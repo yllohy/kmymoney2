@@ -26,6 +26,18 @@
 #include <qfile.h>
 #include <qdatastream.h>
 
+class TestObserverSet : public MyMoneyObserver
+{
+public:
+        TestObserverSet() { m_updated.clear(); }
+        void update(const QString& id) { m_updated.append(id); };
+        const QStringList& updated(void) { return m_updated; };
+        void reset(void) { m_updated.clear(); };
+private:
+        QStringList m_updated;
+};
+
+
 class MyMoneyFileTest : public CppUnit::TestFixture  {
         CPPUNIT_TEST_SUITE(MyMoneyFileTest);
 	CPPUNIT_TEST(testEmptyConstructor);
@@ -57,12 +69,14 @@ class MyMoneyFileTest : public CppUnit::TestFixture  {
 protected:
 	MyMoneyFile	*m;
 	MyMoneySeqAccessMgr*	storage;
+	TestObserverSet *observer;
 
 public:
 	MyMoneyFileTest () {};
 
 
 void setUp () {
+	observer = new TestObserverSet;
 	storage = new MyMoneySeqAccessMgr;
 	m = new MyMoneyFile(storage);
 }
@@ -70,6 +84,7 @@ void setUp () {
 void tearDown () {
 	delete m;
 	delete storage;
+	delete observer;
 }
 
 void testEmptyConstructor() {
@@ -381,11 +396,15 @@ void testAddAccounts() {
 	institution = m->institution("I000001");
 	CPPUNIT_ASSERT(institution.id() == "I000001");
 
+	m->attach("I000001", observer);
+	m->attach("I000002", observer);
+
 	a.setName("Account1");
 	a.setInstitution(institution.id());
 
 	try {
 		MyMoneyAccount parent = m->asset();
+		observer->reset();
 		m->addAccount(a, parent);
 		CPPUNIT_ASSERT(m->accountCount() == 5);
 		CPPUNIT_ASSERT(a.parentAccount() == "AStd::Asset");
@@ -399,6 +418,9 @@ void testAddAccounts() {
 		CPPUNIT_ASSERT(institution.accountCount() == 1);
 		CPPUNIT_ASSERT(institution.accountList()[0] == "A000001");
 
+		CPPUNIT_ASSERT(observer->updated().count() == 1);
+		CPPUNIT_ASSERT(observer->updated().contains("I000001") == 1);
+		observer->reset();
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -412,6 +434,8 @@ void testAddAccounts() {
 	} catch(MyMoneyException *e) {
 		delete e;
 	}
+
+	CPPUNIT_ASSERT(observer->updated().count() == 0);
 
 	// check that we can modify the local object and
 	// reload it from the file
@@ -429,6 +453,7 @@ void testAddAccounts() {
 	CPPUNIT_ASSERT(c.institution() == "I000001");
 
 	CPPUNIT_ASSERT(m->dirty() == false);
+	CPPUNIT_ASSERT(observer->updated().count() == 0);
 
 	// add a second account
 	institution = m->institution("I000002");
@@ -453,6 +478,10 @@ void testAddAccounts() {
 		CPPUNIT_ASSERT(m->asset().accountList().count() == 2);
 		CPPUNIT_ASSERT(m->asset().accountList()[0] == "A000001");
 		CPPUNIT_ASSERT(m->asset().accountList()[1] == "A000002");
+
+		CPPUNIT_ASSERT(observer->updated().count() == 1);
+		CPPUNIT_ASSERT(observer->updated().contains("I000002") == 1);
+		observer->reset();
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -542,6 +571,8 @@ void testReparentAccount() {
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(p.parentAccount() == q.id());
 		CPPUNIT_ASSERT(q.accountCount() == 1);
+		CPPUNIT_ASSERT(q.id() == "A000002");
+		CPPUNIT_ASSERT(p.id() == "A000001");
 		CPPUNIT_ASSERT(q.accountList()[0] == p.id());
 
 		o = m->account(o.id());
@@ -610,7 +641,6 @@ void testRemoveAccountTree() {
 	try {
 		m->removeAccount(a);
 	} catch(MyMoneyException *e) {
-		cout << endl << e->what() << endl;
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
 	}

@@ -37,10 +37,13 @@
 #include "mymoneyfile.h"
 #include "storage/mymoneyseqaccessmgr.h"
 #include "storage/mymoneystoragebin.h"
+#include "mymoneysubject.h"
+#include "mymoneyobserver.h"
 #undef private
 
 #include "mymoneyexceptiontest.h"
 #include "mymoneymoneytest.h"
+#include "mymoneyobservertest.h"
 #include "mymoneyinstitutiontest.h"
 #include "mymoneysplittest.h"
 #include "mymoneyaccounttest.h"
@@ -80,6 +83,7 @@ main(int argc, char** argv)
 
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyExceptionTest); 
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyMoneyTest); 
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyObserverTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyInstitutionTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySplitTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyTransactionTest);

@@ -37,6 +37,7 @@
 #include "../mymoneyaccount.h"
 #include "../mymoneytransaction.h"
 #include "../mymoneypayee.h"
+#include "../mymoneyobserver.h"
 
 /**
   *@author Thomas Baumgart
@@ -364,8 +365,6 @@ public:
     * @return MyMoneyAccount income account(group)
     */
   virtual const MyMoneyAccount income(void) const = 0;
-
-
 };
 
 #endif

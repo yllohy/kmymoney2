@@ -68,21 +68,54 @@ void MyMoneyFile::addInstitution(MyMoneyInstitution& institution)
 
 void MyMoneyFile::modifyInstitution(const MyMoneyInstitution& institution)
 {
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   m_storage->modifyInstitution(institution);
+
+  addNotification(institution.id());
 }
 
 void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
 {
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  // get the current setting of this transaction
+  MyMoneyTransaction tr = MyMoneyFile::transaction(transaction.id());
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+
+  // and mark all accounts that are referenced
+  for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
+    notifyAccountTree((*it_s).account());
+  }
+
+  // perform modification
   m_storage->modifyTransaction(transaction);
+
+  // and mark all accounts that are referenced
+  tr = transaction;
+  for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
+    notifyAccountTree((*it_s).account());
+  }
 }
 
 void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
 {
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   // check that it's not one of the standard account groups
   if(isStandardAccount(account.id()))
     throw new MYMONEYEXCEPTION("Unable to modify the standard account groups");
 
+  // the account can be moved to another one, so we notify
+  // the old one as well
+  addNotification(account.institution());
+
   m_storage->modifyAccount(account);
+
+  notifyAccountTree(account.id());
 }
 
 const MyMoneyAccount::accountTypeE MyMoneyFile::accountGroup(MyMoneyAccount::accountTypeE type) const
@@ -113,7 +146,16 @@ void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& paren
     throw new MYMONEYEXCEPTION("Unable to reparent the standard account groups");
 
   if(accountGroup(account.accountType()) == accountGroup(parent.accountType())) {
+    // automatically notify all observers once this routine is done
+    MyMoneyNotifier notifier(this);
+
+    // remember current account tree
+    notifyAccountTree(account.id());
+
     m_storage->reparentAccount(account, parent);
+
+    // and also keep the new one
+    notifyAccountTree(account.id());
 
   } else
     throw new MYMONEYEXCEPTION("Unable to reparent to different account type");
@@ -131,6 +173,18 @@ const MyMoneyAccount& MyMoneyFile::account(const QString& id) const
 
 void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
 {
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  // get the current setting of this transaction
+  MyMoneyTransaction tr = MyMoneyFile::transaction(transaction.id());
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+
+  // and mark all accounts that are referenced
+  for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
+    notifyAccountTree((*it_s).account());
+  }
+
   m_storage->removeTransaction(transaction);
 }
 
@@ -148,10 +202,11 @@ const bool MyMoneyFile::isStandardAccount(const QString& id) const
 void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
 {
   MyMoneyAccount parent;
+  MyMoneyAccount acc;
 
   // check that the account and it's parent exist
   // this will throw an exception if the id is unknown
-  MyMoneyFile::account(account.id());
+  acc = MyMoneyFile::account(account.id());
   parent = MyMoneyFile::account(account.parentAccount());
 
   // check that it's not one of the standard account groups
@@ -161,6 +216,15 @@ void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
   if(hasActiveSplits(account.id())) {
     throw new MYMONEYEXCEPTION("Unable to remove account with active splits");
   }
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  // collect all sub-ordinate accounts for notification
+  QStringList::ConstIterator it;
+  for(it = acc.accountList().begin(); it != acc.accountList().end(); ++it)
+    notifyAccountTree(*it);
+  notifyAccountTree(parent.id());
 
   m_storage->removeAccount(account);
 }
@@ -172,6 +236,9 @@ void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
 
 void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
 {
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   MyMoneyInstitution institution;
 
   // perform some checks to see that the account stuff is OK. For
@@ -217,10 +284,17 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
 
   if(account.institution().length() != 0)
     m_storage->addAccount(institution, account);
+
+  // parse the complete account tree and collect all
+  // account and institution ids
+  notifyAccountTree(account.id());
 }
 
 void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
 {
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   // perform some checks to see that the transaction stuff is OK. For
   // now we assume that
   // * no ids are assigned
@@ -244,6 +318,11 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
 
   // then add the transaction to the file global pool
   m_storage->addTransaction(transaction);
+
+  // scan the splits again to update notification list
+  for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+    notifyAccountTree((*it_s).account());
+  }
 }
 
 const MyMoneyTransaction& MyMoneyFile::transaction(const QString& id) const
@@ -543,7 +622,7 @@ const QValueList<MyMoneyAccount> MyMoneyFile::accountList(void) const
 const QValueList<MyMoneyInstitution> MyMoneyFile::institutionList(void) const
 {
   return m_storage->institutionList();
-};
+}
 
 // general get functions
 const QString MyMoneyFile::userName(void) const { return m_storage->userName(); }
@@ -612,3 +691,67 @@ const MyMoneyMoney MyMoneyFile::totalBalance(const QString& id) const
 {
   return m_storage->totalBalance(id);
 }
+
+void MyMoneyFile::attach(const QString& id, MyMoneyObserver* observer)
+{
+  QMap<QString, MyMoneyFileSubject>::Iterator it_s;
+
+  // make sure an entry for the subject with the id exists
+  m_subjects[id];
+
+  it_s = m_subjects.find(id);
+  (*it_s).attach(observer);
+}
+
+void MyMoneyFile::detach(const QString& id, MyMoneyObserver* observer)
+{
+  QMap<QString, MyMoneyFileSubject>::Iterator it_s;
+
+  it_s = m_subjects.find(id);
+  if(it_s != m_subjects.end())
+    (*it_s).detach(observer);
+}
+
+void MyMoneyFile::notify(const QString& id) const
+{
+  QMap<QString, MyMoneyFileSubject>::ConstIterator it_s;
+
+  it_s = m_subjects.find(id);
+  if(it_s != m_subjects.end())
+    (*it_s).notify(id);
+}
+
+void MyMoneyFile::notify(void)
+{
+  QMap<QString, bool>::ConstIterator it;
+  for(it = m_notificationList.begin(); it != m_notificationList.end(); ++it)
+    notify(it.key());
+
+  clearNotification();
+}
+
+void MyMoneyFile::notifyAccountTree(const QString& id)
+{
+  QString accId = id;
+  MyMoneyAccount acc;
+
+  do {
+    addNotification(accId);
+    acc = account(accId);
+    addNotification(acc.institution());
+    accId = acc.parentAccount();
+  } while(accId != "");
+}
+
+void MyMoneyFile::addNotification(const QString& id)
+{
+  if(id != "")
+    m_notificationList[id] = true;
+}
+
+void MyMoneyFile::clearNotification()
+{
+  // reset list to be empty
+  m_notificationList.clear();
+}
+

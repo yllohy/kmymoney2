@@ -29,9 +29,9 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <imymoneystorage.h>
-#include <imymoneyserialize.h>
-
+#include "imymoneystorage.h"
+#include "imymoneyserialize.h"
+// #include "../mymoneysubject.h"
 /**
   *@author Thomas Baumgart
   */
@@ -44,7 +44,6 @@ public:
 #define STD_ACC_ASSET     "AStd::Asset"
 #define STD_ACC_EXPENSE   "AStd::Expense"
 #define STD_ACC_INCOME    "AStd::Income"
-
 
 	MyMoneySeqAccessMgr();
 	~MyMoneySeqAccessMgr();
@@ -519,8 +518,17 @@ private:
     */
   const QString nextTransactionID(void);
 
-
-
+  /**
+    * This method re-parents an existing account
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param account MyMoneyAccount reference to account to be re-parented
+    * @param parent  MyMoneyAccount reference to new parent account
+    * @param sendNotification if true, notifications with the ids
+    *                of all modified objects are send
+    */
+  void reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent, const bool sendNotification);
 };
 
 #endif

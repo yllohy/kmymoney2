@@ -80,15 +80,14 @@ const MyMoneyAccount& MyMoneySeqAccessMgr::account(const QString id) const
 {
   QMap<QString, MyMoneyAccount>::ConstIterator pos;
 
-  // check the list of available accounts
-  for(pos = m_accountList.begin(); pos != m_accountList.end(); ++pos) {
-    if((*pos).id() == id) {
-      return (*pos);
-    }
-  }
+  // locate the account and if present, return it's data
+  pos = m_accountList.find(id);
+  if(pos != m_accountList.end())
+    return (*pos);
 
-  // if it's not in here, it does not exist
-  throw new MYMONEYEXCEPTION("Unknown account id");
+  // throw an exception, if it does not exist
+  QString msg = "Unknown account id '" + id + "'";
+  throw new MYMONEYEXCEPTION(msg);
 }
 
 const QValueList<MyMoneyAccount> MyMoneySeqAccessMgr::accountList(void) const
@@ -236,6 +235,9 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
 
   transaction = newTransaction;
 
+  // mark file as changed
+  touch();
+
   if(!skipAccountUpdate) {
     // now update those accounts that need a reference
     // to this transaction
@@ -249,8 +251,6 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
       }
     }
   }
-  // mark file as changed
-  touch();
 }
 
 const QString MyMoneySeqAccessMgr::transactionKey(const MyMoneyTransaction& t) const
@@ -365,10 +365,12 @@ void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account)
         oldInst = m_institutionList.find((*pos).institution());
         newInst = m_institutionList.find(account.institution());
 
-        if(oldInst != m_institutionList.end())
+        if(oldInst != m_institutionList.end()) {
           (*oldInst).removeAccount(account.id());
-        if(newInst != m_institutionList.end())
+        }
+        if(newInst != m_institutionList.end()) {
           (*newInst).addAccount(account.id());
+        }
       }
       // update information in account list
       m_accountList[account.id()] = account;
@@ -393,6 +395,7 @@ void MyMoneySeqAccessMgr::modifyInstitution(const MyMoneyInstitution& institutio
 
     // mark file as changed
     touch();
+
   } else
     throw new MYMONEYEXCEPTION("unknown institution");
 }
@@ -454,6 +457,9 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
   m_transactionList[newKey] = transaction;
   m_transactionKeys[transaction.id()] = newKey;
 
+  // mark file as changed
+  touch();
+
   // now update the accounts
   QMap<QString, bool>::ConstIterator it_a;
   for(it_a = modifiedAccounts.begin(); it_a != modifiedAccounts.end(); ++it_a) {
@@ -464,12 +470,14 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
       refreshAccountTransactionList(acc);
     }
   }
-
-  // mark file as changed
-  touch();
 }
 
 void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent)
+{
+  reparentAccount(account, parent, true);
+}
+
+void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent, const bool sendNotification)
 {
   QMap<QString, MyMoneyAccount>::Iterator oldParent;
   QMap<QString, MyMoneyAccount>::Iterator newParent;
@@ -566,12 +574,9 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
   for(it = account.accountList().begin(); it != account.accountList().end(); ++it) {
     MyMoneySeqAccessMgr::account(*it);
   }
+
   // if one of the accounts did not exist, an exception had been
   // thrown and we would not make it until here.
-  for(it = account.accountList().begin(); it != account.accountList().end(); ++it) {
-    MyMoneyAccount acc(MyMoneySeqAccessMgr::account(*it));
-    reparentAccount(acc, parent);
-  }
 
   QMap<QString, MyMoneyAccount>::Iterator it_a;
 
@@ -589,6 +594,15 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
   && (*it_a).institution() == account.institution()
   && (*it_a).accountType() == account.accountType()) {
 
+    // second round over sub-ordinate accounts: do re-parenting
+    // but only if the list contains at least one entry
+    if((*it_a).accountList().count() > 0) {
+      while((*it_a).accountList().count() > 0) {
+        it = (*it_a).accountList().begin();
+        MyMoneyAccount acc(MyMoneySeqAccessMgr::account(*it));
+        reparentAccount(acc, parent, false);
+      }
+    }
     // remove account from account list
     m_accountList.remove(it_a);
 

@@ -34,17 +34,42 @@
 #include "mymoneyaccount.h"
 #include "mymoneytransaction.h"
 #include "mymoneypayee.h"
+#include "mymoneyobserver.h"
+#include "mymoneysubject.h"
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart, Michael Edwardes
   */
 
 class IMyMoneyStorage;
 
-/// This class represents the interface to all data kept in a KMyMoney file
+/**
+  * This class represents the interface to the MyMoney engine. For historical
+  * reasons it is still called MyMoneyFile
+  */
 class MyMoneyFile
 {
 public:
+
+  class MyMoneyFileSubject : public MyMoneySubject
+  {
+  public:
+    MyMoneyFileSubject() {};
+    ~MyMoneyFileSubject() {};
+  };
+
+
+  class MyMoneyNotifier
+  {
+  public:
+    MyMoneyNotifier(MyMoneyFile* file) { m_file = file; m_file->clearNotification(); };
+    ~MyMoneyNotifier() { m_file->notify(); };
+  private:
+    MyMoneyFile* m_file;
+  };
+
+  friend MyMoneyNotifier;
+
   /**
     * This is the constructor for a new empty file description
     */
@@ -357,45 +382,93 @@ public:
   const QValueList<MyMoneyAccount> accountList(void) const;
 
   /**
-    * The following error codes are defined during reading
-    * a MyMoneyFile from a QDataStream.
+    * This method is used to attach an observer to a subject
+    * represented by it's id. Whenever the object represented
+    * by the id changes it's state, the observers method
+    * ::update(const QString& id) is called with id set to
+    * the value passed as argument to attach. This allows an
+    * object of the GUI to observe multiple objects with the
+    * ability to know which object changed. If it observes
+    * multiple objects, it's update(const QString& id) method
+    * is called multiple times if more than one object changed
+    * during a single operation.
+    *
+    * @param id reference to id of the subject from which
+    *           notifications should be activated
+    * @param observer pointer to object observing the subject
+    *
+    * @see detach
     */
-  enum readStreamErrorType {
-    OK = 0,
-    UNKNOWN_FILE_TYPE,
-    UNKNOWN_FILE_FORMAT
-  };
+  void attach(const QString& id, MyMoneyObserver* observer);
 
   /**
-    * This method is used to read the data from a QDataStream.
-    * It is the responsability of the caller to open and close
-    * the stream. Different versions of the file layout are
-    * handled by this routine.
+    * This method is used to detach an observer from a subject
+    * represented by it's id. If an object observes more than one
+    * subject, it must call this method multiple times.
     *
-    * @param s QDataStream to read from
-    * @return return code
-    */
-  const int readStream(QDataStream& s);
-
-  /**
-    * This method is used to write all data found in the MyMoneyFile
-    * object to a QDataStream.
-    * It is the responsability of the caller to open and close
-    * the stream.
+    * @param id reference to id of the subject from which
+    *           notifications were activated
+    * @param observer pointer to object observing the subject
     *
-    * @param s QDataStream to read from
-    * @return return code
+    * @see attach
     */
-  const int writeStream(QDataStream& s);
+  void detach(const QString& id, MyMoneyObserver* observer);
 
   // Payee operations
   void addPayee(const QString& newPayee, const QString& address=QString::null, const QString& postcode=QString::null, const QString& telephone=QString::null, const QString& email=QString::null);
   void removePayee(const QString name);
 
 private:
+  /**
+    * This method is used to add an id to the list of objects
+    * to be notified. If id == "", then nothing is added to the list.
+    *
+    * @param id id of object to be notified
+    * @see attach, detach
+    */
+  void addNotification(const QString& id);
+
+  /**
+    * This method is used to clear the notification list
+    */
+  void clearNotification(void);
+
+  /**
+    * This method is used to notify the objects observing
+    * a specific id
+    */
+  void notify(const QString& id) const;
+
+  /**
+    * This method is used to notify all objects observing
+    * any object contained in m_notificationList.
+    */
+  void notify(void);
+
+  /**
+    * This method is used to add the account with id 'id'
+    * and all it's parent account's ids to the notification list.
+    *
+    * @param id account's id
+    */
+  void notifyAccountTree(const QString& id);
+
+  /**
+    * This member points to the storage strategy
+    */
   IMyMoneyStorage *m_storage;
 
+  /**
+    * This member variable keeps a set of all subjects known to
+    * the object (accounts, institutions, etc)
+    */
+  QMap<QString, MyMoneyFileSubject> m_subjects;
 
+  /**
+    * This member keeps a list of ids to notify after an
+    * operation is completed.
+    */
+  QMap<QString, bool> m_notificationList;
 
 };
 #endif

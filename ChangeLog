@@ -1,3 +1,6 @@
+2002-05-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * added notification logic to the engine
+
 2002-05-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * merged new engine branch
   * *** THE PROJECT WILL NOT COMPILE FOR AWHILE ***

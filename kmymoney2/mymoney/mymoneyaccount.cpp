@@ -30,6 +30,7 @@ MyMoneyAccount::MyMoneyAccount(const int accountType)
   m_name = "";
   m_description = "";
   m_number = "";
+  m_parentAccount = "";
   m_accountType = static_cast<accountTypeE> (accountType);
 }
 
