@@ -7,7 +7,4 @@ edit it the editor shows the number as 1,000,000.00 but if you click
 enter the last three digits are lost.  Affects US & UK currencies haven't
 checked the others.
 
-MyMoneyFile seems to thinks it's dirty even when it's not.  (Something to
-do with the way the file is read ?).
-
 Random crashes on exit ?
