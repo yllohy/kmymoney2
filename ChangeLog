@@ -1,3 +1,8 @@
+2003-07-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * disable save button and menu entry if data in engine is unchanged
+  * fix memory leak in KLedgerView
+  * added feature to have country and language specific home page
+
 2003-07-29 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed loading of blank icon in the startup dialog.
   * Fix schedule errors.
