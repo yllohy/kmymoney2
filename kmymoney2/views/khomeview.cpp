@@ -195,7 +195,7 @@ void KHomeView::showPayments(void)
     tmp = "<div class=\"warning\">" + i18n("Overdue payments") + "</div>\n";
     m_part->write(tmp);
     
-    m_part->write("<table cellspacing=\"0\" cellpadding=\"1\">");
+    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"1\">");
     for(it = overdues.begin(); it != overdues.end(); ++it) {
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
       showPaymentEntry(*it);
@@ -234,7 +234,7 @@ void KHomeView::showPayments(void)
       m_part->write("<div class=\"gap\">&nbsp;</div>\n");
       tmp = "<div class=\"item\">" + i18n("Todays payments") + "</div>\n";
       m_part->write(tmp);
-      m_part->write("<table cellspacing=\"0\" cellpadding=\"1\">");
+      m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"1\">");
 
       for(t_it = todays.begin(); t_it != todays.end(); ++t_it) {
         m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
@@ -252,7 +252,7 @@ void KHomeView::showPayments(void)
       tmp = "<div class=\"item\">" + i18n("Future payments") + "</div>\n";
       m_part->write(tmp);
 
-      m_part->write("<table cellspacing=\"0\" cellpadding=\"1\">");
+      m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"1\">");
       for(it = schedule.begin(); it != schedule.end(); ++it) {
         m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
         showPaymentEntry(*it);
@@ -359,7 +359,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
           "</div>\n<div class=\"gap\">&nbsp;</div>\n";
 
     m_part->write(tmp);
-    m_part->write("<table cellspacing=\"0\" cellpadding=\"2\" width=\"60%\">");
+    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\" width=\"60%\">");
     m_part->write("<tr class=\"item\"><td width=\"70%\">");
     m_part->write(i18n("Account"));
     m_part->write("</td><td width=\"30%\" align=\"right\">");
