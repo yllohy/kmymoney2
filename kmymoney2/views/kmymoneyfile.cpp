@@ -103,10 +103,6 @@ void KMyMoneyFile::close()
 
 bool KMyMoneyFile::isOpen()
 {
-  /* keeping this debug here for now because it
-    highlights the infinite loop bug on exit
-  */
-  qDebug("returning open %d", m_open);
   return m_open;
 }
 
