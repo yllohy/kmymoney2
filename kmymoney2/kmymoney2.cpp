@@ -117,6 +117,9 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
 
   // make sure, we get a note when the engine changes state
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAnyChange, this);
+
+  // initial setup of settings
+  KMyMoneyUtils::updateSettings();
 }
 
 KMyMoney2App::~KMyMoney2App()
@@ -571,6 +574,8 @@ void KMyMoney2App::slotViewStatusBar()
 
 
 
+
+
   {
     statusBar()->show();
   }
@@ -626,6 +631,7 @@ void KMyMoney2App::progressCallback(int current, int total, const QString& msg)
 {
   if(!msg.isEmpty())
     kmymoney2->slotStatusMsg(msg);
+
 
   kmymoney2->slotStatusProgressBar(current, total);
 }
@@ -705,14 +711,6 @@ void KMyMoney2App::slotQifImportFinished(void)
   if(m_reader != 0) {
     // fixme: re-enable the QIF import menu options
     if(m_reader->finishImport()) {
-      // explain the user what's happening next
-      KMessageBox::information(0, i18n(
-                      "The imported data will be displayed together with the "
-                      "data already stored in the file. Imported transactions "
-                      "are shown with a yellow background. Pressing OK will accept "
-                      "all transactions, CANCEL will remove all imported transactions."),
-                      i18n("Import verification"));
-                      
       if(verifyImportedData()) {
         // keep the new data set, destroy the backup copy
         delete m_engineBackup;
@@ -991,6 +989,7 @@ void KMyMoney2App::slotFileNewWindow()
 
 void KMyMoney2App::slotKeySettings()
 {
+
   QString path = KGlobal::dirs()->findResource("appdata", "kmymoney2ui.rc");
   KKeyDialog::configureKeys(actionCollection(), path);
 }
@@ -1146,6 +1145,7 @@ void KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDa
     {
       KMessageBox::error(this, i18n("Unable to modify schedule: ") + e->what());
       delete e;
+
     }
   }
   catch (MyMoneyException *e)
