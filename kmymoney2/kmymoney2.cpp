@@ -447,7 +447,9 @@ void KMyMoney2App::slotFilePrint()
 void KMyMoney2App::slotFileQuit()
 {
   slotStatusMsg(i18n("Exiting..."));
-  KMainWindow* w;
+
+  KMainWindow* w = 0;
+
   if(memberList) {
     for(w=memberList->first(); w!=0; w=memberList->first()) {
       // only close the window if the closeEvent is accepted. If the user presses Cancel on the saveModified() dialog,
@@ -455,9 +457,14 @@ void KMyMoney2App::slotFileQuit()
       if(!w->close())
       	break;
     }
-  }
-//	kapp->quit();
-  slotStatusMsg(i18n("Ready."));
+    // We will only quit if all windows were processed and not cancelled
+    if(w == 0)
+  	  kapp->quit();
+
+  } else
+      kapp->quit();
+
+//  slotStatusMsg(i18n("Ready."));
 }
 
 void KMyMoney2App::slotEditCut()
