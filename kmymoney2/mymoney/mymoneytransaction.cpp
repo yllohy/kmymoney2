@@ -70,6 +70,20 @@ void MyMoneyTransaction::addSplit(MyMoneySplit& split)
   if(!split.id().isEmpty())
     throw new MYMONEYEXCEPTION("Cannot add split with assigned id (" + split.id() + ")");
 
+  QValueList<MyMoneySplit>::Iterator it;
+
+  // if the account referenced in this split is already
+  // referenced in another split, we add the amount of
+  // this split to the other one. All other data contained
+  // in the new split will be discarded.
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    if((*it).accountId() == split.accountId()) {
+      (*it).setValue((*it).value()+split.value());
+      split = (*it);
+      return;
+    }
+  }
+
   split.setId(nextSplitID());
   m_splits.append(split);
 }
@@ -77,17 +91,28 @@ void MyMoneyTransaction::addSplit(MyMoneySplit& split)
 void MyMoneyTransaction::modifySplit(MyMoneySplit& split)
 {
   QValueList<MyMoneySplit>::Iterator it;
-
+  QValueList<MyMoneySplit>::Iterator self = m_splits.end();
+  QValueList<MyMoneySplit>::Iterator dup = self;
+  bool duplicateAccount = false;
+  
   for(it = m_splits.begin(); it != m_splits.end(); ++it) {
     if(split.id() == (*it).id()) {
-      *it = split;
-      break;
+      self = it;
+    } else if(split.accountId() == (*it).accountId()) {
+      (*it).setValue((*it).value() + split.value());
+      dup = it;
+      duplicateAccount = true;
     }
   }
-  if(it == m_splits.end())
+
+  if(self == m_splits.end())
     throw new MYMONEYEXCEPTION("Invalid split id '" + split.id() + "'");
 
-  split = *it;
+  if(duplicateAccount) {
+    m_splits.remove(self);
+    split = *dup;
+  } else
+    *self = split;
 }
 
 void MyMoneyTransaction::removeSplit(const MyMoneySplit& split)
