@@ -13,7 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+#include <kfiledialog.h>
 #include <kglobal.h>
 #include <kstddirs.h>
 #include <kmessagebox.h>
@@ -492,6 +492,8 @@ void KMyMoneyView::slotAccountImportAscii(void)
   if (dlg.exec()) {
     if (dlg.importExportType()=="QIF")
       slotAccountImportQIF();
+    else
+      accountImportCSV();
   }
 }
 
@@ -501,6 +503,8 @@ void KMyMoneyView::slotAccountExportAscii(void)
   if (dlg.exec()) {
     if (dlg.importExportType()=="QIF")
       slotAccountExportQIF();
+    else
+      accountExportCSV();
   }
 }
 
@@ -1522,4 +1526,107 @@ void KMyMoneyView::slotBankSelected()
 void KMyMoneyView::slotAccountSelected()
 {
   emit accountOperations(true);
+}
+
+void KMyMoneyView::accountImportCSV(void)
+{
+  KMessageBox::information(this, "Unable to read comma delimeted text file at this time.  Sorry", "Import CSV");
+}
+
+void KMyMoneyView::accountExportCSV(void)
+{
+  bool bankSuccess=false, accountSuccess=false;
+  MyMoneyBank *pBank;
+  MyMoneyAccount *pAccount;
+
+	pBank = m_file.bank(m_mainView->currentBank(bankSuccess));
+	if (!pBank || !bankSuccess) {
+    qDebug("KMyMoneyView::doTransactionSearch: Unable to get the current bank");
+    return;
+  }
+  pAccount = pBank->account(m_mainView->currentAccount(accountSuccess));
+  if (!pAccount || !accountSuccess) {
+    qDebug("KMyMoneyView::doTransactionSearch: Unable to grab the current account");
+    return;
+  }
+
+  QString name = KFileDialog::getSaveFileName();
+
+  QString buf;
+
+  // Write header line(s) first
+  QFile f(name);
+  if (f.open(IO_WriteOnly)) {
+    QTextStream t(&f);
+
+    QString tmpBuf1, tmpBuf2;
+    MyMoneyTransaction *transaction;
+    int i=0;
+    for ( i=1, transaction = pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext(), i++) {
+      switch (transaction->type()) {
+        case MyMoneyTransaction::Cheque:
+          tmpBuf1 = "Cheque";
+          break;
+        case MyMoneyTransaction::Deposit:
+          tmpBuf1 = "Deposit";
+          break;
+        case MyMoneyTransaction::ATM:
+          tmpBuf1 = "ATM";
+          break;
+        case MyMoneyTransaction::Withdrawal:
+          tmpBuf1 = "Withdrawal";
+          break;
+        case MyMoneyTransaction::Transfer:
+          tmpBuf1 = "Transfer";
+          break;
+        default:
+          tmpBuf1 = "Unknown";
+          break;
+      }
+
+      switch (transaction->state()) {
+        case MyMoneyTransaction::Reconciled:
+          tmpBuf2 = "Reconciled";
+          break;
+        case MyMoneyTransaction::Cleared:
+          tmpBuf2 = "Cleared";
+          break;
+        case MyMoneyTransaction::Unreconciled:
+          tmpBuf2 = "Unreconciled";
+          break;
+        default:
+          tmpBuf2 = "Unknown";
+          break;
+      }
+
+      buf = QString::number(i)
+          + ","
+          + KGlobal::locale()->formatDate(transaction->date(), true)
+          + ","
+          + tmpBuf1
+          + ","
+          + transaction->payee()
+          + ","
+          + tmpBuf2
+          + ","
+          + ((transaction->type()==MyMoneyTransaction::Credit) ?
+            QString::number(transaction->amount().amount()) :
+            "")
+          + ","
+          + ((transaction->type()==MyMoneyTransaction::Credit) ?
+            "" :
+            QString::number(transaction->amount().amount()))
+          + ","
+          + "\n"
+          + ",,"
+          + transaction->number()
+          + ","
+          + (transaction->categoryMajor() + ":" + transaction->categoryMinor())
+          + ","
+          + transaction->memo()
+          + ",,\n";
+      t << buf;
+    }
+    f.close();
+  }
 }

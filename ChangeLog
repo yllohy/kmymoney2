@@ -1,4 +1,8 @@
 2001-07-12 Michael Edwardes <mte@users.sourceforge.net>
+  * Implemented CSV export.  Import may be disabled for CSV in the
+    future (will anybody use it ?).
+
+2001-07-12 Michael Edwardes <mte@users.sourceforge.net>
   * Fixed small bug i introduced in the import dialog.
   * Released 0.3.5.
 
