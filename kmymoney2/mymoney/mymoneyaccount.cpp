@@ -221,7 +221,8 @@ const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(MyMoneyAccount::
 
 const bool MyMoneyAccount::operator == (const MyMoneyAccount& right) const
 {
-  return ((m_id == right.m_id) &&
+  return (static_cast<const MyMoneyKeyValueContainer>(*this) == static_cast<const MyMoneyKeyValueContainer>(right) &&
+      (m_id == right.m_id) &&
       (m_accountList == right.m_accountList) &&
       (m_accountType == right.m_accountType) &&
       (m_description == right.m_description) &&
@@ -232,6 +233,7 @@ const bool MyMoneyAccount::operator == (const MyMoneyAccount& right) const
       (m_openingBalance == right.m_openingBalance) &&
       (m_openingDate == right.m_openingDate) &&
       (m_parentAccount == right.m_parentAccount) &&
+      (m_currencyId == right.m_currencyId) &&
       (m_institution == right.m_institution) );
 }
 

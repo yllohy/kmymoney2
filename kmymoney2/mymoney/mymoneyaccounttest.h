@@ -36,6 +36,7 @@ class MyMoneyAccountTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testBalance);
 */
 	CPPUNIT_TEST(testSubAccounts);
+	CPPUNIT_TEST(testEquality);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -54,6 +55,7 @@ public:
 	void testTransactionRetrieval();
 	void testBalance();
 	void testSubAccounts();
+	void testEquality();
 };
 
 #endif

@@ -60,3 +60,20 @@ void MyMoneyKeyValueContainer::deletePair(const QCString& key)
     m_kvp.remove(it);
 }
 
+const bool MyMoneyKeyValueContainer::operator == (const MyMoneyKeyValueContainer& right) const
+{
+  QMap<QCString, QString>::ConstIterator it_a, it_b;
+
+  it_a = m_kvp.begin();
+  it_b = right.m_kvp.begin();
+  
+  while(it_a != m_kvp.end() && it_b != right.m_kvp.end()) {
+    if(it_a.key() != it_b.key()
+    || *it_a != *it_b)
+      return false;
+    ++it_a;
+    ++it_b;
+  }
+
+  return (it_a == m_kvp.end() && it_b == right.m_kvp.end());  
+}

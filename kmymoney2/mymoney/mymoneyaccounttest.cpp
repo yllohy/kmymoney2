@@ -284,3 +284,83 @@ void MyMoneyAccountTest::testSubAccounts()
 
 }
 
+void MyMoneyAccountTest::testEquality()
+{
+	MyMoneyAccount a;
+
+	a.setLastModified(QDate::currentDate());
+	a.setName("Name");
+	a.setNumber("Number");
+	a.setDescription("Desc");
+	a.setInstitutionId("I-ID");
+	a.setOpeningDate(QDate::currentDate());
+	a.setOpeningBalance(100);
+	a.setLastReconciliationDate(QDate::currentDate());
+	a.setAccountType(MyMoneyAccount::Asset);
+	a.setParentAccountId("P-ID");
+	a.setAccountId("A-ID");
+	a.setCurrencyId("C-ID");
+	a.setValue("Key", "Value");
+
+	MyMoneyAccount b;
+
+	b = a;
+	CPPUNIT_ASSERT(b == a);
+
+	a.setName("Noname");
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setLastModified(QDate::currentDate().addDays(-1));
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setNumber("Nonumber");
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setDescription("NoDesc");
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setInstitutionId("I-noID");
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setOpeningDate(QDate::currentDate().addDays(-1));
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setOpeningBalance(200);
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setLastReconciliationDate(QDate::currentDate().addDays(-1));
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setAccountType(MyMoneyAccount::Liability);
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setParentAccountId("P-noID");
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setAccountId("A-noID");
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setCurrencyId("C-noID");
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setValue("Key", "noValue");
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+	a.setValue("noKey", "Value");
+	CPPUNIT_ASSERT(!(b == a));
+	b = a;
+
+}

@@ -104,6 +104,11 @@ public:
     */
   void setPairs(const QMap<QCString, QString>& list);
 
+  /**
+    * This operator tests for equality of two MyMoneyKeyValueContainer objects
+    */
+  const bool operator == (const MyMoneyKeyValueContainer &) const;
+
 private:
   /**
     * This member variable represents the container of key/value pairs.
