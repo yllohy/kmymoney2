@@ -833,6 +833,12 @@ public:
     */
   static const QCString NotifyClassSchedule;
 
+  /**
+    * MyMoneyFile::NotifyClassAnyChange
+    * is a special id that will be notified whenever any object of the engine changes
+    */
+  static const QCString NotifyClassAnyChange;
+  
 protected:
   /**
     * This is the constructor for a new empty file description

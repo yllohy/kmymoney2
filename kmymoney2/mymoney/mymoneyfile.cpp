@@ -45,6 +45,7 @@ const QCString MyMoneyFile::NotifyClassPayee = "MyMoneyFile::NotifyPayee";
 const QCString MyMoneyFile::NotifyClassInstitution = "MyMoneyFile::NotifyInstitution";
 const QCString MyMoneyFile::NotifyClassAccountHierarchy = "MyMoneyFile::NotifyAccountHierarchy";
 const QCString MyMoneyFile::NotifyClassSchedule = "MyMoneyFile::NotifySchedule";
+const QCString MyMoneyFile::NotifyClassAnyChange = "MyMoneyFile::NotifyAnyChange";
 
 // include the following line to get a 'cout' for debug purposes
 // #include <iostream>
@@ -651,6 +652,9 @@ void MyMoneyFile::notify(void)
   for(it = m_notificationList.begin(); it != m_notificationList.end(); ++it) {
     notify(it.key());
   }
+  
+  if(m_notificationList.count() > 0)
+    notify(NotifyClassAnyChange);
 
   clearNotification();
 }
