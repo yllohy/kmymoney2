@@ -1,4 +1,5 @@
-# KDE tags expanded automatically by am_edit - $Revision: 1.4 $ 
+# Generated automatically from Makefile.in by config.pl.
+# KDE tags expanded automatically by am_edit - $Revision: 1.1 $ 
 # Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
@@ -14,49 +15,49 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
 
-SHELL = @SHELL@
+SHELL = /bin/sh
 
-srcdir = @srcdir@
-top_srcdir = @top_srcdir@
-VPATH = @srcdir@
-prefix = @prefix@
-exec_prefix = @exec_prefix@
+srcdir = .
+top_srcdir = ../../../..
+VPATH = .
+prefix = /opt/kde
+exec_prefix = ${prefix}
 #>- 
-bindir = @bindir@
+bindir = ${exec_prefix}/bin
 #>+ 3
 DEPDIR = .deps
 
-bindir = @bindir@
-sbindir = @sbindir@
-libexecdir = @libexecdir@
-datadir = @datadir@
-sysconfdir = @sysconfdir@
-sharedstatedir = @sharedstatedir@
-localstatedir = @localstatedir@
-libdir = @libdir@
-infodir = @infodir@
-mandir = @mandir@
-includedir = @includedir@
+bindir = ${exec_prefix}/bin
+sbindir = ${exec_prefix}/sbin
+libexecdir = ${exec_prefix}/libexec
+datadir = ${prefix}/share
+sysconfdir = ${prefix}/etc
+sharedstatedir = ${prefix}/com
+localstatedir = ${prefix}/var
+libdir = ${exec_prefix}/lib
+infodir = ${prefix}/info
+mandir = ${prefix}/man
+includedir = ${prefix}/include
 oldincludedir = /usr/include
 
 DESTDIR =
 
-pkgdatadir = $(datadir)/@PACKAGE@
-pkglibdir = $(libdir)/@PACKAGE@
-pkgincludedir = $(includedir)/@PACKAGE@
+pkgdatadir = $(datadir)/kmymoney2
+pkglibdir = $(libdir)/kmymoney2
+pkgincludedir = $(includedir)/kmymoney2
 
 top_builddir = ../../../..
 
-ACLOCAL = @ACLOCAL@
-AUTOCONF = @AUTOCONF@
-AUTOMAKE = @AUTOMAKE@
-AUTOHEADER = @AUTOHEADER@
+ACLOCAL = aclocal
+AUTOCONF = autoconf
+AUTOMAKE = automake
+AUTOHEADER = autoheader
 
-INSTALL = @INSTALL@
-INSTALL_PROGRAM = @INSTALL_PROGRAM@ $(AM_INSTALL_PROGRAM_FLAGS)
-INSTALL_DATA = @INSTALL_DATA@
-INSTALL_SCRIPT = @INSTALL_SCRIPT@
-transform = @program_transform_name@
+INSTALL = /usr/bin/install -c -p
+INSTALL_PROGRAM = ${INSTALL} $(INSTALL_STRIP_FLAG) $(AM_INSTALL_PROGRAM_FLAGS)
+INSTALL_DATA = ${INSTALL} -m 644
+INSTALL_SCRIPT = ${INSTALL}
+transform = s,x,x,
 
 NORMAL_INSTALL = :
 PRE_INSTALL = :
@@ -64,142 +65,142 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-build_alias = @build_alias@
-build_triplet = @build@
-host_alias = @host_alias@
-host_triplet = @host@
-target_alias = @target_alias@
-target_triplet = @target@
-ARTSCCONFIG = @ARTSCCONFIG@
+build_alias = i686-pc-linux-gnu
+build_triplet = i686-pc-linux-gnu
+host_alias = i686-pc-linux-gnu
+host_triplet = i686-pc-linux-gnu
+target_alias = i686-pc-linux-gnu
+target_triplet = i686-pc-linux-gnu
+ARTSCCONFIG = /opt/kde/bin/artsc-config
 AS = @AS@
-AUTODIRS = @AUTODIRS@
-CC = @CC@
-CONF_FILES = @CONF_FILES@
-CPP = @CPP@
-CXX = @CXX@
-CXXCPP = @CXXCPP@
-DCOPIDL = @DCOPIDL@
-DCOPIDL2CPP = @DCOPIDL2CPP@
-DCOP_DEPENDENCIES = @DCOP_DEPENDENCIES@
+AUTODIRS = 
+CC = gcc
+CONF_FILES =  $(top_srcdir)/./admin/configure.in.min $(top_srcdir)/configure.in.in
+CPP = gcc -E
+CXX = g++
+CXXCPP = g++ -E
+DCOPIDL = /opt/kde/bin/dcopidl
+DCOPIDL2CPP = /opt/kde/bin/dcopidl2cpp
+DCOP_DEPENDENCIES = $(DCOPIDL)
 DLLTOOL = @DLLTOOL@
 DPMSINC = @DPMSINC@
 DPMSLIB = @DPMSLIB@
-EXEEXT = @EXEEXT@
+EXEEXT = 
 GCJ = @GCJ@
 GCJFLAGS = @GCJFLAGS@
 GLINC = @GLINC@
 GLLIB = @GLLIB@
-GMSGFMT = @GMSGFMT@
+GMSGFMT = /usr/bin/msgfmt
 IDL = @IDL@
 IDL_DEPENDENCIES = @IDL_DEPENDENCIES@
-KDB2HTML = @KDB2HTML@
-KDECONFIG = @KDECONFIG@
-KDE_CXXFLAGS = @KDE_CXXFLAGS@
-KDE_EXTRA_RPATH = @KDE_EXTRA_RPATH@
-KDE_INCLUDES = @KDE_INCLUDES@
-KDE_LDFLAGS = @KDE_LDFLAGS@
-KDE_PLUGIN = @KDE_PLUGIN@
-KDE_RPATH = @KDE_RPATH@
-KDE_USE_CLOSURE_FALSE = @KDE_USE_CLOSURE_FALSE@
-KDE_USE_CLOSURE_TRUE = @KDE_USE_CLOSURE_TRUE@
-KDE_USE_FINAL_FALSE = @KDE_USE_FINAL_FALSE@
-KDE_USE_FINAL_TRUE = @KDE_USE_FINAL_TRUE@
-LIBCOMPAT = @LIBCOMPAT@
-LIBCRYPT = @LIBCRYPT@
-LIBDL = @LIBDL@
-LIBJPEG = @LIBJPEG@
+KDB2HTML = /opt/kde/bin/kdb2html
+KDECONFIG = /opt/kde/bin/kde-config
+KDE_CXXFLAGS = 
+KDE_EXTRA_RPATH = 
+KDE_INCLUDES = -I/opt/kde/include
+KDE_LDFLAGS = -L/opt/kde/lib
+KDE_PLUGIN = -avoid-version -module -no-undefined
+KDE_RPATH = -R $(kde_libraries) -R $(x_libraries)
+KDE_USE_CLOSURE_FALSE = #
+KDE_USE_CLOSURE_TRUE = 
+KDE_USE_FINAL_FALSE = 
+KDE_USE_FINAL_TRUE = #
+LIBCOMPAT = 
+LIBCRYPT = -lcrypt
+LIBDL = -ldl
+LIBJPEG = -ljpeg
 LIBMICO = @LIBMICO@
 LIBOBJS = @LIBOBJS@
-LIBPNG = @LIBPNG@
+LIBPNG = -lpng -lz -lm
 LIBPTHREAD = @LIBPTHREAD@
 LIBPYTHON = @LIBPYTHON@
 LIBQIMGIO = @LIBQIMGIO@
-LIBSM = @LIBSM@
-LIBSOCKET = @LIBSOCKET@
+LIBSM = -lSM -lICE
+LIBSOCKET = 
 LIBTIFF = @LIBTIFF@
-LIBTOOL = @LIBTOOL@
-LIBUCB = @LIBUCB@
-LIBZ = @LIBZ@
-LIB_KAB = @LIB_KAB@
-LIB_KDECORE = @LIB_KDECORE@
-LIB_KDEUI = @LIB_KDEUI@
-LIB_KFILE = @LIB_KFILE@
-LIB_KFM = @LIB_KFM@
-LIB_KFORMULA = @LIB_KFORMULA@
-LIB_KHTML = @LIB_KHTML@
+LIBTOOL = $(SHELL) $(top_builddir)/libtool
+LIBUCB = 
+LIBZ = -lz
+LIB_KAB = -lkab
+LIB_KDECORE = -lkdecore
+LIB_KDEUI = -lkdeui
+LIB_KFILE = -lkfile
+LIB_KFM = 
+LIB_KFORMULA = -lkformula
+LIB_KHTML = -lkhtml
 LIB_KIMGIO = @LIB_KIMGIO@
-LIB_KIO = @LIB_KIO@
-LIB_KPARTS = @LIB_KPARTS@
-LIB_KSPELL = @LIB_KSPELL@
-LIB_KSYCOCA = @LIB_KSYCOCA@
-LIB_KWRITE = @LIB_KWRITE@
-LIB_QT = @LIB_QT@
-LIB_SMB = @LIB_SMB@
-LIB_X11 = @LIB_X11@
-LN_S = @LN_S@
-MAKEINFO = @MAKEINFO@
-MCOPIDL = @MCOPIDL@
+LIB_KIO = -lkio
+LIB_KPARTS = -lkparts
+LIB_KSPELL = -lkspell
+LIB_KSYCOCA = -lksycoca
+LIB_KWRITE = -lkwrite
+LIB_QT = -lqt $(LIBPNG) $(LIBJPEG) -lXext $(LIB_X11) $(LIBSM)
+LIB_SMB = -lsmb
+LIB_X11 = -lX11 $(LIBSOCKET)
+LN_S = ln -s
+MAKEINFO = /develop/Projects/kmymoney2/admin/missing makeinfo
+MCOPIDL = /opt/kde/bin/mcopidl
 MICO_INCLUDES = @MICO_INCLUDES@
 MICO_LDFLAGS = @MICO_LDFLAGS@
-MOC = @MOC@
-MSGFMT = @MSGFMT@
-NOOPT_CXXFLAGS = @NOOPT_CXXFLAGS@
-NOREPO = @NOREPO@
+MOC = /usr/lib/qt/bin/moc
+MSGFMT = /usr/bin/msgfmt
+NOOPT_CXXFLAGS =  -fno-exceptions -fno-check-new -Wall -pedantic -W -Wpointer-arith -Wmissing-prototypes -Wwrite-strings -Wno-long-long -Wnon-virtual-dtor -fno-builtin -g3 -Wall
+NOREPO = -fno-repo
 OBJDUMP = @OBJDUMP@
-OBJEXT = @OBJEXT@
-PACKAGE = @PACKAGE@
+OBJEXT = o
+PACKAGE = kmymoney2
 PAMINC = @PAMINC@
 PAMLIBPATHS = @PAMLIBPATHS@
 PAMLIBS = @PAMLIBS@
 PYTHONINC = @PYTHONINC@
 PYTHONLIB = @PYTHONLIB@
 PYTHONMODDIR = @PYTHONMODDIR@
-QT_INCLUDES = @QT_INCLUDES@
-QT_LDFLAGS = @QT_LDFLAGS@
-RANLIB = @RANLIB@
-REPO = @REPO@
-STRIP = @STRIP@
-TOPSUBDIRS = @TOPSUBDIRS@
-UIC = @UIC@
-USER_INCLUDES = @USER_INCLUDES@
-USER_LDFLAGS = @USER_LDFLAGS@
-USE_EXCEPTIONS = @USE_EXCEPTIONS@
-USE_RTTI = @USE_RTTI@
+QT_INCLUDES = -I/usr/lib/qt/include
+QT_LDFLAGS = 
+RANLIB = ranlib
+REPO = -frepo
+STRIP = strip
+TOPSUBDIRS =  doc kmymoney2 po
+UIC = /usr/lib/qt/bin/uic
+USER_INCLUDES = 
+USER_LDFLAGS = 
+USE_EXCEPTIONS = -fexceptions
+USE_RTTI = -frtti
 USE_THREADS = @USE_THREADS@
-VERSION = @VERSION@
-XGETTEXT = @XGETTEXT@
+VERSION = 0.3.1
+XGETTEXT = /usr/bin/xgettext
 XPMINC = @XPMINC@
 XPMLIB = @XPMLIB@
-X_EXTRA_LIBS = @X_EXTRA_LIBS@
-X_INCLUDES = @X_INCLUDES@
-X_LDFLAGS = @X_LDFLAGS@
-X_PRE_LIBS = @X_PRE_LIBS@
-all_includes = @all_includes@
-all_libraries = @all_libraries@
+X_EXTRA_LIBS = 
+X_INCLUDES = -I/usr/X11R6/include
+X_LDFLAGS = -L/usr/X11R6/lib
+X_PRE_LIBS = 
+all_includes = -I/opt/kde/include -I/usr/lib/qt/include -I/usr/X11R6/include 
+all_libraries = -L/usr/X11R6/lib -L/opt/kde/lib 
 idldir = @idldir@
-kde_appsdir = @kde_appsdir@
-kde_bindir = @kde_bindir@
-kde_confdir = @kde_confdir@
-kde_datadir = @kde_datadir@
-kde_htmldir = @kde_htmldir@
-kde_icondir = @kde_icondir@
-kde_includes = @kde_includes@
-kde_libraries = @kde_libraries@
-kde_libs_htmldir = @kde_libs_htmldir@
-kde_libs_prefix = @kde_libs_prefix@
-kde_locale = @kde_locale@
-kde_mimedir = @kde_mimedir@
-kde_moduledir = @kde_moduledir@
-kde_servicesdir = @kde_servicesdir@
-kde_servicetypesdir = @kde_servicetypesdir@
-kde_sounddir = @kde_sounddir@
-kde_templatesdir = @kde_templatesdir@
-kde_wallpaperdir = @kde_wallpaperdir@
+kde_appsdir = ${prefix}/share/applnk
+kde_bindir = ${exec_prefix}/bin
+kde_confdir = ${prefix}/share/config
+kde_datadir = ${prefix}/share/apps
+kde_htmldir = ${prefix}/share/doc/HTML
+kde_icondir = ${prefix}/share/icons
+kde_includes = /opt/kde/include
+kde_libraries = /opt/kde/lib
+kde_libs_htmldir = /opt/kde/share/doc/HTML
+kde_libs_prefix = /opt/kde
+kde_locale = ${prefix}/share/locale
+kde_mimedir = ${prefix}/share/mimelnk
+kde_moduledir = ${prefix}/lib/kde2
+kde_servicesdir = ${prefix}/share/services
+kde_servicetypesdir = ${prefix}/share/servicetypes
+kde_sounddir = ${prefix}/share/sounds
+kde_templatesdir = ${prefix}/share/templates
+kde_wallpaperdir = ${prefix}/share/wallpapers
 micodir = @micodir@
-qt_includes = @qt_includes@
-qt_libraries = @qt_libraries@
-x_includes = @x_includes@
-x_libraries = @x_libraries@
+qt_includes = /usr/lib/qt/include
+qt_libraries = 
+x_includes = /usr/X11R6/include
+x_libraries = /usr/X11R6/lib
 
 SUBDIRS = actions 
 mkinstalldirs = $(SHELL) $(top_srcdir)/admin/mkinstalldirs
@@ -217,10 +218,10 @@ GZIP_ENV = --best
 all: docs-am  all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-#>- 	cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/icons/hicolor/22x22/Makefile
+#>- 	cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/icons/hicolor/16x16/Makefile
 #>+ 2
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/icons/hicolor/22x22/Makefile
-	cd $(top_srcdir) && perl admin/am_edit kmymoney2/icons/hicolor/22x22/Makefile.in
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/icons/hicolor/16x16/Makefile
+	cd $(top_srcdir) && perl admin/am_edit kmymoney2/icons/hicolor/16x16/Makefile.in
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -234,7 +235,7 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 #     (which will cause the Makefiles to be regenerated when you run `make');
 # (2) otherwise, pass the desired values on the `make' command line.
 
-@SET_MAKE@
+
 
 all-recursive install-data-recursive install-exec-recursive \
 installdirs-recursive install-recursive uninstall-recursive  \
@@ -318,14 +319,14 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = kmymoney2/icons/hicolor/22x22
+subdir = kmymoney2/icons/hicolor/16x16
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu kmymoney2/icons/hicolor/22x22/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu kmymoney2/icons/hicolor/16x16/Makefile
 #>- 	@for file in $(DISTFILES); do \
 #>- 	  d=$(srcdir); \
 #>- 	  if test -d $$d/$$file; then \
@@ -440,8 +441,8 @@ docs-am:
 
 #>+ 5
 force-reedit:
-		cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/icons/hicolor/22x22/Makefile
-	cd $(top_srcdir) && perl admin/am_edit kmymoney2/icons/hicolor/22x22/Makefile.in
+		cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/icons/hicolor/16x16/Makefile
+	cd $(top_srcdir) && perl admin/am_edit kmymoney2/icons/hicolor/16x16/Makefile.in
 
 
 #>+ 2

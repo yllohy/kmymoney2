@@ -1,5 +1,5 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
-SUBDIRS = 22x22 16x16 
+SUBDIRS = actions 
 
 ####### kdevelop will overwrite this part!!! (end)############

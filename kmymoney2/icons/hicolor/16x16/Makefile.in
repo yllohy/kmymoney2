@@ -1,4 +1,4 @@
-# KDE tags expanded automatically by am_edit - $Revision: 1.4 $ 
+# KDE tags expanded automatically by am_edit - $Revision: 1.1 $ 
 # Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
@@ -217,10 +217,10 @@ GZIP_ENV = --best
 all: docs-am  all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-#>- 	cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/icons/hicolor/22x22/Makefile
+#>- 	cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/icons/hicolor/16x16/Makefile
 #>+ 2
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/icons/hicolor/22x22/Makefile
-	cd $(top_srcdir) && perl admin/am_edit kmymoney2/icons/hicolor/22x22/Makefile.in
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/icons/hicolor/16x16/Makefile
+	cd $(top_srcdir) && perl admin/am_edit kmymoney2/icons/hicolor/16x16/Makefile.in
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -318,14 +318,14 @@ maintainer-clean-tags:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = kmymoney2/icons/hicolor/22x22
+subdir = kmymoney2/icons/hicolor/16x16
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu kmymoney2/icons/hicolor/22x22/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu kmymoney2/icons/hicolor/16x16/Makefile
 #>- 	@for file in $(DISTFILES); do \
 #>- 	  d=$(srcdir); \
 #>- 	  if test -d $$d/$$file; then \
@@ -440,8 +440,8 @@ docs-am:
 
 #>+ 5
 force-reedit:
-		cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/icons/hicolor/22x22/Makefile
-	cd $(top_srcdir) && perl admin/am_edit kmymoney2/icons/hicolor/22x22/Makefile.in
+		cd $(top_srcdir) && $(AUTOMAKE) --gnu kmymoney2/icons/hicolor/16x16/Makefile
+	cd $(top_srcdir) && perl admin/am_edit kmymoney2/icons/hicolor/16x16/Makefile.in
 
 
 #>+ 2
