@@ -20,6 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "config.h"
+
 #if HAVE_LIBXMLPP
 
 #include <xml++.h>
@@ -65,4 +67,4 @@ void MyMoneyStorageXML::addCategory(IMyMoneySerialize* storage,QMap<QString, QCS
 
 }
 
-#endif // HAVE_LIBXMLPP>>>>>>> 1.2
+#endif // HAVE_LIBXMLPP
