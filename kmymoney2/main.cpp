@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     "http://kmymoney2.sourceforge.net/",
     "kmymoney2-developer@lists.sourceforge.net");
     
-  aboutData.addAuthor("Michael Edwardes", I18N_NOOP("Project Manager"), "mte@users.sourceforge.net");
+  aboutData.addAuthor("Michael Edwardes (babelfish_mte on jabber & msn).", I18N_NOOP("Project Manager"), "mte@users.sourceforge.net");
   aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Project Admin"), "frodriguez@users.sourceforge.net");
   aboutData.addCredit("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
   aboutData.addAuthor("John C", I18N_NOOP("Developer"), "tacoturtle@users.sourceforge.net");

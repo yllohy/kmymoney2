@@ -1,3 +1,7 @@
+2004-02-03 Michael Edwardes <mte@users.sourceforge.net>
+  * Fix #886979
+
+
 2004-02-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed bug in 'create schedule' to include all splits of the originating
     transaction
