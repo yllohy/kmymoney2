@@ -130,9 +130,9 @@ KTempDatePicker::resizeEvent(QResizeEvent*)
 void
 KTempDatePicker::dateChangedSlot(QDate date)
 {
-    kdDebug() << "KDatePicker::dateChangedSlot: date changed (" << date.year() << "/" << date.month() << "/" << date.day() << ")." << endl;
-    line->setText(KGlobal::locale()->formatDate(date, true));
-    emit(dateChanged(date));
+  kdDebug() << "KDatePicker::dateChangedSlot: date changed (" << date.year() << "/" << date.month() << "/" << date.day() << ")." << endl;
+  line->setText(KGlobal::locale()->formatDate(date, true));
+  emit(dateChanged(date));
 }
 
 void
@@ -152,19 +152,19 @@ KTempDatePicker::getDate()
 bool
 KTempDatePicker::setDate(const QDate& date)
 {
-    if(date.isValid()) {
-	QString temp;
-	// -----
-	table->setDate(date);
-	selectMonth->setText(KGlobal::locale()->monthName(date.month(), false));
-	temp.setNum(date.year());
-	selectYear->setText(temp);
-	line->setText(KGlobal::locale()->formatDate(date, true));
-	return true;
-    } else {
-	kdDebug() << "KDatePicker::setDate: refusing to set invalid date." << endl;
-	return false;
-    }
+  if(date.isValid()) {
+  	QString temp;
+  	// -----
+  	table->setDate(date);
+  	selectMonth->setText(KGlobal::locale()->monthName(date.month(), false));
+  	temp.setNum(date.year());
+  	selectYear->setText(temp);
+  	line->setText(KGlobal::locale()->formatDate(date, true));
+  	return true;
+  } else {
+  	kdDebug() << "KDatePicker::setDate: refusing to set invalid date." << endl;
+  	return false;
+  }
 }
 
 void
@@ -246,22 +246,19 @@ KTempDatePicker::yearBackwardClicked()
 void
 KTempDatePicker::selectMonthClicked()
 {
-  int month;
   KPopupFrame popup;
-  KDateInternalMonthPicker picker(fontsize, &popup);
+  KDateInternalMonthPicker* picker = new KDateInternalMonthPicker(fontsize, &popup);
   // -----
-  picker.resize(picker.sizeHint());
-  popup.setMainWidget(&picker);
-  picker.setFocus();
-  connect(&picker, SIGNAL(closeMe(int)), &popup, SLOT(close(int)));
+  picker->resize(picker->sizeHint());
+  popup.setMainWidget(picker);
+  picker->setFocus();
+  connect(picker, SIGNAL(closeMe(int)), &popup, SLOT(close(int)));
   if(popup.exec(selectMonth->mapToGlobal(QPoint(0, selectMonth->height()))))
     {
-      QDate date;
-      int day;
       // -----
-      month=picker.getResult();
-      date=table->getDate();
-      day=date.day();
+      int month = picker->getResult();
+      QDate date = table->getDate();
+      int day = date.day();
       // ----- construct a valid date in this month:
       date.setYMD(date.year(), month, 1);
       date.setYMD(date.year(), month, QMIN(day, date.daysInMonth()));
@@ -275,21 +272,19 @@ KTempDatePicker::selectMonthClicked()
 void
 KTempDatePicker::selectYearClicked()
 {
-  int year;
   KPopupFrame popup;
-  KDateInternalYearSelector picker(fontsize, &popup);
+  KDateInternalYearSelector* picker = new KDateInternalYearSelector(fontsize, &popup);
   // -----
-  picker.resize(picker.sizeHint());
-  popup.setMainWidget(&picker);
-  connect(&picker, SIGNAL(closeMe(int)), &popup, SLOT(close(int)));
+  picker->resize(picker->sizeHint());
+  popup.setMainWidget(picker);
+  picker->setFocus();
+  connect(picker, SIGNAL(closeMe(int)), &popup, SLOT(close(int)));
   if(popup.exec(selectYear->mapToGlobal(QPoint(0, selectMonth->height()))))
     {
-      QDate date;
-      int day;
       // -----
-      year=picker.getYear();
-      date=table->getDate();
-      day=date.day();
+      int year = picker->getYear();
+      QDate date = table->getDate();
+      int day = date.day();
       // ----- construct a valid date in this month:
       date.setYMD(year, date.month(), 1);
       date.setYMD(year, date.month(), QMIN(day, date.daysInMonth()));
