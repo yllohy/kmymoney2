@@ -294,10 +294,10 @@ void KAccountListItem::paintBranches(QPainter* /* p */, const QColorGroup& /* cg
 
 void KAccountListItem::paintFocus(QPainter* p, const QColorGroup& cg, const QRect& r)
 {
-  int indent = -20 * (depth()+1);
+  int indent = listView()->treeStepSize() * (depth()+1);
 
   QRect r2(r);
-  r2.setLeft(r2.left() + indent);
+  r2.setLeft(r2.left() + -indent);
   
   if (isSelected())
     p->fillRect(  r2.left(),

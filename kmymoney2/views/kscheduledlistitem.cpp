@@ -126,6 +126,38 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
   textColour = config->readColorEntry("listGridColor", &textColour);
   cellFont = config->readFontEntry("listCellFont", &cellFont);
 
+  if (m_schedule.isFinished())
+  {
+    textColour = Qt::darkGreen;
+  }
+  else if (m_schedule.isOverdue())
+  {
+    textColour = Qt::red;
+  }
+  // else
+  //   keep the same colour
+
+  p->setFont(cellFont);
+  cg2.setColor(QColorGroup::Text, textColour);
+
+  if (m_base)
+  {
+    QFont font(p->font());
+    font.setBold(true);
+    p->setFont(font);
+  }
+
+  if (isAlternate())
+  {
+    cg2.setColor(QColorGroup::Base, colour);
+  }
+  else
+  {
+    cg2.setColor(QColorGroup::Base, bgColour);
+  }
+
+  QListViewItem::paintCell(p, cg2, column, width, align);
+
   int indent = 0;
   if (column == 0)
   {
@@ -198,55 +230,10 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
 
     p->restore();
   }
-  
-  if (m_schedule.isFinished())
-  {
-    textColour = Qt::darkGreen;
-  }
-  else if (m_schedule.isOverdue())
-  {
-    textColour = Qt::red;
-  }
-  // else
-  //   keep the same colour
-
-  p->setFont(cellFont);
-  cg2.setColor(QColorGroup::Text, textColour);
-
-  if (m_base)
-  {
-    QFont font(p->font());
-    font.setBold(true);
-    p->setFont(font);
-  }
-
-  if (isAlternate())
-  {
-    cg2.setColor(QColorGroup::Base, colour);
-  }
-  else
-  {
-    cg2.setColor(QColorGroup::Base, bgColour);
-  }
-
-  QListViewItem::paintCell(p, cg2, column, width, align);
 }
 
-void KScheduledListItem::paintBranches(QPainter* p, const QColorGroup&/* cg*/, int w, int/* y*/, int h)
+void KScheduledListItem::paintBranches(QPainter*/* p*/, const QColorGroup&/* cg*/, int/* w*/, int/* y*/, int/* h*/)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-
-  QColor colour = Qt::white;
-  QColor bgColour = QColor(224, 253, 182); // Same as for home view
-  
-  bgColour = config->readColorEntry("listBGColor", &bgColour);
-  colour = config->readColorEntry("listColor", &colour);
-  
-  if (isAlternate())
-    p->fillRect( 0, 0, w, h, colour );
-  else
-    p->fillRect( 0, 0, w, h, bgColour );
 }
 
 void KScheduledListItem::paintFocus(QPainter* p, const QColorGroup& cg, const QRect& r)
@@ -266,10 +253,10 @@ void KScheduledListItem::paintFocus(QPainter* p, const QColorGroup& cg, const QR
     
   cg2.setColor(QColorGroup::HighlightedText, textColour);
   
-  int indent = -20 * (depth()+1);
+  int indent = listView()->treeStepSize() * (depth()+1);
 
   QRect r2(r);
-  r2.setLeft(r2.left() + indent);
+  r2.setLeft(r2.left() + -indent);
   if (isSelected())
     p->fillRect(  r2.left(),
                   r2.top(),
@@ -281,4 +268,5 @@ void KScheduledListItem::paintFocus(QPainter* p, const QColorGroup& cg, const QR
                 QStyle::PE_FocusRect, p, r2, cg2,
                 (isSelected() ? QStyle::Style_FocusAtBorder : QStyle::Style_Default),
                 QStyleOption(isSelected() ? cg2.highlight() : cg2.base()));
+
 }
