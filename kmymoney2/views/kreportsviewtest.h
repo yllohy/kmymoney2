@@ -24,7 +24,20 @@
 
 class KReportsViewTest : public CppUnit::TestFixture  {
         CPPUNIT_TEST_SUITE(KReportsViewTest);
-	CPPUNIT_TEST(testTest);
+	CPPUNIT_TEST(testNetWorthSingle);
+	CPPUNIT_TEST(testNetWorthOfsetting);
+	CPPUNIT_TEST(testNetWorthOpeningPrior);
+	CPPUNIT_TEST(testNetWorthDateFilter);
+	CPPUNIT_TEST(testSpendingEmpty);
+	CPPUNIT_TEST(testSingleTransaction);
+	CPPUNIT_TEST(testSubAccount);
+	CPPUNIT_TEST(testFilterIEvsIE);
+	CPPUNIT_TEST(testFilterALvsAL);
+	CPPUNIT_TEST(testFilterALvsIE);
+	CPPUNIT_TEST(testFilterAllvsIE);
+	CPPUNIT_TEST(testFilterBasics);
+	CPPUNIT_TEST(testMultipleCurrencies);
+	CPPUNIT_TEST(testAdvancedFilter);
 	CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -32,12 +45,25 @@ private:
 
   MyMoneySeqAccessMgr* storage;
   MyMoneyFile* file;
-
+  
 public:
 	KReportsViewTest();
 	void setUp ();
 	void tearDown ();
-	void testTest();
+	void testNetWorthSingle();
+	void testNetWorthOfsetting();
+	void testNetWorthOpeningPrior();
+	void testNetWorthDateFilter();
+	void testSpendingEmpty();
+	void testSingleTransaction();
+	void testSubAccount();
+	void testFilterIEvsIE();
+	void testFilterALvsAL();
+	void testFilterALvsIE();
+	void testFilterAllvsIE();
+	void testFilterBasics();
+	void testMultipleCurrencies();
+	void testAdvancedFilter();
 };
 
 #endif

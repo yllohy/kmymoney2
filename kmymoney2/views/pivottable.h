@@ -36,6 +36,8 @@
 // Project Includes
 #include "../mymoney/mymoneyfile.h"
 
+class MyMoneyTransactionFilter;
+
 namespace reports {
 
 // define to enable massive debug logging to stderr
@@ -109,7 +111,7 @@ public:
   bool getShowRowTotals(void) const { return m_showRowTotals; }
   unsigned int getRowFilter(void) const { return m_rowFilter; }
   bool getRunningSum(void) const { return ((m_rowFilter & eAsset) || (m_rowFilter & eLiability)); }
-  bool includesAccount(const QString& id ) { if ( m_includesAllAccounts ) return true; else return (m_accounts.contains(id) > 0); }
+  bool includesAccount(const QString& id ) const { if ( m_includesAllAccounts ) return true; else return (m_accounts.contains(id) > 0); }
   void setIncludesAccount(const QString& id, bool in) { m_includesAllAccounts = false; m_accounts.remove(id); if (in) m_accounts.append(id); }
   void setIncludesAccount(const QCString& id, bool in) { setIncludesAccount(QString(id),in); }
 
@@ -269,6 +271,7 @@ private:
     class TGrid: public QMap<QString,TOuterGroup> { public: TGridRow m_total; };
 
     TGrid m_grid;
+    QValueList<MyMoneyAccount::accountTypeE> m_accounttypes;
 
     QStringList m_columnHeadings;
     bool m_displayRowTotals;
@@ -278,6 +281,8 @@ private:
     bool m_showSubCategories;
     QString m_name;
     ReportConfiguration m_config;
+    MyMoneyTransactionFilter m_filter;
+    bool m_usingFilter;
 
 public:
   /**
@@ -286,6 +291,8 @@ public:
     * @param ReportConfiguration The configuration parameters for this report
     */
     PivotTable( const ReportConfiguration& _config );
+    PivotTable( ReportConfiguration::ERowFilter _type, const MyMoneyTransactionFilter& _filter );
+
 
   /**
     * Render the report to an HTML stream.
@@ -294,6 +301,8 @@ public:
     * @return QString HTML string representing the report
     */
     QString renderHTML( void ) const;
+    
+    void dump( const QString& file ) const;
 
 protected:
   /**
@@ -322,6 +331,17 @@ protected:
     inline void assignCell( const QString& outergroup, const AccountDescriptor& row, int column, MyMoneyMoney value );
 
   /**
+    * Determines whether this is an income/expense category
+    */
+    inline static bool isCategory(const MyMoneyAccount&);
+    
+  /**
+    * Determines whether this account is considered in the report
+    */
+    bool includesAccount( const MyMoneyAccount& account ) const;
+
+
+  /**
     * Record the opening balances of all qualifying accounts into the grid.
     *
     * For accounts opened before the report period, places the balance into the '0' column.
@@ -330,7 +350,7 @@ protected:
     *
     * @param accounttypes Which account types to include.  Valid values are major account types: MyMoneyAccount::Asset, Liability, Income, Expense.
     */
-    void calculateOpeningBalances( const QValueList<MyMoneyAccount::accountTypeE>& accounttypes );
+    void calculateOpeningBalances( void );
 
   /**
     * Calculate the running sums.

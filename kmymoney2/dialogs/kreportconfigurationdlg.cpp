@@ -153,65 +153,63 @@ const ReportConfiguration& KReportConfigurationDlg::getResult(void)
 
 void KReportConfigurationDlg::updateDateRange( const QString & range )
 {
-    if ( range == "Custom...")
+  if ( range == "Custom...")
+  {
+    DateEditStart->setEnabled(true);
+    DateEditEnd->setEnabled(true);
+  }
+  else
+  {
+    DateEditStart->setEnabled(false);
+    DateEditEnd->setEnabled(false);
+  
+    const QDate& currentdate = QDate::currentDate();
+    int year = currentdate.year();
+    int month = currentdate.month();
+    int quarter = month - ((month-1)%3);
+  
+    if ( range == "Current Year")
     {
-  DateEditStart->setEnabled(true);
-  DateEditEnd->setEnabled(true);
+        DateEditStart->setDate(QDate(year,1,1));
+        DateEditEnd->setDate(QDate(year+1,1,1).addDays(-1));
     }
-    else
+    else if ( range == "Previous Year" )
     {
-  DateEditStart->setEnabled(false);
-  DateEditEnd->setEnabled(false);
-
-  const QDate& currentdate = QDate::currentDate();
-  int year = currentdate.year();
-  int month = currentdate.month();
-  int quarter = month - ((month-1)%3);
-
-  if ( range == "Current Year")
-  {
-      DateEditStart->setDate(QDate(year,1,1));
-      DateEditEnd->setDate(QDate(year+1,1,1).addDays(-1));
-  }
-  else if ( range == "Previous Year" )
-  {
-      DateEditStart->setDate(QDate(year-1,1,1));
-      DateEditEnd->setDate(QDate(year,1,1).addDays(-1));
-  }
-  else if ( range == "Current Quarter" )
-  {
-      DateEditStart->setDate(QDate(year,quarter,1));
-      DateEditEnd->setDate(QDate(year,quarter+3,1).addDays(-1));
-  }
-  else if ( range == "Previous Quarter" )
-  {
-      DateEditEnd->setDate(QDate(year,quarter,1).addDays(-1));
-      if ( quarter == 1 )
-      {
-    year--;
-    quarter+=12;
-      }
-      DateEditStart->setDate(QDate(year,quarter-3,1));
-  }
-  else if ( range == "Current Month" )
-  {
-      DateEditStart->setDate(QDate(year,month,1));
-      DateEditEnd->setDate(QDate(year,month+1,1).addDays(-1));
-  }
-  else if ( range == "Previous Month" )
-  {
-      DateEditEnd->setDate(QDate(year,month,1).addDays(-1));
-      if ( month == 1 )
-      {
-    year--;
-    month+=12;
-      }
-      DateEditStart->setDate(QDate(year,month-1,1));
-  }
+        DateEditStart->setDate(QDate(year-1,1,1));
+        DateEditEnd->setDate(QDate(year,1,1).addDays(-1));
     }
+    else if ( range == "Current Quarter" )
+    {
+        DateEditStart->setDate(QDate(year,quarter,1));
+        DateEditEnd->setDate(QDate(year,quarter+3,1).addDays(-1));
+    }
+    else if ( range == "Previous Quarter" )
+    {
+        DateEditEnd->setDate(QDate(year,quarter,1).addDays(-1));
+        if ( quarter == 1 )
+        {
+      year--;
+      quarter+=12;
+        }
+        DateEditStart->setDate(QDate(year,quarter-3,1));
+    }
+    else if ( range == "Current Month" )
+    {
+        DateEditStart->setDate(QDate(year,month,1));
+        DateEditEnd->setDate(QDate(year,month+1,1).addDays(-1));
+    }
+    else if ( range == "Previous Month" )
+    {
+        DateEditEnd->setDate(QDate(year,month,1).addDays(-1));
+        if ( month == 1 )
+        {
+          year--;
+          month+=12;
+        }
+        DateEditStart->setDate(QDate(year,month-1,1));
+    }
+  }
 }
-
-
 
 void KReportConfigurationDlg::butCategoriesAll_pressed()
 {
