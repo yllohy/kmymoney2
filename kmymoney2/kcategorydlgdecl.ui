@@ -11,9 +11,23 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>393</width>
-            <height>352</height>
+            <width>550</width>
+            <height>500</height>
         </rect>
+    </property>
+    <property stdset="1">
+        <name>sizePolicy</name>
+        <sizepolicy>
+            <hsizetype>3</hsizetype>
+            <vsizetype>3</vsizetype>
+        </sizepolicy>
+    </property>
+    <property stdset="1">
+        <name>minimumSize</name>
+        <size>
+            <width>550</width>
+            <height>500</height>
+        </size>
     </property>
     <property stdset="1">
         <name>caption</name>
@@ -203,12 +217,6 @@ delete and pressing the delete button.</string>
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-    <customwidget>
-        <class>KListView</class>
-        <header location="global">klistview.h</header>
-    </customwidget>
-</customwidgets>
 <connections>
     <connection>
         <sender>buttonOk</sender>

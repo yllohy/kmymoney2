@@ -429,7 +429,7 @@ void MyMoneyFile::addCategory(const bool income, const QString& major, QStringLi
   MyMoneyCategory *data;
   for (data=m_categoryList.first(); data!=0; data=m_categoryList.next()) {
     if (data->name() == major) {
-      data->addMinorCategory(minors);
+      data->setMinorCategories(minors);
       m_dirty=true;
       if (data->isIncome() != income)
         data->setIncome(income);

@@ -91,6 +91,12 @@ bool MyMoneyCategory::addMinorCategory(QStringList values)
   return false;
 }
 
+bool MyMoneyCategory::setMinorCategories(QStringList values)
+{
+  m_minorCategories.clear();
+  return addMinorCategory(values);
+}
+
 bool MyMoneyCategory::removeAllMinors(void)
 {
   m_minorCategories.clear();

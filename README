@@ -1,12 +1,13 @@
 KMyMoney 2.  (covered by the GNU license - see COPYING)
 
 Authors - Michael Edwardes - mte@users.sourceforge.net
-    Javier Campos Morales - javi_c@ctv.es.
-    Felix Rodriguez - frodriguez@mail.wesleyan.edu.
+    Javier Campos Morales - javi_c@users.sourceforge.net.
+    Felix Rodriguez - frodriguez@users.sourceforge.net.
+    John C - thetacoturtle@users.sourceforge.net
 
 Homepage - kmymoney2.sourceforge.net
 
-The two most important libraries are QT-2.2.* available from www.trolltech.no and
+The two most important libraries are QT-2.2.* and above available from www.trolltech.com and
 KDE 2 from www.kde.org.
 
 To compile use this general sequence:
@@ -28,8 +29,8 @@ AND/OR
 If you find this program useful in any way or wish to contribute please send an email to me at
   mte@users.sourceforge.net.
 
-The latest version of KMyMoney2 can always (hopefully) be found at kymoney2.sourceforge.net
+The latest version of KMyMoney2 can always be found at kymoney2.sourceforge.net
 and the cvs at cvs.kmymoney2.sourceforge.net:/cvsroot/kmymoney2 module kmymoney2.
 
 For more information on the cvs interface, ftp interface or web interface, please see the
-wonderful sourceforge.net or the homepage at kmymoney2.sourceforge.net for more information.
+wonderful sourceforge.net or the homepage at kmymoney2.sourceforge.net.

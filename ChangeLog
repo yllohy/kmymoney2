@@ -1,3 +1,9 @@
+2001-06-19 Michael Edwardes <mte@users.sourceforge.net>
+  * GUI improvements to the New Category dialog.
+  * Bug fixed in MyMoneyFile in dealing with categories.
+  * README and AUTHORS updated.
+  * GUI improvements to the Payee dialog.
+
 2001-06-18 Michael Edwardes <mte@users.sourceforge.net>
   * KAbout data updated.
   * More GUI improvements focusing on the Categories dialog.
@@ -92,7 +98,7 @@
 2001-04-28 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
   * Alphabetized Categories
 
-2001-04-13
+2001-04-13 Michael Edwardes <mte@users.sourceforge.net>
   * Removed some of the old code in ktransactionview.cpp.
   * Removed all of the unneeded Table Item classes in
     ktransactionview.cpp and added a single KTransactionTableItem

@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>347</width>
-            <height>306</height>
+            <width>381</width>
+            <height>291</height>
         </rect>
     </property>
     <property stdset="1">
@@ -36,22 +36,35 @@
             </property>
             <property stdset="1">
                 <name>text</name>
-                <string>Edit Category</string>
+                <string>Editing category details.
+
+To add minor categories enter the name and press the Add button.</string>
+            </property>
+        </widget>
+        <widget>
+            <class>Line</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Line1</cstring>
             </property>
             <property stdset="1">
-                <name>font</name>
-                <font>
-                    <family>adobe-helvetica</family>
-                    <pointsize>18</pointsize>
-                    <bold>1</bold>
-                </font>
+                <name>frameShadow</name>
+                <enum>Raised</enum>
+            </property>
+            <property stdset="1">
+                <name>lineWidth</name>
+                <number>3</number>
+            </property>
+            <property stdset="1">
+                <name>orientation</name>
+                <enum>Horizontal</enum>
             </property>
         </widget>
         <widget>
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout2</cstring>
+                <cstring>Layout6</cstring>
             </property>
             <hbox>
                 <property stdset="1">
@@ -69,6 +82,20 @@
                         <cstring>TextLabel2</cstring>
                     </property>
                     <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Category Name:</string>
                     </property>
@@ -79,6 +106,20 @@
                         <name>name</name>
                         <cstring>categoryNameEdit</cstring>
                     </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>0</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>maximumSize</name>
+                        <size>
+                            <width>32767</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
                 </widget>
             </hbox>
         </widget>
@@ -86,7 +127,7 @@
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout3</cstring>
+                <cstring>Layout8</cstring>
             </property>
             <hbox>
                 <property stdset="1">
@@ -104,12 +145,26 @@
                         <cstring>TextLabel3</cstring>
                     </property>
                     <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Type:</string>
                     </property>
                 </widget>
                 <widget>
-                    <class>KComboBox</class>
+                    <class>QComboBox</class>
                     <item>
                         <property>
                             <name>text</name>
@@ -125,6 +180,20 @@
                     <property stdset="1">
                         <name>name</name>
                         <cstring>typeCombo</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>7</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>0</width>
+                            <height>0</height>
+                        </size>
                     </property>
                 </widget>
             </hbox>
@@ -149,7 +218,7 @@
                     <number>6</number>
                 </property>
                 <widget>
-                    <class>KComboBox</class>
+                    <class>QComboBox</class>
                     <property stdset="1">
                         <name>name</name>
                         <cstring>minorCategoriesCombo</cstring>
@@ -166,7 +235,7 @@
                     <class>QLayoutWidget</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>Layout4</cstring>
+                        <cstring>Layout5</cstring>
                     </property>
                     <hbox>
                         <property stdset="1">
@@ -202,11 +271,44 @@
                             <class>QPushButton</class>
                             <property stdset="1">
                                 <name>name</name>
-                                <cstring>minorAddBtn</cstring>
+                                <cstring>minorDeleteBtn</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property stdset="1">
+                                <name>minimumSize</name>
+                                <size>
+                                    <width>80</width>
+                                    <height>0</height>
+                                </size>
                             </property>
                             <property stdset="1">
                                 <name>text</name>
-                                <string>Add</string>
+                                <string>&amp;Delete</string>
+                            </property>
+                        </widget>
+                        <widget>
+                            <class>QPushButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>minorAddBtn</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property stdset="1">
+                                <name>minimumSize</name>
+                                <size>
+                                    <width>80</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>&amp;Add</string>
                             </property>
                         </widget>
                     </hbox>
@@ -257,7 +359,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>Cancel</string>
+                        <string>&amp;Cancel</string>
                     </property>
                 </widget>
                 <widget>
@@ -268,7 +370,7 @@
                     </property>
                     <property stdset="1">
                         <name>text</name>
-                        <string>OK</string>
+                        <string>&amp;OK</string>
                     </property>
                     <property stdset="1">
                         <name>default</name>
@@ -279,20 +381,4 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-    <customwidget>
-        <class>KComboBox</class>
-        <header location="global">kcombobox.h</header>
-        <sizehint>
-            <width>330</width>
-            <height>100</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
-</customwidgets>
 </UI>

@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>519</width>
-            <height>490</height>
+            <width>390</width>
+            <height>462</height>
         </rect>
     </property>
     <property stdset="1">
@@ -33,10 +33,56 @@
             <number>6</number>
         </property>
         <widget>
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel1_2</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Entering payee details.
+
+Select a payee from the choice box below or type in a new payee
+name.  The other details are optional and are there to provide useful
+information when viewing the payee details.</string>
+            </property>
+        </widget>
+        <widget>
+            <class>Line</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Line1</cstring>
+            </property>
+            <property>
+                <name>frameShape</name>
+                <enum>HLine</enum>
+            </property>
+            <property stdset="1">
+                <name>frameShadow</name>
+                <enum>Raised</enum>
+            </property>
+            <property stdset="1">
+                <name>lineWidth</name>
+                <number>3</number>
+            </property>
+            <property stdset="1">
+                <name>midLineWidth</name>
+                <number>1</number>
+            </property>
+            <property stdset="1">
+                <name>orientation</name>
+                <enum>Horizontal</enum>
+            </property>
+            <property>
+                <name>frameShape</name>
+                <enum>HLine</enum>
+            </property>
+        </widget>
+        <widget>
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout25</cstring>
+                <cstring>Layout8</cstring>
             </property>
             <hbox>
                 <property stdset="1">
@@ -54,15 +100,138 @@
                         <cstring>TextLabel1</cstring>
                     </property>
                     <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>1</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>150</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
                         <name>text</name>
                         <string>Please choose a payee:</string>
                     </property>
                 </widget>
                 <widget>
-                    <class>KComboBox</class>
+                    <class>QComboBox</class>
                     <property stdset="1">
                         <name>name</name>
                         <cstring>payeeCombo</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>3</hsizetype>
+                            <vsizetype>0</vsizetype>
+                        </sizepolicy>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout9</cstring>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <widget>
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel1_3</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>sizePolicy</name>
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>1</vsizetype>
+                        </sizepolicy>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>150</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>Or enter a new name:</string>
+                    </property>
+                </widget>
+                <widget>
+                    <class>QLineEdit</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>payeeEdit</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget>
+            <class>QLayoutWidget</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>Layout8</cstring>
+            </property>
+            <hbox>
+                <property stdset="1">
+                    <name>margin</name>
+                    <number>0</number>
+                </property>
+                <property stdset="1">
+                    <name>spacing</name>
+                    <number>6</number>
+                </property>
+                <spacer>
+                    <property>
+                        <name>name</name>
+                        <cstring>Spacer7</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>orientation</name>
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property stdset="1">
+                        <name>sizeType</name>
+                        <enum>Expanding</enum>
+                    </property>
+                    <property>
+                        <name>sizeHint</name>
+                        <size>
+                            <width>20</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget>
+                    <class>QPushButton</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>addButton</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>enabled</name>
+                        <bool>false</bool>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>&amp;Add</string>
                     </property>
                 </widget>
             </hbox>
@@ -108,10 +277,6 @@
                                 <cstring>TextLabel2</cstring>
                             </property>
                             <property stdset="1">
-                                <name>text</name>
-                                <string>Name:</string>
-                            </property>
-                            <property stdset="1">
                                 <name>sizePolicy</name>
                                 <sizepolicy>
                                     <hsizetype>0</hsizetype>
@@ -124,6 +289,10 @@
                                     <width>90</width>
                                     <height>0</height>
                                 </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Name:</string>
                             </property>
                         </widget>
                         <spacer>
@@ -154,8 +323,15 @@
                                 <cstring>nameLabel</cstring>
                             </property>
                             <property stdset="1">
+                                <name>sizePolicy</name>
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                </sizepolicy>
+                            </property>
+                            <property stdset="1">
                                 <name>text</name>
-                                <string>TextLabel3</string>
+                                <string>Please select a payee.</string>
                             </property>
                         </widget>
                     </hbox>
@@ -182,10 +358,6 @@
                                 <cstring>TextLabel4</cstring>
                             </property>
                             <property stdset="1">
-                                <name>text</name>
-                                <string>Address:</string>
-                            </property>
-                            <property stdset="1">
                                 <name>sizePolicy</name>
                                 <sizepolicy>
                                     <hsizetype>0</hsizetype>
@@ -198,6 +370,10 @@
                                     <width>90</width>
                                     <height>0</height>
                                 </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Address:</string>
                             </property>
                         </widget>
                         <spacer>
@@ -227,6 +403,10 @@
                                 <name>name</name>
                                 <cstring>addressEdit</cstring>
                             </property>
+                            <property stdset="1">
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
                         </widget>
                     </hbox>
                 </widget>
@@ -252,10 +432,6 @@
                                 <cstring>TextLabel5</cstring>
                             </property>
                             <property stdset="1">
-                                <name>text</name>
-                                <string>Postcode:</string>
-                            </property>
-                            <property stdset="1">
                                 <name>sizePolicy</name>
                                 <sizepolicy>
                                     <hsizetype>0</hsizetype>
@@ -268,6 +444,10 @@
                                     <width>90</width>
                                     <height>0</height>
                                 </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Postcode:</string>
                             </property>
                         </widget>
                         <spacer>
@@ -297,6 +477,10 @@
                                 <name>name</name>
                                 <cstring>postcodeEdit</cstring>
                             </property>
+                            <property stdset="1">
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
                         </widget>
                     </hbox>
                 </widget>
@@ -322,10 +506,6 @@
                                 <cstring>TextLabel6</cstring>
                             </property>
                             <property stdset="1">
-                                <name>text</name>
-                                <string>Telephone/Fax:</string>
-                            </property>
-                            <property stdset="1">
                                 <name>sizePolicy</name>
                                 <sizepolicy>
                                     <hsizetype>0</hsizetype>
@@ -338,6 +518,10 @@
                                     <width>90</width>
                                     <height>0</height>
                                 </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>Telephone/Fax:</string>
                             </property>
                         </widget>
                         <spacer>
@@ -367,6 +551,10 @@
                                 <name>name</name>
                                 <cstring>telephoneEdit</cstring>
                             </property>
+                            <property stdset="1">
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
                         </widget>
                     </hbox>
                 </widget>
@@ -392,10 +580,6 @@
                                 <cstring>TextLabel7</cstring>
                             </property>
                             <property stdset="1">
-                                <name>text</name>
-                                <string>E-Mail:</string>
-                            </property>
-                            <property stdset="1">
                                 <name>sizePolicy</name>
                                 <sizepolicy>
                                     <hsizetype>0</hsizetype>
@@ -408,6 +592,10 @@
                                     <width>90</width>
                                     <height>0</height>
                                 </size>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>E-Mail:</string>
                             </property>
                         </widget>
                         <spacer>
@@ -436,6 +624,63 @@
                             <property stdset="1">
                                 <name>name</name>
                                 <cstring>emailEdit</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget>
+                    <class>QLayoutWidget</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>Layout10</cstring>
+                    </property>
+                    <hbox>
+                        <property stdset="1">
+                            <name>margin</name>
+                            <number>0</number>
+                        </property>
+                        <property stdset="1">
+                            <name>spacing</name>
+                            <number>6</number>
+                        </property>
+                        <spacer>
+                            <property>
+                                <name>name</name>
+                                <cstring>Spacer8</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>orientation</name>
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property stdset="1">
+                                <name>sizeType</name>
+                                <enum>Expanding</enum>
+                            </property>
+                            <property>
+                                <name>sizeHint</name>
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget>
+                            <class>QPushButton</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>updateButton</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>enabled</name>
+                                <bool>false</bool>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>&amp;Update Details</string>
                             </property>
                         </widget>
                     </hbox>
@@ -501,22 +746,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-    <customwidget>
-        <class>KComboBox</class>
-        <header location="global">kcombobox.h</header>
-        <sizehint>
-            <width>330</width>
-            <height>100</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
-</customwidgets>
 <connections>
     <connection>
         <sender>buttonOk</sender>

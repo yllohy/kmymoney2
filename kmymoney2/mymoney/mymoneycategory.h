@@ -44,6 +44,7 @@ public:
 	void setIncome(const bool val) { m_income = val; }
 	void setName(const QString val) { m_name = val; }
 	
+  bool setMinorCategories(QStringList values);
 	bool addMinorCategory(const QString val);
 	bool removeMinorCategory(const QString val);
 	bool renameMinorCategory(const QString oldVal, const QString newVal);

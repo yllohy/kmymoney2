@@ -35,10 +35,9 @@ public:
 
 protected slots:
   void payeeHighlighted(const QString&);
-  void addressEditChanged();
-  void postcodeEditChanged(const QString& text);
-  void telephoneEditChanged(const QString& text);
-  void emailEditChanged(const QString& text);
+  void slotAddClicked();
+  void slotPayeeTextChanged(const QString& text);
+  void slotUpdateClicked();
 
 private:
   MyMoneyFile *m_file;

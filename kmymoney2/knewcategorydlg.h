@@ -16,16 +16,7 @@
 
 #ifndef KNEWCATEGORYDLG_H
 #define KNEWCATEGORYDLG_H
-/*
-//Generated area. DO NOT EDIT!!!(begin)
-#include <qwidget.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qcombobox.h>
-#include <qgroupbox.h>
-#include <qpushbutton.h>
-//Generated area. DO NOT EDIT!!!(end)
-*/
+
 #include <klocale.h>
 #include <qdialog.h>
 
@@ -46,26 +37,11 @@ protected slots:
   void typeChanged(const QString& text);
   void minorEditChanged(const QString& text);
   void minorAddBtnClicked();
+  void minorDeleteBtnClicked();
+  void slotMinorActivated(const QString &text);
 
-protected:
-/*
-	void initDialog();
-	//Generated area. DO NOT EDIT!!!(begin)
-	QLabel *titleLabel;
-	QLabel *catNameLabel;
-	QLineEdit *categoryNameEdit;
-	QComboBox *typeCombo;
-	QLabel *typeLabel;
-	QGroupBox *minorGroupBox;
-	QComboBox *minorCategoriesCombo;
-	QLineEdit *minorCategoryEdit;
-	QPushButton *minorAddBtn;
-	QPushButton *okBtn;
-	QPushButton *cancelBtn;
-	//Generated area. DO NOT EDIT!!!(end)
-*/
 private:
-  MyMoneyCategory* m_category; // Why does gcc-2.95.3 complain when I use a reference to a reference.
+  MyMoneyCategory* m_category;
 };
 
 #endif

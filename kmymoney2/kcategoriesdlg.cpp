@@ -56,6 +56,7 @@ void KCategoriesDlg::refresh(void)
     for ( QStringList::Iterator it2 = data->minorCategories().begin(); it2 != data->minorCategories().end(); ++it2 ) {
       (void) new KCategoryListItem(item0, (*it2).latin1(), data->isIncome(), false, item0->text(0));
     }
+    categoryListView->setOpen(item0, true);
   }
 }
 
@@ -80,11 +81,13 @@ void KCategoriesDlg::slotDeleteClicked()
 
   QString prompt;
   if (item->major()) {
-    prompt = i18n("By deleting a major category all minor(s) will be lost.\nAre you sure you want to delete ");
+    prompt = i18n("By deleting a major category all minor(s) will be lost.\nAre you sure you want to delete: ");
     prompt += item->text(0);
   } else {
     prompt = i18n("Delete this minor category item: ");
     prompt += item->text(0);
+    prompt += i18n(" in major category: ");
+    prompt += item->majorName();
   }
 
   if ((KMessageBox::questionYesNo(this, prompt))==KMessageBox::Yes) {
@@ -133,6 +136,7 @@ void KCategoriesDlg::slotEditClicked()
     if (!dlg.exec())
       return;
 
+    m_file->removeMajorCategory(item->text(0));
     m_file->addCategory(category.isIncome(), category.name(), category.minorCategories());
     categoryListView->clear();
     refresh();

@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <qpushbutton.h>
 #include "kpayeedlg.h"
 
 KPayeeDlg::KPayeeDlg(MyMoneyFile *file, QWidget *parent, const char *name)
@@ -23,13 +24,10 @@ KPayeeDlg::KPayeeDlg(MyMoneyFile *file, QWidget *parent, const char *name)
   for ( ; it.current(); ++it)
     payeeCombo->insertItem(it.current()->name());    	
 
-  connect(addressEdit, SIGNAL(textChanged()), SLOT(addressEditChanged()));
-  connect(postcodeEdit, SIGNAL(textChanged(const QString&)), SLOT(postcodeEditChanged(const QString&)));
-  connect(telephoneEdit, SIGNAL(textChanged(const QString&)), SLOT(telephoneEditChanged(const QString&)));
-  connect(emailEdit, SIGNAL(textChanged(const QString&)), SLOT(emailEditChanged(const QString&)));
-
   connect(payeeCombo, SIGNAL(activated(const QString&)), this, SLOT(payeeHighlighted(const QString&)));
-//  connect(okBtn, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(addButton, SIGNAL(clicked()), this, SLOT(slotAddClicked()));
+  connect(payeeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeTextChanged(const QString&)));
+  connect(updateButton, SIGNAL(clicked()), this, SLOT(slotUpdateClicked()));
 }
 
 KPayeeDlg::~KPayeeDlg()
@@ -38,64 +36,55 @@ KPayeeDlg::~KPayeeDlg()
 
 void KPayeeDlg::payeeHighlighted(const QString& text)
 {
+  MyMoneyPayee *payee=0;
+  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
+  for ( ; it.current(); ++it) {
+    payee = it.current();
+    if (payee->name() == text) {
+      nameLabel->setText(payee->name());
+      addressEdit->setEnabled(true);
+      addressEdit->setText(payee->address());
+      postcodeEdit->setEnabled(true);
+      postcodeEdit->setText(payee->postcode());
+      telephoneEdit->setEnabled(true);
+      telephoneEdit->setText(payee->telephone());
+      emailEdit->setEnabled(true);
+      emailEdit->setText(payee->email());
+      updateButton->setEnabled(true);
+    }
+  }
+}
+
+void KPayeeDlg::slotAddClicked()
+{
+  m_file->addPayee(payeeEdit->text());
+  payeeEdit->setText("");
+  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
+  payeeCombo->clear();
+  for ( ; it.current(); ++it)
+    payeeCombo->insertItem(it.current()->name());    	
+}
+
+void KPayeeDlg::slotPayeeTextChanged(const QString& text)
+{
+  if (text.isEmpty())
+    addButton->setEnabled(false);
+  else
+    addButton->setEnabled(true);
+}
+
+void KPayeeDlg::slotUpdateClicked()
+{
   MyMoneyPayee *payee;
   bool found=false;
   QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
   for ( ; it.current(); ++it) {
     payee = it.current();
-    if (payee->name() == text)
-      found=true;
-  }
-  if (found) {
-    nameLabel->setText(payee->name());
-    addressEdit->setText(payee->address());
-    postcodeEdit->setText(payee->postcode());
-    telephoneEdit->setText(payee->telephone());
-    emailEdit->setText(payee->email());
-  }
-}
-
-void KPayeeDlg::addressEditChanged()
-{
-  QString text = addressEdit->text();
-  MyMoneyPayee *payee;
-  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
-  for ( ; it.current(); ++it) {
-    payee = it.current();
-    if (payee->name() == nameLabel->text())
-      payee->setAddress(text);
-  }
-}
-
-void KPayeeDlg::postcodeEditChanged(const QString& text)
-{
-  MyMoneyPayee *payee;
-  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
-  for ( ; it.current(); ++it) {
-    payee = it.current();
-    if (payee->name() == nameLabel->text())
-      payee->setPostcode(text);
-  }
-}
-
-void KPayeeDlg::telephoneEditChanged(const QString& text)
-{
-  MyMoneyPayee *payee;
-  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
-  for ( ; it.current(); ++it) {
-    payee = it.current();
-    if (payee->name() == nameLabel->text())
-      payee->setTelephone(text);
-  }
-}
-
-void KPayeeDlg::emailEditChanged(const QString& text)
-{
-  MyMoneyPayee *payee;
-  QListIterator<MyMoneyPayee> it = m_file->payeeIterator();
-  for ( ; it.current(); ++it) {
-    payee = it.current();
-    if (payee->name() == nameLabel->text())
-      payee->setEmail(text);
+    if (payee->name() == nameLabel->text()) {
+      payee->setAddress(addressEdit->text());
+      payee->setPostcode(postcodeEdit->text());
+      payee->setTelephone(telephoneEdit->text());
+      payee->setEmail(emailEdit->text());
+    }
   }
 }
