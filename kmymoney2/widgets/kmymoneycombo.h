@@ -20,18 +20,30 @@
 #ifndef KMYMONEYCOMBO_H
 #define KMYMONEYCOMBO_H
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
 #include <kcombobox.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 
 /**
   *@author Michael Edwardes
   */
 
-class kMyMoneyCombo : public KComboBox  {
+class kMyMoneyCombo : public KComboBox
+{
 	Q_OBJECT
 public:
-	kMyMoneyCombo(QWidget *w, const char *name=0);
-    kMyMoneyCombo(bool rw, QWidget *w);
-	~kMyMoneyCombo();
+  kMyMoneyCombo(QWidget *w, const char *name=0);
+  kMyMoneyCombo(bool rw, QWidget *w);
+  ~kMyMoneyCombo();
+
   /** No descriptions */
   virtual bool eventFilter(QObject *, QEvent *);
 
@@ -43,23 +55,40 @@ public:
   // override the base class variant
   void setCurrentItem(int i) { KComboBox::setCurrentItem(i); }
 
+  void loadCurrentItem(int i);
+
+  void resetCurrentItem(void);
+
 private:
   /// perform initialization required for all constructors
   void init(void);
+
+protected:
+  virtual void focusOutEvent(QFocusEvent *);
 
 protected slots:
   void slotCheckValidSelection(int id);
 
 signals: // Signals
-  /** No descriptions */
+/*
+  // No descriptions
   void signalFocusOut();
-  void signalEnter();
-  /** No descriptions */
   void signalNextTransaction();
+*/
+  void selectionChanged(int value);
+  void signalEnter();
+  void signalEsc();
+
   /** signal is sent, when the tab key is pressed */
   void signalTab();
   /** signal is sent, when the Back-tab (Shift-Tab) key is pressed */
   void signalBackTab();
+
+private:
+  /**
+    * This member keeps a copy of the original selected item
+    */
+  int   m_item;
 };
 
 #endif
