@@ -619,6 +619,16 @@ public:
   const MyMoneySchedule schedule(const QCString& id) const;
 
   /**
+    * This method is used to create a new equity object.  The ID will be created
+    * automatically.
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param account MyMoneyEquity filled with data
+    */
+  virtual void newEquity(MyMoneyEquity& equity);
+
+  /**
     * This method is used to add a new equity object to the engine.
     * The ID of the object is the trading symbol, so there is no need for an additional
     * ID since the symbol is guaranteed to be unique.  
@@ -798,7 +808,7 @@ private:
     * This member variable keeps the name of the User
     * @see userName(), setUserName()
     */
-  QString m_userName;
+  QString m_userName;           
 
   /**
     * This member variable keeps the street of the users address

@@ -502,9 +502,18 @@ public:
   virtual const MyMoneyAccount income(void) const = 0;
 
   /**
-    * This method is used to add a new equity object to the engine.
-    * The ID of the object is the trading symbol, so there is no need for an additional
-    * ID since the symbol is guaranteed to be unique.
+    * This method is used to create a new equity object.  The ID will be created
+    * automatically.
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param account MyMoneyEquity filled with data
+    */
+  virtual void newEquity(MyMoneyEquity& equity) = 0;
+
+  /**
+    * This method is used to add a new equity object to the engine. This object is expected
+    * to already have a valid ID.
     *
     * An exception will be thrown upon erronous situations.
     *

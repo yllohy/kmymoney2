@@ -1412,6 +1412,15 @@ QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleListEx(int scheduleType
   return list;  
 }
 
+void MyMoneySeqAccessMgr::newEquity(MyMoneyEquity& equity)
+{
+  // create the account
+  MyMoneyEquity newEquity(nextEquityID(), equity);
+  m_equitiesList[newEquity.id()] = newEquity;
+  touch();
+  equity = newEquity;
+}
+
 void MyMoneySeqAccessMgr::addEquity(MyMoneyEquity& equity)
 {
   m_equitiesList[equity.id()] = equity;
