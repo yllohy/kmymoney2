@@ -57,12 +57,9 @@ private:
 class KFindTransactionDlg : public KFindTransactionDlgDecl  {
   Q_OBJECT
 public:
-  KFindTransactionDlg(QWidget *parent=0, const char *name=0);
-  ~KFindTransactionDlg();
 
-protected:
   // Make sure to keep the following enum valus in sync with the values
-  // defined in kfindtransactiondlgdecl.ui
+  // used by the GUI in kfindtransactiondlgdecl.ui
   enum dateOptionE {
     allDates = 0,
     untilToday,
@@ -85,30 +82,13 @@ protected:
     dateOptionCount
   };
 
-  // Make sure to keep the following enum valus in sync with the values
-  // defined in kfindtransactiondlgdecl.ui
-  enum typeOptionE {
-    allTypes = 0,
-    payments,
-    deposits,
-    transfers,
-    // insert new constants above of this line
-    typeOptionCount
-  };
-
-  // Make sure to keep the following enum valus in sync with the values
-  // defined in kfindtransactiondlgdecl.ui
-  enum stateOptionE {
-    allStates = 0,
-    reconciled,
-    notReconciled,
-    // insert new constants above of this line
-    stateOptionCount
-  };
+  KFindTransactionDlg(QWidget *parent=0, const char *name=0);
+  ~KFindTransactionDlg();
 
 public slots:
   void slotUpdateSelections(void);
-
+  void slotReset(void);
+  
 protected slots:
   void slotDateRangeChanged(int);
   void slotDateChanged(void);
@@ -130,6 +110,9 @@ protected slots:
   void slotNrSelected(void);
   void slotNrRangeSelected(void);
 
+private slots:
+  void slotRightSize(void);
+  
 signals:
 
 private:
@@ -157,6 +140,8 @@ private:
   void loadAccounts(void);
   void loadCategories(void);
 
+  void loadPayees(void);
+  
   void loadSubAccounts(QListViewItem* parent, const QCStringList& list);
   
   /**

@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>518</width>
+            <width>495</width>
             <height>467</height>
         </rect>
     </property>
@@ -93,6 +93,99 @@
                                     </property>
                                     <widget class="QLayoutWidget">
                                         <property name="name">
+                                            <cstring>Layout17</cstring>
+                                        </property>
+                                        <vbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <property name="margin">
+                                                <number>0</number>
+                                            </property>
+                                            <property name="spacing">
+                                                <number>6</number>
+                                            </property>
+                                            <widget class="QLabel">
+                                                <property name="name">
+                                                    <cstring>TextLabel3</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Search transactions containing the following text</string>
+                                                </property>
+                                            </widget>
+                                            <widget class="KLineEdit">
+                                                <property name="name">
+                                                    <cstring>m_textEdit</cstring>
+                                                </property>
+                                                <property name="minimumSize">
+                                                    <size>
+                                                        <width>300</width>
+                                                        <height>0</height>
+                                                    </size>
+                                                </property>
+                                            </widget>
+                                        </vbox>
+                                    </widget>
+                                    <spacer>
+                                        <property name="name">
+                                            <cstring>Spacer21</cstring>
+                                        </property>
+                                        <property name="orientation">
+                                            <enum>Horizontal</enum>
+                                        </property>
+                                        <property name="sizeType">
+                                            <enum>Expanding</enum>
+                                        </property>
+                                        <property name="sizeHint">
+                                            <size>
+                                                <width>52</width>
+                                                <height>0</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>Layout17</cstring>
+                                        </property>
+                                        <hbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <property name="margin">
+                                                <number>0</number>
+                                            </property>
+                                            <property name="spacing">
+                                                <number>6</number>
+                                            </property>
+                                            <widget class="QCheckBox">
+                                                <property name="name">
+                                                    <cstring>m_caseSensitive</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Case sensitive</string>
+                                                </property>
+                                            </widget>
+                                            <spacer>
+                                                <property name="name">
+                                                    <cstring>Spacer15</cstring>
+                                                </property>
+                                                <property name="orientation">
+                                                    <enum>Horizontal</enum>
+                                                </property>
+                                                <property name="sizeType">
+                                                    <enum>Expanding</enum>
+                                                </property>
+                                                <property name="sizeHint">
+                                                    <size>
+                                                        <width>105</width>
+                                                        <height>0</height>
+                                                    </size>
+                                                </property>
+                                            </spacer>
+                                        </hbox>
+                                    </widget>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
                                             <cstring>Layout18</cstring>
                                         </property>
                                         <hbox>
@@ -105,44 +198,17 @@
                                             <property name="spacing">
                                                 <number>6</number>
                                             </property>
-                                            <widget class="QLayoutWidget">
+                                            <widget class="QCheckBox">
                                                 <property name="name">
-                                                    <cstring>Layout17</cstring>
+                                                    <cstring>m_regExp</cstring>
                                                 </property>
-                                                <vbox>
-                                                    <property name="name">
-                                                        <cstring>unnamed</cstring>
-                                                    </property>
-                                                    <property name="margin">
-                                                        <number>0</number>
-                                                    </property>
-                                                    <property name="spacing">
-                                                        <number>6</number>
-                                                    </property>
-                                                    <widget class="QLabel">
-                                                        <property name="name">
-                                                            <cstring>TextLabel3</cstring>
-                                                        </property>
-                                                        <property name="text">
-                                                            <string>Search transactions containing the following text</string>
-                                                        </property>
-                                                    </widget>
-                                                    <widget class="KLineEdit">
-                                                        <property name="name">
-                                                            <cstring>m_textEdit</cstring>
-                                                        </property>
-                                                        <property name="minimumSize">
-                                                            <size>
-                                                                <width>300</width>
-                                                                <height>0</height>
-                                                            </size>
-                                                        </property>
-                                                    </widget>
-                                                </vbox>
+                                                <property name="text">
+                                                    <string>Treat text as regular expression</string>
+                                                </property>
                                             </widget>
                                             <spacer>
                                                 <property name="name">
-                                                    <cstring>Spacer21</cstring>
+                                                    <cstring>Spacer16</cstring>
                                                 </property>
                                                 <property name="orientation">
                                                     <enum>Horizontal</enum>
@@ -152,7 +218,7 @@
                                                 </property>
                                                 <property name="sizeHint">
                                                     <size>
-                                                        <width>84</width>
+                                                        <width>43</width>
                                                         <height>0</height>
                                                     </size>
                                                 </property>
@@ -172,7 +238,7 @@
                                         <property name="sizeHint">
                                             <size>
                                                 <width>0</width>
-                                                <height>109</height>
+                                                <height>28</height>
                                             </size>
                                         </property>
                                     </spacer>
@@ -1256,7 +1322,7 @@
         </widget>
         <widget class="kMyMoneyRegisterSearch">
             <property name="name">
-                <cstring>m_transactionView</cstring>
+                <cstring>m_register</cstring>
             </property>
             <property name="minimumSize">
                 <size>

@@ -20,6 +20,7 @@
 #include <qlabel.h>
 #include <qradiobutton.h>
 #include <qcheckbox.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -46,6 +47,7 @@
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneylineedit.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneytransactionfilter.h"
 
 KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListView* parent, const QString& txt, Type type, const QCString& id, KFindTransactionDlg* dlg) :
   QCheckListItem(parent, txt, type),
@@ -73,8 +75,8 @@ void KMyMoneyCheckListItem::stateChange(bool)
 KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
  : KFindTransactionDlgDecl(parent, name, false)
 {
-  connect(m_searchButton, SIGNAL(clicked()), m_transactionView, SLOT(hide()));
-  connect(m_resetButton, SIGNAL(clicked()), m_transactionView, SLOT(show()));
+  connect(m_searchButton, SIGNAL(clicked()), m_register, SLOT(show()));
+  connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
   connect(m_closeButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
 
   connect(m_textEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
@@ -83,7 +85,7 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   // displayed as small as can be. We make sure that the larger
   // version (with the transaction register) will also fit on the screen
   // by moving the dialog by (-45,-45).
-  m_transactionView->hide();
+  m_register->hide();
   update();
   resize(minimumSizeHint());
   
@@ -98,11 +100,61 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
       
   // readConfig();
   slotUpdateSelections();
+  
+  QTimer::singleShot(0, this, SLOT(slotRightSize()));
 }
 
 KFindTransactionDlg::~KFindTransactionDlg()
 {
   // writeConfig();
+}
+
+void KFindTransactionDlg::slotReset(void)
+{
+  m_textEdit->setText("");
+  m_regExp->setChecked(false);
+  m_caseSensitive->setChecked(false);
+  
+  selectAllItems(m_accountsView, true);
+
+  m_amountEdit->setEnabled(true);
+  m_amountFromEdit->setEnabled(false);
+  m_amountToEdit->setEnabled(false);
+  m_amountEdit->loadText("");
+  m_amountFromEdit->loadText("");
+  m_amountToEdit->loadText("");
+  m_amountButton->setChecked(true);
+  m_amountRangeButton->setChecked(false);
+
+  selectAllItems(m_categoriesView, true);
+
+  m_emptyPayeesButton->setChecked(false);
+  selectAllItems(m_payeesView, true);
+
+  m_typeBox->setCurrentItem(MyMoneyTransactionFilter::allTypes);
+  m_stateBox->setCurrentItem(MyMoneyTransactionFilter::allStates);
+  m_nrEdit->setEnabled(true);
+  m_nrFromEdit->setEnabled(false);
+  m_nrToEdit->setEnabled(false);
+  m_nrEdit->setText("");
+  m_nrFromEdit->setText("");
+  m_nrToEdit->setText("");
+  m_nrButton->setChecked(true);
+  m_nrRangeButton->setChecked(false);
+      
+  m_register->hide();
+  
+  // the following call implies a call to slotUpdateSelections,
+  // that's why we call it last
+  m_dateRange->setCurrentItem(allDates);        
+  slotDateRangeChanged(allDates);
+
+  QTimer::singleShot(0, this, SLOT(slotRightSize()));
+}
+
+void KFindTransactionDlg::slotRightSize(void)
+{
+  resize(minimumSize());
 }
 
 void KFindTransactionDlg::slotUpdateSelections(void)
@@ -114,7 +166,11 @@ void KFindTransactionDlg::slotUpdateSelections(void)
     if(!txt.isEmpty())
       txt += ", ";
     txt += i18n("Text");
-  }
+    m_regExp->setEnabled(QRegExp(m_textEdit->text()).isValid());
+  } else
+    m_regExp->setEnabled(false);
+    
+  m_caseSensitive->setEnabled(!m_textEdit->text().isEmpty());
     
   // Account tab
   if(!allItemsSelected(m_accountsView)) {
@@ -521,23 +577,28 @@ void KFindTransactionDlg::setupPayeesPage(void)
 {
   m_accountsView->setSelectionMode(QListView::Single);
   m_payeesView->header()->hide();
+
+  loadPayees();  
+  m_emptyPayeesButton->setChecked(false);
   
+  connect(m_allPayeesButton, SIGNAL(clicked()), this, SLOT(slotSelectAllPayees()));
+  connect(m_clearPayeesButton, SIGNAL(clicked()), this, SLOT(slotDeselectAllPayees()));
+  connect(m_emptyPayeesButton, SIGNAL(stateChanged(int)), this, SLOT(slotUpdateSelections()));
+}
+
+void KFindTransactionDlg::loadPayees(void)
+{
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyPayee> list;
   QValueList<MyMoneyPayee>::Iterator it_l;
-  
+
   list = file->payeeList();
   // load view
   for(it_l = list.begin(); it_l != list.end(); ++it_l) {
     KMyMoneyCheckListItem* item = new KMyMoneyCheckListItem(m_payeesView, (*it_l).name(), QCheckListItem::CheckBox, (*it_l).id(), this);
     item->setOn(true);
   }
-
-  connect(m_allPayeesButton, SIGNAL(clicked()), this, SLOT(slotSelectAllPayees()));
-  connect(m_clearPayeesButton, SIGNAL(clicked()), this, SLOT(slotDeselectAllPayees()));
-  connect(m_emptyPayeesButton, SIGNAL(stateChanged(int)), this, SLOT(slotUpdateSelections()));
 }
-
 void KFindTransactionDlg::slotSelectAllPayees(void)
 {
   selectAllItems(m_payeesView, true);
