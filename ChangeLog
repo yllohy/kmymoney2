@@ -1,3 +1,9 @@
+2004-01-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #887044 (cannot rename categories)
+  * Fixed #887048 (account icons not updated after rename)
+  * update of previous fixes. We now allow multiple splits with
+    the same category for one transaction. This certainly makes sense.
+
 2004-01-29 Michael Edwardes <mte@users.sourceforge.net>
  * Fixed #884364 (Support for variable amounts in startup code).
  * Fixed config read/write in settings dialog.
