@@ -81,7 +81,7 @@
 class PivotTable
 {
 private:
-    typedef QValueList<double> TGridLine;
+    typedef QValueList<MyMoneyMoney> TGridLine;
     typedef QMap<QString,TGridLine> TGrid;
 
     QMap<QString,TGrid> m_grid;
@@ -103,52 +103,47 @@ PivotTable::PivotTable( const MyMoneyFile* file ): m_file( file )
   int currentyear = QDate::currentDate().year();
   MyMoneyTransactionFilter filter;
   filter.setDateFilter(QDate(currentyear,1,1),QDate(currentyear,12,31));
+  filter.setReportAllSplits(false);
   QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
-  QValueList<MyMoneyTransaction>::const_iterator it = transactions.begin();
-  while ( it != transactions.end() )
+  QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
+  while ( it_transaction != transactions.end() )
   {
-    // filter out duplicate transactions (sadly, I have no idea WHY I'm getting
-    // duplicates
-    if ( ! transactiondupes[(*it).id()] )
+    int column = (*it_transaction).postDate().month() - 1;
+
+    QValueList<MyMoneySplit> splits = (*it_transaction).splits();
+    QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
+    while ( it_split != splits.end() )
     {
-      transactiondupes[(*it).id()] = true;
+      // reverse sign to match common notation for cash flow direction
+      MyMoneyMoney value = - (*it_split).value();
 
-      int column = (*it).postDate().month() - 1;
+      // determine the type of transaction, which will become the row group
+      QCString accountid = (*it_split).accountId();
+      QCString parentid;
+      QString rowgroup = getType( accountid, parentid );
 
-      QValueList<MyMoneySplit> splits = (*it).splits();
-      QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
-      while ( it_split != splits.end() )
+      // roll up subcategories into top level categories
+      while ( rowgroup == "Subcategory" )
       {
-        // get value and reverse sign to match common notation for
-        // cash flow direction
-        double value = - (*it_split).value().toDouble();
-
-        // determine the type of transaction, which will become the row group
-        QCString accountid = (*it_split).accountId();
-        QCString parentid;
-        QString rowgroup = getType( accountid, parentid );
-
-        // roll up subcategories into top level categories
-        while ( rowgroup == "Subcategory" )
-        {
-          accountid = parentid;
-          rowgroup = getType( accountid, parentid );
-        }
-
-        QString row = file->account(accountid).name();
-
-        if ( rowgroup == "Income" || rowgroup == "Expense" )
-        {
-          if ( m_grid[rowgroup][row].isEmpty() )
-            m_grid[rowgroup][row].insert( m_grid[rowgroup][row].end(), 12, 0 );
-
-          m_grid[rowgroup][row][column] += value;
-
-        }
-        ++it_split;
+        accountid = parentid;
+        rowgroup = getType( accountid, parentid );
       }
+
+      // the row itself is the account name
+      QString row = file->account(accountid).name();
+
+      // filter out undesirable row groups
+      if ( rowgroup == "Income" || rowgroup == "Expense" )
+      {
+        if ( m_grid[rowgroup][row].isEmpty() )
+          m_grid[rowgroup][row].insert( m_grid[rowgroup][row].end(), 12, 0 );
+
+        m_grid[rowgroup][row][column] += value;
+
+      }
+      ++it_split;
     }
-    ++it;
+    ++it_transaction;
   }
 }
 
@@ -156,15 +151,20 @@ QString PivotTable::getType( const QCString& accountid, QCString& parentid ) con
 {
   QString result;
 
+  static QCString assetid = m_file->asset().id();
+  static QCString liabilityid = m_file->liability().id();
+  static QCString incomeid = m_file->income().id();
+  static QCString expenseid = m_file->expense().id();
+
   parentid = m_file->account(accountid).parentAccountId();
 
-  if ( parentid == "AStd::Asset" )
+  if ( parentid == assetid )
     result = "Asset";
-  else if ( parentid == "AStd::Liability" )
+  else if ( parentid == liabilityid )
     result = "Liability";
-  else if ( parentid == "AStd::Income" )
+  else if ( parentid == incomeid )
     result = "Income";
-  else if ( parentid == "AStd::Expense" )
+  else if ( parentid == expenseid )
     result = "Expense";
   else
     result = "Subcategory";
@@ -190,7 +190,7 @@ QString PivotTable::renderHTML( void ) const
   result += QString("<th>%1</th></tr>").arg(i18n("Total"));
 
   // calculate the column grand totals along the way
-  QValueList<double> columngrandtotal;
+  QValueList<MyMoneyMoney> columngrandtotal;
   columngrandtotal.insert( columngrandtotal.end(), 12, 0.0 );
 
   //
@@ -207,7 +207,7 @@ QString PivotTable::renderHTML( void ) const
 
     result += QString("<tr class=\"sectionheader\"><td class=\"left\" colspan=\"0\">%1</td></tr>").arg(it_rowgroup.key());
 
-    QValueList<double> columntotal;
+    QValueList<MyMoneyMoney> columntotal;
     columntotal.insert( columntotal.end(), 12, 0.0 );
 
     //
@@ -233,13 +233,13 @@ QString PivotTable::renderHTML( void ) const
       //
 
       int column = 0;
-      double rowtotal = 0.0;
+      MyMoneyMoney rowtotal = 0.0;
       while ( column < 12 )
       {
-        double value = it_row.data()[column];
+        MyMoneyMoney value = it_row.data()[column];
         columntotal[column] += value;
         rowtotal += value;
-        result += QString("<td>%1</td>").arg(MyMoneyMoney(value).formatMoney());
+        result += QString("<td>%1</td>").arg(value.formatMoney());
 
         ++column;
       }
@@ -247,7 +247,7 @@ QString PivotTable::renderHTML( void ) const
       //
       // Row Total
       //
-      result += QString("<td>%1</td></tr>").arg(MyMoneyMoney(rowtotal).formatMoney());
+      result += QString("<td>%1</td></tr>").arg(rowtotal.formatMoney());
 
       ++it_row;
     }
@@ -258,17 +258,17 @@ QString PivotTable::renderHTML( void ) const
 
     result += QString("<tr class=\"sectionfooter\"><td class=\"left\">%1&nbsp;%1</td>").arg(i18n("Total")).arg(it_rowgroup.key());
     int column = 0;
-    double rowgrouptotal = 0.0;
+    MyMoneyMoney rowgrouptotal = 0.0;
     while ( column < 12 )
     {
-      double value = columntotal[column];
+      MyMoneyMoney value = columntotal[column];
       columngrandtotal[column] += value;
       rowgrouptotal += value;
-      result += QString("<td>%1</td>").arg(MyMoneyMoney(value).formatMoney());
+      result += QString("<td>%1</td>").arg(value.formatMoney());
 
       ++column;
     }
-    result += QString("<td>%1</td></tr>").arg(MyMoneyMoney(rowgrouptotal).formatMoney());
+    result += QString("<td>%1</td></tr>").arg(rowgrouptotal.formatMoney());
 
     ++it_rowgroup;
   }
@@ -280,18 +280,18 @@ QString PivotTable::renderHTML( void ) const
   result += QString("<tr class=\"spacer\"><td></td></tr>");
   result += QString("<tr class=\"reportfooter\"><td class=\"left\">%1</td>").arg(i18n("Grand Total"));
   int totalcolumn = 0;
-  double grandtotal = 0.0;
+  MyMoneyMoney grandtotal = 0.0;
   while ( totalcolumn < 12 )
   {
-    double value = columngrandtotal[totalcolumn];
+    MyMoneyMoney value = columngrandtotal[totalcolumn];
     grandtotal += value;
-    result += QString("<td>%1</td>").arg(MyMoneyMoney(value).formatMoney());
+    result += QString("<td>%1</td>").arg(value.formatMoney());
 
     ++totalcolumn;
   }
 
-  double value = grandtotal;
-  result += QString("<td>%1</td></tr>").arg(MyMoneyMoney(value).formatMoney());
+  MyMoneyMoney value = grandtotal;
+  result += QString("<td>%1</td></tr>").arg(value.formatMoney());
 
   result += QString("<tr class=\"spacer\"><td></td></tr>");
   result += QString("<tr class=\"spacer\"><td></td></tr>");
