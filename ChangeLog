@@ -1,3 +1,8 @@
+2001-09-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Call resize() of base class in KCategoriesDlg, KBanksView, KReconcileDlg
+  * Prevent hiding of fields 'cleared balance' and 'difference' when shrinking
+    the reconcile dialog
+
 2001-09-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed another uninitialized variable bug in KExportDlg::readConfig()
     This sets the program default of QIF exports to %d/%m/%yyyy
