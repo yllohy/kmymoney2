@@ -24,7 +24,6 @@
 // QT Includes
 
 #include <qapplication.h>
-#include <qguardedptr.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -45,7 +44,6 @@
 
 class QSignalMapper;
 class KProgress;
-class KStartupLogo;
 class KMyMoneyView;
 class MyMoneyQifReader;
 class MyMoneyStatementReader;
@@ -125,7 +123,7 @@ protected slots:
     * be called from the UI.
     */
   void slotGncImport(void);
-  
+
   void slotPluginImport(const QString&);
 
   /**
@@ -210,7 +208,7 @@ public:
   QString readLastUsedDir();
   void writeLastUsedFile(const QString& fileName);
   QString readLastUsedFile();
-  
+
   /**
     * Returns whether there is an importer available that can handle this file
     */
@@ -505,8 +503,6 @@ private:
   KProgress* progressBar;
 
   QString m_statusMsg;
-
-  QGuardedPtr<KStartupLogo> m_startLogo;
 
   int m_progressUpdate;
   int m_nextUpdate;

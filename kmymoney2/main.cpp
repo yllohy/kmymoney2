@@ -103,6 +103,11 @@ int main(int argc, char *argv[])
   timer.start();
 
   KApplication* a = new KApplication();
+
+  // show startup logo
+  KStartupLogo* splash = new KStartupLogo();
+  a->processEvents();
+
   KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
   // setup the MyMoneyMoney locale settings according to the KDE settings
@@ -169,6 +174,8 @@ int main(int argc, char *argv[])
 
   kmymoney2->show();
   kmymoney2->setEnabled(false);
+
+  delete splash;
 
   // force complete paint of widgets
   qApp->processEvents();

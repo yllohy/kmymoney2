@@ -66,7 +66,6 @@
 
 #include "kmymoney2.h"
 #include "kmymoney2_stub.h"
-#include "kstartuplogo.h"
 
 #include "dialogs/kstartdlg.h"
 #include "dialogs/ksettingsdlg.h"
@@ -107,9 +106,6 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
 {
   updateCaption(true);
 
-  // splash screen
-  m_startLogo = new KStartupLogo;
-
   // initial setup of settings
   KMyMoneyUtils::updateSettings();
 
@@ -124,7 +120,7 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   config = kapp->config();
 
   m_pluginSignalMapper = new QSignalMapper( this );
-  connect( m_pluginSignalMapper, SIGNAL( mapped( const QString& ) ), this, SLOT( slotPluginImport( const QString& ) ) ); 
+  connect( m_pluginSignalMapper, SIGNAL( mapped( const QString& ) ), this, SLOT( slotPluginImport( const QString& ) ) );
 
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
@@ -156,8 +152,6 @@ KMyMoney2App::~KMyMoney2App()
 {
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAnyChange, this);
 
-  if(m_startLogo)
-    delete m_startLogo;
   if(m_reader != 0)
     delete m_reader;
   if(m_engineBackup != 0)
@@ -172,9 +166,6 @@ const KURL KMyMoney2App::lastOpenedURL(void)
   {
     url = readLastUsedFile();
   }
-
-  if(m_startLogo)
-    delete m_startLogo;
 
   slotStatusMsg(i18n("Ready."));
   return url;
@@ -391,7 +382,7 @@ bool KMyMoney2App::isImportableFile( const KURL& url )
 {
   bool result = false;
 
-  // Iterate through the plugins and see if there's a loaded plugin who can handle it  
+  // Iterate through the plugins and see if there's a loaded plugin who can handle it
   QMap<QString,KMyMoneyPlugin::ImporterPlugin*>::const_iterator it_plugin = m_importerPlugins.begin();
   while ( it_plugin != m_importerPlugins.end() )
   {
@@ -402,9 +393,9 @@ bool KMyMoney2App::isImportableFile( const KURL& url )
     }
     ++it_plugin;
   }
-  
+
   // If we did not find a match, try importing it as a KMM statement file,
-  // which is really just for testing.  the statement file is not exposed 
+  // which is really just for testing.  the statement file is not exposed
   // to users.
   if ( it_plugin == m_importerPlugins.end() )
     if ( MyMoneyStatement::isStatementFile( url.path() ) )
@@ -413,7 +404,7 @@ bool KMyMoney2App::isImportableFile( const KURL& url )
   // Place code here to test for QIF and other locally-supported formats
   // (i.e. not a plugin). If you add them here, be sure to add it to
   // the webConnect function.
-  
+
   return result;
 }
 
@@ -439,9 +430,6 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
     }
     delete remoteApp;
   }
-
-  if(m_startLogo)
-    delete m_startLogo;
 
   if(!duplicate) {
 
@@ -884,26 +872,26 @@ void KMyMoney2App::slotGncImport(void)
 void KMyMoney2App::slotPluginImport(const QString& format)
 {
   kdDebug() << __PRETTY_FUNCTION__ << ": Activated '" << format << "'plugin." << endl;
-  
+
   if ( m_importerPlugins.contains(format) )
   {
     KMyMoneyPlugin::ImporterPlugin* plugin = m_importerPlugins[format];
-    
+
     QString prevMsg = slotStatusMsg(i18n("Importing a statement using %1 plugin").arg(format));
-    
+
     KFileDialog* dialog = new KFileDialog
     (
       KGlobalSettings::documentPath(),
       i18n("*.%1|%2 files\n*.*|All files (*.*)")
         .arg(format.lower())
         .arg(format),
-      this, 
-      i18n("Import %1 Statement...").arg(format), 
+      this,
+      i18n("Import %1 Statement...").arg(format),
       true
     );
-    
+
     dialog->setMode(KFile::File | KFile::ExistingOnly);
-    
+
     if(dialog->exec() == QDialog::Accepted)
     {
       if ( plugin->isMyFormat(dialog->selectedURL().path()) )
@@ -1056,15 +1044,15 @@ bool KMyMoney2App::slotStatementImport(const QValueList<MyMoneyStatement>& state
     ok = ok && slotStatementImport(*it_s);
     ++it_s;
   }
-  
+
   if ( hasstatements && !ok )
   {
     KMessageBox::error( this, i18n("Importing process terminated unexpectedly."), i18n("Failed to import all statements."));
-  }              
-  
+  }
+
   return ( !hasstatements || ok );
 }
-          
+
 void KMyMoney2App::slotStatementImportFinished(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -1531,7 +1519,7 @@ void KMyMoney2App::slotCheckSchedules(void)
             //qDebug("Auto Entering schedule: %s", schedule.name().latin1());
             //qDebug("\tAuto enter date: %s", schedule.nextPayment(schedule.lastPayment()).toString().latin1());
             if (!slotCommitTransaction(schedule, schedule.nextPayment(schedule.lastPayment())))
-	    	        break; // abandon processing of schedule if error found
+                break; // abandon processing of schedule if error found
           }
           else
           {
@@ -1614,8 +1602,8 @@ bool KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDa
       cb->setText(d, QClipboard::Clipboard);
       QMessageBox::information( 0, PACKAGE,
         QObject::tr("Unable to autoEnter schedule %1. Please check manually\n"
-	"Debug data has been copied to clipboard; please paste into an\n"
-	"email and send to kmymoney2-developer@lists.sourceforge.net").arg (schedule.name()));
+  "Debug data has been copied to clipboard; please paste into an\n"
+  "email and send to kmymoney2-developer@lists.sourceforge.net").arg (schedule.name()));
       return (false);
     }
 
@@ -1770,7 +1758,7 @@ void KMyMoney2App::webConnect(const QString& url, const QCString& asn_id)
   // can be importing using that method.  If so, it will import it unsing that
   // plugin
   //
-  
+
   // Bring this window to the forefront.  This method was suggested by
   // Lubos Lunak <l.lunak@suse.cz> of the KDE core development team.
   KStartupInfo::setNewStartupId(this,asn_id);
@@ -1784,7 +1772,7 @@ void KMyMoney2App::webConnect(const QString& url, const QCString& asn_id)
   if ( myMoneyView->fileOpen() )
   {
     QString prevMsg = slotStatusMsg(i18n("Importing a statement via Web Connect"));
-      
+
     QMap<QString,KMyMoneyPlugin::ImporterPlugin*>::const_iterator it_plugin = m_importerPlugins.begin();
     while ( it_plugin != m_importerPlugins.end() )
     {
@@ -1799,14 +1787,14 @@ void KMyMoney2App::webConnect(const QString& url, const QCString& asn_id)
         {
           KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  The plugin returned the following error: %3").arg(url,(*it_plugin)->formatName(),(*it_plugin)->lastError()), i18n("Importing error"));
         }
-        
+
         break;
       }
       ++it_plugin;
     }
-    
+
     // If we did not find a match, try importing it as a KMM statement file,
-    // which is really just for testing.  the statement file is not exposed 
+    // which is really just for testing.  the statement file is not exposed
     // to users.
     if ( it_plugin == m_importerPlugins.end() )
       if ( MyMoneyStatement::isStatementFile( url ) )
@@ -1839,17 +1827,17 @@ void KMyMoney2App::loadPlugins(void)
 {
   {
     KTrader::OfferList offers = KTrader::self()->query("KMyMoneyPlugin");
-  
+
     KTrader::OfferList::ConstIterator iter;
     for(iter = offers.begin(); iter != offers.end(); ++iter) {
       KService::Ptr service = *iter;
       int errCode = 0;
-  
+
       KMyMoneyPlugin::Plugin* plugin =
         KParts::ComponentFactory::createInstanceFromService<KMyMoneyPlugin::Plugin>
         ( service, m_pluginInterface, service->name(), QStringList(), &errCode);
       // here we ought to check the error code.
-  
+
       if (plugin) {
         guiFactory()->addClient(plugin);
         kdDebug() << "Loaded '"
@@ -1863,32 +1851,32 @@ void KMyMoney2App::loadPlugins(void)
   }
   {
     KTrader::OfferList offers = KTrader::self()->query("KMyMoneyImporterPlugin");
-  
+
     KTrader::OfferList::ConstIterator iter;
     for(iter = offers.begin(); iter != offers.end(); ++iter) {
       KService::Ptr service = *iter;
       int errCode = 0;
-  
+
       KMyMoneyPlugin::ImporterPlugin* plugin =
         KParts::ComponentFactory::createInstanceFromService<KMyMoneyPlugin::ImporterPlugin>
         ( service, NULL, service->name(), QStringList(), &errCode);
       // here we ought to check the error code.
-  
+
       if (plugin) {
         kdDebug() << "Loaded '"
                   << plugin->name() << "' importer plugin" << endl;
 
-        // Create the custom action for this plugin                  
+        // Create the custom action for this plugin
         QString format = plugin->formatName();
         KAction* action = new KAction(i18n("%1 (Plugin)...").arg(format), "", 0, m_pluginSignalMapper, SLOT(map()), actionCollection(), QString("file_import_plugin_%1").arg(format));
-        
+
         // Add it to the signal mapper, so we'll know which plugin triggered the signal
         m_pluginSignalMapper->setMapping( action, format );
-        
+
         // Add it to the plugin map, so we can find it later
         // FIXME: Check for duplicate and error out if there is already a plugin to handle this format.
         m_importerPlugins[format] = plugin;
-        
+
         // Add it into the UI at the 'file_import_plugins' insertion point
         QPtrList<KAction> import_actions;
         import_actions.append( action );

@@ -21,13 +21,13 @@
 
 #include <qapplication.h>
 #include <qpixmap.h>
-#include <qtimer.h>
 #include <qframe.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include <kglobal.h>
+#include <klocale.h>
 #include <kstandarddirs.h>
 #include <kapplication.h>
 #include <kconfig.h>
@@ -67,7 +67,6 @@ KStartupLogo::KStartupLogo() :
   splash->setLineWidth( 2 );
   splash->setGeometry( QRect( (QApplication::desktop()->width()/2)-(pm.width()/2), (QApplication::desktop()->height()/2)-(pm.height()/2), pm.width(), pm.height() ) );
 
-  // QTimer::singleShot(1000, m_splash, SLOT(close()));
 #endif
 
   splash->show();
