@@ -1,3 +1,9 @@
+2004-07-17 Ace Jones <acejones@users.sourceforge.net>
+  * Ability to delete reports
+  * Context menu (right click) from the reports list to access the report 
+    management actions.  (The same actions that are available as links in
+    the report tabs)
+    
 2004-07-16 Ace Jones <acejones@users.sourceforge.net>
   * Interface to contain the reports, as suggested by Tom. Completely re-wrote
     KReportsView in the process.

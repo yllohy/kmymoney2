@@ -651,7 +651,6 @@ void MyMoneyFile::removePayee(const MyMoneyPayee& payee)
   addNotification(NotifyClassPayeeSet);
 }
 
-
 const QValueList<MyMoneyAccount> MyMoneyFile::accountList(void) const
 {
   checkStorage();
@@ -1569,3 +1568,14 @@ MyMoneyReport MyMoneyFile::report( const QCString& id ) const
 
   return m_storage->report(id);
 }
+
+void MyMoneyFile::removeReport(const MyMoneyReport& report)
+{
+  checkStorage();
+  MyMoneyNotifier notifier(this);
+
+  m_storage->removeReport(report);
+
+  addNotification(NotifyClassReport);
+}
+

@@ -155,9 +155,15 @@ public slots:
   void slotReloadView(void) { slotRefreshView(); };
   void slotConfigure(void);
   void slotDuplicate(void);
-  void slotReportDoubleClicked(QListViewItem*);
+  void slotOpenReport(QListViewItem*);
   void slotCloseCurrent(void);
   void slotClose(QWidget*);
+  void slotDelete(void);
+  void slotListContextMenu(KListView*,QListViewItem*,const QPoint &);
+  void slotOpenFromList(void);
+  void slotConfigureFromList(void);
+  void slotNewFromList(void);
+  void slotDeleteFromList(void);
 
 signals:
   /**

@@ -839,7 +839,17 @@ public:
     * @return MyMoneyReport object
     */
   MyMoneyReport report( const QCString& _id ) const;
-                                              
+                                            
+  /**
+    * This method is used to remove an existing MyMoneyReport object
+    * from the engine. The id attribute of the object must be set.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param report const reference to the MyMoneyReport object to be updated
+    */
+  void removeReport(const MyMoneyReport& report);
+    
 private:
 
   static const int INSTITUTION_ID_SIZE = 6;

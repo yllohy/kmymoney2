@@ -35,6 +35,8 @@
 #include <qtabwidget.h>
 #include <qtimer.h>
 #include <qiconset.h>
+#include <qpopupmenu.h>
+#include <qmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -125,13 +127,15 @@ void KReportsView::KReportTab::updateReport(void)
 {
   QString links;
 
-  links += QString("<a href=\"/%1?command=configure\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Configure This Report"));
+  links += QString("<a href=\"/%1?command=configure\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Configure"));
   links += "&nbsp;|&nbsp;";
-  links += QString("<a href=\"/%1?command=duplicate\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Create New Report"));
+  links += QString("<a href=\"/%1?command=duplicate\">%2</a>").arg(VIEW_REPORTS).arg(i18n("New Report"));
   links += "&nbsp;|&nbsp;";
   links += QString("<a href=\"/%1?command=copy\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Copy to Clipboard"));
   links += "&nbsp;|&nbsp;";
   links += QString("<a href=\"/%1?command=save\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Save to File"));
+  links += "&nbsp;|&nbsp;";
+  links += QString("<a href=\"/%1?command=delete\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Delete"));
   links += "&nbsp;|&nbsp;";
   links += QString("<a href=\"/%1?command=close\">%2</a>").arg(VIEW_REPORTS).arg(i18n("Close"));
     
@@ -188,11 +192,15 @@ KReportsView::KReportsView(QWidget *parent, const char *name )
   
   m_reportListView->addColumn(i18n("Report"));
   m_reportListView->setResizeMode(QListView::AllColumns);
-
+  
   connect( m_reportTabWidget, SIGNAL(closeRequest(QWidget*)), 
     this, SLOT(slotClose(QWidget*)) );
   connect(m_reportListView, SIGNAL(doubleClicked(QListViewItem*)),
-    this, SLOT(slotReportDoubleClicked(QListViewItem*)));
+    this, SLOT(slotOpenReport(QListViewItem*)));
+  connect(m_reportListView, SIGNAL(returnPressed(QListViewItem*)),
+    this, SLOT(slotOpenReport(QListViewItem*)));
+  connect( m_reportListView, SIGNAL(contextMenu(KListView*,QListViewItem*,const QPoint &)),
+    this, SLOT(slotListContextMenu(KListView*,QListViewItem*,const QPoint &)));
 }
 
 KReportsView::~KReportsView()
@@ -263,6 +271,8 @@ void KReportsView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args *
       slotDuplicate();
     else if ( command == "close" )
       slotCloseCurrent();
+    else if ( command == "delete" )
+      slotDelete();
     else
       qDebug("Unknown command '%s' in KReportsView::slotOpenURL()", static_cast<const char*>(command));
 
@@ -330,29 +340,46 @@ void KReportsView::slotDuplicate(void)
   addReportTab(dupe);
 }
 
-void KReportsView::slotReportDoubleClicked(QListViewItem* item)
+void KReportsView::slotDelete(void)
+{
+  KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
+
+  MyMoneyReport report = MyMoneyFile::instance()->report(tab->id());
+  if ( QMessageBox::Ok == QMessageBox::warning(this,"Delete Report?",QString("Are you sure you want to delete %1?  There is no way to recover it!").arg(report.name()), QMessageBox::Ok, QMessageBox::Cancel) )
+  {
+    MyMoneyFile::instance()->removeReport(report);
+    slotClose(tab);
+    slotRefreshView();
+  }
+}
+
+void KReportsView::slotOpenReport(QListViewItem* item)
 {  
   KReportListItem *reportItem = dynamic_cast<KReportListItem*> (item);
-  KReportTab* page = NULL;
-
-  // Find the tab which contains the report indicated by this list item  
-  int index = 1;
-  while ( index < m_reportTabWidget->count() )
-  {
-    KReportTab* current = dynamic_cast<KReportTab*>(m_reportTabWidget->page(index));
-    if ( current->id() == reportItem->id() )
-    {
-      page = current;
-      break;
-    }
-    ++index;
-  }
   
-  // Show the tab, or create a new one, as needed
-  if ( page )
-    m_reportTabWidget->showPage( page );
-  else
-    addReportTab(MyMoneyFile::instance()->report(reportItem->id()));
+  if ( reportItem )
+  {
+    KReportTab* page = NULL;
+  
+    // Find the tab which contains the report indicated by this list item  
+    int index = 1;
+    while ( index < m_reportTabWidget->count() )
+    {
+      KReportTab* current = dynamic_cast<KReportTab*>(m_reportTabWidget->page(index));
+      if ( current->id() == reportItem->id() )
+      {
+        page = current;
+        break;
+      }
+      ++index;
+    }
+    
+    // Show the tab, or create a new one, as needed
+    if ( page )
+      m_reportTabWidget->showPage( page );
+    else
+      addReportTab(MyMoneyFile::instance()->report(reportItem->id()));
+  }
 }
 
 void KReportsView::slotCloseCurrent(void)
@@ -379,3 +406,56 @@ void KReportsView::addReportTab(const MyMoneyReport& report)
   
 };
 
+void KReportsView::slotListContextMenu(KListView* lv,QListViewItem* item,const QPoint & p)
+{
+  if ( lv == m_reportListView && item )
+  {
+    QPopupMenu* contextmenu = new QPopupMenu(this);
+    contextmenu->insertItem( i18n("&Open"), this, SLOT(slotOpenFromList()) );
+    contextmenu->insertItem( i18n("&Configure"), this, SLOT(slotConfigureFromList()) );
+    contextmenu->insertItem( i18n("&New report"), this, SLOT(slotNewFromList()) );
+    contextmenu->insertItem( i18n("&Delete"), this, SLOT(slotDeleteFromList()) );
+    
+    contextmenu->popup(p);
+  }
+}
+
+void KReportsView::slotOpenFromList(void)
+{
+  KReportListItem *reportItem = dynamic_cast<KReportListItem*> (m_reportListView->selectedItem());
+  
+  if ( reportItem )
+    slotOpenReport(reportItem);
+}
+
+void KReportsView::slotConfigureFromList(void)
+{
+  KReportListItem *reportItem = dynamic_cast<KReportListItem*> (m_reportListView->selectedItem());
+  
+  if ( reportItem )
+  {
+    slotOpenReport(reportItem);
+    slotConfigure();
+  }
+}
+void KReportsView::slotNewFromList(void)
+{
+  KReportListItem *reportItem = dynamic_cast<KReportListItem*> (m_reportListView->selectedItem());
+  
+  if ( reportItem )
+  {
+    slotOpenReport(reportItem);
+    slotDuplicate();
+  }
+}
+
+void KReportsView::slotDeleteFromList(void)
+{
+  KReportListItem *reportItem = dynamic_cast<KReportListItem*> (m_reportListView->selectedItem());
+  
+  if ( reportItem )
+  {
+    slotOpenReport(reportItem);
+    slotDelete();
+  }
+}

@@ -1632,3 +1632,17 @@ MyMoneyReport MyMoneySeqAccessMgr::report( const QCString& _id ) const
 { 
   return m_reportList[_id]; 
 }
+
+void MyMoneySeqAccessMgr::removeReport( const MyMoneyReport& report )
+{
+  QMap<QCString, MyMoneyReport>::Iterator it;
+
+  it = m_reportList.find(report.id());
+  if(it == m_reportList.end()) {
+    QString msg = "Unknown report '" + report.id() + "'";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+
+  m_reportList.remove(it);
+  touch();
+}
