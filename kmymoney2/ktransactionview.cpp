@@ -388,7 +388,6 @@ void KTransactionView::enterClicked()
   int commaindex;
 
 
-	qDebug("Before Payment Text");
 	if(m_payment->text() == "")
 	{
     commaindex = m_withdrawal->text().find(",");
@@ -412,7 +411,6 @@ void KTransactionView::enterClicked()
 	{
    	dblnewamount = 0;
 	}
-  qDebug("After Payment Text");
 
   MyMoneyMoney newamount(dblnewamount);
 	MyMoneyTransaction::stateE newstate;
@@ -456,6 +454,51 @@ void KTransactionView::enterClicked()
    	catmajor = m_category->currentText().left(colonindex);
 		catminor = m_category->currentText().right(len - colonindex);
 	}
+	int lessindex = m_category->currentText().find("<");
+  int greatindex = m_category->currentText().find(">");
+	QString transferAccount = "";
+  if((lessindex != -1) && (greatindex != -1) & (m_method->currentItem() == 2))
+  {
+  	transferAccount =  m_category->currentText();
+		transferAccount = transferAccount.remove(0,1);
+		transferAccount = transferAccount.remove(transferAccount.length() - 1,1);
+    MyMoneyAccount *currentAccount;
+    for(currentAccount = m_bankIndex.accountFirst(); currentAccount != 0; currentAccount = m_bankIndex.accountNext())
+    {
+			if(currentAccount->accountName() == transferAccount)
+      {
+				MyMoneyTransaction::transactionMethod transfermethod = MyMoneyTransaction::Deposit;
+				QString theText;
+	     	theText.sprintf("<%s>",account->accountName().latin1());
+				newstate = MyMoneyTransaction::Unreconciled;
+				currentAccount->addTransaction(transfermethod, m_number->text(), m_payee->currentText(),
+																			 newamount, newdate, theText, "", "",
+																			 account->accountName(),"" ,"",
+																			 newstate);
+			}
+		}		
+	}
+  if((lessindex != -1) && (greatindex != -1) & (m_method->currentItem() == 1))
+  {
+  	transferAccount =  m_category->currentText();
+		transferAccount = transferAccount.remove(0,1);
+		transferAccount = transferAccount.remove(transferAccount.length() - 1,1);
+    MyMoneyAccount *currentAccount;
+    for(currentAccount = m_bankIndex.accountFirst(); currentAccount != 0; currentAccount = m_bankIndex.accountNext())
+    {
+			if(currentAccount->accountName() == transferAccount)
+      {
+				MyMoneyTransaction::transactionMethod transfermethod = MyMoneyTransaction::Transfer;
+				QString theText;
+	     	theText.sprintf("<%s>",account->accountName().latin1());
+				newstate = MyMoneyTransaction::Unreconciled;
+				currentAccount->addTransaction(transfermethod, m_number->text(), m_payee->currentText(),
+																			 newamount, newdate, theText, "", "",
+																			 account->accountName(),"" ,"",
+																			 newstate);
+			}
+		}		
+	}
 
 	if(m_index < m_transactions.count())
 	{
@@ -463,14 +506,14 @@ void KTransactionView::enterClicked()
    	account->removeCurrentTransaction(m_index);
   	account->addTransaction(newmethod, m_number->text(), m_payee->currentText(),
                             newamount, newdate, catmajor, catminor, "",
-  													"", "", "", newstate);
+  													transferAccount, "", "", newstate);
 	}
 	else
   {
 		newstate = MyMoneyTransaction::Unreconciled;
   	account->addTransaction(newmethod, m_number->text(), m_payee->currentText(),
                             newamount, newdate, catmajor, catminor, "",
-  													"", "", "", newstate);
+  													transferAccount, "", "", newstate);
 	}
 	
   updateTransactionList(-1, -1);
@@ -539,6 +582,12 @@ void KTransactionView::updateInputLists(void)
         categoryList.append(theText);
       }
     }
+    MyMoneyAccount *currentAccount;
+    for(currentAccount = m_bankIndex.accountFirst(); currentAccount != 0; currentAccount = m_bankIndex.accountNext())
+    {
+     	theText.sprintf("<%s>",currentAccount->accountName().latin1());
+			categoryList.append(theText);
+		}
   }
 	m_category->clear();
   m_category->insertStringList(categoryList);
