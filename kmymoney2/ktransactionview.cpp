@@ -193,52 +193,57 @@ void KTransactionView::slotMethodCompleted()
 
 void KTransactionView::createInputWidgets()
 {
-
-    m_date = new kMyMoneyDateInput(0,QDate::currentDate(), Qt::AlignRight);
-    m_method = new kMyMoneyCombo(0);
-    m_payee = new kMyMoneyCombo(true,0);
-    m_payment = new kMyMoneyEdit(0);
-    m_withdrawal = new kMyMoneyEdit(0);
-    m_number = new kMyMoneyLineEdit(0);
-    m_hlayout = new kMyMoneyHLayout(0);
-    m_category = new kMyMoneyCombo(false, 0);
-    m_memo = new kMyMoneyLineEdit(0);
-    m_hlayout->addWidget(m_category);
-    m_hlayout->addWidget(m_memo);
-    m_enter = new KPushButton(i18n("Enter"),0);
-    m_cancel = new KPushButton(i18n("Cancel"),0);
-    m_delete = new KPushButton(i18n("Delete"),0);
-    m_method->setEditable(false);
-    m_method->setAutoCompletion(true);
-    KCompletion *methodcomp = m_method->completionObject();
-    connect(m_method,SIGNAL(returnPressed(const QString&)),methodcomp,SLOT(addItem(const QString&)));
-    m_payee->setEditable(true);
-    m_payee->setAutoCompletion(true);
-    m_number->setHandleSignals(false);
-    m_number->setKeyBinding(KCompletionBase::TextCompletion, Qt::Key_End );
-    m_number->setContextMenuEnabled(false);
-    m_number->setEnableSignals(false);
-    m_number->useGlobalKeyBindings();
-    m_number->setAlignment(Qt::AlignLeft);
-    m_payment->setHandleSignals(false);
-    m_payment->setKeyBinding(KCompletionBase::TextCompletion, Qt::Key_End );
-    m_payment->setContextMenuEnabled(false);
-    m_payment->setEnableSignals(false);
-    m_payment->useGlobalKeyBindings();
-    m_payment->setAlignment(Qt::AlignRight);
-    m_withdrawal->setHandleSignals(false);
-    m_withdrawal->setKeyBinding(KCompletionBase::TextCompletion, Qt::Key_End );
-    m_withdrawal->setContextMenuEnabled(false);
-    m_withdrawal->setEnableSignals(false);
-    m_withdrawal->useGlobalKeyBindings();
-    m_withdrawal->setAlignment(Qt::AlignRight);
-//	m_method->insertItem("");  // We don't need a blank item.  These will be dynamic in the future
+  m_date = new kMyMoneyDateInput(0,QDate::currentDate(), Qt::AlignRight);
+  m_method = new kMyMoneyCombo(0);
+  m_payee = new kMyMoneyCombo(true,0);
+  m_payment = new kMyMoneyEdit(0);
+  m_withdrawal = new kMyMoneyEdit(0);
+  m_number = new kMyMoneyLineEdit(0);
+  m_hlayout = new kMyMoneyHLayout(0);
+  m_category = new kMyMoneyCombo(false, 0);
+  m_memo = new kMyMoneyLineEdit(0);
+  m_hlayout->addWidget(m_category);
+  m_hlayout->addWidget(m_memo);
+  m_enter = new KPushButton(i18n("Enter"),0);
+  m_cancel = new KPushButton(i18n("Cancel"),0);
+  m_delete = new KPushButton(i18n("Delete"),0);
+  m_payee->setEditable(true);
+  m_payee->setAutoCompletion(true);
+  m_number->setHandleSignals(false);
+  m_number->setKeyBinding(KCompletionBase::TextCompletion, Qt::Key_End );
+  m_number->setContextMenuEnabled(false);
+  m_number->setEnableSignals(false);
+  m_number->useGlobalKeyBindings();
+  m_number->setAlignment(Qt::AlignLeft);
+  m_payment->setHandleSignals(false);
+  m_payment->setKeyBinding(KCompletionBase::TextCompletion, Qt::Key_End );
+  m_payment->setContextMenuEnabled(false);
+  m_payment->setEnableSignals(false);
+  m_payment->useGlobalKeyBindings();
+  m_payment->setAlignment(Qt::AlignRight);
+  m_withdrawal->setHandleSignals(false);
+  m_withdrawal->setKeyBinding(KCompletionBase::TextCompletion, Qt::Key_End );
+  m_withdrawal->setContextMenuEnabled(false);
+  m_withdrawal->setEnableSignals(false);
+  m_withdrawal->useGlobalKeyBindings();
+  m_withdrawal->setAlignment(Qt::AlignRight);
+  //  m_method->insertItem("");
+  // We don't need a blank item.  These will be dynamic in the future
+  KCompletion *methodcomp = m_method->completionObject();
+  connect(m_method,SIGNAL(returnPressed(const QString&)),methodcomp,SLOT(addItem(const QString&)));
+  m_method->setEditable(true);
+  m_method->setAutoCompletion(true);
   m_method->insertItem(i18n("Cheque"));
   m_method->insertItem(i18n("Deposit"));
   m_method->insertItem(i18n("Transfer"));
   m_method->insertItem(i18n("Withdrawal"));
   m_method->insertItem(i18n("ATM"));
-  m_method->setEditable(true);
+
+  // as the code has hard-coded references to the above list,
+  // we do not allow editing of these values here. This somehow
+  // makes autocompletion senseless, but I leave it in for later use.
+  m_method->setEditable(false);
+
   m_category->setAutoCompletion(true);
   KCompletion *categorycomp = m_category->completionObject();
   connect(m_category,SIGNAL(returnPressed(const QString&)),categorycomp,SLOT(addItem(const QString&)));
