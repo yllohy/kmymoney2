@@ -29,13 +29,13 @@ cflags=
 cppflags=
 cxxflags=\s-O0 -g3 -Wall
 ldadd=\s$(LIB_KHTML) $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
-ldflags=\s       \s
+ldflags=\s         \s
 path_to_bin_program=kmymoney2
 
 [General]
 AMChanged=true
 author=Michael Edwardes
-configure_args=--prefix=/opt/kde3 --enable-debug\s
+configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux --prefix=/opt/kde3 --enable-debug\s
 dir_where_make_will_be_called=
 email=mte@users.sourceforge.net
 kdevprj_version=1.3
@@ -1995,7 +1995,7 @@ install_location=
 type=SOURCE
 
 [kmymoney2/widgets/Makefile.am]
-files=kmymoney2/widgets/kmymoneydateinput.cpp,kmymoney2/widgets/kmymoneydateinput.h,kmymoney2/widgets/kmymoneyedit.cpp,kmymoney2/widgets/kmymoneyedit.h,kmymoney2/widgets/kmymoneylineedit.cpp,kmymoney2/widgets/kmymoneylineedit.h,kmymoney2/widgets/kmymoneyhlayout.cpp,kmymoney2/widgets/kmymoneyhlayout.h,kmymoney2/widgets/kmymoneycombo.cpp,kmymoney2/widgets/kmymoneycombo.h,kmymoney2/widgets/kmymoneysplittable.cpp,kmymoney2/widgets/kmymoneysplittable.h,kmymoney2/widgets/kmymoneyregister.cpp,kmymoney2/widgets/kmymoneyregister.h,kmymoney2/widgets/kmymoneyregistercheckings.cpp,kmymoney2/widgets/kmymoneyregistercheckings.h,kmymoney2/widgets/kmymoneytransactionform.h,kmymoney2/widgets/kmymoneytransactionform.cpp,kmymoney2/widgets/kmymoneypayee.cpp,kmymoney2/widgets/kmymoneypayee.h,kmymoney2/widgets/kmymoneycategory.cpp,kmymoney2/widgets/kmymoneycategory.h,kmymoney2/widgets/kmymoneycalculator.cpp,kmymoney2/widgets/kmymoneycalculator.h,kmymoney2/widgets/kmymoneycalendar.cpp,kmymoney2/widgets/kmymoneycalendar.h,kmymoney2/widgets/kmymoneyscheduledcalendar.cpp,kmymoney2/widgets/kmymoneyscheduledcalendar.h,kmymoney2/widgets/kmymoneydatetbl.cpp,kmymoney2/widgets/kmymoneydatetbl.h,kmymoney2/widgets/kmymoneyscheduleddatetbl.cpp,kmymoney2/widgets/kmymoneyscheduleddatetbl.h,kmymoney2/widgets/kschedulebriefwidget.ui,kmymoney2/widgets/kmymoneybriefschedule.cpp,kmymoney2/widgets/kmymoneybriefschedule.h,kmymoney2/widgets/kmymoneyregistersearch.cpp,kmymoney2/widgets/kmymoneyregistersearch.h,kmymoney2/widgets/kmymoneyregisterloan.cpp,kmymoney2/widgets/kmymoneyregisterloan.h,kmymoney2/widgets/kmymoneyaccountselector.cpp,kmymoney2/widgets/kmymoneyaccountselector.h
+files=kmymoney2/widgets/kmymoneydateinput.cpp,kmymoney2/widgets/kmymoneydateinput.h,kmymoney2/widgets/kmymoneyedit.cpp,kmymoney2/widgets/kmymoneyedit.h,kmymoney2/widgets/kmymoneylineedit.cpp,kmymoney2/widgets/kmymoneylineedit.h,kmymoney2/widgets/kmymoneyhlayout.cpp,kmymoney2/widgets/kmymoneyhlayout.h,kmymoney2/widgets/kmymoneycombo.cpp,kmymoney2/widgets/kmymoneycombo.h,kmymoney2/widgets/kmymoneysplittable.cpp,kmymoney2/widgets/kmymoneysplittable.h,kmymoney2/widgets/kmymoneyregister.cpp,kmymoney2/widgets/kmymoneyregister.h,kmymoney2/widgets/kmymoneyregistercheckings.cpp,kmymoney2/widgets/kmymoneyregistercheckings.h,kmymoney2/widgets/kmymoneytransactionform.h,kmymoney2/widgets/kmymoneytransactionform.cpp,kmymoney2/widgets/kmymoneypayee.cpp,kmymoney2/widgets/kmymoneypayee.h,kmymoney2/widgets/kmymoneycategory.cpp,kmymoney2/widgets/kmymoneycategory.h,kmymoney2/widgets/kmymoneycalculator.cpp,kmymoney2/widgets/kmymoneycalculator.h,kmymoney2/widgets/kmymoneycalendar.cpp,kmymoney2/widgets/kmymoneycalendar.h,kmymoney2/widgets/kmymoneyscheduledcalendar.cpp,kmymoney2/widgets/kmymoneyscheduledcalendar.h,kmymoney2/widgets/kmymoneydatetbl.cpp,kmymoney2/widgets/kmymoneydatetbl.h,kmymoney2/widgets/kmymoneyscheduleddatetbl.cpp,kmymoney2/widgets/kmymoneyscheduleddatetbl.h,kmymoney2/widgets/kmymoneybriefschedule.cpp,kmymoney2/widgets/kmymoneybriefschedule.h,kmymoney2/widgets/kmymoneyregistersearch.cpp,kmymoney2/widgets/kmymoneyregistersearch.h,kmymoney2/widgets/kmymoneyregisterloan.cpp,kmymoney2/widgets/kmymoneyregisterloan.h,kmymoney2/widgets/kmymoneyaccountselector.cpp,kmymoney2/widgets/kmymoneyaccountselector.h,kmymoney2/widgets/kschedulebriefwidget.ui
 sub_dirs=
 type=static_library
 
