@@ -201,6 +201,8 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& 
 {
   if(COLUMN_NAME_INDEX == c || COLUMN_SYMBOL_INDEX == c)
   {
+    MyMoneyFile* currentFile = MyMoneyFile::instance();
+    currentFile->
     //QString clickedEquity = pItem->text(COLUMN_SYMBOL_INDEX);
     MyMoneyEquity equity;
     KEditEquityEntryDlg *pDlg = new KEditEquityEntryDlg(&equity, this);
