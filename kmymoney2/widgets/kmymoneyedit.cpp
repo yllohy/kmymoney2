@@ -136,6 +136,7 @@ bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
         break;
 
       case Qt::Key_Tab:
+        rc = false;         // we signal, but we also use the standard behaviour
         if(k->state() & Qt::ShiftButton)
           emit signalBackTab();
         else
@@ -143,6 +144,7 @@ bool kMyMoneyEdit::eventFilter(QObject *o , QEvent *e )
         break;
 
       case Qt::Key_Backtab:
+        rc = false;         // we signal, but we also use the standard behaviour
         emit signalBackTab();
         break;
 
