@@ -1,3 +1,6 @@
+2001-12-13 Kevin Tambascio <ktambascio@yahoo.com>
+  * Fixed export dialogs to always add the appropriate file extension.
+
 2001-12-12 Thomas Baumgart  <ipwizard@users.sourceforge.net>
   * updated project handbook files in developer-doc/phb
   * added selection of monetaryDecimalSymbol in QIF import
@@ -482,5 +485,6 @@
 	* Added .cvsignore in all project.
 
  
+
 
 
