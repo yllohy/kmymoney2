@@ -62,7 +62,9 @@ public:
   signed64 value(void) const { return m_64Value; };
   const MyMoneyMoney abs(void) const { return *this < 0 ? -(*this) : *this; };
   const QString formatMoney(/*QString locale="C", bool addPrefixPostfix=false*/void) const;
-
+  const QString toString(void) const;
+  void fromString(const QString& str);
+  
   static void setThousandSeparator(const unsigned char);
   static void setDecimalSeparator(const unsigned char);
   static unsigned char thousandSeparator(void);

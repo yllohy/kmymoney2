@@ -23,6 +23,14 @@
 #define __STDC_LIMIT_MACROS         // force definition of min and max values 
 #include <stdint.h>
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
+#include <qregexp.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include "mymoneymoney.h"
 
 unsigned char MyMoneyMoney::_thousandSeparator = ',';
@@ -38,7 +46,6 @@ void MyMoneyMoney::setThousandSeparator(const unsigned char separator)
     _thousandSeparator = separator;
   else
     _thousandSeparator = 0;
-
 }
 
 unsigned char MyMoneyMoney::thousandSeparator(void)
@@ -68,6 +75,13 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmountInPence)
 {
   m_64Value = 0;
 
+  QRegExp regExp("(\\-?\\d+)/(\\d+)");
+  if(regExp.search(pszAmountInPence) > -1) {
+    // string matches the internal representation
+    fromString(pszAmountInPence);
+    return;
+  }
+    
   QString res = pszAmountInPence;
   int pos;
   while((pos = res.find(_thousandSeparator)) != -1)
@@ -113,7 +127,19 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
       bNegative=true;
     }
 
-    res = QString("%1").arg((long)left);
+    if(left & 0xFFFFFFFF00000000LL) {
+      signed64 tmp = m_64Value;
+
+      // QString.sprintf("%Ld") did not work :-(,  so I had to
+      // do it the old ugly way.
+      while(tmp) {
+        res.insert(0, QString("%1").arg(static_cast<int>(tmp % 10)));
+        tmp /= 10;
+      }
+
+    } else
+      res = QString("%1").arg((long)left);
+      
     int pos = res.length();
     while(0 < (pos -= 3)  && thousandSeparator())
       res.insert(pos, thousandSeparator());
@@ -130,18 +156,6 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
       res += "00";
     else
       res += QString("%1").arg(right);
-/*
-    }
-    else
-    {
-      if (right < 10)
-        return QString("%1.0%2").arg((long)left).arg(right);
-      else if (right == 0)
-        return QString("%1.00").arg((long)left);
-      else
-        return QString("%1.%2").arg((long)left).arg(right);
-    }
-*/
   }
   else {
     if(decimalSeparator())
@@ -151,6 +165,44 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
   }
 
   return res;
+}
+
+const QString MyMoneyMoney::toString(void) const
+{
+  signed64 tmp = m_64Value;
+  QString  res;
+
+  if(tmp < 0) {
+    tmp = -tmp;
+  }
+
+  // QString.sprintf("%Ld") did not work :-(,  so I had to
+  // do it the old ugly way.  
+  while(tmp) {
+    res = QString("%1").arg(static_cast<int>(tmp % 10)) + res;
+    tmp /= 10;
+  }
+  if(res.isEmpty())
+    res = QString("0");
+    
+  if(m_64Value < 0)
+    res = QString("-") + res;
+    
+  res += QString("/100");
+  return res;
+}
+
+void MyMoneyMoney::fromString(const QString& str)
+{
+  m_64Value = 0;
+  
+  QRegExp regExp("(\\-?\\d+)/(\\d+)");
+  int pos = regExp.search(str);
+  if(pos > -1) {
+    // for now, we only support 2 digits of fractional part fixed
+    if(regExp.cap(2) == QString("100"))
+      *this = MyMoneyMoney(regExp.cap(1));
+  }
 }
 
 QDataStream &operator<<(QDataStream &s, const MyMoneyMoney &money)

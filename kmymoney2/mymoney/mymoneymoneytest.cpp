@@ -101,6 +101,9 @@ void MyMoneyMoneyTest::testStringConstructor()
 	CPPUNIT_ASSERT(m1->value() == 12345LL);
 	delete m1;
 
+	m1 = new MyMoneyMoney("12345/100");
+	CPPUNIT_ASSERT(m1->value() == 12345LL);
+	delete m1;
 }
 
 void MyMoneyMoneyTest::testEquality()
@@ -266,3 +269,28 @@ void MyMoneyMoneyTest::testAbsoluteFunction()
 	CPPUNIT_ASSERT(m2.abs() == 100);
 	CPPUNIT_ASSERT(m1.abs() == 100);
 }
+
+void MyMoneyMoneyTest::testToString()
+{
+	MyMoneyMoney m1(-100);
+	MyMoneyMoney m2(1234);
+	MyMoneyMoney m3;
+
+	CPPUNIT_ASSERT(m1.toString() == QString("-100/100"));
+	CPPUNIT_ASSERT(m2.toString() == QString("1234/100"));
+	CPPUNIT_ASSERT(m3.toString() == QString("0/100"));
+}
+
+void MyMoneyMoneyTest::testFromString()
+{
+	MyMoneyMoney m;
+
+	m.fromString("-100/100");
+	CPPUNIT_ASSERT(m.value() == -100LL);
+	m.fromString("1234/100");
+	CPPUNIT_ASSERT(m.value() == 1234LL);
+	m.fromString("1234/10");
+	CPPUNIT_ASSERT(m.value() == 0LL);
+	
+}
+
