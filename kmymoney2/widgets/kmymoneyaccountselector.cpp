@@ -487,8 +487,8 @@ const QCStringList kMyMoneyAccountSelector::accountList(const  QValueList<MyMone
         if(filterList.count() == 0 || it_f != filterList.end())
           list << it_c->id();
       }
-      it++;
     }
+    it++;
   }
   return list;
 }
