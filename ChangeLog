@@ -1,3 +1,8 @@
+2002-11-04 Kevin Tambascio <ktambascio@yahoo.com>
+  * Added new pure virtual class to describe the file type reader classes,
+    IMyMoneyStorageFormat.cpp and .h.
+  * Updated project files to include these new files.
+  
 2002-11-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed return code of kMyMoneyLedgerViewCheckings::focusNextPrevChild()
   * Improved KLedgerView::focusNextPrevChild to handle invisible and

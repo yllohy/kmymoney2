@@ -1,7 +1,7 @@
 /***************************************************************************
-                          mymoneystoragexml.cpp  -  description
+                          imymoneystorageformat.cpp  -  description
                              -------------------
-    begin                : Thu Oct 24 2002
+    begin                : Sun Oct 27 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
@@ -20,49 +20,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#if HAVE_LIBXMLPP
+ #include "imymoneystorageformat.h"
+ 
+ IMyMoneyStorageFormat::IMyMoneyStorageFormat()
+ {
 
-#include <xml++.h>
-#include "mymoneystoragexmlcallback.h"
-#include "mymoneystoragexml.h"
+ }
 
-MyMoneyStorageXML::MyMoneyStorageXML()
-{
-  XMLParser<MyMoneyStorageXMLCallback> *parser = new XMLParser<MyMoneyStorageXMLCallback>;
-  if(parser)
-  {
-    //cout << "Able to create XML++ parser" << endl;
-  }
-}
+ IMyMoneyStorageFormat::~IMyMoneyStorageFormat()
+ {
 
-MyMoneyStorageXML::~MyMoneyStorageXML()
-{
-  
-}
-
-void MyMoneyStorageXML::readStream(QDataStream& s, IMyMoneySerialize* storage)
-{
-  if(storage)
-  {
-
-  }
-}
-
-void MyMoneyStorageXML::readOldFormat(QDataStream& s, IMyMoneySerialize* storage)
-{
-  readStream(s, storage);
-}
-
-void MyMoneyStorageXML::readNewFormat(QDataStream& s, IMyMoneySerialize* storage)
-{
-  readStream(s, storage);
-}
-
-void MyMoneyStorageXML::addCategory(IMyMoneySerialize* storage,QMap<QString, QCString>& categories,
-                                    const QString& majorName, const QString& minorName,
-                                    const MyMoneyAccount::accountTypeE type)
-{
-
-}
-
-#endif // HAVE_LIBXMLPP>>>>>>> 1.2
+ }
+ 
+   

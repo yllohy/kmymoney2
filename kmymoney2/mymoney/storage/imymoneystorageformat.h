@@ -1,7 +1,7 @@
 /***************************************************************************
-                          mymoneystoragexml.cpp  -  description
+                          imymoneystorageformat.h  -  description
                              -------------------
-    begin                : Thu Oct 24 2002
+    begin                : Sun Oct 27 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
@@ -20,49 +20,44 @@
  *                                                                         *
  ***************************************************************************/
 
-#if HAVE_LIBXMLPP
+#ifndef IMYMONEYSTORAGEFORMAT_H
+#define IMYMONEYSTORAGEFORMAT_H
 
-#include <xml++.h>
-#include "mymoneystoragexmlcallback.h"
-#include "mymoneystoragexml.h"
 
-MyMoneyStorageXML::MyMoneyStorageXML()
-{
-  XMLParser<MyMoneyStorageXMLCallback> *parser = new XMLParser<MyMoneyStorageXMLCallback>;
-  if(parser)
-  {
-    //cout << "Able to create XML++ parser" << endl;
-  }
-}
+/**
+  *@author Kevin Tambascio (ktambascio@yahoo.com)
+  */
 
-MyMoneyStorageXML::~MyMoneyStorageXML()
-{
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "imymoneyserialize.h"
   
-}
 
-void MyMoneyStorageXML::readStream(QDataStream& s, IMyMoneySerialize* storage)
+class IMyMoneyStorageFormat
 {
-  if(storage)
-  {
+public: 
+	IMyMoneyStorageFormat();
+	virtual ~IMyMoneyStorageFormat();
 
-  }
-}
+    enum fileVersionDirectionType {
+    Reading = 0,          /**< version of file to be read */
+    Writing = 1           /**< version to be used when writing a file */
+  };
 
-void MyMoneyStorageXML::readOldFormat(QDataStream& s, IMyMoneySerialize* storage)
-{
-  readStream(s, storage);
-}
+  virtual void readStream(QDataStream& s, IMyMoneySerialize* storage) = 0;
 
-void MyMoneyStorageXML::readNewFormat(QDataStream& s, IMyMoneySerialize* storage)
-{
-  readStream(s, storage);
-}
+  /**
+    * This member is used to store the file version information
+    * obtained while reading a file.
+    */
+  static unsigned int fileVersionRead;
 
-void MyMoneyStorageXML::addCategory(IMyMoneySerialize* storage,QMap<QString, QCString>& categories,
-                                    const QString& majorName, const QString& minorName,
-                                    const MyMoneyAccount::accountTypeE type)
-{
+  /**
+    * This member is used to store the file version information
+    * to be used when writing a file.
+    */
+  static unsigned int fileVersionWrite;
+};
 
-}
-
-#endif // HAVE_LIBXMLPP>>>>>>> 1.2
+#endif

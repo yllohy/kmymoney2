@@ -256,3 +256,19 @@ bool MyMoneyUtils::appendCorrectFileExt(String& str, const String strExtToUse)
   */
 	return true;
 }
+
+QString MyMoneyUtils::getFileExtension(QString strFileName)
+{
+  QString strTemp;
+  if(!strFileName.isEmpty())
+  {
+		//find last . delminator
+		int nLoc = strFileName.findRev('.');
+    if(nLoc != -1)
+		{
+      strTemp = strFileName.right(strFileName.length() - (nLoc + 1));
+      return strTemp.upper();
+    }
+  }
+  return strTemp;
+}

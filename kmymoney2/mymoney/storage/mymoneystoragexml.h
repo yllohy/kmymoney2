@@ -33,13 +33,14 @@
 // Project Includes
 
 #include "imymoneyserialize.h"
+#include "imymoneystorageformat.h"
 
 /**
   *@author Kevin Tambascio (ktambascio@yahoo.com)
   */
 
-
-class MyMoneyStorageXML
+                            
+class MyMoneyStorageXML : public IMyMoneyStorageFormat
 {
 public: 
 	MyMoneyStorageXML();

@@ -32,20 +32,23 @@
 // Project Includes
 
 #include "imymoneyserialize.h"
+#include "imymoneystorageformat.h"
 
 /**
   *@author Thomas Baumgart
   */
 
-class MyMoneyStorageBin {
+class IMyMoneyStorageFormat;
+
+class MyMoneyStorageBin : public IMyMoneyStorageFormat {
 public: 
 	MyMoneyStorageBin();
 	~MyMoneyStorageBin();
 
-  enum fileVersionDirectionType {
-    Reading = 0,          /**< version of file to be read */
-    Writing = 1,          /**< version to be used when writing a file */
-  };
+  //enum fileVersionDirectionType {
+  //  Reading = 0,          /**< version of file to be read */
+  //  Writing = 1,          /**< version to be used when writing a file */
+  //};
 
   /**
     * This method returns the version of the underlying file. It

@@ -58,9 +58,11 @@
 #include "../dialogs/kimportdlg.h"
 #include "../dialogs/kexportdlg.h"
 
+#include "../mymoney/storage/imymoneystorageformat.h"
 #include "../mymoney/storage/mymoneystoragebin.h"
 #include "../mymoney/mymoneyexception.h"
 #include "../mymoney/storage/mymoneystoragedump.h"
+#include "../mymoney/storage/mymoneystoragexml.h"
 
 #include "kmymoneyview.h"
 #include "kmymoneyfile.h"
@@ -131,6 +133,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   //connect(accountsView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
   connect(accountsView, SIGNAL(bankRightMouseClick()),
     this, SLOT(slotBankRightMouse()));
+
   connect(accountsView, SIGNAL(rightMouseClick()),
     this, SLOT(slotRightMouse()));
 
@@ -371,14 +374,24 @@ bool KMyMoneyView::readFile(QString filename)
   else
     kfile->open();
 
-  // Use the old reader for now
-  MyMoneyStorageBin *binaryReader = new MyMoneyStorageBin;
+  IMyMoneyStorageFormat* pReader = NULL;    
+
+  QString strFileExtension = MyMoneyUtils::getFileExtension(filename);
+  if(strFileExtension.find("XML"))
+  {
+    pReader = new MyMoneyStorageXML;
+  }
+  else
+  {
+    // Use the old reader for now
+    pReader = new MyMoneyStorageBin;
+  }
   QFile qfile(filename);
 
   if(qfile.open(IO_ReadOnly)) {
     QDataStream s(&qfile);
     try {
-      binaryReader->readStream(s, kfile->storage());
+      pReader->readStream(s, kfile->storage());
     } catch (MyMoneyException *e) {
       QString msg = e->what();
       qDebug("%s", msg.latin1());
@@ -388,7 +401,7 @@ bool KMyMoneyView::readFile(QString filename)
   } else {
     KMessageBox::sorry(this, i18n("File not found!"));
   }
-  delete binaryReader;
+  delete pReader;
 
   // update all views
   m_categoriesView->refreshView();
@@ -981,6 +994,7 @@ void KMyMoneyView::settingsLists()
 
       qdateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
 
+
       if (qdateStart != defaultDate.date())
       {
 
@@ -1213,6 +1227,7 @@ bool KMyMoneyView::checkTransactionDescription(const MyMoneyTransaction *transac
 }
 
 bool KMyMoneyView::checkTransactionNumber(const MyMoneyTransaction *transaction, const bool enabled, const QString number, const bool isRegExp)
+
 {
 
 /*

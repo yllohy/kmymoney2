@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file './knewbankdlgdecl.ui'
 **
-** Created: Mon Jun 10 22:36:58 2002
+** Created: Mon Nov 4 17:37:42 2002
 **      by:  The User Interface Compiler (uic)
 **
 ** WARNING! All changes made in this file will be lost!

@@ -5,10 +5,10 @@ INCLUDES = $(all_includes)
 
 libstorage_a_METASOURCES = AUTO
 
-libstorage_a_SOURCES = mymoneystoragexml.cpp mymoneystoragexmlcallback.cpp mymoneystoragedump.cpp mymoneystoragebin.cpp mymoneyseqaccessmgr.cpp imymoneystorage.cpp imymoneyserialize.cpp 
+libstorage_a_SOURCES = imymoneystorageformat.cpp mymoneystoragexml.cpp mymoneystoragexmlcallback.cpp mymoneystoragedump.cpp mymoneystoragebin.cpp mymoneyseqaccessmgr.cpp imymoneystorage.cpp imymoneyserialize.cpp 
 
 
-EXTRA_DIST = imymoneyserialize.cpp imymoneyserialize.h imymoneystorage.cpp imymoneystorage.h mymoneyseqaccessmgr.cpp mymoneyseqaccessmgr.h mymoneystoragebin.cpp mymoneystoragebin.h mymoneystoragedump.cpp mymoneystoragedump.h mymoneystoragexmlcallback.h mymoneystoragexmlcallback.cpp mymoneystoragexml.h mymoneystoragexml.cpp 
+EXTRA_DIST = imymoneyserialize.cpp imymoneyserialize.h imymoneystorage.cpp imymoneystorage.h mymoneyseqaccessmgr.cpp mymoneyseqaccessmgr.h mymoneystoragebin.cpp mymoneystoragebin.h mymoneystoragedump.cpp mymoneystoragedump.h mymoneystoragexmlcallback.h mymoneystoragexmlcallback.cpp mymoneystoragexml.h mymoneystoragexml.cpp imymoneystorageformat.cpp imymoneystorageformat.h 
 
 ####### kdevelop will overwrite this part!!! (end)############
 
