@@ -56,7 +56,7 @@ public:
   void updateDisplay();
 
   /** No description */
-  void displayNewEquity(const MyMoneyEquity *pEntry);
+  void displayNewEquity(MyMoneyEquity *pEntry);
 
   /** No description */
   void addEquityEntry(MyMoneyEquity *pEntry);

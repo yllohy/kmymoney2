@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>262</width>
+            <width>258</width>
             <height>252</height>
         </rect>
     </property>
@@ -57,30 +57,6 @@
         <property stdset="1">
             <name>text</name>
             <string>Investment Type:</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLineEdit</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>edtEquityName</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>100</x>
-                <y>10</y>
-                <width>151</width>
-                <height>22</height>
-            </rect>
-        </property>
-        <property>
-            <name>toolTip</name>
-            <string>Name of the company, or mutual fund.</string>
-        </property>
-        <property>
-            <name>whatsThis</name>
-            <string>Name of the company, or mutual fund.</string>
         </property>
     </widget>
     <widget>
@@ -137,30 +113,6 @@
                 <width>151</width>
                 <height>21</height>
             </rect>
-        </property>
-    </widget>
-    <widget>
-        <class>QLineEdit</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>edtMarketSymbol</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>100</x>
-                <y>50</y>
-                <width>151</width>
-                <height>22</height>
-            </rect>
-        </property>
-        <property>
-            <name>toolTip</name>
-            <string>Trading Symbol of the stock or mutual fund, not required.</string>
-        </property>
-        <property>
-            <name>whatsThis</name>
-            <string>Trading Symbol of the stock or mutual fund, not required.</string>
         </property>
     </widget>
     <widget>
@@ -295,6 +247,54 @@
         <property stdset="1">
             <name>text</name>
             <string>Cancel</string>
+        </property>
+    </widget>
+    <widget>
+        <class>QLineEdit</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>edtEquityName</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>100</x>
+                <y>10</y>
+                <width>151</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property>
+            <name>toolTip</name>
+            <string>Name of the company, or mutual fund.</string>
+        </property>
+        <property>
+            <name>whatsThis</name>
+            <string>Name of the company, or mutual fund.</string>
+        </property>
+    </widget>
+    <widget>
+        <class>QLineEdit</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>edtMarketSymbol</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>100</x>
+                <y>50</y>
+                <width>151</width>
+                <height>22</height>
+            </rect>
+        </property>
+        <property>
+            <name>toolTip</name>
+            <string>Trading Symbol of the stock or mutual fund, not required.</string>
+        </property>
+        <property>
+            <name>whatsThis</name>
+            <string>Trading Symbol of the stock or mutual fund, not required.</string>
         </property>
     </widget>
 </widget>

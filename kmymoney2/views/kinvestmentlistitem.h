@@ -25,7 +25,7 @@
 
 #include <klistview.h>
 
-#include "../mymoney/mymoneyaccount.h"
+#include "../mymoney/mymoneyequity.h"
 
 /**
   *@author Kevin Tambascio
@@ -33,8 +33,11 @@
 
 class KInvestmentListItem : public KListViewItem  {
 public: 
-	KInvestmentListItem(KListView* parent, MyMoneyAccount *pAccount);
+	KInvestmentListItem(KListView* parent, MyMoneyEquity *pEquity);
 	~KInvestmentListItem();
+	
+private:
+	KListView *m_pListView;	
 };
 
 #endif

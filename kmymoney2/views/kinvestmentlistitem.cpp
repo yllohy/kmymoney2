@@ -23,10 +23,25 @@
 #include <klistview.h>
 #include "kinvestmentlistitem.h"
 
-KInvestmentListItem::KInvestmentListItem(KListView* parent, MyMoneyAccount *pAccount)
+#include "../mymoney/mymoneyequity.h"
+
+KInvestmentListItem::KInvestmentListItem(KListView* parent, MyMoneyEquity *pEquity)
 	: KListViewItem(parent)
 {
-
+	m_pListView = parent;
+	
+	//column 0 is the name of the stock
+	setText(0, QString(pEquity->getEquityName().data()));
+	
+	//column 1 is the ticker symbol
+	setText(1, QString(pEquity->getEquitySymbol().data()));
+	
+	//column 3 is the current price, using the QString translator to get a string value.
+	QString strValue;
+	const double price = pEquity->getCurrentPrice().amount();
+	strValue.setNum(price);
+	//strValue = tr("%1", arg(pEquity->getCurrentPrice().amount()));
+	setText(3, strValue);
 }
 
 KInvestmentListItem::~KInvestmentListItem()

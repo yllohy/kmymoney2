@@ -42,6 +42,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kconfig.h>
+#include <knuminput.h>
 
 #include "knewequityentrydlg.h"
 
@@ -64,4 +65,9 @@ void KNewEquityEntryDlg::onOKClicked()
 void KNewEquityEntryDlg::onCancelClicked()
 {
 	reject();
+}
+/** No descriptions */
+double KNewEquityEntryDlg::getStockPrice()
+{
+  return dblCurrentPrice->value();
 }

@@ -42,6 +42,8 @@ class KNewEquityEntryDlg : public kNewEquityEntryDecl
 public:
 	KNewEquityEntryDlg(QWidget *parent = NULL, const char *name = NULL);
 	~KNewEquityEntryDlg();
+  /** No descriptions */
+  double getStockPrice();
 
 protected slots:
   void onOKClicked();

@@ -31,8 +31,15 @@
   *@author Kevin Tambascio
   */
 
+#include <qdatetime.h>
+
 #include "mymoneymoney.h"
 #include "mymoneyutils.h"
+
+typedef struct {
+	QDate date;
+	MyMoneyMoney price;
+} sPriceUpdate;
 
 class MyMoneyEquity
 {
@@ -48,29 +55,30 @@ public:
 		ETYPE_BOND
 	} eEQUITYTYPE;
 	
-	String 	getEquityName() 												{ return m_strEquityName; }
-	void			setEquityName(const String& str)			{ m_strEquityName = str; }
+	QString 	getEquityName() 												{ return m_strEquityName; }
+	void			setEquityName(const QString& str)			{ m_strEquityName = str; }
 
-	String 	getEquitySymbol() 											{ return m_strEquitySymbol; }
-	void			setEquitySymbol(const String& str)		{ m_strEquitySymbol = str; }
+	QString 	getEquitySymbol() 											{ return m_strEquitySymbol; }
+	void			setEquitySymbol(const QString& str)		{ m_strEquitySymbol = str; }
 
 	eEQUITYTYPE 	getEquityType() 													{ return m_equityType; }
 	void					setEquityType(const eEQUITYTYPE& e)			{ m_equityType = e; }
 
-	String 	getEquityMarket() 											{ return m_strEquityMarket; }
-	void			setEquityMarket(const String& str)		{ m_strEquityMarket = str; }
+	QString 	getEquityMarket() 											{ return m_strEquityMarket; }
+	void			setEquityMarket(const QString& str)		{ m_strEquityMarket = str; }
 
 	MyMoneyMoney		getCurrentPrice()								{ return m_CurrentPrice; }
-	void						setCurrentPrice(const MyMoneyMoney *m)	{ m_CurrentPrice = *m; }
+	void						setCurrentPrice(const QDate date, const MyMoneyMoney *m);//	{ m_CurrentPrice = *m; }
   /** No descriptions */
-  void setEquityType(const String& str);
+  void setEquityType(const QString& str);
 	
 private:
-	String m_strEquityName;
-	String m_strEquitySymbol;
-	String m_strEquityMarket;
+	QString m_strEquityName;
+	QString m_strEquitySymbol;
+	QString m_strEquityMarket;
 	eEQUITYTYPE m_equityType;
 	MyMoneyMoney m_CurrentPrice;
+	vector<sPriceUpdate*> m_priceUpdates;
 };
 
 #endif

@@ -26,6 +26,8 @@
 #include <kglobal.h>
 #include <klocale.h>
 
+#include <qstring.h>
+
 //Includes for STL support below
 #include <vector>
 #include <map>
@@ -33,11 +35,13 @@
 #include <string>
 using namespace std;
 
-#ifdef _UNICODE
-typedef std::wstring String;
-#else
-typedef std::string String;
-#endif
+//#define _UNICODE 1
+
+//#ifdef _UNICODE
+//typedef std::wstring MyString;
+//#else
+//typedef std::string MyString;
+//#endif
 
 //typedef for data type to store currency with.
 typedef long long DLONG;
@@ -50,7 +54,10 @@ public:
 	~MyMoneyUtils() {};
 	
 	//static function to add the correct file extension at the end of the file name
-	static bool appendCorrectFileExt(String& str, const String strExtToUse);
+	static bool appendCorrectFileExt(QString& str, const QString strExtToUse);
+	
+	//static MyString StringFromQString(const QString& str);
+	//static QString QStringFromString(const MyString& str);
 };
 
 

@@ -33,9 +33,9 @@ MyMoneyEquity::~MyMoneyEquity()
 {
 }
 /** No descriptions */
-void MyMoneyEquity::setEquityType(const String& str)
+void MyMoneyEquity::setEquityType(const QString& str)
 {
-	if(str.size())
+	if(str.length())
 	{
 		if(!str.find(i18n("Stock")))
 		{
@@ -54,4 +54,12 @@ void MyMoneyEquity::setEquityType(const String& str)
 			setEquityType(ETYPE_NONE);
 		}
 	}
+}
+
+void	 MyMoneyEquity::setCurrentPrice(const QDate date, const MyMoneyMoney *m)
+{
+	sPriceUpdate *priceUpdate = new sPriceUpdate;
+	priceUpdate->price = *m;
+	priceUpdate->date = date;
+	m_priceUpdates.push_back(priceUpdate);
 }

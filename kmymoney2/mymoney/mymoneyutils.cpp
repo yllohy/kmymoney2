@@ -34,7 +34,7 @@
 *						in the library files, because it appears in numerous places.
 */
 ///////////////////////////////////////////////////////////////////////////////////////////////
-bool MyMoneyUtils::appendCorrectFileExt(String& str, const String strExtToUse)
+bool MyMoneyUtils::appendCorrectFileExt(QString& str, const QString strExtToUse)
 {
 	/*if(!str.isEmpty())
   {
@@ -69,3 +69,16 @@ bool MyMoneyUtils::appendCorrectFileExt(String& str, const String strExtToUse)
   */
 	return true;
 }
+
+/*QString MyMoneyUtils::StringFromQString(const QString& str)
+{
+	QString strRetval(str);
+	strRetval[str.length()] = '\0';
+	return strRetval;	
+}
+
+QString MyMoneyUtils::QStringFromString(const QString& str)
+{
+	QString strRetval(str.data());
+	return strRetval;
+}  */

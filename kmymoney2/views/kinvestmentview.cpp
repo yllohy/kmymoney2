@@ -19,6 +19,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kdebug.h>
 #include <kglobal.h>
 #include <kconfig.h>
 #include <klocale.h>
@@ -45,9 +46,10 @@
 #include "../mymoney/mymoneyinvesttransaction.h"
 #include "../widgets/kmymoneytable.h"
 #include "../mymoney/mymoneyaccount.h"
-#include "kinvestmentview.h"
+#include "kinvestmentlistitem.h"
 #include "../dialogs/knewequityentrydlg.h"
 #include "../dialogs/kupdatestockpricedlg.h"
+#include "kinvestmentview.h"
 
 KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
  :  kInvestmentViewDecl(parent,name)
@@ -60,6 +62,7 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
 	investmentTable->setRootIsDecorated(true);
 	investmentTable->setColumnText(0, QString(i18n("Symbol")));
   investmentTable->addColumn(i18n("Name"));
+  investmentTable->addColumn(i18n("Symbol"));
   investmentTable->addColumn(i18n("Number of Shares"));
   investmentTable->addColumn(i18n("Current Price"));
   investmentTable->addColumn(i18n("Original Price"));
@@ -70,8 +73,8 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
   investmentTable->addColumn(i18n("YTD %"));
 
   investmentTable->setMultiSelection(false);
-	investmentTable->setColumnWidthMode(0, QListView::Manual);
-  investmentTable->header()->setResizeEnabled(false);
+	investmentTable->setColumnWidthMode(0, QListView::Maximum);
+  investmentTable->header()->setResizeEnabled(true);
   investmentTable->setAllColumnsShowFocus(true);
 
   // never show a horizontal scroll bar
@@ -168,12 +171,29 @@ void KInvestmentView::slotNewInvestment()
     if(pEquity)
     {
 			//populate this equity entry with information from the dialog.
-			pEquity->setEquityName(String(pDlg->edtEquityName->text()));
-			pEquity->setEquitySymbol(String(pDlg->edtMarketSymbol->text()));
-			pEquity->setEquityType(String(pDlg->cmbInvestmentType->currentText()));
-    	MyMoneyMoney money(pDlg->dblCurrentPrice->value());
-    	pEquity->setCurrentPrice(&money);
+			QString strTemp;
+			strTemp = pDlg->edtEquityName->text();
+			kdDebug(1) << "Equity name is: " << strTemp << endl;
+			pEquity->setEquityName(strTemp);
+			
+			strTemp = pDlg->edtMarketSymbol->text();
+			kdDebug(1) << "Equity Symbol is: " << strTemp << endl;
+			pEquity->setEquitySymbol(strTemp);
+			
+			strTemp = pDlg->cmbInvestmentType->currentText();
+			kdDebug(1) << "Equity Type is: " << strTemp << endl;
+			pEquity->setEquityType(strTemp);
+			
+			const double price = pDlg->getStockPrice();
+			kdDebug(1) << "Current Equity Price is: " << price << endl;
+    	MyMoneyMoney money(price);
+    	pEquity->setCurrentPrice(QDate::currentDate(), &money);
+    	
+    	//add to equity database
     	addEquityEntry(pEquity);
+    	
+    	//display new equity in the list view.
+    	displayNewEquity(pEquity);
     }
 	}
 }
@@ -194,8 +214,10 @@ void KInvestmentView::addEquityEntry(MyMoneyEquity *pEntry)
 	}
 }
 
-void KInvestmentView::displayNewEquity(const MyMoneyEquity *pEntry)
+void KInvestmentView::displayNewEquity(MyMoneyEquity *pEntry)
 {
+	KInvestmentListItem *pItem = new KInvestmentListItem(investmentTable, pEntry);
+	investmentTable->insertItem(pItem);
 }
 
 void KInvestmentView::slotEditInvestment()
