@@ -581,6 +581,18 @@ void KReportsView::slotClose(QWidget* w)
   tab->setReadyToDelete(true);
 }
 
+void KReportsView::slotCloseAll(void)
+{
+  KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->page(1));
+  while (tab)
+  {
+    m_reportTabWidget->removePage(tab);
+    tab->setReadyToDelete(true);
+    
+    tab = dynamic_cast<KReportTab*>(m_reportTabWidget->page(1));
+  }
+}
+
 void KReportsView::addReportTab(const MyMoneyReport& report)
 {
   KReportTab* tab = new KReportTab(m_reportTabWidget,report);

@@ -1,3 +1,8 @@
+2004-10-17 Ace Jones <acejones@users.sourceforge.net>
+  * Automatically close all report tabs when the file closes
+  * Added right-click access to on-line price updating in investment view
+    summary
+  
 2004-10-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed crash when creating new categories while entering transactions
   * Added "Don't ask again" switch to question if new category should be

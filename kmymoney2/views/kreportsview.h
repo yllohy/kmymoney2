@@ -203,6 +203,7 @@ public slots:
   void slotOpenReport(const QCString&);
   void slotCloseCurrent(void);
   void slotClose(QWidget*);
+  void slotCloseAll(void);
   void slotDelete(void);
   void slotListContextMenu(KListView*,QListViewItem*,const QPoint &);
   void slotOpenFromList(void);

@@ -58,6 +58,8 @@
 #include "../dialogs/kupdatestockpricedlg.h"
 #include "../dialogs/keditequityentrydlg.h"
 #include "../dialogs/knewaccountdlg.h"
+#include "../dialogs/kequitypriceupdatedlg.h"
+
 
 #include "../widgets/kmymoneyaccountcombo.h"
 
@@ -315,14 +317,12 @@ void KInvestmentView::slotEditInvestment()
 
 void KInvestmentView::slotUpdatePrice()
 {
-/*
-  KUpdateStockPriceDlg *pDlg = new KUpdateStockPriceDlg;
-  if(pDlg)
-  {
-    pDlg->exec();
-    int nResult = pDlg->result();
-  }
-*/
+  // TODO: When initiated from here, the price update dialog should only show 
+  // the stock you picked, and it should AUTOMATICALLY launch the update.
+
+  KEquityPriceUpdateDlg *pDlg = new KEquityPriceUpdateDlg(this);
+  pDlg->exec();
+  
 }
 
 void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& /*point*/, int /*x*/)
@@ -335,7 +335,7 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& /*po
   m_popMenu->insertTitle(kiconloader->loadIcon("transaction", KIcon::MainToolbar), i18n("Investment Options"));
   newId = m_popMenu->insertItem(kiconloader->loadIcon("file_new", KIcon::Small), i18n("New ..."), this, SLOT(slotNewInvestment()));
   editId = m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit ..."), this, SLOT(slotEditInvestment()));
-  updateId = m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Update Price ..."), this, SLOT(slotUpdatePrice()));
+  updateId = m_popMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("On-line Price Update ..."), this, SLOT(slotUpdatePrice()));
 #if 0
   delId = m_popMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
                         i18n("Delete ..."),

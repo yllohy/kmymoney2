@@ -753,6 +753,9 @@ bool KMyMoneyView::fileOpen(void)
 
 void KMyMoneyView::closeFile(void)
 {
+  if ( m_reportsView )
+    m_reportsView->slotCloseAll();
+  
   newStorage();
   m_fileOpen = false;
 }
