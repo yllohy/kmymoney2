@@ -107,6 +107,12 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     QValueList<MyMoneySplit>::ConstIterator it_s;
     for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
       s << "   ID = " << (*it_s).id() << "\n";
+      s << "    Payee = " << (*it_s).payeeId();
+      if((*it_s).payeeId() != "") {
+        MyMoneyPayee p = storage->payee((*it_s).payeeId());
+        s << " (" << p.name() << ")" << "\n";
+      } else
+        s << " ()\n";
       s << "    Account = " << (*it_s).accountId();
       MyMoneyAccount acc = storage->account((*it_s).accountId());
       s << " (" << acc.name() << ")" << "\n";
