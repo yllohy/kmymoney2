@@ -35,7 +35,7 @@ path_to_bin_program=kmymoney2
 [General]
 AMChanged=true
 author=Michael Edwardes
-configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux --prefix=/opt/kde3 --enable-debug\s
+configure_args=
 dir_where_make_will_be_called=
 email=mte@users.sourceforge.net
 kdevprj_version=1.3
@@ -2259,9 +2259,15 @@ install_location=
 type=DATA
 
 [po/Makefile.am]
-files=po/fr.po
+files=po/fr.po,po/de.po
 sub_dirs=
 type=po
+
+[po/de.po]
+dist=false
+install=false
+install_location=
+type=PO
 
 [po/fr.po]
 dist=false
