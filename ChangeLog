@@ -4,6 +4,8 @@
   * Types and balances are shown again in the accounts view.
   * Categories view updated.
   * KCategoryListItem removed.
+  * The accounts view type is now configurable through the settings dialog
+    in the page 'Accounts View'.  (Institution or Accounts view).
 
 2002-06-11 Michael Edwardes <mte@users.sourceforge.net>
   * Categories view now works as before.

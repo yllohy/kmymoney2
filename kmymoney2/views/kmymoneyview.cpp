@@ -335,6 +335,7 @@ bool KMyMoneyView::readFile(QString filename)
   return true;
 }
 
+
 void KMyMoneyView::saveFile(QString filename)
 {
 /*
@@ -449,6 +450,7 @@ void KMyMoneyView::slotAccountReconcile(void)
         l_previousBal -= transaction->amount();
 
     if (transaction->type() == MyMoneyTransaction::Credit)
+
       l_endingBalGuess += transaction->amount();
     else
       l_endingBalGuess -= transaction->amount();
@@ -494,6 +496,7 @@ void KMyMoneyView::slotAccountImportAscii(void)
     }
   }
 */
+
 }
 
 void KMyMoneyView::slotAccountExportAscii(void)
@@ -810,6 +813,7 @@ void KMyMoneyView::viewTransactionList(void)
 
 void KMyMoneyView::settingsLists()
 {
+  accountsView->refresh("");
 /*
   bool bankSuccess=false, accountSuccess=false;
   MyMoneyBank *pBank;

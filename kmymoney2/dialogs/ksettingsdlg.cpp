@@ -56,6 +56,7 @@ KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
 {
   // Setup the pages and then read the configuration object.
   setPageGeneral();
+  setPageAccountsView();
   setPageList();
   configRead();
   m_bDoneApply=false;
@@ -97,6 +98,36 @@ void KSettingsDlg::setPageGeneral()
   m_qradiobuttonStartFile = new QRadioButton("start_file", qbuttongroup);
   m_qradiobuttonStartFile->setText( i18n( "Start with last file used" ) );
   qvboxlayout->addWidget(m_qradiobuttonStartFile);
+}
+
+void KSettingsDlg::setPageAccountsView()
+{
+  // Create the main frame to hold the widgets
+  QVBox *qvboxMainFrame = addVBoxPage( i18n("Accounts View"), i18n("Accounts view settings"),
+    DesktopIcon("accounts_view"));
+
+  // Create a group box to hold the available options
+  QButtonGroup *qbuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox1");
+  qbuttongroup->setTitle( i18n( "General Settings" ) );
+  qbuttongroup->setColumnLayout(0, Qt::Vertical );
+  qbuttongroup->layout()->setSpacing( 0 );
+  qbuttongroup->layout()->setMargin( 0 );
+
+  // Create a layout to organize the widgets.
+  QVBoxLayout *qvboxlayout = new QVBoxLayout(qbuttongroup->layout());
+  qvboxlayout->setAlignment( Qt::AlignTop );
+  qvboxlayout->setSpacing( 6 );
+  qvboxlayout->setMargin( 11 );
+
+  // Create a check box to be in the group box
+  m_qradiobuttonNormalView = new QRadioButton("normal_view", qbuttongroup);
+  m_qradiobuttonNormalView->setText( i18n( "Use the normal institution view" ) );
+  qvboxlayout->addWidget(m_qradiobuttonNormalView);
+
+  // Create another check box to the group box
+  m_qradiobuttonAccountView = new QRadioButton("account_view", qbuttongroup);
+  m_qradiobuttonAccountView->setText( i18n( "Use the new accounts view" ) );
+  qvboxlayout->addWidget(m_qradiobuttonAccountView);
 }
 
 /** Called to create the Main List page shown in the dialog.
@@ -320,6 +351,10 @@ void KSettingsDlg::configRead()
   m_qdateTempStart = kconfig->readDateTimeEntry("StartDate").date();
   m_dateinputStart->setDate(m_qdateTempStart);
 
+  m_bTempNormalView = kconfig->readBoolEntry("NormalAccountsView", true);
+  m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
+
+  m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);
 }
 
 /** Write out all the settings to the global KConfig object.
@@ -345,6 +380,8 @@ void KSettingsDlg::configWrite()
 #else
   kconfig->writeEntry("StartDate", m_dateinputStart->getQDate());
 #endif
+
+  kconfig->writeEntry("NormalAccountsView", m_qradiobuttonNormalView->isChecked());
 
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_qradiobuttonStartPrompt->isChecked());
@@ -401,6 +438,8 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("StartDate", m_qdateTempStart);
 #endif
 
+  kconfig->writeEntry("NormalAccountsView", m_bTempNormalView);
+
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_bTempStartPrompt);
 
@@ -430,4 +469,6 @@ void KSettingsDlg::slotUser1()
   m_qradiobuttonOtherRow->setChecked(!m_bTempColourPerTransaction);
   m_qcheckboxTextPrompt->setChecked(m_bTempTextPrompt);
   m_dateinputStart->setDate(m_qdateTempStart);
+  m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
+  m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);
 }
