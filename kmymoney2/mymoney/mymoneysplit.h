@@ -84,7 +84,7 @@ public:
   const QCString action(void) const { return m_action; };
   const QString number(void) const { return m_number; };
   const bool isAmortizationSplit(void) const { return m_action == ActionAmortization; };
-  
+
   void setShares(const MyMoneyMoney& shares);
   void setValue(const MyMoneyMoney& value);
 
@@ -117,11 +117,16 @@ public:
   static const char ActionTransfer[];
   static const char ActionWithdrawal[];
   static const char ActionATM[];
+
   static const char ActionAmortization[];
   static const char ActionInterest[];
-  static const char ActionAddShares[];
-  static const char ActionRemoveShares[];
-  
+
+  static const char ActionBuyShares[];  // negative amount is sellShares
+  static const char ActionDividend[];
+  static const char ActionReinvestDividend[];
+  static const char ActionYield[];
+  static const char ActionAddShares[];  // negative amount is removeShares
+
 private:
   /**
     * This member contains the ID of the transaction

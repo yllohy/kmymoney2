@@ -27,10 +27,16 @@ const char MyMoneySplit::ActionDeposit[] = "Deposit";
 const char MyMoneySplit::ActionTransfer[] = "Transfer";
 const char MyMoneySplit::ActionWithdrawal[] = "Withdrawal";
 const char MyMoneySplit::ActionATM[] = "ATM";
+
 const char MyMoneySplit::ActionAmortization[] = "Amortization";
 const char MyMoneySplit::ActionInterest[] = "Interest";
-const char MyMoneySplit::ActionAddShares[] = "AddShares";
-const char MyMoneySplit::ActionRemoveShares[] = "RemoveShares";
+
+
+const char MyMoneySplit::ActionBuyShares[] = "Buy";
+const char MyMoneySplit::ActionDividend[] = "Dividend";
+const char MyMoneySplit::ActionReinvestDividend[] = "Reinvest";
+const char MyMoneySplit::ActionYield[] = "Yield";
+const char MyMoneySplit::ActionAddShares[] = "Add";
 
 MyMoneySplit::MyMoneySplit()
 {
