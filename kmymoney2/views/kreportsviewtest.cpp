@@ -176,15 +176,14 @@ InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& 
   //kdDebug(2) << "updating price..." << endl;
     
   // update the price, while we're here
-#if 0
-  // FIXME price interface has changed
-  MyMoneySecurity equity = file->security( stockaccount.currencyId() );
-  if ( ! equity.hasPrice( _date,true ) )
+  QCString stockid = stockaccount.currencyId();
+  QCString basecurrencyid = file->baseCurrency().id();
+  MyMoneyPrice price = file->price( stockid, basecurrencyid, _date, true );
+  if ( !price.isValid() )
   {
-    equity.addPriceHistory( _date, _price );
-    file->modifyEquity(equity);
+    MyMoneyPrice newprice( stockid, basecurrencyid, _date, _price, "test" );  
+    file->addPrice(newprice);
   }
-#endif
 
   //kdDebug(2) << "successfully added " << id() << endl;
 }
@@ -210,15 +209,12 @@ QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, 
   return info.id();
 }
 
-void makePrice(const QCString& _currency, const QDate& _date, const MyMoneyMoney& _price )
+void makePrice(const QCString& _currencyid, const QDate& _date, const MyMoneyMoney& _price )
 {
-  MyMoneySecurity curr = MyMoneyFile::instance()->currency(_currency);
-#if 0
-  curr.addPriceHistory(_date,_price);
-  MyMoneyFile::instance()->modifyCurrency(curr);
-#endif
-  MyMoneyPrice price(MyMoneyFile::instance()->baseCurrency().id(), _currency, _date, _price, "test");
-  MyMoneyFile::instance()->addPrice(price);
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneySecurity curr = file->currency(_currencyid);
+  MyMoneyPrice price(file->baseCurrency().id(), _currencyid, _date, _price, "test");
+  file->addPrice(price);
 }
 
 QCString makeEquity(const QString& _name, const QString& _symbol )
@@ -236,14 +232,15 @@ QCString makeEquity(const QString& _name, const QString& _symbol )
 
 void makeEquityPrice(const QCString& _id, const QDate& _date, const MyMoneyMoney& _price )
 {
-#if 0
-  // FIXME price interface has changed
-  MyMoneySecurity eq = MyMoneyFile::instance()->security(_id);
-  eq.addPriceHistory(_date,_price);
-  MyMoneyFile::instance()->modifyEquity(eq);
-#endif
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QCString basecurrencyid = file->baseCurrency().id();
+  MyMoneyPrice price = file->price( _id, basecurrencyid, _date, true );
+  if ( !price.isValid() )
+  {
+    MyMoneyPrice newprice( _id, basecurrencyid, _date, _price, "test" );  
+    file->addPrice(newprice);
+  }
 }
-
 
 void writeRCFtoXMLDoc( const MyMoneyReport& filter, QDomDocument* doc )
 {

@@ -172,7 +172,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   s1.setNumber(t_in.m_strNumber);
 
   // If the user has chosent to import into an investment account, determine the correct account to use
-  MyMoneyAccount thisaccount = m_account; //file->account( m_account.id() );
+  MyMoneyAccount thisaccount = m_account;
   if ( thisaccount.accountType() == MyMoneyAccount::Investment )
   {
     // the correct account is the stock account which matches two criteria:
@@ -199,14 +199,13 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
         // update the price, while we're here.  in the future, this should be
         // an option
-// FIXME PRICE
-#if 0
-        if ( ! equity.hasPrice( t_in.m_datePosted,true ) )
+        QCString basecurrencyid = file->baseCurrency().id();
+        MyMoneyPrice price = file->price( currencyid, basecurrencyid, t_in.m_datePosted, true );
+        if ( !price.isValid() )
         {
-          equity.addPriceHistory( t_in.m_datePosted, t_in.m_moneyAmount / t_in.m_dShares );
-          file->modifyEquity(equity);
+          MyMoneyPrice newprice( currencyid, basecurrencyid, t_in.m_datePosted, t_in.m_moneyAmount / t_in.m_dShares, i18n("Statement Importer") );
+          file->addPrice(newprice);
         }
-#endif
       }
 
       ++it_account;

@@ -383,9 +383,7 @@ void QueryTable::constructTransactionTable(void)
       {
         // I have no idea how to deal with stock accounts quite yet (acejones)
         MyMoneySecurity currency = file->currency((*it_transaction).commodity());
-        // FIXME PRICE
-        // currencyfactor = currency.price(postdate);
-
+        currencyfactor = file->price(currency.id(),file->baseCurrency().id(),QDate::currentDate()).rate();
       }
     }
     else
@@ -598,11 +596,9 @@ void QueryTable::constructAccountTable(void)
       qaccountrow["shares"] = shares.toString();
 
       MyMoneySecurity security = MyMoneyFile::instance()->security((*it_account).currencyId());
-      // FIXME PRICE
-      // MyMoneyMoney price = equity.price( m_config.toDate() );
-      // qaccountrow["price"] = price.toString();
-
-      // qaccountrow["value"] = ( price * shares ).toString();
+      MyMoneyMoney price = file->price(security.id(),file->baseCurrency().id(),m_config.toDate(),false).rate();
+      qaccountrow["price"] = price.toString();
+      qaccountrow["value"] = ( price * shares ).toString();
 
       QCString iid = (*it_account).institutionId();
       if ( iid.isEmpty() )
