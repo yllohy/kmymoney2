@@ -825,13 +825,9 @@ void KMyMoneyView::viewTransactionList(void)
     return;
   }
 
-	m_transactionList.clear();
-  MyMoneyTransaction *trans=0;
-  for (trans=pAccount->transactionFirst(); trans; trans=pAccount->transactionNext())
-    m_transactionList.append(trans);
 
   qDebug("kmymoneyview::view transactionlist");
-  m_mainView->initTransactionView(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::NORMAL);
+  m_mainView->initTransactionView(&m_file, *pBank, *pAccount, pAccount->getTransactionList(), KTransactionView::NORMAL);
   m_mainView->viewTransactionList();
   emit transactionOperations(true);
 }

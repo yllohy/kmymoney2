@@ -1,3 +1,6 @@
+2001-07-06 Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+  * Optimized TransactionView Refresh
+
 2001-07-05
   * Fixed the category list item class so you can use
     --enable-final in the configure process.

@@ -864,13 +864,6 @@ void KTransactionView::updateTransactionList(int row, int col)
 		bool isEmpty = m_transactions.isEmpty();
 */
     int i = 0;
-	if(m_viewType == NORMAL)
-	{
-		m_transactions->clear();
-    	for ( transaction = account->transactionFirst(); transaction; transaction=account->transactionNext(), i++ ) {
-        	m_transactions->append(transaction); 	
-		}
-	}
     transactionsTable->setNumRows((m_transactions->count() * 2) + 2);
     for (transaction=m_transactions->first(); transaction; transaction=m_transactions->next(), i++ ) {
 /* Removed me

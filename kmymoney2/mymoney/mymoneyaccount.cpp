@@ -241,3 +241,9 @@ bool MyMoneyAccount::readAllData(int version, QDataStream& stream)
 
   return true;
 }
+/** No descriptions */
+QList<MyMoneyTransaction> * MyMoneyAccount::getTransactionList(){
+
+	return &m_transactions;
+
+}

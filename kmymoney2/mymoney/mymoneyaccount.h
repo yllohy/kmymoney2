@@ -31,7 +31,7 @@
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.8 2001/06/29 05:19:59 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.9 2001/07/07 04:58:28 frodriguez Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -354,6 +354,8 @@ public:
 
   /** */
   bool readAllData(int version, QDataStream& stream);
+  /** No descriptions */
+  QList<MyMoneyTransaction> * getTransactionList();
 };
 
 #endif
