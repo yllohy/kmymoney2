@@ -498,6 +498,16 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 	}
 }
 
+void MyMoneySeqAccessMgrTest::testTransactionCount() {
+	testAddTransactions();
+	CPPUNIT_ASSERT(m->transactionCount("A000001") == 0);
+	CPPUNIT_ASSERT(m->transactionCount("A000002") == 1);
+	CPPUNIT_ASSERT(m->transactionCount("A000003") == 1);
+	CPPUNIT_ASSERT(m->transactionCount("A000004") == 1);
+	CPPUNIT_ASSERT(m->transactionCount("A000005") == 1);
+	CPPUNIT_ASSERT(m->transactionCount("A000006") == 2);
+}
+
 void MyMoneySeqAccessMgrTest::testBalance() {
 	testAddTransactions();
 
@@ -851,4 +861,60 @@ void MyMoneySeqAccessMgrTest::testRemovePayee() {
 		delete e;
 	} 
 	CPPUNIT_ASSERT(m->m_payeeList.count() == 1);
+}
+
+
+void MyMoneySeqAccessMgrTest::testRemoveAccountFromTree() {
+	MyMoneyAccount a, b, c;
+	a.setName("Acc A");
+	b.setName("Acc B");
+	c.setName("Acc C");
+
+	// build a tree A -> B -> C, remove B and see if A -> C
+	// remains in the storage manager
+
+	try {
+		m->newAccount(a);
+		m->newAccount(b);
+		m->newAccount(c);
+		m->reparentAccount(b, a);
+		m->reparentAccount(c, b);
+
+		CPPUNIT_ASSERT(a.accountList().count() == 1);
+		CPPUNIT_ASSERT(m->account(a.accountList()[0]).name() == "Acc B");
+
+		CPPUNIT_ASSERT(b.accountList().count() == 1);
+		CPPUNIT_ASSERT(m->account(b.accountList()[0]).name() == "Acc C");
+
+		CPPUNIT_ASSERT(c.accountList().count() == 0);
+
+		m->removeAccount(b);
+
+		// reload account info from storage
+		a = m->account(a.id());
+		c = m->account(c.id());
+
+		try {
+			b = m->account(b.id());
+			CPPUNIT_FAIL("Exception expected");
+		} catch (MyMoneyException *e) {
+			delete e;
+		}
+		CPPUNIT_ASSERT(a.accountList().count() == 1);
+		CPPUNIT_ASSERT(m->account(a.accountList()[0]).name() == "Acc C");
+
+		CPPUNIT_ASSERT(c.accountList().count() == 0);
+
+	} catch (MyMoneyException *e) {
+		string msg = "Unexpected exception: ";
+		msg += e->what();
+		msg += " thrown in ";
+		msg += e->file().latin1();
+		msg += ":";
+		char line[8];
+		sprintf(line, "%ld", e->line());
+		msg += line;
+		delete e;
+		CPPUNIT_FAIL(msg);
+	}
 }

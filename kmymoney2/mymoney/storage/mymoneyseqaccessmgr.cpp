@@ -258,9 +258,39 @@ void MyMoneySeqAccessMgr::addInstitution(MyMoneyInstitution& institution)
   institution = newInstitution;
 }
 
-const unsigned int MyMoneySeqAccessMgr::transactionCount(void) const
+const unsigned int MyMoneySeqAccessMgr::transactionCount(const QCString& account) const
 {
-  return m_transactionList.count();
+  unsigned int cnt = 0;
+
+  if(account.length() == 0) {
+    cnt = m_transactionList.count();
+
+  } else {
+    QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
+    QValueList<MyMoneySplit>::ConstIterator it_s;
+
+    // scan all transactions
+    for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
+
+      // scan all splits of this transaction
+      for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
+        // is it a split in our account?
+        if((*it_s).accountId() == account) {
+          // since a transaction can only have one split referencing
+          // each account, we're done with the splits here!
+          break;
+        }
+      }
+      // if no split contains the account id, continue with the
+      // next transaction
+      if(it_s == (*it_t).splits().end())
+        continue;
+
+      // otherwise count it
+      ++cnt;
+    }
+  }
+  return cnt;
 }
 
 const unsigned int MyMoneySeqAccessMgr::institutionCount(void) const
@@ -592,13 +622,17 @@ void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccoun
   // an exception is thrown
   MyMoneySeqAccessMgr::account(account.id());
   MyMoneySeqAccessMgr::account(parent.id());
-  MyMoneySeqAccessMgr::account(account.parentAccountId());
+  if(account.parentAccountId().length() != 0) {
+    MyMoneySeqAccessMgr::account(account.parentAccountId());
+    oldParent = m_accountList.find(account.parentAccountId());
+  }
 
-  oldParent = m_accountList.find(account.parentAccountId());
   newParent = m_accountList.find(parent.id());
   childAccount = m_accountList.find(account.id());
 
-  (*oldParent).removeAccountId(account.id());
+  if(account.parentAccountId().length() != 0)
+    (*oldParent).removeAccountId(account.id());
+
   (*newParent).addAccountId(account.id());
   (*childAccount).setParentAccountId(parent.id());
 
@@ -684,12 +718,17 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
   // thrown and we would not make it until here.
 
   QMap<QCString, MyMoneyAccount>::Iterator it_a;
+  QMap<QCString, MyMoneyAccount>::Iterator it_p;
 
   // locate the account in the file global pool
 
   it_a = m_accountList.find(account.id());
   if(it_a == m_accountList.end())
     throw new MYMONEYEXCEPTION("Internal error: account not found in list");
+
+  it_p = m_accountList.find(parent.id());
+  if(it_p == m_accountList.end())
+    throw new MYMONEYEXCEPTION("Internal error: parent account not found in list");
 
   // check if the new info is based on the old one.
   // this is the case, when the file and the id
@@ -708,7 +747,10 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
         reparentAccount(acc, parent, false);
       }
     }
-    // remove account from account list
+    // remove account from parent's list
+    (*it_p).removeAccountId(account.id());
+
+    // remove account from the global account pool
     m_accountList.remove(it_a);
 
     // remove account from institution's list

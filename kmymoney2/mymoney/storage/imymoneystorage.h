@@ -331,9 +331,14 @@ public:
     * This method returns the number of transactions currently known to file
     * in the range 0..MAXUINT
     *
-    * @return number of transactions in journal
+    * @param account QCString reference to account id. If account equals ""
+    +                all transactions (the journal) will be counted. If account
+    *                is not equal to "" it returns the number of transactions
+    *                that have splits in this account.
+    *
+    * @return number of transactions in journal/account
     */
-  virtual const unsigned int transactionCount(void) const = 0;
+  virtual const unsigned int transactionCount(const QCString& account = "") const = 0;
 
   /**
     * This method is used to pull a list of transactions from the file

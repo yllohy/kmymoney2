@@ -438,9 +438,9 @@ const MyMoneyAccount MyMoneyFile::income(void) const
   return m_storage->income();
 }
 
-const unsigned int MyMoneyFile::transactionCount(void) const
+const unsigned int MyMoneyFile::transactionCount(const QCString& account) const
 {
-  return m_storage->transactionCount();
+  return m_storage->transactionCount(account);
 }
 
 const unsigned int MyMoneyFile::institutionCount(void) const
@@ -483,15 +483,17 @@ void MyMoneyFile::notify(const QCString& id) const
   QMap<QCString, MyMoneyFileSubject>::ConstIterator it_s;
 
   it_s = m_subjects.find(id);
-  if(it_s != m_subjects.end())
+  if(it_s != m_subjects.end()) {
     (*it_s).notify(id);
+  }
 }
 
 void MyMoneyFile::notify(void)
 {
   QMap<QCString, bool>::ConstIterator it;
-  for(it = m_notificationList.begin(); it != m_notificationList.end(); ++it)
+  for(it = m_notificationList.begin(); it != m_notificationList.end(); ++it) {
     notify(it.key());
+  }
 
   clearNotification();
 }

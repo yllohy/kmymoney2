@@ -568,6 +568,7 @@ void MyMoneyFileTest::testRemoveAccount() {
 		CPPUNIT_ASSERT(m->accountCount() == 5);
 		institution = m->institution("I000001");
 		CPPUNIT_ASSERT(institution.accountCount() == 0);
+		CPPUNIT_ASSERT(m->asset().accountList().count() == 1);
 
 		institution = m->institution("I000002");
 		CPPUNIT_ASSERT(institution.accountCount() == 1);
