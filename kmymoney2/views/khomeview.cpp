@@ -24,6 +24,7 @@
 // QT Includes
 #include <qlayout.h>
 #include <qdatetime.h>
+#include <qapplication.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -37,6 +38,11 @@
 
 #include <khtmlview.h>
 #include <kconfig.h>
+#include <kstdaction.h>
+#include <kmainwindow.h>
+#include <kactioncollection.h>
+#include <kapplication.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -69,7 +75,7 @@ KHomeView::KHomeView(QWidget *parent, const char *name ) :
     m_filename = KGlobal::dirs()->findResource("appdata", "html/home.html");
   }
 
-  m_part->openURL(m_filename);
+//   m_part->openURL(m_filename);
   connect(m_part->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
           this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)));
 }
@@ -85,10 +91,27 @@ void KHomeView::show()
   emit signalViewActivated();
 }
 
+#include <dom/dom_element.h>
+#include <dom/dom_doc.h>
+
 void KHomeView::slotRefreshView(void)
 {
   if(MyMoneyFile::instance()->accountList().count() == 0) {
     m_part->openURL(m_filename);
+
+    // test out the anchor replacement
+    DOM::Element e = m_part->document().getElementById("test");
+    if ( e.isNull() )
+    {
+      qDebug("Element not found\n");
+    }
+    else
+    {
+      qDebug("Element found!\n");
+      QString tagname = e.tagName().string();
+      qDebug("%s\n",tagname.latin1());
+      qDebug("%s id=%s\n",e.tagName().string().latin1(),e.getAttribute("id").string().latin1());
+    }
   } else {
     QString filename = KGlobal::dirs()->findResource("appdata", "html/kmymoney2.css");
     QString header = QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n") +
@@ -512,6 +535,40 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
     emit reportSelected(id);
 
   } else if(view == VIEW_WELCOME) {
+    KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
+    Q_CHECK_PTR(mw);
+    if ( mode == "whatsnew" )
+     m_part->openURL(KGlobal::dirs()->findResource("appdata", "html/whats_new.html"));
+    else if ( mode == "filenew" )
+    {
+      mw->actionCollection()->action( KStdAction::name( KStdAction::New ) )->activate();
+    }
+    else if ( mode == "fileopen" )
+    {
+      mw->actionCollection()->action( KStdAction::name( KStdAction::Open ) )->activate();
+    }
+    else if ( mode == "manual" )
+    {
+      KMessageBox::sorry(qApp->mainWidget(),i18n("There is no user manual yet"),i18n("No manual"));
+    }
+    else if ( mode == "www" )
+    {
+      KApplication::kApplication()->invokeBrowser("http://kmymoney2.sf.net");
+    }
+    else if ( mode == "devlist" )
+    {
+      KApplication::kApplication()->invokeMailer(QString("kmymoney2-developer@lists.sourceforge.net"),"Inquiry about KMyMoney");
+    }
+    else if ( mode == "bugreport" )
+    {
+      mw->actionCollection()->action( KStdAction::name( KStdAction::ReportBug ) )->activate();
+//       unsigned idx = mw->actionCollection()->count();
+//       while( idx-- )
+//       {
+//         qDebug("%u: %s\n",idx,mw->actionCollection()->action(idx)->name());
+//       }
+    }
+    else 
     m_part->openURL(m_filename);
 
   } else if(view == VIEW_HOME) {
