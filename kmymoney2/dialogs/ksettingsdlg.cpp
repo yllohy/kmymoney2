@@ -473,6 +473,8 @@ void KSettingsDlg::configRead()
   m_qIntPricePrecision->setText(QString("%1").arg(m_iTempPricePrecision));
 
   m_bTempFocusChangeEnter = kconfig->readBoolEntry("FocusChangeIsEnter", false);
+  m_qcheckboxFocusChangeEnter->setChecked(m_bTempFocusChangeEnter);
+
   kconfig->setGroup("List Options");
 
   m_qcolorTempList = KMyMoneyUtils::defaultListColour();
@@ -617,10 +619,6 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("HideUnusedCategory", m_bTempHideCategory);
   kconfig->writeEntry("StartDate", QDateTime(m_qdateTempStart));
 
-#if 0
-  kconfig->writeEntry("NormalAccountsView", m_bTempNormalView);
-#endif
-
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartLastViewSelected", m_bTempStartPage);
   kconfig->writeEntry("LedgerLens", m_bTempLedgerLens);
@@ -630,7 +628,7 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("CheckSchedule", m_bTempCheckSchedule);
   kconfig->writeEntry("CheckSchedulePreview", m_iTempSchedulePreview);
   kconfig->writeEntry("PricePrecision", m_iTempPricePrecision);
-  kconfig->writeEntry("FocusChangeEnter", m_bTempFocusChangeEnter);
+  kconfig->writeEntry("FocusChangeIsEnter", m_bTempFocusChangeEnter);
 
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", m_tempHomePageItems);
