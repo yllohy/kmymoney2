@@ -212,6 +212,105 @@ This section has been copied from the RPM-Howto and adapted where necessary
 </para>
 </sect2>
 
+<sect2 id="rpm-sign">
+<title>Signing the package</title>
+<para>
+Once you are confident with the RPM package, it is a good idea to sign it
+with your secret &GPG; key before you distribute it. Signing the package
+allows any recipient of the package to verify that it has not been altered
+by an unauthorized party.
+</para>
+
+<para>
+ Signing will create a
+separate file that contains the electronic signature for the RPM file.
+In order to allow any
+recipient to verify the signature, two things have to be kept in mind:
+
+<itemizedlist>
+<listitem>
+   <para>Always distribute both files together</para>
+</listitem>
+<listitem>
+   <para>
+      Make your public key available on e.g.
+      <ulink url="http://www.keyserver.net/">http://www.keyserver.net</ulink>.
+   </para></listitem>
+</itemizedlist>
+
+The following example shows the command sequence necessary to create an
+ASCII armored signature.
+</para>
+
+<para>
+<screen>
+
+
+  <prompt>thb:~&gt; </prompt><userinput>gpg -b -a kmymoney2-0.5.1-1.i386.rpm</userinput>
+  You need a passphrase to unlock the secret key for
+  user: "Thomas Baumgart &lt;thb@net-bembel.de&gt;"
+  1024-bit DSA key, ID B75DD3BA, created 2001-06-23
+
+  Enter passphrase: <userinput>I WON'T TELL YOU MY PASSPHRASE ;-)</userinput>
+  <prompt>thb:~&gt; </prompt><userinput></userinput>
+
+
+</screen>
+</para>
+
+<para>
+Once you have entered the correct passphrase the signature file will be
+created under the name kmymoney2-0.5.1-1.i386.rpm.asc. As an example, I
+include it here. <command>THIS IS NOT THE REAL SIGNATURE, EVEN IF IT LOOKS LIKE
+IT</command>. 
+</para>
+
+<para>
+<screen>
+
+   -----BEGIN PGP SIGNATURE-----
+   Version: GnuPG v1.0.7 (GNU/Linux)
+
+   iD8DBQA+E1DInFnbQLdd07oRAmFQAKDV0I9nzxGEIh1Mx/tzoZ4J3Iyt6gCfTXl1
+   LrISXXgD6xELWZlO+NsWbLw=
+   =qJIP
+   -----END PGP SIGNATURE-----
+
+</screen>
+</para>
+
+<para>
+These two files, the RPM and the signature,  should be distributed to
+the public. The receiver of these
+two files can now verify if the RPM file is the one you signed or has been
+modified. Therefor, he needs your public key which he gets from one of the
+public key servers (e.g. <ulink
+url="http://www.keyserver.net/">http://www.keyserver.net</ulink>) into his
+keyring. The verification is performed using &GPG; as the following example
+shows:
+</para>
+
+
+<para>
+<screen>
+
+
+  <prompt>thb:~&gt; </prompt><userinput>gpg --verify kmymoney2-0.5.1-1.i386.rpm.asc</userinput>
+  gpg: Signature made Wed 01 Jan 2003 09:16:37 PM CET using DSA key ID B75DD3BA
+  gpg: Good signature from "Thomas Baumgart &lt;thb@net-bembel.de&gt;"
+  <prompt>thb:~&gt; </prompt><userinput></userinput>
+
+
+</screen>
+
+<note>
+<para>
+Besides signing the RPM package, the SRPM (Source-RPM) package should be
+signed as well.
+</para>
+</note>
+</para>
+</sect2>
 
 </sect1>
 </chapter>
