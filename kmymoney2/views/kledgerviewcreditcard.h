@@ -44,8 +44,8 @@ class KLedgerViewCreditCard : public KLedgerViewCheckings
 {
    Q_OBJECT
 public: 
-	KLedgerViewCreditCard(QWidget *parent=0, const char *name=0);
-	~KLedgerViewCreditCard();
+  KLedgerViewCreditCard(QWidget *parent=0, const char *name=0);
+  ~KLedgerViewCreditCard();
 
 protected:
   /* documented in base class */

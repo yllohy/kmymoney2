@@ -126,8 +126,8 @@ class KLedgerViewCheckings : public KLedgerView  {
   friend class kMyMoneyTransactionFormTable;
 
 public: 
-	KLedgerViewCheckings(QWidget *parent=0, const char *name=0);
-	~KLedgerViewCheckings();
+  KLedgerViewCheckings(QWidget *parent=0, const char *name=0);
+  ~KLedgerViewCheckings();
 
 public slots:
   /**
@@ -257,11 +257,6 @@ protected slots:
     * Calling this slot starts editing and opens the split dialog
     */
   virtual void slotStartEditSplit(void);
-
-  /**
-    * Calling this slot displays the More menu.
-    */
-  virtual void slotMorePressed(void);
 
   void reloadEditWidgets(const MyMoneyTransaction& t);
 

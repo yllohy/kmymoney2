@@ -44,8 +44,8 @@ class KLedgerViewSavings : public KLedgerViewCheckings
 {
   Q_OBJECT
 public: 
-	KLedgerViewSavings(QWidget *parent=0, const char *name=0);
-	~KLedgerViewSavings();
+  KLedgerViewSavings(QWidget *parent=0, const char *name=0);
+  ~KLedgerViewSavings();
 
 protected slots:
   void resizeEvent(QResizeEvent*);

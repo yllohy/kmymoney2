@@ -45,8 +45,8 @@ class KLedgerViewCash : public KLedgerViewCheckings
   Q_OBJECT
 
 public: 
-	KLedgerViewCash(QWidget *parent=0, const char *name=0);
-	~KLedgerViewCash();
+  KLedgerViewCash(QWidget *parent=0, const char *name=0);
+  ~KLedgerViewCash();
 
 protected slots:
 

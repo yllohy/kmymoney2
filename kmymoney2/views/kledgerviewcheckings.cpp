@@ -287,7 +287,7 @@ void KLedgerViewCheckings::createMoreMenu(void)
   m_moreMenu->insertItem(i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
       QKeySequence(), -1, 2);
 
-  connect(m_form->moreButton(), SIGNAL(clicked()), this, SLOT(slotMorePressed()));
+  m_form->moreButton()->setPopup(m_moreMenu);
 }
 
 void KLedgerViewCheckings::createContextMenu(void)
@@ -1475,11 +1475,6 @@ void KLedgerViewCheckings::slotAccountDetail(void)
       delete e;
     }
   }
-}
-
-void KLedgerViewCheckings::slotMorePressed(void)
-{
-  m_moreMenu->exec(m_form->moreButton()->mapToGlobal(QPoint(0,0)));
 }
 
 void KLedgerViewCheckings::slotPayeeSelected(void)

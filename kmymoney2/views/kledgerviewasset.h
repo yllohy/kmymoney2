@@ -45,8 +45,8 @@ class KLedgerViewAsset : public KLedgerViewCheckings
   Q_OBJECT
 
 public: 
-	KLedgerViewAsset(QWidget *parent=0, const char *name=0);
-	~KLedgerViewAsset();
+  KLedgerViewAsset(QWidget *parent=0, const char *name=0);
+  ~KLedgerViewAsset();
 
 protected slots:
 
