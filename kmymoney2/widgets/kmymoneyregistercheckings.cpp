@@ -191,8 +191,8 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
 void kMyMoneyRegisterCheckings::adjustColumn(int col)
 {
   QHeader *topHeader = horizontalHeader();
-  QFontMetrics fontMetrics(m_headerFont);
-
+  QFontMetrics cellFontMetrics(m_cellFont);
+  
   int w = topHeader->fontMetrics().width( topHeader->label( col ) ) + 10;
   if ( topHeader->iconSet( col ) )
     w += topHeader->iconSet( col )->pixmap().width();
@@ -212,13 +212,13 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
 
         case 0:
           txt = t->splitById(t->splitId()).number();
-          nw = fontMetrics.width(txt);
+          nw = cellFontMetrics.width(txt);
           w = QMAX( w, nw );
           break;
         
         case 1:
           txt = KGlobal::locale()->formatDate(t->postDate(), true)+"  ";
-          nw = fontMetrics.width(txt);
+          nw = cellFontMetrics.width(txt);
           w = QMAX( w, nw );
           break;
         
@@ -226,7 +226,7 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
           amount = t->splitById(t->splitId()).value();
           if(amount < 0) {
             txt = amount.formatMoney();
-            nw = fontMetrics.width(txt);
+            nw = cellFontMetrics.width(txt);
             w = QMAX( w, nw );
           }
           break;
@@ -235,7 +235,7 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
           amount = t->splitById(t->splitId()).value();
           if(amount >= 0) {
             txt = amount.formatMoney();
-            nw = fontMetrics.width(txt);
+            nw = cellFontMetrics.width(txt);
             w = QMAX( w, nw );
           }
           break;

@@ -165,7 +165,7 @@ bool kMyMoneyRegisterSearch::eventFilter(QObject* o, QEvent* e)
 void kMyMoneyRegisterSearch::adjustColumn(int col)
 {
   QHeader *topHeader = horizontalHeader();
-  QFontMetrics fontMetrics(m_headerFont);
+  QFontMetrics fontMetrics(m_cellFont);
   QString txt;
   
   int w = topHeader->fontMetrics().width( topHeader->label( col ) ) + 10;
@@ -185,19 +185,19 @@ void kMyMoneyRegisterSearch::adjustColumn(int col)
             break;
 
           case 0: // nr
-            txt = t->splitById(t->splitId()).number();
+            txt = t->splitById(t->splitId()).number() + " ";
             nw = fontMetrics.width(txt);
             w = QMAX( w, nw );
             break;
 
           case 1: // date
-            txt = KGlobal::locale()->formatDate(t->postDate(), true);
+            txt = KGlobal::locale()->formatDate(t->postDate(), true)+ " ";
             nw = fontMetrics.width(txt);
             w = QMAX( w, nw );
             break;
 
           case 2: // account
-            txt = MyMoneyFile::instance()->account(t->splitById(t->splitId()).accountId()).name();
+            txt = MyMoneyFile::instance()->account(t->splitById(t->splitId()).accountId()).name() + " ";
             nw = fontMetrics.width(txt);
             w = QMAX( w, nw );
             break;
