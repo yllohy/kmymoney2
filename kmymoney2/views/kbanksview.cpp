@@ -107,7 +107,6 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
         m_bSelectedAccount=true;
         m_bSelectedInstitution=false;
         m_selectedAccount = accountItem->accountID();
-        qDebug("Setting selected acc to %s", accountItem->accountID().data());
 
         emit accountRightMouseClick();
       }
@@ -116,7 +115,6 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
         m_bSelectedAccount=false;
         m_bSelectedInstitution=true;
         // FIXME: Change KAccountListItem::accountID to id.
-        qDebug("Setting selected inst to %s", accountItem->accountID().data());
         m_selectedInstitution = accountItem->accountID();
 
         emit bankRightMouseClick();
@@ -235,6 +233,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
         {
           KAccountListItem *accountItem = new KAccountListItem(liabilityTopLevelAccount,
               file->account(*it).name(), file->account(*it).id(),
+
               KMyMoneyFile::accountTypeToString(file->account(*it).accountType()),
               file->totalBalance(*it).formatMoney());
 
@@ -374,7 +373,6 @@ void KAccountsView::slotSelectionChanged(QListViewItem *item)
       MyMoneyAccount account = file->account(accountItem->accountID());
       m_bSelectedAccount=true;
       m_selectedAccount = accountItem->accountID();
-      qDebug("2: Setting acc to %s", accountItem->accountID().data());
       //emit accountSelected();
     }
     catch (MyMoneyException *e)
@@ -383,7 +381,6 @@ void KAccountsView::slotSelectionChanged(QListViewItem *item)
       m_bSelectedAccount=false;
       m_bSelectedInstitution=true;
       // FIXME: Change KAccountListItem::accountID to id.
-      qDebug("2: Setting inst to %s", accountItem->accountID().data());
       m_selectedInstitution = accountItem->accountID();
 
       delete e;

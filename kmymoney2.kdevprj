@@ -33,7 +33,7 @@ ldflags=\s  \s
 path_to_bin_program=kmymoney2
 
 [General]
-AMChanged=true
+AMChanged=false
 author=Michael Edwardes
 configure_args=\s--build=i386-linux --host=i386-linux --target=i386-linux --prefix=/opt/kde3\s
 dir_where_make_will_be_called=

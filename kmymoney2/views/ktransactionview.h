@@ -52,9 +52,9 @@ public:
           SUBSET // Sub set view
           };
 private:
-  MyMoneyFile *m_filePointer;
+  //MyMoneyFile *m_filePointer;
   //MyMoneyBank m_bankIndex;
-  MyMoneyAccount m_accountIndex;
+  QCString m_accountIndex;
   long m_index;
   bool useall;
   bool usedate;
@@ -62,8 +62,8 @@ private:
 	long lastcheck;
 	int m_currentcol;
 	int m_currentrow;
-    int m_currentbutton;
-    QPoint m_currentpos;
+  int m_currentbutton;
+  QPoint m_currentpos;
   viewingType m_viewType;
 
   unsigned m_debitWidth;
@@ -89,23 +89,28 @@ private:
 
   bool m_bEditingTransaction;
 
-  /// List of all transactions in an account
-  QList<MyMoneyTransaction> *m_transactions;
-
   /// keeps a copy of the transaction that will be edited
   /// and is used when the user rejects any modification (Cancel button)
   /// This member is set in setInputData(const MyMoneyTransaction) and
   /// used in cancelClicked().
-  MyMoneyTransaction m_originalTransaction;
+  //MyMoneyTransaction m_originalTransaction;
+
+  QMap<unsigned int, QCString> m_transactionMap;
 
   bool m_bSignals;
+
+  /* Is it read only?
+     This will be false for asset and liability accounts,
+     true for income/expense accounts.
+  */
+  bool m_bReadOnly;
 
   void updateTransactionList(int start, int col=-1);
 
   void createInputWidgets();
 	void loadPayees();
   void clearInputData();
-  void setInputData(const MyMoneyTransaction transaction);
+  void setInputData(const QCString& transaction);
   void updateInputLists(void);
   /** No descriptions */
   MyMoneyAccount* getAccount();
@@ -117,11 +122,22 @@ private:
   /** Setup initial width for the amount fields */
   void initAmountWidth(void);
 
+  /* These could go in MyMoneyUtils or something? */
+  MyMoneyMoney transactionAmount(const QCString& trans);
+  MyMoneyPayee transactionPayee(const QCString& trans);
+  MyMoneyAccount transactionCategory(const QCString& trans);
+  MyMoneySplit::reconcileFlagE transactionReconcileFlag(const QCString& trans);
+  void setTransactionAmount(const QCString& trans, const MyMoneyMoney& amount);
+  void setTransactionPayeeId(const QCString& trans, const QCString& payeeId);
+  void setTransactionCategory(const QCString& trans, const QCString& accountId);
+  void setTransactionReconcileFlag(const QCString& trans, MyMoneySplit::reconcileFlagE flag);
+  bool transactionIsDebit(const QCString& trans);
+
 public:
 	KTransactionView(QWidget *parent=0, const char *name=0);
 	~KTransactionView();
 
-	void init(MyMoneyFile *file, MyMoneyAccount account, QList<MyMoneyTransaction> *transList, viewingType type);
+	void init(const QCString&, bool readOnly);
 	void clear(void);
   void refresh(void);
   void show(void);

@@ -808,77 +808,45 @@ void KMyMoneyView::viewAccountList(const QCString& selectAccount)
 
 void KMyMoneyView::viewTransactionList(void)
 {
-/*
-  bool bankSuccess=false, accountSuccess=false;
-  MyMoneyBank *pBank;
-  MyMoneyAccount *pAccount;
+  bool accountSuccess=false;
 
-  pBank = m_file.bank(accountsView->currentBank(bankSuccess));
-  if (!pBank || !bankSuccess) {
-    qDebug("KMyMoneyView::slotAccountEdit: Unable to get the current bank");
-    return;
-  }
-  pAccount = pBank->account(accountsView->currentAccount(accountSuccess));
-  if (!pAccount || !accountSuccess) {
-    qDebug("KMyMoneyView::slotAccountEdit: Unable to grab the current account");
-    return;
-  }
-
-  //set up stock account view
-  if(pAccount->accountType() == MyMoneyAccount::Investment)
+  try
   {
-    accountsView->hide();
-    transactionView->hide();
-    m_investmentView->show();
-    m_showing = InvestmentList;
-    m_investmentView->init(pAccount);
-  }
-  else
-  {
-    m_showing = TransactionList;
-    m_investmentView->hide();
-    accountsView->hide();
-    transactionView->show();
+    MyMoneyAccount account = MyMoneyFile::instance()->account(
+        accountsView->currentAccount(accountSuccess));
 
-    if (!fileOpen())
-      return;
-
-
-    KConfig *config = KGlobal::config();
-    QDateTime defaultDate = QDate::currentDate();
-    QDate qdateStart = QDate::currentDate();//config->readDateTimeEntry("StartDate", &defaultDate).date();
-
-    if (qdateStart != defaultDate.date())
+    //set up stock account view
+    if(account.accountType() == MyMoneyAccount::Investment)
     {
-      MyMoneyTransaction *transaction;
-      m_transactionList.clear();
-      for ( transaction=pAccount->transactionFirst(); transaction; transaction=pAccount->transactionNext()) {
-        if (transaction->date() >= qdateStart)
-        {
-          m_transactionList.append(new MyMoneyTransaction(
-            pAccount,
-            transaction->id(),
-            transaction->method(),
-            transaction->number(),
-            transaction->memo(),
-            transaction->amount(),
-            transaction->date(),
-            transaction->categoryMajor(),
-            transaction->categoryMinor(),
-            transaction->atmBankName(),
-            transaction->payee(),
-            transaction->accountFrom(),
-            transaction->accountTo(),
-            transaction->state()));
-        }
-      }
-      transactionView->init(&m_file, *pBank, *pAccount, &m_transactionList, KTransactionView::SUBSET);
+      accountsView->hide();
+      transactionView->hide();
+      m_investmentView->show();
+      m_showing = InvestmentList;
+      //m_investmentView->init(account.id());
     }
     else
-      transactionView->init(&m_file, *pBank, *pAccount, pAccount->getTransactionList(), KTransactionView::NORMAL);
+    {
+      m_showing = TransactionList;
+      m_investmentView->hide();
+
+      accountsView->hide();
+      transactionView->show();
+
+      bool readOnly=false;
+      MyMoneyAccount::accountTypeE type = MyMoneyFile::instance()->accountGroup(account.accountType());
+      if (type == MyMoneyAccount::Income || type == MyMoneyAccount::Expense)
+        readOnly = true;
+      transactionView->init(account.id(), readOnly);
+    }
   }
-  emit transactionOperations(true);
-*/
+  catch (MyMoneyException *e)
+  {
+    if (accountSuccess)
+    {
+      KMessageBox::information(this, i18n("Unable to query account to view the transaction list"));
+    }
+    delete e;
+  }
 }
 
 void KMyMoneyView::settingsLists()
@@ -1246,6 +1214,7 @@ QString KMyMoneyView::currentAccountName(void)
       }
       delete e;
     }
+
 
   return i18n("Unknown Account");
 }

@@ -28,6 +28,7 @@
 //#include "../dialogs/knewcategorydlg.h"
 #include "../dialogs/ksplittransactiondlg.h"
 #include <kmessagebox.h>
+#include <kdebug.h>
 
 #if QT_VERSION > 300
 #include <qcursor.h>
@@ -61,22 +62,10 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
 
   initAmountWidth();
 
-/*
-  int w=transactionsTable->width();
-  transactionsTable->setColumnWidth(0, 100);
-  transactionsTable->setColumnWidth(1, 100);
-  transactionsTable->setColumnWidth(2, w-530-25);
-  transactionsTable->setColumnWidth(3, 30);
-  transactionsTable->setColumnWidth(4, 100);
-  transactionsTable->setColumnWidth(5, 100);
-  transactionsTable->setColumnWidth(6, 100);
-*/
 	KConfig *config = KGlobal::config();
   QFont defaultFont = QFont("helvetica", 12);
   transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
 	
-  m_filePointer=0;
-
   connect(transactionsTable, SIGNAL(clicked(int, int, int, const QPoint&)),
     this, SLOT(slotFocusChange(int, int, int, const QPoint&)));
 
@@ -107,6 +96,8 @@ KTransactionView::KTransactionView(QWidget *parent, const char *name)
   createInputWidgets();
 
   m_bSignals=true;
+
+  m_bReadOnly = false;
 }
 
 KTransactionView::~KTransactionView()
@@ -225,8 +216,7 @@ void KTransactionView::slotMethodCompleted()
 
 void KTransactionView::createInputWidgets()
 {
-/*
-  m_date = new kMyMoneyDateInput(0,QDate::currentDate(), Qt::AlignRight);
+  m_date = new kMyMoneyDateInput(0, "dateinput", Qt::AlignRight);
   m_method = new kMyMoneyCombo(0);
   m_payee = new kMyMoneyCombo(true,0);
   m_payment = new kMyMoneyEdit(0);
@@ -307,7 +297,6 @@ void KTransactionView::createInputWidgets()
   connect(m_split, SIGNAL(clicked()),this,SLOT(slotEditSplit()));
 	
 	connect(m_category, SIGNAL(activated(int)), this, SLOT(slotCategoryActivated(int)));
-*/
 }
 
 void KTransactionView::loadPayees()
@@ -368,7 +357,6 @@ void KTransactionView::loadPayees()
 
 void KTransactionView::slotFocusChange(int row, int col, int button, const QPoint&  point)
 {
-/*
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
@@ -376,7 +364,10 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
   int realrow = transrow * NO_ROWS;
 
   // Can't add transactions in search mode
-  if (m_date->isVisible() || (m_viewType!=NORMAL && (transrow >= m_transactions->count())))
+  if (m_date->isVisible() || (m_viewType!=NORMAL && (transrow >= MyMoneyFile::instance()->transactionCount(m_accountIndex))))
+    return;
+
+  if (m_bReadOnly)
     return;
 
   // make sure, realrow points to the first line of the transaction
@@ -404,9 +395,11 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
   // Check the online help on QScrollView for details.
   if(lastY >= (transactionsTable->viewportToContents(point).y())
   && (transactionsTable->numRows()>=1)) {
-		if(button == 1) {
-      if(m_transactions->count() > transrow)
+		if(button == 1)
+    {
+      if(MyMoneyFile::instance()->transactionCount(m_accountIndex) > transrow)
       {
+        /* FIXME: Engine.
        	switch (m_transactions->at(transrow)->method()) {
         	case MyMoneyTransaction::Cheque:
 						m_method->setCurrentItem(0);
@@ -424,6 +417,7 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
 						m_method->setCurrentItem(4);
           	break;		
       	}
+        */
 			}
       transactionsTable->setCellWidget(realrow, 0,m_date);
       m_date->show();
@@ -451,10 +445,11 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
       m_split->show();
 
       updateInputLists();
-      if(m_transactions->count() > transrow)
+
+      if(MyMoneyFile::instance()->transactionCount(m_accountIndex) > transrow)
       {
         m_bEditingTransaction=true;
-	      setInputData(*m_transactions->at(transrow));
+	      setInputData(m_transactionMap[transrow]);
 			}
 			else
 			{
@@ -466,7 +461,6 @@ void KTransactionView::slotFocusChange(int row, int col, int button, const QPoin
 
   } else
     m_index=-1;
-*/
 }
 
 void KTransactionView::slotContextMenu(int row, int col, int button, const QPoint&  point)
@@ -694,39 +688,24 @@ void KTransactionView::slotEditSplit()
 */
 }
 
-void KTransactionView::init(MyMoneyFile *file, MyMoneyAccount account,
-  QList<MyMoneyTransaction> *transList, viewingType type)
+void KTransactionView::init(const QCString& accountId, bool readOnly)
 {
-/*
-  m_filePointer = file;
-  m_bankIndex = bank;
-  m_accountIndex = account;
-  m_transactions = transList;
+  m_accountIndex = accountId;
+  m_bReadOnly = readOnly;
 
-  switch (type) {
-    case NORMAL:
-      viewTypeCombo->setCurrentItem(0);
-      break;
-    case SUBSET:
-      viewTypeCombo->setCurrentItem(1);
-      break;
-    default:
-      viewTypeCombo->setCurrentItem(0);
-      break;
-  }
-  m_viewType=type;
+  viewTypeCombo->setCurrentItem(0);
+  m_viewType = NORMAL;
 
- clear();
- useall = true;
- usedate = false;
- userow = false;
+  clear();
+  useall = true;
+  usedate = false;
+  userow = false;
 
   // Set the transaction list to have focus to grab it from the bank view
   // BUG: 490015
   transactionsTable->setFocus();
 
   updateTransactionList(-1);
-*/
 }
 
 void KTransactionView::clear(void)
@@ -977,7 +956,6 @@ void KTransactionView::enterClicked()
 
 void KTransactionView::clearInputData()
 {
-/*
 	m_date->setDate(QDate::currentDate());
   m_method->setCurrentItem(0);
 	m_number->setText(QString(""));
@@ -987,11 +965,10 @@ void KTransactionView::clearInputData()
   m_category->setCurrentItem(0);
 	m_memo->setText(QString(""));
 	m_delete->hide();
-*/
 }
 
 
-void KTransactionView::setInputData(const MyMoneyTransaction transaction)
+void KTransactionView::setInputData(const QCString& transaction)
 {
 /*
   // keep a copy of the transaction for the case the user cancels
@@ -1140,262 +1117,322 @@ void KTransactionView::updateInputLists(void)
 
 void KTransactionView::updateTransactionList(int row, int col)
 {
-/*
-  if (!m_filePointer)
-    return;
-
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   QFont defaultFont = QFont("helvetica", 12);
   transactionsTable->horizontalHeader()->setFont(config->readFontEntry("listHeaderFont", &defaultFont));
-  const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
+  unsigned int rowCount = 0;
+  const int NO_ROWS = (config->readEntry("tableRow", "2").toInt());
 
-  MyMoneyAccount *account;
-
-	account = getAccount();
-	if(account == 0)
-		return;
   MyMoneyMoney balance;
-  MyMoneyTransaction *transaction;
-  unsigned long rowCount=0;
-  QString currentBalance;
+  //MyMoneyTransaction *transaction;
 
-  if (row==-1) { // We are going to refresh the whole list
-    m_index=-1;
+  try
+  {
+    MyMoneyFile *file = MyMoneyFile::instance();
+    MyMoneyAccount account = file->account(m_accountIndex);
 
-    int i = 0;
-    bool haveCurrentDate = false;
-    transactionsTable->setNumRows((m_transactions->count() * NO_ROWS) + 2);
+    balance = account.openingBalance();
 
-    initAmountWidth();
+    QString openingAmount(i18n("Opening Balance: "));
+    openingAmount += balance.formatMoney();
+    m_qlabelOpeningBal->setText(openingAmount);
+    m_qlabelOpeningBal->setFont(config->readFontEntry("listCellFont", &defaultFont));
 
-    for (transaction=m_transactions->first(); transaction; transaction=m_transactions->next(), i++) {
-      QString colText;
-      if (transaction->type()==MyMoneyTransaction::Credit)
-        balance += transaction->amount();
-      else
-        balance -= transaction->amount();
+    if (row==-1) // We are going to refresh the whole list
+    {
+      m_index=-1;
 
-      if((useall == true) ||
-         (usedate == true && transaction->date() >= m_date->getQDate()) ||
-         (userow == true && m_index >= i))
+      int i = 0;
+      bool haveCurrentDate = false;
+      transactionsTable->setNumRows((file->transactionCount(account.id()) * NO_ROWS) + 2);
+
+      initAmountWidth();
+
+      QValueList<MyMoneyTransaction>::ConstIterator transactionIter;
+      QValueList<MyMoneyTransaction> transactionList = file->transactionList(m_accountIndex);
+      unsigned int tableRow = 0;
+
+      for ( transactionIter = transactionList.begin();
+            transactionIter != transactionList.end();
+            ++transactionIter, tableRow++)
       {
+        QString colText;
 
-      if(!haveCurrentDate && transaction->date() > QDate::currentDate()) {
-        haveCurrentDate = true;
-        transactionsTable->setCurrentDateRow(rowCount);
-      }
-      if(!haveCurrentDate && transaction->date() < QDate::currentDate()) {
-        transactionsTable->setCurrentDateRow(rowCount);
-      }
+        // Cache the Transaction index
+        m_transactionMap[tableRow] = (*transactionIter).id();
 
-      switch (transaction->method()) {
-        case MyMoneyTransaction::Cheque:
-          colText = i18n("Cheque");
-          break;
-        case MyMoneyTransaction::Deposit:
-          colText = i18n("Deposit");
-          break;
-        case MyMoneyTransaction::Transfer:
-          colText = i18n("Transfer");
-          break;
-        case MyMoneyTransaction::Withdrawal:
-          colText = i18n("Withdrawal");
-          break;
-        case MyMoneyTransaction::ATM:
-          colText = i18n("ATM");
-          break;
-      }
+        // Save the transaction
+        MyMoneyTransaction transaction = (*transactionIter);
 
-      transactionsTable->setText(rowCount, 0, KGlobal::locale()->formatDate(transaction->date(), true));
+        balance += transactionAmount(transaction.id());
 
-      transactionsTable->setText(rowCount, 1, colText);
-
-      transactionsTable->setText(rowCount, 2, transaction->payee());
-
-      switch (transaction->state()) {
-        case MyMoneyTransaction::Cleared:
-          colText = i18n("C");
-          break;
-        case MyMoneyTransaction::Reconciled:
-          colText = i18n("R");
-          break;
-        default:
-          colText = " ";
-          break;
-      }
-      transactionsTable->setText(rowCount, 3, colText);
-
-      QString amountTxt = KGlobal::locale()->formatMoney(transaction->amount().amount(), "");
-      unsigned width = transactionsTable->fontMetrics().width(amountTxt);
-      if(transaction->type()==MyMoneyTransaction::Debit) {
-        transactionsTable->setText(rowCount, 4, amountTxt);
-        transactionsTable->setText(rowCount, 5, "");
-        if(width > m_debitWidth)
-          m_debitWidth = width;
-      } else {
-        transactionsTable->setText(rowCount, 4, "");
-        transactionsTable->setText(rowCount, 5, amountTxt);
-        if(width > m_creditWidth)
-          m_creditWidth = width;
-      }
-
-      if (m_viewType==NORMAL) {
-        amountTxt = KGlobal::locale()->formatMoney(balance.amount(), "");
-        width = transactionsTable->fontMetrics().width(amountTxt);
-        transactionsTable->setText(rowCount, 6, amountTxt);
-        if(width > m_balanceWidth)
-          m_balanceWidth = width;
-      } else
-        transactionsTable->setText(rowCount, 6, i18n("N/A"));
-
-      // initializing the table like I've done below speeds up operations
-      // when using 1700 transactions at 2 row display. At 1 row
-      // display performance was OK, but with 2 row display it was
-      // odd. Measurements on my system:
-      //
-      // 1758 transactions, 1 row display    ~2 sec
-      // 1758 transactions, 2 row display   ~23 sec
-      //
-      // for the display to show up. Adding the code below helped
-      // a lot!! I now get
-      //
-      // 1758 transactions, 1 row display    ~3 sec
-      // 1758 transactions, 2 row display    ~3 sec
-      //
-      // Please don't ask me why!!
-
-      if (NO_ROWS==2) {
-        transactionsTable->setText(rowCount + 1, 0, "");
-        transactionsTable->setText(rowCount + 1, 1, transaction->number());
-
-  			if(transaction->categoryMinor() == "") {
-          colText = transaction->categoryMajor();
-        } else {
-          colText = transaction->categoryMajor()
-                    + ":"
-                    + transaction->categoryMinor();
-        }
-        colText = colText + "|" + transaction->memo();
-
-        transactionsTable->setText(rowCount + 1, 2, colText);
-        transactionsTable->setText(rowCount + 1, 3, "");
-        transactionsTable->setText(rowCount + 1, 4, "");
-        transactionsTable->setText(rowCount + 1, 5, "");
-        transactionsTable->setText(rowCount + 1, 6, "");
-      } // NO_ROWS == 2
-
-    }  // useall etc check
-      rowCount += NO_ROWS;
-			currentBalance = KGlobal::locale()->formatMoney(balance.amount(),"");
-    }
-
-    if(!haveCurrentDate && rowCount > 0) {
-      transactionsTable->setCurrentDateRow(rowCount);
-    } else if(!haveCurrentDate)
-      transactionsTable->setCurrentDateRow(-1);
-
-		if (m_viewType==NORMAL) {
-		  if (!m_bEditingTransaction)
-        transactionsTable->ensureCellVisible(rowCount+1, 0);
-      else
-        m_bEditingTransaction=false;
-
-      if (config->readBoolEntry("TextPrompt", true)) {
-        transactionsTable->setText(rowCount, 0, i18n("Date"));
-        transactionsTable->setText(rowCount, 1, i18n("Method"));
-        transactionsTable->setText(rowCount, 2, i18n("Click on a field to enter a transaction"));
-        transactionsTable->setText(rowCount, 3, i18n("?"));
-        transactionsTable->setText(rowCount, 4, i18n("Amount"));
-        transactionsTable->setText(rowCount, 5, i18n("Amount"));
-        transactionsTable->setText(rowCount, 6, "");
-        transactionsTable->setText(rowCount+1, 0, "");
-        transactionsTable->setText(rowCount+1, 1, i18n("Number"));
-        transactionsTable->setText(rowCount+1, 2, i18n("Category|Description"));
-        transactionsTable->setText(rowCount+1, 3, "");
-        transactionsTable->setText(rowCount+1, 4, "");
-        transactionsTable->setText(rowCount+1, 5, "");
-      }
-
-  		lblBalanceAmt->setText(currentBalance);
-      lblBalanceAmt->setFont(config->readFontEntry("listCellFont", &defaultFont));
-    } else {
-      transactionsTable->ensureCellVisible(rowCount, 0);
-      lblBalanceAmt->setText(i18n("N/A"));
-    }
-
-  } else { // We are just updating a section of it
-    QString txt;
-    if (row<0 || row>transactionsTable->numRows()-1)
-      return;
-    if (col<0 || col>transactionsTable->numCols()-1)
-      return;
-		int transrow = row / NO_ROWS;
-		
-    switch (col) {
-      case 0:
-        transactionsTable->setText(row, col, KGlobal::locale()->formatDate(m_transactions->at(transrow)->date()));
-        break;
-
-      case 1:
-        switch (m_transactions->at(transrow)->method()) {
-          case MyMoneyTransaction::Cheque:
-            transactionsTable->setText(row, col, i18n("Cheque"));
-            break;
-          case MyMoneyTransaction::Deposit:
-            transactionsTable->setText(row, col, i18n("Deposit"));
-            break;
-          case MyMoneyTransaction::Transfer:
-            transactionsTable->setText(row, col, i18n("Transfer"));
-            break;
-          case MyMoneyTransaction::Withdrawal:
-            transactionsTable->setText(row, col, i18n("Withdrawal"));
-            break;
-          case MyMoneyTransaction::ATM:
-            transactionsTable->setText(row, col, i18n("ATM"));
-            break;
-        }
-        break;
-
-      case 2:
-  	    if((row % 2) == 0)
+        if((useall == true) ||
+           (usedate == true && transaction.postDate() >= m_date->getQDate()) ||
+           (userow == true && m_index >= i))
         {
-          transactionsTable->setText(row, col, m_transactions->at(row)->payee());
-				}
-        else
-				{
-        	txt = m_transactions->at(row)->categoryMajor();
-        	txt += ":";
-        	txt += m_transactions->at(transrow)->categoryMinor();
-          txt = txt + "|" + m_transactions->at(m_index)->memo();
-        	transactionsTable->setText(row + 1, col, txt);
-				}
-				break;
-      case 3:
-        switch (m_transactions->at(transrow)->state()) {
-          case MyMoneyTransaction::Unreconciled:
-            transactionsTable->setText(row, col, "");
-            break;
-          case MyMoneyTransaction::Cleared:
-            transactionsTable->setText(row, col, i18n("C"));
-            break;
-          case MyMoneyTransaction::Reconciled:
-            transactionsTable->setText(row, col, i18n("R"));
-            break;
+          if(!haveCurrentDate && transaction.postDate() > QDate::currentDate())
+          {
+            haveCurrentDate = true;
+            transactionsTable->setCurrentDateRow(rowCount);
+          }
+          if(!haveCurrentDate && transaction.postDate() < QDate::currentDate())
+          {
+            transactionsTable->setCurrentDateRow(rowCount);
+          }
+
+// FIXME: Need to add this functionality to the engine
+//          switch (transaction->method()) {
+//            case MyMoneyTransaction::Cheque:
+//              colText = i18n("Cheque");
+//              break;
+//            case MyMoneyTransaction::Deposit:
+//              colText = i18n("Deposit");
+//              break;
+//            case MyMoneyTransaction::Transfer:
+//              colText = i18n("Transfer");
+//              break;
+//            case MyMoneyTransaction::Withdrawal:
+//              colText = i18n("Withdrawal");
+//              break;
+//            case MyMoneyTransaction::ATM:
+//              colText = i18n("ATM");
+//              break;
+//          }
+
+          transactionsTable->setText(rowCount, 0, KGlobal::locale()->formatDate(transaction.postDate(), true));
+
+          transactionsTable->setText(rowCount, 1, colText);
+
+          transactionsTable->setText(rowCount, 2, transactionPayee(transaction.id()).name());
+
+
+          switch (transactionReconcileFlag(transaction.id())) {
+            case MyMoneySplit::Cleared:
+              colText = i18n("C");
+              break;
+            case MyMoneySplit::Reconciled:
+              colText = i18n("R");
+              break;
+            default:
+              colText = " ";
+              break;
+          }
+          transactionsTable->setText(rowCount, 3, colText);
+
+          QString amountTxt = transactionAmount(transaction.id()).formatMoney();
+          unsigned width = transactionsTable->fontMetrics().width(amountTxt);
+          if(!transactionIsDebit(transaction.id()))
+          {
+            transactionsTable->setText(rowCount, 4, amountTxt);
+            transactionsTable->setText(rowCount, 5, "");
+            if(width > m_debitWidth)
+            {
+              m_debitWidth = width;
+            }
+          }
+          else
+          {
+            transactionsTable->setText(rowCount, 4, "");
+            transactionsTable->setText(rowCount, 5, amountTxt);
+            if(width > m_creditWidth)
+            {
+              m_creditWidth = width;
+            }
+          }
+
+          if (m_viewType==NORMAL)
+          {
+            amountTxt = balance.formatMoney();
+            width = transactionsTable->fontMetrics().width(amountTxt);
+            transactionsTable->setText(rowCount, 6, amountTxt);
+            if(width > m_balanceWidth)
+            {
+              m_balanceWidth = width;
+            }
+          }
+          else
+          {
+            transactionsTable->setText(rowCount, 6, i18n("N/A"));
+          }
+
+          // initializing the table like I've done below speeds up operations
+          // when using 1700 transactions at 2 row display. At 1 row
+          // display performance was OK, but with 2 row display it was
+          // odd. Measurements on my system:
+          //
+          // 1758 transactions, 1 row display    ~2 sec
+          // 1758 transactions, 2 row display   ~23 sec
+          //
+          // for the display to show up. Adding the code below helped
+          // a lot!! I now get
+          //
+          // 1758 transactions, 1 row display    ~3 sec
+          // 1758 transactions, 2 row display    ~3 sec
+          //
+          // Please don't ask me why!!
+
+          if (NO_ROWS==2)
+          {
+            transactionsTable->setText(rowCount + 1, 0, "");
+
+            // FIXME: Need to add to engine
+            //transactionsTable->setText(rowCount + 1, 1, transaction->number());
+
+            // FIXME: Need to show account hierarchy e.g
+            // Expense : AccountName : SubAccountName
+            // We could maybe trim the account hierarchy some how
+            colText = transactionCategory(transaction.id()).name();
+            colText = colText + "|" + transaction.memo();
+
+            transactionsTable->setText(rowCount + 1, 2, colText);
+            transactionsTable->setText(rowCount + 1, 3, "");
+            transactionsTable->setText(rowCount + 1, 4, "");
+            transactionsTable->setText(rowCount + 1, 5, "");
+            transactionsTable->setText(rowCount + 1, 6, "");
+          } // NO_ROWS == 2
+        }  // useall etc check
+
+        rowCount += NO_ROWS;
+      } // End for loop
+
+      if(!haveCurrentDate && rowCount > 0)
+      {
+        transactionsTable->setCurrentDateRow(rowCount);
+      }
+      else if(!haveCurrentDate)
+      {
+        transactionsTable->setCurrentDateRow(-1);
+      }
+
+  		if (m_viewType==NORMAL)
+      {
+  		  if (!m_bEditingTransaction)
+        {
+          transactionsTable->ensureCellVisible(rowCount+1, 0);
         }
-        break;
-      case 4:
-        transactionsTable->setText(row, col, KGlobal::locale()->formatMoney(m_transactions->at(transrow)->amount().amount(),""));
-        break;
-      case 5:
-        transactionsTable->setText(row, col, KGlobal::locale()->formatMoney(m_transactions->at(transrow)->amount().amount(),""));
-        break;
+        else
+        {
+          m_bEditingTransaction=false;
+        }
+
+        if (config->readBoolEntry("TextPrompt", true)) {
+          transactionsTable->setText(rowCount, 0, i18n("Date"));
+          transactionsTable->setText(rowCount, 1, i18n("Method"));
+          transactionsTable->setText(rowCount, 2, i18n("Click on a field to enter a transaction"));
+          transactionsTable->setText(rowCount, 3, i18n("?"));
+          transactionsTable->setText(rowCount, 4, i18n("Amount"));
+          transactionsTable->setText(rowCount, 5, i18n("Amount"));
+          transactionsTable->setText(rowCount, 6, "");
+          transactionsTable->setText(rowCount+1, 0, "");
+          transactionsTable->setText(rowCount+1, 1, i18n("Number"));
+          transactionsTable->setText(rowCount+1, 2, i18n("Category|Description"));
+          transactionsTable->setText(rowCount+1, 3, "");
+          transactionsTable->setText(rowCount+1, 4, "");
+          transactionsTable->setText(rowCount+1, 5, "");
+        }
+
+        QString displayAmount(i18n("Ending Balance: "));
+        displayAmount += balance.formatMoney();
+        lblBalance->setText(displayAmount);
+        lblBalance->setFont(config->readFontEntry("listCellFont", &defaultFont));
+      }
+      else
+      {
+        transactionsTable->ensureCellVisible(rowCount, 0);
+        lblBalance->setText(i18n("Ending Balance: 0"));
+        lblBalance->setFont(config->readFontEntry("listCellFont", &defaultFont));
+      }
+
     }
+    else
+    { // We are just updating a section of it
+      QString txt;
+
+      if (row<0 || row>transactionsTable->numRows()-1)
+        return;
+      if (col<0 || col>transactionsTable->numCols()-1)
+        return;
+  		
+      int transrow = row / NO_ROWS;
+  		
+      switch (col)
+      {
+        case 0:
+          txt = KGlobal::locale()->formatDate(file->transaction(m_transactionMap[transrow]).postDate());
+          transactionsTable->setText(row, col, txt);
+          break;
+
+        case 1:
+          /* FIXME:  Notin engine
+          switch (m_transactions->at(transrow)->method()) {
+            case MyMoneyTransaction::Cheque:
+              transactionsTable->setText(row, col, i18n("Cheque"));
+              break;
+            case MyMoneyTransaction::Deposit:
+              transactionsTable->setText(row, col, i18n("Deposit"));
+              break;
+            case MyMoneyTransaction::Transfer:
+              transactionsTable->setText(row, col, i18n("Transfer"));
+              break;
+            case MyMoneyTransaction::Withdrawal:
+              transactionsTable->setText(row, col, i18n("Withdrawal"));
+              break;
+            case MyMoneyTransaction::ATM:
+              transactionsTable->setText(row, col, i18n("ATM"));
+              break;
+          }
+          */
+          break;
+
+        case 2:
+    	    if((row % 2) == 0)
+          {
+            txt = transactionPayee(m_transactionMap[transrow]).name();
+            transactionsTable->setText(row, col, txt);
+  				}
+          else
+  				{
+            // FIXME: Want to show more than just name here
+            txt = transactionCategory(m_transactionMap[transrow]).name();
+            txt = txt + "|" + file->transaction(m_transactionMap[transrow]).memo();
+          	transactionsTable->setText(row + 1, col, txt);
+  				}
+  				break;
+
+        case 3:
+          switch (transactionReconcileFlag(m_transactionMap[transrow]))
+          {
+            case MyMoneySplit::NotReconciled:
+              transactionsTable->setText(row, col, "");
+              break;
+            case MyMoneySplit::Cleared:
+              transactionsTable->setText(row, col, i18n("C"));
+              break;
+            case MyMoneySplit::Reconciled:
+              transactionsTable->setText(row, col, i18n("R"));
+              break;
+          }
+          break;
+
+        case 4:
+          transactionsTable->setText(row, col, transactionAmount(m_transactionMap[transrow]).formatMoney());
+          break;
+
+        case 5:
+          transactionsTable->setText(row, col, transactionAmount(m_transactionMap[transrow]).formatMoney());
+          break;
+      }
+    }
+  }
+  catch (MyMoneyException *e)
+  {
+    qDebug("Exception %s", e->what().latin1());
+    delete e;
   }
 
   // setup new size values
   resizeEvent(NULL);
-*/
 }
 
 void KTransactionView::cancelClicked()
@@ -1612,4 +1649,115 @@ void KTransactionView::show()
 void KTransactionView::setSignals(bool enable)
 {
   m_bSignals=enable;
+}
+
+/*
+
+  return returnValue;
+*/
+
+/* These could go in MyMoneyUtils or something? */
+MyMoneyMoney KTransactionView::transactionAmount(const QCString& trans)
+{
+  MyMoneyMoney value;
+
+  try
+  {
+    MyMoneyFile *file = MyMoneyFile::instance();
+    value = file->transaction(trans).split(m_accountIndex).value();
+  }
+  catch (MyMoneyException *e)
+  {
+    // Do nothing, we just dont want to abort the transaction refresh
+    delete e;
+  }
+  return value;
+}
+
+MyMoneyPayee KTransactionView::transactionPayee(const QCString& trans)
+{
+  MyMoneyPayee value;
+
+  try
+  {
+    MyMoneyFile *file = MyMoneyFile::instance();
+    value = file->payee(file->transaction(trans).split(m_accountIndex).payeeId());
+  }
+  catch (MyMoneyException *e)
+  {
+    // Do nothing, we just dont want to abort the transaction refresh
+    delete e;
+  }
+  return value;
+}
+
+MyMoneyAccount KTransactionView::transactionCategory(const QCString& trans)
+{
+  MyMoneyAccount value;
+
+  try
+  {
+    // If there's more than two splits the register should have displayed
+    // <Split> instead of calling this method, so just ignore transactions
+    // with more than two splits.
+    if (MyMoneyFile::instance()->transaction(trans).splitCount() <= 2)
+    {
+      QValueList<MyMoneySplit> splits = MyMoneyFile::instance()->transaction(trans).splits();
+      QValueList<MyMoneySplit>::ConstIterator it;
+
+      for ( it = splits.begin();
+            it != splits.end();
+            ++it )
+      {
+        if ((*it).accountId() != m_accountIndex)
+        {
+          value = MyMoneyFile::instance()->account((*it).accountId());
+        }
+      }
+    }
+  }
+  catch (MyMoneyException *e)
+  {
+    // Do nothing, we just dont want to abort the transaction refresh
+    delete e;
+  }
+
+  return value;
+}
+
+MyMoneySplit::reconcileFlagE KTransactionView::transactionReconcileFlag(const QCString& trans)
+{
+  MyMoneyFile *file = MyMoneyFile::instance();
+  return file->transaction(trans).split(m_accountIndex).reconcileFlag();
+}
+
+void KTransactionView::setTransactionAmount(const QCString& trans, const MyMoneyMoney& amount)
+{
+  // FIXME:  These set functions need to call modifySplit?
+  //MyMoneyFile *file = MyMoneyFile::instance();
+  //file->transaction(trans).split(m_accountIndex).setValue(amount);
+}
+
+void KTransactionView::setTransactionPayeeId(const QCString& trans, const QCString& payeeId)
+{
+  //MyMoneyFile *file = MyMoneyFile::instance();
+  //file->transaction(trans).split(m_accountIndex).setPayeeId(payeeId);
+}
+
+void KTransactionView::setTransactionCategory(const QCString& trans, const QCString& accountId)
+{
+  //MyMoneyFile *file = MyMoneyFile::instance();
+  //file->transaction(trans).split(m_accountIndex).setAccountId(accountId);
+}
+
+void KTransactionView::setTransactionReconcileFlag(const QCString& trans, MyMoneySplit::reconcileFlagE flag)
+{
+  //MyMoneyFile *file = MyMoneyFile::instance();
+  //file->transaction(trans).split(m_accountIndex).setReconcileFlag(flag);
+}
+
+bool KTransactionView::transactionIsDebit(const QCString& trans)
+{
+  MyMoneyFile *file = MyMoneyFile::instance();
+  return (file->transaction(trans).split(m_accountIndex).value() >= 0);
 }
