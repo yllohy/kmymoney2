@@ -479,13 +479,13 @@ void KMyMoneyView::slotAccountReconcile(void)
       reconcileDlg = new KReconcileDlg(dlg.previousBalance, dlg.endingBalance, dlg.endingDate, *pBank, pAccount, m_file, 0);
       connect(reconcileDlg, SIGNAL(reconcileFinished(bool)), this, SLOT(slotReconcileFinished(bool)));
       connect(m_mainView->getTransactionView(),SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
-      reconcileDlg->show();
+      reconcileDlg->exec();
       m_inReconciliation = true;
       m_reconcileInited=true;
     } else {
       reconcileDlg->resetData(dlg.previousBalance, dlg.endingBalance, dlg.endingDate, *pBank, pAccount, m_file);
       connect(m_mainView->getTransactionView(),SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
-      reconcileDlg->show();
+      reconcileDlg->exec();
       m_inReconciliation = true;
     }
   }
