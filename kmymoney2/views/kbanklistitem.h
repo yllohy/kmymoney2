@@ -120,6 +120,7 @@ private:
   int m_nAccountColumn;
   int m_nInstitutionColumn;
 
+  static  QPixmap* accountPixmap;
 };
 
 #endif

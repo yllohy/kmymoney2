@@ -43,6 +43,8 @@
 #include "kbanklistitem.h"
 #include "../mymoney/mymoneyfile.h"
 
+QPixmap* KAccountListItem::accountPixmap = 0;
+
 KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyAccount& account)
   : QListViewItem(parent)
 {
@@ -57,11 +59,16 @@ KAccountListItem::KAccountListItem(KAccountListItem *parent, const MyMoneyAccoun
 
 void KAccountListItem::newAccount(const MyMoneyAccount& account)
 {
+
+  if(accountPixmap == 0) {
+    accountPixmap = new QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png"));
+  }
+
   MyMoneyFile*  file = MyMoneyFile::instance();
 
   m_accountID = account.id();
 
-  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata", "icons/hicolor/22x22/actions/account.png")));
+  setPixmap(0, *accountPixmap);
   setText(0, account.name());
   // setText(1, typeName);
   try {
