@@ -440,8 +440,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
         if(method != 2)
           transactionList.append(tr);
 
-        if(!(k % 10))
-          signalProgress(k, 0);
+        signalProgress(k, 0);
       }
     }
   }
@@ -636,8 +635,7 @@ void MyMoneyStorageBin::readInstitutions(QDataStream&s, IMyMoneySerialize *stora
     id = extractId(inst.id().data());
     if(id > storage->institutionId())
       storage->loadInstitutionId(id);
-    if(!(i%10))
-      signalProgress(i, 0);
+    signalProgress(i, 0);
   }
 }
 
@@ -717,8 +715,7 @@ void MyMoneyStorageBin::readPayees(QDataStream& s, IMyMoneySerialize *storage)
     id = extractId(p.id().data());
     if(id > storage->payeeId())
       storage->loadPayeeId(id);
-    if(!(i%10))
-      signalProgress(i, 0);
+    signalProgress(i, 0);
   }
 }
 
@@ -779,8 +776,7 @@ void MyMoneyStorageBin::writeAccounts(QDataStream& s, IMyMoneySerialize *storage
   for(it = list.begin(); it != list.end(); ++it, ++i) {
     writeAccount(s, *it);
 
-    if(!(i%10))
-      signalProgress(i, 0);
+    signalProgress(i, 0);
   }
 }
 
@@ -802,8 +798,7 @@ void MyMoneyStorageBin::readAccounts(QDataStream& s, IMyMoneySerialize *storage)
     if(id > storage->accountId())
       storage->loadAccountId(id);
 
-    if(!(i%10))
-      signalProgress(i, 0);
+    signalProgress(i, 0);
   }
 }
 
@@ -868,7 +863,6 @@ const MyMoneyAccount MyMoneyStorageBin::readAccount(QDataStream& s)
 
 void MyMoneyStorageBin::writeTransactions(QDataStream& s, IMyMoneySerialize* storage)
 {
-  int update;
   Q_INT32 tmp;
   QValueList<MyMoneyTransaction> list;
   QValueList<MyMoneyTransaction>::ConstIterator it;
@@ -882,18 +876,11 @@ void MyMoneyStorageBin::writeTransactions(QDataStream& s, IMyMoneySerialize* sto
 
   signalProgress(0, list.count(), QObject::tr("Saving transactions..."));
 
-  // make sure, we don't waste too much time for updateing the screen.
-  // if we have more than 1000 transactions, we update the progress bar
-  // every 100 read transactions. If we have less, we allow to update
-  // every 10 transactions.
-  update = (list.count() > 1000) ? 100 : 10;
-
   int i = 0;
   for(it = list.begin(); it != list.end(); ++it, ++i) {
     writeTransaction(s, *it);
 
-    if(!(i % update))
-      signalProgress(i, 0);
+    signalProgress(i, 0);
   }
 }
 
@@ -901,19 +888,12 @@ void MyMoneyStorageBin::readTransactions(QDataStream& s, IMyMoneySerialize* stor
 {
   Q_INT32 version;
   Q_INT32 cnt;
-  int     update;
   unsigned long id;
 
   s >> version;
 
   s >> cnt;
   signalProgress(0, cnt, QObject::tr("Loading transactions..."));
-
-  // make sure, we don't waste too much time for updateing the screen.
-  // if we have more than 1000 transactions, we update the progress bar
-  // every 100 read transactions. If we have less, we allow to update
-  // every 10 transactions.
-  update = (cnt > 1000) ? 100 : 10;
 
   for(int i = 0; i < cnt; ++i) {
     MyMoneyTransaction t = readTransaction(s);
@@ -922,10 +902,8 @@ void MyMoneyStorageBin::readTransactions(QDataStream& s, IMyMoneySerialize* stor
     id = extractId(t.id().data());
     if(id > storage->transactionId())
       storage->loadTransactionId(id);
-    if(!(i % update))
-      signalProgress(i, 0);
+    signalProgress(i, 0);
   }
-  signalProgress(cnt, 0);
 }
 
 void MyMoneyStorageBin::writeTransaction(QDataStream& s, const MyMoneyTransaction& t)
