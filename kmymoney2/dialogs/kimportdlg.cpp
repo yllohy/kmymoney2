@@ -47,17 +47,39 @@ KImportDlg::KImportDlg(MyMoneyAccount *account)
   else
     m_qlabelAccount->setText(i18n("NO ACCOUNT AVAILABLE."));
 
-  m_qcomboboxDateFormat->insertItem("MM/DD\'YY");
-  m_qcomboboxDateFormat->insertItem("MM/DD/YYYY");
-  m_qcomboboxDateFormat->setEditable(false);
+  // Typical UK formats, (as well as france etc)
+  m_qcomboboxDateFormat->insertItem("%d/%m/%yy");
+  m_qcomboboxDateFormat->insertItem("%d/%mmm/%yy");
+  m_qcomboboxDateFormat->insertItem("%d/%m/%yyyy");
+  m_qcomboboxDateFormat->insertItem("%d/%mmm/%yyyy");
+  m_qcomboboxDateFormat->insertItem("%d/%m%yy");
+  m_qcomboboxDateFormat->insertItem("%d/%mmm%yy");
+
+  // Typical US formats
+  m_qcomboboxDateFormat->insertItem("%m/%d/%yy");
+  m_qcomboboxDateFormat->insertItem("%mmm/%d/%yy");
+  m_qcomboboxDateFormat->insertItem("%m/%d/%yyyy");
+  m_qcomboboxDateFormat->insertItem("%mmm/%d/%yyyy");
+  m_qcomboboxDateFormat->insertItem("%m%d%yy");
+  m_qcomboboxDateFormat->insertItem("%mmm/%d%yy");
+
+  m_qcomboboxDateFormat->setEditable(true);
 
   // Set all the last used options
   readConfig();
 
-  if (m_qstringLastFormat == "MM/DD\'YY")
-    m_qcomboboxDateFormat->setCurrentItem(0);
-  else
-    m_qcomboboxDateFormat->setCurrentItem(1);
+  int nErrorReturn = 0;
+
+  if (m_mymoneyaccount->validateQIFDateFormat("", m_qstringLastFormat.latin1(), nErrorReturn, false))
+    m_qcomboboxDateFormat->setEditText(m_qstringLastFormat);
+  else {
+    QString qstringError("QIF date format invalid: ");
+    qstringError += m_mymoneyaccount->getQIFDateFormatErrorString(nErrorReturn);
+    KMessageBox::error(this, qstringError, i18n("Import QIF"));
+  }
+
+  // Now that we've got the text in the combo box, reset the edit status
+  m_qcomboboxDateFormat->setEditable(false);
 
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
@@ -82,6 +104,17 @@ void KImportDlg::slotOkClicked()
   if (m_qlineeditFile->text().isEmpty()) {
     KMessageBox::information(this, i18n("Please enter the path to the QIF file"), i18n("Import QIF"));
     m_qlineeditFile->setFocus();
+    return;
+  }
+
+  int nErrorReturn = 0;
+
+  if (!m_mymoneyaccount->validateQIFDateFormat("", m_qstringLastFormat.latin1(), nErrorReturn, false))
+  {
+    QString qstringError("QIF date format invalid: ");
+    qstringError += m_mymoneyaccount->getQIFDateFormatErrorString(nErrorReturn);
+    KMessageBox::error(this, qstringError, i18n("Import QIF"));
+    m_qcomboboxDateFormat->setFocus();
     return;
   }
 

@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>445</width>
-            <height>439</height>
+            <width>794</width>
+            <height>491</height>
         </rect>
     </property>
     <property stdset="1">
@@ -48,14 +48,12 @@
             </property>
             <property stdset="1">
                 <name>text</name>
-                <string>From this dialog you are able to export transactions to a quicken compatable file, (known as
-a QIF file, because of the extension).   Please enter the path to the QIF file or select it by
-clicking on the Browse button.
+                <string>From this dialog you are able to export transactions to a quicken compatable file, (known as a QIF file, because of the extension).   Please enter the path to the QIF
+file or select it by clicking on the Browse button.
 
-Once you have the file's path you can choose which transactions to export by date (start &amp;
-and).  Choose Account to export all the transactions between the specified dates or just
-categories.  Once you have pressed the Export button a message box will appear when the
-export has completed detailing how many transactions, categories and payees were exported.</string>
+Once you have the file's path you can choose which transactions to export by date (start &amp; and end).  Choose Account to export all the transactions between the
+specified dates or just categories.  Once you have pressed the Export button a message box will appear when the export has completed detailing how many transactions,
+categories and payees were exported.</string>
             </property>
         </widget>
         <widget>
@@ -138,7 +136,7 @@ export has completed detailing how many transactions, categories and payees were
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout14</cstring>
+                <cstring>Layout17</cstring>
             </property>
             <hbox>
                 <property stdset="1">
@@ -329,13 +327,13 @@ export has completed detailing how many transactions, categories and payees were
                     <class>QGroupBox</class>
                     <property stdset="1">
                         <name>name</name>
-                        <cstring>groupDateFormat</cstring>
+                        <cstring>GroupBox6</cstring>
                     </property>
                     <property stdset="1">
                         <name>title</name>
-                        <string>DateFormat</string>
+                        <string>Date Format</string>
                     </property>
-                    <vbox>
+                    <grid>
                         <property stdset="1">
                             <name>margin</name>
                             <number>11</number>
@@ -344,36 +342,62 @@ export has completed detailing how many transactions, categories and payees were
                             <name>spacing</name>
                             <number>6</number>
                         </property>
-                        <widget>
+                        <spacer row="1"  column="0" >
+                            <property>
+                                <name>name</name>
+                                <cstring>Spacer3</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>orientation</name>
+                                <enum>Vertical</enum>
+                            </property>
+                            <property stdset="1">
+                                <name>sizeType</name>
+                                <enum>Expanding</enum>
+                            </property>
+                            <property>
+                                <name>sizeHint</name>
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget row="0"  column="0" >
                             <class>QComboBox</class>
                             <property stdset="1">
                                 <name>name</name>
                                 <cstring>m_qcomboboxDateFormat</cstring>
                             </property>
+                            <property stdset="1">
+                                <name>minimumSize</name>
+                                <size>
+                                    <width>150</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
                         </widget>
-                    </vbox>
+                        <widget row="0"  column="1"  rowspan="2"  colspan="1" >
+                            <class>QLabel</class>
+                            <property stdset="1">
+                                <name>name</name>
+                                <cstring>TextLabel1_2</cstring>
+                            </property>
+                            <property stdset="1">
+                                <name>text</name>
+                                <string>The Date format is represented as follows:
+
+d = Day Number
+m = Month Number
+mmm = Month Name (abbreviated to three letters)
+yy = Year Number (last two digits)
+yyyy = Year Number
+
+To use the awful 'yy use a format like %d/%m%yy e.g for  1/2'01.</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
-                <spacer>
-                    <property>
-                        <name>name</name>
-                        <cstring>Spacer7</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>orientation</name>
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property stdset="1">
-                        <name>sizeType</name>
-                        <enum>Expanding</enum>
-                    </property>
-                    <property>
-                        <name>sizeHint</name>
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
             </hbox>
         </widget>
         <widget>

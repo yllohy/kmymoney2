@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>453</width>
-            <height>338</height>
+            <width>547</width>
+            <height>444</height>
         </rect>
     </property>
     <property stdset="1">
@@ -40,12 +40,11 @@
             </property>
             <property stdset="1">
                 <name>text</name>
-                <string>From this dialog you are able to import transactions from a quicken compatable file, (known as
-a QIF file, because of the extension).   Please enter the path to the QIF file or select it by
-clicking on the Browse button.
+                <string>From this dialog you are able to import transactions from a quicken compatable file, (known as a QIF file,
+because of the extension).   Please enter the path to the QIF file or select it by clicking on the Browse button.
 
-Once you have the file's path press the Import button and KMyMoney2 will import all the
-transactions, categories and payees it finds.</string>
+Once you have the file's path press the Import button and KMyMoney2 will import all the transactions, categories
+and payees it finds.</string>
             </property>
         </widget>
         <widget>
@@ -120,9 +119,9 @@ transactions, categories and payees it finds.</string>
             <class>QLayoutWidget</class>
             <property stdset="1">
                 <name>name</name>
-                <cstring>Layout3</cstring>
+                <cstring>Layout8</cstring>
             </property>
-            <hbox>
+            <grid>
                 <property stdset="1">
                     <name>margin</name>
                     <number>0</number>
@@ -131,7 +130,26 @@ transactions, categories and payees it finds.</string>
                     <name>spacing</name>
                     <number>6</number>
                 </property>
-                <widget>
+                <widget row="0"  column="2"  rowspan="2"  colspan="1" >
+                    <class>QLabel</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>TextLabel1_2</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>text</name>
+                        <string>The Date format is represented as follows:
+
+d = Day Number
+m = Month Number
+mmm = Month Name (abbreviated to three letters)
+yy = Year Number (last two digits)
+yyyy = Year Number
+
+To use the awful 'yy use a format like %d/%m%yy e.g for  1/2'01.</string>
+                    </property>
+                </widget>
+                <widget row="0"  column="0" >
                     <class>QLabel</class>
                     <property stdset="1">
                         <name>name</name>
@@ -142,28 +160,14 @@ transactions, categories and payees it finds.</string>
                         <string>Date Format:</string>
                     </property>
                 </widget>
-                <widget>
-                    <class>QComboBox</class>
-                    <property stdset="1">
-                        <name>name</name>
-                        <cstring>m_qcomboboxDateFormat</cstring>
-                    </property>
-                    <property stdset="1">
-                        <name>minimumSize</name>
-                        <size>
-                            <width>150</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                </widget>
-                <spacer>
+                <spacer row="1"  column="1" >
                     <property>
                         <name>name</name>
-                        <cstring>Spacer2</cstring>
+                        <cstring>Spacer3</cstring>
                     </property>
                     <property stdset="1">
                         <name>orientation</name>
-                        <enum>Horizontal</enum>
+                        <enum>Vertical</enum>
                     </property>
                     <property stdset="1">
                         <name>sizeType</name>
@@ -177,7 +181,21 @@ transactions, categories and payees it finds.</string>
                         </size>
                     </property>
                 </spacer>
-            </hbox>
+                <widget row="0"  column="1" >
+                    <class>QComboBox</class>
+                    <property stdset="1">
+                        <name>name</name>
+                        <cstring>m_qcomboboxDateFormat</cstring>
+                    </property>
+                    <property stdset="1">
+                        <name>minimumSize</name>
+                        <size>
+                            <width>150</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                </widget>
+            </grid>
         </widget>
         <widget>
             <class>QGroupBox</class>

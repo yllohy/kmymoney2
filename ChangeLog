@@ -1,3 +1,7 @@
+2001-08-20 Michael Edwardes <mte@users.sourceforge.net>
+  * Added the new *unstable* qif date formatter code to the qif read and write
+    methods.
+
 2001-08-19 Michael Edwardes <mte@users.sourceforge.net>
   * Export QIF now has a progress bar.
   * KExportDlg now conforms to coding standards and uses i18n where

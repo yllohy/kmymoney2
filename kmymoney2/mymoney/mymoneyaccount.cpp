@@ -20,6 +20,11 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
 #include "mymoneyaccount.h"
 #include "mymoney_config.h"
 #include "mymoneyfile.h"
@@ -407,11 +412,24 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat,
               int apost = -1;
               int checknum = 0;
               bool isnumber = false;
-              int intyear = 0;
-              int intmonth = 0;
-              int intday = 0;
+//              int intyear = 0;
+//              int intmonth = 0;
+//              int intday = 0;
               QString checknumber = "";
+              qDebug("Date: %s, dateFormat: %s", date.latin1(), dateFormat.latin1());
+
+
               MyMoneyTransaction::transactionMethod transmethod;
+
+              int day=0, month=0, year=0;
+              char *buffer = (char*)date.latin1();
+              char *format = (char*)dateFormat.latin1();
+              int res = convertQIFDate(buffer, format, &day, &month, &year);
+              qDebug("day: %d, month: %d, year %d", day, month, year);
+              qDebug("res = %s", getQIFDateFormatErrorString(res));
+              QDate transdate(year, month, day);
+
+/*
               if(dateFormat == "MM/DD'YY")
               {
                 slash = date.find("/");             
@@ -442,6 +460,7 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat,
                 intmonth = month.toInt();
                 intday = day.toInt();
               }     
+*/
               checknum = type.toInt(&isnumber);
               if(isnumber == false)
               {
@@ -490,7 +509,7 @@ bool MyMoneyAccount::readQIFFile(const QString& name, const QString& dateFormat,
                     transmethod = MyMoneyTransaction::Deposit;
                   checknumber=type;
               }
-              QDate transdate(intyear,intmonth,intday);
+//              QDate transdate(intyear,intmonth,intday);
                      int commaindex = amount.find(",");
               double dblamount = 0;
               if(commaindex != -1)
@@ -649,6 +668,12 @@ bool MyMoneyAccount::writeQIFFile(const QString& name, const QString& dateFormat
         {
           if((transaction->date() >= startDate) && (transaction->date() <= endDate))
           {
+            QString qstringBuffer;
+            QDateToQIFDate(transaction->date(), qstringBuffer, dateFormat);
+            qDebug("QDate: %s, QIF Date: %s", transaction->date().toString().latin1(), qstringBuffer.latin1());
+            t << "D" << qstringBuffer << endl;
+
+            /*
             int year = transaction->date().year();
             if(dateFormat == "MM/DD'YY")
             {
@@ -659,6 +684,8 @@ bool MyMoneyAccount::writeQIFFile(const QString& name, const QString& dateFormat
             }
             int month = transaction->date().month();
             int day = transaction->date().day();
+            */
+
             double amount = transaction->amount().amount();
             if(transaction->type() == MyMoneyTransaction::Debit)
               amount = amount * -1;
@@ -679,7 +706,7 @@ bool MyMoneyAccount::writeQIFFile(const QString& name, const QString& dateFormat
               Category = transaction->categoryMajor();
             else
               Category = transaction->categoryMajor() + ":" + transaction->categoryMinor();
-              
+            /*
             if(dateFormat == "MM/DD'YY")
             {
               t << "D" << month << "/" << day << "'" << year << endl;
@@ -688,6 +715,7 @@ bool MyMoneyAccount::writeQIFFile(const QString& name, const QString& dateFormat
             {
               t << "D" << month << "/" << day << "/" << year << endl;
             }
+            */
             t << "U" << amount << endl;
             t << "T" << amount << endl;
             if(transaction->state() == MyMoneyTransaction::Reconciled)
@@ -706,4 +734,444 @@ bool MyMoneyAccount::writeQIFFile(const QString& name, const QString& dateFormat
       catCount = numcat;
     }
   return true;
+}
+
+// Doesn't do any sanity checks on the days, months or years e.g
+// days could be 7 or 78.  Months could be 3 or 83.  Both can't be
+// > 99 e.g only 2 digits.
+int MyMoneyAccount::convertQIFDate(char* buffer, char* format, int *da, int *mo, int *ye)
+{
+  int result=0;
+  
+  *da = *mo = *ye = 0;
+  
+  // result gets sets to the error in validate
+  if (validateQIFDateFormat(buffer, format, result, true)) {
+    int d_count=0, m_count=0, y_count=0;
+    int buf_count=0;
+  
+    while (*format && result==0) {
+      switch (*format) {
+        case '%':
+          ++format;
+          switch (*format) {
+            case 'd':
+              while (*format=='d') { format++; d_count++; }
+              // See if the next char is a digit so we can use %d
+              // and still pick up 10 etc after 9
+              if (d_count==1 && isdigit(buffer[buf_count+d_count])) {
+                d_count++;
+              }
+                
+              *da = to_days(buffer+buf_count, d_count);
+              if (*da>0) {
+                buf_count += d_count;
+              } else
+                result = 1;
+              break;
+            case 'm':
+              while (*format=='m') { format++; m_count++; }
+              // See if the next char is a digit so we can use %m
+              // and still pick up 10 etc after 9.  WILL BREAK WHEN
+              // USING %d%m%y for instance.  Could use a flag to indicate
+              // if any separators are present and if they are check to
+              // make sure the next digit isn't a separator.
+              if (m_count==1 && isdigit(buffer[buf_count+m_count])) {
+                m_count++;
+              }
+              *mo = to_months(buffer+buf_count, m_count);
+              if (*mo>0) {
+                buf_count += m_count;
+              } else
+                result = 2;
+              break;
+            case 'y':
+              while (*format=='y') { format++; y_count++; }
+              if (isdigit(buffer[buf_count+y_count]) &&
+                !buffer_contains(buffer, '\''))
+                result = 14;
+              else {
+                *ye = to_year(buffer+buf_count, y_count);
+                if (*ye>0)
+                  buf_count += y_count;
+                else
+                  result = 3;
+              }
+              break;
+          }
+          break;
+        default:
+          if (*format==buffer[buf_count]) {
+            buf_count++;
+            format++;
+          } else {
+            result = 4;
+          }
+          break;
+      }
+    }
+/*
+    if ((*format == NULL) && (result!=0)) { // end of format.  check for buffer underun
+      if (buffer[buf_count]!=NULL)
+        result = 14;
+    }
+  */
+  }
+    
+  return result;
+}
+
+bool MyMoneyAccount::validateQIFDateFormat(const char *buffer, const char *format, int& result, bool checkBuffer)
+{
+  int special_count=0, d_count=0, m_count=0, y_count=0, normal_count=0;
+  int found_current=0;
+  
+  if (!format)
+    result =  5;
+
+  if (checkBuffer && !buffer)
+    result =  5;
+
+  if ((strlen(format)<3))
+    result =  6;
+
+  if (checkBuffer && strlen(buffer)<3)
+    result =  6;
+
+  if (checkBuffer) {
+    char *p_buffer = (char*)buffer;
+    while (*p_buffer) {
+      if (*p_buffer=='\'')
+        found_current=1;
+      p_buffer++;
+    }
+  }
+  
+  char *p_format = (char*)format;
+  while (*p_format) {
+    switch (*p_format) {
+      case '%':
+        special_count++;
+        break;
+      case 'd':
+        d_count++;
+        break;
+      case 'm':
+        m_count++;
+        break;
+      case 'y':
+        y_count++;
+        break;
+      default:
+        normal_count++;
+        break;
+    }
+    p_format++;
+  }
+
+/*
+  if (found_current) {
+    if ((strlen(buffer)-1) != (strlen(format)-special_count))
+      result =  7;
+  } else {
+    if ((strlen(buffer)) != (strlen(format)-special_count))
+      result =  8;
+  }
+*/  
+  if (special_count != 3)
+    result =  9;
+    
+  if (d_count < 1 || d_count >= 3)
+    result =  10;
+    
+  if (m_count < 1 || m_count >= 4)
+    result =  11;
+    
+  if ((y_count < 2 || y_count >= 5) || y_count == 3)
+    result =  12;
+    
+  if (normal_count < 1 || normal_count > 2)
+    result =  13;
+    
+  if (result!=0)
+    return false;
+  return true;
+}
+
+int MyMoneyAccount::to_days(char *buffer, int dcount)
+{
+  char s_number[10];
+
+  if (str_has_alpha(buffer, dcount))
+    return -1;
+    
+  for (int i=0; i<dcount; i++)
+    s_number[i]=buffer[i];
+  s_number[dcount]=NULL;
+  
+  if (strlen(s_number)>=1) {
+    switch (dcount) {
+      case 1:
+        return atoi(s_number);
+      case 2:
+        if (s_number[0]=='0') {
+          return atoi(s_number+1);
+        }
+        else
+          return atoi(s_number);
+        break;
+    }
+  }
+  
+  return -1;
+}
+
+int MyMoneyAccount::to_months(char *buffer, int mcount)
+{
+  char s_number[10];
+
+  if (mcount!=3) {
+    if (str_has_alpha(buffer, mcount))
+      return -1;
+  }
+    
+  for (int i=0; i<mcount; i++)
+    s_number[i]=buffer[i];
+  s_number[mcount]=NULL;
+  
+  if (strlen(s_number)>=1) {
+    switch (mcount) {
+      case 1:
+        return atoi(s_number);
+      case 2:
+        if (s_number[0]=='0') {
+          return atoi(s_number+1);
+        }
+        else
+          return atoi(s_number);
+        break;
+      case 3:
+        return month_to_no(s_number);
+    }
+  }
+  
+  return -1;
+}
+
+int MyMoneyAccount::month_to_no(char *s_number)
+{
+  strupper(s_number);
+
+  if ((strcmp("JAN", s_number))==0)
+    return 1;
+  else if ((strcmp("FEB", s_number))==0)
+    return 2;
+  else if ((strcmp("MAR", s_number))==0)
+    return 3;
+  else if ((strcmp("APR", s_number))==0)
+    return 4;
+  else if ((strcmp("MAY", s_number))==0)
+    return 5;
+  else if ((strcmp("JUN", s_number))==0)
+    return 6;
+  else if ((strcmp("JUL", s_number))==0)
+    return 7;
+  else if ((strcmp("AUG", s_number))==0)
+    return 8;
+  else if ((strcmp("SEP", s_number))==0)
+    return 9;
+  else if ((strcmp("OCT", s_number))==0)
+    return 10;
+  else if ((strcmp("NOV", s_number))==0)
+    return 11;
+  else if ((strcmp("DEC", s_number))==0)
+    return 12;
+
+  return -1;
+}
+
+void MyMoneyAccount::strupper(char *buffer)
+{
+  while (*buffer) {
+    *buffer = toupper(*buffer);
+    buffer++;
+  }
+}
+
+int MyMoneyAccount::to_year(char *buffer, int ycount)
+{
+  char s_number[10];
+  int i=0;
+  int k=0;
+  int use_current=0;
+  int l_count=0;
+
+  if (str_has_alpha(buffer, ycount))
+    return -1;
+    
+  if (buffer[0]=='\'') {
+    use_current=1;
+    i=1;
+    l_count = ycount+1;
+  } else {
+    i=0;
+    l_count = ycount;
+  }
+    
+  int current = 20; // CHANGE CHANGE CHANGE !
+  for (k=0; i<l_count; i++, k++)
+    s_number[k]=buffer[i];
+  s_number[ycount]=NULL;
+  
+  if (strlen(s_number)>=1) {
+    switch (ycount) {
+      case 1:
+        return -1;
+      case 2:
+        char conv[5];
+        if (use_current)
+          strcpy(conv, itoa(current, buffer));
+        else
+          strcpy(conv, itoa(current-1, buffer));
+        strcat(conv, s_number);
+        return atoi(conv);
+      case 3:
+        return -1;
+      case 4:
+        return atoi(s_number);
+    }
+  }
+  
+  return -1;
+}
+
+char *MyMoneyAccount::itoa(int num, char *buffer)
+{
+  snprintf(buffer, strlen(buffer), "%d", num);
+  return buffer;
+}
+
+const char *MyMoneyAccount::getQIFDateFormatErrorString(int res)
+{
+  switch (res) {
+    case 0:
+      return "No error";
+    case 1:
+      return "Cannot convert number to Days";
+    case 2:
+      return "Cannot convert number to Months";
+    case 3:
+      return "Cannot convert number to Years";
+    case 4:
+      return "Character literal in format does not match in buffer";
+    case 5:
+      return "Arguments have not been allocated memory";
+    case 6:
+      return "Arguments aren't long enough";
+    case 7:
+    case 8:
+      return "Format and Buffer types do not match";
+    case 9:
+      return "Number of format specifiers invalid (%)";
+    case 10:
+      return "Number of day format options invalid (d)";
+    case 11:
+      return "Number of month format options invalid (m)";
+    case 12:
+      return "Number of year format options invalid (y)";
+    case 13:
+      return "Too many literal characters. (Just use them as separators)";
+    case 14:
+      return "Too many characters for a format specifier found in buffer";
+    default:
+      return "Unknown error.  Please mail mte@users.sourceforge.net with error number. Sorry.";
+  }
+}
+
+int MyMoneyAccount::str_has_alpha(const char *buffer, int len)
+{
+  int count=0;
+  while (*buffer && (count<len)) {
+    if (isalpha(*buffer))
+      return 1;
+    buffer++;
+    count ++;
+  }
+  
+  return 0;
+}
+
+int MyMoneyAccount::buffer_contains(const char *buffer, char let)
+{
+  char *pbuf = (char*)buffer;
+  while (*pbuf) {
+    if (*pbuf == let)
+      return 1;
+    pbuf++;
+  }
+  
+  return 0;
+}
+
+int MyMoneyAccount::QDateToQIFDate(const QDate date, QString& buffer, const char* format)
+{
+  int result=0;
+  char cLastLetter = 'x';
+
+  // result gets sets to the error in validate
+  buffer = "";
+
+  if (validateQIFDateFormat("", format, result, false)) {
+    int d_count=0, m_count=0, y_count=0;
+
+    while (*format && result==0) {
+      switch (*format) {
+        case '%':
+          ++format;
+          switch (*format) {
+            case 'd':
+              while (*format=='d') { format++; d_count++; }
+              buffer += QString::number(date.day());
+              cLastLetter = 'd';
+              break;
+            case 'm':
+              while (*format=='m') { format++; m_count++; }
+              if (m_count==3)
+                buffer += date.monthName(date.month());
+              else
+                buffer += QString::number(date.month());
+              cLastLetter = 'm';
+              break;
+            case 'y':
+              while (*format=='y') { format++; y_count++; }
+              if (y_count==2) {
+                int nYear = 0;
+                if(date.year() >=2000)
+                  nYear = date.year() - 2000;
+                else
+                  nYear = date.year() - 1900;
+
+                if (cLastLetter == 'm' || cLastLetter == 'd') // Insert a '
+                  buffer += "\'";
+
+                if (nYear<10) // Prefix with a zero first
+                  buffer += "0";
+                buffer += QString::number(nYear);
+              } else
+                buffer += QString::number(date.year());
+              cLastLetter = 'y';
+              break;
+          }
+          break;
+        default:
+          buffer += *format; // Hopefully just a separator or the ' char
+          cLastLetter = *format;
+          format++;
+          break;
+      }
+    }
+  }
+
+  buffer += "\0";
+  return result;
 }

@@ -51,17 +51,29 @@ KExportDlg::KExportDlg(MyMoneyAccount *account)
   else
     m_qlabelAccount->setText(i18n("NO ACCOUNT AVAILABLE."));
   
-  m_qcomboboxDateFormat->insertItem("MM/DD\'YY");
-  m_qcomboboxDateFormat->insertItem("MM/DD/YYYY");
-  m_qcomboboxDateFormat->setEditable(false);
+  // Typical UK formats, (as well as france etc)
+  m_qcomboboxDateFormat->insertItem("%d/%m/%yy");
+  m_qcomboboxDateFormat->insertItem("%d/%mmm/%yy");
+  m_qcomboboxDateFormat->insertItem("%d/%m/%yyyy");
+  m_qcomboboxDateFormat->insertItem("%d/%mmm/%yyyy");
+  m_qcomboboxDateFormat->insertItem("%d/%m%yy");
+  m_qcomboboxDateFormat->insertItem("%d/%mmm%yy");
+
+  // Typical US formats
+  m_qcomboboxDateFormat->insertItem("%m/%d/%yy");
+  m_qcomboboxDateFormat->insertItem("%mmm/%d/%yy");
+  m_qcomboboxDateFormat->insertItem("%m/%d/%yyyy");
+  m_qcomboboxDateFormat->insertItem("%mmm/%d/%yyyy");
+  m_qcomboboxDateFormat->insertItem("%m%d%yy");
+  m_qcomboboxDateFormat->insertItem("%mmm/%d%yy");
+
+  m_qcomboboxDateFormat->setEditable(true);
 
   // Load up the last used settings
   readConfig();
 
-  if (m_qstringLastFormat == "MM/DD\'YY")
-    m_qcomboboxDateFormat->setCurrentItem(0);
-  else
-    m_qcomboboxDateFormat->setCurrentItem(1);
+//  if (m_mymoneyaccount->validateQIFDateFormat(m_qstringLastFormat))
+    m_qcomboboxDateFormat->setEditText(m_qstringLastFormat);
 
   connect(m_qbuttonBrowse, SIGNAL( clicked() ), this, SLOT( slotBrowse() ) );
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));

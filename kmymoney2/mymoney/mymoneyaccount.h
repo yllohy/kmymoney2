@@ -34,7 +34,7 @@ class MyMoneyBank;
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.14 2001/08/19 18:59:20 mte Exp $
+  * $Id: mymoneyaccount.h,v 1.15 2001/08/20 00:21:51 mte Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -74,6 +74,17 @@ private:
 
   // Looks through the transaction list for a transaction !
   bool findTransactionPosition(const MyMoneyTransaction& transaction, unsigned int&);
+
+  int convertQIFDate(char* buffer, char* format, int *da, int *mo, int *ye);
+  int to_days(char *buffer, int dcount);
+  int to_months(char *buffer, int mcount);
+  int month_to_no(char *s_number);
+  void strupper(char *buffer);
+  int to_year(char *buffer, int ycount);
+  char *itoa(int num, char *buffer);
+  int str_has_alpha(const char *buffer, int len);
+  int buffer_contains(const char *buffer, char let);
+  int QDateToQIFDate(const QDate date, QString& buffer, const char* format);
 
 public:
   /**
@@ -379,6 +390,9 @@ public:
   /** No descriptions */
   bool writeQIFFile(const QString& name, const QString& dateFormat, bool expCat,bool expAcct,
                     QDate startDate, QDate endDate, int& transCount, int& catCount);
+
+  bool validateQIFDateFormat(const char *buffer, const char *format, int& result, bool checkBuffer=true);
+  const char *getQIFDateFormatErrorString(int res);
 
 signals:
   void signalProgressCount(int);
