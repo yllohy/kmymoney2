@@ -21,6 +21,8 @@
 #include <qdatetime.h>
 #include "mymoneymoney.h"
 
+class MyMoneyAccount;
+
 // This class represents a Transaction in an Account
 class MyMoneyTransaction {
 public:
@@ -29,6 +31,8 @@ public:
   enum stateE { Cleared, Reconciled, Unreconciled };
 
 private:
+	MyMoneyAccount *m_parent;
+
   // The 'fields'
   unsigned long m_id;
   QString m_number;
@@ -50,7 +54,7 @@ private:
 
 public:
   MyMoneyTransaction();
-  MyMoneyTransaction(const long id, transactionMethod methodType, const QString& number, const QString& memo,
+  MyMoneyTransaction(MyMoneyAccount *parent, const long id, transactionMethod methodType, const QString& number, const QString& memo,
                      const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor, const QString& atmName,
                      const QString& fromTo, const QString& bankFrom, const QString& bankTo, stateE state);
   ~MyMoneyTransaction();
@@ -72,21 +76,20 @@ public:
   stateE state(void) const { return m_state; }
 
   // Simple set operations
-//  void setId(const long id) { m_id = id; }
-  void setNumber(const QString& val) { m_number = val; }
-  void setMemo(const QString& val) { m_memo = val; }
-  void setAmount(const MyMoneyMoney& val) { m_amount = val; }
-  void setDate(const QDate& date) { m_date = date; }
-  void setMethod(const transactionMethod method) { m_method = method; }
-  void setCategoryMajor(const QString& major) { m_categoryMajor = major; }
-  void setCategoryMinor(const QString& minor) { m_categoryMinor = minor; }
-  void setAtmBankName(const QString& val) { m_atmBankName = val; }
-  void setPayee(const QString& fromTo) { m_payee = fromTo; }
-  void setAccountFrom(const QString& bankFrom) { m_accountFrom = bankFrom; }
-  void setAccountTo(const QString& bankTo) { m_accountTo = bankTo; }
-  void setState(const stateE state) { m_state = state; }
+  void setNumber(const QString& val);
+  void setMemo(const QString& val);
+  void setAmount(const MyMoneyMoney& val);
+  void setDate(const QDate& date);
+  void setMethod(const transactionMethod method);
+  void setCategoryMajor(const QString& major);
+  void setCategoryMinor(const QString& minor);
+  void setAtmBankName(const QString& val);
+  void setPayee(const QString& fromTo);
+  void setAccountFrom(const QString& bankFrom);
+  void setAccountTo(const QString& bankTo);
+  void setState(const stateE state);
 
-  void setIndex(const unsigned int index) { m_index = index; }
+  void setIndex(const unsigned int index);
   unsigned int index(void) { return m_index; }
 
   bool operator == (const MyMoneyTransaction&);

@@ -38,7 +38,7 @@
   * @see MyMoneyBank
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyfile.h,v 1.6 2001/07/07 17:46:29 mte Exp $
+  * $Id: mymoneyfile.h,v 1.7 2001/07/08 17:45:02 mte Exp $
   *
   * @short A representation of the file format used by KMyMoney2.
 **/
@@ -87,6 +87,7 @@ private:
   // <kde2dir>/share/apps/kmymoney2/default_categories.dat
   QList<MyMoneyCategory> m_categoryList;
   bool findBankPosition(const MyMoneyBank& bank, unsigned int&);
+
 
 public:
   /**
@@ -220,14 +221,14 @@ public:
   QDate lastModifyDate(void) { return m_lastModify; }
 
   // Simple set operations
-  void set_userName(const QString& val) { m_userName = val; }
-  void set_userStreet(const QString& val) { m_userStreet = val; }
-  void set_userTown(const QString& val) { m_userTown = val; }
-  void set_userCounty(const QString& val) { m_userCounty = val; }
-  void set_userPostcode(const QString& val) { m_userPostcode = val; }
-  void set_userTelephone(const QString& val) { m_userTelephone = val; }
-  void set_userEmail(const QString& val) { m_userEmail = val; }
-  void setCreateDate(const QDate& val) { m_createdDate = val; }
+  void set_userName(const QString& val) { m_userName = val; m_dirty=true; }
+  void set_userStreet(const QString& val) { m_userStreet = val; m_dirty=true; }
+  void set_userTown(const QString& val) { m_userTown = val;  m_dirty=true; }
+  void set_userCounty(const QString& val) { m_userCounty = val;  m_dirty=true; }
+  void set_userPostcode(const QString& val) { m_userPostcode = val;  m_dirty=true; }
+  void set_userTelephone(const QString& val) { m_userTelephone = val;  m_dirty=true; }
+  void set_userEmail(const QString& val) { m_userEmail = val;  m_dirty=true; }
+  void setCreateDate(const QDate& val) { m_createdDate = val;  m_dirty=true; }
 
   // File reading/saving code
   int saveAllData(const QString& fileName);

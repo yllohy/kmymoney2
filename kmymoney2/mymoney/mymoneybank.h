@@ -20,9 +20,12 @@
 #include <qdatastream.h>
 #include "mymoneyaccount.h"
 
+class MyMoneyFile;
+
 // This class represents a Bank contained within a file
 class MyMoneyBank {
 private:
+	MyMoneyFile *m_parent;
   // Bank 'fields'
   QString m_name;
   QString m_city;
@@ -42,7 +45,8 @@ private:
 
 public:
 	MyMoneyBank();
-	MyMoneyBank(const QString& name, const QString& sortCode, const QString& city, const QString& street,
+
+	MyMoneyBank(MyMoneyFile* parent, const QString& name, const QString& sortCode, const QString& city, const QString& street,
 	  const QString& postcode, const QString& telephone, const QString& manager);
 	~MyMoneyBank();
 
@@ -54,15 +58,16 @@ public:
   QString telephone(void) const { return m_telephone; }
   QString manager(void) const { return m_manager; }
   QString sortCode(void) const { return m_sortCode; }
+	MyMoneyFile *parent(void) { return m_parent; }
 
 	// Simple set operations
-  void setName(const QString& name) { m_name = name; }
-  void setCity(const QString& val) { m_city = val; }
-  void setStreet(const QString& val) { m_street = val; }
-  void setPostcode(const QString& val) { m_postcode = val; }
-  void setTelephone(const QString& val) { m_telephone = val; }
-  void setManager(const QString& val) { m_manager = val; }
-  void setSortCode(const QString& val) { m_sortCode = val; }
+  void setName(const QString& name);
+  void setCity(const QString& val);
+  void setStreet(const QString& val);
+  void setPostcode(const QString& val);
+  void setTelephone(const QString& val);
+  void setManager(const QString& val);
+  void setSortCode(const QString& val);
 
 	void clear(void);
 

@@ -16,18 +16,23 @@
 #include "mymoneyaccount.h"
 #include "mymoney_config.h"
 
+#include "mymoneyfile.h"
+#include "mymoneybank.h"
+
 MyMoneyAccount::MyMoneyAccount()
 {
   m_openingDate = QDate::currentDate();
   m_lastId = 0L;
   m_accountType = MyMoneyAccount::Current;
   m_lastReconcile = QDate::currentDate();
+	m_parent=0;
 }
 
-MyMoneyAccount::MyMoneyAccount(const QString& name, const QString& number, accountTypeE type,
+MyMoneyAccount::MyMoneyAccount(MyMoneyBank *parent, const QString& name, const QString& number, accountTypeE type,
     const QString& description, const QDate openingDate, const MyMoneyMoney openingBal,
     const QDate& lastReconcile)
 {
+	m_parent = parent;
   m_accountName = name;
   m_accountNumber = number;
   m_lastId=0L;
@@ -107,8 +112,11 @@ bool MyMoneyAccount::removeCurrentTransaction(unsigned int pos)
 bool MyMoneyAccount::removeTransaction(const MyMoneyTransaction& transaction)
 {
   unsigned int pos;
-  if (findTransactionPosition(transaction, pos))
+  if (findTransactionPosition(transaction, pos)) {
+		if (m_parent)
+			m_parent->parent()->setDirty(true);
     return m_transactions.remove(pos);
+	}
   return false;
 }
 
@@ -116,13 +124,15 @@ bool MyMoneyAccount::addTransaction(MyMoneyTransaction::transactionMethod method
   const MyMoneyMoney& amount, const QDate& date, const QString& categoryMajor, const QString& categoryMinor, const QString& atmName,
   const QString& fromTo, const QString& bankFrom, const QString& bankTo, MyMoneyTransaction::stateE state)
 {
-  MyMoneyTransaction *transaction = new MyMoneyTransaction(m_lastId++, methodType, number,
+  MyMoneyTransaction *transaction = new MyMoneyTransaction(this, m_lastId++, methodType, number,
     memo, amount, date, categoryMajor, categoryMinor, atmName,
     fromTo, bankFrom, bankTo, state);
 
 
   if (m_transactions.isEmpty()) {
     m_transactions.append(transaction);
+		if (m_parent)
+			m_parent->parent()->setDirty(true);
     return true;
   }
   int idx=0;
@@ -140,6 +150,8 @@ bool MyMoneyAccount::addTransaction(MyMoneyTransaction::transactionMethod method
   }
 
   m_transactions.insert(idx,transaction);
+	if (m_parent)	
+		m_parent->parent()->setDirty(true);
 
   return true;
 }
@@ -186,6 +198,7 @@ MyMoneyAccount::MyMoneyAccount(const MyMoneyAccount& right)
   m_balance = right.m_balance;
   m_transactions.clear();
   m_transactions = right.m_transactions;
+	m_parent = right.m_parent;
 }
 
 MyMoneyAccount& MyMoneyAccount::operator = (const MyMoneyAccount& right)
@@ -201,6 +214,7 @@ MyMoneyAccount& MyMoneyAccount::operator = (const MyMoneyAccount& right)
   m_balance = right.m_balance;
   m_transactions.clear();
   m_transactions = right.m_transactions;
+	m_parent = right.m_parent;
   return *this;
 }
 
@@ -247,3 +261,12 @@ QList<MyMoneyTransaction> * MyMoneyAccount::getTransactionList(){
 	return &m_transactions;
 
 }
+
+void MyMoneyAccount::setOpeningDate(QDate date) { m_openingDate = date; if (m_parent) m_parent->parent()->setDirty(true); }
+void MyMoneyAccount::setOpeningBalance(MyMoneyMoney money) { m_openingBalance = money; if (m_parent) m_parent->parent()->setDirty(true); }
+void MyMoneyAccount::setName(const QString& name) { m_accountName = name; if (m_parent) m_parent->parent()->setDirty(true); }
+void MyMoneyAccount::setAccountNumber(const QString& number) { m_accountNumber = number; if (m_parent) m_parent->parent()->setDirty(true); }
+void MyMoneyAccount::setLastId(const long id) { m_lastId = id; if (m_parent) m_parent->parent()->setDirty(true); }
+void MyMoneyAccount::setAccountType(MyMoneyAccount::accountTypeE type) { m_accountType = type; if (m_parent) m_parent->parent()->setDirty(true); }
+void MyMoneyAccount::setDescription(const QString& description) { m_description = description; if (m_parent) m_parent->parent()->setDirty(true); }
+void MyMoneyAccount::setLastReconcile(const QDate& date) { m_lastReconcile = date; if (m_parent) m_parent->parent()->setDirty(true); }

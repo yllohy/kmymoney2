@@ -23,6 +23,8 @@
 #include "mymoneymoney.h"
 #include "mymoneyscheduled.h"
 
+class MyMoneyBank;
+
 /**
   * A representation of an account typically held at a bank.  This class currently
   * only supports two types of account - current & savings.
@@ -31,7 +33,7 @@
   * @see MyMoneyTransaction
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyaccount.h,v 1.9 2001/07/07 04:58:28 frodriguez Exp $
+  * $Id: mymoneyaccount.h,v 1.10 2001/07/08 17:45:02 mte Exp $
   *
   * @short Representation of an account which holds transactions.
 **/
@@ -47,6 +49,7 @@ public:
   };
 
 private:
+	MyMoneyBank *m_parent;
   // Account details
   QString m_accountName;
   QString m_accountNumber;
@@ -74,7 +77,7 @@ public:
     * The default constructor which loads default values into the attributes.
   **/
 	MyMoneyAccount();
-	
+
 	/**
 	  * The most commonly used constructor.  Initialises all the attributes to the
 	  * supplied arguments.
@@ -85,7 +88,7 @@ public:
 	  * @param description A description of the account. Unlimited in length.
 	  * @param lastReconcile TODO: remove this param, *why* is it here ?
 	**/
-  MyMoneyAccount(const QString& name, const QString& number, accountTypeE type,
+  MyMoneyAccount(MyMoneyBank *parent, const QString& name, const QString& number, accountTypeE type,
     const QString& description, const QDate openingDate, const MyMoneyMoney openingBal,
     const QDate& lastReconcile);
 
@@ -154,10 +157,10 @@ public:
   MyMoneyMoney openingBalance(void) { return m_openingBalance; }
 
   /** */
-  void setOpeningDate(QDate date) { m_openingDate = date; }
+  void setOpeningDate(QDate date);
 
   /** */
-  void setOpeningBalance(MyMoneyMoney money) { m_openingBalance = money; }
+  void setOpeningBalance(MyMoneyMoney money);
 
   /**
     * Calculates the balance of the account and returns it in a MyMoneyMoney
@@ -174,14 +177,14 @@ public:
     *
     * @param name The new name for the account.
   **/
-  void setName(const QString& name) { m_accountName = name; }
+  void setName(const QString& name);
 
   /**
     * Simple set operation.
     *
     * @param number The new account number for the account.
   **/
-  void setAccountNumber(const QString& number) { m_accountNumber = number; }
+  void setAccountNumber(const QString& number);
 
   /**
     * Simple set operation.
@@ -190,7 +193,7 @@ public:
     *
     * @param id The new last id for the account.
   **/
-  void setLastId(const long id) { m_lastId = id; }
+  void setLastId(const long id);
 
   /**
     * Simple set operation.
@@ -199,14 +202,14 @@ public:
     *
     * @see accountTypeE
   **/
-  void setAccountType(MyMoneyAccount::accountTypeE type) { m_accountType = type; }
+  void setAccountType(MyMoneyAccount::accountTypeE type);
 
   /**
     * Simple set operation.
     *
     * @param description The new description for the account.
   **/
-  void setDescription(const QString& description) { m_description = description; }
+  void setDescription(const QString& description);
 
   /**
     * Simple set operation.
@@ -215,7 +218,7 @@ public:
     *
     * @param date The last time this account was reconciled.
   **/
-  void setLastReconcile(const QDate& date) { m_lastReconcile = date; }
+  void setLastReconcile(const QDate& date);
 
   /**
     * Finds a transaction in the list that matches the argument.
@@ -356,6 +359,8 @@ public:
   bool readAllData(int version, QDataStream& stream);
   /** No descriptions */
   QList<MyMoneyTransaction> * getTransactionList();
+
+	MyMoneyBank *parent(void) { return m_parent; }
 };
 
 #endif

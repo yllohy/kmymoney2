@@ -329,6 +329,7 @@ void MyMoneyFile::resetAllData(void)
   m_lastModify = QDate::currentDate();
   m_categoryList.clear();
   m_initialised = m_containsBanks = m_containsAccounts = m_containsTransactions = false;
+	m_dirty = false;
 }
 
 MyMoneyBank* MyMoneyFile::bank(const MyMoneyBank& bank)
@@ -367,13 +368,17 @@ bool MyMoneyFile::removeBank(const MyMoneyBank& bank)
     m_containsBanks=false;
 
   unsigned int pos;
-  if (findBankPosition(bank, pos))
+  if (findBankPosition(bank, pos)) {
+		m_dirty=true;
     return m_banks.remove(pos);
+	}
+	
   return false;
 }
 
 void MyMoneyFile::addBankName(const QString& val)
 {
+	m_dirty=true;
   m_bankNames.append(val);
 }
 
@@ -531,8 +536,9 @@ QListIterator<MyMoneyPayee> MyMoneyFile::payeeIterator(void)
 bool MyMoneyFile::addBank(const QString& name, const QString& sortCode, const QString& city,
   const QString& street, const QString& postcode, const QString& telephone, const QString& manager)
 {
-  MyMoneyBank *bank = new MyMoneyBank(name, sortCode, city, street, postcode, telephone, manager);
+  MyMoneyBank *bank = new MyMoneyBank(this, name, sortCode, city, street, postcode, telephone, manager);
   m_banks.append(bank);
+	m_dirty=true;
   if (m_containsBanks==false)
     m_containsBanks=true;
   return true;
@@ -609,6 +615,7 @@ bool MyMoneyFile::findBankPosition(const MyMoneyBank& bank, unsigned int& pos)
 void MyMoneyFile::init(void)
 {
   m_initialised=true;
+	m_dirty=false;
 }
 
 bool MyMoneyFile::isInitialised(void)

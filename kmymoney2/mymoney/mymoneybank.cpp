@@ -16,15 +16,19 @@
 #include "mymoneybank.h"
 #include "mymoney_config.h"
 
+#include "mymoneyfile.h"
+
 MyMoneyBank::MyMoneyBank()
 {
 //  m_accounts.setAutoDelete(true);
+	m_parent=0;
 }
 
-MyMoneyBank::MyMoneyBank(const QString& name, const QString& sortCode, const QString& city, const QString& street,
+MyMoneyBank::MyMoneyBank(MyMoneyFile *parent, const QString& name, const QString& sortCode, const QString& city, const QString& street,
   const QString& postcode, const QString& telephone, const QString& manager)
 {
 //  m_accounts.setAutoDelete(true);
+	m_parent = parent;
   m_name = name;
   m_city = city;
   m_street = street;
@@ -52,8 +56,10 @@ void MyMoneyBank::clear(void)
 bool MyMoneyBank::newAccount(const QString& name, const QString& number, MyMoneyAccount::accountTypeE type,
     const QString& description, const QDate openingDate, const MyMoneyMoney openingBal, const QDate& lastReconcile)
 {
-  MyMoneyAccount *account = new MyMoneyAccount(name, number, type, description, openingDate, openingBal, lastReconcile);
+  MyMoneyAccount *account = new MyMoneyAccount(this, name, number, type, description, openingDate, openingBal, lastReconcile);
   m_accounts.append(account);
+	if (m_parent)
+		m_parent->setDirty(true);
   return true;
 }
 
@@ -91,8 +97,11 @@ bool MyMoneyBank::removeAccount(const MyMoneyAccount& account)
 {
   unsigned int pos;
 
-  if (findAccountPosition(account, pos))
+  if (findAccountPosition(account, pos)) {
+		if (m_parent)
+			m_parent->setDirty(true);
     return m_accounts.remove(pos);
+	}
   return false;
 }
 
@@ -112,6 +121,7 @@ bool MyMoneyBank::findAccountPosition(const MyMoneyAccount& account, unsigned in
 
 MyMoneyBank::MyMoneyBank(const MyMoneyBank& right)
 {
+	m_parent = right.m_parent;
   m_name = right.m_name;
   m_city = right.m_city;
   m_street = right.m_street;
@@ -125,6 +135,7 @@ MyMoneyBank::MyMoneyBank(const MyMoneyBank& right)
 
 MyMoneyBank& MyMoneyBank::operator = (const MyMoneyBank& right)
 {
+	m_parent = right.m_parent;
   m_name = right.m_name;
   m_city = right.m_city;
   m_street = right.m_street;
@@ -185,3 +196,11 @@ bool MyMoneyBank::readAllData(int version, QDataStream& stream)
     >> m_sortCode;
   return true;
 }
+
+void MyMoneyBank::setName(const QString& name) { m_name = name; if (m_parent) m_parent->setDirty(true); }
+void MyMoneyBank::setCity(const QString& val) { m_city = val; if (m_parent) m_parent->setDirty(true); }
+void MyMoneyBank::setStreet(const QString& val) { m_street = val; if (m_parent) m_parent->setDirty(true); }
+void MyMoneyBank::setPostcode(const QString& val) { m_postcode = val; if (m_parent) m_parent->setDirty(true); }
+void MyMoneyBank::setTelephone(const QString& val) { m_telephone = val; if (m_parent) m_parent->setDirty(true); }
+void MyMoneyBank::setManager(const QString& val) { m_manager = val; if (m_parent) m_parent->setDirty(true); }
+void MyMoneyBank::setSortCode(const QString& val) { m_sortCode = val; if (m_parent) m_parent->setDirty(true); }
