@@ -47,7 +47,7 @@ KLedgerViewSavings::KLedgerViewSavings(QWidget *parent, const char *name )
   m_form->tabBar()->removeTab(m_tabCheck);
   m_form->tabBar()->removeTab(m_tabAtm);
   m_register->hideColumn(0);
-  m_register->repaintContents();
+  m_register->repaintContents(false);
 }
 
 KLedgerViewSavings::~KLedgerViewSavings()
