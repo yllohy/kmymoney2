@@ -54,8 +54,8 @@ class MyMoneyQifWriter : public QObject
   Q_OBJECT
 
 public: 
-	MyMoneyQifWriter();
-	~MyMoneyQifWriter();
+  MyMoneyQifWriter();
+  ~MyMoneyQifWriter();
 
   /**
     * This method is used to start the conversion. The parameters control
