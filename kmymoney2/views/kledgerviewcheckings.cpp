@@ -105,6 +105,7 @@ void KLedgerViewCheckings::refreshView(void)
 
 void KLedgerViewCheckings::resizeEvent(QResizeEvent* ev)
 {
+  
   // resize the register
   int w = m_register->visibleWidth();
 
@@ -113,7 +114,13 @@ void KLedgerViewCheckings::resizeEvent(QResizeEvent* ev)
   int m_balanceWidth = 100;
 
   m_register->setColumnWidth(0, 80);
-  m_register->setColumnWidth(1, 100);
+
+  // Resize the date field to the size required by the input widget
+  kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
+  datefield->setFont(m_register->cellFont());
+  m_register->setColumnWidth(1, datefield->minimumSizeHint().width());
+  delete datefield;
+
   m_register->setColumnWidth(3, 20);
   m_register->setColumnWidth(4, m_debitWidth);
   m_register->setColumnWidth(5, m_creditWidth);
@@ -1083,6 +1090,19 @@ void KLedgerViewCheckings::arrangeEditWidgetsInRegister(QWidget*& focusWidget, c
   m_tabOrderWidgets.append(m_editMemo);
   m_tabOrderWidgets.append(m_editPayment);
   m_tabOrderWidgets.append(m_editDeposit);
+
+  if(m_editFrom) {
+    delete m_editFrom;
+    m_editFrom = 0;
+  }
+  if(m_editTo) {
+    delete m_editTo;
+    m_editTo = 0;
+  }
+  if(m_editSplit) {
+    delete m_editSplit;
+    m_editSplit = 0;
+  }
 }
 
 void KLedgerViewCheckings::showWidgets(void)
