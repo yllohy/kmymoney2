@@ -91,12 +91,12 @@
 #include "../mymoney/storage/mymoneystoragexml.h"
 #include "../mymoney/storage/mymoneystoragegnc.h"
 
+#include "../converter/mymoneybanking.h"
+
 #include "kmymoneyview.h"
 #include "kbanksview.h"
 #include "khomeview.h"
-#ifdef HAVE_KBANKING
-# include "kjobview.h"
-#endif
+#include "kjobview.h"
 #include "kcategoriesview.h"
 #include "kpayeesview.h"
 #include "kscheduledview.h"
@@ -199,13 +199,12 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_reportsView, SLOT(slotReloadView()));
 
   // page 8
-#ifdef HAVE_KBANKING
-  if (kbanking) {
+  m_jobViewFrame = 0;
+  if(KMyMoneyBanking::instance()->isAvailable()) {
     m_jobViewFrame = addVBoxPage( i18n("Outbox"), i18n("Outbox"),
                                  DesktopIcon("outbox"));
     m_jobView=new KJobView(m_jobViewFrame, "jobView");
   }
-#endif
 
   // connect the view activation signal mapper
   connect(signalMap, SIGNAL(mapped(int)), this, SIGNAL(viewActivated(int)));
@@ -248,8 +247,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_accountMenu->insertSeparator();
   m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("Edit..."), this, SLOT(slotAccountEdit()), 0, AccountEdit);
   m_accountMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotAccountDelete()), 0, AccountDelete);
-#ifdef HAVE_KBANKING
-  if (kbanking) {
+
+  if(KMyMoneyBanking::instance()->isAvailable()) {
     m_accountMenu->insertSeparator();
     m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small),
                               i18n("Map to online account..."),
@@ -260,7 +259,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
                               this, SLOT(slotAccountOnlineUpdate()), 0,
                               AccountOnlineUpdate);
   }
-#endif
+
   m_bankMenu = new KPopupMenu(this);
   m_bankMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("Institution Options"));
   // Use a proxy slot
@@ -316,9 +315,8 @@ void KMyMoneyView::enableViews(int state)
   m_payeesViewFrame->setEnabled(state);
   m_ledgerViewFrame->setEnabled(state);
   m_reportsViewFrame->setEnabled(state);
-#ifdef HAVE_KBANKING
-  m_jobViewFrame->setEnabled(state);
-#endif
+  if(m_jobViewFrame)
+    m_jobViewFrame->setEnabled(state);
 }
 
 void KMyMoneyView::slotRightMouse()
@@ -360,27 +358,24 @@ void KMyMoneyView::slotAccountRightMouse()
             m_accountMenu->setItemEnabled(AccountReconcile, true);
             m_accountMenu->setItemEnabled(AccountEdit, true);
             m_accountMenu->setItemEnabled(AccountDelete, true);
-#ifdef HAVE_KBANKING
-            if (kbanking) {
+            if(KMyMoneyBanking::instance()->isAvailable()) {
               m_accountMenu->setItemEnabled(AccountOnlineMap, true);
               m_accountMenu->setItemEnabled(AccountOnlineUpdate, true);
             }
-#endif
           }
           m_accountMenu->changeItem(AccountNew, i18n("New account..."));
           m_accountMenu->connectItem(AccountNew, this, SLOT(slotAccountNew()));
           break;
+
         case MyMoneyAccount::Income:
         case MyMoneyAccount::Expense:
           if(!file->isStandardAccount(acc)) {
             m_accountMenu->setItemEnabled(AccountEdit, true);
             m_accountMenu->setItemEnabled(AccountDelete, true);
-#ifdef HAVE_KBANKING
-            if (kbanking) {
+            if(KMyMoneyBanking::instance()->isAvailable()) {
               m_accountMenu->setItemEnabled(AccountOnlineMap, true);
               m_accountMenu->setItemEnabled(AccountOnlineUpdate, true);
             }
-#endif
           }
           m_accountMenu->changeItem(AccountNew, i18n("New category..."));
           m_accountMenu->connectItem(AccountNew, this, SLOT(slotCategoryNew()));
@@ -633,8 +628,7 @@ void KMyMoneyView::slotAccountDelete()
 
 void KMyMoneyView::slotAccountOnlineMap()
 {
-#ifdef HAVE_KBANKING
-  if (kbanking) {
+  if(KMyMoneyBanking::instance()->isAvailable()) {
     if (!fileOpen())
       return;
 
@@ -669,7 +663,7 @@ void KMyMoneyView::slotAccountOnlineMap()
             }
 
             // open map dialog
-            if (!kbanking->askMapAccount(accountId,
+            if (!KMyMoneyBanking::instance()->askMapAccount(accountId,
                                          bankCode.latin1(),
                                          account.number())) {
               // TODO: flash result
@@ -693,60 +687,49 @@ void KMyMoneyView::slotAccountOnlineMap()
         return;
       }
   }
-#endif
 }
 
 
 
 void KMyMoneyView::slotAccountOnlineUpdate()
 {
-#ifdef HAVE_KBANKING
-  if (kbanking) {
+  KMyMoneyBanking* kbanking = KMyMoneyBanking::instance();
+  if(kbanking->isAvailable()) {
     if (!fileOpen())
       return;
 
     bool accountSuccess=false;
+    try {
+      MyMoneyFile* file = MyMoneyFile::instance();
+      MyMoneyAccount account;
 
-    try
-      {
-        MyMoneyFile* file = MyMoneyFile::instance();
-        MyMoneyAccount account;
+      if(pageIndex(m_accountsViewFrame) == activePageIndex()) {
+        QCString accountId = m_accountsView->currentAccount(accountSuccess);
+        if(!accountId.isEmpty()) {
 
-        if(pageIndex(m_accountsViewFrame) == activePageIndex()) {
-          QCString accountId = m_accountsView->currentAccount(accountSuccess);
-          if(!accountId.isEmpty()) {
-
-            account=file->account(accountId);
-            // TODO: get last statement date
-            if (kbanking->requestBalance(accountId))
-              if (kbanking->requestTransactions(accountId,
-                                                QDate(), QDate())) {
-                // TODO: flash status
-              }
+          account=file->account(accountId);
+          // TODO: get last statement date
+          if (kbanking->requestBalance(accountId)) {
+            if (kbanking->requestTransactions(accountId,
+                                              QDate(), QDate())) {
+              // TODO: flash status
+            }
           }
         }
       }
-    catch (MyMoneyException *e)
-      {
-        if (accountSuccess)
-          {
-            QString errorString = i18n("Cannot edit account/category: ");
-            errorString += e->what();
+    }
+    catch (MyMoneyException *e) {
+      if (accountSuccess) {
+        QString errorString = i18n("Cannot edit account/category: ");
+        errorString += e->what();
 
-            KMessageBox::information(this, errorString);
-          }
-        delete e;
-        return;
+        KMessageBox::information(this, errorString);
       }
+      delete e;
+      return;
+    }
   }
-#endif
 }
-
-
-
-
-
-
 
 bool KMyMoneyView::fileOpen(void)
 {
@@ -801,6 +784,13 @@ bool KMyMoneyView::readFile(const KURL& url)
   // let's glimps into the file to figure out, if it's one
   // of the old (uncompressed) or new (compressed) files.
   QFile file(filename);
+  QFileInfo info(file);
+  if(!info.isFile()) {
+    QString msg=i18n("<b>%1</b> is not a KMyMoney file.").arg(filename);
+    KMessageBox::error(this, QString("<p>")+msg, i18n("Filetype Error"));
+    return false;
+  }
+
   QIODevice *qfile = 0;
   bool rc = true;
 

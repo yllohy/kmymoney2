@@ -18,15 +18,7 @@
 # include <config.h>
 #endif
 
-
 #include <stdio.h>
-
-
-#ifdef HAVE_KBANKING
-# include "converter/mymoneybanking.h"
-# include <gwenhywfar/logger.h>
-#endif
-
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -52,6 +44,7 @@
 #include "kapptest.h"
 #include "kmymoneyutils.h"
 #include "converter/mymoneyofxstatement.h"
+#include "converter/mymoneybanking.h"
 
 static const char *description =
   I18N_NOOP("KMyMoney, the Personal Finance Manager for KDE.\n\nPlease consider contributing to this project with code and or suggestions.");
@@ -67,9 +60,6 @@ static KCmdLineOptions options[] =
 QTime timer;
 
 KMyMoney2App* kmymoney2;
-#ifdef HAVE_KBANKING
-KMyMoneyBanking *kbanking=0;
-#endif
 
 int main(int argc, char *argv[])
 {
@@ -129,19 +119,6 @@ int main(int argc, char *argv[])
     }
   }
 
-#ifdef HAVE_KBANKING
-  // create KBanking object
-  GWEN_Logger_SetLevel(0, GWEN_LoggerLevelInfo);
-  GWEN_Logger_SetLevel(AQBANKING_LOGDOMAIN, GWEN_LoggerLevelInfo);
-  kbanking=new KMyMoneyBanking("kmymoney");
-  int rv=kbanking->init();
-  if (rv) {
-    qWarning("Could not initialize KBanking online banking interface");
-    delete kbanking;
-    kbanking=0;
-  }
-#endif
-
   kmymoney2 = new KMyMoney2App();
   a->setMainWidget( kmymoney2 );
 
@@ -150,34 +127,34 @@ int main(int argc, char *argv[])
   if(client->registerAs("kmymoney", true) != false) {
     const QCStringList instances = kmymoney2->instanceList();
     if(instances.count() > 0) {
-    
-      // If the user launches a second copy of the app and includes a file to 
+
+      // If the user launches a second copy of the app and includes a file to
       // open, they may be attempting a "WebConnect" session.  In this case,
       // we'll check if it's an OFX file that's passed in, and if so, we'll
       // notify the primary instance of the file and kill ourselves.
-   
+
       if(args->count() > 0) {
         KURL url = args->url(0);
         if ( MyMoneyOfxStatement::isOfxFile( url.path() ) )
         {
           // if there are multiple instances, we'll send this to the first one
           QCString primary = instances[0];
-          
+
           // send a message to the primary client to import this ofx
           QByteArray data;
           QDataStream arg(data, IO_WriteOnly);
           arg << url.path();
-	  arg << kapp->startupId();
+    arg << kapp->startupId();
           if (!client->send(primary, "kmymoney2app", "ofxWebConnect(QString,QCString)",
                         data))
             qDebug("Unable to launch WebConnect via DCOP.");
-            
+
           // TODO: Figure out why this segfaults!?!
           delete a;
           exit(0);
         }
-      } 
-      
+      }
+
       if(KMessageBox::questionYesNo(0, i18n("Another instance of KMyMoney is already running. Do you want to quit?")) == KMessageBox::Yes) {
         delete a;
         exit(1);
@@ -201,19 +178,19 @@ int main(int argc, char *argv[])
   // line before we go and open the last one used
   if(args->count() > 0) {
     url = args->url(0);
-    
+
     // Check to see if this is an importable file, as opposed to a loadable
     // file.  If it is importable, what we really want to do is load the
     // last used file anyway and then immediately import this file.  This
     // implements a "web connect" session where there is not already an
     // instance of the program running.
-    
+
     if ( MyMoneyOfxStatement::isOfxFile( url.path() ) )
     {
       importfile = url.path();
       url = kmymoney2->readLastUsedFile();
     }
-    
+
   } else {
     url = kmymoney2->readLastUsedFile();
   }
@@ -226,7 +203,7 @@ int main(int argc, char *argv[])
     // kmymoney2->createInitialAccount();
     KTipDialog::showTip(kmymoney2, "", false);
   }
-  
+
   if ( ! importfile.isEmpty() )
     kmymoney2->ofxWebConnect( importfile, kapp->startupId() );
 
@@ -241,17 +218,12 @@ int main(int argc, char *argv[])
 
   DESTROY_TEST_CONTAINER();
 
-#ifdef HAVE_KBANKING
-  if (kbanking) {
-    int rv;
-
-    rv=kbanking->fini();
-    if (rv) {
+  if(KMyMoneyBanking::instance()->isAvailable()) {
+    if (KMyMoneyBanking::instance()->fini()) {
       qWarning("Could not deinitialize banking interface");
     }
-    delete kbanking;
   }
-#endif
+  delete KMyMoneyBanking::instance();
 
   delete a;
   KAccountListItem::cleanCache();

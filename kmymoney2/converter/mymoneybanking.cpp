@@ -19,8 +19,6 @@
 # include <config.h>
 #endif
 
-#ifdef HAVE_KBANKING
-
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -34,8 +32,12 @@
 // ----------------------------------------------------------------------------
 // Library Includes
 
+#ifdef HAVE_KBANKING
 #include <aqbanking/imexporter.h>
+#include <gwenhywfar/logger.h>
 #include <gwenhywfar/debug.h>
+#include <kbanking/settings.h>
+#endif
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -44,24 +46,93 @@
 #include "../kmymoney2.h"
 #include "../mymoney/mymoneystatement.h"
 
-KMyMoneyBanking::KMyMoneyBanking(const char *appname,
-                                 const char *fname)
-:KBanking(appname, fname) {
+static KMyMoneyBanking* _instance = 0;
+static bool _available = 0;
 
+KMyMoneyBanking::KMyMoneyBanking(const char *appname, const char *fname)
+  : KBanking(appname, fname)
+{
 }
 
-KMyMoneyBanking::~KMyMoneyBanking(){
+KMyMoneyBanking::~KMyMoneyBanking()
+{
+  _instance = 0;
 }
 
-const AB_ACCOUNT_STATUS*
-KMyMoneyBanking::_getAccountStatus(AB_IMEXPORTER_ACCOUNTINFO *ai){
+KMyMoneyBanking* KMyMoneyBanking::instance(void)
+{
+  if(!_instance) {
+#ifdef HAVE_KBANKING
+    GWEN_Logger_SetLevel(0, GWEN_LoggerLevelInfo);
+    GWEN_Logger_SetLevel(AQBANKING_LOGDOMAIN, GWEN_LoggerLevelInfo);
+#endif
+
+    _instance = new KMyMoneyBanking("kmymoney");
+    _available = false;
+    Q_CHECK_PTR(_instance);
+
+#ifdef HAVE_KBANKING
+    if(_instance->init()) {
+      qWarning("Could not initialize KBanking online banking interface");
+    } else {
+      _available = true;
+    }
+    _instance->m_jobView = 0;
+#endif
+  }
+  return _instance;
+}
+
+const bool KMyMoneyBanking::isAvailable(void) const
+{
+  return _available;
+}
+
+void KMyMoneyBanking::settingsDialog(QWidget* parent, char* name, QWidget::WFlags fl)
+{
+#ifdef HAVE_KBANKING
+  KBankingSettings bs(this, parent, name, fl);
+
+  if (bs.init()) {
+    qWarning("Error on ini of settings dialog.");
+  } else {
+    bs.exec();
+    if (!bs.fini()) {
+      qWarning("Error on fini of settings dialog.");
+    }
+  }
+#endif
+}
+
+QWidget* KMyMoneyBanking::createJobView(QWidget* parent, char *name)
+{
+#ifdef HAVE_KBANKING
+  m_jobView = new JobView(this, parent, name);
+  return m_jobView;
+#else
+  return new QWidget(parent, name);
+#endif
+}
+
+void KMyMoneyBanking::updateJobView(void)
+{
+#ifdef HAVE_KBANKING
+  if(m_jobView)
+    m_jobView->slotQueueUpdated();
+#endif
+}
+
+
+#ifdef HAVE_KBANKING
+const AB_ACCOUNT_STATUS* KMyMoneyBanking::_getAccountStatus(AB_IMEXPORTER_ACCOUNTINFO *ai)
+{
   const AB_ACCOUNT_STATUS *ast;
   const AB_ACCOUNT_STATUS *best;
 
   best=0;
   DBG_NOTICE(0, "Checking account (%s/%s)",
-	     AB_ImExporterAccountInfo_GetBankCode(ai),
-	     AB_ImExporterAccountInfo_GetAccountNumber(ai));
+       AB_ImExporterAccountInfo_GetBankCode(ai),
+       AB_ImExporterAccountInfo_GetAccountNumber(ai));
   ast=AB_ImExporterAccountInfo_GetFirstAccountStatus(ai);
   while(ast) {
     if (!best)
@@ -74,18 +145,18 @@ KMyMoneyBanking::_getAccountStatus(AB_IMEXPORTER_ACCOUNTINFO *ai){
       ti=AB_AccountStatus_GetTime(ast);
 
       if (!tiBest) {
-	best=ast;
+        best=ast;
       }
       else {
-	if (ti) {
-	  double d;
+        if (ti) {
+          double d;
 
-	  /* we have two times, compare them */
-	  d=GWEN_Time_Diff(ti, tiBest);
-	  if (d>0)
-	    /* newer */
-	    best=ast;
-	}
+          /* we have two times, compare them */
+          d=GWEN_Time_Diff(ti, tiBest);
+          if (d>0)
+            /* newer */
+            best=ast;
+        }
       }
     }
     ast=AB_ImExporterAccountInfo_GetNextAccountStatus(ai);
@@ -94,7 +165,8 @@ KMyMoneyBanking::_getAccountStatus(AB_IMEXPORTER_ACCOUNTINFO *ai){
   return best;
 }
 
-bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai){
+bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai)
+{
   QString s;
   const char *p;
   AB_TRANSACTION *t;
@@ -270,3 +342,5 @@ bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai){
 }
 
 #endif
+
+

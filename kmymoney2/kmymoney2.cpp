@@ -18,23 +18,15 @@
 # include <config.h>
 #endif
 
-
 #include <stdio.h>
 #include <iostream>
-
-#ifdef HAVE_KBANKING
-#include "converter/mymoneybanking.h"
-#include <kbanking/settings.h>
-#endif
 
 // ----------------------------------------------------------------------------
 // QT Includes
 
 #include <qdir.h>
 #include <qprinter.h>
-#include <qpainter.h>
 #include <qlayout.h>
-#include <qdom.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -49,18 +41,15 @@
 #include <kconfig.h>
 #include <kstdaction.h>
 #include <kglobal.h>
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
 #include <kstatusbar.h>
-#else
-#include <kstddirs.h>
-#endif
 #include <ktip.h>
 #include <kkeydialog.h>
 #include <kprogress.h>
 #include <kio/netaccess.h>
 #include <dcopclient.h>
 #include <kstartupinfo.h>
+
 #if !KDE_IS_VERSION(3,2,0)
 #include <kwin.h>
 #endif
@@ -93,6 +82,7 @@
 #include "converter/mymoneystatementreader.h"
 #include "converter/mymoneytemplate.h"
 #include "converter/mymoneyofxstatement.h"
+#include "converter/mymoneybanking.h"
 
 #include "kmymoneyutils.h"
 #include "kdecompat.h"
@@ -210,12 +200,11 @@ void KMyMoney2App::initActions()
   actionOfxImport = new KAction(i18n("OFX ..."), "", 0, this, SLOT(slotOfxImport()), actionCollection(), "file_import_ofx");
   actionGncImport = new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
   actionStatementImport = new KAction(i18n("Statement file ..."), "", 0, this, SLOT(slotStatementImport()), actionCollection(), "file_import_statement");
+
   actionAqbImport=0;
-#ifdef HAVE_KBANKING
-  if (kbanking) {
+  if(KMyMoneyBanking::instance()->isAvailable()) {
     actionAqbImport = new KAction(i18n("AqBanking importer ..."), "", 0, this, SLOT(slotBankingImport()), actionCollection(), "file_import_aqb");
   }
-#endif
 
   actionLoadTemplate = new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotLoadAccountTemplates()), actionCollection(), "file_import_template");
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
@@ -1007,23 +996,15 @@ void KMyMoney2App::slotQifExport()
   slotStatusMsg(prevMsg);
 }
 
-void KMyMoney2App::slotBankingSettings() {
-#ifdef HAVE_KBANKING
-  KBankingSettings bs(kbanking, 0, "BankingSettings");
+void KMyMoney2App::slotBankingSettings()
+{
+  KMyMoneyBanking* kbanking = KMyMoneyBanking::instance();
 
-  if (kbanking) {
-    if (bs.init()) {
-      qWarning("Error on ini of settings dialog.");
-    } else {
-      bs.exec();
-      if (!bs.fini()) {
-        qWarning("Error on fini of settings dialog.");
-      }
-    }
+  if (kbanking && kbanking->isAvailable()) {
+    kbanking->settingsDialog(this);
+  } else {
+    KMessageBox::information( this, QString("<p>")+i18n("Online banking settings is unavailable.  This version of <b>KMyMoney</b> was built without <b>KBanking</b> support."), i18n("Function not available"));
   }
-#else
-  KMessageBox::information( this, QString("<p>")+i18n("Online banking settings is unavailable.  This version of <b>KMyMoney</b> was built without <b>KBanking</b> support."), i18n("Function not available"));
-#endif
 }
 
 void KMyMoney2App::slotSettings()
@@ -1665,13 +1646,14 @@ void KMyMoney2App::ofxWebConnect(const QString& url, const QCString& asn_id)
 
 }
 
-void KMyMoney2App::slotBankingImport() {
-#ifdef HAVE_KBANKING
-  if (kbanking) {
+void KMyMoney2App::slotBankingImport()
+{
+  KMyMoneyBanking* kbanking = KMyMoneyBanking::instance();
+
+  if (kbanking->isAvailable()) {
     if (!kbanking->interactiveImport()) {
       qWarning("Error on ini of import dialog.");
     }
   }
-#endif
 }
 

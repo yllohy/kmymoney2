@@ -48,11 +48,6 @@
 #include "mymoney/mymoneyobserver.h"
 #include "mymoney/mymoneyscheduled.h"
 
-#ifdef HAVE_KBANKING
-  #include "converter/mymoneybanking.h"
-  extern KMyMoneyBanking *kbanking;
-#endif
-
 class KProgress;
 class KStartupLogo;
 class KMyMoneyView;

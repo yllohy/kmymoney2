@@ -17,9 +17,6 @@
 #ifndef KJOBVIEW_H
 #define KJOBVIEW_H
 
-class JobView;
-
-
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qwidget.h>
@@ -31,13 +28,12 @@ class QVBoxLayout;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-
 /**
   * Displays a 'home page' for the user.  Similar to concepts used in
   * quicken and m$-money.
   *
   * @author Michael Edwardes
-  * $Id: kjobview.h,v 1.1 2004/09/05 18:31:07 ipwizard Exp $
+  * $Id: kjobview.h,v 1.2 2004/09/14 16:59:14 ipwizard Exp $
   *
   * @short A view containing the home page for kmymoney2.
 **/
@@ -46,8 +42,7 @@ class KJobView : public QWidget  {
 
 private:
   QVBoxLayout *m_qvboxlayoutPage;
-  JobView *m_jobview;
-  
+
 signals:
   void signalViewActivated();
 
@@ -82,7 +77,7 @@ public:
   void show();
 
 protected:
-  
+
 public slots:
   void slotRefreshView(void);
   void slotReloadView(void) { slotRefreshView(); };

@@ -19,8 +19,6 @@
 # include <config.h>
 #endif
 
-#ifdef HAVE_KBANKING
-
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qlayout.h>
@@ -30,19 +28,14 @@
 // KDE Includes
 #include <kglobal.h>
 #include <klocale.h>
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
 
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kjobview.h"
 #include "../kmymoneyutils.h"
 #include "../kmymoney2.h"
-#include <kbanking/jobview.h>
-
+#include "../converter/mymoneybanking.h"
 
 
 KJobView::KJobView(QWidget *parent, const char *name )
@@ -53,9 +46,7 @@ KJobView::KJobView(QWidget *parent, const char *name )
   m_qvboxlayoutPage->setSpacing( 6 );
   m_qvboxlayoutPage->setMargin( 11 );
 
-  m_jobview=new JobView(kbanking, this, "JobView");
-  m_qvboxlayoutPage->addWidget(m_jobview);
-
+  m_qvboxlayoutPage->addWidget(KMyMoneyBanking::instance()->createJobView(this, "JobView"));
 }
 
 KJobView::~KJobView()
@@ -72,12 +63,8 @@ void KJobView::show()
 
 void KJobView::slotRefreshView(void)
 {
-  m_jobview->slotQueueUpdated();
-
+  KMyMoneyBanking::instance()->updateJobView();
 }
-
-
-#endif // HAVE_KBANKING
 
 
 
