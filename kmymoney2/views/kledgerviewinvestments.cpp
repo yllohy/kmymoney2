@@ -118,8 +118,9 @@ void KLedgerViewInvestments::slotReconciliation(void)
 
 void KLedgerViewInvestments::createForm(void)
 {
-  m_form = new kMyMoneyTransactionForm(this, NULL, 15, 4, 5);
-  
+  m_form = new kMyMoneyTransactionForm(this, NULL, 0, 4, 5);
+
+/*  
   m_tabCheck = new QTab(action2str(MyMoneySplit::ActionCheck, true));
   m_tabDeposit = new QTab(action2str(MyMoneySplit::ActionDeposit, true));
   m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
@@ -131,6 +132,7 @@ void KLedgerViewInvestments::createForm(void)
   m_form->addTab(m_tabTransfer);
   m_form->addTab(m_tabWithdrawal);
   m_form->addTab(m_tabAtm); 
+*/
 
   // never show horizontal scroll bars
   m_form->table()->setHScrollBarMode(QScrollView::AlwaysOff);
@@ -147,7 +149,6 @@ void KLedgerViewInvestments::createForm(void)
   //connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
 
   m_form->enterButton()->setDefault(true);
-
 }
 
 void KLedgerViewInvestments::createInfoStack(void)
