@@ -1,3 +1,9 @@
+2004-01-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * made some editorial changes to dialogs for better i18n support
+  * added German translation file (many thanks to Raphael Langerhorst
+    <raphael-langerhorst@gmx.at> who has done a great job
+  * updated kmymoney2.pot file
+
 2004-01-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added info about mandir setting in README
   * added man page found in MEPIS distro
