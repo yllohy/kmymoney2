@@ -66,6 +66,13 @@ void MyMoneyTransactionFilter::setTextFilter(const QRegExp& text)
   m_text = text;
 }
 
+void MyMoneyTransactionFilter::addAccount(const QCStringList& ids)
+{
+  QCStringList::ConstIterator it;
+  for(it = ids.begin(); it != ids.end(); ++it)
+    addAccount(*it);  
+}
+
 void MyMoneyTransactionFilter::addAccount(const QCString& id)
 {
   if(!m_accounts.isEmpty() && !id.isEmpty()) {
@@ -78,6 +85,13 @@ void MyMoneyTransactionFilter::addAccount(const QCString& id)
   m_filterSet.singleFilter.accountFilter = 1;
   if(!id.isEmpty())
     m_accounts.insert(id, "");
+}
+
+void MyMoneyTransactionFilter::addCategory(const QCStringList& ids)
+{
+  QCStringList::ConstIterator it;
+  for(it = ids.begin(); it != ids.end(); ++it)
+    addCategory(*it);  
 }
 
 void MyMoneyTransactionFilter::addCategory(const QCString& id)

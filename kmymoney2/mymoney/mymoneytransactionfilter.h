@@ -120,12 +120,24 @@ public:
   void addAccount(const QCString& id);
 
   /**
+    * This is a convenience method and behaves exactly like the above
+    * method but for a list of id's.
+    */
+  void addAccount(const QCStringList& ids);
+  
+  /**
     * This method will add the category with id @p id to the list of matching categories.
     * If the list is empty, only transaction with a single asset/liability account will match.
     *  
     * @param id internal ID of the account
     */
   void addCategory(const QCString& id);
+
+  /**
+    * This is a convenience method and behaves exactly like the above
+    * method but for a list of id's.
+    */
+  void addCategory(const QCStringList& ids);
 
   /**
     * This method sets the date filter to match only transactions with posting dates in
