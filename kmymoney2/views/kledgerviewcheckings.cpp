@@ -72,10 +72,14 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
 
   formLayout->addLayout( ledgerLayout, 0, 0);
 
-  // create the context menu that is accessible via RMB or the MORE Button
+  // create the context menu that is accessible via RMB 
   createContextMenu();
 
+  // create the context menu that is accessible via the MORE Button
+  createMoreMenu();
+
   connect(m_contextMenu, SIGNAL(aboutToShow()), SLOT(slotConfigureContextMenu()));
+  connect(m_moreMenu, SIGNAL(aboutToShow()), SLOT(slotConfigureMoreMenu()));
 
   // load the form with inital settings. Always consider transaction type Deposit
   m_form->tabBar()->blockSignals(true);
@@ -267,6 +271,18 @@ void KLedgerViewCheckings::createRegister(void)
   connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
 }
 
+void KLedgerViewCheckings::createMoreMenu(void)
+{
+  // get the basic entries for all ledger views
+  KLedgerView::createMoreMenu();
+
+  // and now the specific entries for checkings/savings etc.
+  m_moreMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
+      QKeySequence(), -1, 1);
+
+  connect(m_form->moreButton(), SIGNAL(clicked()), this, SLOT(slotMorePressed()));
+}
+
 void KLedgerViewCheckings::createContextMenu(void)
 {
   // get the basic entries for all ledger views
@@ -275,7 +291,6 @@ void KLedgerViewCheckings::createContextMenu(void)
   // and now the specific entries for checkings/savings etc.
   m_contextMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
       QKeySequence(), -1, 2);
-
 }
 
 void KLedgerViewCheckings::createForm(void)
@@ -1199,6 +1214,35 @@ void KLedgerViewCheckings::slotRegisterClicked(int row, int col, int button, con
   }
 }
 
+void KLedgerViewCheckings::slotConfigureMoreMenu(void)
+{
+  int splitEditId = m_moreMenu->idAt(1);
+  m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotStartEditSplit()));
+  m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
+
+  m_moreMenu->changeItem(splitEditId, i18n("Edit splits ..."));
+  if(m_transactionPtr != 0) {
+    if(transactionType(m_split) != Transfer) {
+      m_moreMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
+    } else {
+      QString dest = "";
+      try {
+        MyMoneySplit split = m_transaction.split(m_account.id(), false);
+        MyMoneyAccount acc = MyMoneyFile::instance()->account(split.accountId());
+        dest = acc.name();
+      } catch(MyMoneyException *e) {
+        delete e;
+        dest = "opposite account";
+      }
+      m_moreMenu->changeItem(splitEditId, i18n("Goto '%1'").arg(dest));
+      m_moreMenu->connectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
+    }
+    m_moreMenu->setItemEnabled(splitEditId, true);
+  } else {
+    m_moreMenu->setItemEnabled(splitEditId, false);
+  }
+}
+
 void KLedgerViewCheckings::slotConfigureContextMenu(void)
 {
   int splitEditId = m_contextMenu->idAt(2);
@@ -1206,9 +1250,9 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
   m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotStartEditSplit()));
   m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
 
+  m_contextMenu->changeItem(splitEditId, i18n("Edit splits ..."));
   if(m_transactionPtr != 0) {
     if(transactionType(m_split) != Transfer) {
-      m_contextMenu->changeItem(splitEditId, i18n("Edit splits ..."));
       m_contextMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
       QString dest = "";
@@ -1226,7 +1270,6 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
     m_contextMenu->setItemEnabled(splitEditId, true);
     m_contextMenu->setItemEnabled(deleteId, true);
   } else {
-    m_contextMenu->changeItem(splitEditId, i18n("Edit splits ..."));
     m_contextMenu->setItemEnabled(splitEditId, false);
     m_contextMenu->setItemEnabled(deleteId, false);
   }
@@ -1386,4 +1429,9 @@ void KLedgerViewCheckings::slotAccountDetail(void)
       delete e;
     }
   }
+}
+
+void KLedgerViewCheckings::slotMorePressed(void)
+{
+  m_moreMenu->exec(m_form->moreButton()->mapToGlobal(QPoint(0,0)));
 }

@@ -293,6 +293,13 @@ public:
     */
   bool selectTransaction(const QCString& id);
 
+  /**
+    * This method is used to check if the transaction is being edited
+    *
+    * @return true if editing, false otherwise.
+    */
+  const bool isEditMode(void) const;
+
 public slots:
   /**
     * This method refreshes the current view. This includes reading the
@@ -632,6 +639,8 @@ protected:
 
   virtual void createContextMenu(void);
 
+  virtual void createMoreMenu(void);
+
   virtual void reloadEditWidgets(const MyMoneyTransaction& t) = 0;
 
 protected:
@@ -745,6 +754,11 @@ protected:
     * This member keeps a pointer to the sort-menu
     */
   KPopupMenu*   m_sortMenu;
+
+  /**
+    * This member keeps a pointer to the more-menu
+    */
+  KPopupMenu*   m_moreMenu;
 
 private:
   void fromToChanged(const bool fromChanged, const QString& accountName);

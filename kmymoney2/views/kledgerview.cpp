@@ -493,7 +493,7 @@ void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint
 void KLedgerView::slotNextTransaction(void)
 {
   // up and down movement is not allowed when editing inline
-  if(!m_transactionFormActive && m_editDate && m_editDate->isVisible())
+  if(!m_transactionFormActive && isEditMode())
     return;
 
   if(static_cast<unsigned> (m_register->currentTransactionIndex() + 1) <= m_transactionPtrVector.count()) {
@@ -510,7 +510,7 @@ void KLedgerView::slotNextTransaction(void)
 void KLedgerView::slotPreviousTransaction(void)
 {
   // up and down movement is not allowed when editing inline
-  if(!m_transactionFormActive && m_editDate && m_editDate->isVisible())
+  if(!m_transactionFormActive && isEditMode())
     return;
 
   if(m_register->currentTransactionIndex() > 0) {
@@ -1008,7 +1008,7 @@ void KLedgerView::slotNrChanged(const QString& nr)
 
 void KLedgerView::slotDateChanged(const QDate& date)
 {
-  if(!m_editDate)
+  if(!isEditMode())
     return;
 
   MyMoneyTransaction t = m_transaction;
@@ -1557,6 +1557,30 @@ void KLedgerView::createContextMenu(void)
   connect(m_sortMenu, SIGNAL(activated(int)), this, SLOT(slotSortOrderChanged(int)));
 }
 
+void KLedgerView::createMoreMenu(void)
+{
+  if(m_register == 0)
+    qFatal("KLedgerView::createMoreMenu called before register was created!");
+
+  KIconLoader *kiconloader = KGlobal::iconLoader();
+
+  KPopupMenu* submenu = new KPopupMenu(this);
+  submenu->insertItem(i18n("Not cleared"), this, SLOT(slotMarkNotReconciled()));
+  submenu->insertItem(i18n("Cleared"), this, SLOT(slotMarkCleared()));
+  submenu->insertItem(i18n("Reconciled"), this, SLOT(slotMarkReconciled()));
+
+  m_moreMenu = new KPopupMenu(this);
+  m_moreMenu->insertTitle(i18n("Transaction Options"));
+  m_moreMenu->insertSeparator();
+  m_moreMenu->insertItem(i18n("Mark as ..."), submenu);
+  m_moreMenu->insertItem(i18n("Move to account ..."), this, SLOT(slotMoveToAccount()));
+  m_moreMenu->insertSeparator();
+
+  m_moreMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
+                        i18n("Delete transaction ..."),
+                        this, SLOT(slotDeleteTransaction()));
+}
+
 void KLedgerView::markSplit(MyMoneySplit::reconcileFlagE flag)
 {
   if(m_transactionPtr != 0) {
@@ -1566,7 +1590,8 @@ void KLedgerView::markSplit(MyMoneySplit::reconcileFlagE flag)
         m_split.setReconcileDate(QDate::currentDate());
 
       m_transaction.modifySplit(m_split);
-      MyMoneyFile::instance()->modifyTransaction(m_transaction);
+      if(!isEditMode())
+        MyMoneyFile::instance()->modifyTransaction(m_transaction);
     } catch (MyMoneyException *e) {
       KMessageBox::detailedSorry(0, i18n("Unable to mark split"),
         (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
@@ -1606,6 +1631,7 @@ void KLedgerView::slotDeleteTransaction(void)
        i18n("Continue")
        );
     if(answer == KMessageBox::Continue) {
+      slotCancelEdit();
       try {
         MyMoneyFile::instance()->removeTransaction(m_transaction);
       } catch(MyMoneyException *e) {
@@ -1648,4 +1674,9 @@ void KLedgerView::slotSortOrderChanged(int order)
   // have changed within the register while re-sorting
   selectTransaction(id);
   updateView();
+}
+
+const bool KLedgerView::isEditMode(void) const
+{
+  return m_editDate != 0 && m_editDate->isVisible();
 }

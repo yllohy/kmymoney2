@@ -198,9 +198,14 @@ protected:
   /**
     * This method creates the context menu that is accessible via the
     * right mouse button while pointing on a transaction in the register
-    * or via the More... button in the transaction form.
     */
   virtual void createContextMenu(void);
+
+  /**
+    * This method creates the context menu that is accessible via the
+    * More... button in the transaction form.
+    */
+  virtual void createMoreMenu(void);
 
 protected slots:
   /**
@@ -239,6 +244,11 @@ protected slots:
     * Calling this slot starts editing and opens the split dialog
     */
   virtual void slotStartEditSplit(void);
+
+  /**
+    * Calling this slot displays the More menu.
+    */
+  virtual void slotMorePressed(void);
 
   void reloadEditWidgets(const MyMoneyTransaction& t);
 
@@ -328,6 +338,13 @@ private slots:
     */
   void slotConfigureContextMenu(void);
 
+  /**
+    * This method enables and disables the options available for
+    * the selected transaction (e.g. more menu options). It
+    * is connected to the more menu's aboutToShow() signal.
+    */
+  void slotConfigureMoreMenu(void);
+  
 protected:
   QTab* m_tabCheck;
   QTab* m_tabDeposit;
