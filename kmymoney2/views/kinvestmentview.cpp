@@ -86,15 +86,10 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
 
   initSummaryTab();
   initTransactionTab();
-
-
-
-  // fill in some demo data
-  //KListViewItem* item1 = new KListViewItem(investmentTable, QString("Redhat"), QString("RHAT"), QString("24"), QString("$20.00"), QString("$13.43"), QString("$212"), QString("5.43%"), QString("9.43%"));
-  //investmentTable->insertItem(item1);
-
-  //KListViewItem* item2 = new KListViewItem(investmentTable, QString("Yahoo"), QString("YHOO"), QString("100"), QString("$14.21"), QString("$25.43"), QString("$900"), QString("10.43%"), QString("19.12%"));
-  //investmentTable->insertItem(item2);
+  
+  m_tabMap[m_summaryTab] = VIEW_SUMMARY;
+  m_tabMap[m_transactionTab] = VIEW_TRANSACTIONS;
+  qDebug("KInvestmentView::KInvestmentView: widgets in map = %d", m_tabMap.size());
 
   // never show a horizontal scroll bar
  // investmentTable->setHScrollBarMode(QScrollView::AlwaysOff);
@@ -115,6 +110,7 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name)
  // btnSummary->setChecked(TRUE);
 
    connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotSelectAccount(const QCString&)));
+   connect(m_tab, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotTabSelected(QWidget*)));
  //const bool KInvestmentView::slotSelectAccount(const QCString& id, const bool reconciliation)
 
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
@@ -238,6 +234,9 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& 
 
         //puts this in the storage container.
         file->modifyEquity(equity);
+        
+        //update the summary display to show the new data.
+        updateDisplay();
       }
     }
   }
@@ -342,25 +341,33 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& poin
 */
 }
 
-void KInvestmentView::slotViewChanged(int ID)
+void KInvestmentView::slotTabSelected(QWidget *pWidget)
 {
-  switch(ID)
+  qDebug("KInvestmentView::slotTabSelected() called, size=%d", m_tabMap.size());
+  tabmap_iterator it = m_tabMap.find(pWidget);
+  if(it == m_tabMap.end())
   {
-    case VIEW_SUMMARY:
+    return;
+  }
+  else
+  {
+    int ID = it.data();
+    qDebug("KInvestmentView::slotTabSelected(), id=%d", ID);
+    switch(ID)
     {
-//      investmentTable->show();
-//      transactionTable->hide();
-      break;
-    }
-    case VIEW_INVESTMENT:
-    {
-//      investmentTable->hide();
-//      transactionTable->show();
-      break;
-    }
-    default:
-    {
-      break;
+      case VIEW_SUMMARY:
+      {
+        updateDisplay();
+        break;
+      }
+      case VIEW_TRANSACTIONS:
+      {
+        break;
+      }
+      default:
+      {
+        break;
+      }
     }
   }
 }
@@ -369,7 +376,7 @@ void KInvestmentView::slotReloadView(void)
 {
   updateDisplay();
 
-  // qDebug("KInvestmentView::slotReloadView()");
+  qDebug("KInvestmentView::slotReloadView()");
 
   // make sure to determine the current account from scratch
   m_account = MyMoneyAccount();

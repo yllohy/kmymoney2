@@ -45,6 +45,8 @@ class MyMoneyTransaction;
 class MyMoneyInvestTransaction;
 class KLedgerView;
 
+typedef QMap<QWidget*, int>::Iterator tabmap_iterator;
+
 /**
   * @author Kevin Tambascio
   */
@@ -56,7 +58,7 @@ class KInvestmentView : public kInvestmentViewDecl, MyMoneyObserver
 public:
   typedef enum {
     VIEW_SUMMARY = 0,
-    VIEW_INVESTMENT
+    VIEW_TRANSACTIONS
   } eViewType;
 
   KInvestmentView(QWidget *parent=0, const char *name=0);
@@ -154,7 +156,7 @@ protected slots:
   //void slotNewInvestment();
   void slotEditInvestment();
   void slotUpdatePrice();
-  void slotViewChanged(int);
+  void slotTabSelected(QWidget *pWidget);
 
 signals:
   void signalViewActivated(void);
@@ -170,6 +172,7 @@ private:
   void initTransactionTab(void);
 
 private:
+  QMap<QWidget*, int> m_tabMap;
   KPopupMenu*       m_popMenu;
   KLedgerView*      m_ledgerView;
   MyMoneyAccount    m_account;
