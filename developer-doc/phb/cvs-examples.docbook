@@ -224,7 +224,7 @@ sandbox and needs to be returned to the repository.
 </para>
 
 <para>
-<anchor id="cvs-source-changes">
+<anchor id="cvs-source-changes"/>
 As the next step, one should check what has been changed in the file
 <command>knewbankdlg.cpp</command>. This is done using the following command:
 </para>
@@ -233,17 +233,17 @@ As the next step, one should check what has been changed in the file
 
   <prompt>thb:~&gt; </prompt><userinput>cvs -q diff knewbankdlg.cpp</userinput>
   74,75d73
-  <     return;
-  <   }
+  &lt;     return;
+  &lt;   }
   77,84c75,84
-  <   m_name = nameEdit->text();
-  <   m_city = cityEdit->text();
-  <   m_street = streetEdit->text();
-  <   m_postcode = postcodeEdit->text();
-  <   m_telephone = telephoneEdit->text();
-  <   m_managerName = managerEdit->text();
-  <   m_sortCode = sortCodeEdit->text();
-  <   accept();
+  &lt;   m_name = nameEdit->text();
+  &lt;   m_city = cityEdit->text();
+  &lt;   m_street = streetEdit->text();
+  &lt;   m_postcode = postcodeEdit->text();
+  &lt;   m_telephone = telephoneEdit->text();
+  &lt;   m_managerName = managerEdit->text();
+  &lt;   m_sortCode = sortCodeEdit->text();
+  &lt;   accept();
   ---
   >   } else {
   >     m_name = nameEdit->text();
@@ -270,7 +270,7 @@ started, which is checking the changes back into the repository.
 
   <prompt>thb:~&gt; </prompt><userinput>cvs -q ci -m "Avoid return in the middle of a function" knewbankdlg.cpp</userinput>
   Checking in knewbankdlg.cpp;
-  kmymoney2/kmymoney2/knewbankdlg.cpp,v  <--  knewbankdlg.cpp
+  kmymoney2/kmymoney2/knewbankdlg.cpp,v  &lt;--  knewbankdlg.cpp
   new revision: 1.10; previous revision: 1.9
   done
   <prompt>thb:~&gt; </prompt>
@@ -577,6 +577,7 @@ branch and promote it to the developer branch, as the fix as it works on
 the release branch might
 break things and broken software is definitly something we do not want
  to happen on the stable branch.
+</para>
 </footnote>
 </para>
 
