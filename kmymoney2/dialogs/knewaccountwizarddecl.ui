@@ -9,8 +9,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>752</width>
-            <height>438</height>
+            <width>746</width>
+            <height>408</height>
         </rect>
     </property>
     <property name="caption">
@@ -1004,42 +1004,12 @@ Note: if you want to maintain this account from the date of opening enter 0. If 
                             <property name="spacing">
                                 <number>6</number>
                             </property>
-                            <widget class="QLabel" row="5" column="0">
-                                <property name="name">
-                                    <cstring>textLabel1</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>0</hsizetype>
-                                        <vsizetype>5</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="minimumSize">
-                                    <size>
-                                        <width>180</width>
-                                        <height>0</height>
-                                    </size>
-                                </property>
-                                <property name="text">
-                                    <string>Category</string>
-                                </property>
-                            </widget>
-                            <widget class="kMyMoneyCategory" row="5" column="1">
-                                <property name="name">
-                                    <cstring>m_category</cstring>
-                                </property>
-                                <property name="focusPolicy">
-                                    <enum>TabFocus</enum>
-                                </property>
-                            </widget>
                             <widget class="kMyMoneyEdit" row="2" column="1">
                                 <property name="name">
                                     <cstring>m_amount</cstring>
                                 </property>
                                 <property name="focusPolicy">
-                                    <enum>TabFocus</enum>
+                                    <enum>StrongFocus</enum>
                                 </property>
                             </widget>
                             <widget class="QLabel" row="4" column="0">
@@ -1059,7 +1029,7 @@ from account</string>
                                     <cstring>m_date</cstring>
                                 </property>
                                 <property name="focusPolicy">
-                                    <enum>TabFocus</enum>
+                                    <enum>StrongFocus</enum>
                                 </property>
                             </widget>
                             <widget class="QLabel" row="6" column="0">
@@ -1080,7 +1050,7 @@ from account</string>
                                     <cstring>m_payee</cstring>
                                 </property>
                                 <property name="focusPolicy">
-                                    <enum>TabFocus</enum>
+                                    <enum>StrongFocus</enum>
                                 </property>
                             </widget>
                             <widget class="QLineEdit" row="0" column="1">
@@ -1139,7 +1109,7 @@ from account</string>
                                     <cstring>m_method</cstring>
                                 </property>
                                 <property name="focusPolicy">
-                                    <enum>TabFocus</enum>
+                                    <enum>StrongFocus</enum>
                                 </property>
                             </widget>
                         </grid>
@@ -1215,22 +1185,6 @@ from account</string>
         </sizepolicy>
         <pixmap>image4</pixmap>
     </customwidget>
-    <customwidget>
-        <class>kMyMoneyCategory</class>
-        <header location="local">../widgets/kmymoneycategory.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image4</pixmap>
-    </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
@@ -1266,7 +1220,6 @@ from account</string>
     <tabstop>m_amount</tabstop>
     <tabstop>m_date</tabstop>
     <tabstop>accountListView</tabstop>
-    <tabstop>m_category</tabstop>
     <tabstop>m_method</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
@@ -1279,7 +1232,6 @@ from account</string>
     <includehint>kmymoneyedit.h</includehint>
     <includehint>kmymoneydateinput.h</includehint>
     <includehint>kcombobox.h</includehint>
-    <includehint>kmymoneycategory.h</includehint>
     <includehint>kmymoneyedit.h</includehint>
     <includehint>kmymoneydateinput.h</includehint>
     <includehint>klistview.h</includehint>

@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.40 2003/09/01 17:51:34 mte Exp $
+  * $Id: kmymoneyview.h,v 1.41 2003/09/15 16:47:06 mte Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -150,18 +150,6 @@ private:
   // Parses a line in the default categories file
   bool parseDefaultCategory(QString& line, bool& income, QString& name, QStringList& minors);
   void viewAccountList(const QCString& selectAccount); // Show the accounts view
-
-  // Some utility functions for the KFindTransactionDlg calls in doTransactionSearch()
-  bool checkTransactionDates(const MyMoneyTransaction *transaction, const bool enabled, const QDate start, const QDate end);
-  bool checkTransactionAmount(const MyMoneyTransaction *transaction, const bool enabled, const QString id, const MyMoneyMoney amount);
-  bool checkTransactionCredit(const MyMoneyTransaction *transaction, const bool enabled, const QString id);
-  bool checkTransactionStatus(const MyMoneyTransaction *transaction, const bool enabled, const QString id);
-  bool checkTransactionDescription(const MyMoneyTransaction *transaction, const bool enabled, const QString description, const bool isRegExp);
-
-  bool checkTransactionNumber(const MyMoneyTransaction *transaction, const bool enabled, const QString number, const bool isRegExp);
-  bool checkTransactionPayee(const MyMoneyTransaction *transaction, const bool enabled, const QString payee, const bool isRegExp);
-
-  bool checkTransactionCategory(const MyMoneyTransaction *transaction, const bool enabled, const QString category);
 
   static void progressCallback(int current, int total, const QString&);
 
@@ -452,14 +440,6 @@ protected slots:
   void slotBankDelete();
 
   /**
-    * This is connected to KReconcileDlg::reconcileFinished in slotAccountReconcile.
-    * It is called when the user has finished the reconciliation process.
-    *
-    * @param success Whether the user successfully reconciled the account.
-  **/
-  void slotReconcileFinished(bool success);
-
-  /**
     * Destroys the search dialog
     **/
   void slotCloseSearchDialog(void);
@@ -494,7 +474,7 @@ protected slots:
     *
     * @param show if true, the transaction form is shown
     */
-  void slotShowTransactionForm(bool show);
+  // void slotShowTransactionForm(bool show);
 
 
   /**

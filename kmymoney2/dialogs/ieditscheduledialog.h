@@ -127,7 +127,7 @@ private:
 
   MyMoneySchedule::occurenceE comboToOccurence(void);
   void createSplits();
-  void checkCategory();
+  bool checkCategory();
   void checkPayee();
   QCString theAccountId();
 };

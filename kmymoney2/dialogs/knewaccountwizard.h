@@ -34,6 +34,7 @@
 
 #include "knewaccountwizarddecl.h"
 #include "../mymoney/mymoneyaccount.h"
+#include "../mymoney/mymoneyscheduled.h"
 #include "../views/kbanklistitem.h"
 
 /**
@@ -88,7 +89,14 @@ public:
     * @param type account type as specified in MyMoneyAccount
     */
   void setAccountType(const MyMoneyAccount::accountTypeE type);
-  
+
+  /**
+    * Get the schedule.
+    *
+    * If the schedule has not been created name() should be empty.
+  **/
+  MyMoneySchedule schedule(void) const { return m_schedule; }
+    
 protected:
   /**
     * This method is used to reload the institution combo box
@@ -127,6 +135,7 @@ private:
   QString m_accountPaymentPageTitle;
   MyMoneyAccount m_account;
   MyMoneyAccount m_parent;
+  MyMoneySchedule m_schedule;
 };
 
 #endif

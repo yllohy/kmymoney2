@@ -331,7 +331,7 @@ kMyMoneyCalendar::yearBackwardClicked()
 void
 kMyMoneyCalendar::selectWeekClicked()
 {
-#if KDE_VERSION == 310
+#if KDE_VERSION >= 310 && KDE_VERSION <= 314
   int week;
   KPopupFrame* popup = new KPopupFrame(this);
   KDateInternalWeekSelector* picker = new KDateInternalWeekSelector(/*fontsize, */popup);
@@ -370,7 +370,7 @@ kMyMoneyCalendar::selectWeekClicked()
 void
 kMyMoneyCalendar::selectMonthClicked()
 {
-#if KDE_VERSION == 310
+#if KDE_VERSION >= 310 && KDE_VERSION <= 314
   int month;
   KPopupFrame* popup = new KPopupFrame(this);
   KDateInternalMonthPicker* picker = new KDateInternalMonthPicker(/*fontsize, */popup);
@@ -402,7 +402,7 @@ kMyMoneyCalendar::selectMonthClicked()
 void
 kMyMoneyCalendar::selectYearClicked()
 {
-#if KDE_VERSION == 310
+#if KDE_VERSION >= 310 && KDE_VERSION <= 314
   int year;
   KPopupFrame* popup = new KPopupFrame(this);
   KDateInternalYearSelector* picker = new KDateInternalYearSelector(fontsize, popup);

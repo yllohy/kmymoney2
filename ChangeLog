@@ -1,4 +1,11 @@
 2003-09-10 Michael Edwardes <mte@users.sourceforge.net>
+  * Removed some old search code from KMyMoneyView and some compile warnings.
+  * Fix credit card schedule creation.
+  * Use StrongFocus for certain widgets in the accout wizard ui.
+  * Force the user to use the correct category type when creating schedules.
+  * Fix bug in KEditScheduleDialog that wrongly negated the entered amount.
+  
+2003-09-10 Michael Edwardes <mte@users.sourceforge.net>
   * Implemented adding a schedule for the credit card account type when using the
     account wizard.
   * When executing a schedule list item, set the date to the real next payment.

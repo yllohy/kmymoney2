@@ -361,7 +361,9 @@ void KEditScheduleDialog::okClicked()
     }
   }
 
-  checkCategory();
+  if (!checkCategory())
+    return;
+    
   checkPayee();
   
   // Just reset the schedules transaction here.
@@ -409,14 +411,20 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     {
       switch (m_schedule.paymentType())
       {
-        case MyMoneySchedule::STYPE_DIRECTDEPOSIT:
+        case MyMoneySchedule::STYPE_DIRECTDEBIT:
           m_kcomboMethod->setCurrentItem(0);
           break;
-        case MyMoneySchedule::STYPE_MANUALDEPOSIT:
+        case MyMoneySchedule::STYPE_DIRECTDEPOSIT:
           m_kcomboMethod->setCurrentItem(1);
           break;
-        case MyMoneySchedule::STYPE_OTHER:
+        case MyMoneySchedule::STYPE_MANUALDEPOSIT:
           m_kcomboMethod->setCurrentItem(2);
+          break;
+        case MyMoneySchedule::STYPE_WRITECHEQUE:
+          m_kcomboMethod->setCurrentItem(3);
+          break;
+        case MyMoneySchedule::STYPE_OTHER:
+          m_kcomboMethod->setCurrentItem(4);
           break;
         default:
           break;
@@ -649,11 +657,7 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
 
       if (m_actionType != MyMoneySplit::ActionDeposit)
       {
-          // if it's the deposit part of a transfer, we don't invert sign
-          if(s.value() < 0)
-          {
-            val = -val;
-          }
+        val = -val;
       }
 
       s.setValue(val);
@@ -901,7 +905,7 @@ void KEditScheduleDialog::createSplits()
     {
       MyMoneySplit split2;
       split2.setAccountId(m_kcomboTo->currentAccountId());
-      split2.setAction(MyMoneySplit::ActionDeposit);
+      split2.setAction(MyMoneySplit::ActionTransfer);
       m_transaction.addSplit(split2);
     }
     else
@@ -916,8 +920,10 @@ void KEditScheduleDialog::createSplits()
   }
 }
 
-void KEditScheduleDialog::checkCategory()
+bool KEditScheduleDialog::checkCategory()
 {
+  bool exitDialog = true;
+  
   // Make sure a category has been set
   if (m_category->text() != i18n("Splitted Transaction") && !m_category->text().isEmpty())
   {
@@ -944,15 +950,67 @@ void KEditScheduleDialog::checkCategory()
         MyMoneySplit s = m_transaction.splits()[1];
         s.setAccountId(categoryId);
         m_transaction.modifySplit(s);
+
+        QString type, stype;
+        MyMoneyAccount::accountTypeE typeE = MyMoneyFile::instance()->account(categoryId).accountType();
+        if (m_actionType == MyMoneySplit::ActionDeposit &&
+              typeE != MyMoneyAccount::Income)
+        {
+          type = i18n("Expense");
+          stype = i18n("Deposit");
+        }
+        else if (m_actionType != MyMoneySplit::ActionDeposit &&
+              typeE != MyMoneyAccount::Expense)
+        {
+          type = i18n("Income");
+          stype = i18n("Withdrawal or Transfer");
+        }
+
+        if (!type.isEmpty())
+        {
+          message = QString("You have specified an %1 category for a %1 schedule.").arg(type).arg(stype);
+          KMessageBox::error(this, message);
+          m_category->setText("");
+          m_category->setFocus();
+          exitDialog = false;
+        }
       }
       else
       {
         m_category->setText("");
         m_category->setFocus();
-        return;
+       exitDialog = false;
+      }
+    }
+    else
+    {
+      QString type, stype;
+      MyMoneyAccount::accountTypeE typeE = MyMoneyFile::instance()->account(categoryId).accountType();
+      if (m_actionType == MyMoneySplit::ActionDeposit &&
+            typeE != MyMoneyAccount::Income)
+      {
+        type = i18n("Expense");
+        stype = i18n("Deposit");
+      }
+      else if (m_actionType != MyMoneySplit::ActionDeposit &&
+            typeE != MyMoneyAccount::Expense)
+      {
+        type = i18n("Income");
+        stype = i18n("Bill or Transfer");
+      }
+
+      if (!type.isEmpty())
+      {
+        QString message = QString("You have specified an %1 category for a %2 schedule.").arg(type).arg(stype);
+        KMessageBox::error(this, message);
+        m_category->setText("");
+        m_category->setFocus();
+        exitDialog = false;
       }
     }
   }
+
+  return exitDialog;
 }
 
 void KEditScheduleDialog::checkPayee()

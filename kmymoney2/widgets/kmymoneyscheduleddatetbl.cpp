@@ -157,7 +157,7 @@ void kMyMoneyScheduledDateTbl::drawCellContents(QPainter *painter, int /*row*/, 
 
       schedules = file->scheduleListEx( scheduleTypes,
                                         scheduleOcurrences,
-                                        scheduleTypes,
+                                        schedulePaymentTypes,
                                         theDate,
                                         m_filterAccounts);
     }

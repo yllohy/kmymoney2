@@ -846,6 +846,31 @@ void KMyMoneyView::accountNew(const bool createCategory)
     {
       MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
 
+      // Add the credit card schedule only if one exists
+      // We MUST add the schedule AFTER adding the account because
+      // otherwise an unknown account will be thrown.
+      //
+      // Remember to modify the first split to to reference the newly created account
+      MyMoneySchedule newSchedule = m_newAccountWizard->schedule();
+      if (!newSchedule.name().isEmpty())
+      {
+        try
+        {
+          // We can guarantee 2 splits.
+          MyMoneyTransaction t = newSchedule.transaction();
+          MyMoneySplit s = t.splits()[0];
+          s.setAccountId(MyMoneyFile::instance()->nameToAccount(newAccount.name()));
+          t.modifySplit(s);
+          newSchedule.setTransaction(t);
+          
+          MyMoneyFile::instance()->addSchedule(newSchedule);
+        } catch (MyMoneyException *e)
+        {
+          KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
+          delete e;
+        }
+      }
+        
       viewAccountList(newAccount.id());
     }
     catch (MyMoneyException *e)
@@ -940,22 +965,6 @@ void KMyMoneyView::slotAccountExportAscii(void)
       kcsvprogressdlg.exec();
     }
   }
-*/
-}
-
-void KMyMoneyView::slotReconcileFinished(bool success)
-{
-
-/*
-  if (success)
-  {
-    transactionView->refresh();
-  }
-
-  // Remember to disconnect.
-  // disconnect(transactionView,SIGNAL(transactionListChanged()),reconcileDlg,SLOT(slotTransactionChanged()));
-  reconcileDlg->hide();
-  m_inReconciliation=false;
 */
 }
 
@@ -1227,7 +1236,7 @@ void KMyMoneyView::viewUp(void)
     return;
 }
 
-void KMyMoneyView::viewAccountList(const QCString& selectAccount)
+void KMyMoneyView::viewAccountList(const QCString& /*selectAccount*/)
 {
   if(pageIndex(m_accountsViewFrame) != activePageIndex())
     showPage(1);
@@ -1387,200 +1396,6 @@ void KMyMoneyView::slotCloseSearchDialog(void)
 */
 }
 
-bool KMyMoneyView::checkTransactionDates(const MyMoneyTransaction *transaction, const bool enabled, const QDate start, const QDate end)
-{
-  if (enabled) {
-    if (transaction->postDate()>=start && transaction->postDate()<=end)
-      return true;
-    else
-      return false;
-  }
-  return true;
-
-}
-
-bool KMyMoneyView::checkTransactionAmount(const MyMoneyTransaction *transaction, const bool enabled, const QString id, const MyMoneyMoney amount)
-{
-/*
-  if (!enabled)
-
-    return true;
-
-  if (id==i18n("At least")) {
-    if (transaction->amount() >= amount)
-      return true;
-  } else if (id==i18n("At most")) {
-    if (transaction->amount() <= amount)
-      return true;
-  } else {
-    if (transaction->amount() == amount)
-      return true;
-  }
-*/
-  return false;
-}
-
-bool KMyMoneyView::checkTransactionCredit(const MyMoneyTransaction *transaction, const bool enabled, const QString id)
-
-{
-/*
-
-  if (!enabled)
-    return true;
-
-  if (id==i18n("Credit or Debit") && (transaction->type()==MyMoneyTransaction::Credit || transaction->type()==MyMoneyTransaction::Debit))
-    return true;
-  else if (id==i18n("Credit") && transaction->type()==MyMoneyTransaction::Credit)
-    return true;
-  else if (id==i18n("Debit") && transaction->type()==MyMoneyTransaction::Debit)
-    return true;
-  else if (id==i18n("Cheque") && transaction->method()==MyMoneyTransaction::Cheque)
-    return true;
-
-  else if (id==i18n("Deposit") && transaction->method()==MyMoneyTransaction::Deposit)
-    return true;
-  else if (id==i18n("Transfer") && transaction->method()==MyMoneyTransaction::Transfer)
-    return true;
-  else if (id==i18n("Withdrawal") && transaction->method()==MyMoneyTransaction::Withdrawal)
-    return true;
-  else if (id==i18n("ATM") && transaction->method()==MyMoneyTransaction::ATM)
-    return true;
-*/
-  return false;
-}
-
-bool KMyMoneyView::checkTransactionStatus(const MyMoneyTransaction *transaction, const bool enabled, const QString id)
-{
-/*
-  if (!enabled)
-    return true;
-
-  if (id==i18n("Cleared") && transaction->state()==MyMoneyTransaction::Cleared)
-    return true;
-  if (id==i18n("Reconciled") && transaction->state()==MyMoneyTransaction::Reconciled)
-    return true;
-  if (id==i18n("Unreconciled") && transaction->state()==MyMoneyTransaction::Unreconciled)
-    return true;
-*/
-  return false;
-}
-
-bool KMyMoneyView::checkTransactionDescription(const MyMoneyTransaction *transaction, const bool enabled, const QString description, const bool isRegExp)
-
-
-{
-/*
-  if (!enabled)
-    return true;
-
-  if (!isRegExp) {
-    if (transaction->memo().contains(description))
-      return true;
-    else
-      return false;
-  } else {
-    QRegExp regExp(description);
-    if (!regExp.isValid())
-      return false;
-    if (regExp.match(transaction->memo())==-1)
-      return false;
-    else
-      return true;
-  }
-*/
-}
-
-bool KMyMoneyView::checkTransactionNumber(const MyMoneyTransaction *transaction, const bool enabled, const QString number, const bool isRegExp)
-
-{
-
-/*
-  if (!enabled)
-
-    return true;
-
-  if (!isRegExp) {
-    if (transaction->number().contains(number))
-      return true;
-    else
-
-      return false;
-  } else {
-    QRegExp regExp(number);
-    if (!regExp.isValid())
-      return false;
-    if (regExp.match(transaction->number())==-1)
-      return false;
-    else
-      return true;
-  }
-*/
-}
-
-bool KMyMoneyView::checkTransactionPayee(const MyMoneyTransaction *transaction, const bool enabled, const QString payee, const bool isRegExp)
-{
-/*
-  if (!enabled)
-    return true;
-
-  if (!isRegExp) {
-
-
-    if (transaction->payee().contains(payee))
-      return true;
-    else
-      return false;
-  } else {
-    QRegExp regExp(payee);
-    if (!regExp.isValid())
-      return false;
-    if (regExp.match(transaction->payee())==-1)
-      return false;
-    else
-
-      return true;
-  }
-*/
-}
-
-bool KMyMoneyView::checkTransactionCategory(const MyMoneyTransaction *transaction, const bool enabled, const QString category)
-{
-
-/*
-  if (!enabled)
-    return true;
-
-  QString left, right;
-  if (category.contains(':')) {
-    left = category.left(category.find(':'));
-    right = category.mid(category.find(':')+1, category.length());
-    if (transaction->categoryMajor()==left &&
-        transaction->categoryMinor()==right)
-      return true;
-    else
-
-      return false;
-  }
-
-  if (transaction->categoryMajor() == category)
-    return true;
-
-*/
-  return false;
-}
-/*
-QString KMyMoneyView::currentBankName(void)
-
-{
-  bool bankSuccess=false;
-  if (m_file) {
-    MyMoneyInstiution = accountsView->currentInstitution(bankSuccess);
-    if (bankSuccess)
-      return institution.name();
-  }
-  return i18n("Unknown Institution");
-}
-*/
 QString KMyMoneyView::currentAccountName(void)
 {
   bool accountSuccess=false;
@@ -1644,14 +1459,14 @@ void KMyMoneyView::slotActivatedPayeeView()
   emit signalPayeeView();
 }
 
+#if 0
 void KMyMoneyView::slotShowTransactionForm(bool show)
 {
-#if 0
 // FIXME: For what is this used anyway?
   if(m_ledgerView != 0)
     m_ledgerView->slotShowTransactionForm(show);
-#endif    
 }
+#endif
 
 void KMyMoneyView::slotShowTransactionDetail(bool detailed)
 {

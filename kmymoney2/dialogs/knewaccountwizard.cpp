@@ -172,13 +172,6 @@ void KNewAccountWizard::accept()
       return;
     }
 
-    if (m_category->text().isEmpty())
-    {
-      KMessageBox::error(this, i18n("Please enter the category."));
-      m_category->setFocus();
-      return;
-    }
-
     if (m_payee->text().isEmpty())
     {
       KMessageBox::error(this, i18n("Please enter the payee name."));
@@ -195,30 +188,8 @@ void KNewAccountWizard::accept()
     }
 
     // Create the schedule transaction
-    QCString categoryId;
     QCString payeeId;
   
-    try
-    {
-      categoryId = MyMoneyFile::instance()->categoryToAccount(m_category->text());
-      if (categoryId.isEmpty())
-      {
-        int y = KMessageBox::questionYesNo(this, QString(i18n("Category '%1' does not exist.  Add it?")).arg(m_category->text()));
-        if (y == KMessageBox::No)
-        {
-          m_category->setText("");
-          m_category->setFocus();
-          return;
-        }
-        categoryId = MyMoneyFile::instance()->createCategory(MyMoneyFile::instance()->expense(), m_category->text());
-      }
-    }
-    catch (MyMoneyException *e)
-    {
-      KMessageBox::error(this, i18n("Unable to create category.  Please manually edit the schedule later."));
-      delete e;
-    }
-
     try
     {
       payeeId = MyMoneyFile::instance()->payeeByName(m_payee->text()).id();
@@ -233,10 +204,10 @@ void KNewAccountWizard::accept()
     MyMoneySplit s1, s2;
     s1.setValue(m_amount->getMoneyValue());
     s2.setValue(-s1.value());
-    s1.setAction(MyMoneySplit::ActionWithdrawal);
-    s2.setAction(MyMoneySplit::ActionDeposit);
-    s1.setAccountId(item->accountID());
-    s2.setAccountId(categoryId);
+    s1.setAction(MyMoneySplit::ActionTransfer);
+    s2.setAction(MyMoneySplit::ActionTransfer);
+    s1.setAccountId(""/*this_account?*/);  // This needs to be set by caller  (see KMyMoneyView::accountNew)
+    s2.setAccountId(item->accountID());
     s1.setPayeeId(payeeId);
     s2.setPayeeId(payeeId);
 
@@ -252,9 +223,15 @@ void KNewAccountWizard::accept()
         paymentType = MyMoneySchedule::STYPE_DIRECTDEBIT;
         break;
       case 1:
-        paymentType = MyMoneySchedule::STYPE_WRITECHEQUE;
+        paymentType = MyMoneySchedule::STYPE_DIRECTDEPOSIT;
         break;
       case 2:
+        paymentType = MyMoneySchedule::STYPE_MANUALDEPOSIT;
+        break;
+      case 3:
+        paymentType = MyMoneySchedule::STYPE_WRITECHEQUE;
+        break;
+      case 4:
         paymentType = MyMoneySchedule::STYPE_OTHER;
         break;
       default:
@@ -262,17 +239,17 @@ void KNewAccountWizard::accept()
         break;
     }
 
-    MyMoneySchedule paymentSchedule(  m_name->text(),
-                                      MyMoneySchedule::TYPE_BILL,
-                                      MyMoneySchedule::OCCUR_MONTHLY,
-                                      paymentType,
-                                      m_date->getQDate(),
-                                      QDate(),
-                                      false,
-                                      false);
+    m_schedule = MyMoneySchedule(  m_name->text(),
+                                   MyMoneySchedule::TYPE_BILL,
+                                   MyMoneySchedule::OCCUR_MONTHLY,
+                                   paymentType,
+                                   m_date->getQDate(),
+                                   QDate(),
+                                   false,
+                                   false);
 
-    paymentSchedule.setTransaction(t);
-
+    m_schedule.setTransaction(t);
+/*
     try
     {
       MyMoneyFile::instance()->addSchedule(paymentSchedule);
@@ -281,6 +258,7 @@ void KNewAccountWizard::accept()
       KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
       delete e;
     }
+*/
   }
 
   KNewAccountWizardDecl::accept();
@@ -510,6 +488,8 @@ void KNewAccountWizard::loadPaymentMethods()
 {
   m_method->clear();
   m_method->insertItem(i18n("Direct Debit"));
+  m_method->insertItem(i18n("Direct Deposit"));
+  m_method->insertItem(i18n("Manual Deposit"));
   m_method->insertItem(i18n("Write Cheque"));
   m_method->insertItem(i18n("Other"));
 }
