@@ -620,7 +620,7 @@ void KReportsView::addReportTab(const MyMoneyReport& report)
 
   m_reportTabWidget->showPage(tab);
 
-};
+}
 
 void KReportsView::slotListContextMenu(KListView* lv,QListViewItem* item,const QPoint & p)
 {

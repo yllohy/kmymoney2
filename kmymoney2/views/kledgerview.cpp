@@ -2074,7 +2074,7 @@ void KLedgerView::setRegisterCellWidget(const int r, const int c, QWidget *w)
 void KLedgerView::setFormCellWidget(const int r, const int c, QWidget* w)
 {
   setCellWidget(m_form->table(), r, c, w);
-};
+}
 
 void KLedgerView::setCellWidget(QTable* table, const int row, const int col, QWidget* w)
 {
