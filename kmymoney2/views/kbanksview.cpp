@@ -575,11 +575,15 @@ const QPixmap KAccountsView::accountImage(const MyMoneyAccount::accountTypeE typ
       rc = QPixmap(checkingsIconImage);
       break;
 
+    case MyMoneyAccount::Loan:
+      rc = QPixmap(loanIconImage);
+    
     case MyMoneyAccount::CreditCard:
       rc = QPixmap(creditCardIconImage);
       break;
 
     case MyMoneyAccount::Asset:
+    case MyMoneyAccount::AssetLoan:
       rc = QPixmap(assetIconImage);
       break;
 
@@ -756,6 +760,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
         accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
         new KAccountIconItem(accountIconView,
+
             m_accountMap[*it],
             accountImage(m_accountMap[*it].accountType()));
 
