@@ -76,6 +76,8 @@ void MyMoneyScheduleTest::testEmptyConstructor() {
 	
 	CPPUNIT_ASSERT(s.m_id == "");
 	CPPUNIT_ASSERT(s.m_occurence == MyMoneySchedule::OCCUR_ANY);
+
+	delete storage;
 }
 
 void MyMoneyScheduleTest::testConstructor() {
