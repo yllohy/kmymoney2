@@ -27,7 +27,6 @@
 // QT Includes
 
 #include <qwidget.h>
-class QVBox;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -143,10 +142,6 @@ private:
     */
   QCString                   m_id;
 
-  QValueList<MyMoneyAccount> m_accountList;
-  QMap<QString, QCString>    m_categoryConversionList;
-
-  QVBox*                     m_accountFrame;
   kMyMoneyAccountCompletion* m_accountSelector;
   bool                       m_inCreation;
 };
