@@ -1,5 +1,8 @@
-####### kdevelop will overwrite this part!!! (begin)##########
+SUBDIRS = 16x16 22x22 32x32 48x48 64x64
 
-SUBDIRS = 22x22 16x16 32x32 48x48 64x64
+LOCAL_DIR=kmymoney2/icons/hicolor
 
-####### kdevelop will overwrite this part!!! (end)############
+uninstall-local:
+	for i in $(SUBDIRS); do \
+	  rmdir $(kde_datadir)/$(LOCAL_DIR)/$$i; \
+	done
