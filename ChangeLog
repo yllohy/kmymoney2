@@ -1,3 +1,8 @@
+2003-01-21 Michael Edwardes <mte@users.sourceforge.net>
+  * Added the beginnings of recurring transaction support.
+  * Added some test cases for the MyMoneyScheduled and
+    MyMoneySchedule classes.
+
 2003-01-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Honor start date setting in ledger view was broken after startup
   * Added QifProfile and QifProfileEditor classes

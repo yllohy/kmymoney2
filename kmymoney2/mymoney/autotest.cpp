@@ -44,6 +44,7 @@
 #include "storage/mymoneystoragebintest.h"
 #include "mymoneyfiletest.h"
 #include "mymoneykeyvaluecontainertest.h"
+#include "mymoneyscheduletest.h"
 
 #include "cppunit/TextTestProgressListener.h"
 
@@ -100,6 +101,7 @@ main(int argc, char** argv)
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyStorageBinTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFileTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyKeyValueContainerTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyScheduleTest);
 
   CppUnit::TestFactoryRegistry &registry =
     CppUnit::TestFactoryRegistry::getRegistry();
