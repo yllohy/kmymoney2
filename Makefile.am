@@ -7,7 +7,7 @@ EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO Cha
 ####### kdevelop will overwrite this part!!! (end)############
 # not a GNU package. You can remove this line, if 
 # have all needed files, that a GNU package needs
-AUTOMAKE_OPTIONS = foreign dist-bzip2
+AUTOMAKE_OPTIONS = foreign
 
 $(top_srcdir)/configure.in: configure.in.in $(top_srcdir)/subdirs
 	cd $(top_srcdir) && $(MAKE) -f admin/Makefile.common configure.in ;
