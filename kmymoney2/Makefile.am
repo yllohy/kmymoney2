@@ -89,8 +89,14 @@ rc_DATA = kmymoney2ui.rc
 
 # messages:
 
+# Remove *.moc.* files from the list of files searched for messages.
+# Don't know, if that has any negative effect, but it avoids to include
+# automatically generated names which usually not need to be translated
+# from clobbering the pot file. (ipwizard@user.sourceforge.net, 07/16/2003)
 messages: rc.cpp
-	LIST=`find . -name \*.h -o -name \*.hh -o -name \*.H -o -name \*.hxx -o -name \*.hpp -o -name \*.cpp -o -name \*.cc -o -name \*.cxx -o -name \*.ecpp -o -name \*.C`; \
+	LIST=`find . -name \*.h -o -name \*.hh -o -name \*.H -o -name \*.hxx -o \
+	-name \*.hpp -o -name \*.cpp -o -name \*.cc -o -name \*.cxx -o -name \*.ecpp -o \
+	-name \*.C | grep -v -E \*\.moc\.\*`; \
 	if test -n "$$LIST"; then \
 	 $(XGETTEXT) $$LIST -o $(podir)/kmymoney2.pot; \
 	fi
