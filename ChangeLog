@@ -1,3 +1,8 @@
+2002-07-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added Account Creation Wizard
+  * Added configuration setting to select between wizard and dialog
+    for new account creation
+
 2002-06-24 Michael Edwardes <mte@users.sourceforge.net>
   * Made KTransactionView enabled.
   * Fixed transaction refresh.

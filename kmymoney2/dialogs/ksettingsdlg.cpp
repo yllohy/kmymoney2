@@ -128,6 +128,29 @@ void KSettingsDlg::setPageAccountsView()
   m_qradiobuttonAccountView = new QRadioButton("account_view", qbuttongroup);
   m_qradiobuttonAccountView->setText( i18n( "Use the new accounts view" ) );
   qvboxlayout->addWidget(m_qradiobuttonAccountView);
+
+  // Create a group box to hold the available options for the wizard
+  QButtonGroup *qwizardbuttongroup = new QButtonGroup(qvboxMainFrame, "GroupBox1");
+  qwizardbuttongroup->setTitle( i18n( "New Account Settings" ) );
+  qwizardbuttongroup->setColumnLayout(0, Qt::Vertical );
+  qwizardbuttongroup->layout()->setSpacing( 0 );
+  qwizardbuttongroup->layout()->setMargin( 0 );
+
+  // Create a layout to organize the widgets.
+  QVBoxLayout *qwizardvboxlayout = new QVBoxLayout(qwizardbuttongroup->layout());
+  qwizardvboxlayout->setAlignment( Qt::AlignTop );
+  qwizardvboxlayout->setSpacing( 6 );
+  qwizardvboxlayout->setMargin( 11 );
+
+  // Create a check box to be in the group box
+  m_qradiobuttonAccountDialog = new QRadioButton("normal_view", qwizardbuttongroup);
+  m_qradiobuttonAccountDialog->setText( i18n( "Use the normal account dialog" ) );
+  qwizardvboxlayout->addWidget(m_qradiobuttonAccountDialog);
+
+  // Create another check box to the group box
+  m_qradiobuttonAccountWizard = new QRadioButton("account_view", qwizardbuttongroup);
+  m_qradiobuttonAccountWizard->setText( i18n( "Use the new account wizard" ) );
+  qwizardvboxlayout->addWidget(m_qradiobuttonAccountWizard);
 }
 
 /** Called to create the Main List page shown in the dialog.
@@ -313,6 +336,10 @@ void KSettingsDlg::configRead()
   m_qradiobuttonStartPrompt->setChecked(m_bTempStartPrompt);
   m_qradiobuttonStartFile->setChecked(!m_bTempStartPrompt);
 
+  m_bTempAccountWizard = kconfig->readBoolEntry("NewAccountWizard", true);
+  m_qradiobuttonAccountWizard->setChecked(m_bTempAccountWizard);
+  m_qradiobuttonAccountDialog->setChecked(!m_bTempAccountWizard);
+
   kconfig->setGroup("List Options");
 
   QFont qfontDefault = QFont("helvetica", 12);
@@ -353,7 +380,6 @@ void KSettingsDlg::configRead()
 
   m_bTempNormalView = kconfig->readBoolEntry("NormalAccountsView", true);
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
-
   m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);
 }
 
@@ -385,6 +411,7 @@ void KSettingsDlg::configWrite()
 
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_qradiobuttonStartPrompt->isChecked());
+  kconfig->writeEntry("NewAccountWizard", m_qradiobuttonAccountWizard->isChecked());
 
   kconfig->sync();
 }
@@ -442,6 +469,7 @@ void KSettingsDlg::slotCancel()
 
   kconfig->setGroup("General Options");
   kconfig->writeEntry("StartDialog", m_bTempStartPrompt);
+  kconfig->writeEntry("NewAccountWizard", m_bTempAccountWizard);
 
   kconfig->sync();
 
@@ -471,4 +499,6 @@ void KSettingsDlg::slotUser1()
   m_dateinputStart->setDate(m_qdateTempStart);
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
   m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);
+  m_qradiobuttonAccountWizard->setChecked(m_bTempAccountWizard);
+  m_qradiobuttonAccountDialog->setChecked(!m_bTempAccountWizard);
 }

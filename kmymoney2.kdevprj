@@ -323,7 +323,7 @@ install_location=$$(kde_datadir)/kmymoney2/default_categories.dat
 type=DATA
 
 [kmymoney2/dialogs/Makefile.am]
-files=kmymoney2/dialogs/kbackupdlg.cpp,kmymoney2/dialogs/kbackupdlg.h,kmymoney2/dialogs/kbackupdlgdecl.ui,kmymoney2/dialogs/kchooseimportexportdlg.cpp,kmymoney2/dialogs/kchooseimportexportdlg.h,kmymoney2/dialogs/kchooseimportexportdlgdecl.ui,kmymoney2/dialogs/kcsvprogressdlgdecl.ui,kmymoney2/dialogs/kcsvprogressdlg.cpp,kmymoney2/dialogs/kcsvprogressdlg.h,kmymoney2/dialogs/kexportdlg.cpp,kmymoney2/dialogs/kexportdlg.h,kmymoney2/dialogs/kexportdlgdecl.ui,kmymoney2/dialogs/kimportdlg.cpp,kmymoney2/dialogs/kimportdlg.h,kmymoney2/dialogs/kimportdlgdecl.ui,kmymoney2/dialogs/ksplittransactiondlgdecl.ui,kmymoney2/dialogs/ksplittransactiondlg.cpp,kmymoney2/dialogs/ksplittransactiondlg.h,kmymoney2/dialogs/kendingbalancedlg.cpp,kmymoney2/dialogs/kendingbalancedlg.h,kmymoney2/dialogs/kendingbalancedlgdecl.ui,kmymoney2/dialogs/kfindtransactiondlg.cpp,kmymoney2/dialogs/kfindtransactiondlg.h,kmymoney2/dialogs/kfindtransactiondlgdecl.ui,kmymoney2/dialogs/knewaccountdlg.cpp,kmymoney2/dialogs/knewaccountdlg.h,kmymoney2/dialogs/knewaccountdlgdecl.ui,kmymoney2/dialogs/knewbankdlg.cpp,kmymoney2/dialogs/knewbankdlg.h,kmymoney2/dialogs/knewfiledlg.cpp,kmymoney2/dialogs/knewfiledlg.h,kmymoney2/dialogs/knewfiledlgdecl.ui,kmymoney2/dialogs/kreconciledlg.cpp,kmymoney2/dialogs/kreconciledlg.h,kmymoney2/dialogs/kreconciledlgdecl.ui,kmymoney2/dialogs/ksettingsdlg.cpp,kmymoney2/dialogs/ksettingsdlg.h,kmymoney2/dialogs/kstartdlg.cpp,kmymoney2/dialogs/kstartdlg.h,kmymoney2/dialogs/kreconcilelistitem.cpp,kmymoney2/dialogs/kreconcilelistitem.h,kmymoney2/dialogs/ksplitcorrectiondlg.ui,kmymoney2/dialogs/knewequityentrydecl.ui,kmymoney2/dialogs/knewequityentrydlg.cpp,kmymoney2/dialogs/knewequityentrydlg.h,kmymoney2/dialogs/kupdatestockpricedlgdecl.ui,kmymoney2/dialogs/kupdatestockpricedlg.cpp,kmymoney2/dialogs/kupdatestockpricedlg.h,kmymoney2/dialogs/keditscheduledbilldlg.cpp,kmymoney2/dialogs/keditscheduledbilldlg.h,kmymoney2/dialogs/keditschedbilldlgdecl.ui,kmymoney2/dialogs/keditscheddepdlgdecl.ui,kmymoney2/dialogs/keditschedtransdlgdecl.ui,kmymoney2/dialogs/keditscheduleddepositdlg.cpp,kmymoney2/dialogs/keditscheduleddepositdlg.h,kmymoney2/dialogs/keditscheduledtransferdlg.cpp,kmymoney2/dialogs/keditscheduledtransferdlg.h,kmymoney2/dialogs/knewbankdlgdecl.ui
+files=kmymoney2/dialogs/kbackupdlg.cpp,kmymoney2/dialogs/kbackupdlg.h,kmymoney2/dialogs/kbackupdlgdecl.ui,kmymoney2/dialogs/kchooseimportexportdlg.cpp,kmymoney2/dialogs/kchooseimportexportdlg.h,kmymoney2/dialogs/kchooseimportexportdlgdecl.ui,kmymoney2/dialogs/kcsvprogressdlgdecl.ui,kmymoney2/dialogs/kcsvprogressdlg.cpp,kmymoney2/dialogs/kcsvprogressdlg.h,kmymoney2/dialogs/kexportdlg.cpp,kmymoney2/dialogs/kexportdlg.h,kmymoney2/dialogs/kexportdlgdecl.ui,kmymoney2/dialogs/kimportdlg.cpp,kmymoney2/dialogs/kimportdlg.h,kmymoney2/dialogs/kimportdlgdecl.ui,kmymoney2/dialogs/ksplittransactiondlgdecl.ui,kmymoney2/dialogs/ksplittransactiondlg.cpp,kmymoney2/dialogs/ksplittransactiondlg.h,kmymoney2/dialogs/kendingbalancedlg.cpp,kmymoney2/dialogs/kendingbalancedlg.h,kmymoney2/dialogs/kendingbalancedlgdecl.ui,kmymoney2/dialogs/kfindtransactiondlg.cpp,kmymoney2/dialogs/kfindtransactiondlg.h,kmymoney2/dialogs/kfindtransactiondlgdecl.ui,kmymoney2/dialogs/knewaccountdlg.cpp,kmymoney2/dialogs/knewaccountdlg.h,kmymoney2/dialogs/knewbankdlg.cpp,kmymoney2/dialogs/knewbankdlg.h,kmymoney2/dialogs/knewfiledlg.cpp,kmymoney2/dialogs/knewfiledlg.h,kmymoney2/dialogs/knewfiledlgdecl.ui,kmymoney2/dialogs/kreconciledlg.cpp,kmymoney2/dialogs/kreconciledlg.h,kmymoney2/dialogs/kreconciledlgdecl.ui,kmymoney2/dialogs/ksettingsdlg.cpp,kmymoney2/dialogs/ksettingsdlg.h,kmymoney2/dialogs/kstartdlg.cpp,kmymoney2/dialogs/kstartdlg.h,kmymoney2/dialogs/kreconcilelistitem.cpp,kmymoney2/dialogs/kreconcilelistitem.h,kmymoney2/dialogs/ksplitcorrectiondlg.ui,kmymoney2/dialogs/knewequityentrydecl.ui,kmymoney2/dialogs/knewequityentrydlg.cpp,kmymoney2/dialogs/knewequityentrydlg.h,kmymoney2/dialogs/kupdatestockpricedlgdecl.ui,kmymoney2/dialogs/kupdatestockpricedlg.cpp,kmymoney2/dialogs/kupdatestockpricedlg.h,kmymoney2/dialogs/keditscheduledbilldlg.cpp,kmymoney2/dialogs/keditscheduledbilldlg.h,kmymoney2/dialogs/keditschedbilldlgdecl.ui,kmymoney2/dialogs/keditscheddepdlgdecl.ui,kmymoney2/dialogs/keditschedtransdlgdecl.ui,kmymoney2/dialogs/keditscheduleddepositdlg.cpp,kmymoney2/dialogs/keditscheduleddepositdlg.h,kmymoney2/dialogs/keditscheduledtransferdlg.cpp,kmymoney2/dialogs/keditscheduledtransferdlg.h,kmymoney2/dialogs/knewbankdlgdecl.ui,kmymoney2/dialogs/knewaccountdlgdecl.ui,kmymoney2/dialogs/knewaccountwizarddecl.ui,kmymoney2/dialogs/knewaccountwizard.cpp,kmymoney2/dialogs/knewaccountwizard.h
 sub_dirs=
 type=static_library
 
@@ -520,6 +520,24 @@ install_location=
 type=HEADER
 
 [kmymoney2/dialogs/knewaccountdlgdecl.ui]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/dialogs/knewaccountwizard.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/dialogs/knewaccountwizard.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/dialogs/knewaccountwizarddecl.ui]
 dist=true
 install=false
 install_location=

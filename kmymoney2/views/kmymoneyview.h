@@ -35,6 +35,7 @@
 //#include "kmainview.h"
 #include "../dialogs/kreconciledlg.h"
 #include "../dialogs/kfindtransactiondlg.h"
+#include "../dialogs/knewaccountwizard.h"
 //#include "kscheduleview.h"
 #include "../dialogs/kcsvprogressdlg.h"
 
@@ -56,7 +57,7 @@
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.14 2002/06/24 06:05:03 ipwizard Exp $
+  * $Id: kmymoneyview.h,v 1.15 2002/07/08 11:15:28 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -75,7 +76,8 @@ private:
   KPayeesView *m_payeesView;
   KScheduledView *m_scheduledView;
   KInvestmentView *m_investmentView;
-  
+  KNewAccountWizard *m_newAccountWizard;
+
   viewType m_showing;
   viewShowing m_realShowing;
 

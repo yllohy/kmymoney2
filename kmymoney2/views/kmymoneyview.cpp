@@ -22,6 +22,7 @@
 #endif
 
 #include <kmessagebox.h>
+#include <../dialogs/knewaccountwizard.h>
 #include <qlabel.h>
 #include <qfile.h>
 #include <qtextstream.h>
@@ -118,6 +119,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_reconcileInited=false;
   reconcileDlg=0;
   transactionFindDlg=0;
+
+  m_newAccountWizard = new KNewAccountWizard(this, "NewAccountWizard");
+  connect(m_newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotBankNew()));
 
   // construct account context menu
   KIconLoader *kiconloader = KGlobal::iconLoader();
@@ -394,11 +398,54 @@ void KMyMoneyView::slotBankNew(void)
 
 void KMyMoneyView::slotAccountNew(void)
 {
+
   if (!fileOpen())
     return;
 
-  MyMoneyAccount account;
+  MyMoneyAccount newAccount;
+  MyMoneyAccount parentAccount;
+  int dialogResult;
 
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+  if(config->readBoolEntry("NewAccountWizard", true) == true) {
+    // wizard selected
+    if((dialogResult = m_newAccountWizard->exec()) == QDialog::Accepted) {
+      newAccount = m_newAccountWizard->account();
+      parentAccount = m_newAccountWizard->parentAccount();
+    }
+  } else {
+    // regular dialog selected
+    MyMoneyAccount account;
+    KNewAccountDlg dialog(account, false, false, this, "hi", i18n("Create a new Account"));
+    if((dialogResult = dialog.exec()) == QDialog::Accepted) {
+      MyMoneyAccount newAccount = dialog.account();
+      MyMoneyAccount parentAccount = dialog.parentAccount();
+    }
+  }
+
+  if(dialogResult == QDialog::Accepted) {
+    // The dialog/wizard doesn't check the parent.
+    // An exception will be thrown on the next line instead.
+    try
+    {
+      qDebug("new %s, parent %s, name %s, %s", newAccount.id().data(), parentAccount.id().data(), newAccount.name().latin1(), parentAccount.name().latin1());
+
+      MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
+      accountsView->refresh("");
+      viewAccountList(newAccount.id());
+    }
+    catch (MyMoneyException *e)
+    {
+      QString message("Unable to add account: ");
+      message += e->what();
+      KMessageBox::information(this, message);
+      delete e;
+
+    }
+  }
+
+/*
   KNewAccountDlg dialog(account, false, false, this, "hi", i18n("Create a new Account"));
 
   if (dialog.exec())
@@ -427,6 +474,7 @@ void KMyMoneyView::slotAccountNew(void)
       return;
     }
   }
+*/
 }
 
 void KMyMoneyView::slotAccountReconcile(void)
@@ -827,6 +875,7 @@ void KMyMoneyView::viewTransactionList(void)
     else
     {
       m_showing = TransactionList;
+
       m_investmentView->hide();
 
       accountsView->hide();
@@ -1196,6 +1245,7 @@ QString KMyMoneyView::currentAccountName(void)
 
       MyMoneyAccount account = file->account(accountsView->currentAccount(accountSuccess));
       if (accountSuccess)
+
         return account.name();
     }
     catch (MyMoneyException *e)

@@ -53,7 +53,7 @@
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.4 2002/06/13 22:23:38 mte Exp $
+  * $Id: ksettingsdlg.h,v 1.5 2002/07/08 11:12:53 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -95,6 +95,9 @@ private:
   QRadioButton *m_qradiobuttonNormalView;
   QRadioButton *m_qradiobuttonAccountView;
 
+  QRadioButton *m_qradiobuttonAccountDialog;
+  QRadioButton *m_qradiobuttonAccountWizard;
+
   /** Set page general */
   void setPageGeneral();
   /** Set page list settings */
@@ -123,6 +126,7 @@ private:
   bool m_bTempTextPrompt;
   QDate m_qdateTempStart;
   bool m_bTempNormalView;
+  bool m_bTempAccountWizard;
 
 private slots:
   /** Called when OK pressed */
