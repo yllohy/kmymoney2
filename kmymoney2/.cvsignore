@@ -11,8 +11,7 @@ templates
 *decl.cpp
 *decl.h
 kmymoney2
-knewbillwizard.cpp
-knewbillwizard.h
+kmymoneytest
 *~
 *.kidl
 *_skel.*

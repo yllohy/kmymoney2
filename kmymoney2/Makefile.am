@@ -142,3 +142,15 @@ install-exec-hook:
 
 uninstall-hook:
 	-rm -f $(DESTDIR)$(bindir)/kmymoney
+
+if CPPUNIT
+TESTS = kmymoneytest
+check_PROGRAMS = $(TESTS)
+
+kmymoneytest_SOURCES = kmymoneytest.cpp
+
+kmymoneytest_LDADD = ./mymoney/storage/libstoragetest.a ./mymoney/libmymoneytest.a ./views/libviewstest.a $(kmymoney2_LDADD)
+
+# the library search path.
+kmymoneytest_LDFLAGS = $(all_libraries) $(kde_RPATH) $(CPPUNIT_LIBS)
+endif
