@@ -62,8 +62,8 @@
 
 KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name) : KLedgerView(parent, name)
 {
-  QGridLayout* formLayout = new QGridLayout( this, 1, 2, 11, 6, "FormLayout");
-  QVBoxLayout* ledgerLayout = new QVBoxLayout( 6, "LedgerLayout");
+  QGridLayout* formLayout = new QGridLayout( this, 1, 2, 11, 6, "InvestmentFormLayout");
+  QVBoxLayout* ledgerLayout = new QVBoxLayout(this, 5, 6, "InvestmentLedgerLayout");
 
   createInfoStack();
   formLayout->addWidget(m_infoStack, 0, 1 );
@@ -118,55 +118,8 @@ void KLedgerViewInvestments::slotReconciliation(void)
 
 void KLedgerViewInvestments::createForm(void)
 {
-/*
-  mainGrid = new QGridLayout( this, 1, 1, 5, 5 );
-
-  m_InvestmentTabs = new QTabWidget(this);
-
-  m_SummaryTab = new QWidget(m_InvestmentTabs);
-  m_TransactionTab = new QWidget(m_InvestmentTabs);
-
-  
-
-  textBrowser = new KTextBrowser(m_SummaryTab);
-  
-  // QLabel *liFirstName = new QLabel( "First &Name", m_SummaryTab );
-  
-
-  QGridLayout *grid2 = new QGridLayout( m_TransactionTab, 2, 1, 5, 5 );
-
   m_form = new kMyMoneyTransactionForm(this, NULL, 15, 4, 5);
-  //m_form->hide();
-  m_register = new kMyMoneyRegisterCheckings(this, "Checkings");
-  m_register->setParent(this);
-  //m_register->hide();
   
-  grid2->addWidget(m_form, 1, 0);
-  grid2->addWidget(m_register, 0, 0);
-
-  //QPoint point(0,0);
-  //m_form->reparent(m_TransactionTab, QPoint(300,0), true);
-  
-  //m_register->reparent(m_TransactionTab, QPoint(0, 100), true);
-  //m_form->show();
-  //m_register->show();
-  
-  m_InvestmentTabs->addTab( m_SummaryTab, "&Account Summary" );
-  m_InvestmentTabs->addTab( m_TransactionTab, "Account &Transactions" );
-
-  mainGrid->addWidget( m_InvestmentTabs, 0, 0 );
-
-
-  //this->addWidget(m_InvestmentTabs);
-    
-  //m_SummaryTab = new QTab("Tab1");
-  //m_TransactionTab = new QTab("Tab2");
-  //m_InvestmentTabs->addTab(m_SummaryTab);
-  //m_InvestmentTabs->addTab(m_TransactionTab);
-  
-  
-
-              
   m_tabCheck = new QTab(action2str(MyMoneySplit::ActionCheck, true));
   m_tabDeposit = new QTab(action2str(MyMoneySplit::ActionDeposit, true));
   m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
@@ -177,7 +130,7 @@ void KLedgerViewInvestments::createForm(void)
   m_form->addTab(m_tabDeposit);
   m_form->addTab(m_tabTransfer);
   m_form->addTab(m_tabWithdrawal);
-  m_form->addTab(m_tabAtm);
+  m_form->addTab(m_tabAtm); 
 
   // never show horizontal scroll bars
   m_form->table()->setHScrollBarMode(QScrollView::AlwaysOff);
@@ -186,15 +139,15 @@ void KLedgerViewInvestments::createForm(void)
   m_form->table()->setMaximumHeight(m_form->table()->rowHeight(0)*m_form->table()->numRows());
 
   // connections
-  connect(m_form->tabBar(), SIGNAL(selected(int)), this, SLOT(slotTypeSelected(int)));
+  //connect(m_form->tabBar(), SIGNAL(selected(int)), this, SLOT(slotTypeSelected(int)));
 
-  connect(m_form->editButton(), SIGNAL(clicked()), this, SLOT(slotStartEdit()));
-  connect(m_form->cancelButton(), SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
-  connect(m_form->enterButton(), SIGNAL(clicked()), this, SLOT(slotEndEdit()));
-  connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
+  //connect(m_form->editButton(), SIGNAL(clicked()), this, SLOT(slotStartEdit()));
+  //connect(m_form->cancelButton(), SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
+  //connect(m_form->enterButton(), SIGNAL(clicked()), this, SLOT(slotEndEdit()));
+  //connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
 
   m_form->enterButton()->setDefault(true);
-*/
+
 }
 
 void KLedgerViewInvestments::createInfoStack(void)
@@ -285,21 +238,25 @@ void KLedgerViewInvestments::slotRegisterDoubleClicked(int /* row */,
 
 void KLedgerViewInvestments::createRegister(void)
 {
-  m_register = new kMyMoneyRegisterCheckings(this, "Investments");
+  m_register = new kMyMoneyRegisterCheckings(this, "Checkings");
   m_register->setParent(this);
-/*
+
+  m_register->setAction(QCString(MyMoneySplit::ActionATM), i18n("ATM"));
+  m_register->setAction(QCString(MyMoneySplit::ActionCheck), i18n("Cheque"));
+  m_register->setAction(QCString(MyMoneySplit::ActionDeposit), i18n("Deposit"));
+  m_register->setAction(QCString(MyMoneySplit::ActionWithdrawal), i18n("Withdrawal"));
+  m_register->setAction(QCString(MyMoneySplit::ActionTransfer), i18n("Transfer"));
+
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
   connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
 
   connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
-
   connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
   connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
   connect(m_register, SIGNAL(signalDelete()), this, SLOT(slotDeleteTransaction()));
   connect(m_register, SIGNAL(signalSelectTransaction(const QCString&)), this, SLOT(selectTransaction(const QCString&)));
 
   connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
-*/
 }
 
 void KLedgerViewInvestments::createSummary(void)

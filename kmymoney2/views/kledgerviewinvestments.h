@@ -112,6 +112,9 @@ private:
 
   QLabel*         m_lastReconciledLabel;
 
+  QTab *m_tabCheck, *m_tabDeposit, *m_tabTransfer,
+       *m_tabWithdrawal, *m_tabAtm;
+  
 /*
   KTextBrowser *textBrowser;
   QGridLayout *mainGrid;
