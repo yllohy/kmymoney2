@@ -1,9 +1,10 @@
+2004-07-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #987465 (can't edit scheduled transactions)
+
 2004-07-14 Ace Jones <acejones@users.sourceforge.net>
   * Creation of new reports.  Interface is pretty rudimentary.
-  
-2004-07-14 Ace Jones <acejones@users.sourceforge.net>
   * Center reports within tab frame
-  
+
 2004-07-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * More investment work
   * Moved showWidgets() from the various ledger views to the base class
