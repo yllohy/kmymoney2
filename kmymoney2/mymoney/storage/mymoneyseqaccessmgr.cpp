@@ -696,6 +696,9 @@ void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccoun
     oldParent = m_accountList.find(account.parentAccountId());
   }
 
+  if(account.accountType() == MyMoneyAccount::Stock && parent.accountType() != MyMoneyAccount::Investment)
+    throw new MYMONEYEXCEPTION("Cannot move a stock acocunt into a non-investment account");
+
   newParent = m_accountList.find(parent.id());
   childAccount = m_accountList.find(account.id());
 
@@ -705,8 +708,9 @@ void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccoun
   (*newParent).addAccountId(account.id());
   (*childAccount).setParentAccountId(parent.id());
 
-  // make sure the type is the same as the new parent
-  (*childAccount).setAccountType((*newParent).accountType());
+  // make sure the type is the same as the new parent. This does not work for stock and investment
+  if(account.accountType() != MyMoneyAccount::Stock && account.accountType() != MyMoneyAccount::Investment)
+    (*childAccount).setAccountType((*newParent).accountType());
 
   parent = *newParent;
   account = *childAccount;
