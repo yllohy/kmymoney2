@@ -53,7 +53,7 @@ private:
   void initParentWidget(QCString parentId, const QCString& accountId);
   void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, const QCString& parentId, const QCString& accountId);
   void loadInstitutions(const QString&);
-
+  void loadVatAccounts(void);
 
 public:
   /**
@@ -92,6 +92,8 @@ protected slots:
   void okClicked();
   void slotSelectionChanged(QListViewItem *item);
   void slotAccountTypeChanged(const QString& type);
+  void slotVatChanged(bool);
+  void slotVatAssignmentChanged(bool);
   void slotNewClicked();
   void slotCheckFinished(void);
 

@@ -835,6 +835,8 @@ protected:
     */
   void createRegister(kMyMoneyRegister* reg);
 
+  virtual void vatCheck(MyMoneyTransaction& t, MyMoneySplit& s);
+
 protected:
   /**
     * This member keeps a pointer to the specific register for the account

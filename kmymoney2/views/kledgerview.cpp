@@ -821,6 +821,11 @@ void KLedgerView::amountChanged(const QString& value, int dir)
     // we need it to recalculate shares/values.
     MyMoneyMoney price = m_split.shares() / m_split.value();
 
+    MyMoneyAccount vacc;
+    MyMoneySplit split = m_transaction.splitByAccount(accountId(), false);
+    vacc = MyMoneyFile::instance()->account(split.accountId());
+    bool checkVat = !split.accountId().isEmpty() && split.value().isZero() && !vacc.value("VatAccount").isEmpty();
+
     // set either shares or value depending on the currencies
     m_split.setValue(val, m_transaction.commodity(), m_account.currencyId());
 
@@ -841,7 +846,6 @@ void KLedgerView::amountChanged(const QString& value, int dir)
       MyMoneyAccount acc;
       acc.setCurrencyId(m_transaction.commodity());
 
-      MyMoneySplit split = m_transaction.splitByAccount(accountId(), false);
       // if the user enters the amount first w/o the category field
       // being filled, we cannot determine the 'other side' of the
       // transaction correctly. In this case, we assume a price of 0
@@ -862,7 +866,12 @@ void KLedgerView::amountChanged(const QString& value, int dir)
       if(m_transaction.commodity() != acc.currencyId() && price != 0) {
         split.setShares(split.value() / price);
       }
+
       m_transaction.modifySplit(split);
+      if(m_transaction.commodity() == m_account.currencyId() && checkVat) {
+        vatCheck(m_transaction, split);
+      }
+
     }
     reloadEditWidgets(m_transaction);
 
@@ -912,6 +921,58 @@ void KLedgerView::slotDepositChanged(const QString& value)
   updateTabBar(m_transaction, m_split);
 }
 
+void KLedgerView::vatCheck(MyMoneyTransaction& t, MyMoneySplit& split)
+{
+  bool needFocusOutEvent = false;
+  try {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(split.accountId());
+    // verify that vat account exists
+    MyMoneyAccount vatAcc = MyMoneyFile::instance()->account(acc.value("VatAccount").latin1());
+    MyMoneyMoney vatRate;
+    MyMoneyMoney gv, nv;    // gross value, net value
+    vatRate.fromString(vatAcc.value("VatRate"));
+    if(!vatRate.isZero()) {
+      MyMoneySplit vatSplit;
+      try {
+        vatSplit = t.splitByAccount(vatAcc.id(), true);
+      } catch(MyMoneyException *e) {
+        // if the split does not yet exist, we end up here and create it
+        vatSplit.setAccountId(vatAcc.id());
+        t.addSplit(vatSplit);
+        // if we switch from 'non-split' to 'split' transaction, we
+        // need to get out of the category field.
+        needFocusOutEvent = true;
+        delete e;
+      }
+
+      qDebug("vat amount is '%s'", acc.value("VatAmount").latin1());
+      if(acc.value("VatAmount") != QString("Net")) {
+        // split value is the gross value
+        gv = split.value();
+        nv = gv / (MyMoneyMoney(1,1) + vatRate);
+        split.setValue(nv);
+        t.modifySplit(split);
+
+      } else {
+        // split value is the net value
+        nv = split.value();
+        gv = nv * (MyMoneyMoney(1,1) + vatRate);
+        MyMoneySplit accSplit = t.splitByAccount(accountId());
+        accSplit.setValue(accSplit.value() - (gv - nv));
+        t.modifySplit(accSplit);
+      }
+
+      vatSplit.setValue(vatSplit.value() + (gv - nv));
+      t.modifySplit(vatSplit);
+    }
+  } catch(MyMoneyException *e) {
+    delete e;
+  }
+  if(needFocusOutEvent && qApp->focusWidget() == m_editCategory) {
+    m_editMemo->setFocus();
+  }
+}
+
 void KLedgerView::slotCategoryChanged(const QCString& categoryId)
 {
   MyMoneyTransaction t;
@@ -924,9 +985,17 @@ void KLedgerView::slotCategoryChanged(const QCString& categoryId)
     createSecondSplit();
     MyMoneySplit split = m_transaction.splitByAccount(accountId(), false);
     if(!categoryId.isEmpty()) {
+      // verify that account exists
       MyMoneyAccount acc = MyMoneyFile::instance()->account(categoryId);
+      // do we have to check for vat?
+      bool checkVat = split.accountId().isEmpty() && !(split.value().isZero()) && !acc.value("VatAccount").isEmpty();
+
       split.setAccountId(categoryId);
       m_transaction.modifySplit(split);
+      if(checkVat) {
+        vatCheck(m_transaction, split);
+        reloadEditWidgets(m_transaction);
+      }
     } else {
       m_transaction.removeSplit(split);
       createSecondSplit();

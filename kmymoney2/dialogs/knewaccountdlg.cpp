@@ -26,6 +26,9 @@
 #include <qtooltip.h>
 #include <qcheckbox.h>
 #include <qtimer.h>
+#include <qtabwidget.h>
+#include <qbuttongroup.h>
+#include <qradiobutton.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
@@ -55,6 +58,7 @@
 #include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneycurrencyselector.h"
 #include "../widgets/kmymoneyequity.h"
+#include "../widgets/kmymoneyaccountselector.h"
 
 #include "../mymoney/mymoneyexception.h"
 #include "../mymoney/mymoneyfile.h"
@@ -62,6 +66,11 @@
 #include "../views/kbanklistitem.h"
 #include "../views/kmymoneyfile.h"
 #include "../kmymoneyutils.h"
+
+#define TAB_GENERAL      0
+#define TAB_INSTITUTION  1
+#define TAB_CURRENCY     2
+#define TAB_TAX          3
 
 KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent,
     const char *name, const char *title)
@@ -95,6 +104,9 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
 
   if (categoryEditor)
   {
+    m_tab->setTabEnabled(m_tab->page(TAB_INSTITUTION), false);
+    m_tab->setTabEnabled(m_tab->page(TAB_CURRENCY), false);
+
     m_qlistviewParentAccounts->setEnabled(true);
     startDateEdit->setEnabled(false);
     startBalanceEdit->setEnabled(false);
@@ -128,12 +140,14 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     m_currency->setEnabled(false);
     m_equityText->hide();
     m_equity->hide();
-    
-    m_qcheckboxTax->setChecked(account.value("Tax") == "Yes");
 
+    m_qcheckboxTax->setChecked(account.value("Tax") == "Yes");
+    loadVatAccounts();
   }
   else
   {
+    m_tab->setTabEnabled(m_tab->page(TAB_TAX), false);
+
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Checkings));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Savings));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Cash));
@@ -225,7 +239,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       m_equityText->hide();
       m_equity->hide();
     }
-    
+
     m_qcheckboxTax->hide();
   }
 
@@ -285,6 +299,16 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   // connect(m_equity, SIGNAL(equityChanged(const QCString&)), this, SLOT(slotCheckFinished()));
   connect(m_equity, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckFinished()));
 
+  connect(m_vatCategory, SIGNAL(toggled(bool)), this, SLOT(slotVatChanged(bool)));
+  connect(m_vatAssignment, SIGNAL(toggled(bool)), this, SLOT(slotVatAssignmentChanged(bool)));
+  connect(m_vatCategory, SIGNAL(toggled(bool)), this, SLOT(slotCheckFinished()));
+  connect(m_vatAssignment, SIGNAL(toggled(bool)), this, SLOT(slotCheckFinished()));
+  connect(m_vatRate, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckFinished()));
+  connect(m_vatAccount, SIGNAL(stateChanged()), this, SLOT(slotCheckFinished()));
+
+  m_vatCategory->setChecked(false);
+  m_vatAssignment->setChecked(false);
+
   // make sure our account does not have an id and no parent assigned
   // and certainly no children in case we create a new account
   if(!m_isEditing) {
@@ -302,7 +326,31 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
         type = MyMoneyAccount::Checkings;
       slotAccountTypeChanged(KMyMoneyUtils::accountTypeToString(type));
     }
+  } else {
+    if(categoryEditor) {
+      if(!m_account.value("VatRate").isEmpty()) {
+        m_vatCategory->setChecked(true);
+        m_vatRate->setValue(MyMoneyMoney(m_account.value("VatRate"))*MyMoneyMoney(100,1));
+      } else {
+        if(!m_account.value("VatAccount").isEmpty()) {
+          QCString accId = m_account.value("VatAccount").latin1();
+          try {
+            // make sure account exists
+            MyMoneyFile::instance()->account(accId);
+            m_vatAssignment->setChecked(true);
+            m_vatAccount->setSelected(accId);
+            m_grossAmount->setChecked(true);
+            if(m_account.value("VatAmount") == "Net")
+              m_netAmount->setChecked(true);
+          } catch(MyMoneyException *e) {
+            delete e;
+          }
+        }
+      }
+    }
   }
+  slotVatChanged(m_vatCategory->isChecked());
+  slotVatAssignmentChanged(m_vatAssignment->isChecked());
   slotCheckFinished();
 
   // using a timeout is the only way, I got the 'ensureItemVisible'
@@ -423,13 +471,31 @@ void KNewAccountDlg::okClicked()
       KMessageBox::information(this, i18n("You have selected to suppress the display of unused categories in the KMyMoney configuration dialog. The category you just created will therefore only be shown if it is used. Otherwise, it will be hidden in the accounts/categories view."), i18n("Hidden categories"), "NewHiddenCategory");
     }
   }
-  
+
   if (m_categoryEditor)
   {
     if ( m_qcheckboxTax->isChecked())
-      m_account.setValue("Tax","Yes");
+      m_account.setValue("Tax", "Yes");
     else
       m_account.deletePair("Tax");
+
+    m_account.deletePair("VatAccount");
+    m_account.deletePair("VatAmount");
+    m_account.deletePair("VatRate");
+
+    if(m_vatCategory->isChecked()) {
+      m_account.setValue("VatRate", (m_vatRate->value().abs() / MyMoneyMoney(100,1)).toString());
+    } else {
+      if(m_vatAssignment->isChecked()) {
+        m_account.setValue("VatAccount", m_vatAccount->selectedAccounts().first());
+        if(m_netAmount->isChecked())
+          m_account.setValue("VatAmount", "Net");
+      }
+    }
+
+    if(m_vatAssignment->isEnabled() && m_vatAssignment->isChecked()) {
+    } else {
+    }
   }
 
   accept();
@@ -746,6 +812,24 @@ void KNewAccountDlg::slotSelectionChanged(QListViewItem *item)
   }
 }
 
+void KNewAccountDlg::loadVatAccounts(void)
+{
+  QValueList<MyMoneyAccount> list = MyMoneyFile::instance()->accountList();
+  QValueList<MyMoneyAccount>::Iterator it;
+  QCStringList loadListExpense;
+  QCStringList loadListIncome;
+  for(it = list.begin(); it != list.end(); ++it) {
+    if(!(*it).value("VatRate").isEmpty()) {
+      if((*it).accountType() == MyMoneyAccount::Expense)
+        loadListExpense += (*it).id();
+      else
+        loadListIncome += (*it).id();
+    }
+  }
+  m_vatAccount->loadList(i18n("Income"), loadListIncome, true);
+  m_vatAccount->loadList(i18n("Expense"), loadListExpense, false);
+}
+
 void KNewAccountDlg::loadInstitutions(const QString& name)
 {
   int id=-1, counter=0;
@@ -850,5 +934,29 @@ void KNewAccountDlg::slotCheckFinished(void)
       showButton = false;
     }
   }
+
+  if(m_vatCategory->isChecked() && m_vatRate->value() <= MyMoneyMoney(0)) {
+    showButton = false;
+  } else {
+    if(m_vatAssignment->isChecked() && m_vatAccount->selectedAccounts().isEmpty())
+      showButton = false;
+  }
   createButton->setEnabled(showButton);
+}
+
+void KNewAccountDlg::slotVatChanged(bool state)
+{
+  if(state) {
+    m_vatCategoryFrame->show();
+    m_vatAssignmentFrame->hide();
+  } else {
+    m_vatCategoryFrame->hide();
+    m_vatAssignmentFrame->show();
+  }
+}
+
+void KNewAccountDlg::slotVatAssignmentChanged(bool state)
+{
+  m_vatAccount->setEnabled(state);
+  m_amountGroup->setEnabled(state);
 }
