@@ -33,12 +33,12 @@
 #include "../views/kledgerview.h"
 
 kMyMoneyRegister::kMyMoneyRegister(QWidget *parent, const char *name )
-  : QTable(parent,name)
+  : QTable(parent, name)
 {
   readConfig();
   m_currentDateRow = -1;
   m_lastTransactionIndex = -1;
-  m_currentTransactionRow = 0;
+  m_currentTransactionIndex = 0;
   setSelectionMode(QTable::SingleRow);
 }
 
@@ -76,6 +76,11 @@ void kMyMoneyRegister::setTransactionCount(int r)
   updateScrollBars();
 
   m_lastTransactionIndex = -1;
+}
+
+/** Override the QTable member function to avoid display of focus */
+void kMyMoneyRegister::paintFocus(QPainter *p, const QRect &cr)
+{
 }
 
 void kMyMoneyRegister::readConfig(void)
@@ -135,12 +140,14 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
   m_transactionRow = row%m_rpt;
   if(m_transactionIndex != m_lastTransactionIndex) {
     m_transaction = m_view->transaction(m_transactionIndex);
-    m_split = m_transaction->split(m_view->accountId());
-    m_balance = m_view->balance(m_transactionIndex);
+    if(m_transaction != NULL) {
+      m_split = m_transaction->split(m_view->accountId());
+      m_balance = m_view->balance(m_transactionIndex);
+    }
     m_lastTransactionIndex = m_transactionIndex;
   }
 
-  if(m_transactionIndex == m_currentTransactionRow) {
+  if(m_transactionIndex == m_currentTransactionIndex) {
     QBrush backgroundBrush(m_cg.highlight());
     p->fillRect(m_cellRect,backgroundBrush);
     m_textColor = m_cg.highlightedText();
@@ -151,4 +158,23 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
     m_textColor = m_cg.text();
   }
   p->setPen(m_textColor);
+}
+
+void kMyMoneyRegister::contentsMouseReleaseEvent( QMouseEvent* e )
+{
+  QTable::contentsMouseReleaseEvent(e);
+/*
+  if(e->button != LeftButton)
+    int row = rowAt(e->pos().y()) / m_rpt;
+    emit clicked( row, columnAt(e->pos().x()), e->button(), e->pos() );
+  }
+*/
+}
+
+void kMyMoneyRegister::setCurrentTransactionIndex(int idx)
+{
+  if(idx < 0)
+    idx = 0;
+
+  m_currentTransactionIndex = idx;
 }

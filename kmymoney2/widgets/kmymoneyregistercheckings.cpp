@@ -48,7 +48,24 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
 {
   // do general stuff
   kMyMoneyRegister::paintCell(p, row, col, r, selected, cg);
+
   const bool lastLine = m_transactionRow == m_rpt-1;
+  int align = Qt::AlignVCenter;
+
+  // if a grid is selected, we paint it right away
+  if (m_showGrid) {
+    p->setPen(m_gridColor);
+    p->drawLine(m_cellRect.x(), 0, m_cellRect.x(), m_cellRect.height()-1);
+    if(lastLine)
+      p->drawLine(m_cellRect.x(), m_cellRect.height()-1, m_cellRect.width(), m_cellRect.height()-1);
+    p->setPen(m_textColor);
+  }
+
+  // if we paint something, that we don't know (yet), we're done
+  // this applies to the very last line of the ledger which always
+  // shows an empty line for new transactions to be added.
+  if(m_transaction == NULL)
+    return;
 
   // now the specific stuff for checking accounts
   QRect rr3 = r;
@@ -57,12 +74,23 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
 
   switch (col) {
     case 0:
-      txt = " "; // for now keep it empty
-      // txt = m_transaction->???
+      align |= Qt::AlignRight;
+      switch(m_transactionRow) {
+        case 0:
+          txt = m_split.number();
+          if(txt.isEmpty())
+            txt = " ";
+          break;
+        case 1:
+        case 2:
+          txt = " "; // for now keep it empty
+          break;
+      }
       // tricky fall through here!
 
     case 1:
       if(txt.isEmpty()) {
+        align |= Qt::AlignLeft;
         switch(m_transactionRow) {
           case 0:
             txt = KGlobal::locale()->formatDate(m_transaction->postDate(), true);
@@ -78,6 +106,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
 
     case 2:
       if(txt.isEmpty()) {
+        align |= Qt::AlignLeft;
         switch(m_transactionRow) {
           case 0:
             try {
@@ -107,6 +136,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         }
       }
 
+/*
       // now do the painting
       if (m_showGrid) {
         p->setPen(m_gridColor);
@@ -115,6 +145,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
           p->drawLine(m_cellRect.x(), m_cellRect.height()-1, m_cellRect.width(), m_cellRect.height()-1);
         p->setPen(m_textColor);
       }
+*/
 /*
       if(m_transactionRow > 0 && col == 2) {
         int intMemoStart = m_cellRect.width() / 2;
@@ -134,7 +165,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
 
       } else {
 */
-        p->drawText(m_textRect, Qt::AlignLeft | Qt::AlignVCenter, txt);
+        p->drawText(m_textRect, align, txt);
 //      }
       if(row == m_currentDateRow) {
         p->setPen(m_gridColor);
@@ -143,13 +174,6 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
       }
       break;
     case 3:
-      if (m_showGrid) {
-        p->setPen(m_gridColor);
-        p->drawLine(m_cellRect.x(), 0, m_cellRect.x(), m_cellRect.height()-1);
-        if(lastLine)
-          p->drawLine(m_cellRect.x(), m_cellRect.height()-1, m_cellRect.width(), m_cellRect.height()-1);
-        p->setPen(m_textColor);
-      }
       if(txt.isEmpty()) {
         switch(m_transactionRow) {
           case 0:
@@ -210,6 +234,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
             break;
         }
       }
+/*
       if (m_showGrid) {
         p->setPen(m_gridColor);
         p->drawLine(m_cellRect.x(), 0, m_cellRect.x(), m_cellRect.height()-1);
@@ -218,6 +243,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         p->drawLine(m_cellRect.x()+m_cellRect.width(), 0, m_cellRect.x()+m_cellRect.width(), m_cellRect.height()-1);
         p->setPen(m_textColor);
       }
+*/
       p->drawText(m_textRect, Qt::AlignRight | Qt::AlignVCenter, txt);
       if(row == m_currentDateRow) {
         p->setPen(m_gridColor);
@@ -246,9 +272,12 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
 
       case 1:
         QString txt;
-        txt = KGlobal::locale()->formatDate(m_view->transaction(i)->postDate(), true)+"  ";
-        int nw = fontMetrics.width(txt);
-        w = QMAX( w, nw );
+        MyMoneyTransaction *t = m_view->transaction(i);
+        if(t != NULL) {
+          txt = KGlobal::locale()->formatDate(t->postDate(), true)+"  ";
+          int nw = fontMetrics.width(txt);
+          w = QMAX( w, nw );
+        }
         break;
     }
   }

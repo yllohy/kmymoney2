@@ -29,6 +29,7 @@
 #include <qwidget.h>
 #include <qpainter.h>
 #include <qtable.h>
+
 // #include <qfontmetric.h>
 
 // ----------------------------------------------------------------------------
@@ -49,7 +50,8 @@
 
 class KLedgerView;
 
-class kMyMoneyRegister : public QTable  {
+class kMyMoneyRegister : public QTable
+{
   Q_OBJECT
 
   friend class QHeader;
@@ -58,6 +60,8 @@ class kMyMoneyRegister : public QTable  {
 public:
 	kMyMoneyRegister(QWidget *parent=0, const char *name=0);
 	virtual ~kMyMoneyRegister();
+
+  void paintFocus(QPainter* p, const QRect& cr );
 
   void setView(KLedgerView *view) { m_view = view; };
 
@@ -72,6 +76,29 @@ public:
 
   void clearCellWidget(int row, int col) {};
   QWidget* cellWidget(int row, int col) const { return NULL; };
+
+  /**
+    * Return the number of table rows displayed per transaction
+    *
+    * @return int number of rows per transaction
+    */
+  int rpt(void) { return m_rpt; };
+
+  /**
+    * This method is used to return the index of the currently selected
+    * transaction.
+    *
+    * @return index as int of currently selected transaction.
+    */
+  int currentTransactionIndex(void) const { return m_currentTransactionIndex; };
+
+  /**
+    * This method is used to move the selection bar to a specific
+    * transaction in the register.
+    *
+    * @param idx index into transaction table
+    */
+  void setCurrentTransactionIndex(int idx);
 
 public slots:
   /**
@@ -95,6 +122,14 @@ protected:
 
   void insertWidget(int row, int col, QWidget *) {};
 
+  void contentsMouseReleaseEvent( QMouseEvent* e );
+/*
+  void contentsMousePressEvent( QMouseEvent* e );
+  void contentsMouseDoubleClickEvent( QMouseEvent* e );
+  bool eventFilter(QObject *o, QEvent *e);
+  void keyPressEvent(QKeyEvent *k);
+*/
+
 protected:
   int    m_rpt;     // rows per transaction
   KLedgerView*  m_view;
@@ -113,11 +148,12 @@ protected:
   QRect  m_cellRect;
   QRect  m_textRect;
 
-  int    m_lastTransactionIndex;
   int    m_transactionIndex;
+  int    m_currentTransactionIndex;
+  int    m_lastTransactionIndex;
+
   int    m_transactionRow;
   int    m_currentDateRow;
-  int    m_currentTransactionRow;
 
   MyMoneyTransaction const * m_transaction;
   MyMoneyMoney m_balance;
