@@ -26,6 +26,8 @@
 #include <qwidget.h>
 #include "kpayeesviewdecl.h"
 
+#include "../mymoney/mymoneyfile.h"
+
 /**
   *@author Michael Edwardes
   */
@@ -33,8 +35,22 @@
 class KPayeesView : public kPayeesViewDecl  {
    Q_OBJECT
 public: 
-	KPayeesView(QWidget *parent=0, const char *name=0);
+	KPayeesView(MyMoneyFile *file, QWidget *parent=0, const char *name=0);
 	~KPayeesView();
+
+protected slots:
+  void payeeHighlighted(const QString&);
+  void slotAddClicked();
+  void slotPayeeTextChanged(const QString& text);
+  void slotUpdateClicked();
+  void slotDeleteClicked();
+
+private:
+  MyMoneyFile *m_file;
+  QString m_lastPayee;
+
+  void readConfig(void);
+  void writeConfig(void);
 };
 
 #endif
