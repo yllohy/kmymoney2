@@ -483,6 +483,7 @@ void KMyMoney2App::slotFileClose()
 {
   // no update status here, as we might delete the status too early.
 
+
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
     if (answer == KMessageBox::Cancel)
@@ -765,6 +766,19 @@ bool KMyMoney2App::initWizard()
 /** No descriptions */
 void KMyMoney2App::slotFileBackup()
 {
+  // Save the file first so isLocalFile() works
+  if (myMoneyView && myMoneyView->dirty())
+  {
+    if (KMessageBox::questionYesNo(this, i18n("The file must be saved first "
+        "before it can be backed up.  Do you want to continue?")) == KMessageBox::No)
+    {
+      return;
+    }
+
+    slotFileSave();
+  }
+
+  
   if(!fileName.isLocalFile()) {
     KMessageBox::sorry(this,
                        i18n("The current immplementation of the backup functionality "
@@ -774,22 +788,8 @@ void KMyMoney2App::slotFileBackup()
     return;
   }
 
-  if (myMoneyView->dirty()) {
-    int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
-    if (answer == KMessageBox::Cancel)
-      return;
-    else if (answer == KMessageBox::Yes)
-      slotFileSave();
-
-
-
-  }
-
   KBackupDlg *backupDlg = new KBackupDlg(this,0/*,true*/);
   int returncode = backupDlg->exec();
-
-
-
   if(returncode)
   {
     m_backupMount = backupDlg->mountCheckBox->isChecked();
@@ -871,6 +871,7 @@ void KMyMoney2App::slotProcessExited()
           proc << mountpoint;
           m_backupState = BACKUP_UNMOUNTING;
           proc.start();
+
         } else {
           m_backupState = BACKUP_IDLE;
           progressCallback(-1, -1, i18n("Ready."));
