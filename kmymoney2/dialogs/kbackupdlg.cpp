@@ -67,7 +67,7 @@ void KBackupDlg::chooseButtonClicked()
 {
   QString newDir = KFileDialog::getExistingDirectory();
   if (!newDir.isEmpty())
-    txtMountPoint->setText(temp);
+    txtMountPoint->setText(newDir);
 }
 
 void KBackupDlg::readConfig(void)
