@@ -16,6 +16,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qapp.h>
 #include <qlayout.h>
 #include <qvbox.h>
 #include <qlabel.h>
@@ -23,6 +24,7 @@
 #include <qtabwidget.h>
 #include <qvalidator.h>
 #include <qheader.h>
+#include <qlistview.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -49,6 +51,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "ksettingsdlg.h"
+#include "../kmymoneyutils.h"
 
 /** Standard constructor for the class.
   * The constructor passes some additional parameters to the base class KDialogBase
@@ -64,15 +67,18 @@ KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
   setPageList();
   setHomePage();
   configRead();
+  
   m_bDoneApply=false;
   
   KPushButton *reset = static_cast<KPushButton *>(actionButton(User1));
+  
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem resetButtonItem( i18n( "&Reset" ),
                     QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Reset all settings"),
                     i18n("Use this to reset all settings to the state they were when the dialog was opened."));
   reset->setGuiItem(resetButtonItem);
+
 }
 
 /** Standard destructor for the class.
@@ -210,7 +216,13 @@ void KSettingsDlg::setHomePage()
   QHBoxLayout* Form1Layout = new QHBoxLayout( frame, 11, 6, "Form1Layout");
 
   m_homePageList = new KListView( frame, "KListView1" );
+  m_homePageList->setMinimumSize( QSize( 250, 0 ) );
+  m_homePageList->setSelectionMode(QListView::Single);
+  m_homePageList->setSorting(-1);
   m_homePageList->header()->hide();
+  m_homePageList->setAllColumnsShowFocus(true);
+  m_homePageList->setColumnWidth(0, 250);
+  
   Form1Layout->addWidget( m_homePageList );
 
   QVBoxLayout*  Layout5 = new QVBoxLayout( 0, 0, 6, "Layout5");
@@ -255,7 +267,16 @@ void KSettingsDlg::setHomePage()
   QSpacerItem* spacer_4 = new QSpacerItem( 0, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
   Layout5->addItem( spacer_4 );
   Form1Layout->addLayout( Layout5 );
-        
+
+  m_homePageList->addColumn("");
+
+  m_currentItem = -1;   // none selected
+
+  connect(m_homePageList, SIGNAL(selectionChanged(QListViewItem*)),
+          this, SLOT(slotSelectHomePageItem(QListViewItem *)));
+
+  connect(m_upButton, SIGNAL(clicked()), this, SLOT(slotMoveUp()));          
+  connect(m_downButton, SIGNAL(clicked()), this, SLOT(slotMoveDown()));
 }
 
 /** Called to create the Main List page shown in the dialog.
@@ -486,8 +507,8 @@ void KSettingsDlg::configRead()
 {
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("Settings Dialog");
-  QSize *qsizeDefaultSize = new QSize(470,470);
-  this->resize(kconfig->readSizeEntry("Geometry", qsizeDefaultSize));
+  QSize qsizeDefaultSize(470,470);
+  this->resize(kconfig->readSizeEntry("Geometry", &qsizeDefaultSize));
 
   kconfig->setGroup("General Options");
   m_bTempStartPrompt = kconfig->readBoolEntry("StartDialog", true);
@@ -567,6 +588,10 @@ void KSettingsDlg::configRead()
   m_bTempNormalView = kconfig->readBoolEntry("NormalAccountsView", true);
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
   m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);
+
+  kconfig->setGroup("Homepage Options");
+  m_tempHomePageItems = kconfig->readListEntry("Itemlist");
+  fillHomePageItems(m_tempHomePageItems);
 }
 
 /** Write out all the settings to the global KConfig object.
@@ -603,6 +628,10 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("TransactionForm", m_qcheckboxTransactionForm->isChecked());
   kconfig->writeEntry("CopyTypeToNr", m_qcheckboxTypeToNr->isChecked());
   kconfig->writeEntry("AlwaysShowNrField", m_qcheckboxShowNrField->isChecked());
+
+  kconfig->setGroup("Homepage Options");
+  kconfig->writeEntry("Itemlist", homePageItems());
+
   kconfig->sync();
 }
 
@@ -670,6 +699,8 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("CopyTypeToNr", m_bTempTypeToNr);
   kconfig->writeEntry("AlwaysShowNrField", m_bTempShowNrField);
 
+  kconfig->setGroup("Homepage Options");
+  kconfig->writeEntry("Itemlist", m_tempHomePageItems);
   kconfig->sync();
 
   if (m_bDoneApply)
@@ -707,6 +738,8 @@ void KSettingsDlg::slotUser1()
   m_qcheckboxShowNrField->setChecked(m_bTempShowNrField);
   m_qradiobuttonStartLast->setChecked(m_bTempStartPage);
   m_qradiobuttonStartHome->setChecked(!m_bTempStartPage);
+  
+  fillHomePageItems(m_tempHomePageItems);
 }
 
 void KSettingsDlg::slotNrFieldToggled(bool state)
@@ -716,5 +749,105 @@ void KSettingsDlg::slotNrFieldToggled(bool state)
   } else {
     m_qcheckboxTypeToNr->setChecked(false);
     m_qcheckboxTypeToNr->setEnabled(false);
+  }
+}
+
+const QStringList KSettingsDlg::homePageItems(void) const
+{
+  QStringList list;
+  QListViewItem *it;
+
+  for(it = m_homePageList->firstChild(); it; it = it->nextSibling()) {
+    int item = KMyMoneyUtils::stringToHomePageItem(it->text(0));
+    if(!(static_cast<QCheckListItem*>(it)->isOn()))
+      item = -item;
+    list << QString::number(item);
+  }
+  return list;
+}
+
+void KSettingsDlg::fillHomePageItems(QStringList& list)
+{
+  QStringList::ConstIterator it;
+  int highest = 0;
+  int w = 0;
+  m_homePageList->clear();
+  QCheckListItem *sel = 0;
+    
+  m_upButton->setEnabled(false);
+  m_downButton->setEnabled(false);
+
+  // FIXME: use KDE setting for this font here
+  QFontMetrics fm( QFont("helvetica", 10) );
+  QCheckListItem* last = 0;
+
+  for(it = list.begin(); it != list.end(); ++it) {
+    int idx = (*it).toInt();
+    bool enabled = idx > 0;
+    if(!enabled) idx = -idx;
+    if(idx > highest) highest = idx;
+    QCheckListItem* item = new QCheckListItem(m_homePageList, KMyMoneyUtils::homePageItemToString(idx), QCheckListItem::CheckBox);
+    if(last)
+      item->moveItem(last);
+
+    // qDebug("Adding %s", item->text(0).latin1());
+    item->setOn(enabled);
+    if(item->width(fm, m_homePageList, 0) > w)
+      w = item->width(fm, m_homePageList, 0);
+      
+    if(sel == 0)
+      sel = item;
+    last = item;
+  }
+
+  for(int idx = highest+1; idx <= KMyMoneyUtils::maxHomePageItems; ++idx) {
+    list.append(QString::number(-idx));
+    QCheckListItem* item = new QCheckListItem(m_homePageList, KMyMoneyUtils::homePageItemToString(idx), QCheckListItem::CheckBox);
+    if(last)
+      item->moveItem(last);
+
+    // qDebug("Adding missing %s", item->text(0).latin1());
+    item->setOn(false);
+    if(item->width(fm, m_homePageList, 0) > w)
+      w = item->width(fm, m_homePageList, 0);
+      
+    if(sel == 0)
+      sel = item;
+    last = item;
+  }
+  
+  if(sel) {
+    m_homePageList->setSelected(sel, true);
+    slotSelectHomePageItem(sel);
+  }
+
+  m_homePageList->setMinimumWidth(w+30);
+  m_homePageList->setMaximumWidth(w+30);
+  m_homePageList->setColumnWidth(0, w+28);
+}
+
+void KSettingsDlg::slotSelectHomePageItem(QListViewItem *item)
+{
+  m_upButton->setEnabled(m_homePageList->firstChild() != item);
+  m_downButton->setEnabled(item->nextSibling());  
+}
+
+void KSettingsDlg::slotMoveUp(void)
+{
+  QListViewItem *item = m_homePageList->currentItem();
+  QListViewItem *prev = item->itemAbove();
+  if(prev) {
+    prev->moveItem(item);
+    slotSelectHomePageItem(item);
+  }
+}
+
+void KSettingsDlg::slotMoveDown(void)
+{
+  QListViewItem *item = m_homePageList->currentItem();
+  QListViewItem *next = item->nextSibling();
+  if(next) {
+    item->moveItem(next);
+    slotSelectHomePageItem(item);
   }
 }

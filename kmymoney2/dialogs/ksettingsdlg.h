@@ -23,6 +23,7 @@
 #include <qbuttongroup.h>
 #include <qcolor.h>
 #include <qfont.h>
+#include <qstringlist.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -55,7 +56,7 @@ class KPushButton;
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: ksettingsdlg.h,v 1.11 2003/07/28 17:07:41 ipwizard Exp $
+  * $Id: ksettingsdlg.h,v 1.12 2003/08/02 16:50:24 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -121,9 +122,10 @@ private:
   QRadioButton *m_qradiobuttonAccountWizard;
 
 
-  KListView*  m_homePageList;
-  KPushButton* m_upButton;
-  KPushButton* m_downButton;
+  KListView*    m_homePageList;
+  KPushButton*  m_upButton;
+  KPushButton*  m_downButton;
+  int           m_currentItem;
   
   /** Set page general */
   void setPageGeneral();
@@ -134,7 +136,9 @@ private:
 
   /** Set homepage settings */
   void setHomePage();
-  
+  void fillHomePageItems(QStringList& list);
+  const QStringList homePageItems(void) const;
+
   /** Write settings */
   void configWrite();
   /** Read settings */
@@ -162,7 +166,8 @@ private:
   bool m_bTempTypeToNr;
   bool m_bTempShowNrField;
   bool m_bTempStartPage;
-  
+  QStringList m_tempHomePageItems;
+
 private slots:
   /** Called when OK pressed */
   void slotOk();
@@ -179,6 +184,11 @@ private slots:
   /** Called when 'Always show nr field' is toggled */
   void slotNrFieldToggled(bool state);
 
+  void slotSelectHomePageItem(QListViewItem *);
+
+  void slotMoveUp(void);
+  void slotMoveDown(void);
+  
 public:
   /**
     * Standard constructor.
