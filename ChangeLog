@@ -1,3 +1,6 @@
+2005-03-25 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Avoid inadvertent overwrite of foreign file types
+
 2005-03-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed unused files
   * Added missing header file to support 'make bcheck'

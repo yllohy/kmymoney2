@@ -127,7 +127,16 @@ private:
 
   bool m_bankRightClick;
   MyMoneyInstitution m_accountsInstitution;
-
+  // Keep a note of the file type
+  typedef enum _fileTypeE {
+    KmmBinary = 0, // native, binary
+    KmmXML,        // native, XML
+    /* insert new native file types above this line */
+    MaxNativeFileType,
+    /* and non-native types below */
+    GncXML
+  }fileTypeE;
+  fileTypeE m_fileType;
 private:
   void ungetString(QIODevice *qfile, char * buf, int len);
 
@@ -232,6 +241,13 @@ public:
     * @retval true save operation was successful
     */
   const bool saveFile(const KURL& url);
+  /**
+    * Call this to find out if the currently open file is native KMM
+    *
+    * @retval true file is native
+    * @retval false file is foreign
+    */
+  const bool isNativeFile() { return (m_fileType < MaxNativeFileType);};
 
   /**
     * Call this to see if the MyMoneyFile contains any unsaved data.

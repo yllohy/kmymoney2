@@ -441,10 +441,13 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
       slotFileClose();
       if(!myMoneyView->fileOpen()) {
         if(myMoneyView->readFile(url)) {
-          fileName = url;
-          fileOpenRecent->addURL( url );
-          writeLastUsedFile(url.url());
-
+          if(myMoneyView->isNativeFile()) {
+            fileName = url;
+            fileOpenRecent->addURL( url );
+            writeLastUsedFile(url.url());
+          } else {
+            fileName = KURL(); // imported files have no filename
+          }
           // Check the schedules
           slotCheckSchedules();
         }
@@ -491,8 +494,10 @@ const bool KMyMoney2App::slotFileSaveAs()
   bool rc = false;
 
   QString prevMsg = slotStatusMsg(i18n("Saving file with a new filename..."));
+  QString prevDir= ""; // don't prompt file name if not a native file
+  if (myMoneyView->isNativeFile()) prevDir = readLastUsedDir();
 
-  QString newName=KFileDialog::getSaveFileName(readLastUsedDir(),//KGlobalSettings::documentPath(),
+  QString newName=KFileDialog::getSaveFileName(prevDir,//KGlobalSettings::documentPath(),
                                                i18n("*.kmy|KMyMoney files\n""*.xml|XML Files\n""*.ANON.xml|Anonymous Files\n"
 
                                                "*.*|All files"), this, i18n("Save as..."));

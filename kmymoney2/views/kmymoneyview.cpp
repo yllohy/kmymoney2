@@ -835,10 +835,10 @@ bool KMyMoneyView::readFile(const KURL& url)
             // check the beginning of the file against an pattern
             // of the XML file (e.g. '?<xml' ).
             if((magic0 == MAGIC_0_50 && magic1 == MAGIC_0_51)
-            || magic0 < 30)
+            || magic0 < 30) {
               pReader = new MyMoneyStorageBin;
-
-            else {
+              m_fileType = KmmBinary;
+            } else {
               // Scan the first 70 bytes to see if we find something
               // we know. For now, we support our own XML format and
               // GNUCash XML format. If the file is smaller, then it
@@ -854,9 +854,11 @@ bool KMyMoneyView::readFile(const KURL& url)
                 QCString txt(hdr);
                 if(kmyexp.search(txt) != -1) {
                   pReader = new MyMoneyStorageXML;
+                  m_fileType = KmmXML;
                 } else if(gncexp.search(txt) != -1) {
                   loadDefaultCurrencies(); // currency list required for gnc
                   pReader = new MyMoneyStorageGNC;
+                  m_fileType = GncXML;
                 }
               }
             }
@@ -1121,6 +1123,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
         throw new MYMONEYEXCEPTION(i18n("Unable to upload to '%1'").arg(url.url()));
       tmpfile.unlink();
     }
+    m_fileType = KmmXML;
   } catch (MyMoneyException *e) {
     KMessageBox::error(this, e->what());
     delete e;
