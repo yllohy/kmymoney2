@@ -111,14 +111,17 @@ const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType
 
 QString Tester::m_sTabs;
 bool Tester::m_sEnabled = DEBUG_ENABLED_BY_DEFAULT;
+QString Tester::m_sEnableKey;
 
 Tester::Tester( const QString& _name ): m_methodName( _name ), m_enabled( m_sEnabled )
 {
+  if (!m_enabled && _name == m_sEnableKey)
+    m_enabled = true;
+
   if (m_enabled)
   {
     qDebug( "%s%s(): ENTER", m_sTabs.latin1(), m_methodName.latin1() );
     m_sTabs.append("--");
-
   }
 }
 
@@ -128,6 +131,9 @@ Tester::~Tester()
   {
     m_sTabs.remove(0,2);
     qDebug( "%s%s(): EXIT", m_sTabs.latin1(), m_methodName.latin1() );
+
+    if (m_methodName == m_sEnableKey)
+      m_enabled = false;
   }
 }
 

@@ -170,6 +170,12 @@ void KReportConfigurationFilterDlg::slotSearch()
       qc |= MyMoneyReport::eQCaccount;
     if ( m_tab3->m_checkReconciled->isChecked() )
       qc |= MyMoneyReport::eQCreconciled;
+    if ( m_tab3->m_checkAction->isChecked() )
+      qc |= MyMoneyReport::eQCaction;
+    if ( m_tab3->m_checkShares->isChecked() )
+      qc |= MyMoneyReport::eQCshares;
+    if ( m_tab3->m_checkPrice->isChecked() )
+      qc |= MyMoneyReport::eQCprice;
       
     m_currentState.setQueryColumns(static_cast<MyMoneyReport::EQueryColumns>(qc));
     
@@ -260,6 +266,9 @@ void KReportConfigurationFilterDlg::slotReset(void)
     m_tab3->m_checkMemo->setChecked(qc & MyMoneyReport::eQCmemo);
     m_tab3->m_checkAccount->setChecked(qc & MyMoneyReport::eQCaccount);
     m_tab3->m_checkReconciled->setChecked(qc & MyMoneyReport::eQCreconciled);
+    m_tab3->m_checkAction->setChecked(qc & MyMoneyReport::eQCaction);
+    m_tab3->m_checkShares->setChecked(qc & MyMoneyReport::eQCshares);
+    m_tab3->m_checkPrice->setChecked(qc & MyMoneyReport::eQCprice);
     
     m_tab3->m_checkTax->setChecked( m_initialState.isTax() );
   }

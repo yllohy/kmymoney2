@@ -210,6 +210,39 @@
                                 <string>&lt;p&gt;Select this option to show the Account column&lt;/p&gt;</string>
                             </property>
                         </widget>
+                        <widget class="QCheckBox" row="0" column="4">
+                            <property name="name">
+                                <cstring>m_checkAction</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Action</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>&lt;p&gt;Select this option to show the Action column&lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="3">
+                            <property name="name">
+                                <cstring>m_checkShares</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Shares</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>&lt;p&gt;Select this option to show the Shares column for investments&lt;/p&gt;</string>
+                            </property>
+                       </widget>
+                       <widget class="QCheckBox" row="1" column="3">
+                            <property name="name">
+                                <cstring>m_checkPrice</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Price</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>&lt;p&gt;Select this option to show the Price column for investments&lt;/p&gt;</string>
+                            </property>
+                       </widget>
                     </grid>
                 </widget>
                 <spacer>

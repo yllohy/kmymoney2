@@ -42,7 +42,7 @@
 
 const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,assetliability,expenseincome,category,topcategory,account,payee,month,week",true);
 const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,months,bimonths,quarters,,,,,,,,,years",true);
-const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,,category,,,,memo,,,,,,,,account,,,,,,,,,,,,,,,,reconcileflag",true);
+const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,category,memo,account,reconcileflag,action,shares,price",true);
 const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable };
 
 // This should live in mymoney/mymoneytransactionfilter.h
@@ -88,11 +88,13 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc) const
     QStringList columns;
     unsigned qc = m_queryColumns;
     unsigned it_qc = eQCbegin;
+    unsigned index = 1;
     while ( it_qc != eQCend )
     {
       if ( qc & it_qc )
-        columns += kQueryColumnsText[it_qc];
+        columns += kQueryColumnsText[index];
       it_qc *= 2;
+      index++;
     }
     e.setAttribute("querycolumns", columns.join(","));
   }
@@ -320,8 +322,8 @@ bool MyMoneyReport::read(const QDomElement& e)
     while (it_column != columns.end())
     {
       i = kQueryColumnsText.findIndex(*it_column);
-      if ( i != -1 )
-        qc |= i;
+      if ( i > 0 )
+        qc |= ( 1 << (i-1) );
     
       ++it_column;
     }
