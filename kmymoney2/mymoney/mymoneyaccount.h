@@ -171,6 +171,8 @@ public:
     */
   static const MyMoneyAccount::accountTypeE accountGroup(MyMoneyAccount::accountTypeE type);
 
+  const MyMoneyAccount::accountTypeE accountGroup(void) const;
+  
   /**
     * This method returns the ID of the account under which it is known
     * inside the MyMoneyFile.

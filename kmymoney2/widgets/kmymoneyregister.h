@@ -41,8 +41,8 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-class MyMoneyTransaction;
 class KLedgerView;
+#include "../views/kmymoneytransaction.h"
 #include "../mymoney/mymoneymoney.h"
 #include "../mymoney/mymoneysplit.h"
 
@@ -68,7 +68,7 @@ public:
     *         selected transaction. If idx is out of bounds,
     *         0 will be returned.
     */
-  virtual MyMoneyTransaction* transaction(const int idx) const = 0;
+  virtual KMyMoneyTransaction* transaction(const int idx) const = 0;
   
   /**
     * This method returns the id of the account that should be
@@ -77,10 +77,12 @@ public:
     * transaction passed as @p transaction.
     *
     * @param transaction pointer to a transaction
+    * @param number of matching split to use to determine the account id
+    *        defaults to the first one
     *
     * @return const QCString containing the account's id.
     */
-  virtual const QCString accountId(const MyMoneyTransaction * const transaction) const = 0;
+  //virtual const QCString accountId(const MyMoneyTransaction * const transaction, int match = 0) const = 0;
 
   /**
     * This method returns the balance of any visible transaction
@@ -306,11 +308,8 @@ protected:
 
   void contentsMouseDoubleClickEvent( QMouseEvent* e );
   void contentsMouseReleaseEvent( QMouseEvent* e );
-/*
-  void contentsMousePressEvent( QMouseEvent* e );
-  bool eventFilter(QObject *o, QEvent *e);
-  void keyPressEvent(QKeyEvent *k);
-*/
+
+  virtual const bool isEditable(void) const { return true; };
 
 protected:
   int    m_rpt;     // current rows per transaction
@@ -366,7 +365,7 @@ protected:
     * This member points to the transaction data.
     * It is updated whenever paintCell() is invoked.
     */
-  MyMoneyTransaction const * m_transaction;
+  KMyMoneyTransaction const * m_transaction;
 
   /**
     *

@@ -81,7 +81,16 @@ public:
     *
     * @return reference to split within the transaction is returned
     */
-  const MyMoneySplit& split(const QCString& accountId, const bool match = true) const;
+  const MyMoneySplit& splitByAccount(const QCString& accountId, const bool match = true) const;
+
+  /**
+    * This method is used to extract a split from a transaction.
+    *
+    * @param splitId the split to look for
+    *
+    * @return reference to split within the transaction is returned
+    */
+  const MyMoneySplit& splitById(const QCString& splitId) const;
 
   /**
     * This method is used to extract a split for a given payeeId

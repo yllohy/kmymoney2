@@ -237,3 +237,9 @@ const bool MyMoneyAccount::operator == (const MyMoneyAccount& right) const
       (m_parentAccount == right.m_parentAccount) &&
       (m_institution == right.m_institution) );
 }
+
+const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(void) const
+{
+  return accountGroup(m_accountType);  
+}
+

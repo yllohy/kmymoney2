@@ -57,6 +57,7 @@ class KPopupMenu;
 #include "../mymoney/mymoneytransaction.h"
 #include "../mymoney/mymoneyobserver.h"
 #include "../widgets/kmymoneyregister.h"
+#include "../views/kmymoneytransaction.h"
 
 /**
   * @author Thomas Baumgart
@@ -70,7 +71,7 @@ class KPopupMenu;
   * vector is created, the sort method is set to SortPostDate.
   * The sort type can be changed using the method setSortType().
   */
-class KTransactionPtrVector : public QPtrVector<MyMoneyTransaction> {
+class KTransactionPtrVector : public QPtrVector<KMyMoneyTransaction> {
 public:
   /**
     * This enumerator defines the possible sort methods.
@@ -279,7 +280,7 @@ public:
     *
     * @return const QCString containing the account's id.
     */
-  const QCString accountId(const MyMoneyTransaction* const) const { return m_account.id(); }
+  const QCString accountId(const MyMoneyTransaction* const, int match) const { return m_account.id(); }
 
   /**
     * This method returns a pointer to the transaction data
@@ -291,7 +292,7 @@ public:
     *         selected transaction. If idx is out of bounds,
     *         0 will be returned.
     */
-  MyMoneyTransaction* transaction(const int idx) const;
+  KMyMoneyTransaction* transaction(const int idx) const;
 
   /**
     * This method is used to convert a string used in the
@@ -758,7 +759,7 @@ protected:
     * This member holds a list of all transactions that belong to the account
     * shown in this view.
     */
-  QValueList<MyMoneyTransaction> m_transactionList;
+  QValueList<KMyMoneyTransaction> m_transactionList;
 
   /**
     * This member holds vector of the balances for each transaction
@@ -776,7 +777,7 @@ protected:
     * This member keeps a pointer to the currently selected transaction
     * It is NULL, if an empty (new) transaction is selected.
     */
-  MyMoneyTransaction *m_transactionPtr;
+  KMyMoneyTransaction *m_transactionPtr;
 
   /**
     * This member keeps a copy of the currently selected transaction

@@ -217,7 +217,7 @@ void MyMoneyTransactionTest::testExtractSplit() {
 	// this one should fail, as the account is not referenced by
 	// any split in the transaction
 	try {
-		split = m->split("A000003");
+		split = m->splitByAccount("A000003");
 		CPPUNIT_FAIL("Exception expected");
 	} catch(MyMoneyException *e) {
 		delete e;
@@ -225,7 +225,7 @@ void MyMoneyTransactionTest::testExtractSplit() {
 
 	// this one should be found
 	try {
-		split = m->split("A000002");
+		split = m->splitByAccount("A000002");
 		CPPUNIT_ASSERT(split.id() == "S0002");
 
 	} catch(MyMoneyException *e) {
@@ -235,7 +235,7 @@ void MyMoneyTransactionTest::testExtractSplit() {
 
 	// this one should be found also
 	try {
-		split = m->split("A000002", false);
+		split = m->splitByAccount("A000002", false);
 		CPPUNIT_ASSERT(split.id() == "S0001");
 	} catch(MyMoneyException *e) {
 		CPPUNIT_FAIL("Unexpected exception!");

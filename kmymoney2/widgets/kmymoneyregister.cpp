@@ -30,7 +30,6 @@
 // Project Includes
 
 #include "kmymoneyregister.h"
-#include "../views/kledgerview.h"
 
 kMyMoneyRegister::kMyMoneyRegister(int maxRpt, QWidget *parent, const char *name )
   : QTable(parent, name),
@@ -45,6 +44,7 @@ kMyMoneyRegister::kMyMoneyRegister(int maxRpt, QWidget *parent, const char *name
   setSelectionMode(QTable::SingleRow);
   resize(670,200);
   m_editWidgets.clear();
+  m_parent = 0;
 }
 
 kMyMoneyRegister::~kMyMoneyRegister()
@@ -57,8 +57,6 @@ void kMyMoneyRegister::setNumRows(int /* r */)
 
 void kMyMoneyRegister::setTransactionCount(const int r, const bool setTransaction)
 {
-  // setUpdatesEnabled( false );
-  
   int irows = r * m_rpt;
 
   if(m_ledgerLens == true) {
@@ -75,7 +73,6 @@ void kMyMoneyRegister::setTransactionCount(const int r, const bool setTransactio
     verticalHeader()->resizeSection(i, height);
 
   verticalHeader()->setUpdatesEnabled(true);
-  //setUpdatesEnabled( true );
 
   if(setTransaction) {
     setCurrentTransactionIndex(r);
@@ -83,8 +80,6 @@ void kMyMoneyRegister::setTransactionCount(const int r, const bool setTransactio
   
   // add or remove scrollbars as required
   updateScrollBars();
-
-  // setUpdatesEnabled( true );
 }
 
 void kMyMoneyRegister::paintFocus(QPainter* /* p */, const QRect& /* cr */)
@@ -154,9 +149,14 @@ void kMyMoneyRegister::setTransactionRow(const int row)
       m_transactionRow = (row - maxRpt() + m_rpt) % m_rpt;
     }
   }
+  if(!m_parent) {
+    qFatal("kMyMoneyRegister::setTransactionRow(): m_parent == 0 !  Use setParent() to set it up");
+    exit(0);
+  }
+  
   m_transaction = m_parent->transaction(m_transactionIndex);
   if(m_transaction != NULL) {
-    m_split = m_transaction->split(m_parent->accountId(m_transaction));
+    m_split = m_transaction->splitById(m_transaction->splitId());
     m_balance = m_parent->balance(m_transactionIndex);
   }
 }
@@ -262,7 +262,12 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
   }
   p->setPen(m_textColor);
 
-  p->drawText(m_textRect, align, txt);
+  // make sure, we clear the cell
+  if(txt.isEmpty())
+    p->drawText(m_textRect, align, " ");
+  else
+    p->drawText(m_textRect, align, txt);
+  
   if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
     p->setPen(m_gridColor);
     p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);

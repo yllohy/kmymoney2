@@ -75,7 +75,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
   setTransactionRow(row);
   
   int align = Qt::AlignVCenter;
-  QString txt = " ";
+  QString txt;
   if(m_transaction != 0) {
     switch (col) {
       case 0:
@@ -83,8 +83,6 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         switch(m_transactionRow) {
           case 0:
             txt = m_split.number();
-            if(txt.isEmpty())
-              txt = " ";
             break;
         }
         break;
@@ -98,8 +96,6 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
 
           case 1:
             txt = m_split.action();
-            if(txt.isEmpty())
-              txt = " ";
             break;
         }
         break;
@@ -120,7 +116,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
               if(m_transaction->splitCount() > 2)
                 txt = QString(i18n("Splitted transaction"));
               else {
-                MyMoneySplit split = m_transaction->split(m_parent->accountId(m_transaction), false);
+                MyMoneySplit split = m_transaction->splitByAccount(m_transaction->splitId(), false);
                 txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
               }
             } catch(MyMoneyException *e) {
@@ -188,210 +184,6 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
   
   // do general stuff
   kMyMoneyRegister::paintCell(p, row, col, r, selected, cg, txt, align);
-/*
-  // do general stuff
-  kMyMoneyRegister::paintCell(p, row, col, r, selected, cg, cellTxt, cellAlign);
-
-  const bool lastLine = m_ledgerLens && m_transactionIndex == m_currentTransactionIndex
-                         ? m_transactionRow == maxRpt() - 1
-                         : m_transactionRow == m_rpt-1;
-
-  int align = Qt::AlignVCenter;
-
-  // if a grid is selected, we paint it right away
-  if (m_showGrid) {
-    p->setPen(m_gridColor);
-    p->drawLine(m_cellRect.x(), 0, m_cellRect.x(), m_cellRect.height()-1);
-    if(lastLine)
-      p->drawLine(m_cellRect.x(), m_cellRect.height()-1, m_cellRect.width(), m_cellRect.height()-1);
-  }
-
-  // if we paint something, that we don't know (yet), we're done
-  // this applies to the very last line of the ledger which always
-  // shows an empty line for new transactions to be added.
-  // In case this is the current date row, we still draw the marker
-  if(m_transaction == NULL) {
-    if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
-      p->setPen(m_gridColor);
-      p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);
-      p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
-    }
-    return;
-  }
-
-  QColor textColor(m_textColor);
-  // if it's an erronous transaction, set it to error color (which toggles ;-)  )
-  if(m_transaction->splitCount() < 2
-  || m_transaction->splitSum() != 0) {
-    textColor = m_errorColor;
-  }
-  p->setPen(textColor);
-
-  // now the specific stuff for checking accounts
-
-  QString txt;
-
-  switch (col) {
-    case 0:
-      align |= Qt::AlignRight;
-      switch(m_transactionRow) {
-        case 0:
-          txt = m_split.number();
-          if(txt.isEmpty())
-            txt = " ";
-          break;
-        case 1:
-        case 2:
-          txt = " "; // for now keep it empty
-          break;
-      }
-      // tricky fall through here!
-
-    case 1:
-      if(txt.isEmpty()) {
-        align |= Qt::AlignLeft;
-        switch(m_transactionRow) {
-          case 0:
-            txt = KGlobal::locale()->formatDate(m_transaction->postDate(), true);
-            break;
-
-          case 1:
-          txt = m_split.action();
-          if(txt.isEmpty())
-            txt = " ";
-          break;
-
-          case 2:
-            txt = " ";
-            break;
-        }
-      }
-      // tricky fall through here!
-
-    case 2:
-      if(txt.isEmpty()) {
-        align |= Qt::AlignLeft;
-        switch(m_transactionRow) {
-          case 0:
-            try {
-              txt = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
-            } catch(MyMoneyException *e) {
-              delete e;
-            }
-            break;
-
-          case 1:
-            try {
-              if(m_transaction->splitCount() > 2)
-                txt = QString(i18n("Splitted transaction"));
-              else {
-                MyMoneySplit split = m_transaction->split(m_view->accountId(), false);
-                txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
-              }
-            } catch(MyMoneyException *e) {
-              delete e;
-            }
-            break;
-
-          case 2:
-            txt = m_split.memo();
-            break;
-        }
-      }
-      p->drawText(m_textRect, align, txt);
-      if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
-        p->setPen(m_gridColor);
-        p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);
-        p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
-        p->setPen(textColor);
-      }
-      break;
-    case 3:
-      if(txt.isEmpty()) {
-        txt = " ";
-        switch(m_transactionRow) {
-          case 0:
-            switch(m_split.reconcileFlag()) {
-              case MyMoneySplit::Cleared:
-                txt = i18n("C");
-                break;
-              case MyMoneySplit::Reconciled:
-              case MyMoneySplit::Frozen:
-                txt = i18n("R");
-                break;
-              case MyMoneySplit::NotReconciled:
-                break;
-            }
-            break;
-        }
-      }
-      p->drawText(m_textRect, Qt::AlignCenter | Qt::AlignVCenter, txt);
-      if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
-        p->setPen(m_gridColor);
-        p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);
-        p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
-        p->setPen(textColor);
-      }
-      break;
-
-    case 4:
-        switch(m_transactionRow) {
-          case 0:
-            if(m_split.value() < 0)
-              txt = (-m_split.value()).formatMoney();
-            else
-              txt = " ";    // make sure cell stays empty
-            break;
-
-          case 1:
-          case 2:
-            txt = " ";
-            break;
-        }
-      // tricky fall through here!
-
-    case 5:
-      if(txt.isEmpty()) {
-        switch(m_transactionRow) {
-          case 0:
-            if(m_split.value() >= 0)
-              txt = (m_split.value()).formatMoney();
-            else
-              txt = " ";    // make sure cell stays empty
-            break;
-
-          case 1:
-          case 2:
-            txt = " ";
-            break;
-        }
-      }
-      // tricky fall through here!
-    case 6:
-      if(txt.isEmpty()) {
-        switch(m_transactionRow) {
-          case 0:
-            txt = m_balance.formatMoney();
-            if(m_balance < 0)
-              p->setPen(QColor(255, 0, 0));
-            break;
-
-          case 1:
-          case 2:
-            txt = " ";
-            break;
-        }
-      }
-      p->drawText(m_textRect, Qt::AlignRight | Qt::AlignVCenter, txt);
-      if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
-        p->setPen(m_gridColor);
-        p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);
-        p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
-        p->setPen(textColor);
-      }
-      break;
-  }
-*/
 }
 
 void kMyMoneyRegisterCheckings::adjustColumn(int col)

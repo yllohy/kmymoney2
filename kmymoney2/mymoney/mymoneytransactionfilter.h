@@ -40,6 +40,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+class IMyMoneyStorage;
 #include "../mymoney/mymoneytransaction.h"
 
 /**
@@ -190,7 +191,7 @@ public:
     * @retval false The transaction does not match at least of of
     *               the filters in the filter set
     */
-  const bool match(const MyMoneyTransaction& transaction);
+  const bool match(const MyMoneyTransaction& transaction, const IMyMoneyStorage* const storage);
 
   /**
     * This method returns the id of the first matching split for the filter.
@@ -203,7 +204,7 @@ public:
     *       to check the data contained in the MyMoneyTransaction
     *       object (e.g. posting-date, state, etc.).
     */
-  const QCString& matchingSplit(void) const { return m_matchingSplit; };
+  const QValueList<MyMoneySplit> matchingSplits(void) const { return m_matchingSplits; };
   
 private:
   /**
@@ -227,7 +228,7 @@ private:
   const int splitType(const MyMoneySplit& split) const;
 
 private:
-  union {
+  union FilterSet {
     unsigned  allFilter;
     struct {
       unsigned textFilter       : 1;
@@ -251,7 +252,7 @@ private:
   QString             m_fromNr, m_toNr;
   QDate               m_fromDate, m_toDate;
   MyMoneyMoney        m_fromAmount, m_toAmount;
-  QCString            m_matchingSplit;
+  QValueList<MyMoneySplit> m_matchingSplits;
 };
 
 #endif

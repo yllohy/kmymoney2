@@ -76,18 +76,18 @@ void KEnterScheduleDialog::initWidgets()
     else
       m_to->setEnabled(false);
       
-    m_payee->setText(MyMoneyFile::instance()->payee(m_transaction.split(m_schedule.account().id()).payeeId()).name());
+    m_payee->setText(MyMoneyFile::instance()->payee(m_transaction.splitByAccount(m_schedule.account().id()).payeeId()).name());
     m_date->setDate(m_schedule.nextPayment(m_schedule.lastPayment()));
 
-    MyMoneyMoney amount = m_transaction.split(m_schedule.account().id()).value();
+    MyMoneyMoney amount = m_transaction.splitByAccount(m_schedule.account().id()).value();
     m_amount->setText(amount.formatMoney());
 
     if (m_transaction.splitCount() >= 3)
       m_category->setText(i18n("Splitted Transaction"));
     else
-      m_category->setText(MyMoneyFile::instance()->instance()->accountToCategory(m_transaction.split(m_schedule.account().id(), false).accountId()));
+      m_category->setText(MyMoneyFile::instance()->instance()->accountToCategory(m_transaction.splitByAccount(m_schedule.account().id(), false).accountId()));
 
-    m_memo->setText(m_transaction.split(m_schedule.account().id()).memo());
+    m_memo->setText(m_transaction.splitByAccount(m_schedule.account().id()).memo());
 
     m_scheduleName->setText(m_schedule.name());
 
@@ -183,7 +183,7 @@ void KEnterScheduleDialog::slotSplitClicked()
     {
       // the amount might have changed
       // set it just in case, same for memo etc
-      MyMoneySplit s = m_transaction.split(m_schedule.account().id());
+      MyMoneySplit s = m_transaction.splitByAccount(m_schedule.account().id());
       if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
         s.setValue(m_amount->getMoneyValue());
       else
@@ -204,7 +204,7 @@ void KEnterScheduleDialog::slotSplitClicked()
 
       if (m_transaction.splitCount() == 2)
       {
-        MyMoneySplit s2 = m_transaction.split(m_schedule.account().id(), false);
+        MyMoneySplit s2 = m_transaction.splitByAccount(m_schedule.account().id(), false);
         s2.setValue(-s.value());
         s2.setMemo(s.memo());
         s2.setPayeeId(s.payeeId());
@@ -230,7 +230,7 @@ void KEnterScheduleDialog::slotSplitClicked()
       switch(m_transaction.splitCount())
       {
         case 2:
-          s = m_transaction.split(m_from->currentAccountId(), false);
+          s = m_transaction.splitByAccount(m_from->currentAccountId(), false);
           category = MyMoneyFile::instance()->accountToCategory(s.accountId());
           disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
@@ -250,7 +250,7 @@ void KEnterScheduleDialog::slotSplitClicked()
 
       m_category->setText(category);
 
-      MyMoneySplit split = m_transaction.split(m_from->currentAccountId());
+      MyMoneySplit split = m_transaction.splitByAccount(m_from->currentAccountId());
       MyMoneyMoney amount(split.value());
       if (amount < 0)
         amount = -amount;
@@ -276,7 +276,7 @@ bool KEnterScheduleDialog::checkData(void)
 
   try
   {
-    payeeName = MyMoneyFile::instance()->payee(m_schedule.transaction().split(
+    payeeName = MyMoneyFile::instance()->payee(m_schedule.transaction().splitByAccount(
       m_schedule.account().id()).payeeId()).name();
 
     if (m_payee->text() != payeeName)
@@ -311,7 +311,7 @@ bool KEnterScheduleDialog::checkData(void)
     if (m_schedule.transaction().splitCount() >= 3)
       category = i18n("Splitted Transaction");
     else
-      category = MyMoneyFile::instance()->instance()->accountToCategory(m_schedule.transaction().split(m_schedule.account().id(), false).accountId());
+      category = MyMoneyFile::instance()->instance()->accountToCategory(m_schedule.transaction().splitByAccount(m_schedule.account().id(), false).accountId());
 
     if (category != m_category->text())
     {
@@ -319,14 +319,14 @@ bool KEnterScheduleDialog::checkData(void)
       messageDetail += QString(i18n("<font size=\"-1\">Category changed.  Old: %1, New: %2</font><br>")).arg(category).arg(m_category->text());
     }
 
-    QString memo = m_schedule.transaction().split(m_schedule.account().id()).memo();
+    QString memo = m_schedule.transaction().splitByAccount(m_schedule.account().id()).memo();
     if (memo != m_memo->text())
     {
       noItemsChanged++;
       messageDetail += QString(i18n("<font size=\"-1\">Memo changed.  Old: %1, New: %2</font><br>")).arg(memo).arg(m_memo->text());
     }
 
-    MyMoneyMoney amount = m_schedule.transaction().split(m_schedule.account().id()).value();
+    MyMoneyMoney amount = m_schedule.transaction().splitByAccount(m_schedule.account().id()).value();
     if (amount != m_amount->getMoneyValue())
     {
       noItemsChanged++;

@@ -795,6 +795,7 @@ void MyMoneySeqAccessMgrTest::testTransactionList() {
 
 	filter.clear();
 	filter.addAccount("A000003");
+	filter.addCategory("A000003");
 	list = m->transactionList(filter);
 	CPPUNIT_ASSERT(list.count() == 1);
 	CPPUNIT_ASSERT((*(list.at(0))).id() == "T000000000000000002");

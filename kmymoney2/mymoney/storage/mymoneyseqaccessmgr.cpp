@@ -830,26 +830,30 @@ void MyMoneySeqAccessMgr::removeInstitution(const MyMoneyInstitution& institutio
     throw new MYMONEYEXCEPTION("invalid institution");
 }
 
-#if 0
-const QValueList<MyMoneyTransaction> MyMoneySeqAccessMgr::transactionList(const QCString& account) const
-{
-  MyMoneyTransactionFilter filter;
-
-  if(!account.isEmpty())
-    filter.addAccount(account);
-
-  return transactionList(filter);    
-}
-#endif
-
 const QValueList<MyMoneyTransaction> MyMoneySeqAccessMgr::transactionList(MyMoneyTransactionFilter& filter) const
 {
   QValueList<MyMoneyTransaction> list;
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
 
   for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-    if(filter.match(*it_t))
+#if 0
+    if(filter.match(*it_t, this))
       list.append(*it_t);
+#else
+    // This code is used now. It adds the transaction to the list for
+    // each matching split exactly once. This allows to show information
+    // about different splits in the same register view (e.g. search result)
+    //
+    // I have no idea, if this has some impact on the functionality. So far,
+    // I could not see it.  (ipwizard 9/5/2003)
+    if(filter.match(*it_t, this)) {
+      if(filter.matchingSplits().count() > 0) {
+        for(unsigned i=0; i < filter.matchingSplits().count(); ++i)
+          list.append(*it_t);
+      } else
+        list.append(*it_t);
+    }
+#endif
   }
   return list;
 }
@@ -922,7 +926,7 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id)
 
     for(it = list.begin(); it != list.end(); ++it) {
       try {
-        split = (*it).split(id);
+        split = (*it).splitByAccount(id);
         result += split.value();
 
       } catch(MyMoneyException *e) {

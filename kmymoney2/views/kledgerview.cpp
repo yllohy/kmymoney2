@@ -84,8 +84,8 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
     MyMoneySplit s2;
     switch(m_idMode) {
       case AccountMode:
-        s1 = t1->split(m_id);
-        s2 = t2->split(m_id);
+        s1 = t1->splitByAccount(m_id);
+        s2 = t2->splitByAccount(m_id);
         break;
       case PayeeMode:
         s1 = t1->splitByPayee(m_id);
@@ -348,7 +348,15 @@ void KLedgerView::refreshView(void)
       filter.setDateFilter(m_dateStart, QDate());
 
     // get the list of transactions
-    m_transactionList = file->transactionList(filter);
+    QValueList<MyMoneyTransaction> list = file->transactionList(filter);
+    QValueList<MyMoneyTransaction>::ConstIterator it;
+    m_transactionList.clear();
+    for(it = list.begin(); it != list.end(); ++it) {
+      KMyMoneyTransaction k(*it);
+      k.setSplitId((*it).splitByAccount(accountId()).id());
+      m_transactionList.append(k);
+    }
+    //m_transactionList = file->transactionList(filter);
     
   } catch(MyMoneyException *e) {
     delete e;
@@ -380,7 +388,7 @@ void KLedgerView::setupPointerAndBalanceArrays(void)
 {
   int   i;
 
-  QValueList<MyMoneyTransaction>::ConstIterator it_t;
+  QValueList<KMyMoneyTransaction>::ConstIterator it_t;
 
   // setup the pointer vector
   m_transactionPtrVector.clear();
@@ -391,7 +399,6 @@ void KLedgerView::setupPointerAndBalanceArrays(void)
     m_transactionPtrVector.insert(i, &(*it_t));
     ++i;
   }
-  m_transactionPtrVector.resize(i);
 
   // sort the transactions
   m_transactionPtrVector.sort();
@@ -412,7 +419,7 @@ void KLedgerView::setupPointerAndBalanceArrays(void)
 
     while(--i >= 0) {
       m_balance[i] = balance;
-      balance -= m_transactionPtrVector[i]->split(accountId()).value();
+      balance -= m_transactionPtrVector[i]->splitByAccount(accountId()).value();
       if(m_transactionPtrVector.sortType() == KTransactionPtrVector::SortPostDate) {
         if(m_transactionPtrVector[i]->postDate() > QDate::currentDate()) {
           m_register->setCurrentDateIndex(i+1);
@@ -429,188 +436,6 @@ void KLedgerView::setupPointerAndBalanceArrays(void)
     delete e;
   }
 }
-
-
-
-#if 0
-void KLedgerView::reloadAccount(const bool repaint)
-{
-  // in case someone changed the account info and we are called here
-  // via the observer's update function, we just reload ourselves.
-  MyMoneyFile* file = MyMoneyFile::instance();
-  m_account = file->account(m_account.id());
-
-  // setup the filter to select the transactions we want to display
-  MyMoneyTransactionFilter filter(m_account.id());
-  filter.setDateFilter(m_dateStart, QDate());
-
-  // get the list of transactions
-  m_transactionList = file->transactionList(filter);
-
-  // filter all unwanted transactions
-  updateView();
-
-  if(repaint == true) {
-    m_register->repaintContents(false);
-    // if the very last transaction was deleted, we need to update
-    // the index to the current transaction
-    bool selectFlag = false;
-    if(static_cast<unsigned>(m_register->currentTransactionIndex()) >= m_transactionList.count()) {
-      m_register->setCurrentTransactionIndex(m_transactionList.count()-1);
-      selectFlag = true;
-    }
-
-    // don't forget to show the data in the form
-    fillForm();
-
-    // and the summary line
-    fillSummary();
-
-    if(selectFlag == true)
-      emit transactionSelected();
-  }
-
-}
-
-void KLedgerView::loadAccount(void)
-{
-  reloadAccount(false);
-
-  // select the last transaction
-  m_register->setCurrentTransactionIndex(m_transactionList.count()-1);
-
-  // make sure, full transaction is visible
-  m_register->ensureTransactionVisible();
-
-  // fill in the form with the currently selected transaction
-  fillForm();
-
-  // fill in the current summary as well
-  fillSummary();
-
-  // Let others know, that we selected a transaction
-  emit transactionSelected();
-}
-
-void KLedgerView::refreshView(void)
-{
-  KConfig *config = KGlobal::config();
-  config->setGroup("General Options");
-  m_ledgerLens = config->readBoolEntry("LedgerLens", true);
-  m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
-  m_register->readConfig();
-
-  config->setGroup("List Options");
-  QDateTime defaultDate;
-  m_dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
-
-  QCString id;
-  if(m_transactionPtr != 0)
-    id = m_transactionPtr->id();
-    
-  // get a current transaction list for the account
-  MyMoneyTransactionFilter filter(m_account.id());
-  filter.setDateFilter(m_dateStart, QDate());
-  m_transactionList = MyMoneyFile::instance()->transactionList(filter);
-
-  updateView();
-  
-  selectTransaction(id);
-}
-
-void KLedgerView::updateView(void)
-{
-  QCString id;
-  if(m_transactionPtr != 0)
-    id = m_transactionPtr->id();
-    
-  filterTransactions();
-
-  slotShowTransactionForm(m_transactionFormActive);
-
-  m_register->setTransactionCount(m_transactionPtrVector.count()+1);
-  
-  if(!id.isEmpty())
-    selectTransaction(id);
-    
-  resizeEvent(NULL);
-}
-
-void KLedgerView::filterTransactions(void)
-{
-  int   i;
-
-  QValueList<MyMoneyTransaction>::ConstIterator it_t;
-
-  // setup the pointer vector
-  m_transactionPtrVector.clear();
-  m_transactionPtrVector.resize(m_transactionList.size());
-  m_transactionPtrVector.setAccountId(m_account.id());
-
-  for(i = 0, it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-
-    // if in reconciliation mode, don't show old stuff and don't
-    // use any of the other filters
-    if(m_inReconciliation == true) {
-      MyMoneySplit s = (*it_t).split(m_account.id());
-      if(s.reconcileFlag() == MyMoneySplit::Reconciled
-      || s.reconcileFlag() == MyMoneySplit::Frozen) {
-        continue;
-      }
-    }
-#if 0    
-     else {
-
-      // only show those transactions, that are posted after the configured start date
-      if((*it_t).postDate() < m_dateStart)
-        continue;
-
-      // add more filters before this line ;-)
-    }
-#endif
-
-    // Wow, we made it through all the filters. Guess we have to show this one
-    m_transactionPtrVector.insert(i, &(*it_t));
-    ++i;
-  }
-  m_transactionPtrVector.resize(i);
-
-  // sort the transactions
-  m_transactionPtrVector.sort();
-
-  // calculate the balance for each item. At the same time
-  // we figure out the row where the current date mark should
-  // be shown if it's sorted by post date.
-
-  MyMoneyMoney balance(0);
-  m_balance.resize(i, balance);
-
-  bool dateMarkPlaced = false;
-  m_register->setCurrentDateIndex();    // turn off date mark
-
-  try {
-    balance = MyMoneyFile::instance()->balance(accountId());
-    // the trick is to go backwards ;-)
-    while(--i >= 0) {
-      m_balance[i] = balance;
-      balance -= m_transactionPtrVector[i]->split(accountId()).value();
-      if(m_transactionPtrVector.sortType() == KTransactionPtrVector::SortPostDate) {
-        if(m_transactionPtrVector[i]->postDate() > QDate::currentDate()) {
-          m_register->setCurrentDateIndex(i+1);
-
-        } else if(dateMarkPlaced == false) {
-          m_register->setCurrentDateIndex(i+1);
-          dateMarkPlaced = true;
-        }
-      }
-    }
-  } catch(MyMoneyException *e) {
-    if(accountId() != "")
-      qDebug("Unexpected exception in KLedgerView::filterTransactions");
-    delete e;
-  }
-}
-#endif
 
 void KLedgerView::enableWidgets(const bool enable)
 {
@@ -642,7 +467,7 @@ void KLedgerView::suspendUpdate(const bool suspend)
     m_suspendUpdate = suspend;
 }
 
-MyMoneyTransaction* KLedgerView::transaction(const int idx) const
+KMyMoneyTransaction* KLedgerView::transaction(const int idx) const
 {
   if(idx >= 0 && static_cast<unsigned> (idx) < m_transactionPtrVector.count())
     return m_transactionPtrVector[idx];
@@ -768,7 +593,7 @@ void KLedgerView::slotPayeeChanged(const QString& name)
 
   MyMoneySplit sp;
   if(m_transaction.splitCount() == 2) {
-    sp = m_transaction.split(m_account.id(), false);
+    sp = m_transaction.splitByAccount(m_account.id(), false);
   }
 
   if(name != "") {
@@ -830,7 +655,7 @@ void KLedgerView::slotMemoChanged(const QString& memo)
     // for tranfers, we always modify the other side as well
     if(m_transaction.splitCount() == 2
     && m_split.action() == MyMoneySplit::ActionTransfer) {
-      MyMoneySplit sp = m_transaction.split(m_account.id(), false);
+      MyMoneySplit sp = m_transaction.splitByAccount(m_account.id(), false);
       sp.setMemo(memo);
       m_transaction.modifySplit(sp);
     }
@@ -898,7 +723,7 @@ void KLedgerView::slotAmountChanged(const QString& value)
     m_editAmount->loadText(value);
     m_transaction.modifySplit(m_split);
     if(m_transaction.splitCount() == 2) {
-      MyMoneySplit split = m_transaction.split(accountId(), false);
+      MyMoneySplit split = m_transaction.splitByAccount(accountId(), false);
       split.setValue(-m_split.value());
       m_transaction.modifySplit(split);
     }
@@ -944,7 +769,7 @@ void KLedgerView::slotPaymentChanged(const QString& value)
 
     m_transaction.modifySplit(m_split);
     if(m_transaction.splitCount() == 2) {
-      MyMoneySplit split = m_transaction.split(accountId(), false);
+      MyMoneySplit split = m_transaction.splitByAccount(accountId(), false);
       split.setValue(-m_split.value());
       m_transaction.modifySplit(split);
     }
@@ -991,7 +816,7 @@ void KLedgerView::slotDepositChanged(const QString& value)
 
     m_transaction.modifySplit(m_split);
     if(m_transaction.splitCount() == 2) {
-      MyMoneySplit split = m_transaction.split(accountId(), false);
+      MyMoneySplit split = m_transaction.splitByAccount(accountId(), false);
       split.setValue(-m_split.value());
       m_transaction.modifySplit(split);
     }
@@ -1033,7 +858,7 @@ void KLedgerView::slotCategoryChanged(const QString& category)
 
     if(category == "") {
       if(m_transaction.splitCount() == 2) {
-        MyMoneySplit sp = m_transaction.split(m_account.id(), false);
+        MyMoneySplit sp = m_transaction.splitByAccount(m_account.id(), false);
         m_transaction.removeSplit(sp);
       }
     } else {
@@ -1084,7 +909,7 @@ void KLedgerView::slotCategoryChanged(const QString& category)
 
         case 2:
           // find the 'other' split
-          split = m_transaction.split(accountId(), false);
+          split = m_transaction.splitByAccount(accountId(), false);
           split.setAccountId(id);
           m_transaction.modifySplit(split);
           break;
@@ -1278,7 +1103,7 @@ void KLedgerView::slotTypeChanged(const QCString& action)
         MyMoneySplit split;
         try {
           for(;;) {
-            split = m_transaction.split(m_account.id(), false);
+            split = m_transaction.splitByAccount(m_account.id(), false);
             m_transaction.removeSplit(split);
           }
         } catch(MyMoneyException *e) {
@@ -1304,7 +1129,7 @@ void KLedgerView::slotTypeChanged(const QCString& action)
         m_transaction.modifySplit(*it);
       }
       // don't forget to update our copy of the specific split
-      m_split = m_transaction.split(m_account.id());
+      m_split = m_transaction.splitByAccount(m_account.id());
     }
 
     m_split.setAction(action);
@@ -1900,7 +1725,7 @@ void KLedgerView::slotDeleteTransaction(void)
 
 void KLedgerView::slotGotoOtherSideOfTransfer(void)
 {
-  MyMoneySplit split = m_transaction.split(m_account.id(), false);
+  MyMoneySplit split = m_transaction.splitByAccount(m_account.id(), false);
 
   emit accountAndTransactionSelected(split.accountId(), m_transaction.id());
 }

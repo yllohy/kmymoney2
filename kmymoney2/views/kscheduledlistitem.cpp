@@ -61,8 +61,8 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
     MyMoneyTransaction transaction = schedule.transaction();
     setText(0, schedule.name());
     setText(1, schedule.account().name());
-    setText(2, MyMoneyFile::instance()->payee(transaction.split(accountId).payeeId()).name());
-    MyMoneyMoney amount = transaction.split(accountId).value();
+    setText(2, MyMoneyFile::instance()->payee(transaction.splitByAccount(accountId).payeeId()).name());
+    MyMoneyMoney amount = transaction.splitByAccount(accountId).value();
     if (amount < 0)
       amount = -amount;
     setText(3, amount.formatMoney());

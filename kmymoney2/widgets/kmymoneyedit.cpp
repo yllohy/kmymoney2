@@ -61,6 +61,11 @@ kMyMoneyEdit::~kMyMoneyEdit()
   delete m_calculatorFrame;
 }
 
+const bool kMyMoneyEdit::isValid(void) const
+{
+  return !m_text.isEmpty();
+}
+
 MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
 {
   MyMoneyMoney money(text());

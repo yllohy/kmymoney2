@@ -60,7 +60,9 @@ public:
   MyMoneyMoney getMoneyValue(void);
 
   void resetText(void);
-
+  
+  const bool isValid(void) const;
+  
   virtual bool eventFilter(QObject * , QEvent * );
 
 public slots:

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
 <class>KFindTransactionDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>495</width>
-            <height>467</height>
+            <width>497</width>
+            <height>511</height>
         </rect>
     </property>
     <property name="caption">
@@ -269,7 +269,7 @@
                                             <property name="clickable">
                                                 <bool>false</bool>
                                             </property>
-                                            <property name="resizeable">
+                                            <property name="resizable">
                                                 <bool>false</bool>
                                             </property>
                                         </column>
@@ -750,7 +750,7 @@
                                             <property name="clickable">
                                                 <bool>false</bool>
                                             </property>
-                                            <property name="resizeable">
+                                            <property name="resizable">
                                                 <bool>false</bool>
                                             </property>
                                         </column>
@@ -864,7 +864,7 @@
                                                     <property name="clickable">
                                                         <bool>false</bool>
                                                     </property>
-                                                    <property name="resizeable">
+                                                    <property name="resizable">
                                                         <bool>false</bool>
                                                     </property>
                                                 </column>
@@ -1293,7 +1293,7 @@
                                 <string>Help</string>
                             </property>
                             <property name="accel">
-                                <number>0</number>
+                                <string></string>
                             </property>
                             <property name="autoDefault">
                                 <bool>true</bool>
@@ -1320,16 +1320,53 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="kMyMoneyRegisterSearch">
+        <widget class="QFrame">
             <property name="name">
-                <cstring>m_register</cstring>
+                <cstring>m_registerFrame</cstring>
             </property>
-            <property name="minimumSize">
-                <size>
-                    <width>0</width>
-                    <height>180</height>
-                </size>
+            <property name="frameShape">
+                <enum>StyledPanel</enum>
             </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout18</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="kMyMoneyRegisterSearch">
+                            <property name="name">
+                                <cstring>m_register</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>180</height>
+                                </size>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>m_foundText</cstring>
+                            </property>
+                            <property name="text">
+                                <string>F</string>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignVCenter|AlignLeft</set>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+            </vbox>
         </widget>
     </vbox>
 </widget>
@@ -1338,7 +1375,7 @@
         <class>kMyMoneyDateInput</class>
         <header location="local">../widgets/kmymoneydateinput.h</header>
         <sizehint>
-            <width>120</width>
+            <width>90</width>
             <height>25</height>
         </sizehint>
         <container>0</container>
@@ -1409,4 +1446,34 @@
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klineedit.h</includehint>
+    <includehint>klistview.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>kmymoneyedit.h</includehint>
+    <includehint>klistview.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>klistview.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kmymoneylineedit.h</includehint>
+    <includehint>kmymoneylineedit.h</includehint>
+    <includehint>kmymoneylineedit.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kmymoneyregistersearch.h</includehint>
+</includehints>
 </UI>

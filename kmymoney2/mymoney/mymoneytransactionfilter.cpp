@@ -29,6 +29,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include "../mymoney/storage/imymoneystorage.h"
 
 #include "mymoneytransactionfilter.h"
 
@@ -41,6 +42,7 @@ MyMoneyTransactionFilter::MyMoneyTransactionFilter(const QCString& id)
 {
   m_filterSet.allFilter = 0;
   addAccount(id);
+  addCategory(id);
 }
 
 MyMoneyTransactionFilter::~MyMoneyTransactionFilter()
@@ -55,6 +57,7 @@ void MyMoneyTransactionFilter::clear(void)
   m_payees.clear();
   m_types.clear();
   m_states.clear();
+  m_matchingSplits.clear();
 }
 
 void MyMoneyTransactionFilter::setTextFilter(const QRegExp& text)
@@ -65,7 +68,7 @@ void MyMoneyTransactionFilter::setTextFilter(const QRegExp& text)
 
 void MyMoneyTransactionFilter::addAccount(const QCString& id)
 {
-  if(!m_accounts.isEmpty()) {
+  if(!m_accounts.isEmpty() && !id.isEmpty()) {
     if(m_accounts.find(id) != 0)
       return;
   }
@@ -79,7 +82,7 @@ void MyMoneyTransactionFilter::addAccount(const QCString& id)
 
 void MyMoneyTransactionFilter::addCategory(const QCString& id)
 {
-  if(!m_categories.isEmpty()) {
+  if(!m_categories.isEmpty() && !id.isEmpty()) {
     if(m_categories.find(id) != 0)
       return;
   }
@@ -107,7 +110,7 @@ void MyMoneyTransactionFilter::setAmountFilter(const MyMoneyMoney& from, const M
 
 void MyMoneyTransactionFilter::addPayee(const QCString& id)
 {
-  if(!m_payees.isEmpty()) {
+  if(!m_payees.isEmpty() && !id.isEmpty()) {
     if(m_payees.find(id) != 0)
       return;
   }
@@ -115,7 +118,8 @@ void MyMoneyTransactionFilter::addPayee(const QCString& id)
     m_payees.resize(457);
   }
   m_filterSet.singleFilter.payeeFilter = 1;
-  m_payees.insert(id, "");
+  if(!id.isEmpty())
+    m_payees.insert(id, "");
 }
 
 void MyMoneyTransactionFilter::addType(const int type)
@@ -149,11 +153,13 @@ void MyMoneyTransactionFilter::setNumberFilter(const QString& from, const QStrin
   m_toNr = to;
 }
 
-const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction)
+const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction, const IMyMoneyStorage* const storage)
 {
-  QValueList<MyMoneySplit>::ConstIterator it;
-  m_matchingSplit = QCString();
-  
+  QValueList<MyMoneySplit>::Iterator it;
+
+  m_matchingSplits.clear();
+        
+  // qDebug("T: %s", transaction.id().data());
   // if no filter is set, we can savely return a match
   if(!m_filterSet.allFilter)
     return true;
@@ -173,81 +179,161 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
     }
   }
 
-  if(m_filterSet.singleFilter.accountFilter
-  || m_filterSet.singleFilter.textFilter
-  || m_filterSet.singleFilter.payeeFilter
-  || m_filterSet.singleFilter.typeFilter
-  || m_filterSet.singleFilter.stateFilter
-  || m_filterSet.singleFilter.nrFilter
-  || m_filterSet.singleFilter.amountFilter) {
-    // now scan all the splits for matches
-    for(it = transaction.splits().begin(); it != transaction.splits().end(); ++it) {
+  // construct a local copy of all splits and
+  // remove all the splits that do not match account and/or categories.
+  m_matchingSplits = transaction.splits();
 
-      // check if the split references one of the accounts in the list
-      if(m_filterSet.singleFilter.accountFilter) {
-        if(m_accounts.count() > 0) {
-          if(!m_accounts.find((*it).accountId()))
-            continue;
-        }
+  if(m_filterSet.singleFilter.accountFilter == 1
+  || m_filterSet.singleFilter.categoryFilter == 1) {
+    for(it = m_matchingSplits.begin(); it != m_matchingSplits.end(); ) {
+      bool removeSplit = true;
+      MyMoneyAccount acc = storage->account((*it).accountId());
+      switch(acc.accountGroup()) {
+        case MyMoneyAccount::Income:
+        case MyMoneyAccount::Expense:
+          // check if the split references one of the categories in the list
+          if(m_filterSet.singleFilter.categoryFilter) {
+            if(m_categories.count() > 0) {
+              if(m_categories.find((*it).accountId())) {
+                removeSplit = false;
+              }
+            } else {
+              // we're looking for transactions with 'no' categories
+              return false;
+            }
+          }
+          break;
+          
+        default:
+          // check if the split references one of the accounts in the list
+          if(m_filterSet.singleFilter.accountFilter) {
+            if(m_accounts.count() > 0) {
+              if(m_accounts.find((*it).accountId())) {
+                removeSplit = false;
+              }
+            }
+          } else
+            removeSplit = false;
+
+          break;
       }
-
-      // check if the text is contained in one of the fields
-      if(m_filterSet.singleFilter.textFilter) {
-
+      if(removeSplit) {
+        // qDebug(" S: %s", (*it).id().data());
+        it = m_matchingSplits.remove(it);
+      } else {
+        ++it;
       }
-
-      // check the payee list
-      if(m_filterSet.singleFilter.payeeFilter) {
-        if(m_payees.count() > 0) {
-          if(!m_payees.find((*it).payeeId()))
-            continue;
-        }
-      }
-
-      // check the type list
-      if(m_filterSet.singleFilter.typeFilter) {
-        if(m_types.count() > 0) {
-          if(!m_types.find(splitType(*it)))
-            continue;
-        }
-      }
-
-      // check the state list
-      if(m_filterSet.singleFilter.stateFilter) {
-        if(m_states.count() > 0) {
-          if(!m_states.find(splitState(*it)))
-            continue;
-        }
-      }
-
-      if(m_filterSet.singleFilter.nrFilter) {
-        if(!m_fromNr.isEmpty()) {
-          if((*it).number() < m_fromNr)
-            continue;
-        }
-        if(!m_toNr.isEmpty()) {
-          if((*it).number() > m_toNr)
-            continue;
-        }
-      }
-
-      if(m_filterSet.singleFilter.amountFilter) {
-        if((*it).value() < m_fromAmount)
-          continue;
-        if((*it).value() > m_toAmount)
-          continue;
-      }
-      // all filters passed, this one seems to match
-      break;
     }
-    if(it == transaction.splits().end())
-      return false;
+  }
+
+  if(m_matchingSplits.count() == 0)
+    return false;
+
+  FilterSet filterSet = m_filterSet;
+  filterSet.singleFilter.dateFilter =
+  filterSet.singleFilter.accountFilter =
+  filterSet.singleFilter.categoryFilter = 0;
+
+  // check if we still have something to do
+  if(filterSet.allFilter != 0) {
+    for(it = m_matchingSplits.begin(); it != m_matchingSplits.end();) {
+      bool removeSplit = false;
+      MyMoneyAccount acc = storage->account((*it).accountId());
+
+      // Determine if this account is a category or an account      
+      bool isCategory = false;
+      switch(acc.accountGroup()) {
+        case MyMoneyAccount::Income:
+        case MyMoneyAccount::Expense:
+          isCategory = true;
+        default:
+          break;
+      }
       
-    m_matchingSplit = (*it).id();
+      // check if the text is contained in one of the fields
+      // memo, value, number, payee, account, date
+      if(m_filterSet.singleFilter.textFilter) {
+        bool textMatch = false;
+        if((*it).memo().contains(m_text)
+        || (*it).value().formatMoney().contains(m_text)
+        || (*it).number().contains(m_text))
+          textMatch = true;
+
+        if(!textMatch && acc.name().contains(m_text))
+          textMatch = true;
+          
+        if(!textMatch && !(*it).payeeId().isEmpty()) {
+          MyMoneyPayee payee;
+          payee = storage->payee((*it).payeeId());
+          if(payee.name().contains(m_text))
+            textMatch = true;
+        }
+
+        if(!textMatch)
+          removeSplit = true;
+      }
+
+      if(!removeSplit && m_filterSet.singleFilter.amountFilter) {
+        if((*it).value() < m_fromAmount)
+          removeSplit = true;
+        if((*it).value() > m_toAmount)
+          removeSplit = true;
+      }
+
+      if(!isCategory && !removeSplit) {
+        // check the payee list
+        if(!removeSplit && m_filterSet.singleFilter.payeeFilter) {
+          if(m_payees.count() > 0) {
+            if(!m_payees.find((*it).payeeId()))
+              removeSplit = true;
+          } else if(!(*it).payeeId().isEmpty())
+              removeSplit = true;
+        }
+
+        // check the type list
+        if(!removeSplit && m_filterSet.singleFilter.typeFilter) {
+          if(m_types.count() > 0) {
+            if(!m_types.find(splitType(*it)))
+              removeSplit = true;
+          }
+        }
+
+        // check the state list
+        if(!removeSplit && m_filterSet.singleFilter.stateFilter) {
+          if(m_states.count() > 0) {
+            if(!m_states.find(splitState(*it)))
+              removeSplit = true;
+          }
+        }
+
+        if(!removeSplit && m_filterSet.singleFilter.nrFilter) {
+          if(!m_fromNr.isEmpty()) {
+            if((*it).number() < m_fromNr)
+              removeSplit = true;
+          }
+          if(!m_toNr.isEmpty()) {
+            if((*it).number() > m_toNr)
+              removeSplit = true;
+          }
+        }
+      } else if(m_filterSet.singleFilter.payeeFilter
+      || m_filterSet.singleFilter.typeFilter
+      || m_filterSet.singleFilter.stateFilter
+      || m_filterSet.singleFilter.nrFilter)
+        removeSplit = true;
+      
+      if(removeSplit) {
+        // qDebug(" S: %s", (*it).id().data());
+        it = m_matchingSplits.remove(it);
+      } else {
+        ++it;
+      }
+    }
   }
       
   // all filters passed, I guess we have a match
-  return true;
+  // qDebug("  C: %d", m_matchingSplits.count());
+  return m_matchingSplits.count() != 0;
 }
 
 const int MyMoneyTransactionFilter::splitState(const MyMoneySplit& split) const

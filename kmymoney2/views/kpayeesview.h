@@ -112,7 +112,7 @@ private:
   /**
     * This member holds a list of all transactions
     */
-  QValueList<MyMoneyTransaction> m_transactionList;
+  QValueList<KMyMoneyTransaction> m_transactionList;
 
   /**
     * This member keeps a vector of pointers to all visible (filtered)

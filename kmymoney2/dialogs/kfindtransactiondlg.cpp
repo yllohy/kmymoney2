@@ -47,7 +47,7 @@
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneylineedit.h"
 #include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneytransactionfilter.h"
+#include "../mymoney/storage/imymoneystorage.h"
 
 KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListView* parent, const QString& txt, Type type, const QCString& id, KFindTransactionDlg* dlg) :
   QCheckListItem(parent, txt, type),
@@ -73,19 +73,15 @@ void KMyMoneyCheckListItem::stateChange(bool)
 }
 
 KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
- : KFindTransactionDlgDecl(parent, name, false)
+ : KFindTransactionDlgDecl(parent, name, false),
+  m_transactionPtr(0)
 {
-  connect(m_searchButton, SIGNAL(clicked()), m_register, SLOT(show()));
-  connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
-  connect(m_closeButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
-
-  connect(m_textEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
-    
   // hide the transaction register and make sure the dialog is
   // displayed as small as can be. We make sure that the larger
   // version (with the transaction register) will also fit on the screen
   // by moving the dialog by (-45,-45).
-  m_register->hide();
+  m_register->setParent(this);
+  m_registerFrame->hide();
   update();
   resize(minimumSizeHint());
   
@@ -102,6 +98,12 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   slotUpdateSelections();
   
   QTimer::singleShot(0, this, SLOT(slotRightSize()));
+
+  // setup the connections
+  connect(m_searchButton, SIGNAL(clicked()), this, SLOT(slotSearch()));
+  connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
+  connect(m_closeButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
+  connect(m_textEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
 }
 
 KFindTransactionDlg::~KFindTransactionDlg()
@@ -142,7 +144,7 @@ void KFindTransactionDlg::slotReset(void)
   m_nrButton->setChecked(true);
   m_nrRangeButton->setChecked(false);
       
-  m_register->hide();
+  m_registerFrame->hide();
   
   // the following call implies a call to slotUpdateSelections,
   // that's why we call it last
@@ -187,9 +189,9 @@ void KFindTransactionDlg::slotUpdateSelections(void)
   }
 
   // Amount tab
-  if((m_amountButton->isChecked() && m_amountEdit->getMoneyValue() != 0)
+  if((m_amountButton->isChecked() && m_amountEdit->isValid())
   || (m_amountRangeButton->isChecked()
-      && (m_amountFromEdit->getMoneyValue() != 0 || m_amountToEdit->getMoneyValue() != 0))) {
+      && (m_amountFromEdit->isValid() || m_amountToEdit->isValid()))) {
     if(!txt.isEmpty())
       txt += ", ";
     txt += i18n("Amount");
@@ -209,7 +211,8 @@ void KFindTransactionDlg::slotUpdateSelections(void)
       txt += ", ";
     txt += i18n("Payees");
   }
-
+  m_payeesView->setEnabled(!m_emptyPayeesButton->isChecked());
+  
   // Details tab
   if(m_typeBox->currentItem() != 0
   || m_stateBox->currentItem() != 0
@@ -640,3 +643,253 @@ void KFindTransactionDlg::slotNrRangeSelected(void)
   slotUpdateSelections();
 }
 
+void KFindTransactionDlg::addItemToFilter(const opTypeE op, const QCString& id)
+{
+  switch(op) {
+    case addAccountToFilter:
+      m_filter.addAccount(id);
+      break;
+    case addCategoryToFilter:
+      m_filter.addCategory(id);
+      break;
+    case addPayeeToFilter:
+      m_filter.addPayee(id);
+      break;
+  }
+}
+
+void KFindTransactionDlg::scanCheckListItems(QListViewItem* item, const opTypeE op)
+{
+  QListViewItem* it_v;
+
+  for(it_v = item->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
+    if(it_v->rtti() == 1) {
+      KMyMoneyCheckListItem* it_c = static_cast<KMyMoneyCheckListItem*>(it_v);
+      if(it_c->type() == QCheckListItem::CheckBox) {
+        if(it_c->isOn())
+          addItemToFilter(op, (*it_c).accountId());
+      }
+      scanCheckListItems(it_v, op);
+    }
+  }
+}
+
+void KFindTransactionDlg::scanCheckListItems(QListView* view, const opTypeE op)
+{
+  QListViewItem* it_v;
+
+  for(it_v = view->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
+    if(it_v->rtti() == 1) {
+      KMyMoneyCheckListItem* it_c = static_cast<KMyMoneyCheckListItem*>(it_v);
+      if(it_c->type() == QCheckListItem::CheckBox) {
+        if(it_c->isOn())
+          addItemToFilter(op, (*it_c).accountId());
+      }
+      scanCheckListItems(it_v, op);
+    }
+  }
+}
+
+void KFindTransactionDlg::slotSearch(void)
+{
+  // setup the filter from the dialog widgets
+  m_filter.clear();
+  
+  // Text tab
+  if(!m_textEdit->text().isEmpty()) {
+    QRegExp exp(m_textEdit->text(), m_caseSensitive->isChecked(), !m_regExp->isChecked());
+    m_filter.setTextFilter(exp);
+  }
+  
+  // Account tab
+  if(!allItemsSelected(m_accountsView)) {
+    scanCheckListItems(m_accountsView, addAccountToFilter);
+  }
+
+  // Date tab
+  if(m_dateRange->currentItem() != 0) {
+    m_filter.setDateFilter(m_fromDate->getQDate(), m_toDate->getQDate());
+  }
+  
+  // Amount tab
+  if((m_amountButton->isChecked() && m_amountEdit->isValid())) {
+    m_filter.setAmountFilter(m_amountEdit->getMoneyValue(), m_amountEdit->getMoneyValue());
+    
+  } else if((m_amountRangeButton->isChecked()
+      && (m_amountFromEdit->isValid() || m_amountToEdit->isValid()))) {
+    
+    MyMoneyMoney from(MyMoneyMoney::minValue), to(MyMoneyMoney::maxValue);
+    if(m_amountFromEdit->isValid())
+      from = m_amountFromEdit->getMoneyValue();
+    if(m_amountToEdit->isValid())
+      to = m_amountToEdit->getMoneyValue();
+      
+    m_filter.setAmountFilter(from, to);
+  }
+  
+  // Categories tab
+  scanCheckListItems(m_accountsView, addCategoryToFilter);
+  
+  // Payees tab
+  if(m_emptyPayeesButton->isChecked()) {
+    m_filter.addPayee(QCString());
+    
+  } else if(!allItemsSelected(m_payeesView)) {
+    scanCheckListItems(m_payeesView, addPayeeToFilter);
+  }
+  
+  // Details tab
+  if(m_typeBox->currentItem() != 0)
+    m_filter.addType(m_typeBox->currentItem());
+
+  if(m_stateBox->currentItem() != 0)
+    m_filter.addState(m_stateBox->currentItem());
+
+  if(m_nrButton->isChecked() && !m_nrEdit->text().isEmpty())
+    m_filter.setNumberFilter(m_nrEdit->text(), m_nrEdit->text());
+
+  if(m_nrRangeButton->isChecked()
+     && (!m_nrFromEdit->text().isEmpty() || !m_nrToEdit->text().isEmpty())) {
+    m_filter.setNumberFilter(m_nrFromEdit->text(), m_nrToEdit->text());
+  }
+
+
+  // filter is setup, now fill the register
+  slotRefreshView();
+}
+
+void KFindTransactionDlg::slotRefreshView(void)
+{
+  try {
+    QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(m_filter);
+    QValueList<MyMoneyTransaction>::ConstIterator it;
+    
+    m_transactionList.clear();
+    QCString lastId;
+    int ofs = 0;
+    
+    for(it = list.begin(); it != list.end(); ++it) {
+      KMyMoneyTransaction k(*it);
+      m_filter.match(*it, MyMoneyFile::instance()->storage());
+      if(lastId != (*it).id()) {
+        ofs = 0;
+        lastId = (*it).id();
+      } else
+        ofs++;
+        
+      k.setSplitId(m_filter.matchingSplits()[ofs].id());
+      m_transactionList.append(k);
+    }
+  } catch(MyMoneyException *e) {
+    delete e;
+    return;
+  }
+
+  QValueList<KMyMoneyTransaction>::ConstIterator it_t;
+
+  // setup the pointer vector
+  m_transactionPtrVector.clear();
+  m_transactionPtrVector.resize(m_transactionList.size());
+
+  int i;
+  for(i = 0, it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
+    m_transactionPtrVector.insert(i, &(*it_t));
+    ++i;
+  }
+
+  // sort the transactions
+  m_transactionPtrVector.sort();
+
+  bool dateMarkPlaced = false;
+  m_register->setCurrentDateIndex();    // turn off date mark
+
+  try {
+    // the trick is to go backwards ;-)
+
+    while(--i >= 0) {
+      if(m_transactionPtrVector.sortType() == KTransactionPtrVector::SortPostDate) {
+        if(m_transactionPtrVector[i]->postDate() > QDate::currentDate()) {
+          m_register->setCurrentDateIndex(i+1);
+
+        } else if(dateMarkPlaced == false) {
+          m_register->setCurrentDateIndex(i+1);
+          dateMarkPlaced = true;
+        }
+      }
+    }
+  } catch(MyMoneyException *e) {
+    qWarning("Unexpected exception in KFindTransactionDlg::refreshView");
+    delete e;
+    return;
+  }
+  m_foundText->setText(i18n(QString("Found %1 matching transactions")
+                      .arg(m_transactionPtrVector.count())));
+  m_register->setTransactionCount(m_transactionPtrVector.count());
+  m_register->setCurrentTransactionIndex(0);
+  m_registerFrame->show();
+}
+
+KMyMoneyTransaction* KFindTransactionDlg::transaction(const int idx) const
+{
+  if(idx >= 0 && static_cast<unsigned> (idx) < m_transactionPtrVector.count())
+    return m_transactionPtrVector[idx];
+  return 0;
+}
+
+const QCString KFindTransactionDlg::accountId(const MyMoneyTransaction * const transaction, int match) const
+{
+  QValueList<MyMoneySplit>::ConstIterator it;
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyTransactionFilter filter = m_filter;
+  
+  if(filter.match(*transaction, file->storage())) {
+    for(it = filter.matchingSplits().begin(); it != filter.matchingSplits().end(); ++it) {
+      MyMoneyAccount acc = file->account((*it).accountId());
+      switch(acc.accountGroup()) {
+        case MyMoneyAccount::Income:
+        case MyMoneyAccount::Expense:
+          break;
+        default:
+          if(!match--)
+            return (*it).accountId();
+          break;
+      }
+    }
+  }
+  qFatal("KFindTransactionDlg::accountId(): No asset/liability account for transaction. This usually crashes");
+  return QCString();  
+}
+
+void KFindTransactionDlg::resizeEvent(QResizeEvent* /* ev */)
+{
+  if(!m_register->isVisible())
+    return;
+    
+  // resize the register
+  int w = m_register->visibleWidth();
+
+  int m_debitWidth = 80;
+  int m_creditWidth = 80;
+
+  m_register->setColumnWidth(0, 80);
+
+  // Resize the date field to the size required by the input widget
+  kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
+  datefield->setFont(m_register->cellFont());
+  m_register->setColumnWidth(1, datefield->minimumSizeHint().width());
+  delete datefield;
+
+  m_register->setColumnWidth(5, m_debitWidth);
+  m_register->setColumnWidth(6, m_creditWidth);
+
+  for(int i = 0; i < m_register->numCols(); ++i) {
+    switch(i) {
+      default:
+        w -= m_register->columnWidth(i);
+        break;
+      case 3:     // skip the one, we want to set
+        break;
+    }
+  }
+  m_register->setColumnWidth(3, w);
+}

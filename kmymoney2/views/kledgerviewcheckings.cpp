@@ -512,7 +512,7 @@ void KLedgerViewCheckings::fillForm(void)
   if(m_transactionPtr != 0) {
     // get my local copy of the selected transaction
     m_transaction = *m_transactionPtr;
-    m_split = m_transaction.split(accountId());
+    m_split = m_transaction.splitByAccount(accountId());
 
     MyMoneyMoney amount = m_split.value();
 
@@ -546,7 +546,7 @@ void KLedgerViewCheckings::fillForm(void)
       MyMoneySplit s;
       switch(m_transaction.splitCount()) {
         case 2:
-          s = m_transaction.split(accountId(), false);
+          s = m_transaction.splitByAccount(accountId(), false);
           category = MyMoneyFile::instance()->accountToCategory(s.accountId());
           break;
         case 1:
@@ -726,7 +726,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
   QString category, payee;
 
   m_transaction = t;
-  m_split = m_transaction.split(accountId());
+  m_split = m_transaction.splitByAccount(accountId());
   amount = m_split.value();
 
   if(m_editCategory != 0)
@@ -743,7 +743,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
     MyMoneyAccount acc;
     switch(t.splitCount()) {
       case 2:
-        s = t.split(accountId(), false);
+        s = t.splitByAccount(accountId(), false);
         acc = MyMoneyFile::instance()->account(s.accountId());
 
         // if the second account is also an asset or liability account
@@ -1181,7 +1181,7 @@ void KLedgerViewCheckings::fillReconcileData(void)
 
   for(unsigned int i = 0; i < m_transactionPtrVector.size(); ++i) {
     MyMoneyTransaction* t = m_transactionPtrVector[i];
-    MyMoneySplit sp = t->split(m_account.id());
+    MyMoneySplit sp = t->splitByAccount(m_account.id());
     if(sp.reconcileFlag() == MyMoneySplit::Cleared)
       cleared += sp.value();
   }
@@ -1227,7 +1227,7 @@ void KLedgerViewCheckings::slotConfigureMoreMenu(void)
     } else {
       QString dest = "";
       try {
-        MyMoneySplit split = m_transaction.split(m_account.id(), false);
+        MyMoneySplit split = m_transaction.splitByAccount(m_account.id(), false);
         MyMoneyAccount acc = file->account(split.accountId());
         dest = acc.name();
       } catch(MyMoneyException *e) {
@@ -1270,7 +1270,7 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
     } else {
       QString dest = "";
       try {
-        MyMoneySplit split = m_transaction.split(m_account.id(), false);
+        MyMoneySplit split = m_transaction.splitByAccount(m_account.id(), false);
         MyMoneyAccount acc = MyMoneyFile::instance()->account(split.accountId());
         dest = acc.name();
       } catch(MyMoneyException *e) {
@@ -1291,7 +1291,7 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
 void KLedgerViewCheckings::slotToggleClearFlag(void)
 {
   if(m_transactionPtr != 0) {
-    MyMoneySplit sp = m_transactionPtr->split(m_account.id());
+    MyMoneySplit sp = m_transactionPtr->splitByAccount(m_account.id());
     switch(sp.reconcileFlag()) {
       case MyMoneySplit::NotReconciled:
         sp.setReconcileFlag(MyMoneySplit::Cleared);
@@ -1380,7 +1380,7 @@ void KLedgerViewCheckings::slotEndReconciliation(void)
       QValueList<MyMoneyTransaction>::Iterator it;
 
       for(it = list.begin(); it != list.end(); ++it) {
-        MyMoneySplit sp = (*it).split(m_account.id());
+        MyMoneySplit sp = (*it).splitByAccount(m_account.id());
         if(sp.reconcileFlag() == MyMoneySplit::Cleared) {
           sp.setReconcileFlag(MyMoneySplit::Reconciled);
           sp.setReconcileDate(m_endingDate);

@@ -94,7 +94,7 @@ void KMyMoneyBriefSchedule::loadSchedule()
       QString text(i18n("Payment on "));
       text += m_date.toString();
       text += i18n(" for ");
-      MyMoneyMoney amount = sched.transaction().split(sched.account().id()).value();
+      MyMoneyMoney amount = sched.transaction().splitByAccount(sched.account().id()).value();
       if (amount < 0)
         amount = -amount;
       text += amount.formatMoney();

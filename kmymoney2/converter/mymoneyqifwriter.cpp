@@ -155,7 +155,7 @@ void MyMoneyQifWriter::writeCategoryEntry(QTextStream &s, const QCString& accoun
 void MyMoneyQifWriter::writeTransactionEntry(QTextStream &s, const MyMoneyTransaction& t, const QCString& accountId)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneySplit split = t.split(accountId);
+  MyMoneySplit split = t.splitByAccount(accountId);
 
   s << "D" << m_qifProfile.date(t.postDate()) << endl;
 
@@ -186,7 +186,7 @@ void MyMoneyQifWriter::writeTransactionEntry(QTextStream &s, const MyMoneyTransa
     s << "P" << payee.name() << endl;
   }
 
-  MyMoneySplit sp = t.split(accountId, false);
+  MyMoneySplit sp = t.splitByAccount(accountId, false);
   MyMoneyAccount acc = file->account(sp.accountId());
   if(split.action() == MyMoneySplit::ActionTransfer) {
     s << "L" << m_qifProfile.accountDelimiter()[0]

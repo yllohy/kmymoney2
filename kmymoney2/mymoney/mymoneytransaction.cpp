@@ -121,7 +121,7 @@ const MyMoneySplit& MyMoneyTransaction::splitByPayee(const QCString& payeeId) co
   throw new MYMONEYEXCEPTION(QString("Split not found for payee") + QString(payeeId));
 }
 
-const MyMoneySplit& MyMoneyTransaction::split(const QCString& accountId, const bool match) const
+const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QCString& accountId, const bool match) const
 {
   QValueList<MyMoneySplit>::ConstIterator it;
 
@@ -132,6 +132,17 @@ const MyMoneySplit& MyMoneyTransaction::split(const QCString& accountId, const b
       return *it;
   }
   throw new MYMONEYEXCEPTION(QString("Split not found for account") + QString(accountId));
+}
+
+const MyMoneySplit& MyMoneyTransaction::splitById(const QCString& splitId) const
+{
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    if((*it).id() == splitId)
+      return *it;
+  }
+  throw new MYMONEYEXCEPTION(QString("Split not found for id ") + QString(splitId));
 }
 
 const QCString MyMoneyTransaction::nextSplitID()

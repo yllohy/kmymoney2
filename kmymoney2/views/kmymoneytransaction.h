@@ -1,7 +1,7 @@
 /***************************************************************************
-                          kmymoneyregistersearch.h  -  description
+                          kmymoneytransaction.h  -  description
                              -------------------
-    begin                : Sun Aug 10 2003
+    begin                : Fri Sep 5 2003
     copyright            : (C) 2000-2003 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
@@ -20,13 +20,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KMYMONEYREGISTERSEARCH_H
-#define KMYMONEYREGISTERSEARCH_H
+#ifndef KMYMONEYTRANSACTION_H
+#define KMYMONEYTRANSACTION_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
-
-#include <qwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -34,29 +32,30 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <../widgets/kmymoneyregister.h>
+#include "../mymoney/mymoneytransaction.h"
 
 /**
   * @author Thomas Baumgart
   */
 
-class kMyMoneyRegisterSearch : public kMyMoneyRegister  {
-   Q_OBJECT
-public: 
-  kMyMoneyRegisterSearch(QWidget *parent=0, const char *name=0);
-  ~kMyMoneyRegisterSearch();
+/**
+  * This class is used to store the information required to
+  * display a transaction in a ledger view (register).
+  * It is derived from MyMoneyTransaction but contains additional
+  * information.
+  */
+class KMyMoneyTransaction : public MyMoneyTransaction {
+public:
+  KMyMoneyTransaction();
+  KMyMoneyTransaction(const MyMoneyTransaction& t);
+  ~KMyMoneyTransaction();
 
-  bool eventFilter(QObject* o, QEvent* e);
+  void setSplitId(const QCString& id);
+  const QCString& splitId(void) const { return m_splitId; };
 
-  virtual const int maxRpt(void) const { return 3; };
-
-public slots:
-  void adjustColumn(int col);
-
-protected:
-  void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
-
-  const bool isEditable(void) const { return false; };
+private:
+  QCString    m_splitId;
 };
+
 
 #endif

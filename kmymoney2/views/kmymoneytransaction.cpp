@@ -1,7 +1,7 @@
 /***************************************************************************
-                          kmymoneyregistersearch.h  -  description
+                          kmymoneytransaction.cpp  -  description
                              -------------------
-    begin                : Sun Aug 10 2003
+    begin                : Fri Sep 5 2003
     copyright            : (C) 2000-2003 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
@@ -20,13 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KMYMONEYREGISTERSEARCH_H
-#define KMYMONEYREGISTERSEARCH_H
-
 // ----------------------------------------------------------------------------
 // QT Includes
-
-#include <qwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -34,29 +29,25 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <../widgets/kmymoneyregister.h>
 
-/**
-  * @author Thomas Baumgart
-  */
+#include "kmymoneytransaction.h"
 
-class kMyMoneyRegisterSearch : public kMyMoneyRegister  {
-   Q_OBJECT
-public: 
-  kMyMoneyRegisterSearch(QWidget *parent=0, const char *name=0);
-  ~kMyMoneyRegisterSearch();
+KMyMoneyTransaction::KMyMoneyTransaction()
+{
+}
 
-  bool eventFilter(QObject* o, QEvent* e);
+KMyMoneyTransaction::KMyMoneyTransaction(const MyMoneyTransaction& t) :
+  MyMoneyTransaction(t)
+{
+}
 
-  virtual const int maxRpt(void) const { return 3; };
+KMyMoneyTransaction::~KMyMoneyTransaction()
+{
+}
 
-public slots:
-  void adjustColumn(int col);
+void KMyMoneyTransaction::setSplitId(const QCString& id)
+{
+  m_splitId = id;
+}
 
-protected:
-  void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
 
-  const bool isEditable(void) const { return false; };
-};
-
-#endif

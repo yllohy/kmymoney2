@@ -31,6 +31,7 @@
 
 #include "kmymoneyregistersearch.h"
 #include "../views/kledgerview.h"
+#include "../mymoney/mymoneyfile.h"
 
 kMyMoneyRegisterSearch::kMyMoneyRegisterSearch(QWidget *parent, const char *name )
  : kMyMoneyRegister(3, parent, name)
@@ -48,8 +49,8 @@ kMyMoneyRegisterSearch::kMyMoneyRegisterSearch(QWidget *parent, const char *name
   verticalHeader()->hide();
   setColumnStretchable(0, false);
   setColumnStretchable(1, false);
-  setColumnStretchable(2, false);
-  setColumnStretchable(3, false);
+  setColumnStretchable(2, true);
+  setColumnStretchable(3, true);
   setColumnStretchable(4, false);
   setColumnStretchable(5, false);
 
@@ -70,7 +71,85 @@ void kMyMoneyRegisterSearch::paintCell(QPainter *p, int row, int col, const QRec
   setTransactionRow(row);
 
   int align = Qt::AlignVCenter;
-  QString txt = " ";
+  QString txt;
+
+  if(m_transaction != 0) {
+    switch (col) {
+      case 0:
+        align |= Qt::AlignRight;
+        switch(m_transactionRow) {
+          case 0:
+            txt = m_split.number();
+            break;
+        }
+        break;
+
+      case 1:
+        align |= Qt::AlignLeft;
+        switch(m_transactionRow) {
+          case 0:
+            txt = KGlobal::locale()->formatDate(m_transaction->postDate(), true);
+            break;
+
+          case 1:
+            txt = m_split.action();
+            break;
+        }
+        break;
+        
+      case 2:
+        align |= Qt::AlignLeft;
+        switch(m_transactionRow) {
+          case 0:
+            try {
+              MyMoneyAccount acc;
+              acc = MyMoneyFile::instance()->account(m_split.accountId());
+              txt = acc.name();
+            } catch(MyMoneyException *e) {
+              delete e;
+            }
+            break;
+        }
+        break;
+        
+      case 3:
+        align |= Qt::AlignLeft;
+        switch(m_transactionRow) {
+          case 0:
+            try {
+              if(!m_split.payeeId().isEmpty()) {
+                MyMoneyPayee payee;
+                payee = MyMoneyFile::instance()->payee(m_split.payeeId());
+                txt = payee.name();
+              }
+            } catch(MyMoneyException *e) {
+              delete e;
+            }
+            break;
+        }
+        break;
+        
+      case 4:
+        switch(m_transactionRow) {
+          case 0:
+            align |= Qt::AlignRight;
+            if(m_split.value() < 0)
+              txt = (-m_split.value()).formatMoney();
+            break;
+        }
+        break;
+
+      case 5:
+        switch(m_transactionRow) {
+          case 0:
+            align |= Qt::AlignRight;
+            if(m_split.value() >= 0)
+              txt = (m_split.value()).formatMoney();
+            break;
+        }
+        break;
+    } // switch
+  } // if(m_transaction != 0)
 
   // do general stuff
   kMyMoneyRegister::paintCell(p, row, col, r, selected, cg, txt, align);

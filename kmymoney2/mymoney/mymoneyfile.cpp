@@ -690,15 +690,6 @@ void MyMoneyFile::clearNotification()
   m_notificationList.clear();
 }
 
-#if 0
-const QValueList<MyMoneyTransaction> MyMoneyFile::transactionList(const QCString& account) const
-{
-  checkStorage();
-
-  return m_storage->transactionList(account);
-}
-#endif
-
 const QValueList<MyMoneyTransaction> MyMoneyFile::transactionList(MyMoneyTransactionFilter& filter) const
 {
   checkStorage();

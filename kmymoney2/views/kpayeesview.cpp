@@ -150,26 +150,31 @@ void KPayeesView::showTransactions(void)
   MyMoneyTransactionFilter filter;
   filter.addPayee(m_payee.id());
   filter.setDateFilter(dateStart, QDate());
-  
-  m_transactionList = file->transactionList(filter);
 
+  QValueList<MyMoneyTransaction> list = file->transactionList(filter);
+  m_transactionList.clear();
+  
   m_transactionPtrVector.clear();
-  m_transactionPtrVector.resize(m_transactionList.size());
+  m_transactionPtrVector.resize(list.size());
   m_transactionPtrVector.setPayeeId(m_payee.id());
   m_transactionPtrVector.setSortType(KTransactionPtrVector::SortPostDate);
 
   MyMoneyMoney balance(0);
 
   QValueList<MyMoneyTransaction>::ConstIterator it_t;
-  for(i = 0, it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
+  for(i = 0, it_t = list.begin(); it_t != list.end(); ++it_t) {
+    KMyMoneyTransaction k(*it_t);
+    QValueList<KMyMoneyTransaction>::ConstIterator it_k;
+    
     QValueList<MyMoneySplit>::ConstIterator it_s;
-
+    
     for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
       if((*it_s).payeeId() == m_payee.id()) {
         balance += (*it_s).value();
       }
     }
-    m_transactionPtrVector.insert(i, &(*it_t));
+    it_k = m_transactionList.append(k);
+    m_transactionPtrVector.insert(i, &(*it_k));
     ++i;
   }
 
@@ -201,7 +206,7 @@ void KPayeesView::showTransactions(void)
         } else if(t->splitCount() > 2) {
           txt = i18n("Splitted transaction");
         } else {
-          MyMoneySplit s = t->split((*it_s).accountId(), false);
+          MyMoneySplit s = t->splitByAccount((*it_s).accountId(), false);
           txt = MyMoneyFile::instance()->accountToCategory(s.accountId());
         }
         item->setText(2, txt);

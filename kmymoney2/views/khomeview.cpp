@@ -208,7 +208,7 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched)
   MyMoneyAccount acc = sched.account();
   if(acc.id()) {
     MyMoneyTransaction t = sched.transaction();
-    MyMoneySplit sp = t.split(acc.id(), true);
+    MyMoneySplit sp = t.splitByAccount(acc.id(), true);
 
     tmp = QString("<td width=\"10%\">") +
       KGlobal::locale()->formatDate(sched.nextPayment(sched.lastPayment()), true) +

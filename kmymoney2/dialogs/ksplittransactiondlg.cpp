@@ -270,7 +270,7 @@ void KSplitTransactionDlg::slotFinishClicked()
   }
 
   if(diffAmount() != 0) {
-    MyMoneySplit split = m_transaction.split(m_account.id());
+    MyMoneySplit split = m_transaction.splitByAccount(m_account.id());
     kSplitCorrectionDlgDecl* dlg = new kSplitCorrectionDlgDecl(0, 0, true);
 
     // add icons to buttons
@@ -389,7 +389,7 @@ void KSplitTransactionDlg::slotClearAllClicked()
 void KSplitTransactionDlg::updateSums(void)
 {
   MyMoneyMoney splits(splitsValue());
-  MyMoneySplit split = m_transaction.split(m_account.id());
+  MyMoneySplit split = m_transaction.splitByAccount(m_account.id());
 
   if(m_amountValid == false) {
     split.setValue(-splits);
@@ -422,7 +422,7 @@ MyMoneyMoney KSplitTransactionDlg::diffAmount(void)
   // if there is an amount specified in the transaction, we need to calculate the
   // difference, otherwise we display the difference as 0 and display the same sum.
   if(m_amountValid) {
-    MyMoneySplit split = m_transaction.split(m_account.id());
+    MyMoneySplit split = m_transaction.splitByAccount(m_account.id());
 
     diff = -(splitsValue() + split.value());
   }
