@@ -1,3 +1,10 @@
+2003-08-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * set date fields in export QIF dialog to the posting dates of the
+    first and last transaction found in the selected account
+  * made appendCorrectFileExt() a static method of KMyMoneyUtils and
+    removed it in all other places
+  * removed unused connections in KMyMoney2App
+
 2003-08-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * show full url as tooltip in start dialog
   * fixed endless loop when recent file list contains abandoned files
