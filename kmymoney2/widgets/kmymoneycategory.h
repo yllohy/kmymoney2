@@ -69,7 +69,7 @@ public:
   virtual bool eventFilter(QObject * , QEvent * );
 
   kMyMoneyAccountCompletion* selector(void) const { return m_accountSelector; };
-  
+
   QCString selectedAccountId() const { return m_id; }
 
 signals:
@@ -133,6 +133,9 @@ protected:
   virtual void keyPressEvent( QKeyEvent * );
   void focusOutEvent(QFocusEvent *ev);
   void focusInEvent(QFocusEvent *ev);
+
+private:
+  void checkForNewCategory(void);
 
 private:
   /**

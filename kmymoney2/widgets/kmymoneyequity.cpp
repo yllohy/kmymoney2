@@ -78,11 +78,63 @@ void kMyMoneyEquity::focusInEvent(QFocusEvent *ev)
   emit signalFocusIn();
 }
 
+void kMyMoneyEquity::checkForNewEquity(void)
+{
+  bool newEquity = true;
+
+  if(!text().isEmpty()) {
+    if(!m_id.isEmpty()) {
+      MyMoneyEquity equity = MyMoneyFile::instance()->equity(m_id);
+      if(equity.tradingSymbol() == text())
+        newEquity = false;
+    }
+  } else {
+    slotSelectEquity(QCString());
+    newEquity = false;
+  }
+
+  if(newEquity) {
+    m_inCreation = true;
+
+    if(KMessageBox::questionYesNo(this,
+          i18n("The equity \"%1\" currently does not exist. "
+                "Do you want to create it?").arg(text())) == KMessageBox::Yes) {
+
+      KNewEquityEntryDlg dlg(this, 0);
+      dlg.setSymbolName(text());
+      if(dlg.exec() == QDialog::Accepted) {
+        //create the new Equity object, and assign an ID.
+        MyMoneyEquity newEquity;
+        //fill in the fields.
+        newEquity.setTradingSymbol(dlg.symbolName());
+        newEquity.setName(dlg.name());
+        try {
+          MyMoneyFile::instance()->addEquity(newEquity);
+          slotSelectEquity(newEquity.id());
+        } catch(MyMoneyException *e) {
+          qWarning("Cannot add equity %s to storage", newEquity.name().data());
+          delete e;
+          slotSelectEquity(QCString());
+        }
+      }
+    } else {
+      slotSelectEquity(QCString());
+    }
+
+    m_inCreation = false;
+  } else {
+    slotSelectEquity(QCString());
+  }
+}
+
 void kMyMoneyEquity::focusOutEvent(QFocusEvent *ev)
 {
   m_equitySelector->hide();
-  if(!m_inCreation && !m_id.isEmpty()) {
-    slotSelectEquity(m_id);
+
+  if(!m_inCreation) {
+    checkForNewEquity();
+    if(!m_id.isEmpty())
+      slotSelectEquity(m_id);
   }
 
   // now call base class
@@ -106,7 +158,6 @@ bool kMyMoneyEquity::eventFilter(QObject* o, QEvent* e)
   if(rc == false) {
     if(e->type() == QEvent::KeyPress) {
       QKeyEvent *k = static_cast<QKeyEvent *> (e);
-      bool newEquity = true;
       switch(k->key()) {
         case Qt::Key_Return:
         case Qt::Key_Enter:
@@ -120,47 +171,6 @@ bool kMyMoneyEquity::eventFilter(QObject* o, QEvent* e)
           break;
 
         case Qt::Key_Tab:
-          if(!m_id.isEmpty()) {
-            MyMoneyEquity equity = MyMoneyFile::instance()->equity(m_id);
-            if(equity.tradingSymbol() == text())
-              newEquity = false;
-          }
-          if(newEquity) {
-            m_inCreation = true;
-
-            if(KMessageBox::questionYesNo(this,
-                  i18n("The equity \"%1\" currently does not exist. "
-                       "Do you want to create it?").arg(text())) == KMessageBox::Yes) {
-
-
-              KNewEquityEntryDlg *pDlg = new KNewEquityEntryDlg(this, 0);
-              pDlg->setSymbolName(text());
-              rc = pDlg->exec();
-              if(rc == QDialog::Accepted) {
-                //create the new Equity object, and assign an ID.
-                MyMoneyEquity newEquity;
-                //fill in the fields.
-                newEquity.setTradingSymbol(pDlg->symbolName());
-                newEquity.setName(pDlg->name());
-                try {
-                  MyMoneyFile::instance()->addEquity(newEquity);
-                  slotSelectEquity(newEquity.id());
-                } catch(MyMoneyException *e) {
-                  qWarning("Cannot add equity %s to storage", newEquity.name().data());
-                  delete e;
-                  rc = QDialog::Rejected;
-                }
-              }
-
-              if(rc != QDialog::Accepted) {
-                rc = true;
-              }
-            } else {
-              rc = true;
-            }
-
-            m_inCreation = false;
-          }
           break;
       }
     }

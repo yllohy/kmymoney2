@@ -108,6 +108,9 @@ protected:
   void focusInEvent(QFocusEvent *ev);
 
 private:
+  void checkForNewEquity(void);
+
+private:
   /**
     * This member keeps the initial value. It is used during
     * resetText() to set the widgets text back to this initial value

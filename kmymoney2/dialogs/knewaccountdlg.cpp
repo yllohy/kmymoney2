@@ -283,7 +283,8 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     this, SLOT(slotAccountTypeChanged(const QString&)));
 
   connect(accountNameEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckFinished()));
-  connect(m_equity, SIGNAL(equityChanged(const QCString&)), this, SLOT(slotCheckFinished()));
+  // connect(m_equity, SIGNAL(equityChanged(const QCString&)), this, SLOT(slotCheckFinished()));
+  connect(m_equity, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckFinished()));
 
   // make sure our account does not have an id and no parent assigned
   // and certainly no children in case we create a new account
@@ -838,7 +839,7 @@ void KNewAccountDlg::slotCheckFinished(void)
   }
 
   if(m_account.accountType() == MyMoneyAccount::Stock) {
-    if(m_equity->id().length() == 0) {
+    if(m_equity->text().length() == 0) {
       showButton = false;
     }
   }

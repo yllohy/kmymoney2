@@ -121,9 +121,68 @@ void kMyMoneyCategory::focusInEvent(QFocusEvent *ev)
   emit signalFocusIn();
 }
 
+void kMyMoneyCategory::checkForNewCategory(void)
+{
+  bool newAccount = true;
+
+  if(!text().isEmpty()) {
+    if(!m_id.isEmpty()) {
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(m_id);
+      QString txt = text();
+      int pos = text().findRev(':');
+      if(pos != -1) {
+        txt = txt.mid(pos+1);
+      }
+      if(acc.name() == txt)
+        newAccount = false;
+    }
+  } else {
+    slotSelectAccount(QCString());
+    newAccount = false;
+  }
+
+  if(newAccount) {
+    m_inCreation = true;
+
+    if(KMessageBox::questionYesNo(this,
+          i18n("The category \"%1\" currently does not exist. "
+                "Do you want to create it?").arg(text())) == KMessageBox::Yes) {
+      MyMoneyAccount acc;
+      int rc;
+      acc.setName(text());
+
+      KNewAccountDlg dlg(acc, false, true);
+      rc = dlg.exec();
+      if(rc == QDialog::Accepted) {
+        try {
+          MyMoneyAccount parentAccount;
+          acc = dlg.account();
+          parentAccount = dlg.parentAccount();
+          MyMoneyFile::instance()->addAccount(acc, parentAccount);
+          slotSelectAccount(acc.id());
+
+        } catch(MyMoneyException *e) {
+          KMessageBox::detailedSorry(0, i18n("Unable to add category"),
+              (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+          delete e;
+          slotSelectAccount(QCString());
+        }
+      } else
+        slotSelectAccount(QCString());
+
+    } else
+      slotSelectAccount(QCString());
+    m_inCreation = false;
+  }
+}
+
 void kMyMoneyCategory::focusOutEvent(QFocusEvent *ev)
 {
   m_accountSelector->hide();
+
+  if(!m_inCreation)
+    checkForNewCategory();
+
   if(!m_inCreation && !m_id.isEmpty()) {
     slotSelectAccount(m_id);
   }
@@ -149,7 +208,6 @@ bool kMyMoneyCategory::eventFilter(QObject* o, QEvent* e)
   if(rc == false) {
     if(e->type() == QEvent::KeyPress) {
       QKeyEvent *k = static_cast<QKeyEvent *> (e);
-      bool newAccount = true;
       switch(k->key()) {
         case Qt::Key_Return:
         case Qt::Key_Enter:
@@ -163,59 +221,6 @@ bool kMyMoneyCategory::eventFilter(QObject* o, QEvent* e)
           break;
 
         case Qt::Key_Tab:
-          if(!text().isEmpty()) {
-            if(!m_id.isEmpty()) {
-              MyMoneyAccount acc = MyMoneyFile::instance()->account(m_id);
-              QString txt = text();
-              int pos = text().findRev(':');
-              if(pos != -1) {
-                txt = txt.mid(pos+1);
-              }
-              if(acc.name() == txt)
-                newAccount = false;
-            }
-          } else {
-            slotSelectAccount(QCString());
-            newAccount = false;
-          }
-
-          if(newAccount) {
-            m_inCreation = true;
-
-            if(KMessageBox::questionYesNo(this,
-                  i18n("The category \"%1\" currently does not exist. "
-                       "Do you want to create it?").arg(text())) == KMessageBox::Yes) {
-              MyMoneyAccount acc;
-              int rc;
-              acc.setName(text());
-
-              KNewAccountDlg dlg(acc, false, true);
-              rc = dlg.exec();
-              if(rc == QDialog::Accepted) {
-                try {
-                  MyMoneyAccount parentAccount;
-                  acc = dlg.account();
-                  parentAccount = dlg.parentAccount();
-                  MyMoneyFile::instance()->addAccount(acc, parentAccount);
-                  slotSelectAccount(acc.id());
-
-                } catch(MyMoneyException *e) {
-                  KMessageBox::detailedSorry(0, i18n("Unable to add category"),
-                      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
-                  delete e;
-                  rc = QDialog::Rejected;
-                }
-              }
-
-              if(rc != QDialog::Accepted) {
-                rc = true;
-              }
-            } else {
-              rc = true;
-            }
-
-            m_inCreation = false;
-          }
           break;
       }
     }
