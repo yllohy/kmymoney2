@@ -34,6 +34,7 @@
 #include <kglobal.h>
 #include <klistview.h>
 #include <kiconloader.h>
+#include <kconfig.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -55,8 +56,12 @@ kMyMoneyPriceItem::~kMyMoneyPriceItem()
 
 void kMyMoneyPriceItem::setPrice(const MyMoneyMoney& price)
 {
+  KConfig *kconfig = KGlobal::config();
+  kconfig->setGroup("General Options");
+  int prec = kconfig->readNumEntry("PricePrecision", 4);
+  
   m_price = price;
-  setText(1, price.formatMoney());
+  setText(1, price.formatMoney("", prec));
 }
 
 void kMyMoneyPriceItem::setDate(const QDate& date)
