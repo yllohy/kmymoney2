@@ -431,3 +431,70 @@ void MyMoneyMoneyTest::testFromString()
 	CPPUNIT_ASSERT(m.m_num == 1234LL);
 	CPPUNIT_ASSERT(m.m_denom == 2LL);
 }
+
+void MyMoneyMoneyTest::testNegativeSignPos(void)
+{
+	MyMoneyMoney m("-123456/100");
+
+	MyMoneyMoney::signPosition pos = MyMoneyMoney::negativeMonetarySignPosition();
+
+	MyMoneyMoney::setNegativePrefixCurrencySymbol(false);
+	MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "(1,234.56) CUR");
+	MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::BeforeQuantityMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "-1,234.56 CUR");
+	MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::AfterQuantityMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "1,234.56- CUR");
+	MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::BeforeMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "1,234.56 -CUR");
+	MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::AfterMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "1,234.56 CUR-");
+
+	MyMoneyMoney::setNegativePrefixCurrencySymbol(true);
+	MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "CUR (1,234.56)");
+	MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::BeforeQuantityMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "CUR -1,234.56");
+	MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::AfterQuantityMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "CUR 1,234.56-");
+	MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::BeforeMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "-CUR 1,234.56");
+	MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::AfterMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "CUR- 1,234.56");
+
+	MyMoneyMoney::setNegativeMonetarySignPosition(pos);
+}
+
+void MyMoneyMoneyTest::testPositiveSignPos(void)
+{
+	MyMoneyMoney m("123456/100");
+
+	MyMoneyMoney::signPosition pos = MyMoneyMoney::positiveMonetarySignPosition();
+
+	MyMoneyMoney::setPositivePrefixCurrencySymbol(false);
+	MyMoneyMoney::setPositiveMonetarySignPosition(MyMoneyMoney::ParensAround);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "(1,234.56) CUR");
+	MyMoneyMoney::setPositiveMonetarySignPosition(MyMoneyMoney::BeforeQuantityMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "1,234.56 CUR");
+	MyMoneyMoney::setPositiveMonetarySignPosition(MyMoneyMoney::AfterQuantityMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "1,234.56 CUR");
+	MyMoneyMoney::setPositiveMonetarySignPosition(MyMoneyMoney::BeforeMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "1,234.56 CUR");
+	MyMoneyMoney::setPositiveMonetarySignPosition(MyMoneyMoney::AfterMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "1,234.56 CUR");
+
+	MyMoneyMoney::setPositivePrefixCurrencySymbol(true);
+	MyMoneyMoney::setPositiveMonetarySignPosition(MyMoneyMoney::ParensAround);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "CUR (1,234.56)");
+	MyMoneyMoney::setPositiveMonetarySignPosition(MyMoneyMoney::BeforeQuantityMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "CUR 1,234.56");
+	MyMoneyMoney::setPositiveMonetarySignPosition(MyMoneyMoney::AfterQuantityMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "CUR 1,234.56");
+	MyMoneyMoney::setPositiveMonetarySignPosition(MyMoneyMoney::BeforeMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "CUR 1,234.56");
+	MyMoneyMoney::setPositiveMonetarySignPosition(MyMoneyMoney::AfterMoney);
+	CPPUNIT_ASSERT(m.formatMoney("CUR", 2) == "CUR 1,234.56");
+
+	MyMoneyMoney::setPositiveMonetarySignPosition(pos);
+}
+

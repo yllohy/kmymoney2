@@ -71,6 +71,11 @@ void MyMoneyMoney::setPositiveMonetarySignPosition(const signPosition pos)
   _positiveMonetarySignPosition = pos;
 }
 
+MyMoneyMoney::signPosition MyMoneyMoney::positiveMonetarySignPosition(void)
+{
+  return _positiveMonetarySignPosition;
+}
+
 void MyMoneyMoney::setThousandSeparator(const unsigned char separator)
 {
   if(separator != ' ')
