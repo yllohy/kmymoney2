@@ -1,3 +1,19 @@
+2002-06-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * removed MyMoneyAccount::Transaction, all references and tests
+  * added MyMoneyTransaction::split(const QCString& accountId) and tests
+  * added MyMoneyFile::attachStorage and MyMoneyFile::detachStorage
+  * check for presence of storage object prior to use it inside MyMoneyFile
+  * added MyMoneyFile::payeeList()
+  * made MyMoneyFile a Singleton object
+  * removed singleton behaviour from KMyMoneyFile
+  * filled logic for KMyMoneyView::loadDefaultCategories
+  * default accounts are now stored in file 'default_accounts.dat'
+  * 'default_categories.dat' is not used anymore. I kept it for referenc
+    in the repository
+  * show error message, if a file could not be loaded in KMyMoneyView::readFile
+  * made KCategoriesView an observer of the MyMoneyFile object to track
+    any changes to any account in the 'income' and 'expense' hierarchy
+
 2002-06-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * added accountId as parameter to MyMoneyFile::transactionCount()
   * added test cases for it
