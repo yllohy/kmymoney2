@@ -97,7 +97,7 @@ class MyMoneyTransactionFilter;
   * transaction() and transactionList() are used to retrieve
   * a single instance or a QValueList of MyMoneyTransaction objects.
   *
-  * The methods liablity(), asset(), expense() and income() are used to
+  * The methods liability(), asset(), expense() and income() are used to
   * retrieve the four standard accounts. isStandardAccount() checks if a
   * given accountId references one of the or not. setAccountName() is used
   * to specify a name for the standard accounts from the GUI.
