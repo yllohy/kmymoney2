@@ -75,7 +75,7 @@ class IMyMoneyStorage;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.38 2003/12/17 01:27:46 ktambascio Exp $
+  * $Id: kmymoney2.h,v 1.39 2003/12/26 12:40:39 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -138,6 +138,12 @@ protected slots:
   void slotQifProfileEditor(void);
 
 public:
+  /**
+    * This method checks if there is at least one asset or liability account
+    * in the current storage object. If not, it starts the new account wizard.
+    */
+  void createInitialAccount(void);
+    
   /**
     * This method returns the last URL used or an empty URL
     * depending on the option setting if the last file should

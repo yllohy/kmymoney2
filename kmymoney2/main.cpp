@@ -115,20 +115,24 @@ int main(int argc, char *argv[])
   if (url.url().isEmpty()) {
     if (kmymoney2->initWizard()) {
       KTipDialog::showTip(kmymoney2, "", false);
-      args->clear();
-      kmymoney2->setEnabled(true);
-      rc = a->exec();
+      
     } else {
       delete kmymoney2;
+      kmymoney2 = 0;
     }
+    
   } else {
     KTipDialog::showTip(kmymoney2, "", false);
     kmymoney2->slotFileOpenRecent(url);
-    args->clear();
-    kmymoney2->setEnabled(true);
-    rc = a->exec();
   }
 
+  if(kmymoney2 != 0) {
+    args->clear();
+    kmymoney2->setEnabled(true);
+    kmymoney2->createInitialAccount();
+    rc = a->exec();
+  }
+  
   delete a;
   KAccountListItem::cleanCache();
 

@@ -569,6 +569,7 @@ void KMyMoney2App::slotViewStatusBar()
   }
   else
 
+
   {
     statusBar()->show();
   }
@@ -1182,4 +1183,21 @@ QString KMyMoney2App::readLastUsedDir()
   }
 
   return str;
+}
+
+void KMyMoney2App::createInitialAccount(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  if(file->asset().accountCount() == 0
+  && file->liability().accountCount() == 0
+  && myMoneyView != 0) {
+    KMessageBox::information(this, i18n(
+          "The currently opened KMyMoney document does not contain "
+          "a single asset account. In order to maintain "
+          "your finances you need at least one asset account (e.g. "
+          "your checkings account). KMyMoney will start the \"New Account Wizard\" "
+          "now which allows you to create your first asset account."),
+           i18n("No asset account"));
+    myMoneyView->slotAccountNew();
+  }
 }
