@@ -29,6 +29,7 @@
   <Menu name="account"><text>&amp;Account</text>
     <Action name="account_open"/>
     <Action name="account_add"/>
+    <Action name="category_add"/>
     <Action name="account_reconcile"/>
     <Action name="account_find"/>
   </Menu>
