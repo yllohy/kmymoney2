@@ -51,6 +51,7 @@ class kMyMoneyEdit;
 class kMyMoneyLineEdit;
 class kMyMoneyDateInput;
 class KPushButton;
+class KPopupMenu;
 
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
@@ -95,10 +96,18 @@ public:
     */
   void setSortType(const TransactionSortE type);
 
+  /**
+    * This method is used to set the account id to have a chance to
+    * get information about the split referencing the current account
+    * during the sort phase.
+    */
+  void setAccountId(const QCString& id);
+
 protected:
   int compareItems(KTransactionPtrVector::Item d1, KTransactionPtrVector::Item d2);
 
 private:
+  QCString          m_accountId;
   TransactionSortE  m_sortType;
 };
 
@@ -422,6 +431,42 @@ public slots:
     */
   virtual void slotNew(void);
 
+protected slots:
+  /**
+    * This method marks the split referencing the account in the current
+    * selected transaction as not reconciled. Calls markSplit().
+    */
+  void slotMarkNotReconciled(void);
+
+  /**
+    * This method marks the split referencing the account in the current
+    * selected transaction as cleared. Calls markSplit().
+    */
+  void slotMarkCleared(void);
+
+  /**
+    * This method marks the split referencing the account in the current
+    * selected transaction as not reconciled. Calls markSplit().
+    */
+  void slotMarkReconciled(void);
+
+  /**
+    * This method asks the user for an account and modifies the split
+    * referencing the current account to the selected account.
+    */
+  void slotMoveToAccount(void);
+
+  /**
+    * This method deletes the current selected transaction.
+    */
+  void slotDeleteTransaction(void);
+
+  /**
+    * This method shows the opposite split of the currently selected
+    * transaction of type transfer.
+    */
+  void slotGotoOtherSideOfTransfer(void);
+
 protected:
   /**
     * This method is called to create the widget stack for the
@@ -508,6 +553,8 @@ protected:
     * virtual, it must be provided by the derived classes.
     */
   virtual void hideWidgets(void) = 0;
+
+  virtual void createContextMenu(void);
 
 protected:
   /**
@@ -610,11 +657,46 @@ protected:
     */
   bool          m_ledgerLens;
 
+  /**
+    * This member keeps a pointer to the popup-menu
+    */
+  KPopupMenu*   m_contextMenu;
+
 private:
   QTimer*       m_timer;
 
+  /**
+    * This is the blink timer used to toggle the color for
+    * erronous transactions in the register. The current state (on/off)
+    * is kept in m_blinkState.
+    */
+  QTimer        m_blinkTimer;
+
+  /**
+    * This member holds the state of the toggle switch used
+    * to colorize erronous transactions in the register of the ledger view.
+    */
+  bool          m_blinkState;
+
 private slots:
   void timerDone(void);
+
+  /**
+    * This method is called by m_blinkTimer upon timeout and toggles
+    * m_blinkState between true and false.
+    * If a register is available, it informs the register about
+    * the state of m_blinkState.
+    */
+  void slotBlinkTimeout(void);
+
+  /**
+    * This method sets the reconcileFlag of the selected transaction
+    * to the value @p flag. If @p flag equal MyMoneySplit::Reconciled then
+    * the reconcileDate of the split is set to the current date.
+    *
+    * @param flag MyMoneySplit::reconcileFlagE value to be set
+    */
+  void markSplit(MyMoneySplit::reconcileFlagE flag);
 
 signals:
   /**
@@ -624,6 +706,16 @@ signals:
     */
   void transactionSelected(void);
 
+  /**
+    * The signal accountAndTransactionSelected() is emitted, when a 
+    * transaction in a different account should be shown. It should be
+    * handled by KGlobalLedgerView which shows the correct view and loads
+    * the appropriate account.
+    *
+    * @param accountId const QCString reference to account to be shown
+    * @param transactionId const QCString reference to transaction to be selected
+    */
+  void accountAndTransactionSelected(const QCString& accountId, const QCString& transactionId);
 };
 
 #endif

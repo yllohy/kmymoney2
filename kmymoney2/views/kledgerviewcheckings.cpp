@@ -69,6 +69,11 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
 
   formLayout->addLayout( ledgerLayout, 0, 0);
 
+  // create the context menu that is accessible via RMB or the MORE Button
+  createContextMenu();
+
+  connect(m_contextMenu, SIGNAL(aboutToShow()), SLOT(slotConfigureContextMenu()));
+
   // load the form with inital settings. Always consider transaction type Deposit
   m_form->tabBar()->blockSignals(true);
   slotTypeSelected(1);
@@ -252,6 +257,16 @@ void KLedgerViewCheckings::createRegister(void)
   connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
   connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
+}
+
+void KLedgerViewCheckings::createContextMenu(void)
+{
+  // get the basic entries for all ledger views
+  KLedgerView::createContextMenu();
+
+  // and now the specific entries for checkings/savings
+  m_contextMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
+      QKeySequence(), -1, 2);
 
 }
 
@@ -514,11 +529,18 @@ void KLedgerViewCheckings::fillForm(void)
 
     QString category;
     try {
-      if(m_transaction.splitCount() == 2) {
-        MyMoneySplit s = m_transaction.split(accountId(), false);
-        category = MyMoneyFile::instance()->accountToCategory(s.accountId());
-      } else {
-        category = i18n("Splitted transaction");
+      MyMoneySplit s;
+      switch(m_transaction.splitCount()) {
+        case 2:
+          s = m_transaction.split(accountId(), false);
+          category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+          break;
+        case 1:
+          category = " ";
+          break;
+        default:
+          category = i18n("Splitted transaction");
+          break;
       }
     } catch (MyMoneyException *e) {
       delete e;
@@ -641,8 +663,6 @@ void KLedgerViewCheckings::createEditWidgets(void)
   m_editPayment = new kMyMoneyEdit(0, "editPayment");
   m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
 
-  // for now, the split button is not usable
-  // m_editSplit->setEnabled(false);
   connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
 
   connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
@@ -689,110 +709,19 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
   m_split = m_transaction.split(accountId());
   amount = m_split.value();
 
+  if(m_editCategory != 0)
+    disconnect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
+
   try {
     if(m_split.payeeId() != "")
       payee = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
 
-    if(t.splitCount() == 2) {
-      MyMoneySplit s = t.split(accountId(), false);
-      MyMoneyAccount acc = MyMoneyFile::instance()->account(s.accountId());
-
-      // if the second account is also an asset or liability account
-      // then this is a transfer type transaction and handled a little different
-      switch(MyMoneyFile::instance()->accountGroup(acc.accountType())) {
-        case MyMoneyAccount::Expense:
-        case MyMoneyAccount::Income:
-          category = MyMoneyFile::instance()->accountToCategory(s.accountId());
-          break;
-
-        case MyMoneyAccount::Asset:
-        case MyMoneyAccount::Liability:
-          if(m_split.action() != MyMoneySplit::ActionTransfer) {
-            m_split.setAction(MyMoneySplit::ActionTransfer);
-            m_transaction.modifySplit(m_split);
-          }
-          if(s.action() != MyMoneySplit::ActionTransfer) {
-            s.setAction(MyMoneySplit::ActionTransfer);
-            m_transaction.modifySplit(s);
-          }
-          if(m_split.value() > 0) {
-            m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
-            m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
-          } else {
-            m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
-            m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
-            amount = -amount;       // make it positive
-          }
-          break;
-
-        default:
-          qDebug("Unknown account group in KLedgerCheckingsView::showWidgets()");
-          break;
-      }
-    } else {
-      connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
-      category = i18n("Splitted transaction");
-    }
-
-
-  } catch(MyMoneyException *e) {
-    qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::showWidgets():%d",
-      e->what().latin1(), e->file().latin1(), e->line(), __LINE__);
-    delete e;
-  }
-
-  // for almost all transaction types we have to negate the value
-  // exceptions are: deposits and transfers (which are always positive)
-  if(transactionType(m_split) != Deposit)
-    amount = -amount;
-  if(m_split.action() == MyMoneySplit::ActionTransfer && amount < 0) {
-    amount = -amount;
-  }
-
-  if(m_editPayee != 0)
-    m_editPayee->loadText(payee);
-  if(m_editCategory != 0)
-    m_editCategory->loadText(category);
-  if(m_editMemo != 0)
-    m_editMemo->loadText(m_split.memo());
-  if(m_editAmount != 0)
-    m_editAmount->loadText(amount.formatMoney());
-  if(m_editDate != 0)
-    m_editDate->loadDate(m_transactionPtr->postDate());
-  if(m_editNr != 0)
-    m_editNr->loadText(m_split.number());
-
-  if(m_editPayment != 0 && m_editDeposit != 0) {
-    if(m_split.value() < 0) {
-      m_editPayment->loadText((-m_split.value()).formatMoney());
-      m_editDeposit->loadText("");
-    } else {
-      m_editPayment->loadText("");
-      m_editDeposit->loadText((m_split.value()).formatMoney());
-    }
-  }
-}
-
-void KLedgerViewCheckings::loadEditWidgets(int& transType)
-{
-  if(m_transactionPtr != 0) {
-    reloadEditWidgets(*m_transactionPtr);
-    transType = transactionType(m_split);
-#if 0
-    QString category, payee;
-
-    // get my local copy of the selected transaction
-    m_transaction = *m_transactionPtr;
-    m_split = m_transaction.split(accountId());
-    amount = m_split.value();
-
-    try {
-      if(m_split.payeeId() != "")
-        payee = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
-
-      if(m_transactionPtr->splitCount() == 2) {
-        MyMoneySplit s = m_transactionPtr->split(accountId(), false);
-        MyMoneyAccount acc = MyMoneyFile::instance()->account(s.accountId());
+    MyMoneySplit s;
+    MyMoneyAccount acc;
+    switch(t.splitCount()) {
+      case 2:
+        s = t.split(accountId(), false);
+        acc = MyMoneyFile::instance()->account(s.accountId());
 
         // if the second account is also an asset or liability account
         // then this is a transfer type transaction and handled a little different
@@ -826,34 +755,44 @@ void KLedgerViewCheckings::loadEditWidgets(int& transType)
             qDebug("Unknown account group in KLedgerCheckingsView::showWidgets()");
             break;
         }
-      } else {
+        break;
+
+      case 1:
+        category = "";
+        break;
+
+      default:
         connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
         category = i18n("Splitted transaction");
-      }
-
-
-    } catch(MyMoneyException *e) {
-      qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::showWidgets():%d",
-        e->what().latin1(), e->file().latin1(), e->line(), __LINE__);
-      delete e;
     }
+  } catch(MyMoneyException *e) {
+    qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::showWidgets():%d",
+      e->what().latin1(), e->file().latin1(), e->line(), __LINE__);
+    delete e;
+  }
 
-    // for almost all transaction types we have to negate the value
-    // exceptions are: deposits and transfers (which are always positive)
-    if(transactionType(m_split) != Deposit)
-      amount = -amount;
-    if(m_split.action() == MyMoneySplit::ActionTransfer && amount < 0) {
-      amount = -amount;
-    }
+  // for almost all transaction types we have to negate the value
+  // exceptions are: deposits and transfers (which are always positive)
+  if(transactionType(m_split) != Deposit)
+    amount = -amount;
+  if(m_split.action() == MyMoneySplit::ActionTransfer && amount < 0) {
+    amount = -amount;
+  }
 
+  if(m_editPayee != 0)
     m_editPayee->loadText(payee);
+  if(m_editCategory != 0)
     m_editCategory->loadText(category);
+  if(m_editMemo != 0)
     m_editMemo->loadText(m_split.memo());
+  if(m_editAmount != 0)
     m_editAmount->loadText(amount.formatMoney());
+  if(m_editDate != 0 && m_transactionPtr)
     m_editDate->loadDate(m_transactionPtr->postDate());
-    if(m_editNr != 0)
-      m_editNr->loadText(m_split.number());
+  if(m_editNr != 0)
+    m_editNr->loadText(m_split.number());
 
+  if(m_editPayment != 0 && m_editDeposit != 0) {
     if(m_split.value() < 0) {
       m_editPayment->loadText((-m_split.value()).formatMoney());
       m_editDeposit->loadText("");
@@ -861,8 +800,14 @@ void KLedgerViewCheckings::loadEditWidgets(int& transType)
       m_editPayment->loadText("");
       m_editDeposit->loadText((m_split.value()).formatMoney());
     }
+  }
+}
+
+void KLedgerViewCheckings::loadEditWidgets(int& transType)
+{
+  if(m_transactionPtr != 0) {
+    reloadEditWidgets(*m_transactionPtr);
     transType = transactionType(m_split);
-#endif
   } else {
     m_editDate->setDate(QDate::currentDate());
     transType = m_form->tabBar()->currentTab();
@@ -1196,6 +1141,39 @@ void KLedgerViewCheckings::slotRegisterClicked(int row, int col, int button, con
   }
 }
 
+void KLedgerViewCheckings::slotConfigureContextMenu(void)
+{
+  int splitEditId = m_contextMenu->idAt(2);
+  int deleteId = m_contextMenu->idAt(7);
+  m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotStartEditSplit()));
+  m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
+
+  if(m_transactionPtr != 0) {
+    if(transactionType(m_split) != Transfer) {
+      m_contextMenu->changeItem(splitEditId, i18n("Edit splits ..."));
+      m_contextMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
+    } else {
+      QString dest = "";
+      try {
+        MyMoneySplit split = m_transaction.split(m_account.id(), false);
+        MyMoneyAccount acc = MyMoneyFile::instance()->account(split.accountId());
+        dest = acc.name();
+      } catch(MyMoneyException *e) {
+        delete e;
+        dest = "opposite account";
+      }
+      m_contextMenu->changeItem(splitEditId, i18n("Goto '%1'").arg(dest));
+      m_contextMenu->connectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
+    }
+    m_contextMenu->setItemEnabled(splitEditId, true);
+    m_contextMenu->setItemEnabled(deleteId, true);
+  } else {
+    m_contextMenu->changeItem(splitEditId, i18n("Edit splits ..."));
+    m_contextMenu->setItemEnabled(splitEditId, false);
+    m_contextMenu->setItemEnabled(deleteId, false);
+  }
+}
+
 void KLedgerViewCheckings::slotToggleClearFlag(void)
 {
   if(m_transactionPtr != 0) {
@@ -1301,23 +1279,43 @@ void KLedgerViewCheckings::slotEndReconciliation(void)
 
 void KLedgerViewCheckings::slotOpenSplitDialog(void)
 {
-  MyMoneyMoney amount;
-  bool dir = true;
+  bool isDeposit = false;
+  bool isValidAmount = false;
 
+  if(m_transactionFormActive) {
+    isDeposit = transactionType(m_split) == Deposit;
+    isValidAmount = m_editAmount->text().length() != 0;
+  } else {
+    if(m_editPayment->text().length() != 0) {
+      isDeposit = false;
+      isValidAmount = true;
+    }
+    if(m_editDeposit->text().length() != 0) {
+      isDeposit = true;
+      isValidAmount = true;
+    }
+  }
   KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
                                                        m_account,
-                                                       amount,
-                                                       m_editAmount->text().length() != 0,
-                                                       transactionType(m_split) == Deposit,
+                                                       isValidAmount,
+                                                       isDeposit,
                                                        this);
 
   if(dlg->exec()) {
     reloadEditWidgets(dlg->transaction());
+  }
+
+  if(m_transactionFormActive) {
     m_editSplit->setFocus();
   } else {
-    m_editCategory->setFocus();
-    dir = false;
+    m_editMemo->setFocus();
   }
   delete dlg;
-  focusNextPrevChild(dir);
 }
+
+void KLedgerViewCheckings::slotStartEditSplit(void)
+{
+  slotStartEdit();
+  slotOpenSplitDialog();
+}
+

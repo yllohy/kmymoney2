@@ -187,6 +187,12 @@ protected:
     */
   virtual void createEditWidgets(void);
 
+  /**
+    * This method creates the context menu that is accessible via the
+    * right mouse button while pointing on a transaction in the register
+    * or via the More... button in the transaction form.
+    */
+  virtual void createContextMenu(void);
 
 protected slots:
   /**
@@ -222,6 +228,11 @@ protected slots:
     * loaded.
     */
   virtual void slotOpenSplitDialog(void);
+
+  /**
+    * Calling this slot starts editing and opens the split dialog
+    */
+  virtual void slotStartEditSplit(void);
 
 private:
   /**
@@ -302,6 +313,14 @@ private:
     * and slotEndReconciliation().
     */
   void endReconciliation(void);
+
+private slots:
+  /**
+    * This method enables and disables the options available for
+    * the selected transaction (e.g. context menu options). It
+    * is connected to the context menu's aboutToShow() signal.
+    */
+  void slotConfigureContextMenu(void);
 
 protected:
   QTab* m_tabCheck;

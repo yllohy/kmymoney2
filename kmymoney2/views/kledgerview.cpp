@@ -26,6 +26,8 @@
 #include <qdatetime.h>
 #include <qapp.h>
 #include <qwidgetstack.h>
+#include <qcursor.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -33,6 +35,8 @@
 #include <kmessagebox.h>
 #include <kpushbutton.h>
 #include <kconfig.h>
+#include <kpopupmenu.h>
+#include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -60,7 +64,20 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
     case SortPostDate:
     // tricky fall through here!
     default:
+      // sort by post date
       rc = t2->postDate().daysTo(t1->postDate());
+      if(rc == 0) {
+        // on same day, larger amounts show up first
+        try {
+          MyMoneySplit s1, s2;
+          s1 = t1->split(m_accountId);
+          s2 = t2->split(m_accountId);
+          rc = static_cast<int> ((s2.value() - s1.value()).value());
+        } catch (MyMoneyException *e) {
+          delete e;
+          rc = 0;
+        }
+      }
       break;
   }
   return rc;
@@ -72,8 +89,15 @@ void KTransactionPtrVector::setSortType(const TransactionSortE type)
   sort();
 }
 
+void KTransactionPtrVector::setAccountId(const QCString& id)
+{
+  m_accountId = id;
+}
+
 KLedgerView::KLedgerView(QWidget *parent, const char *name )
-  : QWidget(parent,name)
+  : QWidget(parent,name),
+  m_contextMenu(0),
+  m_blinkTimer(parent)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
@@ -97,6 +121,10 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
 
   m_infoStack = 0;
   m_inReconciliation = false;
+
+  m_blinkTimer.start(500);       // setup blink frequency to one hertz
+  m_blinkState = false;
+  connect(&m_blinkTimer, SIGNAL(timeout()), SLOT(slotBlinkTimeout()));
 }
 
 KLedgerView::~KLedgerView()
@@ -105,6 +133,15 @@ KLedgerView::~KLedgerView()
     delete m_infoStack;
 
   MyMoneyFile::instance()->detach(m_account.id(), this);
+}
+
+void KLedgerView::slotBlinkTimeout(void)
+{
+  m_blinkState = !m_blinkState;
+  if(m_register) {
+    m_register->slotSetErrorColor(m_blinkState);
+    m_register->repaintContents(false);
+  }
 }
 
 void KLedgerView::setCurrentAccount(const QCString& accountId)
@@ -141,14 +178,20 @@ void KLedgerView::reloadAccount(const bool repaint)
     m_register->repaintContents(false);
     // if the very last transaction was deleted, we need to update
     // the index to the current transaction
-    if(m_register->currentTransactionIndex() >= m_transactionList.count())
+    bool selectFlag = false;
+    if(m_register->currentTransactionIndex() >= m_transactionList.count()) {
       m_register->setCurrentTransactionIndex(m_transactionList.count()-1);
+      selectFlag = true;
+    }
 
     // don't forget to show the data in the form
     fillForm();
 
     // and the summary line
     fillSummary();
+
+    if(selectFlag == true)
+      emit transactionSelected();
   }
 }
 
@@ -167,6 +210,9 @@ void KLedgerView::loadAccount(void)
 
   // fill in the current summary as well
   fillSummary();
+
+  // Let others know, that we selected a transaction
+  emit transactionSelected();
 }
 
 void KLedgerView::refreshView(void)
@@ -206,6 +252,8 @@ void KLedgerView::filterTransactions(void)
   // setup the pointer vector
   m_transactionPtrVector.clear();
   m_transactionPtrVector.resize(m_transactionList.size());
+  m_transactionPtrVector.setAccountId(m_account.id());
+
   for(i = 0, it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
 
     // if in reconciliation mode, don't show old stuff and don't
@@ -300,6 +348,13 @@ void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint
     emit transactionSelected();
 
   }
+
+  if(button == Qt::RightButton) {
+    if(m_register->currentTransactionIndex() != m_transactionList.count()) {
+      slotCancelEdit();
+      m_contextMenu->exec(QCursor::pos());
+    }
+  }
 }
 
 void KLedgerView::slotNextTransaction(void)
@@ -339,9 +394,8 @@ void KLedgerView::slotPreviousTransaction(void)
 bool KLedgerView::selectTransaction(const QCString& transactionId)
 {
   bool  rc = false;
-  int i;
 
-  for(i = 0; i < m_transactionPtrVector.size(); ++i) {
+  for(unsigned i = 0; i < m_transactionPtrVector.size(); ++i) {
     if(m_transactionPtrVector[i]->id() == transactionId) {
       m_register->setCurrentTransactionIndex(i);
       m_register->ensureTransactionVisible();
@@ -525,7 +579,7 @@ void KLedgerView::slotCategoryChanged(const QString& category)
   try {
     // First, we check if the category exists
     QCString id = MyMoneyFile::instance()->categoryToAccount(category);
-    if(id == "") {
+    if(id == "" && category != "") {
       // FIXME:
       /// Todo: Add account (hierarchy) upon new category
       KMessageBox::sorry(0, i18n("Direct creation of new account not yet implemented"));
@@ -534,52 +588,64 @@ void KLedgerView::slotCategoryChanged(const QString& category)
       return;
     }
 
-    // We have to distinguish between the following cases
-    //
-    // a) transaction contains just a single split
-    // b) transaction contains exactly two splits
-    // c) transaction contains more than two splits
-    //
-    // Here's how we react
-    //
-    // a) add a split with the account set to the new category
-    // b) modify the split and modify the account to the new category
-    // c) ask the user that all data about the splits are lost. Upon
-    //    positive response remove all splits except the one that
-    //    references accountId() then continue with a)
+    if(category == "") {
+      if(m_transaction.splitCount() == 2) {
+        MyMoneySplit sp = m_transaction.split(m_account.id(), false);
+        m_transaction.removeSplit(sp);
+      }
+    } else {
 
-    QValueList<MyMoneySplit> list = m_transaction.splits();
-    QValueList<MyMoneySplit>::Iterator it;
-    MyMoneySplit split;
+      // We have to distinguish between the following cases
+      //
+      // a) transaction contains just a single split
+      // b) transaction contains exactly two splits
+      // c) transaction contains more than two splits
+      //
+      // Here's how we react
+      //
+      // a) add a split with the account set to the new category
+      // b) modify the split and modify the account to the new category
+      // c) ask the user that all data about the splits are lost. Upon
+      //    positive response remove all splits except the one that
+      //    references accountId() then continue with a)
 
-    switch(m_transaction.splitCount()) {
-      default:
-        if(KMessageBox::warningContinueCancel(0,
-            i18n("If you press continue, information about all other splits will be lost"),
-            i18n("Splitted Transaction")) == KMessageBox::Cancel) {
-          m_editCategory->resetText();
-          m_editCategory->setFocus();
-        }
-        for(it = list.begin(); it != list.end(); ++it) {
-          if((*it) == m_split)
-            continue;
-          m_transaction.removeSplit((*it));
-        }
-        // tricky fall through here
-      case 1:
-        split.setAccountId(id);
-        split.setValue(-m_split.value());
-        m_transaction.addSplit(split);
-        break;
+      QValueList<MyMoneySplit> list = m_transaction.splits();
+      QValueList<MyMoneySplit>::Iterator it;
+      MyMoneySplit split;
 
-      case 2:
-        // find the 'other' split
-        split = m_transaction.split(accountId(), false);
-        split.setAccountId(id);
-        m_transaction.modifySplit(split);
-        break;
+      switch(m_transaction.splitCount()) {
+        // The more I think about it, this case cannot happen, as
+        // the widget does not get active. The split dialog is
+        // opened instead. So I think, we could remove the logic
+        // for default
+        default:
+          if(KMessageBox::warningContinueCancel(0,
+              i18n("If you press continue, information about all other splits will be lost"),
+              i18n("Splitted Transaction")) == KMessageBox::Cancel) {
+            m_editCategory->resetText();
+            m_editCategory->setFocus();
+          }
+          for(it = list.begin(); it != list.end(); ++it) {
+            if((*it) == m_split)
+              continue;
+            m_transaction.removeSplit((*it));
+          }
+          // tricky fall through here
+
+        case 1:
+          split.setAccountId(id);
+          split.setValue(-m_split.value());
+          m_transaction.addSplit(split);
+          break;
+
+        case 2:
+          // find the 'other' split
+          split = m_transaction.split(accountId(), false);
+          split.setAccountId(id);
+          m_transaction.modifySplit(split);
+          break;
+      }
     }
-
     m_editCategory->loadText(category);
 
   } catch(MyMoneyException *e) {
@@ -704,7 +770,6 @@ void KLedgerView::slotNrChanged(const QString& nr)
   MyMoneyTransaction t = m_transaction;
   MyMoneySplit s = m_split;
   try {
-    qDebug("slotNrChanged from %s to %s", m_split.number().latin1(), nr.latin1());
     m_split.setNumber(nr);
     m_transaction.modifySplit(m_split);
     m_editNr->loadText(nr);
@@ -1014,11 +1079,12 @@ void KLedgerView::slotEndEdit(void)
     // b) the sum of all split amounts must be zero
 
     if(m_transaction.splitCount() < 2) {
-      ;
+      qDebug("Transaction has less than 2 splits");
     }
     if(m_transaction.splitSum() != 0) {
-      ;
+      qDebug("Splits of transaction do not sum up to 0");
     }
+
     try {
       // differentiate between add and modify
       QCString id;
@@ -1104,3 +1170,92 @@ void KLedgerView::createInfoStack(void)
   m_infoStack = new QWidgetStack(this, "InfoStack");
 }
 
+void KLedgerView::createContextMenu(void)
+{
+  KIconLoader *kiconloader = KGlobal::iconLoader();
+
+  KPopupMenu* submenu = new KPopupMenu(this);
+  submenu->insertItem(i18n("Not cleared"), this, SLOT(slotMarkNotReconciled()));
+  submenu->insertItem(i18n("Cleared"), this, SLOT(slotMarkCleared()));
+  submenu->insertItem(i18n("Reconciled"), this, SLOT(slotMarkReconciled()));
+
+  m_contextMenu = new KPopupMenu(this);
+  m_contextMenu->insertTitle(kiconloader->loadIcon("transaction", KIcon::MainToolbar), i18n("Transaction Options"));
+  m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit ..."), this, SLOT(slotStartEdit()));
+  m_contextMenu->insertSeparator();
+  m_contextMenu->insertItem(i18n("Mark as ..."), submenu);
+  m_contextMenu->insertItem(i18n("Move to account ..."), this, SLOT(slotMoveToAccount()));
+  m_contextMenu->insertSeparator();
+
+  m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
+                        i18n("Delete transaction ..."),
+                        this, SLOT(slotDeleteTransaction()));
+
+}
+
+void KLedgerView::markSplit(MyMoneySplit::reconcileFlagE flag)
+{
+  if(m_transactionPtr != 0) {
+    try {
+      m_split.setReconcileFlag(flag);
+      if(flag == MyMoneySplit::Reconciled)
+        m_split.setReconcileDate(QDate::currentDate());
+
+      m_transaction.modifySplit(m_split);
+      MyMoneyFile::instance()->modifyTransaction(m_transaction);
+    } catch (MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to mark split"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+      delete e;
+    }
+  }
+}
+
+void KLedgerView::slotMarkNotReconciled(void)
+{
+  markSplit(MyMoneySplit::NotReconciled);
+}
+
+void KLedgerView::slotMarkCleared(void)
+{
+  markSplit(MyMoneySplit::Cleared);
+}
+
+void KLedgerView::slotMarkReconciled(void)
+{
+  markSplit(MyMoneySplit::Reconciled);
+}
+
+void KLedgerView::slotMoveToAccount(void)
+{
+  KMessageBox::information(0,i18n("Moving a split to a different account is not yet implemented"), "Function not implemented");
+}
+
+void KLedgerView::slotDeleteTransaction(void)
+{
+  int answer;
+  if(m_transactionPtr != 0) {
+    answer = KMessageBox::warningContinueCancel (NULL,
+       i18n("You are about to delete the selected transaction. "
+            "Do you really want to continue?"),
+       i18n("Delete transaction"),
+       i18n("Continue")
+       );
+    if(answer == KMessageBox::Continue) {
+      try {
+        MyMoneyFile::instance()->removeTransaction(m_transaction);
+      } catch(MyMoneyException *e) {
+        KMessageBox::detailedSorry(0, i18n("Unable to remove transaction"),
+          (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+        delete e;
+      }
+    }
+  }
+}
+
+void KLedgerView::slotGotoOtherSideOfTransfer(void)
+{
+  MyMoneySplit split = m_transaction.split(m_account.id(), false);
+
+  emit accountAndTransactionSelected(split.accountId(), m_transaction.id());
+}

@@ -114,8 +114,7 @@ void KLedgerViewSavings::createEditWidgets(void)
   m_editPayment = new kMyMoneyEdit(0, "editPayment");
   m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
 
-  // for now, the split button is not usable
-  m_editSplit->setEnabled(false);
+  connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
 
   connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
   connect(m_editPayee, SIGNAL(payeeChanged(const QString&)), this, SLOT(slotPayeeChanged(const QString&)));
