@@ -1,0 +1,89 @@
+<chapter id="rel-mgmt">
+<title>Release Management</title>
+<para>
+Whenever the project development team decides to build a new release, it
+follows the procedure described in <link linkend="create-new-version">
+Creating a new version</link>. This procedure will mark the required
+files for that version in the repository.
+</para>
+
+<para>
+Additionally, it is necessary to provide an installable versions of &app;.
+The following chapters explain how to produce the various files. They all
+assume that you have checked out a version of the project using a release tag.
+</para>
+
+<sect1 id="tar-ball">
+<title>Tar Ball</title>
+<para>
+The first step is to produce a source tar-ball archive. Two possible ways
+exist to do that
+
+<itemizedlist>
+<listitem><para>from within KDevelop</para></listitem>
+<listitem><para>from the shell command line</para></listitem>
+</itemizedlist>
+
+The name for the tar-ball archive is derived from the projects name and the
+respective version. For this example I use the version 0.4pre2 which leads
+to a base filename of kmymoney2-0.4pre2.tar with various endings according
+to the compression used (gzip or bzip2).
+</para>
+
+<sect2 id="tar-ball-kdevelop">
+<title>KDevelop</title>
+<para>
+If you are used to the KDevelop integrated development environment (IDE)
+you just select the <command>Project/Make distribution/Source-tgz</command>
+menu entry which will create the file for you in the projects top
+directory with an appropriate name (e.g. kmymoney2-0.4pre2.tar.gz)
+</para>
+</sect2>
+
+<sect2 id="tar-ball-shell">
+<title>Shell</title>
+<para>
+If you are using the shell to execute commands, you might execute
+<command>make dist</command> from the top directory of the project. This
+leads to the same result, the kmymoney2-0.4pre2.tar.gz file.
+</para>
+</sect2>
+
+<sect2 id="tar-ball-optimize">
+<title>Size optimization for tar-ball</title>
+<para>
+The above described methods deliver a GZIPed tar-archive. As BZIP2 gives a
+better compression ratio, you might want to transform the archive to a
+BZIP2 compressed version with the following commands.
+
+<screen>
+
+  <prompt>thb:~&gt; </prompt><userinput>gunzip kmymoney2-0.4pre2.tar.gz</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>bzip2 kmymoney2-0.4pre2.tar</userinput>
+
+
+</screen>
+
+This results in a file called kmymoney2-0.4pre2.tar.bz2 which is the final
+version of the source tar ball.
+</para>
+</sect2>
+</sect1>
+
+<sect1 id="rpm">
+<title>Creating an RPM file</title>
+<para>
+Another possibility to distribute the program is to use the Red-Hat Package
+manager (RPM) format. In order to be able to create such a package for
+&app;, you need to have a source tar-ball as described in <link
+linkend="tar-ball">a previous chapter</link>. Either version (GZIP or
+BZIP2) will work. Additionally, you need an
+RPM-spec file for the respective distribution. You have to perform the
+following steps:
+</para>
+
+<para>
+<command>FIXME: TO BE DONE!</command>
+</para>
+</sect1>
+</chapter>

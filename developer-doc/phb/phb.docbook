@@ -5,6 +5,7 @@
   <!ENTITY ac "<command>autoconf</command>">
   <!ENTITY am "<command>automake</command>">
   <!ENTITY config-management SYSTEM "cfg-mgmt.docbook">
+  <!ENTITY release-management SYSTEM "rel-mgmt.docbook">
   <!ENTITY coding-standards SYSTEM "coding.docbook">
   <!ENTITY error-management SYSTEM "error-mgmt.docbook">
   <!ENTITY cvs-examples SYSTEM "cvs-examples.docbook">
@@ -114,6 +115,7 @@ The dedication will show up here!
 -->
 
 &config-management;
+&release-management;
 &coding-standards;
 &error-management;
 &cvs-examples;
