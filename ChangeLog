@@ -1,3 +1,7 @@
+2001-07-26 Michael Edwardes <mte@users.sourceforge.net>
+  * Added a qstring operator to the mymoney class.
+  * Added support for editing transactions when in search mode.
+
 2001-07-23 Michael Edwardes <mte@users.sourceforge.net>
   * MyMoneyFile now doesn't add empty categories & payees.  If this is going
     to become a standard financial library these sort of checks are going to

@@ -35,7 +35,7 @@ KNewAccountDlg::KNewAccountDlg(QString institution, QWidget *parent, const char 
 }
 
 KNewAccountDlg::KNewAccountDlg(QString institution, QString m_name, QString no,
-  MyMoneyAccount::accountTypeE type, QString description,
+  MyMoneyAccount::accountTypeE/* type*/, QString description,
   QDate openingDate, MyMoneyMoney openingBalance,
   QWidget *parent, const char *name, const char *title)
   : KNewAccountDlgDecl(parent,name,true)

@@ -17,7 +17,7 @@
 #ifndef MYMONEYMONEY_H
 #define MYMONEYMONEY_H
 
-#include <qstringlist.h>
+#include <qdatastream.h>
 
 // This class represents a money type.
 class MyMoneyMoney { // In the future it could do conversion rates etc
@@ -30,6 +30,7 @@ private:
 public:
 	MyMoneyMoney();
 	MyMoneyMoney(const double amount);
+	MyMoneyMoney(const QString& amount);
 	~MyMoneyMoney();
 	
   void setAmount(const double amount) const { ((MyMoneyMoney*)this)->m_amount = amount; }
@@ -40,6 +41,7 @@ public:
   MyMoneyMoney(const MyMoneyMoney&);
   MyMoneyMoney& operator = (const MyMoneyMoney&);
   MyMoneyMoney& operator = (const double&);
+  MyMoneyMoney& operator = (const QString&);
 
   // Some convenience operators
   MyMoneyMoney operator + (const MyMoneyMoney&);

@@ -13,6 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <kglobal.h>
+#include <klocale.h>
 #include "mymoneymoney.h"
 
 MyMoneyMoney::MyMoneyMoney()
@@ -23,6 +25,15 @@ MyMoneyMoney::MyMoneyMoney()
 MyMoneyMoney::MyMoneyMoney(const double amount)
 {
   m_amount = amount;
+}
+
+MyMoneyMoney::MyMoneyMoney(const QString& amount)
+{
+  bool ok;
+  m_amount = KGlobal::locale()->readNumber(amount, &ok);
+  if (!ok) {
+    qDebug("cannot convert %s to a number", amount.latin1());
+  }
 }
 
 MyMoneyMoney::~MyMoneyMoney()
@@ -43,6 +54,16 @@ MyMoneyMoney& MyMoneyMoney::operator = (const MyMoneyMoney& right)
 MyMoneyMoney& MyMoneyMoney::operator = (const double& right)
 {
   m_amount = right;
+  return *this;
+}
+
+MyMoneyMoney& MyMoneyMoney::operator = (const QString& right)
+{
+  bool ok;
+  m_amount = KGlobal::locale()->readNumber(right, &ok);
+  if (!ok) {
+    qDebug("cannot convert %s to a number", right.latin1());
+  }
   return *this;
 }
 

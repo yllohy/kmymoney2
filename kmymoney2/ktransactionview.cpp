@@ -317,18 +317,19 @@ void KTransactionView::loadPayees()
 
 void KTransactionView::slotFocusChange(int row, int col, int button, const QPoint&  point)
 {
-   if(m_date->isVisible() || ( m_viewType != NORMAL))
-		return;
+  KConfig *config = KGlobal::config();
+  config->setGroup("List Options");
+  const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
+	int transrow = row / NO_ROWS;
+  int realrow = transrow * NO_ROWS;
+
+  // Can't add transactions in search mode
+  if (m_date->isVisible() || (m_viewType!=NORMAL && (transrow >= m_transactions->count())))
+    return;
 	
 	if (row > (transactionsTable->numRows()-2))  // make sure there is room for the input widgets
 	  return;
 	
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  const int NO_ROWS = (config->readEntry("RowCount", "2").toInt());
-	
-	int transrow = row / NO_ROWS;
-  int realrow = transrow * NO_ROWS;
 	m_currentrow = realrow;
 	m_currentcol = col;
 	m_currentbutton = button;
@@ -573,7 +574,6 @@ void KTransactionView::clear(void)
 
 void KTransactionView::enterClicked()
 {
-
 	hideWidgets();
   if (!m_filePointer)
     return;
@@ -596,23 +596,29 @@ void KTransactionView::enterClicked()
 //  MyMoneyTransaction *transaction;
 
 	MyMoneyTransaction::transactionMethod newmethod;
-  double dblnewamount;
+//  double dblnewamount;
+
   QDate newdate = m_date->getQDate();
 	QString newcategory = m_category->currentText();
   int commaindex;
+ 	MyMoneyMoney newamount;
 
     // Get amount from payment or withdrawal Line Edit
 	if(m_payment->text() == "")
 	{
+	  /* Old code
     commaindex = m_withdrawal->text().find(",");
 		if(commaindex != -1)
 			dblnewamount = m_withdrawal->text().remove(commaindex,1).toDouble();
 		else
 			dblnewamount = m_withdrawal->text().toDouble();
   	dblnewamount = dblnewamount;
+  	*/
+  	newamount = m_withdrawal->text();
 	}
   else if(m_withdrawal->text() == "")
 	{
+		/* old code
 		commaindex = m_payment->text().find(",");
 		if(commaindex != -1)
 			dblnewamount = m_payment->text().remove(commaindex,1).toDouble();
@@ -620,13 +626,14 @@ void KTransactionView::enterClicked()
 			dblnewamount = m_payment->text().toDouble();
 
   	dblnewamount = dblnewamount;
+  	*/
+  	newamount = m_payment->text();
 	}
 	else
 	{
-   	dblnewamount = 0;
+   	newamount = 0;
 	}
 
-  	MyMoneyMoney newamount(dblnewamount);
 	MyMoneyTransaction::stateE newstate;
 	
 	// Set the transaction type
@@ -656,8 +663,8 @@ void KTransactionView::enterClicked()
 	}
     // Add payee to Payee List
 	m_filePointer->addPayee(m_payee->currentText());
-  	int colonindex = m_category->currentText().find(":");
-  	QString catmajor;
+ 	int colonindex = m_category->currentText().find(":");
+ 	QString catmajor;
 	QString catminor;
   if(colonindex == -1)
 	{
@@ -677,13 +684,11 @@ void KTransactionView::enterClicked()
   int greatindex = m_category->currentText().find(">");
 	QString transferAccount = "";
 
+  MyMoneyTransaction *transaction = m_transactions->at(m_index);
+	
 	if(m_index < m_transactions->count())
 	{
 		newstate = m_transactions->at(m_index)->state();
-    MyMoneyTransaction *transaction = m_transactions->at(m_index);
-    if (!transaction)
-      return;
-
 
 	  QDate transdate;
 	  MyMoneyMoney transamount;
@@ -719,10 +724,45 @@ void KTransactionView::enterClicked()
 			  }
 		  }		
 	  }
-   	account->removeTransaction(*m_transactions->at(m_index));
-  	account->addTransaction(newmethod, m_number->text(), m_memo->text(),
-                                            newamount, newdate, catmajor, catminor, "",
-  											    m_payee->currentText(), "", "", newstate);
+//   	  account->removeTransaction(*m_transactions->at(m_index));
+//    	account->addTransaction(newmethod, m_number->text(), m_memo->text(),
+//            newamount, newdate, catmajor, catminor, "",
+//            m_payee->currentText(), "", "", newstate);
+	
+    // Look for it, in case we are searching, use the new 'parent' methods
+    MyMoneyAccount *mymoneyaccount = m_transactions->at(m_index)->account();
+    if (!mymoneyaccount) {
+      qDebug("Aaaaaaaaaaaaaarrrrrrrrrrrrrggggggggggggghhhhhhhhhhhhhhh!");
+      return;
+    }
+    transaction = mymoneyaccount->transaction(*transaction);
+    if (!transaction) {
+      qDebug("could not locate transaction");
+      return;
+    }
+	
+	  transaction->setDate(newdate);
+	  transaction->setMethod(newmethod);
+	  transaction->setPayee(m_payee->currentText());
+	  transaction->setState(newstate);
+	  transaction->setAmount(newamount);
+	  transaction->setNumber(m_number->text());
+	  transaction->setMemo(m_memo->text());
+	  transaction->setCategoryMajor(catmajor);
+	  transaction->setCategoryMinor(catminor);
+	
+	  // update the m_transactions one
+	  transaction = m_transactions->at(m_index);
+	  transaction->setDate(newdate);
+	  transaction->setMethod(newmethod);
+	  transaction->setPayee(m_payee->currentText());
+	  transaction->setState(newstate);
+	  transaction->setAmount(newamount);
+	  transaction->setNumber(m_number->text());
+	  transaction->setMemo(m_memo->text());
+	  transaction->setCategoryMajor(catmajor);
+	  transaction->setCategoryMinor(catminor);
+	
 	}
 	else
   {
