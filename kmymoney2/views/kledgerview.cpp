@@ -79,24 +79,40 @@ void KLedgerView::setCurrentAccount(const QCString& accountId)
     try {
       m_account = file->account(accountId);
       file->attach(m_account.id(), this);
-      update(accountId);
+      // force initial load
+      loadAccount();
+      refreshView();
     } catch(MyMoneyException *e) {
       qDebug("Unexpected exception in KLedgerView::setCurrentAccount");
       delete e;
     }
-  } else
-    refreshView();
+  }
+}
+
+void KLedgerView::reloadAccount(const bool repaint)
+{
+  m_transactionList = MyMoneyFile::instance()->transactionList(m_account.id());
+
+  // filter all unwanted transactions
+  refreshView();
+
+  if(repaint == true) {
+    m_register->repaintContents();
+    // if the very last transaction was deleted, we need to update
+    // the index to the current transaction
+    if(m_register->currentTransactionIndex() >= m_transactionList.count())
+      m_register->setCurrentTransactionIndex(m_transactionList.count()-1);
+
+    // don't forget to show the data in the form
+    fillForm();
+  }
 }
 
 void KLedgerView::loadAccount(void)
 {
-  m_transactionList = MyMoneyFile::instance()->transactionList(m_account.id());
-  // filter all unwanted transactions
-  refreshView();
+  reloadAccount(false);
 
-  // add another, empty transaction that will be the new transaction
-
-  // when opened, show the last transaction
+  // select the last transaction
   m_register->setCurrentTransactionIndex(m_transactionList.count()-1);
 
   // make sure, full transaction is visible
@@ -164,7 +180,7 @@ void KLedgerView::filterTransactions(void)
 void KLedgerView::update(const QCString& accountId)
 {
   try {
-    loadAccount();
+    reloadAccount(true);
   } catch(MyMoneyException *e) {
     qDebug("Unexpected exception in KLedgerView::update");
     delete e;
@@ -192,18 +208,312 @@ void KLedgerView::slotRegisterClicked(int row, int col, int button, const QPoint
   // only redraw the register and form, when a different
   // transaction has been selected with this click.
   if(m_register->setCurrentTransactionIndex(row / m_register->rpt()) == true) {
+    m_register->ensureTransactionVisible();
     m_register->repaintContents();
     fillForm();
     emit transactionSelected();
   }
 }
 
+void KLedgerView::selectTransaction(const QCString& transactionId)
+{
+  int i;
+
+  for(i = 0; i < m_transactionPtrVector.size(); ++i) {
+    if(m_transactionPtrVector[i]->id() == transactionId) {
+      m_register->setCurrentTransactionIndex(i);
+      m_register->ensureTransactionVisible();
+      m_register->repaintContents();
+      fillForm();
+      emit transactionSelected();
+      break;
+    }
+  }
+}
+
+void KLedgerView::slotPayeeChanged(const QString& name)
+{
+  if(name != "") {
+    MyMoneyPayee payee;
+    try {
+      payee = MyMoneyFile::instance()->payeeByName(name);
+      m_split.setPayeeId(payee.id());
+
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to setup payee/receiver"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+      delete e;
+      m_editPayee->resetText();
+    }
+
+  } else {
+    // clear the field
+    m_split.setPayeeId("");
+  }
+
+  try {
+    m_transaction.modifySplit(m_split);
+    m_editPayee->loadText(name);
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify split"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editPayee->resetText();
+  }
+
+}
+
+void KLedgerView::slotMemoChanged(const QString& memo)
+{
+  m_split.setMemo(memo);
+
+  try {
+    m_transaction.modifySplit(m_split);
+    m_editMemo->loadText(memo);
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify split"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editMemo->resetText();
+  }
+}
+
+void KLedgerView::slotAmountChanged(const QString& value)
+{
+  MyMoneyTransaction t;
+  MyMoneySplit s;
+
+  t = m_transaction;
+  s = m_split;
+
+  try {
+    m_editAmount->loadText(value);
+    m_split.setValue(MyMoneyMoney(value.toDouble()));
+    switch(transactionType(m_split)) {
+      case Deposit:
+        break;
+      default:
+        // make it negative in case of !deposit
+        m_split.setValue(-m_split.value());
+        break;
+    }
+    m_transaction.modifySplit(m_split);
+    if(m_transaction.splitCount() == 2) {
+      MyMoneySplit split = m_transaction.split(accountId(), false);
+      split.setValue(-m_split.value());
+      m_transaction.modifySplit(split);
+    }
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify amount"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editAmount->resetText();
+    m_transaction = t;
+    m_split = s;
+  }
+}
+
+void KLedgerView::slotCategoryChanged(const QString& category)
+{
+  MyMoneyTransaction t = m_transaction;
+  MyMoneySplit s = m_split;
+
+  try {
+    // First, we check if the category exists
+    QCString id = MyMoneyFile::instance()->categoryToAccount(category);
+    if(id == "") {
+      // FIXME:
+      /// Todo: Add account (hierarchy) upon new category
+      KMessageBox::sorry(0, i18n("Direct creation of new account not yet implemented"));
+      m_editCategory->resetText();
+      m_editCategory->setFocus();
+      return;
+    }
+
+    // We have to distinguish between the following cases
+    //
+    // a) transaction contains just a single split
+    // b) transaction contains exactly two splits
+    // c) transaction contains more than two splits
+    //
+    // Here's how we react
+    //
+    // a) add a split with the account set to the new category
+    // b) modify the split and modify the account to the new category
+    // c) ask the user that all data about the splits are lost. Upon
+    //    positive response remove all splits except the one that
+    //    references accountId() then continue with a)
+
+    QValueList<MyMoneySplit> list = m_transaction.splits();
+    QValueList<MyMoneySplit>::Iterator it;
+    MyMoneySplit split;
+
+    switch(m_transaction.splitCount()) {
+      default:
+        if(KMessageBox::warningContinueCancel(0,
+            i18n("If you press continue, information about all other splits will be lost"),
+            i18n("Splitted Transaction")) == KMessageBox::Cancel) {
+          m_editCategory->resetText();
+          m_editCategory->setFocus();
+        }
+        for(it = list.begin(); it != list.end(); ++it) {
+          if((*it) == m_split)
+            continue;
+          m_transaction.removeSplit((*it));
+        }
+        // tricky fall through here
+      case 1:
+        split.setAccountId(id);
+        split.setValue(-m_split.value());
+        m_transaction.addSplit(split);
+        break;
+
+      case 2:
+        // find the 'other' split
+        split = m_transaction.split(accountId(), false);
+        split.setAccountId(id);
+        m_transaction.modifySplit(split);
+        break;
+    }
+
+    m_editCategory->loadText(category);
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify category"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editCategory->resetText();
+
+    m_transaction = t;
+    m_split = s;
+  }
+}
+
+void KLedgerView::slotFromChanged(const QString& from)
+{
+  MyMoneyTransaction t = m_transaction;
+  MyMoneySplit s = m_split;
+
+  try {
+    // First, we check if the account exists
+    QCString id = MyMoneyFile::instance()->nameToAccount(from);
+    if(id == "") {
+      // FIXME:
+      /// Todo: Add account (hierarchy) upon new category
+      KMessageBox::sorry(0, i18n("Direct creation of new account not yet implemented"));
+      m_editFrom->resetText();
+      m_editFrom->setFocus();
+      return;
+    }
+
+    // For transfers we assume, that the first split contains the
+    // from-account and the second split contains the to-account.
+    // Therefor, the following cases can exist:
+    //
+    // a) one split available
+    // b) two splits available
+    //
+    // In both cases, we just modify the first split.
+
+    MyMoneySplit split = m_transaction.splits()[0];
+
+    split.setAccountId(id);
+    m_transaction.modifySplit(split);
+
+    m_editFrom->loadText(from);
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify account"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editFrom->resetText();
+
+    m_transaction = t;
+    m_split = s;
+  }
+
+}
+
+void KLedgerView::slotToChanged(const QString& to)
+{
+  MyMoneyTransaction t = m_transaction;
+  MyMoneySplit s = m_split;
+
+  try {
+    // First, we check if the account exists
+    QCString id = MyMoneyFile::instance()->nameToAccount(to);
+    if(id == "") {
+      // FIXME:
+      /// Todo: Add account (hierarchy) upon new category
+      KMessageBox::sorry(0, i18n("Direct creation of new account not yet implemented"));
+      m_editTo->resetText();
+      m_editTo->setFocus();
+      return;
+    }
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify account"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editTo->resetText();
+
+    m_transaction = t;
+    m_split = s;
+  }
+}
+
+
+void KLedgerView::slotNrChanged(const QString& nr)
+{
+  MyMoneyTransaction t = m_transaction;
+  MyMoneySplit s = m_split;
+  try {
+    qDebug("slotNrChanged from %s to %s", m_split.number().latin1(), nr.latin1());
+    m_split.setNumber(nr);
+    m_transaction.modifySplit(m_split);
+    m_editNr->loadText(nr);
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify number"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editNr->resetText();
+
+    m_transaction = t;
+    m_split = s;
+  }
+}
+
+void KLedgerView::slotDateChanged(const QDate& date)
+{
+  MyMoneyTransaction t = m_transaction;
+  MyMoneySplit s = m_split;
+  try {
+    m_transaction.setPostDate(date);
+    m_editDate->loadDate(date);
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to modify number"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    m_editDate->resetDate();
+
+    m_transaction = t;
+    m_split = s;
+  }
+
+}
+
 void KLedgerView::slotShowTransactionForm(bool visible)
 {
   if(m_form != 0) {
-    if(visible)
+    if(visible) {
+      // block signals here to avoid running into the NEW case
+      // which is triggered by the signal tabBar()->selected(int)
+      m_form->tabBar()->blockSignals(true);
       m_form->show();
-    else
+      m_form->tabBar()->blockSignals(false);
+    } else
       m_form->hide();
   }
 
@@ -211,8 +521,7 @@ void KLedgerView::slotShowTransactionForm(bool visible)
     m_register->setInlineEditingAvailable(!visible);
     // make sure, full transaction is visible
     resizeEvent(NULL);
-    m_register->ensureCellVisible(m_register->currentTransactionIndex() * m_register->rpt(), 0);
-    m_register->ensureCellVisible((m_register->currentTransactionIndex()-1) * m_register->rpt(), 0);
+    m_register->ensureTransactionVisible();
   }
 }
 
@@ -270,7 +579,7 @@ void KLedgerView::slotNewPayee(const QString& payeeName)
 
     } catch(MyMoneyException *e) {
       KMessageBox::detailedSorry(0, i18n("Unable to add payee/receiver"),
-        e->what());
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
       delete e;
 
       m_editPayee->resetText();
@@ -278,3 +587,19 @@ void KLedgerView::slotNewPayee(const QString& payeeName)
   } else
     m_editPayee->resetText();
 }
+
+int KLedgerView::transactionType(const MyMoneySplit& split) const
+{
+  if(split.action() == MyMoneySplit::ActionCheck)
+    return Check;
+  if(split.action() == MyMoneySplit::ActionDeposit)
+    return Deposit;
+  if(split.action() == MyMoneySplit::ActionTransfer)
+    return Transfer;
+  if(split.action() == MyMoneySplit::ActionWithdrawal)
+    return Withdrawal;
+  if(split.action() == MyMoneySplit::ActionATM)
+    return ATM;
+  return Check;
+}
+

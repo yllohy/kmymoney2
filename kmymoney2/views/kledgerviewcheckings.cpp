@@ -31,6 +31,7 @@
 #include <kglobal.h>
 #include <klocale.h>
 #include <kpushbutton.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -225,6 +226,7 @@ void KLedgerViewCheckings::slotTypeSelected(int type)
   // specific elements (in the order of the tabs)
   switch(type) {
     case 0:   // Check
+      m_action = MyMoneySplit::ActionCheck;
       formTable->setText(1, 0, i18n("Receiver"));
       formTable->setText(2, 0, i18n("Category"));
 
@@ -232,22 +234,26 @@ void KLedgerViewCheckings::slotTypeSelected(int type)
       break;
 
     case 1:   // Deposit
+      m_action = MyMoneySplit::ActionDeposit;
       formTable->setText(1, 0, i18n("Payee"));
       formTable->setText(2, 0, i18n("Category"));
       break;
 
     case 2:   // Transfer
+      m_action = MyMoneySplit::ActionTransfer;
       formTable->setText(0, 0, i18n("From"));
       formTable->setText(1, 0, i18n("To"));
       formTable->setText(2, 0, i18n("Payee"));
       break;
 
     case 3:   // Withdrawal
+      m_action = MyMoneySplit::ActionWithdrawal;
       formTable->setText(1, 0, i18n("Receiver"));
       formTable->setText(2, 0, i18n("Category"));
       break;
 
     case 4:   // ATM
+      m_action = MyMoneySplit::ActionATM;
       formTable->setText(1, 0, i18n("Receiver"));
       formTable->setText(2, 0, i18n("Category"));
       break;
@@ -269,7 +275,10 @@ void KLedgerViewCheckings::fillForm(void)
   m_transactionPtr = transaction(m_register->currentTransactionIndex());
 
   if(m_transactionPtr != 0) {
-    m_split = m_transactionPtr->split(accountId());
+    // get my local copy of the selected transaction
+    m_transaction = *m_transactionPtr;
+    m_split = m_transaction.split(accountId());
+
     MyMoneyMoney amount = m_split.value();
 
     kMyMoneyTransactionFormTableItem* item;
@@ -284,7 +293,7 @@ void KLedgerViewCheckings::fillForm(void)
     formTable->setText(3, 1, m_split.memo());
 
     // make sure, that the date is aligned to the right of the cell
-    item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never, KGlobal::locale()->formatDate(m_transactionPtr->postDate(), true));
+    item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never, KGlobal::locale()->formatDate(m_transaction.postDate(), true));
     item->setAlignment(kMyMoneyTransactionFormTableItem::right);
     formTable->setItem(1, 3, item);
 
@@ -299,8 +308,8 @@ void KLedgerViewCheckings::fillForm(void)
 
     QString category;
     try {
-      if(m_transactionPtr->splitCount() == 2) {
-        MyMoneySplit s = m_transactionPtr->split(accountId(), false);
+      if(m_transaction.splitCount() == 2) {
+        MyMoneySplit s = m_transaction.split(accountId(), false);
         category = MyMoneyFile::instance()->accountToCategory(s.accountId());
       } else {
         category = i18n("Splitted transaction");
@@ -312,7 +321,7 @@ void KLedgerViewCheckings::fillForm(void)
 
     // then fill in the data depending on the transaction type
     switch(transactionType(m_split)) {
-      case 0:   // Check
+      case Check:
         // receiver
         formTable->setText(1, 1, payee);
 
@@ -327,7 +336,7 @@ void KLedgerViewCheckings::fillForm(void)
         amount = -amount;
         break;
 
-      case 1:   // Deposit
+      case Deposit:
         // payee
         formTable->setText(1, 1, payee);
 
@@ -335,7 +344,7 @@ void KLedgerViewCheckings::fillForm(void)
         formTable->setText(2, 1, category);
         break;
 
-      case 2:   // Transfer
+      case Transfer:
         // formTable->setText(0, 0, "From");
         // formTable->setText(1, 0, "To");
 
@@ -345,7 +354,7 @@ void KLedgerViewCheckings::fillForm(void)
         amount = -amount;
         break;
 
-      case 3:   // Withdrawal
+      case Withdrawal:
         // receiver
         formTable->setText(1, 1, payee);
 
@@ -355,7 +364,7 @@ void KLedgerViewCheckings::fillForm(void)
         amount = -amount;
         break;
 
-      case 4:   // ATM
+      case ATM:
         // receiver
         formTable->setText(1, 1, payee);
 
@@ -374,7 +383,11 @@ void KLedgerViewCheckings::fillForm(void)
     m_form->cancelButton()->setEnabled(false);
     m_form->moreButton()->setEnabled(false);
   } else {
+    m_transaction = MyMoneyTransaction();
     m_split = MyMoneySplit();
+    m_split.setAccountId(accountId());
+    m_split.setAction(m_action);
+    m_transaction.addSplit(m_split);
 
     // transaction empty, clean out space
     for(int i = 0; i < formTable->numRows(); ++i) {
@@ -390,25 +403,11 @@ void KLedgerViewCheckings::fillForm(void)
   }
 }
 
-int KLedgerViewCheckings::transactionType(const MyMoneySplit& split) const
-{
-  if(split.action() == MyMoneySplit::ActionCheck)
-    return 0;
-  if(split.action() == MyMoneySplit::ActionDeposit)
-    return 1;
-  if(split.action() == MyMoneySplit::ActionTransfer)
-    return 2;
-  if(split.action() == MyMoneySplit::ActionWithdrawal)
-    return 3;
-  if(split.action() == MyMoneySplit::ActionATM)
-    return 4;
-  return 0;
-}
-
 void KLedgerViewCheckings::slotNew(void)
 {
   // select the very last line (empty one), and load it into the form
   m_register->setCurrentTransactionIndex(m_transactionList.count());
+  m_register->ensureTransactionVisible();
   m_register->repaintContents();
   fillForm();
 
@@ -423,7 +422,9 @@ void KLedgerViewCheckings::slotNew(void)
 
 void KLedgerViewCheckings::slotStartEdit(void)
 {
-  m_form->newButton()->setEnabled(true);
+  m_register->ensureTransactionVisible();
+
+  m_form->newButton()->setEnabled(false);
   m_form->enterButton()->setEnabled(true);
   m_form->cancelButton()->setEnabled(true);
   m_form->moreButton()->setEnabled(true);
@@ -448,6 +449,9 @@ void KLedgerViewCheckings::slotCancelEdit(void)
 
 void KLedgerViewCheckings::slotEndEdit(void)
 {
+  // force focus change to update all data
+  m_form->enterButton()->setFocus();
+
   MyMoneyTransaction t;
 
   // so, we now have to save something here.
@@ -456,50 +460,48 @@ void KLedgerViewCheckings::slotEndEdit(void)
     t = *m_transactionPtr;
   }
 
-  // perform any checks on the data, before we start storeing the transaction
+  if(!(t == m_transaction)) {
+    // If there are any differences, we need to update the storage
+    // But first we check for the following things:
+    //
+    // a) transaction must have 2 or more than 2 splits
+    // b) the sum of all split amounts must be zero
 
-      // FIXME: add those checks, currently I don't know what could be done
-
-  // checks are done, now we store the data and switch the context
-  // first the transaction data
-  t.setMemo(m_editMemo->text());
-  t.setPostDate(m_editDate->getQDate());
-
-  // now the splits. for now, we don't worry about splitted
-  // transactions. so there always will be two splits!
-
-  try {
-    MyMoneySplit accSplit;
-    MyMoneySplit catSplit;
-
-    // locate the payee in the list
-    QValueList<MyMoneyPayee> payeeList = MyMoneyFile::instance()->payeeList();
-    QValueList<MyMoneyPayee>::ConstIterator it_p;
-    for(it_p = payeeList.begin(); it_p != payeeList.end(); ++it_p) {
-      if((*it_p).name() == m_editPayee->text())
-        break;
+    if(m_transaction.splitCount() < 2) {
+      ;
     }
-    if(it_p == payeeList.end())
-      throw new MYMONEYEXCEPTION("Unable to find payee in list");
+    if(m_transaction.splitSum() != 0) {
+      ;
+    }
+    try {
+      // differentiate between add and modify
+      QCString id;
+      if(m_transactionPtr == 0) {
+        // in the add case, we don't have an ID yet. So let's get one
+        // and use it down the line
+        m_transaction.setPostDate(QDate::currentDate());
+        MyMoneyFile::instance()->addTransaction(m_transaction);
+        id = m_transaction.id();
+      } else {
+        // in the modify case, we have to keep the id. The call to
+        // modifyTransaction might change m_transaction due to some
+        // callbacks.
+        id = m_transaction.id();
+        MyMoneyFile::instance()->modifyTransaction(m_transaction);
+      }
 
-    accSplit = t.split(accountId());
-    catSplit = t.split(accountId(), false);
+      // make sure the transaction stays selected. It's position might
+      // have changed within the register (e.g. date changed)
+      selectTransaction(id);
 
-    accSplit.setAccountId(accountId());
-    accSplit.setMemo(m_editMemo->text());
-    if(m_editNr != 0)
-      accSplit.setNumber(m_editNr->text());
-    accSplit.setPayeeId((*it_p).id());
-    // accSplit.setValue();
-    accSplit.setShares(accSplit.value());
-    // accSplit.setAction();
-
-  } catch(MyMoneyException *e) {
-    qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::showWidgets()",
-      e->what().latin1(), e->file().latin1(), e->line());
-    delete e;
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to add/modify transaction"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+      delete e;
+    }
   }
 
+  // now switch the context
   m_form->newButton()->setEnabled(true);
   m_form->enterButton()->setEnabled(false);
   m_form->cancelButton()->setEnabled(false);
@@ -523,8 +525,18 @@ void KLedgerViewCheckings::showWidgets(void)
   m_editAmount = new kMyMoneyEdit(0);
   m_editDate = new kMyMoneyDateInput();
   m_editNr = new kMyMoneyLineEdit(0);
+  m_editFrom = new kMyMoneyCategory(0, 0, static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
+  m_editTo = new kMyMoneyCategory(0, 0, static_cast<kMyMoneyCategory::categoryTypeE> (kMyMoneyCategory::asset | kMyMoneyCategory::liability));
 
   connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
+  connect(m_editPayee, SIGNAL(payeeChanged(const QString&)), this, SLOT(slotPayeeChanged(const QString&)));
+  connect(m_editMemo, SIGNAL(lineChanged(const QString&)), this, SLOT(slotMemoChanged(const QString&)));
+  connect(m_editCategory, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotCategoryChanged(const QString&)));
+  connect(m_editAmount, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAmountChanged(const QString&)));
+  connect(m_editNr, SIGNAL(lineChanged(const QString&)), this, SLOT(slotNrChanged(const QString&)));
+  connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
+  connect(m_editFrom, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotFromChanged(const QString&)));
+  connect(m_editTo, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotToChanged(const QString&)));
 
   // make sure, we're using the right palette
   m_editPayee->setPalette(palette);
@@ -533,21 +545,73 @@ void KLedgerViewCheckings::showWidgets(void)
   m_editAmount->setPalette(palette);
   m_editDate->setPalette(palette);
   m_editNr->setPalette(palette);
+  m_editFrom->setPalette(palette);
+  m_editTo->setPalette(palette);
 
   int transType;
 
   if(m_transactionPtr != 0) {
     QString category, payee;
+
+    // get my local copy of the selected transaction
+    m_transaction = *m_transactionPtr;
+    m_split = m_transaction.split(accountId());
+
     try {
       if(m_split.payeeId() != "")
         payee = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
 
       if(m_transactionPtr->splitCount() == 2) {
         MyMoneySplit s = m_transactionPtr->split(accountId(), false);
-        category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+        MyMoneyAccount acc = MyMoneyFile::instance()->account(s.accountId());
+
+        // if the second account is also an asset or liability account
+        // then this is a transfer type transaction and handled a little different
+        switch(MyMoneyFile::instance()->accountGroup(acc.accountType())) {
+          case MyMoneyAccount::Expense:
+          case MyMoneyAccount::Income:
+            category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+            break;
+
+          case MyMoneyAccount::Checkings:
+          case MyMoneyAccount::Savings:
+          case MyMoneyAccount::Cash:
+          case MyMoneyAccount::CreditCard:
+            if(m_split.action() != MyMoneySplit::ActionTransfer) {
+              m_split.setAction(MyMoneySplit::ActionTransfer);
+              m_transaction.modifySplit(m_split);
+            }
+            if(s.action() != MyMoneySplit::ActionTransfer) {
+              s.setAction(MyMoneySplit::ActionTransfer);
+              m_transaction.modifySplit(s);
+            }
+            if(m_split.value() > 0) {
+              m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
+              m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
+            } else {
+              m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
+              m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
+            }
+            break;
+
+          case MyMoneyAccount::Loan:
+          case MyMoneyAccount::MoneyMarket:
+          case MyMoneyAccount::Investment:
+          case MyMoneyAccount::CertificateDep:
+          case MyMoneyAccount::Currency:
+            qDebug("Implementation for transfer missing for account type %d",
+              MyMoneyFile::instance()->accountGroup(acc.accountType()));
+            category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+            break;
+
+          default:
+            qDebug("Unknown account group in KLedgerCheckingsView::showWidgets()");
+            break;
+        }
       } else {
         category = i18n("Splitted transaction");
       }
+
 
     } catch(MyMoneyException *e) {
       qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewCheckings::showWidgets()",
@@ -561,12 +625,12 @@ void KLedgerViewCheckings::showWidgets(void)
     if(transactionType(m_split) != 2)
       amount = -amount;
 
-    m_editPayee->setText(payee);
-    m_editCategory->setText(category);
-    m_editMemo->setText(m_split.memo());
-    m_editAmount->setText(amount.formatMoney());
-    m_editDate->setDate(m_transactionPtr->postDate());
-    m_editNr->setText(m_split.number());
+    m_editPayee->loadText(payee);
+    m_editCategory->loadText(category);
+    m_editMemo->loadText(m_split.memo());
+    m_editAmount->loadText(amount.formatMoney());
+    m_editDate->loadDate(m_transactionPtr->postDate());
+    m_editNr->loadText(m_split.number());
 
     transType = transactionType(m_split);
 
@@ -592,19 +656,22 @@ void KLedgerViewCheckings::showWidgets(void)
     // that the field is not used in this type.
     int payeeRow = 1,
         categoryRow = 2,
+        fromRow = 0,
+        toRow = 1,
         nrRow = 0;
     switch(transType) {
-      case 0:
-      case 4:
+      case 0: // Check
+      case 4: // ATM
         m_form->table()->setEditable(0, 3);
+        fromRow = toRow = -1;
         break;
 
-      case 1:
-      case 3:
-        nrRow = -1;
+      case 1: // Deposit
+      case 3: // Withdrawal
+        fromRow = toRow = nrRow = -1;
         break;
 
-      case 2:
+      case 2: // Transfer
         payeeRow = 2;
         categoryRow = -1;
         nrRow = -1;
@@ -614,6 +681,20 @@ void KLedgerViewCheckings::showWidgets(void)
     }
 
     m_form->table()->setCellWidget(payeeRow, 1, m_editPayee);
+
+    if(fromRow != -1) {
+      m_form->table()->setCellWidget(fromRow, 1, m_editFrom);
+    } else {
+      delete m_editFrom;
+      m_editFrom = 0;
+    }
+
+    if(toRow != -1) {
+      m_form->table()->setCellWidget(toRow, 1, m_editTo);
+    } else {
+      delete m_editTo;
+      m_editTo = 0;
+    }
 
     if(categoryRow != -1) {
       m_form->table()->setCellWidget(categoryRow, 1, m_editCategory);

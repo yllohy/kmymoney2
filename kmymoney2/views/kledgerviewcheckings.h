@@ -74,7 +74,6 @@ protected:
   void hideWidgets(void);
 
 private:
-  int transactionType(const MyMoneySplit& split) const;
 
 private:
   QTab* m_tabCheck;
@@ -82,6 +81,12 @@ private:
   QTab* m_tabTransfer;
   QTab* m_tabWithdrawal;
   QTab* m_tabAtm;
+
+  /**
+    * This attribute stores the current selected transaction type
+    * which is used for new transactions.
+    */
+  QCString m_action;
 };
 
 #endif

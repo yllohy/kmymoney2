@@ -76,7 +76,16 @@ private:
 
 class KLedgerView : public QWidget, MyMoneyObserver  {
    Q_OBJECT
-public: 
+
+public:
+  enum transactionTypeE {
+    Check = 0,
+    Deposit,
+    Transfer,
+    Withdrawal,
+    ATM
+  };
+
 	KLedgerView(QWidget *parent=0, const char *name=0);
 	virtual ~KLedgerView();
 
@@ -114,30 +123,95 @@ public:
     */
   virtual void fillForm(void) = 0;
 
+  /**
+    * This method is used to select a specific transaction
+    *
+    * @param id const reference to the ID of the transaction to be selected
+    */
+  void selectTransaction(const QCString& id);
+
 public slots:
   /**
     * refresh the current view
     */
   virtual void refreshView(void);
-  void slotRegisterClicked(int row, int col, int button, const QPoint &mousePos);
+  virtual void slotRegisterClicked(int row, int col, int button, const QPoint &mousePos);
 
   /**
     * Called when the user changes the visibility
     * setting of the transaction form
     */
-  void slotShowTransactionForm(bool show);
+  virtual void slotShowTransactionForm(bool show);
+
+  /**
+    * Called when the payee field has been changed
+    *
+    * @param name const reference to the name of the payee
+    */
+  virtual void slotPayeeChanged(const QString &name);
+
+  /**
+    * Called when the memo field has been changed
+    *
+    * @param memo const reference to the new memo text
+    */
+  virtual void slotMemoChanged(const QString &memo);
+
+  /**
+    * Called when the category field has been changed
+    *
+    * @param name const reference to the name of the category
+    */
+  virtual void slotCategoryChanged(const QString& category);
+
+  /**
+    * Called when the amount field has been changed by the user
+    *
+    * @param amount const reference to the amount value
+    */
+  virtual void slotAmountChanged(const QString& amount);
+
+  /**
+    * Called when the nr field has been changed by the user
+    *
+    * @param nr const reference to the nr
+    */
+  virtual void slotNrChanged(const QString& nr);
+
+  /**
+    * Called when the date field has been changed by the user
+    *
+    * @param date const reference to the date
+    */
+  virtual void slotDateChanged(const QDate& date);
+
+  /**
+    * Called when the from account field has been changed by the user
+    *
+    * @param from const reference to the from account name
+    */
+  virtual void slotFromChanged(const QString& from);
+
+  /**
+    * Called when the to field has been changed by the user
+    *
+    * @param date const reference to the to account name
+    */
+  virtual void slotToChanged(const QString& to);
 
   /**
     * Called when a new payee entry has been edited
     * This routine will call the payee dialog and possibly add
     * the payee to the MyMoneyFile object
     */
-  void slotNewPayee(const QString& payee);
+  virtual void slotNewPayee(const QString& payee);
 
 protected:
+  void reloadAccount(const bool repaint = true);
   void loadAccount(void);
   void filterTransactions(void);
   void sortTransactions(void);
+  int transactionType(const MyMoneySplit& split) const;
 
 protected:
   kMyMoneyRegister *m_register;
@@ -149,10 +223,28 @@ protected:
   QValueList<MyMoneyTransaction> m_transactionList;
   QValueVector<MyMoneyMoney> m_balance;
 
+  /**
+    * This member keeps a vector of pointers to all visible (filtered)
+    * transaction in m_transactionList.
+    */
   KTransactionPtrVector m_transactionPtrVector;
+
+  /**
+    * This member keeps a pointer to the currently selected transaction
+    * It is NULL, if an empty (new) transaction is selected.
+    */
   MyMoneyTransaction *m_transactionPtr;
+
+  /**
+    * This member keeps a copy of the currently selected transaction
+    * during the edit phase. It will be used for all modifications.
+    */
   MyMoneyTransaction m_transaction;
 
+  /**
+    * This member keeps a copy of the split that references the current
+    * account.
+    */
   MyMoneySplit m_split;
 
   kMyMoneyPayee*        m_editPayee;
@@ -161,6 +253,8 @@ protected:
   kMyMoneyEdit*         m_editAmount;
   kMyMoneyLineEdit*     m_editNr;
   kMyMoneyDateInput*    m_editDate;
+  kMyMoneyCategory*     m_editFrom;
+  kMyMoneyCategory*     m_editTo;
 
 signals:
   void transactionSelected(void);
