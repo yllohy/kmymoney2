@@ -104,16 +104,23 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
 
   if (categoryEditor)
   {
-    m_tab->setTabEnabled(m_tab->page(TAB_INSTITUTION), false);
-    m_tab->setTabEnabled(m_tab->page(TAB_CURRENCY), false);
+    QWidget* tab;
+    // delete higher indexes prior to lower ones. Otherwise,
+    // you have to maintain the offset.
+    tab = m_tab->page(TAB_CURRENCY);
+    if(tab) {
+      m_tab->removePage(tab);
+    }
+    tab = m_tab->page(TAB_INSTITUTION);
+    if(tab) {
+      m_tab->removePage(tab);
+    }
 
     m_qlistviewParentAccounts->setEnabled(true);
     startDateEdit->setEnabled(false);
     startBalanceEdit->setEnabled(false);
     accountNoEdit->setEnabled(false);
 
-    // m_qcomboboxInstitutions->setEnabled(false);
-    // m_qbuttonNew->setEnabled(false);
     m_qcomboboxInstitutions->hide();
     m_qbuttonNew->hide();
 
@@ -146,7 +153,10 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   }
   else
   {
-    m_tab->setTabEnabled(m_tab->page(TAB_TAX), false);
+    QWidget* tab = m_tab->page(TAB_TAX);
+    if(tab) {
+      m_tab->removePage(tab);
+    }
 
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Checkings));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Savings));
@@ -450,7 +460,7 @@ void KNewAccountDlg::okClicked()
 
   if (!m_categoryEditor)
   {
-    m_account.setOpeningBalance(startBalanceEdit->getMoneyValue());
+    m_account.setOpeningBalance(startBalanceEdit->value());
     m_account.setOpeningDate(startDateEdit->getQDate());
     if(m_account.accountType() == MyMoneyAccount::Stock) {
       m_account.setCurrencyId(m_equity->id());
@@ -491,10 +501,6 @@ void KNewAccountDlg::okClicked()
         if(m_netAmount->isChecked())
           m_account.setValue("VatAmount", "Net");
       }
-    }
-
-    if(m_vatAssignment->isEnabled() && m_vatAssignment->isChecked()) {
-    } else {
     }
   }
 
