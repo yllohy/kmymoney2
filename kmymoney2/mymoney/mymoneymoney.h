@@ -44,7 +44,9 @@
 
 // Check for standard definitions
 #ifdef HAVE_STDINT_H
-  #define __STDC_LIMIT_MACROS         // force definition of min and max values
+  #ifndef __STDC_LIMIT_MACROS
+    #define __STDC_LIMIT_MACROS         // force definition of min and max values
+  #endif
   #include <stdint.h>
 #else
   #include <limits.h>

@@ -20,6 +20,11 @@
  *                                                                         *
  ***************************************************************************/
 
+// make sure, that this is defined before we even include any other header file
+#ifndef __STDC_LIMIT_MACROS
+  #define __STDC_LIMIT_MACROS         // force definition of min and max values
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -38,10 +43,6 @@ bool MyMoneyMoney::_negativePrefixCurrencySymbol = false;
 bool MyMoneyMoney::_positivePrefixCurrencySymbol = false;
 
 MyMoneyMoney::fileVersionE MyMoneyMoney::_fileVersion = MyMoneyMoney::FILE_4_BYTE_VALUE;
-
-#ifndef INT64_MIN
-#error missing INT64_MIN definition
-#endif
 
 MyMoneyMoney MyMoneyMoney::maxValue = MyMoneyMoney(INT64_MAX,100);
 MyMoneyMoney MyMoneyMoney::minValue = MyMoneyMoney(INT64_MIN,100);
