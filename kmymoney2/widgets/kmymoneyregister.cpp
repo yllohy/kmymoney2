@@ -126,8 +126,38 @@ void kMyMoneyRegister::readConfig(void)
   m_colorPerTransaction = true;
 }
 
+void kMyMoneyRegister::setTransactionRow(const int row)
+{
+  int firstRow,       // first row occupied by current transaction
+      lastRow;        // last row occupied by current transaction
+  firstRow = m_currentTransactionIndex * m_rpt;
+  if(m_ledgerLens)
+    lastRow = (m_currentTransactionIndex * m_rpt) + maxRpt() - 1;
+  else
+    lastRow = (m_currentTransactionIndex * m_rpt) + m_rpt - 1;
+    
+  m_transactionIndex = row/m_rpt;
+  m_transactionRow = row%m_rpt;
+
+  if(m_ledgerLens) {
+    if(row >= firstRow && row <= lastRow) {
+      m_transactionIndex = m_currentTransactionIndex;
+      m_transactionRow = row - firstRow;
+    } else if(row > lastRow && m_ledgerLens) {
+      m_transactionIndex = (row - maxRpt() + m_rpt) / m_rpt;
+      m_transactionRow = (row - maxRpt() + m_rpt) % m_rpt;
+    }
+  }
+  m_transaction = m_parent->transaction(m_transactionIndex);
+  if(m_transaction != NULL) {
+    m_split = m_transaction->split(m_parent->accountId(m_transaction));
+    m_balance = m_parent->balance(m_transactionIndex);
+  }
+}
+
 void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
-                                 bool /* selected */, const QColorGroup& cg)
+                                 bool /* selected */, const QColorGroup& cg,
+                                 const QString& txt, const int align)
 {
   int firstRow,       // first row occupied by current transaction
       lastRow;        // last row occupied by current transaction
@@ -170,23 +200,10 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
   m_textRect.setWidth(columnWidth(col)-4);
   m_textRect.setHeight(rowHeight(row));
 
-  m_transactionIndex = row/m_rpt;
-  m_transactionRow = row%m_rpt;
-
-  if(m_ledgerLens) {
-    if(row >= firstRow && row <= lastRow) {
-      m_transactionIndex = m_currentTransactionIndex;
-      m_transactionRow = row - firstRow;
-    } else if(row > lastRow && m_ledgerLens) {
-      m_transactionIndex = (row - maxRpt() + m_rpt) / m_rpt;
-      m_transactionRow = (row - maxRpt() + m_rpt) % m_rpt;
-    }
-  }
-
-  m_transaction = m_view->transaction(m_transactionIndex);
+  // this should have been called by the caller already, but we never know
+  setTransactionRow(row);
+  
   if(m_transaction != NULL) {
-    m_split = m_transaction->split(m_view->accountId());
-    m_balance = m_view->balance(m_transactionIndex);
     if(m_transaction->value("Imported").lower() == "true") {
       m_cg.setColor(QColorGroup::Base, m_importColor);
     }
@@ -202,7 +219,50 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
     p->fillRect(m_cellRect,backgroundBrush);
     m_textColor = m_cg.text();
   }
+  // p->setPen(m_textColor);
+
+  /* new stuff */
+  
+  const bool lastLine = m_ledgerLens && m_transactionIndex == m_currentTransactionIndex
+                         ? m_transactionRow == maxRpt() - 1
+                         : m_transactionRow == m_rpt-1;
+
+  // if a grid is selected, we paint it right away
+  if (m_showGrid) {
+    p->setPen(m_gridColor);
+    p->drawLine(m_cellRect.x(), 0, m_cellRect.x(), m_cellRect.height()-1);
+    if(lastLine)
+      p->drawLine(m_cellRect.x(), m_cellRect.height()-1, m_cellRect.width(), m_cellRect.height()-1);
+  }
+
+  // if we paint something, that we don't know (yet), we're done
+  // this applies to the very last line of the ledger which always
+  // shows an empty line for new transactions to be added.
+  // In case this is the current date row, we still draw the marker
+  if(m_transaction == NULL) {
+    if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
+      p->setPen(m_gridColor);
+      p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);
+      p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
+    }
+    return;
+  }
+
+  // QColor textColor(m_textColor);
+  // if it's an erronous transaction, set it to error color (which toggles ;-)  )
+  if(m_transaction->splitCount() < 2
+  || m_transaction->splitSum() != 0) {
+    m_textColor = m_errorColor;
+  }
   p->setPen(m_textColor);
+
+  p->drawText(m_textRect, align, txt);
+  if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
+    p->setPen(m_gridColor);
+    p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);
+    p->drawLine(m_cellRect.x(), 1, m_cellRect.width(), 1);
+    p->setPen(m_textColor);
+  }
 }
 
 void kMyMoneyRegister::contentsMouseDoubleClickEvent( QMouseEvent *e)

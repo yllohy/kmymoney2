@@ -52,6 +52,51 @@ class KLedgerView;
 
 class KLedgerView;
 
+class IMyMoneyRegisterParent
+{
+public:
+  IMyMoneyRegisterParent() {};
+  virtual ~IMyMoneyRegisterParent() {};
+
+  /**
+    * This method returns a pointer to the transaction data
+    * in the ledger of this account. The transaction is identified
+    * by the parameter @p idx.
+    *
+    * @param idx index into ledger starting at 0
+    * @return pointer to MyMoneyTransaction object representing the
+    *         selected transaction. If idx is out of bounds,
+    *         0 will be returned.
+    */
+  virtual MyMoneyTransaction* transaction(const int idx) const = 0;
+  
+  /**
+    * This method returns the id of the account that should be
+    * shown by the view. The implementation depends on the type of view
+    * and might return a constant value or a value depending on the
+    * transaction passed as @p transaction.
+    *
+    * @param transaction pointer to a transaction
+    *
+    * @return const QCString containing the account's id.
+    */
+  virtual const QCString accountId(const MyMoneyTransaction * const transaction) const = 0;
+
+  /**
+    * This method returns the balance of any visible transaction
+    * in the ledger of this account. The balance depends on filters
+    * and is automatically calculated when any view option is changed
+    * (e.g. filters, sort order, etc.)
+    *
+    * @param idx index into the ledger starting at 0
+    * @return Value of the balance for the account after the selected
+    *         transaction has been taken into account. If idx is out
+    *         of bounds, 0 will be returned as value. For liability type
+    *         accounts, the sign will be inverted for display purposes.
+    */
+  virtual const MyMoneyMoney balance(const int idx) const = 0;
+};
+
 class kMyMoneyRegister : public QTable
 {
   Q_OBJECT
@@ -60,8 +105,8 @@ class kMyMoneyRegister : public QTable
   friend class QTableHeader;
 
 public:
-	kMyMoneyRegister(int maxRpt, QWidget *parent=0, const char *name=0);
-	virtual ~kMyMoneyRegister();
+  kMyMoneyRegister(int maxRpt, QWidget *parent=0, const char *name=0);
+  virtual ~kMyMoneyRegister();
 
   /**
     * Override the QTable member function to avoid display of focus
@@ -72,7 +117,7 @@ public:
     * Set the pointer back to the connected view. This pointer is used
     * to access transaction data during painting operations.
     */
-  void setView(KLedgerView *view) { m_view = view; };
+  void setParent(IMyMoneyRegisterParent *parent) { m_parent = parent; };
 
   /**
     * read configuration settings from config file
@@ -92,9 +137,9 @@ public:
     */
   void setLedgerLens(const bool enabled);
 
-  void clearCell(int row, int col) {} ;
-  void setItem(int row, int col, QTableItem *) {};
-  QTableItem* item(int row, int col) const  { return NULL; };
+  void clearCell(int /* row */, int /* col */) {} ;
+  void setItem(int /* row */ , int /* col */, QTableItem *) {};
+  QTableItem* item(int /* row */, int /* col */) const  { return NULL; };
 
   void clearCellWidget(int row, int col);
   QWidget* cellWidget(int row, int col) const;
@@ -231,13 +276,31 @@ public slots:
   virtual void setNumCols(int r);
 
 protected:
-  void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
+  /**
+    * The paint method must be provided by the derived class.
+    */
+  void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected, const QColorGroup& cg) = 0;
+  
+  void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected, const QColorGroup& cg, const QString& txt, const int align);
 
+  /**
+    * This method sets up the relative row within a transaction kept
+    * in the member variable m_transactionRow. It also sets
+    * m_transactionIndex to point to the current transaction covered
+    * by row @p row.
+    *
+    * @param row absolute row in the table
+    *
+    * @note This method must be called in the derived class first thing in
+    *       paintCell before m_transactionRow can be used.
+    */
+  void setTransactionRow(const int row);
+  
   /**
     * resizeData is re-implemented to avoid creation
     * of huge arrays that are not required
     */
-  void resizeData(int len) {};
+  void resizeData(int /* len */) {};
 
   void insertWidget(int row, int col, QWidget *);
 
@@ -253,7 +316,7 @@ protected:
   int    m_rpt;     // current rows per transaction
   bool   m_ledgerLens;
 
-  KLedgerView*  m_view;
+  IMyMoneyRegisterParent*  m_parent;
 
   QFont  m_cellFont;
   QFont  m_headerFont;

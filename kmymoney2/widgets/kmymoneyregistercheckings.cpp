@@ -38,6 +38,31 @@
 kMyMoneyRegisterCheckings::kMyMoneyRegisterCheckings(QWidget *parent, const char *name )
   : kMyMoneyRegister(3, parent,name)
 {
+  setNumCols(7);
+  setCurrentCell(0, 1);
+  horizontalHeader()->setClickEnabled(true);
+  horizontalHeader()->setLabel(0, i18n("Nr."));
+  horizontalHeader()->setLabel(1, i18n("Date"));
+  horizontalHeader()->setLabel(2, i18n("Payee"));
+  horizontalHeader()->setLabel(3, i18n("C"));
+  horizontalHeader()->setLabel(4, i18n("Payment"));
+  horizontalHeader()->setLabel(5, i18n("Deposit"));
+  horizontalHeader()->setLabel(6, i18n("Balance"));
+  setLeftMargin(0);
+  verticalHeader()->hide();
+  setColumnStretchable(0, false);
+  setColumnStretchable(1, false);
+  setColumnStretchable(2, false);
+  setColumnStretchable(3, false);
+  setColumnStretchable(4, false);
+  setColumnStretchable(5, false);
+  setColumnStretchable(6, false);
+
+  horizontalHeader()->setResizeEnabled(false);
+  horizontalHeader()->setMovingEnabled(false);
+
+  // never show horizontal scroll bars
+  setHScrollBarMode(QScrollView::AlwaysOff);
 }
 
 kMyMoneyRegisterCheckings::~kMyMoneyRegisterCheckings()
@@ -47,8 +72,125 @@ kMyMoneyRegisterCheckings::~kMyMoneyRegisterCheckings()
 void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const QRect& r,
                                  bool selected, const QColorGroup& cg)
 {
+  setTransactionRow(row);
+  
+  int align = Qt::AlignVCenter;
+  QString txt = " ";
+  if(m_transaction != 0) {
+    switch (col) {
+      case 0:
+        align |= Qt::AlignRight;
+        switch(m_transactionRow) {
+          case 0:
+            txt = m_split.number();
+            if(txt.isEmpty())
+              txt = " ";
+            break;
+        }
+        break;
+
+      case 1:
+        align |= Qt::AlignLeft;
+        switch(m_transactionRow) {
+          case 0:
+            txt = KGlobal::locale()->formatDate(m_transaction->postDate(), true);
+            break;
+
+          case 1:
+            txt = m_split.action();
+            if(txt.isEmpty())
+              txt = " ";
+            break;
+        }
+        break;
+        
+      case 2:
+        align |= Qt::AlignLeft;
+        switch(m_transactionRow) {
+          case 0:
+            try {
+              txt = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
+            } catch(MyMoneyException *e) {
+              delete e;
+            }
+            break;
+
+          case 1:
+            try {
+              if(m_transaction->splitCount() > 2)
+                txt = QString(i18n("Splitted transaction"));
+              else {
+                MyMoneySplit split = m_transaction->split(m_parent->accountId(m_transaction), false);
+                txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
+              }
+            } catch(MyMoneyException *e) {
+              delete e;
+            }
+            break;
+
+          case 2:
+            txt = m_split.memo();
+            break;
+        }
+        break;
+        
+      case 3:
+        switch(m_transactionRow) {
+          case 0:
+            align |= Qt::AlignHCenter;
+            switch(m_split.reconcileFlag()) {
+              case MyMoneySplit::Cleared:
+                txt = i18n("C");
+                break;
+              case MyMoneySplit::Reconciled:
+              case MyMoneySplit::Frozen:
+                txt = i18n("R");
+                break;
+              case MyMoneySplit::NotReconciled:
+                break;
+            }
+            break;
+        }
+        break;
+
+      case 4:
+        switch(m_transactionRow) {
+          case 0:
+            align |= Qt::AlignRight;
+            if(m_split.value() < 0)
+              txt = (-m_split.value()).formatMoney();
+            break;
+        }
+        break;
+        
+      case 5:
+        switch(m_transactionRow) {
+          case 0:
+            align |= Qt::AlignRight;
+            if(m_split.value() >= 0)
+              txt = (m_split.value()).formatMoney();
+            break;
+        }
+        break;
+        
+      case 6:
+        switch(m_transactionRow) {
+          case 0:
+            align |= Qt::AlignRight;
+            txt = m_balance.formatMoney();
+            if(m_balance < 0)
+              p->setPen(QColor(255, 0, 0));
+            break;
+        }
+        break;
+    }
+  }
+  
   // do general stuff
-  kMyMoneyRegister::paintCell(p, row, col, r, selected, cg);
+  kMyMoneyRegister::paintCell(p, row, col, r, selected, cg, txt, align);
+/*
+  // do general stuff
+  kMyMoneyRegister::paintCell(p, row, col, r, selected, cg, cellTxt, cellAlign);
 
   const bool lastLine = m_ledgerLens && m_transactionIndex == m_currentTransactionIndex
                          ? m_transactionRow == maxRpt() - 1
@@ -156,38 +298,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
             break;
         }
       }
-
-/*
-      // now do the painting
-      if (m_showGrid) {
-        p->setPen(m_gridColor);
-        p->drawLine(m_cellRect.x(), 0, m_cellRect.x(), m_cellRect.height()-1);
-        if(lastLine)
-          p->drawLine(m_cellRect.x(), m_cellRect.height()-1, m_cellRect.width(), m_cellRect.height()-1);
-        p->setPen(m_textColor);
-      }
-*/
-/*
-      if(m_transactionRow > 0 && col == 2) {
-        int intMemoStart = m_cellRect.width() / 2;
-        rr3.setX(2);
-        rr3.setY(0);
-        rr3.setWidth(intMemoStart-4);
-        rr3.setHeight(rowHeight(row));
-        // p->drawText(rr3,Qt::AlignLeft | Qt::AlignVCenter,qstringCategory);
-        if(m_showGrid) {
-          p->setPen(m_gridColor);
-          p->drawLine(intMemoStart,0,intMemoStart,m_cellRect.height()-1);
-          p->setPen(m_cg.foreground());
-        }
-        rr3.setX(intMemoStart + 2);
-        rr3.setWidth(intMemoStart-4);
-        // p->drawText(rr3,Qt::AlignLeft | Qt::AlignVCenter,qstringMemo);
-
-      } else {
-*/
-        p->drawText(m_textRect, align, txt);
-//      }
+      p->drawText(m_textRect, align, txt);
       if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
         p->setPen(m_gridColor);
         p->drawLine(m_cellRect.x(), 0, m_cellRect.width(), 0);
@@ -271,16 +382,6 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
             break;
         }
       }
-/*
-      if (m_showGrid) {
-        p->setPen(m_gridColor);
-        p->drawLine(m_cellRect.x(), 0, m_cellRect.x(), m_cellRect.height()-1);
-        if(lastLine)
-          p->drawLine(m_cellRect.x(), m_cellRect.height()-1, m_cellRect.width(), m_cellRect.height()-1);
-        p->drawLine(m_cellRect.x()+m_cellRect.width(), 0, m_cellRect.x()+m_cellRect.width(), m_cellRect.height()-1);
-        p->setPen(m_textColor);
-      }
-*/
       p->drawText(m_textRect, Qt::AlignRight | Qt::AlignVCenter, txt);
       if(m_transactionIndex == m_currentDateIndex && m_transactionRow == 0) {
         p->setPen(m_gridColor);
@@ -290,6 +391,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
       }
       break;
   }
+*/
 }
 
 void kMyMoneyRegisterCheckings::adjustColumn(int col)
@@ -310,7 +412,7 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
 
       case 1:
         QString txt;
-        MyMoneyTransaction *t = m_view->transaction(i);
+        MyMoneyTransaction *t = m_parent->transaction(i);
         if(t != NULL) {
           txt = KGlobal::locale()->formatDate(t->postDate(), true)+"  ";
           int nw = fontMetrics.width(txt);

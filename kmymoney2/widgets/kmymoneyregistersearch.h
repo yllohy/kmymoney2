@@ -1,8 +1,8 @@
 /***************************************************************************
-                          kmymoneyregistercheckings.h  -  description
+                          kmymoneyregistersearch.h  -  description
                              -------------------
-    begin                : Thu Jul 18 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
+    begin                : Sun Aug 10 2003
+    copyright            : (C) 2000-2003 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
                            Felix Rodriguez <frodriguez@users.sourceforge.net>
@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KMYMONEYREGISTERCHECKINGS_H
-#define KMYMONEYREGISTERCHECKINGS_H
+#ifndef KMYMONEYREGISTERSEARCH_H
+#define KMYMONEYREGISTERSEARCH_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -34,18 +34,17 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../widgets/kmymoneyregister.h"
+#include <../widgets/kmymoneyregister.h>
 
 /**
   * @author Thomas Baumgart
   */
 
-class kMyMoneyRegisterCheckings : public kMyMoneyRegister
-{
+class kMyMoneyRegisterSearch : public kMyMoneyRegister  {
    Q_OBJECT
 public: 
-  kMyMoneyRegisterCheckings(QWidget *parent=0, const char *name=0);
-  ~kMyMoneyRegisterCheckings();
+  kMyMoneyRegisterSearch(QWidget *parent=0, const char *name=0);
+  ~kMyMoneyRegisterSearch();
 
   bool eventFilter(QObject* o, QEvent* e);
 
