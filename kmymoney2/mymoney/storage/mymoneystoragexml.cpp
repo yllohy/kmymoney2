@@ -270,8 +270,10 @@ void MyMoneyStorageXML::on_start_element(const std::string &n, const Element::At
         m_pCurrentAccount->setAccountId(QCString(strTemp.data()));
         
         // The type of account specified must match up with one of the types, or this file should be treated as invalid.
+        MyMoneyAccount::accountTypeE acctype;
         strTemp = getPropertyValue(std::string("type"), p);
-        m_pCurrentAccount->setAccountTypeByName(QCString(strTemp.data()));
+        acctype = KMyMoneyUtils::stringToAccountType(QString(strTemp.data()));
+        m_pCurrentAccount->setAccountType(acctype);
         
         strTemp = getPropertyValue(std::string("name"), p);
         m_pCurrentAccount->setName(QString(strTemp.data()));
