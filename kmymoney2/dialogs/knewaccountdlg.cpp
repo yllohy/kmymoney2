@@ -39,6 +39,7 @@
 #include <kconfig.h>
 #include <qcheckbox.h>
 #include "../mymoney/mymoneyexception.h"
+#include "../mymoney/storage/mymoneyseqaccessmgr.h"
 
 KNewAccountDlg::KNewAccountDlg(MyMoneyAccount& account, MyMoneyFile* file, QWidget *parent,
     const char *name, const char *title)
@@ -204,7 +205,7 @@ void KNewAccountDlg::initParentWidget()
   {
     // Asset
     KAccountListItem *assetTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
-                      assetAccount.name(), assetAccount.id());
+                      assetAccount.name(), STD_ACC_ASSET, false);
 
     for ( QCStringList::ConstIterator it = m_file->asset().accountList().begin();
           it != m_file->asset().accountList().end();
@@ -222,7 +223,7 @@ void KNewAccountDlg::initParentWidget()
 
     // Liability
     KAccountListItem *liabilityTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
-                      liabilityAccount.name(), liabilityAccount.id());
+                      liabilityAccount.name(), STD_ACC_LIABILITY, false);
 
     for ( QCStringList::ConstIterator it = m_file->liability().accountList().begin();
           it != m_file->liability().accountList().end();
@@ -240,7 +241,7 @@ void KNewAccountDlg::initParentWidget()
 
     // Income
     KAccountListItem *incomeTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
-                      incomeAccount.name(), incomeAccount.id());
+                      incomeAccount.name(), STD_ACC_INCOME, false);
 
     for ( QCStringList::ConstIterator it = m_file->income().accountList().begin();
           it != m_file->income().accountList().end();
@@ -258,7 +259,7 @@ void KNewAccountDlg::initParentWidget()
 
     // Expense
     KAccountListItem *expenseTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
-                      expenseAccount.name(), expenseAccount.id());
+                      expenseAccount.name(), STD_ACC_EXPENSE, false);
 
     for ( QCStringList::ConstIterator it = m_file->expense().accountList().begin();
           it != m_file->expense().accountList().end();
@@ -309,11 +310,9 @@ void KNewAccountDlg::resizeEvent(QResizeEvent* e)
 void KNewAccountDlg::slotSelectionChanged(QListViewItem *item)
 {
   KAccountListItem *accountItem = (KAccountListItem*)item;
-  m_bSelectedParentAccount = true;
   try
   {
-    qDebug("Selected account id: %s", accountItem->accountID().data());
-    qDebug("asset acount id: %s", m_file->asset().id().data());
+    //qDebug("Selected account id: %s", accountItem->accountID().data());
     m_parentAccount = m_file->account(accountItem->accountID());
     QString theText(i18n("Is a sub account of "));
     theText += m_parentAccount.name();
@@ -321,7 +320,7 @@ void KNewAccountDlg::slotSelectionChanged(QListViewItem *item)
   }
   catch (MyMoneyException *e)
   {
-    qDebug("This shouldn't happen!");
+    qDebug("This shouldn't happen! : %s", e->what().latin1());
     delete e;
   }
 }
@@ -334,9 +333,11 @@ void KNewAccountDlg::slotSubAccountsToggled(bool on)
     QString theText(i18n("Is a sub account of "));
     theText += m_parentAccount.name();
     m_qcheckboxSubAccount->setText(theText);
+    m_bSelectedParentAccount = true;
   }
   else
   {
     m_qcheckboxSubAccount->setText(i18n("Is a sub account"));
+    m_bSelectedParentAccount = false;
   }
 }

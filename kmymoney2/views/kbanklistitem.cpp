@@ -34,6 +34,7 @@
 KAccountListItem::KAccountListItem(KListView *parent, const QString& accountName, const QCString& accountID, bool viewNormal)
   : QListViewItem(parent), m_accountID(accountID), m_bViewNormal(viewNormal)
 {
+  qDebug("set id1 to %s", m_accountID.data());
   if (m_bViewNormal)
   {
     m_nAccountColumn = 1;
@@ -55,6 +56,7 @@ KAccountListItem::KAccountListItem(KListView *parent, const QString& accountName
 KAccountListItem::KAccountListItem(KAccountListItem *parent, const QString& accountName, const QCString& accountID, bool viewNormal)
   : QListViewItem(parent), m_accountID(accountID), m_bViewNormal(viewNormal)
 {
+  qDebug("set id2 to %s", m_accountID.data());
   if (m_bViewNormal)
   {
     m_nAccountColumn = 1;
@@ -73,6 +75,7 @@ KAccountListItem::KAccountListItem(KAccountListItem *parent, const QString& acco
 KAccountListItem::KAccountListItem(KListView *parent, const QString& institutionName, const QCString& institutionID)
   : QListViewItem(parent), m_institutionID(institutionID), m_bViewNormal(true)
 {
+  qDebug("set id3 to %s", m_accountID.data());
   if (m_bViewNormal)
   {
     m_nAccountColumn = 1;

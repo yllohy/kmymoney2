@@ -170,6 +170,8 @@ const MyMoneyInstitution& MyMoneyFile::institution(const QCString& id) const
 
 const MyMoneyAccount& MyMoneyFile::account(const QCString& id) const
 {
+/*  It would be nice if this works, but it causes a seg fault.
+    because we're returning a reference to a temporary.
 	MyMoneyAccount account;
   if (m_storage->isStandardAccount(id))
 	{
@@ -183,7 +185,7 @@ const MyMoneyAccount& MyMoneyFile::account(const QCString& id) const
 			account = income();
 		return account;
 	}
-	
+*/	
   return m_storage->account(id);
 }
 

@@ -1,3 +1,7 @@
+2002-06-06 Michael Edwardes <mte@users.sourceforge.net>
+  * Selecting the four root accounts in the parent account widget
+    now works.
+
 2002-06-05 Michael Edwardes <mte@users.sourceforge.net>
   * Removed the action enabling logic.
   * You can now read a file into KMyMoney2 again.
