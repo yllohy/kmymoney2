@@ -2054,9 +2054,9 @@ void KMyMoneyView::fixTransactions(void)
       MyMoneyAccount acc = file->account((*it_s).accountId());
       MyMoneyMoney val = (*it_s).value();
       if(acc.accountType() == MyMoneyAccount::CreditCard) {
-        if(val < 0 && (*it_s).action() != MyMoneySplit::ActionWithdrawal)
+        if(val < 0 && (*it_s).action() != MyMoneySplit::ActionWithdrawal && (*it_s).action() != MyMoneySplit::ActionTransfer )
           needModify = true;
-        if(val >= 0 && (*it_s).action() != MyMoneySplit::ActionDeposit)
+        if(val >= 0 && (*it_s).action() != MyMoneySplit::ActionDeposit && (*it_s).action() != MyMoneySplit::ActionTransfer)
           needModify = true;
       }
     }
