@@ -25,16 +25,21 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include "kdecompat.h"
 #include <klocale.h>
 #include <kglobal.h>
 #include <kconfig.h>
 #include <klineedit.h>
-#include <klineeditdlg.h>
 #include <kmessagebox.h>
 #include <kcombobox.h>
 #include <kurlrequester.h>
 #include <kiconloader.h>
 
+#if KDE_IS_VERSION(3,2,0)
+  #include <kinputdialog.h>
+#else
+  #include <klineeditdlg.h>
+#endif
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -84,7 +89,7 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
                     i18n("Reset all settings"),
                     i18n("Use this to reset all settings to the state they were when the dialog was opened."));
   m_resetButton->setGuiItem(resetButtonItem);
-  
+
   KGuiItem cancelButtenItem( i18n( "&Cancel" ),
                       QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
                       i18n("Close dialog"),
@@ -117,7 +122,7 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
   connect(m_deleteButton, SIGNAL(clicked()), this, SLOT(slotDelete()));
   connect(m_newButton, SIGNAL(clicked()), this, SLOT(slotNew()));
   connect(m_cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
-  
+
   connect(m_editDescription, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setProfileDescription(const QString&)));
   connect(m_editType, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setProfileType(const QString&)));
   connect(m_editOpeningBalance, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setOpeningBalanceText(const QString&)));
@@ -133,7 +138,7 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
 
   connect(m_editInputFilterLocation, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setFilterScriptImport(const QString&)));
   connect(m_editInputFilterLocation, SIGNAL(urlSelected(const QString&)), m_editInputFilterLocation, SLOT(setURL(const QString&)));
-  
+
   connect(m_editOutputFilterLocation, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setFilterScriptExport(const QString&)));
   connect(m_editOutputFilterLocation, SIGNAL(urlSelected(const QString&)), m_editOutputFilterLocation, SLOT(setURL(const QString&)));
 }
@@ -175,7 +180,7 @@ void MyMoneyQifProfileEditor::loadWidgets(void)
   m_editApostrophe->insertItem( "1900-1949" );
   m_editApostrophe->insertItem( "1900-1999" );
   m_editApostrophe->insertItem( "2000-2099" );
-  
+
   m_editAmounts->setColumnAlignment(1, Qt::AlignCenter);
   m_editAmounts->setColumnAlignment(2, Qt::AlignCenter);
   m_editAmounts->setColumnAlignment(3, Qt::AlignCenter);
@@ -205,7 +210,7 @@ void MyMoneyQifProfileEditor::loadWidgets(void)
   m_editVoidMark->setEnabled(m_inEdit);
   m_editInputFilterLocation->setEnabled(m_inEdit);
   m_editOutputFilterLocation->setEnabled(m_inEdit);
-  
+
   if(!m_inEdit) {
     m_renameButton->hide();
     m_deleteButton->hide();
@@ -290,7 +295,7 @@ void MyMoneyQifProfileEditor::showProfile(void)
   m_editVoidMark->setText(m_profile.voidMark());
   m_editInputFilterLocation->setURL(m_profile.filterScriptImport());
   m_editOutputFilterLocation->setURL(m_profile.filterScriptExport());
-  
+
   m_editDateFormat->setCurrentText(m_profile.dateFormat());
   m_editApostrophe->setCurrentText(m_profile.apostropheFormat());
 
@@ -347,10 +352,10 @@ void MyMoneyQifProfileEditor::slotOk(void)
     m_isDirty = true;
 
   m_profile.saveProfile();
-  
+
   KConfig* config = KGlobal::config();
   config->sync();
-  
+
   m_isAccepted = true;
   accept();
 }
@@ -398,8 +403,18 @@ void MyMoneyQifProfileEditor::slotNew(void)
 
 const QString MyMoneyQifProfileEditor::enterName(bool& ok)
 {
-  QString rc;
   MyMoneyQifProfileNameValidator val(this, "Validator");
+#if KDE_IS_VERSION(3,2,1)
+  return KInputDialog::getText(i18n("QIF Profile Editor"),
+                               i18n("Enter new profile name"),
+                               QString::null,
+                               &ok,
+                               this,
+                               0,
+                               &val,
+                               0);
+#else
+  QString rc;
 
   // the blank in the next line as the value for the edit box is
   // there on purpose, so that with the following call to validateAndSet
@@ -416,6 +431,7 @@ const QString MyMoneyQifProfileEditor::enterName(bool& ok)
   delete dlg;
 
   return rc;
+#endif
 }
 
 void MyMoneyQifProfileEditor::slotDelete(void)
