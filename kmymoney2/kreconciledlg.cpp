@@ -100,6 +100,27 @@ KReconcileDlg::~KReconcileDlg()
 {
 }
 
+void KReconcileDlg::clearReconcile()
+{
+	
+  MyMoneyTransaction *temp_transaction;
+ 	for(temp_transaction = m_creditsQList.first();temp_transaction;temp_transaction = m_creditsQList.next())
+  {
+    if(temp_transaction->state() == MyMoneyTransaction::Reconciled)
+		{
+     	temp_transaction->setState(MyMoneyTransaction::Unreconciled);
+		}
+  }
+ 	for(temp_transaction = m_debitsQList.first();temp_transaction;temp_transaction = m_debitsQList.next())
+  {
+    if(temp_transaction->state() == MyMoneyTransaction::Reconciled)
+		{
+     	temp_transaction->setState(MyMoneyTransaction::Unreconciled);
+		}
+  }
+
+}
+
 void KReconcileDlg::loadLists(void)
 {
   // Load the internal transaaction lists
@@ -367,6 +388,7 @@ void KReconcileDlg::finishClicked(void)
 {
   if (!m_balanced) {
     if ((KMessageBox::questionYesNo(this, i18n("Account did not balance, are you sure ?")))==KMessageBox::No) {
+			clearReconcile();
       return;
     }
   }
@@ -414,6 +436,7 @@ void KReconcileDlg::updateData(void)
 
 void KReconcileDlg::cancelClicked()
 {
+	clearReconcile();
   emit reconcileFinished(true);
 }
 

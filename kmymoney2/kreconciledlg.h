@@ -33,6 +33,7 @@ public:
 	KReconcileDlg(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, const MyMoneyAccount accountIndex, const MyMoneyFile file, QWidget *parent=0, const char *name=0);
 	~KReconcileDlg();
   void updateData(void);
+  void clearReconcile();
   void resetData(const MyMoneyMoney previousBal, const MyMoneyMoney endingBal, const QDate endingDate, const MyMoneyBank bankIndex, const MyMoneyAccount accountIndex, const MyMoneyFile file);
 
 protected slots:
