@@ -23,7 +23,7 @@ install_location=
 type=DATA
 
 [Config for BinMakefileAm]
-addcxxflags=-fexceptions -D_CHECK_MEMORY
+addcxxflags=-fexceptions
 bin_program=kmymoney2
 cflags=
 cppflags=
