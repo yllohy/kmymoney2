@@ -380,6 +380,14 @@ void KEditScheduledDepositDlg::okClicked()
       payeeId = (*it_p).id();
   }
 
+  if (payeeId.length() == 0)
+  {
+    KMessageBox::information(this, "Adding " + m_kcomboPayTo->text() + " as a payee");
+    MyMoneyPayee payee(m_kcomboPayTo->text());
+    file->addPayee(payee);
+    payeeId = file->payeeByName(m_kcomboPayTo->text()).id();
+  }
+
   if (m_transaction.splitCount() == 0)
   {
     if (m_kmoneyeditAmount->text() == "")
@@ -389,20 +397,6 @@ void KEditScheduledDepositDlg::okClicked()
     }
 
     MyMoneySplit split1;
-
-    MyMoneyFile *file = MyMoneyFile::instance();
-
-    QValueList<MyMoneyPayee> list = file->payeeList();
-    QValueList<MyMoneyPayee>::ConstIterator it_p;
-
-    QCString payeeId;
-
-    for(it_p = list.begin(); it_p != list.end(); ++it_p)
-    {
-      if ((*it_p).name() == m_kcomboPayTo->text())
-        payeeId = (*it_p).id();
-    }
-
     split1.setAccountId(m_accountId);
     split1.setAction(split1.ActionWithdrawal);
     split1.setPayeeId(payeeId);
@@ -477,7 +471,6 @@ void KEditScheduledDepositDlg::loadWidgetsFromSchedule(void)
       case MyMoneySchedule::STYPE_OTHER:
         m_kcomboMethod->setCurrentItem(2);
         break;
-
     }
 
     switch (m_schedule.occurence())

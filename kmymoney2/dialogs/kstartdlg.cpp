@@ -37,6 +37,7 @@
 #include <kurlrequester.h>
 #include <kfile.h>
 #include <kio/netaccess.h>
+#include <kmessagebox.h>
 
 KStartDlg::KStartDlg(QWidget *parent, const char *name, bool modal) : KDialogBase(IconList,i18n("Start Dialog"),Help|Ok|Cancel,Ok, parent, name, modal, true)
 {
@@ -56,33 +57,38 @@ KStartDlg::~KStartDlg()
 /** Set the font  Page of the preferences dialog */
 void KStartDlg::setPage_Template()
 {
-	QVBox *mainFrame = addVBoxPage( i18n("Templates"), i18n("Select templates"), DesktopIcon("wizard"));
-  view_wizard = new KIconView( mainFrame, "view_options" );
+	templateMainFrame = addVBoxPage( i18n("Templates"), i18n("Select templates"), DesktopIcon("wizard"));
+  view_wizard = new KIconView( templateMainFrame, "view_options" );
   (void)new QIconViewItem( view_wizard, i18n("Blank Document"), QPixmap( locate("icon","hicolor/48x48/mimetypes/mime_empty.png") ) );
   connect( view_wizard, SIGNAL( executed(QIconViewItem *) ), this, SLOT( slotTemplateClicked(QIconViewItem *) ) );
+  connect(view_wizard, SIGNAL(selectionChanged(QIconViewItem*)),
+    this, SLOT(slotTemplateSelectionChanged(QIconViewItem*)));
 }
 
 /** Set the Misc options Page of the preferences dialog */
 void KStartDlg::setPage_Documents()
 {
-	QFrame *mainFrame = addPage( i18n("Open"), i18n("Open a KMyMoney document"), DesktopIcon("fileopen"));
-  QVBoxLayout *mainLayout = new QVBoxLayout( mainFrame );
+	recentMainFrame = addPage( i18n("Open"), i18n("Open a KMyMoney document"), DesktopIcon("fileopen"));
+  QVBoxLayout *mainLayout = new QVBoxLayout( recentMainFrame );
 
-  kurlrequest = new KURLRequester( mainFrame, "kurlrequest" );
+  kurlrequest = new KURLRequester( recentMainFrame, "kurlrequest" );
 
 	//allow user to select either a .kmy file, or any generic file.
   kurlrequest->fileDialog()->setFilter( i18n("%1|KMyMoney files (*.kmy)\n" "%2|All files (*.*)").arg("*.kmy").arg("*.*") );
   kurlrequest->fileDialog()->setMode(KFile::File || KFile::ExistingOnly);
   mainLayout->addWidget( kurlrequest );
 
-	QLabel *label1 = new QLabel( mainFrame, "label1" );
+	QLabel *label1 = new QLabel( recentMainFrame, "label1" );
 	label1->setText( i18n("Recent Files") );
 	mainLayout->addWidget( label1 );
-  view_recent = new KIconView( mainFrame, "view_recent" );
+  view_recent = new KIconView( recentMainFrame, "view_recent" );
   connect( view_recent, SIGNAL( executed(QIconViewItem *) ), this, SLOT( slotRecentClicked(QIconViewItem *) ) );
   mainLayout->addWidget( view_recent );
   view_recent->setArrangement(KIconView::TopToBottom);
   view_recent->setItemTextPos(KIconView::Right);
+
+  connect(view_recent, SIGNAL(selectionChanged(QIconViewItem*)),
+    this, SLOT(slotRecentSelectionChanged(QIconViewItem*)));
 }
 
 void KStartDlg::slotTemplateClicked(QIconViewItem *item)
@@ -125,6 +131,10 @@ void KStartDlg::readConfig()
 	QSize *defaultSize = new QSize(400,300);
 	this->resize( config->readSizeEntry("Geometry", defaultSize ) );
 
+  // Restore the last page viewed
+  // default to the recent files page if no entry exists
+  this->showPage(config->readNumEntry("LastPage", this->pageIndex(recentMainFrame)));
+
 }
 
 /** Write config window */
@@ -134,6 +144,7 @@ void KStartDlg::writeConfig()
 
   config->setGroup("Start Dialog");
   config->writeEntry("Geometry", this->size() );
+  config->writeEntry("LastPage", this->activePageIndex());
   config->sync();
 }
 
@@ -158,4 +169,32 @@ void KStartDlg::slotOk()
 bool KStartDlg::fileExists(KURL url)
 {
   return KIO::NetAccess::exists(url);
+}
+
+void KStartDlg::slotTemplateSelectionChanged(QIconViewItem* item)
+{
+  if(!item) return;
+
+  // Clear the other selection
+  view_recent->clearSelection();
+
+  // If the item is the blank document turn isnewfile variable true, else is template or wizard
+  if( item->text() == i18n("Blank Document") )
+     isnewfile = true;
+  else
+    templatename = item->text();
+
+  isopenfile = false;
+}
+  
+void KStartDlg::slotRecentSelectionChanged(QIconViewItem* item)
+{
+  if(!item) return;
+
+  // Clear the other selection
+  view_wizard->clearSelection();
+
+  isnewfile = false;
+  isopenfile = true;
+  kurlrequest->setURL( item->text() );
 }

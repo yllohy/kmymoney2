@@ -25,6 +25,7 @@
 #include <qpushbutton.h>
 #include <qtoolbutton.h>
 #include <qcombobox.h>
+#include <qtabwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -44,8 +45,7 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
  : kScheduledViewDecl(parent,name, false)
 {
   m_qlistviewScheduled->setRootIsDecorated(true);
-  m_qlistviewScheduled->addColumn(i18n("Type"));
-  m_qlistviewScheduled->addColumn(i18n("Payee"));
+  m_qlistviewScheduled->addColumn(i18n("Type/Payee"));
   m_qlistviewScheduled->addColumn(i18n("Amount"));
   m_qlistviewScheduled->addColumn(i18n("Next Due Date"));
   m_qlistviewScheduled->addColumn(i18n("Frequency"));
@@ -66,6 +66,9 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   kpopupmenuNew->insertItem(kiconloader->loadIcon("new_transfer", KIcon::Small), i18n("Transfer"), this, SLOT(slotNewTransfer()));
   m_qbuttonNew->setPopup(kpopupmenuNew);
 
+  m_qbuttonEdit->setEnabled(false);
+  m_qbuttonDelete->setEnabled(false);
+
   connect(m_qlistviewScheduled, SIGNAL(selectionChanged(QListViewItem*)),
     this, SLOT(slotSelectionChanged(QListViewItem*)));
   connect(m_qlistviewScheduled, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)),
@@ -85,53 +88,46 @@ void KScheduledView::refresh(const QString schedId)
 {
   m_qlistviewScheduled->clear();
 
-  if (MyMoneyScheduled::instance()->count(m_accountId) == 0)
-    return;
-
-//    MyMoneyScheduled *scheduled = MyMoneyFile::instance()->scheduledInstance();
-  MyMoneyScheduled *scheduled = MyMoneyScheduled::instance();
-
-  KScheduledListItem *itemBills = new KScheduledListItem(m_qlistviewScheduled, i18n("Bills"));
-  KScheduledListItem *itemDeposits = new KScheduledListItem(m_qlistviewScheduled, i18n("Deposits"));
-  KScheduledListItem *itemTransfers = new KScheduledListItem(m_qlistviewScheduled, i18n("Transfers"));
-  
   try
   {
-    QStringList scheduledBills = scheduled->getScheduled(m_accountId);
+    if (MyMoneyScheduled::instance()->count(m_accountId) == 0)
+      return;
+
+//    MyMoneyScheduled *scheduled = MyMoneyFile::instance()->scheduledInstance();
+    MyMoneyScheduled *scheduled = MyMoneyScheduled::instance();
+
+    KScheduledListItem *itemBills = new KScheduledListItem(m_qlistviewScheduled, i18n("Bills"));
+    KScheduledListItem *itemDeposits = new KScheduledListItem(m_qlistviewScheduled, i18n("Deposits"));
+    KScheduledListItem *itemTransfers = new KScheduledListItem(m_qlistviewScheduled, i18n("Transfers"));
+  
+    QStringList scheduledItems = scheduled->getScheduled(m_accountId);
 
     QStringList::Iterator it;
 
     KScheduledListItem *openItem=0;
 
-    for (it = scheduledBills.begin(); it != scheduledBills.end(); ++it)
+    for (it = scheduledItems.begin(); it != scheduledItems.end(); ++it)
     {
       MyMoneySchedule schedData = scheduled->getSchedule(m_accountId, *it);
+      KScheduledListItem* item=0;
 
       switch (schedData.type())
       {
         case MyMoneySchedule::TYPE_BILL:
-        {
-          KScheduledListItem *billItem = new KScheduledListItem(itemBills, m_accountId, schedData);
+          item = new KScheduledListItem(itemBills, m_accountId, schedData);
           if (schedData.id() == schedId)
-          {
-            openItem = billItem;
-          }
+            openItem = item;
           break;
-        }
         case MyMoneySchedule::TYPE_DEPOSIT:
-        {
-          KScheduledListItem *depositItem = new KScheduledListItem(itemDeposits, m_accountId, schedData);
+          item = new KScheduledListItem(itemDeposits, m_accountId, schedData);
           if (schedData.id() == schedId)
-            openItem = depositItem;
+            openItem = item;
           break;
-        }
         case MyMoneySchedule::TYPE_TRANSFER:
-        {
-          KScheduledListItem *transferItem = new KScheduledListItem(itemTransfers, m_accountId, schedData);
+          item = new KScheduledListItem(itemTransfers, m_accountId, schedData);
           if (schedData.id() == schedId)
-            openItem = transferItem;
+            openItem = item;
           break;
-        }
         case MyMoneySchedule::TYPE_ANY:
           break; // Should we display an error ?
       }
@@ -141,9 +137,9 @@ void KScheduledView::refresh(const QString schedId)
     {
       m_qlistviewScheduled->ensureItemVisible(openItem);
     }
-
   } catch (MyMoneyException *e)
   {
+    KMessageBox::error(this, e->what());
     delete e;
   }
 }
@@ -154,28 +150,36 @@ void KScheduledView::show()
 
   refresh();
   
-  emit signalViewActivated();
+  if (m_accountsCombo->count() == 0)
+  {
+    // disable operations if no accounts exist
+    m_qbuttonNew->setEnabled(false);
+    m_qbuttonDelete->setEnabled(false);
+    m_qbuttonEdit->setEnabled(false);
+    m_accountsCombo->setEnabled(false);
+    m_tabWidget->setEnabled(false);
+  }
+
+  QWidget::show();
 
   m_qlistviewScheduled->setColumnWidth(0, 100);
+  m_qlistviewScheduled->setColumnWidth(1, 120);
   m_qlistviewScheduled->setColumnWidth(2, 120);
   m_qlistviewScheduled->setColumnWidth(3, 120);
   m_qlistviewScheduled->setColumnWidth(4, 120);
-  m_qlistviewScheduled->setColumnWidth(5, 120);
-  m_qlistviewScheduled->setColumnWidth(6, 120);
-  m_qlistviewScheduled->setColumnWidth(1, m_qlistviewScheduled->width()-700);
+  m_qlistviewScheduled->setColumnWidth(0, m_qlistviewScheduled->width()-480);
 
-  QWidget::show();
+  emit signalViewActivated();
 }
 
 void KScheduledView::resizeEvent(QResizeEvent* e)
 {
   m_qlistviewScheduled->setColumnWidth(0, 100);
+  m_qlistviewScheduled->setColumnWidth(1, 120);
   m_qlistviewScheduled->setColumnWidth(2, 120);
   m_qlistviewScheduled->setColumnWidth(3, 120);
   m_qlistviewScheduled->setColumnWidth(4, 120);
-  m_qlistviewScheduled->setColumnWidth(5, 120);
-  m_qlistviewScheduled->setColumnWidth(6, 120);
-  m_qlistviewScheduled->setColumnWidth(1, m_qlistviewScheduled->width()-700);
+  m_qlistviewScheduled->setColumnWidth(0, m_qlistviewScheduled->width()-480);
 
   // call base class resizeEvent()
   kScheduledViewDecl::resizeEvent(e);
@@ -206,7 +210,14 @@ void KScheduledView::slotSelectionChanged(QListViewItem* item)
 {
   if (item)
   {
+    m_qbuttonDelete->setEnabled(true);
+    m_qbuttonEdit->setEnabled(true);
     m_selectedSchedule = ((KScheduledListItem*)item)->scheduleId();
+  }
+  else
+  {
+    m_qbuttonDelete->setEnabled(false);
+    m_qbuttonEdit->setEnabled(false);
   }
 }
 
@@ -476,5 +487,15 @@ void KScheduledView::slotListViewContextMenu(QListViewItem *item, const QPoint& 
       KMessageBox::detailedSorry(this, i18n("Error building context menu"), e->what());
       delete e;
     }
+  }
+  else
+  {
+    KIconLoader *kiconloader = KGlobal::iconLoader();
+    KPopupMenu *listViewMenu = new KPopupMenu(m_qlistviewScheduled);
+
+    listViewMenu->insertItem(kiconloader->loadIcon("new_bill", KIcon::Small), i18n("New Bill..."), this, SLOT(slotNewBill()));
+    listViewMenu->insertItem(kiconloader->loadIcon("new_deposit", KIcon::Small), i18n("New Deposit..."), this, SLOT(slotNewDeposit()));
+    listViewMenu->insertItem(kiconloader->loadIcon("new_transfer", KIcon::Small), i18n("New Transfer..."), this, SLOT(slotNewTransfer()));
+    listViewMenu->popup(pos);
   }
 }

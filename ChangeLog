@@ -1,3 +1,12 @@
+2003-07-01 Michael Edwardes <mte@users.sourceforge.net>
+  * Fixed crash in KScheduleView::refresh when no accounts exist.
+  * Monitor selections in KStartDlg so the user can select an item
+    and then press on OK and the item is executed as expected.
+  * Deselect all other highlights in KStartDlg when a selection occurs.
+  * Remember the last page in KStartDlg, (defaults to recent files page).
+  * Context menu can appear in the schedule view when there are no items.
+  * Disable schedule view if no account is available.
+
 2003-06-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * updated 'home' page for next release
   * differentiate between new account and new category

@@ -64,6 +64,9 @@ private: // Private methods
   bool isnewfile;
   bool isopenfile;
   QString templatename;
+  QVBox *templateMainFrame;
+  QFrame *recentMainFrame;
+
 protected slots:
   /** No descriptions */
   void slotOk();
@@ -71,6 +74,10 @@ private slots:
   void slotTemplateClicked(QIconViewItem *item);
   /** slot to recent view */
   void slotRecentClicked(QIconViewItem *item);
+
+  /** Handle selections */
+  void slotTemplateSelectionChanged(QIconViewItem* item);
+  void slotRecentSelectionChanged(QIconViewItem* item);
 };
 
 #endif
