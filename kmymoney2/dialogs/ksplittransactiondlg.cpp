@@ -441,8 +441,8 @@ void KSplitTransactionDlg::updateTransactionTableSize(void)
 
   // see if we need some extra lines to fill the current size with the grid
   m_numExtraLines = (tableHeight / rowHeight) - splitCount;
-  if(m_numExtraLines < 0)
-    m_numExtraLines = 0;
+  if(m_numExtraLines < 1)
+    m_numExtraLines = 1;
 
   transactionsTable->setNumRows(splitCount + m_numExtraLines);
   transactionsTable->setMaxRows(splitCount);
