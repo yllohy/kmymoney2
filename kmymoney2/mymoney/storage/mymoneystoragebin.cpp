@@ -36,8 +36,6 @@
 #include "mymoneystoragebin.h"
 #include "../mymoneyaccount.h"
 
-#include <iostream>
-
 unsigned int MyMoneyStorageBin::fileVersionRead;
 unsigned int MyMoneyStorageBin::fileVersionWrite;
 

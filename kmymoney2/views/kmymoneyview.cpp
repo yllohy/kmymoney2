@@ -16,7 +16,6 @@
 
 // #include <stdio.h>
 
-
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -53,6 +52,14 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
+// This is include is required here, because later it will produce
+// compile errors on gcc 3.2 as we redefine new() in case of _CHECK_MEMORY
+// being defined. To avoid these problems, we just include the header
+// already here in this case
+#ifdef _CHECK_MEMORY
+#include <string>
+#endif
 
 #include <../dialogs/knewaccountwizard.h>
 

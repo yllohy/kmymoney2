@@ -57,6 +57,8 @@
 #include "kstartuplogo.h"
 #include "dialogs/kbackupdlg.h"
 
+#include "mymoney/mymoneyutils.h"
+
 #define ID_STATUS_MSG 1
 
 KMyMoney2App::KMyMoney2App(QWidget *parent , const char* name)
@@ -108,6 +110,7 @@ KMyMoney2App::KMyMoney2App(QWidget *parent , const char* name)
   connect(myMoneyView, SIGNAL(signalScheduledView()), this, SLOT(slotScheduledView()));
   connect(myMoneyView, SIGNAL(signalCategoryView()), this, SLOT(slotCategoryView()));
   connect(myMoneyView, SIGNAL(signalPayeeView()), this, SLOT(slotPayeeView()));
+
 
 
   //enableFileOperations(false);
@@ -691,6 +694,7 @@ void KMyMoney2App::slotBillsAdd()
 void KMyMoney2App::slotReportBasic()
 {
   KMessageBox::information(this, "Placement holder for future addition...\nPlease wait, I'm on it.\nMichael (mte@users.sourceforge.net.");
+
 }
 
 void KMyMoney2App::slotPluginLoad()

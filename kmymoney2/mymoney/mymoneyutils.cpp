@@ -20,6 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <iostream>
+
 #include "mymoneyutils.h"
 #include "mymoneyaccount.h"
 
@@ -28,8 +30,6 @@
 #include <cstdio>
 #include <cstdarg>
 #include <cstdlib>
-
-#include <iostream>
 
 #undef new
 #undef _CheckMemory_Leak
