@@ -1153,8 +1153,8 @@ QString PivotTable::renderHTML( void ) const
 {
   DEBUG_ENTER("PivotTable::renderHTML");
 
-  MyMoneyMoney::signPosition savesignpos = MyMoneyMoney::negativeMonetarySignPosition();
-  MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
+/*  MyMoneyMoney::signPosition savesignpos = MyMoneyMoney::negativeMonetarySignPosition();
+  MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);*/
   
   QString colspan = QString(" colspan=\"%1\"").arg(m_numColumns + 1 + (m_config_f.isShowingRowTotals() ? 1 : 0) );
 
@@ -1345,7 +1345,7 @@ QString PivotTable::renderHTML( void ) const
   result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");
   result += "</table>\n";
 
-  MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
+//   MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
   
   return result;
 }

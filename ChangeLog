@@ -7,6 +7,7 @@
   * Better handling for online price update when selecting it for a single 
     stock using the right-click menu in investment summary.  Automatically
     starts the update, and only shows the selected stock.
+  * Respect KDE-wide settings for negative money sign position in reports
 
 2004-11-08 Ace Jones <acejones@users.sourceforge.net>
   * Added support for multiple accounts in a single OFX file, based on a patch

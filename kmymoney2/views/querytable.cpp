@@ -575,7 +575,7 @@ class GroupIterator
 
 void QueryTable::render( QString& result, QString& csv ) const
 {
-  MyMoneyMoney::signPosition savesignpos = MyMoneyMoney::negativeMonetarySignPosition();
+//   MyMoneyMoney::signPosition savesignpos = MyMoneyMoney::negativeMonetarySignPosition();
   unsigned char savethsep = MyMoneyMoney::thousandSeparator();
   
   MyMoneyMoney grandtotal;
@@ -700,11 +700,11 @@ void QueryTable::render( QString& result, QString& csv ) const
         {
           grandtotal += (*it_group).subtotal();
           
-          MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
+//           MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
           QString subtotal_html = (*it_group).subtotal().formatMoney();
           MyMoneyMoney::setThousandSeparator('\0');
           QString subtotal_csv = (*it_group).subtotal().formatMoney();
-          MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
+//           MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
           MyMoneyMoney::setThousandSeparator(savethsep);
 
           result += "<tr class=\"sectionfooter\">"
@@ -744,7 +744,7 @@ void QueryTable::render( QString& result, QString& csv ) const
       
       if ( moneyColumns.contains(*it_column) )
       {
-        MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
+//         MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
 
         result += QString("<td>%1&nbsp;%2</td>")
           .arg((*it_row)["currency"])
@@ -754,7 +754,7 @@ void QueryTable::render( QString& result, QString& csv ) const
 
         csv += (*it_row)["currency"] + " " + MyMoneyMoney(data).formatMoney() + ",";
 
-        MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
+//         MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
         MyMoneyMoney::setThousandSeparator(savethsep);
 
       }
@@ -787,11 +787,11 @@ void QueryTable::render( QString& result, QString& csv ) const
       (*it_group).update(TableRow());
       grandtotal += (*it_group).subtotal();
 
-      MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
+//       MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
       QString subtotal_html = (*it_group).subtotal().formatMoney();
       MyMoneyMoney::setThousandSeparator('\0');
       QString subtotal_csv = (*it_group).subtotal().formatMoney();
-      MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
+//       MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
       MyMoneyMoney::setThousandSeparator(savethsep);
 
       result += "<tr class=\"sectionfooter\">"
@@ -807,11 +807,11 @@ void QueryTable::render( QString& result, QString& csv ) const
     // Grand total
     //
     
-    MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
+//     MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
     QString grandtotal_html = grandtotal.formatMoney();
     MyMoneyMoney::setThousandSeparator('\0');
     QString grandtotal_csv = grandtotal.formatMoney();
-    MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
+//     MyMoneyMoney::setNegativeMonetarySignPosition(savesignpos);
     MyMoneyMoney::setThousandSeparator(savethsep);
 
     result += "<tr class=\"sectionfooter\">"
