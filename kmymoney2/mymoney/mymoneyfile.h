@@ -38,7 +38,7 @@
   * @see MyMoneyBank
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: mymoneyfile.h,v 1.5 2001/06/17 17:44:19 mte Exp $
+  * $Id: mymoneyfile.h,v 1.6 2001/07/07 17:46:29 mte Exp $
   *
   * @short A representation of the file format used by KMyMoney2.
 **/
@@ -254,6 +254,7 @@ public:
 
   // Payee operations
   void addPayee(const QString& newPayee, const QString address=QString::null, const QString postcode=QString::null, const QString telephone=QString::null, const QString email=QString::null);
+  void removePayee(const QString name);
   QListIterator<MyMoneyPayee> payeeIterator(void);
 
   // Copy constructors

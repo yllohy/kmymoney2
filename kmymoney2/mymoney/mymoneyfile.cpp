@@ -518,6 +518,7 @@ void MyMoneyFile::addPayee(const QString& newPayee, QString address, QString pos
   if (!found) {
     MyMoneyPayee *np = new MyMoneyPayee(newPayee, address, postcode, telephone, email);
     m_payeeList.append(np);
+    m_dirty=true;
   }
 }
 
@@ -631,4 +632,15 @@ bool MyMoneyFile::containsTransactions(void)
 {
   qDebug("STUB: in MyMoneyFile::containsTransactions");
   return m_containsTransactions;
+}
+
+void MyMoneyFile::removePayee(const QString name)
+{
+  MyMoneyPayee *payee;
+  for ( payee=m_payeeList.first(); payee!=0; payee=m_payeeList.next()) {
+    if (payee->name() == name) {
+      m_payeeList.remove();
+      m_dirty=true;
+    }
+  }
 }
