@@ -88,7 +88,7 @@ MyMoneyTransaction* MyMoneyAccount::transactionLast(void)
 
 MyMoneyTransaction* MyMoneyAccount::transactionAt(int index)
 {
- 	return m_transactions.at();
+ 	return m_transactions.at(index);
 }
 
 unsigned int MyMoneyAccount::transactionCount(void) const
