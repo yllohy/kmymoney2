@@ -75,13 +75,36 @@ public:
     */
   void setProfile(const QString& name);
 
-  void import(void);
+  /**
+    * This method actually imports the data from the selected file
+    * into the MyMoney engine. If further data is required by the
+    * user (e.g. categories, accounts, payees etc. are missing)
+    * appropriate dialogs will show up.
+    *
+    * Progress during the reading of the file is shown in the
+    * via the callback function registered with setProgressCallback()
+    *
+    * @retval true the import was finished
+    * @retval false the import was aborted by the user before the end
+    *               of the input file
+    */
+  const bool import(void);
   
   const QString scanFileForAccount(void);
 
   const MyMoneyAccount& account() const { return m_account; };
 
+  void setProgressCallback(void(*callback)(int, int, const QString&));
+  
 private:
+  /**
+    * This method is used to update the progress information. It
+    * checks if an appropriate function is known and calls it.
+    *
+    * For a parameter description see KMyMoneyView::progressCallback().
+    */
+  void signalProgress(int current, int total, const QString& = "");
+
   void runFilter(void);
 
   /**
@@ -132,6 +155,21 @@ private:
     * @return QStringList containing the lines read
     */
   const QStringList readEntry(QTextStream& s) const;
+
+  /**
+    * This method is used to get the account id of the split for
+    * a transaction from the text found in the QIF $ or L record.
+    * If an account with the name is not found, the user is asked
+    * if it should be created.
+    *
+    * @param name name of account as found in the QIF file
+    * @param value value found in the T record
+    *
+    * @return id of the account for the split. If no name is specified
+    *            or the account was not found and not created the
+    *            return value will be "".
+    */
+  const QCString checkCategory(const QString& name, const MyMoneyMoney value);
 
   /**
     * This method extracts the line beginning with the letter @p id
@@ -199,6 +237,8 @@ private:
   unsigned long           m_transactionsProcessed;
   QStringList             m_dontAskAgain;
   QMap<QString, QCString> m_accountTranslation;
+
+  void (*m_progressCallback)(int, int, const QString&);
 };
 
 #endif

@@ -38,6 +38,7 @@ class KProgress;
 class KStartupLogo;
 
 #include "views/kmymoneyview.h"
+#include "converter/mymoneyqifreader.h"
 
 /*! \mainpage KMyMoney2 Main Page for API documentation.
  *
@@ -61,7 +62,7 @@ class KStartupLogo;
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: kmymoney2.h,v 1.28 2003/02/26 19:41:46 ipwizard Exp $
+  * $Id: kmymoney2.h,v 1.29 2003/06/20 12:25:25 ipwizard Exp $
   *
   * @short Main application class.
 **/
@@ -252,6 +253,8 @@ public:
   /** initial file loader */
   void readFile(void);
 
+  static void progressCallback(int current, int total, const QString&);
+
 protected:
   /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration
    * file
@@ -374,7 +377,11 @@ public slots:
   void slotProcessExited();
 
 private:
+  bool verifyImportedData(const MyMoneyQifReader& reader);
+    
+private:
   /** the configuration object of the application */
+
 
 
   KConfig *config;
@@ -474,7 +481,8 @@ private:
   KStartupLogo* m_startLogo;
 
   int m_progressUpdate;
-
+  int m_nextUpdate;
+  
 private:
   //void disableAllAccountActions(bool enable=true);
 

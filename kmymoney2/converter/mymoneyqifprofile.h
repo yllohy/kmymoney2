@@ -1,5 +1,5 @@
 /***************************************************************************
-                          kqifprofile.h  -  description
+                          mymoneyqifprofile.h  -  description
                              -------------------
     begin                : Tue Dec 24 2002
     copyright            : (C) 2002 by Thomas Baumgart

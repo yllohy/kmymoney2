@@ -1,5 +1,5 @@
 /***************************************************************************
-                          kqifprofile.cpp  -  description
+                          mymoneyqifprofile.cpp  -  description
                              -------------------
     begin                : Tue Dec 24 2002
     copyright            : (C) 2002 by Thomas Baumgart
@@ -289,7 +289,7 @@ const QString MyMoneyQifProfile::date(const QDate& datein) const
             if(delim)
               buffer += delim;
             if(maskLen == 3)
-              buffer += datein.monthName(datein.month());
+              buffer += datein.shortMonthName(datein.month());
             else
               buffer += QString::number(datein.month());
             break;
@@ -322,7 +322,170 @@ const QString MyMoneyQifProfile::date(const QDate& datein) const
 
 const QDate MyMoneyQifProfile::date(const QString& datein) const
 {
-  return QDate(1900,1,1);
+  QString scannedParts[3];
+  QString scannedDelim[2];
+  QString formatParts[3];
+  QString formatDelim[2];
+  int part;
+  int delim;
+  unsigned int i;
+
+  qDebug("Converting '%s' with format '%s'", datein.latin1(), m_dateFormat.latin1());
+  
+  part = -1;
+  delim = 0;
+  for(i = 0; i < m_dateFormat.length(); ++i) {
+    if(m_dateFormat[i] == '%') {
+      ++part;
+      if(part == 3) {
+        qWarning("Too many parts in date format");
+        return QDate();
+      }
+      ++i;
+    }
+    switch(m_dateFormat[i].latin1()) {
+      case 'm':
+      case 'd':
+      case 'y':
+        formatParts[part] += m_dateFormat[i];
+        break;
+      case '/':
+      case '.':
+        if(delim == 2) {
+          qWarning("Too many delimiters in date format");
+          return QDate();
+        }
+        formatDelim[delim] = m_dateFormat[i];
+        ++delim;
+        break;
+      default:
+        qWarning("Invalid char in date format");
+        return QDate();
+    }
+  }
+
+  
+  part = 0;
+  delim = 0;
+  bool prevWasChar = false;
+  for(i = 0; i < datein.length(); ++i) {
+    switch(datein[i].latin1()) {
+      case '/':
+      case '.':
+      case '\'':
+        if(delim == 2) {
+          qWarning("Too many delimiters in date field");
+          return QDate();
+        }
+        scannedDelim[delim] = datein[i];
+        ++delim;
+        ++part;
+        prevWasChar = false;
+        break;
+        
+      default:
+        if(prevWasChar && datein[i].isDigit()) {
+          ++part;
+          prevWasChar = false;
+        }
+        if(datein[i].isLetter())
+          prevWasChar = true;
+        scannedParts[part] += datein[i];
+        break;
+    }
+  }
+
+  int day, mon, yr;
+  bool ok;
+  for(i = 0; i < 2; ++i) {
+    if(scannedDelim[i] != formatDelim[i]
+    && scannedDelim[i] != QChar('\'')) {
+      qWarning("Invalid delimiter %s when %s was expected",
+        scannedDelim[i].latin1(), formatDelim[i].latin1());
+      return QDate();
+    }
+  }
+  
+  QString msg("No warning!");
+  for(i = 0; i < 3; ++i) {
+    switch(formatParts[i][0].latin1()) {
+      case 'd':
+        day = scannedParts[i].toUInt(&ok);
+        msg = "Invalid numeric character in day string";
+        break;
+      case 'm':
+        if(formatParts[i].length() != 3) {
+          mon = scannedParts[i].toUInt(&ok);
+          msg = "Invalid numeric character in month string";
+        } else {
+          for(i = 1; i <= 12; ++i) {
+            if(QDate::shortMonthName(i).lower() == formatParts[i].lower()) {
+              mon = i;
+              ok = true;
+              break;
+            }
+          }
+          if(i == 13) {
+            msg = "Unknown month '" + scannedParts[i] + "'";
+          }
+        }
+        break;
+      case 'y':
+        ok = false;
+        if(scannedParts[i].length() == formatParts[i].length()) {
+          yr = scannedParts[i].toUInt(&ok);
+          msg = "Invalid numeric character in month string";
+          if(yr < 100) {      // two digit year info
+            if(i > 1) {
+              ok = true;
+              if(scannedDelim[i-1] == QChar('\'')) {
+                if(m_apostropheFormat == "1900-1949") {
+                  if(yr < 50)
+                    yr += 1900;
+                  else
+                    yr += 2000;
+                } else if(m_apostropheFormat == "1900-1999") {
+                  yr += 1900;
+                } else if(m_apostropheFormat == "2000-2099") {
+                  yr += 2000;
+                } else {
+                  msg = "Unsupported apostropheFormat!";
+                  ok = false;
+                }
+              } else {
+                if(m_apostropheFormat == "1900-1949") {
+                  if(yr < 50)
+                    yr += 2000;
+                  else
+                    yr += 1900;
+                } else if(m_apostropheFormat == "1900-1999") {
+                  yr += 2000;
+                } else if(m_apostropheFormat == "2000-2099") {
+                  yr += 1900;
+                } else {
+                  msg = "Unsupported apostropheFormat!";
+                  ok = false;
+                }
+              }
+            } else {
+              msg = "Year as first parameter is not supported!";
+            }
+          } else if(yr < 1900) {
+              msg = "Year not in range < 100 or >= 1900!";
+          } else {
+            ok = true;
+          }
+        } else {
+          msg = "Length of year does not match expected length.";
+        }
+        break;
+    }
+    if(!ok) {
+      qWarning(msg.latin1());
+      return QDate();
+    }
+  }
+  return QDate(yr, mon, day);
 }
 
 const QString MyMoneyQifProfile::twoDigitYear(const QChar delim, int yr) const

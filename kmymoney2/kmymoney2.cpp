@@ -59,11 +59,14 @@
 #include "dialogs/kbackupdlg.h"
 #include "dialogs/kexportdlg.h"
 #include "dialogs/kimportdlg.h"
+#include "dialogs/mymoneyqifprofileeditor.h"
+#include "dialogs/kimportverifydlg.h"
 
 #include "mymoney/mymoneyutils.h"
-#include "dialogs/mymoneyqifprofileeditor.h"
+
 #include "converter/mymoneyqifwriter.h"
 #include "converter/mymoneyqifreader.h"
+
 
 #define ID_STATUS_MSG 1
 
@@ -172,6 +175,8 @@ void KMyMoney2App::initActions()
 */
 
 /*  Future
+
+
   editCut = KStdAction::cut(this, SLOT(slotEditCut()), actionCollection());
   editCopy = KStdAction::copy(this, SLOT(slotEditCopy()), actionCollection());
   editPaste = KStdAction::paste(this, SLOT(slotEditPaste()), actionCollection());
@@ -236,6 +241,7 @@ void KMyMoney2App::initActions()
   new KAction(i18n("&Show tip of the day"), "idea", 0, this, SLOT(slotShowTipOfTheDay()), actionCollection(), "show_tip");
 
   // For the toolbar only
+
 //  viewUp = new KAction(i18n("Move view up..."), QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_up.xpm"))), 0, this, SLOT(slotViewUp()), actionCollection(), "view_up");
   viewUp = KStdAction::back(this, SLOT(slotViewUp()), actionCollection());
 
@@ -514,6 +520,8 @@ void KMyMoney2App::slotFileCloseWindow()
 {
   QString prevMsg = slotStatusMsg(i18n("Closing window..."));
 
+
+
   if (myMoneyView->dirty()) {
 
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
@@ -606,6 +614,7 @@ void KMyMoney2App::slotEditPaste()
   slotStatusMsg(prevMsg);
 }
 
+
 void KMyMoney2App::slotViewToolBar()
 {
   QString prevMsg = slotStatusMsg(i18n("Toggling toolbar..."));
@@ -674,13 +683,23 @@ void KMyMoney2App::slotStatusProgressBar(const int current, const int total)
       m_progressUpdate = 10;
     if(total > 1000)
       m_progressUpdate = 100;
-
+    m_nextUpdate = 0;
+    
   } else {                                // update
-    if((current % m_progressUpdate) == 0) {
+    if(current > m_nextUpdate) {
       progressBar->setProgress(current);
       qApp->processEvents();
+      m_nextUpdate += m_progressUpdate;
     }
   }
+}
+
+void KMyMoney2App::progressCallback(int current, int total, const QString& msg)
+{
+  if(!msg.isEmpty())
+    kmymoney2->slotStatusMsg(msg);
+
+  kmymoney2->slotStatusProgressBar(current, total);
 }
 
 void KMyMoney2App::slotFileViewPersonal()
@@ -718,6 +737,13 @@ void KMyMoney2App::slotBankAdd()
   myMoneyView->slotBankNew();
 }
 
+
+
+
+
+
+
+
 void KMyMoney2App::slotAccountAdd()
 {
   myMoneyView->slotAccountNew();
@@ -734,7 +760,10 @@ void KMyMoney2App::slotQifImport()
 
   KImportDlg* dlg = new KImportDlg(0);
 
+
   if(dlg->exec()) {
+    myMoneyView->suspendUpdate(true);
+    
     // construct a copy of the current engine
     MyMoneySeqAccessMgr* backup = new MyMoneySeqAccessMgr;
     MyMoneySeqAccessMgr* data = static_cast<MyMoneySeqAccessMgr *> (MyMoneyFile::instance()->storage());
@@ -743,22 +772,29 @@ void KMyMoney2App::slotQifImport()
     MyMoneyQifReader reader;
     reader.setFilename(dlg->filename());
     reader.setProfile(dlg->profile());
-    reader.import();
+    reader.setProgressCallback(&progressCallback);
     
-    if(0) {    
-      // keep the new data set, destroy the backup copy
-      delete backup;
-
-    } else {
+    if(reader.import()) {
+      
+      if(verifyImportedData(reader)) {
+        // keep the new data set, destroy the backup copy
+        delete backup;
+        backup = 0;
+      }
+    }
+    
+    if(backup != 0) {
       // user cancelled, destroy the updated set and keep the backup copy
       MyMoneyFile::instance()->detachStorage(data);
       MyMoneyFile::instance()->attachStorage(backup);
       delete data;
 
-      // update the views as they might still contain invalid data
-      // from the import session
-      myMoneyView->slotRefreshViews();
     }
+    
+    myMoneyView->suspendUpdate(false);
+    // update the views as they might still contain invalid data
+    // from the import session
+    myMoneyView->slotRefreshViews();
   }
   delete dlg;
 
@@ -866,8 +902,10 @@ void KMyMoney2App::enableAccountOperations(bool enable)
 {
   if (enable) {
     enableFileOperations(true);
+
     enableBankOperations(false);
     enableTransactionOperations(false);
+
   }
 
 //  accountAdd->setEnabled(false);
@@ -969,6 +1007,7 @@ void KMyMoney2App::slotFileBackup()
   KBackupDlg *backupDlg = new KBackupDlg(this,0/*,true*/);
   int returncode = backupDlg->exec();
 
+
   if(returncode)
   {
     m_backupMount = backupDlg->mountCheckBox->isChecked();
@@ -1020,6 +1059,7 @@ void KMyMoney2App::slotProcessExited()
               proc.start();
             } else
               m_backupState = BACKUP_IDLE;
+
           }
         }
         if(m_backupResult == 0) {
@@ -1052,6 +1092,7 @@ void KMyMoney2App::slotProcessExited()
           proc.start();
         } else {
           KMessageBox::information(this, i18n("File successfully backed up"), i18n("Backup"));
+
           m_backupState = BACKUP_IDLE;
         }
       } else {
@@ -1089,6 +1130,7 @@ void KMyMoney2App::slotProcessExited()
 void KMyMoney2App::slotFileNewWindow()
 {
   KMyMoney2App *newWin = new KMyMoney2App;
+
   newWin->show();
 }
 
@@ -1116,6 +1158,7 @@ void KMyMoney2App::slotAccountsView()
 void KMyMoney2App::disableAllAccountActions(bool enable)
 {
   enableBankOperations(false);
+
   enableAccountOperations(false);
   enableTransactionOperations(false);
 }
@@ -1127,6 +1170,7 @@ void KMyMoney2App::slotScheduledView()
 }
 
 void KMyMoney2App::slotCategoryView()
+
 {
   //disableAllAccountActions();
 }
@@ -1154,4 +1198,14 @@ void KMyMoney2App::slotQifProfileEditor(void)
   editor->exec();
 
   delete editor;
+
+}
+
+bool KMyMoney2App::verifyImportedData(const MyMoneyQifReader& reader)
+{
+  bool rc;
+  QDialog *dialog = new KImportVerifyDlg(reader.account(), this);
+  rc = (dialog->exec() == QDialog::Accepted);
+  delete dialog;
+  return rc;
 }
