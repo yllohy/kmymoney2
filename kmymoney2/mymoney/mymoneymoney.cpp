@@ -104,7 +104,7 @@ const QString MyMoneyMoney::formatMoney(/*QString locale="C", bool addPrefixPost
 */
   }
   else
-    res = QString("0")+_decimalSeparator+"00";
+    res = QString("0")+QChar(_decimalSeparator)+"00";
 
   return res;
 }
