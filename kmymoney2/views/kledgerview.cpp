@@ -49,6 +49,7 @@
 #include <kpopupmenu.h>
 #include <kiconloader.h>
 #include <kcmenumngr.h>
+#include <kcompletionbox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -2091,6 +2092,7 @@ bool KLedgerView::eventFilter(QObject* o, QEvent* e)
       QKeyEvent *k = static_cast<QKeyEvent *> (e);
       if(m_tabOrderWidgets.findRef(w) != -1) {
         rc = true;
+        bool terminate = true;
         switch(k->key()) {
           default:
             rc = false;
@@ -2100,8 +2102,20 @@ bool KLedgerView::eventFilter(QObject* o, QEvent* e)
           case Qt::Key_Enter:
             // we cannot call the slot directly, as it destroys the caller of
             // this method :-(  So we let the event handler take care of calling
-            // the respective slot using a timeout.
-            QTimer::singleShot(0, this, SLOT(slotEndEdit()));
+            // the respective slot using a timeout. For a KLineEdit derived object
+            // it could be, that at this point the user selected a value from
+            // a completion list. In this case, we close the completion list and
+            // do not end editing of the transaction.
+            if(o->inherits("KLineEdit")) {
+              KLineEdit* le = dynamic_cast<KLineEdit*> (o);
+              KCompletionBox* box = le->completionBox(false);
+              if(box && box->isVisible()) {
+                terminate = false;
+                le->completionBox(false)->hide();
+              }
+            }
+            if(terminate)
+              QTimer::singleShot(0, this, SLOT(slotEndEdit()));
             break;
 
           case Qt::Key_Escape:
