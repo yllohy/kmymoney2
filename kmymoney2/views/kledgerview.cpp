@@ -1904,8 +1904,23 @@ void KLedgerView::slotCreateSchedule(void)
     if(m_transaction.splitCount() == 2
     && m_split.action() == MyMoneySplit::ActionTransfer)
       scheduleType = MyMoneySchedule::TYPE_TRANSFER;
-      
-    schedule.setTransaction(m_transaction);
+
+    // create a copy and reset all flags
+    MyMoneyTransaction t;
+    try {
+      t = m_transaction;
+      QValueList<MyMoneySplit>::ConstIterator it_s;
+      for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+        MyMoneySplit s = *it_s;
+        s.setReconcileDate(QDate());
+        s.setReconcileFlag(MyMoneySplit::NotReconciled);
+        t.modifySplit(s);
+      }
+    } catch (MyMoneyException *e) {
+      qDebug("Unable to reset flags in %s(%d):'%s'", __FILE__, __LINE__, e->what().latin1());
+      delete e;
+    }
+    schedule.setTransaction(t);
 
     KEditScheduleDialog *m_keditscheddlg = new KEditScheduleDialog(
       m_transaction.splitByAccount(m_account.id()).action(),
