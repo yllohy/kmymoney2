@@ -26,6 +26,7 @@
   */
 
 class KAccountListItem : public QListViewItem  {
+private:
   QCString m_accountID;
   bool m_bViewNormal;
   int m_nAccountColumn;
