@@ -320,6 +320,9 @@ public slots:
 
   /** No descriptions */
   void slotProcessExited();
+  
+  /** Called to update stock and currency prices from the user menu */
+  void slotEquityPriceUpdate();
 
 private:
   bool verifyImportedData(void);

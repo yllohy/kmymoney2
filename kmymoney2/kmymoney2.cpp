@@ -66,6 +66,7 @@
 #include "dialogs/kimportverifydlg.h"
 #include "dialogs/kenterscheduledialog.h"
 #include "dialogs/kcurrencyeditdlg.h"
+#include "dialogs/kequitypriceupdatedlg.h"
 
 #include "views/kmymoneyview.h"
 
@@ -192,7 +193,7 @@ void KMyMoney2App::initActions()
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
   new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tool_currency_dialog");
-
+  new KAction(i18n("Update Stock and Currency Prices..."), "", 0, this, SLOT(slotEquityPriceUpdate()), actionCollection(), "equity_price_update");
   // The Settings Menu
   settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
   settings = KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
@@ -205,6 +206,7 @@ void KMyMoney2App::initActions()
 
   // The tool menu
   new KAction(i18n("QIF Profile Editor..."), "edit", 0, this, SLOT(slotQifProfileEditor()), actionCollection(), "qif_editor");
+  
   
   // The help menu
   new KAction(i18n("&Show tip of the day"), "idea", 0, this, SLOT(slotShowTipOfTheDay()), actionCollection(), "show_tip");
@@ -1335,4 +1337,10 @@ const QCStringList KMyMoney2App::instanceList(void) const
     }
   }
   return list;
+}
+
+void KMyMoney2App::slotEquityPriceUpdate()
+{
+  KEquityPriceUpdateDlg *pDlg = new KEquityPriceUpdateDlg(this);
+  pDlg->exec();
 }

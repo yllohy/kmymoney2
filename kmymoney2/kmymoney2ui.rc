@@ -39,6 +39,7 @@
     <Action name="qif_editor"/>
     <Action name="tool_currency_dialog"/>
     <Action name="file_consistency_check"/>
+    <Action name="equity_price_update"/>
   </Menu>
 
   <Menu name="help">
@@ -63,12 +64,12 @@
 <ToolBar name="mainToolBar" >
   <Action name="bank_add"/>
   <Action name="account_add"/>
-	<Separator/>
+  <Separator/>
   <Action name="account_open"/>
   <Action name="account_reconcile"/>
   <Action name="account_import"/>
   <Action name="account_export"/>
-	<Separator/>
+  <Separator/>
   <Action name="account_find"/>
   <Action name="go_back"/>
 </ToolBar>
