@@ -105,6 +105,7 @@
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   : KJanusWidget(parent, name, KJanusWidget::IconList),
+  m_newAccountWizard(0),
   m_searchDlg(0),
   m_fileOpen(false),
   m_bankRightClick(false)
@@ -212,9 +213,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_homeView, SIGNAL(scheduleSelected(const QCString&)),
     this, SLOT(slotScheduleSelected(const QCString&)));
   
-  m_newAccountWizard = new KNewAccountWizard(this, "NewAccountWizard");
-  connect(m_newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotBankNew()));
-
   // construct account context menu
   KIconLoader *kiconloader = KGlobal::iconLoader();
 
@@ -678,25 +676,17 @@ bool KMyMoneyView::readFile(const KURL& url)
   // stays untouched on the local filesystem
   KIO::NetAccess::removeTempFile(filename);
 
+  MyMoneyFile::instance()->suspendNotify(true);
   // we check, if we have any currency in the file. If not, we load
   // all the default currencies we know.
   if(MyMoneyFile::instance()->currencyList().count() == 0)
     loadDefaultCurrencies();
 
   // make sure, we have a base currency
-  MyMoneyFile::instance()->suspendNotify(true);
   while(MyMoneyFile::instance()->baseCurrency().id().isEmpty())
     selectBaseCurrency();
   MyMoneyFile::instance()->suspendNotify(false);
 
-  // since the new account wizard contains the payees list, we have
-  // to create the wizard completely new to get the latest list
-  // into the payees widget
-  if(m_newAccountWizard != 0)
-    delete m_newAccountWizard;
-  m_newAccountWizard = new KNewAccountWizard(this, "NewAccountWizard");
-  connect(m_newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotBankNew()));
-  
   KConfig *config = KGlobal::config();
   int page;
   config->setGroup("General Options");
@@ -881,7 +871,7 @@ void KMyMoneyView::slotBankNew(void)
       file->addInstitution(institution);
 
       // Set the institution member of KNewAccountWizard
-      if (m_newAccountWizard->isVisible())
+      if (m_newAccountWizard)
         m_newAccountWizard->setInstitution(institution);
     }
     catch (MyMoneyException *e)
@@ -915,10 +905,11 @@ void KMyMoneyView::accountNew(const bool createCategory)
   MyMoneyAccount parentAccount;
   int dialogResult;
 
-  // KConfig *config = KGlobal::config();
-  // config->setGroup("General Options");
-  if(/* config->readBoolEntry("NewAccountWizard", true) == true && */ createCategory == false) {
-    // wizard selected
+  if(createCategory == false) {
+    // create account, use wizard
+    m_newAccountWizard = new KNewAccountWizard(this, "NewAccountWizard");
+    connect(m_newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotBankNew()));
+
     m_newAccountWizard->setAccountName(QString());
     m_newAccountWizard->setOpeningBalance(0);
 
@@ -997,7 +988,8 @@ void KMyMoneyView::accountNew(const bool createCategory)
 
       // We MUST add the schedule AFTER adding the account because
       // otherwise an unknown account will be thrown.
-      createSchedule(m_newAccountWizard->schedule(), newAccount);
+      if(m_newAccountWizard != 0)
+        createSchedule(m_newAccountWizard->schedule(), newAccount);
         
       viewAccountList(newAccount.id());
     }
@@ -1008,6 +1000,10 @@ void KMyMoneyView::accountNew(const bool createCategory)
       KMessageBox::information(this, message);
       delete e;
     }
+  }
+  if(m_newAccountWizard != 0) {
+    delete m_newAccountWizard;
+    m_newAccountWizard = 0;
   }
 }
 
