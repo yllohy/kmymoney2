@@ -1241,19 +1241,15 @@ void KLedgerView::slotTypeChanged(const QCString& action)
 
 void KLedgerView::slotShowTransactionForm(bool visible)
 {
-/*
-  // if the setting is different, don't forget to update
-  // the configuration
-  if(m_transactionFormActive != visible) {
-    KConfig *config = KGlobal::config();
-    config->setGroup("General Options");
-    config->writeEntry("TransactionForm", visible);
-  }
-*/
   m_transactionFormActive = visible;
 
   if(m_form != 0) {
     if(visible) {
+      // make sure, that any pending edit activity is cancelled
+      // when the transaction form is enabled. This could happen
+      // during reconciliation.
+      slotCancelEdit();
+      
       // block signals here to avoid running into the NEW case
       // which is triggered by the signal tabBar()->selected(int)
       m_form->tabBar()->blockSignals(true);
@@ -1285,7 +1281,7 @@ void KLedgerView::slotShowTransactionForm(bool visible)
     // using a timeout is the only way, I got the 'ensureTransactionVisible'
     // working when coming from hidden form to visible form. I assume, this
     // has something to do with the delayed update of the display somehow.
-    // QTimer::singleShot(10, this, SLOT(timerDone()));
+    QTimer::singleShot(10, this, SLOT(timerDone()));
   }
 }
 

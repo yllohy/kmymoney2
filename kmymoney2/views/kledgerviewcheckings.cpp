@@ -1229,6 +1229,7 @@ void KLedgerViewCheckings::slotReconciliation(void)
 {
   slotCancelEdit();
 
+/*
   MyMoneyMoney lastReconciledBalance(m_account.value("lastReconciledBalance"));
   if(lastReconciledBalance == 0)
     lastReconciledBalance = MyMoneyMoney(m_account.value("lastStatementBalance"));
@@ -1241,12 +1242,33 @@ void KLedgerViewCheckings::slotReconciliation(void)
     
   if(!statementDate.isValid())
     statementDate = QDate::currentDate();
-
-  KEndingBalanceDlg dlg(lastReconciledBalance, statementBalance, statementDate);
+*/
+  KEndingBalanceDlg dlg(m_account);
 
   if(dlg.exec()) {
     QCString transactionId;
 
+    // check if the user requests us to create interest
+    // or charge transactions.
+    MyMoneyTransaction ti = dlg.interestTransaction();
+    MyMoneyTransaction tc = dlg.chargeTransaction();
+    if(!(ti == MyMoneyTransaction())) {
+      try {
+        MyMoneyFile::instance()->addTransaction(ti);
+      } catch(MyMoneyException *e) {
+        qWarning("interest transaction not stored: '%s'", e->what().data());
+        delete e;
+      }
+    }
+    if(!(tc == MyMoneyTransaction())) {
+      try {
+        MyMoneyFile::instance()->addTransaction(tc);
+      } catch(MyMoneyException *e) {
+        qWarning("charge transaction not stored: '%s'", e->what().data());
+        delete e;
+      }
+    }
+    
     m_infoStack->raiseWidget(KLedgerView::Reconciliation);
     m_inReconciliation = true;
     m_summaryLine->hide();
@@ -1254,7 +1276,7 @@ void KLedgerViewCheckings::slotReconciliation(void)
 
     m_prevBalance = dlg.previousBalance();
     m_endingBalance = dlg.endingBalance();
-    m_endingDate = dlg.endingDate();
+    m_endingDate = dlg.statementDate();
 
     refreshView();
     fillReconcileData();

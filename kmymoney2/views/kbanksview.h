@@ -62,7 +62,7 @@ private:
   bool m_bSelectedInstitution;
 
   void refresh(const QCString& selectAccount);
-  void refreshTotalProfit(void);
+  void refreshNetWorth(void);
   const bool showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const QString& group);
 
   QMap<QCString, MyMoneyAccount> m_accountMap;

@@ -506,7 +506,7 @@ void KAccountsView::update(const QCString& id)
       refresh(id);
     }
     if(id == MyMoneyFile::NotifyClassAccount)
-      refreshTotalProfit();
+      refreshNetWorth();
   }
 }
 
@@ -526,7 +526,7 @@ void KAccountsView::suspendUpdate(const bool suspend)
     refresh(MyMoneyFile::NotifyClassAccountHierarchy);
     if(m_bViewNormalAccountsView == true)
       refresh(MyMoneyFile::NotifyClassInstitution);
-    refreshTotalProfit();
+    refreshNetWorth();
   }
   
   m_suspendUpdate = suspend;
@@ -539,28 +539,29 @@ void KAccountsView::slotRefreshView(void)
   refresh(m_selectedAccount);
 }
 
-void KAccountsView::refreshTotalProfit(void)
+void KAccountsView::refreshNetWorth(void)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   QFont defaultFont = QFont("helvetica", 12);
 
-  MyMoneyMoney totalProfit;
+  MyMoneyMoney netWorth;
   MyMoneyFile* file = MyMoneyFile::instance();
 
   MyMoneyAccount liabilityAccount = file->liability();
   MyMoneyAccount assetAccount = file->asset();
 
-  totalProfit = file->totalBalance(assetAccount.id()) +
-                file->totalBalance(liabilityAccount.id());
+  netWorth = file->totalBalance(assetAccount.id()) +
+             file->totalBalance(liabilityAccount.id());
 
-  QString s(i18n("Total Profits: "));
-  s += totalProfit.formatMoney();
+  QString s(i18n("Net Worth: "));
+  s += netWorth.formatMoney();
 
 
   totalProfitsLabel->setFont(config->readFontEntry("listCellFont", &defaultFont));
   totalProfitsLabel->setText(s);
 }
+
 
 
 
@@ -769,6 +770,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
       KAccountListItem *incomeTopLevelAccount = new KAccountListItem(accountListView,
             incomeAccount);
 
+
       for ( QCStringList::ConstIterator it = incomeAccount.accountList().begin();
             it != incomeAccount.accountList().end();
             ++it ) {
@@ -826,7 +828,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
   m_accountMap.clear();
   m_transactionCountMap.clear();
 
-  refreshTotalProfit();
+  refreshNetWorth();
 
 /*
 
