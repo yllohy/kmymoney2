@@ -1,4 +1,9 @@
 2002-01-29 Kevin Tambascio <ktambascio@users.sourceforge.net>
+  * Added MyMoneyEquity and MyMoneyEquityList classes, to store information about stocks, mutul funds.
+  * Added MyMoneyUtil.cpp and .h to put global/static utility functions, typedefs.
+  * Added STL support for the MyMoneyUtil class.  Just include "mymoneyutils.h" to access STL.
+
+2002-01-29 Kevin Tambascio <ktambascio@users.sourceforge.net>
   * Added stock transaction view files, no new functionality yet.
 
 2002-01-28 Thomas Baumgart <ipwizard@users.sourceforge.net>

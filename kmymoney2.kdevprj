@@ -939,7 +939,7 @@ install_location=$$(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
 type=DATA
 
 [kmymoney2/mymoney/Makefile.am]
-files=kmymoney2/mymoney/mymoneyaccount.cpp,kmymoney2/mymoney/mymoneyaccount.h,kmymoney2/mymoney/mymoneybank.cpp,kmymoney2/mymoney/mymoneybank.h,kmymoney2/mymoney/mymoneycategory.cpp,kmymoney2/mymoney/mymoneycategory.h,kmymoney2/mymoney/mymoneyfile.cpp,kmymoney2/mymoney/mymoneyfile.h,kmymoney2/mymoney/mymoneymoney.cpp,kmymoney2/mymoney/mymoneymoney.h,kmymoney2/mymoney/mymoneypayee.cpp,kmymoney2/mymoney/mymoneypayee.h,kmymoney2/mymoney/mymoneyscheduled.cpp,kmymoney2/mymoney/mymoneyscheduled.h,kmymoney2/mymoney/mymoneytransaction.cpp,kmymoney2/mymoney/mymoneytransaction.h,kmymoney2/mymoney/readme-mymoney.txt,kmymoney2/mymoney/mymoney_config.h,kmymoney2/mymoney/mymoneysplittransaction.cpp,kmymoney2/mymoney/mymoneysplittransaction.h,kmymoney2/mymoney/mymoneytransactionbase.cpp,kmymoney2/mymoney/mymoneytransactionbase.h
+files=kmymoney2/mymoney/mymoneyaccount.cpp,kmymoney2/mymoney/mymoneyaccount.h,kmymoney2/mymoney/mymoneybank.cpp,kmymoney2/mymoney/mymoneybank.h,kmymoney2/mymoney/mymoneycategory.cpp,kmymoney2/mymoney/mymoneycategory.h,kmymoney2/mymoney/mymoneyfile.cpp,kmymoney2/mymoney/mymoneyfile.h,kmymoney2/mymoney/mymoneymoney.cpp,kmymoney2/mymoney/mymoneymoney.h,kmymoney2/mymoney/mymoneypayee.cpp,kmymoney2/mymoney/mymoneypayee.h,kmymoney2/mymoney/mymoneyscheduled.cpp,kmymoney2/mymoney/mymoneyscheduled.h,kmymoney2/mymoney/mymoneytransaction.cpp,kmymoney2/mymoney/mymoneytransaction.h,kmymoney2/mymoney/readme-mymoney.txt,kmymoney2/mymoney/mymoney_config.h,kmymoney2/mymoney/mymoneysplittransaction.cpp,kmymoney2/mymoney/mymoneysplittransaction.h,kmymoney2/mymoney/mymoneytransactionbase.cpp,kmymoney2/mymoney/mymoneytransactionbase.h,kmymoney2/mymoney/mymoneyequity.cpp,kmymoney2/mymoney/mymoneyequity.h,kmymoney2/mymoney/mymoneyutils.h,kmymoney2/mymoney/mymoneyutils.cpp,kmymoney2/mymoney/mymoneyequitylist.cpp,kmymoney2/mymoney/mymoneyequitylist.h
 sub_dirs=
 type=static_library
 
@@ -980,6 +980,30 @@ install_location=
 type=SOURCE
 
 [kmymoney2/mymoney/mymoneycategory.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/mymoney/mymoneyequity.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/mymoney/mymoneyequity.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/mymoney/mymoneyequitylist.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/mymoney/mymoneyequitylist.h]
 dist=true
 install=false
 install_location=
@@ -1064,6 +1088,18 @@ install_location=
 type=SOURCE
 
 [kmymoney2/mymoney/mymoneytransactionbase.h]
+dist=true
+install=false
+install_location=
+type=HEADER
+
+[kmymoney2/mymoney/mymoneyutils.cpp]
+dist=true
+install=false
+install_location=
+type=SOURCE
+
+[kmymoney2/mymoney/mymoneyutils.h]
 dist=true
 install=false
 install_location=
