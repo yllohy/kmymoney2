@@ -1,3 +1,6 @@
+2004-04-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed some problems around multi currency and account/category creation
+
 2004-04-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Revised view activation signalling
   * Added print button and file print option which is active for reports
