@@ -59,7 +59,7 @@ kMyMoneyTransactionFormTable::kMyMoneyTransactionFormTable( KLedgerView* view, Q
 }
 
 /** Override the QTable member function to avoid display of focus */
-void kMyMoneyTransactionFormTable::paintFocus(QPainter *p, const QRect &cr)
+void kMyMoneyTransactionFormTable::paintFocus(QPainter* /* p */, const QRect& /* cr */)
 {
 }
 
