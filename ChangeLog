@@ -1,8 +1,16 @@
-2202-11-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2002-11-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added MyMoneyKeyValueContainer class to have the ability to
+    add a variable number of arguments to an engine object
+  * Fixed reader for old format to interpret account type correctly
+  * Fixed testcases as well
+  * Fixed settings dialog to set the startdate to 1.1.1970 if not
+    present in kmymoney2rc file. Otherwise, it would use currentDate.
+ 
+2002-11-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support for network file access over the protocols
     provided by KIO (ftp, http, smb etc.)
 
-2202-11-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2002-11-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support for compressed file I/O. The reader checks if an
     uncompressed or compressed file is read. The writer always adds
     compression. This can be turned off by setting the switch
