@@ -366,7 +366,6 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
   }
   catch (MyMoneyException *e)
   {
-    qDebug("No parent available. Use the corresponding top level parent");
     m_bSelectedParentAccount = false;
     parentAccount();
     parentId = m_parentAccount.id();
