@@ -117,8 +117,12 @@ void KReportsView::KReportTab::copyToClipboard(void)
 void KReportsView::KReportTab::saveAs( const QString& filename )
 {
   QFile file( filename );
-  if ( file.open( IO_WriteOnly ) ) {
-    QTextStream(&file) <<  createTable();
+  if ( file.open( IO_WriteOnly ) ) 
+  {
+    if ( QFileInfo(filename).extension(false).lower() == "csv")
+      QTextStream(&file) << PivotTable( MyMoneyFile::instance()->report(m_reportId) ).renderCSV();
+    else
+      QTextStream(&file) <<  createTable();
     file.close();
   }
 }
