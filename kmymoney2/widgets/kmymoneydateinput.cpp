@@ -51,10 +51,10 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   m_date = QDate::currentDate();
 
   dateEdit = new QDateEdit(m_date, this, "dateEdit");
-	setFocusProxy(dateEdit);
+  setFocusProxy(dateEdit);
 
   m_dateFrame = new QVBox(0,0,WType_Popup);
-	m_dateFrame->setFrameStyle(QFrame::PopupPanel | QFrame::Raised);
+  m_dateFrame->setFrameStyle(QFrame::PopupPanel | QFrame::Raised);
   m_dateFrame->setLineWidth(3);
   m_dateFrame->hide();
 
@@ -81,22 +81,21 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   }
   dateEdit->setSeparator(separator);
 
-	m_datePicker = new KDatePicker(m_dateFrame, m_date);
+  m_datePicker = new KDatePicker(m_dateFrame, m_date);
 #if KDE_VERSION >= 310
   // Let the date picker have a close button (Added in 3.1)
   m_datePicker->setCloseButton(true);
 #endif
 
   // the next line is a try to add an icon to the button
-	m_dateButton = new QPushButton(QIconSet(QPixmap( locate("icon","hicolor/16x16/apps/korganizer.png"))), QString(""), this);
+  m_dateButton = new QPushButton(QIconSet(QPixmap( locate("icon","hicolor/16x16/apps/korganizer.png"))), QString(""), this);
   m_dateButton->setMinimumWidth(30);
-	// m_dateButton = new QPushButton(this);
 
-	connect(m_dateButton,SIGNAL(clicked()),SLOT(toggleDatePicker()));
+  connect(m_dateButton,SIGNAL(clicked()),SLOT(toggleDatePicker()));
   connect(dateEdit, SIGNAL(valueChanged(const QDate&)), this, SLOT(slotDateChosenRef(const QDate&)));
-	connect(m_datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(slotDateChosen(QDate)));
+  connect(m_datePicker, SIGNAL(dateSelected(QDate)), this, SLOT(slotDateChosen(QDate)));
   connect(m_datePicker, SIGNAL(dateEntered(QDate)), this, SLOT(slotDateChosen(QDate)));
-	connect(m_datePicker, SIGNAL(dateSelected(QDate)), m_dateFrame, SLOT(hide()));
+  connect(m_datePicker, SIGNAL(dateSelected(QDate)), m_dateFrame, SLOT(hide()));
 }
 
 void kMyMoneyDateInput::show(void)
@@ -157,10 +156,9 @@ void kMyMoneyDateInput::toggleDatePicker()
 	    m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), w, h);
 		}
 
-    QDate date = dateEdit->date();
-    if(date.isValid())
+    if(m_date.isValid())
 		{
-      m_datePicker->setDate(date);
+      m_datePicker->setDate(m_date);
     }
 		else
 		{
@@ -221,19 +219,18 @@ void kMyMoneyDateInput::keyPressEvent(QKeyEvent * k)
 
 void kMyMoneyDateInput::slotDateChosenRef(const QDate& date)
 {
-  slotDateChosen(QDate(date));
+  if(date.isValid()) {
+    emit dateChanged(date);
+    m_date=date;
+  }
 }
 
 void kMyMoneyDateInput::slotDateChosen(QDate date)
 {
-  dateEdit->blockSignals(true);
-  dateEdit->setDate(date);
-  m_datePicker->setDate(date);
-  m_date=date;
-
-  emit dateChanged(date);
-
-  dateEdit->blockSignals(false);
+  if(date.isValid()) {
+    // the next line implies a call to slotDateChosenRef() above
+    dateEdit->setDate(date);
+  }
 }
 
 QDate kMyMoneyDateInput::getQDate(void)

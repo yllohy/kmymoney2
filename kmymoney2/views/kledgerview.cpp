@@ -1154,7 +1154,6 @@ void KLedgerView::slotDateChanged(const QDate& date)
   MyMoneySplit s = m_split;
   try {
     m_transaction.setPostDate(date);
-    m_editDate->loadDate(date);
 
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to modify number"),
