@@ -108,6 +108,12 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     s << "  ID = " << (*it_t).id() << "\n";
     s << "  Postdate  = " << (*it_t).postDate().toString() << "\n";
     s << "  EntryDate = " << (*it_t).entryDate().toString() << "\n";
+    s << "  KVP: " << "\n";
+    QMap<QCString, QString>kvp = (*it_t).pairs();
+    QMap<QCString, QString>::Iterator it;
+    for(it = kvp.begin(); it != kvp.end(); ++it) {
+      s << "    '" << it.key() << "' = '" << it.data() << "'\n";
+    }
     s << "  Splits\n";
     s << "  ------\n";
     QValueList<MyMoneySplit>::ConstIterator it_s;
