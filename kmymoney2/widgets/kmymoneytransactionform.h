@@ -39,8 +39,8 @@
 // Project Includes
 
 class QVBoxLayout;
-class QHBoxLayout; 
-class QGridLayout; 
+class QHBoxLayout;
+class QGridLayout;
 class KPushButton;
 class QFrame;
 class QTable;
@@ -61,24 +61,28 @@ public:
   void paintFocus(QPainter *p, const QRect &cr);
   QWidget* createEditor(int row, int col, bool initFromCell) const;
 
-  void setEditable(int row, int col, bool editable = true);
+  void setEditable(const int row, const int col, const bool editable = true);
+
   void clearEditable(void);
 
   bool eventFilter( QObject * o, QEvent * );
 
   QSize sizeHint() const;
-  
+
+  void adjustColumn(const int col, const int minWidth = 0);
+
+  void setNumRows(const int r, const int rowHeight);
+
 public slots:
   virtual void setNumCols(int c);
-  virtual void setNumRows(int r);
-  
+
 protected:
   bool focusNextPrevChild(bool next);
 
 private:
   void resizeEditable(int r, int c);
   QSize tableSize(void) const;
-  
+
 private:
   QBitArray m_editable;
   KLedgerView*  m_view;
@@ -123,11 +127,11 @@ private:
 };
 
 class kMyMoneyTransactionForm : public QWidget
-{ 
+{
   Q_OBJECT
 
 public:
-  kMyMoneyTransactionForm( KLedgerView* parent = 0, const char* name = 0, WFlags fl = 0, const int rows = 4, const int cols = 4 );
+  kMyMoneyTransactionForm( KLedgerView* parent = 0, const char* name = 0, WFlags fl = 0, const int rows = 4, const int cols = 4 , const int rowHeight = 25);
   ~kMyMoneyTransactionForm();
 
   void addTab(QTab *tab) { m_tabBar->addTab(tab); };

@@ -108,7 +108,7 @@ void kMyMoneyRegisterSearch::paintCell(QPainter *p, int row, int col, const QRec
             break;
         }
         break;
-        
+
       case 2:
         align |= Qt::AlignLeft;
         switch(m_transactionRow) {
@@ -123,7 +123,7 @@ void kMyMoneyRegisterSearch::paintCell(QPainter *p, int row, int col, const QRec
             break;
         }
         break;
-        
+
       case 3:
         align |= Qt::AlignLeft;
         switch(m_transactionRow) {
@@ -144,7 +144,7 @@ void kMyMoneyRegisterSearch::paintCell(QPainter *p, int row, int col, const QRec
               if(m_transaction->isLoanPayment()) {
                 txt = QString(i18n("Loan payment"));
               } else if(m_transaction->splitCount() > 2)
-                txt = QString(i18n("Splitted transaction"));
+                txt = QString(i18n("Split transaction"));
               else {
                 MyMoneySplit split = m_transaction->splitByAccount(m_split.accountId(), false);
                 txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
@@ -159,7 +159,7 @@ void kMyMoneyRegisterSearch::paintCell(QPainter *p, int row, int col, const QRec
             break;
         }
         break;
-        
+
       case 4:
         switch(m_transactionRow) {
           case 0:
@@ -198,10 +198,10 @@ void kMyMoneyRegisterSearch::adjustColumn(int col)
   QHeader *topHeader = horizontalHeader();
   QFontMetrics fontMetrics(m_cellFont);
   QString txt;
-  
+
   int w = topHeader->fontMetrics().width( topHeader->label( col ) ) + 10;
   int nw;
-  
+
   if ( topHeader->iconSet( col ) )
     w += topHeader->iconSet( col )->pixmap().width();
   w = QMAX( w, 20 );

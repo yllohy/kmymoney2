@@ -47,7 +47,7 @@ class kMyMoneyTransactionFormTable;
 
 class KLedgerViewLoan : public KLedgerView  {
    Q_OBJECT
-public: 
+public:
   KLedgerViewLoan(QWidget *parent=0, const char *name=0);
   ~KLedgerViewLoan();
 
@@ -79,7 +79,7 @@ protected:
   void fillForm(void);
 
   void fillFormStatics(void);
-  
+
   void resizeEvent(QResizeEvent*);
 
   /**
@@ -93,6 +93,8 @@ protected:
     * This destroys and hides the widgets used to edit a transaction.
     */
   void hideWidgets(void);
+
+  virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s);
 
   /**
     * This method is called to determine the next widget that receives focus
@@ -149,7 +151,7 @@ protected slots:
     * selected account.
     */
   virtual void slotLoanAccountDetail(void);
-  
+
   /**
     * Calling this slot opens the account edit dialog for the current
     * selected account.
@@ -176,40 +178,26 @@ private:
     * This method loads the data of the current transaction into the
     * widgets created with createEditWidgets(). If different widgets are
     * required for in-register and in-form editing, all widgets will be filled.
-    * This method also analyses the data of the transaction and determines
-    * the transaction type which is returned in the parameter @p transType.
-    *
-    * @param transType reference to transaction type. The method will set this
-    *                  value upon return to the caller.
-    * @return The return value is passed in the variable referenced by @p transType
     */
-  void loadEditWidgets(int& transType);
+  void loadEditWidgets(void);
 
   /**
-    * This method arranges the widgets required for in-form editing in the
-    * form according to the transaction type passed by @p transType. It destroys
+    * This method arranges the widgets required for in-form editing. It destroys
     * all widgets that have been created specifically for in-register editing.
-    * Depending on the transaction type, the @p focusWidget will be selected.
+    * A pointer to the widget that should receive the focus is returned.
     *
-    * @param focusWidget reference to pointer which will point to the widget
-    *                    that should receive focus when editing starts.
-    * @param transType type of transaction as determined by loadEditWidgets()
-    * @return The return value is passed in the variable referenced by @p focusWidget.
+    * @return pointer to the widget that should receive focus when editing starts.
     */
-  void arrangeEditWidgetsInForm(QWidget*& focusWidget, const int transType);
+  QWidget* arrangeEditWidgetsInForm(void);
 
   /**
-    * This method arranges the widgets required for in-register editing in the
-    * register according to the transaction type passed by @p transType. It destroys
+    * This method arranges the widgets required for in-register editing. It destroys
     * all widgets that have been created specifically for in-form editing.
-    * Depending on the transaction type, the @p focusWidget will be selected.
+    * A pointer to the widget that should receive the focus is returned.
     *
-    * @param focusWidget reference to pointer which will point to the widget
-    *                    that should receive focus when editing starts.
-    * @param transType type of transaction as determined by loadEditWidgets()
-    * @return The return value is passed in the variable referenced by @p focusWidget.
+    * @return pointer to the widget that should receive focus when editing starts.
     */
-  void arrangeEditWidgetsInRegister(QWidget*& focusWidget, const int transType);
+  QWidget* arrangeEditWidgetsInRegister(void);
 
   /**
     * This method is used by the constructor to create the necessary widgets
@@ -257,7 +245,7 @@ protected:
   KPushButton*  m_reconcileButton;
   KPushButton*  m_interestButton;
   KPushButton*  m_loanDetailsButton;
-  
+
   /**
     * This member keeps a pointer to the summary line
     * which is located underneath the register. The

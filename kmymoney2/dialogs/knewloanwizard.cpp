@@ -52,6 +52,7 @@
 #include "../widgets/kmymoneyaccountselector.h"
 
 #include "../dialogs/knewaccountdlg.h"
+#include "../dialogs/ksplittransactiondlg.h"
 
 #include "../mymoney/mymoneyfinancialcalculator.h"
 #include "../mymoney/mymoneyfile.h"
@@ -133,6 +134,13 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
     
   // for now, we don't have online help :-(
   helpButton()->hide();
+
+  // setup a phony transaction for additional fee processing
+  m_account = MyMoneyAccount(QCString("Phony-ID"), MyMoneyAccount());
+  MyMoneySplit split;
+  split.setAccountId(m_account.id());
+  split.setValue(0);
+  m_transaction.addSplit(split);
 }
 
 KNewLoanWizard::~KNewLoanWizard()
@@ -912,19 +920,40 @@ void KNewLoanWizard::loadAccountList(void)
 
 void KNewLoanWizard::slotAdditionalFees(void)
 {
-  KMessageBox::information(0, QString("Not yet implemented ... if you want to help, contact kmymoney2-developer@lists.sourceforge.net"), QString("Development notice"));
+  // KMessageBox::information(0, QString("Not yet implemented ... if you want to help, contact kmymoney2-developer@lists.sourceforge.net"), QString("Development notice"));
+  MyMoneyAccount account(QCString("Phony-ID"), MyMoneyAccount());
+
+  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction, account, false, !m_borrowButton->isChecked(), MyMoneyMoney(0));
+  
+  if(dlg->exec() == QDialog::Accepted) {
+    m_transaction = dlg->transaction();
+    // sum up the additional fees
+    QValueList<MyMoneySplit>::ConstIterator it;
+
+    MyMoneyMoney fees;
+    for(it = m_transaction.splits().begin(); it != m_transaction.splits().end(); ++it) {
+      if((*it).accountId() != account.id()) {
+        fees += (*it).value();
+      }
+    }
+    m_additionalCost->setText(fees.abs().formatMoney());
+  }
+  
+  delete dlg;
   updatePeriodicPayment();
 }
 
-const MyMoneySchedule KNewLoanWizard::schedule() const
+const MyMoneyTransaction KNewLoanWizard::transaction() const
 {
   MyMoneyTransaction t;
-  
+
   MyMoneySplit sPayment, sInterest, sAmortization;
-  // accounts
+  // setup accounts. at this point, we cannot fill in the id of the
+  // account that the amortization will be performed on, because we
+  // create the is account. So the id is yet unknown.
   sPayment.setAccountId(m_paymentAccountEdit->selectedAccounts().first());
   sInterest.setAccountId(m_interestAccountEdit->selectedAccounts().first());
-  
+
   // values
   if(m_borrowButton->isChecked()) {
     sPayment.setValue(-m_paymentEdit->getMoneyValue());
@@ -934,7 +963,7 @@ const MyMoneySchedule KNewLoanWizard::schedule() const
   sInterest.setValue(MyMoneyMoney::minValue+1);
   sAmortization.setValue(MyMoneyMoney::minValue+1);
 
-  // actions  
+  // actions
   sPayment.setAction(MyMoneySplit::ActionAmortization);
   sAmortization.setAction(MyMoneySplit::ActionAmortization);
   sInterest.setAction(MyMoneySplit::ActionInterest);
@@ -950,14 +979,30 @@ const MyMoneySchedule KNewLoanWizard::schedule() const
       delete e;
     }
   }
-  
+
   // IMPORTANT: Payment split must be the first one, because
   //            the schedule view expects it this way during display
   t.addSplit(sPayment);
   t.addSplit(sAmortization);
   t.addSplit(sInterest);
-  // FIXME: copy over the splits from the other costs, we don't have that yet
-    
+
+  // copy the splits from the other costs and update the payment split
+  MyMoneyAccount account(QCString("Phony-ID"), MyMoneyAccount());
+  QValueList<MyMoneySplit>::ConstIterator it;
+  for(it = m_transaction.splits().begin(); it != m_transaction.splits().end(); ++it) {
+    if((*it).accountId() != account.id()) {
+      MyMoneySplit sp = (*it);
+      sp.setId(QCString());
+      t.addSplit(sp);
+      sPayment.setValue(sPayment.value()-sp.value());
+      t.modifySplit(sPayment);
+    }
+  }
+  return t;
+}
+
+const MyMoneySchedule KNewLoanWizard::schedule() const
+{
   MyMoneySchedule sched(m_nameEdit->text(),
                         MyMoneySchedule::TYPE_LOANPAYMENT,
                         KMyMoneyUtils::stringToOccurence(m_paymentFrequencyUnitEdit->currentText()),
@@ -967,7 +1012,7 @@ const MyMoneySchedule KNewLoanWizard::schedule() const
                         false,
                         false);
 
-  sched.setTransaction(t);
+  sched.setTransaction(transaction());
   
   return sched;
 }

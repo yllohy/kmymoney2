@@ -34,11 +34,13 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kdeversion.h>
 #include <klocale.h>
 #include <kglobal.h>
 #include <kpushbutton.h>
 #include <kiconloader.h>
 #include <kguiitem.h>
+#include <kglobalsettings.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -68,7 +70,7 @@ QWidget* kMyMoneyTransactionFormTable::createEditor(int row, int col, bool initF
   return QTable::createEditor(row, col, initFromCell);
 }
 
-void kMyMoneyTransactionFormTable::setEditable(int row, int col, bool flag)
+void kMyMoneyTransactionFormTable::setEditable(const int row, const int col, const bool flag)
 {
   if(row >= 0 && row < numRows() && col >= 0 && col < numCols())
     m_editable[row * numCols() + col] = flag;
@@ -80,12 +82,12 @@ void kMyMoneyTransactionFormTable::setNumCols(int c)
   QTable::setNumCols(c);
 }
 
-void kMyMoneyTransactionFormTable::setNumRows(int r)
+void kMyMoneyTransactionFormTable::setNumRows(const int r, const int rowHeight)
 {
   resizeEditable(r, numCols());
   QTable::setNumRows(r);
   for(int i = 0; i < r; ++i)
-    QTable::setRowHeight(i, 22);
+    QTable::setRowHeight(i, rowHeight);
 }
 
 void kMyMoneyTransactionFormTable::resizeEditable(int r, int c)
@@ -136,6 +138,18 @@ QSize kMyMoneyTransactionFormTable::sizeHint(void) const
   return QSize(tableSize().width() + vmargin + 5, tableSize().height() + topMargin() + 5);
 }
 
+void kMyMoneyTransactionFormTable::adjustColumn(const int col, const int minWidth)
+{
+  QFontMetrics fontMetrics(KGlobalSettings::generalFont());
+
+  // scan through the rows
+  int w = minWidth;
+  for ( int i = numRows()-1; i >= 0; --i ) {
+    w = QMAX(w, fontMetrics.width(text(i, col)+"  "));
+  }
+  setColumnWidth( col, w );
+}
+
 /* -------------------------------------------------------------------------------*/
 /*                         kMyMoneyTransactionFormTableItem                       */
 /* -------------------------------------------------------------------------------*/
@@ -184,11 +198,12 @@ void kMyMoneyTransactionFormTableItem::setAlignment(alignmentTypeE type)
  *  Constructs a kMyMoneyTransactionForm which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const char* name, WFlags fl, const int rows, const int cols)
+kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const char* name, WFlags fl, const int rows, const int cols, const int rowHeight)
     : QWidget( parent, name, fl )
 {
   m_view = parent;
   formLayout = new QVBoxLayout( this, 0, 0, "formLayout");
+  int buttonWidth = 0;
 
   m_tabBar = new QTabBar( this, "tabBar" );
   m_tabBar->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, m_tabBar->sizePolicy().hasHeightForWidth() ) );
@@ -200,20 +215,20 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
                                          QSizePolicy::Minimum,
                                          0, 0,
                                          formFrame->sizePolicy().hasHeightForWidth() ) );
-  formFrame->setFrameShape( QFrame::StyledPanel );
+  formFrame->setFrameShape( QFrame::Panel );
   formFrame->setFrameShadow( QFrame::Raised );
   formFrameLayout = new QGridLayout( formFrame, 1, 1, 11, 6, "formFrameLayout");
 
   buttonLayout = new QHBoxLayout( 0, 0, 10, "buttonLayout");
 
   KIconLoader *il = KGlobal::iconLoader();
-  
+
   KGuiItem newButtItem( i18n( "&New" ),
-                    QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),  
+                    QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Create a new transaction"),
                     i18n("Use this to create a new transaction in the ledger"));
   buttonNew = new KPushButton( newButtItem, formFrame, "buttonNew" );
-  buttonNew->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
+  buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
   buttonLayout->addWidget( buttonNew );
 
   KGuiItem editButtItem( i18n( "&Edit" ),
@@ -221,7 +236,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
                     i18n("Modify a transaction"),
                     i18n("Use this to modify the current selected transaction in the ledger"));
   buttonEdit = new KPushButton( editButtItem, formFrame, "buttonEdit" );
-  buttonEdit->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonEdit->sizePolicy().hasHeightForWidth() ) );
+  buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
   buttonLayout->addWidget( buttonEdit );
 
   KGuiItem enterButtItem( i18n( "Enter" ),
@@ -229,7 +244,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
                     i18n("Enter transaction into ledger"),
                     i18n("Use this to enter the current transaction into the ledger"));
   buttonEnter = new KPushButton( enterButtItem, formFrame, "buttonEnter" );
-  buttonEnter->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonEnter->sizePolicy().hasHeightForWidth() ) );
+  buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
   buttonLayout->addWidget( buttonEnter );
 
   KGuiItem cancelButtItem( i18n( "&Cancel" ),
@@ -237,7 +252,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
                     i18n("Forget changes made to this transaction"),
                     i18n("Use this to abort the changes to the current transaction"));
   buttonCancel = new KPushButton( cancelButtItem, formFrame, "buttonCancel" );
-  buttonCancel->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonCancel->sizePolicy().hasHeightForWidth() ) );
+  buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
   buttonLayout->addWidget( buttonCancel );
 
   KGuiItem moreButtItem( i18n( "M&ore" ),
@@ -245,10 +260,23 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
                     i18n("Access more functions"),
                     i18n("Use this to access special functions"));
   buttonMore = new KPushButton( moreButtItem, formFrame, "buttonMore" );
-  buttonMore->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)3, (QSizePolicy::SizeType)0, 0, 0, buttonMore->sizePolicy().hasHeightForWidth() ) );
+  buttonNew->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed, 0, 0, buttonNew->sizePolicy().hasHeightForWidth() ) );
   buttonLayout->addWidget( buttonMore );
-  
-  QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+
+  // make all buttons the same width
+  buttonNew->update();
+  buttonWidth = buttonNew->sizeHint().width();
+  buttonWidth = QMAX(buttonWidth, buttonEdit->sizeHint().width());
+  buttonWidth = QMAX(buttonWidth, buttonEnter->sizeHint().width());
+  buttonWidth = QMAX(buttonWidth, buttonCancel->sizeHint().width());
+  buttonWidth = QMAX(buttonWidth, buttonMore->sizeHint().width());
+  buttonNew->setMinimumWidth(buttonWidth);
+  buttonEdit->setMinimumWidth(buttonWidth);
+  buttonEnter->setMinimumWidth(buttonWidth);
+  buttonCancel->setMinimumWidth(buttonWidth);
+  buttonMore->setMinimumWidth(buttonWidth);
+
+  QSpacerItem* spacer = new QSpacerItem( 0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum );
   buttonLayout->addItem( spacer );
 
   formFrameLayout->addLayout( buttonLayout, 0, 0 );
@@ -260,15 +288,15 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
   formTable->setFrameShape( QTable::NoFrame );
   formTable->setFrameShadow( QTable::Plain );
   formTable->setNumCols( cols );
-  formTable->setNumRows( rows );
+  formTable->setNumRows( rows, rowHeight );
   formTable->setShowGrid( FALSE );
   formTable->setSelectionMode( QTable::NoSelection );
   formTable->verticalHeader()->hide();
   formTable->horizontalHeader()->hide();
   formTable->setLeftMargin(0);
   formTable->setTopMargin(0);
-  
-  setMinimumSize(formTable->sizeHint().width(),
+
+  setMinimumSize(QMAX(formTable->sizeHint().width(), buttonLayout->sizeHint().width()),
                  formTable->sizeHint().height()+buttonMore->minimumHeight()+m_tabBar->minimumHeight());
 
   formFrameLayout->addWidget( formTable, 1, 0 );
@@ -285,7 +313,7 @@ kMyMoneyTransactionForm::kMyMoneyTransactionForm( KLedgerView* parent,  const ch
   formLayout->addWidget( formFrame );
 }
 
-/*  
+/*
  *  Destroys the object and frees any allocated resources
  */
 kMyMoneyTransactionForm::~kMyMoneyTransactionForm()

@@ -69,7 +69,7 @@ public:
     *         0 will be returned.
     */
   virtual KMyMoneyTransaction* transaction(const int idx) const = 0;
-  
+
   /**
     * This method returns the id of the account that should be
     * shown by the view. The implementation depends on the type of view
@@ -291,7 +291,7 @@ protected:
     * The paint method must be provided by the derived class.
     */
   void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected, const QColorGroup& cg) = 0;
-  
+
   void paintCell(QPainter *p, int row, int col, const QRect& r, bool selected, const QColorGroup& cg, const QString& txt, const int align);
 
   /**
@@ -306,7 +306,7 @@ protected:
     *       paintCell before m_transactionRow can be used.
     */
   void setTransactionRow(const int row);
-  
+
   /**
     * resizeData is re-implemented to avoid creation
     * of huge arrays that are not required
@@ -336,7 +336,7 @@ protected:
   QColor m_gridColor;
   QColor m_errorColor;
   QColor m_importColor;
-  
+
   bool   m_showGrid;
   bool   m_colorPerTransaction;
 
@@ -400,7 +400,7 @@ protected:
     * the setAction() method.
     */
   QMap<QCString, QString> m_action;
-  
+
 private:
   /**
     * This method is used to update all horizontal headers to the
@@ -430,12 +430,12 @@ signals:
     * This signal is emitted when the user presses the 'Home' or 'End' key
     */
   void signalSelectTransaction(const QCString&);
-  
+
   /**
     * This signal is emitted when the user presses DELETE
     */
   void signalDelete();
-  
+
   /**
     * This signal is emitted when the user presses RETURN
     */

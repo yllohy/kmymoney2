@@ -137,7 +137,9 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
   // If the loan is a liability, we reverse the sign at the end
   MyMoneyMoney basePayment;
   MyMoneyMoney addPayment;
-  
+
+  m_transaction = m_schedule.transaction();
+
   QValueList<MyMoneySplit>::ConstIterator it_s;
   for(it_s = m_schedule.transaction().splits().begin();
       it_s != m_schedule.transaction().splits().end();
@@ -167,6 +169,15 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
           qWarning("Payee for schedule has been deleted");
         }
       }
+
+      // remove this split with one that will be replaced
+      // later and has a phony id
+      m_transaction.removeSplit(*it_s);
+
+      MyMoneySplit split;
+      split.setAccountId(QCString("Phony-ID"));
+      split.setValue(0);
+      m_transaction.addSplit(split);
     }
 
     if((*it_s).action() == MyMoneySplit::ActionInterest) {
@@ -175,7 +186,12 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
     
     if((*it_s).value() != MyMoneyMoney::minValue+1) {
       basePayment += (*it_s).value();
+    } else {
+      // remove the splits which should not show up
+      // for additional fees
+      m_transaction.removeSplit(*it_s);
     }
+
   }
   if(m_borrowButton->isChecked()) {
     basePayment = -basePayment;
@@ -446,6 +462,7 @@ void KEditLoanWizard::updateEditSummary(void)
 const MyMoneySchedule KEditLoanWizard::schedule(void) const
 {
   MyMoneySchedule sched = m_schedule;
+  sched.setTransaction(transaction());
   sched.setOccurence(KMyMoneyUtils::stringToOccurence(m_paymentFrequencyUnitEdit->currentText()));
   if(m_nextDueDateEdit->getQDate() < m_schedule.startDate())
     sched.setStartDate(m_nextDueDateEdit->getQDate());
@@ -485,4 +502,15 @@ const MyMoneyAccount KEditLoanWizard::account(void) const
   }
 
   return acc;  
+}
+
+const MyMoneyTransaction KEditLoanWizard::transaction() const
+{
+  MyMoneyTransaction t = KNewLoanWizard::transaction();
+  MyMoneySplit s = t.splitByAccount(QCString());
+
+  s.setAccountId(m_account.id());
+  t.modifySplit(s);
+
+  return t;
 }

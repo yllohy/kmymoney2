@@ -23,6 +23,7 @@
 #ifndef KLEDGERVIEW_H
 #define KLEDGERVIEW_H
 
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -36,6 +37,11 @@ class QWidgetStack;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
+#include <kdeversion.h>
+#if KDE_VERSION < KDE_MAKE_VERSION(3,2,0)
+#define KDE_DEPRECATED
+#endif
 
 #include <klocale.h>
 
@@ -203,12 +209,67 @@ class KLedgerView : public QWidget, MyMoneyObserver, public IMyMoneyRegisterPare
   friend class kMyMoneyTransactionFormTable;
 
 public:
+  enum transactionDirectionE {
+    /**
+      * In case the value of the split is 0, the direction is unknown.
+      */
+    UnknownDirection,
+
+    /**
+      * A credit denotes a transaction consisting of two or more splits.
+      * With respect to a given account, the flow of money is into this
+      * account.
+      */
+    Credit,
+
+    /**
+      * A debit denotes a transaction consisting of two or more splits.
+      * With respect to a given account, the flow of money is out of this
+      * account.
+      */
+    Debit
+  };
+
   enum transactionTypeE {
-    Check = 0,
-    Deposit,
+    /**
+      * Unknown transaction type (e.g. used for a transaction with only
+      * a single split)
+      */
+    Unknown,
+
+    /**
+      * A 'normal' transaction is one that consists out two splits: one
+      * referencing an income/expense account, the other referencing
+      * an asset/liability account.
+      */
+    Normal,
+
+    /**
+      * A transfer denotes a transaction consisting of two splits.
+      * Both of the splits reference an asset/liability
+      * account.
+      */
     Transfer,
-    Withdrawal,
-    ATM
+
+    /**
+      * Whenever a transaction consists of more than 2 splits,
+      * it is treated as 'split transaction'.
+      */
+    SplitTransaction,
+
+    /**
+      * This transaction denotes a specific transaction where
+      * a loan account is involved. Ususally, a special dialog
+      * is used to modify this transaction.
+      */
+    LoanPayment,
+
+    /**
+      * This transaction denotes a specific transaction where
+      * a an investment is involved. Ususally, a special dialog
+      * is used to modify this transaction.
+      */
+    InvestmentTransaction
   };
 
   enum editModeE {
@@ -324,6 +385,36 @@ public:
     */
   const bool isEditMode(void) const;
 
+  /**
+    * Called when the action has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
+    *
+    * @param type const QCString reference to the new action value
+    */
+  void actionChanged(const QCString& type);
+
+  /**
+    * This method converts the actions strings contained in a split
+    * (e.g. MyMoneySplit::ActionATM) into the internal used numeric value.
+    *
+    * @param t const reference to the transaction
+    *
+    * @return KLedgerView::transactionTypeE value of the action
+    */
+  static int transactionType(const MyMoneyTransaction& t);
+
+  /**
+    * This method returns the direction of the cash flow for
+    * a given split @p split. If the value is positive (> 0), @p
+    * Deposit is returned, @p Withdrawal otherwise.
+    *
+    * @param split const reference to a MyMoneySplit object
+    * @retval UnknownDirection returned if value of the split is zero
+    * @retval Deposit returned if value of the split is positive
+    * @retval Withdrawal returned if value is negative
+    */
+  static int transactionDirection(const MyMoneySplit& split);
+
 public slots:
   /**
     * This method is used to select a specific transaction. If @p id is equal
@@ -417,8 +508,17 @@ public slots:
     * m_transaction and m_split will be updated accordingly.
     *
     * @param category const reference to the name of the category
+    * @deprecated
     */
   virtual void slotCategoryChanged(const QString& category);
+
+  /**
+    * Called when the category field has been changed.
+    * m_transaction and m_split will be updated accordingly.
+    *
+    * @param category const reference to the id of the category
+    */
+  virtual void slotCategoryChanged(const QCString& categoryId);
 
   /**
     * Called when the amount field has been changed by the user.
@@ -459,38 +559,6 @@ public slots:
     * @param date const reference to the date
     */
   virtual void slotDateChanged(const QDate& date);
-
-  /**
-    * Called when the from account field has been changed by the user.
-    * m_transaction and m_split will be updated accordingly.
-    *
-    * @param from const reference to the from account name
-    */
-  virtual void slotFromChanged(const QString& from);
-
-  /**
-    * Called when the to field has been changed by the user.
-    * m_transaction and m_split will be updated accordingly.
-    *
-    * @param to const reference to the to account name
-    */
-  virtual void slotToChanged(const QString& to);
-
-  /**
-    * Called when the type field has been changed by the user.
-    * m_transaction and m_split will be updated accordingly.
-    *
-    * @param type index of the selected item in the combo box
-    */
-  virtual void slotTypeChanged(int type);
-
-  /**
-    * Called when the type field has been changed by the user.
-    * m_transaction and m_split will be updated accordingly.
-    *
-    * @param type const QCString reference to the new action value
-    */
-  virtual void slotTypeChanged(const QCString& type);
 
   /**
     * Called when a new payee entry has been edited
@@ -606,7 +674,7 @@ protected slots:
     * transaction data and creates a scheduled transaction this way.
     */
   void slotCreateSchedule(void);
-  
+
 protected:
   /**
     * This method is called to create the widget stack for the
@@ -624,6 +692,14 @@ protected:
     * class.
     */
   virtual void fillForm(void) = 0;
+
+  /**
+    * This method is called to fill the transaction form
+    * with the descriptions for the currently selected transaction
+    * in m_register. It must be overridden by any derived
+    * class.
+    */
+  virtual void fillFormStatics(void) {};
 
   /**
     * This method is called to fill the summary line with
@@ -649,24 +725,13 @@ protected:
   void setupPointerAndBalanceArrays(void);
 
   /**
-    * This method converts the actions strings contained in a split
-    * (e.g. MyMoneySplit::ActionATM) into the internal used numeric values.
-    *
-    * @param split const reference to the split
-    * @param t const reference to the transaction
-    *
-    * @return KLedgerView::transactionTypeE value of the action
-    */
-  virtual int transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
-
-  /**
     * This method converts the internal used numeric value for actions
     * into the strings contained in a split (e.g. MyMoneySplit::ActionATM)
     *
     * @param type const int representing KLedgerView::transactionTypeE value of the action
     * @return const action string
     */
-  virtual const QCString transactionType(const int type) const;
+  virtual const QCString transactionType(const int type) const KDE_DEPRECATED;
 
   /**
     * This method handles the focus of the keyboard. When in edit mode
@@ -707,7 +772,9 @@ protected:
     * @retval false if transfer transactions are not (yet) possible
     */
   const bool transfersPossible(void) const;
-  
+
+  virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s) = 0;
+
 protected:
   /**
     * This member keeps a pointer to the specific info stack for the account
@@ -803,8 +870,6 @@ protected:
   kMyMoneyEdit*         m_editDeposit;    ///< pointer to deposit edit widget
   kMyMoneyLineEdit*     m_editNr;         ///< pointer to number edit widget
   kMyMoneyDateInput*    m_editDate;       ///< pointer to date edit widget
-  kMyMoneyCategory*     m_editFrom;       ///< pointer to 'from account' edit widget
-  kMyMoneyCategory*     m_editTo;         ///< pointer to 'to account' edit widget
   KPushButton*          m_editSplit;      ///< pointer to split button
   kMyMoneyCombo*        m_editType;       ///< pointer to transaction type
 
@@ -834,13 +899,19 @@ protected:
   KPopupMenu*   m_moreMenu;
 
 private:
-  void fromToChanged(const bool fromChanged, const QString& accountName);
-
   /**
     * This method creates a second split if the current @p m_transaction
     * only contains a single split and adds it to @p m_transaction.
     */
   void createSecondSplit(void);
+
+  /**
+    * This method is used to update the value of the transaction.
+    * It is provided for internal use by slotPaymentChanged() and
+    * slotDepositChanged() which need an ability to override the
+    * direction of m_split.
+    */
+  void amountChanged(const QString& value, const int dir = UnknownDirection);
 
 private:
    /**
@@ -891,7 +962,7 @@ signals:
   void transactionSelected(void);
 
   /**
-    * The signal accountAndTransactionSelected() is emitted, when a 
+    * The signal accountAndTransactionSelected() is emitted, when a
     * transaction in a different account should be shown. It should be
     * handled by KGlobalLedgerView which shows the correct view and loads
     * the appropriate account.

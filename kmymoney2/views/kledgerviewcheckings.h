@@ -95,6 +95,34 @@ class kMyMoneyTransactionFormTable;
   * is called by the constructor. A second page exists, which is used by
   * the reconciliation code.
   *
+  * The transaction form itself has the following layout:
+  *
+  * @code
+  *
+  * +------------------------------------------------------------------------------+
+  * | formLayout                                                                   |
+  * | +--------------------------------------------------------------------------+ +
+  * | | tabbar                                                                   | |
+  * | |                                                                          | |
+  * | +--------------------------------------------------------------------------+ +
+  * | +--------------------------------------------------------------------------+ +
+  * | | formFrame                                                                | |
+  * | | +----------------------------------------------------------------------+ | |
+  * | | | buttons                                                              | | |
+  * | | +----------------------------------------------------------------------+ | |
+  * | | +----------------------------------------------------------------------+ | |
+  * | | | kMyMoneyTransactionFormTable                                         | | |
+  * | | |                                                                      | | |
+  * | | |                                                                      | | |
+  * | | |                                                                      | | |
+  * | | |                                                                      | | |
+  * | | +----------------------------------------------------------------------+ | |
+  * | +--------------------------------------------------------------------------+ +
+  * +------------------------------------------------------------------------------+
+
+  * @endcode
+  *
+  *
   * The tabbar on top of the actual form is part of the kMyMoneyTransactionForm
   * widget and shows the possible transaction types. It
   * is loaded in the constructor of this class.
@@ -116,7 +144,7 @@ class kMyMoneyTransactionFormTable;
   *
   * fillForm() fills the data provided by the current selected transaction
   * into the read-only form. The layout of the form depends on the type
-  * the selected of transaction.
+  * of the selected of transaction.
   *
   * fillSummary() will be called and should update the summary line.
   */
@@ -125,7 +153,7 @@ class KLedgerViewCheckings : public KLedgerView  {
 
   friend class kMyMoneyTransactionFormTable;
 
-public: 
+public:
   KLedgerViewCheckings(QWidget *parent=0, const char *name=0);
   ~KLedgerViewCheckings();
 
@@ -135,7 +163,7 @@ public slots:
     */
   virtual void refreshView(void);
 
-  void slotTypeSelected(int transactionType);
+  void slotActionSelected(int transactionType);
 
   /**
     *
@@ -152,10 +180,40 @@ public slots:
     */
   virtual void slotReconciliation(void);
 
+  /**
+    * Called when the amount field has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
+    *
+    * @param amount const reference to the amount value
+    */
+  virtual void slotAmountChanged(const QString& amount);
+
 protected:
+  /**
+    * This method updates the summary line with the actual values.
+    */
   void fillSummary(void);
 
+  /**
+    * This method updates the static text areas within the transaction form
+    * according to the currently loaded values in m_transaction and m_split.
+    */
+  void fillFormStatics(void);
+
+  /**
+    * This method updates the variable areas within the transaction form
+    * according to the currently loaded values in m_transaction and m_split.
+    */
   void fillForm(void);
+
+  /**
+    * This method returns the index of the tab that is required for
+    * the transaction @p t and split @p s.
+    *
+    * @param t transaction which should be used
+    * @param s split which should be used
+    */
+  int actionTab(const MyMoneyTransaction& t, const MyMoneySplit& s) const;
 
   void resizeEvent(QResizeEvent*);
 
@@ -170,6 +228,8 @@ protected:
     * This destroys and hides the widgets used to edit a transaction.
     */
   void hideWidgets(void);
+
+  void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s);
 
   /**
     * This method is called to determine the next widget that receives focus
@@ -219,6 +279,15 @@ protected:
     * @param enable true enables the widgets, false disables them
     */
   virtual void enableWidgets(const bool enable);
+#if 0
+  /**
+    * Called when the type field has been changed by the user.
+    * m_transaction and m_split will be updated accordingly.
+    *
+    * @param type index of the selected item in the combo box
+    */
+  void slotTypeChanged(int type);
+#endif
 
 protected slots:
   /**
@@ -267,40 +336,26 @@ private:
     * This method loads the data of the current transaction into the
     * widgets created with createEditWidgets(). If different widgets are
     * required for in-register and in-form editing, all widgets will be filled.
-    * This method also analyses the data of the transaction and determines
-    * the transaction type which is returned in the parameter @p transType.
-    *
-    * @param transType reference to transaction type. The method will set this
-    *                  value upon return to the caller.
-    * @return The return value is passed in the variable referenced by @p transType
     */
-  void loadEditWidgets(int& transType);
+  void loadEditWidgets(void);
 
   /**
-    * This method arranges the widgets required for in-form editing in the
-    * form according to the transaction type passed by @p transType. It destroys
+    * This method arranges the widgets required for in-form editing. It destroys
     * all widgets that have been created specifically for in-register editing.
-    * Depending on the transaction type, the @p focusWidget will be selected.
+    * A pointer to the widget that should receive the focus is returned.
     *
-    * @param focusWidget reference to pointer which will point to the widget
-    *                    that should receive focus when editing starts.
-    * @param transType type of transaction as determined by loadEditWidgets()
-    * @return The return value is passed in the variable referenced by @p focusWidget.
+    * @return pointer to the widget that should receive focus when editing starts.
     */
-  void arrangeEditWidgetsInForm(QWidget*& focusWidget, const int transType);
+  QWidget* arrangeEditWidgetsInForm(void);
 
   /**
-    * This method arranges the widgets required for in-register editing in the
-    * register according to the transaction type passed by @p transType. It destroys
+    * This method arranges the widgets required for in-register editing. It destroys
     * all widgets that have been created specifically for in-form editing.
-    * Depending on the transaction type, the @p focusWidget will be selected.
+    * A pointer to the widget that should receive the focus is returned.
     *
-    * @param focusWidget reference to pointer which will point to the widget
-    *                    that should receive focus when editing starts.
-    * @param transType type of transaction as determined by loadEditWidgets()
-    * @return The return value is passed in the variable referenced by @p focusWidget.
+    * @return pointer to the widget that should receive focus when editing starts.
     */
-  void arrangeEditWidgetsInRegister(QWidget*& focusWidget, const int transType);
+  QWidget* arrangeEditWidgetsInRegister(void);
 
   /**
     * This method is used by the constructor to create the necessary widgets
@@ -340,6 +395,17 @@ private:
     */
   void endReconciliation(void);
 
+  /**
+    * This method returns information if the Nr field is to be
+    * displayed and available for the split @p split.
+    *
+    * @param trans the transaction to be checked
+    * @param split the split to be checked
+    * @retval true Nr field is required
+    * @retval false Nr field is not required
+    */
+  const bool showNrField(const MyMoneyTransaction& trans, const MyMoneySplit& split) const;
+
 private slots:
   /**
     * This method enables and disables the options available for
@@ -355,7 +421,6 @@ private slots:
     */
   void slotConfigureMoreMenu(void);
 
-signals:
 protected:
   QTab* m_tabCheck;
   QTab* m_tabDeposit;
@@ -381,6 +446,8 @@ protected:
 
   QHBoxLayout*    m_summaryLayout;
 
+  short           m_actionIdx[5];
+
 private:
 
   // The following attributes are exclusively used for reconciliation
@@ -393,9 +460,8 @@ private:
   QLabel*         m_differenceLabel;
 
   QCheckBox*      m_transactionCheckBox;
-  
-  QLabel*         m_lastReconciledLabel;
 
+  QLabel*         m_lastReconciledLabel;
 };
 
 #endif

@@ -85,6 +85,7 @@ protected:
   virtual void showWidgets();
   virtual void hideWidgets();
   virtual void reloadEditWidgets(const MyMoneyTransaction& t);
+  virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s);
 
 private:
   /**

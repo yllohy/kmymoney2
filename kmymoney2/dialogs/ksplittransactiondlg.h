@@ -93,7 +93,7 @@ private:
     *
     * @param row row of the register to place the widgets
     */
-  void createInputWidgets(const int row);
+  void createInputWidgets(const unsigned row);
 
   /**
     * This method destroys all input widgets created with createInputWidgets().
@@ -233,7 +233,8 @@ protected slots:
     *
     * @param name const reference to the name of the category
     */
-  virtual void slotCategoryChanged(const QString& name);
+  virtual void slotCategoryChanged(const QCString& id);
+  // virtual void slotCategoryChanged(const QString& name);
 
   /**
     * Called when the amount field has been changed by the user.

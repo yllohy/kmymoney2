@@ -59,7 +59,7 @@ public:
     * Re-implemented for internal reasons.  API is unaffected.
     */
   virtual void hide();
-  
+
   /**
     * This method loads the set of accounts into the widget
     * as defined by the parameter @p typeMask. @p typeMask is
@@ -75,6 +75,14 @@ public:
     */
   void loadList(KMyMoneyUtils::categoryTypeE typeMask) { m_accountSelector->loadList(typeMask); };
 
+  /**
+    * This method sets the current account with id @p id as
+    * the current selection.
+    *
+    * @param id id of account to be selected
+    */
+  void setSelected(const QCString& id) { m_id = id; };
+
 public slots:
   void slotMakeCompletion(const QString& txt);
 
@@ -89,15 +97,16 @@ protected:
 
   /**
     * This method resizes the widget to show a maximum of @p count lines
-    */  
+    */
   void adjustSize(const int count);
 
 signals:
   void accountSelected(const QCString& id);
-  
+
 private:
   QWidget*                    m_parent;
   kMyMoneyAccountSelector*    m_accountSelector;
+  QCString                    m_id;
 };
 
 #endif

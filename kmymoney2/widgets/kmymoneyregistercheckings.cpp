@@ -75,7 +75,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
   QCString splitCurrency;
 
   setTransactionRow(row);
-  
+
   int align = Qt::AlignVCenter;
   QString txt;
   if(m_transaction != 0) {
@@ -97,11 +97,21 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
             break;
 
           case 1:
-            txt = m_action[m_split.action()];
+            txt = m_action[MyMoneySplit::ActionWithdrawal];
+            if(KLedgerView::transactionType(*m_transaction) == KLedgerView::Transfer) {
+              txt = m_action[MyMoneySplit::ActionTransfer];
+            } else if(KLedgerView::transactionDirection(m_split) == KLedgerView::Credit) {
+              txt = m_action[MyMoneySplit::ActionDeposit];
+            } else if( m_split.action() == MyMoneySplit::ActionCheck){
+              txt = m_action[MyMoneySplit::ActionCheck];
+            } else if(m_split.action() == MyMoneySplit::ActionATM) {
+              txt = m_action[MyMoneySplit::ActionATM];
+            }
+
             break;
         }
         break;
-        
+
       case 2:
         align |= Qt::AlignLeft;
         switch(m_transactionRow) {
@@ -118,7 +128,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
               if(m_transaction->isLoanPayment()) {
                 txt = QString(i18n("Loan payment"));
               } else if(m_transaction->splitCount() > 2)
-                txt = QString(i18n("Splitted transaction"));
+                txt = QString(i18n("Split transaction"));
               else {
                 MyMoneySplit split = m_transaction->splitByAccount(m_split.accountId(), false);
                 txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
@@ -133,7 +143,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
             break;
         }
         break;
-        
+
       case 3:
         switch(m_transactionRow) {
           case 0:
@@ -164,7 +174,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
             break;
         }
         break;
-        
+
       case 5:
         switch(m_transactionRow) {
           case 0:
@@ -176,7 +186,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
             break;
         }
         break;
-        
+
       case 6:
         switch(m_transactionRow) {
           case 0:
@@ -189,7 +199,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         break;
     }
   }
-  
+
   // do general stuff
   kMyMoneyRegister::paintCell(p, row, col, r, selected, cg, txt, align);
 }
@@ -198,7 +208,7 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
 {
   QHeader *topHeader = horizontalHeader();
   QFontMetrics cellFontMetrics(m_cellFont);
-  
+
   int w = topHeader->fontMetrics().width( topHeader->label( col ) ) + 10;
   if ( topHeader->iconSet( col ) )
     w += topHeader->iconSet( col )->pixmap().width();
@@ -217,7 +227,7 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
     KMyMoneyTransaction *t = m_parent->transaction(i);
     MyMoneyMoney amount;
     int nw = 0;
-    
+
     if(t != NULL) {
       MyMoneySplit split = t->splitById(t->splitId());
       switch(col) {
@@ -228,12 +238,12 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
           txt = t->splitById(t->splitId()).number();
           nw = cellFontMetrics.width(txt+"  ");
           break;
-        
+
         case 1:
           txt = m_action[split.action()];
           nw = cellFontMetrics.width(txt+"  ");
           break;
-        
+
         case 4:
           amount = t->splitById(t->splitId()).value();
           if(amount < 0) {
@@ -241,7 +251,7 @@ void kMyMoneyRegisterCheckings::adjustColumn(int col)
             nw = cellFontMetrics.width(txt+"  ");
           }
           break;
-          
+
         case 5:
           amount = t->splitById(t->splitId()).value();
           if(amount >= 0) {

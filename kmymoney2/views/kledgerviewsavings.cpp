@@ -52,6 +52,13 @@ KLedgerViewSavings::KLedgerViewSavings(QWidget *parent, const char *name )
   if(config->readBoolEntry("AlwaysShowNrField", false) == false)
     m_register->hideColumn(0);
   m_register->repaintContents(false);
+
+  // setup action index
+  m_actionIdx[0] =
+  m_actionIdx[1] =
+  m_actionIdx[3] = 0;
+  m_actionIdx[2] = 1;
+  m_actionIdx[3] = 2;
 }
 
 KLedgerViewSavings::~KLedgerViewSavings()
@@ -63,10 +70,6 @@ void KLedgerViewSavings::resizeEvent(QResizeEvent* /* ev */)
   // resize the register
   int w = m_register->visibleWidth();
 
-  int m_debitWidth = 80;
-  int m_creditWidth = 80;
-  int m_balanceWidth = 100;
-
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
   if(config->readBoolEntry("AlwaysShowNrField", false) == false) {
@@ -74,13 +77,38 @@ void KLedgerViewSavings::resizeEvent(QResizeEvent* /* ev */)
     m_register->setColumnWidth(0, 0);             // we don't have a Nr. here
   } else {
     m_register->showColumn(0);
-    m_register->setColumnWidth(0, 80);
+    m_register->adjustColumn(0);
   }
-  m_register->setColumnWidth(1, 100);
+
+  // check which space we need
+  m_register->adjustColumn(4);
+  m_register->adjustColumn(5);
+  m_register->adjustColumn(6);
+
+  // make amount columns all the same size
+  int width = m_register->columnWidth(4);
+  if(width < m_register->columnWidth(5))
+    width = m_register->columnWidth(5);
+  if(width < m_register->columnWidth(6))
+    width = m_register->columnWidth(6);
+
+  m_register->setColumnWidth(4, width);
+  m_register->setColumnWidth(5, width);
+  m_register->setColumnWidth(6, width);
+
+  // Resize the date field to either
+  // a) the size required by the input widget if no transaction form is shown
+  // b) the adjusted value for the date if the transaction form is visible
+  if(!m_transactionFormActive) {
+    kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
+    datefield->setFont(m_register->cellFont());
+    m_register->setColumnWidth(1, datefield->minimumSizeHint().width());
+    delete datefield;
+  } else {
+    m_register->adjustColumn(1);
+  }
+
   m_register->setColumnWidth(3, 20);
-  m_register->setColumnWidth(4, m_debitWidth);
-  m_register->setColumnWidth(5, m_creditWidth);
-  m_register->setColumnWidth(6, m_balanceWidth);
 
   for(int i = 0; i < m_register->numCols(); ++i) {
     switch(i) {
@@ -94,10 +122,14 @@ void KLedgerViewSavings::resizeEvent(QResizeEvent* /* ev */)
   m_register->setColumnWidth(2, w);
 
   // now resize the form
-  QTable* table = m_form->table();
-  table->setColumnWidth(0, 80);
-  table->setColumnWidth(2, 80);
-  table->setColumnWidth(3, m_balanceWidth);
+  kMyMoneyDateInput dateInput(0, "editDate");
+  KPushButton splitButton(i18n("Split"), 0, "editSplit");
+
+  kMyMoneyTransactionFormTable* table = static_cast<kMyMoneyTransactionFormTable *>(m_form->table());
+  table->adjustColumn(0);
+  table->adjustColumn(2, splitButton.sizeHint().width());
+  table->adjustColumn(3);
+  table->adjustColumn(4, dateInput.minimumSizeHint().width()+10);
 
   w = table->visibleWidth();
   for(int i = 0; i < table->numCols(); ++i) {
@@ -114,62 +146,75 @@ void KLedgerViewSavings::resizeEvent(QResizeEvent* /* ev */)
 
 void KLedgerViewSavings::createEditWidgets(void)
 {
-  m_editPayee = new kMyMoneyPayee(0, "editPayee");
-  m_editCategory = new kMyMoneyCategory(0, "editCategory");
-  m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft | AlignVCenter);
-  m_editAmount = new kMyMoneyEdit(0, "editAmount");
-  m_editDate = new kMyMoneyDateInput(0, "editDate");
+  if(m_editPayee == 0) {
+    m_editPayee = new kMyMoneyPayee(0, "editPayee");
+    connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
+    connect(m_editPayee, SIGNAL(payeeChanged(const QString&)), this, SLOT(slotPayeeChanged(const QString&)));
+    connect(m_editPayee, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editPayee, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
 
-  KConfig *config = KGlobal::config();
-  config->setGroup("General Options");
-  if(config->readBoolEntry("AlwaysShowNrField", false) == false)
-    m_editNr = 0;
-  else
+  if(m_editCategory == 0) {
+    m_editCategory = new kMyMoneyCategory(0, "editCategory");
+    connect(m_editCategory, SIGNAL(categoryChanged(const QCString&)), this, SLOT(slotCategoryChanged(const QCString&)));
+    connect(m_editCategory, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editCategory, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
+
+  if(m_editMemo == 0) {
+    m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft | AlignVCenter);
+    connect(m_editMemo, SIGNAL(lineChanged(const QString&)), this, SLOT(slotMemoChanged(const QString&)));
+    connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
+
+  if(m_editAmount == 0) {
+    m_editAmount = new kMyMoneyEdit(0, "editAmount");
+    connect(m_editAmount, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAmountChanged(const QString&)));
+    connect(m_editAmount, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editAmount, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
+
+  if(m_editDate == 0) {
+    m_editDate = new kMyMoneyDateInput(0, "editDate");
+    connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
+    connect(m_editDate, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editDate, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
+
+  if(m_editNr == 0) {
     m_editNr = new kMyMoneyLineEdit(0, "editNr");
+    connect(m_editNr, SIGNAL(lineChanged(const QString&)), this, SLOT(slotNrChanged(const QString&)));
+    connect(m_editNr, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editNr, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
 
-  m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  m_editSplit = new KPushButton("Split", 0, "editSplit");
-  m_editPayment = new kMyMoneyEdit(0, "editPayment");
-  m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
-  m_editType = new kMyMoneyCombo(0, "editType");
-  m_editType->setFocusPolicy(QWidget::StrongFocus);
+  if(m_editSplit == 0) {
+    m_editSplit = new KPushButton("Split", 0, "editSplit");
+    connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
+  }
 
-  connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
+  if(m_editPayment == 0) {
+    m_editPayment = new kMyMoneyEdit(0, "editPayment");
+    connect(m_editPayment, SIGNAL(valueChanged(const QString&)), this, SLOT(slotPaymentChanged(const QString&)));
+    connect(m_editPayment, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editPayment, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
 
-  connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
-  connect(m_editPayee, SIGNAL(payeeChanged(const QString&)), this, SLOT(slotPayeeChanged(const QString&)));
-  connect(m_editMemo, SIGNAL(lineChanged(const QString&)), this, SLOT(slotMemoChanged(const QString&)));
-  connect(m_editCategory, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotCategoryChanged(const QString&)));
-  connect(m_editAmount, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAmountChanged(const QString&)));
-  connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
-  connect(m_editFrom, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotFromChanged(const QString&)));
-  connect(m_editTo, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotToChanged(const QString&)));
-  connect(m_editPayment, SIGNAL(valueChanged(const QString&)), this, SLOT(slotPaymentChanged(const QString&)));
-  connect(m_editDeposit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotDepositChanged(const QString&)));
-  connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotTypeChanged(int)));
+  if(m_editDeposit == 0) {
+    m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
+    connect(m_editDeposit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotDepositChanged(const QString&)));
+    connect(m_editDeposit, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editDeposit, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
 
-  connect(m_editPayee, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editCategory, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editDate, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editFrom, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editTo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editAmount, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editPayment, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editDeposit, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editType, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-
-  connect(m_editPayee, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editCategory, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editDate, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editFrom, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editTo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editAmount, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editPayment, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editDeposit, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editType, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  if(m_editType == 0) {
+    m_editType = new kMyMoneyCombo(0, "editType");
+    m_editType->setFocusPolicy(QWidget::StrongFocus);
+    connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotTypeChanged(int)));
+    connect(m_editType, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editType, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
 }
 
 void KLedgerViewSavings::slotReconciliation(void)

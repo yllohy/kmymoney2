@@ -13,8 +13,11 @@ EXTRA_DIST = kmymoneydateinput.cpp kmymoneydateinput.h kmymoneyedit.cpp kmymoney
 ####### kdevelop will overwrite this part!!! (end)############
 
 # make sure, automatically generated files exist
-BUILT_SOURCES = kupdatestockpricedlgdecl.h
+BUILT_SOURCES = kupdatestockpricedlgdecl.h knewaccountdlgdecl.h
 
-.PHONY: kupdatestockpricedlgdecl.h
+.PHONY: kupdatestockpricedlgdecl.h knewaccountdlgdecl.h
 kupdatestockpricedlgdecl.h:
 	make -C ../dialogs kupdatestockpricedlgdecl.h
+
+knewaccountdlgdecl.h:
+	make -C ../dialogs knewaccountdlgdecl.h

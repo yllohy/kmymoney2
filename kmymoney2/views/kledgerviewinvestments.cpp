@@ -85,7 +85,7 @@ KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name
 
 KLedgerViewInvestments::~KLedgerViewInvestments()
 {
-  
+
 }
 
 void KLedgerViewInvestments::fillForm()
@@ -111,8 +111,6 @@ void KLedgerViewInvestments::hideWidgets()
   m_editAmount = 0;
   m_editNr = 0;
   m_editDate = 0;
-  m_editFrom = 0;
-  m_editTo = 0;
   m_editSplit = 0;
 }
 
@@ -130,7 +128,7 @@ void KLedgerViewInvestments::slotNew()
 {
   KLedgerView::slotNew();
 
-  
+
 }
 
 void KLedgerViewInvestments::createEditWidgets()
@@ -141,8 +139,8 @@ void KLedgerViewInvestments::createEditWidgets()
   m_editAmount = new kMyMoneyEdit(0, "editAmount");
   m_editDate = new kMyMoneyDateInput(0, "editDate");
   m_editNr = new kMyMoneyLineEdit(0, "editNr");
-  m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  // m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  // m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
   m_editSplit = new KPushButton("Split", 0, "editSplit");
   m_editPayment = new kMyMoneyEdit(0, "editPayment");
   m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
@@ -155,7 +153,7 @@ void KLedgerViewInvestments::createForm(void)
 {
   m_form = new kMyMoneyTransactionForm(this, NULL, 0, 4, 5);
 
-  
+
   m_tabAddShares = new QTab(action2str(MyMoneySplit::ActionAddShares, true));
   m_tabRemoveShares = new QTab(action2str(MyMoneySplit::ActionRemoveShares, true));
   //m_tabTransfer = new QTab(action2str(MyMoneySplit::ActionTransfer, true));
@@ -386,13 +384,14 @@ void KLedgerViewInvestments::slotAccountDetail(void)
 
 int KLedgerViewInvestments::transactionType(const MyMoneyTransaction& t, const MyMoneySplit& split) const
 {
+  qDebug("logic of KLedgerViewInvestments::transactionType should go to KLedgerView::transactionType");
   if(split.action() == MyMoneySplit::ActionAddShares)
     return KLedgerViewInvestments::AddShares;
   else if(split.action() == MyMoneySplit::ActionRemoveShares)
     return KLedgerViewInvestments::RemoveShares;
   else
-    return KLedgerView::transactionType(t, split);
-    
+    return KLedgerView::transactionType(t);
+
   //qDebug("Unknown transaction type in KLedgerView::transactionType, Check assumed");
   //return Check;
 }
@@ -414,3 +413,6 @@ const QCString KLedgerViewInvestments::transactionType(int type) const
   return KLedgerView::transactionType(type);
 }
 
+void KLedgerViewInvestments::updateTabBar(const MyMoneyTransaction& /* t */, const MyMoneySplit& /* s */)
+{
+}

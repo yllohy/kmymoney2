@@ -43,7 +43,7 @@
 class KLedgerViewSavings : public KLedgerViewCheckings
 {
   Q_OBJECT
-public: 
+public:
   KLedgerViewSavings(QWidget *parent=0, const char *name=0);
   ~KLedgerViewSavings();
 

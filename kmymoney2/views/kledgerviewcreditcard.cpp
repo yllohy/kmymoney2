@@ -59,6 +59,13 @@ KLedgerViewCreditCard::KLedgerViewCreditCard(QWidget *parent, const char *name )
   m_register->setAction(QCString(MyMoneySplit::ActionWithdrawal), i18n("Charge"));
 
   m_register->repaintContents(false);
+
+  // setup action index
+  m_actionIdx[0] =
+  m_actionIdx[1] =
+  m_actionIdx[3] = 0;
+  m_actionIdx[2] = 1;
+  m_actionIdx[3] = 2;
 }
 
 KLedgerViewCreditCard::~KLedgerViewCreditCard()
@@ -67,58 +74,76 @@ KLedgerViewCreditCard::~KLedgerViewCreditCard()
 
 void KLedgerViewCreditCard::createEditWidgets(void)
 {
-  m_editPayee = new kMyMoneyPayee(0, "editPayee");
-  m_editCategory = new kMyMoneyCategory(0, "editCategory");
-  m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft | AlignVCenter);
-  m_editAmount = new kMyMoneyEdit(0, "editAmount");
-  m_editDate = new kMyMoneyDateInput(0, "editDate");
-  m_editNr = new kMyMoneyLineEdit(0, "editNr");
-  m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  m_editSplit = new KPushButton("Split", 0, "editSplit");
-  m_editPayment = new kMyMoneyEdit(0, "editPayment");
-  m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
-  m_editType = new kMyMoneyCombo(0, "editType");
-  m_editType->setFocusPolicy(QWidget::StrongFocus);
+  // FIXME: change this to the new stuff
+  if(!m_editPayee) {
+    m_editPayee = new kMyMoneyPayee(0, "editPayee");
+    connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
+    connect(m_editPayee, SIGNAL(payeeChanged(const QString&)), this, SLOT(slotPayeeChanged(const QString&)));
+    connect(m_editPayee, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editPayee, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
 
-  connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
+  if(!m_editCategory) {
+    m_editCategory = new kMyMoneyCategory(0, "editCategory");
+    connect(m_editCategory, SIGNAL(categoryChanged(const QCString&)), this, SLOT(slotCategoryChanged(const QCString&)));
+    connect(m_editCategory, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editCategory, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
 
-  connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
-  connect(m_editPayee, SIGNAL(payeeChanged(const QString&)), this, SLOT(slotPayeeChanged(const QString&)));
-  connect(m_editMemo, SIGNAL(lineChanged(const QString&)), this, SLOT(slotMemoChanged(const QString&)));
-  connect(m_editCategory, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotCategoryChanged(const QString&)));
-  connect(m_editAmount, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAmountChanged(const QString&)));
-  connect(m_editNr, SIGNAL(lineChanged(const QString&)), this, SLOT(slotNrChanged(const QString&)));
-  connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
-  connect(m_editFrom, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotFromChanged(const QString&)));
-  connect(m_editTo, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotToChanged(const QString&)));
-  connect(m_editPayment, SIGNAL(valueChanged(const QString&)), this, SLOT(slotPaymentChanged(const QString&)));
-  connect(m_editDeposit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotDepositChanged(const QString&)));
-  connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotTypeChanged(int)));
+  if(!m_editMemo) {
+    m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft | AlignVCenter);
+    connect(m_editMemo, SIGNAL(lineChanged(const QString&)), this, SLOT(slotMemoChanged(const QString&)));
+    connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
 
-  connect(m_editPayee, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editCategory, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editNr, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editDate, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editFrom, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editTo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editAmount, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editPayment, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editDeposit, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editType, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  if(!m_editAmount) {
+    m_editAmount = new kMyMoneyEdit(0, "editAmount");
+    connect(m_editAmount, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAmountChanged(const QString&)));
+    connect(m_editAmount, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editAmount, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
 
-  connect(m_editPayee, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editCategory, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editNr, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editDate, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editFrom, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editTo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editAmount, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editPayment, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editDeposit, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editType, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  if(!m_editDate) {
+    m_editDate = new kMyMoneyDateInput(0, "editDate");
+    connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
+    connect(m_editDate, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editDate, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
+
+  if(!m_editNr) {
+    m_editNr = new kMyMoneyLineEdit(0, "editNr");
+    connect(m_editNr, SIGNAL(lineChanged(const QString&)), this, SLOT(slotNrChanged(const QString&)));
+    connect(m_editNr, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editNr, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
+
+  if(!m_editSplit) {
+    m_editSplit = new KPushButton("Split", 0, "editSplit");
+    connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
+  }
+
+  if(!m_editPayment) {
+    m_editPayment = new kMyMoneyEdit(0, "editPayment");
+    connect(m_editPayment, SIGNAL(valueChanged(const QString&)), this, SLOT(slotPaymentChanged(const QString&)));
+    connect(m_editPayment, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editPayment, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
+
+  if(!m_editDeposit) {
+    m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
+    connect(m_editDeposit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotDepositChanged(const QString&)));
+    connect(m_editDeposit, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editDeposit, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
+
+  if(!m_editType) {
+    m_editType = new kMyMoneyCombo(0, "editType");
+    m_editType->setFocusPolicy(QWidget::StrongFocus);
+    connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotActionSelected(int)));
+    connect(m_editType, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+    connect(m_editType, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  }
 }
 
 void KLedgerViewCreditCard::slotReconciliation(void)
@@ -147,7 +172,7 @@ void KLedgerViewCreditCard::fillSummary(void)
       else
         summary->setText(i18n("Current balance: ") + balance.formatMoney());
 */
-      
+
     } catch(MyMoneyException *e) {
         qDebug("Unexpected exception in KLedgerViewCreditCard::fillSummary");
     }

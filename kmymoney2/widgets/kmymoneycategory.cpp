@@ -29,36 +29,25 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <klocale.h>
+#include <kmessagebox.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kmymoneycategory.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../widgets/kmymoneyaccountcompletion.h"
+#include "../dialogs/knewaccountdlg.h"
 
 kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const KMyMoneyUtils::categoryTypeE categoryType)
   : KLineEdit(parent,name)
 {
-#ifndef OWN_COMPLETION  
-  // make sure, the completion object exists
-  if(compObj() == 0)
-    completionObject();
-
-  compObj()->setOrder(KCompletion::Sorted);
-  setCompletionMode(KGlobalSettings::CompletionPopupAuto);
-
-  // set the standard value for substring completion, as we
-  // fake that with every key entered
-  setKeyBinding(SubstringCompletion, KShortcut("Ctrl+T"));
-
-  loadList(categoryType);
-#else
+  m_inCreation = false;
   m_accountSelector = new kMyMoneyAccountCompletion(this, 0);
   m_accountSelector->hide();
   connect(this, SIGNAL(textChanged(const QString&)), m_accountSelector, SLOT(slotMakeCompletion(const QString&)));
   connect(m_accountSelector, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotSelectAccount(const QCString&)));
-
-#endif
 }
 
 kMyMoneyCategory::~kMyMoneyCategory()
@@ -68,9 +57,9 @@ kMyMoneyCategory::~kMyMoneyCategory()
 void kMyMoneyCategory::keyPressEvent( QKeyEvent * ev)
 {
   bool oldColon = text().find(':');
-  
+
   KLineEdit::keyPressEvent(ev);
-  
+
   if(ev->isAccepted()) {
     // check if the name contains one or more colons. We
     // wipe out the stuff to the left of the right most colon
@@ -80,84 +69,31 @@ void kMyMoneyCategory::keyPressEvent( QKeyEvent * ev)
     int pos = text().findRev(':');
     if(pos != -1 && oldColon) {
       setText(text().mid(pos+1));
-      
+
     } else if(pos != -1) {
       // it was just entered, so we take it away again ;-)
       setText(text().left(pos-1)+text().mid(pos+1));
     }
   }
-#ifndef OWN_COMPLETION
-  if(ev->isAccepted()) {
-    // if the key was accepted by KLineEdit, we fake a substring completion
-    // which we set previously to Ctrl+T.
-    QKeyEvent evc(QEvent::KeyPress, Qt::Key_T, 0, Qt::ControlButton);
-    KLineEdit::keyPressEvent(&evc);
+}
+
+void kMyMoneyCategory::loadAccount(const QCString& id)
+{
+  try {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+    setText(MyMoneyFile::instance()->accountToCategory(id));
+    m_id = id;
+    m_accountSelector->setSelected(id);
+  } catch(MyMoneyException *e) {
+    qDebug("Account with id %s not found anymore", id.data());
+    delete e;
   }
-#endif
 }
 
 void kMyMoneyCategory::loadText(const QString& text)
 {
-  m_text = text;
-  setText(text);
-}
-
-void kMyMoneyCategory::resetText(void)
-{
-  setText(m_text);
-}
-
-
-void kMyMoneyCategory::addCategories(QStringList& strList, const QCString& id, const QString& leadIn)
-{
-  MyMoneyFile *file = MyMoneyFile::instance();
-  QString name;
-
-  MyMoneyAccount account = file->account(id);
-
-  QCStringList accList = account.accountList();
-  QCStringList::ConstIterator it_a;
-
-  for(it_a = accList.begin(); it_a != accList.end(); ++it_a) {
-    account = file->account(*it_a);
-    strList << leadIn + account.name();
-    addCategories(strList, *it_a, leadIn + account.name() + ":");
-  }
-}
-
-void kMyMoneyCategory::loadList(const KMyMoneyUtils::categoryTypeE type)
-{
-#ifndef OWN_COMPLETION
-  QStringList strList;
-
-  try {
-    MyMoneyFile *file = MyMoneyFile::instance();
-
-    // read all account items from the MyMoneyFile objects and add them to the listbox
-    m_accountList = file->accountList();
-
-    if(type & KMyMoneyUtils::liability)
-      addCategories(strList, file->liability().id(), "");
-
-    if(type & KMyMoneyUtils::asset)
-      addCategories(strList, file->asset().id(), "");
-
-    if(type & KMyMoneyUtils::expense)
-      addCategories(strList, file->expense().id(), "");
-
-    if(type & KMyMoneyUtils::income)
-      addCategories(strList, file->income().id(), "");
-
-  } catch (MyMoneyException *e) {
-    qDebug("Exception '%s' thrown in %s, line %ld caught in kMyMoneyCategory::loadList",
-      e->what().latin1(), e->file().latin1(), e->line());
-    delete e;
-  }
-
-  // construct the list of completion items
-  compObj()->setItems(strList);
-  compObj()->setIgnoreCase(true);
-#endif
+  m_id = QCString();
+  KLineEdit::setText(text);
 }
 
 void kMyMoneyCategory::focusInEvent(QFocusEvent *ev)
@@ -169,19 +105,10 @@ void kMyMoneyCategory::focusInEvent(QFocusEvent *ev)
 void kMyMoneyCategory::focusOutEvent(QFocusEvent *ev)
 {
   m_accountSelector->hide();
-#ifndef OWN_COMPLETION
-  // if the current text is not in the list of
-  // possible completions, we have a new category
-  // and signal that to the outside world.
-  if(!text().isEmpty() && compObj()->items().contains(text()) == 0) {
-    emit newCategory(text());
+  if(!m_inCreation && !m_id.isEmpty()) {
+    slotSelectAccount(m_id);
   }
-#endif
 
-  if(!(text().isEmpty() && m_text.isEmpty())
-  && text() != m_text) {
-    emit categoryChanged(text());
-  }
   // now call base class
   KLineEdit::focusOutEvent(ev);
 }
@@ -203,6 +130,7 @@ bool kMyMoneyCategory::eventFilter(QObject* o, QEvent* e)
   if(rc == false) {
     if(e->type() == QEvent::KeyPress) {
       QKeyEvent *k = static_cast<QKeyEvent *> (e);
+      bool newAccount = true;
       switch(k->key()) {
         case Qt::Key_Return:
         case Qt::Key_Enter:
@@ -215,6 +143,57 @@ bool kMyMoneyCategory::eventFilter(QObject* o, QEvent* e)
           rc = true;
           break;
 
+        case Qt::Key_Tab:
+          if(!text().isEmpty()) {
+            if(!m_id.isEmpty()) {
+              MyMoneyAccount acc = MyMoneyFile::instance()->account(m_id);
+              QString txt = text();
+              int pos = text().findRev(':');
+              if(pos != -1) {
+                txt = txt.mid(pos+1);
+              }
+              if(acc.name() == txt)
+                newAccount = false;
+            }
+          }
+          if(newAccount) {
+            m_inCreation = true;
+
+            if(KMessageBox::questionYesNo(this,
+                  i18n("The category \"%1\" currently does not exist. "
+                       "Do you want to create it?").arg(text())) == KMessageBox::Yes) {
+              MyMoneyAccount acc;
+              int rc;
+              acc.setName(text());
+
+              KNewAccountDlg dlg(acc, false, true);
+              rc = dlg.exec();
+              if(rc == QDialog::Accepted) {
+                try {
+                  MyMoneyAccount parentAccount;
+                  acc = dlg.account();
+                  parentAccount = dlg.parentAccount();
+                  MyMoneyFile::instance()->addAccount(acc, parentAccount);
+                  slotSelectAccount(acc.id());
+
+                } catch(MyMoneyException *e) {
+                  KMessageBox::detailedSorry(0, i18n("Unable to add category"),
+                      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+                  delete e;
+                  rc = QDialog::Rejected;
+                }
+              }
+
+              if(rc != QDialog::Accepted) {
+                rc = true;
+              }
+            } else {
+              rc = true;
+            }
+
+            m_inCreation = false;
+          }
+          break;
       }
     }
   }
@@ -224,5 +203,10 @@ bool kMyMoneyCategory::eventFilter(QObject* o, QEvent* e)
 void kMyMoneyCategory::slotSelectAccount(const QCString& id)
 {
   setText(MyMoneyFile::instance()->accountToCategory(id));
+  if(m_id != id) {
+    qDebug("emit categoryChanged(%s)", id.data());
+    emit categoryChanged(id);
+    m_id = id;
+  }
   m_accountSelector->hide();
 }

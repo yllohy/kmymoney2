@@ -147,7 +147,7 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name )
   m_contextMenu->insertItem(il->loadIcon("delete", KIcon::Small),
                         i18n("Delete payee ..."),
                         this, SLOT(slotDeletePayee()));
-  
+
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassPayeeSet, this);
 }
 
@@ -186,10 +186,10 @@ void KPayeesView::slotSelectPayee(QListViewItem *p)
 
   if(m_updateButton->isEnabled()) {
     if (KMessageBox::questionYesNo(this, i18n("Do you want to discard the changes for '%1'").arg(m_newName), i18n("Discard changes")) == KMessageBox::No) {
-      slotUpdatePayee();      
+      slotUpdatePayee();
     }
   }
-  
+
   try {
     MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -209,7 +209,7 @@ void KPayeesView::slotSelectPayee(QListViewItem *p)
 
     showTransactions();
     writeConfig();
-    
+
   } catch(MyMoneyException *e) {
     qDebug("exception during display of payee: %s at %s:%ld", e->what().latin1(), e->file().latin1(), e->line());
     m_transactionView->clear();
@@ -226,12 +226,12 @@ void KPayeesView::showTransactions(void)
 
   // clear the current transaction listview
   m_transactionView->clear();
-  
+
   if(m_payee.id().isEmpty()) {
     m_balanceLabel->setText(i18n("Balance: %1").arg(balance.formatMoney()));
     return;
   }
-      
+
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   QDateTime defaultDate;
@@ -244,7 +244,7 @@ void KPayeesView::showTransactions(void)
 
   QValueList<MyMoneyTransaction> list = file->transactionList(filter);
   m_transactionList.clear();
-  
+
   m_transactionPtrVector.clear();
   m_transactionPtrVector.resize(list.size());
   m_transactionPtrVector.setPayeeId(m_payee.id());
@@ -256,7 +256,7 @@ void KPayeesView::showTransactions(void)
 
   for(i = 0, it_t = list.begin(); it_t != list.end(); ++it_t) {
     KMyMoneyTransaction k(*it_t);
-    
+
     filter.match(*it_t, MyMoneyFile::instance()->storage());
     if(lastId != (*it_t).id()) {
       ofs = 0;
@@ -275,7 +275,7 @@ void KPayeesView::showTransactions(void)
       ++i;
     }
   }
-  
+
   // sort the transactions
   m_transactionPtrVector.sort();
 
@@ -286,11 +286,11 @@ void KPayeesView::showTransactions(void)
     KMyMoneyTransaction* t = m_transactionPtrVector[i];
     MyMoneySplit s = t->splitById(t->splitId());
     MyMoneyAccount acc = file->account(s.accountId());
-    
+
     item = new KTransactionListItem(m_transactionView, item, s.accountId(), t->id());
     item->setText(0, s.number());
     item->setText(1, KGlobal::locale()->formatDate(t->postDate(), true));
-    
+
     QString txt;
     if(s.action() == MyMoneySplit::ActionAmortization) {
       if(acc.accountType() == MyMoneyAccount::Loan) {
@@ -315,7 +315,7 @@ void KPayeesView::showTransactions(void)
         txt = i18n("Transfer from %1").arg(acc.name());
       }
     } else if(t->splitCount() > 2) {
-      txt = i18n("Splitted transaction");
+      txt = i18n("Split transaction");
     } else if(t->splitCount() == 2) {
       MyMoneySplit s0 = t->splitByAccount(s.accountId(), false);
       txt = MyMoneyFile::instance()->accountToCategory(s0.accountId());
@@ -365,7 +365,7 @@ void KPayeesView::slotPayeeDataChanged(void)
       || (!telephoneEdit->text().isEmpty() && m_payee.telephone() != telephoneEdit->text()));
   rc |= ((m_payee.name().isEmpty() != m_newName.isEmpty())
       || (!m_newName.isEmpty() && m_payee.name() != m_newName));
-      
+
   m_updateButton->setEnabled(rc);
 }
 
@@ -516,10 +516,10 @@ void KPayeesView::slotSelectPayeeAndTransaction(const QCString& payeeId, const Q
           m_payeesList->ensureItemVisible(it->itemAbove());
         if(it->itemBelow())
           m_payeesList->ensureItemVisible(it->itemBelow());
-        
+
         m_payeesList->setCurrentItem(it);
         m_payeesList->ensureItemVisible(it);
-        
+
         KTransactionListItem* item = static_cast<KTransactionListItem*> (m_transactionView->firstChild());
         while(item != 0) {
           if(item->accountID() == accountId && item->transactionId() == transactionId)

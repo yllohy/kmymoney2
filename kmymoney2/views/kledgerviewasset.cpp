@@ -42,15 +42,25 @@
 KLedgerViewAsset::KLedgerViewAsset(QWidget *parent, const char *name )
   : KLedgerViewCheckings(parent,name)
 {
-	m_register->horizontalHeader()->setLabel(4, i18n("Decrease"));
-	m_register->horizontalHeader()->setLabel(5, i18n("Increase"));
+  m_register->horizontalHeader()->setLabel(4, i18n("Decrease"));
+  m_register->horizontalHeader()->setLabel(5, i18n("Increase"));
 
   m_form->tabBar()->removeTab(m_tabCheck);
   m_form->tabBar()->removeTab(m_tabAtm);
   m_form->tabBar()->tabAt(0)->setText(i18n("Increase"));
   m_form->tabBar()->tabAt(2)->setText(i18n("Decrease"));
 
+  m_register->setAction(QCString(MyMoneySplit::ActionDeposit), i18n("Increase"));
+  m_register->setAction(QCString(MyMoneySplit::ActionWithdrawal), i18n("Decrease"));
+
   m_register->repaintContents(false);
+
+  // setup action index
+  m_actionIdx[0] =
+  m_actionIdx[1] =
+  m_actionIdx[3] = 0;
+  m_actionIdx[2] = 1;
+  m_actionIdx[3] = 2;
 }
 
 KLedgerViewAsset::~KLedgerViewAsset()

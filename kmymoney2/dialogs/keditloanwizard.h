@@ -68,6 +68,8 @@ public:
   
   void loadWidgets(const MyMoneyAccount& acc);
   
+  const MyMoneyTransaction transaction() const;
+  
 public slots:
   void next();
 
@@ -78,7 +80,7 @@ protected:
   void updateEditSummary(void);
     
 private:
-  MyMoneyAccountLoan  m_account;
+  //MyMoneyAccountLoan  m_account;
   MyMoneySchedule     m_schedule;
   int                 m_lastSelection;
   bool                m_fullyRepayLoan;

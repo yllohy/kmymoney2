@@ -134,7 +134,7 @@ void KNewAccountWizard::next()
     // we logically never come back to this wizard, so we hide it.
     hide();
 
-    KNewLoanWizard* loanWizard = new KNewLoanWizard(this);
+    KNewLoanWizard* loanWizard = new KNewLoanWizard(0);
     if((rc = loanWizard->exec()) == QDialog::Accepted) {
       m_account = loanWizard->account();
       // copy relevant data into my widgets so that

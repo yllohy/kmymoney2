@@ -55,7 +55,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   m_qbuttonCancel->setGuiItem(KStdGuiItem::cancel());
   m_qbuttonSplit->setGuiItem(KMyMoneyUtils::splitGuiItem());
   m_helpButton->setGuiItem(KStdGuiItem::help());
-  
+
   m_actionType = action;
   m_schedule = schedule;
   m_transaction = schedule.transaction();
@@ -63,7 +63,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   if(m_transaction.splitCount() > 0) {
     m_actionType = m_transaction.splits()[0].action();
   }
-  
+
   KIntValidator *validator = new KIntValidator(1, 32768, this);
   m_qlineeditRemaining->setValidator(validator);
 
@@ -97,7 +97,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     m_qbuttonSplit->setEnabled(true);
     m_qcheckboxEnd->setEnabled(false);
     setCaption(i18n("Edit Loan Payment Schedule"));
-  }  
+  }
   else if (m_actionType == MyMoneySplit::ActionDeposit)
   {
     m_accountCombo->setEnabled(false);
@@ -269,7 +269,7 @@ void KEditScheduleDialog::slotSplitClicked()
     checkPayee();
 
     MyMoneyAccount acc  = MyMoneyFile::instance()->account(theAccountId());
-    
+
     // theAccountId() returned the account that this schedule is attached
     // to. In case of a loan payment, we need to find the account that
     // the amortization goes to. This account contains a member that gives
@@ -311,7 +311,7 @@ void KEditScheduleDialog::slotSplitClicked()
 
       MyMoneySplit s;
       QString category;
-      
+
       disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
       switch(m_transaction.splitCount())
       {
@@ -326,7 +326,7 @@ void KEditScheduleDialog::slotSplitClicked()
         case 0:
           break;
         default:
-          category = i18n("Splitted Transaction");
+          category = i18n("Split Transaction");
           connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
       }
@@ -361,7 +361,7 @@ void KEditScheduleDialog::slotWillEndToggled(bool on)
     m_kcomboFreq->setFocus();
     return;
   }
-  
+
   m_endLabel1->setEnabled(on);
   m_qlineeditRemaining->setEnabled(on);
   m_endLabel2->setEnabled(on);
@@ -409,7 +409,7 @@ void KEditScheduleDialog::okClicked()
     m_kdateinputFinal->setFocus();
     return;
   }
-  
+
   if (m_actionType == MyMoneySplit::ActionTransfer)
   {
     if (m_accountCombo->currentText() == m_kcomboTo->currentText())
@@ -422,9 +422,9 @@ void KEditScheduleDialog::okClicked()
 
   if (!checkCategory())
     return;
-    
+
   checkPayee();
-  
+
   slotEstimateChanged(); // Fix estimate being set when it shouldnt
 
   switch (m_weekendOption->currentItem())
@@ -439,10 +439,10 @@ void KEditScheduleDialog::okClicked()
       m_schedule.setWeekendOption(MyMoneySchedule::MoveMonday);
       break;
   }
-  
+
   // Just reset the schedules transaction here.
   m_schedule.setTransaction(m_transaction);
-  
+
 /*
   QString message;
   message += "Schedule Name: " + m_schedule.name() + "\n";
@@ -459,7 +459,7 @@ void KEditScheduleDialog::okClicked()
   message += "endDate: " + m_schedule.endDate().toString() + "\n";
   KMessageBox::information(this, message);
 */
-  
+
   accept();
 }
 
@@ -469,7 +469,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
   {
     if (m_schedule.account().name().isEmpty())
       return;
-      
+
     if (m_actionType == MyMoneySplit::ActionTransfer)
     {
       // Jiggle the splits to how we want them
@@ -503,7 +503,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
       m_kcomboTo->setCurrentText(
         MyMoneyFile::instance()->account(m_transaction.splits()[1].accountId()).name());
     }
-    
+
     m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().splitByAccount(theAccountId()).payeeId()).name());
     m_kdateinputDue->setDate(m_schedule.nextPayment(m_schedule.lastPayment())/*m_schedule.startDate()*/);
 
@@ -643,7 +643,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     {
       if (m_schedule.transaction().splitCount() >= 3)
       {
-        m_category->loadText(i18n("Splitted Transaction"));
+        m_category->loadText(i18n("Split Transaction"));
         connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
       }
       else if(m_actionType == MyMoneySplit::ActionAmortization)
@@ -651,9 +651,9 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
         m_category->loadText(i18n("Loan payment"));
       }
       else
-        m_category->loadText(MyMoneyFile::instance()->accountToCategory(m_schedule.transaction().splitByAccount(theAccountId(), false).accountId()));
+        m_category->loadAccount(m_schedule.transaction().splitByAccount(theAccountId(), false).accountId());
     }
-    
+
     m_qlineeditMemo->setText(m_schedule.transaction().splitByAccount(theAccountId()).memo());
     m_qcheckboxAuto->setChecked(m_schedule.autoEnter());
     m_qcheckboxEnd->setChecked(m_schedule.willEnd());
@@ -681,7 +681,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
         m_weekendOption->setCurrentItem(2);
         break;
     }
-    
+
     // Quick hack
     slotFrequencyChanged(frequency);
     slotMethodChanged(method);
@@ -696,7 +696,7 @@ void KEditScheduleDialog::slotRemainingChanged(const QString& text)
   // Make sure the required fields are set
   m_schedule.setStartDate(m_kdateinputDue->getQDate());
   m_schedule.setOccurence(comboToOccurence());
-  
+
   if (m_schedule.transactionsRemaining() != text.toInt())
   {
     m_kdateinputFinal->setDate(m_schedule.dateAfter(text.toInt()));
@@ -720,7 +720,7 @@ void KEditScheduleDialog::slotEndDateChanged(const QDate& date)
 MyMoneySchedule::occurenceE KEditScheduleDialog::comboToOccurence()
 {
   MyMoneySchedule::occurenceE occur;
-  
+
   switch (m_kcomboFreq->currentItem())
   {
     case 0:
@@ -776,15 +776,15 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
     {
       createSplits();
     }
-    
+
     MyMoneySplit s = m_transaction.splits()[0];
     MyMoneyMoney amount = s.value();
     if (m_kmoneyeditAmount->getMoneyValue() != amount)
     {
       // Cribbed from KLedgerView::slotAmountChanged
-      
+
       MyMoneyMoney val = MyMoneyMoney(m_kmoneyeditAmount->text());
-      
+
       // if someone enters a negative number, we have to make sure that
       // the action is corrected. For transfers, we don't have to do anything
       // The accounts will be 'exchanged' in reloadEditWidgets() and fillForm()
@@ -809,13 +809,13 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
 
       s.setValue(val);
       m_transaction.modifySplit(s);
-      
+
       if(m_transaction.splitCount() == 2)
       {
         MyMoneySplit split = m_transaction.splits()[1];
         split.setValue(-s.value());
         m_transaction.modifySplit(split);
-      }  
+      }
       else if (count >= 3)
       {
         KMessageBox::information(this, i18n("All split data lost.  Please re-enter splits"));
@@ -1029,7 +1029,7 @@ void KEditScheduleDialog::slotEstimateChanged()
 
 void KEditScheduleDialog::slotCategoryChanged(const QString& text)
 {
-  if (text != i18n("Splitted Transaction"))
+  if (text != i18n("Split Transaction"))
   {
     int count = m_transaction.splitCount();
     if (count == 0)
@@ -1135,9 +1135,9 @@ void KEditScheduleDialog::createSplits()
 bool KEditScheduleDialog::checkCategory()
 {
   bool exitDialog = true;
-  
+
   // Make sure a category has been set
-  if (m_category->text() != i18n("Splitted Transaction") && !m_category->text().isEmpty())
+  if (m_category->text() != i18n("Split Transaction") && !m_category->text().isEmpty())
   {
     bool invalid=false;
     QCString categoryId = MyMoneyFile::instance()->categoryToAccount(m_category->text());

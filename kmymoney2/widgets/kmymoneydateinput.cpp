@@ -132,11 +132,11 @@ void kMyMoneyDateInput::toggleDatePicker()
   int h = m_dateFrame->height();
 
   if(m_dateFrame->isVisible())
-	{
-		m_dateFrame->hide();
-	}
-	else
-	{
+  {
+    m_dateFrame->hide();
+  }
+  else
+  {
     QPoint tmpPoint = mapToGlobal(m_dateButton->geometry().bottomRight());
 
     // usually, the datepicker widget is shown underneath the dateEdit widget
@@ -147,24 +147,24 @@ void kMyMoneyDateInput::toggleDatePicker()
     }
 
     if (m_qtalignment == Qt::AlignRight)
-		{
-	    m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), w, h);
-		}
-		else
-		{
-			tmpPoint.setX(tmpPoint.x() - w);
-	    m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), w, h);
-		}
+    {
+      m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), w, h);
+    }
+    else
+    {
+      tmpPoint.setX(tmpPoint.x() - w);
+      m_dateFrame->setGeometry(tmpPoint.x(), tmpPoint.y(), w, h);
+    }
 
     if(m_date.isValid())
-		{
+    {
       m_datePicker->setDate(m_date);
     }
-		else
-		{
+    else
+    {
       m_datePicker->setDate(QDate::currentDate());
     }
-		m_dateFrame->show();
+    m_dateFrame->show();
   }
 }
 

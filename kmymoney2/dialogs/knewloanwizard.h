@@ -79,6 +79,15 @@ public:
   const MyMoneySchedule schedule(void) const;
 
   void loadWidgets(const MyMoneyAccount& acc);
+
+protected:
+  /**
+    * This method returns the transaction that is stored within
+    * the schedule. See schedule().
+    *
+    * @return MyMoneyTransaction object to be used within the schedule
+    */
+  const MyMoneyTransaction transaction(void) const;
       
 public slots:
   void next();
@@ -94,7 +103,7 @@ protected slots:
   void slotInterestOnPayment(void);
   void slotInterestOnReception(void);
   void slotCreateCategory(void);
-  void slotAdditionalFees(void);
+  virtual void slotAdditionalFees(void);
   void slotNewPayee(const QString&);
       
 protected:
@@ -114,6 +123,9 @@ protected:
   int occurenceToPeriod(const MyMoneySchedule::occurenceE occurence) const;
   int term(void) const;
 
+protected:
+  MyMoneyAccountLoan  m_account;
+  MyMoneyTransaction  m_transaction;
 };
 
 #endif

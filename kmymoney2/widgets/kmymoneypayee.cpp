@@ -26,6 +26,8 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kdeversion.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -40,7 +42,11 @@ kMyMoneyPayee::kMyMoneyPayee(QWidget *parent, const char *name )
     completionObject();
 
   compObj()->setOrder(KCompletion::Sorted);
+#if KDE_IS_VERSION(3,2,0)
+  setCompletionMode(KGlobalSettings::CompletionPopup);
+#else
   setCompletionMode(KGlobalSettings::CompletionPopupAuto);
+#endif
   setAutoDeleteCompletionObject(true);
 
   // set the standard value for substring completion, as we

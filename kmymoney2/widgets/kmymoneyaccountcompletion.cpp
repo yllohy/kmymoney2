@@ -77,7 +77,7 @@ void kMyMoneyAccountCompletion::adjustSize(const int count)
     QPoint orig = m_parent->mapToGlobal( QPoint(0, m_parent->height()) );
     int x = orig.x();
     int y = orig.y();
-    
+
     if ( x + width() > screenSize.right() )
         x = screenSize.right() - width();
 
@@ -95,9 +95,11 @@ void kMyMoneyAccountCompletion::adjustSize(const int count)
 void kMyMoneyAccountCompletion::show(void)
 {
   loadList((KMyMoneyUtils::categoryTypeE) 0x0f);
+  if(!m_id.isEmpty())
+    m_accountSelector->setSelected(m_id);
 
   adjustSize(MAX_ITEMS);
-  
+
   if(m_parent)
     qApp->installEventFilter(this);
 
@@ -149,7 +151,7 @@ bool kMyMoneyAccountCompletion::eventFilter(QObject* o, QEvent* e)
             slotItemSelected(m_accountSelector->listView()->currentItem(), QPoint(0,0), 0);
             ev->accept();
             return true;
-            
+
           case Key_Home:
           case Key_End:
             if(ev->state() & ControlButton) {
@@ -163,7 +165,7 @@ bool kMyMoneyAccountCompletion::eventFilter(QObject* o, QEvent* e)
         }
       }
     }
-    
+
   } else if(type == QEvent::MouseButtonPress) {
     // any mouse click on something else than "this" makes us hide
     QMouseEvent* ev = static_cast<QMouseEvent*> (e);
@@ -175,12 +177,15 @@ bool kMyMoneyAccountCompletion::eventFilter(QObject* o, QEvent* e)
 
 void kMyMoneyAccountCompletion::slotMakeCompletion(const QString& txt)
 {
+  if(txt.isEmpty() || txt.length() == 0)
+    return;
+
   QString account(txt);
   int pos = txt.findRev(':');
   if(pos != -1) {
     account = txt.mid(pos+1);
   }
-  
+
   if(m_parent && m_parent->isVisible() && !isVisible())
     show();
 
@@ -198,7 +203,9 @@ void kMyMoneyAccountCompletion::slotItemSelected(QListViewItem *item, const QPoi
 {
   kMyMoneyListViewItem* it_v = static_cast<kMyMoneyListViewItem*>(item);
   if(it_v && it_v->isSelectable()) {
-    hide();
+    // qDebug("kMyMoneyAccountCompletion::slotItemSelected(%s)", it_v->id().data());
     emit accountSelected(it_v->id());
+    m_id = it_v->id();
+    hide();
   }
 }
