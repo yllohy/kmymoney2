@@ -24,7 +24,7 @@
 
 class ConverterTest : public CppUnit::TestFixture  {
   CPPUNIT_TEST_SUITE(ConverterTest);
-#ifdef HAVE_NEW_OFX
+#ifdef USE_OFX_DIRECTCONNECT
   CPPUNIT_TEST(testOfxImport);
 #endif
   CPPUNIT_TEST(testWebQuotes);

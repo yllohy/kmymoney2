@@ -130,6 +130,8 @@ void KEnterScheduleDialog::initWidgets()
 
   if (m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT)
   {
+    try
+    {
     MyMoneySplit amortizationSplit;
     QValueList<MyMoneySplit>::ConstIterator it_s;
     for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
@@ -157,6 +159,13 @@ void KEnterScheduleDialog::initWidgets()
         }
         break;
       }
+    }
+    }
+    catch (MyMoneyException* e)
+    {
+      KMessageBox::detailedError(this, i18n("Unable to load schedule details"), e->what());
+      delete e;
+      return;
     }
   }
   else if (m_schedule.type() == MyMoneySchedule::TYPE_TRANSFER
@@ -996,6 +1005,8 @@ void KEnterScheduleDialog::slotToActivated(const QCString& id)
 
 void KEnterScheduleDialog::calculateInterest(void)
 {
+  try
+  {
   if (m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
     MyMoneySplit interestSplit, amortizationSplit;
     QValueList<MyMoneySplit>::ConstIterator it_s;
@@ -1076,6 +1087,13 @@ void KEnterScheduleDialog::calculateInterest(void)
       m_transaction.modifySplit(interestSplit);
     }
   }
+  }
+  catch (MyMoneyException* e)
+  {
+    KMessageBox::detailedError(this, i18n("Unable to load schedule details"), e->what());
+    delete e;
+    reject();
+  }
 }
 
 bool KEnterScheduleDialog::checkDateInPeriod(const QDate& date)
@@ -1134,3 +1152,4 @@ bool KEnterScheduleDialog::checkDateInPeriod(const QDate& date)
 
   return true;
 }
+// vim:cin:si:ai:et:ts=2:sw=2:

@@ -1,3 +1,17 @@
+2005-04-03 Ace Jones <acejones@users.sourceforge.net>
+  * Fix QIF import to set shares as well as value.  This bug caused reports to
+    be all 0's until the file was saved and reloaded.  The reload ran it through
+    KMMView::fixTransactions(), which fixed the problem.
+  * Added a custom '#' field which contains the unique transaction ID.  The QIF
+    importer will refuse to load a transaction which contains the same transaction
+    ID as an existing transaction.
+  * Separated --enable-ofx into --enable-ofxplugin and --enable-ofxbanking.
+    ofxplugin enables ofx support only in the plugin.  It defualts ON, and should
+    be left on for the release.  ofxbanking enables OFX direct connect, and causes
+    the main application to require libofx.  This is experimental and is not
+    desired for production use.
+  * More thorough error checking in KEnterScheduleDialog.
+
 2005-04-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Move GnuCash reader to converter directory
 

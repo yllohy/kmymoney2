@@ -74,7 +74,7 @@ KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution,  bool /*isEditing*/, Q
 
   m_ofxSettings = m_institution.ofxConnectionSettings();
                 
-#ifndef HAVE_NEW_OFX
+#ifndef USE_OFX_DIRECTCONNECT
   // the 'advanced' button will take the user to set up their OFX Direct Connect
   // settings, which is only available if KMM is compiled with the new OFX libraries.
   advancedBtn->hide();

@@ -44,7 +44,7 @@ class KReportsViewTest : public CppUnit::TestFixture  {
   CPPUNIT_TEST(testCashFlowAnalysis);
   CPPUNIT_TEST(testAccountQuery);
   CPPUNIT_TEST(testInvestment);
-#ifdef HAVE_NEW_OFX
+#ifdef USE_OFX_DIRECTCONNECT
   CPPUNIT_TEST(testOfxImport);
 #endif
   CPPUNIT_TEST(testWebQuotes);

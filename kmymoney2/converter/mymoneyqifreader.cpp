@@ -632,6 +632,14 @@ void MyMoneyQifReader::processTransactionEntry(void)
   }
   t.setMemo(tmp);
 
+  // Assign the "#" field to the transaction's bank id
+  // This is the custom KMM extension to QIF for a unique ID
+  tmp = extractLine('#');
+  if(!tmp.isEmpty()) 
+  {
+    t.setBankID(QString("QIF/")+tmp);
+  }
+  
   // Collect data for the account's split
   s1.setAccountId(m_account.id());
   tmp = extractLine('S');
@@ -640,7 +648,16 @@ void MyMoneyQifReader::processTransactionEntry(void)
     tmp = tmp.left(pos);
   }
   s1.setMemo(tmp);
+  
+  // TODO Deal with currencies more gracefully.  QIF cannot deal with multiple
+  // currencies, so we should assume that transactions imported into a given
+  // account are in THAT ACCOUNT's currency.  If one of those involves a transfer
+  // to an account with a different currency, value and shares should be
+  // different.  (Shares is in the target account's currency, value is in the
+  // transaction's)
+  
   s1.setValue(m_qifProfile.value('T', extractLine('T')));
+  s1.setShares(m_qifProfile.value('T', extractLine('T')));
   s1.setNumber(extractLine('N'));
 
   tmp = extractLine('P');
@@ -717,6 +734,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
     // use the same values for the second split, but clear the ID and reverse the value
     MyMoneySplit s2 = s1;
     s2.setValue(-s1.value());
+    s2.setShares(-s1.value());
     s2.setId(QCString());
 
     // standard transaction
@@ -774,6 +792,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
       MyMoneySplit s2 = s1;
       s2.setId(QCString());
       s2.setValue(-m_qifProfile.value('$', extractLine('$', count)));
+      s2.setShares(-m_qifProfile.value('$', extractLine('$', count)));
       s2.setMemo(extractLine('E', count));
       tmp = extractLine('S', count);
 
@@ -824,33 +843,37 @@ void MyMoneyQifReader::processTransactionEntry(void)
     }
   }
 
-  // FIXME: here we could check if the transaction already exists
-  //        and mark it as a duplicate which will be shown in a
-  //        different color after importing
-
   // Add the transaction
   try {
-    bool oktoadd = false;
-    
-    if ( m_qifProfile.attemptMatchDuplicates() )
-    {
-      // First, do the duplicate check
-      QValueList<MyMoneyTransaction> list;
-      MyMoneyTransactionFilter filter;
-      filter.setDateFilter(t.postDate().addDays(-4), t.postDate().addDays(4));
-      list = file->transactionList(filter);
-  
-      QValueList<MyMoneyTransaction>::Iterator it;
-      for(it = list.begin(); it != list.end(); ++it) {
-        if(t.isDuplicate(*it))
-          break;
-      }
-      if(it == list.end()) {
-        oktoadd = true;
+    bool oktoadd = true;
+
+    // first, check for duplicates by Bank ID in this account.
+    MyMoneyTransactionFilter filter;
+    filter.setDateFilter(t.postDate().addDays(-4), t.postDate().addDays(4));
+    filter.addAccount(m_account.id());
+    QValueList<MyMoneyTransaction> list = file->transactionList(filter);
+    QValueList<MyMoneyTransaction>::ConstIterator it;
+    for(it = list.begin(); it != list.end(); ++it) {
+      if(t.bankID() == (*it).bankID() && !t.bankID().isNull() && !(*it).bankID().isNull())
+      {
+        oktoadd = false;
+        break;
       }
     }
-    else
-      oktoadd = true;
+
+    // Second, if no bank-id diplicates, try using the more error-prone
+    // MMTransaction::isDuplicate() method, as long as the user asked for
+    // this behaviour        
+    if ( oktoadd & m_qifProfile.attemptMatchDuplicates() )
+    {
+      for(it = list.begin(); it != list.end(); ++it) {
+        if(t.isDuplicate(*it))
+        {
+          oktoadd = false;
+          break;
+        }
+      }
+    }
 
     if ( oktoadd )     
       file->addTransaction(t);

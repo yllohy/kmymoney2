@@ -22,14 +22,26 @@ fi
 
 echo ""
 
-if test x$enable_ofx = xno; then
-	echo "OFX support:                           disabled"
+if test x$enable_ofxplugin = xno; then
+	echo "OFX plugin:                            disabled"
 elif test x$have_new_ofx = xyes; then
-	echo "OFX support:                           yes"
+	echo "OFX plugin:                            yes"
 else
-	echo "OFX support:                           no"
+	echo "OFX plugin:                            no"
 	echo "    You are missing the libofx headers and libraries"
-	echo "    The OFX support won't be compiled."
+	echo "    The OFX plugin won't be compiled."
+fi
+
+echo ""
+
+if test x$enable_ofxbanking = xno; then
+	echo "OFX direct connect:                    disabled"
+elif test x$have_new_ofx = xyes; then
+	echo "OFX direct connect:                    yes"
+else
+	echo "OFX direct connect:                    no"
+	echo "    You are missing the libofx headers and libraries"
+	echo "    The OFX direct connect support won't be compiled."
 fi
 
 echo ""

@@ -76,7 +76,7 @@ MyMoneyOfxStatement::~MyMoneyOfxStatement()
 // FIXME: Remove this workaround, and solve this problem correctly.  The
 // program should not construct MMOS objects without one of these
 // defined.
-#ifndef HAVE_NEW_OFX
+#ifndef USE_OFX_DIRECTCONNECT
 MyMoneyOfxStatement::MyMoneyOfxStatement(const QString&): m_valid(false) 
 {
 }
@@ -91,7 +91,7 @@ MyMoneyOfxStatement::MyMoneyOfxStatement(const QString&): m_valid(false)
  * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
  */
 
-#ifdef HAVE_NEW_OFX
+#ifdef USE_OFX_DIRECTCONNECT
 
 #include <libofx/libofx.h>
 
@@ -394,7 +394,7 @@ MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
   libofx_free_context(ctx);
 }
 
-#endif // HAVE_NEW_OFX
+#endif // USE_OFX_DIRECTCONNECT
 
 
 

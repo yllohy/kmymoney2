@@ -45,9 +45,6 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* whether OFX >= 0.7.0 is present */
-#undef HAVE_NEW_OFX
-
 /* Define if your system needs _NSGetEnviron to set up the environment */
 #undef HAVE_NSGETENVIRON
 
@@ -149,6 +146,9 @@
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
+
+/* whether to use OFX directconnect */
+#undef USE_OFX_DIRECTCONNECT
 
 /* Version number of package */
 #undef VERSION
