@@ -270,6 +270,8 @@ public slots:
   void slotFileQuit();
 
   void slotFileConsitencyCheck(void);
+
+  void slotCurrencyDialog(void);
   
   /** toggles the toolbar
    */

@@ -62,7 +62,7 @@ class KInvestmentView;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.50 2004/03/10 03:32:03 ktambascio Exp $
+  * $Id: kmymoneyview.h,v 1.51 2004/04/03 07:41:27 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -130,6 +130,16 @@ private:
     */
   void loadDefaultCategories(void);
 
+  /**
+    * This method preloads all known currencies into the engine.
+    */
+  void loadDefaultCurrencies(void);
+
+  /**
+    * if no base currency is defined, start the dialog and force it to be set
+    */
+  void selectBaseCurrency(void);
+  
   /**
     * This method loads the accounts specified in the file @p filename
     * into the KMyMoney engine.

@@ -64,6 +64,11 @@ class MyMoneySeqAccessMgrTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testRemoveSchedule);
 	CPPUNIT_TEST(testSchedule);
 	CPPUNIT_TEST(testScheduleList);
+	CPPUNIT_TEST(testAddCurrency);
+	CPPUNIT_TEST(testModifyCurrency);
+	CPPUNIT_TEST(testRemoveCurrency);
+	CPPUNIT_TEST(testCurrency);
+	CPPUNIT_TEST(testCurrencyList);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -110,6 +115,11 @@ public:
 	void testRemoveSchedule();
 	void testSupportFunctions();
 	void testScheduleList();
+	void testAddCurrency();
+	void testModifyCurrency();
+	void testRemoveCurrency();
+	void testCurrency();
+	void testCurrencyList();
 };
 
 #endif

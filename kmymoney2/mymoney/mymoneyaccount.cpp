@@ -240,6 +240,10 @@ const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(void) const
   return accountGroup(m_accountType);  
 }
 
+void MyMoneyAccount::setCurrencyId(const QCString& id)
+{
+  m_currencyId = id;
+}
 
 MyMoneyAccountLoan::MyMoneyAccountLoan(const MyMoneyAccount& acc)
  : MyMoneyAccount(acc)
@@ -420,3 +424,12 @@ void MyMoneyAccountLoan::setPayee(const QCString& payee)
   setValue("payee", payee);
 }
 
+const QCString MyMoneyAccountLoan::interestAccountId(void) const
+{
+  return QCString();  
+}
+
+void MyMoneyAccountLoan::setInterestAccountId(const QCString& /* id */)
+{
+  
+}

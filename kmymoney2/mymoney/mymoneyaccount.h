@@ -442,7 +442,20 @@ public:
     */
   const accountTypeE accountType(void) const {return m_accountType; };
 
-  // Statics
+  /**
+    * This method retrieves the id of the currency used with this account.
+    * If the return value is empty, the base currency should be used.
+    *
+    * @return id of currency
+    */
+  const QCString currencyId(void) const { return m_currencyId; };
+
+  /**
+    * This method sets the id of the currency used with this account.
+    *
+    * @param id ID of currency to be associated with this account.
+    */
+  void setCurrencyId(const QCString& id);
 
 private:
   /**
@@ -531,6 +544,11 @@ private:
     * This member contains the ID of the parent account
     */
   QCString m_parentAccount;
+
+  /**
+    * This member contains the ID of the currency associated with this account
+    */
+  QCString m_currencyId;
 };
 
 /**
@@ -574,7 +592,10 @@ public:
   void setPeriodicPayment(const MyMoneyMoney& payment);
   const QCString payee(void) const;
   void setPayee(const QCString& payee);
+  const QCString interestAccountId(void) const;
+  void setInterestAccountId(const QCString& id);
 };
 
 #endif
+
 

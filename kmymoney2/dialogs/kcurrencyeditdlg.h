@@ -1,8 +1,8 @@
 /***************************************************************************
-                           mymoneystoragedump.h  -  description
+                          kcurrencyeditdlg.h  -  description
                              -------------------
-    begin                : Sun May 5 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
+    begin                : Wed Mar 24 2004
+    copyright            : (C) 2000-2004 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
                            Felix Rodriguez <frodriguez@users.sourceforge.net>
@@ -20,40 +20,62 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MYMONEYSTORAGEDUMP_H
-#define MYMONEYSTORAGEDUMP_H
+#ifndef KCURRENCYEDITDLG_H
+#define KCURRENCYEDITDLG_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qdatastream.h>
+#include <qwidget.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kpopupmenu.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "imymoneyserialize.h"
-#include "../mymoneyequity.h"
+#include "kcurrencyeditdlgdecl.h"
+#include "../mymoney/mymoneyequity.h"
+#include "../mymoney/mymoneycurrency.h"
 
 /**
   * @author Thomas Baumgart
   */
 
-class MyMoneyStorageDump
+class KCurrencyEditDlg : public KCurrencyEditDlgDecl
 {
+  Q_OBJECT
 public: 
-  MyMoneyStorageDump();
-  ~MyMoneyStorageDump();
+  KCurrencyEditDlg(QWidget *parent=0, const char *name=0);
+  ~KCurrencyEditDlg();
 
-  void readStream(QDataStream& s, IMyMoneySerialize* storage);
-  void writeStream(QDataStream& s, IMyMoneySerialize* storage);
+protected:
+  /// the resize event
+  virtual void resizeEvent(QResizeEvent*);
+  void updateCurrency(void);
+
+protected slots:
+  void slotSelectCurrency(QListViewItem *);
+  void slotSetBaseCurrency(void);
+  void slotClose(void);
+  void slotNewCurrency(void);
+  void slotRenameCurrency(void);
+  void slotDeleteCurrency(void);
+  void slotListClicked(QListViewItem* item, const QPoint&, int);
+  void slotRenameCurrency(QListViewItem* item, int col, const QString& txt);
+  
+private slots:
+  void timerDone(void);
 
 private:
-  void dumpTransaction(QTextStream& s, IMyMoneyStorage* storage, const MyMoneyTransaction& it_t);
-  void dumpPriceHistory(QTextStream& s, const equity_price_history history);
-  const QString occurenceToString(const MyMoneySchedule::occurenceE occurence);
-  const QString scheduleTypeToString(MyMoneySchedule::typeE type);
-  const QString paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType);
-  const QString reconcileToString(MyMoneySplit::reconcileFlagE flag) const;
+  void loadCurrencies(void);
+  void checkBaseCurrency(void);
+
+private:
+  MyMoneyCurrency      m_currency;
+  KPopupMenu*          m_contextMenu;
 };
 
 #endif

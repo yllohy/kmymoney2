@@ -1,0 +1,38 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>kMyMoneyPriceViewDecl</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>kMyMoneyPriceViewDecl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>397</width>
+            <height>320</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>PriceInfo</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <widget class="KListView">
+            <property name="name">
+                <cstring>m_priceHistory</cstring>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<customwidgets>
+</customwidgets>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>klistview.h</includehint>
+</includehints>
+</UI>

@@ -71,12 +71,13 @@ public:
   void setEquityType(const String& str);
 
   const equity_price_history& priceHistory() const { return m_priceHistory; }
+  void setPriceHistory(const equity_price_history& history);
 
   void  editPriceHistory(QDate& date,MyMoneyMoney& money);
   void  addPriceHistory(QDate& date, MyMoneyMoney& money);
   void  removePriceHistory(QDate& date);
 	
-private:
+protected:
   QCString m_id;
   QString m_name;
 	QString m_symbol;

@@ -550,12 +550,14 @@ void KLedgerViewCheckings::createInfoStack(void)
 void KLedgerViewCheckings::fillSummary(void)
 {
   MyMoneyMoney balance;
+  MyMoneyFile* file = MyMoneyFile::instance();
+
   QLabel *summary = static_cast<QLabel *> (m_summaryLine);
 
   if(accountId().length() > 0) {
     try {
-      balance = MyMoneyFile::instance()->balance(accountId());
-      QString txt = balance.formatMoney();
+      balance = file->balance(accountId());
+      QString txt = balance.formatMoney(file->currency(m_account.currencyId()).tradingSymbol());
       if(balance < 0)
         txt = "<font color=\"red\"><b>" + txt + "</b></font>";
       txt = "<nobr>"+ i18n("Current balance: ") + txt + "</nobr>";

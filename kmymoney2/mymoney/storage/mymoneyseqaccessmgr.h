@@ -517,6 +517,7 @@ public:
   virtual void loadPayee(const MyMoneyPayee& payee);
   virtual void loadSchedule(const MyMoneySchedule& sched);
   virtual void loadEquity(const MyMoneyEquity& equity);
+  virtual void loadCurrency(const MyMoneyCurrency& currency);
   
   virtual void loadAccountId(const unsigned long id);
   virtual void loadTransactionId(const unsigned long id);
@@ -657,6 +658,58 @@ public:
     * knowledge of.
     */
   const QValueList<MyMoneyEquity> equityList(void) const;
+
+  /**
+    * This method is used to add a new currency object to the engine.
+    * The ID of the object is the trading symbol, so there is no need for an additional
+    * ID since the symbol is guaranteed to be unique.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param currency reference to the MyMoneyCurrency object
+    */
+  void addCurrency(const MyMoneyCurrency& currency);
+
+  /**
+    * This method is used to modify an existing MyMoneyCurrency
+    * object.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param currency reference to the MyMoneyCurrency object
+    */
+  void modifyCurrency(const MyMoneyCurrency& currency);
+
+  /**
+    * This method is used to remove an existing MyMoneyCurrency object
+    * from the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param currency reference to the MyMoneyCurrency object
+    */
+  void removeCurrency(const MyMoneyCurrency& currency);
+
+  /**
+    * This method is used to retrieve a single MyMoneySchedule object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneySchedule object
+    * @return MyMoneySchedule object
+    */
+  const MyMoneyCurrency currency(const QCString& id) const;
+
+  /**
+    * This method is used to retrieve the list of all currencies
+    * known to the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return QValueList of all MyMoneyCurrency objects.
+    */
+  const QValueList<MyMoneyCurrency> currencyList(void) const;
 
   /**
     * This method is used to extract a list of scheduled transactions
@@ -868,6 +921,11 @@ private:
     */
   QMap<QCString, MyMoneyEquity> m_equitiesList;
   
+  /**
+    * A list containing all the currency information objects.  
+    */
+  QMap<QCString, MyMoneyCurrency> m_currencyList;
+
   /**
     * This member signals if the file has been modified or not
     */

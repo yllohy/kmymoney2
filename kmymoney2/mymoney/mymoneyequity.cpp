@@ -38,6 +38,11 @@ MyMoneyEquity::~MyMoneyEquity()
 {
 }
 
+void MyMoneyEquity::setPriceHistory(const equity_price_history& history)
+{
+  m_priceHistory = history;  
+}
+
 void MyMoneyEquity::editPriceHistory(QDate& date,MyMoneyMoney& money)
 {
   m_priceHistory[date] = money;

@@ -521,7 +521,7 @@ void KFindTransactionDlg::scanCheckListItems(QListViewItem* item, const opTypeE 
       kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
       if(it_c->type() == QCheckListItem::CheckBox) {
         if(it_c->isOn())
-          addItemToFilter(op, (*it_c).accountId());
+          addItemToFilter(op, (*it_c).id());
       }
       scanCheckListItems(it_v, op);
     }
@@ -537,7 +537,7 @@ void KFindTransactionDlg::scanCheckListItems(QListView* view, const opTypeE op)
       kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
       if(it_c->type() == QCheckListItem::CheckBox) {
         if(it_c->isOn())
-          addItemToFilter(op, (*it_c).accountId());
+          addItemToFilter(op, (*it_c).id());
       }
       scanCheckListItems(it_v, op);
     }

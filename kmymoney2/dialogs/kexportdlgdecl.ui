@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KExportDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -9,13 +9,16 @@
             <x>0</x>
             <y>0</y>
             <width>659</width>
-            <height>426</height>
+            <height>592</height>
         </rect>
     </property>
     <property name="caption">
         <string>QIF Export</string>
     </property>
     <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <property name="modal">
         <bool>true</bool>
     </property>
     <vbox>
@@ -71,7 +74,7 @@
                     <property name="sizePolicy">
                         <sizepolicy>
                             <hsizetype>5</hsizetype>
-                            <vsizetype>3</vsizetype>
+                            <vsizetype>7</vsizetype>
                             <horstretch>0</horstretch>
                             <verstretch>0</verstretch>
                         </sizepolicy>
@@ -88,7 +91,7 @@
 You can choose the file's path, the account and the format of the QIF file (profile).  Choose Account to export all the transactions between the specified dates or just categories.  You can also limit the transactions that are exported by start and ending date.  Once you have pressed the Export button a message box will appear when the export has completed detailing how many transactions, categories and payees were exported.</string>
                     </property>
                     <property name="alignment">
-                        <set>WordBreak|AlignVCenter|AlignLeft</set>
+                        <set>WordBreak|AlignTop|AlignLeft</set>
                     </property>
                     <property name="wordwrap" stdset="0">
                     </property>
@@ -291,17 +294,11 @@ You can choose the file's path, the account and the format of the QIF file (prof
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>Layout45</cstring>
+                <cstring>layout13</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
                 </property>
                 <widget class="QGroupBox">
                     <property name="name">
@@ -357,62 +354,18 @@ You can choose the file's path, the account and the format of the QIF file (prof
                         </property>
                         <widget class="QLayoutWidget">
                             <property name="name">
-                                <cstring>Layout43</cstring>
+                                <cstring>layout12</cstring>
                             </property>
-                            <hbox>
+                            <grid>
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <property name="margin">
-                                    <number>0</number>
-                                </property>
-                                <property name="spacing">
-                                    <number>6</number>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>lblStartDate</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>0</hsizetype>
-                                            <vsizetype>1</vsizetype>
-                                            <horstretch>0</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="minimumSize">
-                                        <size>
-                                            <width>50</width>
-                                            <height>0</height>
-                                        </size>
-                                    </property>
-                                    <property name="text">
-                                        <string>Start on:</string>
-                                    </property>
-                                </widget>
-                                <widget class="kMyMoneyDateInput">
+                                <widget class="kMyMoneyDateInput" row="0" column="1">
                                     <property name="name">
                                         <cstring>m_kmymoneydateStart</cstring>
                                     </property>
                                 </widget>
-                            </hbox>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>Layout44</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <property name="margin">
-                                    <number>0</number>
-                                </property>
-                                <property name="spacing">
-                                    <number>6</number>
-                                </property>
-                                <widget class="QLabel">
+                                <widget class="QLabel" row="1" column="0">
                                     <property name="name">
                                         <cstring>lblEndDate</cstring>
                                     </property>
@@ -434,7 +387,29 @@ You can choose the file's path, the account and the format of the QIF file (prof
                                         <string>End on:</string>
                                     </property>
                                 </widget>
-                                <widget class="kMyMoneyDateInput">
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>lblStartDate</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>0</hsizetype>
+                                            <vsizetype>1</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="minimumSize">
+                                        <size>
+                                            <width>50</width>
+                                            <height>0</height>
+                                        </size>
+                                    </property>
+                                    <property name="text">
+                                        <string>Start on:</string>
+                                    </property>
+                                </widget>
+                                <widget class="kMyMoneyDateInput" row="1" column="1">
                                     <property name="name">
                                         <cstring>m_kmymoneydateEnd</cstring>
                                     </property>
@@ -447,7 +422,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
                                         </sizepolicy>
                                     </property>
                                 </widget>
-                            </hbox>
+                            </grid>
                         </widget>
                     </vbox>
                 </widget>
@@ -463,8 +438,8 @@ You can choose the file's path, the account and the format of the QIF file (prof
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>165</width>
-                            <height>0</height>
+                            <width>230</width>
+                            <height>16</height>
                         </size>
                     </property>
                 </spacer>
@@ -549,7 +524,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
         <class>kMyMoneyDateInput</class>
         <header location="local">../widgets/kmymoneydateinput.h</header>
         <sizehint>
-            <width>90</width>
+            <width>120</width>
             <height>25</height>
         </sizehint>
         <container>0</container>
@@ -569,4 +544,14 @@ You can choose the file's path, the account and the format of the QIF file (prof
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kcombobox.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kmymoneydateinput.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+</includehints>
 </UI>

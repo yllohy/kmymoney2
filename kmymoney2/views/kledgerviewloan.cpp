@@ -358,16 +358,17 @@ void KLedgerViewLoan::createSummary(void)
 void KLedgerViewLoan::fillSummary(void)
 {
   MyMoneyMoney balance;
+  MyMoneyFile* file = MyMoneyFile::instance();
   QLabel *summary = static_cast<QLabel *> (m_summaryLine);
 
   if(!accountId().isEmpty()) {
     try {
-      balance = MyMoneyFile::instance()->balance(accountId());
+      balance = file->balance(accountId());
       QString txt = balance.formatMoney();
       if(m_account.accountType() == MyMoneyAccount::Loan)
-        summary->setText(i18n("You currently owe: ") + (-balance).formatMoney());
+        summary->setText(i18n("You currently owe: ") + (-balance).formatMoney(file->currency(m_account.currencyId()).tradingSymbol()));
       else
-        summary->setText(i18n("Current balance: ") + balance.formatMoney());
+        summary->setText(i18n("Current balance: ") + balance.formatMoney(file->currency(m_account.currencyId()).tradingSymbol()));
 
     } catch(MyMoneyException *e) {
         qDebug("Unexpected exception in KLedgerViewLoan::fillSummary");

@@ -40,6 +40,7 @@
 #include "../mymoneyobserver.h"
 #include "../mymoneytransactionfilter.h"
 #include "../mymoneyequity.h"
+#include "../mymoneycurrency.h"
 
 /**
   * @author Thomas Baumgart
@@ -625,6 +626,57 @@ public:
                                               QDate startDate,
                                               const QCStringList& accounts=QCStringList()) const = 0;
 
+  /**
+    * This method is used to add a new currency object to the engine.
+    * The ID of the object is the trading symbol, so there is no need for an additional
+    * ID since the symbol is guaranteed to be unique.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param currency reference to the MyMoneyCurrency object
+    */
+  virtual void addCurrency(const MyMoneyCurrency& currency) = 0;
+
+  /**
+    * This method is used to modify an existing MyMoneyCurrency
+    * object.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param currency reference to the MyMoneyCurrency object
+    */
+  virtual void modifyCurrency(const MyMoneyCurrency& currency) = 0;
+
+  /**
+    * This method is used to remove an existing MyMoneyCurrency object
+    * from the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param currency reference to the MyMoneyCurrency object
+    */
+  virtual void removeCurrency(const MyMoneyCurrency& currency) = 0;
+
+  /**
+    * This method is used to retrieve a single MyMoneySchedule object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneySchedule object
+    * @return MyMoneySchedule object
+    */
+  virtual const MyMoneyCurrency currency(const QCString& id) const = 0;
+
+  /**
+    * This method is used to retrieve the list of all currencies
+    * known to the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return QValueList of all MyMoneyCurrency objects.
+    */
+  virtual const QValueList<MyMoneyCurrency> currencyList(void) const = 0;
 };
 
 #endif

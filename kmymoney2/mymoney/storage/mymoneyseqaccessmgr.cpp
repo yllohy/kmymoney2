@@ -1132,6 +1132,18 @@ void MyMoneySeqAccessMgr::loadEquity(const MyMoneyEquity& equity)
   qDebug("loadEquity: Equity list size is %d, this=0x%08X", m_equitiesList.size(), this);
 }
 
+void MyMoneySeqAccessMgr::loadCurrency(const MyMoneyCurrency& currency)
+{
+  QMap<QCString, MyMoneyCurrency>::ConstIterator it;
+
+  it = m_currencyList.find(currency.id());
+  if(it != m_currencyList.end())
+  {
+    throw new MYMONEYEXCEPTION(QString("Duplicate currency '%1' during loadCurrency()").arg(currency.id().data()));
+  }
+  m_currencyList[currency.id()] = currency;
+}
+
 void MyMoneySeqAccessMgr::loadAccountId(const unsigned long id)
 {
   m_nextAccountID = id;
@@ -1165,11 +1177,13 @@ const QString MyMoneySeqAccessMgr::value(const QCString& key) const
 void MyMoneySeqAccessMgr::setValue(const QCString& key, const QString& val)
 {
   MyMoneyKeyValueContainer::setValue(key, val);
+  touch();
 }
 
 void MyMoneySeqAccessMgr::deletePair(const QCString& key)
 {
   MyMoneyKeyValueContainer::deletePair(key);
+  touch();
 }
 
 QMap<QCString, QString> MyMoneySeqAccessMgr::pairs(void) const
@@ -1180,6 +1194,7 @@ QMap<QCString, QString> MyMoneySeqAccessMgr::pairs(void) const
 void MyMoneySeqAccessMgr::setPairs(const QMap<QCString, QString>& list)
 {
   MyMoneyKeyValueContainer::setPairs(list);
+  touch();
 }
 
 void MyMoneySeqAccessMgr::addSchedule(MyMoneySchedule& sched)
@@ -1429,3 +1444,69 @@ const QValueList<MyMoneyEquity> MyMoneySeqAccessMgr::equityList(void) const
   }
   return list;
 }
+
+void MyMoneySeqAccessMgr::addCurrency(const MyMoneyCurrency& currency)
+{
+  QMap<QCString, MyMoneyCurrency>::Iterator it;
+
+  it = m_currencyList.find(currency.id());
+  if(it != m_currencyList.end()) {
+    throw new MYMONEYEXCEPTION(QString("Cannot add currency with existing id %1").arg(currency.id().data()));
+  }
+
+  m_currencyList[currency.id()] = currency;
+  touch();
+}
+
+void MyMoneySeqAccessMgr::modifyCurrency(const MyMoneyCurrency& currency)
+{
+  QMap<QCString, MyMoneyCurrency>::Iterator it;
+
+  it = m_currencyList.find(currency.id());
+  if(it == m_currencyList.end()) {
+    throw new MYMONEYEXCEPTION(QString("Cannot modify currency with unknown id %1").arg(currency.id().data()));
+  }
+
+  *it = currency;
+  touch();
+}
+
+void MyMoneySeqAccessMgr::removeCurrency(const MyMoneyCurrency& currency)
+{
+  QMap<QCString, MyMoneyCurrency>::Iterator it;
+
+  it = m_currencyList.find(currency.id());
+  if(it == m_currencyList.end()) {
+    throw new MYMONEYEXCEPTION(QString("Cannot remove currency with unknown id %1").arg(currency.id().data()));
+  }
+
+  m_currencyList.remove(it);  
+  touch();
+}
+
+const MyMoneyCurrency MyMoneySeqAccessMgr::currency(const QCString& id) const
+{
+  if(id.isEmpty()) {
+    
+  }
+  QMap<QCString, MyMoneyCurrency>::ConstIterator it;
+
+  it = m_currencyList.find(id);
+  if(it == m_currencyList.end()) {
+    throw new MYMONEYEXCEPTION(QString("Cannot retrieve currency with unknown id %1").arg(id.data()));
+  }
+
+  return *it;
+}
+
+const QValueList<MyMoneyCurrency> MyMoneySeqAccessMgr::currencyList(void) const
+{
+  QValueList<MyMoneyCurrency> list;
+  QMap<QCString, MyMoneyCurrency>::ConstIterator it;
+
+  for(it = m_currencyList.begin(); it != m_currencyList.end(); ++it) {
+    list.append(*it);
+  }
+  return list;
+}
+

@@ -34,6 +34,8 @@
 #include "mymoneystoragedump.h"
 #include "imymoneystorage.h"
 #include "../mymoneyaccount.h"
+#include "../mymoneyequity.h"
+#include "../mymoneycurrency.h"
 
 MyMoneyStorageDump::MyMoneyStorageDump()
 {
@@ -64,6 +66,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   s << "user e-mail = " << storage->userEmail() << "\n";
   s << "creation date = " << storage->creationDate().toString(Qt::ISODate) << "\n";
   s << "last modification date = " << storage->lastModificationDate().toString(Qt::ISODate) << "\n";
+  s << "base currency = " << storage->value("kmm-baseCurrency") << "\n";
   s << "\n";
   
   s << "Internal-Info\n";
@@ -164,6 +167,24 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     s << "\n";
   }
   s << "\n";
+
+  s << "Currencies" << "\n";
+  s << "----------" << "\n";
+
+  QValueList<MyMoneyCurrency> list_c = storage->currencyList();
+  QValueList<MyMoneyCurrency>::ConstIterator it_c;
+  for(it_c = list_c.begin(); it_c != list_c.end(); ++it_c) {
+    s << "  Name = " << (*it_c).name() << "\n";
+    s << "    ID = " << (*it_c).id() << "\n";
+    s << "    Symbol = " << (*it_c).tradingSymbol() << "\n";
+    s << "    Parts/Unit = " << (*it_c).partsPerUnit() << "\n";
+    s << "    smallest cash fraction = " << (*it_c).smallestCashFraction() << "\n";
+    s << "    smallest account fraction = " << (*it_c).smallestAccountFraction() << "\n";
+    dumpPriceHistory(s, (*it_c).priceHistory());
+    s << "\n";
+  }
+  s << "\n";
+
 
   s << "Transactions" << "\n";
   s << "------------" << "\n";
@@ -402,4 +423,11 @@ const QString MyMoneyStorageDump::reconcileToString(MyMoneySplit::reconcileFlagE
       break;
   }
   return rc;
+}
+
+void MyMoneyStorageDump::dumpPriceHistory(QTextStream& s, const equity_price_history history)
+{
+  if(history.count() != 0) {
+    s << "    Price History:\n";
+  }
 }

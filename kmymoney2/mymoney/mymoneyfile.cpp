@@ -47,6 +47,7 @@ const QCString MyMoneyFile::NotifyClassInstitution = "MyMoneyFile::NotifyInstitu
 const QCString MyMoneyFile::NotifyClassAccountHierarchy = "MyMoneyFile::NotifyAccountHierarchy";
 const QCString MyMoneyFile::NotifyClassSchedule = "MyMoneyFile::NotifySchedule";
 const QCString MyMoneyFile::NotifyClassAnyChange = "MyMoneyFile::NotifyAnyChange";
+const QCString MyMoneyFile::NotifyClassCurrency = "MyMoneyFile::NotifyCurrency";
 
 // include the following line to get a 'cout' for debug purposes
 // #include <iostream>
@@ -902,14 +903,24 @@ void MyMoneyFile::setValue(const QCString& key, const QString& val)
 {
   checkStorage();
 
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   m_storage->setValue(key, val);
+
+  addNotification(NotifyClassAnyChange);
 }
 
 void MyMoneyFile::deletePair(const QCString& key)
 {
   checkStorage();
 
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   m_storage->deletePair(key);
+
+  addNotification(NotifyClassAnyChange);
 }
 
 void MyMoneyFile::addSchedule(MyMoneySchedule& sched)
@@ -1147,7 +1158,6 @@ const QStringList MyMoneyFile::consistencyCheck(void)
 
   addNotification(NotifyClassAccount);
   addNotification(NotifyClassAccountHierarchy);
-  addNotification(NotifyClassAnyChange);
   
   // add more checks here
   
@@ -1260,5 +1270,75 @@ const QValueList<MyMoneyEquity> MyMoneyFile::equityList(void) const
   checkStorage();
 
   return m_storage->equityList();
+}
+
+void MyMoneyFile::addCurrency(const MyMoneyCurrency& currency)
+{
+  checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  m_storage->addCurrency(currency);
+  addNotification(NotifyClassCurrency);
+}
+
+void MyMoneyFile::modifyCurrency(const MyMoneyCurrency& currency)
+{
+  checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  m_storage->modifyCurrency(currency);
+  addNotification(NotifyClassCurrency);
+}
+
+void MyMoneyFile::removeCurrency(const MyMoneyCurrency& currency)
+{
+  checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  m_storage->removeCurrency(currency);
+  addNotification(NotifyClassCurrency);
+}
+
+const MyMoneyCurrency MyMoneyFile::currency(const QCString& id) const
+{
+  if(id.isEmpty())
+    return baseCurrency();
+
+  checkStorage();
+  return m_storage->currency(id);
+}
+
+const QValueList<MyMoneyCurrency> MyMoneyFile::currencyList(void) const
+{
+  checkStorage();
+
+  return m_storage->currencyList();
+}
+
+const MyMoneyCurrency MyMoneyFile::baseCurrency(void) const
+{
+  QCString id = QCString(value("kmm-baseCurrency"));
+  if(id.isEmpty())
+    return MyMoneyCurrency();
+
+  return currency(id);
+}
+
+void MyMoneyFile::setBaseCurrency(const MyMoneyCurrency& curr)
+{
+  MyMoneyCurrency c = currency(curr.id());
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  setValue("kmm-baseCurrency", curr.id());
+
+  addNotification(NotifyClassCurrency);
 }
 

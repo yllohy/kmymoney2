@@ -63,6 +63,7 @@
 #include "dialogs/mymoneyqifprofileeditor.h"
 #include "dialogs/kimportverifydlg.h"
 #include "dialogs/kenterscheduledialog.h"
+#include "dialogs/kcurrencyeditdlg.h"
 
 #include "views/kmymoneyview.h"
 
@@ -189,7 +190,8 @@ void KMyMoney2App::initActions()
   actionOfxImport = new KAction(i18n("OFX ..."), "", 0, this, SLOT(slotOfxImport()), actionCollection(), "file_import_ofx");
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
-  
+  new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tool_currency_dialog");
+
   // The Settings Menu
   settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
   settings = KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
@@ -1074,6 +1076,12 @@ void KMyMoney2App::update(const QCString& /* id */)
   updateCaption();
 }
 
+void KMyMoney2App::slotCurrencyDialog(void)
+{
+  KCurrencyEditDlg dlg;
+
+  dlg.exec();  
+}
 
 void KMyMoney2App::slotFileConsitencyCheck(void)
 {

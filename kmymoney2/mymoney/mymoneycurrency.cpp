@@ -1,8 +1,8 @@
 /***************************************************************************
-                           mymoneystoragedump.h  -  description
+                          mymoneycurrency.cpp  -  description
                              -------------------
-    begin                : Sun May 5 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
+    begin                : Fri Mar 19 2004
+    copyright            : (C) 2000-2004 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
                            Felix Rodriguez <frodriguez@users.sourceforge.net>
@@ -20,40 +20,57 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MYMONEYSTORAGEDUMP_H
-#define MYMONEYSTORAGEDUMP_H
-
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qdatastream.h>
+// ----------------------------------------------------------------------------
+// KDE Includes
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "imymoneyserialize.h"
-#include "../mymoneyequity.h"
 
-/**
-  * @author Thomas Baumgart
-  */
+#include "mymoneycurrency.h"
 
-class MyMoneyStorageDump
+MyMoneyCurrency::MyMoneyCurrency()
 {
-public: 
-  MyMoneyStorageDump();
-  ~MyMoneyStorageDump();
+  setEquityType(ETYPE_CURRENCY);
+  m_partsPerUnit = 100;
+  m_smallestCashFraction = 100;
+  m_smallestAccountFraction = 100;
+  // m_symbol = QChar(0x00A4);         // general currency symbol
+  m_symbol = QString();
+}
 
-  void readStream(QDataStream& s, IMyMoneySerialize* storage);
-  void writeStream(QDataStream& s, IMyMoneySerialize* storage);
+MyMoneyCurrency::MyMoneyCurrency(const QCString& id, const QString& name, const QString& symbol, const int partsPerUnit, const int smallestCashFraction, const int smallestAccountFraction)
+{
+  setEquityType(ETYPE_CURRENCY);
+  m_id = id;
+  m_name = name;
 
-private:
-  void dumpTransaction(QTextStream& s, IMyMoneyStorage* storage, const MyMoneyTransaction& it_t);
-  void dumpPriceHistory(QTextStream& s, const equity_price_history history);
-  const QString occurenceToString(const MyMoneySchedule::occurenceE occurence);
-  const QString scheduleTypeToString(MyMoneySchedule::typeE type);
-  const QString paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType);
-  const QString reconcileToString(MyMoneySplit::reconcileFlagE flag) const;
-};
+  if(symbol.isEmpty())
+    m_symbol = id;
+  else
+    m_symbol = symbol;
 
-#endif
+  m_partsPerUnit = partsPerUnit;
+  m_smallestCashFraction = smallestCashFraction;
+  if(smallestAccountFraction)
+    m_smallestAccountFraction = smallestAccountFraction;
+  else
+    m_smallestAccountFraction = smallestCashFraction;
+}
+
+MyMoneyCurrency::~MyMoneyCurrency()
+{
+}
+
+MyMoneyCurrency::MyMoneyCurrency(const MyMoneyEquity& r)
+{
+  MyMoneyEquity* that = static_cast<MyMoneyEquity*> (this);
+  *that = r;
+
+  m_partsPerUnit = 100;
+  m_smallestCashFraction = 100;
+  m_smallestAccountFraction = 100;
+}

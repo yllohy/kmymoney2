@@ -86,6 +86,8 @@ void MyMoneySeqAccessMgrTest::testSetFunctions() {
 	m->setUserEmail("Email");
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
+	m->setValue("key", "value");
+	CPPUNIT_ASSERT(m->dirty() == true);
 
 	CPPUNIT_ASSERT(m->userName() == "Name");
 	CPPUNIT_ASSERT(m->userStreet() == "Street");
@@ -94,6 +96,11 @@ void MyMoneySeqAccessMgrTest::testSetFunctions() {
 	CPPUNIT_ASSERT(m->userPostcode() == "Postcode");
 	CPPUNIT_ASSERT(m->userTelephone() == "Telephone");
 	CPPUNIT_ASSERT(m->userEmail() == "Email");
+	CPPUNIT_ASSERT(m->value("key") == "value");
+
+	m->m_dirty = false;
+	m->deletePair("key");
+	CPPUNIT_ASSERT(m->dirty() == true);
 }
 
 void MyMoneySeqAccessMgrTest::testSupportFunctions()
@@ -1346,4 +1353,128 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				true);
 	CPPUNIT_ASSERT(list.count() == 1);
 	CPPUNIT_ASSERT(list[0].name() == "Schedule 4");
+}
+
+void MyMoneySeqAccessMgrTest::testAddCurrency()
+{
+	MyMoneyCurrency curr("EUR", "Euro", "?", 100, 100);
+	CPPUNIT_ASSERT(m->m_currencyList.count() == 0);
+	m->m_dirty = false;
+	try {
+		m->addCurrency(curr);
+		CPPUNIT_ASSERT(m->m_currencyList.count() == 1);
+		CPPUNIT_ASSERT(m->m_currencyList["EUR"].name() == "Euro");
+		CPPUNIT_ASSERT(m->dirty() == true);
+	} catch(MyMoneyException *e) {
+                delete e;
+                CPPUNIT_FAIL("Unexpected exception");
+	}
+
+	m->m_dirty = false;
+	try {
+		m->addCurrency(curr);
+                CPPUNIT_FAIL("Expected exception missing");
+	} catch(MyMoneyException *e) {
+		CPPUNIT_ASSERT(m->dirty() == false);
+                delete e;
+	}
+}
+
+void MyMoneySeqAccessMgrTest::testModifyCurrency()
+{
+	MyMoneyCurrency curr("EUR", "Euro", "?", 100, 100);
+	testAddCurrency();
+	m->m_dirty = false;
+	curr.setName("EURO");
+	try {
+		m->modifyCurrency(curr);
+		CPPUNIT_ASSERT(m->m_currencyList.count() == 1);
+		CPPUNIT_ASSERT(m->m_currencyList["EUR"].name() == "EURO");
+		CPPUNIT_ASSERT(m->dirty() == true);
+	} catch(MyMoneyException *e) {
+                delete e;
+                CPPUNIT_FAIL("Unexpected exception");
+	}
+
+	m->m_dirty = false;
+
+	MyMoneyCurrency unknownCurr("DEM", "Deutsche Mark", "DM", 100, 100);
+	try {
+		m->modifyCurrency(unknownCurr);
+                CPPUNIT_FAIL("Expected exception missing");
+	} catch(MyMoneyException *e) {
+		CPPUNIT_ASSERT(m->dirty() == false);
+                delete e;
+	}
+}
+
+void MyMoneySeqAccessMgrTest::testRemoveCurrency()
+{
+	MyMoneyCurrency curr("EUR", "Euro", "?", 100, 100);
+	testAddCurrency();
+	m->m_dirty = false;
+	try {
+		m->removeCurrency(curr);
+		CPPUNIT_ASSERT(m->m_currencyList.count() == 0);
+		CPPUNIT_ASSERT(m->dirty() == true);
+	} catch(MyMoneyException *e) {
+                delete e;
+                CPPUNIT_FAIL("Unexpected exception");
+	}
+
+	m->m_dirty = false;
+
+	MyMoneyCurrency unknownCurr("DEM", "Deutsche Mark", "DM", 100, 100);
+	try {
+		m->removeCurrency(unknownCurr);
+                CPPUNIT_FAIL("Expected exception missing");
+	} catch(MyMoneyException *e) {
+		CPPUNIT_ASSERT(m->dirty() == false);
+                delete e;
+	}
+}
+
+void MyMoneySeqAccessMgrTest::testCurrency()
+{
+	MyMoneyCurrency curr("EUR", "Euro", "?", 100, 100);
+	MyMoneyCurrency newCurr;
+	testAddCurrency();
+	m->m_dirty = false;
+	try {
+		newCurr = m->currency("EUR");
+		CPPUNIT_ASSERT(m->dirty() == false);
+		CPPUNIT_ASSERT(newCurr.id() == curr.id());
+		CPPUNIT_ASSERT(newCurr.name() == curr.name());
+	} catch(MyMoneyException *e) {
+                delete e;
+                CPPUNIT_FAIL("Unexpected exception");
+	}
+
+	try {
+		m->currency("DEM");
+                CPPUNIT_FAIL("Expected exception missing");
+	} catch(MyMoneyException *e) {
+		CPPUNIT_ASSERT(m->dirty() == false);
+                delete e;
+	}
+}
+
+void MyMoneySeqAccessMgrTest::testCurrencyList()
+{
+	CPPUNIT_ASSERT(m->currencyList().count() == 0);
+
+	testAddCurrency();
+	CPPUNIT_ASSERT(m->currencyList().count() == 1);
+
+	MyMoneyCurrency unknownCurr("DEM", "Deutsche Mark", "DM", 100, 100);
+	try {
+		m->addCurrency(unknownCurr);
+		m->m_dirty = false;
+		CPPUNIT_ASSERT(m->m_currencyList.count() == 2);
+		CPPUNIT_ASSERT(m->currencyList().count() == 2);
+		CPPUNIT_ASSERT(m->dirty() == false);
+	} catch(MyMoneyException *e) {
+                delete e;
+                CPPUNIT_FAIL("Unexpected exception");
+	}
 }

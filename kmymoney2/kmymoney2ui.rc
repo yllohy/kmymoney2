@@ -37,6 +37,7 @@
 
   <Menu name="tools">
     <Action name="qif_editor"/>
+    <Action name="tool_currency_dialog"/>
     <Action name="file_consistency_check"/>
   </Menu>
 

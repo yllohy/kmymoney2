@@ -40,6 +40,7 @@
 #include "../mymoneyscheduled.h"
 #include "../mymoneytransactionfilter.h"
 #include "../mymoneyequity.h"
+#include "../mymoneycurrency.h"
 
 /**
   * @author Thomas Baumgart
@@ -283,6 +284,7 @@ public:
   virtual void loadPayee(const MyMoneyPayee& payee) = 0;
   virtual void loadSchedule(const MyMoneySchedule& sched) = 0;
   virtual void loadEquity(const MyMoneyEquity& equity) = 0;
+  virtual void loadCurrency(const MyMoneyCurrency& currency) = 0;
 
   virtual const unsigned long accountId(void) = 0;
   virtual const unsigned long transactionId(void) = 0;
@@ -326,6 +328,17 @@ public:
                                               int schedulePaymentTypes,
                                               QDate startDate,
                                               const QCStringList& accounts=QCStringList()) const = 0;
+
+  /**
+    * This method is used to retrieve the list of all currencies
+    * known to the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return QValueList of all MyMoneyCurrency objects.
+    */
+  virtual const QValueList<MyMoneyCurrency> currencyList(void) const = 0;
+
 };
 
 #endif

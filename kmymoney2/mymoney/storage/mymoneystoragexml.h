@@ -141,9 +141,15 @@ private:
   void writeEquities(QDomElement& equities);
   void writeEquity(QDomElement& equityElement, const MyMoneyEquity& equity);
   
+  void writeCurrencies(QDomElement& currencies);
+  void writeCurrency(QDomElement& currencyElement, const MyMoneyCurrency& currency);
+
   void readEquities(QDomElement& equities); 
   MyMoneyEquity readEquity(QDomElement& equityElement);
   
+  void readCurrencies(QDomElement& currencies);
+  const MyMoneyCurrency readCurrency(QDomElement& currencyElement);
+
   QDomElement findChildElement(const QString& name, const QDomElement& root);
   
 private:

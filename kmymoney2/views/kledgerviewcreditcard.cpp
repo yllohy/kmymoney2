@@ -131,12 +131,13 @@ void KLedgerViewCreditCard::resizeEvent(QResizeEvent* ev)
 void KLedgerViewCreditCard::fillSummary(void)
 {
   MyMoneyMoney balance;
+  MyMoneyFile* file = MyMoneyFile::instance();
   QLabel *summary = static_cast<QLabel *> (m_summaryLine);
 
   if(!accountId().isEmpty()) {
     try {
-      balance = MyMoneyFile::instance()->balance(accountId());
-      summary->setText(i18n("You currently owe: ") + (-balance).formatMoney());
+      balance = file->balance(accountId());
+      summary->setText(i18n("You currently owe: ") + (-balance).formatMoney(file->currency(m_account.currencyId()).tradingSymbol()));
 /* the fancy version. don't know, if we should use it
       if(balance < 0)
         summary->setText(i18n("You currently owe: ") + (-balance).formatMoney());

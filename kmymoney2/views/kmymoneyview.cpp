@@ -77,6 +77,7 @@
 #include "../dialogs/kimportdlg.h"
 #include "../dialogs/kexportdlg.h"
 #include "../dialogs/knewloanwizard.h"
+#include "../dialogs/kcurrencyeditdlg.h"
 
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 #include "../mymoney/storage/imymoneystorageformat.h"
@@ -658,6 +659,11 @@ bool KMyMoneyView::readFile(const KURL& url)
   // stays untouched on the local filesystem
   KIO::NetAccess::removeTempFile(filename);
 
+  // we check, if we have any currency in the file. If not, we load
+  // all the default currencies we know.
+  if(MyMoneyFile::instance()->currencyList().count() == 0)
+    loadDefaultCurrencies();
+
   // since the new account wizard contains the payees list, we have
   // to create the wizard completely new to get the latest list
   // into the payees widget
@@ -699,7 +705,9 @@ bool KMyMoneyView::readFile(const KURL& url)
   // if there's no asset account, then automatically start the
   // new account wizard
   // kmymoney2->createInitialAccount();
-    
+
+  selectBaseCurrency();
+
   // if we currently see a different page, then select the right one
   if(page != activePageIndex()) {
     showPage(page);
@@ -1097,6 +1105,8 @@ void KMyMoneyView::newFile(const bool createEmtpyFile)
                     i18n("Load standard categories"));
 
       loadDefaultCategories();
+      loadDefaultCurrencies();
+      selectBaseCurrency();
     }
   }
   m_fileOpen = true;
@@ -1124,6 +1134,191 @@ void KMyMoneyView::viewPersonal(void)
     file->setUserPostcode(newFileDlg.userPostcodeText);
     file->setUserTelephone(newFileDlg.userTelephoneText);
     file->setUserEmail(newFileDlg.userEmailText);
+  }
+}
+
+void KMyMoneyView::selectBaseCurrency(void)
+{
+  // check if we have a base currency. If not, we need to select one
+  if(MyMoneyFile::instance()->baseCurrency().id().isEmpty()) {
+    KCurrencyEditDlg dlg;
+    dlg.exec();
+  }
+}
+
+void KMyMoneyView::loadDefaultCurrencies(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  try {
+    file->addCurrency(MyMoneyCurrency("AFA", i18n("Afghanistan Afghani")));
+    file->addCurrency(MyMoneyCurrency("ALL", i18n("Albanian Lek")));
+    file->addCurrency(MyMoneyCurrency("DZD", i18n("Algerian Dinar")));
+    file->addCurrency(MyMoneyCurrency("ADF", i18n("Andorran Franc")));
+    file->addCurrency(MyMoneyCurrency("ADP", i18n("Andorran Peseta")));
+    file->addCurrency(MyMoneyCurrency("AON", i18n("Angolan New Kwanza")));
+    file->addCurrency(MyMoneyCurrency("ARS", i18n("Argentine Peso")));
+    file->addCurrency(MyMoneyCurrency("AWG", i18n("Aruban Florin")));
+    file->addCurrency(MyMoneyCurrency("AUD", i18n("Australian Dollar"),      "$"));
+    file->addCurrency(MyMoneyCurrency("AZM", i18n("Azerbaijani Manat")));
+    file->addCurrency(MyMoneyCurrency("BSD", i18n("Bahamian Dollar"),        "$"));
+    file->addCurrency(MyMoneyCurrency("BHD", i18n("Bahraini Dinar"),         "BHD", 1000, 1000));
+    file->addCurrency(MyMoneyCurrency("BDT", i18n("Bangladeshi Taka")));
+    file->addCurrency(MyMoneyCurrency("BBD", i18n("Barbados Dollar"),        "$"));
+    file->addCurrency(MyMoneyCurrency("BYR", i18n("Belarussian Ruble"),      "BYR", 1, 1));
+    file->addCurrency(MyMoneyCurrency("BZD", i18n("Belize Dollar"),          "$"));
+    file->addCurrency(MyMoneyCurrency("BMD", i18n("Bermudian Dollar"),       "$"));
+    file->addCurrency(MyMoneyCurrency("BTN", i18n("Bhutan Ngultrum")));
+    file->addCurrency(MyMoneyCurrency("BOB", i18n("Bolivian Boliviano")));
+    file->addCurrency(MyMoneyCurrency("BAM", i18n("Bosnian Convertible Mark")));
+    file->addCurrency(MyMoneyCurrency("BWP", i18n("Botswana Pula")));
+    file->addCurrency(MyMoneyCurrency("BRL", i18n("Brazilian Real"),         "R$"));
+    file->addCurrency(MyMoneyCurrency("GBP", i18n("British Pound"),          QChar(0x00A3)));
+    file->addCurrency(MyMoneyCurrency("BND", i18n("Brunei Dollar"),          "$"));
+    file->addCurrency(MyMoneyCurrency("BGL", i18n("Bulgarian Lev")));
+    file->addCurrency(MyMoneyCurrency("BIF", i18n("Burundi Franc")));
+    file->addCurrency(MyMoneyCurrency("XAF", i18n("CFA Franc BEAC")));
+    file->addCurrency(MyMoneyCurrency("XOF", i18n("CFA Franc BCEAO")));
+    file->addCurrency(MyMoneyCurrency("XPF", i18n("CFP Franc Pacifique")));
+    file->addCurrency(MyMoneyCurrency("KHR", i18n("Cambodia Riel")));
+    file->addCurrency(MyMoneyCurrency("CAD", i18n("Canadian Dollar"),        "$"));
+    file->addCurrency(MyMoneyCurrency("CVE", i18n("Cape Verde Escudo")));
+    file->addCurrency(MyMoneyCurrency("KYD", i18n("Cayman Islands Dollar"),  "$"));
+    file->addCurrency(MyMoneyCurrency("CLP", i18n("Chilean Peso")));
+    file->addCurrency(MyMoneyCurrency("CNY", i18n("Chinese Yuan Renminbi")));
+    file->addCurrency(MyMoneyCurrency("COP", i18n("Colombian Peso")));
+    file->addCurrency(MyMoneyCurrency("KMF", i18n("Comoros Franc")));
+    file->addCurrency(MyMoneyCurrency("CRC", i18n("Costa Rican Colon"),      QChar(0x20A1)));
+    file->addCurrency(MyMoneyCurrency("HRK", i18n("Croatian Kuna")));
+    file->addCurrency(MyMoneyCurrency("CUP", i18n("Cuban Peso")));
+    file->addCurrency(MyMoneyCurrency("CYP", i18n("Cyprus Pound"),           QChar(0x00A3)));
+    file->addCurrency(MyMoneyCurrency("CZK", i18n("Czech Koruna")));
+    file->addCurrency(MyMoneyCurrency("DKK", i18n("Danish Krone"),           "kr"));
+    file->addCurrency(MyMoneyCurrency("DJF", i18n("Djibouti Franc")));
+    file->addCurrency(MyMoneyCurrency("DOP", i18n("Dominican Peso")));
+    file->addCurrency(MyMoneyCurrency("XCD", i18n("East Caribbean Dollar"),  "$"));
+    file->addCurrency(MyMoneyCurrency("EGP", i18n("Egyptian Pound"),         QChar(0x00A3)));
+    file->addCurrency(MyMoneyCurrency("SVC", i18n("El Salvador Colon")));
+    file->addCurrency(MyMoneyCurrency("ERN", i18n("Eritrean Nakfa")));
+    file->addCurrency(MyMoneyCurrency("EEK", i18n("Estonian Kroon")));
+    file->addCurrency(MyMoneyCurrency("ETB", i18n("Ethiopian Birr")));
+    file->addCurrency(MyMoneyCurrency("EUR", i18n("Euro"),                   QChar(0x20ac)));
+    file->addCurrency(MyMoneyCurrency("FKP", i18n("Falkland Islands Pound"), QChar(0x00A3)));
+    file->addCurrency(MyMoneyCurrency("FJD", i18n("Fiji Dollar"),            "$"));
+    file->addCurrency(MyMoneyCurrency("GMD", i18n("Gambian Dalasi")));
+    file->addCurrency(MyMoneyCurrency("GEL", i18n("Georgian Lari")));
+    file->addCurrency(MyMoneyCurrency("GHC", i18n("Ghanaian Cedi")));
+    file->addCurrency(MyMoneyCurrency("GIP", i18n("Gibraltar Pound"),        QChar(0x00A3)));
+    file->addCurrency(MyMoneyCurrency("GTQ", i18n("Guatemalan Quetzal")));
+    file->addCurrency(MyMoneyCurrency("GWP", i18n("Guinea-Bissau Peso")));
+    file->addCurrency(MyMoneyCurrency("GYD", i18n("Guyanan Dollar"),         "$"));
+    file->addCurrency(MyMoneyCurrency("HTG", i18n("Haitian Gourde")));
+    file->addCurrency(MyMoneyCurrency("HNL", i18n("Honduran Lempira")));
+    file->addCurrency(MyMoneyCurrency("HKD", i18n("Hong Kong Dollar"),       "$"));
+    file->addCurrency(MyMoneyCurrency("HUF", i18n("Hungarian Forint"),       "HUF", 1, 1, 100));
+    file->addCurrency(MyMoneyCurrency("ISK", i18n("Iceland Krona")));
+    file->addCurrency(MyMoneyCurrency("INR", i18n("Indian Rupee"),           QChar(0x20A8)));
+    file->addCurrency(MyMoneyCurrency("IDR", i18n("Indonesian Rupiah"),      "IDR", 100, 1));
+    file->addCurrency(MyMoneyCurrency("IRR", i18n("Iranian Rial"),           "IRR", 1, 1));
+    file->addCurrency(MyMoneyCurrency("IQD", i18n("Iraqi Dinar"),            "IQD", 1000, 1000));
+    file->addCurrency(MyMoneyCurrency("ILS", i18n("Israeli New Shekel"),     QChar(0x20AA)));
+    file->addCurrency(MyMoneyCurrency("JMD", i18n("Jamaican Dollar"),        "$"));
+    file->addCurrency(MyMoneyCurrency("JPY", i18n("Japanese Yen"),           QChar(0x00A5), 100, 1));
+    file->addCurrency(MyMoneyCurrency("JOD", i18n("Jordanian Dinar"),        "JOD", 1000, 1000));
+    file->addCurrency(MyMoneyCurrency("KZT", i18n("Kazakhstan Tenge")));
+    file->addCurrency(MyMoneyCurrency("KES", i18n("Kenyan Shilling")));
+    file->addCurrency(MyMoneyCurrency("KWD", i18n("Kuwaiti Dinar"),          "KWD", 1000, 1000));
+    file->addCurrency(MyMoneyCurrency("KGS", i18n("Kyrgyzstan Som")));
+    file->addCurrency(MyMoneyCurrency("LAK", i18n("Laos Kip"),               QChar(0x20AD)));
+    file->addCurrency(MyMoneyCurrency("LVL", i18n("Latvian Lats")));
+    file->addCurrency(MyMoneyCurrency("LBP", i18n("Lebanese Pound"),         QChar(0x00A3)));
+    file->addCurrency(MyMoneyCurrency("LSL", i18n("Lesotho Loti")));
+    file->addCurrency(MyMoneyCurrency("LRD", i18n("Liberian Dollar"),        "$"));
+    file->addCurrency(MyMoneyCurrency("LYD", i18n("Libyan Dinar"),           "LYD", 1000, 1000));
+    file->addCurrency(MyMoneyCurrency("LTL", i18n("Lithuanian Litas")));
+    file->addCurrency(MyMoneyCurrency("MOP", i18n("Macau Pataca")));
+    file->addCurrency(MyMoneyCurrency("MKD", i18n("Macedonian Denar")));
+    file->addCurrency(MyMoneyCurrency("MGF", i18n("Malagasy Franc"),         "MGF", 500, 500));
+    file->addCurrency(MyMoneyCurrency("MWK", i18n("Malawi Kwacha")));
+    file->addCurrency(MyMoneyCurrency("MYR", i18n("Malaysian Ringgit")));
+    file->addCurrency(MyMoneyCurrency("MVR", i18n("Maldive Rufiyaa")));
+    file->addCurrency(MyMoneyCurrency("MLF", i18n("Mali Republic Franc")));
+    file->addCurrency(MyMoneyCurrency("MTL", i18n("Maltese Lira")));
+    file->addCurrency(MyMoneyCurrency("MRO", i18n("Mauritanian Ouguiya"),    "MRO", 5, 5));
+    file->addCurrency(MyMoneyCurrency("MUR", i18n("Mauritius Rupee")));
+    file->addCurrency(MyMoneyCurrency("MXP", i18n("Mexican Peso"),           "$"));
+    file->addCurrency(MyMoneyCurrency("MNT", i18n("Mongolian Tugrik"),       QChar(0x20AE)));
+    file->addCurrency(MyMoneyCurrency("MAD", i18n("Moroccan Dirham")));
+    file->addCurrency(MyMoneyCurrency("MZM", i18n("Mozambique Metical")));
+    file->addCurrency(MyMoneyCurrency("MMK", i18n("Myanmar Kyat")));
+    file->addCurrency(MyMoneyCurrency("NAD", i18n("Namibian Dollar"),        "$"));
+    file->addCurrency(MyMoneyCurrency("NPR", i18n("Nepalese Rupee")));
+    file->addCurrency(MyMoneyCurrency("NZD", i18n("New Zealand Dollar"),     "$"));
+    file->addCurrency(MyMoneyCurrency("NIC", i18n("Nicaraguan Cordoba Oro")));
+    file->addCurrency(MyMoneyCurrency("NGN", i18n("Nigerian Naira"),         QChar(0x20A6)));
+    file->addCurrency(MyMoneyCurrency("KPW", i18n("North Korean Won"),       QChar(0x20A9)));
+    file->addCurrency(MyMoneyCurrency("NOK", i18n("Norwegian Kroner"),       "kr"));
+    file->addCurrency(MyMoneyCurrency("OMR", i18n("Omani Rial"),             "OMR", 1000, 1000));
+    file->addCurrency(MyMoneyCurrency("PKR", i18n("Pakistan Rupee")));
+    file->addCurrency(MyMoneyCurrency("PAB", i18n("Panamanian Balboa")));
+    file->addCurrency(MyMoneyCurrency("PGK", i18n("Papua New Guinea Kina")));
+    file->addCurrency(MyMoneyCurrency("PYG", i18n("Paraguay Guarani")));
+    file->addCurrency(MyMoneyCurrency("PEN", i18n("Peruvian Nuevo Sol")));
+    file->addCurrency(MyMoneyCurrency("PHP", i18n("Philippine Peso"),        QChar(0x20B1)));
+    file->addCurrency(MyMoneyCurrency("PLN", i18n("Polish Zloty")));
+    file->addCurrency(MyMoneyCurrency("QAR", i18n("Qatari Rial")));
+    file->addCurrency(MyMoneyCurrency("ROL", i18n("Romanian Leu")));
+    file->addCurrency(MyMoneyCurrency("RUR", i18n("Russian Rouble")));
+    file->addCurrency(MyMoneyCurrency("RWF", i18n("Rwanda Franc")));
+    file->addCurrency(MyMoneyCurrency("WST", i18n("Samoan Tala")));
+    file->addCurrency(MyMoneyCurrency("STD", i18n("Sao Tome and Principe Dobra")));
+    file->addCurrency(MyMoneyCurrency("SAR", i18n("Saudi Riyal")));
+    file->addCurrency(MyMoneyCurrency("SCR", i18n("Seychelles Rupee")));
+    file->addCurrency(MyMoneyCurrency("SLL", i18n("Sierra Leone Leone")));
+    file->addCurrency(MyMoneyCurrency("SGD", i18n("Singapore Dollar"),       "$"));
+    file->addCurrency(MyMoneyCurrency("SKK", i18n("Slovak Koruna")));
+    file->addCurrency(MyMoneyCurrency("SIT", i18n("Slovenian Tolar")));
+    file->addCurrency(MyMoneyCurrency("SBD", i18n("Solomon Islands Dollar"), "$"));
+    file->addCurrency(MyMoneyCurrency("SOS", i18n("Somali Shilling")));
+    file->addCurrency(MyMoneyCurrency("ZAR", i18n("South African Rand")));
+    file->addCurrency(MyMoneyCurrency("KRW", i18n("South Korean Won"),       QChar(0x20A9)));
+    file->addCurrency(MyMoneyCurrency("LKR", i18n("Sri Lanka Rupee")));
+    file->addCurrency(MyMoneyCurrency("SHP", i18n("St. Helena Pound"),       QChar(0x00A3)));
+    file->addCurrency(MyMoneyCurrency("SDD", i18n("Sudanese Dinar")));
+    file->addCurrency(MyMoneyCurrency("SRG", i18n("Suriname Guilder")));
+    file->addCurrency(MyMoneyCurrency("SZL", i18n("Swaziland Lilangeni")));
+    file->addCurrency(MyMoneyCurrency("SEK", i18n("Swedish Krona")));
+    file->addCurrency(MyMoneyCurrency("CHF", i18n("Swiss Franc"),            "SFr"));
+    file->addCurrency(MyMoneyCurrency("SYP", i18n("Syrian Pound"),           QChar(0x00A3)));
+    file->addCurrency(MyMoneyCurrency("TWD", i18n("Taiwan Dollar"),          "$"));
+    file->addCurrency(MyMoneyCurrency("TJS", i18n("Tajikistan Somani")));
+    file->addCurrency(MyMoneyCurrency("TZS", i18n("Tanzanian Shilling")));
+    file->addCurrency(MyMoneyCurrency("THB", i18n("Thai Baht"),              QChar(0x0E3F)));
+    file->addCurrency(MyMoneyCurrency("TOP", i18n("Tongan Pa'anga")));
+    file->addCurrency(MyMoneyCurrency("TTD", i18n("Trinidad and Tobago Dollar"), "$"));
+    file->addCurrency(MyMoneyCurrency("TND", i18n("Tunisian Dinar"),         "TND", 1000, 1000));
+    file->addCurrency(MyMoneyCurrency("TRL", i18n("Turkish Lira")));
+    file->addCurrency(MyMoneyCurrency("TMM", i18n("Turkmenistan Manat")));
+    file->addCurrency(MyMoneyCurrency("USD", i18n("US Dollar"),              "$"));
+    file->addCurrency(MyMoneyCurrency("UGX", i18n("Uganda Shilling")));
+    file->addCurrency(MyMoneyCurrency("UAG", i18n("Ukraine Hryvnia")));
+    file->addCurrency(MyMoneyCurrency("AED", i18n("United Arab Emirates Dirham")));
+    file->addCurrency(MyMoneyCurrency("UYU", i18n("Uruguayan Peso")));
+    file->addCurrency(MyMoneyCurrency("UZS", i18n("Uzbekistani Sum")));
+    file->addCurrency(MyMoneyCurrency("VUV", i18n("Vanuatu Vatu")));
+    file->addCurrency(MyMoneyCurrency("VEB", i18n("Venezuelan Bolivar")));
+    file->addCurrency(MyMoneyCurrency("VND", i18n("Vietnamese Dong"),        QChar(0x20AB)));
+    file->addCurrency(MyMoneyCurrency("YUM", i18n("Yugoslav Dinar")));
+    file->addCurrency(MyMoneyCurrency("ZMK", i18n("Zambian Kwacha")));
+    file->addCurrency(MyMoneyCurrency("ZWD", i18n("Zimbabwe Dollar"),        "$"));
+
+    file->addCurrency(MyMoneyCurrency("XAU", i18n("Gold"),       "XAU", 1, 1000000));
+    file->addCurrency(MyMoneyCurrency("XPD", i18n("Palladium"),  "XPD", 1, 1000000));
+    file->addCurrency(MyMoneyCurrency("XPT", i18n("Platinum"),   "XPT", 1, 1000000));
+    file->addCurrency(MyMoneyCurrency("XAG", i18n("Silver"),     "XAG", 1, 1000000));
+
+  } catch(MyMoneyException *e) {
+    qDebug("Error %s loading default currencies", e->what().data());
+    delete e;
   }
 }
 

@@ -38,6 +38,7 @@
 #include "mymoneysubject.h"
 #include "mymoneykeyvaluecontainer.h"
 #include "mymoneyequity.h"
+#include "mymoneycurrency.h"
 
 /**
   * @author Thomas Baumgart, Michael Edwardes, Kevin Tambascio
@@ -731,6 +732,9 @@ public:
     *
     * @param key const reference to QCString containing the key
     * @param val const reference to QString containing the value
+    *
+    * @note Keys starting with the leadin @p kmm- are reserved for internal use
+    *       by the MyMoneyFile object.
     */
   void setValue(const QCString& key, const QString& val);
 
@@ -884,6 +888,12 @@ public:
   static const QCString NotifyClassAnyChange;
 
   /**
+    * MyMoneyFile::NotifyClassSchedule
+    * is a special id that will be notified whenever any currency is changed
+    */
+  static const QCString NotifyClassCurrency;
+
+  /**
     * createCategory creates a category from a text name.
     *
     * The whole account hierarchy is created if it doesnt
@@ -953,7 +963,84 @@ public:
 
   const QValueList<MyMoneyEquity> equityList(void) const;
 
-  
+  /**
+    * This method is used to add a new currency object to the engine.
+    * The ID of the object is the trading symbol, so there is no need for an additional
+    * ID since the symbol is guaranteed to be unique.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param currency reference to the MyMoneyCurrency object
+    */
+  void addCurrency(const MyMoneyCurrency& currency);
+
+  /**
+    * This method is used to modify an existing MyMoneyCurrency
+    * object.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param currency reference to the MyMoneyCurrency object
+    */
+  void modifyCurrency(const MyMoneyCurrency& currency);
+
+  /**
+    * This method is used to remove an existing MyMoneyCurrency object
+    * from the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param currency reference to the MyMoneyCurrency object
+    */
+  void removeCurrency(const MyMoneyCurrency& currency);
+
+  /**
+    * This method is used to retrieve a single MyMoneySchedule object.
+    * The id of the object must be supplied in the parameter @p id.
+    * If @p id is empty, this method returns baseCurrency().
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneySchedule object
+    * @return MyMoneySchedule object
+    */
+  const MyMoneyCurrency currency(const QCString& id) const;
+
+  /**
+    * This method is used to retrieve the list of all currencies
+    * known to the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return QValueList of all MyMoneyCurrency objects.
+    */
+  const QValueList<MyMoneyCurrency> currencyList(void) const;
+
+  /**
+    * This method retrieves a MyMoneyCurrency object representing
+    * the selected base currency. If the base currency is not
+    * selected (e.g. due to a previous call to setBaseCurrency())
+    * a standard MyMoneyCurrency object will be returned. See
+    * MyMoneyCurrency() for details.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return MyMoneyCurrency describing base currency
+    */
+  const MyMoneyCurrency baseCurrency(void) const;
+
+  /**
+    * This method allows to select the base currency. It does
+    * not perform any changes to the data in the engine. It merely
+    * stores a reference to the base currency. The currency
+    * passed as argument must exist in the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param currency
+    */
+  void setBaseCurrency(const MyMoneyCurrency& currency);
+
 protected:
   /**
     * This is the constructor for a new empty file description

@@ -47,7 +47,7 @@ class KPushButton;
 
 /**
   * This class implements a derived version of a QCheckListItem that
-  * allows the storage of an account id with the object and emits
+  * allows the storage of an engine object id with the object and emits
   * a signal upon state change.
   */
 class kMyMoneyCheckListItem : public QObject, public QCheckListItem
@@ -57,7 +57,7 @@ public:
   kMyMoneyCheckListItem(QListView *parent, const QString& txt, const QCString& id, Type type = QCheckListItem::CheckBox);
   kMyMoneyCheckListItem(QListViewItem *parent, const QString& txt, const QCString& id, Type type = QCheckListItem::CheckBox);
   ~kMyMoneyCheckListItem();
-  const QCString& accountId(void) const { return m_id; };
+  const QCString& id(void) const { return m_id; };
 
   /**
     * use my own paint method
@@ -90,7 +90,7 @@ private:
 
 /**
   * This class implements a derived version of a QListViewItem that
-  * allows the storage of an account id with the object
+  * allows the storage of an engine object id with the object
   */
 class kMyMoneyListViewItem : public QObject, public KListViewItem
 {
@@ -99,7 +99,7 @@ public:
   kMyMoneyListViewItem(QListView *parent, const QString& txt, const QCString& id);
   kMyMoneyListViewItem(QListViewItem *parent, const QString& txt, const QCString& id);
   ~kMyMoneyListViewItem();
-  const QCString& accountId(void) const { return m_id; };
+  const QCString& id(void) const { return m_id; };
 
   /**
     * use my own paint method

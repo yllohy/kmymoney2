@@ -101,7 +101,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
         {
           readTransactions(childElement);
         }
-        else if(QString("KEYVALPAIRS") == childElement.tagName())
+        else if(QString("KEYVALUEPAIRS") == childElement.tagName())
         {
           m_storage->setPairs(readKeyValuePairs(childElement));
         }
@@ -112,6 +112,10 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
         else if(QString("EQUITIES") == childElement.tagName())
         {
           readEquities(childElement);
+        }
+        else if(QString("CURRENCIES") == childElement.tagName())
+        {
+          readCurrencies(childElement);
         }
         child = child.nextSibling();
       }
@@ -187,6 +191,10 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   QDomElement equities = m_doc->createElement("EQUITIES");
   writeEquities(equities);
   mainElement.appendChild(equities);
+
+  QDomElement currencies = m_doc->createElement("CURRENCIES");
+  writeCurrencies(currencies);
+  mainElement.appendChild(currencies);
 
   QTextStream stream(qf);
   //stream.setEncoding(QTextStream::Locale);
@@ -584,6 +592,7 @@ MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
   acc.setInstitutionId(QCStringEmpty(account.attribute(QString("institution"))));
   acc.setNumber(QStringEmpty(account.attribute(QString("number"))));
   acc.setOpeningDate(getDate(QStringEmpty(account.attribute(QString("opened")))));
+  acc.setCurrencyId(QCStringEmpty(account.attribute(QString("currency"))));
 
   tmp = QStringEmpty(account.attribute(QString("type")));
   bool bOK = false;
@@ -648,6 +657,8 @@ void MyMoneyStorageXML::writeAccount(QDomElement& account, const MyMoneyAccount&
   account.setAttribute(QString("id"), p.id());
   account.setAttribute(QString("name"), p.name());
   account.setAttribute(QString("description"), p.description());
+  if(!p.currencyId().isEmpty())
+    account.setAttribute(QString("currency"), p.currencyId());
 
   //Add in subaccount information, if this account has subaccounts.
   if(p.accountCount())
@@ -1007,6 +1018,57 @@ void MyMoneyStorageXML::readEquities(QDomElement& equities)
     }
     child = child.nextSibling();
   }
+}
+
+void MyMoneyStorageXML::writeCurrencies(QDomElement& currencies)
+{
+  QValueList<MyMoneyCurrency> currencyList = m_storage->currencyList();
+  if(currencyList.size())
+  {
+    for(QValueList<MyMoneyCurrency>::Iterator it = currencyList.begin(); it != currencyList.end(); ++it)
+    {
+      QDomElement currency = m_doc->createElement("CURRENCY");
+      writeCurrency(currency, (*it));
+      currencies.appendChild(currency);
+    }
+  }
+
+}
+
+void MyMoneyStorageXML::writeCurrency(QDomElement& currencyElement, const MyMoneyCurrency& currency)
+{
+  writeEquity(currencyElement, currency);
+  currencyElement.setAttribute(QString("ppu"), currency.partsPerUnit());
+  currencyElement.setAttribute(QString("scf"), currency.smallestCashFraction());
+  currencyElement.setAttribute(QString("saf"), currency.smallestAccountFraction());
+}
+
+void MyMoneyStorageXML::readCurrencies(QDomElement& currencies)
+{
+  QDomNode child = currencies.firstChild();
+  while(!child.isNull() && child.isElement())
+  {
+    QDomElement childElement = child.toElement();
+    if(QString("CURRENCY") == childElement.tagName())
+    {
+      MyMoneyCurrency currency = readCurrency(childElement);
+
+      //tell the storage objects we have a new currency object.
+      m_storage->loadCurrency(currency);
+    }
+    child = child.nextSibling();
+  }
+}
+
+const MyMoneyCurrency MyMoneyStorageXML::readCurrency(QDomElement& currencyElement)
+{
+  MyMoneyCurrency c(readEquity(currencyElement));
+  
+  c.setPartsPerUnit(currencyElement.attribute(QString("ppu")).toInt());
+  c.setSmallestCashFraction(currencyElement.attribute(QString("scf")).toInt());
+  c.setSmallestAccountFraction(currencyElement.attribute(QString("saf")).toInt());
+
+  return c;
 }
 
 MyMoneyEquity MyMoneyStorageXML::readEquity(QDomElement& equityElement)
