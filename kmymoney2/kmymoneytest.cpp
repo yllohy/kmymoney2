@@ -92,6 +92,7 @@ void unexpectedException(MyMoneyException *e)
 int
 main(int /* argc */, char** /* argv */ )
 {
+  int rc = 0;
 #ifdef HAVE_LIBCPPUNIT
 
 #ifdef _CHECK_MEMORY
@@ -123,13 +124,19 @@ main(int /* argc */, char** /* argv */ )
   CppUnit::Test *suite = registry.makeTest();
 
   CppUnit::TextTestRunner* runner = new CppUnit::TextTestRunner();
+
   runner->addTest(suite);
 
   MyProgressListener progress;
+  CppUnit::TestResultCollector result;
+
   runner->eventManager().addListener(&progress);
+  runner->eventManager().addListener(&result);
+ 
   runner->run();
   std::cout << "Tests were run with CPPUNIT version " CPPUNIT_VERSION << std::endl;
 
+  rc = result.wasSuccessful() ? 0 : 1;
   delete runner;
 
   // make sure to delete the singletons before we start memory checking
@@ -145,4 +152,5 @@ main(int /* argc */, char** /* argv */ )
   std::cout << "libcppunit not installed. no automatic tests available."
 		 << std::endl;
 #endif // HAVE_LIBCPPUNIT
+  return rc;
 }
