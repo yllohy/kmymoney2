@@ -43,7 +43,7 @@ unsigned int MyMoneyStorageBin::fileVersionWrite;
 
 MyMoneyStorageBin::MyMoneyStorageBin()
 {
-  fileVersionWrite = VERSION_0_5_0;
+  fileVersionWrite = MAX_FILE_VERSION;
 }
 
 MyMoneyStorageBin::~MyMoneyStorageBin()
@@ -109,10 +109,15 @@ void MyMoneyStorageBin::readStream(QDataStream& s, IMyMoneySerialize* storage)
   // next we read a Q_INT32 file version code
   fileVersionRead = 0;
   s >> fileVersionRead;
-  if(fileVersionRead != VERSION_0_3_3
-  && fileVersionRead != VERSION_0_4_0
-  && fileVersionRead != VERSION_0_5_0)
-    throw new MYMONEYEXCEPTION("Unknown file format");
+
+  // see, if we know how to handle this stuff
+  if(fileVersionRead < MIN_FILE_VERSION || fileVersionRead > MAX_FILE_VERSION) {
+    // make sure it's not one of the old 0.4 formats
+    if(fileVersionRead != VERSION_0_3_3
+    && fileVersionRead != VERSION_0_4_0) {
+      throw new MYMONEYEXCEPTION("Unknown file format");
+    }
+  }
 
   Q_INT32 tmp;
   s >> tmp;
@@ -143,7 +148,8 @@ void MyMoneyStorageBin::readStream(QDataStream& s, IMyMoneySerialize* storage)
     case VERSION_0_4_0:
       readOldFormat(s, storage);
       break;
-    case VERSION_0_5_0:
+
+    default:
       readNewFormat(s, storage);
       break;
   }
@@ -208,6 +214,9 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
   Q_INT32 tmp_int32;
   QString tmp;
   QDate date;
+
+  // the old format stored MyMoneyMoney objects in 4 bytes
+  MyMoneyMoney::setFileVersion(MyMoneyMoney::FILE_4_BYTE_VALUE);
 
   s >> tmp; storage->setUserName(tmp);
   s >> tmp; storage->setUserStreet(tmp);
@@ -474,6 +483,14 @@ void MyMoneyStorageBin::readNewFormat(QDataStream&s, IMyMoneySerialize* storage)
   QDate date;
   Q_INT32 tmp;
 
+  // setup MyMoneyMoney objects to read the correct amount of data bytes
+  if(fileVersionRead >= VERSION_0_51) {
+    MyMoneyMoney::setFileVersion(MyMoneyMoney::FILE_8_BYTE_VALUE);
+  } else {
+    qDebug("Use 4 byte MyMoneyMoney reader");
+    MyMoneyMoney::setFileVersion(MyMoneyMoney::FILE_4_BYTE_VALUE);
+  }
+
   s >> tmp_s; storage->setUserName(tmp_s);
   s >> tmp_s; storage->setUserStreet(tmp_s);
   s >> tmp_s; storage->setUserTown(tmp_s);
@@ -508,8 +525,17 @@ void MyMoneyStorageBin::writeStream(QDataStream& s, IMyMoneySerialize* storage)
   s << magic;
   magic = MAGIC_0_51;
   s << magic;
-  magic = VERSION_0_5_0;
+  magic = fileVersionWrite;
   s << magic;
+
+  if(fileVersionWrite >= VERSION_0_51) {
+    // make sure that from now on we write MyMoneyMoney objects with 64 bytes
+    // we signal that to the reader by using VERSION_0_51 instead of VERSION_0_50
+    MyMoneyMoney::setFileVersion(MyMoneyMoney::FILE_8_BYTE_VALUE);
+  } else {
+    qDebug("Using old 4 byte writer for MyMoneyMoney objects");
+    MyMoneyMoney::setFileVersion(MyMoneyMoney::FILE_4_BYTE_VALUE);
+  }
 
   Q_INT32 tmp;
   tmp = 0;
