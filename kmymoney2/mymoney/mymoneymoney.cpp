@@ -142,7 +142,7 @@ QDataStream &operator<<(QDataStream &s, const MyMoneyMoney &money)
 
   switch(MyMoneyMoney::_fileVersion) {
     case MyMoneyMoney::FILE_4_BYTE_VALUE:
-      if(money.m_64Value & 0xffffffff00000000)
+      if(money.m_64Value & 0xffffffff00000000LL)
         qWarning("Lost data while writing out MyMoneyMoney object using deprecated 4 byte writer");
 
       s << static_cast<Q_INT32> (money.m_64Value & 0xffffffff);
