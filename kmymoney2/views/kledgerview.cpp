@@ -1256,7 +1256,7 @@ const QString KLedgerView::action2str(const QCString &action, const bool showHot
   QString rc;
 
   if(action == MyMoneySplit::ActionCheck)
-    rc = i18n("&Check");
+    rc = i18n("&Cheque");
   else if(action == MyMoneySplit::ActionDeposit)
     rc = i18n("&Deposit");
   else if(action == MyMoneySplit::ActionTransfer)
