@@ -268,7 +268,7 @@ public:
 
   /**
     * This method is used to return the ID of the parent account
-    * @return QString with the ID of the parent of this account
+    * @return QCString with the ID of the parent of this account
     */
   const QCString parentAccountId(void) const { return m_parentAccount; };
 
