@@ -1131,6 +1131,37 @@ void KMyMoneyView::accountNew(const bool createCategory)
       if(newAccountWizard != 0)
         createSchedule(newAccountWizard->schedule(), newAccount);
 
+      // in case of a loan account, we add the initial payment
+      if((newAccount.accountType() == MyMoneyAccount::Loan
+      || newAccount.accountType() == MyMoneyAccount::AssetLoan)
+      && !newAccount.value("kmm-loan-payment-acc").isEmpty()
+      && !newAccount.value("kmm-loan-payment-date").isEmpty()) {
+        MyMoneyAccountLoan acc(newAccount);
+        MyMoneyTransaction t;
+        MyMoneySplit a, b;
+        a.setAccountId(acc.id());
+        b.setAccountId(acc.value("kmm-loan-payment-acc").latin1());
+        a.setValue(acc.loanAmount());
+        if(acc.accountType() == MyMoneyAccount::Loan)
+          a.setValue(-a.value());
+        b.setValue(-a.value());
+        a.setMemo(i18n("Loan payout"));
+        b.setMemo(i18n("Loan payout"));
+        t.setPostDate(QDate::fromString(acc.value("kmm-loan-payment-date"), Qt::ISODate));
+        try {
+          newAccount.deletePair("kmm-loan-payment-acc");
+          newAccount.deletePair("kmm-loan-payment-date");
+          MyMoneyFile::instance()->modifyAccount(newAccount);
+
+          t.addSplit(a);
+          t.addSplit(b);
+          MyMoneyFile::instance()->addTransaction(t);
+        } catch(MyMoneyException *e) {
+          qDebug("Cannot add loan payout transaction: %s", e->what().latin1());
+          delete e;
+        }
+
+      }
     }
     catch (MyMoneyException *e)
     {
