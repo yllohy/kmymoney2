@@ -119,6 +119,8 @@ public:
   static const char ActionATM[];
   static const char ActionAmortization[];
   static const char ActionInterest[];
+  static const char ActionAddShares[];
+  static const char ActionRemoveShares[];
   
 private:
   /**
