@@ -27,7 +27,7 @@
 #include <qdatetime.h>
 #include <qvaluelist.h>
 #include <qstringlist.h>
-#include <qfile.h>
+#include <qiodevice.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -60,7 +60,7 @@ unsigned int MyMoneyStorageBin::fileVersion(fileVersionDirectionType dir)
   return 0;
 }
 
-void MyMoneyStorageBin::readFile(QFile* qfile, IMyMoneySerialize* storage)
+void MyMoneyStorageBin::readFile(QIODevice* qfile, IMyMoneySerialize* storage)
 {
   QDataStream s(qfile);
   readStream(s, storage);
@@ -480,7 +480,7 @@ void MyMoneyStorageBin::readNewFormat(QDataStream&s, IMyMoneySerialize* storage)
   readTransactions(s, storage);
 }
 
-void MyMoneyStorageBin::writeFile(QFile* qfile, IMyMoneySerialize* storage)
+void MyMoneyStorageBin::writeFile(QIODevice* qfile, IMyMoneySerialize* storage)
 {
   QDataStream s(qfile);
   writeStream(s, storage);

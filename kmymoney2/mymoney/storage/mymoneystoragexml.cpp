@@ -51,21 +51,13 @@ MyMoneyStorageXML::~MyMoneyStorageXML()
 }
 
 //Function to read in the file, send to XML parser.
-void MyMoneyStorageXML::readFile(QFile* qf, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
 {
   if(!CreateXMLParser())
   {
     return;
   }
 
-  QDataStream s(qf);
-  //
-  //  QDataStream is a wrapper around a real file object.  QDataStream provides a nice interface,
-  //  but we need raw access to the file, to read it at 1000 bytes at a time.  We need to send the
-  //  XML file to the SAX interface in chunks not too big to waste memory, but not too small to
-  //  still provide good speed.  The ideal number of bytes read should be determined by profiling.
-  //
-  QIODevice *pDevice = s.device();
   if(pDevice && storage)
   {
     Q_LONG totalSize = 0;
@@ -99,7 +91,7 @@ void MyMoneyStorageXML::readFile(QFile* qf, IMyMoneySerialize* storage)
   }
 }
 
-void MyMoneyStorageXML::writeFile(QFile* qf, IMyMoneySerialize* storage)
+void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
 {
   qDebug("XMLWRITER: not implemented yet!");
 }

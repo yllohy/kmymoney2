@@ -27,6 +27,7 @@
 // QT Includes
 
 #include <qdatastream.h>
+class QIODevice;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -66,8 +67,8 @@ public:
     */
   static unsigned int fileVersion(fileVersionDirectionType dir = Reading);
 
-  void readFile(QFile* qfile, IMyMoneySerialize* storage);
-  void writeFile(QFile* qfile, IMyMoneySerialize* storage);
+  void readFile(QIODevice* qfile, IMyMoneySerialize* storage);
+  void writeFile(QIODevice* qfile, IMyMoneySerialize* storage);
 
 private:
   void readStream(QDataStream& s, IMyMoneySerialize* storage);

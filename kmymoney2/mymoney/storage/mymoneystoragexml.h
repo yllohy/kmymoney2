@@ -29,7 +29,7 @@
 // QT Includes
 
 #include <qdatastream.h>
-#include <qfile.h>
+class QIODevice;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -70,8 +70,8 @@ public:
     */
   static unsigned int fileVersion(fileVersionDirectionType dir = Reading);
 
-  void readFile(QFile* s, IMyMoneySerialize* storage);
-  void writeFile(QFile* s, IMyMoneySerialize* storage);
+  void readFile(QIODevice* s, IMyMoneySerialize* storage);
+  void writeFile(QIODevice* s, IMyMoneySerialize* storage);
 
 private:
   xmlpp::XMLParser<MyMoneyStorageXMLCallback> *m_parser;

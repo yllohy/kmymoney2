@@ -50,10 +50,10 @@ public:
     Writing = 1           /**< version to be used when writing a file */
   };
 
-  virtual void readFile(QFile* qf, IMyMoneySerialize* storage) = 0;
+  virtual void readFile(QIODevice* qf, IMyMoneySerialize* storage) = 0;
   // virtual void readStream(QDataStream& s, IMyMoneySerialize* storage) = 0;
 
-  virtual void writeFile(QFile* qf, IMyMoneySerialize* storage) = 0;
+  virtual void writeFile(QIODevice* qf, IMyMoneySerialize* storage) = 0;
   //virtual void writeStream(QDataStream& s, IMyMoneySerialize* storage) = 0;
 
   /**
