@@ -351,7 +351,8 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched)
         "</td>" +
         "<td width=\"10%\" align=\"right\">";
 
-      QString amount = sp.value().formatMoney();
+      MyMoneySecurity currency = MyMoneyFile::instance()->currency(acc.currencyId());
+      QString amount = sp.value().formatMoney(currency.tradingSymbol());
       amount.replace(" ","&nbsp;");
       tmp += amount;
       tmp += "</td>";
@@ -535,7 +536,7 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
   {
     if(view == VIEW_LEDGER) {
       emit ledgerSelected(id, QCString());
-  
+
     } else if(view == VIEW_SCHEDULE) {
       if(!id.isEmpty())
         emit scheduleSelected(id);
@@ -543,10 +544,10 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
         m_showAllSchedules = (mode == QCString("full"));
         slotRefreshView();
       }
-  
+
     } else if(view == VIEW_REPORTS) {
       emit reportSelected(id);
-  
+
     } else if(view == VIEW_WELCOME) {
       KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
       Q_CHECK_PTR(mw);
@@ -558,9 +559,9 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
       {
         KMessageBox::sorry(qApp->mainWidget(),i18n("There is no user manual yet"),i18n("No manual"));
       }
-      else 
+      else
         m_part->openURL(m_filename);
-  
+
     } else if(view == "action") {
         KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
         Q_CHECK_PTR(mw);
@@ -571,10 +572,10 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
 //         {
 //           qDebug("%u: %s\n",idx,mw->actionCollection()->action(idx)->name());
 //         }
-                
+
     } else if(view == VIEW_HOME) {
       slotRefreshView();
-  
+
     } else {
       qDebug("Unknown view '%s' in KHomeView::slotOpenURL()", view.latin1());
     }

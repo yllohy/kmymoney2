@@ -69,6 +69,7 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
     MyMoneySplit s2 = transaction.splits()[1];
     QValueList<MyMoneySplit>::ConstIterator it_s;
     MyMoneySplit split;
+    MyMoneyAccount acc;
 
     switch(schedule.type()) {
       case MyMoneySchedule::TYPE_DEPOSIT:
@@ -80,7 +81,7 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
 
       case MyMoneySchedule::TYPE_LOANPAYMENT:
         for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
-          MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
+          acc = MyMoneyFile::instance()->account((*it_s).accountId());
           if(acc.accountGroup() == MyMoneyAccount::Asset
           || acc.accountGroup() == MyMoneyAccount::Liability) {
             if(acc.accountType() != MyMoneyAccount::Loan
@@ -102,6 +103,8 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
           split = s2;
         break;
     }
+    acc = MyMoneyFile::instance()->account(split.accountId());
+
 /*
     if (schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
     {
@@ -123,11 +126,13 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
     }
 */
     setText(0, schedule.name());
-    setText(1, MyMoneyFile::instance()->account(split.accountId()).name());
+    MyMoneySecurity currency = MyMoneyFile::instance()->currency(acc.currencyId());
+
+    setText(1, acc.name());
     setText(2, MyMoneyFile::instance()->payee(split.payeeId()).name());
     MyMoneyMoney amount = split.value();
     amount = amount.abs();
-    setText(3, amount.formatMoney());
+    setText(3, amount.formatMoney(currency.tradingSymbol()));
     // Do the real next payment like ms-money etc
     if (schedule.isFinished())
     {
