@@ -1,0 +1,71 @@
+/***************************************************************************
+                          mymoneyscheduletest.h
+                          -------------------
+    copyright            : (C) 2002 by Michael Edwardes
+    email                : mte@users.sourceforge.net
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef __MYMONEYSCHEDULETEST_H__
+#define __MYMONEYSCHEDULETEST_H__
+
+#include <cppunit/extensions/HelperMacros.h>
+
+#define private public
+#include "mymoneyscheduled.h"
+#undef private
+
+class MyMoneyScheduleTest : public CppUnit::TestFixture  {
+        CPPUNIT_TEST_SUITE(MyMoneyScheduleTest);
+	CPPUNIT_TEST(testEmptyConstructor);
+	CPPUNIT_TEST(testConstructor);
+	CPPUNIT_TEST(testSetFunctions);
+	CPPUNIT_TEST(testCopyConstructor);
+	CPPUNIT_TEST(testAssignmentConstructor);
+	// The following tests must be done in this order.
+	CPPUNIT_TEST(testSingleton);
+	CPPUNIT_TEST(testAddSchedule);
+	CPPUNIT_TEST(testAnyScheduled);
+	CPPUNIT_TEST(testAnyOverdue);
+	CPPUNIT_TEST(testGetSchedule);
+	CPPUNIT_TEST(testGetScheduled);
+	CPPUNIT_TEST(testGetOverdue);
+	CPPUNIT_TEST(testNextPayment);
+	CPPUNIT_TEST(testPaymentDates);
+	CPPUNIT_TEST(testReplaceSchedule);
+	CPPUNIT_TEST(testRemoveSchedule);
+	CPPUNIT_TEST_SUITE_END();
+
+protected:
+
+public:
+	MyMoneyScheduleTest();
+	void setUp ();
+	void tearDown ();
+	void testEmptyConstructor();
+	void testConstructor();
+	void testSetFunctions();
+	void testCopyConstructor();
+	void testAssignmentConstructor();
+	void testSingleton();
+	void testAddSchedule();
+	void testAnyScheduled();
+	void testAnyOverdue();
+	void testGetSchedule();
+	void testGetScheduled();
+	void testGetOverdue();
+	void testNextPayment();
+	void testPaymentDates();
+	void testReplaceSchedule();
+	void testRemoveSchedule();
+};
+
+#endif
