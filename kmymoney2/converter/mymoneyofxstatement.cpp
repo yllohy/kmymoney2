@@ -31,42 +31,69 @@
 #include "../mymoney/mymoneyexception.h"
 #include "mymoneyofxstatement.h"
 
-
-#if defined(HAVE_LIBOFX) || defined(HAVE_NEW_OFX)
-
 /* __________________________________________________________________________
  * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
  *
- * The following part is compiled for ANY version of LibOFX.
+ * This part is compiled whether or not there is a version of LibOFX
+ * available.
  *
  * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
  */
 
-#include <libofx/libofx.h>
+bool MyMoneyOfxStatement::isOfxFile(const QString& filename)
+{
+  // filename is an Ofx file if it contains the tag "<OFX>" somewhere.
+  bool result = false;
 
-// In libofx 0.6.6 these defines are inside OfxTransactionData, while in the
-// new version they are in the global scope.
-#if !defined(HAVE_NEW_OFX)
-#define OFX_BUYDEBT OfxTransactionData::OFX_BUYDEBT
-#define OFX_BUYMF OfxTransactionData::OFX_BUYMF
-#define OFX_BUYOPT OfxTransactionData::OFX_BUYOPT
-#define OFX_BUYOTHER OfxTransactionData::OFX_BUYOTHER
-#define OFX_BUYSTOCK OfxTransactionData::OFX_BUYSTOCK
-#define OFX_REINVEST OfxTransactionData::OFX_REINVEST
-#define OFX_SELLDEBT OfxTransactionData::OFX_SELLDEBT
-#define OFX_SELLMF OfxTransactionData::OFX_SELLMF
-#define OFX_SELLOPT OfxTransactionData::OFX_SELLOPT
-#define OFX_SELLOTHER OfxTransactionData::OFX_SELLOTHER
-#define OFX_SELLSTOCK OfxTransactionData::OFX_SELLSTOCK
-#define OFX_INCOME OfxTransactionData::OFX_INCOME
-#define OFX_CLOSUREOPT OfxTransactionData::OFX_CLOSUREOPT
-#define OFX_INVEXPENSE OfxTransactionData::OFX_INVEXPENSE
-#define OFX_JRNLFUND OfxTransactionData::OFX_JRNLFUND
-#define OFX_MARGININTEREST OfxTransactionData::OFX_MARGININTEREST
-#define OFX_RETOFCAP OfxTransactionData::OFX_RETOFCAP
-#define OFX_SPLIT OfxTransactionData::OFX_SPLIT
-#define OFX_TRANSFER OfxTransactionData::OFX_TRANSFER
+  QFile f( filename );
+  if ( f.open( IO_ReadOnly ) )
+  {
+    QTextStream ts( &f );
+
+    while ( !ts.atEnd() && !result )
+      if ( ts.readLine().contains("<OFX>",false) )
+        result = true;
+
+    f.close();
+  }
+
+  return result;
+}
+
+MyMoneyOfxStatement::~MyMoneyOfxStatement()
+{
+}
+
+/* __________________________________________________________________________
+ * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ *
+ * This part is compiled only if there is NOT a suitable version of LibOFX
+ * available
+ *
+ * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+ */
+
+// FIXME: Remove this workaround, and solve this problem correctly.  The
+// program should not construct MMOS objects without one of these
+// defined.
+#ifndef HAVE_NEW_OFX
+MyMoneyOfxStatement::MyMoneyOfxStatement(const QString&): m_valid(false) 
+{
+}
 #endif
+
+/* __________________________________________________________________________
+ * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ *
+ * This part is compiled only if there IS a suitable version of
+ * LibOFX available
+ *
+ * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+ */
+
+#ifdef HAVE_NEW_OFX
+
+#include <libofx/libofx.h>
 
 int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
 {
@@ -351,28 +378,6 @@ int ofxStatusCallback(struct OfxStatusData data, void * pv)
   return 0;
 }
 
-#endif
-
-
-
-
-
-
-#ifdef HAVE_NEW_OFX
-
-/* __________________________________________________________________________
- * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
- *
- * The following part is only compiled if a newer version of LibOFX is used
- * (0.7 and higher). The second half of this file contains the old code.
- *
- * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
- */
-
-//
-// MyMoneyOfxStatement Implementation
-//
-
 MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
   m_valid( false )
 {
@@ -395,111 +400,6 @@ MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
 
 
 
-// FIXME: Remove this workaround, and solve this problem correctly.  The
-// program should not construct MMOS objects without one of these
-// defined.
-#if ! defined(HAVE_LIBOFX) && ! defined(HAVE_NEW_OFX)
-MyMoneyOfxStatement::MyMoneyOfxStatement(const QString&): m_valid(false) {}
-#endif
-
-
-#ifdef HAVE_LIBOFX
-/* __________________________________________________________________________
- * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
- *
- * The following part is only compiled if an older version of LibOFX is used
- * (up to 0.6.6)
- *
- * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
- */
-
-MyMoneyOfxStatement* pgCurrentStatement = NULL;
-
-//
-// MyMoneyOfxStatement Implementation
-//
-
-MyMoneyOfxStatement::MyMoneyOfxStatement(const QString& filename):
-  m_valid( false )
-{
-  if ( pgCurrentStatement )
-    throw new MYMONEYEXCEPTION("Ofx import already in progress. Only ONE ofx import can be processed at once!");
-
-  pgCurrentStatement = this;
-
-  QCString filename_deep( filename.utf8() );
-  const char* argv[2];
-  argv[0] = "KMyMoney2";
-  argv[1] = filename_deep;
-  ofx_proc_file(2, const_cast<char**>(argv));
-
-  pgCurrentStatement = NULL;
-}
-
-//
-// These global _cb functions are callbacks from libofx.  They are required to
-// be in the global scope, and named as such.
-//
-
-int ofx_proc_status_cb(struct OfxStatusData data)
-{
-  return ofxStatusCallback(data,pgCurrentStatement);
-}
-
-int ofx_proc_security_cb(struct OfxSecurityData /*data*/)
-{
-  return 0;
-}
-
-int ofx_proc_transaction_cb(struct OfxTransactionData data)
-{
-  return ofxTransactionCallback(data,pgCurrentStatement);
-}
-
-int ofx_proc_statement_cb(struct OfxStatementData data)
-{
-  return ofxStatementCallback(data,pgCurrentStatement);
-}
-
-int ofx_proc_account_cb(struct OfxAccountData data)
-{
-  return ofxAccountCallback(data, pgCurrentStatement);
-}
-
-#endif // #ifdef HAVE_LIBOFX
-
-/* __________________________________________________________________________
- * AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
- *
- * The following part is compiled whether or not there is a version of LibOFX
- * available.
- *
- * YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
- */
-
-bool MyMoneyOfxStatement::isOfxFile(const QString& filename)
-{
-  // filename is an Ofx file if it contains the tag "<OFX>" somewhere.
-  bool result = false;
-
-  QFile f( filename );
-  if ( f.open( IO_ReadOnly ) )
-  {
-    QTextStream ts( &f );
-
-    while ( !ts.atEnd() && !result )
-      if ( ts.readLine().contains("<OFX>",false) )
-        result = true;
-
-    f.close();
-  }
-
-  return result;
-}
-
-MyMoneyOfxStatement::~MyMoneyOfxStatement()
-{
-}
 
 
 
