@@ -89,6 +89,7 @@ public:
   void setTown(QString town) { m_town = town; }
   void setCity(QString town) { setTown(town); }
   void setSortcode(QString code) { m_sortcode = code; }
+  void setId(QString id)          { m_id = id; }
 
   /**
     * This method adds the id of an account to the account list of

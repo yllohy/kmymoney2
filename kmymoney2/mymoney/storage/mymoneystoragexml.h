@@ -50,6 +50,7 @@ typedef enum {
     PARSE_INSTITUTIONS,
     PARSE_INSTITUTION,
     PARSE_PAYEES,
+    PARSE_PAYEE,
     PARSE_STATE_UNKNOWN
   }eParseState;
 
@@ -133,7 +134,9 @@ private:
   eTxParseState       m_txParseState;
   eParseState         getCurrentParseState() const { return m_parseState; }
   void                parseNextIDS(const std::string &n, const Element::AttributeMap& p);
-
+  MyMoneyInstitution* m_pCurrentInstitution;
+  MyMoneyPayee*       m_pCurrentPayee;
+  
   /**
     * This method returns the version of the underlying file. It
     * is used by the MyMoney objects contained in a MyMoneyStorageBin object (e.g.

@@ -38,16 +38,15 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "mymoneyxmlparser.h"
-//#include "mymoneystoragexmlcallback.h"
 #include "mymoneystoragexml.h"
 
 using namespace xmlpp;
 
 MyMoneyStorageXML::MyMoneyStorageXML()
 {
-  //m_parser = NULL;
   m_pStorage = NULL;
+  m_pCurrentInstitution = NULL;
+  m_pCurrentPayee = NULL;
 }
 
 MyMoneyStorageXML::~MyMoneyStorageXML()
@@ -90,20 +89,12 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
         {
           qDebug("XMLREADER: EXCEPTION while parsing buffer");
         }
-        //m_parser->parse_chunk(parseString);
       }
       else
       {
-        //m_parser->finish();
-        break;
+       break;
       }
     }
-
-    /*if(m_parser)
-    {
-      delete m_parser;
-      m_parser = NULL;
-    }*/
 
     //don't use this pointer after the function has exited...
     m_pStorage = NULL;
@@ -121,26 +112,6 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
 bool MyMoneyStorageXML::CreateXMLParser()
 {
   return true;
-  /*if(m_parser)
-  {
-    qDebug("XMLREADER:  XML++ parser already created");
-    return true;
-  }
-  else
-  {
-    m_parser = new MyMoneyXMLParser;//xmlpp::XMLParser<MyMoneyStorageXMLCallback>;
-    if(m_parser)
-    {
-      //m_callback = new MyMoneyStorageXMLCallback(this);
-      m_parser->setParserCallback(this);
-      
-      qDebug("XMLREADER:  Able to create the XML++ Parser");
-      return true;
-    }
-  }
-
-  qDebug("XMLREADER:  Failed to create XML++ Parser");   */
-  //return false;
 }
 
 void MyMoneyStorageXML::on_start_document(void)
@@ -158,88 +129,156 @@ void MyMoneyStorageXML::on_start_element(const std::string &n, const Element::At
 {
   qDebug("XMLREADER:  start_element called, %s", n.data());
 
-  
+  std::string strTemp;
 
   if(!n.find("NEXTIDS"))
   {
 
   }
-  if(!n.find("USER"))
+  else if(!n.find("USER"))
   {
-    ChangeParseState(PARSE_USERINFO);
+    strTemp = getPropertyValue(std::string("name"), p);
+
     if(m_pStorage)
     {
-      std::string strUserName = getPropertyValue(std::string("name"), p);
-      m_pStorage->setUserName(QString(strUserName.data()));
+      m_pStorage->setUserName(QString(strTemp.data()));
+    }
+      
+    ChangeParseState(PARSE_USERINFO);
+  }
+  else if(!n.find("ADDRESS"))
+  {
+    if(getCurrentParseState() == PARSE_USERINFO)
+    {
+      qDebug("XMLREADER: Parsing address for User info");
+      
+      strTemp = getPropertyValue(std::string("street"), p);
+      m_pStorage->setUserStreet(QString(strTemp.data()));
+
+      strTemp = getPropertyValue(std::string("city"), p);
+      m_pStorage->setUserTown(QString(strTemp.data()));
+
+      strTemp = getPropertyValue(std::string("state"), p);
+      m_pStorage->setUserCounty(QString(strTemp.data()));
+
+      strTemp = getPropertyValue(std::string("zip"), p);
+      m_pStorage->setUserPostcode(QString(strTemp.data()));
+    }
+    else if(getCurrentParseState() == PARSE_INSTITUTION)
+    {
+      qDebug("XMLREADER: Parsing address for Institution info");
+    
+      if(m_pCurrentInstitution)
+      {
+        strTemp = getPropertyValue(std::string("street"), p);
+        m_pCurrentInstitution->setStreet(QString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("city"), p);
+        m_pCurrentInstitution->setCity(QString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("state"), p);
+        m_pCurrentInstitution->setTown(QString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("zip"), p);
+        m_pCurrentInstitution->setPostcode(QString(strTemp.data()));
+      }
+    }
+    else if(getCurrentParseState() == PARSE_PAYEE)
+    {
+      qDebug("XMLREADER: Parsing address for Payee info");
+
+      if(m_pCurrentPayee)
+      {
+        strTemp = getPropertyValue(std::string("street"), p);
+        m_pCurrentPayee->setAddress(QString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("city"), p);
+        m_pCurrentPayee->setCity(QString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("state"), p);
+        m_pCurrentPayee->setState(QString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("zip"), p);
+        m_pCurrentPayee->setPostcode(QString(strTemp.data()));
+      }
     }
   }
+  else if(!n.find("INSTITUTIONS"))
+  {
+    ChangeParseState(PARSE_INSTITUTIONS);
+  }
+  else if(!n.find("INSTITUTION"))
+  {
+    qDebug("XMLREADER: Parsing an institution");
 
-  if(getCurrentParseState() == PARSE_NEXTIDS)
-  {
-      parseNextIDS(n, p);
-  }
-  else if(getCurrentParseState() == PARSE_USERINFO)
-  {
+    if(getCurrentParseState() == PARSE_INSTITUTIONS)
+    {
+      ChangeParseState(PARSE_INSTITUTION);
+      
+      if(!m_pCurrentInstitution)
+      {
+        qDebug("XMLREADER: creating new institution object to use.");
+        m_pCurrentInstitution = new MyMoneyInstitution;
+      }
 
-  }
-  
-  /*if(m_parseState == PARSE_USERINFO)
-  {
-    if(!n.find("ADDRESS"))
-    {
-      ChangeParseState(PARSE_USERINFO_ADDRESS);
-    }
-  }
-  else if(m_parseState == PARSE_USERINFO_ADDRESS)
-  {
-    if(!n.find("STREET"))
-    {
-      ChangeParseState(PARSE_USERINFO_ADDRESS_STREET);
-    }
-    else if(!n.find("CITY"))
-    {
-      ChangeParseState(PARSE_USERINFO_ADDRESS_CITY);
-    }
-    else if(!n.find("STATE"))
-    {
-      ChangeParseState(PARSE_USERINFO_ADDRESS_STATE);
-    }
-    else if(!n.find("ZIPCODE"))
-    {
-      ChangeParseState(PARSE_USERINFO_ADDRESS_ZIPCODE);
-    }
-    else if(!n.find("COUNTY"))
-    {
-      ChangeParseState(PARSE_USERINFO_ADDRESS_COUNTY);
-    }
-    else if(!n.find("COUNTRY"))
-    {
-      ChangeParseState(PARSE_USERINFO_ADDRESS_COUNTRY);
-    }
-    else if(!n.find("TELEPHONE"))
-    {
-      ChangeParseState(PARSE_USERINFO_ADDRESS_TELEPHONE);
+      if(m_pCurrentInstitution)
+      {
+        strTemp = getPropertyValue(std::string("id"), p);
+        m_pCurrentInstitution->setId(QString(strTemp.data()));
+        
+        strTemp = getPropertyValue(std::string("name"), p);
+        m_pCurrentInstitution->setName(QString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("manager"), p);
+        m_pCurrentInstitution->setManager(QString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("sortcode"), p);
+        m_pCurrentInstitution->setSortcode(QString(strTemp.data()));
+
+        qDebug("XMLREADER: Main information for institution object in place");
+      }
     }
   }
-
-
-  if(m_parseState == PARSE_USERINFO)
+  else if(!n.find("PAYEES"))
   {
-    qDebug("Changing state, element name = %s", n.data());
-    qDebug("length = %d", n.size());
-    //if(!n.find("CURRENCY"))
-    //{
-//      m_parseState = PARSE_ACCOUNTS;
-    //}
+    ChangeParseState(PARSE_PAYEES);
   }
-
-  if(m_parseState != PARSE_STATE_UNKNOWN)
+  else if(!n.find("PAYEE"))
   {
-    //for(XMLPropertyMap::const_iterator i = p.begin(); i != p.end(); ++i)
-    //{
+    if(getCurrentParseState() == PARSE_PAYEES)
+    {
+      ChangeParseState(PARSE_PAYEE);
 
-    //}
-  }    */
+      if(!m_pCurrentPayee)
+      {
+        m_pCurrentPayee = new MyMoneyPayee;
+      }
+
+      if(m_pCurrentPayee)
+      {
+        strTemp = getPropertyValue(std::string("name"), p);
+        m_pCurrentPayee->setName(QString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("id"), p);
+        m_pCurrentPayee->setId(QCString(strTemp.data()));
+
+        strTemp = getPropertyValue(std::string("ref"), p);
+        m_pCurrentPayee->setReference(QString(strTemp.data()));
+      }
+    }
+  }
+  else if(!n.find("ACCOUNTS"))
+  {
+    ChangeParseState(PARSE_ACCOUNTS);
+  }
+  else if(!n.find("ACCOUNT"))
+  {
+    if(getCurrentParseState() == PARSE_ACCOUNT)
+    {
+      ChangeParseState(PARSE_ACCOUNT);
+
+    }
+  }
 }
 
 std::string MyMoneyStorageXML::getPropertyValue(std::string str, const Element::AttributeMap& p)
@@ -260,6 +299,26 @@ std::string MyMoneyStorageXML::getPropertyValue(std::string str, const Element::
 
 void MyMoneyStorageXML::on_end_element(const std::string &n)
 {
+  qDebug("XMLREADER:  on_end_element called, %s", n.data());
+  
+  if(!n.find("INSTITUTION"))
+  {
+    if(m_pCurrentInstitution)
+    {
+      m_pStorage->addInstitution(*m_pCurrentInstitution);
+      delete m_pCurrentInstitution;
+      m_pCurrentInstitution = NULL;
+    }
+  }
+  else if(!n.find("PAYEE"))
+  {
+    if(m_pCurrentPayee)
+    {
+      m_pStorage->addPayee(*m_pCurrentPayee);
+      delete m_pCurrentPayee;
+      m_pCurrentPayee = NULL;
+    }
+  }
   m_parseState = m_previousParseState;
 }
 

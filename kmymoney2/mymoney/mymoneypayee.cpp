@@ -26,13 +26,15 @@ MyMoneyPayee::MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee)
   m_id = id;
 }
 
-MyMoneyPayee::MyMoneyPayee(const QString& name, const QString address, const QString postcode, const QString telephone, const QString email)
+MyMoneyPayee::MyMoneyPayee(const QString& name, const QString address, const QString postcode, const QString telephone, const QString email, const QString city, const QString state)
 {
-  m_name = name;
-  m_address = address;
-  m_postcode = postcode;
+  m_name      = name;
+  m_address   = address;
+  m_postcode  = postcode;
   m_telephone = telephone;
-  m_email = email;
+  m_email     = email;
+  m_city      = city;
+  m_state     = state;
 }
 
 MyMoneyPayee::~MyMoneyPayee()
