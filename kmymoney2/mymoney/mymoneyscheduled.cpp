@@ -102,7 +102,7 @@ void MyMoneySchedule::setLastPayment(const QDate& date)
   // Delete all payments older than date
   QValueList<QDate>::Iterator it;
   QValueList<QDate> delList;
-  
+
   for (it=m_recordedPayments.begin(); it!=m_recordedPayments.end(); ++it)
   {
     if (*it < date)
@@ -153,16 +153,16 @@ void MyMoneySchedule::validate(bool id_check) const
 
   if(m_type == TYPE_ANY)
     throw new MYMONEYEXCEPTION("Invalid type for schedule");
-  
+
   if(!m_startDate.isValid())
     throw new MYMONEYEXCEPTION("Invalid start date for schedule");
-    
+
   if(m_paymentType == STYPE_ANY)
     throw new MYMONEYEXCEPTION("Invalid payment type for schedule");
 
   if(m_transaction.splitCount() == 0)
     throw new MYMONEYEXCEPTION("Scheduled transaction does not contain splits");
-  
+
   // Check the payment types
   switch (m_type)
   {
@@ -184,7 +184,7 @@ void MyMoneySchedule::validate(bool id_check) const
 //        if (m_paymentType == STYPE_DIRECTDEPOSIT || m_paymentType == STYPE_MANUALDEPOSIT)
 //          return false;
       break;
-      
+
     case TYPE_LOANPAYMENT:
       break;
   }
@@ -196,16 +196,16 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
 
   // if there never was a payment, then the next payment date must
   // be identical to the start date of the payments.
-    
+
   if(!paymentDate.isValid()) {
     paymentDate = m_startDate;
-    
+
     // if the reference date is invalid, then that's what we're looking for
     if(!refDate.isValid())
     {
       if (m_recordedPayments.contains(paymentDate))
         return QDate();
-        
+
       return paymentDate;
     }
   }
@@ -213,7 +213,7 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
   // if the enddate is valid and it is before the reference date,
   // then there will be no more payments.
   if(m_endDate.isValid() && m_endDate < refDate) {
-    
+
     return QDate();
   }
 
@@ -230,16 +230,16 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
         return QDate();
       paymentDate = m_startDate;
       break;
-      
+
     case OCCUR_DAILY:
       paymentDate = refDate.addDays(1);
       break;
-      
+
     case OCCUR_WEEKLY:
       while (paymentDate <= refDate)
         paymentDate = paymentDate.addDays(7);
       break;
-      
+
     case OCCUR_FORTNIGHTLY:
     case OCCUR_EVERYOTHERWEEK:
       while (paymentDate <= refDate)
@@ -252,41 +252,55 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
       break;
 
     case OCCUR_MONTHLY:
-      while (paymentDate <= refDate)
+      while (paymentDate <= refDate) {
         paymentDate = paymentDate.addMonths(1);
+        fixDate(paymentDate);
+      }
       break;
 
     case OCCUR_EVERYOTHERMONTH:
-      while (paymentDate <= refDate)
+      while (paymentDate <= refDate) {
         paymentDate = paymentDate.addMonths(2);
+        fixDate(paymentDate);
+      }
       break;
 
     case OCCUR_EVERYTHREEMONTHS:
-      while (paymentDate <= refDate)
+      while (paymentDate <= refDate) {
         paymentDate = paymentDate.addMonths(3);
+        fixDate(paymentDate);
+      }
       break;
 
     case OCCUR_QUARTERLY:
     case OCCUR_EVERYFOURMONTHS:
-      while (paymentDate <= refDate)
+      while (paymentDate <= refDate) {
         paymentDate = paymentDate.addMonths(4);
+        fixDate(paymentDate);
+      }
       break;
-      
+
     case OCCUR_TWICEYEARLY:
-      while (paymentDate <= refDate)
+      while (paymentDate <= refDate) {
         paymentDate = paymentDate.addMonths(6);
+        fixDate(paymentDate);
+      }
       break;
 
     case OCCUR_YEARLY:
-      while (paymentDate <= refDate)
+      while (paymentDate <= refDate) {
         paymentDate = paymentDate.addYears(1);
+        fixDate(paymentDate);
+      }
       break;
 
     case OCCUR_EVERYOTHERYEAR:
-      while (paymentDate <= refDate)
+      while (paymentDate <= refDate) {
         paymentDate = paymentDate.addYears(2);
+        fixDate(paymentDate);
+      }
       break;
-      
+
     case OCCUR_ANY:
       paymentDate = QDate();
       break;
@@ -298,7 +312,7 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
 
   if (paymentDate.isValid() && m_recordedPayments.contains(paymentDate))
     paymentDate = nextPayment(paymentDate);
-    
+
   return paymentDate;
 }
 
@@ -319,7 +333,7 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
       if (m_startDate >= startDate && m_startDate <= endDate)
         theDates.append(m_startDate);
       break;
-      
+
     case OCCUR_DAILY:
       while (paymentDate <= endDate)
       {
@@ -327,7 +341,7 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
         theDates.append(paymentDate);
       }
       break;
-      
+
     case OCCUR_WEEKLY:
       while (paymentDate < startDate)
         paymentDate = paymentDate.addDays(7);
@@ -338,7 +352,7 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
         theDates.append(paymentDate);
       }
       break;
-      
+
     case OCCUR_FORTNIGHTLY:
     case OCCUR_EVERYOTHERWEEK:
       while (paymentDate < startDate)
@@ -349,7 +363,7 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
         theDates.append(paymentDate);
       }
       break;
-      
+
     case OCCUR_EVERYFOURWEEKS:
       while (paymentDate < startDate)
         paymentDate = paymentDate.addDays(28);
@@ -359,37 +373,40 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
         theDates.append(paymentDate);
       }
       break;
-      
+
     case OCCUR_MONTHLY:
       while (paymentDate < startDate)
         paymentDate = paymentDate.addMonths(1);
       while (paymentDate <= endDate)
       {
         paymentDate = paymentDate.addMonths(1);
+        fixDate(paymentDate);
         theDates.append(paymentDate);
       }
       break;
-      
+
     case OCCUR_EVERYOTHERMONTH:
       while (paymentDate < startDate)
         paymentDate = paymentDate.addMonths(2);
       while (paymentDate <= endDate)
       {
         paymentDate = paymentDate.addMonths(2);
+        fixDate(paymentDate);
         theDates.append(paymentDate);
       }
       break;
-      
+
     case OCCUR_EVERYTHREEMONTHS:
       while (paymentDate < startDate)
         paymentDate = paymentDate.addMonths(3);
       while (paymentDate <= endDate)
       {
         paymentDate = paymentDate.addMonths(3);
+        fixDate(paymentDate);
         theDates.append(paymentDate);
       }
       break;
-      
+
     case OCCUR_QUARTERLY:
     case OCCUR_EVERYFOURMONTHS:
       while (paymentDate < startDate)
@@ -397,36 +414,40 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
       while (paymentDate <= endDate)
       {
         paymentDate = paymentDate.addMonths(4);
+        fixDate(paymentDate);
         theDates.append(paymentDate);
       }
       break;
-      
+
     case OCCUR_TWICEYEARLY:
       while (paymentDate < startDate)
         paymentDate = paymentDate.addMonths(6);
       while (paymentDate <= endDate)
       {
         paymentDate = paymentDate.addMonths(6);
+        fixDate(paymentDate);
         theDates.append(paymentDate);
       }
       break;
-      
+
     case OCCUR_YEARLY:
       while (paymentDate < startDate)
         paymentDate = paymentDate.addYears(1);
       while (paymentDate <= endDate)
       {
         paymentDate = paymentDate.addYears(1);
+        fixDate(paymentDate);
         theDates.append(paymentDate);
       }
       break;
-      
+
     case OCCUR_EVERYOTHERYEAR:
       while (paymentDate < startDate)
         paymentDate = paymentDate.addYears(2);
       while (paymentDate <= endDate)
       {
         paymentDate = paymentDate.addYears(2);
+        fixDate(paymentDate);
         theDates.append(paymentDate);
       }
       break;
@@ -440,7 +461,7 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
 
 bool MyMoneySchedule::operator <(const MyMoneySchedule& right)
 {
-  return nextPayment(m_lastPayment) < right.nextPayment(right.m_lastPayment);  
+  return nextPayment(m_lastPayment) < right.nextPayment(right.m_lastPayment);
 }
 
 bool MyMoneySchedule::operator ==(const MyMoneySchedule& right)
@@ -480,7 +501,7 @@ const MyMoneyAccount MyMoneySchedule::account(int cnt) const
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount acc;
 
-  // search the first asset or liability account    
+  // search the first asset or liability account
   for(it = splits.begin(); it != splits.end() && (acc.id().isEmpty() || cnt); ++it) {
     acc = file->account((*it).accountId());
     switch(file->accountGroup(acc.accountType())) {
@@ -488,7 +509,7 @@ const MyMoneyAccount MyMoneySchedule::account(int cnt) const
       case MyMoneyAccount::Asset:
         --cnt;
         break;
-        
+
       default:
         break;
     }
@@ -595,7 +616,7 @@ bool MyMoneySchedule::isOverdue() const
       bOverdue = false;
   }
   else
-  {          
+  {
     // Check the dates
     // Remove all dates before m_lastPayment
     QValueList<QDate> delList;
@@ -614,7 +635,7 @@ bool MyMoneySchedule::isOverdue() const
     // Remove nextPayment (lastPayments returns it?)
     if (datesBeforeToday.contains(nextPayment(m_lastPayment)))
       datesBeforeToday.remove(nextPayment(m_lastPayment));
-    
+
     for (it=m_recordedPayments.begin(); it!=m_recordedPayments.end(); ++it)
     {
       if (datesBeforeToday.contains(*it))
@@ -629,7 +650,7 @@ bool MyMoneySchedule::isOverdue() const
       bOverdue = false;
   }
 
-  return bOverdue;  
+  return bOverdue;
 }
 
 bool MyMoneySchedule::isFinished() const
@@ -640,7 +661,7 @@ bool MyMoneySchedule::isFinished() const
   // Check to see if its a once off payment
   if (m_occurence == MyMoneySchedule::OCCUR_ONCE && m_lastPayment.isValid())
     return true;
-    
+
   return false;
 }
 
@@ -649,10 +670,10 @@ bool MyMoneySchedule::hasRecordedPayment(const QDate& date) const
   // m_lastPayment should always be > recordedPayments()
   if (m_lastPayment.isValid() && m_lastPayment >= date)
     return true;
-    
+
   if (m_recordedPayments.contains(date))
     return true;
-    
+
   return false;
 }
 
@@ -669,9 +690,17 @@ void MyMoneySchedule::setWeekendOption(const weekendOptionE option)
     case MoveMonday:
       m_weekendOption = option;
       break;
-      
+
     default:
       m_weekendOption = MoveNothing;
       break;
+  }
+}
+
+void MyMoneySchedule::fixDate(QDate& date) const
+{
+  if(date.day() != m_startDate.day()
+  && QDate::isValid(date.year(), date.month(), m_startDate.day())) {
+    date.setYMD(date.year(), date.month(), m_startDate.day());
   }
 }

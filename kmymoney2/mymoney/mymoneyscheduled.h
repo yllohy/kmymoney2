@@ -353,7 +353,7 @@ public:
   void setName(const QString& nm);
 
   bool operator ==(const MyMoneySchedule& right);
-  
+
   bool operator <(const MyMoneySchedule& right);
 
   const MyMoneyAccount account(int cnt = 1) const;
@@ -365,7 +365,18 @@ public:
   bool hasRecordedPayment(const QDate&) const;
   void recordPayment(const QDate&);
   QValueList<QDate> recordedPayments(void) const { return m_recordedPayments; }
-  
+
+private:
+  /**
+    * This method forces the day of the passed @p date to
+    * be the day of the start date of this schedule kept
+    * in m_startDate. It is internally used when calculating
+    * the payment dates over several periods.
+    *
+    * @param date reference to QDate object to be checked and adjusted
+    */
+  void fixDate(QDate& date) const;
+
 private:
   /// Its occurence
   occurenceE m_occurence;
