@@ -81,12 +81,13 @@ int main(int argc, char *argv[])
 
   aboutData.addAuthor("Michael Edwardes (babelfish_mte on jabber & msn).", I18N_NOOP("Initial idea, much intial source code, Project admin"), "mte@users.sourceforge.net");
   aboutData.addAuthor("Thomas Baumgart", I18N_NOOP("Core engine, Release Manager, Project admin"), "ipwizard@users.sourceforge.net");
-  aboutData.addAuthor("Ace Jones", I18N_NOOP("Reporting logic"), "acejones@users.sourceforge.net");
+  aboutData.addAuthor("Ace Jones", I18N_NOOP("Reporting logic, OFX Import"), "acejones@users.sourceforge.net");
   aboutData.addAuthor("Kevin Tambascio", I18N_NOOP("Initial investment support"), "ktambascio@users.sourceforge.net");
   aboutData.addAuthor("Felix Rodriguez", I18N_NOOP("Project Admin"), "frodriguez@users.sourceforge.net");
   aboutData.addAuthor("John C", I18N_NOOP("Developer"), "tacoturtle@users.sourceforge.net");
 
   aboutData.addCredit("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
+  aboutData.addCredit("Tony Bloomfield", I18N_NOOP("GnuCash Importer"), "tonybloom@users.sourceforge.net");
   aboutData.addCredit("Robert Wadley", I18N_NOOP("Icons & splash screen"), "rob@robntina.fastmail.us");
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
