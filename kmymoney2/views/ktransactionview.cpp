@@ -1090,6 +1090,7 @@ void KTransactionView::updateInputLists(void)
 	m_category->clear();
 	
 	qstringlistIncome.prepend(i18n("--- Income ---"));
+  qstringlistIncome.prepend("");
 	categoryList = qstringlistIncome;
 	
 	qstringlistExpense.prepend(i18n("--- Expense ---"));
