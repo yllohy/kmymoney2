@@ -66,6 +66,7 @@ public:
   void setPostDate(const QDate& date);
   void setEntryDate(const QDate& date);
   void setMemo(const QString& memo);
+  void setId(const QString& id) { m_id = id; };
 
   bool operator == (const MyMoneyTransaction&) const;
 
