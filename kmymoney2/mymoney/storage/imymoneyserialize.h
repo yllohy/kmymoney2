@@ -117,9 +117,9 @@ public:
     * the set of transaction referenced by a specific account depending
     * on the argument given.
     *
-    * @param account QCString reference to account id. If account equals ""
+    * @param account QCString reference to account id. If account is empty
     +                all transactions (the journal) is returned. If account
-    *                is not equal to "" it returns the set of transactions
+    *                is not empty it returns the set of transactions
     *                that have splits in this account.
     *
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
@@ -140,7 +140,7 @@ public:
     * list of the transactions, all arguments should be used with their
     * default arguments.
     */
-  virtual const QValueList<MyMoneySchedule> scheduleList(const QCString& = "",
+  virtual const QValueList<MyMoneySchedule> scheduleList(const QCString& = QCString(),
                                      const MyMoneySchedule::typeE = MyMoneySchedule::TYPE_ANY,
                                      const MyMoneySchedule::occurenceE = MyMoneySchedule::OCCUR_ANY,
                                      const MyMoneySchedule::paymentTypeE = MyMoneySchedule::STYPE_ANY,

@@ -76,6 +76,8 @@ void KAccountListItem::cleanCache(void)
 
 void KAccountListItem::newAccount(const MyMoneyAccount& account)
 {
+  m_suspendUpdate = false;
+  
   loadCache();
   MyMoneyFile*  file = MyMoneyFile::instance();
 
@@ -102,13 +104,13 @@ void KAccountListItem::newAccount(const MyMoneyAccount& account)
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const QString& txt)
-  : KListViewItem(parent), m_bViewNormal(true)
+  : KListViewItem(parent), m_bViewNormal(true), m_suspendUpdate(false)
 {
   setText(0, txt);  
 }
 
 KAccountListItem::KAccountListItem(KListView *parent, const MyMoneyInstitution& institution)
-  : KListViewItem(parent), m_bViewNormal(true)
+  : KListViewItem(parent), m_bViewNormal(true), m_suspendUpdate(false)
 {
   setAccountID(institution.id());
   setText(0, institution.name());
@@ -121,8 +123,11 @@ KAccountListItem::~KAccountListItem()
 
 void KAccountListItem::update(const QCString& accountId)
 {
+  if(m_suspendUpdate == true)
+    return;
+    
   MyMoneyFile*  file = MyMoneyFile::instance();
-
+    
   try {
     MyMoneyAccount acc = file->account(accountId);
 

@@ -55,6 +55,7 @@
 #include "../widgets/kmymoneycombo.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../dialogs/ieditscheduledialog.h"
+#include "../dialogs/knewaccountdlg.h"
 
 int KTransactionPtrVector::compareItems(const QCString& s1, const QCString& s2) const
 {
@@ -146,10 +147,10 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
         break;
 
       case SortReceiver:
-        if(s2.payeeId() != "") {
+        if(!s2.payeeId().isEmpty()) {
           p2 = MyMoneyFile::instance()->payee(s2.payeeId()).name();
         }
-        if(s1.payeeId() != "") {
+        if(!s1.payeeId().isEmpty()) {
           p1 = MyMoneyFile::instance()->payee(s1.payeeId()).name();
         }
 
@@ -320,9 +321,25 @@ void KLedgerView::slotSelectAccount(const QCString& accountId)
   refreshView();
 }
 
-
 void KLedgerView::refreshView(void)
 {
+  // read in the configuration parameters for this view
+  KConfig *config = KGlobal::config();
+  config->setGroup("General Options");
+  m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
+  refreshView(m_transactionFormActive);  
+}
+
+void KLedgerView::refreshView(const bool transactionFormVisible)
+{
+  // if we're currently editing a transaction, we don't refresh the view
+  // this will screw us, if someone creates a category on the fly, as this
+  // will come here when the notifications by the engine are send out.
+  if(isEditMode())
+    return;
+
+  m_transactionFormActive = transactionFormVisible;
+      
   // if a transaction is currently selected, keep the id
   QCString transactionId;
   if(m_transactionPtr != 0)
@@ -334,7 +351,6 @@ void KLedgerView::refreshView(void)
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
   m_ledgerLens = config->readBoolEntry("LedgerLens", true);
-  m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
 
   config->setGroup("List Options");
   QDateTime defaultDate;
@@ -475,7 +491,7 @@ void KLedgerView::suspendUpdate(const bool suspend)
   && suspend == false) {
     m_suspendUpdate = false;
     if(!m_account.id().isEmpty())
-      update("");
+      update(QCString());
     
   } else
     m_suspendUpdate = suspend;
@@ -613,7 +629,7 @@ void KLedgerView::slotPayeeChanged(const QString& name)
     sp = m_transaction.splitByAccount(m_account.id(), false);
   }
 
-  if(name != "") {
+  if(!name.isEmpty()) {
     MyMoneyPayee payee;
     try {
       createSecondSplit();
@@ -634,10 +650,10 @@ void KLedgerView::slotPayeeChanged(const QString& name)
 
   } else {
     // clear the field
-    m_split.setPayeeId("");
+    m_split.setPayeeId(QCString());
     // for tranfers, we always modify the other side as well
     if(m_split.action() == MyMoneySplit::ActionTransfer) {
-      sp.setPayeeId("");
+      sp.setPayeeId(QCString());
     }
   }
 
@@ -779,7 +795,7 @@ void KLedgerView::slotPaymentChanged(const QString& value)
 
     m_split.setValue(-MyMoneyMoney(value));
     m_editPayment->loadText(value);
-    m_editDeposit->loadText("");
+    m_editDeposit->loadText(QString());
 
     if(m_split.action() == MyMoneySplit::ActionDeposit)
       m_split.setAction(MyMoneySplit::ActionWithdrawal);
@@ -825,7 +841,7 @@ void KLedgerView::slotDepositChanged(const QString& value)
 
     m_split.setValue(MyMoneyMoney(value));
     m_editDeposit->loadText(value);
-    m_editPayment->loadText("");
+    m_editPayment->loadText(QString());
 
     if(m_split.action() != MyMoneySplit::ActionDeposit
     && m_split.action() != MyMoneySplit::ActionTransfer)
@@ -856,7 +872,8 @@ void KLedgerView::slotCategoryChanged(const QString& category)
 
   MyMoneyTransaction t = m_transaction;
   MyMoneySplit s = m_split;
-
+  QString cat(category);
+  
   // usually we call createSecondSplit() here in all the other xxxChanged()
   // functions, but we don't do it for slotCategoryChanged() because we will
   // remove it later on anyway.
@@ -864,16 +881,52 @@ void KLedgerView::slotCategoryChanged(const QString& category)
   try {
     // First, we check if the category exists
     QCString id = MyMoneyFile::instance()->categoryToAccount(category);
-    if(id == "" && category != "") {
+    if(id.isEmpty() && !category.isEmpty()) {
       // FIXME:
       /// Todo: Add account (hierarchy) upon new category
+      if(KMessageBox::questionYesNo(0,
+            i18n("The category \"%1\" currently does not exist. "
+                 "Do you want to create it?").arg(category)) == KMessageBox::Yes) {
+        MyMoneyAccount acc;
+        int rc;
+        acc.setName(category);
+        
+        KNewAccountDlg dlg(acc, false, true);
+        rc = dlg.exec();
+        if(rc == QDialog::Accepted) {
+          try {
+            MyMoneyAccount parentAccount;
+            acc = dlg.account();
+            parentAccount = dlg.parentAccount();
+            MyMoneyFile::instance()->addAccount(acc, parentAccount);
+            id = acc.id();
+            cat = MyMoneyFile::instance()->accountToCategory(id);
+          } catch(MyMoneyException *e) {
+            KMessageBox::detailedSorry(0, i18n("Unable to add category"),
+                (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+            delete e;
+            rc = QDialog::Rejected;
+          }
+        }
+        
+        if(rc != QDialog::Accepted) {
+          m_editCategory->resetText();
+          m_editCategory->setFocus();
+          return;
+        }
+        
+      } else {
+        m_editCategory->resetText();
+        m_editCategory->setFocus();
+        return;
+      }
+/*      
       KMessageBox::sorry(0, i18n("Direct creation of new account not yet implemented"));
-      m_editCategory->resetText();
-      m_editCategory->setFocus();
       return;
+*/
     }
 
-    if(category == "") {
+    if(cat.isEmpty()) {
       if(m_transaction.splitCount() == 2) {
         MyMoneySplit sp = m_transaction.splitByAccount(m_account.id(), false);
         m_transaction.removeSplit(sp);
@@ -932,7 +985,7 @@ void KLedgerView::slotCategoryChanged(const QString& category)
           break;
       }
     }
-    m_editCategory->loadText(category);
+    m_editCategory->loadText(cat);
 
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to modify category"),
@@ -968,7 +1021,7 @@ void KLedgerView::fromToChanged(const bool fromChanged, const QString& accountNa
 
     // First, we check if the account exists
     QCString id = MyMoneyFile::instance()->nameToAccount(accountName);
-    if(id == "") {
+    if(id.isEmpty()) {
       // FIXME:
       /// Todo: Add account (hierarchy) upon new category
       KMessageBox::sorry(0, i18n("Direct creation of new account not yet implemented"));
@@ -1219,7 +1272,7 @@ void KLedgerView::slotShowTransactionForm(bool visible)
     // using a timeout is the only way, I got the 'ensureTransactionVisible'
     // working when coming from hidden form to visible form. I assume, this
     // has something to do with the delayed update of the display somehow.
-    QTimer::singleShot(10, this, SLOT(timerDone()));
+    // QTimer::singleShot(10, this, SLOT(timerDone()));
   }
 }
 
@@ -1275,6 +1328,9 @@ void KLedgerView::slotNewPayee(const QString& payeeName)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyPayee payee;
+
+  if(!m_editPayee)
+    return;
 
   // Ask the user if that is what he intended to do?
   QString msg = i18n("Do you want to add '%1' as payee/receiver ?").arg(payeeName);
@@ -1362,6 +1418,9 @@ void KLedgerView::slotNew(void)
   m_form->newButton()->setEnabled(false);
 
   showWidgets();
+
+  if(m_editDate->getQDate().isValid())
+    m_transaction.setPostDate(m_editDate->getQDate());
 
   disconnect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   if(!m_transactionFormActive)
@@ -1460,6 +1519,18 @@ void KLedgerView::slotEndEdit(void)
   // force focus change to update all data
   m_form->enterButton()->setFocus();
 
+  // switch the context to enable refreshView() to work
+  m_form->newButton()->setEnabled(true);
+  m_form->enterButton()->setEnabled(false);
+  m_form->cancelButton()->setEnabled(false);
+  m_form->moreButton()->setEnabled(false);
+
+  if(transaction(m_register->currentTransactionIndex()) != 0) {
+    m_form->editButton()->setEnabled(true);
+  }
+
+  hideWidgets();
+
   MyMoneyTransaction t;
 
   // so, we now have to save something here.
@@ -1490,9 +1561,9 @@ void KLedgerView::slotEndEdit(void)
       //
       // Splits not referencing any account will be removed.
 
-      QCString payeeId = "";
+      QCString payeeId;
       for(it = list.begin(); it != list.end(); ++it) {
-        if((*it).accountId() == "") {
+        if((*it).accountId().isEmpty()) {
           m_transaction.removeSplit(*it);
           continue;
         }
@@ -1504,12 +1575,12 @@ void KLedgerView::slotEndEdit(void)
             break;
 
           default:
-            (*it).setPayeeId("");
+            (*it).setPayeeId(QCString());
             m_transaction.modifySplit(*it);
             break;
         }
         if((*it).action() == MyMoneySplit::ActionTransfer
-        && payeeId == "" && (*it).payeeId() != "")
+        && payeeId.isEmpty() && !(*it).payeeId().isEmpty())
           payeeId = (*it).payeeId();
       }
 
@@ -1573,18 +1644,6 @@ void KLedgerView::slotEndEdit(void)
       delete e;
     }
   }
-
-  // now switch the context
-  m_form->newButton()->setEnabled(true);
-  m_form->enterButton()->setEnabled(false);
-  m_form->cancelButton()->setEnabled(false);
-  m_form->moreButton()->setEnabled(false);
-
-  if(transaction(m_register->currentTransactionIndex()) != 0) {
-    m_form->editButton()->setEnabled(true);
-  }
-
-  hideWidgets();
 
   connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
   m_register->setInlineEditingMode(false);
@@ -1749,7 +1808,16 @@ void KLedgerView::slotDeleteTransaction(void)
     if(answer == KMessageBox::Continue) {
       slotCancelEdit();
       try {
+        unsigned int idx = m_register->currentTransactionIndex();
+        
         MyMoneyFile::instance()->removeTransaction(m_transaction);
+        
+        if(m_transactionPtrVector.count() > 0) {
+          if(idx >= m_transactionPtrVector.count())
+            idx = m_transactionPtrVector.count()-1;
+          m_transactionPtr = m_transactionPtrVector[idx];
+          selectTransaction(m_transactionPtr->id());
+        }
       } catch(MyMoneyException *e) {
         KMessageBox::detailedSorry(0, i18n("Unable to remove transaction"),
           (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));

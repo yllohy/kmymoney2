@@ -42,7 +42,6 @@ MyMoneySchedule::MyMoneySchedule()
   m_startDate = QDate();
   m_endDate = QDate();
   m_lastPayment = QDate();
-  m_id = "";
 }
 
 MyMoneySchedule::MyMoneySchedule(const QString& name, typeE type,
@@ -60,7 +59,6 @@ MyMoneySchedule::MyMoneySchedule(const QString& name, typeE type,
   m_startDate = startDate;
   m_endDate = endDate;
   m_lastPayment = QDate();
-  m_id = "";
 }
 
 

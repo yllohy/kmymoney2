@@ -34,13 +34,13 @@ void MyMoneySeqAccessMgrTest::tearDown()
 
 void MyMoneySeqAccessMgrTest::testEmptyConstructor()
 {
-	CPPUNIT_ASSERT(m->m_userName == "");
-	CPPUNIT_ASSERT(m->m_userStreet == "");
-	CPPUNIT_ASSERT(m->m_userTown == "");
-	CPPUNIT_ASSERT(m->m_userCounty == "");
-	CPPUNIT_ASSERT(m->m_userPostcode == "");
-	CPPUNIT_ASSERT(m->m_userTelephone == "");
-	CPPUNIT_ASSERT(m->m_userEmail == "");
+	CPPUNIT_ASSERT(m->m_userName.isEmpty());
+	CPPUNIT_ASSERT(m->m_userStreet.isEmpty());
+	CPPUNIT_ASSERT(m->m_userTown.isEmpty());
+	CPPUNIT_ASSERT(m->m_userCounty.isEmpty());
+	CPPUNIT_ASSERT(m->m_userPostcode.isEmpty());
+	CPPUNIT_ASSERT(m->m_userTelephone.isEmpty());
+	CPPUNIT_ASSERT(m->m_userEmail.isEmpty());
 	CPPUNIT_ASSERT(m->m_nextInstitutionID == 0);
 	CPPUNIT_ASSERT(m->m_nextAccountID == 0);
 	CPPUNIT_ASSERT(m->m_nextTransactionID == 0);
@@ -432,14 +432,14 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 		s.setAccountId("A000006");	// Checkings
 		s.setShares(100000);
 		s.setValue(100000);
-		CPPUNIT_ASSERT(s.id() == "");
+		CPPUNIT_ASSERT(s.id().isEmpty());
 		t1.addSplit(s);
 
-		s.setId("");		// enable re-usage of split variable
+		s.setId(QCString());	// enable re-usage of split variable
 		s.setAccountId("A000005");	// Salary
 		s.setShares(-100000);
 		s.setValue(-100000);
-		CPPUNIT_ASSERT(s.id() == "");
+		CPPUNIT_ASSERT(s.id().isEmpty());
 		t1.addSplit(s);
 
 		t1.setPostDate(QDate(2002,5,10));
@@ -460,32 +460,32 @@ void MyMoneySeqAccessMgrTest::testAddTransactions() {
 
 	try {
 		// I spent some money, not so great
-		s.setId("");		// enable re-usage of split variable
+		s.setId(QCString());	// enable re-usage of split variable
 		s.setAccountId("A000004");	// Grosseries
 		s.setShares(10000);
 		s.setValue(10000);
-		CPPUNIT_ASSERT(s.id() == "");
+		CPPUNIT_ASSERT(s.id().isEmpty());
 		t2.addSplit(s);
 
-		s.setId("");		// enable re-usage of split variable
+		s.setId(QCString());	// enable re-usage of split variable
 		s.setAccountId("A000002");	// 16% sales tax
 		s.setShares(1200);
 		s.setValue(1200);
-		CPPUNIT_ASSERT(s.id() == "");
+		CPPUNIT_ASSERT(s.id().isEmpty());
 		t2.addSplit(s);
 
-		s.setId("");		// enable re-usage of split variable
+		s.setId(QCString());	// enable re-usage of split variable
 		s.setAccountId("A000003");	// 7% sales tax
 		s.setShares(400);
 		s.setValue(400);
-		CPPUNIT_ASSERT(s.id() == "");
+		CPPUNIT_ASSERT(s.id().isEmpty());
 		t2.addSplit(s);
 
-		s.setId("");		// enable re-usage of split variable
+		s.setId(QCString());	// enable re-usage of split variable
 		s.setAccountId("A000006");	// Checkings account
 		s.setShares(-11600);
 		s.setValue(-11600);
-		CPPUNIT_ASSERT(s.id() == "");
+		CPPUNIT_ASSERT(s.id().isEmpty());
 		t2.addSplit(s);
 
 		t2.setPostDate(QDate(2002,5,9));
@@ -756,7 +756,7 @@ void MyMoneySeqAccessMgrTest::testRemoveInstitution() {
 		m->removeInstitution(i);
 		a = m->account("A000006");
 		CPPUNIT_ASSERT(m->dirty() == true);
-		CPPUNIT_ASSERT(a.institutionId() == "");
+		CPPUNIT_ASSERT(a.institutionId().isEmpty());
 		CPPUNIT_ASSERT(m->institutionCount() == 0);
 	} catch (MyMoneyException *e) {
 		delete e;

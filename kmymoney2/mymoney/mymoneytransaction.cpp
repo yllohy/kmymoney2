@@ -27,8 +27,6 @@
 MyMoneyTransaction::MyMoneyTransaction()
 {
   m_nextSplitID = 1;
-  m_id =
-  m_memo = "";
   m_entryDate = QDate();
   m_postDate = QDate();
 }
@@ -69,7 +67,7 @@ const bool MyMoneyTransaction::accountReferenced(const QCString& id) const
 
 void MyMoneyTransaction::addSplit(MyMoneySplit& split)
 {
-  if(split.id() != "")
+  if(!split.id().isEmpty())
     throw new MYMONEYEXCEPTION("Cannot add split with assigned id (" + split.id() + ")");
 
   split.setId(nextSplitID());

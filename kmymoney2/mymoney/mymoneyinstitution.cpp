@@ -26,16 +26,6 @@
 
 MyMoneyInstitution::MyMoneyInstitution()
 {
-	m_file = 0;
-
-  m_id =
-  m_name =
-  m_town =
-  m_street =
-  m_postcode =
-  m_telephone =
-  m_manager =
-  m_sortcode = "";
 }
 
 // MyMoneyInstitution::MyMoneyInstitution(MyMoneyFile *file, const QString id, const MyMoneyInstitution& right)
@@ -53,8 +43,7 @@ MyMoneyInstitution::MyMoneyInstitution(const QString& name,
                          const QString& manager,
                          const QString& sortcode)
 {
-	m_file = 0;
-  m_id = "";
+  m_id = QCString();
   m_name = name;
   m_town = town;
   m_street = street;
@@ -63,23 +52,6 @@ MyMoneyInstitution::MyMoneyInstitution(const QString& name,
   m_manager = manager;
   m_sortcode = sortcode;
 }
-
-#if 0
-MyMoneyInstitution& MyMoneyInstitution::operator = (const MyMoneyInstitution &right)
-{
-  m_file = right.m_file;
-  m_id = right.m_id;
-  m_name = right.m_name;
-  m_town = right.m_town;
-  m_street = right.m_street;
-  m_postcode = right.m_postcode;
-  m_telephone = right.m_telephone;
-  m_manager = right.m_manager;
-  m_sortcode = right.m_sortcode;
-  m_accountList = right.m_accountList;
-  return *this;
-}
-#endif
 
 MyMoneyInstitution::~MyMoneyInstitution()
 {
@@ -95,7 +67,7 @@ void MyMoneyInstitution::addAccountId(const QCString& account)
 QCString MyMoneyInstitution::removeAccountId(const QCString& account)
 {
   QCStringList::Iterator pos;
-  QCString rc = "";
+  QCString rc;
 
   pos = m_accountList.find(account);
   if(pos != m_accountList.end()) {
@@ -108,7 +80,6 @@ QCString MyMoneyInstitution::removeAccountId(const QCString& account)
 bool MyMoneyInstitution::operator == (const MyMoneyInstitution& right) const
 {
   if ((m_id == right.m_id) &&
-      (m_file == right.m_file) &&
       (m_name == right.m_name) &&
       (m_town == right.m_town) &&
       (m_street == right.m_street) &&
@@ -122,41 +93,3 @@ bool MyMoneyInstitution::operator == (const MyMoneyInstitution& right) const
     return false;
 }
 
-/*
-QDataStream& operator << (QDataStream &s, const MyMoneyInstitution &institution)
-{
-  if(MyMoneyFile::fileVersion(MyMoneyFile::Writing) >= VERSION_0_5_0) {
-    s << Q_INT8(0);
-    s << institution.m_id;
-  }
-
-  return s << institution.m_name
-    << institution.m_town
-    << institution.m_street
-    << institution.m_postcode
-    << institution.m_telephone
-    << institution.m_manager
-    << institution.m_sortcode;
-}
-
-QDataStream& operator >> (QDataStream &s, MyMoneyInstitution &institution)
-{
-  Q_UINT8  objVersion;
-
-  institution.m_file = 0;
-  institution.m_id = "";
-
-  if(MyMoneyFile::fileVersion(MyMoneyFile::Reading) >= VERSION_0_5_0) {
-    s >> objVersion;
-    s >> institution.m_id;
-  }
-
-  return s >> institution.m_name
-    >> institution.m_town
-    >> institution.m_street
-    >> institution.m_postcode
-    >> institution.m_telephone
-    >> institution.m_manager
-    >> institution.m_sortcode;
-}
-*/

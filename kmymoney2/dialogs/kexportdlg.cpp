@@ -235,8 +235,8 @@ void KExportDlg::loadAccounts(void)
     MyMoneyFile *file = MyMoneyFile::instance();
 
     // read all account items from the MyMoneyFile objects and add them to the listbox
-    addCategories(strList, file->liability().id(), "");
-    addCategories(strList, file->asset().id(), "");
+    addCategories(strList, file->liability().id(), QString());
+    addCategories(strList, file->asset().id(), QString());
 
   } catch (MyMoneyException *e) {
     qDebug("Exception '%s' thrown in %s, line %ld caught in KExportDlg::loadAccounts:%d",

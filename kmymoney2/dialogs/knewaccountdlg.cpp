@@ -200,10 +200,10 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
 
   try
   {
-    if (m_isEditing && account.institutionId() != "")
+    if (m_isEditing && !account.institutionId().isEmpty())
       institutionName = file->institution(account.institutionId()).name();
     else
-      institutionName = "";
+      institutionName = QString();
   }
   catch (MyMoneyException *e)
   {

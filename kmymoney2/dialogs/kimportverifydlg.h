@@ -50,11 +50,33 @@ public:
   KImportVerifyDlg(const MyMoneyAccount& accountId, QWidget *parent=0, const char *name=0);
   ~KImportVerifyDlg();
 
+  /**
+    * This method is used to register a callback function that
+    * can be used to by this dialog to display progress information.
+    *
+    * @param callback pointer to a callback function that takes three
+    *                 parameters. See KMyMoney2App::progressCallback
+    *                 for a description of the parameters.
+    */
+  void setProgressCallback(void(*callback)(int, int, const QString&));
+
+private:
+  /**
+    * This method is used to update the progress information. It
+    * checks if an appropriate function is known and calls it.
+    *
+    * For a parameter description see KMyMoneyView::progressCallback().
+    */
+  void signalProgress(int current, int total, const QString& = QString());
+
+  
 protected slots:
   void slotOkClicked(void);
   
 private:
   MyMoneyAccount m_account;
+  void (*m_progressCallback)(int, int, const QString&);
+
 };
 
 #endif

@@ -86,7 +86,7 @@ void MyMoneyQifReader::slotSendDataToFilter(void)
 {
   Q_LONG len;
   QByteArray data(0);
-    
+
   if(m_file->atEnd()) {
     m_filter.flushStdin();
     m_filter.closeStdin();
@@ -117,40 +117,58 @@ void MyMoneyQifReader::slotReceivedErrorFromFilter(void)
 
 void MyMoneyQifReader::slotReceivedDataFromFilter(void)
 {
-  if(!m_processingData) {
-    m_processingData = true;
-    if(m_filter.isRunning() || m_filter.normalExit()) {
-      while(m_filter.canReadLineStdout() && !m_userAbort) {
-        // slotReceivedErrorFromFilter();
-        m_qifLine = m_filter.readLineStdout();
-        m_pos += m_qifLine.length() + 1;
-        while(m_qifLine.endsWith(" ") || m_qifLine.endsWith("\t"))
-          m_qifLine = m_qifLine.left(m_qifLine.length()-1);
+  if(m_data.count() == 0)
+    QTimer::singleShot(10, this, SLOT(slotProcessBuffers()));
+  m_data.append(m_filter.readStdout());
+}
 
-        // skip empty lines
-        if(!m_qifLine.isEmpty()) {
+void MyMoneyQifReader::slotProcessBuffers(void)
+{
+  QValueList<QByteArray>::Iterator it;
 
-          if(m_qifLine == "^") {
+  while(!m_userAbort && !m_data.isEmpty()) {
+    unsigned int   i;
+    
+    it = m_data.begin();
+    
+    // parse this buffer
+    for(i = 0; !m_userAbort && i < (*it).size(); ++i) {
+      QChar c((*it).at(i));
+      if(c == '\r')
+        continue;
+      if(c == '\n') {
+        processQifLine();
+        m_qifLine = QString();
+      } else
+        m_qifLine += c;
+    }
+    m_data.remove(it);
+  }
+  m_data.clear();
+  
+  emit importFinished();
+}
 
-            // skip empty entries
-            if(m_qifEntry.count() != 0) {
-              processQifEntry();
-              m_qifEntry.clear();
-            }
-          } else {
-            m_qifEntry += m_qifLine;
-          }
-        }
+void MyMoneyQifReader::processQifLine(void)
+{
+  m_pos += m_qifLine.length() + 1;
+  while(m_qifLine.endsWith(" ") || m_qifLine.endsWith("\t"))
+    m_qifLine = m_qifLine.left(m_qifLine.length()-1);
+
+  // skip empty lines
+  if(!m_qifLine.isEmpty()) {
+
+    if(m_qifLine == "^") {
+
+      // skip empty entries
+      if(m_qifEntry.count() != 0) {
         signalProgress(m_pos, 0);
-        // qApp->processEvents(20);
+        processQifEntry();
+        m_qifEntry.clear();
       }
+    } else {
+      m_qifEntry += m_qifLine;
     }
-    
-    if(!m_filter.isRunning() || m_userAbort) {
-      emit importFinished();
-    }
-    
-    m_processingData = false;
   }
 }
 
@@ -158,9 +176,6 @@ void MyMoneyQifReader::slotImportFinished(void)
 {
   slotReceivedDataFromFilter();
   slotReceivedErrorFromFilter();
-  if(!m_filter.normalExit()) {
-    emit importFinished();
-  }
 }
 
 const bool MyMoneyQifReader::startImport(void)
@@ -171,7 +186,9 @@ const bool MyMoneyQifReader::startImport(void)
   m_accountTranslation.clear();
   m_userAbort = false;
   m_pos = 0;
-  
+
+  m_data.clear();
+
   m_file = new QFile(m_filename);
   if(m_file->open(IO_ReadOnly)) {
     m_filter.setCommunication(QProcess::Stdin | QProcess::Stdout | QProcess::Stderr);
@@ -327,6 +344,8 @@ const QString MyMoneyQifReader::extractLine(const QChar id, int cnt)
     m_extractedLine++;
     if((*it)[0] == id) {
       if(cnt-- == 1) {
+        if((*it).mid(1).isEmpty())
+          return QString(" ");
         return (*it).mid(1);
       }
     }
@@ -362,7 +381,20 @@ void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE 
 
 void MyMoneyQifReader::processCategoryEntry(void)
 {
-  qWarning("MyMoneyQifReader::processCategoryEntry not yet implemented");
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QString name = extractLine('N');
+  
+  if(!extractLine('I').isEmpty()) {
+    file->createCategory(file->income(), name);
+    
+  } else if(!extractLine('E').isEmpty()) {
+    file->createCategory(file->expense(), name);
+    
+  } else {
+    MyMoneyAccount acc;
+    acc.setName(name);
+    selectOrCreateAccount(Select, acc);
+  }
 }
 
 void MyMoneyQifReader::processTransactionEntry(void)
@@ -473,7 +505,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
         }
         
       } else if(rc == KMessageBox::No) {
-        s1.setPayeeId("");
+        s1.setPayeeId(QCString());
         
       } else {
         throw new MYMONEYEXCEPTION("USERABORT");
@@ -509,7 +541,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
     // use the same values for the second split, but clear the ID and reverse the value
     MyMoneySplit s2 = s1;
     s2.setValue(-s1.value());
-    s2.setId("");
+    s2.setId(QCString());
     
     // standard transaction
     tmp = extractLine('L');
@@ -534,7 +566,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
       }
       
       // it's an expense / income
-      accountId = checkCategory(tmp, s1.value());
+      accountId = checkCategory(tmp, s1.value(), s2.value());
     }
 
     if(!accountId.isEmpty()) {
@@ -543,7 +575,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
         // FIXME: check that the type matches and ask if not
       } catch (MyMoneyException *e) {
         qWarning("Account with id %s not found", accountId.data());
-        accountId = "";
+        accountId = QCString();
         delete e;
       }
     }
@@ -564,24 +596,41 @@ void MyMoneyQifReader::processTransactionEntry(void)
     
     for(count = 1; !extractLine('$', count).isEmpty(); ++count) {
       MyMoneySplit s2 = s1;
-      s2.setId("");
+      s2.setId(QCString());
       s2.setValue(-m_qifProfile.value('$', extractLine('$', count)));
       s2.setMemo(extractLine('E', count));
       tmp = extractLine('S', count);
-      pos = tmp.findRev("--");
-      if(pos != -1) {
-        t.setValue("Dialog", tmp.mid(pos+2));
-        tmp = tmp.left(pos);
+
+      if(tmp.left(1) == m_qifProfile.accountDelimiter().left(1)) {
+        // it's a transfer, extract the account name
+        tmp = tmp.mid(1, tmp.length()-2);
+        accountId = file->nameToAccount(tmp);
+        if(accountId.isEmpty()) {
+          MyMoneyAccount account;
+          account.setName(tmp);
+          selectOrCreateAccount(Select, account);
+          accountId = account.id();
+        }
+        s1.setAction(MyMoneySplit::ActionTransfer);
+        s2.setAction(MyMoneySplit::ActionTransfer);
+        t.modifySplit(s1);
+      } else {
+        pos = tmp.findRev("--");
+        if(pos != -1) {
+          t.setValue("Dialog", tmp.mid(pos+2));
+          tmp = tmp.left(pos);
+        }
+
+        accountId = checkCategory(tmp, s1.value(), s2.value());
       }
       
-      accountId = checkCategory(tmp, s1.value());
       if(!accountId.isEmpty()) {
         try {
           MyMoneyAccount account = file->account(accountId);
           // FIXME: check that the type matches and ask if not
         } catch (MyMoneyException *e) {
           qWarning("Account with id %s not found", accountId.data());
-          accountId = "";
+          accountId = QCString();
           delete e;
         }
       }
@@ -615,9 +664,9 @@ void MyMoneyQifReader::processTransactionEntry(void)
   
 }
 
-const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMoneyMoney value)
+const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMoneyMoney value, const MyMoneyMoney value2)
 {
-  QCString accountId = "";
+  QCString accountId;
   MyMoneyFile *file = MyMoneyFile::instance();
   MyMoneyAccount account;
   
@@ -639,7 +688,7 @@ const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMone
       } else
         account.setName(name);
       
-      if(value >= 0)
+      if(value >= 0 && value2 < 0)
         account.setAccountType(MyMoneyAccount::Income);
       else
         account.setAccountType(MyMoneyAccount::Expense);
@@ -735,7 +784,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
     }
   }
 
-  if(!m_account.name().isEmpty()) {
+  if(!account.name().isEmpty()) {
     if(type & (KMyMoneyUtils::income | KMyMoneyUtils::expense)) {
       accountId = file->categoryToAccount(account.name());
     } else {

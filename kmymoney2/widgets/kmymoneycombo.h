@@ -74,7 +74,7 @@ public:
     * Convenience function to return the account id of the
     * currently selected item
     *
-    * @return QCString The account id or "" if not found
+    * @return QCString The account id or QCString() if not found
   **/
   QCString currentAccountId(void);
 

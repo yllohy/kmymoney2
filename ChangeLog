@@ -1,3 +1,25 @@
+2003-10-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * modify transfers to/from loan accounts to amortization payments
+    when a new transaction is entered into the engine
+  * added more logic for loan ledger view
+  * added logic to read categories from QIF file
+  * removed libxml++ references in configure stuff
+  * improved QIF import performance
+  * added method to turn off/on engine notifications for bulk updates
+  * send out notification if an account was moved to another institution
+  * if no filename is known, show 'Untitled' in caption
+  * allow creation of categories while entering transactions
+  * replaced "" with QCString() in all id handling spots
+  * replaced comparison against "" with call to isEmpty() method
+  * removed member m_file from MyMoneyTransaction
+  * adapted testcases to the QCString() changes
+  * don't popup transaction form when modifying transaction in
+    reconciliation phase
+  * removed message about file closing if no data has been changed
+  * added startup logo for version 0.6 (hope you like it ;-)   )
+  * fixed crash in transaction filter
+  * fixed initial setting of post date for new transactions
+
 2003-09-29 Michael Edwardes <mte@users.sourceforge.net>
   * Create a liability ledger view.
   * Confirm that the user meant to enter a positive number for the

@@ -76,7 +76,7 @@ void kMyMoneyRegisterLoan::paintCell(QPainter *p, int row, int col, const QRect&
   QString txt;
   if(m_transaction != 0) {
     switch (col) {
-      case 0:
+      case 0:                         // Date
         align |= Qt::AlignLeft;
         switch(m_transactionRow) {
           case 0:
@@ -85,7 +85,7 @@ void kMyMoneyRegisterLoan::paintCell(QPainter *p, int row, int col, const QRect&
         }
         break;
 
-      case 1:
+      case 1:                         // Nr
         align |= Qt::AlignRight;
         switch(m_transactionRow) {
           case 0:
@@ -94,7 +94,7 @@ void kMyMoneyRegisterLoan::paintCell(QPainter *p, int row, int col, const QRect&
         }
         break;
 
-      case 2:
+      case 2:                         // Payee
         align |= Qt::AlignLeft;
         switch(m_transactionRow) {
           case 0:
@@ -126,7 +126,7 @@ void kMyMoneyRegisterLoan::paintCell(QPainter *p, int row, int col, const QRect&
         }
         break;
 
-      case 3:
+      case 3:                         // Amount
         switch(m_transactionRow) {
           case 0:
             try {
@@ -149,7 +149,7 @@ void kMyMoneyRegisterLoan::paintCell(QPainter *p, int row, int col, const QRect&
         }
         break;
 
-      case 4:
+      case 4:                         // Amortization
         switch(m_transactionRow) {
           case 0:
             align |= Qt::AlignRight;
@@ -161,7 +161,7 @@ void kMyMoneyRegisterLoan::paintCell(QPainter *p, int row, int col, const QRect&
         }
         break;
 
-      case 5:
+      case 5:                         // Balance
         switch(m_transactionRow) {
           case 0:
             align |= Qt::AlignRight;

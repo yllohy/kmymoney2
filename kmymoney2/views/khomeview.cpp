@@ -407,7 +407,7 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
   //qDebug("id = '%s'", url.queryItem("id").latin1());
   
   if(view == VIEW_LEDGER) {
-    emit ledgerSelected(id, "");
+    emit ledgerSelected(id, QCString());
     
   } else if(view == VIEW_SCHEDULE) {
     emit scheduleSelected(id);

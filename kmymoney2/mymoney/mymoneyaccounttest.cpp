@@ -30,9 +30,9 @@ void MyMoneyAccountTest::tearDown () {
 void MyMoneyAccountTest::testEmptyConstructor() {
 	MyMoneyAccount a;
 
-	CPPUNIT_ASSERT(a.id() == "");
+	CPPUNIT_ASSERT(a.id().isEmpty());
 	CPPUNIT_ASSERT(a.file() == 0);
-	CPPUNIT_ASSERT(a.name() == "");
+	CPPUNIT_ASSERT(a.name().isEmpty());
 	CPPUNIT_ASSERT(a.accountType() == MyMoneyAccount::UnknownAccountType);
 	CPPUNIT_ASSERT(a.openingDate() == QDate());
 	CPPUNIT_ASSERT(a.openingBalance() == 0);
@@ -60,7 +60,7 @@ void MyMoneyAccountTest::testConstructor() {
 	MyMoneyAccount a(id, r);
 
 	CPPUNIT_ASSERT(a.id() == id);
-	CPPUNIT_ASSERT(a.institutionId() == "");
+	CPPUNIT_ASSERT(a.institutionId().isEmpty());
 	CPPUNIT_ASSERT(a.accountType() == MyMoneyAccount::Asset);
 	CPPUNIT_ASSERT(a.openingDate() == QDate::currentDate());
 	CPPUNIT_ASSERT(a.lastModified() == QDate::currentDate());
@@ -78,9 +78,9 @@ void MyMoneyAccountTest::testSetFunctions() {
 	MyMoneyAccount a;
 
 	QDate today(QDate::currentDate());
-	CPPUNIT_ASSERT(a.name() == "");
+	CPPUNIT_ASSERT(a.name().isEmpty());
 	CPPUNIT_ASSERT(a.lastModified() == QDate());
-	CPPUNIT_ASSERT(a.description() == "");
+	CPPUNIT_ASSERT(a.description().isEmpty());
 
 	a.setName("Account");
 	a.setInstitutionId("Institution1");

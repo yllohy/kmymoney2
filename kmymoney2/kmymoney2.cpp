@@ -315,7 +315,8 @@ bool KMyMoney2App::queryExit()
 void KMyMoney2App::slotFileNew()
 {
   QString prevMsg = slotStatusMsg(i18n("Creating new document..."));
-
+  
+#if 0
   if (myMoneyView->fileOpen()) {
 #if QT_VERSION > 300
 
@@ -329,6 +330,12 @@ void KMyMoney2App::slotFileNew()
     }
     slotFileClose();
   }
+#else
+  slotFileClose();
+  if(myMoneyView->fileOpen())
+    return;
+#endif
+
   fileName = KURL();
   myMoneyView->newFile();
   slotStatusMsg(prevMsg);
@@ -343,6 +350,7 @@ void KMyMoney2App::slotFileOpen()
 {
   QString prevMsg = slotStatusMsg(i18n("Open a document."));
 
+#if 0
   if (myMoneyView->fileOpen()) {
 #if QT_VERSION > 300
 
@@ -357,6 +365,11 @@ void KMyMoney2App::slotFileOpen()
     slotFileClose();
   }
   
+#else
+  slotFileClose();
+  if(myMoneyView->fileOpen())
+    return;
+#endif
   fileName = KURL();
   initWizard();
   slotStatusMsg(prevMsg);
@@ -369,6 +382,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 {
   QString prevMsg = slotStatusMsg(i18n("Loading file..."));
 
+#if 0
   if (myMoneyView->fileOpen()) {
 #if QT_VERSION > 300
     int answer = KMessageBox::warningContinueCancel(this, i18n("KMyMoney file already open.  Close it ?"), "Close File"/*, "Close", "dont_ask_again"*/);
@@ -382,6 +396,12 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
     }
     slotFileClose();
   }
+
+#else
+  slotFileClose();
+  if(myMoneyView->fileOpen())
+    return;
+#endif
 
   fileName = url;
   fileOpenRecent->addURL( url );
@@ -601,6 +621,12 @@ void KMyMoney2App::slotStatusProgressBar(const int current, const int total)
 
 void KMyMoney2App::progressCallback(int current, int total, const QString& msg)
 {
+
+
+
+
+
+
   if(!msg.isEmpty())
     kmymoney2->slotStatusMsg(msg);
 
@@ -626,6 +652,7 @@ void KMyMoney2App::slotFileViewPersonal()
 void KMyMoney2App::slotFileFileInfo()
 {
   if ( !myMoneyView->fileOpen() ) {
+
     KMessageBox::information(this, i18n("No MyMoneyFile open"));
 
     return;
@@ -659,10 +686,14 @@ void KMyMoney2App::slotQifImport()
       m_engineBackup = MyMoneyFile::instance()->storage()->duplicate();
 
       m_reader->setFilename(dlg->filename());
+
       m_reader->setProfile(dlg->profile());
       m_reader->setAutoCreatePayee(dlg->autoCreatePayee());
       m_reader->setProgressCallback(&progressCallback);
 
+      // disable all standard widgets during the import
+      setEnabled(false);
+      
       m_reader->startImport();
     }
     delete dlg;
@@ -676,6 +707,14 @@ void KMyMoney2App::slotQifImportFinished(void)
   if(m_reader != 0) {
     // fixme: re-enable the QIF import menu options
     if(m_reader->finishImport()) {
+      // explain the user what's happening next
+      KMessageBox::information(0, i18n(
+                      "The imported data will be displayed together with the "
+                      "data already stored in the file. Imported transactions "
+                      "are shown with a yellow background. Pressing OK will accept "
+                      "all transactions, CANCEL will remove all imported transactions."),
+                      i18n("Import verification"));
+                      
       if(verifyImportedData()) {
         // keep the new data set, destroy the backup copy
         delete m_engineBackup;
@@ -703,10 +742,12 @@ void KMyMoney2App::slotQifImportFinished(void)
     // slotStatusMsg(prevMsg);
     delete m_reader;
     m_reader = 0;
-    slotStatusProgressBar(-1, -1);
-    slotStatusMsg(i18n("Ready."));
-
   }
+  slotStatusProgressBar(-1, -1);
+  slotStatusMsg(i18n("Ready."));
+
+  // re-enable all standard widgets
+  setEnabled(true);  
 }
 
 void KMyMoney2App::slotQifExport()
@@ -779,7 +820,9 @@ void KMyMoney2App::slotFileBackup()
     slotFileSave();
   }
 
+
   
+
   if(!fileName.isLocalFile()) {
     KMessageBox::sorry(this,
                        i18n("The current immplementation of the backup functionality "
@@ -793,6 +836,7 @@ void KMyMoney2App::slotFileBackup()
   int returncode = backupDlg->exec();
   if(returncode)
   {
+
     m_backupMount = backupDlg->mountCheckBox->isChecked();
     proc.clearArguments();
     m_backupState = BACKUP_MOUNTING;
@@ -909,6 +953,7 @@ void KMyMoney2App::slotProcessExited()
           m_backupState = BACKUP_UNMOUNTING;
           proc.start();
 
+
         } else {
           m_backupState = BACKUP_IDLE;
           progressCallback(-1, -1, i18n("Ready."));
@@ -988,7 +1033,8 @@ void KMyMoney2App::slotQifProfileEditor(void)
 bool KMyMoney2App::verifyImportedData()
 {
   bool rc;
-  QDialog *dialog = new KImportVerifyDlg(m_reader->account(), this);
+  KImportVerifyDlg *dialog = new KImportVerifyDlg(m_reader->account(), this);
+  dialog->setProgressCallback(progressCallback);
   rc = (dialog->exec() == QDialog::Accepted);
   delete dialog;
   return rc;
@@ -998,7 +1044,11 @@ void KMyMoney2App::updateCaption(void)
 {
   QString caption;
 
-  caption = kapp->makeStdCaption(fileName.filename(false), false, MyMoneyFile::instance()->dirty());
+  caption = fileName.filename(false);
+  if(caption.isEmpty())
+    caption = i18n("Untitled");
+    
+  caption = kapp->makeStdCaption(caption, false, MyMoneyFile::instance()->dirty());
   caption += " - KMyMoney";
   setPlainCaption(caption);
 

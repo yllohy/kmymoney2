@@ -30,15 +30,6 @@ AM_PATH_XML2(2.0.0,
 	AC_SUBST(XML2_LIBS)
 	)
 
-dnl
-dnl check for libxml++
-dnl
-AM_LIBXMLPP(
-	AM_CONDITIONAL(LIBXMLPP, test x = x)
-	AC_DEFINE_UNQUOTED(HAVE_LIBXMLPP, 1, [Define if you have libxml++]),
-	AM_CONDITIONAL(LIBXMLPP, test x = y)
-	)
-
 dnl CXXFLAGS="$NOOPT_CXXFLAGS" dnl __kdevelop[noopt]__
 CXXFLAGS="$CXXFLAGS $USE_EXCEPTIONS" dnl __kdevelop[exc]__
 dnl KDE_NEED_FLEX dnl __kdevelop__

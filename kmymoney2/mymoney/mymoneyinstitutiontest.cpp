@@ -33,12 +33,12 @@ void MyMoneyInstitutionTest::tearDown () {
 }
 
 void MyMoneyInstitutionTest::testEmptyConstructor() {
-	CPPUNIT_ASSERT(m->id() == "");
-	CPPUNIT_ASSERT(m->street() == "");
-	CPPUNIT_ASSERT(m->town() == "");
-	CPPUNIT_ASSERT(m->postcode() == "");
-	CPPUNIT_ASSERT(m->telephone() == "");
-	CPPUNIT_ASSERT(m->manager() == "");
+	CPPUNIT_ASSERT(m->id().isEmpty());
+	CPPUNIT_ASSERT(m->street().isEmpty());
+	CPPUNIT_ASSERT(m->town().isEmpty());
+	CPPUNIT_ASSERT(m->postcode().isEmpty());
+	CPPUNIT_ASSERT(m->telephone().isEmpty());
+	CPPUNIT_ASSERT(m->manager().isEmpty());
 
 	CPPUNIT_ASSERT(m->accountCount() == 0);
 }
@@ -51,8 +51,7 @@ void MyMoneyInstitutionTest::testSetFunctions() {
 	m->setManager("manager");
 	m->setName("name");
 
-	CPPUNIT_ASSERT(m->id() == "");
-	CPPUNIT_ASSERT(m->file() == 0);
+	CPPUNIT_ASSERT(m->id().isEmpty());
 	CPPUNIT_ASSERT(m->street() == "street");
 	CPPUNIT_ASSERT(m->town() == "town");
 	CPPUNIT_ASSERT(m->postcode() == "postcode");
@@ -62,8 +61,7 @@ void MyMoneyInstitutionTest::testSetFunctions() {
 }
 
 void MyMoneyInstitutionTest::testNonemptyConstructor() {
-	CPPUNIT_ASSERT(n->id() == "");
-	CPPUNIT_ASSERT(n->file() == 0);
+	CPPUNIT_ASSERT(n->id().isEmpty());
 	CPPUNIT_ASSERT(n->street() == "street");
 	CPPUNIT_ASSERT(n->town() == "town");
 	CPPUNIT_ASSERT(n->postcode() == "postcode");

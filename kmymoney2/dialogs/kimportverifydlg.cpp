@@ -28,6 +28,8 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <klocale.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -51,16 +53,35 @@ KImportVerifyDlg::~KImportVerifyDlg()
 void KImportVerifyDlg::slotOkClicked(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneyTransactionFilter filter(m_account.id());
+  MyMoneyTransactionFilter filter;
   QValueList<MyMoneyTransaction> list = file->transactionList(filter);
   QValueList<MyMoneyTransaction>::Iterator it_t;
 
+  signalProgress(0, list.count(), i18n("Merging transactions ..."));
+  // qDebug("step0");
+  int cnt = 0;
+  file->suspendNotify(true);
   for(it_t = list.begin(); it_t != list.end(); ++it_t) {
-    if((*it_t).value("Imported") != "") {
+    if(!(*it_t).value("Imported").isEmpty()) {
       (*it_t).deletePair("Imported");
+      // qDebug("  %s", (*it_t).id().data());
       file->modifyTransaction(*it_t);
+      signalProgress(++cnt, 0);
     }
   }
+  file->suspendNotify(false);
   
   accept();  
 }
+
+void KImportVerifyDlg::setProgressCallback(void(*callback)(int, int, const QString&))
+{
+  m_progressCallback = callback;
+}
+
+void KImportVerifyDlg::signalProgress(int current, int total, const QString& msg)
+{
+  if(m_progressCallback != 0)
+    (*m_progressCallback)(current, total, msg);
+}
+

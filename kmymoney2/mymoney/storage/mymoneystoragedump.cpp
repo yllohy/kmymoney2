@@ -97,7 +97,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     s << "  Name = " << (*it_a).name() << "\n";
     s << "  Type = " << (*it_a).accountType() << "\n";
     s << "  Parent = " << (*it_a).parentAccountId();
-    if((*it_a).parentAccountId() != "") {
+    if(!(*it_a).parentAccountId().isEmpty()) {
       MyMoneyAccount parent = storage->account((*it_a).parentAccountId());
       s << " (" << parent.name() << ")";
     } else {
@@ -140,7 +140,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
       s << "   ID = " << (*it_s).id() << "\n";
       s << "    Payee = " << (*it_s).payeeId();
-      if((*it_s).payeeId() != "") {
+      if(!(*it_s).payeeId().isEmpty()) {
         MyMoneyPayee p = storage->payee((*it_s).payeeId());
         s << " (" << p.name() << ")" << "\n";
       } else

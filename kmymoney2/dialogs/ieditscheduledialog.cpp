@@ -270,7 +270,7 @@ void KEditScheduleDialog::slotSplitClicked()
           disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
         case 1:
-          category = "";
+          category = QString();
           m_transaction.removeSplits();
           disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
@@ -327,28 +327,28 @@ MyMoneySchedule KEditScheduleDialog::schedule(void)
 
 void KEditScheduleDialog::okClicked()
 {
-  if (m_scheduleName->text() == "")
+  if (m_scheduleName->text().isEmpty())
   {
     KMessageBox::information(this, i18n("Please fill in the name field."));
     m_scheduleName->setFocus();
     return;
   }
 
-  if (m_kcomboPayTo->text() == "")
+  if (m_kcomboPayTo->text().isEmpty())
   {
     KMessageBox::information(this, i18n("Please fill in the payee field."));
     m_kcomboPayTo->setFocus();
     return;
   }
 
-  if (m_kmoneyeditAmount->text() == "")
+  if (m_kmoneyeditAmount->text().isEmpty())
   {
     KMessageBox::information(this, i18n("Please fill in the amount field."));
     m_kmoneyeditAmount->setFocus();
     return;
   }
 
-  if (m_actionType != MyMoneySplit::ActionTransfer && m_category->text() == "")
+  if (m_actionType != MyMoneySplit::ActionTransfer && m_category->text().isEmpty())
   {
     KMessageBox::information(this, i18n("Please fill in the category field."));
     m_category->setFocus();
@@ -404,7 +404,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
 {
   try
   {
-    if (m_schedule.account().name() == "")
+    if (m_schedule.account().name().isEmpty())
       return;
       
     if (m_actionType == MyMoneySplit::ActionTransfer)
@@ -417,8 +417,8 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
       {
         try {
         m_transaction.removeSplits();
-        s2.setId("");
-        s1.setId("");
+        s2.setId(QCString());
+        s1.setId(QCString());
         m_transaction.addSplit(s2);
         m_transaction.addSplit(s1);
         } catch (MyMoneyException *e)
@@ -710,7 +710,7 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
         KMessageBox::information(this, i18n("All split data lost.  Please re-enter splits"));
         disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
         m_transaction.removeSplits();
-        m_category->setText("");
+        m_category->setText(QString());
         m_category->setFocus();
       }
     }
@@ -927,7 +927,7 @@ void KEditScheduleDialog::slotCategoryChanged(const QString& text)
     MyMoneySplit s = m_transaction.splits()[1];
     QString category = text;
     QCString id = MyMoneyFile::instance()->categoryToAccount(category);
-    if(id == "" && category != "")
+    if(id.isEmpty() && !category.isEmpty())
     {
       // They are probably still typing
       // The category gets checked in okClicked()
@@ -1067,14 +1067,14 @@ bool KEditScheduleDialog::checkCategory()
         {
           message = QString("You have specified an %1 category for a %1 schedule.").arg(type).arg(stype);
           KMessageBox::error(this, message);
-          m_category->setText("");
+          m_category->setText(QString());
           m_category->setFocus();
           exitDialog = false;
         }
       }
       else
       {
-        m_category->setText("");
+        m_category->setText(QString());
         m_category->setFocus();
        exitDialog = false;
       }
@@ -1100,7 +1100,7 @@ bool KEditScheduleDialog::checkCategory()
       {
         QString message = QString("You have specified an %1 category for a %2 schedule.").arg(type).arg(stype);
         KMessageBox::error(this, message);
-        m_category->setText("");
+        m_category->setText(QString());
         m_category->setFocus();
         exitDialog = false;
       }
@@ -1148,5 +1148,5 @@ QCString KEditScheduleDialog::theAccountId()
     return m_kcomboTo->currentAccountId();
   }
 
-  return "";
+  return QCString();
 }

@@ -220,198 +220,203 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
   CPPUNIT_ASSERT(storage.accountCount() == 4);
   CPPUNIT_ASSERT(storage.transactionCount() == 0);
 
-  createOldFile(version, magic);
-  QFile f( "old.kmy" );
-  f.open( IO_ReadOnly );
-  CPPUNIT_ASSERT(f.isOpen() == true);
-
-  QDataStream s(&f);
-
-  storage.m_dirty = true;
-
-  m->readStream(s, &storage);
-
-  f.close();
-  unlink("old.kmy");
-
-  CPPUNIT_ASSERT(storage.dirty() == false);
-  CPPUNIT_ASSERT(storage.userName() == "Thomas Baumgart");
-  CPPUNIT_ASSERT(storage.userStreet() == "Testallee");
-  CPPUNIT_ASSERT(storage.userTown() == "Testtown");
-  CPPUNIT_ASSERT(storage.userCounty() == "Testcounty");
-  CPPUNIT_ASSERT(storage.userPostcode() == "TestZIP");
-  CPPUNIT_ASSERT(storage.userTelephone() == "Testphone");
-  CPPUNIT_ASSERT(storage.userEmail() == "testmail");
-
-  CPPUNIT_ASSERT(storage.creationDate() == QDate(1,2,3));
-  CPPUNIT_ASSERT(storage.lastModificationDate() == QDate(7,8,9));
-
-  CPPUNIT_ASSERT(storage.institutionCount() == 1);
-  // we assume four basic account groups, two old accounts, a major
-  // and a minor category. That's eight accounts
-  CPPUNIT_ASSERT(storage.accountCount() == 8);
-  CPPUNIT_ASSERT(storage.transactionCount() == 3);
-
-  // get account information
-  MyMoneyAccount a1, a2;
   try {
-    a1 = storage.account("A000003");
-    a2 = storage.account("A000004");
+    createOldFile(version, magic);
+    QFile f( "old.kmy" );
+    f.open( IO_ReadOnly );
+    CPPUNIT_ASSERT(f.isOpen() == true);
+
+    QDataStream s(&f);
+
+    storage.m_dirty = true;
+
+    m->readStream(s, &storage);
+
+    f.close();
+    unlink("old.kmy");
+
+    CPPUNIT_ASSERT(storage.dirty() == false);
+    CPPUNIT_ASSERT(storage.userName() == "Thomas Baumgart");
+    CPPUNIT_ASSERT(storage.userStreet() == "Testallee");
+    CPPUNIT_ASSERT(storage.userTown() == "Testtown");
+    CPPUNIT_ASSERT(storage.userCounty() == "Testcounty");
+    CPPUNIT_ASSERT(storage.userPostcode() == "TestZIP");
+    CPPUNIT_ASSERT(storage.userTelephone() == "Testphone");
+    CPPUNIT_ASSERT(storage.userEmail() == "testmail");
+
+    CPPUNIT_ASSERT(storage.creationDate() == QDate(1,2,3));
+    CPPUNIT_ASSERT(storage.lastModificationDate() == QDate(7,8,9));
+
+    CPPUNIT_ASSERT(storage.institutionCount() == 1);
+    // we assume four basic account groups, two old accounts, a major
+    // and a minor category. That's eight accounts
+    CPPUNIT_ASSERT(storage.accountCount() == 8);
+    CPPUNIT_ASSERT(storage.transactionCount() == 3);
+
+    // get account information
+    MyMoneyAccount a1, a2;
+    try {
+      a1 = storage.account("A000003");
+      a2 = storage.account("A000004");
+    } catch(MyMoneyException *e) {
+      std::cout << e->what() << std::endl;
+      delete e;
+    }
+
+    // check account one
+    CPPUNIT_ASSERT(a1.name() == "A-Name1");
+    CPPUNIT_ASSERT(a1.number() == "A-Number1");
+    CPPUNIT_ASSERT(a1.description() == "A-Desc1");
+
+    if(magic == 0x07) {
+      CPPUNIT_ASSERT(a1.openingDate() == QDate(7,8,9));
+      CPPUNIT_ASSERT(a1.openingBalance() == 123400);
+    } else {
+      CPPUNIT_ASSERT(a1.openingBalance() == 0);
+      CPPUNIT_ASSERT(a1.openingDate() == QDate(1970,1,1));
+    }
+    CPPUNIT_ASSERT(a1.lastReconciliationDate() == QDate(4,5,6));
+
+    // check account two
+    CPPUNIT_ASSERT(a2.name() == "A-Name2");
+    CPPUNIT_ASSERT(a2.number() == "A-Number2");
+    CPPUNIT_ASSERT(a2.description() == "A-Desc2");
+
+    if(magic == 0x07) {
+      CPPUNIT_ASSERT(a2.openingDate() == QDate(1,2,3));
+      CPPUNIT_ASSERT(a2.openingBalance() == -432100);
+    } else {
+      CPPUNIT_ASSERT(a2.openingBalance() == 0);
+      CPPUNIT_ASSERT(a2.openingDate() == QDate(1970,1,1));
+    }
+    CPPUNIT_ASSERT(a2.lastReconciliationDate() == QDate(7,9,7));
+
+  /* removed with MyMoneyAccount::Transaction
+    // check transactions in account one
+    CPPUNIT_ASSERT(a1.transactionCount() == 3);
+  */
+
+    MyMoneyTransaction t;
+    MyMoneySplit sp1, sp2;
+
+    // check first transaction
+    try {
+      t = storage.transaction("A000003", 0);
+    } catch(MyMoneyException *e) {
+      std::cout << e->what() << std::endl;
+      delete e;
+    }
+    CPPUNIT_ASSERT(t.splitCount() == 2);
+    CPPUNIT_ASSERT(t.id() == "T000000000000000001");
+    CPPUNIT_ASSERT(t.postDate() == QDate(1,2,3));
+    // CPPUNIT_ASSERT(t.method() == MyMoneyCheckingTransaction::Cheque);
+
+    sp1 = t.splits()[0];
+    sp2 = t.splits()[1];
+
+    CPPUNIT_ASSERT(sp1.accountId() == "A000003");
+    CPPUNIT_ASSERT(sp1.value() == -123);
+    CPPUNIT_ASSERT(sp1.memo() == "Memo1");
+    CPPUNIT_ASSERT(sp1.reconcileFlag() == MyMoneySplit::Cleared);
+    CPPUNIT_ASSERT(sp1.reconcileDate() == QDate());
+    CPPUNIT_ASSERT(sp1.action() == MyMoneySplit::ActionCheck);
+    CPPUNIT_ASSERT(sp1.number() == "Number1");
+
+    CPPUNIT_ASSERT(sp2.accountId() == "A000002");
+    CPPUNIT_ASSERT(sp2.value() == 123);
+    CPPUNIT_ASSERT(sp2.memo() == "Memo1");
+    CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::Cleared);
+    CPPUNIT_ASSERT(sp2.reconcileDate() == QDate());
+    CPPUNIT_ASSERT(sp2.action().isEmpty());
+    CPPUNIT_ASSERT(sp2.number().isEmpty());
+
+    // CPPUNIT_ASSERT(t.payee() == "Payee1");
+    // CPPUNIT_ASSERT(t.number() == "Number1");
+
+    // check second transaction
+    try {
+      t = storage.transaction("A000003", 1);
+    } catch(MyMoneyException *e) {
+      std::cout << e->what() << std::endl;
+      delete e;
+    }
+    CPPUNIT_ASSERT(t.splitCount() == 2);
+    CPPUNIT_ASSERT(t.id() == "T000000000000000002");
+    CPPUNIT_ASSERT(t.postDate() == QDate(4,5,6));
+    // CPPUNIT_ASSERT(t.method() == MyMoneyCheckingTransaction::Cheque);
+
+    sp1 = t.splits()[0];
+    sp2 = t.splits()[1];
+
+    CPPUNIT_ASSERT(sp1.accountId() == "A000003");
+    CPPUNIT_ASSERT(sp1.value() == 356);
+    CPPUNIT_ASSERT(sp1.memo() == "Memo2");
+    CPPUNIT_ASSERT(sp1.reconcileFlag() == MyMoneySplit::Reconciled);
+    CPPUNIT_ASSERT(sp1.reconcileDate() == QDate(4,5,6));
+    CPPUNIT_ASSERT(sp1.action() == MyMoneySplit::ActionDeposit);
+    CPPUNIT_ASSERT(sp1.number() == "Number2");
+
+    CPPUNIT_ASSERT(sp2.accountId() == "A000004");
+    CPPUNIT_ASSERT(sp2.value() == -356);
+    CPPUNIT_ASSERT(sp2.memo() == "Memo2");
+    CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::Reconciled);
+    CPPUNIT_ASSERT(sp2.reconcileDate() == QDate(4,5,6));
+
+    // check third transaction
+    try {
+      t = storage.transaction("A000003", 2);
+    } catch(MyMoneyException *e) {
+      std::cout << e->what() << std::endl;
+      delete e;
+    }
+    CPPUNIT_ASSERT(t.splitCount() == 2);
+    CPPUNIT_ASSERT(t.id() == "T000000000000000003");
+    CPPUNIT_ASSERT(t.postDate() == QDate(5,6,7));
+    // CPPUNIT_ASSERT(t.method() == MyMoneyCheckingTransaction::Cheque);
+
+    sp1 = t.splits()[0];
+    sp2 = t.splits()[1];
+
+    CPPUNIT_ASSERT(sp1.accountId() == "A000004");
+    CPPUNIT_ASSERT(sp1.value() == 356);
+    CPPUNIT_ASSERT(sp1.memo() == "Memo5");
+    CPPUNIT_ASSERT(sp1.reconcileFlag() == MyMoneySplit::NotReconciled);
+    CPPUNIT_ASSERT(sp1.reconcileDate() == QDate());
+
+    CPPUNIT_ASSERT(sp2.accountId() == "A000003");
+    CPPUNIT_ASSERT(sp2.value() == -356);
+    CPPUNIT_ASSERT(sp2.memo() == "Memo5");
+    CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::NotReconciled);
+    CPPUNIT_ASSERT(sp2.reconcileDate() == QDate());
+
+  /* removed with MyMoneyAccount::Transaction
+    // check transactions in account two
+    CPPUNIT_ASSERT(a2.transactionCount() == 2);
+  */
+
+    t = storage.transaction("A000004", 0);
+    CPPUNIT_ASSERT(t.splitCount() == 2);
+    CPPUNIT_ASSERT(t.id() == "T000000000000000002");
+    CPPUNIT_ASSERT(t.postDate() == QDate(4,5,6));
+
+    t = storage.transaction("A000004", 1);
+    CPPUNIT_ASSERT(t.splitCount() == 2);
+    CPPUNIT_ASSERT(t.id() == "T000000000000000003");
+    CPPUNIT_ASSERT(t.postDate() == QDate(5,6,7));
+
+    QFile g( "old.asc" );
+    g.open( IO_WriteOnly );
+    CPPUNIT_ASSERT(g.isOpen() == true);
+
+    QDataStream st(&g);
+
+    MyMoneyStorageDump dumper;
+    dumper.writeStream(st, &storage);
+    g.close();  
   } catch(MyMoneyException *e) {
-    std::cout << e->what() << std::endl;
+    std::cout << e->what() << " in " << e->file() << ", line " << e->line() << std::endl;
     delete e;
   }
-
-  // check account one
-  CPPUNIT_ASSERT(a1.name() == "A-Name1");
-  CPPUNIT_ASSERT(a1.number() == "A-Number1");
-  CPPUNIT_ASSERT(a1.description() == "A-Desc1");
-
-  if(magic == 0x07) {
-    CPPUNIT_ASSERT(a1.openingDate() == QDate(7,8,9));
-    CPPUNIT_ASSERT(a1.openingBalance() == 123400);
-  } else {
-    CPPUNIT_ASSERT(a1.openingBalance() == 0);
-    CPPUNIT_ASSERT(a1.openingDate() == QDate(1970,1,1));
-  }
-  CPPUNIT_ASSERT(a1.lastReconciliationDate() == QDate(4,5,6));
-
-  // check account two
-  CPPUNIT_ASSERT(a2.name() == "A-Name2");
-  CPPUNIT_ASSERT(a2.number() == "A-Number2");
-  CPPUNIT_ASSERT(a2.description() == "A-Desc2");
-
-  if(magic == 0x07) {
-    CPPUNIT_ASSERT(a2.openingDate() == QDate(1,2,3));
-    CPPUNIT_ASSERT(a2.openingBalance() == -432100);
-  } else {
-    CPPUNIT_ASSERT(a2.openingBalance() == 0);
-    CPPUNIT_ASSERT(a2.openingDate() == QDate(1970,1,1));
-  }
-  CPPUNIT_ASSERT(a2.lastReconciliationDate() == QDate(7,9,7));
-
-/* removed with MyMoneyAccount::Transaction
-  // check transactions in account one
-  CPPUNIT_ASSERT(a1.transactionCount() == 3);
-*/
-
-  MyMoneyTransaction t;
-  MyMoneySplit sp1, sp2;
-
-  // check first transaction
-  try {
-    t = storage.transaction("A000003", 0);
-  } catch(MyMoneyException *e) {
-    std::cout << e->what() << std::endl;
-    delete e;
-  }
-  CPPUNIT_ASSERT(t.splitCount() == 2);
-  CPPUNIT_ASSERT(t.id() == "T000000000000000001");
-  CPPUNIT_ASSERT(t.postDate() == QDate(1,2,3));
-  // CPPUNIT_ASSERT(t.method() == MyMoneyCheckingTransaction::Cheque);
-
-  sp1 = t.splits()[0];
-  sp2 = t.splits()[1];
-
-  CPPUNIT_ASSERT(sp1.accountId() == "A000003");
-  CPPUNIT_ASSERT(sp1.value() == -123);
-  CPPUNIT_ASSERT(sp1.memo() == "Memo1");
-  CPPUNIT_ASSERT(sp1.reconcileFlag() == MyMoneySplit::Cleared);
-  CPPUNIT_ASSERT(sp1.reconcileDate() == QDate());
-  CPPUNIT_ASSERT(sp1.action() == MyMoneySplit::ActionCheck);
-  CPPUNIT_ASSERT(sp1.number() == "Number1");
-
-  CPPUNIT_ASSERT(sp2.accountId() == "A000002");
-  CPPUNIT_ASSERT(sp2.value() == 123);
-  CPPUNIT_ASSERT(sp2.memo() == "Memo1");
-  CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::Cleared);
-  CPPUNIT_ASSERT(sp2.reconcileDate() == QDate());
-  CPPUNIT_ASSERT(sp2.action() == "");
-  CPPUNIT_ASSERT(sp2.number() == "");
-
-  // CPPUNIT_ASSERT(t.payee() == "Payee1");
-  // CPPUNIT_ASSERT(t.number() == "Number1");
-
-  // check second transaction
-  try {
-    t = storage.transaction("A000003", 1);
-  } catch(MyMoneyException *e) {
-    std::cout << e->what() << std::endl;
-    delete e;
-  }
-  CPPUNIT_ASSERT(t.splitCount() == 2);
-  CPPUNIT_ASSERT(t.id() == "T000000000000000002");
-  CPPUNIT_ASSERT(t.postDate() == QDate(4,5,6));
-  // CPPUNIT_ASSERT(t.method() == MyMoneyCheckingTransaction::Cheque);
-
-  sp1 = t.splits()[0];
-  sp2 = t.splits()[1];
-
-  CPPUNIT_ASSERT(sp1.accountId() == "A000003");
-  CPPUNIT_ASSERT(sp1.value() == 356);
-  CPPUNIT_ASSERT(sp1.memo() == "Memo2");
-  CPPUNIT_ASSERT(sp1.reconcileFlag() == MyMoneySplit::Reconciled);
-  CPPUNIT_ASSERT(sp1.reconcileDate() == QDate(4,5,6));
-  CPPUNIT_ASSERT(sp1.action() == MyMoneySplit::ActionDeposit);
-  CPPUNIT_ASSERT(sp1.number() == "Number2");
-
-  CPPUNIT_ASSERT(sp2.accountId() == "A000004");
-  CPPUNIT_ASSERT(sp2.value() == -356);
-  CPPUNIT_ASSERT(sp2.memo() == "Memo2");
-  CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::Reconciled);
-  CPPUNIT_ASSERT(sp2.reconcileDate() == QDate(4,5,6));
-
-  // check third transaction
-  try {
-    t = storage.transaction("A000003", 2);
-  } catch(MyMoneyException *e) {
-    std::cout << e->what() << std::endl;
-    delete e;
-  }
-  CPPUNIT_ASSERT(t.splitCount() == 2);
-  CPPUNIT_ASSERT(t.id() == "T000000000000000003");
-  CPPUNIT_ASSERT(t.postDate() == QDate(5,6,7));
-  // CPPUNIT_ASSERT(t.method() == MyMoneyCheckingTransaction::Cheque);
-
-  sp1 = t.splits()[0];
-  sp2 = t.splits()[1];
-
-  CPPUNIT_ASSERT(sp1.accountId() == "A000004");
-  CPPUNIT_ASSERT(sp1.value() == 356);
-  CPPUNIT_ASSERT(sp1.memo() == "Memo5");
-  CPPUNIT_ASSERT(sp1.reconcileFlag() == MyMoneySplit::NotReconciled);
-  CPPUNIT_ASSERT(sp1.reconcileDate() == QDate());
-
-  CPPUNIT_ASSERT(sp2.accountId() == "A000003");
-  CPPUNIT_ASSERT(sp2.value() == -356);
-  CPPUNIT_ASSERT(sp2.memo() == "Memo5");
-  CPPUNIT_ASSERT(sp2.reconcileFlag() == MyMoneySplit::NotReconciled);
-  CPPUNIT_ASSERT(sp2.reconcileDate() == QDate());
-
-/* removed with MyMoneyAccount::Transaction
-  // check transactions in account two
-  CPPUNIT_ASSERT(a2.transactionCount() == 2);
-*/
-
-  t = storage.transaction("A000004", 0);
-  CPPUNIT_ASSERT(t.splitCount() == 2);
-  CPPUNIT_ASSERT(t.id() == "T000000000000000002");
-  CPPUNIT_ASSERT(t.postDate() == QDate(4,5,6));
-
-  t = storage.transaction("A000004", 1);
-  CPPUNIT_ASSERT(t.splitCount() == 2);
-  CPPUNIT_ASSERT(t.id() == "T000000000000000003");
-  CPPUNIT_ASSERT(t.postDate() == QDate(5,6,7));
-
-  QFile g( "old.asc" );
-  g.open( IO_WriteOnly );
-  CPPUNIT_ASSERT(g.isOpen() == true);
-
-  QDataStream st(&g);
-
-  MyMoneyStorageDump dumper;
-  dumper.writeStream(st, &storage);
-  g.close();  
 }
 
 void MyMoneyStorageBinTest::testReadOldV3MyMoneyFile() {

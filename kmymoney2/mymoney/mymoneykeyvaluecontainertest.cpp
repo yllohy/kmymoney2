@@ -41,7 +41,7 @@ void MyMoneyKeyValueContainerTest::testRetrieveValue() {
 	CPPUNIT_ASSERT(m->m_kvp["Key"] == "Value");
 	// now check that the access function works
 	CPPUNIT_ASSERT(m->value("Key") == "Value");
-	CPPUNIT_ASSERT(m->value("key") == "");
+	CPPUNIT_ASSERT(m->value("key").isEmpty());
 }
 
 void MyMoneyKeyValueContainerTest::testSetValue() {
@@ -56,7 +56,7 @@ void MyMoneyKeyValueContainerTest::testDeletePair() {
 	CPPUNIT_ASSERT(m->m_kvp.count() == 2);
 	m->deletePair("Key");
 	CPPUNIT_ASSERT(m->m_kvp.count() == 1);
-	CPPUNIT_ASSERT(m->value("Key") == "");
+	CPPUNIT_ASSERT(m->value("Key").isEmpty());
 	CPPUNIT_ASSERT(m->value("key") == "value");
 }
 

@@ -179,6 +179,16 @@ public:
   void setUserEmail(const QString& val);
 
   /**
+    * This method can be used to turn on/off the notifications
+    * of the engine. During bulk-updates it's sometimes useful
+    * to turn off notifications for an improved performance.
+    *
+    * @param state if @p true, no notifications will be send out,
+    *              if @p false, notifications will be send out.
+    */
+  void suspendNotify(const bool state);
+  
+  /**
     * This method is used to attach a storage to the MyMoneyFile object
     * Without an attached storage object, the MyMoneyFile object is
     * of no use. In case of an error condition, an exception is thrown.
@@ -446,9 +456,9 @@ public:
     * the set of transaction referenced by a specific account depending
     * on the argument given.
     *
-    * @param account QCString reference to account id. If account equals ""
+    * @param account QCString reference to account id. If account is empty
     *                all transactions (the journal) is returned. If account
-    *                is not equal to "" it returns the set of transactions
+    *                is not empty, it returns the set of transactions
     *                that have splits in this account.
     *
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
@@ -485,14 +495,14 @@ public:
     * This method returns the number of transactions currently known to file
     * in the range 0..MAXUINT
     *
-    * @param account QCString reference to account id. If account equals ""
+    * @param account QCString reference to account id. If account is empty
     +                all transactions (the journal) will be counted. If account
-    *                is not equal to "" it returns the number of transactions
+    *                is not empty it returns the number of transactions
     *                that have splits in this account.
     *
     * @return number of transactions in journal/account
     */
-  const unsigned int transactionCount(const QCString& account = "") const;
+  const unsigned int transactionCount(const QCString& account = QCString()) const;
 
   /**
     * This method returns a QMap filled with the number of transactions
@@ -769,7 +779,7 @@ public:
     *
     * @param accountId only search for scheduled transactions that reference
     *                  accound @p accountId. If accountId is the empty string,
-    *                  this filter is off. Default is @p "".
+    *                  this filter is off. Default is @p QCString().
     * @param type      only schedules of type @p type are searched for.
     *                  See MyMoneySchedule::typeE for details.
     *                  Default is MyMoneySchedule::TYPE_ANY
@@ -789,7 +799,7 @@ public:
     *
     * @return const QValueList<MyMoneySchedule> list of schedule objects.
     */
-  const QValueList<MyMoneySchedule> scheduleList(const QCString& = "",
+  const QValueList<MyMoneySchedule> scheduleList(const QCString& = QCString(),
                                      const MyMoneySchedule::typeE = MyMoneySchedule::TYPE_ANY,
                                      const MyMoneySchedule::occurenceE = MyMoneySchedule::OCCUR_ANY,
                                      const MyMoneySchedule::paymentTypeE = MyMoneySchedule::STYPE_ANY,
@@ -865,7 +875,7 @@ public:
     * @param base The base account (expense or income)
     * @param name The category to create
     *
-    * @return The category account id or "" on error.
+    * @return The category account id or empty on error.
     *
     * @exception An exception will be thrown, if @p base is not equal
     *            expense() or income().
@@ -891,7 +901,7 @@ private:
 private:
   /**
     * This method is used to add an id to the list of objects
-    * to be notified. If id == "", then nothing is added to the list.
+    * to be notified. If id is empty, then nothing is added to the list.
     *
     * @param id id of object to be notified
     * @see attach, detach
@@ -932,6 +942,7 @@ private:
       throw new MYMONEYEXCEPTION("No storage object attached to MyMoneyFile");
   }
 
+private:
   /**
     * This member points to the storage strategy
     */
@@ -949,6 +960,10 @@ private:
     */
   QMap<QCString, bool> m_notificationList;
 
+  /**
+    */
+  bool m_suspendNotify;
+  
   static MyMoneyFile* _instance;
 };
 #endif

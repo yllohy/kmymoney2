@@ -122,14 +122,14 @@ void KNewAccountWizard::next()
 void KNewAccountWizard::accept()
 {
   if(appropriate(accountNumberPage) == false)
-    accountNumber->setText("");
+    accountNumber->setText(QString());
 
   // setup account
   m_account.setAccountType(m_accountType);
   m_account.setName(accountName->text());
   m_account.setNumber(accountNumber->text());
 
-  if(institutionComboBox->currentText() != "") {
+  if(!institutionComboBox->currentText().isEmpty()) {
     QValueList<MyMoneyInstitution> list;
     QValueList<MyMoneyInstitution>::ConstIterator it;
 
@@ -207,7 +207,7 @@ void KNewAccountWizard::accept()
     s2.setValue(-s1.value());
     s1.setAction(MyMoneySplit::ActionTransfer);
     s2.setAction(MyMoneySplit::ActionTransfer);
-    s1.setAccountId(""/*this_account?*/);  // This needs to be set by caller  (see KMyMoneyView::accountNew)
+    s1.setAccountId(QCString()/*this_account?*/);  // This needs to be set by caller  (see KMyMoneyView::accountNew)
     s2.setAccountId(item->accountID());
     s1.setPayeeId(payeeId);
     s2.setPayeeId(payeeId);
@@ -293,7 +293,7 @@ int KNewAccountWizard::exec()
   estimateFrame->setEnabled(true);
 
   // reset everything else if not preset
-  accountNumber->setText("");
+  accountNumber->setText(QString());
 
   rc = KNewAccountWizardDecl::exec();
 
@@ -310,7 +310,7 @@ void KNewAccountWizard::loadInstitutionList(void)
   QValueList<MyMoneyInstitution> list;
   QValueList<MyMoneyInstitution>::ConstIterator it;
 
-  institutionComboBox->insertItem("");
+  institutionComboBox->insertItem(QString());
   list = MyMoneyFile::instance()->institutionList();
   for(it = list.begin(); it != list.end(); ++it)
   {

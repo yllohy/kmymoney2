@@ -30,9 +30,9 @@ void MyMoneyTransactionTest::tearDown () {
 }
 
 void MyMoneyTransactionTest::testEmptyConstructor() {
-	CPPUNIT_ASSERT(m->id() == "");
+	CPPUNIT_ASSERT(m->id().isEmpty());
 	CPPUNIT_ASSERT(m->entryDate() == QDate());
-	CPPUNIT_ASSERT(m->memo() == "");
+	CPPUNIT_ASSERT(m->memo().isEmpty());
 	CPPUNIT_ASSERT(m->splits().count() == 0);
 }
 

@@ -30,10 +30,10 @@ void MyMoneySplitTest::tearDown () {
 }
 
 void MyMoneySplitTest::testEmptyConstructor() {
-	CPPUNIT_ASSERT(m->accountId() == "");
-	CPPUNIT_ASSERT(m->id() == "");
-	CPPUNIT_ASSERT(m->memo() == "");
-	CPPUNIT_ASSERT(m->action() == "");
+	CPPUNIT_ASSERT(m->accountId().isEmpty());
+	CPPUNIT_ASSERT(m->id().isEmpty());
+	CPPUNIT_ASSERT(m->memo().isEmpty());
+	CPPUNIT_ASSERT(m->action().isEmpty());
 	CPPUNIT_ASSERT(m->shares() == 0);
 	CPPUNIT_ASSERT(m->value() == 0);
 	CPPUNIT_ASSERT(m->reconcileFlag() == MyMoneySplit::NotReconciled);

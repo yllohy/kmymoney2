@@ -484,7 +484,7 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
     for(it = list.begin(); it != list.end(); ++it) {
       QString colText;
       MyMoneyMoney value = (*it).value();
-      if((*it).accountId() != "") {
+      if(!(*it).accountId().isEmpty()) {
         try {
           colText = MyMoneyFile::instance()->accountToCategory((*it).accountId());
         } catch(MyMoneyException *e) {
@@ -494,7 +494,7 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
       }
       QString amountTxt = value.formatMoney();
       if(colText.isEmpty() && (*it).memo().isEmpty() && value == 0)
-        amountTxt = "";
+        amountTxt = QString();
 
       unsigned width = transactionsTable->fontMetrics().width(amountTxt);
       if(width > m_amountWidth)
@@ -522,7 +522,7 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
       MyMoneyMoney value = s.value();
       QString colText;
 
-      if(s.accountId() != "") {
+      if(!s.accountId().isEmpty()) {
         try {
           colText = MyMoneyFile::instance()->accountToCategory(s.accountId());
         } catch(MyMoneyException *e) {
@@ -532,7 +532,7 @@ void KSplitTransactionDlg::updateSplit(int row, int /* col */)
       }
       QString amountTxt = value.formatMoney();
       if(colText.isEmpty() && s.memo().isEmpty() && value == 0)
-        amountTxt = "";
+        amountTxt = QString();
 
       unsigned width = transactionsTable->fontMetrics().width(amountTxt);
       if(width > m_amountWidth)
@@ -695,7 +695,7 @@ void KSplitTransactionDlg::slotFocusChange(int realrow, int col, int button, con
       && !m_editCategory->text().isEmpty()) {
         // there's data in the split -> update it
         try {
-          if(m_split.id() != "") {
+          if(!m_split.id().isEmpty()) {
             m_transaction.modifySplit(m_split);
           } else {
             m_transaction.addSplit(m_split);
@@ -766,7 +766,7 @@ void KSplitTransactionDlg::slotCategoryChanged(const QString& category)
   try {
     // First, we check if the category exists
     QCString id = MyMoneyFile::instance()->categoryToAccount(category);
-    if(id == "") {
+    if(id.isEmpty()) {
       // FIXME:
       KMessageBox::sorry(0, i18n("Direct creation of new account not yet implemented"));
       m_editCategory->resetText();
@@ -796,7 +796,7 @@ void KSplitTransactionDlg::slotCategoryChanged(const QString& category)
       if((*it).accountId() == m_split.accountId()) {
         (*it).setValue((*it).value() + m_split.value());
         m_transaction.modifySplit(*it);
-        if(m_split.id() != "")
+        if(!m_split.id().isEmpty())
           m_transaction.removeSplit(m_split);
         hideWidgets();
         updateTransactionTableSize();

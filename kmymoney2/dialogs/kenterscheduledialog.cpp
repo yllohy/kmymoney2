@@ -78,8 +78,8 @@ void KEnterScheduleDialog::initWidgets()
       if (s1.value() < 0)
       {
         transaction.removeSplits();
-        s2.setId("");
-        s1.setId("");
+        s2.setId(QCString());
+        s1.setId(QCString());
         transaction.addSplit(s2);
         transaction.addSplit(s1);
         m_schedule.setTransaction(transaction);
@@ -91,8 +91,8 @@ void KEnterScheduleDialog::initWidgets()
       if (s1.value() > 0)
       {
         transaction.removeSplits();
-        s2.setId("");
-        s1.setId("");
+        s2.setId(QCString());
+        s1.setId(QCString());
         transaction.addSplit(s2);
         transaction.addSplit(s1);
         m_schedule.setTransaction(transaction);
@@ -127,7 +127,7 @@ void KEnterScheduleDialog::initWidgets()
     
   try
   {
-    if (m_schedule.account().name() == "")
+    if (m_schedule.account().name().isEmpty())
       return;
 
 
@@ -250,7 +250,7 @@ void KEnterScheduleDialog::slotSplitClicked()
           disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
         case 1:
-          category = "";
+          category = QString();
           m_transaction.removeSplits();
           disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
@@ -438,7 +438,7 @@ void KEnterScheduleDialog::checkCategory()
   {
     QString category = m_category->text();
     QCString id = MyMoneyFile::instance()->categoryToAccount(category);
-    if(id == "" && category != "")
+    if(id.isEmpty() && !category.isEmpty())
     {
       // Create the category
       QString message = QString("The category '%1' does not exist.  Create?").arg(m_category->text());
@@ -454,7 +454,7 @@ void KEnterScheduleDialog::checkCategory()
       }
       else
       {
-        m_category->setText("");
+        m_category->setText(QString());
         m_category->setFocus();
         return;
       }
@@ -633,7 +633,7 @@ void KEnterScheduleDialog::setAmount()
           KMessageBox::information(this, i18n("All split data lost.  Please re-enter splits"));
           disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           m_transaction.removeSplits();
-          m_category->setText("");
+          m_category->setText(QString());
           m_category->setFocus();
         }
         else  // Must be two

@@ -184,20 +184,40 @@ void KLedgerViewLoan::createInfoStack(void)
 
   QVBoxLayout* buttonLayout = new QVBoxLayout( frame, 0, 6, "ButtonLayout");
 
+  KIconLoader* il = KGlobal::iconLoader();
+
   m_detailsButton = new KPushButton(frame, "detailsButton" );
-  m_detailsButton->setText(i18n("Account Details"));
+  KGuiItem detailsButtenItem( i18n("&Account Details"),
+                    QIconSet(il->loadIcon("viewmag", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Open the account dialog"),
+                    i18n("Use this view and modify the account details."));
+  m_detailsButton->setGuiItem(detailsButtenItem);
   buttonLayout->addWidget(m_detailsButton);
 
-/*
-  // FIXME: add buttons to show account details, modify interest rate etc.
   m_reconcileButton = new KPushButton(frame, "reconcileButton");
-  m_reconcileButton->setText(i18n("&Reconcile ..."));
+  KGuiItem reconcileButtenItem( i18n("&Reconcile ..."),
+                    QIconSet(il->loadIcon("reconcile", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Start the account reconciliation"),
+                    i18n("Use this to reconcile your account against the bank statement."));
+  m_reconcileButton->setGuiItem(reconcileButtenItem);
   buttonLayout->addWidget(m_reconcileButton);
 
-  connect(m_reconcileButton, SIGNAL(clicked()), this, SLOT(slotReconciliation()));
+  m_interestButton = new KPushButton(frame, "interestButton");
+  KGuiItem interestButtonItem( i18n("&Update interest..."),
+                    QIconSet(il->loadIcon("reconcile", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Start the account reconciliation"),
+                    i18n("Use this to reconcile your account against the bank statement."));
+  m_interestButton->setGuiItem(interestButtonItem);
+  buttonLayout->addWidget(m_interestButton);
+                      
+/*
+  // FIXME: add buttons to show account details, modify interest rate etc.
 */
+  connect(m_reconcileButton, SIGNAL(clicked()), this, SLOT(slotReconciliation()));
   connect(m_detailsButton, SIGNAL(clicked()), this, SLOT(slotAccountDetail()));
-
+  // For now just show the proposed functionality
+  m_interestButton->setEnabled(false);
+  
   QSpacerItem* spacer = new QSpacerItem( 20, 20,
                    QSizePolicy::Minimum, QSizePolicy::Expanding );
   buttonLayout->addItem( spacer );
@@ -213,7 +233,8 @@ void KLedgerViewLoan::slotRegisterDoubleClicked(int /* row */,
                                                 int /* button */,
                                                 const QPoint & /* mousePos */)
 {
-  slotStartEdit();
+  if(m_transactionPtr != 0)
+    slotStartEdit();
 }
 
 void KLedgerViewLoan::createRegister(void)
@@ -221,16 +242,14 @@ void KLedgerViewLoan::createRegister(void)
   m_register = new kMyMoneyRegisterLoan(this, "Loans");
   m_register->setParent(this);
 
-  /*
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
   connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
 
   connect(m_register, SIGNAL(signalEnter()), this, SLOT(slotStartEdit()));
+
   connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
   connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
-
   connect(m_register->horizontalHeader(), SIGNAL(clicked(int)), this, SLOT(slotRegisterHeaderClicked(int)));
-  */
 }
 
 void KLedgerViewLoan::createMoreMenu(void)
@@ -256,13 +275,14 @@ void KLedgerViewLoan::createForm(void)
   m_form->table()->setMaximumHeight(m_form->table()->rowHeight(0)*m_form->table()->numRows());
 
   // connections
-/*  
-  // FIXME: connections
   connect(m_form->editButton(), SIGNAL(clicked()), this, SLOT(slotStartEdit()));
   connect(m_form->cancelButton(), SIGNAL(clicked()), this, SLOT(slotCancelEdit()));
   connect(m_form->enterButton(), SIGNAL(clicked()), this, SLOT(slotEndEdit()));
   connect(m_form->newButton(), SIGNAL(clicked()), this, SLOT(slotNew()));
-*/
+
+  // for now, we don't allow to enter new transactions here.
+  m_form->newButton()->hide();
+  
   m_form->enterButton()->setDefault(true);
 }
 
@@ -411,7 +431,7 @@ void KLedgerViewLoan::fillForm(void)
     formTable->setItem(2, 4, item);
 
     // payment amount
-    item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never, amount.formatMoney());
+    item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never, (-amount).formatMoney());
     item->setAlignment(kMyMoneyTransactionFormTableItem::right);
     formTable->setItem(3, 4, item);
     
@@ -444,20 +464,19 @@ void KLedgerViewLoan::fillForm(void)
 
 void KLedgerViewLoan::createEditWidgets(void)
 {
-/*  
   m_editPayee = new kMyMoneyPayee(0, "editPayee");
   m_editCategory = new kMyMoneyCategory(0, "editCategory");
   m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft|AlignVCenter);
   m_editAmount = new kMyMoneyEdit(0, "editAmount");
   m_editDate = new kMyMoneyDateInput(0, "editDate");
   m_editNr = new kMyMoneyLineEdit(0, "editNr");
-  m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  // m_editFrom = new kMyMoneyCategory(0, "editFrom", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  // m_editTo = new kMyMoneyCategory(0, "editTo", static_cast<KMyMoneyUtils::categoryTypeE> (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
   m_editSplit = new KPushButton("Split", 0, "editSplit");
   m_editPayment = new kMyMoneyEdit(0, "editPayment");
   m_editDeposit = new kMyMoneyEdit(0, "editDeposit");
-  m_editType = new kMyMoneyCombo(0, "editType");
-  m_editType->setFocusPolicy(QWidget::StrongFocus);
+  // m_editType = new kMyMoneyCombo(0, "editType");
+  m_editDate->setFocusPolicy(QWidget::StrongFocus);
 
   connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
 
@@ -468,41 +487,39 @@ void KLedgerViewLoan::createEditWidgets(void)
   connect(m_editAmount, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAmountChanged(const QString&)));
   connect(m_editNr, SIGNAL(lineChanged(const QString&)), this, SLOT(slotNrChanged(const QString&)));
   connect(m_editDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged(const QDate&)));
-  connect(m_editFrom, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotFromChanged(const QString&)));
-  connect(m_editTo, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotToChanged(const QString&)));
+  //connect(m_editFrom, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotFromChanged(const QString&)));
+  //connect(m_editTo, SIGNAL(categoryChanged(const QString&)), this, SLOT(slotToChanged(const QString&)));
   connect(m_editPayment, SIGNAL(valueChanged(const QString&)), this, SLOT(slotPaymentChanged(const QString&)));
   connect(m_editDeposit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotDepositChanged(const QString&)));
-  connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotTypeChanged(int)));
+  // connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotTypeChanged(int)));
 
   connect(m_editPayee, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editMemo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editCategory, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editNr, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editDate, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editFrom, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editTo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  //connect(m_editFrom, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  //connect(m_editTo, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editAmount, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editPayment, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
   connect(m_editDeposit, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
-  connect(m_editType, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
+  // connect(m_editType, SIGNAL(signalEnter()), this, SLOT(slotEndEdit()));
 
   connect(m_editPayee, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editMemo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editCategory, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editNr, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editDate, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editFrom, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editTo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  //connect(m_editFrom, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
+  //connect(m_editTo, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editAmount, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editPayment, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
   connect(m_editDeposit, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-  connect(m_editType, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
-*/
+  // connect(m_editType, SIGNAL(signalEsc()), this, SLOT(slotCancelEdit()));
 }
 
 void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
 {
-/*
   MyMoneyMoney amount;
   QString category, payee;
 
@@ -512,12 +529,12 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
 
   if(m_editCategory != 0)
     disconnect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
-
+/*
   if(m_editType)
     m_editType->loadCurrentItem(m_form->tabBar()->indexOf(transactionType(m_split)));
-
+*/
   try {
-    if(m_split.payeeId() != "")
+    if(!m_split.payeeId().isEmpty())
       payee = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
 
     MyMoneySplit s;
@@ -528,7 +545,8 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
         acc = MyMoneyFile::instance()->account(s.accountId());
 
         // if the second account is also an asset or liability account
-        // then this is a transfer type transaction and handled a little different
+        // then this is a loan payment transfer type transaction and handled
+        // a little different
         switch(MyMoneyFile::instance()->accountGroup(acc.accountType())) {
           case MyMoneyAccount::Expense:
           case MyMoneyAccount::Income:
@@ -537,14 +555,15 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
 
           case MyMoneyAccount::Asset:
           case MyMoneyAccount::Liability:
-            if(m_split.action() != MyMoneySplit::ActionTransfer) {
-              m_split.setAction(MyMoneySplit::ActionTransfer);
+            if(m_split.action() != MyMoneySplit::ActionAmortization) {
+              m_split.setAction(MyMoneySplit::ActionAmortization);
               m_transaction.modifySplit(m_split);
             }
-            if(s.action() != MyMoneySplit::ActionTransfer) {
-              s.setAction(MyMoneySplit::ActionTransfer);
+            if(s.action() != MyMoneySplit::ActionAmortization) {
+              s.setAction(MyMoneySplit::ActionAmortization);
               m_transaction.modifySplit(s);
             }
+/*
             if(m_split.value() > 0) {
               m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(s.accountId()));
               m_editTo->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
@@ -553,7 +572,9 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
               m_editFrom->loadText(MyMoneyFile::instance()->accountToCategory(m_account.id()));
               amount = -amount;       // make it positive
             }
-            category = m_editTo->text();
+*/
+            connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
+            category = i18n("Loan payment");
             break;
 
           default:
@@ -563,12 +584,12 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
         break;
 
       case 1:
-        category = "";
+        category = QString();
         break;
 
       default:
         connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
-        category = i18n("Splitted transaction");
+        category = i18n("Loan payment");
     }
   } catch(MyMoneyException *e) {
     qDebug("Exception '%s' thrown in %s, line %ld caught in KLedgerViewLoan::showWidgets():%d",
@@ -580,7 +601,7 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
   // exceptions are: deposits and transfers (which are always positive)
   if(transactionType(m_split) != Deposit)
     amount = -amount;
-  if(m_split.action() == MyMoneySplit::ActionTransfer && amount < 0) {
+  if(m_split.action() == MyMoneySplit::ActionAmortization && amount < 0) {
     amount = -amount;
   }
 
@@ -600,13 +621,12 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
   if(m_editPayment != 0 && m_editDeposit != 0) {
     if(m_split.value() < 0) {
       m_editPayment->loadText((-m_split.value()).formatMoney());
-      m_editDeposit->loadText("");
+      m_editDeposit->loadText(QString());
     } else {
-      m_editPayment->loadText("");
+      m_editPayment->loadText(QString());
       m_editDeposit->loadText((m_split.value()).formatMoney());
     }
   }
-*/
 }
 
 void KLedgerViewLoan::loadEditWidgets(int& transType)
@@ -623,11 +643,13 @@ void KLedgerViewLoan::loadEditWidgets(int& transType)
       }
     }
   }
+*/  
   if(m_transactionPtr != 0) {
     reloadEditWidgets(*m_transactionPtr);
     transType = transactionType(m_split);
   } else {
     m_editDate->setDate(m_lastPostDate);
+/*
     transType = m_form->tabBar()->currentTab();
 
     try {
@@ -657,13 +679,12 @@ void KLedgerViewLoan::loadEditWidgets(int& transType)
         e->what().latin1(), e->file().latin1(), e->line());
       delete e;
     }
-  }
 */
+  }
 }
 
 void KLedgerViewLoan::arrangeEditWidgetsInForm(QWidget*& focusWidget, const int transType)
 {
-/*
   // span items over multiple cells if necessary
   QTableItem* item;
   // from account
@@ -679,6 +700,10 @@ void KLedgerViewLoan::arrangeEditWidgetsInForm(QWidget*& focusWidget, const int 
   item = m_form->table()->item(3,1);
   item->setSpan(1, 2);
 
+  // hide amount field during edit phase
+  m_form->table()->setText(3, 3, " ");
+  m_form->table()->setText(3, 4, " ");
+  
   // make sure, we're using the right palette
   QPalette palette = m_register->palette();
   m_editPayee->setPalette(palette);
@@ -688,13 +713,13 @@ void KLedgerViewLoan::arrangeEditWidgetsInForm(QWidget*& focusWidget, const int 
   m_editDate->setPalette(palette);
   if(m_editNr != 0)
     m_editNr->setPalette(palette);
-  m_editFrom->setPalette(palette);
-  m_editTo->setPalette(palette);
+  // m_editFrom->setPalette(palette);
+  // m_editTo->setPalette(palette);
 
   // delete widgets that are used for the register edit mode only
   delete m_editPayment; m_editPayment = 0;
   delete m_editDeposit; m_editDeposit = 0;
-  delete m_editType; m_editType = 0;
+  // delete m_editType; m_editType = 0;
 
   m_form->table()->clearEditable();
   m_form->table()->setCellWidget(3, 1, m_editMemo);
@@ -731,8 +756,10 @@ void KLedgerViewLoan::arrangeEditWidgetsInForm(QWidget*& focusWidget, const int 
     case Deposit: // Deposit
     case Withdrawal: // Withdrawal
       fromRow = toRow = -1;
+/*
       if(config->readBoolEntry("AlwaysShowNrField", false) == false)
         nrRow = -1;
+*/
       break;
 
     case Transfer: // Transfer
@@ -750,7 +777,7 @@ void KLedgerViewLoan::arrangeEditWidgetsInForm(QWidget*& focusWidget, const int 
   }
 
   m_form->table()->setCellWidget(payeeRow, 1, m_editPayee);
-
+/*
   if(fromRow != -1) {
     m_form->table()->setCellWidget(fromRow, 1, m_editFrom);
   } else {
@@ -764,7 +791,7 @@ void KLedgerViewLoan::arrangeEditWidgetsInForm(QWidget*& focusWidget, const int 
     delete m_editTo;
     m_editTo = 0;
   }
-
+*/
   if(categoryRow != -1) {
     m_form->table()->setCellWidget(categoryRow, 1, m_editCategory);
     m_form->table()->setCellWidget(categoryRow, 2, m_editSplit);
@@ -817,7 +844,6 @@ void KLedgerViewLoan::arrangeEditWidgetsInForm(QWidget*& focusWidget, const int 
     m_tabOrderWidgets.append(m_editNr);
   m_tabOrderWidgets.append(m_editDate->focusWidget());
   m_tabOrderWidgets.append(m_editAmount);
-*/
 }
 
 void KLedgerViewLoan::arrangeEditWidgetsInRegister(QWidget*& focusWidget, const int /* transType */)
@@ -829,7 +855,7 @@ void KLedgerViewLoan::arrangeEditWidgetsInRegister(QWidget*& focusWidget, const 
   if(m_editNr != 0)
     m_register->setCellWidget(firstRow, 0, m_editNr);
   m_register->setCellWidget(firstRow, 1, m_editDate);
-  m_register->setCellWidget(firstRow+1, 1, m_editType);
+  // m_register->setCellWidget(firstRow+1, 1, m_editType);
   m_register->setCellWidget(firstRow, 2, m_editPayee);
   m_register->setCellWidget(firstRow+1, 2, m_editCategory);
   m_register->setCellWidget(firstRow+2, 2, m_editMemo);
@@ -890,7 +916,6 @@ void KLedgerViewLoan::showWidgets(void)
 
 void KLedgerViewLoan::hideWidgets(void)
 {
-/*
   for(int i=0; i < m_form->table()->numRows(); ++i) {
     m_form->table()->clearCellWidget(i, 1);
     m_form->table()->clearCellWidget(i, 2);
@@ -910,13 +935,14 @@ void KLedgerViewLoan::hideWidgets(void)
   m_editAmount = 0;
   m_editNr = 0;
   m_editDate = 0;
-  m_editFrom = 0;
-  m_editTo = 0;
+  // m_editFrom = 0;
+  // m_editTo = 0;
   m_editSplit = 0;
 
   m_form->table()->clearEditable();
   m_form->tabBar()->setEnabled(true);
-*/
+
+  fillForm();
 }
 
 bool KLedgerViewLoan::focusNextPrevChild(bool next)
@@ -949,7 +975,7 @@ void KLedgerViewLoan::slotConfigureMoreMenu(void)
 
   m_moreMenu->changeItem(splitEditId, i18n("Edit splits ..."));
   if(m_transactionPtr != 0) {
-    if(m_split.payeeId() != "" && m_split.accountId() != "" && m_transaction.id() != "") {
+    if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && !m_transaction.id().isEmpty()) {
       MyMoneyPayee payee = file->payee(m_split.payeeId());
       m_moreMenu->changeItem(gotoPayeeId, i18n("Goto '%1'").arg(payee.name()));
       m_moreMenu->setItemEnabled(gotoPayeeId, true);
@@ -961,7 +987,7 @@ void KLedgerViewLoan::slotConfigureMoreMenu(void)
     if(transactionType(m_split) != Transfer) {
       m_moreMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
-      QString dest = "";
+      QString dest;
       try {
         MyMoneySplit split = m_transaction.splitByAccount(m_account.id(), false);
         MyMoneyAccount acc = file->account(split.accountId());
@@ -993,7 +1019,7 @@ void KLedgerViewLoan::slotConfigureContextMenu(void)
 
   m_contextMenu->changeItem(splitEditId, i18n("Edit splits ..."));
   if(m_transactionPtr != 0) {
-    if(m_split.payeeId() != "" && m_split.accountId() != "" && m_transaction.id() != "") {
+    if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && m_transaction.id().isEmpty()) {
       MyMoneyPayee payee = file->payee(m_split.payeeId());
       QString name = payee.name();
       name.replace(QRegExp("&(?!&)"), "&&");
@@ -1006,7 +1032,7 @@ void KLedgerViewLoan::slotConfigureContextMenu(void)
     if(transactionType(m_split) != Transfer) {
       m_contextMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
-      QString dest = "";
+      QString dest;
       try {
         MyMoneySplit split = m_transaction.splitByAccount(m_account.id(), false);
         MyMoneyAccount acc = MyMoneyFile::instance()->account(split.accountId());
@@ -1083,6 +1109,6 @@ void KLedgerViewLoan::slotAccountDetail(void)
 void KLedgerViewLoan::slotPayeeSelected(void)
 {
   slotCancelEdit();
-  if(m_split.payeeId() != "" && m_split.accountId() != "" && m_transaction.id() != "")
+  if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && !m_transaction.id().isEmpty())
     emit payeeSelected(m_split.payeeId(), m_split.accountId(), m_transaction.id());
 }

@@ -346,6 +346,14 @@ void KCategoriesView::update(const QCString& /* id */)
 
 void KCategoriesView::suspendUpdate(const bool suspend)
 {
+  KAccountListItem* item = static_cast<KAccountListItem *>(categoryListView->firstChild());
+
+  // inform all children
+  while(item) {
+    item->suspendUpdate(suspend);
+    item = static_cast<KAccountListItem *>(item->itemBelow());
+  }
+  
   // force a refresh, if update was off
   if(m_suspendUpdate == true
   && suspend == false)
@@ -359,7 +367,7 @@ const QCString KCategoriesView::currentAccount(bool& success) const
   KAccountListItem *item = (KAccountListItem *)categoryListView->selectedItem();
   if (!item) {
     success = false;
-    return QCString("");
+    return QCString();
   }
 
   success=true;

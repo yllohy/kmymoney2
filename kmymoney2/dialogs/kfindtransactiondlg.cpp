@@ -129,16 +129,16 @@ KFindTransactionDlg::~KFindTransactionDlg()
 
 void KFindTransactionDlg::slotReset(void)
 {
-  m_textEdit->setText("");
+  m_textEdit->setText(QString());
   m_regExp->setChecked(false);
   m_caseSensitive->setChecked(false);
 
   m_amountEdit->setEnabled(true);
   m_amountFromEdit->setEnabled(false);
   m_amountToEdit->setEnabled(false);
-  m_amountEdit->loadText("");
-  m_amountFromEdit->loadText("");
-  m_amountToEdit->loadText("");
+  m_amountEdit->loadText(QString());
+  m_amountFromEdit->loadText(QString());
+  m_amountToEdit->loadText(QString());
   m_amountButton->setChecked(true);
   m_amountRangeButton->setChecked(false);
 
@@ -150,9 +150,9 @@ void KFindTransactionDlg::slotReset(void)
   m_nrEdit->setEnabled(true);
   m_nrFromEdit->setEnabled(false);
   m_nrToEdit->setEnabled(false);
-  m_nrEdit->setText("");
-  m_nrFromEdit->setText("");
-  m_nrToEdit->setText("");
+  m_nrEdit->setText(QString());
+  m_nrFromEdit->setText(QString());
+  m_nrToEdit->setText(QString());
   m_nrButton->setChecked(true);
   m_nrRangeButton->setChecked(false);
       
@@ -173,7 +173,7 @@ void KFindTransactionDlg::slotRightSize(void)
 
 void KFindTransactionDlg::slotUpdateSelections(void)
 {
-  QString txt = "";
+  QString txt;
 
   // Text tab
   if(!m_textEdit->text().isEmpty()) {

@@ -42,7 +42,7 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   m_userCounty =
   m_userPostcode =
   m_userTelephone =
-  m_userEmail = "";
+  m_userEmail = QString();
   m_dirty = false;
   m_institutionList.clear();
   m_accountList.clear();
@@ -171,6 +171,9 @@ const MyMoneyPayee MyMoneySeqAccessMgr::payee(const QCString& id) const
 
 const MyMoneyPayee MyMoneySeqAccessMgr::payeeByName(const QString& payee) const
 {
+  if(payee.isEmpty())
+    return MyMoneyPayee();
+    
   QMap<QCString, MyMoneyPayee>::ConstIterator it_p;
 
   for(it_p = m_payeeList.begin(); it_p != m_payeeList.end(); ++it_p) {
@@ -409,7 +412,7 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
   // * the referenced accounts in the splits exist
 
   // first perform all the checks
-  if(transaction.id() != "")
+  if(!transaction.id().isEmpty())
     throw new MYMONEYEXCEPTION("transaction already contains an id");
   if(!transaction.postDate().isValid())
     throw new MYMONEYEXCEPTION("invalid post date");
@@ -420,7 +423,7 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
     // the following lines will throw an exception if the
     // account or payee do not exist
     account((*it_s).accountId());
-    if((*it_s).payeeId() != "")
+    if(!(*it_s).payeeId().isEmpty())
       payee((*it_s).payeeId());
   }
 
@@ -516,7 +519,7 @@ void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account, const boo
       // if it points to a different institution, then update both
       if((*pos).institutionId() != account.institutionId()) {
         // check if new institution exists
-        if(account.institutionId() != "")
+        if(!account.institutionId().isEmpty())
           institution(account.institutionId());
 
         QMap<QCString, MyMoneyInstitution>::Iterator oldInst, newInst;
@@ -574,7 +577,7 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
   // * the splits must have valid account ids
 
   // first perform all the checks
-  if(transaction.id() == ""
+  if(transaction.id().isEmpty()
 //  || transaction.file() != this
   || !transaction.postDate().isValid())
     throw new MYMONEYEXCEPTION("invalid transaction to be modified");
@@ -585,7 +588,7 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
     // the following lines will throw an exception if the
     // account or payee do not exist
     account((*it_s).accountId());
-    if((*it_s).payeeId() != "")
+    if(!(*it_s).payeeId().isEmpty())
       payee((*it_s).payeeId());
   }
 
@@ -680,7 +683,7 @@ void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transactio
   QMap<QCString, bool> modifiedAccounts;
 
   // first perform all the checks
-  if(transaction.id() == "")
+  if(transaction.id().isEmpty())
     throw new MYMONEYEXCEPTION("invalid transaction to be deleted");
 
   QMap<QCString, QCString>::Iterator it_k;
@@ -813,7 +816,7 @@ void MyMoneySeqAccessMgr::removeInstitution(const MyMoneyInstitution& institutio
       QCStringList::Iterator it_a;
       for(it_a = accounts.begin(); it_a != accounts.end(); ++it_a) {
         MyMoneyAccount acc = account(*it_a);
-        acc.setInstitutionId("");
+        acc.setInstitutionId(QCString());
         try {
           modifyAccount(acc);
         } catch(MyMoneyException *e) {
@@ -1144,7 +1147,7 @@ void MyMoneySeqAccessMgr::setPairs(const QMap<QCString, QString>& list)
 void MyMoneySeqAccessMgr::addSchedule(MyMoneySchedule& sched)
 {
   // first perform all the checks
-  if(sched.id() != "")
+  if(!sched.id().isEmpty())
     throw new MYMONEYEXCEPTION("schedule already contains an id");
 
   // The following will throw an exception when it fails

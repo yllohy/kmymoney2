@@ -817,7 +817,7 @@ void KMyMoneyView::accountNew(const bool createCategory)
   config->setGroup("General Options");
   if(config->readBoolEntry("NewAccountWizard", true) == true && createCategory == false) {
     // wizard selected
-    m_newAccountWizard->setAccountName("");
+    m_newAccountWizard->setAccountName(QString());
     m_newAccountWizard->setOpeningBalance(0);
 
     // Preselect the institution if we right clicked on a bank
@@ -1552,6 +1552,7 @@ void KMyMoneyView::suspendUpdate(const bool suspend)
   m_accountsView->suspendUpdate(suspend);
   m_categoriesView->suspendUpdate(suspend);
   m_ledgerView->suspendUpdate(suspend);
+  m_payeesView->suspendUpdate(suspend);
 }
 
 void KMyMoneyView::slotRememberPage(QWidget* w)

@@ -184,7 +184,7 @@ void MyMoneyStorageBin::addCategory(IMyMoneySerialize* storage,
     categories[name] = majorCat.id();
   }
 
-  if(minorName != "") {
+  if(!minorName.isEmpty()) {
     name += ":" + minorName;
     if(!categories.contains(name)) {
       MyMoneyAccount minorCat;
@@ -386,7 +386,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
 
         s >> category;    // major category
         s >> tmp;         // minor category
-        if(tmp != "")
+        if(!tmp.isEmpty())
           category += ":" + tmp;
         // for now, we keep it as it is and convert sp2.account later on
         sp2.setAccountId(category.latin1());
@@ -462,7 +462,7 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
       QString catminor;
       if(colonindex == -1) {
         catmajor = accname;
-        catminor = "";
+        catminor = QString();
       } else {
         int len = accname.length();
         len--;
@@ -1003,7 +1003,7 @@ const MyMoneySplit MyMoneyStorageBin::readSplit(QDataStream& s)
     case MyMoneyAccount::Liability:
       break;
     default:
-      sp.setPayeeId("");
+      sp.setPayeeId(QCString());
       break;
   }
   return sp;

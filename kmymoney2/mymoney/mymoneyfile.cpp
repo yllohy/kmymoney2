@@ -62,6 +62,7 @@ MyMoneyFile* const MyMoneyFile::instance()
 MyMoneyFile::MyMoneyFile()
 {
   m_storage = 0;
+  m_suspendNotify = false;
 }
 
 MyMoneyFile::~MyMoneyFile()
@@ -98,8 +99,7 @@ void MyMoneyFile::addInstitution(MyMoneyInstitution& institution)
   // and it does not have a parent (MyMoneyFile).
 
   if(institution.name().length() == 0
-  || institution.id().length() != 0
-  || institution.file() != 0)
+  || institution.id().length() != 0)
     throw new MYMONEYEXCEPTION("Not a new institution");
 
   checkStorage();
@@ -129,12 +129,46 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
 {
   checkStorage();
 
+  const MyMoneyTransaction* t = &transaction;
+  MyMoneyTransaction tCopy;
+  
+  // now check the splits
+  bool loanAccountAffected = false;
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+  for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+    // the following line will throw an exception if the
+    // account does not exist
+    MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
+    if((acc.accountType() == MyMoneyAccount::Loan
+    || acc.accountType() == MyMoneyAccount::AssetLoan)
+    && ((*it_s).action() == MyMoneySplit::ActionTransfer))
+      loanAccountAffected = true;
+  }
+
+  // change transfer splits between asset/liability and loan accounts
+  // into amortization splits
+  if(loanAccountAffected) {
+    tCopy = transaction;
+    for(it_s = tCopy.splits().begin(); it_s != tCopy.splits().end(); ++it_s) {
+      if((*it_s).action() == MyMoneySplit::ActionTransfer) {
+        MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
+
+        if(acc.accountGroup() == MyMoneyAccount::Asset
+        || acc.accountGroup() == MyMoneyAccount::Liability) {
+          MyMoneySplit s = (*it_s);
+          s.setAction(MyMoneySplit::ActionAmortization);
+          tCopy.modifySplit(s);
+          t = &tCopy;
+        }
+      }
+    }
+  }
+
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
 
   // get the current setting of this transaction
   MyMoneyTransaction tr = MyMoneyFile::transaction(transaction.id());
-  QValueList<MyMoneySplit>::ConstIterator it_s;
 
   // and mark all accounts that are referenced
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
@@ -142,11 +176,10 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
   }
 
   // perform modification
-  m_storage->modifyTransaction(transaction);
+  m_storage->modifyTransaction(*t);
 
   // and mark all accounts that are referenced
-  tr = transaction;
-  for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
+  for(it_s = t->splits().begin(); it_s != t->splits().end(); ++it_s) {
     notifyAccountTree((*it_s).accountId());
   }
   addNotification(NotifyClassAccount);
@@ -167,10 +200,13 @@ void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
 
-  // the account can be moved to another one, so we notify
-  // the old one as well
-  addNotification(acc.institutionId());
-  addNotification(account.institutionId());
+  // if the account was moved to another insitution, we notify
+  // the old one as well as the new one and the structure change
+  if(acc.institutionId() != account.institutionId()) {
+    addNotification(acc.institutionId());
+    addNotification(account.institutionId());
+    addNotification(NotifyClassInstitution);      
+  }
 
   m_storage->modifyAccount(account);
 
@@ -458,13 +494,34 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
     throw new MYMONEYEXCEPTION("Unable to add transaction with invalid postdate");
 
   // now check the splits
+  bool loanAccountAffected = false;
   QValueList<MyMoneySplit>::ConstIterator it_s;
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
     // the following line will throw an exception if the
     // account does not exist
-    MyMoneyFile::account((*it_s).accountId());
+    MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
+    if(acc.accountType() == MyMoneyAccount::Loan
+    || acc.accountType() == MyMoneyAccount::AssetLoan)
+      loanAccountAffected = true;
   }
 
+  // change transfer splits between asset/liability and loan accounts
+  // into amortization splits
+  if(loanAccountAffected) {
+    for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+      if((*it_s).action() == MyMoneySplit::ActionTransfer) {
+        MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
+        
+        if(acc.accountGroup() == MyMoneyAccount::Asset
+        || acc.accountGroup() == MyMoneyAccount::Liability) {
+          MyMoneySplit s = (*it_s);
+          s.setAction(MyMoneySplit::ActionAmortization);
+          transaction.modifySplit(s);
+        }
+      }
+    }
+  }
+  
   // then add the transaction to the file global pool
   m_storage->addTransaction(transaction);
 
@@ -683,19 +740,23 @@ void MyMoneyFile::notify(const QCString& id)
 
 void MyMoneyFile::notify(void)
 {
-  QMap<QCString, bool>::ConstIterator it;
-  for(it = m_notificationList.begin(); it != m_notificationList.end(); ++it) {
-    notify(it.key());
-  }
-  
-  if(m_notificationList.count() > 0)
-    notify(NotifyClassAnyChange);
+  if(!m_suspendNotify) {
+    QMap<QCString, bool>::ConstIterator it;
+    for(it = m_notificationList.begin(); it != m_notificationList.end(); ++it) {
+      notify(it.key());
+    }
 
+    if(m_notificationList.count() > 0)
+      notify(NotifyClassAnyChange);
+  }  
   clearNotification();
 }
 
 void MyMoneyFile::notifyAccountTree(const QCString& id)
 {
+  if(m_suspendNotify)
+    return;
+    
   checkStorage();
 
   QCString accId = id;
@@ -713,7 +774,7 @@ void MyMoneyFile::notifyAccountTree(const QCString& id)
 
 void MyMoneyFile::addNotification(const QCString& id)
 {
-  if(!id.isEmpty())
+  if(!m_suspendNotify && !id.isEmpty())
     m_notificationList[id] = true;
 }
 
@@ -1133,4 +1194,9 @@ QValueList<MyMoneySchedule> MyMoneyFile::scheduleListEx( int scheduleTypes,
   checkStorage();
 
   return m_storage->scheduleListEx(scheduleTypes, scheduleOcurrences, schedulePaymentTypes, startDate, accounts);
+}
+
+void MyMoneyFile::suspendNotify(const bool state)
+{
+  m_suspendNotify = state;
 }

@@ -33,7 +33,7 @@ void MyMoneyScheduleTest::tearDown () {
 void MyMoneyScheduleTest::testEmptyConstructor() {
 	MyMoneySchedule s;
 	
-	CPPUNIT_ASSERT(s.m_id == "");
+	CPPUNIT_ASSERT(s.m_id.isEmpty());
 	CPPUNIT_ASSERT(s.m_occurence == MyMoneySchedule::OCCUR_ANY);
 	CPPUNIT_ASSERT(s.m_type == MyMoneySchedule::TYPE_ANY);
 	CPPUNIT_ASSERT(s.m_paymentType == MyMoneySchedule::STYPE_ANY);
@@ -42,7 +42,7 @@ void MyMoneyScheduleTest::testEmptyConstructor() {
 	CPPUNIT_ASSERT(!s.m_endDate.isValid());
 	CPPUNIT_ASSERT(!s.m_lastPayment.isValid());
 	CPPUNIT_ASSERT(s.m_autoEnter == false);
-	CPPUNIT_ASSERT(s.m_name == "");
+	CPPUNIT_ASSERT(s.m_name.isEmpty());
 	CPPUNIT_ASSERT(s.willEnd() == false);
 }
 

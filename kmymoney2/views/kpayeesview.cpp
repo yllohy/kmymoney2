@@ -143,6 +143,9 @@ void KPayeesView::showTransactions(void)
   MyMoneyFile* file = MyMoneyFile::instance();
   unsigned int   i;
 
+  if(m_payee.id().isEmpty())
+    return;
+    
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
   QDateTime defaultDate;
@@ -275,7 +278,7 @@ void KPayeesView::slotAddClicked()
       m_payee.setName(payeeEdit->text());
       m_lastPayee = m_payee.name();
       MyMoneyFile::instance()->addPayee(m_payee);
-      payeeEdit->setText("");
+      payeeEdit->setText(QString());
       
     } catch(MyMoneyException *e) {
       KMessageBox::detailedSorry(0, i18n("Unable to add payee"),

@@ -130,7 +130,7 @@ protected slots:
     *
     * @param account The name of the selected account.
     */
-  void checkData(const QString& account = "");
+  void checkData(const QString& account = QString());
 
 private:
   void readConfig(void);

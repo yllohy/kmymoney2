@@ -357,6 +357,8 @@ public slots:
     */
   virtual void refreshView(void);
 
+  virtual void refreshView(const bool transactionFormVisible);
+
   /**
     * This method refreshes the current view including rebuild
     * of the filters by calling filterTransactions().

@@ -32,11 +32,6 @@ const char MyMoneySplit::ActionAmortization[] = "Amortization";
 MyMoneySplit::MyMoneySplit()
 {
   m_reconcileFlag = NotReconciled;
-  m_account =
-  m_memo =
-  m_payee =
-  m_action =
-  m_id = "";
 }
 
 MyMoneySplit::~MyMoneySplit()

@@ -169,7 +169,7 @@ void KAccountSelectDlg::slotCreateAccount(void)
 
     if((dialogResult = dialog.exec()) == QDialog::Accepted) {
       newAccount = dialog.account();
-      newAccount.setParentAccountId("");  // make sure, it's not set for adding
+      newAccount.setParentAccountId(QCString());  // make sure, it's not set for adding
       parentAccount = dialog.parentAccount();
     }
   }
@@ -189,8 +189,8 @@ void KAccountSelectDlg::slotCreateAccount(void)
 
         file->addAccount(newAccount, parentAccount);
         parentAccount = newAccount;
-        newAccount.setParentAccountId("");  // make sure, there's no parent
-        newAccount.setAccountId("");        // and no id set for adding
+        newAccount.setParentAccountId(QCString());  // make sure, there's no parent
+        newAccount.setAccountId(QCString());        // and no id set for adding
         newAccount.setName(remainder);
       }
       

@@ -55,33 +55,11 @@ int main(int argc, char *argv[])
 {
   QString feature;
 
-#ifdef _COMPILE_XML  
-  #if _COMPILE_XML
-    #if HAVE_LIBXMLPP
-  feature += "\t- XML support\n";
-    #else
-  feature += "\t- no XML support\n";
-    #endif
-  #else // _COMPILE_XML
-  feature += "\t- no XML support\n";
-  #endif
-#else
-  feature += "\t- no XML support\n";
-#endif
-
-#if HAVE_LIBCPPUNIT
-  feature += "\t- Automatic regression testing\n";
-#else
-  feature += "\t- Automatic regression testing disabled\n";
-#endif
-
 #ifdef _CHECK_MEMORY
   feature += "\t- Memory leakage detection\n";
-#else
-  feature += "\t- No memory leakage detection\n";
 #endif
 
-  if(feature.length() != 0)
+  if(!feature.isEmpty())
     feature = I18N_NOOP("Compiled with the following settings:\n") + feature;
 
   KAboutData aboutData( "kmymoney2", I18N_NOOP("KMyMoney2"),
@@ -94,7 +72,7 @@ int main(int argc, char *argv[])
   aboutData.addAuthor("John C", I18N_NOOP("Developer"), "tacoturtle@users.sourceforge.net");
   aboutData.addAuthor("Thomas Baumgart", I18N_NOOP("Developer & Release Manager"), "ipwizard@users.sourceforge.net");
   aboutData.addAuthor("Kevin Tambascio", I18N_NOOP("Developer"), "ktambascio@users.sourceforge.net");
-  aboutData.addAuthor("Arni Ingimundarson", I18N_NOOP("Developer"), "arniing@users.sourceforge.net");
+  aboutData.addCredit("Arni Ingimundarson", I18N_NOOP("Developer"), "arniing@users.sourceforge.net");
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 

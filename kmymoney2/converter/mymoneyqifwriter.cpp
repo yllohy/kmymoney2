@@ -181,7 +181,7 @@ void MyMoneyQifWriter::writeTransactionEntry(QTextStream &s, const MyMoneyTransa
   if(split.number().length() > 0)
     s << "N" << split.number() << endl;
 
-  if(split.payeeId() != "") {
+  if(!split.payeeId().isEmpty()) {
     MyMoneyPayee payee = file->payee(split.payeeId());
     s << "P" << payee.name() << endl;
   }

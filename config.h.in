@@ -24,9 +24,6 @@
 /* Define if you have libxml2 */
 #undef HAVE_LIBXML2
 
-/* Define if you have libxml++ */
-#undef HAVE_LIBXMLPP
-
 /* Define if you have libz */
 #undef HAVE_LIBZ
 

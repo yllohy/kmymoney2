@@ -181,12 +181,13 @@ private:
     *
     * @param name name of account as found in the QIF file
     * @param value value found in the T record
+    * @param value2 value found in the $ record for splitted transactions
     *
     * @return id of the account for the split. If no name is specified
     *            or the account was not found and not created the
     *            return value will be "".
     */
-  const QCString checkCategory(const QString& name, const MyMoneyMoney value);
+  const QCString checkCategory(const QString& name, const MyMoneyMoney value, const MyMoneyMoney value2);
 
   /**
     * This method extracts the line beginning with the letter @p id
@@ -242,6 +243,8 @@ private:
     */
   void selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account);
 
+  void processQifLine(void);
+  
 signals:
   /**
     * This signal will be emitted when the import is finished.
@@ -252,7 +255,8 @@ private slots:
   void slotSendDataToFilter(void);
   void slotReceivedDataFromFilter(void);
   void slotReceivedErrorFromFilter(void);
-
+  void slotProcessBuffers(void);
+  
   /**
     * This slot is used to be informed about the end of the filtering process.
     * It emits the signal importFinished()
@@ -288,7 +292,9 @@ private:
   bool                    m_userAbort;
   bool                    m_autoCreatePayee;
   unsigned long           m_pos;
-    
+
+  QValueList<QByteArray>  m_data;
+          
   void (*m_progressCallback)(int, int, const QString&);
 };
 

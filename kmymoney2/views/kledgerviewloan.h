@@ -245,6 +245,8 @@ private slots:
 protected:
 
   KPushButton*  m_detailsButton;
+  KPushButton*  m_reconcileButton;
+  KPushButton*  m_interestButton;
   
   /**
     * This member keeps a pointer to the summary line
@@ -255,7 +257,7 @@ protected:
 
   QHBoxLayout*    m_summaryLayout;
 
-
+private:
 };
 
 #endif

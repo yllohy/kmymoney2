@@ -154,8 +154,12 @@ public:
   static void cleanCache(void);
 
   /**
+    */
+  void suspendUpdate(const bool suspend) { m_suspendUpdate = suspend; };
+  
+  /**
     * Override and do nothing
-  **/
+    **/
   void paintBranches(QPainter* p, const QColorGroup& cg, int w, int y, int h);
 
 private:
@@ -175,6 +179,7 @@ private:
 
 private:
   bool m_bViewNormal;
+  bool m_suspendUpdate;
   int m_nAccountColumn;
   int m_nInstitutionColumn;
 

@@ -61,7 +61,7 @@ class MyMoneyTransaction;
   * is represented by a tab within the view.
   *
   * @author Michael Edwardes 2001 Copyright 2000-2001
-  * $Id: kmymoneyview.h,v 1.42 2003/09/26 13:37:12 mte Exp $
+  * $Id: kmymoneyview.h,v 1.43 2003/10/03 08:02:49 ipwizard Exp $
   *
   * @short Handles the view of the MyMoneyFile.
 **/
@@ -303,7 +303,7 @@ public slots:
     * @param acc The ID of the account to be shown
     * @param transaction The ID of the transaction to be selected
     */
-  void slotLedgerSelected(const QCString& acc, const QCString& transaction = "");
+  void slotLedgerSelected(const QCString& acc, const QCString& transaction = QCString());
 
   /**
     * Called, whenever the payees view should pop up and a specific
@@ -434,6 +434,7 @@ protected slots:
     * a dialog which allows the user to edit the account details.  TODO: move this
     * method into KBanksView.
   **/
+
   void slotAccountEdit();
 
   /**

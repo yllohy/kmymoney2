@@ -195,7 +195,7 @@ public:
   /**
     * This method returns the id of the MyMoneyInstitution object this account
     * belongs to.
-    * @return id of MyMoneyInstitution object. QString("") if it is
+    * @return id of MyMoneyInstitution object. QString() if it is
     *         an internal account
     * @see setInstitution
     */

@@ -364,7 +364,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name)
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassInstitution, this);
 
-  refresh("");
+  refresh(QCString());
 }
 
 KAccountsView::~KAccountsView()
@@ -485,13 +485,13 @@ void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int 
 QCString KAccountsView::currentAccount(bool& success)
 {
   success=m_bSelectedAccount;
-  return (success) ? m_selectedAccount : QCString("");
+  return (success) ? m_selectedAccount : QCString();
 }
 
 QCString KAccountsView::currentInstitution(bool& success)
 {
   success=m_bSelectedInstitution;
-  return (success) ? m_selectedInstitution : QCString("");
+  return (success) ? m_selectedInstitution : QCString();
 }
 
 void KAccountsView::update(const QCString& id)
@@ -502,8 +502,9 @@ void KAccountsView::update(const QCString& id)
   // updates in this phase. The switch is controlled with suspendUpdate().
   if(m_suspendUpdate == false) {
     if(id == MyMoneyFile::NotifyClassAccountHierarchy
-    || (id == MyMoneyFile::NotifyClassInstitution && m_bViewNormalAccountsView == true))
+    || (id == MyMoneyFile::NotifyClassInstitution && m_bViewNormalAccountsView == true)) {
       refresh(id);
+    }
     if(id == MyMoneyFile::NotifyClassAccount)
       refreshTotalProfit();
   }
@@ -511,6 +512,14 @@ void KAccountsView::update(const QCString& id)
 
 void KAccountsView::suspendUpdate(const bool suspend)
 {
+  KAccountListItem* item = static_cast<KAccountListItem *>(accountListView->firstChild());
+
+  // inform all children
+  while(item) {
+    item->suspendUpdate(suspend);
+    item = static_cast<KAccountListItem *>(item->itemBelow());
+  }
+
   // force a refresh, if update was off
   if(m_suspendUpdate == true
   && suspend == false) {
@@ -522,6 +531,7 @@ void KAccountsView::suspendUpdate(const bool suspend)
   
   m_suspendUpdate = suspend;
 }
+
 
 void KAccountsView::slotRefreshView(void)
 {
@@ -614,6 +624,7 @@ void KAccountsView::fillAccountMap(void)
 
 
 void KAccountsView::refresh(const QCString& selectAccount)
+
 {
   KConfig *config = KGlobal::config();
   config->setGroup("List Options");
@@ -647,6 +658,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
         switch((*accountIterator).accountGroup()) {
           case MyMoneyAccount::Asset:
+
           case MyMoneyAccount::Liability:
             if((*accountIterator).institutionId().isEmpty()) {
               KAccountListItem *accountItem;
@@ -686,7 +698,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
           QCStringList subAccounts = m_accountMap[*it].accountList();
           if (subAccounts.count() >= 1) {
 
-            showSubAccounts(subAccounts, accountItem, i18n(""));
+            showSubAccounts(subAccounts, accountItem, "");
           }
         }
       }
@@ -858,6 +870,7 @@ void KAccountsView::resizeEvent(QResizeEvent* /* e */)
   //accountListView->setColumnWidth(1,150);
   //int totalWidth=accountListView->width();
   // accountListView->setColumnWidth(2, totalWidth-550-5);
+
 
   // call base class resizeEvent()
   //KBankViewDecl::resizeEvent(e);

@@ -41,13 +41,13 @@ void MyMoneyFileTest::tearDown () {
 }
 
 void MyMoneyFileTest::testEmptyConstructor() {
-	CPPUNIT_ASSERT(m->userName() == "");
-	CPPUNIT_ASSERT(m->userStreet() == "");
-	CPPUNIT_ASSERT(m->userTown() == "");
-	CPPUNIT_ASSERT(m->userCounty() == "");
-	CPPUNIT_ASSERT(m->userPostcode() == "");
-	CPPUNIT_ASSERT(m->userTelephone() == "");
-	CPPUNIT_ASSERT(m->userEmail() == "");
+	CPPUNIT_ASSERT(m->userName().isEmpty());
+	CPPUNIT_ASSERT(m->userStreet().isEmpty());
+	CPPUNIT_ASSERT(m->userTown().isEmpty());
+	CPPUNIT_ASSERT(m->userCounty().isEmpty());
+	CPPUNIT_ASSERT(m->userPostcode().isEmpty());
+	CPPUNIT_ASSERT(m->userTelephone().isEmpty());
+	CPPUNIT_ASSERT(m->userEmail().isEmpty());
 
 	CPPUNIT_ASSERT(m->institutionCount() == 0);
 	CPPUNIT_ASSERT(m->dirty() == false);
@@ -68,7 +68,7 @@ void MyMoneyFileTest::testAddOneInstitution() {
 	// MyMoneyInstitution institution_file("", institution);
 	MyMoneyInstitution institution_id("I000002", institution);
 	MyMoneyInstitution institution_noname(institution);
-	institution_noname.setName("");
+	institution_noname.setName(QString());
 
 	QString id;
 
@@ -295,13 +295,13 @@ void MyMoneyFileTest::testInstitutionModify() {
 }
 
 void MyMoneyFileTest::testSetFunctions() {
-	CPPUNIT_ASSERT(m->userName() == "");
-	CPPUNIT_ASSERT(m->userStreet() == "");
-	CPPUNIT_ASSERT(m->userTown() == "");
-	CPPUNIT_ASSERT(m->userCounty() == "");
-	CPPUNIT_ASSERT(m->userPostcode() == "");
-	CPPUNIT_ASSERT(m->userTelephone() == "");
-	CPPUNIT_ASSERT(m->userEmail() == "");
+	CPPUNIT_ASSERT(m->userName().isEmpty());
+	CPPUNIT_ASSERT(m->userStreet().isEmpty());
+	CPPUNIT_ASSERT(m->userTown().isEmpty());
+	CPPUNIT_ASSERT(m->userCounty().isEmpty());
+	CPPUNIT_ASSERT(m->userPostcode().isEmpty());
+	CPPUNIT_ASSERT(m->userTelephone().isEmpty());
+	CPPUNIT_ASSERT(m->userEmail().isEmpty());
 	
 	storage->m_dirty = false;
 	m->setUserName("Name");

@@ -354,14 +354,14 @@ public:
     * This method returns the number of transactions currently known to file
     * in the range 0..MAXUINT
     *
-    * @param account QCString reference to account id. If account equals ""
+    * @param account QCString reference to account id. If account is empty
     +                all transactions (the journal) will be counted. If account
-    *                is not equal to "" it returns the number of transactions
+    *                is not empty it returns the number of transactions
     *                that have splits in this account.
     *
     * @return number of transactions in journal/account
     */
-  virtual const unsigned int transactionCount(const QCString& account = "") const = 0;
+  virtual const unsigned int transactionCount(const QCString& account = QCString()) const = 0;
 
   /**
     * This method returns a QMap filled with the number of transactions
@@ -392,9 +392,9 @@ public:
     * the set of transaction referenced by a specific account depending
     * on the argument given.
     *
-    * @param account QCString reference to account id. If account equals "" all
+    * @param account QCString reference to account id. If account is empty all
     +                transactions (the journal) is returned. If account
-    *                is not equal to "" it returns the set of transactions
+    *                is not empty it returns the set of transactions
     *                that have splits in this account.
     *
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
@@ -532,7 +532,7 @@ public:
     *
     * @param accountId only search for scheduled transactions that reference
     *                  accound @p accountId. If accountId is the empty string,
-    *                  this filter is off. Default is @p "".
+    *                  this filter is off. Default is @p QCString().
     * @param type      only schedules of type @p type are searched for.
     *                  See MyMoneySchedule::typeE for details.
     *                  Default is MyMoneySchedule::TYPE_ANY
@@ -552,7 +552,7 @@ public:
     *
     * @return const QValueList<MyMoneySchedule> list of schedule objects.
     */
-  virtual const QValueList<MyMoneySchedule> scheduleList(const QCString& = "",
+  virtual const QValueList<MyMoneySchedule> scheduleList(const QCString& = QCString(),
                                      const MyMoneySchedule::typeE = MyMoneySchedule::TYPE_ANY,
                                      const MyMoneySchedule::occurenceE = MyMoneySchedule::OCCUR_ANY,
                                      const MyMoneySchedule::paymentTypeE = MyMoneySchedule::STYPE_ANY,

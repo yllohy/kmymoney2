@@ -101,7 +101,10 @@ KLedgerViewCheckings::~KLedgerViewCheckings()
 
 void KLedgerViewCheckings::refreshView(void)
 {
-  KLedgerView::refreshView();
+  if(m_inReconciliation)
+    KLedgerView::refreshView(m_transactionCheckBox->isChecked());
+  else
+    KLedgerView::refreshView();
 }
 
 void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
@@ -783,7 +786,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
     m_editType->loadCurrentItem(m_form->tabBar()->indexOf(transactionType(m_split)));
 
   try {
-    if(m_split.payeeId() != "")
+    if(!m_split.payeeId().isEmpty())
       payee = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
 
     MyMoneySplit s;
@@ -837,7 +840,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
         break;
 
       case 1:
-        category = "";
+        category = QString();
         break;
 
       default:
@@ -879,9 +882,9 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
   if(m_editPayment != 0 && m_editDeposit != 0) {
     if(m_split.value() < 0) {
       m_editPayment->loadText((-m_split.value()).formatMoney());
-      m_editDeposit->loadText("");
+      m_editDeposit->loadText(QString());
     } else {
-      m_editPayment->loadText("");
+      m_editPayment->loadText(QString());
       m_editDeposit->loadText((m_split.value()).formatMoney());
     }
   }
@@ -1273,7 +1276,7 @@ void KLedgerViewCheckings::slotConfigureMoreMenu(void)
 
   m_moreMenu->changeItem(splitEditId, i18n("Edit splits ..."));
   if(m_transactionPtr != 0) {
-    if(m_split.payeeId() != "" && m_split.accountId() != "" && m_transaction.id() != "") {
+    if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && !m_transaction.id().isEmpty()) {
       MyMoneyPayee payee = file->payee(m_split.payeeId());
       m_moreMenu->changeItem(gotoPayeeId, i18n("Goto '%1'").arg(payee.name()));
       m_moreMenu->setItemEnabled(gotoPayeeId, true);
@@ -1285,7 +1288,7 @@ void KLedgerViewCheckings::slotConfigureMoreMenu(void)
     if(transactionType(m_split) != Transfer) {
       m_moreMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
-      QString dest = "";
+      QString dest;
       try {
         MyMoneySplit split = m_transaction.splitByAccount(m_account.id(), false);
         MyMoneyAccount acc = file->account(split.accountId());
@@ -1315,7 +1318,7 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
 
   m_contextMenu->changeItem(splitEditId, i18n("Edit splits ..."));
   if(m_transactionPtr != 0) {
-    if(m_split.payeeId() != "" && m_split.accountId() != "" && m_transaction.id() != "") {
+    if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && !m_transaction.id().isEmpty()) {
       MyMoneyPayee payee = file->payee(m_split.payeeId());
       QString name = payee.name();
       name.replace(QRegExp("&(?!&)"), "&&");
@@ -1328,7 +1331,7 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
     if(transactionType(m_split) != Transfer) {
       m_contextMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
-      QString dest = "";
+      QString dest;
       try {
         MyMoneySplit split = m_transaction.splitByAccount(m_account.id(), false);
         MyMoneyAccount acc = MyMoneyFile::instance()->account(split.accountId());
@@ -1411,7 +1414,7 @@ void KLedgerViewCheckings::endReconciliation(void)
 
   updateView();
 
-  if(transactionId != "") {
+  if(!transactionId.isEmpty()) {
     if(selectTransaction(transactionId) == false
     && m_transactionPtrVector.size() > 0)
       selectTransaction(m_transactionPtrVector[m_transactionPtrVector.size()-1]->id());
@@ -1512,6 +1515,6 @@ void KLedgerViewCheckings::slotAccountDetail(void)
 void KLedgerViewCheckings::slotPayeeSelected(void)
 {
   slotCancelEdit();
-  if(m_split.payeeId() != "" && m_split.accountId() != "" && m_transaction.id() != "")
+  if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && !m_transaction.id().isEmpty())
     emit payeeSelected(m_split.payeeId(), m_split.accountId(), m_transaction.id());
 }

@@ -305,7 +305,7 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
         // check the payee list
         if(!removeSplit && m_filterSet.singleFilter.payeeFilter) {
           if(m_payees.count() > 0) {
-            if(!m_payees.find((*it).payeeId()))
+            if((*it).payeeId().isEmpty() || !m_payees.find((*it).payeeId()))
               removeSplit = true;
           } else if(!(*it).payeeId().isEmpty())
               removeSplit = true;

@@ -131,14 +131,6 @@ public:
     */
   const QCString id(void) const { return m_id; }
 
-  /**
-    * This method returns a pointer to the MyMoneyFile object this
-    * institution belongs to.
-    *
-    * @return pointer to MyMoneyFile object or 0 if not assigned.
-    */
-  MyMoneyFile* file(void) const { return m_file; }
-
   bool operator == (const MyMoneyInstitution&) const;
   // MyMoneyInstitution& operator = (const MyMoneyInstitution&);
 
@@ -147,12 +139,6 @@ private:
   friend QDataStream& operator >> (QDataStream &, MyMoneyInstitution &);
 
 private:
-  /**
-    * This member variable keeps a pointer to the MyMoneyFile object
-    * that this object belongs to.
-    */
-  MyMoneyFile* m_file;
-
   /**
     * This member variable keeps the ID of the institution under which it
     * is known inside the MyMoneyFile.
