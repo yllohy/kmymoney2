@@ -1,3 +1,14 @@
+2003-12-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * select account for QIF import if it already exists
+  * fixed visibility of selected account in kMyMoneyAccountSelector
+  * re-arranged introduction to "import verification" message and
+    allow to turn it off in the future (DontShowAgain)
+  * removed check for C-only options (-Wbad-function-cast) in acinclude.m4.in
+  * added bzip2 tarball generation to Makefile.am
+  * added alternate background to transaction list in payees view and
+    account selector widget
+  * Added general method to extract colors respecting the user settings
+
 2003-12-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * display correct action strings for credit card accounts in ledger
   * support i18n of action strings in ledger
