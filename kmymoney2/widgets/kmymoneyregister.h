@@ -249,8 +249,7 @@ private:
 private:
   /**
     * This member is set, if the view currently uses editing inside
-    * the register is available. The view must set this using
-    * setInlineEditingMode().
+    * the register. The view must set this using setInlineEditingMode().
     */
   bool m_inlineEditMode;
 
