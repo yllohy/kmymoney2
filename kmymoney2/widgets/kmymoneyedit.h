@@ -22,12 +22,12 @@
 
 #include <qwidget.h>
 #include <qvbox.h>
+#include <qvalidator.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include <klineedit.h>
-#include <knumvalidator.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -38,7 +38,7 @@ class kMyMoneyCalculator;
 // This class is derived from KDoubleValidator and uses
 // the monetary symbols instead of the numeric symbols.
 // Also, it always accepts localized input.
-class kMyMoneyMoneyValidator : public KDoubleValidator {
+class kMyMoneyMoneyValidator : public QDoubleValidator {
   Q_OBJECT
 
 public:

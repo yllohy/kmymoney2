@@ -35,13 +35,13 @@
 #include "../mymoney/mymoneymoney.h"
 
 kMyMoneyMoneyValidator::kMyMoneyMoneyValidator(QObject * parent, const char * name) :
-  KDoubleValidator(parent, name)
+  QDoubleValidator(parent, name)
 {
 }
 
 kMyMoneyMoneyValidator::kMyMoneyMoneyValidator( double bottom, double top, int decimals,
                                                 QObject * parent, const char * name ) :
-  KDoubleValidator(bottom, top, decimals, parent, name)
+  QDoubleValidator(bottom, top, decimals, parent, name)
 {
 }
 
