@@ -52,15 +52,16 @@ class QLabel;
 
 class KLedgerViewInvestments : public KLedgerView
 {
+  Q_OBJECT
+public:
+
   enum investTransactionTypeE {
     AddShares = 100,
     RemoveShares,
     Deposit,
     Withdrawal
   };
-  
-  Q_OBJECT
-public: 
+
   KLedgerViewInvestments(QWidget *parent = NULL, const char *name = NULL);
   ~KLedgerViewInvestments();
 
