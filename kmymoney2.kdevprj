@@ -870,7 +870,7 @@ install_location=$$(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
 type=DATA
 
 [kmymoney2/html/Makefile.am]
-files=kmymoney2/html/home.html,kmymoney2/html/kmymoney2.css,kmymoney2/html/home_fr.fr.html
+files=kmymoney2/html/home.html,kmymoney2/html/kmymoney2.css,kmymoney2/html/home_fr.fr.html,kmymoney2/html/home_de.de.html
 sub_dirs=
 type=normal
 
@@ -878,6 +878,12 @@ type=normal
 dist=true
 install=true
 install_location=$$(kde_datadir)/kmymoney2/html/home.html
+type=DATA
+
+[kmymoney2/html/home_de.de.html]
+dist=true
+install=true
+install_location=$$(kde_datadir)/kmymoney2/html/home_de.de.html
 type=DATA
 
 [kmymoney2/html/home_fr.fr.html]

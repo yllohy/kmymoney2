@@ -1,7 +1,7 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
 
-EXTRA_DIST = home.html kmymoney2.css home_fr.fr.html 
+EXTRA_DIST = home.html kmymoney2.css home_fr.fr.html home_de.de.html 
 
 install-data-local:
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/html/
@@ -10,10 +10,13 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/kmymoney2.css $(kde_datadir)/kmymoney2/html/kmymoney2.css
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/html/
 	$(INSTALL_DATA) $(srcdir)/home_fr.fr.html $(kde_datadir)/kmymoney2/html/home_fr.fr.html
+	$(mkinstalldirs) $(kde_datadir)/kmymoney2/html/
+	$(INSTALL_DATA) $(srcdir)/home_de.de.html $(kde_datadir)/kmymoney2/html/home_de.de.html
 
 uninstall-local:
 	-rm -f $(kde_datadir)/kmymoney2/html/home.html
 	-rm -f $(kde_datadir)/kmymoney2/html/kmymoney2.css
 	-rm -f $(kde_datadir)/kmymoney2/html/home_fr.fr.html
+	-rm -f $(kde_datadir)/kmymoney2/html/home_de.de.html
 
 ####### kdevelop will overwrite this part!!! (end)############
