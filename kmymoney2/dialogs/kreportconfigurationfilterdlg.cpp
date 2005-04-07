@@ -37,7 +37,7 @@
 #include <qtabwidget.h>
 #include <qtextedit.h>
 #include <qlayout.h>
-#include <qapp.h>
+#include <qapplication.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
