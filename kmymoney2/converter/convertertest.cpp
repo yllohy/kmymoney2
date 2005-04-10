@@ -41,7 +41,10 @@ using namespace test;
 #include "../mymoney/storage/mymoneystoragexml.h"
 #include "../dialogs/mymoneyofxconnector.h"
 #include "../converter/mymoneyofxstatement.h"
+
+#define private public
 #include "../converter/webpricequote.h"
+#undef private
 
 ConverterTest::ConverterTest()
 {
@@ -376,7 +379,7 @@ void ConverterTest::testWebQuotes()
     
     q.launch("DIS");
     
-//     kdDebug(2) << "ConverterTest::testWebQuotes(): quote is " << qr.m_date.toString() << " | " << qr.m_price.toString() << endl;
+//    kdDebug(2) << "ConverterTest::testWebQuotes(): quote for " << q.m_symbol << " on " << qr.m_date.toString() << " is " << qr.m_price.toString() << " errors(" << qr.m_errors.count() << "): " << qr.m_errors.join(" /// ") << endl;
     
     // No errors allowed
     CPPUNIT_ASSERT(qr.m_errors.count() == 0);
@@ -390,7 +393,7 @@ void ConverterTest::testWebQuotes()
     
     q.launch("MF8AAUKS.L","Yahoo UK");
     
-//     kdDebug(2) << "ConverterTest::testWebQuotes(): quote is " << qr.m_date.toString() << " | " << qr.m_price.toString() << endl;
+//    kdDebug(2) << "ConverterTest::testWebQuotes(): quote for " << q.m_symbol << " on " << qr.m_date.toString() << " is " << qr.m_price.toString() << " errors(" << qr.m_errors.count() << "): " << qr.m_errors.join(" /// ") << endl;
         
     CPPUNIT_ASSERT(qr.m_errors.count() == 0);
     CPPUNIT_ASSERT(qr.m_date <= QDate::currentDate().addDays(1));
@@ -399,7 +402,7 @@ void ConverterTest::testWebQuotes()
     
     q.launch("EUR > USD","Yahoo Currency");
 
-//      kdDebug(2) << "ConverterTest::testWebQuotes(): quote is " << qr.m_date.toString() << " | " << qr.m_price.toString() << endl;
+//    kdDebug(2) << "ConverterTest::testWebQuotes(): quote for " << q.m_symbol << " on " << qr.m_date.toString() << " is " << qr.m_price.toString() << " errors(" << qr.m_errors.count() << "): " << qr.m_errors.join(" /// ") << endl;
     
     CPPUNIT_ASSERT(qr.m_errors.count() == 0);
     CPPUNIT_ASSERT(qr.m_date <= QDate::currentDate().addDays(1));
@@ -408,7 +411,7 @@ void ConverterTest::testWebQuotes()
   
     q.launch("50492","Globe & Mail");
 
-//      kdDebug(2) << "ConverterTest::testWebQuotes(): quote is " << qr.m_date.toString() << " | " << qr.m_price.toString() << endl;
+//    kdDebug(2) << "ConverterTest::testWebQuotes(): quote for " << q.m_symbol << " on " << qr.m_date.toString() << " is " << qr.m_price.toString() << " errors(" << qr.m_errors.count() << "): " << qr.m_errors.join(" /// ") << endl;
     
     CPPUNIT_ASSERT(qr.m_errors.count() == 0);
     CPPUNIT_ASSERT(qr.m_date <= QDate::currentDate().addDays(1));
@@ -417,7 +420,7 @@ void ConverterTest::testWebQuotes()
   
     q.launch("TDB647","MSN.CA");
 
-//      kdDebug(2) << "ConverterTest::testWebQuotes(): quote is " << qr.m_date.toString() << " | " << qr.m_price.toString() << endl;
+//    kdDebug(2) << "ConverterTest::testWebQuotes(): quote for " << q.m_symbol << " on " << qr.m_date.toString() << " is " << qr.m_price.toString() << " errors(" << qr.m_errors.count() << "): " << qr.m_errors.join(" /// ") << endl;
     
     CPPUNIT_ASSERT(qr.m_errors.count() == 0);
     CPPUNIT_ASSERT(qr.m_date <= QDate::currentDate().addDays(1));
