@@ -77,7 +77,7 @@ uninstall-local:
 # kde_toolbardir    Where general toolbar icons should go to.
 # kde_wallpaperdir  Where general wallpapers should go to.
 
-DISTCLEANFILES=kmymoney2
+DISTCLEANFILES=kmymoney2 *.html *.csv old.asc stripped.txt
 
 # set the include path for X, qt and KDE
 INCLUDES= $(all_includes) -I$(top_srcdir) -I. -I$(top_builddir)/kmymoney2/dialogs
