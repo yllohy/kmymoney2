@@ -1,8 +1,26 @@
+2005-04-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed config.h.in from repository because it is automatically generated
+  * Fixed initial setting of LED in gpg config dialog when key field is empty
+  * Added ability to turn off VAT handling for specific accounts
+
+2005-04-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added configure switch to turn off online tests by default
+  * Added this switch to the respective unit tests
+
+2005-04-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed generation of symbolic links to header files to support
+    building for different environments and using the header files
+    of the sandbox and not the one's installed in $KDEDIR/include/kmymoney
+  * Fixed buildsystem again to use top_builddir in some circumstances rather
+    than top_srcdir
+  * Make sure to remove temporary files during distclean
+  * Fixed distribution directory for conditional subdirectories (plugins)
+
 2005-04-06 Robert Wadley <robntina@users.sourceforge.net>
-  * Changed the size of the title text in welcome.html and whats_new.html to allow
-    for languages that require more space.
-  * Added the capability of using a background image for the welcome and whats_new
-    pages.
+  * Changed the size of the title text in welcome.html and whats_new.html
+    to allow for languages that require more space.
+  * Added the capability of using a background image for the welcome and
+    whats_new pages.
 
 2005-04-06 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix spurious re-display of split editor window
@@ -15,16 +33,16 @@
 
 2005-04-03 Ace Jones <acejones@users.sourceforge.net>
   * Fix QIF import to set shares as well as value.  This bug caused reports to
-    be all 0's until the file was saved and reloaded.  The reload ran it through
-    KMMView::fixTransactions(), which fixed the problem.
+    be all 0's until the file was saved and reloaded.  The reload ran it
+   through KMMView::fixTransactions(), which fixed the problem.
   * Added a custom '#' field which contains the unique transaction ID.  The QIF
-    importer will refuse to load a transaction which contains the same transaction
-    ID as an existing transaction.
+    importer will refuse to load a transaction which contains the same
+    transaction ID as an existing transaction.
   * Separated --enable-ofx into --enable-ofxplugin and --enable-ofxbanking.
-    ofxplugin enables ofx support only in the plugin.  It defualts ON, and should
-    be left on for the release.  ofxbanking enables OFX direct connect, and causes
-    the main application to require libofx.  This is experimental and is not
-    desired for production use.
+    ofxplugin enables ofx support only in the plugin.  It defualts ON, and
+    should be left on for the release.  ofxbanking enables OFX direct 
+    connect, and causes the main application to require libofx.  This 
+    is experimental and is not desired for production use.
   * More thorough error checking in KEnterScheduleDialog.
 
 2005-04-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
@@ -41,7 +59,7 @@
 2005-03-31 Ace Jones <acejones@users.sourceforge.net>
   * Added support for utf8-encoded QIF files
   * Cleaned up some character-based string handling in QIF imports
-  
+
 2005-03-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Set all values when entering scheduled transactions
   * Don't show 'More ...' in home view, if there are no more scheduled tx
