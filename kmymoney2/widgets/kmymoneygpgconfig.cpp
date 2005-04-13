@@ -115,7 +115,10 @@ void kMyMoneyGPGConfig::slotStatusChanged(bool state)
     m_idGroup->setEnabled(KGPGFile::GPGAvailable());
     m_recoveryGroup->setEnabled(KGPGFile::GPGAvailable());
     m_recoverKeyFound->setState((KLed::State) (KGPGFile::keyAvailable(RECOVER_KEY_ID) ? KLed::On : KLed::Off));
-    m_userKeyFound->setState((KLed::State) (KGPGFile::keyAvailable(m_userId->text()) ? KLed::On : KLed::Off));
+    if(m_userId->text().isEmpty())
+      m_userKeyFound->setState(KLed::Off);
+    else
+      m_userKeyFound->setState((KLed::State) (KGPGFile::keyAvailable(m_userId->text()) ? KLed::On : KLed::Off));
   } else {
     m_idGroup->setEnabled(false);
     m_recoveryGroup->setEnabled(false);
