@@ -67,7 +67,8 @@ dnl AC_PROG_YACC dnl __kdevelop__
 rm -rf kmymoney
 mkdir kmymoney
 
-MFILES=$(find $(pwd) -name Makefile.am);
+echo Generating symlinks to header files
+MFILES=$(find `pwd`/$srcdir -name Makefile.am);
 for mfile in $MFILES; do
   DIR=$(dirname $mfile)
   HFILES=$(grep -v noinst_HEADERS $mfile | grep _HEADERS)
