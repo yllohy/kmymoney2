@@ -320,7 +320,7 @@ public:
     *
     * @param acc reference to account for which the opening balance transaction
     *            should be retrieved
-    * @return QString id for the transaction, or QCString() if no transaction exists
+    * @return QCString id for the transaction, or QCString() if no transaction exists
     */
   QCString openingBalanceTransaction(const MyMoneyAccount& acc) const;
 
