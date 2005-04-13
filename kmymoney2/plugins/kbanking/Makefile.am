@@ -10,7 +10,7 @@ kde_module_LTLIBRARIES = kmm_kbanking.la
 kmm_kbanking_la_SOURCES = mymoneybanking.cpp
 
 # Libs needed by the plugin
-kmm_kbanking_la_LIBADD = @kbanking_libs@ ../libkmm_plugin.la $(top_srcdir)/kmymoney2/mymoney/libkmm_mymoney.la
+kmm_kbanking_la_LIBADD = @kbanking_libs@ ../libkmm_plugin.la $(top_builddir)/kmymoney2/mymoney/libkmm_mymoney.la
 
 # LD flags for the plugin
 # -module says: this is a module, i.e. something you're going to dlopen

@@ -10,7 +10,7 @@ kde_module_LTLIBRARIES = kmm_ofximport.la
 kmm_ofximport_la_SOURCES = ofximporterplugin.cpp
 
 # Libs needed by the plugin
-kmm_ofximport_la_LIBADD = @ofx_libs@ ../libkmm_plugin.la ../libkmm_plugin.la $(top_srcdir)/kmymoney2/mymoney/libkmm_mymoney.la
+kmm_ofximport_la_LIBADD = @ofx_libs@ ../libkmm_plugin.la ../libkmm_plugin.la $(top_builddir)/kmymoney2/mymoney/libkmm_mymoney.la
 
 # LD flags for the plugin
 # -module says: this is a module, i.e. something you're going to dlopen
