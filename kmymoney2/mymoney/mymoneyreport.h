@@ -28,7 +28,7 @@ class QDomDocument;
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "../mymoney/mymoneyaccount.h"
+#include <kmymoney/mymoneyaccount.h>
 #include "mymoneytransactionfilter.h"
 
 /**
