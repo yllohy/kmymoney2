@@ -15,6 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <qvaluelist.h>
 #include <qvaluevector.h>
 #include <qdom.h>
@@ -372,6 +376,7 @@ void ConverterTest::testOfxImport(void)
 
 void ConverterTest::testWebQuotes()
 {
+#ifdef PERFORM_ONLINE_TESTS
   try
   {
     WebPriceQuote q;
@@ -432,6 +437,7 @@ void ConverterTest::testWebQuotes()
   {
     CPPUNIT_FAIL(e->what());
   }
+#endif
 }
 
 void ConverterTest::testDateFormat()

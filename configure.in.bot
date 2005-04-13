@@ -48,6 +48,7 @@ echo ""
 
 if test x$no_cppunit = x; then
 	echo "CPPUNIT support:                       yes"
+	echo "        online tests:                  "$enable_online_tests;
 elif test x$no_cppunit = xuser; then
 	echo "CPPUNIT support:                       disabled"
 else
