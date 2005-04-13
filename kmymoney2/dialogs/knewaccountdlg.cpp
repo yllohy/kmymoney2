@@ -102,6 +102,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     accountNoEdit->setEnabled(false);
 
     m_institutionBox->hide();
+    m_qcheckboxNoVat->hide();
 
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Income));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Expense));
@@ -203,6 +204,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     startDateEdit->setDate(m_account.openingDate());
     accountNoEdit->setText(account.number());
     m_qcheckboxPreferred->setChecked(account.value("PreferredAccount") == "Yes");
+    m_qcheckboxNoVat->setChecked(account.value("NoVat") == "Yes");
 
     if(account.accountType() == MyMoneyAccount::Stock) {
       m_equity->loadEquity(account.currencyId());
@@ -448,6 +450,10 @@ void KNewAccountDlg::okClicked()
       m_account.setValue("PreferredAccount", "Yes");
     else
       m_account.deletePair("PreferredAccount");
+    if(m_qcheckboxNoVat->isChecked())
+      m_account.setValue("NoVat", "Yes");
+    else
+      m_account.deletePair("NoVat");
   }
   else
   {

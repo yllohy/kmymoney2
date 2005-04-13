@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>613</width>
-            <height>512</height>
+            <height>520</height>
         </rect>
     </property>
     <property name="caption">
@@ -39,7 +39,7 @@
                     </property>
                     <widget class="QLayoutWidget">
                         <property name="name">
-                            <cstring>layout40</cstring>
+                            <cstring>layout13</cstring>
                         </property>
                         <hbox>
                             <property name="name">
@@ -47,7 +47,7 @@
                             </property>
                             <widget class="QLayoutWidget">
                                 <property name="name">
-                                    <cstring>layout39</cstring>
+                                    <cstring>layout12</cstring>
                                 </property>
                                 <vbox>
                                     <property name="name">
@@ -200,6 +200,14 @@
                                             <string>Preferred Account</string>
                                         </property>
                                     </widget>
+                                    <widget class="QCheckBox">
+                                        <property name="name">
+                                            <cstring>m_qcheckboxNoVat</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>No auto-VAT-assignment</string>
+                                        </property>
+                                    </widget>
                                     <spacer>
                                         <property name="name">
                                             <cstring>spacer8</cstring>
@@ -213,7 +221,7 @@
                                         <property name="sizeHint">
                                             <size>
                                                 <width>20</width>
-                                                <height>40</height>
+                                                <height>20</height>
                                             </size>
                                         </property>
                                     </spacer>

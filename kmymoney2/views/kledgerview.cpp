@@ -825,6 +825,8 @@ void KLedgerView::amountChanged(const QString& value, int dir)
       MyMoneyAccount vacc = MyMoneyFile::instance()->account(split.accountId());
       checkVat = split.value().isZero() && !vacc.value("VatAccount").isEmpty();
     }
+    if(m_account.value("NoVat") == "Yes")
+      checkVat = false;
 
     // set either shares or value depending on the currencies
     m_split.setValue(val, m_transaction.commodity(), m_account.currencyId());
