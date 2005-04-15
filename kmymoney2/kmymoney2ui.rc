@@ -16,6 +16,8 @@
     </Menu>
     <Menu name="export" icon="fileexport" append="save_merge"><text>E&amp;xport</text>
       <Action name="file_export_qif"/>
+      <Separator/>
+      <Action name="file_export_template"/>
     </Menu>
     <Action name="file_view_info"/>
     <Action name="file_personal_data" icon="personal_data"/>

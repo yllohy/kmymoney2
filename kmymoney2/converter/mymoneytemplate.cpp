@@ -30,6 +30,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kio/netaccess.h>
+#include <ksavefile.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -155,7 +156,7 @@ const bool MyMoneyTemplate::loadDescription(void)
   return validMask == validHeader;
 }
 
-const bool MyMoneyTemplate::import(void(*callback)(int, int, const QString&))
+const bool MyMoneyTemplate::importTemplate(void(*callback)(int, int, const QString&))
 {
   m_progressCallback = callback;
   bool rc = !m_accounts.isNull();
@@ -272,3 +273,104 @@ void MyMoneyTemplate::signalProgress(int current, int total, const QString& msg)
     (*m_progressCallback)(current, total, msg);
 }
 
+const bool MyMoneyTemplate::exportTemplate(void(*callback)(int, int, const QString&))
+{
+  m_progressCallback = callback;
+
+  m_doc = QDomDocument("KMYMONEY-TEMPLATE");
+
+  QDomProcessingInstruction instruct = m_doc.createProcessingInstruction(QString("xml"), QString("version=\"1.0\" encoding=\"utf-8\""));
+  m_doc.appendChild(instruct);
+
+  QDomElement mainElement = m_doc.createElement("kmymoney-account-template");
+  m_doc.appendChild(mainElement);
+
+  QDomElement title = m_doc.createElement("title");
+  mainElement.appendChild(title);
+
+  QDomElement shortDesc = m_doc.createElement("shortdesc");
+  mainElement.appendChild(shortDesc);
+
+  QDomElement longDesc = m_doc.createElement("longdesc");
+  mainElement.appendChild(longDesc);
+
+  QDomElement accounts = m_doc.createElement("accounts");
+  mainElement.appendChild(accounts);
+
+  // addAccountStructure(accounts, MyMoneyFile::instance()->asset());
+  // addAccountStructure(accounts, MyMoneyFile::instance()->liability());
+  addAccountStructure(accounts, MyMoneyFile::instance()->income());
+  addAccountStructure(accounts, MyMoneyFile::instance()->expense());
+  // addAccountStructure(accounts, MyMoneyFile::instance()->equity());
+
+  return true;
+}
+
+const bool MyMoneyTemplate::addAccountStructure(QDomElement& parent, const MyMoneyAccount& acc)
+{
+  QDomElement account = m_doc.createElement("account");
+  parent.appendChild(account);
+
+  if(MyMoneyFile::instance()->isStandardAccount(acc.id()))
+    account.setAttribute(QString("name"), QString());
+  else
+    account.setAttribute(QString("name"), acc.name());
+  account.setAttribute(QString("type"), acc.accountType());
+
+  // FIXME: add tax flag stuff
+
+  // any child accounts?
+  if(acc.accountList().count() > 0) {
+    QValueList<MyMoneyAccount> list = MyMoneyFile::instance()->accountList(acc.accountList(), false);
+    QValueList<MyMoneyAccount>::Iterator it;
+    for(it = list.begin(); it != list.end(); ++it) {
+      addAccountStructure(account, *it);
+    }
+  }
+  return true;
+}
+
+const bool MyMoneyTemplate::saveTemplate(const KURL& url)
+{
+  QString filename;
+
+  if(!url.isValid()) {
+    qDebug("Invalid template URL '%s'", url.url().latin1());
+    return false;
+  }
+
+  if(url.isLocalFile()) {
+    filename = url.path();
+    KSaveFile qfile(filename, 0600);
+    if(qfile.status() == 0) {
+      saveToLocalFile(qfile.file());
+      if(!qfile.close()) {
+        throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
+      }
+    } else {
+      throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
+    }
+  } else {
+    KTempFile tmpfile;
+    saveToLocalFile(tmpfile.file());
+    if(!KIO::NetAccess::upload(tmpfile.name(), url, NULL))
+      throw new MYMONEYEXCEPTION(i18n("Unable to upload to '%1'").arg(url.url()));
+    tmpfile.unlink();
+  }
+  return true;
+}
+
+const bool MyMoneyTemplate::saveToLocalFile(QFile* qfile)
+{
+  QTextStream stream(qfile);
+#if KDE_IS_VERSION(3,2,0)
+  stream.setEncoding(QTextStream::UnicodeUTF8);
+  stream << m_doc.toString();
+#else
+  //stream.setEncoding(QTextStream::Locale);
+  QCString temp = m_doc.toCString();
+  stream << temp.data();
+#endif
+
+  return true;
+}

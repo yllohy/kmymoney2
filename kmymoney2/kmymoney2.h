@@ -136,6 +136,8 @@ protected slots:
   void slotStatementImportFinished(void);
 
   void slotLoadAccountTemplates(void);
+  void slotSaveAccountTemplates(void);
+
   void loadAccountTemplates(const QStringList& filelist);
 
   /**
@@ -456,7 +458,8 @@ private:
   KAction *actionGncImport;
   KAction *actionStatementImport;
   KAction *actionAqbImport;
-  KAction *actionLoadTemplate;
+  KAction* actionLoadTemplate;
+  KAction* actionSaveTemplate;
   KAction* actionSecurities;
   KAction* actionCurrencies;
   KAction* actionPrices;

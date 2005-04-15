@@ -41,7 +41,8 @@
 /**
   * This class represents an account template handler. It is capable
   * to read an XML formatted account template file and import it into
-  * the current engine.
+  * the current engine. Also, it can save the current account structure
+  * of the engine to an XML formatted template file.
   */
 class MyMoneyTemplate
 {
@@ -51,12 +52,16 @@ public:
   ~MyMoneyTemplate();
 
   const bool loadTemplate(const KURL& url);
-  const bool import(void(*callback)(int, int, const QString&));
+  const bool saveTemplate(const KURL& url);
+  const bool importTemplate(void(*callback)(int, int, const QString&));
+  const bool exportTemplate(void(*callback)(int, int, const QString&));
 
 protected:
   const bool loadDescription(void);
   const bool createAccounts(MyMoneyAccount& parent, QDomNode account);
   const bool setFlags(MyMoneyAccount& acc, QDomNode flags);
+  const bool saveToLocalFile(QFile* qfile);
+  const bool addAccountStructure(QDomElement& parent, const MyMoneyAccount& acc);
 
   /**
     * This method is used to update the progress information. It

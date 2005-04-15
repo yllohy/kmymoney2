@@ -211,6 +211,8 @@ void KMyMoney2App::initActions()
   actionStatementImport = new KAction(i18n("Statement file ..."), "", 0, this, SLOT(slotStatementImport()), actionCollection(), "file_import_statement");
 
   actionLoadTemplate = new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotLoadAccountTemplates()), actionCollection(), "file_import_template");
+  actionSaveTemplate = new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotSaveAccountTemplates()), actionCollection(), "file_export_template");
+
   actionQifExport = new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check");
 
@@ -765,13 +767,52 @@ void KMyMoney2App::slotLoadAccountTemplates(void)
   slotStatusMsg(prevMsg);
 }
 
+void KMyMoney2App::slotSaveAccountTemplates(void)
+{
+  QString prevMsg = slotStatusMsg(i18n("Importing account templates."));
+
+  QString newName = KFileDialog::getSaveFileName(KGlobalSettings::documentPath(),
+                                               i18n("*.kmt|KMyMoney template files\n"
+                                               "*.*|All files"), this, i18n("Save as..."));
+  //
+  // If there is no file extension, then append a .kmt at the end of the file name.
+  // If there is a file extension, make sure it is .kmt, delete any others.
+  //
+  if(!newName.isEmpty())
+  {
+    // find last . delimiter
+    int nLoc = newName.findRev('.');
+    if(nLoc != -1)
+    {
+      QString strExt, strTemp;
+      strTemp = newName.left(nLoc + 1);
+      strExt = newName.right(newName.length() - (nLoc + 1));
+      if((strExt.find("kmt", 0, FALSE) == -1))
+      {
+        strTemp.append("kmt");
+        //append to make complete file name
+        newName = strTemp;
+      }
+    }
+    else
+    {
+      newName.append(".kmt");
+    }
+
+    MyMoneyTemplate templ;
+    templ.exportTemplate(&progressCallback);
+    templ.saveTemplate(newName);
+  }
+  slotStatusMsg(prevMsg);
+}
+
 void KMyMoney2App::loadAccountTemplates(const QStringList& filelist)
 {
   QStringList::ConstIterator it;
   for(it = filelist.begin(); it != filelist.end(); ++it) {
     MyMoneyTemplate templ;
     if(templ.loadTemplate(*it)) {
-      templ.import(&progressCallback);
+      templ.importTemplate(&progressCallback);
     }
   }
 }
