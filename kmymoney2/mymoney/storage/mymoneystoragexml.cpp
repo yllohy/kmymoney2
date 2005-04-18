@@ -1015,7 +1015,8 @@ void MyMoneyStorageXML::writeSplit(QDomElement& splitElement, const MyMoneySplit
   splitElement.setAttribute(QString("value"), split.value().toString());
   splitElement.setAttribute(QString("shares"), split.shares().toString());
   splitElement.setAttribute(QString("memo"), split.memo());
-  splitElement.setAttribute(QString("id"), split.id());
+  // No need to write the split id as it will be re-assigned when the file is read
+  // splitElement.setAttribute(QString("id"), split.id());
   splitElement.setAttribute(QString("account"), split.accountId());
   splitElement.setAttribute(QString("number"), split.number());
 }
