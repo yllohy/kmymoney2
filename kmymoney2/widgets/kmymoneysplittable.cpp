@@ -20,6 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <kdecompat.h>
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -29,6 +31,10 @@
 #include <qapplication.h>
 #include <qtimer.h>
 #include <qlayout.h>
+
+#if QT_IS_VERSION(3,3,0)
+#include <qeventloop.h>
+#endif
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -205,6 +211,7 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
   bool rc = false;
   int row = currentRow();
   int lines = visibleHeight()/rowHeight(0);
+  QWidget* w;
 
   if(e->type() == QEvent::KeyPress && !isEditMode()) {
     rc = true;
@@ -261,10 +268,14 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
         break;
 
       default:
-        rc = false;
+        rc = true;
         if(KStdAccel::copy().contains(KKey(k))) {
           slotDuplicateSplit();
-          rc = true;
+
+        } else if ( k->text()[ 0 ].isPrint() ) {
+          w = slotStartEdit();
+          // make sure, the widget receives the key again
+          QApplication::sendEvent(w, e);
         }
         break;
     }
@@ -600,10 +611,10 @@ void kMyMoneySplitTable::slotDeleteSplit(void)
   }
 }
 
-void kMyMoneySplitTable::slotStartEdit(void)
+QWidget* kMyMoneySplitTable::slotStartEdit(void)
 {
   MYMONEYTRACER(tracer);
-  createEditWidgets();
+  return createEditWidgets();
 }
 
 void kMyMoneySplitTable::slotEndEdit(void)
@@ -639,6 +650,7 @@ void kMyMoneySplitTable::slotEndEdit(void)
   }
   this->setFocus();
   destroyEditWidgets();
+  slotSetFocus(currentRow()+1);
 }
 
 void kMyMoneySplitTable::slotCancelEdit(void)
@@ -663,9 +675,17 @@ void kMyMoneySplitTable::destroyEditWidgets(void)
   clearCellWidget(m_currentRow, 2);
   clearCellWidget(m_currentRow+1, 0);
   m_editMode = false;
+
+#if QT_IS_VERSION(3,3,0)
+  // make sure, that the widgets will be gone (really deleted) before we continue
+  QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 100);
+#else
+  qApp->processEvents(10);
+#endif
+
 }
 
-void kMyMoneySplitTable::createEditWidgets(void)
+QWidget* kMyMoneySplitTable::createEditWidgets(void)
 {
   MYMONEYTRACER(tracer);
 
@@ -744,6 +764,8 @@ void kMyMoneySplitTable::createEditWidgets(void)
   m_editCategory->setFocus();
   m_editCategory->selectAll();
   m_editMode = true;
+
+  return m_editCategory;
 }
 
 void kMyMoneySplitTable::addToTabOrder(QWidget* w)

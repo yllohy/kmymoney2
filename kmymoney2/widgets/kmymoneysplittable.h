@@ -92,7 +92,7 @@ protected:
   void endEdit(int row, int col, bool accept, bool replace );
 
   void resizeEvent(QResizeEvent*);
-  void createEditWidgets(void);
+  QWidget* createEditWidgets(void);
   void destroyEditWidgets(void);
 
   /**
@@ -135,7 +135,7 @@ public slots:
 
   virtual void setNumRows(int r);
 
-  void slotStartEdit(void);
+  QWidget* slotStartEdit(void);
   void slotEndEdit(void);
   void slotDeleteSplit(void);
   void slotCancelEdit(void);
