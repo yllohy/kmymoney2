@@ -404,6 +404,7 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
     CPPUNIT_ASSERT(t.id() == "T000000000000000003");
     CPPUNIT_ASSERT(t.postDate() == QDate(5,6,7));
 
+#ifdef KMM_DEBUG
     QFile g( "old.asc" );
     g.open( IO_WriteOnly );
     CPPUNIT_ASSERT(g.isOpen() == true);
@@ -412,7 +413,9 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
 
     MyMoneyStorageDump dumper;
     dumper.writeStream(st, &storage);
-    g.close();  
+    g.close();
+#endif
+
   } catch(MyMoneyException *e) {
     std::cout << e->what() << " in " << e->file() << ", line " << e->line() << std::endl;
     delete e;
