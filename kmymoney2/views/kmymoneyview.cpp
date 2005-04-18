@@ -1108,7 +1108,16 @@ const bool KMyMoneyView::saveFile(const KURL& url)
 
     if(url.isLocalFile()) {
       filename = url.path();
-      KSaveFile qfile(filename, 0600);
+      int fmode = 0600;
+      QFileInfo fi(filename);
+      if(fi.exists()) {
+        fmode |= fi.permission(QFileInfo::ReadGroup) ? 040 : 0;
+        fmode |= fi.permission(QFileInfo::WriteGroup) ? 020 : 0;
+        fmode |= fi.permission(QFileInfo::ReadOther) ? 004 : 0;
+        fmode |= fi.permission(QFileInfo::WriteOther) ? 002 : 0;
+      }
+
+      KSaveFile qfile(filename, fmode);
       if(qfile.status() == 0) {
         saveToLocalFile(qfile.file(), pWriter,plaintext);
         if(!qfile.close()) {
