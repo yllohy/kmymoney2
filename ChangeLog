@@ -1,3 +1,9 @@
+2005-04-18 Ace Jones <acejones@users.sourceforge.net>
+  Applied patch #1183190: Online quotes locale patch
+  Submitted by Andy Thaller <gandy@users.sourceforge.net>
+  * Fixes an error in online quotes on locales which use a different
+    comma and period placement scheme from the quote source.
+
 2005-04-17 Robert Wadley <robntina@users.sourceforge.net>
   * Added a background image
 
@@ -40,7 +46,7 @@
 2005-04-03 Ace Jones <acejones@users.sourceforge.net>
   * Fix QIF import to set shares as well as value.  This bug caused reports to
     be all 0's until the file was saved and reloaded.  The reload ran it
-   through KMMView::fixTransactions(), which fixed the problem.
+    through KMMView::fixTransactions(), which fixed the problem.
   * Added a custom '#' field which contains the unique transaction ID.  The QIF
     importer will refuse to load a transaction which contains the same
     transaction ID as an existing transaction.

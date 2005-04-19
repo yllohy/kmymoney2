@@ -341,7 +341,7 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _symbol,const QDate
       if ( date > QDate::currentDate() )
         date = QDate::currentDate();
 
-      item->setText(PRICE_COL, QString::number(_price,'f',m_pricePrecision));
+      item->setText(PRICE_COL, KGlobal::locale()->formatMoney(_price,NULL,m_pricePrecision));
       item->setText(DATE_COL, date.toString(Qt::ISODate));
       logStatusMessage(i18n("Price for %1 updated").arg(_symbol));
     }
