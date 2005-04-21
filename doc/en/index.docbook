@@ -1,22 +1,48 @@
 <?xml version="1.0" ?>
-<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.1-Based Variant V1.0//EN" "dtd/kdex.dtd" [
-  <!ENTITY kappname "KMyMoney2">
-  <!ENTITY % addindex "IGNORE">
-  <!ENTITY % English "INCLUDE"><!-- change language only here -->
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.1.2-Based Variant V1.0//EN" "dtd/kdex.dtd" [
+	<!ENTITY kappname "KMyMoney">
+	<!ENTITY % addindex "IGNORE">
+	<!ENTITY % English "INCLUDE"><!-- change language only here -->
 
-
-  <!-- Do not define any other entities; instead, use the entities
-       from kde-genent.entities and $LANG/user.entities. -->
+	<!ENTITY introduction SYSTEM "introduction.docbook">
+	<!ENTITY firsttime SYSTEM "firsttime.docbook">
+	<!ENTITY details-files SYSTEM "details-files.docbook">
+	<!ENTITY details-institutions SYSTEM "details-institutions.docbook">
+	<!ENTITY details-accounts SYSTEM "details-accounts.docbook">
+	<!ENTITY details-categories SYSTEM "details-categories.docbook">
+	<!ENTITY details-payees SYSTEM "details-payees.docbook">
+	<!ENTITY details-transactions SYSTEM "details-transactions.docbook">
+	<!ENTITY details-schedules SYSTEM "details-schedules.docbook">
+	<!ENTITY details-ledgers SYSTEM "details-ledgers.docbook">
+	<!ENTITY details-investments SYSTEM "details-investments.docbook">
+	<!ENTITY details-reconciliation SYSTEM "details-reconciliation.docbook">
+	<!ENTITY details-reports SYSTEM "details-reports.docbook">
+	<!ENTITY details-impexp SYSTEM "details-impexp.docbook">
+	<!ENTITY details-loans SYSTEM "details-loans.docbook">
+	<!ENTITY details-settings SYSTEM "details-settings.docbook">
+	<!ENTITY details-widgets SYSTEM "details-widgets.docbook">
+	<!ENTITY details-search SYSTEM "details-search.docbook">
+	<!ENTITY details-formats SYSTEM "details-formats.docbook">
+	<!ENTITY details-integrity SYSTEM "details-integrity.docbook">
+	<!ENTITY details-hbciofx SYSTEM "details-hbciofx">
+	<!ENTITY views-home SYSTEM "views-home.docbook">
+	<!ENTITY views-institutions SYSTEM "views-institutions.docbook">
+	<!ENTITY views-accounts SYSTEM "views-accounts.docbook">
+	<!ENTITY views-schedules SYSTEM "views-schedules.docbook">
+	<!ENTITY views-categories SYSTEM "views-categories.docbook">
+	<!ENTITY views-payees SYSTEM "views-payees.docbook">
+	<!ENTITY views-ledgers SYSTEM "views-ledgers.docbook">
+	<!ENTITY views-investments SYSTEM "views-investments.docbook">
+	<!ENTITY views-reports SYSTEM "views-reports.docbook">
+	<!ENTITY views-outbox SYSTEM "views-outbox.docbook">
+	<!ENTITY otherdoc SYSTEM "otherdoc.docbook">
+	<!ENTITY credits SYSTEM "credits.docbook">
 ]>
-<!-- kdoctemplate v0.8 October 1 1999
-     Minor update to "Credits and Licenses" section on August 24, 2000
-     Removed "Revision history" section on 22 January 2001   -->
-
 
 <book lang="&language;">
 
 <bookinfo>
-<title>The KMyMoney2 Handbook</title>
+<title>The KMyMoney Handbook</title>
 
 <authorgroup>
 <author>
@@ -27,6 +53,7 @@
 <address><email>mte@users.sourceforge.net</email></address>
 </affiliation>
 </author>
+
 <author>
 <firstname>Thomas</firstname>
 <surname>Baumgart</surname>
@@ -34,6 +61,64 @@
 <address><email>ipwizard@users.sourceforge.net</email></address>
 </affiliation>
 </author>
+
+<author>
+<firstname>Felix</firstname>
+<surname>Rodriguez</surname>
+<affiliation>
+<address><email>frodriguez@users.sourceforge.net</email></address>
+</affiliation>
+</author>
+
+<author>
+<firstname>Kevin</firstname>
+<surname>Tambasico</surname>
+<affiliation>
+<address><email>ktambascio@users.sourceforge.net</email></address>
+</affiliation>
+</author>
+
+<author>
+<firstname>Ace</firstname>
+<surname>Jones</surname>
+<affiliation>
+<address><email>acejones@users.sourceforge.net</email></address>
+</affiliation>
+</author>
+
+
+<author>
+<firstname>Michael</firstname>
+<surname>Caron</surname>
+<affiliation>
+<address><email>armadilloman@users.sourceforge.net</email></address>
+</affiliation>
+</author>
+
+<author>
+<firstname>Arni</firstname>
+<surname>Ingimundarson</surname>
+<affiliation>
+<address><email>arniing@users.sourceforge.net</email></address>
+</affiliation>
+</author>
+
+<author>
+<firstname>Laurent</firstname>
+<surname>Colonges</surname>
+<affiliation>
+<address><email>lcolonges@users.sourceforge.net</email></address>
+</affiliation>
+</author>
+
+<author>
+	<firstname>Marce</firstname>
+	<surname>Villarino</surname>
+	<affiliation>
+		<address><email>mvillarino@dubmail.net</email></address>
+	</affiliation>
+</author>
+
 </authorgroup>
 
 <!-- TRANS:ROLES_OF_TRANSLATORS -->
@@ -42,13 +127,15 @@
 <year>2000</year>
 <year>2001</year>
 <year>2003</year>
-<holder>Michael Edwardes</holder>
-<holder>Thomas Baumgart</holder>
+<year>2004</year>
+<year>2005</year>
+<holder>The KMyMoney Development Team</holder>
 </copyright>
+
 <!-- Translators: put here the copyright notice of the translation -->
 <!-- Put here the FDL notice.  Read the explanation in fdl-notice.docbook
      and in the FDL itself on how to use it. -->
-<legalnotice>&FDLNotice;</legalnotice>
+<!-- <legalnotice>&FDLNotice;</legalnotice> -->
 
 <!-- Date and version information of the documentation
 Don't forget to include this last date and this last revision number, we
@@ -57,8 +144,8 @@ Please respect the format of the date (DD/MM/YYYY) and of the version
 (V.MM.LL), it could be used by automation scripts.
 Do NOT change these in the translation. -->
 
-<date>22/06/2003</date>
-<releaseinfo>0.2.0</releaseinfo>
+<date>01/01/1970</date>
+<releaseinfo>0.8</releaseinfo>
 
 <!-- Abstract about this handbook -->
 
@@ -67,17 +154,9 @@ Do NOT change these in the translation. -->
 &kappname;, the personal finances manager for KDE.
 </para>
 <para>
-  This handbook describes &kappname; version 0.5.x.
-</para>
-<para>
-  WARNING: This handbook is not finished and may not accurately describe the current
-  version of &kappname;
+  This handbook describes &kappname; version 0.8.
 </para>
 </abstract>
-
-<!-- This is a set of Keywords for indexing by search engines.
-Please at least include KDE, the KDE package it is in, the name
- of your application, and a few relevant keywords. -->
 
 <keywordset>
 <keyword>KDE</keyword>
@@ -93,856 +172,43 @@ Please at least include KDE, the KDE package it is in, the name
 
 </bookinfo>
 
-<!-- The contents of the documentation begin here.  Label
-each chapter so with the id attribute. This is necessary for two reasons: it
-allows you to easily reference the chapter from other chapters of your
-document, and if there is no ID, the name of the generated HTML files will vary
-from time to time making it hard to manage for maintainers and for the CVS
-system. Any chapter labelled (OPTIONAL) may be left out at the author's
-discretion. Other chapters should not be left out in order to maintain a
-consistent documentation style across all KDE apps. -->
-
-<chapter id="introduction">
-<title>Introduction</title>
-
-<!-- The introduction chapter contains a brief introduction for the
-application that explains what it does and where to report
-problems. Basically a long version of the abstract.  Don't include a
-revision history. (see installation appendix comment) -->
-
-<para>
-  &kappname; is a program that lets you manage your finances similar to other
-  well known software such as GNU Cash, Intuit's Quicken and Microsoft's Money.
-</para>
-<para>
-  In it's simplest form &kappname; can be used to simulate an account held
-  at a bank, e.g a current account.  But as with many of the available
-  software for managing your finances, &kappname; can do much more.
-</para>
-<para>&kappname; is specifically
-  built for the KDE desktop environment and utilises the many advanced features
-  provided by the magnificent KDE.
-</para>
-<para>
-  See the homepage <ulink url="http://kmymoney2.sourceforge.net">kmymoney2.sourceforge.net</ulink>
-  for the most current sources and binaries and for more information on how to report
-  bugs and request features.
-</para>
-<para>
-  TODO: more general overview of how &kappname; works.
-</para>
-</chapter>
-
-<chapter id="exploreid"><title id="exploreid.title">Accounting principles. (In the eyes of &kappname;).</title>
-<para>
-  Within &kappname; a number of different terms is used. Their role and usage is
-  explained in the following.
-</para>
-<sect1 id="bankid"><title id="bankid.title">Explaining Institutions.</title>
-<para>
-  An institution is used to represent a bank or other descriptive container
-  that would hold accounts.  Typical banks here in the UK could be Natwest
-  or Barclays.  An institution could also represent a Building Society or
-  even something descriptive such as family accounts which are all cash but
-  would be useful to keep track of.
-</para>
-<para>
-  Some data is stored for each institution to provide useful information
-  for both &kappname; and the user.  The information stored is:
-  <itemizedlist>
-  <listitem>
-    <para>The name of the institution.</para>
-  </listitem>
-  <listitem>
-    <para>The address of the institution.</para>
-  </listitem>
-  <listitem>
-    <para>The sort code or number of the branch.</para>
-  </listitem>
-  <listitem>
-    <para>A list of the accounts.</para>
-  </listitem>
-  </itemizedlist>
-</para>
-<para>
-  None of the information stored is currently used by &kappname;, (except for
-  the list of accounts obviously), but future incarnations may include further
-  information and may use the above information in online banking (e.g the
-  name, and sort code fields).
-</para>
-</sect1>
-
-<sect1 id="accountid"><title id="accountid.title">Explaining Accounts.</title>
-<para>
-  Accounts are used to hold all the data needed to process transactions and
-  are analogous to an account held at a typical bank. Accounts can be organized
-  in an arbitrary hierarchy where each account has a parent account. The top
-  most parent accounts are 'Assets' and 'Liabilities'. These are fixed accounts
-  which cannot be removed.
-</para>
-<para>
-  &kappname; can currently
-  process the following types of accounts:
-  <itemizedlist>
-  <listitem>
-  <para>Asset accounts to manage your house, car or art collection</para>
-  </listitem>
-  <listitem>
-  <para>Checking accounts to manage activities on your checking account e.g. payments, checks and ec-card purchases.</para>
-  </listitem>
-  <listitem>
-  <para>Savings accounts to manage activities on your savings accounts</para>
-  </listitem>
-  <listitem>
-  <para>Credit Card accounts to manage activities on your credit cards</para>
-  </listitem>
-  <listitem>
-  <para>Cash accounts to manage activities in your wallet</para>
-  </listitem>
-  <listitem>
-  <para>Liability accounts to manage your mortgages etc.</para>
-  </listitem>
-  </itemizedlist>
-</para>
-<para>
-  Future versions will have
-  support for more account types including Investment, Loan, Money-Market etc.
-</para>
-<para>
-  Data stored in an account is as follows:
-  <itemizedlist>
-  <listitem>
-    <para>The name of the account.</para>
-  </listitem>
-  <listitem>
-    <para>The account number.</para>
-  </listitem>
-  <listitem>
-    <para>The account type.</para>
-  </listitem>
-  <listitem>
-    <para>A brief description of the account.</para>
-  </listitem>
-  <listitem>
-    <para>The account balance.</para>
-  </listitem>
-  <listitem>
-    <para>Reconciliation information.</para>
-  </listitem>
-  </itemizedlist>
-</para>
-<para>
-  The brief description of the account can be used to differentiate the accounts
-  in a manner more suited to humans and can contain descriptive text such as
-  'My Personal Current Account' and 'My Business Current Account'.
-  Reconciliation information is stored for when you balance the account and stores
-  the date the last reconciliation was performed.  For more information on how to
-  reconcile an account see <link linkend="rectutid" endterm="rectutid.title"></link>.
-</para>
-</sect1>
-
-<sect1 id="transid"><title id="transid.title">Explaining Transactions.</title>
-<para>
-  The transaction is the most integral part of the accounting process and it
-  contains information for every withdrawal and payment you make from an
-  account.  Each time you make a withdrawal or payment certain information
-  must be recorded and other optional information may be recorded to help
-  when analysing your spending patterns.  The information stored by &kappname;
-  is:
-  <itemizedlist>
-  <listitem>
-    <para>The transaction number.</para>
-  </listitem>
-  <listitem>
-    <para>A brief description of the transaction.</para>
-  </listitem>
-  <listitem>
-    <para>The transaction amount.</para>
-  </listitem>
-  <listitem>
-    <para>The date the transaction occured on.</para>
-  </listitem>
-  <listitem>
-    <para>How the transaction was performed.</para>
-  </listitem>
-  <listitem>
-    <para>The category for the transaction.</para>
-  </listitem>
-  <listitem>
-    <para>The payee.</para>
-  </listitem>
-  <listitem>
-    <para>The state of the transaction.</para>
-  </listitem>
-  </itemizedlist>
-</para>
-<para>
-  The transaction number is optional and is used as a reference when creating
-  certain types of transactions e.g Cheque.  You can create a brief description
-  of the transaction for personal use.  The transaction can be performed many
-  different ways and the action is stored along with the other data.  &kappname;
-  currently supports up to five different methods depending on the account type;
-  <itemizedlist>
-  <listitem>
-    <para>Cheque payment.</para>
-  </listitem>
-  <listitem>
-    <para>General deposit.</para>
-  </listitem>
-  <listitem>
-    <para>Transfer.</para>
-  </listitem>
-  <listitem>
-    <para>General withdrawal.</para>
-  </listitem>
-  <listitem>
-    <para>A.T.M.</para>
-  </listitem>
-  </itemizedlist>
-</para>
-<para>
-  The category is there to provide usefull information on why the transaction
-  was performed and will be used by &kappname; to provide easy ways of seeing
-  how you spend your money over time. Categories - just like accounts - are
-  organized in a hierarchical structure. The top most entries that all
-  categories are derived from are 'Expense' and 'Income'.
-  Typical
-  categories are provided for you when &kappname; creates a new file and more
-  can be created or edited within the categories dialog.  (See
-  <link linkend="catid" endterm="catid.title"></link> and
-  <link linkend="catpayid" endterm="catpayid.title"></link> for further information).
-  To facilitate in balancing the account, (see
-  <link linkend="rectutid" endterm="rectutid.title"></link>) the transaction state
-  is stored to indicate whether it is reconciled, cleared or neither.  A single
-  letter is used to represent the state and can be one of 'R', 'C' or ' '.
-</para>
-</sect1>
-
-<sect1 id="catid"><title id="catid.title">Explaining Categories.</title>
-<para>
-  A category as used by &kappname; provides a convenient way for you to group
-  your transactions.  There are two top level groups of categories; Income and
-  Expense.  These two groups are further divided into useful categories for
-  you to use such as Bills which is a category of the Expense group.  Each
-  category can be subdivided into more categories giving a more refined analysis
-  of your spending habits, e.g Bills could be further split by having sub
-  categories such as Rent, Electricity etc.
-</para>
-<para>
-  When you have entered several transaction using these categories you will
-  then be able to analyse your spending habits by viewing different graphs
-  and reports detailing where you spend your money and what on.  (Not
-  currently implemented in &kappname;).
-</para>
-<para>
-  When you create a new &kappname; file a default set of categories is
-  created for you to use and this list can be changed by editing the
-  file $KDEDIR/share/apps/kmymoney2/default_accounts.dat.  This file
-  is in plain text, the format of which is explained within the file.
-</para>
-<para>
-  As categories are handled as regular accounts, the same information
-  is stored for them.
-  You can edit the category data within
-  KMyMoney2 by using the category editor.  Please see
-  <link linkend="catpayid" endterm="catpayid.title"></link> for more
-  information.
-</para>
-</sect1>
-
-<sect1 id="payid"><title id="payid.title">Explaining Payees.</title>
-<para>
-  A payee is quite simply the person to whom you paid out the money or from
-  whom you got the money.  The payee does not necessarily have to be an
-  individual but could be a company as is often the case.  When creating the
-  transaction you can specify which payee the amount is to or from.
-</para>
-<para>
-  &kappname; stores information, other than the name, about each payee you
-  enter into the system which can then be altered later.  (See
-  <link linkend="catpayid" endterm="catpayid.title"></link>).  This data
-  provides useful information about each payee you use and can be analysed
-  to see where you spend your money and to whom.  (Currently only implemented
-  in &kappname;'s payee editor).
-</para>
-</sect1>
-</chapter>
-
-<chapter id="basicid"><title id="basicid.title">KMyMoney2 basics.</title>
-<sect1 id="startid"><title id="startid.title">Using &kappname; for the first time.</title>
-<para>
-  When you first run &kappname;, either from the start menu or by typing kmymoney2
-  in a terminal or even in the 'Run Dialog' (Alt-F2), you will be presented with the
-  Start Dialog.
-</para>
-<para>
-  <screenshot>
-  	<mediaobject>
-	    <imageobject>
-	      <imagedata fileref="startdialog.png" format="PNG"></imagedata>
-  	  </imageobject>
-	  </mediaobject>
-  </screenshot>
-</para>
-<para>
-  From this dialog you can choose whether to create a new file, open a file or
-  use a predefined template or wizard.  However, with this version of
-  &kappname; there is only one template; Blank, which creates a new empty file.
-</para>
-<para>
-  To create a new file, click on the
-  <guiicon><inlinemediaobject>
-  <imageobject>
-    <imagedata fileref="blank_icon.png" format="PNG"></imagedata>
-  </imageobject>
-  <textobject>
-    <phrase>Blank</phrase>
-  </textobject>
-  </inlinemediaobject></guiicon>
-  icon.  This will create a new empty
-  file for you to work on.  You will then be prompted to enter some information
-  about yourself.  Please enter all fields you feel relevant, but none are
-  required.  Once you have entered the details click on the <guibutton>OK</guibutton>
-  button and you are then ready to start creating institutions and accounts.
-</para>
-</sect1>
-
-<sect1 id="mainwndid"><title id="mainwndid.title">The Institutions/Accounts View.</title>
-<para>
-  <screenshot>
-  	<mediaobject>
-	    <imageobject>
-	      <imagedata fileref="mainwindow.png" format="PNG"></imagedata>
-  	  </imageobject>
-	  </mediaobject>
-  </screenshot>
-</para>
-<para>
-  The window consists of the menu bar at the top and below that the
-  toolbar. (See <link linkend="kmymoney2-mainwindow">The Menu Bar</link>).
-  These two items are the main entry point to starting the available functions
-  in &kappname;.
-</para>
-<para>
-  This is the main entry point to all of &kappname;'s functions and contents.
-  It shows the institutions and accounts in a hierarchical list view with the
-  institution being at the root.  Differing from other programs you cannot
-  create accounts as 'children' of other accounts, an account can only belong
-  to one institution.
-</para>
-
-<sect2 id="newbankid"><title id="newbankid.title">Creating a new institution.</title>
-<para>
-  To create a new institution choose either <guimenu>Institution</guimenu>
-  <guimenuitem>Add new..</guimenuitem> or click on the
-  <guiicon><inlinemediaobject>
-  <imageobject>
-    <imagedata fileref="newbank_icon.png" format="PNG"></imagedata>
-  </imageobject>
-  <textobject>
-    <phrase>New Bank</phrase>
-  </textobject>
-  </inlinemediaobject></guiicon> icon located on the toolbar.  This will bring
-  up the create new institution dialog and prompt you to enter the needed
-  information.
-</para>
-<para>
-  <screenshot>
-  	<mediaobject>
-	    <imageobject>
-	      <imagedata fileref="newbank.png" format="PNG"></imagedata>
-  	  </imageobject>
-	  </mediaobject>
-  </screenshot>
-</para>
-<para>
-  Enter the institutions name and any other information you wish and click
-  on OK.  The institution will then be created and added to the list.  To
-  edit the institution details you are able to right click on the institution
-  and choose Edit...
-</para>
-</sect2>
-
-<sect2 id="newaccountid"><title id="newaccountid.title">Creating a new account.</title>
-<para>
-  To create a new account, first select the institution you wish to create the
-  account in and the choose either <guimenu>Account</guimenu>
-  <guimenuitem>Add new account..</guimenuitem> or click on the
-  <guiicon><inlinemediaobject>
-  <imageobject>
-    <imagedata fileref="newaccount_icon.png" format="PNG"></imagedata>
-  </imageobject>
-  <textobject>
-    <phrase>New Account</phrase>
-  </textobject>
-  </inlinemediaobject></guiicon> icon located on the toolbar.  This will bring
-  up the create new account dialog and prompt you to enter the needed
-  information.
-</para>
-<para>
-  <screenshot>
-  	<mediaobject>
-	    <imageobject>
-	      <imagedata fileref="newaccount.png" format="PNG"></imagedata>
-  	  </imageobject>
-	  </mediaobject>
-  </screenshot>
-</para>
-<para>
-  The only required field is the account name which can distinguish it from
-  other accounts in the same institution.  The other fields are optional and
-  are described in detail below.
-  <variablelist>
-  <varlistentry><term>Number</term>
-  <listitem>
-  <para>
-    This is the account number. This is used by banks to differentiate between
-    account held at their branch.  If you're not creating a bank account just
-    leave this field empty.
-  </para>
-  </listitem>
-  </varlistentry>
-  <varlistentry><term>Account type</term>
-  <listitem>
-  <para>
-    &kappname; only supports one type at the moment - Current, so this choice
-    is disabled until more account types appear.  Do not worry if the account
-    you wish to create is not a current account because &kappname; does not
-    distinguish between account types at the moment and treats current like
-    a Cash account under Intuit's Quicken.
-  </para>
-  </listitem>
-  </varlistentry>
-  <varlistentry><term>Opening details</term>
-  <listitem>
-  <para>
-    When creating the account you can specify an opening balance for creating
-    an electronic version of an account that already exists.  Just enter the
-    date the account was created, (usually the current date), and the current
-    balance of your account.  This information can be gathered from your
-    last bank statement if needed.  If you enter a balance other than 0 a
-    transaction will be created for you with the payee being Opening Balance
-    and added to the account being created.
-  </para>
-  </listitem>
-  </varlistentry>
-  <varlistentry><term>Notes</term>
-  <listitem>
-  <para>
-    To provide more useful information when viewing the account details you can
-    enter additional information here.  Any text typed here is simply stored
-    and is not used in any way.
-  </para>
-  </listitem>
-  </varlistentry>
-  </variablelist>
-</para>
-<para>
-  To create the account simply click on the OK button and the account will be
-  created and added to the list.  To edit the account details you can right
-  click on the account and choose Edit...
-</para>
-<para>
-  To view the register for the account
-  choose either <guimenu>Account</guimenu>
-  <guimenuitem>Open register...</guimenuitem> or click on the
-  <guiicon><inlinemediaobject>
-  <imageobject>
-    <imagedata fileref="openaccount_icon.png" format="PNG"></imagedata>
-  </imageobject>
-  <textobject>
-    <phrase>Open Account</phrase>
-  </textobject>
-  </inlinemediaobject></guiicon> icon located on the toolbar.  You can also
-  right click on the account and choose Open register from the popup menu.
-</para>
-</sect2>
-</sect1>
-
-<sect1 id="regwndid"><title id="regwndid.title">The Register View.</title>
-  <screenshot>
-  	<mediaobject>
-	    <imageobject>
-	      <imagedata fileref="transwindow.png" format="PNG"></imagedata>
-  	  </imageobject>
-	  </mediaobject>
-  </screenshot>
-<para>
-  The register view is quite possibly, and appropriately :-), one of the most
-  complicated areas within &kappname;.  This is where you enter all the
-  deposits and credits made to your account.  The view is arranged vertically
-  with the most current transactions appearing at the end of the list at the
-  bottom of the screen.  The list is sorted by date and at the moment this
-  cannot be changed.  Each transaction covers two lines.
-</para>
-<para>
-  To enter a new transaction click on one of the transaction 'lines' and
-  several editable boxes will appear to let you enter the transaction details,
-  and two buttons, (Enter, Cancel), will appear.
-  Each of these input fields and their expected input is detailed below in
-  order reading from left to right, top to bottom (same as a book).
-</para>
-<para>
-  <variablelist>
-  <varlistentry><term>Date</term>
-  <listitem>
-  <para>
-    Click on the Date field to enter the date of the transaction.  By default
-    the current date will be inserted but you can alter this by clicking on the
-    'down' icon to bring up the calendar input box.  Navigate to the date you
-    seek and click on the appropriate number, the date will then be inserted
-    into the field.
-  </para>
-  </listitem>
-  </varlistentry>
-  <varlistentry><term>Method</term>
-  <listitem>
-  <para>
-    This choice lets you enter how the transaction was made.  You have 5 choices:
-  </para>
-  <para>
-    <itemizedlist>
-    <listitem>
-      <para>Cheque payment.</para>
-    </listitem>
-    <listitem>
-      <para>General deposit.</para>
-    </listitem>
-    <listitem>
-      <para>Transfer.</para>
-    </listitem>
-    <listitem>
-      <para>General withdrawal.</para>
-    </listitem>
-    <listitem>
-      <para>A.T.M.</para>
-    </listitem>
-    </itemizedlist>
-  </para>
-  <para>
-    Select the appropriate method from the choice box.
-  </para>
-  </listitem>
-  </varlistentry>
-  <varlistentry><term>Payee</term>
-  <listitem>
-  <para>
-    To enter the payee you can either select a previously created one from the
-    drop down choice or type in a new name.  When you enter the transaction
-    into the system the new payee's name will be added to the global list.  The
-    payee field can be left empty to indicate an unknown payee, (or you forgot)
-    and can be edited later.  See <link linkend="payid" endterm="payid.title"></link>
-    for more information on payees.
-  </para>
-  </listitem>
-  </varlistentry>
-  <varlistentry><term>Amount (Payment or Deposit)</term>
-  <listitem>
-  <para>
-    Depending upon the method you chose for the transaction you now need to
-    enter the transaction's amount.  Click on the appropriate field and enter
-    the amount.
-  </para>
-  </listitem>
-  </varlistentry>
-  <varlistentry><term>Number</term>
-  <listitem>
-  <para>
-    This field lets you enter a number for the transaction where it is
-    appropriate, e.g Cheque.  If you chose Cheque from the method choice a
-    number will appear when you click on the field and it is the 'next' cheque
-    number.  To change this just enter a new number.  The next cheque number
-    will follow this new number.
-  </para>
-  </listitem>
-  </varlistentry>
-  <varlistentry><term>Category</term>
-  <listitem>
-  <para>
-    You can choose a category for the transaction from this drop down choice.
-    See <link linkend="catid" endterm="catid.title"></link> for more information
-    on categories.  Each category is represented by one line and can consist
-    of two parts. The major and sub category.  These are separated by the colon
-    ':' character.  If only one part is specified then it is just the major
-    category.
-  </para>
-  </listitem>
-  </varlistentry>
-  </variablelist>
-  </para>
-<para>
-    All that remains for you to do now is to enter the transaction into the
-    account by pressing the enter button, or, if you change your mind, to press
-    the cancel button returning you to the list.
-</para>
-<para>
-    To edit a transaction you need to click on the transaction you wish to edit
-    and change the details.  Press enter to commit the changes you made.
-</para>
-<para>
-    To delete a transaction, click on the transaction you wish to delete and
-    click on the delete button to permanently remove that transaction from the
-    account.  You will be prompted for confirmation showing the payee name.
-</para>
-<para>
-  TODO: talk about transfers.
-</para>
-</sect1>
-
-<sect1 id="catpayid"><title id="catpayid.title">The Category and Payee editors.</title>
-<para>
-</para>
-</sect1>
-</chapter>
-
-<chapter id="tutid"><title id="tutid.title">How do I do... ?</title>
-<sect1 id="rectutid"><title id="rectutid.title">Balancing the account.</title>
-<para>
-</para>
-</sect1>
-
-<sect1 id="imptutid"><title id="imptutid.title">Importing and Exporting.</title>
-<para>
-Importing and exporting transactions allows you to collect transactions you
-received through downloads from your bank or send transactions to other
-applications.
-</para>
-<para>
-Currently, &kappname; supports the QIF (Quicken Interchange Format)
-<!-- and CSV (Comma Seperated Values) -->
-format.
-</para>
-</sect1>
-
-<sect1 id="findtutid"><title id="findtutid.title">Finding transactions.</title>
-<para>
-</para>
-</sect1>
-
-</chapter>
-
-<chapter id="commands">
-<title>Command Reference</title>
-
-<!-- (OPTIONAL, BUT RECOMMENDED) This chapter should list all of the
-application windows and their menubar and toolbar commands for easy reference.
-Also include any keys that have a special function but have no equivalent in the
-menus or toolbars. This may not be necessary for small apps or apps with no tool
-or menu bars. -->
-
-<sect1 id="kmymoney2-mainwindow">
-<title>The main &kappname; window</title>
-<para></para>
-
-<sect2>
-<title>The File Menu</title>
-<para>
-<variablelist>
-<varlistentry>
-<term><menuchoice>
-<shortcut>
-<keycombo><keycap>Ctrl</keycap><keycap>n</keycap></keycombo>
-</shortcut>
-<guimenu>File</guimenu>
-<guimenuitem>New</guimenuitem>
-</menuchoice></term>
-<listitem><para><action>Creates a new document</action></para></listitem>
-</varlistentry>
-<varlistentry>
-<term><menuchoice>
-<shortcut>
-<keycombo><keycap>Ctrl</keycap><keycap>s</keycap></keycombo>
-</shortcut>
-<guimenu>File</guimenu>
-<guimenuitem>Save</guimenuitem>
-</menuchoice></term>
-<listitem><para><action>Saves the document</action></para></listitem>
-</varlistentry>
-<varlistentry>
-<term><menuchoice>
-<shortcut>
-<keycombo><keycap>Ctrl</keycap><keycap>q</keycap></keycombo>
-</shortcut>
-<guimenu>File</guimenu>
-<guimenuitem>Quit</guimenuitem>
-</menuchoice></term>
-<listitem><para><action>Quits</action> &kappname;</para></listitem>
-</varlistentry>
-</variablelist>
-</para>
-
-</sect2>
-
-</sect1>
-</chapter>
-
-
-<chapter id="faq">
-<title>Questions and Answers</title>
-
-<!-- (OPTIONAL but recommended) This chapter should include all of the silly
-(and not-so-silly) newbie questions that fill up your mailbox. This chapter
-should be reserved for BRIEF questions and answers! If one question uses more
-than a page or so then it should probably be part of the
-"Using this Application" chapter instead. You should use links to
-cross-reference questions to the parts of your documentation that answer them.
-This is also a great place to provide pointers to other FAQ's if your users
-must do some complicated configuration on other programs in order for your
-application work. -->
 <!--
-&reporting.bugs;
-&updating.documentation;
+	the main book
 -->
+&introduction;
+&firsttime;
+&details-files;
+&details-institutions;
+&details-accounts;
+&details-categories;
+&details-payees;
+&details-transactions;
+&details-schedules;
+&details-ledgers;
+&details-investments;
+&details-reconciliation;
+&details-reports;
+&details-impexp;
+&details-loans;
+&details-settings;
+&details-widgets;
+&details-search;
+&details-formats;
+&details-integrity;
+&views-home;
+&views-institutions;
+&views-accounts;
+&views-schedules;
+&views-categories;
+&views-payees;
+&views-ledgers;
+&views-investments;
+&views-reports;
+&views-outbox;
+&otherdoc;
+&credits;
 
-<qandaset id="faqlist">
-<qandaentry>
-<question>
-<para>My Mouse doesn't work. How do I quit &kappname;?</para>
-</question>
-<answer>
-<para>You silly goose! Check out the <link linkend="commands">Commands
-Section</link> for the answer.</para>
-</answer>
-</qandaentry>
-<qandaentry>
-<question>
-<para>Why can't I twiddle my documents?</para>
-</question>
-<answer>
-<para>You can only twiddle your documents if you have the foobar.lib
-installed.</para>
-</answer>
-</qandaentry>
-</qandaset>
-</chapter>
 
-<chapter id="credits">
-
-<!-- Include credits for the programmers, documentation writers, and
-contributors here. The license for your software should then be included below
-the credits with a reference to the appropriate license file included in the KDE
-distribution. -->
-
-<title>Credits and License</title>
-
-<para>
-&kappname;
-</para>
-<para>
-Program copyright 1997 John Q. Hacker <email>jqh@kde.org</email>
-</para>
-<para>
-Contributors:
-<itemizedlist>
-<listitem><para>Konqui the KDE Dragon <email>konqui@kde.org</email></para>
-</listitem>
-<listitem><para>Tux the Linux Penguin <email>tux@linux.org</email></para>
-</listitem>
-</itemizedlist>
-</para>
-
-<para>
-Documentation copyright 1999 George N. Ugnacious <email>gnu@kde.org</email>
-</para>
-<para>
-Translations done by:
-<itemizedlist>
-<listitem>
-<para>Babel D. Fish <email>babelfish@kde.org</email> (Sanskrit)</para>
-</listitem>
-</itemizedlist>
-</para>
-
-&underFDL;               <!-- FDL: do not remove -->
-
-<!-- Determine which license your application is licensed under,
-     and delete all the remaining licenses below:
-
-     (NOTE:  All documentation are licensed under the FDL, 
-     regardless of what license the application uses) -->
-
-&underGPL;        	 <!-- GPL License -->
-&underBSDLicense;        <!-- BSD License -->
-&underArtisticLicense;   <!-- BSD Artistic License -->
-&underX11License;        <!-- X11 License  -->
-
-</chapter>
-
-<appendix id="installation">
-<title>Installation</title>
-
-<sect1 id="getting-oui">
-<title>How to obtain Oui</title>
-
-<para>
-&kappname; is part of the KDE project
-<ulink url="http://www.kde.org">http://www.kde.org</ulink>.
-&kappname; can be found in the kdeutils package on
-<ulink url="ftp://ftp.kde.org/pub/kde/">ftp://ftp.kde.org/pub/kde/</ulink>, the
-main ftp site of the KDE project. </para>
-</sect1>
-
-<sect1 id="requirements">
-<title>Requirements</title>
-
-<!--
-List any special requirements for your application here. This should include:
-.Libraries or other software that is not included in kdesupport,
-kdelibs, or kdebase.
-.Hardware requirements like amount of RAM, disk space, graphics card
-capabilities, screen resolution, special expansion cards, etc.
-.Operating systems the app will run on. If your app is designed only for a
-specific OS, (you wrote a graphical LILO configurator for example) put this
-information here.
--->
-
-<para>
-In order to successfully use &kappname;, you need KDE 1.1. Foobar.lib is required
-in order to support the advanced &kappname; features. &kappname; uses about 5 megs of
-memory to run, but this may vary depending on your platform and
-configuration.
-</para>
-
-<para>
-All required libraries as well as &kappname; itself can be found
-on <ulink url="ftp://ftp.oui.org">The &kappname; home page</ulink>.
-</para>
-
-<!-- For a list of updates, you may refer to the application web site
-or the ChangeLog file, or ... -->
-<para>
-You can find a list of changes at <ulink
-url="http://apps.kde.org/oui">http://apps.kde.org/oui</ulink>.
-</para>
-</sect1>
-
-<sect1 id="compilation">
-<title>Compilation and installation</title>
-
-<para>
-In order to compile and install KApp on your system, type the following in the base
-directory of the Icon Editor distribution:
-<screen width="40">
-<prompt>%</prompt> <userinput>./configure</userinput>
-<prompt>%</prompt> <userinput>make</userinput>
-<prompt>%</prompt> <userinput>make install</userinput>
-</screen>
-</para>
-
-<para>Since KApp uses autoconf and automake you should have not trouble compiling it.
-Should you run into problems please report them to the KDE mailing lists.</para>
-
-</sect1>
-
-<sect1 id="configuration">
-<title>Configuration</title>
-
-<para>Don't forget to tell your system to start the <filename>dtd</filename>
-dicer-toaster daemon first, or KApp won't work !</para>
-
-</sect1>
-
-</appendix>
 
 &documentation.index;
 </book>
