@@ -133,7 +133,7 @@ void MyMoneyTransaction::modifySplit(MyMoneySplit& split)
       return;
     }
   }
-  throw new MYMONEYEXCEPTION("Invalid split id '" + split.id() + "'");
+  throw new MYMONEYEXCEPTION(QString("Invalid split id '%1'").arg(split.id()));
 }
 
 void MyMoneyTransaction::removeSplit(const MyMoneySplit& split)
@@ -147,7 +147,7 @@ void MyMoneyTransaction::removeSplit(const MyMoneySplit& split)
     }
   }
   if(it == m_splits.end())
-    throw new MYMONEYEXCEPTION("Invalid split id '" + split.id() + "'");
+    throw new MYMONEYEXCEPTION(QString("Invalid split id '%1'").arg(split.id()));
 }
 
 void MyMoneyTransaction::removeSplits(void)
@@ -163,7 +163,7 @@ const MyMoneySplit& MyMoneyTransaction::splitByPayee(const QCString& payeeId) co
     if((*it).payeeId() == payeeId)
       return *it;
   }
-  throw new MYMONEYEXCEPTION(QString("Split not found for payee") + QString(payeeId));
+  throw new MYMONEYEXCEPTION(QString("Split not found for payee '%1'").arg(QString(payeeId)));
 }
 
 const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QCString& accountId, const bool match) const
@@ -176,7 +176,7 @@ const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QCString& accountId
     if(match == false && (*it).accountId() != accountId)
       return *it;
   }
-  throw new MYMONEYEXCEPTION(QString("Split not found for account") + QString(accountId));
+  throw new MYMONEYEXCEPTION(QString("Split not found for account %1%2").arg(match?"":"!").arg(QString(accountId)));
 }
 
 const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QCStringList& accountIds, const bool match) const
@@ -189,7 +189,7 @@ const MyMoneySplit& MyMoneyTransaction::splitByAccount(const QCStringList& accou
     if(match == false && !accountIds.contains((*it).accountId()))
       return *it;
   }
-  throw new MYMONEYEXCEPTION(QString("Split not found for account %1...%2").arg(accountIds.front(),accountIds.back()));
+  throw new MYMONEYEXCEPTION(QString("Split not found for account  %1%1...%2").arg(match?"":"!").arg(accountIds.front(),accountIds.back()));
 }
 
 const MyMoneySplit& MyMoneyTransaction::splitById(const QCString& splitId) const
@@ -200,7 +200,7 @@ const MyMoneySplit& MyMoneyTransaction::splitById(const QCString& splitId) const
     if((*it).id() == splitId)
       return *it;
   }
-  throw new MYMONEYEXCEPTION(QString("Split not found for id ") + QString(splitId));
+  throw new MYMONEYEXCEPTION(QString("Split not found for id '%1'").arg(QString(splitId)));
 }
 
 const QCString MyMoneyTransaction::nextSplitID()
@@ -297,7 +297,7 @@ const bool MyMoneyTransaction::isDuplicate(const MyMoneyTransaction& r) const
       }
     }
   }
-  
+
   return rc;
 }
 
