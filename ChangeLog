@@ -1,6 +1,23 @@
+2005-04-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed editing schedules with a single split
+  * Improved exception messeages if split is not found
+
+2005-04-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed deprecated method from KLedgerView
+  * Fixed creation of categories when editing transaction with
+    single split
+
+2005-04-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Preserve file permission when saving
+  * Don't store ID for splits within transaction. They will be re-assigned
+    during file load anyway.
+  * Start editing split when any printable key is pressed
+  * Fixed crash in split editor when quitting using ESCape
+  * Advance selection bar to next split when saving a split
+
 2005-04-18 Ace Jones <acejones@users.sourceforge.net>
-  Applied patch #1183190: Online quotes locale patch
-  Submitted by Andy Thaller <gandy@users.sourceforge.net>
+  * Applied patch #1183190: Online quotes locale patch
+    Submitted by Andy Thaller <gandy@users.sourceforge.net>
   * Fixes an error in online quotes on locales which use a different
     comma and period placement scheme from the quote source.
 
@@ -9,6 +26,7 @@
 
 2005-04-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added template exporter
+  * Allow start editing in split editor with any key if table has focus
 
 2005-04-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed config.h.in from repository because it is automatically generated
