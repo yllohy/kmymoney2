@@ -88,6 +88,8 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   m_actionType = action;
   m_schedule = schedule;
   m_transaction = schedule.transaction();
+  createSecondSplit();
+
   // override the the action type if we have a scheduled transaction
 //  if(m_transaction.splitCount() > 0) {
 //    m_actionType = m_transaction.splits()[0].action();
@@ -279,6 +281,18 @@ void KEditScheduleDialog::reloadFromFile(void)
   }
   else if (m_schedule.name().isEmpty() && m_transaction.splitCount() >= 2)
     slotDateChanged(QDate::currentDate());
+}
+
+void KEditScheduleDialog::createSecondSplit(void)
+{
+  if(m_transaction.splitCount() == 1) {
+    MyMoneySplit split, osplit;
+    split.setAction(m_transaction.splits()[0].action());
+    split.setPayeeId(m_transaction.splits()[0].payeeId());
+    split.setMemo(m_transaction.splits()[0].memo());
+    split.setValue(-m_transaction.splits()[0].value());
+    m_transaction.addSplit(split);
+  }
 }
 
 /*
@@ -584,7 +598,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
        // MyMoneyFile::instance()->account(m_transaction.splits()[1].accountId()).name());
       m_kcomboTo->setSelected (m_toAccountId);
     }
-    m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_schedule.transaction().splitByAccount(theAccountId()).payeeId()).name());
+    m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_transaction.splitByAccount(theAccountId()).payeeId()).name());
 
     m_kdateinputDue->setDate(m_schedule.nextPayment(m_schedule.lastPayment())/*m_schedule.startDate()*/);
 
@@ -664,14 +678,14 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     if (occurMasks[frequency] == END_OCCURS) frequency = 0;
     m_kcomboFreq->setCurrentItem(frequency);
 
-    MyMoneyMoney amount = m_schedule.transaction().splitByAccount(theAccountId()).value();
+    MyMoneyMoney amount = m_transaction.splitByAccount(theAccountId()).value();
     amount = amount.abs();
     m_kmoneyeditAmount->setText(amount.formatMoney());
     m_qcheckboxEstimate->setChecked(!m_schedule.isFixed());
 
     if (m_actionType != MyMoneySplit::ActionTransfer)
     {
-      if (m_schedule.transaction().splitCount() >= 3)
+      if (m_transaction.splitCount() >= 3)
       {
         m_category->loadText(i18n("Split Transaction"));
         connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
@@ -681,10 +695,10 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
         m_category->loadText(i18n("Loan payment"));
       }
       else
-        m_category->loadAccount(m_schedule.transaction().splitByAccount(theAccountId(), false).accountId());
+        m_category->loadAccount(m_transaction.splitByAccount(theAccountId(), false).accountId());
     }
 
-    m_qlineeditMemo->setText(m_schedule.transaction().splitByAccount(theAccountId()).memo());
+    m_qlineeditMemo->setText(m_transaction.splitByAccount(theAccountId()).memo());
     m_qcheckboxAuto->setChecked(m_schedule.autoEnter());
     m_qcheckboxEnd->setChecked(m_schedule.willEnd());
     if (m_schedule.willEnd())
@@ -714,7 +728,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
 
     for (int i=0; i < m_paymentMethod->count(); i++)
     {
-      if (QString(m_paymentMethod->text(i)) == i18n(m_schedule.transaction().splits()[0].action()))
+      if (QString(m_paymentMethod->text(i)) == i18n(m_transaction.splits()[0].action()))
       {
         m_paymentMethod->setCurrentItem(i);
         break;

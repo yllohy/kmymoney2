@@ -110,6 +110,13 @@ private:
   QCString m_actionType;
   // occurrences in order
   static MyMoneySchedule::occurenceE occurMasks[];
+
+  /**
+    * This method makes sure, that m_transaction has at least
+    * two splits when currently only one is present.
+    */
+  void createSecondSplit(void);
+
   /**
     * Sets up the widgets based on whats in MyMoneyFile.
     */
