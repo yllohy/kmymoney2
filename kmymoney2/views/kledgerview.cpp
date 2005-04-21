@@ -1013,11 +1013,6 @@ void KLedgerView::slotCategoryChanged(const QCString& categoryId)
   }
 }
 
-void KLedgerView::slotCategoryChanged(const QString& /* category */)
-{
-  qDebug("usage of KLedgerView::slotCategoryChanged(const QString& category) is deprecated");
-}
-
 void KLedgerView::createSecondSplit(void)
 {
   MyMoneySplit split;
@@ -1153,6 +1148,9 @@ void KLedgerView::timerDone(void)
   // have and show up correctly. Don't ask me, why
   // this is, but it cured the problem (ipwizard).
   resize(width()+1, height());
+
+  // force focus to register
+  m_register->setFocus();
 }
 
 const QCString KLedgerView::str2action(const QString &action) const
@@ -1243,7 +1241,7 @@ int KLedgerView::transactionType(const MyMoneyTransaction& t)
   ida = t.splits()[0].accountId();
   idb = t.splits()[1].accountId();
   if(ida.isEmpty() || idb.isEmpty())
-    return Normal;
+    return Unknown;
 
   MyMoneyAccount a, b;
   a = MyMoneyFile::instance()->account(ida);
@@ -1254,31 +1252,6 @@ int KLedgerView::transactionType(const MyMoneyTransaction& t)
    || b.accountGroup() == MyMoneyAccount::Liability))
     return Transfer;
   return Normal;
-}
-
-const QCString KLedgerView::transactionType(int type) const
-{
-  qDebug("Usage of KLedgerView::transactionType(int type) is deprecated!");
-  switch(type) {
-    default:
-      qWarning("Unknown transaction type used in KLedgerView::transactionType(int)");
-      // Tricky fall through here!
-
-    case 0: // Check
-      return MyMoneySplit::ActionCheck;
-
-    case 1: // Deposit
-      return MyMoneySplit::ActionDeposit;
-
-    case 2: // Transfer
-      return MyMoneySplit::ActionTransfer;
-
-    case 3: // Withdrawal
-      return MyMoneySplit::ActionWithdrawal;
-
-    case 4: // ATM
-      return MyMoneySplit::ActionATM;
-  }
 }
 
 void KLedgerView::showWidgets(void)

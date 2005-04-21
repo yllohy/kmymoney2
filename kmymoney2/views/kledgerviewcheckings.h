@@ -278,6 +278,16 @@ protected:
     */
   virtual void enableWidgets(const bool enable);
 
+  /**
+    * This method retrieves the transaction type from the GUI elements.
+    * It will be used by transactionType(const MyMoneyTransaction&) in the
+    * case that not enough information is contained in the splits of
+    * the transaction.
+    *
+    * @return KLedgerView::transactionTypeE value of the action
+    */
+  virtual int transactionType(const MyMoneyTransaction& t) const;
+
 protected slots:
   /**
     * Calling this slot opens the account edit dialog for the current

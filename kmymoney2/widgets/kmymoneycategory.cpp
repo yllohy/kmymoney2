@@ -111,6 +111,10 @@ void kMyMoneyCategory::loadAccount(const QCString& id)
       qDebug("Account with id %s not found anymore", id.data());
       delete e;
     }
+  } else {
+    blockSignals(true);
+    KLineEdit::setText(QString());
+    blockSignals(false);
   }
 }
 

@@ -525,15 +525,6 @@ public slots:
     * Called when the category field has been changed.
     * m_transaction and m_split will be updated accordingly.
     *
-    * @param category const reference to the name of the category
-    * @deprecated
-    */
-  virtual void slotCategoryChanged(const QString& category);
-
-  /**
-    * Called when the category field has been changed.
-    * m_transaction and m_split will be updated accordingly.
-    *
     * @param categoryId const reference to the id of the category
     */
   virtual void slotCategoryChanged(const QCString& categoryId);
@@ -732,15 +723,6 @@ protected:
   virtual void enableWidgets(const bool enable);
 
   void setupPointerAndBalanceArrays(void);
-
-  /**
-    * This method converts the internal used numeric value for actions
-    * into the strings contained in a split (e.g. MyMoneySplit::ActionATM)
-    *
-    * @param type const int representing KLedgerView::transactionTypeE value of the action
-    * @return const action string
-    */
-  virtual const QCString transactionType(const int type) const KDE_DEPRECATED;
 
   /**
     * This method handles the focus of the keyboard. When in edit mode

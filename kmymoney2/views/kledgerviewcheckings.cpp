@@ -787,11 +787,11 @@ void KLedgerViewCheckings::fillFormStatics(void)
       switch( transactionDirection(m_split) ){
         case Credit:
         case UnknownDirection:
-          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Payer"));
+          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Paid by"));
           formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("From (account)","From"));
           break;
         case Debit:
-          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Receiver"));
+          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Pay to"));
           formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("To (account)","To"));
           break;
       }
@@ -802,10 +802,10 @@ void KLedgerViewCheckings::fillFormStatics(void)
       switch( transactionDirection(m_split) ){
         case Credit:
         case UnknownDirection:
-          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Payer"));
+          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("From"));
           break;
         case Debit:
-          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Receiver"));
+          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Pay to"));
           break;
       }
       break;
@@ -1000,6 +1000,14 @@ void KLedgerViewCheckings::createEditWidgets(void)
     m_editType = new kMyMoneyCombo(0, "Type");
     m_editType->setFocusPolicy(QWidget::StrongFocus);
     connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotActionSelected(int)));
+
+    // need to load the combo box with the required values?
+    // copy them from the tab's in the transaction form
+    for(int i = 0; i < m_form->tabBar()->count(); ++i) {
+      QString txt = m_form->tabBar()->tabAt(i)->text();
+      txt = txt.replace(QRegExp("&"), "");
+      m_editType->insertItem(txt);
+    }
   }
 }
 
@@ -1042,7 +1050,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 
         case 1:
           if(m_editCategory)
-            m_editCategory->loadText("");
+            m_editCategory->loadAccount(QCString());
           break;
 
         default:
@@ -1085,17 +1093,6 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 
 void KLedgerViewCheckings::loadEditWidgets(void)
 {
-  // need to load the combo box with the required values?
-  if(m_editType) {
-    if(m_editType->count() == 0) {
-      // copy them from the tab's in the transaction form
-      for(int i = 0; i < m_form->tabBar()->count(); ++i) {
-        QString txt = m_form->tabBar()->tabAt(i)->text();
-        txt = txt.replace(QRegExp("&"), "");
-        m_editType->insertItem(txt);
-      }
-    }
-  }
   if(m_transactionPtr != 0) {
     reloadEditWidgets(*m_transactionPtr);
   } else {
@@ -1611,6 +1608,36 @@ void KLedgerViewCheckings::slotPayeeSelected(void)
 bool KLedgerViewCheckings::eventFilter( QObject *o, QEvent *e )
 {
   return KLedgerView::eventFilter(o, e);
+}
+
+int KLedgerViewCheckings::transactionType(const MyMoneyTransaction& t) const
+{
+  int rc = KLedgerView::transactionType(t);
+  if(rc == Unknown) {
+    if(m_transactionFormActive) {
+      switch(m_form->tabBar()->currentTab()) {
+        case 2:    // Transfer
+          rc = Transfer;
+          break;
+        default:
+          rc = Normal;
+          break;
+      }
+    } else {
+      if(m_editType) {
+        switch(m_editType->currentItem()) {
+          case 2:    // Transfer
+            rc = Transfer;
+            break;
+          default:
+            rc = Normal;
+            break;
+        }
+      } else
+        return Unknown;
+    }
+  }
+  return rc;
 }
 
 // Make sure, that these definitions are only used within this file
