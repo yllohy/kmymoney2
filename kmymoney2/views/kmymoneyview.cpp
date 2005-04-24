@@ -1365,8 +1365,12 @@ void KMyMoneyView::slotAccountReconcile(void)
     acc = m_accountsView->currentAccount(ok);
   else if(pageIndex(m_institutionsViewFrame) == activePageIndex())
     acc = m_institutionsView->currentAccount(ok);
-  else
+  else if(pageIndex(m_categoriesViewFrame) == activePageIndex())
     acc = m_categoriesView->currentAccount(ok);
+  else if(pageIndex(m_ledgerViewFrame) == activePageIndex()) {
+    acc = m_ledgerView->accountId();
+    ok = !acc.isEmpty();
+  }
 
   // we cannot reconcile standard accounts
   if(file->isStandardAccount(acc))
@@ -1392,7 +1396,12 @@ void KMyMoneyView::slotAccountReconcile(void)
 
   if(ok == true) {
     showPage(pageIndex(m_ledgerViewFrame));
-    m_ledgerView->slotSelectAccount(acc, true);
+
+    // for internal reasons, the account must be selected first
+    m_ledgerView->slotSelectAccount(acc, QCString(), false);
+
+    // and in a second step the reconciliation mode can be started
+    m_ledgerView->slotSelectAccount(acc, QCString(), true);
   }
 }
 
