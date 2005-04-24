@@ -232,6 +232,7 @@ void KMyMoney2App::initActions()
 
   // The Account Menu
   accountAdd = new KAction(i18n("Add new account..."), "account_add"/*QIconSet(QPixmap(KGlobal::dirs()->findResource("appdata", "toolbar/kmymoney_newacc.xpm")))*/, 0, myMoneyView, SLOT(slotAccountNew()), actionCollection(), "account_add");
+  accountReconcile = new KAction(i18n("Reconcile ..."), "reconcile", 0, myMoneyView, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
 
   // The tool menu
   new KAction(i18n("QIF Profile Editor..."), "edit", 0, this, SLOT(slotQifProfileEditor()), actionCollection(), "qif_editor");

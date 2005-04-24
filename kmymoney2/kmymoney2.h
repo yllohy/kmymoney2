@@ -464,6 +464,7 @@ private:
   KAction* actionCurrencies;
   KAction* actionPrices;
   KAction* actionPriceUpdate;
+  KAction* accountReconcile;
 
   QSignalMapper *m_pluginSignalMapper;
   QMap<QString,KMyMoneyPlugin::ImporterPlugin*> m_importerPlugins;
