@@ -337,10 +337,12 @@ void KAccountsView::refreshNetWorth(void)
   QString s(i18n("Net Worth: "));
   if(!(file->totalValueValid(assetAccount.id()) & file->totalValueValid(liabilityAccount.id())))
     s += "~ ";
+  s.replace(QString(" "), QString("&nbsp;"));
   if(netWorth.isNegative()) {
     s += "<b><font color=\"red\">";
   }
-  s += netWorth.formatMoney(file->baseCurrency().tradingSymbol());
+  QString v(netWorth.formatMoney(file->baseCurrency().tradingSymbol()));
+  s += v.replace(QString(" "), QString("&nbsp;"));
   if(netWorth.isNegative()) {
     s += "</font></b>";
   }
@@ -458,7 +460,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
       // scan for all asset/liability accounts w/o an institution
       KAccountListItem *topLevelInstitution = new KAccountListItem(accountListView,
                        i18n("Accounts with no institution assigned"));
-                       topLevelInstitution->setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg("bank"))));
+      topLevelInstitution->setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg("bank"))));
       QValueList<MyMoneyAccount> acclist = file->accountList();
       QValueList<MyMoneyAccount>::ConstIterator accountIterator;
       MyMoneyMoney balance;
@@ -468,9 +470,11 @@ void KAccountsView::refresh(const QCString& selectAccount)
           accountIterator != acclist.end();
           ++accountIterator) {
 
-        // Don't show stock accounts
-        if((*accountIterator).accountType() == MyMoneyAccount::Stock)
+        // Don't show stock accounts, they will be handled with the
+        // investment accounts further down
+        if((*accountIterator).accountType() == MyMoneyAccount::Stock) {
           continue;
+        }
 
         switch((*accountIterator).accountGroup()) {
           case MyMoneyAccount::Asset:
@@ -481,9 +485,15 @@ void KAccountsView::refresh(const QCString& selectAccount)
               accountItem->setText(1, QString("%1").arg(m_transactionCountMap[(*accountIterator).id()]));
               // new KAccountIconItem(accountIconView, (*accountIterator),
               //   accountImage((*accountIterator).accountType()));
-              balance += file->accountValue((*accountIterator).id());
-              if(!file->accountValueValid((*accountIterator).id()))
-                balanceValid = false;
+              if((*accountIterator).accountType() == MyMoneyAccount::Investment) {
+                balance += file->totalValue((*accountIterator).id());
+                if(!file->totalValueValid((*accountIterator).id()))
+                  balanceValid = false;
+              } else {
+                balance += file->accountValue((*accountIterator).id());
+                if(!file->accountValueValid((*accountIterator).id()))
+                  balanceValid = false;
+              }
             }
             break;
           default:
@@ -491,7 +501,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
         }
       }
 
-      topLevelInstitution->setValue(balance.abs(), balanceValid);
+      topLevelInstitution->setValue(balance, balanceValid);
 
       // in case there is no account w/o reference to an institution
       // we can safely remove this entry to avoid user's confusion
@@ -524,13 +534,15 @@ void KAccountsView::refresh(const QCString& selectAccount)
               m_accountMap[*it]);
           accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
-          // new KAccountIconItem(accountIconView,
-          //     m_accountMap[*it],
-          //     accountImage(m_accountMap[*it].accountType()));
-
-          balance += file->accountValue(*it);
-          if(!file->accountValueValid(*it))
-            balanceValid = false;
+          if(m_accountMap[*it].accountType() == MyMoneyAccount::Investment) {
+            balance += file->totalValue(*it);
+            if(!file->totalValueValid(*it))
+              balanceValid = false;
+          } else {
+            balance += file->accountValue(*it);
+            if(!file->accountValueValid(*it))
+              balanceValid = false;
+          }
         }
         topLevelInstitution->setValue(balance, balanceValid);
       }
