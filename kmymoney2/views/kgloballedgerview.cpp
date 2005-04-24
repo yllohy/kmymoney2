@@ -52,8 +52,9 @@
 #include "kledgerviewliability.h"
 #include "kledgerviewinvestments.h"
 
-#include "../mymoney/mymoneyaccount.h"
-#include "../mymoney/mymoneyfile.h"
+#include <kmymoney/mymoneyexception.h>
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneyfile.h>
 #include "../widgets/kmymoneyaccountcombo.h"
 #include "../widgets/kmymoneytitlelabel.h"
 
