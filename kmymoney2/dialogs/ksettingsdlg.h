@@ -82,6 +82,8 @@ private:
   KColorButton *m_kcolorbuttonBack;
   /** Color grid */
   KColorButton *m_kcolorbuttonGrid;
+  /** Missing conversion rate */
+  KColorButton *m_kcolorbuttonRate;
   /** Select font header */
   KFontChooser *m_kfontchooserHeader;
   /** Font cell setting */
@@ -190,6 +192,7 @@ private:
   QColor m_qcolorTempList;
   QColor m_qcolorTempListBG;
   QColor m_qcolorTempListGrid;
+  QColor m_qcolorTempRate;
   QFont m_qfontTempHeader;
   QFont m_qfontTempCell;
 //  QString m_qstringTempRowCount;

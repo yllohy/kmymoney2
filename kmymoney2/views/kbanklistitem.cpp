@@ -306,9 +306,13 @@ void KAccountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column
   else
     cg2.setColor(QColorGroup::Base, bgColour);
 
-  // show values with missing currency conversion rates in red
+  // show values with missing currency conversion rates in specific color
   if(column == 3 && !m_valueValid) {
-    cg2.setColor(QColorGroup::Text, QColor(255, 0, 0));
+    KConfig *kconfig = KGlobal::config();
+    kconfig->setGroup("List Options");
+    QColor color(0, 0, 255); // blue is the application default
+    color = kconfig->readColorEntry("listMissingConversionRate", &color);
+    cg2.setColor(QColorGroup::Text, color);
   }
 
   QListViewItem::paintCell(p, cg2, column, width, align);

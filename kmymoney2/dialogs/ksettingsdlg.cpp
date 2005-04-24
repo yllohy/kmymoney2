@@ -492,6 +492,10 @@ void KSettingsDlg::configRead()
   m_qcolorTempListGrid = KMyMoneyUtils::defaultGridColour();
   m_kcolorbuttonGrid->setColor(m_qcolorTempListGrid);
 
+  m_qcolorTempRate = QColor(0, 0, 255); // blue is the application default
+  m_qcolorTempRate = kconfig->readColorEntry("listMissingConversionRate", &m_qcolorTempRate);
+  m_kcolorbuttonRate->setColor(m_qcolorTempRate);
+
   QFont qfontDefault = KMyMoneyUtils::headerFont();
   m_qfontTempHeader = kconfig->readFontEntry("listHeaderFont", &qfontDefault);
   m_kfontchooserHeader->setFont(m_qfontTempHeader);
@@ -550,6 +554,7 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("listColor", m_kcolorbuttonList->color());
   kconfig->writeEntry("listBGColor", m_kcolorbuttonBack->color());
   kconfig->writeEntry("listGridColor", m_kcolorbuttonGrid->color());
+  kconfig->writeEntry("listMissingConversionRate", m_kcolorbuttonRate->color());
   kconfig->writeEntry("listHeaderFont", m_kfontchooserHeader->font());
   kconfig->writeEntry("listCellFont", m_kfontchooserCell->font());
   kconfig->writeEntry("useSystemFont", m_systemFont->isChecked());
@@ -620,6 +625,8 @@ void KSettingsDlg::slotCancel()
   kconfig->setGroup("List Options");
   kconfig->writeEntry("listColor", m_qcolorTempList);
   kconfig->writeEntry("listBGColor", m_qcolorTempListBG);
+  kconfig->writeEntry("listGridColor", m_qcolorTempListGrid);
+  kconfig->writeEntry("listMissingConversionRate", m_qcolorTempRate);
   kconfig->writeEntry("listHeaderFont", m_qfontTempHeader);
   kconfig->writeEntry("listCellFont", m_qfontTempCell);
   kconfig->writeEntry("ShowGrid", m_bTempShowGrid);
@@ -659,6 +666,8 @@ void KSettingsDlg::slotUser1()
 {
   m_kcolorbuttonList->setColor(m_qcolorTempList);
   m_kcolorbuttonBack->setColor(m_qcolorTempListBG);
+  m_kcolorbuttonGrid->setColor(m_qcolorTempListGrid);
+  m_kcolorbuttonRate->setColor(m_qcolorTempRate);
   m_kfontchooserHeader->setFont(m_qfontTempHeader);
   m_kfontchooserCell->setFont(m_qfontTempCell);
   m_systemFont->setChecked(m_bTempUseSystemFont);
@@ -887,6 +896,16 @@ void KSettingsDlg::setPageColour()
   m_kcolorbuttonGrid = new KColorButton( groupBox2, "m_kcolorbuttonGrid" );
   layout4->addWidget( m_kcolorbuttonGrid );
   groupBox2Layout->addLayout( layout4 );
+
+  QHBoxLayout* layout5 = new QHBoxLayout( 0, 0, 6, "layout5");
+
+  QLabel* textLabel2_4 = new QLabel( groupBox2, "textLabel2_4" );
+  textLabel2_4->setText( i18n( "Value with missing conversion rate :" ) );
+  layout5->addWidget( textLabel2_4 );
+
+  m_kcolorbuttonRate = new KColorButton( groupBox2, "m_kcolorbuttonRate" );
+  layout5->addWidget( m_kcolorbuttonRate );
+  groupBox2Layout->addLayout( layout5 );
 
   QSpacerItem* spacer = new QSpacerItem( 20, 31, QSizePolicy::Minimum, QSizePolicy::Expanding );
   groupBox2Layout->addItem( spacer );
