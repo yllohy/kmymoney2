@@ -80,6 +80,12 @@ public:
     */
   void update(const QCString& id);
 
+  /**
+    * This method returns the id of the currently selected account
+    * or QCString() if none is selected.
+    */
+  const QCString accountId(void) const { return m_accountId; }
+
 public slots:
   void show(void);
 
