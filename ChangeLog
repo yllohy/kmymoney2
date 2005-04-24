@@ -1,6 +1,14 @@
+2005-04-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added setting for color used to identify values that are based
+    on missing conversion rates (default=blue)
+  * Fixed values in the institution view when stock accounts are involved
+  * Fixed sign of values in institution view
+  * Added KGlobalLedgerView::accountId() to return id of selected account
+
 2005-04-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed editing schedules with a single split
   * Improved exception messeages if split is not found
+  * Added capability to select reconcile from menu / toolbar
 
 2005-04-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed deprecated method from KLedgerView
