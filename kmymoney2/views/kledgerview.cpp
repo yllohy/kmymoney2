@@ -701,6 +701,10 @@ void KLedgerView::slotPayeeChanged(const QString& name)
               MyMoneySplit s(*it);
               s.setReconcileFlag(MyMoneySplit::NotReconciled);
               s.setId(QCString());
+              if(!s.number().isEmpty()) {
+                unsigned64 no = MyMoneyFile::instance()->highestCheckNo(s.accountId()).toULongLong();
+                s.setNumber(QString::number(no+1));
+              }
               m_transaction.addSplit(s);
             }
             if(m_transaction.splitCount() == 2) {
@@ -709,6 +713,7 @@ void KLedgerView::slotPayeeChanged(const QString& name)
 
             // update the UI
             reloadEditWidgets(m_transaction);
+            updateTabBar(m_transaction, m_split);
 
             m_editPayee->setFocus();
           }
@@ -1025,7 +1030,7 @@ void KLedgerView::createSecondSplit(void)
   }
 }
 
-void KLedgerView::slotNrChanged(const QString& nr)
+void KLedgerView::slotNrChanged(const QString& _nr)
 {
   if(!m_editNr)
     return;
@@ -1034,8 +1039,15 @@ void KLedgerView::slotNrChanged(const QString& nr)
   MyMoneySplit s = m_split;
 
   try {
+    QString nr(_nr);
     createSecondSplit();
 
+    if(MyMoneyFile::instance()->checkNoUsed(m_split.accountId(), nr)) {
+      if(KMessageBox::questionYesNo(this, QString("<p>")+i18n("The number <b>%1</b> has already been used in account <b>%2</b>. Do you want to replace it with the next available number?").arg(nr).arg(m_account.name()), i18n("Duplicate number")) == KMessageBox::Yes) {
+        unsigned64 no = MyMoneyFile::instance()->highestCheckNo(m_split.accountId()).toULongLong();
+        nr = QString::number(no+1);
+      }
+    }
     m_split.setNumber(nr);
     m_transaction.modifySplit(m_split);
     m_editNr->loadText(nr);
