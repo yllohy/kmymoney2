@@ -767,6 +767,17 @@ void KEnterScheduleDialog::commitTransaction()
         }
       }
 #endif
+
+      // If we are writing a check, we adjust the split's
+      // number to the highest number used in this account plus one
+      if(m_schedule.paymentType() == MyMoneySchedule::STYPE_WRITECHEQUE) {
+        MyMoneySplit s = m_transaction.splitByAccount(m_schedule.account().id(), true);
+        s.setAction(MyMoneySplit::ActionCheck);
+        unsigned64 no = MyMoneyFile::instance()->highestCheckNo(s.accountId()).toULongLong();
+        s.setNumber(QString::number(no+1));
+        m_transaction.modifySplit(s);
+      }
+
       MyMoneyFile::instance()->addTransaction(m_transaction);
       MyMoneyFile::instance()->modifySchedule(m_schedule);
     } catch(MyMoneyException *e) {
@@ -922,13 +933,15 @@ void KEnterScheduleDialog::createSplits()
     MyMoneySplit split1;
     split1.setAccountId(theAccountId());
 
+#if 0
+    // These actions are not required anymore
     if (m_schedule.type() == MyMoneySchedule::TYPE_BILL)
       split1.setAction(MyMoneySplit::ActionWithdrawal);
     else if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
       split1.setAction(MyMoneySplit::ActionDeposit);
     else
       split1.setAction(MyMoneySplit::ActionTransfer);
-
+#endif
     split1.setPayeeId(payeeId);
     split1.setMemo(m_memo->text());
 
@@ -952,12 +965,15 @@ void KEnterScheduleDialog::createSplits()
     split2.setMemo(split1.memo());
     split2.setValue(-split1.value());
 
+#if 0
+    // These actions are not required anymore
     if (split1.action() == MyMoneySplit::ActionDeposit)
       split2.setAction(MyMoneySplit::ActionWithdrawal);
     else if (split1.action() == MyMoneySplit::ActionWithdrawal)
       split2.setAction(MyMoneySplit::ActionDeposit);
     else
       split2.setAction(MyMoneySplit::ActionTransfer);
+#endif
 
     m_transaction.addSplit(split2);
   }
