@@ -3,6 +3,8 @@
   * Warn user if check no is already in use
   * When creating a transaction based on a previous one, set
     check no to 'highest number used' plus 1.
+  * Update check no field if scheduled bill is paid with check
+    (This partially fixes #972028)
 
 2005-04-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added setting for color used to identify values that are based
