@@ -1,4 +1,10 @@
 2005-04-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added methods checkNoUsed() and highestCheckNo() to MyMoneyFile
+  * Warn user if check no is already in use
+  * When creating a transaction based on a previous one, set
+    check no to 'highest number used' plus 1.
+
+2005-04-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added setting for color used to identify values that are based
     on missing conversion rates (default=blue)
   * Fixed values in the institution view when stock accounts are involved
