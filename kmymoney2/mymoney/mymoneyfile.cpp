@@ -550,7 +550,7 @@ QCString MyMoneyFile::openingBalanceTransaction(const MyMoneyAccount& acc) const
 
   MyMoneySecurity currency = security(acc.currencyId());
   MyMoneyAccount openAcc;
-  
+
   try
   {
     openAcc = openingBalanceAccount(currency);
@@ -559,7 +559,7 @@ QCString MyMoneyFile::openingBalanceTransaction(const MyMoneyAccount& acc) const
   {
     delete e;
     return result;
-  } 
+  }
 
   // Iterate over all the opening balance transactions for this currency
   MyMoneyTransactionFilter filter;
@@ -1866,4 +1866,55 @@ const bool MyMoneyFile::isReferenced(const MyMoneySecurity& security) const
       return true;
   }
   return false;
+}
+
+const bool MyMoneyFile::checkNoUsed(const QCString& accId, const QString& no) const
+{
+  // by definition, an empty number is not used
+  if(no.isEmpty())
+    return false;
+
+  MyMoneyTransactionFilter filter;
+  filter.addAccount(accId);
+  QValueList<MyMoneyTransaction> transactions = transactionList(filter);
+  QValueList<MyMoneyTransaction>::const_iterator it_t = transactions.begin();
+  while ( it_t != transactions.end() ) {
+    try {
+      MyMoneySplit split;
+      // Test whether the transaction also includes a split into
+      // this account
+      split = (*it_t).splitByAccount(accId, true /*match*/);
+      if(!split.number().isEmpty() && split.number() == no)
+        return true;
+    } catch(MyMoneyException *e) {
+      delete e;
+    }
+    ++it_t;
+  }
+  return false;
+}
+
+QString MyMoneyFile::highestCheckNo(const QCString& accId) const
+{
+  QString no(""); // don't use QString() as this will break QString::compare
+  MyMoneyTransactionFilter filter;
+  filter.addAccount(accId);
+  QValueList<MyMoneyTransaction> transactions = transactionList(filter);
+  QValueList<MyMoneyTransaction>::const_iterator it_t = transactions.begin();
+  while ( it_t != transactions.end() ) {
+    try {
+      // Test whether the transaction also includes a split into
+      // this account
+      MyMoneySplit split = (*it_t).splitByAccount(accId, true /*match*/);
+      if(!split.number().isEmpty()) {
+        if(QString::compare(split.number(), no) > 0) {
+          no = split.number();
+        }
+      }
+    } catch(MyMoneyException *e) {
+      delete e;
+    }
+    ++it_t;
+  }
+  return no;
 }

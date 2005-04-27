@@ -1359,6 +1359,27 @@ public:
     */
   const bool isReferenced(const MyMoneyPayee& payee) const;
 
+  /**
+    * This method checks if the given check no &p no is used in
+    * a transaction referencing account &p accId. If  @p accId is empty,
+    * @p false is returned.
+    *
+    * @param accId id of account to checked
+    * @param no check number to be verified if used or not
+    * @retval false @p no is not in use
+    * @retval true @p no is already assigned
+    */
+  const bool checkNoUsed(const QCString& accId, const QString& no) const;
+
+  /**
+    * This method returns the highest assigned check no for
+    * account @p accId.
+    *
+    * @param accId id of account to be scanned
+    * @return highest check no. used
+    */
+  QString highestCheckNo(const QCString& accId) const;
+
 protected:
   /**
     * This is the constructor for a new empty file description
