@@ -734,7 +734,7 @@ void KLedgerViewInvestments::preloadEditType(void)
       m_editType->setCurrentItem(ReinvestDividend);
 
   } else {
-    qDebug("Unknown MyMoneySplit::Action%s in KLedgerViewInvestments::reloadEditWidgets", m_split.action().data());
+    qDebug("Unknown MyMoneySplit::Action%s in KLedgerViewInvestments::preloadEditType", m_split.action().data());
     return;
   }
 }
@@ -1126,7 +1126,6 @@ void KLedgerViewInvestments::slotRegisterDoubleClicked(int /* row */,
                                                 int /* button */,
                                                 const QPoint & /* mousePos */)
 {
-  if(m_transactionPtr != 0)
     slotStartEdit();
 }
 
@@ -1266,8 +1265,123 @@ void KLedgerViewInvestments::resizeEvent(QResizeEvent* /* ev */)
   table->setColumnWidth(1, w);
 }
 
+void KLedgerViewInvestments::createSplits(void)
+{
+  MyMoneyMoney total, fees, interest, shares, value;
+
+  m_split = MyMoneySplit();
+  m_accountSplit = MyMoneySplit();
+  m_feeSplit = MyMoneySplit();
+  m_interestSplit = MyMoneySplit();
+
+  //determine the transaction type
+  int currentAction = m_editType->currentItem();
+
+  switch(currentAction) {
+    case BuyShares:
+    case SellShares:
+      // setup stock account split
+      shares = m_editShares->value().abs();
+      total = m_editAmount->value().abs();
+      if(!m_editFeeCategory->selectedAccountId().isEmpty())
+        fees = m_editFees->value();
+      m_split.setAction(MyMoneySplit::ActionBuyShares);
+      if(currentAction == SellShares) {
+        shares = -shares;
+        total = -total;
+      }
+      value = total - fees;
+      m_split.setValue(value);
+      m_split.setShares(shares);
+      m_split.setMemo(m_editMemo->text());
+      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+
+      //set up the fee split now
+      m_feeSplit.setValue(fees);
+      m_feeSplit.setShares(fees);
+      m_feeSplit.setAccountId(m_editFeeCategory->selectedAccountId());
+
+      //set up the split for the money that is sourcing this transaction
+      total = -total;
+      m_accountSplit.setAccountId(m_editCashAccount->selectedAccounts().first());
+      m_accountSplit.setValue(total);
+      m_accountSplit.setShares(total);
+      m_accountSplit.setMemo(m_editMemo->text());
+      break;
+
+    case ReinvestDividend:
+      // setup stock account split
+      shares = m_editShares->value().abs();
+      total = m_editAmount->value().abs();
+      if(!m_editFeeCategory->selectedAccountId().isEmpty())
+        fees = m_editFees->value();
+      value = total - fees;
+      m_split.setAction(MyMoneySplit::ActionReinvestDividend);
+      m_split.setValue(value);
+      m_split.setShares(shares);
+      m_split.setMemo(m_editMemo->text());
+      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+
+      //set up the fee split now
+      m_feeSplit.setValue(fees);
+      m_feeSplit.setShares(fees);
+      m_feeSplit.setAccountId(m_editFeeCategory->selectedAccountId());
+
+      //set up the split for the money that is sourcing this transaction
+      total = -total;
+      m_interestSplit.setAccountId(m_editCashAccount->selectedAccounts().first());
+      m_interestSplit.setValue(total);
+      m_interestSplit.setShares(total);
+      m_interestSplit.setMemo(m_editMemo->text());
+      break;
+
+    case Dividend:
+    case Yield:
+      // setup stock account split. As each investment transaction
+      // must reference a stock account, we better add it, even though
+      // it does not seem to be necessary here otherwise.
+      m_split.setAction(MyMoneySplit::ActionDividend);
+      if(currentAction == Yield)
+        m_split.setAction(MyMoneySplit::ActionYield);
+      m_split.setValue(0);
+      m_split.setShares(0);
+      m_split.setMemo(m_editMemo->text());
+      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+
+      //set up the interest split now (attention: uses fee widgets)
+      interest = -m_editFees->value();
+      m_interestSplit.setValue(interest);
+      m_interestSplit.setShares(interest);
+      m_interestSplit.setAccountId(m_editFeeCategory->selectedAccountId());
+
+      //set up the split for the account that receives the payment
+      m_accountSplit.setAccountId(m_editCashAccount->selectedAccounts().first());
+      m_accountSplit.setValue(-interest);
+      m_accountSplit.setShares(-interest);
+      m_accountSplit.setMemo(m_editMemo->text());
+      break;
+
+    case AddShares:
+    case RemoveShares:
+      shares = m_editShares->value().abs();
+      m_split.setAction(MyMoneySplit::ActionAddShares);
+      if(currentAction == RemoveShares) {
+        shares = -shares;
+      }
+      // setup stock account split
+      m_split.setValue(0);
+      m_split.setShares(shares);
+      m_split.setMemo(m_editMemo->text());
+      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+      break;
+  }
+}
+
 void KLedgerViewInvestments::slotEndEdit()
 {
+  if(!isEditMode())
+    return;
+
   // check if someone tries to trick us. this works as follows:
   //  * set all conditions, so that the ENTER button is enabled
   //  * modify one condition and don't leave the field (e.g. set a value to 0)
@@ -1299,7 +1413,6 @@ void KLedgerViewInvestments::slotEndEdit()
   // the transaction because we will generate new ones.
   m_transaction.removeSplits();
 
-  MyMoneyMoney total, fees, interest, shares, value;
   bool transactionContainsPriceInfo = false;
 
   MyMoneyAccount stockAccount = file->account(stockId);
@@ -1308,41 +1421,12 @@ void KLedgerViewInvestments::slotEndEdit()
 
   m_transaction.setCommodity(security.tradingCurrency());
 
+  createSplits();
+
   m_priceInfo.clear();
   switch(currentAction) {
     case BuyShares:
     case SellShares:
-      // setup stock account split
-      shares = m_editShares->value().abs();
-      total = m_editAmount->value().abs();
-      if(!m_editFeeCategory->selectedAccountId().isEmpty())
-        fees = m_editFees->value();
-      m_split.setAction(MyMoneySplit::ActionBuyShares);
-      if(currentAction == SellShares) {
-        shares = -shares;
-        total = -total;
-      }
-      value = total - fees;
-      m_split.setValue(value);
-      m_split.setShares(shares);
-      m_split.setMemo(m_editMemo->text());
-      m_split.setAccountId(stockId);
-      m_split.setId(QCString());
-
-      //set up the fee split now
-      m_feeSplit.setValue(fees);
-      m_feeSplit.setShares(fees);
-      m_feeSplit.setAccountId(m_editFeeCategory->selectedAccountId());
-      m_feeSplit.setId(QCString());
-
-      //set up the split for the money that is sourcing this transaction
-      total = -total;
-      m_accountSplit.setAccountId(accountId);
-      m_accountSplit.setValue(total);
-      m_accountSplit.setShares(total);
-      m_accountSplit.setMemo(m_editMemo->text());
-      m_accountSplit.setId(QCString());
-
       // check for possible conversion rate and continue to edit
       // if user cancelled
       if(!setupPrice(m_accountSplit))
@@ -1361,32 +1445,6 @@ void KLedgerViewInvestments::slotEndEdit()
       break;
 
     case ReinvestDividend:
-      // setup stock account split
-      shares = m_editShares->value().abs();
-      total = m_editAmount->value().abs();
-      if(!m_editFeeCategory->selectedAccountId().isEmpty())
-        fees = m_editFees->value();
-      value = total - fees;
-      m_split.setAction(MyMoneySplit::ActionReinvestDividend);
-      m_split.setValue(value);
-      m_split.setShares(shares);
-      m_split.setMemo(m_editMemo->text());
-      m_split.setAccountId(stockId);
-      m_split.setId(QCString());
-
-      //set up the fee split now
-      m_feeSplit.setValue(fees);
-      m_feeSplit.setShares(fees);
-      m_feeSplit.setAccountId(m_editFeeCategory->selectedAccountId());
-      m_feeSplit.setId(QCString());
-
-      //set up the split for the money that is sourcing this transaction
-      total = -total;
-      m_interestSplit.setAccountId(accountId);
-      m_interestSplit.setValue(total);
-      m_interestSplit.setShares(total);
-      m_interestSplit.setMemo(m_editMemo->text());
-      m_interestSplit.setId(QCString());
       // check for possible conversion rate and continue to edit
       // if user cancelled
       if(!setupPrice(m_interestSplit))
@@ -1408,31 +1466,6 @@ void KLedgerViewInvestments::slotEndEdit()
 
     case Dividend:
     case Yield:
-      // setup stock account split. As each investment transaction
-      // must reference a stock account, we better add it, even though
-      // it does not seem to be necessary here otherwise.
-      m_split.setAction(MyMoneySplit::ActionDividend);
-      if(currentAction == Yield)
-        m_split.setAction(MyMoneySplit::ActionYield);
-      m_split.setValue(0);
-      m_split.setShares(0);
-      m_split.setMemo(m_editMemo->text());
-      m_split.setAccountId(stockId);
-      m_split.setId(QCString());
-
-      //set up the interest split now (attention: uses fee widgets)
-      interest = -m_editFees->value();
-      m_interestSplit.setValue(interest);
-      m_interestSplit.setShares(interest);
-      m_interestSplit.setAccountId(m_editFeeCategory->selectedAccountId());
-      m_interestSplit.setId(QCString());
-
-      //set up the split for the account that receives the payment
-      m_accountSplit.setAccountId(accountId);
-      m_accountSplit.setValue(-interest);
-      m_accountSplit.setShares(-interest);
-      m_accountSplit.setMemo(m_editMemo->text());
-      m_accountSplit.setId(QCString());
       // check for possible conversion rate and continue to edit
       // if user cancelled
       if(!setupPrice(m_accountSplit))
@@ -1451,18 +1484,6 @@ void KLedgerViewInvestments::slotEndEdit()
 
     case AddShares:
     case RemoveShares:
-      shares = m_editShares->value().abs();
-      m_split.setAction(MyMoneySplit::ActionAddShares);
-      if(currentAction == RemoveShares) {
-        shares = -shares;
-      }
-      // setup stock account split
-      m_split.setValue(0);
-      m_split.setShares(shares);
-      m_split.setMemo(m_editMemo->text());
-      m_split.setAccountId(stockId);
-      m_split.setId(QCString());
-
       m_transaction.addSplit(m_split);
       break;
   }
@@ -1565,11 +1586,13 @@ void KLedgerViewInvestments::slotSecurityChanged(const QCString& id)
   s = m_split;
 
   try {
+    createSplits();
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
     m_security = MyMoneyFile::instance()->security(acc.currencyId());
     m_editStockAccount->setSelected(acc);
     m_split.setAccountId(id);
     reloadEditWidgets(m_transaction);
+    slotDataChanged(None);
   } catch(MyMoneyException *e) {
     delete e;
   }
@@ -1792,6 +1815,7 @@ void KLedgerViewInvestments::updateEditWidgets(void)
   Q_CHECK_PTR(static_cast<void*>(m_editType));
 
   m_editType->setCurrentItem(m_transactionType);
+  createSplits();
   reloadEditWidgets(m_transaction);
 
   if(m_transactionFormActive) {

@@ -1461,6 +1461,9 @@ void KLedgerView::slotCancelEdit(void)
 
 void KLedgerView::slotEndEdit(void)
 {
+  if(!isEditMode())
+    return;
+
   // force focus change to update all data
   m_form->enterButton()->setFocus();
 

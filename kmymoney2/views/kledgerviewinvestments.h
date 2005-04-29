@@ -234,6 +234,12 @@ private:
     */
   void createSummary(void);
 
+  /**
+    * This method creates the splits based on the widgets contents
+    * It only generates valid values during edit mode.
+    */
+  void createSplits(void);
+
 protected:
   int actionTab(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
 
