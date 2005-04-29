@@ -30,6 +30,7 @@
 #include <qlabel.h>
 #include <qmultilineedit.h>
 #include <qpixmap.h>
+#include <qtabwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -127,6 +128,8 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name )
 
   connect(m_transactionView, SIGNAL(doubleClicked(QListViewItem*)),
           this, SLOT(slotTransactionDoubleClicked(QListViewItem*)));
+
+  connect(m_tabWidget, SIGNAL(currentChanged(QWidget*)), this, SLOT(rearrange(void)));
 
   m_updateButton->setEnabled(false);
 
