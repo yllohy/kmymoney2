@@ -255,6 +255,22 @@ void KLedgerViewCheckings::enableWidgets(const bool enable)
   KLedgerView::enableWidgets(enable);
 }
 
+void KLedgerViewCheckings::slotNew(void)
+{
+  switch( m_form->tabBar()->currentTab() ) {
+    case 0:
+      m_action = MyMoneySplit::ActionCheck;
+      break;
+    case 4:
+      m_action = MyMoneySplit::ActionATM;
+      break;
+    default:
+      m_action = QCString();
+      break;
+  }
+  KLedgerView::slotNew();
+}
+
 void KLedgerViewCheckings::slotAmountChanged(const QString& amount)
 {
   MyMoneyMoney value(amount);
@@ -302,17 +318,6 @@ void KLedgerViewCheckings::slotActionSelected(int type)
 {
   if(!m_form->tabBar()->signalsBlocked()
   && !isEditMode()) {
-    switch( type ) {
-      case 0:
-        m_action = MyMoneySplit::ActionCheck;
-        break;
-      case 4:
-        m_action = MyMoneySplit::ActionATM;
-        break;
-      default:
-        m_action = QCString();
-        break;
-    }
     slotNew();
 
   } else if(isEditMode()) {
@@ -367,6 +372,7 @@ void KLedgerViewCheckings::slotActionSelected(int type)
     m_tabOrderWidgets.find(focusWidget);
     focusWidget->setFocus();
   }
+  autoIncCheckNumber();
 }
 
 void KLedgerViewCheckings::slotRegisterDoubleClicked(int /* row */,
@@ -1018,6 +1024,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 
   m_transaction = t;
   m_split = m_transaction.splitByAccount(accountId());
+  m_action = m_split.action();
   amount = m_split.value();
 
   if(m_editCategory)
@@ -1091,6 +1098,20 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
   }
 }
 
+void KLedgerViewCheckings::autoIncCheckNumber(void)
+{
+  if(m_editNr && m_editNr->text().isEmpty() && m_action == MyMoneySplit::ActionCheck) {
+    KConfig* kconfig = KGlobal::config();
+    kconfig->setGroup("General Options");
+    if(kconfig->readBoolEntry("AutoIncCheckNumber", false)) {
+      unsigned64 no = MyMoneyFile::instance()->highestCheckNo(m_account.id()).toULongLong();
+      m_split.setNumber(QString::number(no+1));
+      m_transaction.modifySplit(m_split);
+      m_editNr->loadText(m_split.number());
+    }
+  }
+}
+
 void KLedgerViewCheckings::loadEditWidgets(void)
 {
   if(m_transactionPtr != 0) {
@@ -1109,6 +1130,8 @@ void KLedgerViewCheckings::loadEditWidgets(void)
           m_split.setNumber(m_action);
           m_transaction.modifySplit(m_split);
           m_editNr->loadText(m_split.number());
+        } else {
+          autoIncCheckNumber();
         }
       }
     } catch(MyMoneyException *e) {

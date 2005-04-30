@@ -385,6 +385,11 @@ void KSettingsDlg::setPageList()
   // new transactions
   m_qcheckboxTypeToNr = new QCheckBox(i18n("Insert transaction type into No. field for new transactions"), qwidgetPage);
   qvboxlayoutPage->addWidget(m_qcheckboxTypeToNr);
+  connect(m_qcheckboxTypeToNr, SIGNAL(toggled(bool)), this, SLOT(slotTypeToNrToggled(bool)));
+
+  // Setting for switch to always increment the number for checks
+  m_qcheckboxIncCheckNumber = new QCheckBox(i18n("Auto increment check number"), qwidgetPage);
+  qvboxlayoutPage->addWidget(m_qcheckboxIncCheckNumber);
 
   // Setting for the behaviour how changes should be treated when editing
   // is left by selecting a different transaction/split
@@ -462,14 +467,19 @@ void KSettingsDlg::configRead()
   m_bTempShowNrField = kconfig->readBoolEntry("AlwaysShowNrField", false);
   m_qcheckboxShowNrField->setChecked(m_bTempShowNrField);
 
+  m_bTempAutoIncCheckNumber = kconfig->readBoolEntry("AutoIncCheckNumber", false);
+  m_qcheckboxIncCheckNumber->setChecked(m_bTempAutoIncCheckNumber);
+
   if(m_bTempShowNrField == true) {
     m_bTempTypeToNr = kconfig->readBoolEntry("CopyTypeToNr", false);
     m_qcheckboxTypeToNr->setChecked(m_bTempTypeToNr);
     m_qcheckboxTypeToNr->setEnabled(true);
+    m_qcheckboxIncCheckNumber->setEnabled(!m_bTempTypeToNr);
   } else {
     m_bTempTypeToNr = false;
     m_qcheckboxTypeToNr->setChecked(m_bTempTypeToNr);
     m_qcheckboxTypeToNr->setEnabled(false);
+    m_qcheckboxIncCheckNumber->setEnabled(true);
   }
 
   m_iTempPricePrecision = kconfig->readNumEntry("PricePrecision", 4);
@@ -574,6 +584,7 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("LedgerLens", m_qcheckboxLedgerLens->isChecked());
   kconfig->writeEntry("TransactionForm", m_qcheckboxTransactionForm->isChecked());
   kconfig->writeEntry("CopyTypeToNr", m_qcheckboxTypeToNr->isChecked());
+  kconfig->writeEntry("AutoIncCheckNumber", m_qcheckboxIncCheckNumber->isChecked());
   kconfig->writeEntry("AlwaysShowNrField", m_qcheckboxShowNrField->isChecked());
   kconfig->writeEntry("PricePrecision", m_qIntPricePrecision->text());
   kconfig->writeEntry("FocusChangeIsEnter", m_qcheckboxFocusChangeEnter->isChecked());
@@ -638,6 +649,7 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("LedgerLens", m_bTempLedgerLens);
   kconfig->writeEntry("TransactionForm", m_bTempTransactionForm);
   kconfig->writeEntry("CopyTypeToNr", m_bTempTypeToNr);
+  kconfig->writeEntry("AutoIncCheckNumber", m_bTempAutoIncCheckNumber);
   kconfig->writeEntry("AlwaysShowNrField", m_bTempShowNrField);
   kconfig->writeEntry("CheckSchedule", m_bTempCheckSchedule);
   kconfig->writeEntry("CheckSchedulePreview", m_iTempSchedulePreview);
@@ -681,6 +693,7 @@ void KSettingsDlg::slotUser1()
   m_qcheckboxLedgerLens->setChecked(m_bTempLedgerLens);
   m_qcheckboxTransactionForm->setChecked(m_bTempTransactionForm);
   m_qcheckboxTypeToNr->setChecked(m_bTempTypeToNr);
+  m_qcheckboxIncCheckNumber->setChecked(m_bTempAutoIncCheckNumber);
   m_qcheckboxShowNrField->setChecked(m_bTempShowNrField);
   m_qcheckboxFocusChangeEnter->setChecked(m_bTempFocusChangeEnter);
   m_qcheckboxAutoFillTransaction->setChecked(m_bTempAutoFillTransaction);
@@ -705,6 +718,15 @@ void KSettingsDlg::slotNrFieldToggled(bool state)
   } else {
     m_qcheckboxTypeToNr->setChecked(false);
     m_qcheckboxTypeToNr->setEnabled(false);
+  }
+}
+
+void KSettingsDlg::slotTypeToNrToggled(bool state)
+{
+  if(state == true) {
+    m_qcheckboxIncCheckNumber->setEnabled(false);
+  } else {
+    m_qcheckboxIncCheckNumber->setEnabled(true);
   }
 }
 

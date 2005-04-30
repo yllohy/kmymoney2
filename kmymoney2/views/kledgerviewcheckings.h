@@ -187,6 +187,8 @@ public slots:
     */
   virtual void slotAmountChanged(const QString& amount);
 
+  virtual void slotNew(void);
+
 protected:
   /**
     * This method updates the summary line with the actual values.
@@ -403,6 +405,13 @@ private:
     * @retval false Nr field is not required
     */
   const bool showNrField(const MyMoneyTransaction& trans, const MyMoneySplit& split) const;
+
+  /**
+    * If the number field is visible, empty and the current action
+    * is 'Check' and the option to automatically increment the check no
+    * then this method does just that.
+    */
+  void autoIncCheckNumber(void);
 
 private slots:
   /**

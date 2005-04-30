@@ -110,6 +110,9 @@ private:
   /* copy type to nr field */
   QCheckBox* m_qcheckboxTypeToNr;
 
+  /* increment check number */
+  QCheckBox* m_qcheckboxIncCheckNumber;
+
   /* hide unused categories */
   QCheckBox* m_qcheckboxHideCategory;
 
@@ -207,6 +210,7 @@ private:
   bool m_bTempLedgerLens;
   bool m_bTempTransactionForm;
   bool m_bTempTypeToNr;
+  bool m_bTempAutoIncCheckNumber;
   bool m_bTempShowNrField;
   bool m_bTempStartPage;
   bool m_bTempCheckSchedule;
@@ -231,6 +235,9 @@ private slots:
 
   /** Called when 'Always show nr field' is toggled */
   void slotNrFieldToggled(bool state);
+
+  /** Called when 'Copy Type to Nr field' is toggled */
+  void slotTypeToNrToggled(bool state);
 
   /** Called when 'Use system font' is toggled */
   void slotSystemFontToggled(bool state);
