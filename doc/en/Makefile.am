@@ -16,7 +16,7 @@ install-data-hook: kmymoney2.1.gz
 	$(INSTALL_DATA) $(srcdir)/kmymoney2.1.gz $(DESTDIR)$(mandir)/man1/kmymoney2.1.gz
 
 kmymoney2.1.gz: kmymoney2.1
-	gzip -9 -c -N kmymoney2.1 > kmymoney2.1.gz
+	gzip -9 -c -N $(top_srcdir)/$(subdir)/kmymoney2.1 > kmymoney2.1.gz
 
 uninstall-hook:
 	-rm -f $(DESTDIR)$(mandir)/man1/kmymoney2.1.gz
