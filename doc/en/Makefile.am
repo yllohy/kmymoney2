@@ -13,7 +13,7 @@ KDE_DOCS = kmymoney2
 install-data-hook: kmymoney2.1.gz
 	-rm -f $(DESTDIR)$(kde_htmldir)/$(KDE_LANG)/kmymoney2/kmymoney2.1
 	$(mkinstalldirs) $(DESTDIR)$(mandir)/man1/
-	$(INSTALL_DATA) $(srcdir)/kmymoney2.1.gz $(DESTDIR)$(mandir)/man1/kmymoney2.1.gz
+	$(INSTALL_DATA) kmymoney2.1.gz $(DESTDIR)$(mandir)/man1/kmymoney2.1.gz
 
 kmymoney2.1.gz: kmymoney2.1
 	gzip -9 -c -N $(top_srcdir)/$(subdir)/kmymoney2.1 > kmymoney2.1.gz
