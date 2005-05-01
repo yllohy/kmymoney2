@@ -215,6 +215,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   connect(m_institutionsView, SIGNAL(bankRightMouseClick()), this, SLOT(slotBankRightMouse()));
   connect(m_institutionsView, SIGNAL(accountRightMouseClick()), this, SLOT(slotAccountRightMouse()));
+  connect(m_institutionsView, SIGNAL(accountDoubleClick()), this, SLOT(slotAccountDoubleClick()));
 
   connect(m_categoriesView, SIGNAL(categoryRightMouseClick()),
     this, SLOT(slotAccountRightMouse()));
