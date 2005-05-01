@@ -1,8 +1,20 @@
+2005-05-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Switch to ledger view when double-clicking an account in the 
+    institutions view
+  * Fixed title label of institution view
+
+2005-04-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed display of positive net-worth (no more &nbsp;)
+  * Added auto increment check number
+  * Fixed a bug in the build system around the man pages
+
 2005-04-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed crash when adding new investment transactions via clicking
     on the emtpy line at the end of the ledger.
   * Fixed some problems around widget updates during entry of
     investment transactions
+  * Fixed initial column width of transaction list in payees view
+  * Removed non-existant files in doc/en from distribution list
 
 2005-04-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added methods checkNoUsed() and highestCheckNo() to MyMoneyFile
