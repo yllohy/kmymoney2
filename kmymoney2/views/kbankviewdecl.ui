@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KBankViewDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -31,9 +31,6 @@
             </property>
             <property name="rightImageFile" stdset="0">
                 <cstring>pics/titlelabel_background.png</cstring>
-            </property>
-            <property name="text" stdset="0">
-                <string>Accounts</string>
             </property>
         </widget>
         <widget class="Line">

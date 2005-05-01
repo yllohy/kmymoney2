@@ -52,8 +52,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutio
    m_suspendUpdate(false),
    m_bViewNormalAccountsView(bInstitutionView)
 {
-  if ( bInstitutionView )
-    titleLabel->setProperty( "text", i18n("Institutions") );
+  titleLabel->setText(bInstitutionView ? i18n("Institutions") : i18n("Accounts"));
 
   accountListView->setRootIsDecorated(true);
   accountListView->setAllColumnsShowFocus(true);
