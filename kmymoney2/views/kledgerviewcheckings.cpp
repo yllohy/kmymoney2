@@ -28,6 +28,7 @@
 #include <qwidgetstack.h>
 #include <qcheckbox.h>
 #include <qregexp.h>
+#include <qapplication.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -382,7 +383,7 @@ void KLedgerViewCheckings::slotTypeSelected(int type)
   if(m_actionIdx[type] != -1)
     slotActionSelected(m_actionIdx[type]);
   else
-    qWarning("Invalid type %d passed to KLedgerViewCheckings::slotTypeSelected");
+    qWarning("Invalid type %d passed to KLedgerViewCheckings::slotTypeSelected", type);
 }
 
 void KLedgerViewCheckings::slotActionSelected(int type)
@@ -440,8 +441,10 @@ void KLedgerViewCheckings::slotActionSelected(int type)
     }
 
     // select the focus widget
-    m_tabOrderWidgets.find(focusWidget);
-    focusWidget->setFocus();
+    if(m_tabOrderWidgets.find(qApp->focusWidget()) == -1) {
+      m_tabOrderWidgets.find(focusWidget);
+      focusWidget->setFocus();
+    }
   }
   autoIncCheckNumber();
 }
@@ -1077,7 +1080,7 @@ void KLedgerViewCheckings::createEditWidgets(void)
   if(!m_editType) {
     m_editType = new kMyMoneyCombo(0, "Type");
     m_editType->setFocusPolicy(QWidget::StrongFocus);
-    connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotActionSelected(int)));
+    connect(m_editType, SIGNAL(selectionChanged(int)), this, SLOT(slotTypeSelected(int)));
 
     // need to load the combo box with the required values?
     // copy them from the tab's in the transaction form
