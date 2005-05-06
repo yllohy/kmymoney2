@@ -29,19 +29,20 @@
 #include "../mymoney/mymoneyfile.h"
 
 kMyMoneyCombo::kMyMoneyCombo(QWidget *w, const char *name)
-  : KComboBox(w, name), m_type(NONE)
+  : KComboBox(w, name)
 {
   init();
 }
 
 kMyMoneyCombo::kMyMoneyCombo(bool rw, QWidget *w, const char *name)
-  : KComboBox(rw, w, name), m_type(NONE)
+  : KComboBox(rw, w, name)
 {
   init();
 }
 
 void kMyMoneyCombo::init(void)
 {
+  m_type = NONE;
   connect(this, SIGNAL(activated(int)), SLOT(slotCheckValidSelection(int)));
 }
 
@@ -49,98 +50,15 @@ kMyMoneyCombo::~kMyMoneyCombo()
 {
 }
 
-void kMyMoneyCombo::keyPressEvent(QKeyEvent* k)
-{
-  KComboBox::keyPressEvent(k);
-
-  switch(k->key()) {
-    case Qt::Key_Return:
-    case Qt::Key_Enter:
-      emit signalEnter();
-      break;
-
-    case Qt::Key_Escape:
-      emit signalEsc();
-      break;
-
-    case Qt::Key_Tab:
-      break;
-  }
-  return;
-}
-
-bool kMyMoneyCombo::eventFilter(QObject *o, QEvent *e)
-{
-  bool rc = KComboBox::eventFilter(o, e);
-
-  if(rc == false) {
-    if(e->type() == QEvent::KeyPress) {
-      QKeyEvent *k = static_cast<QKeyEvent *> (e);
-      rc = true;
-      switch(k->key()) {
-        case Qt::Key_Return:
-        case Qt::Key_Enter:
-          emit signalEnter();
-          break;
-
-        case Qt::Key_Escape:
-          emit signalEsc();
-          break;
-
-        case Qt::Key_Tab:
-          rc = false;
-          if(k->state() & Qt::ShiftButton)
-            emit signalBackTab();
-          else
-            emit signalTab();
-          break;
-
-        case Qt::Key_Backtab:
-          rc = false;
-          emit signalBackTab();
-          break;
-
-        default:
-          rc = false;
-      }
-    }
-  }
-  return rc;
-/*
-  if(e->type() == QEvent::FocusOut) {
-    emit signalFocusOut();
-
-  } else if(e->type() == QEvent::KeyRelease) {
-    QKeyEvent *k = static_cast<QKeyEvent *> (e);
-    if((k->key() == Qt::Key_Return) ||
-      (k->key() == Qt::Key_Enter)) {
-      emit signalEnter();
-      emit signalNextTransaction();
-    }
-
-  } else if(e->type() == QEvent::KeyPress) {
-    QKeyEvent *k = static_cast<QKeyEvent *> (e);
-    if(k->key() == Qt::Key_Backtab ||
-       (k->key() == Qt::Key_Tab &&
-       (k->state() & Qt::ShiftButton)) ) {
-      emit signalBackTab();
-
-    } else if(k->key() == Qt::Key_Tab) {
-      emit signalTab();
-    }
-  }
-  return KComboBox::eventFilter(o,e);
-*/
-}
-
 void kMyMoneyCombo::loadCurrentItem(const int item)
 {
-  m_item = item;
+  m_prevItem = m_item = item;
   resetCurrentItem();
 }
 
 void kMyMoneyCombo::resetCurrentItem(void)
 {
+  m_prevItem = m_item;
   setCurrentItem(m_item);
 }
 
@@ -151,6 +69,7 @@ void kMyMoneyCombo::setCurrentItem(const QString& str)
   for(; i < count(); ++i) {
     if(str == text(i)) {
       KComboBox::setCurrentItem(i);
+      m_prevItem = i;
       break;
     }
   }
@@ -159,6 +78,7 @@ void kMyMoneyCombo::setCurrentItem(const QString& str)
   if(i == count()) {
     qDebug("kMyMoneyCombo::setCurrentItem: '%s' not found", str.latin1());
     KComboBox::setCurrentItem(0);
+    m_prevItem = 0;
   }
 }
 
@@ -180,8 +100,9 @@ void kMyMoneyCombo::focusOutEvent(QFocusEvent *ev)
   // if the current text is not in the list of
   // possible completions, we have a new payee
   // and signal that to the outside world.
-  if(currentItem() != m_item) {
+  if(currentItem() != m_prevItem) {
     emit selectionChanged(currentItem());
+    m_prevItem = currentItem();
   }
   KComboBox::focusOutEvent(ev);
 }

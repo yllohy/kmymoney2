@@ -33,7 +33,8 @@
 
 
 /**
-  *@author Michael Edwardes
+  * @author Michael Edwardes
+  * @author Thomas Baumgart
   */
 
 class kMyMoneyCombo : public KComboBox
@@ -44,12 +45,12 @@ public:
   kMyMoneyCombo(bool rw, QWidget *w, const char *name=0);
   ~kMyMoneyCombo();
 
-  /** No descriptions */
-  virtual bool eventFilter(QObject *, QEvent *);
-
-  // return the id of the entry identified by str or -1 if not found
-  // @param str reference to the string to be searched for in the list
-  // if the item is not found, the first item of the list will be selected
+  /**
+    * return the id of the entry identified by str or -1 if not found
+    *
+    * @param str reference to the string to be searched for in the list
+    *            if the item is not found, the first item of the list will be selected
+    */
   void setCurrentItem(const QString& str);
 
   // override the base class variant
@@ -67,7 +68,7 @@ public:
     * @param asset  Load the asset accounts if true
     * @param liability Load the liablity accounts if true
     * @return none
-  **/
+    **/
   void loadAccounts(bool asset=true, bool liability=false);
 
   /**
@@ -75,13 +76,13 @@ public:
     * currently selected item
     *
     * @return QCString The account id or QCString() if not found
-  **/
+    **/
   QCString currentAccountId(void);
 
-  virtual void keyPressEvent(QKeyEvent* e);
-
 private:
-  /// perform initialization required for all constructors
+  /**
+    * perform initialization required for all constructors
+    */
   void init(void);
 
 protected:
@@ -91,25 +92,18 @@ protected slots:
   void slotCheckValidSelection(int id);
 
 signals: // Signals
-/*
-  // No descriptions
-  void signalFocusOut();
-  void signalNextTransaction();
-*/
   void selectionChanged(int value);
-  void signalEnter();
-  void signalEsc();
-
-  /** signal is sent, when the tab key is pressed */
-  void signalTab();
-  /** signal is sent, when the Back-tab (Shift-Tab) key is pressed */
-  void signalBackTab();
 
 private:
   /**
     * This member keeps a copy of the original selected item
     */
   int   m_item;
+
+  /**
+    * This member keeps a copy of the previously selected item
+    */
+  int   m_prevItem;
 
   /**
     * The current type of the combo box
