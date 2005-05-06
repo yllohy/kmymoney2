@@ -337,6 +337,8 @@ protected slots:
 
   void slotPayeeSelected(void);
 
+  void slotTypeSelected(int type);
+
 private:
   /**
     * This method loads the data of the current transaction into the

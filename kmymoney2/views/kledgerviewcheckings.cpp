@@ -149,10 +149,6 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
 
   // and the register has the focus
   m_register->setFocus();
-
-  // setup a 1:1 action index
-  for(unsigned int i = 0; i < sizeof(m_actionIdx); ++i)
-    m_actionIdx[i] = i;
 }
 
 KLedgerViewCheckings::~KLedgerViewCheckings()
@@ -313,7 +309,7 @@ void KLedgerViewCheckings::slotAmountChanged(const QString& amount)
 
 void KLedgerViewCheckings::updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s, const bool enableAll)
 {
-  int tab = actionTab(t, s);
+  int selectedTab = actionTab(t, s);
   QTabBar* bar = m_form->tabBar();
   MyMoneySplit otherSplit;
   if(t.splitCount() > 1)
@@ -323,14 +319,14 @@ void KLedgerViewCheckings::updateTabBar(const MyMoneyTransaction& t, const MyMon
     // determine the tab differently if edit-mode or not
     if(otherSplit.accountId().isEmpty() || s.value().isZero()) {
       // don't touch current setting if info ambigious
-      tab = bar->currentTab();
+      selectedTab = bar->currentTab();
     }
   }
 
   QPtrList<QTab> list;
   QTab* it;
 
-  bar->setCurrentTab(tab);
+  bar->setCurrentTab(selectedTab);
 
   if(m_tabAtm)        list.append(m_tabAtm);
   if(m_tabDeposit)    list.append(m_tabDeposit);
@@ -360,9 +356,33 @@ void KLedgerViewCheckings::updateTabBar(const MyMoneyTransaction& t, const MyMon
   // force repaint, unfortunately, setEnabled() does not do that for us
   bar->update();
 
+  // update the edit type widget if present
   if(m_editType) {
-    m_editType->loadCurrentItem(m_actionIdx[tab]);
+    m_editType->clear();
+    int j = 0;
+    for(int i = 0; i < 5; ++i) {
+      QTab* tab = bar->tab(i);
+      if(tab && tab->isEnabled()) {
+        m_actionIdx[j++] = i;
+        QString txt = tab->text();
+        txt = txt.replace(QRegExp("&"), "");
+        m_editType->insertItem(txt);
+        if(selectedTab == i)
+          m_editType->loadCurrentItem(j-1);
+      }
+    }
+    while(j < 5) {
+      m_actionIdx[j++] = -1;
+    }
   }
+}
+
+void KLedgerViewCheckings::slotTypeSelected(int type)
+{
+  if(m_actionIdx[type] != -1)
+    slotActionSelected(m_actionIdx[type]);
+  else
+    qWarning("Invalid type %d passed to KLedgerViewCheckings::slotTypeSelected");
 }
 
 void KLedgerViewCheckings::slotActionSelected(int type)
@@ -1081,10 +1101,6 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 
   if(m_editCategory)
     disconnect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
-
-  if(m_editType) {
-    m_editType->loadCurrentItem(m_actionIdx[actionTab(t, m_split)]);
-  }
 
   try {
     if(!m_split.payeeId().isEmpty())
