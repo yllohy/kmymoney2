@@ -1,3 +1,7 @@
+2005-05-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Force pointers to deleted objects to point to 0x00
+  * Fixed update of transaction type tabs and field description strings
+
 2005-05-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Switch to ledger view when double-clicking an account in the 
     institutions view
