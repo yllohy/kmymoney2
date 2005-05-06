@@ -116,8 +116,7 @@ void KHomeView::slotRefreshView(void)
 #endif
   } else {
     QString filename = KGlobal::dirs()->findResource("appdata", "html/kmymoney2.css");
-    QString header = QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n") +
-      QString("<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"%1\">\n").arg(filename);
+    QString header = QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"%1\">\n").arg(filename);
 
     header += KMyMoneyUtils::variableCSS();
 
