@@ -47,6 +47,7 @@ KLedgerViewSavings::KLedgerViewSavings(QWidget *parent, const char *name )
 {
   m_form->tabBar()->removeTab(m_tabCheck);
   m_form->tabBar()->removeTab(m_tabAtm);
+  m_tabCheck = m_tabAtm = 0;
   KConfig *config = KGlobal::config();
   config->setGroup("General Options");
   if(config->readBoolEntry("AlwaysShowNrField", false) == false)

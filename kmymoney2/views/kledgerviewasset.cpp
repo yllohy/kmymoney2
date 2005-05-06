@@ -47,6 +47,7 @@ KLedgerViewAsset::KLedgerViewAsset(QWidget *parent, const char *name )
 
   m_form->tabBar()->removeTab(m_tabCheck);
   m_form->tabBar()->removeTab(m_tabAtm);
+  m_tabCheck = m_tabAtm = 0;
   m_form->tabBar()->tabAt(0)->setText(i18n("Increase"));
   m_form->tabBar()->tabAt(2)->setText(i18n("Decrease"));
 
