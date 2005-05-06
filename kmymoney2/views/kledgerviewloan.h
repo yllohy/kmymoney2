@@ -90,7 +90,7 @@ protected:
     */
   void destroyWidgets(void);
 
-  virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s);
+  virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s, const bool enableAll = false);
 
   /**
     * This method is called to determine the next widget that receives focus

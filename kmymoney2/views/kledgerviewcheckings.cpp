@@ -52,6 +52,7 @@
 #include "../dialogs/ksplittransactiondlg.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyutils.h"
 #include "../views/kmymoneyview.h"
 
 #define PAYEE_ROW       0
@@ -227,6 +228,11 @@ void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
   }
   m_register->setColumnWidth(2, w);
 
+  resizeForm();
+}
+
+void KLedgerViewCheckings::resizeForm(void)
+{
   // now resize the form
   kMyMoneyDateInput dateInput(0, "editDate");
   KPushButton splitButton(i18n("Split"), 0, "editSplit");
@@ -237,7 +243,7 @@ void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
   table->adjustColumn(3);
   table->adjustColumn(4, dateInput.minimumSizeHint().width()+10);
 
-  w = table->visibleWidth();
+  int w = table->visibleWidth();
   for(int i = 0; i < table->numCols(); ++i) {
     switch(i) {
       default:
@@ -305,10 +311,55 @@ void KLedgerViewCheckings::slotAmountChanged(const QString& amount)
   }
 }
 
-void KLedgerViewCheckings::updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s)
+void KLedgerViewCheckings::updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s, const bool enableAll)
 {
   int tab = actionTab(t, s);
-  m_form->tabBar()->setCurrentTab(tab);
+  QTabBar* bar = m_form->tabBar();
+  MyMoneySplit otherSplit;
+  if(t.splitCount() > 1)
+    otherSplit = t.splitByAccount(m_account.id(), false);
+
+  if(isEditMode()) {
+    // determine the tab differently if edit-mode or not
+    if(otherSplit.accountId().isEmpty() || s.value().isZero()) {
+      // don't touch current setting if info ambigious
+      tab = bar->currentTab();
+    }
+  }
+
+  QPtrList<QTab> list;
+  QTab* it;
+
+  bar->setCurrentTab(tab);
+
+  if(m_tabAtm)        list.append(m_tabAtm);
+  if(m_tabDeposit)    list.append(m_tabDeposit);
+  if(m_tabCheck)      list.append(m_tabCheck);
+  if(m_tabWithdrawal) list.append(m_tabWithdrawal);
+
+  if(otherSplit.accountId().isEmpty() || enableAll) {
+    for(it = list.first(); it; it = list.next())
+      it->setEnabled(true);
+    if(m_tabTransfer)
+      m_tabTransfer->setEnabled(transfersPossible());
+
+  } else {
+    bool isXfer = false;
+    if(t.splitCount() == 2) {
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(otherSplit.accountId());
+      isXfer = acc.accountGroup() == MyMoneyAccount::Asset
+               || acc.accountGroup() == MyMoneyAccount::Liability;
+
+    }
+    for(it = list.first(); it; it = list.next())
+      it->setEnabled(!isXfer);
+    if(m_tabTransfer)
+      m_tabTransfer->setEnabled(isXfer && transfersPossible());
+  }
+
+  // force repaint, unfortunately, setEnabled() does not do that for us
+  bar->update();
+
   if(m_editType) {
     m_editType->loadCurrentItem(m_actionIdx[tab]);
   }
@@ -773,7 +824,7 @@ void KLedgerViewCheckings::fillSummary(void)
 
 void KLedgerViewCheckings::fillFormStatics(void)
 {
-  QTable* formTable = m_form->table();
+  kMyMoneyTransactionFormTable* formTable = m_form->table();
 
   // clear complete table, but leave the cell widgets while editing
   for(int r = 0; r < formTable->numRows(); ++r) {
@@ -792,13 +843,13 @@ void KLedgerViewCheckings::fillFormStatics(void)
     case Transfer:
       switch( transactionDirection(m_split) ){
         case Credit:
-        case UnknownDirection:
-          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Paid by"));
-          formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("From (account)","From"));
+          formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("From"));
+          formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Transfer from"));
           break;
+        case UnknownDirection:
         case Debit:
           formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Pay to"));
-          formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("To (account)","To"));
+          formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Transfer to"));
           break;
       }
       break;
@@ -819,6 +870,7 @@ void KLedgerViewCheckings::fillFormStatics(void)
 
   if(showNrField(m_transaction, m_split))
     formTable->setText(NR_ROW, NR_TXT_COL, i18n("No."));
+  resizeForm();
 }
 
 void KLedgerViewCheckings::fillForm(void)
@@ -837,7 +889,7 @@ void KLedgerViewCheckings::fillForm(void)
 
     // setup the fields first
     m_form->tabBar()->blockSignals(true);
-    m_form->tabBar()->setCurrentTab(actionTab(m_transaction, m_split));
+    updateTabBar(m_transaction, m_split, true);
     m_form->tabBar()->blockSignals(false);
 
     // fill in common fields

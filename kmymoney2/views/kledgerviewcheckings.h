@@ -219,11 +219,16 @@ protected:
   void resizeEvent(QResizeEvent*);
 
   /**
+    * This method resizes the widgets in the transaction form.
+    */
+  void resizeForm(void);
+
+  /**
     * This destroys and hides the widgets used to edit a transaction.
     */
   void destroyWidgets(void);
 
-  void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s);
+  void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s, const bool enableAll = false);
 
   /**
     * This method is called to determine the next widget that receives focus

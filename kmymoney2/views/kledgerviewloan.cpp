@@ -1035,7 +1035,7 @@ void KLedgerViewLoan::slotReconciliation(void)
   }
 }
 
-void KLedgerViewLoan::updateTabBar(const MyMoneyTransaction& /* t */, const MyMoneySplit& /* s */)
+void KLedgerViewLoan::updateTabBar(const MyMoneyTransaction& /* t */, const MyMoneySplit& /* s */, const bool /* enableAll */)
 {
 }
 

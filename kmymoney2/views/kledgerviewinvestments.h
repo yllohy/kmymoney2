@@ -170,7 +170,7 @@ protected:
   virtual void destroyWidgets();
 
   virtual void reloadEditWidgets(const MyMoneyTransaction& t);
-  virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s);
+  virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s, const bool enableAll = false);
 
   void resizeEvent(QResizeEvent*);
 

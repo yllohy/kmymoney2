@@ -1184,7 +1184,7 @@ const KLedgerView::investTransactionTypeE KLedgerViewInvestments::transactionTyp
   return BuyShares;
 }
 
-void KLedgerViewInvestments::updateTabBar(const MyMoneyTransaction& /* t */, const MyMoneySplit& /* s */)
+void KLedgerViewInvestments::updateTabBar(const MyMoneyTransaction& /* t */, const MyMoneySplit& /* s */, const bool /* enableAll */)
 {
 }
 

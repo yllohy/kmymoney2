@@ -1008,6 +1008,7 @@ void KLedgerView::slotCategoryChanged(const QCString& categoryId)
       createSecondSplit();
     }
     fillFormStatics();
+    updateTabBar(m_transaction, m_split);
 
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to modify category"),
@@ -1422,6 +1423,10 @@ void KLedgerView::slotStartEdit(void)
 
   showWidgets();
 
+  m_form->tabBar()->blockSignals(true);
+  updateTabBar(m_transaction, m_split);
+  m_form->tabBar()->blockSignals(false);
+
   if(!m_transactionFormActive)
     m_register->setInlineEditingMode(true);
 }
@@ -1457,6 +1462,10 @@ void KLedgerView::slotCancelEdit(void)
 
   m_register->setInlineEditingMode(false);
   m_register->setFocus();
+
+  m_form->tabBar()->blockSignals(true);
+  updateTabBar(m_transaction, m_split, true);
+  m_form->tabBar()->blockSignals(false);
 }
 
 void KLedgerView::slotEndEdit(void)

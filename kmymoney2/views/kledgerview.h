@@ -780,7 +780,7 @@ protected:
     */
   const bool transfersPossible(void) const;
 
-  virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s) = 0;
+  virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s, const bool enableAll = false) = 0;
 
   /**
     * This method returns the split referencing a stock account if
