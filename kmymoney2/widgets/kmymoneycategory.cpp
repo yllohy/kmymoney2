@@ -248,9 +248,10 @@ void kMyMoneyCategory::slotSelectAccount(const QCString& id)
   else
     setText("");
 
+  m_accountSelector->hide();
+
   if(m_id != id) {
     m_id = id;
     emit categoryChanged(id);
   }
-  m_accountSelector->hide();
 }
