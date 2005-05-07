@@ -299,6 +299,7 @@ void KInvestmentView::slotReloadView(void)
 {
   // make sure to determine the current account from scratch
   m_account = MyMoneyAccount();
+  m_accountId = QCString();
 
   slotRefreshView();
 }
@@ -315,17 +316,16 @@ void KInvestmentView::slotRefreshView(void)
   // if the current account differs from the previous selection
   // then select the correct ledgerview first and force loading
   // the newly selected account
-  if(m_account.id() != id) {
+  if(m_account.id() != id && !id.isEmpty()) {
     slotSelectAccount(m_account.id());
   } else if(m_account.id().isEmpty()) {
     slotSelectAccount(QCString());
     m_ledgerView->refreshView();
   } else {
     m_ledgerView->refreshView();
+    // update the summary tab
+    updateDisplay();
   }
-
-  // update the summary tab
-  updateDisplay();
 
   // Enable selection widget if we have at least one account
   m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
