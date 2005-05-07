@@ -1,3 +1,8 @@
+2005-05-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed flickering of register when running w/o transaction form
+  * Fixed crash when loading different file
+  * Fixed initial selection of account in investment view
+
 2005-05-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Force pointers to deleted objects to point to 0x00
   * Fixed update of transaction type tabs and field description strings
