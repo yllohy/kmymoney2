@@ -172,6 +172,8 @@ void KLedgerViewCheckings::refreshView(void)
 
 void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
 {
+  m_register->setUpdatesEnabled(false);
+
   // resize the register
   int w = m_register->visibleWidth();
 
@@ -195,14 +197,16 @@ void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
   // a) the size required by the input widget if no transaction form is shown
   // b) the adjusted value for the input widget if the transaction form is visible
   if(!m_transactionFormActive) {
-    kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
-    datefield->setFont(m_register->cellFont());
-    m_register->setColumnWidth(1, datefield->minimumSizeHint().width());
-    delete datefield;
-    kMyMoneyEdit* valfield = new kMyMoneyEdit();
-    valfield->setMinimumWidth(width);
-    width = valfield->minimumSizeHint().width();
-    delete valfield;
+    kMyMoneyDateInput* dateField = new kMyMoneyDateInput(0, "editDate");
+    kMyMoneyEdit* valField = new kMyMoneyEdit(0, "valEdit");
+
+    dateField->setFont(m_register->cellFont());
+    m_register->setColumnWidth(1, dateField->minimumSizeHint().width());
+    valField->setMinimumWidth(width);
+    width = valField->minimumSizeHint().width();
+
+    delete valField;
+    delete dateField;
   } else {
     m_register->adjustColumn(1);
   }
@@ -226,6 +230,8 @@ void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
   m_register->setColumnWidth(2, w);
 
   resizeForm();
+  m_register->setUpdatesEnabled(true);
+  m_register->repaintContents(false);
 }
 
 void KLedgerViewCheckings::resizeForm(void)

@@ -145,6 +145,8 @@ void KLedgerViewLoan::enableWidgets(const bool enable)
 
 void KLedgerViewLoan::resizeEvent(QResizeEvent* /* ev */)
 {
+  m_register->setUpdatesEnabled(false);
+
   // resize the register
   int w = m_register->visibleWidth();
 
@@ -192,6 +194,9 @@ void KLedgerViewLoan::resizeEvent(QResizeEvent* /* ev */)
     }
   }
   m_register->setColumnWidth(2, w);
+
+  m_register->setUpdatesEnabled(true);
+  m_register->repaintContents(false);
 
   // now resize the form
   kMyMoneyDateInput dateInput(0, "editDate");
