@@ -1147,7 +1147,7 @@ void KLedgerView::slotShowTransactionForm(bool visible)
     // working when coming from hidden form to visible form. I assume, this
     // has something to do with the delayed update of the display somehow.
     resize(width()-1, height());
-    QTimer::singleShot(10, this, SLOT(timerDone()));
+    QTimer::singleShot(0, this, SLOT(timerDone()));
   }
 }
 
@@ -1287,9 +1287,6 @@ void KLedgerView::showWidgets(void)
   for(QWidget* w = m_tabOrderWidgets.first(); w; w = m_tabOrderWidgets.next()) {
     w->installEventFilter(this);
   }
-
-  // make sure, size of all form columns are correct
-  resizeEvent(0);
 
   m_tabOrderWidgets.find(focusWidget);
   focusWidget->setFocus();
@@ -1443,6 +1440,10 @@ void KLedgerView::cancelOrEndEdit(void)
 
 void KLedgerView::slotCancelEdit(void)
 {
+  // make this a NOP if not in edit mode
+  if(!isEditMode())
+    return;
+
   // force focusOut processing of the widgets
   m_register->setFocus();
 
