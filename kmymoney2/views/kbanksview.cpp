@@ -129,6 +129,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutio
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassInstitution, this);
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassSecurity, this);
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassCurrency, this);
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassPrice, this);
 
   refresh(QCString());
 }
@@ -140,6 +141,7 @@ KAccountsView::~KAccountsView()
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassInstitution, this);
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassSecurity, this);
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassCurrency, this);
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassPrice, this);
 }
 
 void KAccountsView::slotListDoubleClicked(QListViewItem* item, const QPoint& /* pos */, int /* c */)
@@ -283,11 +285,13 @@ void KAccountsView::update(const QCString& id)
     if(id == MyMoneyFile::NotifyClassAccountHierarchy
     || id == MyMoneyFile::NotifyClassCurrency
     || id == MyMoneyFile::NotifyClassSecurity
+    || id == MyMoneyFile::NotifyClassPrice
     || (id == MyMoneyFile::NotifyClassInstitution && m_bViewNormalAccountsView == true)) {
       refresh(id);
     }
     if(id == MyMoneyFile::NotifyClassAccount
     || id == MyMoneyFile::NotifyClassCurrency
+    || id == MyMoneyFile::NotifyClassPrice
     || id == MyMoneyFile::NotifyClassSecurity)
       refreshNetWorth();
   }
