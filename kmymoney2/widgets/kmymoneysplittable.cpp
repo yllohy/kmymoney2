@@ -744,12 +744,12 @@ QWidget* kMyMoneySplitTable::createEditWidgets(void)
   }
 
   m_editMemo->loadText(m_split.memo());
-  m_editAmount->loadText(m_split.value().formatMoney());
   // don't allow automatically calculated values to be modified
   if(m_split.value() == MyMoneyMoney::autoCalc) {
     m_editAmount->setEnabled(false);
     m_editAmount->loadText("will be calculated");
-  }
+  } else
+    m_editAmount->setValue(m_split.value());
 
   setCellWidget(m_currentRow, 0, m_editCategory);
   setCellWidget(m_currentRow, 1, m_editMemo);

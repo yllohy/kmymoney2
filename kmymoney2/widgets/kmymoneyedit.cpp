@@ -97,7 +97,37 @@ QValidator::State kMyMoneyMoneyValidator::validate( QString & input, int & _p ) 
     for ( int idx = s.find( n ) ; idx >= 0 ; idx = s.find( n, idx + 1 ) )
       s.replace( idx, n.length(), "-" );
 
-  return QDoubleValidator::validate( s, _p );
+  // Take care of monetary parens around the value if selected via
+  // the locale settings.
+  // If the lead-in or lead-out paren is present, remove it
+  // before passing the string to the QDoubleValidator
+  if(l->negativeMonetarySignPosition() == KLocale::ParensAround
+  || l->positiveMonetarySignPosition() == KLocale::ParensAround) {
+    QRegExp regExp("^(\\()?([\d-\\.]*)(\\))?$");
+    if(s.find(regExp) != -1) {
+      s = regExp.cap(2);
+    }
+  }
+
+  // check the numeric value
+  QValidator::State rc = QDoubleValidator::validate( s, _p );
+
+  if(rc == Acceptable) {
+    // If the numeric value is acceptable, we check if the parens
+    // are ok. If only the lead-in is present, the return value
+    // is intermediate, if only the lead-out is present then it
+    // definitely is invalid. Nevertheless, we check for parens
+    // only, if the locale settings have it enabled.
+    if(l->negativeMonetarySignPosition() == KLocale::ParensAround
+    || l->positiveMonetarySignPosition() == KLocale::ParensAround) {
+      int tmp = input.contains('(') - input.contains(')');
+      if(tmp > 0)
+        rc = Intermediate;
+      else if(tmp < 0)
+        rc = Invalid;
+    }
+  }
+  return rc;
 }
 
 kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name, const int prec)
@@ -203,12 +233,21 @@ void kMyMoneyEdit::theTextChanged(const QString & theText)
   KLocale * l = KGlobal::locale();
   QString d = l->monetaryDecimalSymbol();
   QString l_text = theText;
+  QString nsign, psign;
+  if(l->negativeMonetarySignPosition() == KLocale::ParensAround
+  || l->positiveMonetarySignPosition() == KLocale::ParensAround) {
+    nsign = psign = "(";
+  } else {
+    nsign = l->negativeSign();
+    psign = l->positiveSign();
+  }
+
   int i = 0;
   if(isEnabled()) {
     QValidator::State state =  m_edit->validator()->validate( l_text, i);
     if(state == QValidator::Intermediate) {
       if(l_text.length() == 1) {
-        if(l_text != d && l_text != "-")
+        if(l_text != d && l_text != nsign && l_text != psign)
           state = QValidator::Invalid;
       }
     }
