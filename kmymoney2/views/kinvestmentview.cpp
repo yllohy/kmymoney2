@@ -321,9 +321,9 @@ void KInvestmentView::slotRefreshView(void)
   } else if(m_account.id().isEmpty()) {
     slotSelectAccount(QCString());
     m_ledgerView->refreshView();
+    updateDisplay();
   } else {
     m_ledgerView->refreshView();
-    // update the summary tab
     updateDisplay();
   }
 
