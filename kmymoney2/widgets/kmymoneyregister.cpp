@@ -418,13 +418,21 @@ bool kMyMoneyRegister::eventFilter(QObject* o, QEvent* e)
         break;
 
       case Qt::Key_PageUp:
+        setUpdatesEnabled(false);
         while(lines-- > 0)
           emit signalPreviousTransaction();
+        setUpdatesEnabled(true);
+        ensureTransactionVisible();
+        repaintContents(false);
         break;
 
       case Qt::Key_PageDown:
+        setUpdatesEnabled(false);
         while(lines-- > 0)
           emit signalNextTransaction();
+        setUpdatesEnabled(true);
+        ensureTransactionVisible();
+        repaintContents(false);
         break;
 
       case Qt::Key_Home:
