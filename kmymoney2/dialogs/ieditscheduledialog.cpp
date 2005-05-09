@@ -856,6 +856,10 @@ void KEditScheduleDialog::slotAccountChanged(const QCString& id)
     MyMoneySplit s = m_transaction.splits()[0];
     s.setAccountId(id);
     m_transaction.modifySplit(s);
+    if(!id.isEmpty()) {
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+      m_transaction.setCommodity(acc.currencyId());
+    }
   }
 }
 
