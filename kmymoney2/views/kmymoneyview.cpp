@@ -2170,6 +2170,17 @@ void KMyMoneyView::fixSchedule(MyMoneySchedule sched)
     // Check if the splits contain valid data and set it to
     // be valid.
     for(it_s = splitList.begin(); it_s != splitList.end(); ++it_s) {
+      // the first split is always the account on which this transaction operates
+      // and if the transaction commodity is not set, we take this
+      if(it_s == splitList.begin() && t.commodity().isEmpty()) {
+        try {
+          MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
+          t.setCommodity(acc.currencyId());
+          updated = true;
+        } catch(MyMoneyException *e) {
+          delete e;
+        }
+      }
       if((*it_s).reconcileFlag() != MyMoneySplit::NotReconciled) {
         MyMoneySplit split = *it_s;
         split.setReconcileDate(QDate());
