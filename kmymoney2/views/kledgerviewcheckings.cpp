@@ -886,8 +886,17 @@ void KLedgerViewCheckings::fillFormStatics(void)
     default:
       formTable->setText(CATEGORY_ROW, CATEGORY_TXT_COL, i18n("Category"));
       switch( transactionDirection(m_split) ){
-        case Credit:
         case UnknownDirection:
+          switch(m_form->tabBar()->currentTab()) {
+            case 1:  // Deposit
+              formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("From"));
+              break;
+            default:
+              formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Pay to"));
+              break;
+          }
+          break;
+        case Credit:
           formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("From"));
           break;
         case Debit:

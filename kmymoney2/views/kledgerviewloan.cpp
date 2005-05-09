@@ -365,14 +365,14 @@ void KLedgerViewLoan::fillFormStatics(void)
 
   switch(m_account.accountGroup()) {
     case MyMoneyAccount::Asset:
-      formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Payer"));
+      formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("From"));
       break;
     case MyMoneyAccount::Liability:
-      formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Receiver"));
+      formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Pay to"));
       break;
     default:
       if(m_account.id().isEmpty()) {
-        formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Receiver"));
+        formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Pay to"));
       } else {
         qFatal("KLedgerViewLoan::fillFormStatics(): Got a loan with an expense/income account. Strange!");
       }
