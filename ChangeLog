@@ -1,3 +1,14 @@
+2005-05-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Update field descriptions according to tab for all fields empty
+  * Fixed scheduled transactions to work from non-base-currency accounts
+  * Fix commodity of scheduled transactions if empty when loading file
+
+2005-05-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Update balances in accounts and institutio view when prices are changed
+  * Fixed handling of 'parens around' handling for negative values
+  * Fixed layout of details tab in FindTransactionDlg
+  * Speedup processing of page-up/page-down of register display
+
 2005-05-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed flickering of register when running w/o transaction form
   * Fixed crash when loading different file
