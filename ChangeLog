@@ -1,3 +1,6 @@
+2005-05-12 Robert Wadley <robntina@users.sourceforge.net>
+  * Changed the version number in the "about this release" page to 0.7
+
 2005-05-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Update field descriptions according to tab for all fields empty
   * Fixed scheduled transactions to work from non-base-currency accounts
