@@ -45,7 +45,7 @@ email                : mte@users.sourceforge.net
   #include "../mymoney/mymoneyfile.h"
   #include "../mymoney/mymoneyprice.h"
   #include "../dialogs/kgncimportoptionsdlg.h"
-
+  #include "../dialogs/ieditscheduledialog.h"
   #define TRY try {
   #define PASS } catch (MyMoneyException *e) { throw e; }
 #else
@@ -1584,6 +1584,8 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
     postMessage ("SC", 2, sc.name().latin1());
   } else {
     m_storage->addSchedule(sc);
+    if (m_suspectSchedule)
+      m_suspectList.append (sc.id());
   }
   signalProgress (++m_scheduleCount, 0);
   return ;
@@ -1601,7 +1603,7 @@ void MyMoneyGncReader::terminate () {
   TRY
   // All data has been converted and added to storage
   // this code is just temporary to show us what is in the file.
-  if (gncdebug) qDebug("%d accounts found in the GNU Cash file", m_mapIds.count());
+  if (gncdebug) qDebug("%d accounts found in the GNU Cash file", (unsigned int)m_mapIds.count());
   for (map_accountIds::Iterator it = m_mapIds.begin(); it != m_mapIds.end(); ++it) {
     if (gncdebug) qDebug("key = %s, value = %s", it.key().data(), it.data().data());
   }
@@ -1705,6 +1707,23 @@ void MyMoneyGncReader::terminate () {
     case 2:   // Cancel clicked or Escape pressed
       exit = true;
       break;
+    }
+  }
+  for (i = 0; i < m_suspectList.count(); i++) {
+    MyMoneySchedule sc = m_storage->schedule(m_suspectList[i]);
+    QMessageBox mb (PACKAGE,
+            QObject::tr(QString("Problems were encountered in converting schedule '%1'.\n"
+                "Do you want to review or edit it now?").arg(sc.name())),
+                    QMessageBox::Question,
+                    QMessageBox::Yes | QMessageBox::Default,
+                    QMessageBox::No | QMessageBox::Escape,
+                    QMessageBox::NoButton);
+    switch (mb.exec()) {
+    case QMessageBox::Yes:
+        KEditScheduleDialog *s = new  KEditScheduleDialog (sc.transaction().splits()[0].action(), sc, 0, "");;
+        if (s->exec())
+          m_storage->modifySchedule (s->schedule());
+        delete s;
     }
   }
   PASS

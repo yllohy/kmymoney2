@@ -775,6 +775,8 @@ private:
   * A holding area for template txs while we're waiting for the schedules
   */
   QPtrList<GncTransaction> m_templateList;
+  /** Hold a list of suspect schedule ids for later processing? */
+  QValueList<QCString> m_suspectList;
   /**
     * To hold message data till final report
     */

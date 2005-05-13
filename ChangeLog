@@ -1,3 +1,7 @@
+2005-05-13 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash Reader
+    * Allow edit of suspect scheduled transactions
+
 2005-05-12 Robert Wadley <robntina@users.sourceforge.net>
   * Changed the version number in the "about this release" page to 0.7
 
