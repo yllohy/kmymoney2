@@ -281,7 +281,8 @@ void KLedgerViewInvestments::fillForm()
         formTable->setText(ACCOUNT_ROW, ACCOUNT_DATA_COL, accName);
 
         // total amount
-        amount = m_accountSplit.value(m_transaction.commodity(), m_account.currencyId()).abs();
+//        amount = m_accountSplit.value(m_transaction.commodity(), m_account.currencyId()).abs();
+        amount = m_accountSplit.value().abs();
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
                  amount.formatMoney());
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
@@ -297,7 +298,8 @@ void KLedgerViewInvestments::fillForm()
 
         // price
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
-                 (m_split.value(m_transaction.commodity(), m_account.currencyId())/m_split.shares()).formatMoney());
+//                 (m_split.value(m_transaction.commodity(), m_account.currencyId())/m_split.shares()).formatMoney());
+                 (m_split.value()/m_split.shares()).formatMoney());
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
         formTable->setItem(PRICE_ROW, PRICE_DATA_COL, item);
 
@@ -315,7 +317,8 @@ void KLedgerViewInvestments::fillForm()
         formTable->setText(ACCOUNT_ROW, ACCOUNT_DATA_COL, interest);
 
         // total amount
-        amount = m_interestSplit.value(m_transaction.commodity(), m_account.currencyId()).abs();
+//        amount = m_interestSplit.value(m_transaction.commodity(), m_account.currencyId()).abs();
+        amount = m_interestSplit.value().abs();
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
                  amount.formatMoney());
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
@@ -331,13 +334,15 @@ void KLedgerViewInvestments::fillForm()
 
         // price
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
-                 (m_split.value(m_transaction.commodity(), m_account.currencyId())/m_split.shares()).formatMoney());
+//                 (m_split.value(m_transaction.commodity(), m_account.currencyId())/m_split.shares()).formatMoney());
+                 (m_split.value()/m_split.shares()).formatMoney());
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
         formTable->setItem(PRICE_ROW, PRICE_DATA_COL, item);
 
         // fees
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
-                 m_feeSplit.value(m_transaction.commodity(), m_account.currencyId()).abs().formatMoney());
+//                 m_feeSplit.value(m_transaction.commodity(), m_account.currencyId()).abs().formatMoney());
+                 m_feeSplit.value().abs().formatMoney());
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
         formTable->setItem(FEES_ROW, FEES_DATA_COL, item);
         break;
@@ -353,7 +358,8 @@ void KLedgerViewInvestments::fillForm()
         formTable->setText(ACCOUNT_ROW, ACCOUNT_DATA_COL, accName);
 
         // total amount
-        amount = m_accountSplit.value(m_transaction.commodity(), m_account.currencyId()).abs();
+//        amount = m_accountSplit.value(m_transaction.commodity(), m_account.currencyId()).abs();
+        amount = m_accountSplit.value().abs();
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
                  amount.formatMoney());
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
