@@ -1,6 +1,17 @@
+2005-05-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Display all values in the investment transaction form as they show
+    up in the edit widgets
+  * Display currency symbol in investment transaction's value column
+  * Updated language specific files
+  * Released 0.7.0
+
 2005-05-13 Tony Bloomfield <tonybloom@users.sourceforge.net>
-  * Gnucash Reader
-    * Allow edit of suspect scheduled transactions
+  * Gnucash Reader: allow edit of suspect scheduled transactions
+
+2005-05-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated am_edit to state currently found in KDE admin directory
+  * Fixed am_edit to setup dependencies correctly
+  * Show currency symbols in investment ledger
 
 2005-05-12 Robert Wadley <robntina@users.sourceforge.net>
   * Changed the version number in the "about this release" page to 0.7
