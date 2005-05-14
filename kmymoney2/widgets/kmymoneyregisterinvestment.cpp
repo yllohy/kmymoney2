@@ -76,6 +76,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
   QCString splitCurrency;
   MyMoneyAccount acc;
   MyMoneySecurity security;
+  QString currency;
   MyMoneyMoney tmp;
   MyMoneyFile* file = MyMoneyFile::instance();
   KLedgerViewInvestments* myParent = dynamic_cast<KLedgerViewInvestments*> (m_parent);
@@ -89,6 +90,13 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
   int align = Qt::AlignVCenter;
   QString txt(" ");
   if(m_transaction != 0) {
+    try {
+      security = file->security(m_transaction->commodity());
+      currency = security.tradingSymbol();
+    } catch(MyMoneyException *e) {
+      currency = "???";
+      delete e;
+    }
     try {
       m_feeSplit = MyMoneySplit();
       m_interestSplit = MyMoneySplit();
@@ -306,7 +314,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                 case KLedgerView::BuyShares:
                 case KLedgerView::SellShares:
                 case KLedgerView::ReinvestDividend:
-                  txt = m_feeSplit.value().abs().formatMoney();
+                  txt = m_feeSplit.value().abs().formatMoney(currency);
                   break;
                 case KLedgerView::Dividend:
                 case KLedgerView::Yield:
@@ -330,7 +338,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                 case KLedgerView::BuyShares:
                 case KLedgerView::SellShares:
                 case KLedgerView::ReinvestDividend:
-                  txt = (m_split.value(QCString(), QCString())/m_split.shares()).abs().formatMoney();
+                  txt = (m_split.value(QCString(), QCString())/m_split.shares()).abs().formatMoney(currency);
                   break;
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
@@ -354,10 +362,10 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                 case KLedgerView::SellShares:
                 case KLedgerView::Dividend:
                 case KLedgerView::Yield:
-                  txt = m_accountSplit.value(QCString(), QCString()).abs().formatMoney();
+                  txt = m_accountSplit.value(QCString(), QCString()).abs().formatMoney(currency);
                   break;
                 case KLedgerView::ReinvestDividend:
-                  txt = m_interestSplit.value(QCString(), QCString()).abs().formatMoney();
+                  txt = m_interestSplit.value(QCString(), QCString()).abs().formatMoney(currency);
                   break;
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
@@ -443,7 +451,7 @@ void kMyMoneyRegisterInvestment::adjustColumn(int col)
           amount = split.shares().abs() > feeSplit.value().abs() ? split.shares().abs() : feeSplit.value().abs();
           amount = amount > interestSplit.value().abs() ? amount : interestSplit.value().abs();
           txt = amount.formatMoney();
-          nw = cellFontMetrics.width(txt+"  ");
+          nw = cellFontMetrics.width(txt+" WWW  ");
           break;
 
         case 5:
@@ -457,7 +465,7 @@ void kMyMoneyRegisterInvestment::adjustColumn(int col)
         case 6:
           amount = accountSplit.value().abs();
           txt = amount.formatMoney();
-          nw = cellFontMetrics.width(txt+"  ");
+          nw = cellFontMetrics.width(txt+" WWW  ");
           break;
       }
       w = QMAX( w, nw );
