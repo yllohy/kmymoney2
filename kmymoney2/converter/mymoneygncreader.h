@@ -748,11 +748,12 @@ private:
   // currency counter
   QMap<QString, unsigned int> m_currencyCount;
   /**
-    * Map gnucash vs. Kmm ids for accounts, equities, schedules
+    * Map gnucash vs. Kmm ids for accounts, equities, schedules, price sources
     */
   QMap<QCString, QCString> m_mapIds;
   QMap<QCString, QCString> m_mapEquities;
   QMap<QCString, QCString> m_mapSchedules;
+  QMap<QString, QString> m_mapSources;
   /**
     * A list of stock accounts (gnc ids) which will be held till the end 
       so we can implement the user's investment option
@@ -790,6 +791,7 @@ private:
   QDate incrDate (QDate lastDate, unsigned char interval, unsigned int intervalCount); // for date calculations
   MyMoneyAccount checkConsistency (MyMoneyAccount& parent, MyMoneyAccount& child); // gnucash is sometimes TOO flexible
   void checkInvestmentOption (QString stockId); // implement user investment option
+  void getPriceSource (MyMoneySecurity stock, QString gncSource);
 #endif // _GNCFILEANON
 };
 

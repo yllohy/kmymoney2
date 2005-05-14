@@ -1,3 +1,7 @@
+2005-05-14 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash Reader
+    * Infrastructure for Price Source fix
+
 2005-05-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Display all values in the investment transaction form as they show
     up in the edit widgets

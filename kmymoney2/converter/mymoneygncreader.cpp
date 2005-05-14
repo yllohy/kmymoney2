@@ -45,6 +45,7 @@ email                : mte@users.sourceforge.net
   #include "../mymoney/mymoneyfile.h"
   #include "../mymoney/mymoneyprice.h"
   #include "../dialogs/kgncimportoptionsdlg.h"
+  #include "../dialogs/kgncpricesourcedlg.h"
   #include "../dialogs/ieditscheduledialog.h"
   #define TRY try {
   #define PASS } catch (MyMoneyException *e) { throw e; }
@@ -997,7 +998,8 @@ void MyMoneyGncReader::convertCommodity (const GncCommodity *gcm) {
     equ.setName (gcm->name());
     equ.setTradingSymbol (gcm->id());
     equ.setTradingMarket (gcm->space()); // the 'space' may be market or quote source, dep on what the user did
-    equ.setValue ("kmm-online-source", gcm->space()); // we don't know, so use it as both
+    // don't set the source here since he may not want quotes
+    //equ.setValue ("kmm-online-source", gcm->space()); // we don't know, so use it as both
     equ.setTradingCurrency (""); // not available here, will set from pricedb or transaction
     equ.setSecurityType (MyMoneySecurity::SECURITY_STOCK); // default to it being a stock
     //tell the storage objects we have a new equity object.
@@ -1117,6 +1119,18 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
       if (gncdebug) qDebug ("Setting %s to mutual", e.name().latin1());
       m_storage->modifySecurity (e);
     }
+    ///////////////////////////////////
+    QPtrListIterator<GncObject> kvpi (gac->kvpList);
+    GncKvp *k;
+    while ((k = static_cast<GncKvp *>(kvpi.current())) != 0) {
+      if (k->key().contains("price-source") && k->type() == "string") {
+        getPriceSource (e, k->value());
+        break;
+      } else {
+        ++kvpi;
+      }
+    }
+    ////////////////////////////////////////////////
   }
   // all the details from the file about the account should be known by now.
   // calling addAccount will automatically fill in the account ID.
@@ -1988,6 +2002,18 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
     qFatal ("Invalid investment option %d", m_investmentOption);
   }
 }
+
+void MyMoneyGncReader::getPriceSource (MyMoneySecurity stock, QString gncSource) {
+  QString s = "";
+  if (gncdebug) qDebug ("%s = %s", stock.name().latin1(), gncSource.latin1());
+/////////////////////////////////////////////////////
+//KGncPriceSourceDlg *dlg = new KGncPriceSourceDlg;
+//dlg->exec();
+//delete dlg;
+///////////////////////////////////////////////////////
+  return;
+}
+
 // functions to control the progress bar
 //*********************** setProgressCallback *****************************
 void MyMoneyGncReader::setProgressCallback(void(*callback)(int, int, const QString&)) {
