@@ -27,3 +27,5 @@ autom4te-2.5x.cache
 autom4te.cache
 tags
 kmymoney
+kmymoney*.bz2
+kmymoney*.gz
