@@ -201,7 +201,7 @@ void KMyMoney2App::initActions()
   connect(viewTransactionForm, SIGNAL(toggled(bool)), myMoneyView, SLOT(slotShowTransactionDetail(bool)));
 
   // Additions to the file menu
-#ifdef KMM_DEBUG
+#if KMM_DEBUG
   fileViewInfo = new KAction(i18n("Dump Memory..."), "", 0, this, SLOT(slotFileFileInfo()),  actionCollection(), "file_view_info");
 #endif
   filePersonalData = new KAction(i18n("Personal Data..."), "personal_data", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data");
@@ -1487,7 +1487,7 @@ void KMyMoney2App::updateCaption(const bool skipActions)
     modified = false;
   }
 
-#ifdef KMM_DEBUG
+#if KMM_DEBUG
   QString sizeMsg;
   sizeMsg.sprintf(" (%d x %d)", width(), height());
   caption += sizeMsg;
