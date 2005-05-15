@@ -1,6 +1,17 @@
 <chapter id="details.reports">
-<title>Reports - Under development - Marce Villarino</title>
-<para>
-</para>
+<title>Reports - Under development - Ace</title>
+<section id="details.reports.avail"><title>Available Reports</title>
+<para>This section will list the various reports and describe why you might want to run each one.</para>
+<para>&hellip;</para>
+</section>
+<section id="details.reports.working"><title>Working With Reports</title>
+<para>This section will descibe the various actions you can take with a report, like copy to clipboard, etc</para>
+<para>&hellip;</para>
+</section>
+<section id="details.reports.config"><title>Configuring Reports</title>
+<para>This section will describe what each section of the report configuration dialog does</para>
+<para>It will also describe how to work with customized versus default reports</para>
+<para>&hellip;</para>
+</section>
 </chapter>
 

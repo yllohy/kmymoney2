@@ -6,6 +6,7 @@
 
 	<!ENTITY introduction SYSTEM "introduction.docbook">
 	<!ENTITY firsttime SYSTEM "firsttime.docbook">
+	<!ENTITY whatsnew SYSTEM "whatsnew.docbook">
 	<!ENTITY details-files SYSTEM "details-files.docbook">
 	<!ENTITY details-institutions SYSTEM "details-institutions.docbook">
 	<!ENTITY details-accounts SYSTEM "details-accounts.docbook">
@@ -15,6 +16,7 @@
 	<!ENTITY details-schedules SYSTEM "details-schedules.docbook">
 	<!ENTITY details-ledgers SYSTEM "details-ledgers.docbook">
 	<!ENTITY details-investments SYSTEM "details-investments.docbook">
+	<!ENTITY details-currencies SYSTEM "details-currencies.docbook">
 	<!ENTITY details-reconciliation SYSTEM "details-reconciliation.docbook">
 	<!ENTITY details-reports SYSTEM "details-reports.docbook">
 	<!ENTITY details-impexp SYSTEM "details-impexp.docbook">
@@ -144,8 +146,8 @@ Please respect the format of the date (DD/MM/YYYY) and of the version
 (V.MM.LL), it could be used by automation scripts.
 Do NOT change these in the translation. -->
 
-<date>01/01/1970</date>
-<releaseinfo>0.8</releaseinfo>
+<date>05/13/2005</date>
+<releaseinfo>0.7</releaseinfo>
 
 <!-- Abstract about this handbook -->
 
@@ -154,7 +156,7 @@ Do NOT change these in the translation. -->
 &kappname;, the personal finances manager for KDE.
 </para>
 <para>
-  This handbook describes &kappname; version 0.8.
+  This handbook describes &kappname; version 0.7.
 </para>
 </abstract>
 
@@ -177,6 +179,7 @@ Do NOT change these in the translation. -->
 -->
 &introduction;
 &firsttime;
+&whatsnew;
 &details-files;
 &details-institutions;
 &details-accounts;
@@ -186,6 +189,7 @@ Do NOT change these in the translation. -->
 &details-schedules;
 &details-ledgers;
 &details-investments;
+&details-currencies;
 &details-reconciliation;
 &details-reports;
 &details-impexp;

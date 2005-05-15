@@ -1,6 +1,15 @@
 <chapter id="details.investments">
-<title>Investments - Under development - UNASSIGNED</title>
-<para>
-</para>
+<title>Investments - Under development - Ace/Thb</title>
+<section id="details.investments.investment"><title>Creating an Investment Account</title><para>&hellip;</para></section>
+<section id="details.investments.securities"><title>Adding Securities to Your Account</title><para>&hellip;</para></section>
+<section id="details.investments.summary"><title>Investment Summary Information</title><para>&hellip;</para></section>
+<section id="details.investments.ledger"><title>Investment Ledger</title><para>&hellip;</para></section>
+<section id="details.investments.foreign"><title>Working With Foreign Investments</title><para>&hellip;</para></section>
+<section id="details.investments.prices"><title>Updating Prices</title><para>&hellip;</para></section>
+<section id="details.investments.onlinequotes"><title>Online Price Quotes</title>
+<para>&hellip;</para>
+<section><title>Fecthing Quotes</title><para>&hellip;</para></section>
+<section><title>Creating a New Quote Source</title><para>&hellip;</para></section>
+</section>
 </chapter>
 

@@ -1,6 +1,18 @@
 <chapter id="details.impexp">
-<title>Importing and Export - Under development - UNASSIGNED</title>
-<para>
-</para>
+<title>Importing and Export - Under development - Tony/Ace</title>
+<section id="details.impexp.gnucash"><title>GnuCash Importer</title><para>&hellip;</para></section>
+<section id="details.impexp.qifimp"><title>QIF Importer</title>
+<para>&hellip;</para>
+<section><title>How to import a QIF file</title><para>&hellip;</para></section>
+<section><title>Setting up a QIF profile</title><para>&hellip;</para></section>
+<section><title>Understanding apostrophe format</title><para>&hellip;</para></section>
+<section><title>Choosing an import account</title><para>&hellip;</para></section>
+<section><title>Supported file types</title><para>&hellip;</para></section>
+<section><title>Special KMyMoney QIF extensions</title><para>&hellip;</para></section>
+<section><title>QIF format considered harmful</title><para>&hellip;</para></section>
+</section>
+<section id="details.impexp.qifexp"><title>QIF Exporter</title><para>&hellip;</para></section>
+<section id="details.impexp.ofx"><title>OFX Importer Plugin</title><para>&hellip;</para></section>
+<section id="details.impexp.plugins"><title>Writing Importer Plugins</title><para>&hellip;</para></section>
 </chapter>
 
