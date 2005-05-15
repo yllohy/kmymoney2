@@ -103,7 +103,7 @@ QValidator::State kMyMoneyMoneyValidator::validate( QString & input, int & _p ) 
   // before passing the string to the QDoubleValidator
   if(l->negativeMonetarySignPosition() == KLocale::ParensAround
   || l->positiveMonetarySignPosition() == KLocale::ParensAround) {
-    QRegExp regExp("^(\\()?([\d-\\.]*)(\\))?$");
+    QRegExp regExp("^(\\()?([\\d-\\.]*)(\\))?$");
     if(s.find(regExp) != -1) {
       s = regExp.cap(2);
     }
