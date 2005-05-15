@@ -348,6 +348,7 @@ void MyMoneyQifReader::processQifEntry(void)
             processSecurityEntry();
           } else if(category == "Invst") {
 
+#if 0
             // Warn the user
             if ( ! m_warnedInvestment )
             {
@@ -355,6 +356,7 @@ void MyMoneyQifReader::processQifEntry(void)
               if ( KMessageBox::warningContinueCancel (qApp->mainWidget(), i18n("This file contains investment entries.  These are not currently supported by the QIF importer."), i18n("Unable to import"), KStdGuiItem::cont(), "QIFCantImportInvestment") == KMessageBox::Cancel )
                 throw new MYMONEYEXCEPTION("USERABORT");
             }
+#endif
           
             m_entryType = EntryInvestmentTransaction;
             processMSAccountEntry(MyMoneyAccount::Investment);
@@ -909,8 +911,509 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
   
   It will be presumed all transactions are to the associated cash account, if 
   one exists, unless otherwise noted by the 'L' field.
+
+  Expense/Income categories will be automatically generated, "_Dividend",
+  "_InterestIncome", etc.
   
   */
+
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  // ensure that the user is really importing this into an investment account
+  if ( m_account.accountType() != MyMoneyAccount::Investment )
+  {
+    int rc = KMessageBox::warningContinueCancel(0,
+         i18n("This QIF file contains investment transactions.  You are trying to import this file into "
+              "an account which is not an investment account.  These transactions will be ignored."),
+         i18n("Invalid account for investments"),
+         KStdGuiItem::cont(),
+         "InvalidAccountForInvestments");
+    switch(rc) {
+      case KMessageBox::Continue:
+        return;
+
+      case KMessageBox::Cancel:
+        throw new MYMONEYEXCEPTION("USERABORT");
+        break;
+    }
+  }
+   
+  MyMoneyTransaction t;
+
+  // mark it imported for the view
+  t.setValue("Imported", "true");
+
+  t.setCommodity(m_account.currencyId());
+
+  // 'D' field: Date
+  QDate date = m_qifProfile.date(extractLine('D'));
+  if(date.isValid())
+    t.setPostDate(date);
+  else
+  {
+    int rc = KMessageBox::warningContinueCancel(0,
+         i18n("The date entry \"%1\" read from the file cannot be interpreted through the current "
+              "date profile setting of \"%2\".\n\nPressing \"Continue\" will "
+              "assign todays date to the transaction. Pressing \"Cancel\" will abort "
+              "the import operation. You can then restart the import and select a different "
+              "QIF profile or create a new one.")
+           .arg(extractLine('D')).arg(m_qifProfile.dateFormat()),
+         i18n("Invalid date format"));
+    switch(rc) {
+      case KMessageBox::Continue:
+        t.setPostDate(QDate::currentDate());
+        break;
+
+      case KMessageBox::Cancel:
+        throw new MYMONEYEXCEPTION("USERABORT");
+        break;
+    }
+  }
+
+  // 'M' field: Memo
+  QString memo = extractLine('M');
+  t.setMemo(memo);
+
+  // '#' field: BankID
+  QString bankid = extractLine('#');
+  if ( ! bankid.isEmpty() )
+    t.setBankID(bankid);
+
+  MyMoneySplit s1;
+  s1.setMemo(extractLine('M'));
+  
+  // 'T' field: Amount
+  MyMoneyMoney amount = m_qifProfile.value('T', extractLine('T'));
+  s1.setValue(amount);
+
+  // 'Y' field: Security name
+
+  // The big problem here is that the Y field is not the SYMBOL, it's the NAME.
+  // The name is not very unique, because people could have used slightly different
+  // abbreviations or ordered words differently, etc.
+  //
+  // If there is a perfect name match with a subordinate stock account, great.
+  // More likely, we have to rely on the QIF file containing !Type:Security
+  // records, which tell us the mapping from name to symbol.
+  //
+  // Therefore, generally it is not recommended to import a QIF file containing
+  // investment transactions but NOT containing security records.
+  
+  QString securityname = extractLine('Y').lower();
+  QString securitysymbol = m_investmentMap[securityname];
+
+  // the correct account is the stock account which matches two criteria:
+  // (1) it is a sub-account of the selected investment account, and either
+  // (2a) the security name of the transaction matches the name of the security, OR
+  // (2b) the security name of the transaction maps to a symbol which matches the symbol of the security
+
+  // search through each subordinate account
+  bool found = false;
+  MyMoneyAccount thisaccount = m_account;
+  QCStringList accounts = thisaccount.accountList();
+  QCStringList::const_iterator it_account = accounts.begin();
+  while( !found && it_account != accounts.end() )
+  {
+    QCString currencyid = file->account(*it_account).currencyId();
+    MyMoneySecurity security = file->security( currencyid );
+    QString symbol = security.tradingSymbol().lower();
+    QString name = security.name().lower();
+    
+    if ( securityname == name || securitysymbol == symbol )
+    {
+      s1.setAccountId(*it_account);
+      thisaccount = file->account(*it_account);
+      found = true;
+
+#if 0      
+      // update the price, while we're here.  in the future, this should be
+      // an option
+      QCString basecurrencyid = file->baseCurrency().id();
+      MyMoneyPrice price = file->price( currencyid, basecurrencyid, t_in.m_datePosted, true );
+      if ( !price.isValid() )
+      {
+        MyMoneyPrice newprice( currencyid, basecurrencyid, t_in.m_datePosted, t_in.m_moneyAmount / t_in.m_dShares, i18n("Statement Importer") );
+        file->addPrice(newprice);
+      }
+#endif    
+    }
+
+    ++it_account;
+  }
+
+  if (!found)
+  {
+    // If the security is not known, notify the user
+    // TODO: A "SelectOrCreateAccount" interface for investments
+    KMessageBox::information(0, i18n("This investment account does not contain the '%1' security.  "
+                                      "Transactions involving this security will be ignored.").arg(securityname),
+                                i18n("Security not found"),
+                                QString("MissingSecurity%1").arg(securityname.stripWhiteSpace()));
+    return;
+  }
+  
+  // 'Q' field: Quantity
+  MyMoneyMoney quantity = m_qifProfile.value('T', extractLine('Q'));
+
+  // 'N' field: Action
+  QString action = extractLine('N').lower();
+
+  if (action == "reinvdiv")
+  {
+    s1.setShares(quantity);
+    s1.setAction(MyMoneySplit::ActionReinvestDividend);
+  }
+  if ( action == "div" || action == "intinc" || action == "cgshort" || action == "cgmid" || action == "cglong" || action == "rtrncap" )
+  {
+    // NOTE: With CashDividend, the amount of the dividend should
+    // be in data.amount.  Since I've never seen an OFX file with
+    // cash dividends, this is an assumption on my part. (acejones)
+
+    // Cash dividends require setting 2 splits to get all of the information
+    // in.  Split #1 will be the income split, and we'll set it to the first
+    // income account.  This is a hack, but it's needed in order to get the
+    // amount into the transaction.
+
+    // FIXME: Use a better mechanism to get the divident amount into the
+    // transaction (I started a discussion on the mail list, 2004-11-28).
+    QString incomeaccount = QString("_") + extractLine('N');
+    
+    s1.setAccountId(findOrCreateIncomeAccount(incomeaccount));
+    s1.setShares(amount);
+
+    // Split 2 will be the zero-amount investment split that serves to
+    // mark this transaction as a cash dividend and note which stock account
+    // it belongs to.
+    MyMoneySplit s2;
+    s2.setMemo(memo);
+    s2.setValue(0);
+    s2.setAction(MyMoneySplit::ActionDividend);
+    s2.setAccountId(thisaccount.id());
+    t.addSplit(s2);
+  }
+  else if (action == "buy")
+  {
+    s1.setShares(quantity);
+    s1.setAction(MyMoneySplit::ActionBuyShares);
+  }
+  else if (action == "sell")
+  {
+    s1.setShares(-quantity);
+    s1.setValue(-amount);
+    s1.setAction(MyMoneySplit::ActionBuyShares);
+  }
+  else if ( action == "shrsin" )
+  {
+    s1.setShares(quantity);
+    s1.setValue(0);
+    s1.setAction(MyMoneySplit::ActionAddShares);
+  }
+  else if ( action == "shrsout" )
+  {
+    s1.setShares(-quantity);
+    s1.setValue(0);
+    s1.setAction(MyMoneySplit::ActionAddShares);
+  }
+  else
+  {
+    // Unsupported action type
+    kdDebug(2) << "Unsupported transaction action: " << action << endl;
+  }
+
+  t.addSplit(s1);
+
+  // If there is a brokerage account, add a final split to stash the -value of the
+  // transaction there.
+  QCString brokerageaccid = m_account.value("kmm-brokerage-account").utf8();
+  if ( ! brokerageaccid.isEmpty() )
+  {
+    // FIXME This maynot deal with foreign currencies properly
+    MyMoneySplit s3;
+    s3.setMemo(memo);
+    s3.setValue(-s1.value());
+    s3.setShares(-s1.value());
+    s3.setAccountId(brokerageaccid);
+    t.addSplit(s3);
+  }
+  
+  // Add the transaction
+  try {
+    // check for duplicates ONLY by Bank ID in this account.
+    // We know Bank ID will definitely
+    // find duplicates.  For "softer" duplicates, we'll wait for the full
+    // matching interface.
+    MyMoneyTransactionFilter filter;
+    filter.setDateFilter(t.postDate().addDays(-4), t.postDate().addDays(4));
+    filter.addAccount(thisaccount.id());
+    QValueList<MyMoneyTransaction> list = file->transactionList(filter);
+    QValueList<MyMoneyTransaction>::Iterator it;
+    for(it = list.begin(); it != list.end(); ++it) {
+      if(t.bankID() == (*it).bankID() && !t.bankID().isNull() && !(*it).bankID().isNull())
+        break;
+    }
+    if(it == list.end())
+    {
+      file->addTransaction(t);
+    }
+  } catch (MyMoneyException *e) {
+    QString message(i18n("Problem adding imported transaction: "));
+    message += e->what();
+    KMessageBox::information(0, message);
+    delete e;
+  }
+  
+  /*************************************************************************
+   *
+   * These transactions are natively supported by KMyMoney
+   *
+   *************************************************************************/
+  /*
+  D1/ 3' 5
+  NShrsIn
+  YGENERAL MOTORS CORP 52BR1
+  I20
+  Q200
+  U4,000.00
+  T4,000.00
+  M200 shares added to account @ $20/share
+  ^
+  */
+  /*
+  ^
+  D1/14' 5
+  NShrsOut
+  YTEMPLETON GROWTH 97GJ0
+  Q50
+90  ^
+  */
+  /*
+  D1/28' 5
+  NBuy
+  YGENERAL MOTORS CORP 52BR1
+  I24.35
+  Q100
+  U2,435.00
+  T2,435.00
+  ^
+  */
+  /*
+  D1/ 5' 5
+  NSell
+  YUnited Vanguard
+  I8.41
+  Q50
+  U420.50
+  T420.50
+  ^
+  */
+  /*
+  D1/ 7' 5
+  NReinvDiv
+  YFRANKLIN INCOME 97GM2
+  I38
+  Q1
+  U38.00
+  T38.00
+  ^
+  */
+  /*************************************************************************
+   *
+   * These transactions are all different kinds of income.  (Anything that
+   * follows the DNYUT pattern).  They are all handled the same, the only
+   * difference is which income account the income is placed into.  By
+   * default, it's placed into _xxx where xxx is the right side of the
+   * N field.  e.g. NDiv transaction goes into the _Div account
+   *
+   *************************************************************************/
+  /*
+  D1/10' 5
+  NDiv
+  YTEMPLETON GROWTH 97GJ0
+  U10.00
+  T10.00
+  ^
+  */
+  /*
+  D1/10' 5
+  NIntInc
+  YTEMPLETON GROWTH 97GJ0
+  U20.00
+  T20.00
+  ^
+  */
+  /*
+  D1/10' 5
+  NCGShort
+  YTEMPLETON GROWTH 97GJ0
+  U111.00
+  T111.00
+  ^
+  */
+  /*
+  D1/10' 5
+  NCGLong
+  YTEMPLETON GROWTH 97GJ0
+  U333.00
+  T333.00
+  ^
+  */
+  /*
+  D1/10' 5
+  NCGMid
+  YTEMPLETON GROWTH 97GJ0
+  U222.00
+  T222.00
+  ^
+  */
+  /*
+  D2/ 2' 5
+  NRtrnCap
+  YFRANKLIN INCOME 97GM2
+  U1,234.00
+  T1,234.00
+  ^
+  */
+  /*************************************************************************
+   *
+   * These transactions deal with miscellaneous activity that KMyMoney
+   * does not support, but may support in the future.
+   *
+   *************************************************************************/
+  /*
+  D1/14' 5
+  NStkSplit
+  YIBM
+  Q12.5
+  ^
+  */
+  /*************************************************************************
+   *
+   * These transactions deal with short positions and options, which are
+   * not supported at all by KMyMoney.  They will be ignored for now.
+   * There may be a way to hack around this, by creating a new security
+   * "IBM_Short".
+   *
+   *************************************************************************/
+  /*
+  D1/21' 5
+  NShtSell
+  YIBM
+  I92.38
+  Q100
+  U9,238.00
+  T9,238.00
+  ^
+  */
+  /*
+  D1/28' 5
+  NCvrShrt
+  YIBM
+  I92.89
+  Q100
+  U9,339.00
+  T9,339.00
+  O50.00
+  ^
+  */
+  /*
+  D6/ 1' 5
+  NVest
+  YIBM Option
+  Q20
+  ^
+  */
+  /*
+  D6/ 8' 5
+  NExercise
+  YIBM Option
+  I60.952381
+  Q20
+  MFrom IBM Option Grant 6/1/2004
+  ^
+  */
+  /*
+  D6/ 1'14
+  NExpire
+  YIBM Option
+  Q5
+  ^
+  */
+  /*************************************************************************
+   *
+   * These transactions do not have an associated investment ("Y" field)
+   * so presumably they are only valid for the cash account.  Once I
+   * understand how these are really implemented, they can probably be
+   * handled without much trouble.
+   *
+   *************************************************************************/
+  /*
+  D1/14' 5
+  NCash
+  U-100.00
+  T-100.00
+  LBank Chrg
+  ^
+  */
+  /*
+  D1/15' 5
+  NXOut
+  U500.00
+  T500.00
+  L[CU Savings]
+  $500.00
+  ^
+  */
+  /*
+  D1/28' 5
+  NXIn
+  U1,000.00
+  T1,000.00
+  L[CU Checking]
+  $1,000.00
+  ^
+  */
+  /*
+  D1/25' 5
+  NMargInt
+  U25.00
+  T25.00
+  ^
+  */
+}
+
+const QCString MyMoneyQifReader::findOrCreateIncomeAccount(const QString& searchname)
+{
+  QCString result;
+  
+  MyMoneyFile *file = MyMoneyFile::instance();
+
+  // First, try to find this account as an income account
+  MyMoneyAccount acc = file->income();
+  QCStringList list = acc.accountList();
+  QCStringList::ConstIterator it_accid = list.begin();
+  while ( it_accid != list.end() )
+  {
+    acc = file->account(*it_accid);
+    if ( acc.name() == searchname )
+    {
+      result = *it_accid;
+      break;
+    }  
+    ++it_accid;
+  }
+
+  // If we did not find the account, now we must create one.
+  if ( result.isEmpty() )
+  {
+    MyMoneyAccount acc;
+    acc.setName( searchname );
+    acc.setAccountType( MyMoneyAccount::Income );
+    MyMoneyAccount income = file->income();
+    file->addAccount( acc, income );
+    result = acc.id();
+  }
+
+  return result;
 }
 
 const QCString MyMoneyQifReader::checkCategory(const QString& name, const MyMoneyMoney value, const MyMoneyMoney value2)
@@ -1175,6 +1678,24 @@ void MyMoneyQifReader::signalProgress(int current, int total, const QString& msg
 
 void MyMoneyQifReader::processPriceEntry(void)
 {
+/*
+  !Type:Prices
+  "IBM",141 9/16,"10/23/98"
+  ^
+  !Type:Prices
+  "GMW",21.28," 3/17' 5"
+  ^
+  !Type:Prices
+  "GMW",71652181.001,"67/128/ 0"
+  ^
+
+  Note that Quicken will often put in a price with a bogus date and number.  We will ignore
+  prices with bogus dates.  Hopefully that will catch all of these.
+
+  Also note that prices can be in fractional units, e.g. 141 9/16.
+  
+*/
+#if 0
   // Warn the user
   if ( ! m_warnedPrice )
   {
@@ -1182,7 +1703,9 @@ void MyMoneyQifReader::processPriceEntry(void)
     if ( KMessageBox::warningContinueCancel (qApp->mainWidget(), i18n("This file contains price entries.  These are not currently supported by the QIF importer."), i18n("Unable to import"), KStdGuiItem::cont(), "QIFCantImportPrice") == KMessageBox::Cancel )
       throw new MYMONEYEXCEPTION("USERABORT");
   }
+#endif
 
+  MyMoneyFile* file = MyMoneyFile::instance();
   QStringList::const_iterator it_line = m_qifEntry.begin();
 
   // Get past the "!Type: Price" line
@@ -1192,17 +1715,47 @@ void MyMoneyQifReader::processPriceEntry(void)
   // Make a price for each line
   while ( it_line != m_qifEntry.end() )
   {
-    QStringList columns = QStringList::split(",",*it_line,true);
-    kdDebug(2) << "Price:" << columns[0] << " / " << columns[1] << " / " << columns[2] << endl;
+    QStringList column = QStringList::split(",",*it_line,true);
+    QString symbol = column[0].remove("\"");
+    QString pricestr = column[1];
+    QString datestr = column[2].remove("\"");
+    kdDebug(2) << "Price:" << column[0] << " / " << column[1] << " / " << column[2] << endl;
   
-    // TODO Add this price
-
+    // Only add the price if the date is valid.  If invalid, fail silently.  See note above.
+    // Also require the price value to not have any slashes.  Old prices will be something like
+    // "25 9/16", which we do not support.  So we'll skip the price for now.
+    QDate date = m_qifProfile.date(datestr);
+    if(date.isValid() && !pricestr.contains("/"))
+    {
+      MyMoneyMoney pricerate(pricestr);
+      
+      // Find the stock account
+      QCStringList accounts = m_account.accountList();
+      QCStringList::const_iterator it_account = accounts.begin();
+      while( it_account != accounts.end() )
+      {
+        QCString actcurrencyid = file->account(*it_account).currencyId();
+        MyMoneySecurity security = file->security( actcurrencyid );
+        QString thissymbol = security.tradingSymbol();
+  
+        if ( symbol.lower() == thissymbol.lower() )
+        {
+          QCString deepcurrencyid = security.tradingCurrency();
+          MyMoneyPrice price(actcurrencyid,deepcurrencyid,date,pricerate,i18n("QIF Import"));
+          file->addPrice(price);
+          break;
+        }
+        ++it_account;
+      }      
+    }
+    
     ++it_line;
   }  
 }
 
 void MyMoneyQifReader::processSecurityEntry(void)
 {
+#if 0
   // Warn the user
   if ( ! m_warnedSecurity )
   {
@@ -1210,20 +1763,27 @@ void MyMoneyQifReader::processSecurityEntry(void)
     if ( KMessageBox::warningContinueCancel (qApp->mainWidget(), i18n("This file contains security entries.  These are not currently supported by the QIF importer."), i18n("Unable to import"), KStdGuiItem::cont(), "QIFCantImportSecurity") == KMessageBox::Cancel )
       throw new MYMONEYEXCEPTION("USERABORT");
   }
+#endif
   
-  // TODO Implement security
-  QString type = extractLine('T');
-  QString name = extractLine('N');
-  QString symbol = extractLine('S');
-  
-  kdDebug(2) << "Security (" << type << "): " << name << " (" << symbol << ")" << endl;
-
   /*
-  !Type:Security      throw new MYMONEYEXCEPTION("USERABORT");
-
+  !Type:Security
   NVANGUARD 500 INDEX
   SVFINX
   TMutual Fund
   ^
   */
+
+  QString type = extractLine('T').lower();
+  QString name = extractLine('N').lower();
+  QString symbol = extractLine('S').lower();
+  
+  kdDebug(2) << "Security (" << type << "): " << name << " (" << symbol << ")" << endl;
+
+  // TODO: If this investment isn't already in the account, add it
+
+  // Add it to our name-to-symbol mapping.  This will allow the investment transaction
+  // importer to translate from the QIF file's security name to the symbol, which we
+  // can then use to look up the security in KMM.
+
+  m_investmentMap[name] = symbol;  
 }

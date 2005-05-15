@@ -261,6 +261,16 @@ private:
     */
   void selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account);
 
+  /**
+    * This method looks up the @p searchname account by name and returns its id
+    * if it was found.  If it was not found, it creates a new income account using
+    * @p searchname as a name, and returns the id if the newly created account
+    *
+    * @param searchname The name of the account to find or create
+    * @return QCString id of the found or created account
+    */
+  static const QCString MyMoneyQifReader::findOrCreateIncomeAccount(const QString& searchname);
+  
   void processQifLine(void);
   
 signals:
@@ -304,6 +314,7 @@ private:
   unsigned long           m_transactionsProcessed;
   QStringList             m_dontAskAgain;
   QMap<QString, QCString> m_accountTranslation;
+  QMap<QString, QString>  m_investmentMap;
   QFile                   *m_file;
   char                    m_buffer[1024];
   QStringList             m_qifEntry;

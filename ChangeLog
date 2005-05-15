@@ -1,3 +1,7 @@
+2005-05-14 Ace Jones <acejones@users.sourceforge.net>
+  * Added investment handling to QIF importing.  Handles !Type:Invst !Type:Price
+    and !Type:Security.
+
 2005-05-14 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash Reader
     * Infrastructure for Price Source fix
