@@ -702,3 +702,5 @@ void KScheduledView::slotSetSelectedItem(QListViewItem* item)
   if(item)
     m_selectedSchedule = schedItem->scheduleId();
 }
+
+#include "kscheduledview.moc"

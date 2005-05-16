@@ -210,3 +210,5 @@ void kMyMoneyOnlineQuoteConfig::slotEntryRenamed(QListViewItem* item, const QStr
   }
   m_newButton->setEnabled(m_quoteSourceList->findItem(i18n("New Quote Source"), 0) == 0);
 }
+
+#include "kmymoneyonlinequoteconfig.moc"

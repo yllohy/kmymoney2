@@ -895,3 +895,6 @@ const MyMoneyMoney KFindTransactionDlg::balance(const int /* idx */) const
 }
 
 // vim:cin:si:ai:et:ts=2:sw=2:
+
+
+#include "kfindtransactiondlg.moc"

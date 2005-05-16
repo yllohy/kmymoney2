@@ -238,3 +238,5 @@ bool kMyMoneyRegisterLoan::eventFilter(QObject* o, QEvent* e)
 {
   return kMyMoneyRegister::eventFilter(o, e);
 }
+
+#include "kmymoneyregisterloan.moc"

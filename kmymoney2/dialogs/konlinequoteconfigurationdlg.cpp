@@ -47,3 +47,5 @@ KOnlineQuoteConfigurationDlg::~KOnlineQuoteConfigurationDlg()
 {
 
 }
+
+#include "konlinequoteconfigurationdlg.moc"

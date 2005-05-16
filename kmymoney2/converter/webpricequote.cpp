@@ -598,3 +598,5 @@ void convertertest::QuoteReceiver::slotError(const QString& msg)
 }
 
 // vim:cin:si:ai:et:ts=2:sw=2:
+
+#include "webpricequote.moc"

@@ -165,3 +165,5 @@ bool KLedgerViewLiability::eventFilter( QObject *o, QEvent *e )
 {
   return KLedgerViewCheckings::eventFilter(o, e);
 }
+
+#include "kledgerviewliability.moc"

@@ -99,3 +99,5 @@ void kMyMoneyLineEdit::focusOutEvent(QFocusEvent *ev)
   }
   KLineEdit::focusOutEvent(ev);
 }
+
+#include "kmymoneylineedit.moc"

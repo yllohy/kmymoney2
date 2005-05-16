@@ -157,3 +157,5 @@ void KEditEquityEntryDlg::slotDataChanged(void)
 
   m_changes = true;
 }
+
+#include "keditequityentrydlg.moc"

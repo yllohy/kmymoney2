@@ -240,3 +240,5 @@ void kMyMoneyRegisterSearch::adjustColumn(int col)
   }
   setColumnWidth( col, w );
 }
+
+#include "kmymoneyregistersearch.moc"

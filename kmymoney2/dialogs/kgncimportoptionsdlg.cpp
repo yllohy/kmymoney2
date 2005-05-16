@@ -84,3 +84,5 @@ void KGncImportOptionsDlg::slotHelp(void)
   layout.setResizeMode(QLayout::Minimum);
   dlg.exec();  
 }
+
+#include "kgncimportoptionsdlg.moc"

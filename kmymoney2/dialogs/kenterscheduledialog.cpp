@@ -1169,3 +1169,5 @@ bool KEnterScheduleDialog::checkDateInPeriod(const QDate& date)
   return true;
 }
 // vim:cin:si:ai:et:ts=2:sw=2:
+
+#include "kenterscheduledialog.moc"

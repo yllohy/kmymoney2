@@ -131,3 +131,5 @@ void KEditEquityEntryDlg_useless(void)
 #undef PRICE_COL
 #undef SOURCE_COL
 
+
+#include "kmymoneypricedlg.moc"

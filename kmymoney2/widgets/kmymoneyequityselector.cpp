@@ -77,3 +77,5 @@ const int kMyMoneyEquitySelector::loadList(void)
   QWidget::update();
   return count;
 }
+
+#include "kmymoneyequityselector.moc"

@@ -457,3 +457,5 @@ void KInvestmentView::slotCancelEdit(void)
 {
   m_ledgerView->slotCancelEdit();
 }
+
+#include "kinvestmentview.moc"

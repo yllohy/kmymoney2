@@ -551,3 +551,5 @@ void KPayeesView::slotListRightMouse(QListViewItem* it, const QPoint& /* p */, i
   m_contextMenu->exec(QCursor::pos());
 }
 
+
+#include "kpayeesview.moc"

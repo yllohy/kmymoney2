@@ -318,3 +318,5 @@ void kMyMoneyPriceView::slotOnlinePriceUpdate(void)
   }
 }
 
+
+#include "kmymoneypriceview.moc"

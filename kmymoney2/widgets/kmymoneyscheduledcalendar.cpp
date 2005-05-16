@@ -86,3 +86,5 @@ void kMyMoneyScheduledCalendar::slotSetViewTransfers()
   kpopupmenu->setItemChecked(2, ((kpopupmenu->isItemChecked(2)) ? false : true));
   m_scheduledDateTable->filterTransfers(!kpopupmenu->isItemChecked(2));
 }
+
+#include "kmymoneyscheduledcalendar.moc"

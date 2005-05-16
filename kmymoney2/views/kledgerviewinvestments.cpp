@@ -2046,3 +2046,5 @@ bool KLedgerViewInvestments::setupPrice(MyMoneySplit& split)
 #undef ACCOUNT_DATA_COL
 #undef VALUE_TXT_COL
 #undef VALUE_DATA_COL
+
+#include "kledgerviewinvestments.moc"

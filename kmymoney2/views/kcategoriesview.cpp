@@ -432,3 +432,5 @@ void KCategoriesView::refreshProfits(void)
     totalProfitsLabel->setText(i18n("Profit: %1").arg(profit.formatMoney(file->baseCurrency().tradingSymbol())));
 
 }
+
+#include "kcategoriesview.moc"

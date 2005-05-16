@@ -1203,3 +1203,5 @@ const QDate KNewLoanWizard::initialPaymentDate(void) const
   }
   return m_paymentDate->getQDate();
 }
+
+#include "knewloanwizard.moc"

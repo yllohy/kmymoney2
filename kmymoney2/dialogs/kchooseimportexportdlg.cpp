@@ -104,3 +104,5 @@ void KChooseImportExportDlg::writeConfig(void)
   config->writeEntry("KChooseImportExportDlg_LastType", typeCombo->currentText());
   config->sync();
 }
+
+#include "kchooseimportexportdlg.moc"

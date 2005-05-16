@@ -394,3 +394,5 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _symbol,const QDate
 #undef DATE_COL
 #undef ID_COL
 #undef SOURCE_COL
+
+#include "kequitypriceupdatedlg.moc"

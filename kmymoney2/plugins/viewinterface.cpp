@@ -30,3 +30,5 @@ KMyMoneyPlugin::ViewInterface::ViewInterface(QObject* parent, const char* name) 
   QObject(parent, name)
 {
 }
+
+#include "viewinterface.moc"

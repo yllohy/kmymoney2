@@ -37,3 +37,5 @@ bool KMyMoneyPlugin::KMMStatementInterface::import(MyMoneyStatement& s)
 {
   return m_app->slotStatementImport(s);
 }
+
+#include "kmmstatementinterface.moc"

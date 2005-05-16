@@ -278,3 +278,5 @@ bool kMyMoneyRegisterCheckings::eventFilter(QObject* o, QEvent* e)
 {
   return kMyMoneyRegister::eventFilter(o, e);
 }
+
+#include "kmymoneyregistercheckings.moc"

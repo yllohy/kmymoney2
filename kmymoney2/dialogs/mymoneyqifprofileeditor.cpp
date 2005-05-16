@@ -486,3 +486,5 @@ const QString MyMoneyQifProfileEditor::selectedProfile() const
 {
   return m_profileListBox->currentText();
 }
+
+#include "mymoneyqifprofileeditor.moc"

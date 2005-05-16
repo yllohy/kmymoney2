@@ -197,3 +197,5 @@ void kMyMoneyCompletion::slotItemSelected(QListViewItem *item, const QPoint&, in
     emit itemSelected(id);
   }
 }
+
+#include "kmymoneycompletion.moc"

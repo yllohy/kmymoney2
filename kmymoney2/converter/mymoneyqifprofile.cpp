@@ -592,3 +592,5 @@ void MyMoneyQifProfile::setAttemptMatchDuplicates(bool f)
   
   m_attemptMatchDuplicates = f;    
 }
+
+#include "mymoneyqifprofile.moc"

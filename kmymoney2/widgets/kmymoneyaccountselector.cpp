@@ -871,3 +871,5 @@ int kMyMoneyAccountSelector::slotMakeCompletion(const QString& txt)
 #endif
   return cnt;
 }
+
+#include "kmymoneyaccountselector.moc"

@@ -525,3 +525,5 @@ void kMyMoneyScheduledDateTbl::filterTransfers(bool enable)
   m_filterTransfers = enable;
   repaintContents(false);
 }
+
+#include "kmymoneyscheduleddatetbl.moc"

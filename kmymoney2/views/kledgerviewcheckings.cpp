@@ -1773,3 +1773,5 @@ int KLedgerViewCheckings::transactionType(const MyMoneyTransaction& t) const
 #undef DATE_DATA_COL
 #undef AMOUNT_TXT_COL
 #undef AMOUNT_DATA_COL
+
+#include "kledgerviewcheckings.moc"

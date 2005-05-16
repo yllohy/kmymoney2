@@ -972,3 +972,5 @@ void KSettingsDlg::setPageOnlineQuotes(void)
   m_onlineQuotesWidget = new kMyMoneyOnlineQuoteConfig(qvboxMainFrame,"online_quotes");
 }
 
+
+#include "ksettingsdlg.moc"

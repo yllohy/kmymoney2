@@ -48,3 +48,5 @@ KStockTransactionView::KStockTransactionView(QWidget *parent, const char *name)
 KStockTransactionView::~KStockTransactionView()
 {
 }
+
+#include "kstocktransactionview.moc"

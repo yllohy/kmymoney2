@@ -889,3 +889,5 @@ void KAccountsView::slotDeleteClicked(void)
   }
 }
 
+
+#include "kbanksview.moc"

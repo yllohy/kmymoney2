@@ -230,3 +230,5 @@ void MyMoneyQifWriter::writeSplitEntry(QTextStream& s, const MyMoneySplit& split
 
   s << "$" << m_qifProfile.value('$', -split.value()) << endl;
 }
+
+#include "mymoneyqifwriter.moc"

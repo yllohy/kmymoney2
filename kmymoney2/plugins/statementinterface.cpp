@@ -30,3 +30,5 @@ KMyMoneyPlugin::StatementInterface::StatementInterface(QObject* parent, const ch
   QObject(parent, name)
 {
 }
+
+#include "statementinterface.moc"

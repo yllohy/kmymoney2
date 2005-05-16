@@ -275,3 +275,5 @@ const QCString KAccountSelectDlg::selectedAccount(void) const
     rc = m_accountSelector->selectedAccounts().first();
   return rc;
 }
+
+#include "kaccountselectdlg.moc"

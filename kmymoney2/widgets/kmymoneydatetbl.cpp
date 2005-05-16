@@ -694,3 +694,5 @@ int kMyMoneyDateTbl::weekNumber(const QDate& date, int *yearNumber) const
 
 }
 #endif
+
+#include "kmymoneydatetbl.moc"

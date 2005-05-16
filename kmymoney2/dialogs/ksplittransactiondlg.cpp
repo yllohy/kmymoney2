@@ -310,3 +310,5 @@ MyMoneyMoney KSplitTransactionDlg::diffAmount(void)
   }
   return diff;
 }
+
+#include "ksplittransactiondlg.moc"

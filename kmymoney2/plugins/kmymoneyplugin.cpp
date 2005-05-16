@@ -67,3 +67,5 @@ bool KMyMoneyPlugin::ImporterPlugin::import( const QString& /*filename*/, QValue
 QString KMyMoneyPlugin::ImporterPlugin::lastError(void) const /*= 0*/
 { return QString(); }
 
+
+#include "kmymoneyplugin.moc"

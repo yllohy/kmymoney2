@@ -418,3 +418,5 @@ void kMyMoneyEdit::showCalculatorButton(const bool show)
   else
     m_calcButton->hide();
 }
+
+#include "kmymoneyedit.moc"

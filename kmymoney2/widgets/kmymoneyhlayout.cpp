@@ -188,3 +188,5 @@ void kMyMoneyHLayout::paintEvent(QPaintEvent * /* p */)
     m_widgets.at(i)->repaint();
   }
 }
+
+#include "kmymoneyhlayout.moc"

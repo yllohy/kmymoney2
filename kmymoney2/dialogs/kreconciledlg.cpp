@@ -460,3 +460,5 @@ void KReconcileDlg::resizeEvent(QResizeEvent* /* e */)
   KReconcileDlgDecl::resizeEvent(e);
 */
 }
+
+#include "kreconciledlg.moc"

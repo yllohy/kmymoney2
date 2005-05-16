@@ -599,3 +599,5 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
 #undef VIEW_HOME
 #undef VIEW_REPORTS
 
+
+#include "khomeview.moc"

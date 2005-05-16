@@ -248,3 +248,5 @@ void KCsvProgressDlg::slotSetProgress(int progress)
   qstring += QString::number(m_qprogressbar->totalSteps());
   m_qlabelTransaction->setText(qstring);
 }
+
+#include "kcsvprogressdlg.moc"

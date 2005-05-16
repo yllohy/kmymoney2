@@ -220,3 +220,5 @@ const MyMoneyMoney KCurrencyCalculator::price(void) const
   return m_result / m_value;
 }
 
+
+#include "kcurrencycalculator.moc"

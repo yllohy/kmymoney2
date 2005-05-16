@@ -2158,3 +2158,5 @@ bool KLedgerView::eventFilter(QObject* o, QEvent* e)
   return rc;
 }
 
+
+#include "kledgerview.moc"

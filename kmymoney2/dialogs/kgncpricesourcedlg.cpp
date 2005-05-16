@@ -72,3 +72,5 @@ void KGncPriceSourceDlg::slotHelp(void)
   layout.setResizeMode(QLayout::Minimum);
   dlg.exec();  */
 }
+
+#include "kgncpricesourcedlg.moc"

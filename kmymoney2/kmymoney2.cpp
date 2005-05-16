@@ -1958,3 +1958,5 @@ void KMyMoney2App::loadPlugins(void)
     }
   }
 }
+
+#include "kmymoney2.moc"

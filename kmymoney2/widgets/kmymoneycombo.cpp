@@ -158,3 +158,5 @@ QCString kMyMoneyCombo::currentAccountId(void)
 
   return "";
 }
+
+#include "kmymoneycombo.moc"

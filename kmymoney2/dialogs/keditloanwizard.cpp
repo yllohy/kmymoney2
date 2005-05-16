@@ -516,3 +516,5 @@ const MyMoneyTransaction KEditLoanWizard::transaction() const
 
   return t;
 }
+
+#include "keditloanwizard.moc"

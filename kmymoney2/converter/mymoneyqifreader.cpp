@@ -1787,3 +1787,5 @@ void MyMoneyQifReader::processSecurityEntry(void)
 
   m_investmentMap[name] = symbol;  
 }
+
+#include "mymoneyqifreader.moc"

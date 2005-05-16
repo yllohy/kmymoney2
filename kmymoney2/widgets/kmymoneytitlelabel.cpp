@@ -99,3 +99,5 @@ void kMyMoneyTitleLabel::setText(const QString& txt)
   m_text = txt;
   update();
 }
+
+#include "kmymoneytitlelabel.moc"

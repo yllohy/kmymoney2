@@ -134,3 +134,5 @@ void KNewFileDlg::loadFromKABC(void)
   streetEdit->setText( a.street() );
 #endif
 }
+
+#include "knewfiledlg.moc"

@@ -1283,3 +1283,5 @@ QCString KEditScheduleDialog::theAccountId()
 
   return QCString();
 }
+
+#include "ieditscheduledialog.moc"

@@ -126,3 +126,5 @@ void kMyMoneyGPGConfig::slotStatusChanged(bool state)
     m_userKeyFound->setState(KLed::Off);
   }
 }
+
+#include "kmymoneygpgconfig.moc"

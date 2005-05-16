@@ -396,3 +396,5 @@ int OfxImporterPlugin::ofxStatusCallback(struct OfxStatusData data, void * pv)
   }
   return 0;
 }
+
+#include "ofximporterplugin.moc"

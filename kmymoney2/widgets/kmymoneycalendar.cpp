@@ -656,3 +656,5 @@ void kMyMoneyCalendar::setUserButton2(bool enable, QPushButton* pb)
 
     updateGeometry();
 }
+
+#include "kmymoneycalendar.moc"

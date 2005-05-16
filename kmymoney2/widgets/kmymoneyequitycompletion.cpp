@@ -82,3 +82,5 @@ void kMyMoneyEquityCompletion::slotMakeCompletion(const QString& txt)
   }
 }
 
+
+#include "kmymoneyequitycompletion.moc"

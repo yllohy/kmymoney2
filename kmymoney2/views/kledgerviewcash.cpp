@@ -61,3 +61,5 @@ bool KLedgerViewCash::eventFilter( QObject *o, QEvent *e )
 {
   return KLedgerViewCheckings::eventFilter(o, e);
 }
+
+#include "kledgerviewcash.moc"

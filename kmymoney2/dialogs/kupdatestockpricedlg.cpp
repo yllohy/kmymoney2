@@ -122,3 +122,5 @@ void KUpdateStockPriceDlg::slotCheckData(void)
 
 
 
+
+#include "kupdatestockpricedlg.moc"

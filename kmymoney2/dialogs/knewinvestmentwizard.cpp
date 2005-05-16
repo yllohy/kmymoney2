@@ -188,3 +188,5 @@ void KNewInvestmentWizard::createObjects(const QCString& parentId)
       file->modifyAccount(m_account);
   }
 }
+
+#include "knewinvestmentwizard.moc"

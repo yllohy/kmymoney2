@@ -78,3 +78,5 @@ KStartupLogo::~KStartupLogo()
   if(m_splash)
     delete m_splash;
 }
+
+#include "kstartuplogo.moc"

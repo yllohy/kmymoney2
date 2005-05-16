@@ -266,3 +266,5 @@ void KImportDlg::addCategories(QStringList& strList, const QCString& id, const Q
   }
 }
 
+
+#include "kimportdlg.moc"

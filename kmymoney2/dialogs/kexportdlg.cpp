@@ -284,3 +284,5 @@ const QCString KExportDlg::accountId(const QString& account) const
   return MyMoneyFile::instance()->nameToAccount(account);
 }
 */
+
+#include "kexportdlg.moc"

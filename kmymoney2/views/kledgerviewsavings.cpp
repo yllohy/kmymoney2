@@ -209,3 +209,5 @@ bool KLedgerViewSavings::eventFilter( QObject *o, QEvent *e )
 {
   return KLedgerViewCheckings::eventFilter(o, e);
 }
+
+#include "kledgerviewsavings.moc"

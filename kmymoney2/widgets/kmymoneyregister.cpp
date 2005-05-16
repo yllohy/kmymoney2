@@ -640,3 +640,5 @@ bool kMyMoneyRegister::focusNextPrevChild(bool next)
   return m_parent->focusNextPrevChild(next);
 }
 
+
+#include "kmymoneyregister.moc"

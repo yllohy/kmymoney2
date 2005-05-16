@@ -811,3 +811,5 @@ bool kMyMoneySplitTable::focusNextPrevChild(bool next)
   return rc;
 }
 
+
+#include "kmymoneysplittable.moc"

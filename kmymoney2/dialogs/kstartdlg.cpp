@@ -239,3 +239,5 @@ void KStartDlg::slotAboutToShowPage(QWidget* page)
 {
   enableButtonOK(page == recentMainFrame);
 }
+
+#include "kstartdlg.moc"

@@ -406,3 +406,5 @@ const MyMoneyTransaction KEndingBalanceLoanDlg::adjustmentTransaction(void) cons
   }
   return t;
 }
+
+#include "kendingbalancedlg.moc"

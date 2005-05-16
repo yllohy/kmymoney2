@@ -952,3 +952,5 @@ void KNewAccountDlg::slotVatAssignmentChanged(bool state)
   m_vatAccount->setEnabled(state);
   m_amountGroup->setEnabled(state);
 }
+
+#include "knewaccountdlg.moc"

@@ -159,3 +159,5 @@ kMyMoneyCurrencySelector::kMyMoneyCurrencySelector(QWidget *parent, const char *
   kMyMoneySecuritySelector(TypeCurrencies, parent, name)
 {
 }
+
+#include "kmymoneycurrencyselector.moc"

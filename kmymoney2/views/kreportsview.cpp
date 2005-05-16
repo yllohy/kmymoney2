@@ -872,3 +872,5 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
 #undef VIEW_WELCOME
 #undef VIEW_HOME
 #undef VIEW_REPORTS
+
+#include "kreportsview.moc"

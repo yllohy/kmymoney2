@@ -191,3 +191,5 @@ void kMyMoneyEquity::slotSelectEquity(const QCString& id)
   }
   m_equitySelector->hide();
 }
+
+#include "kmymoneyequity.moc"

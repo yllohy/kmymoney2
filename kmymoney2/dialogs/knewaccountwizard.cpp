@@ -636,3 +636,5 @@ void KNewAccountWizard::slotPriceUpdate(void)
   dlg.slotSelectCurrency(m_currencyComboBox->security().id());
   dlg.exec();
 }
+
+#include "knewaccountwizard.moc"

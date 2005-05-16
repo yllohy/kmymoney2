@@ -344,3 +344,5 @@ void kMyMoneyCalculator::setInitialValues(const QString& value, QKeyEvent* ev)
   if(ev)
     keyPressEvent(ev);
 }
+
+#include "kmymoneycalculator.moc"

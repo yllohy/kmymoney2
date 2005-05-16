@@ -137,3 +137,5 @@ void KImportVerifyDlg::slotShowIntroduction(void) const
                   i18n("Import verification"),
                   "ImportVerificationIntroduction");
 }
+
+#include "kimportverifydlg.moc"

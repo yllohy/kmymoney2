@@ -211,3 +211,5 @@ void KSecurityListEditor::slotDeleteSecurity(void)
 #undef CURR_COL
 #undef ACCFRACT_COL
 #undef CASHFRACT_COL
+
+#include "ksecuritylisteditor.moc"

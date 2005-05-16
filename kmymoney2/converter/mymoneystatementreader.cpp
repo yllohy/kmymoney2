@@ -533,3 +533,5 @@ void MyMoneyStatementReader::signalProgress(int current, int total, const QStrin
     (*m_progressCallback)(current, total, msg);
 }
 
+
+#include "mymoneystatementreader.moc"

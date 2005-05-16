@@ -525,3 +525,5 @@ bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai)
 
 
 
+
+#include "mymoneybanking.moc"

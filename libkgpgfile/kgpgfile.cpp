@@ -554,3 +554,5 @@ const bool KGPGFile::keyAvailable(const QString& name)
 
  */
 
+
+#include "kgpgfile.moc"

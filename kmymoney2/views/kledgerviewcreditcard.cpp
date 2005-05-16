@@ -174,3 +174,5 @@ bool KLedgerViewCreditCard::eventFilter( QObject *o, QEvent *e )
 {
   return KLedgerViewCheckings::eventFilter(o, e);
 }
+
+#include "kledgerviewcreditcard.moc"

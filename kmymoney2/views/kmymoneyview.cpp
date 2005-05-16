@@ -2537,3 +2537,5 @@ void KMyMoneyViewBase::addWidget(QWidget* w)
 {
   m_viewLayout->addWidget(w);
 }
+
+#include "kmymoneyview.moc"

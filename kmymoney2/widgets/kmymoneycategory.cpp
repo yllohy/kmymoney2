@@ -255,3 +255,5 @@ void kMyMoneyCategory::slotSelectAccount(const QCString& id)
     emit categoryChanged(id);
   }
 }
+
+#include "kmymoneycategory.moc"

@@ -175,3 +175,6 @@ void KMyMoneyBriefSchedule::slotEnterClicked()
   hide();
   emit enterClicked(m_scheduleList[m_index], m_date);
 }
+
+
+#include "kmymoneybriefschedule.moc"

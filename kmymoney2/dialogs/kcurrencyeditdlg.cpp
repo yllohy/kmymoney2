@@ -324,3 +324,5 @@ void KCurrencyEditDlg::slotRenameCurrency(QListViewItem* item, int /* col */, co
     updateCurrency();
   }
 }
+
+#include "kcurrencyeditdlg.moc"

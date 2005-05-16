@@ -183,3 +183,5 @@ void kMyMoneyAccountCombo::mouseReleaseEvent(QMouseEvent *e)
     emit clicked();
   }
 }
+
+#include "kmymoneyaccountcombo.moc"

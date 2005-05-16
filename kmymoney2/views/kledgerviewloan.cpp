@@ -1076,3 +1076,5 @@ bool KLedgerViewLoan::eventFilter( QObject *o, QEvent *e )
 #undef AMORTIZATION_DATA_COL
 #undef AMOUNT_TXT_COL
 #undef AMOUNT_DATA_COL
+
+#include "kledgerviewloan.moc"

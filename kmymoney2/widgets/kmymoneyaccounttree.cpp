@@ -198,3 +198,5 @@ void kMyMoneyAccountTree::slotReparentInstitution(void)
     KMessageBox::detailedError(this, i18n("Cannot move account to institution"), detail, i18n("Error"));
   }
 }
+
+#include "kmymoneyaccounttree.moc"

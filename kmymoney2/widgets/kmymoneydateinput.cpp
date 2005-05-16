@@ -267,3 +267,5 @@ QWidget* kMyMoneyDateInput::focusWidget(void) const
     w = w->focusProxy();
   return w;
 }
+
+#include "kmymoneydateinput.moc"

@@ -340,3 +340,5 @@ kMyMoneyTransactionForm::~kMyMoneyTransactionForm()
 {
   delete m_toolbar;
 }
+
+#include "kmymoneytransactionform.moc"

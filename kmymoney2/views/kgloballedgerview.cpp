@@ -400,3 +400,5 @@ void KGlobalLedgerView::update(const QCString& /* id */)
     slotRefreshView();
   }
 }
+
+#include "kgloballedgerview.moc"

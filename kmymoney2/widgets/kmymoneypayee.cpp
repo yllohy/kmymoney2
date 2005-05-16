@@ -114,3 +114,5 @@ void kMyMoneyPayee::keyPressEvent( QKeyEvent * ev)
     KLineEdit::keyPressEvent(&evc);
   }
 }
+
+#include "kmymoneypayee.moc"
