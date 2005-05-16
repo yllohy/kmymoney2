@@ -5,9 +5,9 @@
 <section><title>QIF format considered harmful</title>
 <para>Generally speaking, the QIF format should be avoided wherever possible.  It is a poor choice for transporting financial data.    Among other thing, QIF suffers from these problems:</para>
 <itemizedlist>
-<listitem>Lack of standardized format.  Different version of the same program will impart different meanings to the same element.</listitem>
-<listitem>Lack of transaction identifier.  Because there is no ID number associated with each transaction, matching duplicates is haphazard at best.</listitem>
-<listitem>Lack of expressiveness.  The grammar is really simple, and cannot portray the depth of financial information found in today's financial environment.</listitem>
+<listitem><para>Lack of standardized format.  Different version of the same program will impart different meanings to the same element.</para></listitem>
+<listitem><para>Lack of transaction identifier.  Because there is no ID number associated with each transaction, matching duplicates is haphazard at best.</para></listitem>
+<listitem><para>Lack of expressiveness.  The grammar is really simple, and cannot portray the depth of financial information found in today's financial environment.</para></listitem>
 </itemizedlist>
 <para>This is generally why Intuit stopped supporting QIF input at all with Quicken 2005.  If you have the option of getting data some other way, like OFX, always choose that option.</para>
 </section>
