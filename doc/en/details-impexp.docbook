@@ -11,13 +11,22 @@
 </itemizedlist>
 <para>This is generally why Intuit stopped supporting QIF input at all with Quicken 2005.  If you have the option of getting data some other way, like OFX, always choose that option.</para>
 </section>
-<section><title>How to import a QIF file</title><para>&hellip;</para></section>
+<section><title>How to import a QIF file</title>
+<para>From the File menu, choose Import, and then QIF.  You are asked for the location of your file to be imported, which QIF profile to use, and a 'create payees' option.  See the next section for details on the QIF profile.</para>
+<para>The &quot;Create missing payees&quot; option tells KMyMoney that if it should find a payee in your QIF file that is not already known, it should create a new one.  Generally, this is the desired behaviour and you should check this option.</para>
+<para>The first thing the importer will do is ask you which account to import the transactions into.  If there are transactions from multiple accounts in your file, you will be asked this question multiple times.</para>
+<para>After importing, some of your transactions may be flashing red in the ledger.  This is because they need to be assigned a category.  The importer was not able to automatically assign a category based on your past transaction history.</para>
+</section>
 <section><title>Setting up a QIF profile</title>
 <para>Because there is no universally standard format for the QIF file, different vendors have taken liberties with the format, and introduced their own nuances.  Therefore, you must create a QIF Profile before you can import a QIF file.  This profile tells KMyMoney about the peculiarities of your file.</para>
 <para>The most commonly changed thing between QIF implementations is the date format.  So if this is the first time you're importing a QIF file, spend a few moments to figure out what format the dates are in, and set the QIF Profile accordingly.  See the discussion below on apostrophe format for more details.</para>
 </section>
-<section><title>Understanding apostrophe format</title><para>&hellip;</para></section>
-<section><title>Choosing an import account</title><para>&hellip;</para></section>
+<section><title>Understanding apostrophe format</title>
+<para>When dates are represented by a 2-digit character code, it's not obvious whether the century is 1900 or 2000.  The QIF format usually handles this by assuming the century, and then providing an escape code for the opposite century.  This escape code is an apostrophe placed before the year.</para>
+<para>For example, 5/25/90 might mean 1990, and 5/25'05 would mean 2005.</para>
+<para>The &quot;Apostrophe Format&quot; setting controls which century is meant by the apostrophe.  Usually setting this to 2000-2099 provides the desired results, but you have to review your QIF file to be sure.</para> 
+</section>
+<section><title>Transaction matching</title><para>&hellip;</para></section>
 <section><title>Supported file chunks</title><para>&hellip;</para></section>
 <section><title>Writing an import filter</title><para>&hellip;</para></section>
 <section><title>Special KMyMoney QIF extensions</title>
