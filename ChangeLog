@@ -1,3 +1,8 @@
+2005-05-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed dependencies and install instructions for documentation
+  * Added initial doc on currencies
+  * Removed outbox view from documentation as it is not part of 0.8
+
 2005-05-14 Ace Jones <acejones@users.sourceforge.net>
   * Added investment handling to QIF importing.  Handles !Type:Invst !Type:Price
     and !Type:Security.
