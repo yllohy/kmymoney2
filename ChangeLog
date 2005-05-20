@@ -1,11 +1,20 @@
-2005-05-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2005-05-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed dependencies and install instructions for documentation
   * Added initial doc on currencies
   * Removed outbox view from documentation as it is not part of 0.8
 
+2005-05-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Avoid warning about unknown macro in kmymoney2.cpp
+  * Fixed escape sequence in kmymoneyedit.cpp
+  * Allow --enable-final to work properly with prior modifications
+  * Don't include the docbook source files in the installation
+  * Added new docbook files provided by Ace
+  * Added patch provided by Laurent Montel to fix some cvsignore files
+  * Fixed some more .cvsignore problems
+
 2005-05-14 Ace Jones <acejones@users.sourceforge.net>
-  * Added investment handling to QIF importing.  Handles !Type:Invst !Type:Price
-    and !Type:Security.
+  * Added investment handling to QIF importing.  Handles !Type:Invst
+    !Type:Price and !Type:Security.
   * Started "KMyMoney Files" help file
 
 2005-05-14 Tony Bloomfield <tonybloom@users.sourceforge.net>
