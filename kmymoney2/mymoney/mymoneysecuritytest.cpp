@@ -33,7 +33,12 @@ void MyMoneySecurityTest::testEmptyConstructor() {
 	CPPUNIT_ASSERT(m->id().isEmpty());
 	CPPUNIT_ASSERT(m->name().isEmpty());
 	CPPUNIT_ASSERT(m->tradingSymbol().isEmpty());
-	// CPPUNIT_ASSERT(m->priceHistory().count() == 0);
+	CPPUNIT_ASSERT(m->securityType() == MyMoneySecurity::SECURITY_NONE);
+	CPPUNIT_ASSERT(m->tradingMarket().isEmpty());
+	CPPUNIT_ASSERT(m->tradingCurrency().isEmpty());
+	CPPUNIT_ASSERT(m->smallestCashFraction() == 100);
+	CPPUNIT_ASSERT(m->smallestAccountFraction() == 100);
+	CPPUNIT_ASSERT(m->partsPerUnit() == 100);
 }
 
 void MyMoneySecurityTest::testCopyConstructor() {
@@ -62,11 +67,28 @@ void MyMoneySecurityTest::testNonemptyConstructor() {
 	// CPPUNIT_ASSERT(n.priceHistory().count() == 1);
 }
 
-/*
 
 void MyMoneySecurityTest::testSetFunctions() {
+	m->setName("Name");
+	m->setTradingSymbol("Symbol");
+	m->setTradingMarket("Market");
+	m->setTradingCurrency("Currency");
+	m->setSecurityType(MyMoneySecurity::SECURITY_STOCK);
+	m->setSmallestAccountFraction(50);
+	m->setSmallestCashFraction(2);
+	m->setPartsPerUnit(30);
+
+	CPPUNIT_ASSERT(m->name() == "Name");
+	CPPUNIT_ASSERT(m->tradingSymbol() == "Symbol");
+	CPPUNIT_ASSERT(m->tradingMarket() == "Market");
+	CPPUNIT_ASSERT(m->tradingCurrency() == "Currency");
+	CPPUNIT_ASSERT(m->securityType() == MyMoneySecurity::SECURITY_STOCK);
+	CPPUNIT_ASSERT(m->smallestAccountFraction() == 50);
+	CPPUNIT_ASSERT(m->smallestCashFraction() == 2);
+	CPPUNIT_ASSERT(m->partsPerUnit() == 30);
 }
 
+/*
 void MyMoneySecurityTest::testMyMoneyFileConstructor() {
 	MyMoneySecurity *t = new MyMoneySecurity("GUID", *n);
 
@@ -74,13 +96,81 @@ void MyMoneySecurityTest::testMyMoneyFileConstructor() {
 
 	delete t;
 }
+*/
 
 void MyMoneySecurityTest::testEquality () {
+	testSetFunctions();
+	m->setValue("Key", "Value");
+
+	MyMoneySecurity n;
+	n = *m;
+
+	CPPUNIT_ASSERT(n == *m);
+	n.setName("NewName");
+	CPPUNIT_ASSERT(!(n == *m));
+	n = *m;
+	n.setTradingSymbol("NewSymbol");
+	CPPUNIT_ASSERT(!(n == *m));
+	n = *m;
+	n.setTradingMarket("NewMarket");
+	CPPUNIT_ASSERT(!(n == *m));
+	n = *m;
+	n.setTradingCurrency("NewCurrency");
+	CPPUNIT_ASSERT(!(n == *m));
+	n = *m;
+	n.setSecurityType(MyMoneySecurity::SECURITY_CURRENCY);
+	CPPUNIT_ASSERT(!(n == *m));
+	n = *m;
+	n.setSmallestAccountFraction(40);
+	CPPUNIT_ASSERT(!(n == *m));
+	n = *m;
+	n.setSmallestCashFraction(20);
+	CPPUNIT_ASSERT(!(n == *m));
+	n = *m;
+	n.setPartsPerUnit(3);
+	CPPUNIT_ASSERT(!(n == *m));
+	n = *m;
+	n.setValue("Key", "NewValue");
+	CPPUNIT_ASSERT(!(n == *m));
 }
 
 void MyMoneySecurityTest::testInequality () {
+	testSetFunctions();
+	m->setValue("Key", "Value");
+
+	MyMoneySecurity n;
+	n = *m;
+
+	CPPUNIT_ASSERT(!(n != *m));
+	n.setName("NewName");
+	CPPUNIT_ASSERT(n != *m);
+	n = *m;
+	n.setTradingSymbol("NewSymbol");
+	CPPUNIT_ASSERT(n != *m);
+	n = *m;
+	n.setTradingMarket("NewMarket");
+	CPPUNIT_ASSERT(n != *m);
+	n = *m;
+	n.setTradingCurrency("NewCurrency");
+	CPPUNIT_ASSERT(n != *m);
+	n = *m;
+	n.setSecurityType(MyMoneySecurity::SECURITY_CURRENCY);
+	CPPUNIT_ASSERT(n != *m);
+	n = *m;
+	n.setSmallestAccountFraction(40);
+	CPPUNIT_ASSERT(n != *m);
+	n = *m;
+	n.setSmallestCashFraction(20);
+	CPPUNIT_ASSERT(n != *m);
+	n = *m;
+	n.setPartsPerUnit(3);
+	CPPUNIT_ASSERT(n != *m);
+	n = *m;
+	n.setValue("Key", "NewValue");
+	CPPUNIT_ASSERT(n != *m);
 }
 
+/*
 void MyMoneySecurityTest::testAccountIDList () {
 	MyMoneySecurity equity;
 	QCStringList list;

@@ -54,6 +54,19 @@ public:
   MyMoneySecurity(const QCString& id, const QString& name, const QString& symbol = QString(), const int partsPerUnit = 100, const int smallestCashFraction = 100, const int smallestAccountFraction = 0);
   virtual ~MyMoneySecurity();
 
+  /**
+    * This operator tests for equality of two MyMoneySecurity objects
+    */
+  const bool operator == (const MyMoneySecurity&) const;
+
+  /**
+    * This operator tests for inequality of this MyMoneySecurity object
+    * and the one passed by @p r
+    *
+    * @param r the right side of the comparison
+    */
+  const bool operator != (const MyMoneySecurity& r) const { return !(*this == r); }
+
 public:
   typedef enum {
     SECURITY_STOCK,

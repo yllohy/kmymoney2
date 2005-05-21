@@ -67,6 +67,22 @@ MyMoneySecurity::~MyMoneySecurity()
 {
 }
 
+const bool MyMoneySecurity::operator == (const MyMoneySecurity& r) const
+{
+  return (m_id == r.m_id)
+      && (m_name == r.m_name)
+      && (m_tradingSymbol == r.m_tradingSymbol)
+      && (m_tradingMarket == r.m_tradingMarket)
+      && (m_tradingSymbol == r.m_tradingSymbol)
+      && (m_tradingCurrency == r.m_tradingCurrency)
+      && (m_securityType == r.m_securityType)
+      && (m_smallestAccountFraction == r.m_smallestAccountFraction)
+      && (m_smallestCashFraction == r.m_smallestCashFraction)
+      && (m_partsPerUnit == r.m_partsPerUnit)
+      && this->MyMoneyKeyValueContainer::operator == (r);
+  
+}
+
 #if 0
 void MyMoneyEquity::setPriceHistory(const equity_price_history& history)
 {

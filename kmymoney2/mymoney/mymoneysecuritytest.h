@@ -28,11 +28,11 @@ class MyMoneySecurityTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testEmptyConstructor);
 	CPPUNIT_TEST(testNonemptyConstructor);
 	CPPUNIT_TEST(testCopyConstructor);
-/*
 	CPPUNIT_TEST(testSetFunctions);
-	CPPUNIT_TEST(testMyMoneyFileConstructor);
 	CPPUNIT_TEST(testEquality);
 	CPPUNIT_TEST(testInequality);
+/*
+	CPPUNIT_TEST(testMyMoneyFileConstructor);
 	CPPUNIT_TEST(testAccountIDList);
 */
 	CPPUNIT_TEST_SUITE_END();
@@ -48,10 +48,10 @@ public:
 	void testEmptyConstructor();
 	void testNonemptyConstructor();
 	void testCopyConstructor();
-	// void testSetFunctions();
+	void testSetFunctions();
+	void testEquality ();
+	void testInequality ();
 	// void testMyMoneyFileConstructor();
-	// void testEquality ();
-	// void testInequality ();
 	// void testAccountIDList ();
 };
 
