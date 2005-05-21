@@ -1,3 +1,6 @@
+2005-05-21 Ace Jones <acejones@users.sourceforge.net>
+  * First draft of help files for reports, online quotes, and qif/ofx import
+
 2005-05-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Bumped version to 0.7.2
   * Added == and != operators to MyMoneySecurity
