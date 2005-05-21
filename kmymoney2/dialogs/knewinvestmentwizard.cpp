@@ -103,7 +103,7 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneySecurity& security, QWi
 void KNewInvestmentWizard::init(void)
 {
   m_onlineSourceCombo->insertStringList( WebPriceQuote::quoteSources() );
-  
+
   // FIXME for now, we don't have online help
   helpButton()->hide();
 
@@ -157,12 +157,15 @@ void KNewInvestmentWizard::createObjects(const QCString& parentId)
 
   // update all relevant attributes only, if we create a stock
   // account and the security is unknown or we modifiy the security
-  if(m_security.id().isEmpty() || m_createAccount == false) {
-    m_security.setName(m_investmentName->text());
-    m_security.setTradingSymbol(m_investmentSymbol->text());
-    m_security.setTradingMarket(m_tradingMarket->currentText());
-    m_security.setTradingCurrency(m_tradingCurrencyEdit->security().id());
-    m_security.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
+  MyMoneySecurity newSecurity(m_security);
+  newSecurity.setName(m_investmentName->text());
+  newSecurity.setTradingSymbol(m_investmentSymbol->text());
+  newSecurity.setTradingMarket(m_tradingMarket->currentText());
+  newSecurity.setTradingCurrency(m_tradingCurrencyEdit->security().id());
+  newSecurity.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
+
+  if(m_security.id().isEmpty() || newSecurity != m_security) {
+    m_security = newSecurity;
 
     // if the security was not found, we have to create it while not forgetting
     // to setup the type
