@@ -1,4 +1,10 @@
 2005-05-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Bumped version to 0.7.2
+  * Added == and != operators to MyMoneySecurity
+  * Added testcases for the above
+  * Fixed new investment wizard to store modified security information
+
+2005-05-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed drag&drop of accounts between institutions
   * Fixed build system for documentation
   * Released 0.7.1
