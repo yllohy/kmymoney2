@@ -26,11 +26,11 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "kgncpricesourcedlgdecl.h"
+#include "../dialogs/kgncpricesourcedlgdecl.h"
 
 class KGncPriceSourceDlg : public KGncPriceSourceDlgDecl
 {
-Q_OBJECT
+  Q_OBJECT
 public:
   KGncPriceSourceDlg(QWidget *parent = 0, const char *name = 0);
   ~KGncPriceSourceDlg();
