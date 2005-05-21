@@ -158,7 +158,7 @@ void kMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* pa
       // routine right out of the main loop. This will reset the focus of the cursor.
       m_institution = MyMoneyFile::instance()->institution(newParent->accountID());
       m_accFrom = MyMoneyFile::instance()->account(id);
-      QTimer::singleShot(0, this, SLOT(slotReparentAccount()));
+      QTimer::singleShot(0, this, SLOT(slotReparentInstitution()));
 
     } catch(MyMoneyException *e) {
       delete e;
