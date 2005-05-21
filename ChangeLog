@@ -1,3 +1,8 @@
+2005-05-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed drag&drop of accounts between institutions
+  * Fixed build system for documentation
+  * Released 0.7.1
+
 2005-05-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed dependencies and install instructions for documentation
   * Added initial doc on currencies
