@@ -1,6 +1,268 @@
-<chapter id="details.ledgers">
-<title>Ledgers - Under development - MTE/Robert?</title>
-<para>
-</para>
-</chapter>
+<chapter id="details.ledgers"><title id="ledgerid.title">Ledgers Screen.</title>
 
+<para>
+  The ledgers screen is for entering transaction data into the various accounts. The view is split into two main areas: the transaction list, and the input area. In the transactions list, the transactions are arranged by date with the most recent transaction on the bottom. 
+</para>
+
+<para>
+  The ledgers screen allows for several key functions: viewing transactions, entering transactions, and editing or deleting existing transactions. Other functionality includes modifying account details, or reconciling the account. 
+</para>
+
+
+<screenshot>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="ledgers.png" format="PNG"></imagedata>
+    </imageobject>
+  </mediaobject>
+</screenshot>
+
+
+<sect1 id="viewtransactionsid"><title id="viewtransactionsid.title">Viewing Transactions.</title>
+
+<para>
+  To view the transactions associated with a particular account, first select the active account from the drop down menu on the top of the screen. Depending on the account type, the information fields presented in the transactions will change. 
+</para>
+
+<para>
+  Each transaction is listed on a separate line, with varied columns between all the different account types.  Below, the information columns for each account type is explained. For brevity, the definitions are not repeated if they have already been defined in earlier account listings. 
+</para>
+
+<para>
+
+  <itemizedlist>
+  
+  <listitem>
+    <para>Checkings, Savings, Cash</para>
+    <itemizedlist>
+    <listitem>
+      <para>Nr. - The cheque number (not available for Savings).</para>	
+    </listitem>
+    <listitem>
+      <para>Date - date of transaction.</para>
+    </listitem>  
+    <listitem>
+      <para>Payee - name of the receiver.</para>
+    </listitem>
+    <listitem>
+      <para>C - indicates not cleared (blank), cleared (C), or reconciled (R). A cleared transaction indicates the funds indicated in the transaction have been deposited or withdrawn. A reconciled transaction has been verified against a financial statement.</para>
+    </listitem>
+    <listitem>
+      <para>Payment - amount being paid to the Payee.</para>
+    </listitem>
+    <listitem>
+      <para>Deposit - amount received from the Payee.</para>
+    </listitem>
+    <listitem>
+      <para>Balance - the balance on the account at the end of the transaction.</para>
+    </listitem>
+    </itemizedlist>
+  </listitem>
+  
+  <listitem>
+    <para>Credit Card</para>
+    <itemizedlist>
+    <listitem>
+      <para>Nr.</para>	
+    </listitem>
+    <listitem>
+      <para>Date</para>
+    </listitem>  
+    <listitem>
+      <para>Payee</para>
+    </listitem>
+    <listitem>
+      <para>C</para>
+    </listitem>
+    <listitem>
+      <para>Charge - charges made against the credit card by the Payee.</para>
+    </listitem>
+    <listitem>
+      <para>Payment - payments made to the credit card by the Payee.</para>
+    </listitem>
+    <listitem>
+      <para>Balance</para>
+    </listitem>
+    </itemizedlist>
+  </listitem>
+  
+  <listitem>
+    <para>Loan</para>
+    <itemizedlist>
+    <listitem>
+      <para>Date</para>
+    </listitem>  
+    <listitem>
+      <para>Payment - payment number.</para>
+    </listitem>
+    <listitem>
+      <para>Payee</para>
+    </listitem>
+    <listitem>
+      <para>Amount - total payment made, including interest amount.</para>
+    </listitem>
+    <listitem>
+      <para>Amortization - amount the loan is reduced by.</para>
+    </listitem>
+    <listitem>
+      <para>Balance - money still owing.</para>
+    </listitem>
+    </itemizedlist>    
+  </listitem>
+  
+  <listitem>
+    <para>Investments</para>
+    <itemizedlist>
+    <listitem>
+      <para>Date</para>
+    </listitem>  
+    <listitem>
+      <para>Security - name of the investment.</para>
+    </listitem>
+    <listitem>
+      <para>Activity - buy, sell, etc.</para>
+    </listitem>
+    <listitem>
+      <para>C</para>
+    </listitem>
+    <listitem>
+      <para>Amount - number of shares.</para>
+    </listitem>
+    <listitem>
+      <para>Price - price per share.</para>
+    </listitem>
+    <listitem>
+      <para>Value - total value of transaction.</para>
+    </listitem>
+    </itemizedlist>     
+  </listitem>
+  
+  <listitem>
+    <para>Asset</para>
+    <itemizedlist>
+    <listitem>
+      <para>Nr.</para>
+    </listitem>  
+    <listitem>
+      <para>Date</para>
+    </listitem>
+    <listitem>
+      <para>Payee</para>
+    </listitem>
+    <listitem>
+      <para>C</para>
+    </listitem>
+    <listitem>
+      <para>Decrease - the amount the value of the asset has decreased by.</para>
+    </listitem>
+    <listitem>
+      <para>Increase - the amount the value of the asset has increased by.</para>
+    </listitem>
+    <listitem>
+      <para>Balance</para>
+    </listitem>
+    </itemizedlist>    
+    
+  </listitem>
+  
+  <listitem>
+    <para>Liability</para>
+    <itemizedlist>
+    <listitem>
+      <para>Nr.</para>
+    </listitem>  
+    <listitem>
+      <para>Date</para>
+    </listitem>
+    <listitem>
+      <para>Payee</para>
+    </listitem>
+    <listitem>
+      <para>C</para>
+    </listitem>
+    <listitem>
+      <para>Increase - increasing the money you owe.</para>
+    </listitem>
+    <listitem>
+      <para>Decrease - decreasing the money you owe.</para>
+    </listitem>
+    <listitem>
+      <para>Balance</para>
+    </listitem>
+    </itemizedlist>    
+  </listitem>
+  </itemizedlist>
+  
+</para>
+
+</sect1>
+
+<sect1 id="enteringtransactionsid"><title id="enteringtransactionsid.title">Entering and Editing Transactions.</title>
+
+<para>
+  To enter a transaction, first ensure that you have selected the correct account. To start entering a new transaction, double-clicking the empty line below the last transaction, or click the New button in the input area at the bottom of the screen. The fields in the input area then become available for entering information. 
+</para>
+
+<para>
+  The fields in the input area match the information fields in the transactions list. Additional fields include the Memo field, for a more detailed description of the transaction and a Category selection. The Split button allows for the transaction to be split into multiple categories. 
+</para>
+
+<para>
+  There are several types of transactions, depending on the account type. The list below provides a quick description of the transaction types.
+</para>
+
+<para>
+  <itemizedlist>
+  <listitem>
+    <para>Deposit - add money to the account.</para>
+  </listitem>
+  <listitem>
+    <para>Transfer - transfer money from one account to another. The account that the transfer involves is specified in the category field. </para>
+  </listitem>
+  <listitem>
+    <para>Withdrawal - remove money from the account.</para>
+  </listitem>
+  <listitem>
+    <para>Cheque - transactions involving cheques.</para>
+  </listitem>
+  <listitem>
+    <para>ATM - transactions involving the ATM.</para>
+  </listitem>
+  <listitem>
+    <para>Increase - increase a liability or an asset.</para>
+  </listitem>
+  <listitem>
+    <para>Decrease - decrease a liability or an asset.</para>
+  </listitem>
+  <listitem>
+    <para>Payment - refund or payment on a credit card.</para>
+  </listitem>
+  <listitem>
+    <para>Charge - purchase made on a credit card.</para>
+  </listitem>
+  </itemizedlist>
+</para>
+
+<para>
+  To remove a transaction, bring up the Transaction Options menu by right-clicking on a transaction in the transaction list, or pressing the More button in the input area. To edit a transaction, double-click the transaction or press the Edit button, and change the fields to the new values. 
+</para>
+
+</sect1>
+
+<sect1 id="othertransactionsid"><title id="othertransactionsid.title">Other Functionality.</title>
+
+<para>
+  Additional options are available from the Transaction Options menu, accessed either by right-clicking a transaction in the list or pressing the More button in the bottom input area. 
+</para>
+
+<para>
+  Options include jumping to the Payee's page, creating a schedule, and changing reconciled or cleared indication. 
+</para>
+
+<para>
+  To edit the account information from this view, press the Account button to bring up the Account Options menu. From this menu, you can change the account details, or bring up the Reconcile menu, which allows you to match transactions against an official bank statement or credit card notice. 
+</para>
+
+</sect1>
+
+</chapter>
