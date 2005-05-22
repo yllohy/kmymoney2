@@ -481,6 +481,7 @@ void KMyMoneyView::slotAccountDoubleClick(void)
     MyMoneyAccount account = MyMoneyFile::instance()->account(acc);
     if(account.accountType() == MyMoneyAccount::Investment) {
       showPage(pageIndex(m_investmentViewFrame));
+      m_investmentView->slotSelectAccount(acc);
     } else {
       showPage(pageIndex(m_ledgerViewFrame));
       m_ledgerView->slotSelectAccount(acc);
