@@ -20,23 +20,32 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "../dialogs/kgncpricesourcedlgdecl.h"
+#include "kgncpricesourcedlgdecl.h"
 
 class KGncPriceSourceDlg : public KGncPriceSourceDlgDecl
 {
-  Q_OBJECT
+Q_OBJECT
 public:
   KGncPriceSourceDlg(QWidget *parent = 0, const char *name = 0);
+  KGncPriceSourceDlg(QString stockName, QString gncSource);
   ~KGncPriceSourceDlg();
+  
+  QString selectedSource ();
+  bool alwaysUse() { return (checkAlwaysUse->isChecked()); }
     
 public slots:
+  void buttonPressed(int);
   void slotHelp();
+  
+private:
+  int m_currentButton;
 };
 
 #endif

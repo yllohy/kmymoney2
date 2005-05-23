@@ -33,13 +33,19 @@ email                : mte@users.sourceforge.net
 #include <qdatetime.h>
 
 // ----------------------------------------------------------------------------
+// KDE Includes
+#ifndef _GNCFILEANON
+  #include <kconfig.h>
+#endif
+
+// ----------------------------------------------------------------------------
 // Third party Includes
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "config.h"
 #include "mymoneygncreader.h"
 #ifndef _GNCFILEANON
+  #include "config.h"
   #include "../mymoney/storage/imymoneystorage.h"
   #include "../kmymoneyutils.h"
   #include "../mymoney/mymoneyfile.h"
@@ -50,7 +56,7 @@ email                : mte@users.sourceforge.net
   #define TRY try {
   #define PASS } catch (MyMoneyException *e) { throw e; }
 #else
-  #include "../mymoneymoney/mymoneymoney.h"
+  #include "mymoneymoney.h"
   #define TRY
   #define PASS
   #define MYMONEYEXCEPTION QString
@@ -1119,7 +1125,10 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
       if (gncdebug) qDebug ("Setting %s to mutual", e.name().latin1());
       m_storage->modifySecurity (e);
     }
-    ///////////////////////////////////
+    // See if he wants online quotes for this account
+    // NB: In gnc, this selection is per account, in KMM, per security
+    // This is unlikely to cause problems in practice. If it does,
+    // we probably need to introduce a 'pricing basis' in the account class
     QPtrListIterator<GncObject> kvpi (gac->kvpList);
     GncKvp *k;
     while ((k = static_cast<GncKvp *>(kvpi.current())) != 0) {
@@ -1130,7 +1139,6 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
         ++kvpi;
       }
     }
-    ////////////////////////////////////////////////
   }
   // all the details from the file about the account should be known by now.
   // calling addAccount will automatically fill in the account ID.
@@ -1265,9 +1273,13 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
 #define NEW_DENOM 10000
       newPrice = MyMoneyMoney ( price.toDouble(), (signed64)NEW_DENOM );
       if (!newPrice.isZero()) {
-        e.setTradingCurrency (m_txCommodity);
+        if (m_storage->security(m_txCommodity).isCurrency()) {
+          e.setTradingCurrency (m_txCommodity);
+        } else { // stock transfer; treat like free shares?
+          //split.setAction (MyMoneySplit::ActionAddShares);
+        }
         if (gncdebug) qDebug ("added price for %s, %s date %s",
-                                e.name().latin1(), price.toString().latin1(), m_txDatePosted.toString(Qt::ISODate).latin1());
+        e.name().latin1(), price.toString().latin1(), m_txDatePosted.toString(Qt::ISODate).latin1());
         m_storage->modifySecurity(e);
         MyMoneyPrice dealPrice (e.id(), m_txCommodity, m_txDatePosted, newPrice, QObject::tr("Imported Transaction"));
         m_storage->addPrice (dealPrice);
@@ -2003,14 +2015,29 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
   }
 }
 
+// get the price source for a stock (gnc account) where online quotes are requested
 void MyMoneyGncReader::getPriceSource (MyMoneySecurity stock, QString gncSource) {
-  QString s = "";
-  if (gncdebug) qDebug ("%s = %s", stock.name().latin1(), gncSource.latin1());
-/////////////////////////////////////////////////////
-//KGncPriceSourceDlg *dlg = new KGncPriceSourceDlg;
-//dlg->exec();
-//delete dlg;
-///////////////////////////////////////////////////////
+  // first check if we have already asked about this source
+  // (mapSources is initialy empty. We may be able to pre-fill it with some equivalent
+  //  sources, if such things do exist. User feedback may help here.)
+  QMap<QString, QString>::Iterator it;
+  for (it = m_mapSources.begin(); it != m_mapSources.end(); it++) {
+    if (it.key() == gncSource) {
+      stock.setValue("kmm-online-source", it.data());
+      m_storage->modifySecurity(stock);
+      return;
+    }
+  }
+  // not found in map, so ask the user
+  KGncPriceSourceDlg *dlg = new KGncPriceSourceDlg (stock.name(), gncSource);
+  dlg->exec();
+  QString s = dlg->selectedSource();
+  if (!s.isEmpty()) {
+    stock.setValue("kmm-online-source", s);
+    m_storage->modifySecurity(stock);
+  }
+  if (dlg->alwaysUse()) m_mapSources[gncSource] = s;
+  delete dlg;
   return;
 }
 

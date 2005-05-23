@@ -17,46 +17,106 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qlabel.h>
+#include <qlistbox.h>
+#include <qlineedit.h>
+#include <qbuttongroup.h>
+#include <qlayout.h>
+#include <qapplication.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include <kurlrequester.h>
+#include <ktextbrowser.h>
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kgncpricesourcedlg.h"
+#include "../converter/webpricequote.h"
 
 KGncPriceSourceDlg::KGncPriceSourceDlg(QWidget *parent, const char *name)
  : KGncPriceSourceDlgDecl(parent, name)
 {
+}
+KGncPriceSourceDlg::KGncPriceSourceDlg(QString stockName, QString gncSource){
+  // signals and slots connections
+  connect( buttonGroup5, SIGNAL( released(int) ), this, SLOT( buttonPressed(int) ) );
+  connect( buttonHelp, SIGNAL( clicked() ), this, SLOT( slotHelp() ) );
+  // initialize data fields
+  textStockName->setText (QObject::tr ("Investment: ") + stockName);
+  textGncSource->setText (QObject::tr ("Quote source: ") + gncSource);
+  listKnownSource->insertStringList (WebPriceQuote::quoteSources());
+  lineUserSource->setText (gncSource);
+  checkAlwaysUse->setChecked(true);
+  buttonGroup5->setButton (0);
+  buttonPressed (0);
+  return;
 }
 
 KGncPriceSourceDlg::~KGncPriceSourceDlg()
 {
 }
 
+enum ButtonIds {NOSOURCE = 0, KMMSOURCE, USERSOURCE};
+
+void KGncPriceSourceDlg::buttonPressed (int buttonId) {
+  m_currentButton = buttonId;
+  switch (m_currentButton) {
+    case NOSOURCE:
+      listKnownSource->clearSelection();
+      listKnownSource->setEnabled (false);
+      lineUserSource->deselect();
+      lineUserSource->setEnabled (false);
+      break;
+    case KMMSOURCE:
+      lineUserSource->deselect ();
+      lineUserSource->setEnabled (false);
+      listKnownSource->setEnabled (true);
+      listKnownSource->setFocus();
+      listKnownSource->setSelected (0, true);
+      break;
+    case USERSOURCE:
+      listKnownSource->clearSelection();
+      listKnownSource->setEnabled (false);
+      lineUserSource->setEnabled (true);
+      lineUserSource->selectAll();
+      lineUserSource->setFocus ();
+      break;
+  }
+}
+
+QString KGncPriceSourceDlg::selectedSource() {
+  QString s;
+  switch (m_currentButton) {
+    case NOSOURCE: s = ""; break;
+    case KMMSOURCE: s = listKnownSource->currentText(); break;
+    case USERSOURCE: s = lineUserSource->text(); break;
+  }
+  return (s);
+}
 
 void KGncPriceSourceDlg::slotHelp(void)
 {
-/*
+
   QString helpstring = QObject::tr(
-  "<h1>GnuCash Import Options</h1>"
-  "<h2>Investment Options</h2>"
-    "<p>In KMyMoney, all accounts representing investments (stocks, shares, bonds, etc.) must "
-    "have an associated investment (portfolio) account.</p>"
-    "<p>GnuCash does not enforce this, so we cannot automate this association. If you have investments, "
-    "please select one of the following options.</p>"
-     "<p>o create a separate investment account for each stock with the same name as the stock</p>"
-     "<p>o create a single investment account to hold all stocks - you will be asked for a name</p>"
-     "<p>o create multiple investment accounts - you will be asked for a name for each stock</p>" 
-  "<h2>Scheduled Transactions</h2>"
-    "<p>Due to differences in implementation, it is not always possible to import scheduled "
-    "transactions correctly. Though best efforts are made, it may be that some "
-    "imported transactions cause problems within KMyMoney.</p>"
-    "<p>An attempt will be made to identify potential problem transactions, "
-    "and setting this option will cause them to be dropped from the file. "
-    "A report of which transactions were dropped, and why, will be produced on screen.</p>"
-  "<h2>Debug Options</h2>"
-  "<p>These should only be used under developer direction (or at your own risk!).</p>" );
+  "<h1>Online Quote Price Sources</h1>"
+  "<p>For obtaining the latest prices of investments, GnuCash uses a collection of Perl scripts"
+  " under the name of Finance::Quote. A number of such scripts have been developed over the years,"
+  " and contributed to the project. </p>"
+  "<p>KMyMoney takes a different approach, namely the use of a URL in conjuction with the stock's"
+  " ticker symbol to retrieve prices directly,where such facilities are available,"
+  " and does not at this time support such a wide variety of sources. We do however"
+  " offer the facility for defining your own sources without requiring a knowledge of Perl,"
+  " (though an understanding of Regular Expressions may be helpful!!). The use of a URL means"
+  " that the 'source' could be a shell script or other Linux executable, if you have the skills to produce these. Use"
+  " the Settings menu, Configure KMyMoney and select Online Quotes, to supply new sources. (N.B. Due to a quirk"
+  " of Qt, you may need to maximize the window to see the full instructions.)</p>"
+  "<p>Do not worry too much about any mistakes you may make here. They can always be corrected"
+  " later, via the Tools/Securities menu item.</p>"
+  "<p>Please be aware that some of the sources used may have restrictions on the use"
+  " which you make of their prices. You should consult the Terms and Conditions of these sites"
+  " to ensure that you are abiding by any such rules.</p>" );
   
   QDialog dlg;
   QVBoxLayout layout( &dlg, 11, 6, "Layout17");
@@ -65,12 +125,12 @@ void KGncPriceSourceDlg::slotHelp(void)
   te.setReadOnly(true);
   te.setTextFormat(Qt::RichText);
   te.setText(helpstring);
-  dlg.setCaption(i18n("GnuCash Import Options Help"));
+  dlg.setCaption(i18n("Online Quote Sources Help"));
   unsigned width = QApplication::desktop()->width();
   unsigned height = QApplication::desktop()->height();
   te.setMinimumSize(width/2,height/2);  
   layout.setResizeMode(QLayout::Minimum);
-  dlg.exec();  */
+  dlg.exec();
 }
 
 #include "kgncpricesourcedlg.moc"
