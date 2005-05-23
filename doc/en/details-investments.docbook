@@ -1,15 +1,100 @@
 <chapter id="details.investments">
-<title>Investments - Under development - Ace/Thb</title>
-<section id="details.investments.investment"><title>Creating an Investment Account</title><para>&hellip;</para></section>
-<section id="details.investments.securities"><title>Adding Securities to Your Account</title><para>&hellip;</para></section>
-<section id="details.investments.summary"><title>Investment Summary Information</title><para>&hellip;</para></section>
-<section id="details.investments.ledger"><title>Investment Ledger</title><para>&hellip;</para></section>
-<section id="details.investments.foreign"><title>Working With Foreign Investments</title><para>&hellip;</para></section>
-<section id="details.investments.prices"><title>Updating Prices</title><para>&hellip;</para></section>
-<section id="details.investments.onlinequotes"><title>Online Price Quotes</title>
-<para>&hellip;</para>
-<section><title>Fecthing Quotes</title><para>&hellip;</para></section>
-<section><title>Creating a New Quote Source</title><para>&hellip;</para></section>
-</section>
+<title>Investments - Under development - THB/Ace</title>
+<sect1 id="details.investments.investment"><title>Creating an Investment Account</title><para>&hellip;</para></sect1>
+<sect1 id="details.investments.securities"><title>Adding Securities to Your Account</title><para>&hellip;</para></sect1>
+<sect1 id="details.investments.summary"><title>Investment Summary Information</title><para>&hellip;</para></sect1>
+<sect1 id="details.investments.ledger"><title>Investment Ledger</title><para>&hellip;</para></sect1>
+<sect1 id="details.investments.foreign"><title>Working With Foreign Investments</title><para>&hellip;</para></sect1>
+<sect1 id="details.investments.prices"><title>Updating Prices</title><para>&hellip;</para></sect1>
+
+<sect1 id="details.investments.onlinequotes">
+
+						<title>Online Price Quotes</title>
+
+<sect2><title>How Online Quotes Work</title>
+<para>
+	KMyMoney has the ability to download the latest prices for your investments and currencies via the web.
+	At your request, it will fetch a page from the web that contains the latest price for each item.
+	By default, prices are fetched from finance.yahoo.com, and are subject to the terms and conditions of that site.
+</para>
+<para>
+	The online quote lookup uses the investment's trading symbol to find the price.  
+	Therefore, it's important to set the symbol correctly.
+	Yahoo supports stocks from most major world markets, so it's usually just a matter of finding the correct symbol.
+	For example, TietoEnator trades on the Stockholm Stock Exchange market, and its Yahoo symbol is TIEN.ST.
+</para>
+</sect2>
+
+<sect2><title>Assigning a Quote Source</title>
+
+<para>
+	In order to get online price quotes, you first have to enable it for each investment or currency you want updated by setting a &quot;Online Quote Source&quot;.
+	This is the name of the service from which the quote should be fetched.  KMyMoney ships with several sources to choose from.  
+	Yahoo is the recommended default source, and should work for most investments and all currencies.
+</para>
+<para>
+	To assign a quote source to an investment, navigate to the investment summary view for the account in which the security is held.
+	Edit the security by right-clicking it and selecting &quot;Edit&quot;.  
+	Choose the &quot;Quote Source&quot; tab.  
+	Pick the appropriate source from the drop-down menu.
+</para>
+<para>
+	To assign a quote source to a currency price, choose the price editor from the Tools menu.  
+	Select a currency pair, and edit it.
+	Choose the &quot;Quote Source&quot; tab.  
+	Pick the appropriate source from the drop-down menu.
+</para>
+</sect2>
+
+<sect2><title>Fetching Quotes</title>
+
+<para>
+	Typically, you will update the prices for all your investments and currencies at once.  
+	Choose the Online Price Quote option from the tools menu, and press &quot;Update All&quot;
+</para>
+</sect2>
+
+<sect2><title>Editing or Adding Quote Sources</title>
+
+<para>
+	Editing or adding quote sources is not recommended for anyone but the most technical user.  
+	You should feel comfortable reading HTML, and writing complex regular expressions.
+	If this doesn't sound like you, we recommend writing to the developer's list if none of the quote sources work for you.  
+	Ideally, please point us to a web page where these quotes can be obtained.
+</para>
+<para>
+	If you do feel up to the challenge, here's how it works.  
+	The quote sources are contained in the settings dialog.  
+	Choose &quot;Configure KMyMoney&quot; from the Tools menu.  
+	From there, choose the &quot;Online Quotes&quot; section.  
+	You can choose an existing source to edit, or create a new one.  
+	When you are done with your changes, be sure to press the &quot;Update&quot; button before exiting the dialog.
+	Your changes are not saved by default.
+</para>
+<para>
+	The first thing to worry about in an online quote source is the URL.  
+	This is the page that is fetched from the web.  
+	You will see a %1 in all sources, and a %2 in currency sources.  For investments, %1 is replaced by the trading symbol.
+	For currencies, %1 is replaced by the From currency, and %2 is replaced by the To.  
+	This URL is then fetched, all HTML tags are removed, and that stripped file is then sent to the page parser.
+</para>
+<para>
+	Note that the URL can also be a file: URL, which the quote fetcher takes to mean an executable script.  
+	It will pass any command-line arguments to it that you have specified, and feed the stdout to the page parser.
+	For example, you might have a script called getquote.sh that contained custom quote logic, taking the symbol as a single paramenter.
+	Your URL would be &quot;file:/path/to/getquote.sh %1&quot;.
+</para>
+<para>
+	The page parser looks for a symbol, a date, and a price.  
+	Regular expressions tell it how to rip those items out of the page.  
+	Please review the documentation for the QRegExp class at doc.trolltech.com for the exact makeup of the regular expressions.
+	There should be exactly one capture expression, surrounded by parentheses, in each regexp.
+	The date format further tells the date parser the order of year, month, and day.  
+	This date format should always be in the form "%x %x %x". where x is y, m, or d.
+	The date parser is very smart.  &quot;%m %d %y&quot; will parse &quot;December 31st, 2005&quot; as easily as &quot;12/31/05&quot;.  
+	Two digit years are interpreted as being in the range of 1950-2049.
+</para>
+</sect2>
+</sect1>
 </chapter>
 

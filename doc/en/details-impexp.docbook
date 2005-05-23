@@ -1,61 +1,242 @@
 <chapter id="details.impexp">
-<title>Importing and Export - Under development - Tony/Ace</title>
-<section id="details.impexp.gnucash"><title>GnuCash Importer</title><para>&hellip;</para></section>
-<section id="details.impexp.qifimp"><title>QIF Importer</title>
-<section><title>QIF format considered harmful</title>
-<para>Generally speaking, the QIF format should be avoided wherever possible.  It is a poor choice for transporting financial data.    Among other thing, QIF suffers from these problems:</para>
+<title>Importing and Export</title>
+<sect1 id="details.impexp.gnucash">
+					<title>GnuCash Importer - Under Construction - Tony</title>
+<para>
+	&hellip;
+</para>
+</sect1>
+
+<sect1 id="details.impexp.qifimp">
+					<title>QIF Importer</title>
+
+<sect2><title>QIF format considered harmful</title>
+<para>
+	Generally speaking, the QIF format should be avoided wherever possible.  
+	It is a poor choice for transporting financial data.    
+	Among other thing, QIF suffers from these problems:
+</para>
+
 <itemizedlist>
-<listitem><para>Lack of standardized format.  Different version of the same program will impart different meanings to the same element.</para></listitem>
+<listitem><para>Lack of standardized format.  Different versions of the same program will impart different meanings to the same element.</para></listitem>
 <listitem><para>Lack of transaction identifier.  Because there is no ID number associated with each transaction, matching duplicates is haphazard at best.</para></listitem>
 <listitem><para>Lack of expressiveness.  The grammar is really simple, and cannot portray the depth of financial information found in today's financial environment.</para></listitem>
 </itemizedlist>
-<para>This is generally why Intuit stopped supporting QIF input at all with Quicken 2005.  If you have the option of getting data some other way, like OFX, always choose that option.</para>
-</section>
-<section><title>How to import a QIF file</title>
-<para>From the File menu, choose Import, and then QIF.  You are asked for the location of your file to be imported, which QIF profile to use, and a 'create payees' option.  See the next section for details on the QIF profile.</para>
-<para>The &quot;Create missing payees&quot; option tells KMyMoney that if it should find a payee in your QIF file that is not already known, it should create a new one.  Generally, this is the desired behaviour and you should check this option.</para>
-<para>The first thing the importer will do is ask you which account to import the transactions into.  If there are transactions from multiple accounts in your file, you will be asked this question multiple times.</para>
-<para>After importing, some of your transactions may be flashing red in the ledger.  This is because they need to be assigned a category.  The importer was not able to automatically assign a category based on your past transaction history.</para>
-</section>
-<section><title>Setting up a QIF profile</title>
-<para>Because there is no universally standard format for the QIF file, different vendors have taken liberties with the format, and introduced their own nuances.  Therefore, you must create a QIF Profile before you can import a QIF file.  This profile tells KMyMoney about the peculiarities of your file.</para>
-<para>The most commonly changed thing between QIF implementations is the date format.  So if this is the first time you're importing a QIF file, spend a few moments to figure out what format the dates are in, and set the QIF Profile accordingly.  See the discussion below on apostrophe format for more details.</para>
-</section>
-<section><title>Understanding apostrophe format</title>
-<para>When dates are represented by a 2-digit character code, it's not obvious whether the century is 1900 or 2000.  The QIF format usually handles this by assuming the century, and then providing an escape code for the opposite century.  This escape code is an apostrophe placed before the year.</para>
-<para>For example, 5/25/90 might mean 1990, and 5/25'05 would mean 2005.</para>
-<para>The &quot;Apostrophe Format&quot; setting controls which century is meant by the apostrophe.  Usually setting this to 2000-2099 provides the desired results, but you have to review your QIF file to be sure.</para> 
-</section>
-<section><title>Transaction matching</title><para>&hellip;</para></section>
-<section><title>Supported file chunks</title><para>&hellip;</para></section>
-<section><title>Writing an import filter</title><para>&hellip;</para></section>
-<section><title>Special KMyMoney QIF extensions</title>
-<para>As noted previously, one of the major drawbacks of the QIF format is the lack of a unique identifier for each transaction.  If you are writing your own QIF file creator (or filter, as described above), you can overcome this problem.  KMyMoney supports the '#' field.  The importer will interpret this as a unique transaction ID, and disregard it if the transaction is already in the system.</para>
-</section>
-</section>
-<section id="details.impexp.qifexp"><title>QIF Exporter</title><para>&hellip;</para></section>
-<section id="details.impexp.ofx"><title>OFX Importer Plugin</title>
-<section><title>Getting the plugin</title>
-<para>KMyMoney2 will import OFX files painlessly.  However, this functionality is not built into the core program.  You must obtain and install the OFX Importer Plugin.  Once that is installed, the command to import OFX files will automatically show up under the &quot;File | Import&quot; menu.</para>
-<para>If you have installed from RPM, the OFX Imported Plugin is contained within the kmymoney-ofx RPM.  It should be available from whatever source you got the base kmymoney RPM.  If you have built from sources, all you need to do is have the libOFX 0.7 development libraries installed on your system, and the KMyMoney build process will also compile the plugin.</para>
-</section>
-<section><title>File | Import | OFX...</title>
-<para>The most basic way to import an OFX file is to choose the importer from the menu bar. From the File menu, choose Import, and then OFX.  If OFX does not show up under Import, you do not have the OFX Importer Plugin installed correctly.  Please see the previous section.</para>
-<para>The first thing the importer will do is ask you which account to import the transactions into.  If there are transactions from multiple accounts in your file, you will be asked this question multiple times.</para>
-<para>After importing, some of your transactions may be flashing red in the ledger.  This is because they need to be assigned a category.  The importer was not able to automatically assign a category based on your past transaction history.</para>
-<para>Please note that this is the &quot;native&quot; OFX importer.  OFX files may also be imported using the AqBanking Importer Plugin if you have installed that.  Note that the two importers do behave slightly differently, and they are written and supported by two different developers.</para>
-</section>
-<section><title>Web Connect</title>
-<para>The easiest way to import an OFX file is to set up Web Connect.  Visit your bank's web site, and click on a link to download an OFX file.  Your browser should ask you what program you would like to use to open the program.  Point your browser to KMyMoney2.  It will then import the downloaded OFX file into the KMyMoney file you most recently had open.</para>
-<para>If you need to import the OFX file into some other KMyMoney file, load up that file in KMyMoney first, and then visit your bank.</para>
-</section>
-<section><title>Direct Connect</title>
-<para>This version of KMyMoney does not support the ability to contact your bank directly to obtain statements or make payments.  However, Martin Preuss has created a program called AqBanking to do this for you.  It includes a plugin which integrates seamlessly with KMyMoney.  Please visit the AqBanking site for more details.</para>
-</section>
-<section><title>Exporting an OFX file</title>
-<para>It is not possible to export your data as an OFX file currently.  If you're interested to contribute in this area, please contact the libofx development team for details.</para>
-</section>
-</section>
-<section id="details.impexp.plugins"><title>Writing Importer Plugins</title><para>&hellip;</para></section>
-</chapter>
 
+<para>
+	This is generally why Intuit stopped supporting QIF input at all with Quicken 2005.  
+	If you have the option of getting data some other way, like OFX, always choose that option.
+</para>
+</sect2>
+
+<sect2><title>How to import a QIF file</title>
+
+<para>
+	From the File menu, choose Import, and then QIF.
+	This brings up the QIF import dialog, which will ask you for the location of the file, and ask which QIF Profile you want to use.
+	The QIF Profile is very important, because all QIF files are different.
+	Please be sure it is set up correctly before continuing.
+	See the next section for more details on that.
+</para>
+<para>
+	The first thing the importer will do is ask you which account to import the transactions into.  
+	If there are transactions from multiple accounts in your file, you will be asked this question multiple times.
+</para>
+<para>
+	After importing, some of your transactions may be flashing red in the ledger.  
+	This is because they need to be assigned a category.  
+	The importer was not able to automatically assign a category based on your past transaction history.
+</para>
+</sect2>
+
+<sect2><title>Importing Investments</title>
+
+<para>
+	Please note that if you are importing a file with investment transactions, those investments must first exist in your KMyMoney file.
+	The trading symbol is used to match, so please ensure that the symbol in KMyMoney is exactly the same as the one in the file you're importing.
+</para>
+</sect2>
+
+<sect2><title>Setting up a QIF profile</title>
+
+<para>
+	Because there is no universally standard format for the QIF file, different vendors have taken liberties with the format, and introduced their own nuances.  
+	Therefore, you must create a QIF Profile before you can import a QIF file.  
+	This profile tells KMyMoney about the peculiarities of your file.
+	To edit an existing QIF Profile, or to create a new one, press the &quot;New&quot; button on the QIF Import dialog, near the profile selector.
+</para>
+<para>
+	The most commonly changed thing between QIF implementations is the date format.  
+	So if this is the first time you're importing a QIF file, spend a few moments to figure out what format the dates are in, and set the QIF Profile accordingly.  
+	See the discussion below on apostrophe format for more details.
+</para>
+</sect2>
+
+<sect2><title>Understanding apostrophe format</title>
+
+<para>
+	Many common QIF writers use a 2-digit representation for the year. 
+	This is ambiguous, because the importer cannot know which century the date belongs in.
+	To make things even more complicated, QIF files will often used an apostrophe as a year separator to indicate that the date belongs in the OTHER century from the default.
+</para>
+<para>
+	For example, if the default century is 1900-1999, the date 12/31/95 would mean 1995.  The date 12/31'05 would mean 2005.
+</para>
+<para>
+	Because the QIF format is not standardized, it's impossible to know which century is desired.
+	This is why you have to explicitly state it in the QIF profile.
+	You do this by specifying which century is intended when an apostrophe is found.
+	In the example above, you would set the Apostrophe Format to &quot;2000-2099&quot;, so dates with an apostrophe will be interpreted as being > year 2000.
+	In this case, dates without an apostrophe will be treated as being in the 1900's.
+</para>
+</sect2>
+<sect2><title>Supported file chunks</title>
+
+<para>
+	<!-- I need the mmqifreader.cpp to determine these -->
+	&hellip;
+</para>
+</sect2>
+
+<sect2><title>Writing an import filter (NEW)</title>
+
+<para>
+	Sometimes you may have data in a custom format, like comma-separated-values (CSV), or something else unique to your situation.  
+	You can still import that file into KMyMoney using a QIF Import Filter.
+	A filter is a custom program you write which takes your special file as input, and produces a QIF file as output.
+	This can be a shell script, a perl script, a compiled program written in C/C++, or anything else you can dream of, as long as the system can run it.
+</para>
+<para>
+	To use it, edit your favorite QIF Profile, and select the Filter tab.  
+	Enter the location of your filter program where prompted.  
+	Then, whenever you do a QIF import using this profile, the file you select for importing will be run through your filter first.
+</para>
+<para>
+	A common problem is to convert a list of comma-separated-values into a QIF file.  
+	This is a textbook case for the awk tool.  
+	Create a script called csv2qif.awk, with the following two lines as contents:
+</para>
+<para>
+	BEGIN { FS=&quot;,&quot;; print &quot;!Type:Bank&quot; }
+</para>
+<para>
+	{ print &quot;D&quot;$1; print &quot;T&quot;$2; print &quot;N&quot;$3; print &quot;P&quot;$4; print &quot;M&quot;$5; print &quot;^&quot; }
+</para>
+<para>
+	Then, change the QIF keys (D,T,N,P,M) to match the order of your csv data.  
+	Set the input filter to &quot;awk -f csv2qif.awk&quot;
+</para>
+</sect2>
+<sect2><title>Special KMyMoney QIF extensions</title>
+
+<para>
+	As noted previously, one of the major drawbacks of the QIF format is the lack of a unique identifier for each transaction.  
+	If you are writing your own QIF file creator (or filter, as described above), you can overcome this problem.  
+	KMyMoney supports the '#' field.  
+	The importer will interpret this as a unique transaction ID, and disregard it if the transaction is already in the system.
+</para>
+</sect2>
+</sect1>
+
+<sect1 id="details.impexp.qifexp">
+					<title>QIF Exporter</title>
+<para>
+	&hellip;
+</para>
+</sect1>
+
+<sect1 id="details.impexp.ofx">
+					<title>OFX Importer Plugin</title>
+
+<sect2><title>Getting the plugin</title>
+
+<para>
+	KMyMoney2 will import OFX files painlessly.  
+	However, this functionality is not built into the core program.  
+	You must obtain and install the OFX Importer Plugin.  
+	Once that is installed, the command to import OFX files will automatically show up under the &quot;File | Import&quot; menu.
+</para>
+<para>
+	If you have installed from RPM, the OFX Imported Plugin is contained within the kmymoney-ofx RPM.  
+	It should be available from whatever source you got the base kmymoney RPM.  
+	If you have built from sources, all you need to do is have the libOFX 0.7 development headers &amp; libraries installed on your system.  
+	The KMyMoney build process will detect these and compile the plugin.
+</para>
+</sect2>
+
+<sect2><title>File | Import | OFX...</title>
+
+<para>
+	The most basic way to import an OFX file is to choose the importer from the menu bar. 
+	From the File menu, choose Import, and then OFX.  
+	If OFX does not show up under Import, you do not have the OFX Importer Plugin installed correctly.  
+	Please see the previous section.
+</para>
+<para>
+	The first thing the importer will do is ask you which account to import the transactions into.  
+	If there are transactions from multiple accounts in your file, you will be asked this question multiple times.
+</para>
+<para>
+	After importing, some of your transactions may be flashing red in the ledger.  
+	This is because they need to be assigned a category.  
+	The importer was not able to automatically assign a category based on your past transaction history.
+</para>
+<para>
+	Please note that this section describes the &quot;native&quot; OFX importer.  
+	OFX files may also be imported using the AqBanking Importer Plugin if you have installed that.  
+	Note that the two importers do behave slightly differently, and they are written and supported by two different developers.
+</para>
+</sect2>
+
+<sect2><title>Importing Investments</title>
+
+<para>
+	Please note that if you are importing a file with investment transactions, those investments must first exist in your KMyMoney file.
+	The trading symbol is used to match, so please ensure that the symbol in KMyMoney is exactly the same as the one in the file you're importing.
+</para>
+</sect2>
+
+<sect2><title>Web Connect</title>
+
+<para>
+	The easiest way to import an OFX file is to set up Web Connect.  
+	Visit your bank's web site, and click on a link to download an OFX file.  
+	Your browser should ask you what program you would like to use to open the program.  
+	Point your browser to KMyMoney2.  
+	It will then import the downloaded OFX file into the KMyMoney file you most recently had open.
+</para>
+<para>
+	If you need to import the OFX file into some other KMyMoney file, load up that file in KMyMoney first, and then visit your bank.
+</para>
+</sect2>
+
+<sect2><title>Direct Connect</title>
+
+<para>
+	This version of KMyMoney does not support the ability to contact your bank directly to obtain statements or make payments.  
+	However, Martin Preuss has created a program called AqBanking to do this for you.  
+	It includes a plugin which integrates seamlessly with KMyMoney.  
+	Please visit the AqBanking site for more details.
+</para>
+</sect2>
+
+<sect2><title>Exporting an OFX file</title>
+
+<para>
+	It is not possible to export your data as an OFX file currently.  
+	If you're interested to contribute in this area, please contact the libofx development team for details.
+</para>
+</sect2>
+</sect1>
+
+<sect1 id="details.impexp.plugins">
+					<title>Writing Importer Plugins (NEW)</title>
+
+<para>
+	KMyMoney contains explicit support for importer plugins.  
+	If you have a custom format, and you would like to write an importer plugin, we would value your contribution.
+	To do so, you'll need to compile the program from source.  
+	Then use the OFX Importer Plugin as an example.
+</para>
+</sect1>
+</chapter>
