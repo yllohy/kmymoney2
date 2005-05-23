@@ -41,7 +41,6 @@
 #include "../mymoney/mymoneyobserver.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../kmymoneyutils.h"
-
 /**
   * @author Thomas Baumgart
   */

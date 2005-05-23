@@ -164,26 +164,26 @@ void KSplitTransactionDlg::accept()
     QString diff = diffAmount().formatMoney();
 
     // now modify the text items of the dialog to contain the correct values
-    QString q = QString(i18n("The total amount of this transaction is %1 while "
+    QString q = i18n("The total amount of this transaction is %1 while "
                              "the sum of the splits is %2. The remaining %3 are "
-                             "unassigned."))
+                             "unassigned.")
                 .arg(total)
                 .arg(sums)
                 .arg(diff);
     dlg->explanation->setText(q);
 
-    q = QString(i18n("&Change total amount of transaction to %1."))
+    q = i18n("&Change total amount of transaction to %1.")
         .arg(sums);
     dlg->changeBtn->setText(q);
 
-    q = QString(i18n("&Distribute difference of %1 among all splits."))
+    q = i18n("&Distribute difference of %1 among all splits.")
         .arg(diff);
     dlg->distributeBtn->setText(q);
     // FIXME remove the following line once distribution among
     //       all splits is implemented
     dlg->distributeBtn->hide();
 
-    q = QString(i18n("&Leave %1 unassigned."))
+    q = i18n("&Leave %1 unassigned.")
         .arg(diff);
     dlg->leaveBtn->setText(q);
 

@@ -43,7 +43,7 @@ public:
 protected slots:
   void okClicked();
   void advancedClicked();
-
+	void institutionNameChanged( const QString &);
 };
 
 #endif

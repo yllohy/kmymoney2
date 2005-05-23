@@ -376,7 +376,7 @@ bool KEnterScheduleDialog::checkData(void)
     if (m_payee->text() != payeeName)
     {
       noItemsChanged++;
-      messageDetail += QString(i18n("Payee changed.  Old: \"%1\", New: \"%2\""))
+      messageDetail += i18n("Payee changed.  Old: \"%1\", New: \"%2\"")
         .arg(payeeName).arg(m_payee->text()) + QString("\n");
     }
 
@@ -385,7 +385,7 @@ bool KEnterScheduleDialog::checkData(void)
           m_from->currentText() != m_schedule.account().name())
     {
       noItemsChanged++;
-      messageDetail += QString(i18n("Account changed.  Old: \"%1\", New: \"%2\""))
+      messageDetail += i18n("Account changed.  Old: \"%1\", New: \"%2\"")
         .arg(m_schedule.account().name()).arg(m_from->currentText()) + QString("\n");
     }
 
@@ -393,7 +393,7 @@ bool KEnterScheduleDialog::checkData(void)
           m_to->currentText() != m_schedule.account().name())
     {
       noItemsChanged++;
-      messageDetail += QString(i18n("Account changed.  Old: \"%1\", New: \"%2\""))
+      messageDetail += i18n("Account changed.  Old: \"%1\", New: \"%2\"")
         .arg(m_schedule.account().name()).arg(m_to->currentText()) + QString("\n");
     }
 
@@ -401,7 +401,7 @@ bool KEnterScheduleDialog::checkData(void)
           m_to->currentText() != MyMoneyFile::instance()->account(m_schedule.transaction().splits()[1].accountId()).name())
     {
       noItemsChanged++;
-      messageDetail += QString(i18n("Transfer account changed.  Old: \"%1\", New: \"%2\""))
+      messageDetail += i18n("Transfer account changed.  Old: \"%1\", New: \"%2\"")
         .arg(MyMoneyFile::instance()->account(m_schedule.transaction().splits()[1].accountId()).name())
         .arg(m_to->currentText()) + QString("\n");
     }
@@ -418,7 +418,7 @@ bool KEnterScheduleDialog::checkData(void)
       if (category != m_category->text())
       {
         noItemsChanged++;
-        messageDetail += QString(i18n("Category changed.  Old: \"%1\", New: \"%2\""))
+        messageDetail += i18n("Category changed.  Old: \"%1\", New: \"%2\"")
           .arg(category).arg(m_category->text()) + QString("\n");
       }
     }
@@ -429,7 +429,7 @@ bool KEnterScheduleDialog::checkData(void)
       if(memo != m_memo->text())
       {
         noItemsChanged++;
-        messageDetail += QString(i18n("Memo changed.  Old: \"%1\", New: \"%2\""))
+        messageDetail += i18n("Memo changed.  Old: \"%1\", New: \"%2\"")
           .arg(memo).arg(m_memo->text()) + QString("\n");
       }
     }
@@ -439,7 +439,7 @@ bool KEnterScheduleDialog::checkData(void)
     if (amount != m_amount->value())
     {
       noItemsChanged++;
-      messageDetail += QString(i18n("Amount changed.  Old: \"%1\", New: \"%2\""))
+      messageDetail += i18n("Amount changed.  Old: \"%1\", New: \"%2\"")
         .arg(amount.formatMoney()).arg(m_amount->value().formatMoney()) + QString("\n");
     }
 
@@ -584,7 +584,7 @@ void KEnterScheduleDialog::commitTransaction()
       if (m_schedDate < m_schedule.nextPayment(m_schedule.nextPayment(m_schedule.lastPayment())))
         realLastPayment = m_schedule.nextPayment(m_schedule.lastPayment());
 
-      QString message = QString(i18n("Some occurences that are older than '%1' have not been entered yet.\n\nDelete all occurences that have not been entered before this date?")).arg(m_schedDate.toString());
+      QString message = i18n("Some occurences that are older than '%1' have not been entered yet.\n\nDelete all occurences that have not been entered before this date?").arg(m_schedDate.toString());
 
       if (realLastPayment != m_schedule.nextPayment(m_schedule.lastPayment()) &&
           KMessageBox::warningYesNo(this, message) == KMessageBox::No)
@@ -599,7 +599,7 @@ void KEnterScheduleDialog::commitTransaction()
     else if (m_schedDate > QDate::currentDate())
     {
       // FIXME: we should probably respect the configurable pre-enter period
-      QString message = QString(i18n("Are you sure you want to enter this occurence which is %1 days after today?")).arg(QDate::currentDate().daysTo(m_schedDate));
+      QString message = i18n("Are you sure you want to enter this occurence which is %1 days after today?").arg(QDate::currentDate().daysTo(m_schedDate));
       if (KMessageBox::warningYesNo(this, message) == KMessageBox::No)
         return;
 

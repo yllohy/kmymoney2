@@ -121,7 +121,7 @@ KInvestmentView::~KInvestmentView()
 void KInvestmentView::initSummaryTab(void)
 {
   investmentTable->setRootIsDecorated(false);
-  investmentTable->setColumnText(0, QString(i18n("Symbol")));
+  investmentTable->setColumnText(0, i18n("Symbol"));
   investmentTable->addColumn(i18n("Name"));
   investmentTable->addColumn(i18n("Symbol"));
   investmentTable->addColumn(i18n("Value"));

@@ -83,8 +83,15 @@ KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution,  bool /*isEditing*/, Q
   connect(okBtn, SIGNAL(clicked()), SLOT(okClicked()));
   connect(cancelBtn, SIGNAL(clicked()), SLOT(reject()));
   connect(advancedBtn, SIGNAL(clicked()), SLOT(advancedClicked()));
+  connect(nameEdit, SIGNAL(textChanged ( const QString & )), SLOT(institutionNameChanged( const QString &)));
+  institutionNameChanged( nameEdit->text());
 }
 
+void KNewBankDlg::institutionNameChanged( const QString &_text)
+{
+	okBtn->setEnabled( !_text.isEmpty() );
+}
+	
 KNewBankDlg::~KNewBankDlg()
 {
 }

@@ -56,6 +56,7 @@
 #include <dcopclient.h>
 #include <kstartupinfo.h>
 #include <kparts/componentfactory.h>
+#include <kedittoolbar.h>
 
 #if !KDE_IS_VERSION(3,2,0)
 #include <kwin.h>
@@ -224,6 +225,7 @@ void KMyMoney2App::initActions()
 
   // The Settings Menu
   settingsKey = KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
+  KStdAction::configureToolbars( this, SLOT( slotEditToolbars() ), actionCollection() );
   settings = KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
   new KAction(i18n("Enable all messages"), "", 0, this, SLOT(slotEnableMessages()), actionCollection(), "enable_messages");
 
@@ -1407,6 +1409,18 @@ void KMyMoney2App::slotFileNewWindow()
   newWin->show();
 }
 
+void KMyMoney2App::slotEditToolbars()
+{
+    saveMainWindowSettings( KGlobal::config(), "main_window_settings" );
+    KEditToolbar dlg( factory(),this );
+    connect( &dlg, SIGNAL( newToolbarConfig() ), SLOT( slotNewToolBarConfig() ) );
+    dlg.exec();
+}
+
+void KMyMoney2App::slotNewToolBarConfig() {
+  applyMainWindowSettings( KGlobal::config(), "main_window_settings" );
+}
+
 void KMyMoney2App::slotKeySettings()
 {
 
@@ -1729,7 +1743,7 @@ void KMyMoney2App::writeLastUsedFile(const QString& fileName)
   }
 }
 
-QString KMyMoney2App::readLastUsedDir()
+QString KMyMoney2App::readLastUsedDir() const
 {
   QString str;
 
@@ -1749,7 +1763,7 @@ QString KMyMoney2App::readLastUsedDir()
   return str;
 }
 
-QString KMyMoney2App::readLastUsedFile()
+QString KMyMoney2App::readLastUsedFile() const
 {
   QString str;
 

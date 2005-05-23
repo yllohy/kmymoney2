@@ -91,7 +91,8 @@ protected slots:
   void slotEnableMessages(void);
 
   void slotKeySettings();
-
+  void slotEditToolbars();
+  void slotNewToolBarConfig();
   /**
     * Called when the user asks for file information.
     */
@@ -207,9 +208,9 @@ public:
   static void progressCallback(int current, int total, const QString&);
 
   void writeLastUsedDir(const QString& directory);
-  QString readLastUsedDir();
+  QString readLastUsedDir() const;
   void writeLastUsedFile(const QString& fileName);
-  QString readLastUsedFile();
+  QString readLastUsedFile() const;
 
   /**
     * Returns whether there is an importer available that can handle this file

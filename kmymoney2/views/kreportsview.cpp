@@ -97,7 +97,6 @@ KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& re
   m_layout->addWidget( m_control ); //, 0, Qt::AlignTop );
   m_layout->addWidget( m_part->view() );
   m_layout->addWidget( m_chartView );
-  QIconSet icons(QPixmap("/usr/share/icons/default.kde/16x16/mimetypes/spreadsheet.png"));
 
   // I like this icon...
   QString icon = KGlobal::dirs()->findResource("icon", "default.kde/16x16/mimetypes/spreadsheet.png");

@@ -75,7 +75,6 @@ KStartupLogo::KStartupLogo() :
 
 KStartupLogo::~KStartupLogo()
 {
-  if(m_splash)
     delete m_splash;
 }
 

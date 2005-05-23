@@ -53,7 +53,7 @@ static KCmdLineOptions options[] =
 
   // INSERT YOUR COMMANDLINE OPTIONS HERE
   { "+[File]", I18N_NOOP("file to open"), 0 },
-  { 0, 0, 0 }
+  KCmdLineLastOption
 };
 
 QTime timer;
@@ -87,6 +87,8 @@ int main(int argc, char *argv[])
   aboutData.addCredit("Javier Campos Morales", I18N_NOOP("Developer & Artist"), "javi_c@users.sourceforge.net");
   aboutData.addCredit("Tony Bloomfield", I18N_NOOP("GnuCash Importer"), "tonybloom@users.sourceforge.net");
   aboutData.addCredit("Robert Wadley", I18N_NOOP("Icons & splash screen"), "rob@robntina.fastmail.us");
+  aboutData.addCredit("Laurent Montel", I18N_NOOP("Patches"), "montel@kde.org");
+
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.
 

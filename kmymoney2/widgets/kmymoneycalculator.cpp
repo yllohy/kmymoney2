@@ -140,8 +140,7 @@ kMyMoneyCalculator::kMyMoneyCalculator(QWidget* parent, const char *name)
 
 kMyMoneyCalculator::~kMyMoneyCalculator()
 {
-  int i;
-  i = 0;
+//    delete []buttons;
 }
 
 void kMyMoneyCalculator::digitClicked(int button)

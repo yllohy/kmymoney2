@@ -52,9 +52,7 @@ KOfxDirectConnectDlg::KOfxDirectConnectDlg(const MyMoneyAccount& account, QWidge
 
 KOfxDirectConnectDlg::~KOfxDirectConnectDlg()
 {
-  if ( m_statement )
     delete m_statement;
-  if ( m_tmpfile )
     delete m_tmpfile;
 }
 
@@ -63,15 +61,15 @@ void KOfxDirectConnectDlg::init(void)
   show();
 
   m_job = KIO::http_post(
-    m_connector.url(), 
-    m_connector.statementRequest(QDate::currentDate().addMonths(-2)), 
-    true 
+    m_connector.url(),
+    m_connector.statementRequest(QDate::currentDate().addMonths(-2)),
+    true
   );
   m_job->addMetaData("content-type", "Content-type: application/x-ofx" );
   connect(m_job,SIGNAL(result(KIO::Job*)),this,SLOT(slotOfxFinished(KIO::Job*)));
   connect(m_job,SIGNAL(data(KIO::Job*, const QByteArray&)),this,SLOT(slotOfxData(KIO::Job*,const QByteArray&)));
   connect(m_job,SIGNAL(connected(KIO::Job*)),this,SLOT(slotOfxConnected(KIO::Job*)));
-  
+
   setStatus(QString("Contacting %1...").arg(m_connector.url()));
   kProgress1->setTotalSteps(3);
   kProgress1->setProgress(1);
@@ -91,8 +89,11 @@ void KOfxDirectConnectDlg::setDetails(const QString& _details)
 void KOfxDirectConnectDlg::slotOfxConnected(KIO::Job*)
 {
   if ( m_tmpfile )
+  {
 //     throw new MYMONEYEXCEPTION(QString("Already connected, using %1.").arg(m_tmpfile->name()));
     kdDebug(2) << "Already connected, using " << m_tmpfile->name() << endl;
+    delete m_tmpfile; //delete otherwise we mem leak
+  }
   m_tmpfile = new KTempFile();
   setStatus("Connection established, retrieving data...");
   setDetails(QString("Downloading data to %1...").arg(m_tmpfile->name()));
@@ -112,15 +113,14 @@ void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job*)
 {
   kProgress1->advance(1);
   setStatus("Completed.");
-  
+
   int error = m_job->error();
-  
+
   if ( error )
   {
     m_job->showErrorDialog();
 
-    if ( m_statement )
-      delete m_statement;
+    delete m_statement;
     m_statement = 0;
     if ( m_tmpfile )
     {
@@ -128,23 +128,22 @@ void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job*)
       delete m_tmpfile;
     }
     m_tmpfile = 0;
-  } 
+  }
   else if ( m_tmpfile )
   {
-    m_tmpfile->close();  
-    
-    if ( m_statement )
-      delete m_statement;
-    
+    m_tmpfile->close();
+
+    delete m_statement;
+
     m_statement = new MyMoneyOfxStatement(m_tmpfile->name());
-    
+
 // TODO: unlink this file, when I'm sure this is all really working.
 // in the meantime, I'll leave the file around to assist people in debugging.
 //     m_tmpfile->unlink();
     delete m_tmpfile;
     m_tmpfile = 0;
 
-    emit statementReady(*m_statement);    
+    emit statementReady(*m_statement);
   }
   hide();
 }
@@ -154,15 +153,12 @@ void KOfxDirectConnectDlg::reject(void)
   m_job->kill();
   if ( m_tmpfile )
   {
-    m_tmpfile->close();  
+    m_tmpfile->close();
     delete m_tmpfile;
     m_tmpfile = NULL;
   }
-  if ( m_statement )
-  {
-    delete m_statement;
-    m_statement = 0;
-  }
+  delete m_statement;
+  m_statement = 0;
   QDialog::reject();
 }
 

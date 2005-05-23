@@ -41,10 +41,10 @@ class KStartDlg : public KDialogBase  {
 public:
 	KStartDlg( QWidget *parent=0, const char *name=0, bool modal=true );
 	~KStartDlg();
-  bool isNewFile(void)          { return isnewfile;           }
-  bool isOpenFile(void)         { return !kurlrequest->url().isEmpty();          }
+  bool isNewFile(void)  const        { return isnewfile;           }
+  bool isOpenFile(void) const        { return !kurlrequest->url().isEmpty();          }
   const QString getURL(void) const { return kurlrequest->url(); }
-  QString getTemplateName(void) { return templatename;    }
+  QString getTemplateName(void) const { return templatename;    }
 
 private: // Private methods
   QString m_filename;
