@@ -1,6 +1,8 @@
 2005-05-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patches provided by Laurent Montel
   * Added entry for Laurent on the about page
+  * Added shortcut Ctrl-Ins to start a new transaction/split
+  * Changed copy split to only work with Ctrl-C
 
 2005-05-23 Ace Jones <acejones@users.sourceforge.net>
   * Updated help files for reports, investments, and qif/ofx import
@@ -10,6 +12,10 @@
     * Add dialog for Price Source
     * Fix stock transfer crash
     * Stand-alone anonymizer fix
+
+2005-05-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fix selection of investment accounts when account is selected in
+    another view
 
 2005-05-21 Ace Jones <acejones@users.sourceforge.net>
   * First draft of help files for reports, online quotes, and qif/ofx import
