@@ -426,6 +426,9 @@ signals:
     */
   void fileLoaded(const KURL& url);
 
+public:
+  KAction* newTransaction;
+
 private:
   /** the configuration object of the application */
 

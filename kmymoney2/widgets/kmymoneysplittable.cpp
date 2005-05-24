@@ -269,8 +269,14 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
 
       default:
         rc = true;
-        if(KStdAccel::copy().contains(KKey(k))) {
+        KShortcut copySplit(i18n("Duplicate split", "CTRL+c"));
+        KShortcut newSplit(QKeySequence(Qt::CTRL | Qt::Key_Insert));
+        if(copySplit.contains(KKey(k))) {
           slotDuplicateSplit();
+
+        } else if(newSplit.contains(KKey(k))) {
+          slotSetFocus(m_transaction.splits().count()-1);
+          slotStartEdit();
 
         } else if ( k->text()[ 0 ].isPrint() ) {
           w = slotStartEdit();

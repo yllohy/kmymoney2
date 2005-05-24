@@ -67,6 +67,7 @@
 #include "../dialogs/ieditscheduledialog.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/kcurrencycalculator.h"
+#include "../kmymoney2.h"
 
 /* -------------------------------------------------------------------------------*/
 /*                               KTransactionPtrVector                            */
@@ -281,6 +282,8 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_transactionPtr = 0;
 
   m_inReconciliation = false;
+
+  connect(kmymoney2->newTransaction, SIGNAL(activated()), this, SLOT(slotNew()));
 
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
 }
@@ -1320,7 +1323,7 @@ void KLedgerView::destroyWidgets(void)
 void KLedgerView::slotNew(void)
 {
   // this is not available when we have no account
-  if(m_account.id().isEmpty())
+  if(m_account.id().isEmpty() || !isVisible() || isEditMode())
     return;
 
   // select the very last line (empty one), and load it into the form

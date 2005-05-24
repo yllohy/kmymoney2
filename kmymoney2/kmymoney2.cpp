@@ -105,6 +105,10 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
  DCOPObject("kmymoney2app"),
  myMoneyView(0)
 {
+  // preset the pointer because we need it during the course of this constructor
+  kmymoney2 = this;
+  config = kapp->config();
+
   updateCaption(true);
 
   // initial setup of settings
@@ -115,19 +119,18 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   // values for margin (11) and spacing(6) taken from KDialog implementation
   QBoxLayout* layout = new QBoxLayout(frame, QBoxLayout::TopToBottom, 11, 6);
 
-  myMoneyView = new KMyMoneyView(frame, "KMyMoneyView");
-  layout->addWidget(myMoneyView, 10);
-
-  config = kapp->config();
-
-  m_pluginSignalMapper = new QSignalMapper( this );
-  connect( m_pluginSignalMapper, SIGNAL( mapped( const QString& ) ), this, SLOT( slotPluginImport( const QString& ) ) );
-
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
   initStatusBar();
   initActions();
   readOptions();
+
+  myMoneyView = new KMyMoneyView(frame, "KMyMoneyView");
+  layout->addWidget(myMoneyView, 10);
+
+
+  m_pluginSignalMapper = new QSignalMapper( this );
+  connect( m_pluginSignalMapper, SIGNAL( mapped( const QString& ) ), this, SLOT( slotPluginImport( const QString& ) ) );
 
   // now initialize the plugin structure
   createInterfaces();
@@ -138,6 +141,12 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   connect(myMoneyView, SIGNAL(viewActivated(int)), this, SLOT(slotSetViewSpecificActions(int)));
 
   connect(&proc,SIGNAL(processExited(KProcess *)),this,SLOT(slotProcessExited()));
+
+  // force to show the home page if the file is closed
+  connect(fileClose, SIGNAL(activated()), myMoneyView, SLOT(slotShowHomePage()));
+  connect(viewTransactionForm, SIGNAL(toggled(bool)), myMoneyView, SLOT(slotShowTransactionDetail(bool)));
+
+
 
   m_backupState = BACKUP_IDLE;
 
@@ -199,7 +208,6 @@ void KMyMoney2App::initActions()
     viewTransactionForm->setChecked(true);
   else
     viewTransactionForm->setChecked(false);
-  connect(viewTransactionForm, SIGNAL(toggled(bool)), myMoneyView, SLOT(slotShowTransactionDetail(bool)));
 
   // Additions to the file menu
 #if KMM_DEBUG
@@ -242,14 +250,13 @@ void KMyMoney2App::initActions()
   // The help menu
   new KAction(i18n("&Show tip of the day"), "idea", 0, this, SLOT(slotShowTipOfTheDay()), actionCollection(), "show_tip");
 
+  newTransaction = new KAction(i18n("Add new transaction"), QKeySequence(Qt::CTRL | Qt::Key_Insert), actionCollection(), "transaction_new");
+
   m_previousViewButton = new KToolBarPopupAction(i18n("View back"), "back", 0, this, SLOT(slotShowPreviousView()), actionCollection(), "go_back");
   m_nextViewButton = new KToolBarPopupAction(i18n("View forward"), "forward", 0, this, SLOT(slotShowNextView()), actionCollection(), "go_forward");
 
   m_previousViewButton->setEnabled(false);
   m_nextViewButton->setEnabled(false);
-
-  // force to show the home page if the file is closed
-  connect(fileClose, SIGNAL(activated()), myMoneyView, SLOT(slotShowHomePage()));
 
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
   createGUI(QString::null,false);
