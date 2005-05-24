@@ -1247,7 +1247,8 @@ void KMyMoney2App::slotFileBackup()
 
 
 
-
+  if ( fileName.isEmpty() )
+      return;
 
   if(!fileName.isLocalFile()) {
     KMessageBox::sorry(this,
@@ -1691,7 +1692,7 @@ bool KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDa
       QClipboard *cb = QApplication::clipboard();
       cb->setText(d, QClipboard::Clipboard);
       QMessageBox::information( 0, PACKAGE,
-        QObject::tr("Unable to autoEnter schedule %1. Please check manually\n"
+        i18n("Unable to autoEnter schedule %1. Please check manually\n"
   "Debug data has been copied to clipboard; please paste into an\n"
   "email and send to kmymoney2-developer@lists.sourceforge.net").arg (schedule.name()));
       return (false);
