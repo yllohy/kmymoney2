@@ -55,22 +55,24 @@ KStartupLogo::KStartupLogo() :
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/startlogo.png");
   QPixmap pm(filename);
 
+  if(!pm.isNull()) {
 #if KDE_IS_VERSION(3,2,0)
-  KSplashScreen* splash = new KSplashScreen(pm);
-  splash->setFixedSize(pm.size());
+    KSplashScreen* splash = new KSplashScreen(pm);
+    splash->setFixedSize(pm.size());
 
 #else
-  QFrame* splash = new QFrame(0, 0, QFrame::WStyle_NoBorder | QFrame::WStyle_StaysOnTop | QFrame::WStyle_Tool | QFrame::WWinOwnDC | QFrame::WStyle_Customize);
-  splash->setBackgroundPixmap(pm);
-  splash->setFrameShape( QFrame::StyledPanel );
-  splash->setFrameShadow( QFrame::Raised );
-  splash->setLineWidth( 2 );
-  splash->setGeometry( QRect( (QApplication::desktop()->width()/2)-(pm.width()/2), (QApplication::desktop()->height()/2)-(pm.height()/2), pm.width(), pm.height() ) );
+    QFrame* splash = new QFrame(0, 0, QFrame::WStyle_NoBorder | QFrame::WStyle_StaysOnTop | QFrame::WStyle_Tool | QFrame::WWinOwnDC | QFrame::WStyle_Customize);
+    splash->setBackgroundPixmap(pm);
+    splash->setFrameShape( QFrame::StyledPanel );
+    splash->setFrameShadow( QFrame::Raised );
+    splash->setLineWidth( 2 );
+    splash->setGeometry( QRect( (QApplication::desktop()->width()/2)-(pm.width()/2), (QApplication::desktop()->height()/2)-(pm.height()/2), pm.width(), pm.height() ) );
 
 #endif
 
-  splash->show();
-  m_splash = splash;
+    splash->show();
+    m_splash = splash;
+  }
 }
 
 KStartupLogo::~KStartupLogo()
