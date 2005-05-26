@@ -19,13 +19,13 @@
 
 #include <qstring.h>
 #include <qcstring.h>
-
+#include <kmymoney/export.h>
 /**
   * This class represents a payee or receiver within the MyMoney engine
   *
   * @author Thomas Baumgart
   */
-class MyMoneyPayee {
+class KMYMONEY_EXPORT MyMoneyPayee {
 private:
 	// Simple fields
 	QString m_name;

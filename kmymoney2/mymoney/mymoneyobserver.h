@@ -27,7 +27,7 @@
 // QT Includes
 
 #include <qcstring.h>
-
+#include <kmymoney/export.h>
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -39,7 +39,7 @@ class MyMoneySubject;
   *
   * @author Thomas Baumgart
   */
-class MyMoneyObserver {
+class KMYMONEY_EXPORT MyMoneyObserver {
 public: 
 	virtual ~MyMoneyObserver();
   virtual void update(const QCString& id) = 0;

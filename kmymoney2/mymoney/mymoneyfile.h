@@ -41,6 +41,7 @@
 #include <kmymoney/mymoneyprice.h>
 #include <kmymoney/mymoneyreport.h>
 #include <kmymoney/mymoneyscheduled.h>
+#include <kmymoney/export.h>
 
 /**
   * @author Thomas Baumgart, Michael Edwardes, Kevin Tambascio
@@ -129,7 +130,7 @@ class MyMoneyTransactionFilter;
   * while the engine code is running. The MyMoneyException:: object
   * describes the problem.
   */
-class MyMoneyFile
+class KMYMONEY_EXPORT MyMoneyFile
 {
 public:
 

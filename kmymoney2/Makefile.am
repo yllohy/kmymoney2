@@ -10,8 +10,9 @@ SUBDIRS = widgets dialogs views converter mymoney pics icons html templates plug
 
 EXTRA_DIST = kmymoney2ui.rc kmymoney2.desktop lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png mimetype_kmy_64x64.png mimetype_kmy_128x128.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png hi64-app-kmymoney2.png hi128-app-kmymoney2.png tips
 
+instdir=$(includedir)/kmymoney
+inst_HEADERS = export.h
 noinst_HEADERS = kmymoney2.h kmymoneyutils.h kstartuplogo.h
-
 
 install-data-local:
 	$(mkinstalldirs) $(kde_datadir)/kmymoney2/

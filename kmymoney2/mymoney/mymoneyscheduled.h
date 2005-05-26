@@ -35,7 +35,7 @@
 
 #include "mymoneytransaction.h"
 #include "mymoneyaccount.h"
-
+#include <kmymoney/export.h>
 /**
   * @author Michael Edwardes
   */
@@ -47,7 +47,7 @@
   * @short A class to represent a schedule.
   * @see MyMoneyScheduled
   */
-class MyMoneySchedule {
+class KMYMONEY_EXPORT MyMoneySchedule {
 public:
   /**
     * This enum is used to describe all the possible schedule frequencies.

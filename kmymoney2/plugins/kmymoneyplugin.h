@@ -39,6 +39,7 @@ class KInstance;
 
 #include "kmymoney/viewinterface.h"
 #include "kmymoney/statementinterface.h"
+#include <kmymoney/export.h>
 
 namespace KMyMoneyPlugin {
 
@@ -52,7 +53,7 @@ namespace KMyMoneyPlugin {
   * http://developer.kde.org/documentation/tutorials/developing-a-plugin-structure/index.html
   *
   */
-  class Plugin : public QObject, public KXMLGUIClient
+  class KMYMONEY_EXPORT Plugin : public QObject, public KXMLGUIClient
   {
     Q_OBJECT
   public:
@@ -81,7 +82,7 @@ namespace KMyMoneyPlugin {
   * http://developer.kde.org/documentation/tutorials/developing-a-plugin-structure/index.html
   *
   */
-  class ImporterPlugin : public QObject
+  class KMYMONEY_EXPORT ImporterPlugin : public QObject
   {
     Q_OBJECT
   public:

@@ -32,7 +32,7 @@
 #include "mymoneymoney.h"
 #include "mymoneyutils.h"
 #include "mymoneykeyvaluecontainer.h"
-
+#include <kmymoney/export.h>
 class MyMoneyTransaction;
 class MyMoneyInstitution;
 class MyMoneyFile;
@@ -70,7 +70,7 @@ class MyMoneyFile;
   * @author Thomas Baumgart 2002
   *
 **/
-class MyMoneyAccount : public MyMoneyKeyValueContainer
+class KMYMONEY_EXPORT MyMoneyAccount : public MyMoneyKeyValueContainer
 {
 public:
 
@@ -547,7 +547,7 @@ private:
   * laon relevant data stored in the key value container of the MyMoneyAccount
   * object.
   */
-class MyMoneyAccountLoan : public MyMoneyAccount
+class KMYMONEY_EXPORT MyMoneyAccountLoan : public MyMoneyAccount
 {
 public:
   enum interestDueE {

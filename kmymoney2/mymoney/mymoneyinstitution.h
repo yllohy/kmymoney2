@@ -29,6 +29,7 @@
 
 #include "mymoneyutils.h"
 #include "mymoneykeyvaluecontainer.h"
+#include <kmymoney/export.h>
 
 class MyMoneyFile;
 class MyMoneyMoney;
@@ -38,7 +39,7 @@ class MyMoneyMoney;
   *
   * @author Thomas Baumgart
   */
-class MyMoneyInstitution {
+class KMYMONEY_EXPORT MyMoneyInstitution {
 public:
   /**
     * This is the constructor for a new empty institution description

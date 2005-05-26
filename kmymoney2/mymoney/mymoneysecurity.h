@@ -28,7 +28,7 @@
 
 #include <qdatetime.h>
 #include <qmap.h>
-
+#include <kmymoney/export.h>
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -46,7 +46,7 @@
   *
   * @author Kevin Tambascio
   */
-class MyMoneySecurity : public MyMoneyKeyValueContainer
+class KMYMONEY_EXPORT MyMoneySecurity : public MyMoneyKeyValueContainer
 {
 public:
   MyMoneySecurity();

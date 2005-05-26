@@ -41,6 +41,7 @@
 // So we can save this object
 #include <qstring.h>
 #include <qdatastream.h>
+#include <kmymoney/export.h>
 
 // Check for standard definitions
 #ifdef HAVE_STDINT_H
@@ -62,7 +63,7 @@ typedef uint64_t unsigned64;
   *
   * @author Michael Edwardes
   */
-class MyMoneyMoney
+class KMYMONEY_EXPORT MyMoneyMoney
 {
 public:
   enum fileVersionE {
@@ -264,8 +265,8 @@ private:
 
   const signed64 getLcd(const MyMoneyMoney& b) const;
 
-  friend QDataStream &operator<<(QDataStream &, const MyMoneyMoney &);
-  friend QDataStream &operator>>(QDataStream &, MyMoneyMoney &);
+  KMYMONEY_EXPORT friend QDataStream &operator<<(QDataStream &, const MyMoneyMoney &);
+  KMYMONEY_EXPORT friend QDataStream &operator>>(QDataStream &, MyMoneyMoney &);
 
   static unsigned char _thousandSeparator;
   static unsigned char _decimalSeparator;

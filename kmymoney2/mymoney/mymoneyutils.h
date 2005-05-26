@@ -26,7 +26,7 @@
 #include <qstring.h>
 #include <qcstring.h>
 #include <qvaluelist.h>
-
+#include <kmymoney/export.h>
 #if 0
 
 //Includes for STL support below
@@ -67,7 +67,7 @@ public:
 
 };
 
-class MyMoneyTracer
+class KMYMONEY_EXPORT MyMoneyTracer
 {
 public:
   MyMoneyTracer(const char* prettyName);

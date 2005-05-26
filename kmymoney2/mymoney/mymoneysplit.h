@@ -35,7 +35,7 @@
 #include "mymoneyexception.h"
 #include "mymoneyutils.h"
 #include "mymoneymoney.h"
-
+#include <kmymoney/export.h>
 /**
   * @author Thomas Baumgart
   */
@@ -43,7 +43,7 @@
 /**
   * This class represents a split of a transaction.
   */
-class MyMoneySplit {
+class KMYMONEY_EXPORT MyMoneySplit {
 public:
   /**
     * This enum defines the possible reconciliation states a split

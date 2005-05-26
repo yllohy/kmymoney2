@@ -39,6 +39,7 @@ class KPopupMenu;
 // Project Includes
 
 #include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/export.h>
 class KMyMoneyViewBase;
 
 namespace KMyMoneyPlugin {
@@ -48,7 +49,7 @@ namespace KMyMoneyPlugin {
   * add new view pages to the JanusWidget of KMyMoney. It
   * also gives access to the account context menu.
   */
-class ViewInterface : public QObject {
+class KMYMONEY_EXPORT ViewInterface : public QObject {
   Q_OBJECT
 
 public:

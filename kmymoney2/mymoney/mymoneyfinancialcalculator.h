@@ -24,7 +24,7 @@
 #define MYMONEYFINANCIALCALCULATOR_H
 
 #include <cmath>
-
+#include <kmymoney/export.h>
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -64,7 +64,7 @@
   * For a detailed description of the algorithms see
   * gnucash-1.8.5/src/doc/finutil.html.
   */
-class MyMoneyFinancialCalculator
+class KMYMONEY_EXPORT MyMoneyFinancialCalculator
 {
 public:
   MyMoneyFinancialCalculator();

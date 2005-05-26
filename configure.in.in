@@ -2,6 +2,8 @@
 
 AM_INIT_AUTOMAKE(kmymoney2,0.7.2)
 
+KDE_ENABLE_HIDDEN_VISIBILITY
+
 dnl
 dnl check for a recent autoconf version
 dnl

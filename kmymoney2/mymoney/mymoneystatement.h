@@ -27,6 +27,7 @@
 #include <qstring.h>
 #include <qvaluelist.h>
 #include <qdatetime.h>
+#include <kmymoney/export.h>
 
 class QDomElement;
 class QDomDocument;
@@ -77,9 +78,9 @@ struct MyMoneyStatement
   void write(QDomElement&,QDomDocument*) const;
   bool read(const QDomElement&);
   
-  static bool isStatementFile(const QString&);
-  static bool readXMLFile( MyMoneyStatement&, const QString& );
-  static void writeXMLFile( const MyMoneyStatement&, const QString& );
+  KMYMONEY_EXPORT static bool isStatementFile(const QString&);
+  KMYMONEY_EXPORT static bool readXMLFile( MyMoneyStatement&, const QString& );
+  KMYMONEY_EXPORT static void writeXMLFile( const MyMoneyStatement&, const QString& );
 };
 
 #endif

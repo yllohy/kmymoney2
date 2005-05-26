@@ -34,14 +34,14 @@
 // Project Includes
 
 #include <kmymoney/mymoneystatement.h>
-
+#include <kmymoney/export.h>
 namespace KMyMoneyPlugin {
 
 /**
   * This abstract class represents the interface to import statements
   * into the KMyMoney application
   */
-class StatementInterface : public QObject {
+class KMYMONEY_EXPORT StatementInterface : public QObject {
   Q_OBJECT
 
 public:

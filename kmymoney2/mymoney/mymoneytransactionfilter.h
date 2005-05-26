@@ -42,12 +42,12 @@
 
 class IMyMoneyStorage;
 #include <kmymoney/mymoneytransaction.h>
-
+#include <kmymoney/export.h>
 /**
   * @author Thomas Baumgart
   */
 
-class MyMoneyTransactionFilter
+class KMYMONEY_EXPORT MyMoneyTransactionFilter
 {
 public:
   // Make sure to keep the following enum valus in sync with the values

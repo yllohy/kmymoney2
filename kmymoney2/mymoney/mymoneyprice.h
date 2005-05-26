@@ -39,7 +39,7 @@
 // Project Includes
 
 #include <kmymoney/mymoneymoney.h>
-
+#include <kmymoney/export.h>
 /**
   * @author Thomas Baumgart
   */
@@ -62,7 +62,7 @@
   * Using the @p price() member function, one can retrieve the price based
   * upon the @p toSecurity or the @p fromSecurity.
   */
-class MyMoneyPrice
+class KMYMONEY_EXPORT MyMoneyPrice
 {
 public:
   MyMoneyPrice();

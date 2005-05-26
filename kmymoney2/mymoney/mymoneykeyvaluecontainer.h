@@ -34,7 +34,7 @@
 #include <qstring.h>
 #include <qcstring.h>
 #include <qmap.h>
-
+#include <kmymoney/export.h>
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -49,7 +49,7 @@
   * To give any class the ability to have a key/value pair container,
   * just derive the class from this one. See MyMoneyAccount as an example.
   */
-class MyMoneyKeyValueContainer
+class KMYMONEY_EXPORT MyMoneyKeyValueContainer
 {
 public: 
 	MyMoneyKeyValueContainer();
