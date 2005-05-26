@@ -23,6 +23,10 @@
 #ifndef MYMONEYSPLIT_H
 #define MYMONEYSPLIT_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -36,6 +40,7 @@
 #include "mymoneyutils.h"
 #include "mymoneymoney.h"
 #include <kmymoney/export.h>
+
 /**
   * @author Thomas Baumgart
   */

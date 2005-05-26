@@ -23,6 +23,10 @@
 #ifndef MYMONEYTRANSACTIONFILTER_H
 #define MYMONEYTRANSACTIONFILTER_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -43,6 +47,7 @@
 class IMyMoneyStorage;
 #include <kmymoney/mymoneytransaction.h>
 #include <kmymoney/export.h>
+
 /**
   * @author Thomas Baumgart
   */

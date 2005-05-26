@@ -24,6 +24,10 @@
 #ifndef MYMONEYSTATEMENT_H
 #define MYMONEYSTATEMENT_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <qstring.h>
 #include <qvaluelist.h>
 #include <qdatetime.h>

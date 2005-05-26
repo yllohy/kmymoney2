@@ -22,6 +22,10 @@
 #ifndef MYMONEYSCHEDULED_H
 #define MYMONEYSCHEDULED_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -36,6 +40,7 @@
 #include "mymoneytransaction.h"
 #include "mymoneyaccount.h"
 #include <kmymoney/export.h>
+
 /**
   * @author Michael Edwardes
   */

@@ -17,6 +17,10 @@
 #ifndef MYMONEYINSTITUTION_H
 #define MYMONEYINSTITUTION_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 

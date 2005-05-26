@@ -17,6 +17,10 @@
 #ifndef MYMONEYPAYEE_H
 #define MYMONEYPAYEE_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <qstring.h>
 #include <qcstring.h>
 #include <kmymoney/export.h>

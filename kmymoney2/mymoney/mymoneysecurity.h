@@ -23,18 +23,23 @@
 #ifndef MYMONEYSECURITY_H
 #define MYMONEYSECURITY_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
 #include <qdatetime.h>
 #include <qmap.h>
-#include <kmymoney/export.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/export.h>
 #include <kmymoney/mymoneymoney.h>
 #include <kmymoney/mymoneyutils.h>
 #include <kmymoney/mymoneykeyvaluecontainer.h>

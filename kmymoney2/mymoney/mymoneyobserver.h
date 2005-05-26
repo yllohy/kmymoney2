@@ -2,7 +2,7 @@
                           mymoneyobserver.h  -  description
                              -------------------
     begin                : Sat May 18 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
+    copyright            : (C) 2000-2005 by Michael Edwardes
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
                            Felix Rodriguez <frodriguez@users.sourceforge.net>
@@ -23,14 +23,19 @@
 #ifndef MYMONEYOBSERVER_H
 #define MYMONEYOBSERVER_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
 #include <qcstring.h>
-#include <kmymoney/export.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/export.h>
 class MyMoneySubject;
 
 /**

@@ -23,8 +23,11 @@
 #ifndef MYMONEYFINANCIALCALCULATOR_H
 #define MYMONEYFINANCIALCALCULATOR_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <cmath>
-#include <kmymoney/export.h>
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -33,6 +36,8 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
+#include <kmymoney/export.h>
 
 #ifdef _GLIBCPP_HAVE_MODFL
 #define HAVE_LONG_DOUBLE  1

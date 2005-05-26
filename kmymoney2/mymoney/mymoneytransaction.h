@@ -19,6 +19,10 @@
 #ifndef MYMONEYTRANSACTION_H
 #define MYMONEYTRANSACTION_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -34,6 +38,7 @@
 #include "mymoneykeyvaluecontainer.h"
 #include "mymoneysplit.h"
 #include <kmymoney/export.h>
+
 /**
   * This class represents a transaction within the MyMoneyEngine. A transaction
   * contains none, one or more splits of type MyMoneySplit. They are stored in

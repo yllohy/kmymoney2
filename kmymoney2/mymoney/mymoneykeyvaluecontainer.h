@@ -28,6 +28,10 @@
   *@author Thomas Baumgart
   */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 

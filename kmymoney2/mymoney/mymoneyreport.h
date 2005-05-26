@@ -18,6 +18,10 @@
 #ifndef MYMONEYREPORT_H
 #define MYMONEYREPORT_H
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qmap.h>
@@ -29,7 +33,7 @@ class QDomDocument;
 // ----------------------------------------------------------------------------
 // Project Includes
 #include <kmymoney/mymoneyaccount.h>
-#include "mymoneytransactionfilter.h"
+#include <kmymoney/mymoneytransactionfilter.h>
 #include <kmymoney/export.h>
 /**
   * This class defines a report within the MyMoneyEngine.  The report class 
