@@ -175,8 +175,17 @@ void KPayeesView::suspendUpdate(const bool suspend)
 
 void KPayeesView::slotRenamePayee(QListViewItem* /* p */, int /* col */, const QString& txt)
 {
-  m_newName = txt;
-  slotPayeeDataChanged();
+  if(m_payee.name() != txt) {
+    try {
+      m_payee.setName(txt);
+      MyMoneyFile::instance()->modifyPayee(m_payee);
+
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to modify payee"),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+      delete e;
+    }
+  }
 }
 
 void KPayeesView::slotSelectPayee(QListViewItem *p)
