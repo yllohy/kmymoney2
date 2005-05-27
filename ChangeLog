@@ -1,3 +1,19 @@
+2005-05-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Calculator widget will clear display upon first digit/comma/period when
+    opened via the button
+  * Fixed payee rename to happen immediately
+  * Don't crash if splash screen is not correctly installed
+  * Renamed gl_ES.po and es_ES.po into gl.po and es.po
+  * Updated -fvisibility detection and usage
+
+2005-05-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added support for unsermake (updated to current versions of 
+    cvs.sh and detect-autoconf.sh in the admin subdir)
+  * Added support for -fvisibility (slightly modified patch
+    provided by Laurent Montel)
+  * Fixed build-system in kgncpricesourcedlg.h (I made this change
+    already for 0.7.1 but it got lost/overwritten in the meantime)
+
 2005-05-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patches provided by Laurent Montel
   * Added entry for Laurent on the about page
