@@ -24,10 +24,7 @@
 #include <kdeversion.h>
 
 #if KDE_IS_VERSION(3,2,90)
-  #ifndef __KDE_HAVE_GCC_VISIBILITY
-    #define __KDE_HAVE_GCC_VISIBILITY 0
-  #endif
-  #if __KDE_HAVE_GCC_VISIBILITY
+  #ifdef __KDE_HAVE_GCC_VISIBILITY
     #include <kdemacros.h>
     #define KMYMONEY_EXPORT KDE_EXPORT
   #else
