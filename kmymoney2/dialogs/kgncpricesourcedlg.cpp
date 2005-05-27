@@ -134,3 +134,4 @@ void KGncPriceSourceDlg::slotHelp(void)
 }
 
 #include "kgncpricesourcedlg.moc"
+
