@@ -16,8 +16,9 @@ KDE_DOCS = kmymoney2 - $(DOCBOOK_FILES) $(SCREENSHOT_FILES)
 index.cache.bz2: $(DOCBOOK_FILES) $(KDE_XSL_STYLESHEET) $(SCREENSHOT_FILES)
 	if test -n "$(MEINPROC)"; then echo $(MEINPROC) --check --cache index.cache.bz2 --stylesheet $(KDE_XSL_STYLESHEET) $(srcdir)/index.docbook; $(MEINPROC) --check --cache index.cache.bz2 --stylesheet $(KDE_XSL_STYLESHEET) $(srcdir)/index.docbook; fi
 
-index.html:
-	$(MEINPROC) --stylesheet $(KDE_XSL_STYLESHEET) $(srcdir)/index.docbook -o index.html
+.PHONY: show
+preview:
+	$(MEINPROC) --stylesheet $(kde_datadir)/ksgmltools2/customization/kde-nochunk.xsl  $(srcdir)/index.docbook -o index.html
 
 # The automatic KDE install installs some files,
 # that we don't need, so we remove them immediately.
