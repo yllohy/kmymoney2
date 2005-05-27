@@ -4,7 +4,7 @@
 This appendix contains an example of an RPM SPEC file. 
 </para>
 
-<screen>
+<programlisting>
 
 #
 # spec file for package kmymoney2 (Version 0.4)
@@ -64,7 +64,7 @@ make
 make DESTDIR=%buildroot install
 
 %clean
-[ ${RPM_BUILD_ROOT} != "/" ] && rm -rf ${RPM_BUILD_ROOT}
+[ ${RPM_BUILD_ROOT} != "/" ] &amp;&amp; rm -rf ${RPM_BUILD_ROOT}
 
 %post
 
@@ -142,5 +142,5 @@ make DESTDIR=%buildroot install
 %dir %_iconsdir/hicolor/32x32/apps/
 %_iconsdir/hicolor/32x32/apps/*.png
 
-</screen>
+</programlisting>
 </appendix>

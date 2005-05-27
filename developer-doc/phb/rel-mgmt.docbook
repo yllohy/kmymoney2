@@ -143,6 +143,7 @@ This section has been copied from the RPM-Howto and adapted where necessary
 </para>
 </note>
 </para>
+</sect2>
 
 <sect2 id="rpm-specfile">
 <title>Setting up the SPEC file</title>

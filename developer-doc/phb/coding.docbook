@@ -225,7 +225,7 @@ signal. e.g
 
 <listitem>
 <para>
-<anchor id="attribute-names">
+<anchor id="attribute-names"/>
 Attribute names should begin with the m_ prefix to indicate that they are
 member variables. The variable name should begin with a descriptive
 identifier such as qcomboboxMethod. Explicit hungarian notation is also

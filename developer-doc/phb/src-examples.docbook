@@ -59,7 +59,7 @@ This appendix contains an example of a
   * @see KDialogBase
   *
   * @author Michael Edwardes 2000-2001
-  * $Id: src-examples.docbook,v 1.2 2002/06/16 16:02:53 ipwizard Exp $
+  * $Id: src-examples.docbook,v 1.3 2005/05/27 19:05:18 ipwizard Exp $
   *
   * @short A class to manipulate the settings needed for running KMyMoney2
 **/
@@ -474,7 +474,7 @@ void KSettingsDlg::configWrite()
 void KSettingsDlg::slotOk()
 {
   int nCount = m_klineeditRowCount->text().toInt();
-  if (nCount <= 0 || nCount >= 4) {
+  if (nCount &lt;= 0 || nCount &gt;= 4) {
     KMessageBox::information(this, i18n("The row count has to be between 1
 and 3"));
     m_klineeditRowCount->setFocus();
@@ -488,7 +488,7 @@ and 3"));
 void KSettingsDlg::slotApply()
 {
   int nCount = m_klineeditRowCount->text().toInt();
-  if (nCount <= 0 || nCount >= 4) {
+  if (nCount &lt;= 0 || nCount &gt;= 4) {
     KMessageBox::information(this, i18n("The row count has to be between 1
 and 3"));
     m_klineeditRowCount->setFocus();

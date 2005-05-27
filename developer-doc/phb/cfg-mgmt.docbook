@@ -134,6 +134,7 @@ example.
 </row>
 
 </tbody>
+</tgroup>
 </table>
 </para>
 <!-- SECTION =================================================== -->
@@ -175,6 +176,7 @@ Access to the repository is available in two different forms
 <listitem><para>Read-Only access</para></listitem>
 <listitem><para>Read-Write access</para></listitem>
 </itemizedlist>
+</para>
 
 <sect2>
 <title>Read-Only access</title>
@@ -483,7 +485,6 @@ the same revision 1.2.
 </example>
 
 
-<para>
 </para>
 </sect2>
 </sect1>
@@ -537,6 +538,7 @@ If you do not use &ac; and &am; and write your Makefiles directly, they
 have to be checked in as they are not automatically generated.
 </para>
 </note>
+</para>
 </sect2>
 </sect1>
 </chapter>

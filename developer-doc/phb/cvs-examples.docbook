@@ -224,7 +224,7 @@ sandbox and needs to be returned to the repository.
 </para>
 
 <para>
-<anchor id="cvs-source-changes">
+<anchor id="cvs-source-changes"/>
 As the next step, one should check what has been changed in the file
 <command>knewbankdlg.cpp</command>. This is done using the following command:
 </para>

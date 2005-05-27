@@ -1,5 +1,9 @@
 <?xml version="1.0" ?>
-<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
+ <!ENTITY kappname "KMyMoney">
+ <!ENTITY % addindex "IGNORE">
+ <!ENTITY % English "INCLUDE"><!-- change language only here -->
+
   <!ENTITY app "<command>KMyMoney</command>">
   <!ENTITY cvs "<command>CVS</command>">
   <!ENTITY ac "<command>autoconf</command>">
@@ -18,7 +22,7 @@
   <!ENTITY fdl-licence SYSTEM "fdl-licence">
 ]>
 
-<book lang="en">
+<book lang="&language;">
 <bookinfo>
 <title>&app; Project Handbook</title>
 <authorgroup>
