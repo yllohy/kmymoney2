@@ -5,6 +5,8 @@
   * Don't crash if splash screen is not correctly installed
   * Renamed gl_ES.po and es_ES.po into gl.po and es.po
   * Updated -fvisibility detection and usage
+  * Added 'make preview' to online documentation
+  * Generate PHB using meinproc
 
 2005-05-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support for unsermake (updated to current versions of 
