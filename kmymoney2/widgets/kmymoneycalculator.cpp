@@ -42,6 +42,7 @@ kMyMoneyCalculator::kMyMoneyCalculator(QWidget* parent, const char *name)
   : QFrame(parent, name)
 {
   m_comma = KGlobal::locale()->decimalSymbol()[0];
+  m_clearOperandOnDigit = false;
 
   QGridLayout* grid = new QGridLayout(this, 5, 5, 1, 2);
 
@@ -99,7 +100,7 @@ kMyMoneyCalculator::kMyMoneyCalculator(QWidget* parent, const char *name)
 
   op1 = 0.0;
   op = 0;
-  operand = "";
+  operand = QString();
   changeDisplay("0");
 
   // connect the digit signals through a signal mapper
@@ -140,7 +141,6 @@ kMyMoneyCalculator::kMyMoneyCalculator(QWidget* parent, const char *name)
 
 kMyMoneyCalculator::~kMyMoneyCalculator()
 {
-//    delete []buttons;
 }
 
 void kMyMoneyCalculator::digitClicked(int button)
@@ -156,7 +156,7 @@ void kMyMoneyCalculator::commaClicked(void)
   if(operand.length() == 0)
     operand = "0";
   if(operand.contains('.', FALSE) == 0)
-    operand += ".";
+    operand.append('.');
 
   if(operand.length() > 16)
     operand = operand.left(16);
@@ -169,10 +169,10 @@ void kMyMoneyCalculator::plusminusClicked(void)
     operand = m_result;
 
   if(operand.length() > 0) {
-    if(operand[0] == '-')
-      operand = operand.mid(1);
+    if(operand.find('-') != -1)
+      operand.replace('-', QString());
     else
-      operand = "-" + operand;
+      operand.prepend('-');
     changeDisplay(operand);
   }
 }
@@ -208,7 +208,7 @@ void kMyMoneyCalculator::calculationClicked(int button)
     if(error) {
       op = 0;
       changeDisplay("Error");
-      operand = "";
+      operand = QString();
     } else {
       op1 = op2;
       m_result.setNum(op1);
@@ -226,7 +226,7 @@ void kMyMoneyCalculator::calculationClicked(int button)
     op = 0;
     emit signalResultAvailable();
   }
-  operand = "";
+  operand = QString();
 }
 
 void kMyMoneyCalculator::clearClicked(void)
@@ -242,7 +242,7 @@ void kMyMoneyCalculator::clearClicked(void)
 
 void kMyMoneyCalculator::clearAllClicked(void)
 {
-  operand = "";
+  operand = QString();
   op = 0;
   changeDisplay("0");
 }
@@ -286,6 +286,10 @@ void kMyMoneyCalculator::keyPressEvent(QKeyEvent* ev)
     case Qt::Key_7:
     case Qt::Key_8:
     case Qt::Key_9:
+      if(m_clearOperandOnDigit) {
+        operand = QString();
+        m_clearOperandOnDigit = false;
+      }
       button = ev->key() - Qt::Key_0;
       break;
     case Qt::Key_Plus:
@@ -298,6 +302,10 @@ void kMyMoneyCalculator::keyPressEvent(QKeyEvent* ev)
       button = MINUS;
       break;
     case Qt::Key_Period:
+      if(m_clearOperandOnDigit) {
+        operand = QString();
+        m_clearOperandOnDigit = false;
+      }
       button = COMMA;
       break;
     case Qt::Key_Slash:
@@ -326,15 +334,17 @@ void kMyMoneyCalculator::keyPressEvent(QKeyEvent* ev)
   }
   if(button != -1)
     buttons[button]->animateClick();
+
+  m_clearOperandOnDigit = false;
 }
 
 void kMyMoneyCalculator::setInitialValues(const QString& value, QKeyEvent* ev)
 {
   // setup operand
   operand = value;
-  operand.replace(QRegExp(QString("\\")+KGlobal::locale()->thousandsSeparator()), "");
+  operand.replace(QRegExp(QString("\\")+KGlobal::locale()->thousandsSeparator()), QString());
   operand.replace(QRegExp(QString("\\")+m_comma), ".");
-  if(operand == "")
+  if(operand.isEmpty())
     operand = "0";
   changeDisplay(operand);
 
@@ -342,6 +352,8 @@ void kMyMoneyCalculator::setInitialValues(const QString& value, QKeyEvent* ev)
   op = 0;
   if(ev)
     keyPressEvent(ev);
+  else
+    m_clearOperandOnDigit = true;
 }
 
 #include "kmymoneycalculator.moc"

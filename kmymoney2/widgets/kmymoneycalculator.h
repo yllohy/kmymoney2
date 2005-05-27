@@ -218,6 +218,13 @@ private:
     /* insert new buttons before this line */
     MAX_BUTTONS
   };
+
+  /**
+    * This flag signals, if the operand should be replaced upon
+    * a digit key pressure. Defaults to false and will be set, if
+    * setInitialValues() is called without an operation.
+    */
+  bool m_clearOperandOnDigit;
 };
 
 #endif
