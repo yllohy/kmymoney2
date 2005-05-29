@@ -2,7 +2,7 @@ KDE_OPTIONS = noautodist
 
 SUBDIRS = images
 
-EXTRA_DIST = home.html kmymoney2.css welcome.css whats_new.html home_fr.fr.html home_de.de.html home_ru.ru.html home_br.pt_BR.html
+EXTRA_DIST = home.html kmymoney2.css welcome.css whats_new.html home_fr.fr.html home_de.de.html home_ru.ru.html home_br.pt_BR.html home_gl.html whats_new_gl.html whats_new_de.html
 
 LOCAL_DIR = kmymoney2/html
 
