@@ -79,6 +79,12 @@ public:
 
   MyMoneyTracer(const QString& className, const QString& methodName);
   ~MyMoneyTracer();
+
+  /**
+    * This method allows to trace a printf like formatted text
+    *
+    * @param format format mask
+    */
   void printf(const char *format, ...) const __attribute__ ((format (__printf__, 2, 3)));
 
   static void off(void);
