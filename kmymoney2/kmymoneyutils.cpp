@@ -31,6 +31,7 @@
 #include <kiconloader.h>
 #include <kmessagebox.h>
 #include <kconfig.h>
+#include <kstandarddirs.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -635,4 +636,37 @@ QString KMyMoneyUtils::variableCSS(void)
 
   css += "-->\n</style>\n";
   return css;
+}
+
+QString KMyMoneyUtils::findResource(const char* type, const QString& filename)
+{
+  QString language = KGlobal::locale()->language();
+  QString country = KGlobal::locale()->country();
+  QString rc, mask;
+
+  // check that the placeholder is present
+  if(!filename.find("%1")) {
+    qWarning("%%1 not found in '%s'", filename.latin1());
+    return filename;
+  }
+
+  // search the given resource
+  mask = filename.arg("_%1.%2");
+  rc = KGlobal::dirs()->findResource(type, mask.arg(country).arg(language));
+  if(rc.isEmpty()) {
+    mask = filename.arg("_%1");
+    rc = KGlobal::dirs()->findResource(type, mask.arg(language));
+  }
+  if(rc.isEmpty()) {
+    // qDebug(QString("html/home_%1.html not found").arg(country).latin1());
+    rc = KGlobal::dirs()->findResource(type, mask.arg(country));
+  }
+  if(rc.isEmpty()) {
+    rc = KGlobal::dirs()->findResource(type, filename.arg(""));
+  }
+
+  if(rc.isEmpty()) {
+    qWarning("No resource found for (%s,%s)", type, filename.latin1());
+  }
+  return rc;
 }

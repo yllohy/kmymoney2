@@ -62,18 +62,8 @@ KHomeView::KHomeView(QWidget *parent, const char *name ) :
 {
   m_part = new KHTMLPart(this, "htmlpart_km2");
   m_viewLayout->addWidget(m_part->view());
-  QString language = KGlobal::locale()->language();
-  QString country = KGlobal::locale()->country();
 
-  m_filename = KGlobal::dirs()->findResource("appdata", QString("html/home_%1.%2.html").arg(country).arg(language));
-  if(m_filename.isEmpty()) {
-    // qDebug(QString("html/home_%1.%2.html not found").arg(country).arg(language).latin1());
-    m_filename = KGlobal::dirs()->findResource("appdata", QString("html/home_%1.html").arg(country));
-  }
-  if(m_filename.isEmpty()) {
-    // qDebug(QString("html/home_%1.html not found").arg(country).latin1());
-    m_filename = KGlobal::dirs()->findResource("appdata", "html/home.html");
-  }
+  m_filename = KMyMoneyUtils::findResource("appdata", QString("html/home%1.html"));
 
 //   m_part->openURL(m_filename);
   connect(m_part->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
@@ -559,7 +549,9 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
       Q_CHECK_PTR(mw);
       if ( mode == "whatsnew" )
       {
-        m_part->openURL(KGlobal::dirs()->findResource("appdata", "html/whats_new.html"));
+        QString fname = KMyMoneyUtils::findResource("appdata",QString("html/whats_new%1.html"));
+        if(!fname.isEmpty())
+          m_part->openURL(fname);
       }
       else if ( mode == "manual" )
       {
