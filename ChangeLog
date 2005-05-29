@@ -1,3 +1,10 @@
+2005-05-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Pickup i18n version of whats_new.html
+  * Added KMyMoneyUtils::findResource() which searches different
+    filenames to find a translated file
+  * Added some more Galician files provided by Marcellino
+  * Added German translation to home page and what's new page
+
 2005-05-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Calculator widget will clear display upon first digit/comma/period when
     opened via the button
