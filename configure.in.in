@@ -53,6 +53,14 @@ if test "$have_kbanking" = "yes"; then
 fi
 
 dnl
+dnl check for html2ps and ps2pdf
+dnl
+AC_CHECK_PROG(found_html2ps, html2ps, yes, no)
+AC_CHECK_PROG(found_ps2pdf, ps2pdf14, yes, no)
+AM_CONDITIONAL(HAVE_HTML2PS, test x$found_html2ps = xyes)
+AM_CONDITIONAL(HAVE_PS2PDF, test x$found_ps2pdf = xyes)
+
+dnl
 dnl check for libofx
 dnl 
 AC_LIBOFX()
