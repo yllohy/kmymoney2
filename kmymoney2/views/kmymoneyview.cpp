@@ -1010,7 +1010,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
         encryptedOk = false;
       }
     } else {
-      KMessageBox::sorry(this, QString("<p>")+i18n("You have specified to encrypt your data but you have not  provided a user-id. Please make sure to setup a valid user id. This time, encryption is disabled.").arg(config->readEntry("GPG-Recipient")), i18n("GPG-Key not found"));
+      KMessageBox::sorry(this, QString("<p>")+i18n("You have specified to encrypt your data but you have not provided a user-id. Please make sure to setup a valid user id. This time, encryption is disabled."), i18n("GPG-Key not found"));
       encryptedOk = false;
     }
 
@@ -1088,15 +1088,14 @@ const bool KMyMoneyView::saveFile(const KURL& url)
 
   // If this file ends in ".ANON.XML" then this should be written using the
   // anonymous writer.
-  bool plaintext = false;
+  bool plaintext = plaintext = filename.right(4).lower() == ".xml";
   if (filename.right(9).lower() == ".anon.xml")
   {
     pWriter = new MyMoneyStorageANON;
-    plaintext = true;
   }
   else
   {
-    // only use XML writer. The binary format will be depreacated sometime
+    // only use XML writer. The binary format will be depreacated after 0.8
     pWriter = new MyMoneyStorageXML;
   }
 
