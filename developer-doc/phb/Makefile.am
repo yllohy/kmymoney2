@@ -1,6 +1,6 @@
 KDE_OPTIONS = noautodist
 
-DOCBOOK_FILES = phb.docbook cfg-mgmt.docbook coding.docbook cvs-examples.docbook  src-examples.docbook licence.docbook error-mgmt.docbook unit-test.docbook rel-mgmt.docbook test-examples.docbook rpm-example.docbook
+DOCBOOK_FILES = phb.docbook cfg-mgmt.docbook coding.docbook cvs-examples.docbook  src-examples.docbook licence.docbook error-mgmt.docbook unit-test.docbook rel-mgmt.docbook test-examples.docbook rpm-example.docbook fdl-licence
 
 EXTRA_DIST = $(DOCBOOK_FILES)
 
@@ -21,8 +21,8 @@ STYLESHEET = kde-nochunk.xsl
 
 phb.html:	$(DOCBOOK_FILES)
 	@if test -e $(MEINPROC); then \
-		echo $(MEINPROC) --stylesheet $(kde_datadir)/ksgmltools2/customization/$(STYLESHEET) $(srcdir)/phb.docbook -o phb.html; \
-		$(MEINPROC) --stylesheet $(kde_datadir)/ksgmltools2/customization/$(STYLESHEET) $(srcdir)/phb.docbook -o phb.html; \
+		echo $(MEINPROC) --stylesheet $(kde_libs_prefix)/share/apps/ksgmltools2/customization/$(STYLESHEET) $(srcdir)/phb.docbook -o phb.html; \
+		$(MEINPROC) --stylesheet $(kde_libs_prefix)/share/apps/ksgmltools2/customization/$(STYLESHEET) $(srcdir)/phb.docbook -o phb.html; \
 	fi
 
 phb.pdf: phb.html
