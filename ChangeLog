@@ -1,9 +1,20 @@
+2005-05-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Released 0.7.2
+
+2005-05-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added detection of html2ps and ps2pdf14 during configure
+  * Added conditional conversion of project handbook into pdf if
+    the necessary tools are present
+  * Don't compress file if named .xml
+  * Fixed warning about missing argument to QString::arg() in KMyMoneyView
+
 2005-05-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Pickup i18n version of whats_new.html
   * Added KMyMoneyUtils::findResource() which searches different
     filenames to find a translated file
   * Added some more Galician files provided by Marcellino
   * Added German translation to home page and what's new page
+  * Added (partial) italian translation provided by Samuel Algisi
 
 2005-05-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Calculator widget will clear display upon first digit/comma/period when
