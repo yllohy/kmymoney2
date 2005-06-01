@@ -1,9 +1,5 @@
 <chapter id="details.formats">
 <title>File Formats</title>
-<author>
-<firstname>Thomas</firstname>
-<surname>Baumgart</surname>
-</author>
 
 <para>
 This chapter describes the formats in which &kappname; stores it's data in permanent form on the users disk. In
@@ -11,16 +7,16 @@ general, &kappname; stores it's information in form of an XML document. Dependin
 XML document will be written
 
 <itemizedlist>
-<listitem>as <link linkend="details.formats.plain">plain text file</link> encoded in UTF-8,</listitem>
+<listitem><para>as <link linkend="details.formats.plain">plain text file</link> encoded in UTF-8,</para></listitem>
 
-<listitem>as <link linkend="details.formats.compressed">compressed file</link> using GZIP compression,</listitem>
+<listitem><para>as <link linkend="details.formats.compressed">compressed file</link> using GZIP compression,</para></listitem>
 
-<listitem>as <link linkend="details.formats.encrypted">encrypted file</link> using GPG encryption or</listitem>
+<listitem><para>as <link linkend="details.formats.encrypted">encrypted file</link> using GPG encryption or</para></listitem>
 
-<listitem>as <link linkend="details.formats.anonymous">anonymous plain text file</link> encoded in UTF-8 but with all your personal data scrambled.</listitem>
+<listitem><para>as <link linkend="details.formats.anonymous">anonymous plain text file</link> encoded in UTF-8 but with all your personal data scrambled.</para></listitem>
 </itemizedlist>
-
 </para>
+
 <sect1 id="details.formats.plain">
 <title>Plain text file</title>
 <para>
@@ -28,9 +24,11 @@ This is the most space consuming format supported as no compression is performed
 user and provided to support debugging purposes and the capability to modify the file manually. If you end a filename in <literal role="extension">.xml</literal> the file will be stored in this format.
 
 <caution>
+<para>
 Manual modification of the file is not recommended to the normal user and should only be performed if the internal
 working of &kappname; is fully understood or instructions from the developers tell you what to do. Don't blame the
 &kappname; developers if you screw up your data: You have been warned!
+</para>
 </caution>
 </para>
 </sect1>
@@ -41,7 +39,9 @@ working of &kappname; is fully understood or instructions from the developers te
 This is the normal format used by &kappname; when you store a file with the extension <literal role="extension">.kmy</literal> 
 </para>
 <note>
+<para>
 If <link linkend="details.formats.encrypted">encryption</link> has been selected, the file will be stored encrypted.
+</para>
 </note>
 <para>
 If you want to look at a GZIP compressed file, rename it to a filename ending in <literal role="extension">.gz</literal> (e.g. <filename>myfinances.kmy</filename> into <filename>myfinances.kmy.gz</filename>, then use <command>gunzip</command> to uncompress the file and look at it. You don't have to compress it before loading it into &kappname; the next time, because &kappname; can read the uncompressed data as well. Nevertheless, if you save it thereafter, it will be saved compressed again. Use the <link linkend="details.formats.plain">.xml</link> extension to write it in uncompressed format.
@@ -53,7 +53,9 @@ If you want to look at a GZIP compressed file, rename it to a filename ending in
 <para>
 Using the GPG-encrpyted file format is a very secure method to store your personal finance data on your disk. When &kappname; has been instructed through the settings dialog to store your data encrypted, it will cipher the data using GPG and the key you provided before actually storing it on disk. When opening an encrypted file, you have to provide the passphrase necessary to open your keyring. The encrypted file itself will be stored in GPG's <emphasis>ASCII armored</emphasis> format.
 <note>
+<para>
 When using GPG encryption, GPG also compresses the file, so no extra compression is necessary.
+</para>
 </note>
 </para>
 
@@ -73,7 +75,9 @@ The details about howto generate a key-pair, howto take care of it are beyond th
 <para>
 On the security page of the settings dialog you have a field where you can enter the key-id of the key that should be used for encryption and decryption. You can use either the key-id, the e-mail address associated with this key or any other valid GPG key identification as value for this field. When you enter the key-id, &kappname; will check it's validity and turn on a green LED in the dialog if a key is found.
 <caution>
+<para>
  Make sure, you have both, the public and the private key for this id. If you don't own the private key for the id entered, you will not be able to open the file again.
+</para>
 </caution>
 </para>
 </sect2>
