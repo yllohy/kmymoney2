@@ -1,5 +1,31 @@
-<chapter id="details.accounts">
-<title>Accounts - Under development - MTE</title>
+<chapter id="details.accounts"><title id="details.accounts.title">Accounts</title>
+<para>Written by Roger Lum &lt;rogerlum@gmail.com&gt;.</para>
 <para>
+  The Accounts screen provides a summary of all the accounts. There are four different account categories: Asset, Liability, Income and Expense.  Typical asset accounts include bank accounts, cash, and investments,  while typical liability accounts include credit cards and loans. 
 </para>
+
+<para>
+  There are two ways to view the accounts: List or Icon view. In Icon view, the different Asset and Liability accounts are shown with icons indicating the account type. List view shows the name, number of transactions, and balance or value of each account.   
+</para>
+
+<para>
+  Income and Expense lists the categories that each transaction is filed under and provides similar functionality as the Categories screen.  The options and features involving Income and Expense accounts are described in detail in the upcoming Categories chapter. The rest of this chapter will focus on Asset and Liability account functionality.
+</para>
+
+<sect1 id="details.accounts.edit"><title id="details.accounts.edit.title">Editing Account Information</title>
+
+<para>
+  To edit a particular account, right-click that account and choose "Edit". A details window will pop-up. This window allows you to change the name and start date of the account, associated banking institution, and the parent account. Changing the parent account is also possible in the main Accounts screen, by dragging the account and dropping it on a different parent account. In this window, you can also create a new banking institution and associate the account with that institution. 
+</para>
+
+</sect1>
+
+<sect1 id="details.accounts.other"><title id="details.accounts.other.title">Other Functionality</title>
+
+<para>
+  Right-clicking an account brings up a list of other possible functions, besides the edit function. Choosing "New account" steps you through the new account process, where you specify institution, type, date, name and opening balance. Selecting "Open" on an account switches you to either the Ledgers screen or Investments screen, depending on the account type. In this screen, you can enter transaction details. Selecting "Reconcile" opens up the Reconcile Wizard, which steps you through the process of comparing your bank account statements to your electronic entries. Deleting an account is only possible if there are no transactions associated with that account.  
+</para>
+
+</sect1>
+
 </chapter>

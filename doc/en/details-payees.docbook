@@ -1,6 +1,43 @@
-<chapter id="details.payees">
-<title>Payees - Under development - Roger Lum</title>
+<chapter id="details.payees"><title id="details.payees.title">Payees</title>
+<para>Written by Roger Lum &lt;rogerlum@gmail.com&gt;.</para>
 <para>
+  The Payees screen provides detailed information about all the payees involved in transactions. The Payees screen is split into two main areas: a payees list and a detail area. 
 </para>
-</chapter>
 
+<para>
+  The Payees screen allows for updating personal information associated with a particular payee and viewing the transaction history.  
+</para>
+
+<para>
+! Add screen shot? !
+</para>
+
+<sect1 id="details.payees.list"><title id="details.payees.list.title">Payees List</title>
+
+<para>
+  A list of payees is on the left side of this screen. The payee list is sorted alphabetically. To sort in reverse alphabetical order, click on the Name title at the top of the list.
+</para>
+
+<para>
+  To remove a payee, right-click the payee name and select "Delete payee". You will not be able to delete a payee unless all the transactions associated with that particular payee has been removed.  To add a payee, right-click on any payee name and choose "New payee". To rename a payee, simply double-click on a payee name and the name becomes editable. Changing the name will affect the payee name in all transaction entries. 
+</para>
+
+</sect1>
+
+<sect1 id="details.payees.personalinformation"><title id="details.payees.personalinformation.title">Viewing Personal Information</title>
+
+<para>
+  To view the personal information associated with a particular payee, select the payee from the list and select the Personal Information tab in the detail area. To modify this information, edit the detail area directly and press the Update button when finished.   
+</para>
+
+</sect1>
+
+<sect1 id="details.payees.transactionhistory"><title id="details.payees.transactionhistory.title">Viewing Transaction History</title>
+
+<para>
+  To view all transactions associated with a particular payee, select the payee from the list and the Transaction History tab in the detail area. Double-clicking a particular transaction will bring you directly to that transaction in the Ledgers screen. 
+</para>
+
+</sect1>
+
+</chapter>

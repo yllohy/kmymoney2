@@ -1,6 +1,23 @@
-<chapter id="details.categories">
-<title>Categories - Under development - MTE</title>
+<chapter id="details.categories"><title id="details.categories.title">Categories</title>
+<para>Written by Roger Lum &lt;rogerlum@gmail.com&gt;.</para>
 <para>
+  The Categories screen provides a summary of all the existing categories transactions are filed under. The categories are split into income and expense, and a balance is displayed for each category.
 </para>
-</chapter>
 
+<sect1 id="details.categories.edit"><title id="details.categories.edit.title">Editing a Category</title>
+
+<para>
+  To edit a category, right-click on a category name, and choose "Edit". A  window comes up, with two tabs, "General" and "Tax". The General tab  allows you to edit the name of the category and change its parent category. Changing the parent category is also possible from the main category page by dragging the category to a different parent. The Tax tab enables automatic VAT assignment. 
+</para>
+
+</sect1>
+
+<sect1 id="details.categories.other"><title id="details.categories.other.title">Other Functionality</title>
+
+<para>
+  Right-clicking brings up other functionality, include adding new, renaming and deleting categories. Deleting is only possible if there are no transactions under that category. If a parent category is deleted, all the sub-categories are moved up one level.   
+</para>
+
+</sect1>
+
+</chapter>
