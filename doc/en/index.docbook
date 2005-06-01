@@ -1,6 +1,8 @@
 <?xml version="1.0" ?>
 <!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.1.2-Based Variant V1.0//EN" "dtd/kdex.dtd" [
 	<!ENTITY kappname "KMyMoney">
+	<!ENTITY devlist "<email>kmymoney2-developers@lists.sourceforge.net</email>">
+	<!ENTITY userlist "<email>kmymoney2-users@lists.sourceforge.net</email>">
 	<!ENTITY % addindex "IGNORE">
 	<!ENTITY % English "INCLUDE"><!-- change language only here -->
 
@@ -48,76 +50,51 @@
 
 <authorgroup>
 <author>
-<firstname>Michael</firstname>
-<othername>T.</othername>
-<surname>Edwardes</surname>
-<affiliation>
-<address><email>mte@users.sourceforge.net</email></address>
-</affiliation>
+	<firstname>Michael</firstname>
+	<othername>T.</othername>
+	<surname>Edwardes</surname>
+	<affiliation>
+		<address><email>mte@users.sourceforge.net</email></address>
+	</affiliation>
 </author>
 
 <author>
-<firstname>Thomas</firstname>
-<surname>Baumgart</surname>
-<affiliation>
-<address><email>ipwizard@users.sourceforge.net</email></address>
-</affiliation>
+	<firstname>Thomas</firstname>
+	<surname>Baumgart</surname>
+	<affiliation>
+		<address><email>ipwizard@users.sourceforge.net</email></address>
+	</affiliation>
 </author>
 
 <author>
-<firstname>Felix</firstname>
-<surname>Rodriguez</surname>
-<affiliation>
-<address><email>frodriguez@users.sourceforge.net</email></address>
-</affiliation>
+	<firstname>Ace</firstname>
+	<surname>Jones</surname>
+	<affiliation>
+		<address><email>acejones@users.sourceforge.net</email></address>
+	</affiliation>
 </author>
 
 <author>
-<firstname>Kevin</firstname>
-<surname>Tambasico</surname>
-<affiliation>
-<address><email>ktambascio@users.sourceforge.net</email></address>
-</affiliation>
-</author>
-
-<author>
-<firstname>Ace</firstname>
-<surname>Jones</surname>
-<affiliation>
-<address><email>acejones@users.sourceforge.net</email></address>
-</affiliation>
-</author>
-
-
-<author>
-<firstname>Michael</firstname>
-<surname>Caron</surname>
-<affiliation>
-<address><email>armadilloman@users.sourceforge.net</email></address>
-</affiliation>
-</author>
-
-<author>
-<firstname>Arni</firstname>
-<surname>Ingimundarson</surname>
-<affiliation>
-<address><email>arniing@users.sourceforge.net</email></address>
-</affiliation>
-</author>
-
-<author>
-<firstname>Laurent</firstname>
-<surname>Colonges</surname>
-<affiliation>
-<address><email>lcolonges@users.sourceforge.net</email></address>
-</affiliation>
-</author>
-
-<author>
-	<firstname>Marce</firstname>
+	<firstname>Marcellino</firstname>
 	<surname>Villarino</surname>
 	<affiliation>
 		<address><email>mvillarino@dubmail.net</email></address>
+	</affiliation>
+</author>
+
+<author>
+	<firstname>Tony</firstname>
+	<surname>Bloomfield</surname>
+	<affiliation>
+		<address><email>tonyb.lx@btinternet.com</email></address>
+	</affiliation>
+</author>
+
+<author>
+	<firstname>Darin</firstname>
+	<surname>Strait</surname>
+	<affiliation>
+		<address><email>darin.strait@ashdar-partners.com</email></address>
 	</affiliation>
 </author>
 
