@@ -1,6 +1,99 @@
 <chapter id="details.formats">
-<title>File Formats - Under development - UNASSIGNED</title>
+<title>File Formats</title>
+<author>
+<firstname>Thomas</firstname>
+<surname>Baumgart</surname>
+</author>
+
 <para>
+This chapter describes the formats in which &kappname; stores it's data in permanent form on the users disk. In
+general, &kappname; stores it's information in form of an XML document. Depending on the actual format, this
+XML document will be written
+
+<itemizedlist>
+<listitem>as <link linkend="details.formats.plain">plain text file</link> encoded in UTF-8,</listitem>
+
+<listitem>as <link linkend="details.formats.compressed">compressed file</link> using GZIP compression,</listitem>
+
+<listitem>as <link linkend="details.formats.encrypted">encrypted file</link> using GPG encryption or</listitem>
+
+<listitem>as <link linkend="details.formats.anonymous">anonymous plain text file</link> encoded in UTF-8 but with all your personal data scrambled.</listitem>
+</itemizedlist>
+
 </para>
+<sect1 id="details.formats.plain">
+<title>Plain text file</title>
+<para>
+This is the most space consuming format supported as no compression is performed. It is usually not used by normal
+user and provided to support debugging purposes and the capability to modify the file manually. If you end a filename in <literal role="extension">.xml</literal> the file will be stored in this format.
+
+<caution>
+Manual modification of the file is not recommended to the normal user and should only be performed if the internal
+working of &kappname; is fully understood or instructions from the developers tell you what to do. Don't blame the
+&kappname; developers if you screw up your data: You have been warned!
+</caution>
+</para>
+</sect1>
+
+<sect1 id="details.formats.compressed">
+<title>GZIP-compressed file</title>
+<para>
+This is the normal format used by &kappname; when you store a file with the extension <literal role="extension">.kmy</literal> 
+</para>
+<note>
+If <link linkend="details.formats.encrypted">encryption</link> has been selected, the file will be stored encrypted.
+</note>
+<para>
+If you want to look at a GZIP compressed file, rename it to a filename ending in <literal role="extension">.gz</literal> (e.g. <filename>myfinances.kmy</filename> into <filename>myfinances.kmy.gz</filename>, then use <command>gunzip</command> to uncompress the file and look at it. You don't have to compress it before loading it into &kappname; the next time, because &kappname; can read the uncompressed data as well. Nevertheless, if you save it thereafter, it will be saved compressed again. Use the <link linkend="details.formats.plain">.xml</link> extension to write it in uncompressed format.
+</para>
+</sect1>
+
+<sect1 id="details.formats.encrypted">
+<title>GPG-encrypted file</title>
+<para>
+Using the GPG-encrpyted file format is a very secure method to store your personal finance data on your disk. When &kappname; has been instructed through the settings dialog to store your data encrypted, it will cipher the data using GPG and the key you provided before actually storing it on disk. When opening an encrypted file, you have to provide the passphrase necessary to open your keyring. The encrypted file itself will be stored in GPG's <emphasis>ASCII armored</emphasis> format.
+<note>
+When using GPG encryption, GPG also compresses the file, so no extra compression is necessary.
+</note>
+</para>
+
+<sect2 id="details.formats.encrypted.gpgkeys">
+<title>GPG-Keys</title>
+<para>
+If you have not done so already for mail encryption, you need to generate a key-pair in order to be able to use the GPG encryption feature of &kappname;. Also, <application>GPG</application> must be installed on your system.
+</para>
+<para>
+The details about howto generate a key-pair, howto take care of it are beyond the scope of this document.
+ A Mini Howto on this subject can be found at <ulink url="http://webberr.dewinter.com/gnupg_howto/english/GPGMiniHowto.html">http://webberr.dewinter.com/gnupg_howto/english/GPGMiniHowto.html</ulink>.
+</para>
+</sect2>
+
+<sect2 id="details.formats.encrypted.keysettings">
+<title>Setting the keys in &kappname;</title>
+<para>
+On the security page of the settings dialog you have a field where you can enter the key-id of the key that should be used for encryption and decryption. You can use either the key-id, the e-mail address associated with this key or any other valid GPG key identification as value for this field. When you enter the key-id, &kappname; will check it's validity and turn on a green LED in the dialog if a key is found.
+<caution>
+ Make sure, you have both, the public and the private key for this id. If you don't own the private key for the id entered, you will not be able to open the file again.
+</caution>
+</para>
+</sect2>
+
+<sect2 id="details.formats.encrypted.recoverkey">
+<title>The &kappname; recover key</title>
+<para>
+Also on this page of the settings dialog you have the choice to select supplemental encryption with the &kappname; recover key. This option is available to you, if that key is stored in your <application>GPG</application> keyring. Selecting this option will allow you to recover your data even in the case you loose your own private key. This is possible, because the data is not only encrypted for your own key, but also for the &kappname; recover key. This key is only available to selected &kappname; developers (at the time of writing only to the author).
+</para>
+<para>
+Under normal circumstances, you will open/save/close your file as usual. In the abnormal case of loss of your key, you have the chance to contact one of the developers who has access to the &kappname; recover key and request help to recover your data. You may contact the developers via e-mail to the &kappname; developer mailing list at &devlist;.
+</para>
+</sect2>
+</sect1>
+
+<sect1 id="details.formats.anonymous">
+<title>Anonymous file</title>
+<para>
+This format is not intended to be used for normal data storage. It is supported as a method to supply the &kappname; development team with your file in case of a problem without disclosing any of your financial data. If instructed by the developers use the <guimenuitem>Save as...</guimenuitem> menu item to store your data in anonymous format by selecting <literal role="extension">.anon.xml</literal> as file extension. To verify that your problem still exists, reload this anonymized file and try to duplicate your problem. If it shows, send the file to the developer mailing list at &devlist; for further investigation. If the problem does not show ... well, I don't want to think about this scenario right now.
+</para>
+</sect1>
 </chapter>
 
