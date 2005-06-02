@@ -908,6 +908,18 @@ void KMyMoney2App::slotQifImportFinished(void)
 
 void KMyMoney2App::slotGncImport(void)
 {
+  if (myMoneyView->fileOpen()) {
+    switch (QMessageBox::question (0, PACKAGE, 
+         QObject::tr("You cannot import GnuCash data into an existing file. Do you wish to save this file?"),
+          QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel)) {
+    case QMessageBox::Yes:
+      slotFileSave();
+      break;
+    case QMessageBox::Cancel:
+      return;
+    }
+  }
+  
   QString prevMsg = slotStatusMsg(i18n("Importing a Gnucash file."));
 
   KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
@@ -916,9 +928,9 @@ void KMyMoney2App::slotGncImport(void)
   dialog->setMode(KFile::File | KFile::ExistingOnly);
 
   if(dialog->exec() == QDialog::Accepted) {
-    slotFileClose();
-    if(myMoneyView->fileOpen())
-      return;
+//    slotFileClose();
+//    if(myMoneyView->fileOpen())
+//      return;
 
     // call the importer
     myMoneyView->readFile(dialog->selectedURL());
@@ -1536,7 +1548,7 @@ void KMyMoney2App::updateCaption(const bool skipActions)
     actionFindTransaction->setEnabled(fileOpen);
     actionQifExport->setEnabled(fileOpen);
     actionQifImport->setEnabled(fileOpen);
-    actionGncImport->setEnabled(fileOpen);
+    actionGncImport->setEnabled(true);
     actionLoadTemplate->setEnabled(fileOpen);
     bankAdd->setEnabled(fileOpen);
     accountAdd->setEnabled(fileOpen);
