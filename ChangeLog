@@ -1,3 +1,6 @@
+2005-06-02 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Allow to open/import GnuCash files without suffix
+
 2005-05-31 Ace Jones <acejones@users.sourceforge.net>
   * Added Categories and Accounts help as submitted by
     Roger Lum <rogerlum@gmail.com>

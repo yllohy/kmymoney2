@@ -384,7 +384,7 @@ void KMyMoney2App::slotFileOpen()
   QString prevMsg = slotStatusMsg(i18n("Open a file."));
 
   KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
-                            i18n("%1|KMyMoney files\n%2|All files (*.*)").arg("*.kmy *.xml").arg("*.*"),
+                            i18n("%1|KMyMoney files\n%2|All files (*.*)").arg("*.kmy *.xml").arg("*"),
                             this, i18n("Open File..."), true);
   dialog->setMode(KFile::File | KFile::ExistingOnly);
 
@@ -911,7 +911,7 @@ void KMyMoney2App::slotGncImport(void)
   QString prevMsg = slotStatusMsg(i18n("Importing a Gnucash file."));
 
   KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
-                            i18n("%1|Gnucash files\n%2|All files (*.*)").arg("*.xac").arg("*.*"),
+                            i18n("%1|Gnucash files\n%2|All files (*.*)").arg("*").arg("*"),
                             this, i18n("Import Gnucash file..."), true);
   dialog->setMode(KFile::File | KFile::ExistingOnly);
 
