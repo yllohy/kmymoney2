@@ -915,6 +915,10 @@ void KMyMoney2App::slotGncImport(void)
     case QMessageBox::Yes:
       slotFileSave();
       break;
+    case QMessageBox::No:
+      myMoneyView->closeFile();
+      fileName = KURL();
+      break;
     case QMessageBox::Cancel:
       return;
     }
