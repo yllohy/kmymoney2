@@ -119,15 +119,14 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   // values for margin (11) and spacing(6) taken from KDialog implementation
   QBoxLayout* layout = new QBoxLayout(frame, QBoxLayout::TopToBottom, 11, 6);
 
+  myMoneyView = new KMyMoneyView(frame, "KMyMoneyView");
+  layout->addWidget(myMoneyView, 10);
+
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
   initStatusBar();
   initActions();
   readOptions();
-
-  myMoneyView = new KMyMoneyView(frame, "KMyMoneyView");
-  layout->addWidget(myMoneyView, 10);
-
 
   m_pluginSignalMapper = new QSignalMapper( this );
   connect( m_pluginSignalMapper, SIGNAL( mapped( const QString& ) ), this, SLOT( slotPluginImport( const QString& ) ) );
@@ -909,7 +908,7 @@ void KMyMoney2App::slotQifImportFinished(void)
 void KMyMoney2App::slotGncImport(void)
 {
   if (myMoneyView->fileOpen()) {
-    switch (QMessageBox::question (0, PACKAGE, 
+    switch (QMessageBox::question (0, PACKAGE,
          QObject::tr("You cannot import GnuCash data into an existing file. Do you wish to save this file?"),
           QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel)) {
     case QMessageBox::Yes:
@@ -923,7 +922,7 @@ void KMyMoney2App::slotGncImport(void)
       return;
     }
   }
-  
+
   QString prevMsg = slotStatusMsg(i18n("Importing a Gnucash file."));
 
   KFileDialog* dialog = new KFileDialog(KGlobalSettings::documentPath(),
