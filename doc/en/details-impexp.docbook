@@ -104,6 +104,7 @@
   This can be a problem if you have transactions that look too similar but are actually different.
   In this case, you can try turning off the &quot;Attempt to match similar transactions&quot; option in the QIF profile.
 </para>
+</sect2>
 
 <sect2><title>Supported file chunks</title>
 
