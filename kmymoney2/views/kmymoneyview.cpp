@@ -992,7 +992,6 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
   bool encryptedOk = true;
   bool encryptRecover = false;
   if(config->readBoolEntry("WriteDataEncrypted", false) != false) {
-    qDebug("Write encrypted");
     if(!KGPGFile::GPGAvailable()) {
       KMessageBox::sorry(this, i18n("GPG does not seem to be installed on your system. Please make sure, that GPG can be found using the standard search path. This time, encryption is disabled."), i18n("GPG not found"));
       encryptedOk = false;
