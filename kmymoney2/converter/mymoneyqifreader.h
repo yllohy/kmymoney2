@@ -41,6 +41,7 @@
 
 #include "mymoneyqifprofile.h"
 #include "../mymoney/mymoneyaccount.h"
+#include "../mymoney/mymoneytransaction.h"
 
 /**
   * @author Thomas Baumgart
@@ -329,6 +330,7 @@ private:
   bool                    m_warnedInvestment;
   bool                    m_warnedSecurity;
   bool                    m_warnedPrice;
+  QValueList<MyMoneyTransaction> m_transactionCache;
 
   QValueList<QByteArray>  m_data;
           

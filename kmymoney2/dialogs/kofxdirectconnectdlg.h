@@ -52,7 +52,7 @@ public:
   void init(void);  
 
 signals:
-  void statementReady(const MyMoneyOfxStatement&);
+  void statementReady(const QString&, const QString&);
 
 protected slots:
   void slotOfxFinished(KIO::Job*);

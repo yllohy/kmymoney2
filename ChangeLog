@@ -1,3 +1,11 @@
+2005-06-02 Ace Jones <acejones@users.sourceforge.net>
+  * Massive speed-up to QIF import.  3,000 transactions now takes less than a 
+    minute, instead of >45.  The progress dialog needs help, though.
+  * Fixed OFX direct connect, that has been broken since I purged the non-
+    plugin OFX importer.
+  * Changes to experiment with link replacement in home.html.  These are all
+    #if0'd out.
+
 2005-06-02 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Don't allow GnuCash import into existing file
 

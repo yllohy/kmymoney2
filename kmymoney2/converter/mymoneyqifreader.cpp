@@ -252,6 +252,8 @@ const bool MyMoneyQifReader::startImport(void)
   return rc;
 }
 
+#include <kprogress.h>
+
 const bool MyMoneyQifReader::finishImport(void)
 {
   bool  rc = false;
@@ -298,6 +300,32 @@ const bool MyMoneyQifReader::finishImport(void)
     qWarning("MyMoneyQifReader::finishImport() must not be called while the filter\n\tprocess is still running.");
   }
 #endif
+
+  // Add the transaction entries
+  KProgressDialog dlg(0,"transactionaddprogress",i18n("Adding transactions"),i18n("Now adding the transactions to your ledger..."));
+  dlg.progressBar()->setTotalSteps(m_transactionCache.count());
+  dlg.progressBar()->setTextEnabled(true);
+  dlg.setAllowCancel(true);
+  dlg.setLabel(i18n("Now adding the transactions to your ledger..."));
+  dlg.showCancelButton(true);
+  dlg.show();
+  MyMoneyFile* file = MyMoneyFile::instance();
+  file->suspendNotify(true);
+  QValueList<MyMoneyTransaction>::iterator it = m_transactionCache.begin();
+  while( it != m_transactionCache.end() )
+  {
+    if ( dlg.wasCancelled() )
+    {
+      m_userAbort = true;
+      rc = false;
+      break;
+    }
+    file->addTransaction(*it);
+    dlg.progressBar()->advance(1);
+    ++it;
+  }
+  file->suspendNotify(false);
+
   return rc;
 }
 
@@ -877,9 +905,10 @@ void MyMoneyQifReader::processTransactionEntry(void)
       }
     }
 
-    if ( oktoadd )     
-      file->addTransaction(t);
-    
+    if ( oktoadd )
+    {
+      m_transactionCache.push_back(t);      
+    }
   } catch (MyMoneyException *e) {
     QString message(i18n("Problem adding imported transaction: "));
     message += e->what();
@@ -1153,7 +1182,7 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     }
     if(it == list.end())
     {
-      file->addTransaction(t);
+      m_transactionCache.push_back(t);      
     }
   } catch (MyMoneyException *e) {
     QString message(i18n("Problem adding imported transaction: "));

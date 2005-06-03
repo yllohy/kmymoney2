@@ -25,6 +25,9 @@
 #include <qlayout.h>
 #include <qdatetime.h>
 #include <qapplication.h>
+#include <dom/dom_element.h>
+#include <dom/dom_doc.h>
+#include <dom/dom_text.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -81,27 +84,46 @@ void KHomeView::show()
   emit signalViewActivated();
 }
 
-#include <dom/dom_element.h>
-#include <dom/dom_doc.h>
-
 void KHomeView::slotRefreshView(void)
 {
   if(MyMoneyFile::instance()->accountList().count() == 0) {
     m_part->openURL(m_filename);
 
 #if 0
-    // test out the anchor replacement
+    // (ace) I am experimenting with replacing links in the
+    // html depending on the state of the engine.  It's not
+    // working.  That's why it's #if0'd out.
+    
     DOM::Element e = m_part->document().getElementById("test");
     if ( e.isNull() )
     {
-      qDebug("Element id=test not found\n");
+      qDebug("Element id=test not found");
     }
     else
     {
-      qDebug("Element id=test found!\n");
+      qDebug("Element id=test found!");
       QString tagname = e.tagName().string();
-      qDebug("%s\n",tagname.latin1());
-      qDebug("%s id=%s\n",e.tagName().string().latin1(),e.getAttribute("id").string().latin1());
+      qDebug("%s",tagname.latin1());
+      qDebug("%s id=%s",e.tagName().string().latin1(),e.getAttribute("id").string().latin1());
+      
+      // Find the character data node
+      DOM::Node n = e.firstChild();
+      while (!n.isNull())
+      {
+        qDebug("Child type %u",static_cast<unsigned>(n.nodeType()));
+        if ( n.nodeType() == DOM::Node::TEXT_NODE )
+        {
+          DOM::Text t = n;
+          t.setData("Success!!");
+          e.replaceChild(n,t);
+          m_part->document().setDesignMode(true);
+          m_part->document().importNode(e,true);
+          m_part->document().updateRendering();
+          
+          qDebug("Data is now %s",t.data().string().latin1());
+        }
+        n = n.nextSibling();
+      }
     }
 #endif
   } else {
@@ -515,11 +537,6 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
   QCString id = url.queryItem("id").data();
   QCString mode = url.queryItem("mode").data();
 
-//   qDebug("protocol = '%s'", protocol.latin1());
-//   qDebug("view = '%s'", view.latin1());
-//   qDebug("id = '%s'", static_cast<const char*>(id));
-//   qDebug("mode = '%s'", static_cast<const char*>(mode));
-
   if ( protocol == "http" )
   {
     KApplication::kApplication()->invokeBrowser(url.prettyURL());
@@ -565,11 +582,14 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
         Q_CHECK_PTR(mw);
         mw->actionCollection()->action( id )->activate();
 
-//         unsigned idx = mw->actionCollection()->count();
-//         while( idx-- )
-//         {
-//           qDebug("%u: %s\n",idx,mw->actionCollection()->action(idx)->name());
-//         }
+#if 0
+        // Enable this to get a dump of all action names
+        unsigned idx = mw->actionCollection()->count();
+        while( idx-- )
+        {
+          qDebug("%u: %s\n",idx,mw->actionCollection()->action(idx)->name());
+        }
+#endif
 
     } else if(view == VIEW_HOME) {
       slotRefreshView();
@@ -590,6 +610,5 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
 #undef VIEW_WELCOME
 #undef VIEW_HOME
 #undef VIEW_REPORTS
-
 
 #include "khomeview.moc"

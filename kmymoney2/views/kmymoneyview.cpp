@@ -699,8 +699,9 @@ void KMyMoneyView::slotAccountOfxConnect(void)
         KOfxDirectConnectDlg dlg(account);
 
         KMyMoney2App* mw = dynamic_cast<KMyMoney2App*>(kapp->mainWidget());
-        connect(&dlg,SIGNAL(statementReady(const MyMoneyOfxStatement&)),mw,SLOT(slotOfxStatementImport(const MyMoneyOfxStatement&)));
-
+        connect(&dlg,SIGNAL(statementReady(const QString&,const QString&)),mw,
+          SLOT(slotPluginImport(const QString&,const QString&)));
+        
         dlg.init();
         dlg.exec();
       }

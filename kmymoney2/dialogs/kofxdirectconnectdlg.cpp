@@ -19,6 +19,8 @@
 // QT Includes
 
 #include <qlabel.h>
+#include <qfile.h>
+#include <qtextstream.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -109,7 +111,7 @@ void KOfxDirectConnectDlg::slotOfxData(KIO::Job*,const QByteArray& _ba)
   setDetails(QString("Got %1 bytes").arg(_ba.size()));
 }
 
-void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job*)
+void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job*e)
 {
   kProgress1->advance(1);
   setStatus("Completed.");
@@ -128,22 +130,37 @@ void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job*)
       delete m_tmpfile;
     }
     m_tmpfile = 0;
+  } 
+  else if ( m_job->isErrorPage() )
+  {
+    QString details;
+    QFile f( m_tmpfile->name() );
+    if ( f.open( IO_ReadOnly ) )
+    {
+      QTextStream stream( &f );
+      QString line;
+      int i = 1;
+      while ( !stream.atEnd() ) {
+          details += stream.readLine(); // line of text excluding '\n'
+      }
+      f.close();
+      
+      kdDebug(2) << "The HTTP request failed: " << details << endl;
+    }
+    KMessageBox::detailedSorry( this, i18n("The HTTP request failed."), details, i18n("Failed") );
   }
   else if ( m_tmpfile )
   {
-    m_tmpfile->close();
+    m_tmpfile->close();  
 
-    delete m_statement;
-
-    m_statement = new MyMoneyOfxStatement(m_tmpfile->name());
-
+    emit statementReady("OFX",m_tmpfile->name());
+    
 // TODO: unlink this file, when I'm sure this is all really working.
 // in the meantime, I'll leave the file around to assist people in debugging.
 //     m_tmpfile->unlink();
     delete m_tmpfile;
     m_tmpfile = 0;
-
-    emit statementReady(*m_statement);
+    
   }
   hide();
 }

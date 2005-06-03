@@ -995,6 +995,40 @@ void KMyMoney2App::slotPluginImport(const QString& format)
   }
 }
 
+void KMyMoney2App::slotPluginImport(const QString& format, const QString& url)
+{
+  kdDebug() << __PRETTY_FUNCTION__ << ": Activated '" << format << "'plugin." << endl;
+
+  if ( m_importerPlugins.contains(format) )
+  {
+    KMyMoneyPlugin::ImporterPlugin* plugin = m_importerPlugins[format];
+
+    QString prevMsg = slotStatusMsg(i18n("Importing a statement using %1 plugin").arg(format));
+
+    if ( plugin->isMyFormat(url) )
+    {
+      QValueList<MyMoneyStatement> statements;
+      if ( plugin->import(url,statements) )
+      {
+        slotStatementImport(statements);
+      }
+      else
+      {
+        KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  The plugin returned the following error: %3").arg(url,format,plugin->lastError()), i18n("Importing error"));
+      }
+    }
+    else
+    {
+        KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  This file is not the correct format.").arg(url,format), i18n("Incorrect format"));
+    }
+    slotStatusMsg(prevMsg);
+  }
+  else
+  {
+    KMessageBox::error( this, i18n("Unable to import <b>%1</b> file.  There is no such plugin loaded.").arg(format), i18n("Function not available"));
+  }
+}
+
 //
 // KMyMoney2App::slotStatementImport() is for testing only.  The MyMoneyStatement
 // is not intended to be exposed to users in XML form.
