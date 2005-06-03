@@ -72,7 +72,7 @@
 </para>
 </sect2>
 
-<sect2><title>Understanding apostrophe format</title>
+<sect2><title>Apostrophe format</title>
 
 <para>
 	Many common QIF writers use a 2-digit representation for the year. 
@@ -86,10 +86,25 @@
 	Because the QIF format is not standardized, it's impossible to know which century is desired.
 	This is why you have to explicitly state it in the QIF profile.
 	You do this by specifying which century is intended when an apostrophe is found.
-	In the example above, you would set the Apostrophe Format to &quot;2000-2099&quot;, so dates with an apostrophe will be interpreted as being > year 2000.
+	In the example above, you would set the Apostrophe Format to &quot;2000-2099&quot;, so dates with an apostrophe will be interpreted as being &gt; year 2000.
 	In this case, dates without an apostrophe will be treated as being in the 1900's.
 </para>
 </sect2>
+
+<sect2><title>Transaction matching</title>
+
+<para>
+  As noted previously, one of the major drawbacks of the QIF format is the lack of a unique identifier for each transaction.  
+  Thus, if you import a QIF file and some of the transactions are already in your ledger, you may get duplicates.  
+  KMM attempts to get around this by looking for transactions that look similiar to those you already have.
+  If it finds something that looks like the same transaction, it will discard the apparant duplicate.
+</para>
+
+<para>
+  This can be a problem if you have transactions that look too similar but are actually different.
+  In this case, you can try turning off the &quot;Attempt to match similar transactions&quot; option in the QIF profile.
+</para>
+
 <sect2><title>Supported file chunks</title>
 
 <para>
@@ -98,7 +113,7 @@
 </para>
 </sect2>
 
-<sect2><title>Writing an import filter (NEW)</title>
+<sect2><title>Writing an import filter</title>
 
 <para>
 	Sometimes you may have data in a custom format, like comma-separated-values (CSV), or something else unique to your situation.  
@@ -180,6 +195,7 @@
 	After importing, some of your transactions may be flashing red in the ledger.  
 	This is because they need to be assigned a category.  
 	The importer was not able to automatically assign a category based on your past transaction history.
+  You can edit each flashing transaction in the ledger to assign a category, and it will then stop flashing red.
 </para>
 <para>
 	Please note that this section describes the &quot;native&quot; OFX importer.  
@@ -230,7 +246,7 @@
 </sect1>
 
 <sect1 id="details.impexp.plugins">
-					<title>Writing Importer Plugins (NEW)</title>
+					<title>Writing Importer Plugins</title>
 
 <para>
 	KMyMoney contains explicit support for importer plugins.  
