@@ -75,15 +75,15 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     //
     // Rework labelling
     //
-    
+
     setCaption( tr2i18n( "Report Configuration" ) );
     delete TextLabel1;
 
     //
     // Rework the buttons
     //
-    
-    
+
+
     m_searchButton->setText( tr2i18n( "OK" ) );
     m_searchButton->disconnect();
     m_resetButton->disconnect();
@@ -100,13 +100,13 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     //
 
     m_tab1 = new kMyMoneyReportConfigTab1Decl( m_criteriaTab, "kMyMoneyReportConfigTab1" );
-    m_criteriaTab->insertTab( m_tab1, QString("Report"), 0 );
-    
+    m_criteriaTab->insertTab( m_tab1, i18n("Report"), 0 );
+
     if ( m_initialState.reportType() == MyMoneyReport::ePivotTable )
     {
       m_tab2 = new kMyMoneyReportConfigTab2Decl( m_criteriaTab, "kMyMoneyReportConfigTab2" );
-      m_criteriaTab->insertTab( m_tab2, QString("Rows/Columns"), 1 );
-    }    
+      m_criteriaTab->insertTab( m_tab2, i18n( "Rows/Columns"), 1 );
+    }
     else if ( m_initialState.reportType() == MyMoneyReport::eQueryTable )
     {
       // eInvestmentHoldings is a special-case report, and you cannot configure the
@@ -114,17 +114,17 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
       if ( m_initialState.rowType() < MyMoneyReport::eAccountByTopAccount )
       {
         m_tab3 = new kMyMoneyReportConfigTab3Decl( m_criteriaTab, "kMyMoneyReportConfigTab3" );
-        m_criteriaTab->insertTab( m_tab3, QString("Rows/Columns"), 1 );
+        m_criteriaTab->insertTab( m_tab3, i18n("Rows/Columns"), 1 );
       }
     }
-    
+
     m_criteriaTab->showPage( m_tab1 );
     m_criteriaTab->setMinimumSize( 500,200 );
-    
+
     //
     // Now set up the widgets with proper values
     //
-        
+
     slotReset();
 }
 
@@ -149,10 +149,10 @@ void KReportConfigurationFilterDlg::slotSearch()
   if ( m_tab2 )
   {
     m_currentState.setShowSubAccounts( ! m_tab2->m_checkShowTop->isChecked() );
-  
+
     MyMoneyReport::ERowType rt[2] = { MyMoneyReport::eExpenseIncome, MyMoneyReport::eAssetLiability };
     m_currentState.setRowType( rt[m_tab2->m_comboRows->currentItem()] );
-    
+
     MyMoneyReport::EColumnType ct[4] = { MyMoneyReport::eMonths, MyMoneyReport::eBiMonths, MyMoneyReport::eQuarters, MyMoneyReport::eYears };
     m_currentState.setColumnType( ct[m_tab2->m_comboColumns->currentItem()] );
   }
@@ -160,9 +160,9 @@ void KReportConfigurationFilterDlg::slotSearch()
   {
     MyMoneyReport::ERowType rtq[7] = { MyMoneyReport::eCategory, MyMoneyReport::eTopCategory, MyMoneyReport::ePayee, MyMoneyReport::eAccount, MyMoneyReport::eTopAccount, MyMoneyReport::eMonth, MyMoneyReport::eWeek };
     m_currentState.setRowType( rtq[m_tab3->m_comboOrganizeBy->currentItem()] );
-    
+
     unsigned qc = MyMoneyReport::eQCnone;
-    
+
     if ( m_tab3->m_checkNumber->isChecked() )
       qc |= MyMoneyReport::eQCnumber;
     if ( m_tab3->m_checkPayee->isChecked() )
@@ -181,17 +181,17 @@ void KReportConfigurationFilterDlg::slotSearch()
       qc |= MyMoneyReport::eQCshares;
     if ( m_tab3->m_checkPrice->isChecked() )
       qc |= MyMoneyReport::eQCprice;
-      
+
     m_currentState.setQueryColumns(static_cast<MyMoneyReport::EQueryColumns>(qc));
-    
+
     m_currentState.setTax( m_tab3->m_checkTax->isChecked() );
     m_currentState.setInvestmentsOnly( m_tab3->m_checkInvestments->isChecked() );
   }
-  
+
   // setup the date lock
   unsigned range = m_dateRange->currentItem();
   m_currentState.setDateFilter(range);
-  
+
   done(true);
 }
 
@@ -204,21 +204,21 @@ void KReportConfigurationFilterDlg::slotReset(void)
   //
   // Report Properties
   //
-  
+
   m_tab1->m_editName->setText( m_initialState.name() );
   m_tab1->m_editComment->setText( m_initialState.comment() );
   m_tab1->m_checkCurrency->setChecked( m_initialState.isConvertCurrency() );
   m_tab1->m_checkFavorite->setChecked( m_initialState.isFavorite() );
-  
+
   if ( m_tab2 )
   {
     m_tab2->m_checkShowTop->setChecked( ! m_initialState.isShowingSubAccounts() );
-    
+
     if ( m_initialState.rowType() == MyMoneyReport::eExpenseIncome )
       m_tab2->m_comboRows->setCurrentItem(0);
     else
       m_tab2->m_comboRows->setCurrentItem(1);
-    
+
     switch ( m_initialState.columnType() )
     {
     case MyMoneyReport::eNoColumns:
@@ -237,7 +237,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
     }
   }
   else if ( m_tab3 )
-  {  
+  {
     switch ( m_initialState.rowType() )
     {
     case MyMoneyReport::eNoColumns:
@@ -269,8 +269,8 @@ void KReportConfigurationFilterDlg::slotReset(void)
     case MyMoneyReport::eAssetLiability:
     case MyMoneyReport::eExpenseIncome:
       throw new MYMONEYEXCEPTION("KReportConfigurationFilterDlg::slotReset(): QueryTable report has invalid rowtype");
-    }  
-    
+    }
+
     unsigned qc = m_initialState.queryColumns();
     m_tab3->m_checkNumber->setChecked(qc & MyMoneyReport::eQCnumber);
     m_tab3->m_checkPayee->setChecked(qc & MyMoneyReport::eQCpayee);
@@ -281,11 +281,11 @@ void KReportConfigurationFilterDlg::slotReset(void)
     m_tab3->m_checkAction->setChecked(qc & MyMoneyReport::eQCaction);
     m_tab3->m_checkShares->setChecked(qc & MyMoneyReport::eQCshares);
     m_tab3->m_checkPrice->setChecked(qc & MyMoneyReport::eQCprice);
-    
+
     m_tab3->m_checkTax->setChecked( m_initialState.isTax() );
     m_tab3->m_checkInvestments->setChecked( m_initialState.isInvestmentsOnly() );
   }
-      
+
   //
   // Text Filter
   //
@@ -464,7 +464,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
   }
 
   //QTimer::singleShot(0, this, SLOT(slotRightSize()));
-  
+
   slotRightSize();
 }
 
@@ -477,16 +477,16 @@ void KReportConfigurationFilterDlg::slotHelp(void)
   te.setReadOnly(true);
   te.setTextFormat(Qt::RichText);
   QString text;
-  
-  text += "<h1>" + m_tab1->caption() + "</h1>" + QWhatsThis::textFor( m_tab1 );  
+
+  text += "<h1>" + m_tab1->caption() + "</h1>" + QWhatsThis::textFor( m_tab1 );
   text += "<h3>" + m_tab1->textLabel6->text() + "</h3>" + QToolTip::textFor( m_tab1->m_editName );
   text += "<h3>" + m_tab1->textLabel7->text() + "</h3>" + QToolTip::textFor( m_tab1->m_editComment );
   text += "<h3>" + m_tab1->m_checkCurrency->text() + "</h3>" + QToolTip::textFor( m_tab1->m_checkCurrency );
   text += "<h3>" + m_tab1->m_checkFavorite->text() + "</h3>" + QToolTip::textFor( m_tab1->m_checkFavorite );
-  
+
   if ( m_tab2 )
   {
-    text += "<h1>" + m_tab2->caption() + "</h1>" + QWhatsThis::textFor( m_tab2 );  
+    text += "<h1>" + m_tab2->caption() + "</h1>" + QWhatsThis::textFor( m_tab2 );
     text += "<h3>" + m_tab2->textLabel4->text() + "</h3>" + QToolTip::textFor( m_tab2->m_comboColumns );
     text += "<h3>" + m_tab2->textLabel5->text() + "</h3>" + QToolTip::textFor( m_tab2->m_comboRows );
     text += "<h3>" + m_tab2->m_checkShowTop->text() + "</h3>" + QToolTip::textFor( m_tab2->m_checkShowTop );
@@ -494,20 +494,20 @@ void KReportConfigurationFilterDlg::slotHelp(void)
 
   if ( m_tab3 )
   {
-    text += "<h1>" + m_tab3->caption() + "</h1>" + QWhatsThis::textFor( m_tab3 );  
+    text += "<h1>" + m_tab3->caption() + "</h1>" + QWhatsThis::textFor( m_tab3 );
     text += "<h3>" + m_tab3->textLabel3->text() + "</h3>" + QToolTip::textFor( m_tab3->m_comboOrganizeBy );
     text += "<h3>" + m_tab3->buttonGroup1->title() + "</h3>" + QToolTip::textFor( m_tab3->buttonGroup1 );
     text += "<h3>" + m_tab3->m_checkTax->text() + "</h3>" + QToolTip::textFor( m_tab3->m_checkTax );
   }
-      
+
   te.setText(text);
   dlg.setCaption(i18n("Report Configuration Help"));
   unsigned width = QApplication::desktop()->width();
   unsigned height = QApplication::desktop()->height();
 
-  te.setMinimumSize(width/2,height/2);  
+  te.setMinimumSize(width/2,height/2);
   layout.setResizeMode(QLayout::Minimum);
-  
+
   dlg.exec();
 }
 

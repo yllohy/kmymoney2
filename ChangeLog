@@ -1,3 +1,7 @@
+2005-06-03 Ace Jones <acejones@users.sourceforge.net>
+  * Added some i18n's in report configuration.  Submitted by Laurent Montel
+    <montel@kde.org>
+    
 2005-06-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Add a bit of code that got lost yesterday
 
