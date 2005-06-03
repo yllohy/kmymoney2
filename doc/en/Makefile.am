@@ -18,7 +18,7 @@ index.cache.bz2: $(DOCBOOK_FILES) $(KDE_XSL_STYLESHEET) $(SCREENSHOT_FILES)
 
 .PHONY: show
 preview:
-	$(MEINPROC) --stylesheet $(kde_datadir)/ksgmltools2/customization/kde-nochunk.xsl  $(srcdir)/index.docbook -o index.html
+	$(MEINPROC) --check --stylesheet $(kde_datadir)/ksgmltools2/customization/kde-nochunk.xsl  $(srcdir)/index.docbook -o index.html
 
 # The automatic KDE install installs some files,
 # that we don't need, so we remove them immediately.
