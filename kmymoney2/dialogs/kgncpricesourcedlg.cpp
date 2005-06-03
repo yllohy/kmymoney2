@@ -44,8 +44,8 @@ KGncPriceSourceDlg::KGncPriceSourceDlg(QString stockName, QString gncSource){
   connect( buttonGroup5, SIGNAL( released(int) ), this, SLOT( buttonPressed(int) ) );
   connect( buttonHelp, SIGNAL( clicked() ), this, SLOT( slotHelp() ) );
   // initialize data fields
-  textStockName->setText (QObject::tr ("Investment: ") + stockName);
-  textGncSource->setText (QObject::tr ("Quote source: ") + gncSource);
+  textStockName->setText (i18n ("Investment: %1").arg(stockName));
+  textGncSource->setText (i18n ("Quote source: %1").arg(gncSource));
   listKnownSource->insertStringList (WebPriceQuote::quoteSources());
   lineUserSource->setText (gncSource);
   checkAlwaysUse->setChecked(true);
@@ -99,7 +99,7 @@ QString KGncPriceSourceDlg::selectedSource() {
 void KGncPriceSourceDlg::slotHelp(void)
 {
 
-  QString helpstring = QObject::tr(
+  QString helpstring = i18n(
   "<h1>Online Quote Price Sources</h1>"
   "<p>For obtaining the latest prices of investments, GnuCash uses a collection of Perl scripts"
   " under the name of Finance::Quote. A number of such scripts have been developed over the years,"
@@ -117,7 +117,7 @@ void KGncPriceSourceDlg::slotHelp(void)
   "<p>Please be aware that some of the sources used may have restrictions on the use"
   " which you make of their prices. You should consult the Terms and Conditions of these sites"
   " to ensure that you are abiding by any such rules.</p>" );
-  
+
   QDialog dlg;
   QVBoxLayout layout( &dlg, 11, 6, "Layout17");
   KTextBrowser te(&dlg,"Help");

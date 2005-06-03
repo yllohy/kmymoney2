@@ -50,7 +50,7 @@ KGncImportOptionsDlg::~KGncImportOptionsDlg()
 
 void KGncImportOptionsDlg::slotHelp(void)
 {
-  QString helpstring = QObject::tr(
+  QString helpstring = i18n(
   "<h1>GnuCash Import Options</h1>"
   "<h2>Investment Options</h2>"
     "<p>In KMyMoney, all accounts representing investments (stocks, shares, bonds, etc.) must "
@@ -59,7 +59,7 @@ void KGncImportOptionsDlg::slotHelp(void)
     "please select one of the following options.</p>"
      "<p>o create a separate investment account for each stock with the same name as the stock</p>"
      "<p>o create a single investment account to hold all stocks - you will be asked for a name</p>"
-     "<p>o create multiple investment accounts - you will be asked for a name for each stock</p>" 
+     "<p>o create multiple investment accounts - you will be asked for a name for each stock</p>"
   "<h2>Scheduled Transactions</h2>"
     "<p>Due to differences in implementation, it is not always possible to import scheduled "
     "transactions correctly. Though best efforts are made, it may be that some "
@@ -69,7 +69,7 @@ void KGncImportOptionsDlg::slotHelp(void)
     "A report of which transactions were dropped, and why, will be produced on screen.</p>"
   "<h2>Debug Options</h2>"
   "<p>These should only be used under developer direction (or at your own risk!).</p>" );
-  
+
   QDialog dlg;
   QVBoxLayout layout( &dlg, 11, 6, "Layout17");
   KTextBrowser te(&dlg,"Help");
@@ -80,9 +80,9 @@ void KGncImportOptionsDlg::slotHelp(void)
   dlg.setCaption(i18n("GnuCash Import Options Help"));
   unsigned width = QApplication::desktop()->width();
   unsigned height = QApplication::desktop()->height();
-  te.setMinimumSize(width/2,height/2);  
+  te.setMinimumSize(width/2,height/2);
   layout.setResizeMode(QLayout::Minimum);
-  dlg.exec();  
+  dlg.exec();
 }
 
 #include "kgncimportoptionsdlg.moc"

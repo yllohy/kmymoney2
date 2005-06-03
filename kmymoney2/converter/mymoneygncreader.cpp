@@ -31,6 +31,7 @@ email                : mte@users.sourceforge.net
 #include <qfiledialog.h>
 #include <qinputdialog.h>
 #include <qdatetime.h>
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -124,15 +125,15 @@ void GncObject::checkVersion (const QString& elName, const QXmlAttributes& elAtt
   static bool validHeaderFound = false;
   TRY
   if (!validHeaderFound) {  // check the header first
-    if (elName != "gnc-v2") throw new MYMONEYEXCEPTION (QObject::tr("Invalid header for file. Should be gnc-v2"));
+    if (elName != "gnc-v2") throw new MYMONEYEXCEPTION (i18n("Invalid header for file. Should be gnc-v2"));
   }
   validHeaderFound = true;
 
   for (uint i = 0; versionList[i] != "zzz"; i++) {
     if (versionList[i].section (' ', 0, 0) == elName) {
       if (elAttrs.value("version") != versionList[i].section(' ', 1, 1)) {
-        QString em = (QObject::tr(QString().sprintf("chkVersion: Element %s must have version %s",
-                                  elName.latin1(), versionList[i].section(' ', 1, 1).latin1())));
+          QString em = i18n("chkVersion: Element %1 must have version %2")
+                          .arg(elName).arg(versionList[i].section(' ', 1, 1));
         throw new MYMONEYEXCEPTION (em);
       }
     }
@@ -199,11 +200,11 @@ QString GncObject::hide (QString data, unsigned int anonClass) {
   switch (anonClass) {
   case ASIS: break;                  // this is not personal data
   case SUPPRESS: result = ""; break; // this is personal and is not essential
-  case NXTACC: result.sprintf ("%s %.6d", QObject::tr("Account").latin1(), ++nextAccount); break; // generate account name
+  case NXTACC: result = i18n("Account %1").arg(++nextAccount, 6); break; // generate account name
   case NXTEQU:   // generate/return an equity name
     it = anonStocks.find (data);
     if (it == anonStocks.end()) {
-      result.sprintf ("%s %.6d", QObject::tr("Stock").latin1(), ++nextEquity);
+      result = i18n("Stock %1").arg(++nextEquity, 6);
       anonStocks.insert (data, result);
     } else {
       result = (*it).data();
@@ -212,13 +213,13 @@ QString GncObject::hide (QString data, unsigned int anonClass) {
   case NXTPAY:   // genearet/return a payee name
     it = anonPayees.find (data);
     if (it == anonPayees.end()) {
-      result.sprintf ("%s %.6d", QObject::tr("Payee").latin1(), ++nextPayee);
+      result = i18n("Payee").arg(++nextPayee, 6);
       anonPayees.insert (data, result);
     } else {
       result = (*it).data();
     }
     break;
-  case NXTSCHD: result.sprintf ("%s %.6d", QObject::tr("Schedule").latin1(), ++nextSched); break; // generate a schedule name
+  case NXTSCHD: result = i18n("Schedule").arg(++nextSched, 6); break; // generate a schedule name
   case MONEY1:
     in = MyMoneyMoney(data);
     if (data == "-1/0") in = MyMoneyMoney (0); // spurious gnucash data - causes a crash sometimes
@@ -238,7 +239,7 @@ QString GncObject::hide (QString data, unsigned int anonClass) {
   return (result);
   PASS
 }
- 
+
 // dump current object data values // only called if gncdebug set
 void GncObject::debugDump () {
   uint i;
@@ -268,7 +269,7 @@ GncObject *GncFile::startSubEl() {
   GncObject *next = 0;
   switch (m_state) {
   case BOOK:
-    if (m_bookFound) throw new MYMONEYEXCEPTION (QObject::tr("This version of the importer cannot handle multi-book files."));
+    if (m_bookFound) throw new MYMONEYEXCEPTION (i18n("This version of the importer cannot handle multi-book files."));
     m_bookFound = true;
     break;
   case COUNT: next = new GncCountData; break;
@@ -758,7 +759,7 @@ void XmlReader::processFile (QIODevice* pDevice) {
   m_reader->setContentHandler (this);
   // go read the file
   if (!m_reader->parse (m_source)) {
-    throw new MYMONEYEXCEPTION (QObject::tr("Input file cannot be parsed; may be corrupt\n%s", errorString().latin1()));
+    throw new MYMONEYEXCEPTION (i18n("Input file cannot be parsed; may be corrupt\n%s", errorString().latin1()));
   }
   delete m_reader;
   delete m_source;
@@ -815,7 +816,7 @@ bool XmlReader::startElement (const QString&, const QString&, const QString& elN
   } catch (MyMoneyException *e) {
 #ifndef _GNCFILEANON
     // we can't pass on exceptions here coz the XML reader won't catch them and we just abort
-    QMessageBox::critical (0, PACKAGE, QObject::tr("Import failed\n\n") + e->what(),
+    QMessageBox::critical (0, PACKAGE, i18n("Import failed\n\n") + e->what(),
                            QMessageBox::Abort, QMessageBox::NoButton , QMessageBox::NoButton);
     qFatal ("%s", e->what().latin1());
 #else
@@ -851,7 +852,7 @@ bool XmlReader::endElement( const QString&, const QString&, const QString&elName
   } catch (MyMoneyException *e) {
 #ifndef _GNCFILEANON
     // we can't pass on exceptions here coz the XML reader won't catch them and we just abort
-    QMessageBox::critical (0, PACKAGE, QObject::tr("Import failed\n\n") + e->what(),
+    QMessageBox::critical (0, PACKAGE, i18n("Import failed\n\n") + e->what(),
                            QMessageBox::Abort, QMessageBox::NoButton , QMessageBox::NoButton);
     qFatal ("%s", e->what().latin1());
 #else
@@ -893,7 +894,7 @@ bool XmlReader::endDocument() {
 /*******************************************************************************************
                                  Main class for this module
   Controls overall operation of the importer
-********************************************************************************************/ 
+********************************************************************************************/
 //***************** Constructor ***********************
 MyMoneyGncReader::MyMoneyGncReader() {
 #ifndef _GNCFILEANON
@@ -919,14 +920,14 @@ void MyMoneyGncReader::readFile(QIODevice* pDevice, IMyMoneySerialize* storage) 
   setOptions ();
   // get a file anonymization factor from the user
   if (bAnonymize) setFileHideFactor ();
-  m_defaultPayee = createPayee (QObject::tr("Unknown payee"));
+  m_defaultPayee = createPayee (i18n("Unknown payee"));
 
   xr = new XmlReader (this);
   try {
     xr->processFile (pDevice);
     terminate (); // do all the wind-up things
   } catch (MyMoneyException *e) {
-    QMessageBox::critical (0, PACKAGE, QObject::tr("Import failed\n\n") + e->what(),
+    QMessageBox::critical (0, PACKAGE, i18n("Import failed\n\n") + e->what(),
                            QMessageBox::Abort, QMessageBox::NoButton , QMessageBox::NoButton);
     qFatal ("%s", e->what().latin1());
   } // end catch
@@ -963,7 +964,7 @@ int main (int argc, char ** argv) {
     QApplication a (argc, argv);
     MyMoneyGncReader m;
     QString inFile, outFile;
-    
+
     if (argc > 0) inFile = a.argv()[1];
     if (argc > 1) outFile = a.argv()[2];
     if (inFile.isEmpty()) {
@@ -985,11 +986,11 @@ void MyMoneyGncReader::setFileHideFactor () {
     m_fileHideFactor = 0.0;
     while (m_fileHideFactor == 0.0) {
       m_fileHideFactor = QInputDialog::getDouble (
-        QObject::tr ("Disguise your wealth"),
-        QObject::tr (QString ("Each monetary value on your file will be multiplied by a random number between 0.01 and 1.99\n"
+        i18n ("Disguise your wealth"),
+        i18n ("Each monetary value on your file will be multiplied by a random number between 0.01 and 1.99\n"
 	             "with a different value used for each transaction. In addition, to further disguise the true\n"
 		             "values, you may enter a number between %1 and %2 which will be applied to all values.\n"
-		             "These numbers will not be stored in the file.").arg(MINFILEHIDEF).arg(MAXFILEHIDEF)),
+		             "These numbers will not be stored in the file.").arg(MINFILEHIDEF).arg(MAXFILEHIDEF),
         	(1.0 + (int)(1000.0 * rand() / (RAND_MAX + 1.0))) / 100.0,
         MINFILEHIDEF, MAXFILEHIDEF, 2);
     }
@@ -999,7 +1000,7 @@ void MyMoneyGncReader::setFileHideFactor () {
 void MyMoneyGncReader::convertCommodity (const GncCommodity *gcm) {
   Q_CHECK_PTR (gcm);
   MyMoneySecurity equ;
-  if (m_commodityCount == 0) signalProgress (0, gcm->gncCommodityCount(), QObject::tr("Loading commodities..."));
+  if (m_commodityCount == 0) signalProgress (0, gcm->gncCommodityCount(), i18n("Loading commodities..."));
   if (!gcm->isCurrency()) { // currencies should not be present here but...
     equ.setName (gcm->name());
     equ.setTradingSymbol (gcm->id());
@@ -1023,10 +1024,10 @@ void MyMoneyGncReader::convertCommodity (const GncCommodity *gcm) {
 void MyMoneyGncReader::convertPrice (const GncPrice *gpr) {
   Q_CHECK_PTR (gpr);
   // add this to our price history
-  if (m_priceCount == 0) signalProgress (0, 1, QObject::tr("Loading prices..."));
+  if (m_priceCount == 0) signalProgress (0, 1, i18n("Loading prices..."));
   if (gpr->commodity()->isCurrency()) {
     MyMoneyPrice exchangeRate (gpr->commodity()->id().utf8(), gpr->currency()->id().utf8(),
-                               gpr->priceDate(), MyMoneyMoney(gpr->value()), QObject::tr("Imported History"));
+                               gpr->priceDate(), MyMoneyMoney(gpr->value()), i18n("Imported History"));
     m_storage->addPrice (exchangeRate);
   } else {
     MyMoneySecurity e = m_storage->security(m_mapEquities[gpr->commodity()->id().utf8()]);
@@ -1034,7 +1035,7 @@ void MyMoneyGncReader::convertPrice (const GncPrice *gpr) {
                             gpr->commodity()->id().latin1(), e.id().data());
     e.setTradingCurrency (gpr->currency()->id().utf8());
     MyMoneyMoney priceValue(gpr->value());
-    MyMoneyPrice stockPrice(e.id(), gpr->currency()->id().utf8(), gpr->priceDate(), priceValue, QObject::tr("Imported History"));
+    MyMoneyPrice stockPrice(e.id(), gpr->currency()->id().utf8(), gpr->priceDate(), priceValue, i18n("Imported History"));
     m_storage->addPrice (stockPrice);
     m_storage->modifySecurity(e);
   }
@@ -1048,7 +1049,7 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
   TRY
 
   MyMoneyAccount acc;
-  if (m_accountCount == 0) signalProgress (0, gac->gncAccountCount(), QObject::tr("Loading accounts..."));
+  if (m_accountCount == 0) signalProgress (0, gac->gncAccountCount(), i18n("Loading accounts..."));
   acc.setName(gac->name());
 
   acc.setDescription(gac->desc());
@@ -1096,7 +1097,7 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
     acc.setAccountType(MyMoneyAccount::Liability);
   } else { // we have here an account type we can't currently handle
     QString em =
-      (QObject::tr(QString().sprintf("Current importer does not recognize GnuCash account type %s", gac->type().latin1())));
+      i18n("Current importer does not recognize GnuCash account type %1", gac->type());
     throw new MYMONEYEXCEPTION (em);
   }
   // if no parent account is present, assign to one of our standard accounts
@@ -1160,7 +1161,7 @@ void MyMoneyGncReader::convertTransaction (const GncTransaction *gtx) {
   MyMoneySplit split;
   unsigned int i;
 
-  if (m_transactionCount == 0) signalProgress (0, gtx->gncTransactionCount(), QObject::tr("Loading transactions..."));
+  if (m_transactionCount == 0) signalProgress (0, gtx->gncTransactionCount(), i18n("Loading transactions..."));
   // initialize class variables related to transactions
   m_txCommodity = "";
   m_txPayeeId = m_defaultPayee;
@@ -1281,7 +1282,7 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
         if (gncdebug) qDebug ("added price for %s, %s date %s",
         e.name().latin1(), price.toString().latin1(), m_txDatePosted.toString(Qt::ISODate).latin1());
         m_storage->modifySecurity(e);
-        MyMoneyPrice dealPrice (e.id(), m_txCommodity, m_txDatePosted, newPrice, QObject::tr("Imported Transaction"));
+        MyMoneyPrice dealPrice (e.id(), m_txCommodity, m_txDatePosted, newPrice, i18n("Imported Transaction"));
         m_storage->addPrice (dealPrice);
       }
     } else { // not stock
@@ -1325,7 +1326,7 @@ MyMoneyTransaction MyMoneyGncReader::convertTemplateTransaction (const QString s
   MyMoneyTransaction tx;
   MyMoneySplit split;
   unsigned int i;
-  if (m_templateCount == 0) signalProgress (0, 1, QObject::tr("Loading templates..."));
+  if (m_templateCount == 0) signalProgress (0, 1, i18n("Loading templates..."));
 
   // initialize class variables related to transactions
   m_txCommodity = "";
@@ -1513,7 +1514,7 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
   QDate today = QDate::currentDate();
   int numOccurs, remOccurs;
 
-  if (m_scheduleCount == 0) signalProgress (0, gsc->gncScheduleCount(), QObject::tr("Loading schedules..."));
+  if (m_scheduleCount == 0) signalProgress (0, gsc->gncScheduleCount(), i18n("Loading schedules..."));
   // schedule name
   sc.setName(gsc->name());
   // find the transaction template as stored earlier
@@ -1525,7 +1526,7 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
     ++itt;
   }
   if (itt == 0) {
-    throw new MYMONEYEXCEPTION (QObject::tr(QString("Can't find template transaction for schedule " + sc.name())));
+    throw new MYMONEYEXCEPTION (i18n("Can't find template transaction for schedule %1").arg(sc.name()));
   } else {
     tx = convertTemplateTransaction (sc.name(), *itt);
   }
@@ -1641,7 +1642,7 @@ void MyMoneyGncReader::terminate () {
   }
   // Next step is to walk the list and assign the parent/child relationship between the objects.
   unsigned int i = 0;
-  signalProgress (0, m_accountCount, QObject::tr ("Reorganizing accounts..."));
+  signalProgress (0, m_accountCount, i18n ("Reorganizing accounts..."));
   QValueList<MyMoneyAccount> list;
   QValueList<MyMoneyAccount>::Iterator acc;
   list = m_storage->accountList();
@@ -1696,7 +1697,7 @@ void MyMoneyGncReader::terminate () {
   }
   if (mainCurrency != "") {
     switch (QMessageBox::question (0, PACKAGE,
-        QObject::tr("Your main currency seems to be %1 (%2); do you want to set this as your base currency?")
+        i18n("Your main currency seems to be %1 (%2); do you want to set this as your base currency?")
             .arg(mainCurrency).arg(m_storage->currency(mainCurrency.utf8()).name()),
                     QMessageBox::Yes | QMessageBox::Default, QMessageBox::No)) {
         case QMessageBox::Yes:
@@ -1738,7 +1739,7 @@ void MyMoneyGncReader::terminate () {
   for (i = 0; i < m_suspectList.count(); i++) {
     MyMoneySchedule sc = m_storage->schedule(m_suspectList[i]);
     QMessageBox mb (PACKAGE,
-            QObject::tr(QString("Problems were encountered in converting schedule '%1'.\n"
+            i18n(QString("Problems were encountered in converting schedule '%1'.\n"
                 "Do you want to review or edit it now?").arg(sc.name())),
                     QMessageBox::Question,
                     QMessageBox::Yes | QMessageBox::Default,
@@ -1760,30 +1761,30 @@ const QString MyMoneyGncReader::buildReportSection (const QString source) {
   QString s = "";
   bool more = false;
   if (source == "MN") {
-    s.append (QObject::tr("Found:\n\n"));
-    s.append (QString::number(m_commodityCount) + QObject::tr(" commodities (equities)\n"));
-    s.append (QString::number(m_priceCount) + QObject::tr(" prices\n"));
-    s.append (QString::number(m_accountCount) + QObject::tr(" accounts\n"));
-    s.append (QString::number(m_transactionCount) + QObject::tr(" transactions\n"));
-    s.append (QString::number(m_scheduleCount) + QObject::tr(" schedules\n"));
+    s.append (i18n("Found:\n\n"));
+    s.append (QString::number(m_commodityCount) + i18n(" commodities (equities)\n"));
+    s.append (QString::number(m_priceCount) + i18n(" prices\n"));
+    s.append (QString::number(m_accountCount) + i18n(" accounts\n"));
+    s.append (QString::number(m_transactionCount) + i18n(" transactions\n"));
+    s.append (QString::number(m_scheduleCount) + i18n(" schedules\n"));
     s.append ("\n\n");
     if (m_ccCount == 0) {
-      s.append (QObject::tr("No inconsistencies were detected"));
+      s.append (i18n("No inconsistencies were detected"));
     } else {
-      s.append (QString::number(m_ccCount) + QObject::tr(" inconsistencies were detected and corrected\n"));
+      s.append (QString::number(m_ccCount) + i18n(" inconsistencies were detected and corrected\n"));
       more = true;
     }
     if (m_orCount > 0) {
       s.append ("\n\n");
-      s.append (QString::number(m_orCount) + QObject::tr(" orphan accounts were created\n"));
+      s.append (QString::number(m_orCount) + i18n(" orphan accounts were created\n"));
       more = true;
     }
     if (m_scCount > 0) {
       s.append ("\n\n");
-      s.append (QString::number(m_scCount) + QObject::tr(" possible schedule problems were noted\n"));
+      s.append (QString::number(m_scCount) + i18n(" possible schedule problems were noted\n"));
       more = true;
     }
-    if (more) s.append (QObject::tr("\n\nPress More for further information"));
+    if (more) s.append (i18n("\n\nPress More for further information"));
   } else { // we need to retrieve the posted messages for this source
     unsigned int i, j;
     for (i = 0; i < m_messageList.count(); i++) {
@@ -1822,7 +1823,7 @@ bool MyMoneyGncReader::writeReportToFile (const QValueList<QString> sectionsToRe
 }
 /****************************************************************************
                     Utility routines
-*****************************************************************************/ 
+*****************************************************************************/
 //************************ createPayee ***************************
 
 const QString MyMoneyGncReader::createPayee (const QString gncDescription) {
@@ -1841,7 +1842,7 @@ const QCString MyMoneyGncReader::createOrphanAccount (const QString gncName) {
   MyMoneyAccount acc;
 
   acc.setName ("orphan_" + gncName);
-  acc.setDescription (QObject::tr("Orphan created from unknown gnucash account"));
+  acc.setDescription (i18n("Orphan created from unknown gnucash account"));
 
   QDate today = QDate::currentDate();
 
@@ -1870,7 +1871,7 @@ QDate MyMoneyGncReader::incrDate (QDate lastDate, unsigned char interval, unsign
   case 'y':
     return (lastDate.addYears(intervalCount));
   }
-  throw new MYMONEYEXCEPTION (QObject::tr("Internal error - invalid interval char in incrDate"));
+  throw new MYMONEYEXCEPTION (i18n("Internal error - invalid interval char in incrDate"));
   QDate r = QDate(); return (r); // to keep compiler happy
   PASS
 }
@@ -1933,8 +1934,8 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
       QString invAccName;
       while (!ok) {
         invAccName = QInputDialog::getText (PACKAGE,
-                                            QObject::tr("Enter the investment account name "), QLineEdit::Normal,
-                                            QObject::tr("My Investments"), &ok);
+                                            i18n("Enter the investment account name "), QLineEdit::Normal,
+                                            i18n("My Investments"), &ok);
       }
       singleInvAcc.setName (invAccName);
       singleInvAcc.setAccountType (MyMoneyAccount::Investment);
@@ -1969,7 +1970,7 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
     bool ok = false;
     while (!ok) { // keep going till we have a valid investment parent
       QString invAccName = QInputDialog::getItem (
-                             PACKAGE, QObject::tr("Select parent investment account or enter new name. Stock ") + stockAcc.name (),
+                             PACKAGE, i18n("Select parent investment account or enter new name. Stock %1").arg(stockAcc.name ()),
                              accList, lastSelected, true, &ok);
       if (ok) {
         lastSelected = accList.findIndex (invAccName); // preserve selection for next time
@@ -1991,7 +1992,7 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
         } else {
           // this code is probably not going to be implemented coz we can't change account types (??)
           QMessageBox mb (PACKAGE,
-                          invAcc.name() + QObject::tr (" is not an Investment Account. Do you wish to make it one?"),
+                          i18n ("%1 is not an Investment Account. Do you wish to make it one?").arg(invAcc.name()),
                           QMessageBox::Question,
                           QMessageBox::Yes | QMessageBox::Default,
                           QMessageBox::No | QMessageBox::Escape,
@@ -2081,22 +2082,22 @@ void MyMoneyGncReader::postMessage (const QString source, const unsigned int cod
 }
 //********************************** Message texts **********************************************
 GncMessages::messText GncMessages::texts [] = {
-      {"CC", 1, QObject::tr("An Investment account must be a child of an Asset account\n"
+      {"CC", 1, i18n("An Investment account must be a child of an Asset account\n"
                             "Account %1 will be stored under the main Asset account")},
-      {"CC", 2, QObject::tr("An Income account must be a child of an Income account\n"
+      {"CC", 2, i18n("An Income account must be a child of an Income account\n"
                             "Account %1 will be stored under the main Income account")},
-      {"CC", 3, QObject::tr("An Expense account must be a child of an Expense account\n"
+      {"CC", 3, i18n("An Expense account must be a child of an Expense account\n"
                             "Account %1 will be stored under the main Expense account")},
-      {"OR", 1, QObject::tr("One or more transactions contain a reference to an otherwise unknown account\n"
+      {"OR", 1, i18n("One or more transactions contain a reference to an otherwise unknown account\n"
                             "An asset account with the name %1 has been created to hold the data")},
-      {"SC", 1, QObject::tr("Schedule %1 has interval of %2 which is not currently available")},
-      {"SC", 2, QObject::tr("Schedule %1 dropped at user request")},
-      {"SC", 3, QObject::tr("Schedule %1 contains unknown action (key = %2, type = %3)")},
-      {"SC", 4, QObject::tr("Schedule %1 contains multiple actions; only one has been imported")},
-      {"SC", 5, QObject::tr("Schedule %1 contains no valid splits")},
-      {"SC", 6, QObject::tr("Schedule %1 appears to contain a formula. GnuCash formulae are not convertible")},
-      {"SC", 7, QObject::tr("Schedule %1 contains a composite interval specification; please check for correct operation")},
-      {"CC", 4, QObject::tr("Account or Category %1, transaction date %2; split contains invalid value; please check")},
+      {"SC", 1, i18n("Schedule %1 has interval of %2 which is not currently available")},
+      {"SC", 2, i18n("Schedule %1 dropped at user request")},
+      {"SC", 3, i18n("Schedule %1 contains unknown action (key = %2, type = %3)")},
+      {"SC", 4, i18n("Schedule %1 contains multiple actions; only one has been imported")},
+      {"SC", 5, i18n("Schedule %1 contains no valid splits")},
+      {"SC", 6, i18n("Schedule %1 appears to contain a formula. GnuCash formulae are not convertible")},
+      {"SC", 7, i18n("Schedule %1 contains a composite interval specification; please check for correct operation")},
+      {"CC", 4, i18n("Account or Category %1, transaction date %2; split contains invalid value; please check")},
       {"ZZ", 0, ""} // stopper
     };
 //
