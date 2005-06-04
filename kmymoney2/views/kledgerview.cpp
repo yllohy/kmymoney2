@@ -287,7 +287,7 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
 
   // finish up some initialization that can only be performed after this object
   // is created
-  QTimer::singleShot(0, this, SLOT(finishInitialization));
+  QTimer::singleShot(0, this, SLOT(finishInitialization()));
 }
 
 void KLedgerView::finishInitialization(void)
