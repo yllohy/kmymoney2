@@ -1,5 +1,5 @@
 /***************************************************************************
-                          mymoneyqifreader.cpp  -  description
+                          mymoneyqifreader.cpp 
                              -------------------
     begin                : Mon Jan 27 2003
     copyright            : (C) 2000-2003 by Michael Edwardes
@@ -9,6 +9,7 @@
                            John C <thetacoturtle@users.sourceforge.net>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
                            Kevin Tambascio <ktambascio@users.sourceforge.net>
+                           Ace Jones <acejones@users.sourceforge.net>
  ***************************************************************************/
 
 /***************************************************************************
@@ -37,6 +38,7 @@
 #include <kmessagebox.h>
 #include <kconfig.h>
 #include <kdebug.h>
+#include <kprogress.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
@@ -171,7 +173,7 @@ void MyMoneyQifReader::slotProcessBuffers(void)
 
 void MyMoneyQifReader::processQifLine(void)
 {
-  m_pos += m_qifLine.length() + 1;
+  m_pos += m_qifLine.length() + 2;
   while(m_qifLine.endsWith(" ") || m_qifLine.endsWith("\t"))
     m_qifLine = m_qifLine.left(m_qifLine.length()-1);
 
@@ -252,8 +254,6 @@ const bool MyMoneyQifReader::startImport(void)
   return rc;
 }
 
-#include <kprogress.h>
-
 const bool MyMoneyQifReader::finishImport(void)
 {
   bool  rc = false;
@@ -306,9 +306,8 @@ const bool MyMoneyQifReader::finishImport(void)
   dlg.progressBar()->setTotalSteps(m_transactionCache.count());
   dlg.progressBar()->setTextEnabled(true);
   dlg.setAllowCancel(true);
-  dlg.setLabel(i18n("Now adding the transactions to your ledger..."));
-  dlg.showCancelButton(true);
   dlg.show();
+  kapp->processEvents();
   MyMoneyFile* file = MyMoneyFile::instance();
   file->suspendNotify(true);
   QValueList<MyMoneyTransaction>::iterator it = m_transactionCache.begin();

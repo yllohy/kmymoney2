@@ -1,5 +1,5 @@
 <chapter id="details.reports">
-<title>Reports (NEW)</title>
+<title>Reports</title>
 
 <sect1 id="details.reports.avail">
 						<title>Available Reports</title>
@@ -7,7 +7,7 @@
 <sect2><title>Income and Expenses</title>
 
 <para>
-	The reports in this sect2 show your income and expenses either for the current month, or for each month in the current year.
+	The reports in this section show your income and expenses either for the current month, or for each month in the current year.
 	Of course, the duration of the overall report and the duration captured by each column can be configured to your liking.
 </para>
 </sect2>
@@ -23,7 +23,7 @@
 <sect2><title>Transactions</title>
 
 <para>
-	This sect2 includes reports that list out your individual transactions.  
+	This section includes reports that list out your individual transactions.  
 	This is the best way to print your account register for a specific period of time.
 </para>
 <para>
@@ -68,9 +68,13 @@
 <sect2><title>Favorites</title>
 
 <para>
-	This section lists all the reports you have marked as your favorite in the configuration dialog.  
-	They are still listed in one of the other sect2s, but they're also aggregated here for your easy reference.
+	This section lists all the reports you have marked as your favorite in the report configuration dialog.  
+	They are still listed in one of the other sections, but they're also aggregated here for your easy reference.
 	Favorite reports are also included on the financial summary page for even easier reference.
+</para>
+
+<para>
+  To access the report configuration dialog, bring up the report you wish to configure, and press the &quot;Configure&quot; button at the top of the report. 
 </para>
 </sect2>
 
@@ -91,7 +95,7 @@
 	<listitem><para>Print:  You can print them to your favorite printer.</para></listitem>
 	<listitem><para>Delete:  Customized reports can be deleted.  The default reports that ship with KMyMoney cannot be deleted.</para></listitem>
 	<listitem><para>New:  Create a new customized report based on the selected report.</para></listitem>
-	<listitem><para>Customize:  Change the properties of this report.</para></listitem>
+	<listitem><para>Configure:  Change the properties of this report.</para></listitem>
 	</itemizedlist>
 </sect1>
 
@@ -103,7 +107,8 @@
 
 <para>
 	Any of the default reports which ship with the program can be customized to your liking.
-	This can be done with an easy-to-use dialog--no special programming knowledge is required.
+	This can be done with an easy-to-use dialog.  
+  No special programming knowledge is required.
 	Customizing allows you to select a subset of accounts, for example, or change the date period of the report, or choose only a single payee, etc.
 	The possibilities are nearly endless.
 	When you customize a default report, it creates a new report.  
@@ -115,13 +120,12 @@
 </para>
 </sect2>
 
-
 <sect2><title>Report Tab</title><para>On this tab, you set the basic properties of this report.</para>
 <itemizedlist>
 <listitem><para>Report Name: Choose a name for this report.</para></listitem>
 <listitem><para>Comment: Enter a comment to help you remember the details of this report.</para></listitem>
-<listitem><para>Convert values to base currency: Select this option to convert all values in the report to your base currency.&lt;/p&gt;&lt;p&gt;Leave it unchecked if you'd like to see values in their original currency. If currencies are not converted, then subtotals will not be shown.</para></listitem>
-<listitem><para>Mark as a favorite report: Select this option to notate this report as one of your favorites.&lt;/p&gt;&lt;p&gt;All your favorite reports are grouped in one place on the report list for easy access.</para></listitem>
+<listitem><para>Convert values to base currency: Select this option to convert all values in the report to your base currency. Leave it unchecked if you'd like to see values in their original currency. If currencies are not converted, then subtotals will not be shown.</para></listitem>
+<listitem><para>Mark as a favorite report: Select this option to notate this report as one of your favorites. All your favorite reports are grouped in one place on the report list for easy access.</para></listitem>
 </itemizedlist>
 </sect2>
 

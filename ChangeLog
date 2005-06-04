@@ -1,4 +1,9 @@
-2005-05-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2005-06-03 Ace Jones <acejones@users.sourceforge.net>
+  * Refined the language regarding report configuration & report favorites
+  * Fixed the QIF import progress dialog for adding transactions to your 
+    ledger, so now it displays properly.
+  
+2005-06-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed broken actions (find transactions, print, reconcile)
   * Removed some recently added debug output
   * Applied i18n-patch provided by Laurent Montel with slight modifications
