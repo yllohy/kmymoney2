@@ -55,10 +55,12 @@ email                : mte@users.sourceforge.net
   #include "../dialogs/kgncpricesourcedlg.h"
   #include "../dialogs/ieditscheduledialog.h"
   #define TRY try {
+  #define CATCH } catch (MyMoneyException *e) { 
   #define PASS } catch (MyMoneyException *e) { throw e; }
 #else
   #include "mymoneymoney.h"
   #define TRY
+  #define CATCH
   #define PASS
   #define MYMONEYEXCEPTION QString
   #define MyMoneyException QString
@@ -1264,8 +1266,8 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
   case MyMoneyAccount::Asset:
     if (splitAccount.accountType() == MyMoneyAccount::Stock) {
       split.value() == MyMoneyMoney(0) ?
-      split.setAction (MyMoneySplit::ActionAddShares) :     // free shares?
-      split.setAction (MyMoneySplit::ActionBuyShares);
+        split.setAction (MyMoneySplit::ActionAddShares) :     // free shares?
+        split.setAction (MyMoneySplit::ActionBuyShares);
       m_potentialTransfer = false; // ?
       // add a price history entry
       e = m_storage->security(splitAccount.currencyId());
@@ -1274,16 +1276,20 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
 #define NEW_DENOM 10000
       newPrice = MyMoneyMoney ( price.toDouble(), (signed64)NEW_DENOM );
       if (!newPrice.isZero()) {
-        if (m_storage->security(m_txCommodity).isCurrency()) {
+        TRY
+          // we can't use m_storage->security coz security list is not built yet
+          m_storage->currency(m_txCommodity);   // will throw exception if not currency
           e.setTradingCurrency (m_txCommodity);
-        } else { // stock transfer; treat like free shares?
-          //split.setAction (MyMoneySplit::ActionAddShares);
+          if (gncdebug) qDebug ("added price for %s, %s date %s",
+              e.name().latin1(), price.toString().latin1(),
+              m_txDatePosted.toString(Qt::ISODate).latin1());
+          m_storage->modifySecurity(e);
+          MyMoneyPrice dealPrice (e.id(), m_txCommodity, m_txDatePosted, newPrice, i18n("Imported Transaction"));
+          m_storage->addPrice (dealPrice);
+        CATCH // stock transfer; treat like free shares?
+          split.setAction (MyMoneySplit::ActionAddShares);
+          delete e;
         }
-        if (gncdebug) qDebug ("added price for %s, %s date %s",
-        e.name().latin1(), price.toString().latin1(), m_txDatePosted.toString(Qt::ISODate).latin1());
-        m_storage->modifySecurity(e);
-        MyMoneyPrice dealPrice (e.id(), m_txCommodity, m_txDatePosted, newPrice, i18n("Imported Transaction"));
-        m_storage->addPrice (dealPrice);
       }
     } else { // not stock
       if (split.value().isNegative()) {
