@@ -1,10 +1,356 @@
 <chapter id="details.impexp">
 <title>Importing and Export</title>
 <sect1 id="details.impexp.gnucash">
-					<title>GnuCash Importer - Under Construction - Tony</title>
+					<title>GnuCash Importer</title>
+<sect2><title>Gnucash Files</title>
+
 <para>
-	&hellip;
+The &kappname; GnuCash importer handles direct reading of standard (XML)
+files as produced by GnuCash version 1.8. The following are not supported
 </para>
+<itemizedlist>
+	<listitem><para>import of database (Postgres) data</para></listitem>
+	<listitem><para>import of 'multi-book' files</para></listitem>
+	<listitem><para>import into an existing &kappname; file</para></listitem>
+	<listitem><para>export to GnuCash files.</para></listitem>
+</itemizedlist>
+
+<para>
+The import will probably only work correctly if presented with a
+valid file. It is recommended that the GnuCash 'Check &amp; Repair All'
+function (in the Actions menu) be run before attempting to import.
+</para>
+
+<para>
+Files can be opened by specifying the file name on the command
+line (<command>kmymoney &lt;filepath&gt;</command>), or by means of the &kappname; 
+<menuchoice>
+  <shortcut>
+    <keycombo><keysym>Ctrl-O</keysym></keycombo>
+  </shortcut>
+  <guimenu>File</guimenu>
+  <guimenuitem>Open</guimenuitem>
+</menuchoice>
+or
+<menuchoice>
+  <guimenu>File</guimenu>
+  <guimenuitem>Import</guimenuitem>
+</menuchoice>
+menu items.
+</para>
+
+<para>
+The similarity between the two products means that much day-to-day
+data can be imported in a straightforward fashion. However, there are
+some areas where differences arise, and various options are provided
+to deal with these. The following sections will describe some of
+these differences; understanding them should lead to a smoother importation.
+</para>
+</sect2>
+
+<sect2><title>Similarities, Differences and Terminology</title>
+<sect3><title>Small Business Usage</title>
+<para>
+It should be noted that &kappname; is
+a <emphasis>personal</emphasis> finance manager, and as such, does not directly
+support any of the business features of GnuCash, such as tax tables,
+payroll, and tracking of lots. Any Accounts Payable or Receivable
+accounts found in a file will be imported as Liability or Asset
+accounts respectively.
+</para>
+</sect3>
+
+<sect3><title>Accounts</title>
+<sect4><title>Account types</title>
+<para>
+For both products, the highest level of structure in the file is
+the account. &kappname; supports 5 main types of account, Asset, Liability,
+Income, Expense and Equity, each of which may have various subtypes.
+&kappname; includes a 'standard' account for each of these five types, and
+all other accounts are held subordinate to one of these. &kappname; enforces
+more consistency (or less flexibility, depending on your point of
+view) between account types than does GnuCash, and the importer will
+correct any inconsistencies it detects. This may result in a slightly
+different account structure, though this can, within reason, be
+amended after the import is complete. 
+</para>
+</sect4>
+
+<sect4><title>Categories</title>
+<para>
+&kappname; uses the term Category to denote an account of an Income or
+Expense type. Unlike GnuCash, these are not considered as 'ledger'
+accounts and entry of transactions directly is not currently
+supported, all postings being made by splits (see below).
+</para>
+</sect4>
+
+<sect4><title>Structure and Placeholders</title>
+<para>
+GnuCash supports the use of Placeholder accounts. In effect, these are
+just read-only accounts into which no transactions can be entered,
+but which function in an analogous fashion to folders in a directory
+structure, as a holder for other accounts. Though &kappname; does not
+support this feature as such, it does provide a parent/child account
+relationship, so the importer simulates placeholders by creating
+empty accounts.
+</para>
+</sect4>
+
+<sect4>
+<table frame='all'>
+<title>Equivalence of GnuCash and &kappname; account types</title>
+<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+<thead>
+  <row>
+    <entry>GnuCash type</entry><entry>&kappname; type</entry>
+  </row>
+</thead>
+<tbody>
+  <row>
+    <entry>BANK</entry><entry>Checkings</entry>
+  </row>
+  <row>
+    <entry>ASSET</entry><entry>Asset</entry>
+  </row>
+  <row>
+    <entry>CASH</entry><entry>Cash</entry>
+  </row>
+  <row>
+    <entry>STOCK</entry><entry>Stock</entry>
+  </row>
+  <row>
+    <entry>MUTUAL</entry><entry>Stock</entry>
+  </row>
+  <row>
+    <entry>EQUITY</entry><entry>Equity</entry>
+  </row>
+  <row>
+    <entry>LIABILITY</entry><entry>Liability</entry>
+  </row>
+  <row>
+    <entry>CREDIT</entry><entry>CreditCard</entry>
+  </row>
+  <row>
+    <entry>INCOME</entry><entry>Income</entry>
+  </row>
+  <row>
+    <entry>EXPENSE</entry><entry>Expense</entry>
+  </row>
+  <row>
+    <entry>RECEIVABLE</entry><entry>Asset</entry>
+  </row>
+  <row>
+    <entry>PAYABLE</entry><entry>Liability</entry>
+  </row>
+</tbody>
+</tgroup>
+</table>
+
+</sect4>
+</sect3>
+
+<sect3><title>Transactions and Splits</title>
+<sect4><title>Balanced transactions</title>
+<para>
+As with GnuCash, data is entered in the form of transactions, each
+generally consisting of 2 or more split entries. In fact, valid GnuCash
+transactions will always contain at least 2 splits, and to conform to
+GnuCash's double-entry bookkeeping standard, these must be in monetary
+balance (i.e. must balance out to zero). &kappname; encourages, but does not
+enforce, this standard.
+</para>
+</sect4>
+
+<sect4><title>Payees</title>
+<para>
+&kappname; prefers that all transactions have a Payee (a generic term
+that encompasses both payees and payers), and unlike GnuCash,  a list of
+these payees is maintained. Payee names are generated by the importer
+from the GnuCash transaction's Description field. Splits are allocated to
+a dummy 'Unknown Payee' account where this field is blank.
+</para>
+</sect4>
+
+<sect4><title>Transfers</title>
+<para>
+&kappname; uses the term Transfer to describe a transaction which does
+not involve a Category, but only transfers money between Asset and/or
+Liability accounts.
+</para>
+</sect4>
+
+<sect4><title>Reconcile</title>
+<para>
+&kappname; provides an account reconciliation function similar to that of
+GnuCash, and the corresponding transaction status will be imported.
+</para>
+</sect4>
+</sect3>
+
+<sect3><title>Commodities</title>
+<para>
+GnuCash uses the term Commodity to cover both currencies and
+non-currency assets. These are treated separately in &kappname;.
+</para>
+<sect4><title>Currencies</title>
+<para>
+&kappname; has inbuilt support for all foreign 
+<link linkend="details.currencies"> currency </link>types.
+&kappname; also requires that the user specify a base
+currency, this being the default currency for new accounts. The
+importer will attempt to determine the most likely base currency,
+though this choice may be rejected in favour of an alternative.
+</para>
+</sect4>
+
+<sect4><title>Securities and Investments</title>
+<para>
+Non-currency assets (normally stocks and bonds) are called
+Securities by &kappname;, and represent the main difference between the two
+products, in that &kappname; requires any account denominated in a security
+to be subordinate to an Investment Account. This is described in more
+detail in the chapter on <link linkend="details.investments">Investments</link>. Though users may have
+implemented such a relationship in a GnuCash file, the latter imposes no
+defined structure on it, so the importer is unable to detect it and
+perform an automatic conversion. Three options are therefore made
+available:
+</para>
+<itemizedlist>
+	<listitem><para>Create a separate Investment account for each security, with
+	the same name as the security</para></listitem>
+	<listitem><para>Create a single Investment account which will act as 'parent'
+	for all security accounts</para></listitem>
+	<listitem><para>Create several Investment accounts, and assign securities to
+	them as directed by the user.</para></listitem>
+</itemizedlist>
+<para>
+It depends entirely on user requirements which of these options is
+relevant in each situation, and in some cases, manual restructuring
+of accounts after importation may be necessary.
+</para>
+</sect4>
+
+<sect4><title>Prices and currency rates</title>
+<para>
+Security prices and currency exchange rates as displayed in the
+GnuCash Price Editor will be imported. In addition, price and rate
+entries will be generated from all transactions involving securities
+and multiple currencies.
+</para>
+</sect4>
+
+<sect4><title>Online Quotes 
+</title>
+<para>
+For obtaining online price and currency rate quotations, GnuCash uses
+a package called Finance::Quote. &kappname; does not support this, and has
+its own methods, covered in more detail in 
+<link linkend="details.investments.onlinequotes">online quotes</link>.
+Obtaining a quote requires a currency or stock (ticker)
+symbol, and these are imported unchanged into &kappname;. The source from
+which the quote is to be obtained, however, cannot be imported.
+Instead the following dialog will allow selection of a 'native' &kappname;
+price source, or a user-defined source, for each account for which
+online quotes are required.
+</para>
+<para>
+(FIXME: GnuCash Price source dialog screenshot)
+</para>
+</sect4>
+</sect3>
+
+<sect3><title>Scheduled Transactions</title>
+<para>
+&kappname; does not retain the separation made in GnuCash between template
+transactions and their frequency of occurrence. Transaction data will
+be duplicated if the same template is used in different schedules,
+but this is not likely to be of great significance. 
+</para>
+
+<sect4><title>Schedule types</title>
+<para>
+&kappname; classifies all schedules as one of three types, Bills,
+Deposits and Transfers. Since GnuCash does not make such a distinction,
+the importer attempts to determine the classification from the
+accounts and direction of money movements. It may be that in some
+cases incorrect assumptions are made, and these will need manual
+correction.
+</para>
+</sect4>
+
+<sect4><title>Suspect Schedules</title>
+<para>
+Some features of GnuCash scheduled transactions are not available in
+&kappname;, so the importer tries in each case to reach a reasonable
+compromise in converting the data. These transactions will be flagged
+as suspect, and the user will be given the option of editing them
+directly during the import process. Examples of situations which may
+cause this are:
+</para>
+<itemizedlist>
+	<listitem><para>some frequency intervals supported in GnuCash are not currently
+	available in &kappname;</para></listitem>
+	<listitem><para>&kappname; does not support the use of formulae and variables in
+	amount fields</para></listitem>
+	<listitem><para>complex cases which have not yet been identified for import.</para></listitem>
+</itemizedlist>
+<para>
+Despite best efforts, it is possible that, due to the many options
+involved, a scheduled transaction may cause a fatal error within &kappname;.
+If this sort of problem seems to be occurring, the importer offers
+the option to drop all suspect schedules.
+</para>
+</sect4>
+</sect3>
+
+<sect3><title>Reports</title>
+<para>
+&kappname; provides a comprehensive selection of configurable reports,
+described in more detail in <link linkend="details.reports"> Reports. </link> 
+These will not necessarily, however, match precisely those reports available in GnuCash.
+</para>
+</sect3>
+</sect2>
+
+<sect2><title>Selecting Importer Options</title>
+<para>
+(FIXME: screenshot of import options dialog)
+</para>
+<sect3><title>Investment Handling</title>
+<para>See above description.</para>
+</sect3>
+<sect3><title>Scheduled Transactions</title>
+<para>See above description.</para>
+</sect3>
+<sect3><title>Debug Options</title>
+<para>
+These need only be used in the event of import problems, which in
+any case should be reported to the &kappname; developer list &devlist;.
+Note that the traces produced by these options may
+contain data of a confidential nature, and the Anonymize option
+should be used if they are to be made publicly available.
+</para>
+</sect3>
+</sect2>
+
+<sect2><title>Import Report</title>
+<para>
+At the end of processing, the importer produces a report showing
+the number of different entities processed, and any errors or
+anomalies encountered. This report will be displayed on screen, and
+may be saved to a file for later review. A full report may contain
+the following sections:
+</para>
+<itemizedlist>
+	<listitem><para>Record counts</para></listitem>
+	<listitem><para>Inconsistencies in account types and actions taken</para></listitem>
+	<listitem><para>Details of suspect schedules</para></listitem>
+</itemizedlist>
+<para>
+(FIXME: Screenshot of report)
+</para>
+</sect2>
 </sect1>
 
 <sect1 id="details.impexp.qifimp">
