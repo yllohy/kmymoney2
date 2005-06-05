@@ -97,7 +97,7 @@ empty accounts.
 </para>
 </sect4>
 
-<sect4>
+<sect4> <title>Account Type map</title>
 <table frame='all'>
 <title>Equivalence of GnuCash and &kappname; account types</title>
 <tgroup cols='2' align='left' colsep='1' rowsep='1'>
@@ -146,7 +146,6 @@ empty accounts.
 </tbody>
 </tgroup>
 </table>
-
 </sect4>
 </sect3>
 
