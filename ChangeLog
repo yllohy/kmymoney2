@@ -1,3 +1,12 @@
+2005-06-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added access to online help to find transaction dialog
+  * Made the transaction history the default in payees view
+  * Added chapter about widgets to documentation
+  * Convert html to encoding 'utf-8' for make preview
+  * Added 'make show' which opens the preview in konqueror
+  * Updated italian translation provided by Samuel Algisi and Andrea Nironi
+  * Revised german pages
+
 2005-06-05 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * GnuCash Reader - fix crash in Tools/Prices
 
@@ -11,7 +20,7 @@
   * Refined the language regarding report configuration & report favorites
   * Fixed the QIF import progress dialog for adding transactions to your 
     ledger, so now it displays properly.
-  
+
 2005-06-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed broken actions (find transactions, print, reconcile)
   * Removed some recently added debug output
