@@ -21,18 +21,15 @@
 #include <qradiobutton.h>
 #include <qcheckbox.h>
 #include <qtimer.h>
+#include <qtabwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kapplication.h>
 #include <kglobal.h>
 #include <klocale.h>
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
-
 #include <kpushbutton.h>
 #include <klineedit.h>
 #include <klistview.h>
@@ -75,6 +72,15 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   setupPayeesPage();
   setupDetailsPage();
 
+  // We don't need to add the default into the list (see ::slotShowHelp() why)
+  // m_helpAnchor[m_textTab] = QString("details.search");
+  m_helpAnchor[m_accountTab] = QString("details.search.account");
+  m_helpAnchor[m_dateTab] = QString("details.search.date");
+  m_helpAnchor[m_amountTab] = QString("details.search.amount");
+  m_helpAnchor[m_categoryTab] = QString("details.search.category");
+  m_helpAnchor[m_payeeTab] = QString("details.search.payee");
+  m_helpAnchor[m_detailsTab] = QString("details.search.details");
+
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem resetButtonItem( i18n( "&Reset" ),
                     QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
@@ -94,6 +100,12 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
                     i18n("Takes the current criteria and searches for matching transactions."));
   m_searchButton->setGuiItem(searchButtonItem);
 
+  KGuiItem helpButtonItem (i18n("&Help"),
+                    QIconSet(il->loadIcon("help", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Open online help"),
+                    i18n("Opens the online help and shows detailed information about transaction searching."));
+  m_helpButton->setGuiItem(helpButtonItem);
+
   // readConfig();
   slotUpdateSelections();
 
@@ -108,6 +120,8 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
 
   connect(m_closeButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
 
+  connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotShowHelp()));
+
   connect(m_textEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
 
   connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
@@ -116,9 +130,6 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
   connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
   connect(m_register, SIGNAL(signalSelectTransaction(const QCString&)), this, SLOT(slotSelectTransaction(const QCString&)));
-
-  // FIXME: Once we have the online help going, we can show the help button
-  m_helpButton->hide();
 
   m_textEdit->setFocus();
 
@@ -892,6 +903,15 @@ bool KFindTransactionDlg::eventFilter(QObject* o, QEvent* e)
 const MyMoneyMoney KFindTransactionDlg::balance(const int /* idx */) const
 {
   return 0;
+}
+
+void KFindTransactionDlg::slotShowHelp(void)
+{
+  QString anchor = m_helpAnchor[m_criteriaTab->currentPage()];
+  if(anchor.isEmpty())
+    anchor = QString("details.search");
+
+  kapp->invokeHelp(anchor);
 }
 
 // vim:cin:si:ai:et:ts=2:sw=2:

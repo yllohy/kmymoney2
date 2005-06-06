@@ -70,7 +70,7 @@
                             </property>
                             <widget class="QWidget">
                                 <property name="name">
-                                    <cstring>tab</cstring>
+                                    <cstring>m_textTab</cstring>
                                 </property>
                                 <attribute name="title">
                                     <string>Text</string>
@@ -240,7 +240,7 @@
                             </widget>
                             <widget class="QWidget">
                                 <property name="name">
-                                    <cstring>tab</cstring>
+                                    <cstring>m_accountTab</cstring>
                                 </property>
                                 <attribute name="title">
                                     <string>Account</string>
@@ -264,7 +264,7 @@
                             </widget>
                             <widget class="QWidget">
                                 <property name="name">
-                                    <cstring>tab</cstring>
+                                    <cstring>m_dateTab</cstring>
                                 </property>
                                 <attribute name="title">
                                     <string>Date</string>
@@ -475,7 +475,7 @@
                             </widget>
                             <widget class="QWidget">
                                 <property name="name">
-                                    <cstring>tab</cstring>
+                                    <cstring>m_amountTab</cstring>
                                 </property>
                                 <attribute name="title">
                                     <string>Amount</string>
@@ -637,7 +637,7 @@
                             </widget>
                             <widget class="QWidget">
                                 <property name="name">
-                                    <cstring>tab</cstring>
+                                    <cstring>m_categoryTab</cstring>
                                 </property>
                                 <attribute name="title">
                                     <string>Category</string>
@@ -655,7 +655,7 @@
                             </widget>
                             <widget class="QWidget">
                                 <property name="name">
-                                    <cstring>tab</cstring>
+                                    <cstring>m_payeeTab</cstring>
                                 </property>
                                 <attribute name="title">
                                     <string>Payee</string>
@@ -763,7 +763,7 @@
                             </widget>
                             <widget class="QWidget">
                                 <property name="name">
-                                    <cstring>tab</cstring>
+                                    <cstring>m_detailsTab</cstring>
                                 </property>
                                 <attribute name="title">
                                     <string>Details</string>

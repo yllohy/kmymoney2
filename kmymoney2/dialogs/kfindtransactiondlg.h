@@ -22,6 +22,7 @@
 
 #include <qlistview.h>
 #include <qdatetime.h>
+#include <qmap.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -164,8 +165,13 @@ protected slots:
   void slotSelectTransaction(void);
   void slotSelectTransaction(const QCString& id);
 
-protected slots:
   void slotRightSize(void);
+
+  /**
+    * This slot opens the detailed help page in khelpcenter. The
+    * anchor for the information is taken from m_helpAnchor.
+    */
+  void slotShowHelp(void);
 
 signals:
   void transactionSelected(const QCString& accountId, const QCString& transactionId);
@@ -242,6 +248,7 @@ protected:
 
   MyMoneyTransactionFilter        m_filter;
 
+  QMap<QWidget*, QString>         m_helpAnchor;
 };
 
 #endif
