@@ -22,6 +22,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qlayout.h>
 #include <qdatetime.h>
 #include <qapplication.h>
@@ -31,14 +32,10 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <kglobal.h>
 #include <klocale.h>
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
-
 #include <khtmlview.h>
 #include <kconfig.h>
 #include <kstdaction.h>
@@ -93,7 +90,7 @@ void KHomeView::slotRefreshView(void)
     // (ace) I am experimenting with replacing links in the
     // html depending on the state of the engine.  It's not
     // working.  That's why it's #if0'd out.
-    
+
     DOM::Element e = m_part->document().getElementById("test");
     if ( e.isNull() )
     {
@@ -105,7 +102,7 @@ void KHomeView::slotRefreshView(void)
       QString tagname = e.tagName().string();
       qDebug("%s",tagname.latin1());
       qDebug("%s id=%s",e.tagName().string().latin1(),e.getAttribute("id").string().latin1());
-      
+
       // Find the character data node
       DOM::Node n = e.firstChild();
       while (!n.isNull())
@@ -119,7 +116,7 @@ void KHomeView::slotRefreshView(void)
           m_part->document().setDesignMode(true);
           m_part->document().importNode(e,true);
           m_part->document().updateRendering();
-          
+
           qDebug("Data is now %s",t.data().string().latin1());
         }
         n = n.nextSibling();
