@@ -78,6 +78,114 @@
                             <cstring>tab</cstring>
                         </property>
                         <attribute name="title">
+                            <string>Transaction History</string>
+                        </attribute>
+                        <vbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QGroupBox">
+                                <property name="name">
+                                    <cstring>transactionGroup</cstring>
+                                </property>
+                                <property name="title">
+                                    <string>Transactions</string>
+                                </property>
+                                <vbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <property name="margin">
+                                        <number>11</number>
+                                    </property>
+                                    <property name="spacing">
+                                        <number>6</number>
+                                    </property>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>Layout11</cstring>
+                                        </property>
+                                        <vbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <property name="margin">
+                                                <number>0</number>
+                                            </property>
+                                            <property name="spacing">
+                                                <number>6</number>
+                                            </property>
+                                            <widget class="KListView">
+                                                <column>
+                                                    <property name="text">
+                                                        <string>No.</string>
+                                                    </property>
+                                                    <property name="clickable">
+                                                        <bool>true</bool>
+                                                    </property>
+                                                    <property name="resizable">
+                                                        <bool>true</bool>
+                                                    </property>
+                                                </column>
+                                                <column>
+                                                    <property name="text">
+                                                        <string>Date</string>
+                                                    </property>
+                                                    <property name="clickable">
+                                                        <bool>true</bool>
+                                                    </property>
+                                                    <property name="resizable">
+                                                        <bool>true</bool>
+                                                    </property>
+                                                </column>
+                                                <column>
+                                                    <property name="text">
+                                                        <string>Category</string>
+                                                    </property>
+                                                    <property name="clickable">
+                                                        <bool>true</bool>
+                                                    </property>
+                                                    <property name="resizable">
+                                                        <bool>true</bool>
+                                                    </property>
+                                                </column>
+                                                <column>
+                                                    <property name="text">
+                                                        <string>Amount</string>
+                                                    </property>
+                                                    <property name="clickable">
+                                                        <bool>true</bool>
+                                                    </property>
+                                                    <property name="resizable">
+                                                        <bool>true</bool>
+                                                    </property>
+                                                </column>
+                                                <property name="name">
+                                                    <cstring>m_transactionView</cstring>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel">
+                                                <property name="name">
+                                                    <cstring>m_balanceLabel</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Balance: </string>
+                                                </property>
+                                                <property name="alignment">
+                                                    <set>AlignVCenter|AlignRight</set>
+                                                </property>
+                                            </widget>
+                                        </vbox>
+                                    </widget>
+                                </vbox>
+                            </widget>
+                        </vbox>
+                    </widget>
+                    <widget class="QWidget">
+                        <property name="name">
+                            <cstring>tab</cstring>
+                        </property>
+                        <attribute name="title">
                             <string>Personal Information</string>
                         </attribute>
                         <vbox>
@@ -395,114 +503,6 @@
                                         </property>
                                     </widget>
                                 </hbox>
-                            </widget>
-                        </vbox>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>tab</cstring>
-                        </property>
-                        <attribute name="title">
-                            <string>Transaction History</string>
-                        </attribute>
-                        <vbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QGroupBox">
-                                <property name="name">
-                                    <cstring>transactionGroup</cstring>
-                                </property>
-                                <property name="title">
-                                    <string>Transactions</string>
-                                </property>
-                                <vbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <property name="margin">
-                                        <number>11</number>
-                                    </property>
-                                    <property name="spacing">
-                                        <number>6</number>
-                                    </property>
-                                    <widget class="QLayoutWidget">
-                                        <property name="name">
-                                            <cstring>Layout11</cstring>
-                                        </property>
-                                        <vbox>
-                                            <property name="name">
-                                                <cstring>unnamed</cstring>
-                                            </property>
-                                            <property name="margin">
-                                                <number>0</number>
-                                            </property>
-                                            <property name="spacing">
-                                                <number>6</number>
-                                            </property>
-                                            <widget class="KListView">
-                                                <column>
-                                                    <property name="text">
-                                                        <string>No.</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Date</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Category</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <column>
-                                                    <property name="text">
-                                                        <string>Amount</string>
-                                                    </property>
-                                                    <property name="clickable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                    <property name="resizable">
-                                                        <bool>true</bool>
-                                                    </property>
-                                                </column>
-                                                <property name="name">
-                                                    <cstring>m_transactionView</cstring>
-                                                </property>
-                                            </widget>
-                                            <widget class="QLabel">
-                                                <property name="name">
-                                                    <cstring>m_balanceLabel</cstring>
-                                                </property>
-                                                <property name="text">
-                                                    <string>Balance: </string>
-                                                </property>
-                                                <property name="alignment">
-                                                    <set>AlignVCenter|AlignRight</set>
-                                                </property>
-                                            </widget>
-                                        </vbox>
-                                    </widget>
-                                </vbox>
                             </widget>
                         </vbox>
                     </widget>
