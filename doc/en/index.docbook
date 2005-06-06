@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.1.2-Based Variant V1.0//EN" "dtd/kdex.dtd" [
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
 	<!ENTITY kappname "KMyMoney">
 	<!ENTITY devlist "<email>kmymoney2-developers@lists.sourceforge.net</email>">
 	<!ENTITY userlist "<email>kmymoney2-users@lists.sourceforge.net</email>">
@@ -28,7 +28,8 @@
 	<!ENTITY details-search SYSTEM "details-search.docbook">
 	<!ENTITY details-formats SYSTEM "details-formats.docbook">
 	<!ENTITY details-integrity SYSTEM "details-integrity.docbook">
-	<!ENTITY details-hbciofx SYSTEM "details-hbciofx">
+	<!ENTITY details-hbciofx SYSTEM "details-hbciofx.docbook">
+	<!ENTITY details-widgets SYSTEM "details-widgets.docbook">
 	<!ENTITY views-home SYSTEM "views-home.docbook">
 	<!ENTITY views-institutions SYSTEM "views-institutions.docbook">
 	<!ENTITY views-accounts SYSTEM "views-accounts.docbook">
@@ -172,10 +173,10 @@ Do NOT change these in the translation. -->
 &details-impexp;
 &details-loans;
 &details-settings;
-&details-widgets;
 &details-search;
 &details-formats;
 &details-integrity;
+&details-widgets;
 &views-home;
 &views-institutions;
 &views-accounts;

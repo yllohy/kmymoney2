@@ -1,5 +1,19 @@
 <chapter id="details.currencies">
-<title>Currencies - Under development - THB</title>
+<chapterinfo>
+<authorgroup>
+<author>
+<firstname>Thomas</firstname>
+<surname>Baumgart</surname>
+<affiliation><address>
+<email>ipwizard@users.sourceforge.net</email>
+</address></affiliation>
+</author>
+</authorgroup>
+<date>2005-06-01</date>
+<releaseinfo>0.7</releaseinfo>
+</chapterinfo>
+
+<title>Currencies</title>
 <para>
 &kappname; supports the use of multiple currencies in different accounts. For example, you can setup a bank account in Euro, another in British Pounds and yet your credit card account is maintained in US Dollars.
 </para>
@@ -14,7 +28,7 @@ Once you create a &kappname; file you will be asked for the base currency. The b
 <sect1 id="details.currencies.accountsetup">
 <title>Account setup</title>
 <para>
-If you create a new account you have the option to specify the currency in which it will be managed. The ledger for the account will then show all values in the selected currency. The new account wizard defaults this setting to the <link linkend="details.currencies.basecurrency">default currency</link>.
+If you create a new account you have the option to specify the currency in which it will be managed. The ledger for the account will then show all values in the selected currency. The new account wizard defaults this setting to the <link linkend="details.currencies.basecurrency">base currency</link>.
 </para>
 </sect1>
 

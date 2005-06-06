@@ -1,6 +1,34 @@
 <chapter id="details.widgets">
-<title>KMyMoney Controls - Under development - MTE</title>
+<chapterinfo>
+<authorgroup>
+<author>
+<firstname>Thomas</firstname>
+<surname>Baumgart</surname>
+<affiliation><address>
+<email>ipwizard@users.sourceforge.net</email>
+</address></affiliation>
+</author>
+</authorgroup>
+<date>2005-06-06</date>
+<releaseinfo>0.7</releaseinfo>
+</chapterinfo>
+
+<title>Widgets</title>
+<para>
+&kappname; has some specific widgets not found in other applications. The usage of these widgets are explained in this chapter.
+</para>
+
+<sect1 id="details.widgets.datepicker">
+<title>Datepicker</title>
 <para>
 </para>
+</sect1>
+
+<sect1 id="details.widgets.value">
+<title>Value</title>
+<para>
+</para>
+</sect1>
+
 </chapter>
 

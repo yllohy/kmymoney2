@@ -1,6 +1,6 @@
 KDE_OPTIONS = noautodist
 
-DOCBOOK_FILES = credits.docbook details-accounts.docbook  details-categories.docbook details-files.docbook details-formats.docbook  details-hbciofx.docbook details-impexp.docbook details-institutions.docbook details-integrity.docbook details-investments.docbook details-ledgers.docbook details-loans.docbook details-payees.docbook details-reconciliation.docbook details-reports.docbook details-schedules.docbook details-search.docbook details-settings.docbook details-transactions.docbook details-widgets.docbook firsttime.docbook index.docbook introduction.docbook otherdoc.docbook views-accounts.docbook views-categories.docbook views-home.docbook views-investments.docbook views-ledgers.docbook views-outbox.docbook views-payees.docbook views-schedules.docbook views-institutions.docbook views-reports.docbook whatsnew.docbook details-currencies.docbook
+DOCBOOK_FILES = credits.docbook details-accounts.docbook  details-categories.docbook details-files.docbook details-formats.docbook  details-hbciofx.docbook details-impexp.docbook details-institutions.docbook details-integrity.docbook details-investments.docbook details-ledgers.docbook details-loans.docbook details-payees.docbook details-reconciliation.docbook details-reports.docbook details-schedules.docbook details-search.docbook details-settings.docbook details-transactions.docbook details-widgets.docbook firsttime.docbook index.docbook introduction.docbook otherdoc.docbook views-accounts.docbook views-categories.docbook views-home.docbook views-investments.docbook views-ledgers.docbook views-outbox.docbook views-payees.docbook views-schedules.docbook views-institutions.docbook views-reports.docbook whatsnew.docbook details-currencies.docbook details-widgets.docbook
 
 SCREENSHOT_FILES = ledgers.png
 
@@ -19,6 +19,10 @@ index.cache.bz2: $(DOCBOOK_FILES) $(KDE_XSL_STYLESHEET) $(SCREENSHOT_FILES)
 .PHONY: show
 preview:
 	$(MEINPROC) --check --stylesheet $(kde_datadir)/ksgmltools2/customization/kde-nochunk.xsl  $(srcdir)/index.docbook -o index.html
+	sed -i "s/ISO-8859-1/UTF-8/g" index.html
+
+show: preview
+	konqueror index.html
 
 # The automatic KDE install installs some files,
 # that we don't need, so we remove them immediately.
