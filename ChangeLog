@@ -1,3 +1,16 @@
+2005-06-06 Ace Jones <acejones@users.sourceforge.net>  
+  QIF Importer fixes for investments
+  * Don't create the cash side of the split if there is no cash involved
+    (Reinvest dividends and add/subtract shares)
+  * Fix Reinvest Dividends to use an income account also
+  * Support reinvlg, reinvsh (doing this on blind faith..I'm not really sure
+    what these transactions look like)
+  * Fix missing 'else' that caused reinvested dividends to show up as
+    unsupported.
+  * Support "sellx", "divx", etc
+  * Clarified the warning that !Type:Bank + NInvst isn't really supported
+  * Clarified the warning that Memorized Transactions are not supported
+
 2005-06-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added access to online help to find transaction dialog
   * Made the transaction history the default in payees view

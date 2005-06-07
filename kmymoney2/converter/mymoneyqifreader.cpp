@@ -445,6 +445,10 @@ void MyMoneyQifReader::processQifEntry(void)
           processPriceEntry();
           break;
 
+        case EntryMemorizedTransaction:
+          qWarning("%s","Memorized transactions are not yet implemented!");
+          break;
+        
         default:
           qWarning("EntryType %d not yet implemented!", m_entryType);
           break;
@@ -919,7 +923,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
 
 void MyMoneyQifReader::processInvestmentTransactionEntry()
 {
-  kdDebug(2) << "Investment Transaction:" << m_qifEntry.count() << " lines" << endl;
+//   kdDebug(2) << "Investment Transaction:" << m_qifEntry.count() << " lines" << endl;
   /*
   Items for Investment Accounts
   Field 	Indicator Explanation
@@ -1085,24 +1089,37 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
 
   // 'N' field: Action
   QString action = extractLine('N').lower();
+  
+  // Whether to create a cash split for the other side of the value
+  bool cashsplit = false;
+  
+  // remove trailing X, which seems to have no purpose (?!)
+  if ( action.endsWith("x") )
+    action = action.left( action.length() - 1 );
 
-  if (action == "reinvdiv")
+  if ( action == "reinvdiv" || action == "reinvlg" || action == "reinvsh" )
   {
     s1.setShares(quantity);
     s1.setAction(MyMoneySplit::ActionReinvestDividend);
+    
+    MyMoneySplit s2;
+    s2.setMemo(memo);
+    
+    QString incomeaccount = QString("_") + extractLine('N');
+    s2.setAccountId(findOrCreateIncomeAccount(incomeaccount));
+        
+    s2.setValue(-s1.value());
+    s2.setShares(-s1.value());
+    t.addSplit(s2);
   }
-  if ( action == "div" || action == "intinc" || action == "cgshort" || action == "cgmid" || action == "cglong" || action == "rtrncap" )
+  else if ( action == "div" || action == "intinc" || action == "cgshort" || action == "cgmid" || action == "cglong" || action == "rtrncap" )
   {
-    // NOTE: With CashDividend, the amount of the dividend should
-    // be in data.amount.  Since I've never seen an OFX file with
-    // cash dividends, this is an assumption on my part. (acejones)
-
     // Cash dividends require setting 2 splits to get all of the information
     // in.  Split #1 will be the income split, and we'll set it to the first
     // income account.  This is a hack, but it's needed in order to get the
     // amount into the transaction.
 
-    // FIXME: Use a better mechanism to get the divident amount into the
+    // FIXME: Use a better mechanism to get the dividend amount into the
     // transaction (I started a discussion on the mail list, 2004-11-28).
     QString incomeaccount = QString("_") + extractLine('N');
     
@@ -1118,17 +1135,23 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     s2.setAction(MyMoneySplit::ActionDividend);
     s2.setAccountId(thisaccount.id());
     t.addSplit(s2);
+    
+    cashsplit = true;
   }
   else if (action == "buy")
   {
     s1.setShares(quantity);
     s1.setAction(MyMoneySplit::ActionBuyShares);
+
+    cashsplit = true;      
   }
   else if (action == "sell")
   {
     s1.setShares(-quantity);
     s1.setValue(-amount);
     s1.setAction(MyMoneySplit::ActionBuyShares);
+    
+    cashsplit = true;
   }
   else if ( action == "shrsin" )
   {
@@ -1146,16 +1169,18 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
   {
     // Unsupported action type
     kdDebug(2) << "Unsupported transaction action: " << action << endl;
+    return;
   }
 
   t.addSplit(s1);
 
   // If there is a brokerage account, add a final split to stash the -value of the
-  // transaction there.
+  // transaction there, if needed based on the type of transaction
+  
   QCString brokerageaccid = m_account.value("kmm-brokerage-account").utf8();
-  if ( ! brokerageaccid.isEmpty() )
+  if ( ! brokerageaccid.isEmpty() && cashsplit )
   {
-    // FIXME This maynot deal with foreign currencies properly
+    // FIXME This may not deal with foreign currencies properly
     MyMoneySplit s3;
     s3.setMemo(memo);
     s3.setValue(-s1.value());
@@ -1521,6 +1546,9 @@ void MyMoneyQifReader::processAccountEntry(void)
     m_account.setAccountType(MyMoneyAccount::Asset);
   } else if(type == "othl") {
     m_account.setAccountType(MyMoneyAccount::Liability);
+  } else if(type == "invst") {
+    m_account.setAccountType(MyMoneyAccount::Checkings);
+    qWarning("%s","Warning: This file contains an investment account with 'bank' transactions.  KMM does not natively support this.  However, it usually works fine to treat it as a checking account.");
   } else {
     m_account.setAccountType(MyMoneyAccount::Checkings);
     qWarning("Unknown account type '%s', checkings assumed", type.latin1());
