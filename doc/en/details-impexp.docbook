@@ -558,7 +558,7 @@ the following sections:
 </para>
 </sect2>
 
-<sect2><title>Web Connect</title>
+<sect2 id="details.impexp.webconnect"><title>Web Connect</title>
 
 <para>
 	The easiest way to import an OFX file is to set up Web Connect.  
