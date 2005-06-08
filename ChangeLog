@@ -1,3 +1,7 @@
+2005-06-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added function to select/unselect an account subtree in the 
+    account selector widget via the right mouse button
+
 2005-06-07 Ace Jones <acejones@users.sourceforge.net>  
   * Added Roger's chapter on institutions
   * Updated some documentor assignments

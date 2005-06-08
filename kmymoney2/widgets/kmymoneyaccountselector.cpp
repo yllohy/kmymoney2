@@ -28,6 +28,8 @@
 #include <qlabel.h>
 #include <qtimer.h>
 #include <qpainter.h>
+#include <qstyle.h>
+#include <qrect.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -164,7 +166,6 @@ kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *na
     m_listView->setFocusProxy(parent->focusProxy());
   }
 
-
   layout = new QHBoxLayout( this, 0, 6, "accountSelectorLayout");
 
   m_listView->addColumn( "Hidden" );
@@ -210,6 +211,8 @@ kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *na
     connect(m_incomeCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectIncomeCategories()));
     connect(m_expenseCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectExpenseCategories()));
   }
+
+  connect(m_listView, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)), this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
 
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
 }
@@ -870,6 +873,43 @@ int kMyMoneyAccountSelector::slotMakeCompletion(const QString& txt)
   }
 #endif
   return cnt;
+}
+
+void kMyMoneyAccountSelector::slotListRightMouse(QListViewItem* it_v, const QPoint& pos, int /* col */)
+{
+  if(it_v->rtti() == 1) {
+    kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
+    if(it_c->type() == QCheckListItem::CheckBox) {
+      // the following is copied from QCheckListItem::activate() et al
+      int boxsize = m_listView->style().pixelMetric(QStyle::PM_CheckListButtonSize, m_listView);
+      int align = m_listView->columnAlignment( 0 );
+      int marg = m_listView->itemMargin();
+      int y = 0;
+
+      if ( align & AlignVCenter )
+        y = ( ( height() - boxsize ) / 2 ) + marg;
+      else
+        y = (m_listView->fontMetrics().height() + 2 + marg - boxsize) / 2;
+
+      QRect r( 0, y, boxsize-3, boxsize-3 );
+      // columns might have been swapped
+      r.moveBy( m_listView->header()->sectionPos( 0 ), 0 );
+
+      QPoint topLeft = m_listView->itemRect(it_v).topLeft(); //### inefficient?
+      QPoint p = m_listView->mapFromGlobal( pos ) - topLeft;
+
+      int xdepth = m_listView->treeStepSize() * (it_v->depth() + (m_listView->rootIsDecorated() ? 1 : 0))
+                   + m_listView->itemMargin();
+      xdepth += m_listView->header()->sectionPos( m_listView->header()->mapToSection( 0 ) );
+      p.rx() -= xdepth;
+      // copy ends around here
+
+      if ( r.contains( p ) ) {
+        // we get down here, if we have a right click onto the checkbox
+        selectAllSubAccounts(it_c, it_c->isOn());
+      }
+    }
+  }
 }
 
 #include "kmymoneyaccountselector.moc"

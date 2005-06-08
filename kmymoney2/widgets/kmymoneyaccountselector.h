@@ -375,6 +375,14 @@ protected slots:
     */
   void slotShowSelected(void);
 
+  /**
+    * This slot processes the right mouse button press on a list view item.
+    *
+    * @param it_v pointer to list view item that was pressed
+    * @param p    the position where the mouse was pressed
+    */
+  void slotListRightMouse(QListViewItem* it_v, const QPoint& p, int /* col */);
+
 protected:
   KListView*                m_listView;
   QValueList<int>           m_typeList;
@@ -389,7 +397,6 @@ protected:
 
 private:
   const QListViewItem*      m_visibleItem;
-
 };
 
 #endif
