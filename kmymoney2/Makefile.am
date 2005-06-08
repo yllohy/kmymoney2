@@ -15,54 +15,54 @@ inst_HEADERS = export.h
 noinst_HEADERS = kmymoney2.h kmymoneyutils.h kstartuplogo.h
 
 install-data-local:
-	$(mkinstalldirs) $(kde_datadir)/kmymoney2/
-	$(INSTALL_DATA) $(srcdir)/kmymoney2ui.rc $(kde_datadir)/kmymoney2/kmymoney2ui.rc
-	$(mkinstalldirs) $(xdg_appsdir)
-	$(INSTALL_DATA) $(srcdir)/kmymoney2.desktop $(xdg_appsdir)/kmymoney2.desktop
-	$(mkinstalldirs) $(kde_icondir)/locolor/16x16/apps/
-	$(INSTALL_DATA) $(srcdir)/lo16-app-kmymoney2.png $(kde_icondir)/locolor/16x16/apps/kmymoney2.png
-	$(mkinstalldirs) $(kde_icondir)/locolor/32x32/apps/
-	$(INSTALL_DATA) $(srcdir)/lo32-app-kmymoney2.png $(kde_icondir)/locolor/32x32/apps/kmymoney2.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/16x16/mimetypes/
-	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_16x16.png $(kde_icondir)/hicolor/16x16/mimetypes/kmy.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/32x32/mimetypes/
-	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_32x32.png $(kde_icondir)/hicolor/32x32/mimetypes/kmy.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/48x48/mimetypes/
-	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_48x48.png $(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/64x64/mimetypes/
-	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_64x64.png $(kde_icondir)/hicolor/64x64/mimetypes/kmy.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/128x128/mimetypes/
-	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_128x128.png $(kde_icondir)/hicolor/128x128/mimetypes/kmy.png
+	$(mkinstalldirs) $(DESTDIR)$(kde_datadir)/kmymoney2/
+	$(INSTALL_DATA) $(srcdir)/kmymoney2ui.rc $(DESTDIR)$(kde_datadir)/kmymoney2/kmymoney2ui.rc
+	$(mkinstalldirs) $(DESTDIR)$(xdg_appsdir)
+	$(INSTALL_DATA) $(srcdir)/kmymoney2.desktop $(DESTDIR)$(xdg_appsdir)/kmymoney2.desktop
+	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/locolor/16x16/apps/
+	$(INSTALL_DATA) $(srcdir)/lo16-app-kmymoney2.png $(DESTDIR)$(kde_icondir)/locolor/16x16/apps/kmymoney2.png
+	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/locolor/32x32/apps/
+	$(INSTALL_DATA) $(srcdir)/lo32-app-kmymoney2.png $(DESTDIR)$(kde_icondir)/locolor/32x32/apps/kmymoney2.png
+	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/16x16/mimetypes/
+	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_16x16.png $(DESTDIR)$(kde_icondir)/hicolor/16x16/mimetypes/kmy.png
+	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/32x32/mimetypes/
+	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_32x32.png $(DESTDIR)$(kde_icondir)/hicolor/32x32/mimetypes/kmy.png
+	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/48x48/mimetypes/
+	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_48x48.png $(DESTDIR)$(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
+	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/64x64/mimetypes/
+	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_64x64.png $(DESTDIR)$(kde_icondir)/hicolor/64x64/mimetypes/kmy.png
+	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/128x128/mimetypes/
+	$(INSTALL_DATA) $(srcdir)/mimetype_kmy_128x128.png $(DESTDIR)$(kde_icondir)/hicolor/128x128/mimetypes/kmy.png
 	$(mkinstalldirs) $(kde_mimedir)/application/
 	$(INSTALL_DATA) $(srcdir)/x-kmymoney2.desktop $(kde_mimedir)/application/x-kmymoney2.desktop
-	$(mkinstalldirs) $(kde_icondir)/hicolor/16x16/apps/
-	$(INSTALL_DATA) $(srcdir)/hi16-app-kmymoney2.png $(kde_icondir)/hicolor/16x16/apps/kmymoney2.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/32x32/apps/
-	$(INSTALL_DATA) $(srcdir)/hi32-app-kmymoney2.png $(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/64x64/apps/
-	$(INSTALL_DATA) $(srcdir)/hi64-app-kmymoney2.png $(kde_icondir)/hicolor/64x64/apps/kmymoney2.png
-	$(mkinstalldirs) $(kde_icondir)/hicolor/128x128/apps/
-	$(INSTALL_DATA) $(srcdir)/hi128-app-kmymoney2.png $(kde_icondir)/hicolor/128x128/apps/kmymoney2.png
-	$(mkinstalldirs) $(kde_datadir)/kmymoney2/
-	$(INSTALL_DATA) $(srcdir)/tips $(kde_datadir)/kmymoney2/tips
+	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/16x16/apps/
+	$(INSTALL_DATA) $(srcdir)/hi16-app-kmymoney2.png $(DESTDIR)$(kde_icondir)/hicolor/16x16/apps/kmymoney2.png
+	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/32x32/apps/
+	$(INSTALL_DATA) $(srcdir)/hi32-app-kmymoney2.png $(DESTDIR)$(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
+	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/64x64/apps/
+	$(INSTALL_DATA) $(srcdir)/hi64-app-kmymoney2.png $(DESTDIR)$(kde_icondir)/hicolor/64x64/apps/kmymoney2.png
+	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/128x128/apps/
+	$(INSTALL_DATA) $(srcdir)/hi128-app-kmymoney2.png $(DESTDIR)$(kde_icondir)/hicolor/128x128/apps/kmymoney2.png
+	$(mkinstalldirs) $(DESTDIR)$(kde_datadir)/kmymoney2/
+	$(INSTALL_DATA) $(srcdir)/tips $(DESTDIR)$(kde_datadir)/kmymoney2/tips
 
 
 uninstall-local:
-	-rm -f $(kde_datadir)/kmymoney2/kmymoney2ui.rc
-	-rm -f $(xdg_appsdir)/kmymoney2.desktop
-	-rm -f $(kde_icondir)/locolor/16x16/apps/kmymoney2.png
-	-rm -f $(kde_icondir)/locolor/32x32/apps/kmymoney2.png
-	-rm -f $(kde_icondir)/hicolor/16x16/mimetypes/kmy.png
-	-rm -f $(kde_icondir)/hicolor/32x32/mimetypes/kmy.png
-	-rm -f $(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
-	-rm -f $(kde_icondir)/hicolor/64x64/mimetypes/kmy.png
-	-rm -f $(kde_icondir)/hicolor/128x128/mimetypes/kmy.png
-	-rm -f $(kde_mimedir)/application/x-kmymoney2.desktop
-	-rm -f $(kde_icondir)/hicolor/16x16/apps/kmymoney2.png
-	-rm -f $(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
-	-rm -f $(kde_icondir)/hicolor/64x64/apps/kmymoney2.png
-	-rm -f $(kde_icondir)/hicolor/128x128/apps/kmymoney2.png
-	-rm -f $(kde_datadir)/kmymoney2/tips
+	-rm -f $(DESTDIR)$(kde_datadir)/kmymoney2/kmymoney2ui.rc
+	-rm -f $(DESTDIR)$(xdg_appsdir)/kmymoney2.desktop
+	-rm -f $(DESTDIR)$(kde_icondir)/locolor/16x16/apps/kmymoney2.png
+	-rm -f $(DESTDIR)$(kde_icondir)/locolor/32x32/apps/kmymoney2.png
+	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/16x16/mimetypes/kmy.png
+	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/32x32/mimetypes/kmy.png
+	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/48x48/mimetypes/kmy.png
+	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/64x64/mimetypes/kmy.png
+	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/128x128/mimetypes/kmy.png
+	-rm -f $(DESTDIR)$(kde_mimedir)/application/x-kmymoney2.desktop
+	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/16x16/apps/kmymoney2.png
+	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
+	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/64x64/apps/kmymoney2.png
+	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/128x128/apps/kmymoney2.png
+	-rm -f $(DESTDIR)$(kde_datadir)/kmymoney2/tips
 
 ####### kdevelop will overwrite this part!!! (end)############
 # this 10 paths are KDE specific. Use them:
