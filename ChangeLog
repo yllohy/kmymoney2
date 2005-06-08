@@ -1,3 +1,8 @@
+2005-06-07 Ace Jones <acejones@users.sourceforge.net>  
+  * Added Roger's chapter on institutions
+  * Updated some documentor assignments
+  * Added Roger to the doc credits
+
 2005-06-06 Ace Jones <acejones@users.sourceforge.net>  
   QIF Importer fixes for investments
   * Don't create the cash side of the split if there is no cash involved
