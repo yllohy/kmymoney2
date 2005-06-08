@@ -8,10 +8,8 @@ MOSTLYCLEANFILES = *.html *.pdf *.ps
 
 TARGETS = phb.html
 
-if HAVE_HTML2PS
-if HAVE_PS2PDF
+if HAVE_PDFCONVERSIONTOOLS
 TARGETS += phb.pdf
-endif
 endif
 
 .PHONY: all

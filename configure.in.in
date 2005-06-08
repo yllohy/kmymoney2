@@ -57,8 +57,7 @@ dnl check for html2ps and ps2pdf
 dnl
 AC_CHECK_PROG(found_html2ps, html2ps, yes, no)
 AC_CHECK_PROG(found_ps2pdf, ps2pdf14, yes, no)
-AM_CONDITIONAL(HAVE_HTML2PS, test x$found_html2ps = xyes)
-AM_CONDITIONAL(HAVE_PS2PDF, test x$found_ps2pdf = xyes)
+AM_CONDITIONAL(HAVE_PDFCONVERSIONTOOLS, test x$found_ps2pdf = xyes -a x$found_html2ps == xyes)
 
 dnl
 dnl check for libofx
