@@ -1,6 +1,19 @@
 <chapter id="details.search">
+
+<chapterinfo>
+<authorgroup>
+<author>
+<firstname>Darin</firstname>
+<surname>Strait</surname>
+<affiliation><address><email>darin_strait@yahoo.com</email></address></affiliation>
+</author>
+</authorgroup>
+<date>2005-06-01</date>
+<releaseinfo>0.7</releaseinfo>
+</chapterinfo>
+
 <title>Search Transactions</title>
-<para>Written by Darin Strait &lt;darin_strait@yahoo.com&gt;</para>
+
 <sect1 id="details.search.general">
 <title>General</title>
 

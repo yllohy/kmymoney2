@@ -1,5 +1,18 @@
-<chapter id="details.accounts"><title id="details.accounts.title">Accounts</title>
-<para>Written by Roger Lum &lt;rogerlum@gmail.com&gt;.</para>
+<chapter id="details.accounts">
+<chapterinfo>
+<authorgroup>
+<author>
+<firstname>Roger</firstname>
+<surname>Lum</surname>
+<affiliation><address><email>rogerlum@gmail.com</email></address></affiliation>
+</author>
+</authorgroup>
+<date>2005-06-01</date>
+<releaseinfo>0.7</releaseinfo>
+</chapterinfo>
+
+<title id="details.accounts.title">Accounts</title>
+
 <para>
   The Accounts screen provides a summary of all the accounts. There are four different account categories: Asset, Liability, Income and Expense.  Typical asset accounts include bank accounts, cash, and investments,  while typical liability accounts include credit cards and loans. 
 </para>

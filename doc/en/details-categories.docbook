@@ -1,5 +1,18 @@
-<chapter id="details.categories"><title id="details.categories.title">Categories</title>
-<para>Written by Roger Lum &lt;rogerlum@gmail.com&gt;.</para>
+<chapter id="details.categories">
+<chapterinfo>
+<authorgroup>
+<author>
+<firstname>Roger</firstname>
+<surname>Lum</surname>
+<affiliation><address><email>rogerlum@gmail.com</email></address></affiliation>
+</author>
+</authorgroup>
+<date>2005-06-01</date>
+<releaseinfo>0.7</releaseinfo>
+</chapterinfo>
+
+<title id="details.categories.title">Categories</title>
+
 <para>
   The Categories screen provides a summary of all the existing categories transactions are filed under. The categories are split into income and expense, and a balance is displayed for each category.
 </para>

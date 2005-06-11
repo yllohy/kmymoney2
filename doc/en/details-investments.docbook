@@ -1,8 +1,116 @@
 <chapter id="details.investments">
+<chapterinfo>
+<authorgroup>
+<author>
+<firstname>Ace</firstname>
+<surname>Jones</surname>
+<affiliation><address><email>acejones@users.sourceforge.net</email></address></affiliation>
+</author>
+</authorgroup>
+<date>2005-06-10</date>
+<releaseinfo>0.7</releaseinfo>
+</chapterinfo>
+
 <title>Investments - Under development - THB/Ace</title>
-<sect1 id="details.investments.investment"><title>Creating an Investment Account</title><para>&hellip;</para></sect1>
-<sect1 id="details.investments.securities"><title>Adding Securities to Your Account</title><para>&hellip;</para></sect1>
-<sect1 id="details.investments.summary"><title>Investment Summary Information</title><para>&hellip;</para></sect1>
+
+<sect1 id="details.investments.overview">
+
+            <title>Investments in &kappname;</title>
+
+<sect2><title>Investments</title>
+<para>
+Investments are instruments for investing money that are traded on a market.
+Stocks, bonds, and mutual funds are the most common investments, so they're the ones supported most directly.
+Futures, commodities, options and more complex derivatives are also sometimes used, but &kappname; has no special functionality for them.  As long as they behave like a stock or a bond, they can be tracked easily.
+</para>
+</sect2>
+
+<sect2><title>Base Currency</title>
+<para>
+Each investment has a Base Currency.
+This is the currency it's traded in.
+When a price quote is entered for an investment, the currency of the value given is always its base currency.
+A stock on the NYSE would be in US dollars, and one on the Australian markets would be in Australian dollars.
+</para>
+</sect2>
+
+<sect2><title>Investment Accounts</title>
+<para>
+Investment Accounts hold a collection of investments.  
+Transactions, such as buys and sells, of those investments are contained in an Investment Account.
+</para>
+</sect2>
+
+<sect2><title>Brokerage Accounts</title>
+<para>
+Often an investment account has an associated Brokerage Account.
+This is also sometimes referred to as a &quot;Cash Account&quot;.
+Investment accounts cannot contain cash transactions, like a transfer from your bank.
+When a stock is sold, the proceeds are typically placed in the Brokerage Account.
+</para>
+
+<para>
+When you create an Investment Account, you have the option of creating an associated Brokerage Account with it.
+</para>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="details.investments.investment">
+
+            <title>Creating an Investment Account</title>
+
+<para>
+  The first step on the path to working with investments is to create an account to hold your investments.
+  Choose   
+<menuchoice>
+<guimenu>Account</guimenu>
+<guimenuitem>Add new account...</guimenuitem>
+</menuchoice>
+ to begin the process of adding a new account.  Create an account as usual, making sure to choose &quot;Investment&quot; as the type of account.
+</para>
+<para>
+  To work with the new investment account, navigate to the <guibutton>Investments</guibutton> view, 
+  and choose the account you just created from the <guilabel>Select Account</guilabel> drop-down box.
+</para>
+</sect1>
+            
+<sect1 id="details.investments.securities">
+
+            <title>Adding Investments to Your Account</title>
+<para>
+  To add individual Investments to your Investment Account, navigate to the <guibutton>Investments</guibutton> view, 
+  and choose the account where the investment is held from the <guilabel>Select Account</guilabel> drop-down box.
+  Ensure you are looking at the <guibutton>Investment Summary</guibutton> tab.
+</para>
+<para>
+  Right-click the mouse in the empty space in the view.  
+  This brings up the <guimenu>Investment Options</guimenu> context menu.  
+  Choose <guimenuitem>New...</guimenuitem> from this menu.
+  This launches the <guilabel>New Investment Wizard</guilabel> which you use to create your new Investment.
+</para>
+<para>
+  If you are using Online Quotes, ensure that the symbol exactly matches the symbol used by your quote source.
+  Yahoo covers most of the world's markets, and requires a suffix on the end of symbols outside the US.
+  For example, Rubicon Limited on the New Zealand market should be entered as &quot;RBC.NZ&quot;.  
+</para>
+</sect1>
+
+<sect1 id="details.investments.summary">
+
+            <title>Investment Summary Information</title>
+
+<para>
+  The Investment Summary tab lists your current holdings in this account, along with their price and value.
+</para>
+<para>
+  It's also the place to add, edit or delete indivdual investments from this account.
+  Likewise, you can update the price of your investments here either manually or via their online source.
+  To perform any of these, right-click the mouse on any of the investments to bring up the <guimenu>Investment Options</guimenu> context menu.
+</para>
+</sect1>
+
 <sect1 id="details.investments.ledger"><title>Investment Ledger</title><para>&hellip;</para></sect1>
 <sect1 id="details.investments.foreign"><title>Working With Foreign Investments</title><para>&hellip;</para></sect1>
 <sect1 id="details.investments.prices"><title>Updating Prices</title><para>&hellip;</para></sect1>

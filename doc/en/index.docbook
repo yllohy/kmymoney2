@@ -29,17 +29,7 @@
 	<!ENTITY details-formats SYSTEM "details-formats.docbook">
 	<!ENTITY details-integrity SYSTEM "details-integrity.docbook">
 	<!ENTITY details-hbciofx SYSTEM "details-hbciofx.docbook">
-	<!ENTITY details-widgets SYSTEM "details-widgets.docbook">
-	<!ENTITY views-home SYSTEM "views-home.docbook">
-	<!ENTITY views-institutions SYSTEM "views-institutions.docbook">
-	<!ENTITY views-accounts SYSTEM "views-accounts.docbook">
-	<!ENTITY views-schedules SYSTEM "views-schedules.docbook">
-	<!ENTITY views-categories SYSTEM "views-categories.docbook">
-	<!ENTITY views-payees SYSTEM "views-payees.docbook">
-	<!ENTITY views-ledgers SYSTEM "views-ledgers.docbook">
-	<!ENTITY views-investments SYSTEM "views-investments.docbook">
-	<!ENTITY views-reports SYSTEM "views-reports.docbook">
-	<!ENTITY views-outbox SYSTEM "views-outbox.docbook">
+	<!ENTITY reference SYSTEM "reference.docbook">
 	<!ENTITY otherdoc SYSTEM "otherdoc.docbook">
 	<!ENTITY credits SYSTEM "credits.docbook">
 ]>
@@ -184,21 +174,9 @@ Do NOT change these in the translation. -->
 &details-search;
 &details-formats;
 &details-integrity;
-&details-widgets;
-&views-home;
-&views-institutions;
-&views-accounts;
-&views-schedules;
-&views-categories;
-&views-payees;
-&views-ledgers;
-&views-investments;
-&views-reports;
-&views-outbox;
+&reference;
 &otherdoc;
 &credits;
-
-
 
 &documentation.index;
 </book>

@@ -1,5 +1,18 @@
-<chapter id="details.payees"><title id="details.payees.title">Payees</title>
-<para>Written by Roger Lum &lt;rogerlum@gmail.com&gt;.</para>
+<chapter id="details.payees">
+
+<chapterinfo>
+<authorgroup>
+<author>
+<firstname>Roger</firstname>
+<surname>Lum</surname>
+<affiliation><address><email>rogerlum@gmail.com</email></address></affiliation>
+</author>
+</authorgroup>
+<date>2005-06-01</date>
+<releaseinfo>0.7</releaseinfo>
+</chapterinfo>
+
+<title id="details.payees.title">Payees</title>
 <para>
   The Payees screen provides detailed information about all the payees involved in transactions. The Payees screen is split into two main areas: a payees list and a detail area. 
 </para>
