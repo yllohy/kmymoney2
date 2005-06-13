@@ -1,0 +1,99 @@
+<chapter id="reference">
+<title>Reference</title>
+
+<sect1 id="reference.menus">
+<title>Menus</title>
+<para>...</para>
+
+<sect2 id="reference.menus.file"><title>File Menu</title>
+<para>
+
+<variablelist>
+<varlistentry>
+<term><menuchoice>
+<shortcut>
+<keycombo><keycap>Ctrl</keycap><keycap>n</keycap></keycombo>
+</shortcut>
+<guimenu>File</guimenu>
+<guimenuitem>New</guimenuitem>
+</menuchoice></term>
+<listitem><para>
+<action>
+  Creates a new empty file.
+  Only one &kappname; file can be open at once, so this will close your current file first.  
+</action></para></listitem>
+</varlistentry>
+<varlistentry>
+<term><menuchoice>
+<shortcut>
+<keycombo><keycap>Ctrl</keycap><keycap>s</keycap></keycombo>
+</shortcut>
+<guimenu>File</guimenu>
+<guimenuitem>Save</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Saves the currently open file</action></para></listitem>
+</varlistentry>
+<varlistentry>
+<term><menuchoice>
+<shortcut>
+<keycombo><keycap>Ctrl</keycap><keycap>q</keycap></keycombo>
+</shortcut>
+<guimenu>File</guimenu>
+<guimenuitem>Quit</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Quits</action> &kappname;</para></listitem>
+</varlistentry>
+</variablelist>
+
+</para>
+</sect2>
+<sect2 id="reference.menus.institution"><title>Institution Menu</title><para>...</para></sect2>
+<sect2 id="reference.menus.account"><title>Account Menu</title><para>...</para></sect2>
+<sect2 id="reference.menus.tools"><title>Tools Menu</title><para>...</para></sect2>
+<sect2 id="reference.menus.settings"><title>Settings Menu</title><para>...</para></sect2>
+<sect2 id="reference.menus.help"><title>Help Menu</title><para>...</para></sect2>
+
+</sect1>
+
+<sect1 id="reference.views">
+<title>Views</title>
+
+<sect2 id="reference.views.home"><title>Home View</title><para>...</para></sect2>
+<sect2 id="reference.views.institutions"><title>Institutions View</title><para>...</para></sect2>
+<sect2 id="reference.views.accounts"><title>Accounts View</title><para>...</para></sect2>
+<sect2 id="reference.views.schedules"><title>Schedules View</title><para>...</para></sect2>
+<sect2 id="reference.views.categories"><title>Categories View</title><para>...</para></sect2>
+<sect2 id="reference.views.payees"><title>Payees View</title><para>...</para></sect2>
+<sect2 id="reference.views.ledgers"><title>Ledgers View</title><para>...</para></sect2>
+<sect2 id="reference.views.investments"><title>Investments View</title><para>...</para></sect2>
+<sect2 id="reference.views.reports"><title>Reports View</title><para>...</para></sect2>
+
+</sect1>
+
+<sect1 id="reference.widgets">
+
+<title>Widgets</title>
+<para>
+&kappname; has some specific widgets not found in other applications. The usage of these widgets are explained in this chapter.
+</para>
+
+<sect2 id="reference.widgets.datepicker">
+<title>Datepicker</title>
+<para>
+</para>
+</sect2>
+
+<sect2 id="reference.widgets.value">
+<title>Value</title>
+<para>
+</para>
+</sect2>
+
+<sect2 id="reference.widgets.calculator">
+<title>Calculator</title>
+<para>
+</para>
+</sect2>
+
+</sect1>
+</chapter>
