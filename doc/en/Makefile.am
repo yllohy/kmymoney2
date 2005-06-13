@@ -18,7 +18,7 @@ index.cache.bz2: $(DOCBOOK_FILES) $(KDE_XSL_STYLESHEET) $(SCREENSHOT_FILES)
 
 .PHONY: show
 preview:
-	$(MEINPROC) --check --stylesheet $(kde_datadir)/ksgmltools2/customization/kde-nochunk.xsl  $(srcdir)/index.docbook -o index.html
+	$(MEINPROC) --check --stylesheet `dirname $(KDE_XSL_STYLESHEET)`/kde-nochunk.xsl  $(srcdir)/index.docbook -o index.html
 	sed -i "s/ISO-8859-1/UTF-8/g" index.html
 
 show: preview
