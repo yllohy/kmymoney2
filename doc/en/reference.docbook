@@ -77,23 +77,7 @@
 &kappname; has some specific widgets not found in other applications. The usage of these widgets are explained in this chapter.
 </para>
 
-<sect2 id="reference.widgets.datepicker">
-<title>Datepicker</title>
-<para>
-</para>
-</sect2>
-
-<sect2 id="reference.widgets.value">
-<title>Value</title>
-<para>
-</para>
-</sect2>
-
-<sect2 id="reference.widgets.calculator">
-<title>Calculator</title>
-<para>
-</para>
-</sect2>
+&details-widgets;
 
 </sect1>
 </chapter>

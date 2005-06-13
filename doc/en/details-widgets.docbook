@@ -1,24 +1,5 @@
-<chapter id="details.widgets">
-<chapterinfo>
-<authorgroup>
-<author>
-<firstname>Thomas</firstname>
-<surname>Baumgart</surname>
-<affiliation><address>
-<email>ipwizard@users.sourceforge.net</email>
-</address></affiliation>
-</author>
-</authorgroup>
-<date>2005-06-06</date>
-<releaseinfo>0.7</releaseinfo>
-</chapterinfo>
 
-<title>Widgets</title>
-<para>
-&kappname; has some specific widgets not found in other applications. The usage of these widgets are explained in this chapter.
-</para>
-
-<sect1 id="details.widgets.datepicker">
+<sect2 id="reference.widgets.datepicker">
 <title>Date entry widget</title>
 <para>
 Whenever &kappname; needs information about a specific date, eg. the posting date of a transaction of the opening date of an account,
@@ -53,9 +34,9 @@ At the bottom of the widget the users finds a button, a text edit field and a co
 in the datepicker, the text field can be used to enter a specific date. Pressing the RETURN key shows that date in the datepicker widget.
 The combo box allows the user to select a specific week and continue to pick a date from there.
 </para>
-</sect1>
+</sect2>
 
-<sect1 id="details.widgets.value">
+<sect2 id="reference.widgets.value">
 <title>Value entry</title>
 <para>
 The value entry widget consits out of a text field that accepts digits, thousand seperators and decimal symbols as well as a button to
@@ -68,9 +49,9 @@ and allows you to calculate the final value.
 Use the calculator widget just like a normal calculator and once done leave it by clicking on the '=' button or press the '=' key on
 your keyboard.
 </para>
-</sect1>
+</sect2>
 
-<sect1 id="details.widgets.payee">
+<sect2 id="reference.widgets.payee">
 <title>Payee/Payer entry</title>
 <para>
 When you are requested to select a payee/payer for a transaction, you can start entering the name by pressing keys on your keyboard.
@@ -83,9 +64,9 @@ select the entry by pressing the RETURN key.
 If a name is entered that is not yet known to &kappname; you will be asked if you wants to create a new payee/payer record.
 If you do not wish to do so, then the field will be blanked. Otherwise, the record will be created and added to the list.
 </para>
-</sect1>
+</sect2>
 
-<sect1 id="details.widgets.category">
+<sect2 id="reference.widgets.category">
 <title>Category/account entry</title>
 <para>
 When you are request to enter the name of a category or acocunt, you can start entering the name by pressing keys on your keyboard.
@@ -98,7 +79,6 @@ select the entry by pressing the RETURN key.
 If a name is entered that is not yet known to &kappname; you will be asked if you wants to create a new category record.
 If you do not wish to do so, then the field will be blanked. Otherwise, the record will be created and added to the list.
 </para>
-</sect1>
+</sect2>
 
-</chapter>
 
