@@ -39,7 +39,7 @@ KGncPriceSourceDlg::KGncPriceSourceDlg(QWidget *parent, const char *name)
  : KGncPriceSourceDlgDecl(parent, name)
 {
 }
-KGncPriceSourceDlg::KGncPriceSourceDlg(QString stockName, QString gncSource){
+KGncPriceSourceDlg::KGncPriceSourceDlg(const QString &stockName, const QString &gncSource){
   // signals and slots connections
   connect( buttonGroup5, SIGNAL( released(int) ), this, SLOT( buttonPressed(int) ) );
   connect( buttonHelp, SIGNAL( clicked() ), this, SLOT( slotHelp() ) );
@@ -86,7 +86,7 @@ void KGncPriceSourceDlg::buttonPressed (int buttonId) {
   }
 }
 
-QString KGncPriceSourceDlg::selectedSource() {
+QString KGncPriceSourceDlg::selectedSource() const {
   QString s;
   switch (m_currentButton) {
     case NOSOURCE: s = ""; break;

@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>kSplitCorrectionDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -141,9 +141,6 @@
                             </property>
                             <property name="text">
                                 <string>&amp;Leave unassigned</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+L</string>
                             </property>
                         </widget>
                     </vbox>

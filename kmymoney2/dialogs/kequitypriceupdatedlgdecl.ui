@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>KEquityPriceUpdateDlgDecl</class>
 <author>Kevin Tambascio &lt;ktambascio@users.sourceforge.net&gt;</author>
 <widget class="QDialog">
@@ -66,9 +66,6 @@
                             <property name="text">
                                 <string>&amp;Update Selected</string>
                             </property>
-                            <property name="accel">
-                                <string>Alt+U</string>
-                            </property>
                         </widget>
                         <widget class="KPushButton">
                             <property name="name">
@@ -77,9 +74,6 @@
                             <property name="text">
                                 <string>Update &amp;All</string>
                             </property>
-                            <property name="accel">
-                                <string>Alt+A</string>
-                            </property>
                         </widget>
                         <widget class="KPushButton">
                             <property name="name">
@@ -87,9 +81,6 @@
                             </property>
                             <property name="text">
                                 <string>Con&amp;figure</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+F</string>
                             </property>
                         </widget>
                         <spacer>
@@ -166,9 +157,6 @@
                     <property name="text">
                         <string>&amp;OK</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+O</string>
-                    </property>
                     <property name="default">
                         <bool>true</bool>
                     </property>
@@ -179,9 +167,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;Cancel</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
                     </property>
                 </widget>
             </hbox>

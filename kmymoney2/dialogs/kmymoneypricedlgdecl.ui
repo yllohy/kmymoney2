@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>KMyMoneyPriceDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -65,9 +65,6 @@
                             <property name="text">
                                 <string>&amp;New</string>
                             </property>
-                            <property name="accel">
-                                <string>Alt+N</string>
-                            </property>
                         </widget>
                         <widget class="KPushButton">
                             <property name="name">
@@ -75,9 +72,6 @@
                             </property>
                             <property name="text">
                                 <string>&amp;Modify</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+M</string>
                             </property>
                         </widget>
                         <widget class="KPushButton">
@@ -87,9 +81,6 @@
                             <property name="text">
                                 <string>&amp;Delete</string>
                             </property>
-                            <property name="accel">
-                                <string>Alt+D</string>
-                            </property>
                         </widget>
                         <widget class="KPushButton">
                             <property name="name">
@@ -97,9 +88,6 @@
                             </property>
                             <property name="text">
                                 <string>Delete &amp;Range ...</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+R</string>
                             </property>
                         </widget>
                         <spacer>
@@ -125,9 +113,6 @@
                             </property>
                             <property name="text">
                                 <string>Online &amp;Quotes</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+Q</string>
                             </property>
                         </widget>
                     </vbox>
@@ -187,9 +172,6 @@
                             </property>
                             <property name="text">
                                 <string>&amp;Close</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+C</string>
                             </property>
                             <property name="autoDefault">
                                 <bool>true</bool>

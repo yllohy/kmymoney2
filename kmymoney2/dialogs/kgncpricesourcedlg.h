@@ -36,16 +36,16 @@ class KGncPriceSourceDlg : public KGncPriceSourceDlgDecl
   Q_OBJECT
 public:
   KGncPriceSourceDlg(QWidget *parent = 0, const char *name = 0);
-  KGncPriceSourceDlg(QString stockName, QString gncSource);
+  KGncPriceSourceDlg(const QString &stockName, const QString &gncSource);
   ~KGncPriceSourceDlg();
-  
-  QString selectedSource ();
-  bool alwaysUse() { return (checkAlwaysUse->isChecked()); }
-    
+
+  QString selectedSource () const;
+  bool alwaysUse() const { return (checkAlwaysUse->isChecked()); }
+
 public slots:
   void buttonPressed(int);
   void slotHelp();
-  
+
 private:
   int m_currentButton;
 };

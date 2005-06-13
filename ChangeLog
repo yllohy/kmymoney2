@@ -1,6 +1,7 @@
 2005-06-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added description of common widgets
   * Extract path for stylesheet from $(KDE_XSL_STYLESHEET)
+  * Applied ui-dialog patch provided by Laurent Montel
 
 2005-06-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added function to select/unselect an account subtree in the 

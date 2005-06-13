@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>KNewAccountWizardDecl</class>
 <author>Thomas Baumgart</author>
 <widget class="QWizard">
@@ -1065,9 +1065,6 @@ Select &lt;b&gt;No&lt;/b&gt; if you don't use this account for active stock brok
                                         </property>
                                         <property name="text">
                                             <string>&amp;Price</string>
-                                        </property>
-                                        <property name="accel">
-                                            <string>Alt+P</string>
                                         </property>
                                     </widget>
                                 </hbox>

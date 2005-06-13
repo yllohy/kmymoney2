@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>KGncPriceSourceDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -168,9 +168,6 @@
                             <property name="text">
                                 <string>Do &amp;not perform online quotes for this investment</string>
                             </property>
-                            <property name="accel">
-                                <string>Alt+N</string>
-                            </property>
                             <property name="buttonGroupId">
                                 <number>0</number>
                             </property>
@@ -181,9 +178,6 @@
                             </property>
                             <property name="text">
                                 <string>Select a known KMyMoney source from the list &amp;below</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+B</string>
                             </property>
                             <property name="buttonGroupId">
                                 <number>1</number>
@@ -202,9 +196,6 @@
                                 <string>&amp;Use the following name for the price source.
 (Click Help for further information.)</string>
                             </property>
-                            <property name="accel">
-                                <string>Alt+U</string>
-                            </property>
                             <property name="buttonGroupId">
                                 <number>2</number>
                             </property>
@@ -222,9 +213,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;Always use this selection for this price source.</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+A</string>
                     </property>
                 </widget>
             </vbox>

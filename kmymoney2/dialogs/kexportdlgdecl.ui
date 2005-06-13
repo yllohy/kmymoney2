@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.1" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
 <class>KExportDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -437,9 +437,6 @@ You can choose the file's path, the account and the format of the QIF file (prof
                     </property>
                     <property name="text">
                         <string>&amp;Export</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+E</string>
                     </property>
                     <property name="autoDefault">
                         <bool>true</bool>
