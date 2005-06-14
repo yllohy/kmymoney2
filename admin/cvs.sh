@@ -553,6 +553,10 @@ for subdir in $dirs; do
 
    kdepotpath=${includedir:-`kde-config --expandvars --install include`}/kde.pot
 
+   if test "$kdepotpath" == "NONE/kde.pot"; then
+      kdepotpath=`kde-config --expandvars --prefix`/include/kde.pot
+   fi
+
    $MAKE -s -f _transMakefile podir=$podir EXTRACTRC="$EXTRACTRC" PREPARETIPS="$PREPARETIPS" srcdir=. \
 	XGETTEXT="${XGETTEXT:-xgettext} --foreign-user -C -ci18n -ki18n -ktr2i18n -kI18N_NOOP -kI18N_NOOP2 -kaliasLocale -x $kdepotpath" messages
    exit_code=$?
