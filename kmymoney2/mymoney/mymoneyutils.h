@@ -125,7 +125,7 @@ typedef QMap<void *, _CheckMemoryEntry> CheckMemoryTable;
 
 typedef void _CheckMemoryOutFunc(const char *);
 
-class _CheckMemory {
+class KMYMONEY_EXPORT _CheckMemory {
  public:
   _CheckMemory();
   _CheckMemory(_CheckMemoryOutFunc *out);
@@ -150,17 +150,17 @@ class _CheckMemory {
   friend void operator delete [] (void *p) throw();
 };
 
-void * operator new(size_t s,const char *file,int line) throw(); // Normal new operator
-void * operator new [] (size_t s,const char *file,int line) throw(); // Array new operator
-void operator delete(void *p) throw();
-void operator delete [] (void *p) throw();
+KMYMONEY_EXPORT void * operator new(size_t s,const char *file,int line) throw(); // Normal new operator
+KMYMONEY_EXPORT void * operator new [] (size_t s,const char *file,int line) throw(); // Array new operator
+KMYMONEY_EXPORT void operator delete(void *p) throw();
+KMYMONEY_EXPORT void operator delete [] (void *p) throw();
 
 #define new new(__FILE__,__LINE__)
 
-extern _CheckMemory chkmem;
+KMYMONEY_EXPORT extern _CheckMemory chkmem;
 
-void _CheckMemory_Init(_CheckMemoryOutFunc *out);
-void _CheckMemory_End();
+KMYMONEY_EXPORT void _CheckMemory_Init(_CheckMemoryOutFunc *out);
+KMYMONEY_EXPORT void _CheckMemory_End();
 #define _CheckMemory_Leak(freeall) chkmem.CheckMemoryLeak(freeall)
 #define _CheckMemory_FreeAll() chkmem.FreeAll()
 
