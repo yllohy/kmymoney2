@@ -1,3 +1,6 @@
+2005-06-15 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * GnuCash Reader - make anonymized names more readable
+
 2005-06-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added description of common widgets
   * Extract path for stylesheet from $(KDE_XSL_STYLESHEET)

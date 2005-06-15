@@ -202,11 +202,11 @@ QString GncObject::hide (QString data, unsigned int anonClass) {
   switch (anonClass) {
   case ASIS: break;                  // this is not personal data
   case SUPPRESS: result = ""; break; // this is personal and is not essential
-  case NXTACC: result = i18n("Account %1").arg(++nextAccount, 6); break; // generate account name
+  case NXTACC: result = i18n("Account%1").arg(++nextAccount, -6); break; // generate account name
   case NXTEQU:   // generate/return an equity name
     it = anonStocks.find (data);
     if (it == anonStocks.end()) {
-      result = i18n("Stock %1").arg(++nextEquity, 6);
+      result = i18n("Stock%1").arg(++nextEquity, -6);
       anonStocks.insert (data, result);
     } else {
       result = (*it).data();
@@ -215,13 +215,13 @@ QString GncObject::hide (QString data, unsigned int anonClass) {
   case NXTPAY:   // genearet/return a payee name
     it = anonPayees.find (data);
     if (it == anonPayees.end()) {
-      result = i18n("Payee").arg(++nextPayee, 6);
+      result = i18n("Payee%1").arg(++nextPayee, -6);
       anonPayees.insert (data, result);
     } else {
       result = (*it).data();
     }
     break;
-  case NXTSCHD: result = i18n("Schedule").arg(++nextSched, 6); break; // generate a schedule name
+  case NXTSCHD: result = i18n("Schedule%1").arg(++nextSched, -6); break; // generate a schedule name
   case MONEY1:
     in = MyMoneyMoney(data);
     if (data == "-1/0") in = MyMoneyMoney (0); // spurious gnucash data - causes a crash sometimes
@@ -1701,6 +1701,7 @@ void MyMoneyGncReader::terminate () {
       mainCurrency = it.key();
       }
   }
+  
   if (mainCurrency != "") {
     switch (QMessageBox::question (0, PACKAGE,
         i18n("Your main currency seems to be %1 (%2); do you want to set this as your base currency?")
