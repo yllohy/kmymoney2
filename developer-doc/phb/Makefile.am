@@ -9,11 +9,11 @@ MOSTLYCLEANFILES = *.html *.pdf *.ps
 TARGETS = phb.html
 
 if HAVE_PDFCONVERSIONTOOLS
-TARGETS += phb.pdf
+PDF_TARGET = phb.pdf
 endif
 
 .PHONY: all
-all:	$(TARGETS)
+all:	$(TARGETS) $(PDF_TARGET)
 
 STYLESHEET = kde-nochunk.xsl
 
