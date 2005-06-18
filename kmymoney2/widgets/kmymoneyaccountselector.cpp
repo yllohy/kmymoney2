@@ -166,6 +166,8 @@ kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *na
     m_listView->setFocusProxy(parent->focusProxy());
   }
 
+  m_listView->setAllColumnsShowFocus(true);
+
   layout = new QHBoxLayout( this, 0, 6, "accountSelectorLayout");
 
   m_listView->addColumn( "Hidden" );
