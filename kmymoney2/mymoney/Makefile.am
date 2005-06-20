@@ -32,7 +32,7 @@ lib_LTLIBRARIES = libkmm_mymoney.la
 
 libkmm_mymoney_la_METASOURCES = AUTO
 
-libkmm_mymoney_la_SOURCES = mymoneyfinancialcalculator.cpp mymoneytransactionfilter.cpp mymoneykeyvaluecontainer.cpp mymoneyobserver.cpp mymoneysubject.cpp mymoneysplit.cpp mymoneyinstitution.cpp mymoneyexception.cpp mymoneyinvesttransaction.cpp mymoneyutils.cpp mymoneysecurity.cpp mymoneytransaction.cpp mymoneyscheduled.cpp mymoneypayee.cpp mymoneymoney.cpp mymoneyfile.cpp mymoneycategory.cpp mymoneyaccount.cpp mymoneyreport.cpp mymoneystatement.cpp mymoneyprice.cpp
+libkmm_mymoney_la_SOURCES = mymoneymoney.cpp mymoneyfinancialcalculator.cpp mymoneytransactionfilter.cpp mymoneykeyvaluecontainer.cpp mymoneyobserver.cpp mymoneysubject.cpp mymoneysplit.cpp mymoneyinstitution.cpp mymoneyexception.cpp mymoneyinvesttransaction.cpp mymoneyutils.cpp mymoneysecurity.cpp mymoneytransaction.cpp mymoneyscheduled.cpp mymoneypayee.cpp mymoneyfile.cpp mymoneycategory.cpp mymoneyaccount.cpp mymoneyreport.cpp mymoneystatement.cpp mymoneyprice.cpp
 libkmm_mymoney_la_LDFLAGS = $(all_libraries) -version-info $(LIBVERSION)
 
 SUBDIRS = storage 
