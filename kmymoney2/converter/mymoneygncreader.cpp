@@ -1703,10 +1703,14 @@ void MyMoneyGncReader::terminate () {
   }
   
   if (mainCurrency != "") {
+    /* fix for qt3.3.4?. According to Qt docs, this should return the enum id of the button pressed, and
+       indeed it used to do so. However now it seems to return the index of the button. In this case it doesn't matter,
+       since for Yes, the id is 3 and the index is 0, whereas the No button will return 4 or 1. So we test for either Yes case */
     switch (QMessageBox::question (0, PACKAGE,
         i18n("Your main currency seems to be %1 (%2); do you want to set this as your base currency?")
             .arg(mainCurrency).arg(m_storage->currency(mainCurrency.utf8()).name()),
                     QMessageBox::Yes | QMessageBox::Default, QMessageBox::No)) {
+        case 0:
         case QMessageBox::Yes:
           m_storage->setValue ("kmm-baseCurrency", mainCurrency);
     }

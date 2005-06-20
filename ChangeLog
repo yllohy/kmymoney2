@@ -1,3 +1,6 @@
+2005-06-20 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * GnuCash Reader -  fix QMessageBox change/bug
+
 2005-06-15 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * GnuCash Reader - make anonymized names more readable
 
