@@ -162,7 +162,7 @@ bool KGPGFile::open(int mode)
 
   QStringList args;
 
-  args << "--homedir" << m_homedir
+  args << "--homedir" << QString("\"") + m_homedir + QString("\"")
        << "-q"
        << "--batch";
 
@@ -170,10 +170,10 @@ bool KGPGFile::open(int mode)
     args << "-ea"
          << "-z" << "6"
          << "--comment" << QString("\"") + m_comment + QString("\"")
-         << "-o" << m_fn;
+         << "-o" << QString("\"") + m_fn + QString("\"");
     QValueList<QCString>::Iterator it;
     for(it = m_recipient.begin(); it != m_recipient.end(); ++it)
-      args << "-r" << *it;
+      args << "-r" << QCString("\"") + *it + QCString("\"");
 
     // some versions of GPG had trouble to replace a file
     // so we delete it first
@@ -182,7 +182,7 @@ bool KGPGFile::open(int mode)
     args << "-da";
     if(useOwnPassphrase)
       args << "--passphrase-fd" << "0";
-    args << "--no-default-recipient" << m_fn;
+    args << "--no-default-recipient" << QString("\"") + m_fn + QString("\"");
   }
 
   QCString pwd;
