@@ -111,7 +111,7 @@ void KOfxDirectConnectDlg::slotOfxData(KIO::Job*,const QByteArray& _ba)
   setDetails(QString("Got %1 bytes").arg(_ba.size()));
 }
 
-void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job*e)
+void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job* /* e */)
 {
   kProgress1->advance(1);
   setStatus("Completed.");
@@ -139,7 +139,6 @@ void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job*e)
     {
       QTextStream stream( &f );
       QString line;
-      int i = 1;
       while ( !stream.atEnd() ) {
           details += stream.readLine(); // line of text excluding '\n'
       }
