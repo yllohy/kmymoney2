@@ -1,3 +1,6 @@
+2005-06-22 Ace Jones <acejones@users.sourceforge.net>
+  * Surround CSV fields with quotes in report export.  Fixes #1210755
+  
 2005-06-20 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * GnuCash Reader -  fix QMessageBox change/bug
 
@@ -10,7 +13,7 @@
   * Applied ui-dialog patch provided by Laurent Montel
 
 2005-06-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
-  * Added function to select/unselect an account subtree in the 
+  * Added function to select/unselect an account subtree in the
     account selector widget via the right mouse button
   * Fixed nested 'if' in Makefile.am
   * Fixed reported Makefile.am problems with missing $(DESTDIR)

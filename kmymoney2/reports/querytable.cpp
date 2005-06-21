@@ -899,7 +899,7 @@ void QueryTable::render( QString& result, QString& csv ) const
             "colspan=\"" + QString::number(columns.count()-1) + "\">"+
             i18n("Total")+" " + (*it_group).oldName() + "</td>"
             "<td>" + subtotal_html + "</td></tr>\n";
-          csv += "\"" + i18n("Total") + " " + (*it_group).oldName() + "\"," + subtotal_csv + "\n";
+          csv += "\"" + i18n("Total") + " " + (*it_group).oldName() + "\",\"" + subtotal_csv + "\"\n";
         }
         --it_group;
       }
@@ -936,7 +936,7 @@ void QueryTable::render( QString& result, QString& csv ) const
 
         MyMoneyMoney::setThousandSeparator('\0');
 
-        csv += MyMoneyMoney(data).formatMoney() + ",";
+        csv += "\"" + MyMoneyMoney(data).formatMoney() + "\",";
 
         MyMoneyMoney::setThousandSeparator(savethsep);
       }
@@ -948,7 +948,7 @@ void QueryTable::render( QString& result, QString& csv ) const
 
         MyMoneyMoney::setThousandSeparator('\0');
 
-        csv += (*it_row)["currency"] + " " + MyMoneyMoney(data).formatMoney() + ",";
+        csv += "\"" + (*it_row)["currency"] + " " + MyMoneyMoney(data).formatMoney() + "\",";
 
         MyMoneyMoney::setThousandSeparator(savethsep);
 
@@ -1001,7 +1001,7 @@ void QueryTable::render( QString& result, QString& csv ) const
         "colspan=\"" + QString::number(columns.count()-1) + "\">"+
         i18n("Total")+" " + (*it_group).oldName() + "</td>"
         "<td>" + subtotal_html + "</td></tr>\n";
-      csv += "\"" + i18n("Total") + " " + (*it_group).oldName() + "\"," + subtotal_csv + "\n";
+      csv += "\"" + i18n("Total") + " " + (*it_group).oldName() + "\",\"" + subtotal_csv + "\"\n";
       --it_group;
     }
 
@@ -1019,7 +1019,7 @@ void QueryTable::render( QString& result, QString& csv ) const
       "colspan=\"" + QString::number(columns.count()-1) + "\">"+
       i18n("Grand Total") + "</td>"
       "<td>" + grandtotal_html + "</td></tr>\n";
-    csv += "\"" + i18n("Grand Total") + "\"," + grandtotal_csv + "\n";
+    csv += "\"" + i18n("Grand Total") + "\",\"" + grandtotal_csv + "\"\n";
   }
   result += "</table>\n";
 }
