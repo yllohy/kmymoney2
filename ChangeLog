@@ -1,11 +1,30 @@
-2005-06-22 Ace Jones <acejones@users.sourceforge.net>
+2005-06-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed 'undefined INT_MIN, INT_MAX' problem
+  * Resolved compiler warnings in kofxdirectconnectdlg.cpp
+  * Fixed #1216779 (Fails to save with space in path)
+  * Added italian what's new page provided by Samuel Algisi and Andrea Nironi
+
+2005-06-20 Ace Jones <acejones@users.sourceforge.net>
   * Surround CSV fields with quotes in report export.  Fixes #1210755
   
 2005-06-20 Tony Bloomfield <tonybloom@users.sourceforge.net>
-  * GnuCash Reader -  fix QMessageBox change/bug
+  * GnuCash Reader - fix QMessageBox change/bug
 
 2005-06-15 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * GnuCash Reader - make anonymized names more readable
+
+2005-06-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Moved mymoneymoney.cpp to be the first module included when
+    building with --enable-final=yes, so that __STDC_LIMIT_MACROS is defined
+    before stdint.h is included for the first time
+
+2005-06-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Bumped version number to 0.7.3
+  * Applied fix-compile-visibility patch by Laurent Montel
+  * Updated acinclude.m4.in and cvs.sh from KDE/admin
+  * Pick up unusual places for the KDE basedir (e.g. /usr/lib/kde/3.3)
+  * Allow generation of pot file even if kde-config --install include
+    returns NONE
 
 2005-06-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added description of common widgets
