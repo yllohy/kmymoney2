@@ -1,3 +1,11 @@
+2005-06-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Selecting a different payee during renaming of another payee will
+    now enter the changes if the 'Keep changes when selecting a 
+    different transaction/split' register setting is selected.
+    See also ChangeLog entry dated 2005-03-12.
+  * New categories will be shown as sub-account of expenses (#1061790)
+  * Applied patch provided by Laurent Montel to kmymoney2ui.rc
+
 2005-06-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed 'undefined INT_MIN, INT_MAX' problem
   * Resolved compiler warnings in kofxdirectconnectdlg.cpp
