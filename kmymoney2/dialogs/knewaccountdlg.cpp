@@ -113,11 +113,11 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       case MyMoneyAccount::Income:
         typeCombo->setCurrentItem(0);
         break;
+
       case MyMoneyAccount::Expense:
+      default:
         typeCombo->setCurrentItem(1);
         break;
-      default:
-        typeCombo->setCurrentItem(0);
     }
     if (m_isEditing)
     {
