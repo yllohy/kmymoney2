@@ -58,6 +58,6 @@ install-docs:
 	$(LN_S) $(kde_libs_htmldir)/$(KDE_LANG)/common $(DESTDIR)$(kde_htmldir)/$(KDE_LANG)/kmymoney2/common
 
 uninstall-docs:
-	-rm -rf $(kde_htmldir)/$(KDE_LANG)/kmymoney2
+	-rm -rf $(DESTDIR)$(kde_htmldir)/$(KDE_LANG)/kmymoney2
 
 
