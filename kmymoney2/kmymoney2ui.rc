@@ -1,10 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="kmymoney2" version="2">
-<!--
-  This file is merged with $KDEDIR/share/config/ui/ui_standards.rc file
-  to form the menu of this application. The merge points are defined
-  in the standard file using the <MergeLocal> tag
--->
+<kpartgui name="kmymoney2" version="3">
 <MenuBar>
   <Menu name="file">
     <Menu name="import" icon="fileimport" append="save_merge"><text>&amp;Import</text>
@@ -34,9 +29,7 @@
     <Action name="account_reconcile"/>
     <Action name="account_find" icon="transaction_find"/>
   </Menu>
-
   <Merge/>
-
   <Menu name="tools">
     <Action name="qif_editor"/>
     <Action name="tool_security_editor"/>
@@ -45,7 +38,6 @@
 <!--    <Action name="file_consistency_check"/> -->
     <Action name="equity_price_update"/>
   </Menu>
-
   <Menu name="settings">
     <Action name="show_transaction_detail" append="show_merge"/>
     <!-- <Action name="banking_settings" append="configure_merge"/> -->
@@ -59,11 +51,9 @@
   <Menu name="bills"><text>&amp;Bills/Deposits</text>
     <Action name="bills_add"/>
   </Menu>
-
   <Menu name="reports"><text>&amp;Reports</text>
     <Action name="report_basic"/>
   </Menu>
-
   <Menu name="plugin"><text>&amp;Plugins</text>
     <Action name="plugin_load"/>
     <Action name="plugin_unload"/>
@@ -71,8 +61,13 @@
   </Menu>
 -->
 </MenuBar>
-<ToolBar name="mainToolBar" >
-	<Separator/>
+<ToolBar noMerge="1" name="mainToolBar" fullWidth="true" >
+<text>Main Toolbar</text>
+ <Action name="file_new" />
+ <Action name="file_open" />
+ <Action name="file_save" />
+ <Action name="file_print" />
+ <Separator />
   <Action name="bank_add"/>
   <Action name="account_add"/>
   <Separator/>
