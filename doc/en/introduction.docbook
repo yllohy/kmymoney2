@@ -1,6 +1,33 @@
 <chapter id="introduction">
-<title>Introduction - Under development - MTE</title>
-<para>
-</para>
-</chapter>
+<title>Introduction</title>
 
+<sect1 id="intro-1">
+<title>What is &kappname;</title>
+
+<para>
+Put simply &kappname; is a personal finances manager.  As with other applications that offer to manage your finances &kappname; provides a number of features and tools that assist in creating and maintaining your accounts.
+</para>
+
+<para>
+Based on tried and tested double entry accounting principles &kappname; ensures that your finances are kept in correct order.
+</para>
+
+<para>
+Along with managing accounts &kappname; also manages your Income accounts, Expenditure accounts, Institutions (banks), Categories (income &amp; expense accounts), Payees and Scheduled Transactions giving you a comprehensive view of your financial situtation.
+</para>
+
+</sect1>
+
+<sect1 id="intro-2">
+<title>&kappname; limitations</title>
+
+<para>
+In its present version &kappname; does not scale well to the average business needs.  Due to the complexity and processes needed &kappname; is not recommended for business use although plans are underway to provide client / supplier / document features through a plugin.
+</para>
+
+<para>
+&kappname; is not a clone, and although many of the features present in &kappname; can be found in other similar applications, &kappname; tries to present an individual and unique view of your finances.
+</para>
+
+</sect1>
+</chapter>

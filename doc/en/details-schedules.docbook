@@ -1,6 +1,215 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
 <chapter id="details.schedules">
-<title>Schedules - Under development - MTE</title>
-<para>
-</para>
-</chapter>
+<title>Schedules</title>
 
+<sect1 id="details.schedules.introduction"><title>Introduction</title>
+<para></para>
+
+<sect2><title>What are Schedules?</title>
+<para>
+	<quote>Schedules maintain information about transactions that occur one or more times over a period time.</quote>
+</para>
+<para>
+	Sometimes called recurring transactions, schedules provide a means to record information about transactions that happen on a regular basis.  A common schedule is your salary.  Once a month, or even weekly, the company you work for pays you for services rendered.  This payment can happen in many different ways but each month or week you will receive a payment that needs to be recorded.
+</para>
+</sect2>
+
+<sect2><title>How can schedules be used?</title>
+<para>
+	Because you know these payments are regularly made to you, a Schedule can be created to record information about the payment and even create the transaction for you when pay day arrives.
+</para>
+<para>
+	Other types of schedule can also be recorded to reflect money coming in and out of your account.  Common expenses such as utility bills or money transfers can be recorded with schedules along with loan repayments.
+</para>
+</sect2>
+
+<sect2><title>What information is recorded in a Schedule?</title>
+<para>
+	Schedules consist of two parts;
+
+	<itemizedlist>
+	<listitem>
+	<para>The schedule data</para>
+	</listitem>
+	<listitem>
+	<para>The transaction data</para>
+	</listitem>
+	</itemizedlist>
+</para>
+
+<sect3><title>The schedule data</title>
+<para>
+	As stated earlier schedules record information about regularly occuring transactions.  When recording these transactions some important information about how the transaction is to be used needs to be stored.
+</para>
+<para>
+	All schedules share some common data that is used to define how the transaction is to be presented.  The two most important bits of data are the name of the schedule and the frequency of payments.  Taking the previous example of a salary schedule the frequency would be set to monthly, weekly or any other payment scheme you have set up with your employer.  Currently supported frequency formats include:
+</para>
+<para>
+	<itemizedlist>
+	<listitem>
+	<para>Once</para>
+	</listitem>
+	<listitem>
+	<para>Daily</para>
+	</listitem>
+	<listitem>
+	<para>Weekly</para>
+	</listitem>
+	<listitem>
+	<para>Fortnightly</para>
+	</listitem>
+	<listitem>
+	<para>Every other week</para>
+	</listitem>
+	<listitem>
+	<para>Monthly</para>
+	</listitem>
+	<listitem>
+	<para>Every four weeks</para>
+	</listitem>
+	<listitem>
+	<para>Every two months</para>
+	</listitem>
+	<listitem>
+	<para>Every three months</para>
+	</listitem>
+	<listitem>
+	<para>Quarterly</para>
+	</listitem>
+	<listitem>
+	<para>Every four months</para>
+	</listitem>
+	<listitem>
+	<para>Twice yearly</para>
+	</listitem>
+	<listitem>
+	<para>Yearly</para>
+	</listitem>
+	<listitem>
+	<para>Every other year</para>
+	</listitem>
+	</itemizedlist>
+</para>
+<para>
+	Note that &kappname; does not currently support creating your own frequency types and it is expected that this functionality will be provided in the next official release.
+</para>
+<para>
+	The schedule frequency is based upon a start date and this is recorded in the schedule data.  From this date all future occurences of the schedule can be calculated.  Future payments can be viewed from the Home View and from the calendar view tab in the Schedule View.
+</para>
+</sect3>
+
+<sect3><title>The transaction data</title>
+<para>
+	As a schedule represents a recurring transaction its details must also be stored.  This includes all aspects of the transaction and is discussed in detail <link linkend="details.transactions">here</link>.  The transactional data stored is used to create the transaction when due.
+</para>
+</sect3>
+</sect2>
+</sect1>
+
+
+<sect1 id="details.schedules.types"><title>Schedule Types</title>
+<para>
+	Several different types of schedule are supported recording the credits and debits from your account(s).  Selecting the appropriate schedule for your requirements is as simple as deciding whether the transaction describes a credit or debit from the account.  &kappname; currently supports these schedule types:
+</para>
+<para>
+	<itemizedlist>
+	<listitem>
+	<para>Bills</para>
+	</listitem>
+	<listitem>
+	<para>Deposits</para>
+	</listitem>
+	<listitem>
+	<para>Transfers</para>
+	</listitem>
+	<listitem>
+	<para>Loans</para>
+	</listitem>
+	</itemizedlist>
+</para>
+
+<sect2 id="details.schedules.types.bills"><title>Bills</title>
+<para>
+	A bill schedule represents a debit from an account.  Any payment you make to an individual or company on a regular basis can have a bill schedule created.
+</para>
+<para>
+	When creating a bill schedule the account from which payments are to be paid is specified along with other relevant transaction data.
+</para>
+</sect2>
+
+<sect2 id="details.schedules.types.deposits"><title>Deposits</title>
+<para>
+	A deposit schedule represents a credit to your account.  Any regular income you receive or payments made to you can be recorded with this schedule type.
+</para>
+<para>
+	When creating deposit schedules the account to be credited is specified.
+</para>
+</sect2>
+
+<sect2 id="details.schedules.types.transfers"><title>Transfers</title>
+<para>
+	A transfer schedule represents a debit from one account along with a credit to another, typically used when moving money between bank accounts.
+</para>
+</sect2>
+
+<sect2 id="details.schedules.types.loans"><title>Loans</title>
+<para>
+	A Loan schedule is created for you when creating a loan account and are discussed in <link linkend="details.loans">this</link> section.
+</para>
+</sect2>
+</sect1>
+
+
+<sect1 id="details.schedules.using"><title>Using Schedules</title>
+<para>
+	Schedules are maintained within the Schedule View.  Using schedules typically involves:
+</para>
+<para>
+	<orderedlist numeration="upperalpha">
+	<listitem>
+	<para>Creating the schedule</para>
+	</listitem>
+	<listitem>
+	<para>Viewing upcoming schedules</para>
+	</listitem>
+	<listitem>
+	<para>Entering the schedule</para>
+	</listitem>
+	<listitem>
+	<para>Changing the schedule details</para>
+	</listitem>
+	</orderedlist>
+</para>
+
+<sect2 id="details.schedules.creating"><title>Creating Schedules</title>
+<para>
+	Once you have identified a transaction that could be made into a schedule you first have to create the schedule.  This involves selecting the appropriate type and then entering the transaction details you wish to be entered each time a payment is due.
+</para>
+<para>
+	A schedule can be created from scratch or a template can be built from an existing transaction that has been entered into the ledger already.  Using either method once all the appropriate details have been entered, &kappname; can then create all subsequent transactions for you as and when needed.
+</para>
+</sect2>
+
+<sect2 id="details.schedules.viewing"><title>Viewing Schedules</title>
+<para>
+	Once the schedule has been entered into &kappname; any upcoming payments will be listed in both the Home View and in the calendar tab located in the Schedule View.
+</para>
+</sect2>
+
+<sect2 id="details.schedules.entering"><title>Entering Schedules</title>
+<para>
+	When a schedule is due its transaction must be entered into the appropriate ledger.  This can be done manually or by letting &kappname; enter the transaction for you.
+</para>
+<para>
+	If the schedule is to be entered manually then it can be entered, for the due date, by running the appropriate option discussed in detail here.  Confirmation of the transaction details will be displayed allowing you to amend any data in case the payment is not as expected, (the payment might have come a day early for instance).
+</para>
+</sect2>
+
+<sect2 id="details.schedules.editing"><title>Editing</title>
+<para>
+	If any details of the schedule should change then the schedule can be modified to relect the new information.  Any transactions entered into the register after this edit will reflect the changes made.  Any transactions previously entered by &kappname; will be unaffected by the changes and will need to be manually changed if needed.
+</para>
+</sect2>
+</sect1>
+</chapter>
+	

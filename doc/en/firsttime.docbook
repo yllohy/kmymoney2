@@ -1,6 +1,1397 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
 <chapter id="firsttime">
-<title>Using KMyMoney for the first time - Under development - Robert</title>
-<para>(This section can be removed if not completed in time) (Ace)
-</para>
-</chapter>
+<title>Using &kappname; for the first time</title>
 
+<sect1 id="firstime-1">
+<title>Running &kappname; for the first time</title>
+
+<para>
+	After starting &kappname; and the application has fully loaded two windows will be opened.  The top most window, 'Tip of the Day' presents a method for the application to let you know about important or useful pieces of information.
+	<screenshot>
+	<screeninfo>Tip of the Day</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="tipofday.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Tip of the Day</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>
+It is highly recommended to quickly read through these tips by pressing on the <guibutton>Previous</guibutton> and <guibutton>Next</guibutton> buttons at the bottom of the window.
+</para>
+
+<para>
+Once you have read the tips the window can be closed and will re-open each time &kappname; is started.  To stop this default behaviour uncheck the appropriate option on the Tip of the Day window.
+</para>
+
+<note><para>
+	Tips can be read at anytime by selecting <guimenuitem>Show tip of the day</guimenuitem> from the <guimenu>Help</guimenu> menu within &kappname;.
+</para></note>
+
+<para>
+All tips have been extracted from the Frequency Asked Questions list (FAQ) that provides more detailed help and can be found on the project <ulink url="http://kmymoney2.sourceforge.net/faq.html">website</ulink> and in this <link linkend="otherdoc">manual</link>.
+</para>
+
+<para>
+	Please click on <guibutton>Close</guibutton> to close the Tip of the Day dialogue.
+</para>
+</sect1>
+
+<sect1 id="firsttime-2">
+<title>The main window</title>
+
+<para>
+The &kappname; main window consists of four major parts
+</para>
+<itemizedlist>
+	<listitem><para>1) The menu bar</para></listitem>
+	<listitem><para>2) The toolbar</para></listitem>
+	<listitem><para>3) The View selector</para></listitem>
+	<listitem><para>4) The view</para></listitem>
+</itemizedlist>
+
+<para>
+	<screenshot>
+	<screeninfo>The Main Window</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="mainwindow_numbered.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>The Main Window</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>	
+The menu and toolbars provide access to the features of &kappname; and allow you to <link linkend="firsttime-3">Create</link> files or configure how &kappname; operates.
+</para>
+
+<para>
+The view selector consits up to ten icons in the left side of the main window depending upon the software provided by your system.  By clicking on an icon the view window on the right hand side is loaded with the appropriate view of your financial data.  Each view provides a unique representation of your financial situation and allows you to view or edit the information shown.
+</para>
+
+<para>
+	The view selector contains the following icons
+</para>
+	
+<itemizedlist>
+	<listitem>
+		<para>
+			<guiicon>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="home_view.png" format="PNG"></imagedata>
+					</imageobject>
+					<textobject>
+						<phrase>Home View</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</guiicon>
+			A configurable overview of your current financial situtation (or an introduction page when no data exists).
+		</para>
+	</listitem>
+
+	<listitem>
+		<para>
+			<guiicon>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="institution_view.png" format="PNG"></imagedata>
+					</imageobject>
+					<textobject>
+						<phrase>Accounts View</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</guiicon>
+			All of your accounts displayed in a hierachy.
+		</para>
+	</listitem>
+
+	<listitem>
+		<para>
+			<guiicon>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="accounts_view.png" format="PNG"></imagedata>
+					</imageobject>
+					<textobject>
+						<phrase>Accounts View</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</guiicon>
+			All of your accounts displayed in a hierachy.
+		</para>
+	</listitem>
+
+	<listitem>
+		<para>
+			<guiicon>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="schedule_view.png" format="PNG"></imagedata>
+					</imageobject>
+					<textobject>
+						<phrase>Schedule View</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</guiicon>
+			Your recurring bills and deposits.
+		</para>
+	</listitem>
+
+	<listitem>
+		<para>
+			<guiicon>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="categories_view.png" format="PNG"></imagedata>
+					</imageobject>
+					<textobject>
+						<phrase>Categories View</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</guiicon>
+			Special accounts that provide a means for you to group associated transactions.
+		</para>
+	</listitem>
+
+	<listitem>
+		<para>
+			<guiicon>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="payees_view.png" format="PNG"></imagedata>
+					</imageobject>
+					<textobject>
+						<phrase>Payees View</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</guiicon>
+			All Payees used by &kappname;.
+		</para>
+	</listitem>
+
+	<listitem>
+		<para>
+			<guiicon>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="ledgers_view.png" format="PNG"></imagedata>
+					</imageobject>
+					<textobject>
+						<phrase>Ledgers View</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</guiicon>
+			Your account transactions.
+		</para>
+	</listitem>
+
+	<listitem>
+		<para>
+			<guiicon>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="investments_view.png" format="PNG"></imagedata>
+					</imageobject>
+					<textobject>
+						<phrase>Investments View</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</guiicon>
+			Your portfolio summary.
+		</para>
+	</listitem>
+
+	<listitem>
+		<para>
+			<guiicon>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="reports_view.png" format="PNG"></imagedata>
+					</imageobject>
+					<textobject>
+						<phrase>Reports View</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</guiicon>
+			A collection of useful reports, providing alternate views of you financial data.
+		</para>
+	</listitem>
+
+	<listitem>
+		<para>
+			<guiicon>
+				<inlinemediaobject>
+					<imageobject>
+						<imagedata fileref="outbox_view.png" format="PNG"></imagedata>
+					</imageobject>
+					<textobject>
+						<phrase>Outbox View</phrase>
+					</textobject>
+				</inlinemediaobject>
+			</guiicon>
+			Used by the online banking module to provide feedback on running processes.
+		</para>
+	</listitem>
+</itemizedlist>
+</sect1>	
+
+<sect1 id="firsttime-3">
+<title>Creating a new file</title>
+
+<para>
+	To create a new file you can either select <guimenuitem>New</guimenuitem> from the <guimenu>File</guimenu> menu or choose the <inlinemediaobject><imageobject><imagedata fileref="new.png"/></imageobject><textobject><phrase>New</phrase></textobject></inlinemediaobject> icon from the toolbar.
+</para>
+
+<para>
+	Select <guimenu>File></guimenu><guimenuitem>New</guimenuitem> to create a new file.
+</para>
+
+<para>
+	Once this has been selected &kappname; will open the personal information dialogue box asking for your name and address.	
+</para>
+	
+<para>
+	<screenshot>
+	<screeninfo>Personal Information Dialogue</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="newfile.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Personal Information Dialogue</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>
+Any information entered here is not currently used by &kappname; but is used to personalise your file and will be required in future releases when features such as reporting and online banking are fully implemented.  All fields are optional and you can use &kappname; without entering any information now.  If &kappname; requires any personal information in future releases and finds none, you will be prompted to enter the relevant data then.
+</para>
+
+<para>
+	Please enter your name and address or nothing and press <guibutton>OK</guibutton>.
+</para>
+
+<para>&kappname; supports multiple currencies.  To set your base currency, (the currency you use day to day), select the appropriate symbol from the list provided.</para>
+
+<para>
+	Because this is a new file &kappname; will now import a set of default accounts with your interaction.  A message box is first shown reminding you that this step involves selecting the correct file to import into &kappname;.
+</para>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="default_prompt.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Prompt</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>
+	Please read the message and click on <guibutton>OK</guibutton>.
+</para>
+
+<para>
+	Next &kappname; shows the standard KDE File Open dialogue box allowing you to select the appropriate file for your country/region.  This window should list various language dependant directories containing files ending with the file extension 'kmt'.  If no files are listed matching this criteria then please navigate to $KDEDIR/share/apps/kmymoney2.  On a Mandrake 10 System this relates to /usr/share/apps/kmymoney2.
+
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="kmt.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Templates</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+
+	Only one file needs to be selected and should match your country and or region.  If your country/region is not listed then please select the default_account_enC.dat file or Click on <guibutton>Cancel</guibutton> to not load any pre-defined accounts.  The enC file relates to the default country and region and is usually American.  Accounts can be renamed later if needed.
+</para>
+
+<para>
+	Choose the appropriate accounts file and click on <guibutton>OK</guibutton> to create the file.
+</para>
+
+<para>
+After &kappname; has finished loading the default accounts your financial summary will be displayed.  As you have defined no accounts to hold your transactions this is currently empty.
+</para>
+</sect1>
+
+
+<sect1 id="firsttime-4">
+<title>Creating account(s)</title>
+
+<para>
+You can create an account in one of two ways both of which are described here:
+</para>
+
+<variablelist>
+	<varlistentry><term>Using the menu</term><listitem><para>To create an account using the menu select <guimenuitem>Add new account</guimenuitem> from the <guimenu>Accounts</guimenu> menu</para></listitem></varlistentry>
+		
+	<varlistentry><term>Using the Accounts view</term><listitem><para>To create an account using the accounts view click on the Accounts icon in the view selector and then right click on the Asset tree icon in the right hand view and select <guimenuitem>New account</guimenuitem> from the popup menu.  The Asset tree holds all of your accounts that are an asset.  Assets, and all the other account types, are discussed in more detail later in this manual.</para></listitem></varlistentry>
+</variablelist>
+
+<tip>
+	<para>
+		Note that &kappname; uses the context menus a lot throughout the whole application.
+	</para>
+</tip>
+
+<para>
+	Creating a new account by either method opens the <emphasis>New Account Wizard</emphasis>.  This wizard will take you step by step through the process of creating an account, gathering the required information at each step.  To navigate through the pages click on the <guibutton>Previous</guibutton> and <guibutton>Next</guibutton> buttons.
+</para>
+
+<sect2 id="firsttime-accwiz1">
+<title>The institution (Bank) name</title>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accwiz1.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+	
+	The first step involves setting an institution for the account.  If this is not a bank account then the step can be skipped by pressing the <guibutton>Next</guibutton> button.  If this account is a bank account or you wish to create a 'dummy' institution then click on the <guibutton>New Institution</guibutton> button.
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="newinst.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+	
+	Only the name is required in the New Institution dialogue, all other fields are optional.
+</para>
+
+<para>
+	As with the personal information dialogue, this data is not currently used by &kappname; but will be required by future releases for certain features.  Once you have entered the name click on <guibutton>OK</guibutton> to select the institution or click on <guibutton>Cancel</guibutton> to not use an institution for this account.  To select an existing institution simply click on the institution drop down list.
+</para>
+
+<para>
+	Enter an institution if needed and click on <guibutton>Next</guibutton>.
+</para>
+</sect2>
+
+<sect2 id="firsttime-accwiz2">
+<title>Account type</title>
+
+<para>
+	<screenshot>
+	<screeninfo>Schedule View</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accwiz2.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+	From the next page you can select an account type.  Seven choices are displayed:
+</para>
+
+<variablelist>
+	<varlistentry><term>Current</term><listitem><para>A normal current account, the type you get with any high street bank.</para></listitem></varlistentry>
+	<varlistentry><term>Savings</term><listitem><para>A normal savings account, the type you get with any high street bank.</para></listitem></varlistentry>
+	<varlistentry><term>Credit Card</term><listitem><para>An account to represent your credit card.</para></listitem></varlistentry>
+	<varlistentry><term>Cash</term><listitem><para>A general purpose account typically used for accounts not held at a bank.</para></listitem></varlistentry>
+	<varlistentry><term>Loan</term><listitem><para>An account to manage a loan.</para></listitem></varlistentry>
+	<varlistentry><term>Asset</term><listitem><para>An account to manage assets.</para></listitem></varlistentry>
+	<varlistentry><term>Liability</term><listitem><para>An account to manage a liability such as money you borrowed.</para></listitem></varlistentry>
+</variablelist>
+
+<para>	
+	Select the account type and click on <guibutton>Next</guibutton>.
+	
+	Note, if you have selected a Loan account type please see the loans <link linkend="details.loans">section</link> for information on how to proceed.  Any other account type please read on.
+</para>
+</sect2>
+
+
+<sect2 id="firsttime-accwiz3">
+<title>The account name and preference</title>
+
+<para>
+	You can set the account name in the next step.
+</para>	
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accwiz3.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>
+	Enter the account name, usually your title, initials and surname if it is a bank account, into the required fields.
+</para>
+
+<para>
+	To make this account your primary account check the tickbox labelled <guilabel>Preferred account</guilabel>  This account will then be used by default within &kappname; for your convenience.
+</para>
+
+<para>
+	To proceed to the next step click on <guibutton>Next</guibutton>.
+</para>
+</sect2>
+
+<sect2 id="firsttime-accwiz4">
+<title>Account number</title>
+
+<para>
+	The next step prompts for the account number.
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accwiz4.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>	
+	If this is a bank account then enter the the account number in the required field.  If this not a bank account or you do not know the account number the field can be left blank.
+</para>
+
+<para>
+	To proceed to the next step click on <guibutton>Next</guibutton>.
+</para>
+</sect2>
+
+<sect2 id="firsttime-accwiz5">
+<title>Opening date and balance</title>
+
+<para>
+	The final step, (except for Credit Card account types), is to set the opening date and balance for the account.
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accwiz5.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>	
+	If this is an existing bank account this information can be found on your statement otherwise the opening balance can be left at zero if it is a new account.
+</para>
+
+<para>
+	If this is not a Credit Card account then all required information has been gathered and you can add the account to &kappname; by clicking on the <guibutton>Finish</guibutton> button.  If you do not wish to add the account click on <guibutton>Cancel</guibutton>.
+</para>
+
+<sect3 id="firsttime-accwiz5.1">
+<title>Credit card schedule</title>
+
+<para>
+	When creating a Credit Card account one more step is required; creating a <link linkend="details.schedules">scheduled transaction</link>.
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accwiz6.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+	A transaction can be setup to automatically pay the balance for you.  To create the transaction make sure the tick box is checked and enter the required information.  Click on <guibutton>Finish</guibutton> to add the account and create the scheduled transaction if one was specified.
+</para>
+
+<para>
+	Click on <guibutton>Finish</guibutton> to create the account.
+</para>
+</sect3>
+</sect2>
+</sect1>
+
+<sect1 id="firsttime-5">
+<title>Opening / viewing accounts</title>
+
+<para>
+	To open an account in the Ledgers view you can either click on the link to the account from the Home view, or click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="ledgers_view_icon.png"/></imageobject></inlinemediaobject>Ledgers</guiicon> icon in the view selector and select the account in the drop down list at the top of the view.
+</para>
+</sect1>
+
+<sect1 id="firsttime-6">
+<title>Changing account properties</title>
+
+<para>
+	To change the account details select the Accounts view and find the account in the hierarchy listed.
+</para>
+
+<para>Right click on the chosen account and select <guimenuitem>Edit</guimenuitem> from the popup menu to open the account details dialogue.
+</para>
+
+<para>Alternatively the account details can be changed through the <link linkend="details.ledgers">Ledgers</link> view via the <guibutton>Account Details</guibutton> button in the command frame.
+</para>
+</sect1>
+
+<sect1 id="firsttime-7">
+	<title>Deleting accounts</title>
+
+<para>
+	To delete an account find the account you wish to delete in the accounts view and after right clicking on the entry to show the popup menu select <guimenuitem>Delete</guimenuitem> from the popup menu.
+</para>
+
+</sect1>
+
+<sect1 id="firsttime-7.5">
+<title>What next</title>
+<para>
+	Now that one or more accounts exist in &kappname; your account summary is shown in the Home view and you can create transactions manually or through the Schedule view.
+</para>
+
+<para>
+Open an account using either of the two previously mentioned methods to continue.
+</para>
+</sect1>
+
+<sect1 id="firsttime-8">
+<title>Creating transactions</title>
+
+<sect2 id="firstime-8-1">
+<title>The Ledger View</title>
+<para>
+	The <link linkend="details.ledgers">Ledgers</link> view is where most of the functionality of &kappname; lies.  The view consists of these components:
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="ledgerview-numbered.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Ledger View</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<orderedlist numeration="upperalpha">
+	<listitem><para>The account drop down list</para></listitem>
+	<listitem><para>The transaction list</para></listitem>
+	<listitem><para>The transaction input form</para></listitem>
+</orderedlist>
+</sect2>
+
+<sect2 id="firsttime-8-2">
+<title>The account drop down list</title>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accountdropdown.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Drop Down</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+	You can select an account via the account drop down list.  Note that depending upon the type of the account the <link linkend="firsttime-8-4">transaction input form</link> at the bottom of the view changes.
+</para>
+</sect2>
+
+<sect2 id="firsttime-8-3">
+<title>The transaction list</title>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="translist.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Transaction list</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+	After you have entered some transactions they are displayed in the transaction list.  From here you can also  change transaction properties or even create new transactions directly in the list.
+</para>
+</sect2>
+
+<sect2 id="firsttime-8-4">
+<title>The transaction input form</title>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="transactionform.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Transaction Form</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+The transaction input form at the bottom of the view is the interface for creating transactions.  Creating a transaction is as simple as choosing the transaction type, filling in the required information and then entering the transaction to the ledger.
+</para>
+</sect2>
+
+</sect1>
+
+<sect1 id="firsttime-9">
+<title>Entering transactions</title>
+<para>
+Two methods of entering transactions into the ledger are available; using the transaction input form and entering the data directly into the transaction list.  The transaction form is displayed by default and this is the method we will discuss first.
+</para>
+
+<sect2 id="firsttime-9-1">
+<title>Using the transaction form</title>
+<para>
+	Depending upon the transaction you wish to enter there are several different tabs available in the transaction form.  Click on the tab that best describes your transaction and the transaction form will load several fields ready for your input.
+</para>
+
+<para>
+	Please note that the actual transaction method is not directly used by &kappname; but is purely for grouping/reporting purposes.
+</para>
+
+<para>
+	If you are unsure what method to choose simply use Deposit for any money going into the account and Withdrawal for money coming out of the account.  The transaction methods and the differences between them are discussed in more detail within this manual.
+</para>
+
+<para>
+Select the transaction method by clicking on one of the tabs.
+</para>
+
+<sect3 id ="firsttime-9-1-1">
+<title>Entering the required information</title>
+<para>
+	Enter the required information using the following notes on the available fields.  Note that many fields have 'Auto Completion' turned on.  That is the field will try and finish your input for you.  If you start typing &kappname; will offer alternatives matching the characters you have entered so far.  To select an entry click on it using the mouse or keyboard, or if your entry is not listed keep typing to add the new value.  The next time you type the value in, &kappname; will find it for you after the first few characters have ben input.
+</para>
+
+<sect4 id="firsttime-9-1-1-1">
+<title>The Payee</title>
+<para>
+	The Payee is who the money came from/to.  If the payee is a new entry &kappname; will ask if you wish to add this to the Payees view.  Any other information related to a payee, such as the address details can be updated in this view later.
+</para>
+</sect4>
+
+<sect4 id="firsttime-9-1-1-2">
+<title>The Category</title>
+<para>
+	The Category lets you associate this transaction with another account for accounting purposes and to let you create reports and or group certain transactions. Type the name of the category into the required field.  If you have entered the category and it does not exist then &kappname; will prompt you to create a new one.
+</para>
+<para>
+	If this transaction is a multipart transaction, i.e you wish to associate the transaction with more than one category, &kappname; can let you do that.  An example transaction might be a cash machine withdrawal of 50 that you use 10 on food, 20 on beer and 20 as spare cash.  The transaction will therefore be assigned three categories, Food, Beer and Cash.  To assign these categories to the transaction click on the <guibutton>Split</guibutton> button.  This brings up a dialog window listing the currently assigned categories if any.  Enter the categories, creating any new ones as needed, and input the amount per category.  Click on <guibutton>OK</guibutton> to save the assignments.  Note that the category field in the transaction input form now displays <emphasis>Split transaction</emphasis>
+</para>
+</sect4>
+
+<sect4 id="firsttime-9-1-1-3">
+<title>The Memo</title>
+<para>
+A one line memo can be entered if you wish to help you remember what the transaction was for.
+</para>
+</sect4>
+
+<sect4 id="firsttime-9-1-1-4">
+<title>The Cheque Number</title>
+<para>
+	The cheque number can be entered if needed.  Note that the cheque number can always be visible if desired.  This is configured in the Settings dialog.
+</para>
+</sect4>
+
+<sect4 id="firsttime-9-1-1-5">
+<title>The Date</title>
+<para>
+	The transaction date can also be entered to specify when the transaction took place.  See the special &kappname; fields section for more information on the date input field and it can be used to make entering dates quicker and easier.
+</para>
+</sect4>
+
+<sect4 id="firsttime-9-1-1-6">
+<title>The Amount</title>
+<para>
+	Finally the transaction amount is entered into the required field.  Note that a simple calculator can be displayed by entering the % character into the field.
+</para>
+
+<para>
+	Enter the required information for the transaction and click on <guibutton>Enter</guibutton>.
+</para>
+
+</sect4>
+</sect3>
+</sect2>
+
+<sect2 id="firsttime-9-2">
+<title>Directly inputting transactions into the list</title>
+<para>
+	The second method of entering transactions into the ledger involves editing the transaction list itself directly.
+</para>
+
+<sect3 id="firsttime-9-2-1">
+<title>Hiding the transaction form using the Settings dialogue.</title>
+<para>
+	To do this you must first let &kappname; know that you don't want to use the transaction from by opening the settings dialogue and unchecking the <guilabel>Use transaction form</guilabel> option.
+</para>
+
+<para>
+	This is performed by selecting <guimenu>Settings</guimenu><guimenuitem>Configure &kappname;</guimenuitem> from the menu bar and selecting the <guiicon><inlinemediaobject><imageobject><imagedata fileref="../icons/register.png"></imagedata></imageobject></inlinemediaobject>Register</guiicon> icon from the list on left.  The option to uncheck is labelled <guilabel>Show transaction form</guilabel>.  When finished click on <guibutton>OK</guibutton> to be ready to directly enter transactions.
+</para>
+</sect3>
+</sect2>
+
+<sect2 id="firsttime-9-3">
+<title>Starting the edit</title>
+<para>	
+	To enter a transaction into the register you can now either double click on the entry or press <keycap>Enter</keycap> when the transaction is highlighted.  The <keycap>Up</keycap> and <keycap>Down</keycap> arrow keys let you navigate through the list.  After pressing <keycap>Enter</keycap> or double clicking on an entry, the transaction list displayes the fields required to enter the transaction and waits for input.
+</para>
+
+<para>
+	To move through the fields press the <keycap>Tab</keycap> key and when done press <keycap>Enter</keycap> to save the changes or <keycap>Esc</keycap> to cancel.
+</para>
+
+<para>
+Which method you use to enter transactions is up to you and is a matter of personal preference.
+</para>
+</sect2>
+	
+	<sect2 id="firsttime-9-4">
+<title>Editing transactions</title>
+<para>
+	To edit a transaction select it in the list view and either click on <guibutton>Edit</guibutton> in the transaction input form or right click on the entry and select <guimenuitem>Edit</guimenuitem> from the popup menu.  If you are editing transactions directly in the list you can edit the transaction simply by double clicking on an entry or by pressing <keycap>Enter</keycap> when a transaction is highlighted.
+</para>
+</sect2>
+
+<sect2 id="firsttime-9-5">
+<title>Deleting transactions</title>
+<para>
+	To delete the transaction select it in the list view and right click on the entry selecting <guimenuitem>Delete</guimenuitem> from the popup menu when it appears.
+</para>
+</sect2>
+</sect1>
+
+<sect1 id="firsttime-10">
+<title>Schedules</title>
+<para>
+	A <link linkend="details.schedules">Schedule</link> is a transaction that occurs one or more times over a certain period of time.  Sometimes called recurring transactions a typical example is your pay cheque that you receive every month or week.  Rather than have to enter the transaction details each time you get paid, you can instruct &kappname; to create a schedule that will enter a transaction for you when you get paid.
+</para>
+
+<para>
+The schedule consists of two main parts; the schedule data and the transaction itself.
+</para>
+
+<sect2 id="firsttime-10-1">
+<title>The schedule data</title>
+<para>
+The schedule data records the occurrence of the schedule, ie. when the transaction is to be entered into the ledger and how.  The transaction data records normal transaction information and will be entered in to the ledger as-is.
+</para>
+
+<para>
+There are four different types of schedule at the moment:
+</para>
+
+<itemizedlist>
+	<listitem><para><link linkend="firsttime-10-1-1">Bills</link></para></listitem>
+	<listitem><para><link linkend="firsttime-10-1-2">Deposits</link></para></listitem>
+	<listitem><para><link linkend="firsttime-10-1-3">Transfers</link></para></listitem>
+	<listitem><para><link linkend="firsttime-10-1-4">Loans</link></para></listitem>
+</itemizedlist>
+
+<sect3 id="firsttime-10-1-1">
+<title>Bills</title>
+<para>
+	A Bill Schedule is used to create a schedule for money going out of your account such as a Gym membership.
+</para>
+</sect3>
+
+<sect3 id="firsttime-10-1-2">
+<title>Deposits</title>
+<para>
+	A Deposit Schedule is used to create a schedule for money coming into your account such as a pay cheque.
+</para>
+</sect3>
+
+<sect3 id="firsttime-10-1-3">
+<title>Transfers</title>
+<para>
+	A Transfer Schedule is used to create a schedule for money coming out of one account and into another.  A typical example is a credit card payment.
+</para>
+</sect3>
+
+<sect3 id="firsttime-10-1-4">
+<title>Loans</title>
+<para>	
+	A Loan Schedule is a special type of schedule and is created when dealing with <link linkend="details.loans">Loan</link> accounts.
+</para>
+
+<para>
+	Open the schedule view by clicking on the <guiicon>Schedule<inlinemediaobject><imageobject><imagedata fileref="schedule.png"/></imageobject></inlinemediaobject></guiicon> icon in the view selector.
+</para>
+</sect3>
+</sect2>
+
+<sect2 id="firsttime-10-2">
+<title>The schedule view</title>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="scheduleview.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Schedule View</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+	The schedule view consists of a tabbed list view along with a create button above it.  At the moment this list is empty.  To create a new schedule click on the <guibutton>New Schedule</guibutton> button and select the type of schedule you wish to create.
+</para>
+</sect2>
+
+<sect2 id="firsttime-10-3">
+<title>The new schedule dialogue</title>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="newsched_numbered.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>New Schedule</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+A new dialogue window is now shown prompting for the schedule and transaction data.  The schedule data includes the following fields:
+</para>
+
+<orderedlist numeration="upperalpha">
+	<listitem><para>Schedule Name</para></listitem>
+	<listitem><para>Next due date</para></listitem>
+	<listitem><para>Frequency</para></listitem>
+	<listitem><para>Estimated amount</para></listitem>
+	<listitem><para>Schedule options</para></listitem>
+</orderedlist>
+
+<sect3 id="firsttime-10-3-1">
+<title>Filling in the fields</title>
+<para>
+	Enter the schedule name and the next occurence of this schdule into their respective fields.  Select the frequency from the <guibutton>Frequency</guibutton> drop down list.  If the amount varies transaction to transaction make sure to check the <guilabel>Estimate</guilabel> check box and you will be prompted for the correct amount when it is entered into the ledger.  Fill in all the transaction fields as you would normally with the ledger view.
+</para>
+</sect3>
+
+<sect3 id="firsttime-10-3-2">
+<title>Modifying the schedule behaviour</title>
+<para>
+At the bottom of the dialogue are some optional fields that can modify how the schedule behaves.  If the schedule occurs on a weekend you can choose whether to enter the transaction the previous friday or the next monday.  Typically this option is used to replicate some real world operation such as a bank transaction.
+</para>
+</sect3>
+
+<sect3 id="firsttime-10-3-3">
+<title>Letting &kappname; enter the transaction into the register</title>
+<para>
+	To let &kappname; enter the transaction for you when needed make sure that the check box labelled <guilabel>Enter this into the ledger automatically</guilabel> is checked otherwise when the transaction is due to be entered, &kappname; will open a dialogue box asking you to confirm that you want it to be entered.  This behaviour is configurable and more information can be found in the Settings section.
+</para>
+</sect3>
+
+<sect3 id="firsttime-10-3-4">
+<title>Letting &kappname; know when the schedule will finish</title>
+<para>
+If you know how many transactions are left or when they are due to finish this information can be entered so the transactions are not entered indefinitely.  Check the appropriate tick box and enter the information you have.  Only the date or the number of transactions remaining is needed because the other can be calculated.
+</para>
+
+<para>
+	Enter the required information and click on <guibutton>OK</guibutton> to continue.
+</para>
+</sect3>
+
+</sect2>
+
+<sect2 id="firsttime-10-4">
+<title>Editing schedules</title>
+<para>
+	To edit the schedule simply select the entry in the list and right click to bring up the context menu and select <guimenuitem>Edit</guimenuitem>.
+</para>
+</sect2>
+
+<sect2 id="firsttime-10-5">
+<title>Deleting Schedules</title>
+<para>
+	To delete the schedule simply select the entry in the list and right click to bring up the context menu and select <guimenuitem>Delete</guimenuitem>.
+</para>
+</sect2>
+
+<sect2 id="firsttime-10-6">
+<title>The calendar view</title>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="calendarview.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Calendar View</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+	The calendar tab presents the schedules in a calendar format so it is easier to see when they occur.  To switch to the calendar view click on the <guibutton>Calendar View</guibutton> tab.
+</para>
+
+<para>
+	The calendar type can be changed using the <guibutton>Select Style</guibutton> button.  Currently only two types exist; Week and Month.  The monthly view is the default and is usually the most useful.  Navigate through the dates using the controls as you would with the date input control.
+</para>
+
+<para>
+	If any schedules fall on any particular then the number of schedules is displayed.
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="schedmonthday.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>
+To view the schedule(s) that fall on that day move the mouse cursor over the highlight and a popup window
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="schedpopup.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>
+will be displayed allowing you to view the schedule summary.
+</para>
+
+<para>
+	If more than one schedule falls on that day you can cycle through them using the buttons at the top of the window.
+</para>
+
+<para>
+	If you find that the display is cluttered with schedules and you only want to view one type of schedule, then this is possible from the <guibutton>Select Schedules</guibutton> button.  After clicking on this button the different schedule types are listed and are checked by default
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="schedcaltypes.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>
+To remove the type from the calendar view simply uncheck it in the list.
+</para>
+</sect2>
+
+<sect2 id="firsttime-10-7">
+<title>Entering schedules</title>
+<para>
+Schedules can be entered in one of three different ways
+</para>
+
+<itemizedlist>
+	<listitem><para>Manually by right clicking on the list entry</para></listitem>
+	<listitem><para>Manually via the popup window in the calendar view</para></listitem>
+	<listitem><para>&kappname; can enter them with or without your interaction upon startup</para></listitem>
+</itemizedlist>
+
+<sect3 id="firsttime-10-7-1">
+<title>Manually entering schedules</title>
+<para>	
+	You can enter a schedule manually be right clicking on the list entry and selecting <guimenuitem>Enter</guimenuitem> from the popup menu or by clicking on the <guibutton>Enter</guibutton> button on the popup window in the calendar view.
+</para>
+</sect3>
+
+<sect3 id="firsttime-10-7-2">
+<title>Confirming the schedule to enter</title>
+<para>
+	After selecting either method the Enter Scheduled Transaction dialogue window is shown prompting you with the required information, entered when creating the schedule.
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="enterschedule.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>		
+	This information can be changed and can be applied to just this one instance of the schedule or to all subsequent transactions.  After checking that all the data is correct clicking on <guibutton>OK</guibutton> will add the transaction to the ledger.  If you have changed any of the transaction data a further confirmation of what you intend will be displayed.
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="confirmenter.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>	
+	Select what you want to do with the information presented and click <guibutton>OK</guibutton> or <guibutton>Cancel</guibutton>.
+</para>
+</sect3>
+
+<sect3 id="firsttime-10-7-3">
+
+
+<title>Letting &kappname; enter the schedule(s) for you</title>
+<para>	
+	Alternatively &kappname; can check which schedules are due upon startup and enter them for you if the appropriate option was checked when setting up the schedule.
+</para>
+
+<para>
+	If the option was not checked then &kappname; will open the previously mentioned dialogue and you can follow the steps mentioned there.  &kappname; will also open the dialogue if the amount is an estimate so you can enter the real amount.
+</para>
+
+<para>
+	You can also opt to have &kappname; not check the schedules on startup by deselecting the option in the Settings dialogue and any overdue schedules or schedules due 'today' will be shown in the Home view for you to enter manually.
+</para>
+</sect3>
+</sect2>
+</sect1>
+
+<sect1 id="firsttime-11">
+<title>Categories</title>
+<para>	
+	To maintain <link linkend="details.categories">categories</link> click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="categories.png"/></imageobject></inlinemediaobject>Categories</guiicon> icon in the view selector.
+</para>
+
+<sect2 id="firsttime-11-1">
+<title>The view</title>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="categories.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+	A sub-set of the accounts available in the Accounts view is shown, specifically the Income and Expense account types.
+</para>
+</sect2>
+
+<sect2 id="firsttime-11-2">
+<title>Creating categories</title>
+<para>
+	To create a new category select a parent in the tree and right click to bring up the popup menu.  Once open select the <guimenuitem>New Cateogry</guimenuitem> option.  This will open the account details dialogue with the parent account selected.
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="categoryedit.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>
+	Enter the category name any notes and click on <guibutton>OK</guibutton> to save the new category.
+</para>
+</sect2>
+
+<sect2 id="firsttime-11-3">
+<title>Editing categories</title>
+<para>
+	To edit a cateogry select it in the tree and right click to bring up the popup menu and select <guimenuitem>Edit</guimenuitem>.
+</para>
+</sect2>
+
+<sect2 id="firsttime-11-4">
+<title>Deleting categories</title>
+<para>
+	To delete a cateogry select it in the tree and right click to bring up the popup menu and select <guimenuitem>Delete</guimenuitem>.
+</para>
+</sect2>
+</sect1>
+
+
+<sect1 id="firsttime-12">
+<title>Payees</title>
+<sect2 id="firsttime-12-1">
+<title>Intro</title>
+<para>
+	To maintain <link linkend="details.payees">payees</link> click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="payees.png"/></imageobject></inlinemediaobject>Payees</guiicon> icon in the view selector.
+</para>
+	
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="payeeview.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+	Any transactions associated with the payee are displayed in the list at the right hand side of the view.  To enter the address details for the payee enter the required information and click on the <guibutton>Update Details</guibutton> button.  To delete the payee click on the <guibutton>Delete Payee</guibutton> button.
+</para>
+</sect2>
+
+<sect2 id="firsttime-12-2">
+<title>Creating a new payee</title>
+<para>
+	To create a new payee enter the name in the required field and click on the <guibutton>Add</guibutton> button.  
+</para>
+</sect2>
+</sect1>
+
+
+<sect1 id="firsttime-import">
+<title>Importing financial data</title>
+
+<sect2 id="firsttime-import-qif">
+<title>Quicken Interchage Format (QIF) Import</title>
+<para>
+If you currently use a financial manager application &kappname; can then import an account's transactions as long as they are in the Quicken Interchange Format (QIF).  Most financial programs can export this format and the different applications methods of exporting QIF is not discussed here for brevity.
+</para>
+
+<sect3 id="firsttime-import-qif-1">
+<title>Selecting the file to import</title>
+<para>
+	To import a QIF file select <guimenuitem>Import</guimenuitem> <guimenuitem>Qif</guimenuitem> from the <guimenu>File</guimenu> menu.
+</para>
+	
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="qifopen.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>	
+	The resulting dialogue prompts for the QIF filename allowing you to locate the file by clicking on the <guibutton>Browse</guibutton> button.
+</para>
+
+<para>
+If you want &kappname; to automatically enter new payees check the appropriate option otherwise &kappname; will prompt you each time a new payee is found.
+</para>
+
+<para>
+	Click on <guibutton>Import</guibutton> to import the QIF file.
+</para>
+</sect3>
+
+<sect3 id="import-qif-2">
+<title>The import process</title>
+<para>
+	During the import process &kappname; may prompt you to select the account to import to.  Make your selection and press <guibutton>OK</guibutton> to continue.
+</para>
+</sect3>
+
+<sect3 id="import-qif-3">
+<title>Confirming the imported transactions</title>
+<para>	
+	When &kappname; has finished importing the QIF transactions the account will be shown with the imported transactions listed in Yellow.
+</para>
+	
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="qifimportconfirm.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>	
+	Transaction data can be edited or even deleted if needed.  To edit a transaction simply double click on the entry or hit enter when the entry is highlighted.  Once finished click on <guibutton>OK</guibutton> to accept the imported transactions or <guibutton>Cancel</guibutton> to remove the imported transactions.
+</para>
+
+<para>
+	Importing and exporting QIF files is covered in more detail in <link linkend="details.impexp">this</link> section which also covers the QIF profile feature not discussed here.
+</para>
+</sect3>
+</sect2>
+</sect1>
+
+
+<sect1 id="firsttime-find">
+<title>Searching for transactions</title>
+<sect2 id="firsttime-find-1">
+<title>Opening the find window</title>
+<para>
+	&kappname; provides a useful and powerful transaction search facility in the form of the search dialog.
+</para>
+
+<para>
+	The search dialog can be opened from the toolbar using the <guiicon><inlinemediaobject><imageobject><imagedata fileref="../icons/find.png"/></imageobject></inlinemediaobject>Find</guiicon> icon or by selecting <guimenuitem>Find Transaction</guimenuitem> from the <guimenu>Account</guimenu> menu.
+</para>
+</sect2>
+
+<sect2 id="firsttime-find-2">
+<title>Entering the search criteria</title>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="finddlg.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+	The search dialogue contains several tabs each restricting the particular type of transaction you wish to find.  Ener the required information and click on <guibutton>Search</guibutton>.  Any transactions found are displayed in the list below the search parameters.  Selecting the transaction is then as simple as double clicking on the entry.  To re-enter the search parameters click on the <guibutton>Reset</guibutton> button which will cause all the fields to revert to their default values on close the found transactions list.
+</para>
+
+<para>
+	A full description of the tabs and the input required is discussed in <link linkend="details.search">this</link> section.
+</para>
+</sect2>
+</sect1>
+
+<sect1 id="firsttime-reconcile">
+<title>Reconciliation</title>
+	
+<sect2 id="firsttime-reconcile-1">
+<title>What is reconciliation</title>
+<para>
+At some point you will want to reconcile the transactions you have entered with the transactions listed in a statement, be it a bank statement, credit card statement, loan statement or any other statement.  Reconciliation involves matching what you have entered with what the statement lists.  If any discrepencies are found then either you or the person who created the statement have made a mistake.
+</para>
+
+<para>
+	To reconcile an account click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="ledgers.png"/></imageobject></inlinemediaobject>Ledgers</guiicon> icon in the account selector, choose your account from the drop down list and then click on the <guibutton>Reconcile</guibutton> button.
+</para>
+</sect2>
+
+<sect2 id="firsttime-reconcile-2">
+<title>The reconciliation wizard</title>
+<para>
+	This will open the reconcilation wizard with the first page informing you of what will happen briefly.  Click on <guibutton>Next</guibutton> to actually start the wizard.
+</para>
+
+<sect3 id="firsttime-reconcile-2-1">
+<title>Statement details</title>
+<para>
+	The statement date, starting balance and ending balance can be found in your statement.  Make sure that the figures match and click on the <guibutton>Next</guibutton> button.  If the figures do not match then enter the figures as listed on your statement and click on the <guibutton>Next</guibutton> button.
+</para>
+</sect3>
+
+<sect3 id="firsttime-reconcile-2-2">
+<title>Interest</title>
+<para>
+If the statement reconciliation is on a bank account or any account with interest and/or charges then enter these values in the required fields.  A category can be assigned to the transactions.
+</para>
+
+<para>
+	Click on <guibutton>Finish</guibutton> to start matching your statment to what you have entered.
+</para>
+</sect3>
+
+<sect3 id="firsttime-reconcile-2-3">
+<title>Clearing transactions</title>
+<para>
+	To mark a transaction as cleared click on the C column in the list view.  A transaction is cleared when it matches the transaction on your statement.  The command frame lists the statement amount and the cleared amount.  When the difference is zero then the account is reconciled and you can click the <guibutton>Finish</guibutton> button to save the transactions.  To postpone the reconciliation to a later time click on the <guibutton>Postpone</guibutton> button.  During the reconcilation any transaction can be edited to make it match the statement and new transactions can be created as usual.  After clicking on the <guibutton>Finish</guibutton> button the transactions are marked as reconciled and the C column changes to 'R' to reflect the change.
+</para>
+</sect3>
+</sect2>
+</sect1>
+
+<sect1 id="firsttime-backup">
+<title>Backing up</title>
+<para>
+Now that you have created some accounts and entered transactions its a good idea to perform a backup.  Because the file used by kmymoney is a standard unix file you can just copy the file to another location to back it up or use the dialog provided by &kappname;.  Using the dialog is the preferred method because if &kappname; ever starts using other file formats, such as SQL, then it would be much harder to copy the file manually.
+</para>
+
+<para>
+	To backup your file through &kappname; Select <guimenuitem>Backup</guimenuitem> from the <guimenu>File</guimenu> menu and enter the directory where you wish the file to be copied to.  If the directory needs mounting first and you have the sufficient privileges then check the tick box labelled <guilabel>Mount this directory before backing up</guilabel> and click on <guibutton>OK</guibutton>.
+</para>
+
+<para>
+The file will be coped to the directory specified with the current date appended to the filename so it is easy to see the date the file was backed up.
+</para>
+</sect1>
+
+<sect1 id="firsttime-contact">
+<title>Contacting the developers / Reporting Bugs</title>
+<para>
+	You can contact the developers through the User mailing list<ulink url="kmymoney2-user@lists.sourceforge.net">mail list</ulink>.
+</para>
+
+<para>
+	To report a bug please use the interface provided by &kappname; by selecting <guimenuitem>Report Bug</guimenuitem> from the Help menu and filling in the required information.
+</para>
+</sect1>
+
+</chapter>
