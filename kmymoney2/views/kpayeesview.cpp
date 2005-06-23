@@ -432,6 +432,12 @@ void KPayeesView::readConfig(void)
   m_transactionView->header()->setMinimumHeight(height);
   m_transactionView->header()->setMaximumHeight(height);
   m_transactionView->header()->setFont(font);
+
+  KConfig* kconfig = KGlobal::config();
+  kconfig->setGroup("General Options");
+  if(kconfig->readBoolEntry("FocusChangeIsEnter", false) == true)
+  m_payeesList->setDefaultRenameAction(
+           kconfig->readBoolEntry("FocusChangeIsEnter", false) == true ? QListView::Accept : QListView::Reject);
 }
 
 void KPayeesView::writeConfig(void)
