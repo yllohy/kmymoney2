@@ -1,3 +1,7 @@
+2005-06-28 Ace Jones <acejones@users.sourceforge.net>
+  * Added meta tag to html reports.  Apparantly this makes them show up better
+    on Windows.  Submitted by Duloup <duloup@gmail.com>
+    
 2005-06-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Selecting a different payee during renaming of another payee will
     now enter the changes if the 'Keep changes when selecting a 
