@@ -1,3 +1,8 @@
+2005-07-02 Robert Wadley <robntina@users.sourceforge.net>
+  * Added screenshots for the manual.
+  * Made some small changes to some of the image names in the manual.
+  * Added image names to the makefile
+
 2005-06-28 Ace Jones <acejones@users.sourceforge.net>
   * Added meta tag to html reports.  Apparantly this makes them show up better
     on Windows.  Submitted by Duloup <duloup@gmail.com>

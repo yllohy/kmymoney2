@@ -48,10 +48,10 @@ All tips have been extracted from the Frequency Asked Questions list (FAQ) that 
 The &kappname; main window consists of four major parts
 </para>
 <itemizedlist>
-	<listitem><para>1) The menu bar</para></listitem>
-	<listitem><para>2) The toolbar</para></listitem>
-	<listitem><para>3) The View selector</para></listitem>
-	<listitem><para>4) The view</para></listitem>
+	<listitem><para>A. The menu bar</para></listitem>
+	<listitem><para>B. The toolbar</para></listitem>
+	<listitem><para>C. The View selector</para></listitem>
+	<listitem><para>D. The view</para></listitem>
 </itemizedlist>
 
 <para>
@@ -780,7 +780,7 @@ A one line memo can be entered if you wish to help you remember what the transac
 </para>
 
 <para>
-	This is performed by selecting <guimenu>Settings</guimenu><guimenuitem>Configure &kappname;</guimenuitem> from the menu bar and selecting the <guiicon><inlinemediaobject><imageobject><imagedata fileref="../icons/register.png"></imagedata></imageobject></inlinemediaobject>Register</guiicon> icon from the list on left.  The option to uncheck is labelled <guilabel>Show transaction form</guilabel>.  When finished click on <guibutton>OK</guibutton> to be ready to directly enter transactions.
+	This is performed by selecting <guimenu>Settings</guimenu><guimenuitem>Configure &kappname;</guimenuitem> from the menu bar and selecting the <guiicon><inlinemediaobject><imageobject><imagedata fileref="register.png"></imagedata></imageobject></inlinemediaobject>Register</guiicon> icon from the list on left.  The option to uncheck is labelled <guilabel>Show transaction form</guilabel>.  When finished click on <guibutton>OK</guibutton> to be ready to directly enter transactions.
 </para>
 </sect3>
 </sect2>
@@ -870,7 +870,7 @@ There are four different types of schedule at the moment:
 </para>
 
 <para>
-	Open the schedule view by clicking on the <guiicon>Schedule<inlinemediaobject><imageobject><imagedata fileref="schedule.png"/></imageobject></inlinemediaobject></guiicon> icon in the view selector.
+	Open the schedule view by clicking on the  <guiicon>Schedule <inlinemediaobject><imageobject><imagedata fileref="schedule.png"/></imageobject></inlinemediaobject></guiicon> icon in the view selector.
 </para>
 </sect3>
 </sect2>
@@ -1124,7 +1124,7 @@ Schedules can be entered in one of three different ways
 <sect1 id="firsttime-11">
 <title>Categories</title>
 <para>	
-	To maintain <link linkend="details.categories">categories</link> click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="categories.png"/></imageobject></inlinemediaobject>Categories</guiicon> icon in the view selector.
+	To maintain <link linkend="details.categories">categories</link> click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="categories_view.png"/></imageobject></inlinemediaobject>Categories</guiicon> icon in the view selector.
 </para>
 
 <sect2 id="firsttime-11-1">
@@ -1186,7 +1186,7 @@ Schedules can be entered in one of three different ways
 <sect2 id="firsttime-12-1">
 <title>Intro</title>
 <para>
-	To maintain <link linkend="details.payees">payees</link> click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="payees.png"/></imageobject></inlinemediaobject>Payees</guiicon> icon in the view selector.
+	To maintain <link linkend="details.payees">payees</link> click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="payees_view.png"/></imageobject></inlinemediaobject>Payees</guiicon> icon in the view selector.
 </para>
 	
 <para>
@@ -1295,7 +1295,7 @@ If you want &kappname; to automatically enter new payees check the appropriate o
 </para>
 
 <para>
-	The search dialog can be opened from the toolbar using the <guiicon><inlinemediaobject><imageobject><imagedata fileref="../icons/find.png"/></imageobject></inlinemediaobject>Find</guiicon> icon or by selecting <guimenuitem>Find Transaction</guimenuitem> from the <guimenu>Account</guimenu> menu.
+	The search dialog can be opened from the toolbar using the <guiicon><inlinemediaobject><imageobject><imagedata fileref="transaction_find.png"/></imageobject></inlinemediaobject>Find</guiicon> icon or by selecting <guimenuitem>Find Transaction</guimenuitem> from the <guimenu>Account</guimenu> menu.
 </para>
 </sect2>
 
@@ -1331,7 +1331,7 @@ At some point you will want to reconcile the transactions you have entered with 
 </para>
 
 <para>
-	To reconcile an account click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="ledgers.png"/></imageobject></inlinemediaobject>Ledgers</guiicon> icon in the account selector, choose your account from the drop down list and then click on the <guibutton>Reconcile</guibutton> button.
+	To reconcile an account click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="reconcile.png"/></imageobject></inlinemediaobject> Reconcile Ledgers</guiicon> icon in the account selector, choose your account from the drop down list and then click on the <guibutton>Reconcile</guibutton> button.
 </para>
 </sect2>
 
