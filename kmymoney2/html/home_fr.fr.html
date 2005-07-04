@@ -1,44 +1,58 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<!--
+***************************************************************************************
+3/23/2005  KMyMoney Welcome Page
+Robert Wadley    rob<at>robntina.fastmail.us
+David Wadley     mail<at>davidwadley.com
+
+***************************************************************************************
+-->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="kmymoney2.css">
+  <title>Untitled Document</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+  <link href="welcome.css" rel="stylesheet" type="text/css">
 </head>
-
 <body>
-  <center><h1>Bonjour et bienvenue dans KMyMoney version 0.6rc1</h1></center>
-<hr>
-L'équipe de développement est fière de vous présenter la version candidate de la prochaine mouture de<p>
-
-  <center><h1>KMyMoney, le Gestionnaire de Finances Personnelles pour KDE</h1></center>
-<p>
-De nombreuses nouvelles fonctionnalités ont été ajoutées à cette version,
-dont voici les plus importantes :
-<br>
-<ul>
-<li>saisie des opérations par formulaire
-<li>vue du registre mise à jour
-<li>Support pour davantage de types de comptes
-<li>Support pour les échéances
-<li>Fonctions de recherches améliorées
-<li>Assistants pour vous aider à créer et rapprocher vos comptes
-<li>Support des langues fran&ccedil;ais et allemand
-</ul>
-Veuillez essayer vous-même les nombreuses fonctions de KMyMoney.
-Bien que nous ayons fait de notre mieux pour supprimer les erreurs dans cette version, il se peut qu'il en reste.
-Veuillez nous faire savoir tout fonctionnement anormal du programme en envoyant un e-mail à
-<font color="blue"><b>kmymoney2-developer@lists.sourceforge.net</b></font>,
-la liste de discussion des développeurs.
-<p>
-<b>Attention : Comme cette version de KMyMoney écrit seulement les fichiers dans son nouveau format,
-les fichiers écrit par cette version ne peuvent plus être lus par les anciennes versions
-(cad 0.4 et précédentes). Si vous désirez malgré tout utiliser ces versions de KMyMoney avec vos fichiers
-de données, assurez-vous que vous ayez effectué une copie de sauvegarde de vos données financières.
-Il n'existe malheureusement de possibilité de retourner en arrière.</b><p>
-Nous recherchons aussi des traducteurs et des personnes pour travailler sur le manuel de l'application.
-Si vous le voulez, vous pouvez nous aider dans ce domaine, ou si vous avez d'autres talents pour
-contribuer à cette application, contactez-nous sur la liste de discussion des développeurs à l'adresse
-<font color="blue"><b>kmymoney2-developer@lists.sourceforge.net</b></font>.
-<p>
-<a href="/home">Voir votre résumé financier</a> (disponible seulement si vous avez créé au moins un compte)<p>
+<!--"background_image", if enabled, displays an image in the background of this page.
+If you wish to use a background, un-comment the following line  -->
+<!-- <img id="background_image" src="images/background.png" height="100%"> -->
+<img id="KMyMoneyLogo" src="images/trans_logo.png">
+<h3 id="title" style="font-size: 20px;">Bienvenue dans KMyMoney</h3>
+<p id="tagline">Logiciel de comptabilité personnelle</p>
+<div id="summaryLink"><a href="/home">Accéder à mon résumé financier</a></div>
+<div id="topleft">
+<div id="topright"><img src="images/spacer.png"></div>
+<div id="rightborder">
+<table style="width: 100%;">
+  <tbody>
+    <tr>
+      <td></td>
+      <td style="height: 150px; width: 380px;">
+      <div id="welcomeMenu">
+      <ul>
+        <li><img src="images/filenew.png"><a href="/action?id=file_new">Créer un nouveau fichier KMyMoney</a></li>
+        <li><img src="images/kmymoneydata.png"><a href="/action?id=file_open">Utiliser un fichier KMyMoney existant</a></li>
+        <li><img src="images/manual.png"><a href="/action?id=help_contents">Apprendre à utiliser KMyMoney</a></li>
+        <li><img src="images/konqueror.png"><a href="http://kmymoney2.sf.net">Visiter le site web de KMyMoney</a></li>
+        <li><img src="images/messagebox_info.png"><a href="/welcome?mode=whatsnew">Voir les nouveautés de cette version</a></li>
+      </ul>
+      </div>
+      </td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div id="bottomleft">
+<div id="bottomright"></div>
+</div>
+</div>
 </body>
 </html>
+
+
+
+
