@@ -2,7 +2,7 @@ KDE_OPTIONS = noautodist
 
 DOCBOOK_FILES = credits.docbook details-accounts.docbook  details-categories.docbook details-files.docbook details-formats.docbook  details-hbciofx.docbook details-impexp.docbook details-institutions.docbook details-integrity.docbook details-investments.docbook details-ledgers.docbook details-loans.docbook details-payees.docbook details-reconciliation.docbook details-reports.docbook details-schedules.docbook details-search.docbook details-settings.docbook details-transactions.docbook details-widgets.docbook firsttime.docbook index.docbook introduction.docbook otherdoc.docbook views-accounts.docbook views-categories.docbook views-home.docbook views-investments.docbook views-ledgers.docbook views-outbox.docbook views-payees.docbook views-schedules.docbook views-institutions.docbook views-reports.docbook whatsnew.docbook details-currencies.docbook reference.docbook
 
-SCREENSHOT_FILES = ledgers.png
+SCREENSHOT_FILES = accountdropdown.png accounts_view.png accwiz1.png accwiz2.png accwiz3.png accwiz4.png accwiz5.png accwiz6.png calendarview.png categories.png categories_view.png categoryedit.png confirmenter.png default_prompt.png enterschedule.png finddlg.png home_view.png institutions_view.png investments_view.png kmt.png ledgers.png ledgers_view.png ledgerview-numbered.png mainwindow_numbered.png newfile.png newinst.png new.png newsched_numbered.png outbox_view.png payees_view.png payeeview.png qifopen.png reconcile.png register.png reports_view.png schedcaltypes.png schedpopup.png schedule.png schedule_view.png scheduleview.png tipofday.png transaction_find.png transactionform.png translist.png
 
 EXTRA_DIST = kmymoney2.1 $(DOCBOOK_FILES)
 
