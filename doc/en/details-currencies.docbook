@@ -46,7 +46,7 @@ Optionally, the exchange rate is saved in the price data base once entered by th
 <sect1 id="details.currencies.prices">
 <title>Entering exchange rates for currencies</title>
 <para>
-The price database editor allows you to enter exchange rates between currencies or prices for invsetments.
+The price database editor allows you to enter exchange rates between currencies or prices for investments.
 </para>
 </sect1>
 
