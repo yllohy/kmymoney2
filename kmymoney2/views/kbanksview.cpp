@@ -285,10 +285,16 @@ void KAccountsView::update(const QCString& id)
     if(id == MyMoneyFile::NotifyClassAccountHierarchy
     || id == MyMoneyFile::NotifyClassCurrency
     || id == MyMoneyFile::NotifyClassSecurity
-    || id == MyMoneyFile::NotifyClassPrice
-    || (id == MyMoneyFile::NotifyClassInstitution && m_bViewNormalAccountsView == true)) {
+    || id == MyMoneyFile::NotifyClassPrice) {
       refresh(id);
+
+    } else if(m_bViewNormalAccountsView == true) {
+      if(id == MyMoneyFile::NotifyClassInstitution
+      || id == MyMoneyFile::NotifyClassAccount) {
+        refresh(id);
+      }
     }
+
     if(id == MyMoneyFile::NotifyClassAccount
     || id == MyMoneyFile::NotifyClassCurrency
     || id == MyMoneyFile::NotifyClassPrice
