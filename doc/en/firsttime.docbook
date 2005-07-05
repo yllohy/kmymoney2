@@ -102,14 +102,14 @@ The view selector consits up to ten icons in the left side of the main window de
 			<guiicon>
 				<inlinemediaobject>
 					<imageobject>
-						<imagedata fileref="institution_view.png" format="PNG"></imagedata>
+						<imagedata fileref="institutions_view.png" format="PNG"></imagedata>
 					</imageobject>
 					<textobject>
 						<phrase>Accounts View</phrase>
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			All of your accounts displayed in a hierachy.
+			All of your institutions and accounts displayed in a hierachy.
 		</para>
 	</listitem>
 
