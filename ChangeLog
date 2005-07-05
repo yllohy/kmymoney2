@@ -1,3 +1,6 @@
+2005-07-05 Robert Wadley <robntina@users.sourceforge.net>
+  * screenshot stuff
+  
 2005-07-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added index.html to .cvsignore in doc/en
   * Fixed #1231925 (Institutions view: totals do not reflect the accounts)
