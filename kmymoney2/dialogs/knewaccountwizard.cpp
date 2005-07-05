@@ -31,6 +31,7 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kapplication.h>
 #include <klocale.h>
 #include <klistbox.h>
 #include <kcombobox.h>
@@ -67,6 +68,16 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
 {
   // keep title of payment page
   m_accountPaymentPageTitle = title(accountPaymentPage);
+
+  // We don't need to add the default into the list (see ::help() why)
+  m_helpAnchor[institutionPage] = QString("firsttime-accwiz1");
+  m_helpAnchor[accountTypePage] = QString("firsttime-accwiz2");
+  m_helpAnchor[accountNamePage] = QString("firsttime-accwiz3");
+  m_helpAnchor[accountNumberPage] = QString("firsttime-accwiz4");
+  //m_helpAnchor[brokerageAccountPage] = QString("");
+  m_helpAnchor[accountDetailsPage] = QString("firsttime-accwiz5");
+  m_helpAnchor[accountPaymentPage] = QString("firsttime-accwiz5.1");
+  //m_helpAnchor[summaryPage] = QString("");
 
   accountListView->setRootIsDecorated(true);
   accountListView->setAllColumnsShowFocus(true);
@@ -336,13 +347,7 @@ int KNewAccountWizard::exec()
 
   accountListView->header()->setFont(KMyMoneyUtils::headerFont());
 
-  // currently, we don't have help :-(
-  setHelpEnabled(institutionPage, false);
-  setHelpEnabled(accountTypePage, false);
-  setHelpEnabled(accountNamePage, false);
-  setHelpEnabled(accountNumberPage, false);
-  setHelpEnabled(accountDetailsPage, false);
-  setHelpEnabled(accountPaymentPage, false);
+  // currently, we don't have help for these pages :-(
   setHelpEnabled(brokerageAccountPage, false);
   setHelpEnabled(summaryPage, false);
 
@@ -635,6 +640,15 @@ void KNewAccountWizard::slotPriceUpdate(void)
   KCurrencyEditDlg dlg(this, "KCurrencyEditDlg");
   dlg.slotSelectCurrency(m_currencyComboBox->security().id());
   dlg.exec();
+}
+
+void KNewAccountWizard::help(void)
+{
+  QString anchor = m_helpAnchor[currentPage()];
+  if(anchor.isEmpty())
+    anchor = QString("firsttime-4");
+
+  kapp->invokeHelp(anchor);
 }
 
 #include "knewaccountwizard.moc"

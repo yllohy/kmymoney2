@@ -147,6 +147,8 @@ protected slots:
   void slotCurrencyChanged(int);
   void slotPriceUpdate(void);
 
+  void help(void);
+
 signals:
   void newInstitutionClicked();
 
@@ -166,6 +168,7 @@ private:
   MyMoneyAccount m_brokerage;
   MyMoneySchedule m_schedule;
   MyMoneyInstitution m_institution;
+  QMap<QWidget*, QString>         m_helpAnchor;
 };
 
 #endif
