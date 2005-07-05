@@ -32,8 +32,9 @@
 // Project Includes
 
 #include "kmymoneyregistercheckings.h"
-#include "../mymoney/mymoneyfile.h"
+#include "kmymoney/mymoneyfile.h"
 #include "../views/kledgerview.h"
+#include "../kmymoneyutils.h"
 
 kMyMoneyRegisterCheckings::kMyMoneyRegisterCheckings(QWidget *parent, const char *name )
   : kMyMoneyRegister(3, parent,name)
@@ -73,11 +74,12 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
                                  bool selected, const QColorGroup& cg)
 {
   QCString splitCurrency;
+  MyMoneySplit split;
 
   setTransactionRow(row);
 
   int align = Qt::AlignVCenter;
-  QString txt;
+  QString txt, addon;
   if(m_transaction != 0) {
     switch (col) {
       case 0:
@@ -98,7 +100,7 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
 
           case 1:
             txt = m_action[MyMoneySplit::ActionWithdrawal];
-            if(KLedgerView::transactionType(*m_transaction) == KLedgerView::Transfer) {
+            if(KMyMoneyUtils::transactionType(*m_transaction) == KMyMoneyUtils::Transfer) {
               txt = m_action[MyMoneySplit::ActionTransfer];
             } else if(KLedgerView::transactionDirection(m_split) == KLedgerView::Credit) {
               txt = m_action[MyMoneySplit::ActionDeposit];
@@ -116,10 +118,29 @@ void kMyMoneyRegisterCheckings::paintCell(QPainter *p, int row, int col, const Q
         align |= Qt::AlignLeft;
         switch(m_transactionRow) {
           case 0:
-            try {
-              txt = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
-            } catch(MyMoneyException *e) {
-              delete e;
+            if(KMyMoneyUtils::transactionType(dynamic_cast<const MyMoneyTransaction&>(*m_transaction)) == KMyMoneyUtils::InvestmentTransaction) {
+              split = KMyMoneyUtils::stockSplit(dynamic_cast<const MyMoneyTransaction&>(*m_transaction));
+              txt = MyMoneyFile::instance()->account(split.accountId()).name();
+              if(split.action() == MyMoneySplit::ActionBuyShares) {
+                if(split.value().isNegative()) {
+                  addon = i18n("Sell");
+                } else {
+                  addon = i18n("Buy");
+                }
+              } else if(split.action() == MyMoneySplit::ActionDividend) {
+                  addon = i18n("Dividend");
+              } else if(split.action() == MyMoneySplit::ActionYield) {
+                  addon = i18n("Yield");
+              }
+              if(!addon.isEmpty()) {
+                txt += QString(" (%1)").arg(addon);
+              }
+            } else {
+              try {
+                txt = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
+              } catch(MyMoneyException *e) {
+                delete e;
+              }
             }
             break;
 

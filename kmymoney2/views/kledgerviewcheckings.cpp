@@ -522,7 +522,7 @@ void KLedgerViewCheckings::createContextMenu(void)
 
 int KLedgerViewCheckings::actionTab(const MyMoneyTransaction& t, const MyMoneySplit& split) const
 {
-  if(transactionType(t) == Transfer) {
+  if(transactionType(t) == KMyMoneyUtils::Transfer) {
     return 2;
   } else if(transactionDirection(split) == Credit) {
     return 1;
@@ -869,7 +869,7 @@ void KLedgerViewCheckings::fillFormStatics(void)
   formTable->setText(AMOUNT_ROW, AMOUNT_TXT_COL, i18n("Amount"));
 
   switch(transactionType(m_transaction)) {
-    case Transfer:
+    case KMyMoneyUtils::Transfer:
       switch( transactionDirection(m_split) ){
         case Credit:
           formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("From"));
@@ -902,6 +902,10 @@ void KLedgerViewCheckings::fillFormStatics(void)
         case Debit:
           formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Pay to"));
           break;
+      }
+      // For investment transactions we display the activity instead of the payee
+      if(KMyMoneyUtils::transactionType(m_transaction) == KMyMoneyUtils::InvestmentTransaction) {
+        formTable->setText(PAYEE_ROW, PAYEE_TXT_COL, i18n("Activity"));
       }
       break;
   }
@@ -940,11 +944,31 @@ void KLedgerViewCheckings::fillForm(void)
 
     // collect values
     QString payee;
-    try {
-      payee = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
-    } catch (MyMoneyException *e) {
-      delete e;
-      payee = " ";
+    if(KMyMoneyUtils::transactionType(m_transaction) == KMyMoneyUtils::InvestmentTransaction) {
+      MyMoneySplit split = KMyMoneyUtils::stockSplit(m_transaction);
+      payee = MyMoneyFile::instance()->account(split.accountId()).name();
+      QString addon;
+      if(split.action() == MyMoneySplit::ActionBuyShares) {
+        if(split.value().isNegative()) {
+          addon = i18n("Sell");
+        } else {
+          addon = i18n("Buy");
+        }
+      } else if(split.action() == MyMoneySplit::ActionDividend) {
+          addon = i18n("Dividend");
+      } else if(split.action() == MyMoneySplit::ActionYield) {
+          addon = i18n("Yield");
+      }
+      if(!addon.isEmpty()) {
+        payee += QString(" (%1)").arg(addon);
+      }
+    } else {
+      try {
+        payee = MyMoneyFile::instance()->payee(m_split.payeeId()).name();
+      } catch (MyMoneyException *e) {
+        delete e;
+        payee = " ";
+      }
     }
 
     QString category;
@@ -1482,7 +1506,7 @@ void KLedgerViewCheckings::slotConfigureMoreMenu(void)
     }
 
     int type = transactionType(*m_transactionPtr);
-    if ( ( type != Transfer) && ( type != InvestmentTransaction) ) {
+    if ( ( type != KMyMoneyUtils::Transfer) && ( type != KMyMoneyUtils::InvestmentTransaction) ) {
       m_moreMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
       QString dest;
@@ -1526,7 +1550,7 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
       m_contextMenu->setItemEnabled(gotoPayeeId, false);
     }
     int type = transactionType(*m_transactionPtr);
-    if ( ( type != Transfer) && ( type != InvestmentTransaction) ) {
+    if ( ( type != KMyMoneyUtils::Transfer) && ( type != KMyMoneyUtils::InvestmentTransaction) ) {
       m_contextMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
     } else {
       QString dest;
@@ -1721,29 +1745,29 @@ bool KLedgerViewCheckings::eventFilter( QObject *o, QEvent *e )
 
 int KLedgerViewCheckings::transactionType(const MyMoneyTransaction& t) const
 {
-  int rc = KLedgerView::transactionType(t);
-  if(rc == Unknown) {
+  int rc = KMyMoneyUtils::transactionType(t);
+  if(rc == KMyMoneyUtils::Unknown) {
     if(m_transactionFormActive) {
       switch(m_form->tabBar()->currentTab()) {
         case 2:    // Transfer
-          rc = Transfer;
+          rc = KMyMoneyUtils::Transfer;
           break;
         default:
-          rc = Normal;
+          rc = KMyMoneyUtils::Normal;
           break;
       }
     } else {
       if(m_editType) {
         switch(m_editType->currentItem()) {
           case 2:    // Transfer
-            rc = Transfer;
+            rc = KMyMoneyUtils::Transfer;
             break;
           default:
-            rc = Normal;
+            rc = KMyMoneyUtils::Normal;
             break;
         }
       } else
-        return Unknown;
+        rc = KMyMoneyUtils::Unknown;
     }
   }
   return rc;

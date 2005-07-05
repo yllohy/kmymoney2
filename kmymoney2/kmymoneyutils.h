@@ -39,6 +39,7 @@
 #include "mymoney/mymoneyaccount.h"
 #include "mymoney/mymoneysecurity.h"
 #include "mymoney/mymoneyscheduled.h"
+#include "mymoney/mymoneytransaction.h"
 #include "widgets/kmymoneypayee.h"
 
 /**
@@ -62,6 +63,48 @@ public:
     expense =    0x04,          ///< expense accounts selected
     income =     0x08,          ///< income accounts selected
     last =       0x10           ///< the leftmost bit in the mask
+  };
+
+  enum transactionTypeE {
+    /**
+      * Unknown transaction type (e.g. used for a transaction with only
+      * a single split)
+      */
+    Unknown,
+
+    /**
+      * A 'normal' transaction is one that consists out two splits: one
+      * referencing an income/expense account, the other referencing
+      * an asset/liability account.
+      */
+    Normal,
+
+    /**
+      * A transfer denotes a transaction consisting of two splits.
+      * Both of the splits reference an asset/liability
+      * account.
+      */
+    Transfer,
+
+    /**
+      * Whenever a transaction consists of more than 2 splits,
+      * it is treated as 'split transaction'.
+      */
+    SplitTransaction,
+
+    /**
+      * This transaction denotes a specific transaction where
+      * a loan account is involved. Ususally, a special dialog
+      * is used to modify this transaction.
+      */
+    LoanPayment,
+
+    /**
+      * This transaction denotes a specific transaction where
+      * an investment is involved. Ususally, a special dialog
+      * is used to modify this transaction.
+      */
+    InvestmentTransaction
   };
 
   static const int maxHomePageItems = 4;
@@ -342,6 +385,28 @@ public:
     * @note See KStandardDirs::findResource() for details on the parameters
     */
   static QString findResource(const char* type, const QString& filename);
+
+  /**
+    * This method returns the split referencing a stock account if
+    * one exists in the transaction passed as @p t. If none is present
+    * in @p t, an empty MyMoneySplit() object will be returned.
+    *
+    * @param t transaction to be checked for a stock account
+    * @return MyMoneySplit object referencing a stock account or an
+    *         empty MyMoneySplit object.
+    */
+  static const MyMoneySplit stockSplit(const MyMoneyTransaction& t);
+
+  /**
+    * This method analyses the splits of a transaction and returns
+    * the type of transaction. Possible values are defined by the
+    * KMyMoneyUtils::transactionTypeE enum.
+    *
+    * @param t const reference to the transaction
+    *
+    * @return KMyMoneyUtils::transactionTypeE value of the action
+    */
+  static const transactionTypeE transactionType(const MyMoneyTransaction& t);
 
 private:
   static QColor _backgroundColour;

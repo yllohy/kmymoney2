@@ -670,3 +670,46 @@ QString KMyMoneyUtils::findResource(const char* type, const QString& filename)
   }
   return rc;
 }
+
+const MyMoneySplit KMyMoneyUtils::stockSplit(const MyMoneyTransaction& t)
+{
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+  for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+    if(!(*it_s).accountId().isEmpty()) {
+      MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
+      if(acc.accountType() == MyMoneyAccount::Stock) {
+        return *it_s;
+      }
+    }
+  }
+  return MyMoneySplit();
+}
+
+const KMyMoneyUtils::transactionTypeE KMyMoneyUtils::transactionType(const MyMoneyTransaction& t)
+{
+  if(!stockSplit(t).id().isEmpty())
+    return InvestmentTransaction;
+
+  if(t.splitCount() < 2) {
+    return Unknown;
+  } else if(t.splitCount() > 2) {
+    // FIXME check for loan transaction here
+    return SplitTransaction;
+  }
+  QCString ida, idb;
+  ida = t.splits()[0].accountId();
+  idb = t.splits()[1].accountId();
+  if(ida.isEmpty() || idb.isEmpty())
+    return Unknown;
+
+  MyMoneyAccount a, b;
+  a = MyMoneyFile::instance()->account(ida);
+  b = MyMoneyFile::instance()->account(idb);
+  if((a.accountGroup() == MyMoneyAccount::Asset
+   || a.accountGroup() == MyMoneyAccount::Liability)
+  && (b.accountGroup() == MyMoneyAccount::Asset
+   || b.accountGroup() == MyMoneyAccount::Liability))
+    return Transfer;
+  return Normal;
+}
+

@@ -230,48 +230,6 @@ public:
     Debit
   };
 
-  enum transactionTypeE {
-    /**
-      * Unknown transaction type (e.g. used for a transaction with only
-      * a single split)
-      */
-    Unknown,
-
-    /**
-      * A 'normal' transaction is one that consists out two splits: one
-      * referencing an income/expense account, the other referencing
-      * an asset/liability account.
-      */
-    Normal,
-
-    /**
-      * A transfer denotes a transaction consisting of two splits.
-      * Both of the splits reference an asset/liability
-      * account.
-      */
-    Transfer,
-
-    /**
-      * Whenever a transaction consists of more than 2 splits,
-      * it is treated as 'split transaction'.
-      */
-    SplitTransaction,
-
-    /**
-      * This transaction denotes a specific transaction where
-      * a loan account is involved. Ususally, a special dialog
-      * is used to modify this transaction.
-      */
-    LoanPayment,
-
-    /**
-      * This transaction denotes a specific transaction where
-      * an investment is involved. Ususally, a special dialog
-      * is used to modify this transaction.
-      */
-    InvestmentTransaction
-  };
-
   enum investTransactionTypeE {
     UnknownTransactionType = -1,
     BuyShares,
@@ -403,16 +361,6 @@ public:
     * @param type const QCString reference to the new action value
     */
   void actionChanged(const QCString& type);
-
-  /**
-    * This method converts the actions strings contained in a split
-    * (e.g. MyMoneySplit::ActionATM) into the internal used numeric value.
-    *
-    * @param t const reference to the transaction
-    *
-    * @return KLedgerView::transactionTypeE value of the action
-    */
-  static int transactionType(const MyMoneyTransaction& t);
 
   /**
     * This method returns the direction of the cash flow for
@@ -781,17 +729,6 @@ protected:
   const bool transfersPossible(void) const;
 
   virtual void updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s, const bool enableAll = false) = 0;
-
-  /**
-    * This method returns the split referencing a stock account if
-    * one exists in the transaction passed as @p t. If none is present
-    * in @p t, an empty MyMoneySplit() object will be returned.
-    *
-    * @param t transaction to be checked for a stock account
-    * @return MyMoneySplit object referencing a stock account or an
-    *         empty MyMoneySplit object.
-    */
-  static const MyMoneySplit stockSplit(const MyMoneyTransaction& t);
 
   /**
     * Resets the tab order for input mode to contain no widgets. New

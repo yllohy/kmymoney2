@@ -1235,48 +1235,6 @@ int KLedgerView::transactionDirection(const MyMoneySplit& split)
   return (split.value().isZero()) ? UnknownDirection: ((split.value().isPositive()) ? Credit : Debit);
 }
 
-const MyMoneySplit KLedgerView::stockSplit(const MyMoneyTransaction& t)
-{
-  QValueList<MyMoneySplit>::ConstIterator it_s;
-  for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
-    if(!(*it_s).accountId().isEmpty()) {
-      MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
-      if(acc.accountType() == MyMoneyAccount::Stock) {
-        return *it_s;
-      }
-    }
-  }
-  return MyMoneySplit();
-}
-
-int KLedgerView::transactionType(const MyMoneyTransaction& t)
-{
-  if(!stockSplit(t).id().isEmpty())
-    return InvestmentTransaction;
-
-  if(t.splitCount() < 2) {
-    return Unknown;
-  } else if(t.splitCount() > 2) {
-    // FIXME check for loan transaction here
-    return SplitTransaction;
-  }
-  QCString ida, idb;
-  ida = t.splits()[0].accountId();
-  idb = t.splits()[1].accountId();
-  if(ida.isEmpty() || idb.isEmpty())
-    return Unknown;
-
-  MyMoneyAccount a, b;
-  a = MyMoneyFile::instance()->account(ida);
-  b = MyMoneyFile::instance()->account(idb);
-  if((a.accountGroup() == MyMoneyAccount::Asset
-   || a.accountGroup() == MyMoneyAccount::Liability)
-  && (b.accountGroup() == MyMoneyAccount::Asset
-   || b.accountGroup() == MyMoneyAccount::Liability))
-    return Transfer;
-  return Normal;
-}
-
 void KLedgerView::showWidgets(void)
 {
   QWidget* focusWidget;
@@ -1358,11 +1316,11 @@ void KLedgerView::slotNew(void)
 void KLedgerView::slotStartEdit(void)
 {
   // make sure, the view supports the type of transaction
-  if(transactionType(m_transaction) == InvestmentTransaction
+  if(KMyMoneyUtils::transactionType(m_transaction) == KMyMoneyUtils::InvestmentTransaction
   && !inherits("KLedgerViewInvestments")) {
-    if(KMessageBox::questionYesNo(0, i18n("An investment transaction can only be modified in the transaction view. Do you want to change to the investment view?")) == KMessageBox::Yes) {
+    if(KMessageBox::questionYesNo(0, i18n("An investment transaction can only be modified in the investment view. Do you want to change to the investment view?")) == KMessageBox::Yes) {
 
-      emit accountAndTransactionSelected(stockSplit(m_transaction).accountId(), m_transaction.id());
+      emit accountAndTransactionSelected(KMyMoneyUtils::stockSplit(m_transaction).accountId(), m_transaction.id());
     }
     return;
   }
@@ -1595,7 +1553,7 @@ void KLedgerView::slotEndEdit(void)
       }
     }
 
-    if(transactionType(m_transaction) == Transfer && !m_split.payeeId().isEmpty()) {
+    if(KMyMoneyUtils::transactionType(m_transaction) == KMyMoneyUtils::Transfer && !m_split.payeeId().isEmpty()) {
       for(it = list.begin(); it != list.end(); ++it) {
         if((*it).id() == m_split.id())
           continue;

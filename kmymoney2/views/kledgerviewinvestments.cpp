@@ -183,7 +183,7 @@ void KLedgerViewInvestments::createContextMenu(void)
 
 int KLedgerViewInvestments::actionTab(const MyMoneyTransaction& t, const MyMoneySplit& split) const
 {
-  if(KLedgerView::transactionType(t) == Transfer) {
+  if(KMyMoneyUtils::transactionType(t) == KMyMoneyUtils::Transfer) {
     return 2;
   } else if(transactionDirection(split) == Credit) {
     return 1;
