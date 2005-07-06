@@ -1,3 +1,7 @@
+2005-07-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Save equity account to file
+  * Re-attach children of equity account when loading old file
+
 2005-07-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Moved stockSplit() and transactionType() from KLedgerView to KMyMoneyUtils
   * Improved display of investment transactions in other ledger views
