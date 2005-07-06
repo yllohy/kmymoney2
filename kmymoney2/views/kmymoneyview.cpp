@@ -701,7 +701,7 @@ void KMyMoneyView::slotAccountOfxConnect(void)
         KMyMoney2App* mw = dynamic_cast<KMyMoney2App*>(kapp->mainWidget());
         connect(&dlg,SIGNAL(statementReady(const QString&,const QString&)),mw,
           SLOT(slotPluginImport(const QString&,const QString&)));
-        
+
         dlg.init();
         dlg.exec();
       }
@@ -2130,11 +2130,29 @@ void KMyMoneyView::fixFile(void)
   QValueList<MyMoneySchedule> scheduleList = file->scheduleList();
   QValueList<MyMoneySchedule>::Iterator it_s;
 
+  MyMoneyAccount equity = file->equity();
+  MyMoneyAccount asset = file->asset();
+  bool equityListEmpty = equity.accountList().count() == 0;
+
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
     fixOpeningBalance(*it_a);
     if((*it_a).accountType() == MyMoneyAccount::Loan
     || (*it_a).accountType() == MyMoneyAccount::AssetLoan) {
       fixLoanAccount(*it_a);
+    }
+    // until early before 0.8 release, the equity account was not saved to
+    // the file. If we have an equity account with no sub-accounts but
+    // find and equity account that has equity() as it's parent, we reparent
+    // this account. Need to move it to asset() first, because otherwise
+    // MyMoneyFile::reparent would act as NOP.
+    if(equityListEmpty && (*it_a).accountType() == MyMoneyAccount::Equity) {
+      if((*it_a).parentAccountId() == equity.id()) {
+        MyMoneyAccount acc = *it_a;
+        // tricky, force parent account to be empty so that we really
+        // can re-parent it
+        acc.setParentAccountId(QCString());
+        file->reparentAccount(acc, equity);
+      }
     }
   }
 
