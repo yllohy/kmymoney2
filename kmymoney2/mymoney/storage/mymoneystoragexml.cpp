@@ -603,7 +603,7 @@ void MyMoneyStorageXML::writeAccounts(QDomElement& accounts)
 
   list = m_storage->accountList();
 
-  QDomElement asset, liability, expense, income;
+  QDomElement asset, liability, expense, income, equity;
 
   asset = m_doc->createElement("ACCOUNT");
   writeAccount(asset, m_storage->asset());
@@ -620,6 +620,10 @@ void MyMoneyStorageXML::writeAccounts(QDomElement& accounts)
   income = m_doc->createElement("ACCOUNT");
   writeAccount(income, m_storage->income());
   accounts.appendChild(income);
+
+  equity = m_doc->createElement("ACCOUNT");
+  writeAccount(equity, m_storage->equity());
+  accounts.appendChild(equity);
 
   //signalProgress(0, list.count(), QObject::tr("Saving accounts..."));
   int i = 0;
