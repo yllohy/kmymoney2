@@ -1,3 +1,7 @@
+2005-07-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added quick-fix to avoid crash on schedule creation
+  * Applied doc patch provided by Jerry Amundsen
+
 2005-07-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Save equity account to file
   * Re-attach children of equity account when loading old file
