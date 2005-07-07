@@ -25,7 +25,7 @@ It is highly recommended to quickly read through these tips by pressing on the <
 </para>
 
 <para>
-Once you have read the tips the window can be closed and will re-open each time &kappname; is started.  To stop this default behaviour uncheck the appropriate option on the Tip of the Day window.
+Once you have read the tips the window can be closed and will re-open each time &kappname; is started.  To stop this default behavior uncheck the appropriate option on the Tip of the Day window.
 </para>
 
 <note><para>
@@ -37,7 +37,7 @@ All tips have been extracted from the Frequency Asked Questions list (FAQ) that 
 </para>
 
 <para>
-	Please click on <guibutton>Close</guibutton> to close the Tip of the Day dialogue.
+	Please click on <guibutton>Close</guibutton> to close the Tip of the Day dialog.
 </para>
 </sect1>
 
@@ -73,7 +73,7 @@ The menu and toolbars provide access to the features of &kappname; and allow you
 </para>
 
 <para>
-The view selector consits up to ten icons in the left side of the main window depending upon the software provided by your system.  By clicking on an icon the view window on the right hand side is loaded with the appropriate view of your financial data.  Each view provides a unique representation of your financial situation and allows you to view or edit the information shown.
+The view selector consists of up to ten icons in the left side of the main window, depending upon the software provided by your system.  By clicking on an icon, the view window on the right hand side is loaded with the appropriate view of your financial data.  Each view provides a unique representation of your financial situation and allows you to view or edit the information shown.
 </para>
 
 <para>
@@ -109,7 +109,7 @@ The view selector consits up to ten icons in the left side of the main window de
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			All of your institutions and accounts displayed in a hierachy.
+			All of your institutions and accounts displayed in a hierarchy.
 		</para>
 	</listitem>
 
@@ -125,7 +125,7 @@ The view selector consits up to ten icons in the left side of the main window de
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			All of your accounts displayed in a hierachy.
+			All of your accounts displayed in a hierarchy.
 		</para>
 	</listitem>
 
@@ -221,7 +221,7 @@ The view selector consits up to ten icons in the left side of the main window de
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			A collection of useful reports, providing alternate views of you financial data.
+			A collection of useful reports, providing alternate views of your financial data.
 		</para>
 	</listitem>
 
@@ -255,25 +255,25 @@ The view selector consits up to ten icons in the left side of the main window de
 </para>
 
 <para>
-	Once this has been selected &kappname; will open the personal information dialogue box asking for your name and address.	
+	Once this has been selected &kappname; will open the personal information dialog box asking for your name and address.	
 </para>
 	
 <para>
 	<screenshot>
-	<screeninfo>Personal Information Dialogue</screeninfo>
+	<screeninfo>Personal Information Dialog</screeninfo>
 	<mediaobject>
 	<imageobject>
 	<imagedata fileref="newfile.png" format="PNG" />
 	</imageobject>
 	<textobject>
-	<phrase>Personal Information Dialogue</phrase>
+	<phrase>Personal Information Dialog</phrase>
 	</textobject>
 	</mediaobject>
 	</screenshot>
 </para>
 
 <para>
-Any information entered here is not currently used by &kappname; but is used to personalise your file and will be required in future releases when features such as reporting and online banking are fully implemented.  All fields are optional and you can use &kappname; without entering any information now.  If &kappname; requires any personal information in future releases and finds none, you will be prompted to enter the relevant data then.
+Any information entered here is not currently used by &kappname; but is used to personalize your file and will be required in future releases when features such as reporting and online banking are fully implemented.  All fields are optional and you can use &kappname; without entering any information now.  If &kappname; requires any personal information in future releases and finds none, you will be prompted to enter the relevant data then.
 </para>
 
 <para>
@@ -303,7 +303,7 @@ Any information entered here is not currently used by &kappname; but is used to 
 </para>
 
 <para>
-	Next &kappname; shows the standard KDE File Open dialogue box allowing you to select the appropriate file for your country/region.  This window should list various language dependant directories containing files ending with the file extension 'kmt'.  If no files are listed matching this criteria then please navigate to $KDEDIR/share/apps/kmymoney2.  On a Mandrake 10 System this relates to /usr/share/apps/kmymoney2.
+	Next &kappname; shows the standard KDE File Open dialog box allowing you to select the appropriate file for your country/region.  This window should list various language dependant directories containing files ending with the file extension 'kmt'.  If no files are listed matching this criteria then please navigate to $KDEDIR/share/apps/kmymoney2.  On a Mandrake 10 System this relates to /usr/share/apps/kmymoney2.
 
 	<screenshot>
 	<mediaobject>
@@ -381,11 +381,11 @@ You can create an account in one of two ways both of which are described here:
 	</mediaobject>
 	</screenshot>
 	
-	Only the name is required in the New Institution dialogue, all other fields are optional.
+	Only the name is required in the New Institution dialog, all other fields are optional.
 </para>
 
 <para>
-	As with the personal information dialogue, this data is not currently used by &kappname; but will be required by future releases for certain features.  Once you have entered the name click on <guibutton>OK</guibutton> to select the institution or click on <guibutton>Cancel</guibutton> to not use an institution for this account.  To select an existing institution simply click on the institution drop down list.
+	As with the personal information dialog, this data is not currently used by &kappname; but will be required by future releases for certain features.  Once you have entered the name click on <guibutton>OK</guibutton> to select the institution or click on <guibutton>Cancel</guibutton> to not use an institution for this account.  To select an existing institution simply click on the institution drop down list.
 </para>
 
 <para>
@@ -567,7 +567,7 @@ You can create an account in one of two ways both of which are described here:
 	To change the account details select the Accounts view and find the account in the hierarchy listed.
 </para>
 
-<para>Right click on the chosen account and select <guimenuitem>Edit</guimenuitem> from the popup menu to open the account details dialogue.
+<para>Right click on the chosen account and select <guimenuitem>Edit</guimenuitem> from the popup menu to open the account details dialog.
 </para>
 
 <para>Alternatively the account details can be changed through the <link linkend="details.ledgers">Ledgers</link> view via the <guibutton>Account Details</guibutton> button in the command frame.
@@ -712,7 +712,7 @@ Select the transaction method by clicking on one of the tabs.
 <sect3 id ="firsttime-9-1-1">
 <title>Entering the required information</title>
 <para>
-	Enter the required information using the following notes on the available fields.  Note that many fields have 'Auto Completion' turned on.  That is the field will try and finish your input for you.  If you start typing &kappname; will offer alternatives matching the characters you have entered so far.  To select an entry click on it using the mouse or keyboard, or if your entry is not listed keep typing to add the new value.  The next time you type the value in, &kappname; will find it for you after the first few characters have ben input.
+	Enter the required information using the following notes on the available fields.  Note that many fields have 'Auto Completion' turned on.  That is the field will try and finish your input for you.  If you start typing &kappname; will offer alternatives matching the characters you have entered so far.  To select an entry click on it using the mouse or keyboard, or if your entry is not listed keep typing to add the new value.  The next time you type the value in, &kappname; will find it for you after the first few characters have been input.
 </para>
 
 <sect4 id="firsttime-9-1-1-1">
@@ -740,9 +740,9 @@ A one line memo can be entered if you wish to help you remember what the transac
 </sect4>
 
 <sect4 id="firsttime-9-1-1-4">
-<title>The Cheque Number</title>
+<title>The Check Number</title>
 <para>
-	The cheque number can be entered if needed.  Note that the cheque number can always be visible if desired.  This is configured in the Settings dialog.
+	The check number can be entered if needed.  Note that the check number can always be visible if desired.  This is configured in the Settings dialog.
 </para>
 </sect4>
 
@@ -776,7 +776,7 @@ A one line memo can be entered if you wish to help you remember what the transac
 <sect3 id="firsttime-9-2-1">
 <title>Hiding the transaction form using the Settings dialogue.</title>
 <para>
-	To do this you must first let &kappname; know that you don't want to use the transaction from by opening the settings dialogue and unchecking the <guilabel>Use transaction form</guilabel> option.
+	To do this you must first let &kappname; know that you don't want to use the transaction from by opening the settings dialog and unchecking the <guilabel>Use transaction form</guilabel> option.
 </para>
 
 <para>
@@ -788,7 +788,7 @@ A one line memo can be entered if you wish to help you remember what the transac
 <sect2 id="firsttime-9-3">
 <title>Starting the edit</title>
 <para>	
-	To enter a transaction into the register you can now either double click on the entry or press <keycap>Enter</keycap> when the transaction is highlighted.  The <keycap>Up</keycap> and <keycap>Down</keycap> arrow keys let you navigate through the list.  After pressing <keycap>Enter</keycap> or double clicking on an entry, the transaction list displayes the fields required to enter the transaction and waits for input.
+	To enter a transaction into the register you can now either double click on the entry or press <keycap>Enter</keycap> when the transaction is highlighted.  The <keycap>Up</keycap> and <keycap>Down</keycap> arrow keys let you navigate through the list.  After pressing <keycap>Enter</keycap> or double clicking on an entry, the transaction list displays the fields required to enter the transaction and waits for input.
 </para>
 
 <para>
@@ -818,7 +818,7 @@ Which method you use to enter transactions is up to you and is a matter of perso
 <sect1 id="firsttime-10">
 <title>Schedules</title>
 <para>
-	A <link linkend="details.schedules">Schedule</link> is a transaction that occurs one or more times over a certain period of time.  Sometimes called recurring transactions a typical example is your pay cheque that you receive every month or week.  Rather than have to enter the transaction details each time you get paid, you can instruct &kappname; to create a schedule that will enter a transaction for you when you get paid.
+	A <link linkend="details.schedules">Schedule</link> is a transaction that occurs one or more times over a certain period of time.  Sometimes called recurring transactions a typical example is your pay check that you receive every month or week.  Rather than have to enter the transaction details each time you get paid, you can instruct &kappname; to create a schedule that will enter a transaction for you when you get paid.
 </para>
 
 <para>
@@ -852,7 +852,7 @@ There are four different types of schedule at the moment:
 <sect3 id="firsttime-10-1-2">
 <title>Deposits</title>
 <para>
-	A Deposit Schedule is used to create a schedule for money coming into your account such as a pay cheque.
+	A Deposit Schedule is used to create a schedule for money coming into your account such as a pay check.
 </para>
 </sect3>
 
@@ -896,7 +896,7 @@ There are four different types of schedule at the moment:
 </sect2>
 
 <sect2 id="firsttime-10-3">
-<title>The new schedule dialogue</title>
+<title>The new schedule dialog</title>
 <para>
 	<screenshot>
 	<mediaobject>
@@ -911,7 +911,7 @@ There are four different types of schedule at the moment:
 </para>
 	
 <para>
-A new dialogue window is now shown prompting for the schedule and transaction data.  The schedule data includes the following fields:
+A new dialog window is now shown prompting for the schedule and transaction data.  The schedule data includes the following fields:
 </para>
 
 <orderedlist numeration="upperalpha">
@@ -925,21 +925,21 @@ A new dialogue window is now shown prompting for the schedule and transaction da
 <sect3 id="firsttime-10-3-1">
 <title>Filling in the fields</title>
 <para>
-	Enter the schedule name and the next occurence of this schdule into their respective fields.  Select the frequency from the <guibutton>Frequency</guibutton> drop down list.  If the amount varies transaction to transaction make sure to check the <guilabel>Estimate</guilabel> check box and you will be prompted for the correct amount when it is entered into the ledger.  Fill in all the transaction fields as you would normally with the ledger view.
+	Enter the schedule name and the next occurrence of this schedule into their respective fields.  Select the frequency from the <guibutton>Frequency</guibutton> drop down list.  If the amount varies transaction to transaction make sure to check the <guilabel>Estimate</guilabel> check box and you will be prompted for the correct amount when it is entered into the ledger.  Fill in all the transaction fields as you would normally with the ledger view.
 </para>
 </sect3>
 
 <sect3 id="firsttime-10-3-2">
-<title>Modifying the schedule behaviour</title>
+<title>Modifying the schedule behavior</title>
 <para>
-At the bottom of the dialogue are some optional fields that can modify how the schedule behaves.  If the schedule occurs on a weekend you can choose whether to enter the transaction the previous friday or the next monday.  Typically this option is used to replicate some real world operation such as a bank transaction.
+At the bottom of the dialog are some optional fields that can modify how the schedule behaves.  If the schedule occurs on a weekend you can choose whether to enter the transaction the previous Friday or the next Monday.  Typically this option is used to replicate some real world operation such as a bank transaction.
 </para>
 </sect3>
 
 <sect3 id="firsttime-10-3-3">
 <title>Letting &kappname; enter the transaction into the register</title>
 <para>
-	To let &kappname; enter the transaction for you when needed make sure that the check box labelled <guilabel>Enter this into the ledger automatically</guilabel> is checked otherwise when the transaction is due to be entered, &kappname; will open a dialogue box asking you to confirm that you want it to be entered.  This behaviour is configurable and more information can be found in the Settings section.
+	To let &kappname; enter the transaction for you when needed make sure that the check box labelled <guilabel>Enter this into the ledger automatically</guilabel> is checked otherwise when the transaction is due to be entered, &kappname; will open a dialog box asking you to confirm that you want it to be entered.  This behavior is configurable and more information can be found in the Settings section.
 </para>
 </sect3>
 
@@ -1070,7 +1070,7 @@ Schedules can be entered in one of three different ways
 <sect3 id="firsttime-10-7-2">
 <title>Confirming the schedule to enter</title>
 <para>
-	After selecting either method the Enter Scheduled Transaction dialogue window is shown prompting you with the required information, entered when creating the schedule.
+	After selecting either method the Enter Scheduled Transaction dialog window is shown prompting you with the required information, entered when creating the schedule.
 </para>
 
 <para>
@@ -1111,11 +1111,11 @@ Schedules can be entered in one of three different ways
 </para>
 
 <para>
-	If the option was not checked then &kappname; will open the previously mentioned dialogue and you can follow the steps mentioned there.  &kappname; will also open the dialogue if the amount is an estimate so you can enter the real amount.
+	If the option was not checked then &kappname; will open the previously mentioned dialog and you can follow the steps mentioned there.  &kappname; will also open the dialog if the amount is an estimate so you can enter the real amount.
 </para>
 
 <para>
-	You can also opt to have &kappname; not check the schedules on startup by deselecting the option in the Settings dialogue and any overdue schedules or schedules due 'today' will be shown in the Home view for you to enter manually.
+	You can also opt to have &kappname; not check the schedules on startup by deselecting the option in the Settings dialog and any overdue schedules or schedules due 'today' will be shown in the Home view for you to enter manually.
 </para>
 </sect3>
 </sect2>
@@ -1147,7 +1147,7 @@ Schedules can be entered in one of three different ways
 <sect2 id="firsttime-11-2">
 <title>Creating categories</title>
 <para>
-	To create a new category select a parent in the tree and right click to bring up the popup menu.  Once open select the <guimenuitem>New Cateogry</guimenuitem> option.  This will open the account details dialogue with the parent account selected.
+	To create a new category select a parent in the tree and right click to bring up the popup menu.  Once open select the <guimenuitem>New Category</guimenuitem> option.  This will open the account details dialog with the parent account selected.
 </para>
 
 <para>
@@ -1168,14 +1168,14 @@ Schedules can be entered in one of three different ways
 <sect2 id="firsttime-11-3">
 <title>Editing categories</title>
 <para>
-	To edit a cateogry select it in the tree and right click to bring up the popup menu and select <guimenuitem>Edit</guimenuitem>.
+	To edit a category select it in the tree and right click to bring up the popup menu and select <guimenuitem>Edit</guimenuitem>.
 </para>
 </sect2>
 
 <sect2 id="firsttime-11-4">
 <title>Deleting categories</title>
 <para>
-	To delete a cateogry select it in the tree and right click to bring up the popup menu and select <guimenuitem>Delete</guimenuitem>.
+	To delete a category select it in the tree and right click to bring up the popup menu and select <guimenuitem>Delete</guimenuitem>.
 </para>
 </sect2>
 </sect1>
@@ -1217,7 +1217,7 @@ Schedules can be entered in one of three different ways
 <title>Importing financial data</title>
 
 <sect2 id="firsttime-import-qif">
-<title>Quicken Interchage Format (QIF) Import</title>
+<title>Quicken Interchange Format (QIF) Import</title>
 <para>
 If you currently use a financial manager application &kappname; can then import an account's transactions as long as they are in the Quicken Interchange Format (QIF).  Most financial programs can export this format and the different applications methods of exporting QIF is not discussed here for brevity.
 </para>
@@ -1239,7 +1239,7 @@ If you currently use a financial manager application &kappname; can then import 
 </para>
 
 <para>	
-	The resulting dialogue prompts for the QIF filename allowing you to locate the file by clicking on the <guibutton>Browse</guibutton> button.
+	The resulting dialog prompts for the QIF filename allowing you to locate the file by clicking on the <guibutton>Browse</guibutton> button.
 </para>
 
 <para>
@@ -1312,7 +1312,7 @@ If you want &kappname; to automatically enter new payees check the appropriate o
 </para>
 	
 <para>
-	The search dialogue contains several tabs each restricting the particular type of transaction you wish to find.  Ener the required information and click on <guibutton>Search</guibutton>.  Any transactions found are displayed in the list below the search parameters.  Selecting the transaction is then as simple as double clicking on the entry.  To re-enter the search parameters click on the <guibutton>Reset</guibutton> button which will cause all the fields to revert to their default values on close the found transactions list.
+	The search dialog contains several tabs each restricting the particular type of transaction you wish to find.  Enter the required information and click on <guibutton>Search</guibutton>.  Any transactions found are displayed in the list below the search parameters.  Selecting the transaction is then as simple as double clicking on the entry.  To re-enter the search parameters click on the <guibutton>Reset</guibutton> button which will cause all the fields to revert to their default values on close the found transactions list.
 </para>
 
 <para>
@@ -1327,7 +1327,7 @@ If you want &kappname; to automatically enter new payees check the appropriate o
 <sect2 id="firsttime-reconcile-1">
 <title>What is reconciliation</title>
 <para>
-At some point you will want to reconcile the transactions you have entered with the transactions listed in a statement, be it a bank statement, credit card statement, loan statement or any other statement.  Reconciliation involves matching what you have entered with what the statement lists.  If any discrepencies are found then either you or the person who created the statement have made a mistake.
+At some point you will want to reconcile the transactions you have entered with the transactions listed in a statement, be it a bank statement, credit card statement, loan statement or any other statement.  Reconciliation involves matching what you have entered with what the statement lists.  If any discrepancies are found then either you or the person who created the statement have made a mistake.
 </para>
 
 <para>
@@ -1338,7 +1338,7 @@ At some point you will want to reconcile the transactions you have entered with 
 <sect2 id="firsttime-reconcile-2">
 <title>The reconciliation wizard</title>
 <para>
-	This will open the reconcilation wizard with the first page informing you of what will happen briefly.  Click on <guibutton>Next</guibutton> to actually start the wizard.
+	This will open the reconciliation wizard with the first page informing you of what will happen briefly.  Click on <guibutton>Next</guibutton> to actually start the wizard.
 </para>
 
 <sect3 id="firsttime-reconcile-2-1">
@@ -1355,14 +1355,14 @@ If the statement reconciliation is on a bank account or any account with interes
 </para>
 
 <para>
-	Click on <guibutton>Finish</guibutton> to start matching your statment to what you have entered.
+	Click on <guibutton>Finish</guibutton> to start matching your statement to what you have entered.
 </para>
 </sect3>
 
 <sect3 id="firsttime-reconcile-2-3">
 <title>Clearing transactions</title>
 <para>
-	To mark a transaction as cleared click on the C column in the list view.  A transaction is cleared when it matches the transaction on your statement.  The command frame lists the statement amount and the cleared amount.  When the difference is zero then the account is reconciled and you can click the <guibutton>Finish</guibutton> button to save the transactions.  To postpone the reconciliation to a later time click on the <guibutton>Postpone</guibutton> button.  During the reconcilation any transaction can be edited to make it match the statement and new transactions can be created as usual.  After clicking on the <guibutton>Finish</guibutton> button the transactions are marked as reconciled and the C column changes to 'R' to reflect the change.
+	To mark a transaction as cleared click on the C column in the list view.  A transaction is cleared when it matches the transaction on your statement.  The command frame lists the statement amount and the cleared amount.  When the difference is zero then the account is reconciled and you can click the <guibutton>Finish</guibutton> button to save the transactions.  To postpone the reconciliation to a later time click on the <guibutton>Postpone</guibutton> button.  During the reconciliation any transaction can be edited to make it match the statement and new transactions can be created as usual.  After clicking on the <guibutton>Finish</guibutton> button the transactions are marked as reconciled and the C column changes to 'R' to reflect the change.
 </para>
 </sect3>
 </sect2>
@@ -1371,7 +1371,7 @@ If the statement reconciliation is on a bank account or any account with interes
 <sect1 id="firsttime-backup">
 <title>Backing up</title>
 <para>
-Now that you have created some accounts and entered transactions its a good idea to perform a backup.  Because the file used by kmymoney is a standard unix file you can just copy the file to another location to back it up or use the dialog provided by &kappname;.  Using the dialog is the preferred method because if &kappname; ever starts using other file formats, such as SQL, then it would be much harder to copy the file manually.
+Now that you have created some accounts and entered transactions its a good idea to perform a backup.  Because the file used by &kappname; is a standard Unix file you can just copy the file to another location to back it up or use the dialog provided by &kappname;.  Using the dialog is the preferred method because if &kappname; ever starts using other file formats, such as SQL, then it would be much harder to copy the file manually.
 </para>
 
 <para>
