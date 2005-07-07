@@ -2015,8 +2015,13 @@ void KLedgerView::slotCreateSchedule(void)
     }
     schedule.setTransaction(t);
 
-    KEditScheduleDialog *m_keditscheddlg = new KEditScheduleDialog(
-      m_transaction.splitByAccount(m_account.id()).action(),
+    // FIXME: For some reason, the action field is empty for some deposit transactions.
+    QCString action = m_transaction.splitByAccount(m_account.id()).action();
+    if(action.isEmpty()) {
+      action = MyMoneySplit::ActionDeposit;
+    }
+
+    KEditScheduleDialog *m_keditscheddlg = new KEditScheduleDialog(action,
       schedule, this);
 
     if (m_keditscheddlg->exec() == QDialog::Accepted) {
