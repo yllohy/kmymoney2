@@ -1,3 +1,6 @@
+2005-07-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Released 0.7.3
+
 2005-07-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added quick-fix to avoid crash on schedule creation
   * Applied doc patch provided by Jerry Amundsen
