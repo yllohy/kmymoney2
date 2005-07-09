@@ -14,7 +14,6 @@
 	<!ENTITY details-accounts SYSTEM "details-accounts.docbook">
 	<!ENTITY details-categories SYSTEM "details-categories.docbook">
 	<!ENTITY details-payees SYSTEM "details-payees.docbook">
-	<!ENTITY details-transactions SYSTEM "details-transactions.docbook">
 	<!ENTITY details-schedules SYSTEM "details-schedules.docbook">
 	<!ENTITY details-ledgers SYSTEM "details-ledgers.docbook">
 	<!ENTITY details-investments SYSTEM "details-investments.docbook">
@@ -161,7 +160,6 @@ Do NOT change these in the translation. -->
 &details-accounts;
 &details-categories;
 &details-payees;
-&details-transactions;
 &details-schedules;
 &details-ledgers;
 &details-investments;

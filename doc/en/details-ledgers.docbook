@@ -1,4 +1,4 @@
-<chapter id="details.ledgers"><title id="ledgerid.title">Ledgers Screen.</title>
+<chapter id="details.ledgers"><title id="details.ledgers.title">Ledgers</title>
 
 <para>
   The ledgers screen is for entering transaction data into the various accounts. The view is split into two main areas: the transaction list, and the input area. In the transactions list, the transactions are arranged by date with the most recent transaction on the bottom. 
@@ -18,14 +18,14 @@
 </screenshot>
 
 
-<sect1 id="viewtransactionsid"><title id="viewtransactionsid.title">Viewing Transactions.</title>
+<sect1 id="details.ledgers.view"><title id="details.ledgers.view.title">Viewing Transactions</title>
 
 <para>
   To view the transactions associated with a particular account, first select the active account from the drop down menu on the top of the screen. Depending on the account type, the information fields presented in the transactions will change. 
 </para>
 
 <para>
-  Each transaction is listed on a separate line, with varied columns between all the different account types.  Below, the information columns for each account type is explained. For brevity, the definitions are not repeated if they have already been defined in earlier account listings. 
+  Each transaction is listed on a separate line, showing a summary of the transaction. To see the detail associated with a transaction in the list, toggle the "Show Transaction Detail" option in the Settings menu, or click a specific transaction to see its details. Each transaction list is shown with varied columns between all the different account types. Below, the information columns for each account type is explained. For brevity, the definitions are not repeated if they have already been defined in earlier account listings. 
 </para>
 
 <para>
@@ -197,7 +197,7 @@
 
 </sect1>
 
-<sect1 id="enteringtransactionsid"><title id="enteringtransactionsid.title">Entering and Editing Transactions.</title>
+<sect1 id="details.ledgers.entering"><title id="details.ledgers.entering.title">Entering and Editing Transactions</title>
 
 <para>
   To enter a transaction, first ensure that you have selected the correct account. To start entering a new transaction, double-clicking the empty line below the last transaction, or click the New button in the input area at the bottom of the screen. The fields in the input area then become available for entering information. 
@@ -249,7 +249,49 @@
 
 </sect1>
 
-<sect1 id="othertransactionsid"><title id="othertransactionsid.title">Other Functionality.</title>
+<sect1 id="details.ledgers.split"><title id="details.ledgers.split.title">Entering Split Transactions</title>
+
+<para>
+  Split transactions allows you to divide up a transaction into multiple amounts and categories. For example, using a split transaction, you can divide a single purchase at a store into multiple categories for the different items purchased.  
+</para> 
+
+<para>
+  To enter a split transaction, start a new transaction as normal, including entering the total amount. Instead of selecting a category, click the split button. If you have selected a category, that becomes the first entry in the split editor screen. 
+</para> 
+ 
+<para>
+  In the split editor screen, double-click a line to enter a new sub-transaction. Specify the category, add a memo, and enter the amount. To save this sub-transaction, press the green check mark under the category. To cancel, press the red cross.  
+</para> 
+ 
+<para>
+  After entering a sub-transaction, the bottom of the split editor shows how much of the total transaction is still unassigned. After entering all the sub-transactions, press the Finish button to save the entire transaction. If there are still unassigned amounts, you will be prompted to either return to editing the splits, change the total transaction amount, or leave part of the transaction unassigned. 
+</para> 
+
+</sect1>
+
+
+<sect1 id="details.ledgers.settings"><title id="details.ledgers.settings.title">Changing Transaction Settings</title>
+
+<para>
+  There are several settings options to change the view and behaviour of the ledgers view in terms of transactions. These settings are found under "Configure KMyMoney..." under the Settings menu, and in the Register settings page. 
+</para> 
+
+<para>
+  Most of the settings are self explanatory. For clarity, several of the settings are explained below.
+  <itemizedlist>
+  <listitem>
+    <para>Show transaction form - toggle to hide the transaction input area the bottom of this screen. Transactions can still be entered directly into an empty line at the end of the transaction list, through an automatic compact entry area.</para>
+  </listitem>
+  <listitem>
+    <para>Keep changes when selecting a different transaction/split - by selecting the next line in the transaction list or split editor, the changes are kept, instead of the default behaviour where you have to push the green check mark to save changes.</para>
+  </listitem>
+  </itemizedlist>
+</para> 
+ 
+</sect1>
+
+
+<sect1 id="details.ledgers.other"><title id="details.ledgers.other.title">Other Functionality</title>
 
 <para>
   Additional options are available from the Transaction Options menu, accessed either by right-clicking a transaction in the list or pressing the More button in the bottom input area. 
@@ -266,3 +308,5 @@
 </sect1>
 
 </chapter>
+
+

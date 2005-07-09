@@ -100,7 +100,7 @@
 
 <sect3><title>The transaction data</title>
 <para>
-	As a schedule represents a recurring transaction its details must also be stored.  This includes all aspects of the transaction and is discussed in detail <link linkend="details.transactions">here</link>.  The transactional data stored is used to create the transaction when due.
+	As a schedule represents a recurring transaction its details must also be stored.  This includes all aspects of the transaction and is discussed in detail in the <link linkend="details.ledgers">Ledgers section</link>.  The transactional data stored is used to create the transaction when due.
 </para>
 </sect3>
 </sect2>
