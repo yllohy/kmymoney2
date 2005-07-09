@@ -16,7 +16,7 @@
 <listitem><para><link linkend="details.formats.encrypted">Encryption of the Data File</link></para></listitem>
 <listitem><para>Calculator Widget when entering values</para></listitem>
 <listitem><para><link linkend="details.investments.onlinequotes">Online Quotes for Stocks &amp; Currencies</link></para></listitem>
-<listitem><para>Support for VAT</para></listitem>
+<listitem><para><link linkend="details.categories.vat">Support for VAT</link></para></listitem>
 <listitem><para><link linkend="details.impexp.plugins">Ability to write importer plugins</link></para></listitem>
 <listitem><para><link linkend="details.formats.anonymous">&quot;Anonymous&quot; File Format to assist debugging</link> </para></listitem>
 </itemizedlist>

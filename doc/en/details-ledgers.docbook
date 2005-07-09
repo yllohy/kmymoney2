@@ -1,4 +1,18 @@
-<chapter id="details.ledgers"><title id="details.ledgers.title">Ledgers</title>
+<chapter id="details.ledgers">
+
+<chapterinfo>
+<authorgroup>
+<author>
+<firstname>Roger</firstname>
+<surname>Lum</surname>
+<affiliation><address><email>rogerlum@gmail.com</email></address></affiliation>
+</author>
+</authorgroup>
+<date>2005-07-09</date>
+<releaseinfo>0.7</releaseinfo>
+</chapterinfo>
+
+<title id="details.ledgers.title">Ledgers</title>
 
 <para>
   The ledgers screen is for entering transaction data into the various accounts. The view is split into two main areas: the transaction list, and the input area. In the transactions list, the transactions are arranged by date with the most recent transaction on the bottom. 
@@ -45,7 +59,7 @@
       <para>Payee - name of the receiver.</para>
     </listitem>
     <listitem>
-      <para>C - indicates not cleared (blank), cleared (C), or reconciled (R). A cleared transaction indicates the funds indicated in the transaction have been deposited or withdrawn. A reconciled transaction has been verified against a financial statement.</para>
+      <para>C - The &quot;cleared&quot; state.  See <link linkend="details.ledgers.cleared"> Understanding the Cleared State </link></para>
     </listitem>
     <listitem>
       <para>Payment - amount being paid to the Payee.</para>
@@ -72,7 +86,7 @@
       <para>Payee</para>
     </listitem>
     <listitem>
-      <para>C</para>
+      <para>C - The &quot;cleared&quot; state.  See <link linkend="details.ledgers.cleared"> Understanding the Cleared State </link></para>
     </listitem>
     <listitem>
       <para>Charge - charges made against the credit card by the Payee.</para>
@@ -123,7 +137,7 @@
       <para>Activity - buy, sell, etc.</para>
     </listitem>
     <listitem>
-      <para>C</para>
+      <para>C - The &quot;cleared&quot; state.  See <link linkend="details.ledgers.cleared"> Understanding the Cleared State </link></para>
     </listitem>
     <listitem>
       <para>Amount - number of shares.</para>
@@ -150,7 +164,7 @@
       <para>Payee</para>
     </listitem>
     <listitem>
-      <para>C</para>
+      <para>C - The &quot;cleared&quot; state.  See <link linkend="details.ledgers.cleared"> Understanding the Cleared State </link></para>
     </listitem>
     <listitem>
       <para>Decrease - the amount the value of the asset has decreased by.</para>
@@ -178,7 +192,7 @@
       <para>Payee</para>
     </listitem>
     <listitem>
-      <para>C</para>
+      <para>C - The &quot;cleared&quot; state.  See <link linkend="details.ledgers.cleared"> Understanding the Cleared State </link></para>
     </listitem>
     <listitem>
       <para>Increase - increasing the money you owe.</para>
@@ -193,6 +207,36 @@
   </listitem>
   </itemizedlist>
   
+</para>
+
+</sect1>
+
+<sect1 id="details.ledgers.cleared"><title>Understanding the Cleared State</title>
+
+<para>
+A transaction can have three states: non-reconciled (N), cleared (C) and 
+reconciled (R). When you enter a transaction, it has state (N). Once the 
+the bank posts the transaction, the user can clear it and thus transform 
+it to state (C). When you receive a statement from the bank, all cleared 
+transactions should be on the statement. 
+</para>
+<para>
+When you <link linkend="details.reconcile"> reconcile your account </link>, 
+you actually mark the statements as cleared and check that 
+the difference of the sum of beginning balance and cleared transactions 
+equals the ending balance of the statement. When this is the case, you can 
+'finish reconciling' which actually turns the state of all transactions in 
+(C) to (R).
+</para>
+
+<para>
+If you try to edit a transaction with at least one split in (R), you will be warned.
+</para>
+
+<para>
+A fourth state is defined (frozen (F)) but there's currently no way to set 
+it. It is reserved for future use. Nevertheless, if a transaction has at 
+least one split in state frozen it cannot be edited anymore.
 </para>
 
 </sect1>

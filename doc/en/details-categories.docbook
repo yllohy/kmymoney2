@@ -25,6 +25,55 @@
 
 </sect1>
 
+<sect1 id="details.categories.vat">
+
+<sect1info>
+<author>
+<firstname>Thomas</firstname>
+<surname>Baumgart</surname>
+<affiliation><address><email>ipwizard@users.sourceforge.net</email></address></affiliation>
+</author>
+</sect1info>
+
+<title>VAT Support</title>
+	
+<para>
+ You can turn an expense/income account into a VAT 
+ category, which means that it receives all the splits that actually make 
+ up the VAT payment towards the government. The percentage rate can be 
+ entered.
+</para>
+ 
+<para>
+ Categories can be assigned a VAT category, which allows KMyMoney to split 
+ up a transaction for a category into two splits, one for the category and 
+ one for the VAT. Depending on the setting of the gross/net amount switch, 
+ the amount you enter for the transaction is the gross or net amount.
+</para>
+ 
+<para>
+ Example: In Germany, there are three VAT percentages (0, 7 and 16%). So I 
+ have a main category "VAT payed" and three subcategories, one for each 
+ percentage rate. Next I have this on the income and the expense side so a 
+ total of 8 categories.  For the goods I buy, I select one of the above 
+ mentioned categorie as the "VAT category assignment".
+</para>
+ 
+<para>
+ When I buy goods, I enter them into a transaction. Let"s assume I have 
+ selected the gross amount entry method, once I enter the category and 
+ amount, KMyMoney will recognize that there"s a VAT assignment and 
+ calculates the VAT part, creates a second split with the VAT account and 
+ VAT amount and reduces the category amount.
+</para>
+ 
+<para>
+ The same applies to income categories but the other way around. Hope that 
+ makes sense.
+</para>
+
+</sect1>
+
 <sect1 id="details.categories.other"><title id="details.categories.other.title">Other Functionality</title>
 
 <para>
