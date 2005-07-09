@@ -1,7 +1,9 @@
 2005-07-09 Ace Jones <acejones@users.sourceforge.net>
   * Updated ledger docs from Roger
   * Small fixes here and there in the docs
-
+  * Modified home view to show total value of favorite accounts
+    (this includes balances of sub-accounts, and correctly handles currency)
+  
 2005-07-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Regenerated message files
   * Released 0.7.3
