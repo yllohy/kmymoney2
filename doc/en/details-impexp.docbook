@@ -502,7 +502,8 @@ the following sections:
 <sect1 id="details.impexp.qifexp">
 					<title>QIF Exporter</title>
 <para>
-	&hellip;
+	To export one of your accounts to a QIF file, choose the &quot;File | Export | Qif...&quot; menu option.
+	You will be prompted for which single account to export, what file to export it to, and what QIF Profile to use.
 </para>
 </sect1>
 

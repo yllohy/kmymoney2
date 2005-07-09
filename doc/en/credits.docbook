@@ -1,6 +1,40 @@
 <chapter id="credits">
-<title>Credits - Under development - MTE</title>
-<para>
-</para>
+<title>Credits</title>
+
+<sect1 id="credits.original">
+
+            <title>Original Author</title>
+
+<sect2><title>Michael Edwardes &lt;mte@users.sourceforge.net&gt;</title><para>Original idea, much intial source code. Project admin.</para></sect2></sect1>
+
+<sect1 id="credits.active">
+
+            <title>Active Developers</title>
+
+<sect2><title>Thomas Baumgart &lt;ipwizard@users.sourceforge.net&gt;</title><para>Release manager and de-facto Maintainer.  Core Engine.  Project Admin.</para></sect2>
+<sect2><title>Ace Jones &lt;acejones@users.sourceforge.net&gt;</title><para>Reports. OFX Import. Online Quotes. </para></sect2>
+<sect2><title>Tony Bloomfield &lt;tonybloom@users.sourceforge.net&gt;</title><para>GnuCash Importer</para></sect2>
+<sect2><title>Robert Wadley &lt;rob@robntina.fastmail.us&gt;</title><para>Artist.  Icons, splash screen, home view.</para></sect2>
+
+</sect1>
+<sect1 id="credits.past">
+
+            <title>Developers of Previous Versions</title>
+
+<sect2><title>Kevin Tambascio &lt;ktambascio@users.sourceforge.net&gt;</title><para>Initial investment support</para></sect2>
+<sect2><title>Felix Rodriguez &lt;frodriguez@users.sourceforge.net&gt;</title><para>Project admin</para></sect2>
+<sect2><title>John C &lt;tacoturtle@users.sourceforge.net&gt;</title><para>Developer</para></sect2>
+
+
+</sect1>
+<sect1 id="credits.special">
+
+            <title>Special Thanks</title>
+
+<sect2><title>Javier Campos Morales &lt;javi_c@users.sourceforge.net&gt;</title><para>Developer &amp; Artist</para></sect2>
+<sect2><title>Laurent Montel &lt;montel@kde.org&gt;</title><para>Patches</para></sect2>
+<sect2><title>Roger Lum &lt;rogerlum@gmail.com&gt;</title><para>Documentation</para></sect2>
+<sect2><title>Darin Strait &lt;darin_strait@yahoo.com&gt;</title><para>Documentation</para></sect2>
+</sect1>
 </chapter>
 
