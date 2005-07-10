@@ -1,3 +1,8 @@
+2005-07-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied patch provided by Christian Nolte <noltec@users.sourceforge.net>
+  * Use QFile as base class instead of QIODevice
+  * Bumped version number to 0.7.4
+
 2005-07-10 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * GnuCash Reader - improve formula detection in schedules
                    - minor stand-alone anonymizer changes
@@ -7,7 +12,7 @@
   * Small fixes here and there in the docs
   * Modified home view to show total value of favorite accounts
     (this includes balances of sub-accounts, and correctly handles currency)
-  
+
 2005-07-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Regenerated message files
   * Released 0.7.3
@@ -63,7 +68,7 @@
 
 2005-06-20 Ace Jones <acejones@users.sourceforge.net>
   * Surround CSV fields with quotes in report export.  Fixes #1210755
-  
+
 2005-06-20 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * GnuCash Reader - fix QMessageBox change/bug
 
