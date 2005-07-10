@@ -110,7 +110,7 @@ void KGPGFile::flush(void)
   // no functionality
 }
 
-bool KGPGFile::atEnd(void) const
+bool KGPGFile::atEnd(void) 
 {
   if(!isOpen())
     return false;
@@ -119,14 +119,13 @@ bool KGPGFile::atEnd(void) const
     // if the unget buffer is filled, we're for sure not at the end of file
     if(!m_ungetchBuffer.isEmpty())
       return false;
+    
+    // check for end-of-file
+    int ch = this->getch();
+    if(ch != EOF)
+      this->ungetch(ch);
 
-    // If you wonder about 'this' and 'that': 'this' is const
-    // but we need a non-const to call getch(). So we use 'that'.
-    QIODevice* that = (QIODevice*) this;
-    int ch = that->getch();
-    bool result = ch == EOF;
-    that->ungetch(ch);
-    return result;
+    return (ch == EOF);
   }
   return false;
 }

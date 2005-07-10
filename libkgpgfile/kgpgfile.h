@@ -18,7 +18,7 @@
 #ifndef KGPGFILE_H
 #define KGPGFILE_H
 
-#include <qiodevice.h>
+#include <qfile.h>
 #include <qobject.h>
 #include <qstring.h>
 #include <qmutex.h>
@@ -34,7 +34,7 @@ class KProcess;
   * A class for reading and writing data to/from an
   * encrypted e.g. file.
   */
-class KGPGFile : public QObject, public QIODevice
+class KGPGFile : public QObject, public QFile
 {
   Q_OBJECT
 
@@ -52,7 +52,7 @@ public:
   virtual Offset size(void) const { return 0; };
   virtual Offset at(void) { return 0; };
   virtual bool at(Offset) { return false; };
-  virtual bool atEnd(void) const;
+  virtual bool atEnd(void);
 
   virtual Q_LONG readBlock(char *data, Q_ULONG maxlen);
   virtual Q_LONG writeBlock(const char *data, Q_ULONG maxlen);
