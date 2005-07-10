@@ -1,3 +1,7 @@
+2005-07-10 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * GnuCash Reader - improve formula detection in schedules
+                   - minor stand-alone anonymizer changes
+
 2005-07-09 Ace Jones <acejones@users.sourceforge.net>
   * Updated ledger docs from Roger
   * Small fixes here and there in the docs

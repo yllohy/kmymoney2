@@ -31,11 +31,11 @@ email                : mte@users.sourceforge.net
 #include <qfiledialog.h>
 #include <qinputdialog.h>
 #include <qdatetime.h>
-#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 #ifndef _GNCFILEANON
+  #include <klocale.h>
   #include <kconfig.h>
 #endif
 
@@ -54,11 +54,13 @@ email                : mte@users.sourceforge.net
   #include "../dialogs/kgncimportoptionsdlg.h"
   #include "../dialogs/kgncpricesourcedlg.h"
   #include "../dialogs/ieditscheduledialog.h"
+  #include "../widgets/kmymoneyedit.h"
   #define TRY try {
   #define CATCH } catch (MyMoneyException *e) { 
   #define PASS } catch (MyMoneyException *e) { throw e; }
 #else
   #include "mymoneymoney.h"
+  #define i18n QObject::tr
   #define TRY
   #define CATCH
   #define PASS
@@ -977,7 +979,7 @@ int main (int argc, char ** argv) {
     if (inFile.isEmpty()) qFatal ("Input file required");
     if (outFile.isEmpty()) outFile = inFile + ".anon";
     m.readFile (inFile, outFile);
-    qFatal ("finished");
+    exit (0);
 }
 #endif // _GNCFILEANON
 
@@ -1443,25 +1445,28 @@ void MyMoneyGncReader::convertTemplateSplit (const QString schedName, const GncT
         validSlotCount++;
       }
       // validate numeric, work out sign
-      MyMoneyMoney exFormula;
-      exFormula.setThousandSeparator (','); // gnucash always uses these in internal file format?
-      exFormula.setDecimalSeparator ('.');
+      MyMoneyMoney exFormula (0);
       QString numericTest;
+      char crdr;
       if (!gncCreditFormula.isEmpty()) {
-        exFormula = "-" + gncCreditFormula;
+        crdr = 'C';
         numericTest = gncCreditFormula;
       } else if (!gncDebitFormula.isEmpty()) {
-        exFormula = gncDebitFormula;
+        crdr = 'D';
         numericTest = gncDebitFormula;
       }
-      if (exFormula.isZero()) { // if there was a real formula there it would be converted to zero
-        bool isNumeric;         // but just the fact that it's zero doesn't make it bad...
-        double temp;
-        temp = numericTest.toDouble (&isNumeric); // this seems to be the only way to test for valid numeric
-        if (!isNumeric) {
-          qDebug ("%s is not numeric", numericTest.latin1());
-          nonNumericFormula = true;
+      kMyMoneyMoneyValidator v (0);
+      int pos; // useless, but required for validator
+      if (v.validate (numericTest, pos) == QValidator::Acceptable) {
+        switch (crdr) {
+          case 'C':
+            exFormula = "-" + numericTest; break;
+          case 'D':
+            exFormula = numericTest;
         }
+      } else {
+          if (gncdebug) qDebug ("%s is not numeric", numericTest.latin1());
+          nonNumericFormula = true;
       }
       split.setValue (exFormula);
       xactionCount++;
