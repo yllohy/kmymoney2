@@ -327,6 +327,7 @@ private:
   bool                    m_userAbort;
   bool                    m_autoCreatePayee;
   unsigned long           m_pos;
+  unsigned                m_linenumber;
   bool                    m_warnedInvestment;
   bool                    m_warnedSecurity;
   bool                    m_warnedPrice;

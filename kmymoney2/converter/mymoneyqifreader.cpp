@@ -173,6 +173,7 @@ void MyMoneyQifReader::slotProcessBuffers(void)
 
 void MyMoneyQifReader::processQifLine(void)
 {
+  ++m_linenumber;
   m_pos += m_qifLine.length() + 2;
   while(m_qifLine.endsWith(" ") || m_qifLine.endsWith("\t"))
     m_qifLine = m_qifLine.left(m_qifLine.length()-1);
@@ -208,6 +209,7 @@ const bool MyMoneyQifReader::startImport(void)
   m_accountTranslation.clear();
   m_userAbort = false;
   m_pos = 0;
+  m_linenumber = 0;
 
   m_data.clear();
 
@@ -374,25 +376,13 @@ void MyMoneyQifReader::processQifEntry(void)
             m_entryType = EntrySecurity;
             processSecurityEntry();
           } else if(category == "Invst") {
-
-#if 0
-            // Warn the user
-            if ( ! m_warnedInvestment )
-            {
-              m_warnedInvestment = true;
-              if ( KMessageBox::warningContinueCancel (qApp->mainWidget(), i18n("This file contains investment entries.  These are not currently supported by the QIF importer."), i18n("Unable to import"), KStdGuiItem::cont(), "QIFCantImportInvestment") == KMessageBox::Cancel )
-                throw new MYMONEYEXCEPTION("USERABORT");
-            }
-#endif
-          
             m_entryType = EntryInvestmentTransaction;
             processMSAccountEntry(MyMoneyAccount::Investment);
-
           } else if(category == "Prices") {
             m_entryType = EntryPrice;
             processPriceEntry();
           } else
-            qWarning("Unknown '!Type:%s' category", category.latin1());
+            kdDebug(2) << "Line " << m_linenumber<< ": Unknown '!Type:" << category << "' category" << endl;
 
         } else if(category == "Account") {
           processAccountEntry();
@@ -408,7 +398,7 @@ void MyMoneyQifReader::processQifEntry(void)
           continue;
 
         } else
-          qWarning("Unknown '!%s' category", category.latin1());
+          kdDebug(2) << "Line " << m_linenumber<< ": Unknown '!" << category << "' category" << endl;
 
         break;
       }
@@ -417,7 +407,7 @@ void MyMoneyQifReader::processQifEntry(void)
       // Process entry of same type
       switch(m_entryType) {
         case EntryUnknown:
-          qWarning("Found an entry without a type being specified. Entry skipped.");
+          kdDebug(2) << "Line " << m_linenumber << ":Found an entry without a type being specified. Entry skipped." << endl;
           break;
 
         case EntryCategory:
@@ -446,17 +436,17 @@ void MyMoneyQifReader::processQifEntry(void)
           break;
 
         case EntryMemorizedTransaction:
-          qWarning("%s","Memorized transactions are not yet implemented!");
+          kdDebug(2) << "Line " << m_linenumber << ": Memorized transactions are not yet implemented!" << endl;
           break;
         
         default:
-          qWarning("EntryType %d not yet implemented!", m_entryType);
+          kdDebug(2) << "Line " << m_linenumber<< ": EntryType " << m_entryType <<" not yet implemented!" << endl;
           break;
       }
     }
   } catch(MyMoneyException *e) {
     if(e->what() != "USERABORT") {
-      qWarning("This shouldn't happen! : %s", e->what().latin1());
+      kdDebug(2) << "Line " << m_linenumber << ": Unhandled error: " << e->what() << endl;
     } else {
       m_filter.closeStdin();
       m_filter.kill();
@@ -670,7 +660,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
   tmp = extractLine('#');
   if(!tmp.isEmpty()) 
   {
-    t.setBankID(QString("QIF/")+tmp);
+    t.setBankID(tmp);
   }
   
   // Collect data for the account's split
@@ -801,7 +791,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
         MyMoneyAccount account = file->account(accountId);
         // FIXME: check that the type matches and ask if not
       } catch (MyMoneyException *e) {
-        qWarning("Account with id %s not found", accountId.data());
+        kdDebug(2) << "Line " << m_linenumber << ": Account with id " << accountId.data() << " not found" << endl;
         accountId = QCString();
         delete e;
       }
@@ -811,9 +801,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
       try {
         t.addSplit(s2);
       } catch (MyMoneyException *e) {
-        QString message(i18n("Unable to add second split: "));
-        message += e->what();
-        KMessageBox::information(0, message);
+        kdDebug(2) << "Line " << m_linenumber << ": Unable to add second split: " << e->what() << endl;
         delete e;
       }
     }
@@ -857,7 +845,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
           MyMoneyAccount account = file->account(accountId);
           // FIXME: check that the type matches and ask if not
         } catch (MyMoneyException *e) {
-          qWarning("Account with id %s not found", accountId.data());
+          kdDebug(2) << "Line " << m_linenumber << ": Account with id " << accountId.data() << " not found" << endl;
           accountId = QCString();
           delete e;
         }
@@ -867,9 +855,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
         try {
           t.addSplit(s2);
         } catch (MyMoneyException *e) {
-          QString message(i18n("Unable to add split: "));
-          message += e->what();
-          KMessageBox::information(0, message);
+          kdDebug(2) << "Line " << m_linenumber << ": Unable to add split: " << e->what() << endl;
           delete e;
         }
       }
@@ -912,10 +898,10 @@ void MyMoneyQifReader::processTransactionEntry(void)
     {
       m_transactionCache.push_back(t);      
     }
-  } catch (MyMoneyException *e) {
-    QString message(i18n("Problem adding imported transaction: "));
-    message += e->what();
-    KMessageBox::information(0, message);
+  } 
+  catch (MyMoneyException *e) 
+  {
+    kdDebug(2) << "Line " << m_linenumber << ": Problem adding imported transaction: " << e->what() << endl;  
     delete e;
   }
 
@@ -954,6 +940,8 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
   // ensure that the user is really importing this into an investment account
   if ( m_account.accountType() != MyMoneyAccount::Investment )
   {
+    kdDebug(2) << "Line " << m_linenumber << ": Can't import investment transactions into this account." << endl;
+    
     int rc = KMessageBox::warningContinueCancel(0,
          i18n("This QIF file contains investment transactions.  You are trying to import this file into "
               "an account which is not an investment account.  These transactions will be ignored."),
@@ -1020,6 +1008,13 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
 
   // 'Y' field: Security name
 
+  QString securityname = extractLine('Y').lower();
+  if ( securityname.isEmpty() )
+  {
+    kdDebug(2) << "Line " << m_linenumber << ": Investment transaction without a security is not supported." << endl;
+    return;
+  }
+
   // The big problem here is that the Y field is not the SYMBOL, it's the NAME.
   // The name is not very unique, because people could have used slightly different
   // abbreviations or ordered words differently, etc.
@@ -1031,7 +1026,6 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
   // Therefore, generally it is not recommended to import a QIF file containing
   // investment transactions but NOT containing security records.
   
-  QString securityname = extractLine('Y').lower();
   QString securitysymbol = m_investmentMap[securityname];
 
   // the correct account is the stock account which matches two criteria:
@@ -1075,6 +1069,8 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
 
   if (!found)
   {
+    kdDebug(2) << "Line " << m_linenumber << ": Security " << securityname << " not found in this account.  Transaction ignored." << endl;
+    
     // If the security is not known, notify the user
     // TODO: A "SelectOrCreateAccount" interface for investments
     KMessageBox::information(0, i18n("This investment account does not contain the '%1' security.  "
@@ -1124,7 +1120,8 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     QString incomeaccount = QString("_") + extractLine('N');
     
     s1.setAccountId(findOrCreateIncomeAccount(incomeaccount));
-    s1.setShares(amount);
+    s1.setValue(-amount);
+    s1.setShares(-amount);
 
     // Split 2 will be the zero-amount investment split that serves to
     // mark this transaction as a cash dividend and note which stock account
@@ -1165,10 +1162,16 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     s1.setValue(0);
     s1.setAction(MyMoneySplit::ActionAddShares);
   }
+  else if ( action == "stksplit" )
+  {
+    // Stock splits not supported
+    kdDebug(2) << "Line " << m_linenumber << ": Stock split not supported (date=" << date << " security=" << securityname << " quantity=" << quantity << ")" << endl;
+    return;
+  }
   else
   {
     // Unsupported action type
-    kdDebug(2) << "Unsupported transaction action: " << action << endl;
+    kdDebug(2) << "Line " << m_linenumber << ": Unsupported transaction action (" << action << ")" << endl;
     return;
   }
 
@@ -1209,6 +1212,9 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
       m_transactionCache.push_back(t);      
     }
   } catch (MyMoneyException *e) {
+  
+    kdDebug(2) << "Line " << m_linenumber << ": Problem adding imported transaction: " << e->what() << endl;
+    
     QString message(i18n("Problem adding imported transaction: "));
     message += e->what();
     KMessageBox::information(0, message);
@@ -1548,10 +1554,14 @@ void MyMoneyQifReader::processAccountEntry(void)
     m_account.setAccountType(MyMoneyAccount::Liability);
   } else if(type == "invst") {
     m_account.setAccountType(MyMoneyAccount::Checkings);
-    qWarning("%s","Warning: This file contains an investment account with 'bank' transactions.  KMM does not natively support this.  However, it usually works fine to treat it as a checking account.");
+    //kdDebug(2) << "Line " << m_linenumber << ": This file contains an investment account with 'bank' transactions.  KMM does not natively support this.  However, it usually works fine to treat it as a checking account." << endl;
+    // I can't fathom why I originally wrote this warning, so I am taking it out for now.
+    // Perhaps a !Type:Invst is used to refer to BOTH the brokerage account (which is a checkings account in KMM)
+    // and the investment account.
+  
   } else {
     m_account.setAccountType(MyMoneyAccount::Checkings);
-    qWarning("Unknown account type '%s', checkings assumed", type.latin1());
+    kdDebug(2) << "Line " << m_linenumber << ": Unknown account type '" << type << "', checkings assumed" << endl;
   }
   selectOrCreateAccount(Select, m_account);
 }
@@ -1751,15 +1761,6 @@ void MyMoneyQifReader::processPriceEntry(void)
   Also note that prices can be in fractional units, e.g. 141 9/16.
   
 */
-#if 0
-  // Warn the user
-  if ( ! m_warnedPrice )
-  {
-    m_warnedPrice = true;
-    if ( KMessageBox::warningContinueCancel (qApp->mainWidget(), i18n("This file contains price entries.  These are not currently supported by the QIF importer."), i18n("Unable to import"), KStdGuiItem::cont(), "QIFCantImportPrice") == KMessageBox::Cancel )
-      throw new MYMONEYEXCEPTION("USERABORT");
-  }
-#endif
 
   MyMoneyFile* file = MyMoneyFile::instance();
   QStringList::const_iterator it_line = m_qifEntry.begin();
@@ -1768,11 +1769,13 @@ void MyMoneyQifReader::processPriceEntry(void)
   if ( it_line != m_qifEntry.end() )
     ++it_line;
 
+  QValueList<MyMoneySecurity> securities = file->securityList();
+    
   // Make a price for each line
   while ( it_line != m_qifEntry.end() )
   {
     QStringList column = QStringList::split(",",*it_line,true);
-    QString symbol = column[0].remove("\"");
+    QString symbol = column[0].remove("\"").lower();
     QString pricestr = column[1];
     QString datestr = column[2].remove("\"");
     kdDebug(2) << "Price:" << column[0] << " / " << column[1] << " / " << column[2] << endl;
@@ -1783,26 +1786,31 @@ void MyMoneyQifReader::processPriceEntry(void)
     QDate date = m_qifProfile.date(datestr);
     if(date.isValid() && !pricestr.contains("/"))
     {
-      MyMoneyMoney pricerate(pricestr);
-      
-      // Find the stock account
-      QCStringList accounts = m_account.accountList();
-      QCStringList::const_iterator it_account = accounts.begin();
-      while( it_account != accounts.end() )
+      // NOTE: Price entries are not associated with an account.  They are
+      // universal in the file, so all securities in the file must be
+      // searched.
+
+      QValueList<MyMoneySecurity>::const_iterator it_security = securities.begin();
+      while ( it_security != securities.end() )
       {
-        QCString actcurrencyid = file->account(*it_account).currencyId();
-        MyMoneySecurity security = file->security( actcurrencyid );
-        QString thissymbol = security.tradingSymbol();
-  
-        if ( symbol.lower() == thissymbol.lower() )
+        QString thissymbol = (*it_security).tradingSymbol();
+        thissymbol = thissymbol.lower();
+        if ( thissymbol == symbol )
         {
-          QCString deepcurrencyid = security.tradingCurrency();
-          MyMoneyPrice price(actcurrencyid,deepcurrencyid,date,pricerate,i18n("QIF Import"));
+          MyMoneyMoney pricerate(pricestr);
+          MyMoneyPrice price((*it_security).id(),(*it_security).tradingCurrency(),date,pricerate,i18n("QIF Import"));
           file->addPrice(price);
           break;
         }
-        ++it_account;
-      }      
+        ++ it_security;      
+      }
+      
+      // if the security mentioned in this price was not found in the file
+      if ( it_security == securities.end() )
+      {
+        // warn the user
+        kdDebug(2) << "Line " << m_linenumber << ": Security " << symbol << " not found." << endl;
+      }
     }
     
     ++it_line;
@@ -1833,7 +1841,7 @@ void MyMoneyQifReader::processSecurityEntry(void)
   QString name = extractLine('N').lower();
   QString symbol = extractLine('S').lower();
   
-  kdDebug(2) << "Security (" << type << "): " << name << " (" << symbol << ")" << endl;
+  kdDebug(2) << "Line " << m_linenumber << ": Security (" << type << "): " << name << " (" << symbol << ")" << endl;
 
   // TODO: If this investment isn't already in the account, add it
 
