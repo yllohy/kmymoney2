@@ -31,8 +31,8 @@
 namespace reports {
 
 // define to enable massive debug logging to stderr
-// #undef DEBUG_REPORTS
-#define DEBUG_REPORTS
+#undef DEBUG_REPORTS
+//#define DEBUG_REPORTS
 
 #define DEBUG_ENABLED_BY_DEFAULT false
 
