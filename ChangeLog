@@ -1,3 +1,22 @@
+2005-07-10 Ace Jones <acejones@users.sourceforge.net>
+  * When saving an anonymous file, retain the linkage from investment account 
+    to brokerage account  
+  
+  QIF Importer improvements for investments
+  * Fixed reversed sign on dividend importing
+  * Fixed price importing.  Previously, it only imported prices for the
+    current account.  But really it should import them for any prices you have
+    in your KMM file.
+  * Added line number to warnings, to make it easier to track them down
+  * Converted many dialog-box warnings to debug output.  They weren't that 
+    useful in dialogs
+  * Removed "QIF/" from bank ID's.  It was a bad design decision to include
+    that.  If you import the same transaction 2 different ways, it will
+    seem different to KMM, but it should look like the same transaction.
+  * Warn when importing an investment transaction without a stock
+  * Warn when ignoring a transaction because the stock was not found
+  * Warn when ignoring a stock split
+  
 2005-07-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patch provided by Christian Nolte <noltec@users.sourceforge.net>
   * Use QFile as base class instead of QIODevice
