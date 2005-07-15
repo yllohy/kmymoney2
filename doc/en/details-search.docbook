@@ -5,7 +5,7 @@
 <author>
 <firstname>Darin</firstname>
 <surname>Strait</surname>
-<affiliation><address><email>darin_strait@yahoo.com</email></address></affiliation>
+<affiliation><address><email>darin.strait@ashdar-partners.com</email></address></affiliation>
 </author>
 </authorgroup>
 <date>2005-06-01</date>
@@ -48,6 +48,17 @@ window will bring up the appropriate ledger and display the transaction.
 <sect1 id="details.search.text">
 <title>Text Search Criteria</title>
 
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="find-text.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>### what goes here? dms ###</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
 <para>
 This tab allows you to specify text for the search criteria. 
 </para>
@@ -58,8 +69,8 @@ By default, this will match on simple substrings. For example:
 
 <para>
 <itemizedlist>
-<listitem><para><quote>Best</quote> will find <quote>Best Cakes, Inc.</quote></para></listitem>
-<listitem><para><quote>est</quote> will also find <quote>Best Cakes, Inc.</quote></para></listitem>
+<listitem><para>&quot;Best&quot; will find &quot;Best Cakes, Inc.&quot;</para></listitem>
+<listitem><para>&quot;est&quot; will also find &quot;Best Cakes, Inc.&quot;</para></listitem>
 </itemizedlist>
 </para>
 
@@ -77,6 +88,17 @@ regular expresssion.
 <sect1 id="details.search.account">
 <title>Account Search Criteria</title>
 
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="find-account.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>### what goes here? dms ###</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
 <para>
 This tab allows you to specify the accounts that should be searched. 
 </para>
@@ -93,12 +115,23 @@ can be marked or unmarked by clicking on the box next to the account name.
 <sect1 id="details.search.date">
 <title>Date Search Criteria</title>
 
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="find-date.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>### what goes here? dms ###</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
 <para>
 This tab allows you to specify which dates should be searched.
 </para>
 
 <para>
-The <quote>Range</quote> control provides a convenient way to set the From and To controls. 
+The &quot;Range&quot; control provides a convenient way to set the From and To controls. 
 The From and To controls can be manipulated individually. Dates can be 
 entered manually. The controls will prevent you from entering non-existing 
 dates. Date values can also be changed by clicking on the up and down arrows. 
@@ -111,6 +144,17 @@ dates.
 
 <sect1 id="details.search.amount">
 <title>Amount Search Criteria</title>
+
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="find-amount.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>### what goes here? dms ###</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
 
 <para>
 This tab allows you to specify what amounts should be searched for.
@@ -126,6 +170,17 @@ in entering a value.
 
 <sect1 id="details.search.category">
 <title>Category Search Criteria</title>
+
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="find-category.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>### what goes here? dms ###</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
 
 <para>
 This tab allows you to specify which categories should be searched. 
@@ -149,6 +204,17 @@ the account name.
 <sect1 id="details.search.payee">
 <title>Payee Search Criteria</title>
 
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="find-payee.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>### what goes here? dms ###</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
 <para>
 This tab allows you to specify which payees should be searched. 
 </para>
@@ -169,6 +235,17 @@ will be selected.
 
 <sect1 id="details.search.details">
 <title>Details Search Criteria</title>
+
+<screenshot>
+<mediaobject>
+<imageobject>
+<imagedata fileref="find-details.png" format="PNG" />
+</imageobject>
+<textobject>
+<phrase>### what goes here? dms ###</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
 
 <para>
 You can search for various detail criteria.

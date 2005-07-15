@@ -1,3 +1,6 @@
+2005-07-15 Robert Wadley <robntina@users.sourceforge.net>
+  * Applied patches submitted by Darin Strait for the user manual.
+
 2005-07-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow modification of due date for newly created schedules based on
     existing transactions
