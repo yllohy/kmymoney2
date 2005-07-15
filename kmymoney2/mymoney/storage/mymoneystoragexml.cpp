@@ -148,6 +148,8 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   }
   else
   {
+    delete m_doc;
+    m_doc = NULL;
     throw new MYMONEYEXCEPTION("File was not parsable!");
   }
 }
