@@ -550,10 +550,12 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     if (m_schedule.account().name().isEmpty())
       return;
 
-    // always disable the date field if editing
-    m_kdateinputDue->setEnabled(false);
-    m_kdateinputFinal->setEnabled(false);
-    m_qlineeditRemaining->setEnabled(false);
+    // always disable some fields when editing
+    if(!m_schedule.id().isEmpty()) {
+      m_kdateinputDue->setEnabled(false);
+      m_kdateinputFinal->setEnabled(false);
+      m_qlineeditRemaining->setEnabled(false);
+    }
     // FIXME we allow to modify the end of a schedule at any time
     // m_qcheckboxEnd->setEnabled(false);
 
