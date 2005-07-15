@@ -1638,6 +1638,7 @@ void KMyMoney2App::slotCheckSchedules(void)
   kconfig->setGroup("Schedule Options");
   if(kconfig->readBoolEntry("CheckSchedules", false) == true) {
 
+    MyMoneyFile::instance()->suspendNotify(true);
     QString prevMsg = slotStatusMsg(i18n("Checking for overdue schedules..."));
     MyMoneyFile *file = MyMoneyFile::instance();
     QDate checkDate = QDate::currentDate().addDays(kconfig->readNumEntry("CheckSchedulePreview", 0));
@@ -1679,6 +1680,7 @@ void KMyMoney2App::slotCheckSchedules(void)
         }
       }
     }
+    MyMoneyFile::instance()->suspendNotify(false);
     slotStatusMsg(prevMsg);
     updateCaption();
   }
