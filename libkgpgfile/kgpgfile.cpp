@@ -1,8 +1,8 @@
 /***************************************************************************
-                          kgpgfile.cpp  -  description
+                             kgpgfile.cpp
                              -------------------
     begin                : Fri Jan 23 2004
-    copyright            : (C) 2004 by Thomas Baumgart
+    copyright            : (C) 2004,2005 by Thomas Baumgart
     email                : thb@net-bembel.de
  ***************************************************************************/
 
@@ -75,7 +75,6 @@ KGPGFile::KGPGFile(const QString& fn, const QString& homedir, const QString& opt
 {
   setName(fn);
   m_exitStatus = -2;
-  m_ungetchBuffer = QCString();
   m_comment = "created by KGPGFile";
   // qDebug("ungetchbuffer %d", m_ungetchBuffer.length());
 }
@@ -108,26 +107,6 @@ void KGPGFile::setName(const QString& fn)
 void KGPGFile::flush(void)
 {
   // no functionality
-}
-
-bool KGPGFile::atEnd(void) 
-{
-  if(!isOpen())
-    return false;
-
-  if(isReadable()) {
-    // if the unget buffer is filled, we're for sure not at the end of file
-    if(!m_ungetchBuffer.isEmpty())
-      return false;
-    
-    // check for end-of-file
-    int ch = this->getch();
-    if(ch != EOF)
-      this->ungetch(ch);
-
-    return (ch == EOF);
-  }
-  return false;
 }
 
 void KGPGFile::addRecipient(const QCString& recipient)
@@ -197,7 +176,7 @@ bool KGPGFile::open(int mode)
     return false;
 
   if(isReadable() && useOwnPassphrase) {
-    if(_writeBlock(pwd.data(), pwd.length()) == -1) {
+    if(writeBlock(pwd.data(), pwd.length()) == -1) {
       // qDebug("Sending passphrase failed");
       return false;
     }
@@ -266,9 +245,7 @@ void KGPGFile::close(void)
         m_process->kill();
     }
   }
-  // m_ungetMutex.lock();
   m_ungetchBuffer = QCString();
-  // m_ungetMutex.unlock();
   setState(0);
   m_recipient.clear();
 }
@@ -283,14 +260,12 @@ int KGPGFile::getch(void)
   int ch;
 
   if(!m_ungetchBuffer.isEmpty()) {
-    // m_ungetMutex.lock();
-    ch = m_ungetchBuffer[0];
+    ch = (m_ungetchBuffer)[0] & 0xff;
     m_ungetchBuffer.remove(0, 1);
-    // m_ungetMutex.unlock();
 
   } else {
     char buf[1];
-    ch = readBlock(buf,1) == 1 ? buf[0] : EOF;
+    ch = (readBlock(buf,1) == 1) ? buf[0] : EOF;
   }
 
   return ch;
@@ -304,9 +279,7 @@ int KGPGFile::ungetch(int ch)
     return EOF;
 
   if(ch != EOF) {
-    // m_ungetMutex.lock();
-    m_ungetchBuffer.insert(0, ch);
-    // m_ungetMutex.unlock();
+    m_ungetchBuffer.insert(0, ch & 0xff);
   }
 
   return ch;
@@ -328,11 +301,6 @@ Q_LONG KGPGFile::writeBlock(const char *data, Q_ULONG maxlen)
   if(!isWritable())
     return EOF;
 
-  return _writeBlock(data, maxlen);
-}
-
-Q_LONG KGPGFile::_writeBlock(const char *data, Q_ULONG maxlen)
-{
   if(!m_process)
     return EOF;
   if(!m_process->isRunning())
@@ -352,6 +320,7 @@ Q_LONG KGPGFile::_writeBlock(const char *data, Q_ULONG maxlen)
 
 Q_LONG KGPGFile::readBlock(char *data, Q_ULONG maxlen)
 {
+  // char *oridata = data;
   if(maxlen == 0)
     return 0;
 
@@ -362,7 +331,6 @@ Q_LONG KGPGFile::readBlock(char *data, Q_ULONG maxlen)
 
   Q_ULONG nread = 0;
   if(!m_ungetchBuffer.isEmpty()) {
-    // m_ungetMutex.lock();
     unsigned l = m_ungetchBuffer.length();
     if(maxlen < l)
       l = maxlen;
@@ -370,10 +338,10 @@ Q_LONG KGPGFile::readBlock(char *data, Q_ULONG maxlen)
     nread += l;
     data = &data[l];
     m_ungetchBuffer.remove(0, l);
-    // m_ungetMutex.unlock();
 
     if(!m_process) {
       // qDebug("read %d bytes from unget buffer", nread);
+      // dumpBuffer(oridata, nread);
       return nread;
     }
   }
@@ -396,6 +364,8 @@ Q_LONG KGPGFile::readBlock(char *data, Q_ULONG maxlen)
     // qDebug("EOF");
     return EOF;
   }
+  // qDebug("return %d bytes", maxlen - m_readRemain);
+  // dumpBuffer(oridata, maxlen - m_readRemain);
   return maxlen - m_readRemain;
 }
 
@@ -434,11 +404,9 @@ void KGPGFile::slotDataFromGPG(KProcess* proc, char* buf, int len)
   }
 
   // store rest of buffer in ungetch buffer
-  // m_ungetMutex.lock();
   while(len--) {
     m_ungetchBuffer += *buf++;
   }
-  // m_ungetMutex.unlock();
 
   // if we have all the data the app requested, we can safely suspend
   if(m_readRemain == 0) {
@@ -553,5 +521,42 @@ const bool KGPGFile::keyAvailable(const QString& name)
 
  */
 
+#ifdef KMM_DEBUG
+void KGPGFile::dumpBuffer(char *s, int len) const
+{
+  QString data, tmp, chars;
+  unsigned long addr = 0x0;
+
+  while(1) {
+    if(addr && !(addr & 0x0f)) {
+      qDebug("%s %s", data.data(), chars.data());
+      if(!len)
+        break;
+    }
+    if(!(addr & 0x0f)) {
+      data = tmp.sprintf("%08lX", addr);
+      chars = QString();
+    }
+    if(!(addr & 0x03)) {
+      data += " ";
+    }
+    ++addr;
+
+    if(!len) {
+      data += "  ";
+      chars += " ";
+      continue;
+    }
+
+    data += tmp.sprintf("%02X", *s & 0xff);
+    if(*s >= ' ' && *s <= '~')
+      chars += *s & 0xff;
+    else
+      chars += '.';
+    ++s;
+    --len;
+  }
+}
+#endif
 
 #include "kgpgfile.moc"

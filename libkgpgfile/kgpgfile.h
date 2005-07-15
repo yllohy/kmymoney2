@@ -1,8 +1,8 @@
 /***************************************************************************
-                          kgpgfile.h  -  description
+                             kgpgfile.h
                              -------------------
     begin                : Fri Jan 23 2004
-    copyright            : (C) 2004 by Thomas Baumgart
+    copyright            : (C) 2004,2005 by Thomas Baumgart
     email                : thb@net-bembel.de
  ***************************************************************************/
 
@@ -21,7 +21,6 @@
 #include <qfile.h>
 #include <qobject.h>
 #include <qstring.h>
-#include <qmutex.h>
 
 /**
   * @author Thomas Baumgart
@@ -33,6 +32,27 @@ class KProcess;
 /**
   * A class for reading and writing data to/from an
   * encrypted e.g. file.
+  *
+  * This class presents a QFile based object to the application
+  * but reads/writes data from/to the file through an instance of GPG.
+  *
+  * @code
+  *
+  *  +------------------+   write  +-----------+     stdin +-------+     +--------+
+  *  |                  |--------->|\          |---------->|       |---->|        |
+  *  | Application code |   read   | QFile     |    stdout |  GPG  |     |  File  |
+  *  |                  |<---------|/          |<----------|       |<----|        |
+  *  +------------------+          |  KGPGFile |           +-------+     +--------+
+  *                |        control|           |
+  *                +-------------->|           |
+  *                                +-----------+
+  * @endcode
+  *
+  * The @p write interface contains methods as writeBlock() and putch(), the @p read
+  * interface the methods readBlock(), getch() and ungetch(). The @p control interface
+  * special methods only available with KGPGFile e.g. addRecipient(), keyAvailable() and
+  * GPGAvailable(). Other, more general methods such as open(), close() and flush() are
+  * not shown in the above picture.
   */
 class KGPGFile : public QObject, public QFile
 {
@@ -50,9 +70,6 @@ public:
   virtual void flush(void);
 
   virtual Offset size(void) const { return 0; };
-  virtual Offset at(void) { return 0; };
-  virtual bool at(Offset) { return false; };
-  virtual bool atEnd(void);
 
   virtual Q_LONG readBlock(char *data, Q_ULONG maxlen);
   virtual Q_LONG writeBlock(const char *data, Q_ULONG maxlen);
@@ -101,7 +118,10 @@ public:
     */
   static const bool keyAvailable(const QString& name);
 
+#ifdef KMM_DEBUG
   void dumpUngetBuffer(void);
+  void dumpBuffer(char *s, int len) const;
+#endif
 
 protected slots:
   void slotGPGExited(KProcess *);
@@ -111,7 +131,6 @@ protected slots:
 
 private:
   void init(void);
-  Q_LONG _writeBlock(const char *data, Q_ULONG maxlen);
   const bool startProcess(const QStringList& args);
 
 private:
@@ -122,18 +141,15 @@ private:
   QString m_comment;
   QString m_homedir;
 
-  Q_LONG  m_readRemain;
-  char*   m_ptrRemain;
-
-  bool    m_needExitLoop;
-
   KShellProcess* m_process;
 
   QValueList<QCString> m_recipient;
-  QMutex   m_ungetMutex;
   QCString m_ungetchBuffer;
   QCString m_errmsg;
   int      m_exitStatus;
+  Q_LONG  m_readRemain;
+  char*   m_ptrRemain;
+  bool    m_needExitLoop;
 };
 
 #endif
