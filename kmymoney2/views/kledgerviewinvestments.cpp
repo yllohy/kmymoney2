@@ -269,6 +269,8 @@ void KLedgerViewInvestments::fillForm()
 
     MyMoneyMoney amount, shares;
     int prec;
+    KConfig *kconfig = KGlobal::config();
+    kconfig->setGroup("General Options");
     switch(m_transactionType) {
       case BuyShares:
       case SellShares:
@@ -299,7 +301,7 @@ void KLedgerViewInvestments::fillForm()
         // price
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
 //                 (m_split.value(m_transaction.commodity(), m_account.currencyId())/m_split.shares()).formatMoney());
-                 (m_split.value()/m_split.shares()).formatMoney());
+                 (m_split.value()/m_split.shares()).formatMoney("", kconfig->readNumEntry("PricePrecision", 4)));
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
         formTable->setItem(PRICE_ROW, PRICE_DATA_COL, item);
 
@@ -335,7 +337,7 @@ void KLedgerViewInvestments::fillForm()
         // price
         item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
 //                 (m_split.value(m_transaction.commodity(), m_account.currencyId())/m_split.shares()).formatMoney());
-                 (m_split.value()/m_split.shares()).formatMoney());
+                 (m_split.value()/m_split.shares()).formatMoney("", kconfig->readNumEntry("PricePrecision", 4)));
         item->setAlignment(kMyMoneyTransactionFormTableItem::right);
         formTable->setItem(PRICE_ROW, PRICE_DATA_COL, item);
 
@@ -791,8 +793,9 @@ void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& /*t*/ )
           m_editShares->loadText(shares.abs().formatMoney("", prec));
         }
       }
-      if(m_editPPS)
-        m_editPPS->loadText(price.abs().formatMoney());
+      if(m_editPPS) {
+        m_editPPS->loadText(price.abs().formatMoney("", m_editPPS->precision()));
+      }
       if(m_editCashAccount)
         m_editCashAccount->setSelected(m_accountSplit.accountId());
       if(m_editFeeCategory) {
@@ -815,7 +818,7 @@ void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& /*t*/ )
         }
       }
       if(m_editPPS)
-        m_editPPS->loadText(price.formatMoney());
+        m_editPPS->loadText(price.abs().formatMoney("", m_editPPS->precision()));
       if(m_editCashAccount) {
         // the cash account field is actually used for the interest income
         // in the case of ReinvestDividend. So we have to reload the widget
@@ -891,6 +894,10 @@ void KLedgerViewInvestments::createEditWidgets()
   }
   if(!m_editPPS) {
     m_editPPS = new kMyMoneyEdit(0, "editPPS");
+    KConfig *kconfig = KGlobal::config();
+    kconfig->setGroup("General Options");
+    int prec = kconfig->readNumEntry("PricePrecision", 4);
+    m_editPPS->setPrecision(prec);
     m_editMapper.setMapping(m_editPPS, Price);
     connect(m_editPPS, SIGNAL(valueChanged(const QString& )), &m_editMapper, SLOT(map()));
   }

@@ -77,7 +77,6 @@ public:
 
   /** Overloaded for internal reasons. The API is not affected. */
   virtual QValidator::State validate( QString & input, int & pos ) const;
-
 };
 
 /**
@@ -163,8 +162,15 @@ public:
     * @param prec number of fractional digits.
     *
     * @note should be used prior to calling loadText()
+    * @sa precision
     */
   void setPrecision(const int prec);
+
+  /**
+    * return the number of fractional digits
+    * @sa setPrecision
+    */
+  const int precision(void) { return m_prec; };
 
   QWidget* focusWidget(void) const;
 
@@ -183,6 +189,9 @@ public:
     * showCalculatorButton(false).
     */
   void hideCalculatorButton(void) { showCalculatorButton(false); }
+
+  /** Overloaded for internal reasons. The API is not affected. */
+  void setValidator(const QValidator* v);
 
 public slots:
   void loadText(const QString& text);

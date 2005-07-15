@@ -90,6 +90,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
   int align = Qt::AlignVCenter;
   QString txt(" ");
   if(m_transaction != 0) {
+    KConfig *kconfig = KGlobal::config();
     try {
       security = file->security(m_transaction->commodity());
       currency = security.tradingSymbol();
@@ -338,7 +339,8 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                 case KLedgerView::BuyShares:
                 case KLedgerView::SellShares:
                 case KLedgerView::ReinvestDividend:
-                  txt = (m_split.value(QCString(), QCString())/m_split.shares()).abs().formatMoney(currency);
+                  kconfig->setGroup("General Options");
+                  txt = (m_split.value(QCString(), QCString())/m_split.shares()).abs().formatMoney(currency, kconfig->readNumEntry("PricePrecision", 4));
                   break;
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
@@ -433,6 +435,7 @@ void kMyMoneyRegisterInvestment::adjustColumn(int col)
           accountSplit = *it_s;
         }
       }
+      KConfig *kconfig = KGlobal::config();
       switch(col) {
         default:
           break;
@@ -456,10 +459,12 @@ void kMyMoneyRegisterInvestment::adjustColumn(int col)
 
         case 5:
           if(!split.shares().isZero()) {
-            amount = (split.value() / split.shares()).abs();
-            txt = amount.formatMoney();
+            // amount = (split.value() / split.shares()).abs();
+            // txt = amount.formatMoney("   ", );
+            kconfig->setGroup("General Options");
+            txt = (split.value(QCString(), QCString())/split.shares()).abs().formatMoney("   ", kconfig->readNumEntry("PricePrecision", 4));
           }
-          nw = cellFontMetrics.width(txt+"  ");
+          nw = cellFontMetrics.width(txt+"   ");
           break;
 
         case 6:

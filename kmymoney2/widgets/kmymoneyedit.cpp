@@ -178,6 +178,11 @@ void kMyMoneyEdit::init(void)
   connect(m_calcButton, SIGNAL(clicked()), this, SLOT(slotCalculatorOpen()));
 }
 
+void kMyMoneyEdit::setValidator(const QValidator* v)
+{
+  m_edit->setValidator(v);
+}
+
 kMyMoneyEdit::~kMyMoneyEdit()
 {
   delete m_calculatorFrame;

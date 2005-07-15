@@ -32,6 +32,7 @@
 #include "knewinvestmentwizard.h"
 
 #include "../widgets/kmymoneylineedit.h"
+#include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneycurrencyselector.h"
 #include "../mymoney/mymoneysecurity.h"
 #include "../mymoney/mymoneyfile.h"
@@ -64,6 +65,7 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneyAccount& acc, QWidget *
 
   m_investmentSymbol->setText(m_security.tradingSymbol());
   m_tradingMarket->setCurrentText(m_security.tradingMarket());
+  m_fraction->setValue(MyMoneyMoney(m_security.smallestAccountFraction(), 1));
   m_tradingCurrencyEdit->setSecurity(tradingCurrency);
 
   m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
@@ -91,6 +93,7 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneySecurity& security, QWi
 
   m_investmentSymbol->setText(m_security.tradingSymbol());
   m_tradingMarket->setCurrentText(m_security.tradingMarket());
+  m_fraction->setValue(MyMoneyMoney(m_security.smallestAccountFraction(), 1));
   m_tradingCurrencyEdit->setSecurity(tradingCurrency);
 
   m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
@@ -104,11 +107,16 @@ void KNewInvestmentWizard::init(void)
 {
   m_onlineSourceCombo->insertStringList( WebPriceQuote::quoteSources() );
 
+  m_fraction->setPrecision(0);
+  QIntValidator* fractionValidator = new QIntValidator(1, 100000, this);
+  m_fraction->setValidator(fractionValidator);
+
   // FIXME for now, we don't have online help
   helpButton()->hide();
 
   connect(m_investmentName, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
   connect(m_investmentSymbol, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
+  connect(m_fraction, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
   connect(m_investmentIdentification, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
 
   m_createAccount = true;
@@ -129,7 +137,8 @@ void KNewInvestmentWizard::slotCheckPage(void)
   if(currentPage() == m_investmentDetailsPage) {
     setNextEnabled(m_investmentDetailsPage, false);
     if(m_investmentName->text().length() > 0
-    && m_investmentSymbol->text().length() > 0) {
+    && m_investmentSymbol->text().length() > 0
+    && !m_fraction->value().isZero()) {
       setNextEnabled(m_investmentDetailsPage, true);
     }
   } else if(currentPage() == m_onlineUpdatePage) {
@@ -161,6 +170,7 @@ void KNewInvestmentWizard::createObjects(const QCString& parentId)
   newSecurity.setName(m_investmentName->text());
   newSecurity.setTradingSymbol(m_investmentSymbol->text());
   newSecurity.setTradingMarket(m_tradingMarket->currentText());
+  newSecurity.setSmallestAccountFraction(m_fraction->value());
   newSecurity.setTradingCurrency(m_tradingCurrencyEdit->security().id());
   newSecurity.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
 
