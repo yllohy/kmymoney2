@@ -1386,7 +1386,7 @@ The file will be coped to the directory specified with the current date appended
 <sect1 id="firsttime-contact">
 <title>Contacting the developers / Reporting Bugs</title>
 <para>
-	You can contact the developers through the User mailing list<ulink url="kmymoney2-user@lists.sourceforge.net">mail list</ulink>.
+	You can contact the developers through their mailing list &devlist;.
 </para>
 
 <para>
