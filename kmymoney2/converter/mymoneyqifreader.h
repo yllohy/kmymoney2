@@ -272,6 +272,16 @@ private:
     */
   static const QCString MyMoneyQifReader::findOrCreateIncomeAccount(const QString& searchname);
   
+  /**
+    * This method looks up the @p searchname account by name and returns its id
+    * if it was found.  If it was not found, it creates a new expense account using
+    * @p searchname as a name, and returns the id if the newly created account
+    *
+    * @param searchname The name of the account to find or create
+    * @return QCString id of the found or created account
+    */
+  static const QCString MyMoneyQifReader::findOrCreateExpenseAccount(const QString& searchname);
+  
   void processQifLine(void);
   
 signals:

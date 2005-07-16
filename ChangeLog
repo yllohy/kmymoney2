@@ -1,3 +1,7 @@
+2005-07-16 Ace Jones <acejones@users.sourceforge.net>
+  * QIF Importer improvements for investments
+    - Supports O and L fields (transaction fees and account transfer)
+    
 2005-07-15 Robert Wadley <robntina@users.sourceforge.net>
   * Applied patches submitted by Darin Strait for the user manual.
 

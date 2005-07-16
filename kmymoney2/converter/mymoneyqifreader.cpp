@@ -1002,9 +1002,21 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
   MyMoneySplit s1;
   s1.setMemo(extractLine('M'));
   
+  // 'O' field: Fees
+  MyMoneyMoney fees = m_qifProfile.value('T', extractLine('O'));
+  if ( ! fees.isZero() )
+  {
+    MyMoneySplit s;
+    s.setMemo(i18n("(Fees) ") + memo);
+    s.setValue(fees);
+    s.setShares(fees);
+    s.setAccountId(findOrCreateExpenseAccount("_Fees"));
+    t.addSplit(s);
+  }
+  
   // 'T' field: Amount
   MyMoneyMoney amount = m_qifProfile.value('T', extractLine('T'));
-  s1.setValue(amount);
+  s1.setValue(amount-fees);
 
   // 'Y' field: Security name
 
@@ -1086,13 +1098,13 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
   // 'N' field: Action
   QString action = extractLine('N').lower();
   
-  // Whether to create a cash split for the other side of the value
-  bool cashsplit = false;
-  
   // remove trailing X, which seems to have no purpose (?!)
   if ( action.endsWith("x") )
     action = action.left( action.length() - 1 );
 
+  // Whether to create a cash split for the other side of the value
+  MyMoneyMoney cashsplit;
+  
   if ( action == "reinvdiv" || action == "reinvlg" || action == "reinvsh" )
   {
     s1.setShares(quantity);
@@ -1104,8 +1116,8 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     QString incomeaccount = QString("_") + extractLine('N');
     s2.setAccountId(findOrCreateIncomeAccount(incomeaccount));
         
-    s2.setValue(-s1.value());
-    s2.setShares(-s1.value());
+    s2.setValue(-amount-fees);
+    s2.setShares(-amount-fees);
     t.addSplit(s2);
   }
   else if ( action == "div" || action == "intinc" || action == "cgshort" || action == "cgmid" || action == "cglong" || action == "rtrncap" )
@@ -1115,13 +1127,11 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     // income account.  This is a hack, but it's needed in order to get the
     // amount into the transaction.
 
-    // FIXME: Use a better mechanism to get the dividend amount into the
-    // transaction (I started a discussion on the mail list, 2004-11-28).
     QString incomeaccount = QString("_") + extractLine('N');
     
     s1.setAccountId(findOrCreateIncomeAccount(incomeaccount));
-    s1.setValue(-amount);
-    s1.setShares(-amount);
+    s1.setValue(-amount-fees);
+    s1.setShares(-amount-fees);
 
     // Split 2 will be the zero-amount investment split that serves to
     // mark this transaction as a cash dividend and note which stock account
@@ -1133,22 +1143,22 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     s2.setAccountId(thisaccount.id());
     t.addSplit(s2);
     
-    cashsplit = true;
+    cashsplit = amount;
   }
   else if (action == "buy")
   {
     s1.setShares(quantity);
     s1.setAction(MyMoneySplit::ActionBuyShares);
 
-    cashsplit = true;      
+    cashsplit = -amount;      
   }
   else if (action == "sell")
   {
     s1.setShares(-quantity);
-    s1.setValue(-amount);
+    s1.setValue(-amount-fees);
     s1.setAction(MyMoneySplit::ActionBuyShares);
     
-    cashsplit = true;
+    cashsplit = amount;
   }
   else if ( action == "shrsin" )
   {
@@ -1179,17 +1189,42 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
 
   // If there is a brokerage account, add a final split to stash the -value of the
   // transaction there, if needed based on the type of transaction
-  
-  QCString brokerageaccid = m_account.value("kmm-brokerage-account").utf8();
-  if ( ! brokerageaccid.isEmpty() && cashsplit )
+
+  QCString accountid;
+  QString accountname = extractLine('L');
+  if ( accountname.isEmpty() )
+  {
+    accountid = m_account.value("kmm-brokerage-account").utf8();
+  }
+  else
+  {
+    if(accountname.left(1) == m_qifProfile.accountDelimiter().left(1)) 
+    {
+      accountname = accountname.mid(1, accountname.length()-2);
+      accountid = file->nameToAccount(accountname);
+      if(accountid.isEmpty()) {
+        MyMoneyAccount account;
+        account.setName(accountname);
+        selectOrCreateAccount(Select, account);
+        accountid = account.id();
+      }
+    } 
+    else 
+    {
+      // L field with income/expense categories not supported in investments
+      kdDebug(2) << "Line " << m_linenumber << ": L field with income/expense categories not supported in investments" << endl;
+    }
+  }  
+    
+  if ( ! accountid.isEmpty() && ! cashsplit.isZero() )
   {
     // FIXME This may not deal with foreign currencies properly
-    MyMoneySplit s3;
-    s3.setMemo(memo);
-    s3.setValue(-s1.value());
-    s3.setShares(-s1.value());
-    s3.setAccountId(brokerageaccid);
-    t.addSplit(s3);
+    MyMoneySplit s;
+    s.setMemo(memo);
+    s.setValue(cashsplit);
+    s.setShares(cashsplit);
+    s.setAccountId(accountid);
+    t.addSplit(s);
   }
   
   // Add the transaction
@@ -1469,6 +1504,43 @@ const QCString MyMoneyQifReader::findOrCreateIncomeAccount(const QString& search
     acc.setAccountType( MyMoneyAccount::Income );
     MyMoneyAccount income = file->income();
     file->addAccount( acc, income );
+    result = acc.id();
+  }
+
+  return result;
+}
+
+// TODO: Combine this and the previous function
+
+const QCString MyMoneyQifReader::findOrCreateExpenseAccount(const QString& searchname)
+{
+  QCString result;
+  
+  MyMoneyFile *file = MyMoneyFile::instance();
+
+  // First, try to find this account as an income account
+  MyMoneyAccount acc = file->expense();
+  QCStringList list = acc.accountList();
+  QCStringList::ConstIterator it_accid = list.begin();
+  while ( it_accid != list.end() )
+  {
+    acc = file->account(*it_accid);
+    if ( acc.name() == searchname )
+    {
+      result = *it_accid;
+      break;
+    }  
+    ++it_accid;
+  }
+
+  // If we did not find the account, now we must create one.
+  if ( result.isEmpty() )
+  {
+    MyMoneyAccount acc;
+    acc.setName( searchname );
+    acc.setAccountType( MyMoneyAccount::Expense );
+    MyMoneyAccount expense = file->expense();
+    file->addAccount( acc, expense );
     result = acc.id();
   }
 
