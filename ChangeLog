@@ -1,3 +1,6 @@
+2005-07-16 Robert Wadley <robntina@users.sourceforge.net>
+  * Added screenshots for details-widgets.docbook in the user manual.
+
 2005-07-16 Ace Jones <acejones@users.sourceforge.net>
   * QIF Importer improvements for investments
     - Supports O and L fields (transaction fees and account transfer)

@@ -7,7 +7,21 @@ it presents the user the <emphasis>date entry widget</emphasis>. This widget con
 the <emphasis>day</emphasis>, the <emphasis>month</emphasis> and the <emphasis>year</emphasis> seperated by the respective date separator
 characters depending on your locale settings. The button - if pressed - opens the datepicker widget.
 </para>
-<para>FIXME: add picture of widget</para>
+
+<para>
+<screenshot>
+	<screeninfo>Tip of the Day</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="date_widget.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Date widget</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 <para>
 The left/right cursor keys can be used to switch between the <emphasis>day</emphasis>, the <emphasis>month</emphasis>
 and the <emphasis>year</emphasis> field. Using the up/down cursor keys, the value of the selected field can be incremented/decremented.
@@ -44,7 +58,21 @@ the right. Use the digits to enter the value. Separate the fractional part by en
 click on the button to the right or press a key representing a numeric operation (eg. +,-,/,* or %) a little calculator will pop up
 and allows you to calculate the final value.
 </para>
-<para>FIXME: add picture of widget</para>
+
+<para>
+<screenshot>
+	<screeninfo>Tip of the Day</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="value_widget.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Value widget</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 <para>
 Use the calculator widget just like a normal calculator and once done leave it by clicking on the '=' button or press the '=' key on
 your keyboard.
@@ -59,7 +87,21 @@ As long as matching entries exist in the list of payees/payers maintained by &ka
 the text entry area. Using the mouse or the up/down keys one can select a name from that list. Using the keyboard additionally requires to
 select the entry by pressing the RETURN key.
 </para>
-<para>FIXME: add picture of widget</para>
+
+<para>
+<screenshot>
+	<screeninfo>Tip of the Day</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="payee_widget.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Payee widget</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 <para>
 If a name is entered that is not yet known to &kappname; you will be asked if you wants to create a new payee/payer record.
 If you do not wish to do so, then the field will be blanked. Otherwise, the record will be created and added to the list.
@@ -74,7 +116,21 @@ As long as matching entries exist in the list of categories/accounts known to &k
 the text entry area. Using the mouse or the up/down keys one can select a name from that list. Using the keyboard additionally requires to
 select the entry by pressing the RETURN key.
 </para>
-<para>FIXME: add picture of widget</para>
+
+<para>
+<screenshot>
+	<screeninfo>Tip of the Day</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="category_widget.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Category widget</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 <para>
 If a name is entered that is not yet known to &kappname; you will be asked if you wants to create a new category record.
 If you do not wish to do so, then the field will be blanked. Otherwise, the record will be created and added to the list.
