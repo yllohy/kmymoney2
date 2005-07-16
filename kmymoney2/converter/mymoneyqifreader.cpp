@@ -790,12 +790,20 @@ void MyMoneyQifReader::processTransactionEntry(void)
       try {
         MyMoneyAccount account = file->account(accountId);
         // FIXME: check that the type matches and ask if not
+        
+        if ( account.accountType() == MyMoneyAccount::Investment )
+        {
+          kdDebug(2) << "Line " << m_linenumber << ": Cannot transfer to an investment account. Transaction ignored." << endl;
+          return;
+        }
+        
       } catch (MyMoneyException *e) {
         kdDebug(2) << "Line " << m_linenumber << ": Account with id " << accountId.data() << " not found" << endl;
         accountId = QCString();
         delete e;
       }
     }
+    
     if(!accountId.isEmpty()) {
       s2.setAccountId(accountId);
       try {
@@ -844,6 +852,13 @@ void MyMoneyQifReader::processTransactionEntry(void)
         try {
           MyMoneyAccount account = file->account(accountId);
           // FIXME: check that the type matches and ask if not
+        
+          if ( account.accountType() == MyMoneyAccount::Investment )
+          {
+            kdDebug(2) << "Line " << m_linenumber << ": Cannot transfer to an investment account. Transaction ignored." << endl;
+            return;
+          }
+        
         } catch (MyMoneyException *e) {
           kdDebug(2) << "Line " << m_linenumber << ": Account with id " << accountId.data() << " not found" << endl;
           accountId = QCString();
@@ -1174,8 +1189,10 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
   }
   else if ( action == "stksplit" )
   {
+    MyMoneyMoney splitfactor = (quantity / MyMoneyMoney(10.0)).reduce();
+    
     // Stock splits not supported
-    kdDebug(2) << "Line " << m_linenumber << ": Stock split not supported (date=" << date << " security=" << securityname << " quantity=" << quantity << ")" << endl;
+    kdDebug(2) << "Line " << m_linenumber << ": Stock split not supported (date=" << date << " security=" << securityname << " factor=" << splitfactor.toString() << ")" << endl;
     return;
   }
   else
@@ -1373,7 +1390,8 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
    * does not support, but may support in the future.
    *
    *************************************************************************/
-  /*
+  /*   Note the Q field is the split ratio per 10 shares, so Q12.5 is a 
+        12.5:10 split, otherwise known as 5:4.
   D1/14' 5
   NStkSplit
   YIBM
