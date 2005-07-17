@@ -6,6 +6,7 @@
 	<!ENTITY % addindex "IGNORE">
 	<!ENTITY % English "INCLUDE"><!-- change language only here -->
 
+<!-- the chapters -->
 	<!ENTITY introduction SYSTEM "introduction.docbook">
 	<!ENTITY firsttime SYSTEM "firsttime.docbook">
 	<!ENTITY whatsnew SYSTEM "whatsnew.docbook">
@@ -28,6 +29,10 @@
 	<!ENTITY details-hbciofx SYSTEM "details-hbciofx.docbook">
 	<!ENTITY reference SYSTEM "reference.docbook">
 	<!ENTITY credits SYSTEM "credits.docbook">
+
+<!-- i18n for keys -->
+	<!ENTITY Ctrl "<keycap>Ctrl</keycap>">
+	<!ENTITY Insert "<keycap>Ins</keycap>">
 ]>
 
 <book lang="&language;">

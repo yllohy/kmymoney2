@@ -543,15 +543,14 @@ Some of your transactions may be flashing red in the ledger.
 	This is a textbook case for the awk tool.  
 	Create a script called csv2qif.awk, with the following two lines as contents:
 </para>
-<para>
+<programlisting>
 	BEGIN { FS=&quot;,&quot;; print &quot;!Type:Bank&quot; }
-</para>
-<para>
+
 	{ print &quot;D&quot;$1; print &quot;T&quot;$2; print &quot;N&quot;$3; print &quot;P&quot;$4; print &quot;M&quot;$5; print &quot;^&quot; }
-</para>
+</programlisting>
 <para>
 	Then, change the QIF keys (D,T,N,P,M) to match the order of your csv data.  
-	Set the input filter to &quot;awk -f csv2qif.awk&quot;
+	Set the input filter to <userinput>awk -f csv2qif.awk</userinput>.
 </para>
 </sect2>
 <sect2><title>Special &kappname; QIF extensions</title>
