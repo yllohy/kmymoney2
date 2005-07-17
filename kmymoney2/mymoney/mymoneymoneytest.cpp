@@ -14,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <iostream>
 #include "mymoneymoneytest.h"
+#include <iostream>
 #include <stdint.h>
 
 // make sure, we have the correct suffix

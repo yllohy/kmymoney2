@@ -17,6 +17,18 @@
 #ifndef __MYMONEYMONEYTEST_H__
 #define __MYMONEYMONEYTEST_H__
 
+// Check for standard definitions
+#ifdef HAVE_STDINT_H
+  #ifndef __STDC_LIMIT_MACROS
+    #define __STDC_LIMIT_MACROS         // force definition of min and max values
+  #endif
+  #include <stdint.h>
+#else
+  #include <limits.h>
+  #define INT64_MAX LLONG_MAX
+  #define INT64_MIN LLONG_MIN
+#endif
+
 #include <cppunit/extensions/HelperMacros.h>
 
 #define private public

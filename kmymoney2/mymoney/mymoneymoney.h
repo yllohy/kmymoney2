@@ -96,9 +96,6 @@ public:
   MyMoneyMoney( const int iAmount, const signed64 denom = 100 );
   MyMoneyMoney( const QString& pszAmount );
   MyMoneyMoney( const signed64 Amount, const signed64 denom = 100  );
-#if __WORDSIZE == 32
-  MyMoneyMoney( const long ldAmount, const signed64 denom = 100  );
-#endif
   MyMoneyMoney( const double dAmount, const signed64 denom = 100  );
 #if HAVE_LONG_DOUBLE
   MyMoneyMoney( const long double dAmount, const signed64 denom = 100  );
@@ -153,11 +150,6 @@ public:
   // assignment
   const MyMoneyMoney& operator=( const MyMoneyMoney& Amount );
   const MyMoneyMoney& operator=( const QString& pszAmount );
-  const MyMoneyMoney& operator=( signed64 Amount );
-#if __WORDSIZE == 32
-  const MyMoneyMoney& operator=( long ldAmount );
-#endif
-  const MyMoneyMoney& operator=( int iAmount );
 
   // comparison
   bool operator==( const MyMoneyMoney& Amount ) const;
@@ -218,9 +210,6 @@ public:
   MyMoneyMoney operator*( const MyMoneyMoney& factor ) const;
   MyMoneyMoney operator*( int factor ) const;
   MyMoneyMoney operator*( signed64 factor ) const;
-#if __WORDSIZE == 32
-  MyMoneyMoney operator*( long factor ) const;
-#endif
   MyMoneyMoney operator/( const MyMoneyMoney& Amount ) const;
 
   // unary operators
@@ -344,23 +333,6 @@ inline MyMoneyMoney::MyMoneyMoney(const long double dAmount, const signed64 deno
   long double adj = dAmount < 0 ? -0.5 : 0.5;
   m_denom = denom;
   m_num = static_cast<signed64> (dAmount * m_denom + adj);
-}
-#endif
-
-#if __WORDSIZE == 32
-////////////////////////////////////////////////////////////////////////////////
-//      Name: MyMoneyMoney
-//   Purpose: Constructor - constructs object from an amount in a long value
-//   Returns: None
-//    Throws: Nothing.
-// Arguments: ldAmount - long object containing amount
-//            denom    - denominator of the object
-//
-////////////////////////////////////////////////////////////////////////////////
-inline MyMoneyMoney::MyMoneyMoney(const long ldAmount, const signed64 denom)
-{
-  m_num = static_cast<signed64>(ldAmount);
-  m_denom = denom;
 }
 #endif
 
@@ -1104,23 +1076,6 @@ inline MyMoneyMoney MyMoneyMoney::operator*(signed64 factor) const
   result.m_num *= factor;
   return result;
 }
-
-#if __WORDSIZE == 32
-////////////////////////////////////////////////////////////////////////////////
-//      Name: operator*
-//   Purpose: Multiplication operator - multiplies the object with factor
-//   Returns: The current object
-//    Throws: Nothing.
-// Arguments: AmountInPence - long object to be multiplied
-//
-////////////////////////////////////////////////////////////////////////////////
-inline MyMoneyMoney MyMoneyMoney::operator*(long factor) const
-{
-  MyMoneyMoney result(*this);
-  result.m_num *= factor;
-  return result;
-}
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 //      Name: operator*
