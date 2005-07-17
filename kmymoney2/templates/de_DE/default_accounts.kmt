@@ -250,6 +250,7 @@
         <account name="Haus- und Grundbesitzabgaben" type="13"/>
         <account name="Hypothekenzinsen" type="13"/>
         <account name="Kabelfernsehen" type="13"/>
+        <account name="Fernseh- und Rundfunkgebühren (GEZ)" type="13"/>
         <account name="Miete" type="13"/>
         <account name="Müllgebühren" type="13"/>
         <account name="Strom" type="13"/>
