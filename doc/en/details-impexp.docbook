@@ -452,7 +452,7 @@ Some of your transactions may be flashing red in the ledger.
 	The importer was not able to automatically assign a category based on your past transaction history.
 	</para>
   
-<para>
+<!--para>
 	<screenshot>
 	<mediaobject>
 	<imageobject>
@@ -460,7 +460,7 @@ Some of your transactions may be flashing red in the ledger.
 	</imageobject>
 	</mediaobject>
 	</screenshot>
-</para>
+</para-->
 
 <para>	
 	Transaction data can be edited or even deleted if needed.  To edit a transaction simply double click on the entry or hit enter when the entry is highlighted.  Once finished click on <guibutton>OK</guibutton> to accept the imported transactions or <guibutton>Cancel</guibutton> to remove the imported transactions.
