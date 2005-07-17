@@ -1,6 +1,10 @@
 2005-07-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Minor layout changes (use tags where possible)
   * Added Ctrl-Ins to create new transactions/splits
+  * Use $(MAKE) instead of 'make' to be able to switch make program
+  * Removed unused code enclosed with "#if __WORDSIZE == 32"
+  * Removed unused declarations in mymoneymoney.h
+  * Allow to compile mymoneymoneytest on FreeBSD
 
 2005-07-16 Ace Jones <acejones@users.sourceforge.net>
   * QIF Importer improvements for investments
