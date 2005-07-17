@@ -1,5 +1,6 @@
-2005-07-16 Robert Wadley <robntina@users.sourceforge.net>
-  * Added screenshots for details-widgets.docbook in the user manual.
+2005-07-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Minor layout changes (use tags where possible)
+  * Added Ctrl-Ins to create new transactions/splits
 
 2005-07-16 Ace Jones <acejones@users.sourceforge.net>
   * QIF Importer improvements for investments
@@ -16,6 +17,9 @@
     - Removed my "Files" section. Tom's is better.
     - Added links for the 2 remaining "whats new" items without links
         
+2005-07-16 Robert Wadley <robntina@users.sourceforge.net>
+  * Added screenshots for details-widgets.docbook in the user manual.
+
 2005-07-15 Robert Wadley <robntina@users.sourceforge.net>
   * Applied patches submitted by Darin Strait for the user manual.
 
