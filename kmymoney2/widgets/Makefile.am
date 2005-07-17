@@ -17,19 +17,19 @@ BUILT_SOURCES = kupdatestockpricedlgdecl.h knewaccountdlgdecl.h knewequityentryd
 .PHONY: kupdatestockpricedlgdecl.h knewaccountdlgdecl.h knewequityentrydecl.h kcurrencycalculatordecl.h kequitypriceupdatedlgdecl.h
 
 kupdatestockpricedlgdecl.h:
-	make -C ../dialogs kupdatestockpricedlgdecl.h
+	$(MAKE) -C ../dialogs kupdatestockpricedlgdecl.h
 
 knewaccountdlgdecl.h:
-	make -C ../dialogs knewaccountdlgdecl.h
+	$(MAKE) -C ../dialogs knewaccountdlgdecl.h
 
 knewequityentrydecl.h:
-	make -C ../dialogs knewequityentrydecl.h
+	$(MAKE) -C ../dialogs knewequityentrydecl.h
 
 kcurrencycalculatordecl.h:
-	make -C ../dialogs kcurrencycalculatordecl.h
+	$(MAKE) -C ../dialogs kcurrencycalculatordecl.h
 
 kequitypriceupdatedlgdecl.h:
-	make -C ../dialogs kequitypriceupdatedlgdecl.h
+	$(MAKE) -C ../dialogs kequitypriceupdatedlgdecl.h
 
 
 # The below has been commented out for now. Once we add
