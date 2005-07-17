@@ -2,13 +2,19 @@
 <title>Reference</title>
 
 <sect1 id="reference.menus">
+<sect1info>
+<author>
+<firstname>Roger</firstname>
+<surname>Lum</surname>
+<affiliation><address><email>rogerlum@gmail.com</email></address></affiliation>
+</author>
+</sect1info>
 <title>Menus</title>
-<para>...</para>
 
 <sect2 id="reference.menus.file"><title>File Menu</title>
 <para>
-
 <variablelist>
+
 <varlistentry>
 <term><menuchoice>
 <shortcut>
@@ -23,6 +29,32 @@
   Only one &kappname; file can be open at once, so this will close your current file first.  
 </action></para></listitem>
 </varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<shortcut>
+<keycombo><keycap>Ctrl</keycap><keycap>o</keycap></keycombo>
+</shortcut>
+<guimenu>File</guimenu>
+<guimenuitem>Open</guimenuitem>
+</menuchoice></term>
+<listitem><para>
+<action>
+  Opens an existing file. 
+</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>File</guimenu>
+<guimenuitem>Open Recent</guimenuitem>
+</menuchoice></term>
+<listitem><para>
+<action>
+  Allows quick access to recently opened files. 
+</action></para></listitem>
+</varlistentry>
+
 <varlistentry>
 <term><menuchoice>
 <shortcut>
@@ -31,8 +63,71 @@
 <guimenu>File</guimenu>
 <guimenuitem>Save</guimenuitem>
 </menuchoice></term>
-<listitem><para><action>Saves the currently open file</action></para></listitem>
+<listitem><para><action>Saves the currently open file.</action></para></listitem>
 </varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>File</guimenu>
+<guimenuitem>Save As...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Saves the currently open file as a different filename. </action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>File</guimenu>
+<guimenuitem>Import</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Import other file types, such as QIF and Gnucash.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>File</guimenu>
+<guimenuitem>Export</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Export current file as a different file type, such as QIF.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<shortcut>
+<keycombo><keycap>Ctrl</keycap><keycap>p</keycap></keycombo>
+</shortcut>
+<guimenu>File</guimenu>
+<guimenuitem>Print</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Prints the current file.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>File</guimenu>
+<guimenuitem>Personal Data</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Edit personal data.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>File</guimenu>
+<guimenuitem>Backup</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Backup current file.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<shortcut>
+<keycombo><keycap>Ctrl</keycap><keycap>w</keycap></keycombo>
+</shortcut>
+<guimenu>File</guimenu>
+<guimenuitem>Close</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Closes the current file.</action></para></listitem>
+</varlistentry>
+
 <varlistentry>
 <term><menuchoice>
 <shortcut>
@@ -43,34 +138,278 @@
 </menuchoice></term>
 <listitem><para><action>Quits</action> &kappname;</para></listitem>
 </varlistentry>
-</variablelist>
 
+</variablelist>
 </para>
 </sect2>
-<sect2 id="reference.menus.institution"><title>Institution Menu</title><para>...</para></sect2>
-<sect2 id="reference.menus.account"><title>Account Menu</title><para>...</para></sect2>
-<sect2 id="reference.menus.tools"><title>Tools Menu</title><para>...</para></sect2>
-<sect2 id="reference.menus.settings"><title>Settings Menu</title><para>...</para></sect2>
-<sect2 id="reference.menus.help"><title>Help Menu</title><para>...</para></sect2>
 
-</sect1>
 
-<sect1 id="reference.views">
-<title>Views</title>
+<sect2 id="reference.menus.go"><title>Go Menu</title>
+<para>
+<variablelist>
 
-<sect2 id="reference.views.home"><title>Home View</title><para>...</para></sect2>
-<sect2 id="reference.views.institutions"><title>Institutions View</title><para>...</para></sect2>
-<sect2 id="reference.views.accounts"><title>Accounts View</title><para>...</para></sect2>
-<sect2 id="reference.views.schedules"><title>Schedules View</title><para>...</para></sect2>
-<sect2 id="reference.views.categories"><title>Categories View</title><para>...</para></sect2>
-<sect2 id="reference.views.payees"><title>Payees View</title><para>...</para></sect2>
-<sect2 id="reference.views.ledgers"><title>Ledgers View</title><para>...</para></sect2>
-<sect2 id="reference.views.investments"><title>Investments View</title><para>...</para></sect2>
-<sect2 id="reference.views.reports"><title>Reports View</title><para>...</para></sect2>
+<varlistentry>
+<term><menuchoice>
+<guimenu>Go</guimenu>
+<guimenuitem>View back</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Go back to the previous screen.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Go</guimenu>
+<guimenuitem>View forward</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Go forward to the previous screen.</action></para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</sect2>
+
+
+<sect2 id="reference.menus.institution"><title>Institution Menu</title>
+<para>
+<variablelist>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Institution</guimenu>
+<guimenuitem>Add new institution...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Add a new institution.</action></para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</sect2>
+
+
+<sect2 id="reference.menus.account"><title>Account Menu</title>
+<para>
+<variablelist>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Account</guimenu>
+<guimenuitem>Add new account...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Add a new account.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Account</guimenu>
+<guimenuitem>Reconcile...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Reconcile an account through the reconciliation wizard.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<shortcut>
+<keycombo><keycap>Ctrl</keycap><keycap>f</keycap></keycombo>
+</shortcut>
+<guimenu>Account</guimenu>
+<guimenuitem>Find transaction...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Find a transaction</action></para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</sect2>
+
+
+<sect2 id="reference.menus.tools"><title>Tools Menu</title>
+<para>
+<variablelist>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Tools</guimenu>
+<guimenuitem>QIF Profile Editor...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Modifies the QIF profile used to import or export QIF files.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Tools</guimenu>
+<guimenuitem>Securities...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Lists all the current securities.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Tools</guimenu>
+<guimenuitem>Currencies...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>List currencies.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Tools</guimenu>
+<guimenuitem>Prices...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>List stock and currency prices.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Tools</guimenu>
+<guimenuitem>Update Stock and Currency prices...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Updates stock and currency prices from online sources.</action></para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</sect2>
+
+
+<sect2 id="reference.menus.settings"><title>Settings Menu</title>
+<para>
+<variablelist>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Settings</guimenu>
+<guimenuitem>Show Toolbar</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Toggles toolbar on or off.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Settings</guimenu>
+<guimenuitem>Hide/Show Statusbar </guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Toggles bottom statusbar on or off.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<shortcut>
+<keycombo><keycap>Ctrl</keycap><keycap>t</keycap></keycombo>
+</shortcut>
+<guimenu>Settings</guimenu>
+<guimenuitem>Show Transaction Detail</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Show transaction detail in Ledgers view.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Settings</guimenu>
+<guimenuitem>Enable all messages</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Enable all messages.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Settings</guimenu>
+<guimenuitem>Configure Shortcuts...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Configure custom shortcuts.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Settings</guimenu>
+<guimenuitem>Configure Toolbars...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Customize toolbars.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Settings</guimenu>
+<guimenuitem>Configure &kappname;...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Configure &kappname; settings.</action></para></listitem>
+</varlistentry>
+</variablelist>
+</para>
+</sect2>
+
+
+<sect2 id="reference.menus.help"><title>Help Menu</title>
+<para>
+<variablelist>
+
+<varlistentry>
+<term><menuchoice>
+<shortcut>
+<keycombo><keycap>F1</keycap></keycombo>
+</shortcut>
+<guimenu>Help</guimenu>
+<guimenuitem>&kappname; Handbook</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Access the &kappname; Handbook.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<shortcut>
+<keycombo><keycap>Shift</keycap><keycap>F1</keycap></keycombo>
+</shortcut>
+<guimenu>Help</guimenu>
+<guimenuitem>What's This?</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Activate "What's This?" cursor for pop-up help.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Help</guimenu>
+<guimenuitem>Show tip of the day</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Show tip of the day.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Help</guimenu>
+<guimenuitem>Report Bug...</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Report a found bug.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Help</guimenu>
+<guimenuitem>About &kappname;</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Show About &kappname; information.</action></para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><menuchoice>
+<guimenu>Help</guimenu>
+<guimenuitem>About KDE</guimenuitem>
+</menuchoice></term>
+<listitem><para><action>Show KDE information.</action></para></listitem>
+</varlistentry>
+
+</variablelist>
+</para>
+</sect2>
 
 </sect1>
 
 <sect1 id="reference.widgets">
+<sect1info>
+<author>
+<firstname>Thomas</firstname>
+<surname>Baumgart</surname>
+<affiliation><address><email>ipwizard@users.sourceforge.net</email></address></affiliation>
+</author>
+</sect1info>
 
 <title>Widgets</title>
 <para>

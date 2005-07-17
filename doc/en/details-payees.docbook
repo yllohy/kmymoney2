@@ -22,7 +22,13 @@
 </para>
 
 <para>
-! Add screen shot? !
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="payeeview.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
 </para>
 
 <sect1 id="details.payees.list"><title id="details.payees.list.title">Payees List</title>
@@ -31,9 +37,23 @@
   A list of payees is on the left side of this screen. The payee list is sorted alphabetically. To sort in reverse alphabetical order, click on the Name title at the top of the list.
 </para>
 
+<sect2><title>Adding a Payee</title>
 <para>
-  To remove a payee, right-click the payee name and select "Delete payee". You will not be able to delete a payee unless all the transactions associated with that particular payee has been removed.  To add a payee, right-click on any payee name and choose "New payee". To rename a payee, simply double-click on a payee name and the name becomes editable. Changing the name will affect the payee name in all transaction entries. 
+  To add a payee, right-click on any payee name and choose "New payee". To rename a payee, simply double-click on a payee name and the name becomes editable. Changing the name will affect the payee name in all transaction entries. 
 </para>
+</sect2>
+
+<sect2><title>Renaming a Payee</title>
+<para>
+  To rename a payee, simply double-click on a payee name and the name becomes editable. Changing the name will affect the payee name in all transaction entries. 
+</para>
+</sect2>
+
+<sect2><title>Deleting a Payee</title>
+<para>
+  To remove a payee, right-click the payee name and select "Delete payee". You will not be able to delete a payee unless all the transactions associated with that particular payee has been removed.
+</para>
+</sect2>
 
 </sect1>
 

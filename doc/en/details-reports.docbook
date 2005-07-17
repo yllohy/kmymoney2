@@ -146,12 +146,10 @@
 
 </sect2>
 
-<!-- I need the find transaction dialog decl.ui to see all these tabs -->
-
-<sect2><title>Accounts Tab</title><para>&hellip;</para></sect2>
-<sect2><title>Categories Tab</title><para>&hellip;</para></sect2>
-<sect2><title>Payees Tab</title><para>&hellip;</para></sect2>
-<sect2><title>Text Tab</title><para>&hellip;</para></sect2>
+<sect2><title>Other Tabs</title>
+<para>The other tabs in this dialog are the same as in the Search Transactions interface.  
+Please refer to the <link linkend="details.search">documentation</link> on that interface for details on the other tabs.</para>
+</sect2>
 
 </sect1>
 

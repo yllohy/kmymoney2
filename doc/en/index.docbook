@@ -9,7 +9,6 @@
 	<!ENTITY introduction SYSTEM "introduction.docbook">
 	<!ENTITY firsttime SYSTEM "firsttime.docbook">
 	<!ENTITY whatsnew SYSTEM "whatsnew.docbook">
-	<!ENTITY details-files SYSTEM "details-files.docbook">
 	<!ENTITY details-institutions SYSTEM "details-institutions.docbook">
 	<!ENTITY details-accounts SYSTEM "details-accounts.docbook">
 	<!ENTITY details-categories SYSTEM "details-categories.docbook">
@@ -26,10 +25,8 @@
 	<!ENTITY details-widgets SYSTEM "details-widgets.docbook">
 	<!ENTITY details-search SYSTEM "details-search.docbook">
 	<!ENTITY details-formats SYSTEM "details-formats.docbook">
-	<!ENTITY details-integrity SYSTEM "details-integrity.docbook">
 	<!ENTITY details-hbciofx SYSTEM "details-hbciofx.docbook">
 	<!ENTITY reference SYSTEM "reference.docbook">
-	<!ENTITY otherdoc SYSTEM "otherdoc.docbook">
 	<!ENTITY credits SYSTEM "credits.docbook">
 ]>
 
@@ -87,7 +84,6 @@
 	</affiliation>
 </author>
 
-
 <author>
 	<firstname>Roger</firstname>
 	<surname>Lum</surname>
@@ -121,8 +117,8 @@ Please respect the format of the date (DD/MM/YYYY) and of the version
 (V.MM.LL), it could be used by automation scripts.
 Do NOT change these in the translation. -->
 
-<date>05/13/2005</date>
-<releaseinfo>0.7</releaseinfo>
+<date>07/16/2005</date>
+<releaseinfo>0.8</releaseinfo>
 
 <!-- Abstract about this handbook -->
 
@@ -131,7 +127,7 @@ Do NOT change these in the translation. -->
 &kappname;, the personal finances manager for KDE.
 </para>
 <para>
-  This handbook describes &kappname; version 0.7.
+  This handbook describes &kappname; version 0.8.
 </para>
 </abstract>
 
@@ -153,9 +149,8 @@ Do NOT change these in the translation. -->
 	the main book
 -->
 &introduction;
-&firsttime;
 &whatsnew;
-&details-files;
+&firsttime;
 &details-institutions;
 &details-accounts;
 &details-categories;
@@ -171,9 +166,7 @@ Do NOT change these in the translation. -->
 &details-settings;
 &details-search;
 &details-formats;
-&details-integrity;
 &reference;
-&otherdoc;
 &credits;
 
 &documentation.index;

@@ -2,6 +2,14 @@
 <chapterinfo>
 <authorgroup>
 <author>
+	<firstname>Michael</firstname>
+	<othername>T.</othername>
+	<surname>Edwardes</surname>
+	<affiliation>
+		<address><email>mte@users.sourceforge.net</email></address>
+	</affiliation>
+</author>
+<author>
 <firstname>Roger</firstname>
 <surname>Lum</surname>
 <affiliation><address><email>rogerlum@gmail.com</email></address></affiliation>
@@ -25,20 +33,234 @@
   Income and Expense lists the categories that each transaction is filed under and provides similar functionality as the Categories screen.  The options and features involving Income and Expense accounts are described in detail in the upcoming Categories chapter. The rest of this chapter will focus on Asset and Liability account functionality.
 </para>
 
+<sect1 id="details.accounts.create"><title>Creating an Account</title>
+
+<para>To create an account using the accounts view click on the Accounts icon in the view selector and then right click on the Asset tree icon in the right hand view and select <guimenuitem>New account</guimenuitem> from the popup menu.  The Asset tree holds all of your accounts that are an asset.  Assets, and all the other account types, are discussed in more detail later in this manual.</para>
+
+<sect2>
+<title>The institution (Bank) name</title>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accwiz1.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+	
+	The first step involves setting an institution for the account.  If this is not a bank account then the step can be skipped by pressing the <guibutton>Next</guibutton> button.  If this account is a bank account or you wish to create a 'dummy' institution then click on the <guibutton>New Institution</guibutton> button.
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="newinst.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+	
+	Only the name is required in the New Institution dialog, all other fields are optional.
+</para>
+
+<para>
+	As with the personal information dialog, this data is not currently used by &kappname; but will be required by future releases for certain features.  Once you have entered the name click on <guibutton>OK</guibutton> to select the institution or click on <guibutton>Cancel</guibutton> to not use an institution for this account.  To select an existing institution simply click on the institution drop down list.
+</para>
+
+<para>
+	Enter an institution if needed and click on <guibutton>Next</guibutton>.
+</para>
+</sect2>
+
+<sect2>
+<title>Account type</title>
+
+<para>
+	<screenshot>
+	<screeninfo>Schedule View</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accwiz2.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+	From the next page you can select an account type.  Seven choices are displayed:
+</para>
+
+<variablelist>
+	<varlistentry><term>Current</term><listitem><para>A normal current account, the type you get with any high street bank.</para></listitem></varlistentry>
+	<varlistentry><term>Savings</term><listitem><para>A normal savings account, the type you get with any high street bank.</para></listitem></varlistentry>
+	<varlistentry><term>Credit Card</term><listitem><para>An account to represent your credit card.</para></listitem></varlistentry>
+	<varlistentry><term>Cash</term><listitem><para>A general purpose account typically used for accounts not held at a bank.</para></listitem></varlistentry>
+	<varlistentry><term>Loan</term><listitem><para>An account to manage a loan.</para></listitem></varlistentry>
+	<varlistentry><term>Asset</term><listitem><para>An account to manage assets.</para></listitem></varlistentry>
+	<varlistentry><term>Liability</term><listitem><para>An account to manage a liability such as money you borrowed.</para></listitem></varlistentry>
+</variablelist>
+
+<para>	
+	Select the account type and click on <guibutton>Next</guibutton>.
+	
+	Note, if you have selected a Loan account type please see the loans <link linkend="details.loans">section</link> for information on how to proceed.  Any other account type please read on.
+</para>
+</sect2>
+
+<sect2>
+<title>The account name and preference</title>
+
+<para>
+	You can set the account name in the next step.
+</para>	
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accwiz3.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>
+	Enter the account name, usually your title, initials and surname if it is a bank account, into the required fields.
+</para>
+
+<para>
+	To make this account your primary account check the tickbox labelled <guilabel>Preferred account</guilabel>  This account will then be used by default within &kappname; for your convenience.
+</para>
+
+<para>
+	To proceed to the next step click on <guibutton>Next</guibutton>.
+</para>
+</sect2>
+
+<sect2>
+<title>Account number</title>
+
+<para>
+	The next step prompts for the account number.
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accwiz4.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>	
+	If this is a bank account then enter the the account number in the required field.  If this not a bank account or you do not know the account number the field can be left blank.
+</para>
+
+<para>
+	To proceed to the next step click on <guibutton>Next</guibutton>.
+</para>
+</sect2>
+
+<sect2>
+<title>Opening date and balance</title>
+
+<para>
+	The final step, (except for Credit Card account types), is to set the opening date and balance for the account.
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accwiz5.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>	
+	If this is an existing bank account this information can be found on your statement otherwise the opening balance can be left at zero if it is a new account.
+</para>
+
+<para>
+	If this is not a Credit Card account then all required information has been gathered and you can add the account to &kappname; by clicking on the <guibutton>Finish</guibutton> button.  If you do not wish to add the account click on <guibutton>Cancel</guibutton>.
+</para>
+
+<sect3>
+<title>Credit card schedule</title>
+
+<para>
+	When creating a Credit Card account one more step is required; creating a <link linkend="details.schedules">scheduled transaction</link>.
+</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="accwiz6.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Account Wizard</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+	
+<para>
+	A transaction can be setup to automatically pay the balance for you.  To create the transaction make sure the tick box is checked and enter the required information.  Click on <guibutton>Finish</guibutton> to add the account and create the scheduled transaction if one was specified.
+</para>
+
+<para>
+	Click on <guibutton>Finish</guibutton> to create the account.
+</para>
+</sect3>
+</sect2>
+
+</sect1>
+
+<sect1 id="details.accounts.view">
+<title>Opening / viewing accounts</title>
+
+<para>
+	To open an account in the Ledgers view you can either click on the link to the account from the Home view, or click on the <guiicon><inlinemediaobject><imageobject><imagedata fileref="ledgers_view.png"/></imageobject></inlinemediaobject>Ledgers</guiicon> icon in the view selector and select the account in the drop down list at the top of the view.
+</para>
+</sect1>
+
 <sect1 id="details.accounts.edit"><title id="details.accounts.edit.title">Editing Account Information</title>
 
 <para>
-  To edit a particular account, right-click that account and choose "Edit". A details window will pop-up. This window allows you to change the name and start date of the account, associated banking institution, and the parent account. Changing the parent account is also possible in the main Accounts screen, by dragging the account and dropping it on a different parent account. In this window, you can also create a new banking institution and associate the account with that institution. 
+  To edit a particular account, right-click that account and choose <guimenuitem>Edit</guimenuitem>. A details window will pop-up. This window allows you to change the name and start date of the account, associated banking institution, and the parent account. Changing the parent account is also possible in the main Accounts screen, by dragging the account and dropping it on a different parent account. In this window, you can also create a new banking institution and associate the account with that institution. 
+</para>
+
+<para>Alternatively the account details can be changed through the <link linkend="details.ledgers">Ledgers</link> view via the <guibutton>Account Details</guibutton> button in the command frame.
 </para>
 
 </sect1>
 
-<sect1 id="details.accounts.other"><title id="details.accounts.other.title">Other Functionality</title>
+<sect1 id="details.accounts.delete">
+	<title>Deleting accounts</title>
 
 <para>
-  Right-clicking an account brings up a list of other possible functions, besides the edit function. Choosing "New account" steps you through the new account process, where you specify institution, type, date, name and opening balance. Selecting "Open" on an account switches you to either the Ledgers screen or Investments screen, depending on the account type. In this screen, you can enter transaction details. Selecting "Reconcile" opens up the Reconcile Wizard, which steps you through the process of comparing your bank account statements to your electronic entries. Deleting an account is only possible if there are no transactions associated with that account.  
+	To delete an account find the account you wish to delete in the accounts view and after right clicking on the entry to show the popup menu select <guimenuitem>Delete</guimenuitem> from the popup menu.
 </para>
-
 </sect1>
-
 </chapter>

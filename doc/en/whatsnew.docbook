@@ -12,9 +12,9 @@
 <listitem><para><link linkend="details.impexp.gnucash">GnuCash File Converter</link></para></listitem>
 <listitem><para><link linkend="details.impexp.ofx">OFX Import</link></para></listitem>
 <listitem><para><link linkend="details.impexp.webconnect">Web Connect</link></para></listitem>
-<listitem><para>An improved look and feel -including a new icon set</para></listitem> 
+<listitem><para><link linkend="firsttime.mainwindow">An improved look and feel -including a new icon set</link></para></listitem> 
 <listitem><para><link linkend="details.formats.encrypted">Encryption of the Data File</link></para></listitem>
-<listitem><para>Calculator Widget when entering values</para></listitem>
+<listitem><para><link linkend="reference.widgets">Widgets for entering dates, values, payees &amp; categories</link></para></listitem>
 <listitem><para><link linkend="details.investments.onlinequotes">Online Quotes for Stocks &amp; Currencies</link></para></listitem>
 <listitem><para><link linkend="details.categories.vat">Support for VAT</link></para></listitem>
 <listitem><para><link linkend="details.impexp.plugins">Ability to write importer plugins</link></para></listitem>

@@ -5,7 +5,17 @@
   * QIF Importer improvements for investments
     - Supports O and L fields (transaction fees and account transfer)
     - Disallow transfers INTO an investment account
-    
+  * Major revision of the handbook
+    - Pared down 'firsttime' section significantly
+    - Moved most 'firsttime' information down into the details
+    - Merged MTE's 'firsttime' information with Roger's sections
+    - Added Roger's latest: Menus reference
+    - Removed "Views" reference
+    - Removed "Integrity Checks"
+    - Removed "Other documentation"
+    - Removed my "Files" section. Tom's is better.
+    - Added links for the 2 remaining "whats new" items without links
+        
 2005-07-15 Robert Wadley <robntina@users.sourceforge.net>
   * Applied patches submitted by Darin Strait for the user manual.
 

@@ -397,21 +397,75 @@ the following sections:
 <sect2><title>How to import a QIF file</title>
 
 <para>
-	From the File menu, choose Import, and then QIF.
-	This brings up the QIF import dialog, which will ask you for the location of the file, and ask which QIF Profile you want to use.
+	To import a QIF file select <guimenuitem>Import</guimenuitem> <guimenuitem>Qif</guimenuitem> from the <guimenu>File</guimenu> menu.
+</para>
+	
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="qifopen.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>	
+	The resulting dialog prompts for the QIF filename allowing you to locate the file by clicking on the <guibutton>Browse</guibutton> button.
+</para>
+
+<para>
+If you want &kappname; to automatically enter new payees check the appropriate option otherwise &kappname; will prompt you each time a new payee is found.
+</para>
+
+<para>
 	The QIF Profile is very important, because all QIF files are different.
 	Please be sure it is set up correctly before continuing.
 	See the next section for more details on that.
 </para>
+
+<para>
+	Click on <guibutton>Import</guibutton> to import the QIF file.
+</para>
+
 <para>
 	The first thing the importer will do is ask you which account to import the transactions into.  
 	If there are transactions from multiple accounts in your file, you will be asked this question multiple times.
 </para>
+
 <para>
 	After importing, some of your transactions may be flashing red in the ledger.  
 	This is because they need to be assigned a category.  
 	The importer was not able to automatically assign a category based on your past transaction history.
 </para>
+</sect2>
+
+<sect2>
+<title>Confirming the imported transactions</title>
+<para>	
+	When &kappname; has finished importing the QIF transactions the account will be shown with the imported transactions listed in Yellow.
+</para>
+
+<para>
+Some of your transactions may be flashing red in the ledger.  
+	This is because they need to be assigned a category.  
+	The importer was not able to automatically assign a category based on your past transaction history.
+	</para>
+  
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="qifimportconfirm.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
+<para>	
+	Transaction data can be edited or even deleted if needed.  To edit a transaction simply double click on the entry or hit enter when the entry is highlighted.  Once finished click on <guibutton>OK</guibutton> to accept the imported transactions or <guibutton>Cancel</guibutton> to remove the imported transactions.
+</para>
+
 </sect2>
 
 <sect2><title>Importing Investments</title>
@@ -468,14 +522,6 @@ the following sections:
 <para>
   This can be a problem if you have transactions that look too similar but are actually different.
   In this case, you can try turning off the &quot;Attempt to match similar transactions&quot; option in the QIF profile.
-</para>
-</sect2>
-
-<sect2><title>Supported file chunks</title>
-
-<para>
-	<!-- I need the mmqifreader.cpp to determine these -->
-	&hellip;
 </para>
 </sect2>
 
