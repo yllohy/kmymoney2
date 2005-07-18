@@ -2,6 +2,7 @@
   * Fixed tab order in new investment wizard
   * Added help button to reconcile wizard
   * Released 0.7.4
+  * Bumped version to 0.7.5
 
 2005-07-18 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * GnuCash Reader - stand-alone anonymizer fixes
