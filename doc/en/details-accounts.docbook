@@ -251,6 +251,20 @@
   To edit a particular account, right-click that account and choose <guimenuitem>Edit</guimenuitem>. A details window will pop-up. This window allows you to change the name and start date of the account, associated banking institution, and the parent account. Changing the parent account is also possible in the main Accounts screen, by dragging the account and dropping it on a different parent account. In this window, you can also create a new banking institution and associate the account with that institution. 
 </para>
 
+<para>
+<screenshot>
+    	<screeninfo>Edit an account</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="account_edit.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Edit account information</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 <para>Alternatively the account details can be changed through the <link linkend="details.ledgers">Ledgers</link> view via the <guibutton>Account Details</guibutton> button in the command frame.
 </para>
 

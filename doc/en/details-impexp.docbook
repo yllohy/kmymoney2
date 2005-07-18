@@ -333,9 +333,7 @@ These will not necessarily, however, match precisely those reports available in 
 </sect2>
 
 <sect2><title>Selecting Importer Options</title>
-<para>
-(FIXME: screenshot of import options dialog)
-</para>
+
 <sect3><title>Investment Handling</title>
 <para>See above description.</para>
 </sect3>
@@ -366,9 +364,8 @@ the following sections:
 	<listitem><para>Inconsistencies in account types and actions taken</para></listitem>
 	<listitem><para>Details of suspect schedules</para></listitem>
 </itemizedlist>
-<para>
-(FIXME: Screenshot of report)
-</para>
+
+
 </sect2>
 </sect1>
 
@@ -434,10 +431,25 @@ If you want &kappname; to automatically enter new payees check the appropriate o
 </para>
 
 <para>
+<screenshot>
+	<screeninfo>QIF import report</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="qif_report.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>QIF import report</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
+<para>
 	After importing, some of your transactions may be flashing red in the ledger.  
 	This is because they need to be assigned a category.  
 	The importer was not able to automatically assign a category based on your past transaction history.
 </para>
+
 </sect2>
 
 <sect2>
@@ -447,20 +459,24 @@ If you want &kappname; to automatically enter new payees check the appropriate o
 </para>
 
 <para>
+<screenshot>
+	<screeninfo>QIF import verification</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="qifimportverify.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>QIF import verification</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
+<para>
 Some of your transactions may be flashing red in the ledger.  
 	This is because they need to be assigned a category.  
 	The importer was not able to automatically assign a category based on your past transaction history.
-	</para>
-  
-<!--para>
-	<screenshot>
-	<mediaobject>
-	<imageobject>
-	<imagedata fileref="qifimportconfirm.png" format="PNG" />
-	</imageobject>
-	</mediaobject>
-	</screenshot>
-</para-->
+</para>
 
 <para>	
 	Transaction data can be edited or even deleted if needed.  To edit a transaction simply double click on the entry or hit enter when the entry is highlighted.  Once finished click on <guibutton>OK</guibutton> to accept the imported transactions or <guibutton>Cancel</guibutton> to remove the imported transactions.

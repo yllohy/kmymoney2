@@ -18,17 +18,60 @@ At some point you will want to reconcile the transactions you have entered with 
 This will open the reconciliation wizard with the first page informing you of what will happen briefly.  Click on <guibutton>Next</guibutton> to actually start the wizard.
 </para>
 
+<para>
+<screenshot>
+	<screeninfo>Reconciliation wizard</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="reconcile1.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Reconciliation wizard</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 <sect2 id="details.reconcile.wizard.statement">
 <title>Statement details</title>
 <para>
 The statement date, starting balance and ending balance can be found in your statement.  Make sure that the figures match and click on the <guibutton>Next</guibutton> button.  If the figures do not match then enter the figures as listed on your statement and click on the <guibutton>Next</guibutton> button.
 </para>
+
+<para>
+<screenshot>
+	<screeninfo>Reconciliation wizard</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="reconcile2.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Reconciliation wizard</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 </sect2>
 
 <sect2 id="details.reconcile.wizard.interest">
 <title>Interest</title>
 <para>
 If the statement reconciliation is on a bank account or any account with interest and/or charges then enter these values in the required fields.  A category can be assigned to the transactions.
+</para>
+
+<para>
+<screenshot>
+	<screeninfo>Reconciliation wizard</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="reconcile3.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Reconciliation wizard</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
 </para>
 
 <para>
@@ -41,6 +84,21 @@ Click on <guibutton>Finish</guibutton> to start matching your statement to what 
 <para>
 	To mark a transaction as cleared click on the C column in the list view.  A transaction is cleared when it matches the transaction on your statement.  The command frame lists the statement amount and the cleared amount.  When the difference is zero then the account is reconciled and you can click the <guibutton>Finish</guibutton> button to save the transactions.  To postpone the reconciliation to a later time click on the <guibutton>Postpone</guibutton> button.  During the reconciliation any transaction can be edited to make it match the statement and new transactions can be created as usual.  After clicking on the <guibutton>Finish</guibutton> button the transactions are marked as reconciled and the C column changes to 'R' to reflect the change.
 </para>
+
+<para>
+<screenshot>
+	<screeninfo>Reconciliation wizard</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="reconcile4.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Reconciliation wizard</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 </sect2>
 </sect1>
 

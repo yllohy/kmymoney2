@@ -23,6 +23,21 @@
 <para>
 Once you create a &kappname; file you will be asked for the base currency. The base currency is the one that all income and expense categories use and that the reports will be based on. Usually, the base currency is the currency you use in your country. Once selected, the base currency cannot be changed. If not otherwise selected, new accounts will use this currency as the default.
 </para>
+
+<para>
+<screenshot>
+	<screeninfo>The select currency dialog</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="select_currency.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>select currency</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 </sect1>
 
 <sect1 id="details.currencies.accountsetup">

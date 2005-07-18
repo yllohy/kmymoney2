@@ -1,3 +1,6 @@
+2005-07-18 Robert Wadley <robntina@users.sourceforge.net>
+  * Added quite a few more screenshots to the user manual.
+
 2005-07-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Minor layout changes (use tags where possible)
   * Added Ctrl-Ins to create new transactions/splits

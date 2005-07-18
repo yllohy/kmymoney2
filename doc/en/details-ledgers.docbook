@@ -265,6 +265,20 @@ Which method you use to enter transactions is up to you and is a matter of perso
   After entering a sub-transaction, the bottom of the split editor shows how much of the total transaction is still unassigned. After entering all the sub-transactions, press the Finish button to save the entire transaction. If there are still unassigned amounts, you will be prompted to either return to editing the splits, change the total transaction amount, or leave part of the transaction unassigned. 
 </para> 
 
+<para>
+<screenshot>
+	<screeninfo>Split transactions</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="split_transaction.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Split transaction</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 </sect1>
 
 <sect1 id="details.ledgers.cleared"><title>Understanding the Cleared State</title>
@@ -276,6 +290,21 @@ the bank posts the transaction, the user can clear it and thus transform
 it to state (C). When you receive a statement from the bank, all cleared 
 transactions should be on the statement. 
 </para>
+
+<para>
+<screenshot>
+	<screeninfo>Understanding the cleared state</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="cleared_state.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>cleared state</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
 <para>
 When you <link linkend="details.reconcile"> reconcile your account </link>, 
 you actually mark the statements as cleared and check that 
@@ -306,14 +335,50 @@ least one split in state frozen it cannot be edited anymore.
 <para>
   Most of the settings are self explanatory. For clarity, several of the settings are explained below.
   <itemizedlist>
-  <listitem>
-    <para>Show transaction form - toggle to hide the transaction input area the bottom of this screen. Transactions can still be entered directly into an empty line at the end of the transaction list, through an automatic compact entry area.</para>
-  </listitem>
+
   <listitem>
     <para>Keep changes when selecting a different transaction/split - by selecting the next line in the transaction list or split editor, the changes are kept, instead of the default behaviour where you have to push the green check mark to save changes.</para>
   </listitem>
+
+  <listitem>
+    <para>Show transaction form - toggle to hide the transaction input area the bottom of this screen. Transactions can still be entered directly into an empty line at the end of the transaction list, through an automatic compact entry area.</para>
+  </listitem>
+
   </itemizedlist>
 </para> 
+
+<para>These images show the what direct transaction entry looks like compared to the transaction form.</para>
+<para>The transaction input form</para>
+
+<para>
+<screenshot>
+	<screeninfo>The transaction form</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="transactionform.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Transaction form</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
+
+<para>Transactions entered directly</para>
+
+<para>
+<screenshot>
+	<screeninfo>Transactions entered directly</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="transactionform-off.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Direct input</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
  
 </sect1>
 
@@ -321,6 +386,20 @@ least one split in state frozen it cannot be edited anymore.
 
 <para>
   Additional options are available from the Transaction Options menu, accessed either by right-clicking a transaction in the list or pressing the More button in the bottom input area. 
+</para>
+
+<para>
+<screenshot>
+	<screeninfo>The transaction options sub-menu</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="ledger_more.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Transaction options</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
 </para>
 
 <para>
