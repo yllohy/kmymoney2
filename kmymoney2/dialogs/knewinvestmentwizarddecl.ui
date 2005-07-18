@@ -496,9 +496,11 @@ The first step in this process requires to select the type of investment. The fo
     <tabstop>m_securityType</tabstop>
     <tabstop>m_investmentName</tabstop>
     <tabstop>m_investmentSymbol</tabstop>
+    <tabstop>m_fraction</tabstop>
     <tabstop>m_tradingMarket</tabstop>
     <tabstop>m_investmentIdentification</tabstop>
     <tabstop>m_tradingCurrencyEdit</tabstop>
+    <tabstop>m_onlineSourceCombo</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
