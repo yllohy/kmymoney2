@@ -1,3 +1,7 @@
+2005-07-18 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * GnuCash Reader - stand-alone anonymizer fixes
+                   - fix memory leak when deferred interval present
+
 2005-07-18 Robert Wadley <robntina@users.sourceforge.net>
   * Added quite a few more screenshots to the user manual.
 

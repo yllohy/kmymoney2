@@ -60,6 +60,7 @@ email                : mte@users.sourceforge.net
   #define PASS } catch (MyMoneyException *e) { throw e; }
 #else
   #include "mymoneymoney.h"
+  #include <qtextedit.h>
   #define i18n QObject::tr
   #define TRY
   #define CATCH
@@ -467,6 +468,7 @@ void GncPrice::endSubEl(GncObject *subObj) {
   case PRICEDATE: m_vpPriceDate = static_cast<GncDate *>(subObj); break;
   default: throw new MYMONEYEXCEPTION ("GncPrice rcvd invalid m_state");
   }
+  return;
   PASS
 }
 
@@ -661,7 +663,7 @@ void GncTemplateSplit::endSubEl(GncObject *subObj) {
 //************* GncSchedule********************************************
 GncSchedule::GncSchedule () {
   m_subElementListCount = END_Schedule_SELS;
-  static const QString subEls[] = {"sx:start", "sx:last", "sx:end", "gnc:freqspec"};
+  static const QString subEls[] = {"sx:start", "sx:last", "sx:end", "gnc:freqspec", "sx:deferredInstance"};
   m_subElementList = subEls;
   m_dataElementListCount = END_Schedule_DELS;
   static const QString dataEls[] = {"sx:name", "sx:autoCreate", "sx:autoCreateNotify",
@@ -673,10 +675,12 @@ GncSchedule::GncSchedule () {
   m_anonClassList = anonClasses;
   for (uint i = 0; i < m_dataElementListCount; i++) m_v.append (new QString (""));
   m_vpStartDate = m_vpLastDate = m_vpEndDate = NULL;
+  m_vpFreqSpec = NULL;
+  m_vpSchedDef = NULL;
 }
 
 GncSchedule::~GncSchedule () {
-  delete m_vpStartDate; delete m_vpLastDate; delete m_vpEndDate; delete m_vpFreqSpec;
+  delete m_vpStartDate; delete m_vpLastDate; delete m_vpEndDate; delete m_vpFreqSpec; delete m_vpSchedDef;
 }
 
 GncObject *GncSchedule::startSubEl() {
@@ -688,6 +692,7 @@ GncObject *GncSchedule::startSubEl() {
   case LASTDATE:
   case ENDDATE: next = new GncDate; break;
   case FREQ: next = new GncFreqSpec; break;
+  case DEFINST: next = new GncSchedDef; break;
   default: throw new MYMONEYEXCEPTION ("GncSchedule rcvd invalid m_state");
   }
   return (next);
@@ -701,6 +706,7 @@ void GncSchedule::endSubEl(GncObject *subObj) {
   case LASTDATE: m_vpLastDate = static_cast<GncDate *>(subObj); break;
   case ENDDATE: m_vpEndDate = static_cast<GncDate *>(subObj); break;
   case FREQ: m_vpFreqSpec = static_cast<GncFreqSpec *>(subObj); break;
+  case DEFINST: m_vpSchedDef = static_cast<GncSchedDef *>(subObj); break;
   }
   return ;
 }
@@ -754,6 +760,16 @@ void GncFreqSpec::terminate() {
   pMain->convertFreqSpec (this);
   return ;
 }
+
+//************* GncSchedDef********************************************
+GncSchedDef::GncSchedDef () {
+  // process ing for this sub-object is undefined at the present time
+  m_subElementListCount = 0;
+  m_dataElementListCount = 0;
+}
+
+GncSchedDef::~GncSchedDef () {}
+
 /************************************************************************************************
                          XML Reader
 ************************************************************************************************/
@@ -874,11 +890,12 @@ bool XmlReader::characters (const QString &data) {
     m_co->storeData (pData); //go store it
 #ifdef _GNCFILEANON
     QString anonData = m_co->getData ();
-    if (!anonData.isEmpty()) {
-      pMain->oStream << anonData; // write anonymized data
-    } else {
-      pMain->oStream << pData; // write original data
-    }
+    if (anonData.isEmpty()) anonData = pData;
+    // there must be a Qt standard way of doing the following but I can't ... find it
+    anonData.replace ('<', "&lt;");
+    anonData.replace ('>', "&gt;");
+    anonData.replace ('&', "&amp;");
+    pMain->oStream << anonData; // write original data
     lastType = 1;
 #endif // _GNCFILEANON
   }
@@ -1603,6 +1620,11 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
       endDate = incrDate (endDate, vi[i].interval, vi[i].intervalCount);
     }
     sc.setEndDate(endDate);
+  }
+  // Check for sched deferred interval. Don't know how/if we can handle it, or even what it means...
+  if (gsc->getSchedDef() != NULL) {
+    // FIXME: we really need to post a specific error message here, but we're on a string freeze for 0.8. Do it for 1.0
+    m_suspectSchedule = true;
   }
   // payment type, options
   sc.setPaymentType((MyMoneySchedule::paymentTypeE)MyMoneySchedule::STYPE_OTHER);

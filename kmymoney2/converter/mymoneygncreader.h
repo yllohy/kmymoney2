@@ -497,6 +497,7 @@ private:
 };
 // ************* GncSchedule********************************************
 class GncFreqSpec;
+class GncSchedDef;
 class GncSchedule : public GncObject {
 public:
   GncSchedule ();
@@ -521,9 +522,10 @@ protected:
   const QDate endDate() const 
     {QDate x = QDate(); return (m_vpEndDate == NULL ? x : m_vpEndDate->date());};
   const GncFreqSpec *getFreqSpec() const { return (m_vpFreqSpec);};
+  const GncSchedDef *getSchedDef() const { return (m_vpSchedDef);};
 private:
   // subsidiary objects/elements
-  enum ScheduleSubEls {STARTDATE, LASTDATE, ENDDATE, FREQ, END_Schedule_SELS };
+  enum ScheduleSubEls {STARTDATE, LASTDATE, ENDDATE, FREQ, DEFINST, END_Schedule_SELS };
   virtual GncObject *startSubEl();
   virtual void endSubEl(GncObject *);
   virtual void terminate();
@@ -532,6 +534,7 @@ private:
                         NUMOCC, REMOCC, TEMPLID, END_Schedule_DELS };
   GncDate *m_vpStartDate, *m_vpLastDate, *m_vpEndDate;
   GncFreqSpec *m_vpFreqSpec;
+  GncSchedDef *m_vpSchedDef;
 };
 // ************* GncFreqSpec********************************************
 class GncFreqSpec : public GncObject {
@@ -551,6 +554,18 @@ private:
   enum FreqSpecDataEls {INTVT, MONTHLY, DAILY, WEEKLY, INTVI, INTVO, INTVD, END_FreqSpec_DELS};
   virtual void terminate();
   mutable QPtrList<GncObject> m_fsList;
+};
+
+// ************* GncSchedDef********************************************
+// This is a sub-object of GncSchedule, (sx:deferredInstance) function currently unknown
+class GncSchedDef : public GncObject {
+  public:
+    GncSchedDef ();
+    ~GncSchedDef();
+  protected:
+    friend class MyMoneyGncReader;
+  private:
+  // subsidiary objects/elements
 };
 
 // ****************************************************************************************
