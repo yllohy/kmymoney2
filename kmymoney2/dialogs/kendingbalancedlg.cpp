@@ -24,11 +24,8 @@
 // KDE Includes
 
 #include <kglobal.h>
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
+#include <kapplication.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -64,6 +61,11 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
     showPage(m_pagePreviousPostpone);
   }
 
+  // We don't need to add the default into the list (see ::help() why)
+  // m_helpAnchor[m_startPageCheckings] = QString("");
+  m_helpAnchor[m_interestChargeCheckings] = QString("details.reconcile.wizard.interest");
+  m_helpAnchor[m_statementInfoPageCheckings] = QString("details.reconcile.wizard.statement");
+
   m_previousBalance->loadText(MyMoneyMoney(value).formatMoney());
 
   value = account.value("statementBalance");
@@ -85,9 +87,6 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
   removePage(m_startPageLoan);
   removePage(m_checkPaymentsPage);
   removePage(m_adjustmentTransactionPage);
-
-  // FIXME: we need the online help first
-  helpButton()->hide();
 
   // connect the signals with the slots
   connect(m_interestEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished(void)));
@@ -192,6 +191,14 @@ const MyMoneyTransaction KEndingBalanceDlg::createTransaction(const int sign, kM
   return t;
 }
 
+void KEndingBalanceDlg::help(void)
+{
+  QString anchor = m_helpAnchor[currentPage()];
+  if(anchor.isEmpty())
+    anchor = QString("details.reconcile.whatis");
+
+  kapp->invokeHelp(anchor);
+}
 
 KEndingBalanceLoanDlg::KEndingBalanceLoanDlg(const MyMoneyAccount& account, QWidget *parent, const char *name)
  : KEndingBalanceDlgDecl(parent, name, true),
@@ -215,9 +222,6 @@ KEndingBalanceLoanDlg::KEndingBalanceLoanDlg(const MyMoneyAccount& account, QWid
   removePage(m_statementInfoPageCheckings);
   removePage(m_pagePreviousPostpone);
   removePage(m_interestChargeCheckings);
-
-  // FIXME: we need the online help first
-  helpButton()->hide();
 
   // connect the signals with the slots
   connect(m_amortizationTotalEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished(void)));
@@ -405,6 +409,15 @@ const MyMoneyTransaction KEndingBalanceLoanDlg::adjustmentTransaction(void) cons
     }
   }
   return t;
+}
+
+void KEndingBalanceLoanDlg::help(void)
+{
+  QString anchor = m_helpAnchor[currentPage()];
+  if(anchor.isEmpty())
+    anchor = QString("details.reconcile.whatis");
+
+  kapp->invokeHelp(anchor);
 }
 
 #include "kendingbalancedlg.moc"

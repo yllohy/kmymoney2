@@ -65,9 +65,11 @@ protected:
 
 protected slots:
   void slotCheckPageFinished(void);
+  void help(void);
 
 private:
   MyMoneyAccount m_account;
+  QMap<QWidget*, QString>         m_helpAnchor;
 };
 
 /**
@@ -111,9 +113,11 @@ public slots:
 
 protected slots:
   void slotCheckPageFinished(void);
+  void help(void);
 
 private:
   MyMoneyAccountLoan m_account;
+  QMap<QWidget*, QString>         m_helpAnchor;
 };
 
 #endif
