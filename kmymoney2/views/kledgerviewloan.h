@@ -162,14 +162,10 @@ protected slots:
 
   /**
     * Calling this slot opens the split dialog with the current transaction
-    * loaded.
+    * loaded. If the user interface is not in edit mode, slotStartEdit()
+    * will be called.
     */
   virtual void slotOpenSplitDialog(void);
-
-  /**
-    * Calling this slot starts editing and opens the split dialog
-    */
-  virtual void slotStartEditSplit(void);
 
   void reloadEditWidgets(const MyMoneyTransaction& t);
 

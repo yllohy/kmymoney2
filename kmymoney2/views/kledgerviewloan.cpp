@@ -251,7 +251,7 @@ void KLedgerViewLoan::createMoreMenu(void)
   // and now the specific entries for checkings/savings etc.
   KIconLoader *kiconloader = KGlobal::iconLoader();
 
-  m_moreMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
+  m_moreMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotOpenSplitDialog()),
       QKeySequence(), -1, 1);
   m_moreMenu->insertItem(kiconloader->loadIcon("goto", KIcon::Small),
                             i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
@@ -268,7 +268,7 @@ void KLedgerViewLoan::createContextMenu(void)
   // and now the specific entries for checkings/savings etc.
   KIconLoader *kiconloader = KGlobal::iconLoader();
 
-  m_contextMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotStartEditSplit()),
+  m_contextMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotOpenSplitDialog()),
       QKeySequence(), -1, 2);
   m_contextMenu->insertItem(kiconloader->loadIcon("goto", KIcon::Small),
                             i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
@@ -804,7 +804,6 @@ void KLedgerViewLoan::slotConfigureMoreMenu(void)
   int gotoPayeeId = m_moreMenu->idAt(2);
   int markAsId = m_moreMenu->idAt(4);
   int moveToId = m_moreMenu->idAt(5);
-  m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotStartEditSplit()));
   m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
 
   m_moreMenu->changeItem(splitEditId, i18n("Edit splits ..."));
@@ -818,9 +817,7 @@ void KLedgerViewLoan::slotConfigureMoreMenu(void)
       m_moreMenu->setItemEnabled(gotoPayeeId, false);
     }
 
-    if(KMyMoneyUtils::transactionType(*m_transactionPtr) != KMyMoneyUtils::Transfer) {
-      m_moreMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
-    } else {
+    if(KMyMoneyUtils::transactionType(*m_transactionPtr) == KMyMoneyUtils::Transfer) {
       QString dest;
       try {
         MyMoneySplit split = m_transaction.splitByAccount(m_account.id(), false);
@@ -851,7 +848,6 @@ void KLedgerViewLoan::slotConfigureContextMenu(void)
   int deleteId = m_contextMenu->idAt(8);
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotStartEditSplit()));
   m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
 
   m_contextMenu->changeItem(splitEditId, i18n("Edit splits ..."));
@@ -866,9 +862,7 @@ void KLedgerViewLoan::slotConfigureContextMenu(void)
       m_contextMenu->changeItem(gotoPayeeId, i18n("Goto payee/receiver"));
       m_contextMenu->setItemEnabled(gotoPayeeId, false);
     }
-    if(KMyMoneyUtils::transactionType(*m_transactionPtr) != KMyMoneyUtils::Transfer) {
-      m_contextMenu->connectItem(splitEditId, this, SLOT(slotStartEditSplit()));
-    } else {
+    if(KMyMoneyUtils::transactionType(*m_transactionPtr) == KMyMoneyUtils::Transfer) {
       QString dest;
       try {
         MyMoneySplit split = m_transaction.splitByAccount(m_account.id(), false);
@@ -894,6 +888,9 @@ void KLedgerViewLoan::slotConfigureContextMenu(void)
 
 void KLedgerViewLoan::slotOpenSplitDialog(void)
 {
+  if(!isEditMode())
+    slotStartEdit();
+
   bool isDeposit = false;
   bool isValidAmount = false;
 
@@ -919,12 +916,6 @@ void KLedgerViewLoan::slotOpenSplitDialog(void)
   delete dlg;
 
   m_editMemo->setFocus();
-}
-
-void KLedgerViewLoan::slotStartEditSplit(void)
-{
-  slotStartEdit();
-  slotOpenSplitDialog();
 }
 
 void KLedgerViewLoan::slotAccountDetail(void)
