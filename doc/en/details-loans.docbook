@@ -1,6 +1,77 @@
 <chapter id="details.loans">
-<title>Loans - Under development - Darin Strait</title>
+
+<chapterinfo>
+<authorgroup>
+<author>
+<firstname>Darin</firstname>
+<surname>Strait</surname>
+<affiliation><address><email>darin.strait@ashdar-partners.com</email></address></affiliation>
+</author>
+</authorgroup>
+<date>2005-07-12</date>
+<releaseinfo>0.7</releaseinfo>
+</chapterinfo>
+
+<title>Loans</title>
+
+<sect1 id="details.loans.general">
+<title>General</title>
+
 <para>
+This section is intended to provide a very brief overview of loans. 
 </para>
+
+<para>
+A loan is an agreement where a borrower receives money from a lender and agrees to return the money at some future date. In personal finance, it always seems that a person always borrows more than he or she lends. This means that you will generally be the borrower and a mortgage company or auto loan firm will generally be the lender. 
+</para>
+
+<para>
+&kappname; does allow you to borrow money (you are the borrower) or to lend money (you are the lender). In the circumstance where you loan money to a family member or a friend, you can use &kappname; to track this loan as well. This guide will generally talk about borrowing from some entity, but the topics discussed here should apply equally well to loans that you might make to someone else. The largest difference between borrowing and lending money is that an expense category will be used when borrowing money and an income category will be used when lending money.
+</para>
+
+<para>
+The amount that is lent out is called the loan amount (often called the principle). 
+</para>
+
+<para>
+At some point in time, the borrower will return the entire loan amount to the lender. This is generally done by periodically paying a small portion of the entire amount. The sum of all of these payments will add up the original loan amount.  &kappname; calls these payments amortization payments, but they may also be referred to as principle payments. The &quot;lifetime&quot; of the loan is called the &quot;term&quot; of the loan. Terms are generally expressed in months or years, but can be expressed in terms of the number of payments. 
+</para>
+
+<para>
+The frequency with that loan payments are required to be made with is called a loan's period. Examples of period might be weekly, monthly quarterly or yearly. In the United States, the most common period for home and auto loans is monthly.
+</para>
+
+<para>
+(For the purposes of this example, I will ignore interest payments, which are described below.) For an example, you might borrow $3,600.00 for a new auto and agree to pay the bank one payment of $100.00 each month for 36 months. The loan amount is $3,600.00. The term of the loan is 36 months or 3 years.  Since there will be one payment per month, the term of the loan could also be described as 36 payments. The period of the loan is one month since payments will be made once each month. The amortization payment would be $100.00. 
+</para>
+
+<para>
+Generally, the borrower will have to pay the lender extra money for the priviledge of having the use of this money. This cost is called interest. Interest is expressed as a percentage of the amount of the loan. Interest rates can be fixed, where the rate does not change over the lifetime of the loan, or variable, where the interest rate can change over time. In the United States, variable interest rate loans are most often found in home loans and are often called "balloon" loans.
+</para>
+
+<para>
+The periodic payment is the sum of the amortization and interest for a period.
+</para>
+
+<para>
+A loan schedule is a table that shows the date that a payment should be made and the amount of each payment that must be made.
+</para>
+
+<para>
+Optionally, a loan can be associated with a particular institution. If you are borrowing from a mortgage company or a car loan company, you should create an institution entry that describes this firm and associate the institution with your loan. If you are borrowing from your Uncle Ted, there is no requirement to set up an institution.
+</para>
+
+</sect1>
+
+
+<sect1 id="details.loans.creation">
+<title>Creation of New Loans</title>
+
+<para>
+In &kappname;, a loan is a type of account. Therefore, to create a new loan, you begin by selecting "New Account" from the "Account" menu. You should then continue by answering the questions that the wizard poses to you.
+</para>
+
+</sect1>
+
 </chapter>
 

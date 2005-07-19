@@ -59,10 +59,39 @@ Optionally, the exchange rate is saved in the price data base once entered by th
 </sect1>
 
 <sect1 id="details.currencies.prices">
-<title>Entering exchange rates for currencies</title>
+<title>Exchange rates for currencies</title>
+<sect2><title>Entering prices manually</title>
 <para>
-The price database editor allows you to enter exchange rates between currencies or prices for investments.
+The price database editor allows you to enter exchange rates between currencies or prices for investments.  You can pull it up using the <menuchoice>
+<guimenu>Tools</guimenu>
+<guimenuitem>Prices...</guimenuitem> </menuchoice> menu option.
 </para>
+<para>Screen Shot of the Price Editor</para>
+<para>
+In &kappname; a &quot;Price&quot; is the price of one currency in terms of another.  
+For example, as I write this, the price of USD in EUR is 0.83.  
+That is, 1 USD costs 0.83 EUR.  
+In the price editor the first currency is the one being bought or sold, and the second one is the currency used to buy or sell it.
+</para>
+<para>
+When you press the <guibutton>New</guibutton> button, you get the New Price Entry dialog.  
+Enter the currency being bought or sold (USD in the example above) in the Security field.
+Enter the currency used to buy or sell it (EUR in the example above) in the Currency field.
+Enter the effective date of the price in the Date field.
+</para>
+<para>Screen Shot of the new price entry dialog</para>
+</sect2>
+
+<sect2><title>Online currency updates</title>
+<para>
+&kappname; will fetch currency conversions from the web.  
+Once you have entered a single price for a pair of currencies, the online quote feature will always list 
+that pair amongst its options.
+</para>
+<para>
+See the section on <link linkend="details.investments.onlinequotes">Online Price Quotes</link> in the Investments chapter for more details.
+</para>
+</sect2>
 </sect1>
 
 </chapter>

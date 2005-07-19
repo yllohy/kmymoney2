@@ -38,6 +38,9 @@ A stock on the NYSE would be in US dollars, and one on the Australian markets wo
 <para>
 Investment Accounts hold a collection of investments.  
 Transactions, such as buys and sells, of those investments are contained in an Investment Account.
+All transactions in an Investment account must relate to a specific investment.
+There is no separate &quot;cash balance&quot; in an investment account.
+For that, you need a Brokerage Account.
 </para>
 </sect2>
 
@@ -111,9 +114,106 @@ When you create an Investment Account, you have the option of creating an associ
 </para>
 </sect1>
 
-<sect1 id="details.investments.ledger"><title>Investment Ledger</title><para>&hellip;</para></sect1>
-<sect1 id="details.investments.foreign"><title>Working With Foreign Investments</title><para>&hellip;</para></sect1>
-<sect1 id="details.investments.prices"><title>Updating Prices</title><para>&hellip;</para></sect1>
+<sect1 id="details.investments.ledger"><title>Investment Transactions</title>
+<para>
+Screen shot of investment transaction form (at the bottom of the ledger)
+</para>
+<para>
+The investment ledger is almost the same as the <link linkend="details.ledgers">ledger</link> for other kinds of accounts.
+Investment transactions have some additional elements:
+</para>
+<orderedlist numeration="upperalpha">
+	<listitem><para>Activity</para></listitem>
+	<listitem><para>Symbol Name</para></listitem>
+	<listitem><para>Shares &amp; Price</para></listitem>
+	<listitem><para>Fees</para></listitem>
+	<listitem><para>Account</para></listitem>
+</orderedlist>
+
+<sect2><title>Activity</title>
+<para>
+The Activity for an investment transaction describes what action is happening to the stock.
+The following activities are supported:
+</para>
+
+<itemizedlist>
+	<listitem><para>Buy/Sell.  Use to record purchases or sales of individual investments.  This action requires an account to transfer the funds from/to.</para></listitem>
+	<listitem><para>Dividend/Yield.  Also known as a &quot;Cash Dividend&quot;, this action is used for when you receive an interest or dividend disbersement from your investment. This action requires an account to transfer the funds from/to.</para></listitem>
+	<listitem><para>Reinvest Dividend.  This is a dividend where the proceeds are re-invested back into the investment.</para></listitem>
+	<listitem><para>Add/Remove Shares.  A simple increase or decrease in your balance.  This should be used very rarely, because it's uncommon for shares to just show up in your account (or disappear) unless it's a purchase or a sale.</para></listitem>
+</itemizedlist>
+
+</sect2>
+
+<sect2><title>Symbol Name</title>
+<para>
+Each investment transaction must be associated with an indvidual investment.
+Choose the investment name when adding or editing a transaction.
+The symbol will be displayed when viewing it.
+</para>
+</sect2>
+
+<sect2><title>Shares, Price &amp; Total Amount</title>
+<para>
+For buy, sell, and cash dividend transactions, the number of shares, the price, and the total amount of the transaction must be established.
+You can enter any two of these, and &kappname; will calculate the third.
+It's usually best to enter just just the total amount and the shares, because these are the known facts of the transaction.
+The price can be calculated from these.
+</para>
+</sect2>
+
+<sect2><title>Fees</title>
+<para>
+With many investment transactions you can include the fees (or commission) you paid the broker.
+There is a space for the amount of the fee and the category to which you wish to assign it.
+</para>
+</sect2>
+
+<sect2><title>Account</title>
+<para>
+For any transactions which generate or require money, you must enter the account where the money is transferred from/to.
+If your investment account has an associated brokerage account, it's usually best to transfer the funds there.
+</para>
+</sect2>
+
+</sect1>
+
+<sect1 id="details.investments.foreign"><title>Working With Foreign Investments</title>
+<para>
+Now that &kappname; supports multiple currencies and investments, you'd probably like to combine the two.
+Doing so requires extra care.
+As noted above, when you added an investment, you had to specify its trading currency. 
+This might not be the same as your base currency, and it also might not be the same as the account in which you hold the stock or the account where you transfer your funds to/from for buys/sells.
+</para>
+<para>
+Consider a hypothetical case.  
+Your base currency is USD.
+You have an investment account in EUR, and a brokerage account also in EUR.
+In that account, you hold shares of TietoEnator, which is traded in SEK.
+</para>
+<para>
+When you enter a buy transaction on this investement, use SEK as the currency.  
+So if you buy 100 shares at a price of SEK 248.00, for a total of SEK 24,800.00, enter these values in the transaction.
+</para>
+<para>Screen shot of the following warning</para>
+<para>
+When you choose the brokerage account to fund the transfer, you'll be warned that it's in a different currency.
+</para>
+<para>Screen shot of the price prompt</para>
+<para>
+When you finish the transaction, you will be prompted for a price update to the investment account's currency, in this case, SEK -> EUR.
+</para>
+<para>
+If you then switch over to the brokerage account, you will see the transaction in EUR, or 2,430.48 in this case.
+</para>
+</sect1>
+<sect1 id="details.investments.prices"><title>Updating Prices</title>
+<para>
+You can enter prices for your investments using the same
+<link linkend="details.currencies.prices">Price Editor</link> as used for currencies.  
+Or you can fetch them electronically, using <link linkend="details.investments.onlinequotes">Online Price Quotes</link>.
+</para>
+</sect1>
 
 <sect1 id="details.investments.onlinequotes">
 
@@ -142,14 +242,8 @@ When you create an Investment Account, you have the option of creating an associ
 </para>
 <para>
 	To assign a quote source to an investment, navigate to the investment summary view for the account in which the security is held.
-	Edit the security by right-clicking it and selecting &quot;Edit&quot;.  
-	Choose the &quot;Quote Source&quot; tab.  
-	Pick the appropriate source from the drop-down menu.
-</para>
-<para>
-	To assign a quote source to a currency price, choose the price editor from the Tools menu.  
-	Select a currency pair, and edit it.
-	Choose the &quot;Quote Source&quot; tab.  
+	Edit the security by right-clicking it and selecting <guibutton>Edit</guibutton>.
+	Choose the <guibutton>Quote Source</guibutton> tab.  
 	Pick the appropriate source from the drop-down menu.
 </para>
 </sect2>
@@ -157,9 +251,13 @@ When you create an Investment Account, you have the option of creating an associ
 <sect2><title>Fetching Quotes</title>
 
 <para>
-	Typically, you will update the prices for all your investments and currencies at once.  
-	Choose the Online Price Quote option from the tools menu, and press &quot;Update All&quot;
+	Typically, you will update the prices for all your investments and currencies at once. 
+  Choose the   
+  <menuchoice>
+<guimenu>Tools</guimenu>
+<guimenuitem>Update Stock and Currency Prices...</guimenuitem> </menuchoice> menu option to bring up the online price quotes dialog.  Press <guibutton>Update All</guibutton> to fetch quotes for all investments and currencies in your &kappname; file.
 </para>
+<para>Screen shot of online price quotes dialog</para>
 </sect2>
 
 <sect2><title>Editing or Adding Quote Sources</title>
@@ -173,7 +271,7 @@ When you create an Investment Account, you have the option of creating an associ
 <para>
 	If you do feel up to the challenge, here's how it works.  
 	The quote sources are contained in the settings dialog.  
-	Choose &quot;Configure KMyMoney&quot; from the Tools menu.  
+	Choose &quot;Configure &kappname;&quot; from the Tools menu.  
 	From there, choose the &quot;Online Quotes&quot; section.  
 	You can choose an existing source to edit, or create a new one.  
 	When you are done with your changes, be sure to press the &quot;Update&quot; button before exiting the dialog.
@@ -203,6 +301,12 @@ When you create an Investment Account, you have the option of creating an associ
 	Two digit years are interpreted as being in the range of 1950-2049.
 </para>
 </sect2>
+</sect1>
+<sect1 id="details.investments.unimplemented"><title>Unimplemented Features</title>
+<para>
+Certain common features that are normally found with investments are not yet implemented in &kappname;.  
+These include:  Stock splits, derivatives (options, futures, etc), capital gains and tax reporting for investments.
+</para>
 </sect1>
 </chapter>
 
