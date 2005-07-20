@@ -1,10 +1,18 @@
+2005-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed auto increment of check number field to work with non-numeric
+    entries
+
 2005-07-18 Ace Jones <acejones@users.sourceforge.net>
   * More handbook changes
     - Explained the price editor
     - Finished investment documentation
     - Added lots of "Screen Shot" cues for Rob
     - Added Rob to the manual credits
-    
+
+2005-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow opening the split editor on new transactions when the
+    transaction form is not visible
+
 2005-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed tab order in new investment wizard
   * Added help button to reconcile wizard
