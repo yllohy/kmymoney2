@@ -1896,7 +1896,8 @@ const bool MyMoneyFile::checkNoUsed(const QCString& accId, const QString& no) co
 
 QString MyMoneyFile::highestCheckNo(const QCString& accId) const
 {
-  QString no(""); // don't use QString() as this will break QString::compare
+  unsigned64 lno = 0, cno;
+  QString no;
   MyMoneyTransactionFilter filter;
   filter.addAccount(accId);
   QValueList<MyMoneyTransaction> transactions = transactionList(filter);
@@ -1907,7 +1908,10 @@ QString MyMoneyFile::highestCheckNo(const QCString& accId) const
       // this account
       MyMoneySplit split = (*it_t).splitByAccount(accId, true /*match*/);
       if(!split.number().isEmpty()) {
-        if(QString::compare(split.number(), no) > 0) {
+        // non-numerical values stored in number will return 0 in the next line
+        cno = split.number().toULongLong();
+        if(cno > lno) {
+          lno = cno;
           no = split.number();
         }
       }
