@@ -1,8 +1,11 @@
+2005-07-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed crash when selecting print with no report selected
+
 2005-07-20 Ace Jones <acejones@users.sourceforge.net>
   * Fixed QIF importer to deal with reinvest dividend transactions that have
     fees associated with them.
-    
-2005-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+
+2005-07-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed auto increment of check number field to work with non-numeric
     entries
 

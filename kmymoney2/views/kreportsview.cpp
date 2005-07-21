@@ -110,7 +110,8 @@ KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& re
 
 void KReportsView::KReportTab::print(void)
 {
-  m_part->view()->print();
+  if(m_part && m_part->view())
+    m_part->view()->print();
 }
 
 void KReportsView::KReportTab::copyToClipboard(void)
@@ -383,26 +384,30 @@ void KReportsView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args *
 void KReportsView::slotPrintView(void)
 {
   KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
-  tab->print();
+  if(tab)
+    tab->print();
 }
 
 void KReportsView::slotCopyView(void)
 {
   KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
-  tab->copyToClipboard();
+  if(tab)
+    tab->copyToClipboard();
 }
 
 void KReportsView::slotSaveView(void)
 {
   KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
-  QString newName=KFileDialog::getSaveFileName(KGlobalSettings::documentPath(),i18n("*.csv|CSV files\n""*.html|HTML files\n""*.*|All files"), this, i18n("Save as..."));
+  if(tab) {
+    QString newName=KFileDialog::getSaveFileName(KGlobalSettings::documentPath(),i18n("*.csv|CSV files\n""*.html|HTML files\n""*.*|All files"), this, i18n("Save as..."));
 
-  if(!newName.isEmpty())
-  {
-    if(newName.findRev('.') == -1)
-      newName.append(".html");
+    if(!newName.isEmpty())
+    {
+      if(newName.findRev('.') == -1)
+        newName.append(".html");
 
-    tab->saveAs( newName );
+      tab->saveAs( newName );
+    }
   }
 }
 
@@ -410,34 +415,36 @@ void KReportsView::slotConfigure(void)
 {
   KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
 
-  MyMoneyReport report = tab->report();
-  if ( report.comment() == i18n("Default Report") )
-  {
-    report.setComment( i18n("Custom Report") );
-    report.setName( report.name() + i18n(" (Customized)") );
-  }
-
-  KReportConfigurationFilterDlg dlg(report);
-
-  if (dlg.exec())
-  {
-    MyMoneyReport newreport = dlg.getConfig();
-
-    // If this report has an ID, then MODIFY it, otherwise ADD it
-    if ( ! newreport.id().isEmpty() )
+  if(tab) {
+    MyMoneyReport report = tab->report();
+    if ( report.comment() == i18n("Default Report") )
     {
-      MyMoneyFile::instance()->modifyReport(newreport);
-      tab->modifyReport(newreport);
-      slotRefreshView();
-
-      m_reportTabWidget->changeTab( tab, newreport.name() );
-      m_reportTabWidget->showPage(tab);
+      report.setComment( i18n("Custom Report") );
+      report.setName( report.name() + i18n(" (Customized)") );
     }
-    else
+
+    KReportConfigurationFilterDlg dlg(report);
+
+    if (dlg.exec())
     {
-      MyMoneyFile::instance()->addReport(newreport);
-      new KReportListItem( m_reportListView, newreport );
-      addReportTab(newreport);
+      MyMoneyReport newreport = dlg.getConfig();
+
+      // If this report has an ID, then MODIFY it, otherwise ADD it
+      if ( ! newreport.id().isEmpty() )
+      {
+        MyMoneyFile::instance()->modifyReport(newreport);
+        tab->modifyReport(newreport);
+        slotRefreshView();
+
+        m_reportTabWidget->changeTab( tab, newreport.name() );
+        m_reportTabWidget->showPage(tab);
+      }
+      else
+      {
+        MyMoneyFile::instance()->addReport(newreport);
+        new KReportListItem( m_reportListView, newreport );
+        addReportTab(newreport);
+      }
     }
   }
 }
@@ -446,19 +453,21 @@ void KReportsView::slotDuplicate(void)
 {
   KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
 
-  MyMoneyReport dupe = tab->report();
-  dupe.setName( QString(i18n("Copy of %1")).arg(dupe.name()) );
-  if ( dupe.comment() == i18n("Default Report") )
-    dupe.setComment( i18n("Custom Report") );
-  dupe.setId(QCString());
+  if(tab) {
+    MyMoneyReport dupe = tab->report();
+    dupe.setName( QString(i18n("Copy of %1")).arg(dupe.name()) );
+    if ( dupe.comment() == i18n("Default Report") )
+      dupe.setComment( i18n("Custom Report") );
+    dupe.setId(QCString());
 
-  KReportConfigurationFilterDlg dlg(dupe);
-  if (dlg.exec())
-  {
-    dupe = dlg.getConfig();
-    MyMoneyFile::instance()->addReport(dupe);
-    new KReportListItem( m_reportListView, dupe );
-    addReportTab(dupe);
+    KReportConfigurationFilterDlg dlg(dupe);
+    if (dlg.exec())
+    {
+      dupe = dlg.getConfig();
+      MyMoneyFile::instance()->addReport(dupe);
+      new KReportListItem( m_reportListView, dupe );
+      addReportTab(dupe);
+    }
   }
 }
 
@@ -466,18 +475,20 @@ void KReportsView::slotDelete(void)
 {
   KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
 
-  MyMoneyReport report = tab->report();
-  if ( ! report.id().isEmpty() )
-  {
-    if ( QMessageBox::Ok == QMessageBox::warning(this,i18n("Delete Report?"),QString(i18n("Are you sure you want to delete %1?  There is no way to recover it!")).arg(report.name()), QMessageBox::Ok, QMessageBox::Cancel) )
+  if(tab) {
+    MyMoneyReport report = tab->report();
+    if ( ! report.id().isEmpty() )
     {
-      MyMoneyFile::instance()->removeReport(report);
-      slotClose(tab);
-      slotRefreshView();
+      if ( QMessageBox::Ok == QMessageBox::warning(this,i18n("Delete Report?"),QString(i18n("Are you sure you want to delete %1?  There is no way to recover it!")).arg(report.name()), QMessageBox::Ok, QMessageBox::Cancel) )
+      {
+        MyMoneyFile::instance()->removeReport(report);
+        slotClose(tab);
+        slotRefreshView();
+      }
     }
+    else
+      QMessageBox::warning(this,i18n("Delete Report?"),QString(i18n("Sorry, %1 is a default report.  You may not delete it.")).arg(report.name()), QMessageBox::Ok, 0);
   }
-  else
-    QMessageBox::warning(this,i18n("Delete Report?"),QString(i18n("Sorry, %1 is a default report.  You may not delete it.")).arg(report.name()), QMessageBox::Ok, 0);
 }
 
 void KReportsView::slotOpenReport(const QCString& id)
@@ -564,19 +575,23 @@ void KReportsView::slotOpenReport(QListViewItem* item)
 void KReportsView::slotToggleChart(void)
 {
   KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
-  tab->toggleChart();
+  if(tab)
+    tab->toggleChart();
 }
 
 void KReportsView::slotCloseCurrent(void)
 {
-  slotClose(m_reportTabWidget->currentPage());
+  if(m_reportTabWidget->currentPage())
+    slotClose(m_reportTabWidget->currentPage());
 }
 
 void KReportsView::slotClose(QWidget* w)
 {
   KReportTab* tab = dynamic_cast<KReportTab*>(w);
-  m_reportTabWidget->removePage(tab);
-  tab->setReadyToDelete(true);
+  if(tab) {
+    m_reportTabWidget->removePage(tab);
+    tab->setReadyToDelete(true);
+  }
 }
 
 void KReportsView::slotCloseAll(void)
