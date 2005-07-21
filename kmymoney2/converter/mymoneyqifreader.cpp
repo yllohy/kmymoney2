@@ -1019,15 +1019,6 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
   
   // 'O' field: Fees
   MyMoneyMoney fees = m_qifProfile.value('T', extractLine('O'));
-  if ( ! fees.isZero() )
-  {
-    MyMoneySplit s;
-    s.setMemo(i18n("(Fees) ") + memo);
-    s.setValue(fees);
-    s.setShares(fees);
-    s.setAccountId(findOrCreateExpenseAccount("_Fees"));
-    t.addSplit(s);
-  }
   
   // 'T' field: Amount
   MyMoneyMoney amount = m_qifProfile.value('T', extractLine('T'));
@@ -1131,8 +1122,8 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     QString incomeaccount = QString("_") + extractLine('N');
     s2.setAccountId(findOrCreateIncomeAccount(incomeaccount));
         
-    s2.setValue(-amount-fees);
-    s2.setShares(-amount-fees);
+    s2.setValue(-amount);
+    s2.setShares(-amount);
     t.addSplit(s2);
   }
   else if ( action == "div" || action == "intinc" || action == "cgshort" || action == "cgmid" || action == "cglong" || action == "rtrncap" )
@@ -1204,6 +1195,19 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
 
   t.addSplit(s1);
 
+  // The fees has to be added AFTER the interest, because 
+  // KLedgerViewInvestments::preloadInvestmentSplits expects the splits to be
+  // ordered this way.
+  if ( ! fees.isZero() )
+  {
+    MyMoneySplit s;
+    s.setMemo(i18n("(Fees) ") + memo);
+    s.setValue(fees);
+    s.setShares(fees);
+    s.setAccountId(findOrCreateExpenseAccount("_Fees"));
+    t.addSplit(s);
+  }
+  
   // If there is a brokerage account, add a final split to stash the -value of the
   // transaction there, if needed based on the type of transaction
 
