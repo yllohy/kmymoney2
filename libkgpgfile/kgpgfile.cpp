@@ -118,22 +118,27 @@ bool KGPGFile::open(int mode)
 {
   bool useOwnPassphrase = (getenv("GPG_AGENT_INFO") == 0);
 
+  // qDebug("KGPGFile::open(%d)", mode);
   m_errmsg.resize(1);
   if(isOpen())
     return false;
 
+  // qDebug("check filename empty");
   if(m_fn.isEmpty())
     return false;
 
   init();
   setMode(mode);
 
+  // qDebug("check valid access mode");
   if(!(isReadable() || isWritable()))
     return false;
 
   if(isWritable()) {
+    // qDebug("check recipient count");
     if(m_recipient.count() == 0)
       return false;
+    // qDebug("check access rights");
     if(!checkAccess(m_fn, W_OK))
       return false;
   }
@@ -169,14 +174,17 @@ bool KGPGFile::open(int mode)
       return false;
   }
 
+  // qDebug("starting GPG process");
   if(!startProcess(args))
     return false;
 
+  // qDebug("check GPG process running");
   if(!m_process)
     return false;
 
   if(isReadable() && useOwnPassphrase) {
-    if(writeBlock(pwd.data(), pwd.length()) == -1) {
+    // qDebug("Passphrase is '%s'", pwd.data());
+    if(_writeBlock(pwd.data(), pwd.length()) == -1) {
       // qDebug("Sending passphrase failed");
       return false;
     }
@@ -301,6 +309,11 @@ Q_LONG KGPGFile::writeBlock(const char *data, Q_ULONG maxlen)
   if(!isWritable())
     return EOF;
 
+  return _writeBlock(data, maxlen);
+}
+
+Q_LONG KGPGFile::_writeBlock(const char *data, Q_ULONG maxlen)
+{
   if(!m_process)
     return EOF;
   if(!m_process->isRunning())

@@ -132,6 +132,7 @@ protected slots:
 private:
   void init(void);
   const bool startProcess(const QStringList& args);
+  Q_LONG _writeBlock(const char *data, Q_ULONG maxlen);
 
 private:
   QString m_fn;

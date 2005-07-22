@@ -1,3 +1,7 @@
+2005-07-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem when opening an encrypted file w/o using the gpg-agent
+    This was broken due to the changes added on 2005-07-15
+
 2005-07-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed crash when selecting print with no report selected
 
