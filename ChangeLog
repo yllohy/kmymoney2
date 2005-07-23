@@ -1,3 +1,7 @@
+2005-07-23 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * GnuCash Reader - handle Currency account type
+                   - update documentation
+
 2005-07-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem when opening an encrypted file w/o using the gpg-agent
     This was broken due to the changes added on 2005-07-15

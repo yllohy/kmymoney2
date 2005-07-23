@@ -137,6 +137,9 @@ empty accounts.
     <entry>CASH</entry><entry>Cash</entry>
   </row>
   <row>
+    <entry>CURRENCY</entry><entry>Cash</entry>
+  </row>
+  <row>
     <entry>STOCK</entry><entry>Stock</entry>
   </row>
   <row>

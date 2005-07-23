@@ -1092,6 +1092,8 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
     acc.setAccountType(MyMoneyAccount::Asset);
   } else if (QString("CASH") == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Cash);
+  } else if (QString("CURRENCY") == gac->type()) {
+    acc.setAccountType(MyMoneyAccount::Cash);
   } else if (QString("STOCK") == gac->type() || QString("MUTUAL") == gac->type() ) {
     // gnucash allows a 'broker' account to be denominated as type STOCK, but with
     // a currency balance. We do not need to create a stock account for this
