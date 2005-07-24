@@ -290,6 +290,9 @@ void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& /*po
 
 void KInvestmentView::slotTabSelected(QWidget *pWidget)
 {
+  // make sure any editing action ends
+  slotCancelEdit();
+
   if(pWidget == m_summaryTab) {
     updateDisplay();
   }

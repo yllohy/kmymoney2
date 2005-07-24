@@ -1402,8 +1402,10 @@ void KLedgerView::cancelOrEndEdit(void)
   kconfig->setGroup("General Options");
   if(kconfig->readBoolEntry("FocusChangeIsEnter", false) == true)
     slotEndEdit();
-  else
-    slotCancelEdit();
+  // In case slotEndEdit() fails for internal reasons, we make sure
+  // to destroy any edit widgets by calling slotCancelEdit(). If
+  // slotEndEdit() was successful, this should be a NOP.
+  slotCancelEdit();
 }
 
 void KLedgerView::slotCancelEdit(void)
