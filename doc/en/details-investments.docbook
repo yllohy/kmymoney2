@@ -116,7 +116,17 @@ When you create an Investment Account, you have the option of creating an associ
 
 <sect1 id="details.investments.ledger"><title>Investment Transactions</title>
 <para>
-Screen shot of investment transaction form (at the bottom of the ledger)
+<screenshot>
+	<screeninfo>Investment Transaction Form</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="investment-transactionform.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Investment Transaction Form</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
 </para>
 <para>
 The investment ledger is almost the same as the <link linkend="details.ledgers">ledger</link> for other kinds of accounts.
@@ -195,11 +205,35 @@ In that account, you hold shares of TietoEnator, which is traded in SEK.
 When you enter a buy transaction on this investement, use SEK as the currency.  
 So if you buy 100 shares at a price of SEK 248.00, for a total of SEK 24,800.00, enter these values in the transaction.
 </para>
-<para>Screen shot of the following warning</para>
+<para>
+<screenshot>
+	<screeninfo>Currency Warning</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="investment-currencywarning.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Currency Warning</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
 <para>
 When you choose the brokerage account to fund the transfer, you'll be warned that it's in a different currency.
 </para>
-<para>Screen shot of the price prompt</para>
+<para>
+<screenshot>
+	<screeninfo>Exchange Rate Editor</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="investment-exchangerateeditor.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Exchange Rate Editor</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
 <para>
 When you finish the transaction, you will be prompted for a price update to the investment account's currency, in this case, SEK -> EUR.
 </para>
@@ -257,7 +291,19 @@ Or you can fetch them electronically, using <link linkend="details.investments.o
 <guimenu>Tools</guimenu>
 <guimenuitem>Update Stock and Currency Prices...</guimenuitem> </menuchoice> menu option to bring up the online price quotes dialog.  Press <guibutton>Update All</guibutton> to fetch quotes for all investments and currencies in your &kappname; file.
 </para>
-<para>Screen shot of online price quotes dialog</para>
+<para>
+<screenshot>
+	<screeninfo>Update Stock and Currency Prices</screeninfo>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="investment-onlineupdate.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Online Stock and Currency Price Update</phrase>
+	</textobject>
+	</mediaobject>
+</screenshot>
+</para>
 </sect2>
 
 <sect2><title>Editing or Adding Quote Sources</title>
