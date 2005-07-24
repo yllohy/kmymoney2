@@ -273,9 +273,10 @@ int KGPGFile::getch(void)
 
   } else {
     char buf[1];
-    ch = (readBlock(buf,1) == 1) ? buf[0] : EOF;
+    ch = (readBlock(buf,1) == 1) ? (buf[0] & 0xff) : EOF;
   }
 
+  // qDebug("getch returns 0x%02X", ch);
   return ch;
 }
 
@@ -287,6 +288,7 @@ int KGPGFile::ungetch(int ch)
     return EOF;
 
   if(ch != EOF) {
+    // qDebug("store 0x%02X in ungetchbuffer", ch & 0xff);
     m_ungetchBuffer.insert(0, ch & 0xff);
   }
 
@@ -374,7 +376,7 @@ Q_LONG KGPGFile::readBlock(char *data, Q_ULONG maxlen)
   }
   // if nothing has been read (maxlen-m_readRemain == 0) then we assume EOF
   if((maxlen - m_readRemain) == 0) {
-    // qDebug("EOF");
+    // qDebug("EOF (nothing read)");
     return EOF;
   }
   // qDebug("return %d bytes", maxlen - m_readRemain);
