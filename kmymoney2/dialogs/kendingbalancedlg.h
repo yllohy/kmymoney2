@@ -53,8 +53,8 @@ public:
   KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *parent=0, const char *name=0);
   ~KEndingBalanceDlg();
 
-  const MyMoneyMoney endingBalance(void) const { return m_endingBalance->value(); };
-  const MyMoneyMoney previousBalance(void) const { return m_previousBalance->value(); };
+  const MyMoneyMoney endingBalance(void) const;
+  const MyMoneyMoney previousBalance(void) const;
   const QDate statementDate(void) const { return m_statementDate->getQDate(); };
 
   const MyMoneyTransaction interestTransaction(void) const;
@@ -62,6 +62,7 @@ public:
 
 protected:
   const MyMoneyTransaction createTransaction(const int sign, kMyMoneyEdit *amountEdit, kMyMoneyCategory *categoryEdit) const;
+  const MyMoneyMoney adjustedReturnValue(const MyMoneyMoney& v) const;
 
 protected slots:
   void slotCheckPageFinished(void);

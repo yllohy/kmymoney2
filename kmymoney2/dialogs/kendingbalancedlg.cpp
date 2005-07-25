@@ -66,10 +66,16 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
   m_helpAnchor[m_interestChargeCheckings] = QString("details.reconcile.wizard.interest");
   m_helpAnchor[m_statementInfoPageCheckings] = QString("details.reconcile.wizard.statement");
 
-  m_previousBalance->loadText(MyMoneyMoney(value).formatMoney());
+  if(m_account.accountGroup() == MyMoneyAccount::Liability)
+    m_previousBalance->loadText((-MyMoneyMoney(value)).formatMoney());
+  else
+    m_previousBalance->loadText(MyMoneyMoney(value).formatMoney());
 
   value = account.value("statementBalance");
-  m_endingBalance->loadText(MyMoneyMoney(value).formatMoney());
+  if(m_account.accountGroup() == MyMoneyAccount::Liability)
+    m_endingBalance->loadText((-MyMoneyMoney(value)).formatMoney());
+  else
+    m_endingBalance->loadText(MyMoneyMoney(value).formatMoney());
 
   m_statementDate->setDate(QDate::currentDate());
   value = account.value("statementDate");
@@ -109,6 +115,21 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
 
 KEndingBalanceDlg::~KEndingBalanceDlg()
 {
+}
+
+const MyMoneyMoney KEndingBalanceDlg::endingBalance(void) const
+{
+  return adjustedReturnValue(m_endingBalance->value());
+}
+
+const MyMoneyMoney KEndingBalanceDlg::previousBalance(void) const
+{
+  return adjustedReturnValue(m_previousBalance->value());
+}
+
+const MyMoneyMoney KEndingBalanceDlg::adjustedReturnValue(const MyMoneyMoney& v) const
+{
+  return m_account.accountGroup() == MyMoneyAccount::Liability ? -v : v;
 }
 
 void KEndingBalanceDlg::slotCheckPageFinished(void)
@@ -421,3 +442,4 @@ void KEndingBalanceLoanDlg::help(void)
 }
 
 #include "kendingbalancedlg.moc"
+

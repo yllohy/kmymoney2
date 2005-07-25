@@ -1462,6 +1462,7 @@ void KLedgerViewCheckings::slotReconciliation(void)
 void KLedgerViewCheckings::fillReconcileData(void)
 {
   MyMoneyMoney cleared(m_prevBalance);
+  MyMoneyMoney endingBalance(m_endingBalance);
 
   for(unsigned int i = 0; i < m_transactionPtrVector.size(); ++i) {
     MyMoneyTransaction* t = m_transactionPtrVector[i];
@@ -1469,9 +1470,14 @@ void KLedgerViewCheckings::fillReconcileData(void)
     if(sp.reconcileFlag() == MyMoneySplit::Cleared)
       cleared += sp.value();
   }
+  // We need to invert all values for liability accounts
+  if(m_account.accountGroup() == MyMoneyAccount::Liability) {
+    cleared = -cleared;
+    endingBalance = -endingBalance;
+  }
   m_clearedLabel->setText(i18n("Cleared: %1").arg(cleared.formatMoney()));
-  m_statementLabel->setText(i18n("Statement: %1").arg(m_endingBalance.formatMoney()));
-  m_differenceLabel->setText(i18n("Difference: %1").arg((cleared - m_endingBalance).formatMoney()));
+  m_statementLabel->setText(i18n("Statement: %1").arg(endingBalance.formatMoney()));
+  m_differenceLabel->setText(i18n("Difference: %1").arg((cleared - endingBalance).formatMoney()));
 }
 
 void KLedgerViewCheckings::slotRegisterClicked(int row, int col, int button, const QPoint &mousePos)
