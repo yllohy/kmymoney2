@@ -263,7 +263,7 @@
 <guimenu>Tools</guimenu>
 <guimenuitem>Update Stock and Currency prices...</guimenuitem>
 </menuchoice></term>
-<listitem><para><action>Updates stock and currency prices from online sources.</action></para></listitem>
+<listitem><para><action>Updates stock and currency prices from online sources using the <link linkend="details.investments.onlinequotes">Online Price Quotes</link> feature.</action></para></listitem>
 </varlistentry>
 
 </variablelist>
@@ -291,7 +291,7 @@
 <listitem><para><action>Toggles bottom statusbar on or off.</action></para></listitem>
 </varlistentry>
 
-<varlistentry>
+<varlistentry id="reference.menus.settings.transactiondetail">
 <term><menuchoice>
 <shortcut>
 <keycombo><keycap>Ctrl</keycap><keycap>t</keycap></keycombo>
@@ -299,7 +299,7 @@
 <guimenu>Settings</guimenu>
 <guimenuitem>Show Transaction Detail</guimenuitem>
 </menuchoice></term>
-<listitem><para><action>Show transaction detail in Ledgers view.</action></para></listitem>
+<listitem><para><action>Show transaction detail in <link linkend="details.ledgers">Ledgers</link> view.  With this option turned on, all lines of the transaction will be shown in the ledger.  When it is turned off, only one line will be shown.</action></para><para>If you only want to see details for the currently selected transaction, but only one line for the others, you can turn on the <link linkend="details.settings.register.lens">Ledger Lens</link>.</para></listitem>
 </varlistentry>
 
 <varlistentry>
@@ -307,7 +307,7 @@
 <guimenu>Settings</guimenu>
 <guimenuitem>Enable all messages</guimenuitem>
 </menuchoice></term>
-<listitem><para><action>Enable all messages.</action></para></listitem>
+<listitem><para><action>Re-enables any messages you may have turned off by checking <guimenuitem>Don't tell me about this again</guimenuitem> in a dialog box.</action></para></listitem>
 </varlistentry>
 
 <varlistentry>
@@ -331,7 +331,7 @@
 <guimenu>Settings</guimenu>
 <guimenuitem>Configure &kappname;...</guimenuitem>
 </menuchoice></term>
-<listitem><para><action>Configure &kappname; settings.</action></para></listitem>
+<listitem><para><action>Configure <link linkend="details.settings">&kappname; settings</link>.</action></para></listitem>
 </varlistentry>
 </variablelist>
 </para>
@@ -377,7 +377,7 @@
 <guimenu>Help</guimenu>
 <guimenuitem>Report Bug...</guimenuitem>
 </menuchoice></term>
-<listitem><para><action>Report a found bug.</action></para></listitem>
+<listitem><para><action>Report a found bug.  Please refer to the section on <link linkend="firsttime.bugs.quality">Writing High Quality Bugs</link> for guidance on how to write the most useful bugs.</action></para></listitem>
 </varlistentry>
 
 <varlistentry>
@@ -385,7 +385,7 @@
 <guimenu>Help</guimenu>
 <guimenuitem>About &kappname;</guimenuitem>
 </menuchoice></term>
-<listitem><para><action>Show About &kappname; information.</action></para></listitem>
+<listitem><para><action>Show About &kappname; information, including the version number and the credits.</action></para></listitem>
 </varlistentry>
 
 <varlistentry>

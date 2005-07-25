@@ -1,6 +1,265 @@
-<chapter id="details.settings">
-<title>KMyMoney Settings - Under development - Roger Lum</title>
-<para>
-</para>
-</chapter>
+<chapter id="details.settings"><title id="details.settings.title">&kappname; Settings</title>
 
+<para>
+   The settings descibe below modifies the behaviour of &kappname;. These settings can be changed through <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure &kappname;...</guimenuitem></menuchoice>. 
+</para>
+
+<sect1 id="details.settings.general"><title id="details.settings.general.title">General</title>
+
+<para>
+   These options allows you to modify the general options.
+</para>
+
+<sect2 id="details.settings.general.startup"><title>Startup page options</title>
+
+<para> 
+   Choose the initial view upon startup.
+</para>
+
+<itemizedlist>
+   <listitem><para>Start with <link linkend="firsttime.mainwindow">home page</link></para></listitem>
+   <listitem><para>Start with last selected page</para></listitem>
+</itemizedlist>
+
+</sect2>
+
+<sect2 id="details.settings.general.equityoptions"><title>Equity/Currency/Value options</title>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Price Precision</guilabel></term>
+<listitem><para>Enter how many digits of precision your prices will have after the decimal point.  For example, setting this to 2 will result in prices like 35.18, where setting it to 4 might cause the same price to show 35.1791</para></listitem>
+</varlistentry>
+</variablelist>
+
+</sect2>
+
+<sect2 id="details.settings.general.account"><title>Account options</title>
+
+<variablelist>
+<varlistentry>
+<term><guilabel>Don't show unused categories</guilabel></term>
+<listitem><para>Hide unused categories.</para></listitem>
+</varlistentry>
+</variablelist>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="details.settings.register"><title id="details.settings.register.title">Register</title>
+
+<para>
+   These options allow you to modify the behaviour of the transaction registers.
+</para>
+
+<sect2 id="details.settings.register.general"><title>General tab</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Show a grid in the register</guilabel></term>
+<listitem><para>Show grid lines in the transaction 
+register.</para></listitem>
+</varlistentry>
+
+<varlistentry id="details.settings.register.lens">
+<term><guilabel>Use the ledger lens</guilabel></term>
+<listitem><para>With this option enabled, the ledger will show all lines of detail for the transaction you have currently selected, even if you have set the <link linkend="reference.menus.settings.transactiondetail">Show Transaction Detail</link> menu option turned off.</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Show transaction form</guilabel></term>
+<listitem><para>Show the <link linkend="details.ledger.transactionform">transaction form</link> at the bottom of the 
+transaction register for entering and editing transactions.  With this option turned off, you edit the transaction in-place within the register itself.</para><para></para></listitem> 
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Always show a No. field in transaction form</guilabel></term>
+<listitem><para>Always have the number (&quot;No.&quot;) field when entering or editing a transaction.</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Insert transaction type into No. field for new transactions</guilabel></term>
+<listitem><para>Automatically place the type of the tranaction, e.g. Deposit, Withdrawl, etc., in the No. field.</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Auto increment check number</guilabel></term>
+<listitem><para>Have the check number automatically increment whenever entering a new check transaction.</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Keep changes when selecting a different transaction/split</guilabel></term>
+<listitem><para>When enabled, selecting a different transaction or split will save edits to the current transaction.</para><para>When disabled, selecting a different transaction will cancel them.  Instead, you must explicitly accept the changes.</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Auto fill with previous transaction data</guilabel></term>
+<listitem><para>When entering a new transaction with this option enabled, &kappname; will fill in all the transaction details based on the previous transaction with the selected payee.</para><para>For example, all your transactions to &quot;The &kappname; Development Team&quot; might be classified under the &quot;Contributions To Make The World a Better Place&quot; category.  When you enter a new transaction and choose this payee, it will automatically pick this category.</para></listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect2>
+
+<sect2 id="details.settings.register.filter"><title>Filter tab</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Restrict by date</guilabel></term>
+<listitem><para>Filter transactions by specifying a start date.  Transactions prior to this date will not be shown.</para><para>Setting this option to January 1, 1900 is a good way to debug date-related file import problems.</para></listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="details.settings.home"><title id="details.settings.home.title">Home</title>
+
+<para>
+   These options allow you to customize the appearance of the Home page by choosing which entries to show on the Home page and the order in which they appear. 
+</para>
+
+</sect1>
+
+<sect1 id="details.settings.schedules"><title id="details.settings.schedules.title">Schedules</title>
+
+<para>
+   These options allow you to modify the behaviour of the <link linkend="details.schedules">scheduling features</link>.
+</para>
+
+<sect2 id="details.settings.schedules.startupoptions"><title>Schedule startup options</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Check schedules upon startup</guilabel></term>
+<listitem><para>Enables checking the schedule upon startup of &kappname;.</para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term><guilabel>Enter transactions this number of days in advance</guilabel></term>
+<listitem><para>Specify how many days in advance should the scheduled transactions be entered.</para></listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="details.settings.security"><title id="details.settings.security.title">Security</title>
+
+<para>
+   These options allow you to modify the data encryption settings.
+</para>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Use GPG</guilabel></term>
+<listitem><para>Enables the use of GPG to encrypt data file.  See the section on <link linkend="details.formats.encrypted">GPG Security</link> for more details.</para></listitem>
+</varlistentry>
+
+</variablelist>
+
+<sect2 id="details.settings.security.useridentification"><title>User identification</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>User ID</guilabel></term>
+<listitem><para>Enter the e-mail address or the hexadecimal key id to use for data encryption.</para></listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect2>
+
+<sect2 id="details.settings.security.recoveryencryption"><title>Recovery encryption</title>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Also encrypt with kmymoney-recover key</guilabel></term>
+<listitem><para>Encrypts data with the &kappname; recover key, allowing core &kappname; developers to decrypt data in case you lose your encryption key.</para></listitem>
+</varlistentry>
+
+</variablelist>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="details.settings.colours"><title id="details.settings.colours.title">Colours</title>
+
+<para>
+   These options allow you to change colours within &kappname;.
+</para>
+
+<sect2 id="details.settings.colours.list"><title>List colours</title>
+
+<para>
+   Modify the colours used in viewing a transaction list by clicking on the colour button and opening a colour select palette.
+</para>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="details.settings.fonts"><title id="details.settings.fonts.title">Fonts</title>
+
+<para>
+   These options allow you to modify the fonts.
+</para>
+
+<variablelist>
+
+<varlistentry>
+<term><guilabel>Use system fonts</guilabel></term>
+<listitem><para>Select this to use system fonts. Deselecting this option allows you to customize fonts.</para></listitem>
+</varlistentry>
+
+</variablelist>
+
+<sect2 id="details.settings.fonts.header"><title>Header Font</title>
+
+<para>
+   Specify the custom font to use for the headers of each view.
+</para>
+
+</sect2>
+
+<sect2 id="details.settings.fonts.cell"><title>Cell Font</title>
+
+<para>
+   Specify the custom font to use within each cell.
+</para>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="details.settings.onlinequote"><title id="details.settings.onlinequote.title">Online Quotes</title>
+
+<para>
+   These settings modify how online quotes are retrieved from different online sources.
+</para>
+
+<sect2 id="details.settings.onlinequote.details"><title>Details</title>
+
+<para>This tab allows you to change the online quote sources for &kappname;.  Generally speaking this is an advanced feature, and should only be attempted by the most technically adept users.</para>
+
+<para>
+For more details, please refer to to the <link linkend="details.investments.onlinequotes">Online Price Quotes</link> section.
+</para>
+
+</sect2>
+
+</sect1>
+
+</chapter>

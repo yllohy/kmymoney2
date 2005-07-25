@@ -7,11 +7,11 @@
 <affiliation><address><email>acejones@users.sourceforge.net</email></address></affiliation>
 </author>
 </authorgroup>
-<date>2005-06-10</date>
-<releaseinfo>0.7</releaseinfo>
+<date>2005-07-20</date>
+<releaseinfo>0.8</releaseinfo>
 </chapterinfo>
 
-<title>Investments - Under development - THB/Ace</title>
+<title>Investments</title>
 
 <sect1 id="details.investments.overview">
 
@@ -235,7 +235,7 @@ When you choose the brokerage account to fund the transfer, you'll be warned tha
 </screenshot>
 </para>
 <para>
-When you finish the transaction, you will be prompted for a price update to the investment account's currency, in this case, SEK -> EUR.
+When you finish the transaction, you will be prompted for a price update to the investment account's currency, in this case, SEK -> EUR.  Review the documentation on <link linkend="details.currencies.prices">Entering Prices Manually</link> for more information on the price dialog.
 </para>
 <para>
 If you then switch over to the brokerage account, you will see the transaction in EUR, or 2,430.48 in this case.
@@ -317,10 +317,10 @@ Or you can fetch them electronically, using <link linkend="details.investments.o
 <para>
 	If you do feel up to the challenge, here's how it works.  
 	The quote sources are contained in the settings dialog.  
-	Choose &quot;Configure &kappname;&quot; from the Tools menu.  
-	From there, choose the &quot;Online Quotes&quot; section.  
+	Choose <menuchoice><guimenu>Tools</guimenu><guimenuitem>Configure &kappname;</guimenuitem></menuchoice>.  
+	From there, choose the <guilabel>Online Quotes</guilabel> section.  
 	You can choose an existing source to edit, or create a new one.  
-	When you are done with your changes, be sure to press the &quot;Update&quot; button before exiting the dialog.
+	When you are done with your changes, be sure to press the <guibutton>Update</guibutton> button before exiting the dialog.
 	Your changes are not saved by default.
 </para>
 <para>

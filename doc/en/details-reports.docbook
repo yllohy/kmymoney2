@@ -1,4 +1,16 @@
 <chapter id="details.reports">
+<chapterinfo>
+<authorgroup>
+<author>
+<firstname>Ace</firstname>
+<surname>Jones</surname>
+<affiliation><address><email>acejones@users.sourceforge.net</email></address></affiliation>
+</author>
+</authorgroup>
+<date>2005-07-20</date>
+<releaseinfo>0.8</releaseinfo>
+</chapterinfo>
+
 <title>Reports</title>
 
 <sect1 id="details.reports.avail">

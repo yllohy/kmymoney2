@@ -1,32 +1,40 @@
 <chapter id="introduction">
 <title>Introduction</title>
 
-<sect1 id="intro-1">
-<title>What is &kappname;</title>
+<sect1>
+<title>What is &kappname;?</title>
 
 <para>
-Put simply &kappname; is a personal finances manager.  As with other applications that offer to manage your finances &kappname; provides a number of features and tools that assist in creating and maintaining your accounts.
+Put simply, &kappname; is a personal finances manager for KDE.  It enables users of open source operating systems to keep careful track of their personal finances by providing a broad array of financial features and tools.
 </para>
 
-<para>
+<para>The principal goals of the project are:</para>
+<itemizedlist>
+<listitem><formalpara><title>Feature Parity</title><para>
+&kappname; intends to provide all important features found in the commercially-available personal finance managers.  Although this release is closer than ever to that goal, there is still work to be done.
+</para></formalpara>
+</listitem>
+
+<listitem><formalpara><title>Ease of Use.</title><para>
+&kappname; strives to be the easiest open source personal finance manager to use, especially for the non-technical user.
+</para></formalpara></listitem>
+
+<listitem><formalpara><title>Correctness.</title><para>
 Based on tried and tested double entry accounting principles &kappname; ensures that your finances are kept in correct order.
-</para>
-
-<para>
-&kappname; manages your Income and Expense accounts, along with accounts for Assets and Liabilities. In addition, &kappname; manages Institutions (banks), Categories (income &amp; expense accounts), Payees and Scheduled Transactions, giving you a comprehensive view of your financial situtation.
-</para>
+</para></formalpara></listitem>
+</itemizedlist>
 
 </sect1>
 
-<sect1 id="intro-2">
-<title>&kappname; limitations</title>
+<sect1>
+<title>What &kappname; is not</title>
 
 <para>
-In its present version &kappname; does not scale well to the average business needs.  Due to the complexity and processes needed &kappname; is not recommended for business use although plans are underway to provide client / supplier / document features through a plugin.
+As a personal finances manager, &kappname; is not intended to scale to the needs of an average business.  It would be possible to create client / supplier / document features through plugins.
 </para>
 
 <para>
-&kappname; is not a clone, and although many of the features present in &kappname; can be found in other similar applications, &kappname; tries to present an individual and unique view of your finances.
+&kappname; is not simply a clone of the commercially-available personal finance programs. Although many of the features present in &kappname; can be found in other similar applications, &kappname; strives to present an individual and unique view of your finances.
 </para>
 
 </sect1>

@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <chapter id="firsttime">
+
+<chapterinfo>
+<authorgroup>
+<author>
+	<firstname>Michael</firstname>
+	<othername>T.</othername>
+	<surname>Edwardes</surname>
+	<affiliation>
+		<address><email>mte@users.sourceforge.net</email></address>
+	</affiliation>
+</author>
+</authorgroup>
+<date>2005-07-09</date>
+<releaseinfo>0.8</releaseinfo>
+</chapterinfo>
+
 <title>Using &kappname; for the first time</title>
 
 <sect1 id="firstime-1">
@@ -247,15 +263,11 @@ The view selector consists of up to ten icons in the left side of the main windo
 <title>Creating a new file</title>
 
 <para>
-	To create a new file you can either select <guimenuitem>New</guimenuitem> from the <guimenu>File</guimenu> menu or choose the <inlinemediaobject><imageobject><imagedata fileref="new.png"/></imageobject><textobject><phrase>New</phrase></textobject></inlinemediaobject> icon from the toolbar.
+	To create a new file you can either select <menuchoice><guimenu>File</guimenu><guimenuitem>New</guimenuitem></menuchoice> from the  menu or choose the <inlinemediaobject><imageobject><imagedata fileref="new.png"/></imageobject><textobject><phrase>New</phrase></textobject></inlinemediaobject> icon from the toolbar.
 </para>
 
 <para>
-	Select <guimenu>File></guimenu><guimenuitem>New</guimenuitem> to create a new file.
-</para>
-
-<para>
-	Once this has been selected &kappname; will open the personal information dialog box asking for your name and address.	
+	&kappname; will then open the personal information dialog box asking for your name and address.
 </para>
 	
 <para>
@@ -273,7 +285,7 @@ The view selector consists of up to ten icons in the left side of the main windo
 </para>
 
 <para>
-Any information entered here is not currently used by &kappname; but is used to personalize your file and will be required in future releases when features such as reporting and online banking are fully implemented.  All fields are optional and you can use &kappname; without entering any information now.  If &kappname; requires any personal information in future releases and finds none, you will be prompted to enter the relevant data then.
+Because all fields are optional, you can use &kappname; without entering any information now.  Any information entered here is used only to personalize your file.  In the future, it may be used in some reports and for online banking. If &kappname; requires any personal information in future releases and finds none, you will be prompted to enter the relevant data then.
 </para>
 
 <para>
@@ -337,14 +349,14 @@ You can create an account in one of two ways both of which are described here:
 </para>
 
 <variablelist>
-	<varlistentry><term>Using the menu</term><listitem><para>To create an account using the menu select <guimenuitem>Add new account</guimenuitem> from the <guimenu>Accounts</guimenu> menu</para></listitem></varlistentry>
+	<varlistentry><term>Using the menu</term><listitem><para>To create an account using the menu select <menuchoice><guimenu>Accounts</guimenu><guimenuitem>Add new account</guimenuitem></menuchoice>.</para></listitem></varlistentry>
 		
 	<varlistentry><term>Using the Accounts view</term><listitem><para>To create an account using the accounts view click on the Accounts icon in the view selector and then right click on the Asset tree icon in the right hand view and select <guimenuitem>New account</guimenuitem> from the popup menu.  The Asset tree holds all of your accounts that are an asset.  Assets, and all the other account types, are discussed in more detail later in this manual.</para></listitem></varlistentry>
 </variablelist>
 
 <tip>
 	<para>
-		Note that &kappname; uses the context menus a lot throughout the whole application.
+		Note that &kappname; uses the context menus a lot throughout the whole application.  If you find yourself stuck trying to figure out how to do something, try right-clicking where you would expect to see a feature.
 	</para>
 </tip>
 
@@ -450,13 +462,51 @@ The file will be coped to the directory specified with the current date appended
 
 <sect1 id="firsttime-contact">
 <title>Contacting the developers / Reporting Bugs</title>
+<sect2><title>Contacting the developers</title>
 <para>
 	You can contact the developers through their mailing list &devlist;.
 </para>
-
 <para>
-	To report a bug please use the interface provided by &kappname; by selecting <guimenuitem>Report Bug</guimenuitem> from the Help menu and filling in the required information.
+We're happy to hear about your experiences using &kappname;.
 </para>
+</sect2>
+<sect2><title>Reporting bugs</title>
+<para>
+	To report a bug please use the interface provided by &kappname; by selecting <menuchoice><guimenu>Help</guimenu><guimenuitem>Report Bug</guimenuitem></menuchoice> and filling in the required information.
+</para>
+<sect3 id="firsttime.bugs.quality"><title>Writing High Quality Bugs</title>
+<para>
+	To report highly useful bugs, try to follow these helpful tips:
+</para>
+
+<formalpara><title>Include your system information</title>
+<para>
+The  <menuchoice><guimenu>Help</guimenu><guimenuitem>Report Bug</guimenuitem></menuchoice> menu choice will fill this in automatically.  But if you would prefer not to use this interface, we will need to know the version of &kappname; you're running, the version of KDE, the name and version of your distribution, and the version of your kernel.
+</para>
+</formalpara>
+
+
+<formalpara><title>Include a backtrace for crashes</title>
+<para>
+The backtrace is often the single most useful piece of information in solving crashes.
+</para>
+</formalpara>
+
+<formalpara><title>Try to reproduce it</title><para>Let us know if you were able to do so.  It's useful to know whether the bug only happened once and you couldn't get it to happen again; or whether it happens every time; or whether it happens sometimes but not others.</para>
+</formalpara>
+
+<formalpara><title>Include specific steps</title><para>This is a bad bug: &quot;I entered a transaction, and &kappname; crashed.&quot;  A much better bug is: &quot;Using the transaction form, I entered a new transaction in my Credit Card account.  I selected the Transfer tab, entered in an amount, then changed to the Deposit tab, and back to the Transfer tab.  When I returned to the Transfer tab, &kappname; crashed.  This bug is fully reproducable for me.&quot;</para>
+</formalpara>
+
+<formalpara><title>Tell us what you expected to happen</title><para>In crashes this is obvious, but in more subtle bugs, sometimes you'll see a bug report that is not obvious what the reporter expected to happen.  Always tell us what you think should have happened.</para>
+</formalpara>
+
+<formalpara><title>Consider running with debugging enabled</title><para>By compiling a version configured with --enable-debug=full you can ensure that the best possible backtraces are generated.  If you encounter a crash, run &kappname; again from within gdb, and reproduce the crash.  When it crashes, type &quot;bt&quot; to generate a backtrace.</para>
+</formalpara>
+
+<para>Running this way is a bit more difficult, so we don't expect all users to do this.  However, if you're interested in helping &kappname; become as stable as possible, this is the best way to do it short of finding the bug in the code and sending in a patch.</para>
+</sect3>
+</sect2>
 </sect1>
 
 </chapter>

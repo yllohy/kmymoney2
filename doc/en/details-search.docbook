@@ -75,12 +75,12 @@ By default, this will match on simple substrings. For example:
 </para>
 
 <para>
-If you check the <guilabel>Case Sensitive</guilabel> box, the search will be case sensitive.
+If you check the <guilabel>Case Sensitive</guilabel> box, the search will be case sensitive.   For example, &quot;best&quot; would not find &quot;Best Cakes, Inc.&quot; if this option is set.
 </para>
 
 <para>
 If you check the <guilabel>Treat Text as regular expression</guilabel> box, the text will be treated as a 
-regular expresssion.
+regular expresssion.  For details on how to craft a regular expression, visit the Qt documentation at doc.trolltech.com, and look for the QRegExp class.
 </para>
 
 </sect1>

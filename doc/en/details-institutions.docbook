@@ -1,5 +1,18 @@
-<chapter id="details.institutions"><title id="details.institutions.title">Institutions</title>
-<para>Written by Roger Lum &lt;rogerlum@gmail.com&gt;.</para>
+<chapter id="details.institutions">
+
+<chapterinfo>
+<authorgroup>
+<author>
+<firstname>Roger</firstname>
+<surname>Lum</surname>
+<affiliation><address><email>rogerlum@gmail.com</email></address></affiliation>
+</author>
+</authorgroup>
+<date>2005-07-09</date>
+<releaseinfo>0.8</releaseinfo>
+</chapterinfo>
+
+<title id="details.institutions.title">Institutions</title>
 
 <para>
   The Institutions screen provides a summary of all the accounts filed under their respective institutions. Asset accounts are symbolized with a black arrow, while liability accounts are symbolized with a red arrow. 

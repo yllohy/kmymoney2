@@ -1,3 +1,13 @@
+2005-07-26 Ace Jones <acejones@users.sourceforge.net>
+  * More handbook changes
+    - Added & edited Roger's Settings chapter
+    - Retooled introduction chapter
+    - Added lots of links between various sections
+    - Added more details on the price editor
+    - Added authorinfo tags to chapters where they were missing
+    - Wrote instructions on how to write high-quality bugs
+    - Various edits throughout the manual
+
 2005-07-23 Robert Wadley <robntina@users.sourceforge.net>
   * Added some investment screenshots to the user manual.
 
