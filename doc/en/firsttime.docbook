@@ -476,7 +476,11 @@ We're happy to hear about your experiences using &kappname;.
 </para>
 <sect3 id="firsttime.bugs.quality"><title>Writing High Quality Bugs</title>
 <para>
-	To report highly useful bugs, try to follow these helpful tips:
+	We encourage users to take extra time to write high-quality bug reports when submitting them.
+	This reduces wasted effort on all sides, as the reporter and the developer who will fix it trade e-mails until this information is really in place.
+</para>
+<para>
+Eli Goldberg wrote the canonical Bug-Writing Guideline, available at <ulink url="http://issues.apache.org/bugwritinghelp.html">http://issues.apache.org/bugwritinghelp.html</ulink>.  Generally, you'll be well-served by following these guidelines:
 </para>
 
 <formalpara><title>Include your system information</title>
