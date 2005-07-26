@@ -474,7 +474,11 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
   QString tmp;
   MyMoneySecurity currency = MyMoneyFile::instance()->currency(acc.currencyId());
 
-  QString amount = MyMoneyFile::instance()->totalValue(acc.id()).formatMoney(currency.tradingSymbol());
+  QString amount;
+  if(acc.accountType() == MyMoneyAccount::Investment)
+    amount = MyMoneyFile::instance()->totalValue(acc.id()).formatMoney(currency.tradingSymbol());
+  else
+    amount = MyMoneyFile::instance()->balance(acc.id()).formatMoney(currency.tradingSymbol());
   amount.replace(" ","&nbsp;");
 
   tmp = QString("<td width=\"70%\">") +
