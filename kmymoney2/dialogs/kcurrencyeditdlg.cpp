@@ -60,6 +60,9 @@ KCurrencyEditDlg::KCurrencyEditDlg(QWidget *parent, const char *name ) :
   m_currencyList->addColumn(i18n("Currency"));
   m_currencyList->header()->hide();
 
+  // FIXME: the online source table currently has no functionality
+  m_onlineSourceTable->hide();
+
   KIconLoader *kiconloader = KGlobal::iconLoader();
 
   m_contextMenu = new KPopupMenu(this);
