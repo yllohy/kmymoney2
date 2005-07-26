@@ -1681,7 +1681,7 @@ void KLedgerViewInvestments::refreshView(const bool transactionFormVisible)
 void KLedgerViewInvestments::updateValues(int field)
 {
   MyMoneyMoney fees, shares, price, total;
-  ChangedFieldE calcField = None;
+  ChangedFieldE calcField = Total;
 #if 0
   // in case of negative share value, we might have to adjust the type of transaction
   if(field == Shares && m_editShares->value() < 0) {
