@@ -1,4 +1,13 @@
-2005-07-26 Ace Jones <acejones@users.sourceforge.net>
+2005-07-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem with total value not including fees when editing
+    investment transactions (reported by Peter Pointner)
+  * Fixed #1243365 (Wrong symbol of foreign currency on homepage)
+
+2005-07-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Enter and show reconciliation values for liability accounts as
+    positive values
+
+2005-07-24 Ace Jones <acejones@users.sourceforge.net>
   * More handbook changes
     - Added & edited Roger's Settings chapter
     - Retooled introduction chapter
@@ -7,6 +16,11 @@
     - Added authorinfo tags to chapters where they were missing
     - Wrote instructions on how to write high-quality bugs
     - Various edits throughout the manual
+
+2005-07-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed misdetection of EOF in KGPGFile
+  * Make sure edit session ends when switching from investment transaction tab
+    to investment summary tab
 
 2005-07-23 Robert Wadley <robntina@users.sourceforge.net>
   * Added some investment screenshots to the user manual.
