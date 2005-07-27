@@ -1,3 +1,6 @@
+2005-07-27 Robert Wadley <robntina@users.sourceforge.net>
+  * Added some screenshots for the user manual for Tony.
+
 2005-07-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem with total value not including fees when editing
     investment transactions (reported by Peter Pointner)
