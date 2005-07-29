@@ -120,13 +120,16 @@ bool KGPGFile::open(int mode)
 
   // qDebug("KGPGFile::open(%d)", mode);
   m_errmsg.resize(1);
-  if(isOpen())
+  if(isOpen()) {
+    // qDebug("File already open");
     return false;
+  }
 
   // qDebug("check filename empty");
   if(m_fn.isEmpty())
     return false;
 
+  // qDebug("setup file structures");
   init();
   setMode(mode);
 
@@ -204,6 +207,9 @@ const bool KGPGFile::startProcess(const QStringList& args)
   *m_process << "gpg";
   *m_process << args;
 
+  // QString arglist = args.join(":");
+  // qDebug("gpg '%s'", arglist.data());
+
   connect(m_process, SIGNAL(processExited(KProcess *)),
           this, SLOT(slotGPGExited(KProcess *)));
 
@@ -217,6 +223,7 @@ const bool KGPGFile::startProcess(const QStringList& args)
           this, SLOT(slotSendDataToGPG(KProcess *)));
 
   if(!m_process->start(KProcess::NotifyOnExit, (KProcess::Communication)(KProcess::Stdin|KProcess::Stdout|KProcess::Stderr))) {
+    // qDebug("m_process->start failed");
     delete m_process;
     m_process = 0;
     return false;
@@ -229,12 +236,16 @@ const bool KGPGFile::startProcess(const QStringList& args)
 
 void KGPGFile::close(void)
 {
-  if(!isOpen())
+  // qDebug("KGPGFile::close()");
+  if(!isOpen()) {
+    // qDebug("File not open");
     return;
+  }
 
   // finish the KProcess and clean up things
   if(m_process) {
     if(isWritable()) {
+      // qDebug("Finish writing");
       if(m_process->isRunning()) {
         m_process->closeStdin();
         // now wait for GPG to finish
@@ -244,6 +255,7 @@ void KGPGFile::close(void)
         m_process->kill();
 
     } else if(isReadable()) {
+      // qDebug("Finish reading");
       if(m_process->isRunning()) {
         m_process->closeStdout();
         // now wait for GPG to finish
@@ -256,6 +268,7 @@ void KGPGFile::close(void)
   m_ungetchBuffer = QCString();
   setState(0);
   m_recipient.clear();
+  // qDebug("File closed");
 }
 
 int KGPGFile::getch(void)
