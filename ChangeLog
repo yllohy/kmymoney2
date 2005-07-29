@@ -1,7 +1,15 @@
+2005-07-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Released 0.7.5
+  * Regenerated strings for translations
+  * Added updated Italian and German translation
+  * Fixed #1241831 (Encryption/Decryption problem with 0.7.4)
+    Many thanks to Thomas Schlesinger for his help to resolve this problem
+
 2005-07-29 Tony Bloomfield <tonybloom@users.sourceforge.net>
-  * GnuCash Reader - fix account type error message
-                   - fix sloppy coding errors which I've been getting away with for too long
-                   - update documentation
+  * GnuCash Reader
+    - fix account type error message
+    - fix sloppy coding errors which I've been getting away with for too long
+    - update documentation
 
 2005-07-27 Robert Wadley <robntina@users.sourceforge.net>
   * Added some screenshots for the user manual for Tony.
@@ -10,6 +18,7 @@
   * Fixed problem with total value not including fees when editing
     investment transactions (reported by Peter Pointner)
   * Fixed #1243365 (Wrong symbol of foreign currency on homepage)
+  * Hide unused widget in currency editor
 
 2005-07-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Enter and show reconciliation values for liability accounts as
