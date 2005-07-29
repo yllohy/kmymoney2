@@ -25,7 +25,7 @@ KDE_OPTIONS = noautodist
 #
 # The above information is copied from 'info libtool'.
 
-LIBVERSION=1:0:1
+LIBVERSION=1:1:1
 
 INCLUDES = $(all_includes)  -I$(top_srcdir) -I.
 lib_LTLIBRARIES = libkmm_mymoney.la
