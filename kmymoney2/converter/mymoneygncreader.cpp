@@ -441,6 +441,9 @@ GncPrice::GncPrice () {
   static const unsigned int anonClasses[] = {ASIS};
   m_anonClassList = anonClasses;
   for (uint i = 0; i < m_dataElementListCount; i++) m_v.append (new QString (""));
+  m_vpCommodity = NULL;
+  m_vpCurrency = NULL;
+  m_vpPriceDate = NULL;
 }
 
 GncPrice::~GncPrice () {
@@ -491,6 +494,7 @@ GncAccount::GncAccount () {
   m_anonClassList = anonClasses;
   kvpList.setAutoDelete (true);
   for (uint i = 0; i < m_dataElementListCount; i++) m_v.append (new QString (""));
+  m_vpCommodity = NULL;
 }
 
 GncAccount::~GncAccount () {
@@ -539,6 +543,8 @@ GncTransaction::GncTransaction (bool processingTemplates) {
   m_template = processingTemplates;
   m_splitList.setAutoDelete (true);
   for (uint i = 0; i < m_dataElementListCount; i++) m_v.append (new QString (""));
+  m_vpCurrency = NULL;
+  m_vpDateEntered = m_vpDatePosted = NULL;
 }
 
 GncTransaction::~GncTransaction () {
@@ -1120,7 +1126,7 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
     acc.setAccountType(MyMoneyAccount::Liability);
   } else { // we have here an account type we can't currently handle
     QString em =
-      i18n("Current importer does not recognize GnuCash account type %1", gac->type());
+        i18n("Current importer does not recognize GnuCash account type %1").arg(gac->type());
     throw new MYMONEYEXCEPTION (em);
   }
   // if no parent account is present, assign to one of our standard accounts

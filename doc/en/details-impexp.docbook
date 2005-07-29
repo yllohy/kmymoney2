@@ -85,7 +85,8 @@ accounts respectively.
 <para>
 For both products, the highest level of structure in the file is
 the account. &kappname; supports 5 main types of account, Asset, Liability,
-Income, Expense and Equity, each of which may have various subtypes.
+Income, Expense and Equity, each of which may have various subtypes,
+e.g. Checking, Credit Card, etc.
 &kappname; includes a 'standard' account for each of these five types, and
 all other accounts are held subordinate to one of these. &kappname; enforces
 more consistency (or less flexibility, depending on your point of
@@ -101,7 +102,8 @@ amended after the import is complete.
 &kappname; uses the term Category to denote an account of an Income or
 Expense type. Unlike GnuCash, these are not considered as 'ledger'
 accounts and entry of transactions directly is not currently
-supported, all postings being made by splits (see below).
+supported, all postings being made by splits (see below) from transactions entered 
+in other account types.
 </para>
 </sect4>
 
@@ -128,7 +130,7 @@ empty accounts.
 </thead>
 <tbody>
   <row>
-    <entry>BANK</entry><entry>Checkings</entry>
+    <entry>BANK</entry><entry>Checking</entry>
   </row>
   <row>
     <entry>ASSET</entry><entry>Asset</entry>
@@ -224,6 +226,12 @@ currency, this being the default currency for new accounts. The
 importer will attempt to determine the most likely base currency,
 though this choice may be rejected in favour of an alternative.
 </para>
+<para>
+(NOTE: &kappname; does not currently support accounts denominated in 'defunct' currencies,
+for example those replaced by the Euro. At present, it will be necessary to remove
+any such accounts from your GnuCash file before importing. We hope to
+improve on this situation in a future release.)
+</para>
 </sect4>
 
 <sect4><title>Securities and Investments</title>
@@ -233,7 +241,7 @@ Securities by &kappname;, and represent the main difference between the two
 products, in that &kappname; requires any account denominated in a security
 to be subordinate to an Investment Account. This is described in more
 detail in the chapter on <link linkend="details.investments">Investments</link>. Though users may have
-implemented such a relationship in a GnuCash file, the latter imposes no
+implemented such a relationship, GnuCash imposes no
 defined structure on it, so the importer is unable to detect it and
 perform an automatic conversion. Three options are therefore made
 available:
@@ -266,7 +274,7 @@ and multiple currencies.
 </title>
 <para>
 For obtaining online price and currency rate quotations, GnuCash uses
-a package called Finance::Quote. &kappname; does not support this, and has
+a package called Finance::Quote. &kappname; does not support this at present, and has
 its own methods, covered in more detail in 
 <link linkend="details.investments.onlinequotes">online quotes</link>.
 Obtaining a quote requires a currency or stock (ticker)
@@ -277,7 +285,13 @@ price source, or a user-defined source, for each account for which
 online quotes are required.
 </para>
 <para>
-(FIXME: GnuCash Price source dialog screenshot)
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="gnucash-select_price_source.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
 </para>
 </sect4>
 </sect3>
@@ -336,12 +350,21 @@ These will not necessarily, however, match precisely those reports available in 
 </sect2>
 
 <sect2><title>Selecting Importer Options</title>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="gnucash-import_options.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
 
 <sect3><title>Investment Handling</title>
-<para>See above description.</para>
+<para>See "Securities and Investments" above.</para>
 </sect3>
 <sect3><title>Scheduled Transactions</title>
-<para>See above description.</para>
+<para>See "Scheduled Transactions" above.</para>
 </sect3>
 <sect3><title>Debug Options</title>
 <para>
@@ -367,6 +390,15 @@ the following sections:
 	<listitem><para>Inconsistencies in account types and actions taken</para></listitem>
 	<listitem><para>Details of suspect schedules</para></listitem>
 </itemizedlist>
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="gnucash-report.png" format="PNG" />
+	</imageobject>
+	</mediaobject>
+	</screenshot>
+</para>
 
 
 </sect2>
