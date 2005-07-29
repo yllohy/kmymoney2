@@ -1121,9 +1121,6 @@ const bool KMyMoneyView::saveFile(const KURL& url)
       KSaveFile qfile(filename, fmode);
       if(qfile.status() == 0) {
         saveToLocalFile(qfile.file(), pWriter,plaintext);
-        if(!qfile.close()) {
-          throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
-        }
       } else {
         throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
       }
