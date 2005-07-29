@@ -133,94 +133,94 @@ int main(int argc, char *argv[])
   kmymoney2 = new KMyMoney2App();
   a->setMainWidget( kmymoney2 );
 
-  // connect to DCOP server
-  DCOPClient* client = a->dcopClient();
-  if(client->registerAs("kmymoney", true) != false) {
-    const QCStringList instances = kmymoney2->instanceList();
-    if(instances.count() > 0) {
-
-      // If the user launches a second copy of the app and includes a file to
-      // open, they are probably attempting a "WebConnect" session.  In this case,
-      // we'll check to make sure it's an importable file that's passed in, and if so, we'll
-      // notify the primary instance of the file and kill ourselves.
-
-      if(args->count() > 0) {
-        KURL url = args->url(0);
-        if ( kmymoney2->isImportableFile( url.path() ) )
-        {
-          // if there are multiple instances, we'll send this to the first one
-          QCString primary = instances[0];
-
-          // send a message to the primary client to import this file
-          QByteArray data;
-          QDataStream arg(data, IO_WriteOnly);
-          arg << url.path();
-          arg << kapp->startupId();
-          if (!client->send(primary, "kmymoney2app", "webConnect(QString,QCString)",data))
-            qDebug("Unable to launch WebConnect via DCOP.");
-
-          // TODO: Figure out why this segfaults!?!
-          delete a;
-          exit(0);
-        }
-      }
-
-      if(KMessageBox::questionYesNo(0, i18n("Another instance of KMyMoney is already running. Do you want to quit?")) == KMessageBox::Yes) {
-        delete a;
-        exit(1);
-      }
-    }
-  } else {
-    qDebug("DCOP registration failed. Some functions are not available.");
-  }
-
-  kmymoney2->show();
-  kmymoney2->setEnabled(false);
-
-  delete splash;
-
-  // force complete paint of widgets
-  qApp->processEvents();
-
   int rc = 0;
 
-  QString importfile;
-  KURL url;
-  // make sure, we take the file provided on the command
-  // line before we go and open the last one used
-  if(args->count() > 0) {
-    url = args->url(0);
+  do {
+    // connect to DCOP server
+    DCOPClient* client = a->dcopClient();
+    if(client->registerAs("kmymoney", true) != false) {
+      const QCStringList instances = kmymoney2->instanceList();
+      if(instances.count() > 0) {
 
-    // Check to see if this is an importable file, as opposed to a loadable
-    // file.  If it is importable, what we really want to do is load the
-    // last used file anyway and then immediately import this file.  This
-    // implements a "web connect" session where there is not already an
-    // instance of the program running.
+        // If the user launches a second copy of the app and includes a file to
+        // open, they are probably attempting a "WebConnect" session.  In this case,
+        // we'll check to make sure it's an importable file that's passed in, and if so, we'll
+        // notify the primary instance of the file and kill ourselves.
 
-    if ( kmymoney2->isImportableFile( url.path() ) )
-    {
-      importfile = url.path();
+        if(args->count() > 0) {
+          KURL url = args->url(0);
+          if ( kmymoney2->isImportableFile( url.path() ) )
+          {
+            // if there are multiple instances, we'll send this to the first one
+            QCString primary = instances[0];
+
+            // send a message to the primary client to import this file
+            QByteArray data;
+            QDataStream arg(data, IO_WriteOnly);
+            arg << url.path();
+            arg << kapp->startupId();
+            if (!client->send(primary, "kmymoney2app", "webConnect(QString,QCString)",data))
+              qDebug("Unable to launch WebConnect via DCOP.");
+
+            break;
+          }
+        }
+
+        if(KMessageBox::questionYesNo(0, i18n("Another instance of KMyMoney is already running. Do you want to quit?")) == KMessageBox::Yes) {
+          rc = 1;
+          break;
+        }
+      }
+    } else {
+      qDebug("DCOP registration failed. Some functions are not available.");
+    }
+
+    kmymoney2->show();
+    kmymoney2->setEnabled(false);
+
+    delete splash;
+
+    // force complete paint of widgets
+    qApp->processEvents();
+
+    QString importfile;
+    KURL url;
+    // make sure, we take the file provided on the command
+    // line before we go and open the last one used
+    if(args->count() > 0) {
+      url = args->url(0);
+
+      // Check to see if this is an importable file, as opposed to a loadable
+      // file.  If it is importable, what we really want to do is load the
+      // last used file anyway and then immediately import this file.  This
+      // implements a "web connect" session where there is not already an
+      // instance of the program running.
+
+      if ( kmymoney2->isImportableFile( url.path() ) )
+      {
+        importfile = url.path();
+        url = kmymoney2->readLastUsedFile();
+      }
+
+    } else {
       url = kmymoney2->readLastUsedFile();
     }
 
-  } else {
-    url = kmymoney2->readLastUsedFile();
-  }
+    KTipDialog::showTip(kmymoney2, "", false);
+    if(url.isValid()) {
+      kmymoney2->slotFileOpenRecent(url);
+    }
 
-  KTipDialog::showTip(kmymoney2, "", false);
-  if(url.isValid()) {
-    kmymoney2->slotFileOpenRecent(url);
-  }
+    if ( ! importfile.isEmpty() )
+      kmymoney2->webConnect( importfile, kapp->startupId() );
 
-  if ( ! importfile.isEmpty() )
-    kmymoney2->webConnect( importfile, kapp->startupId() );
-
-  if(kmymoney2 != 0) {
-    kmymoney2->updateCaption();
-    args->clear();
-    kmymoney2->setEnabled(true);
-    rc = a->exec();
-  }
+    if(kmymoney2 != 0) {
+      kmymoney2->updateCaption();
+      args->clear();
+      kmymoney2->setEnabled(true);
+      rc = a->exec();
+    }
+  } while(0);
 
   delete a;
 
