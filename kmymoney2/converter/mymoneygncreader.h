@@ -451,7 +451,7 @@ protected:
   const QString id() const { return (var(ID));};
   const QString no() const { return (var(NO));};
   const QString desc() const { return (var(DESC));};
-  const QString currency() const { return (m_vpCurrency->id());};
+  const QString currency() const { return (m_vpCurrency == NULL ? QString () : m_vpCurrency->id());};
   const QDate dateEntered() const { return (m_vpDateEntered->date());};
   const QDate datePosted() const { return (m_vpDatePosted->date());};
   const bool isTemplate() const { return (m_template);};

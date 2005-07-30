@@ -1,3 +1,5 @@
+2005-07-30 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * GnuCash Reader - handle transactions without a currency
 2005-07-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Released 0.7.5
   * Regenerated strings for translations
