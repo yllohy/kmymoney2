@@ -154,7 +154,7 @@ kMyMoneyPriceView::kMyMoneyPriceView(QWidget *parent, const char *name ) :
 
   connect(m_priceHistory, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
           this, SLOT(slotListClicked(QListViewItem*, const QPoint&, int)));
-  connect(m_priceHistory, SIGNAL(clicked(QListViewItem*)), this, SIGNAL(selectionChanged(QListViewItem*)));
+  connect(m_priceHistory, SIGNAL(selectionChanged(QListViewItem*)), this, SIGNAL(selectionChanged(QListViewItem*)));
 
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassPrice, this);
 
@@ -234,10 +234,17 @@ void kMyMoneyPriceView::slotListClicked(QListViewItem* item, const QPoint&, int)
     MyMoneySecurity security;
     security = MyMoneyFile::instance()->security(priceitem->price().from());
     m_contextMenu->setItemEnabled(updateId, security.isCurrency() );
+
+    // Modification of automatically added entries is not allowed
+    if(priceitem->price().source() == "KMyMoney") {
+      m_contextMenu->setItemEnabled(editId, false);
+      m_contextMenu->setItemEnabled(updateId, false);
+      m_contextMenu->setItemEnabled(delId, false);
+    }
   }
   else
     m_contextMenu->setItemEnabled(updateId, false );
-  
+
   m_contextMenu->exec(QCursor::pos());
 }
 

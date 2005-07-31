@@ -100,6 +100,15 @@ void KMyMoneyPriceDlg::slotSelectPrice(QListViewItem * item)
   m_currentItem = item;
   m_editButton->setEnabled(item != 0);
   m_deleteButton->setEnabled(item != 0);
+
+  // Modification of automatically added entries is not allowed
+  if(item) {
+    kMyMoneyPriceItem* priceitem = dynamic_cast<kMyMoneyPriceItem*>(item);
+    if(priceitem && (priceitem->price().source() == "KMyMoney")) {
+      m_editButton->setEnabled(false);
+      m_deleteButton->setEnabled(false);
+    }
+  }
 }
 
 void KMyMoneyPriceDlg::slotEquityPriceUpdate()
