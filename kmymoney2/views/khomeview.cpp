@@ -352,28 +352,33 @@ void KHomeView::showPayments(void)
 void KHomeView::showPaymentEntry(const MyMoneySchedule& sched)
 {
   QString tmp;
-  MyMoneyAccount acc = sched.account();
-  if(acc.id()) {
-    MyMoneyTransaction t = sched.transaction();
-    // only show the entry, if it is still active
-    if(!sched.isFinished() && sched.nextPayment(sched.lastPayment()) != QDate()) {
-      MyMoneySplit sp = t.splitByAccount(acc.id(), true);
+  try {
+    MyMoneyAccount acc = sched.account();
+    if(acc.id()) {
+      MyMoneyTransaction t = sched.transaction();
+      // only show the entry, if it is still active
+      if(!sched.isFinished() && sched.nextPayment(sched.lastPayment()) != QDate()) {
+        MyMoneySplit sp = t.splitByAccount(acc.id(), true);
 
-      tmp = QString("<td width=\"20%\">") +
-        KGlobal::locale()->formatDate(sched.nextPayment(sched.lastPayment()), true) +
-        "</td><td width=\"70%\">" +
-        link(VIEW_SCHEDULE, QString("?id=%1").arg(sched.id())) + sched.name() + linkend() +
-        "</td>" +
-        "<td width=\"10%\" align=\"right\">";
+        tmp = QString("<td width=\"20%\">") +
+          KGlobal::locale()->formatDate(sched.nextPayment(sched.lastPayment()), true) +
+          "</td><td width=\"70%\">" +
+          link(VIEW_SCHEDULE, QString("?id=%1").arg(sched.id())) + sched.name() + linkend() +
+          "</td>" +
+          "<td width=\"10%\" align=\"right\">";
 
-      MyMoneySecurity currency = MyMoneyFile::instance()->currency(acc.currencyId());
-      QString amount = sp.value().formatMoney(currency.tradingSymbol());
-      amount.replace(" ","&nbsp;");
-      tmp += amount;
-      tmp += "</td>";
-      // qDebug("paymentEntry = '%s'", tmp.latin1());
-      m_part->write(tmp);
+        MyMoneySecurity currency = MyMoneyFile::instance()->currency(acc.currencyId());
+        QString amount = sp.value().formatMoney(currency.tradingSymbol());
+        amount.replace(" ","&nbsp;");
+        tmp += amount;
+        tmp += "</td>";
+        // qDebug("paymentEntry = '%s'", tmp.latin1());
+        m_part->write(tmp);
+      }
     }
+  } catch(MyMoneyException* e) {
+    qDebug("Unable to display schedule entry: %s", e->what().data());
+    delete e;
   }
 }
 
