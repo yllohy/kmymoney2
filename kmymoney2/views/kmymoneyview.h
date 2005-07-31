@@ -146,6 +146,13 @@ private:
   void loadDefaultCurrencies(void);
 
   /**
+    *
+    */
+  void loadAncientCurrency(const QCString& id, const QString& name, const QString& sym, const QDate& date, const MyMoneyMoney& rate, const QCString& newId, const int partsPerUnit = 100, const int smallestCashFraction = 100, const int smallestAccountFraction = 0);
+
+  void loadAncientCurrencies(void);
+
+  /**
     * if no base currency is defined, start the dialog and force it to be set
     */
   void selectBaseCurrency(void);

@@ -912,6 +912,8 @@ bool KMyMoneyView::readFile(const KURL& url)
   if(MyMoneyFile::instance()->currencyList().count() == 0)
     loadDefaultCurrencies();
 
+  loadAncientCurrencies();
+
   // make sure, we have a base currency and all accounts are
   // also assigned to a currency.
   if(MyMoneyFile::instance()->baseCurrency().id().isEmpty()) {
@@ -1478,6 +1480,7 @@ bool KMyMoneyView::newFile(const bool createEmtpyFile)
       file->setUserEmail(newFileDlg.userEmailText);
 
     loadDefaultCurrencies();
+    loadAncientCurrencies();
 
     // Stay in this endless loop until we have a base currency,
     // as without it the application does not work anymore.
@@ -1726,6 +1729,43 @@ void KMyMoneyView::loadDefaultCurrencies(void)
     qDebug("Error %s loading default currencies", e->what().data());
     delete e;
   }
+}
+
+void KMyMoneyView::loadAncientCurrency(const QCString& id, const QString& name, const QString& sym, const QDate& date, const MyMoneyMoney& rate, const QCString& newId, const int partsPerUnit, const int smallestCashFraction, const int smallestAccountFraction)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  try {
+    file->currency(id);
+  } catch(MyMoneyException *e) {
+    delete e;
+    qDebug("Adding %s as ancient currency", name.data());
+    try {
+      file->addCurrency(MyMoneySecurity(id, name, sym, partsPerUnit, smallestCashFraction, smallestAccountFraction));
+      if(date.isValid()) {
+        MyMoneyPrice price(id, newId, date, rate, "KMyMoney");
+        file->addPrice(price);
+      }
+    } catch(MyMoneyException *e) {
+      qDebug("Error loading currency: %s", e->what().data());
+      delete e;
+    }
+  }
+}
+
+void KMyMoneyView::loadAncientCurrencies(void)
+{
+  loadAncientCurrency("ATS", i18n("Austrian Schilling"), "ÖS", QDate(1998,12,31), MyMoneyMoney(10000, 137603), "EUR");
+  loadAncientCurrency("DEM", i18n("German Mark"), "DM", QDate(1998,12,31), MyMoneyMoney(100000, 195583), "EUR");
+  loadAncientCurrency("FRF", i18n("French Franc"), "FF", QDate(1998,12,31), MyMoneyMoney(100000, 655957), "EUR");
+  loadAncientCurrency("ITL", i18n("Italian Lira"), QChar(0x20A4), QDate(1998,12,31), MyMoneyMoney(100, 193627), "EUR");
+  loadAncientCurrency("ESP", i18n("Spanish Peseta"), QCString(), QDate(1998,12,31), MyMoneyMoney(1000, 166386), "EUR");
+  loadAncientCurrency("NLG", i18n("Dutch Guilder"), QCString(), QDate(1998,12,31), MyMoneyMoney(100000, 220371), "EUR");
+  loadAncientCurrency("BEF", i18n("Belgian Franc"), "Fr", QDate(1998,12,31), MyMoneyMoney(10000, 403399), "EUR");
+  loadAncientCurrency("LUF", i18n("Luxembourg Franc"), "Fr", QDate(1998,12,31), MyMoneyMoney(10000, 403399), "EUR");
+  loadAncientCurrency("PTE", i18n("Portuguese Escudo"), QCString(), QDate(1998,12,31), MyMoneyMoney(1000, 200482), "EUR");
+  loadAncientCurrency("IEP", i18n("Irish Pound"), QChar(0x00A3), QDate(1998,12,31), MyMoneyMoney(1000000, 787564), "EUR");
+  loadAncientCurrency("FIM", i18n("Finnish Markka"), QCString(), QDate(1998,12,31), MyMoneyMoney(100000, 594573), "EUR");
+  loadAncientCurrency("GRD", i18n("Greek Drachma"), QChar(0x20AF), QDate(1998,12,31), MyMoneyMoney(100, 34075), "EUR");
 }
 
 # if 0
