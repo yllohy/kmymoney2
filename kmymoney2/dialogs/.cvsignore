@@ -13,3 +13,4 @@ ksplitcorrectiondlg.cpp
 ksplitcorrectiondlg.h
 kconfirmmanualenterdialog.cpp
 kconfirmmanualenterdialog.h
+*.all_cpp.cpp

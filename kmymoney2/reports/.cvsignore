@@ -12,3 +12,4 @@ Makefile.in
 moc_*.cpp
 moc_*.o
 *.so
+*.all_cpp.cpp

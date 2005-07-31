@@ -14,3 +14,4 @@ kmymoney2
 knewbillwizard.cpp
 knewbillwizard.h
 *~
+*.all_cpp.cpp

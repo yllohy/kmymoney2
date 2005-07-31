@@ -11,3 +11,4 @@ kschedulebriefwidget.cpp
 kschedulebriefwidget.h
 *decl.h
 *decl.cpp
+*.all_cpp.cpp

@@ -8,3 +8,4 @@ Makefile.in
 *_meta_unload.cpp
 *~
 autotest
+*.all_cpp.cpp

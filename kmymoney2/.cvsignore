@@ -16,3 +16,4 @@ kmymoneytest
 *.kidl
 *_skel.*
 *_stub.*
+*.all_cpp.cpp

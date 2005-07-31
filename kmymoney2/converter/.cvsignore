@@ -11,3 +11,4 @@ templates
 *decl.cpp
 *decl.h
 *~
+*.all_cpp.cpp

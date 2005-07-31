@@ -15,3 +15,4 @@ Makefile.in
 *_skel.*
 *_stub.*
 *.la
+*.all_cpp.cpp
