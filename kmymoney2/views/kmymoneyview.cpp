@@ -861,6 +861,7 @@ bool KMyMoneyView::readFile(const KURL& url)
                   m_fileType = KmmXML;
                 } else if(gncexp.search(txt) != -1) {
                   loadDefaultCurrencies(); // currency list required for gnc
+                  loadAncientCurrencies(); // these too
                   pReader = new MyMoneyGncReader;
                   m_fileType = GncXML;
                 }

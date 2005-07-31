@@ -1,3 +1,5 @@
+2005-07-31 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * GnuCash Reader - implement (and document) ancient currency support
 2005-07-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added auto loading of 'ancient' currencies to
     KMyMoneyView::loadAncientCurrencies

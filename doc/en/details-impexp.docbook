@@ -227,8 +227,8 @@ importer will attempt to determine the most likely base currency,
 though this choice may be rejected in favour of an alternative.
 </para>
 <para>
-(NOTE: &kappname; does not currently support accounts denominated in 'defunct' currencies,
-for example those replaced by the Euro. At present, it will be necessary to remove
+(NOTE: &kappname; does not currently support accounts denominated in 'defunct' currencies
+(except those replaced by the Euro). At present, it will be necessary to remove
 any such accounts from your GnuCash file before importing. We hope to
 improve on this situation in a future release.)
 </para>
