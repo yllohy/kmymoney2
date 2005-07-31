@@ -1,3 +1,13 @@
+2005-07-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added auto loading of 'ancient' currencies to
+    KMyMoneyView::loadAncientCurrencies
+  * Added all currencies that were converted to EURO to this list
+
+2005-07-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Maintain identification entered for investments
+  * Modified home view to catch exceptions when information is somewhat
+    inconsistent
+
 2005-07-30 Robert Wadley <robntina@users.sourceforge.net>
   * fixed some screenshot mistakes
 
