@@ -85,6 +85,7 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMo
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("General Options");
   m_ratePrec = kconfig->readNumEntry("PricePrecision", 4);
+  m_updateButton->setChecked(kconfig->readBoolEntry("PriceHistoryUpdate", true));
 
   // setup initial result
   if(m_result == MyMoneyMoney() && !m_value.isZero()) {
@@ -201,7 +202,10 @@ void KCurrencyCalculator::updateExample(const MyMoneyMoney& price)
 
 void KCurrencyCalculator::accept(void)
 {
-  slotUpdateRate(QString());
+  if(m_conversionRate->isEnabled())
+    slotUpdateRate(QString());
+  else
+    slotUpdateResult(QString());
 
   if(m_updateButton->isChecked()) {
     MyMoneyPrice pr = MyMoneyFile::instance()->price(m_fromCurrency.id(), m_toCurrency.id(), m_date);
@@ -212,6 +216,11 @@ void KCurrencyCalculator::accept(void)
       MyMoneyFile::instance()->addPrice(pr);
     }
   }
+
+  KConfig *kconfig = KGlobal::config();
+  kconfig->setGroup("General Options");
+  kconfig->writeEntry("PriceHistoryUpdate", m_updateButton->isChecked());
+
   KCurrencyCalculatorDecl::accept();
 }
 
