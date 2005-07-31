@@ -1,9 +1,14 @@
 2005-07-31 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * GnuCash Reader - implement (and document) ancient currency support
+
 2005-07-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added auto loading of 'ancient' currencies to
     KMyMoneyView::loadAncientCurrencies
   * Added all currencies that were converted to EURO to this list
+  * Maintain setting of 'update price history' between sessions
+  * Correctly interpret the amount entered for foreign currency
+    transactions (required a TAB to update the values before pressing OK)
+  * Do not allow to modify ancient currency prices
 
 2005-07-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Maintain identification entered for investments
