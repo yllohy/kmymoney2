@@ -1,3 +1,8 @@
+2005-07-31 Ace Jones <acejones@users.sourceforge.net>
+  * Added a "continue/cancel" dialog when there is a problem importing
+    a single transaction.  Otherwise, the user will keep getting the
+    error dialog continuously in a large file.
+  
 2005-07-31 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * GnuCash Reader - implement (and document) ancient currency support
 

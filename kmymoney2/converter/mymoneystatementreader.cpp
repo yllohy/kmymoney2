@@ -420,7 +420,11 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   } catch (MyMoneyException *e) {
     QString message(i18n("Problem adding imported transaction: "));
     message += e->what();
-    KMessageBox::information(0, message);
+    
+    int result = KMessageBox::warningContinueCancel(0, message);
+    if ( result == KMessageBox::Cancel )
+        throw new MYMONEYEXCEPTION("USERABORT");
+    
     delete e;
   }
 }
