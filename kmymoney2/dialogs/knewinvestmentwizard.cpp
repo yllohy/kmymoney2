@@ -67,8 +67,8 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneyAccount& acc, QWidget *
   m_tradingMarket->setCurrentText(m_security.tradingMarket());
   m_fraction->setValue(MyMoneyMoney(m_security.smallestAccountFraction(), 1));
   m_tradingCurrencyEdit->setSecurity(tradingCurrency);
-
   m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
+  m_investmentIdentification->setText(m_security.value("kmm-security-id"));
 
   // we can't see this one because the page is hidden, but we have to
   // set it anyway because during createObjects() we use the value
@@ -97,6 +97,7 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneySecurity& security, QWi
   m_tradingCurrencyEdit->setSecurity(tradingCurrency);
 
   m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
+  m_investmentIdentification->setText(m_security.value("kmm-security-id"));
 
   // we can't see this one because the page is hidden, but we have to
   // set it anyway because during createObjects() we use the value
@@ -172,7 +173,13 @@ void KNewInvestmentWizard::createObjects(const QCString& parentId)
   newSecurity.setTradingMarket(m_tradingMarket->currentText());
   newSecurity.setSmallestAccountFraction(m_fraction->value());
   newSecurity.setTradingCurrency(m_tradingCurrencyEdit->security().id());
-  newSecurity.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
+  newSecurity.deletePair("kmm-online-source");
+  newSecurity.deletePair("kmm-security-id");
+
+  if(!m_onlineSourceCombo->currentText().isEmpty())
+    newSecurity.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
+  if(!m_investmentIdentification->text().isEmpty())
+    newSecurity.setValue("kmm-security-id", m_investmentIdentification->text());
 
   if(m_security.id().isEmpty() || newSecurity != m_security) {
     m_security = newSecurity;
