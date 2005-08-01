@@ -597,10 +597,10 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   //    Account, Value on <Opening>, Buys, Sells, Income, Value on <Closing>, Return%
 
   MyMoneyReport report = m_config;
-  QDate startingDate = report.fromDate();
-  QDate endingDate = report.toDate();
-  
+  QDate startingDate;
+  QDate endingDate;
   report.validDateRange( startingDate, endingDate );
+  startingDate = startingDate.addDays(-1);
 
   MyMoneyMoney startingBal = file->balance(account.id(),startingDate) * file->price(security.id(), QCString(), startingDate).rate();
   MyMoneyMoney endingBal = file->balance((account).id(),endingDate) * file->price(security.id(), QCString(), endingDate).rate();
