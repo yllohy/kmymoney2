@@ -77,6 +77,7 @@ QCString acInvestment;
 QCString acStock1;
 QCString acStock2;
 QCString acDividends;
+QCString acInterest;
 
 }
 using namespace querytabletest;
@@ -456,6 +457,7 @@ void QueryTableTest::testInvestment(void)
   acStock1 = makeAccount("Stock 1",MyMoneyAccount::Stock,moZero,QDate(2004,1,1),acInvestment,eqStock1);
   acStock2 = makeAccount("Stock 2",MyMoneyAccount::Stock,moZero,QDate(2004,1,1),acInvestment,eqStock2);
   acDividends = makeAccount("Dividends",MyMoneyAccount::Income,moZero,QDate(2004,1,1),acIncome);
+  acInterest = makeAccount("Interest",MyMoneyAccount::Income,moZero,QDate(2004,1,1),acIncome);
 
   // Transactions
   //                         Date             Action                              Shares  Price   Stock     Asset       Income
@@ -467,6 +469,7 @@ void QueryTableTest::testInvestment(void)
   InvTransactionHelper s1r2( QDate(2004,7,1), MyMoneySplit::ActionReinvestDividend, 50.00,  80.00, acStock1, QCString(), acDividends );
   InvTransactionHelper s1c1( QDate(2004,8,1), MyMoneySplit::ActionDividend,         10.00, 100.00, acStock1, acChecking, acDividends );
   InvTransactionHelper s1c2( QDate(2004,9,1), MyMoneySplit::ActionDividend,         10.00, 120.00, acStock1, acChecking, acDividends );
+  InvTransactionHelper s1y1( QDate(2004,9,15), MyMoneySplit::ActionYield,           10.00, 110.00, acStock1, acChecking, acInterest );
 
   makeEquityPrice( eqStock1, QDate(2004,10,1), 100.00 );
 
@@ -487,7 +490,7 @@ void QueryTableTest::testInvestment(void)
   XMLandback(invtran_r);
   QueryTable invtran(invtran_r);
 
-  CPPUNIT_ASSERT(invtran.m_transactions.count()==8);
+  CPPUNIT_ASSERT(invtran.m_transactions.count()==9);
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[0]["value"])==MyMoneyMoney(100000.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[1]["value"])==MyMoneyMoney(110000.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[2]["value"])==MyMoneyMoney(-24000.00));
@@ -496,25 +499,29 @@ void QueryTableTest::testInvestment(void)
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[5]["value"])==MyMoneyMoney(  4000.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[6]["value"])==MyMoneyMoney( -1000.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[7]["value"])==MyMoneyMoney( -1200.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[8]["value"])==MyMoneyMoney( -1100.00));
 
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[0]["price"])==MyMoneyMoney(100.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[2]["price"])==MyMoneyMoney(120.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[4]["price"])==MyMoneyMoney(100.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[6]["price"])==MyMoneyMoney(  0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[8]["price"])==MyMoneyMoney(  0.00));
 
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[1]["shares"])==MyMoneyMoney(1000.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[3]["shares"])==MyMoneyMoney(-200.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[5]["shares"])==MyMoneyMoney(  50.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[7]["shares"])==MyMoneyMoney(   0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[8]["shares"])==MyMoneyMoney(   0.00));
 
   CPPUNIT_ASSERT(invtran.m_transactions[0]["action"]=="Buy");
   CPPUNIT_ASSERT(invtran.m_transactions[2]["action"]=="Sell");
   CPPUNIT_ASSERT(invtran.m_transactions[4]["action"]=="Reinvest");
   CPPUNIT_ASSERT(invtran.m_transactions[6]["action"]=="Dividend");
+  CPPUNIT_ASSERT(invtran.m_transactions[8]["action"]=="Yield");
         
   QString html = invtran.renderHTML();
-  CPPUNIT_ASSERT( searchHTML(html,i18n("Total Stock 1")) == MyMoneyMoney(172800.00) );
-  CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == MyMoneyMoney(172800.00) );
+  CPPUNIT_ASSERT( searchHTML(html,i18n("Total Stock 1")) == MyMoneyMoney(171700.00) );
+  CPPUNIT_ASSERT( searchHTML(html,i18n("Grand Total")) == MyMoneyMoney(171700.00) );
     
   //
   // Investment Performance Report
@@ -534,11 +541,11 @@ void QueryTableTest::testInvestment(void)
   QueryTable invhold(invhold_r);
   
   CPPUNIT_ASSERT(invhold.m_transactions.count()==2);
-  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["return"])==MyMoneyMoney("567/10000"));
+  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["return"])==MyMoneyMoney("669/10000"));
   CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["buys"])==MyMoneyMoney(210000.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["sells"])==MyMoneyMoney(-44000.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["reinvestincome"])==MyMoneyMoney(9000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["cashincome"])==MyMoneyMoney(2200.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["cashincome"])==MyMoneyMoney(3300.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["shares"])==MyMoneyMoney(1700.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["price"])==MyMoneyMoney(100.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[1]["return"]).isZero());

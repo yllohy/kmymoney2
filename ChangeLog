@@ -1,3 +1,7 @@
+2005-08-01 Ace Jones <acejones@users.sourceforge.net>
+  * Handle 'yield' transactions in reports.  Previously, they were
+    universally ignored.
+  
 2005-08-01 Robert Wadley <robntina@users.sourceforge.net>
   * Added more screenshots for the manual
   * Clarified some text in the manual (Schedules)

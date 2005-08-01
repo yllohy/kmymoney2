@@ -140,7 +140,7 @@ InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& 
     s2.setValue(-value);
     addSplit(s2);
   }
-  else if ( _action == MyMoneySplit::ActionDividend )
+  else if ( _action == MyMoneySplit::ActionDividend || _action == MyMoneySplit::ActionYield )
   {
     s1.setAccountId(_categoryid);
     s1.setShares(-value);
@@ -152,7 +152,7 @@ InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& 
     MyMoneySplit s2;
     s2.setValue(0);
     s2.setShares(0);
-    s2.setAction(MyMoneySplit::ActionDividend);
+    s2.setAction(_action);
     s2.setAccountId(_stockaccountid);
     addSplit(s2);
 

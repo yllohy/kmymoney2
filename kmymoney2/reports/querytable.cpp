@@ -542,7 +542,7 @@ void QueryTable::constructTransactionTable(void)
             if (
               ( splitaccount.accountType() == MyMoneyAccount::Stock )
               &&
-              ( (*it_split).action() == MyMoneySplit::ActionDividend )
+              ( (*it_split).action() == MyMoneySplit::ActionDividend || (*it_split).action() == MyMoneySplit::ActionYield )
               &&
               ( split2account.isIncomeExpense() )
             )
@@ -632,7 +632,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
     {
       reinvestincome += CashFlowListItem( (*it_transaction).postDate(), s.value() );
     }
-    else if ( action == MyMoneySplit::ActionDividend )
+    else if ( action == MyMoneySplit::ActionDividend || action == MyMoneySplit::ActionYield )
     {
       // find the split with the category, which has the actual amount of the dividend
       QValueList<MyMoneySplit> splits = (*it_transaction).splits();
