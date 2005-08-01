@@ -112,6 +112,20 @@ When you create an Investment Account, you have the option of creating an associ
   Likewise, you can update the price of your investments here either manually or via their online source.
   To perform any of these, right-click the mouse on any of the investments to bring up the <guimenu>Investment Options</guimenu> context menu.
 </para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="investments_summarytab.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Investments Summary Tab</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
 </sect1>
 
 <sect1 id="details.investments.ledger"><title>Investment Transactions</title>

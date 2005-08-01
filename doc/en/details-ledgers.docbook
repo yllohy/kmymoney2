@@ -205,6 +205,20 @@ A one line memo can be entered if you wish to help you remember what the transac
 
 <sect1 id="details.ledger.direct">
 <title>Directly inputting transactions into the list</title>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="transactionform-off.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Direct Transaction Entry</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
 <para>
 	The second method of entering transactions into the ledger involves editing the transaction list itself directly.
 </para>

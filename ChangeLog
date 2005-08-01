@@ -1,3 +1,8 @@
+2005-08-01 Robert Wadley <robntina@users.sourceforge.net>
+  * Added more screenshots for the manual
+  * Clarified some text in the manual (Schedules)
+  * Made some small changes in the manual for consistency.(First time)
+
 2005-07-31 Ace Jones <acejones@users.sourceforge.net>
   * Added a "continue/cancel" dialog when there is a problem importing
     a single transaction.  Otherwise, the user will keep getting the

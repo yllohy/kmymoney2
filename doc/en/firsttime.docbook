@@ -61,16 +61,6 @@ All tips have been extracted from the Frequency Asked Questions list (FAQ) that 
 <title>The main window</title>
 
 <para>
-The &kappname; main window consists of four major parts
-</para>
-<itemizedlist>
-	<listitem><para>A. The menu bar</para></listitem>
-	<listitem><para>B. The toolbar</para></listitem>
-	<listitem><para>C. The View selector</para></listitem>
-	<listitem><para>D. The view</para></listitem>
-</itemizedlist>
-
-<para>
 	<screenshot>
 	<screeninfo>The Main Window</screeninfo>
 	<mediaobject>
@@ -83,6 +73,18 @@ The &kappname; main window consists of four major parts
 	</mediaobject>
 	</screenshot>
 </para>
+
+<para>
+The &kappname; main window consists of four major parts
+</para>
+<itemizedlist>
+	<listitem><para>A. The menu bar</para></listitem>
+	<listitem><para>B. The toolbar</para></listitem>
+	<listitem><para>C. The View selector</para></listitem>
+	<listitem><para>D. The view</para></listitem>
+</itemizedlist>
+
+
 
 <para>	
 The menu and toolbars provide access to the features of &kappname; and allow you to <link linkend="firsttime-3">Create</link> files or configure how &kappname; operates.

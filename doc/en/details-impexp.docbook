@@ -535,11 +535,39 @@ Some of your transactions may be flashing red in the ledger.
 	This profile tells &kappname; about the peculiarities of your file.
 	To edit an existing QIF Profile, or to create a new one, press the &quot;New&quot; button on the QIF Import dialog, near the profile selector.
 </para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="qifimport-qifprofileeditor.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>QIF Profile Editor</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
 <para>
 	The most commonly changed thing between QIF implementations is the date format.  
 	So if this is the first time you're importing a QIF file, spend a few moments to figure out what format the dates are in, and set the QIF Profile accordingly.  
 	See the discussion below on apostrophe format for more details.
 </para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="qifimport-qifprofiledate.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>QIF Profile Date</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
 </sect2>
 
 <sect2><title>Apostrophe format</title>
@@ -621,6 +649,20 @@ Some of your transactions may be flashing red in the ledger.
 	To export one of your accounts to a QIF file, choose the &quot;File | Export | Qif...&quot; menu option.
 	You will be prompted for which single account to export, what file to export it to, and what QIF Profile to use.
 </para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="qifimport-export.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>QIF Export</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
 </sect1>
 
 <sect1 id="details.impexp.ofx">

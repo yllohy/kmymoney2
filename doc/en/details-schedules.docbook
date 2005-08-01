@@ -108,7 +108,7 @@ There are four different types of schedule at the moment:
 </para>
 	
 <para>
-	The schedule view consists of a tabbed list view along with a create button above it.  At the moment this list is empty.  To create a new schedule click on the <guibutton>New Schedule</guibutton> button and select the type of schedule you wish to create.
+	The schedule view consists of a tabbed list view along with a create button above it. To create a new schedule click on the <guibutton>New Schedule</guibutton> button and select the type of schedule you wish to create.
 </para>
 </sect1>
 
@@ -211,7 +211,7 @@ If you know how many transactions are left or when they are due to finish this i
 </para>
 
 <para>
-	If any schedules fall on any particular then the number of schedules is displayed.
+	The number of transactions scheduled for each day is displayed on the calendar.
 </para>
 
 <para>

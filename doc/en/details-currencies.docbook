@@ -66,7 +66,20 @@ The price database editor allows you to enter exchange rates between currencies 
 <guimenu>Tools</guimenu>
 <guimenuitem>Prices...</guimenuitem> </menuchoice> menu option.
 </para>
-<para>Screen Shot of the Price Editor</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="currency_priceeditor.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>Currency Price Editor</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
 <para>
 In &kappname; a &quot;Price&quot; is the price of one currency in terms of another.  
 For example, as I write this, the price of USD in EUR is 0.83.  
@@ -79,7 +92,20 @@ Enter the currency being bought or sold (USD in the example above) in the Securi
 Enter the currency used to buy or sell it (EUR in the example above) in the Currency field.
 Enter the effective date of the price in the Date field.
 </para>
-<para>Screen Shot of the new price entry dialog</para>
+
+<para>
+	<screenshot>
+	<mediaobject>
+	<imageobject>
+	<imagedata fileref="currency_newpriceentry.png" format="PNG" />
+	</imageobject>
+	<textobject>
+	<phrase>New Price Entry</phrase>
+	</textobject>
+	</mediaobject>
+	</screenshot>
+</para>
+
 </sect2>
 
 <sect2><title>Online currency updates</title>
