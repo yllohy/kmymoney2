@@ -172,16 +172,18 @@ void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair)
   QString symbol = QString("%1 > %2").arg(pair.first,pair.second);
   if ( ! lvEquityList->findItem(symbol,SYMBOL_COL,Qt::ExactMatch) )
   {
-    KListViewItem* item = new KListViewItem(lvEquityList,
-      symbol,
-      i18n("%1 units in %2").arg(pair.first,pair.second));
     MyMoneyPrice pr = file->price(pair.first,pair.second);
-    if(pr.isValid()) {
-      item->setText(PRICE_COL, pr.rate().formatMoney(file->currency(pair.second).tradingSymbol()));
-      item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
+    if(pr.source() != "KMyMoney") {
+      KListViewItem* item = new KListViewItem(lvEquityList,
+        symbol,
+        i18n("%1 units in %2").arg(pair.first,pair.second));
+      if(pr.isValid()) {
+        item->setText(PRICE_COL, pr.rate().formatMoney(file->currency(pair.second).tradingSymbol()));
+        item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
+      }
+      item->setText(ID_COL,QString("%1 %2").arg(pair.first,pair.second));
+      item->setText(SOURCE_COL, pr.source());
     }
-    item->setText(ID_COL,QString("%1 %2").arg(pair.first,pair.second));
-    item->setText(SOURCE_COL,i18n("Yahoo Currency"));
   }
 }
 
