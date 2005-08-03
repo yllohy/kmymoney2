@@ -26,18 +26,18 @@ A loan is an agreement where a borrower receives money from a lender and agrees 
 </para>
 
 <para>
-The amount that is lent out is called the &quot;loan amount&quot; or &quot;principle&quot;. 
+The amount that is lent out is called the &quot;loan amount&quot; or &quot;principal&quot;. 
 </para>
 
-<para>The lifetime of the loan is called the &quot;term&quot; of the loan. At the end of the term, the entirety of the principle will have been returned to the borrower. Terms are generally expressed in calendar time. Common units for term are months, quarters or years. Term can also be expressed in the number of payments.  For example, a one year, loan with weekly payments would have term of 52 weeks or one year. 
-</para>
-
-<para>
-The return of the principle to the lender is generally not done as a lump sum. Instead, this is generally done by making a series of payments where each payment is a small portion of the entire principle. These payments are called &quot;principle payments&quot; but they may also be referred to as &quot;amortization payments&quot;. &quot;Amortization&quot; is defined as the act of paying off a loan in installments. 
+<para>The lifetime of the loan is called the &quot;term&quot; of the loan. At the end of the term, the entirety of the principal will have been returned to the borrower. Terms are generally expressed in calendar time. Common units for term are months, quarters or years. Term can also be expressed in the number of payments.  For example, a one year, loan with weekly payments would have term of 52 weeks or one year. 
 </para>
 
 <para>
-Since these payments are generally made on some sort of calendar or scheduled basis, they are referred to as &quot;periodic payments&quot;. The sum of all periodic principle payments will add up the loan principle. 
+The return of the principal to the lender is generally not done as a lump sum. Instead, this is generally done by making a series of payments where each payment is a small portion of the entire principal. These payments are called &quot;principal payments&quot; but they may also be referred to as &quot;amortization payments&quot;. &quot;Amortization&quot; is defined as the act of paying off a loan in installments. 
+</para>
+
+<para>
+Since these payments are generally made on some sort of calendar or scheduled basis, they are referred to as &quot;periodic payments&quot;. The sum of all periodic principal payments will add up the loan principal. 
 </para>
 
 <para>
@@ -45,7 +45,7 @@ The frequency at which loan payments are required to be made is called a loan's 
 </para>
 
 <para>
-For the priviledge of being able to use the money, the borrower will pay the lender a fee called &quot;interest&quot;. Interest is expressed as a percentage of the amount of the loan.  Interest rates can be fixed, where the interest rate does not change over the lifetime of the loan or variable, where the interest rate can change over time. Typically, interest payments are included with each periodic principle payment. 
+For the priviledge of being able to use the money, the borrower will pay the lender a fee called &quot;interest&quot;. Interest is expressed as a percentage of the amount of the loan.  Interest rates can be fixed, where the interest rate does not change over the lifetime of the loan or variable, where the interest rate can change over time. Typically, interest payments are included with each periodic principal payment. 
 </para>
 
 <para>
@@ -60,7 +60,7 @@ There may be other fees besides interest that are required to paid every period.
 </para>
 
 <para>
-In summary, the borrower recieves a lump sum from the lender at the start of the loan. The borrower makes a periodic payment to the lender. The periodic payment is the sum of the principle payment (which is used to pay down the balance of the loan) plus the interest payment (which rewards the lender for allowing the use of the money by the borrower) plus any recurring fees (which cover any incidentals.) At the end of the loan, the borrower has paid back the entire principle.
+In summary, the borrower recieves a lump sum from the lender at the start of the loan. The borrower makes a periodic payment to the lender. The periodic payment is the sum of the principal payment (which is used to pay down the balance of the loan) plus the interest payment (which rewards the lender for allowing the use of the money by the borrower) plus any recurring fees (which cover any incidentals.) At the end of the loan, the borrower has paid back the entire principal.
 </para>
 
 
@@ -73,7 +73,7 @@ In this scenario, the loan amount is $25,000.00. The term of the loan is 60 mont
 </para>
 
 <para>
-A &quot;loan schedule&quot; is a chart or table that shows the date that a payment should be made and the amount of each periodic payment.  Often, these schedules break the periodic payment down into it's consituent parts: the principle payment and the interest payment and the recurring fees payment.
+A &quot;loan schedule&quot; is a chart or table that shows the date that a payment should be made and the amount of each periodic payment.  Often, these schedules break the periodic payment down into it's consituent parts: the principal payment and the interest payment and the recurring fees payment.
 </para>
 
 </sect1>
@@ -82,22 +82,22 @@ A &quot;loan schedule&quot; is a chart or table that shows the date that a payme
 <sect1 id="details.loans.extra-payments">
 <title>Making Extra Principle Payments On Loans</title>
 <para>
-If you would like to make an extra principle payment, you can do so. Examples of exta principle payments are (but are not necessarily limited to): 
+If you would like to make an extra principal payment, you can do so. Examples of exta principal payments are (but are not necessarily limited to): 
 
 <itemizedlist>
 <listitem><para>Contributing an extra $50 a month</para></listitem>
-<listitem><para>Doubling the periodic principle payment for every period. (The principle payment can be found for any particular period by referring to the loan schedule.)</para></listitem>
-<listitem><para>Making a 13th principle payment every year (This assumes a loan with a monthly period.)</para></listitem>
+<listitem><para>Doubling the periodic principal payment for every period. (The principal payment can be found for any particular period by referring to the loan schedule.)</para></listitem>
+<listitem><para>Making a 13th principal payment every year (This assumes a loan with a monthly period.)</para></listitem>
 </itemizedlist>
 
 </para>
 
 <para>
-This extra payment of principle will be taken into account for the interest calculation that happens for the next periodic payment. 
+This extra payment of principal will be taken into account for the interest calculation that happens for the next periodic payment. 
 </para>
 
 <para>
-If you are doubling the principle paid with every periodic payment, you will need to recalculate the loan schedule with every periodic payment. This will allow there to be an accurate value for the required principal payment for the period.
+If you are doubling the principal paid with every periodic payment, you will need to recalculate the loan schedule with every periodic payment. This will allow there to be an accurate value for the required principal payment for the period.
 </para>
 
 </sect1>
