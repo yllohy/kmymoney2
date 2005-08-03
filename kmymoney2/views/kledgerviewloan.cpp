@@ -804,9 +804,13 @@ void KLedgerViewLoan::slotConfigureMoreMenu(void)
   int gotoPayeeId = m_moreMenu->idAt(2);
   int markAsId = m_moreMenu->idAt(4);
   int moveToId = m_moreMenu->idAt(5);
+
+  // we need to disconnect the slots, otherwise we cannot connect unconditionally
   m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
+  m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
 
   m_moreMenu->changeItem(splitEditId, i18n("Edit splits ..."));
+  m_moreMenu->connectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
   if(m_transactionPtr != 0) {
     if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && !m_transaction.id().isEmpty()) {
       MyMoneyPayee payee = file->payee(m_split.payeeId());
@@ -829,6 +833,7 @@ void KLedgerViewLoan::slotConfigureMoreMenu(void)
       }
       m_moreMenu->changeItem(splitEditId, i18n("Goto '%1'").arg(dest));
       m_moreMenu->connectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
+      m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
     }
     m_moreMenu->setItemEnabled(splitEditId, true);
   } else {
@@ -848,9 +853,12 @@ void KLedgerViewLoan::slotConfigureContextMenu(void)
   int deleteId = m_contextMenu->idAt(8);
   MyMoneyFile* file = MyMoneyFile::instance();
 
+  // we need to disconnect the slots, otherwise we cannot connect unconditionally
   m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
+  m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
 
   m_contextMenu->changeItem(splitEditId, i18n("Edit splits ..."));
+  m_contextMenu->connectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
   if(m_transactionPtr != 0) {
     if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && !m_transaction.id().isEmpty()) {
       MyMoneyPayee payee = file->payee(m_split.payeeId());
@@ -874,6 +882,7 @@ void KLedgerViewLoan::slotConfigureContextMenu(void)
       }
       m_contextMenu->changeItem(splitEditId, i18n("Goto '%1'").arg(dest));
       m_contextMenu->connectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
+      m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
     }
     m_contextMenu->setItemEnabled(splitEditId, true);
     m_contextMenu->setItemEnabled(deleteId, true);
@@ -888,8 +897,13 @@ void KLedgerViewLoan::slotConfigureContextMenu(void)
 
 void KLedgerViewLoan::slotOpenSplitDialog(void)
 {
+  // if we're not in edit mode, then start editing
   if(!isEditMode())
     slotStartEdit();
+
+  // but the user may have decided not to edit, so we bail out
+  if(!isEditMode())
+    return;
 
   bool isDeposit = false;
   bool isValidAmount = false;

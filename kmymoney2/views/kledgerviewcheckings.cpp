@@ -492,6 +492,7 @@ void KLedgerViewCheckings::createMoreMenu(void)
   KIconLoader *kiconloader = KGlobal::iconLoader();
   m_moreMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotOpenSplitDialog()),
       QKeySequence(), -1, 1);
+
   m_moreMenu->insertItem(kiconloader->loadIcon("goto", KIcon::Small),
                          i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
                          QKeySequence(), -1, 2);
@@ -512,6 +513,7 @@ void KLedgerViewCheckings::createContextMenu(void)
 
   m_contextMenu->insertItem(i18n("Edit splits ..."), this, SLOT(slotOpenSplitDialog()),
       QKeySequence(), -1, 2);
+
   m_contextMenu->insertItem(kiconloader->loadIcon("goto", KIcon::Small),
                             i18n("Goto payee/receiver"), this, SLOT(slotPayeeSelected()),
                             QKeySequence(), -1, 3);
@@ -1497,9 +1499,13 @@ void KLedgerViewCheckings::slotConfigureMoreMenu(void)
   MyMoneyFile* file = MyMoneyFile::instance();
   int splitEditId = m_moreMenu->idAt(1);
   int gotoPayeeId = m_moreMenu->idAt(2);
+
+  // we need to disconnect the slots, otherwise we cannot connect unconditionally
   m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
+  m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
 
   m_moreMenu->changeItem(splitEditId, i18n("Edit splits ..."));
+  m_moreMenu->connectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
   if(m_transactionPtr != 0) {
     if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && !m_transaction.id().isEmpty()) {
       MyMoneyPayee payee = file->payee(m_split.payeeId());
@@ -1523,6 +1529,7 @@ void KLedgerViewCheckings::slotConfigureMoreMenu(void)
       }
       m_moreMenu->changeItem(splitEditId, i18n("Goto '%1'").arg(dest));
       m_moreMenu->connectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
+      m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
     }
     m_moreMenu->setItemEnabled(splitEditId, true);
   } else {
@@ -1537,9 +1544,12 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
   int deleteId = m_contextMenu->idAt(9);
   MyMoneyFile* file = MyMoneyFile::instance();
 
+  // we need to disconnect the slots, otherwise we cannot connect unconditionally
   m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
+  m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
 
   m_contextMenu->changeItem(splitEditId, i18n("Edit splits ..."));
+  m_contextMenu->connectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
   if(m_transactionPtr != 0) {
     if(!m_split.payeeId().isEmpty() && !m_split.accountId().isEmpty() && !m_transaction.id().isEmpty()) {
       MyMoneyPayee payee = file->payee(m_split.payeeId());
@@ -1564,6 +1574,7 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
       }
       m_contextMenu->changeItem(splitEditId, i18n("Goto '%1'").arg(dest));
       m_contextMenu->connectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
+      m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
     }
     m_contextMenu->setItemEnabled(splitEditId, true);
     m_contextMenu->setItemEnabled(deleteId, true);
@@ -1678,8 +1689,13 @@ void KLedgerViewCheckings::slotEndReconciliation(void)
 
 void KLedgerViewCheckings::slotOpenSplitDialog(void)
 {
+  // if we're not in edit mode, then start editing
   if(!isEditMode())
     slotStartEdit();
+
+  // but the user may have decided not to edit, so we bail out
+  if(!isEditMode())
+    return;
 
   // force focus change to update all data
   if(m_editSplit)
