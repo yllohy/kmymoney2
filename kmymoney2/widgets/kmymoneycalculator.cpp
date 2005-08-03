@@ -181,7 +181,7 @@ void kMyMoneyCalculator::calculationClicked(int button)
 {
   if(operand.length() == 0 && op != 0 && button == EQUAL) {
     op = 0;
-    m_result.setNum(op1);
+    m_result = normalizeString(op1);
     changeDisplay(m_result);
 
   } else if(operand.length() > 0 && op != 0) {
@@ -211,12 +211,12 @@ void kMyMoneyCalculator::calculationClicked(int button)
       operand = QString();
     } else {
       op1 = op2;
-      m_result.setNum(op1);
+      m_result = normalizeString(op1);
       changeDisplay(m_result);
     }
   } else if(operand.length() > 0 && op == 0) {
     op1 = operand.toDouble();
-    m_result.setNum(op1);
+    m_result = normalizeString(op1);
     changeDisplay(m_result);
   }
 
@@ -227,6 +227,25 @@ void kMyMoneyCalculator::calculationClicked(int button)
     emit signalResultAvailable();
   }
   operand = QString();
+}
+
+QString kMyMoneyCalculator::normalizeString(const double& val)
+{
+  QString str;
+  str.setNum(val, 'f');
+  int i = str.length();
+  while(i > 1 && str[i-1] == '0') {
+    --i;
+  }
+  // cut off trailing 0's
+  str.remove(i, str.length());
+  if(str.length() > 0) {
+    // possibly remove trailing period
+    if(str[str.length()-1] == '.') {
+      str.remove(str.length()-1, 1);
+    }
+  }
+  return str;
 }
 
 void kMyMoneyCalculator::clearClicked(void)
@@ -252,7 +271,7 @@ void kMyMoneyCalculator::percentClicked(void)
   if(op != 0) {
     double op2 = operand.toDouble();
     op2 = op1 * op2 / 100;
-    operand.setNum(op2);
+    operand = normalizeString(op2);
     changeDisplay(operand);
   }
 }

@@ -102,6 +102,15 @@ signals:
 protected:
   void keyPressEvent(QKeyEvent* ev);
 
+  /**
+    * This method is used to transform a double into a QString
+    * and removing any trailing 0's and decimal seperators
+    *
+    * @param val reference to double value to be converted
+    * @return QString object containing the converted value
+    */
+  QString normalizeString(const double& val);
+
 protected slots:
   /**
     * This method appends the digit represented by the parameter
