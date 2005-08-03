@@ -1,6 +1,9 @@
+2005-08-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1250608 (Calculator calculates wrong)
+
 2005-08-03 Ace Jones <acejones@users.sourceforge.net>
   * Spelling fixes in loans docs from Darin
-  
+
 2005-08-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't show the 'ancient' currencies in the online update dialog
 
