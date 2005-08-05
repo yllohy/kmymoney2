@@ -1,5 +1,17 @@
+2005-08-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added --enable-pdf-docs to configure which controls the generation
+    of the PDF version of the developer handbook and the user manual.
+    This setting defaults to 'no'
+  * Fixed a problem around creating symbolic links to header files in
+    VPATH build environments
+  * Added online help to
+    - settings dialog
+    - QIF profile editor
+    - Schedule dialog
+
 2005-08-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1250608 (Calculator calculates wrong)
+  * Fixed crash when using option 'Goto other side of transfer transaction'
 
 2005-08-03 Ace Jones <acejones@users.sourceforge.net>
   * Spelling fixes in loans docs from Darin
