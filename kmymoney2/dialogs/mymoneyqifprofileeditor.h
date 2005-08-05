@@ -54,7 +54,7 @@ class MyMoneyQifProfileEditor : public MyMoneyQifProfileEditorDecl
 {
   Q_OBJECT
 
-public: 
+public:
   MyMoneyQifProfileEditor(const bool edit = false, QWidget *parent=0, const char *name=0);
   virtual ~MyMoneyQifProfileEditor();
 
@@ -75,6 +75,7 @@ protected slots:
   void slotAmountTypeSelected(QListViewItem*);
   void slotDecimalChanged(const QString& val);
   void slotThousandsChanged(const QString& val);
+  void slotHelp(void);
 
 private:
   void loadProfileListFromConfig(void);

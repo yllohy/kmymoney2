@@ -25,6 +25,7 @@
 #include <qcolor.h>
 #include <qfont.h>
 #include <qstringlist.h>
+#include <qmap.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -67,6 +68,8 @@ class KSettingsDlg : public KDialogBase
   Q_OBJECT
 
 private:
+  QMap<int, QString>         m_helpAnchor;
+
   /** Start prompt dialog */
   QRadioButton *m_qradiobuttonStartPrompt;
   /** Start file */
@@ -219,6 +222,9 @@ private:
   bool m_bTempAutoFillTransaction;
   int  m_iTempSchedulePreview;
   QStringList m_tempHomePageItems;
+
+protected slots:
+  void slotHelp(void);
 
 private slots:
   /** Called when OK pressed */

@@ -527,7 +527,7 @@ Some of your transactions may be flashing red in the ledger.
 </para>
 </sect2>
 
-<sect2><title>Setting up a QIF profile</title>
+<sect2 id="details.impexp.qifimp.profile"><title>Setting up a QIF profile</title>
 
 <para>
 	Because there is no universally standard format for the QIF file, different vendors have taken liberties with the format, and introduced their own nuances.  

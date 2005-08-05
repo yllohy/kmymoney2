@@ -56,7 +56,7 @@
   * to set the buttons to be showed and the type of dialog to be shown.
   **/
 KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
- : KDialogBase(IconList, i18n("Configure"), Ok|Cancel|Apply|User1, Ok, parent,
+ : KDialogBase(IconList, i18n("Configure"), Ok|Cancel|Apply|User1|Help, Ok, parent,
     name, modal, true, i18n("&Reset"))
 {
   // Setup the pages and then read the configuration object.
@@ -190,6 +190,10 @@ void KSettingsDlg::setPageGeneral()
   m_qcheckboxHideCategory = new QCheckBox("hide_categories", qbuttongroupAccount);
   m_qcheckboxHideCategory->setText( i18n( "Don't show unused categories" ) );
   qhboxlayout3->addWidget(m_qcheckboxHideCategory);
+
+  // set online help reference
+  // not needed here, as it is the default anyway
+  // m_helpAnchor[pageIndex(qvboxMainFrame)] = "details.settings.general";
 }
 #if 0
 void KSettingsDlg::setPageAccountsView()
@@ -320,6 +324,9 @@ void KSettingsDlg::setHomePage()
 
   connect(m_upButton, SIGNAL(clicked()), this, SLOT(slotMoveUp()));
   connect(m_downButton, SIGNAL(clicked()), this, SLOT(slotMoveDown()));
+
+  // set online help reference
+  m_helpAnchor[pageIndex(qvboxMainFrame)] = "details.settings.home";
 }
 
 /** Called to create the Main List page shown in the dialog.
@@ -440,6 +447,9 @@ void KSettingsDlg::setPageList()
 
   // Add the page to the tab
   qtabwidget->insertTab(qwidgetFilter, i18n("Filter"));
+
+  // set online help reference
+  m_helpAnchor[pageIndex(qvboxMainFrame)] = "details.settings.register";
 }
 
 /** Read all the settings in from the global KConfig object and set all the
@@ -833,6 +843,9 @@ void KSettingsDlg::setPageSecurity(void)
     DesktopIcon("kgpg"));
 
   m_encryptionWidget = new kMyMoneyGPGConfig(qvboxMainFrame,"encryption settings");
+
+  // set online help reference
+  m_helpAnchor[pageIndex(qvboxMainFrame)] = "details.settings.security";
 }
 
 void KSettingsDlg::setPageSchedule()
@@ -871,6 +884,9 @@ void KSettingsDlg::setPageSchedule()
   groupBox1Layout->addItem( spacer );
 
   connect(m_qradiobuttonCheckSchedules, SIGNAL(toggled(bool)), m_intSchedulePreview, SLOT(setEnabled(bool)));
+
+  // set online help reference
+  m_helpAnchor[pageIndex(qvboxMainFrame)] = "details.settings.schedules";
 }
 
 void KSettingsDlg::setPageColour()
@@ -931,6 +947,9 @@ void KSettingsDlg::setPageColour()
 
   QSpacerItem* spacer = new QSpacerItem( 20, 31, QSizePolicy::Minimum, QSizePolicy::Expanding );
   groupBox2Layout->addItem( spacer );
+
+  // set online help reference
+  m_helpAnchor[pageIndex(qvboxMainFrame)] = "details.settings.colours";
 }
 
 void KSettingsDlg::setPageFont()
@@ -961,6 +980,9 @@ void KSettingsDlg::setPageFont()
 
   m_fontTabWidget->changeTab( tab, i18n( "Header Font" ) );
   m_fontTabWidget->changeTab( tab_2, i18n( "Cell Font" ) );
+
+  // set online help reference
+  m_helpAnchor[pageIndex(qvboxMainFrame)] = "details.settings.fonts";
 }
 
 void KSettingsDlg::setPageOnlineQuotes(void)
@@ -970,6 +992,18 @@ void KSettingsDlg::setPageOnlineQuotes(void)
     DesktopIcon("network_local"));
 
   m_onlineQuotesWidget = new kMyMoneyOnlineQuoteConfig(qvboxMainFrame,"online_quotes");
+
+  // set online help reference
+  m_helpAnchor[pageIndex(qvboxMainFrame)] = "details.settings.onlinequote";
+}
+
+void KSettingsDlg::slotHelp(void)
+{
+  QString anchor = m_helpAnchor[activePageIndex()];
+  if(anchor.isEmpty())
+    anchor = "details.settings.general";
+  setHelp(anchor);
+  KDialogBase::slotHelp();
 }
 
 

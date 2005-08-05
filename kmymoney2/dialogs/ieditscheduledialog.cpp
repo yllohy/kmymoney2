@@ -32,6 +32,7 @@
 #include <kmessagebox.h>
 #include <knumvalidator.h>
 #include <klocale.h>
+#include <kapplication.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -151,6 +152,8 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   connect(m_qbuttonSplit, SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
   connect(m_qcheckboxEnd, SIGNAL(toggled(bool)), this, SLOT(slotWillEndToggled(bool)));
   connect(m_qbuttonOK, SIGNAL(clicked()), this, SLOT(okClicked()));
+  connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotHelp()));
+
   connect(m_qlineeditRemaining, SIGNAL(textChanged(const QString&)),
     this, SLOT(slotRemainingChanged(const QString&)));
   connect(m_kdateinputFinal, SIGNAL(dateChanged(const QDate&)),
@@ -1285,5 +1288,11 @@ QCString KEditScheduleDialog::theAccountId()
 
   return QCString();
 }
+
+void KEditScheduleDialog::slotHelp(void)
+{
+  kapp->invokeHelp("details.schedules.new");
+}
+
 
 #include "ieditscheduledialog.moc"

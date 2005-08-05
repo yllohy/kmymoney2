@@ -92,7 +92,7 @@ protected slots:
   void slotCategoryChanged(const QString&);
   void slotAutoEnterChanged();
   void slotMemoChanged(const QString& text);
-
+  void slotHelp(void);
 
 private:
   /// Save the current account ids (there must be a better way...)

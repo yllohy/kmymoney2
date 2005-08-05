@@ -35,6 +35,7 @@
 #include <kcombobox.h>
 #include <kurlrequester.h>
 #include <kiconloader.h>
+#include <kapplication.h>
 
 #if KDE_IS_VERSION(3,2,0)
   #include <kinputdialog.h>
@@ -109,12 +110,13 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
                       i18n("Use this to delete the selected profile"));
   m_deleteButton->setGuiItem(deleteButtenItem);
 
-  KGuiItem newButtenItem( i18n( "&New..." ),
+  KGuiItem newButtenItem( i18n( "&New" ),
                       QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
                       i18n("Create a new profile"),
                       i18n("Use this to create a new QIF import/export profile"));
   m_newButton->setGuiItem(newButtenItem);
 
+  m_helpButton->setGuiItem(KStdGuiItem::help());
 
   connect(m_profileListBox, SIGNAL(highlighted(const QString&)), this, SLOT(slotLoadProfileFromConfig(const QString&)));
   connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
@@ -123,6 +125,7 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
   connect(m_deleteButton, SIGNAL(clicked()), this, SLOT(slotDelete()));
   connect(m_newButton, SIGNAL(clicked()), this, SLOT(slotNew()));
   connect(m_cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotHelp()));
 
   connect(m_editDescription, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setProfileDescription(const QString&)));
   connect(m_editType, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setProfileType(const QString&)));
@@ -215,16 +218,13 @@ void MyMoneyQifProfileEditor::loadWidgets(void)
   m_editVoidMark->setEnabled(m_inEdit);
   m_editInputFilterLocation->setEnabled(m_inEdit);
   m_editOutputFilterLocation->setEnabled(m_inEdit);
-  
+
   if(!m_inEdit) {
     m_renameButton->hide();
     m_deleteButton->hide();
     m_resetButton->hide();
     m_newButton->hide();
   }
-
-  // help is not yet supported
-  m_helpButton->hide();
 }
 
 void MyMoneyQifProfileEditor::loadProfileListFromConfig(void)
@@ -304,7 +304,7 @@ void MyMoneyQifProfileEditor::showProfile(void)
   m_editDateFormat->setCurrentText(m_profile.dateFormat());
   m_editApostrophe->setCurrentText(m_profile.apostropheFormat());
 
-  m_attemptMatch->setChecked(m_profile.attemptMatchDuplicates()); 
+  m_attemptMatch->setChecked(m_profile.attemptMatchDuplicates());
 
   QListViewItem* item;
   QListViewItemIterator it(m_editAmounts);
@@ -455,6 +455,11 @@ void MyMoneyQifProfileEditor::slotDelete(void)
 
     slotLoadProfileFromConfig(m_profileListBox->text(idx));
   }
+}
+
+void MyMoneyQifProfileEditor::slotHelp(void)
+{
+  kapp->invokeHelp("details.impexp.qifimp.profile");
 }
 
 void MyMoneyQifProfileEditor::slotAmountTypeSelected(QListViewItem* item)
