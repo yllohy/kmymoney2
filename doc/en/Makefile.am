@@ -6,9 +6,9 @@ SCREENSHOT_FILES = accountdropdown.png accounts_view.png accwiz1.png accwiz2.png
 
 EXTRA_DIST = kmymoney2.1 $(DOCBOOK_FILES)
 
-MOSTLYCLEANFILES = index.cache.bz2 kmymoney2.1.gz index.html
+MOSTLYCLEANFILES = index.cache.bz2 kmymoney2.1.gz index.html *.aux *.tex *.log **.out *.pdf errorlog *.ps
 
-BUILT_SOURCES = index.cache.bz2 kmymoney2.1.gz
+BUILT_SOURCES = index.cache.bz2 kmymoney2.1.gz $(PDF_TARGET)
 
 KDE_LANG = en
 KDE_DOCS = kmymoney2 - $(DOCBOOK_FILES) $(SCREENSHOT_FILES)
@@ -16,13 +16,78 @@ KDE_DOCS = kmymoney2 - $(DOCBOOK_FILES) $(SCREENSHOT_FILES)
 index.cache.bz2: $(DOCBOOK_FILES) $(KDE_XSL_STYLESHEET) $(SCREENSHOT_FILES)
 	if test -n "$(MEINPROC)"; then echo $(MEINPROC) --check --cache index.cache.bz2 --stylesheet $(KDE_XSL_STYLESHEET) $(srcdir)/index.docbook; $(MEINPROC) --check --cache index.cache.bz2 --stylesheet $(KDE_XSL_STYLESHEET) $(srcdir)/index.docbook; fi
 
-.PHONY: show
-preview:
+index.html: 
 	$(MEINPROC) --check --stylesheet `dirname $(KDE_XSL_STYLESHEET)`/kde-nochunk.xsl  $(srcdir)/index.docbook -o index.html
 	sed -i "s/ISO-8859-1/UTF-8/g" index.html
 
+.PHONY: show preview get-files clear-files
+preview: index.html
+
 show: preview
 	konqueror index.html
+
+if HAVE_DSSSLCONVERSIONTOOLS
+PDF_TARGET = kmymoney-user.pdf
+else
+if HAVE_HTMLCONVERSIONTOOLS
+PDF_TARGET = kmymoney-user.pdf
+endif
+endif
+
+if HAVE_DSSSLCONVERSIONTOOLS
+DOCBOOK_DSL = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl
+
+# if we're in a VPATH environment, we need to copy all files over
+# to the build directory. Otherwise, we'll get into trouble. Of course
+# we delete them afterwards.
+get-files:
+	if test x$(VPATH) != x.; then \
+		for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do \
+			cp $(srcdir)/$$file .; \
+		done; \
+	fi
+
+clear-files:
+	if test x$(VPATH) != x.; then \
+		for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do rm $$file; done;  \
+	fi
+
+index.docbook.tex: $(DOCBOOK_FILES) $(SCREENSHOTFILES)
+	make get-files
+	-jade -t tex -d $(DOCBOOK_DSL) -D `dirname $(KDE_XSL_STYLESHEET)` -D $(kde_libs_htmldir)/en/common index.docbook
+	make clear-files
+
+#index.docbook.tex: index.cache.bz2
+#	-jade -t tex -d $(DOCBOOK_DSL) -D `dirname $(KDE_XSL_STYLESHEET)` -D $(kde_libs_htmldir)/en/common index.docbook
+#
+
+
+kmymoney-user.pdf: index.docbook.tex
+	make get-files
+	@echo "Generating PDF document"
+	@pdfjadetex index.docbook.tex > errorlog
+	@echo "Generating bookmarks"
+	@pdfjadetex index.docbook.tex >> errorlog
+	@echo "Generating page numbers for table of contents"
+	@pdfjadetex index.docbook.tex >> errorlog
+	@mv index.docbook.pdf kmymoney-user.pdf
+	make clear-files
+else
+if HAVE_HTMLCONVERSIONTOOLS
+
+kmymoney-user.pdf: index.html
+	make get-files
+	html2ps -D -t -o index.ps index.html
+	ps2pdf14 index.ps kmymoney-user.pdf
+	rm index.ps
+	make clear-files
+endif
+endif
+
+
+
+
+
 
 # The automatic KDE install installs some files,
 # that we don't need, so we remove them immediately.

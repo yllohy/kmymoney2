@@ -1,6 +1,6 @@
 #MIN_CONFIG(3.0)
 
-AM_INIT_AUTOMAKE(kmymoney2,0.7.5)
+AM_INIT_AUTOMAKE(kmymoney2,0.7.6)
 
 KDE_ENABLE_HIDDEN_VISIBILITY
 
@@ -53,11 +53,10 @@ if test "$have_kbanking" = "yes"; then
 fi
 
 dnl
-dnl check for html2ps and ps2pdf
+dnl check for tools required for generation of PDF documentation 
 dnl
-AC_CHECK_PROG(found_html2ps, html2ps, yes, no)
-AC_CHECK_PROG(found_ps2pdf, ps2pdf14, yes, no)
-AM_CONDITIONAL(HAVE_PDFCONVERSIONTOOLS, test x$found_ps2pdf = xyes -a x$found_html2ps == xyes)
+AC_PDF_GENERATION()
+
 
 dnl
 dnl check for libofx
@@ -77,18 +76,24 @@ rm -rf kmymoney
 mkdir kmymoney
 
 echo Generating symlinks to header files
-MFILES=$(find `pwd`/$srcdir -name Makefile.am);
+CURDIR=`pwd`
+MFILES=$(find $CURDIR/$srcdir -name Makefile.am);
 for mfile in $MFILES; do
   DIR=$(dirname $mfile)
-  HFILES=$(grep -v noinst_HEADERS $mfile | grep _HEADERS)
-  for HFILE in $HFILES; do
-    case $HFILE in
-      =|*_HEADERS)
-        ;;
-      *)
-        ln -s $DIR/$HFILE kmymoney/$HFILE
-        ;;
-    esac
-  done
+  pushd $DIR > /dev/null
+  CD=`pwd`
+  popd > /dev/null
+  if test "$srcdir" == "." -o ${CD:0:${#CURDIR}} == $CURDIR; then
+    HFILES=$(grep -v noinst_HEADERS $mfile | grep _HEADERS)
+    for HFILE in $HFILES; do
+      case $HFILE in
+        =|*_HEADERS)
+          ;;
+        *)
+          ln -s $DIR/$HFILE kmymoney/$HFILE
+          ;;
+      esac
+    done
+  fi
 done
 
