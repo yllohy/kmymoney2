@@ -45,11 +45,11 @@ The frequency at which loan payments are required to be made is called a loan's 
 </para>
 
 <para>
-For the priviledge of being able to use the money, the borrower will pay the lender a fee called &quot;interest&quot;. Interest is expressed as a percentage of the amount of the loan.  Interest rates can be fixed, where the interest rate does not change over the lifetime of the loan or variable, where the interest rate can change over time. Typically, interest payments are included with each periodic principal payment. 
+For the privilege of being able to use the money, the borrower will pay the lender a fee called &quot;interest&quot;. Interest is expressed as a percentage of the amount of the loan.  Interest rates can be fixed, where the interest rate does not change over the lifetime of the loan or variable, where the interest rate can change over time. Typically, interest payments are included with each periodic principal payment. 
 </para>
 
 <para>
-There may be other fees besides interest that are required to paid every period. These are called &quot;recurring fees&quot;. Examples of recurring fees are (but are not necessaily limited to): 
+There may be other fees besides interest that are required to paid every period. These are called &quot;recurring fees&quot;. Examples of recurring fees are (but are not necessarily limited to): 
 <itemizedlist>
 <listitem><para>&quot;Impound&quot; or &quot;escrow&quot; account payments. (Payments of this sort are commonly used to hold funds to pay annual or bi-annual property taxes.)</para></listitem>
 <listitem><para>Mortgage insurance</para></listitem>
@@ -60,7 +60,7 @@ There may be other fees besides interest that are required to paid every period.
 </para>
 
 <para>
-In summary, the borrower recieves a lump sum from the lender at the start of the loan. The borrower makes a periodic payment to the lender. The periodic payment is the sum of the principal payment (which is used to pay down the balance of the loan) plus the interest payment (which rewards the lender for allowing the use of the money by the borrower) plus any recurring fees (which cover any incidentals.) At the end of the loan, the borrower has paid back the entire principal.
+In summary, the borrower receives a lump sum from the lender at the start of the loan. The borrower makes a periodic payment to the lender. The periodic payment is the sum of the principal payment (which is used to pay down the balance of the loan) plus the interest payment (which rewards the lender for allowing the use of the money by the borrower) plus any recurring fees (which cover any incidentals.) At the end of the loan, the borrower has paid back the entire principal.
 </para>
 
 
@@ -73,7 +73,7 @@ In this scenario, the loan amount is $25,000.00. The term of the loan is 60 mont
 </para>
 
 <para>
-A &quot;loan schedule&quot; is a chart or table that shows the date that a payment should be made and the amount of each periodic payment.  Often, these schedules break the periodic payment down into it's consituent parts: the principal payment and the interest payment and the recurring fees payment.
+A &quot;loan schedule&quot; is a chart or table that shows the date that a payment should be made and the amount of each periodic payment.  Often, these schedules break the periodic payment down into it's constituent parts: the principal payment and the interest payment and the recurring fees payment.
 </para>
 
 </sect1>
@@ -82,7 +82,7 @@ A &quot;loan schedule&quot; is a chart or table that shows the date that a payme
 <sect1 id="details.loans.extra-payments">
 <title>Making Extra Principle Payments On Loans</title>
 <para>
-If you would like to make an extra principal payment, you can do so. Examples of exta principal payments are (but are not necessarily limited to): 
+If you would like to make an extra principal payment, you can do so. Examples of extra principal payments are (but are not necessarily limited to): 
 
 <itemizedlist>
 <listitem><para>Contributing an extra $50 a month</para></listitem>

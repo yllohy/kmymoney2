@@ -1,3 +1,6 @@
+2005-08-07 Ace Jones <acejones@users.sourceforge.net>
+  * Spelling fixes in loans docs from Darin
+
 2005-08-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added --enable-pdf-docs to configure which controls the generation
     of the PDF version of the developer handbook and the user manual.
