@@ -1796,7 +1796,12 @@ void MyMoneyFile::addReport( MyMoneyReport& report )
 {
   checkStorage();
 
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
   m_storage->addReport( report );
+
+  addNotification(NotifyClassReport);
 }
 
 void MyMoneyFile::modifyReport( const MyMoneyReport& report )
