@@ -9,45 +9,58 @@
 </author>
 </authorgroup>
 <date>2005-07-12</date>
-<releaseinfo>0.7</releaseinfo>
+<releaseinfo>0.8</releaseinfo>
 </chapterinfo>
 
 <title>Loans</title>
 
 <sect1 id="details.loans.general">
-<title>General</title>
+<title>Understanding Loans</title>
 
 <para>
-This section is intended to provide a very brief overview of loans.  Loan regulations and customs can vary wildly from locality to locality. For detailed explanations of loans as well as information on local regulations and customs, please see other resources.
+This section is intended to provide a very brief overview of loans.  Loan regulations and customs vary from locality to locality. For detailed explanations of loans as well as information on local regulations and customs, please see other resources.
 </para>
 
 <para>
-A loan is an agreement where a borrower receives money from a lender and agrees to return the money at some future date. &kappname; allows you to borrow money (you are the borrower) or to lend money (you are the lender). In personal finance, it always seems that a person always borrows more than he or she lends. This means that you will generally be the borrower and a mortgage company or auto loan company will generally be the lender. In the circumstance where you loan money to a family member or a friend, you can use &kappname; to track this loan as well. This guide will assume that you are borrowing from some sort of financing company, but the topics discussed here apply equally well to loans that you might make to a person. The largest difference between borrowing and lending money is that an expense category will be used to keep track of interest when borrowing money and an income category will be used to keep track of interest when lending money.
+A loan is an agreement where a borrower receives money from a lender and agrees to return the money at some future date. &kappname; allows you to track loans with which you borrow money (you are the borrower) or lend money (you are the lender). In personal finance, it always seems that a person always borrows more than he or she lends. This means that you will generally be the borrower and a mortgage company or auto loan company will generally be the lender. In the circumstance where you loan money to a family member or a friend, you can use &kappname; to track this loan as well. 
+</para>
+<para>This guide will assume that you are borrowing from some sort of financing company, but the topics discussed here apply equally well to loans that you might make to a person. The largest difference between borrowing and lending money is that an expense category will be used to keep track of interest when borrowing money and an income category will be used to keep track of interest when lending money.
 </para>
 
+<formalpara><title>Loan Amount</title>
 <para>
 The amount that is lent out is called the &quot;loan amount&quot; or &quot;principal&quot;. 
 </para>
+</formalpara>
 
+<formalpara><title>Term</title>
 <para>The lifetime of the loan is called the &quot;term&quot; of the loan. At the end of the term, the entirety of the principal will have been returned to the borrower. Terms are generally expressed in calendar time. Common units for term are months, quarters or years. Term can also be expressed in the number of payments.  For example, a one year, loan with weekly payments would have term of 52 weeks or one year. 
 </para>
+</formalpara>
+
+<formalpara><title>Payments</title>
+<para>
+The return of the principal to the lender is generally not done as a lump sum. Instead, this is generally done by making a series of payments where each payment is a small portion of the entire principal. These payments are called &quot;principal payments&quot; but they are occasonally referred to as &quot;amortization payments&quot; in &kappname;. &quot;Amortization&quot; is defined as the act of paying off a loan in installments. 
+</para>
+</formalpara>
 
 <para>
-The return of the principal to the lender is generally not done as a lump sum. Instead, this is generally done by making a series of payments where each payment is a small portion of the entire principal. These payments are called &quot;principal payments&quot; but they may also be referred to as &quot;amortization payments&quot;. &quot;Amortization&quot; is defined as the act of paying off a loan in installments. 
+Since these payments are generally made on some sort of calendar or scheduled basis, they are referred to as &quot;periodic payments&quot;. The sum of all periodic principal payments plus the final payment will add up the loan principal. 
 </para>
 
+<formalpara><title>Payment Frequency</title>
 <para>
-Since these payments are generally made on some sort of calendar or scheduled basis, they are referred to as &quot;periodic payments&quot;. The sum of all periodic principal payments will add up the loan principal. 
+The frequency at which loan payments are required to be made is called a loan's &quot;period&quot;, also referred to as &quot;Payment Frequency&quot;in &kappname;. Examples of period might be weekly, bi-weekly, monthly, quarterly or yearly. In the US, periodic payments are normally made every month, therefore the loan's period is one month.
 </para>
+</formalpara>
 
-<para>
-The frequency at which loan payments are required to be made is called a loan's &quot;period&quot;. Examples of period might be weekly, bi-weekly, monthly, quarterly or yearly. In the US, periodic payments are normally made every month, therefore the loan's period is one month.
-</para>
-
+<formalpara><title>Interest Rate</title>
 <para>
 For the privilege of being able to use the money, the borrower will pay the lender a fee called &quot;interest&quot;. Interest is expressed as a percentage of the amount of the loan.  Interest rates can be fixed, where the interest rate does not change over the lifetime of the loan or variable, where the interest rate can change over time. Typically, interest payments are included with each periodic principal payment. 
 </para>
+</formalpara>
 
+<formalpara><title>Fees</title>
 <para>
 There may be other fees besides interest that are required to paid every period. These are called &quot;recurring fees&quot;. Examples of recurring fees are (but are not necessarily limited to): 
 <itemizedlist>
@@ -58,12 +71,16 @@ There may be other fees besides interest that are required to paid every period.
 </itemizedlist>
 
 </para>
+</formalpara>
 
+<formalpara><title>Summary</title>
 <para>
 In summary, the borrower receives a lump sum from the lender at the start of the loan. The borrower makes a periodic payment to the lender. The periodic payment is the sum of the principal payment (which is used to pay down the balance of the loan) plus the interest payment (which rewards the lender for allowing the use of the money by the borrower) plus any recurring fees (which cover any incidentals.) At the end of the loan, the borrower has paid back the entire principal.
 </para>
+</formalpara>
+</sect1>
 
-
+<sect1 id="details.loans.example"><title>Example</title>
 <para>
 For an example, you might borrow $25,000.00 for a new auto and agree to pay the bank one payment each month for 60 months. The interest rate on the loan might be 5.5%. 
 </para>
@@ -78,11 +95,27 @@ A &quot;loan schedule&quot; is a chart or table that shows the date that a payme
 
 </sect1>
 
+<sect1 id="details.loans.creation">
+<title>Creating a New Loan</title>
+
+<para>
+In &kappname;, a loan is a type of account. Therefore, to create a new loan, you begin by selecting <menuchoice><guimenu>Account</guimenu><guimenuitem>New Account</guimenuitem></menuchoice>. Continue by answering the questions that the wizard poses to you.
+</para>
+
+<para>
+Optionally, a loan can be associated with a particular institution. If you are borrowing from a mortgage company or a car loan company, you could create an institution entry that describes this firm and associate the institution with your loan. If you are borrowing from your Uncle Ted, there is no requirement to set up an institution.
+</para>
+
+</sect1>
 
 <sect1 id="details.loans.extra-payments">
 <title>Making Extra Principle Payments On Loans</title>
+
 <para>
-If you would like to make an extra principal payment, you can do so. Examples of extra principal payments are (but are not necessarily limited to): 
+If you would like to make an extra principal payment, you can do so.  Simply <link linkend="details.ledger.transactions">enter a transaction</link> using the ledgers.  This extra payment of principal will be taken into account for the interest calculation that happens for the next periodic payment. 
+</para>
+
+<para>Examples of extra principal payments are (but are not necessarily limited to): 
 
 <itemizedlist>
 <listitem><para>Contributing an extra $50 a month</para></listitem>
@@ -93,25 +126,7 @@ If you would like to make an extra principal payment, you can do so. Examples of
 </para>
 
 <para>
-This extra payment of principal will be taken into account for the interest calculation that happens for the next periodic payment. 
-</para>
-
-<para>
-If you are doubling the principal paid with every periodic payment, you will need to recalculate the loan schedule with every periodic payment. This will allow there to be an accurate value for the required principal payment for the period.
-</para>
-
-</sect1>
-
-
-<sect1 id="details.loans.creation">
-<title>Creation of New Loans</title>
-
-<para>
-In &kappname;, a loan is a type of account. Therefore, to create a new loan, you begin by selecting "New Account" from the "Account" menu. You should then continue by answering the questions that the wizard poses to you.
-</para>
-
-<para>
-Optionally, a loan can be associated with a particular institution. If you are borrowing from a mortgage company or a car loan company, you should create an institution entry that describes this firm and associate the institution with your loan. If you are borrowing from your Uncle Ted, there is no requirement to set up an institution.
+Note: If you are doubling the principal paid with every periodic payment, you will need to recalculate the loan schedule with every periodic payment. This will allow there to be an accurate value for the required principal payment for the period.
 </para>
 
 </sect1>
