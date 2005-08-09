@@ -1,3 +1,7 @@
+2005-08-08 Robert Wadley <robntina@users.sourceforge.net>
+  * Changed my email address as listed in the docs
+  * Assorted image resolution tweeks to improve PDF output.
+
 2005-08-06 Robert Wadley <robntina@users.sourceforge.net>
   * Added the 0.8 splash screen and titlebar image.
 
