@@ -86,6 +86,7 @@ KEditLoanWizard::KEditLoanWizard(const MyMoneyAccount& account, QWidget *parent,
   setAppropriate(m_namePage, false);
   setAppropriate(m_newCalculateLoanPage, false);
   setAppropriate(m_newPaymentsPage, false);
+  setAppropriate(m_assetAccountPage, false);
 
   // turn on all pages that are contained here for derived classes
   setAppropriate(m_editIntroPage, true);
