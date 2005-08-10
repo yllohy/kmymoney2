@@ -104,10 +104,13 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
     this, SLOT(slotSetSelectedItem(QListViewItem*)));
 
   connect(m_calendar, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)), this, SLOT(slotBriefEnterClicked(const MyMoneySchedule&, const QDate&)));
+
+  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassSchedule, this);
 }
 
 KScheduledView::~KScheduledView()
 {
+  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassSchedule, this);
   writeConfig();
 }
 
@@ -702,5 +705,15 @@ void KScheduledView::slotSetSelectedItem(QListViewItem* item)
   if(item)
     m_selectedSchedule = schedItem->scheduleId();
 }
+
+void KScheduledView::update(const QCString& /* id */)
+{
+  KScheduledListItem *p = dynamic_cast<KScheduledListItem*>(m_qlistviewScheduled->selectedItem());
+  QCString schedId;
+  if(p)
+    schedId = p->scheduleId();
+  refresh(true, schedId);
+}
+
 
 #include "kscheduledview.moc"

@@ -129,7 +129,10 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
     MyMoneySecurity currency = MyMoneyFile::instance()->currency(acc.currencyId());
 
     setText(1, acc.name());
-    setText(2, MyMoneyFile::instance()->payee(split.payeeId()).name());
+    if(!split.payeeId().isEmpty())
+      setText(2, MyMoneyFile::instance()->payee(split.payeeId()).name());
+    else
+      setText(2, "---");
     MyMoneyMoney amount = split.value();
     amount = amount.abs();
     setText(3, amount.formatMoney(currency.tradingSymbol()));
