@@ -476,7 +476,7 @@ We're happy to hear about your experiences using &kappname;.
 <para>
 	To report a bug please use the interface provided by &kappname; by selecting <menuchoice><guimenu>Help</guimenu><guimenuitem>Report Bug</guimenuitem></menuchoice> and filling in the required information.
 </para>
-<sect3 id="firsttime.bugs.quality"><title>Writing High Quality Bugs</title>
+<sect3 id="firsttime.bugs.quality"><title>Writing High Quality Bug Reports</title>
 <para>
 	We encourage users to take extra time to write high-quality bug reports when submitting them.
 	This reduces wasted effort on all sides, as the reporter and the developer who will fix it trade e-mails until this information is really in place.
