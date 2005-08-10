@@ -1473,3 +1473,53 @@ const uint MyMoneyStorageXML::getChildCount(const QDomElement& element) const
   return tempList.count();
 }
 
+/*!
+    This convenience function returns all of the remaining data in the
+    device.
+
+    @note It's copied from the original Qt sources and modified to
+          fix a problem with KFilterDev that does not correctly return
+          atEnd() status in certain circumstances which caused our
+          application to lock at startup.
+*/
+QByteArray QIODevice::readAll()
+{
+  if ( isDirectAccess() ) {
+    // we know the size
+    int n = size()-at(); // ### fix for 64-bit or large files?
+    int totalRead = 0;
+    QByteArray ba( n );
+    char* c = ba.data();
+    while ( n ) {
+      int r = readBlock( c, n );
+      if ( r < 0 )
+        return QByteArray();
+      n -= r;
+      c += r;
+      totalRead += r;
+      // If we have a translated file, then it is possible that
+      // we read less bytes than size() reports
+      if ( atEnd() ) {
+        ba.resize( totalRead );
+        break;
+      }
+    }
+    return ba;
+  } else {
+    // read until we reach the end
+    const int blocksize = 512;
+    int nread = 0;
+    QByteArray ba;
+    int r = 1;
+    while ( !atEnd() && r != 0) {
+      ba.resize( nread + blocksize );
+      r = readBlock( ba.data()+nread, blocksize );
+      if ( r < 0 )
+        return QByteArray();
+      nread += r;
+    }
+    ba.resize( nread );
+    return ba;
+  }
+}
+
