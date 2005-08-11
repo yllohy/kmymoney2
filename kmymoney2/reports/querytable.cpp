@@ -355,7 +355,7 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
     m_group = "type";
     break;
   case MyMoneyReport::eInstitution:
-    m_group = "institution";
+    m_group = "institution,topaccount";
     break;
   default:
     throw new MYMONEYEXCEPTION("QueryTable::QueryTable(): unhandled row type");
@@ -691,7 +691,10 @@ void QueryTable::constructAccountTable(void)
   {
     ReportAccount account = *it_account;
     
-    if ( account.isAssetLiability() && m_config.includes(account) )
+    // Note, "Investment" accounts are never included in account rows because
+    // they don't contain anything by themselves.  In reports, they are only
+    // useful as a "topaccount" aggregator of stock accounts
+    if ( account.isAssetLiability() && m_config.includes(account) && account.accountType() != MyMoneyAccount::Investment )
     {
       TableRow qaccountrow;
 
@@ -724,6 +727,14 @@ void QueryTable::constructAccountTable(void)
       qaccountrow["value"] = ( netprice.reduce() * shares.reduce() ).toString();
 
       QCString iid = (*it_account).institutionId();
+      
+      // If an account does not have an institution, get it from the top-parent.
+      if ( iid.isEmpty() && ! account.isTopLevel() )
+      {
+        ReportAccount topaccount = account.topParent();
+        iid = topaccount.institutionId();
+      }
+      
       if ( iid.isEmpty() )
         qaccountrow["institution"] = "None";
       else

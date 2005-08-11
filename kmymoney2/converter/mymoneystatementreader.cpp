@@ -107,16 +107,20 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
   if ( !m_userAbort )
     m_userAbort = ! selectOrCreateAccount(Select, m_account);
 
+  signalProgress(0, s.m_listTransactions.count(), "Importing Statement ...");
+    
   //
   // Process the transactions
   //
 
   if ( !m_userAbort )
   {
+    int progress = 0;
     QValueList<MyMoneyStatement::Transaction>::const_iterator it_t = s.m_listTransactions.begin();
     while ( it_t != s.m_listTransactions.end() )
     {
       processTransactionEntry(*it_t);
+      signalProgress(++progress, 0);
       ++it_t;
     }
   }
@@ -224,6 +228,13 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     {
       s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
       s1.setAction(MyMoneySplit::ActionReinvestDividend);
+      
+      MyMoneySplit s2;
+      s2.setMemo(t_in.m_strMemo);
+      s2.setAccountId(findOrCreateIncomeAccount("_Dividend"));
+      s2.setShares(-t_in.m_moneyAmount);
+      s2.setValue(-t_in.m_moneyAmount);
+      t.addSplit(s2);
     }
     if (t_in.m_eAction==MyMoneyStatement::Transaction::eaCashDividend)
     {
@@ -236,11 +247,9 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       // income account.  This is a hack, but it's needed in order to get the
       // amount into the transaction.
 
-      // FIXME: Use a better mechanism to get the divident amount into the
-      // transaction (I started a discussion on the mail list, 2004-11-28).
-
-      s1.setAccountId(*(file->income().accountList().begin()));
-      s1.setShares(t_in.m_moneyAmount);
+      s1.setAccountId(findOrCreateIncomeAccount("_Dividend"));
+      s1.setShares(-t_in.m_moneyAmount);
+      s1.setValue(-t_in.m_moneyAmount);
 
       // Split 2 will be the zero-amount investment split that serves to
       // mark this transaction as a cash dividend and note which stock account
@@ -537,5 +546,39 @@ void MyMoneyStatementReader::signalProgress(int current, int total, const QStrin
     (*m_progressCallback)(current, total, msg);
 }
 
+const QCString MyMoneyStatementReader::findOrCreateIncomeAccount(const QString& searchname)
+{
+  QCString result;
+  
+  MyMoneyFile *file = MyMoneyFile::instance();
+
+  // First, try to find this account as an income account
+  MyMoneyAccount acc = file->income();
+  QCStringList list = acc.accountList();
+  QCStringList::ConstIterator it_accid = list.begin();
+  while ( it_accid != list.end() )
+  {
+    acc = file->account(*it_accid);
+    if ( acc.name() == searchname )
+    {
+      result = *it_accid;
+      break;
+    }  
+    ++it_accid;
+  }
+
+  // If we did not find the account, now we must create one.
+  if ( result.isEmpty() )
+  {
+    MyMoneyAccount acc;
+    acc.setName( searchname );
+    acc.setAccountType( MyMoneyAccount::Income );
+    MyMoneyAccount income = file->income();
+    file->addAccount( acc, income );
+    result = acc.id();
+  }
+
+  return result;
+}
 
 #include "mymoneystatementreader.moc"

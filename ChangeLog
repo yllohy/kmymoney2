@@ -1,3 +1,10 @@
+2005-08-09 Ace Jones <acejones@users.sourceforge.net>
+  * Added progress to the progress bar when importing a KMM statement
+  * In KMM statement importer, post dividend income to "_Dividend" account
+  * "By institution" reports now group by institution & topaccount
+  * Accounts with no institution now get their institution from the topaccount
+  * Investment accounts are not included in account-based query reports
+
 2005-08-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Make sure the Finish button is enabled on the last page of
     the edit loan wizard
