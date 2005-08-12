@@ -156,6 +156,8 @@ public:
   /// This has to be included for internal reasons, no API change
   bool eventFilter(QObject* o, QEvent* e);
 
+  virtual int currentActionTab(void) const;
+
 public slots:
   /**
     * refresh the current view

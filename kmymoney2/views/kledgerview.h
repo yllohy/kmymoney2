@@ -376,6 +376,8 @@ public:
 
   virtual bool eventFilter( QObject *o, QEvent *e );
 
+  virtual int currentActionTab(void) const = 0;
+
 public slots:
   /**
     * This method is used to select a specific transaction. If @p id is equal
@@ -574,6 +576,8 @@ public slots:
     * cancel any pending edit activities first.
     */
   virtual void hide(void);
+
+  virtual void slotActionSelected(int transactionType) = 0;
 
 protected slots:
   /**

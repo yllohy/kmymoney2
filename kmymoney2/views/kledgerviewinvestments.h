@@ -77,6 +77,7 @@ public:
 
   /// This has to be included for internal reasons, no API change
   bool eventFilter(QObject* o, QEvent* e);
+  virtual int currentActionTab(void) const { return -1; };
 
 protected:
   enum ChangedFieldE {
@@ -93,6 +94,8 @@ public slots:
   void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
 
   virtual void refreshView(const bool transactionFormVisible);
+
+  void slotActionSelected(int transactionType) {};
 
 protected slots:
   /**

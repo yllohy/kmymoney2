@@ -721,10 +721,10 @@ void KLedgerView::slotPayeeChanged(const QString& name)
               sp = m_transaction.splitByAccount(m_account.id(), false);
             }
 
-            // update the UI
+            // update the UI while retaining the selected transaction type
             reloadEditWidgets(m_transaction);
+            slotActionSelected(currentActionTab());
             updateTabBar(m_transaction, m_split);
-
             m_editPayee->setFocus();
           }
         }
@@ -1207,12 +1207,6 @@ const QString KLedgerView::action2str(const QCString &action, const bool showHot
     rc = i18n("&Withdrawal");
   else if(action == MyMoneySplit::ActionATM)
     rc = i18n("AT&M");
-#if 0
-  else if(action == MyMoneySplit::ActionAddShares)
-    rc = i18n("&Add Shares");
-  else if(action == MyMoneySplit::ActionRemoveShares)
-    rc = i18n("&Remove Shares");
-#endif
 
   if(rc.isEmpty()) {
     qDebug("Unsupported action string %s, set to check", static_cast<const char *>(action));

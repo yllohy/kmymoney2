@@ -54,6 +54,8 @@ public:
   /// This has to be included for internal reasons, no API change
   bool eventFilter(QObject* o, QEvent* e);
 
+  int currentActionTab(void) const;
+
 public slots:
   /**
     * refresh the current view
@@ -75,6 +77,8 @@ public slots:
     * Any active editing of a transaction is cancelled.
     */
   virtual void slotReconciliation(void);
+
+  void slotActionSelected(int transactionType) {};
 
 protected:
   void fillSummary(void);

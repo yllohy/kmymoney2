@@ -314,6 +314,12 @@ void KLedgerViewCheckings::slotAmountChanged(const QString& amount)
   }
 }
 
+int KLedgerViewCheckings::currentActionTab(void) const
+{
+  QTabBar* bar = m_form->tabBar();
+  return bar->currentTab();
+}
+
 void KLedgerViewCheckings::updateTabBar(const MyMoneyTransaction& t, const MyMoneySplit& s, const bool enableAll)
 {
   int selectedTab = actionTab(t, s);
