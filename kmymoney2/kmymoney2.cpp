@@ -1653,7 +1653,7 @@ void KMyMoney2App::slotCheckSchedules(void)
 
       if (schedule.autoEnter())
       {
-        while ((schedule.nextPayment(schedule.lastPayment()) < checkDate) && !schedule.isFinished())
+        while ((schedule.nextPayment(schedule.lastPayment()) <= checkDate) && !schedule.isFinished())
         {
           if (schedule.isFixed())
           {
