@@ -1,3 +1,9 @@
+2005-08-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * If auto enter is selected for a schedule, enter it if it's due today
+    not only if it is overdue
+  * Fixed #1256431 (tx switch from Dep. to Withdr.)
+  * Released 0.8
+
 2005-08-09 Ace Jones <acejones@users.sourceforge.net>
   * Added progress to the progress bar when importing a KMM statement
   * In KMM statement importer, post dividend income to "_Dividend" account
