@@ -325,8 +325,15 @@ const bool MyMoneyQifReader::finishImport(void)
     dlg.progressBar()->advance(1);
     ++it;
   }
-  file->suspendNotify(false);
-
+  try
+  {
+    file->suspendNotify(false);
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to add transactions"),
+    (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+    rc = false;
+  }
   return rc;
 }
 

@@ -1,3 +1,6 @@
+2005-08-12 Ace Jones <acejones@users.sourceforge.net>
+  * Catch exceptions in QIF importer when turning back on notifications
+
 2005-08-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * If auto enter is selected for a schedule, enter it if it's due today
     not only if it is overdue
