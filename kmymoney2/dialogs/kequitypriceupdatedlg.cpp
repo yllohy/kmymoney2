@@ -182,7 +182,7 @@ void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair)
         item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
       }
       item->setText(ID_COL,QString("%1 %2").arg(pair.first,pair.second));
-      item->setText(SOURCE_COL, pr.source());
+      item->setText(SOURCE_COL, "Yahoo Currency");  // This string value should not be localized
     }
   }
 }
