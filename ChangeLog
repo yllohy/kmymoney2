@@ -1,3 +1,7 @@
+2005-08-13 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed a recently-introduced bug where the wrong price
+    source was being used.
+
 2005-08-12 Ace Jones <acejones@users.sourceforge.net>
   * Catch exceptions in QIF importer when turning back on notifications
 
