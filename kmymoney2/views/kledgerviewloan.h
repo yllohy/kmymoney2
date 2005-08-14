@@ -78,7 +78,7 @@ public slots:
     */
   virtual void slotReconciliation(void);
 
-  void slotActionSelected(int transactionType) {};
+  void slotActionSelected(int /*transactionType*/) {};
 
 protected:
   void fillSummary(void);

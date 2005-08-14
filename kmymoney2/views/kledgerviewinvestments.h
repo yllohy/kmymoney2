@@ -95,7 +95,7 @@ public slots:
 
   virtual void refreshView(const bool transactionFormVisible);
 
-  void slotActionSelected(int transactionType) {};
+  void slotActionSelected(int /*transactionType*/) {};
 
 protected slots:
   /**
