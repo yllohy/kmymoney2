@@ -131,6 +131,7 @@ public:
   static const char ActionReinvestDividend[];
   static const char ActionYield[];
   static const char ActionAddShares[];  // negative amount is removeShares
+  static const char ActionSplitShares[];
 
 private:
   /**

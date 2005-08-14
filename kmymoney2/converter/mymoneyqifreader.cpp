@@ -1190,8 +1190,13 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     MyMoneyMoney splitfactor = (quantity / MyMoneyMoney(10.0)).reduce();
     
     // Stock splits not supported
-    kdDebug(2) << "Line " << m_linenumber << ": Stock split not supported (date=" << date << " security=" << securityname << " factor=" << splitfactor.toString() << ")" << endl;
-    return;
+//     kdDebug(2) << "Line " << m_linenumber << ": Stock split not supported (date=" << date << " security=" << securityname << " factor=" << splitfactor.toString() << ")" << endl;
+    
+    s1.setShares(splitfactor);
+    s1.setValue(0);
+    s1.setAction(MyMoneySplit::ActionSplitShares);
+    
+//     return;
   }
   else
   {

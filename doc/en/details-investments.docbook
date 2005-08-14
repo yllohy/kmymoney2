@@ -165,6 +165,7 @@ The following activities are supported:
 	<listitem><para>Dividend/Yield.  Also known as a &quot;Cash Dividend&quot;, this action is used for when you receive an interest or dividend disbersement from your investment. This action requires an account to transfer the funds from/to.</para></listitem>
 	<listitem><para>Reinvest Dividend.  This is a dividend where the proceeds are re-invested back into the investment.</para></listitem>
 	<listitem><para>Add/Remove Shares.  A simple increase or decrease in your balance.  This should be used very rarely, because it's uncommon for shares to just show up in your account (or disappear) unless it's a purchase or a sale.</para></listitem>
+	<listitem><para>Split Shares.  Used when the stock is split.  Enter the ratio of the split in the &quot;Split Ratio&quot; field.  For example, in a 3:2 split, enter 1.5</para></listitem>
 </itemizedlist>
 
 </sect2>
@@ -365,7 +366,7 @@ Or you can fetch them electronically, using <link linkend="details.investments.o
 <sect1 id="details.investments.unimplemented"><title>Unimplemented Features</title>
 <para>
 Certain common features that are normally found with investments are not yet implemented in &kappname;.  
-These include:  Stock splits, derivatives (options, futures, etc), capital gains and tax reporting for investments.
+These include:  Derivatives (options, futures, etc), capital gains and tax reporting for investments.
 </para>
 </sect1>
 </chapter>

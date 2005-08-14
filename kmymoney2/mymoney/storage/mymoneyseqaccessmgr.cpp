@@ -983,8 +983,13 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate&
     for(it = list.begin(); it != list.end(); ++it) {
       try {
         split = (*it).splitByAccount(id);
-        result += split.value((*it).commodity(), acc.currencyId());
-
+        
+        // For stock splits, the ratio of the split is in the 'shares' field
+        if ( split.action() == MyMoneySplit::ActionSplitShares )
+          result = result * split.shares();
+        else
+          result += split.value((*it).commodity(), acc.currencyId());
+          
       } catch(MyMoneyException *e) {
         // account is not referenced within this transaction
         delete e;
@@ -1120,13 +1125,22 @@ void MyMoneySeqAccessMgr::loadTransaction(const MyMoneyTransaction& tr)
   m_transactionList[key] = tr;
   m_transactionKeys[tr.id()] = key;
 
+  // (acejones) Cacheing the balance at load time doesn't work with Split 
+  // Shares transactions.  That's because the DATE matters with split shares,
+  // and there's no guarantee these transactions are loaded in date order.
+  //
+  // There must be a more elegant way to handle this, but I don't know the
+  // caching system well enough.  Instead, I'll just invalidate the cache
+  // ALWAYS :-/
+  
   QValueList<MyMoneySplit> list = tr.splits();
   QValueList<MyMoneySplit>::ConstIterator it_s;
 
   for(it_s = list.begin(); it_s != list.end(); ++it_s) {
     QCString id = (*it_s).accountId();
     MyMoneyAccount acc = account(id);
-    m_balanceCache[id] = MyMoneyBalanceCacheItem(balance(id, QDate()) + (*it_s).value(tr.commodity(), acc.currencyId()));
+//     m_balanceCache[id] = MyMoneyBalanceCacheItem(balance(id, QDate()) + (*it_s).value(tr.commodity(), acc.currencyId()));
+    m_balanceCache[id].valid = false;
   }
 }
 

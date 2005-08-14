@@ -385,6 +385,18 @@ void KLedgerViewInvestments::fillForm()
 
         break;
 
+      case SplitShares:
+        formTable->setText(ACTIVITY_ROW, ACTIVITY_DATA_COL, i18n("Split Shares"));
+
+        // shares
+        prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
+        item = new kMyMoneyTransactionFormTableItem(formTable, QTableItem::Never,
+                 m_split.shares().abs().formatMoney("", prec));
+        item->setAlignment(kMyMoneyTransactionFormTableItem::right);
+        formTable->setItem(QUANTITY_ROW, QUANTITY_DATA_COL, item);
+
+        break;
+      
       case UnknownTransactionType:
         qWarning("%s","Unknown transaction type!");
         break;
@@ -463,6 +475,10 @@ void KLedgerViewInvestments::fillFormStatics(void)
       formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Shares"));
       break;
 
+    case SplitShares:
+      formTable->setText(QUANTITY_ROW, QUANTITY_TXT_COL, i18n("Split Ratio"));
+      break;
+
     case UnknownTransactionType:
       qWarning("%s","Unknown transaction type!");
       break;
@@ -522,6 +538,7 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInRegister(void)
 
     case AddShares:
     case RemoveShares:
+    case SplitShares:
       m_editPPS->hide();
       m_editFees->hide();
       m_editFeeCategory->hide();
@@ -624,6 +641,7 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInForm(void)
 
     case AddShares:
     case RemoveShares:
+    case SplitShares:
       m_editPPS->hide();
       m_editFees->hide();
       m_editFeeCategory->hide();
@@ -731,6 +749,9 @@ void KLedgerViewInvestments::preloadEditType(void)
       m_editType->setCurrentItem(RemoveShares);
     else
       m_editType->setCurrentItem(AddShares);
+
+  } else if(m_split.action() == MyMoneySplit::ActionSplitShares) {
+    m_editType->setCurrentItem(SplitShares);
 
   } else if(m_split.action() == MyMoneySplit::ActionDividend) {
       m_editType->setCurrentItem(Dividend);
@@ -844,6 +865,7 @@ void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& /*t*/ )
 
     case AddShares:
     case RemoveShares:
+    case SplitShares:
       shares = m_split.shares().abs();
       if(m_editShares) {
         prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
@@ -928,6 +950,7 @@ void KLedgerViewInvestments::createEditWidgets()
     m_editType->insertItem(i18n("Yield"), Yield);
     m_editType->insertItem(i18n("Add Shares"), AddShares);
     m_editType->insertItem(i18n("Remove Shares"), RemoveShares);
+    m_editType->insertItem(i18n("Split Shares"), SplitShares);
     m_editMapper.setMapping(m_editType, None);
     connect(m_editType, SIGNAL(activated(int)), &m_editMapper, SLOT(map()));
   }
@@ -1194,6 +1217,9 @@ const KLedgerView::investTransactionTypeE KLedgerViewInvestments::transactionTyp
   else if(split.action() == MyMoneySplit::ActionYield) {
     return Yield;
   }
+  else if(split.action() == MyMoneySplit::ActionSplitShares) {
+    return SplitShares;
+  }
   return BuyShares;
 }
 
@@ -1392,6 +1418,16 @@ void KLedgerViewInvestments::createSplits(void)
       m_split.setMemo(m_editMemo->text());
       m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
       break;
+
+    case SplitShares:
+      shares = m_editShares->value().abs();
+      m_split.setAction(MyMoneySplit::ActionSplitShares);
+      // setup stock account split
+      m_split.setValue(0);
+      m_split.setShares(shares);
+      m_split.setMemo(m_editMemo->text());
+      m_split.setAccountId(m_editStockAccount->selectedAccounts().first());
+      break;
   }
 }
 
@@ -1502,6 +1538,7 @@ void KLedgerViewInvestments::slotEndEdit()
 
     case AddShares:
     case RemoveShares:
+    case SplitShares:
       m_transaction.addSplit(m_split);
       break;
   }
@@ -1785,6 +1822,7 @@ void KLedgerViewInvestments::updateValues(int field)
     case Yield:
     case AddShares:
     case RemoveShares:
+    case SplitShares:
       // in these cases, there is no automatic update
       break;
   }
@@ -1936,6 +1974,7 @@ const bool KLedgerViewInvestments::slotDataChanged(int field)
 
     case AddShares:
     case RemoveShares:
+    case SplitShares:
       if(m_editShares->value().isZero())
         ok = false;
       break;

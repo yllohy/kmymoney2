@@ -238,7 +238,8 @@ public:
     ReinvestDividend,
     Yield,
     AddShares,
-    RemoveShares
+    RemoveShares,
+    SplitShares
   };
 
   enum editModeE {

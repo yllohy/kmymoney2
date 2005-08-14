@@ -160,6 +160,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                   break;
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
+                case KLedgerView::SplitShares:
                 default:
                   txt = " ";
                   break;
@@ -180,6 +181,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                   break;
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
+                case KLedgerView::SplitShares:
                 default:
                   txt = " ";
                   break;
@@ -214,6 +216,9 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                 case KLedgerView::RemoveShares:
                   txt = i18n("Remove Shares");
                   break;
+                case KLedgerView::SplitShares:
+                  txt = i18n("Split Shares");
+                  break;
                 default:
                   txt = " ";
                   break;
@@ -235,6 +240,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                   break;
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
+                case KLedgerView::SplitShares:
                 default:
                   txt = " ";
                   break;
@@ -256,6 +262,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                   break;
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
+                case KLedgerView::SplitShares:
                 default:
                   txt = " ";
                   break;
@@ -298,6 +305,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                 case KLedgerView::ReinvestDividend:
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
+                case KLedgerView::SplitShares:
                   prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
                   txt = m_split.shares().abs().formatMoney("", prec);
                   break;
@@ -323,6 +331,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                   break;
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
+                case KLedgerView::SplitShares:
                 default:
                   txt = " ";
                   break;
@@ -344,6 +353,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                   break;
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
+                case KLedgerView::SplitShares:
                 case KLedgerView::Dividend:
                 case KLedgerView::Yield:
                 default:
@@ -371,6 +381,7 @@ void kMyMoneyRegisterInvestment::paintCell(QPainter *p, int row, int col, const 
                   break;
                 case KLedgerView::AddShares:
                 case KLedgerView::RemoveShares:
+                case KLedgerView::SplitShares:
                 default:
                   txt = " ";
                   break;

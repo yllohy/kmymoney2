@@ -31,12 +31,12 @@ const char MyMoneySplit::ActionATM[] = "ATM";
 const char MyMoneySplit::ActionAmortization[] = "Amortization";
 const char MyMoneySplit::ActionInterest[] = "Interest";
 
-
 const char MyMoneySplit::ActionBuyShares[] = "Buy";
 const char MyMoneySplit::ActionDividend[] = "Dividend";
 const char MyMoneySplit::ActionReinvestDividend[] = "Reinvest";
 const char MyMoneySplit::ActionYield[] = "Yield";
 const char MyMoneySplit::ActionAddShares[] = "Add";
+const char MyMoneySplit::ActionSplitShares[] = "Split";
 
 MyMoneySplit::MyMoneySplit()
 {

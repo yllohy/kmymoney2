@@ -5,6 +5,7 @@
   * #if0'd OFX unit tests this will get moved to a plugin unit tester.
   * #if0'd code to create OFX response files.  This will get moved to
     libofx.
+  * Added support for stock splits
 
 2005-08-12 Ace Jones <acejones@users.sourceforge.net>
   * Catch exceptions in QIF importer when turning back on notifications
