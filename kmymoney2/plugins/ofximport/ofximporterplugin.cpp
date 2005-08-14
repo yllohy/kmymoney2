@@ -19,6 +19,7 @@
 // KDE Includes
 
 #include <kgenericfactory.h>
+#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -111,6 +112,8 @@ QString OfxImporterPlugin::lastError(void) const
 
 int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, void * pv)
 {
+  kdDebug(2) << __func__ << endl;
+    
   OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
   MyMoneyStatement& s = pofx->back();
 
@@ -275,11 +278,15 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
   else
     s.m_listTransactions += t;
 
+  kdDebug(2) << __func__ << "return 0 " << endl;
+  
   return 0;
 }
 
 int OfxImporterPlugin::ofxStatementCallback(struct OfxStatementData data, void* pv)
 {
+  kdDebug(2) << __func__ << endl;
+
   OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
   MyMoneyStatement& s = pofx->back();
 
@@ -312,11 +319,15 @@ int OfxImporterPlugin::ofxStatementCallback(struct OfxStatementData data, void* 
     s.m_moneyClosingBalance = static_cast<double>(data.ledger_balance);
   }
 
+  kdDebug(2) << __func__ << " return 0" << endl;
+  
   return 0;
 }
 
 int OfxImporterPlugin::ofxAccountCallback(struct OfxAccountData data, void * pv)
 {
+  kdDebug(2) << __func__ << endl;
+
   OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
   pofx->addnew();
   MyMoneyStatement& s = pofx->back();
@@ -355,11 +366,15 @@ int OfxImporterPlugin::ofxAccountCallback(struct OfxAccountData data, void * pv)
     }
   }
 
+  kdDebug(2) << __func__ << " return 0" << endl;
+  
   return 0;
 }
 
 int OfxImporterPlugin::ofxStatusCallback(struct OfxStatusData data, void * pv)
 {
+  kdDebug(2) << __func__ << endl;
+
   OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
   QString message;
 
@@ -394,6 +409,9 @@ int OfxImporterPlugin::ofxStatusCallback(struct OfxStatusData data, void * pv)
       break;
     }
   }
+  
+  kdDebug(2) << __func__ << " return 0 " << endl;
+  
   return 0;
 }
 

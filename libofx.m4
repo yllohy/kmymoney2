@@ -29,7 +29,7 @@ fi
 
 if test "$enable_ofxbanking" != "no"; then
   AC_CHECK_HEADER([OpenSP/macros.h], [
-    AC_CHECK_LIB(ofx, libofx_proc_file,[have_new_ofx="yes"], [have_new_ofx="no"])
+    AC_CHECK_LIB(ofx, libofx_request_accountinfo,[have_new_ofx="yes"], [have_new_ofx="no"])
     if test "$have_new_ofx" == "yes"; then
       AC_DEFINE_UNQUOTED(USE_OFX_DIRECTCONNECT, "1", [whether to use OFX directconnect])
       LIBS="-lofx $LIBS"

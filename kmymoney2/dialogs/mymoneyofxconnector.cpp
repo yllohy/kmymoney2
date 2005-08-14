@@ -22,6 +22,8 @@
 // ----------------------------------------------------------------------------
 // System Includes
 
+#include <libofx/libofx.h>
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -56,18 +58,18 @@ QString MyMoneyOfxConnector::username(void) const { return m_fiSettings.value("u
 QString MyMoneyOfxConnector::password(void) const { return m_fiSettings.value("password"); }
 QString MyMoneyOfxConnector::accountnum(void) const { return m_account.number(); }
 QString MyMoneyOfxConnector::url(void) const { return m_fiSettings.value("url"); }
-
-QString MyMoneyOfxConnector::accounttype(void) const
+ 
+AccountType MyMoneyOfxConnector::accounttype(void) const
 {
-  QString result = "BANK";
+  AccountType result = OFX_BANK_ACCOUNT;
 
   switch( m_account.accountType() )
   {
   case MyMoneyAccount::Investment:
-    result = "INV";
+    result = OFX_INVEST_ACCOUNT;
     break;
   case MyMoneyAccount::CreditCard:
-    result = "CC";
+    result = OFX_CREDITCARD_ACCOUNT;
     break;
   default:
     break;
@@ -79,8 +81,15 @@ QString MyMoneyOfxConnector::accounttype(void) const
   QRegExp rexp("OFXTYPE:([A-Z]*)");
   if ( rexp.search(m_account.description()) != -1 )
   {
-    result = rexp.cap(1);
+    QString override = rexp.cap(1);
     kdDebug(2) << "MyMoneyOfxConnector::accounttype() overriding to " << result << endl;
+    
+    if ( override == "BANK" )
+    result = OFX_BANK_ACCOUNT;
+    else if ( override == "CC" )
+      result = OFX_CREDITCARD_ACCOUNT;
+    else if ( override == "INV" )
+      result = OFX_INVEST_ACCOUNT;
   }
 
   return result;
@@ -88,27 +97,50 @@ QString MyMoneyOfxConnector::accounttype(void) const
 
 const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) const
 {
-  QString request;
-
-  if ( accounttype()=="CC" )
-    request = header() + Tag("OFX").subtag(signOn()).subtag(creditCardRequest(_dtstart));
-  else if ( accounttype()=="INV" )
-    request = header() + Tag("OFX").subtag(signOn()).subtag(investmentRequest(_dtstart));
-  else
-    request = header() + Tag("OFX").subtag(signOn()).subtag(bankStatementRequest(_dtstart));
-
+  OfxFiLogin fi;
+  memset(&fi,0,sizeof(OfxFiLogin));
+  strncpy(fi.fid,fiid().latin1(),OFX_FID_LENGTH-1);
+  strncpy(fi.org,fiorg().latin1(),OFX_ORG_LENGTH-1);
+  strncpy(fi.userid,username().latin1(),OFX_USERID_LENGTH-1);
+  strncpy(fi.userpass,password().latin1(),OFX_USERPASS_LENGTH-1);
+  
+  OfxAccountInfo account;
+  memset(&account,0,sizeof(OfxAccountInfo));
+  
+  strncpy(account.bankid,iban().latin1(),OFX_BANKID_LENGTH-1);
+  strncpy(account.brokerid,iban().latin1(),OFX_BROKERID_LENGTH-1);
+  strncpy(account.accountid,accountnum().latin1(),OFX_ACCOUNT_ID_LENGTH-1);
+  account.type = accounttype();
+  
+  char* szrequest = libofx_request_statement( &fi, &account, QDateTime(_dtstart).toTime_t() );
+  QString request = szrequest;
   // remove the trailing zero
   QByteArray result = request.utf8();
   result.truncate(result.size()-1);
+  free(szrequest);
 
   return result;
 }
 
-QString MyMoneyOfxConnector::uuid(void)
+const QByteArray MyMoneyOfxConnector::accountInfoRequest(void) const
 {
-  static int id = 1;
-  return QDateTime::currentDateTime().toString("yyyyMMdd-hhmmsszzz-") + QString::number(id++);
+  OfxFiLogin fi;
+  memset(&fi,0,sizeof(OfxFiLogin));
+  strncpy(fi.fid,fiid().latin1(),OFX_FID_LENGTH-1);
+  strncpy(fi.org,fiorg().latin1(),OFX_ORG_LENGTH-1);
+  strncpy(fi.userid,username().latin1(),OFX_USERID_LENGTH-1);
+  strncpy(fi.userpass,password().latin1(),OFX_USERPASS_LENGTH-1);
+  
+  char* szrequest = libofx_request_accountinfo( &fi );
+  QString request = szrequest;
+  // remove the trailing zero
+  QByteArray result = request.utf8();
+  result.truncate(result.size()-1);
+  free(szrequest);
+
+  return result;
 }
+#if 0
 
 MyMoneyOfxConnector::Tag MyMoneyOfxConnector::message(const QString& _msgType, const QString& _trnType, const Tag& _request)
 {
@@ -150,20 +182,6 @@ MyMoneyOfxConnector::Tag MyMoneyOfxConnector::creditCardRequest(const QDate& _dt
     .subtag(Tag("INCTRAN").element("DTSTART",dtstart_string).element("INCLUDE","Y")));
 }
 
-QString MyMoneyOfxConnector::header(void)
-{
-  return QString("OFXHEADER:100\r\n"
-                 "DATA:OFXSGML\r\n"
-                 "VERSION:102\r\n"
-                 "SECURITY:NONE\r\n"
-                 "ENCODING:USASCII\r\n"
-                 "CHARSET:1252\r\n"
-                 "COMPRESSION:NONE\r\n"
-                 "OLDFILEUID:NONE\r\n"
-                 "NEWFILEUID:%1\r\n"
-                 "\r\n").arg(uuid());
-}
-
 MyMoneyOfxConnector::Tag MyMoneyOfxConnector::signOn(void) const
 {
   QString dtnow_string = QDateTime::currentDateTime().toString(Qt::ISODate).remove(QRegExp("[^0-9]"));
@@ -182,6 +200,26 @@ MyMoneyOfxConnector::Tag MyMoneyOfxConnector::signOn(void) const
       .subtag(fi)
       .element("APPID","QWIN")
       .element("APPVER","1100"));
+}
+
+QString MyMoneyOfxConnector::header(void)
+{
+  return QString("OFXHEADER:100\r\n"
+                 "DATA:OFXSGML\r\n"
+                 "VERSION:102\r\n"
+                 "SECURITY:NONE\r\n"
+                 "ENCODING:USASCII\r\n"
+                 "CHARSET:1252\r\n"
+                 "COMPRESSION:NONE\r\n"
+                 "OLDFILEUID:NONE\r\n"
+                 "NEWFILEUID:%1\r\n"
+                 "\r\n").arg(uuid());
+}
+
+QString MyMoneyOfxConnector::uuid(void)
+{
+  static int id = 1;
+  return QDateTime::currentDateTime().toString("yyyyMMdd-hhmmsszzz-") + QString::number(id++);
 }
 
 //
@@ -373,7 +411,7 @@ MyMoneyOfxConnector::Tag MyMoneyOfxConnector::transaction(const MyMoneyTransacti
     .element("TRNTYPE","DEBIT")
     .element("DTPOSTED",_t.postDate().toString(Qt::ISODate).remove(QRegExp("[^0-9]")))
     .element("TRNAMT",s.value().formatMoney(QString(),2));
-
+  
   if ( ! _t.bankID().isEmpty() )
     result.element("FITID",_t.bankID());
   else
@@ -481,3 +519,4 @@ MyMoneyOfxConnector::Tag MyMoneyOfxConnector::investmentTransaction(const MyMone
   //FIXME: Do something useful with these errors
   return Tag("ERROR").element("DETAILS","This transaction contains an unsupported action type");
 }
+#endif

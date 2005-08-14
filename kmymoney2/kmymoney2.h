@@ -48,7 +48,6 @@ class KMyMoneyView;
 class MyMoneyQifReader;
 class MyMoneyStatementReader;
 class MyMoneyStatement;
-class MyMoneyOfxStatement;
 class IMyMoneyStorage;
 
 namespace KMyMoneyPlugin { class ImporterPlugin; }

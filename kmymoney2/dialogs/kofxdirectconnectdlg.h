@@ -37,8 +37,6 @@ class TransferJob;
 #include "../dialogs/mymoneyofxconnector.h"
 #include "../dialogs/kofxdirectconnectdlgdecl.h"
 
-class MyMoneyOfxStatement;
-
 /**
 @author ace jones
 */
@@ -65,7 +63,6 @@ protected:
   void setDetails(const QString& _details);  
   
   KTempFile* m_tmpfile;
-  MyMoneyOfxStatement* m_statement;
   MyMoneyOfxConnector m_connector;
   KIO::TransferJob* m_job;
 };

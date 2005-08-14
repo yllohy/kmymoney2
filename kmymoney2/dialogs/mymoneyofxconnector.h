@@ -19,6 +19,11 @@
 #define MYMONEYOFXCONNECTOR_H
 
 // ----------------------------------------------------------------------------
+// Library Includes
+
+#include <libofx/libofx.h>
+
+// ----------------------------------------------------------------------------
 // QT Includes
 
 class QDate;
@@ -40,6 +45,7 @@ class MyMoneyTransaction;
 */
 class MyMoneyOfxConnector
 {
+#if 0
   class Tag
   {
   public:
@@ -53,14 +59,17 @@ class MyMoneyOfxConnector
     QString m_name;
     QString m_contents;
   };
-
+#endif
 public:
   MyMoneyOfxConnector(const MyMoneyAccount& _account);
   QString url(void) const;
   const QByteArray statementRequest(const QDate& _dtstart) const;
+  const QByteArray MyMoneyOfxConnector::accountInfoRequest(void) const;
+  
   const QByteArray statementResponse(const QDate& _dtstart) const;
   
 protected:
+#if 0
   Tag investmentRequest(const QDate& _dtstart) const;
   Tag bankStatementRequest(const QDate& _dtstart) const;
   Tag creditCardRequest(const QDate& _dtstart) const; 
@@ -71,22 +80,23 @@ protected:
   Tag creditCardStatementResponse(const QDate& _dtstart) const;
   QString investmentStatementResponse(const QDate& _dtstart) const;
   Tag signOnResponse(void) const;
-  
+#endif
   QString iban(void) const;
   QString fiorg(void) const;
   QString fiid(void) const;
   QString username(void) const;
   QString password(void) const;
   QString accountnum(void) const;
-  QString accounttype(void) const;
-  
+  AccountType accounttype(void) const;
+#if 0  
   static Tag message(const QString& _msgType, const QString& _trnType, const Tag& _request);
   static Tag messageResponse(const QString& _msgType, const QString& _trnType, const Tag& _response);
   static QString header(void);
   static QString uuid(void);
+#endif
 
 private:
-  QString m_body;
+//   QString m_body;
   const MyMoneyAccount& m_account;
   const MyMoneyInstitution& m_institution;
   MyMoneyKeyValueContainer m_fiSettings;

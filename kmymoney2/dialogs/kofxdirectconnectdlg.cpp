@@ -46,7 +46,6 @@
 KOfxDirectConnectDlg::KOfxDirectConnectDlg(const MyMoneyAccount& account, QWidget *parent, const char *name)
  : KOfxDirectConnectDlgDecl(parent, name),
    m_tmpfile(NULL),
-   m_statement(NULL),
    m_connector(account),
    m_job(NULL)
 {
@@ -54,7 +53,6 @@ KOfxDirectConnectDlg::KOfxDirectConnectDlg(const MyMoneyAccount& account, QWidge
 
 KOfxDirectConnectDlg::~KOfxDirectConnectDlg()
 {
-    delete m_statement;
     delete m_tmpfile;
 }
 
@@ -62,9 +60,17 @@ void KOfxDirectConnectDlg::init(void)
 {
   show();
 
+  QByteArray request = m_connector.statementRequest(QDate::currentDate().addMonths(-2));
+  
+  // For debugging, dump out the request
+  QFile g( "request.ofx" );
+  g.open( IO_WriteOnly );
+  QTextStream(&g) << QString(request);
+  g.close();
+    
   m_job = KIO::http_post(
     m_connector.url(),
-    m_connector.statementRequest(QDate::currentDate().addMonths(-2)),
+    request,
     true
   );
   m_job->addMetaData("content-type", "Content-type: application/x-ofx" );
@@ -122,8 +128,6 @@ void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job* /* e */)
   {
     m_job->showErrorDialog();
 
-    delete m_statement;
-    m_statement = 0;
     if ( m_tmpfile )
     {
       m_tmpfile->close();
@@ -173,8 +177,6 @@ void KOfxDirectConnectDlg::reject(void)
     delete m_tmpfile;
     m_tmpfile = NULL;
   }
-  delete m_statement;
-  m_statement = 0;
   QDialog::reject();
 }
 

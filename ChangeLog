@@ -1,6 +1,10 @@
 2005-08-13 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a recently-introduced bug where the wrong price
     source was being used.
+  * Updated OFX Direct Connect to use libofx 0.8.0
+  * #if0'd OFX unit tests this will get moved to a plugin unit tester.
+  * #if0'd code to create OFX response files.  This will get moved to
+    libofx.
 
 2005-08-12 Ace Jones <acejones@users.sourceforge.net>
   * Catch exceptions in QIF importer when turning back on notifications
