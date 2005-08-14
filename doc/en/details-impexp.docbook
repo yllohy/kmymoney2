@@ -631,6 +631,14 @@ Some of your transactions may be flashing red in the ledger.
 	Then, change the QIF keys (D,T,N,P,M) to match the order of your csv data.  
 	Set the input filter to <userinput>awk -f csv2qif.awk</userinput>.
 </para>
+
+<para>
+  Another problem sometimes arises in the encoding of QIF files.  
+  &kappname; expects files to be UTF8 encoded.  
+  If your file is encoded in something else, it can be useful to convert it to UTF8.
+  For example to convert it from iso-8859-1, you would set the input filter to <userinput>recode iso-8859-1..utf-8</userinput>.
+</para>
+
 </sect2>
 <sect2><title>Special &kappname; QIF extensions</title>
 
