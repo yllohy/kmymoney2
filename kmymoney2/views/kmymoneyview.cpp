@@ -680,6 +680,7 @@ void KMyMoneyView::slotAccountDelete()
 
 void KMyMoneyView::slotAccountOfxConnect(void)
 {
+#ifdef USE_OFX_DIRECTCONNECT
   bool accountSuccess=false;
   try
   {
@@ -712,7 +713,7 @@ void KMyMoneyView::slotAccountOfxConnect(void)
     KMessageBox::information(this,i18n("Error connecting to bank: %1").arg(e->what()));
     delete e;
   }
-
+#endif
 }
 
 bool KMyMoneyView::fileOpen(void)

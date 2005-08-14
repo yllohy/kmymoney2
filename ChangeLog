@@ -1,3 +1,8 @@
+2005-08-14 Ace Jones <acejones@users.sourceforge.net>
+  * Explain how to convert from another encoding to UTF8
+  * Fixed a problem in my last checkin where libofx was 
+    required to build CVS version.
+  
 2005-08-13 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a recently-introduced bug where the wrong price
     source was being used.

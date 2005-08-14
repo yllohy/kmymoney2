@@ -18,6 +18,12 @@
 #ifndef MYMONEYOFXCONNECTOR_H
 #define MYMONEYOFXCONNECTOR_H
 
+#ifdef HAVE_CONFIG_H
+#include "../../config.h"
+#endif
+
+#ifdef USE_OFX_DIRECTCONNECT
+
 // ----------------------------------------------------------------------------
 // Library Includes
 
@@ -45,21 +51,6 @@ class MyMoneyTransaction;
 */
 class MyMoneyOfxConnector
 {
-#if 0
-  class Tag
-  {
-  public:
-    Tag(const QString& _name): m_name(_name) {}
-    Tag& subtag(const Tag& _tag) { m_contents += _tag; return *this; }
-    Tag& element(const QString& _name, const QString& _data) { m_contents += "<"+_name+">"+_data+"\r\n"; return *this; }
-    Tag& data(const QString& _data) { m_contents += _data; return *this; }
-    operator QString(void) const { return QString("<%1>\r\n%2</%3>\r\n").arg(m_name).arg(m_contents).arg(m_name); }
-    bool isEmpty(void) const { return m_contents.isEmpty(); }
-  private:
-    QString m_name;
-    QString m_contents;
-  };
-#endif
 public:
   MyMoneyOfxConnector(const MyMoneyAccount& _account);
   QString url(void) const;
@@ -69,18 +60,6 @@ public:
   const QByteArray statementResponse(const QDate& _dtstart) const;
   
 protected:
-#if 0
-  Tag investmentRequest(const QDate& _dtstart) const;
-  Tag bankStatementRequest(const QDate& _dtstart) const;
-  Tag creditCardRequest(const QDate& _dtstart) const; 
-  Tag signOn(void) const;
-  Tag transaction(const MyMoneyTransaction& _t) const;
-  Tag investmentTransaction(const MyMoneyTransaction& _t) const;
-  Tag bankStatementResponse(const QDate& _dtstart) const;
-  Tag creditCardStatementResponse(const QDate& _dtstart) const;
-  QString investmentStatementResponse(const QDate& _dtstart) const;
-  Tag signOnResponse(void) const;
-#endif
   QString iban(void) const;
   QString fiorg(void) const;
   QString fiid(void) const;
@@ -88,12 +67,6 @@ protected:
   QString password(void) const;
   QString accountnum(void) const;
   AccountType accounttype(void) const;
-#if 0  
-  static Tag message(const QString& _msgType, const QString& _trnType, const Tag& _request);
-  static Tag messageResponse(const QString& _msgType, const QString& _trnType, const Tag& _response);
-  static QString header(void);
-  static QString uuid(void);
-#endif
 
 private:
 //   QString m_body;
@@ -102,4 +75,5 @@ private:
   MyMoneyKeyValueContainer m_fiSettings;
 };
 
+#endif // USE_OFX_DIRECTCONNECT
 #endif // OFXCONNECTOR_H

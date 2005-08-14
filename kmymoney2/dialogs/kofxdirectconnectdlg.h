@@ -18,6 +18,12 @@
 #ifndef KOFXDIRECTCONNECTDLG_H
 #define KOFXDIRECTCONNECTDLG_H
 
+#ifdef HAVE_CONFIG_H
+#include "../../config.h"
+#endif
+
+#ifdef USE_OFX_DIRECTCONNECT
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -67,4 +73,5 @@ protected:
   KIO::TransferJob* m_job;
 };
 
+#endif // USE_OFX_DIRECTCONNECT
 #endif // KOFXDIRECTCONNECTDLG_H

@@ -15,6 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "../../config.h"
+#endif
+#ifdef USE_OFX_DIRECTCONNECT
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -181,3 +186,4 @@ void KOfxDirectConnectDlg::reject(void)
 }
 
 #include "kofxdirectconnectdlg.moc"
+#endif // USE_OFX_DIRECTCONNECT
