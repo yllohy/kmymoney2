@@ -102,7 +102,7 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutio
 
   connect(accountListView, SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)),
     this, SLOT(slotListDoubleClicked(QListViewItem*, const QPoint&, int)));
-  connect(accountIconView, SIGNAL(doubleClicked(QIconViewItem*)),
+  connect(accountIconView, SIGNAL(executed(QIconViewItem*)),
     this, SLOT(slotIconDoubleClicked(QIconViewItem*)));
 
   connect(accountTabWidget, SIGNAL(currentChanged(QWidget*)),
