@@ -5,9 +5,9 @@ INCLUDES = $(all_includes) -I.. -I$(top_srcdir) -I.
 noinst_LIBRARIES = libreports.a
 libreports_a_METASOURCES = AUTO
 
-libreports_a_SOURCES = pivottable.cpp querytable.cpp reportaccount.cpp
+libreports_a_SOURCES = pivottable.cpp querytable.cpp reportaccount.cpp kreportchartview.cpp
 
-noinst_HEADERS = kreportchartview.h kreportsviewtest.h pivottable.h pivottabletest.h querytable.h querytabletest.h reportaccount.h reportdebug.h reportstestcommon.h
+noinst_HEADERS = kreportchartview.h kreportsviewtest.h pivottable.h pivottabletest.h querytable.h querytabletest.h reportaccount.h reportdebug.h reportstestcommon.h kreportchartview.h
 
 if CPPUNIT
 check_LIBRARIES = libreportstest.a

@@ -93,6 +93,7 @@ KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& re
     m_control->buttonChart->hide();
   }
 
+  m_chartView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   m_chartView->hide();
   m_layout->addWidget( m_control ); //, 0, Qt::AlignTop );
   m_layout->addWidget( m_part->view() );

@@ -1138,49 +1138,15 @@ void PivotTable::dump( const QString& file ) const
 
 void PivotTable::drawChart( KReportChartView& _view ) const
 {
-  _view.canvas()->setBackgroundColor(QColor("gray"));
-
-  // create a sanple graph, just to get the point across.
-  // bonus points if you figure out what these data are
-  QPoint points[] = {
-  QPoint(600,21),  QPoint(595,148),  QPoint(590,141),  QPoint(585,151),  QPoint(580,141),  QPoint(575,174),
-  QPoint(570,153),  QPoint(565,200),  QPoint(560,197),  QPoint(555,155),  QPoint(550,228),  QPoint(545,166),
-  QPoint(540,256),  QPoint(535,297),  QPoint(530,337),  QPoint(525,327),  QPoint(520,362),  QPoint(515,327),
-  QPoint(510,331),  QPoint(505,389),  QPoint(500,376),  QPoint(495,378),  QPoint(490,390),  QPoint(485,415),
-  QPoint(480,439),  QPoint(475,424),  QPoint(470,438),  QPoint(465,436),  QPoint(460,436),  QPoint(455,424),
-  QPoint(450,443),  QPoint(445,446),  QPoint(440,449),  QPoint(435,486),  QPoint(430,479),  QPoint(425,473),
-  QPoint(420,497),  QPoint(415,502),  QPoint(410,515),  QPoint(405,518),  QPoint(400,524),  QPoint(395,527),
-  QPoint(390,525),  QPoint(385,526),  QPoint(380,529),  QPoint(375,536),  QPoint(370,538),  QPoint(365,542),
-  QPoint(360,545),  QPoint(355,546),  QPoint(350,538),  QPoint(345,543),  QPoint(340,542),  QPoint(335,543),
-  QPoint(330,544),  QPoint(325,547),  QPoint(320,549),  QPoint(315,555),  QPoint(310,561),  QPoint(305,563),
-  QPoint(300,562),  QPoint(295,561),  QPoint(290,561),  QPoint(285,565),  QPoint(280,564),  QPoint(275,568),
-  QPoint(270,568),  QPoint(265,566),  QPoint(260,571),  QPoint(255,573),  QPoint(250,574),  QPoint(245,573),
-  QPoint(240,575),  QPoint(235,575),  QPoint(230,575),  QPoint(225,574),  QPoint(220,576),  QPoint(215,577),
-  QPoint(210,572),  QPoint(205,571),  QPoint(200,573),  QPoint(195,571),  QPoint(190,574),  QPoint(185,573),
-  QPoint(180,573),  QPoint(175,571),  QPoint(170,572),  QPoint(165,575),  QPoint(160,576),  QPoint(155,577),
-  QPoint(150,578),  QPoint(145,575),  QPoint(140,577),  QPoint(135,575),  QPoint(130,574),  QPoint(125,575),
-  QPoint(120,577),  QPoint(115,579),  QPoint(110,580),  QPoint(105,581),  QPoint(100,582),  QPoint(95,584),
-  QPoint(90,585),  QPoint(85,584),  QPoint(80,586),  QPoint(75,585),  QPoint(70,585),  QPoint(65,586),
-  QPoint(60,589),  QPoint(55,590),  QPoint(50,591),  QPoint(45,591),  QPoint(40,591),  QPoint(35,590),
-  QPoint(30,589),  QPoint(25,589),  QPoint(20,592),  QPoint(15,592),  QPoint(10,593),  QPoint(5,593),
-  QPoint(0,593),  QPoint(600,593),
-  };
-
-  QPointArray qpa(122);
-  qpa.duplicate( points, 122 );
-
-  QCanvasPolygon* poly = new QCanvasPolygon( _view.canvas() );
-  poly->setBrush(QColor(255,0,0));
-  poly->setPoints( qpa );
-  poly->show();
-
-  QCanvasText* i = new QCanvasText(_view.canvas());
-  i->setText("This is where a chart would go if there were a chart!");
-  i->move(10,50);
-  i->setZ(2);
-  i->show();
-
-  _view.canvas()->update();
+  KDChartTableData data( 1, m_numColumns );
+  
+  unsigned totalcolumn = 1;
+  while ( totalcolumn < m_numColumns )
+  {
+    data.setCell( 0, totalcolumn-1, m_grid.m_total[totalcolumn].toDouble() );
+    ++totalcolumn;
+  }
+  _view.setNewData(data);
 }
 
 }

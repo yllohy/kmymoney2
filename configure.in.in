@@ -57,11 +57,15 @@ dnl check for tools required for generation of PDF documentation
 dnl
 AC_PDF_GENERATION()
 
-
 dnl
 dnl check for libofx
 dnl 
 AC_LIBOFX()
+
+dnl
+dnl check for kdchart
+dnl 
+AC_KDCHART()
 
 dnl CXXFLAGS="$NOOPT_CXXFLAGS" dnl __kdevelop[noopt]__
 CXXFLAGS="$CXXFLAGS $USE_EXCEPTIONS" dnl __kdevelop[exc]__

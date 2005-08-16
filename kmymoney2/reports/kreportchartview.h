@@ -19,28 +19,55 @@
 #ifndef KREPORTCHARTVIEW_H
 #define KREPORTCHARTVIEW_H
 
+#ifdef HAVE_CONFIG_H
+#include "../../config.h"
+#endif
+#ifdef HAVE_KDCHART
+
 // ----------------------------------------------------------------------------
 // QT Includes
-#include <qcanvas.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
+#include <KDChartWidget.h>
+#include <KDChartTable.h>
+#include <KDChartParams.h>
+#include <KDChartAxisParams.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 namespace reports {
 
-class KReportChartView: public QCanvasView 
+class KReportChartView: public KDChartWidget
 {
 public:
-  QCanvas* m_canvas;
-  
-  KReportChartView( QWidget* parent, const char* name ): QCanvasView(parent,name) { m_canvas = new QCanvas(parent); setCanvas( m_canvas ); m_canvas->resize(600,600); }
-  ~KReportChartView() { if ( m_canvas ) delete m_canvas; }
+  KReportChartView( QWidget* parent, const char* name );
+  ~KReportChartView() {}
+  static bool implemented(void) { return true; }
+  void setNewData( const KDChartTableData& newdata ) { m_data = newdata; }
+private:
+  KDChartParams m_params;
+  KDChartTableData m_data;
+};
+
+} // end namespace reports
+
+#else
+
+namespace reports {
+
+class KReportChartView: public KDChartWidget
+{
+public:
+  KReportChartView( QWidget* parent, const char* name ) {}
+  ~KReportChartView() {}
   static bool implemented(void) { return false; }
 };
 
 } // end namespace reports
+
+#endif
 
 #endif // KREPORTCHARTVIEW_H

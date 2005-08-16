@@ -1,3 +1,9 @@
+2005-08-15 Ace Jones <acejones@users.sourceforge.net>
+  * Initial integration of charts.  For pivottable reports (income/expenses and
+    net worth), the "Chart" button will display a single line graph of the 
+    total.  To use it, ensure you have libkdchart.la and configure with 
+    --enable-charts.
+
 2005-08-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1259351 (Icons view doesn't honor single click preference)
   * Fixed minor problem in build environment
