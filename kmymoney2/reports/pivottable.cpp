@@ -176,7 +176,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
 
   if ( m_config_f.isRunningSum() )
     calculateOpeningBalances();
-  
+
   //
   // Populate all transactions into the row/column pivot grid
   //
@@ -437,7 +437,7 @@ void PivotTable::calculateOpeningBalances( void )
       // extract the balance of the account for the given begin date, which is
       // the opening balance plus the sum of all transactions prior to the begin
       // date
-      
+
       // this is in the underlying currency
       MyMoneyMoney value = file->balance(account.id(), from.addDays(-1));
 
@@ -1138,8 +1138,9 @@ void PivotTable::dump( const QString& file ) const
 
 void PivotTable::drawChart( KReportChartView& _view ) const
 {
+#ifdef HAVE_KDCHART
   KDChartTableData data( 1, m_numColumns );
-  
+
   unsigned totalcolumn = 1;
   while ( totalcolumn < m_numColumns )
   {
@@ -1147,6 +1148,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     ++totalcolumn;
   }
   _view.setNewData(data);
+#endif
 }
 
-}
+} // namespace
