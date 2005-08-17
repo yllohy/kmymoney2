@@ -1122,32 +1122,134 @@ void PivotTable::dump( const QString& file ) const
   g.close();
 }
 
-// ----------------------------------------------------------------------------
-// CHART STUBS
-//
-// Someday, someone enterprising may want to implement report charts before I
-// get there.  If so, here are the stubs you'll need:
-//
-// - Define KReportChartView, and inherit from whatever charting base you need.
-//   I used QCanvasView just to test, but you can use whatever makes sense.
-// - Change KReportChartView::implemented() to return true
-// - Implement PivotTable::drawChart to draw a chart into a KReportChartView,
-//   using the data in m_grid.  You can safely assume that m_grid has been
-//   correctly populated first.
-// - Move KReportChartView into its own file.
-
 void PivotTable::drawChart( KReportChartView& _view ) const
 {
 #ifdef HAVE_KDCHART
-  KDChartTableData data( 1, m_numColumns );
 
-  unsigned totalcolumn = 1;
-  while ( totalcolumn < m_numColumns )
+  //
+  // If "show subcategories" is selected, add one series for every row
+  //
+
+  if ( m_config_f.isShowingSubAccounts() )
   {
-    data.setCell( 0, totalcolumn-1, m_grid.m_total[totalcolumn].toDouble() );
-    ++totalcolumn;
+    unsigned rownum = 1;  
+    KDChartTableData data( 1, m_numColumns );
+    
+    // iterate over outer groups
+    TGrid::const_iterator it_outergroup = m_grid.begin();
+    while ( it_outergroup != m_grid.end() )
+    {
+  
+      // iterate over inner groups
+      TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
+      while ( it_innergroup != (*it_outergroup).end() )
+      {
+        //
+        // Rows
+        //
+  
+        QString innergroupdata;
+        TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
+        while ( it_row != (*it_innergroup).end() )
+        {
+          //data.setCell( rownum-1, 0, it_row.key().name() );
+          _view.params()->setLegendText( rownum-1, it_row.key().name() );
+          
+          //
+          // Columns
+          //
+  
+          unsigned column = 1;
+          while ( column < m_numColumns )
+          {
+            data.setCell( rownum-1, column-1, it_row.data()[column].toDouble() );
+            ++column;
+          }
+          
+          // TODO: This is inefficient. Really we should total up how many rows
+          // there will be and allocate it all at once.
+          data.expand( ++rownum, m_numColumns );
+  
+          ++it_row;
+        }
+        ++it_innergroup;
+      }
+      ++it_outergroup;  
+    }
+    data.expand( rownum-1, m_numColumns );
+    _view.setNewData(data);
+  
   }
-  _view.setNewData(data);
+
+  //
+  // Else "show subcategories" is NOT selected, add one series for every inner group
+  //
+  
+  else
+  {
+    unsigned rownum = 1;  
+    KDChartTableData data( 1, m_numColumns );
+    
+    // iterate over outer groups
+    TGrid::const_iterator it_outergroup = m_grid.begin();
+    while ( it_outergroup != m_grid.end() )
+    {
+  
+      // iterate over inner groups
+      TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
+      while ( it_innergroup != (*it_outergroup).end() )
+      {
+        _view.params()->setLegendText( rownum-1, it_innergroup.key() );
+        
+        //
+        // Columns
+        //
+
+        unsigned column = 1;
+        while ( column < m_numColumns )
+        {
+          data.setCell( rownum-1, column-1, (*it_innergroup).m_total[column].toDouble() );
+          ++column;
+        }
+
+        // TODO: This is inefficient. Really we should total up how many rows
+        // there will be and allocate it all at once.
+        data.expand( ++rownum, m_numColumns );
+                
+        ++it_innergroup;
+      }
+      ++it_outergroup;  
+    }
+    data.expand( rownum-1, m_numColumns );
+    _view.setNewData(data);
+  }
+
+  //
+  // Actually, another sub-level is needed here for showing only the outergroups
+  // This tells me the "Show top accounts only" should be a 4-state drop down
+  // Called "Detail Level": Single Value, Account Groups, Accounts, Subaccounts
+  //
+  
+  //
+  // If we're in Single Value detail level, show just the totals!
+  // But there is no way to set this mode now!!
+  //
+  
+  if(0)
+  {
+    KDChartTableData data( 1, m_numColumns + 1 );
+    data.setCell( 0,0,QString("Total") );
+    
+    // For now, just the totals
+    unsigned totalcolumn = 1;
+    while ( totalcolumn < m_numColumns )
+    {
+      data.setCell( 0, totalcolumn-1, m_grid.m_total[totalcolumn].toDouble() );
+      ++totalcolumn;
+    }
+    _view.setNewData(data);
+  }
+
 #endif
 }
 

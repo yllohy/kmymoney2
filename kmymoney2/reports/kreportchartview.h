@@ -47,6 +47,8 @@ public:
   ~KReportChartView() {}
   static bool implemented(void) { return true; }
   void setNewData( const KDChartTableData& newdata ) { m_data = newdata; }
+  KDChartParams* params(void) { return &m_params; }
+  
 private:
   KDChartParams m_params;
   KDChartTableData m_data;

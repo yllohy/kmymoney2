@@ -1,3 +1,7 @@
+2005-08-16 Ace Jones <acejones@users.sourceforge.net>
+  * Modified charts to show one line per sub-account or per top-account
+    depending on the setting of the "Show Top Accounts" configuration option.
+
 2005-08-15 Ace Jones <acejones@users.sourceforge.net>
   * Initial integration of charts.  For pivottable reports (income/expenses and
     net worth), the "Chart" button will display a single line graph of the 
