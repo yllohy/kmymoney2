@@ -1,3 +1,8 @@
+2005-08-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1260732 (Reconciling multiple currencies)
+  * Fixed #1261797 (Manual price entry/update does not store values)
+  * Added complete check for KDChart availability
+
 2005-08-16 Ace Jones <acejones@users.sourceforge.net>
   * Modified charts to show one line per sub-account or per top-account
     depending on the setting of the "Show Top Accounts" configuration option.
