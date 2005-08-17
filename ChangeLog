@@ -1,5 +1,6 @@
 2005-08-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
-  * Fixed #1260732 (Reconciling multiple currencies)
+  * Fixed #1260732 (Reconciling multiple currencies) Thanks to
+    "pSmart" for reporting
   * Fixed #1261797 (Manual price entry/update does not store values)
   * Added complete check for KDChart availability
 
