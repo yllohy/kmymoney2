@@ -58,7 +58,9 @@ private:
 
 #else
 
-class KReportChartView
+namespace reports {
+
+class KReportChartView : public QWidget
 {
 public:
   KReportChartView( QWidget* parent, const char* name ) {}
