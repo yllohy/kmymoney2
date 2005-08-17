@@ -290,10 +290,10 @@ int kMyMoneyPriceView::slotEditPrice(void)
                              fract,
                              this, "currencyCalculator");
     // we always want to update the price, that's why we're here
+    calc.m_updateButton->setChecked(true);
     calc.m_updateButton->hide();
 
-    if((rc = calc.exec()) == QDialog::Accepted) {
-    }
+    rc = calc.exec();
   }
   return rc;
 }
