@@ -1476,7 +1476,7 @@ void KLedgerViewCheckings::fillReconcileData(void)
     MyMoneyTransaction* t = m_transactionPtrVector[i];
     MyMoneySplit sp = t->splitByAccount(m_account.id());
     if(sp.reconcileFlag() == MyMoneySplit::Cleared)
-      cleared += sp.value();
+      cleared += sp.value(t->commodity(), m_account.currencyId());
   }
   // We need to invert all values for liability accounts
   if(m_account.accountGroup() == MyMoneyAccount::Liability) {
