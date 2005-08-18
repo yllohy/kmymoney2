@@ -62,9 +62,15 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   QString dateFormat = KGlobal::locale()->dateFormatShort().lower();
   QString order, separator;
   for(unsigned i = 0; i < dateFormat.length(); ++i) {
-    if(dateFormat[i] == 'y' || dateFormat[i] == 'm' || dateFormat[i] == 'd')
+    // DD.MM.YYYY is %d.%m.%y
+    // dD.mM.YYYY is %e.%n.%y
+    if(dateFormat[i] == 'y' || dateFormat[i] == 'm' || dateFormat[i] == 'n' || dateFormat[i] == 'd' || dateFormat[i] == 'e') {
+      if(dateFormat[i] == 'n')
+        dateFormat[i] = 'm';
+      if(dateFormat[i] == 'e')
+        dateFormat[i] = 'd';
       order += dateFormat[i];
-    else if(dateFormat[i] != '%' && separator.isEmpty())
+    } else if(dateFormat[i] != '%' && separator.isEmpty())
       separator = dateFormat[i];
     if(order.length() == 3)
       break;
