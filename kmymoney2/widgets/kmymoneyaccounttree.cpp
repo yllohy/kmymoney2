@@ -142,35 +142,44 @@ void kMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* pa
   else
     newParent = dynamic_cast<KAccountListItem*>(parent);
 
-  QCString id(event->encodedData("text/plain"));
-  try {
-    // keep the account information and call the acutal routine right out
-    // of the main loop. This will reset the focus of the cursor.
-    m_accTo = MyMoneyFile::instance()->account(newParent->accountID());
-    m_accFrom = MyMoneyFile::instance()->account(id);
-    QTimer::singleShot(0, this, SLOT(slotReparentAccount()));
+  // if the drop occurs in the top half of the very first item in the list,
+  // parent and after both are 0. This can be used to insert the item to be
+  // dropped as the very first element. In our case, this is not possible.
+  // Hence we use the first child of the list as the new parent.
+  if(!newParent)
+    newParent = dynamic_cast<KAccountListItem*>(firstChild());
 
-  } catch(MyMoneyException *e) {
-    delete e;
-    // might have been a bank that we dropped on. let's check
+  if(newParent) {
+    QCString id(event->encodedData("text/plain"));
     try {
-      // keep the account and institution information and call the acutal
-      // routine right out of the main loop. This will reset the focus of the cursor.
-      m_institution = MyMoneyFile::instance()->institution(newParent->accountID());
+      // keep the account information and call the acutal routine right out
+      // of the main loop. This will reset the focus of the cursor.
+      m_accTo = MyMoneyFile::instance()->account(newParent->accountID());
       m_accFrom = MyMoneyFile::instance()->account(id);
-      QTimer::singleShot(0, this, SLOT(slotReparentInstitution()));
+      QTimer::singleShot(0, this, SLOT(slotReparentAccount()));
 
     } catch(MyMoneyException *e) {
       delete e;
-      // we also end up here, if the id of the new parent is empty.
-      // the only case this happens is that we will be removed from the institution
-      MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
-      acc.setInstitutionId(QCString());
+      // might have been a bank that we dropped on. let's check
       try {
-        MyMoneyFile::instance()->modifyAccount(acc);
+        // keep the account and institution information and call the acutal
+        // routine right out of the main loop. This will reset the focus of the cursor.
+        m_institution = MyMoneyFile::instance()->institution(newParent->accountID());
+        m_accFrom = MyMoneyFile::instance()->account(id);
+        QTimer::singleShot(0, this, SLOT(slotReparentInstitution()));
+
       } catch(MyMoneyException *e) {
-        QString detail = i18n("%1 caught in %2 at line %3").arg(e->what()).arg(e->file()).arg(e->line());
-        KMessageBox::detailedError(this, i18n("Cannot remove account from institution"), detail, i18n("Error"));
+        delete e;
+        // we also end up here, if the id of the new parent is empty.
+        // the only case this happens is that we will be removed from the institution
+        MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+        acc.setInstitutionId(QCString());
+        try {
+          MyMoneyFile::instance()->modifyAccount(acc);
+        } catch(MyMoneyException *e) {
+          QString detail = i18n("%1 caught in %2 at line %3").arg(e->what()).arg(e->file()).arg(e->line());
+          KMessageBox::detailedError(this, i18n("Cannot remove account from institution"), detail, i18n("Error"));
+        }
       }
     }
   }
