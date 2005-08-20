@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>kMyMoneyReportConfigTab2Decl</class>
 <widget class="QWidget">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>162</height>
+            <height>164</height>
         </rect>
     </property>
     <property name="caption">
@@ -141,16 +141,68 @@
                 </spacer>
             </hbox>
         </widget>
-        <widget class="QCheckBox">
+        <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>m_checkShowTop</cstring>
+                <cstring>layout34_2</cstring>
             </property>
-            <property name="text">
-                <string>Show Top Categories Only</string>
-            </property>
-            <property name="toolTip" stdset="0">
-                <string>&lt;p&gt;Select this option to summarize all sub-categories into a single line for each Top Category.&lt;/p&gt;&lt;p&gt;(e.g. Values for Computers:Hardware and Computers:Software will all be shown on the Computers line)&lt;/p&gt;</string>
-            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel6</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Detail</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>All</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Top-Level</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Groups</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Totals</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>m_comboDetail</cstring>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>&lt;p&gt;Choose what kind of accounts to display as the rows of this report.&lt;/p&gt;</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer12_2_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>370</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
         </widget>
         <spacer>
             <property name="name">
@@ -165,7 +217,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>119</height>
+                    <height>20</height>
                 </size>
             </property>
         </spacer>

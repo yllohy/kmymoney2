@@ -38,6 +38,7 @@ const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,ass
 const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,months,bimonths,quarters,,,,,,,,,years",true);
 const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,category,memo,account,reconcileflag,action,shares,price,performance",true);
 const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eNoReport };
+const QStringList MyMoneyReport::kDetailLevelText = QStringList::split(",","none,all,top,group,total,invalid",true);
 
 // This should live in mymoney/mymoneytransactionfilter.h
 static const QStringList kTypeText = QStringList::split(",","all,payments,deposits,transfers,none");
@@ -47,7 +48,7 @@ static const QStringList kAccountTypeText = QStringList::split(",","unknown,chec
 
 MyMoneyReport::MyMoneyReport(void):
     m_name("Unconfigured Pivot Table Report"),
-    m_showSubAccounts(false),
+    m_detailLevel(eDetailNone),
     m_convertCurrency(true),
     m_favorite(false),
     m_tax(false),
@@ -64,7 +65,7 @@ MyMoneyReport::MyMoneyReport(void):
 MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment ):
     m_name(_name),
     m_comment(_comment),
-    m_showSubAccounts(_ss),
+    m_detailLevel(_ss?eDetailAll:eDetailTop),
     m_convertCurrency(true),
     m_favorite(false),
     m_tax(false),
@@ -231,7 +232,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
 
   if ( m_reportType == ePivotTable )
   {
-    e.setAttribute("type","pivottable 1.7");
+    e.setAttribute("type","pivottable 1.8");
     
     if ( anonymous )
     {
@@ -244,7 +245,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
       e.setAttribute("comment", m_comment);
     }
     e.setAttribute("group", m_group);
-    e.setAttribute("showsubaccounts", m_showSubAccounts);
+    e.setAttribute("detail", kDetailLevelText[m_detailLevel]);
     e.setAttribute("convertcurrency", m_convertCurrency);
     e.setAttribute("favorite", m_favorite);
     e.setAttribute("tax", m_tax);
@@ -256,7 +257,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   }
   else if ( m_reportType == eQueryTable )
   {
-    e.setAttribute("type","querytable 1.7");
+    e.setAttribute("type","querytable 1.8");
     if ( anonymous )
     {
       e.setAttribute("name", m_id);
@@ -497,7 +498,14 @@ bool MyMoneyReport::read(const QDomElement& e)
 
     m_group = e.attribute("group");
     m_id = e.attribute("id");
-    m_showSubAccounts = e.attribute("showsubaccounts","0").toUInt();
+    if ( e.hasAttribute("detail") )
+    {
+      i = kDetailLevelText.findIndex(e.attribute("detail","all"));      
+      if ( i != -1 )
+        m_detailLevel = static_cast<EDetailLevel>(i);
+    }
+    else
+      setShowSubAccounts( e.attribute("showsubaccounts","0").toUInt() );
     m_convertCurrency = e.attribute("convertcurrency","1").toUInt();
     m_favorite = e.attribute("favorite","0").toUInt();
     m_tax = e.attribute("tax","0").toUInt();    

@@ -953,142 +953,157 @@ QString PivotTable::renderHTML( void ) const
 
   result += "</tr>\n";
 
-  //
-  // Outer groups
-  //
-
-  // iterate over outer groups
-  TGrid::const_iterator it_outergroup = m_grid.begin();
-  while ( it_outergroup != m_grid.end() )
+  // Skip the body of the report if the report only calls for totals to be shown
+  if ( m_config_f.detailLevel() != MyMoneyReport::eDetailTotal )
   {
+  
     //
-    // Outer Group Header
+    // Outer groups
     //
-
-    result += QString("<tr class=\"sectionheader\"><td class=\"left\"%1>%2</td></tr>\n").arg(colspan).arg(it_outergroup.key());
-
-    //
-    // Inner Groups
-    //
-
-    TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
-    unsigned rownum = 0;
-    while ( it_innergroup != (*it_outergroup).end() )
+  
+    // iterate over outer groups
+    TGrid::const_iterator it_outergroup = m_grid.begin();
+    while ( it_outergroup != m_grid.end() )
     {
       //
-      // Rows
+      // Outer Group Header
       //
-
-      QString innergroupdata;
-      TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
-      while ( it_row != (*it_innergroup).end() )
+  
+      result += QString("<tr class=\"sectionheader\"><td class=\"left\"%1>%2</td></tr>\n").arg(colspan).arg(it_outergroup.key());
+  
+      // Skip the inner groups if the report only calls for outer group totals to be shown
+      if ( m_config_f.detailLevel() != MyMoneyReport::eDetailGroup )
       {
+      
         //
-        // Columns
+        // Inner Groups
         //
-
-        QString rowdata;
-        unsigned column = 1;
-        while ( column < m_numColumns )
-          rowdata += QString("<td>%1</td>").arg(it_row.data()[column++].formatMoney());
-
-        if ( m_config_f.isShowingRowTotals() )
-          rowdata += QString("<td>%1</td>").arg((*it_row).m_total.formatMoney());
-
-        //
-        // Row Header
-        //
-
-        ReportAccount rowname = it_row.key();
-
-        innergroupdata += QString("<tr class=\"row-%1\"%2><td%3 class=\"left%4\">%5%6</td>")
-          .arg(rownum & 0x01 ? "even" : "odd")
-          .arg(rowname.isTopLevel() ? " id=\"topparent\"" : "")
-          .arg((*it_row).m_total.isZero() ? colspan : "")
-          .arg(rowname.hierarchyDepth() - 1)
-          .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
-          .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
-
-        if ( !(*it_row).m_total.isZero() )
-          innergroupdata += rowdata;
-
-        innergroupdata += "</tr>\n";
-
-        ++it_row;
-      }
-
-      //
-      // Inner Row Group Totals
-      //
-
-      bool finishrow = true;
-      if ( m_config_f.isShowingSubAccounts() && ((*it_innergroup).size() > 1 ))
-      {
-        // Print the individual rows
-        result += innergroupdata;
-
-        if ( m_config_f.isShowingColumnTotals() )
+    
+        TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
+        unsigned rownum = 0;
+        while ( it_innergroup != (*it_outergroup).end() )
         {
-          // Start the TOTALS row
-          result += QString("<tr class=\"row-%1\" id=\"subtotal\"><td class=\"left\">&nbsp;&nbsp;%2</td>")
-            .arg(rownum & 0x01 ? "even" : "odd")
-            .arg(i18n("Total"));
-        }
-        else
-          finishrow = false;
-      }
-      else
+          //
+          // Rows
+          //
+    
+          QString innergroupdata;
+          TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
+          while ( it_row != (*it_innergroup).end() )
+          {
+            //
+            // Columns
+            //
+    
+            QString rowdata;
+            unsigned column = 1;
+            while ( column < m_numColumns )
+              rowdata += QString("<td>%1</td>").arg(it_row.data()[column++].formatMoney());
+    
+            if ( m_config_f.isShowingRowTotals() )
+              rowdata += QString("<td>%1</td>").arg((*it_row).m_total.formatMoney());
+    
+            //
+            // Row Header
+            //
+    
+            ReportAccount rowname = it_row.key();
+    
+            innergroupdata += QString("<tr class=\"row-%1\"%2><td%3 class=\"left%4\">%5%6</td>")
+              .arg(rownum & 0x01 ? "even" : "odd")
+              .arg(rowname.isTopLevel() ? " id=\"topparent\"" : "")
+              .arg((*it_row).m_total.isZero() ? colspan : "")
+              .arg(rowname.hierarchyDepth() - 1)
+              .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
+              .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
+    
+            if ( !(*it_row).m_total.isZero() )
+              innergroupdata += rowdata;
+    
+            innergroupdata += "</tr>\n";
+    
+            ++it_row;
+          }
+    
+          //
+          // Inner Row Group Totals
+          //
+    
+          bool finishrow = true;
+          if ( m_config_f.isShowingSubAccounts() && ((*it_innergroup).size() > 1 ))
+          {
+            // Print the individual rows
+            result += innergroupdata;
+    
+            if ( m_config_f.isShowingColumnTotals() )
+            {
+              // Start the TOTALS row
+              result += QString("<tr class=\"row-%1\" id=\"subtotal\"><td class=\"left\">&nbsp;&nbsp;%2</td>")
+                .arg(rownum & 0x01 ? "even" : "odd")
+                .arg(i18n("Total"));
+            }
+            else
+              finishrow = false;
+          }
+          else
+          {
+            // Start the single INDIVIDUAL ACCOUNT row
+            // FIXME: There is a bit of a bug here with class=leftX.  There's only a finite number
+            // of classes I can define in the .CSS file, and the user can theoretically nest deeper.
+            // The right solution is to use style=Xem, and calculate X.  Let's see if anyone complains
+            // first :)  Also applies to the row header case above.
+            ReportAccount rowname = (*it_innergroup).begin().key();
+            result += QString("<tr class=\"row-%1\"%2><td class=\"left%3\">%4%5</td>")
+              .arg(rownum & 0x01 ? "even" : "odd")
+              .arg( m_config_f.isShowingSubAccounts() ? "id=\"solo\"" : "" )
+              .arg(rowname.hierarchyDepth() - 1)
+              .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
+              .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
+          }
+    
+          // Finish the row started above, unless told not to
+          if ( finishrow )
+          {
+            unsigned column = 1;
+            while ( column < m_numColumns )
+              result += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
+    
+            if (  m_config_f.isShowingRowTotals() )
+              result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_total.formatMoney());
+    
+            result += "</tr>\n";
+          }
+    
+          ++rownum;
+          ++it_innergroup;
+          
+        } // end while iterating on the inner groups
+        
+      } // end if detail level is not "group"
+  
+      //
+      // Outer Row Group Totals
+      //
+  
+      if ( m_config_f.isShowingColumnTotals() )
       {
-        // Start the single INDIVIDUAL ACCOUNT row
-        // FIXME: There is a bit of a bug here with class=leftX.  There's only a finite number
-        // of classes I can define in the .CSS file, and the user can theoretically nest deeper.
-        // The right solution is to use style=Xem, and calculate X.  Let's see if anyone complains
-        // first :)  Also applies to the row header case above.
-        ReportAccount rowname = (*it_innergroup).begin().key();
-        result += QString("<tr class=\"row-%1\"%2><td class=\"left%3\">%4%5</td>")
-          .arg(rownum & 0x01 ? "even" : "odd")
-          .arg( m_config_f.isShowingSubAccounts() ? "id=\"solo\"" : "" )
-          .arg(rowname.hierarchyDepth() - 1)
-          .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
-          .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
-      }
-
-      // Finish the row started above, unless told not to
-      if ( finishrow )
-      {
+        result += QString("<tr class=\"sectionfooter\"><td class=\"left\">%1&nbsp;%2</td>").arg(i18n("Total")).arg(it_outergroup.key());
         unsigned column = 1;
         while ( column < m_numColumns )
-          result += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
-
+          result += QString("<td>%1</td>").arg((*it_outergroup).m_total[column++].formatMoney());
+  
         if (  m_config_f.isShowingRowTotals() )
-          result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_total.formatMoney());
-
+          result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_total.formatMoney());
+  
         result += "</tr>\n";
       }
-
-      ++rownum;
-      ++it_innergroup;
-    }
-
-    //
-    // Outer Row Group Totals
-    //
-
-    if ( m_config_f.isShowingColumnTotals() )
-    {
-      result += QString("<tr class=\"sectionfooter\"><td class=\"left\">%1&nbsp;%2</td>").arg(i18n("Total")).arg(it_outergroup.key());
-      unsigned column = 1;
-      while ( column < m_numColumns )
-        result += QString("<td>%1</td>").arg((*it_outergroup).m_total[column++].formatMoney());
-
-      if (  m_config_f.isShowingRowTotals() )
-        result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_total.formatMoney());
-
-      result += "</tr>\n";
-    }
-    ++it_outergroup;
-  }
-
+      
+      ++it_outergroup;
+      
+    } // end while iterating on the outergroups
+    
+  } // end if detail level is not "total"
+  
   //
   // Report Totals
   //
@@ -1126,34 +1141,77 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 {
 #ifdef HAVE_KDCHART
 
-  //
-  // If "show subcategories" is selected, add one series for every row
-  //
-
-  if ( m_config_f.isShowingSubAccounts() )
+  switch ( m_config_f.detailLevel() )
   {
-    unsigned rownum = 1;  
-    KDChartTableData data( 1, m_numColumns );
-    
-    // iterate over outer groups
-    TGrid::const_iterator it_outergroup = m_grid.begin();
-    while ( it_outergroup != m_grid.end() )
+    case MyMoneyReport::eDetailNone:
+    case MyMoneyReport::eDetailEnd:
+    case MyMoneyReport::eDetailAll:
     {
-  
-      // iterate over inner groups
-      TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
-      while ( it_innergroup != (*it_outergroup).end() )
+      unsigned rownum = 1;  
+      KDChartTableData data( 1, m_numColumns );
+      
+      // iterate over outer groups
+      TGrid::const_iterator it_outergroup = m_grid.begin();
+      while ( it_outergroup != m_grid.end() )
       {
-        //
-        // Rows
-        //
-  
-        QString innergroupdata;
-        TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
-        while ( it_row != (*it_innergroup).end() )
+    
+        // iterate over inner groups
+        TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
+        while ( it_innergroup != (*it_outergroup).end() )
         {
-          //data.setCell( rownum-1, 0, it_row.key().name() );
-          _view.params()->setLegendText( rownum-1, it_row.key().name() );
+          //
+          // Rows
+          //
+    
+          QString innergroupdata;
+          TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
+          while ( it_row != (*it_innergroup).end() )
+          {
+            //data.setCell( rownum-1, 0, it_row.key().name() );
+            _view.params()->setLegendText( rownum-1, it_row.key().name() );
+            
+            //
+            // Columns
+            //
+    
+            unsigned column = 1;
+            while ( column < m_numColumns )
+            {
+              data.setCell( rownum-1, column-1, it_row.data()[column].toDouble() );
+              ++column;
+            }
+            
+            // TODO: This is inefficient. Really we should total up how many rows
+            // there will be and allocate it all at once.
+            data.expand( ++rownum, m_numColumns );
+    
+            ++it_row;
+          }
+          ++it_innergroup;
+        }
+        ++it_outergroup;  
+      }
+      data.expand( rownum-1, m_numColumns );
+      _view.setNewData(data);
+      
+    }
+    break;    
+        
+    case MyMoneyReport::eDetailTop:
+    {
+      unsigned rownum = 1;  
+      KDChartTableData data( 1, m_numColumns );
+      
+      // iterate over outer groups
+      TGrid::const_iterator it_outergroup = m_grid.begin();
+      while ( it_outergroup != m_grid.end() )
+      {
+    
+        // iterate over inner groups
+        TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
+        while ( it_innergroup != (*it_outergroup).end() )
+        {
+          _view.params()->setLegendText( rownum-1, it_innergroup.key() );
           
           //
           // Columns
@@ -1162,45 +1220,36 @@ void PivotTable::drawChart( KReportChartView& _view ) const
           unsigned column = 1;
           while ( column < m_numColumns )
           {
-            data.setCell( rownum-1, column-1, it_row.data()[column].toDouble() );
+            data.setCell( rownum-1, column-1, (*it_innergroup).m_total[column].toDouble() );
             ++column;
           }
-          
+  
           // TODO: This is inefficient. Really we should total up how many rows
           // there will be and allocate it all at once.
           data.expand( ++rownum, m_numColumns );
-  
-          ++it_row;
+                  
+          ++it_innergroup;
         }
-        ++it_innergroup;
+        ++it_outergroup;  
       }
-      ++it_outergroup;  
-    }
-    data.expand( rownum-1, m_numColumns );
-    _view.setNewData(data);
-  
-  }
+      data.expand( rownum-1, m_numColumns );
+      _view.setNewData(data);
 
-  //
-  // Else "show subcategories" is NOT selected, add one series for every inner group
-  //
-  
-  else
-  {
-    unsigned rownum = 1;  
-    KDChartTableData data( 1, m_numColumns );
-    
-    // iterate over outer groups
-    TGrid::const_iterator it_outergroup = m_grid.begin();
-    while ( it_outergroup != m_grid.end() )
+    }
+    break;
+          
+    case MyMoneyReport::eDetailGroup:
     {
-  
-      // iterate over inner groups
-      TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
-      while ( it_innergroup != (*it_outergroup).end() )
+      unsigned rownum = 1;  
+      KDChartTableData data( 1, m_numColumns );
+      
+      // iterate over outer groups
+      TGrid::const_iterator it_outergroup = m_grid.begin();
+      while ( it_outergroup != m_grid.end() )
       {
-        _view.params()->setLegendText( rownum-1, it_innergroup.key() );
-        
+    
+        _view.params()->setLegendText( rownum-1, it_outergroup.key() );
+          
         //
         // Columns
         //
@@ -1208,21 +1257,40 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         unsigned column = 1;
         while ( column < m_numColumns )
         {
-          data.setCell( rownum-1, column-1, (*it_innergroup).m_total[column].toDouble() );
+          data.setCell( rownum-1, column-1, (*it_outergroup).m_total[column].toDouble() );
           ++column;
         }
-
+  
         // TODO: This is inefficient. Really we should total up how many rows
         // there will be and allocate it all at once.
         data.expand( ++rownum, m_numColumns );
-                
-        ++it_innergroup;
+                  
+        ++it_outergroup;  
       }
-      ++it_outergroup;  
+      data.expand( rownum-1, m_numColumns );
+      _view.setNewData(data);
+
     }
-    data.expand( rownum-1, m_numColumns );
-    _view.setNewData(data);
+    break;
+          
+    case MyMoneyReport::eDetailTotal:
+    {
+      KDChartTableData data( 1, m_numColumns + 1 );
+      _view.params()->setLegendText( 0, i18n("Total") );
+      
+      // For now, just the totals
+      unsigned totalcolumn = 1;
+      while ( totalcolumn < m_numColumns )
+      {
+        data.setCell( 0, totalcolumn-1, m_grid.m_total[totalcolumn].toDouble() );
+        ++totalcolumn;
+      }
+      _view.setNewData(data);
+    }
+    break;
   }
+
+  
 
   //
   // Actually, another sub-level is needed here for showing only the outergroups
@@ -1237,17 +1305,6 @@ void PivotTable::drawChart( KReportChartView& _view ) const
   
   if(0)
   {
-    KDChartTableData data( 1, m_numColumns + 1 );
-    data.setCell( 0,0,QString("Total") );
-    
-    // For now, just the totals
-    unsigned totalcolumn = 1;
-    while ( totalcolumn < m_numColumns )
-    {
-      data.setCell( 0, totalcolumn-1, m_grid.m_total[totalcolumn].toDouble() );
-      ++totalcolumn;
-    }
-    _view.setNewData(data);
   }
 
 #endif

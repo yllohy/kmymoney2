@@ -148,7 +148,9 @@ void KReportConfigurationFilterDlg::slotSearch()
 
   if ( m_tab2 )
   {
-    m_currentState.setShowSubAccounts( ! m_tab2->m_checkShowTop->isChecked() );
+    MyMoneyReport::EDetailLevel dl[4] = { MyMoneyReport::eDetailAll, MyMoneyReport::eDetailTop, MyMoneyReport::eDetailGroup, MyMoneyReport::eDetailTotal };
+    
+    m_currentState.setDetailLevel( dl[m_tab2->m_comboDetail->currentItem()] );
 
     MyMoneyReport::ERowType rt[2] = { MyMoneyReport::eExpenseIncome, MyMoneyReport::eAssetLiability };
     m_currentState.setRowType( rt[m_tab2->m_comboRows->currentItem()] );
@@ -212,7 +214,23 @@ void KReportConfigurationFilterDlg::slotReset(void)
 
   if ( m_tab2 )
   {
-    m_tab2->m_checkShowTop->setChecked( ! m_initialState.isShowingSubAccounts() );
+    switch ( m_initialState.detailLevel() )
+    {
+    case MyMoneyReport::eDetailNone:
+    case MyMoneyReport::eDetailEnd:
+    case MyMoneyReport::eDetailAll:
+      m_tab2->m_comboDetail->setCurrentItem(0);
+      break;
+    case MyMoneyReport::eDetailTop:
+      m_tab2->m_comboDetail->setCurrentItem(1);
+      break;
+    case MyMoneyReport::eDetailGroup:
+      m_tab2->m_comboDetail->setCurrentItem(2);
+      break;
+    case MyMoneyReport::eDetailTotal:
+      m_tab2->m_comboDetail->setCurrentItem(3);
+      break;
+    }
 
     if ( m_initialState.rowType() == MyMoneyReport::eExpenseIncome )
       m_tab2->m_comboRows->setCurrentItem(0);
@@ -489,7 +507,7 @@ void KReportConfigurationFilterDlg::slotHelp(void)
     text += "<h1>" + m_tab2->caption() + "</h1>" + QWhatsThis::textFor( m_tab2 );
     text += "<h3>" + m_tab2->textLabel4->text() + "</h3>" + QToolTip::textFor( m_tab2->m_comboColumns );
     text += "<h3>" + m_tab2->textLabel5->text() + "</h3>" + QToolTip::textFor( m_tab2->m_comboRows );
-    text += "<h3>" + m_tab2->m_checkShowTop->text() + "</h3>" + QToolTip::textFor( m_tab2->m_checkShowTop );
+    text += "<h3>" + m_tab2->textLabel6->text() + "</h3>" + QToolTip::textFor( m_tab2->m_comboDetail );
   }
 
   if ( m_tab3 )

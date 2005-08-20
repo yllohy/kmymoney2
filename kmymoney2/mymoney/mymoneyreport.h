@@ -62,10 +62,12 @@ public:
   enum EReportType { eNoReport = 0, ePivotTable, eQueryTable };
   enum EColumnType { eNoColumns = 0, eMonths = 1, eBiMonths = 2, eQuarters = 3, eYears = 12 };
   enum EQueryColumns { eQCnone = 0x0, eQCbegin = 0x1, eQCnumber = 0x1, eQCpayee = 0x2, eQCcategory = 0x4, eQCmemo = 0x8, eQCaccount = 0x10, eQCreconciled=0x20, eQCaction=0x40, eQCshares=0x80, eQCprice=0x100, eQCperformance=0x200, eQCend=0x400 };
+  enum EDetailLevel { eDetailNone = 0, eDetailAll, eDetailTop, eDetailGroup, eDetailTotal, eDetailEnd };
 
   static const QStringList kRowTypeText;
   static const QStringList kColumnTypeText;
   static const QStringList kQueryColumnsText;
+  static const QStringList kDetailLevelText;
   static const EReportType kTypeArray[];
   
 public:
@@ -74,7 +76,7 @@ public:
 
   // Simple get operations
   const QString& name(void) const { return m_name; }
-  bool isShowingSubAccounts(void) const { return m_showSubAccounts; }
+  bool isShowingSubAccounts(void) const { return (m_detailLevel==eDetailAll); }
   bool isShowingRowTotals(void) const { return (m_rowType==eExpenseIncome); }
   EReportType reportType(void) const { return m_reportType; }
   ERowType rowType(void) const { return m_rowType; }
@@ -90,10 +92,11 @@ public:
   bool isFavorite(void) const { return m_favorite; }
   bool isTax(void) const { return m_tax; }
   bool isInvestmentsOnly(void) const { return m_investments; }
+  EDetailLevel detailLevel(void) const { return m_detailLevel; }
     
   // Simple set operations
   void setName(const QString& _s) { m_name = _s; }
-  void setShowSubAccounts(bool _f) { m_showSubAccounts = _f; }
+  void setShowSubAccounts(bool _f) { m_detailLevel = _f?eDetailAll:eDetailTop; }
   void setConvertCurrency(bool _f) { m_convertCurrency = _f; }
   void setRowType(ERowType _rt);
   void setColumnType(EColumnType _ct) { m_columnType = _ct; }
@@ -104,6 +107,7 @@ public:
   void setId( const QCString& _id ) { m_id = _id; }
   void setTax(bool _f) { m_tax = _f; }
   void setInvestmentsOnly(bool _f) { m_investments = _f; }
+  void setDetailLevel( EDetailLevel _detail ) { m_detailLevel = _detail; }
 
   /**
     * This method allows you to clear the underlying transaction filter
@@ -262,9 +266,9 @@ private:
     */
   QString m_group;
   /**
-    * Whether to show all aub-accounts (true) or only top-level accounts (false)
+    * How much detail to show in the accounts
     */
-  bool m_showSubAccounts;
+  enum EDetailLevel m_detailLevel;
   /**
     * Whether to convert all currencies to the base currency of the file (true).
     * If this is false, it's up to the report generator to decide how to handle

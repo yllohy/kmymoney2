@@ -1,3 +1,9 @@
+2005-08-19 Ace Jones <acejones@users.sourceforge.net>
+  * Modified pivottable reports to be configurable to four levels of detail
+    (sub-accounts, top-accounts, groups, total)
+  * Charting and HTML rendering respects the new levels of detail.  This
+    makes charting much more useful, IMO.
+  
 2005-08-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1263755 (Crash when moving account from one subgroup to another)
 
