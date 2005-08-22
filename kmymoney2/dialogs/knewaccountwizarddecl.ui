@@ -215,7 +215,7 @@
                         </property>
                         <property name="text">
                             <string>If this account is managed by an institution please select the institution from the list. If the institution does not yet exist, please choose the &lt;b&gt;New Institution&lt;/b&gt; button to create it.
-&lt;p&gt;
+&lt;br&gt;
 Otherwise, leave this field empty.</string>
                         </property>
                         <property name="alignment">
@@ -841,7 +841,7 @@ Otherwise, leave this field empty.</string>
                                     <cstring>textLabel2_2</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Select &lt;b&gt;Yes&lt;/b&gt; if this investment account has an associated account for money that is not invested.&lt;p&gt;
+                                    <string>Select &lt;b&gt;Yes&lt;/b&gt; if this investment account has an associated account for money that is not invested.&lt;br&gt;
 
 Select &lt;b&gt;No&lt;/b&gt; if you don't use this account for active stock brokerage. You should also select &lt;b&gt;No&lt;/b&gt; if this account is not maintained by a bank or broker.</string>
                                 </property>
@@ -1077,7 +1077,7 @@ Select &lt;b&gt;No&lt;/b&gt; if you don't use this account for active stock brok
                         </property>
                         <property name="text">
                             <string>Enter the ending balance of your last statement. In case you want to keep track of transactions prior to this date, enter the ending balance of a prior statement and add all following transactions.
-&lt;p&gt;
+&lt;br&gt;
 Note: if you want to maintain this account from the date of opening enter 0. If you do not know the exact amount, enter an estimate. You can change this value later before you reconcile this account.</string>
                         </property>
                         <property name="textFormat">
@@ -1360,7 +1360,7 @@ from account</string>
                                     <cstring>textLabel3_2</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>The information to create the account has now been collected. Press the &lt;b&gt;Finish&lt;/b&gt; button to acutally create the account or the &lt;b&gt;Back&lt;/b&gt; button to modify the settings. The &lt;b&gt;Cancel&lt;/b&gt; button will dismiss all data and leave this wizard.&lt;p&gt;
+                                    <string>The information to create the account has now been collected. Press the &lt;b&gt;Finish&lt;/b&gt; button to acutally create the account or the &lt;b&gt;Back&lt;/b&gt; button to modify the settings. The &lt;b&gt;Cancel&lt;/b&gt; button will dismiss all data and leave this wizard.&lt;br&gt;
 Once the account is successfully created you can enter your transactions on this account.</string>
                                 </property>
                                 <property name="alignment">

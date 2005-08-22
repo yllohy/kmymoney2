@@ -1200,7 +1200,7 @@ bool KEditScheduleDialog::checkCategory()
 
         if (!type.isEmpty())
         {
-          QString message = i18n("You have specified an %1 category for a %1 schedule. Do you want to keep it that way?").arg(type).arg(stype);
+          QString message = i18n("You have specified an %1 category for a %2 schedule. Do you want to keep it that way?").arg(type).arg(stype);
           if(KMessageBox::warningYesNo(this, message, i18n("Verify category type")) == KMessageBox::No) {
             m_category->setText(QString());
             m_category->setFocus();
@@ -1234,7 +1234,7 @@ bool KEditScheduleDialog::checkCategory()
 
       if (!type.isEmpty())
       {
-        QString message = i18n("You have specified an %1 category for a %1 schedule. Do you want to keep it that way?").arg(type).arg(stype);
+        QString message = i18n("You have specified an %1 category for a %2 schedule. Do you want to keep it that way?").arg(type).arg(stype);
         if(KMessageBox::warningYesNo(this, message, i18n("Verify category type")) == KMessageBox::No) {
           m_category->setText(QString());
           m_category->setFocus();

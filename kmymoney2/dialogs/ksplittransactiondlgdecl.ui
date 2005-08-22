@@ -126,7 +126,7 @@
                                         </size>
                                     </property>
                                     <property name="text">
-                                        <string>&lt;b&gt;11,00</string>
+                                        <string>&lt;b&gt;11,00&lt;b&gt;</string>
                                     </property>
                                     <property name="alignment">
                                         <set>AlignVCenter|AlignRight</set>
@@ -153,7 +153,7 @@
                                         </size>
                                     </property>
                                     <property name="text">
-                                        <string>&lt;b&gt;111,00</string>
+                                        <string>&lt;b&gt;111,00&lt;b&gt;</string>
                                     </property>
                                     <property name="alignment">
                                         <set>AlignVCenter|AlignRight</set>

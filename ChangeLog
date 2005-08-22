@@ -1,3 +1,6 @@
+2005-08-22 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed text string problems.  Thanks to Jochen Rundholz for identifying.
+  
 2005-08-19 Ace Jones <acejones@users.sourceforge.net>
   * Modified pivottable reports to be configurable to four levels of detail
     (sub-accounts, top-accounts, groups, total)
