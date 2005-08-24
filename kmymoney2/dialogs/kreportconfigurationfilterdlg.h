@@ -29,6 +29,7 @@
 class kMyMoneyReportConfigTab1Decl;
 class kMyMoneyReportConfigTab2Decl;
 class kMyMoneyReportConfigTab3Decl;
+class kMyMoneyReportConfigTabChartDecl;
 
 /**
 @author Ace Jones
@@ -46,6 +47,7 @@ protected:
     kMyMoneyReportConfigTab1Decl* m_tab1;
     kMyMoneyReportConfigTab2Decl* m_tab2;
     kMyMoneyReportConfigTab3Decl* m_tab3;
+    kMyMoneyReportConfigTabChartDecl* m_tabChart;
     
     MyMoneyReport m_initialState;
     MyMoneyReport m_currentState;

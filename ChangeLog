@@ -1,12 +1,21 @@
+2005-08-23 Ace Jones <acejones@users.sourceforge.net>
+  * Chart configuration dialog
+  * Added line, bar, pie & ring charts
+  * Ability to configure a report to always show up as a chart
+  * Ability to toggle grid lines and printed data values
+  * These new values are saved to the KMM file.
+
 2005-08-22 Ace Jones <acejones@users.sourceforge.net>
   * Fixed text string problems.  Thanks to Jochen Rundholz for identifying.
-  
+  * Attempted to fix QIF import problem where it was hampered by having
+    the KDE locale's negative sign position set to "Parens Around".
+
 2005-08-19 Ace Jones <acejones@users.sourceforge.net>
   * Modified pivottable reports to be configurable to four levels of detail
     (sub-accounts, top-accounts, groups, total)
   * Charting and HTML rendering respects the new levels of detail.  This
     makes charting much more useful, IMO.
-  
+
 2005-08-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1263755 (Crash when moving account from one subgroup to another)
 

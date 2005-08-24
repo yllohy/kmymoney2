@@ -1141,6 +1141,73 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 {
 #ifdef HAVE_KDCHART
 
+  _view.params().setAxisShowGrid(0,m_config_f.isChartGridLines());
+  _view.params().setAxisShowGrid(1,m_config_f.isChartGridLines());
+  _view.params().setPrintDataValues(m_config_f.isChartDataLabels());
+  
+  // whether to limit the chart to use series totals only.  Used for reports which only
+  // show one dimension (pie).
+  bool seriestotals = false;
+  
+  // whether series (rows) are accounts (true) or months (false). This causes a lot
+  // of complexity in the charts.  The problem is that circular reports work best with
+  // an account in a COLUMN, while line/bar prefer it in a ROW.  
+  bool accountseries = true;
+  
+  switch( m_config_f.chartType() )
+  {
+  case MyMoneyReport::eChartNone:
+  case MyMoneyReport::eChartEnd:
+  case MyMoneyReport::eChartLine:
+    _view.params().setChartType( KDChartParams::Line );
+    _view.params().setAxisDatasets( 0,0 );
+    break;
+  case MyMoneyReport::eChartBar:
+    _view.params().setChartType( KDChartParams::Bar );
+    break;
+  case MyMoneyReport::eChartPie:
+    _view.params().setChartType( KDChartParams::Pie );
+    accountseries = false;
+    seriestotals = true;
+    break;
+  case MyMoneyReport::eChartRing:
+    _view.params().setChartType( KDChartParams::Ring );
+    accountseries = false;
+    break;
+  }
+  
+  //
+  // In KDChart parlance, a 'series' (or row) is an account (or accountgroup, etc)
+  // and an 'item' (or column) is a month
+  //
+  unsigned r;
+  unsigned c;
+  if ( accountseries )
+  {
+    r = 1;
+    c = m_numColumns;
+  }
+  else
+  {
+    c = 1;
+    r = m_numColumns;
+  }
+  KDChartTableData data( r,c );
+  
+  // Set up X axis labels (ie "abscissa" to use the technical term)
+  QStringList& abscissaNames = _view.abscissaNames();
+  abscissaNames.clear();
+  if ( accountseries )
+  {
+    unsigned column = 1;
+    while ( column < m_numColumns )
+      abscissaNames += m_columnHeadings[column++];
+  }
+  else
+  {
+    // we will set these up while putting in the chart values.
+  }
+  
   switch ( m_config_f.detailLevel() )
   {
     case MyMoneyReport::eDetailNone:
@@ -1148,7 +1215,6 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     case MyMoneyReport::eDetailAll:
     {
       unsigned rownum = 1;  
-      KDChartTableData data( 1, m_numColumns );
       
       // iterate over outer groups
       TGrid::const_iterator it_outergroup = m_grid.begin();
@@ -1167,23 +1233,40 @@ void PivotTable::drawChart( KReportChartView& _view ) const
           TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
           while ( it_row != (*it_innergroup).end() )
           {
-            //data.setCell( rownum-1, 0, it_row.key().name() );
-            _view.params()->setLegendText( rownum-1, it_row.key().name() );
+            if ( accountseries )
+              _view.params().setLegendText( rownum-1, it_row.key().name() );
+            else
+              abscissaNames += it_row.key().name();
             
             //
             // Columns
             //
     
-            unsigned column = 1;
-            while ( column < m_numColumns )
+            if ( seriestotals )
             {
-              data.setCell( rownum-1, column-1, it_row.data()[column].toDouble() );
-              ++column;
+                if ( accountseries )
+                  data.setCell( rownum-1, 0, it_row.data().m_total.toDouble() );
+                else
+                  data.setCell( 0, rownum-1, it_row.data().m_total.toDouble() );
             }
-            
+            else
+            {
+              unsigned column = 1;
+              while ( column < m_numColumns )
+              {
+                if ( accountseries )
+                  data.setCell( rownum-1, column-1, it_row.data()[column].toDouble() );
+                else
+                  data.setCell( column-1, rownum-1, it_row.data()[column].toDouble() );
+                ++column;
+              }
+            }            
             // TODO: This is inefficient. Really we should total up how many rows
             // there will be and allocate it all at once.
-            data.expand( ++rownum, m_numColumns );
+            if ( accountseries )
+              data.expand( ++rownum, m_numColumns );
+            else
+              data.expand( m_numColumns, ++rownum );
     
             ++it_row;
           }
@@ -1191,8 +1274,11 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         }
         ++it_outergroup;  
       }
-      data.expand( rownum-1, m_numColumns );
-      _view.setNewData(data);
+      
+      if ( accountseries )
+        data.expand( rownum-1, m_numColumns );
+      else
+        data.expand( m_numColumns, rownum-1 );
       
     }
     break;    
@@ -1200,7 +1286,6 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     case MyMoneyReport::eDetailTop:
     {
       unsigned rownum = 1;  
-      KDChartTableData data( 1, m_numColumns );
       
       // iterate over outer groups
       TGrid::const_iterator it_outergroup = m_grid.begin();
@@ -1211,29 +1296,50 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
         while ( it_innergroup != (*it_outergroup).end() )
         {
-          _view.params()->setLegendText( rownum-1, it_innergroup.key() );
+          if ( accountseries )
+            _view.params().setLegendText( rownum-1, it_innergroup.key() );
+          else
+            abscissaNames += it_innergroup.key();
           
           //
           // Columns
           //
   
-          unsigned column = 1;
-          while ( column < m_numColumns )
+          if ( seriestotals )
           {
-            data.setCell( rownum-1, column-1, (*it_innergroup).m_total[column].toDouble() );
-            ++column;
+            if ( accountseries )
+              data.setCell( rownum-1, 0, (*it_innergroup).m_total.m_total.toDouble() );
+            else
+              data.setCell( 0, rownum-1, (*it_innergroup).m_total.m_total.toDouble() );
           }
-  
+          else
+          {
+            unsigned column = 1;
+            while ( column < m_numColumns )
+            {
+              if ( accountseries )
+                data.setCell( rownum-1, column-1, (*it_innergroup).m_total[column].toDouble() );
+              else
+                data.setCell( column-1, rownum-1, (*it_innergroup).m_total[column].toDouble() );
+              ++column;
+            }
+          }
+            
           // TODO: This is inefficient. Really we should total up how many rows
           // there will be and allocate it all at once.
-          data.expand( ++rownum, m_numColumns );
-                  
+          if ( accountseries )
+            data.expand( ++rownum, m_numColumns );
+          else
+            data.expand( m_numColumns, ++rownum );
+                              
           ++it_innergroup;
         }
-        ++it_outergroup;  
+        ++it_outergroup;
       }
-      data.expand( rownum-1, m_numColumns );
-      _view.setNewData(data);
+      if ( accountseries )
+        data.expand( rownum-1, m_numColumns );
+      else
+        data.expand( m_numColumns, rownum-1 );
 
     }
     break;
@@ -1241,71 +1347,89 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     case MyMoneyReport::eDetailGroup:
     {
       unsigned rownum = 1;  
-      KDChartTableData data( 1, m_numColumns );
       
       // iterate over outer groups
       TGrid::const_iterator it_outergroup = m_grid.begin();
       while ( it_outergroup != m_grid.end() )
       {
-    
-        _view.params()->setLegendText( rownum-1, it_outergroup.key() );
+        if ( accountseries )    
+          _view.params().setLegendText( rownum-1, it_outergroup.key() );
+        else
+          abscissaNames += it_outergroup.key();
           
         //
         // Columns
         //
 
-        unsigned column = 1;
-        while ( column < m_numColumns )
+        if ( seriestotals )
         {
-          data.setCell( rownum-1, column-1, (*it_outergroup).m_total[column].toDouble() );
-          ++column;
+          if ( accountseries )
+            data.setCell( rownum-1, 0, (*it_outergroup).m_total.m_total.toDouble() );
+          else
+            data.setCell( 0, rownum-1, (*it_outergroup).m_total.m_total.toDouble() );
         }
-  
+        else
+        {
+          unsigned column = 1;
+          while ( column < m_numColumns )
+          {
+            if ( accountseries )
+              data.setCell( rownum-1, column-1, (*it_outergroup).m_total[column].toDouble() );
+            else
+              data.setCell( column-1, rownum-1, (*it_outergroup).m_total[column].toDouble() );
+            ++column;
+          }
+        }
+          
         // TODO: This is inefficient. Really we should total up how many rows
         // there will be and allocate it all at once.
-        data.expand( ++rownum, m_numColumns );
+        if ( accountseries )
+          data.expand( ++rownum, m_numColumns );
+        else
+          data.expand( m_numColumns, ++rownum );
                   
         ++it_outergroup;  
       }
-      data.expand( rownum-1, m_numColumns );
-      _view.setNewData(data);
-
+      if ( accountseries )
+        data.expand( rownum-1, m_numColumns );
+      else
+        data.expand( m_numColumns, rownum-1 );
     }
     break;
           
     case MyMoneyReport::eDetailTotal:
     {
-      KDChartTableData data( 1, m_numColumns + 1 );
-      _view.params()->setLegendText( 0, i18n("Total") );
-      
-      // For now, just the totals
-      unsigned totalcolumn = 1;
-      while ( totalcolumn < m_numColumns )
+      if ( accountseries )
+        _view.params().setLegendText( 0, i18n("Total") );
+      else
+        abscissaNames += i18n("Total");
+
+      if ( seriestotals )
       {
-        data.setCell( 0, totalcolumn-1, m_grid.m_total[totalcolumn].toDouble() );
-        ++totalcolumn;
+        if ( accountseries )
+          data.setCell( 0, 0, m_grid.m_total.m_total.toDouble() );
+        else
+          data.setCell( 0, 0, m_grid.m_total.m_total.toDouble() );
       }
-      _view.setNewData(data);
+      else
+      {
+        // For now, just the totals
+        unsigned totalcolumn = 1;
+        while ( totalcolumn < m_numColumns )
+        {
+          if ( accountseries )
+            data.setCell( 0, totalcolumn-1, m_grid.m_total[totalcolumn].toDouble() );
+          else
+            data.setCell( totalcolumn-1, 0, m_grid.m_total[totalcolumn].toDouble() );
+          ++totalcolumn;
+        }
+      }
     }
     break;
   }
-
-  
-
-  //
-  // Actually, another sub-level is needed here for showing only the outergroups
-  // This tells me the "Show top accounts only" should be a 4-state drop down
-  // Called "Detail Level": Single Value, Account Groups, Accounts, Subaccounts
-  //
-  
-  //
-  // If we're in Single Value detail level, show just the totals!
-  // But there is no way to set this mode now!!
-  //
-  
-  if(0)
-  {
-  }
+      
+  _view.setNewData(data);
+  _view.refreshLabels();
 
 #endif
 }

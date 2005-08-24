@@ -21,6 +21,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qvariant.h>
@@ -60,6 +64,7 @@
 #include "../widgets/kmymoneyreportconfigtab1decl.h"
 #include "../widgets/kmymoneyreportconfigtab2decl.h"
 #include "../widgets/kmymoneyreportconfigtab3decl.h"
+#include "../widgets/kmymoneyreportconfigtabchartdecl.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/storage/imymoneystorage.h"
 #include "../mymoney/mymoneyreport.h"
@@ -106,6 +111,11 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     {
       m_tab2 = new kMyMoneyReportConfigTab2Decl( m_criteriaTab, "kMyMoneyReportConfigTab2" );
       m_criteriaTab->insertTab( m_tab2, i18n( "Rows/Columns"), 1 );
+
+#ifdef HAVE_KDCHART
+      m_tabChart = new kMyMoneyReportConfigTabChartDecl( m_criteriaTab, "kMyMoneyReportConfigTabChart" );
+      m_criteriaTab->insertTab( m_tabChart, i18n( "Chart"), 2 );
+#endif
     }
     else if ( m_initialState.reportType() == MyMoneyReport::eQueryTable )
     {
@@ -190,6 +200,18 @@ void KReportConfigurationFilterDlg::slotSearch()
     m_currentState.setInvestmentsOnly( m_tab3->m_checkInvestments->isChecked() );
   }
 
+  if ( m_tabChart )
+  {
+    kdDebug(2) << __func__ << ": Pulling chart params from m_tabChart" << endl;
+  
+    MyMoneyReport::EChartType ct[4] = { MyMoneyReport::eChartLine, MyMoneyReport::eChartBar, MyMoneyReport::eChartPie, MyMoneyReport::eChartRing };
+    m_currentState.setChartType( ct[m_tabChart->m_comboType->currentItem()] );
+    
+    m_currentState.setChartGridLines( m_tabChart->m_checkGridLines->isChecked() );
+    m_currentState.setChartDataLabels( m_tabChart->m_checkValues->isChecked() );
+    m_currentState.setChartByDefault( m_tabChart->m_checkShowChart->isChecked() );
+  }
+  
   // setup the date lock
   unsigned range = m_dateRange->currentItem();
   m_currentState.setDateFilter(range);
@@ -288,7 +310,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
     case MyMoneyReport::eExpenseIncome:
       throw new MYMONEYEXCEPTION("KReportConfigurationFilterDlg::slotReset(): QueryTable report has invalid rowtype");
     }
-
+    
     unsigned qc = m_initialState.queryColumns();
     m_tab3->m_checkNumber->setChecked(qc & MyMoneyReport::eQCnumber);
     m_tab3->m_checkPayee->setChecked(qc & MyMoneyReport::eQCpayee);
@@ -304,6 +326,33 @@ void KReportConfigurationFilterDlg::slotReset(void)
     m_tab3->m_checkInvestments->setChecked( m_initialState.isInvestmentsOnly() );
   }
 
+  if ( m_tabChart )
+  {
+    kdDebug(2) << __func__ << ": Setting up m_tabChart" << endl;
+    
+    switch( m_initialState.chartType() )
+    {
+      case MyMoneyReport::eChartNone:
+      case MyMoneyReport::eChartLine:
+        m_tabChart->m_comboType->setCurrentItem(0);
+        break;        
+      case MyMoneyReport::eChartBar:
+        m_tabChart->m_comboType->setCurrentItem(1);
+        break;        
+      case MyMoneyReport::eChartPie:
+        m_tabChart->m_comboType->setCurrentItem(2);
+        break;        
+      case MyMoneyReport::eChartRing:
+        m_tabChart->m_comboType->setCurrentItem(3);
+        break;        
+      case MyMoneyReport::eChartEnd:
+        throw new MYMONEYEXCEPTION("KReportConfigurationFilterDlg::slotReset(): Report has invalid charttype");
+    }
+    m_tabChart->m_checkGridLines->setChecked(m_initialState.isChartGridLines());
+    m_tabChart->m_checkValues->setChecked(m_initialState.isChartDataLabels());
+    m_tabChart->m_checkShowChart->setChecked(m_initialState.isChartByDefault());
+  }
+  
   //
   // Text Filter
   //

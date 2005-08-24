@@ -47,11 +47,15 @@ public:
   ~KReportChartView() {}
   static bool implemented(void) { return true; }
   void setNewData( const KDChartTableData& newdata ) { m_data = newdata; }
-  KDChartParams* params(void) { return &m_params; }
-  
+  KDChartParams& params(void) { return m_params; }
+  QStringList& abscissaNames(void) { return m_abscissaNames; }
+  void refreshLabels(void) { m_params.setAxisLabelStringParams( KDChartAxisParams::AxisPosBottom,&m_abscissaNames,0); }
+  void setCircularLabels(void) { m_params.setAxisLabelStringParams( KDChartAxisParams::AxisPosCircular,&m_abscissaNames,0); }
+
 private:
   KDChartParams m_params;
   KDChartTableData m_data;
+  QStringList m_abscissaNames;
 };
 
 } // end namespace reports

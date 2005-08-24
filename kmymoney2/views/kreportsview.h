@@ -126,6 +126,7 @@ public:
     void saveAs( const QString& filename );
     void updateReport(void);
     QString createTable(const QString& links=QString());
+    void drawChart(reports::KReportChartView& _chartView );
     const kMyMoneyReportControlDecl* control(void) const { return m_control; }
     bool isReadyToDelete(void) const { return m_deleteMe; }
     void setReadyToDelete(bool f) { m_deleteMe = f; }

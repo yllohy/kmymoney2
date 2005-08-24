@@ -21,6 +21,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "kdecompat.h"
 
 // ----------------------------------------------------------------------------
@@ -107,6 +111,11 @@ KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& re
 
   parent->insertTab( this, QIconSet(QPixmap(icon)), report.name() );
   parent->setTabEnabled( this, true );
+
+#ifdef HAVE_KDCHART    
+  if ( m_report.isChartByDefault() )
+    toggleChart();
+#endif
 }
 
 void KReportsView::KReportTab::print(void)
@@ -145,6 +154,8 @@ void KReportsView::KReportTab::updateReport(void)
   m_part->begin();
   m_part->write(createTable());
   m_part->end();
+  
+  drawChart( *m_chartView ); 
 }
 
 QString KReportsView::KReportTab::createTable(const QString& links)
@@ -164,7 +175,7 @@ QString KReportsView::KReportTab::createTable(const QString& links)
   try {
     html += header;
     html += links;
-
+    
     if ( m_report.reportType() == MyMoneyReport::ePivotTable )
       html += PivotTable( m_report ).renderHTML();
     else if ( m_report.reportType() == MyMoneyReport::eQueryTable )
@@ -191,6 +202,14 @@ QString KReportsView::KReportTab::createTable(const QString& links)
 
 }
 
+void KReportsView::KReportTab::drawChart(reports::KReportChartView& _chartView )
+{
+  if ( m_report.reportType() == MyMoneyReport::ePivotTable )
+    PivotTable( m_report ).drawChart(_chartView);
+  else if ( m_report.reportType() == MyMoneyReport::eQueryTable )
+    ; // no action for query table
+}
+
 void KReportsView::KReportTab::toggleChart(void)
 {
   // for now it will just SHOW the chart.  In the future it actually has to toggle it.
@@ -205,10 +224,6 @@ void KReportsView::KReportTab::toggleChart(void)
   }
   else
   {
-    //FIXME: Check the type of report and call the correct report type, don't just assume
-    //it's a pivot table...duh!
-    PivotTable t( m_report );
-    t.drawChart( *m_chartView );
     m_part->hide();
     m_chartView->show();
 

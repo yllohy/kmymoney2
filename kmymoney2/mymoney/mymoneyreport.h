@@ -63,11 +63,13 @@ public:
   enum EColumnType { eNoColumns = 0, eMonths = 1, eBiMonths = 2, eQuarters = 3, eYears = 12 };
   enum EQueryColumns { eQCnone = 0x0, eQCbegin = 0x1, eQCnumber = 0x1, eQCpayee = 0x2, eQCcategory = 0x4, eQCmemo = 0x8, eQCaccount = 0x10, eQCreconciled=0x20, eQCaction=0x40, eQCshares=0x80, eQCprice=0x100, eQCperformance=0x200, eQCend=0x400 };
   enum EDetailLevel { eDetailNone = 0, eDetailAll, eDetailTop, eDetailGroup, eDetailTotal, eDetailEnd };
+  enum EChartType { eChartNone = 0, eChartLine, eChartBar, eChartPie, eChartRing, eChartEnd };
 
   static const QStringList kRowTypeText;
   static const QStringList kColumnTypeText;
   static const QStringList kQueryColumnsText;
   static const QStringList kDetailLevelText;
+  static const QStringList kChartTypeText;
   static const EReportType kTypeArray[];
   
 public:
@@ -93,6 +95,10 @@ public:
   bool isTax(void) const { return m_tax; }
   bool isInvestmentsOnly(void) const { return m_investments; }
   EDetailLevel detailLevel(void) const { return m_detailLevel; }
+  EChartType chartType(void) const { return m_chartType; }
+  bool isChartDataLabels(void) const { return m_chartDataLabels; }
+  bool isChartGridLines(void) const { return m_chartGridLines; }
+  bool isChartByDefault(void) const { return m_chartByDefault; }
     
   // Simple set operations
   void setName(const QString& _s) { m_name = _s; }
@@ -108,7 +114,11 @@ public:
   void setTax(bool _f) { m_tax = _f; }
   void setInvestmentsOnly(bool _f) { m_investments = _f; }
   void setDetailLevel( EDetailLevel _detail ) { m_detailLevel = _detail; }
-
+  void setChartType ( EChartType _type ) { m_chartType = _type; }
+  void setChartDataLabels ( bool _f ) { m_chartDataLabels = _f; }
+  void setChartGridLines ( bool _f ) { m_chartGridLines = _f; }
+  void setChartByDefault ( bool _f ) { m_chartByDefault = _f; }
+  
   /**
     * This method allows you to clear the underlying transaction filter
     */
@@ -325,6 +335,23 @@ private:
     * Whether an account group filter has been set (see m_accountGroups)
     */
   bool m_accountGroupFilter;
+  /**
+    * What format should be used to draw this report as a chart
+    */
+  enum EChartType m_chartType;
+  /**
+    * Whether the value of individual data points should be drawn on the chart
+    */
+  bool m_chartDataLabels;
+  /**
+    * Whether grid lines should be drawn on the chart
+    */
+  bool m_chartGridLines;
+  /**
+    * Whether this report should be shown as a chart by default (otherwise it
+    * should be shown as a textual report)
+    */
+  bool m_chartByDefault;
   
 };
 

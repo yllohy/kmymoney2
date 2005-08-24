@@ -15,7 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -39,6 +41,7 @@ const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,
 const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,category,memo,account,reconcileflag,action,shares,price,performance",true);
 const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eNoReport };
 const QStringList MyMoneyReport::kDetailLevelText = QStringList::split(",","none,all,top,group,total,invalid",true);
+const QStringList MyMoneyReport::kChartTypeText = QStringList::split(",","none,line,bar,pie,ring,invalid",true);
 
 // This should live in mymoney/mymoneytransactionfilter.h
 static const QStringList kTypeText = QStringList::split(",","all,payments,deposits,transfers,none");
@@ -58,7 +61,11 @@ MyMoneyReport::MyMoneyReport(void):
     m_columnType(eMonths),
     m_queryColumns(eQCnone),
     m_dateLock(userDefined),
-    m_accountGroupFilter(false)
+    m_accountGroupFilter(false),   
+    m_chartType(eChartLine),
+    m_chartDataLabels(true),
+    m_chartGridLines(true),
+    m_chartByDefault(false)
 {
 }
   
@@ -73,7 +80,11 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
     m_reportType(kTypeArray[_rt]),
     m_rowType(_rt),
     m_dateLock(_dl),
-    m_accountGroupFilter(false)
+    m_accountGroupFilter(false),
+    m_chartType(eChartLine),
+    m_chartDataLabels(true),
+    m_chartGridLines(true),
+    m_chartByDefault(false)
 {
   if ( m_reportType == ePivotTable )
     m_columnType = static_cast<EColumnType>(_ct);
@@ -229,53 +240,40 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   // the major type if it becomes impossible to maintain compatability with 
   // older versions of the program as new features are added to the reports.
   // Feel free to change the minor type every time a change is made here.
+  
+  if ( anonymous )
+  {
+    e.setAttribute("name", m_id);
+    e.setAttribute("comment", QString(m_comment).fill('x'));
+  }
+  else
+  {
+    e.setAttribute("name", m_name);
+    e.setAttribute("comment", m_comment);
+  }
+  e.setAttribute("group", m_group);
+  e.setAttribute("convertcurrency", m_convertCurrency);
+  e.setAttribute("favorite", m_favorite);
+  e.setAttribute("tax", m_tax);
+  e.setAttribute("investments", m_investments);
+  e.setAttribute("rowtype", kRowTypeText[m_rowType]);
+  e.setAttribute("id", m_id);
+  e.setAttribute("datelock", kDateLockText[m_dateLock]);
+
+  e.setAttribute("charttype",kChartTypeText[m_chartType]);
+  e.setAttribute("chartdatalabels",m_chartDataLabels);
+  e.setAttribute("chartgridlines",m_chartGridLines);
+  e.setAttribute("chartbydefault",m_chartByDefault);
 
   if ( m_reportType == ePivotTable )
   {
-    e.setAttribute("type","pivottable 1.8");
-    
-    if ( anonymous )
-    {
-      e.setAttribute("name", m_id);
-      e.setAttribute("comment", QString(m_comment).fill('x'));
-    }
-    else
-    {
-      e.setAttribute("name", m_name);
-      e.setAttribute("comment", m_comment);
-    }
-    e.setAttribute("group", m_group);
+    e.setAttribute("type","pivottable 1.9");
     e.setAttribute("detail", kDetailLevelText[m_detailLevel]);
-    e.setAttribute("convertcurrency", m_convertCurrency);
-    e.setAttribute("favorite", m_favorite);
-    e.setAttribute("tax", m_tax);
-    e.setAttribute("investments", m_investments);
-    e.setAttribute("rowtype", kRowTypeText[m_rowType]);
     e.setAttribute("columntype", kColumnTypeText[m_columnType]);
-    e.setAttribute("id", m_id);
-    e.setAttribute("datelock", kDateLockText[m_dateLock]);
   }
   else if ( m_reportType == eQueryTable )
   {
-    e.setAttribute("type","querytable 1.8");
-    if ( anonymous )
-    {
-      e.setAttribute("name", m_id);
-      e.setAttribute("comment", QString(m_comment).fill('x'));
-    }
-    else
-    {
-      e.setAttribute("name", m_name);
-      e.setAttribute("comment", m_comment);
-    }
-    e.setAttribute("group", m_group);
-    e.setAttribute("convertcurrency", m_convertCurrency);
-    e.setAttribute("favorite", m_favorite);
-    e.setAttribute("tax", m_tax);
-    e.setAttribute("investments", m_investments);
-    e.setAttribute("rowtype", kRowTypeText[m_rowType]);
-    e.setAttribute("id", m_id);
-    e.setAttribute("datelock", kDateLockText[m_dateLock]);
+    e.setAttribute("type","querytable 1.9");
     
     QStringList columns;
     unsigned qc = m_queryColumns;
@@ -510,6 +508,14 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_favorite = e.attribute("favorite","0").toUInt();
     m_tax = e.attribute("tax","0").toUInt();    
     m_investments = e.attribute("investments","0").toUInt();
+    
+    i = kChartTypeText.findIndex(e.attribute("charttype"));      
+    if ( i != -1 )
+      m_chartType = static_cast<EChartType>(i);
+    
+    m_chartDataLabels = e.attribute("chartdatalabels","1").toUInt();
+    m_chartGridLines = e.attribute("chartgridlines","1").toUInt();
+    m_chartByDefault = e.attribute("chartbydefault","0").toUInt();
     
     QString datelockstr = e.attribute("datelock","userdefined");
     // Handle the pivot 1.2/query 1.1 case where the values were saved as
