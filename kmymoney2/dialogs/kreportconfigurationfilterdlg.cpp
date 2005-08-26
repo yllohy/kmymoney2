@@ -203,9 +203,7 @@ void KReportConfigurationFilterDlg::slotSearch()
 
   if ( m_tabChart )
   {
-    kdDebug(2) << __func__ << ": Pulling chart params from m_tabChart" << endl;
-  
-    MyMoneyReport::EChartType ct[4] = { MyMoneyReport::eChartLine, MyMoneyReport::eChartBar, MyMoneyReport::eChartPie, MyMoneyReport::eChartRing };
+    MyMoneyReport::EChartType ct[5] = { MyMoneyReport::eChartLine, MyMoneyReport::eChartBar, MyMoneyReport::eChartStackedBar, MyMoneyReport::eChartPie, MyMoneyReport::eChartRing };
     m_currentState.setChartType( ct[m_tabChart->m_comboType->currentItem()] );
     
     m_currentState.setChartGridLines( m_tabChart->m_checkGridLines->isChecked() );
@@ -329,8 +327,6 @@ void KReportConfigurationFilterDlg::slotReset(void)
 
   if ( m_tabChart )
   {
-    kdDebug(2) << __func__ << ": Setting up m_tabChart" << endl;
-    
     switch( m_initialState.chartType() )
     {
       case MyMoneyReport::eChartNone:
@@ -340,11 +336,14 @@ void KReportConfigurationFilterDlg::slotReset(void)
       case MyMoneyReport::eChartBar:
         m_tabChart->m_comboType->setCurrentItem(1);
         break;        
-      case MyMoneyReport::eChartPie:
+      case MyMoneyReport::eChartStackedBar:
         m_tabChart->m_comboType->setCurrentItem(2);
         break;        
-      case MyMoneyReport::eChartRing:
+      case MyMoneyReport::eChartPie:
         m_tabChart->m_comboType->setCurrentItem(3);
+        break;        
+      case MyMoneyReport::eChartRing:
+        m_tabChart->m_comboType->setCurrentItem(4);
         break;        
       case MyMoneyReport::eChartEnd:
         throw new MYMONEYEXCEPTION("KReportConfigurationFilterDlg::slotReset(): Report has invalid charttype");

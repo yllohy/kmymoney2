@@ -1164,14 +1164,21 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     break;
   case MyMoneyReport::eChartBar:
     _view.params().setChartType( KDChartParams::Bar );
+    _view.params().setBarChartSubType( KDChartParams::BarNormal );
+    break;
+  case MyMoneyReport::eChartStackedBar:
+    _view.params().setChartType( KDChartParams::Bar );
+    _view.params().setBarChartSubType( KDChartParams::BarStacked );
     break;
   case MyMoneyReport::eChartPie:
     _view.params().setChartType( KDChartParams::Pie );
+    _view.params().setThreeDPies( true );
     accountseries = false;
     seriestotals = true;
     break;
   case MyMoneyReport::eChartRing:
     _view.params().setChartType( KDChartParams::Ring );
+    _view.params().setRelativeRingThickness( true );
     accountseries = false;
     break;
   }

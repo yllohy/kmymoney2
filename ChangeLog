@@ -1,6 +1,9 @@
 2005-08-25 Ace Jones <acejones@users.sourceforge.net>
   * Fixed crash in chart configuration
-
+  * Added stacked bar chart
+  * Changed ring chart to be proportional widths (not sure I like this)
+  * Changed pie charts to look 3D
+  
 2005-08-23 Ace Jones <acejones@users.sourceforge.net>
   * Chart configuration dialog
   * Added line, bar, pie & ring charts

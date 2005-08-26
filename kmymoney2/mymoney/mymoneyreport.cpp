@@ -34,14 +34,12 @@
 #include "mymoneyfile.h"
 #include "mymoneyreport.h"
  
-//ReportContainer gContainer;
-
 const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,assetliability,expenseincome,category,topcategory,account,payee,month,week,topaccount,topaccount-account,equitytype,accounttype,institution",true);
 const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,months,bimonths,quarters,,,,,,,,,years",true);
 const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,category,memo,account,reconcileflag,action,shares,price,performance",true);
 const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eNoReport };
 const QStringList MyMoneyReport::kDetailLevelText = QStringList::split(",","none,all,top,group,total,invalid",true);
-const QStringList MyMoneyReport::kChartTypeText = QStringList::split(",","none,line,bar,pie,ring,invalid",true);
+const QStringList MyMoneyReport::kChartTypeText = QStringList::split(",","none,line,bar,pie,ring,stackedbar,invalid",true);
 
 // This should live in mymoney/mymoneytransactionfilter.h
 static const QStringList kTypeText = QStringList::split(",","all,payments,deposits,transfers,none");
