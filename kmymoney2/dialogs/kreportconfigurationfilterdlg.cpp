@@ -74,6 +74,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
  : KFindTransactionDlg(parent, name),
  m_tab2(0),
  m_tab3(0),
+ m_tabChart(0),
  m_initialState(report),
  m_currentState(report)
 {
