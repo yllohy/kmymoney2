@@ -291,6 +291,9 @@ void KReportsView::slotRefreshView(void)
 
   // Default Reports
 
+  QString pagename = "9. " + i18n("Charts");
+  KListViewItem* chartnode = new KListViewItem(m_reportListView,pagename);
+  
   QMap<QString,KListViewItem*> groupitems;
   QValueList<ReportGroup> defaultreports;
   defaultReports(defaultreports);
@@ -308,17 +311,27 @@ void KReportsView::slotRefreshView(void)
       MyMoneyReport report = *it_report;
       report.setGroup(groupname);
       new KReportListItem( curnode, report );
+
+      // ALSO place it into the Charts list if it's displayed as a chart by default
+      if ( (*it_report).isChartByDefault() )
+        new KReportListItem( chartnode, *it_report );
+      
       ++it_report;
     }
 
     ++it_group;
   }
+
+  // Rename the charts item to place it at this point in the list.
+  pagename = QString::number(pagenumber++) + ". " + i18n("Charts");
+  chartnode->setText(0,pagename);
+    
   // Custom reports
 
-  QString pagename = QString::number(pagenumber++) + ". " + i18n("Favorite Reports");
+  pagename = QString::number(pagenumber++) + ". " + i18n("Favorite Reports");
   KListViewItem* favoritenode = new KListViewItem(m_reportListView,pagename);
   KListViewItem* orphannode = NULL;
-
+  
   QValueList<MyMoneyReport> customreports = MyMoneyFile::instance()->reportList();
   QValueList<MyMoneyReport>::const_iterator it_report = customreports.begin();
   while( it_report != customreports.end() )
@@ -342,6 +355,10 @@ void KReportsView::slotRefreshView(void)
     if ( (*it_report).isFavorite() )
       new KReportListItem( favoritenode, *it_report );
 
+    // ALSO place it into the Charts list if it's displayed as a chart by default
+    if ( (*it_report).isChartByDefault() )
+      new KReportListItem( chartnode, *it_report );
+      
     ++it_report;
   }
 
@@ -726,6 +743,32 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Income and Expenses This Year"),
       i18n("Default Report")
     ));
+    
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eExpenseIncome,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::yearToDate,
+      true,
+      i18n("Income and Expenses Graph"),
+      i18n("Default Report")
+    ));
+    list.back().setChartByDefault(true);
+    list.back().setDetailLevel(MyMoneyReport::eDetailTop);
+    list.back().setChartType(MyMoneyReport::eChartLine);
+    list.back().setChartDataLabels(false);
+    
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eExpenseIncome,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::yearToDate,
+      false,
+      i18n("Income and Expenses Pie Chart"),
+      i18n("Default Report")
+    ));
+    list.back().setChartByDefault(true);
+    list.back().setDetailLevel(MyMoneyReport::eDetailGroup);
+    list.back().setChartType(MyMoneyReport::eChartPie);
+    
     groups.push_back(list);
   }
   {
@@ -756,6 +799,19 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Default Report")
     ));
 
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eAssetLiability,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::last12Months,
+      false,
+      i18n("Net Worth Graph"),
+      i18n("Default Report")
+    ));
+    list.back().setChartByDefault(true);
+    list.back().setChartGridLines(false);
+    list.back().setDetailLevel(MyMoneyReport::eDetailTotal);
+    list.back().setChartType(MyMoneyReport::eChartLine);
+    
     list.push_back(MyMoneyReport(
       MyMoneyReport::eInstitution,
       MyMoneyReport::eQCnone,

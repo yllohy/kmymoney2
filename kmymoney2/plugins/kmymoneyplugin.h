@@ -96,7 +96,16 @@ namespace KMyMoneyPlugin {
       * @return QString Name of the format
       */
     virtual QString formatName(void) const /*= 0*/;
-  
+
+    /**
+      * This method returns the filename filter suitable for passing to
+      * KFileDialog::setFilter(), e.g. "*.ofx *.qfx" which describes how
+      * files of this format are likely to be named in the file system
+      *
+      * @return QString Filename filter string
+      */
+    virtual QString formatFilenameFilter(void) const /*= 0*/;
+
     /**
       * This method returns whether this plugin is able to import
       * a particular file.
@@ -106,7 +115,7 @@ namespace KMyMoneyPlugin {
       * @return bool Whether the indicated file is importable by this plugin
       */
     virtual bool isMyFormat( const QString& filename ) const /*= 0*/;
-    
+
     /**
       * Import a file
       *

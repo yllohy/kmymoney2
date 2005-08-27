@@ -50,6 +50,11 @@ QString OfxImporterPlugin::formatName(void) const
   return "OFX";
 }
 
+QString OfxImporterPlugin::formatFilenameFilter(void) const
+{
+  return "*.ofx *.qfx";
+}
+
 bool OfxImporterPlugin::isMyFormat( const QString& filename ) const
 {
   // filename is an Ofx file if it contains the tag "<OFX>" somewhere.

@@ -56,6 +56,15 @@ public:
   virtual QString formatName(void) const;
 
   /**
+    * This method returns the filename filter suitable for passing to
+    * KFileDialog::setFilter(), e.g. "*.ofx *.qfx" which describes how
+    * files of this format are likely to be named in the file system
+    *
+    * @return QString Filename filter string
+    */
+  virtual QString formatFilenameFilter(void) const;
+
+  /**
     * This method returns whether this plugin is able to import
     * a particular file.
     *

@@ -1,3 +1,11 @@
+2005-08-26 Ace Jones <acejones@users.sourceforge.net>
+  * Added ability for import plugins to specify the file format filter to use
+    when looking for those files
+  * Added "*.qfx" to file format filter in OFX import plugin
+  * Added three new default chart-type reports
+  * Added a new "Charts" section to the reports summary which collects all
+    reports that are set to display initially as charts
+
 2005-08-25 Ace Jones <acejones@users.sourceforge.net>
   * Fixed crash in chart configuration
   * Added stacked bar chart

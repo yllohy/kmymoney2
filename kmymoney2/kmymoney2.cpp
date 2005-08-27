@@ -961,9 +961,10 @@ void KMyMoney2App::slotPluginImport(const QString& format)
     KFileDialog* dialog = new KFileDialog
     (
       KGlobalSettings::documentPath(),
-      i18n("*.%1|%2 files\n*.*|All files (*.*)")
-        .arg(format.lower())
-        .arg(format),
+      i18n("%1|%2 files (%3)\n*.*|All files (*.*)")
+        .arg(plugin->formatFilenameFilter().lower())
+        .arg(format)
+        .arg(plugin->formatFilenameFilter().lower()),
       this,
       i18n("Import %1 Statement...").arg(format),
       true
