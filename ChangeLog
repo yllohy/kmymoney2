@@ -1,3 +1,11 @@
+2005-08-27 Ace Jones <acejones@users.sourceforge.net>
+  * When importing investments via OFX into an investment account with an
+    associated brokerage account, use that account for the buys/sells &
+    cash dividends.
+  * When importing investments via OFX into an investment account with an
+    associated brokerage account, allow non-investment transactions.  Dump
+    them into the brokerage account.
+
 2005-08-26 Ace Jones <acejones@users.sourceforge.net>
   * Added ability for import plugins to specify the file format filter to use
     when looking for those files

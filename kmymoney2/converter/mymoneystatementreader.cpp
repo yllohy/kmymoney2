@@ -35,6 +35,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kconfig.h>
+#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
@@ -175,53 +176,62 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   s1.setValue(t_in.m_moneyAmount);
   s1.setNumber(t_in.m_strNumber);
 
+  // set these values if a transfer split is needed at the very end.
+  MyMoneyMoney transfervalue;
+  QCString transferaccountid;  
+  
   // If the user has chosent to import into an investment account, determine the correct account to use
   MyMoneyAccount thisaccount = m_account;
   if ( thisaccount.accountType() == MyMoneyAccount::Investment )
   {
-    // the correct account is the stock account which matches two criteria:
-    // (1) it is a sub-account of the selected investment account, and
-    // (2) the symbol of the underlying security matches the security of the
-    // transaction
-
-    // search through each subordinate account
-    bool found = false;
-    QCStringList accounts = thisaccount.accountList();
-    QCStringList::const_iterator it_account = accounts.begin();
-    while( !found && it_account != accounts.end() )
+    // find the security transacted, UNLESS this transaction didn't
+    // involve any security.
+    if ( t_in.m_eAction != MyMoneyStatement::Transaction::eaNone )
     {
-      QCString currencyid = file->account(*it_account).currencyId();
-      MyMoneySecurity security = file->security( currencyid );
-      QString symbol = security.tradingSymbol();
-
-      // startsWith(QString, bool) is not available in Qt 3.0
-      if ( t_in.m_strSecurity.lower().startsWith(QString(symbol+" ").lower()) )
+      // the correct account is the stock account which matches two criteria:
+      // (1) it is a sub-account of the selected investment account, and
+      // (2) the symbol of the underlying security matches the security of the
+      // transaction
+  
+      // search through each subordinate account
+      bool found = false;
+      QCStringList accounts = thisaccount.accountList();
+      QCStringList::const_iterator it_account = accounts.begin();
+      while( !found && it_account != accounts.end() )
       {
-        s1.setAccountId(*it_account);
-        thisaccount = file->account(*it_account);
-        found = true;
-
-        // update the price, while we're here.  in the future, this should be
-        // an option
-        QCString basecurrencyid = file->baseCurrency().id();
-        MyMoneyPrice price = file->price( currencyid, basecurrencyid, t_in.m_datePosted, true );
-        if ( !price.isValid() )
+        QCString currencyid = file->account(*it_account).currencyId();
+        MyMoneySecurity security = file->security( currencyid );
+        QString symbol = security.tradingSymbol();
+  
+        // startsWith(QString, bool) is not available in Qt 3.0
+        if ( t_in.m_strSecurity.lower().startsWith(QString(symbol+" ").lower()) )
         {
-          MyMoneyPrice newprice( currencyid, basecurrencyid, t_in.m_datePosted, t_in.m_moneyAmount / t_in.m_dShares, i18n("Statement Importer") );
-          file->addPrice(newprice);
+          s1.setAccountId(*it_account);
+          thisaccount = file->account(*it_account);
+          found = true;
+  
+          // update the price, while we're here.  in the future, this should be
+          // an option
+          QCString basecurrencyid = file->baseCurrency().id();
+          MyMoneyPrice price = file->price( currencyid, basecurrencyid, t_in.m_datePosted, true );
+          if ( !price.isValid() )
+          {
+            MyMoneyPrice newprice( currencyid, basecurrencyid, t_in.m_datePosted, t_in.m_moneyAmount / t_in.m_dShares, i18n("Statement Importer") );
+            file->addPrice(newprice);
+          }
         }
+  
+        ++it_account;
       }
 
-      ++it_account;
-    }
-
-    if (!found)
-    {
-      KMessageBox::information(0, i18n("This investment account does not contain the '%1' security.  "
-                                        "Transactions involving this security will be ignored.").arg(t_in.m_strSecurity),
-                                  i18n("Security not found"),
-                                  QString("MissingSecurity%1").arg(t_in.m_strSecurity.stripWhiteSpace()));
-      return;
+      if (!found)
+      {
+        KMessageBox::information(0, i18n("This investment account does not contain the '%1' security.  "
+                                          "Transactions involving this security will be ignored.").arg(t_in.m_strSecurity),
+                                    i18n("Security not found"),
+                                    QString("MissingSecurity%1").arg(t_in.m_strSecurity.stripWhiteSpace()));
+        return;
+      }
     }
 
     if (t_in.m_eAction==MyMoneyStatement::Transaction::eaReinvestDividend)
@@ -236,7 +246,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       s2.setValue(-t_in.m_moneyAmount);
       t.addSplit(s2);
     }
-    if (t_in.m_eAction==MyMoneyStatement::Transaction::eaCashDividend)
+    else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaCashDividend)
     {
       // NOTE: With CashDividend, the amount of the dividend should
       // be in data.amount.  Since I've never seen an OFX file with
@@ -260,20 +270,47 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       s2.setAction(MyMoneySplit::ActionDividend);
       s2.setAccountId(thisaccount.id());
       t.addSplit(s2);
+      
+      transfervalue = t_in.m_moneyAmount;
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaBuy || t_in.m_eAction==MyMoneyStatement::Transaction::eaSell)
     {
       s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
       s1.setAction(MyMoneySplit::ActionBuyShares);
+      
+      transfervalue = -t_in.m_moneyAmount;
+      
+      kdDebug(2) << __func__ << ": buy/sell, xfervalue=" << transfervalue.toString() << endl;
     }
-
+    else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaNone)
+    {
+      // User is attempting to import a non-investment transaction into this
+      // investment account.  This is not supportable the way KMyMoney is 
+      // written.  However, if a user has an associated brokerage account,
+      // we can stuff the transaction there.
+      
+      QCString brokerageactid = m_account.value("kmm-brokerage-account").utf8();
+      if ( ! brokerageactid.isEmpty() )
+      {
+        s1.setAccountId(brokerageactid);
+    
+        if(!s1.value().isNegative())
+          s1.setAction(MyMoneySplit::ActionDeposit);
+        else
+          s1.setAction(MyMoneySplit::ActionWithdrawal);
+      }
+      else
+      {
+        // Warning!! Your transaction is being thrown away.
+      }
+    }
   }
   else
   {
     // For non-investment accounts, just use the selected account
     // Note that it is perfectly reasonable to import an investment statement into a non-investment account
     // if you really want.  The investment-specific information, such as number of shares and action will
-    // be disacarded in that case.
+    // be discarded in that case.
     s1.setAccountId(m_account.id());
 
     if(!s1.value().isNegative())
@@ -407,6 +444,26 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
   t.addSplit(s1);
 
+  // Add the 'account' split if it's needed
+  if ( ! transfervalue.isZero() )
+  {
+    kdDebug(2) << __func__ << ": xfervalue=" << transfervalue.toString() << endl;
+  
+    QCString brokerageactid = m_account.value("kmm-brokerage-account").utf8();
+    if ( ! brokerageactid.isEmpty() )
+    {
+      kdDebug(2) << __func__ << ": brokerageactid=" << brokerageactid << endl;
+      
+      // FIXME This may not deal with foreign currencies properly
+      MyMoneySplit s;
+      s.setMemo(t_in.m_strMemo);
+      s.setValue(transfervalue);
+      s.setShares(transfervalue);
+      s.setAccountId(brokerageactid);
+      t.addSplit(s);
+    }
+  }
+  
   // Add the transaction
   try {
     // check for duplicates ONLY by Bank ID in this account.

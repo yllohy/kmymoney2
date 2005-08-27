@@ -117,7 +117,7 @@ QString OfxImporterPlugin::lastError(void) const
 
 int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, void * pv)
 {
-  kdDebug(2) << __func__ << endl;
+//   kdDebug(2) << __func__ << endl;
     
   OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
   MyMoneyStatement& s = pofx->back();
@@ -277,20 +277,22 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
       break;
     }
   }
-
+  else
+    t.m_eAction = MyMoneyStatement::Transaction::eaNone;
+  
   if ( unhandledtype )
     pofx->addWarning(QString("OFX Transaction Warning: File includes a transaction of an unsupported type (%1).  Please contact the developers mailing list, and we can try to add support for it.").arg(type));
   else
     s.m_listTransactions += t;
 
-  kdDebug(2) << __func__ << "return 0 " << endl;
+//   kdDebug(2) << __func__ << "return 0 " << endl;
   
   return 0;
 }
 
 int OfxImporterPlugin::ofxStatementCallback(struct OfxStatementData data, void* pv)
 {
-  kdDebug(2) << __func__ << endl;
+//   kdDebug(2) << __func__ << endl;
 
   OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
   MyMoneyStatement& s = pofx->back();
@@ -324,14 +326,14 @@ int OfxImporterPlugin::ofxStatementCallback(struct OfxStatementData data, void* 
     s.m_moneyClosingBalance = static_cast<double>(data.ledger_balance);
   }
 
-  kdDebug(2) << __func__ << " return 0" << endl;
+//   kdDebug(2) << __func__ << " return 0" << endl;
   
   return 0;
 }
 
 int OfxImporterPlugin::ofxAccountCallback(struct OfxAccountData data, void * pv)
 {
-  kdDebug(2) << __func__ << endl;
+//   kdDebug(2) << __func__ << endl;
 
   OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
   pofx->addnew();
@@ -371,14 +373,14 @@ int OfxImporterPlugin::ofxAccountCallback(struct OfxAccountData data, void * pv)
     }
   }
 
-  kdDebug(2) << __func__ << " return 0" << endl;
+//   kdDebug(2) << __func__ << " return 0" << endl;
   
   return 0;
 }
 
 int OfxImporterPlugin::ofxStatusCallback(struct OfxStatusData data, void * pv)
 {
-  kdDebug(2) << __func__ << endl;
+//   kdDebug(2) << __func__ << endl;
 
   OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
   QString message;
@@ -415,7 +417,7 @@ int OfxImporterPlugin::ofxStatusCallback(struct OfxStatusData data, void * pv)
     }
   }
   
-  kdDebug(2) << __func__ << " return 0 " << endl;
+//   kdDebug(2) << __func__ << " return 0 " << endl;
   
   return 0;
 }
