@@ -54,11 +54,15 @@ struct MyMoneyStatement
     QString m_strBankID;
     double m_moneyAmount;
     
-    // the following members are only used when m_eType==etInvestment
+    // the following members are only used for investment accounts (m_eType==etInvestment)
+    // eaNone means the action, shares, and security can be ignored.
     enum EAction { eaNone = 0, eaBuy, eaSell, eaReinvestDividend, eaCashDividend, eaEnd };
     EAction m_eAction;
     double m_dShares;
-    QString m_strSecurity;  // should be security ID followed by name, e.g. "DIS The Disney Corporation"
+    double m_moneyFees;
+    // should be trading symbol followed by name, e.g. "DIS The Disney Corporation"
+    // if there is no symbol, then it's a space followed by the name, e.g. " PennyStock Co., Inc."
+    QString m_strSecurity;  
   };
   
   struct Price

@@ -5,7 +5,10 @@
   * When importing investments via OFX into an investment account with an
     associated brokerage account, allow non-investment transactions.  Dump
     them into the brokerage account.
-
+  * Added fees to MMStatement::Transaction struct for later use
+  * Commented some obscure aspects of MMStatement
+  * Also match imported securities by name if they have no symbol
+  
 2005-08-26 Ace Jones <acejones@users.sourceforge.net>
   * Added ability for import plugins to specify the file format filter to use
     when looking for those files

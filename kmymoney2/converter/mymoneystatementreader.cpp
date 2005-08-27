@@ -190,8 +190,9 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     {
       // the correct account is the stock account which matches two criteria:
       // (1) it is a sub-account of the selected investment account, and
-      // (2) the symbol of the underlying security matches the security of the
-      // transaction
+      // (2a) the symbol of the underlying security matches the security of the
+      // transaction, or
+      // (2b) the name of the security matches the name of the security of the transaction.
   
       // search through each subordinate account
       bool found = false;
@@ -201,10 +202,14 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       {
         QCString currencyid = file->account(*it_account).currencyId();
         MyMoneySecurity security = file->security( currencyid );
-        QString symbol = security.tradingSymbol();
+        QString symboltoken = security.tradingSymbol() + " ";
+        QString nametoken = " " + security.name();
   
-        // startsWith(QString, bool) is not available in Qt 3.0
-        if ( t_in.m_strSecurity.lower().startsWith(QString(symbol+" ").lower()) )
+        if ( 
+          t_in.m_strSecurity.startsWith(symboltoken,false)
+          ||
+          (t_in.m_strSecurity == nametoken) 
+        )
         {
           s1.setAccountId(*it_account);
           thisaccount = file->account(*it_account);
@@ -279,8 +284,6 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       s1.setAction(MyMoneySplit::ActionBuyShares);
       
       transfervalue = -t_in.m_moneyAmount;
-      
-      kdDebug(2) << __func__ << ": buy/sell, xfervalue=" << transfervalue.toString() << endl;
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaNone)
     {
@@ -447,13 +450,9 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   // Add the 'account' split if it's needed
   if ( ! transfervalue.isZero() )
   {
-    kdDebug(2) << __func__ << ": xfervalue=" << transfervalue.toString() << endl;
-  
     QCString brokerageactid = m_account.value("kmm-brokerage-account").utf8();
     if ( ! brokerageactid.isEmpty() )
     {
-      kdDebug(2) << __func__ << ": brokerageactid=" << brokerageactid << endl;
-      
       // FIXME This may not deal with foreign currencies properly
       MyMoneySplit s;
       s.setMemo(t_in.m_strMemo);
