@@ -67,7 +67,7 @@ namespace reports {
 class KReportChartView : public QWidget
 {
 public:
-  KReportChartView( QWidget* parent, const char* name ) {}
+  KReportChartView( QWidget* parent, const char* name ): QWidget(parent,name) {}
   ~KReportChartView() {}
   static bool implemented(void) { return false; }
 };
