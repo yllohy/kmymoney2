@@ -114,7 +114,7 @@
                             </font>
                         </property>
                         <property name="toolTip" stdset="0">
-                            <string>Summary of the equities contained in this account, showing price and % gains.</string>
+                            <string>Summary of the equities contained in this account, showing your holdings and their most recent price.</string>
                         </property>
                     </widget>
                 </hbox>
