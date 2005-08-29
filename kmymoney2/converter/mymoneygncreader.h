@@ -781,6 +781,7 @@ private:
   QCString m_txCommodity; // save commodity for current transaction
   QString m_txPayeeId;    // gnc has payee at tx level, we need it at split level
   QDate m_txDatePosted;   // ditto for post date
+  QString m_txChequeNo;    // ditto for cheque number
   /** In kmm, the order of splits is critical to some operations. These
     * areas will hold the splits until we've read them all */
   QValueList<MyMoneySplit> m_splitList, m_liabilitySplitList, m_otherSplitList;

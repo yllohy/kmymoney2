@@ -1201,6 +1201,7 @@ void MyMoneyGncReader::convertTransaction (const GncTransaction *gtx) {
   tx.setEntryDate (gtx->dateEntered());
   tx.setPostDate (gtx->datePosted());
   m_txDatePosted = tx.postDate(); // save for use in splits
+  m_txChequeNo = gtx->no(); // ditto
   tx.setCommodity (gtx->currency().utf8());
   m_txCommodity = tx.commodity(); // save in storage, maybe needed for Orphan accounts
   // process splits
@@ -1218,7 +1219,7 @@ void MyMoneyGncReader::convertTransaction (const GncTransaction *gtx) {
   while (!m_splitList.isEmpty()) {
     split = *it;
     if (m_potentialTransfer) split.setAction(MyMoneySplit::ActionTransfer);
-    split.setNumber(gtx->no());
+    //split.setNumber(gtx->no());
     // Arbitrarily, save the first non-null split memo as the memo for the whole tx
     // I think this is necessary because txs with just 2 splits (the majority)
     // are not viewable as split transactions in kmm so the split memo is not seen
@@ -1268,6 +1269,8 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
   split.setMemo(gsp->memo());
   // accountId
   split.setAccountId (kmmAccountId);
+  // cheque no
+  split.setNumber (m_txChequeNo);
   // value and quantity
   MyMoneyMoney splitValue (0);
   if (gsp->value() != QString("-1/0")) { // treat gnc invalid value as zero
@@ -1320,8 +1323,6 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
       }
     } else { // not stock
       if (split.value().isNegative()) {
-        split.setAction (MyMoneySplit::ActionDeposit);
-      } else {
         bool isNumeric = false;
         if (!split.number().isEmpty()) {
           split.number().toLong(&isNumeric);    // No QString.isNumeric()??
@@ -1331,14 +1332,16 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
         } else {
           split.setAction (MyMoneySplit::ActionWithdrawal);
         }
+      } else {
+        split.setAction (MyMoneySplit::ActionDeposit);
       }
     }
     m_splitList.append(split);
     break;
   case MyMoneyAccount::Liability:
     split.value().isNegative() ?
-    split.setAction (MyMoneySplit::ActionWithdrawal) :
-    split.setAction (MyMoneySplit::ActionDeposit);
+        split.setAction (MyMoneySplit::ActionWithdrawal) :
+        split.setAction (MyMoneySplit::ActionDeposit);
     m_liabilitySplitList.append(split);
     break;
   default:
@@ -1379,14 +1382,14 @@ MyMoneyTransaction MyMoneyGncReader::convertTemplateTransaction (const QString s
     convertTemplateSplit (schedName, static_cast<const GncTemplateSplit *>(gtx->getSplit (i)));
   }
   // determine the action type for the splits and link them to the template tx
-  QCString negativeActionType, positiveActionType;
-  if (!m_splitList.isEmpty()) { // if there are asset splits
+  /*QCString negativeActionType, positiveActionType;
+  if (!m_splitList.isEmpty()) { // if there are asset splits 
     positiveActionType = MyMoneySplit::ActionDeposit;
     negativeActionType = MyMoneySplit::ActionWithdrawal;
   } else { // if there are liability splits
     positiveActionType = MyMoneySplit::ActionWithdrawal;
     negativeActionType = MyMoneySplit::ActionDeposit;
-  }
+} */
   if (!m_otherSplitList.isEmpty()) m_potentialTransfer = false; // tfrs can occur only between assets and asset/liabilities
   m_splitList += m_liabilitySplitList += m_otherSplitList;
   // the splits are in order in splitList. Transfer them to the tx
@@ -1400,10 +1403,12 @@ MyMoneyTransaction MyMoneyGncReader::convertTemplateTransaction (const QString s
     if (m_potentialTransfer) {
       split.setAction(MyMoneySplit::ActionTransfer);
     } else {
-      if (split.value() <= MyMoneyMoney (0)) {
-        split.setAction (negativeActionType);
+      if (split.value().isNegative()) {
+        //split.setAction (negativeActionType);
+        split.setAction (MyMoneySplit::ActionWithdrawal);
       } else {
-        split.setAction (positiveActionType);
+        //split.setAction (positiveActionType);
+        split.setAction (MyMoneySplit::ActionDeposit);
       }
     }
     split.setNumber(gtx->no()); // set cheque no (or equivalent description)

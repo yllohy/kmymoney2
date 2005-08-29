@@ -1,3 +1,7 @@
+2005-08-29 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * GnuCash Reader - correct split action types
+                   - detect checks properly
+                   - fix locale-dependent problem on schedules
 2005-08-27 Ace Jones <acejones@users.sourceforge.net>
   * When importing investments via OFX into an investment account with an
     associated brokerage account, use that account for the buys/sells &
