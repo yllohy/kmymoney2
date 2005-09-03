@@ -175,8 +175,8 @@ private:
   /** Set schedule options */
   void setPageSchedule();
 
-  /** Set security options */
-  void setPageSecurity(void);
+  /** Set encryption options */
+  void setPageEncryption(void);
 
   /** Set colour options */
   void setPageColour();

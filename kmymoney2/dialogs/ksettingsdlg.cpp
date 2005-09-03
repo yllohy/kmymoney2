@@ -65,7 +65,7 @@ KSettingsDlg::KSettingsDlg(QWidget *parent, const char *name, bool modal)
   setPageList();
   setHomePage();
   setPageSchedule();
-  setPageSecurity();
+  setPageEncryption();
   setPageColour();
   setPageFont();
   setPageOnlineQuotes();
@@ -826,26 +826,16 @@ void KSettingsDlg::slotMoveDown(void)
   }
 }
 
-void KSettingsDlg::setPageSecurity(void)
+void KSettingsDlg::setPageEncryption(void)
 {
-#if 0
   // Create the main frame to hold the widgets
-  QVBox *qvboxMainFrame = addVBoxPage( i18n("Security"), i18n("Security settings"),
-    DesktopIcon("kgpg"));
-
-  QGroupBox* groupBox1 = new QGroupBox( qvboxMainFrame, "groupBox1" );
-  groupBox1->setTitle( i18n( "Encryption options" ) );
-
-  groupBox1->setEnabled(KGPGFile::GPGAvailable());
-#endif
-  // Create the main frame to hold the widgets
-  QVBox *qvboxMainFrame = addVBoxPage( i18n("Security"), i18n("Data Encryption Settings"),
+  QVBox *qvboxMainFrame = addVBoxPage( i18n("Encryption"), i18n("Data Encryption Settings"),
     DesktopIcon("kgpg"));
 
   m_encryptionWidget = new kMyMoneyGPGConfig(qvboxMainFrame,"encryption settings");
 
   // set online help reference
-  m_helpAnchor[pageIndex(qvboxMainFrame)] = "details.settings.security";
+  m_helpAnchor[pageIndex(qvboxMainFrame)] = "details.settings.encryption";
 }
 
 void KSettingsDlg::setPageSchedule()

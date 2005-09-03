@@ -87,7 +87,7 @@ The details about howto generate a key-pair, howto take care of it are beyond th
 <sect2 id="details.formats.encrypted.keysettings">
 <title>Setting the keys in &kappname;</title>
 <para>
-On the security page of the settings dialog you have a field where you can enter the key-id of the key that should be used for encryption and decryption. You can use either the key-id, the e-mail address associated with this key or any other valid GPG key identification as value for this field. When you enter the key-id, &kappname; will check it's validity and turn on a green LED in the dialog if a key is found.
+On the encryption page of the settings dialog you have a field where you can enter the key-id of the key that should be used for encryption and decryption. You can use either the key-id, the e-mail address associated with this key or any other valid GPG key identification as value for this field. When you enter the key-id, &kappname; will check it's validity and turn on a green LED in the dialog if a key is found.
 <caution>
 <para>
  Make sure, you have both, the public and the private key for this id. If you don't own the private key for the id entered, you will not be able to open the file again.

@@ -152,7 +152,7 @@ transaction register for entering and editing transactions.  With this option tu
 
 </sect1>
 
-<sect1 id="details.settings.security"><title id="details.settings.security.title">Security</title>
+<sect1 id="details.settings.encryption"><title id="details.settings.encryption.title">Encryption</title>
 
 <para>
    These options allow you to modify the data encryption settings.
@@ -162,12 +162,12 @@ transaction register for entering and editing transactions.  With this option tu
 
 <varlistentry>
 <term><guilabel>Use GPG</guilabel></term>
-<listitem><para>Enables the use of GPG to encrypt data file.  See the section on <link linkend="details.formats.encrypted">GPG Security</link> for more details.</para></listitem>
+<listitem><para>Enables the use of GPG to encrypt data file.  See the section on <link linkend="details.formats.encrypted">GPG Encryption</link> for more details.</para></listitem>
 </varlistentry>
 
 </variablelist>
 
-<sect2 id="details.settings.security.useridentification"><title>User identification</title>
+<sect2 id="details.settings.encryption.useridentification"><title>User identification</title>
 
 <variablelist>
 
@@ -180,7 +180,7 @@ transaction register for entering and editing transactions.  With this option tu
 
 </sect2>
 
-<sect2 id="details.settings.security.recoveryencryption"><title>Recovery encryption</title>
+<sect2 id="details.settings.encryption.recoveryencryption"><title>Recovery encryption</title>
 
 <variablelist>
 
