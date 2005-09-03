@@ -92,7 +92,7 @@ KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& re
   m_deleteMe( false ),
   m_showingChart( false )
 {
-  if ( ! KReportChartView::implemented() )
+  if ( ! KReportChartView::implemented() || m_report.reportType() != MyMoneyReport::ePivotTable )
   {
     m_control->buttonChart->hide();
   }
@@ -112,7 +112,7 @@ KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& re
   parent->insertTab( this, QIconSet(QPixmap(icon)), report.name() );
   parent->setTabEnabled( this, true );
 
-#ifdef HAVE_KDCHART    
+#ifdef HAVE_KDCHART
   if ( m_report.isChartByDefault() )
     toggleChart();
 #endif
@@ -743,7 +743,8 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Income and Expenses This Year"),
       i18n("Default Report")
     ));
-    
+
+#ifdef HAVE_KDCHART   
     list.push_back(MyMoneyReport(
       MyMoneyReport::eExpenseIncome,
       MyMoneyReport::eMonths,
@@ -768,6 +769,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.back().setChartByDefault(true);
     list.back().setDetailLevel(MyMoneyReport::eDetailGroup);
     list.back().setChartType(MyMoneyReport::eChartPie);
+#endif
     
     groups.push_back(list);
   }
@@ -799,6 +801,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Default Report")
     ));
 
+#ifdef HAVE_KDCHART
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAssetLiability,
       MyMoneyReport::eMonths,
@@ -820,6 +823,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Account Balances by Institution"),
       i18n("Default Report")
     ));
+#endif
 
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAccountType,

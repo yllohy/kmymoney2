@@ -1,7 +1,14 @@
+2005-09-02 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed legend on circular charts
+  * Don't give option to display charts for querytable reports
+  * Don't populate default charts if charts are not compiled in
+
 2005-08-29 Tony Bloomfield <tonybloom@users.sourceforge.net>
-  * GnuCash Reader - correct split action types
-                   - detect checks properly
-                   - fix locale-dependent problem on schedules
+  * GnuCash Reader 
+    - correct split action types
+    - detect checks properly
+    - fix locale-dependent problem on schedules
+
 2005-08-27 Ace Jones <acejones@users.sourceforge.net>
   * When importing investments via OFX into an investment account with an
     associated brokerage account, use that account for the buys/sells &
@@ -12,7 +19,7 @@
   * Added fees to MMStatement::Transaction struct for later use
   * Commented some obscure aspects of MMStatement
   * Also match imported securities by name if they have no symbol
-  
+
 2005-08-26 Ace Jones <acejones@users.sourceforge.net>
   * Added ability for import plugins to specify the file format filter to use
     when looking for those files

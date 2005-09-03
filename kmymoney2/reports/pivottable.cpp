@@ -1240,10 +1240,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
           TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
           while ( it_row != (*it_innergroup).end() )
           {
-            if ( accountseries )
-              _view.params().setLegendText( rownum-1, it_row.key().name() );
-            else
-              abscissaNames += it_row.key().name();
+            _view.params().setLegendText( rownum-1, it_row.key().name() );
             
             //
             // Columns
@@ -1303,10 +1300,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
         while ( it_innergroup != (*it_outergroup).end() )
         {
-          if ( accountseries )
-            _view.params().setLegendText( rownum-1, it_innergroup.key() );
-          else
-            abscissaNames += it_innergroup.key();
+          _view.params().setLegendText( rownum-1, it_innergroup.key() );
           
           //
           // Columns
@@ -1359,10 +1353,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
       TGrid::const_iterator it_outergroup = m_grid.begin();
       while ( it_outergroup != m_grid.end() )
       {
-        if ( accountseries )    
-          _view.params().setLegendText( rownum-1, it_outergroup.key() );
-        else
-          abscissaNames += it_outergroup.key();
+        _view.params().setLegendText( rownum-1, it_outergroup.key() );
           
         //
         // Columns
@@ -1406,10 +1397,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
           
     case MyMoneyReport::eDetailTotal:
     {
-      if ( accountseries )
-        _view.params().setLegendText( 0, i18n("Total") );
-      else
-        abscissaNames += i18n("Total");
+      _view.params().setLegendText( 0, i18n("Total") );
 
       if ( seriestotals )
       {
