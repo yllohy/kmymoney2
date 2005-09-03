@@ -114,7 +114,7 @@
                         <cstring>groupBox2_2</cstring>
                     </property>
                     <property name="title">
-                        <string>Transfer from</string>
+                        <string>Convert from</string>
                     </property>
                     <hbox>
                         <property name="name">
@@ -149,7 +149,7 @@
                         <cstring>groupBox3</cstring>
                     </property>
                     <property name="title">
-                        <string>Transfer to</string>
+                        <string>Convert to</string>
                     </property>
                     <hbox>
                         <property name="name">

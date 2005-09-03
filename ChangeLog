@@ -4,6 +4,8 @@
   * Don't populate default charts if charts are not compiled in
   * Change all uses of "security" to "encryption" where that's what it means.
     Eliminates terminology conflict with "security" where it means "stock/etc".
+  * Change uses of "Transfer from/to" to "Convert from/to" in currency converter.
+    Linguistically more accurate.
 
 2005-08-29 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * GnuCash Reader 
