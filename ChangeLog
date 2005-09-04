@@ -7,6 +7,7 @@
   * Added ability to handle quote sources where the decimal separator is not period
   * Added ability to handle quote sources which contain a thousands separator
   * Added docs on how to find the trading symbol for a security supported by Yahoo
+  * Chart documentation
 
 2005-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support to build widget library for Qt-Designer (needs to be enabled via configure)

@@ -7,8 +7,8 @@
 <affiliation><address><email>acejones@users.sourceforge.net</email></address></affiliation>
 </author>
 </authorgroup>
-<date>2005-07-20</date>
-<releaseinfo>0.8</releaseinfo>
+<date>2005-08-04</date>
+<releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
 <title>Reports</title>
@@ -28,6 +28,8 @@
 	</mediaobject>
 	</screenshot>
 </para>
+
+<para>@Rob: Pls update Screenshot to include new Charts section</para>
 
 <sect2><title>Income and Expenses</title>
 
@@ -87,6 +89,15 @@
 <para>
 	The tax reports are just like the Transactions report, with the addition that only Tax categories are included.  
 	This allows you to flag certain categories as being tax-related, and then get one big report at the end of the year to see them all in one place
+</para>
+</sect2>
+
+<sect2><title>Charts</title>
+
+<para>
+  If <link linkend="details.reports.charts">Charts</link> are enabled, this section lists all the reports which are marked to display a
+  graphical chart as the default.
+  They are still listed in one of the other sections, but they're also aggregated here for your easy reference.
 </para>
 </sect2>
 
@@ -165,11 +176,32 @@
 <listitem><para>Report Name: Choose a name for this report.</para></listitem>
 <listitem><para>Comment: Enter a comment to help you remember the details of this report.</para></listitem>
 <listitem><para>Convert values to base currency: Select this option to convert all values in the report to your base currency. Leave it unchecked if you'd like to see values in their original currency. If currencies are not converted, then subtotals will not be shown.</para></listitem>
-<listitem><para>Mark as a favorite report: Select this option to notate this report as one of your favorites. All your favorite reports are grouped in one place on the report list for easy access.</para></listitem>
+<listitem><para>Mark as favorite report: Check this to cause this report to show up on the home page and in the group of <guilabel>Favorite Reports</guilabel>.</para></listitem>
 </itemizedlist>
+
 </sect2>
 
-<sect2><title>Rows/Columns Tab</title>
+<sect2 id="details.reports.config.rowscolumns"><title>Rows/Columns Tab</title>
+
+<para>On this tab, you configure how you'd like the rows and columns to be selected and organized.
+This tab presents different configuration options depending on the style of report you have selected.</para>
+
+<para>@Rob: Screenshot of rows/columns tab from an income/expense report</para>
+
+<para>For income/expense and net worth reports:</para>
+<itemizedlist>
+<listitem><para>Columns: Choose how large of a time period each column should encompass</para></listitem>
+<listitem><para>Rows: Choose what kind of accounts to display as the rows of this report</para></listitem>
+<listitem><para>Detail: Choose the level of detail required for this report.</para></listitem>
+</itemizedlist>
+
+<para>The following levels of detail are available:</para>
+<itemizedlist>
+<listitem><para>All: Show every category or account.</para></listitem>
+<listitem><para>Top-Level: Show only the highest-level categories or accounts, and roll up the sums of the subordinates categories or accounts into those values.</para></listitem>
+<listitem><para>Groups: Show only the totals of the income, expenses, assets, or liabilities.</para></listitem>
+<listitem><para>Total: Show only the grand totals line.</para></listitem>
+</itemizedlist>
 
 <para>
 	<screenshot>
@@ -184,19 +216,28 @@
 	</screenshot>
 </para>
 
-<para>On this tab, you configure how you'd like the rows and columns to be selected and organized.</para>
-
-<para>For income/expense and net worth reports:</para>
-<itemizedlist>
-<listitem><para>Columns: Choose how large of a time period each column should encompass</para></listitem>
-<listitem><para>Rows: Choose what kind of accounts to display as the rows of this report</para></listitem>
-<listitem><para>Show Top Categories Only: Select this option to summarize all sub-categories into a single line for each Top Category</para></listitem>
-</itemizedlist>
-
 <para>For transaction reports:</para>
 <itemizedlist>
 <listitem><para>Organize by: Choose how to group the transactions in this report</para></listitem>
 <listitem><para>Show Columns: Choose which columns should be shown in the report. The date and transaction amount are always shown.</para></listitem>
+<listitem><para>Include only Tax Categories: Only show categories which have been marked as tax-related.</para></listitem>
+<listitem><para>Include only Investment Accounts: Only show transactions from investment accounts.</para></listitem>
+</itemizedlist>
+
+</sect2>
+
+<sect2><title>Chart Tab</title>
+
+<para>This tab allows you to configure how the report should look when it is displayed as a chart.  
+See the <link linkend="details.reports.charts">Graphs &amp; Charts</link> section for more explanation of the charting functions.</para>
+
+<para>@Rob: Screenshot of chart tab</para>
+
+<itemizedlist>
+<listitem><para>Chart Type: The visual format of chart desired.</para></listitem>
+<listitem><para>Show grid lines: Whether to print horizontal and vertical grid lines on the chart.</para></listitem>
+<listitem><para>Draw values on chart: Whether to print the data values on the chart itself for chosen data points.</para></listitem>
+<listitem><para>Show chart by default: Whether this report should first be displayed as a chart when it's opened.</para></listitem>
 </itemizedlist>
 
 </sect2>
@@ -211,9 +252,74 @@ Please refer to the <link linkend="details.search">documentation</link> on that 
 <sect1 id="details.reports.charts">
 					<title>Graphs &amp; Charts</title>
 
+<sect2><title>Enabling Charts</title>
+
 <para>
-	Graphs and charts are not supported in this release.  
-	They are planned for a future release.
+  Charts are an optional feature of &kappname;.
+  To use them, the KDChart libraries must be available.
+  If you're compiling &kappname; from source: first ensure that you have the KDChart libraries and headers; then configure with --enable-charts.
+  If you're installing from RPM's, the dependencies should be managed by the RPM creator.  
 </para>
+
+</sect2>
+
+<sect2><title>Viewing as a Chart</title>
+
+<para>
+  Each report can be viewed in either textual form or graphical (chart) form.
+  The same report configuration parameters are used in either case.
+  You can easily jump back and forth between the textual and graphical forms by pressing the <guibutton>Chart</guibutton> or <guibutton>Report</guibutton> buttons along the top of the report view.  
+</para>
+
+<para>
+  Using the same configuration for both textual and graphical forms means it's possible to configure a chart in a visually cluttered an unappealing way.
+  Care should be taken to limit the amount of data you choose to display on a chart so it's still possible to be useful.
+  &kappname; will not force you to keep your charts readable and useful!
+</para>
+
+</sect2>
+
+<sect2><title>Available Chart Types</title>
+
+<sect3><title>Line Graph</title>
+<para>@Rob: Screenshot of a simple line graph</para>
+<para>
+A line graph is the most simple form of a chart.
+There is one line for each series (usually a series is a single account or category; see below for more details on that)
+The time periods stretch out along the bottom axis, and the currency values are along the left.
+</para>
+<para>
+The detail level for each line is controlled in the <link linkend="details.reports.config.rowscolumns">Rows/Columns</link> Tab of chart configuration.
+If you choose the &quot;Top-Level&quot; detail level, there will be one line for each of the top-most accounts or categories which show the sum total of all underlying accounts or categories.
+If you choose &quot;Groups&quot; it will instead show one line each for Income, Expenses, Assets, or Liabilities, depending on the other settings.
+</para>
+</sect3>
+
+<sect3><title>Bar Graph</title>
+<para>@Rob: Screenshot of a simple bar graph</para>
+<para>
+The bar graph works exactly the same as the line graph, except there is one bar for each series in each time slice.
+</para>
+</sect3>
+
+<sect3><title>Pie Chart</title>
+<para>@Rob: Screenshot of a simple pie chart</para>
+<para>
+The pie chart is the most simple chart available.  
+It shows only one time slice, as opposed to showing the values across time.
+This chart shows only the totals column of whatever report is selected.
+If your report is configured to NOT convert values to the base currency, there will be no totals column, and therefore this report is not useful.
+</para>
+</sect3>
+
+<sect3><title>Ring Chart</title>
+<para>@Rob: Screenshot of a simple ring chart</para>
+<para>
+The ring chart is just like a pie chart, except there is one &quot;ring&quot; for each time slice in the report.
+</para>
+</sect3>
+
+</sect2>
+
 </sect1>
 </chapter>
