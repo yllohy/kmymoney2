@@ -1,83 +1,476 @@
 <chapter id="rel-mgmt">
 <title>Release Management</title>
 <para>
-Whenever the project development team decides to build a new release, it
-follows the procedure described in <link linkend="create-new-version">
-Creating a new version</link>. This procedure will mark the required
-files for that version in the repository.
+At certain stages, the development team releases a version of &app;. The
+following chapters explain the steps that are performed during this process.
+</para>
+
+<sect1 id="create-new-source-version">
+<title>Creating a new source version</title>
+<para>
+The process of releasing a new version is to build a source tar-ball archive, verify
+that &app; can be build from it and upload it to the SourceForge File Release System.
+This chapter explains the steps of making sure that the version numbers are set
+correctly, creating the source tar-ball, tagging the repository etc.
+
+<note>
+<para>
+The steps explained apply for both the development branches as well as the
+release branches. For convenience, the examples are based on the
+development branch.
+</para>
+</note>
+</para>
+
+<orderedlist>
+<listitem>
+<para>
+Visit all subdirectories that contain a shared library and check whether the code/interface of the
+shared library has been changed since the last release. Modify the LIBVERSION setting in each
+Makefile.am according to the following recipe, where
+the LIBVERSION setting controls the libtool versioning system for shared
+libraries. It is constructed out of the triplet CURRENT:REVISION:AGE.
 </para>
 
 <para>
-Additionally, it is necessary to provide an installable versions of &app;.
-The following chapters explain how to produce the various files. They all
-assume that you have checked out a version of the project using a release tag.
+  <orderedlist>
+    <listitem><para>
+      If the library source code has changed at all since the last
+      release, then increment REVISION (`C:R:A' becomes `C:r+1:A').
+    </para></listitem>
+
+    <listitem><para>
+      If any interfaces have been added, removed, or changed since the
+      last update, increment CURRENT, and set REVISION to 0.
+    </para></listitem>
+
+    <listitem><para>
+      If any interfaces have been added since the last public release,
+      then increment AGE.
+    </para></listitem>
+
+    <listitem><para>
+      If any interfaces have been removed since the last public release,
+      then set AGE to 0.
+    </para></listitem>
+  </orderedlist>
+</para>
+<para>
+<caution>
+Make sure to modify the numbers in coordination with changes on the release- and development branch.
+It could well be, that the REVISION must be incremented more than 1 if it has been changed on the other branch as well.
+</caution>
+</para>
+</listitem>
+
+
+<listitem>
+<para>
+Make sure that the project version is set correct to the
+version to be created (e.g. 0.5.6) by opening the Help/About dialog box. The correct version number is determined
+by the following rules (see also <link linkend="version-mgmt">Version Management</link> for more details.
 </para>
 
-<sect1 id="tar-ball">
-<title>Tar Ball</title>
 <para>
-The first step is to produce a source tar-ball archive. Two possible ways
-exist to do that
-
-<itemizedlist>
-<listitem><para>from within KDevelop</para></listitem>
-<listitem><para>from the shell command line</para></listitem>
-</itemizedlist>
-
-The name for the tar-ball archive is derived from the projects name and the
-respective version. For this example I use the version 0.4pre2 which leads
-to a base filename of kmymoney2-0.4pre2.tar with various endings according
-to the compression used (gzip or bzip2).
+<note>
+Two types of versions can be created at this time: a <emphasis>follow-up</emphasis> release or a <emphasis>fresh stable</emphasis>
+release. The follow-up release is based on a previous release with the same major and minor release number. The fresh stable
+release starts a new major and minor release number pair. In the latter case, the major and minor release numbers on the
+development branch in CVS are also adjusted. More details below.
+</note>
 </para>
 
-<sect2 id="tar-ball-kdevelop">
-<title>KDevelop</title>
 <para>
-If you are used to the KDevelop integrated development environment (IDE)
-you just select the <command>Project/Make distribution/Source-tgz</command>
-menu entry which will create the file for you in the projects top
-directory with an appropriate name (e.g. kmymoney2-0.4pre2.tar.gz)
+  <orderedlist>
+    <listitem><para>
+    For follow-up releases increase the micro-release-number by one since the last unstable/stable release.    
+    </para></listitem>
+    <listitem><para>
+    For a fresh stable release, increase the minor release number and set the micro-release number to 0.
+    </para></listitem>
+  </orderedlist>
 </para>
-</sect2>
 
-<sect2 id="tar-ball-shell">
-<title>Shell</title>
 <para>
-If you are using the shell to execute commands, you might execute
-<command>make dist</command> from the top directory of the project. This
-leads to the same result, the kmymoney2-0.4pre2.tar.gz file.
+
+If this is not the case, change the version in the file configure.in.in.
+Afterwards, run the following commands:
+
+<screen>
+<prompt>thb: ~&gt; </prompt><userinput>make -f Makefile.dist</userinput>
+<prompt>thb: ~&gt; </prompt><userinput>./configure <emphasis>&lt;any-options-you-need&gt;</emphasis></userinput>
+<prompt>thb: ~&gt; </prompt><userinput>make</userinput>
+</screen>
+ 
+This will regenerate all files of the application and rebuild everything automatically.
 </para>
-</sect2>
+</listitem>
 
-<sect2 id="tar-ball-optimize">
-<title>Size optimization for tar-ball</title>
+<listitem>
 <para>
-The above described methods deliver a GZIPed tar-archive. As BZIP2 gives a
-better compression ratio, you might want to transform the archive to a
-BZIP2 compressed version with the following commands.
+Update the text source file for translations. This is done by running the command:
+
+<screen>
+<prompt>thb: ~&gt; </prompt><userinput>make package-messages</userinput>
+</screen>
+ 
+</para>
+</listitem>
+
+<listitem>
+<para>
+Run the command
+ 
+<screen>
+<prompt>thb: ~&gt; </prompt><userinput>make distcheck</userinput>
+</screen>
+ 
+This will do the following things automatically and stop on any error:
+</para>
+
+<para>
+<orderedlist>
+<listitem><para>create a source tar-ball in tgz form</para></listitem>
+<listitem><para>unpack this source tar-ball in a seperate directory</para></listitem>
+<listitem><para>run configure on the unpacked source tar-ball</para></listitem>
+<listitem><para>compile and link the configured package</para></listitem>
+<listitem><para>compile and link all testcases</para></listitem>
+<listitem><para>installs the compiled program in a temp directory</para></listitem>
+<listitem><para>checks that all files are installed</para></listitem>
+<listitem><para>uninstalls the package from the temp space</para></listitem>
+<listitem><para>checks that no files are left behind</para></listitem>
+</orderedlist>
+</para>
+
+<para>
+Make sure that everything builds correct. If errors occur, correct them and
+rerun <command>make distcheck</command>. Once everything is ok, a respective message, that the tar-ball is
+ready for distribution is shown at the end of <command>make distcheck</command>.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Add a line with the text <screen>  * Released x.y.z</screen> to the ChangeLog file.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Checkin the changes you have made in the previous two steps to the CVS repository before you proceed with the next step.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Tag the version with the applicable tag (e.g. rel-0-5-6)
+</para>
+</listitem>
+
+<listitem>
+<para>
+Optimize the size of the tar-ball by compressing it from GZIP to BZIP2 compression. This can be done with the following two commands:
+
+<screen>
+<prompt>thb: ~&gt; </prompt><userinput>gunzip <emphasis>name-of-tar-ball</emphasis>.tgz</userinput>
+<prompt>thb: ~&gt; </prompt><userinput>bzip2 -9 <emphasis>name-of-tar-ball</emphasis>.tar</userinput>
+</screen>
+</para>
+</listitem>
+
+<listitem>
+<para>
+Create a release note which should give some short information about the changes since the last release.
+<note>
+In recent releases, I collected all entries from the ChangeLog file and removed the headers of each entry.
+</note>
+</para>
+</listitem>
+
+<listitem>
+<para>
+Upload the tar-ball (bz2-version) to ftp://anonymous:&lt;your-email-address&gt;@upload.sourceforge.net:incoming and
+make sure to use the binary transfer mode. For GUI users: <emphasis>anonymous</emphasis> is the user-name and 
+<emphasis>your-email-address</emphasis> is the password. Next pull the uploaded file into the &app; section
+of the File Release System on SourceForge so that the file will be visible to everyone on the internet.
+Announce the presence of the source tar-ball archive as described in
+<link linkend="announce-new-version">Announce new version</link>.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Make sure that you increase the project version to the next version. This is derived as follows:
+</para>
+
+<para>
+  <orderedlist>
+    <listitem><para>
+    After a follow-up releases increase the micro-release-number by one since the last unstable/stable release.
+    E.g.: The release you currently work on is called 0.7.3 then set the release number to 0.7.4 here.
+    </para></listitem>
+    <listitem><para>
+    After a fresh stable release, increase the minor release number and set the micro-release number to 0. E.g.:
+    The release you currently work on is called 0.6 then set the release number to 0.7.0 here.
+    </para></listitem>
+  </orderedlist>
+</para>
+
+<para>
+Make those changes in configure.in.in.
+Afterwards, run the following commands:
+
+<screen>
+<prompt>thb: ~&gt; </prompt><userinput>make -f Makefile.dist</userinput>
+<prompt>thb: ~&gt; </prompt><userinput>./configure <emphasis>&lt;any-options-you-need&gt;</emphasis></userinput>
+<prompt>thb: ~&gt; </prompt><userinput>make</userinput>
+</screen>
+ 
+This will regenerate all files of the application and rebuild everything automatically.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Check in the changes to configure.in.in into the CVS repository.
+</para>
+</listitem>
+</orderedlist>
+
+<note>
+<para>
+The version number in the sandbox is <emphasis>always</emphasis> the
+version number that is currently developed (we're a little ahead here).
+</para>
+</note>
+
+</sect1>
+
+
+<sect1 id="create-stable-procedure">
+<title>Creating a new stable version</title>
+<para>
+At a certain time in the project's development cycle, the configuration
+manager decides that a feature freeze is necessary to start a new stable
+version. The exact dates when this will happen are announced on the
+developers mailing list ahead of the event. When the time has come to
+freeze the features, a branch will be created as described in this
+section. From this time on, the stable release will only be changed to make
+the current features of the software more stable. New features are not
+introduced to the stable branch but can be developed on the main
+branch (unstable) in parallel.
+
+</para>
+
+<para>
+When the time has come to create a new stable branch, the following steps
+have to be performed.
+
+<orderedlist>
+<listitem>
+<para>
+Run through all the steps explaind in <link linkend="create-stable-example">Creating a new version</link>.
+The version number used in this description for the stable version is 0.4.  Follow the path 
+for a fresh stable release.
+</para>
+</listitem>
+
+<listitem><para>
+Create a branch off of the tagged version. The branch name is build by appending
+the word <emphasis>-branch</emphasis> to the major- and
+minor-release number of the stable release version.
+
+For our example, the branch tag for versions 0.4 is
+<emphasis>rel-0-4-branch</emphasis>. 
+A complete example with all &cvs; commands can be found
+<link linkend="create-stable-example">in the appendix</link>.
+</para></listitem>
+
+<listitem>
+<para>
+From this moment on, the developers working on versions 0.4.x must make
+sure, that they checkout or update their sandbox using the
+tag <emphasis>rel-0-4-branch</emphasis>. This gives them the head revisions of
+the files on the 0.4 branch. Omitting this tag information will leave
+them on the main branch. The main branch is reserved for the unstable
+versions. An example how to keep multiple branches on the same machine is
+presented in the <link linkend="multiple-branches">appendix</link>,
+
+<caution>
+<para>
+The developers really have to
+take care from this point on which version they are modifying in their
+sandbox. Besides that, it is the developers responsibility to make sure
+that bug-fixes are also implemented on the main-branch if applicable.
+</para>
+</caution>
+
+</para>
+
+<para>
+When fixes are applied to the branch, new versions can be created by
+incrementing the micro-release thus rel-0-4-1, rel-0-4-2 are the next
+tags on the release branch.
+</para>
+
+</listitem>
+</orderedlist>
+
+<note>
+<para>
+Since &cvs; does not allow periods inside a tag, we always replace periods
+(.) with dashes (-) inside a tag.
+</para>
+</note>
+
+<para>
+The following diagram shows the above example on two specifc files. Each
+node represented by an asterisk is labelled with it's revision number
+enclosed in parenthesis. If a node has one or more labels attached, then
+they are enclosed in brackets. Nodes may exist without a tag. Such
+revisions never went into a release neither stable nor unstable but are
+valid intermediate steps in the development of the file in question.
+</para>
+
+<example>
+<title>Revisions on the head of a stable branch</title>
+<para>
+The first file is changed rather often between the version tags. All tags
+are on different revisions of the file.
+</para>
 
 <screen>
 
-  <prompt>thb:~&gt; </prompt><userinput>gunzip kmymoney2-0.4pre2.tar.gz</userinput>
-  <prompt>thb:~&gt; </prompt><userinput>bzip2 kmymoney2-0.4pre2.tar</userinput>
+
+     *     (1.12) [rel-0-3-8]
+     |
+     *     (1.13)
+     |
+     *     (1.14) [rel-0-4]
+     |\__________________________
+     |                           \
+     |                            |
+     *     (1.15)                 * (1.14.2.1)  [rel-0-4-1]
+     |                            |
+     *     (1.16) [rel-0-5-0]     * (1.14.2.2)  [rel-0-4-2]
+
+   [HEAD]                  [rel-0-4-branch]
 
 
 </screen>
 
-This results in a file called kmymoney2-0.4pre2.tar.bz2 which is the final
-version of the source tar ball.
+<para>
+The second file is not changed at all between the version
+tags. Nevertheless, all tags are available even though now they are on
+the same revision 1.2.
 </para>
-</sect2>
+
+<screen>
+
+
+     *     (1.2) [rel-0-3-8] [rel-0-4]
+     |           [rel-0-4-1] [rel-0-4-2] [rel-0-5-0]
+     |\__________________________
+     |                           \
+     |                            |
+
+   [HEAD]                   [rel-0-4-branch]
+
+
+</screen>
+
+</example>
+
+
+</para>
 </sect1>
 
-<sect1 id="rpm">
+
+
+
+<sect1 id="announce-new-version">
+<title>Announce a new version</title>
+<para>
+Once the file is visible on the internet, people need to be informed about the new
+release. Besides that, the project maintains certain pages, where information about the
+current release is kept. These pages need to be updated.
+</para>
+
+<sect2 id="announce-new-version-release-system">
+<title>Announce new version via File Release System</title>
+<para>
+The SourceForge File Release System allows to send a short mail about the release of a package to registered
+recipients. On the bottom of the page where the uploaded file is moved into the file space of &app; a checkbox
+can be activated to send out such a mail. This method should only be used for a new source tar-ball release.
+</para>
+</sect2>
+
+<sect2 id="update-web-sites">
+<title>Update information about release on web-sites</title>
+<para>
+Certain web-sites exist that keep version information about &app;. They need to be updated.
+<orderedlist>
+<listitem><para>
+The news system for &app; on SourceForge.net:  Create a news entry on https://sourceforge.net/projects/kmymoney2.
+</para></listitem>
+
+<listitem><para>
+The &app; web-site at http://kmymoney2.sourceforge.net/:  Update all version info
+for the stable and development releases and update the links to the source tar-balls.
+</para></listitem>
+
+<listitem><para>
+The &app; web-site at http://www.kde-apps.arg/: Add the release notes and update the version and minimum requirements.
+</para></listitem>
+
+<listitem><para>
+The &app; web-site at http://kmymoney2.sourceforge.net/: Update the links to the latest stable and development release.
+If you created a fresh stable release, comment the development release entry.
+</para></listitem>
+</orderedlist>
+</para>
+</sect2>
+
+<sect2 id="announce-new-version-mail">
+<title>Announce new version on mailing lists</title>
+<para>
+Write a short mail and send it to the developer- and user-mailing list of the project, so that all subscribed
+recipients are informed about the new release. Add links to the project web-site and the www.kde-apps.org page
+of the project.
+</para>
+</sect2>
+
+</sect1>
+
+
+
+
+
+
+<sect1 id="create-new-bin-version">
+<title>Creating a new binary/installable version</title>
+<para>
+Additionally, installable binary versions of &app; should be provided. Since the installable binary
+files differ from distribution to distribution and the generation in general requires the
+target platform, the &app; project relies on the help of people not directly involved in
+the application development. We greatfully appreciate any help in this area.
+</para>
+
+<para>
+Multiple formats exist: RPM, DEB, e-builds, PKG just to name a few. Since the distro I use (SuSE) relies on
+RPMs, I explain the creation in more detail here. If you can provide similar information about other formats,
+we are more than happy to include it in this document. We assume that you follow our licence terms for any
+documentation you supply. Please send your docbook formatted files to the developer mailing list.
+</para>
+
+
+<sect2 id="rpm">
 <title>Creating an RPM file</title>
 <para>
-Another possibility to distribute the program is to use the Red-Hat Package
+One possibility to distribute the program is to use the Red-Hat Package
 manager (RPM) format. In order to be able to create such a package for
 &app;, you need to have a source tar-ball as described in <link
-linkend="tar-ball">the previous chapter</link>. Either version (GZIP or
-BZIP2) will work.
+linkend="create-new-source-version">the previous chapter</link>.
 </para>
 
 <para>
@@ -97,6 +490,7 @@ CPU architectures (e.g. i386, i486, ppc, etc.). In the remainder of this
 document, I will use the names of these directories without mentioning
 the RPM base directory.
 </para>
+</sect2>
 
 <sect2 id="rpm-tar-ball">
 <title>Copying the tar-ball to the RPM structure</title>
@@ -104,8 +498,7 @@ the RPM base directory.
 The first thing that needs to be done is to copy the tar-ball to a defined
 place where the RPM tool will look for it. For this purpose the SOURCES
 directory is used. Move or copy your <link 
-linkend="tar-ball">tar-ball</link> to this directory. Either version
-(GZIP or BZIP2) will be ok.
+linkend="create-new-source-version">tar-ball</link> to this directory.
 </para>
 </sect2>
 
@@ -166,7 +559,7 @@ usual way to do this is using the following command:
 
 <screen>
 
-  <prompt>thb:~&gt; </prompt><userinput>rpm -ba kmymoney2.xxx.spec</userinput>
+  <prompt>thb:~&gt; </prompt><userinput>rpmbuild -ba kmymoney.spec</userinput>
 
 
 </screen>
