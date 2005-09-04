@@ -1,15 +1,7 @@
 echo ""
 echo ""
-echo "Configure results:"
+echo "Configure results (user options):"
 echo "------------------------------------------"
-if test "x$use_memory_leak_check" != "xno"; then
-	echo "Memory leak check support:             yes"
-else
-	echo "Memory leak check support:             no"
-fi
-
-echo ""
-
 if test x$enable_kbanking = xno; then
 	echo "KBanking support:                      disabled"
 elif test x$have_kbanking = xyes; then
@@ -46,6 +38,41 @@ fi
 
 echo ""
 
+if test "$enable_charts" = "yes"; then
+	echo "Chart support:                         yes"
+else
+	echo "Chart support:                         no"
+fi
+
+echo "------------------------------------------"
+echo ""
+echo ""
+echo "Configure results (developer options):"
+echo "------------------------------------------"
+if test "x$use_memory_leak_check" != "xno"; then
+	echo "Memory leak check support:             yes"
+else
+	echo "Memory leak check support:             no"
+fi
+
+echo ""
+
+if test "$enable_qtdesigner" = "yes"; then
+	echo "Qt-Designer library support:           yes"
+else
+	echo "Qt-Designer library support:           no"
+fi
+
+echo ""
+
+if test -z "${HAVE_DSSSLCONVERSIONTOOLS_TRUE}" || test -z "${HAVE_HTMLCONVERSIONTOOLS_TRUE}"; then
+	echo "PDF document generation:               yes"
+else
+	echo "PDF document generation:               no"
+fi
+
+echo ""
+
 if test x$no_cppunit = x; then
 	echo "CPPUNIT support:                       yes"
 	echo "        online tests:                  "$enable_online_tests;
@@ -59,7 +86,4 @@ else
 	echo "    Unit tests are only required by the developers.";
 fi
 
-echo ""
-
 echo "------------------------------------------"
-echo ""
