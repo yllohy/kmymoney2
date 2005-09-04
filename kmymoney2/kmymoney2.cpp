@@ -908,17 +908,16 @@ void KMyMoney2App::slotQifImportFinished(void)
 void KMyMoney2App::slotGncImport(void)
 {
   if (myMoneyView->fileOpen()) {
-    switch (QMessageBox::question (0, PACKAGE,
-         QObject::tr("You cannot import GnuCash data into an existing file. Do you wish to save this file?"),
-          QMessageBox::Yes, QMessageBox::No, QMessageBox::Cancel)) {
-    case QMessageBox::Yes:
+    switch (KMessageBox::questionYesNoCancel (0,
+          i18n("You cannot import GnuCash data into an existing file. Do you wish to save this file?"), PACKAGE)) {
+    case KMessageBox::Yes:
       slotFileSave();
       break;
-    case QMessageBox::No:
+    case KMessageBox::No:
       myMoneyView->closeFile();
       fileName = KURL();
       break;
-    case QMessageBox::Cancel:
+    default:
       return;
     }
   }
