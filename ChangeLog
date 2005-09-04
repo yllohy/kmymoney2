@@ -1,3 +1,10 @@
+2005-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added support to build widget library for Qt-Designer (needs to be enabled via configure)
+  * Include new options in configure summary.
+  * Separated configure summary in user and developer optionsa
+  * Separated generation of kmymoney2.pot from merging of language files
+  * Allow to run in VPATH environment
+
 2005-09-02 Ace Jones <acejones@users.sourceforge.net>
   * Fixed legend on circular charts
   * Don't give option to display charts for querytable reports
