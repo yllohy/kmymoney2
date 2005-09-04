@@ -435,11 +435,26 @@ void KSettingsDlg::setPageList()
   qhboxlayout2->setSpacing( 6 );
   qhboxlayout2->setMargin( 11 );
 
+  // Create a group to hold the checkbox
+  QGroupBox *qgroupboxReconciledTransactions = new QGroupBox(qwidgetFilter, "GroupBox1");
+  qgroupboxReconciledTransactions->setTitle(i18n("Restrict by transaction state"));
+  qgroupboxReconciledTransactions->setColumnLayout(0, Qt::Vertical );
+  qgroupboxReconciledTransactions->layout()->setSpacing( 0 );
+  qgroupboxReconciledTransactions->layout()->setMargin( 0 );
+
+  QHBoxLayout *qhboxlayout3 = new QHBoxLayout(qgroupboxReconciledTransactions->layout());
+  qhboxlayout3->setAlignment( Qt::AlignTop );
+  qhboxlayout3->setSpacing( 6 );
+  qhboxlayout3->setMargin( 11 );
+
   m_dateinputStart = new kMyMoneyDateInput(qbuttongroupDates, "dateinput");
   QLabel *m_qlabelStartDate = new QLabel(i18n("Start Date: "), qbuttongroupDates);
   qhboxlayout2->addWidget(m_qlabelStartDate);
   qhboxlayout2->addWidget(m_dateinputStart);
+  m_qcheckboxHideReconciledTransactions = new QCheckBox(i18n("Hide reconciled transactions"), qgroupboxReconciledTransactions);
+  qhboxlayout3->addWidget(m_qcheckboxHideReconciledTransactions);
   qvboxlayoutFilter->addWidget(qbuttongroupDates);
+  qvboxlayoutFilter->addWidget(qgroupboxReconciledTransactions);
 
   // Add a vertical spacer to take up the remaining available space
   spacer = new QSpacerItem( 20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding );
@@ -539,6 +554,9 @@ void KSettingsDlg::configRead()
   m_qdateTempStart = kconfig->readDateTimeEntry("StartDate", &defaultDate).date();
   m_dateinputStart->setDate(m_qdateTempStart);
 
+  m_bTempHideReconciledTransactions = kconfig->readBoolEntry("HideReconciledTransactions", false);
+  m_qcheckboxHideReconciledTransactions->setChecked(m_bTempHideReconciledTransactions);
+
 #if 0
   m_bTempNormalView = kconfig->readBoolEntry("NormalAccountsView", false);
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
@@ -584,6 +602,7 @@ void KSettingsDlg::configWrite()
   // kconfig->writeEntry("ColourPerTransaction", m_qradiobuttonPerTransaction->isChecked());
   kconfig->writeEntry("HideUnusedCategory", m_qcheckboxHideCategory->isChecked());
   kconfig->writeEntry("StartDate", QDateTime(m_dateinputStart->getQDate()));
+  kconfig->writeEntry("HideReconciledTransactions", m_qcheckboxHideReconciledTransactions->isChecked());
 
   // kconfig->writeEntry("NormalAccountsView", m_qradiobuttonNormalView->isChecked());
 
@@ -696,6 +715,7 @@ void KSettingsDlg::slotUser1()
   m_qcheckboxShowGrid->setChecked(m_bTempShowGrid);
   m_qcheckboxHideCategory->setChecked(m_bTempHideCategory);
   m_dateinputStart->setDate(m_qdateTempStart);
+  m_qcheckboxHideReconciledTransactions->setChecked(m_bTempHideReconciledTransactions);
 #if 0
   m_qradiobuttonNormalView->setChecked(m_bTempNormalView);
   m_qradiobuttonAccountView->setChecked(!m_bTempNormalView);

@@ -112,6 +112,11 @@ transaction register for entering and editing transactions.  With this option tu
 <listitem><para>Filter transactions by specifying a start date.  Transactions prior to this date will not be shown.</para><para>Setting this option to January 1, 1900 is a good way to debug date-related file import problems.</para></listitem>
 </varlistentry>
 
+<varlistentry>
+<term><guilabel>Hide reconciled transactions</guilabel></term>
+<listitem><para>Filter transactions by reconciliation state.  Transactions that are marked as <emphasis>Reconciled</emphasis> will not be shown.</para></listitem>
+</varlistentry>
+
 </variablelist>
 
 </sect2>

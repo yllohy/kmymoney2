@@ -140,6 +140,7 @@ private:
 
   /** Restrict options */
   kMyMoneyDateInput *m_dateinputStart;
+  QCheckBox* m_qcheckboxHideReconciledTransactions;
 
 #if 0
   QRadioButton *m_qradiobuttonNormalView;
@@ -208,6 +209,7 @@ private:
   bool m_bDoneApply;
   bool m_bTempHideCategory;
   QDate m_qdateTempStart;
+  bool m_bTempHideReconciledTransactions;
 //  bool m_bTempNormalView;
   bool m_bTempAccountWizard;
   bool m_bTempLedgerLens;

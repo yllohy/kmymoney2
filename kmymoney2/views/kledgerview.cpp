@@ -396,6 +396,7 @@ void KLedgerView::refreshView(const bool transactionFormVisible)
   config->setGroup("List Options");
   QDateTime defaultDate;
   m_dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
+  m_hideReconciledTransactions = config->readBoolEntry("HideReconciledTransactions", false);
 
   m_register->readConfig();
 
@@ -410,8 +411,13 @@ void KLedgerView::refreshView(const bool transactionFormVisible)
     if(m_inReconciliation == true) {
       filter.addState(MyMoneyTransactionFilter::notReconciled);
       filter.addState(MyMoneyTransactionFilter::cleared);
-    } else
+    } else {
       filter.setDateFilter(m_dateStart, QDate());
+      if (m_hideReconciledTransactions) {
+	    filter.addState(MyMoneyTransactionFilter::notReconciled);
+	    filter.addState(MyMoneyTransactionFilter::cleared);
+      }
+    }
 
     // get the list of transactions
     QValueList<MyMoneyTransaction> list = file->transactionList(filter);

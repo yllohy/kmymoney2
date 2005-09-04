@@ -796,6 +796,13 @@ protected:
     */
   QDate m_dateStart;
 
+   /**
+    * This member let us know whether the user wants to hide reconciled
+    * transactions in the ledger view. See KSettingsDlg where this value
+    * can be changed.
+    */
+  bool m_hideReconciledTransactions;
+
   /**
     * This member keeps the account information for the account that is shown
     * in the specific view
