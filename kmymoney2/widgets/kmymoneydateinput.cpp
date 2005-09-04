@@ -23,9 +23,7 @@
 #include <qpoint.h>
 #include <qvalidator.h>
 #include <qtimer.h>
-#if QT_VERSION > 300
 #include <qstyle.h>
-#endif
 #include <qlayout.h>
 #include <qapplication.h>
 #include <qdesktopwidget.h>
@@ -39,6 +37,7 @@
 #include <klocale.h>
 #include <kiconloader.h>
 #include <kpushbutton.h>
+#include <kshortcut.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -190,38 +189,29 @@ void kMyMoneyDateInput::resizeEvent(QResizeEvent* ev)
 /** Overriding QWidget::keyPressEvent
   *
   * increments/decrements the date upon +/- key input
+  * sets the date to current date when the 'T' key is pressed
   */
 void kMyMoneyDateInput::keyPressEvent(QKeyEvent * k)
 {
+  KShortcut today(i18n("Enter todays date into date input widget", "T"));
+
   switch(k->key()) {
     case Key_Plus:
       slotDateChosen(m_date.addDays(1));
       break;
 
+    // If seperator is "-", Key_Minus will be consumed by QDateEdit (as it should).
+    // Key_Asterisk is not optimal, but better than nothing.
+    case Key_Asterisk:
     case Key_Minus:
       slotDateChosen(m_date.addDays(-1));
       break;
 
-    case Key_Enter:
-    case Key_Return:
-      emit signalEnter();
+    default:
+      if(today.contains(KKey(k))) {
+        slotDateChosen(QDate::currentDate());
+      }
       break;
-
-    case Key_Escape:
-      emit signalEsc();
-      break;
-
-/*
-    case Key_PageDown:
-      QPoint point = mapToGlobal(rect().bottomRight());
-      if (m_qtalignment == Qt::AlignRight)
-        point.setX(point.x());
-      else
-        point.setX(point.x() - m_datePicker->width());
-
-      m_datePicker->move(point);
-      m_datePicker->show();
-*/
   }
 }
 

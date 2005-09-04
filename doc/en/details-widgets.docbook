@@ -25,8 +25,9 @@ characters depending on your locale settings. The button - if pressed - opens th
 <para>
 The left/right cursor keys can be used to switch between the <emphasis>day</emphasis>, the <emphasis>month</emphasis>
 and the <emphasis>year</emphasis> field. Using the up/down cursor keys, the value of the selected field can be incremented/decremented.
-The '+' and '-' key can be used to increment/decrement for one day. Month and year boundaries are considered and incremented/decremented
-if necessary.
+The <keycap>+</keycap> and <keycap>-</keycap> key can be used to increment/decrement for one day.
+Month and year boundaries are considered and incremented/decremented if necessary. Pressing <keycap>t</keycap> will set the date to today's
+date.
 </para>
 <para>
 The date can also be changed using the mouse. Clicking into the <emphasis>day</emphasis>, <emphasis>month</emphasis>
@@ -45,7 +46,7 @@ closes the datepicker and transfers the selected date into the <emphasis>day</em
 </para>
 <para>
 At the bottom of the widget the users finds a button, a text edit field and a combo box. Pressing the button selects today's date
-in the datepicker, the text field can be used to enter a specific date. Pressing the RETURN key shows that date in the datepicker widget.
+in the datepicker, the text field can be used to enter a specific date. Pressing the <keycap>RETURN</keycap> key shows that date in the datepicker widget.
 The combo box allows the user to select a specific week and continue to pick a date from there.
 </para>
 </sect2>

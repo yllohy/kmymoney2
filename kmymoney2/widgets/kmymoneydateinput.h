@@ -66,18 +66,14 @@ public slots:
 signals:
   void dateChanged(const QDate& date);
 
-  /**
-    * This signal is emitted when the user presses RETURN while editing
-    */
-  void signalEnter();
-
-  /**
-    * This signal is emitted when the user presses ESC while editing
-    */
-  void signalEsc();
-
 protected:
-  /** Overriding QWidget::keyPressEvent */
+  /**
+    * - increments/decrements the date upon +/- key input
+    * - decrements the date upon * key input
+    * - sets the date to current date when the 'T' key is pressed.
+    *   The actual key for this to happen might be overridden through
+    *   an i18n package.
+    */
   void keyPressEvent(QKeyEvent * k);
   void resizeEvent(QResizeEvent*);
 
