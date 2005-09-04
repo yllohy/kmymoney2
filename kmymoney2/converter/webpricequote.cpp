@@ -206,8 +206,30 @@ void WebPriceQuote::slotParseQuote(const QString& _quotedata)
     if(priceRegExp.search(quotedata)> -1)
     {
       gotprice = true;
-      m_price = priceRegExp.cap(1).toDouble();
-      emit status(i18n("Price found: %1").arg(m_price));
+      
+      // Deal with european quotes that come back as X.XXX,XX or XX,XXX
+      //
+      // We will make the assumption that ALL prices have a decimal separator.
+      // So "1,000" always means 1.0, not 1000.0.
+      //
+      // Remove all non-digits from the price string except the last one, and
+      // set the last one to a period.
+      QString pricestr = priceRegExp.cap(1);
+      
+      int pos = pricestr.findRev(QRegExp("\\D"));
+      if ( pos > 0 )
+      {
+        pricestr[pos] = '.';
+        pos = pricestr.findRev(QRegExp("\\D"),pos-1);
+      }
+      while ( pos > 0 )
+      {
+        pricestr.remove(pos,1);
+        pos = pricestr.findRev(QRegExp("\\D"),pos);
+      }
+      
+      m_price = pricestr.toDouble();
+      emit status(i18n("Price found: %1 (%2)").arg(pricestr).arg(m_price));
     }
 
     if(dateRegExp.search(quotedata) > -1)
@@ -280,6 +302,14 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
     QString(),  // symbolregexp
     "Net Asset Value (\\d+\\.\\d+)", // priceregexp
     "NAV update (\\d+\\D+\\d+\\D+\\d+)", // dateregexp
+    "%d %m %y" // dateformat
+  );
+    
+  result["VWD.DE"] = WebPriceQuoteSource("VWD.DE", 
+    "http://www.finanztreff.de/ftreff/kurse_einzelkurs_uebersicht.htm?s=%1",
+    QString(),  // symbolregexp
+    "[Kurs|Realtime]: \\d+\\D+\\d+\\D+\\d+ ([0-9.]+,\\d+)", // priceregexp
+    "Jahreschart (\\d+\\D+\\d+\\D+\\d+)", // dateregexp
     "%d %m %y" // dateformat
   );
     

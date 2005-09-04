@@ -280,6 +280,9 @@ Or you can fetch them electronically, using <link linkend="details.investments.o
 	Yahoo supports stocks from most major world markets, so it's usually just a matter of finding the correct symbol.
 	For example, TietoEnator trades on the Stockholm Stock Exchange market, and its Yahoo symbol is TIEN.ST.
 </para>
+<para>
+	To find the trading symbol for a security supported by Yahoo, use the &quot;Symbol Lookup&quot; feature at http://finance.yahoo.com.
+</para>
 </sect2>
 
 <sect2><title>Assigning a Quote Source</title>
