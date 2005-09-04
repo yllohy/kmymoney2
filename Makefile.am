@@ -29,8 +29,10 @@ DISTCLEANFILES=kmymoney2.kdevses kmymoney2-*.tar.gz
 MAINTAINERCLEANFILES = subdirs configure.in acinclude.m4 configure.files
 
 package-messages:
-	$(MAKE) -f admin/Makefile.common package-messages
-	$(MAKE) -C po merge
+	$(MAKE) -C $(top_srcdir) -f admin/Makefile.common package-messages
+
+merge-messages:
+	$(MAKE) -C $(top_srcdir)/po merge
 
 # The following line adds the required admin files
 EXTRA_DIST += admin/Makefile.common admin/cvs.sh admin/detect-autoconf.sh admin/acinclude.m4.in admin/conf.change.pl admin/config.pl admin/libtool.m4.in admin/configure.in.min admin/configure.in.bot.end admin/am_edit admin/debianrules
