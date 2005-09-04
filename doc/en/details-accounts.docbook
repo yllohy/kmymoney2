@@ -274,7 +274,7 @@
 	<title>Deleting accounts</title>
 
 <para>
-	To delete an account find the account you wish to delete in the accounts view and after right clicking on the entry to show the popup menu select <guimenuitem>Delete</guimenuitem> from the popup menu.
+	To delete an account, first remove all the transactions from that account in the ledger.  Next,        find the account in the accounts view and after right clicking on the entry to show the popup menu select <guimenuitem>Delete</guimenuitem> from the popup menu.
 </para>
 </sect1>
 </chapter>

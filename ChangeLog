@@ -1,4 +1,8 @@
 2005-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Update docs to say that you have to remove all the transactions from an
+    account before deleting it.
+
+2005-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support to build widget library for Qt-Designer (needs to be enabled via configure)
   * Include new options in configure summary.
   * Separated configure summary in user and developer optionsa
