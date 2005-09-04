@@ -9,7 +9,12 @@ libwidgets_a_SOURCES = kmymoneyregisterinvestment.cpp kmymoneyequity.cpp kmymone
 
 EXTRA_DIST = kmymoneygpgconfigdecl.ui kmymoneyonlinequoteconfigdecl.ui kmymoneypriceviewdecl.ui kmymoneyreportconfigtab1decl.ui kmymoneyreportconfigtab2decl.ui kmymoneyreportconfigtab3decl.ui kmymoneyreportcontroldecl.ui kschedulebriefwidget.ui kmymoneyreportconfigtabchartdecl.ui
 
-noinst_HEADERS = kmymoneyregisterinvestment.h kmymoneyequity.h kmymoneyequitycompletion.h kmymoneycompletion.h kmymoneyequityselector.h kmymoneyaccountcombo.h kmymoneyaccountcompletion.h kmymoneycurrencyselector.h kmymoneypriceview.h kmymoneyaccountselector.h kmymoneyregisterloan.h kmymoneyregistersearch.h kmymoneybriefschedule.h kmymoneyscheduleddatetbl.h kmymoneydatetbl.h kmymoneyscheduledcalendar.h kmymoneycalendar.h kmymoneycalculator.h kmymoneycategory.h kmymoneypayee.h kmymoneytransactionform.h kmymoneyregistercheckings.h kmymoneyregister.h kmymoneysplittable.h kmymoneycombo.h kmymoneyhlayout.h kmymoneylineedit.h kmymoneyedit.h kmymoneydateinput.h kmymoneyonlinequoteconfig.h kmymoneyaccounttree.h kmymoneygpgconfig.h kmymoneytitlelabel.h
+# include the widgets that are available to 3rd party sw (e.g. plugins) here
+instdir=$(includedir)/kmymoney
+inst_HEADERS = kmymoneydateinput.h kmymoneyedit.h kmymoneytitlelabel.h
+
+# include the widgets that are only available to KMyMoney here
+noinst_HEADERS = kmymoneyregisterinvestment.h kmymoneyequity.h kmymoneyequitycompletion.h kmymoneycompletion.h kmymoneyequityselector.h kmymoneyaccountcombo.h kmymoneyaccountcompletion.h kmymoneycurrencyselector.h kmymoneypriceview.h kmymoneyaccountselector.h kmymoneyregisterloan.h kmymoneyregistersearch.h kmymoneybriefschedule.h kmymoneyscheduleddatetbl.h kmymoneydatetbl.h kmymoneyscheduledcalendar.h kmymoneycalendar.h kmymoneycalculator.h kmymoneycategory.h kmymoneypayee.h kmymoneytransactionform.h kmymoneyregistercheckings.h kmymoneyregister.h kmymoneysplittable.h kmymoneycombo.h kmymoneyhlayout.h kmymoneylineedit.h kmymoneyonlinequoteconfig.h kmymoneyaccounttree.h kmymoneygpgconfig.h 
 
 # make sure, automatically generated files exist
 BUILT_SOURCES = kupdatestockpricedlgdecl.h knewaccountdlgdecl.h knewequityentrydecl.h kcurrencycalculatordecl.h kequitypriceupdatedlgdecl.h
@@ -31,30 +36,34 @@ kcurrencycalculatordecl.h:
 kequitypriceupdatedlgdecl.h:
 	$(MAKE) -C ../dialogs kequitypriceupdatedlgdecl.h
 
+# -- new stuff starts here
+if BUILD_QTDESIGNER_SUPPORT
+PICS_DIR=kmymoney2/pics
+WIDGET_PNGS = kmymoneytitlelabel.png
+libkmymoney_la_SOURCES = kmmwidgets.cpp kmymoneytitlelabel.cpp kmymoneyedit.cpp kmymoneycalculator.cpp kmymoneydateinput.cpp
 
-# The below has been commented out for now. Once we add
-# generation of the Qt designer library plugin for all
-# our widgets, this stuff might become handy. I keep
-# those referenced files on my local box for now
-# (ipwizard@users.sourceforge.net - 2005/03/19)
+noinst_LTLIBRARIES = libkmymoney.la
 
-# the Qt designer widget plugin
-#all-local: libkmymoney.so
+kmmwidgets.cpp:	kmymoney.widgets
+	$(srcdir)/makekdewidgets -g KMyMoney -n CustomWidgetPlugin -o kmmwidgets.cpp -i kmymoney $(srcdir)/kmymoney.widgets
 
-#Makefile.widgets:	kmymoneywidgets.pro
-#	$(qt_libraries)/../bin/qmake -o Makefile.widgets kmymoneywidgets.pro
+# make sure to compile the Qt designer version w/o the memory leak checker 
+libkmymoney_la_CXXFLAGS = -U_CHECK_MEMORY
+libkmymoney_la_LDFLAGS = $(KDE_LDFLAGS) -rpath $(DESTDIR)$(qt_libraries)/../plugins/designer -lkmm_mymoney $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
 
-#kmymoneywidgets.cpp:	kmymoney.widgets makekdewidgets
-#	./makekdewidgets -g KMyMoney -n CustomWidgetPlugin -o kmymoneywidgets.cpp kmymoney.widgets
+install-exec-local: libkmymoney.la
+	$(mkinstalldirs) $(DESTDIR)$(qt_libraries)/../plugins/designer
+	$(INSTALL_PROGRAM) .libs/libkmymoney.so $(DESTDIR)$(qt_libraries)/../plugins/designer 
+	$(mkinstalldirs) $(DESTDIR)$(kde_datadir)/$(PICS_DIR)
+	for file in $(WIDGET_PNGS); do \
+	  $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(kde_datadir)/$(PICS_DIR); \
+	done
 
-#libkmymoney.so:	Makefile.widgets kmymoneywidgets.cpp $(libwidgets_a_OBJECTS)
-#	make -f Makefile.widgets
+uninstall-local:
+	-rm $(DESTDIR)$(qt_libraries)/../plugins/designer/libkmymoney.so
+	for file in $(WIDGET_PNGS); do \
+	  rm -rf $(DESTDIR)$(kde_datadir)/$(PICS_DIR)/$$file; \
+	done
+endif
+# -- new stuff ends here
 
-#clean-local:
-#	make -f Makefile.widgets clean
-
-#install-exec-local: Makefile.widgets libkmymoney.so
-#	make -f Makefile.widgets install
-
-#uninstall-local: Makefile.widgets
-#	make -f Makefile.widgets uninstall
