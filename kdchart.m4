@@ -1,8 +1,5 @@
-dnl
-dnl Somewhat lame macro to check for kdchart.  All it really does is
-dnl set "HAVE_KDCHART" if you enable it, because I couldn't figure out
-dnl how to check for it
-dnl
+dnl Macro to check for KDChart include and library files
+dnl Availability of KDChart defaults to 'no'
 
 AC_DEFUN([AC_KDCHART],
 [
