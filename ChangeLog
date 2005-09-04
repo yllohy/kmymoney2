@@ -4,17 +4,27 @@
   * Fixed a bug where in online price update, the local KDE currency was being
     shown for foreign stocks, instead of the stock's own currency.
   * Added VWD.DE online quote source, useful for german funds
-  * Added ability to handle quote sources where the decimal separator is not period
+  * Added ability to handle quote sources where the decimal separator
+    is not period
   * Added ability to handle quote sources which contain a thousands separator
-  * Added docs on how to find the trading symbol for a security supported by Yahoo
+  * Added docs on how to find the trading symbol for a security supported
+    by Yahoo
   * Chart documentation
 
 2005-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
-  * Added support to build widget library for Qt-Designer (needs to be enabled via configure)
+  * Added support to build widget library for Qt-Designer (needs to be
+    enabled via configure)
   * Include new options in configure summary.
   * Separated configure summary in user and developer optionsa
   * Separated generation of kmymoney2.pot from merging of language files
   * Allow to run in VPATH environment
+  * Added patch provided by Mathieu Ourioux to hide reconciled
+    transactions in ledger view
+  * Added patch provided by Erik Johansson to allow * to decrement the
+    date and use T to set date to today
+  * Updated documentation
+  * Include a missing string in pot file
+  * Use KMessageBox rather than QMessageBox
 
 2005-09-02 Ace Jones <acejones@users.sourceforge.net>
   * Fixed legend on circular charts
