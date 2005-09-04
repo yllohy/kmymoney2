@@ -1,6 +1,8 @@
-2005-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2005-09-04 Ace Jones <acejones@users.sourceforge.net>
   * Update docs to say that you have to remove all the transactions from an
     account before deleting it.
+  * Fixed a bug where in online price update, the local KDE currency was being
+    shown for foreign stocks, instead of the stock's own currency.
 
 2005-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support to build widget library for Qt-Designer (needs to be enabled via configure)
