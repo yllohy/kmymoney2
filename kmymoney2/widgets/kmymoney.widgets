@@ -1,0 +1,11 @@
+[Includes]
+kinstance.h
+
+[Init]
+new KInstance("kmmwidgets");
+
+[kMyMoneyTitleLabel]
+
+[kMyMoneyEdit]
+
+[kMyMoneyDateInput]
