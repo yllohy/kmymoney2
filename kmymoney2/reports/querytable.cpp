@@ -482,7 +482,7 @@ void QueryTable::constructTransactionTable(void)
         // These items are relevant for each A/L split
         QCString payeeid = (*it_split).payeeId();
         if ( payeeid.isEmpty() )
-          qaccountrow["payee"] = "[Empty Payee]";
+          qaccountrow["payee"] = i18n("[Empty Payee]");
         else
           qaccountrow["payee"] = file->payee(payeeid).name().simplifyWhiteSpace();
 
