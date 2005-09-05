@@ -120,9 +120,8 @@ class CashFlowList: public QValueList<CashFlowListItem>
 {
 public:
   CashFlowList(void) {}
-  CashFlowList(const QValueList<MyMoneyTransaction>&, const CashFlowListItem& _opening, const CashFlowListItem& _current) {}
-  MyMoneyMoney NPV(double rate);
-  double IRR(void);
+  MyMoneyMoney NPV(double rate) const;
+  double IRR(void) const;
   MyMoneyMoney total(void) const;
   void dumpDebug(void) const;
 protected:

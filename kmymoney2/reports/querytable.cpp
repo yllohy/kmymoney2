@@ -86,7 +86,7 @@ const CashFlowListItem& CashFlowList::mostRecent(void) const
   return dupe.back();
 }
 
-MyMoneyMoney CashFlowList::NPV( double _rate )
+MyMoneyMoney CashFlowList::NPV( double _rate ) const
 {
   MyMoneyMoney result = 0.0;
 
@@ -102,7 +102,7 @@ MyMoneyMoney CashFlowList::NPV( double _rate )
   return result;
 }
 
-double CashFlowList::IRR( void )
+double CashFlowList::IRR( void ) const
 {
   double result = 0.0;
 
