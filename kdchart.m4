@@ -1,6 +1,14 @@
 dnl Macro to check for KDChart include and library files
 dnl Availability of KDChart defaults to 'no'
 
+AC_DEFUN([AC_KDCHART_NOT_FOUND],
+[
+    AC_MSG_ERROR([KDChart not found.
+Please check whether you installed KDChart header and library files correctly.
+I looked for KDChartWidget.h and libkdchart.so.
+  ])
+])
+
 AC_DEFUN([AC_KDCHART],
 [
 AC_MSG_CHECKING([if charts are desired for reports])
@@ -31,7 +39,8 @@ AC_ARG_ENABLE(charts,
         AC_DEFINE_UNQUOTED(HAVE_KDCHART, "1", [Define if you have libkdchart]) 
       ],
       [
-        enable_charts="no"
+        AC_KDCHART_NOT_FOUND
+        exit 1;
       ]
     )
 
