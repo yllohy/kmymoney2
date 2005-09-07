@@ -92,6 +92,7 @@ The Ledgers view is where most of the functionality of &kappname; lies.
 	
 <para>
 	After you have entered some transactions they are displayed in the transaction list.  From here you can also  change transaction properties or even create new transactions directly in the list.
+	Using the Right Mouse Button on the header of the transaction list allows to change the sort order of the transactions.
 </para>
 </sect2>
 
