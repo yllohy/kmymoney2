@@ -1,3 +1,16 @@
+2005-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Restrict type of accounts allowed as payment/asset accounts for loans
+  * Sort transactions in ledger on same date by check no and then by value
+  * Keep check number if already entered when autofilling a transaction
+  * Updated link to PDF version of project handbook
+  * Added local rules to make online versions for project handbook and manual
+    (requires a script which I currently only have on my local system)
+  * Changed spelling of Ruble to be consistent
+  * Translate currency names when loading file with different language set
+  * Don't override user supplied check no when loading prev. transaction
+  * Fixed #1264927 (check number for same day not in ascending order)
+  * Removed GWEN logger settings as requested by Martin
+
 2005-09-04 Ace Jones <acejones@users.sourceforge.net>
   * Update docs to say that you have to remove all the transactions from an
     account before deleting it.
