@@ -984,9 +984,25 @@ void KNewLoanWizard::loadAccountList(void)
     m_interestAccountEdit->loadList(KMyMoneyUtils::income);
   }
 
-  m_paymentAccountEdit->loadList(static_cast<KMyMoneyUtils::categoryTypeE>
-                                 (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  m_assetAccountEdit->loadList(KMyMoneyUtils::asset);
+  QValueList<int> typeList;
+  typeList << MyMoneyAccount::Checkings;
+  typeList << MyMoneyAccount::Savings;
+  typeList << MyMoneyAccount::Cash;
+  // typeList << MyMoneyAccount::AssetLoan;
+  // typeList << MyMoneyAccount::CertificateDep;
+  // typeList << MyMoneyAccount::Investment;
+  // typeList << MyMoneyAccount::MoneyMarket;
+  // typeList << MyMoneyAccount::Asset;
+  typeList << MyMoneyAccount::Currency;
+
+  m_assetAccountEdit->loadList(typeList);
+
+  typeList << MyMoneyAccount::CreditCard;
+  // typeList << MyMoneyAccount::Loan;
+  // typeList << MyMoneyAccount::Liability;
+  // typeList << MyMoneyAccount::Income;
+  // typeList << MyMoneyAccount::Expense;
+  m_paymentAccountEdit->loadList(typeList);
 }
 
 void KNewLoanWizard::slotAdditionalFees(void)
