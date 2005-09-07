@@ -61,8 +61,8 @@ KBankingPlugin::KBankingPlugin(QObject *parent, const char* name, const QStringL
 {
   m_kbanking = new KMyMoneyBanking(this, "KMyMoney");
   if(m_kbanking) {
-    GWEN_Logger_SetLevel(0, GWEN_LoggerLevelInfo);
-    GWEN_Logger_SetLevel(AQBANKING_LOGDOMAIN, GWEN_LoggerLevelInfo);
+    // GWEN_Logger_SetLevel(0, GWEN_LoggerLevelInfo);
+    // GWEN_Logger_SetLevel(AQBANKING_LOGDOMAIN, GWEN_LoggerLevelInfo);
     if(m_kbanking->init() == 0) {
       // Tell the host application to load my GUI component
       setInstance(KGenericFactory<KBankingPlugin>::instance());
