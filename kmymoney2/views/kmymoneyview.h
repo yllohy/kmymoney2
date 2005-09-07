@@ -43,6 +43,7 @@ class QVBoxLayout;
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneytransaction.h>
 #include <kmymoney/mymoneyscheduled.h>
+#include <kmymoney/mymoneysecurity.h>
 
 class KHomeView;
 class KAccountsView;
@@ -144,6 +145,18 @@ private:
     * This method preloads all known currencies into the engine.
     */
   void loadDefaultCurrencies(void);
+
+  /**
+    * This method creates the currency @p curr if it does not exist and
+    * @p create is @p true. If the currency already exists, it checks
+    * if the name is equal. If it is not, the name of the object in the
+    * engine is updated to the name passed with @p curr.
+    *
+    * @param curr MyMoneySecurity to be checked
+    * @param create If true and currency does not exist it will be created
+                    If false currency will not be created even if it does not exist
+    */
+  void loadDefaultCurrency(const MyMoneySecurity& curr, const bool create);
 
   /**
     *
