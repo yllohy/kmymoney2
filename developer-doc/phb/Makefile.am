@@ -4,7 +4,7 @@ DOCBOOK_FILES = phb.docbook cfg-mgmt.docbook coding.docbook cvs-examples.docbook
 
 EXTRA_DIST = $(DOCBOOK_FILES)
 
-MOSTLYCLEANFILES = *.html *.pdf *.ps phb.docbook.tex
+MOSTLYCLEANFILES = *.html *.pdf *.ps phb.docbook.tex online-phb.tar.bz2
 
 TARGETS = phb.html
 
@@ -16,7 +16,7 @@ PDF_TARGET = kmymoney-phb.pdf
 endif
 endif
 
-.PHONY: all
+.PHONY: all get-files clear-files web
 all:	$(TARGETS) $(PDF_TARGET)
 
 STYLESHEET = kde-nochunk.xsl
@@ -27,6 +27,44 @@ phb.html:	$(DOCBOOK_FILES)
 		$(MEINPROC) --stylesheet $(kde_libs_prefix)/share/apps/ksgmltools2/customization/$(STYLESHEET) $(srcdir)/phb.docbook -o phb.html; \
 	fi
 
+# if we're in a VPATH environment, we need to copy all files over
+# to the build directory. Otherwise, we'll get into trouble. Of course
+# we delete them afterwards.
+get-files:
+	if test x$(VPATH) != x.; then \
+		for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do \
+			cp $(srcdir)/$$file .; \
+		done; \
+	fi
+
+clear-files:
+	if test x$(VPATH) != x.; then \
+		for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do rm $$file; done;  \
+        fi
+
+
+web: $(PDF_TARGET)
+	if test x`which splitup-kde-chunk-online`x != xx; then \
+		rm -rf phb common; \
+		mkdir phb; \
+		mkdir common; \
+		$(MEINPROC) --stylesheet `dirname $(KDE_XSL_STYLESHEET)`/kde-chunk-online.xsl  $(srcdir)/phb.docbook -o phb/index.xml; \
+		cd phb; \
+		splitup-kde-chunk-online; \
+		rm index.xml; \
+		cd ..; \
+		make get-files; \
+		for file in $(SCREENSHOT_FILES); do \
+			cp $$file phb; \
+		done; \
+		make clear-files; \
+		cp $(kde_libs_htmldir)/en/common/* common; \
+		if test ! -z "$(PDF_TARGET)"; then \
+			cp $(PDF_TARGET) phb; \
+		fi; \
+		tar -cjf online-phb.tar.bz2 common phb; \
+		rm -rf index.xml phb common; \
+	fi;
 
 if HAVE_DSSSLCONVERSIONTOOLS
 DOCBOOK_DSL = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl

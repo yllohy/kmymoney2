@@ -6,7 +6,7 @@ SCREENSHOT_FILES = accountdropdown.png accounts_view.png accwiz1.png accwiz2.png
 
 EXTRA_DIST = kmymoney2.1 $(DOCBOOK_FILES)
 
-MOSTLYCLEANFILES = index.cache.bz2 kmymoney2.1.gz index.html *.aux *.tex *.log **.out *.pdf errorlog *.ps
+MOSTLYCLEANFILES = index.cache.bz2 kmymoney2.1.gz index.xml *.aux *.tex *.log **.out *.pdf errorlog *.ps *.html online-manual.tar.bz2
 
 BUILT_SOURCES = index.cache.bz2 kmymoney2.1.gz $(PDF_TARGET)
 
@@ -20,11 +20,30 @@ index.html:
 	$(MEINPROC) --check --stylesheet `dirname $(KDE_XSL_STYLESHEET)`/kde-nochunk.xsl  $(srcdir)/index.docbook -o index.html
 	sed -i "s/ISO-8859-1/UTF-8/g" index.html
 
-.PHONY: show preview get-files clear-files
+.PHONY: show preview get-files clear-files web
 preview: index.html
 
 show: preview
 	konqueror index.html
+
+web:
+	if test x`which splitup-kde-chunk-online`x != xx; then \
+		rm -rf online-manual common; \
+		mkdir online-manual; \
+		mkdir common; \
+		$(MEINPROC) --check --stylesheet `dirname $(KDE_XSL_STYLESHEET)`/kde-chunk-online.xsl  $(srcdir)/index.docbook -o online-manual/index.xml; \
+		cd online-manual; \
+		splitup-kde-chunk-online; \
+		cd ..; \
+		make get-files; \
+		for file in $(SCREENSHOT_FILES); do \
+			cp $$file online-manual; \
+		done; \
+		make clear-files; \
+		cp $(kde_libs_htmldir)/en/common/* common; \
+		tar -cjf online-manual.tar.bz2 common online-manual; \
+		rm -rf index.xml online-manual common; \
+	fi;
 
 if HAVE_DSSSLCONVERSIONTOOLS
 PDF_TARGET = kmymoney-user.pdf
