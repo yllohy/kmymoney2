@@ -86,7 +86,7 @@ int KTransactionPtrVector::compareItems(const QString& s1, const QString& s2) co
 {
   if(s1 == s2)
     return 0;
-  if(s1 < s2)
+  if(s1.isEmpty() || s1 < s2)
     return -1;
   return 1;
 }
@@ -132,14 +132,18 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
       case SortEntryDate:
         rc = t2->entryDate().daysTo(t1->entryDate());
         if(rc == 0) {
-          // same date? Sort by value
-          rc = 1;
-          tmp = s2.value() - s1.value();
-          if(tmp.isZero()) {
-            // same value? sort by id
-            rc = compareItems(t1->id(), t2->id());
-          } else if(tmp.isNegative()) {
-            rc = -1;
+          // on same day, lower check numbers show up first
+          rc = compareItems(s1.number(), s2.number());
+          if(rc == 0) {
+            // same number (e.g. empty)? larger amounts show up first
+            rc = 1;
+            tmp = s2.value() - s1.value();
+            if(tmp.isZero()) {
+              // same value? Sort by id
+              rc = compareItems(t1->id(), t2->id());
+            } else if(tmp.isNegative()) {
+              rc = -1;
+            }
           }
         }
         break;
@@ -220,14 +224,18 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
         // sort by post date
         rc = t2->postDate().daysTo(t1->postDate());
         if(rc == 0) {
-          // on same day, larger amounts show up first
-          rc = 1;
-          tmp = s2.value() - s1.value();
-          if(tmp.isZero()) {
-            // same value? Sort by id
-            rc = compareItems(t1->id(), t2->id());
-          } else if(tmp.isNegative()) {
-            rc = -1;
+          // on same day, lower check numbers show up first
+          rc = compareItems(s1.number(), s2.number());
+          if(rc == 0) {
+            // same number (e.g. empty)? larger amounts show up first
+            rc = 1;
+            tmp = s2.value() - s1.value();
+            if(tmp.isZero()) {
+              // same value? Sort by id
+              rc = compareItems(t1->id(), t2->id());
+            } else if(tmp.isNegative()) {
+              rc = -1;
+            }
           }
         }
         break;
@@ -414,8 +422,8 @@ void KLedgerView::refreshView(const bool transactionFormVisible)
     } else {
       filter.setDateFilter(m_dateStart, QDate());
       if (m_hideReconciledTransactions) {
-	    filter.addState(MyMoneyTransactionFilter::notReconciled);
-	    filter.addState(MyMoneyTransactionFilter::cleared);
+        filter.addState(MyMoneyTransactionFilter::notReconciled);
+        filter.addState(MyMoneyTransactionFilter::cleared);
       }
     }
 
@@ -710,6 +718,11 @@ void KLedgerView::slotPayeeChanged(const QString& name)
             // ok, we found a previous transaction. now we clear out
             // what we have collected so far and add those splits from
             // the previous transaction
+            //
+            // If a check number is already specified by the user it is
+            // used. If the input field is empty and the previous transaction
+            // contains a checknumber, the next usuable check no will be assigned
+            // to the transaction.
             MyMoneyTransaction t = list.last();
             m_transaction.removeSplits();
             QValueList<MyMoneySplit>::ConstIterator it;
@@ -717,9 +730,13 @@ void KLedgerView::slotPayeeChanged(const QString& name)
               MyMoneySplit s(*it);
               s.setReconcileFlag(MyMoneySplit::NotReconciled);
               s.setId(QCString());
-              if(!s.number().isEmpty()) {
-                unsigned64 no = MyMoneyFile::instance()->highestCheckNo(s.accountId()).toULongLong();
-                s.setNumber(QString::number(no+1));
+              if(s.accountId() == m_account.id()) {
+                if(!m_editNr->text().isEmpty()) {
+                  s.setNumber(m_editNr->text());
+                } else if(!s.number().isEmpty()) {
+                  unsigned64 no = MyMoneyFile::instance()->highestCheckNo(s.accountId()).toULongLong();
+                  s.setNumber(QString::number(no+1));
+                }
               }
               m_transaction.addSplit(s);
             }
