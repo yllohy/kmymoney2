@@ -49,7 +49,7 @@ kmmwidgets.cpp:	kmymoney.widgets
 
 # make sure to compile the Qt designer version w/o the memory leak checker 
 libkmymoney_la_CXXFLAGS = -U_CHECK_MEMORY
-libkmymoney_la_LDFLAGS = $(KDE_LDFLAGS) -rpath $(DESTDIR)$(qt_libraries)/../plugins/designer -lkmm_mymoney $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
+libkmymoney_la_LDFLAGS = $(KDE_LDFLAGS) -rpath $(DESTDIR)$(qt_libraries)/../plugins/designer -L../mymoney -lkmm_mymoney $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
 
 install-exec-local: libkmymoney.la
 	$(mkinstalldirs) $(DESTDIR)$(qt_libraries)/../plugins/designer
