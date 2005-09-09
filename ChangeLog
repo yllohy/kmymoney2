@@ -1,6 +1,13 @@
+2005-09-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Changed minimum KDE version to 3.2 in configure.in.in
+  * Added patch provided by Erik Johansson to display the selected date
+    including the weekday in a KPassivePopup
+  * Adjusted build system to work from in initially empty sandbox
+
 2005-09-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * GnuCash Reader - fix locale-dependent problem on schedules
                    - stop crash on invalid price
+
 2005-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Restrict type of accounts allowed as payment/asset accounts for loans
   * Sort transactions in ledger on same date by check no and then by value
@@ -13,6 +20,7 @@
   * Don't override user supplied check no when loading prev. transaction
   * Fixed #1264927 (check number for same day not in ascending order)
   * Removed GWEN logger settings as requested by Martin
+  * Added hint to sort order of transactions in online manual
 
 2005-09-04 Ace Jones <acejones@users.sourceforge.net>
   * Update docs to say that you have to remove all the transactions from an
