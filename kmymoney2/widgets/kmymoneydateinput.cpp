@@ -29,6 +29,7 @@
 #include <qdesktopwidget.h>
 #include <qpixmap.h>
 #include <qtimer.h>
+#include <qlabel.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -38,11 +39,16 @@
 #include <kiconloader.h>
 #include <kpushbutton.h>
 #include <kshortcut.h>
+#include <kpassivepopup.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kmymoneydateinput.h"
+
+namespace {
+  const int DATE_POPUP_TIMEOUT = 2*1000;
+}
 
 kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::AlignmentFlags flags)
  : QHBox(parent,name)
@@ -52,6 +58,11 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
 
   dateEdit = new QDateEdit(m_date, this, "dateEdit");
   setFocusProxy(dateEdit);
+  focusWidget()->installEventFilter(this); // To get dateEdit's FocusIn and FocusOut events
+
+  m_datePopup = new KPassivePopup(dateEdit, "m_datePopup");
+  m_datePopup->setTimeout(DATE_POPUP_TIMEOUT);
+  m_datePopup->setView(new QLabel(KGlobal::locale()->formatDate(m_date), m_datePopup));
 
   m_dateFrame = new QVBox(0,0,WType_Popup);
   m_dateFrame->setFrameStyle(QFrame::PopupPanel | QFrame::Raised);
@@ -130,6 +141,7 @@ void kMyMoneyDateInput::fixSize(void)
 kMyMoneyDateInput::~kMyMoneyDateInput()
 {
   delete m_dateFrame;
+  delete m_datePopup;
 }
 
 void kMyMoneyDateInput::toggleDatePicker()
@@ -215,11 +227,30 @@ void kMyMoneyDateInput::keyPressEvent(QKeyEvent * k)
   }
 }
 
+/**
+  * This function receives all events that are sent to focusWidget().
+  */
+bool kMyMoneyDateInput::eventFilter(QObject *, QEvent *e)
+{
+  if (e->type() == QEvent::FocusIn)
+    m_datePopup->show();
+  else if (e->type() == QEvent::FocusOut)
+    m_datePopup->hide();
+
+  return false; // Don't filter the event
+}
+
 void kMyMoneyDateInput::slotDateChosenRef(const QDate& date)
 {
   if(date.isValid()) {
     emit dateChanged(date);
     m_date=date;
+
+    QLabel *lbl = static_cast<QLabel*>(m_datePopup->view());
+    lbl->setText(KGlobal::locale()->formatDate(date));
+    lbl->adjustSize();
+    if (m_datePopup->isVisible() || hasFocus())
+      m_datePopup->show(); // Repaint
   }
 }
 

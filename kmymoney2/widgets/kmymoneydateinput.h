@@ -31,6 +31,7 @@
 
 #include <kdatepicker.h>
 class KPushButton;
+class KPassivePopup;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -77,6 +78,9 @@ protected:
   void keyPressEvent(QKeyEvent * k);
   void resizeEvent(QResizeEvent*);
 
+  /** To intercept events sent to focusWidget() */
+  bool eventFilter(QObject *o, QEvent *e);
+
 protected slots:
   void slotDateChosen(QDate date);
   void toggleDatePicker();
@@ -93,6 +97,7 @@ private:
   Qt::AlignmentFlags m_qtalignment;
   QVBox *m_dateFrame;
   KPushButton *m_dateButton;
+  KPassivePopup *m_datePopup;
 };
 
 #endif
