@@ -1052,17 +1052,17 @@ void MyMoneyGncReader::convertPrice (const GncPrice *gpr) {
   Q_CHECK_PTR (gpr);
   // add this to our price history
   if (m_priceCount == 0) signalProgress (0, 1, i18n("Loading prices..."));
+  MyMoneyMoney rate = convBadValue (gpr->value());
   if (gpr->commodity()->isCurrency()) {
     MyMoneyPrice exchangeRate (gpr->commodity()->id().utf8(), gpr->currency()->id().utf8(),
-                               gpr->priceDate(), MyMoneyMoney(gpr->value()), i18n("Imported History"));
+                               gpr->priceDate(), rate, i18n("Imported History"));
     m_storage->addPrice (exchangeRate);
   } else {
     MyMoneySecurity e = m_storage->security(m_mapEquities[gpr->commodity()->id().utf8()]);
     if (gncdebug) qDebug ("Searching map, key = %s, found id = %s",
                             gpr->commodity()->id().latin1(), e.id().data());
     e.setTradingCurrency (gpr->currency()->id().utf8());
-    MyMoneyMoney priceValue(gpr->value());
-    MyMoneyPrice stockPrice(e.id(), gpr->currency()->id().utf8(), gpr->priceDate(), priceValue, i18n("Imported History"));
+    MyMoneyPrice stockPrice(e.id(), gpr->currency()->id().utf8(), gpr->priceDate(), rate, i18n("Imported History"));
     m_storage->addPrice (stockPrice);
     m_storage->modifySecurity(e);
   }
@@ -1272,14 +1272,12 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
   // cheque no
   split.setNumber (m_txChequeNo);
   // value and quantity
-  MyMoneyMoney splitValue (0);
-  if (gsp->value() != QString("-1/0")) { // treat gnc invalid value as zero
-   splitValue = gsp->value();
- } else {
+  MyMoneyMoney splitValue (convBadValue (gsp->value()));
+  if (gsp->value() == QString("-1/0")) { // treat gnc invalid value as zero
    // it's not quite a consistency check, but easier to treat it as such
    postMessage ("CC", 4, splitAccount.name().latin1(), m_txDatePosted.toString(Qt::ISODate).latin1());
  }
-  MyMoneyMoney splitQuantity(gsp->qty());
+ MyMoneyMoney splitQuantity(convBadValue(gsp->qty()));
   split.setValue (splitValue);
   split.setShares (splitQuantity);
 
@@ -1476,6 +1474,7 @@ void MyMoneyGncReader::convertTemplateSplit (const QString schedName, const GncT
       }
       // validate numeric, work out sign
       MyMoneyMoney exFormula (0);
+      exFormula.setNegativeMonetarySignPosition (MyMoneyMoney::BeforeQuantityMoney);
       QString numericTest;
       char crdr;
       if (!gncCreditFormula.isEmpty()) {
@@ -1490,7 +1489,7 @@ void MyMoneyGncReader::convertTemplateSplit (const QString schedName, const GncT
       if (v.validate (numericTest, pos) == QValidator::Acceptable) {
         switch (crdr) {
           case 'C':
-            exFormula = "-" + numericTest; break;
+            exFormula = QString ("-" + numericTest); break;
           case 'D':
             exFormula = numericTest;
         }

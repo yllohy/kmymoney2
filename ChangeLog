@@ -1,3 +1,6 @@
+2005-09-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * GnuCash Reader - fix locale-dependent problem on schedules
+                   - stop crash on invalid price
 2005-09-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Restrict type of accounts allowed as payment/asset accounts for loans
   * Sort transactions in ledger on same date by check no and then by value

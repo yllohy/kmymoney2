@@ -146,7 +146,6 @@ allow us to test the structure, if not the data content, of the file.
 
 #include <qdatastream.h>
 class QIODevice;
-#include <qmessagebox.h>
 #include <qobject.h>
 #include <qvaluelist.h>
 #include <qptrlist.h>
@@ -732,7 +731,9 @@ protected:
   bool developerDebug;
 private:
   void setOptions (); // to set user options, with a dialog eventually
-  void setFileHideFactor ();
+  void setFileHideFactor (); 
+  // the following handles the gnucash indicator for a bad value (-1/0) which causes us probs
+  const QString convBadValue (QString gncValue) const {return (gncValue == "-1/0" ? "0/1" : gncValue); };
 #ifndef _GNCFILEANON
   MyMoneyTransaction convertTemplateTransaction (const QString, const GncTransaction *);
   void convertTemplateSplit (const QString, const GncTemplateSplit *);
