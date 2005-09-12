@@ -53,15 +53,6 @@ public:
 protected:
   /* documented in base class */
   void fillSummary(void);
-
-  /* documented in base class */
-  void resizeEvent(QResizeEvent*);
-
-  /* documented in base class */
-  virtual void createEditWidgets(void);
-
-  /* documented in base class */
-  virtual void slotReconciliation(void);
 };
 
 #endif

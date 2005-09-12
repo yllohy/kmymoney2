@@ -51,11 +51,6 @@ public:
   bool eventFilter(QObject* o, QEvent* e);
 
 protected slots:
-
-  /* documented in base class */
-  virtual void slotReconciliation(void);
-  /* documented in base class */
-  virtual void createEditWidgets(void);
   /* documented in base class */
   void fillSummary(void);
 };

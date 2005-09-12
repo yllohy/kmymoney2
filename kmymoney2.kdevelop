@@ -19,7 +19,8 @@
   <kdevautoproject>
     <general>
       <mainprogram>kmymoney2/kmymoney2</mainprogram>
-      <useconfiguration>default</useconfiguration>
+      <useconfiguration>suse91</useconfiguration>
+      <activetarget>kmymoney2/kmymoneytest</activetarget>
     </general>
     <configure>
       <configargs>\s--build=i386-linux --host=i386-linux --target=i386-linux\s</configargs>
@@ -64,6 +65,22 @@
         <cxxflags>-D_CHECK_MEMORY</cxxflags>
         <f77flags/>
       </default>
+      <suse91>
+        <configargs>--mandir=/usr/share/man --enable-debug=full --enable-kbanking=yes</configargs>
+        <builddir>suse91</builddir>
+        <topsourcedir>/home/thb/devel/kmymoney2</topsourcedir>
+        <cppflags/>
+        <ldflags/>
+        <ccompiler>kdevgccoptions</ccompiler>
+        <cxxcompiler>kdevgppoptions</cxxcompiler>
+        <f77compiler>kdevpgf77options</f77compiler>
+        <ccompilerbinary/>
+        <cxxcompilerbinary/>
+        <f77compilerbinary/>
+        <cflags/>
+        <cxxflags/>
+        <f77flags/>
+      </suse91>
     </configurations>
   </kdevautoproject>
   <kdevfileview>
