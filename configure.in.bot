@@ -20,7 +20,8 @@ elif test x$have_new_ofx = xyes; then
 	echo "OFX plugin:                            yes"
 else
 	echo "OFX plugin:                            no"
-	echo "    You are missing the libofx headers and libraries"
+	echo "    You are missing the latest libOFX headers and libraries"
+	echo "    The CVS version of LibOFX is now required."
 	echo "    The OFX plugin won't be compiled."
 fi
 
@@ -32,7 +33,8 @@ elif test x$have_new_ofx = xyes; then
 	echo "OFX direct connect:                    yes"
 else
 	echo "OFX direct connect:                    no"
-	echo "    You are missing the libofx headers and libraries"
+	echo "    You are missing the latest libofx headers and libraries"
+	echo "    The CVS version of LibOFX is now required."
 	echo "    The OFX direct connect support won't be compiled."
 fi
 

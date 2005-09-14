@@ -140,6 +140,7 @@ private:
     * @return QCString id of the found or created account
     */
   static const QCString findOrCreateIncomeAccount(const QString& searchname);
+  static const QCString findOrCreateExpenseAccount(const QString& searchname);
   
 signals:
   /**

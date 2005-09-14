@@ -312,7 +312,33 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
     "Jahreschart (\\d+\\D+\\d+\\D+\\d+)", // dateregexp
     "%d %m %y" // dateformat
   );
-    
+
+  // The following two price sources were contributed by
+  // Marc Zahnlecker <tf2k@users.sourceforge.net>
+  
+  result["Wallstreet-Online.DE (Default)"] = WebPriceQuoteSource("Wallstreet-Online.DE (Default)", 
+    "http://www.wallstreet-online.de/si/?k=%1&spid=ws",
+    "Symbol:(\\w+)",  // symbolregexp
+    "Letzter Kurs: ([0-9.]+,\\d+)", // priceregexp
+    ", (\\d+\\D+\\d+\\D+\\d+)", // dateregexp
+    "%d %m %y" // dateformat
+  );
+
+  // (tf2k) The "mpid" is I think the market place id. In this case five 
+  // stands for Hamburg.
+  //
+  // Here the id for several market places: 2 Frankfurt, 3 Berlin, 4 
+  // Düsseldorf, 5 Hamburg, 6 München/Munich, 7 Hannover, 9 Stuttgart, 10 
+  // Xetra, 32 NASDAQ, 36 NYSE
+
+  result["Wallstreet-Online.DE (Hamburg)"] = WebPriceQuoteSource("Wallstreet-Online.DE (Hamburg)", 
+    "http://www.wallstreet-online.de/si/?k=%1&spid=ws&mpid=5",
+    "Symbol:(\\w+)",  // symbolregexp
+    "Letzter Kurs: ([0-9.]+,\\d+)", // priceregexp
+    ", (\\d+\\D+\\d+\\D+\\d+)", // dateregexp
+    "%d %m %y" // dateformat
+  );
+  
   return result;
 }
 

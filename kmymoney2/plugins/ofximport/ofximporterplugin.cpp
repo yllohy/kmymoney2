@@ -209,7 +209,18 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
   {
     t.m_dShares = 0;
   }
-
+  
+  t.m_moneyFees = 0.0;
+  
+  if(data.fees_valid==true)
+  {
+    t.m_moneyFees += data.fees;
+  }
+  if(data.commission_valid==true)
+  {
+    t.m_moneyFees += data.commission;
+  }
+  
   bool unhandledtype = false;
   QString type;
 

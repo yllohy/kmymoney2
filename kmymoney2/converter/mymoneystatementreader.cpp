@@ -173,13 +173,12 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   MyMoneySplit s1;
 
   s1.setMemo(t_in.m_strMemo);
-  s1.setValue(t_in.m_moneyAmount);
+  s1.setValue(t_in.m_moneyAmount-t_in.m_moneyFees);
   s1.setNumber(t_in.m_strNumber);
 
   // set these values if a transfer split is needed at the very end.
   MyMoneyMoney transfervalue;
-  QCString transferaccountid;  
-  
+   
   // If the user has chosent to import into an investment account, determine the correct account to use
   MyMoneyAccount thisaccount = m_account;
   if ( thisaccount.accountType() == MyMoneyAccount::Investment )
@@ -253,18 +252,30 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaCashDividend)
     {
-      // NOTE: With CashDividend, the amount of the dividend should
-      // be in data.amount.  Since I've never seen an OFX file with
-      // cash dividends, this is an assumption on my part. (acejones)
-
       // Cash dividends require setting 2 splits to get all of the information
       // in.  Split #1 will be the income split, and we'll set it to the first
       // income account.  This is a hack, but it's needed in order to get the
       // amount into the transaction.
 
+      // There are some sign issues.  The OFX plugin universally reverses the sign
+      // for investment transactions.
+      //
+      // The way we interpret the sign on 'amount' is the s1 split, which is always
+      // the thing that's NOT the cash account.  For dividends, it's the income
+      // category, for buy/sell it's the stock account.
+      //
+      // For cash account transactions, the s1 split IS the cash account split,
+      // which explains why they have to be reversed for investment transactions
+      //
+      // Ergo, the 'amount' is negative at this point and needs to stay negative.
+      // The 'fees' is positive.
+      //
+      // This should probably change.  It would be more consistent to ALWAYS
+      // interpret the 'amount' as the cash account part.
+      
       s1.setAccountId(findOrCreateIncomeAccount("_Dividend"));
-      s1.setShares(-t_in.m_moneyAmount);
-      s1.setValue(-t_in.m_moneyAmount);
+      s1.setShares(t_in.m_moneyAmount);
+      s1.setValue(t_in.m_moneyAmount);
 
       // Split 2 will be the zero-amount investment split that serves to
       // mark this transaction as a cash dividend and note which stock account
@@ -276,7 +287,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       s2.setAccountId(thisaccount.id());
       t.addSplit(s2);
       
-      transfervalue = t_in.m_moneyAmount;
+      transfervalue = -t_in.m_moneyAmount-t_in.m_moneyFees;
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaBuy || t_in.m_eAction==MyMoneyStatement::Transaction::eaSell)
     {
@@ -301,6 +312,9 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
           s1.setAction(MyMoneySplit::ActionDeposit);
         else
           s1.setAction(MyMoneySplit::ActionWithdrawal);
+          
+        // Needed to satisfy the bankid check below.
+        thisaccount = file->account(brokerageactid);
       }
       else
       {
@@ -447,6 +461,19 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
   t.addSplit(s1);
 
+  // The fees has to be added AFTER the interest, because 
+  // KLedgerViewInvestments::preloadInvestmentSplits expects the splits to be
+  // ordered this way.
+  if ( t_in.m_moneyFees != 0.0 )
+  {
+    MyMoneySplit s;
+    s.setMemo(i18n("(Fees) ") + t_in.m_strMemo);
+    s.setValue(t_in.m_moneyFees);
+    s.setShares(t_in.m_moneyFees);
+    s.setAccountId(findOrCreateExpenseAccount("_Fees"));
+    t.addSplit(s);
+  }
+  
   // Add the 'account' split if it's needed
   if ( ! transfervalue.isZero() )
   {
@@ -631,6 +658,41 @@ const QCString MyMoneyStatementReader::findOrCreateIncomeAccount(const QString& 
     acc.setAccountType( MyMoneyAccount::Income );
     MyMoneyAccount income = file->income();
     file->addAccount( acc, income );
+    result = acc.id();
+  }
+
+  return result;
+}
+
+const QCString MyMoneyStatementReader::findOrCreateExpenseAccount(const QString& searchname)
+{
+  QCString result;
+  
+  MyMoneyFile *file = MyMoneyFile::instance();
+
+  // First, try to find this account as an income account
+  MyMoneyAccount acc = file->expense();
+  QCStringList list = acc.accountList();
+  QCStringList::ConstIterator it_accid = list.begin();
+  while ( it_accid != list.end() )
+  {
+    acc = file->account(*it_accid);
+    if ( acc.name() == searchname )
+    {
+      result = *it_accid;
+      break;
+    }  
+    ++it_accid;
+  }
+
+  // If we did not find the account, now we must create one.
+  if ( result.isEmpty() )
+  {
+    MyMoneyAccount acc;
+    acc.setName( searchname );
+    acc.setAccountType( MyMoneyAccount::Expense );
+    MyMoneyAccount expense = file->expense();
+    file->addAccount( acc, expense );
     result = acc.id();
   }
 

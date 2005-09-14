@@ -1,3 +1,11 @@
+2005-09-13 Ace Jones <acejones@users.sourceforge.net>
+  * Updated to CVS version of libOFX
+  * Added support for fees to OFX and Statement imports
+  * Fixed sign reversal on OFX dividend imports
+  * Support QIF imports without a "Type" line
+  * Added Wallstreet-Online.DE online quote source
+    Submitted by Marc Zahnlecker <tf2k@users.sourceforge.net>
+
 2005-09-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Changed minimum KDE version to 3.2 in configure.in.in
   * Added patch provided by Erik Johansson to display the selected date

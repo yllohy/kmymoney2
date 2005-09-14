@@ -1,3 +1,4 @@
+
 AC_DEFUN([AC_LIBOFX],
 [
 AC_MSG_CHECKING(if the OFX importer plugin is desired)
@@ -19,7 +20,7 @@ ofx_importerplugin=""
 
 if test "$enable_ofxplugin" != "no"; then
   AC_CHECK_HEADER([OpenSP/macros.h], [
-    AC_CHECK_LIB(ofx, libofx_proc_file,[have_new_ofx="yes"], [have_new_ofx="no"])
+    AC_CHECK_MEMBER(struct OfxTransactionData.fees_valid,[have_new_ofx="yes"], [have_new_ofx="no"],[#include <libofx/libofx.h>])
     if test "$have_new_ofx" == "yes"; then
       ofx_importerplugin="ofximport"
       ofx_libs="-lofx"
@@ -29,7 +30,7 @@ fi
 
 if test "$enable_ofxbanking" != "no"; then
   AC_CHECK_HEADER([OpenSP/macros.h], [
-    AC_CHECK_LIB(ofx, libofx_request_accountinfo,[have_new_ofx="yes"], [have_new_ofx="no"])
+    AC_CHECK_MEMBER(struct OfxTransactionData.fees_valid,[have_new_ofx="yes"], [have_new_ofx="no"],[#include <libofx/libofx.h>])
     if test "$have_new_ofx" == "yes"; then
       AC_DEFINE_UNQUOTED(USE_OFX_DIRECTCONNECT, "1", [whether to use OFX directconnect])
       LIBS="-lofx $LIBS"

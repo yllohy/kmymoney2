@@ -413,12 +413,13 @@ void MyMoneyQifReader::processQifEntry(void)
     } else {
       // Process entry of same type
       switch(m_entryType) {
-        case EntryUnknown:
-          kdDebug(2) << "Line " << m_linenumber << ":Found an entry without a type being specified. Entry skipped." << endl;
-          break;
-
         case EntryCategory:
           processCategoryEntry();
+          break;
+
+        case EntryUnknown:
+          kdDebug(2) << "Line " << m_linenumber << ": Warning: Found an entry without a type being specified. Checking assumed." << endl;
+          processTransactionEntry();
           break;
 
         case EntryTransaction:
