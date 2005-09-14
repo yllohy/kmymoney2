@@ -1,3 +1,13 @@
+2005-09-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1287850 (Empty action box)
+  * Fixed #1286028 (Edit Account dialog shows wrong currency)
+  * Fixed #1286033 (KMyMoney hangs up)
+  * Fixed result calculation in KCurrencyCalculator to produce smaller
+    numerators and denominators
+  * Added unit testcase for problem #1291044
+  * Fixed #1291044 (Cannot apply $0.01US interest expense in a split)
+  * Fixed typos reported by Jochen Rundholz
+
 2005-09-13 Ace Jones <acejones@users.sourceforge.net>
   * Updated to CVS version of libOFX
   * Added support for fees to OFX and Statement imports
