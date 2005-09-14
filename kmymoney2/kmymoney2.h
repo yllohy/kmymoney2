@@ -127,7 +127,7 @@ protected slots:
   void slotPluginImport(const QString&);
 
   void slotPluginImport(const QString& format, const QString& url);
- 
+
   /**
     * Opens a file selector dialog for the user to choose an existing KMM
     * statement file from the file system to be imported.  This is for testing
@@ -419,6 +419,21 @@ public slots:
 private:
   bool verifyImportedData(const MyMoneyAccount& account);
   bool slotCommitTransaction(const MyMoneySchedule& schedule, const QDate&);
+
+  /**
+    * Load the status bar with the 'ready' message. This is hold in a single
+    * place, so that is consistent with isReady().
+    */
+  void ready(void);
+
+  /**
+    * Check if the status bar contains the 'ready' message. The return
+    * value is used e.g. to detect if a quit operation is allowed or not.
+    *
+    * @retval true application is idle
+    * @retval false application is active working on a longer operation
+    */
+  bool isReady(void);
 
 signals:
   /**

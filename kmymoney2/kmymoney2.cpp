@@ -176,7 +176,8 @@ const KURL KMyMoney2App::lastOpenedURL(void)
     url = readLastUsedFile();
   }
 
-  slotStatusMsg(i18n("Ready."));
+  ready();
+
   return url;
 }
 
@@ -266,8 +267,8 @@ void KMyMoney2App::initStatusBar()
   ///////////////////////////////////////////////////////////////////
   // STATUSBAR
 
-  // TODO: add your own items you need for displaying current application status.
-  statusBar()->insertItem(i18n("Ready."), ID_STATUS_MSG);
+  statusBar()->insertItem("", ID_STATUS_MSG);
+  ready();
 
   // Initialization of progress bar taken from KDevelop ;-)
   progressBar = new KProgress(statusBar());
@@ -335,6 +336,9 @@ void KMyMoney2App::resizeEvent(QResizeEvent* ev)
 
 bool KMyMoney2App::queryClose()
 {
+  if(!isReady())
+    return false;
+
   if (myMoneyView->dirty()) {
     int ans = KMessageBox::warningYesNoCancel(this, i18n("KMyMoney file needs saving.  Save ?"));
     if (ans==KMessageBox::Cancel)
@@ -679,6 +683,15 @@ const QString KMyMoney2App::slotStatusMsg(const QString &text)
   return msg;
 }
 
+void KMyMoney2App::ready(void)
+{
+  slotStatusMsg(i18n("Ready."));
+}
+
+bool KMyMoney2App::isReady(void)
+{
+  return m_statusMsg == i18n("Ready.");
+}
 
 void KMyMoney2App::slotStatusProgressBar(const int current, const int total)
 {
@@ -899,7 +912,7 @@ void KMyMoney2App::slotQifImportFinished(void)
     m_reader = 0;
   }
   slotStatusProgressBar(-1, -1);
-  slotStatusMsg(i18n("Ready."));
+  ready();
 
   // re-enable all standard widgets
   setEnabled(true);
@@ -1203,7 +1216,7 @@ void KMyMoney2App::slotStatementImportFinished(void)
     m_smtReader = 0;
   }
   slotStatusProgressBar(-1, -1);
-  slotStatusMsg(i18n("Ready."));
+  ready();
 
   // re-enable all standard widgets
   setEnabled(true);
@@ -1371,7 +1384,8 @@ void KMyMoney2App::slotProcessExited()
               proc.start();
             } else {
               m_backupState = BACKUP_IDLE;
-              progressCallback(-1, -1, i18n("Ready."));
+              progressCallback(-1, -1, QString());
+              ready();
             }
           }
         }
@@ -1396,7 +1410,8 @@ void KMyMoney2App::slotProcessExited()
 
         } else {
           m_backupState = BACKUP_IDLE;
-          progressCallback(-1, -1, i18n("Ready."));
+          progressCallback(-1, -1, QString());
+          ready();
         }
       }
       break;
@@ -1415,7 +1430,8 @@ void KMyMoney2App::slotProcessExited()
           progressCallback(300, 0, i18n("Done"));
           KMessageBox::information(this, i18n("File successfully backed up"), i18n("Backup"));
           m_backupState = BACKUP_IDLE;
-          progressCallback(-1, -1, i18n("Ready."));
+          progressCallback(-1, -1, QString());
+          ready();
         }
       } else {
         qDebug("cp exit status is %d", proc.exitStatus());
@@ -1433,7 +1449,8 @@ void KMyMoney2App::slotProcessExited()
 
         } else {
           m_backupState = BACKUP_IDLE;
-          progressCallback(-1, -1, i18n("Ready."));
+          progressCallback(-1, -1, QString());
+          ready();
         }
       }
       break;
@@ -1449,12 +1466,14 @@ void KMyMoney2App::slotProcessExited()
         KMessageBox::information(this, i18n("Error unmounting device"), i18n("Backup"));
       }
       m_backupState = BACKUP_IDLE;
-      progressCallback(-1, -1, i18n("Ready."));
+      progressCallback(-1, -1, QString());
+      ready();
       break;
 
     default:
       qWarning("Unknown state for backup operation!");
-      progressCallback(-1, -1, i18n("Ready."));
+      progressCallback(-1, -1, QString());
+      ready();
       break;
   }
 }
