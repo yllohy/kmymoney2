@@ -43,14 +43,14 @@ KChooseImportExportDlg::KChooseImportExportDlg(int type, QWidget *parent, const 
   QString filename;
 
   if (type==0) { // import
-    topLabel->setText(i18n("Please choose the type of import you wish to perform.   A simple explanation\n"
+    topLabel->setText(i18n("Please choose the type of import you wish to perform.  A simple explanation\n"
         "of the import type is available at the bottom of the screen and is updated when\n"
         "you select an item from the choice box."
         "\n\nOnce you have chosen an import type please press the OK button." ));
     promptLabel->setText(i18n("Choose import type:"));
     setCaption(i18n("Choose Import Type Dialog"));
   } else { // export
-    topLabel->setText(i18n("Please choose the type of export you wish to perform.   A simple explanation\n"
+    topLabel->setText(i18n("Please choose the type of export you wish to perform.  A simple explanation\n"
         "of the export type is available at the bottom of the screen and is updated when\n"
         "you select an item from the choice box."
         "\n\nOnce you have chosen an export type please press the OK button." ));

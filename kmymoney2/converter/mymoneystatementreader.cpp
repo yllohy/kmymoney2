@@ -230,7 +230,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
       if (!found)
       {
-        KMessageBox::information(0, i18n("This investment account does not contain the '%1' security.  "
+        KMessageBox::information(0, i18n("This investment account does not contain the \"%1\" security.  "
                                           "Transactions involving this security will be ignored.").arg(t_in.m_strSecurity),
                                     i18n("Security not found"),
                                     QString("MissingSecurity%1").arg(t_in.m_strSecurity.stripWhiteSpace()));
@@ -612,7 +612,7 @@ bool MyMoneyStatementReader::selectOrCreateAccount(const SelectCreateMode /*mode
         //throw new MYMONEYEXCEPTION("USERABORT");
         done = true;
       else
-        KMessageBox::error(0, i18n("You must select an account, create a new one, or press the Abort button."));
+        KMessageBox::error(0, i18n("You must select an account, create a new one, or press the <b>Abort</b> button."));
     }
   }
   return result;

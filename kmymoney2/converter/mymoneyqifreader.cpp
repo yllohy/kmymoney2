@@ -1099,7 +1099,7 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     
     // If the security is not known, notify the user
     // TODO: A "SelectOrCreateAccount" interface for investments
-    KMessageBox::information(0, i18n("This investment account does not contain the '%1' security.  "
+    KMessageBox::information(0, i18n("This investment account does not contain the \"%1\" security.  "
                                       "Transactions involving this security will be ignored.").arg(securityname),
                                 i18n("Security not found"),
                                 QString("MissingSecurity%1").arg(securityname.stripWhiteSpace()));

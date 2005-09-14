@@ -738,7 +738,7 @@ void KMyMoney2App::slotFileViewPersonal()
 
   if ( !myMoneyView->fileOpen() ) {
 
-    KMessageBox::information(this, i18n("No MyMoneyFile open"));
+    KMessageBox::information(this, i18n("No KMyMoneyFile open"));
     return;
   }
 
@@ -751,7 +751,7 @@ void KMyMoney2App::slotFileFileInfo()
 {
   if ( !myMoneyView->fileOpen() ) {
 
-    KMessageBox::information(this, i18n("No MyMoneyFile open"));
+    KMessageBox::information(this, i18n("No KMyMoneyFile open"));
 
     return;
   }
@@ -1641,11 +1641,11 @@ void KMyMoney2App::slotPriceDialog(void)
 
 void KMyMoney2App::slotFileConsitencyCheck(void)
 {
-  QString prevMsg = slotStatusMsg(i18n("Running consitency check..."));
+  QString prevMsg = slotStatusMsg(i18n("Running consistency check..."));
 
   QStringList msg = MyMoneyFile::instance()->consistencyCheck();
 
-  KMessageBox::warningContinueCancelList(0, "Result", msg, i18n("Consitency check result"));
+  KMessageBox::warningContinueCancelList(0, "Result", msg, i18n("Consistency check result"));
 
   slotStatusMsg(prevMsg);
   updateCaption();
@@ -1762,7 +1762,7 @@ bool KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDa
       QClipboard *cb = QApplication::clipboard();
       cb->setText(d, QClipboard::Clipboard);
       QMessageBox::information( 0, PACKAGE,
-        i18n("Unable to autoEnter schedule %1. Please check manually\n"
+        i18n("Unable to autoEnter schedule %1. Please check manually!\n"
   "Debug data has been copied to clipboard; please paste into an\n"
   "email and send to kmymoney2-developer@lists.sourceforge.net").arg (schedule.name()));
       return (false);
