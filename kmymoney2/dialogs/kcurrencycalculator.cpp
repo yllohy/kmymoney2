@@ -151,7 +151,7 @@ void KCurrencyCalculator::slotUpdateResult(const QString& /*txt*/)
     price = result / m_value;
 
     m_conversionRate->loadText(price.formatMoney("", m_ratePrec));
-    m_result = m_value * price;
+    m_result = (m_value * price).convert(m_resultFraction);
     m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_resultFraction)));
   }
   updateExample(price);
@@ -169,7 +169,7 @@ void KCurrencyCalculator::slotUpdateRate(const QString& /*txt*/)
 
   if(!price.isZero()) {
     m_conversionRate->loadText(price.formatMoney("", m_ratePrec));
-    m_result = m_value * price;
+    m_result = (m_value * price).convert(m_resultFraction);
     m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_resultFraction)));
   }
   updateExample(price);
