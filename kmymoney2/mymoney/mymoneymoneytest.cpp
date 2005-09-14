@@ -206,6 +206,8 @@ void MyMoneyMoneyTest::testEquality()
   CPPUNIT_ASSERT(m5 == m7);
 
   CPPUNIT_ASSERT(m5 == QString("369/30"));
+
+  CPPUNIT_ASSERT(MyMoneyMoney::autoCalc == MyMoneyMoney::autoCalc);
 }
 
 void MyMoneyMoneyTest::testInequality()
@@ -222,6 +224,9 @@ void MyMoneyMoneyTest::testInequality()
   CPPUNIT_ASSERT(m3 != m4);
 
   CPPUNIT_ASSERT(m4 != QString("999666555444"));
+
+  CPPUNIT_ASSERT(MyMoneyMoney::autoCalc != MyMoneyMoney(1,100));
+  CPPUNIT_ASSERT(MyMoneyMoney(1,100) != MyMoneyMoney::autoCalc);
 }
 
 
