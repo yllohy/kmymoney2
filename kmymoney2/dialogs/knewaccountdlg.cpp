@@ -206,12 +206,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     m_qcheckboxPreferred->setChecked(account.value("PreferredAccount") == "Yes");
     m_qcheckboxNoVat->setChecked(account.value("NoVat") == "Yes");
 
-    if(account.accountType() == MyMoneyAccount::Stock) {
-      m_equity->loadEquity(account.currencyId());
-    } else {
-      m_currency->setSecurity(file->currency(account.currencyId()));
-    }
-
     // we do not allow to change the account type once an account
     // was created. Same applies to currency.
     if (m_isEditing)
@@ -230,6 +224,13 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     }
 
     m_qcheckboxTax->hide();
+  }
+
+  // setup the currency / equity widgets
+  if(account.accountType() == MyMoneyAccount::Stock) {
+    m_equity->loadEquity(account.currencyId());
+  } else {
+    m_currency->setSecurity(file->currency(account.currencyId()));
   }
 
   // Load the institutions
@@ -741,7 +742,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
   if (m_parentItem)
   {
     m_subAccountLabel->setText(i18n("Is a sub account of %1").arg(m_parentAccount.name()));
-    m_qlistviewParentAccounts->setOpen(m_parentItem, true);
+    m_parentItem->setOpen(true);
     m_qlistviewParentAccounts->setSelected(m_parentItem, true);
   }
 
