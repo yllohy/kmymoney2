@@ -1,3 +1,6 @@
+2005-09-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1288592 (Crash with Auto fill)
+
 2005-09-15 Robert Wadley <robntina@users.sourceforge.net>
   * replaced reports icons
   * added some 22x22 "chart style" icons
