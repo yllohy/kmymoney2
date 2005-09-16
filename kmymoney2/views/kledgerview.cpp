@@ -86,7 +86,7 @@ int KTransactionPtrVector::compareItems(const QString& s1, const QString& s2) co
 {
   if(s1 == s2)
     return 0;
-  if(s1.isEmpty() || s1 < s2)
+  if(s1 < s2)
     return -1;
   return 1;
 }
@@ -731,7 +731,7 @@ void KLedgerView::slotPayeeChanged(const QString& name)
               s.setReconcileFlag(MyMoneySplit::NotReconciled);
               s.setId(QCString());
               if(s.accountId() == m_account.id()) {
-                if(!m_editNr->text().isEmpty()) {
+                if(m_editNr && !m_editNr->text().isEmpty()) {
                   s.setNumber(m_editNr->text());
                 } else if(!s.number().isEmpty()) {
                   unsigned64 no = MyMoneyFile::instance()->highestCheckNo(s.accountId()).toULongLong();
