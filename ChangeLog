@@ -1,3 +1,7 @@
+2005-09-15 Robert Wadley <robntina@users.sourceforge.net>
+  * replaced reports icons
+  * added some 22x22 "chart style" icons
+
 2005-09-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1287850 (Empty action box)
   * Fixed #1286028 (Edit Account dialog shows wrong currency)
