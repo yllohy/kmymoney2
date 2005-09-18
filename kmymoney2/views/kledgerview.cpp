@@ -866,6 +866,7 @@ void KLedgerView::amountChanged(const QString& value, int dir)
     if(m_account.value("NoVat") == "Yes")
       checkVat = false;
 
+    m_split.setShares(val);
     // set either shares or value depending on the currencies
     m_split.setValue(val, m_transaction.commodity(), m_account.currencyId());
 
@@ -875,10 +876,10 @@ void KLedgerView::amountChanged(const QString& value, int dir)
     if(m_transaction.commodity() != m_account.currencyId() && !price.isZero())
       m_split.setValue(val / price);
 
+    m_transaction.modifySplit(m_split);
+
     if(m_editAmount)
       m_editAmount->loadText(val.abs().formatMoney(""));
-
-    m_transaction.modifySplit(m_split);
 
     // let's take care of the other half of the transaction
     if(m_transaction.splitCount() == 2) {
@@ -1403,6 +1404,74 @@ void KLedgerView::slotStartEdit(void)
   enableCancelButton(true);
   enableMoreButton(true);
 
+  // If we deal with multiple currencies we make sure, that for
+  // transactions with two splits, the transaction's commodity is the
+  // currency of the currently selected account. This saves us from a
+  // lot of grieve later on.
+  // Editing a transaction which has more than two splits and a commodity
+  // that differs from the currency of the current selected account is
+  // not a good idea. We will warn the user and give him a hint if there
+  // is an account where he can perfom the edit operation much better.
+  if(m_transaction.commodity() != m_account.currencyId()) {
+    if(m_transaction.splitCount() == 2) {
+      // in case of two splits, it's easy. We just have to switch the
+      // transactions commodity. Let's assume the following scenario:
+      // - transactions commodity is CA
+      // - account's currencyId is CB
+      // - second split is of course in CA (otherwise we have a real problem)
+      // - Value is V in both splits
+      // - Shares in this account's split is SB
+      // - Shares in the other account's split is SA (and equal to V)
+      //
+      // We do the following:
+      // - change transactions commodity to CB
+      // - set V in both splits to SB
+      // - modify the splits in the transaction
+      try {
+        MyMoneySplit split = m_transaction.splitByAccount(m_account.id(), false);
+        m_transaction.setCommodity(m_account.currencyId());
+        m_split.setValue(m_split.shares());
+        split.setValue(-m_split.shares());
+        m_transaction.modifySplit(m_split);
+        m_transaction.modifySplit(split);
+
+        if(m_transactionPtr) {
+          KMyMoneyTransaction k(m_transaction);
+          k.setSplitId(m_split.id());
+          *m_transactionPtr = k;
+        }
+      } catch(MyMoneyException *e) {
+        qDebug("Unable to update commodity to second splits currency in %s: '%s'", m_transaction.id().data(), e->what().data());
+        delete e;
+      }
+
+    } else {
+      // Find a suitable account
+      MyMoneySecurity sec = MyMoneyFile::instance()->currency(m_transaction.commodity());
+      MyMoneyAccount acc;
+      for(it = m_transaction.splits().begin(); it != m_transaction.splits().end(); ++it) {
+        if((*it).id() == m_split.id())
+          continue;
+        acc = MyMoneyFile::instance()->account((*it).accountId());
+        if((acc.accountGroup() == MyMoneyAccount::Asset
+        || acc.accountGroup() == MyMoneyAccount::Liability)
+        && acc.accountType() != MyMoneyAccount::Stock) {
+          if(m_transaction.commodity() == acc.currencyId())
+            break;
+        }
+        acc = MyMoneyAccount();
+      }
+      QString msg;
+      msg = QString("<p>")+i18n("This transaction has more than two splits and is based on a different currency (%1). Using this account to modify the transaction is currently not very well supported by KMyMoney and may result in false results.").arg(sec.name())+QString(" ");
+      if(acc.id().isEmpty()) {
+        msg += i18n("KMyMoney was not able to find a more appropriate account to edit this transaction. Nevertheless, you are allowed to modify the transaction. If you don't want to edit this transaction, please cancel from editing next.");
+      } else {
+         msg += i18n("Using e.g. <b>%1</b> to edit this transaction is a better choice. Nevertheless, you are allowed to modify the transaction. If you want to use the suggested account instead, please cancel from editing next and change the view to the suggested account.").arg(acc.name());
+      }
+      KMessageBox::information(0, msg);
+    }
+  }
+
   showWidgets();
 
   m_form->tabBar()->blockSignals(true);
@@ -1540,6 +1609,15 @@ void KLedgerView::slotEndEdit(void)
             toValue = (*it).shares();
           }
 
+          // make sure either to and from are zero or both are not zero
+          if((fromValue.isZero() && !toValue.isZero())
+          || (!fromValue.isZero() && toValue.isZero())) {
+            if(fromValue.isZero())
+              fromValue = toValue;
+            if(toValue.isZero())
+              toValue = fromValue;
+          }
+
           KCurrencyCalculator calc(fromCurrency,
                                    toCurrency,
                                    fromValue,
@@ -1555,7 +1633,6 @@ void KLedgerView::slotEndEdit(void)
         } else {
           price = (*it_p);
         }
-
         // update shares if the transaction commodity is the currency
         // of the current selected account
         if(m_transaction.commodity() == m_account.currencyId()) {

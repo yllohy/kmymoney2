@@ -1147,7 +1147,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
   m_transaction = t;
   m_split = m_transaction.splitByAccount(accountId());
   m_action = m_split.action();
-  amount = m_split.value();
+  amount = m_split.value(m_transaction.commodity(), m_account.currencyId());
 
   if(m_editCategory)
     disconnect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
@@ -1206,12 +1206,12 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
     m_editNr->loadText(m_split.number());
 
   if(m_editPayment && m_editDeposit) {
-    if(m_split.value().isNegative()) {
-      m_editPayment->loadText((-m_split.value()).formatMoney());
+    if(amount.isNegative()) {
+      m_editPayment->loadText((-amount).formatMoney());
       m_editDeposit->loadText(QString());
     } else {
       m_editPayment->loadText(QString());
-      m_editDeposit->loadText((m_split.value()).formatMoney());
+      m_editDeposit->loadText(amount.formatMoney());
     }
   }
 }
