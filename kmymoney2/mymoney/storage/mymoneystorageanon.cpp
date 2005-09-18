@@ -177,30 +177,31 @@ void MyMoneyStorageANON::writeSchedule(QDomElement& scheduledTx, const MyMoneySc
 
 void MyMoneyStorageANON::writeSplits(QDomElement& splits, const QValueList<MyMoneySplit> splitList, const QCString& transactionId)
 {
-  //FIXME: Get the splits to balance out
+  // get a somewhat random offset factor, which is always different from 0
+  int msec;
+  do {
+    msec = QTime::currentTime().msec();
+  } while(msec == 0);
+  MyMoneyMoney factor(msec, 1);
 
   QValueList<MyMoneySplit>::const_iterator it;
   for(it = splitList.begin(); it != splitList.end(); ++it)
   {
     QDomElement split = m_doc->createElement("SPLIT");
-    writeSplit(split, (*it), transactionId);
+    writeSplit(split, (*it), transactionId, factor);
     splits.appendChild(split);
   }
 }
 
-void MyMoneyStorageANON::writeSplit(QDomElement& splitElement, const MyMoneySplit& split,const QCString& transactionId)
+void MyMoneyStorageANON::writeSplit(QDomElement& splitElement, const MyMoneySplit& split,const QCString& transactionId, const MyMoneyMoney& factor)
 {
   splitElement.setAttribute(QString("payee"), split.payeeId());
   splitElement.setAttribute(QString("reconciledate"), getString(split.reconcileDate()));
   splitElement.setAttribute(QString("action"), split.action());
   splitElement.setAttribute(QString("reconcileflag"), split.reconcileFlag());
 
-  MyMoneyMoney price = split.shares() / split.value();
-  MyMoneyMoney hidevalue = hideNumber(split.value());
-  MyMoneyMoney hideshares;
-  if(! split.value().isZero()){
-    hideshares = (hidevalue * price).convert();
-  }
+  MyMoneyMoney hidevalue = split.value() * factor;
+  MyMoneyMoney hideshares = split.shares() * factor;
 
   splitElement.setAttribute(QString("value"), hidevalue.toString());
   splitElement.setAttribute(QString("shares"), hideshares.toString());

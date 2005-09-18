@@ -83,7 +83,7 @@ protected:
   void writeSchedule(QDomElement& scheduledTx, const MyMoneySchedule& tx);
 
   void writeSplits(QDomElement& splits, const QValueList<MyMoneySplit> splitList,const QCString& transid);
-  void writeSplit(QDomElement& splitElement, const MyMoneySplit& split,const QCString& transid);
+  void writeSplit(QDomElement& splitElement, const MyMoneySplit& split,const QCString& transid, const MyMoneyMoney& factor);
 
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
 
