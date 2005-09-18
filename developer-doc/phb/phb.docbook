@@ -12,6 +12,7 @@
   <!ENTITY config-management SYSTEM "cfg-mgmt.docbook">
   <!ENTITY release-management SYSTEM "rel-mgmt.docbook">
   <!ENTITY coding-standards SYSTEM "coding.docbook">
+  <!ENTITY translation-hints SYSTEM "translation.docbook">
   <!ENTITY error-management SYSTEM "error-mgmt.docbook">
   <!ENTITY cvs-examples SYSTEM "cvs-examples.docbook">
   <!ENTITY src-examples SYSTEM "src-examples.docbook">
@@ -43,33 +44,13 @@
 </affiliation>
 </author>
 
-<!--
-<othercredit role="developer">
-<firstname>Felix</firstname><surname>Rodriguez</surname>
-<contrib>Developer<contrib>
-<affiliation>
-<address><email>frodriguez@users.sourceforge.net</email></address>
-</affiliation>
-</othercredit>
-
-<othercredit role="developer">
-<firstname>Kevin</firstname><surname>Tambascio</surname>
-<contrib>Developer<contrib>
-<affiliation>
-<address><email>ktambascio@users.sourceforge.net</email></address>
-</affiliation>
-</othercredit>
--->
-
 </authorgroup>
 
-<!--
-<date>28.12.2001</date>
-<releaseinfo>0.1</releaseinfo>
--->
+<date>18.09.2005</date>
+<releaseinfo>1.0</releaseinfo>
 
 <copyright>
-<year>2001, 2002</year>
+<year>2001, 2002, 2005</year>
 <holder>Thomas Baumgart, Michael Edwardes</holder>
 </copyright>
 
@@ -124,10 +105,47 @@ The dedication will show up here!
 
 -->
 
+<chapter id="versionhistory">
+<title>History of this document</title>
+<para>
+This chapter contains a list of releases of this document. Each entry in this
+list contains a date, an author and a short description and possibly a
+release number.
+
+<variablelist>
+
+<varlistentry>
+<term>2001-11, Thomas Baumgart, Rev 0.1</term>
+<listitem>
+<itemizedlist>
+<listitem><para>
+Initial work on the project handbook goes back into November 2001.
+Unfortunately, the only history information is available in &cvs;.
+</para></listitem>
+</itemizedlist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>2005-09-18, Thomas Baumgart, Rev 1.0</term>
+<listitem>
+<itemizedlist>
+<listitem><para>Added chapter about <link linkend="translation">translation</link>
+provided by Jochen Rundholz.</para></listitem>
+<listitem><para>Added this version history</para></listitem>
+</itemizedlist>
+</listitem>
+</varlistentry>
+
+</variablelist>
+
+</para>
+</chapter>
 &config-management;
 &release-management;
 &coding-standards;
 &unit-test;
+&translation-hints;
 &error-management;
 &cvs-examples;
 &src-examples;
