@@ -1,5 +1,17 @@
+2005-09-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added version history for the project handbook
+  * Added chapter about translations provided by Jochen Rundholz to project
+    handbook
+  * Fixed problems around editing multi-currency transactions based
+    on a different currency than the current account.
+  * Balance transactions in anonymized files by using a single,
+    somewhat random factor per transaction
+
 2005-09-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1288592 (Crash with Auto fill)
+  * Added danish translation file as provided by Daniel Sørensen
+    <daniel@dumazz.dk> (he says only 20% are done but he does not have time
+    to continue)
 
 2005-09-15 Robert Wadley <robntina@users.sourceforge.net>
   * replaced reports icons
