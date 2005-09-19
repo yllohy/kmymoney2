@@ -88,6 +88,12 @@ If the statement reconciliation is on a bank account or any account with interes
 	</textobject>
 	</mediaobject>
 </screenshot>
+
+<note>
+<para>
+The interest field is for interest you gained. If you have to pay interest for e.g. a credit card account, this has to be entered as charge.
+</para>
+</note>
 </para>
 
 <para>
