@@ -4,6 +4,7 @@
  <!ENTITY % addindex "IGNORE">
  <!ENTITY % English "INCLUDE"><!-- change language only here -->
 
+  <!ENTITY version "1.0">
   <!ENTITY app "<command>KMyMoney</command>">
   <!ENTITY cvs "<command>CVS</command>">
   <!ENTITY ac "<command>autoconf</command>">
@@ -25,7 +26,9 @@
 
 <book lang="&language;">
 <bookinfo>
-<title>&app; Project Handbook</title>
+<title>&kappname; Project Handbook</title>
+<subtitle>Version &version;</subtitle>
+
 <authorgroup>
 <author>
 <honorific>Dipl.Ing</honorific>
@@ -47,11 +50,13 @@
 </authorgroup>
 
 <date>18.09.2005</date>
-<releaseinfo>1.0</releaseinfo>
 
 <copyright>
-<year>2001, 2002, 2005</year>
-<holder>Thomas Baumgart, Michael Edwardes</holder>
+<year>2001</year>
+<year>2002</year>
+<year>2005</year>
+<holder>Thomas Baumgart</holder>
+<holder>Michael Edwardes</holder>
 </copyright>
 
 <legalnotice>
@@ -105,7 +110,7 @@ The dedication will show up here!
 
 -->
 
-<chapter id="versionhistory">
+<preface id="versionhistory">
 <title>History of this document</title>
 <para>
 This chapter contains a list of releases of this document. Each entry in this
@@ -140,7 +145,7 @@ provided by Jochen Rundholz.</para></listitem>
 </variablelist>
 
 </para>
-</chapter>
+</preface>
 &config-management;
 &release-management;
 &coding-standards;
