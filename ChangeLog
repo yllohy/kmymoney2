@@ -1,3 +1,8 @@
+2005-09-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Editorial changes to the project handbook
+  * Use correct character set for HTML version of project handbook
+  * Added note about usage of interest field in reconciliation wizard to docs
+
 2005-09-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added version history for the project handbook
   * Added chapter about translations provided by Jochen Rundholz to project
