@@ -24,7 +24,9 @@ STYLESHEET = kde-nochunk.xsl
 phb.html:	$(DOCBOOK_FILES)
 	@if test -e $(MEINPROC); then \
 		echo $(MEINPROC) --stylesheet $(kde_libs_prefix)/share/apps/ksgmltools2/customization/$(STYLESHEET) $(srcdir)/phb.docbook -o phb.html; \
+		echo sed -i "s/ISO-8859-1/UTF-8/g" phb.html; \
 		$(MEINPROC) --stylesheet $(kde_libs_prefix)/share/apps/ksgmltools2/customization/$(STYLESHEET) $(srcdir)/phb.docbook -o phb.html; \
+		sed -i "s/ISO-8859-1/UTF-8/g" phb.html; \
 	fi
 
 # if we're in a VPATH environment, we need to copy all files over
