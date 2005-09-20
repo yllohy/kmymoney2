@@ -109,7 +109,8 @@ void KNewInvestmentWizard::init(void)
   m_onlineSourceCombo->insertStringList( WebPriceQuote::quoteSources() );
 
   m_fraction->setPrecision(0);
-  QIntValidator* fractionValidator = new QIntValidator(1, 100000, this);
+  m_fraction->setValue(MyMoneyMoney(100, 1));
+  kMyMoneyMoneyValidator* fractionValidator = new kMyMoneyMoneyValidator(1, 100000, 0, this);
   m_fraction->setValidator(fractionValidator);
 
   // FIXME for now, we don't have online help
