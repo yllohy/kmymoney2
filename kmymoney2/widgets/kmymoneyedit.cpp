@@ -109,7 +109,20 @@ QValidator::State kMyMoneyMoneyValidator::validate( QString & input, int & _p ) 
     }
   }
 
-  // check the numeric value
+  // check for non numeric values (QDoubleValidator allows an 'e', we don't)
+  QRegExp nonNumeric("[^\\d-\\.]+");
+  if(s.find(nonNumeric) != -1)
+    return Invalid;
+
+  // check for the maximum allowed number of decimal places
+  int decPos = s.find('.');
+  if(decPos != -1) {
+    if(decimals() == 0)
+      return Invalid;
+    if((s.length() - decPos) > decimals())
+      return Invalid;
+  }
+
   QValidator::State rc = QDoubleValidator::validate( s, _p );
 
   if(rc == Acceptable) {
