@@ -12,3 +12,6 @@ kschedulebriefwidget.h
 *decl.h
 *decl.cpp
 *.all_cpp.cpp
+*.lo
+libkmymoney.la
+kmmwidgets.cpp
