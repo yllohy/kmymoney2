@@ -1923,7 +1923,7 @@ const bool KLedgerViewInvestments::slotDataChanged(int field)
       break;
     case FeeCategory:
       id = m_editFeeCategory->selectedAccountId();
-      fieldName = i18n("catgory");
+      fieldName = i18n("category");
       break;
 
     default:
