@@ -46,6 +46,7 @@ KImportVerifyDlg::KImportVerifyDlg(const MyMoneyAccount& account, QWidget *paren
  : KImportVerifyDlgDecl(parent,name,true),
    m_account(account)
 {
+  m_ledgerView->loadInvestmentView();
   m_ledgerView->slotReloadView();
   m_ledgerView->slotSelectAccount(account.id());
 
@@ -65,7 +66,7 @@ KImportVerifyDlg::KImportVerifyDlg(const MyMoneyAccount& account, QWidget *paren
 
   // for now, we don't have online help
   buttonHelp->hide();
-  
+
   connect(buttonOk, SIGNAL(clicked()), this, SLOT(slotOkClicked()));
   connect(buttonCancel, SIGNAL(clicked()), this, SLOT(slotCancelClicked()));
 }
@@ -94,8 +95,8 @@ void KImportVerifyDlg::slotOkClicked(void)
     }
   }
   file->suspendNotify(false);
-  
-  accept();  
+
+  accept();
 }
 
 void KImportVerifyDlg::slotCancelClicked(void)
@@ -119,7 +120,7 @@ int KImportVerifyDlg::exec(void)
 {
   // force popup of message in 100ms so that the dialog is already visible
   QTimer::singleShot(100, this, SLOT(slotShowIntroduction(void)));
-  
+
   return KImportVerifyDlgDecl::exec();
 }
 

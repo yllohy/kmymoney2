@@ -86,6 +86,16 @@ public:
     */
   const QCString accountId(void) const { return m_accountId; }
 
+  /**
+    * This method allows to see investment transactions within
+    * the stack (useful for the import verification).
+    *
+    * @note should be removed when we have a better import transaction
+    *       matcher
+    * @deprecated
+    */
+  void loadInvestmentView(void);
+
 public slots:
   void show(void);
 

@@ -184,6 +184,19 @@ KGlobalLedgerView::~KGlobalLedgerView()
   delete m_viewLayout;
 }
 
+void KGlobalLedgerView::loadInvestmentView(void)
+{
+  KLedgerView* view;
+  // Investment account
+  view = m_specificView[MyMoneyAccount::Investment] = new KLedgerViewInvestments(this, "InvestmentsView");
+  m_accountStack->addWidget(view, MyMoneyAccount::Investment);
+  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
+    this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
+  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
+    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+}
+
 void KGlobalLedgerView::slotReloadView(void)
 {
   // qDebug("KGlobalLedgerView::slotReloadView()");
