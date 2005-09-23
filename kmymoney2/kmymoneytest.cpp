@@ -47,6 +47,7 @@
 #include "mymoney/mymoneyscheduletest.h"
 #include "mymoney/mymoneyfinancialcalculatortest.h"
 #include "mymoney/mymoneysecuritytest.h"
+#include "mymoney/mymoneypricetest.h"
 
 #include "reports/pivottabletest.h"
 #include "reports/querytabletest.h"
@@ -117,6 +118,7 @@ main(int /* argc */, char** /* argv */ )
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyFileTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyScheduleTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySecurityTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyPriceTest);
 
   // reports tests
   CPPUNIT_TEST_SUITE_REGISTRATION(PivotTableTest);
