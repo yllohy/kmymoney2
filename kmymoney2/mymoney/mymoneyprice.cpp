@@ -59,9 +59,9 @@ const MyMoneyMoney MyMoneyPrice::rate(const QCString& id) const
   if(!isValid())
     return MyMoneyMoney(1,1);
 
-  if(id.isEmpty() || id == m_fromSecurity)
+  if(id.isEmpty() || id == m_toSecurity)
     return m_rate;
-  if(id == m_toSecurity)
+  if(id == m_fromSecurity)
     return MyMoneyMoney(1,1) / m_rate;
 
   QString msg = QString("Unknown security id %1 for price info %2/%3.").arg(id).arg(m_fromSecurity).arg(m_toSecurity);

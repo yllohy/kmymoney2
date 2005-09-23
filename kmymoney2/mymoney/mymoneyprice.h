@@ -63,7 +63,7 @@
   *
   * @endcode
   *
-  * Using the @p price() member function, one can retrieve the price based
+  * Using the @p rate() member function, one can retrieve the conversion rate based
   * upon the @p toSecurity or the @p fromSecurity.
   */
 class KMYMONEY_EXPORT MyMoneyPrice
@@ -75,17 +75,36 @@ public:
 
   /**
     * This method returns the price information based on the
-    * security referenced by id. If id is empty (default), the
-    * price is returned based on the fromSecurity. If this price
+    * security referenced by @p id. If @p id is empty (default), the
+    * price is returned based on the toSecurity. If this price
     * object is invalid (see isValid()) MyMoneyMoney(1,1) is returned.
     *
-    * @param id return price to be the multiplicator of the security
-    *           given by @p id. Defaults to @p fromSecurity.
+    * @param id return price to be the factor to be used to convert a value into
+    *           the correcponding value in security @p id.
+    *           Defaults to @p toSecurity.
     *
     * @return returns the exchange rate (price) as MyMoneyMoney object.
     *
-    * If @p is not empty and does not match either security ids of this price
+    * If @p id is not empty and does not match either security ids of this price
     * an exception will be thrown.
+    *
+    * Example:
+    * Assume the following code, where you have a price object and
+    * and you wish to convert from an amount in GBP (@p valGBP) to ADF (@p valADF).
+    * Then your code will look like this:
+    *
+    * @code
+    *
+    * MyMoneyPrice price("ADF", "GBP", QDate(2005,9,20), MyMoneyMoney(1,3), "User");
+    * MyMoneyMoney valADF, valGBP(100,1);
+    *
+    * valADF = valGBP * price.rate("ADF");
+    *
+    * @endcode
+    *
+    * valADF will contain the value 300 after the assignment operation, because @p price.rate("ADF") returned
+    * @p 3/1 even though the price information kept with the object was @p 1/3, but based on the other
+    * conversion direction (from ADF to GBP).
     */
   const MyMoneyMoney rate(const QCString& id = QCString()) const;
 
@@ -95,7 +114,7 @@ public:
   const QCString to(void) const { return m_toSecurity; };
 
   /**
-    * Check whether the object is valid or not. An MyMoneyPrice object
+    * Check whether the object is valid or not. A MyMoneyPrice object
     * is valid if the date is valid and both security ids are set. In case
     * of an invalid object, price() always returns 1.
     *
