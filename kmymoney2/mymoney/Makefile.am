@@ -40,11 +40,11 @@ SUBDIRS = storage
 instdir=$(includedir)/kmymoney
 inst_HEADERS = mymoneyaccount.h mymoneycategory.h mymoneyexception.h mymoneyfile.h mymoneyfinancialcalculator.h mymoneyinstitution.h mymoneyinvesttransaction.h mymoneykeyvaluecontainer.h mymoneymoney.h mymoneyobserver.h mymoneypayee.h mymoneyprice.h mymoneyreport.h mymoneyscheduled.h mymoneysecurity.h mymoneysplit.h mymoneystatement.h mymoneysubject.h mymoneytransactionfilter.h mymoneytransaction.h mymoneyutils.h
 
-noinst_HEADERS = autotest.h mymoneyaccounttest.h mymoneyfinancialcalculatortest.h mymoneykeyvaluecontainertest.h mymoneyexceptiontest.h mymoneyfiletest.h mymoneyinstitutiontest.h mymoneymoneytest.h mymoneyobservertest.h mymoneyscheduletest.h mymoneysplittest.h mymoneysecuritytest.h mymoneytransactiontest.h
+noinst_HEADERS = autotest.h mymoneyaccounttest.h mymoneyfinancialcalculatortest.h mymoneykeyvaluecontainertest.h mymoneyexceptiontest.h mymoneyfiletest.h mymoneyinstitutiontest.h mymoneymoneytest.h mymoneyobservertest.h mymoneyscheduletest.h mymoneysplittest.h mymoneysecuritytest.h mymoneytransactiontest.h mymoneypricetest.h
 
 if CPPUNIT
 check_LIBRARIES = libmymoneytest.a
 
-libmymoneytest_a_SOURCES = mymoneytransactiontest.cpp mymoneysplittest.cpp mymoneymoneytest.cpp mymoneyfiletest.cpp mymoneyaccounttest.cpp mymoneyexceptiontest.cpp mymoneyinstitutiontest.cpp mymoneykeyvaluecontainertest.cpp mymoneyscheduletest.cpp mymoneyfinancialcalculatortest.cpp mymoneysecuritytest.cpp
+libmymoneytest_a_SOURCES = mymoneytransactiontest.cpp mymoneysplittest.cpp mymoneymoneytest.cpp mymoneyfiletest.cpp mymoneyaccounttest.cpp mymoneyexceptiontest.cpp mymoneyinstitutiontest.cpp mymoneykeyvaluecontainertest.cpp mymoneyscheduletest.cpp mymoneyfinancialcalculatortest.cpp mymoneysecuritytest.cpp mymoneypricetest.cpp
 endif
 
