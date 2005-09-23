@@ -1,5 +1,12 @@
+2005-09-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added MyMoneyPrice unit tests
+  * Fixed #1285995 (Accounts view shows wrong balance with foreign currency)
+    actually a problem in conversion rate extraction in MyMoneyPrice
+  * Added date parameter to totalValue() and accountValue() in MyMoneyFile
+
 2005-09-22 Tony Bloomfield <tonybloom@users.sourceforge.net>
     * Fixed spelling problem reported by Jochen Rundholz
+
 2005-09-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1264916 (Cannot edit fund details in investments)
   * Set default fraction for new investments to 100
