@@ -1017,9 +1017,9 @@ const bool MyMoneyFile::totalValueValid(const QCString& id) const
   return result;
 }
 
-const MyMoneyMoney MyMoneyFile::accountValue(const QCString& id) const
+const MyMoneyMoney MyMoneyFile::accountValue(const QCString& id, const QDate& date) const
 {
-  MyMoneyMoney result(balance(id));
+  MyMoneyMoney result(balance(id, date));
   try {
     MyMoneyAccount acc;
 
@@ -1036,17 +1036,19 @@ const MyMoneyMoney MyMoneyFile::accountValue(const QCString& id) const
 
       if(acc.accountType() == MyMoneyAccount::Stock) {
         MyMoneySecurity security = this->security(acc.currencyId());
-        MyMoneyPrice price = this->price(acc.currencyId(), security.tradingCurrency());
+        MyMoneyPrice price = this->price(acc.currencyId(), security.tradingCurrency(), date);
         result = result * price.rate();
         // if the trading currency differs from the base currency, we
         // calculate the conversion between these two currencies now.
         if(security.tradingCurrency() != baseCurrency().id()) {
-          price = this->price(security.tradingCurrency(), baseCurrency().id());
-          result = result * price.rate();
+          price = this->price(security.tradingCurrency(), baseCurrency().id(), date);
+          result = result * price.rate(baseCurrency().id());
         }
       } else {
+        qDebug("from %s to %s", acc.currencyId().data(), baseCurrency().id().data());
         MyMoneyPrice price = this->price(acc.currencyId(), baseCurrency().id());
-        result = result * price.rate();
+        qDebug("price is %s", price.rate(baseCurrency().id()).formatMoney("",5).data());
+        result = result * price.rate(baseCurrency().id());
       }
     }
   } catch(MyMoneyException *e) {
@@ -1057,12 +1059,12 @@ const MyMoneyMoney MyMoneyFile::accountValue(const QCString& id) const
   return result;
 }
 
-const MyMoneyMoney MyMoneyFile::totalValue(const QCString& id) const
+const MyMoneyMoney MyMoneyFile::totalValue(const QCString& id, const QDate& date) const
 {
   QCStringList accounts;
   QCStringList::ConstIterator it_a;
 
-  MyMoneyMoney result(accountValue(id));
+  MyMoneyMoney result(accountValue(id, date));
   try {
     MyMoneyAccount acc;
 
@@ -1070,7 +1072,7 @@ const MyMoneyMoney MyMoneyFile::totalValue(const QCString& id) const
     accounts = acc.accountList();
 
     for(it_a = accounts.begin(); it_a != accounts.end(); ++it_a) {
-      result += totalValue(*it_a);
+      result += totalValue(*it_a, date);
     }
   } catch(MyMoneyException *e) {
     qDebug("MyMoneyFile::totalValue: %s thrown in %s line %ld",
@@ -1755,8 +1757,10 @@ const MyMoneyPrice MyMoneyFile::price(const QCString& fromId, const QCString& to
   if(fromId.isEmpty() || to.isEmpty())
     return MyMoneyPrice();
 
+  // search 'from-to' rate
   MyMoneyPrice rc = m_storage->price(fromId, to, date, exactDate);
   if(!rc.isValid()) {
+    // not found, search 'to-fron' rate and use reciprocal value
     rc = m_storage->price(to, fromId, date, exactDate);
   }
   return rc;

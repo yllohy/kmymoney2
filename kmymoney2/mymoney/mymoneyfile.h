@@ -588,9 +588,10 @@ public:
     * validity of the returned value.
     *
     * @param id account id of the account in question
+    * @param date return value for specific date (default = QDate())
     * @return value of the account as MyMoneyMoney object
     */
-  const MyMoneyMoney totalValue(const QCString& id) const;
+  const MyMoneyMoney totalValue(const QCString& id, const QDate& date = QDate()) const;
 
   /**
     * This method is used to return the actual value of an account
@@ -599,6 +600,10 @@ public:
     * price for today. If the security's trading currency differs
     * from baseCurrency() then the result of this multiplication
     * is multiplied again by the trading currency's price for today.
+    * If a @p date is presented,
+    * the value at the beginning of this date (not including any
+    * transaction on this date) is returned. Otherwise all recorded
+    * transactions are included in the value.
     *
     * The price for accounts held in the baseCurrency()
     * is 1. The same applies for prices that are not available (no entry
@@ -608,9 +613,10 @@ public:
     * validity of the returned value.
     *
     * @param id account id of the account in question
+    * @param date return value for specific date (default = QDate())
     * @return value of the account as MyMoneyMoney object
     */
-  const MyMoneyMoney accountValue(const QCString& id) const;
+  const MyMoneyMoney accountValue(const QCString& id, const QDate& date = QDate()) const;
 
   /**
     * This method returns if the value returned by totalValue(const QCString&)
