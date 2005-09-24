@@ -1,3 +1,10 @@
+2005-09-24 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed #1289811 (Account balance incorrect when opening kmymoney) by...
+  * Disallow importing a QIF transaction that transfers from/to the same 
+    account.
+  * Properly fix the problem where KDE currency settings would interfere with
+    QIF date parsing.
+
 2005-09-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added 90 day forecast to home view
 

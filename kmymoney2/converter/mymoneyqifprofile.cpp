@@ -561,14 +561,17 @@ const MyMoneyMoney MyMoneyQifProfile::value(const QChar& def, const QString& val
 
   _decimalSeparator = MyMoneyMoney::decimalSeparator();
   _thousandsSeparator = MyMoneyMoney::thousandSeparator();
+  MyMoneyMoney::signPosition _signPosition = MyMoneyMoney::negativeMonetarySignPosition();
 
   MyMoneyMoney::setDecimalSeparator(amountDecimal(def));
   MyMoneyMoney::setThousandSeparator(amountThousands(def));
+  MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::BeforeQuantityMoney);
 
   res = MyMoneyMoney(valuein);
 
   MyMoneyMoney::setDecimalSeparator(_decimalSeparator);
   MyMoneyMoney::setThousandSeparator(_thousandsSeparator);
+  MyMoneyMoney::setNegativeMonetarySignPosition(_signPosition);
 
   return res;
 }

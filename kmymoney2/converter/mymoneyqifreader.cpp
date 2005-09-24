@@ -804,6 +804,11 @@ void MyMoneyQifReader::processTransactionEntry(void)
           kdDebug(2) << "Line " << m_linenumber << ": Cannot transfer to an investment account. Transaction ignored." << endl;
           return;
         }
+        if ( account.id() == m_account.id() )
+        {
+          kdDebug(2) << "Line " << m_linenumber << ": Cannot transfer to the same account. Transfer ignored." << endl;
+          accountId = QCString();
+        }
         
       } catch (MyMoneyException *e) {
         kdDebug(2) << "Line " << m_linenumber << ": Account with id " << accountId.data() << " not found" << endl;
@@ -865,6 +870,11 @@ void MyMoneyQifReader::processTransactionEntry(void)
           {
             kdDebug(2) << "Line " << m_linenumber << ": Cannot transfer to an investment account. Transaction ignored." << endl;
             return;
+          }
+          if ( account.id() == m_account.id() )
+          {
+            kdDebug(2) << "Line " << m_linenumber << ": Cannot transfer to the same account. Transfer ignored." << endl;
+            accountId = QCString();
           }
         
         } catch (MyMoneyException *e) {
