@@ -107,7 +107,7 @@ public:
     InvestmentTransaction
   };
 
-  static const int maxHomePageItems = 4;
+  static const int maxHomePageItems = 5;
 
   KMyMoneyUtils();
   ~KMyMoneyUtils();
@@ -407,6 +407,18 @@ public:
     * @return KMyMoneyUtils::transactionTypeE value of the action
     */
   static const transactionTypeE transactionType(const MyMoneyTransaction& t);
+
+  /**
+    * This method modifies a scheduled loan transaction such that all
+    * references to automatic calculated values are resolved to actual values.
+    *
+    * @param schedule const reference to the schedule the transaction is based on
+    * @param transaction reference to the transaction to be checked and modified
+    * @param balances QMap of (account-id,balance) pairs to be used as current balance
+    *                 for the calculation of interest. If map is empty, the engine
+    *                 will be interrogated for current balances.
+    */
+  static void calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTransaction& transaction, const QMap<QCString, MyMoneyMoney>& balances);
 
 private:
   static QColor _backgroundColour;

@@ -1,3 +1,6 @@
+2005-09-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added 90 day forecast to home view
+
 2005-09-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added MyMoneyPrice unit tests
   * Fixed #1285995 (Accounts view shows wrong balance with foreign currency)

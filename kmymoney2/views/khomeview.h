@@ -110,6 +110,7 @@ protected:
   void showAccounts(paymentTypeE type, const QString& hdr);
   void showAccountEntry(const MyMoneyAccount&);
   void showFavoriteReports();
+  void showForecast(void);
 
   const QString link(const QString& view, const QString& query) const;
   const QString linkend(void) const;

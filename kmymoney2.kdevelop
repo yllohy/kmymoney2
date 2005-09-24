@@ -125,7 +125,7 @@
       <configGdbScript/>
       <runShellScript/>
       <runGdbScript/>
-      <breakonloadinglibs>false</breakonloadinglibs>
+      <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>true</floatingtoolbar>
     </general>

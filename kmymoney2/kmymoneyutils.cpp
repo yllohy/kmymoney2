@@ -38,6 +38,7 @@
 
 #include "kmymoneyutils.h"
 #include "mymoney/mymoneyfile.h"
+#include "mymoney/mymoneyfinancialcalculator.h"
 
 QColor KMyMoneyUtils::_backgroundColour;
 QColor KMyMoneyUtils::_listColour;
@@ -425,6 +426,9 @@ const QString KMyMoneyUtils::homePageItemToString(const int idx)
     case 4:
       rc = i18n("Favorite reports");
       break;
+    case 5:
+      rc = i18n("Forecast");
+      break;
     default:
       rc = "";
       break;
@@ -443,6 +447,8 @@ const int KMyMoneyUtils::stringToHomePageItem(const QString& txt)
     idx = 3;
   else if(txt == i18n("Favorite reports"))
     idx = 4;
+  else if(txt == i18n("Forecast"))
+    idx = 5;
   return idx;
 }
 
@@ -713,3 +719,99 @@ const KMyMoneyUtils::transactionTypeE KMyMoneyUtils::transactionType(const MyMon
   return Normal;
 }
 
+void KMyMoneyUtils::calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTransaction& transaction, const QMap<QCString, MyMoneyMoney>& balances)
+{
+  try
+  {
+    if (schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
+      MyMoneySplit interestSplit, amortizationSplit;
+      QValueList<MyMoneySplit>::ConstIterator it_s;
+      for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+        if((*it_s).value() == MyMoneyMoney::autoCalc) {
+          if((*it_s).action() == MyMoneySplit::ActionAmortization) {
+            amortizationSplit = (*it_s);
+          } else if((*it_s).action() == MyMoneySplit::ActionInterest) {
+            interestSplit = (*it_s);
+          }
+        }
+      }
+
+      if(!amortizationSplit.id().isEmpty() && !interestSplit.id().isEmpty()) {
+        MyMoneyAccountLoan acc(MyMoneyFile::instance()->account(amortizationSplit.accountId()));
+        MyMoneyFinancialCalculator calc;
+        QDate dueDate;
+
+        // FIXME: setup dueDate according to when the interest should be calculated
+        // current implementation: take the date of the next payment according to
+        // the schedule. If the calculation is based on the payment reception, and
+        // the payment is overdue then take the current date
+        dueDate = schedule.nextPayment(schedule.lastPayment());
+        if(acc.interestCalculation() == MyMoneyAccountLoan::paymentReceived) {
+          if(dueDate < QDate::currentDate())
+            dueDate = QDate::currentDate();
+        }
+
+        // we need to calculate the balance at the time the payment is due
+
+        MyMoneyMoney balance;
+        if(balances.count() == 0)
+          balance = MyMoneyFile::instance()->balance(acc.id(), dueDate.addDays(-1));
+        else
+          balance = balances[acc.id()];
+
+  /*
+        QValueList<MyMoneyTransaction> list;
+        QValueList<MyMoneyTransaction>::ConstIterator it;
+        MyMoneySplit split;
+        MyMoneyTransactionFilter filter(acc.id());
+
+        filter.setDateFilter(QDate(), dueDate.addDays(-1));
+        list = MyMoneyFile::instance()->transactionList(filter);
+
+        for(it = list.begin(); it != list.end(); ++it) {
+          try {
+            split = (*it).splitByAccount(acc.id());
+            balance += split.value();
+
+          } catch(MyMoneyException *e) {
+            // account is not referenced within this transaction
+            delete e;
+          }
+        }
+  */
+
+        // FIXME: for now, we only support interest calculation at the end of the period
+        calc.setBep();
+        // FIXME: for now, we only support periodic compounding
+        calc.setDisc();
+
+        calc.setPF(occurenceToFrequency(schedule.occurence()));
+        // FIXME: for now we only support compounding frequency == payment frequency
+        calc.setCF(occurenceToFrequency(schedule.occurence()));
+
+        calc.setPv(balance.toDouble());
+        calc.setIr(static_cast<FCALC_DOUBLE> (acc.interestRate(dueDate).abs().toDouble()));
+        calc.setPmt(acc.periodicPayment().toDouble());
+
+        MyMoneyMoney interest(calc.interestDue()), amortization;
+        interest = interest.abs();    // make sure it's positive for now
+        amortization = acc.periodicPayment() - interest;
+
+        if(acc.accountType() == MyMoneyAccount::AssetLoan) {
+          interest = -interest;
+          amortization = -amortization;
+        }
+        amortizationSplit.setValue(amortization);
+        interestSplit.setValue(interest);
+
+        transaction.modifySplit(amortizationSplit);
+        transaction.modifySplit(interestSplit);
+      }
+    }
+  }
+  catch (MyMoneyException* e)
+  {
+    KMessageBox::detailedError(0, i18n("Unable to load schedule details"), e->what());
+    delete e;
+  }
+}

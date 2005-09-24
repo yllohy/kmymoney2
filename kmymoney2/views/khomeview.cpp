@@ -171,6 +171,9 @@ void KHomeView::slotRefreshView(void)
           case 4:         // favorite reports
             showFavoriteReports();
             break;
+          case 5:          // forecast
+            showForecast();
+            break;
         }
         m_part->write("<div class=\"gap\">&nbsp;</div>\n");
       }
@@ -483,7 +486,7 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
   if(acc.accountType() == MyMoneyAccount::Investment)
     amount = MyMoneyFile::instance()->totalValue(acc.id()).formatMoney(currency.tradingSymbol());
   else
-    amount = MyMoneyFile::instance()->balance(acc.id()).formatMoney(currency.tradingSymbol());
+    amount = MyMoneyFile::instance()->balance(acc.id(), QDate::currentDate()).formatMoney(currency.tradingSymbol());
   amount.replace(" ","&nbsp;");
 
   tmp = QString("<td width=\"70%\">") +
@@ -523,6 +526,196 @@ void KHomeView::showFavoriteReports(void)
       ++it_report;
     }
     m_part->write("</table>");
+  }
+}
+
+void KHomeView::showForecast(void)
+{
+  typedef QMap<int, MyMoneyMoney> dailyBalances;
+  QMap<QCString, dailyBalances> accountList;
+  QMap<QString, QCString> nameIdx;
+  MyMoneyFile* file = MyMoneyFile::instance();
+  const int forecastDays = 90;
+  int  txnCount = 0;
+
+  QDate endDate = QDate::currentDate().addDays(forecastDays);
+  MyMoneyTransactionFilter filter;
+
+  // collect and process all transactions that have already been entered but
+  // are located in the future.
+  filter.setDateFilter(QDate::currentDate(), endDate);
+  filter.setReportAllSplits(false);
+
+  QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
+  QValueList<MyMoneyTransaction>::const_iterator it_t = transactions.begin();
+
+  for(; it_t != transactions.end(); ++it_t ) {
+    QValueList<MyMoneySplit> splits = (*it_t).splits();
+    QValueList<MyMoneySplit>::const_iterator it_s = splits.begin();
+    for(; it_s != splits.end(); ++it_s ) {
+      MyMoneyAccount acc = file->account((*it_s).accountId());
+      if((acc.accountGroup() == MyMoneyAccount::Asset
+      || acc.accountGroup() == MyMoneyAccount::Liability)
+      && acc.accountType() != MyMoneyAccount::Investment) {
+        dailyBalances balance;
+        balance = accountList[acc.id()];
+        int offset = QDate::currentDate().daysTo((*it_t).postDate())+1;
+        balance[offset] += (*it_s).shares();
+        // check if this is a new account for us
+        if(nameIdx[acc.name()] != acc.id()) {
+          nameIdx[acc.name()] = acc.id();
+          balance[0] = file->balance(acc.id(), QDate::currentDate());
+        }
+        accountList[acc.id()] = balance;
+      }
+    }
+    ++txnCount;
+  }
+
+  // now process all the schedules that may have an impact
+  QValueList<MyMoneySchedule> schedule;
+
+  schedule = file->scheduleList("", MyMoneySchedule::TYPE_ANY,
+                                 MyMoneySchedule::OCCUR_ANY,
+                                 MyMoneySchedule::STYPE_ANY,
+                                 QDate::currentDate(),
+                                 endDate);
+  if(schedule.count() > 0) {
+    qBubbleSort(schedule);
+
+    QValueList<MyMoneySchedule>::Iterator it;
+    do {
+      it = schedule.begin();
+      if(it == schedule.end())
+        break;
+
+      QDate nextDate = (*it).nextPayment((*it).lastPayment());
+      if(!nextDate.isValid()) {
+        schedule.remove(it);
+        continue;
+      }
+
+      if (nextDate > endDate)
+        break;
+
+      // found the next schedule. process it
+      MyMoneyAccount acc = (*it).account();
+      if(acc.id()
+      && acc.accountType() != MyMoneyAccount::Investment) {
+        MyMoneyTransaction t = (*it).transaction();
+
+        // only process the entry, if it is still active
+        if(!(*it).isFinished() && nextDate != QDate()) {
+
+          // make sure we have all 'starting balances' so that the autocalc works
+          QValueList<MyMoneySplit> splits = t.splits();
+          QValueList<MyMoneySplit>::const_iterator it_s;
+          QMap<QCString, MyMoneyMoney> balanceMap;
+
+          for(it_s = splits.begin(); it_s != splits.end(); ++it_s ) {
+            MyMoneyAccount acc = file->account((*it_s).accountId());
+            if(acc.accountGroup() == MyMoneyAccount::Asset
+            || acc.accountGroup() == MyMoneyAccount::Liability) {
+              // check if this is a new account for us
+              if(nameIdx[acc.name()] != acc.id()) {
+                nameIdx[acc.name()] = acc.id();
+                accountList[acc.id()][0] = file->balance(acc.id());
+              }
+              int offset = QDate::currentDate().daysTo(nextDate)+1;
+              if(offset <= 0) {  // collect all overdues on the first day
+                offset = 1;
+              }
+              for(int i = 0; i < offset; ++i) {
+                balanceMap[acc.id()] += accountList[acc.id()][i];
+              }
+            }
+          }
+
+          // take care of the autoCalc stuff
+          KMyMoneyUtils::calculateAutoLoan(*it, t, balanceMap);
+
+          // now add the splits to the balances
+          splits = t.splits();
+          for(it_s = splits.begin(); it_s != splits.end(); ++it_s ) {
+            MyMoneyAccount acc = file->account((*it_s).accountId());
+            if(acc.accountGroup() == MyMoneyAccount::Asset
+            || acc.accountGroup() == MyMoneyAccount::Liability) {
+              dailyBalances balance;
+              balance = accountList[acc.id()];
+              int offset = QDate::currentDate().daysTo(nextDate)+1;
+              if(offset <= 0) {  // collect all overdues on the first day
+                offset = 1;
+              }
+              balance[offset] += (*it_s).value();
+              accountList[acc.id()] = balance;
+            }
+          }
+          ++txnCount;
+        }
+      }
+
+      (*it).setLastPayment(nextDate);
+      qBubbleSort(schedule);
+    }
+    while(1);
+  }
+
+  // drop the current balance into offset 0 and build a sorted index
+  if(accountList.count() > 0) {
+    int i = 0;
+
+    // Now output header
+    m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("90 day forecast")));
+    m_part->write("<table width=\"95%\" cellspacing=\"0\" cellpadding=\"2\">");
+    m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
+    m_part->write(i18n("Account"));
+    m_part->write("</th>");
+    for(i = 0; i < 3; ++i) {
+      m_part->write("<th width=\"20%\" class=\"right\">");
+      // m_part->write(QString("%1").arg(KGlobal::locale()->formatDate(QDate::currentDate().addDays((i+1)*30), true)));
+      m_part->write(i18n("%1 days").arg((i+1)*30));
+      m_part->write("</th>");
+    }
+    m_part->write("</tr>");
+
+    // Now output entries
+    i = 0;
+    QString note;
+    QMap<QCString, dailyBalances>::Iterator it_a;
+    QMap<QString, QCString>::ConstIterator it_n;
+    for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
+      MyMoneyAccount acc = file->account(*it_n);
+      it_a = accountList.find(*it_n);
+      m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
+      m_part->write(QString("<td width=\"40%\">") +
+        link(VIEW_LEDGER, QString("?id=%1").arg(acc.id())) + acc.name() + linkend() + "</td>");
+
+      dailyBalances::Iterator it_b = (*it_a).begin();
+      MyMoneyMoney runningSum;
+      QString thisNote;
+      for(int limit = 30; limit < 91; limit += 30) {
+        while(it_b != (*it_a).end() && it_b.key() < limit) {
+          runningSum += (*it_b);
+
+          // check for the running sum going beyond 0 for the first time
+          if(thisNote.isEmpty()
+          && acc.accountGroup() == MyMoneyAccount::Asset
+          && runningSum < MyMoneyMoney(0, 1)) {
+            thisNote = i18n("The balance will drop below 0 in %1 days from today.").arg(it_b.key());
+          }
+          ++it_b;
+        }
+        QString amount;
+        MyMoneySecurity currency = file->currency(acc.currencyId());
+        amount = runningSum.formatMoney(currency.tradingSymbol());
+        amount.replace(" ","&nbsp;");
+        m_part->write(QString("<td width=\"20%\" align=\"right\">%1</td>").arg(amount));
+      }
+      // tmp += QString("<td width=\"25%\" align=\"right\">%1</td>").arg(amount);
+      m_part->write("</tr>");
+    }
+    m_part->write("</table>");
+
   }
 }
 
