@@ -1045,9 +1045,7 @@ const MyMoneyMoney MyMoneyFile::accountValue(const QCString& id, const QDate& da
           result = result * price.rate(baseCurrency().id());
         }
       } else {
-        qDebug("from %s to %s", acc.currencyId().data(), baseCurrency().id().data());
         MyMoneyPrice price = this->price(acc.currencyId(), baseCurrency().id());
-        qDebug("price is %s", price.rate(baseCurrency().id()).formatMoney("",5).data());
         result = result * price.rate(baseCurrency().id());
       }
     }
