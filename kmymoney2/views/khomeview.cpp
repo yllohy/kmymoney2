@@ -680,7 +680,6 @@ void KHomeView::showForecast(void)
 
     // Now output entries
     i = 0;
-    QString note;
     QMap<QCString, dailyBalances>::Iterator it_a;
     QMap<QString, QCString>::ConstIterator it_n;
     for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
@@ -692,27 +691,76 @@ void KHomeView::showForecast(void)
 
       dailyBalances::Iterator it_b = (*it_a).begin();
       MyMoneyMoney runningSum;
-      QString thisNote;
+      int dropZero = -1, dropMinimum = -1;
+      QString minimumBalance = acc.value("minimumBalance");
+      MyMoneySecurity currency = file->currency(acc.currencyId());
+
       for(int limit = 30; limit < 91; limit += 30) {
         while(it_b != (*it_a).end() && it_b.key() < limit) {
           runningSum += (*it_b);
 
+          // check for the running sum going beyond the minimum balance for the first time
+          if(!minimumBalance.isEmpty()
+          && dropZero == -1
+          && dropMinimum == -1
+          && acc.accountGroup() == MyMoneyAccount::Asset
+          && runningSum < MyMoneyMoney(minimumBalance)) {
+            dropMinimum = it_b.key();
+          }
+
           // check for the running sum going beyond 0 for the first time
-          if(thisNote.isEmpty()
+          if(dropZero == -1
           && acc.accountGroup() == MyMoneyAccount::Asset
           && runningSum < MyMoneyMoney(0, 1)) {
-            thisNote = i18n("The balance will drop below 0 in %1 days from today.").arg(it_b.key());
+            dropZero = it_b.key();
           }
           ++it_b;
         }
         QString amount;
-        MyMoneySecurity currency = file->currency(acc.currencyId());
         amount = runningSum.formatMoney(currency.tradingSymbol());
         amount.replace(" ","&nbsp;");
         m_part->write(QString("<td width=\"20%\" align=\"right\">%1</td>").arg(amount));
       }
       // tmp += QString("<td width=\"25%\" align=\"right\">%1</td>").arg(amount);
       m_part->write("</tr>");
+
+      // spit out possible warnings
+      QString msg;
+
+      // if a minimum balance has been specified, an appropriate warning will
+      // only be shown, if the drop below 0 is on a different day or not present
+      MyMoneyMoney minBalance = MyMoneyMoney(minimumBalance);
+      if(dropMinimum != -1
+      && !minBalance.isZero()
+      && (dropMinimum < dropZero
+       || dropZero == -1)) {
+        switch(dropMinimum) {
+          case -1:
+            break;
+          case 0:
+            msg = i18n("The balance of %1 is below the minimum balance %2 today.").arg(acc.name()).arg(minBalance.formatMoney(currency.tradingSymbol()));
+            break;
+          default:
+            msg = i18n("The balance of %1 will drop below the minimum balance %2 in %3 days.").arg(acc.name()).arg(minBalance.formatMoney(currency.tradingSymbol())).arg(dropMinimum-1);
+        }
+        if(!msg.isEmpty()) {
+          m_part->write(QString("<tr><td colspan=4 align=\"center\" ><font color=\"red\">%1</font></td></tr>").arg(msg));
+        }
+      }
+      // a drop below zero is always shown
+      msg = QString();
+      switch(dropZero) {
+        case -1:
+          break;
+        case 0:
+          msg = i18n("The balance of %1 is below %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol()));
+          break;
+        default:
+          msg = i18n("The balance of %1 will drop below %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol())).arg(dropZero-1);
+      }
+      if(!msg.isEmpty()) {
+        m_part->write(QString("<tr><td colspan=4 align=\"center\" ><font color=\"red\"><b>%1</b></font></td></tr>").arg(msg));
+      }
     }
     m_part->write("</table>");
 
