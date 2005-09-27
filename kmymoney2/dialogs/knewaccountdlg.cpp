@@ -127,6 +127,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     m_currency->setEnabled(false);
     m_equityText->hide();
     m_equity->hide();
+    minimumBalanceEdit->hide();
 
     m_qcheckboxTax->setChecked(account.value("Tax") == "Yes");
     loadVatAccounts();
@@ -218,9 +219,11 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       m_qcheckboxPreferred->hide();
       m_currencyText->hide();
       m_currency->hide();
+      minimumBalanceEdit->hide();
     } else {
       m_equityText->hide();
       m_equity->hide();
+      minimumBalanceEdit->setValue(MyMoneyMoney(account.value("minimumBalance")));
     }
 
     m_qcheckboxTax->hide();
@@ -455,6 +458,10 @@ void KNewAccountDlg::okClicked()
       m_account.setValue("NoVat", "Yes");
     else
       m_account.deletePair("NoVat");
+
+    if(minimumBalanceEdit->isVisible()) {
+      m_account.setValue("minimumBalance", minimumBalanceEdit->value().toString());
+    }
   }
   else
   {
