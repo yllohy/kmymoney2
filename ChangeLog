@@ -1,3 +1,9 @@
+2005-09-27 Ace Jones <acejones@users.sourceforge.net>
+  * Removed debug output for price conversion
+  * Added minimum balance for asset/liability  accounts
+  * Improved 90 day forecast to show warnings when balance drops
+    below the minimum balance setting or even below 0
+
 2005-09-24 Ace Jones <acejones@users.sourceforge.net>
   * Fixed #1289811 (Account balance incorrect when opening kmymoney) by...
   * Disallow importing a QIF transaction that transfers from/to the same 
