@@ -78,6 +78,15 @@ dnl KDE_NEED_FLEX dnl __kdevelop__
 dnl AC_PROG_YACC dnl __kdevelop__
 
 #
+# make sure the UIC compiler uses our own widget lib
+#
+X=`echo $UIC | grep -- -L`
+if test "x$X" = "x"; then
+	echo "UIC does not support -L option!!";
+fi
+UIC=`echo $UIC -L \$\(top_builddir\)/kmymoney2/widgets/.libs`
+
+#
 # create header directory, make symlinks
 #
 
