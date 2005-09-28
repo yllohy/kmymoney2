@@ -17,7 +17,7 @@ inst_HEADERS = kmymoneydateinput.h kmymoneyedit.h kmymoneytitlelabel.h
 noinst_HEADERS = kmymoneyregisterinvestment.h kmymoneyequity.h kmymoneyequitycompletion.h kmymoneycompletion.h kmymoneyequityselector.h kmymoneyaccountcombo.h kmymoneyaccountcompletion.h kmymoneycurrencyselector.h kmymoneypriceview.h kmymoneyaccountselector.h kmymoneyregisterloan.h kmymoneyregistersearch.h kmymoneybriefschedule.h kmymoneyscheduleddatetbl.h kmymoneydatetbl.h kmymoneyscheduledcalendar.h kmymoneycalendar.h kmymoneycalculator.h kmymoneycategory.h kmymoneypayee.h kmymoneytransactionform.h kmymoneyregistercheckings.h kmymoneyregister.h kmymoneysplittable.h kmymoneycombo.h kmymoneyhlayout.h kmymoneylineedit.h kmymoneyonlinequoteconfig.h kmymoneyaccounttree.h kmymoneygpgconfig.h 
 
 # make sure, automatically generated files exist
-BUILT_SOURCES = kupdatestockpricedlgdecl.h knewaccountdlgdecl.h knewequityentrydecl.h kcurrencycalculatordecl.h kequitypriceupdatedlgdecl.h
+BUILT_SOURCES = kupdatestockpricedlgdecl.h knewaccountdlgdecl.h knewequityentrydecl.h kcurrencycalculatordecl.h kequitypriceupdatedlgdecl.h $(WIDGET_MOCS)
 
 .PHONY: kupdatestockpricedlgdecl.h knewaccountdlgdecl.h knewequityentrydecl.h kcurrencycalculatordecl.h kequitypriceupdatedlgdecl.h
 
@@ -36,11 +36,12 @@ kcurrencycalculatordecl.h:
 kequitypriceupdatedlgdecl.h:
 	$(MAKE) -C ../dialogs kequitypriceupdatedlgdecl.h
 
-# -- new stuff starts here
-if BUILD_QTDESIGNER_SUPPORT
 PICS_DIR=kmymoney2/pics
 WIDGET_PNGS = kmymoneytitlelabel.png
-libkmymoney_la_SOURCES = kmmwidgets.cpp kmymoneytitlelabel.cpp kmymoneyedit.cpp kmymoneycalculator.cpp kmymoneydateinput.cpp
+
+WIDGET_CPPS=kmymoneytitlelabel.cpp kmymoneyedit.cpp kmymoneycalculator.cpp kmymoneydateinput.cpp
+WIDGET_MOCS=kmymoneytitlelabel.moc kmymoneyedit.moc kmymoneycalculator.moc kmymoneydateinput.moc
+libkmymoney_la_SOURCES = kmmwidgets.cpp $(WIDGET_CPPS)
 
 noinst_LTLIBRARIES = libkmymoney.la
 
@@ -51,6 +52,7 @@ kmmwidgets.cpp:	kmymoney.widgets
 libkmymoney_la_CXXFLAGS = -U_CHECK_MEMORY
 libkmymoney_la_LDFLAGS = $(KDE_LDFLAGS) -rpath $(DESTDIR)$(qt_libraries)/../plugins/designer -L../mymoney -lkmm_mymoney $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
 
+if INSTALL_QTDESIGNER_SUPPORT
 install-exec-local: libkmymoney.la
 	$(mkinstalldirs) $(DESTDIR)$(qt_libraries)/../plugins/designer
 	$(INSTALL_PROGRAM) .libs/libkmymoney.so $(DESTDIR)$(qt_libraries)/../plugins/designer 
@@ -65,5 +67,3 @@ uninstall-local:
 	  rm -rf $(DESTDIR)$(kde_datadir)/$(PICS_DIR)/$$file; \
 	done
 endif
-# -- new stuff ends here
-
