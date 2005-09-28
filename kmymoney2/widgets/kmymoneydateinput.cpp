@@ -58,7 +58,7 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
 
   dateEdit = new QDateEdit(m_date, this, "dateEdit");
   setFocusProxy(dateEdit);
-  focusWidget()->installEventFilter(this); // To get dateEdit's FocusIn and FocusOut events
+  focusWidget()->installEventFilter(this); // To get dateEdit's FocusIn/Out and some KeyPress events
 
   m_datePopup = new KPassivePopup(dateEdit, "m_datePopup");
   m_datePopup->setTimeout(DATE_POPUP_TIMEOUT);
@@ -87,14 +87,19 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   }
 
   // see if we find a known format. If it's unknown, then we use YMD (international)
+  // set m_focusDatePart to the day position (0-2)
   if(order == "mdy") {
     dateEdit->setOrder(QDateEdit::MDY);
+    m_focusDatePart = 1;
   } else if(order == "dmy") {
     dateEdit->setOrder(QDateEdit::DMY);
+    m_focusDatePart = 0;
   } else if(order == "ydm") {
     dateEdit->setOrder(QDateEdit::YDM);
+    m_focusDatePart = 1;
   } else {
     dateEdit->setOrder(QDateEdit::YMD);
+    m_focusDatePart = 2;
   }
   dateEdit->setSeparator(separator);
 
@@ -200,7 +205,7 @@ void kMyMoneyDateInput::resizeEvent(QResizeEvent* ev)
 
 /** Overriding QWidget::keyPressEvent
   *
-  * increments/decrements the date upon +/- key input
+  * increments/decrements the date upon +/- or Up/Down key input
   * sets the date to current date when the 'T' key is pressed
   */
 void kMyMoneyDateInput::keyPressEvent(QKeyEvent * k)
@@ -208,19 +213,19 @@ void kMyMoneyDateInput::keyPressEvent(QKeyEvent * k)
   KShortcut today(i18n("Enter todays date into date input widget", "T"));
 
   switch(k->key()) {
+    case Key_Up:
+    case Key_Equal:
     case Key_Plus:
       slotDateChosen(m_date.addDays(1));
       break;
 
-    // If seperator is "-", Key_Minus will be consumed by QDateEdit (as it should).
-    // Key_Asterisk is not optimal, but better than nothing.
-    case Key_Asterisk:
+    case Key_Down:
     case Key_Minus:
       slotDateChosen(m_date.addDays(-1));
       break;
 
     default:
-      if(today.contains(KKey(k))) {
+      if(today.contains(KKey(k)) || k->key() == Key_T) {
         slotDateChosen(QDate::currentDate());
       }
       break;
@@ -229,13 +234,29 @@ void kMyMoneyDateInput::keyPressEvent(QKeyEvent * k)
 
 /**
   * This function receives all events that are sent to focusWidget().
+  * Some KeyPress events are intercepted and passed to keyPressEvent.
+  * Otherwise they would be consumed by QDateEdit.
   */
 bool kMyMoneyDateInput::eventFilter(QObject *, QEvent *e)
 {
-  if (e->type() == QEvent::FocusIn)
+  if (e->type() == QEvent::FocusIn) {
     m_datePopup->show();
+    // The cast to the base class is needed since setFocusSection
+    // is protected in QDateEdit. This causes some logic in
+    // QDateEdit::setFocusSection not to be executed but this does
+    // not hurt here, because the widget just receives focus.
+    static_cast<QDateTimeEditBase *>(dateEdit)->setFocusSection(m_focusDatePart);
+  }
   else if (e->type() == QEvent::FocusOut)
     m_datePopup->hide();
+  else if (e->type() == QEvent::KeyPress) {
+    if (QKeyEvent *k = dynamic_cast<QKeyEvent*>(e)) {
+      if (k->key() == Key_Up || k->key() == Key_Down || k->key() == Key_Minus) {
+        keyPressEvent(k);
+        return true;
+      }
+    }
+  }
 
   return false; // Don't filter the event
 }

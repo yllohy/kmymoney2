@@ -70,10 +70,10 @@ signals:
 protected:
   /**
     * - increments/decrements the date upon +/- key input
-    * - decrements the date upon * key input
+    * - increments/decrements the date upon Up/Down key input
     * - sets the date to current date when the 'T' key is pressed.
     *   The actual key for this to happen might be overridden through
-    *   an i18n package.
+    *   an i18n package. The 'T'-key is always possible.
     */
   void keyPressEvent(QKeyEvent * k);
   void resizeEvent(QResizeEvent*);
@@ -98,6 +98,7 @@ private:
   QVBox *m_dateFrame;
   KPushButton *m_dateButton;
   KPassivePopup *m_datePopup;
+  int m_focusDatePart;
 };
 
 #endif
