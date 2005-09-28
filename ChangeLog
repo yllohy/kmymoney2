@@ -1,4 +1,11 @@
-2005-09-27 Ace Jones <acejones@users.sourceforge.net>
+2005-09-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Make sure UIC uses our own widget library
+  * always build widget library, install for designer upon request
+  * Applied patches by Erik Johansson to be Up/Down the same as +/- and
+    the day field receives focus when the widget is selected no matter
+    which date format is selected
+
+2005-09-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed debug output for price conversion
   * Added minimum balance for asset/liability  accounts
   * Improved 90 day forecast to show warnings when balance drops
