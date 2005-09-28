@@ -194,7 +194,8 @@ void KEnterScheduleDialog::initWidgets()
       m_from->setCurrentText(m_schedule.account().name());
       m_to->setCurrentText(/*m_schedule.transferAccount().name()*/
         MyMoneyFile::instance()->account(m_schedule.transaction().splits()[1].accountId()).name());
-        m_toAccountId = m_schedule.transaction().splits()[1].accountId();
+      m_fromAccountId = m_schedule.transaction().splits()[0].accountId();
+      m_toAccountId = m_schedule.transaction().splits()[1].accountId();
     }
     else if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT) {
       m_to->setCurrentText(m_schedule.account().name());
