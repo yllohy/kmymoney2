@@ -49,8 +49,14 @@ kmmwidgets.cpp:	kmymoney.widgets
 	$(srcdir)/makekdewidgets -g KMyMoney -n CustomWidgetPlugin -o kmmwidgets.cpp -i kmymoney $(srcdir)/kmymoney.widgets
 
 # make sure to compile the Qt designer version w/o the memory leak checker 
+# also we need a copy of the mymoneymoney.lo file which has been compiled
+# already. This is a quick hack around a bootstrap problem. We could link
+# the libkmymoney.so against libkmm_mymoney.so but this is not yet installed
+# but required to let UIC generate the right code for the dialogs and views.
+# Hence the quick hack to include the required objects from the
+# libkmm_mymoney.so directly into libkmymoney.so
 libkmymoney_la_CXXFLAGS = -U_CHECK_MEMORY
-libkmymoney_la_LDFLAGS = $(KDE_LDFLAGS) -rpath $(DESTDIR)$(qt_libraries)/../plugins/designer -L../mymoney -lkmm_mymoney $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
+libkmymoney_la_LDFLAGS = ../mymoney/mymoneymoney.lo $(KDE_LDFLAGS) -rpath $(DESTDIR)$(qt_libraries)/../plugins/designer $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
 
 if INSTALL_QTDESIGNER_SUPPORT
 install-exec-local: libkmymoney.la
