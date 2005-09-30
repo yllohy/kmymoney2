@@ -184,7 +184,7 @@ void kMyMoneyEdit::init(void)
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("General Options");
   if(kconfig->readBoolEntry("DontShowCalculatorButton", false) == true)
-    showCalculatorButton(false);
+    setCalculatorButtonVisible(false);
 
   connect(m_edit, SIGNAL(textChanged(const QString&)), this, SLOT(theTextChanged(const QString&)));
   connect(m_calculator, SIGNAL(signalResultAvailable()), this, SLOT(slotCalculatorResult()));
@@ -431,10 +431,25 @@ QWidget* kMyMoneyEdit::focusWidget(void) const
 
 void kMyMoneyEdit::showCalculatorButton(const bool show)
 {
+  setCalculatorButtonVisible(show);
+}
+
+void kMyMoneyEdit::hideCalculatorButton(void)
+{
+  setCalculatorButtonVisible(false);
+}
+
+void kMyMoneyEdit::setCalculatorButtonVisible(const bool show)
+{
   if(show)
     m_calcButton->show();
   else
     m_calcButton->hide();
+}
+
+const bool kMyMoneyEdit::isCalculatorButtonVisible(void) const
+{
+  return m_calcButton->isVisible();
 }
 
 #include "kmymoneyedit.moc"

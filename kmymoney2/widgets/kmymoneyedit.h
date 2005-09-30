@@ -90,6 +90,7 @@ public:
 class kMyMoneyEdit : public QHBox
 {
   Q_OBJECT
+  Q_PROPERTY(bool calculatorButtonVisibility READ isCalculatorButtonVisible WRITE setCalculatorButtonVisible);
 
 private:
   QString previousText; // keep track of what has been typed
@@ -99,6 +100,7 @@ private:
   KLineEdit*          m_edit;
   KPushButton*        m_calcButton;
   int                 m_prec;
+  bool                calculatorButtonVisibility;
 
 private:
   /**
@@ -181,22 +183,33 @@ public:
     *
     * @param show if true, button is shown, if false it is hidden
     */
-  void showCalculatorButton(const bool show = true);
+  void showCalculatorButton(const bool show = true) KDE_DEPRECATED;
 
   /**
     * This method allows to hide the calculator button. It is
     * provided as convenience function and is equivilant to @p
     * showCalculatorButton(false).
     */
-  void hideCalculatorButton(void) { showCalculatorButton(false); }
+  void hideCalculatorButton(void) KDE_DEPRECATED;
 
   /** Overloaded for internal reasons. The API is not affected. */
   void setValidator(const QValidator* v);
+
+  const bool isCalculatorButtonVisible(void) const;
 
 public slots:
   void loadText(const QString& text);
   void setReadOnly(bool ro) { m_edit->setReadOnly(ro); };
   void setText(const QString& txt) { m_edit->setText(txt); };
+
+  /**
+    * This method allows to show/hide the calculator button of the widget.
+    * The parameter @p show controls the behavior. Default is to show the
+    * button.
+    *
+    * @param show if true, button is shown, if false it is hidden
+    */
+  void setCalculatorButtonVisible(const bool show);
 
 signals: // Signals
 
