@@ -1,3 +1,8 @@
+2005-09-30 Tony Bloomfield <tonybloom@users.sourceforge.net>
+    Avoid problem when creating schedule from Check or ATM transaction.
+    Unlikely, but...
+
+
 2005-09-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Make sure UIC uses our own widget library
   * always build widget library, install for designer upon request

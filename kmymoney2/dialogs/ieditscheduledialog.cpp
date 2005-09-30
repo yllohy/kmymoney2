@@ -1277,7 +1277,9 @@ QCString KEditScheduleDialog::theAccountId()
 {
   if (m_actionType == MyMoneySplit::ActionTransfer ||
       m_actionType == MyMoneySplit::ActionAmortization ||
-      m_actionType == MyMoneySplit::ActionWithdrawal)
+      m_actionType == MyMoneySplit::ActionWithdrawal ||
+      m_actionType == MyMoneySplit::ActionCheck ||
+      m_actionType == MyMoneySplit::ActionATM)
   {
     return m_fromAccountId;
   }
