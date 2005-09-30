@@ -1,7 +1,14 @@
+2005-09-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Made calculatorButtonVisible available for Qt-Designer
+  * Added kMyMoneyPayee to designer library
+  * Removed calculator button from minimum balance field in new account dialog
+
 2005-09-30 Tony Bloomfield <tonybloom@users.sourceforge.net>
-    Avoid problem when creating schedule from Check or ATM transaction.
+  * Avoid problem when creating schedule from Check or ATM transaction.
     Unlikely, but...
 
+2005-09-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed library dependency during build by including the required object file
 
 2005-09-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Make sure UIC uses our own widget library
@@ -9,6 +16,7 @@
   * Applied patches by Erik Johansson to be Up/Down the same as +/- and
     the day field receives focus when the widget is selected no matter
     which date format is selected
+  * Fixed #1289026 (Transfer creates flashing red entry in destination account)
 
 2005-09-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed debug output for price conversion
