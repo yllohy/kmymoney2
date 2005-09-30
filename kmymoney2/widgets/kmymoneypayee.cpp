@@ -54,7 +54,13 @@ kMyMoneyPayee::kMyMoneyPayee(QWidget *parent, const char *name )
   // code in keyPressEvent()
   setKeyBinding(SubstringCompletion, KShortcut("Ctrl+T"));
 
-  loadList();
+  // if used from within Qt Designer library loadList() will fail
+  // but we don't care.
+  try {
+    loadList();
+  } catch(MyMoneyException *e) {
+    delete e;
+  }
 }
 
 kMyMoneyPayee::~kMyMoneyPayee()

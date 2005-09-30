@@ -9,3 +9,5 @@ new KInstance("kmmwidgets");
 [kMyMoneyEdit]
 
 [kMyMoneyDateInput]
+
+[kMyMoneyPayee]
