@@ -991,7 +991,46 @@ void KMyMoney2App::slotPluginImport(const QString& format)
         QValueList<MyMoneyStatement> statements;
         if ( plugin->import(dialog->selectedURL().path(),statements) )
         {
-          slotStatementImport(statements);
+#if 0
+          /*
+           * This section is under construction
+           */
+
+      	  bool ok = true;
+          unsigned nerrors = plugin->errors().count();
+          unsigned nwarns = plugin->warnings().count();
+          
+          if ( nerrors || nwarns )
+          {
+            int answer = KMessageBox::warningYesNoCancel(this, i18n("There were %1 errors and %2 warnings found when processing this file.  Would you like to view them?").arg(nerrors).arg(nwarns));
+            if (answer == KMessageBox::Cancel)
+              ok = false;
+             
+            if (answer == KMessageBox::Yes)
+            {
+              // is there a better way to do this?!?!
+              
+              QString errstring = "<p><b>Errors<b>" + plugin->errors().join("</p><p>") + "</p><b>Warnings</b>" + plugin->warnings().join("</p><p>") + "</p>";
+              
+              QDialog dlg;
+              QVBoxLayout layout( &dlg, 11, 6, "Warnings Layout");
+              KTextBrowser te(&dlg,"Warnings");
+              layout.addWidget(&te);
+              te.setReadOnly(true);
+              te.setTextFormat(Qt::RichText);
+              te.setText(errstring);
+              dlg.setCaption(i18n("Imported Data Warnings"));
+              unsigned width = QApplication::desktop()->width();
+              unsigned height = QApplication::desktop()->height();
+              te.setMinimumSize(width/2,height/2);
+              layout.setResizeMode(QLayout::Minimum);
+              dlg.exec();            
+            }
+          }
+        
+          if ( ok )
+#endif
+      		slotStatementImport(statements);
         }
         else
         {
@@ -2052,3 +2091,4 @@ void KMyMoney2App::loadPlugins(void)
 }
 
 #include "kmymoney2.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:
