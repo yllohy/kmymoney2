@@ -284,15 +284,31 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
       type = "TRANSFER (Transfer holdings in and out of the investment account)";
       break;
     default:
-      pofx->addWarning(QString("OFX Transaction Warning: File includes a transaction of an unknown type (%1).  Please contact the developers mailing list, and we can try to add support for it.").arg(data.invtransactiontype));
+      unhandledtype = true;
+      type = QString("UNKNOWN %1").arg(data.invtransactiontype);
       break;
     }
   }
   else
     t.m_eAction = MyMoneyStatement::Transaction::eaNone;
   
+  // In the case of investment transactions, the 'total' is supposed to the total amount
+  // of the transaction.  units * unitprice +/- commission.  Easy, right?  Sadly, it seems
+  // some ofx creators do not follow this in all circumstances.  Therefore, we have to double-
+  // check the total here and adjust it if it's wrong.
+  
+  if(data.invtransactiontype_valid==true && data.unitprice_valid)
+  {
+    double proper_total = t.m_dShares * data.unitprice + t.m_moneyFees;
+    if ( proper_total != t.m_moneyAmount )
+    {
+      pofx->addWarning(QString("Transaction %1 has an incorrect total of %2. Using calculated total of %3 instead.").arg(t.m_strBankID).arg(t.m_moneyAmount).arg(proper_total));
+      t.m_moneyAmount = proper_total;
+    }
+  }
+    
   if ( unhandledtype )
-    pofx->addWarning(QString("OFX Transaction Warning: File includes a transaction of an unsupported type (%1).  Please contact the developers mailing list, and we can try to add support for it.").arg(type));
+    pofx->addWarning(QString("Transaction %1 has an unsupported type (%2).").arg(t.m_strBankID,type));
   else
     s.m_listTransactions += t;
 
