@@ -174,6 +174,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
   s1.setMemo(t_in.m_strMemo);
   s1.setValue(t_in.m_moneyAmount-t_in.m_moneyFees);
+  s1.setShares(t_in.m_moneyAmount-t_in.m_moneyFees);
   s1.setNumber(t_in.m_strNumber);
 
   // set these values if a transfer split is needed at the very end.
