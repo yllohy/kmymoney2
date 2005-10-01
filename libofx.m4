@@ -3,14 +3,14 @@ AC_DEFUN([AC_LIBOFX],
 [
 AC_MSG_CHECKING(if the OFX importer plugin is desired)
 AC_ARG_ENABLE(ofxplugin,
-  [  --enable-ofxplugin      enable OFX support (default=no)],
+  AC_HELP_STRING([--enable-ofxplugin],[enable OFX importer plugin (default=no)]),
   enable_ofxplugin="$enableval",
   enable_ofxplugin="no")
 AC_MSG_RESULT($enable_ofxplugin)
 
 AC_MSG_CHECKING(if OFX direct connect is desired)
 AC_ARG_ENABLE(ofxbanking,
-  [  --enable-ofxbanking     enable OFX direct connect (default=no)],
+  AC_HELP_STRING([--enable-ofxbanking],[enable OFX direct connect (default=no)]),
   enable_ofxbanking="$enableval",
   enable_ofxbanking="no")
 AC_MSG_RESULT($enable_ofxbanking)
