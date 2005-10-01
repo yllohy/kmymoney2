@@ -3,9 +3,9 @@ AC_DEFUN([AC_LIBOFX],
 [
 AC_MSG_CHECKING(if the OFX importer plugin is desired)
 AC_ARG_ENABLE(ofxplugin,
-  [  --enable-ofxplugin      enable OFX support (default=yes)],
+  [  --enable-ofxplugin      enable OFX support (default=no)],
   enable_ofxplugin="$enableval",
-  enable_ofxplugin="yes")
+  enable_ofxplugin="no")
 AC_MSG_RESULT($enable_ofxplugin)
 
 AC_MSG_CHECKING(if OFX direct connect is desired)
