@@ -14,37 +14,15 @@ fi
 
 echo ""
 
-if test x$enable_ofxplugin = xno; then
-	echo "OFX plugin:                            disabled"
-elif test x$have_new_ofx = xyes; then
-	echo "OFX plugin:                            yes"
-else
-	echo "OFX plugin:                            no"
-	echo "    You are missing the latest libOFX headers and libraries"
-	echo "    The CVS version of LibOFX is now required."
-	echo "    The OFX plugin won't be compiled."
-fi
+echo "OFX plugin:                            $enable_ofxplugin"
 
 echo ""
 
-if test x$enable_ofxbanking = xno; then
-	echo "OFX direct connect:                    disabled"
-elif test x$have_new_ofx = xyes; then
-	echo "OFX direct connect:                    yes"
-else
-	echo "OFX direct connect:                    no"
-	echo "    You are missing the latest libofx headers and libraries"
-	echo "    The CVS version of LibOFX is now required."
-	echo "    The OFX direct connect support won't be compiled."
-fi
+echo "OFX direct connect:                    $enable_ofxbanking"
 
 echo ""
 
-if test "$enable_charts" = "yes"; then
-	echo "Chart support:                         yes"
-else
-	echo "Chart support:                         no"
-fi
+echo "Chart support:                         $enable_charts"
 
 echo "------------------------------------------"
 echo ""

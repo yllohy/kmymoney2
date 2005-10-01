@@ -15,29 +15,20 @@ AC_ARG_ENABLE(ofxbanking,
   enable_ofxbanking="no")
 AC_MSG_RESULT($enable_ofxbanking)
 
-ofx_libs=""
-ofx_importerplugin=""
-
 if test "$enable_ofxplugin" != "no"; then
-  AC_CHECK_HEADER([OpenSP/macros.h], [
-    AC_CHECK_MEMBER(struct OfxTransactionData.fees_valid,[have_new_ofx="yes"], [have_new_ofx="no"],[#include <libofx/libofx.h>])
-    if test "$have_new_ofx" == "yes"; then
-      ofx_importerplugin="ofximport"
-      ofx_libs="-lofx"
-    fi
- ], [], [])
+  AC_CHECK_HEADER([OpenSP/macros.h],[],[AC_MSG_ERROR([cannot find OpenSP headers. Please ensure you have OpenSP installed.])])
+  PKG_CHECK_MODULES(OFX,libofx >= 0.8.1)
+  OFX_IMPORTERPLUGIN="ofximport" 
 fi
 
 if test "$enable_ofxbanking" != "no"; then
-  AC_CHECK_HEADER([OpenSP/macros.h], [
-    AC_CHECK_MEMBER(struct OfxTransactionData.fees_valid,[have_new_ofx="yes"], [have_new_ofx="no"],[#include <libofx/libofx.h>])
-    if test "$have_new_ofx" == "yes"; then
-      AC_DEFINE_UNQUOTED(USE_OFX_DIRECTCONNECT, "1", [whether to use OFX directconnect])
-      LIBS="-lofx $LIBS"
-    fi
- ], [], [])
+  AC_CHECK_HEADER([OpenSP/macros.h],[],[AC_MSG_ERROR([cannot find OpenSP headers. Please ensure you have OpenSP installed.])])
+  PKG_CHECK_MODULES(OFX,libofx >= 0.8.1)
+  AC_DEFINE_UNQUOTED(USE_OFX_DIRECTCONNECT, "1", [whether to use OFX directconnect])
+  LIBS="$OFX_LIBS $LIBS"
 fi
-AC_SUBST(ofx_libs)
-AC_SUBST(ofx_importerplugin)
+AC_SUBST(OFX_LIBS)
+AC_SUBST(OFX_IMPORTERPLUGIN)
 ])
+
 

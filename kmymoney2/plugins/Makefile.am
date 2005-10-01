@@ -4,7 +4,7 @@ METASOURCES = AUTO
 INCLUDES = $(all_includes)  -I$(top_srcdir) -I.
 
 # since some of the subdirs are conditional, we need to define DIST_SUBDIRS
-SUBDIRS = interfaces @ofx_importerplugin@ @kbanking_plugin@
+SUBDIRS = interfaces @OFX_IMPORTERPLUGIN@ @kbanking_plugin@
 DIST_SUBDIRS = interfaces kbanking ofximport
 
 # The library containing the plugin base class

@@ -1,3 +1,7 @@
+2005-09-30 Ace Jones <acejones@users.sourceforge.net>
+  * Vastly simplified OFX dependency checking.  Now relies on pkg-config to
+    sort out OFX versions.
+
 2005-09-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Made calculatorButtonVisible available for Qt-Designer
   * Added kMyMoneyPayee to designer library
@@ -41,7 +45,7 @@
   * Added date parameter to totalValue() and accountValue() in MyMoneyFile
 
 2005-09-22 Tony Bloomfield <tonybloom@users.sourceforge.net>
-    * Fixed spelling problem reported by Jochen Rundholz
+  * Fixed spelling problem reported by Jochen Rundholz
 
 2005-09-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1264916 (Cannot edit fund details in investments)
