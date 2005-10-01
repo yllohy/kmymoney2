@@ -55,6 +55,7 @@
 #include <kfileitem.h>
 #include <kpushbutton.h>
 #include <kapplication.h>
+#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -2177,6 +2178,12 @@ void KMyMoneyView::slotBankAccountNew()
 
 void KMyMoneyView::fixFile(void)
 {
+  /* (Ace) I am on a crusade against file fixups.  Whenever we have to fix the
+   * file, it is really a warning.  So I'm going to print a debug warning, and
+   * then go track them down when I see them to figure out how they got saved
+   * out needing fixing anyway.
+   */
+
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyAccount> accountList = file->accountList();
   QValueList<MyMoneyAccount>::Iterator it_a;
@@ -2205,6 +2212,7 @@ void KMyMoneyView::fixFile(void)
         // can re-parent it
         acc.setParentAccountId(QCString());
         file->reparentAccount(acc, equity);
+        kdDebug(2) << __func__ << " fixed account " << acc.id() << " reparented to " << equity.id() << endl;
       }
     }
   }
@@ -2224,7 +2232,7 @@ void KMyMoneyView::fixOpeningBalance(MyMoneyAccount& acc)
       acc.setOpeningBalance(MyMoneyMoney(0, 1));
       MyMoneyFile::instance()->modifyAccount(acc);
     } catch(MyMoneyException *e) {
-      qWarning("Unable to create opening balance transaction: %s", e->what().latin1());
+      kdDebug(2) << __func__ << " Unable to create opening balance transaction for account " << acc.id() << " (" << e->what() << ")" << endl;
       delete e;
     }
   }
@@ -2244,6 +2252,7 @@ void KMyMoneyView::fixSchedule(MyMoneySchedule sched)
       // the first split is always the account on which this transaction operates
       // and if the transaction commodity is not set, we take this
       if(it_s == splitList.begin() && t.commodity().isEmpty()) {
+        kdDebug(2) << __func__ << " " << t.id() << " has no commodity" << endl;
         try {
           MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
           t.setCommodity(acc.currencyId());
@@ -2253,6 +2262,7 @@ void KMyMoneyView::fixSchedule(MyMoneySchedule sched)
         }
       }
       if((*it_s).reconcileFlag() != MyMoneySplit::NotReconciled) {
+        kdDebug(2) << __func__ << " " << t.id() << " " << (*it_s).id() << " should be 'not reconciled'" << endl;
         MyMoneySplit split = *it_s;
         split.setReconcileDate(QDate());
         split.setReconcileFlag(MyMoneySplit::NotReconciled);
@@ -2386,6 +2396,7 @@ void KMyMoneyView::fixTransactions(void)
     for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
       if(accounts.contains((*it_s).accountId())) {
         hasDuplicateAccounts = true;
+        kdDebug(2) << __func__ << " " << t.id() << " has multiple splits with account " << (*it_s).accountId() << endl;
       } else {
         accounts << (*it_s).accountId();
       }
@@ -2414,6 +2425,7 @@ void KMyMoneyView::fixTransactions(void)
 
     // check if base commodity is set. if not, set baseCurrency
     if((*it_t).commodity().isEmpty()) {
+      kdDebug(2) << __func__ << " " << (*it_t).id() << " has no base currency" << endl;
       (*it_t).setCommodity(file->baseCurrency().id());
       file->modifyTransaction(*it_t);
     }
@@ -2462,9 +2474,9 @@ void KMyMoneyView::fixTransactions(void)
       }
     }
 
+#if 0
     // Check for correct actions in transactions referencing credit cards
     bool needModify = false;
-#if 0
     // The action fields are actually not used anymore in the ledger view logic
     // so we might as well skip this whole thing here!
     for(it_s = splits.begin(); needModify == false && it_s != splits.end(); ++it_s) {
@@ -2477,7 +2489,10 @@ void KMyMoneyView::fixTransactions(void)
           needModify = true;
       }
     }
-#endif
+    
+    // (Ace) Extended the #endif down to cover this conditional, because as-written
+    // it will ALWAYS be skipped.
+    
     if(needModify == true) {
       for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
         (*it_s).setAction(defaultAction);
@@ -2487,6 +2502,7 @@ void KMyMoneyView::fixTransactions(void)
       splits = (*it_t).splits();    // update local copy
       qDebug("Fixed credit card assignment in %s", (*it_t).id().data());
     }
+#endif
 
     bool hasDuplicateAccounts = false;
     // Check for correct assignment of ActionInterest in all splits
@@ -2502,6 +2518,7 @@ void KMyMoneyView::fixTransactions(void)
       // must be of type ActionInterest
       if(interestAccounts.contains((*it_s).accountId())) {
         if((*it_s).action() != MyMoneySplit::ActionInterest) {
+          kdDebug(2) << __func__ << " " << (*it_t).id() << " contains an interest account (" << (*it_s).accountId() << ") but does not have ActionInterest" << endl;
           (*it_s).setAction(MyMoneySplit::ActionInterest);
           (*it_t).modifySplit(*it_s);
           file->modifyTransaction(*it_t);
@@ -2511,6 +2528,7 @@ void KMyMoneyView::fixTransactions(void)
       // of type ActionInterest
       } else {
         if((*it_s).action() == MyMoneySplit::ActionInterest) {
+          kdDebug(2) << __func__ << " " << (*it_t).id() << " does not contain an interest account so it should not have ActionInterest" << endl;
           (*it_s).setAction(defaultAction);
           (*it_t).modifySplit(*it_s);
           file->modifyTransaction(*it_t);
@@ -2522,7 +2540,8 @@ void KMyMoneyView::fixTransactions(void)
       // the same currency as the transactions commodity the value
       // and shares field are the same.
       if((*it_t).commodity() == splitAccount.currencyId()
-      && (*it_s).value() != (*it_s).shares()) {
+      && (*it_s).value() != (*it_s).shares()) {        
+        kdDebug(2) << __func__ << " " << (*it_t).id() << " " << (*it_s).id() << " uses the transaction currency, but shares != value" << endl;
         (*it_s).setShares((*it_s).value());
         (*it_t).modifySplit(*it_s);
         file->modifyTransaction(*it_t);

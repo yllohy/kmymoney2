@@ -1,6 +1,10 @@
 2005-09-30 Ace Jones <acejones@users.sourceforge.net>
   * Vastly simplified OFX dependency checking.  Now relies on pkg-config to
     sort out OFX versions.
+  * Enabled debugging details for all load-time fixups.  I want to root out 
+    the source of all fixups upon load.
+  * Added debugging information around ofx direct connect sessions, in an
+    attempt to troubleshoot certain problems for users in that area.
 
 2005-09-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Made calculatorButtonVisible available for Qt-Designer
