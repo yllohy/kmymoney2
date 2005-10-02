@@ -1,3 +1,6 @@
+2005-09-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Linked help button in reports configuration dialog to online manual
+
 2005-10-02 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a raft of broken logic in calculation of scheduled payment dates
   * Added option to include scheduled transactions in pivottable reports.
