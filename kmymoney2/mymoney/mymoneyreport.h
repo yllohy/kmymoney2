@@ -99,7 +99,8 @@ public:
   bool isChartDataLabels(void) const { return m_chartDataLabels; }
   bool isChartGridLines(void) const { return m_chartGridLines; }
   bool isChartByDefault(void) const { return m_chartByDefault; }
-    
+  bool isIncludingSchedules(void) const { return m_includeSchedules; }
+
   // Simple set operations
   void setName(const QString& _s) { m_name = _s; }
   void setShowSubAccounts(bool _f) { m_detailLevel = _f?eDetailAll:eDetailTop; }
@@ -118,6 +119,7 @@ public:
   void setChartDataLabels ( bool _f ) { m_chartDataLabels = _f; }
   void setChartGridLines ( bool _f ) { m_chartGridLines = _f; }
   void setChartByDefault ( bool _f ) { m_chartByDefault = _f; }
+  void setIncludingSchedules( bool _f ) { m_includeSchedules = _f; }
   
   /**
     * This method allows you to clear the underlying transaction filter
@@ -352,6 +354,10 @@ private:
     * should be shown as a textual report)
     */
   bool m_chartByDefault;
+  /**
+    * Whether to include scheduled transactions
+    */
+  bool m_includeSchedules;
   
 };
 

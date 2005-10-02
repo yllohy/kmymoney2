@@ -168,6 +168,8 @@ void KReportConfigurationFilterDlg::slotSearch()
 
     MyMoneyReport::EColumnType ct[4] = { MyMoneyReport::eMonths, MyMoneyReport::eBiMonths, MyMoneyReport::eQuarters, MyMoneyReport::eYears };
     m_currentState.setColumnType( ct[m_tab2->m_comboColumns->currentItem()] );
+    
+    m_currentState.setIncludingSchedules( m_tab2->m_checkScheduled->isChecked() );
   }
   else if ( m_tab3 )
   {
@@ -274,6 +276,8 @@ void KReportConfigurationFilterDlg::slotReset(void)
       m_tab2->m_comboColumns->setCurrentItem(3);
       break;
     }
+    
+    m_tab2->m_checkScheduled->setChecked( m_currentState.isIncludingSchedules() );  
   }
   else if ( m_tab3 )
   {

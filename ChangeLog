@@ -1,5 +1,6 @@
 2005-10-02 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a raft of broken logic in calculation of scheduled payment dates
+  * Added option to include scheduled transactions in pivottable reports.
 
 2005-09-30 Ace Jones <acejones@users.sourceforge.net>
   * Vastly simplified OFX dependency checking.  Now relies on pkg-config to

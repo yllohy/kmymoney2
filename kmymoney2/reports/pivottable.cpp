@@ -184,10 +184,57 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   m_config_f.setReportAllSplits(false);
   m_config_f.setConsiderCategory(true);
   QValueList<MyMoneyTransaction> transactions = file->transactionList(m_config_f);
-  QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
-  unsigned colofs = m_beginDate.year() * 12 + m_beginDate.month() - 1;
 
   DEBUG_OUTPUT(QString("Found %1 matching transactions").arg(transactions.count()));
+  
+  // Include scheduled transactions if required
+  if ( m_config_f.isIncludingSchedules() )
+  {
+    // Create a custom version of the report filter, excluding date
+    // We'll use this to compare the transaction against
+    MyMoneyTransactionFilter schedulefilter(m_config_f);
+    schedulefilter.setDateFilter(QDate(),QDate());
+
+    // Get the real dates from the config filter    
+    QDate configbegin, configend;
+    m_config_f.validDateRange(configbegin, configend);
+    
+    QValueList<MyMoneySchedule> schedules = file->scheduleList();
+    QValueList<MyMoneySchedule>::const_iterator it_schedule = schedules.begin();
+    while ( it_schedule != schedules.end() )
+    {
+      // If the transaction meets the filter
+      MyMoneyTransaction tx = (*it_schedule).transaction();
+      if ( schedulefilter.match(tx,file->storage()) )
+      {      
+        // Get the dates when a payment will be made within the report window
+        QDate nextpayment = (*it_schedule).nextPayment(configbegin);
+        if ( nextpayment.isValid() )
+        {
+          // Add one transaction for each date
+          QValueList<QDate> paymentdates = (*it_schedule).paymentDates(nextpayment,configend);
+          QValueList<QDate>::const_iterator it_date = paymentdates.begin();
+          while ( it_date != paymentdates.end() )
+          {
+            tx.setPostDate(*it_date);
+            
+            // ???? Does this violate an assumption that transactions are sorted
+            // by date?? (ace)
+            transactions += tx;
+            
+            DEBUG_OUTPUT(QString("Added transaction for schedule %1 on %2").arg((*it_schedule).id()).arg(*it_date));
+            
+            ++it_date;
+          }
+        }
+      }
+      
+      ++it_schedule;
+    }
+  }  
+  
+  QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
+  unsigned colofs = m_beginDate.year() * 12 + m_beginDate.month() - 1;
   while ( it_transaction != transactions.end() )
   {
     QDate postdate = (*it_transaction).postDate();

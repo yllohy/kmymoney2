@@ -63,7 +63,8 @@ MyMoneyReport::MyMoneyReport(void):
     m_chartType(eChartLine),
     m_chartDataLabels(true),
     m_chartGridLines(true),
-    m_chartByDefault(false)
+    m_chartByDefault(false),
+    m_includeSchedules(false)
 {
 }
   
@@ -82,7 +83,8 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
     m_chartType(eChartLine),
     m_chartDataLabels(true),
     m_chartGridLines(true),
-    m_chartByDefault(false)
+    m_chartByDefault(false),
+    m_includeSchedules(false)
 {
   if ( m_reportType == ePivotTable )
     m_columnType = static_cast<EColumnType>(_ct);
@@ -257,6 +259,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   e.setAttribute("rowtype", kRowTypeText[m_rowType]);
   e.setAttribute("id", m_id);
   e.setAttribute("datelock", kDateLockText[m_dateLock]);
+  e.setAttribute("includeschedules",m_includeSchedules);
 
   e.setAttribute("charttype",kChartTypeText[m_chartType]);
   e.setAttribute("chartdatalabels",m_chartDataLabels);
@@ -265,13 +268,13 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
 
   if ( m_reportType == ePivotTable )
   {
-    e.setAttribute("type","pivottable 1.9");
+    e.setAttribute("type","pivottable 1.10");
     e.setAttribute("detail", kDetailLevelText[m_detailLevel]);
     e.setAttribute("columntype", kColumnTypeText[m_columnType]);
   }
   else if ( m_reportType == eQueryTable )
   {
-    e.setAttribute("type","querytable 1.9");
+    e.setAttribute("type","querytable 1.10");
     
     QStringList columns;
     unsigned qc = m_queryColumns;
@@ -506,6 +509,7 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_favorite = e.attribute("favorite","0").toUInt();
     m_tax = e.attribute("tax","0").toUInt();    
     m_investments = e.attribute("investments","0").toUInt();
+    m_includeSchedules = e.attribute("includeschedules","0").toUInt();
     
     i = kChartTypeText.findIndex(e.attribute("charttype"));      
     if ( i != -1 )
