@@ -45,6 +45,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include <kapplication.h>
 #include <kpushbutton.h>
 #include <klineedit.h>
 #include <klistview.h>
@@ -160,7 +161,7 @@ void KReportConfigurationFilterDlg::slotSearch()
   if ( m_tab2 )
   {
     MyMoneyReport::EDetailLevel dl[4] = { MyMoneyReport::eDetailAll, MyMoneyReport::eDetailTop, MyMoneyReport::eDetailGroup, MyMoneyReport::eDetailTotal };
-    
+
     m_currentState.setDetailLevel( dl[m_tab2->m_comboDetail->currentItem()] );
 
     MyMoneyReport::ERowType rt[2] = { MyMoneyReport::eExpenseIncome, MyMoneyReport::eAssetLiability };
@@ -168,7 +169,7 @@ void KReportConfigurationFilterDlg::slotSearch()
 
     MyMoneyReport::EColumnType ct[4] = { MyMoneyReport::eMonths, MyMoneyReport::eBiMonths, MyMoneyReport::eQuarters, MyMoneyReport::eYears };
     m_currentState.setColumnType( ct[m_tab2->m_comboColumns->currentItem()] );
-    
+
     m_currentState.setIncludingSchedules( m_tab2->m_checkScheduled->isChecked() );
   }
   else if ( m_tab3 )
@@ -207,12 +208,12 @@ void KReportConfigurationFilterDlg::slotSearch()
   {
     MyMoneyReport::EChartType ct[5] = { MyMoneyReport::eChartLine, MyMoneyReport::eChartBar, MyMoneyReport::eChartStackedBar, MyMoneyReport::eChartPie, MyMoneyReport::eChartRing };
     m_currentState.setChartType( ct[m_tabChart->m_comboType->currentItem()] );
-    
+
     m_currentState.setChartGridLines( m_tabChart->m_checkGridLines->isChecked() );
     m_currentState.setChartDataLabels( m_tabChart->m_checkValues->isChecked() );
     m_currentState.setChartByDefault( m_tabChart->m_checkShowChart->isChecked() );
   }
-  
+
   // setup the date lock
   unsigned range = m_dateRange->currentItem();
   m_currentState.setDateFilter(range);
@@ -276,8 +277,8 @@ void KReportConfigurationFilterDlg::slotReset(void)
       m_tab2->m_comboColumns->setCurrentItem(3);
       break;
     }
-    
-    m_tab2->m_checkScheduled->setChecked( m_currentState.isIncludingSchedules() );  
+
+    m_tab2->m_checkScheduled->setChecked( m_currentState.isIncludingSchedules() );
   }
   else if ( m_tab3 )
   {
@@ -313,7 +314,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
     case MyMoneyReport::eExpenseIncome:
       throw new MYMONEYEXCEPTION("KReportConfigurationFilterDlg::slotReset(): QueryTable report has invalid rowtype");
     }
-    
+
     unsigned qc = m_initialState.queryColumns();
     m_tab3->m_checkNumber->setChecked(qc & MyMoneyReport::eQCnumber);
     m_tab3->m_checkPayee->setChecked(qc & MyMoneyReport::eQCpayee);
@@ -336,19 +337,19 @@ void KReportConfigurationFilterDlg::slotReset(void)
       case MyMoneyReport::eChartNone:
       case MyMoneyReport::eChartLine:
         m_tabChart->m_comboType->setCurrentItem(0);
-        break;        
+        break;
       case MyMoneyReport::eChartBar:
         m_tabChart->m_comboType->setCurrentItem(1);
-        break;        
+        break;
       case MyMoneyReport::eChartStackedBar:
         m_tabChart->m_comboType->setCurrentItem(2);
-        break;        
+        break;
       case MyMoneyReport::eChartPie:
         m_tabChart->m_comboType->setCurrentItem(3);
-        break;        
+        break;
       case MyMoneyReport::eChartRing:
         m_tabChart->m_comboType->setCurrentItem(4);
-        break;        
+        break;
       case MyMoneyReport::eChartEnd:
         throw new MYMONEYEXCEPTION("KReportConfigurationFilterDlg::slotReset(): Report has invalid charttype");
     }
@@ -356,7 +357,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
     m_tabChart->m_checkValues->setChecked(m_initialState.isChartDataLabels());
     m_tabChart->m_checkShowChart->setChecked(m_initialState.isChartByDefault());
   }
-  
+
   //
   // Text Filter
   //
@@ -541,45 +542,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
 
 void KReportConfigurationFilterDlg::slotHelp(void)
 {
-  QDialog dlg;
-  QVBoxLayout layout( &dlg, 11, 6, "Layout17");
-  QTextEdit te(&dlg,"Help");
-  layout.addWidget(&te);
-  te.setReadOnly(true);
-  te.setTextFormat(Qt::RichText);
-  QString text;
-
-  text += "<h1>" + m_tab1->caption() + "</h1>" + QWhatsThis::textFor( m_tab1 );
-  text += "<h3>" + m_tab1->textLabel6->text() + "</h3>" + QToolTip::textFor( m_tab1->m_editName );
-  text += "<h3>" + m_tab1->textLabel7->text() + "</h3>" + QToolTip::textFor( m_tab1->m_editComment );
-  text += "<h3>" + m_tab1->m_checkCurrency->text() + "</h3>" + QToolTip::textFor( m_tab1->m_checkCurrency );
-  text += "<h3>" + m_tab1->m_checkFavorite->text() + "</h3>" + QToolTip::textFor( m_tab1->m_checkFavorite );
-
-  if ( m_tab2 )
-  {
-    text += "<h1>" + m_tab2->caption() + "</h1>" + QWhatsThis::textFor( m_tab2 );
-    text += "<h3>" + m_tab2->textLabel4->text() + "</h3>" + QToolTip::textFor( m_tab2->m_comboColumns );
-    text += "<h3>" + m_tab2->textLabel5->text() + "</h3>" + QToolTip::textFor( m_tab2->m_comboRows );
-    text += "<h3>" + m_tab2->textLabel6->text() + "</h3>" + QToolTip::textFor( m_tab2->m_comboDetail );
-  }
-
-  if ( m_tab3 )
-  {
-    text += "<h1>" + m_tab3->caption() + "</h1>" + QWhatsThis::textFor( m_tab3 );
-    text += "<h3>" + m_tab3->textLabel3->text() + "</h3>" + QToolTip::textFor( m_tab3->m_comboOrganizeBy );
-    text += "<h3>" + m_tab3->buttonGroup1->title() + "</h3>" + QToolTip::textFor( m_tab3->buttonGroup1 );
-    text += "<h3>" + m_tab3->m_checkTax->text() + "</h3>" + QToolTip::textFor( m_tab3->m_checkTax );
-  }
-
-  te.setText(text);
-  dlg.setCaption(i18n("Report Configuration Help"));
-  unsigned width = QApplication::desktop()->width();
-  unsigned height = QApplication::desktop()->height();
-
-  te.setMinimumSize(width/2,height/2);
-  layout.setResizeMode(QLayout::Minimum);
-
-  dlg.exec();
+  kapp->invokeHelp("details.reports.config");
 }
 
 #include "kreportconfigurationfilterdlg.moc"
