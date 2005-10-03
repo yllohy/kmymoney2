@@ -1,3 +1,6 @@
+2005-10-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Fix transaction types for Create Schedule
+
 2005-09-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Linked help button in reports configuration dialog to online manual
 

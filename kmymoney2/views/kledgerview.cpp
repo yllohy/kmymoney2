@@ -2076,25 +2076,13 @@ void KLedgerView::slotCreateSchedule(void)
 {
   if (!m_transaction.id().isEmpty()) {
     MyMoneySchedule schedule;
-    MyMoneySchedule::typeE scheduleType = MyMoneySchedule::TYPE_ANY;
-
-    if(m_account.accountGroup() == MyMoneyAccount::Asset) {
-      if(!m_split.value().isNegative())
-        scheduleType = MyMoneySchedule::TYPE_DEPOSIT;
-      else
-        scheduleType = MyMoneySchedule::TYPE_BILL;
-    } else {
-      if(!m_split.value().isNegative())
-        scheduleType = MyMoneySchedule::TYPE_BILL;
-      else
-        scheduleType = MyMoneySchedule::TYPE_DEPOSIT;
-    }
-    if(m_transaction.splitCount() == 2
-    && m_split.action() == MyMoneySplit::ActionTransfer)
-      scheduleType = MyMoneySchedule::TYPE_TRANSFER;
-
-    // create a copy and reset all flags
+    
+    // create a copy of the transaction and reset reconcile flags
+    // check if this is a transfer, coz use of action types in splits is now deprecated (apparently)
     MyMoneyTransaction t;
+    bool potentialTransfer = true;
+    MyMoneyFile* file = MyMoneyFile::instance();
+    
     try {
       t = m_transaction;
       QValueList<MyMoneySplit> list = t.splits();
@@ -2104,6 +2092,9 @@ void KLedgerView::slotCreateSchedule(void)
         s.setReconcileDate(QDate());
         s.setReconcileFlag(MyMoneySplit::NotReconciled);
         t.modifySplit(s);
+        if ((file->account(s.accountId()).accountGroup() != MyMoneyAccount::Asset) &&
+             (file->account(s.accountId()).accountGroup() != MyMoneyAccount::Liability))
+          potentialTransfer = false;
       }
     } catch (MyMoneyException *e) {
       qDebug("Unable to reset flags in %s(%d):'%s'", __FILE__, __LINE__, e->what().latin1());
@@ -2111,12 +2102,21 @@ void KLedgerView::slotCreateSchedule(void)
     }
     schedule.setTransaction(t);
 
-    // FIXME: For some reason, the action field is empty for some deposit transactions.
-    QCString action = m_transaction.splitByAccount(m_account.id()).action();
-    if(action.isEmpty()) {
-      action = MyMoneySplit::ActionDeposit;
+    // take 'action' value from 'this' account's split, or, if it's blank, work it out from the sign
+    QCString action;
+    MyMoneySplit s = m_transaction.splitByAccount(m_account.id());
+    action = s.action();
+    if (action.isEmpty()) {
+      if ((potentialTransfer) && (t.splitCount() == 2)) {
+        action = MyMoneySplit::ActionTransfer;
+      } else {
+        if (s.value().isNegative())
+          action = MyMoneySplit::ActionWithdrawal;
+        else
+          action = MyMoneySplit::ActionDeposit;
+      }
     }
-
+    // display the dialog and await response
     KEditScheduleDialog *m_keditscheddlg = new KEditScheduleDialog(action,
       schedule, this);
 
