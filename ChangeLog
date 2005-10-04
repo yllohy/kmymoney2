@@ -1,3 +1,6 @@
+2005-10-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1221979 (KMyMoney won't start)
+
 2005-10-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix transaction types for Create Schedule
 
