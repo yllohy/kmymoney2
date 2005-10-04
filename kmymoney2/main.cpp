@@ -106,6 +106,13 @@ int main(int argc, char *argv[])
 
   KApplication* a = new KApplication();
 
+  if(KGlobal::locale()->monetaryThousandsSeparator().isEmpty()
+  || KGlobal::locale()->monetaryDecimalSymbol().isEmpty()) {
+    KMessageBox::error(0, i18n("Either the monetary decimal symbol or the monetary thousands separator are not correctly set in the KDE Control Center's Country/Region & Language settings. Please set to reasonable values and start KMyMoney again."), i18n("Invalid settings"));
+    delete a;
+    exit(1);
+  }
+
   // show startup logo
   KStartupLogo* splash = new KStartupLogo();
   a->processEvents();

@@ -287,19 +287,24 @@ void kMyMoneyEdit::ensureFractionalPart(void)
 
 void kMyMoneyEdit::ensureFractionalPart(QString& s) const
 {
+
   KLocale* locale = KGlobal::locale();
+  QString decimalSymbol = locale->monetaryDecimalSymbol();
+  if(decimalSymbol.isEmpty())
+    decimalSymbol = ".";
+
   // If text contains no 'monetaryDecimalSymbol' then add it
   // followed by the required number of 0s
   if (!s.isEmpty()) {
     if(m_prec > 0) {
-      if (!s.contains(locale->monetaryDecimalSymbol())) {
-        s += locale->monetaryDecimalSymbol();
+      if (!s.contains(decimalSymbol)) {
+        s += decimalSymbol;
         for (int i=0; i < m_prec; i++)
           s += "0";
       }
     } else {
-      while(s.contains(locale->monetaryDecimalSymbol())) {
-        int pos = s.findRev(locale->monetaryDecimalSymbol());
+      while(s.contains(decimalSymbol)) {
+        int pos = s.findRev(decimalSymbol);
         if(pos != -1) {
           s = s.left(pos);
         }
