@@ -1,3 +1,6 @@
+2005-10-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash reader - link dialog help to online manual (requires 'make install')
+
 2005-10-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1221979 (KMyMoney won't start)
 

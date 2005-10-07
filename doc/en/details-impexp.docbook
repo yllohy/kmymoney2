@@ -234,7 +234,7 @@ improve on this situation in a future release.)
 </para>
 </sect4>
 
-<sect4><title>Securities and Investments</title>
+<sect4 id="gncsecurities"><title>Securities and Investments</title>
 <para>
 Non-currency assets (normally stocks and bonds) are called
 Securities by &kappname;, and represent the main difference between the two
@@ -270,7 +270,7 @@ and multiple currencies.
 </para>
 </sect4>
 
-<sect4><title>Online Quotes 
+<sect4 id="details.impexp.gncquotes"><title>Online Quotes 
 </title>
 <para>
 For obtaining online price and currency rate quotations, GnuCash uses
@@ -296,7 +296,7 @@ online quotes are required.
 </sect4>
 </sect3>
 
-<sect3><title>Scheduled Transactions</title>
+<sect3 id="gncschedules"><title>Scheduled Transactions</title>
 <para>
 &kappname; does not retain the separation made in GnuCash between template
 transactions and their frequency of occurrence. Transaction data will
@@ -350,7 +350,7 @@ These will not necessarily, however, match precisely those reports available in 
 </sect2>
 
 <sect2><title>Selecting Importer Options</title>
-<para>
+<para id="details.impexp.gncoptions">
 	<screenshot>
 	<mediaobject>
 	<imageobject>
@@ -361,10 +361,10 @@ These will not necessarily, however, match precisely those reports available in 
 </para>
 
 <sect3><title>Investment Handling</title>
-<para>See "Securities and Investments" above.</para>
+<para>See <link linkend="gncsecurities">"Securities and Investments"</link> above.</para>
 </sect3>
 <sect3><title>Scheduled Transactions</title>
-<para>See "Scheduled Transactions" above.</para>
+<para>See <link linkend="gncschedules">"Scheduled Transactions"</link> above.</para>
 </sect3>
 <sect3><title>Debug Options</title>
 <para>

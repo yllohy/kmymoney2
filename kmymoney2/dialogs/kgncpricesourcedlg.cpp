@@ -26,6 +26,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include <kapplication.h>
 #include <kurlrequester.h>
 #include <ktextbrowser.h>
 #include <klocale.h>
@@ -98,39 +99,7 @@ QString KGncPriceSourceDlg::selectedSource() const {
 
 void KGncPriceSourceDlg::slotHelp(void)
 {
-
-  QString helpstring = i18n(
-  "<h1>Online Quote Price Sources</h1>"
-  "<p>For obtaining the latest prices of investments, GnuCash uses a collection of Perl scripts"
-  " under the name of Finance::Quote. A number of such scripts have been developed over the years,"
-  " and contributed to the project. </p>"
-  "<p>KMyMoney takes a different approach, namely the use of a URL in conjuction with the stock's"
-  " ticker symbol to retrieve prices directly,where such facilities are available,"
-  " and does not at this time support such a wide variety of sources. We do however"
-  " offer the facility for defining your own sources without requiring a knowledge of Perl,"
-  " (though an understanding of Regular Expressions may be helpful!!). The use of a URL means"
-  " that the 'source' could be a shell script or other Linux executable, if you have the skills to produce these. Use"
-  " the Settings menu, Configure KMyMoney and select Online Quotes, to supply new sources. (N.B. Due to a quirk"
-  " of Qt, you may need to maximize the window to see the full instructions.)</p>"
-  "<p>Do not worry too much about any mistakes you may make here. They can always be corrected"
-  " later, via the Tools/Securities menu item.</p>"
-  "<p>Please be aware that some of the sources used may have restrictions on the use"
-  " which you make of their prices. You should consult the Terms and Conditions of these sites"
-  " to ensure that you are abiding by any such rules.</p>" );
-
-  QDialog dlg;
-  QVBoxLayout layout( &dlg, 11, 6, "Layout17");
-  KTextBrowser te(&dlg,"Help");
-  layout.addWidget(&te);
-  te.setReadOnly(true);
-  te.setTextFormat(Qt::RichText);
-  te.setText(helpstring);
-  dlg.setCaption(i18n("Online Quote Sources Help"));
-  unsigned width = QApplication::desktop()->width();
-  unsigned height = QApplication::desktop()->height();
-  te.setMinimumSize(width/2,height/2);  
-  layout.setResizeMode(QLayout::Minimum);
-  dlg.exec();
+  kapp->invokeHelp ("details.impexp.gncquotes");
 }
 
 #include "kgncpricesourcedlg.moc"
