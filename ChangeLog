@@ -1,3 +1,8 @@
+2005-10-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added MyMoneyObject as base object to be used for all storable
+    MyMoneyXXX objects.
+  * Converted MyMoneyAccount to use MyMoneyObject
+
 2005-10-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash reader - link dialog help to online manual (requires 'make install')
 
