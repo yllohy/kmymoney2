@@ -48,6 +48,7 @@
 #include "mymoney/mymoneyfinancialcalculatortest.h"
 #include "mymoney/mymoneysecuritytest.h"
 #include "mymoney/mymoneypricetest.h"
+#include "mymoney/mymoneyobjecttest.h"
 
 #include "reports/pivottabletest.h"
 #include "reports/querytabletest.h"
@@ -105,6 +106,7 @@ main(int /* argc */, char** /* argv */ )
 
   // mymoney tests
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyExceptionTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyObjectTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyKeyValueContainerTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyObserverTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyMoneyTest);

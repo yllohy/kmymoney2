@@ -57,7 +57,7 @@ KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountT
   // using showAbortButton()
   m_kButtonAbort->hide();
   m_accountSelector->loadList(accountType);
-  
+
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem skipButtonItem( i18n( "&Skip" ),
                     QIconSet(il->loadIcon("redo", KIcon::Small, KIcon::SizeSmall)),
@@ -76,16 +76,16 @@ KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountT
                     i18n("Accepts the selected action and continues"),
                     i18n("Use this to accept the selection and continue processing the transaction"));
   m_qbuttonOk->setGuiItem(okButtenItem);
-  
+
   KGuiItem abortButtenItem( i18n("&Abort" ),
                     QIconSet(il->loadIcon("stop", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Abort the import operation and dismiss all changes"),
                     i18n("Use this to abort the import. Your financial data will be in the state before you started the QIF import."));
   m_kButtonAbort->setGuiItem(abortButtenItem);
 
-    
+
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
-  
+
   connect(m_createButton, SIGNAL(clicked()), this, SLOT(slotCreateAccount()));
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(accept()));
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
@@ -151,7 +151,7 @@ void KAccountSelectDlg::slotCreateAccount(void)
     // wizard selected
     KNewAccountWizard* wizard = new KNewAccountWizard(this);
     connect(wizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotCreateInstitution()));
-    
+
     wizard->setAccountName(m_account.name());
     wizard->setAccountType(m_account.accountType());
     wizard->setOpeningBalance(m_account.openingBalance());
@@ -161,7 +161,7 @@ void KAccountSelectDlg::slotCreateAccount(void)
       // keep a possible description field
       newAccount.setDescription(m_account.description());
       parentAccount = wizard->parentAccount();
-      
+
       MyMoneyFile* file = MyMoneyFile::instance();
       MyMoneySchedule newSchedule = wizard->schedule();
       try {
@@ -197,7 +197,7 @@ void KAccountSelectDlg::slotCreateAccount(void)
     // need to create a hierarchy.
     int pos;
     MyMoneyFile *file = MyMoneyFile::instance();
-    
+
     try
     {
       while((pos = newAccount.name().find(':')) != -1) {
@@ -208,14 +208,14 @@ void KAccountSelectDlg::slotCreateAccount(void)
         file->addAccount(newAccount, parentAccount);
         parentAccount = newAccount;
         newAccount.setParentAccountId(QCString());  // make sure, there's no parent
-        newAccount.setAccountId(QCString());        // and no id set for adding
+        newAccount.clearId();                       // and no id set for adding
         newAccount.setName(remainder);
       }
-      
+
       file->addAccount(newAccount, parentAccount);
       m_accountSelector->loadList(m_accountType);
       m_accountSelector->setSelected(newAccount.id());
-/*      
+/*
       // widgets are updated in update() by engine's notification
       if(isCategory)
         m_accountComboBox->setCurrentItem(file->accountToCategory(newAccount.id()));
@@ -256,7 +256,7 @@ void KAccountSelectDlg::showAbortButton(const bool visible)
 int KAccountSelectDlg::exec(void)
 {
   int rc = Rejected;
-  
+
   if(m_mode == 1) {
     slotCreateAccount();
     rc = result();
@@ -264,7 +264,7 @@ int KAccountSelectDlg::exec(void)
   if(rc != Accepted) {
     m_createButton->setFocus();
     rc = KAccountSelectDlgDecl::exec();
-  }    
+  }
   return rc;
 }
 

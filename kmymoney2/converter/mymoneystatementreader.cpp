@@ -109,7 +109,7 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
     m_userAbort = ! selectOrCreateAccount(Select, m_account);
 
   signalProgress(0, s.m_listTransactions.count(), "Importing Statement ...");
-    
+
   //
   // Process the transactions
   //
@@ -179,7 +179,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
   // set these values if a transfer split is needed at the very end.
   MyMoneyMoney transfervalue;
-   
+
   // If the user has chosent to import into an investment account, determine the correct account to use
   MyMoneyAccount thisaccount = m_account;
   if ( thisaccount.accountType() == MyMoneyAccount::Investment )
@@ -193,7 +193,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       // (2a) the symbol of the underlying security matches the security of the
       // transaction, or
       // (2b) the name of the security matches the name of the security of the transaction.
-  
+
       // search through each subordinate account
       bool found = false;
       QCStringList accounts = thisaccount.accountList();
@@ -204,17 +204,17 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         MyMoneySecurity security = file->security( currencyid );
         QString symboltoken = security.tradingSymbol() + " ";
         QString nametoken = " " + security.name();
-  
-        if ( 
+
+        if (
           t_in.m_strSecurity.startsWith(symboltoken,false)
           ||
-          (t_in.m_strSecurity == nametoken) 
+          (t_in.m_strSecurity == nametoken)
         )
         {
           s1.setAccountId(*it_account);
           thisaccount = file->account(*it_account);
           found = true;
-  
+
           // update the price, while we're here.  in the future, this should be
           // an option
           QCString basecurrencyid = file->baseCurrency().id();
@@ -225,7 +225,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
             file->addPrice(newprice);
           }
         }
-  
+
         ++it_account;
       }
 
@@ -243,7 +243,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     {
       s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
       s1.setAction(MyMoneySplit::ActionReinvestDividend);
-      
+
       MyMoneySplit s2;
       s2.setMemo(t_in.m_strMemo);
       s2.setAccountId(findOrCreateIncomeAccount("_Dividend"));
@@ -273,7 +273,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       //
       // This should probably change.  It would be more consistent to ALWAYS
       // interpret the 'amount' as the cash account part.
-      
+
       s1.setAccountId(findOrCreateIncomeAccount("_Dividend"));
       s1.setShares(t_in.m_moneyAmount);
       s1.setValue(t_in.m_moneyAmount);
@@ -287,33 +287,33 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       s2.setAction(MyMoneySplit::ActionDividend);
       s2.setAccountId(thisaccount.id());
       t.addSplit(s2);
-      
+
       transfervalue = -t_in.m_moneyAmount-t_in.m_moneyFees;
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaBuy || t_in.m_eAction==MyMoneyStatement::Transaction::eaSell)
     {
       s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
       s1.setAction(MyMoneySplit::ActionBuyShares);
-      
+
       transfervalue = -t_in.m_moneyAmount;
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaNone)
     {
       // User is attempting to import a non-investment transaction into this
-      // investment account.  This is not supportable the way KMyMoney is 
+      // investment account.  This is not supportable the way KMyMoney is
       // written.  However, if a user has an associated brokerage account,
       // we can stuff the transaction there.
-      
+
       QCString brokerageactid = m_account.value("kmm-brokerage-account").utf8();
       if ( ! brokerageactid.isEmpty() )
       {
         s1.setAccountId(brokerageactid);
-    
+
         if(!s1.value().isNegative())
           s1.setAction(MyMoneySplit::ActionDeposit);
         else
           s1.setAction(MyMoneySplit::ActionWithdrawal);
-          
+
         // Needed to satisfy the bankid check below.
         thisaccount = file->account(brokerageactid);
       }
@@ -395,7 +395,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       }
       delete e;
     }
-    
+
     //
     // Fill in other side of the transaction (category/etc) based on payee
     //
@@ -418,7 +418,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     {
       // Default to using the most recent transaction as the reference
       MyMoneyTransaction t_old = list.last();
-      
+
       // if there is more than one matching transaction, try to be a little
       // smart about which one we take.  for now, we'll see if there's one
       // with the same VALUE as our imported transaction, and if so take that one.
@@ -432,11 +432,11 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
           {
             t_old = *it_trans;
             break;
-          }        
-          --it_trans;        
-        }      
+          }
+          --it_trans;
+        }
       }
-    
+
       QValueList<MyMoneySplit>::ConstIterator it_split;
       for(it_split = t_old.splits().begin(); it_split != t_old.splits().end(); ++it_split)
       {
@@ -447,7 +447,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
           MyMoneySplit s(*it_split);
           s.setReconcileFlag(MyMoneySplit::NotReconciled);
           s.setId(QCString());
-    
+
           if ( t_old.splits().count() == 2 )
           {
             s.setShares(-s1.shares());
@@ -457,12 +457,12 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         }
       }
     }
-    
+
   }
 
   t.addSplit(s1);
 
-  // The fees has to be added AFTER the interest, because 
+  // The fees has to be added AFTER the interest, because
   // KLedgerViewInvestments::preloadInvestmentSplits expects the splits to be
   // ordered this way.
   if ( t_in.m_moneyFees != 0.0 )
@@ -474,7 +474,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     s.setAccountId(findOrCreateExpenseAccount("_Fees"));
     t.addSplit(s);
   }
-  
+
   // Add the 'account' split if it's needed
   if ( ! transfervalue.isZero() )
   {
@@ -490,7 +490,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       t.addSplit(s);
     }
   }
-  
+
   // Add the transaction
   try {
     // check for duplicates ONLY by Bank ID in this account.
@@ -513,11 +513,11 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   } catch (MyMoneyException *e) {
     QString message(i18n("Problem adding imported transaction: "));
     message += e->what();
-    
+
     int result = KMessageBox::warningContinueCancel(0, message);
     if ( result == KMessageBox::Cancel )
         throw new MYMONEYEXCEPTION("USERABORT");
-    
+
     delete e;
   }
 }
@@ -550,7 +550,7 @@ bool MyMoneyStatementReader::selectOrCreateAccount(const SelectCreateMode /*mode
           ( (*it_account).number() == accountNumber )
         )
         {
-          account.setAccountId( (*it_account).id() );
+          account.setId( (*it_account).id() );
           accountId = (*it_account).id();
           break;
         }
@@ -633,7 +633,7 @@ void MyMoneyStatementReader::signalProgress(int current, int total, const QStrin
 const QCString MyMoneyStatementReader::findOrCreateIncomeAccount(const QString& searchname)
 {
   QCString result;
-  
+
   MyMoneyFile *file = MyMoneyFile::instance();
 
   // First, try to find this account as an income account
@@ -647,7 +647,7 @@ const QCString MyMoneyStatementReader::findOrCreateIncomeAccount(const QString& 
     {
       result = *it_accid;
       break;
-    }  
+    }
     ++it_accid;
   }
 
@@ -668,7 +668,7 @@ const QCString MyMoneyStatementReader::findOrCreateIncomeAccount(const QString& 
 const QCString MyMoneyStatementReader::findOrCreateExpenseAccount(const QString& searchname)
 {
   QCString result;
-  
+
   MyMoneyFile *file = MyMoneyFile::instance();
 
   // First, try to find this account as an income account
@@ -682,7 +682,7 @@ const QCString MyMoneyStatementReader::findOrCreateExpenseAccount(const QString&
     {
       result = *it_accid;
       break;
-    }  
+    }
     ++it_accid;
   }
 

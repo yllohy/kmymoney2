@@ -305,7 +305,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   // make sure our account does not have an id and no parent assigned
   // and certainly no children in case we create a new account
   if(!m_isEditing) {
-    m_account.setAccountId(QCString());
+    m_account.clearId();
     m_account.setParentAccountId(QCString());
     QCStringList::ConstIterator it;
     while((it = m_account.accountList().begin()) != m_account.accountList().end())

@@ -1755,6 +1755,12 @@ const MyMoneyPrice MyMoneyFile::price(const QCString& fromId, const QCString& to
   if(fromId.isEmpty() || to.isEmpty())
     return MyMoneyPrice();
 
+  // we don't search our tables if someone asks stupid stuff
+  if(fromId == toId) {
+    qDebug("price request for same currency");
+    return MyMoneyPrice(fromId, toId, date, MyMoneyMoney(1,1), "KMyMoney");
+  }
+
   // search 'from-to' rate
   MyMoneyPrice rc = m_storage->price(fromId, to, date, exactDate);
   if(!rc.isValid()) {

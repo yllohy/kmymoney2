@@ -32,6 +32,7 @@
 
 MyMoneyAccount::MyMoneyAccount()
 {
+  setRtti(MyMoneyObject::Account);
   m_openingBalance = MyMoneyMoney(0);
   m_accountType = UnknownAccountType;
 }
@@ -40,10 +41,11 @@ MyMoneyAccount::~MyMoneyAccount()
 {
 }
 
-MyMoneyAccount::MyMoneyAccount(const QCString& id, const MyMoneyAccount& right)
+MyMoneyAccount::MyMoneyAccount(const QCString& id, const MyMoneyAccount& right) :
+  MyMoneyObject(id)
 {
   *this = right;
-  m_id = id;
+  setId(id);
 }
 
 void MyMoneyAccount::setName(const QString& name)
@@ -176,10 +178,12 @@ const MyMoneyMoney MyMoneyAccount::balance(void) const
 }
 */
 
+#if 0
 void MyMoneyAccount::setAccountId(const QCString& id)
 {
   m_id = id;
 }
+#endif
 
 void MyMoneyAccount::addAccountId(const QCString& account)
 {
@@ -222,7 +226,7 @@ const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(MyMoneyAccount::
 const bool MyMoneyAccount::operator == (const MyMoneyAccount& right) const
 {
   return (static_cast<const MyMoneyKeyValueContainer>(*this) == static_cast<const MyMoneyKeyValueContainer>(right) &&
-      (m_id == right.m_id) &&
+      (static_cast<const MyMoneyObject>(*this) == static_cast<const MyMoneyObject>(right)) &&
       (m_accountList == right.m_accountList) &&
       (m_accountType == right.m_accountType) &&
       (m_lastModified == right.m_lastModified) &&

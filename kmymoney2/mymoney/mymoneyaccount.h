@@ -33,10 +33,11 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "mymoneymoney.h"
-#include "mymoneyutils.h"
-#include "mymoneykeyvaluecontainer.h"
+#include <kmymoney/mymoneymoney.h>
+#include <kmymoney/mymoneyobject.h>
+#include <kmymoney/mymoneykeyvaluecontainer.h>
 #include <kmymoney/export.h>
+#include "mymoneyutils.h"
 class MyMoneyTransaction;
 class MyMoneyInstitution;
 class MyMoneyFile;
@@ -74,7 +75,7 @@ class MyMoneyFile;
   * @author Thomas Baumgart 2002
   *
 **/
-class KMYMONEY_EXPORT MyMoneyAccount : public MyMoneyKeyValueContainer
+class KMYMONEY_EXPORT MyMoneyAccount : public MyMoneyObject, public MyMoneyKeyValueContainer
 {
 public:
 
@@ -182,6 +183,7 @@ public:
 
   const MyMoneyAccount::accountTypeE accountGroup(void) const;
 
+#if 0
   /**
     * This method returns the ID of the account under which it is known
     * inside the MyMoneyFile.
@@ -190,6 +192,7 @@ public:
     * @see setID()
     */
   const QCString id(void) const { return m_id; }
+#endif
 
   /**
     * This method returns the id of the MyMoneyInstitution object this account
@@ -424,12 +427,13 @@ public:
     */
   void setParentAccountId(const QCString& parent);
 
+#if 0
   /**
     * This method is used to set a new account id
     * @param id QString reference to new id.
     */
   void setAccountId(const QCString& id);
-
+#endif
 
   /**
     * This method is used to update m_lastModified to the current date
@@ -468,11 +472,13 @@ private:
     */
   QCString m_institution;
 
+#if 0
   /**
     * This member variable keeps the ID of the institution under which it
     * is known inside the MyMoneyFile.
     */
   QCString  m_id;
+#endif
 
   /**
     * This member variable keeps the name of the account

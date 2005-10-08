@@ -1,0 +1,59 @@
+/***************************************************************************
+                          mymoneyobject.cpp
+                          -------------------
+    copyright            : (C) 2005 by Thomas Baumagrt
+    email                : ipwizard@users.sourceforge.net
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include "mymoneyobject.h"
+
+MyMoneyObject::MyMoneyObject(const QCString& id) :
+  m_type(UnknownObject)
+{
+  m_id = id;
+}
+
+MyMoneyObject::MyMoneyObject() :
+  m_type(UnknownObject)
+{
+}
+
+MyMoneyObject::~MyMoneyObject()
+{
+}
+
+void MyMoneyObject::setId(const QCString& id)
+{
+  m_id = id;
+}
+
+const bool MyMoneyObject::operator == (const MyMoneyObject& right) const
+{
+  return m_id == right.m_id;
+}
+
+void MyMoneyObject::clearId(void)
+{
+  m_id = QCString();
+}
+
+void MyMoneyObject::setRtti(const MyMoneyObjectType& type)
+{
+  m_type = type;
+}
+

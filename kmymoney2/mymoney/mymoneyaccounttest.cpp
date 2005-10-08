@@ -297,7 +297,7 @@ void MyMoneyAccountTest::testEquality()
 	a.setLastReconciliationDate(QDate::currentDate());
 	a.setAccountType(MyMoneyAccount::Asset);
 	a.setParentAccountId("P-ID");
-	a.setAccountId("A-ID");
+	a.setId("A-ID");
 	a.setCurrencyId("C-ID");
 	a.setValue("Key", "Value");
 
@@ -346,7 +346,7 @@ void MyMoneyAccountTest::testEquality()
 	CPPUNIT_ASSERT(!(b == a));
 	b = a;
 
-	a.setAccountId("A-noID");
+	a.setId("A-noID");
 	CPPUNIT_ASSERT(!(b == a));
 	b = a;
 
