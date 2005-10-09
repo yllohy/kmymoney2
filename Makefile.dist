@@ -1,11 +1,11 @@
 am_min_maj := 1
-am_min_min := 6
-am_min_rel := 3
+am_min_min := 7
+am_min_rel := 9
 
-am_ver := '$(shell automake --version | head -n 1)'
-am_ver_maj := $(shell echo ${am_ver} | sed 's/.*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/')
-am_ver_min := $(shell echo ${am_ver} | sed 's/.*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/')
-am_ver_rel := $(shell echo ${am_ver} | sed 's/.*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/')
+am_ver := $(shell automake --version | head -n 1)
+am_ver_maj := $(shell echo "${am_ver}" | sed 's/.*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/')
+am_ver_min := $(shell echo "${am_ver}" | sed 's/.*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/')
+am_ver_rel := $(shell echo "${am_ver}" | sed 's/.*\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/')
 am_ver_prop := $(shell expr ${am_ver_maj} \> ${am_min_maj} \| ${am_ver_maj} \= ${am_min_maj} \& ${am_ver_min} \> ${am_min_min} \| ${am_ver_min} \= ${am_min_min} \& ${am_ver_rel} \>= ${am_min_rel})
 
 all: 
@@ -21,8 +21,8 @@ all:
 	fi
 
 	# check for a minimum automake package
-	@if test ${am_ver_prop} == 0; then \
-	   echo "Please install an automake package version ${am_min_maj}.${am_min_min}.${am_min_rel} or greater and rerun the command"; \
+	@if test ${am_ver_prop} = 0; then \
+	   echo -e "Please install an automake package version ${am_min_maj}.${am_min_min}.${am_min_rel} or greater\nand rerun the command"; \
 	   exit 1; \
 	fi
 
