@@ -328,8 +328,9 @@ void KAccountsView::suspendUpdate(const bool suspend)
 
 void KAccountsView::slotRefreshView(void)
 {
-
+  ::timetrace("Start KAccountsView::slotRefreshView");
   refresh(m_selectedAccount);
+  ::timetrace("Done KAccountsView::slotRefreshView");
 }
 
 void KAccountsView::refreshNetWorth(void)
@@ -566,6 +567,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
     // Do all 5 account roots
     try {
       // Asset
+      ::timetrace("Start KAccountsView::refreshNetWorth::Asset");
       MyMoneyAccount assetAccount = file->asset();
       KAccountListItem *assetTopLevelAccount = new KAccountListItem(accountListView,
             assetAccount);
@@ -592,6 +594,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
           showSubAccounts(subAccounts, accountItem, true);
         }
       }
+      ::timetrace("Done KAccountsView::refreshNetWorth::Asset");
 
       // Liability
       MyMoneyAccount liabilityAccount = file->liability();
@@ -621,6 +624,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
           showSubAccounts(subAccounts, accountItem, true);
         }
       }
+      ::timetrace("Done KAccountsView::refreshNetWorth::Liability");
 
       // Income
       MyMoneyAccount incomeAccount = file->income();
@@ -649,6 +653,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
           m_hiddenCategories->show();
         }
       }
+      ::timetrace("Done KAccountsView::refreshNetWorth::Income");
 
       // Expense
       MyMoneyAccount expenseAccount = file->expense();
@@ -677,6 +682,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
           m_hiddenCategories->show();
         }
       }
+      ::timetrace("Done KAccountsView::refreshNetWorth::Expense");
 
       // Equity
       if(KMyMoneyUtils::isExpertMode()) {
@@ -700,6 +706,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
           }
         }
       }
+      ::timetrace("Done KAccountsView::refreshNetWorth::Equity");
 
     } catch (MyMoneyException *e) {
       qDebug("Exception in assets account refresh: %s", e->what().latin1());
@@ -733,13 +740,11 @@ const bool KAccountsView::showSubAccounts(const QCStringList& accounts, KAccount
     KAccountListItem *accountItem  = new KAccountListItem(parentItem,
           m_accountMap[*it]);
 
-    accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
-
     accountUsed |= (m_transactionCountMap[*it] > 0);
 
     QCStringList subAccounts = m_accountMap[*it].accountList();
     if (subAccounts.count() >= 1) {
-      accountUsed |= showSubAccounts(subAccounts, accountItem, used) || m_transactionCountMap[*it] > 0;
+      accountUsed |= showSubAccounts(subAccounts, accountItem, used);
     }
 
     if(accountUsed == false && m_hideCategory == true) {

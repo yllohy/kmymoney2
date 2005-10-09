@@ -300,11 +300,13 @@ void KInvestmentView::slotTabSelected(QWidget *pWidget)
 
 void KInvestmentView::slotReloadView(void)
 {
+  ::timetrace("Start KInvestmentView::slotReloadView");
   // make sure to determine the current account from scratch
   m_account = MyMoneyAccount();
   m_accountId = QCString();
 
   slotRefreshView();
+  ::timetrace("Done KInvestmentView::slotReloadView");
 }
 
 void KInvestmentView::slotRefreshView(void)

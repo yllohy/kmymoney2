@@ -459,8 +459,10 @@ void KPayeesView::show()
 
 void KPayeesView::slotReloadView(void)
 {
+  ::timetrace("Start KPayeesView::slotReloadView");
   slotRefreshView();
   rearrange();
+  ::timetrace("Done KPayeesView::slotReloadView");
 }
 
 void KPayeesView::slotRefreshView(void)

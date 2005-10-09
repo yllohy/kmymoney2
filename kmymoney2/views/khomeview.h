@@ -119,7 +119,7 @@ public slots:
   void slotOpenURL(const KURL &url, const KParts::URLArgs& args);
 
   void slotRefreshView(void);
-  void slotReloadView(void) { slotRefreshView(); };
+  void slotReloadView(void) { if(isVisible()) slotRefreshView(); };
 };
 
 #endif

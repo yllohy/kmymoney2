@@ -103,6 +103,7 @@ KCategoriesView::~KCategoriesView()
 
 void KCategoriesView::slotRefreshView(void)
 {
+  ::timetrace("Start KCategoriesView::slotRefreshView");
   MyMoneyTracer tracer("KCategoriesView", "slotRefreshView");
 
   KConfig *config = KGlobal::config();
@@ -200,6 +201,7 @@ void KCategoriesView::slotRefreshView(void)
 
   // free some memory (we don't need this map anymore)
   m_accountMap.clear();
+  ::timetrace("Done KCategoriesView::slotRefreshView");
 }
 
 const bool KCategoriesView::showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem,

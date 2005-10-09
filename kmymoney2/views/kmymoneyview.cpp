@@ -791,6 +791,7 @@ bool KMyMoneyView::readFile(const KURL& url)
   // for now by keeping track of which method can be used.
   bool haveAt = true;
 
+  ::timetrace("start reading file");
   if(file.open(IO_ReadOnly)) {
     QByteArray hdr(2);
     int cnt;
@@ -901,6 +902,7 @@ bool KMyMoneyView::readFile(const KURL& url)
     rc = false;
   }
 
+  ::timetrace("done reading file");
   if(rc == false)
     return rc;
 
@@ -951,6 +953,8 @@ bool KMyMoneyView::readFile(const KURL& url)
     page = pageIndex(m_homeViewFrame);
   }
 
+  ::timetrace("start fixing file");
+
   // For debugging purposes, we can turn off the automatic fix manually
   // by setting the entry in kmymoney2rc to true
   config->setGroup("General Options");
@@ -975,11 +979,13 @@ bool KMyMoneyView::readFile(const KURL& url)
   // new account wizard
   // kmymoney2->createInitialAccount();
 
+  ::timetrace("done fixing file");
   // if we currently see a different page, then select the right one
   if(page != activePageIndex()) {
     showPage(page);
   }
 
+  ::timetrace("file open");
   m_fileOpen = true;
   return true;
 }

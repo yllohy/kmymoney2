@@ -154,8 +154,8 @@ void KReportsView::KReportTab::updateReport(void)
   m_part->begin();
   m_part->write(createTable());
   m_part->end();
-  
-  drawChart( *m_chartView ); 
+
+  drawChart( *m_chartView );
 }
 
 QString KReportsView::KReportTab::createTable(const QString& links)
@@ -175,7 +175,7 @@ QString KReportsView::KReportTab::createTable(const QString& links)
   try {
     html += header;
     html += links;
-    
+
     if ( m_report.reportType() == MyMoneyReport::ePivotTable )
       html += PivotTable( m_report ).renderHTML();
     else if ( m_report.reportType() == MyMoneyReport::eQueryTable )
@@ -283,6 +283,7 @@ void KReportsView::show()
 
 void KReportsView::slotRefreshView(void)
 {
+  ::timetrace("Start KReportsView::slotRefreshView");
   //
   // Rebuild the list page
   //
@@ -293,7 +294,7 @@ void KReportsView::slotRefreshView(void)
 
   QString pagename = "9. " + i18n("Charts");
   KListViewItem* chartnode = new KListViewItem(m_reportListView,pagename);
-  
+
   QMap<QString,KListViewItem*> groupitems;
   QValueList<ReportGroup> defaultreports;
   defaultReports(defaultreports);
@@ -315,7 +316,7 @@ void KReportsView::slotRefreshView(void)
       // ALSO place it into the Charts list if it's displayed as a chart by default
       if ( (*it_report).isChartByDefault() )
         new KReportListItem( chartnode, *it_report );
-      
+
       ++it_report;
     }
 
@@ -325,13 +326,13 @@ void KReportsView::slotRefreshView(void)
   // Rename the charts item to place it at this point in the list.
   pagename = QString::number(pagenumber++) + ". " + i18n("Charts");
   chartnode->setText(0,pagename);
-    
+
   // Custom reports
 
   pagename = QString::number(pagenumber++) + ". " + i18n("Favorite Reports");
   KListViewItem* favoritenode = new KListViewItem(m_reportListView,pagename);
   KListViewItem* orphannode = NULL;
-  
+
   QValueList<MyMoneyReport> customreports = MyMoneyFile::instance()->reportList();
   QValueList<MyMoneyReport>::const_iterator it_report = customreports.begin();
   while( it_report != customreports.end() )
@@ -358,7 +359,7 @@ void KReportsView::slotRefreshView(void)
     // ALSO place it into the Charts list if it's displayed as a chart by default
     if ( (*it_report).isChartByDefault() )
       new KReportListItem( chartnode, *it_report );
-      
+
     ++it_report;
   }
 
@@ -380,6 +381,7 @@ void KReportsView::slotRefreshView(void)
       tab->updateReport();
     ++index;
   }
+  ::timetrace("Done KReportsView::slotRefreshView");
 }
 
 void KReportsView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
@@ -744,7 +746,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Default Report")
     ));
 
-#ifdef HAVE_KDCHART   
+#ifdef HAVE_KDCHART
     list.push_back(MyMoneyReport(
       MyMoneyReport::eExpenseIncome,
       MyMoneyReport::eMonths,
@@ -757,7 +759,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.back().setDetailLevel(MyMoneyReport::eDetailTop);
     list.back().setChartType(MyMoneyReport::eChartLine);
     list.back().setChartDataLabels(false);
-    
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eExpenseIncome,
       MyMoneyReport::eMonths,
@@ -770,7 +772,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.back().setDetailLevel(MyMoneyReport::eDetailGroup);
     list.back().setChartType(MyMoneyReport::eChartPie);
 #endif
-    
+
     groups.push_back(list);
   }
   {
@@ -814,7 +816,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.back().setChartGridLines(false);
     list.back().setDetailLevel(MyMoneyReport::eDetailTotal);
     list.back().setChartType(MyMoneyReport::eChartLine);
-    
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eInstitution,
       MyMoneyReport::eQCnone,

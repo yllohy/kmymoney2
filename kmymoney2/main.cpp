@@ -62,6 +62,8 @@ KMyMoney2App* kmymoney2;
 
 int main(int argc, char *argv[])
 {
+  timer.start();
+
   QString feature;
 
 #ifdef _CHECK_MEMORY
@@ -101,8 +103,6 @@ int main(int argc, char *argv[])
 #endif
 
   KMyMoneyUtils::checkConstants();
-
-  timer.start();
 
   KApplication* a = new KApplication();
 

@@ -199,12 +199,14 @@ void KGlobalLedgerView::loadInvestmentView(void)
 
 void KGlobalLedgerView::slotReloadView(void)
 {
+  ::timetrace("Start KGlobalLedgerView::slotReloadView");
   // qDebug("KGlobalLedgerView::slotReloadView()");
 
   // make sure to determine the current account from scratch
   m_accountId = QCString();
 
   slotRefreshView();
+  ::timetrace("Done KGlobalLedgerView::slotReloadView");
 }
 
 void KGlobalLedgerView::slotRefreshView(void)
