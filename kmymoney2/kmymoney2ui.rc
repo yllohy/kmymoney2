@@ -1,85 +1,70 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="kmymoney2" version="3">
-<MenuBar>
-  <Menu name="file">
-    <Menu name="import" icon="fileimport" append="save_merge"><text>&amp;Import</text>
-      <Action name="file_import_qif"/>
-      <Action name="file_import_gnc"/>
-      <ActionList name="file_import_plugins"/>
-      <Separator/>
-      <Action name="file_import_template"/>
-    </Menu>
-    <Menu name="export" icon="fileexport" append="save_merge"><text>E&amp;xport</text>
-      <Action name="file_export_qif"/>
-      <Separator/>
-      <Action name="file_export_template"/>
-    </Menu>
-    <Action name="file_view_info"/>
-    <Action name="file_personal_data" icon="personal_data"/>
-    <Action name="file_backup"/>
+<kpartgui version="3" name="kmymoney2" >
+ <MenuBar>
+  <Menu name="file" >
+   <Menu icon="fileimport" append="save_merge" name="import" >
+    <text>&amp;Import</text>
+    <Action name="file_import_qif" />
+    <Action name="file_import_gnc" />
+    <ActionList name="file_import_plugins" />
+    <Separator/>
+    <Action name="file_import_template" />
+   </Menu>
+   <Menu icon="fileexport" append="save_merge" name="export" >
+    <text>E&amp;xport</text>
+    <Action name="file_export_qif" />
+    <Separator/>
+    <Action name="file_export_template" />
+   </Menu>
+   <Action icon="personal_data" name="file_personal_data" />
+   <Action name="file_backup" />
+   <Action icon="info" name="fileinfo" />
+   <Action name="file_view_info" />
   </Menu>
-
-  <Menu name="bank"><text>&amp;Institution</text>
-    <Action name="bank_add" icon="institution_add"/>
+  <Menu name="bank" >
+   <text>&amp;Institution</text>
+   <Action icon="institution_add" name="bank_add" />
   </Menu>
-  <Menu name="account"><text>&amp;Account</text>
-    <Action name="account_open"/>
-    <Action name="account_add" icon="account_add"/>
-    <Action name="category_add"/>
-    <Action name="account_reconcile"/>
-    <Action name="account_find" icon="transaction_find"/>
+  <Menu name="account" >
+   <text>&amp;Account</text>
+   <Action name="account_open" />
+   <Action icon="account_add" name="account_add" />
+   <Action name="category_add" />
+   <Action name="account_reconcile" />
+   <Action icon="transaction_find" name="account_find" />
   </Menu>
   <Merge/>
-  <Menu name="tools">
-    <Action name="qif_editor"/>
-    <Action name="tool_security_editor"/>
-    <Action name="tool_currency_editor"/>
-    <Action name="tool_price_editor"/>
-<!--    <Action name="file_consistency_check"/> -->
-    <Action name="equity_price_update"/>
+  <Menu name="tools" >
+   <Action name="qif_editor" />
+   <Action name="tool_security_editor" />
+   <Action name="tool_currency_editor" />
+   <Action name="tool_price_editor" />
+   <Action name="equity_price_update" />
   </Menu>
-  <Menu name="settings">
-    <Action name="show_transaction_detail" append="show_merge"/>
-    <!-- <Action name="banking_settings" append="configure_merge"/> -->
-    <Action name="enable_messages" append="show_merge"/>
+  <Menu name="settings" >
+   <Action append="show_merge" name="show_transaction_detail" />
+   <Action append="show_merge" name="enable_messages" />
   </Menu>
-
-  <Menu name="help">
-    <Action name="show_tip"/>
+  <Menu name="help" >
+   <Action name="show_tip" />
   </Menu>
-<!--
-  <Menu name="bills"><text>&amp;Bills/Deposits</text>
-    <Action name="bills_add"/>
-  </Menu>
-  <Menu name="reports"><text>&amp;Reports</text>
-    <Action name="report_basic"/>
-  </Menu>
-  <Menu name="plugin"><text>&amp;Plugins</text>
-    <Action name="plugin_load"/>
-    <Action name="plugin_unload"/>
-    <Action name="plugin_list"/>
-  </Menu>
--->
-</MenuBar>
-<ToolBar noMerge="1" name="mainToolBar" fullWidth="true" >
-<text>Main Toolbar</text>
- <Action name="file_new" />
- <Action name="file_open" />
- <Action name="file_save" />
- <Action name="file_print" />
- <Separator />
-  <Action name="bank_add"/>
-  <Action name="account_add"/>
-  <Separator/>
-  <Action name="account_open"/>
-  <Action name="account_reconcile"/>
-  <Action name="account_import"/>
-  <Action name="account_export"/>
-  <Separator/>
-  <Action name="account_find"/>
-<!--
-  <Action name="go_back"/>
-  <Action name="go_forward"/>
--->
-</ToolBar>
+ </MenuBar>
+ <ToolBar noMerge="1" name="mainToolBar" fullWidth="true" >
+  <text>Main Toolbar</text>
+  <Action name="file_quit" />
+  <Action name="file_new" />
+  <Action name="file_open" />
+  <Action name="file_save" />
+  <Action name="file_print" />
+  <Separator name="separator_2" />
+  <Action name="bank_add" />
+  <Action name="account_add" />
+  <Separator name="separator_1" />
+  <Action name="account_open" />
+  <Action name="account_reconcile" />
+  <Action name="account_import" />
+  <Action name="account_export" />
+  <Separator name="separator_0" />
+  <Action name="account_find" />
+ </ToolBar>
 </kpartgui>

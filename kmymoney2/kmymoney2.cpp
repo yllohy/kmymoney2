@@ -80,6 +80,7 @@
 #include "dialogs/kcurrencyeditdlg.h"
 #include "dialogs/kequitypriceupdatedlg.h"
 #include "dialogs/ksecuritylisteditor.h"
+#include "dialogs/kmymoneyfileinfodlg.h"
 
 #include "views/kmymoneyview.h"
 
@@ -105,6 +106,7 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
  DCOPObject("kmymoney2app"),
  myMoneyView(0)
 {
+  ::timetrace("start kmymoney2app constructor");
   // preset the pointer because we need it during the course of this constructor
   kmymoney2 = this;
   config = kapp->config();
@@ -119,24 +121,30 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   // values for margin (11) and spacing(6) taken from KDialog implementation
   QBoxLayout* layout = new QBoxLayout(frame, QBoxLayout::TopToBottom, 11, 6);
 
+  ::timetrace("create view");
   myMoneyView = new KMyMoneyView(frame, "KMyMoneyView");
   layout->addWidget(myMoneyView, 10);
 
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
+  ::timetrace("init statusbar");
   initStatusBar();
+  ::timetrace("init actions");
   initActions();
+  ::timetrace("init options");
   readOptions();
 
   m_pluginSignalMapper = new QSignalMapper( this );
   connect( m_pluginSignalMapper, SIGNAL( mapped( const QString& ) ), this, SLOT( slotPluginImport( const QString& ) ) );
 
   // now initialize the plugin structure
+  ::timetrace("load plugins");
   createInterfaces();
   loadPlugins();
 
   setCentralWidget(frame);
 
+  ::timetrace("done");
   connect(myMoneyView, SIGNAL(viewActivated(int)), this, SLOT(slotSetViewSpecificActions(int)));
 
   connect(&proc,SIGNAL(processExited(KProcess *)),this,SLOT(slotProcessExited()));
@@ -246,6 +254,8 @@ void KMyMoney2App::initActions()
 
   // The tool menu
   new KAction(i18n("QIF Profile Editor..."), "edit", 0, this, SLOT(slotQifProfileEditor()), actionCollection(), "qif_editor");
+
+  new KAction(i18n("File-Information..."), "info", 0, this, SLOT(slotFileInfoDialog()), actionCollection(), "fileinfo");
 
   // The help menu
   new KAction(i18n("&Show tip of the day"), "idea", 0, this, SLOT(slotShowTipOfTheDay()), actionCollection(), "show_tip");
@@ -359,6 +369,12 @@ bool KMyMoney2App::queryExit()
 /////////////////////////////////////////////////////////////////////
 // SLOT IMPLEMENTATION
 /////////////////////////////////////////////////////////////////////
+void KMyMoney2App::slotFileInfoDialog(void)
+{
+  KMyMoneyFileInfoDlg dlg(0);
+  dlg.exec();
+}
+
 void KMyMoney2App::slotFileNew()
 {
   QString prevMsg = slotStatusMsg(i18n("Creating new document..."));
@@ -469,12 +485,16 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
           } else {
             fileName = KURL(); // imported files have no filename
           }
+          ::timetrace("Start checking schedules");
           // Check the schedules
           slotCheckSchedules();
+          ::timetrace("Done checking schedules");
         }
 
         updateCaption();
+        ::timetrace("Announcing new filename");
         emit fileLoaded(fileName);
+        ::timetrace("Announcing new filename done");
       }
     } else {
       slotFileClose();
@@ -996,22 +1016,22 @@ void KMyMoney2App::slotPluginImport(const QString& format)
            * This section is under construction
            */
 
-      	  bool ok = true;
+          bool ok = true;
           unsigned nerrors = plugin->errors().count();
           unsigned nwarns = plugin->warnings().count();
-          
+
           if ( nerrors || nwarns )
           {
             int answer = KMessageBox::warningYesNoCancel(this, i18n("There were %1 errors and %2 warnings found when processing this file.  Would you like to view them?").arg(nerrors).arg(nwarns));
             if (answer == KMessageBox::Cancel)
               ok = false;
-             
+
             if (answer == KMessageBox::Yes)
             {
               // is there a better way to do this?!?!
-              
+
               QString errstring = "<p><b>Errors<b>" + plugin->errors().join("</p><p>") + "</p><b>Warnings</b>" + plugin->warnings().join("</p><p>") + "</p>";
-              
+
               QDialog dlg;
               QVBoxLayout layout( &dlg, 11, 6, "Warnings Layout");
               KTextBrowser te(&dlg,"Warnings");
@@ -1024,13 +1044,13 @@ void KMyMoney2App::slotPluginImport(const QString& format)
               unsigned height = QApplication::desktop()->height();
               te.setMinimumSize(width/2,height/2);
               layout.setResizeMode(QLayout::Minimum);
-              dlg.exec();            
+              dlg.exec();
             }
           }
-        
+
           if ( ok )
 #endif
-      		slotStatementImport(statements);
+          slotStatementImport(statements);
         }
         else
         {

@@ -297,6 +297,8 @@ protected:
   virtual void resizeEvent(QResizeEvent*);
 
 public slots:
+  void slotFileInfoDialog(void);
+
   /** */
   void slotFileNew();
 
