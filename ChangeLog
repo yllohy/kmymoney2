@@ -1,3 +1,9 @@
+2005-10-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added fileinfo dialog to show object counts of current file
+  * Added traces for time measurement
+  * Added patches to Makefile.dist as provided by Bjorn Helgaas
+  * Incremented min automake version to 1.7.9
+
 2005-10-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix a typo which has long annoyed me, tho' nobbut a Brit would notice
 
