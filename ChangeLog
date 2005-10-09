@@ -1,3 +1,6 @@
+2005-10-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Fix a typo which has long annoyed me, tho' nobbut a Brit would notice
+
 2005-10-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added MyMoneyObject as base object to be used for all storable
     MyMoneyXXX objects.
