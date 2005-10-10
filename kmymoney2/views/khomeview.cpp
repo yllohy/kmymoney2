@@ -29,6 +29,8 @@
 #include <dom/dom_element.h>
 #include <dom/dom_doc.h>
 #include <dom/dom_text.h>
+#include <qfile.h>
+#include <qtextstream.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -543,7 +545,7 @@ void KHomeView::showForecast(void)
 
   // collect and process all transactions that have already been entered but
   // are located in the future.
-  filter.setDateFilter(QDate::currentDate(), endDate);
+  filter.setDateFilter(QDate::currentDate().addDays(1), endDate);
   filter.setReportAllSplits(false);
 
   QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
@@ -571,6 +573,27 @@ void KHomeView::showForecast(void)
     }
     ++txnCount;
   }
+
+#if 0
+  QFile trcFile("forecast.csv");
+  trcFile.open(IO_WriteOnly);
+  QTextStream s(&trcFile);
+
+  {
+    s << "Already present transactions\n";
+    QMap<QCString, dailyBalances>::Iterator it_a;
+    QMap<QString, QCString>::ConstIterator it_n;
+    for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
+      MyMoneyAccount acc = file->account(*it_n);
+      it_a = accountList.find(*it_n);
+      s << "\"" << acc.name() << "\",";
+      for(int i = 0; i < 90; ++i) {
+        s << "\"" << (*it_a)[i].formatMoney("") << "\",";
+      }
+      s << "\n";
+    }
+  }
+#endif
 
   // now process all the schedules that may have an impact
   QValueList<MyMoneySchedule> schedule;
@@ -660,7 +683,23 @@ void KHomeView::showForecast(void)
     while(1);
   }
 
-  // drop the current balance into offset 0 and build a sorted index
+#if 0
+  {
+    s << "\n\nAdded scheduled transactions\n";
+    QMap<QCString, dailyBalances>::Iterator it_a;
+    QMap<QString, QCString>::ConstIterator it_n;
+    for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
+      MyMoneyAccount acc = file->account(*it_n);
+      it_a = accountList.find(*it_n);
+      s << "\"" << acc.name() << "\",";
+      for(int i = 0; i < 90; ++i) {
+        s << "\"" << (*it_a)[i].formatMoney("") << "\",";
+      }
+      s << "\n";
+    }
+  }
+#endif
+
   if(accountList.count() > 0) {
     int i = 0;
 
