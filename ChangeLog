@@ -1,3 +1,6 @@
+2005-10-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't include todays transactions twice in the forecast
+
 2005-10-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added fileinfo dialog to show object counts of current file
   * Added traces for time measurement
