@@ -727,7 +727,9 @@ void KMyMoneyView::closeFile(void)
   if ( m_reportsView )
     m_reportsView->slotCloseAll();
 
+  emit kmmFilePlugin (preClose);
   newStorage();
+  emit kmmFilePlugin (postClose);
   m_fileOpen = false;
 }
 
@@ -791,6 +793,7 @@ bool KMyMoneyView::readFile(const KURL& url)
   // for now by keeping track of which method can be used.
   bool haveAt = true;
 
+  emit kmmFilePlugin (preOpen);
   ::timetrace("start reading file");
   if(file.open(IO_ReadOnly)) {
     QByteArray hdr(2);
@@ -939,6 +942,7 @@ bool KMyMoneyView::readFile(const KURL& url)
     // and restart the application with this file. This will for to
     // run the above loop.
     selectBaseCurrency();
+    emit kmmFilePlugin (postOpen);
   }
 
   MyMoneyFile::instance()->suspendNotify(false);
@@ -1093,6 +1097,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
       QString::null, KStdGuiItem::cont(), "WarningNewFileVersion0.5") == KMessageBox::Cancel)
     return false;
 
+  emit kmmFilePlugin (preSave);
   IMyMoneyStorageFormat* pWriter = NULL;
 
   // If this file ends in ".ANON.XML" then this should be written using the
@@ -1148,6 +1153,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
     rc = false;
   }
   delete pWriter;
+  emit kmmFilePlugin (postSave);
   return rc;
 }
 

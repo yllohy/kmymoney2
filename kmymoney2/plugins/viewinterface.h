@@ -82,6 +82,7 @@ public:
 signals:
   void accountSelectedForContextMenu(const MyMoneyAccount& acc);
   void viewStateChanged(bool);
+  void kmmFilePlugin(unsigned int);
 };
 
 }; // namespace

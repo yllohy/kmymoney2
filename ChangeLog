@@ -1,3 +1,6 @@
+2005-10-11 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Preliminary signals for proposed file ops plugin
+
 2005-10-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't include todays transactions twice in the forecast
 

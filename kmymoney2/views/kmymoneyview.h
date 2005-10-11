@@ -85,6 +85,10 @@ public:
     InvestmentsView,
     ReportsView
   };
+  // file actions for plugin 
+  enum fileActions {
+    preOpen, postOpen, preSave, postSave, preClose, postClose
+  };
 
 private:
   enum menuID {
@@ -138,6 +142,7 @@ private:
     GncXML
   }fileTypeE;
   fileTypeE m_fileType;
+  
 private:
   void ungetString(QIODevice *qfile, char * buf, int len);
 
@@ -577,6 +582,11 @@ signals:
   void accountSelectedForContextMenu(const MyMoneyAccount& acc);
 
   void viewStateChanged(bool enabled);
+   /** 
+     * This signal is emitted to inform the kmmFile plugin when various file actions
+     * occur. The Action parameter distinguishes between them.
+     */
+  void kmmFilePlugin (unsigned int action);
 };
 
 class kMyMoneyTitleLabel;

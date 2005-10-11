@@ -35,6 +35,7 @@ KMyMoneyPlugin::KMMViewInterface::KMMViewInterface(KMyMoney2App* app, KMyMoneyVi
 {
   connect(m_view, SIGNAL(accountSelectedForContextMenu(const MyMoneyAccount&)), this, SIGNAL(accountSelectedForContextMenu(const MyMoneyAccount&)));
   connect(m_view, SIGNAL(viewStateChanged(bool)), this, SIGNAL(viewStateChanged(bool)));
+  connect(m_view, SIGNAL(kmmFilePlugin(unsigned int)), this, SIGNAL(kmmFilePlugin(unsigned int)));
 }
 
 KPopupMenu* KMyMoneyPlugin::KMMViewInterface::accountContextMenu(void)
