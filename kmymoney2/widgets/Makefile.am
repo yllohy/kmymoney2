@@ -46,7 +46,7 @@ libkmymoney_la_SOURCES = kmmwidgets.cpp $(WIDGET_CPPS)
 
 noinst_LTLIBRARIES = libkmymoney.la
 
-kmmwidgets.cpp:	kmymoney.widgets
+kmmwidgets.cpp:	$(srcdir)/kmymoney.widgets
 	$(srcdir)/makekdewidgets -g KMyMoney -n CustomWidgetPlugin -o kmmwidgets.cpp -i kmymoney $(srcdir)/kmymoney.widgets
 
 # make sure to compile the Qt designer version w/o the memory leak checker 
