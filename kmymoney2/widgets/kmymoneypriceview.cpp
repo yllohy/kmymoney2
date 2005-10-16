@@ -69,13 +69,13 @@ kMyMoneyPriceItem::kMyMoneyPriceItem(KListView *view, const MyMoneyPrice& pr) :
     m_pr = MyMoneyFile::instance()->price(m_pr.from(), m_pr.to(), m_pr.date());
 
   if(m_pr.isValid()) {
-    QCString priceBase = m_pr.from();
+    QCString priceBase = m_pr.to();
     from = MyMoneyFile::instance()->security(m_pr.from());
     to = MyMoneyFile::instance()->security(m_pr.to());
     if(!to.isCurrency()) {
       from = MyMoneyFile::instance()->security(m_pr.to());
       to = MyMoneyFile::instance()->security(m_pr.from());
-      priceBase = m_pr.to();
+      priceBase = m_pr.from();
     }
 
     setText(COMMODITY_COL, (from.isCurrency()) ? from.id() : from.tradingSymbol());
