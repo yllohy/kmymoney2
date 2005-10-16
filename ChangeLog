@@ -1,6 +1,13 @@
+2005-10-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated MyMoneyObject as discussed on mailing list
+  * Added writeXML and readXML methods to MyMoneyAccount and
+    MyMoneyKeyValueContainer
+  * Added testcases for those routines
+  * Changed storage MyMoneyStorageXML to use these routines
+  * Added number of stored prices to file info dialog
+
 2005-10-16 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix 1323157 - Price Editor showed reciprocal value
-2005-10-16 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash reader - set shares = value where split currency = tx currency
 
 2005-10-11 Tony Bloomfield <tonybloom@users.sourceforge.net>
