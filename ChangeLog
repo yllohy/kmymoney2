@@ -1,3 +1,6 @@
+2005-10-16 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash reader - set shares = value where split currency = tx currency
+
 2005-10-11 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Preliminary signals for proposed file ops plugin
 

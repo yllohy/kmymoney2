@@ -1276,10 +1276,15 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
   if (gsp->value() == QString("-1/0")) { // treat gnc invalid value as zero
    // it's not quite a consistency check, but easier to treat it as such
    postMessage ("CC", 4, splitAccount.name().latin1(), m_txDatePosted.toString(Qt::ISODate).latin1());
- }
- MyMoneyMoney splitQuantity(convBadValue(gsp->qty()));
+  }
+  MyMoneyMoney splitQuantity(convBadValue(gsp->qty()));
   split.setValue (splitValue);
-  split.setShares (splitQuantity);
+  // if split currency = tx currency, set shares = value (14/10/05)
+  if (splitAccount.currencyId() == m_txCommodity) {
+    split.setShares (splitValue);
+  } else {
+    split.setShares (splitQuantity);
+  }
 
   // in kmm, the first split is important. in this routine we will
   // save the splits in our split list with the priority:
@@ -1527,6 +1532,12 @@ void MyMoneyGncReader::convertTemplateSplit (const QString schedName, const GncT
   }
   splitAccount = m_storage->account (kmmAccountId);
   split.setAccountId (kmmAccountId);
+  // if split currency = tx currency, set shares = value (14/10/05)
+  if (splitAccount.currencyId() == m_txCommodity) {
+    split.setShares (split.value());
+  } /* else {  //FIXME: scheduled currency or investment tx needs to be investigated
+    split.setShares (splitQuantity);
+  }  */
   // add the split to one of the lists
   switch (splitAccount.accountGroup()) {
   case MyMoneyAccount::Asset:
