@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>387</width>
-            <height>302</height>
+            <height>347</height>
         </rect>
     </property>
     <property name="caption">
@@ -27,7 +27,7 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout6</cstring>
+                <cstring>layout7</cstring>
             </property>
             <grid>
                 <property name="name">
@@ -41,20 +41,20 @@
                         <string>x</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="2" column="1">
-                    <property name="name">
-                        <cstring>m_baseCurrency</cstring>
-                    </property>
-                    <property name="text">
-                        <string>x</string>
-                    </property>
-                </widget>
                 <widget class="QLabel" row="7" column="0">
                     <property name="name">
                         <cstring>textLabel9</cstring>
                     </property>
                     <property name="text">
                         <string>Schedules</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="1">
+                    <property name="name">
+                        <cstring>m_baseCurrency</cstring>
+                    </property>
+                    <property name="text">
+                        <string>x</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="1" column="0">
@@ -65,14 +65,6 @@
                         <string>Last modified on</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="3" column="1">
-                    <property name="name">
-                        <cstring>m_payeeCount</cstring>
-                    </property>
-                    <property name="text">
-                        <string>x</string>
-                    </property>
-                </widget>
                 <widget class="QLabel" row="5" column="0">
                     <property name="name">
                         <cstring>textLabel7</cstring>
@@ -81,20 +73,12 @@
                         <string>Accounts/Categories</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="0" column="1">
+                <widget class="QLabel" row="3" column="1">
                     <property name="name">
-                        <cstring>m_creationDate</cstring>
+                        <cstring>m_payeeCount</cstring>
                     </property>
                     <property name="text">
                         <string>x</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="0">
-                    <property name="name">
-                        <cstring>textLabel5</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Base currency</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="3" column="0">
@@ -105,6 +89,22 @@
                         <string>Payees</string>
                     </property>
                 </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel5</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Base currency</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="1">
+                    <property name="name">
+                        <cstring>m_creationDate</cstring>
+                    </property>
+                    <property name="text">
+                        <string>x</string>
+                    </property>
+                </widget>
                 <widget class="QLabel" row="4" column="1">
                     <property name="name">
                         <cstring>m_institutionCount</cstring>
@@ -113,12 +113,12 @@
                         <string>x</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="1" column="1">
+                <widget class="QLabel" row="8" column="0">
                     <property name="name">
-                        <cstring>m_lastModificationDate</cstring>
+                        <cstring>textLabel19</cstring>
                     </property>
                     <property name="text">
-                        <string>x</string>
+                        <string>Prices</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="6" column="0">
@@ -127,6 +127,14 @@
                     </property>
                     <property name="text">
                         <string>Transactions</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="1">
+                    <property name="name">
+                        <cstring>m_lastModificationDate</cstring>
+                    </property>
+                    <property name="text">
+                        <string>x</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="0" column="0">
@@ -148,6 +156,14 @@
                 <widget class="QLabel" row="7" column="1">
                     <property name="name">
                         <cstring>m_scheduleCount</cstring>
+                    </property>
+                    <property name="text">
+                        <string>x</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="8" column="1">
+                    <property name="name">
+                        <cstring>m_priceCount</cstring>
                     </property>
                     <property name="text">
                         <string>x</string>
@@ -176,7 +192,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>16</height>
+                    <height>20</height>
                 </size>
             </property>
         </spacer>
