@@ -22,14 +22,12 @@
 
 #include "mymoneyobject.h"
 
-MyMoneyObject::MyMoneyObject(const QCString& id) :
-  m_type(UnknownObject)
+MyMoneyObject::MyMoneyObject(const QCString& id)
 {
   m_id = id;
 }
 
-MyMoneyObject::MyMoneyObject() :
-  m_type(UnknownObject)
+MyMoneyObject::MyMoneyObject()
 {
 }
 
@@ -52,8 +50,38 @@ void MyMoneyObject::clearId(void)
   m_id = QCString();
 }
 
-void MyMoneyObject::setRtti(const MyMoneyObjectType& type)
+QString MyMoneyObject::dateToString(const QDate& date) const
 {
-  m_type = type;
+  if(!date.isNull() && date.isValid()) {
+    return date.toString(Qt::ISODate);
+  }
+
+  return QString();
 }
 
+QDate MyMoneyObject::stringToDate(const QString& str) const
+{
+  if(str.length()) {
+    QDate date = QDate::fromString(str, Qt::ISODate);
+    if(!date.isNull() && date.isValid()) {
+      return date;
+    }
+  }
+  return QDate();
+}
+
+QCString MyMoneyObject::QCStringEmpty(const QString& val) const
+{
+  if(!val.isEmpty())
+    return QCString(val);
+
+  return QCString();
+}
+
+QString MyMoneyObject::QStringEmpty(const QString& val) const
+{
+  if(!val.isEmpty()) {
+    return QString(val);
+  }
+  return QString();
+}

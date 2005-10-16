@@ -126,14 +126,11 @@ void MyMoneySeqAccessMgr::setAccountName(const QCString& id, const QString& name
   m_accountList[id].setName(name);
 }
 
-const MyMoneyAccount MyMoneySeqAccessMgr::account(const QCString id) const
+const MyMoneyAccount& MyMoneySeqAccessMgr::account(const QCString& id) const
 {
-  QMap<QCString, MyMoneyAccount>::ConstIterator pos;
-
   // locate the account and if present, return it's data
-  pos = m_accountList.find(id);
-  if(pos != m_accountList.end())
-    return (*pos);
+  if(m_accountList.find(id) != m_accountList.end())
+    return m_accountList[id];
 
   // throw an exception, if it does not exist
   QString msg = "Unknown account id '" + id + "'";
@@ -975,21 +972,21 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate&
 
     QValueList<MyMoneyTransaction> list;
     QValueList<MyMoneyTransaction>::ConstIterator it;
-    MyMoneySplit split;
+    // MyMoneySplit split;
     MyMoneyTransactionFilter filter(id);
     filter.setDateFilter(QDate(), date);
     list = transactionList(filter);
 
     for(it = list.begin(); it != list.end(); ++it) {
       try {
-        split = (*it).splitByAccount(id);
-        
+        const MyMoneySplit& split((*it).splitByAccount(id));
+
         // For stock splits, the ratio of the split is in the 'shares' field
         if ( split.action() == MyMoneySplit::ActionSplitShares )
           result = result * split.shares();
         else
           result += split.value((*it).commodity(), acc.currencyId());
-          
+
       } catch(MyMoneyException *e) {
         // account is not referenced within this transaction
         delete e;
@@ -1011,10 +1008,7 @@ const MyMoneyMoney MyMoneySeqAccessMgr::totalBalance(const QCString& id, const Q
 
   MyMoneyMoney result(balance(id, date));
 
-  MyMoneyAccount acc;
-
-  acc = account(id);
-  accounts = acc.accountList();
+  accounts = account(id).accountList();
 
   for(it_a = accounts.begin(); it_a != accounts.end(); ++it_a) {
     result += totalBalance(*it_a, date);
@@ -1125,22 +1119,25 @@ void MyMoneySeqAccessMgr::loadTransaction(const MyMoneyTransaction& tr)
   m_transactionList[key] = tr;
   m_transactionKeys[tr.id()] = key;
 
-  // (acejones) Cacheing the balance at load time doesn't work with Split 
+  // (acejones) Cacheing the balance at load time doesn't work with Split
   // Shares transactions.  That's because the DATE matters with split shares,
   // and there's no guarantee these transactions are loaded in date order.
   //
   // There must be a more elegant way to handle this, but I don't know the
   // caching system well enough.  Instead, I'll just invalidate the cache
   // ALWAYS :-/
-  
+  //
+  // (ipwizard) For stock accounts that might be ok, but for all others it
+  // doesn't matter and it speeds up initial loading of the file by
+  // magnitudes
   QValueList<MyMoneySplit> list = tr.splits();
   QValueList<MyMoneySplit>::ConstIterator it_s;
 
   for(it_s = list.begin(); it_s != list.end(); ++it_s) {
-    QCString id = (*it_s).accountId();
-    MyMoneyAccount acc = account(id);
-//     m_balanceCache[id] = MyMoneyBalanceCacheItem(balance(id, QDate()) + (*it_s).value(tr.commodity(), acc.currencyId()));
-    m_balanceCache[id].valid = false;
+    const QCString& id((*it_s).accountId());
+    if(account(id).accountType() != MyMoneyAccount::Stock) {
+      m_balanceCache[id] = MyMoneyBalanceCacheItem(balance(id, QDate()) + (*it_s).value(tr.commodity(), account(id).currencyId()));
+    }
   }
 }
 

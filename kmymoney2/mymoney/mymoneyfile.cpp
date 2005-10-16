@@ -996,17 +996,16 @@ const bool MyMoneyFile::accountValueValid(const QCString& id) const
 
 const bool MyMoneyFile::totalValueValid(const QCString& id) const
 {
-  QCStringList accounts;
   QCStringList::ConstIterator it_a;
 
   bool result = accountValueValid(id);
+
   try {
     MyMoneyAccount acc;
 
     acc = this->account(id);
-    accounts = acc.accountList();
 
-    for(it_a = accounts.begin(); result == true && it_a != accounts.end(); ++it_a) {
+    for(it_a = acc.accountList().begin(); result == true && it_a != acc.accountList().end(); ++it_a) {
       result = totalValueValid(*it_a);
     }
   } catch(MyMoneyException *e) {
@@ -1014,6 +1013,7 @@ const bool MyMoneyFile::totalValueValid(const QCString& id) const
       e->what().data(), e->file().data(), e->line());
     delete e;
   }
+
   return result;
 }
 
@@ -1063,6 +1063,7 @@ const MyMoneyMoney MyMoneyFile::totalValue(const QCString& id, const QDate& date
   QCStringList::ConstIterator it_a;
 
   MyMoneyMoney result(accountValue(id, date));
+
   try {
     MyMoneyAccount acc;
 
@@ -1077,6 +1078,7 @@ const MyMoneyMoney MyMoneyFile::totalValue(const QCString& id, const QDate& date
       e->what().data(), e->file().data(), e->line());
     delete e;
   }
+
   return result;
 }
 
@@ -1585,8 +1587,9 @@ void MyMoneyFile::suspendNotify(const bool state)
   bool prevState = m_suspendNotify;
   m_suspendNotify = state;
 
-  if(state == false && prevState == true)
+  if(state == false && prevState == true) {
     notify();
+  }
   // qDebug("Notification turned %s", state ? "off" : "on");
 }
 

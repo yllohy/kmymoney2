@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "mymoneykeyvaluecontainertest.h"
+#include <kmymoney/mymoneyexception.h>
 
 MyMoneyKeyValueContainerTest::MyMoneyKeyValueContainerTest()
 {
@@ -74,14 +75,82 @@ void MyMoneyKeyValueContainerTest::testRetrieveList() {
 }
 
 void MyMoneyKeyValueContainerTest::testLoadList() {
-	QMap<QCString, QString> copy;
-
-	copy["Key"] = "Value";
-	copy["key"] = "value";
-	m->setPairs(copy);
+	m->setValue("Key", "Value");
+	m->setValue("key", "value");
 
 	CPPUNIT_ASSERT(m->m_kvp.count() == 2);
 	CPPUNIT_ASSERT(m->m_kvp["Key"] == "Value");
 	CPPUNIT_ASSERT(m->m_kvp["key"] == "value");
+}
+
+void MyMoneyKeyValueContainerTest::testWriteXML() {
+	m->setValue("Key", "Value");
+	m->setValue("key", "value");
+
+	QDomDocument doc("TEST");
+	QDomElement el = doc.createElement("KVP-CONTAINER");
+	doc.appendChild(el);
+	m->writeXML(doc, el);
+
+	QString ref(
+		"<!DOCTYPE TEST>\n"
+		"<KVP-CONTAINER>\n"
+		" <KEYVALUEPAIRS>\n"
+		"  <PAIR key=\"Key\" value=\"Value\" />\n"
+		"  <PAIR key=\"key\" value=\"value\" />\n"
+		" </KEYVALUEPAIRS>\n"
+		"</KVP-CONTAINER>\n");
+
+	CPPUNIT_ASSERT(doc.toString() == ref);
+}
+
+void MyMoneyKeyValueContainerTest::testReadXML() {
+	m->setValue("Key", "Value");
+	m->setValue("key", "value");
+
+	QString ref_ok(
+		"<!DOCTYPE TEST>\n"
+		"<KVP-CONTAINER>\n"
+		" <KEYVALUEPAIRS>\n"
+		"  <PAIR key=\"key\" value=\"Value\" />\n"
+		"  <PAIR key=\"Key\" value=\"value\" />\n"
+		" </KEYVALUEPAIRS>\n"
+		"</KVP-CONTAINER>\n");
+
+	QString ref_false(
+		"<!DOCTYPE TEST>\n"
+		"<KVP-CONTAINER>\n"
+		" <KEYVALUE-PAIRS>\n"
+		"  <PAIR key=\"key\" value=\"Value\" />\n"
+		"  <PAIR key=\"Key\" value=\"value\" />\n"
+		" </KEYVALUE-PAIRS>\n"
+		"</KVP-CONTAINER>\n");
+
+	QDomDocument doc;
+	QDomElement node;
+	doc.setContent(ref_false);
+	node = doc.documentElement().firstChild().toElement();
+
+	try {
+		m->readXML(node);
+		CPPUNIT_FAIL("Missing expected exception");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+
+	// make sure the false input does not hurt us
+	CPPUNIT_ASSERT(m->m_kvp.count() == 2);
+
+	doc.setContent(ref_ok);
+	node = doc.documentElement().firstChild().toElement();
+	try {
+		m->readXML(node);
+		CPPUNIT_ASSERT(m->m_kvp.count() == 2);
+		CPPUNIT_ASSERT(m->value("key") == "Value");
+		CPPUNIT_ASSERT(m->value("Key") == "value");
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
 }
 

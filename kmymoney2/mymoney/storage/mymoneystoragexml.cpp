@@ -235,6 +235,9 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   delete m_doc;
   m_doc = NULL;
 
+  //hides the progress bar.
+  signalProgress(-1, -1);
+
   // this seems to be nonsense, but it clears the dirty flag
   // as a side-effect.
   m_storage->setLastModificationDate(m_storage->lastModificationDate());
@@ -580,9 +583,10 @@ void MyMoneyStorageXML::readAccounts(QDomElement& accounts)
     QDomElement childElement = child.toElement();
     if(QString("ACCOUNT") == childElement.tagName())
     {
-      MyMoneyAccount account = readAccount(childElement);
+      MyMoneyAccount account;
+      account.readXML(childElement);
 
-      //tell the storage objects we have a new institution.
+      //tell the storage objects we have a new account.
       m_storage->loadAccount(account);
 
       id = extractId(account.id().data());
@@ -603,42 +607,22 @@ void MyMoneyStorageXML::writeAccounts(QDomElement& accounts)
   QValueList<MyMoneyAccount> list;
   QValueList<MyMoneyAccount>::ConstIterator it;
 
+  writeAccount(accounts, m_storage->asset());
+  writeAccount(accounts, m_storage->liability());
+  writeAccount(accounts, m_storage->expense());
+  writeAccount(accounts, m_storage->income());
+  writeAccount(accounts, m_storage->equity());
+
   list = m_storage->accountList();
-
-  QDomElement asset, liability, expense, income, equity;
-
-  asset = m_doc->createElement("ACCOUNT");
-  writeAccount(asset, m_storage->asset());
-  accounts.appendChild(asset);
-
-  liability = m_doc->createElement("ACCOUNT");
-  writeAccount(liability, m_storage->liability());
-  accounts.appendChild(liability);
-
-  expense = m_doc->createElement("ACCOUNT");
-  writeAccount(expense, m_storage->expense());
-  accounts.appendChild(expense);
-
-  income = m_doc->createElement("ACCOUNT");
-  writeAccount(income, m_storage->income());
-  accounts.appendChild(income);
-
-  equity = m_doc->createElement("ACCOUNT");
-  writeAccount(equity, m_storage->equity());
-  accounts.appendChild(equity);
-
-  //signalProgress(0, list.count(), QObject::tr("Saving accounts..."));
+  signalProgress(0, list.count(), QObject::tr("Saving accounts..."));
   int i = 0;
-  for(it = list.begin(); it != list.end(); ++it, ++i)
-  {
-    QDomElement account = m_doc->createElement("ACCOUNT");
-    writeAccount(account, *it);
-    accounts.appendChild(account);
-
-    //signalProgress(i, 0);
+  for(it = list.begin(); it != list.end(); ++it, ++i) {
+    writeAccount(accounts, *it);
+    signalProgress(i, 0);
   }
 }
 
+#if 0
 MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
 {
   MyMoneyAccount acc;
@@ -706,9 +690,13 @@ MyMoneyAccount MyMoneyStorageXML::readAccount(const QDomElement& account)
 
   return MyMoneyAccount(id, acc);
 }
+#endif
 
 void MyMoneyStorageXML::writeAccount(QDomElement& account, const MyMoneyAccount& p)
 {
+  p.writeXML(*m_doc, account);
+
+#if 0
   account.setAttribute(QString("parentaccount"), p.parentAccountId());
   account.setAttribute(QString("lastreconciled"), getString(p.lastReconciliationDate()));
   account.setAttribute(QString("lastmodified"), getString(p.lastModified()));
@@ -742,6 +730,7 @@ void MyMoneyStorageXML::writeAccount(QDomElement& account, const MyMoneyAccount&
   //Add in Key-Value Pairs for accounts.
   QDomElement keyValPairs = writeKeyValuePairs(p.pairs());
   account.appendChild(keyValPairs);
+#endif
 }
 
 void MyMoneyStorageXML::readTransactions(QDomElement& transactions)
@@ -780,7 +769,7 @@ void MyMoneyStorageXML::writeTransactions(QDomElement& transactions)
 
   list = m_storage->transactionList(filter);
 
-  //signalProgress(0, list.count(), QObject::tr("Saving transactions..."));
+  signalProgress(0, list.count(), QObject::tr("Saving transactions..."));
 
   int i = 0;
   for(it = list.begin(); it != list.end(); ++it, ++i)
@@ -788,7 +777,7 @@ void MyMoneyStorageXML::writeTransactions(QDomElement& transactions)
     QDomElement tx = m_doc->createElement("TRANSACTION");
     writeTransaction(tx, *it);
     transactions.appendChild(tx);
-    //signalProgress(i, 0);
+    signalProgress(i, 0);
   }
 }
 
@@ -1363,6 +1352,7 @@ void MyMoneyStorageXML::readPrices(QDomElement& prices)
     child = child.nextSibling();
     signalProgress(x++, 0);
   }
+  signalProgress(-1, -1);
 }
 
 void MyMoneyStorageXML::readPricePair(const QDomElement& pricePair)

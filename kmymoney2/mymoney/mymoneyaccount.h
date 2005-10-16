@@ -183,17 +183,6 @@ public:
 
   const MyMoneyAccount::accountTypeE accountGroup(void) const;
 
-#if 0
-  /**
-    * This method returns the ID of the account under which it is known
-    * inside the MyMoneyFile.
-    *
-    * @return ID as QString. If the ID is unknown, an empty QString is returned.
-    * @see setID()
-    */
-  const QCString id(void) const { return m_id; }
-#endif
-
   /**
     * This method returns the id of the MyMoneyInstitution object this account
     * belongs to.
@@ -236,7 +225,7 @@ public:
     *
     * @return MyMoneyMoney value of opening balance
     */
-  const MyMoneyMoney openingBalance(void) const { return m_openingBalance; };
+  __attribute__ ((deprecated)) const MyMoneyMoney openingBalance(void) const { return m_openingBalance; };
 
   /**
     * This method returns the date of the last reconciliation of this account
@@ -319,7 +308,7 @@ public:
     * subordinate accounts
     * @return QStringList account ids
     */
-  const QCStringList accountList(void) const { return m_accountList; };
+  const QCStringList& accountList(void) const { return m_accountList; };
 
   /**
     * This method returns the number of entries in the m_accountList
@@ -396,7 +385,7 @@ public:
     *
     * @see openingBalance
     */
-  void setOpeningBalance(const MyMoneyMoney& balance);
+  void setOpeningBalance(const MyMoneyMoney& balance) __attribute__ ((deprecated));
 
   /**
     * This method is used to set the date of the last reconciliation
@@ -459,6 +448,10 @@ public:
     * @param id ID of currency to be associated with this account.
     */
   void setCurrencyId(const QCString& id);
+
+  void writeXML(QDomDocument& document, QDomElement& parent) const;
+
+  void readXML(const QDomElement& node);
 
 private:
   /**

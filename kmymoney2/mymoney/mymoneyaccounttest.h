@@ -37,6 +37,8 @@ class MyMoneyAccountTest : public CppUnit::TestFixture  {
 */
 	CPPUNIT_TEST(testSubAccounts);
 	CPPUNIT_TEST(testEquality);
+	CPPUNIT_TEST(testWriteXML);
+	CPPUNIT_TEST(testReadXML);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -56,6 +58,8 @@ public:
 	void testBalance();
 	void testSubAccounts();
 	void testEquality();
+	void testWriteXML();
+	void testReadXML();
 };
 
 #endif

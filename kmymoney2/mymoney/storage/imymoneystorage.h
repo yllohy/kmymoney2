@@ -190,7 +190,7 @@ public:
     * @return reference to MyMoneyAccount object. An exception is thrown
     *         if the id is unknown
     */
-  virtual const MyMoneyAccount account(const QCString id) const = 0;
+  virtual const MyMoneyAccount& account(const QCString& id) const = 0;
 
   /**
     * This method is used to check whether a given

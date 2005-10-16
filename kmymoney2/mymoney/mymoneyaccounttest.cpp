@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "mymoneyaccounttest.h"
+#include <kmymoney/mymoneyexception.h>
 
 MyMoneyAccountTest::MyMoneyAccountTest()
 {
@@ -55,9 +56,9 @@ void MyMoneyAccountTest::testConstructor() {
 	r.setNumber("465500");
 	r.setParentAccountId(parent);
 	r.setOpeningBalance(1);
-  r.setValue(QCString("key"), QString("value"));
-  CPPUNIT_ASSERT(r.m_kvp.count() == 1);
-  CPPUNIT_ASSERT(r.value("key") == "value");
+	r.setValue(QCString("key"), QString("value"));
+	CPPUNIT_ASSERT(r.m_kvp.count() == 1);
+	CPPUNIT_ASSERT(r.value("key") == "value");
 
 	MyMoneyAccount a(id, r);
 
@@ -363,3 +364,103 @@ void MyMoneyAccountTest::testEquality()
 	b = a;
 
 }
+
+void MyMoneyAccountTest::testWriteXML() {
+	QCString id = "A000001";
+	QCString institutionid = "B000001";
+	QCString parent = "Parent";
+
+	MyMoneyAccount r;
+	r.setAccountType(MyMoneyAccount::Asset);
+	r.setOpeningDate(QDate::currentDate());
+	r.setLastModified(QDate::currentDate());
+	r.setDescription("Desc");
+	r.setName("AccountName");
+	r.setNumber("465500");
+	r.setParentAccountId(parent);
+	r.setInstitutionId(institutionid);
+	r.setValue(QCString("key"), QString("value"));
+	r.addAccountId("A000002");
+	// CPPUNIT_ASSERT(r.m_kvp.count() == 1);
+	// CPPUNIT_ASSERT(r.value("key") == "value");
+
+	MyMoneyAccount a(id, r);
+
+	QDomDocument doc("TEST");
+	QDomElement el = doc.createElement("ACCOUNT-CONTAINER");
+	doc.appendChild(el);
+	a.writeXML(doc, el);
+
+	QString ref = QString(
+		"<!DOCTYPE TEST>\n"
+		"<ACCOUNT-CONTAINER>\n"
+		" <ACCOUNT parentaccount=\"Parent\" lastmodified=\"%1\" lastreconciled=\"\" institution=\"B000001\" number=\"465500\" opened=\"%2\" type=\"9\" id=\"A000001\" name=\"AccountName\" description=\"Desc\" >\n"
+		"  <SUBACCOUNTS>\n"
+		"   <SUBACCOUNT id=\"A000002\" />\n"
+		"  </SUBACCOUNTS>\n"
+		"  <KEYVALUEPAIRS>\n"
+		"   <PAIR key=\"key\" value=\"value\" />\n"
+		"  </KEYVALUEPAIRS>\n"
+		" </ACCOUNT>\n"
+		"</ACCOUNT-CONTAINER>\n").
+			arg(QDate::currentDate().toString(Qt::ISODate)).arg(QDate::currentDate().toString(Qt::ISODate));
+
+	CPPUNIT_ASSERT(doc.toString() == ref);
+}
+
+void MyMoneyAccountTest::testReadXML() {
+	MyMoneyAccount a;
+	QString ref_ok = QString(
+		"<!DOCTYPE TEST>\n"
+		"<ACCOUNT-CONTAINER>\n"
+		" <ACCOUNT parentaccount=\"Parent\" lastmodified=\"%1\" lastreconciled=\"\" institution=\"B000001\" number=\"465500\" opened=\"%2\" type=\"9\" id=\"A000001\" name=\"AccountName\" description=\"Desc\" >\n"
+		"  <SUBACCOUNTS>\n"
+		"   <SUBACCOUNT id=\"A000002\" />\n"
+		"   <SUBACCOUNT id=\"A000003\" />\n"
+		"  </SUBACCOUNTS>\n"
+		"  <KEYVALUEPAIRS>\n"
+		"   <PAIR key=\"key\" value=\"value\" />\n"
+		"   <PAIR key=\"Key\" value=\"Value\" />\n"
+		"  </KEYVALUEPAIRS>\n"
+		" </ACCOUNT>\n"
+		"</ACCOUNT-CONTAINER>\n").
+			arg(QDate::currentDate().toString(Qt::ISODate)).arg(QDate::currentDate().toString(Qt::ISODate));
+
+	QString ref_false = QString(
+		"<!DOCTYPE TEST>\n"
+		"<ACCOUNT-CONTAINER>\n"
+		" <KACCOUNT parentaccount=\"Parent\" lastmodified=\"%1\" lastreconciled=\"\" institution=\"B000001\" number=\"465500\" opened=\"%2\" type=\"9\" id=\"A000001\" name=\"AccountName\" description=\"Desc\" >\n"
+		"  <SUBACCOUNTS>\n"
+		"   <SUBACCOUNT id=\"A000002\" />\n"
+		"   <SUBACCOUNT id=\"A000003\" />\n"
+		"  </SUBACCOUNTS>\n"
+		"  <KEYVALUEPAIRS>\n"
+		"   <PAIR key=\"key\" value=\"value\" />\n"
+		"   <PAIR key=\"Key\" value=\"Value\" />\n"
+		"  </KEYVALUEPAIRS>\n"
+		" </KACCOUNT>\n"
+		"</ACCOUNT-CONTAINER>\n").
+			arg(QDate::currentDate().toString(Qt::ISODate)).arg(QDate::currentDate().toString(Qt::ISODate));
+
+	QDomDocument doc;
+	QDomElement node;
+	doc.setContent(ref_false);
+	node = doc.documentElement().firstChild().toElement();
+
+	try {
+		a.readXML(node);
+		CPPUNIT_FAIL("Missing expected exception");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+
+	doc.setContent(ref_ok);
+	node = doc.documentElement().firstChild().toElement();
+	try {
+		a.readXML(node);
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+}
+

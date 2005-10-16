@@ -25,6 +25,8 @@
 // QT Includes
 
 #include <qcstring.h>
+#include <qdom.h>
+#include <qdatetime.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -41,12 +43,6 @@
 class KMYMONEY_EXPORT MyMoneyObject
 {
 public:
-
-  typedef enum {
-    UnknownObject = 0,
-    Account
-  } MyMoneyObjectType;
-
   /**
     * This contructor assigns the id to the MyMoneyObject
     *
@@ -71,33 +67,58 @@ public:
     */
   const QCString& id(void) const { return m_id; };
 
-  void setId(const QCString& id);
-
-  /**
-    * This method returns the runtime type of this object
-    *
-    * @sa setRtti()
-    */
-  const MyMoneyObjectType& rtti(void) const { return m_type; };
-
-  /**
-    * This method sets the runtime type of this object.
-    *
-    * @param type MyMoneyObjectType indication
-    * @sa rtti
-    */
-  void setRtti(const MyMoneyObjectType& type);
+  void setId(const QCString& id) __attribute__ ((deprecated));
 
   /**
     * This method clears the id of the object
     */
   void clearId(void);
 
+  /**
+    * This method creates a QDomElement for the @p document
+    * under the parent node @p parent.
+    *
+    * @param document reference to QDomDocument
+    * @param parent reference to QDomElement parent node
+    */
+  virtual void writeXML(QDomDocument& document, QDomElement& parent) const = 0;
+
+  /**
+    * This method reads in data for the object from the node
+    * The type will be checked and an exception thrown if
+    * it does not match.
+    *
+    * @param node QDomElement containing the data
+    */
+  virtual void readXML(const QDomElement& node) = 0;
+
   const bool operator == (const MyMoneyObject& right) const;
 
-private:
+  /**
+    * This method returns a date in the form specified by Qt::ISODate.
+    * If the @p date is invalid an empty string will be returned.
+    *
+    * @param date const reference to date to be converted
+    * @return QString containing the converted date
+    */
+  QString dateToString(const QDate& date) const;
+
+  /**
+    * This method returns a date as QDate object as specified by
+    * the parameter @p str. @p str must be in Qt::ISODate format.
+    * If @p str is empty or contains an invalid date, QDate() is
+    * returned.
+    *
+    * @param str date in Qt::ISODate format
+    * @return QDate object
+    */
+  QDate stringToDate(const QString& str) const;
+
+  QCString QCStringEmpty(const QString& val) const;
+  QString QStringEmpty(const QString& val) const;
+
+protected:
   QCString               m_id;
-  MyMoneyObjectType      m_type;
 };
 #endif
 

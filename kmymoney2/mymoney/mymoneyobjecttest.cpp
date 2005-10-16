@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "mymoneyobjecttest.h"
+#include "mymoneyaccount.h"
 
 MyMoneyObjectTest::MyMoneyObjectTest()
 {
@@ -28,19 +29,19 @@ void MyMoneyObjectTest::tearDown () {
 }
 
 void MyMoneyObjectTest::testEmptyConstructor() {
-	MyMoneyObject a;
+	MyMoneyAccount a;
 	CPPUNIT_ASSERT(a.id().isEmpty());
 }
 
 void MyMoneyObjectTest::testConstructor() {
-	MyMoneyObject a(QCString("thb"));
+	MyMoneyAccount a(QCString("thb"), MyMoneyAccount());
 
 	CPPUNIT_ASSERT(!a.id().isEmpty());
 	CPPUNIT_ASSERT(a.id() == QCString("thb"));
 }
 
 void MyMoneyObjectTest::testClearId() {
-	MyMoneyObject a(QCString("thb"));
+	MyMoneyAccount a(QCString("thb"), MyMoneyAccount());
 
 	CPPUNIT_ASSERT(!a.id().isEmpty());
 	a.clearId();
@@ -48,31 +49,25 @@ void MyMoneyObjectTest::testClearId() {
 }
 
 void MyMoneyObjectTest::testCopyConstructor() {
-	MyMoneyObject a(QCString("thb"));
-	MyMoneyObject b(a);
+	MyMoneyAccount a(QCString("thb"), MyMoneyAccount());
+	MyMoneyAccount b(a);
 
-	CPPUNIT_ASSERT(a.id() == b.id());
+	CPPUNIT_ASSERT(a.MyMoneyObject::operator==(b));
 }
 
 void MyMoneyObjectTest::testAssignmentConstructor() {
-	MyMoneyObject a(QCString("thb"));
-	MyMoneyObject b = a;
+	MyMoneyAccount a(QCString("thb"), MyMoneyAccount());
+	MyMoneyAccount b = a;
 
-	CPPUNIT_ASSERT(a.id() == b.id());
+	CPPUNIT_ASSERT(a.MyMoneyObject::operator==(b));
 }
 
 void MyMoneyObjectTest::testEquality() {
-	MyMoneyObject a(QCString("thb"));
-	MyMoneyObject b(QCString("thb"));
-	MyMoneyObject c(QCString("ace"));
+	MyMoneyAccount a(QCString("thb"), MyMoneyAccount());
+	MyMoneyAccount b(QCString("thb"), MyMoneyAccount());
+	MyMoneyAccount c(QCString("ace"), MyMoneyAccount());
 
-	CPPUNIT_ASSERT(a == b);
-	CPPUNIT_ASSERT(!(a == c));
+	CPPUNIT_ASSERT(a.MyMoneyObject::operator==(b));
+	CPPUNIT_ASSERT(!(a.MyMoneyObject::operator==(c)));
 }
 
-void MyMoneyObjectTest::testRTTI() {
-	MyMoneyObject a;
-	CPPUNIT_ASSERT(a.rtti() == MyMoneyObject::UnknownObject);
-	a.setRtti(MyMoneyObject::Account);
-	CPPUNIT_ASSERT(a.rtti() == MyMoneyObject::MyMoneyObject::Account);
-}

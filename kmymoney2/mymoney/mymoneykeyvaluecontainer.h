@@ -2,13 +2,8 @@
                           mymoneykeyvaluecontainer.h
                              -------------------
     begin                : Sun Nov 10 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+    copyright            : (C) 2000-2005 by Thomas Baumgart
+    email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
  ***************************************************************************/
 
 /***************************************************************************
@@ -25,7 +20,7 @@
 
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
 #ifdef HAVE_CONFIG_H
@@ -38,7 +33,9 @@
 #include <qstring.h>
 #include <qcstring.h>
 #include <qmap.h>
+#include <qdom.h>
 #include <kmymoney/export.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -55,19 +52,19 @@
   */
 class KMYMONEY_EXPORT MyMoneyKeyValueContainer
 {
-public: 
-	MyMoneyKeyValueContainer();
-	~MyMoneyKeyValueContainer();
+public:
+  MyMoneyKeyValueContainer();
+  ~MyMoneyKeyValueContainer();
 
   /**
     * This method can be used to retrieve the value for a specific @p key.
     * If the key is unknown in this container, an empty string will be returned.
     *
     * @param key const reference to QCString with the key to search for
-    * @return QCString value of this key. If the key does not exist,
+    * @return reference to value of this key. If the key does not exist,
     *         an emtpy string is returned.
     */
-  const QString value(const QCString& key) const;
+  const QString& value(const QCString& key) const;
 
   /**
     * This method is used to add a key/value pair to the container or
@@ -94,7 +91,7 @@ public:
     * @return QMap<QCString, QString> containing all key/value pairs of
     *         this container.
     */
-  const QMap<QCString, QString> pairs(void) const { return m_kvp; };
+  const QMap<QCString, QString>& pairs(void) const { return m_kvp; };
 
   /**
     * This method is used to initially store a set of key/value pairs
@@ -112,6 +109,24 @@ public:
     * This operator tests for equality of two MyMoneyKeyValueContainer objects
     */
   const bool operator == (const MyMoneyKeyValueContainer &) const;
+
+  /**
+    * This method creates a QDomElement for the @p document
+    * under the parent node @p parent.
+    *
+    * @param document reference to QDomDocument
+    * @param parent reference to QDomElement parent node
+    */
+  void writeXML(QDomDocument& document, QDomElement& parent) const;
+
+  /**
+    * This method reads in data for the object from the node
+    * The type will be checked and an exception thrown if
+    * it does not match.
+    *
+    * @param node QDomElement containing the data
+    */
+  void readXML(const QDomElement& node);
 
 private:
   /**

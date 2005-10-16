@@ -125,7 +125,7 @@ public:
     * @return reference to MyMoneyAccount object. An exception is thrown
     *         if the id is unknown
     */
-  const MyMoneyAccount account(const QCString id) const;
+  const MyMoneyAccount& account(const QCString& id) const;
 
   /**
     * This method is used to check whether a given

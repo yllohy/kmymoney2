@@ -2,13 +2,8 @@
                           mymoneykeyvaluecontainer.cpp
                              -------------------
     begin                : Sun Nov 10 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+    copyright            : (C) 2002-2005 by Thomas Baumgart
+    email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,7 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "mymoneykeyvaluecontainer.h"
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include <kmymoney/mymoneykeyvaluecontainer.h>
+#include <kmymoney/mymoneyexception.h>
 
 MyMoneyKeyValueContainer::MyMoneyKeyValueContainer()
 {
@@ -30,14 +32,14 @@ MyMoneyKeyValueContainer::~MyMoneyKeyValueContainer()
 {
 }
 
-const QString MyMoneyKeyValueContainer::value(const QCString& key) const
+const QString& MyMoneyKeyValueContainer::value(const QCString& key) const
 {
   QMap<QCString, QString>::ConstIterator it;
 
   it = m_kvp.find(key);
   if(it != m_kvp.end())
     return (*it);
-  return QString();
+  return QString::null;
 }
 
 void MyMoneyKeyValueContainer::setValue(const QCString& key, const QString& value)
@@ -76,4 +78,34 @@ const bool MyMoneyKeyValueContainer::operator == (const MyMoneyKeyValueContainer
   }
 
   return (it_a == m_kvp.end() && it_b == right.m_kvp.end());
+}
+
+void MyMoneyKeyValueContainer::writeXML(QDomDocument& document, QDomElement& parent) const
+{
+  QDomElement el = document.createElement("KEYVALUEPAIRS");
+
+  QMap<QCString, QString>::ConstIterator it;
+  for(it = m_kvp.begin(); it != m_kvp.end(); ++it)
+  {
+    QDomElement pair = document.createElement("PAIR");
+    pair.setAttribute(QString("key"), it.key());
+    pair.setAttribute(QString("value"), it.data());
+    el.appendChild(pair);
+  }
+
+  parent.appendChild(el);
+}
+
+void MyMoneyKeyValueContainer::readXML(const QDomElement& node)
+{
+  if(QString("KEYVALUEPAIRS") != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not KEYVALUEPAIRS");
+
+  m_kvp.clear();
+
+  QDomNodeList nodeList = node.elementsByTagName(QString("PAIR"));
+  for(int i = 0; i < nodeList.count(); ++i) {
+    const QDomElement& el(nodeList.item(i).toElement());
+    m_kvp[QCString(el.attribute(QString("key")))] = el.attribute(QString("value"));
+  }
 }

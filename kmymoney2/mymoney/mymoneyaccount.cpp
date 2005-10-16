@@ -24,15 +24,14 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "mymoneyexception.h"
-#include "mymoneyaccount.h"
+#include <kmymoney/mymoneyexception.h>
+#include <kmymoney/mymoneyaccount.h>
 
 // uncomment the next line for debug purposes only
 // #include <iostream>
 
 MyMoneyAccount::MyMoneyAccount()
 {
-  setRtti(MyMoneyObject::Account);
   m_openingBalance = MyMoneyMoney(0);
   m_accountType = UnknownAccountType;
 }
@@ -80,19 +79,6 @@ void MyMoneyAccount::setOpeningDate(const QDate& date)
 
 void MyMoneyAccount::setOpeningBalance(const MyMoneyMoney& balance)
 {
-/* removed with MyMoneyAccount::Transaction
-  MyMoneyMoney diff;
-
-  diff = balance - m_openingBalance;
-
-  if(diff != 0) {
-    QValueList<MyMoneyAccount::Transaction>::Iterator it_t;
-    for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-      MyMoneyAccount::Transaction t((*it_t).transactionID(), (*it_t).balance()+diff);
-      *it_t = t;
-    }
-  }
-*/
   m_openingBalance = balance;
 }
 
@@ -110,80 +96,6 @@ void MyMoneyAccount::setAccountType(const accountTypeE type)
 {
   m_accountType = type;
 }
-
-/*
-void MyMoneyAccount::setAccountTypeByName(const QCString& strType)
-{
-  if(strType == "CHECKING")
-  {
-    m_accountType = MyMoneyAccount::Checkings;
-  }
-  else if(strType == "SAVINGS")
-  {
-    m_accountType = MyMoneyAccount::Savings;
-  }
-  else
-  {
-    m_accountType = MyMoneyAccount::UnknownAccountType;
-  }
-
-  //return m_accountType;
-}
-*/
-
-/* removed with MyMoneyAccount::Transaction
-const QValueList<MyMoneyAccount::Transaction>& MyMoneyAccount::transactionList(void) const
-{
-  return m_transactionList;
-}
-
-const MyMoneyAccount::Transaction& MyMoneyAccount::transaction(const QString id) const
-{
-  QValueList<MyMoneyAccount::Transaction>::ConstIterator it;
-
-  for(it = m_transactionList.begin(); it != m_transactionList.end(); ++it) {
-    if((*it).transactionID() == id)
-      return *it;
-  }
-  throw new MYMONEYEXCEPTION("Invalid transaction id");
-}
-*/
-
-/*
-const MyMoneyAccount::Transaction& MyMoneyAccount::transaction(const int idx) const
-{
-  if(idx >= 0 && idx < static_cast<int> (m_transactionList.count()))
-    return m_transactionList[idx];
-  throw new MYMONEYEXCEPTION("Invalid transaction index");
-}
-
-void MyMoneyAccount::addTransaction(const MyMoneyAccount::Transaction& val)
-{
-  MyMoneyAccount::Transaction v(val.transactionID(), balance() + val.balance());
-  m_transactionList += v;
-}
-
-void MyMoneyAccount::clearTransactions(void)
-{
-  m_transactionList.clear();
-}
-
-const MyMoneyMoney MyMoneyAccount::balance(void) const
-{
-  MyMoneyMoney result(0);
-
-  if(m_transactionList.count() > 0)
-    result = m_transactionList.back().balance();
-  return result;
-}
-*/
-
-#if 0
-void MyMoneyAccount::setAccountId(const QCString& id)
-{
-  m_id = id;
-}
-#endif
 
 void MyMoneyAccount::addAccountId(const QCString& account)
 {
@@ -225,8 +137,8 @@ const MyMoneyAccount::accountTypeE MyMoneyAccount::accountGroup(MyMoneyAccount::
 
 const bool MyMoneyAccount::operator == (const MyMoneyAccount& right) const
 {
-  return (static_cast<const MyMoneyKeyValueContainer>(*this) == static_cast<const MyMoneyKeyValueContainer>(right) &&
-      (static_cast<const MyMoneyObject>(*this) == static_cast<const MyMoneyObject>(right)) &&
+  return (MyMoneyKeyValueContainer::operator==(right) &&
+      MyMoneyObject::operator==(right) &&
       (m_accountList == right.m_accountList) &&
       (m_accountType == right.m_accountType) &&
       (m_lastModified == right.m_lastModified) &&
@@ -439,3 +351,92 @@ void MyMoneyAccountLoan::setInterestAccountId(const QCString& /* id */)
 {
 
 }
+
+void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
+{
+  QDomElement el = document.createElement("ACCOUNT");
+
+  el.setAttribute(QString("parentaccount"), parentAccountId());
+  el.setAttribute(QString("lastreconciled"), dateToString(lastReconciliationDate()));
+  el.setAttribute(QString("lastmodified"), dateToString(lastModified()));
+  el.setAttribute(QString("institution"), institutionId());
+  el.setAttribute(QString("opened"), dateToString(openingDate()));
+  el.setAttribute(QString("number"), number());
+  // el.setAttribute(QString("openingbalance"), openingBalance().toString());
+  el.setAttribute(QString("type"), accountType());
+  el.setAttribute(QString("id"), id());
+  el.setAttribute(QString("name"), name());
+  el.setAttribute(QString("description"), description());
+  if(!currencyId().isEmpty())
+    el.setAttribute(QString("currency"), currencyId());
+
+  //Add in subaccount information, if this account has subaccounts.
+  if(accountCount())
+  {
+    QDomElement subAccounts = document.createElement("SUBACCOUNTS");
+    QCStringList::ConstIterator it;
+    for(it = accountList().begin(); it != accountList().end(); ++it)
+    {
+      QDomElement temp = document.createElement("SUBACCOUNT");
+      temp.setAttribute(QString("id"), (*it));
+      subAccounts.appendChild(temp);
+    }
+
+    el.appendChild(subAccounts);
+  }
+
+  //Add in Key-Value Pairs for accounts.
+  MyMoneyKeyValueContainer::writeXML(document, el);
+
+  parent.appendChild(el);
+}
+
+void MyMoneyAccount::readXML(const QDomElement& node)
+{
+  if(QString("ACCOUNT") != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not ACCOUNT");
+
+  setName(node.attribute(QString("name")));
+
+  // qDebug("Reading information for account %s", acc.name().data());
+
+  setParentAccountId(QCStringEmpty(node.attribute(QString("parentaccount"))));
+  setLastModified(stringToDate(QStringEmpty(node.attribute(QString("lastmodified")))));
+  setLastReconciliationDate(stringToDate(QStringEmpty(node.attribute(QString("lastreconciled")))));
+  setInstitutionId(QCStringEmpty(node.attribute(QString("institution"))));
+  setNumber(QStringEmpty(node.attribute(QString("number"))));
+  setOpeningDate(stringToDate(QStringEmpty(node.attribute(QString("opened")))));
+  setCurrencyId(QCStringEmpty(node.attribute(QString("currency"))));
+
+  QString tmp = QStringEmpty(node.attribute(QString("type")));
+  bool bOK = false;
+  int type = tmp.toInt(&bOK);
+  if(bOK) {
+    setAccountType(static_cast<MyMoneyAccount::accountTypeE>(type));
+  } else {
+    qWarning("XMLREADER: Account %s had invalid or no account type information.", name().data());
+  }
+
+  // setOpeningBalance(MyMoneyMoney(node.attribute(QString("openingbalance"))));
+  setDescription(node.attribute(QString("description")));
+
+  m_id = QCStringEmpty(node.attribute(QString("id")));
+  Q_ASSERT(m_id.size());
+  // qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), type, acc.parentAccountId().data());
+
+  //  Process any Sub-Account information found inside the account entry.
+  QDomNodeList nodeList = node.elementsByTagName(QString("SUBACCOUNTS"));
+  if(nodeList.count() > 0) {
+    nodeList = nodeList.item(0).toElement().elementsByTagName(QString("SUBACCOUNT"));
+    for(int i = 0; i < nodeList.count(); ++i) {
+      addAccountId(QCString(nodeList.item(i).toElement().attribute(QString("id"))));
+    }
+  }
+
+  // Process any key value pair
+  nodeList = node.elementsByTagName(QString("KEYVALUEPAIRS"));
+  if(nodeList.count() > 0) {
+    MyMoneyKeyValueContainer::readXML(nodeList.item(0).toElement());
+  }
+}
+

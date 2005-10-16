@@ -31,7 +31,6 @@ class MyMoneyObjectTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testCopyConstructor);
 	CPPUNIT_TEST(testAssignmentConstructor);
 	CPPUNIT_TEST(testEquality);
-	CPPUNIT_TEST(testRTTI);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -46,7 +45,6 @@ public:
 	void testCopyConstructor();
 	void testAssignmentConstructor();
 	void testEquality();
-	void testRTTI(void);
 };
 
 #endif
