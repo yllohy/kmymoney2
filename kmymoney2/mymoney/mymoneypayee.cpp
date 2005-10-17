@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "mymoneypayee.h"
+#include <kmymoney/mymoneyexception.h>
 
 MyMoneyPayee::MyMoneyPayee()
 {
@@ -46,6 +47,7 @@ MyMoneyPayee::MyMoneyPayee(const MyMoneyPayee& right)
   *this = right;
 }
 
+#if 0
 QDataStream &operator<<(QDataStream &s, const MyMoneyPayee &payee)
 {
   return s << payee.m_name
@@ -63,13 +65,60 @@ QDataStream &operator>>(QDataStream &s, MyMoneyPayee &payee)
     >> payee.m_telephone
     >> payee.m_email;
 }
+#endif
 
 const bool MyMoneyPayee::operator == (const MyMoneyPayee& right) const
 {
-  return ((m_id == right.m_id) &&
+  return (MyMoneyObject::operator==(right) &&
       ((m_address.length() == 0 && right.m_address.length() == 0) || (m_address == right.m_address)) &&
       ((m_email.length() == 0 && right.m_email.length() == 0) || (m_email == right.m_email)) &&
       ((m_name.length() == 0 && right.m_name.length() == 0) || (m_name == right.m_name)) &&
       ((m_postcode.length() == 0 && right.m_postcode.length() == 0) || (m_postcode == right.m_postcode)) &&
       ((m_reference.length() == 0 && right.m_reference.length() == 0) || (m_reference == right.m_reference)) );
+}
+
+void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
+{
+  QDomElement el = document.createElement("PAYEE");
+
+  el.setAttribute(QString("name"), m_name);
+  el.setAttribute(QString("id"), m_id);
+  el.setAttribute(QString("reference"), m_reference);
+
+  QDomElement address = document.createElement("ADDRESS");
+  address.setAttribute(QString("street"), m_address);
+  address.setAttribute(QString("city"), m_city);
+  address.setAttribute(QString("postcode"), m_postcode);
+  address.setAttribute(QString("state"), m_state);
+  address.setAttribute(QString("telephone"), m_telephone);
+
+  el.appendChild(address);
+
+  parent.appendChild(el);
+}
+
+void MyMoneyPayee::readXML(const QDomElement& node)
+{
+  if(QString("PAYEE") != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not PAYEE");
+
+  m_id = QCStringEmpty(node.attribute("id"));
+  Q_ASSERT(m_id.size());
+
+  m_name = node.attribute("name");
+  m_reference = node.attribute("reference");
+
+  QDomNodeList nodeList = node.elementsByTagName(QString("ADDRESS"));
+  if(nodeList.count() == 0) {
+    QString msg = QString("No ADDRESS in payee %1").arg(m_name);
+    throw new MYMONEYEXCEPTION(msg);
+  }
+
+  QDomElement addrNode = nodeList.item(0).toElement();
+  m_address = addrNode.attribute("street");
+  m_city = addrNode.attribute("city");
+  m_postcode = addrNode.attribute("zip");
+  m_state = addrNode.attribute("state");
+  m_telephone = addrNode.attribute("telephone");
+
 }

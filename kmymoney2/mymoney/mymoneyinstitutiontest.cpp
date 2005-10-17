@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "mymoneyinstitutiontest.h"
+#include <kmymoney/mymoneyexception.h>
 
 MyMoneyInstitutionTest::MyMoneyInstitutionTest()
 {
@@ -194,3 +195,108 @@ void MyMoneyInstitutionTest::testAccountIDList () {
 	
 }
 
+void MyMoneyInstitutionTest::testWriteXML() {
+	MyMoneyKeyValueContainer kvp;
+
+	n->addAccountId("A000001");
+	n->addAccountId("A000003");
+	kvp.setValue("key", "value");
+	kvp.setValue("Key", "Value");
+	n->setOfxConnectionSettings(kvp);
+
+	QDomDocument doc("TEST");
+	QDomElement el = doc.createElement("INSTITUTION-CONTAINER");
+	doc.appendChild(el);
+
+	MyMoneyInstitution i("I00001", *n);
+
+	i.writeXML(doc, el);
+
+	QString ref = QString(
+		"<!DOCTYPE TEST>\n"
+		"<INSTITUTION-CONTAINER>\n"
+		" <INSTITUTION sortcode=\"sortcode\" id=\"I00001\" manager=\"manager\" name=\"name\" >\n"
+		"  <ADDRESS street=\"street\" zip=\"postcode\" city=\"town\" telephone=\"telephone\" />\n"
+		"  <ACCOUNTIDS>\n"
+		"   <ACCOUNTID id=\"A000001\" />\n"
+		"   <ACCOUNTID id=\"A000003\" />\n"
+		"  </ACCOUNTIDS>\n"
+		"  <OFXSETTINGS key=\"value\" Key=\"Value\" />\n"
+		" </INSTITUTION>\n"
+		"</INSTITUTION-CONTAINER>\n");
+
+	CPPUNIT_ASSERT(doc.toString() == ref);
+}
+
+void MyMoneyInstitutionTest::testReadXML() {
+	MyMoneyInstitution i;
+	QString ref_ok = QString(
+		"<!DOCTYPE TEST>\n"
+		"<INSTITUTION-CONTAINER>\n"
+		" <INSTITUTION sortcode=\"sortcode\" id=\"I00001\" manager=\"manager\" name=\"name\" >\n"
+		"  <ADDRESS street=\"street\" zip=\"postcode\" city=\"town\" telephone=\"telephone\" />\n"
+		"  <ACCOUNTIDS>\n"
+		"   <ACCOUNTID id=\"A000001\" />\n"
+		"   <ACCOUNTID id=\"A000003\" />\n"
+		"  </ACCOUNTIDS>\n"
+		"  <OFXSETTINGS key=\"value\" Key=\"Value\" />\n"
+		" </INSTITUTION>\n"
+		"</INSTITUTION-CONTAINER>\n");
+
+	QString ref_false = QString(
+		"<!DOCTYPE TEST>\n"
+		"<INSTITUTION-CONTAINER>\n"
+		" <KINSTITUTION sortcode=\"sortcode\" id=\"I00001\" manager=\"manager\" name=\"name\" >\n"
+		"  <ADDRESS street=\"street\" zip=\"postcode\" city=\"town\" telephone=\"telephone\" />\n"
+		"  <ACCOUNTIDS>\n"
+		"   <ACCOUNTID id=\"A000001\" />\n"
+		"   <ACCOUNTID id=\"A000003\" />\n"
+		"  </ACCOUNTIDS>\n"
+		"  <OFXSETTINGS key=\"value\" Key=\"Value\" />\n"
+		" </KINSTITUTION>\n"
+		"</INSTITUTION-CONTAINER>\n");
+
+	QDomDocument doc;
+	QDomElement node;
+
+	doc.setContent(ref_false);
+	node = doc.documentElement().firstChild().toElement();
+	try {
+		i.readXML(node);
+		CPPUNIT_FAIL("Missing expected exception");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+
+	MyMoneyKeyValueContainer kvp;
+	kvp.setValue("key", "VALUE");
+	i.setOfxConnectionSettings(kvp);
+	i.addAccountId("TEST");
+
+	doc.setContent(ref_ok);
+	node = doc.documentElement().firstChild().toElement();
+	try {
+		QCStringList alist;
+		alist << "A000001" << "A000003";
+		i.readXML(node);
+
+		CPPUNIT_ASSERT(i.sortcode() == "sortcode");
+		CPPUNIT_ASSERT(i.id() == "I00001");
+		CPPUNIT_ASSERT(i.manager() == "manager");
+		CPPUNIT_ASSERT(i.name() == "name");
+		CPPUNIT_ASSERT(i.street() == "street");
+		CPPUNIT_ASSERT(i.postcode() == "postcode");
+		CPPUNIT_ASSERT(i.city() == "town");
+		CPPUNIT_ASSERT(i.telephone() == "telephone");
+		CPPUNIT_ASSERT(i.accountList() == alist);
+		MyMoneyKeyValueContainer kvp;
+		kvp = i.ofxConnectionSettings();
+		CPPUNIT_ASSERT(kvp.value("key") == "value");
+		CPPUNIT_ASSERT(kvp.value("Key") == "Value");
+		CPPUNIT_ASSERT(kvp.value("KEY").isEmpty());
+
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+}

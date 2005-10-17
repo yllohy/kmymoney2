@@ -34,6 +34,8 @@ class MyMoneyInstitutionTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testEquality);
 	CPPUNIT_TEST(testInequality);
 	CPPUNIT_TEST(testAccountIDList);
+	CPPUNIT_TEST(testWriteXML);
+	CPPUNIT_TEST(testReadXML);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -52,6 +54,8 @@ public:
 	void testEquality ();
 	void testInequality ();
 	void testAccountIDList ();
+	void testWriteXML();
+	void testReadXML();
 };
 
 #endif

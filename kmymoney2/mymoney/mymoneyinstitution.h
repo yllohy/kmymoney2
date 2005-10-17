@@ -1,7 +1,7 @@
 /***************************************************************************
                           mymoneyinstitution.h
                           -------------------
-    copyright            : (C) 2002 by Thomas Baumgart
+    copyright            : (C) 2002-2005 by Thomas Baumgart
     email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
@@ -32,7 +32,8 @@
 // Project Includes
 
 #include "mymoneyutils.h"
-#include "mymoneykeyvaluecontainer.h"
+#include <kmymoney/mymoneyobject.h>
+#include <kmymoney/mymoneykeyvaluecontainer.h>
 #include <kmymoney/export.h>
 
 class MyMoneyFile;
@@ -43,7 +44,8 @@ class MyMoneyMoney;
   *
   * @author Thomas Baumgart
   */
-class KMYMONEY_EXPORT MyMoneyInstitution {
+class KMYMONEY_EXPORT MyMoneyInstitution : public MyMoneyObject
+{
 public:
   /**
     * This is the constructor for a new empty institution description
@@ -93,7 +95,6 @@ public:
   void setTown(QString town) { m_town = town; }
   void setCity(QString town) { setTown(town); }
   void setSortcode(QString code) { m_sortcode = code; }
-  void setId(QString id)          { m_id = id; }
 
   /**
     * This method sets the kvp's for OFX Direct Connect sessions to this
@@ -102,7 +103,7 @@ public:
     * @param values The container of kvp's needed when connecting to this institution
     */
   void setOfxConnectionSettings(const MyMoneyKeyValueContainer& values) { m_ofxConnectionSettings = values; }
-  
+
   /**
     * This method retrieves the kvp's for OFX Direct Connect sessions to this
     * institution.
@@ -134,7 +135,7 @@ public:
     * this institution
     * return QStringList of account ids
     */
-  QCStringList accountList(void) const { return m_accountList; }
+  const QCStringList& accountList(void) const { return m_accountList; }
 
   /**
     * This method returns the number of accounts known to
@@ -143,28 +144,17 @@ public:
     */
   const unsigned int accountCount(void) const { return m_accountList.count(); }
 
-  /**
-    * This method returns the ID of the institution under which it is known
-    * inside the MyMoneyFile.
-    *
-    * @return ID as QString. If the ID is unknown, an empty QString is returned.
-    */
-  const QCString id(void) const { return m_id; }
-
   bool operator == (const MyMoneyInstitution&) const;
-  // MyMoneyInstitution& operator = (const MyMoneyInstitution&);
+
+  void writeXML(QDomDocument& document, QDomElement& parent) const;
+
+  void readXML(const QDomElement& node);
 
 private:
-  friend QDataStream& operator << (QDataStream &, const MyMoneyInstitution &);
-  friend QDataStream& operator >> (QDataStream &, MyMoneyInstitution &);
+  // friend QDataStream& operator << (QDataStream &, const MyMoneyInstitution &);
+  // friend QDataStream& operator >> (QDataStream &, MyMoneyInstitution &);
 
 private:
-  /**
-    * This member variable keeps the ID of the institution under which it
-    * is known inside the MyMoneyFile.
-    */
-  QCString  m_id;
-
   // Bank 'fields'
   /**
     * This member variable keeps the name of the institution
@@ -209,7 +199,7 @@ private:
     * available at this institution
     */
   QCStringList m_accountList;
-  
+
   /**
     * This member variable keeps the set of kvp's needed to establish
     * OFX Direct Connect sessions to this institution.

@@ -1,3 +1,8 @@
+2005-10-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added writeXML and readXML to MyMoneyInstitution, MyMoneyPayee
+  * Added testcases for those routines
+  * Changed storage MyMoneyStorageXML to use these routines
+
 2005-10-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated MyMoneyObject as discussed on mailing list
   * Added writeXML and readXML methods to MyMoneyAccount and

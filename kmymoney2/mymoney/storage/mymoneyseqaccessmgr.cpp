@@ -524,13 +524,7 @@ const MyMoneyInstitution& MyMoneySeqAccessMgr::institution(const QCString& id) c
 
 const QValueList<MyMoneyInstitution> MyMoneySeqAccessMgr::institutionList(void) const
 {
-  QValueList<MyMoneyInstitution> list;
-  QMap<QCString, MyMoneyInstitution>::ConstIterator it;
-
-  for(it = m_institutionList.begin(); it != m_institutionList.end(); ++it) {
-    list.append(*it);
-  }
-  return list;
+  return m_institutionList.values();
 }
 
 void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account, const bool skipCheck)
@@ -1589,14 +1583,7 @@ const QValueList<MyMoneySecurity> MyMoneySeqAccessMgr::currencyList(void) const
 
 const QValueList<MyMoneyReport> MyMoneySeqAccessMgr::reportList(void) const
 {
-  QValueList<MyMoneyReport> result;
-  QMap<QCString, MyMoneyReport>::ConstIterator it_report = m_reportList.begin();
-  while ( it_report != m_reportList.end() )
-  {
-    result += *it_report;
-    ++it_report;
-  }
-  return result;
+  return m_reportList.values();
 }
 
 void MyMoneySeqAccessMgr::addReport( MyMoneyReport& report )

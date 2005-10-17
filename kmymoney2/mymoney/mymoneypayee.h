@@ -2,7 +2,9 @@
                           mymoneypayee.h
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
+                               2005 by Thomas Baumgart
     email                : mte@users.sourceforge.net
+                           ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,26 +26,24 @@
 #include <qstring.h>
 #include <qcstring.h>
 #include <kmymoney/export.h>
+#include <kmymoney/mymoneyobject.h>
+
 /**
   * This class represents a payee or receiver within the MyMoney engine
   *
   * @author Thomas Baumgart
   */
-class KMYMONEY_EXPORT MyMoneyPayee {
+class KMYMONEY_EXPORT MyMoneyPayee : public MyMoneyObject
+{
 private:
-	// Simple fields
-	QString m_name;
-	QString m_address;
-	QString m_postcode;
-	QString m_telephone;
-	QString m_email;
+  // Simple fields
+  QString m_name;
+  QString m_address;
+  QString m_postcode;
+  QString m_telephone;
+  QString m_email;
   QString m_city;
   QString m_state;
-
-  /**
-    * This member keeps the MyMoney id
-    */
-  QCString m_id;
 
   /**
     * This member keeps a reference to an external database
@@ -54,44 +54,48 @@ private:
     * If no external database is available it should be kept
     * emtpy by the application.
     */
-	QString m_reference;
+  QString m_reference;
 
-  friend QDataStream &operator<<(QDataStream &, const MyMoneyPayee &);
-  friend QDataStream &operator>>(QDataStream &, MyMoneyPayee &);
+  // friend QDataStream &operator<<(QDataStream &, const MyMoneyPayee &);
+  // friend QDataStream &operator>>(QDataStream &, MyMoneyPayee &);
 
 public:
-	MyMoneyPayee();
+  MyMoneyPayee();
   MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee);
-	MyMoneyPayee(const QString& name, const QString address=QString::null, const QString postcode=QString::null, const QString telephone=QString::null, const QString email=QString::null, const QString city=QString::null, const QString state=QString::null);
-	~MyMoneyPayee();
-	
-	// Simple get operations
-	QString name(void) const            { return m_name; }
-	QString address(void) const         { return m_address; }
-	QString postcode(void) const        { return m_postcode; }
-	QString telephone(void) const       { return m_telephone; }
-	QString email(void) const           { return m_email; }
+  MyMoneyPayee(const QString& name, const QString address=QString::null, const QString postcode=QString::null, const QString telephone=QString::null, const QString email=QString::null, const QString city=QString::null, const QString state=QString::null);
+  ~MyMoneyPayee();
+
+  // Simple get operations
+  QString name(void) const            { return m_name; }
+  QString address(void) const         { return m_address; }
+  QString postcode(void) const        { return m_postcode; }
+  QString telephone(void) const       { return m_telephone; }
+  QString email(void) const           { return m_email; }
   QString city(void) const            { return m_city; }
   QString state(void) const           { return m_state; }
   const QCString id(void) const       { return m_id; };
   const QString reference(void) const { return m_reference; };
-  	
-	// Simple set operations
-	void setName(const QString& val)      { m_name = val; }
-	void setAddress(const QString& val)   { m_address = val; }
-	void setPostcode(const QString& val)  { m_postcode = val; }
-	void setTelephone(const QString& val) { m_telephone = val; }
-	void setEmail(const QString& val)     { m_email = val; }
+
+  // Simple set operations
+  void setName(const QString& val)      { m_name = val; }
+  void setAddress(const QString& val)   { m_address = val; }
+  void setPostcode(const QString& val)  { m_postcode = val; }
+  void setTelephone(const QString& val) { m_telephone = val; }
+  void setEmail(const QString& val)     { m_email = val; }
   void setReference(const QString& ref) { m_reference = ref; }
   void setId(const QCString& val)       { m_id = val; }
   void setCity(const QString& val)      { m_city = val; }
   void setState(const QString& val)     { m_state = val; }
-	
+
   // Copy constructors
   MyMoneyPayee(const MyMoneyPayee&);
 
   // Equality operator
   const bool operator == (const MyMoneyPayee &) const;
+
+  void writeXML(QDomDocument& document, QDomElement& parent) const;
+
+  void readXML(const QDomElement& node);
 };
 
 #endif

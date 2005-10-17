@@ -339,7 +339,8 @@ void MyMoneyStorageXML::readInstitutions(QDomElement& institutions)
       QDomElement childElement = child.toElement();
       if(QString("INSTITUTION") == childElement.tagName())
       {
-        MyMoneyInstitution inst = readInstitution(childElement);
+        MyMoneyInstitution inst;
+        inst.readXML(childElement);
 
         //tell the storage objects we have a new institution.
         m_storage->loadInstitution(inst);
@@ -361,18 +362,14 @@ void MyMoneyStorageXML::readInstitutions(QDomElement& institutions)
 
 void MyMoneyStorageXML::writeInstitutions(QDomElement& institutions)
 {
-  QValueList<MyMoneyInstitution> list;
+  const QValueList<MyMoneyInstitution> list = m_storage->institutionList();
   QValueList<MyMoneyInstitution>::ConstIterator it;
 
-  list = m_storage->institutionList();
   for(it = list.begin(); it != list.end(); ++it)
-  {
-    QDomElement institution = m_doc->createElement("INSTITUTION");
-    writeInstitution(institution, *it);
-    institutions.appendChild(institution);
-  }
+    writeInstitution(institutions, *it);
 }
 
+#if 0
 //#include "../mymoneykeyvaluecontainer.h"
 
 MyMoneyInstitution MyMoneyStorageXML::readInstitution(const QDomElement& institution)
@@ -437,9 +434,13 @@ MyMoneyInstitution MyMoneyStorageXML::readInstitution(const QDomElement& institu
 
   return MyMoneyInstitution(id, i);
 }
+#endif
 
 void MyMoneyStorageXML::writeInstitution(QDomElement& institution, const MyMoneyInstitution& i)
 {
+  i.writeXML(*m_doc, institution);
+
+#if 0
   institution.setAttribute(QString("id"), i.id());
   institution.setAttribute(QString("name"), i.name());
   institution.setAttribute(QString("manager"), i.manager());
@@ -477,6 +478,7 @@ void MyMoneyStorageXML::writeInstitution(QDomElement& institution, const MyMoney
 
     institution.appendChild(ofxsettings);
   }
+#endif
 }
 
 void MyMoneyStorageXML::readPayees(QDomElement& payees)
@@ -493,7 +495,8 @@ void MyMoneyStorageXML::readPayees(QDomElement& payees)
       QDomElement childElement = child.toElement();
       if(QString("PAYEE") == childElement.tagName())
       {
-        MyMoneyPayee p = readPayee(childElement);
+        MyMoneyPayee p;
+        p.readXML(childElement);
 
         //tell the storage objects we have a new institution.
         m_storage->loadPayee(p);
@@ -512,19 +515,14 @@ void MyMoneyStorageXML::readPayees(QDomElement& payees)
 
 void MyMoneyStorageXML::writePayees(QDomElement& payees)
 {
-  QValueList<MyMoneyPayee> list;
+  const QValueList<MyMoneyPayee> list = m_storage->payeeList();
   QValueList<MyMoneyPayee>::ConstIterator it;
 
-  list = m_storage->payeeList();
-
   for(it = list.begin(); it != list.end(); ++it)
-  {
-    QDomElement payee = m_doc->createElement("PAYEE");
-    writePayee(payee, *it);
-    payees.appendChild(payee);
-  }
+    writePayee(payees, *it);
 }
 
+#if 0
 MyMoneyPayee MyMoneyStorageXML::readPayee(const QDomElement& payee)
 {
   MyMoneyPayee p;
@@ -554,9 +552,12 @@ MyMoneyPayee MyMoneyStorageXML::readPayee(const QDomElement& payee)
   //create actual object to return to add into the engine's list of objects.
   return MyMoneyPayee(id, p);
 }
+#endif
 
 void MyMoneyStorageXML::writePayee(QDomElement& payee, const MyMoneyPayee& p)
 {
+  p.writeXML(*m_doc, payee);
+#if 0
   payee.setAttribute(QString("name"), p.name());
   payee.setAttribute(QString("id"), p.id());
   payee.setAttribute(QString("reference"), p.reference());
@@ -569,6 +570,7 @@ void MyMoneyStorageXML::writePayee(QDomElement& payee, const MyMoneyPayee& p)
   address.setAttribute(QString("telephone"), p.telephone());
 
   payee.appendChild(address);
+#endif
 }
 
 void MyMoneyStorageXML::readAccounts(QDomElement& accounts)
@@ -604,7 +606,7 @@ void MyMoneyStorageXML::readAccounts(QDomElement& accounts)
 
 void MyMoneyStorageXML::writeAccounts(QDomElement& accounts)
 {
-  QValueList<MyMoneyAccount> list;
+  const QValueList<MyMoneyAccount> list = m_storage->accountList();
   QValueList<MyMoneyAccount>::ConstIterator it;
 
   writeAccount(accounts, m_storage->asset());
@@ -613,7 +615,6 @@ void MyMoneyStorageXML::writeAccounts(QDomElement& accounts)
   writeAccount(accounts, m_storage->income());
   writeAccount(accounts, m_storage->equity());
 
-  list = m_storage->accountList();
   signalProgress(0, list.count(), QObject::tr("Saving accounts..."));
   int i = 0;
   for(it = list.begin(); it != list.end(); ++it, ++i) {
@@ -763,11 +764,9 @@ void MyMoneyStorageXML::readTransactions(QDomElement& transactions)
 
 void MyMoneyStorageXML::writeTransactions(QDomElement& transactions)
 {
-  QValueList<MyMoneyTransaction> list;
-  QValueList<MyMoneyTransaction>::ConstIterator it;
   MyMoneyTransactionFilter filter;
-
-  list = m_storage->transactionList(filter);
+  const QValueList<MyMoneyTransaction> list = m_storage->transactionList(filter);
+  QValueList<MyMoneyTransaction>::ConstIterator it;
 
   signalProgress(0, list.count(), QObject::tr("Saving transactions..."));
 
@@ -866,10 +865,8 @@ void MyMoneyStorageXML::readSchedules(QDomElement& schedules)
 
 void MyMoneyStorageXML::writeSchedules(QDomElement& scheduled)
 {
-  QValueList<MyMoneySchedule> list;
+  const QValueList<MyMoneySchedule> list = m_storage->scheduleList();
   QValueList<MyMoneySchedule>::ConstIterator it;
-
-  list = m_storage->scheduleList();
 
   for(it = list.begin(); it != list.end(); ++it)
   {
@@ -1018,10 +1015,10 @@ void MyMoneyStorageXML::writeSplit(QDomElement& splitElement, const MyMoneySplit
 
 void MyMoneyStorageXML::writeSecurities(QDomElement& equities)
 {
-  QValueList<MyMoneySecurity> securityList = m_storage->securityList();
+  const QValueList<MyMoneySecurity> securityList = m_storage->securityList();
   if(securityList.size())
   {
-    for(QValueList<MyMoneySecurity>::Iterator it = securityList.begin(); it != securityList.end(); ++it)
+    for(QValueList<MyMoneySecurity>::ConstIterator it = securityList.begin(); it != securityList.end(); ++it)
     {
       QDomElement security = m_doc->createElement("SECURITY");
       writeSecurity(security, (*it));
@@ -1090,10 +1087,10 @@ void MyMoneyStorageXML::readSecurities(QDomElement& securities)
 
 void MyMoneyStorageXML::writeCurrencies(QDomElement& currencies)
 {
-  QValueList<MyMoneySecurity> currencyList = m_storage->currencyList();
+  const QValueList<MyMoneySecurity> currencyList = m_storage->currencyList();
   if(currencyList.size())
   {
-    for(QValueList<MyMoneySecurity>::Iterator it = currencyList.begin(); it != currencyList.end(); ++it)
+    for(QValueList<MyMoneySecurity>::ConstIterator it = currencyList.begin(); it != currencyList.end(); ++it)
     {
       QDomElement currency = m_doc->createElement("CURRENCY");
       writeCurrency(currency, (*it));
@@ -1221,7 +1218,7 @@ void MyMoneyStorageXML::readReports(QDomElement& reports)
 
 void MyMoneyStorageXML::writeReports(QDomElement& parent) const
 {
-  QValueList<MyMoneyReport> list = m_storage->reportList();
+  const QValueList<MyMoneyReport> list = m_storage->reportList();
   QValueList<MyMoneyReport>::ConstIterator it;
 
   for(it = list.begin(); it != list.end(); ++it)
@@ -1394,10 +1391,8 @@ const MyMoneyPrice MyMoneyStorageXML::readPrice(const QCString& from, const QCSt
 
 void MyMoneyStorageXML::writePrices(QDomElement& prices)
 {
-  MyMoneyPriceList list;
+  const MyMoneyPriceList list = m_storage->priceList();
   MyMoneyPriceList::ConstIterator it;
-
-  list = m_storage->priceList();
 
   for(it = list.begin(); it != list.end(); ++it)
   {

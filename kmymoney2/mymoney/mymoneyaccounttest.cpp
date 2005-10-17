@@ -456,6 +456,10 @@ void MyMoneyAccountTest::testReadXML() {
 
 	doc.setContent(ref_ok);
 	node = doc.documentElement().firstChild().toElement();
+
+	a.addAccountId("TEST");
+	a.setValue("key", "VALUE");
+
 	try {
 		a.readXML(node);
 	} catch(MyMoneyException *e) {
