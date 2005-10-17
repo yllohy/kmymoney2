@@ -71,13 +71,12 @@ version to be created (e.g. 0.5.6) by opening the Help/About dialog box. The cor
 by the following rules (see also <link linkend="version-mgmt">Version Management</link> for more details.
 </para>
 
-<para>
 <note>
+<para>
 Two types of versions can be created at this time: a <emphasis>follow-up</emphasis> release or a <emphasis>fresh stable</emphasis>
 release. The follow-up release is based on a previous release with the same major and minor release number. The fresh stable
 release starts a new major and minor release number pair. In the latter case, the major and minor release numbers on the
 development branch in CVS are also adjusted. More details below.
-</note>
 </para>
 
 <para>
@@ -90,11 +89,11 @@ development branch in CVS are also adjusted. More details below.
     </para></listitem>
   </orderedlist>
 </para>
+</note>
 
 <para>
-
-If this is not the case, change the version in the file configure.in.in.
-Afterwards, run the following commands:
+If the version number is not correct, change the it in the file
+<filename>configure.in.in</filename>.  Afterwards, run the following commands:
 
 <screen>
 <prompt>thb: ~&gt; </prompt><userinput>make -f Makefile.dist</userinput>
