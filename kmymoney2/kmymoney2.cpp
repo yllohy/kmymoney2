@@ -631,7 +631,8 @@ void KMyMoney2App::slotFileClose()
 
 void KMyMoney2App::slotFileQuit()
 {
-  QString prevMsg = slotStatusMsg(i18n("Exiting..."));
+  // don't modify the status message here as this will prevent quit from working!!
+  // See the beginning of queryClose() and isReady() why. Thomas Baumgart 2005-10-17
 
   KMainWindow* w = 0;
 
@@ -650,9 +651,6 @@ void KMyMoney2App::slotFileQuit()
 
   } else
       kapp->quit();
-
-  // in case we don't really quit
-  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotViewToolBar()
@@ -1719,7 +1717,10 @@ void KMyMoney2App::slotCheckSchedules(void)
     MyMoneyFile::instance()->suspendNotify(true);
     QString prevMsg = slotStatusMsg(i18n("Checking for overdue schedules..."));
     MyMoneyFile *file = MyMoneyFile::instance();
-    QDate checkDate = QDate::currentDate().addDays(kconfig->readNumEntry("CheckSchedulePreview", 0));
+    int checkDays = kconfig->readNumEntry("CheckSchedulePreview", 0);
+    if(checkDays < 0)
+      checkDays = 0;
+    QDate checkDate = QDate::currentDate().addDays(checkDays);
 
     QValueList<MyMoneySchedule> scheduleList =  file->scheduleList();
     QValueList<MyMoneySchedule>::Iterator it;
