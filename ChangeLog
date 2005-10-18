@@ -1,3 +1,6 @@
+2005-10-17 Robert Wadley <robntina@users.sourceforge.net>
+  * Made corrections to the 'what's new' html page.
+ 
 2005-10-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added writeXML and readXML to MyMoneyInstitution, MyMoneyPayee
   * Added testcases for those routines
