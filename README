@@ -51,6 +51,7 @@ from.
      MEPIS             |  omit this parameter    | /usr
      RedHat 8/9        |  omit this parameter    | /usr
      Fedora 1/2	       |  omit this parameter    | /usr
+     Mandriva 2006     |  omit this parameter    | /usr
      
      Distribution      | --man-dir               | --program-prefix
      ------------------+-------------------------+---------------------------
@@ -58,6 +59,7 @@ from.
      Mandrake 9.0      |  ???                    | 
      Slackware >= 9.0  |  /usr/share/man         | 
      MEPIS             |  omit this parameter    | omit this parameter
+     Mandriva 2006     |  /usr/share/man         | /usr
 
      so for SuSE 9.1 the command is:
 
