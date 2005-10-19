@@ -182,6 +182,8 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     this, SLOT(slotAutoEnterChanged()));
   connect(m_qlineeditMemo, SIGNAL(textChanged(const QString&)),
     this, SLOT(slotMemoChanged(const QString&)));
+
+  slotCheckOkEnabled();
 }
 
 KEditScheduleDialog::~KEditScheduleDialog()
@@ -845,6 +847,7 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
     KMessageBox::detailedError(this, i18n("Error in slotAmountChanged?"), e->what() + " : " + m_schedule.account().name());
     delete e;
   }
+  slotCheckOkEnabled();
 }
 
 void KEditScheduleDialog::slotAccountChanged(const QCString& id)
@@ -866,11 +869,13 @@ void KEditScheduleDialog::slotAccountChanged(const QCString& id)
       m_transaction.setCommodity(acc.currencyId());
     }
   }
+  slotCheckOkEnabled();
 }
 
 void KEditScheduleDialog::slotScheduleNameChanged(const QString& text)
 {
   m_schedule.setName(text);
+  slotCheckOkEnabled();
 }
 
 void KEditScheduleDialog::slotToChanged(const QCString& id)
@@ -899,6 +904,7 @@ void KEditScheduleDialog::slotToChanged(const QCString& id)
     s.setAccountId(id);
     m_transaction.modifySplit(s);
   }
+  slotCheckOkEnabled();
 }
 
 void KEditScheduleDialog::slotMethodChanged(int item)
@@ -1070,6 +1076,7 @@ void KEditScheduleDialog::slotCategoryChanged(const QString& text)
     s.setAccountId(id);
     m_transaction.modifySplit(s);
   }
+  slotCheckOkEnabled();
 }
 
 void KEditScheduleDialog::slotAutoEnterChanged()
@@ -1291,10 +1298,26 @@ QCString KEditScheduleDialog::theAccountId()
   return QCString();
 }
 
+void KEditScheduleDialog::slotCheckOkEnabled(void)
+{
+  bool rcEnabled = true;
+  if(m_scheduleName->text().length() == 0)
+    rcEnabled = false;
+  if(m_accountCombo->isEnabled() && m_accountCombo->selectedAccounts().count() == 0)
+    rcEnabled = false;
+  if(m_kcomboTo->isEnabled() && m_kcomboTo->selectedAccounts().count() == 0)
+    rcEnabled = false;
+  if(m_category->isEnabled() && m_category->selectedAccountId().isEmpty())
+    rcEnabled = false;
+  if(m_kmoneyeditAmount->text().length() == 0)
+    rcEnabled = false;
+
+  m_qbuttonOK->setEnabled(rcEnabled);
+}
+
 void KEditScheduleDialog::slotHelp(void)
 {
   kapp->invokeHelp("details.schedules.new");
 }
-
 
 #include "ieditscheduledialog.moc"
