@@ -458,10 +458,26 @@ void MyMoneyAccountTest::testReadXML() {
 	node = doc.documentElement().firstChild().toElement();
 
 	a.addAccountId("TEST");
-	a.setValue("key", "VALUE");
+	a.setValue("KEY", "VALUE");
 
 	try {
 		a.readXML(node);
+		CPPUNIT_ASSERT(a.id() == "A000001");
+		CPPUNIT_ASSERT(a.m_name == "AccountName");
+		CPPUNIT_ASSERT(a.m_parentAccount == "Parent");
+		CPPUNIT_ASSERT(a.m_lastModified == QDate::currentDate());
+		CPPUNIT_ASSERT(a.m_lastReconciliationDate == QDate());
+		CPPUNIT_ASSERT(a.m_institution == "B000001");
+		CPPUNIT_ASSERT(a.m_number == "465500");
+		CPPUNIT_ASSERT(a.m_openingDate == QDate::currentDate());
+		CPPUNIT_ASSERT(a.m_accountType == MyMoneyAccount::Asset);
+		CPPUNIT_ASSERT(a.m_description == "Desc");
+		CPPUNIT_ASSERT(a.accountList().count() == 2);
+		CPPUNIT_ASSERT(a.accountList()[0] == "A000002");
+		CPPUNIT_ASSERT(a.accountList()[1] == "A000003");
+		CPPUNIT_ASSERT(a.pairs().count() == 2);
+		CPPUNIT_ASSERT(a.value("key") == "value");
+		CPPUNIT_ASSERT(a.value("Key") == "Value");
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");

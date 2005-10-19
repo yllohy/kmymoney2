@@ -84,6 +84,11 @@ public:
   void deletePair(const QCString& key);
 
   /**
+    * This method clears all pairs currently in the container.
+    */
+  void clear(void);
+
+  /**
     * This method is used to retrieve the whole set of key/value pairs
     * from the container. It is meant to be used for permanent storage
     * functionality.

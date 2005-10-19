@@ -24,7 +24,8 @@
 
 #include "mymoneytransaction.h"
 
-MyMoneyTransaction::MyMoneyTransaction()
+MyMoneyTransaction::MyMoneyTransaction() :
+  MyMoneyObject()
 {
   m_nextSplitID = 1;
   m_entryDate = QDate();
@@ -33,7 +34,8 @@ MyMoneyTransaction::MyMoneyTransaction()
 
 // MyMoneyTransaction::MyMoneyTransaction(MyMoneyFile *file,
 MyMoneyTransaction::MyMoneyTransaction(const QCString id,
-                                       const MyMoneyTransaction& transaction)
+                                       const MyMoneyTransaction& transaction) :
+  MyMoneyObject(id)
 {
   *this = transaction;
   m_id = id;
@@ -47,7 +49,7 @@ MyMoneyTransaction::~MyMoneyTransaction()
 
 bool MyMoneyTransaction::operator == (const MyMoneyTransaction& right) const
 {
-  return ((m_id == right.m_id) &&
+  return (MyMoneyObject::operator==(right) &&
       (m_commodity == right.m_commodity) &&
       ((m_memo.length() == 0 && right.m_memo.length() == 0) || (m_memo == right.m_memo)) &&
       (m_splits == right.m_splits) &&
@@ -299,5 +301,61 @@ const bool MyMoneyTransaction::isDuplicate(const MyMoneyTransaction& r) const
   }
 
   return rc;
+}
+
+void MyMoneyTransaction::writeXML(QDomDocument& document, QDomElement& parent) const
+{
+  QDomElement el = document.createElement("TRANSACTION");
+
+  el.setAttribute(QString("id"), m_id);
+  el.setAttribute(QString("postdate"), dateToString(m_postDate));
+  el.setAttribute(QString("memo"), m_memo);
+  el.setAttribute(QString("entrydate"), dateToString(m_entryDate));
+  el.setAttribute(QString("commodity"), m_commodity);
+  el.setAttribute(QString("bankid"), m_bankID);
+
+  QDomElement splits = document.createElement("SPLITS");
+  QValueList<MyMoneySplit>::ConstIterator it;
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    (*it).writeXML(document, splits);
+  }
+  el.appendChild(splits);
+
+  MyMoneyKeyValueContainer::writeXML(document, el);
+
+  parent.appendChild(el);
+}
+
+void MyMoneyTransaction::readXML(const QDomElement& node)
+{
+  if(QString("TRANSACTION") != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not TRANSACTION");
+
+  m_nextSplitID = 1;
+  m_splits.clear();
+  m_id = QCStringEmpty(node.attribute(QString("id")));
+
+  m_postDate = stringToDate(node.attribute("postdate"));
+  m_entryDate = stringToDate(node.attribute("entrydate"));
+  m_bankID = QStringEmpty(node.attribute("bankid"));
+  m_memo = QStringEmpty(node.attribute("memo"));
+  m_commodity = QCStringEmpty(node.attribute("commodity"));
+
+  //  Process any split information found inside the transaction entry.
+  QDomNodeList nodeList = node.elementsByTagName(QString("SPLITS"));
+  if(nodeList.count() > 0) {
+    nodeList = nodeList.item(0).toElement().elementsByTagName(QString("SPLIT"));
+    MyMoneySplit s;
+    for(int i = 0; i < nodeList.count(); ++i) {
+      s.readXML(nodeList.item(i).toElement());
+      addSplit(s);
+    }
+  }
+
+  // Process any key value pair
+  nodeList = node.elementsByTagName(QString("KEYVALUEPAIRS"));
+  if(nodeList.count() > 0) {
+    MyMoneyKeyValueContainer::readXML(nodeList.item(0).toElement());
+  }
 }
 

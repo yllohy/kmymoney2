@@ -1760,7 +1760,6 @@ const MyMoneyPrice MyMoneyFile::price(const QCString& fromId, const QCString& to
 
   // we don't search our tables if someone asks stupid stuff
   if(fromId == toId) {
-    qDebug("price request for same currency");
     return MyMoneyPrice(fromId, toId, date, MyMoneyMoney(1,1), "KMyMoney");
   }
 

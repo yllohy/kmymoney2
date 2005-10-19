@@ -425,6 +425,7 @@ void MyMoneyAccount::readXML(const QDomElement& node)
   // qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), type, acc.parentAccountId().data());
 
   //  Process any Sub-Account information found inside the account entry.
+  m_accountList.clear();
   QDomNodeList nodeList = node.elementsByTagName(QString("SUBACCOUNTS"));
   if(nodeList.count() > 0) {
     nodeList = nodeList.item(0).toElement().elementsByTagName(QString("SUBACCOUNT"));

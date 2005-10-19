@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "mymoneysplittest.h"
+#include <kmymoney/mymoneyexception.h>
 
 MyMoneySplitTest::MyMoneySplitTest()
 {
@@ -179,4 +180,76 @@ void MyMoneySplitTest::testSetValue() {
 	m->setValue(3, "EUR", "USD");
 	CPPUNIT_ASSERT(m->value() == MyMoneyMoney(1));
 	CPPUNIT_ASSERT(m->shares() == MyMoneyMoney(3));
+}
+
+void MyMoneySplitTest::testWriteXML() {
+	MyMoneySplit s;
+
+	s.setPayeeId("P000001");
+	s.setShares(MyMoneyMoney(96379, 100));
+	s.setValue(MyMoneyMoney(96379, 1000));
+	s.setAccountId("A000076");
+	s.setNumber("124");
+	s.setAction(MyMoneySplit::ActionDeposit);
+	s.setReconcileFlag(MyMoneySplit::Reconciled);
+
+	QDomDocument doc("TEST");
+	QDomElement el = doc.createElement("SPLIT-CONTAINER");
+	doc.appendChild(el);
+	s.writeXML(doc, el);
+
+	QString ref = QString(
+		"<!DOCTYPE TEST>\n"
+		"<SPLIT-CONTAINER>\n"
+		" <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Deposit\" number=\"124\" reconcileflag=\"2\" memo=\"\" value=\"96379/1000\" account=\"A000076\" />\n"
+		"</SPLIT-CONTAINER>\n");
+
+	CPPUNIT_ASSERT(doc.toString() == ref);
+}
+
+void MyMoneySplitTest::testReadXML() {
+	MyMoneySplit s;
+	QString ref_ok = QString(
+		"<!DOCTYPE TEST>\n"
+		"<SPLIT-CONTAINER>\n"
+		" <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Deposit\" number=\"124\" reconcileflag=\"2\" memo=\"MyMemo\" value=\"96379/1000\" account=\"A000076\" />\n"
+		"</SPLIT-CONTAINER>\n");
+
+	QString ref_false = QString(
+		"<!DOCTYPE TEST>\n"
+		"<SPLIT-CONTAINER>\n"
+		" <SPLITS payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Deposit\" number=\"124\" reconcileflag=\"2\" memo=\"\" value=\"96379/1000\" account=\"A000076\" />\n"
+		"</SPLIT-CONTAINER>\n");
+
+	QDomDocument doc;
+	QDomElement node;
+	doc.setContent(ref_false);
+	node = doc.documentElement().firstChild().toElement();
+
+	try {
+		s.readXML(node);
+		CPPUNIT_FAIL("Missing expected exception");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+
+	doc.setContent(ref_ok);
+	node = doc.documentElement().firstChild().toElement();
+
+	try {
+		s.readXML(node);
+		CPPUNIT_ASSERT(s.id().isEmpty());
+		CPPUNIT_ASSERT(s.payeeId() == "P000001");
+		CPPUNIT_ASSERT(s.reconcileDate() == QDate());
+		CPPUNIT_ASSERT(s.shares() == MyMoneyMoney(96379, 100));
+		CPPUNIT_ASSERT(s.value() == MyMoneyMoney(96379, 1000));
+		CPPUNIT_ASSERT(s.number() == "124");
+		CPPUNIT_ASSERT(s.reconcileFlag() == MyMoneySplit::Reconciled);
+		CPPUNIT_ASSERT(s.action() == MyMoneySplit::ActionDeposit);
+		CPPUNIT_ASSERT(s.accountId() == "A000076");
+		CPPUNIT_ASSERT(s.memo() == "MyMemo");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+	
 }

@@ -352,3 +352,109 @@ void MyMoneyTransactionTest::testModifyDuplicateAccount() {
 		unexpectedException(e);
 	}
 }
+
+void MyMoneyTransactionTest::testWriteXML() {
+	MyMoneyTransaction t;
+	t.setPostDate(QDate(2001,12,28));
+	t.setEntryDate(QDate(2003,9,29));
+	t.setId("T000000000000000001");
+	t.setBankID("BID");
+	t.setMemo("Wohnung:Miete");
+	t.setCommodity("EUR");
+	t.setValue("key", "value");
+
+	MyMoneySplit s;
+	s.setPayeeId("P000001");
+	s.setShares(MyMoneyMoney(96379, 100));
+	s.setValue(MyMoneyMoney(96379, 100));
+	s.setAction(MyMoneySplit::ActionWithdrawal);
+	s.setAccountId("A000076");
+	s.setReconcileFlag(MyMoneySplit::Reconciled);
+	t.addSplit(s);
+
+	QDomDocument doc("TEST");
+	QDomElement el = doc.createElement("TRANSACTION-CONTAINER");
+	doc.appendChild(el);
+	t.writeXML(doc, el);
+
+	QString ref = QString(
+                "<!DOCTYPE TEST>\n"
+                "<TRANSACTION-CONTAINER>\n"
+		" <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		"  <SPLITS>\n"
+		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"  </SPLITS>\n"
+		"  <KEYVALUEPAIRS>\n"
+		"   <PAIR key=\"key\" value=\"value\" />\n"
+		"  </KEYVALUEPAIRS>\n"
+		" </TRANSACTION>\n"
+                "</TRANSACTION-CONTAINER>\n"
+
+	);
+
+	CPPUNIT_ASSERT(doc.toString() == ref);
+}
+
+void MyMoneyTransactionTest::testReadXML() {
+	MyMoneyTransaction t;
+
+	QString ref_ok = QString(
+                "<!DOCTYPE TEST>\n"
+                "<TRANSACTION-CONTAINER>\n"
+		" <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		"  <SPLITS>\n"
+		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"  </SPLITS>\n"
+		"  <KEYVALUEPAIRS>\n"
+		"   <PAIR key=\"key\" value=\"value\" />\n"
+		"  </KEYVALUEPAIRS>\n"
+		" </TRANSACTION>\n"
+                "</TRANSACTION-CONTAINER>\n"
+	);
+
+	QString ref_false = QString(
+                "<!DOCTYPE TEST>\n"
+                "<TRANSACTION-CONTAINER>\n"
+		" <TRANS-ACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		"  <SPLITS>\n"
+		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"  </SPLITS>\n"
+		"  <KEYVALUEPAIRS>\n"
+		"   <PAIR key=\"key\" value=\"value\" />\n"
+		"  </KEYVALUEPAIRS>\n"
+		" </TRANS-ACTION>\n"
+                "</TRANSACTION-CONTAINER>\n"
+	);
+
+	QDomDocument doc;
+	QDomElement node;
+	doc.setContent(ref_false);
+	node = doc.documentElement().firstChild().toElement();
+
+	try {
+		t.readXML(node);
+		CPPUNIT_FAIL("Missing expected exception");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+
+	doc.setContent(ref_ok);
+	node = doc.documentElement().firstChild().toElement();
+
+	t.setValue("key", "VALUE");
+	try {
+		t.readXML(node);
+		CPPUNIT_ASSERT(t.m_postDate == QDate(2001,12,28));
+		CPPUNIT_ASSERT(t.m_entryDate == QDate(2003,9,29));
+		CPPUNIT_ASSERT(t.id() == "T000000000000000001");
+		CPPUNIT_ASSERT(t.m_bankID == "BID");
+		CPPUNIT_ASSERT(t.m_memo == "Wohnung:Miete");
+		CPPUNIT_ASSERT(t.m_commodity == "EUR");
+		CPPUNIT_ASSERT(t.pairs().count() == 1);
+		CPPUNIT_ASSERT(t.value("key") == "value");
+		CPPUNIT_ASSERT(t.splits().count() == 1);
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+}

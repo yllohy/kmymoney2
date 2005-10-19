@@ -29,6 +29,7 @@ class MyMoneyKeyValueContainerTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testRetrieveValue);
 	CPPUNIT_TEST(testSetValue);
 	CPPUNIT_TEST(testDeletePair);
+	CPPUNIT_TEST(testClear);
 	CPPUNIT_TEST(testRetrieveList);
 	CPPUNIT_TEST(testLoadList);
 	CPPUNIT_TEST(testWriteXML);
@@ -46,6 +47,7 @@ public:
 	void testRetrieveValue();
 	void testSetValue();
 	void testDeletePair();
+	void testClear();
 	void testRetrieveList();
 	void testLoadList();
 	void testWriteXML();

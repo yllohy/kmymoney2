@@ -98,9 +98,6 @@ protected:
   virtual void writeSchedules(QDomElement& scheduled);
   virtual void writeSchedule(QDomElement& scheduledTx, const MyMoneySchedule& tx);
 
-  virtual void writeSplits(QDomElement& splits, const QValueList<MyMoneySplit> splitList);
-  virtual void writeSplit(QDomElement& splitElement, const MyMoneySplit& split);
-
   virtual void readFile(QIODevice* s, IMyMoneySerialize* storage);
   virtual void writeFile(QIODevice* s, IMyMoneySerialize* storage);
 

@@ -31,7 +31,8 @@
 #include "mymoneyexception.h"
 #include "mymoneyfile.h"
 
-MyMoneySchedule::MyMoneySchedule()
+MyMoneySchedule::MyMoneySchedule() :
+  MyMoneyObject()
 {
   // Set up the default values
   m_occurence = OCCUR_ANY;
@@ -49,7 +50,9 @@ MyMoneySchedule::MyMoneySchedule(const QString& name, typeE type,
                                  occurenceE occurence, paymentTypeE paymentType,
                                  const QDate& startDate,
                                  const QDate& endDate,
-                                 bool fixed, bool autoEnter) {
+                                 bool fixed, bool autoEnter) :
+  MyMoneyObject()
+{
   // Set up the default values
   m_name = name;
   m_occurence = occurence;
@@ -338,7 +341,7 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
 {
   QDate paymentDate(m_startDate);
   QValueList<QDate> theDates;
-  
+
   QDate endDate = _endDate;
   if ( willEnd() && m_endDate < endDate )
     endDate = m_endDate;
@@ -488,7 +491,8 @@ bool MyMoneySchedule::operator <(const MyMoneySchedule& right)
 
 bool MyMoneySchedule::operator ==(const MyMoneySchedule& right)
 {
-  if (  m_occurence == right.m_occurence &&
+  if (  MyMoneyObject::operator==(right) &&
+        m_occurence == right.m_occurence &&
         m_type == right.m_type &&
         m_startDate == right.m_startDate &&
         m_paymentType == right.m_paymentType &&
@@ -496,7 +500,6 @@ bool MyMoneySchedule::operator ==(const MyMoneySchedule& right)
         m_transaction == right.m_transaction &&
         m_endDate == right.m_endDate &&
         m_autoEnter == right.m_autoEnter &&
-        m_id == right.m_id &&
         m_lastPayment == right.m_lastPayment &&
         ((m_name.length() == 0 && right.m_name.length() == 0) || (m_name == right.m_name)))
     return true;
@@ -525,18 +528,24 @@ const MyMoneyAccount MyMoneySchedule::account(int cnt) const
 
   // search the first asset or liability account
   for(it = splits.begin(); it != splits.end() && (acc.id().isEmpty() || cnt); ++it) {
-    acc = file->account((*it).accountId());
-    switch(file->accountGroup(acc.accountType())) {
-      case MyMoneyAccount::Liability:
-      case MyMoneyAccount::Asset:
-        --cnt;
-        break;
+    try {
+      acc = file->account((*it).accountId());
+      switch(file->accountGroup(acc.accountType())) {
+        case MyMoneyAccount::Liability:
+        case MyMoneyAccount::Asset:
+          --cnt;
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
+      if(!cnt)
+        return acc;
+    } catch(MyMoneyException *e) {
+      qWarning("Schedule '%s' references unknown account '%s'", id().data(),   (*it).accountId().data());
+      delete e;
+      return MyMoneyAccount();
     }
-    if(!cnt)
-      return acc;
   }
 
   return MyMoneyAccount();
@@ -724,5 +733,74 @@ void MyMoneySchedule::fixDate(QDate& date) const
   if(date.day() != m_startDate.day()
   && QDate::isValid(date.year(), date.month(), m_startDate.day())) {
     date.setYMD(date.year(), date.month(), m_startDate.day());
+  }
+}
+
+void MyMoneySchedule::writeXML(QDomDocument& document, QDomElement& parent) const
+{
+  QDomElement el = document.createElement("SCHEDULED_TX");
+
+  el.setAttribute(QString("name"), m_name);
+  el.setAttribute(QString("type"), m_type);
+  el.setAttribute(QString("occurence"), m_occurence);
+  el.setAttribute(QString("paymentType"), m_paymentType);
+  el.setAttribute(QString("startDate"), dateToString(m_startDate));
+  el.setAttribute(QString("endDate"), dateToString(m_endDate));
+  el.setAttribute(QString("fixed"), m_fixed);
+  el.setAttribute(QString("autoEnter"), m_autoEnter);
+  el.setAttribute(QString("id"), id());
+  el.setAttribute(QString("lastPayment"), dateToString(m_lastPayment));
+  el.setAttribute(QString("weekendOption"), m_weekendOption);
+
+  //store the payment history for this scheduled task.
+  QValueList<QDate> payments = recordedPayments();
+  QValueList<QDate>::ConstIterator it;
+  QDomElement paymentsElement = document.createElement("PAYMENTS");
+  for (it=payments.begin(); it!=payments.end(); ++it) {
+    QDomElement paymentEntry = document.createElement("PAYMENT");
+    paymentEntry.setAttribute(QString("date"), dateToString(*it));
+    paymentsElement.appendChild(paymentEntry);
+  }
+  el.appendChild(paymentsElement);
+
+  //store the transaction data for this task.
+  m_transaction.writeXML(document, el);
+
+  parent.appendChild(el);
+}
+
+void MyMoneySchedule::readXML(const QDomElement& node)
+{
+  if(QString("SCHEDULED_TX") != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not SCHEDULED_TX");
+
+  m_name = node.attribute(QString("name"));
+  m_id = node.attribute("id");
+  m_startDate = stringToDate(node.attribute("startDate"));
+  m_endDate = stringToDate(node.attribute("endDate"));
+  m_lastPayment = stringToDate(node.attribute("lastPayment"));
+
+  m_type = static_cast<MyMoneySchedule::typeE>(node.attribute("type").toInt());
+  m_paymentType = static_cast<MyMoneySchedule::paymentTypeE>(node.attribute("paymentType").toInt());
+  m_occurence = static_cast<MyMoneySchedule::occurenceE>(node.attribute("occurence").toInt());
+
+  m_autoEnter = static_cast<bool>(node.attribute("autoEnter").toInt());
+  m_fixed = static_cast<bool>(node.attribute("fixed").toInt());
+  m_weekendOption = static_cast<MyMoneySchedule::weekendOptionE>(node.attribute("weekendOption").toInt());
+
+  // read in the associated transaction
+  QDomNodeList nodeList = node.elementsByTagName("TRANSACTION");
+  if(nodeList.count() == 0)
+    throw new MYMONEYEXCEPTION("SCHEDULED_TX has no TRANSACTION node");
+
+  m_transaction.readXML(nodeList.item(0).toElement());
+
+  // readin the recorded payments
+  nodeList = node.elementsByTagName("PAYMENTS");
+  if(nodeList.count() > 0) {
+    nodeList = nodeList.item(0).toElement().elementsByTagName("PAYMENT");
+    for(int i = 0; i < nodeList.count(); ++i) {
+      m_recordedPayments << stringToDate(nodeList.item(i).toElement().attribute(QString("date")));
+    }
   }
 }

@@ -47,7 +47,7 @@
   * is tolerated by the engine, but in general not a good idea as it is financially
   * wrong.
   */
-class KMYMONEY_EXPORT MyMoneyTransaction : public MyMoneyKeyValueContainer
+class KMYMONEY_EXPORT MyMoneyTransaction : public MyMoneyObject, public MyMoneyKeyValueContainer
 {
 public:
   MyMoneyTransaction();
@@ -62,7 +62,6 @@ public:
   // Simple get operations
   const QDate entryDate(void) const { return m_entryDate; };
   const QDate postDate(void) const { return m_postDate; };
-  const QCString id(void) const { return m_id; };
   const QString memo(void) const { return m_memo; };
   const QValueList<MyMoneySplit> splits(void) const { return m_splits; };
   const unsigned int splitCount(void) const { return m_splits.count(); };
@@ -73,7 +72,6 @@ public:
   void setPostDate(const QDate& date);
   void setEntryDate(const QDate& date);
   void setMemo(const QString& memo);
-  void setId(const QString& id) { m_id = id; };
   void setCommodity(const QCString& commodityId) { m_commodity = commodityId; };
   void setBankID(const QString& bankID) { m_bankID = bankID; };
 
@@ -108,7 +106,7 @@ public:
     * @return reference to split within the transaction is returned
     */
   const MyMoneySplit& splitByAccount(const QCStringList& accountIds, const bool match = true) const;
-  
+
   /**
     * This method is used to extract a split from a transaction.
     *
@@ -117,7 +115,7 @@ public:
     * @return reference to split within the transaction is returned
     */
   const MyMoneySplit& splitById(const QCString& splitId) const;
-  
+
   /**
     * This method is used to extract a split for a given payeeId
     * from a transaction.
@@ -207,6 +205,10 @@ public:
     */
   static const QCString firstSplitID(void);
 
+  void writeXML(QDomDocument& document, QDomElement& parent) const;
+
+  void readXML(const QDomElement& node);
+
 private:
   static const int SPLIT_ID_SIZE = 4;
 
@@ -220,11 +222,6 @@ private:
     * This member contains the date the transaction was posted
     */
   QDate m_postDate;
-
-  /**
-    * This member contains the transaction id
-    */
-  QCString m_id;
 
   /**
     * This member keeps the memo text associated with this transaction

@@ -40,6 +40,7 @@
 #include "mymoneyutils.h"
 #include "mymoneymoney.h"
 #include <kmymoney/export.h>
+#include <kmymoney/mymoneyobject.h>
 
 /**
   * @author Thomas Baumgart
@@ -48,7 +49,8 @@
 /**
   * This class represents a split of a transaction.
   */
-class KMYMONEY_EXPORT MyMoneySplit {
+class KMYMONEY_EXPORT MyMoneySplit : public MyMoneyObject
+{
 public:
   /**
     * This enum defines the possible reconciliation states a split
@@ -77,6 +79,10 @@ public:
 
   bool operator == (const MyMoneySplit&) const;
 
+  void writeXML(QDomDocument& document, QDomElement& parent) const;
+
+  void readXML(const QDomElement& node);
+
   const MyMoneyMoney shares(void) const { return m_shares; };
   const MyMoneyMoney value(void) const { return m_value; };
   const MyMoneyMoney value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const;
@@ -84,7 +90,6 @@ public:
   const QString memo(void) const { return m_memo; };
   const reconcileFlagE reconcileFlag(void) const { return m_reconcileFlag; };
   const QDate reconcileDate(void) const { return m_reconcileDate; };
-  const QCString id(void) const { return m_id; };
   const QCString payeeId(void) const { return m_payee; };
   const QCString action(void) const { return m_action; };
   const QString number(void) const { return m_number; };
@@ -112,7 +117,6 @@ public:
   void setMemo(const QString& memo);
   void setReconcileFlag(const reconcileFlagE flag);
   void setReconcileDate(const QDate date);
-  void setId(const QCString& id);
   void setPayeeId(const QCString& payee);
   void setAction(const QCString& action);
   void setNumber(const QString& number);

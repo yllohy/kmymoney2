@@ -61,6 +61,14 @@ void MyMoneyKeyValueContainerTest::testDeletePair() {
 	CPPUNIT_ASSERT(m->value("key") == "value");
 }
 
+void MyMoneyKeyValueContainerTest::testClear() {
+	m->setValue("Key", "Value");
+	m->setValue("key", "value");
+	CPPUNIT_ASSERT(m->m_kvp.count() == 2);
+	m->clear();
+	CPPUNIT_ASSERT(m->m_kvp.count() == 0);
+}
+
 void MyMoneyKeyValueContainerTest::testRetrieveList() {
 	QMap<QCString, QString> copy;
 

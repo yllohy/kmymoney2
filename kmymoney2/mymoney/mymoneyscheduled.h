@@ -40,6 +40,7 @@
 #include "mymoneytransaction.h"
 #include "mymoneyaccount.h"
 #include <kmymoney/export.h>
+#include <kmymoney/mymoneyobject.h>
 
 /**
   * @author Michael Edwardes
@@ -52,7 +53,8 @@
   * @short A class to represent a schedule.
   * @see MyMoneyScheduled
   */
-class KMYMONEY_EXPORT MyMoneySchedule {
+class KMYMONEY_EXPORT MyMoneySchedule : public MyMoneyObject
+{
 public:
   /**
     * This enum is used to describe all the possible schedule frequencies.
@@ -102,8 +104,7 @@ public:
   /**
     * Standard destructor
     */
-  ~MyMoneySchedule() {
-  }
+  ~MyMoneySchedule() {}
 
   /**
     * Simple get method that returns the occurence frequency.
@@ -176,13 +177,6 @@ public:
     * @return MyMoneyTransaction The transaction data for the instance.
     */
   const MyMoneyTransaction transaction(void) const { return m_transaction; }
-
-  /**
-    * Simple method that returns the schedule id.
-    *
-    * @return QString The instances id.
-    */
-  const QCString id(void) const { return m_id; }
 
   /**
     * Simple method that returns the schedule last payment.
@@ -264,17 +258,6 @@ public:
     * @return none
     */
   void setAutoEnter(bool autoenter);
-
-  /**
-    * Simple set method to set the schedule's id.  DO NOT USE, EVER!
-    *
-    * @param id The instances id.
-    * @return none
-    *
-    * @note DO NOT USE, EVER IN APPLICATION CODE! This method is for test purposes only!
-    */
-  void setId(const QCString& id)
-    { m_id = id; }
 
   /**
     * Simple set method to set the schedule's last payment.
@@ -371,6 +354,10 @@ public:
   void recordPayment(const QDate&);
   QValueList<QDate> recordedPayments(void) const { return m_recordedPayments; }
 
+  void writeXML(QDomDocument& document, QDomElement& parent) const;
+
+  void readXML(const QDomElement& node);
+
 private:
   /**
     * This method forces the day of the passed @p date to
@@ -406,9 +393,6 @@ private:
 
   /// Enter the transaction into the register automatically
   bool m_autoEnter;
-
-  /// The internal id.
-  QCString m_id;
 
   /// Internal date used for calculations
   QDate m_lastPayment;

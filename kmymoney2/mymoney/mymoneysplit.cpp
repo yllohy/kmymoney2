@@ -49,8 +49,7 @@ MyMoneySplit::~MyMoneySplit()
 
 bool MyMoneySplit::operator == (const MyMoneySplit& right) const
 {
-  return
-    m_id == right.m_id &&
+  return MyMoneyObject::operator==(right) &&
     m_account == right.m_account &&
     m_payee == right.m_payee &&
     m_memo == right.m_memo &&
@@ -100,11 +99,6 @@ void MyMoneySplit::setValue(const MyMoneyMoney& value, const QCString& transacti
     setShares(value);
 }
 
-void MyMoneySplit::setId(const QCString& id)
-{
-  m_id = id;
-}
-
 void MyMoneySplit::setPayeeId(const QCString& payee)
 {
   m_payee = payee;
@@ -123,4 +117,41 @@ void MyMoneySplit::setNumber(const QString& number)
 const MyMoneyMoney MyMoneySplit::value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const
 {
   return (transactionCurrencyId == splitCurrencyId) ? m_value : m_shares;
+}
+
+void MyMoneySplit::writeXML(QDomDocument& document, QDomElement& parent) const
+{
+  QDomElement el = document.createElement("SPLIT");
+
+  el.setAttribute(QString("payee"), m_payee);
+  el.setAttribute(QString("reconciledate"), dateToString(m_reconcileDate));
+  el.setAttribute(QString("action"), m_action);
+  el.setAttribute(QString("reconcileflag"), m_reconcileFlag);
+  el.setAttribute(QString("value"), m_value.toString());
+  el.setAttribute(QString("shares"), m_shares.toString());
+  el.setAttribute(QString("memo"), m_memo);
+  // No need to write the split id as it will be re-assigned when the file is read
+  // el.setAttribute(QString("id"), split.id());
+  el.setAttribute(QString("account"), m_account);
+  el.setAttribute(QString("number"), m_number);
+
+  parent.appendChild(el);
+}
+
+void MyMoneySplit::readXML(const QDomElement& node)
+{
+  if(QString("SPLIT") != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not SPLIT");
+
+  clearId();
+
+  m_payee = QCStringEmpty(node.attribute(QString("payee")));
+  m_reconcileDate = stringToDate(QStringEmpty(node.attribute(QString("reconciledate"))));
+  m_action = QCStringEmpty(node.attribute(QString("action")));
+  m_reconcileFlag = static_cast<MyMoneySplit::reconcileFlagE>(node.attribute(QString("reconcileflag")).toInt());
+  m_memo = QStringEmpty(node.attribute(QString("memo")));
+  m_value = MyMoneyMoney(QStringEmpty(node.attribute(QString("value"))));
+  m_shares = MyMoneyMoney(QStringEmpty(node.attribute(QString("shares"))));
+  m_account = QCStringEmpty(node.attribute(QString("account")));
+  m_number = QStringEmpty(node.attribute(QString("number")));
 }
