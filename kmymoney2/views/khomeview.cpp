@@ -623,61 +623,66 @@ void KHomeView::showForecast(void)
 
       // found the next schedule. process it
       MyMoneyAccount acc = (*it).account();
-      if(acc.id()
-      && acc.accountType() != MyMoneyAccount::Investment) {
-        MyMoneyTransaction t = (*it).transaction();
+      if(!acc.id().isEmpty()) {
+        if(acc.accountType() != MyMoneyAccount::Investment) {
+          MyMoneyTransaction t = (*it).transaction();
 
-        // only process the entry, if it is still active
-        if(!(*it).isFinished() && nextDate != QDate()) {
+          // only process the entry, if it is still active
+          if(!(*it).isFinished() && nextDate != QDate()) {
 
-          // make sure we have all 'starting balances' so that the autocalc works
-          QValueList<MyMoneySplit> splits = t.splits();
-          QValueList<MyMoneySplit>::const_iterator it_s;
-          QMap<QCString, MyMoneyMoney> balanceMap;
+            // make sure we have all 'starting balances' so that the autocalc works
+            QValueList<MyMoneySplit> splits = t.splits();
+            QValueList<MyMoneySplit>::const_iterator it_s;
+            QMap<QCString, MyMoneyMoney> balanceMap;
 
-          for(it_s = splits.begin(); it_s != splits.end(); ++it_s ) {
-            MyMoneyAccount acc = file->account((*it_s).accountId());
-            if(acc.accountGroup() == MyMoneyAccount::Asset
-            || acc.accountGroup() == MyMoneyAccount::Liability) {
-              // check if this is a new account for us
-              if(nameIdx[acc.name()] != acc.id()) {
-                nameIdx[acc.name()] = acc.id();
-                accountList[acc.id()][0] = file->balance(acc.id());
-              }
-              int offset = QDate::currentDate().daysTo(nextDate)+1;
-              if(offset <= 0) {  // collect all overdues on the first day
-                offset = 1;
-              }
-              for(int i = 0; i < offset; ++i) {
-                balanceMap[acc.id()] += accountList[acc.id()][i];
+            for(it_s = splits.begin(); it_s != splits.end(); ++it_s ) {
+              MyMoneyAccount acc = file->account((*it_s).accountId());
+              if(acc.accountGroup() == MyMoneyAccount::Asset
+              || acc.accountGroup() == MyMoneyAccount::Liability) {
+                // check if this is a new account for us
+                if(nameIdx[acc.name()] != acc.id()) {
+                  nameIdx[acc.name()] = acc.id();
+                  accountList[acc.id()][0] = file->balance(acc.id());
+                }
+                int offset = QDate::currentDate().daysTo(nextDate)+1;
+                if(offset <= 0) {  // collect all overdues on the first day
+                  offset = 1;
+                }
+                for(int i = 0; i < offset; ++i) {
+                  balanceMap[acc.id()] += accountList[acc.id()][i];
+                }
               }
             }
-          }
 
-          // take care of the autoCalc stuff
-          KMyMoneyUtils::calculateAutoLoan(*it, t, balanceMap);
+            // take care of the autoCalc stuff
+            KMyMoneyUtils::calculateAutoLoan(*it, t, balanceMap);
 
-          // now add the splits to the balances
-          splits = t.splits();
-          for(it_s = splits.begin(); it_s != splits.end(); ++it_s ) {
-            MyMoneyAccount acc = file->account((*it_s).accountId());
-            if(acc.accountGroup() == MyMoneyAccount::Asset
-            || acc.accountGroup() == MyMoneyAccount::Liability) {
-              dailyBalances balance;
-              balance = accountList[acc.id()];
-              int offset = QDate::currentDate().daysTo(nextDate)+1;
-              if(offset <= 0) {  // collect all overdues on the first day
-                offset = 1;
+            // now add the splits to the balances
+            splits = t.splits();
+            for(it_s = splits.begin(); it_s != splits.end(); ++it_s ) {
+              MyMoneyAccount acc = file->account((*it_s).accountId());
+              if(acc.accountGroup() == MyMoneyAccount::Asset
+              || acc.accountGroup() == MyMoneyAccount::Liability) {
+                dailyBalances balance;
+                balance = accountList[acc.id()];
+                int offset = QDate::currentDate().daysTo(nextDate)+1;
+                if(offset <= 0) {  // collect all overdues on the first day
+                  offset = 1;
+                }
+                balance[offset] += (*it_s).value();
+                accountList[acc.id()] = balance;
               }
-              balance[offset] += (*it_s).value();
-              accountList[acc.id()] = balance;
             }
+            ++txnCount;
           }
-          ++txnCount;
         }
+        (*it).setLastPayment(nextDate);
+
+      } else {
+        // remove schedule from list
+        schedule.remove(it);
       }
 
-      (*it).setLastPayment(nextDate);
       qBubbleSort(schedule);
     }
     while(1);
