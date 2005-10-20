@@ -1,10 +1,23 @@
+2005-10-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't crash on schedules w/ strange transactions during forecast
+  * Only allow entering of schedules when all needed values are present
+  * More changes due to introduction of MyMoneyObject
+
+2005-10-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added MyMoneyKeyValueContainer::clear()
+  * Added testcases and fixed a few problems here and there in the read/write
+    XML methods
+  * Added configure options for Mandriva 2006 as reported by Paul Doig
+
 2005-10-17 Robert Wadley <robntina@users.sourceforge.net>
   * Made corrections to the 'what's new' html page.
- 
+
 2005-10-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added writeXML and readXML to MyMoneyInstitution, MyMoneyPayee
   * Added testcases for those routines
   * Changed storage MyMoneyStorageXML to use these routines
+  * Fixed non-working quit button, shortcut and menu entry
+  * Don't allow negative values for 'enter schedules # days in advance'
 
 2005-10-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated MyMoneyObject as discussed on mailing list
