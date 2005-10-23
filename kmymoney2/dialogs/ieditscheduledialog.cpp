@@ -999,6 +999,7 @@ void KEditScheduleDialog::slotPayeeChanged(const QString& text)
        // KMessageBox::detailedError(this, i18n("Exception in slot PayeeChanged"), e->what());
     delete e;
   }
+  slotCheckOkEnabled();
 }
 
 void KEditScheduleDialog::slotDateChanged(const QDate& date)
@@ -1069,6 +1070,7 @@ void KEditScheduleDialog::slotCategoryChanged(const QString& text)
     QCString id = MyMoneyFile::instance()->categoryToAccount(category);
     if(id.isEmpty() && !category.isEmpty())
     {
+      slotCheckOkEnabled();
       // They are probably still typing
       // The category gets checked in okClicked()
       return;
@@ -1301,15 +1303,18 @@ QCString KEditScheduleDialog::theAccountId()
 void KEditScheduleDialog::slotCheckOkEnabled(void)
 {
   bool rcEnabled = true;
+  
   if(m_scheduleName->text().length() == 0)
     rcEnabled = false;
   if(m_accountCombo->isEnabled() && m_accountCombo->selectedAccounts().count() == 0)
     rcEnabled = false;
   if(m_kcomboTo->isEnabled() && m_kcomboTo->selectedAccounts().count() == 0)
     rcEnabled = false;
-  if(m_category->isEnabled() && m_category->selectedAccountId().isEmpty())
+  if(m_category->isEnabled() && m_category->text().length() == 0)
     rcEnabled = false;
   if(m_kmoneyeditAmount->text().length() == 0)
+    rcEnabled = false;
+  if (m_kcomboPayTo->isEnabled() && m_kcomboPayTo->text().length() == 0)
     rcEnabled = false;
 
   m_qbuttonOK->setEnabled(rcEnabled);
