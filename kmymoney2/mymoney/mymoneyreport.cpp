@@ -616,4 +616,24 @@ bool MyMoneyReport::read(const QDomElement& e)
   return result;  
 }
 
+void MyMoneyReport::writeXML(QDomDocument& document, QDomElement& parent) const
+{
+  QDomElement el = document.createElement("REPORT");
+  write(el,&document,false);
+  parent.appendChild(el);
+}
+
+/**
+  * This method reads in data for the object from the node
+  * The type will be checked and an exception thrown if
+  * it does not match. (This version overwrites the
+  * MMObject base class.)
+  *
+  * @param node QDomElement containing the data
+  */
+void MyMoneyReport::readXML(const QDomElement& node)
+{
+  read(node);
+}
+    
 // vim:cin:si:ai:et:ts=2:sw=2:

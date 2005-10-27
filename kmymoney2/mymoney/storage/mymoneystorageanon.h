@@ -83,7 +83,7 @@ protected:
   void writeSchedule(QDomElement& scheduledTx, const MyMoneySchedule& tx);
 
   void writeSplits(QDomElement& splits, const QValueList<MyMoneySplit> splitList,const QCString& transid);
-  void writeSplit(QDomElement& splitElement, const MyMoneySplit& split,const QCString& transid, const MyMoneyMoney& factor);
+  void writeSplit(QDomElement& splitElement, const MyMoneySplit& split,const QCString& transid);
 
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
 
@@ -103,8 +103,10 @@ private:
     */
   static QStringList zKvpXNumber;
 
-  const QString hideString(const QString&) const;
-  const MyMoneyMoney hideNumber(const MyMoneyMoney&) const;
+  QString hideString(const QString&) const;
+  MyMoneyMoney hideNumber(const MyMoneyMoney&) const;
+  
+  MyMoneyMoney m_factor;
 };
 
 #endif

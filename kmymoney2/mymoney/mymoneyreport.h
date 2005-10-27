@@ -32,9 +32,11 @@ class QDomDocument;
 
 // ----------------------------------------------------------------------------
 // Project Includes
+#include <kmymoney/mymoneyobject.h>
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/mymoneytransactionfilter.h>
 #include <kmymoney/export.h>
+
 /**
   * This class defines a report within the MyMoneyEngine.  The report class 
   * contains all the configuration parameters needed to run a report, plus
@@ -54,7 +56,7 @@ class QDomDocument;
   * @author Ace Jones <acejones@users.sourceforge.net>
   */
 
-class KMYMONEY_EXPORT MyMoneyReport: public MyMoneyTransactionFilter
+class KMYMONEY_EXPORT MyMoneyReport: public MyMoneyObject, public MyMoneyTransactionFilter
 {
 public:
   // When adding a new row type, be sure to add a corresponding entry in kTypeArray
@@ -257,12 +259,28 @@ public:
     *    object are undefined.
     */
   bool read(const QDomElement& e);
+  
+  /**
+    * This method creates a QDomElement for the @p document
+    * under the parent node @p parent.  (This version overwrites the
+    * MMObject base class.)
+    *
+    * @param document reference to QDomDocument
+    * @param parent reference to QDomElement parent node
+    */
+  virtual void writeXML(QDomDocument& document, QDomElement& parent) const;
+
+  /**
+    * This method reads in data for the object from the node
+    * The type will be checked and an exception thrown if
+    * it does not match. (This version overwrites the
+    * MMObject base class.)
+    *
+    * @param node QDomElement containing the data
+    */
+  virtual void readXML(const QDomElement& node);
     
 private:
-  /**
-    * The engine-assigned ID of the report.  Do not set this yourself!!
-    */
-  QCString m_id;
   /**
     * The user-assigned name of the report
     */

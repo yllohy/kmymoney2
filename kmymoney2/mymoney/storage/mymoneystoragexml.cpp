@@ -736,6 +736,8 @@ MyMoneySecurity MyMoneyStorageXML::readSecurity(QDomElement& securityElement)
 void MyMoneyStorageXML::readReports(QDomElement& reports)
 {
   QDomNode child = reports.firstChild();
+  unsigned progress = 0;
+  signalProgress(0, getChildCount(reports), QObject::tr("Loading reports..."));
 
   while(!child.isNull())
   {
@@ -751,20 +753,22 @@ void MyMoneyStorageXML::readReports(QDomElement& reports)
           m_storage->loadReportId(id);
       }
     }
+    signalProgress(progress++, 0);
     child = child.nextSibling();
   }
 }
 
-void MyMoneyStorageXML::writeReports(QDomElement& parent) const
+void MyMoneyStorageXML::writeReports(QDomElement& parent)
 {
   const QValueList<MyMoneyReport> list = m_storage->reportList();
   QValueList<MyMoneyReport>::ConstIterator it;
 
+  signalProgress(0, list.count(), QObject::tr("Saving reports..."));
+  unsigned i = 0;
   for(it = list.begin(); it != list.end(); ++it)
   {
-    QDomElement child = m_doc->createElement("REPORT");
-    (*it).write(child, m_doc);
-    parent.appendChild(child);
+    (*it).writeXML(*m_doc, parent);
+    signalProgress(i, 0);
   }
 }
 

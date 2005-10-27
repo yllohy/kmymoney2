@@ -50,6 +50,14 @@ QStringList MyMoneyStorageANON::zKvpXNumber = QStringList::split(",","final-paym
 MyMoneyStorageANON::MyMoneyStorageANON() :
   MyMoneyStorageXML()
 {
+  // Choose a quasi-random 0.0-100.0 factor which will be applied to all splits this time
+  // around.
+  
+  int msec;
+  do {
+    msec = QTime::currentTime().msec();
+  } while(msec == 0);
+  m_factor = MyMoneyMoney(msec, 10).reduce();
 }
 
 MyMoneyStorageANON::~MyMoneyStorageANON()
@@ -178,30 +186,24 @@ void MyMoneyStorageANON::writeSchedule(QDomElement& scheduledTx, const MyMoneySc
 void MyMoneyStorageANON::writeSplits(QDomElement& splits, const QValueList<MyMoneySplit> splitList, const QCString& transactionId)
 {
   // get a somewhat random offset factor, which is always different from 0
-  int msec;
-  do {
-    msec = QTime::currentTime().msec();
-  } while(msec == 0);
-  MyMoneyMoney factor(msec, 1);
-
   QValueList<MyMoneySplit>::const_iterator it;
   for(it = splitList.begin(); it != splitList.end(); ++it)
   {
     QDomElement split = m_doc->createElement("SPLIT");
-    writeSplit(split, (*it), transactionId, factor);
+    writeSplit(split, (*it), transactionId);
     splits.appendChild(split);
   }
 }
 
-void MyMoneyStorageANON::writeSplit(QDomElement& splitElement, const MyMoneySplit& split,const QCString& transactionId, const MyMoneyMoney& factor)
+void MyMoneyStorageANON::writeSplit(QDomElement& splitElement, const MyMoneySplit& split,const QCString& transactionId)
 {
   splitElement.setAttribute(QString("payee"), split.payeeId());
   splitElement.setAttribute(QString("reconciledate"), getString(split.reconcileDate()));
   splitElement.setAttribute(QString("action"), split.action());
   splitElement.setAttribute(QString("reconcileflag"), split.reconcileFlag());
 
-  MyMoneyMoney hidevalue = split.value() * factor;
-  MyMoneyMoney hideshares = split.shares() * factor;
+  MyMoneyMoney hidevalue = split.value() * m_factor;
+  MyMoneyMoney hideshares = split.shares() * m_factor;
 
   splitElement.setAttribute(QString("value"), hidevalue.toString());
   splitElement.setAttribute(QString("shares"), hideshares.toString());
@@ -253,12 +255,12 @@ QDomElement MyMoneyStorageANON::writeKeyValuePairs(const QMap<QCString, QString>
   return QDomElement();
 }
 
-const QString MyMoneyStorageANON::hideString(const QString& _in) const
+QString MyMoneyStorageANON::hideString(const QString& _in) const
 {
   return QString(_in).fill('x');
 }
 
-const MyMoneyMoney MyMoneyStorageANON::hideNumber(const MyMoneyMoney& _in) const
+MyMoneyMoney MyMoneyStorageANON::hideNumber(const MyMoneyMoney& _in) const
 {
   MyMoneyMoney result;
   static MyMoneyMoney counter = MyMoneyMoney(100,100);

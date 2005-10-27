@@ -1,3 +1,9 @@
+2005-10-27 Ace Jones <acejones@users.sourceforge.net>
+  * Updated MyMoneyReport object to use MyMoneyObject
+  * Change MyMoneyStorageANON to calculate the quasi-random offset
+    factor once and use it every time.
+  * Also removed some extraneous consts from returned-by-value objects
+
 2005-10-23 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Allow entry of new categories; check Payee present
     Backport to 0.8

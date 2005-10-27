@@ -142,7 +142,7 @@ protected:
   const MyMoneyPrice readPrice(const QCString& from, const QCString& to, const QDomElement& price);
 
   void readReports(QDomElement& e);
-  virtual void writeReports(QDomElement& e) const;
+  virtual void writeReports(QDomElement& e);
 
   QDomElement findChildElement(const QString& name, const QDomElement& root);
 
