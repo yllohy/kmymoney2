@@ -217,7 +217,4 @@
     <tabstop>m_closeButton</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneypriceview.h</includehint>
-</includehints>
 </UI>

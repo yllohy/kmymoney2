@@ -303,8 +303,4 @@
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneypriceview.h</includehint>
-</includehints>
 </UI>

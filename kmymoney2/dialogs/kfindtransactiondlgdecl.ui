@@ -1302,17 +1302,4 @@
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneyaccountselector.h</includehint>
-    <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneyaccountselector.h</includehint>
-    <includehint>kmymoneylineedit.h</includehint>
-    <includehint>kmymoneylineedit.h</includehint>
-    <includehint>kmymoneylineedit.h</includehint>
-    <includehint>kmymoneyregistersearch.h</includehint>
-</includehints>
 </UI>

@@ -196,8 +196,4 @@
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneytitlelabel.h</includehint>
-    <includehint>kmymoneyaccounttree.h</includehint>
-</includehints>
 </UI>

@@ -1519,13 +1519,4 @@ Once the account is successfully created you can enter your transactions on this
     <tabstop>m_method</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kmymoneycurrencyselector.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kmymoneypayee.h</includehint>
-    <includehint>kmymoneycombo.h</includehint>
-</includehints>
 </UI>

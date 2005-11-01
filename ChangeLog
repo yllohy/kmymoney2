@@ -5,6 +5,8 @@
   * ::timetrace changes
   * Write error message about thrown exception to stderr in pivottable.cpp
   * Added patch required for gcc 4.1 as provided by Stephan Binner
+  * Added patch to remove invalid includehints from *.ui file as provided
+    by Stephan Binner
 
 2005-10-27 Ace Jones <acejones@users.sourceforge.net>
   * Updated MyMoneyReport object to use MyMoneyObject

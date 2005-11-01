@@ -233,7 +233,4 @@
     <tabstop>btnCancel</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneyedit.h</includehint>
-</includehints>
 </UI>

@@ -165,8 +165,4 @@
 <tabstops>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneyaccounttree.h</includehint>
-    <includehint>kmymoneytitlelabel.h</includehint>
-</includehints>
 </UI>

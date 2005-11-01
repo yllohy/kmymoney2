@@ -506,12 +506,6 @@ You can choose the file's path, the account and the format of the QIF file (prof
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kpushbutton.h</includehint>
-    <includehint>kmymoneyaccountcombo.h</includehint>
     <includehint>kcombobox.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
 </includehints>
 </UI>

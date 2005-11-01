@@ -1060,19 +1060,4 @@ All information you have entered into this wizard will be shown and all transact
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneyaccountselector.h</includehint>
-    <includehint>kmymoneyaccountselector.h</includehint>
-    <includehint>kmymoneydateinput.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneycategory.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneycategory.h</includehint>
-</includehints>
 </UI>

@@ -503,11 +503,4 @@ The first step in this process requires to select the type of investment. The fo
     <tabstop>m_onlineSourceCombo</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneylineedit.h</includehint>
-    <includehint>kmymoneylineedit.h</includehint>
-    <includehint>kmymoneyedit.h</includehint>
-    <includehint>kmymoneycurrencyselector.h</includehint>
-    <includehint>kmymoneylineedit.h</includehint>
-</includehints>
 </UI>
