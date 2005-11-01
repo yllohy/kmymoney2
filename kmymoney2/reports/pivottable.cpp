@@ -183,10 +183,15 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
 
   m_config_f.setReportAllSplits(false);
   m_config_f.setConsiderCategory(true);
-  QValueList<MyMoneyTransaction> transactions = file->transactionList(m_config_f);
-
+  QValueList<MyMoneyTransaction> transactions;
+  try {
+    transactions = file->transactionList(m_config_f);
+  } catch(MyMoneyException *e) {
+    qDebug("ERR: %s thrown in %s(%ld)", e->what().data(), e->file().data(), e->line());
+    throw e;
+  }
   DEBUG_OUTPUT(QString("Found %1 matching transactions").arg(transactions.count()));
-  
+
   // Include scheduled transactions if required
   if ( m_config_f.isIncludingSchedules() )
   {
@@ -195,10 +200,10 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
     MyMoneyTransactionFilter schedulefilter(m_config_f);
     schedulefilter.setDateFilter(QDate(),QDate());
 
-    // Get the real dates from the config filter    
+    // Get the real dates from the config filter
     QDate configbegin, configend;
     m_config_f.validDateRange(configbegin, configend);
-    
+
     QValueList<MyMoneySchedule> schedules = file->scheduleList();
     QValueList<MyMoneySchedule>::const_iterator it_schedule = schedules.begin();
     while ( it_schedule != schedules.end() )
@@ -206,7 +211,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
       // If the transaction meets the filter
       MyMoneyTransaction tx = (*it_schedule).transaction();
       if ( schedulefilter.match(tx,file->storage()) )
-      {      
+      {
         // Get the dates when a payment will be made within the report window
         QDate nextpayment = (*it_schedule).nextPayment(configbegin);
         if ( nextpayment.isValid() )
@@ -217,22 +222,22 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
           while ( it_date != paymentdates.end() )
           {
             tx.setPostDate(*it_date);
-            
+
             // ???? Does this violate an assumption that transactions are sorted
             // by date?? (ace)
             transactions += tx;
-            
+
             DEBUG_OUTPUT(QString("Added transaction for schedule %1 on %2").arg((*it_schedule).id()).arg(*it_date));
-            
+
             ++it_date;
           }
         }
       }
-      
+
       ++it_schedule;
     }
-  }  
-  
+  }
+
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
   unsigned colofs = m_beginDate.year() * 12 + m_beginDate.month() - 1;
   while ( it_transaction != transactions.end() )
@@ -1003,11 +1008,11 @@ QString PivotTable::renderHTML( void ) const
   // Skip the body of the report if the report only calls for totals to be shown
   if ( m_config_f.detailLevel() != MyMoneyReport::eDetailTotal )
   {
-  
+
     //
     // Outer groups
     //
-  
+
     // iterate over outer groups
     TGrid::const_iterator it_outergroup = m_grid.begin();
     while ( it_outergroup != m_grid.end() )
@@ -1015,17 +1020,17 @@ QString PivotTable::renderHTML( void ) const
       //
       // Outer Group Header
       //
-  
+
       result += QString("<tr class=\"sectionheader\"><td class=\"left\"%1>%2</td></tr>\n").arg(colspan).arg(it_outergroup.key());
-  
+
       // Skip the inner groups if the report only calls for outer group totals to be shown
       if ( m_config_f.detailLevel() != MyMoneyReport::eDetailGroup )
       {
-      
+
         //
         // Inner Groups
         //
-    
+
         TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
         unsigned rownum = 0;
         while ( it_innergroup != (*it_outergroup).end() )
@@ -1033,7 +1038,7 @@ QString PivotTable::renderHTML( void ) const
           //
           // Rows
           //
-    
+
           QString innergroupdata;
           TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
           while ( it_row != (*it_innergroup).end() )
@@ -1041,21 +1046,21 @@ QString PivotTable::renderHTML( void ) const
             //
             // Columns
             //
-    
+
             QString rowdata;
             unsigned column = 1;
             while ( column < m_numColumns )
               rowdata += QString("<td>%1</td>").arg(it_row.data()[column++].formatMoney());
-    
+
             if ( m_config_f.isShowingRowTotals() )
               rowdata += QString("<td>%1</td>").arg((*it_row).m_total.formatMoney());
-    
+
             //
             // Row Header
             //
-    
+
             ReportAccount rowname = it_row.key();
-    
+
             innergroupdata += QString("<tr class=\"row-%1\"%2><td%3 class=\"left%4\">%5%6</td>")
               .arg(rownum & 0x01 ? "even" : "odd")
               .arg(rowname.isTopLevel() ? " id=\"topparent\"" : "")
@@ -1063,25 +1068,25 @@ QString PivotTable::renderHTML( void ) const
               .arg(rowname.hierarchyDepth() - 1)
               .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
               .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
-    
+
             if ( !(*it_row).m_total.isZero() )
               innergroupdata += rowdata;
-    
+
             innergroupdata += "</tr>\n";
-    
+
             ++it_row;
           }
-    
+
           //
           // Inner Row Group Totals
           //
-    
+
           bool finishrow = true;
           if ( m_config_f.isShowingSubAccounts() && ((*it_innergroup).size() > 1 ))
           {
             // Print the individual rows
             result += innergroupdata;
-    
+
             if ( m_config_f.isShowingColumnTotals() )
             {
               // Start the TOTALS row
@@ -1107,50 +1112,50 @@ QString PivotTable::renderHTML( void ) const
               .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
               .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
           }
-    
+
           // Finish the row started above, unless told not to
           if ( finishrow )
           {
             unsigned column = 1;
             while ( column < m_numColumns )
               result += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
-    
+
             if (  m_config_f.isShowingRowTotals() )
               result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_total.formatMoney());
-    
+
             result += "</tr>\n";
           }
-    
+
           ++rownum;
           ++it_innergroup;
-          
+
         } // end while iterating on the inner groups
-        
+
       } // end if detail level is not "group"
-  
+
       //
       // Outer Row Group Totals
       //
-  
+
       if ( m_config_f.isShowingColumnTotals() )
       {
         result += QString("<tr class=\"sectionfooter\"><td class=\"left\">%1&nbsp;%2</td>").arg(i18n("Total")).arg(it_outergroup.key());
         unsigned column = 1;
         while ( column < m_numColumns )
           result += QString("<td>%1</td>").arg((*it_outergroup).m_total[column++].formatMoney());
-  
+
         if (  m_config_f.isShowingRowTotals() )
           result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_total.formatMoney());
-  
+
         result += "</tr>\n";
       }
-      
+
       ++it_outergroup;
-      
+
     } // end while iterating on the outergroups
-    
+
   } // end if detail level is not "total"
-  
+
   //
   // Report Totals
   //
@@ -1191,16 +1196,16 @@ void PivotTable::drawChart( KReportChartView& _view ) const
   _view.params().setAxisShowGrid(0,m_config_f.isChartGridLines());
   _view.params().setAxisShowGrid(1,m_config_f.isChartGridLines());
   _view.params().setPrintDataValues(m_config_f.isChartDataLabels());
-  
+
   // whether to limit the chart to use series totals only.  Used for reports which only
   // show one dimension (pie).
   bool seriestotals = false;
-  
+
   // whether series (rows) are accounts (true) or months (false). This causes a lot
   // of complexity in the charts.  The problem is that circular reports work best with
-  // an account in a COLUMN, while line/bar prefer it in a ROW.  
+  // an account in a COLUMN, while line/bar prefer it in a ROW.
   bool accountseries = true;
-  
+
   switch( m_config_f.chartType() )
   {
   case MyMoneyReport::eChartNone:
@@ -1229,7 +1234,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     accountseries = false;
     break;
   }
-  
+
   //
   // In KDChart parlance, a 'series' (or row) is an account (or accountgroup, etc)
   // and an 'item' (or column) is a month
@@ -1247,7 +1252,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     r = m_numColumns;
   }
   KDChartTableData data( r,c );
-  
+
   // Set up X axis labels (ie "abscissa" to use the technical term)
   QStringList& abscissaNames = _view.abscissaNames();
   abscissaNames.clear();
@@ -1261,20 +1266,20 @@ void PivotTable::drawChart( KReportChartView& _view ) const
   {
     // we will set these up while putting in the chart values.
   }
-  
+
   switch ( m_config_f.detailLevel() )
   {
     case MyMoneyReport::eDetailNone:
     case MyMoneyReport::eDetailEnd:
     case MyMoneyReport::eDetailAll:
     {
-      unsigned rownum = 1;  
-      
+      unsigned rownum = 1;
+
       // iterate over outer groups
       TGrid::const_iterator it_outergroup = m_grid.begin();
       while ( it_outergroup != m_grid.end() )
       {
-    
+
         // iterate over inner groups
         TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
         while ( it_innergroup != (*it_outergroup).end() )
@@ -1282,17 +1287,17 @@ void PivotTable::drawChart( KReportChartView& _view ) const
           //
           // Rows
           //
-    
+
           QString innergroupdata;
           TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
           while ( it_row != (*it_innergroup).end() )
           {
             _view.params().setLegendText( rownum-1, it_row.key().name() );
-            
+
             //
             // Columns
             //
-    
+
             if ( seriestotals )
             {
                 if ( accountseries )
@@ -1311,48 +1316,48 @@ void PivotTable::drawChart( KReportChartView& _view ) const
                   data.setCell( column-1, rownum-1, it_row.data()[column].toDouble() );
                 ++column;
               }
-            }            
+            }
             // TODO: This is inefficient. Really we should total up how many rows
             // there will be and allocate it all at once.
             if ( accountseries )
               data.expand( ++rownum, m_numColumns );
             else
               data.expand( m_numColumns, ++rownum );
-    
+
             ++it_row;
           }
           ++it_innergroup;
         }
-        ++it_outergroup;  
+        ++it_outergroup;
       }
-      
+
       if ( accountseries )
         data.expand( rownum-1, m_numColumns );
       else
         data.expand( m_numColumns, rownum-1 );
-      
+
     }
-    break;    
-        
+    break;
+
     case MyMoneyReport::eDetailTop:
     {
-      unsigned rownum = 1;  
-      
+      unsigned rownum = 1;
+
       // iterate over outer groups
       TGrid::const_iterator it_outergroup = m_grid.begin();
       while ( it_outergroup != m_grid.end() )
       {
-    
+
         // iterate over inner groups
         TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
         while ( it_innergroup != (*it_outergroup).end() )
         {
           _view.params().setLegendText( rownum-1, it_innergroup.key() );
-          
+
           //
           // Columns
           //
-  
+
           if ( seriestotals )
           {
             if ( accountseries )
@@ -1372,14 +1377,14 @@ void PivotTable::drawChart( KReportChartView& _view ) const
               ++column;
             }
           }
-            
+
           // TODO: This is inefficient. Really we should total up how many rows
           // there will be and allocate it all at once.
           if ( accountseries )
             data.expand( ++rownum, m_numColumns );
           else
             data.expand( m_numColumns, ++rownum );
-                              
+
           ++it_innergroup;
         }
         ++it_outergroup;
@@ -1391,17 +1396,17 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
     }
     break;
-          
+
     case MyMoneyReport::eDetailGroup:
     {
-      unsigned rownum = 1;  
-      
+      unsigned rownum = 1;
+
       // iterate over outer groups
       TGrid::const_iterator it_outergroup = m_grid.begin();
       while ( it_outergroup != m_grid.end() )
       {
         _view.params().setLegendText( rownum-1, it_outergroup.key() );
-          
+
         //
         // Columns
         //
@@ -1425,15 +1430,15 @@ void PivotTable::drawChart( KReportChartView& _view ) const
             ++column;
           }
         }
-          
+
         // TODO: This is inefficient. Really we should total up how many rows
         // there will be and allocate it all at once.
         if ( accountseries )
           data.expand( ++rownum, m_numColumns );
         else
           data.expand( m_numColumns, ++rownum );
-                  
-        ++it_outergroup;  
+
+        ++it_outergroup;
       }
       if ( accountseries )
         data.expand( rownum-1, m_numColumns );
@@ -1441,7 +1446,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         data.expand( m_numColumns, rownum-1 );
     }
     break;
-          
+
     case MyMoneyReport::eDetailTotal:
     {
       _view.params().setLegendText( 0, i18n("Total") );
@@ -1469,7 +1474,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     }
     break;
   }
-      
+
   _view.setNewData(data);
   _view.refreshLabels();
 
