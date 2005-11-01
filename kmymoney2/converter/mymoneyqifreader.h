@@ -270,7 +270,7 @@ private:
     * @param searchname The name of the account to find or create
     * @return QCString id of the found or created account
     */
-  static const QCString MyMoneyQifReader::findOrCreateIncomeAccount(const QString& searchname);
+  static const QCString findOrCreateIncomeAccount(const QString& searchname);
   
   /**
     * This method looks up the @p searchname account by name and returns its id
@@ -280,7 +280,7 @@ private:
     * @param searchname The name of the account to find or create
     * @return QCString id of the found or created account
     */
-  static const QCString MyMoneyQifReader::findOrCreateExpenseAccount(const QString& searchname);
+  static const QCString findOrCreateExpenseAccount(const QString& searchname);
   
   void processQifLine(void);
   
