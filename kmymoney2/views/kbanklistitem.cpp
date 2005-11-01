@@ -206,7 +206,7 @@ void KAccountListItem::update(const QCString& accountId)
   int prec;
 
   try {
-    MyMoneyAccount acc = file->account(accountId);
+    const MyMoneyAccount& acc = file->account(accountId);
     if(acc.accountType() == MyMoneyAccount::Stock) {
       security = file->security(acc.currencyId());
       prec = MyMoneyMoney::denomToPrec(security.smallestAccountFraction());

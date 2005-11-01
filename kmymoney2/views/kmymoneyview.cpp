@@ -942,10 +942,7 @@ bool KMyMoneyView::readFile(const KURL& url)
     // and restart the application with this file. This will for to
     // run the above loop.
     selectBaseCurrency();
-    emit kmmFilePlugin (postOpen);
   }
-
-  MyMoneyFile::instance()->suspendNotify(false);
 
   KConfig *config = KGlobal::config();
   int page;
@@ -963,7 +960,6 @@ bool KMyMoneyView::readFile(const KURL& url)
   // by setting the entry in kmymoney2rc to true
   config->setGroup("General Options");
   if(config->readBoolEntry("SkipFix", false) != true) {
-    MyMoneyFile::instance()->suspendNotify(true);
     try {
       // Check if we have to modify the file before we allow to work with it
       fixFile();
@@ -972,7 +968,6 @@ bool KMyMoneyView::readFile(const KURL& url)
       MyMoneyFile::instance()->suspendNotify(false);
       return false;
     }
-    MyMoneyFile::instance()->suspendNotify(false);
   } else {
     qDebug("Skipping automatic transaction fix!");
   }
@@ -984,6 +979,9 @@ bool KMyMoneyView::readFile(const KURL& url)
   // kmymoney2->createInitialAccount();
 
   ::timetrace("done fixing file");
+  MyMoneyFile::instance()->suspendNotify(false);
+  ::timetrace("done notifications back on");
+
   // if we currently see a different page, then select the right one
   if(page != activePageIndex()) {
     showPage(page);
@@ -991,6 +989,7 @@ bool KMyMoneyView::readFile(const KURL& url)
 
   ::timetrace("file open");
   m_fileOpen = true;
+  emit kmmFilePlugin (postOpen);
   return true;
 }
 
@@ -2206,6 +2205,7 @@ void KMyMoneyView::fixFile(void)
   MyMoneyAccount asset = file->asset();
   bool equityListEmpty = equity.accountList().count() == 0;
 
+  ::timetrace("Fix accounts start");
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
     fixOpeningBalance(*it_a);
     if((*it_a).accountType() == MyMoneyAccount::Loan
@@ -2229,11 +2229,14 @@ void KMyMoneyView::fixFile(void)
     }
   }
 
+  ::timetrace("Fix schedules start");
   for(it_s = scheduleList.begin(); it_s != scheduleList.end(); ++it_s) {
     fixSchedule(*it_s);
   }
 
+  ::timetrace("Fix transactions start");
   fixTransactions();
+  ::timetrace("Fix transactions done");
 }
 
 void KMyMoneyView::fixOpeningBalance(MyMoneyAccount& acc)
@@ -2387,9 +2390,19 @@ void KMyMoneyView::fixTransactions(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
+#if 0
+  ::timetrace("Start alloc memory");
+  int * p = new int [10000];
+  delete p;
+  ::timetrace("Done alloc memory");
+#endif
+
+  ::timetrace("fixTransactions: get schedule list");
   QValueList<MyMoneySchedule> scheduleList = file->scheduleList();
+  ::timetrace("fixTransactions: get transaction list");
   MyMoneyTransactionFilter filter;
   QValueList<MyMoneyTransaction> transactionList = file->transactionList(filter);
+  ::timetrace("fixTransactions: have list");
 
   QValueList<MyMoneySchedule>::Iterator it_x;
   QCStringList interestAccounts;
@@ -2427,6 +2440,7 @@ void KMyMoneyView::fixTransactions(void)
       kmymoney2->slotStatusProgressBar(cnt);
   }
 
+  ::timetrace("fixTransactions: start loop");
   // scan the transactions and modify loan transactions
   QValueList<MyMoneyTransaction>::Iterator it_t;
   for(it_t = transactionList.begin(); it_t != transactionList.end(); ++it_t) {
@@ -2501,10 +2515,10 @@ void KMyMoneyView::fixTransactions(void)
           needModify = true;
       }
     }
-    
+
     // (Ace) Extended the #endif down to cover this conditional, because as-written
     // it will ALWAYS be skipped.
-    
+
     if(needModify == true) {
       for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
         (*it_s).setAction(defaultAction);
@@ -2552,7 +2566,7 @@ void KMyMoneyView::fixTransactions(void)
       // the same currency as the transactions commodity the value
       // and shares field are the same.
       if((*it_t).commodity() == splitAccount.currencyId()
-      && (*it_s).value() != (*it_s).shares()) {        
+      && (*it_s).value() != (*it_s).shares()) {
         kdDebug(2) << __func__ << " " << (*it_t).id() << " " << (*it_s).id() << " uses the transaction currency, but shares != value" << endl;
         (*it_s).setShares((*it_s).value());
         (*it_t).modifySplit(*it_s);
