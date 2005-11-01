@@ -1,3 +1,10 @@
+2005-10-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed MyMoneyStorageANON to write out correct data
+  * Added performance test feature
+  * Performance improvements in accounts view and engine code
+  * ::timetrace changes
+  * Write error message about thrown exception to stderr in pivottable.cpp
+
 2005-10-27 Ace Jones <acejones@users.sourceforge.net>
   * Updated MyMoneyReport object to use MyMoneyObject
   * Change MyMoneyStorageANON to calculate the quasi-random offset
