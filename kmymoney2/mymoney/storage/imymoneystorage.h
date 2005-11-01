@@ -128,7 +128,7 @@ public:
     *
     * @return MyMoneyPayee object of payee
     */
-  virtual const MyMoneyPayee payee(const QCString& id) const = 0;
+  virtual const MyMoneyPayee& payee(const QCString& id) const = 0;
 
   /**
     * This method is used to retrieve the id to a corresponding
@@ -139,7 +139,7 @@ public:
     *
     * @return MyMoneyPayee object of payee
     */
-  virtual const MyMoneyPayee payeeByName(const QString& payee) const = 0;
+  virtual const MyMoneyPayee& payeeByName(const QString& payee) const = 0;
 
   /**
     * This method is used to modify an existing payee
@@ -406,8 +406,9 @@ public:
     *
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
     */
-  virtual const QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const = 0;
+  virtual QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const = 0;
 
+  virtual void transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const = 0;
   /**
     * This method is used to pull a list of transactions from the file
     * global transaction pool. It returns either the whole journal or
@@ -493,25 +494,31 @@ public:
     * This method is used to return the standard liability account
     * @return MyMoneyAccount liability account(group)
     */
-  virtual const MyMoneyAccount liability(void) const = 0;
+  virtual const MyMoneyAccount& liability(void) const = 0;
 
   /**
     * This method is used to return the standard asset account
     * @return MyMoneyAccount asset account(group)
     */
-  virtual const MyMoneyAccount asset(void) const = 0;
+  virtual const MyMoneyAccount& asset(void) const = 0;
 
   /**
     * This method is used to return the standard expense account
     * @return MyMoneyAccount expense account(group)
     */
-  virtual const MyMoneyAccount expense(void) const = 0;
+  virtual const MyMoneyAccount& expense(void) const = 0;
 
   /**
     * This method is used to return the standard income account
     * @return MyMoneyAccount income account(group)
     */
-  virtual const MyMoneyAccount income(void) const = 0;
+  virtual const MyMoneyAccount& income(void) const = 0;
+
+  /**
+    * This method is used to return the standard equity account
+    * @return MyMoneyAccount equity account(group)
+    */
+  virtual const MyMoneyAccount& equity(void) const = 0;
 
   /**
     * This method is used to create a new security object.  The ID will be created
@@ -573,12 +580,6 @@ public:
     * @return MyMoneyPriceList of all MyMoneyPrice objects.
     */
   virtual const MyMoneyPriceList priceList(void) const = 0;
-
-  /**
-    * This method is used to return the standard equity account
-    * @return MyMoneyAccount equity account(group)
-    */
-  virtual const MyMoneyAccount equity(void) const = 0;
 
   /**
     * This method is used to add a scheduled transaction to the engine.
@@ -775,6 +776,11 @@ public:
     * @param report const reference to the MyMoneyReport object to be updated
     */
   virtual void removeReport(const MyMoneyReport& report) = 0;
+
+  /**
+    * Clear all internal caches (used internally for performance measurements)
+    */
+  virtual void clearCache(void) = 0;
 
 };
 

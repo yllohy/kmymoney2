@@ -1489,6 +1489,13 @@ void MyMoneySeqAccessMgrTest::testAccountList()
 	CPPUNIT_ASSERT(m->accountList().count() == 0);
 	testAddNewAccount();
 	CPPUNIT_ASSERT(m->accountList().count() == 2);
+
+	MyMoneyAccount a = m->account("A000001");
+	MyMoneyAccount b = m->account("A000002");
+	m->reparentAccount(b, a);
+	CPPUNIT_ASSERT(m->accountList().count() == 2);
+	CPPUNIT_ASSERT(m->accountList(QCStringList(), true).count() == 2);
+
 	QCStringList list;
 	list << "A000001";
 	QValueList<MyMoneyAccount> accList = m->accountList(list);
@@ -1499,5 +1506,11 @@ void MyMoneySeqAccessMgrTest::testAccountList()
 	accList = m->accountList(list);
 	CPPUNIT_ASSERT(accList.count() == 1);
 	CPPUNIT_ASSERT(accList.first().id() == "A000002");
+	list.clear();
+	list << "A000001";
+	accList = m->accountList(list, true);
+	CPPUNIT_ASSERT(accList.count() == 2);
+	CPPUNIT_ASSERT(accList.first().id() == "A000001");
+	CPPUNIT_ASSERT(accList.last().id() == "A000002");
 }
 

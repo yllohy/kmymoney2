@@ -112,6 +112,22 @@ public:
     dateOptionCount
   };
 
+  typedef union {
+    unsigned  allFilter;
+    struct {
+      unsigned textFilter       : 1;
+      unsigned accountFilter    : 1;
+      unsigned payeeFilter      : 1;
+      unsigned categoryFilter   : 1;
+      unsigned nrFilter         : 1;
+      unsigned dateFilter       : 1;
+      unsigned amountFilter     : 1;
+      unsigned typeFilter       : 1;
+      unsigned stateFilter      : 1;
+      unsigned validityFilter   : 1;
+    } singleFilter;
+  } FilterSet;
+
   /**
     * This is the standard constructor for a transaction filter.
     * It creates the object and calls setReportAllSplits() to
@@ -296,7 +312,7 @@ public:
     *       see the documentation of the constructors MyMoneyTransactionFilter()
     *       and MyMoneyTransactionFilter(const QCString&) for details.
     */
-  const QValueList<MyMoneySplit> matchingSplits(void) const;
+  const QValueList<MyMoneySplit>& matchingSplits(void) const;
 
   /**
     * This method returns the from date set in the filter. If
@@ -447,6 +463,8 @@ public:
     */
   static const bool translateDateRange(int range, QDate& start, QDate& end);
 
+  FilterSet filterSet(void) const { return m_filterSet; };
+
 private:
   /**
     * This is a conversion tool from MyMoneySplit::reconcileFlagE
@@ -481,21 +499,7 @@ private:
   const validityOptionE validTransaction(const MyMoneyTransaction& transaction) const;
 
 protected:
-  union FilterSet {
-    unsigned  allFilter;
-    struct {
-      unsigned textFilter       : 1;
-      unsigned accountFilter    : 1;
-      unsigned payeeFilter      : 1;
-      unsigned categoryFilter   : 1;
-      unsigned nrFilter         : 1;
-      unsigned dateFilter       : 1;
-      unsigned amountFilter     : 1;
-      unsigned typeFilter       : 1;
-      unsigned stateFilter      : 1;
-      unsigned validityFilter   : 1;
-    } singleFilter;
-  }                   m_filterSet;
+  FilterSet           m_filterSet;
   bool                m_reportAllSplits;
   bool                m_considerCategory;
 

@@ -63,7 +63,7 @@ public:
   const QDate entryDate(void) const { return m_entryDate; };
   const QDate postDate(void) const { return m_postDate; };
   const QString memo(void) const { return m_memo; };
-  const QValueList<MyMoneySplit> splits(void) const { return m_splits; };
+  const QValueList<MyMoneySplit>& splits(void) const { return m_splits; };
   const unsigned int splitCount(void) const { return m_splits.count(); };
   const QCString commodity(void) const { return m_commodity; };
   const QString bankID(void) const { return m_bankID; };

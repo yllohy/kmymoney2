@@ -120,7 +120,7 @@ public:
     *
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
     */
-  virtual const QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const = 0;
+  virtual QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const = 0;
 
   /**
     * This method is used to pull a list of transactions from the file
@@ -169,31 +169,31 @@ public:
     * This method is used to return the standard liability account
     * @return MyMoneyAccount liability account(group)
     */
-  virtual const MyMoneyAccount liability(void) const = 0;
+  virtual const MyMoneyAccount& liability(void) const = 0;
 
   /**
     * This method is used to return the standard asset account
     * @return MyMoneyAccount asset account(group)
     */
-  virtual const MyMoneyAccount asset(void) const = 0;
+  virtual const MyMoneyAccount& asset(void) const = 0;
 
   /**
     * This method is used to return the standard expense account
     * @return MyMoneyAccount expense account(group)
     */
-  virtual const MyMoneyAccount expense(void) const = 0;
+  virtual const MyMoneyAccount& expense(void) const = 0;
 
   /**
     * This method is used to return the standard income account
     * @return MyMoneyAccount income account(group)
     */
-  virtual const MyMoneyAccount income(void) const = 0;
+  virtual const MyMoneyAccount& income(void) const = 0;
 
   /**
     * This method is used to return the standard equity account
     * @return MyMoneyAccount equity account(group)
     */
-  virtual const MyMoneyAccount equity(void) const = 0;
+  virtual const MyMoneyAccount& equity(void) const = 0;
 
   /**
     * This method is used to create a new account

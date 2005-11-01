@@ -74,9 +74,20 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
     QDomElement rootElement = m_doc->documentElement();
     if(!rootElement.isNull())
     {
+      // extract the base currency
+      QDomNode child = rootElement.firstChild();
+      while(!child.isNull() && child.isElement() && m_baseCurrencyId.isEmpty()) {
+        QDomElement childElement = child.toElement();
+        if(QString("KEYVALUEPAIRS") == childElement.tagName()) {
+          m_storage->setPairs(readKeyValuePairs(childElement));
+          m_baseCurrencyId = m_storage->pairs()["kmm-baseCurrency"];
+        }
+        child = child.nextSibling();
+      }
+
       // qDebug("XMLREADER: Root element of this file is %s\n", rootElement.tagName().data());
 
-      QDomNode child = rootElement.firstChild();
+      child = rootElement.firstChild();
       while(!child.isNull() && child.isElement())
       {
         QDomElement childElement = child.toElement();
@@ -104,11 +115,6 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
         else if(QString("TRANSACTIONS") == childElement.tagName())
         {
           readTransactions(childElement);
-        }
-        else if(QString("KEYVALUEPAIRS") == childElement.tagName())
-        {
-          m_storage->setPairs(readKeyValuePairs(childElement));
-          m_baseCurrencyId = m_storage->pairs()["kmm-baseCurrency"];
         }
         else if(QString("SCHEDULES") == childElement.tagName())
         {
@@ -432,6 +438,10 @@ void MyMoneyStorageXML::readAccounts(QDomElement& accounts)
     QDomElement childElement = child.toElement();
     if(QString("ACCOUNT") == childElement.tagName())
     {
+      // make sure the account has a currency
+      if(childElement.attribute("currency").isEmpty()) {
+        childElement.setAttribute("currency", m_baseCurrencyId);
+      }
       MyMoneyAccount account;
       account.readXML(childElement);
 
@@ -561,7 +571,7 @@ void MyMoneyStorageXML::writeSchedules(QDomElement& scheduled)
 
   for(it = list.begin(); it != list.end(); ++it)
   {
-    writeSchedule(scheduled, *it);
+    this->writeSchedule(scheduled, *it);
   }
 }
 
@@ -768,7 +778,7 @@ void MyMoneyStorageXML::writeReports(QDomElement& parent)
   for(it = list.begin(); it != list.end(); ++it)
   {
     (*it).writeXML(*m_doc, parent);
-    signalProgress(i, 0);
+    signalProgress(++i, 0);
   }
 }
 

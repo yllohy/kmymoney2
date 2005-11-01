@@ -181,7 +181,7 @@ public:
     *
     * @return MyMoneyPayee object of payee
     */
-  const MyMoneyPayee payee(const QCString& id) const;
+  const MyMoneyPayee& payee(const QCString& id) const;
 
   /**
     * This method is used to retrieve the id to a corresponding
@@ -192,7 +192,7 @@ public:
     *
     * @return MyMoneyPayee object of payee
     */
-  const MyMoneyPayee payeeByName(const QString& payee) const;
+  const MyMoneyPayee& payeeByName(const QString& payee) const;
 
   /**
     * This method is used to modify an existing payee
@@ -453,11 +453,19 @@ public:
     * If more than one transaction exists for the same date, the order among
     * them is undefined.
     *
+    * The @list will be cleared by this method.
+    *
+    * @param list reference to list
     * @param filter MyMoneyTransactionFilter object with the match criteria
     *
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
     */
-  const QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;
+  void transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const;
+
+  /**
+    * Compatibility interface for the previous method.
+    */
+  QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;
 
   /**
     * This method is used to pull a list of transactions from the file
@@ -512,31 +520,31 @@ public:
     * This method is used to return the standard liability account
     * @return MyMoneyAccount liability account(group)
     */
-  const MyMoneyAccount liability(void) const { return account(STD_ACC_LIABILITY); };
+  const MyMoneyAccount& liability(void) const { return account(STD_ACC_LIABILITY); };
 
   /**
     * This method is used to return the standard asset account
     * @return MyMoneyAccount asset account(group)
     */
-  const MyMoneyAccount asset(void) const { return account(STD_ACC_ASSET); };
+  const MyMoneyAccount& asset(void) const { return account(STD_ACC_ASSET); };
 
   /**
     * This method is used to return the standard expense account
     * @return MyMoneyAccount expense account(group)
     */
-  const MyMoneyAccount expense(void) const { return account(STD_ACC_EXPENSE); };
+  const MyMoneyAccount& expense(void) const { return account(STD_ACC_EXPENSE); };
 
   /**
     * This method is used to return the standard income account
     * @return MyMoneyAccount income account(group)
     */
-  const MyMoneyAccount income(void) const { return account(STD_ACC_INCOME); };
+  const MyMoneyAccount& income(void) const { return account(STD_ACC_INCOME); };
 
   /**
     * This method is used to return the standard equity account
     * @return MyMoneyAccount equity account(group)
     */
-  const MyMoneyAccount equity(void) const { return account(STD_ACC_EQUITY); };
+  const MyMoneyAccount& equity(void) const { return account(STD_ACC_EQUITY); };
 
   virtual void loadAccount(const MyMoneyAccount& acc);
   virtual void loadTransaction(const MyMoneyTransaction& tr);
@@ -886,6 +894,11 @@ public:
     */
   const MyMoneyPriceList priceList(void) const;
 
+  /**
+    * Clear all internal caches (used internally for performance measurements)
+    */
+  void clearCache(void);
+
 private:
 
   static const int INSTITUTION_ID_SIZE = 6;
@@ -1025,6 +1038,13 @@ private:
     * accounts actual balance
     */
   QMap<QCString, MyMoneyBalanceCacheItem> m_balanceCache;
+
+  /**
+    * This member keeps the date for which the m_balanceCache member
+    * is valid. In case the whole cache is invalid it is set to
+    * QDate().
+    */
+  QDate          m_balanceCacheDate;
 
   /**
     * The member variable m_transactionList is the container for all

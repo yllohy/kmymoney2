@@ -22,6 +22,7 @@
 
 #include "mymoneyseqaccessmgr.h"
 #include "../mymoneytransactionfilter.h"
+#include <qvaluevector.h>
 
 const bool MyMoneyBalanceCacheItem::operator ==(const MyMoneyBalanceCacheItem & right) const
 {
@@ -184,7 +185,7 @@ void MyMoneySeqAccessMgr::addPayee(MyMoneyPayee& payee)
   payee = newPayee;
 }
 
-const MyMoneyPayee MyMoneySeqAccessMgr::payee(const QCString& id) const
+const MyMoneyPayee& MyMoneySeqAccessMgr::payee(const QCString& id) const
 {
   QMap<QCString, MyMoneyPayee>::ConstIterator it;
 
@@ -195,10 +196,10 @@ const MyMoneyPayee MyMoneySeqAccessMgr::payee(const QCString& id) const
   return *it;
 }
 
-const MyMoneyPayee MyMoneySeqAccessMgr::payeeByName(const QString& payee) const
+const MyMoneyPayee& MyMoneySeqAccessMgr::payeeByName(const QString& payee) const
 {
   if(payee.isEmpty())
-    return MyMoneyPayee();
+    return MyMoneyPayee::null;
 
   QMap<QCString, MyMoneyPayee>::ConstIterator it_p;
 
@@ -868,31 +869,42 @@ void MyMoneySeqAccessMgr::removeInstitution(const MyMoneyInstitution& institutio
     throw new MYMONEYEXCEPTION("invalid institution");
 }
 
-const QValueList<MyMoneyTransaction> MyMoneySeqAccessMgr::transactionList(MyMoneyTransactionFilter& filter) const
+void MyMoneySeqAccessMgr::transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const
 {
-  QValueList<MyMoneyTransaction> list;
+  list.clear();
+
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
 
-  for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
 #if 0
-    if(filter.match(*it_t, this))
-      list.append(*it_t);
-#else
-    // This code is used now. It adds the transaction to the list for
-    // each matching split exactly once. This allows to show information
-    // about different splits in the same register view (e.g. search result)
-    //
-    // I have no idea, if this has some impact on the functionality. So far,
-    // I could not see it.  (ipwizard 9/5/2003)
-    if(filter.match(*it_t, this)) {
-      if(filter.matchingSplits().count() > 0) {
-        for(unsigned i=0; i < filter.matchingSplits().count(); ++i)
-          list.append(*it_t);
-      } else
-        list.append(*it_t);
-    }
+  if(!filter.filterSet().allFilter) {
+    list = m_transactionList.values();
+
+  } else {
 #endif
-  }
+    for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
+      // This code is used now. It adds the transaction to the list for
+      // each matching split exactly once. This allows to show information
+      // about different splits in the same register view (e.g. search result)
+      //
+      // I have no idea, if this has some impact on the functionality. So far,
+      // I could not see it.  (ipwizard 9/5/2003)
+      if(filter.match(*it_t, this)) {
+        unsigned int cnt = filter.matchingSplits().count();
+        if(cnt > 1) {
+          for(unsigned i=0; i < cnt; ++i)
+            list.append(*it_t);
+        } else {
+          list.append(*it_t);
+        }
+      }
+    }
+//  }
+}
+
+QValueList<MyMoneyTransaction> MyMoneySeqAccessMgr::transactionList(MyMoneyTransactionFilter& filter) const
+{
+  QValueList<MyMoneyTransaction> list;
+  transactionList(list, filter);
   return list;
 }
 
@@ -949,49 +961,56 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& accou
 const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate& date)
 {
   MyMoneyMoney result(0);
+  bool needRebuildCache = false;
   MyMoneyAccount acc;
 
-  if(m_balanceCache[id].valid == true && !date.isValid())
-    result = m_balanceCache[id].balance;
+  if(m_balanceCache[id].valid == false || date != m_balanceCacheDate) {
+    QMap<QCString, MyMoneyMoney> balances;
+    QMap<QCString, MyMoneyMoney>::ConstIterator it_b;
 
-  else {
-    acc = account(id);
-
-  /* removed with MyMoneyAccount::Transaction
-    return acc.balance();
-  */
-
-    // new implementation if the above code does not work anymore
-    result += acc.openingBalance();
+    m_balanceCache.clear();
+    m_balanceCacheDate = date;
 
     QValueList<MyMoneyTransaction> list;
-    QValueList<MyMoneyTransaction>::ConstIterator it;
-    // MyMoneySplit split;
-    MyMoneyTransactionFilter filter(id);
+    QValueList<MyMoneyTransaction>::ConstIterator it_t;
+    QValueList<MyMoneySplit>::ConstIterator it_s;
+
+    MyMoneyTransactionFilter filter;
     filter.setDateFilter(QDate(), date);
+    filter.setReportAllSplits(false);
     list = transactionList(filter);
 
-    for(it = list.begin(); it != list.end(); ++it) {
-      try {
-        const MyMoneySplit& split((*it).splitByAccount(id));
-
-        // For stock splits, the ratio of the split is in the 'shares' field
-        if ( split.action() == MyMoneySplit::ActionSplitShares )
-          result = result * split.shares();
-        else
-          result += split.value((*it).commodity(), acc.currencyId());
-
-      } catch(MyMoneyException *e) {
-        // account is not referenced within this transaction
-        delete e;
+    for(it_t = list.begin(); it_t != list.end(); ++it_t) {
+      for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s){
+        const QCString& aid = (*it_s).accountId();
+        if((*it_s).action() == MyMoneySplit::ActionSplitShares) {
+          balances[aid] = balances[aid] * (*it_s).shares();
+        } else {
+          balances[aid] += (*it_s).value((*it_t).commodity(), m_accountList[aid].currencyId());
+        }
       }
     }
 
-    if(!date.isValid()) {
-      MyMoneyBalanceCacheItem balance(result);
-      m_balanceCache[id] = balance;
+    // fill the found balances into the cache
+    for(it_b = balances.begin(); it_b != balances.end(); ++it_b) {
+      MyMoneyBalanceCacheItem balance(*it_b);
+      m_balanceCache[it_b.key()] = balance;
+    }
+
+    // fill all accounts w/o transactions to zero
+    QMap<QCString, MyMoneyAccount>::ConstIterator it_a;
+    for(it_a = m_accountList.begin(); it_a != m_accountList.end(); ++it_a) {
+      if(m_balanceCache[(*it_a).id()].valid == false) {
+        MyMoneyBalanceCacheItem balance(MyMoneyMoney(0,1));
+        m_balanceCache[(*it_a).id()] = balance;
+      }
     }
   }
+
+  if(m_balanceCache[id].valid == true)
+    result = m_balanceCache[id].balance;
+  else
+    qDebug("Cache mishit should never happen at this point");
   return result;
 }
 
@@ -1062,16 +1081,15 @@ const unsigned int MyMoneyFile::moveSplits(const QString& oldAccount, const QStr
 
 void MyMoneySeqAccessMgr::invalidateBalanceCache(const QCString& id)
 {
-  MyMoneyAccount  acc;
-
-  try {
-    m_balanceCache[id].valid = false;
-    if(!isStandardAccount(id)) {
-      acc = account(id);
-      invalidateBalanceCache(acc.parentAccountId());
+  if(!id.isEmpty()) {
+    try {
+      m_balanceCache[id].valid = false;
+      if(!isStandardAccount(id)) {
+        invalidateBalanceCache(account(id).parentAccountId());
+      }
+    } catch (MyMoneyException *e) {
+      delete e;
     }
-  } catch (MyMoneyException *e) {
-    delete e;
   }
 }
 
@@ -1705,3 +1723,7 @@ const MyMoneyPrice MyMoneySeqAccessMgr::price(const QCString& fromId, const QCSt
   return rc;
 }
 
+void MyMoneySeqAccessMgr::clearCache(void)
+{
+  m_balanceCache.clear();
+}

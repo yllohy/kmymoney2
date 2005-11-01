@@ -296,14 +296,11 @@ const MyMoneyInstitution& MyMoneyFile::institution(const QCString& id) const
   return m_storage->institution(id);
 }
 
-const MyMoneyAccount MyMoneyFile::account(const QCString& id) const
+const MyMoneyAccount& MyMoneyFile::account(const QCString& id) const
 {
   checkStorage();
 
-  MyMoneyAccount acc;
-  acc = m_storage->account(id);
-  ensureDefaultCurrency(acc);
-  return acc;
+  return m_storage->account(id);
 }
 
 void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
@@ -749,14 +746,14 @@ void MyMoneyFile::addPayee(MyMoneyPayee& payee)
   addNotification(NotifyClassPayeeSet);
 }
 
-const MyMoneyPayee MyMoneyFile::payee(const QCString& id) const
+const MyMoneyPayee& MyMoneyFile::payee(const QCString& id) const
 {
   checkStorage();
 
   return m_storage->payee(id);
 }
 
-const MyMoneyPayee MyMoneyFile::payeeByName(const QString& name) const
+const MyMoneyPayee& MyMoneyFile::payeeByName(const QString& name) const
 {
   checkStorage();
 
@@ -850,49 +847,39 @@ void MyMoneyFile::ensureDefaultCurrency(MyMoneyAccount& acc) const
   }
 }
 
-const MyMoneyAccount MyMoneyFile::liability(void) const
+const MyMoneyAccount& MyMoneyFile::liability(void) const
 {
   checkStorage();
 
-  MyMoneyAccount acc = m_storage->liability();
-  ensureDefaultCurrency(acc);
-  return acc;
+  return m_storage->liability();
 }
 
-const MyMoneyAccount MyMoneyFile::asset(void) const
+const MyMoneyAccount& MyMoneyFile::asset(void) const
 {
   checkStorage();
 
-  MyMoneyAccount acc = m_storage->asset();
-  ensureDefaultCurrency(acc);
-  return acc;
+  return m_storage->asset();
 }
 
-const MyMoneyAccount MyMoneyFile::expense(void) const
+const MyMoneyAccount& MyMoneyFile::expense(void) const
 {
   checkStorage();
 
-  MyMoneyAccount acc = m_storage->expense();
-  ensureDefaultCurrency(acc);
-  return acc;
+  return m_storage->expense();
 }
 
-const MyMoneyAccount MyMoneyFile::income(void) const
+const MyMoneyAccount& MyMoneyFile::income(void) const
 {
   checkStorage();
 
-  MyMoneyAccount acc = m_storage->income();
-  ensureDefaultCurrency(acc);
-  return acc;
+  return m_storage->income();
 }
 
-const MyMoneyAccount MyMoneyFile::equity(void) const
+const MyMoneyAccount& MyMoneyFile::equity(void) const
 {
   checkStorage();
 
-  MyMoneyAccount acc = m_storage->equity();
-  ensureDefaultCurrency(acc);
-  return acc;
+  return m_storage->equity();
 }
 
 const unsigned int MyMoneyFile::transactionCount(const QCString& account) const
@@ -1161,7 +1148,13 @@ void MyMoneyFile::clearNotification()
   m_notificationList.clear();
 }
 
-const QValueList<MyMoneyTransaction> MyMoneyFile::transactionList(MyMoneyTransactionFilter& filter) const
+void MyMoneyFile::transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const
+{
+  checkStorage();
+  m_storage->transactionList(list, filter);
+}
+
+QValueList<MyMoneyTransaction> MyMoneyFile::transactionList(MyMoneyTransactionFilter& filter) const
 {
   checkStorage();
 
@@ -1936,4 +1929,10 @@ QString MyMoneyFile::highestCheckNo(const QCString& accId) const
     ++it_t;
   }
   return no;
+}
+
+void MyMoneyFile::clearCache(void)
+{
+  checkStorage();
+  m_storage->clearCache();
 }

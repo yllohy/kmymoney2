@@ -250,31 +250,31 @@ public:
     * This method is used to return the standard liability account
     * @return MyMoneyAccount liability account(group)
     */
-  const MyMoneyAccount liability(void) const;
+  const MyMoneyAccount& liability(void) const;
 
   /**
     * This method is used to return the standard asset account
     * @return MyMoneyAccount asset account(group)
     */
-  const MyMoneyAccount asset(void) const;
+  const MyMoneyAccount& asset(void) const;
 
   /**
     * This method is used to return the standard expense account
     * @return MyMoneyAccount expense account(group)
     */
-  const MyMoneyAccount expense(void) const;
+  const MyMoneyAccount& expense(void) const;
 
   /**
     * This method is used to return the standard income account
     * @return MyMoneyAccount income account(group)
     */
-  const MyMoneyAccount income(void) const;
+  const MyMoneyAccount& income(void) const;
 
   /**
     * This method is used to return the standard equity account
     * @return MyMoneyAccount equity account(group)
     */
-  const MyMoneyAccount equity(void) const;
+  const MyMoneyAccount& equity(void) const;
 
   /**
     * This method returns the account information for the opening
@@ -540,7 +540,9 @@ public:
     *
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
     */
-  const QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;
+  QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;
+
+  void transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const;
 
   /**
     * This method is used to remove a transaction from the transaction
@@ -710,7 +712,7 @@ public:
     * @return MyMoneyAccount object carrying the @p id. An exception is thrown
     *         if the id is unknown
     */
-  const MyMoneyAccount account(const QCString& id) const;
+  const MyMoneyAccount& account(const QCString& id) const;
 
   /**
     * This method returns a list of accounts inside a MyMoneyFile object.
@@ -825,7 +827,7 @@ public:
     *
     * @return MyMoneyPayee object of payee
     */
-  const MyMoneyPayee payee(const QCString& id) const;
+  const MyMoneyPayee& payee(const QCString& id) const;
 
   /**
     * This method is used to retrieve the id to a corresponding
@@ -836,7 +838,7 @@ public:
     *
     * @return MyMoneyPayee object of payee
     */
-  const MyMoneyPayee payeeByName(const QString& payee) const;
+  const MyMoneyPayee& payeeByName(const QString& payee) const;
 
   /**
     * This method is used to modify an existing payee
@@ -1390,6 +1392,11 @@ public:
     * @return highest check no. used
     */
   QString highestCheckNo(const QCString& accId) const;
+
+  /**
+    * Clear all internal caches (used internally for performance measurements)
+    */
+  void clearCache(void);
 
 protected:
   /**

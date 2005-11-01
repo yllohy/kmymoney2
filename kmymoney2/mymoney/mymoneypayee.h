@@ -96,6 +96,8 @@ public:
   void writeXML(QDomDocument& document, QDomElement& parent) const;
 
   void readXML(const QDomElement& node);
+
+  static MyMoneyPayee null;
 };
 
 #endif

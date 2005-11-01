@@ -17,6 +17,8 @@
 #include "mymoneypayee.h"
 #include <kmymoney/mymoneyexception.h>
 
+MyMoneyPayee MyMoneyPayee::null = MyMoneyPayee();
+
 MyMoneyPayee::MyMoneyPayee()
 {
 }
