@@ -43,7 +43,7 @@
 #include "../mymoneyreport.h"
 #include "../mymoneyinstitution.h"
 
-QStringList MyMoneyStorageANON::zKvpNoModify = QStringList::split(",","kmm-baseCurrency,PreferredAccount,Tax,fixed-interest,interest-calculation,payee,schedule,term,kmm-online-source,kmm-brokerage-account");
+QStringList MyMoneyStorageANON::zKvpNoModify = QStringList::split(",","kmm-baseCurrency,PreferredAccount,Tax,fixed-interest,interest-calculation,payee,schedule,term,kmm-online-source,kmm-brokerage-account,lastStatementDate");
 QStringList MyMoneyStorageANON::zKvpXNumber = QStringList::split(",","final-payment,loan-amount,periodic-payment");
 
 
@@ -52,7 +52,7 @@ MyMoneyStorageANON::MyMoneyStorageANON() :
 {
   // Choose a quasi-random 0.0-100.0 factor which will be applied to all splits this time
   // around.
-  
+
   int msec;
   do {
     msec = QTime::currentTime().msec();
@@ -126,133 +126,82 @@ void MyMoneyStorageANON::writeAccount(QDomElement& account, const MyMoneyAccount
   p.setOpeningBalance(hideNumber(p.openingBalance()));
   p.setName(p.id());
   p.setDescription(hideString(p.description()));
+  fakeKeyValuePair(p);
 
   MyMoneyStorageXML::writeAccount(account, p);
 }
 
-void MyMoneyStorageANON::writeTransaction(QDomElement& transaction, const MyMoneyTransaction& tx)
+void MyMoneyStorageANON::fakeTransaction(MyMoneyTransaction& tx)
 {
-  transaction.setAttribute(QString("id"), tx.id());
-  transaction.setAttribute(QString("postdate"), getString(tx.postDate()));
-  transaction.setAttribute(QString("memo"), tx.id());
-  transaction.setAttribute(QString("entrydate"), getString(tx.entryDate()));
-  transaction.setAttribute(QString("commodity"), tx.commodity());
-  transaction.setAttribute(QString("bankid"), hideString(tx.bankID()));
+  MyMoneyTransaction tn = tx;
 
-  QDomElement splits = m_doc->createElement("SPLITS");
-  QValueList<MyMoneySplit> splitList = tx.splits();
+  // hide transaction data
+  tn.setMemo(tx.id());
+  tn.setBankID(hideString(tx.bankID()));
 
-  writeSplits(splits, splitList,tx.id());
-  transaction.appendChild(splits);
+  // hide split data
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+  for(it_s = tx.splits().begin(); it_s != tx.splits().end(); ++it_s) {
+    MyMoneySplit s = (*it_s);
+    s.setMemo(QString("%1/%2").arg(tn.id()).arg(s.id()));
 
-  //Add in Key-Value Pairs for transactions.
-  QDomElement keyValPairs = writeKeyValuePairs(tx.pairs());
-  transaction.appendChild(keyValPairs);
-}
-
-void MyMoneyStorageANON::writeSchedule(QDomElement& scheduledTx, const MyMoneySchedule& tx)
-{
-  scheduledTx.setAttribute(QString("name"), tx.id());
-  scheduledTx.setAttribute(QString("type"), tx.type());
-  scheduledTx.setAttribute(QString("occurence"), tx.occurence());
-  scheduledTx.setAttribute(QString("paymentType"), tx.paymentType());
-  scheduledTx.setAttribute(QString("startDate"), getString(tx.startDate()));
-  scheduledTx.setAttribute(QString("endDate"), getString(tx.endDate()));
-  scheduledTx.setAttribute(QString("fixed"), tx.isFixed());
-  scheduledTx.setAttribute(QString("autoEnter"), tx.autoEnter());
-  scheduledTx.setAttribute(QString("id"), tx.id());
-  scheduledTx.setAttribute(QString("lastPayment"), getString(tx.lastPayment()));
-  scheduledTx.setAttribute(QString("weekendOption"), tx.weekendOption());
-
-  //store the payment history for this scheduled task.
-  QValueList<QDate> payments = tx.recordedPayments();
-  QValueList<QDate>::Iterator it;
-  QDomElement paymentsElement = m_doc->createElement("PAYMENTS");
-  paymentsElement.setAttribute(QString("count"), payments.count());
-  for (it=payments.begin(); it!=payments.end(); ++it)
-  {
-    QDomElement paymentEntry = m_doc->createElement("PAYMENT");
-    paymentEntry.setAttribute(QString("date"), getString(*it));
-    paymentsElement.appendChild(paymentEntry);
+    if(s.value() != MyMoneyMoney::autoCalc) {
+      s.setValue((s.value() * m_factor));
+      s.setShares((s.shares() * m_factor));
+    }
+    s.setNumber(hideString(s.number()));
+    tn.modifySplit(s);
   }
-  scheduledTx.appendChild(paymentsElement);
-
-  //store the transaction data for this task.
-  QDomElement transactionElement = m_doc->createElement("TRANSACTION");
-  writeTransaction(transactionElement, tx.transaction());
-  scheduledTx.appendChild(transactionElement);
+  tx = tn;
+  fakeKeyValuePair(tx);
 }
 
-void MyMoneyStorageANON::writeSplits(QDomElement& splits, const QValueList<MyMoneySplit> splitList, const QCString& transactionId)
+void MyMoneyStorageANON::fakeKeyValuePair(MyMoneyKeyValueContainer& kvp)
 {
-  // get a somewhat random offset factor, which is always different from 0
-  QValueList<MyMoneySplit>::const_iterator it;
-  for(it = splitList.begin(); it != splitList.end(); ++it)
+  QMap<QCString, QString> pairs;
+  QMap<QCString, QString>::const_iterator it;
+
+  for(it = kvp.pairs().begin(); it != kvp.pairs().end(); ++it)
   {
-    QDomElement split = m_doc->createElement("SPLIT");
-    writeSplit(split, (*it), transactionId);
-    splits.appendChild(split);
+    if ( zKvpXNumber.contains( it.key() ) || it.key().left(3)=="ir-" )
+      pairs[it.key()] = hideNumber(MyMoneyMoney(it.data())).toString();
+    else if ( zKvpNoModify.contains( it.key() ) )
+      pairs[it.key()] = it.data();
+    else
+      pairs[it.key()] = hideString(it.data());
   }
+  kvp.setPairs(pairs);
 }
 
-void MyMoneyStorageANON::writeSplit(QDomElement& splitElement, const MyMoneySplit& split,const QCString& transactionId)
+void MyMoneyStorageANON::writeTransaction(QDomElement& transactions, const MyMoneyTransaction& tx)
 {
-  splitElement.setAttribute(QString("payee"), split.payeeId());
-  splitElement.setAttribute(QString("reconciledate"), getString(split.reconcileDate()));
-  splitElement.setAttribute(QString("action"), split.action());
-  splitElement.setAttribute(QString("reconcileflag"), split.reconcileFlag());
+  MyMoneyTransaction tn = tx;
 
-  MyMoneyMoney hidevalue = split.value() * m_factor;
-  MyMoneyMoney hideshares = split.shares() * m_factor;
+  fakeTransaction(tn);
 
-  splitElement.setAttribute(QString("value"), hidevalue.toString());
-  splitElement.setAttribute(QString("shares"), hideshares.toString());
-  splitElement.setAttribute(QString("memo"), QString(transactionId) + "/" + QString(split.id()));
-  splitElement.setAttribute(QString("id"), split.id());
-  splitElement.setAttribute(QString("account"), split.accountId());
-  splitElement.setAttribute(QString("number"), hideString(split.number()));
+  MyMoneyStorageXML::writeTransaction(transactions, tn);
+}
+
+void MyMoneyStorageANON::writeSchedule(QDomElement& scheduledTx, const MyMoneySchedule& sx)
+{
+  MyMoneySchedule sn = sx;
+  MyMoneyTransaction tn = sn.transaction();
+
+  fakeTransaction(tn);
+
+  sn.setName(sx.id());
+  sn.setTransaction(tn);
+
+  MyMoneyStorageXML::writeSchedule(scheduledTx, sn);
 }
 
 void MyMoneyStorageANON::writeSecurity(QDomElement& securityElement, const MyMoneySecurity& security)
 {
-  securityElement.setAttribute(QString("name"), security.id());
-  securityElement.setAttribute(QString("symbol"), security.tradingSymbol());
-  securityElement.setAttribute(QString("type"), static_cast<int>(security.securityType()));
-  securityElement.setAttribute(QString("id"), security.id());
-  securityElement.setAttribute(QString("saf"), security.smallestAccountFraction());
+  MyMoneySecurity s = security;
+  s.setName(security.id());
+  fakeKeyValuePair(s);
 
-  if(!security.isCurrency())
-    securityElement.setAttribute(QString("trading-currency"), security.tradingCurrency());
-
-  //Add in Key-Value Pairs for security
-  QDomElement keyValPairs = writeKeyValuePairs(security.pairs());
-  securityElement.appendChild(keyValPairs);
-
-}
-
-QDomElement MyMoneyStorageANON::writeKeyValuePairs(const QMap<QCString, QString> pairs)
-{
-  if(m_doc)
-  {
-    QDomElement keyValPairs = m_doc->createElement("KEYVALUEPAIRS");
-
-    QMap<QCString, QString>::const_iterator it;
-    for(it = pairs.begin(); it != pairs.end(); ++it)
-    {
-      QDomElement pair = m_doc->createElement("PAIR");
-      pair.setAttribute(QString("key"), it.key());
-
-      if ( zKvpXNumber.contains( it.key() ) || it.key().left(3)=="ir-" )
-        pair.setAttribute(QString("value"), hideNumber(MyMoneyMoney(it.data())).toString());
-      else if ( zKvpNoModify.contains( it.key() ) )
-        pair.setAttribute(QString("value"), it.data());
-      else
-        pair.setAttribute(QString("value"), hideString(it.data()));
-      keyValPairs.appendChild(pair);
-    }
-    return keyValPairs;
-  }
-  return QDomElement();
+  MyMoneyStorageXML::writeSecurity(securityElement, s);
 }
 
 QString MyMoneyStorageANON::hideString(const QString& _in) const

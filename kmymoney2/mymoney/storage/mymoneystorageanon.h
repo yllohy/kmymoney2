@@ -82,12 +82,7 @@ protected:
 
   void writeSchedule(QDomElement& scheduledTx, const MyMoneySchedule& tx);
 
-  void writeSplits(QDomElement& splits, const QValueList<MyMoneySplit> splitList,const QCString& transid);
-  void writeSplit(QDomElement& splitElement, const MyMoneySplit& split,const QCString& transid);
-
   void readFile(QIODevice* s, IMyMoneySerialize* storage);
-
-  QDomElement writeKeyValuePairs(const QMap<QCString, QString> pairs);
 
   void writeSecurity(QDomElement& securityElement, const MyMoneySecurity& security);
 
@@ -98,6 +93,7 @@ private:
     * The list of key-value pairs to not modify
     */
   static QStringList zKvpNoModify;
+
   /**
     * The list of key-value pairs which are numbers to be hidden
     */
@@ -105,7 +101,9 @@ private:
 
   QString hideString(const QString&) const;
   MyMoneyMoney hideNumber(const MyMoneyMoney&) const;
-  
+  void fakeTransaction(MyMoneyTransaction& tn);
+  void fakeKeyValuePair(MyMoneyKeyValueContainer& _kvp);
+
   MyMoneyMoney m_factor;
 };
 
