@@ -97,6 +97,7 @@ protected slots:
     */
   void slotFileFileInfo();
 
+  void slotPerformanceTest(void);
 
   /**
     * Called when the user asks for the personal information.

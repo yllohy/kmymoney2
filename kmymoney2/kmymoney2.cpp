@@ -30,8 +30,10 @@
 #include <qprinter.h>
 #include <qlayout.h>
 #include <qsignalmapper.h>
-#include <qclipboard.h> // temp for problem 1105503
-#include <qmessagebox.h> // ditto
+#include <qclipboard.h>        // temp for problem 1105503
+#include <qmessagebox.h>       // ditto
+#include <qdatetime.h>         // only for performance tests
+
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -257,6 +259,8 @@ void KMyMoney2App::initActions()
 
   new KAction(i18n("File-Information..."), "info", 0, this, SLOT(slotFileInfoDialog()), actionCollection(), "fileinfo");
 
+  new KAction(i18n("Performance-Test"), "fork", 0, this, SLOT(slotPerformanceTest()), actionCollection(), "performancetest");
+
   // The help menu
   new KAction(i18n("&Show tip of the day"), "idea", 0, this, SLOT(slotShowTipOfTheDay()), actionCollection(), "show_tip");
 
@@ -373,6 +377,145 @@ void KMyMoney2App::slotFileInfoDialog(void)
 {
   KMyMoneyFileInfoDlg dlg(0);
   dlg.exec();
+}
+
+void KMyMoney2App::slotPerformanceTest(void)
+{
+  // dump performance report to stderr
+
+  int measurement[2];
+  QTime timer;
+  MyMoneyAccount acc;
+
+  qDebug("--- Starting performance tests ---");
+
+  // AccountList
+  MyMoneyFile::instance()->clearCache();
+  measurement[0] = measurement[1] = 0;
+  for(int i = 0; i < 1000; ++i) {
+    QValueList<MyMoneyAccount> list;
+    timer.start();
+    list = MyMoneyFile::instance()->accountList();
+    measurement[i != 0] += timer.elapsed();
+  }
+  std::cerr << "accountList()" << std::endl;
+  std::cerr << "First time: " << measurement[0] << " msec" << std::endl;
+  std::cerr << "Average   : " << (measurement[0] + measurement[1]) / 1000 << " msec" << std::endl;
+
+  // Balance of asset account(s)
+  MyMoneyFile::instance()->clearCache();
+  measurement[0] = measurement[1] = 0;
+  acc = MyMoneyFile::instance()->asset();
+  for(int i = 0; i < 1000; ++i) {
+    timer.start();
+    MyMoneyMoney result = MyMoneyFile::instance()->balance(acc.id());
+    measurement[i != 0] += timer.elapsed();
+  }
+  std::cerr << "balance(Asset)" << std::endl;
+  std::cerr << "First time: " << measurement[0] << " msec" << std::endl;
+  std::cerr << "Average   : " << (measurement[0] + measurement[1]) / 1000 << " msec" << std::endl;
+
+  // total balance of asset account
+  MyMoneyFile::instance()->clearCache();
+  measurement[0] = measurement[1] = 0;
+  acc = MyMoneyFile::instance()->asset();
+  for(int i = 0; i < 1000; ++i) {
+    timer.start();
+    MyMoneyMoney result = MyMoneyFile::instance()->totalBalance(acc.id());
+    measurement[i != 0] += timer.elapsed();
+  }
+  std::cerr << "totalBalance(Asset)" << std::endl;
+  std::cerr << "First time: " << measurement[0] << " msec" << std::endl;
+  std::cerr << "Average   : " << (measurement[0] + measurement[1]) / 1000 << " msec" << std::endl;
+
+  // Balance of expense account(s)
+  MyMoneyFile::instance()->clearCache();
+  measurement[0] = measurement[1] = 0;
+  acc = MyMoneyFile::instance()->expense();
+  for(int i = 0; i < 1000; ++i) {
+    timer.start();
+    MyMoneyMoney result = MyMoneyFile::instance()->balance(acc.id());
+    measurement[i != 0] += timer.elapsed();
+  }
+  std::cerr << "balance(Expense)" << std::endl;
+  std::cerr << "First time: " << measurement[0] << " msec" << std::endl;
+  std::cerr << "Average   : " << (measurement[0] + measurement[1]) / 1000 << " msec" << std::endl;
+
+  // total balance of expense account
+  MyMoneyFile::instance()->clearCache();
+  measurement[0] = measurement[1] = 0;
+  acc = MyMoneyFile::instance()->expense();
+  for(int i = 0; i < 1000; ++i) {
+    timer.start();
+    MyMoneyMoney result = MyMoneyFile::instance()->totalBalance(acc.id());
+    measurement[i != 0] += timer.elapsed();
+  }
+  std::cerr << "totalBalance(Expense)" << std::endl;
+  std::cerr << "First time: " << measurement[0] << " msec" << std::endl;
+  std::cerr << "Average   : " << (measurement[0] + measurement[1]) / 1000 << " msec" << std::endl;
+
+  // total value of expense account
+  MyMoneyFile::instance()->clearCache();
+  measurement[0] = measurement[1] = 0;
+  acc = MyMoneyFile::instance()->expense();
+  for(int i = 0; i < 1000; ++i) {
+    timer.start();
+    MyMoneyMoney result = MyMoneyFile::instance()->totalValue(acc.id());
+    measurement[i != 0] += timer.elapsed();
+  }
+  std::cerr << "totalValue(Expense)" << std::endl;
+  std::cerr << "First time: " << measurement[0] << " msec" << std::endl;
+  std::cerr << "Average   : " << (measurement[0] + measurement[1]) / 1000 << " msec" << std::endl;
+
+  // total value valid of expense account
+  MyMoneyFile::instance()->clearCache();
+  measurement[0] = measurement[1] = 0;
+  acc = MyMoneyFile::instance()->expense();
+  for(int i = 0; i < 1000; ++i) {
+    timer.start();
+    MyMoneyMoney result = MyMoneyFile::instance()->totalValueValid(acc.id());
+    measurement[i != 0] += timer.elapsed();
+  }
+  std::cerr << "totalValueValid(Expense)" << std::endl;
+  std::cerr << "First time: " << measurement[0] << " msec" << std::endl;
+  std::cerr << "Average   : " << (measurement[0] + measurement[1]) / 1000 << " msec" << std::endl;
+
+  // transaction list
+  MyMoneyFile::instance()->clearCache();
+  measurement[0] = measurement[1] = 0;
+  if(MyMoneyFile::instance()->asset().accountCount()) {
+    MyMoneyTransactionFilter filter(MyMoneyFile::instance()->asset().accountList()[0]);
+    filter.setDateFilter(QDate(), QDate::currentDate());
+    QValueList<MyMoneyTransaction> list;
+
+    for(int i = 0; i < 100; ++i) {
+      timer.start();
+      list = MyMoneyFile::instance()->transactionList(filter);
+      measurement[i != 0] += timer.elapsed();
+    }
+    std::cerr << "transactionList()" << std::endl;
+    std::cerr << "First time: " << measurement[0] << " msec" << std::endl;
+    std::cerr << "Average   : " << (measurement[0] + measurement[1]) / 100 << " msec" << std::endl;
+  }
+
+  // transaction list
+  MyMoneyFile::instance()->clearCache();
+  measurement[0] = measurement[1] = 0;
+  if(MyMoneyFile::instance()->asset().accountCount()) {
+    MyMoneyTransactionFilter filter(MyMoneyFile::instance()->asset().accountList()[0]);
+    filter.setDateFilter(QDate(), QDate::currentDate());
+    QValueList<MyMoneyTransaction> list;
+
+    for(int i = 0; i < 100; ++i) {
+      timer.start();
+      MyMoneyFile::instance()->transactionList(list, filter);
+      measurement[i != 0] += timer.elapsed();
+    }
+    std::cerr << "transactionList(list)" << std::endl;
+    std::cerr << "First time: " << measurement[0] << " msec" << std::endl;
+    std::cerr << "Average   : " << (measurement[0] + measurement[1]) / 100 << " msec" << std::endl;
+  }
+
 }
 
 void KMyMoney2App::slotFileNew()

@@ -40,6 +40,7 @@
    <Action name="tool_currency_editor" />
    <Action name="tool_price_editor" />
    <Action name="equity_price_update" />
+   <Action name="performancetest" />
   </Menu>
   <Menu name="settings" >
    <Action append="show_merge" name="show_transaction_detail" />
