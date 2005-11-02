@@ -11,3 +11,4 @@ Makefile.in
 autotest
 *.la
 *.all_cpp.cpp
+*.a

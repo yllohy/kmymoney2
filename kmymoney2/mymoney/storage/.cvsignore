@@ -9,3 +9,4 @@ Makefile.in
 *~
 autotest
 *.all_cpp.cpp
+*.a
