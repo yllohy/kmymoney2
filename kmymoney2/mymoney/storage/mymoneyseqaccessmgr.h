@@ -453,7 +453,7 @@ public:
     * If more than one transaction exists for the same date, the order among
     * them is undefined.
     *
-    * The @list will be cleared by this method.
+    * The @p list will be cleared by this method.
     *
     * @param list reference to list
     * @param filter MyMoneyTransactionFilter object with the match criteria
