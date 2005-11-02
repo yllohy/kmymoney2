@@ -1114,7 +1114,10 @@ void MyMoneySeqAccessMgr::loadAccount(const MyMoneyAccount& acc)
   }
   m_accountList[acc.id()] = acc;
 
-  m_balanceCache[acc.id()] = MyMoneyBalanceCacheItem(acc.openingBalance());
+  // FIXME: Since usage of openingBalance is deprecated, this whole code can go eventually
+  if(acc.accountType() != MyMoneyAccount::Stock
+  && acc.accountType() != MyMoneyAccount::Investment)
+    m_balanceCache[acc.id()] = MyMoneyBalanceCacheItem(acc.openingBalance());
 }
 
 void MyMoneySeqAccessMgr::loadTransaction(const MyMoneyTransaction& tr)

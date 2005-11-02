@@ -223,10 +223,10 @@ void KAccountListItem::update(const QCString& accountId)
       MyMoneyMoney value;
 
       if(acc.accountType() == MyMoneyAccount::Investment) {
-        value = file->totalValue(accountId);
+        value = file->totalValue(accountId, QDate::currentDate());
         m_valueValid = file->totalValueValid(accountId);
       } else {
-        value = file->accountValue(accountId);
+        value = file->accountValue(accountId, QDate::currentDate());
         m_valueValid = file->accountValueValid(accountId);
       }
 
