@@ -176,7 +176,7 @@ public:
     *
     * @return MyMoneyTransaction The transaction data for the instance.
     */
-  const MyMoneyTransaction transaction(void) const { return m_transaction; }
+  const MyMoneyTransaction& transaction(void) const { return m_transaction; }
 
   /**
     * Simple method that returns the schedule last payment.
