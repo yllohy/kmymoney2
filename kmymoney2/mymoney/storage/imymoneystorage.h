@@ -572,14 +572,14 @@ public:
 
   virtual void addPrice(const MyMoneyPrice& price) = 0;
   virtual void removePrice(const MyMoneyPrice& price) = 0;
-  virtual const MyMoneyPrice price(const QCString& fromId, const QCString& toId, const QDate& date, const bool exactDate) const = 0;
+  virtual MyMoneyPrice price(const QCString& fromId, const QCString& toId, const QDate& date, const bool exactDate) const = 0;
 
   /**
     * This method returns a list of all prices.
     *
     * @return MyMoneyPriceList of all MyMoneyPrice objects.
     */
-  virtual const MyMoneyPriceList priceList(void) const = 0;
+  virtual const MyMoneyPriceList& priceList(void) const = 0;
 
   /**
     * This method is used to add a scheduled transaction to the engine.

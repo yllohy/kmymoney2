@@ -885,14 +885,15 @@ public:
   void removePrice(const MyMoneyPrice& price);
 
   /**
-    * This method retrieves a price from the price list
+    * This method retrieves a price from the price list.
+    * If @p date is inValid, QDate::currentDate() is assumed.
     */
-  const MyMoneyPrice price(const QCString& fromId, const QCString& toId, const QDate& date, const bool exactDate) const;
+  MyMoneyPrice price(const QCString& fromId, const QCString& toId, const QDate& date, const bool exactDate) const;
 
   /**
     * This method returns a list of all price entries.
     */
-  const MyMoneyPriceList priceList(void) const;
+  const MyMoneyPriceList& priceList(void) const;
 
   /**
     * Clear all internal caches (used internally for performance measurements)

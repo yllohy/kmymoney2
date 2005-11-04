@@ -377,7 +377,7 @@ public:
     *
     * @return MyMoneyPriceList of all MyMoneyPrice objects.
     */
-  virtual const MyMoneyPriceList priceList(void) const = 0;
+  virtual const MyMoneyPriceList& priceList(void) const = 0;
 
 };
 

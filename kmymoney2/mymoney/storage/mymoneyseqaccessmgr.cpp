@@ -1700,15 +1700,19 @@ void MyMoneySeqAccessMgr::removePrice(const MyMoneyPrice& price)
   touch();
 }
 
-const MyMoneyPriceList MyMoneySeqAccessMgr::priceList(void) const
+const MyMoneyPriceList& MyMoneySeqAccessMgr::priceList(void) const
 {
   return m_priceList;
 }
 
-const MyMoneyPrice MyMoneySeqAccessMgr::price(const QCString& fromId, const QCString& toId, const QDate& date, const bool exactDate) const
+MyMoneyPrice MyMoneySeqAccessMgr::price(const QCString& fromId, const QCString& toId, const QDate& _date, const bool exactDate) const
 {
   MyMoneyPrice rc;
   MyMoneyPriceEntries::ConstIterator it;
+  QDate date(_date);
+
+  if(!date.isValid())
+    date = QDate::currentDate();
 
   for(it = m_priceList[MyMoneySecurityPair(fromId, toId)].begin(); it != m_priceList[MyMoneySecurityPair(fromId, toId)].end(); ++it) {
     if(date < it.key())
