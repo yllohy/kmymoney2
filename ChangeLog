@@ -1,3 +1,10 @@
+2005-11-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added ledger sort mode for 'order of entry' (based on transaction-id)
+  * Fixed MyMoneyScheduled::isOverdue() to return correct information
+  * Added testcase for MyMoneyScheduled::isOverdue()
+  * Fixed calculation of net-worth in views
+  * Added 'Move to account ...' functionality
+
 2005-11-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Make MyMoneySchedule::transaction() return a reference
   * Catch exceptions during forecast processing
