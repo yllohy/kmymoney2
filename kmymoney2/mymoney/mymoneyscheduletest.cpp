@@ -219,8 +219,48 @@ void MyMoneyScheduleTest::testAnyScheduled()
 */
 }
 
-void MyMoneyScheduleTest::testAnyOverdue()
+void MyMoneyScheduleTest::testOverdue()
 {
+	MyMoneySchedule sch;
+
+	QDate startDate = QDate::currentDate().addDays(-701);
+	//QDate startDate = QDate::currentDate().addDays(-31);
+	QDate lastPaymentDate = QDate::currentDate().addDays(-35);
+
+	QString ref_ok = QString(
+		"<!DOCTYPE TEST>\n"
+		"<SCHEDULE-CONTAINER>\n"
+		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"0\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"8\" endDate=\"\" type=\"5\" id=\"SCH0002\" name=\"A Name\" fixed=\"0\" occurence=\"32\" >\n"
+		"  <PAYMENTS>\n"
+		"   <PAYMENT date=\"%3\" />\n"
+		"  </PAYMENTS>\n"
+		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		"   <SPLITS>\n"
+		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
+		"   </SPLITS>\n"
+		"   <KEYVALUEPAIRS>\n"
+		"    <PAIR key=\"key\" value=\"value\" />\n"
+		"   </KEYVALUEPAIRS>\n"
+		"  </TRANSACTION>\n"
+		" </SCHEDULED_TX>\n"
+		"</SCHEDULE-CONTAINER>\n"
+	).arg(startDate.toString(Qt::ISODate))
+	 .arg(lastPaymentDate.toString(Qt::ISODate))
+	 .arg(lastPaymentDate.toString(Qt::ISODate));
+
+	QDomDocument doc;
+	QDomElement node;
+	doc.setContent(ref_ok);
+	node = doc.documentElement().firstChild().toElement();
+
+	try {
+		sch.readXML(node);
+		CPPUNIT_ASSERT(sch.isOverdue() == true);
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
 /*
 	MyMoneyScheduled *m = MyMoneyScheduled::instance();
 	CPPUNIT_ASSERT(m!=NULL);

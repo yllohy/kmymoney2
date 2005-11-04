@@ -347,7 +347,7 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
     endDate = m_endDate;
 
   // if the period specified by the parameters and the period
-  // defined for this schedule, then the list remains empty
+  // defined for this schedule don't overlap, then the list remains empty
   if ((willEnd() && m_endDate < startDate)
   || m_startDate > endDate)
     return theDates;
@@ -360,6 +360,8 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
       break;
 
     case OCCUR_DAILY:
+      while (paymentDate < startDate)
+        paymentDate = paymentDate.addDays(1);
       while (paymentDate <= endDate)
       {
         theDates.append(paymentDate);
@@ -370,7 +372,6 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
     case OCCUR_WEEKLY:
       while (paymentDate < startDate)
         paymentDate = paymentDate.addDays(7);
-
       while (paymentDate <= endDate)
       {
         theDates.append(paymentDate);
@@ -476,6 +477,7 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
         paymentDate = paymentDate.addYears(2);
       }
       break;
+
     case OCCUR_ANY:
       break;
   }
@@ -519,7 +521,7 @@ int MyMoneySchedule::transactionsRemaining(void) const
   return counter;
 }
 
-const MyMoneyAccount MyMoneySchedule::account(int cnt) const
+MyMoneyAccount MyMoneySchedule::account(int cnt) const
 {
   QValueList<MyMoneySplit> splits = m_transaction.splits();
   QValueList<MyMoneySplit>::ConstIterator it;
@@ -632,6 +634,12 @@ bool MyMoneySchedule::isOverdue() const
   if (isFinished())
     return false;
 
+  if(nextPayment(m_lastPayment) >= QDate::currentDate())
+    return false;
+
+  return true;
+
+#if 0
   bool bOverdue = true;
 
   // Check the payment dates first
@@ -680,8 +688,8 @@ bool MyMoneySchedule::isOverdue() const
     if (datesBeforeToday.count() == 0)
       bOverdue = false;
   }
-
   return bOverdue;
+#endif
 }
 
 bool MyMoneySchedule::isFinished() const

@@ -125,7 +125,7 @@ public:
     *
     * @return QDate The instance startDate.
     */
-  QDate startDate(void) const { return m_startDate; }
+  const QDate& startDate(void) const { return m_startDate; }
 
   /**
     * Simple get method that returns the schedule paymentType.
@@ -161,7 +161,7 @@ public:
     *
     * @return QDate The end date for the instance.
     */
-  const QDate endDate(void) const { return m_endDate; }
+  const QDate& endDate(void) const { return m_endDate; }
 
   /**
     * Simple get method that returns true if the transaction should be
@@ -169,7 +169,7 @@ public:
     *
     * @return bool Indicates whether the instance will be automatically entered.
     */
-  const bool autoEnter(void) const { return m_autoEnter; }
+  bool autoEnter(void) const { return m_autoEnter; }
 
   /**
     * Simple get method that returns the transaction data for the schedule.
@@ -183,7 +183,7 @@ public:
     *
     * @return QDate The last payment for the instance.
     */
-  const QDate lastPayment(void) const { return m_lastPayment; }
+  const QDate& lastPayment(void) const { return m_lastPayment; }
 
   /**
     * Get the weekendOption that determines how the schedule check code
@@ -330,7 +330,7 @@ public:
     *
     * @return The name
     */
-  const QString name(void) const { return m_name; }
+  const QString& name(void) const { return m_name; }
 
   /**
     * Changes the instance name
@@ -344,8 +344,8 @@ public:
 
   bool operator <(const MyMoneySchedule& right);
 
-  const MyMoneyAccount account(int cnt = 1) const;
-  const MyMoneyAccount transferAccount(void) const { return account(2); };
+  MyMoneyAccount account(int cnt = 1) const;
+  MyMoneyAccount transferAccount(void) const { return account(2); };
   QDate dateAfter(int transactions) const;
 
   bool isOverdue() const;
