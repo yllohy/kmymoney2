@@ -543,7 +543,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
           accountItem->setText(1, QString("%1").arg(m_transactionCountMap[*it]));
 
           if(m_accountMap[*it].accountType() == MyMoneyAccount::Investment) {
-            balance += file->totalValue(*it);
+            balance += file->totalValue(*it, QDate::currentDate());
             if(!file->totalValueValid(*it))
               balanceValid = false;
           } else {
