@@ -234,6 +234,7 @@ void kMyMoneyAccountSelector::setSelectionMode(const QListView::SelectionMode mo
     if(mode != QListView::Multi) {
       m_selMode = QListView::Single;
       connect(m_listView, SIGNAL(selectionChanged(void)), this, SIGNAL(stateChanged(void)));
+      connect(m_listView, SIGNAL(executed(QListViewItem*)), this, SLOT(slotItemSelected(QListViewItem*)));
 
       if(m_allAccountsButton) {
         m_allAccountsButton->hide();
@@ -243,6 +244,7 @@ void kMyMoneyAccountSelector::setSelectionMode(const QListView::SelectionMode mo
       }
     } else {
       disconnect(m_listView, SIGNAL(selectionChanged(void)), this, SIGNAL(stateChanged(void)));
+      disconnect(m_listView, SIGNAL(executed(QListViewItem*)), this, SLOT(slotItemSelected(QListViewItem*)));
       if(m_allAccountsButton) {
         m_allAccountsButton->show();
         m_noAccountButton->show();
@@ -252,6 +254,16 @@ void kMyMoneyAccountSelector::setSelectionMode(const QListView::SelectionMode mo
     }
   }
   QWidget::update();
+}
+
+void kMyMoneyAccountSelector::slotItemSelected(QListViewItem *item)
+{
+  if(m_selMode == QListView::Single) {
+    kMyMoneyListViewItem* l_item = dynamic_cast<kMyMoneyListViewItem*>(item);
+    if(l_item && l_item->isSelectable()) {
+      emit accountSelected(l_item->id());
+    }
+  }
 }
 
 QListViewItem* kMyMoneyAccountSelector::newEntryFactory(QListViewItem* parent, const QString& name, const QCString& id)
@@ -269,6 +281,34 @@ QListViewItem* kMyMoneyAccountSelector::newEntryFactory(QListViewItem* parent, c
   }
 
   return p;
+}
+
+void kMyMoneyAccountSelector::protectAccount(const QCString& accId, const bool protect)
+{
+  QListViewItemIterator it(m_listView, QListViewItemIterator::Selectable);
+  QListViewItem* it_v;
+  kMyMoneyListViewItem* it_l;
+  kMyMoneyCheckListItem* it_c;
+
+  // scan items
+  while((it_v = it.current()) != 0) {
+    it_l = dynamic_cast<kMyMoneyListViewItem*>(it_v);
+    if(it_l) {
+      if(it_l->id() == accId) {
+        it_l->setSelectable(!protect);
+        break;
+      }
+    } else {
+      it_c = dynamic_cast<kMyMoneyCheckListItem*>(it_v);
+      if(it_c) {
+        if(it_c->id() == accId) {
+          it_c->setSelectable(!protect);
+          break;
+        }
+      }
+    }
+    ++it;
+  }
 }
 
 const int kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
@@ -435,7 +475,7 @@ const int kMyMoneyAccountSelector::loadList(const QString& baseName, const QValu
   return count;
 }
 
-const int kMyMoneyAccountSelector::loadSubAccounts(QListViewItem* parent, const QCStringList& list)
+int kMyMoneyAccountSelector::loadSubAccounts(QListViewItem* parent, const QCStringList& list)
 {
   QCStringList::ConstIterator it_l;
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -477,7 +517,7 @@ const bool kMyMoneyAccountSelector::allAccountsSelected(void) const
   return true;
 }
 
-const bool kMyMoneyAccountSelector::allAccountsSelected(const QListViewItem *item) const
+bool kMyMoneyAccountSelector::allAccountsSelected(const QListViewItem *item) const
 {
   QListViewItem* it_v;
 

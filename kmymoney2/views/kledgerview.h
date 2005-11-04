@@ -53,6 +53,7 @@ class kMyMoneyEdit;
 class kMyMoneyLineEdit;
 class kMyMoneyDateInput;
 class kMyMoneyCombo;
+class kMyMoneyAccountSelector;
 class KPushButton;
 class KPopupMenu;
 
@@ -97,10 +98,12 @@ public:
     SortValue,              /**< Sort the vector so that the transactions appear sorted
                               *     according to their value
                               */
-    SortNr                  /**< Sort the vector so that the transactions appear sorted
+    SortNr,                 /**< Sort the vector so that the transactions appear sorted
                               *     according to nr field contents
                               */
-
+    SortEntryOrder          /**< Sort the vector so that the transactions appear sorted
+                              *     according to order of entry
+                              */
   };
 
   KTransactionPtrVector() { m_sortType = SortPostDate; };
@@ -602,8 +605,10 @@ protected slots:
   /**
     * This method asks the user for an account and modifies the split
     * referencing the current account to the selected account.
+    *
+    * @param id account id of the target account
     */
-  void slotMoveToAccount(void);
+  void slotMoveToAccount(const QCString& id);
 
   /**
     * This method deletes the current selected transaction.
@@ -767,6 +772,8 @@ protected:
     */
   void cancelOrEndEdit(void);
 
+  void loadAccountList(kMyMoneyAccountSelector* accList) const;
+
 protected:
   /**
     * This member keeps a pointer to the specific register for the account
@@ -891,6 +898,13 @@ protected:
     * This member keeps a pointer to the account popup menu
     */
   KPopupMenu*   m_accountMenu;
+
+  /**
+    * This member keeps a pointer to the account list popup selector
+    * used as the 'Move to account ...' submenu.
+    */
+  kMyMoneyAccountSelector*   m_accountListMoreMenu;
+  kMyMoneyAccountSelector*   m_accountListContextMenu;
 
   /**
     * This member keeps a pointer to the sort-menu

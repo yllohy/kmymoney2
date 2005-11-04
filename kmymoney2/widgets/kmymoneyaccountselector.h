@@ -269,6 +269,8 @@ public:
     */
   void selectAccounts(const QCStringList& accountlist, const bool state);
 
+  void protectAccount(const QCString& accId, const bool protect = true);
+
 public slots:
   /**
     * This slot selects all items that are currently in
@@ -293,6 +295,8 @@ public slots:
 signals:
   void stateChanged(void);
 
+  void accountSelected(const QCString& id);
+
 protected:
   /**
     * Helper method for setSelected() to traverse the tree.
@@ -307,7 +311,7 @@ protected:
   /**
     * Helper method for allAccountsSelected() to traverse the tree.
     */
-  const bool allAccountsSelected(const QListViewItem *item) const;
+  bool allAccountsSelected(const QListViewItem *item) const;
 
   /**
     * This method creates a new selectable object depending on the
@@ -326,7 +330,7 @@ protected:
     * @param list QCStringList containing the ids of all subaccounts to load
     * @return This method returns the number of accounts loaded into the list
     */
-  const int loadSubAccounts(QListViewItem* parent, const QCStringList& list);
+  int loadSubAccounts(QListViewItem* parent, const QCStringList& list);
 
   /**
     * This is a helper method for selectAllItems().
@@ -382,6 +386,11 @@ protected slots:
     * @param p    the position where the mouse was pressed
     */
   void slotListRightMouse(QListViewItem* it_v, const QPoint& p, int /* col */);
+
+  /**
+    * This slot is connected to the KListView executed signal
+    */
+  void slotItemSelected(QListViewItem *it_v);
 
 protected:
   KListView*                m_listView;

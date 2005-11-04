@@ -63,6 +63,7 @@
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneycombo.h"
+#include "../widgets/kmymoneyaccountselector.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../dialogs/ieditscheduledialog.h"
 #include "../dialogs/knewaccountdlg.h"
@@ -146,6 +147,11 @@ int KTransactionPtrVector::compareItems(KTransactionPtrVector::Item d1, KTransac
             }
           }
         }
+        break;
+
+      case SortEntryOrder:
+        // sort by id
+        rc = compareItems(t1->id(), t2->id());
         break;
 
       case SortTypeNr:
@@ -1882,12 +1888,19 @@ void KLedgerView::createContextMenu(void)
   submenu->insertItem(i18n("Cleared"), this, SLOT(slotMarkCleared()));
   submenu->insertItem(i18n("Reconciled"), this, SLOT(slotMarkReconciled()));
 
+  KPopupMenu* accSubMenu = new KPopupMenu(this);
+  accSubMenu->insertTitle(i18n("Account list"));
+  m_accountListContextMenu = new kMyMoneyAccountSelector(accSubMenu);
+  accSubMenu->insertItem(m_accountListContextMenu);
+  connect(m_accountListContextMenu, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotMoveToAccount(const QCString&)));
+
+
   m_contextMenu = new KPopupMenu(this);
   m_contextMenu->insertTitle(i18n("Transaction Options"));
   m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit ..."), this, SLOT(slotStartEdit()));
   m_contextMenu->insertSeparator();
   m_contextMenu->insertItem(i18n("Mark as ..."), submenu);
-  m_contextMenu->insertItem(i18n("Move to account ..."), this, SLOT(slotMoveToAccount()));
+  m_contextMenu->insertItem(i18n("Move to account ..."), accSubMenu);
   m_contextMenu->insertSeparator();
 
   m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
@@ -1900,6 +1913,7 @@ void KLedgerView::createContextMenu(void)
   m_sortMenu->insertItem(i18n("Post date"), KTransactionPtrVector::SortPostDate);
 
   m_sortMenu->insertItem(i18n("Entry date"), KTransactionPtrVector::SortEntryDate);
+  m_sortMenu->insertItem(i18n("Order of entry"), KTransactionPtrVector::SortEntryOrder);
   m_sortMenu->insertSeparator();
   m_sortMenu->insertItem(i18n("Type, number"), KTransactionPtrVector::SortTypeNr);
   m_sortMenu->insertItem(i18n("Number"), KTransactionPtrVector::SortNr);
@@ -1925,16 +1939,45 @@ void KLedgerView::createMoreMenu(void)
   submenu->insertItem(i18n("Cleared"), this, SLOT(slotMarkCleared()));
   submenu->insertItem(i18n("Reconciled"), this, SLOT(slotMarkReconciled()));
 
+  KPopupMenu* accSubMenu = new KPopupMenu(this);
+  accSubMenu->insertTitle(i18n("Account list"));
+  m_accountListMoreMenu = new kMyMoneyAccountSelector(accSubMenu);
+  accSubMenu->insertItem(m_accountListMoreMenu);
+  connect(m_accountListMoreMenu, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotMoveToAccount(const QCString&)));
+
   m_moreMenu = new KPopupMenu(this);
   m_moreMenu->insertTitle(i18n("Transaction Options"));
   m_moreMenu->insertSeparator();
   m_moreMenu->insertItem(i18n("Mark as ..."), submenu);
-  m_moreMenu->insertItem(i18n("Move to account ..."), this, SLOT(slotMoveToAccount()));
+  m_moreMenu->insertItem(i18n("Move to account ..."), accSubMenu);
   m_moreMenu->insertSeparator();
 
   m_moreMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
                         i18n("Delete transaction ..."),
                         this, SLOT(slotDeleteTransaction()));
+}
+
+void KLedgerView::loadAccountList(kMyMoneyAccountSelector* accList) const
+{
+  QValueList<int> typeList;
+
+  typeList << MyMoneyAccount::Checkings;
+  typeList << MyMoneyAccount::Savings;
+  typeList << MyMoneyAccount::Cash;
+  typeList << MyMoneyAccount::AssetLoan;
+  typeList << MyMoneyAccount::CertificateDep;
+  typeList << MyMoneyAccount::MoneyMarket;
+  typeList << MyMoneyAccount::Asset;
+  typeList << MyMoneyAccount::Currency;
+  typeList << MyMoneyAccount::CreditCard;
+  typeList << MyMoneyAccount::Loan;
+  typeList << MyMoneyAccount::Liability;
+  accList->loadList(typeList);
+  // make those accounts unselectable that we currently reference
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
+    accList->protectAccount((*it_s).accountId());
+  }
 }
 
 void KLedgerView::markSplit(MyMoneySplit::reconcileFlagE flag)
@@ -1971,9 +2014,51 @@ void KLedgerView::slotMarkReconciled(void)
   markSplit(MyMoneySplit::Reconciled);
 }
 
-void KLedgerView::slotMoveToAccount(void)
+void KLedgerView::slotMoveToAccount(const QCString& accId)
 {
-  KMessageBox::information(0,i18n("Moving a split to a different account is not yet implemented"), "Function not implemented");
+  if(m_accountListContextMenu->isVisible()
+  && m_accountListContextMenu->parentWidget()
+  && m_accountListContextMenu->parentWidget()->inherits("QPopupMenu")) {
+    m_accountListContextMenu->parentWidget()->close();
+  }
+  if(m_accountListMoreMenu->isVisible()
+  && m_accountListMoreMenu->parentWidget()
+  && m_accountListMoreMenu->parentWidget()->inherits("QPopupMenu")) {
+    m_accountListMoreMenu->parentWidget()->close();
+  }
+
+  // make sure, we don't edit anything
+  cancelOrEndEdit();
+  MyMoneyTransaction t = m_transaction;
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  bool transactionChanged = false;
+  for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
+    if((*it_s).accountId() == m_account.id()) {
+      MyMoneySplit s = (*it_s);
+      s.setAccountId(accId);
+      t.modifySplit(s);
+      transactionChanged = true;
+    }
+  }
+
+  if(transactionChanged) {
+    try {
+      unsigned int idx = m_register->currentTransactionIndex();
+
+      MyMoneyFile::instance()->modifyTransaction(t);
+
+      if(m_transactionPtrVector.count() > 0) {
+        if(idx >= m_transactionPtrVector.count())
+          idx = m_transactionPtrVector.count()-1;
+        m_transactionPtr = m_transactionPtrVector[idx];
+        selectTransaction(m_transactionPtr->id());
+      }
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Unable to move transaction to %s").arg(accId.data()),
+        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+      delete e;
+    }
+  }
 }
 
 void KLedgerView::slotDeleteTransaction(void)
@@ -2076,13 +2161,13 @@ void KLedgerView::slotCreateSchedule(void)
 {
   if (!m_transaction.id().isEmpty()) {
     MyMoneySchedule schedule;
-    
+
     // create a copy of the transaction and reset reconcile flags
     // check if this is a transfer, coz use of action types in splits is now deprecated (apparently)
     MyMoneyTransaction t;
     bool potentialTransfer = true;
     MyMoneyFile* file = MyMoneyFile::instance();
-    
+
     try {
       t = m_transaction;
       QValueList<MyMoneySplit> list = t.splits();

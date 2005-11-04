@@ -49,6 +49,7 @@
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneyregistercheckings.h"
+#include "../widgets/kmymoneyaccountselector.h"
 #include "../dialogs/kendingbalancedlg.h"
 #include "../dialogs/ksplittransactiondlg.h"
 #include "../dialogs/knewaccountdlg.h"
@@ -1505,6 +1506,7 @@ void KLedgerViewCheckings::slotConfigureMoreMenu(void)
   MyMoneyFile* file = MyMoneyFile::instance();
   int splitEditId = m_moreMenu->idAt(1);
   int gotoPayeeId = m_moreMenu->idAt(2);
+  int moveAccountId = m_moreMenu->idAt(6);
 
   // we need to disconnect the slots, otherwise we cannot connect unconditionally
   m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
@@ -1537,8 +1539,11 @@ void KLedgerViewCheckings::slotConfigureMoreMenu(void)
       m_moreMenu->connectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
       m_moreMenu->disconnectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
     }
+    loadAccountList(m_accountListMoreMenu);
+    m_moreMenu->setItemEnabled(moveAccountId, true);
     m_moreMenu->setItemEnabled(splitEditId, true);
   } else {
+    m_moreMenu->setItemEnabled(moveAccountId, false);
     m_moreMenu->setItemEnabled(splitEditId, isEditMode());
   }
 }
@@ -1548,6 +1553,8 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
   int splitEditId = m_contextMenu->idAt(2);
   int gotoPayeeId = m_contextMenu->idAt(3);
   int deleteId = m_contextMenu->idAt(9);
+  int moveAccountId = m_contextMenu->idAt(7);
+
   MyMoneyFile* file = MyMoneyFile::instance();
 
   // we need to disconnect the slots, otherwise we cannot connect unconditionally
@@ -1582,9 +1589,13 @@ void KLedgerViewCheckings::slotConfigureContextMenu(void)
       m_contextMenu->connectItem(splitEditId, this, SLOT(slotGotoOtherSideOfTransfer()));
       m_contextMenu->disconnectItem(splitEditId, this, SLOT(slotOpenSplitDialog()));
     }
+    loadAccountList(m_accountListContextMenu);
+
+    m_contextMenu->setItemEnabled(moveAccountId, true);
     m_contextMenu->setItemEnabled(splitEditId, true);
     m_contextMenu->setItemEnabled(deleteId, true);
   } else {
+    m_contextMenu->setItemEnabled(moveAccountId, false);
     m_contextMenu->setItemEnabled(splitEditId, false);
     m_contextMenu->setItemEnabled(deleteId, false);
   }
