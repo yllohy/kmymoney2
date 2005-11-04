@@ -226,7 +226,7 @@ void KAccountListItem::update(const QCString& accountId)
         value = file->totalValue(accountId, QDate::currentDate());
         m_valueValid = file->totalValueValid(accountId);
       } else {
-        value = file->accountValue(accountId, QDate::currentDate());
+        value = file->accountValue(accountId);
         m_valueValid = file->accountValueValid(accountId);
       }
 
