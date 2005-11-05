@@ -269,7 +269,21 @@ public:
     */
   void selectAccounts(const QCStringList& accountlist, const bool state);
 
+  /**
+    * Protect an entry from selection. Protection is controlled by
+    * the parameter @p protect.
+    *
+    * @param accId Account Id of the entry to modify the protection for
+    * @param protect if true, the entry specified by @p accId cannot be
+    *                selected. If false, it can be selected. Defaults to @p true.
+    */
   void protectAccount(const QCString& accId, const bool protect = true);
+
+  /**
+    * This method modifies the width of the widget to match it's optimal size
+    * so that all entries fit completely.
+    */
+  void setOptimizedWidth(void);
 
 public slots:
   /**

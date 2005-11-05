@@ -1978,6 +1978,8 @@ void KLedgerView::loadAccountList(kMyMoneyAccountSelector* accList) const
   for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
     accList->protectAccount((*it_s).accountId());
   }
+  // Now update the width of the list
+  accList->setOptimizedWidth();
 }
 
 void KLedgerView::markSplit(MyMoneySplit::reconcileFlagE flag)

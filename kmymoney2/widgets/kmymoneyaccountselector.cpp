@@ -161,6 +161,9 @@ kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *na
   m_selMode = QListView::Single;
 
   m_listView = new KListView(this);
+  // don't show horizontal scroll bar
+  m_listView->setHScrollBarMode(QScrollView::AlwaysOff);
+
   if(parent) {
     setFocusProxy(parent->focusProxy());
     m_listView->setFocusProxy(parent->focusProxy());
@@ -309,6 +312,36 @@ void kMyMoneyAccountSelector::protectAccount(const QCString& accId, const bool p
     }
     ++it;
   }
+}
+
+void kMyMoneyAccountSelector::setOptimizedWidth(void)
+{
+  QListViewItemIterator it(m_listView, QListViewItemIterator::Selectable);
+  QListViewItem* it_v;
+  kMyMoneyListViewItem* it_l;
+  kMyMoneyCheckListItem* it_c;
+
+  // scan items
+  int w = 0;
+  QFontMetrics fm( KGlobalSettings::generalFont());
+  while((it_v = it.current()) != 0) {
+    it_l = dynamic_cast<kMyMoneyListViewItem*>(it_v);
+    int nw = 0;
+    if(it_l) {
+      nw = it_l->width(fm, m_listView, 0);
+    } else {
+      it_c = dynamic_cast<kMyMoneyCheckListItem*>(it_v);
+      if(it_c) {
+        nw = it_c->width(fm, m_listView, 0);
+      }
+    }
+    if(nw > w)
+      w = nw;
+    ++it;
+  }
+  m_listView->setMinimumWidth(w+30);
+  m_listView->setMaximumWidth(w+30);
+  m_listView->setColumnWidth(0, w+28);
 }
 
 const int kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
