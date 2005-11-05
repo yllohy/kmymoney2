@@ -50,6 +50,7 @@ static KCmdLineOptions options[] =
 {
   { "lang <lang-code>", I18N_NOOP("language to be used"), 0 },
   { "trace", I18N_NOOP("turn on program traces"), 0},
+  { "n", I18N_NOOP("don't open last used file"), 0},
 
   // INSERT YOUR COMMANDLINE OPTIONS HERE
   { "+[File]", I18N_NOOP("file to open"), 0 },
@@ -214,7 +215,7 @@ int main(int argc, char *argv[])
     }
 
     KTipDialog::showTip(kmymoney2, "", false);
-    if(url.isValid()) {
+    if(url.isValid() && !args->isSet("n")) {
       kmymoney2->slotFileOpenRecent(url);
     }
 
