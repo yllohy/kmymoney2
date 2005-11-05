@@ -904,6 +904,7 @@ void KMyMoney2App::slotFileViewPersonal()
   }
 
   myMoneyView->viewPersonal();
+  updateCaption();
 
   slotStatusMsg(prevMsg);
 }
