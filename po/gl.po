@@ -1,14 +1,32 @@
-# translation of kmymoney2-0.7.5.po to galician language
+# translation of kmymoney2-1.17.po to 
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to
+# translation of kmymoney2-1.17.po to galician
 # This file is put in the public domain.
 # Mvillarino <mvillarino@gmail.com>, 2005.
+# Mvillarino <mvillarino@dubmail.net>, 2005.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: kmymoney2-0.7.5-gl\n"
+"Project-Id-Version: kmymoney2-1.17\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-07-29 19:31+0200\n"
-"PO-Revision-Date: 2005-08-03 14:38+0200\n"
-"Last-Translator: Mvillarino <mvillarino@gmail.com>\n"
+"PO-Revision-Date: 2005-09-01 10:37+0200\n"
+"Last-Translator: Mvillarino <mvillarino@dubmail.net>\n"
 "Language-Team:  <gl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -73,7 +91,7 @@ msgstr "Descripzón"
 
 #: dialogs/mymoneyqifprofileeditordecl.cpp:305
 msgid "Attempt to match similiar transactions"
-msgstr "Tentou casar asentos similares"
+msgstr "Tentar casar asentos similares"
 
 #: dialogs/mymoneyqifprofileeditordecl.cpp:306
 #: dialogs/knewaccountdlgdecl.cpp:308 dialogs/knewloanwizarddecl.cpp:1940
@@ -379,11 +397,11 @@ msgstr "Nome do Património:"
 
 #: dialogs/knewequityentrydecl.cpp:122 dialogs/keditequityentrydecl.cpp:148
 msgid "Investment Type:"
-msgstr "Tipo de inversión:"
+msgstr "Tipo de investimento:"
 
 #: dialogs/knewequityentrydecl.cpp:123 dialogs/knewequityentrydecl.cpp:124
 msgid "Trading Symbol of the stock or mutual fund, not required."
-msgstr "Símbolo comercial das aczóns ou fondo de inversión. (non requerido)."
+msgstr "Símbolo comercial das aczóns ou fondo de investimento. (non requerido)."
 
 #: dialogs/knewequityentrydecl.cpp:125 dialogs/keditequityentrydecl.cpp:147
 #: dialogs/knewinvestmentwizarddecl.cpp:204
@@ -411,7 +429,7 @@ msgstr "Aczón"
 #: kmymoneyutils.cpp:188 mymoney/old/mymoneyequity.cpp:140
 #: mymoney/storage/mymoneystoragedump.cpp:530 mymoney/mymoneysecurity.cpp:156
 msgid "Mutual Fund"
-msgstr "Fondo de inversión"
+msgstr "Fondo de Investimento"
 
 #: dialogs/knewequityentrydecl.cpp:131 dialogs/keditequityentrydecl.cpp:145
 #: dialogs/knewinvestmentwizarddecl.cpp:190 kmymoneyutils.cpp:170
@@ -422,7 +440,7 @@ msgstr "Bono"
 
 #: dialogs/knewequityentrydecl.cpp:132 dialogs/knewequityentrydecl.cpp:133
 msgid "Name of the company, or mutual fund."
-msgstr "Nome da compañia ou fondo de inversión."
+msgstr "Nome da compañia ou fondo de investimento."
 
 #: dialogs/kcurrencycalculator.cpp:75 dialogs/knewaccountdlg.cpp:269
 msgid "Reject any changes"
@@ -487,7 +505,7 @@ msgid ""
 "\n"
 "Please enter the following information found on your statement:"
 msgstr ""
-"KMyMoney calcula os pagamentos do seu empréstito automaticamente. Os "
+"KMyMoney calcula os pagamentos do seu empréstimo automaticamente. Os "
 "importes poden desviar-se das calculadas polo acredor. De dar-se este caso, "
 "posibelmente terá que axustar a amortizazón, xuros e outros custos de acordo "
 "co seu resumo de conta.\n"
@@ -718,17 +736,17 @@ msgid ""
 "account."
 msgstr ""
 "Use o tipo de conta pasivo para xestionar calquer tipo de pasivo excepto "
-"amortizazón de empréstitos. Use-o para impostos por pagar ou cartos prestados "
-"por amigos. Para empréstitos con amortizazón como hipotecas debe criar unha "
-"conta empréstito."
+"amortizazón de empréstimos. Use-o para impostos por pagar ou cartos prestados "
+"por amigos. Para empréstimos con amortizazón como hipotecas debe criar unha "
+"conta empréstimo."
 
 #: dialogs/knewaccountwizard.cpp:533
 msgid ""
 "Use the loan account type to manage amortization loans (e.g. mortgages, car "
 "loan, money you lend, private loans etc.)."
 msgstr ""
-"Use o tipo de conta empréstito para xestionar empréstitos con amortizazón (p ."
-"ex hipotecas, financiazón de coches, cartos emprestados, empréstitos privados, "
+"Use o tipo de conta empréstimo para xestionar empréstimos con amortizazón (p ."
+"ex hipotecas, financiazón de coches, cartos emprestados, empréstimos privados, "
 "etc.)."
 
 #: dialogs/knewaccountwizard.cpp:547
@@ -736,7 +754,7 @@ msgid ""
 "Use the investment account to manage your stock, mutual fund and other "
 "investments."
 msgstr ""
-"Use contas de investimento para xestionar as suas aczóns, fondos de inversión "
+"Use contas de investimento para xestionar as suas aczóns, fondos de investimento "
 "e outros investimentos."
 
 #: dialogs/knewaccountwizard.cpp:551
@@ -1144,7 +1162,7 @@ msgstr "Use isto para anular todos os cámbios feitos neste diálogo."
 
 #: dialogs/kcurrencycalculatordecl.cpp:179
 msgid "Exchange Rate Editor"
-msgstr "Editor de Taxa de Cámbio"
+msgstr "Editor de Taxas de Cámbio"
 
 #: dialogs/kcurrencycalculatordecl.cpp:181
 #: dialogs/kcurrencycalculatordecl.cpp:183
@@ -1183,7 +1201,7 @@ msgstr "Actualizar historial de prezos"
 
 #: dialogs/kenterscheduledialogdecl.cpp:224
 msgid "Enter Scheduled Transaction"
-msgstr "Introduza transaczón planificada"
+msgstr "Asentando Transaczón Planificada"
 
 #: dialogs/kenterscheduledialogdecl.cpp:225
 msgid ""
@@ -1243,11 +1261,11 @@ msgstr "<b>Importe:</b>"
 
 #: dialogs/knewloanwizarddecl.cpp:1697
 msgid "New Loan Wizard"
-msgstr "Asistente para a criazón de Empréstitos"
+msgstr "Asistente para a criazón de Empréstimos"
 
 #: dialogs/knewloanwizarddecl.cpp:1698
 msgid "New Loan Account Wizard"
-msgstr "Asistente para nova conta tipo Empréstito "
+msgstr "Asistente para nova conta tipo Empréstimo "
 
 #: dialogs/knewloanwizarddecl.cpp:1699
 msgid ""
@@ -1260,16 +1278,16 @@ msgid ""
 "get the information out of your contract and the last statement."
 msgstr ""
 "\n"
-"Benvido ao Asistente para Novas Contas tipo Empréstito, que o guiará através "
-"da criazón dun novo empréstito p. ex. para a sua casa, coche ou calquer outro "
-"empréstito do que gañe ou pague xuros.\n"
+"Benvido ao Asistente para Novas Contas tipo Empréstimo, que o guiará através "
+"da criazón dun novo empréstimo p. ex. para a sua casa, coche ou calquer outro "
+"empréstimo do que gañe ou pague xuros.\n"
 "\n"
 "Asegure-se de ter a informazón relevante a mao. Polo xeral, está no contrato "
 "ou no último extracto de conta."
 
 #: dialogs/knewloanwizarddecl.cpp:1704
 msgid "Edit Loan Account Wizard"
-msgstr "Asistente para a Edizón de Contas tipo Empréstito"
+msgstr "Asistente para a Edizón de Contas tipo Empréstimo"
 
 #: dialogs/knewloanwizarddecl.cpp:1705
 msgid ""
@@ -1281,8 +1299,8 @@ msgid ""
 "get the information out of your contract and the last statement."
 msgstr ""
 "\n"
-"Benvido ao Asistente para Edizón de contas tipo Empréstito.Use este "
-"asistente para modificar informazón acerca do seu empréstito.\n"
+"Benvido ao Asistente para Edizón de contas tipo Empréstimo.Use este "
+"asistente para modificar informazón acerca do seu empréstimo.\n"
 "\n"
 "Asegure-se de ter a informazón relevante a mao. Polo xeral, está no contrato "
 "ou no último extracto de conta."
@@ -1295,7 +1313,7 @@ msgid ""
 msgstr ""
 "\n"
 "En primeiro lugar, KMyMoney perguntará-lle alguns dados xerais acerca do "
-"empréstito a criar."
+"empréstimo a criar."
 
 #: dialogs/knewloanwizarddecl.cpp:1712 dialogs/knewloanwizarddecl.cpp:1789
 #: dialogs/knewloanwizarddecl.cpp:1888
@@ -1310,7 +1328,7 @@ msgid ""
 "3. Payments"
 msgstr ""
 "\n"
-"2. Calcular Empréstito\n"
+"2. Calcular Empréstimo\n"
 "\n"
 "3. Pagamentos"
 
@@ -1320,7 +1338,7 @@ msgid ""
 "Please select, which data of the loan you want to modify."
 msgstr ""
 "\n"
-"Por favor, escolla os dados do empréstito a modificar."
+"Por favor, escolla os dados do empréstimo a modificar."
 
 #: dialogs/knewloanwizarddecl.cpp:1721
 msgid "Modify the interest rate"
@@ -1332,7 +1350,7 @@ msgstr "Modificar taxas adicionais"
 
 #: dialogs/knewloanwizarddecl.cpp:1723
 msgid "Modify other loan information"
-msgstr "Modificar outra informazón do empréstito"
+msgstr "Modificar outra informazón do empréstimo"
 
 #: dialogs/knewloanwizarddecl.cpp:1724
 msgid "Edit selection"
@@ -1373,8 +1391,8 @@ msgid ""
 "'school loan', 'home owner loan'."
 msgstr ""
 "\n"
-"Como lle desexa chamar a este empréstito? Exemplos de nomes son 'empréstito "
-"do coche', 'empréstito para estudos', 'hipoteca'."
+"Como lle desexa chamar a este empréstimo? Exemplos de nomes son 'empréstimo "
+"do coche', 'empréstimo para estudos', 'hipoteca'."
 
 #: dialogs/knewloanwizarddecl.cpp:1737 dialogs/kequitypriceupdatedlg.cpp:70
 #: dialogs/knewaccountwizarddecl.cpp:4184
@@ -1395,7 +1413,7 @@ msgstr "TextLabel7"
 
 #: dialogs/knewloanwizarddecl.cpp:1740
 msgid "Name of the loan"
-msgstr "Nome do empréstito"
+msgstr "Nome do empréstimo"
 
 #: dialogs/knewloanwizarddecl.cpp:1741
 msgid ""
@@ -1405,7 +1423,7 @@ msgid ""
 "phase of the loan you should choose the option 'variable interest rate'."
 msgstr ""
 "\n"
-"Este empréstito é de xuro fixo ou variábel? Se a taxa de xuro cámbia "
+"Este empréstimo é de xuro fixo ou variábel? Se a taxa de xuro cámbia "
 "durante a fase de amortizazón debe escoller a opzón 'xuro de tipo variábel'."
 
 #: dialogs/knewloanwizarddecl.cpp:1744
@@ -1427,7 +1445,7 @@ msgid ""
 "or not?"
 msgstr ""
 "\n"
-"Fixeron-se pagamentos deste empréstito antes da sua introduzón en KMyMoney "
+"Fixeron-se pagamentos deste empréstimo antes da sua introduzón en KMyMoney "
 "ou non?"
 
 #: dialogs/knewloanwizarddecl.cpp:1750
@@ -1443,7 +1461,7 @@ msgid ""
 "Note: Payments made to obtain the loan (e.g. Dissagio) are not considered as "
 "payments in this context."
 msgstr ""
-"Nota: Os pagamentos feitos para obter o empréstito (p. ex. \"Comisións de "
+"Nota: Os pagamentos feitos para obter o empréstimo (p. ex. \"Comisións de "
 "apertura\") non son considerados como pagamentos neste contexto."
 
 #: dialogs/knewloanwizarddecl.cpp:1753
@@ -1456,7 +1474,7 @@ msgid ""
 "Do you want to record all payments of this loan with KMyMoney?"
 msgstr ""
 "\n"
-"Quere vocé rexistar todos os pagamentos deste empréstito con KMyMoney?"
+"Quere vocé rexistar todos os pagamentos deste empréstimo con KMyMoney?"
 
 #: dialogs/knewloanwizarddecl.cpp:1757
 msgid "Yes, record all payments."
@@ -1477,7 +1495,7 @@ msgid ""
 "the frequency of the future changes."
 msgstr ""
 "\n"
-"Escolla a data en que se modificará a taxa deste empréstito e a frecuéncia "
+"Escolla a data en que se modificará a taxa deste empréstimo e a frecuéncia "
 "de cámbios futuros."
 
 #: dialogs/knewloanwizarddecl.cpp:1762
@@ -1579,8 +1597,8 @@ msgid ""
 "KMyMoney needs some information about the calculation of the loan."
 msgstr ""
 "\n"
-"Introduxo satisfactoriamente a informazón xeral do seu empréstito. A seguir, "
-"KMyMoney necesita algunha informazón acerca do cálculo do empréstito."
+"Introduxo satisfactoriamente a informazón xeral do seu empréstimo. A seguir, "
+"KMyMoney necesita algunha informazón acerca do cálculo do empréstimo."
 
 #: dialogs/knewloanwizarddecl.cpp:1790 dialogs/knewloanwizarddecl.cpp:1889
 msgid ""
@@ -1588,7 +1606,7 @@ msgid ""
 "2. Calculate Loan"
 msgstr ""
 "\n"
-"2. Calcular Empréstito"
+"2. Calcular Empréstimo"
 
 #: dialogs/knewloanwizarddecl.cpp:1792 dialogs/knewloanwizarddecl.cpp:1891
 msgid ""
@@ -1600,7 +1618,7 @@ msgstr ""
 
 #: dialogs/knewloanwizarddecl.cpp:1794
 msgid "Calculate Loan"
-msgstr "Calcular Empréstito"
+msgstr "Calcular Empréstimo"
 
 #: dialogs/knewloanwizarddecl.cpp:1795
 msgid ""
@@ -1608,7 +1626,7 @@ msgid ""
 "How often will there be payments made to this loan?"
 msgstr ""
 "\n"
-"Con que frecuéncia se farán pagamentos a este empréstito?"
+"Con que frecuéncia se farán pagamentos a este empréstimo?"
 
 #: dialogs/knewloanwizarddecl.cpp:1797
 msgid "Payment frequency"
@@ -1636,14 +1654,14 @@ msgstr "Cálculo de xuros"
 
 #: dialogs/knewloanwizarddecl.cpp:1805 dialogs/knewloanwizarddecl.cpp:1816
 msgid "Loan amount"
-msgstr "Importe do empréstito"
+msgstr "Importe do empréstimo"
 
 #: dialogs/knewloanwizarddecl.cpp:1806 dialogs/knewloanwizarddecl.cpp:1820
 #: dialogs/knewloanwizarddecl.cpp:1834 dialogs/knewloanwizarddecl.cpp:1848
 #: dialogs/knewloanwizarddecl.cpp:1862 dialogs/knewloanwizarddecl.cpp:1875
 #: dialogs/knewloanwizarddecl.cpp:1970
 msgid "Loan amount:"
-msgstr "Importe do empréstito:"
+msgstr "Importe do empréstimo:"
 
 #: dialogs/knewloanwizarddecl.cpp:1807 dialogs/knewloanwizarddecl.cpp:1821
 #: dialogs/knewloanwizarddecl.cpp:1835 dialogs/knewloanwizarddecl.cpp:1849
@@ -1682,9 +1700,9 @@ msgid ""
 "might be different from the time your loan contract is signed for."
 msgstr ""
 "\n"
-"Introduza o prazo deste empréstito ou deixe o campo valeiro para calculá-lo. "
-"O prazo é o tempo requerido para devolver por completo o empréstito. Este "
-"tempo pode ser diferente do tempo polo que asine o contrato de empréstito."
+"Introduza o prazo deste empréstimo ou deixe o campo valeiro para calculá-lo. "
+"O prazo é o tempo requerido para devolver por completo o empréstimo. Este "
+"tempo pode ser diferente do tempo polo que asine o contrato de empréstimo."
 
 #: dialogs/knewloanwizarddecl.cpp:1833
 msgid "Term"
@@ -1716,7 +1734,7 @@ msgid ""
 "\" to return to the input field for the information you want to change."
 msgstr ""
 "\n"
-"KMyMoney calculou o empréstito como se mostra no resumo de abaixo. Pode "
+"KMyMoney calculou o empréstimo como se mostra no resumo de abaixo. Pode "
 "aceitar estes valores escollendo \"Seguinte\" ou cambiá-los escollendo "
 "\"Atrás\" para voltar ao campo de entrada da informazón que desexe cambiar."
 
@@ -1732,7 +1750,7 @@ msgid ""
 msgstr ""
 "\n"
 "Nos seguintes pasos, KMyMoney axudará-o a configurar as categorias e "
-"transaczóns planificadas para os pagamentos do seu empréstito."
+"transaczóns planificadas para os pagamentos do seu empréstimo."
 
 #: dialogs/knewloanwizarddecl.cpp:1893 dialogs/knewloanwizard.cpp:627
 #: dialogs/knewloanwizard.cpp:935 dialogs/kfindtransactiondlgdecl.cpp:434
@@ -1819,7 +1837,7 @@ msgid ""
 "\"Back\" button to modify your settings."
 msgstr ""
 "\n"
-"KMyMoney calculou o empréstito como se mostra abaixo. Se quer aceitar estes "
+"KMyMoney calculou o empréstimo como se mostra abaixo. Se quer aceitar estes "
 "valores empregue o botón \"Finalizar\" para actualizar a sua conta, se non é "
 "o caso use o botón \"Atrás\" para modificar os dados."
 
@@ -1901,7 +1919,7 @@ msgstr "O Importe é:"
 
 #: dialogs/knewloanwizarddecl.cpp:1947
 msgid "Loan calculation"
-msgstr "Cálculo de empréstitos"
+msgstr "Cálculo de empréstimos"
 
 #: dialogs/knewloanwizarddecl.cpp:1951
 msgid "Periodic Payment:"
@@ -1990,11 +2008,11 @@ msgstr "Configurazón Avanzada da Organizazón"
 
 #: dialogs/kadvancedbanksettingsdlgdecl.cpp:161
 msgid "OFX Direct Connect Settings"
-msgstr "Configurazón da Conexión Directa mediante OFX"
+msgstr "Configurazón da Conexón Direita mediante OFX"
 
 #: dialogs/kadvancedbanksettingsdlgdecl.cpp:162
 msgid "Enable OFX Direct Connect"
-msgstr "Permitir Conexión Directa via OFX"
+msgstr "Permitir Conexón Direita via OFX"
 
 #: dialogs/kadvancedbanksettingsdlgdecl.cpp:163
 #: widgets/kmymoneyonlinequoteconfigdecl.cpp:145
@@ -2204,7 +2222,7 @@ msgstr "Use isto para pechar o diálogo e retornar á aplicazón."
 
 #: dialogs/keditloanwizard.cpp:56
 msgid "Edit loan wizard"
-msgstr "Asistente para a Edizón de empréstitos"
+msgstr "Asistente para a Edizón de empréstimos"
 
 #: dialogs/keditloanwizard.cpp:58
 msgid ""
@@ -3075,12 +3093,12 @@ msgstr "Tesouraria"
 #: dialogs/knewaccountwizarddecl.cpp:4149 kmymoneyutils.cpp:78
 #: kmymoneyutils.cpp:133 reports/pivottable.cpp:70
 msgid "Loan"
-msgstr "Empréstito"
+msgstr "Empréstimo"
 
 #: dialogs/knewaccountwizarddecl.cpp:4150 kmymoneyutils.cpp:84
 #: kmymoneyutils.cpp:137 reports/pivottable.cpp:76
 msgid "Investment"
-msgstr "Inversión"
+msgstr "Investimento"
 
 #: dialogs/knewaccountwizarddecl.cpp:4152
 msgid "Account Type Selection"
@@ -3399,7 +3417,7 @@ msgstr "Cobrar a"
 msgid "Please enter the date, the first payment for this loan was/is due."
 msgstr ""
 "Por favor introduza a data na que vence/venceu o primeiro pagamento deste "
-"empréstito."
+"empréstimo."
 
 #: dialogs/knewloanwizard.cpp:233
 msgid ""
@@ -3407,7 +3425,7 @@ msgid ""
 "mind, that the first due date usually differs from the date the contract was "
 "signed"
 msgstr ""
-"Nota: Consulte o contrato do empréstito para os detalles da primeira data de "
+"Nota: Consulte o contrato do empréstimo para os detalles da primeira data de "
 "vencemento. Lembre que a primeira data de vencemento polo xeral non é a "
 "mesma que a data na que foi asinado o contrato"
 
@@ -3416,7 +3434,7 @@ msgid ""
 "Please enter the original loan amount in the field below or leave it empty "
 "to be calculated."
 msgstr ""
-"Por favor introduza a cantidade orixinal do empréstito no campo de abaixo ou "
+"Por favor introduza a cantidade orixinal do empréstimo no campo de abaixo ou "
 "deixe-o valeiro para ser calculado."
 
 #: dialogs/knewloanwizard.cpp:246
@@ -3470,8 +3488,8 @@ msgid ""
 "page where the  current value to be calculated is defined and fill in a "
 "value."
 msgstr ""
-"O asistente de empréstitos non é capaz de calcular dous valores diferentes "
-"para o seu empréstito ao mesmo tempo. Por favor introduza un valor para o %1 "
+"O asistente de empréstimos non é capaz de calcular dous valores diferentes "
+"para o seu empréstimo ao mesmo tempo. Por favor introduza un valor para o %1 "
 "nesta páxina ou volte á páxina onde se define o valor actual a ser calculado "
 "e introduza un valor."
 
@@ -3481,7 +3499,7 @@ msgid ""
 "requires you to enter the loan amount exactly as found on your last "
 "statement."
 msgstr ""
-"Escolleu que xa foron feitos pagos deste empréstito. Isto requere que "
+"Escolleu que xa foron feitos pagos deste empréstimo. Isto requere que "
 "introduza a cantidade prestada tal como ven no seu último extracto bancário."
 
 #: dialogs/knewloanwizard.cpp:501 dialogs/knewloanwizard.cpp:510
@@ -3517,7 +3535,7 @@ msgstr "Meses"
 
 #: dialogs/knewloanwizard.cpp:791
 msgid "KMyMoney has calculated the amount of the loan as %1."
-msgstr "KMyMoney calculou a cantidade do empréstito como %1."
+msgstr "KMyMoney calculou a cantidade do empréstimo como %1."
 
 #: dialogs/knewloanwizard.cpp:798
 #, c-format
@@ -3544,15 +3562,15 @@ msgstr "O pagamento final foi modificado a %1."
 
 #: dialogs/knewloanwizard.cpp:843
 msgid "KMyMoney has calculated the term of your loan as %1. "
-msgstr "KMyMoney calculou o remate do seu empréstito como %1. "
+msgstr "KMyMoney calculou o remate do seu empréstimo como %1. "
 
 #: dialogs/knewloanwizard.cpp:882
 msgid "KMyMoney has calculated a final payment of %1 for this loan."
-msgstr "KMyMoney calculou un pagamento final de %1 para este empréstito."
+msgstr "KMyMoney calculou un pagamento final de %1 para este empréstimo."
 
 #: dialogs/knewloanwizard.cpp:889
 msgid "KMyMoney has successfully verified your loan information."
-msgstr "KMyMoney verificou satisfatoriamente a informazón do seu empréstito ."
+msgstr "KMyMoney verificou satisfatoriamente a informazón do seu empréstimo ."
 
 #: dialogs/knewloanwizard.cpp:897
 msgid ""
@@ -3572,7 +3590,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Aceite isto ou modifique a informazón do empréstito e recalcule."
+"Aceite isto ou modifique a informazón do empréstimo e recalcule."
 
 #: dialogs/knewloanwizard.cpp:906
 msgid "Calculation successful"
@@ -3596,7 +3614,7 @@ msgstr "Editar Plano de Transferéncias"
 
 #: dialogs/ieditscheduledialog.cpp:131
 msgid "Edit Loan Payment Schedule"
-msgstr "Editar Plano de Pagamentos de Empréstitos"
+msgstr "Editar Plano de Pagamentos de Empréstimos"
 
 #: dialogs/ieditscheduledialog.cpp:139
 msgid "Edit Deposit Schedule"
@@ -3680,7 +3698,7 @@ msgstr "Excepzón en loadWidgetsFromSchedule(1)"
 #: widgets/kmymoneyregistercheckings.cpp:150
 #: widgets/kmymoneyregistersearch.cpp:145
 msgid "Loan payment"
-msgstr "Pagamento de empréstito"
+msgstr "Pagamento de empréstimo"
 
 #: dialogs/ieditscheduledialog.cpp:745
 msgid "Exception in loadWidgetsFromSchedule(2)"
@@ -3870,7 +3888,7 @@ msgstr "dígitos"
 
 #: dialogs/ksettingsdlg.cpp:179
 msgid "Account options"
-msgstr "Opzóns da Conta"
+msgstr "Opzóns da Vista de Contas"
 
 #: dialogs/ksettingsdlg.cpp:191
 msgid "Don't show unused categories"
@@ -3899,7 +3917,7 @@ msgstr "Utilizar a vista de novas contas"
 #: dialogs/ksettingsdlg.cpp:254 views/khomeview.cpp:60
 #: views/kmymoneyview.cpp:126
 msgid "Home"
-msgstr "Inicio"
+msgstr "Início"
 
 #: dialogs/ksettingsdlg.cpp:254
 msgid "Home page settings"
@@ -3951,7 +3969,7 @@ msgstr "Configurazón do rexisto"
 
 #: dialogs/ksettingsdlg.cpp:366
 msgid "Show a grid in the register."
-msgstr "Mostra unha reixa no rexisto."
+msgstr "Mostrar unha reixa no rexisto."
 
 #: dialogs/ksettingsdlg.cpp:370
 msgid "Use the ledger lens"
@@ -3959,11 +3977,11 @@ msgstr "Usar a lupa do libro maior"
 
 #: dialogs/ksettingsdlg.cpp:374
 msgid "Show transaction form"
-msgstr "Mostrar o formulário de entrada de asentos"
+msgstr "Mostrar o formulário de escriturazón"
 
 #: dialogs/ksettingsdlg.cpp:379
 msgid "Always show a No. field in transaction form"
-msgstr "Mostrar sempre un campo Nº no formulário de entrada de asentos"
+msgstr "Mostrar sempre un campo Nº no formulário de escriturazón"
 
 #: dialogs/ksettingsdlg.cpp:386
 msgid "Insert transaction type into No. field for new transactions"
@@ -3979,7 +3997,7 @@ msgstr "Manter os cámbios cando se escolla unha partida/asento diferente"
 
 #: dialogs/ksettingsdlg.cpp:399
 msgid "Auto fill with previous transaction data"
-msgstr "Auto-completar cos dados de transaczóns anteriores"
+msgstr "Auto-completar con dados de asentos anteriores"
 
 #: dialogs/ksettingsdlg.cpp:421
 msgid "Restrict by date"
@@ -3991,7 +4009,7 @@ msgstr "Data de comezo: "
 
 #: dialogs/ksettingsdlg.cpp:823
 msgid "Security settings"
-msgstr "Configurazón de Valores Bursateis"
+msgstr "Configurazón do Cifrado de Dados"
 
 #: dialogs/ksettingsdlg.cpp:827
 msgid "Encryption options"
@@ -4020,7 +4038,7 @@ msgstr "Comprobar os asentos planificados ao arrincar"
 
 #: dialogs/ksettingsdlg.cpp:863
 msgid "Enter transactions this number of days in advance"
-msgstr "Introducir os asentos con estes dias de antelazón"
+msgstr "Asentar as transaczóns con estes dias de antecipazón"
 
 #: dialogs/ksettingsdlg.cpp:879
 msgid "Colours"
@@ -4432,7 +4450,7 @@ msgstr "Non conciliados"
 #: dialogs/kfindtransactiondlgdecl.cpp:430 views/kledgerview.cpp:1788
 #: views/kledgerview.cpp:1831
 msgid "Cleared"
-msgstr "Libradas"
+msgstr "Librada"
 
 #: dialogs/kfindtransactiondlgdecl.cpp:431 views/kledgerview.cpp:1789
 #: views/kledgerview.cpp:1832 widgets/kmymoneyreportconfigtab3decl.cpp:158
@@ -4578,7 +4596,7 @@ msgstr "Documento valeiro"
 
 #: dialogs/kofxdirectconnectdlgdecl.cpp:75
 msgid "OFX Direct Connect"
-msgstr "Conexión Directa OFX"
+msgstr "Conexón Direita OFX"
 
 #: dialogs/kofxdirectconnectdlgdecl.cpp:76
 msgid "Contacting bank..."
@@ -4586,7 +4604,7 @@ msgstr "Conectando co Banco ..."
 
 #: dialogs/kcommodityeditordecl.cpp:146
 msgid "Commodity Editor"
-msgstr "Editor de Mercadorías"
+msgstr "Editor de Mercadorias"
 
 #: dialogs/kcommodityeditordecl.cpp:154 dialogs/kcommodityeditordecl.cpp:156
 msgid "1/"
@@ -4662,7 +4680,7 @@ msgstr "Pasivos"
 
 #: kmymoneyutils.cpp:105 kmymoneyutils.cpp:151 reports/pivottable.cpp:97
 msgid "Investment Loan"
-msgstr "Financiamento de Inversión"
+msgstr "Financiamento de Investimento"
 
 #: kmymoneyutils.cpp:111 kmymoneyutils.cpp:155 reports/pivottable.cpp:103
 #: views/kbanklistitem.cpp:73
@@ -5274,7 +5292,7 @@ msgstr "Recibos"
 #: views/kscheduledview.cpp:165 views/kscheduledview.cpp:645
 #: views/kscheduledview.cpp:661 views/kscheduledlistitem.cpp:53
 msgid "Loans"
-msgstr "Empréstitos"
+msgstr "Empréstimos"
 
 #: views/kscheduledview.cpp:313
 msgid "Are you sure you want to delete the selected schedule?"
@@ -5285,7 +5303,7 @@ msgid ""
 "In case of loan payments it is currently not possible to recreate the "
 "schedules"
 msgstr ""
-"No caso de pagamento de empréstitos, na actualidade non é posíbel recriar os "
+"No caso de pagamento de empréstimos, na actualidade non é posíbel recriar os "
 "asentos planificados"
 
 #: views/kscheduledview.cpp:328
@@ -5327,7 +5345,7 @@ msgstr "Nova Transferéncia..."
 
 #: views/kscheduledview.cpp:550 widgets/kschedulebriefwidget.cpp:149
 msgid "Enter..."
-msgstr "Introducir..."
+msgstr "Asentar..."
 
 #: views/kscheduledview.cpp:552 views/kmymoneyview.cpp:248
 #: views/kmymoneyview.cpp:260
@@ -5466,11 +5484,11 @@ msgstr "Conciliar ..."
 
 #: views/kledgerview.cpp:1787 views/kledgerview.cpp:1830
 msgid "Not cleared"
-msgstr "Non libradas"
+msgstr "Non librada"
 
 #: views/kledgerview.cpp:1792 views/kledgerview.cpp:1835
 msgid "Transaction Options"
-msgstr "Opzóns de asento"
+msgstr "Opzóns do asento"
 
 #: views/kledgerview.cpp:1793 views/kinvestmentview.cpp:257
 #: widgets/kmymoneysplittable.cpp:99 widgets/kmymoneypriceview.cpp:144
@@ -5632,7 +5650,7 @@ msgstr "Non foi posíbel borrar a conta: "
 
 #: views/kmymoneyview.cpp:712
 msgid "Error connecting to bank: %1"
-msgstr "Erro de conexión ao banco: %1"
+msgstr "Erro de conexón ao banco: %1"
 
 #: views/kmymoneyview.cpp:764 converter/mymoneytemplate.cpp:81
 msgid "Error while loading file '%1'!"
@@ -5806,7 +5824,7 @@ msgstr ""
 
 #: views/kmymoneyview.cpp:1312 views/kmymoneyview.cpp:1313
 msgid "Loan payout"
-msgstr "Pagamentos de Empréstito"
+msgstr "Pagamentos de Empréstimo"
 
 #: views/kmymoneyview.cpp:1461
 msgid "Create new KMyMoney file"
@@ -6510,8 +6528,8 @@ msgid ""
 "information is missing. The new loan wizard will be started to collect all "
 "relevant information. If you cancel the wizard, then the file will be closed."
 msgstr ""
-"A conta \"%1\" foi criada con anterioridade como de tipo empréstito pero "
-"falta algunha informazón. O asistente para novos empréstitos comezará a "
+"A conta \"%1\" foi criada con anterioridade como de tipo empréstimo pero "
+"falta algunha informazón. O asistente para novos empréstimos comezará a "
 "recoller toda a informazón de interese. Se cancela o asistente, entón o "
 "arquivo pechará-se."
 
@@ -6577,11 +6595,11 @@ msgstr "Filtrar contas"
 
 #: views/kscheduledviewdecl.cpp:104
 msgid "List View"
-msgstr "Vista da Lista"
+msgstr "Vista en Lista"
 
 #: views/kscheduledviewdecl.cpp:105
 msgid "Calendar View"
-msgstr "Vista do Calendário"
+msgstr "Vista en Calendário"
 
 #: views/kbanklistitem.cpp:79
 msgid "Opening Balances"
@@ -6597,7 +6615,7 @@ msgstr "Património Persoal"
 
 #: views/kinvestmentviewdecl.cpp:93 views/kinvestmentviewdecl.cpp:97
 msgid "Investment Summary"
-msgstr "Resumo da Inversión"
+msgstr "Resumo do Investimento"
 
 #: views/kinvestmentviewdecl.cpp:95
 msgid "Select Account:"
@@ -6654,7 +6672,7 @@ msgstr "Borrar Investimento"
 
 #: views/kinvestmentview.cpp:255
 msgid "Investment Options"
-msgstr "Opzóns de Investimento"
+msgstr "Opzóns do Investimento"
 
 #: views/kinvestmentview.cpp:256 widgets/kmymoneypriceview.cpp:140
 msgid "New ..."
@@ -6746,13 +6764,13 @@ msgstr "Det&alles da conta"
 
 #: views/kledgerviewinvestments.cpp:1013
 msgid "Modify the loan details for this loan"
-msgstr "Modificar os detalles deste empréstito "
+msgstr "Modificar os detalles deste empréstimo "
 
 #: views/kledgerviewinvestments.cpp:1014
 msgid "Use this to start a wizard that allows changing the details for this loan."
 msgstr ""
 "Use isto para iniciar un asistente que lle permitirá cambiar os detalles "
-"deste empréstito."
+"deste empréstimo."
 
 #: views/kledgerviewinvestments.cpp:1019 views/kledgerviewcheckings.cpp:669
 msgid "&Reconcile ..."
@@ -6843,7 +6861,7 @@ msgstr "Use isto para rematar a conciliazón da sua conta fronte ao extracto ban
 
 #: views/kledgerviewcheckings.cpp:609 views/kledgerviewcheckings.cpp:805
 msgid "&Postpone"
-msgstr "A&diado"
+msgstr "A&diar"
 
 #: views/kledgerviewcheckings.cpp:611
 msgid "Postpone reconciliation"
@@ -6907,7 +6925,7 @@ msgstr "Mercar"
 
 #: views/kledgerviewcheckings.cpp:980 views/kledgerviewcheckings.cpp:993
 msgid "Loan Payment"
-msgstr "Pagamento de empréstito"
+msgstr "Pagamento de empréstimo"
 
 #: views/kledgerviewcheckings.cpp:1478
 msgid "Cleared: %1"
@@ -6980,7 +6998,7 @@ msgstr "Pagamento de %1"
 
 #: views/kpayeesview.cpp:318
 msgid "Loan payment from %1"
-msgstr "Pagar empréstito con %1"
+msgstr "Pagar empréstimo con %1"
 
 #: views/kpayeesview.cpp:322
 msgid "Transfer to %1"
@@ -7541,7 +7559,7 @@ msgstr "Antes de importar un extracto, debe escoller un arquivo de KMyMoney."
 
 #: kmymoney2.cpp:1916
 msgid "Importing a statement via Web Connect"
-msgstr "Importando un extracto mediante Web Connect"
+msgstr "Importando un extracto mediante Conexón á Web"
 
 #: kmymoney2.cpp:1950
 msgid "All messages have been enabled."
@@ -7608,7 +7626,7 @@ msgid ""
 "<font color=\"red\">red</font> in the register?\n"
 msgstr ""
 "<p>... que os asentos sen categoria asinada e as partidas\n"
-"con valores sen asinar parpadean en\n"
+"con valores sen asinar chiscan en\n"
 "<font color=\"red\">vermello</font> no rexisto?\n"
 
 #: _tips.cpp:35
@@ -7655,7 +7673,7 @@ msgid ""
 msgstr ""
 "<p>...que pode criar asentos planificados apartir dun xa existente\n"
 "mediante o menu contextual nun asento no libro maior \n"
-"ou co menu \"Mais...\" no formulário de entrada de asentos?\n"
+"ou co menu \"Mais...\" no formulário de escriturazón?\n"
 
 #: _tips.cpp:68
 msgid ""
@@ -7665,7 +7683,7 @@ msgid ""
 msgstr ""
 "<p>...que pode cambiar ao beneficiário dun asento\n"
 "mediante o menu contextual nun asento no libro maior\n"
-"ou co menu \"Máis...\" no formulário de entrada de asentos?\n"
+"ou co menu \"Máis...\" no formulário de escriturazón?\n"
 
 #: _tips.cpp:75
 msgid ""
@@ -7697,7 +7715,7 @@ msgid ""
 "an account? You can also make the transaction form visible.\n"
 msgstr ""
 "<p>...que pode introducir novos asentos ao tempo que reconcília unha conta? "
-"Tamén pode facer visíbel o formulário de entrada de asentos.\n"
+"Tamén pode facer visíbel o formulário de escriturazón.\n"
 
 #: _tips.cpp:99
 msgid ""
@@ -7827,7 +7845,7 @@ msgid ""
 "This investment account does not contain the '%1' security.  Transactions "
 "involving this security will be ignored."
 msgstr ""
-"Esta Conta de Inversións non contén o valor bursátil '%1'. Os asentos que "
+"Esta Conta de Investimentos non contén o valor bursátil '%1'. Os asentos que "
 "involucren este valor serán ignorados."
 
 #: converter/mymoneystatementreader.cpp:218
@@ -8601,7 +8619,7 @@ msgstr "<p>Introduza un comentário que lle axude a lembrar os detalles deste in
 
 #: widgets/kmymoneyreportconfigtab1decl.cpp:85
 msgid "Convert values to base currency"
-msgstr "Convertir valores a divisa báse"
+msgstr "Converter valores a divisa base"
 
 #: widgets/kmymoneyreportconfigtab1decl.cpp:86
 msgid ""
@@ -8657,7 +8675,7 @@ msgstr "Guardar cifrado con GPG"
 
 #: widgets/kmymoneygpgconfigdecl.cpp:117
 msgid "User identification"
-msgstr "Identificazón de usuário"
+msgstr "Identificazón do usuário"
 
 #: widgets/kmymoneygpgconfigdecl.cpp:118
 msgid ""
@@ -8670,7 +8688,7 @@ msgstr ""
 
 #: widgets/kmymoneygpgconfigdecl.cpp:119
 msgid "User ID"
-msgstr "ID de usuário"
+msgstr "ID do usuário"
 
 #: widgets/kmymoneygpgconfigdecl.cpp:120
 msgid ""
@@ -8682,7 +8700,7 @@ msgstr ""
 
 #: widgets/kmymoneygpgconfigdecl.cpp:121
 msgid "Recovery encryption"
-msgstr "Recuperación de cifraxe"
+msgstr "Recuperación do cifrado"
 
 #: widgets/kmymoneygpgconfigdecl.cpp:122
 msgid "Also encrypt with kmymoney-recover key"
@@ -8872,7 +8890,7 @@ msgstr "Conta:"
 
 #: widgets/kmymoneypriceview.cpp:121
 msgid "Commodity"
-msgstr "Mercadoría"
+msgstr "Mercadoria"
 
 #: widgets/kmymoneypriceview.cpp:125
 msgid "Source"
@@ -8900,7 +8918,7 @@ msgstr "Use este botón para pechar a xanela"
 
 #: widgets/kmymoneybriefschedule.cpp:60
 msgid "&Enter"
-msgstr "I&ntroducir"
+msgstr "Ase&ntar"
 
 #: widgets/kmymoneybriefschedule.cpp:62
 msgid "Record this transaction into the register"
@@ -8989,7 +9007,7 @@ msgstr "º-º-º-º-º-º-º-º-º-º-º-º-º-º-º-º-º-º-º-º-º-º-º-º-
 
 #: widgets/kmymoneytransactionform.cpp:250
 msgid "Enter"
-msgstr "Introducir"
+msgstr "Asentar"
 
 #: widgets/kmymoneytransactionform.cpp:258
 msgid "More"
@@ -9051,7 +9069,7 @@ msgstr "Incapaz de engadir categoria"
 #: plugins/kbanking/mymoneybanking.cpp:98
 #: plugins/kbanking/mymoneybanking.cpp:105
 msgid "Outbox"
-msgstr "Buzón de Saida"
+msgstr "Online"
 
 #: plugins/kbanking/mymoneybanking.cpp:117
 msgid "Configure Online &Banking..."
