@@ -2,6 +2,12 @@
   * Save/restore payee email address
     Could backport to 0.8
 
+2005-11-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1348087 (Save not enabled)
+  * Added command line option '-n' to startup without the last file opened
+  * Adjust the size of the 'move account to ...' selector based on the
+    length of the account names
+
 2005-11-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added ledger sort mode for 'order of entry' (based on transaction-id)
   * Fixed MyMoneyScheduled::isOverdue() to return correct information
