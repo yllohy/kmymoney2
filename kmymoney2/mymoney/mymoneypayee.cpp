@@ -86,6 +86,7 @@ void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
   el.setAttribute(QString("name"), m_name);
   el.setAttribute(QString("id"), m_id);
   el.setAttribute(QString("reference"), m_reference);
+  el.setAttribute(QString("email"), m_email);
 
   QDomElement address = document.createElement("ADDRESS");
   address.setAttribute(QString("street"), m_address);
@@ -109,7 +110,8 @@ void MyMoneyPayee::readXML(const QDomElement& node)
 
   m_name = node.attribute("name");
   m_reference = node.attribute("reference");
-
+  m_email = node.attribute("email");
+  
   QDomNodeList nodeList = node.elementsByTagName(QString("ADDRESS"));
   if(nodeList.count() == 0) {
     QString msg = QString("No ADDRESS in payee %1").arg(m_name);
