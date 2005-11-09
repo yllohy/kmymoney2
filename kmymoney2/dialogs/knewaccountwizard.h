@@ -53,7 +53,7 @@ public:
     *
     * @return MyMoneyAccount filled with information by the user
     */
-  const MyMoneyAccount account(void) const { return m_account; };
+  const MyMoneyAccount& account(void) const { return m_account; };
 
   /**
     * This method returns the account information about a brokerage
@@ -64,7 +64,7 @@ public:
     *
     * @return MyMoneyAccount filled with information by the user
     */
-  const MyMoneyAccount brokerageAccount(void) const { return m_brokerage; };
+  const MyMoneyAccount& brokerageAccount(void) const { return m_brokerage; };
 
   /**
     * This method returns the parent account selected that is appropriate
@@ -72,7 +72,7 @@ public:
     *
     * @return MyMoneyAccount with information about standard account
     */
-  const MyMoneyAccount parentAccount(void) const { return m_parent; };
+  const MyMoneyAccount& parentAccount(void) const { return m_parent; };
 
   /**
     * This method is used to preset the name of the account in the wizard
@@ -87,6 +87,17 @@ public:
     * @param balance opening balance for the account
     */
   void setOpeningBalance(const MyMoneyMoney& balance);
+
+  /**
+    * This method is used to retrieve the opening balance entered
+    * by the user during data collection for the new acocunt.
+    *
+    * @return MyMoneyMoney object containing the opening balance.
+    *
+    * @note The date for the opening balance transaction can be retrieved
+    *       from the account data returned by account().
+    */
+  MyMoneyMoney openingBalance(void) const;
 
   /**
     * This method is used to preset the opening date of the account
@@ -106,14 +117,14 @@ public:
     * Get the schedule.
     *
     * If the schedule has not been created name() should be empty.
-  **/
+    */
   MyMoneySchedule schedule(void) const { return m_schedule; }
 
   /**
     * This method is used to preset the institution.
     *
     * @param institution The institution
-  **/
+    */
   void setInstitution(const MyMoneyInstitution& institution) { m_institution = institution; }
 
 protected:
@@ -140,7 +151,7 @@ public slots:
   void accept();
 
 protected slots:
-  void slotNewInstitution();
+  void slotNewInstitution(void);
   void slotAccountType(const QString& sel);
   void slotCheckPageFinished(void);
   void slotNewPayee(const QString&);

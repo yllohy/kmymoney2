@@ -59,6 +59,11 @@ public:
 
   void update(const QCString& id);
 
+  /**
+    * Start reconciliation for the account in the current view
+    */
+  void reconcileAccount(void);
+
 public slots:
   /**
     * This slot is used to reload all data from the MyMoneyFile engine.

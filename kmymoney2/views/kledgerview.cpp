@@ -306,7 +306,7 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
 
 void KLedgerView::finishInitialization(void)
 {
-  connect(kmymoney2->newTransaction, SIGNAL(activated()), this, SLOT(slotNew()));
+  connect(kmymoney2->action("ActionTransactionNew"), SIGNAL(activated()), this, SLOT(slotNew()));
 }
 
 KLedgerView::~KLedgerView()

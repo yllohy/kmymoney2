@@ -57,7 +57,6 @@ class MyMoneyTransaction;
 class KInvestmentView;
 class KReportsView;
 class KMyMoneyViewBase;
-class KFindTransactionDlg;
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -85,7 +84,7 @@ public:
     InvestmentsView,
     ReportsView
   };
-  // file actions for plugin 
+  // file actions for plugin
   enum fileActions {
     preOpen, postOpen, preSave, postSave, preClose, postClose
   };
@@ -112,7 +111,6 @@ private:
   KGlobalLedgerView *m_ledgerView;
   KInvestmentView *m_investmentView;
   KReportsView* m_reportsView;
-  KFindTransactionDlg* m_searchDlg;
 
   QVBox* m_homeViewFrame;
   QVBox* m_accountsViewFrame;
@@ -142,7 +140,7 @@ private:
     GncXML
   }fileTypeE;
   fileTypeE m_fileType;
-  
+
 private:
   void ungetString(QIODevice *qfile, char * buf, int len);
 
@@ -369,12 +367,6 @@ public slots:
   void slotRefreshViews();
 
   /**
-    * Brings up a dialog to let the user search for specific transaction(s).  It then
-    * opens a results window to display those transactions.
-    */
-  void slotFindTransaction();
-
-  /**
     * Called whenever the user 'executes' an account. This operation opens the account
     * and shows the register view.
     **/
@@ -417,17 +409,6 @@ public slots:
   void slotReportSelected(const QCString& reportid);
 
   /**
-    * Called whenever the user wishes to create a new bank.  Brings up the input
-    * dialog and saves the information.  It then enables the banks view.
-    *
-    * @see KBanksView
-    * @see KNewBankDlg
-    * @see MyMoneyFile
-    * @see MyMoneyInstitution
-    */
-  void slotBankNew(void);
-
-  /**
     * Called whenever the user wishes to create a new account.  Brings up the input
     * dialog and saves the information.
     *
@@ -436,7 +417,7 @@ public slots:
     * @see MyMoneyFile
     * @see MyMoneyAccount
     */
-  void slotAccountNew(void);
+  // void slotAccountNew(void);
 
   /**
     * Called whenever the user wishes to create a new account by right clicking on
@@ -449,7 +430,7 @@ public slots:
     * @see MyMoneyFile
     * @see MyMoneyAccount
     */
-  void slotBankAccountNew(void);
+  // void slotBankAccountNew(void);
 
   /**
     * Called whenever the user wishes to create a new category.  Brings up the input
@@ -460,7 +441,7 @@ public slots:
     * @see MyMoneyFile
     * @see MyMoneyAccount
     */
-  void slotCategoryNew(void);
+  // void slotCategoryNew(void);
 
   /**
     * Called whenever the user wishes to reconcile the open account.  It first get some
@@ -473,7 +454,7 @@ public slots:
     * @see KMyMoneyFile
     * @see MyMoneyAccount
     */
-  void slotAccountReconcile(void);
+  void slotAccountReconcile(const MyMoneyAccount&);
 
   // Not implemented, not documented!
 
@@ -539,11 +520,6 @@ protected slots:
   void slotBankDelete();
 
   /**
-    * Destroys the search dialog
-    */
-  void slotCloseSearchDialog(void);
-
-  /**
     * Called when the user changes the detail
     * setting of the transaction register
     *
@@ -582,7 +558,7 @@ signals:
   void accountSelectedForContextMenu(const MyMoneyAccount& acc);
 
   void viewStateChanged(bool enabled);
-   /** 
+   /**
      * This signal is emitted to inform the kmmFile plugin when various file actions
      * occur. The Action parameter distinguishes between them.
      */

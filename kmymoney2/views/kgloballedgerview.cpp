@@ -290,6 +290,12 @@ void KGlobalLedgerView::loadAccounts(void)
   slotSelectAccount(acc.id());
 }
 
+void KGlobalLedgerView::reconcileAccount(void)
+{
+  if(m_currentView)
+    m_currentView->slotReconciliation();
+}
+
 const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCString& transactionId, const bool reconciliation)
 {
   bool    rc = false;

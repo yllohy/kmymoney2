@@ -79,19 +79,19 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   m_helpAnchor[accountPaymentPage] = QString("firsttime-accwiz5.1");
   //m_helpAnchor[summaryPage] = QString("");
 
-  accountListView->setRootIsDecorated(true);
-  accountListView->setAllColumnsShowFocus(true);
-  accountListView->addColumn(i18n("Account"));
-  accountListView->setMultiSelection(false);
-  accountListView->header()->setResizeEnabled(false);
-  accountListView->setColumnWidthMode(0, QListView::Manual);
-  accountListView->setResizeMode(QListView::AllColumns);
+  m_accountListView->setRootIsDecorated(true);
+  m_accountListView->setAllColumnsShowFocus(true);
+  m_accountListView->addColumn(i18n("Account"));
+  m_accountListView->setMultiSelection(false);
+  m_accountListView->header()->setResizeEnabled(false);
+  m_accountListView->setColumnWidthMode(0, QListView::Manual);
+  m_accountListView->setResizeMode(QListView::AllColumns);
 
-  connect(newInstitutionButton, SIGNAL(clicked()), this, SLOT(slotNewInstitution()));
-  connect(accountTypeListBox, SIGNAL(highlighted(const QString &)), this, SLOT(slotAccountType(const QString &)));
+  connect(m_newInstitutionButton, SIGNAL(clicked()), this, SLOT(slotNewInstitution()));
+  connect(m_accountTypeListBox, SIGNAL(highlighted(const QString &)), this, SLOT(slotAccountType(const QString &)));
   connect(reminderCheckBox, SIGNAL(toggled(bool)), estimateFrame, SLOT(setEnabled(bool)));
 
-  connect(accountName, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
+  connect(m_accountName, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
   connect(reminderCheckBox, SIGNAL(stateChanged(int)), this, SLOT(slotCheckPageFinished()));
   connect(m_name, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
   connect(m_payee, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
@@ -105,7 +105,9 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   loadAccountTypes();
   loadPaymentMethods();
 
-  accountTypeListBox->setCurrentItem(0);
+  m_accountTypeListBox->setCurrentItem(0);
+  setOpeningBalance(MyMoneyMoney(0,1));
+  setAccountName(QString());
 
   m_name->setFocus();
 
@@ -141,7 +143,7 @@ void KNewAccountWizard::next()
       break;
 
     default:
-      setAppropriate(accountNumberPage, institutionComboBox->currentText() != "");
+      setAppropriate(accountNumberPage, m_institutionComboBox->currentText() != "");
       break;
   }
 
@@ -157,11 +159,12 @@ void KNewAccountWizard::next()
       // copy relevant data into my widgets so that
       // accept() will not modify anything later on.
       m_accountType = m_account.accountType();
-      accountName->setText(m_account.name());
-      accountNumber->setText(QString());
-      openingBalance->setText(m_account.openingBalance().formatMoney());
-      openingDate->setDate(m_account.openingDate());
-      preferredAccount->setChecked(false);
+      m_accountName->setText(m_account.name());
+      m_accountNumber->setText(QString());
+      // FIXME: opening balance not support anymore
+      m_openingBalance->setValue(m_account.openingBalance());
+      m_openingDate->setDate(m_account.openingDate());
+      m_preferredAccount->setChecked(false);
 
       m_schedule = loanWizard->schedule();
       if(loanWizard->initialPaymentDate().isValid()
@@ -179,7 +182,7 @@ void KNewAccountWizard::next()
 
   } else {
     if(currentPage() == brokerageAccountPage) {
-      setAppropriate(accountDetailsPage, brokerageYesButton->isChecked());
+      setAppropriate(accountDetailsPage, m_brokerageYesButton->isChecked());
     }
     KNewAccountWizardDecl::next();
 
@@ -191,42 +194,43 @@ void KNewAccountWizard::next()
 void KNewAccountWizard::accept()
 {
   if(appropriate(accountNumberPage) == false)
-    accountNumber->setText(QString());
+    m_accountNumber->setText(QString());
 
   // setup account
   m_account.setAccountType(m_accountType);
-  m_account.setName(accountName->text());
-  m_account.setNumber(accountNumber->text());
+  m_account.setName(m_accountName->text());
+  m_account.setNumber(m_accountNumber->text());
   m_account.setCurrencyId(m_currencyComboBox->security().id());
 
   m_brokerage.setAccountType(MyMoneyAccount::Checkings);
   m_brokerage.setCurrencyId(m_currencyComboBox->security().id());
-  m_brokerage.setNumber(accountNumber->text());
+  m_brokerage.setNumber(m_accountNumber->text());
 
-  if(!institutionComboBox->currentText().isEmpty()) {
+  if(!m_institutionComboBox->currentText().isEmpty()) {
     QValueList<MyMoneyInstitution> list;
     QValueList<MyMoneyInstitution>::ConstIterator it;
 
     list = MyMoneyFile::instance()->institutionList();
     for(it = list.begin(); it != list.end(); ++it) {
-      if((*it).name() == institutionComboBox->currentText()) {
+      if((*it).name() == m_institutionComboBox->currentText()) {
         m_account.setInstitutionId((*it).id());
         m_brokerage.setInstitutionId((*it).id());
       }
     }
   }
   if(m_accountType == MyMoneyAccount::Investment) {
-    if(brokerageYesButton->isChecked()) {
+    if(m_brokerageYesButton->isChecked()) {
       m_brokerage.setName(m_account.name()+i18n(" (Brokerage)"));
     }
-    m_brokerage.setOpeningBalance(MyMoneyMoney(openingBalance->text()));
-    m_brokerage.setOpeningDate(openingDate->getQDate());
+    // FIXME: opening balance not supported anymore
+    m_brokerage.setOpeningBalance(m_openingBalance->value());
+    m_brokerage.setOpeningDate(m_openingDate->getQDate());
   } else {
-    m_account.setOpeningBalance(MyMoneyMoney(openingBalance->text()));
-    m_account.setOpeningDate(openingDate->getQDate());
+    // m_account.setOpeningBalance(MyMoneyMoney(openingBalance->text()));
+    m_account.setOpeningDate(m_openingDate->getQDate());
   }
 
-  if(preferredAccount->isChecked())
+  if(m_preferredAccount->isChecked())
     m_account.setValue("PreferredAccount", "Yes");
 
   // setup parent account
@@ -265,11 +269,11 @@ void KNewAccountWizard::accept()
       return;
     }
 
-    KAccountListItem *item = (KAccountListItem*)accountListView->selectedItem();
+    KAccountListItem *item = (KAccountListItem*)m_accountListView->selectedItem();
     if (!item)
     {
       KMessageBox::error(this, i18n("Please select the account."));
-      accountListView->setFocus();
+      m_accountListView->setFocus();
       return;
     }
 
@@ -345,7 +349,7 @@ int KNewAccountWizard::exec()
 {
   int rc;
 
-  accountListView->header()->setFont(KMyMoneyUtils::headerFont());
+  m_accountListView->header()->setFont(KMyMoneyUtils::headerFont());
 
   // currently, we don't have help for these pages :-(
   setHelpEnabled(brokerageAccountPage, false);
@@ -373,32 +377,32 @@ int KNewAccountWizard::exec()
   estimateFrame->setEnabled(true);
 
   // reset everything else if not preset
-  accountNumber->setText(QString());
+  m_accountNumber->setText(QString());
   m_brokerage = MyMoneyAccount();
 
   rc = KNewAccountWizardDecl::exec();
 
   // always select the first item and show the appropriate note
-  accountTypeListBox->setCurrentItem(0);
+  m_accountTypeListBox->setCurrentItem(0);
 
   return rc;
 }
 
 void KNewAccountWizard::loadInstitutionList(void)
 {
-  institutionComboBox->clear();
+  m_institutionComboBox->clear();
 
   QValueList<MyMoneyInstitution> list;
   QValueList<MyMoneyInstitution>::ConstIterator it;
 
-  institutionComboBox->insertItem(QString());
+  m_institutionComboBox->insertItem(QString());
   list = MyMoneyFile::instance()->institutionList();
   for(it = list.begin(); it != list.end(); ++it)
   {
-    institutionComboBox->insertItem((*it).name());
+    m_institutionComboBox->insertItem((*it).name());
   }
 
-  institutionComboBox->setCurrentText(m_institution.name());
+  m_institutionComboBox->setCurrentText(m_institution.name());
 }
 
 void KNewAccountWizard::loadSubAccountList(KListView* parent, const QCString& accountId)
@@ -441,7 +445,7 @@ QValueList<MyMoneyAccount>::ConstIterator KNewAccountWizard::findAccount(const Q
 
 void KNewAccountWizard::loadAccountList(void)
 {
-  accountListView->clear();
+  m_accountListView->clear();
 
   m_accountList = MyMoneyFile::instance()->accountList();
 
@@ -449,28 +453,28 @@ void KNewAccountWizard::loadAccountList(void)
 
   QCStringList::ConstIterator it_s;
   for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
-    loadSubAccountList(accountListView, (*it_s));
+    loadSubAccountList(m_accountListView, (*it_s));
   }
 }
 
 void KNewAccountWizard::loadAccountTypes(void)
 {
-  accountTypeListBox->clear();
+  m_accountTypeListBox->clear();
 
-  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Checkings));
-  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Savings));
-  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::CreditCard));
-  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Cash));
-  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Loan));
+  m_accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Checkings));
+  m_accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Savings));
+  m_accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::CreditCard));
+  m_accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Cash));
+  m_accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Loan));
 
 /*
   // accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::AssetLoan));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::MoneyMarket));
   accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Currency));
 */
-  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Investment));
-  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Asset));
-  accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Liability));
+  m_accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Investment));
+  m_accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Asset));
+  m_accountTypeListBox->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Liability));
 }
 
 void KNewAccountWizard::slotNewInstitution(void)
@@ -551,36 +555,41 @@ void KNewAccountWizard::slotAccountType(const QString& sel)
     txt += i18n("Explanation is not yet available! UnknownAccountType will be set");
     m_accountType = MyMoneyAccount::UnknownAccountType;
   }
-  explanationTextBox->setText(txt);
+  m_explanationTextBox->setText(txt);
 }
 
 void KNewAccountWizard::setAccountName(const QString& name)
 {
-  accountName->setText(name);
+  m_accountName->setText(name);
 }
 
 void KNewAccountWizard::setOpeningBalance(const MyMoneyMoney& balance)
 {
-  openingBalance->setText(balance.formatMoney());
+  m_openingBalance->setValue(balance);
+}
+
+MyMoneyMoney KNewAccountWizard::openingBalance(void) const
+{
+  return m_openingBalance->value();
 }
 
 void KNewAccountWizard::setOpeningDate(const QDate& date)
 {
   if(date.isValid())
-    openingDate->setDate(date);
+    m_openingDate->setDate(date);
   else
-    openingDate->setDate(QDate::currentDate());
+    m_openingDate->setDate(QDate::currentDate());
 }
 
 void KNewAccountWizard::setAccountType(const MyMoneyAccount::accountTypeE type)
 {
   int i;
 
-  for(i = accountTypeListBox->count()-1; i > 0; --i) {
-    if(accountTypeListBox->text(i) == KMyMoneyUtils::accountTypeToString(type))
+  for(i = m_accountTypeListBox->count()-1; i > 0; --i) {
+    if(m_accountTypeListBox->text(i) == KMyMoneyUtils::accountTypeToString(type))
       break;
   }
-  accountTypeListBox->setSelected(i, true);
+  m_accountTypeListBox->setSelected(i, true);
 }
 
 void KNewAccountWizard::loadPaymentMethods()
@@ -607,7 +616,7 @@ void KNewAccountWizard::slotCheckPageFinished(void)
   finishButton()->setEnabled(true);
 
   if(currentPage() == accountNamePage) {
-    if(accountName->text().isEmpty())
+    if(m_accountName->text().isEmpty())
       nextButton()->setEnabled(false);
 
   } else if(currentPage() == accountPaymentPage) {
@@ -615,7 +624,7 @@ void KNewAccountWizard::slotCheckPageFinished(void)
       if(m_amount->text().isEmpty()
       || m_name->text().isEmpty()
       || m_payee->text().isEmpty()
-      || accountListView->selectedItem() == 0) {
+      || m_accountListView->selectedItem() == 0) {
         finishButton()->setEnabled(false);
       }
     }

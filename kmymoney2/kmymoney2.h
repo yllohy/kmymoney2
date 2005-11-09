@@ -41,6 +41,7 @@
 
 #include "mymoney/mymoneyobserver.h"
 #include "mymoney/mymoneyscheduled.h"
+#include "mymoney/mymoneyinstitution.h"
 
 class QSignalMapper;
 class KProgress;
@@ -49,6 +50,7 @@ class MyMoneyQifReader;
 class MyMoneyStatementReader;
 class MyMoneyStatement;
 class IMyMoneyStorage;
+class KFindTransactionDlg;
 
 namespace KMyMoneyPlugin { class ImporterPlugin; }
 
@@ -176,6 +178,46 @@ protected slots:
 
   void slotSecurityEditor(void);
 
+  /**
+    * Brings up a dialog to let the user search for specific transaction(s).  It then
+    * opens a results window to display those transactions.
+    */
+  void slotFindTransaction();
+
+  /**
+    * Destroys a possibly open the search dialog
+    */
+  void slotCloseSearchDialog(void);
+
+  /**
+    * Brings up the input dialog and saves the information.
+    */
+  void slotNewInstitution(void);
+
+  /**
+    * Creates a new institution entry in the MyMoneyFile engine
+    *
+    * @param institution MyMoneyInstitution object containing the data of
+    *                    the institution to be created.
+    */
+  void slotNewInstitution(MyMoneyInstitution institution);
+
+  /**
+    * Brings up the new account wizard and saves the information.
+    */
+  void slotNewAccount(void);
+
+  /**
+    * Brings up the new category editor and saves the information.
+    */
+  void slotNewCategory(void);
+
+  /**
+    * Calls the print logic for the current view
+    */
+  void slotPrintView(void);
+
+
 public:
   /**
     * This method checks if there is at least one asset or liability account
@@ -243,6 +285,10 @@ public:
     */
   const QCStringList instanceList(void) const;
 
+  void selectAccount(const MyMoneyAccount& account = MyMoneyAccount());
+
+  void selectInstitution(const MyMoneyInstitution& institution = MyMoneyInstitution());
+
 k_dcop:
   const QString filename() const;
 
@@ -297,6 +343,10 @@ protected:
 
   virtual void resizeEvent(QResizeEvent*);
 
+  void createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& newAccount);
+
+  void createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal, MyMoneySchedule& schedule);
+
 public slots:
   void slotFileInfoDialog(void);
 
@@ -343,8 +393,6 @@ public slots:
     * saveModified() dialog, the closing breaks.
     */
   void slotFileQuit();
-
-  void slotAccountNew(void);
 
   void slotFileConsitencyCheck(void);
 
@@ -419,6 +467,11 @@ public slots:
     */
   bool slotStatementImport(const QValueList<MyMoneyStatement>& list);
 
+  /**
+    * This slot starts the reconciliation of the currently selected account
+    */
+  void slotAccountReconcile(void);
+
 private:
   bool verifyImportedData(const MyMoneyAccount& account);
   bool slotCommitTransaction(const MyMoneySchedule& schedule, const QDate&);
@@ -446,48 +499,63 @@ signals:
   void fileLoaded(const KURL& url);
 
 public:
-  KAction* newTransaction;
+  /**
+    * This method retrieves a pointer to a KAction object from m_actionMap.
+    * If the action with the name @p actionName is not found, a pointer to
+    * a static non-configured KAction object is returned and a warning is
+    * printed to stderr.
+    *
+    * @param actionName name of the action to be retrieved
+    * @return pointer to KAction object (or derivative)
+    */
+  KAction* action(const QString& actionName) const;
+
+  /**
+    * This method is implemented for convience. It returns a dynamic_cast-ed
+    * pointer to an action found in m_actionMap.
+    * If the action with the name @p actionName is not found or the object
+    * is not of type KToggleAction, a pointer to a static non-configured
+    * KToggleAction object is returned and a warning is printed to stderr.
+    */
+  KToggleAction* toggleAction(const QString& actionName) const;
+
 
 private:
   /** the configuration object of the application */
 
   KConfig *config;
 
-  // KAction pointers to enable/disable actions
-  KAction *fileNewWindow;
-  KAction* fileNew;
-  KAction* fileOpen;
-  KRecentFilesAction* fileOpenRecent;
-  KAction* fileSave;
-  KAction* fileSaveAs;
-  KAction* fileBackup;
-  KAction* fileClose;
-  KAction* fileCloseWindow;
-  KAction* fileQuit;
-  KAction* filePrint;
-  KToggleAction* viewToolBar;
-  KToggleAction* viewStatusBar;
-  KToggleAction* viewTransactionForm;
-  KAction *fileViewInfo;
-  KAction *filePersonalData;
-  KAction *settings;
-  KAction *settingsKey;
-  KAction *bankAdd;
-  KAction *accountAdd;
-  KAction *actionQifImport;
-  KAction *actionQifExport;
-  KAction *actionFindTransaction;
-  KAction *actionOfxImport;
-  KAction *actionGncImport;
-  KAction *actionStatementImport;
-  KAction *actionAqbImport;
-  KAction* actionLoadTemplate;
-  KAction* actionSaveTemplate;
-  KAction* actionSecurities;
-  KAction* actionCurrencies;
-  KAction* actionPrices;
-  KAction* actionPriceUpdate;
-  KAction* accountReconcile;
+  /**
+    * This is the dynamic container to maintain all application actions.
+    * Access to it in the code is via
+    *
+    * @code
+    *
+    *   // Assignment
+    *   m_actionMap["<action-name>"] = new KAction(....)
+    *
+    *   // Reference
+    *   m_actionMap["<action-name"]->setEnabled(true);
+    *
+    * @endcode
+    *
+    * Naming convention for the <action-name> items: The names for actions should
+    * be constructed using the word 'Action' and the menu structure in CamelCase.
+    *
+    * Examples: ActionFileNew, ActionFileOpen, ActionInstitutionNew
+    */
+  QMap<QString, KAction*> m_actionMap;
+
+  /**
+    * Add an action to the m_actionMap. This method checks, that no action is currently
+    * known with the name @p actionName. A warning message will be displayed and the
+    * action is not added.
+    *
+    * @param actionName name of the action
+    * @param action pointer to a KAction object or one of it's derivatives
+    */
+  void registerAction(const QString& actionName, KAction* action);
+
 
   QSignalMapper *m_pluginSignalMapper;
   QMap<QString,KMyMoneyPlugin::ImporterPlugin*> m_importerPlugins;
@@ -542,6 +610,7 @@ private:
   IMyMoneyStorage*  m_engineBackup;
   MyMoneyQifReader* m_reader;
   MyMoneyStatementReader* m_smtReader;
+  KFindTransactionDlg* m_searchDlg;
 
   bool m_bCheckSchedules;
 
@@ -549,6 +618,9 @@ private:
   KToolBarPopupAction*  m_nextViewButton;
 
   QObject*              m_pluginInterface;
+
+  MyMoneyAccount        m_selectedAccount;
+  MyMoneyInstitution    m_selectedInstitution;
 };
 
 extern  KMyMoney2App *kmymoney2;

@@ -46,6 +46,7 @@
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/knewbankdlg.h"
 #include "../kmymoneyutils.h"
+#include "../kmymoney2.h"
 
 KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutionView)
  : KBankViewDecl(parent,name),
@@ -231,34 +232,21 @@ void KAccountsView::slotIconRightMouse(QIconViewItem* item, const QPoint&)
 
 void KAccountsView::slotListRightMouse(QListViewItem* item, const QPoint& , int col)
 {
+  kmymoney2->selectAccount();
+  kmymoney2->selectInstitution();
+
   if (item==0 || col==-1) {
     emit rightMouseClick();
 
   } else {
-    KAccountListItem* accountItem = static_cast<KAccountListItem*> (item);
+    // select the item first
+    slotSelectionChanged(item);
 
+    if(m_bSelectedAccount) {
+      emit accountRightMouseClick();
 
-
-    if (accountItem) {
-      try {
-        MyMoneyFile *file = MyMoneyFile::instance();
-        MyMoneyAccount account = file->account(accountItem->accountID());
-
-
-        m_bSelectedAccount=true;
-        m_bSelectedInstitution=false;
-        m_selectedAccount = accountItem->accountID();
-
-        emit accountRightMouseClick();
-
-      } catch (MyMoneyException *e) {
-        m_bSelectedAccount=false;
-        m_bSelectedInstitution=true;
-        m_selectedInstitution = accountItem->accountID();
-        delete e;
-
-        emit bankRightMouseClick();
-      }
+    } else if(m_bSelectedInstitution) {
+      emit bankRightMouseClick();
     }
   }
 }
@@ -765,28 +753,37 @@ void KAccountsView::resizeEvent(QResizeEvent* e)
 
 void KAccountsView::slotSelectionChanged(QListViewItem *item)
 {
-
   KAccountListItem *accountItem = (KAccountListItem*)item;
-  if (accountItem)
-  {
+
+  kmymoney2->selectAccount();
+  kmymoney2->selectInstitution();
+
+  m_bSelectedAccount = false;
+  m_bSelectedInstitution = false;
+
+  if (accountItem) {
     MyMoneyFile *file = MyMoneyFile::instance();
 
-    try
-    {
+    try {
       MyMoneyAccount account = file->account(accountItem->accountID());
-      m_bSelectedAccount=true;
+      m_bSelectedAccount = true;
       m_selectedAccount = accountItem->accountID();
+      kmymoney2->selectAccount(account);
       //emit accountSelected();
-    }
-    catch (MyMoneyException *e)
-    {
-      // Probably clicked on the institution in normal view
-      m_bSelectedAccount=false;
-      m_bSelectedInstitution=true;
-      // FIXME: Change KAccountListItem::accountID to id.
-      m_selectedInstitution = accountItem->accountID();
 
+    } catch (MyMoneyException *e) {
       delete e;
+      try {
+        // Probably clicked on the institution in normal view
+        MyMoneyInstitution institution = file->institution(accountItem->accountID());
+        m_bSelectedInstitution = true;
+        // FIXME: Change KAccountListItem::accountID to id.
+        m_selectedInstitution = accountItem->accountID();
+        kmymoney2->selectInstitution(institution);
+
+      } catch (MyMoneyException *e) {
+        delete e;
+      }
     }
   }
 }

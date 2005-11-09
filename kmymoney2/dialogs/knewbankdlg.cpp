@@ -47,7 +47,7 @@
 #include "knewbankdlg.h"
 #include "kadvancedbanksettingsdlg.h"
 
-KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution,  bool /*isEditing*/, QWidget *parent, const char *name)
+KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution, QWidget *parent, const char *name)
   : KNewBankDlgDecl(parent,name,true), m_institution(institution)
 {
   KIconLoader* il = KGlobal::iconLoader();
@@ -64,16 +64,16 @@ KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution,  bool /*isEditing*/, Q
   cancelBtn->setGuiItem(cancelButtenItem);
 
   nameEdit->setFocus();
-	nameEdit->setText(institution.name());
-	cityEdit->setText(institution.city());
-	streetEdit->setText(institution.street());
-	postcodeEdit->setText(institution.postcode());
-	telephoneEdit->setText(institution.telephone());
-	managerEdit->setText(institution.manager());
-	sortCodeEdit->setText(institution.sortcode());
+  nameEdit->setText(institution.name());
+  cityEdit->setText(institution.city());
+  streetEdit->setText(institution.street());
+  postcodeEdit->setText(institution.postcode());
+  telephoneEdit->setText(institution.telephone());
+  managerEdit->setText(institution.manager());
+  sortCodeEdit->setText(institution.sortcode());
 
   m_ofxSettings = m_institution.ofxConnectionSettings();
-                
+
 #ifndef USE_OFX_DIRECTCONNECT
   // the 'advanced' button will take the user to set up their OFX Direct Connect
   // settings, which is only available if KMM is compiled with the new OFX libraries.
@@ -89,9 +89,9 @@ KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution,  bool /*isEditing*/, Q
 
 void KNewBankDlg::institutionNameChanged( const QString &_text)
 {
-	okBtn->setEnabled( !_text.isEmpty() );
+  okBtn->setEnabled( !_text.isEmpty() );
 }
-	
+
 KNewBankDlg::~KNewBankDlg()
 {
 }
@@ -104,13 +104,13 @@ void KNewBankDlg::okClicked()
     return;
   }
 
-	m_institution.setName(nameEdit->text());
-	m_institution.setTown(cityEdit->text());
-	m_institution.setStreet(streetEdit->text());
-	m_institution.setPostcode(postcodeEdit->text());
-	m_institution.setTelephone(telephoneEdit->text());
-	m_institution.setManager(managerEdit->text());
-	m_institution.setSortcode(sortCodeEdit->text());
+  m_institution.setName(nameEdit->text());
+  m_institution.setTown(cityEdit->text());
+  m_institution.setStreet(streetEdit->text());
+  m_institution.setPostcode(postcodeEdit->text());
+  m_institution.setTelephone(telephoneEdit->text());
+  m_institution.setManager(managerEdit->text());
+  m_institution.setSortcode(sortCodeEdit->text());
 
         m_institution.setOfxConnectionSettings(m_ofxSettings);
   accept();
@@ -125,7 +125,7 @@ void KNewBankDlg::advancedClicked()
     m_ofxSettings = dlg.values();
 }
 
-MyMoneyInstitution KNewBankDlg::institution(void)
+const MyMoneyInstitution& KNewBankDlg::institution(void)
 {
   return m_institution;
 }

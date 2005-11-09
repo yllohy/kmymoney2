@@ -865,7 +865,7 @@ void KNewAccountDlg::slotNewClicked()
 {
   MyMoneyInstitution institution;
 
-  KNewBankDlg dlg(institution, false, this, "newbankdlg");
+  KNewBankDlg dlg(institution, this);
   if (dlg.exec())
   {
     try

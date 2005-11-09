@@ -69,7 +69,6 @@
 #endif
 
 #include "../dialogs/knewaccountwizard.h"
-#include "../dialogs/knewbankdlg.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/kendingbalancedlg.h"
 #include "../dialogs/knewfiledlg.h"
@@ -81,6 +80,7 @@
 #include "../dialogs/kcurrencyeditdlg.h"
 #include "../dialogs/kofxdirectconnectdlg.h"
 #include "../dialogs/kfindtransactiondlg.h"
+#include "../dialogs/knewbankdlg.h"
 
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
 #include "../mymoney/storage/imymoneystorageformat.h"
@@ -111,7 +111,6 @@
 
 KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   : KJanusWidget(parent, name, KJanusWidget::IconList),
-  m_searchDlg(0),
   m_fileOpen(false),
   m_bankRightClick(false)
 {
@@ -212,11 +211,12 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_accountsView, SIGNAL(categoryDoubleClick()), this, SLOT(slotAccountEdit()));
   //connect(accountsView, SIGNAL(accountSelected()), this, SLOT(slotAccountSelected()));
   connect(m_accountsView, SIGNAL(bankRightMouseClick()), this, SLOT(slotBankRightMouse()));
-  connect(m_accountsView, SIGNAL(rightMouseClick()), this, SLOT(slotRightMouse()));
+  // connect(m_accountsView, SIGNAL(rightMouseClick()), this, SLOT(slotRightMouse()));
 
   connect(m_institutionsView, SIGNAL(bankRightMouseClick()), this, SLOT(slotBankRightMouse()));
   connect(m_institutionsView, SIGNAL(accountRightMouseClick()), this, SLOT(slotAccountRightMouse()));
   connect(m_institutionsView, SIGNAL(accountDoubleClick()), this, SLOT(slotAccountDoubleClick()));
+  connect(m_institutionsView, SIGNAL(rightMouseClick()), this, SLOT(slotRightMouse()));
 
   connect(m_categoriesView, SIGNAL(categoryRightMouseClick()),
     this, SLOT(slotAccountRightMouse()));
@@ -241,10 +241,10 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   m_accountMenu = new KPopupMenu(this);
   m_accountMenu->insertTitle(kiconloader->loadIcon("account", KIcon::MainToolbar), i18n("Account Options"));
-  m_accountMenu->insertItem(kiconloader->loadIcon("account_add", KIcon::Small), i18n("New account..."), this, SLOT(slotAccountNew()), 0, AccountNew);
+  m_accountMenu->insertItem(kiconloader->loadIcon("account_add", KIcon::Small), i18n("New account..."), kmymoney2, SLOT(slotNewAccount()), 0, AccountNew);
   m_accountMenu->insertItem(kiconloader->loadIcon("account_open", KIcon::Small), i18n("Open..."), this, SLOT(slotAccountDoubleClick()), 0, AccountOpen);
   m_accountMenu->insertSeparator();
-  m_accountMenu->insertItem(kiconloader->loadIcon("reconcile", KIcon::Small), i18n("Reconcile..."), this, SLOT(slotAccountReconcile()), 0, AccountReconcile);
+  m_accountMenu->insertItem(kiconloader->loadIcon("reconcile", KIcon::Small), i18n("Reconcile..."), kmymoney2, SLOT(slotAccountReconcile()), 0, AccountReconcile);
   m_accountMenu->insertSeparator();
   m_accountMenu->insertItem(kiconloader->loadIcon("account", KIcon::Small), i18n("Edit..."), this, SLOT(slotAccountEdit()), 0, AccountEdit);
   m_accountMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotAccountDelete()), 0, AccountDelete);
@@ -257,13 +257,13 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_bankMenu = new KPopupMenu(this);
   m_bankMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("Institution Options"));
   // Use a proxy slot
-  m_bankMenu->insertItem(kiconloader->loadIcon("account_add", KIcon::Small), i18n("New Account..."), this, SLOT(slotBankAccountNew()));
+  m_bankMenu->insertItem(kiconloader->loadIcon("account_add", KIcon::Small), i18n("New Account..."), kmymoney2, SLOT(slotNewAccount()));
   m_bankMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("Edit..."), this, SLOT(slotBankEdit()));
   m_bankMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotBankDelete()));
 
   m_rightMenu = new KPopupMenu(this);
   m_rightMenu->insertTitle(kiconloader->loadIcon("bank", KIcon::MainToolbar), i18n("KMyMoney Options"));
-  m_rightMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("New Institution..."), this, SLOT(slotBankNew()));
+  m_rightMenu->insertItem(kiconloader->loadIcon("bank", KIcon::Small), i18n("New Institution..."), kmymoney2, SLOT(slotNewInstitution()));
 
   // construct an empty file
   newFile(true);
@@ -286,8 +286,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 KMyMoneyView::~KMyMoneyView()
 {
   removeStorage();
-  if(m_searchDlg)
-    delete m_searchDlg;
 }
 
 void KMyMoneyView::newStorage(void)
@@ -349,8 +347,8 @@ void KMyMoneyView::slotAccountRightMouse()
   m_accountMenu->setItemEnabled(AccountDelete, false);
   m_accountMenu->setItemEnabled(AccountOfxConnect, false);
 
-  m_accountMenu->disconnectItem(AccountNew, this, SLOT(slotAccountNew()));
-  m_accountMenu->disconnectItem(AccountNew, this, SLOT(slotCategoryNew()));
+  m_accountMenu->disconnectItem(AccountNew, kmymoney2, SLOT(slotNewAccount()));
+  m_accountMenu->disconnectItem(AccountNew, kmymoney2, SLOT(slotNewCategory()));
 
   if(ok == true) {
     try {
@@ -380,7 +378,7 @@ void KMyMoneyView::slotAccountRightMouse()
             }
           }
           m_accountMenu->changeItem(AccountNew, i18n("New account..."));
-          m_accountMenu->connectItem(AccountNew, this, SLOT(slotAccountNew()));
+          m_accountMenu->connectItem(AccountNew, kmymoney2, SLOT(slotNewAccount()));
           break;
 
         case MyMoneyAccount::Income:
@@ -390,7 +388,7 @@ void KMyMoneyView::slotAccountRightMouse()
             m_accountMenu->setItemEnabled(AccountDelete, file->transactionCount(account.id())==0);
           }
           m_accountMenu->changeItem(AccountNew, i18n("New category..."));
-          m_accountMenu->connectItem(AccountNew, this, SLOT(slotCategoryNew()));
+          m_accountMenu->connectItem(AccountNew, kmymoney2, SLOT(slotNewCategory()));
           break;
 
         default:
@@ -527,7 +525,7 @@ void KMyMoneyView::slotBankEdit()
     MyMoneyInstitution institution = file->institution(pView->currentInstitution(bankSuccess));
 
     // bankSuccess is not checked anymore because m_file->institution will throw anyway
-    KNewBankDlg dlg(institution, true, this, "NewBankDlg");
+    KNewBankDlg dlg(institution);
     if (dlg.exec())
     {
       file->modifyInstitution(dlg.institution());
@@ -1165,255 +1163,31 @@ bool KMyMoneyView::dirty(void)
   return MyMoneyFile::instance()->dirty();
 }
 
-void KMyMoneyView::slotBankNew(void)
+void KMyMoneyView::slotAccountReconcile(const MyMoneyAccount& account)
 {
-  if (!fileOpen())
-    return;
-
-  MyMoneyInstitution institution;
-
-  KNewBankDlg dlg(institution, false, this, "NewBankDlg");
-  if (dlg.exec())
-  {
-    try
-    {
-      MyMoneyFile* file = MyMoneyFile::instance();
-
-      institution = dlg.institution();
-
-      file->addInstitution(institution);
-    }
-    catch (MyMoneyException *e)
-    {
-      delete e;
-      KMessageBox::information(this, i18n("Cannot add bank"));
-      return;
-    }
-  }
-}
-
-void KMyMoneyView::slotCategoryNew(void)
-{
-  m_bankRightClick=false;
-  accountNew(true);
-}
-
-void KMyMoneyView::slotAccountNew(void)
-{
-  m_bankRightClick=false;
-  accountNew(false);
-}
-
-void KMyMoneyView::accountNew(const bool createCategory)
-{
-
-  if (!fileOpen())
-    return;
-
-  MyMoneyAccount newAccount;
-  MyMoneyAccount parentAccount;
-  MyMoneyAccount brokerageAccount;
-  KNewAccountWizard *newAccountWizard = 0;
-  int dialogResult;
-
-  if(createCategory == false) {
-    // create account, use wizard
-    newAccountWizard = new KNewAccountWizard(this, "NewAccountWizard");
-    connect(newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotBankNew()));
-
-    newAccountWizard->setAccountName(QString());
-    newAccountWizard->setOpeningBalance(0);
-
-    // Preselect the institution if we right clicked on a bank
-    if (m_bankRightClick)
-      newAccountWizard->setInstitution(m_accountsInstitution);
-
-    if((dialogResult = newAccountWizard->exec()) == QDialog::Accepted) {
-      newAccount = newAccountWizard->account();
-      parentAccount = newAccountWizard->parentAccount();
-      brokerageAccount = newAccountWizard->brokerageAccount();
-    }
-  } else {
-    // regular dialog selected
-    MyMoneyAccount account;
-    QString title;
-    QCString accId;
-    bool ok;
-
-    if(pageIndex(m_accountsViewFrame) == activePageIndex())
-      accId = m_accountsView->currentAccount(ok);
-    else if(pageIndex(m_institutionsViewFrame) == activePageIndex())
-      accId = m_institutionsView->currentAccount(ok);
-    else if(pageIndex(m_categoriesViewFrame) == activePageIndex())
-      accId = m_categoriesView->currentAccount(ok);
-
-    if(ok) {
-      try {
-        MyMoneyFile* file = MyMoneyFile::instance();
-        MyMoneyAccount parent = file->account(accId);
-        account.setParentAccountId(accId);
-        account.setAccountType( parent.accountType() );
-      } catch(MyMoneyException *e) {
-        delete e;
-      }
-    }
-
-    if(createCategory == false)
-      title = i18n("Create a new Account");
-    else
-      title = i18n("Create a new Category");
-    KNewAccountDlg dialog(account, false, createCategory, 0, "NewAccountDlg", title);
-
-    if((dialogResult = dialog.exec()) == QDialog::Accepted) {
-      newAccount = dialog.account();
-      parentAccount = dialog.parentAccount();
-    }
-  }
-
-  if(dialogResult == QDialog::Accepted) {
-
-    // The dialog/wizard doesn't check the parent.
-    // An exception will be thrown on the next line instead.
-    try
-    {
-      // Check the opening balance
-      MyMoneyMoney openingBal = newAccount.openingBalance();
-      if (openingBal.isPositive() && newAccount.accountGroup() == MyMoneyAccount::Liability)
-      {
-        openingBal = -openingBal;
-        QString message = i18n("This account is a liability and if the "
-            "opening balance represents money owed, then it should be negative.  "
-            "Negate the amount?\n\n"
-            "Please click Yes to change the opening balance to %1,\n"
-            "Please click No to leave the amount as %2,\n"
-            "Please click Cancel to abort the account creation.")
-            .arg(openingBal.formatMoney())
-            .arg(newAccount.openingBalance().formatMoney());
-
-        int ans = KMessageBox::questionYesNoCancel(this, message);
-        if (ans == KMessageBox::Yes)
-        {
-          newAccount.setOpeningBalance(openingBal);
-        }
-        else if (ans == KMessageBox::Cancel)
-          return;
-      }
-
-      MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
-
-      // We MUST add the schedule AFTER adding the account because
-      // otherwise an unknown account will be thrown.
-      if(newAccountWizard != 0)
-        createSchedule(newAccountWizard->schedule(), newAccount);
-
-      // in case of a loan account, we add the initial payment
-      if((newAccount.accountType() == MyMoneyAccount::Loan
-      || newAccount.accountType() == MyMoneyAccount::AssetLoan)
-      && !newAccount.value("kmm-loan-payment-acc").isEmpty()
-      && !newAccount.value("kmm-loan-payment-date").isEmpty()) {
-        MyMoneyAccountLoan acc(newAccount);
-        MyMoneyTransaction t;
-        MyMoneySplit a, b;
-        a.setAccountId(acc.id());
-        b.setAccountId(acc.value("kmm-loan-payment-acc").latin1());
-        a.setValue(acc.loanAmount());
-        if(acc.accountType() == MyMoneyAccount::Loan)
-          a.setValue(-a.value());
-        b.setValue(-a.value());
-        a.setMemo(i18n("Loan payout"));
-        b.setMemo(i18n("Loan payout"));
-        t.setPostDate(QDate::fromString(acc.value("kmm-loan-payment-date"), Qt::ISODate));
-        try {
-          newAccount.deletePair("kmm-loan-payment-acc");
-          newAccount.deletePair("kmm-loan-payment-date");
-          MyMoneyFile::instance()->modifyAccount(newAccount);
-
-          t.addSplit(a);
-          t.addSplit(b);
-          MyMoneyFile::instance()->addTransaction(t);
-        } catch(MyMoneyException *e) {
-          qDebug("Cannot add loan payout transaction: %s", e->what().latin1());
-          delete e;
-        }
-
-      // in case of an investment account we check if we should create
-      // a brokerage account
-      } else if(newAccount.accountType() == MyMoneyAccount::Investment
-             && !brokerageAccount.name().isEmpty()) {
-        try {
-          MyMoneyFile::instance()->addAccount(brokerageAccount, parentAccount);
-
-          // set a link from the investment account to the brokerage account
-          newAccount.setValue("kmm-brokerage-account", brokerageAccount.id());
-          MyMoneyFile::instance()->modifyAccount(newAccount);
-        } catch(MyMoneyException *e) {
-          qDebug("Cannot add brokerage account: %s", e->what().latin1());
-          delete e;
-        }
-      }
-    }
-    catch (MyMoneyException *e)
-    {
-      QString message("Unable to add account: ");
-      message += e->what();
-      KMessageBox::information(this, message);
-      delete e;
-    }
-  }
-  if(newAccountWizard != 0) {
-    delete newAccountWizard;
-    newAccountWizard = 0;
-  }
-}
-
-void KMyMoneyView::slotAccountReconcile(void)
-{
-  bool  ok = false;
-  QCString acc;
-  MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneyAccount account;
-
-  if(pageIndex(m_accountsViewFrame) == activePageIndex())
-    acc = m_accountsView->currentAccount(ok);
-  else if(pageIndex(m_institutionsViewFrame) == activePageIndex())
-    acc = m_institutionsView->currentAccount(ok);
-  else if(pageIndex(m_categoriesViewFrame) == activePageIndex())
-    acc = m_categoriesView->currentAccount(ok);
-  else if(pageIndex(m_ledgerViewFrame) == activePageIndex()) {
-    acc = m_ledgerView->accountId();
-    ok = !acc.isEmpty();
-  }
+  bool  ok = true;
 
   // we cannot reconcile standard accounts
-  if(file->isStandardAccount(acc))
+  if(MyMoneyFile::instance()->isStandardAccount(account.id()))
     ok = false;
 
   // check if we can reconcile this account
   // it make's sense for asset and liability accounts
   if(ok == true) {
-    try {
-      account = file->account(acc);
-      switch(file->accountGroup(account.accountType())) {
-        case MyMoneyAccount::Asset:
-        case MyMoneyAccount::Liability:
-          break;
-        default:
-          ok = false;
-      }
-    } catch(MyMoneyException *e) {
-      delete e;
-      ok = false;
+    switch(MyMoneyFile::instance()->accountGroup(account.accountType())) {
+      case MyMoneyAccount::Asset:
+      case MyMoneyAccount::Liability:
+        showPage(pageIndex(m_ledgerViewFrame));
+        // for internal reasons, the account must be selected first
+        m_ledgerView->slotSelectAccount(account.id(), QCString(), false);
+
+        // and in a second step the reconciliation mode can be started
+        m_ledgerView->slotSelectAccount(account.id(), QCString(), true);
+        break;
+
+      default:
+        ok = false;
     }
-  }
-
-  if(ok == true) {
-    showPage(pageIndex(m_ledgerViewFrame));
-
-    // for internal reasons, the account must be selected first
-    m_ledgerView->slotSelectAccount(acc, QCString(), false);
-
-    // and in a second step the reconciliation mode can be started
-    m_ledgerView->slotSelectAccount(acc, QCString(), true);
   }
 }
 
@@ -2071,25 +1845,6 @@ void KMyMoneyView::slotRefreshViews()
   m_scheduledView->slotReloadView();
 }
 
-void KMyMoneyView::slotFindTransaction(void)
-{
-  if(m_searchDlg == 0) {
-    m_searchDlg = new KFindTransactionDlg();
-    connect(m_searchDlg, SIGNAL(destroyed()), this, SLOT(slotCloseSearchDialog()));
-    connect(m_searchDlg, SIGNAL(transactionSelected(const QCString&, const QCString&)),
-            this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
-  }
-  m_searchDlg->show();
-  m_searchDlg->raise();
-}
-
-void KMyMoneyView::slotCloseSearchDialog(void)
-{
-  if(m_searchDlg)
-    m_searchDlg->deleteLater();
-  m_searchDlg = 0;
-}
-
 QString KMyMoneyView::currentAccountName(void)
 {
   bool accountSuccess=false;
@@ -2173,6 +1928,7 @@ void KMyMoneyView::slotRememberPage(QWidget* w)
   config->sync();
 }
 
+#if 0
 void KMyMoneyView::slotBankAccountNew()
 {
   m_bankRightClick = true;
@@ -2186,6 +1942,7 @@ void KMyMoneyView::slotBankAccountNew()
   }
   accountNew(false);
 }
+#endif
 
 void KMyMoneyView::fixFile(void)
 {

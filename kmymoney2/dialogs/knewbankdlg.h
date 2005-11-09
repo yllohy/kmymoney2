@@ -17,33 +17,43 @@
 #ifndef KNEWBANKDLG_H
 #define KNEWBANKDLG_H
 
-#include <klocale.h>
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qdialog.h>
+
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <klocale.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
 
 #include "../mymoney/mymoneyinstitution.h"
 #include "../mymoney/mymoneykeyvaluecontainer.h"
 
 #include "../dialogs/knewbankdlgdecl.h"
 
-// This dialog lets the user create or edit
-// a bank.
-// Use the second constructor to edit the bank.
-class KNewBankDlg : public KNewBankDlgDecl  {
-   Q_OBJECT
+/// This dialog lets the user create or edit an institution
+class KNewBankDlg : public KNewBankDlgDecl
+{
+  Q_OBJECT
+
+public:
+  KNewBankDlg(MyMoneyInstitution& institution, QWidget *parent = 0, const char *name = 0);
+  ~KNewBankDlg();
+  const MyMoneyInstitution& institution(void);
+
+protected slots:
+  void okClicked();
+  void advancedClicked();
+  void institutionNameChanged( const QString &);
 
 private:
   MyMoneyInstitution m_institution;
   MyMoneyKeyValueContainer m_ofxSettings;
 
-public:
-  KNewBankDlg(MyMoneyInstitution& institution, bool isEditing, QWidget *parent, const char *name);
-	~KNewBankDlg();
-  MyMoneyInstitution institution(void);
-
-protected slots:
-  void okClicked();
-  void advancedClicked();
-	void institutionNameChanged( const QString &);
 };
 
 #endif

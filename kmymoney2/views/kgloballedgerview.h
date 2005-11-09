@@ -58,7 +58,7 @@ class KLedgerView;
 
 class KGlobalLedgerView : public KMyMoneyViewBase, MyMoneyObserver
 {
-   Q_OBJECT
+  Q_OBJECT
 public:
   KGlobalLedgerView(QWidget *parent=0, const char *name=0);
   ~KGlobalLedgerView();
@@ -95,6 +95,8 @@ public:
     * @deprecated
     */
   void loadInvestmentView(void);
+
+  void reconcileAccount(void);
 
 public slots:
   void show(void);
