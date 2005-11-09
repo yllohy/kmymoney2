@@ -221,13 +221,14 @@ void MyMoneyScheduleTest::testAnyScheduled()
 
 void MyMoneyScheduleTest::testOverdue()
 {
-	MyMoneySchedule sch;
+	MyMoneySchedule sch_overdue;
+	MyMoneySchedule sch_intime;
 
-	QDate startDate = QDate::currentDate().addDays(-701);
+	QDate startDate = QDate::currentDate().addDays(-1).addMonths(-23);
 	//QDate startDate = QDate::currentDate().addDays(-31);
-	QDate lastPaymentDate = QDate::currentDate().addDays(-35);
+	QDate lastPaymentDate = QDate::currentDate().addDays(-1).addMonths(-1);
 
-	QString ref_ok = QString(
+	QString ref = QString(
 		"<!DOCTYPE TEST>\n"
 		"<SCHEDULE-CONTAINER>\n"
 		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"0\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"8\" endDate=\"\" type=\"5\" id=\"SCH0002\" name=\"A Name\" fixed=\"0\" occurence=\"32\" >\n"
@@ -244,19 +245,29 @@ void MyMoneyScheduleTest::testOverdue()
 		"   </KEYVALUEPAIRS>\n"
 		"  </TRANSACTION>\n"
 		" </SCHEDULED_TX>\n"
-		"</SCHEDULE-CONTAINER>\n"
-	).arg(startDate.toString(Qt::ISODate))
+		"</SCHEDULE-CONTAINER>\n");
+	QString ref_overdue = ref.arg(startDate.toString(Qt::ISODate))
 	 .arg(lastPaymentDate.toString(Qt::ISODate))
 	 .arg(lastPaymentDate.toString(Qt::ISODate));
 
+	QString ref_intime = ref.arg(startDate.addDays(1).toString(Qt::ISODate))
+	 .arg(lastPaymentDate.addDays(1).toString(Qt::ISODate))
+	 .arg(lastPaymentDate.addDays(1).toString(Qt::ISODate));
+
 	QDomDocument doc;
 	QDomElement node;
-	doc.setContent(ref_ok);
-	node = doc.documentElement().firstChild().toElement();
 
 	try {
-		sch.readXML(node);
-		CPPUNIT_ASSERT(sch.isOverdue() == true);
+		doc.setContent(ref_overdue);
+		node = doc.documentElement().firstChild().toElement();
+		sch_overdue.readXML(node);
+		doc.setContent(ref_intime);
+		node = doc.documentElement().firstChild().toElement();
+		sch_intime.readXML(node);
+
+		CPPUNIT_ASSERT(sch_overdue.isOverdue() == true);
+		CPPUNIT_ASSERT(sch_intime.isOverdue() == false);
+
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
