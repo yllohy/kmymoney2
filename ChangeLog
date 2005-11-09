@@ -1,3 +1,15 @@
+2005-11-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Moved some action slots to KMyMoney2App:
+  * Revised KAction handling
+  * Fixed date calculation in isOverdue testcase, enhanced testcase
+  * Restructured action handling
+  * Renamed some members in the new account wizard
+  * Changed open balance handling in new account wizard to use
+    'opening balance transaction'
+
+2005-11-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated files for german and galician translation
+
 2005-11-06 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Save/restore payee email address
     Could backport to 0.8
