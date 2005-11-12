@@ -144,7 +144,7 @@ void kMyMoneyRegisterSearch::paintCell(QPainter *p, int row, int col, const QRec
               if(m_transaction->isLoanPayment()) {
                 txt = i18n("Loan payment");
               } else if(m_transaction->splitCount() > 2)
-                txt = i18n("Split transaction");
+                txt = i18n("Split transaction (category replacement)", "Split transaction");
               else {
                 MyMoneySplit split = m_transaction->splitByAccount(m_split.accountId(), false);
                 txt = MyMoneyFile::instance()->accountToCategory(split.accountId());
