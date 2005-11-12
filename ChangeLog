@@ -1,3 +1,11 @@
+2005-11-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Moved most context menus to kmymoney2ui.rc
+  * Modified menu structure
+  * Revised logic around actions, context menus
+  * Adapted plugin interface to new action handling
+  * Print error when running 'make package-messages' in a VPATH environment
+  * Differentiate 'split transaction' for usage as category and caption
+
 2005-11-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Moved some action slots to KMyMoney2App:
   * Revised KAction handling
