@@ -118,6 +118,8 @@ KInvestmentView::~KInvestmentView()
 {
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccount, this);
+
+  investmentTable->saveLayout(KGlobal::config(), "Investment Settings");
 }
 
 void KInvestmentView::initSummaryTab(void)
@@ -126,9 +128,15 @@ void KInvestmentView::initSummaryTab(void)
   investmentTable->setColumnText(0, i18n("Symbol"));
   investmentTable->addColumn(i18n("Name"));
   investmentTable->addColumn(i18n("Symbol"));
-  investmentTable->addColumn(i18n("Value"));
-  investmentTable->addColumn(i18n("Quantity"));
-  investmentTable->addColumn(i18n("Price"));
+
+  int col = investmentTable->addColumn(i18n("Value"));
+  investmentTable->setColumnAlignment(col, Qt::AlignRight);
+
+  col = investmentTable->addColumn(i18n("Quantity"));
+  investmentTable->setColumnAlignment(col, Qt::AlignRight);
+
+  col = investmentTable->addColumn(i18n("Price"));
+  investmentTable->setColumnAlignment(col, Qt::AlignRight);
 #if 0
   investmentTable->addColumn(i18n("Cost Basis"));
   investmentTable->addColumn(i18n("$ Gain"));
@@ -142,6 +150,8 @@ void KInvestmentView::initSummaryTab(void)
   investmentTable->setColumnWidthMode(0, QListView::Maximum);
   investmentTable->header()->setResizeEnabled(true);
   investmentTable->setAllColumnsShowFocus(true);
+  investmentTable->setShowSortIndicator(true);
+  investmentTable->restoreLayout(KGlobal::config(), "Investment Settings");
 }
 
 void KInvestmentView::initTransactionTab(void)
