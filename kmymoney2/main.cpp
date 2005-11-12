@@ -140,8 +140,10 @@ int main(int argc, char *argv[])
     }
   }
 
+#if KMM_DEBUG
   if(args->isSet("trace"))
     MyMoneyTracer::on();
+#endif
 
   kmymoney2 = 0;
   kmymoney2 = new KMyMoney2App();
