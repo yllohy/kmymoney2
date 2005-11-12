@@ -28,10 +28,17 @@ $(top_srcdir)/acinclude.m4: $(top_srcdir)/admin/acinclude.m4.in $(top_srcdir)/ad
 DISTCLEANFILES=kmymoney2.kdevses kmymoney2-*.tar.gz
 MAINTAINERCLEANFILES = subdirs configure.in acinclude.m4 configure.files
 
-package-messages:
+.PHONY: check-vpath-environment
+check-vpath-environment:
+	@if test "x$(top_srcdir)x" != "x$(top_builddir)x"; then \
+		echo "Packaging messages does not work in VPATH environment!"; \
+		exit 1; \
+	fi;
+
+package-messages: check-vpath-environment
 	$(MAKE) -C $(top_srcdir) -f admin/Makefile.common package-messages
 
-merge-messages:
+merge-messages: check-vpath-environment
 	$(MAKE) -C $(top_srcdir)/po merge
 
 # The following line adds the required admin files
