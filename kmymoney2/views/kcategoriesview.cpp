@@ -213,17 +213,24 @@ const bool KCategoriesView::showSubAccounts(const QCStringList& accounts, KAccou
 {
   bool accountUsed = false;
 
-  for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
-  {
-    KAccountListItem *accountItem  = new KAccountListItem(parentItem,
-                                                          m_accountMap[*it]);
-    accountUsed = m_transactionCountMap[*it] > 0;
+  for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it ) {
+    bool thisAccountUsed = false;
+    KAccountListItem *accountItem  = new KAccountListItem(parentItem, m_accountMap[*it]);
+    thisAccountUsed = m_transactionCountMap[*it] > 0;
 
-    QCStringList subAccounts = m_accountMap[*it].accountList();
-    if (subAccounts.count() >= 1)
-    {
-      accountUsed |= showSubAccounts(subAccounts, accountItem, typeName);
+    if (m_accountMap[*it].accountList().count() >= 1) {
+      thisAccountUsed |= showSubAccounts(m_accountMap[*it].accountList(), accountItem, typeName);
     }
+
+    if(thisAccountUsed == false && m_hideCategory == true) {
+      // in case hide category is on and the account nor any of it's
+      // subaccounts has a split, we can safely remove it and all
+      // it's sub-ordinate accounts from the list
+      delete accountItem;
+      m_hiddenCategories->show();
+    }
+
+    accountUsed |= thisAccountUsed;
   }
   return accountUsed;
 }

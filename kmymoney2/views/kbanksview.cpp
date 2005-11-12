@@ -707,30 +707,32 @@ void KAccountsView::refresh(const QCString& selectAccount)
 
 const bool KAccountsView::showSubAccounts(const QCStringList& accounts, KAccountListItem *parentItem, const bool used)
 {
-  bool  accountUsed = used;
+  bool accountUsed = used;
 
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it ) {
+    bool thisAccountUsed = used;
 
     // don't show stock accounts in non-expert mode
     if((m_accountMap[*it].accountType() == MyMoneyAccount::Stock)
     && !KMyMoneyUtils::isExpertMode())
       continue;
 
-    KAccountListItem *accountItem  = new KAccountListItem(parentItem,
-          m_accountMap[*it]);
+    KAccountListItem *accountItem  = new KAccountListItem(parentItem, m_accountMap[*it]);
 
-    accountUsed |= (m_transactionCountMap[*it] > 0);
+    thisAccountUsed |= (m_transactionCountMap[*it] > 0);
 
     if (m_accountMap[*it].accountList().count() >= 1) {
-      accountUsed |= showSubAccounts(m_accountMap[*it].accountList(), accountItem, used);
+      thisAccountUsed |= showSubAccounts(m_accountMap[*it].accountList(), accountItem, used);
     }
 
-    if(accountUsed == false && m_hideCategory == true) {
-      // in case hide category is on and the account or any of it's
-      // subaccounts has no split, we can safely remove it and all
+    if(thisAccountUsed == false && m_hideCategory == true) {
+      // in case hide category is on and the account nor any of it's
+      // subaccounts has a split, we can safely remove it and all
       // it's sub-ordinate accounts from the list
       delete accountItem;
+      m_hiddenCategories->show();
     }
+    accountUsed |= thisAccountUsed;
   }
   return accountUsed;
 }
