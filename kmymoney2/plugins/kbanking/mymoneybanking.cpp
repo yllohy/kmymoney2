@@ -61,8 +61,8 @@ KBankingPlugin::KBankingPlugin(QObject *parent, const char* name, const QStringL
 {
   m_kbanking = new KMyMoneyBanking(this, "KMyMoney");
   if(m_kbanking) {
-    // GWEN_Logger_SetLevel(0, GWEN_LoggerLevelInfo);
-    // GWEN_Logger_SetLevel(AQBANKING_LOGDOMAIN, GWEN_LoggerLevelInfo);
+    GWEN_Logger_SetLevel(0, GWEN_LoggerLevelInfo);
+    GWEN_Logger_SetLevel(AQBANKING_LOGDOMAIN, GWEN_LoggerLevelDebug);
     if(m_kbanking->init() == 0) {
       // Tell the host application to load my GUI component
       setInstance(KGenericFactory<KBankingPlugin>::instance());
@@ -73,9 +73,6 @@ KBankingPlugin::KBankingPlugin(QObject *parent, const char* name, const QStringL
 
       // create actions
       createActions();
-
-      // create context menu entries
-      createContextMenu();
 
     } else {
       kdWarning() << "Could not initialize KBanking online banking interface" << endl;
@@ -100,7 +97,7 @@ void KBankingPlugin::createJobView(void)
   QWidget* w = new JobView(m_kbanking, view, "JobView");
   viewInterface()->addWidget(view, w);
   connect(viewInterface(), SIGNAL(viewStateChanged(bool)), frm, SLOT(setEnabled(bool)));
-
+  connect(viewInterface(), SIGNAL(accountSelected(const MyMoneyAccount&)), this, SLOT(slotAccountSelected(const MyMoneyAccount&)));
 #if 0
   QFrame* frm = viewInterface()->addPage(i18n("Outbox"), i18n("Outbox"),DesktopIcon("outbox"));
   QVBoxLayout* layout = new QVBoxLayout(frm);
@@ -114,12 +111,15 @@ void KBankingPlugin::createJobView(void)
 
 void KBankingPlugin::createActions(void)
 {
-  m_configAction = new KAction(i18n("Configure Online &Banking..."), "configure", 0, this, SLOT(slotSettings()), actionCollection(), "banking_settings");
-  m_importAction = new KAction(i18n("AqBanking importer ..."), "", 0, this, SLOT(slotImport()), actionCollection(), "file_import_aqb");
+  new KAction(i18n("Configure Online &Banking..."), "configure", 0, this, SLOT(slotSettings()), actionCollection(), "settings_aqbanking");
+  new KAction(i18n("AqBanking importer ..."), "", 0, this, SLOT(slotImport()), actionCollection(), "file_import_aqbanking");
+  new KAction(i18n("Map to HBCI account..."), "news_subscribe", 0, this, SLOT(slotAccountOnlineMap()), actionCollection(), "account_map_aqbanking");
+  new KAction(i18n("Online update using HBCI..."), "reload", 0, this, SLOT(slotAccountOnlineUpdate()), actionCollection(), "account_update_aqbanking");
 
-  connect(viewInterface(), SIGNAL(viewStateChanged(bool)), m_importAction, SLOT(setEnabled(bool)));
+  connect(viewInterface(), SIGNAL(viewStateChanged(bool)), action("file_import_aqbanking"), SLOT(setEnabled(bool)));
 }
 
+#if 0
 void KBankingPlugin::createContextMenu(void)
 {
   m_accountMenu = viewInterface()->accountContextMenu();
@@ -137,6 +137,7 @@ void KBankingPlugin::createContextMenu(void)
     connect(viewInterface(), SIGNAL(accountSelectedForContextMenu(const MyMoneyAccount&)), this, SLOT(slotAccountSelected(const MyMoneyAccount&)));
   }
 }
+#endif
 
 void KBankingPlugin::slotSettings(void)
 {
@@ -207,8 +208,8 @@ void KBankingPlugin::slotAccountSelected(const MyMoneyAccount& acc)
   bool state = false;
   m_account = acc;
 
-  m_accountMenu->setItemEnabled(m_menuMapId, false);
-  m_accountMenu->setItemEnabled(m_menuUpdateId, false);
+  action("account_map_aqbanking")->setEnabled(false);
+  action("account_update_aqbanking")->setEnabled(false);
 
   if(!MyMoneyFile::instance()->isStandardAccount(acc.id())) {
     switch(m_account.accountGroup()) {
@@ -236,9 +237,9 @@ void KBankingPlugin::slotAccountSelected(const MyMoneyAccount& acc)
 
   if(state == true) {
     if(accountIsMapped(acc.id())) {
-      m_accountMenu->setItemEnabled(m_menuUpdateId, true);
+      action("account_update_aqbanking")->setEnabled(true);
     } else {
-      m_accountMenu->setItemEnabled(m_menuMapId, true);
+      action("account_map_aqbanking")->setEnabled(true);
     }
   }
 }

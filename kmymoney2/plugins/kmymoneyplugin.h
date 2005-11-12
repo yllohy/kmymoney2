@@ -33,6 +33,8 @@
 #include <kxmlguiclient.h>
 class KAboutData;
 class KInstance;
+class KAction;
+class KToggleAction;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -61,6 +63,11 @@ namespace KMyMoneyPlugin {
     virtual ~Plugin();
 
   protected:
+    /** See KMyMoney2App::action() for a description */
+    KAction* action(const QString& name) const;
+
+    /** See KMyMoney2App::toggleAction() for a description */
+    KToggleAction* toggleAction(const QString& name) const;
 
     // define interface classes here
     // they are defined in the following form for an interface

@@ -51,14 +51,6 @@ public:
   ~KMMViewInterface() {};
 
   /**
-    * This method returns a pointer to the account context menu
-    * which is opened when right clicking on an account.
-    *
-    * @return pointer to KPopupMenu
-    */
-  KPopupMenu*   accountContextMenu();
-
-  /**
     * This method returns a pointer to a newly created view
     * with title @p item and icon @p pixmap.
     *

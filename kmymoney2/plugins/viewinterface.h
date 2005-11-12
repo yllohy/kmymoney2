@@ -39,6 +39,7 @@ class KPopupMenu;
 // Project Includes
 
 #include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/export.h>
 class KMyMoneyViewBase;
 
@@ -57,14 +58,6 @@ public:
   ~ViewInterface() {};
 
   /**
-    * This method returns a pointer to the account context menu
-    * which is opened when right clicking on an account.
-    *
-    * @return pointer to KPopupMenu
-    */
-  virtual KPopupMenu*   accountContextMenu() = 0;
-
-  /**
     * This method creates a new page in the application.
     * See KJanusWidget::addPage() for details.
     */
@@ -80,7 +73,8 @@ public:
   virtual void addWidget(KMyMoneyViewBase* view, QWidget* w) = 0;
 
 signals:
-  void accountSelectedForContextMenu(const MyMoneyAccount& acc);
+  void accountSelected(const MyMoneyAccount& acc);
+  void institutionSelected(const MyMoneyInstitution& institution);
   void viewStateChanged(bool);
   void kmmFilePlugin(unsigned int);
 };

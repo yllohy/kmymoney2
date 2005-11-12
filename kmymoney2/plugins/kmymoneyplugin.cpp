@@ -23,6 +23,7 @@
 
 #include <kinstance.h>
 #include <kaboutdata.h>
+#include <kaction.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -37,6 +38,39 @@ KMyMoneyPlugin::Plugin::Plugin(QObject* o, const char* name) :
 
 KMyMoneyPlugin::Plugin::~Plugin()
 {
+}
+
+KAction* KMyMoneyPlugin::Plugin::action(const QString& actionName) const
+{
+  static KShortcut shortcut("");
+  static KAction dummyAction(QString("Dummy"), QString(), shortcut, static_cast<const QObject*>(this), 0, static_cast<KActionCollection*>(0), "");
+
+  KAction* p = actionCollection()->action(actionName.latin1());
+  if(p)
+    return p;
+
+  qWarning("Action with name '%s' not found!", actionName.latin1());
+  return &dummyAction;
+}
+
+KToggleAction* KMyMoneyPlugin::Plugin::toggleAction(const QString& actionName) const
+{
+  static KShortcut shortcut("");
+  static KToggleAction dummyAction(QString("Dummy"), QString(), shortcut, static_cast<const QObject*>(this), 0, static_cast<KActionCollection*>(0), "");
+
+  KAction* q = actionCollection()->action(actionName.latin1());
+
+  if(q) {
+    KToggleAction* p = dynamic_cast<KToggleAction*>(q);
+    if(!p) {
+      qWarning("Action '%s' is not of type KToggleAction", actionName.latin1());
+      p = &dummyAction;
+    }
+    return p;
+  }
+
+  qWarning("Action with name '%s' not found!", actionName.latin1());
+  return &dummyAction;
 }
 
 KMyMoneyPlugin::ViewInterface* KMyMoneyPlugin::Plugin::viewInterface()

@@ -33,14 +33,11 @@ KMyMoneyPlugin::KMMViewInterface::KMMViewInterface(KMyMoney2App* app, KMyMoneyVi
   m_app(app),
   m_view(view)
 {
-  connect(m_view, SIGNAL(accountSelectedForContextMenu(const MyMoneyAccount&)), this, SIGNAL(accountSelectedForContextMenu(const MyMoneyAccount&)));
+  connect(app, SIGNAL(accountSelected(const MyMoneyAccount&)), this, SIGNAL(accountSelected(const MyMoneyAccount&)));
+  connect(app, SIGNAL(institutionSelected(const MyMoneyInstitution&)), this, SIGNAL(institutionSelected(const MyMoneyInstitution&)));
+
   connect(m_view, SIGNAL(viewStateChanged(bool)), this, SIGNAL(viewStateChanged(bool)));
   connect(m_view, SIGNAL(kmmFilePlugin(unsigned int)), this, SIGNAL(kmmFilePlugin(unsigned int)));
-}
-
-KPopupMenu* KMyMoneyPlugin::KMMViewInterface::accountContextMenu(void)
-{
-  return m_view->accountContextMenu();
 }
 
 KMyMoneyViewBase* KMyMoneyPlugin::KMMViewInterface::addPage(const QString& item, const QPixmap& pixmap)

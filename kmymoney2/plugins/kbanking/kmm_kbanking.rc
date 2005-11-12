@@ -1,19 +1,29 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="kmymoneyplugin-kbanking" version="1">
+<kpartgui name="kmymoneyplugin-kbanking" version="2">
   <MenuBar>
+    <Menu name="account">
+      <Separator/>
+      <Action name="account_map_aqbanking"/>
+      <Action name="account_update_aqbanking"/>
+    </Menu>
     <Menu name="online-banking">
       <text>Online Banking</text>
-      <Action name="banking_settings"/>
-      <Action name="file_import_aqb"/>
+      <Action name="settings_aqbanking"/>
+      <Action name="file_import_aqbanking"/>
     </Menu>
     <Menu name="settings">
-      <Action name="banking_settings" append="configure_merge"/>
-      <!-- <Action name="Configure Online Banking ..." /> -->
+      <Action name="settings_aqbanking" append="configure_merge"/>
     </Menu>
     <Menu name="file">
       <Menu name="import">
         <Separator/>
-        <Action name="file_import_aqb"/>
+        <Action name="file_import_aqbanking"/>
       </Menu>
     </Menu>
+  </MenuBar>
+  <Menu name="account_context_menu">
+    <Separator/>
+    <Action name="account_map_aqbanking"/>
+    <Action name="account_update_aqbanking"/>
+  </Menu>
 </kpartgui>
