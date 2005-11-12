@@ -71,15 +71,17 @@ void MyMoneyStorageANON::readFile(QIODevice* , IMyMoneySerialize* )
 
 void MyMoneyStorageANON::writeUserInformation(QDomElement& userInfo)
 {
-  userInfo.setAttribute(QString("name"), hideString(m_storage->userName()));
-  userInfo.setAttribute(QString("email"), hideString(m_storage->userEmail()));
+  MyMoneyPayee user = m_storage->user();
+
+  userInfo.setAttribute(QString("name"), hideString(user.name()));
+  userInfo.setAttribute(QString("email"), hideString(user.email()));
 
   QDomElement address = m_doc->createElement("ADDRESS");
-  address.setAttribute(QString("street"), hideString(m_storage->userStreet()));
-  address.setAttribute(QString("city"), hideString(m_storage->userTown()));
-  address.setAttribute(QString("county"), hideString(m_storage->userCounty()));
-  address.setAttribute(QString("zipcode"), hideString(m_storage->userPostcode()));
-  address.setAttribute(QString("telephone"), hideString(m_storage->userTelephone()));
+  address.setAttribute(QString("street"), hideString(user.address()));
+  address.setAttribute(QString("city"), hideString(user.city()));
+  address.setAttribute(QString("county"), hideString(user.state()));
+  address.setAttribute(QString("zipcode"), hideString(user.postcode()));
+  address.setAttribute(QString("telephone"), hideString(user.telephone()));
 
   userInfo.appendChild(address);
 }

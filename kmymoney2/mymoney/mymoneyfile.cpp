@@ -800,22 +800,10 @@ const QValueList<MyMoneyInstitution> MyMoneyFile::institutionList(void) const
 }
 
 // general get functions
-const QString MyMoneyFile::userName(void) const { checkStorage(); return m_storage->userName(); }
-const QString MyMoneyFile::userStreet(void) const { checkStorage(); return m_storage->userStreet(); }
-const QString MyMoneyFile::userTown(void) const { checkStorage(); return m_storage->userTown(); }
-const QString MyMoneyFile::userCounty(void) const { checkStorage(); return m_storage->userCounty(); }
-const QString MyMoneyFile::userPostcode(void) const { checkStorage(); return m_storage->userPostcode(); }
-const QString MyMoneyFile::userTelephone(void) const { checkStorage(); return m_storage->userTelephone(); }
-const QString MyMoneyFile::userEmail(void) const { checkStorage(); return m_storage->userEmail(); }
+const MyMoneyPayee& MyMoneyFile::user(void) const { checkStorage(); return m_storage->user(); }
 
 // general set functions
-void MyMoneyFile::setUserName(const QString& val) { checkStorage(); m_storage->setUserName(val); }
-void MyMoneyFile::setUserStreet(const QString& val) { checkStorage(); m_storage->setUserStreet(val); }
-void MyMoneyFile::setUserTown(const QString& val) { checkStorage(); m_storage->setUserTown(val); }
-void MyMoneyFile::setUserCounty(const QString& val) { checkStorage(); m_storage->setUserCounty(val); }
-void MyMoneyFile::setUserPostcode(const QString& val) { checkStorage(); m_storage->setUserPostcode(val); }
-void MyMoneyFile::setUserTelephone(const QString& val) { checkStorage(); m_storage->setUserTelephone(val); }
-void MyMoneyFile::setUserEmail(const QString& val) { checkStorage(); m_storage->setUserEmail(val); }
+void MyMoneyFile::setUser(const MyMoneyPayee& user) { checkStorage(); m_storage->setUser(user); }
 
 bool MyMoneyFile::dirty(void) const
 {

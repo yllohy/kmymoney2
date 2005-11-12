@@ -179,22 +179,10 @@ public:
   MyMoneyFile(IMyMoneyStorage *storage);
 
   // general get functions
-  const QString userName(void) const;
-  const QString userStreet(void) const;
-  const QString userTown(void) const;
-  const QString userCounty(void) const;
-  const QString userPostcode(void) const;
-  const QString userTelephone(void) const;
-  const QString userEmail(void) const;
+  const MyMoneyPayee& user(void) const;
 
   // general set functions
-  void setUserName(const QString& val);
-  void setUserStreet(const QString& val);
-  void setUserTown(const QString& val);
-  void setUserCounty(const QString& val);
-  void setUserPostcode(const QString& val);
-  void setUserTelephone(const QString& val);
-  void setUserEmail(const QString& val);
+  void setUser(const MyMoneyPayee& user);
 
   /**
     * This method can be used to turn on/off the notifications

@@ -34,13 +34,15 @@ void MyMoneySeqAccessMgrTest::tearDown()
 
 void MyMoneySeqAccessMgrTest::testEmptyConstructor()
 {
-	CPPUNIT_ASSERT(m->m_userName.isEmpty());
-	CPPUNIT_ASSERT(m->m_userStreet.isEmpty());
-	CPPUNIT_ASSERT(m->m_userTown.isEmpty());
-	CPPUNIT_ASSERT(m->m_userCounty.isEmpty());
-	CPPUNIT_ASSERT(m->m_userPostcode.isEmpty());
-	CPPUNIT_ASSERT(m->m_userTelephone.isEmpty());
-	CPPUNIT_ASSERT(m->m_userEmail.isEmpty());
+	MyMoneyPayee user = m->user();
+
+	CPPUNIT_ASSERT(user.name().isEmpty());
+	CPPUNIT_ASSERT(user.address().isEmpty());
+	CPPUNIT_ASSERT(user.city().isEmpty());
+	CPPUNIT_ASSERT(user.state().isEmpty());
+	CPPUNIT_ASSERT(user.postcode().isEmpty());
+	CPPUNIT_ASSERT(user.telephone().isEmpty());
+	CPPUNIT_ASSERT(user.email().isEmpty());
 	CPPUNIT_ASSERT(m->m_nextInstitutionID == 0);
 	CPPUNIT_ASSERT(m->m_nextAccountID == 0);
 	CPPUNIT_ASSERT(m->m_nextTransactionID == 0);
@@ -65,39 +67,48 @@ void MyMoneySeqAccessMgrTest::testEmptyConstructor()
 }
 
 void MyMoneySeqAccessMgrTest::testSetFunctions() {
-	
+	MyMoneyPayee user = m->user();
+
 	m->m_dirty = false;
-	m->setUserName("Name");
+	user.setName("Name");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
-	m->setUserStreet("Street");
+	user.setAddress("Street");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
-	m->setUserTown("Town");
+	user.setCity("Town");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
-	m->setUserCounty("County");
+	user.setState("County");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
-	m->setUserPostcode("Postcode");
+	user.setPostcode("Postcode");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
-	m->setUserTelephone("Telephone");
+	user.setTelephone("Telephone");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
-	m->setUserEmail("Email");
+	user.setEmail("Email");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	m->m_dirty = false;
 	m->setValue("key", "value");
 	CPPUNIT_ASSERT(m->dirty() == true);
 
-	CPPUNIT_ASSERT(m->userName() == "Name");
-	CPPUNIT_ASSERT(m->userStreet() == "Street");
-	CPPUNIT_ASSERT(m->userTown() == "Town");
-	CPPUNIT_ASSERT(m->userCounty() == "County");
-	CPPUNIT_ASSERT(m->userPostcode() == "Postcode");
-	CPPUNIT_ASSERT(m->userTelephone() == "Telephone");
-	CPPUNIT_ASSERT(m->userEmail() == "Email");
+	user = m->user();
+	CPPUNIT_ASSERT(user.name() == "Name");
+	CPPUNIT_ASSERT(user.address() == "Street");
+	CPPUNIT_ASSERT(user.city() == "Town");
+	CPPUNIT_ASSERT(user.state() == "County");
+	CPPUNIT_ASSERT(user.postcode() == "Postcode");
+	CPPUNIT_ASSERT(user.telephone() == "Telephone");
+	CPPUNIT_ASSERT(user.email() == "Email");
 	CPPUNIT_ASSERT(m->value("key") == "value");
 
 	m->m_dirty = false;
@@ -1026,7 +1037,9 @@ void MyMoneySeqAccessMgrTest::testPayeeName() {
 void MyMoneySeqAccessMgrTest::testAssignment() {
 	testAddTransactions();
 
-	m->setUserName("Thomas");
+	MyMoneyPayee user;
+	user.setName("Thomas");
+	m->setUser(user);
 
 	MyMoneySeqAccessMgr test = *m;
 	testEquality(&test);
@@ -1034,21 +1047,21 @@ void MyMoneySeqAccessMgrTest::testAssignment() {
 
 void MyMoneySeqAccessMgrTest::testEquality(const MyMoneySeqAccessMgr *t)
 {
-	CPPUNIT_ASSERT( m->m_userName == t->m_userName);
-	CPPUNIT_ASSERT( m->m_userStreet == t->m_userStreet);
-	CPPUNIT_ASSERT( m->m_userTown == t->m_userTown);
-	CPPUNIT_ASSERT( m->m_userCounty == t->m_userCounty);
-	CPPUNIT_ASSERT( m->m_userPostcode == t->m_userPostcode);
-	CPPUNIT_ASSERT( m->m_userTelephone == t->m_userTelephone);
-	CPPUNIT_ASSERT( m->m_userEmail == t->m_userEmail);
-	CPPUNIT_ASSERT( m->m_nextInstitutionID == t->m_nextInstitutionID);
-	CPPUNIT_ASSERT( m->m_nextAccountID == t->m_nextAccountID);
-	CPPUNIT_ASSERT( m->m_nextTransactionID == t->m_nextTransactionID);
-	CPPUNIT_ASSERT( m->m_nextPayeeID == t->m_nextPayeeID);
-	CPPUNIT_ASSERT( m->m_nextScheduleID == t->m_nextScheduleID);
-	CPPUNIT_ASSERT( m->m_dirty == t->m_dirty);
-	CPPUNIT_ASSERT( m->m_creationDate == t->m_creationDate);
-	CPPUNIT_ASSERT( m->m_lastModificationDate == t->m_lastModificationDate);
+	CPPUNIT_ASSERT(m->user().name() == t->user().name());
+	CPPUNIT_ASSERT(m->user().address() == t->user().address());
+	CPPUNIT_ASSERT(m->user().city() == t->user().city());
+	CPPUNIT_ASSERT(m->user().state() == t->user().state());
+	CPPUNIT_ASSERT(m->user().postcode() == t->user().postcode());
+	CPPUNIT_ASSERT(m->user().telephone() == t->user().telephone());
+	CPPUNIT_ASSERT(m->user().email() == t->user().email());
+	CPPUNIT_ASSERT(m->m_nextInstitutionID == t->m_nextInstitutionID);
+	CPPUNIT_ASSERT(m->m_nextAccountID == t->m_nextAccountID);
+	CPPUNIT_ASSERT(m->m_nextTransactionID == t->m_nextTransactionID);
+	CPPUNIT_ASSERT(m->m_nextPayeeID == t->m_nextPayeeID);
+	CPPUNIT_ASSERT(m->m_nextScheduleID == t->m_nextScheduleID);
+	CPPUNIT_ASSERT(m->m_dirty == t->m_dirty);
+	CPPUNIT_ASSERT(m->m_creationDate == t->m_creationDate);
+	CPPUNIT_ASSERT(m->m_lastModificationDate == t->m_lastModificationDate);
 
 	/*
 	 * make sure, that the keys and values are the same

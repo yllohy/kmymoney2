@@ -39,13 +39,7 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   m_nextScheduleID = 0;
   m_nextSecurityID = 0;
   m_nextReportID = 0;
-  m_userName =
-  m_userStreet =
-  m_userTown =
-  m_userCounty =
-  m_userPostcode =
-  m_userTelephone =
-  m_userEmail = QString();
+  m_user = MyMoneyPayee();
   m_dirty = false;
   m_institutionList.clear();
   m_accountList.clear();

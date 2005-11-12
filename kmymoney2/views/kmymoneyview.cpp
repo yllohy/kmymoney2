@@ -850,20 +850,22 @@ bool KMyMoneyView::newFile(const bool createEmtpyFile)
     if(newFileDlg.exec() == QDialog::Rejected)
       return false;
 
+    MyMoneyPayee user = file->user();
     if(newFileDlg.userNameText.length() != 0)
-      file->setUserName(newFileDlg.userNameText);
+      user.setName(newFileDlg.userNameText);
     if(newFileDlg.userStreetText.length() != 0)
-      file->setUserStreet(newFileDlg.userStreetText);
+      user.setAddress(newFileDlg.userStreetText);
     if(newFileDlg.userTownText.length() != 0)
-      file->setUserTown(newFileDlg.userTownText);
+      user.setCity(newFileDlg.userTownText);
     if(newFileDlg.userCountyText.length() != 0)
-      file->setUserCounty(newFileDlg.userCountyText);
+      user.setState(newFileDlg.userCountyText);
     if(newFileDlg.userPostcodeText.length() != 0)
-      file->setUserPostcode(newFileDlg.userPostcodeText);
+      user.setPostcode(newFileDlg.userPostcodeText);
     if(newFileDlg.userTelephoneText.length() != 0)
-      file->setUserTelephone(newFileDlg.userTelephoneText);
+      user.setTelephone(newFileDlg.userTelephoneText);
     if(newFileDlg.userEmailText.length() != 0)
-      file->setUserEmail(newFileDlg.userEmailText);
+      user.setEmail(newFileDlg.userEmailText);
+    file->setUser(user);
 
     loadDefaultCurrencies();
     loadAncientCurrencies();

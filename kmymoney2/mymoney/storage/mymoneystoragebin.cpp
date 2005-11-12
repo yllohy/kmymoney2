@@ -220,13 +220,15 @@ void MyMoneyStorageBin::readOldFormat(QDataStream& s, IMyMoneySerialize* storage
   // the old format stored MyMoneyMoney objects in 4 bytes
   MyMoneyMoney::setFileVersion(MyMoneyMoney::FILE_4_BYTE_VALUE);
 
-  s >> tmp; storage->setUserName(tmp);
-  s >> tmp; storage->setUserStreet(tmp);
-  s >> tmp; storage->setUserTown(tmp);
-  s >> tmp; storage->setUserCounty(tmp);
-  s >> tmp; storage->setUserPostcode(tmp);
-  s >> tmp; storage->setUserTelephone(tmp);
-  s >> tmp; storage->setUserEmail(tmp);
+  MyMoneyPayee user;
+  s >> tmp; user.setName(tmp);
+  s >> tmp; user.setAddress(tmp);
+  s >> tmp; user.setCity(tmp);
+  s >> tmp; user.setState(tmp);
+  s >> tmp; user.setPostcode(tmp);
+  s >> tmp; user.setTelephone(tmp);
+  s >> tmp; user.setEmail(tmp);
+  storage->setUser(user);
   s >> date; storage->setCreationDate(date);
   s >> date; // lastAccessDate not used anymore, so we skip it here
   s >> lastModificationDate;
@@ -495,13 +497,15 @@ void MyMoneyStorageBin::readNewFormat(QDataStream&s, IMyMoneySerialize* storage)
     MyMoneyMoney::setFileVersion(MyMoneyMoney::FILE_4_BYTE_VALUE);
   }
 
-  s >> tmp_s; storage->setUserName(tmp_s);
-  s >> tmp_s; storage->setUserStreet(tmp_s);
-  s >> tmp_s; storage->setUserTown(tmp_s);
-  s >> tmp_s; storage->setUserCounty(tmp_s);
-  s >> tmp_s; storage->setUserPostcode(tmp_s);
-  s >> tmp_s; storage->setUserTelephone(tmp_s);
-  s >> tmp_s; storage->setUserEmail(tmp_s);
+  MyMoneyPayee user;
+  s >> tmp_s; user.setName(tmp_s);
+  s >> tmp_s; user.setAddress(tmp_s);
+  s >> tmp_s; user.setCity(tmp_s);
+  s >> tmp_s; user.setState(tmp_s);
+  s >> tmp_s; user.setPostcode(tmp_s);
+  s >> tmp_s; user.setTelephone(tmp_s);
+  s >> tmp_s; user.setEmail(tmp_s);
+  storage->setUser(user);
   s >> date; storage->setCreationDate(date);
   s >> date; storage->setLastModificationDate(date);    // this resets the dirty flag
 
@@ -573,13 +577,14 @@ void MyMoneyStorageBin::writeStream(QDataStream& s, IMyMoneySerialize* storage)
 
   // so much for the common header, now get the specific 0.5 stuff
 
-  s << storage->userName();
-  s << storage->userStreet();
-  s << storage->userTown();
-  s << storage->userCounty();
-  s << storage->userPostcode();
-  s << storage->userTelephone();
-  s << storage->userEmail();
+  MyMoneyPayee user = storage->user();
+  s << user.name();
+  s << user.address();
+  s << user.city();
+  s << user.state();
+  s << user.postcode();
+  s << user.telephone();
+  s << user.email();
   s << storage->creationDate();
   s << storage->lastModificationDate();
 

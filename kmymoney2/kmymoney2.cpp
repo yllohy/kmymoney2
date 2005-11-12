@@ -973,20 +973,22 @@ void KMyMoney2App::slotFileViewPersonal()
   }
 
   MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyPayee user = file->user();
 
-  KNewFileDlg newFileDlg(file->userName(), file->userStreet(),
-    file->userTown(), file->userCounty(), file->userPostcode(), file->userTelephone(),
-    file->userEmail(), this, "NewFileDlg", i18n("Edit Personal Data"));
+  KNewFileDlg newFileDlg(user.name(), user.address(),
+    user.city(), user.state(), user.postcode(), user.telephone(),
+    user.email(), this, "NewFileDlg", i18n("Edit Personal Data"));
 
   if (newFileDlg.exec())
   {
-    file->setUserName(newFileDlg.userNameText);
-    file->setUserStreet(newFileDlg.userStreetText);
-    file->setUserTown(newFileDlg.userTownText);
-    file->setUserCounty(newFileDlg.userCountyText);
-    file->setUserPostcode(newFileDlg.userPostcodeText);
-    file->setUserTelephone(newFileDlg.userTelephoneText);
-    file->setUserEmail(newFileDlg.userEmailText);
+    user.setName(newFileDlg.userNameText);
+    user.setAddress(newFileDlg.userStreetText);
+    user.setCity(newFileDlg.userTownText);
+    user.setState(newFileDlg.userCountyText);
+    user.setPostcode(newFileDlg.userPostcodeText);
+    user.setTelephone(newFileDlg.userTelephoneText);
+    user.setEmail(newFileDlg.userEmailText);
+    file->setUser(user);
   }
 
   updateCaption();

@@ -56,24 +56,12 @@ public:
   virtual ~IMyMoneySerialize();
 
   // general get functions
-  virtual const QString& userName(void) const = 0;
-  virtual const QString& userStreet(void) const = 0;
-  virtual const QString& userTown(void) const = 0;
-  virtual const QString& userCounty(void) const = 0;
-  virtual const QString& userPostcode(void) const = 0;
-  virtual const QString& userTelephone(void) const = 0;
-  virtual const QString& userEmail(void) const = 0;
+  virtual const MyMoneyPayee& user(void) const = 0;
   virtual const QDate& creationDate(void) const = 0;
   virtual const QDate& lastModificationDate(void) const = 0;
 
   // general set functions
-  virtual void setUserName(const QString& val) = 0;
-  virtual void setUserStreet(const QString& val) = 0;
-  virtual void setUserTown(const QString& val) = 0;
-  virtual void setUserCounty(const QString& val) = 0;
-  virtual void setUserPostcode(const QString& val) = 0;
-  virtual void setUserTelephone(const QString& val) = 0;
-  virtual void setUserEmail(const QString& val) = 0;
+  virtual void setUser(const MyMoneyPayee& val) = 0;
   virtual void setCreationDate(const QDate& val) = 0;
 
   /**

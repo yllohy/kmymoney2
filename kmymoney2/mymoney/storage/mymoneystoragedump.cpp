@@ -54,16 +54,17 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
 {
   QTextStream s(_s.device());
   IMyMoneyStorage* storage = dynamic_cast<IMyMoneyStorage *> (_storage);
+  MyMoneyPayee user = storage->user();
 
   s << "File-Info\n";
   s << "---------\n";
-  s << "user name = " << storage->userName() << "\n";
-  s << "user street = " << storage->userStreet() << "\n";
-  s << "user city = " << storage->userTown() << "\n";
-  s << "user city = " << storage->userCounty() << "\n";
-  s << "user zip = " << storage->userPostcode() << "\n";
-  s << "user telephone = " << storage->userTelephone() << "\n";
-  s << "user e-mail = " << storage->userEmail() << "\n";
+  s << "user name = " << user.name() << "\n";
+  s << "user street = " << user.address() << "\n";
+  s << "user city = " << user.city() << "\n";
+  s << "user city = " << user.state() << "\n";
+  s << "user zip = " << user.postcode() << "\n";
+  s << "user telephone = " << user.telephone() << "\n";
+  s << "user e-mail = " << user.email() << "\n";
   s << "creation date = " << storage->creationDate().toString(Qt::ISODate) << "\n";
   s << "last modification date = " << storage->lastModificationDate().toString(Qt::ISODate) << "\n";
   s << "base currency = " << storage->value("kmm-baseCurrency") << "\n";

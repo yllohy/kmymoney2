@@ -236,13 +236,13 @@ void MyMoneyStorageBinTest::testReadOldMyMoneyFile(const QString version, unsign
     unlink("old.kmy");
 
     CPPUNIT_ASSERT(storage.dirty() == false);
-    CPPUNIT_ASSERT(storage.userName() == "Thomas Baumgart");
-    CPPUNIT_ASSERT(storage.userStreet() == "Testallee");
-    CPPUNIT_ASSERT(storage.userTown() == "Testtown");
-    CPPUNIT_ASSERT(storage.userCounty() == "Testcounty");
-    CPPUNIT_ASSERT(storage.userPostcode() == "TestZIP");
-    CPPUNIT_ASSERT(storage.userTelephone() == "Testphone");
-    CPPUNIT_ASSERT(storage.userEmail() == "testmail");
+    CPPUNIT_ASSERT(storage.user().name() == "Thomas Baumgart");
+    CPPUNIT_ASSERT(storage.user().address() == "Testallee");
+    CPPUNIT_ASSERT(storage.user().city() == "Testtown");
+    CPPUNIT_ASSERT(storage.user().state() == "Testcounty");
+    CPPUNIT_ASSERT(storage.user().postcode() == "TestZIP");
+    CPPUNIT_ASSERT(storage.user().telephone() == "Testphone");
+    CPPUNIT_ASSERT(storage.user().email() == "testmail");
 
     CPPUNIT_ASSERT(storage.creationDate() == QDate(1,2,3));
     CPPUNIT_ASSERT(storage.lastModificationDate() == QDate(7,8,9));

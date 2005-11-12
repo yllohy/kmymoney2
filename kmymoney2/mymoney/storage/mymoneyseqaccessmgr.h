@@ -90,24 +90,12 @@ public:
   ~MyMoneySeqAccessMgr();
 
   // general get functions
-  const QString& userName(void) const { return m_userName; };
-  const QString& userStreet(void) const { return m_userStreet; };
-  const QString& userTown(void) const { return m_userTown; };
-  const QString& userCounty(void) const { return m_userCounty; };
-  const QString& userPostcode(void) const { return m_userPostcode; };
-  const QString& userTelephone(void) const { return m_userTelephone; };
-  const QString& userEmail(void) const { return m_userEmail; };
+  const MyMoneyPayee& user(void) const { return m_user; };
   const QDate& creationDate(void) const { return m_creationDate; };
   const QDate& lastModificationDate(void) const { return m_lastModificationDate; };
 
   // general set functions
-  void setUserName(const QString& val) { m_userName = val; touch(); };
-  void setUserStreet(const QString& val) { m_userStreet = val; touch(); };
-  void setUserTown(const QString& val) { m_userTown = val; touch(); };
-  void setUserCounty(const QString& val) { m_userCounty = val; touch(); };
-  void setUserPostcode(const QString& val) { m_userPostcode = val; touch(); };
-  void setUserTelephone(const QString& val) { m_userTelephone = val; touch(); };
-  void setUserEmail(const QString& val) { m_userEmail = val; touch(); };
+  void setUser(const MyMoneyPayee& user) { m_user = user; touch(); };
   void setCreationDate(const QDate& val) { m_creationDate = val; touch(); };
   void setLastModificationDate(const QDate& val) { m_lastModificationDate = val; m_dirty = false; };
 
@@ -937,46 +925,10 @@ private:
   void invalidateBalanceCache(const QCString& id);
 
   /**
-    * This member variable keeps the name of the User
-    * @see userName(), setUserName()
+    * This member variable keeps the User information.
+    * @see setUser()
     */
-  QString m_userName;
-
-  /**
-    * This member variable keeps the street of the users address
-    * @see userStreet(), setUserStreet()
-    */
-  QString m_userStreet;
-
-  /**
-    * This member variable keeps the name of the town the user resides in
-    * @see userTown(), setUserTown()
-    */
-  QString m_userTown;
-
-  /**
-    * This member variable keeps the name of the county for the users address
-    * @see userCounty(), setUserCounty()
-    */
-  QString m_userCounty;
-
-  /**
-    * This member variable keeps the zip-code of the users address
-    * @see userPostcode(), setUserPostcode()
-    */
-  QString m_userPostcode;
-
-  /**
-    * This member variable keeps the telephone number of the user
-    * @see userTelephone(), setUserTelephone()
-    */
-  QString m_userTelephone;
-
-  /**
-    * This member variable keeps the users e-mail address
-    * @see userEmail(), setUserEmail()
-    */
-  QString m_userEmail;
+  MyMoneyPayee m_user;
 
   /**
     * The member variable m_nextInstitutionID keeps the number that will be

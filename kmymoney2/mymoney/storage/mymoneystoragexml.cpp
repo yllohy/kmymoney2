@@ -297,15 +297,16 @@ void MyMoneyStorageXML::writeFileInformation(QDomElement& fileInfo)
 
 void MyMoneyStorageXML::writeUserInformation(QDomElement& userInfo)
 {
-  userInfo.setAttribute(QString("name"), m_storage->userName());
-  userInfo.setAttribute(QString("email"), m_storage->userEmail());
+  MyMoneyPayee user = m_storage->user();
+  userInfo.setAttribute(QString("name"), user.name());
+  userInfo.setAttribute(QString("email"), user.email());
 
   QDomElement address = m_doc->createElement("ADDRESS");
-  address.setAttribute(QString("street"), m_storage->userStreet());
-  address.setAttribute(QString("city"), m_storage->userTown());
-  address.setAttribute(QString("county"), m_storage->userCounty());
-  address.setAttribute(QString("zipcode"), m_storage->userPostcode());
-  address.setAttribute(QString("telephone"), m_storage->userTelephone());
+  address.setAttribute(QString("street"), user.address());
+  address.setAttribute(QString("city"), user.city());
+  address.setAttribute(QString("county"), user.state());
+  address.setAttribute(QString("zipcode"), user.postcode());
+  address.setAttribute(QString("telephone"), user.telephone());
 
   userInfo.appendChild(address);
 }
@@ -314,19 +315,21 @@ void MyMoneyStorageXML::readUserInformation(QDomElement userElement)
 {
   signalProgress(0, 1, QObject::tr("Loading user information..."));
 
-  m_storage->setUserName(QStringEmpty(userElement.attribute(QString("name"))));
-  m_storage->setUserEmail(QStringEmpty(userElement.attribute(QString("email"))));
+  MyMoneyPayee user;
+  user.setName(QStringEmpty(userElement.attribute(QString("name"))));
+  user.setEmail(QStringEmpty(userElement.attribute(QString("email"))));
 
   QDomElement addressNode = findChildElement(QString("ADDRESS"), userElement);
   if(!addressNode.isNull())
   {
-    m_storage->setUserStreet(QStringEmpty(addressNode.attribute(QString("street"))));
-    m_storage->setUserTown(QStringEmpty(addressNode.attribute(QString("city"))));
-    m_storage->setUserCounty(QStringEmpty(addressNode.attribute(QString("county"))));
-    m_storage->setUserPostcode(QStringEmpty(addressNode.attribute(QString("zipcode"))));
-    m_storage->setUserTelephone(QStringEmpty(addressNode.attribute(QString("telephone"))));
+    user.setAddress(QStringEmpty(addressNode.attribute(QString("street"))));
+    user.setCity(QStringEmpty(addressNode.attribute(QString("city"))));
+    user.setState(QStringEmpty(addressNode.attribute(QString("county"))));
+    user.setPostcode(QStringEmpty(addressNode.attribute(QString("zipcode"))));
+    user.setTelephone(QStringEmpty(addressNode.attribute(QString("telephone"))));
   }
 
+  m_storage->setUser(user);
   signalProgress(1, 0);
 }
 

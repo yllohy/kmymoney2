@@ -41,13 +41,15 @@ void MyMoneyFileTest::tearDown () {
 }
 
 void MyMoneyFileTest::testEmptyConstructor() {
-	CPPUNIT_ASSERT(m->userName().isEmpty());
-	CPPUNIT_ASSERT(m->userStreet().isEmpty());
-	CPPUNIT_ASSERT(m->userTown().isEmpty());
-	CPPUNIT_ASSERT(m->userCounty().isEmpty());
-	CPPUNIT_ASSERT(m->userPostcode().isEmpty());
-	CPPUNIT_ASSERT(m->userTelephone().isEmpty());
-	CPPUNIT_ASSERT(m->userEmail().isEmpty());
+	MyMoneyPayee user = m->user();
+
+	CPPUNIT_ASSERT(user.name().isEmpty());
+	CPPUNIT_ASSERT(user.address().isEmpty());
+	CPPUNIT_ASSERT(user.city().isEmpty());
+	CPPUNIT_ASSERT(user.state().isEmpty());
+	CPPUNIT_ASSERT(user.postcode().isEmpty());
+	CPPUNIT_ASSERT(user.telephone().isEmpty());
+	CPPUNIT_ASSERT(user.email().isEmpty());
 
 	CPPUNIT_ASSERT(m->institutionCount() == 0);
 	CPPUNIT_ASSERT(m->dirty() == false);
@@ -295,44 +297,54 @@ void MyMoneyFileTest::testInstitutionModify() {
 }
 
 void MyMoneyFileTest::testSetFunctions() {
-	CPPUNIT_ASSERT(m->userName().isEmpty());
-	CPPUNIT_ASSERT(m->userStreet().isEmpty());
-	CPPUNIT_ASSERT(m->userTown().isEmpty());
-	CPPUNIT_ASSERT(m->userCounty().isEmpty());
-	CPPUNIT_ASSERT(m->userPostcode().isEmpty());
-	CPPUNIT_ASSERT(m->userTelephone().isEmpty());
-	CPPUNIT_ASSERT(m->userEmail().isEmpty());
+	MyMoneyPayee user = m->user();
+
+	CPPUNIT_ASSERT(user.name().isEmpty());
+	CPPUNIT_ASSERT(user.address().isEmpty());
+	CPPUNIT_ASSERT(user.city().isEmpty());
+	CPPUNIT_ASSERT(user.state().isEmpty());
+	CPPUNIT_ASSERT(user.postcode().isEmpty());
+	CPPUNIT_ASSERT(user.telephone().isEmpty());
+	CPPUNIT_ASSERT(user.email().isEmpty());
 	
 	storage->m_dirty = false;
-	m->setUserName("Name");
+	user.setName("Name");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	storage->m_dirty = false;
-	m->setUserStreet("Street");
+	user.setAddress("Street");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	storage->m_dirty = false;
-	m->setUserTown("Town");
+	user.setCity("Town");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	storage->m_dirty = false;
-	m->setUserCounty("County");
+	user.setState("County");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	storage->m_dirty = false;
-	m->setUserPostcode("Postcode");
+	user.setPostcode("Postcode");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	storage->m_dirty = false;
-	m->setUserTelephone("Telephone");
+	user.setTelephone("Telephone");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	storage->m_dirty = false;
-	m->setUserEmail("Email");
+	user.setEmail("Email");
+	m->setUser(user);
 	CPPUNIT_ASSERT(m->dirty() == true);
 	storage->m_dirty = false;
 
-	CPPUNIT_ASSERT(m->userName() == "Name");
-	CPPUNIT_ASSERT(m->userStreet() == "Street");
-	CPPUNIT_ASSERT(m->userTown() == "Town");
-	CPPUNIT_ASSERT(m->userCounty() == "County");
-	CPPUNIT_ASSERT(m->userPostcode() == "Postcode");
-	CPPUNIT_ASSERT(m->userTelephone() == "Telephone");
-	CPPUNIT_ASSERT(m->userEmail() == "Email");
+	user = m->user();
+	CPPUNIT_ASSERT(user.name() == "Name");
+	CPPUNIT_ASSERT(user.address() == "Street");
+	CPPUNIT_ASSERT(user.city() == "Town");
+	CPPUNIT_ASSERT(user.state() == "County");
+	CPPUNIT_ASSERT(user.postcode() == "Postcode");
+	CPPUNIT_ASSERT(user.telephone() == "Telephone");
+	CPPUNIT_ASSERT(user.email() == "Email");
 }
 
 void MyMoneyFileTest::testAddAccounts() {
