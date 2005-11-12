@@ -382,7 +382,7 @@ void KEditScheduleDialog::slotSplitClicked()
         case 0:
           break;
         default:
-          category = i18n("Split Transaction");
+          category = i18n("Split transaction (category replacement)", "Split transaction");
           connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
       }
@@ -694,7 +694,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     {
       if (m_transaction.splitCount() >= 3)
       {
-        m_category->loadText(i18n("Split Transaction"));
+        m_category->loadText(i18n("Split transaction (category replacement)", "Split transaction"));
         connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
       }
       else if(m_actionType == MyMoneySplit::ActionAmortization)
@@ -1056,7 +1056,7 @@ void KEditScheduleDialog::slotEstimateChanged()
 
 void KEditScheduleDialog::slotCategoryChanged(const QString& text)
 {
-  if (text != i18n("Split Transaction"))
+  if (text != i18n("Split transaction (category replacement)", "Split transaction"))
   {
     int count = m_transaction.splitCount();
     if (count == 0)
@@ -1166,7 +1166,7 @@ bool KEditScheduleDialog::checkCategory()
   bool exitDialog = true;
 
   // Make sure a category has been set
-  if (m_category->text() != i18n("Split Transaction") && !m_category->text().isEmpty())
+  if (m_category->text() != i18n("Split transaction (category replacement)", "Split transaction") && !m_category->text().isEmpty())
   {
     bool invalid=false;
     QCString categoryId = MyMoneyFile::instance()->categoryToAccount(m_category->text());
@@ -1303,7 +1303,7 @@ QCString KEditScheduleDialog::theAccountId()
 void KEditScheduleDialog::slotCheckOkEnabled(void)
 {
   bool rcEnabled = true;
-  
+
   if(m_scheduleName->text().length() == 0)
     rcEnabled = false;
   if(m_accountCombo->isEnabled() && m_accountCombo->selectedAccounts().count() == 0)

@@ -227,7 +227,7 @@ void KEnterScheduleDialog::initWidgets()
 
     if (m_transaction.splitCount() >= 3)
     {
-      m_category->setText(i18n("Split Transaction"));
+      m_category->setText(i18n("Split transaction (category replacement)", "Split transaction"));
       connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
     }
     else if (m_schedule.type() != MyMoneySchedule::TYPE_TRANSFER)
@@ -330,7 +330,7 @@ void KEnterScheduleDialog::slotSplitClicked()
           disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
         default:
-          category = i18n("Split Transaction");
+          category = i18n("Split transaction (category replacement)", "Split transaction");
           connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
       }
@@ -411,7 +411,7 @@ bool KEnterScheduleDialog::checkData(void)
     {
       QString category;
       if (m_schedule.transaction().splitCount() >= 3)
-        category = i18n("Split Transaction");
+        category = i18n("Split transaction (category replacement)", "Split transaction");
       else
         category = MyMoneyFile::instance()->accountToCategory(m_schedule.transaction()
           .splitByAccount(m_schedule.account().id(), false).accountId());
@@ -521,7 +521,7 @@ bool KEnterScheduleDialog::checkData(void)
 
 void KEnterScheduleDialog::checkCategory()
 {
-  if (m_category->text() != i18n("Split Transaction") &&
+  if (m_category->text() != i18n("Split transaction (category replacement)", "Split transaction") &&
       m_schedule.type() != MyMoneySchedule::TYPE_TRANSFER)
   {
     QString category = m_category->text();
