@@ -131,6 +131,8 @@ protected slots:
 
   void slotPluginImport(const QString& format, const QString& url);
 
+  void slotAccountUpdateOFX(void);
+
   /**
     * Opens a file selector dialog for the user to choose an existing KMM
     * statement file from the file system to be imported.  This is for testing
@@ -192,7 +194,19 @@ protected slots:
   /**
     * Brings up the input dialog and saves the information.
     */
-  void slotNewInstitution(void);
+  void slotInstitutionNew(void);
+
+  /**
+    * Preloads the input dialog with the data of the current
+    * selected institution and brings up the input dialog
+    * and saves the information entered.
+    */
+  void slotInstitutionEdit(void);
+
+  /**
+    * Deletes the current selected institution.
+    */
+  void slotInstitutionDelete(void);
 
   /**
     * Creates a new institution entry in the MyMoneyFile engine
@@ -200,23 +214,27 @@ protected slots:
     * @param institution MyMoneyInstitution object containing the data of
     *                    the institution to be created.
     */
-  void slotNewInstitution(MyMoneyInstitution institution);
+  void slotInstitutionNew(MyMoneyInstitution institution);
 
   /**
     * Brings up the new account wizard and saves the information.
     */
-  void slotNewAccount(void);
+  void slotAccountNew(void);
 
   /**
     * Brings up the new category editor and saves the information.
     */
-  void slotNewCategory(void);
+  void slotCategoryNew(void);
 
   /**
     * Calls the print logic for the current view
     */
   void slotPrintView(void);
 
+  /**
+    * Create a new investment
+    */
+  void slotInvestmentNew(void);
 
 public:
   /**
@@ -275,7 +293,7 @@ public:
     *                    is usually onyl required by some early calls when
     *                    these widgets are not yet created (the default is false).
     */
-  void updateCaption(const bool skipActions = false);
+  void updateCaption(bool skipActions = false);
 
   /**
     * This method returns a list of all 'other' dcop registered kmymoney processes.
@@ -288,6 +306,11 @@ public:
   void selectAccount(const MyMoneyAccount& account = MyMoneyAccount());
 
   void selectInstitution(const MyMoneyInstitution& institution = MyMoneyInstitution());
+
+  /**
+    * Dump a list of the names of all defined KActions to stdout.
+    */
+  void dumpActions(void) const;
 
 k_dcop:
   const QString filename() const;
@@ -346,6 +369,13 @@ protected:
   void createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& newAccount);
 
   void createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal, MyMoneySchedule& schedule);
+
+  /**
+    * This method updates all KAction items to the current state.
+    */
+  void updateActions(void);
+
+  void showContextMenu(const QString& containerName);
 
 public slots:
   void slotFileInfoDialog(void);
@@ -472,6 +502,40 @@ public slots:
     */
   void slotAccountReconcile(void);
 
+  /**
+    * This slot deletes the currently selected account if possible
+    */
+  void slotAccountDelete(void);
+
+  /**
+    * This slot opens the account editor to edit the currently
+    * selected account if possible
+    */
+  void slotAccountEdit(void);
+
+  /**
+    * This slot opens the selected account in the ledger view
+    */
+  void slotAccountOpen(void);
+
+  /**
+    * This slot opens the account options menu at the current cursor
+    * position.
+    */
+  void slotShowAccountContextMenu(void);
+
+  /**
+    * This slot opens the institution options menu at the current cursor
+    * position.
+    */
+  void slotShowInstitutionContextMenu(void);
+
+  /**
+    * This slot opens the investment options menu at the current cursor
+    * position.
+    */
+  void slotShowInvestmentContextMenu(void);
+
 private:
   bool verifyImportedData(const MyMoneyAccount& account);
   bool slotCommitTransaction(const MyMoneySchedule& schedule, const QDate&);
@@ -498,9 +562,25 @@ signals:
     */
   void fileLoaded(const KURL& url);
 
+  /**
+    * This signal is emitted when a new account has been selected by
+    * the GUI. If no account is selected or the selection is removed,
+    * account is identical to MyMoneyAccount(). This signal is used
+    * by plugins to get information about changes.
+    */
+  void accountSelected(const MyMoneyAccount& account);
+
+  /**
+    * This signal is emitted when a new institution has been selected by
+    * the GUI. If no institution is selected or the selection is removed,
+    * institution is identical to MyMoneyInstitution(). This signal is used
+    * by plugins to get information about changes.
+    */
+  void institutionSelected(const MyMoneyInstitution& institution);
+
 public:
   /**
-    * This method retrieves a pointer to a KAction object from m_actionMap.
+    * This method retrieves a pointer to a KAction object from actionCollection().
     * If the action with the name @p actionName is not found, a pointer to
     * a static non-configured KAction object is returned and a warning is
     * printed to stderr.
@@ -512,7 +592,7 @@ public:
 
   /**
     * This method is implemented for convience. It returns a dynamic_cast-ed
-    * pointer to an action found in m_actionMap.
+    * pointer to an action found in actionCollection().
     * If the action with the name @p actionName is not found or the object
     * is not of type KToggleAction, a pointer to a static non-configured
     * KToggleAction object is returned and a warning is printed to stderr.
@@ -524,38 +604,6 @@ private:
   /** the configuration object of the application */
 
   KConfig *config;
-
-  /**
-    * This is the dynamic container to maintain all application actions.
-    * Access to it in the code is via
-    *
-    * @code
-    *
-    *   // Assignment
-    *   m_actionMap["<action-name>"] = new KAction(....)
-    *
-    *   // Reference
-    *   m_actionMap["<action-name"]->setEnabled(true);
-    *
-    * @endcode
-    *
-    * Naming convention for the <action-name> items: The names for actions should
-    * be constructed using the word 'Action' and the menu structure in CamelCase.
-    *
-    * Examples: ActionFileNew, ActionFileOpen, ActionInstitutionNew
-    */
-  QMap<QString, KAction*> m_actionMap;
-
-  /**
-    * Add an action to the m_actionMap. This method checks, that no action is currently
-    * known with the name @p actionName. A warning message will be displayed and the
-    * action is not added.
-    *
-    * @param actionName name of the action
-    * @param action pointer to a KAction object or one of it's derivatives
-    */
-  void registerAction(const QString& actionName, KAction* action);
-
 
   QSignalMapper *m_pluginSignalMapper;
   QMap<QString,KMyMoneyPlugin::ImporterPlugin*> m_importerPlugins;

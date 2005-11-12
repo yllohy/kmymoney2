@@ -49,8 +49,13 @@ static const char *description =
 static KCmdLineOptions options[] =
 {
   { "lang <lang-code>", I18N_NOOP("language to be used"), 0 },
-  { "trace", I18N_NOOP("turn on program traces"), 0},
   { "n", I18N_NOOP("don't open last used file"), 0},
+
+#if KMM_DEBUG
+  // The following options are only available when compiled in debug mode
+  { "trace", I18N_NOOP("turn on program traces"), 0},
+  { "dump-actions", I18N_NOOP("dump the names of all defined KAction objects to stdout and quit"), 0},
+#endif
 
   // INSERT YOUR COMMANDLINE OPTIONS HERE
   { "+[File]", I18N_NOOP("file to open"), 0 },
@@ -138,8 +143,16 @@ int main(int argc, char *argv[])
   if(args->isSet("trace"))
     MyMoneyTracer::on();
 
+  kmymoney2 = 0;
   kmymoney2 = new KMyMoney2App();
   a->setMainWidget( kmymoney2 );
+
+#if KMM_DEBUG
+  if(args->isSet("dump-actions")) {
+    kmymoney2->dumpActions();
+    exit(0);
+  }
+#endif
 
   int rc = 0;
 

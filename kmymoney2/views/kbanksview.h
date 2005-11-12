@@ -103,8 +103,8 @@ public:
   void suspendUpdate(const bool suspend);
 
 public slots:
-  void slotEditClicked(void);
-  void slotDeleteClicked(void);
+  // void slotEditClicked(void);
+  // void slotDeleteClicked(void);
   void slotRefreshView(void);
   void slotReloadView(void) { slotRefreshView(); };
 

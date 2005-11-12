@@ -48,6 +48,7 @@
 #include "kcategoriesview.h"
 #include "kbanklistitem.h"
 #include "../kmymoneyutils.h"
+#include "../kmymoney2.h"
 
 KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   : kCategoriesViewDecl(parent,name)
@@ -81,6 +82,9 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
   categoryListView->setSorting(0);
 
   readConfig();
+
+  connect(categoryListView, SIGNAL(selectionChanged(QListViewItem*)),
+    this, SLOT(slotSelectionChanged(QListViewItem*)));
 
   connect(categoryListView, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
@@ -226,6 +230,7 @@ const bool KCategoriesView::showSubAccounts(const QCStringList& accounts, KAccou
 
 void KCategoriesView::show()
 {
+  slotSelectionChanged(categoryListView->selectedItem());
   emit signalViewActivated();
   QWidget::show();
 }
@@ -397,10 +402,32 @@ const QCString KCategoriesView::currentAccount(bool& success) const
   return item->accountID();
 }
 
-void KCategoriesView::slotListRightMouse(QListViewItem* item, const QPoint& , int col)
+void KCategoriesView::slotSelectionChanged(QListViewItem* item)
 {
-  if (item != 0 && col != -1) {
+  KAccountListItem *accountItem = (KAccountListItem*)item;
+
+  kmymoney2->selectInstitution();
+  kmymoney2->selectAccount();
+
+  if (item != 0) {
     categoryListView->setSelected(item, true);
+    if(accountItem) {
+      MyMoneyFile *file = MyMoneyFile::instance();
+
+      try {
+        MyMoneyAccount account = file->account(accountItem->accountID());
+        kmymoney2->selectAccount(account);
+      } catch (MyMoneyException *e) {
+        delete e;
+      }
+    }
+  }
+}
+
+void KCategoriesView::slotListRightMouse(QListViewItem* item, const QPoint& /* p */, int col)
+{
+  if(col != -1) {
+    slotSelectionChanged(item);
     emit categoryRightMouseClick();
   }
 }

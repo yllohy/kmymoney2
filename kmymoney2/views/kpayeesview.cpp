@@ -324,7 +324,7 @@ void KPayeesView::showTransactions(void)
         txt = i18n("Transfer from %1").arg(acc.name());
       }
     } else if(t->splitCount() > 2) {
-      txt = i18n("Split transaction");
+      txt = i18n("Split transaction (category replacement)", "Split transaction");
     } else if(t->splitCount() == 2) {
       MyMoneySplit s0 = t->splitByAccount(s.accountId(), false);
       txt = MyMoneyFile::instance()->accountToCategory(s0.accountId());

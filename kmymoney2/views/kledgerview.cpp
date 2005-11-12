@@ -297,16 +297,9 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
 
   m_inReconciliation = false;
 
+  connect(kmymoney2->action("transaction_new"), SIGNAL(activated()), this, SLOT(slotNew()));
+
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
-
-  // finish up some initialization that can only be performed after this object
-  // is created
-  QTimer::singleShot(0, this, SLOT(finishInitialization()));
-}
-
-void KLedgerView::finishInitialization(void)
-{
-  connect(kmymoney2->action("ActionTransactionNew"), SIGNAL(activated()), this, SLOT(slotNew()));
 }
 
 KLedgerView::~KLedgerView()

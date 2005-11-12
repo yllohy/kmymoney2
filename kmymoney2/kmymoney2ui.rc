@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="3" name="kmymoney2" >
+<kpartgui version="4" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Menu icon="fileimport" append="save_merge" name="import" >
@@ -16,40 +16,80 @@
     <Separator/>
     <Action name="file_export_template" />
    </Menu>
-   <Action icon="personal_data" name="file_personal_data" />
    <Action name="file_backup" />
-   <Action icon="info" name="fileinfo" />
-   <Action name="file_view_info" />
+   <Separator/>
+   <Action icon="personal_data" name="view_personal_data" />
+   <Action name="view_file_info" />
+   <Action icon="info" name="file_dump" />
   </Menu>
-  <Menu name="bank" >
+  <Menu name="edit" >
+   <Action icon="transaction_find" name="edit_find_transaction" />
+  </Menu>
+  <Menu name="view" >
+   <Action name="view_show_transaction_detail" />
+  </Menu>
+  <Menu name="institution" >
    <text>&amp;Institution</text>
-   <Action icon="institution_add" name="bank_add" />
+   <Action icon="institution_add" name="institution_new" />
+   <Action name="institution_edit" />
+   <Action name="institution_delete" />
   </Menu>
   <Menu name="account" >
-   <text>&amp;Account</text>
+   <text>&amp;Account/Category</text>
+   <Action icon="account_add" name="account_new" />
+   <Action icon="account_add" name="category_new" />
+   <Action name="account_edit" />
+   <Action name="account_delete" />
    <Action name="account_open" />
-   <Action icon="account_add" name="account_add" />
-   <Action name="category_add" />
    <Action name="account_reconcile" />
-   <Action icon="transaction_find" name="account_find" />
+   <Separator/>
+   <Action name="account_update_ofx" />
   </Menu>
   <Merge/>
   <Menu name="tools" >
-   <Action name="qif_editor" />
-   <Action name="tool_security_editor" />
-   <Action name="tool_currency_editor" />
-   <Action name="tool_price_editor" />
-   <Action name="equity_price_update" />
-   <Action name="performancetest" />
+   <Action name="tools_qif_editor" />
+   <Action name="tools_security_editor" />
+   <Action name="tools_currency_editor" />
+   <Action name="tools_price_editor" />
+   <Action name="tools_update_prices" />
+   <Action name="tools_consistency_check" />
+   <Action name="tools_performancetest" />
   </Menu>
   <Menu name="settings" >
-   <Action append="show_merge" name="show_transaction_detail" />
-   <Action append="show_merge" name="enable_messages" />
+   <Action append="show_merge" name="settings_enable_messages" />
   </Menu>
   <Menu name="help" >
    <Action name="show_tip" />
   </Menu>
  </MenuBar>
+ <Menu name="account_context_menu">
+  <title>Account options</title>
+  <Action name="account_new" />
+  <Action name="account_open" />
+  <Separator/>
+  <Action name="account_reconcile" />
+  <Separator/>
+  <Action name="account_edit" />
+  <Action name="account_delete" />
+ </Menu>
+ <Menu name="institution_context_menu">
+  <title>Insitution options</title>
+  <Action name="institution_new" />
+  <Action name="institution_edit" />
+  <Action name="institution_delete" />
+  <Separator />
+  <Action name="account_new"/>
+ </Menu>
+ <Menu name="payee_context_menu">
+ </Menu>
+ <Menu name="investment_context_menu">
+  <title>Investment options</title>
+  <Action name="investment_new" />
+  <Action name="investment_edit" />
+  <Action name="investment_delete" />
+  <Separator />
+  <Action name="tools_update_prices" />
+ </Menu>
  <ToolBar noMerge="1" name="mainToolBar" fullWidth="true" >
   <text>Main Toolbar</text>
   <Action name="file_quit" />
@@ -58,14 +98,14 @@
   <Action name="file_save" />
   <Action name="file_print" />
   <Separator name="separator_2" />
-  <Action name="bank_add" />
-  <Action name="account_add" />
+  <Action name="institution_new" />
+  <Action name="account_new" />
   <Separator name="separator_1" />
   <Action name="account_open" />
   <Action name="account_reconcile" />
   <Action name="account_import" />
   <Action name="account_export" />
   <Separator name="separator_0" />
-  <Action name="account_find" />
+  <Action name="edit_find_transaction" />
  </ToolBar>
 </kpartgui>

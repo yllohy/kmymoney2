@@ -34,7 +34,6 @@
 #include <qmessagebox.h>       // ditto
 #include <qdatetime.h>         // only for performance tests
 
-
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -86,12 +85,15 @@
 #include "dialogs/kfindtransactiondlg.h"
 #include "dialogs/knewbankdlg.h"
 #include "dialogs/knewaccountwizard.h"
+#include "dialogs/knewinvestmentwizard.h"
 #include "dialogs/knewaccountdlg.h"
+#include "dialogs/knewfiledlg.h"
 
 #include "views/kmymoneyview.h"
 
 #include "mymoney/mymoneyutils.h"
 #include "mymoney/mymoneystatement.h"
+#include "mymoney/storage/mymoneystoragedump.h"
 
 #include "converter/mymoneyqifwriter.h"
 #include "converter/mymoneyqifreader.h"
@@ -128,16 +130,17 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   // values for margin (11) and spacing(6) taken from KDialog implementation
   QBoxLayout* layout = new QBoxLayout(frame, QBoxLayout::TopToBottom, 11, 6);
 
+  ::timetrace("init statusbar");
+  initStatusBar();
+  ::timetrace("init actions");
+  initActions();
+
   ::timetrace("create view");
   myMoneyView = new KMyMoneyView(frame, "KMyMoneyView");
   layout->addWidget(myMoneyView, 10);
 
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
-  ::timetrace("init statusbar");
-  initStatusBar();
-  ::timetrace("init actions");
-  initActions();
   ::timetrace("init options");
   readOptions();
 
@@ -157,10 +160,8 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   connect(&proc,SIGNAL(processExited(KProcess *)),this,SLOT(slotProcessExited()));
 
   // force to show the home page if the file is closed
-  connect(action("ActionFileClose"), SIGNAL(activated()), myMoneyView, SLOT(slotShowHomePage()));
-  connect(action("ActionViewTransactionDetail"), SIGNAL(toggled(bool)), myMoneyView, SLOT(slotShowTransactionDetail(bool)));
-
-
+  connect(action("file_close"), SIGNAL(activated()), myMoneyView, SLOT(slotShowHomePage()));
+  connect(action("view_show_transaction_detail"), SIGNAL(toggled(bool)), myMoneyView, SLOT(slotShowTransactionDetail(bool)));
 
   m_backupState = BACKUP_IDLE;
 
@@ -202,88 +203,157 @@ const KURL KMyMoney2App::lastOpenedURL(void)
 
 void KMyMoney2App::initActions()
 {
-  registerAction("ActionFileNew", KStdAction::openNew(this, SLOT(slotFileNew()), actionCollection()));
-  registerAction("ActionFileOpen", KStdAction::open(this, SLOT(slotFileOpen()), actionCollection()));
-  registerAction("ActionFileOpenRecent", KStdAction::openRecent(this, SLOT(slotFileOpenRecent(const KURL&)), actionCollection()));
-  registerAction("ActionFileSave", KStdAction::save(this, SLOT(slotFileSave()), actionCollection()));
-  registerAction("ActionFileSaveAs", KStdAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection()));
-  registerAction("ActionFileClose", KStdAction::close(this, SLOT(slotFileClose()), actionCollection()));
-  registerAction("ActionFileQuit", KStdAction::quit(this, SLOT(slotFileQuit()), actionCollection()));
-  registerAction("ActionFilePrint", KStdAction::print(this, SLOT(slotPrintView()), actionCollection()));
+  // *************
+  // The File menu
+  // *************
+  KStdAction::openNew(this, SLOT(slotFileNew()), actionCollection());
+  KStdAction::open(this, SLOT(slotFileOpen()), actionCollection());
+  KStdAction::openRecent(this, SLOT(slotFileOpenRecent(const KURL&)), actionCollection());
+  KStdAction::save(this, SLOT(slotFileSave()), actionCollection());
+  KStdAction::saveAs(this, SLOT(slotFileSaveAs()), actionCollection());
+  KStdAction::close(this, SLOT(slotFileClose()), actionCollection());
+  KStdAction::quit(this, SLOT(slotFileQuit()), actionCollection());
+  KStdAction::print(this, SLOT(slotPrintView()), actionCollection());
 
-  registerAction("ActionSettingShowToolbar", KStdAction::showToolbar(this, SLOT(slotViewToolBar()), actionCollection()));
-  registerAction("ActionSettingShowStatusbar", KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection()));
+  new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
+  new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
+  new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
+  new KAction(i18n("Statement file ..."), "", 0, this, SLOT(slotStatementImport()), actionCollection(), "file_import_statement");
 
-  registerAction("ActionEditFindTransaction", new KAction(i18n("Find transaction..."),
-                                      "transaction_find",
-                                      KShortcut("Ctrl+F"),
-                                      this, SLOT(slotFindTransaction()),
-                                      actionCollection(), "account_find"));
-
-  // Setup transaction detail switch
-  registerAction("ActionViewTransactionDetail", new KToggleAction(i18n("Show Transaction Detail"), KShortcut("Ctrl+T"), actionCollection(), "show_transaction_detail"));
-
-  config->setGroup("List Options");
-  toggleAction("ActionViewTransactionDetail")->setChecked(config->readBoolEntry("ShowRegisterDetailed", true));
-
-  // Additions to the file menu
-  registerAction("ActionViewPersonalInfo", new KAction(i18n("Personal Data..."), "personal_data", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "file_personal_data"));
-  registerAction("ActionFileBackup", new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup"));
-  registerAction("ActionFileImportQif", new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif"));
-  registerAction("ActionFileImportGnucash", new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc"));
-  registerAction("ActionFileImportStatement", new KAction(i18n("Statement file ..."), "", 0, this, SLOT(slotStatementImport()), actionCollection(), "file_import_statement"));
-
-  registerAction("ActionFileImportTemplate", new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotLoadAccountTemplates()), actionCollection(), "file_import_template"));
-  registerAction("ActionFileExportTemplate", new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotSaveAccountTemplates()), actionCollection(), "file_export_template"));
-
-  registerAction("ActionFileExportQif", new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif"));
-
-  registerAction("ActionToolsConsistencyCheck", new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "file_consistency_check"));
-
-  registerAction("ActionEditSecurities", new KAction(i18n("Securities ..."), "", 0, this, SLOT(slotSecurityEditor()), actionCollection(), "tool_security_editor"));
-  registerAction("ActionEditCurrencies", new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tool_currency_editor"));
-
-  registerAction("ActionEditPrices", new KAction(i18n("Prices ..."), "", 0, this, SLOT(slotPriceDialog()), actionCollection(), "tool_price_editor"));
-  registerAction("ActionToolsOnlincePriceUpdate", new KAction(i18n("Update Stock and Currency Prices..."), "", 0, this, SLOT(slotEquityPriceUpdate()), actionCollection(), "equity_price_update"));
-
-  // The Settings Menu
-  registerAction("ActionSettingsShortcuts", KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection()));
-  registerAction("ActionSettingsConfigureToolbars", KStdAction::configureToolbars( this, SLOT( slotEditToolbars() ), actionCollection() ));
-  registerAction("ActionSettingsConfigure", KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection()));
-  registerAction("SettingsEnableMessages", new KAction(i18n("Enable all messages"), "", 0, this, SLOT(slotEnableMessages()), actionCollection(), "enable_messages"));
-
-  // The Bank Menu
-  registerAction("ActionInstitutionNew", new KAction(i18n("Add new institution..."), "institution_add", 0, this, SLOT(slotNewInstitution()), actionCollection(), "bank_add"));
-
-  // The Account Menu
-  registerAction("ActionAccountNew", new KAction(i18n("Add new account..."), "account_add", 0, this, SLOT(slotNewAccount()), actionCollection(), "account_add"));
-  registerAction("ActionCategoryNew", new KAction(i18n("Add new category..."), "category_add", 0, this, SLOT(slotNewCategory()), actionCollection(), "category_add"));
-  registerAction("ActionAccountReconcile", new KAction(i18n("Reconcile ..."), "reconcile", 0, this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile"));
-
-  // The tool menu
-  registerAction("ActionToolsQifProfileEditor", new KAction(i18n("QIF Profile Editor..."), "edit", 0, this, SLOT(slotQifProfileEditor()), actionCollection(), "qif_editor"));
+  new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotLoadAccountTemplates()), actionCollection(), "file_import_template");
+  new KAction(i18n("Account Template ..."), "", 0, this, SLOT(slotSaveAccountTemplates()), actionCollection(), "file_export_template");
+  new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifExport()), actionCollection(), "file_export_qif");
+  new KAction(i18n("Personal Data..."), "personal_data", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "view_personal_data");
 
 #if KMM_DEBUG
-  registerAction("ActionFileDumpMemory", new KAction(i18n("Dump Memory..."), "", 0, this, SLOT(slotFileFileInfo()),  actionCollection(), "file_view_info"));
-  registerAction("ActionViewFileInfo", new KAction(i18n("File-Information..."), "info", 0, this, SLOT(slotFileInfoDialog()), actionCollection(), "fileinfo"));
+  new KAction(i18n("Dump Memory..."), "", 0, this, SLOT(slotFileFileInfo()),  actionCollection(), "file_dump");
+  new KAction(i18n("File-Information..."), "info", 0, this, SLOT(slotFileInfoDialog()), actionCollection(), "view_file_info");
 #endif
 
-  registerAction("ActionToolsPerformanceTest", new KAction(i18n("Performance-Test"), "fork", 0, this, SLOT(slotPerformanceTest()), actionCollection(), "performancetest"));
+  // *************
+  // The Edit menu
+  // *************
+  new KAction(i18n("Find transaction..."), "transaction_find", KShortcut("Ctrl+F"), this, SLOT(slotFindTransaction()), actionCollection(), "edit_find_transaction");
 
+  // *************
+  // The View menu
+  // *************
+  new KToggleAction(i18n("Show Transaction Detail"), KShortcut("Ctrl+T"), actionCollection(), "view_show_transaction_detail");
+
+  // *********************
+  // The institutions menu
+  // *********************
+  new KAction(i18n("New institution..."), "institution_add", 0, this, SLOT(slotInstitutionNew()), actionCollection(), "institution_new");
+  new KAction(i18n("Edit institution..."), "edit", 0, this, SLOT(slotInstitutionEdit()), actionCollection(), "institution_edit");
+  new KAction(i18n("Delete institution..."), "delete", 0, this, SLOT(slotInstitutionDelete()), actionCollection(), "institution_delete");
+
+  // *****************
+  // The accounts menu
+  // *****************
+  new KAction(i18n("New account..."), "account_add", 0, this, SLOT(slotAccountNew()), actionCollection(), "account_new");
+  new KAction(i18n("New category..."), "category_add", 0, this, SLOT(slotCategoryNew()), actionCollection(), "category_new");
+  new KAction(i18n("Open ledger"), "account", 0, this, SLOT(slotAccountOpen()), actionCollection(), "account_open");
+  new KAction(i18n("Reconcile..."), "reconcile", 0, this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
+  new KAction(i18n("Delete account..."), "delete", 0, this, SLOT(slotAccountDelete()), actionCollection(), "account_delete");
+  new KAction(i18n("Edit account..."), "edit", 0, this, SLOT(slotAccountEdit()), actionCollection(), "account_edit");
+
+#ifdef USE_OFX_DIRECTCONNECT
+  new KAction(i18n("Online update using OFX..."), "account", 0, this, SLOT(slotAccountUpdateOFX()), actionCollection(), "account_update_ofx");
+#endif
+
+  // **************
+  // The tools menu
+  // **************
+  new KAction(i18n("QIF Profile Editor..."), "edit", 0, this, SLOT(slotQifProfileEditor()), actionCollection(), "tools_qif_editor");
+  new KAction(i18n("Securities ..."), "", 0, this, SLOT(slotSecurityEditor()), actionCollection(), "tools_security_editor");
+  new KAction(i18n("Currencies ..."), "", 0, this, SLOT(slotCurrencyDialog()), actionCollection(), "tools_currency_editor");
+  new KAction(i18n("Prices ..."), "", 0, this, SLOT(slotPriceDialog()), actionCollection(), "tools_price_editor");
+  new KAction(i18n("Update Stock and Currency Prices..."), "", 0, this, SLOT(slotEquityPriceUpdate()), actionCollection(), "tools_update_prices");
+  new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "tools_consistency_check");
+  new KAction(i18n("Performance-Test"), "fork", 0, this, SLOT(slotPerformanceTest()), actionCollection(), "tools_performancetest");
+
+  // *****************
+  // The settings menu
+  // *****************
+  KStdAction::showToolbar(this, SLOT(slotViewToolBar()), actionCollection());
+  KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
+  KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
+  KStdAction::configureToolbars( this, SLOT( slotEditToolbars() ), actionCollection());
+  KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
+  new KAction(i18n("Enable all messages"), "", 0, this, SLOT(slotEnableMessages()), actionCollection(), "settings_enable_messages");
+
+  // *************
   // The help menu
-  registerAction("ActionHelpTipOfTheDay", new KAction(i18n("&Show tip of the day"), "idea", 0, this, SLOT(slotShowTipOfTheDay()), actionCollection(), "show_tip"));
+  // *************
+  new KAction(i18n("&Show tip of the day"), "idea", 0, this, SLOT(slotShowTipOfTheDay()), actionCollection(), "help_show_tip");
 
-  registerAction("ActionTransactionNew", new KAction(i18n("Add new transaction"), QKeySequence(Qt::CTRL | Qt::Key_Insert), actionCollection(), "transaction_new"));
+  // **********************
+  // Actions w/o menu entry
+  // **********************
+  new KAction(i18n("New transaction"), QKeySequence(Qt::CTRL | Qt::Key_Insert), actionCollection(), "transaction_new");
+  new KAction(i18n("New investment"), "file_new", 0, this, SLOT(slotInvestmentNew()), actionCollection(), "investment_new");
 
-  m_previousViewButton = new KToolBarPopupAction(i18n("View back"), "back", 0, this, SLOT(slotShowPreviousView()), actionCollection(), "go_back");
-  m_nextViewButton = new KToolBarPopupAction(i18n("View forward"), "forward", 0, this, SLOT(slotShowNextView()), actionCollection(), "go_forward");
+  // ************************
+  // Currently unused actions
+  // ************************
+#if 0
+  new KToolBarPopupAction(i18n("View back"), "back", 0, this, SLOT(slotShowPreviousView()), actionCollection(), "go_back");
+  new KToolBarPopupAction(i18n("View forward"), "forward", 0, this, SLOT(slotShowNextView()), actionCollection(), "go_forward");
 
-  m_previousViewButton->setEnabled(false);
-  m_nextViewButton->setEnabled(false);
+  action("go_back")->setEnabled(false);
+  action("go_forward")->setEnabled(false);
+#endif
+
+  // Setup transaction detail switch
+  config->setGroup("List Options");
+  toggleAction("view_show_transaction_detail")->setChecked(config->readBoolEntry("ShowRegisterDetailed", true));
 
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
-  createGUI(QString::null,false);
+  createGUI(QString::null, false);
 }
+
+void KMyMoney2App::dumpActions() const
+{
+  KActionPtrList list = actionCollection()->actions();
+  KActionPtrList::const_iterator it;
+  for(it = list.begin(); it != list.end(); ++it) {
+    std::cout << (*it)->name() << ": " << (*it)->text() << std::endl;
+  }
+}
+
+KAction* KMyMoney2App::action(const QString& actionName) const
+{
+  static KShortcut shortcut("");
+  static KAction dummyAction(QString("Dummy"), QString(), shortcut, static_cast<const QObject*>(this), 0, static_cast<KActionCollection*>(0), "");
+
+  KAction* p = actionCollection()->action(actionName.latin1());
+  if(p)
+    return p;
+
+  qWarning("Action with name '%s' not found!", actionName.latin1());
+  return &dummyAction;
+}
+
+KToggleAction* KMyMoney2App::toggleAction(const QString& actionName) const
+{
+  static KShortcut shortcut("");
+  static KToggleAction dummyAction(QString("Dummy"), QString(), shortcut, static_cast<const QObject*>(this), 0, static_cast<KActionCollection*>(0), "");
+
+  KAction* q = actionCollection()->action(actionName.latin1());
+
+  if(q) {
+    KToggleAction* p = dynamic_cast<KToggleAction*>(q);
+    if(!p) {
+      qWarning("Action '%s' is not of type KToggleAction", actionName.latin1());
+      p = &dummyAction;
+    }
+    return p;
+  }
+
+  qWarning("Action with name '%s' not found!", actionName.latin1());
+  return &dummyAction;
+}
+
 
 void KMyMoney2App::initStatusBar()
 {
@@ -310,11 +380,11 @@ void KMyMoney2App::saveOptions()
 {
   config->setGroup("General Options");
   config->writeEntry("Geometry", size());
-  config->writeEntry("Show Toolbar", toggleAction("ActionSettingShowToolbar")->isChecked());
-  config->writeEntry("Show Statusbar", toggleAction("ActionSettingShowStatusbar")->isChecked());
+  config->writeEntry("Show Toolbar", toggleAction("options_show_toolbar")->isChecked());
+  config->writeEntry("Show Statusbar", toggleAction("options_show_statusbar")->isChecked());
   config->writeEntry("ToolBarPos", (int) toolBar("mainToolBar")->barPos());
 
-  dynamic_cast<KRecentFilesAction*>(action("ActionFileOpenRecent"))->saveEntries(config,"Recent Files");
+  dynamic_cast<KRecentFilesAction*>(action("file_open_recent"))->saveEntries(config,"Recent Files");
 }
 
 
@@ -323,10 +393,10 @@ void KMyMoney2App::readOptions()
   config->setGroup("General Options");
 
   // bar status settings
-  toggleAction("ActionSettingShowToolbar")->setChecked(config->readBoolEntry("Show Toolbar", true));
+  toggleAction("options_show_toolbar")->setChecked(config->readBoolEntry("Show Toolbar", true));
   slotViewToolBar();
 
-  toggleAction("ActionSettingShowStatusbar")->setChecked(config->readBoolEntry("Show Statusbar", true));
+  toggleAction("options_show_statusbar")->setChecked(config->readBoolEntry("Show Statusbar", true));
   slotViewStatusBar();
 
   // bar position settings
@@ -335,6 +405,9 @@ void KMyMoney2App::readOptions()
   toolBar("mainToolBar")->setBarPos(toolBarPos);
 
   // initialize the recent file list
+  KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
+  if(p)
+    p->loadEntries(config,"Recent Files");
 
   QSize size=config->readSizeEntry("Geometry");
   if(!size.isEmpty())
@@ -630,7 +703,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
         if(myMoneyView->readFile(url)) {
           if(myMoneyView->isNativeFile()) {
             fileName = url;
-            KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("ActionFileOpenRecent"));
+            KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
             if(p)
               p->addURL( url );
             writeLastUsedFile(url.url());
@@ -774,6 +847,9 @@ void KMyMoney2App::slotFileClose()
       slotFileSave();
   }
 
+  selectAccount(MyMoneyAccount());
+  selectInstitution(MyMoneyInstitution());
+
   myMoneyView->closeFile();
   fileName = KURL();
   updateCaption();
@@ -810,7 +886,7 @@ void KMyMoney2App::slotViewToolBar()
   QString prevMsg = slotStatusMsg(i18n("Toggling toolbar..."));
   ///////////////////////////////////////////////////////////////////
   // turn Toolbar on or off
-  toolBar("mainToolBar")->setShown(toggleAction("ActionSettingShowToolbar")->isChecked());
+  toolBar("mainToolBar")->setShown(toggleAction("options_show_toolbar")->isChecked());
   slotStatusMsg(prevMsg);
 }
 
@@ -819,7 +895,7 @@ void KMyMoney2App::slotViewStatusBar()
   QString prevMsg = slotStatusMsg(i18n("Toggle the statusbar..."));
   ///////////////////////////////////////////////////////////////////
   //turn Statusbar on or off
-  statusBar()->setShown(toggleAction("ActionSettingShowStatusbar")->isChecked());
+  statusBar()->setShown(toggleAction("options_show_statusbar")->isChecked());
   slotStatusMsg(prevMsg);
 }
 
@@ -896,7 +972,23 @@ void KMyMoney2App::slotFileViewPersonal()
     return;
   }
 
-  myMoneyView->viewPersonal();
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  KNewFileDlg newFileDlg(file->userName(), file->userStreet(),
+    file->userTown(), file->userCounty(), file->userPostcode(), file->userTelephone(),
+    file->userEmail(), this, "NewFileDlg", i18n("Edit Personal Data"));
+
+  if (newFileDlg.exec())
+  {
+    file->setUserName(newFileDlg.userNameText);
+    file->setUserStreet(newFileDlg.userStreetText);
+    file->setUserTown(newFileDlg.userTownText);
+    file->setUserCounty(newFileDlg.userCountyText);
+    file->setUserPostcode(newFileDlg.userPostcodeText);
+    file->setUserTelephone(newFileDlg.userTelephoneText);
+    file->setUserEmail(newFileDlg.userEmailText);
+  }
+
   updateCaption();
 
   slotStatusMsg(prevMsg);
@@ -905,18 +997,16 @@ void KMyMoney2App::slotFileViewPersonal()
 void KMyMoney2App::slotFileFileInfo()
 {
   if ( !myMoneyView->fileOpen() ) {
-
     KMessageBox::information(this, i18n("No KMyMoneyFile open"));
-
     return;
   }
 
-  int answer = KMessageBox::warningYesNoCancel(this, i18n("This function is used by the developers to\n\nperform a dump of the engine's data in memory."));
-  if (answer == KMessageBox::Cancel || answer == KMessageBox::No)
-    return;
-
-
-  myMoneyView->memoryDump();
+  QFile g( "kmymoney2.dump" );
+  g.open( IO_WriteOnly );
+  QDataStream st(&g);
+  MyMoneyStorageDump dumper;
+  dumper.writeStream(st, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
+  g.close();
 }
 
 void KMyMoney2App::slotLoadAccountTemplates(void)
@@ -946,7 +1036,7 @@ void KMyMoney2App::slotLoadAccountTemplates(void)
 
 void KMyMoney2App::slotSaveAccountTemplates(void)
 {
-  QString prevMsg = slotStatusMsg(i18n("Importing account templates."));
+  QString prevMsg = slotStatusMsg(i18n("Exporting account templates."));
 
   QString newName = KFileDialog::getSaveFileName(KGlobalSettings::documentPath(),
                                                i18n("*.kmt|KMyMoney template files\n"
@@ -1203,6 +1293,36 @@ void KMyMoney2App::slotPluginImport(const QString& format)
   {
     KMessageBox::error( this, i18n("Unable to import <b>%1</b> file.  There is no such plugin loaded.").arg(format), i18n("Function not available"));
   }
+}
+
+void KMyMoney2App::slotAccountUpdateOFX(void)
+{
+#ifdef USE_OFX_DIRECTCONNECT
+  bool accountSuccess=false;
+  try
+  {
+    MyMoneyFile* file = MyMoneyFile::instance();
+    MyMoneyAccount account;
+
+    if(!m_accountId.isEmpty())
+    {
+      account = file->account(accountId);
+
+      KOfxDirectConnectDlg dlg(account);
+
+      connect(&dlg, SIGNAL(statementReady(const QString&, const QString&)), this,
+        SLOT(slotPluginImport(const QString&, const QString&)));
+
+      dlg.init();
+      dlg.exec();
+    }
+  }
+  catch (MyMoneyException *e)
+  {
+    KMessageBox::information(this,i18n("Error connecting to bank: %1").arg(e->what()));
+    delete e;
+  }
+#endif
 }
 
 void KMyMoney2App::slotPluginImport(const QString& format, const QString& url)
@@ -1704,10 +1824,10 @@ void KMyMoney2App::slotKeySettings()
 
 void KMyMoney2App::slotSetViewSpecificActions(int view)
 {
-  action("ActionFilePrint")->setEnabled(false);
+  action("file_print")->setEnabled(false);
   switch(view) {
     case KMyMoneyView::ReportsView:
-      action("ActionFilePrint")->setEnabled(true);
+      action("file_print")->setEnabled(true);
       break;
     default:
       break;
@@ -1769,7 +1889,7 @@ void KMyMoney2App::slotCloseSearchDialog(void)
   m_searchDlg = 0;
 }
 
-void KMyMoney2App::slotNewInstitution(MyMoneyInstitution institution)
+void KMyMoney2App::slotInstitutionNew(MyMoneyInstitution institution)
 {
   try {
     MyMoneyFile* file = MyMoneyFile::instance();
@@ -1781,13 +1901,50 @@ void KMyMoney2App::slotNewInstitution(MyMoneyInstitution institution)
   }
 }
 
-void KMyMoney2App::slotNewInstitution(void)
+void KMyMoney2App::slotInstitutionNew(void)
 {
   MyMoneyInstitution institution;
 
   KNewBankDlg dlg(institution);
   if (dlg.exec())
-    slotNewInstitution(dlg.institution());
+    slotInstitutionNew(dlg.institution());
+}
+
+void KMyMoney2App::slotInstitutionEdit(void)
+{
+  try {
+    MyMoneyFile* file = MyMoneyFile::instance();
+
+    //grab a pointer to the view, regardless of it being a account or institution view.
+    MyMoneyInstitution institution = file->institution(m_selectedInstitution.id());
+
+    // bankSuccess is not checked anymore because m_file->institution will throw anyway
+    KNewBankDlg dlg(institution);
+    if (dlg.exec()) {
+      file->modifyInstitution(dlg.institution());
+      selectInstitution(dlg.institution());
+    }
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::information(this, i18n("Unable to edit institution: %1").arg(e->what()));
+    delete e;
+  }
+}
+
+void KMyMoney2App::slotInstitutionDelete(void)
+{
+  try {
+    MyMoneyFile *file = MyMoneyFile::instance();
+
+    MyMoneyInstitution institution = file->institution(m_selectedInstitution.id());
+    if ((KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to delete institution <b>%1</b> ?").arg(institution.name()))) == KMessageBox::No)
+      return;
+    file->removeInstitution(institution);
+
+  } catch (MyMoneyException *e) {
+    KMessageBox::information(this, i18n("Unable to delete institution: %1").arg(e->what()));
+    delete e;
+  }
 }
 
 void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal, MyMoneySchedule& schedule)
@@ -1878,7 +2035,7 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
   }
 }
 
-void KMyMoney2App::slotNewCategory(void)
+void KMyMoney2App::slotCategoryNew(void)
 {
   MyMoneyAccount account;
 
@@ -1896,7 +2053,7 @@ void KMyMoney2App::slotNewCategory(void)
     }
   }
 
-  KNewAccountDlg dialog(account, false, true, 0, "NewAccountDlg", i18n("Create a new Category"));
+  KNewAccountDlg dialog(account, false, true, 0, 0, i18n("Create a new Category"));
 
   if(dialog.exec() == QDialog::Accepted) {
     MyMoneyAccount newAccount, parentAccount, brokerageAccount;
@@ -1908,19 +2065,15 @@ void KMyMoney2App::slotNewCategory(void)
   }
 }
 
-void KMyMoney2App::slotNewAccount(void)
+void KMyMoney2App::slotAccountNew(void)
 {
   KNewAccountWizard newAccountWizard;
 
-  connect(&newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotNewInstitution()));
+  connect(&newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotInstitutionNew()));
 
   newAccountWizard.setAccountName(QString());
-
-#if 0
-  // Preselect an institution if one is currently selected
-  if(!m_selectedInstitution.isEmpty())
-    newAccountWizard.setInstitution(m_accountsInstitution);
-#endif
+  // Preselect the current selected institution (or none)
+  newAccountWizard.setInstitution(m_selectedInstitution);
 
   if(newAccountWizard.exec() == QDialog::Accepted) {
     // The wizard doesn't check the parent.
@@ -1933,6 +2086,15 @@ void KMyMoney2App::slotNewAccount(void)
     createAccount(newAccount, parentAccount, brokerageAccount, newAccountWizard.openingBalance(), schedule);
   }
 }
+
+void KMyMoney2App::slotInvestmentNew(void)
+{
+  KNewInvestmentWizard dlg(this, "InvestmentWizard");
+  if(dlg.exec() == QDialog::Accepted) {
+    dlg.createObjects(m_selectedAccount.id());
+  }
+}
+
 
 void KMyMoney2App::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& newAccount)
 {
@@ -1982,6 +2144,80 @@ void KMyMoney2App::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
   }
 }
 
+void KMyMoney2App::slotAccountDelete(void)
+{
+  bool canDelete = false;
+  MyMoneyFile* file = MyMoneyFile::instance();
+  if(!m_selectedAccount.id().isEmpty()) {
+    if(!file->isStandardAccount(m_selectedAccount.id())) {
+      switch(m_selectedAccount.accountGroup()) {
+        case MyMoneyAccount::Asset:
+          if(m_selectedAccount.accountType() == MyMoneyAccount::Investment) {
+            canDelete = (file->transactionCount(m_selectedAccount.id())==0) && (m_selectedAccount.accountList().count() == 0);
+          } else {
+            canDelete = file->transactionCount(m_selectedAccount.id())==0;
+          }
+          break;
+
+        default:
+          canDelete = file->transactionCount(m_selectedAccount.id())==0;
+          break;
+      }
+    }
+  }
+  if(canDelete) {
+    if (KMessageBox::questionYesNo(this, i18n("Do you really want to delete  '%1'?").arg(m_selectedAccount.name())) == KMessageBox::Yes) {
+      try {
+        file->removeAccount(m_selectedAccount);
+      } catch(MyMoneyException* e) {
+        KMessageBox::error( this, i18n("Unable to delete account '%1'. Cause: %2").arg(m_selectedAccount.name()).arg(e->what()));
+        delete e;
+      }
+    }
+  }
+}
+
+void KMyMoney2App::slotAccountEdit(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  if(!m_selectedAccount.id().isEmpty()) {
+    if(!file->isStandardAccount(m_selectedAccount.id())) {
+      QString caption;
+      bool category = false;
+      switch(MyMoneyAccount::accountGroup(m_selectedAccount.accountType())) {
+        default:
+          caption = i18n("Edit an account");
+          break;
+
+        case MyMoneyAccount::Expense:
+        case MyMoneyAccount::Income:
+          caption = i18n("Edit a category");
+          category = true;
+          break;
+      }
+      KNewAccountDlg dlg(m_selectedAccount, true, category, 0, 0, caption);
+
+      if (dlg.exec()) {
+        try {
+          MyMoneyAccount account = dlg.account();
+          MyMoneyAccount parent = dlg.parentAccount();
+
+          // we need to reparent first, as modify will check for same type
+          if(account.parentAccountId() != parent.id()) {
+            file->reparentAccount(account, parent);
+          }
+          file->modifyAccount(account);
+          selectAccount(account);
+
+        } catch(MyMoneyException* e) {
+          KMessageBox::error( this, i18n("Unable to modify account '%1'. Cause: %2").arg(m_selectedAccount.name()).arg(e->what()));
+          delete e;
+        }
+      }
+    }
+  }
+}
+
 void KMyMoney2App::slotAccountReconcile(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -2008,57 +2244,53 @@ void KMyMoney2App::slotAccountReconcile(void)
   }
 }
 
+void KMyMoney2App::slotAccountOpen(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyAccount account;
+
+  // we cannot reconcile standard accounts
+  if(!file->isStandardAccount(m_selectedAccount.id())) {
+    // check if we can open this account
+    // currently it make's sense for asset and liability accounts
+    try {
+      account = file->account(m_selectedAccount.id());
+      myMoneyView->slotLedgerSelected(account.id());
+    } catch(MyMoneyException *e) {
+      delete e;
+    }
+  }
+}
+
+void KMyMoney2App::showContextMenu(const QString& containerName)
+{
+  QWidget* w = factory()->container(containerName, this);
+  QPopupMenu *menu = dynamic_cast<QPopupMenu*>(w);
+  if(menu)
+    menu->exec(QCursor::pos());
+}
+
+void KMyMoney2App::slotShowInvestmentContextMenu(void)
+{
+  showContextMenu("investment_context_menu");
+}
+
+void KMyMoney2App::slotShowAccountContextMenu(void)
+{
+  showContextMenu("account_context_menu");
+}
+
+void KMyMoney2App::slotShowInstitutionContextMenu(void)
+{
+  showContextMenu("institution_context_menu");
+}
+
 void KMyMoney2App::slotPrintView(void)
 {
   myMoneyView->slotPrintView();
 }
 
-void KMyMoney2App::registerAction(const QString& actionName, KAction* action)
-{
-  if(m_actionMap.find(actionName) != m_actionMap.end()) {
-    KMessageBox::error(0, i18n("The KAction named '%1' is not registered because an action with the same name already exists. This is an internal problem and should be fixed or reported to the KMyMoney development team.").arg(actionName));
-    return;
-  }
-  m_actionMap[actionName] = action;
-}
-
-KAction* KMyMoney2App::action(const QString& actionName) const
-{
-  static KShortcut shortcut("");
-  static KAction dummyAction(QString("Dummy"), QString(), shortcut, static_cast<const QObject*>(this), 0, static_cast<KActionCollection*>(0), "");
-
-  QMap<QString, KAction*>::const_iterator it;
-  it = m_actionMap.find(actionName);
-
-  if(m_actionMap.find(actionName) != m_actionMap.end())
-    return (*it);
-
-  qWarning("Action with name '%s' not found!", actionName.data());
-  return &dummyAction;
-}
-
-KToggleAction* KMyMoney2App::toggleAction(const QString& actionName) const
-{
-  static KShortcut shortcut("");
-  static KToggleAction dummyAction(QString("Dummy"), QString(), shortcut, static_cast<const QObject*>(this), 0, static_cast<KActionCollection*>(0), "");
-
-  QMap<QString, KAction*>::const_iterator it;
-  it = m_actionMap.find(actionName);
-
-  if(m_actionMap.find(actionName) != m_actionMap.end()) {
-    KToggleAction* p = dynamic_cast<KToggleAction*>(*it);
-    if(!p) {
-      qWarning("Action '%s' is not of type KToggleAction", actionName.data());
-      p = &dummyAction;
-    }
-    return p;
-  }
-
-  qWarning("Action with name '%s' not found!", actionName.data());
-  return &dummyAction;
-}
-
-void KMyMoney2App::updateCaption(const bool skipActions)
+void KMyMoney2App::updateCaption(bool skipActions)
 {
   QString caption;
 
@@ -2077,6 +2309,7 @@ void KMyMoney2App::updateCaption(const bool skipActions)
   } catch(MyMoneyException *e) {
     delete e;
     modified = false;
+    skipActions = true;
   }
 
 #if KMM_DEBUG
@@ -2092,45 +2325,110 @@ void KMyMoney2App::updateCaption(const bool skipActions)
   setPlainCaption(caption);
 
   if(!skipActions) {
-    bool fileOpen = myMoneyView->fileOpen();
+    myMoneyView->enableViews();
+    updateActions();
+  }
+}
 
-    action("ActionFileSave")->setEnabled(modified);
-    action("ActionFileSaveAs")->setEnabled(fileOpen);
-    action("ActionFileClose")->setEnabled(fileOpen);
-    action("ActionViewPersonalInfo")->setEnabled(fileOpen);
-    action("ActionFileBackup")->setEnabled(fileOpen);
+void KMyMoney2App::updateActions(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  bool fileOpen = myMoneyView->fileOpen();
+  bool modified = file->dirty();
+
+  action("file_save")->setEnabled(modified);
+  action("file_save_as")->setEnabled(fileOpen);
+  action("file_close")->setEnabled(fileOpen);
+  action("view_personal_data")->setEnabled(fileOpen);
+  action("file_backup")->setEnabled(fileOpen);
 #if KMM_DEBUG
-    action("ActionViewFileInfo")->setEnabled(fileOpen);
-    action("ActionFileDumpMemory")->setEnabled(fileOpen);
+  action("view_file_info")->setEnabled(fileOpen);
+  action("file_dump")->setEnabled(fileOpen);
 #endif
 
-    action("ActionEditFindTransaction")->setEnabled(fileOpen);
-    action("ActionFileExportQif")->setEnabled(fileOpen);
-    action("ActionFileImportQif")->setEnabled(fileOpen);
-    action("ActionFileImportGnucash")->setEnabled(true);
-    action("ActionFileImportTemplate")->setEnabled(fileOpen);
-    action("ActionInstitutionNew")->setEnabled(fileOpen);
-    action("ActionAccountNew")->setEnabled(fileOpen);
+  action("edit_find_transaction")->setEnabled(fileOpen);
+  action("file_export_qif")->setEnabled(fileOpen);
+  action("file_import_qif")->setEnabled(fileOpen);
+  action("file_import_gnc")->setEnabled(true);
+  action("file_import_template")->setEnabled(fileOpen);
+  action("institution_new")->setEnabled(fileOpen);
+  action("account_new")->setEnabled(fileOpen);
 
-    action("ActionEditSecurities")->setEnabled(fileOpen);
-    action("ActionEditCurrencies")->setEnabled(fileOpen);
-    action("ActionEditPrices")->setEnabled(fileOpen);
-    action("ActionToolsOnlincePriceUpdate")->setEnabled(fileOpen);
-    action("ActionAccountReconcile")->setEnabled(fileOpen);
+  action("tools_security_editor")->setEnabled(fileOpen);
+  action("tools_currency_editor")->setEnabled(fileOpen);
+  action("tools_price_editor")->setEnabled(fileOpen);
+  action("tools_update_prices")->setEnabled(fileOpen);
+  action("account_reconcile")->setEnabled(fileOpen);
 
-    myMoneyView->enableViews();
+  action("account_reconcile")->setEnabled(false);
+  action("account_edit")->setEnabled(false);
+  action("account_delete")->setEnabled(false);
+  action("account_open")->setEnabled(false);
+
+#ifdef USE_OFX_DIRECTCONNECT
+  action("account_update_ofx")->setEnabled(false);
+#endif
+
+  action("institution_edit")->setEnabled(false);
+  action("institution_delete")->setEnabled(false);
+  action("investment_new")->setEnabled(false);
+
+  if(!m_selectedAccount.id().isEmpty()) {
+    if(!file->isStandardAccount(m_selectedAccount.id())) {
+      action("account_edit")->setEnabled(true);
+      switch(m_selectedAccount.accountGroup()) {
+        case MyMoneyAccount::Asset:
+        case MyMoneyAccount::Liability:
+          action("account_open")->setEnabled(true);
+          action("account_reconcile")->setEnabled(true);
+
+          if(m_selectedAccount.accountType() == MyMoneyAccount::Investment) {
+            action("account_delete")->setEnabled((file->transactionCount(m_selectedAccount.id())==0) && (m_selectedAccount.accountList().count() == 0));
+          } else {
+            action("account_delete")->setEnabled(file->transactionCount(m_selectedAccount.id())==0);
+          }
+
+          if(m_selectedAccount.accountType() == MyMoneyAccount::Investment)
+            action("investment_new")->setEnabled(true);
+
+#ifdef USE_OFX_DIRECTCONNECT
+          if ( !m_selectedAccount.institutionId().isEmpty() ) {
+            MyMoneyInstitution institution = file->institution(m_selectedAccount.institutionId());
+            if ( institution.ofxConnectionSettings().pairs().count() )
+              action("account_update_ofx")->setEnabled(true);
+          }
+#endif
+          break;
+
+        default:
+          action("account_delete")->setEnabled(file->transactionCount(m_selectedAccount.id())==0);
+          break;
+      }
+    }
+  }
+
+  if(!m_selectedInstitution.id().isEmpty()) {
+    action("institution_edit")->setEnabled(true);
+    if(m_selectedInstitution.accountList().count() == 0) {
+      action("institution_delete")->setEnabled(true);
+    }
   }
 }
 
 void KMyMoney2App::selectInstitution(const MyMoneyInstitution& institution)
 {
   m_selectedInstitution = institution;
+  updateActions();
+  emit institutionSelected(institution);
 }
 
 void KMyMoney2App::selectAccount(const MyMoneyAccount& account)
 {
   m_selectedAccount = account;
+  updateActions();
+  emit accountSelected(account);
 }
+
 
 void KMyMoney2App::update(const QCString& /* id */)
 {
@@ -2391,7 +2689,7 @@ void KMyMoney2App::createInitialAccount(void)
         "The currently opened KMyMoney document does not contain a single asset account. In order to maintain your finances you need at least one asset account (e.g. your checkings account). KMyMoney will start the \"New Account Wizard\" now which allows you to create your first asset account."
           ),
       i18n("No asset account"));
-    slotNewAccount();
+    slotAccountNew();
   }
 }
 

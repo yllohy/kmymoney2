@@ -1001,7 +1001,7 @@ void KLedgerViewCheckings::fillForm(void)
           if(m_transaction.isLoanPayment())
             category = i18n("Loan Payment");
           else
-            category = i18n("Split transaction");
+            category = i18n("Split transaction (category replacement)", "Split transaction");
           break;
       }
     } catch (MyMoneyException *e) {
@@ -1184,7 +1184,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
           // directly, but only through the split edit dialog
           if(m_editCategory) {
             connect(m_editCategory, SIGNAL(signalFocusIn()), this, SLOT(slotOpenSplitDialog()));
-            m_editCategory->loadText(i18n("Split transaction"));
+            m_editCategory->loadText(i18n("Split transaction (category replacement)", "Split transaction"));
           }
           break;
       }

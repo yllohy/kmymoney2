@@ -790,6 +790,7 @@ void KAccountsView::slotSelectionChanged(QListViewItem *item)
 
 void KAccountsView::show()
 {
+  slotSelectionChanged(accountListView->selectedItem());
 
   emit signalViewActivated();
 
@@ -803,89 +804,5 @@ void KAccountsView::slotViewSelected(QWidget* /* view */)
   config->writeEntry("KAccountsView_LastType", accountTabWidget->currentPageIndex());
   config->sync();
 }
-
-void KAccountsView::slotEditClicked(void)
-
-{
-  QCString  accountId;
-
-  if(accountTabWidget->currentPageIndex() == 0) {   // ListView?
-    KAccountListItem *item = (KAccountListItem *)accountListView->currentItem();
-    if(!item)
-      return;
-    accountId = item->accountID();
-
-  } else {
-    KAccountIconItem *item = (KAccountIconItem *)accountIconView->currentItem();
-    if(!item)
-      return;
-    accountId = item->accountID();
-  }
-
-  try
-  {
-    MyMoneyFile* file = MyMoneyFile::instance();
-    MyMoneyAccount account = file->account(accountId);
-
-    KNewAccountDlg dlg(account, true, false, this, "hi", i18n("Edit an account"));
-
-    if (dlg.exec())
-    {
-      MyMoneyAccount account = dlg.account();
-      MyMoneyAccount parent = dlg.parentAccount();
-
-      file->modifyAccount(account);
-      if(account.parentAccountId() != parent.id()) {
-        file->reparentAccount(account, parent);
-      }
-    }
-  }
-  catch (MyMoneyException *e)
-  {
-    QString errorString = i18n("Cannot edit category: ");
-    errorString += e->what();
-    KMessageBox::error(this, errorString);
-    delete e;
-  }
-}
-
-void KAccountsView::slotDeleteClicked(void)
-{
-  QCString  accountId;
-
-  if(accountTabWidget->currentPageIndex() == 0) {   // ListView?
-    KAccountListItem *item = (KAccountListItem *)accountListView->currentItem();
-    if(!item)
-      return;
-    accountId = item->accountID();
-
-  } else {
-    KAccountIconItem *item = (KAccountIconItem *)accountIconView->currentItem();
-    if(!item)
-      return;
-    accountId = item->accountID();
-  }
-
-  try
-  {
-    MyMoneyFile *file = MyMoneyFile::instance();
-    MyMoneyAccount account = file->account(accountId);
-    QString prompt = i18n("Do you really want to delete the account '%1'")
-      .arg(account.name());
-
-    if ((KMessageBox::questionYesNo(this, prompt)) == KMessageBox::Yes) {
-      MyMoneyFile *file = MyMoneyFile::instance();
-      file->removeAccount(account);
-    }
-  }
-  catch (MyMoneyException *e)
-  {
-    QString message(i18n("Unable to remove account: "));
-    message += e->what();
-    KMessageBox::error(this, message);
-    delete e;
-  }
-}
-
 
 #include "kbanksview.moc"

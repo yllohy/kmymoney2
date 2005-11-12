@@ -57,6 +57,7 @@
 #include <kmymoney/mymoneyfile.h>
 #include "../widgets/kmymoneyaccountcombo.h"
 #include "../widgets/kmymoneytitlelabel.h"
+#include "../kmymoney2.h"
 
 KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   : KMyMoneyViewBase(parent, name, i18n("Ledgers"))
@@ -303,6 +304,8 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
   if(!id.isEmpty()) {
     // if the account id differs, then we have to do something
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+    if(isVisible())
+      kmymoney2->selectAccount(acc);
     if(m_accountId != id) {
       // cancel any pending edit operation in the ledger views
       // when switching to a different account
@@ -376,6 +379,9 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
     } else {
       qFatal("Houston: we have a serious problem in KGlobalLedgerView");
     }
+    // no account selected
+    if(isVisible())
+      kmymoney2->selectAccount();
   }
   return rc;
 }
@@ -403,6 +409,16 @@ void KGlobalLedgerView::show()
 {
   // only show selection box if filled with at least one account
   m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
+
+  // if we have a selected account, notify the application about it
+  if(!m_accountId.isEmpty()) {
+    try {
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(m_accountId);
+      kmymoney2->selectAccount(acc);
+    } catch(MyMoneyException* e) {
+      delete e;
+    }
+  }
 
   KMyMoneyViewBase::show();
   emit signalViewActivated();

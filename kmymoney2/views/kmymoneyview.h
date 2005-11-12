@@ -25,12 +25,13 @@
 // QT Includes
 #include <qwidget.h>
 #include <qmessagebox.h>
-#include <qvbox.h>
+class QVBox;
 class QFile;
 class QVBoxLayout;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <kpopupmenu.h>
 #include <kjanuswidget.h>
 
@@ -68,9 +69,9 @@ class KMyMoneyViewBase;
   *
   * @short Handles the view of the MyMoneyFile.
   */
-class KMyMoneyView : public KJanusWidget {
-   Q_OBJECT
-
+class KMyMoneyView : public KJanusWidget
+{
+  Q_OBJECT
 
 public:
   enum viewID {
@@ -122,14 +123,13 @@ private:
   QVBox* m_investmentViewFrame;
   QVBox* m_reportsViewFrame;
 
+  bool m_inConstructor;
+
   bool m_fileOpen;
 
-  KPopupMenu* m_accountMenu;
-  KPopupMenu* m_bankMenu;
-  KPopupMenu* m_rightMenu;
+  // bool m_bankRightClick;
+  // MyMoneyInstitution m_accountsInstitution;
 
-  bool m_bankRightClick;
-  MyMoneyInstitution m_accountsInstitution;
   // Keep a note of the file type
   typedef enum _fileTypeE {
     KmmBinary = 0, // native, binary
@@ -296,14 +296,6 @@ public:
   bool newFile(const bool createEmtpyFile = false);
 
   /**
-    * Brings up a dialog that displays information about the user who created
-    * the MyMoneyFile if set.
-    *
-    * @see KNewFileDlg
-    */
-  void viewPersonal(void);
-
-  /**
     * Moves the view up from transaction to Bank/Account view.
     */
   void viewUp(void);
@@ -328,8 +320,6 @@ public:
     */
   void suspendUpdate(const bool suspend);
 
-  void memoryDump();
-
   /**
     * This method allows to set the enable state of all views (except home view)
     * The argument @p state controls the availability.
@@ -340,11 +330,11 @@ public:
     */
   void enableViews(int state = -1);
 
-  KPopupMenu* accountContextMenu(void) const { return m_accountMenu; };
-
   KMyMoneyViewBase* addPage(const QString& title, const QPixmap& pixmap = QPixmap());
 
   void addWidget(QWidget* w);
+
+  virtual bool showPage(int index);
 
 public slots:
   /**
@@ -365,12 +355,6 @@ public slots:
     * data has been loaded from external sources (QIF import).
     **/
   void slotRefreshViews();
-
-  /**
-    * Called whenever the user 'executes' an account. This operation opens the account
-    * and shows the register view.
-    **/
-  void slotAccountDoubleClick(void);
 
   /**
     * Called, whenever the ledger view should pop up and a specific
@@ -409,41 +393,6 @@ public slots:
   void slotReportSelected(const QCString& reportid);
 
   /**
-    * Called whenever the user wishes to create a new account.  Brings up the input
-    * dialog and saves the information.
-    *
-    * @see KBanksView
-    * @see KNewAccountDlg
-    * @see MyMoneyFile
-    * @see MyMoneyAccount
-    */
-  // void slotAccountNew(void);
-
-  /**
-    * Called whenever the user wishes to create a new account by right clicking on
-    * an institution.  Brings up the input dialog and saves the information.
-    *
-    * This exists so that the institution can be pre-set in the account wizard.
-    *
-    * @see KBanksView
-    * @see KNewAccountDlg
-    * @see MyMoneyFile
-    * @see MyMoneyAccount
-    */
-  // void slotBankAccountNew(void);
-
-  /**
-    * Called whenever the user wishes to create a new category.  Brings up the input
-    * dialog and saves the information.
-    *
-    * @see KBanksView
-    * @see KNewAccountDlg
-    * @see MyMoneyFile
-    * @see MyMoneyAccount
-    */
-  // void slotCategoryNew(void);
-
-  /**
     * Called whenever the user wishes to reconcile the open account.  It first get some
     * required input and then opens the reconciliation dialog.  The user can edit transactions
     * as normal in the main view because this dialog is modeless and is updated whenever the
@@ -455,11 +404,6 @@ public slots:
     * @see MyMoneyAccount
     */
   void slotAccountReconcile(const MyMoneyAccount&);
-
-  // Not implemented, not documented!
-
-  void slotAccountImportAscii(void);
-  void slotAccountExportAscii(void);
 
   /**
     * This slot cancels any edit activity in any view. It will
@@ -478,47 +422,6 @@ public slots:
   void slotShowHomePage(void) { showPage(0); }
 
 protected slots:
-  /**
-    * Called whenever the user right clicks on an account.  It brings up
-    * a context menu.  TODO: move the context menu into kmymoney2ui.rc, move
-    * this method into KBanksView, remove the param inList.
-    */
-  void slotAccountRightMouse();
-  void slotBankRightMouse();
-  void slotRightMouse();
-
-  /**
-    * Called by the context menu created in slotAccountRightMouse.  Brings up
-    * a dialog which allows the user to edit the account details.  TODO: move this
-    * method into KBanksView.
-    */
-  void slotAccountEdit();
-
-  /**
-    * Called by the context menu created in slotAccountRightMouse.  Deletes the currently
-    * selected account. TODO: move this method into KBanksView.
-    */
-  void slotAccountDelete();
-
-  /**
-    * Called by the context menu created in slotAccountRightMouse.  Connects to the users
-    * bank via OFX.  Only valid if ofxConnectionSettings have been set in the institution.
-    */
-  void slotAccountOfxConnect();
-
-  /**
-    * Called by the context menu created in slotBankRightMouse.  Brings up
-    * a dialog which allows the user to edit the bank details.  TODO: move this
-    * method into KBanksView.
-    */
-  void slotBankEdit();
-
-  /**
-    * Called by the context menu created in slotBankRightMouse.  Deletes the currently
-    * selected bank. TODO: move this method into KBanksView.
-    */
-  void slotBankDelete();
-
   /**
     * Called when the user changes the detail
     * setting of the transaction register

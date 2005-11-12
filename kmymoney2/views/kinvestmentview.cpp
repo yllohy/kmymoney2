@@ -66,6 +66,8 @@
 #include "../widgets/kmymoneyaccountcombo.h"
 #include "../widgets/kmymoneycurrencyselector.h"
 
+#include "../kmymoney2.h"
+
 #include "kinvestmentview.h"
 #include "kinvestmentlistitem.h"
 #include "kledgerviewinvestments.h"
@@ -389,6 +391,8 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString
   if(!id.isEmpty()) {
     // if the account id differs, then we have to do something
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+    if(isVisible())
+      kmymoney2->selectAccount(acc);
     if(m_accountId != id) {
       // cancel any pending edit operation in the ledger views
       // when switching to a different account
@@ -426,6 +430,8 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString
     // when switching to a non existing account
     slotCancelEdit();
     m_accountComboBox->setSelected(QCString());
+    if(isVisible())
+      kmymoney2->selectAccount();
   }
 
   // keep this as the current account if we loaded a different one
@@ -439,6 +445,16 @@ void KInvestmentView::show(void)
 {
   // only show selection box if filled with at least one account
   m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
+
+  // if we have a selected account, notify the application about it
+  if(!m_accountId.isEmpty()) {
+    try {
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(m_accountId);
+      kmymoney2->selectAccount(acc);
+    } catch(MyMoneyException* e) {
+      delete e;
+    }
+  }
 
   QWidget::show();
   emit signalViewActivated();

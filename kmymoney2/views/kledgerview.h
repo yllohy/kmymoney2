@@ -953,11 +953,6 @@ private:
   bool m_suspendUpdate;
 
 private slots:
-  /**
-    * This method finishes the initialization of the object
-    */
-  void finishInitialization(void);
-
   void timerDone(void);
 
   /**
