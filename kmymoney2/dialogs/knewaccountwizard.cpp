@@ -222,8 +222,6 @@ void KNewAccountWizard::accept()
     if(m_brokerageYesButton->isChecked()) {
       m_brokerage.setName(m_account.name()+i18n(" (Brokerage)"));
     }
-    // FIXME: opening balance not supported anymore
-    m_brokerage.setOpeningBalance(m_openingBalance->value());
     m_brokerage.setOpeningDate(m_openingDate->getQDate());
   } else {
     // m_account.setOpeningBalance(MyMoneyMoney(openingBalance->text()));

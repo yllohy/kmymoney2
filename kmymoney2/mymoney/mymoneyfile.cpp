@@ -489,7 +489,8 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
 
   account.setParentAccountId(parent.id());
 
-  MyMoneyMoney openingBalance(account.openingBalance());
+  // FIXME: remove next line
+  // MyMoneyMoney openingBalance(account.openingBalance());
   account.setOpeningBalance(MyMoneyMoney(0,1));
 
   m_storage->addAccount(account);
@@ -498,7 +499,8 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   if(account.institutionId().length() != 0)
     m_storage->addAccount(institution, account);
 
-  createOpeningBalanceTransaction(account, openingBalance);
+  // FIXME: remove next line
+  // createOpeningBalanceTransaction(account, openingBalance);
 
   // parse the complete account tree and collect all
   // account and institution ids and also the pseudo account class

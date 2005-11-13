@@ -1976,10 +1976,9 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
     }
 
     MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
-    MyMoneyFile::instance()->createOpeningBalanceTransaction(newAccount, openingBal);
 
     // We MUST add the schedule AFTER adding the account because
-    // otherwise an unknown account will be thrown.
+    // otherwise an unknown account exception will be thrown.
     createSchedule(schedule, newAccount);
 
     // in case of a loan account, we add the initial payment
@@ -2011,6 +2010,7 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
         qDebug("Cannot add loan payout transaction: %s", e->what().latin1());
         delete e;
       }
+      MyMoneyFile::instance()->createOpeningBalanceTransaction(newAccount, openingBal);
 
     // in case of an investment account we check if we should create
     // a brokerage account
@@ -2022,11 +2022,14 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
         // set a link from the investment account to the brokerage account
         newAccount.setValue("kmm-brokerage-account", brokerageAccount.id());
         MyMoneyFile::instance()->modifyAccount(newAccount);
+        MyMoneyFile::instance()->createOpeningBalanceTransaction(brokerageAccount, openingBal);
       } catch(MyMoneyException *e) {
         qDebug("Cannot add brokerage account: %s", e->what().latin1());
         delete e;
       }
-    }
+    } else
+      MyMoneyFile::instance()->createOpeningBalanceTransaction(newAccount, openingBal);
+
   }
   catch (MyMoneyException *e)
   {
