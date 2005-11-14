@@ -63,6 +63,8 @@ public:
 
   const MyMoneyMoney price(void) const;
 
+  void setupPriceEditor(void);
+
 protected:
   void updateExample(const MyMoneyMoney& price);
 
@@ -71,14 +73,13 @@ protected slots:
   void slotSetExchangeRate(void);
   void slotUpdateResult(const QString& txt);
   void slotUpdateRate(const QString& txt);
-  virtual void accept();
+  virtual void accept(void);
 
 private:
   MyMoneySecurity     m_fromCurrency;
   MyMoneySecurity     m_toCurrency;
   MyMoneyMoney        m_result;
   MyMoneyMoney        m_value;
-  QDate               m_date;
   int                 m_resultFraction;
   int                 m_ratePrec;
 };

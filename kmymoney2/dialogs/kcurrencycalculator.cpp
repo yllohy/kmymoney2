@@ -44,6 +44,7 @@
 
 #include "kcurrencycalculator.h"
 #include "../widgets/kmymoneyedit.h"
+#include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneycurrencyselector.h"
 #include "../mymoney/mymoneyprice.h"
 #include "../kmymoneyutils.h"
@@ -54,16 +55,18 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMo
   m_toCurrency(to),
   m_result(shares.abs()),
   m_value(value.abs()),
-  m_date(date),
   m_resultFraction(resultFraction)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
+
+  m_dateFrame->hide();
+  m_dateEdit->setDate(date);
 
   m_fromCurrencyText->setText(m_fromCurrency.isCurrency() ? m_fromCurrency.id() : m_fromCurrency.tradingSymbol());
   m_toCurrencyText->setText(m_toCurrency.isCurrency() ? m_toCurrency.id() : m_toCurrency.tradingSymbol());
 
   m_fromAmount->setText(m_value.formatMoney("", MyMoneyMoney::denomToPrec(m_fromCurrency.smallestAccountFraction())));
-  m_dateText->setText(KGlobal::locale()->formatDate(m_date, true));
+  m_dateText->setText(KGlobal::locale()->formatDate(date, true));
 
   m_fromType->setText(KMyMoneyUtils::securityTypeToString(m_fromCurrency.securityType()));
   m_toType->setText(KMyMoneyUtils::securityTypeToString(m_toCurrency.securityType()));
@@ -89,7 +92,7 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMo
 
   // setup initial result
   if(m_result == MyMoneyMoney() && !m_value.isZero()) {
-    MyMoneyPrice pr = file->price(m_fromCurrency.id(), m_toCurrency.id(), m_date);
+    MyMoneyPrice pr = file->price(m_fromCurrency.id(), m_toCurrency.id(), date);
     if(pr.isValid()) {
       m_result = m_value * pr.rate(m_fromCurrency.id());
     }
@@ -120,6 +123,14 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMo
 
 KCurrencyCalculator::~KCurrencyCalculator()
 {
+}
+
+void KCurrencyCalculator::setupPriceEditor(void)
+{
+  m_dateFrame->show();
+  m_amountDateFrame->hide();
+  m_updateButton->setChecked(true);
+  m_updateButton->hide();
 }
 
 void KCurrencyCalculator::slotSetToAmount(void)
@@ -208,11 +219,11 @@ void KCurrencyCalculator::accept(void)
     slotUpdateResult(QString());
 
   if(m_updateButton->isChecked()) {
-    MyMoneyPrice pr = MyMoneyFile::instance()->price(m_fromCurrency.id(), m_toCurrency.id(), m_date);
+    MyMoneyPrice pr = MyMoneyFile::instance()->price(m_fromCurrency.id(), m_toCurrency.id(), m_dateEdit->getQDate());
     if(!pr.isValid()
-    || pr.date() != m_date
-    || (pr.date() == m_date && pr.rate(m_fromCurrency.id()) != price())) {
-      pr = MyMoneyPrice(m_fromCurrency.id(), m_toCurrency.id(), m_date, price(), i18n("User"));
+    || pr.date() != m_dateEdit->getQDate()
+    || (pr.date() == m_dateEdit->getQDate() && pr.rate(m_fromCurrency.id()) != price())) {
+      pr = MyMoneyPrice(m_fromCurrency.id(), m_toCurrency.id(), m_dateEdit->getQDate(), price(), i18n("User"));
       MyMoneyFile::instance()->addPrice(pr);
     }
   }
