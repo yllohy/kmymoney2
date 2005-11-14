@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="4" name="kmymoney2" >
+<kpartgui version="5" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Menu icon="fileimport" append="save_merge" name="import" >
@@ -65,12 +65,18 @@
  <Menu name="account_context_menu">
   <title>Account options</title>
   <Action name="account_new" />
+  <Action name="category_new" />
   <Action name="account_open" />
+  <Action name="account_edit" />
+  <Action name="account_delete" />
   <Separator/>
   <Action name="account_reconcile" />
   <Separator/>
-  <Action name="account_edit" />
-  <Action name="account_delete" />
+  <Action name="investment_new" />
+  <Action name="investment_edit" />
+  <Action name="investment_delete" />
+  <Action name="investment_online_price_update" />
+  <Action name="investment_manual_price_update" />
  </Menu>
  <Menu name="institution_context_menu">
   <title>Insitution options</title>
@@ -87,6 +93,8 @@
   <Action name="investment_new" />
   <Action name="investment_edit" />
   <Action name="investment_delete" />
+  <Action name="investment_online_price_update" />
+  <Action name="investment_manual_price_update" />
   <Separator />
   <Action name="tools_update_prices" />
  </Menu>
@@ -97,15 +105,17 @@
   <Action name="file_open" />
   <Action name="file_save" />
   <Action name="file_print" />
-  <Separator name="separator_2" />
+  <Separator />
   <Action name="institution_new" />
   <Action name="account_new" />
-  <Separator name="separator_1" />
+  <Separator />
   <Action name="account_open" />
   <Action name="account_reconcile" />
   <Action name="account_import" />
   <Action name="account_export" />
-  <Separator name="separator_0" />
+  <Separator />
   <Action name="edit_find_transaction" />
+  <Separator />
+  <Action name="tools_kcalc" />
  </ToolBar>
 </kpartgui>

@@ -236,6 +236,27 @@ protected slots:
     */
   void slotInvestmentNew(void);
 
+  /**
+    * This slot opens the investment editor to edit the currently
+    * selected investment if possible
+    */
+  void slotInvestmentEdit(void);
+
+  /**
+    * Deletes the current selected investment.
+    */
+  void slotInvestmentDelete(void);
+
+  /**
+    * Performs online update for currently selected investment
+    */
+  void slotOnlinePriceUpdate(void);
+
+  /**
+    * Performs manual update for currently selected investment
+    */
+  void slotManualPriceUpdate(void);
+
 public:
   /**
     * This method checks if there is at least one asset or liability account
@@ -306,6 +327,8 @@ public:
   void selectAccount(const MyMoneyAccount& account = MyMoneyAccount());
 
   void selectInstitution(const MyMoneyInstitution& institution = MyMoneyInstitution());
+
+  void selectInvestment(const MyMoneyAccount& account = MyMoneyAccount());
 
   /**
     * Dump a list of the names of all defined KActions to stdout.
@@ -536,6 +559,8 @@ public slots:
     */
   void slotShowInvestmentContextMenu(void);
 
+  void slotToolsStartKCalc(void);
+
 private:
   bool verifyImportedData(const MyMoneyAccount& account);
   bool slotCommitTransaction(const MyMoneySchedule& schedule, const QDate&);
@@ -668,6 +693,7 @@ private:
   QObject*              m_pluginInterface;
 
   MyMoneyAccount        m_selectedAccount;
+  MyMoneyAccount        m_selectedInvestment;
   MyMoneyInstitution    m_selectedInstitution;
 };
 

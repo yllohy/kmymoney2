@@ -759,6 +759,7 @@ void KAccountsView::slotSelectionChanged(QListViewItem *item)
 
   kmymoney2->selectAccount();
   kmymoney2->selectInstitution();
+  kmymoney2->selectInvestment();
 
   m_bSelectedAccount = false;
   m_bSelectedInstitution = false;
@@ -770,7 +771,11 @@ void KAccountsView::slotSelectionChanged(QListViewItem *item)
       MyMoneyAccount account = file->account(accountItem->accountID());
       m_bSelectedAccount = true;
       m_selectedAccount = accountItem->accountID();
-      kmymoney2->selectAccount(account);
+      if(account.accountType() == MyMoneyAccount::Stock) {
+        kmymoney2->selectInvestment(account);
+      } else {
+        kmymoney2->selectAccount(account);
+      }
       //emit accountSelected();
 
     } catch (MyMoneyException *e) {

@@ -63,6 +63,8 @@
 #include <kwin.h>
 #endif
 
+#include <krun.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -88,6 +90,7 @@
 #include "dialogs/knewinvestmentwizard.h"
 #include "dialogs/knewaccountdlg.h"
 #include "dialogs/knewfiledlg.h"
+#include "dialogs/kcurrencycalculator.h"
 
 #include "views/kmymoneyview.h"
 
@@ -226,7 +229,7 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Personal Data..."), "personal_data", 0, this, SLOT(slotFileViewPersonal()), actionCollection(), "view_personal_data");
 
 #if KMM_DEBUG
-  new KAction(i18n("Dump Memory..."), "", 0, this, SLOT(slotFileFileInfo()),  actionCollection(), "file_dump");
+  new KAction(i18n("Dump Memory"), "", 0, this, SLOT(slotFileFileInfo()),  actionCollection(), "file_dump");
   new KAction(i18n("File-Information..."), "info", 0, this, SLOT(slotFileInfoDialog()), actionCollection(), "view_file_info");
 #endif
 
@@ -271,6 +274,7 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Update Stock and Currency Prices..."), "", 0, this, SLOT(slotEquityPriceUpdate()), actionCollection(), "tools_update_prices");
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "tools_consistency_check");
   new KAction(i18n("Performance-Test"), "fork", 0, this, SLOT(slotPerformanceTest()), actionCollection(), "tools_performancetest");
+  new KAction(i18n("KCalc..."), "kcalc", 0, this, SLOT(slotToolsStartKCalc()), actionCollection(), "tools_kcalc");
 
   // *****************
   // The settings menu
@@ -287,11 +291,15 @@ void KMyMoney2App::initActions()
   // *************
   new KAction(i18n("&Show tip of the day"), "idea", 0, this, SLOT(slotShowTipOfTheDay()), actionCollection(), "help_show_tip");
 
-  // **********************
-  // Actions w/o menu entry
-  // **********************
+  // ***************************
+  // Actions w/o main menu entry
+  // ***************************
   new KAction(i18n("New transaction"), QKeySequence(Qt::CTRL | Qt::Key_Insert), actionCollection(), "transaction_new");
   new KAction(i18n("New investment"), "file_new", 0, this, SLOT(slotInvestmentNew()), actionCollection(), "investment_new");
+  new KAction(i18n("Edit investment..."), "edit", 0, this, SLOT(slotInvestmentEdit()), actionCollection(), "investment_edit");
+  new KAction(i18n("Delete investment..."), "delete", 0, this, SLOT(slotInvestmentDelete()), actionCollection(), "investment_delete");
+  new KAction(i18n("Online price update..."), "", 0, this, SLOT(slotOnlinePriceUpdate()), actionCollection(), "investment_online_price_update");
+  new KAction(i18n("Manual price update..."), "", 0, this, SLOT(slotManualPriceUpdate()), actionCollection(), "investment_manual_price_update");
 
   // ************************
   // Currently unused actions
@@ -1872,6 +1880,11 @@ bool KMyMoney2App::verifyImportedData(const MyMoneyAccount& account)
   return rc;
 }
 
+void KMyMoney2App::slotToolsStartKCalc(void)
+{
+  KRun::runCommand("kcalc");
+}
+
 void KMyMoney2App::slotFindTransaction(void)
 {
   if(m_searchDlg == 0) {
@@ -2094,12 +2107,58 @@ void KMyMoney2App::slotAccountNew(void)
 
 void KMyMoney2App::slotInvestmentNew(void)
 {
-  KNewInvestmentWizard dlg(this, "InvestmentWizard");
+  KNewInvestmentWizard dlg;
   if(dlg.exec() == QDialog::Accepted) {
     dlg.createObjects(m_selectedAccount.id());
   }
 }
 
+void KMyMoney2App::slotInvestmentEdit(void)
+{
+  KNewInvestmentWizard dlg(m_selectedInvestment);
+  if(dlg.exec() == QDialog::Accepted) {
+    dlg.createObjects(m_selectedAccount.id());
+  }
+}
+
+void KMyMoney2App::slotInvestmentDelete(void)
+{
+  if(KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to delete the investment <b>%1</b>?").arg(m_selectedInvestment.name()), i18n("Delete investment"), KStdGuiItem::yes(), KStdGuiItem::no(), "DeleteInvestment") == KMessageBox::Yes) {
+    try {
+      MyMoneyFile::instance()->removeAccount(m_selectedInvestment);
+    } catch(MyMoneyException *e) {
+      qDebug("Cannot delete investment: %s", e->what().latin1());
+      delete e;
+    }
+  }
+}
+
+void KMyMoney2App::slotOnlinePriceUpdate(void)
+{
+  if(!m_selectedInvestment.id().isEmpty()) {
+    KEquityPriceUpdateDlg dlg(0, m_selectedInvestment.currencyId());
+    dlg.exec();
+  }
+}
+
+void KMyMoney2App::slotManualPriceUpdate(void)
+{
+  if(!m_selectedInvestment.id().isEmpty()) {
+    try {
+      MyMoneySecurity security = MyMoneyFile::instance()->security(m_selectedInvestment.currencyId());
+      MyMoneySecurity currency = MyMoneyFile::instance()->security(security.tradingCurrency());
+
+      KCurrencyCalculator calc(security, currency, MyMoneyMoney(1,1), MyMoneyMoney(1,1), QDate::currentDate());
+      calc.setupPriceEditor();
+
+      // The dialog takes care of adding the price if necessary
+      calc.exec();
+    } catch(MyMoneyException* e) {
+      qDebug("Error in price update: %s", e->what().data());
+      delete e;
+    }
+  }
+}
 
 void KMyMoney2App::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& newAccount)
 {
@@ -2171,7 +2230,7 @@ void KMyMoney2App::slotAccountDelete(void)
     }
   }
   if(canDelete) {
-    if (KMessageBox::questionYesNo(this, i18n("Do you really want to delete  '%1'?").arg(m_selectedAccount.name())) == KMessageBox::Yes) {
+    if (KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to delete account <b>%1</b>?").arg(m_selectedAccount.name())) == KMessageBox::Yes) {
       try {
         file->removeAccount(m_selectedAccount);
       } catch(MyMoneyException* e) {
@@ -2377,6 +2436,10 @@ void KMyMoney2App::updateActions(void)
   action("institution_edit")->setEnabled(false);
   action("institution_delete")->setEnabled(false);
   action("investment_new")->setEnabled(false);
+  action("investment_edit")->setEnabled(false);
+  action("investment_delete")->setEnabled(false);
+  action("investment_online_price_update")->setEnabled(false);
+  action("investment_manual_price_update")->setEnabled(false);
 
   if(!m_selectedAccount.id().isEmpty()) {
     if(!file->isStandardAccount(m_selectedAccount.id())) {
@@ -2418,10 +2481,26 @@ void KMyMoney2App::updateActions(void)
       action("institution_delete")->setEnabled(true);
     }
   }
+
+  if(!m_selectedInvestment.id().isEmpty()) {
+    action("investment_edit")->setEnabled(true);
+    action("investment_delete")->setEnabled(file->transactionCount(m_selectedInvestment.id())==0);
+    action("investment_manual_price_update")->setEnabled(true);
+    try {
+      MyMoneySecurity security = MyMoneyFile::instance()->security(m_selectedInvestment.currencyId());
+      if(!security.value("kmm-online-source").isEmpty())
+        action("investment_online_price_update")->setEnabled(true);
+
+    } catch(MyMoneyException *e) {
+      qDebug("Error retrieving security for investment %s: %s", m_selectedInvestment.name().data(), e->what().data());
+      delete e;
+    }
+  }
 }
 
 void KMyMoney2App::selectInstitution(const MyMoneyInstitution& institution)
 {
+  // qDebug("selectInstitution('%s')", institution.name().data());
   m_selectedInstitution = institution;
   updateActions();
   emit institutionSelected(institution);
@@ -2429,11 +2508,18 @@ void KMyMoney2App::selectInstitution(const MyMoneyInstitution& institution)
 
 void KMyMoney2App::selectAccount(const MyMoneyAccount& account)
 {
+  // qDebug("selectAccount('%s')", account.name().data());
   m_selectedAccount = account;
   updateActions();
   emit accountSelected(account);
 }
 
+void KMyMoney2App::selectInvestment(const MyMoneyAccount& account)
+{
+  // qDebug("selectInvestment('%s')", account.name().data());
+  m_selectedInvestment = account;
+  updateActions();
+}
 
 void KMyMoney2App::update(const QCString& /* id */)
 {

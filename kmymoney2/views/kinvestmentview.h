@@ -98,18 +98,11 @@ public slots:
 
   void show(void);
 
-  void slotNewInvestment(void);
-
   /**
     * This slot cancels any edit activity in any view. It will
     * be called e.g. before entering the settings dialog.
     */
   void slotCancelEdit(void);
-
-  /**
-    * This slot starts the logic to add a price information to the file
-    */
-  void slotAddPrice(void);
 
 protected:
   /**
@@ -137,11 +130,10 @@ protected slots:
     * This slot receives the signal from the listview control that an item was right-clicked,
     */
   void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
-  //void slotNewInvestment();
-  void slotEditInvestment();
-  void slotUpdatePrice();
+
   void slotTabSelected(QWidget *pWidget);
-  void slotRemoveInvestment();
+
+  void slotSelectionChanged(QListViewItem *item);
 
 signals:
   void signalViewActivated(void);
@@ -151,6 +143,8 @@ signals:
     * which cannot handled by this view.
     */
   void accountSelected(const QCString& accountId, const QCString& transactionId);
+
+  void investmentRightMouseClick(void);
 
 private:
   void initSummaryTab(void);

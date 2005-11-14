@@ -216,6 +216,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   connect(m_categoriesView, SIGNAL(categoryRightMouseClick()), kmymoney2, SLOT(slotShowAccountContextMenu()));
 
+  connect(m_investmentView, SIGNAL(investmentRightMouseClick()), kmymoney2, SLOT(slotShowInvestmentContextMenu()));
 
   connect(m_payeesView, SIGNAL(transactionSelected(const QCString&, const QCString&)),
           this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
@@ -261,8 +262,9 @@ bool KMyMoneyView::showPage(int index)
   // reset all selected items before showing the selected view
   // but not while we're in our own constructor
   if(!m_inConstructor) {
-    kmymoney2->selectAccount(MyMoneyAccount());
-    kmymoney2->selectInstitution(MyMoneyInstitution());
+    kmymoney2->selectAccount();
+    kmymoney2->selectInstitution();
+    kmymoney2->selectInvestment();
   }
 
   return KJanusWidget::showPage(index);
