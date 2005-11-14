@@ -1,3 +1,18 @@
+2005-11-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added date modification widget to KCurrencyCalculator to allow
+    manual price updates in a single dialog
+  * Converted investment view to use new action structure
+
+2005-11-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem with opening balance transactions for investment accounts
+  * Fixed a problem when the current selected investment account is removed
+  * Added toolbar button to start KCalc
+
+2005-11-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied patch as provided by Bjorn Helgaas to collect user
+    information in a MyMoneyPayee object.
+  * Fixed display suppression of unused categories
+
 2005-11-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Moved most context menus to kmymoney2ui.rc
   * Modified menu structure
