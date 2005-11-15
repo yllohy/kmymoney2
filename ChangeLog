@@ -1,3 +1,7 @@
+2005-11-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Converted schedules view to use new action structure
+  * Don't colorize lines in schedule view that do not contain a schedule
+
 2005-11-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added date modification widget to KCurrencyCalculator to allow
     manual price updates in a single dialog
