@@ -34,8 +34,8 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <../dialogs/knewloanwizard.h>
-#include <../mymoney/mymoneyaccount.h>
+
+#include <kmymoney/mymoneyaccount.h>
 
 /**
   * @author Thomas Baumgart
@@ -44,7 +44,7 @@
 class KEditLoanWizard : public KNewLoanWizard
 {
   Q_OBJECT
-public: 
+public:
   KEditLoanWizard(const MyMoneyAccount& account, QWidget *parent=0, const char *name=0);
   ~KEditLoanWizard();
 
@@ -65,11 +65,11 @@ public:
     */
   const MyMoneyAccount account(void) const;
 
-  
+
   void loadWidgets(const MyMoneyAccount& acc);
-  
+
   const MyMoneyTransaction transaction() const;
-  
+
 public slots:
   void next();
 
@@ -78,7 +78,7 @@ protected slots:
 
 protected:
   void updateEditSummary(void);
-    
+
 private:
   //MyMoneyAccountLoan  m_account;
   MyMoneySchedule     m_schedule;

@@ -38,6 +38,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <../dialogs/knewloanwizard.h>
 #include "keditloanwizard.h"
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneyedit.h"

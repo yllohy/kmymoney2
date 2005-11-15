@@ -35,9 +35,9 @@
 // Project Includes
 
 #include <../dialogs/knewloanwizarddecl.h>
-#include <../mymoney/mymoneyscheduled.h>
-#include <../widgets/kmymoneyaccountselector.h>
-#include <../widgets/kmymoneydateinput.h>
+#include <kmymoney/mymoneyscheduled.h>
+#include <kmymoney/kmymoneyaccountselector.h>
+#include <kmymoney/kmymoneydateinput.h>
 
 /**
   * @author Thomas Baumgart

@@ -426,11 +426,6 @@ void KEditScheduleDialog::slotWillEndToggled(bool on)
   }
 }
 
-MyMoneySchedule KEditScheduleDialog::schedule(void)
-{
-  return m_schedule;
-}
-
 void KEditScheduleDialog::okClicked()
 {
   // force focus change to update all data

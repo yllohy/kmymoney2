@@ -59,7 +59,7 @@ public:
     *
     * @return MyMoneySchedule The schedule details.
     **/
-  MyMoneySchedule schedule(void);
+  const MyMoneySchedule& schedule(void) { return m_schedule; };
 
 protected slots:
   /**

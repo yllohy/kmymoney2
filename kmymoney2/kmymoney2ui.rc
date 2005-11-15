@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="5" name="kmymoney2" >
+<kpartgui version="6" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Menu icon="fileimport" append="save_merge" name="import" >
@@ -97,6 +97,22 @@
   <Action name="investment_manual_price_update" />
   <Separator />
   <Action name="tools_update_prices" />
+ </Menu>
+ <Menu name="schedule_context_menu">
+  <title>Schedule options</title>
+  <Action name="schedule_new_bill" />
+  <Action name="schedule_new_deposit" />
+  <Action name="schedule_new_transfer" />
+  <Separator />
+  <Action name="schedule_edit" />
+  <Action name="schedule_delete" />
+  <Separator />
+  <Action name="schedule_enter" /> 
+ </Menu>
+ <Menu name="schedule_create_menu">
+  <Action name="schedule_new_bill" />
+  <Action name="schedule_new_deposit" />
+  <Action name="schedule_new_transfer" />
  </Menu>
  <ToolBar noMerge="1" name="mainToolBar" fullWidth="true" >
   <text>Main Toolbar</text>

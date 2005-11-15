@@ -31,16 +31,17 @@
 
 // ----------------------------------------------------------------------------
 // KDE Headers
+
 #include <kguiitem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "mymoney/mymoneyaccount.h"
-#include "mymoney/mymoneysecurity.h"
-#include "mymoney/mymoneyscheduled.h"
-#include "mymoney/mymoneytransaction.h"
-#include "widgets/kmymoneypayee.h"
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/mymoneyscheduled.h>
+#include <kmymoney/mymoneytransaction.h>
+#include <kmymoney/kmymoneypayee.h>
 
 /**
   * @author Thomas Baumgart

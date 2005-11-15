@@ -330,10 +330,18 @@ public:
 
   void selectInvestment(const MyMoneyAccount& account = MyMoneyAccount());
 
+  void selectSchedule(const MyMoneySchedule& schedule = MyMoneySchedule());
+
   /**
     * Dump a list of the names of all defined KActions to stdout.
     */
   void dumpActions(void) const;
+
+  /**
+    * Popup the context menu with the respective @p containerName.
+    * Valid container names are defined in kmymoney2ui.rc
+    */
+  void showContextMenu(const QString& containerName);
 
 k_dcop:
   const QString filename() const;
@@ -397,8 +405,6 @@ protected:
     * This method updates all KAction items to the current state.
     */
   void updateActions(void);
-
-  void showContextMenu(const QString& containerName);
 
 public slots:
   void slotFileInfoDialog(void);
@@ -559,6 +565,43 @@ public slots:
     */
   void slotShowInvestmentContextMenu(void);
 
+  /**
+    * This slot collects information for a new schedule transaction (bill)
+    * and saves it in the engine
+    */
+  void slotScheduleNewBill(void);
+
+  /**
+    * This slot collects information for a new schedule transaction (deposit)
+    * and saves it in the engine
+    */
+  void slotScheduleNewDeposit(void);
+
+  /**
+    * This slot collects information for a new schedule transaction (transfer)
+    * and saves it in the engine
+    */
+  void slotScheduleNewTransfer(void);
+
+  /**
+    * This slot allows to edit information the currently selected schedule
+    */
+  void slotScheduleEdit(void);
+
+  /**
+    * This slot allows to delete the currently selected schedule
+    */
+  void slotScheduleDelete(void);
+
+  /**
+    * This slot allows to enter the next scheduled transaction of
+    * the currently selected schedule
+    */
+  void slotScheduleEnter(void);
+
+  /**
+    * This slot fires up the KCalc application
+    */
   void slotToolsStartKCalc(void);
 
 private:
@@ -579,6 +622,8 @@ private:
     * @retval false application is active working on a longer operation
     */
   bool isReady(void);
+
+  void KMyMoney2App::scheduleNew(const QCString& scheduleType);
 
 signals:
   /**
@@ -695,6 +740,7 @@ private:
   MyMoneyAccount        m_selectedAccount;
   MyMoneyAccount        m_selectedInvestment;
   MyMoneyInstitution    m_selectedInstitution;
+  MyMoneySchedule       m_selectedSchedule;
 };
 
 extern  KMyMoney2App *kmymoney2;

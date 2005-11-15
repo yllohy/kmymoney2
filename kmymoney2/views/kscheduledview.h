@@ -49,7 +49,7 @@ class KPopupMenu;
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.25 2005/08/10 05:24:13 ipwizard Exp $
+  * $Id: kscheduledview.h,v 1.26 2005/11/15 19:52:42 ipwizard Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -99,47 +99,15 @@ protected:
 
 protected slots:
   /**
-    * Edit button clicked.
-    */
-  void slotEditClicked();
-
-  /**
-    * Delete button clicked.
-    */
-  void slotDeleteClicked();
-
-  /**
-    * New Bill chosen.
-    */
-  void slotNewBill();
-
-  /**
-    * New Deposit chosen.
-    */
-  void slotNewDeposit();
-
-  /**
-    * New transfer chosen.
-    */
-  void slotNewTransfer();
-
-  /**
-    * Slot to handle the account selection in the combo box.
-    *
-    * @param accountName Const reference to the item string selected.
-  **/
-//  void slotAccountSelected(const QString& accountName);
-
-  /**
-    * Creates and shows the context menu when the user right clicks or presses
+    * Shows the context menu when the user right clicks or presses
     * a 'windows' key when an item is selected.
     *
-    * @param item The item
+    * @param view a pointer to the view
+    * @param item a pointer to the current selected listview item
     * @param pos The position to popup
-    * @param col The column where the click occurred
     * @return none
   **/
-  void slotListViewContextMenu(QListViewItem *item, const QPoint& pos, int col);
+  void slotListViewContextMenu(KListView* view, QListViewItem* item, const QPoint& pos);
 
   void slotListItemExecuted(QListViewItem*, const QPoint&, int);
 
@@ -148,7 +116,6 @@ protected slots:
   void slotListViewCollapsed(QListViewItem* item);
   void slotListViewExpanded(QListViewItem* item);
 
-  void slotEnterClicked();
   void slotBriefEnterClicked(const MyMoneySchedule& schedule, const QDate&);
 
   void slotTimerDone(void);
@@ -158,9 +125,6 @@ protected slots:
   void slotRearrange(void);
 
 private:
-  /// The account currently selected via the accounts view
-//  QCString m_accountId;
-
   /// The selected schedule id in the list view.
   QCString m_selectedSchedule;
 

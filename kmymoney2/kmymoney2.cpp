@@ -91,6 +91,9 @@
 #include "dialogs/knewaccountdlg.h"
 #include "dialogs/knewfiledlg.h"
 #include "dialogs/kcurrencycalculator.h"
+#include "dialogs/ieditscheduledialog.h"
+#include "dialogs/knewloanwizard.h"
+#include "dialogs/keditloanwizard.h"
 
 #include "views/kmymoneyview.h"
 
@@ -300,6 +303,13 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Delete investment..."), "delete", 0, this, SLOT(slotInvestmentDelete()), actionCollection(), "investment_delete");
   new KAction(i18n("Online price update..."), "", 0, this, SLOT(slotOnlinePriceUpdate()), actionCollection(), "investment_online_price_update");
   new KAction(i18n("Manual price update..."), "", 0, this, SLOT(slotManualPriceUpdate()), actionCollection(), "investment_manual_price_update");
+
+  new KAction(i18n("New bill"), "", 0, this, SLOT(slotScheduleNewBill()), actionCollection(), "schedule_new_bill");
+  new KAction(i18n("New deposit"), "", 0, this, SLOT(slotScheduleNewDeposit()), actionCollection(), "schedule_new_deposit");
+  new KAction(i18n("New transfer"), "", 0, this, SLOT(slotScheduleNewTransfer()), actionCollection(), "schedule_new_transfer");
+  new KAction(i18n("Edit schedule..."), "edit", 0, this, SLOT(slotScheduleEdit()), actionCollection(), "schedule_edit");
+  new KAction(i18n("Delete schedule..."), "delete", 0, this, SLOT(slotScheduleDelete()), actionCollection(), "schedule_delete");
+  new KAction(i18n("Enter schedule..."), "", 0, this, SLOT(slotScheduleEnter()), actionCollection(), "schedule_enter");
 
   // ************************
   // Currently unused actions
@@ -2326,6 +2336,137 @@ void KMyMoney2App::slotAccountOpen(void)
   }
 }
 
+void KMyMoney2App::scheduleNew(const QCString& scheduleType)
+{
+  MyMoneySchedule schedule;
+
+  KEditScheduleDialog dlg(scheduleType, schedule, this);
+
+  if (dlg.exec() == QDialog::Accepted) {
+    schedule = dlg.schedule();
+    try {
+      MyMoneyFile::instance()->addSchedule(schedule);
+
+    } catch (MyMoneyException *e) {
+      KMessageBox::error(this, i18n("Unable to add schedule: "), e->what());
+      delete e;
+    }
+  }
+}
+
+void KMyMoney2App::slotScheduleNewBill(void)
+{
+  scheduleNew(MyMoneySplit::ActionCheck);
+}
+
+void KMyMoney2App::slotScheduleNewDeposit(void)
+{
+  scheduleNew(MyMoneySplit::ActionDeposit);
+}
+
+void KMyMoney2App::slotScheduleNewTransfer(void)
+{
+  scheduleNew(MyMoneySplit::ActionTransfer);
+}
+
+void KMyMoney2App::slotScheduleEdit(void)
+{
+  if (!m_selectedSchedule.id().isEmpty()) {
+    try {
+      MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
+
+      const char *action = 0;
+      switch (schedule.type()) {
+        case MyMoneySchedule::TYPE_BILL:
+          action = MyMoneySplit::ActionWithdrawal;
+          break;
+
+        case MyMoneySchedule::TYPE_DEPOSIT:
+          action = MyMoneySplit::ActionDeposit;
+          break;
+
+        case MyMoneySchedule::TYPE_TRANSFER:
+          action = MyMoneySplit::ActionTransfer;
+          break;
+
+        case MyMoneySchedule::TYPE_LOANPAYMENT:
+        case MyMoneySchedule::TYPE_ANY:
+          break;
+      }
+
+      KEditScheduleDialog* sched_dlg = 0;
+      KEditLoanWizard* loan_wiz = 0;
+
+      switch (schedule.type()) {
+        case MyMoneySchedule::TYPE_BILL:
+        case MyMoneySchedule::TYPE_DEPOSIT:
+        case MyMoneySchedule::TYPE_TRANSFER:
+          sched_dlg = new KEditScheduleDialog(action, schedule, this);
+          if (sched_dlg->exec() == QDialog::Accepted) {
+            MyMoneySchedule sched = sched_dlg->schedule();
+            MyMoneyFile::instance()->modifySchedule(sched);
+          }
+          delete sched_dlg;
+          break;
+
+        case MyMoneySchedule::TYPE_LOANPAYMENT:
+          loan_wiz = new KEditLoanWizard(schedule.account(2));
+          if (loan_wiz->exec() == QDialog::Accepted) {
+            MyMoneyFile::instance()->modifySchedule(loan_wiz->schedule());
+            MyMoneyFile::instance()->modifyAccount(loan_wiz->account());
+          }
+          delete loan_wiz;
+          break;
+
+        case MyMoneySchedule::TYPE_ANY:
+          break;
+      }
+
+    } catch (MyMoneyException *e) {
+      KMessageBox::detailedSorry(this, i18n("Unable to modify schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+      delete e;
+    }
+  }
+}
+
+void KMyMoney2App::slotScheduleDelete(void)
+{
+  if (!m_selectedSchedule.id().isEmpty()) {
+    try {
+      MyMoneySchedule sched = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
+      QString msg = QString("<p>")+i18n("Are you sure you want to delete the schedule <b>%1</b>?").arg(m_selectedSchedule.name());
+      if(sched.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
+        msg += QString(" ");
+        msg += i18n("In case of loan payments it is currently not possible to recreate the schedule.");
+      }
+      if (KMessageBox::questionYesNo(this, msg) == KMessageBox::No)
+        return;
+
+      MyMoneyFile::instance()->removeSchedule(sched);
+
+    } catch (MyMoneyException *e) {
+      KMessageBox::detailedSorry(this, i18n("Unable to remove schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+      delete e;
+    }
+  }
+}
+
+void KMyMoney2App::slotScheduleEnter(void)
+{
+  if (!m_selectedSchedule.id().isEmpty()) {
+    try {
+      MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
+
+      KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule);
+      dlg->exec();
+
+    } catch (MyMoneyException *e) {
+      KMessageBox::detailedSorry(this, i18n("Unable to enter transaction for schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+      delete e;
+    }
+  }
+}
+
 void KMyMoney2App::showContextMenu(const QString& containerName)
 {
   QWidget* w = factory()->container(containerName, this);
@@ -2441,6 +2582,10 @@ void KMyMoney2App::updateActions(void)
   action("investment_online_price_update")->setEnabled(false);
   action("investment_manual_price_update")->setEnabled(false);
 
+  action("schedule_edit")->setEnabled(false);
+  action("schedule_delete")->setEnabled(false);
+  action("schedule_enter")->setEnabled(false);
+
   if(!m_selectedAccount.id().isEmpty()) {
     if(!file->isStandardAccount(m_selectedAccount.id())) {
       action("account_edit")->setEnabled(true);
@@ -2496,6 +2641,13 @@ void KMyMoney2App::updateActions(void)
       delete e;
     }
   }
+
+  if(!m_selectedSchedule.id().isEmpty()) {
+    action("schedule_edit")->setEnabled(true);
+    action("schedule_delete")->setEnabled(true);
+    if(!m_selectedSchedule.isFinished())
+      action("schedule_enter")->setEnabled(true);
+  }
 }
 
 void KMyMoney2App::selectInstitution(const MyMoneyInstitution& institution)
@@ -2518,6 +2670,13 @@ void KMyMoney2App::selectInvestment(const MyMoneyAccount& account)
 {
   // qDebug("selectInvestment('%s')", account.name().data());
   m_selectedInvestment = account;
+  updateActions();
+}
+
+void KMyMoney2App::selectSchedule(const MyMoneySchedule& schedule)
+{
+  // qDebug("selectSchedule('%s')", schedule.name().data());
+  m_selectedSchedule = schedule;
   updateActions();
 }
 

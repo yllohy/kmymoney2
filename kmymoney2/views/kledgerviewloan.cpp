@@ -53,6 +53,7 @@
 #include "../dialogs/kendingbalancedlg.h"
 #include "../dialogs/ksplittransactiondlg.h"
 #include "../dialogs/knewaccountdlg.h"
+#include <../dialogs/knewloanwizard.h>
 #include "../dialogs/keditloanwizard.h"
 #include "../mymoney/mymoneyfile.h"
 

@@ -38,8 +38,8 @@ class KPushButton;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../kmymoneyutils.h"
-#include "../mymoney/mymoneyobserver.h"
+#include <kmymoney/kmymoneyutils.h>
+#include <kmymoney/mymoneyobserver.h>
 class kMyMoneyAccountCompletion;
 
 /**

@@ -19,8 +19,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qheader.h>
 #include <qtoolbutton.h>
 #include <qcombobox.h>
@@ -30,6 +32,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <kglobal.h>
 #include <klocale.h>
 #include <kconfig.h>
@@ -41,13 +44,17 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "kscheduledview.h"
 #include "kscheduledlistitem.h"
 #include "../widgets/kmymoneyscheduleddatetbl.h"
-#include "../dialogs/ieditscheduledialog.h"
-#include "../dialogs/keditloanwizard.h"
+// #include "../dialogs/ieditscheduledialog.h"
+// #include <../dialogs/knewloanwizard.h>
+// #include "../dialogs/keditloanwizard.h"
 #include "../dialogs/kenterscheduledialog.h"
 #include "../kmymoneyutils.h"
+
+#include "../kmymoney2.h"
 
 KScheduledView::KScheduledView(QWidget *parent, const char *name )
  : kScheduledViewDecl(parent,name, false),
@@ -72,12 +79,13 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   m_qlistviewScheduled->setSorting(-1);
   m_qlistviewScheduled->setColumnAlignment(3, Qt::AlignRight);
 
-  KPopupMenu* kpopupmenuNew = new KPopupMenu(this);
-  kpopupmenuNew->insertItem(KMyMoneyUtils::billScheduleIcon(KIcon::SizeSmall), i18n("Bill"), this, SLOT(slotNewBill()));
-  kpopupmenuNew->insertItem(KMyMoneyUtils::depositScheduleIcon(KIcon::SizeSmall), i18n("Deposit"), this, SLOT(slotNewDeposit()));
-  kpopupmenuNew->insertItem(KMyMoneyUtils::transferScheduleIcon(KIcon::SizeSmall), i18n("Transfer"), this, SLOT(slotNewTransfer()));
-  m_qbuttonNew->setPopup(kpopupmenuNew);
+  // attach popup to 'New schedule ...' button
+  QWidget* w = kmymoney2->factory()->container("schedule_create_menu", kmymoney2);
+  QPopupMenu *menu = dynamic_cast<QPopupMenu*>(w);
+  if(menu)
+    m_qbuttonNew->setPopup(menu);
 
+  // attach popup to 'Filter...' button
   m_kaccPopup = new KPopupMenu(this);
   m_kaccPopup->setCheckable(true);
   m_accountsCombo->setPopup(m_kaccPopup);
@@ -92,16 +100,17 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
 
   readConfig();
 
-  connect(m_qlistviewScheduled, SIGNAL(contextMenuRequested(QListViewItem*, const QPoint&, int)),
-    this, SLOT(slotListViewContextMenu(QListViewItem*, const QPoint&, int)));
+  connect(m_qlistviewScheduled, SIGNAL(contextMenu(KListView*, QListViewItem*, const QPoint&)),
+    this, SLOT(slotListViewContextMenu(KListView*, QListViewItem*, const QPoint&)));
+  connect(m_qlistviewScheduled, SIGNAL(selectionChanged(QListViewItem*)),
+    this, SLOT(slotSetSelectedItem(QListViewItem*)));
+
   connect(m_qlistviewScheduled, SIGNAL(doubleClicked(QListViewItem*, const QPoint&, int)),
     this, SLOT(slotListItemExecuted(QListViewItem*, const QPoint&, int)));
   connect(m_qlistviewScheduled, SIGNAL(expanded(QListViewItem*)),
     this, SLOT(slotListViewExpanded(QListViewItem*)));
   connect(m_qlistviewScheduled, SIGNAL(collapsed(QListViewItem*)),
     this, SLOT(slotListViewCollapsed(QListViewItem*)));
-  connect(m_qlistviewScheduled, SIGNAL(selectionChanged(QListViewItem*)),
-    this, SLOT(slotSetSelectedItem(QListViewItem*)));
 
   connect(m_calendar, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)), this, SLOT(slotBriefEnterClicked(const MyMoneySchedule&, const QDate&)));
 
@@ -306,100 +315,6 @@ void KScheduledView::resizeEvent(QResizeEvent* e)
   kScheduledViewDecl::resizeEvent(e);
 }
 
-void KScheduledView::slotDeleteClicked()
-{
-  if (!m_selectedSchedule.isEmpty())
-  {
-    try
-    {
-      MyMoneySchedule sched = MyMoneyFile::instance()->schedule(m_selectedSchedule);
-      QString msg = i18n("Are you sure you want to delete the selected schedule?");
-      if(sched.type() == MyMoneySchedule::TYPE_LOANPAYMENT)
-      {
-        msg += QString(" ");
-        msg += i18n("In case of loan payments it is currently not possible to recreate the schedules");
-      }
-      if (KMessageBox::questionYesNo(this, msg) == KMessageBox::No)
-        return;
-
-      MyMoneyFile::instance()->removeSchedule(sched);
-
-      refresh();
-
-    } catch (MyMoneyException *e)
-    {
-      KMessageBox::detailedSorry(this, i18n("Unable to remove schedule"), e->what());
-      delete e;
-    }
-  }
-}
-
-void KScheduledView::slotEditClicked()
-{
-  if (!m_selectedSchedule.isEmpty())
-  {
-    try
-    {
-      MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule);
-
-      const char *action = 0;
-      switch (schedule.type())
-      {
-        case MyMoneySchedule::TYPE_BILL:
-          action = MyMoneySplit::ActionWithdrawal;
-          break;
-
-        case MyMoneySchedule::TYPE_DEPOSIT:
-          action = MyMoneySplit::ActionDeposit;
-          break;
-
-        case MyMoneySchedule::TYPE_TRANSFER:
-          action = MyMoneySplit::ActionTransfer;
-          break;
-
-        case MyMoneySchedule::TYPE_LOANPAYMENT:
-        case MyMoneySchedule::TYPE_ANY:
-          break;
-      }
-
-      KEditScheduleDialog* sched_dlg;
-      KEditLoanWizard* loan_wiz;
-
-      switch (schedule.type())
-      {
-        case MyMoneySchedule::TYPE_BILL:
-        case MyMoneySchedule::TYPE_DEPOSIT:
-        case MyMoneySchedule::TYPE_TRANSFER:
-          sched_dlg = new KEditScheduleDialog(action, schedule, this);
-          if (sched_dlg->exec() == QDialog::Accepted)
-          {
-            MyMoneySchedule sched = sched_dlg->schedule();
-            MyMoneyFile::instance()->modifySchedule(sched);
-            refresh(false, m_selectedSchedule);
-          }
-          delete sched_dlg;
-          break;
-
-        case MyMoneySchedule::TYPE_LOANPAYMENT:
-          loan_wiz = new KEditLoanWizard(schedule.account(2));
-          if (loan_wiz->exec() == QDialog::Accepted)
-          {
-            MyMoneyFile::instance()->modifySchedule(loan_wiz->schedule());
-            MyMoneyFile::instance()->modifyAccount(loan_wiz->account());
-            refresh(false, m_selectedSchedule);
-          }
-          delete loan_wiz;
-          break;
-
-        case MyMoneySchedule::TYPE_ANY:
-          break;
-      }
-    } catch (MyMoneyException *e)
-    {
-      delete e;
-    }
-  }
-}
 
 void KScheduledView::readConfig(void)
 {
@@ -427,151 +342,31 @@ void KScheduledView::writeConfig(void)
   config->sync();
 }
 
-void KScheduledView::slotNewBill()
+void KScheduledView::slotListViewContextMenu(KListView* /* view */, QListViewItem *item, const QPoint& /* pos */)
 {
-  MyMoneySchedule schedule;
-
-  KEditScheduleDialog *m_keditschedbilldlg = new KEditScheduleDialog(MyMoneySplit::ActionWithdrawal, schedule, this);
-  if (m_keditschedbilldlg->exec() == QDialog::Accepted)
-  {
-    MyMoneySchedule sched = m_keditschedbilldlg->schedule();
-    try
-    {
-      MyMoneyFile::instance()->addSchedule(sched);
-      refresh(false, sched.id());
-    } catch (MyMoneyException *e)
-    {
-      KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
-      delete e;
-    }
-  }
-
-  delete m_keditschedbilldlg;
-}
-
-void KScheduledView::slotNewDeposit()
-{
-  MyMoneySchedule schedule;
-
-  KEditScheduleDialog *m_keditscheddepdlg = new KEditScheduleDialog(MyMoneySplit::ActionDeposit, schedule, this);
-  if (m_keditscheddepdlg->exec() == QDialog::Accepted)
-  {
-    MyMoneySchedule sched = m_keditscheddepdlg->schedule();
-
-    try
-    {
-      MyMoneyFile::instance()->addSchedule(sched);
-      refresh(false, sched.id());
-    } catch (MyMoneyException *e)
-    {
-      KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
-      delete e;
-    }
-  }
-
-  delete m_keditscheddepdlg;
-}
-
-void KScheduledView::slotNewTransfer()
-{
-  MyMoneySchedule schedule;
-
-  KEditScheduleDialog *m_keditschedtransdlg = new KEditScheduleDialog(MyMoneySplit::ActionTransfer, schedule, this);
-  if (m_keditschedtransdlg->exec() == QDialog::Accepted)
-  {
-    MyMoneySchedule sched = m_keditschedtransdlg->schedule();
-
-    try
-    {
-      MyMoneyFile::instance()->addSchedule(sched);
-      refresh(false, sched.id());
-    } catch (MyMoneyException *e)
-    {
-      KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
-      delete e;
-    }
-  }
-
-  delete m_keditschedtransdlg;
-}
-
-void KScheduledView::slotListViewContextMenu(QListViewItem *item, const QPoint& pos, int/* col*/)
-{
-  KScheduledListItem *scheduleItem = (KScheduledListItem*)item;
+  KScheduledListItem *scheduleItem = dynamic_cast<KScheduledListItem *>(item);
   if (scheduleItem)
   {
     try
     {
       QCString scheduleId = scheduleItem->scheduleId();
 
-      KIconLoader *kiconloader = KGlobal::iconLoader();
-      KPopupMenu *listViewMenu = new KPopupMenu(m_qlistviewScheduled);
-
-      if (scheduleId.isEmpty()) // Top level item
-      {
-        QString text = scheduleItem->text(0);
-        if (text == i18n("Bills"))
-        {
-          listViewMenu->insertTitle(i18n("Bill Options"));
-          listViewMenu->insertItem(kiconloader->loadIcon("new_bill", KIcon::Small), i18n("New Bill..."), this, SLOT(slotNewBill()));
-        }
-        else if (text == i18n("Deposits"))
-        {
-          listViewMenu->insertTitle(i18n("Deposit Options"));
-          listViewMenu->insertItem(kiconloader->loadIcon("new_deposit", KIcon::Small), i18n("New Deposit..."), this, SLOT(slotNewDeposit()));
-        }
-        else if (text == i18n("Transfers"))
-        {
-          listViewMenu->insertTitle(i18n("Transfer Options"));
-          listViewMenu->insertItem(kiconloader->loadIcon("new_transfer", KIcon::Small), i18n("New Transfer..."), this, SLOT(slotNewTransfer()));
-        }
-      }
-      else // schedule item
+      if (!scheduleId.isEmpty()) // Top level item
       {
         MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(scheduleId);
+        kmymoney2->selectSchedule(schedule);
         m_selectedSchedule = schedule.id();
-
-        switch (schedule.type())
-        {
-          case MyMoneySchedule::TYPE_BILL:
-            listViewMenu->insertTitle(i18n("Bill Options"));
-            listViewMenu->insertItem(kiconloader->loadIcon("new_bill", KIcon::Small), i18n("New Bill..."), this, SLOT(slotNewBill()));
-            break;
-          case MyMoneySchedule::TYPE_DEPOSIT:
-            listViewMenu->insertTitle(i18n("Deposit Options"));
-            listViewMenu->insertItem(kiconloader->loadIcon("new_deposit", KIcon::Small), i18n("New Deposit..."), this, SLOT(slotNewDeposit()));
-            break;
-          case MyMoneySchedule::TYPE_TRANSFER:
-            listViewMenu->insertTitle(i18n("Transfer Options"));
-            listViewMenu->insertItem(kiconloader->loadIcon("new_transfer", KIcon::Small), i18n("New Transfer..."), this, SLOT(slotNewTransfer()));
-            break;
-          case MyMoneySchedule::TYPE_LOANPAYMENT:
-          case MyMoneySchedule::TYPE_ANY:
-            break;
-        }
-        listViewMenu->insertSeparator();
-        listViewMenu->insertItem(kiconloader->loadIcon("enter", KIcon::Small), i18n("Enter..."), this, SLOT(slotEnterClicked()));
-        listViewMenu->insertSeparator();
-        listViewMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Edit..."), this, SLOT(slotEditClicked()));
-        listViewMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small), i18n("Delete..."), this, SLOT(slotDeleteClicked()));
       }
-
-      listViewMenu->popup(pos);
+      kmymoney2->showContextMenu("schedule_context_menu");
     } catch (MyMoneyException *e)
     {
-      KMessageBox::detailedSorry(this, i18n("Error building context menu"), e->what());
+      KMessageBox::detailedSorry(this, i18n("Error activating context menu"), e->what());
       delete e;
     }
   }
   else
   {
-    KIconLoader *kiconloader = KGlobal::iconLoader();
-    KPopupMenu *listViewMenu = new KPopupMenu(m_qlistviewScheduled);
-
-    listViewMenu->insertItem(kiconloader->loadIcon("new_bill", KIcon::Small), i18n("New Bill..."), this, SLOT(slotNewBill()));
-    listViewMenu->insertItem(kiconloader->loadIcon("new_deposit", KIcon::Small), i18n("New Deposit..."), this, SLOT(slotNewDeposit()));
-    listViewMenu->insertItem(kiconloader->loadIcon("new_transfer", KIcon::Small), i18n("New Transfer..."), this, SLOT(slotNewTransfer()));
-    listViewMenu->popup(pos);
+    kmymoney2->showContextMenu("schedule_context_menu");
   }
 }
 
@@ -670,26 +465,6 @@ void KScheduledView::slotSelectSchedule(const QCString& schedule)
   refresh(true, schedule);
 }
 
-void KScheduledView::slotEnterClicked()
-{
-  if (!m_selectedSchedule.isEmpty())
-  {
-    try
-    {
-      MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule);
-
-      KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule);
-      if (dlg->exec())
-      {
-        refresh(false/*, schedule.id()*/);
-      }
-    } catch (MyMoneyException *e)
-    {
-      delete e;
-    }
-  }
-}
-
 void KScheduledView::slotBriefEnterClicked(const MyMoneySchedule& schedule, const QDate& date)
 {
   KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule, date);
@@ -701,9 +476,18 @@ void KScheduledView::slotBriefEnterClicked(const MyMoneySchedule& schedule, cons
 
 void KScheduledView::slotSetSelectedItem(QListViewItem* item)
 {
+  kmymoney2->selectSchedule();
   KScheduledListItem* schedItem = static_cast<KScheduledListItem*>(item);
-  if(item)
-    m_selectedSchedule = schedItem->scheduleId();
+  if(item) {
+    try {
+      MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(schedItem->scheduleId());
+      kmymoney2->selectSchedule(schedule);
+      m_selectedSchedule = schedItem->scheduleId();
+    } catch(MyMoneyException* e) {
+      qDebug("KScheduledView::slotSetSelectedItem: %s", e->what().data());
+      delete e;
+    }
+  }
 }
 
 void KScheduledView::update(const QCString& /* id */)
