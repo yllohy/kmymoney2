@@ -168,16 +168,15 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
   QColor textColour = KGlobalSettings::textColor();
   QFont cellFont = KMyMoneyUtils::cellFont();
 
-  if (m_schedule.isFinished())
-  {
-    textColour = Qt::darkGreen;
+  // avoid colorizing lines that do not contain a schedule
+  if(!m_schedule.id().isEmpty()) {
+    if (m_schedule.isFinished())
+      textColour = Qt::darkGreen;
+    else if (m_schedule.isOverdue())
+      textColour = Qt::red;
+    // else
+    //   keep the same colour
   }
-  else if (m_schedule.isOverdue())
-  {
-    textColour = Qt::red;
-  }
-  // else
-  //   keep the same colour
 
   p->setFont(cellFont);
   cg2.setColor(QColorGroup::Text, textColour);
