@@ -343,7 +343,16 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _symbol,const QDate
       if ( date > QDate::currentDate() )
         date = QDate::currentDate();
 
-      item->setText(PRICE_COL, KGlobal::locale()->formatMoney(_price,"",m_pricePrecision));
+      double price = _price;
+      QCString id = item->text(ID_COL).utf8();
+      if ( QString(id).contains(" ") == 0) {
+        MyMoneySecurity security = MyMoneyFile::instance()->security(id);
+        QString factor = security.value("kmm-online-factor");
+        if(!factor.isEmpty()) {
+          price *= MyMoneyMoney(factor).toDouble();
+        }
+      }
+      item->setText(PRICE_COL, KGlobal::locale()->formatMoney(price, "", m_pricePrecision));
       item->setText(DATE_COL, date.toString(Qt::ISODate));
       logStatusMessage(i18n("Price for %1 updated").arg(_symbol));
     }

@@ -74,6 +74,7 @@ public:
 protected slots:
   void next(void);
   void slotCheckPage(void);
+  void slotCheckPage(const QString&);
 
 private:
   void init(void);
