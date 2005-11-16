@@ -304,9 +304,9 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Online price update..."), "", 0, this, SLOT(slotOnlinePriceUpdate()), actionCollection(), "investment_online_price_update");
   new KAction(i18n("Manual price update..."), "", 0, this, SLOT(slotManualPriceUpdate()), actionCollection(), "investment_manual_price_update");
 
-  new KAction(i18n("New bill"), "", 0, this, SLOT(slotScheduleNewBill()), actionCollection(), "schedule_new_bill");
-  new KAction(i18n("New deposit"), "", 0, this, SLOT(slotScheduleNewDeposit()), actionCollection(), "schedule_new_deposit");
-  new KAction(i18n("New transfer"), "", 0, this, SLOT(slotScheduleNewTransfer()), actionCollection(), "schedule_new_transfer");
+  new KAction(i18n("New bill..."), "", 0, this, SLOT(slotScheduleNewBill()), actionCollection(), "schedule_new_bill");
+  new KAction(i18n("New deposit..."), "", 0, this, SLOT(slotScheduleNewDeposit()), actionCollection(), "schedule_new_deposit");
+  new KAction(i18n("New transfer..."), "", 0, this, SLOT(slotScheduleNewTransfer()), actionCollection(), "schedule_new_transfer");
   new KAction(i18n("Edit schedule..."), "edit", 0, this, SLOT(slotScheduleEdit()), actionCollection(), "schedule_edit");
   new KAction(i18n("Delete schedule..."), "delete", 0, this, SLOT(slotScheduleDelete()), actionCollection(), "schedule_delete");
   new KAction(i18n("Enter schedule..."), "", 0, this, SLOT(slotScheduleEnter()), actionCollection(), "schedule_enter");
