@@ -805,7 +805,16 @@ const QValueList<MyMoneyInstitution> MyMoneyFile::institutionList(void) const
 const MyMoneyPayee& MyMoneyFile::user(void) const { checkStorage(); return m_storage->user(); }
 
 // general set functions
-void MyMoneyFile::setUser(const MyMoneyPayee& user) { checkStorage(); m_storage->setUser(user); }
+void MyMoneyFile::setUser(const MyMoneyPayee& user)
+{
+  checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  m_storage->setUser(user);
+  addNotification(NotifyClassAnyChange);
+}
 
 bool MyMoneyFile::dirty(void) const
 {

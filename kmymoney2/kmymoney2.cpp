@@ -1021,8 +1021,6 @@ void KMyMoney2App::slotFileViewPersonal()
     file->setUser(user);
   }
 
-  updateCaption();
-
   slotStatusMsg(prevMsg);
 }
 
@@ -1605,12 +1603,10 @@ void KMyMoney2App::slotSettings()
 
     // stop timer if turned off but running
     if(m_autoSaveTimer->isActive() && !m_autoSaveEnabled) {
-      qDebug("Timer turned off");
       m_autoSaveTimer->stop();
     }
     // start timer if turned on and needed but not running
     if(!m_autoSaveTimer->isActive() && m_autoSaveEnabled && myMoneyView->dirty()) {
-      qDebug("Timer turned on");
       m_autoSaveTimer->start(m_autoSavePeriod * 60 * 1000, true);
     }
   }
@@ -3150,8 +3146,8 @@ void KMyMoney2App::slotAutoSave()
   //calls slotFileSave if needed, and restart the timer
   //it the file is not saved, reinitializes the countdown.
   if (myMoneyView->dirty() && m_autoSaveEnabled) {
-    if (!slotFileSave()) {
-      m_autoSaveTimer->start(m_autoSavePeriod * 60 * 1000);
+    if (!slotFileSave() && m_autoSavePeriod > 0) {
+      m_autoSaveTimer->start(m_autoSavePeriod * 60 * 1000, true);
     }
   }
 

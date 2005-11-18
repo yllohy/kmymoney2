@@ -3,6 +3,7 @@
     modifications
   * Combined multiple ways of commiting a scheduled transaction into a
     single path
+  * Send out notification when MyMoneyFile::setUser() was called
 
 2005-11-18 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Initial checkin of SQL backend code
