@@ -191,10 +191,38 @@ void KSettingsDlg::setPageGeneral()
   m_qcheckboxHideCategory->setText( i18n( "Don't show unused categories" ) );
   qhboxlayout3->addWidget(m_qcheckboxHideCategory);
 
+  // Create a button group for the periodic autosave feature
+  QButtonGroup *qbuttongroupAutoSave = new QButtonGroup(qvboxMainFrame, "ButtonGroup4");
+  qbuttongroupAutoSave->setTitle(i18n("Auto Save Options"));
+
+  qbuttongroupAutoSave->setColumnLayout(0, Qt::Vertical );
+  qbuttongroupAutoSave->layout()->setSpacing( 0 );
+  qbuttongroupAutoSave->layout()->setMargin( 0 );
+
+  QVBoxLayout *qvboxlayout4 = new QVBoxLayout(qbuttongroupAutoSave->layout());
+  qvboxlayout4->setAlignment( Qt::AlignTop );
+  qvboxlayout4->setSpacing( 6 );
+  qvboxlayout4->setMargin( 11 );
+
+  m_qcheckboxAutoSaveFile = new QCheckBox("auto_save", qbuttongroupAutoSave);
+  m_qcheckboxAutoSaveFile->setText( i18n( "Autosave file periodically" ) );
+  qvboxlayout4->addWidget(m_qcheckboxAutoSaveFile);
+
+  QHBoxLayout* layout2 = new QHBoxLayout( qbuttongroupAutoSave->layout());
+  m_intAutoSavePeriod = new KIntNumInput( qbuttongroupAutoSave, "m_intAutoSavePeriod" );
+  m_intAutoSavePeriod->setRange(0, 60, 1, false);
+  layout2->addWidget( m_intAutoSavePeriod );
+  qvboxlayout4->addLayout( layout2 );
+  //QSpacerItem* spacer = new QSpacerItem( 20, 21, QSizePolicy::Minimum, QSizePolicy::Expanding );
+  //qhboxlayout4->addItem( spacer );
+
+  connect(m_qcheckboxAutoSaveFile, SIGNAL(toggled(bool)), m_intAutoSavePeriod, SLOT(setEnabled(bool)));
+
   // set online help reference
   // not needed here, as it is the default anyway
   // m_helpAnchor[pageIndex(qvboxMainFrame)] = "details.settings.general";
 }
+
 #if 0
 void KSettingsDlg::setPageAccountsView()
 {
@@ -516,6 +544,12 @@ void KSettingsDlg::configRead()
   m_bTempAutoFillTransaction = kconfig->readBoolEntry("AutoFillTransaction", false);
   m_qcheckboxAutoFillTransaction->setChecked(m_bTempAutoFillTransaction);
 
+  m_bTempAutoSaveFile = kconfig->readBoolEntry("AutoSaveFile", false);
+  m_qcheckboxAutoSaveFile->setChecked(m_bTempAutoSaveFile);
+  m_intAutoSavePeriod->setEnabled(m_bTempAutoSaveFile);
+  m_iTempAutoSavePeriod = kconfig->readNumEntry("AutoSavePeriod", 0);
+  m_intAutoSavePeriod->setValue(m_iTempAutoSavePeriod);
+
   kconfig->setGroup("List Options");
 
   m_qcolorTempList = KMyMoneyUtils::defaultListColour();
@@ -618,6 +652,8 @@ void KSettingsDlg::configWrite()
   kconfig->writeEntry("PricePrecision", m_qIntPricePrecision->text());
   kconfig->writeEntry("FocusChangeIsEnter", m_qcheckboxFocusChangeEnter->isChecked());
   kconfig->writeEntry("AutoFillTransaction", m_qcheckboxAutoFillTransaction->isChecked());
+  kconfig->writeEntry("AutoSaveFile", m_qcheckboxAutoSaveFile->isChecked());
+  kconfig->writeEntry("AutoSavePeriod", m_intAutoSavePeriod->value());
 
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", homePageItems());
@@ -684,6 +720,8 @@ void KSettingsDlg::slotCancel()
   kconfig->writeEntry("CheckSchedulePreview", m_iTempSchedulePreview);
   kconfig->writeEntry("PricePrecision", m_iTempPricePrecision);
   kconfig->writeEntry("FocusChangeIsEnter", m_bTempFocusChangeEnter);
+  kconfig->writeEntry("AutoSaveFile", m_bTempAutoSaveFile);
+  kconfig->writeEntry("AutoSavePeriod", m_iTempAutoSavePeriod);
 
   kconfig->setGroup("Homepage Options");
   kconfig->writeEntry("Itemlist", m_tempHomePageItems);
@@ -733,6 +771,8 @@ void KSettingsDlg::slotUser1()
   m_intSchedulePreview->setEnabled(m_bTempCheckSchedule);
   m_intSchedulePreview->setValue(m_iTempSchedulePreview);
   m_qIntPricePrecision->setText(QString("%1").arg(m_iTempPricePrecision));
+  m_qcheckboxAutoSaveFile->setChecked(m_bTempAutoSaveFile);
+  m_intAutoSavePeriod->setValue(m_iTempAutoSavePeriod);
 
   QStringList list = m_tempHomePageItems;
   KMyMoneyUtils::addDefaultHomePageItems(list);

@@ -24,6 +24,7 @@
 // QT Includes
 
 #include <qapplication.h>
+class QTimer;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -85,6 +86,16 @@ class KMyMoney2App : public KMainWindow, MyMoneyObserver, public DCOPObject
   K_DCOP
 
 protected slots:
+  /**
+    * This slot is intended to be used as part of auto saving. This is used when the
+    * QTimer emits the timeout signal and simply checks that the file is dirty (has
+    * received modifications to it's contents), and call the apropriate method to
+    * save the file. Furthermore, re-starts the timer (possibly not needed).
+    * @author mvillarino 2005
+    * @see KMyMoney2App::update(), MyMoneyFile::instance()->attach()
+    */
+  void slotAutoSave();
+
   /**
     * This slot re-enables all message for which the "Don't show again"
     * option had been selected.
@@ -606,7 +617,6 @@ public slots:
 
 private:
   bool verifyImportedData(const MyMoneyAccount& account);
-  bool slotCommitTransaction(const MyMoneySchedule& schedule, const QDate&);
 
   /**
     * Load the status bar with the 'ready' message. This is hold in a single
@@ -741,6 +751,12 @@ private:
   MyMoneyAccount        m_selectedInvestment;
   MyMoneyInstitution    m_selectedInstitution;
   MyMoneySchedule       m_selectedSchedule;
+
+  // This is Auto Saving related
+  bool                  m_autoSaveEnabled;
+  QTimer*               m_autoSaveTimer;
+  int                   m_autoSavePeriod;
+
 };
 
 extern  KMyMoney2App *kmymoney2;

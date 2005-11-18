@@ -45,9 +45,12 @@
 class KEnterScheduleDialog : public kEnterScheduleDialogDecl
 {
   Q_OBJECT
-public: 
+public:
   KEnterScheduleDialog(QWidget *parent, const MyMoneySchedule& schedule, const QDate& date=QDate());
   ~KEnterScheduleDialog();
+
+  // FIXME possibly move to KMyMoney2App
+  void commitTransaction();
 
 protected slots:
   void slotOK();
@@ -80,7 +83,6 @@ private:
   void setMemo();
   void setAmount();
   void createSplits();
-  void commitTransaction();
   QCString theAccountId();
   QCString m_toAccountId, m_fromAccountId;
 };

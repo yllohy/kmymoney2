@@ -1,3 +1,9 @@
+2005-11-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added autosave patch provided by Marcellino Villarino with a few
+    modifications
+  * Combined multiple ways of commiting a scheduled transaction into a
+    single path
+
 2005-11-18 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Initial checkin of SQL backend code
 

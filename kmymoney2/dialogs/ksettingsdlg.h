@@ -110,6 +110,10 @@ private:
   /** Show transaction form */
   QCheckBox *m_qcheckboxTransactionForm;
 
+  /** AutoSaveFile **/
+  QCheckBox *m_qcheckboxAutoSaveFile;
+  KIntNumInput* m_intAutoSavePeriod;
+
   /* copy type to nr field */
   QCheckBox* m_qcheckboxTypeToNr;
 
@@ -222,6 +226,8 @@ private:
   bool m_bTempUseSystemFont;
   bool m_bTempFocusChangeEnter;
   bool m_bTempAutoFillTransaction;
+  bool m_bTempAutoSaveFile;
+  int  m_iTempAutoSavePeriod;
   int  m_iTempSchedulePreview;
   QStringList m_tempHomePageItems;
 

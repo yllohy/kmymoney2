@@ -33,6 +33,7 @@
 #include <qclipboard.h>        // temp for problem 1105503
 #include <qmessagebox.h>       // ditto
 #include <qdatetime.h>         // only for performance tests
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -119,7 +120,8 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
  : KMainWindow(0, name),
  DCOPObject("kmymoney2app"),
  myMoneyView(0),
- m_searchDlg(0)
+ m_searchDlg(0),
+ m_autoSaveTimer(0)
 {
   ::timetrace("start kmymoney2app constructor");
   // preset the pointer because we need it during the course of this constructor
@@ -174,6 +176,14 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   m_reader = 0;
   m_smtReader = 0;
   m_engineBackup = 0;
+
+  //this initializes Auto Saving related stuff
+  config->setGroup("General Options");
+  m_autoSaveEnabled = config->readBoolEntry("AutoSaveFile", false);
+  m_autoSavePeriod = config->readNumEntry("AutoSavePeriod", 0);
+
+  m_autoSaveTimer = new QTimer(this);
+  connect(m_autoSaveTimer, SIGNAL(timeout()), this, SLOT(slotAutoSave()));
 
   // make sure, we get a note when the engine changes state
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAnyChange, this);
@@ -767,6 +777,7 @@ const bool KMyMoney2App::slotFileSave()
   }
 
   rc = myMoneyView->saveFile(fileName);
+  m_autoSaveTimer->stop();
 
   slotStatusMsg(prevMsg);
   updateCaption();
@@ -830,6 +841,7 @@ const bool KMyMoney2App::slotFileSaveAs()
       writeLastUsedDir(newName);
       writeLastUsedFile(newName);
     }
+    m_autoSaveTimer->stop();
   }
 
   slotStatusMsg(prevMsg);
@@ -1586,7 +1598,21 @@ void KMyMoney2App::slotSettings()
   {
     myMoneyView->slotRefreshViews();
 
+    // re-read autosave configuration
+    config->setGroup("General Options");
+    m_autoSaveEnabled = config->readBoolEntry("AutoSaveFile", false);
+    m_autoSavePeriod = config->readNumEntry("AutoSavePeriod", 0);
 
+    // stop timer if turned off but running
+    if(m_autoSaveTimer->isActive() && !m_autoSaveEnabled) {
+      qDebug("Timer turned off");
+      m_autoSaveTimer->stop();
+    }
+    // start timer if turned on and needed but not running
+    if(!m_autoSaveTimer->isActive() && m_autoSaveEnabled && myMoneyView->dirty()) {
+      qDebug("Timer turned on");
+      m_autoSaveTimer->start(m_autoSavePeriod * 60 * 1000, true);
+    }
   }
 
 }
@@ -2682,6 +2708,11 @@ void KMyMoney2App::selectSchedule(const MyMoneySchedule& schedule)
 
 void KMyMoney2App::update(const QCString& /* id */)
 {
+  // As this method is called everytime the MyMoneyFile instance
+  // notifies a modification, it's the perfect place to start the timer if needed
+  if (m_autoSaveEnabled && !m_autoSaveTimer->isActive()) {
+    m_autoSaveTimer->start(m_autoSavePeriod * 60 * 1000, true);  //miliseconds
+  }
   updateCaption();
 }
 
@@ -2741,16 +2772,14 @@ void KMyMoney2App::slotCheckSchedules(void)
         {
           if (schedule.isFixed())
           {
-            //qDebug("Auto Entering schedule: %s", schedule.name().latin1());
-            //qDebug("\tAuto enter date: %s", schedule.nextPayment(schedule.lastPayment()).toString().latin1());
-            if (!slotCommitTransaction(schedule, schedule.nextPayment(schedule.lastPayment())))
-                break; // abandon processing of schedule if error found
+            KEnterScheduleDialog dlg(0, schedule, schedule.nextPayment(schedule.lastPayment()));
+            dlg.commitTransaction();
           }
           else
           {
             // 0.8 will feature a list of schedules for a better ui
-            KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule, schedule.nextPayment(schedule.lastPayment()));
-            if (!dlg->exec())
+            KEnterScheduleDialog dlg(0, schedule, schedule.nextPayment(schedule.lastPayment()));
+            if (!dlg.exec())
             {
               int r = KMessageBox::warningYesNo(this, i18n("Are you sure you wish to stop this schedule from being entered into the register?\n\nKMyMoney will prompt you again next time it starts unless you manually enter it later."));
               if (r == KMessageBox::Yes)
@@ -2770,6 +2799,7 @@ void KMyMoney2App::slotCheckSchedules(void)
   }
 }
 
+#if 0
 bool KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDate& date)
 {
   MyMoneySchedule schedule = sched;
@@ -2857,6 +2887,7 @@ bool KMyMoney2App::slotCommitTransaction(const MyMoneySchedule& sched, const QDa
   }
   return (true);
 }
+#endif
 
 void KMyMoney2App::writeLastUsedDir(const QString& directory)
 {
@@ -2923,6 +2954,7 @@ QString KMyMoney2App::readLastUsedFile() const
   return str;
 }
 
+#if 0
 void KMyMoney2App::createInitialAccount(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -2942,6 +2974,7 @@ void KMyMoney2App::createInitialAccount(void)
     slotAccountNew();
   }
 }
+#endif
 
 const QString KMyMoney2App::filename() const
 {
@@ -3108,6 +3141,21 @@ void KMyMoney2App::loadPlugins(void)
       }
     }
   }
+}
+
+void KMyMoney2App::slotAutoSave()
+{
+  QString prevMsg = slotStatusMsg(i18n("Auto saving ..."));
+
+  //calls slotFileSave if needed, and restart the timer
+  //it the file is not saved, reinitializes the countdown.
+  if (myMoneyView->dirty() && m_autoSaveEnabled) {
+    if (!slotFileSave()) {
+      m_autoSaveTimer->start(m_autoSavePeriod * 60 * 1000);
+    }
+  }
+
+  slotStatusMsg(prevMsg);
 }
 
 #include "kmymoney2.moc"
