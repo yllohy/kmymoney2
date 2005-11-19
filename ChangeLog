@@ -1,3 +1,6 @@
+2005-11-19 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Doxygenate SQL stuff
+
 2005-11-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added autosave patch provided by Marcellino Villarino with a few
     modifications

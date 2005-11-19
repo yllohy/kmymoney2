@@ -136,16 +136,82 @@ class dbDef  {
 
 class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
   public:
-    MyMoneyStorageSql (const QString&);
+  /**
+   * MyMoneyStorageSql constructor
+   *
+   * @param driver : Qt driver name (see QSqlDatabase class)
+   * @param storage : pointer to MyMoneySerialize storage 
+   *
+   * @return void
+   *
+   */
+    MyMoneyStorageSql (const QString& driver);
 
     ~MyMoneyStorageSql() {};
-    int open(const QString&, const QString&, const QString&, const QString&);
-    void readFile(void);
-    void writeFile(void);
-    void setStorage (IMyMoneySerialize *s) {m_storage = s;};
-    void displayError(const QString&);
+  /**
+     * MyMoneyStorageSql - open database file
+     *
+     * @param dbName : name of database (file name for SQLite)
+     * @param hostName : name of connected host where server resides
+     * @param userName : name of user for database permission checking
+     * @param password : user's password where required
+     *
+     * @return 0 - database successfully opened
+     * @return 1 - database not opened, but may be able to create it
+     * @return -1 - database not opened, cannot create it
+     *
+   */
+    int open(const QString& dbName, const QString& hostName,
+             const QString& userName, const QString& password);
+  /**
+     * MyMoneyStorageSql create database 
+     *
+     * @param dbName : name of database (file name for SQLite)
+     * @param hostName : name of connected host where server resides
+     * @param userName : name of user for database permission checking
+     * @param password : user's password where required
+     *
+     * @return void
+     *
+   */
     void createDatabase(const QString& dbName, const QString& hostName,
                         const QString& userName, const QString& password);
+  /**
+     * MyMoneyStorageSql set storage
+     *
+     * @param storage : pointer to MyMoneySerialize storage 
+     *
+     * @return void
+     *
+   */
+    void setStorage(IMyMoneySerialize *storage) {m_storage = storage;};
+  /**
+     * MyMoneyStorageSql read all the database into storage
+     *
+     * @param void
+     *
+     * @return void
+     *
+   */
+    void readFile(void);
+  /**
+     * MyMoneyStorageSql write/update the database from storage
+     *
+     * @param void
+     *
+     * @return void
+     *
+   */
+    void writeFile(void);
+  /**
+     * MyMoneyStorageSql generalized error display routine
+     *
+     * @param message : error message to be displayed
+     *
+     * @return void
+     *
+   */
+    void displayError(const QString& message);
   protected:
     void readFile(QIODevice* qf, IMyMoneySerialize* storage) {};
     void writeFile(QIODevice* qf, IMyMoneySerialize* storage) {};
