@@ -140,7 +140,6 @@ class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
    * MyMoneyStorageSql constructor
    *
    * @param driver : Qt driver name (see QSqlDatabase class)
-   * @param storage : pointer to MyMoneySerialize storage 
    *
    * @return void
    *
@@ -188,16 +187,12 @@ class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
   /**
      * MyMoneyStorageSql read all the database into storage
      *
-     * @param void
-     *
      * @return void
      *
    */
     void readFile(void);
   /**
      * MyMoneyStorageSql write/update the database from storage
-     *
-     * @param void
      *
      * @return void
      *
