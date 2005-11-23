@@ -433,6 +433,11 @@ private slots:
     */
   void slotConfigureMoreMenu(void);
 
+  /**
+    * This method will prepare the widget to be shown.
+    */
+  virtual void slotAboutToShow(void);
+  
 protected:
   QTab* m_tabCheck;
   QTab* m_tabDeposit;

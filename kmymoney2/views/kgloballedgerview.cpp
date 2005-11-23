@@ -38,6 +38,9 @@
 #include <kcombobox.h>
 #include <kpushbutton.h>
 #include <kmessagebox.h>
+#include <kiconloader.h>
+#include <ktoolbar.h>
+#include <ktoolbarbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -73,16 +76,22 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 
   setCaption( i18n( "Account register" ) );
 
-  QHBoxLayout* Layout2 = new QHBoxLayout( 0, 0, 6, "Layout2");
+  KIconLoader *il = KGlobal::iconLoader();
+  
+  m_toolbar = new KToolBar(this, "LedgerToolBar", true);
+  m_toolbar->setIconText(KToolBar::IconTextRight);
 
-  m_accountComboBox = new kMyMoneyAccountCombo(this, "AccountCombo");
-  // m_accountComboBox->setMinimumSize( QSize( 240, 0 ) );
-  Layout2->addWidget( m_accountComboBox );
-  QSpacerItem* spacer = new QSpacerItem( 20, 20,
-                                         QSizePolicy::Expanding,
-                                         QSizePolicy::Minimum );
-  Layout2->addItem( spacer );
-  m_viewLayout->addLayout( Layout2 );
+  m_accountComboBox = new kMyMoneyAccountCombo(m_toolbar, "AccountCombo");
+  m_toolbar->insertWidget(1,100,m_accountComboBox);
+  
+  m_toolbar->insertButton(il->loadIcon("document", KIcon::Small, KIcon::SizeSmall),
+                        1,true,i18n("Account"));
+  //m_toolbar->setMaximumSize(50,20);
+  m_toolbar->alignItemRight(1);
+  m_toolbar->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
+  KToolBarButton* m_buttonAccount = m_toolbar->getButton(1);
+  
+  m_viewLayout->addWidget(m_toolbar);
 
   m_accountStack = new QWidgetStack(this, "AccountStack");
 
@@ -176,7 +185,6 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   // setup connections
   connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)),
           this, SLOT(slotSelectAccount(const QCString&)));
-
 }
 
 KGlobalLedgerView::~KGlobalLedgerView()
@@ -383,6 +391,11 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
     if(isVisible())
       kmymoney2->selectAccount();
   }
+  
+  KLedgerView* ledgerview = dynamic_cast<KLedgerView*>(m_accountStack->visibleWidget());
+  if ( ledgerview )
+    ledgerview->slotAboutToShow();
+    
   return rc;
 }
 
@@ -436,6 +449,11 @@ void KGlobalLedgerView::update(const QCString& /* id */)
   } else {
     slotRefreshView();
   }
+}
+
+KToolBarButton* KGlobalLedgerView::accountButton(void) 
+{ 
+  return m_toolbar->getButton(1); 
 }
 
 #include "kgloballedgerview.moc"

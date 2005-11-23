@@ -583,6 +583,11 @@ public slots:
 
   virtual void slotActionSelected(int transactionType) = 0;
 
+  /**
+    * This method will prepare the widget to be shown.
+    */
+  virtual void slotAboutToShow(void);
+  
 protected slots:
   /**
     * This method marks the split referencing the account in the current
@@ -641,7 +646,7 @@ protected slots:
     * transaction data and creates a scheduled transaction this way.
     */
   void slotCreateSchedule(void);
-
+  
 protected:
   /**
     * This method is called to fill the transaction form

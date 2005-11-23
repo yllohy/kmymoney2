@@ -51,6 +51,8 @@ class QPopupMenu;
 
 class kMyMoneyAccountCombo;
 class KLedgerView;
+class KToolBar;
+class KToolBarButton;
 
 /**
   * @author Thomas Baumgart
@@ -98,6 +100,11 @@ public:
 
   void reconcileAccount(void);
 
+  /**
+    * Returns the account button
+    */
+  KToolBarButton* accountButton(void);
+
 public slots:
   void show(void);
 
@@ -135,7 +142,7 @@ public slots:
     * @retval false selection of account failed
     */
   const bool slotSelectAccount(const QCString& accountId, const QCString& transactionId = QCString(), const bool reconciliation = false);
-
+  
 protected:
   /**
     * This method reloads the account selection combo box of the
@@ -145,7 +152,7 @@ protected:
     * the first account found in the list will be made the current account.
     */
   void loadAccounts(void);
-
+  
 private:
   kMyMoneyAccountCombo* m_accountComboBox;
 
@@ -163,7 +170,8 @@ private:
   KLedgerView* m_specificView[MyMoneyAccount::MaxAccountTypes];
   QWidgetStack* m_accountStack;
   KLedgerView* m_currentView;
-
+  KToolBar* m_toolbar;
+  
 signals:
   /**
     * This signal is emitted whenever this view is activated.
