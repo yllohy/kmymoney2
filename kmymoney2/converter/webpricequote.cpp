@@ -181,7 +181,7 @@ void WebPriceQuote::slotParseQuote(const QString& _quotedata)
     quotedata.remove(QRegExp("<[^>]*>"));
 
     // &...;'s
-    quotedata.replace(QRegExp("&[^;]+;")," ");
+    quotedata.replace(QRegExp("&\\w+;")," ");
     
     // Extra white space
     quotedata = quotedata.simplifyWhiteSpace();      

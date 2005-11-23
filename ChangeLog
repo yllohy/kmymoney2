@@ -1,3 +1,7 @@
+2005-11-22 Ace Jones <acejones@users.sourceforge.net>
+  * Better handling of missing &...; sequences in HTML returned during online
+    quotes.
+
 2005-11-19 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix doxygenation...
 
