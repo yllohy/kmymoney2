@@ -14,7 +14,7 @@ libsettings_a_SOURCES = ksettingsgeneraldecl.ui ksettingsgeneral.cpp \
 	ksettingsonlinequotesdecl.ui ksettingsonlinequotes.cpp \
 	ksettingshomedecl.ui ksettingshome.cpp
 
-EXTRA_DIST = ksettingsgeneraldecl.ui ksettingsregisterdecl.ui ksettingsgpgdecl.ui ksettingscolorsdecl.ui ksettingsfontsdecl.ui ksettingsschedulesdecl.ui ksetttingsonlinequotesdecl.ui ksettingshomedecl.ui
+EXTRA_DIST = ksettingsgeneraldecl.ui ksettingsregisterdecl.ui ksettingsgpgdecl.ui ksettingscolorsdecl.ui ksettingsfontsdecl.ui ksettingsschedulesdecl.ui ksettingsonlinequotesdecl.ui ksettingshomedecl.ui
 
 DISTCLEANFILES= ksettingsgeneraldecl.cpp ksettingsgeneraldecl.h ksettingsregisterdecl.cpp ksettingsregisterdecl.h ksettingsgpgdecl.cpp ksettingsgpgdecl.h ksettingscolorsdecl.cpp ksettingscolorsdecl.h ksettingsfontsdecl.cpp ksettingsfontsdecl.h ksettingsschedulesdecl.cpp ksettingsschedulesdecl.h ksettingsonlinequotesdecl.cpp ksettingsonlinequotesdecl.h ksettingshomedecl.cpp ksettingshomedecl.h
 
