@@ -268,6 +268,11 @@ protected slots:
     */
   void slotManualPriceUpdate(void);
 
+  /**
+    * Call this slot, if any configuration parameter has changed
+    */
+  void slotUpdateConfiguration(void);
+
 public:
   /**
     * This method checks if there is at least one asset or liability account

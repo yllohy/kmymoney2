@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
+<kcfg>
+ <kcfgfile name="kmymoney2rc" />
+ <group name="General Options">
+  <entry name="AlwaysShowNrField" type="Bool">
+   <label>Always show a No. field in transaction form</label>
+   <default>false</default>
+  </entry>
+  <entry name="AutoFillTransaction" type="Bool">
+   <label>Auto fill with previous transaction data</label>
+   <default>true</default>
+  </entry>
+  <entry name="AutoIncCheckNumber" type="Bool">
+   <label>Auto increment check number</label>
+   <default>true</default>
+  </entry>
+  <entry name="AutoSaveFile" type="Bool">
+   <label>Autosave file periodically</label>
+   <default>false</default>
+  </entry>
+  <entry name="AutoSavePeriod" type="Int">
+   <label>Autosave interval in minutes</label>
+   <default>10</default>
+   <min>0</min>
+   <max>60</max>
+  </entry>
+  <entry name="CheckSchedule" type="Bool">
+   <label>Check schedules upon startup</label>
+   <default>false</default>
+  </entry>
+  <entry name="CheckSchedulePreview" type="Int">
+   <label>Enter transactions this number of days in advance</label>
+   <default>0</default>
+   <min>0</min>
+   <max>999</max>
+  </entry>
+  <entry name="CopyTypeToNr" type="Bool">
+   <label>Insert transaction type into No. field for new transactions</label>
+   <default>false</default>
+  </entry>
+  <entry name="FocusChangeIsEnter" type="Bool">
+   <label>Keep changes when selecting a different transaction/split</label>
+   <default>false</default>
+  </entry>
+  <entry name="LedgerLens" type="Bool">
+   <label>Use the ledger lens</label>
+   <default>false</default>
+  </entry>
+  <entry name="PricePrecision" type="Int">
+   <label>Price Precision</label>
+   <default>4</default>
+   <min>4</min>
+   <max>10</max>
+  </entry>
+  <entry name="TransactionForm" type="Bool">
+   <label>Show transaction form</label>
+   <default>true</default>
+  </entry>
+  <entry name="StartLastViewSelected" type="Int">
+   <label>Start with last selected view or homepage</label>
+   <default>0</default>
+  </entry>
+  <entry name="WriteDataEncrypted" type="Bool">
+   <label>Use GPG to encrypt data file</label>
+   <default>false</default>
+  </entry>
+  <entry name="EncryptRecover" type="Bool">
+   <label>Also encrypt against recover key</label>
+   <default>false</default>
+  </entry>
+  <entry name="GpgRecipient" type="String">
+   <label>GPG User ID</label>
+  </entry>
+  <entry name="ExpertMode" type="Bool">
+   <label>Run in expert (accountant) mode</label>
+   <default>false</default>
+  </entry>
+ </group>
+ <group name="Homepage Options">
+  <entry name="ItemList" type="String">
+  <label>Order of items on homepage</label>
+  <default>1,2,3,4,5</default>
+  </entry>
+ </group>
+ <group name="Investment Settings">
+ </group>
+ <group name="List Options">
+  <entry name="HideUnusedCategory" type="Bool">
+   <label>Hide unused categories</label>
+   <default>false</default>
+  </entry>
+  <entry name="ShowGrid" type="Bool">
+   <label>Show a grid in the register</label>
+   <default>true</default>
+  </entry>
+  <entry name="StartDate" type="DateTime">
+   <label>Start date</label>
+   <default>QDateTime::fromString("1900-01-01T00:00:00", Qt::ISODate)</default>
+  </entry>
+  <entry name="HideReconciledTransactions" type="Bool">
+   <label>Hide reconciled transactions</label>
+   <default>false</default>
+  </entry>
+  <entry name="listColor" type="Color">
+   <label>List color</label>
+   <default>240,240,240</default>
+  </entry>
+  <entry name="listBGColor" type="Color">
+   <label>List background color</label>
+   <default>255,255,255</default>
+  </entry>
+  <entry name="listGridColor" type="Color">
+   <label>List grid color</label>
+   <default>154,154,154</default>
+  </entry>
+  <entry name="listMissingConversionRate" type="Color">
+   <label>List color</label>
+   <default>0,0,255</default>
+  </entry>
+  <entry name="listNegativeValueColor" type="Color">
+   <label>List color</label>
+   <default>255,0,0</default>
+  </entry>
+  <entry name="useSystemFont" type="Bool">
+   <label>Use system font</label>
+   <default>false</default>
+  </entry>
+  <entry name="listCellFont" type="Font">
+   <label>Cell font</label>
+  </entry>
+  <entry name="listHeaderFont" type="Font">
+   <label>Header font</label>
+  </entry>
+ </group>
+ <group name="Schedule Options">
+ </group>
+</kcfg>
+<!-- 
+  <entry name="" type="">
+   <label>...</label>
+   <default>...</default>
+  </entry>
+-->

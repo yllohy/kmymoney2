@@ -17,3 +17,5 @@ kmymoneytest
 *_skel.*
 *_stub.*
 *.all_cpp.cpp
+kmymoneysettings.h
+kmymoneysettings.cpp

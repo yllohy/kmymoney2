@@ -1,0 +1,233 @@
+<!DOCTYPE UI><UI version="3.0">
+<class>KSettingsOnlineQuotesDecl</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>KSettingsOnlineQuotesDecl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>512</width>
+            <height>442</height>
+        </rect>
+    </property>
+    <property name="minimumSize">
+        <size>
+            <width>0</width>
+            <height>0</height>
+        </size>
+    </property>
+    <property name="caption">
+        <string>Online Quotes</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="KListView">
+            <column>
+                <property name="text">
+                    <string>Name</string>
+                </property>
+                <property name="clickable">
+                    <bool>true</bool>
+                </property>
+                <property name="resizable">
+                    <bool>true</bool>
+                </property>
+            </column>
+            <property name="name">
+                <cstring>m_quoteSourceList</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>3</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="allColumnsShowFocus">
+                <bool>true</bool>
+            </property>
+            <property name="defaultRenameAction">
+                <enum>Accept</enum>
+            </property>
+            <property name="itemsRenameable">
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupParsing</cstring>
+            </property>
+            <property name="title">
+                <string>Details</string>
+            </property>
+            <property name="whatsThis" stdset="0">
+                <string>&lt;i&gt;Enter regular expressions which can be used to parse the data returned from the URL entered above.  The symbol, price, and date must be found in the quote data to be usable. You may also try the KMyMoney user's mailinglist at &lt;a href="mailto:kmymoney2-user@lists.sourceforge.net"&gt;kmymoney2-user@lists.sourceforge.net&lt;/a&gt; to find what settings work for other users in your country.&lt;/i&gt;</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout3</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel" row="3" column="0">
+                            <property name="name">
+                                <cstring>textLabel4</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Date</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Symbol</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="1" column="1">
+                            <property name="name">
+                                <cstring>m_editSymbol</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Regular Expression to extract the symbol from the downloaded data</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="2" column="1">
+                            <property name="name">
+                                <cstring>m_editPrice</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Regular Expression to extract the price from the downloaded data</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="4" column="1">
+                            <property name="name">
+                                <cstring>m_editDateFormat</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Regular Expression to extract the date from the downloaded data</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="0" column="1">
+                            <property name="name">
+                                <cstring>m_editURL</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>URL to be used to download the quote</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enter the URL from which stock quotes will be fetched.  &lt;b&gt;%1&lt;/b&gt; will be replaced with the symbol for the security being quoted. For currency conversions, &lt;b&gt;%2&lt;/b&gt; will be replaced with the currency to be quoted and &lt;b&gt;%1&lt;/b&gt; with the currency the quote is based on.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>textLabel3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Price</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="3" column="1">
+                            <property name="name">
+                                <cstring>m_editDate</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Regular Expression to extract the date from the downloaded data</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="4" column="0">
+                            <property name="name">
+                                <cstring>textLabel4_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Date Format</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>URL</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout15</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_newButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;New</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+N</string>
+                    </property>
+                </widget>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_deleteButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Delete</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+D</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer6</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>240</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_updateButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Update</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+U</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

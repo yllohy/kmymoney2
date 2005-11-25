@@ -34,6 +34,7 @@
 #include <qmessagebox.h>       // ditto
 #include <qdatetime.h>         // only for performance tests
 #include <qtimer.h>
+#include <qsqlpropertymap.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -65,15 +66,25 @@
 #endif
 
 #include <krun.h>
+#include <kconfigdialog.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kmymoney2.h"
+#include "kmymoneysettings.h"
 #include "kmymoney2_stub.h"
 
 #include "dialogs/kstartdlg.h"
-#include "dialogs/ksettingsdlg.h"
+// #include "dialogs/ksettingsdlg.h"
+#include "dialogs/settings/ksettingsgeneral.h"
+#include "dialogs/settings/ksettingsregister.h"
+#include "dialogs/settings/ksettingsgpg.h"
+#include "dialogs/settings/ksettingscolors.h"
+#include "dialogs/settings/ksettingsfonts.h"
+#include "dialogs/settings/ksettingsschedules.h"
+#include "dialogs/settings/ksettingsonlinequotes.h"
+#include "dialogs/settings/ksettingshome.h"
 #include "dialogs/kbackupdlg.h"
 #include "dialogs/kexportdlg.h"
 #include "dialogs/kimportdlg.h"
@@ -755,7 +766,6 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
     }
   } else {
     KMessageBox::sorry(this, QString("<p>")+i18n("File <b>%1</b> is already opened in another instance of KMyMoney").arg(url.url()), i18n("Duplicate open"));
-    return;
   }
   slotStatusMsg(prevMsg);
 }
@@ -879,6 +889,7 @@ void KMyMoney2App::slotFileClose()
 
   selectAccount(MyMoneyAccount());
   selectInstitution(MyMoneyInstitution());
+  selectInvestment(MyMoneyAccount());
 
   myMoneyView->closeFile();
   fileName = KURL();
@@ -1588,29 +1599,56 @@ void KMyMoney2App::slotQifExport()
 
 void KMyMoney2App::slotSettings()
 {
-  KSettingsDlg dlg( this, "Settings");
-  connect(&dlg, SIGNAL(signalApply()), myMoneyView, SLOT(slotRefreshViews()));
-  // terminate any edit session
-  myMoneyView->slotCancelEdit();
-  if( dlg.exec() )
-  {
-    myMoneyView->slotRefreshViews();
+  // if we already have an instance of the settings dialog, then use it
+  if(KConfigDialog::showDialog("KMyMoney-Settings"))
+    return;
 
-    // re-read autosave configuration
-    config->setGroup("General Options");
-    m_autoSaveEnabled = config->readBoolEntry("AutoSaveFile", false);
-    m_autoSavePeriod = config->readNumEntry("AutoSavePeriod", 0);
+  // otherwise, we have to create it
+  KConfigDialog* dlg = new KConfigDialog(this, "KMyMoney-Settings", KMyMoneySettings::self(),
+    KDialogBase::IconList, KDialogBase::Default | KDialogBase::Ok | KDialogBase::Cancel | KDialogBase::Help);
 
-    // stop timer if turned off but running
-    if(m_autoSaveTimer->isActive() && !m_autoSaveEnabled) {
-      m_autoSaveTimer->stop();
-    }
-    // start timer if turned on and needed but not running
-    if(!m_autoSaveTimer->isActive() && m_autoSaveEnabled && myMoneyView->dirty()) {
-      m_autoSaveTimer->start(m_autoSavePeriod * 60 * 1000, true);
-    }
+  // create the pages ...
+  KSettingsGeneral* generalPage = new KSettingsGeneral();
+  KSettingsRegister* registerPage = new KSettingsRegister();
+  KSettingsHome* homePage = new KSettingsHome();
+  KSettingsSchedules* schedulesPage = new KSettingsSchedules();
+  KSettingsGpg* encryptionPage = new KSettingsGpg();
+  KSettingsColors* colorsPage = new KSettingsColors();
+  KSettingsFonts* fontsPage = new KSettingsFonts();
+  KSettingsOnlineQuotes* onlineQuotesPage = new KSettingsOnlineQuotes();
+
+  // ... and add them to the dialog
+  dlg->addPage(generalPage, i18n("General"), "misc");
+  dlg->addPage(registerPage, i18n("Register"), "ledger");
+  dlg->addPage(homePage, i18n("Home"), "home");
+  dlg->addPage(schedulesPage, i18n("Schedules"), "schedule");
+  dlg->addPage(encryptionPage, i18n("Encryption"), "kgpg");
+  dlg->addPage(colorsPage, i18n("Colors"), "colorscm");
+  dlg->addPage(fontsPage, i18n("Fonts"), "font");
+  dlg->addPage(onlineQuotesPage, i18n("Online Quotes"), "network_local");
+
+  connect(dlg, SLOT(settingsChanged()), this, SLOT(updateConfiguration()));
+
+  dlg->show();
+}
+
+void KMyMoney2App::slotUpdateConfiguration(void)
+{
+  myMoneyView->slotRefreshViews();
+
+  // re-read autosave configuration
+  config->setGroup("General Options");
+  m_autoSaveEnabled = KMyMoneySettings::autoSaveFile();
+  m_autoSavePeriod = KMyMoneySettings::autoSavePeriod();
+
+  // stop timer if turned off but running
+  if(m_autoSaveTimer->isActive() && !m_autoSaveEnabled) {
+    m_autoSaveTimer->stop();
   }
-
+  // start timer if turned on and needed but not running
+  if(!m_autoSaveTimer->isActive() && m_autoSaveEnabled && myMoneyView->dirty()) {
+    m_autoSaveTimer->start(m_autoSavePeriod * 60 * 1000, true);
+  }
 }
 
 /** Init wizard dialog */
@@ -2578,14 +2616,17 @@ void KMyMoney2App::updateActions(void)
   action("file_import_qif")->setEnabled(fileOpen);
   action("file_import_gnc")->setEnabled(true);
   action("file_import_template")->setEnabled(fileOpen);
+  action("file_export_template")->setEnabled(fileOpen);
+
   action("institution_new")->setEnabled(fileOpen);
   action("account_new")->setEnabled(fileOpen);
+  action("category_new")->setEnabled(fileOpen);
 
   action("tools_security_editor")->setEnabled(fileOpen);
   action("tools_currency_editor")->setEnabled(fileOpen);
   action("tools_price_editor")->setEnabled(fileOpen);
   action("tools_update_prices")->setEnabled(fileOpen);
-  action("account_reconcile")->setEnabled(fileOpen);
+  action("tools_consistency_check")->setEnabled(fileOpen);
 
   action("account_reconcile")->setEnabled(false);
   action("account_edit")->setEnabled(false);
