@@ -62,7 +62,7 @@ private:
 public:
   MyMoneyPayee();
   MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee);
-  MyMoneyPayee(const QString& name, const QString address=QString::null, const QString postcode=QString::null, const QString telephone=QString::null, const QString email=QString::null, const QString city=QString::null, const QString state=QString::null);
+  MyMoneyPayee(const QString& name, const QString& address=QString::null, const QString& postcode=QString::null, const QString& telephone=QString::null, const QString& email=QString::null, const QString& city=QString::null, const QString& state=QString::null);
   ~MyMoneyPayee();
 
   // Simple get operations

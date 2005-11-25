@@ -29,7 +29,7 @@ MyMoneyPayee::MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee)
   m_id = id;
 }
 
-MyMoneyPayee::MyMoneyPayee(const QString& name, const QString address, const QString postcode, const QString telephone, const QString email, const QString city, const QString state)
+MyMoneyPayee::MyMoneyPayee(const QString& name, const QString& address, const QString& postcode, const QString& telephone, const QString& email, const QString& city, const QString& state)
 {
   m_name      = name;
   m_address   = address;
@@ -111,7 +111,7 @@ void MyMoneyPayee::readXML(const QDomElement& node)
   m_name = node.attribute("name");
   m_reference = node.attribute("reference");
   m_email = node.attribute("email");
-  
+
   QDomNodeList nodeList = node.elementsByTagName(QString("ADDRESS"));
   if(nodeList.count() == 0) {
     QString msg = QString("No ADDRESS in payee %1").arg(m_name);
