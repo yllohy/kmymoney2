@@ -65,7 +65,7 @@ protected slots:
 
   void logStatusMessage(const QString&);
   void logErrorMessage(const QString&);
-  void slotReceivedQuote(const QString&,const QDate&, const double&);
+  void slotReceivedQuote(const QString&, const QString&,const QDate&, const double&);
 
 protected:
   void addPricePair(const MyMoneySecurityPair& pair);

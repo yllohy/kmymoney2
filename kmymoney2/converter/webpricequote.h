@@ -104,12 +104,14 @@ public:
     * emitted on the 'quote' signal.
     *
     * @param _symbol the trading symbol of the stock to fetch a price for
+    * @param _id an arbitrary identifier, which will be emitted in the quote
+    *                signal when a price is sent back.
     * @param _source the source of the quote (must be a valid value returned
     *                by quoteSources().  Send QString() to use the default
     *                source.
     * @return bool Whether the quote fetch process was launched successfully
     */
-  bool launch(const QString& _symbol, const QString& _source=QString());
+  bool launch(const QString& _symbol, const QString& _id, const QString& _source=QString());
 
   /**
     * This returns a list of the names of the quote sources
@@ -120,7 +122,7 @@ public:
   static QStringList quoteSources(void);
     
 signals:
-  void quote(const QString&, const QDate&, const double&);
+  void quote(const QString&, const QString&, const QDate&, const double&);
   void status(const QString&);
   void error(const QString&);
   
@@ -133,6 +135,7 @@ protected:
 private:
   WebPriceQuoteProcess m_filter;
   QString m_symbol;
+  QString m_id;
   QDate m_date;
   double m_price;
   WebPriceQuoteSource m_source;  

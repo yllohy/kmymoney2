@@ -50,11 +50,14 @@ WebPriceQuote::~WebPriceQuote()
 {
 }
   
-bool WebPriceQuote::launch( const QString& _symbol, const QString& _sourcename )
+bool WebPriceQuote::launch( const QString& _symbol, const QString& _id, const QString& _sourcename )
 {
   bool result = true;
   m_symbol = _symbol;
+  m_id = _id;
 
+//   emit status(QString("(Debug) symbol=%1 id=%2...").arg(_symbol,_id));
+  
   // if we're running normally, with a UI, we can just get these the normal way,
   // from the config file
   if ( kapp )
@@ -252,7 +255,7 @@ void WebPriceQuote::slotParseQuote(const QString& _quotedata)
 
     if ( gotprice && gotdate )
     {
-      emit quote( m_symbol, m_date, m_price );
+      emit quote( m_id, m_symbol, m_date, m_price );
     }
     else
     {
