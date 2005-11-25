@@ -1627,7 +1627,7 @@ void KMyMoney2App::slotSettings()
   dlg->addPage(fontsPage, i18n("Fonts"), "font");
   dlg->addPage(onlineQuotesPage, i18n("Online Quotes"), "network_local");
 
-  connect(dlg, SLOT(settingsChanged()), this, SLOT(updateConfiguration()));
+  connect(dlg, SIGNAL(settingsChanged()), this, SLOT(slotUpdateConfiguration()));
 
   dlg->show();
 }
@@ -1637,7 +1637,6 @@ void KMyMoney2App::slotUpdateConfiguration(void)
   myMoneyView->slotRefreshViews();
 
   // re-read autosave configuration
-  config->setGroup("General Options");
   m_autoSaveEnabled = KMyMoneySettings::autoSaveFile();
   m_autoSavePeriod = KMyMoneySettings::autoSavePeriod();
 
@@ -2783,17 +2782,12 @@ void KMyMoney2App::slotFileConsitencyCheck(void)
 
 void KMyMoney2App::slotCheckSchedules(void)
 {
-  KConfig *kconfig = KGlobal::config();
-  kconfig->setGroup("Schedule Options");
-  if(kconfig->readBoolEntry("CheckSchedules", false) == true) {
+  if(KMyMoneySettings::checkSchedule() == true) {
 
     MyMoneyFile::instance()->suspendNotify(true);
     QString prevMsg = slotStatusMsg(i18n("Checking for overdue schedules..."));
     MyMoneyFile *file = MyMoneyFile::instance();
-    int checkDays = kconfig->readNumEntry("CheckSchedulePreview", 0);
-    if(checkDays < 0)
-      checkDays = 0;
-    QDate checkDate = QDate::currentDate().addDays(checkDays);
+    QDate checkDate = QDate::currentDate().addDays(KMyMoneySettings::checkSchedulePreview());
 
     QValueList<MyMoneySchedule> scheduleList =  file->scheduleList();
     QValueList<MyMoneySchedule>::Iterator it;

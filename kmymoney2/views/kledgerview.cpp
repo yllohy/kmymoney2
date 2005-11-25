@@ -45,7 +45,6 @@
 
 #include <kmessagebox.h>
 #include <kpushbutton.h>
-#include <kconfig.h>
 #include <kpopupmenu.h>
 #include <kiconloader.h>
 #include <kcmenumngr.h>
@@ -68,6 +67,8 @@
 #include "../dialogs/ieditscheduledialog.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/kcurrencycalculator.h"
+
+#include "../kmymoneysettings.h"
 #include "../kmymoney2.h"
 
 /* -------------------------------------------------------------------------------*/
@@ -283,11 +284,6 @@ KLedgerView::KLedgerView(QWidget *parent, const char *name )
   m_contextMenu(0),
   m_suspendUpdate(false)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("General Options");
-  m_ledgerLens = config->readBoolEntry("LedgerLens", true);
-  m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
-
   if(!m_lastPostDate.isValid())
     m_lastPostDate = QDate::currentDate();
 
@@ -372,10 +368,7 @@ void KLedgerView::slotSelectAccount(const QCString& accountId)
 void KLedgerView::refreshView(void)
 {
   // read in the configuration parameters for this view
-  KConfig *config = KGlobal::config();
-  config->setGroup("General Options");
-  m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
-  refreshView(m_transactionFormActive);
+  refreshView(KMyMoneySettings::transactionForm());
 }
 
 void KLedgerView::refreshView(const bool transactionFormVisible)
@@ -386,7 +379,7 @@ void KLedgerView::refreshView(const bool transactionFormVisible)
   if(isEditMode())
     return;
 
-  m_transactionFormActive = transactionFormVisible;
+  // m_transactionFormActive = transactionFormVisible;
 
   // if a transaction is currently selected, keep the id
   QCString transactionId;
@@ -394,16 +387,6 @@ void KLedgerView::refreshView(const bool transactionFormVisible)
     transactionId = m_transactionPtr->id();
   m_transactionPtr = 0;
   m_transactionPtrVector.clear();
-
-  // read in the configuration parameters for this view
-  KConfig *config = KGlobal::config();
-  config->setGroup("General Options");
-  m_ledgerLens = config->readBoolEntry("LedgerLens", true);
-
-  config->setGroup("List Options");
-  QDateTime defaultDate;
-  m_dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
-  m_hideReconciledTransactions = config->readBoolEntry("HideReconciledTransactions", false);
 
   m_register->readConfig();
 
@@ -419,8 +402,8 @@ void KLedgerView::refreshView(const bool transactionFormVisible)
       filter.addState(MyMoneyTransactionFilter::notReconciled);
       filter.addState(MyMoneyTransactionFilter::cleared);
     } else {
-      filter.setDateFilter(m_dateStart, QDate());
-      if (m_hideReconciledTransactions) {
+      filter.setDateFilter(KMyMoneySettings::startDate().date(), QDate());
+      if (KMyMoneySettings::hideReconciledTransactions()) {
         filter.addState(MyMoneyTransactionFilter::notReconciled);
         filter.addState(MyMoneyTransactionFilter::cleared);
       }
@@ -456,7 +439,7 @@ void KLedgerView::updateView(const QCString& transactionId)
   //m_register->setTransactionCount(m_transactionList.count()+1);
 
   // show transaction form if selected
-  slotShowTransactionForm(m_transactionFormActive);
+  slotShowTransactionForm(KMyMoneySettings::transactionForm());
 
   // select the last selected transaction or the one beyond the last one
   selectTransaction(transactionId);
@@ -613,7 +596,7 @@ void KLedgerView::slotRegisterClicked(int row, int /* col */, int button, const 
 void KLedgerView::slotNextTransaction(void)
 {
   // up and down movement is not allowed when editing inline
-  if(!m_transactionFormActive && isEditMode())
+  if(!KMyMoneySettings::transactionForm() && isEditMode())
     return;
 
   if(static_cast<unsigned> (m_register->currentTransactionIndex() + 1) <= m_transactionPtrVector.count()) {
@@ -630,7 +613,7 @@ void KLedgerView::slotNextTransaction(void)
 void KLedgerView::slotPreviousTransaction(void)
 {
   // up and down movement is not allowed when editing inline
-  if(!m_transactionFormActive && isEditMode())
+  if(!KMyMoneySettings::transactionForm() && isEditMode())
     return;
 
   if(m_register->currentTransactionIndex() > 0) {
@@ -704,12 +687,10 @@ void KLedgerView::slotPayeeChanged(const QString& name)
       // memo available, we search for the last transaction of this payee
       // in the account.
       if(m_transaction.splitCount() == 2) {
-        KConfig* kconfig = KGlobal::config();
-        kconfig->setGroup("General Options");
         if(sp.accountId().isEmpty()
         && m_split.memo().isEmpty()
         && m_split.value().isZero()
-        && kconfig->readBoolEntry("AutoFillTransaction", false) == true) {
+        && KMyMoneySettings::autoFillTransaction()) {
           MyMoneyTransactionFilter filter(m_account.id());
           filter.addPayee(payee.id());
           QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(filter);
@@ -1145,7 +1126,7 @@ void KLedgerView::actionChanged(const QCString& action)
 
 void KLedgerView::slotShowTransactionForm(bool visible)
 {
-  m_transactionFormActive = visible;
+  // m_transactionFormActive = visible;
 
   if(m_form != 0) {
     if(visible) {
@@ -1165,7 +1146,7 @@ void KLedgerView::slotShowTransactionForm(bool visible)
 
   if(m_register != 0) {
     if(visible) {
-      m_register->setLedgerLens(m_ledgerLens);
+      m_register->setLedgerLens(KMyMoneySettings::ledgerLens());
     } else {
       m_register->setLedgerLens(true);
     }
@@ -1257,12 +1238,12 @@ void KLedgerView::showWidgets(void)
   QWidget* focusWidget;
 
   createEditWidgets();
-  if(!m_transactionFormActive) {
+  if(!KMyMoneySettings::transactionForm()) {
     createRegisterButtons();
   }
   loadEditWidgets();
 
-  if(m_transactionFormActive) {
+  if(KMyMoneySettings::transactionForm()) {
     focusWidget = arrangeEditWidgetsInForm();
   } else {
     focusWidget = arrangeEditWidgetsInRegister();
@@ -1326,7 +1307,7 @@ void KLedgerView::slotNew(void)
   if(m_editDate->getQDate().isValid())
     m_transaction.setPostDate(m_editDate->getQDate());
 
-  if(!m_transactionFormActive)
+  if(!KMyMoneySettings::transactionForm())
     m_register->setInlineEditingMode(true);
 }
 
@@ -1477,15 +1458,13 @@ void KLedgerView::slotStartEdit(void)
   updateTabBar(m_transaction, m_split);
   m_form->tabBar()->blockSignals(false);
 
-  if(!m_transactionFormActive)
+  if(!KMyMoneySettings::transactionForm())
     m_register->setInlineEditingMode(true);
 }
 
 void KLedgerView::cancelOrEndEdit(void)
 {
-  KConfig* kconfig = KGlobal::config();
-  kconfig->setGroup("General Options");
-  if(kconfig->readBoolEntry("FocusChangeIsEnter", false) == true)
+  if(KMyMoneySettings::focusChangeIsEnter())
     slotEndEdit();
   // In case slotEndEdit() fails for internal reasons, we make sure
   // to destroy any edit widgets by calling slotCancelEdit(). If

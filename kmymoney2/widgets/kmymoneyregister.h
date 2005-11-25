@@ -352,9 +352,6 @@ protected:
   QColor m_errorColor, m_lastErrorColor;
   QColor m_importColor;
 
-  bool   m_showGrid;
-  bool   m_colorPerTransaction;
-
   QRect  m_cellRect;
   QRect  m_textRect;
 

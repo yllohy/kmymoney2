@@ -52,6 +52,7 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneysecurity.h"
 #include "../mymoney/mymoneyprice.h"
+#include "../kmymoneysettings.h"
 
 #define SYMBOL_COL      0
 #define NAME_COL        1
@@ -84,11 +85,6 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
   btnUpdateAll->setEnabled(false);
 
   MyMoneyFile* file = MyMoneyFile::instance();
-
-  // Get the price precision from the configuration
-  KConfig *kconfig = KGlobal::config();
-  kconfig->setGroup("General Options");
-  m_pricePrecision = kconfig->readNumEntry("PricePrecision", 4);
 
   //
   // Add each price pair that we know about
@@ -350,7 +346,7 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _id, const QString&
           price *= MyMoneyMoney(factor).toDouble();
         }
       }
-      item->setText(PRICE_COL, KGlobal::locale()->formatMoney(price, "", m_pricePrecision));
+      item->setText(PRICE_COL, KGlobal::locale()->formatMoney(price, "", KMyMoneySettings::pricePrecision()));
       item->setText(DATE_COL, date.toString(Qt::ISODate));
       logStatusMessage(i18n("Price for %1 updated (id %2)").arg(_symbol,_id));
     }

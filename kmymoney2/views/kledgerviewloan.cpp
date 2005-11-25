@@ -57,6 +57,8 @@
 #include "../dialogs/keditloanwizard.h"
 #include "../mymoney/mymoneyfile.h"
 
+#include "../kmymoneysettings.h"
+
 #define PAYEE_ROW         1
 #define CATEGORY_ROW      2
 #define MEMO_ROW          3
@@ -113,7 +115,7 @@ KLedgerViewLoan::KLedgerViewLoan(QWidget *parent, const char *name ) :
   m_form->tabBar()->blockSignals(false);
 
   // setup the form to be visible or not
-  slotShowTransactionForm(m_transactionFormActive);
+  slotShowTransactionForm(KMyMoneySettings::transactionForm());
 
   // and the register has the focus
   m_register->setFocus();
@@ -168,7 +170,7 @@ void KLedgerViewLoan::resizeEvent(QResizeEvent* /* ev */)
   // Resize the date and money fields to either
   // a) the size required by the input widget if no transaction form is shown
   // b) the adjusted value for the input widget if the transaction form is visible
-  if(!m_transactionFormActive) {
+  if(!KMyMoneySettings::transactionForm()) {
     kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
     datefield->setFont(m_register->cellFont());
     m_register->setColumnWidth(0, datefield->minimumSizeHint().width());

@@ -38,7 +38,6 @@
 #include <kmessagebox.h>
 #include <kcombobox.h>
 #include <klistview.h>
-#include <kconfig.h>
 #include <kstandarddirs.h>
 #include <kiconloader.h>
 #include <kguiitem.h>
@@ -60,6 +59,7 @@
 #include "../views/kbanklistitem.h"
 #include "../views/kmymoneyfile.h"
 #include "../kmymoneyutils.h"
+#include "../kmymoneysettings.h"
 
 #define TAB_GENERAL      0
 #define TAB_TAX          1
@@ -465,9 +465,7 @@ void KNewAccountDlg::okClicked()
   }
   else
   {
-    KConfig *kconfig = KGlobal::config();
-    kconfig->setGroup("List Options");
-    if(kconfig->readBoolEntry("HideUnusedCategory", false) == true) {
+    if(KMyMoneySettings::hideUnusedCategory()) {
       KMessageBox::information(this, i18n("You have selected to suppress the display of unused categories in the KMyMoney configuration dialog. The category you just created will therefore only be shown if it is used. Otherwise, it will be hidden in the accounts/categories view."), i18n("Hidden categories"), "NewHiddenCategory");
     }
   }

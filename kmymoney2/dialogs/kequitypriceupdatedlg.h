@@ -70,11 +70,10 @@ protected slots:
 protected:
   void addPricePair(const MyMoneySecurityPair& pair);
   void addInvestment(const MyMoneySecurity& inv);
-  
+
 private:
   bool m_fUpdateAll;
   WebPriceQuote m_webQuote;
-  unsigned m_pricePrecision;
 };
 
 #endif

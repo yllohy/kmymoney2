@@ -57,6 +57,8 @@
 #include "../widgets/kmymoneypayee.h"
 #include "../widgets/kmymoneyequity.h"
 
+#include "../kmymoneysettings.h"
+
 #define ACTIVITY_ROW      0
 #define DATE_ROW          0
 #define SYMBOL_ROW        1
@@ -120,7 +122,7 @@ KLedgerViewInvestments::KLedgerViewInvestments(QWidget *parent, const char *name
   // connect(m_moreMenu, SIGNAL(aboutToShow()), SLOT(slotConfigureMoreMenu()));
 
   // setup the form to be visible or not
-  slotShowTransactionForm(m_transactionFormActive);
+  slotShowTransactionForm(KMyMoneySettings::transactionForm());
 
   // and the register has the focus
   m_register->setFocus();
@@ -396,7 +398,7 @@ void KLedgerViewInvestments::fillForm()
         formTable->setItem(QUANTITY_ROW, QUANTITY_DATA_COL, item);
 
         break;
-      
+
       case UnknownTransactionType:
         qWarning("%s","Unknown transaction type!");
         break;
@@ -1253,7 +1255,7 @@ void KLedgerViewInvestments::resizeEvent(QResizeEvent* /* ev */)
   // Resize the date and money fields to either
   // a) the size required by the input widget if no transaction form is shown
   // b) the adjusted value for the input widget if the transaction form is visible
-  if(!m_transactionFormActive) {
+  if(!KMyMoneySettings::transactionForm()) {
     kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
     datefield->setFont(m_register->cellFont());
     m_register->setColumnWidth(0, datefield->minimumSizeHint().width());
@@ -1661,23 +1663,12 @@ void KLedgerViewInvestments::refreshView(const bool transactionFormVisible)
   if(isEditMode())
     return;
 
-  m_transactionFormActive = transactionFormVisible;
-
   // if a transaction is currently selected, keep the id
   QCString transactionId;
   if(m_transactionPtr != 0)
     transactionId = m_transactionPtr->id();
   m_transactionPtr = 0;
   m_transactionPtrVector.clear();
-
-  // read in the configuration parameters for this view
-  KConfig *config = KGlobal::config();
-  config->setGroup("General Options");
-  m_ledgerLens = config->readBoolEntry("LedgerLens", true);
-
-  config->setGroup("List Options");
-  QDateTime defaultDate;
-  m_dateStart = config->readDateTimeEntry("StartDate", &defaultDate).date();
 
   m_register->readConfig();
 
@@ -1694,7 +1685,7 @@ void KLedgerViewInvestments::refreshView(const bool transactionFormVisible)
       filter.addState(MyMoneyTransactionFilter::notReconciled);
       filter.addState(MyMoneyTransactionFilter::cleared);
     } else
-      filter.setDateFilter(m_dateStart, QDate());
+      filter.setDateFilter(KMyMoneySettings::startDate().date(), QDate());
 
     // get the list of transactions
     QValueList<MyMoneyTransaction> list = file->transactionList(filter);
@@ -1874,7 +1865,7 @@ void KLedgerViewInvestments::updateEditWidgets(void)
   createSplits();
   reloadEditWidgets(m_transaction);
 
-  if(m_transactionFormActive) {
+  if(KMyMoneySettings::transactionForm()) {
     focusWidget = arrangeEditWidgetsInForm();
   } else {
     focusWidget = arrangeEditWidgetsInRegister();
@@ -1997,7 +1988,7 @@ KMyMoneyTransaction* KLedgerViewInvestments::transaction(const int idx) const
     // parts of the register where no edit widgets are shown for
     // the currently selected action. This is useful when you change
     // the action of an existing transaction.
-    if(p == m_transactionPtr && isEditMode() && !m_transactionFormActive)
+    if(p == m_transactionPtr && isEditMode() && !KMyMoneySettings::transactionForm())
       p = 0;
   }
   return p;

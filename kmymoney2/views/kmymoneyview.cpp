@@ -102,6 +102,7 @@
 
 #include "../kmymoney2.h"
 #include "../kmymoneyutils.h"
+#include "../kmymoneysettings.h"
 
 #include <libkgpgfile/kgpgfile.h>
 
@@ -592,7 +593,7 @@ bool KMyMoneyView::readFile(const KURL& url)
   KConfig *config = KGlobal::config();
   int page;
   config->setGroup("General Options");
-  if(config->readBoolEntry("StartLastViewSelected", false) == true) {
+  if(KMyMoneySettings::startLastViewSelected() != 0) {
     config->setGroup("Last Use Settings");
     page = config->readNumEntry("LastViewSelected", 0);
   } else {
@@ -643,27 +644,24 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
   QIODevice *dev = qfile;
   KFilterBase *base = 0;
 
-  KConfig *config = KGlobal::config();
-  config->setGroup("General Options");
-
   bool encryptedOk = true;
   bool encryptRecover = false;
-  if(config->readBoolEntry("WriteDataEncrypted", false) != false) {
+  if(KMyMoneySettings::writeDataEncrypted()) {
     if(!KGPGFile::GPGAvailable()) {
       KMessageBox::sorry(this, i18n("GPG does not seem to be installed on your system. Please make sure, that GPG can be found using the standard search path. This time, encryption is disabled."), i18n("GPG not found"));
       encryptedOk = false;
     }
 
-    if(config->readBoolEntry("EncryptRecover", false) != false) {
+    if(KMyMoneySettings::encryptRecover()) {
       encryptRecover = true;
       if(!KGPGFile::keyAvailable(QString(RECOVER_KEY_ID))) {
         KMessageBox::sorry(this, QString("<p>")+i18n("You have selected to encrypt your data also with the KMyMoney recover key, but the key with id</p><p><center><b>%1</b></center></p>has not been found in your keyring at this time. Please make sure to import this key into your keyring. You can find it on the <a href=\"http://kmymoney2.sourceforge.net/\">KMyMoney web-site</a>. This time your data will not be encrypted with the KMyMoney recover key.").arg(RECOVER_KEY_ID), i18n("GPG-Key not found"));
         encryptRecover = false;
       }
     }
-    if(config->readEntry("GPG-Recipient").length() > 0) {
-      if(!KGPGFile::keyAvailable(config->readEntry("GPG-Recipient"))) {
-        KMessageBox::sorry(this, QString("<p>")+i18n("You have specified to encrypt your data for the user-id</p><p><center><b>%1</b>.</center></p>Unfortunately, a valid key for this user-id was not found in your keyring. Please make sure to import a valid key for this user-id. This time, encryption is disabled.").arg(config->readEntry("GPG-Recipient")), i18n("GPG-Key not found"));
+    if(KMyMoneySettings::gpgRecipient().length() > 0) {
+      if(!KGPGFile::keyAvailable(KMyMoneySettings::gpgRecipient())) {
+        KMessageBox::sorry(this, QString("<p>")+i18n("You have specified to encrypt your data for the user-id</p><p><center><b>%1</b>.</center></p>Unfortunately, a valid key for this user-id was not found in your keyring. Please make sure to import a valid key for this user-id. This time, encryption is disabled.").arg(KMyMoneySettings::gpgRecipient()), i18n("GPG-Key not found"));
         encryptedOk = false;
       }
     } else {
@@ -680,13 +678,13 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     }
   }
 
-  if(config->readBoolEntry("WriteDataEncrypted", false) != false
+  if(KMyMoneySettings::writeDataEncrypted()
   && encryptedOk == true && !plaintext ) {
     qfile->close();
     base++;
     KGPGFile *kgpg = new KGPGFile(qfile->name());
     if(kgpg) {
-      kgpg->addRecipient(config->readEntry("GPG-Recipient").latin1());
+      kgpg->addRecipient(KMyMoneySettings::gpgRecipient().latin1());
       if(encryptRecover) {
         kgpg->addRecipient(RECOVER_KEY_ID);
       }
@@ -695,7 +693,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     if(!dev || !dev->open(IO_WriteOnly))
       throw new MYMONEYEXCEPTION(i18n("Unable to open file '%1' for writing.").arg(qfile->name()));
 
-  } else if(config->readBoolEntry("WriteDataUncompressed", false) == false && !plaintext) {
+  } else if(!plaintext) {
     base = KFilterBase::findFilterByMimeType( COMPRESSION_MIME_TYPE );
     if(base) {
       base->setDevice(qfile, false);
@@ -1214,11 +1212,7 @@ QString KMyMoneyView::currentAccountName(void)
 
 void KMyMoneyView::slotShowTransactionDetail(bool detailed)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  config->writeEntry("ShowRegisterDetailed", detailed);
-  config->sync();
-
+  KMyMoneySettings::setShowRegisterDetailed(detailed);
   slotRefreshViews();
 }
 

@@ -41,6 +41,7 @@
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneycombo.h"
 
+#include "../kmymoneysettings.h"
 
 KLedgerViewSavings::KLedgerViewSavings(QWidget *parent, const char *name )
   : KLedgerViewCheckings(parent,name)
@@ -100,7 +101,7 @@ void KLedgerViewSavings::resizeEvent(QResizeEvent* /* ev */)
   // Resize the date field to either
   // a) the size required by the input widget if no transaction form is shown
   // b) the adjusted value for the date if the transaction form is visible
-  if(!m_transactionFormActive) {
+  if(!KMyMoneySettings::transactionForm()) {
     kMyMoneyDateInput* datefield = new kMyMoneyDateInput();
     datefield->setFont(m_register->cellFont());
     m_register->setColumnWidth(1, datefield->minimumSizeHint().width());

@@ -81,7 +81,6 @@ private:
   MyMoneyMoney        m_result;
   MyMoneyMoney        m_value;
   int                 m_resultFraction;
-  int                 m_ratePrec;
 };
 
 #endif

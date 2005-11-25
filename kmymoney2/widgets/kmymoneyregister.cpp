@@ -31,6 +31,7 @@
 
 #include "kmymoneyregister.h"
 #include "../kmymoneyutils.h"
+#include "../kmymoneysettings.h"
 
 kMyMoneyRegister::kMyMoneyRegister(int maxRpt, QWidget *parent, const char *name )
   : QTable(parent, name),
@@ -118,18 +119,10 @@ void kMyMoneyRegister::readConfig(void)
     QTable::setNumRows(rows);
   }
 
-  // m_rpt = config->readEntry("", "1").toInt();
-  config->deleteEntry("");
-  if(config->readBoolEntry("ShowRegisterDetailed", false))
+  if(KMyMoneySettings::showRegisterDetailed())
     m_rpt = m_maxRpt;
   else
     m_rpt = 1;
-
-  m_showGrid = config->readBoolEntry("ShowGrid", true);
-  // we decided to remove this feature - but I left it in the source for now
-  // also the settings dialog is only commented out.
-  // m_colorPerTransaction = config->readBoolEntry("ColourPerTransaction", true);
-  m_colorPerTransaction = true;
 }
 
 void kMyMoneyRegister::setTransactionRow(const int row)
@@ -180,22 +173,14 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
 
   m_cg = cg;
 
-  if (m_colorPerTransaction) {
-    int adj = 0;
-    if(row > lastRow && m_ledgerLens) {
-      adj = m_rpt - maxRpt();
-    }
-    if(((row + adj)/m_rpt)%2)
-      m_cg.setColor(QColorGroup::Base, m_color);
-    else
-      m_cg.setColor(QColorGroup::Base, m_bgColor);
-
-  } else {
-    if (row%2)
-      m_cg.setColor(QColorGroup::Base, m_color);
-    else
-      m_cg.setColor(QColorGroup::Base, m_bgColor);
+  int adj = 0;
+  if(row > lastRow && m_ledgerLens) {
+    adj = m_rpt - maxRpt();
   }
+  if(((row + adj)/m_rpt)%2)
+    m_cg.setColor(QColorGroup::Base, m_color);
+  else
+    m_cg.setColor(QColorGroup::Base, m_bgColor);
 
   p->setFont(m_cellFont);
 
@@ -239,7 +224,7 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
                          : m_transactionRow == m_rpt-1;
 
   // if a grid is selected, we paint it right away
-  if (m_showGrid) {
+  if (KMyMoneySettings::showGrid()) {
     p->setPen(m_gridColor);
     p->drawLine(m_cellRect.x(), 0, m_cellRect.x(), m_cellRect.height()-1);
     if(lastLine)

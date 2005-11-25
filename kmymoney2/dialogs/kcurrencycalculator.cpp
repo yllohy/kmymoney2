@@ -34,7 +34,6 @@
 
 #include <klocale.h>
 #include <kpushbutton.h>
-#include <kconfig.h>
 #include <kiconloader.h>
 #include <kguiitem.h>
 #include <kcombobox.h>
@@ -48,6 +47,7 @@
 #include "../widgets/kmymoneycurrencyselector.h"
 #include "../mymoney/mymoneyprice.h"
 #include "../kmymoneyutils.h"
+#include "../kmymoneysettings.h"
 
 KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMoneySecurity& to, const MyMoneyMoney& value, const MyMoneyMoney& shares, const QDate& date, const int resultFraction, QWidget *parent, const char *name ) :
   KCurrencyCalculatorDecl(parent, name),
@@ -85,10 +85,7 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMo
                       i18n("Use this to accept the data and possibly update the exchange rate"));
   m_okButton->setGuiItem(okButtenItem);
 
-  KConfig *kconfig = KGlobal::config();
-  kconfig->setGroup("General Options");
-  m_ratePrec = kconfig->readNumEntry("PricePrecision", 4);
-  m_updateButton->setChecked(kconfig->readBoolEntry("PriceHistoryUpdate", true));
+  m_updateButton->setChecked(KMyMoneySettings::priceHistoryUpdate());
 
   // setup initial result
   if(m_result == MyMoneyMoney() && !m_value.isZero()) {
@@ -161,7 +158,7 @@ void KCurrencyCalculator::slotUpdateResult(const QString& /*txt*/)
   if(!result.isZero()) {
     price = result / m_value;
 
-    m_conversionRate->loadText(price.formatMoney("", m_ratePrec));
+    m_conversionRate->loadText(price.formatMoney("", KMyMoneySettings::pricePrecision()));
     m_result = (m_value * price).convert(m_resultFraction);
     m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_resultFraction)));
   }
@@ -179,7 +176,7 @@ void KCurrencyCalculator::slotUpdateRate(const QString& /*txt*/)
   }
 
   if(!price.isZero()) {
-    m_conversionRate->loadText(price.formatMoney("", m_ratePrec));
+    m_conversionRate->loadText(price.formatMoney("", KMyMoneySettings::pricePrecision()));
     m_result = (m_value * price).convert(m_resultFraction);
     m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_resultFraction)));
   }
@@ -199,12 +196,12 @@ void KCurrencyCalculator::updateExample(const MyMoneyMoney& price)
     }
   } else {
     msg = QString("1 %1 = %2 %3").arg(m_fromCurrency.tradingSymbol())
-                                 .arg(price.formatMoney("", m_ratePrec))
+                                 .arg(price.formatMoney("", KMyMoneySettings::pricePrecision()))
                                  .arg(m_toCurrency.tradingSymbol());
     if(m_fromCurrency.isCurrency()) {
       msg += QString("\n");
       msg += QString("1 %1 = %2 %3").arg(m_toCurrency.tradingSymbol())
-                                    .arg((MyMoneyMoney(1,1)/price).formatMoney("", m_ratePrec))
+                                    .arg((MyMoneyMoney(1,1)/price).formatMoney("", KMyMoneySettings::pricePrecision()))
                                     .arg(m_fromCurrency.tradingSymbol());
     }
   }
@@ -228,9 +225,8 @@ void KCurrencyCalculator::accept(void)
     }
   }
 
-  KConfig *kconfig = KGlobal::config();
-  kconfig->setGroup("General Options");
-  kconfig->writeEntry("PriceHistoryUpdate", m_updateButton->isChecked());
+  // remember setting for next round
+  KMyMoneySettings::setPriceHistoryUpdate(m_updateButton->isChecked());
 
   KCurrencyCalculatorDecl::accept();
 }

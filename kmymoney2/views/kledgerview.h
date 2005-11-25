@@ -381,7 +381,7 @@ public:
   virtual bool eventFilter( QObject *o, QEvent *e );
 
   virtual int currentActionTab(void) const = 0;
-  
+
   virtual KPopupMenu* accountMenu(void) { return m_accountMenu; }
 
 public slots:
@@ -643,7 +643,7 @@ protected slots:
     * transaction data and creates a scheduled transaction this way.
     */
   void slotCreateSchedule(void);
-  
+
 protected:
   /**
     * This method is called to fill the transaction form
@@ -788,29 +788,11 @@ protected:
   kMyMoneyTransactionForm *m_form;
 
   /**
-    * This member keeps the visibility status of the transaction form.
-    */
-  bool m_transactionFormActive;
-
-  /**
     * This member keeps track of the reconciliation state.
     * If it is true, the user is in reconciliation mode, otherwise
     * he's in edit mode
     */
   bool m_inReconciliation;
-
-  /**
-    * This member holds the date from which on transactions should be shown
-    * in the ledger view. See KSettingsDlg where this value can be changed.
-    */
-  QDate m_dateStart;
-
-   /**
-    * This member let us know whether the user wants to hide reconciled
-    * transactions in the ledger view. See KSettingsDlg where this value
-    * can be changed.
-    */
-  bool m_hideReconciledTransactions;
 
   /**
     * This member keeps the account information for the account that is shown
@@ -889,7 +871,7 @@ protected:
   /**
     * This member contains the current setting of the ledger lens
     */
-  bool          m_ledgerLens;
+  // bool          m_ledgerLens;
 
   /**
     * This member keeps a pointer to the context popup-menu

@@ -53,6 +53,10 @@
    <min>4</min>
    <max>10</max>
   </entry>
+  <entry name="PriceHistoryUpdate" type="Bool">
+   <label>Update price history</label>
+   <default>true</default>
+  </entry>
   <entry name="TransactionForm" type="Bool">
    <label>Show transaction form</label>
    <default>true</default>
@@ -88,6 +92,10 @@
  <group name="List Options">
   <entry name="HideUnusedCategory" type="Bool">
    <label>Hide unused categories</label>
+   <default>false</default>
+  </entry>
+  <entry name="ShowRegisterDetailed" type="Bool">
+   <label>Show all register entries in full detail</label>
    <default>false</default>
   </entry>
   <entry name="ShowGrid" type="Bool">

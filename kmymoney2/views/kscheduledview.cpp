@@ -48,11 +48,9 @@
 #include "kscheduledview.h"
 #include "kscheduledlistitem.h"
 #include "../widgets/kmymoneyscheduleddatetbl.h"
-// #include "../dialogs/ieditscheduledialog.h"
-// #include <../dialogs/knewloanwizard.h>
-// #include "../dialogs/keditloanwizard.h"
 #include "../dialogs/kenterscheduledialog.h"
 #include "../kmymoneyutils.h"
+#include "../kmymoneysettings.h"
 
 #include "../kmymoney2.h"
 
@@ -125,11 +123,7 @@ KScheduledView::~KScheduledView()
 
 void KScheduledView::refresh(bool full, const QCString schedId)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  QFont headerFont(m_qlistviewScheduled->font());
-  headerFont = config->readFontEntry("listHeaderFont", &headerFont);
-  m_qlistviewScheduled->header()->setFont(headerFont);
+  m_qlistviewScheduled->header()->setFont(KMyMoneySettings::listHeaderFont());
 
   m_qlistviewScheduled->clear();
 
@@ -325,10 +319,7 @@ void KScheduledView::readConfig(void)
   m_openTransfers = config->readBoolEntry("KScheduleView_openTransfers", true);
   m_openLoans = config->readBoolEntry("KScheduleView_openLoans", true);
 
-  config->setGroup("List Options");
-  QFont headerFont(m_qlistviewScheduled->font());
-  headerFont = config->readFontEntry("listHeaderFont", &headerFont);
-  m_qlistviewScheduled->header()->setFont(headerFont);
+  m_qlistviewScheduled->header()->setFont(KMyMoneySettings::listHeaderFont());
 }
 
 void KScheduledView::writeConfig(void)

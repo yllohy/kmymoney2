@@ -57,6 +57,8 @@
 #include "../mymoney/mymoneyutils.h"
 #include "../views/kmymoneyview.h"
 
+#include "../kmymoneysettings.h"
+
 #define PAYEE_ROW       0
 #define CATEGORY_ROW    1
 #define MEMO_ROW        2
@@ -147,7 +149,7 @@ KLedgerViewCheckings::KLedgerViewCheckings(QWidget *parent, const char *name )
   m_form->tabBar()->blockSignals(false);
 
   // setup the form to be visible or not
-  slotShowTransactionForm(m_transactionFormActive);
+  slotShowTransactionForm(KMyMoneySettings::transactionForm());
 
   // and the register has the focus
   m_register->setFocus();
@@ -197,7 +199,7 @@ void KLedgerViewCheckings::resizeEvent(QResizeEvent* /* ev */)
   // Resize the date and money fields to either
   // a) the size required by the input widget if no transaction form is shown
   // b) the adjusted value for the input widget if the transaction form is visible
-  if(!m_transactionFormActive) {
+  if(!KMyMoneySettings::transactionForm()) {
     kMyMoneyDateInput* dateField = new kMyMoneyDateInput(0, "editDate");
     kMyMoneyEdit* valField = new kMyMoneyEdit(0, "valEdit");
 
@@ -442,7 +444,7 @@ void KLedgerViewCheckings::slotActionSelected(int type)
     reloadEditWidgets(m_transaction);
 
     QWidget* focusWidget;
-    if(m_transactionFormActive) {
+    if(KMyMoneySettings::transactionForm()) {
       focusWidget = arrangeEditWidgetsInForm();
     } else {
       focusWidget = arrangeEditWidgetsInRegister();
@@ -1220,9 +1222,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 void KLedgerViewCheckings::autoIncCheckNumber(void)
 {
   if(m_editNr && m_editNr->text().isEmpty() && m_action == MyMoneySplit::ActionCheck) {
-    KConfig* kconfig = KGlobal::config();
-    kconfig->setGroup("General Options");
-    if(kconfig->readBoolEntry("AutoIncCheckNumber", false)) {
+    if(KMyMoneySettings::autoIncCheckNumber()) {
       unsigned64 no = MyMoneyFile::instance()->highestCheckNo(m_account.id()).toULongLong();
       m_split.setNumber(QString::number(no+1));
       m_transaction.modifySplit(m_split);
@@ -1243,9 +1243,7 @@ void KLedgerViewCheckings::loadEditWidgets(void)
       if(m_editNr) {
         // if the CopyTypeToNr switch is set, we copy the m_action string
         // into the nr field of this transaction.
-        KConfig *config = KGlobal::config();
-        config->setGroup("General Options");
-        if(config->readBoolEntry("CopyTypeToNr", false) == true) {
+        if(KMyMoneySettings::copyTypeToNr()) {
           m_split.setNumber(m_action);
           m_transaction.modifySplit(m_split);
           m_editNr->loadText(m_split.number());
@@ -1263,9 +1261,7 @@ void KLedgerViewCheckings::loadEditWidgets(void)
 
 const bool KLedgerViewCheckings::showNrField(const MyMoneyTransaction& t, const MyMoneySplit& s) const
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("General Options");
-  if(config->readBoolEntry("AlwaysShowNrField", false) == true)
+  if(KMyMoneySettings::alwaysShowNrField())
     return true;
 
   int tab = actionTab(t,s);
@@ -1450,7 +1446,7 @@ void KLedgerViewCheckings::slotReconciliation(void)
     m_inReconciliation = true;
     m_summaryLine->hide();
     m_reconciliationFrame->show();
-    m_transactionFormActive = false;
+    // m_transactionFormActive = false;
 
     m_prevBalance = dlg.previousBalance();
     m_endingBalance = dlg.endingBalance();
@@ -1652,13 +1648,11 @@ void KLedgerViewCheckings::slotPostponeReconciliation(void)
 void KLedgerViewCheckings::endReconciliation(void)
 {
   QCString transactionId;
-  KConfig *config = KGlobal::config();
-  config->setGroup("General Options");
 
   m_inReconciliation = false;
   m_reconciliationFrame->hide();
   m_summaryLine->show();
-  m_transactionFormActive = config->readBoolEntry("TransactionForm", true);
+  // m_transactionFormActive = KMyMoneySettings::transactionForm();
 
   refreshView();
 
@@ -1722,7 +1716,7 @@ void KLedgerViewCheckings::slotOpenSplitDialog(void)
 
   bool isValidAmount = false;
 
-  if(m_transactionFormActive) {
+  if(KMyMoneySettings::transactionForm()) {
     isValidAmount = m_editAmount->text().length() != 0;
   } else {
     if ( (m_editPayment && m_editPayment->text().length() != 0)
@@ -1777,7 +1771,7 @@ int KLedgerViewCheckings::transactionType(const MyMoneyTransaction& t) const
 {
   int rc = KMyMoneyUtils::transactionType(t);
   if(rc == KMyMoneyUtils::Unknown) {
-    if(m_transactionFormActive) {
+    if(KMyMoneySettings::transactionForm()) {
       switch(m_form->tabBar()->currentTab()) {
         case 2:    // Transfer
           rc = KMyMoneyUtils::Transfer;
