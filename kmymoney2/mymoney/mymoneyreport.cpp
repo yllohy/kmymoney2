@@ -35,7 +35,7 @@
 #include "mymoneyreport.h"
  
 const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,assetliability,expenseincome,category,topcategory,account,payee,month,week,topaccount,topaccount-account,equitytype,accounttype,institution",true);
-const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,months,bimonths,quarters,,,,,,,,,years",true);
+const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,months,bimonths,quarters,4,5,6,7,8,9,10,11,years",true);
 const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,category,memo,account,reconcileflag,action,shares,price,performance",true);
 const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eNoReport };
 const QStringList MyMoneyReport::kDetailLevelText = QStringList::split(",","none,all,top,group,total,invalid",true);
@@ -57,6 +57,7 @@ MyMoneyReport::MyMoneyReport(void):
     m_reportType(kTypeArray[eExpenseIncome]),
     m_rowType(eExpenseIncome),
     m_columnType(eMonths),
+    m_columnsAreDays(false),
     m_queryColumns(eQCnone),
     m_dateLock(userDefined),
     m_accountGroupFilter(false),   
@@ -78,6 +79,7 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
     m_investments(false),
     m_reportType(kTypeArray[_rt]),
     m_rowType(_rt),
+    m_columnsAreDays(false),
     m_dateLock(_dl),
     m_accountGroupFilter(false),
     m_chartType(eChartLine),
@@ -260,7 +262,8 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   e.setAttribute("id", m_id);
   e.setAttribute("datelock", kDateLockText[m_dateLock]);
   e.setAttribute("includeschedules",m_includeSchedules);
-
+  e.setAttribute("columnsaredays",m_columnsAreDays);
+  
   e.setAttribute("charttype",kChartTypeText[m_chartType]);
   e.setAttribute("chartdatalabels",m_chartDataLabels);
   e.setAttribute("chartgridlines",m_chartGridLines);
@@ -268,13 +271,13 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
 
   if ( m_reportType == ePivotTable )
   {
-    e.setAttribute("type","pivottable 1.10");
+    e.setAttribute("type","pivottable 1.11");
     e.setAttribute("detail", kDetailLevelText[m_detailLevel]);
     e.setAttribute("columntype", kColumnTypeText[m_columnType]);
   }
   else if ( m_reportType == eQueryTable )
   {
-    e.setAttribute("type","querytable 1.10");
+    e.setAttribute("type","querytable 1.11");
     
     QStringList columns;
     unsigned qc = m_queryColumns;
@@ -510,6 +513,7 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_tax = e.attribute("tax","0").toUInt();    
     m_investments = e.attribute("investments","0").toUInt();
     m_includeSchedules = e.attribute("includeschedules","0").toUInt();
+    m_columnsAreDays = e.attribute("columnsaredays","0").toUInt();
     
     i = kChartTypeText.findIndex(e.attribute("charttype"));      
     if ( i != -1 )

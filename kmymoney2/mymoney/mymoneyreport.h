@@ -102,6 +102,7 @@ public:
   bool isChartGridLines(void) const { return m_chartGridLines; }
   bool isChartByDefault(void) const { return m_chartByDefault; }
   bool isIncludingSchedules(void) const { return m_includeSchedules; }
+  bool isColumnsAreDays(void) const { return m_columnsAreDays; }
 
   // Simple set operations
   void setName(const QString& _s) { m_name = _s; }
@@ -122,6 +123,7 @@ public:
   void setChartGridLines ( bool _f ) { m_chartGridLines = _f; }
   void setChartByDefault ( bool _f ) { m_chartByDefault = _f; }
   void setIncludingSchedules( bool _f ) { m_includeSchedules = _f; }
+  void setColumnsAreDays( bool _f ) { m_columnsAreDays = _f; }
   
   /**
     * This method allows you to clear the underlying transaction filter
@@ -327,10 +329,17 @@ private:
   enum ERowType m_rowType;
   /**
     * What sort of values should show up on the COLUMNS of this report,
-    * in the case of a 'PivotTable' report
+    * in the case of a 'PivotTable' report.  Really this is used more as a
+    * QUANTITY of months or days.  Whether it's months or days is determiend
+    * by m_columnsAreDays.
     */
   enum EColumnType m_columnType;
-  /**
+   /**
+    * Whether the base unit of columns of this report is days.  Only applies to
+    * 'PivotTable' reports.  If false, then columns are months or multiples thereof.
+    */
+  bool m_columnsAreDays;
+ /**
     * What sort of values should show up on the COLUMNS of this report,
     * in the case of a 'QueryTable' report
     */
@@ -376,7 +385,7 @@ private:
     * Whether to include scheduled transactions
     */
   bool m_includeSchedules;
-  
+ 
 };
 
 #endif // MYMONEYREPORT_H  
