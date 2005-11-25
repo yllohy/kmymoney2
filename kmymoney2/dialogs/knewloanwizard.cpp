@@ -801,7 +801,7 @@ int KNewLoanWizard::calculateLoan(void)
     } else if(m_paymentEdit->text().isEmpty()) {
       // calculate the periodical amount of the payment out of the other information
       val = calc.payment();
-      m_paymentEdit->setText(MyMoneyMoney(static_cast<double>(val)).abs().formatMoney());
+      m_paymentEdit->setValue(MyMoneyMoney(static_cast<double>(val)).abs());
       // reset payment as it might have changed due to rounding
       val = static_cast<long double> (m_paymentEdit->value().abs().toDouble());
       if(m_lendButton->isChecked())

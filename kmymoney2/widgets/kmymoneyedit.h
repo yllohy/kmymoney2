@@ -39,7 +39,7 @@ class KPushButton;
 
 class MyMoneyMoney;
 class kMyMoneyCalculator;
-#include "../mymoney/mymoneysecurity.h"
+#include <kmymoney/mymoneysecurity.h>
 
 #if KDE_VERSION <= KDE_MAKE_VERSION(3,1,0)
   #define KDoubleValidator QDoubleValidator
@@ -142,7 +142,7 @@ public:
   /**
     * @deprecated Use value() instead
     */
-  MyMoneyMoney getMoneyValue(void) KDE_DEPRECATED;
+  // MyMoneyMoney getMoneyValue(void) KDE_DEPRECATED;
 
   MyMoneyMoney value(void) const;
 
@@ -154,7 +154,11 @@ public:
 
   virtual bool eventFilter(QObject * , QEvent * );
 
-  QString text(void) const { return m_edit->text(); };
+  /**
+    * This method returns the value of the edit field in "numerator/denominator" format.
+    *
+    */
+  QString text(void) const { return value().toString(); };
 
   void setMinimumWidth(int w) { m_edit->setMinimumWidth(w); };
 
@@ -200,7 +204,8 @@ public:
 public slots:
   void loadText(const QString& text);
   void setReadOnly(bool ro) { m_edit->setReadOnly(ro); };
-  void setText(const QString& txt) { m_edit->setText(txt); };
+
+  void setText(const QString& txt) { setValue(MyMoneyMoney(txt)); };
 
   /**
     * This method allows to show/hide the calculator button of the widget.

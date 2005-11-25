@@ -1,3 +1,11 @@
+2005-11-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Reworked settings dialog to be based on KConfigDialog
+  * Allow quit when trying to open the same file as already opened in
+    another instance of KMyMoney
+  * Install kgpgfile.h
+  * Removed deprecated method kMyMoneyEdit::getMoneyValue()
+  * Use kMyMoneyEdit::setValue() rather than setText() to load values
+
 2005-11-24 Ace Jones <acejones@users.sourceforge.net>
   * Added mid- and low-level support for days-based grid reports.  (High-
     level UI support has not been added yet.)

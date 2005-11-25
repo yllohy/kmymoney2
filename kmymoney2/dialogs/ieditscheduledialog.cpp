@@ -392,7 +392,7 @@ void KEditScheduleDialog::slotSplitClicked()
       MyMoneySplit split = m_transaction.splits()[0];
       MyMoneyMoney amount(split.value());
       amount = amount.abs();
-      m_kmoneyeditAmount->setText(amount.formatMoney());
+      m_kmoneyeditAmount->setValue(amount);
     }
 
     delete dlg;
@@ -682,7 +682,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
 
     MyMoneyMoney amount = m_transaction.splitByAccount(theAccountId()).value();
     amount = amount.abs();
-    m_kmoneyeditAmount->setText(amount.formatMoney());
+    m_kmoneyeditAmount->setValue(amount);
     m_qcheckboxEstimate->setChecked(!m_schedule.isFixed());
 
     if (m_actionType != MyMoneySplit::ActionTransfer)

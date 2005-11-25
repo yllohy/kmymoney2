@@ -223,7 +223,7 @@ void KEnterScheduleDialog::initWidgets()
     MyMoneyMoney amount = m_transaction.splitByAccount(m_schedule.account().id()).value();
     if (amount.isNegative())
       amount = -amount;
-    m_amount->setText(amount.formatMoney());
+    m_amount->setValue(amount);
 
     if (m_transaction.splitCount() >= 3)
     {
@@ -340,7 +340,7 @@ void KEnterScheduleDialog::slotSplitClicked()
       MyMoneySplit split = m_transaction.splitByAccount(theAccountId());
       MyMoneyMoney amount(split.value());
       amount = amount.abs();
-      m_amount->setText(amount.formatMoney());
+      m_amount->setValue(amount);
     }
 
     delete dlg;

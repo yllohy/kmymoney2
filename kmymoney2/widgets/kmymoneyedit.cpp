@@ -214,10 +214,12 @@ const bool kMyMoneyEdit::isValid(void) const
 }
 
 // KDE_DEPRECATED
+#if 0
 MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
 {
   return value();
 }
+#endif
 
 MyMoneyMoney kMyMoneyEdit::value(void) const
 {

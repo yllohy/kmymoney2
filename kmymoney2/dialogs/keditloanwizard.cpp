@@ -387,7 +387,7 @@ void KEditLoanWizard::next()
     dontLeavePage = !calculateLoan();
 
     // reset the original loan amount to the widget
-    m_loanAmountEdit->setText(m_account.loanAmount().formatMoney());
+    m_loanAmountEdit->setValue(m_account.loanAmount());
 
     if(!dontLeavePage) {
       updateLoanInfo();
