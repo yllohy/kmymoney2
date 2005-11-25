@@ -381,6 +381,8 @@ public:
   virtual bool eventFilter( QObject *o, QEvent *e );
 
   virtual int currentActionTab(void) const = 0;
+  
+  virtual KPopupMenu* accountMenu(void) { return m_accountMenu; }
 
 public slots:
   /**
@@ -583,11 +585,6 @@ public slots:
 
   virtual void slotActionSelected(int transactionType) = 0;
 
-  /**
-    * This method will prepare the widget to be shown.
-    */
-  virtual void slotAboutToShow(void);
-  
 protected slots:
   /**
     * This method marks the split referencing the account in the current

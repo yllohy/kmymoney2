@@ -392,9 +392,11 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
       kmymoney2->selectAccount();
   }
   
+  // Now that the ledger view has changed, we have to update the "account" button
+  // to point to the correct ledger's account menu.
   KLedgerView* ledgerview = dynamic_cast<KLedgerView*>(m_accountStack->visibleWidget());
   if ( ledgerview )
-    ledgerview->slotAboutToShow();
+    m_toolbar->getButton(1)->setPopup(ledgerview->accountMenu());
     
   return rc;
 }
@@ -449,11 +451,6 @@ void KGlobalLedgerView::update(const QCString& /* id */)
   } else {
     slotRefreshView();
   }
-}
-
-KToolBarButton* KGlobalLedgerView::accountButton(void) 
-{ 
-  return m_toolbar->getButton(1); 
 }
 
 #include "kgloballedgerview.moc"

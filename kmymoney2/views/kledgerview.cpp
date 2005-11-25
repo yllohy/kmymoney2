@@ -2307,8 +2307,4 @@ bool KLedgerView::eventFilter(QObject* o, QEvent* e)
   return rc;
 }
 
-void KLedgerView::slotAboutToShow(void)
-{
-}
-
 #include "kledgerview.moc"

@@ -100,11 +100,6 @@ public:
 
   void reconcileAccount(void);
 
-  /**
-    * Returns the account button
-    */
-  KToolBarButton* accountButton(void);
-
 public slots:
   void show(void);
 

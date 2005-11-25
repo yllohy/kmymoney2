@@ -41,7 +41,6 @@
 
 #include "kledgerviewloan.h"
 #include "kledgerviewcheckings.h"
-#include "kgloballedgerview.h"
 
 #include "../widgets/kmymoneytransactionform.h"
 #include "../widgets/kmymoneyedit.h"
@@ -1060,13 +1059,6 @@ void KLedgerViewLoan::updateTabBar(const MyMoneyTransaction& /* t */, const MyMo
 bool KLedgerViewLoan::eventFilter( QObject *o, QEvent *e )
 {
   return KLedgerView::eventFilter(o, e);
-}
-
-void KLedgerViewLoan::slotAboutToShow(void)
-{
-  KGlobalLedgerView* gledger = dynamic_cast<KGlobalLedgerView*>(parentWidget()->parentWidget());
-  if ( gledger )
-    gledger->accountButton()->setPopup(m_accountMenu);
 }
 
 // Make sure, that these definitions are only used within this file

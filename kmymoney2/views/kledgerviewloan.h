@@ -80,11 +80,6 @@ public slots:
 
   void slotActionSelected(int /*transactionType*/) {};
   
-  /**
-    * This method will prepare the widget to be shown.
-    */
-  virtual void slotAboutToShow(void);
-  
 protected:
   void fillSummary(void);
 

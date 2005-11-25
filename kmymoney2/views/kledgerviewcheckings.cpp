@@ -41,7 +41,6 @@
 // Project Includes
 
 #include "kledgerviewcheckings.h"
-#include "kgloballedgerview.h"
 #include "../widgets/kmymoneytransactionform.h"
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneydateinput.h"
@@ -1802,13 +1801,6 @@ int KLedgerViewCheckings::transactionType(const MyMoneyTransaction& t) const
     }
   }
   return rc;
-}
-
-void KLedgerViewCheckings::slotAboutToShow(void)
-{
-  KGlobalLedgerView* gledger = dynamic_cast<KGlobalLedgerView*>(parentWidget()->parentWidget());
-  if ( gledger )
-    gledger->accountButton()->setPopup(m_accountMenu);
 }
 
 // Make sure, that these definitions are only used within this file
