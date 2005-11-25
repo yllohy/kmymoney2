@@ -162,12 +162,16 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
 
   m_config_f.validDateRange( m_beginDate, m_endDate );
 
-  // strip out the 'days' component of the begin and end dates.
-  // we're only using these variables to contain year and month.
-  m_beginDate =  QDate( m_beginDate.year(), m_beginDate.month(), 1 );
-  m_endDate = QDate( m_endDate.year(), m_endDate.month(), 1 );
-
-  m_numColumns = m_endDate.year() * 12 + m_endDate.month() - m_beginDate.year() * 12 - m_beginDate.month() + 2;
+  // if this is a months-based report
+  if (! m_config_f.isColumnsAreDays())
+  {
+    // strip out the 'days' component of the begin and end dates.
+    // we're only using these variables to contain year and month.
+    m_beginDate =  QDate( m_beginDate.year(), m_beginDate.month(), 1 );
+    m_endDate = QDate( m_endDate.year(), m_endDate.month(), 1 );
+  }
+  
+  m_numColumns = columnValue(m_endDate) - columnValue(m_beginDate) + 2;
 
   //
   // Get opening balances
@@ -237,13 +241,12 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
       ++it_schedule;
     }
   }
-
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
-  unsigned colofs = m_beginDate.year() * 12 + m_beginDate.month() - 1;
+  unsigned colofs = columnValue(m_beginDate) - 1;
   while ( it_transaction != transactions.end() )
   {
     QDate postdate = (*it_transaction).postDate();
-    unsigned column = postdate.year() * 12 + postdate.month() - colofs;
+    unsigned column = columnValue(postdate) - colofs;
 
     QValueList<MyMoneySplit> splits = (*it_transaction).splits();
     QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
@@ -323,7 +326,7 @@ void PivotTable::collapseColumns(void)
   unsigned columnpitch = m_config_f.columnPitch();
   if ( columnpitch != 1 )
   {
-    unsigned sourcemonth = m_beginDate.year() * 12 + m_beginDate.month();
+    unsigned sourcemonth = columnValue(m_beginDate);
     unsigned sourcecolumn = 1;
     unsigned destcolumn = 1;
     while ( sourcecolumn < m_numColumns )
@@ -423,31 +426,68 @@ void PivotTable::calculateColumnHeadings(void)
   m_columnHeadings.append( "Opening" );
 
   unsigned columnpitch = m_config_f.columnPitch();
-  if ( columnpitch == 12 )
+  
+  // if this is a days-based report
+  if (m_config_f.isColumnsAreDays())
   {
-    unsigned year = m_beginDate.year();
-    unsigned column = 1;
-    while ( column++ < m_numColumns )
-      m_columnHeadings.append(QString::number(year++));
+    if ( columnpitch == 1 )
+    {
+      QDate columnDate = m_beginDate;
+      unsigned column = 1;
+      while ( column++ < m_numColumns )
+      {
+        QString heading = QDate::shortMonthName(columnDate.month()) + " " + QString::number(columnDate.day());
+        columnDate = columnDate.addDays(1);
+        m_columnHeadings.append( heading);
+      }
+    }
+    else
+    {
+      QDate columnDate = m_beginDate;
+      unsigned column = 1;
+      while ( column++ < m_numColumns )
+      {
+        QDate columnEndDate = columnDate.addDays(columnpitch).addDays(-1);
+        if ( columnEndDate > m_endDate )
+          columnEndDate = m_endDate;
+      
+        QString heading = QDate::shortMonthName(columnDate.month()) + "&nbsp;" + QString::number(columnDate.day()) + " - " + QDate::shortMonthName(columnEndDate.month()) + "&nbsp;" + QString::number(columnEndDate.day());
+        
+        columnDate = columnDate.addDays(columnpitch);
+        m_columnHeadings.append( heading);
+      }
+    }
   }
+  
+  // else it's a months-based report
   else
   {
-    unsigned year = m_beginDate.year();
-    bool includeyear = ( m_beginDate.year() != m_endDate.year() );
-    unsigned segment = ( m_beginDate.month() - 1 ) / columnpitch;
-    unsigned column = 1;
-    while ( column++ < m_numColumns )
+    if ( columnpitch == 12 )
     {
-      QString heading = QDate::shortMonthName(1+segment*columnpitch);
-      if ( columnpitch != 1 )
-        heading += "-" + QDate::shortMonthName((1+segment)*columnpitch);
-      if ( includeyear )
-        heading += " " + QString::number(year);
-      m_columnHeadings.append( heading);
-      if ( ++segment >= 12/columnpitch )
+      unsigned year = m_beginDate.year();
+      unsigned column = 1;
+      while ( column++ < m_numColumns )
+        m_columnHeadings.append(QString::number(year++));
+    }
+    else
+    {
+      unsigned year = m_beginDate.year();
+      bool includeyear = ( m_beginDate.year() != m_endDate.year() );
+      unsigned segment = ( m_beginDate.month() - 1 ) / columnpitch;
+      unsigned column = 1;
+      while ( column++ < m_numColumns )
       {
-        segment -= 12/columnpitch;
-        ++year;
+        QString heading = QDate::shortMonthName(1+segment*columnpitch);
+        if ( columnpitch != 1 )
+          heading += "-" + QDate::shortMonthName((1+segment)*columnpitch);
+        if ( includeyear )
+          heading += " " + QString::number(year);
+        m_columnHeadings.append( heading);
+        if ( ++segment >= 12/columnpitch )
+        {
+          segment -= 12/columnpitch;
+          ++year;
+        }
       }
     }
   }
@@ -506,7 +546,7 @@ void PivotTable::calculateOpeningBalances( void )
         // get the opening value
         MyMoneyMoney value = account.openingBalance();
         // place in the correct column
-        unsigned column = opendate.year() * 12 + opendate.month() - m_beginDate.year() * 12 - m_beginDate.month() + 1;
+        unsigned column = columnValue(opendate) - columnValue(m_beginDate) + 1;
         assignCell( outergroup, account, column, value );
       }
     }
@@ -785,6 +825,14 @@ void PivotTable::createRow( const QString& outergroup, const ReportAccount& row,
     if ( recursive && !row.isTopLevel() )
         createRow( outergroup, row.parent(), recursive );
   }
+}
+
+unsigned PivotTable::columnValue(const QDate& _date)
+{
+  if (m_config_f.isColumnsAreDays())
+    return (QDate().daysTo(_date));
+  else
+    return (_date.year() * 12 + _date.month()); 
 }
 
 QString PivotTable::renderCSV( void ) const

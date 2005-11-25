@@ -1,3 +1,9 @@
+2005-11-24 Ace Jones <acejones@users.sourceforge.net>
+  * Added mid- and low-level support for days-based grid reports.  (High-
+    level UI support has not been added yet.)
+  * Removed opening balance tests in reports, which now failed thanks to 
+    opening balances being removed.
+
 2005-11-22 Ace Jones <acejones@users.sourceforge.net>
   * Better handling of missing &...; sequences in HTML returned during online
     quotes.

@@ -49,8 +49,8 @@ using namespace test;
 
 namespace pivottabletest
 {
-const MyMoneyMoney moCheckingOpen(1418.0);
-const MyMoneyMoney moCreditOpen(-418.0);
+const MyMoneyMoney moCheckingOpen(0.0);
+const MyMoneyMoney moCreditOpen(-0.0);
 const MyMoneyMoney moZero(0.0);
 const MyMoneyMoney moSolo(234.12);
 const MyMoneyMoney moParent1(88.01);
@@ -418,8 +418,8 @@ void PivotTableTest::testFilterBasics()
 
 void PivotTableTest::testMultipleCurrencies()
 {
-  MyMoneyMoney moCanOpening( 1000.0 );
-  MyMoneyMoney moJpyOpening( 1000.0 );
+  MyMoneyMoney moCanOpening( 0.0 );
+  MyMoneyMoney moJpyOpening( 0.0 );
   MyMoneyMoney moCanPrice( 0.75 );
   MyMoneyMoney moJpyPrice( 0.010 );
   MyMoneyMoney moJpyPrice2( 0.011 );
@@ -842,6 +842,51 @@ void PivotTableTest::testColumnType()
   CPPUNIT_ASSERT(networth_y.m_grid.m_total[2] == -moSolo-moParent-moSolo-moParent+moCheckingOpen+moCreditOpen);
   CPPUNIT_ASSERT(networth_y.m_grid.m_total[3] == -moSolo-moParent-moSolo-moParent-moSolo-moParent+moCheckingOpen+moCreditOpen);
 
+  // Test days-based reports
+
+  TransactionHelper t1d1( QDate(2004,7,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+  TransactionHelper t2d1( QDate(2004,7,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+  TransactionHelper t3d1( QDate(2004,7,5), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+
+  TransactionHelper t1d2( QDate(2004,7,14), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+  TransactionHelper t2d2( QDate(2004,7,15), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+  TransactionHelper t3d2( QDate(2004,7,20), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+
+  TransactionHelper t1d3( QDate(2004,8,2), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+  TransactionHelper t2d3( QDate(2004,8,3), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+  TransactionHelper t3d3( QDate(2004,8,4), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+
+  filter.setDateFilter(QDate(2004,7,2),QDate(2004,7,14));
+  filter.setRowType( MyMoneyReport::eExpenseIncome );
+  filter.setColumnType(MyMoneyReport::eMonths);
+  filter.setColumnsAreDays(true);
+  
+  XMLandback(filter);
+  PivotTable spending_days( filter );
+  writeTabletoHTML(spending_days,"Spending by Days.html");  
+
+  CPPUNIT_ASSERT(spending_days.m_grid.m_total[4] == -moParent2);
+  CPPUNIT_ASSERT(spending_days.m_grid.m_total[13] == -moSolo);
+  CPPUNIT_ASSERT(spending_days.m_grid.m_total.m_total == -moSolo-moParent2); 
+  
+  filter.setDateFilter(QDate(2004,7,2),QDate(2004,8,1));
+  filter.setRowType( MyMoneyReport::eExpenseIncome );
+  filter.setColumnType(static_cast<MyMoneyReport::EColumnType>(7));
+  filter.setColumnsAreDays(true);
+  
+  XMLandback(filter);
+  PivotTable spending_weeks( filter );
+  writeTabletoHTML(spending_weeks,"Spending by Weeks.html");
+
+  CPPUNIT_ASSERT(spending_weeks.m_grid.m_total[0] == moZero);
+  CPPUNIT_ASSERT(spending_weeks.m_grid.m_total[1] == -moParent2);
+  CPPUNIT_ASSERT(spending_weeks.m_grid.m_total[2] == moZero);
+  CPPUNIT_ASSERT(spending_weeks.m_grid.m_total[3] == -moSolo-moParent1);
+  CPPUNIT_ASSERT(spending_weeks.m_grid.m_total[4] == -moParent2);
+  CPPUNIT_ASSERT(spending_weeks.m_grid.m_total[5] == moZero);
+  CPPUNIT_ASSERT(spending_weeks.m_grid.m_total.m_total == -moSolo-moParent-moParent2);
+
+    
 }
 
 void PivotTableTest::testInvestment(void)

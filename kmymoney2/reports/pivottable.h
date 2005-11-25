@@ -226,6 +226,14 @@ protected:
     */
     void accumulateColumn(unsigned destcolumn, unsigned sourcecolumn);
     void clearColumn(unsigned column);  
+  
+  /**
+    * Calculate the column of a given date.  This is the absolute column in a
+    * hypothetical report that covers all of known time.  In reality an actual
+    * report will be a subset of that.
+    *
+    */
+    unsigned columnValue(const QDate& _date);
 };
 
 }
