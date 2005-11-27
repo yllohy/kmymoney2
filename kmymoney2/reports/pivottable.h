@@ -118,7 +118,18 @@ private:
     */
     class TGridRow: public QValueList<MyMoneyMoney> { public: MyMoneyMoney m_total; };
     class TInnerGroup: public QMap<ReportAccount,TGridRow> { public: TGridRow m_total; };
-    class TOuterGroup: public QMap<QString,TInnerGroup> { public: TGridRow m_total; };
+    class TOuterGroup: public QMap<QString,TInnerGroup> 
+    { 
+    public:
+      TOuterGroup(bool inverted=false): m_inverted(inverted) {}
+      TGridRow m_total;
+      
+      // An inverted outergroup means that all values placed in subordinate rows 
+      // should have their sign inverted from typical cash-flow notation.  Also it
+      // means that when the report is summed, the values should be inverted again
+      // so that the grand total is really "non-inverted outergroup MINUS inverted outergroup".
+      bool m_inverted;
+    };
     class TGrid: public QMap<QString,TOuterGroup> { public: TGridRow m_total; };
 
     TGrid m_grid;

@@ -174,6 +174,19 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   m_numColumns = columnValue(m_endDate) - columnValue(m_beginDate) + 2;
 
   //
+  // Initialize outer groups of the grid
+  //
+  if ( m_config_f.rowType() == MyMoneyReport::eAssetLiability )
+  {
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Asset),TOuterGroup());
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Liability),TOuterGroup(true));
+  }
+  else
+  {
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Income),TOuterGroup());
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Expense),TOuterGroup(true));
+  }
+  //
   // Get opening balances
   // (for running sum reports only)
   //
@@ -749,6 +762,7 @@ void PivotTable::calculateTotals( void )
     // Outer Row Group Totals
     //
 
+    bool invert_total = (*it_outergroup).m_inverted;
     unsigned column = 0;
     while ( column < m_numColumns )
     {
@@ -756,8 +770,12 @@ void PivotTable::calculateTotals( void )
         throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, grid totals").arg(column).arg((*it_innergroup).m_total.count()));
 
       MyMoneyMoney value = (*it_outergroup).m_total[column];
-      m_grid.m_total[column] += value;
       (*it_outergroup).m_total.m_total += value;
+      
+      if ( invert_total )
+        value = -value;
+
+      m_grid.m_total[column] += value;
 
       ++column;
     }
@@ -799,6 +817,10 @@ void PivotTable::assignCell( const QString& outergroup, const ReportAccount& row
   if ( m_grid[outergroup][innergroup][row].count() <= column )
     throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::assignCell").arg(column).arg(m_grid[outergroup][innergroup][row].count()));
 
+  // Determine whether the value should be inverted before being placed in the row
+  if ( m_grid[outergroup].m_inverted )
+    value = -value;
+    
   // Add the value to the grid cell
   m_grid[outergroup][innergroup][row][column] += value;
 

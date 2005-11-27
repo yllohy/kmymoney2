@@ -1,5 +1,6 @@
 2005-11-27 Ace Jones <acejones@users.sourceforge.net>
   * Install the 48x48 application icon.  Fixes KDE bug #117044.
+  * Inverted the sign for expenses and liabilities in reports and charts.
 
 2005-11-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reworked settings dialog to be based on KConfigDialog
