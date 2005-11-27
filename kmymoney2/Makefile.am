@@ -44,6 +44,8 @@ install-data-local:
 	$(INSTALL_DATA) $(srcdir)/hi16-app-kmymoney2.png $(DESTDIR)$(kde_icondir)/hicolor/16x16/apps/kmymoney2.png
 	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/32x32/apps/
 	$(INSTALL_DATA) $(srcdir)/hi32-app-kmymoney2.png $(DESTDIR)$(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
+	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/48x48/apps/
+	$(INSTALL_DATA) $(srcdir)/hi48-app-kmymoney2.png $(DESTDIR)$(kde_icondir)/hicolor/48x48/apps/kmymoney2.png
 	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/64x64/apps/
 	$(INSTALL_DATA) $(srcdir)/hi64-app-kmymoney2.png $(DESTDIR)$(kde_icondir)/hicolor/64x64/apps/kmymoney2.png
 	$(mkinstalldirs) $(DESTDIR)$(kde_icondir)/hicolor/128x128/apps/
@@ -65,6 +67,7 @@ uninstall-local:
 	-rm -f $(DESTDIR)$(kde_mimedir)/application/x-kmymoney2.desktop
 	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/16x16/apps/kmymoney2.png
 	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/32x32/apps/kmymoney2.png
+	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/48x48/apps/kmymoney2.png
 	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/64x64/apps/kmymoney2.png
 	-rm -f $(DESTDIR)$(kde_icondir)/hicolor/128x128/apps/kmymoney2.png
 	-rm -f $(DESTDIR)$(kde_datadir)/kmymoney2/tips

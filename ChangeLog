@@ -1,3 +1,6 @@
+2005-11-27 Ace Jones <acejones@users.sourceforge.net>
+  * Install the 48x48 application icon.  Fixes KDE bug #117044.
+
 2005-11-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reworked settings dialog to be based on KConfigDialog
   * Allow quit when trying to open the same file as already opened in
@@ -9,9 +12,10 @@
 2005-11-24 Ace Jones <acejones@users.sourceforge.net>
   * Added mid- and low-level support for days-based grid reports.  (High-
     level UI support has not been added yet.)
-  * Removed opening balance tests in reports, which now failed thanks to 
+  * Removed opening balance tests in reports, which now failed thanks to
+    opening balances being removed.
   * Fixed a bug where duplicate securities were not getting picked up
-    correctly in online quotes.   opening balances being removed.
+    correctly in online quotes.   
 
 2005-11-22 Ace Jones <acejones@users.sourceforge.net>
   * Better handling of missing &...; sequences in HTML returned during online
