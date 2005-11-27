@@ -1338,6 +1338,7 @@ void KMyMoney2App::slotPluginImport(const QString& format)
 
 void KMyMoney2App::slotAccountUpdateOFX(void)
 {
+#if 0
 #ifdef USE_OFX_DIRECTCONNECT
   bool accountSuccess=false;
   try
@@ -1363,6 +1364,7 @@ void KMyMoney2App::slotAccountUpdateOFX(void)
     KMessageBox::information(this,i18n("Error connecting to bank: %1").arg(e->what()));
     delete e;
   }
+#endif
 #endif
 }
 
