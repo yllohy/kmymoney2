@@ -340,12 +340,22 @@
                                                         </item>
                                                         <item>
                                                             <property name="text">
+                                                                <string>Year to month</string>
+                                                            </property>
+                                                        </item>
+                                                        <item>
+                                                            <property name="text">
                                                                 <string>Last month</string>
                                                             </property>
                                                         </item>
                                                         <item>
                                                             <property name="text">
                                                                 <string>Last year</string>
+                                                            </property>
+                                                        </item>
+                                                        <item>
+                                                            <property name="text">
+                                                                <string>Last 7 days</string>
                                                             </property>
                                                         </item>
                                                         <item>
@@ -366,6 +376,11 @@
                                                         <item>
                                                             <property name="text">
                                                                 <string>Last 12 months</string>
+                                                            </property>
+                                                        </item>
+                                                        <item>
+                                                            <property name="text">
+                                                                <string>Next 7 days</string>
                                                             </property>
                                                         </item>
                                                         <item>

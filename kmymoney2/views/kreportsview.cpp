@@ -802,7 +802,17 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Net Worth By Year"),
       i18n("Default Report")
     ));
-
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eAssetLiability,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::next7Days,
+      false,
+      i18n("7-day Cash Flow Forecast"),
+      i18n("Default Report")
+    ));
+    list.back().setIncludingSchedules( true );
+    list.back().setColumnsAreDays( true );
+  
 #ifdef HAVE_KDCHART
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAssetLiability,

@@ -699,6 +699,10 @@ const bool MyMoneyTransactionFilter::translateDateRange(int range, QDate& start,
       start = QDate(yr,1,1);
       end = QDate::currentDate();
       break;
+    case yearToMonth:
+      start = QDate(yr,1,1);
+      end = QDate(yr,mon,1).addDays(-1);
+      break;
     case lastMonth:
       start = QDate(yr,mon,1).addMonths(-1);
       end = QDate(yr,mon,1).addDays(-1);
@@ -706,6 +710,10 @@ const bool MyMoneyTransactionFilter::translateDateRange(int range, QDate& start,
     case lastYear:
       start = QDate(yr,1,1).addYears(-1);
       end = QDate(yr,12,31).addYears(-1);
+      break;
+    case last7Days:
+      start = QDate::currentDate().addDays(-7);
+      end = QDate::currentDate();
       break;
     case last30Days:
       start = QDate::currentDate().addDays(-30);
@@ -722,6 +730,10 @@ const bool MyMoneyTransactionFilter::translateDateRange(int range, QDate& start,
     case last12Months:
       start = QDate::currentDate().addMonths(-12);
       end = QDate::currentDate();
+      break;
+    case next7Days:
+      start = QDate::currentDate();
+      end = QDate::currentDate().addDays(7);
       break;
     case next30Days:
       start = QDate::currentDate();
