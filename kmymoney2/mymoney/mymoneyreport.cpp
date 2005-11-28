@@ -35,7 +35,7 @@
 #include "mymoneyreport.h"
  
 const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,assetliability,expenseincome,category,topcategory,account,payee,month,week,topaccount,topaccount-account,equitytype,accounttype,institution",true);
-const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,months,bimonths,quarters,4,5,6,7,8,9,10,11,years",true);
+const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,months,bimonths,quarters,4,5,6,weeks,8,9,10,11,years",true);
 const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,category,memo,account,reconcileflag,action,shares,price,performance",true);
 const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eNoReport };
 const QStringList MyMoneyReport::kDetailLevelText = QStringList::split(",","none,all,top,group,total,invalid",true);
@@ -65,7 +65,8 @@ MyMoneyReport::MyMoneyReport(void):
     m_chartDataLabels(true),
     m_chartGridLines(true),
     m_chartByDefault(false),
-    m_includeSchedules(false)
+    m_includeSchedules(false),
+    m_includeTransfers(false)
 {
 }
   
@@ -86,7 +87,8 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
     m_chartDataLabels(true),
     m_chartGridLines(true),
     m_chartByDefault(false),
-    m_includeSchedules(false)
+    m_includeSchedules(false),
+    m_includeTransfers(false)
 {
   if ( m_reportType == ePivotTable )
     m_columnType = static_cast<EColumnType>(_ct);
@@ -202,7 +204,9 @@ void MyMoneyReport::addAccountGroup(MyMoneyAccount::accountTypeE type)
 
 const bool MyMoneyReport::includesAccountGroup( MyMoneyAccount::accountTypeE type ) const
 {
-  bool result = (! m_accountGroupFilter) || m_accountGroups.contains( type );
+  bool result = (! m_accountGroupFilter) 
+                || ( isIncludingTransfers() && m_rowType == MyMoneyReport::eExpenseIncome ) 
+                || m_accountGroups.contains( type );
 
   return result;
 }
@@ -226,6 +230,10 @@ const bool MyMoneyReport::includes( const MyMoneyAccount& acc ) const
     case MyMoneyAccount::Liability:
       if ( isInvestmentsOnly() )
         result = (acc.accountType() == MyMoneyAccount::Stock) && includesAccount( acc.id() );
+      else if ( isIncludingTransfers() && m_rowType == MyMoneyReport::eExpenseIncome )
+        // If transfers are included, ONLY include this account if it is NOT
+        // included in the report itself!!
+        result = ! includesAccount( acc.id() );
       else
         result = includesAccount( acc.id() );
       break;

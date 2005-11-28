@@ -167,10 +167,17 @@ void KReportConfigurationFilterDlg::slotSearch()
     MyMoneyReport::ERowType rt[2] = { MyMoneyReport::eExpenseIncome, MyMoneyReport::eAssetLiability };
     m_currentState.setRowType( rt[m_tab2->m_comboRows->currentItem()] );
 
-    MyMoneyReport::EColumnType ct[4] = { MyMoneyReport::eMonths, MyMoneyReport::eBiMonths, MyMoneyReport::eQuarters, MyMoneyReport::eYears };
+    MyMoneyReport::EColumnType ct[6] = { MyMoneyReport::eDays, MyMoneyReport::eWeeks, MyMoneyReport::eMonths, MyMoneyReport::eBiMonths, MyMoneyReport::eQuarters, MyMoneyReport::eYears };
+    bool dy[6] = { true, true, false, false, false, false };
     m_currentState.setColumnType( ct[m_tab2->m_comboColumns->currentItem()] );
+    
+    //TODO: This should be implicit in the call above.  MMReport needs fixin'
+    m_currentState.setColumnsAreDays( dy[m_tab2->m_comboColumns->currentItem()] );
 
     m_currentState.setIncludingSchedules( m_tab2->m_checkScheduled->isChecked() );
+    
+    m_currentState.setIncludingTransfers( m_tab2->m_checkTransfers->isChecked() );
+    
   }
   else if ( m_tab3 )
   {
@@ -261,24 +268,40 @@ void KReportConfigurationFilterDlg::slotReset(void)
     else
       m_tab2->m_comboRows->setCurrentItem(1);
 
-    switch ( m_initialState.columnType() )
+    if ( m_initialState.isColumnsAreDays() )
     {
-    case MyMoneyReport::eNoColumns:
-    case MyMoneyReport::eMonths:
-      m_tab2->m_comboColumns->setCurrentItem(0);
-      break;
-    case MyMoneyReport::eBiMonths:
-      m_tab2->m_comboColumns->setCurrentItem(1);
-      break;
-    case MyMoneyReport::eQuarters:
-      m_tab2->m_comboColumns->setCurrentItem(2);
-      break;
-    case MyMoneyReport::eYears:
-      m_tab2->m_comboColumns->setCurrentItem(3);
-      break;
+      switch ( m_initialState.columnType() )
+      {
+      case MyMoneyReport::eNoColumns:
+      case MyMoneyReport::eDays:
+        m_tab2->m_comboColumns->setCurrentItem(0);
+        break;
+      case MyMoneyReport::eWeeks:
+        m_tab2->m_comboColumns->setCurrentItem(1);
+        break;
+      }
     }
-
+    else
+    {
+      switch ( m_initialState.columnType() )
+      {
+      case MyMoneyReport::eNoColumns:
+      case MyMoneyReport::eMonths:
+        m_tab2->m_comboColumns->setCurrentItem(2);
+        break;
+      case MyMoneyReport::eBiMonths:
+        m_tab2->m_comboColumns->setCurrentItem(3);
+        break;
+      case MyMoneyReport::eQuarters:
+        m_tab2->m_comboColumns->setCurrentItem(4);
+        break;
+      case MyMoneyReport::eYears:
+        m_tab2->m_comboColumns->setCurrentItem(5);
+        break;
+      }
+    }
     m_tab2->m_checkScheduled->setChecked( m_currentState.isIncludingSchedules() );
+    m_tab2->m_checkTransfers->setChecked( m_currentState.isIncludingTransfers() );
   }
   else if ( m_tab3 )
   {

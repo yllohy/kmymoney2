@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>161</height>
+            <height>189</height>
         </rect>
     </property>
     <property name="caption">
@@ -42,6 +42,16 @@
                     </property>
                 </widget>
                 <widget class="QComboBox">
+                    <item>
+                        <property name="text">
+                            <string>Daily</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Weekly</string>
+                        </property>
+                    </item>
                     <item>
                         <property name="text">
                             <string>Monthly</string>
@@ -212,6 +222,14 @@
                 <string>Include Scheduled Transactions</string>
             </property>
         </widget>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>m_checkTransfers</cstring>
+            </property>
+            <property name="text">
+                <string>Include Transfers</string>
+            </property>
+        </widget>
         <spacer>
             <property name="name">
                 <cstring>spacer13</cstring>
@@ -225,7 +243,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>20</height>
+                    <height>16</height>
                 </size>
             </property>
         </spacer>

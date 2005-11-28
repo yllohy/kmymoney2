@@ -62,7 +62,7 @@ public:
   // When adding a new row type, be sure to add a corresponding entry in kTypeArray
   enum ERowType { eNoRows = 0, eAssetLiability, eExpenseIncome, eCategory, eTopCategory, eAccount, ePayee, eMonth, eWeek, eTopAccount, eAccountByTopAccount, eEquityType, eAccountType, eInstitution };
   enum EReportType { eNoReport = 0, ePivotTable, eQueryTable };
-  enum EColumnType { eNoColumns = 0, eMonths = 1, eBiMonths = 2, eQuarters = 3, eYears = 12 };
+  enum EColumnType { eNoColumns = 0, eDays = 1, eMonths = 1, eBiMonths = 2, eQuarters = 3, eWeeks = 7, eYears = 12 };
   enum EQueryColumns { eQCnone = 0x0, eQCbegin = 0x1, eQCnumber = 0x1, eQCpayee = 0x2, eQCcategory = 0x4, eQCmemo = 0x8, eQCaccount = 0x10, eQCreconciled=0x20, eQCaction=0x40, eQCshares=0x80, eQCprice=0x100, eQCperformance=0x200, eQCend=0x400 };
   enum EDetailLevel { eDetailNone = 0, eDetailAll, eDetailTop, eDetailGroup, eDetailTotal, eDetailEnd };
   enum EChartType { eChartNone = 0, eChartLine, eChartBar, eChartPie, eChartRing, eChartStackedBar, eChartEnd };
@@ -103,6 +103,7 @@ public:
   bool isChartByDefault(void) const { return m_chartByDefault; }
   bool isIncludingSchedules(void) const { return m_includeSchedules; }
   bool isColumnsAreDays(void) const { return m_columnsAreDays; }
+  bool isIncludingTransfers(void) const { return m_includeTransfers; }
 
   // Simple set operations
   void setName(const QString& _s) { m_name = _s; }
@@ -124,6 +125,7 @@ public:
   void setChartByDefault ( bool _f ) { m_chartByDefault = _f; }
   void setIncludingSchedules( bool _f ) { m_includeSchedules = _f; }
   void setColumnsAreDays( bool _f ) { m_columnsAreDays = _f; }
+  void setIncludingTransfers( bool _f ) { m_includeTransfers = _f; }
   
   /**
     * This method allows you to clear the underlying transaction filter
@@ -386,6 +388,10 @@ private:
     */
   bool m_includeSchedules;
  
+  /**
+    * Whether to include transfers.  Only applies to Income/Expense reports
+    */
+  bool m_includeTransfers;
 };
 
 #endif // MYMONEYREPORT_H  

@@ -5,6 +5,9 @@
     Hopefully this addresses #1238112
   * Added a "year-to-month" date filter in transaction search and reports.
     Addresses #1260311 
+  * Added option to include transfers on income/expense reports.  This
+    addresses #1297972.
+  * Added ability to configure reports to have days or weeks as the column.
 
 2005-11-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reworked settings dialog to be based on KConfigDialog

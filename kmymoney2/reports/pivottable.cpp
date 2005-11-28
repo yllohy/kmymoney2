@@ -254,6 +254,11 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
       ++it_schedule;
     }
   }
+  
+  // whether asset & liability transactions are actually to be considered
+  // transfers
+  bool al_transfers = ( m_config_f.rowType() == MyMoneyReport::eExpenseIncome ) && ( m_config_f.isIncludingTransfers() );
+  
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
   unsigned colofs = columnValue(m_beginDate) - 1;
   while ( it_transaction != transactions.end() )
@@ -278,8 +283,15 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
         MyMoneyMoney value = (*it_split).shares() * reverse;
 
         // the outer group is the account class (major account type)
-        QString outergroup = accountTypeToString(splitAccount.accountGroup());
-
+        MyMoneyAccount::accountTypeE type = splitAccount.accountGroup();
+        QString outergroup = accountTypeToString(type);
+        
+        // Except in the case of transfers on an income/expense report
+        if ( al_transfers && ( type == MyMoneyAccount::Asset || type == MyMoneyAccount::Liability ) )
+        {
+          outergroup = i18n("Transfers");
+          value = -value;
+        }
         // add the value to its correct position in the pivot table
         assignCell( outergroup, splitAccount, column, value );
 
@@ -294,7 +306,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   // Collapse columns to match column type
   //
 
-  if ( m_config_f.columnType() != MyMoneyReport::eMonths )
+  if ( m_config_f.columnPitch() > 1 )
     collapseColumns();
 
   //
