@@ -159,8 +159,6 @@ private:
   void (*m_progressCallback)(int, int, const QString&);
   const unsigned long extractId(const QCString& txt) const;
   QDate getDate(const QString& strText) const;
-  const QCString QCStringEmpty(const QString& val) const;
-  const QString QStringEmpty(const QString& val) const;
   const uint getChildCount(const QDomElement& element) const;
 
 protected:

@@ -744,7 +744,7 @@ const bool KMyMoneyView::saveFile(const KURL& url)
 
   // If this file ends in ".ANON.XML" then this should be written using the
   // anonymous writer.
-  bool plaintext = plaintext = filename.right(4).lower() == ".xml";
+  bool plaintext = filename.right(4).lower() == ".xml";
   if (filename.right(9).lower() == ".anon.xml")
   {
     pWriter = new MyMoneyStorageANON;

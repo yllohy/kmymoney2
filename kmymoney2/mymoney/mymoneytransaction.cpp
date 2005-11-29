@@ -346,7 +346,7 @@ void MyMoneyTransaction::readXML(const QDomElement& node)
   if(nodeList.count() > 0) {
     nodeList = nodeList.item(0).toElement().elementsByTagName(QString("SPLIT"));
     MyMoneySplit s;
-    for(int i = 0; i < nodeList.count(); ++i) {
+    for(unsigned int i = 0; i < nodeList.count(); ++i) {
       s.readXML(nodeList.item(i).toElement());
       addSplit(s);
     }

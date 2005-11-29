@@ -1655,7 +1655,7 @@ void KLedgerViewInvestments::slotSecurityChanged(const QCString& id)
   }
 }
 
-void KLedgerViewInvestments::refreshView(const bool transactionFormVisible)
+void KLedgerViewInvestments::refreshView(const bool /* transactionFormVisible */)
 {
   // if we're currently editing a transaction, we don't refresh the view
   // this will screw us, if someone creates a category on the fly, as this

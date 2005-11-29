@@ -160,7 +160,7 @@ void MyMoneyInstitution::readXML(const QDomElement& node)
   nodeList = node.elementsByTagName(QString("ACCOUNTIDS"));
   if(nodeList.count() > 0) {
     nodeList = nodeList.item(0).toElement().elementsByTagName(QString("ACCOUNTID"));
-    for(int i = 0; i < nodeList.count(); ++i) {
+    for(unsigned int i = 0; i < nodeList.count(); ++i) {
       m_accountList << QCString(nodeList.item(i).toElement().attribute(QString("id")));
     }
   }
@@ -170,7 +170,7 @@ void MyMoneyInstitution::readXML(const QDomElement& node)
   nodeList = node.elementsByTagName(QString("OFXSETTINGS"));
   if(nodeList.count() > 0) {
     QDomNamedNodeMap attributes = nodeList.item(0).toElement().attributes();
-    for(int i = 0; i < attributes.count(); ++i) {
+    for(unsigned int i = 0; i < attributes.count(); ++i) {
       const QDomAttr& it_attr = attributes.item(i).toAttr();
       m_ofxConnectionSettings.setValue(it_attr.name().utf8(), it_attr.value());
     }

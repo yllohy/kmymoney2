@@ -29,6 +29,7 @@
 
 #include <qstring.h>
 #include <qcstring.h>
+#include <qdatetime.h>
 #include <qvaluelist.h>
 #include <kmymoney/export.h>
 #if 0
@@ -165,4 +166,28 @@ KMYMONEY_EXPORT void _CheckMemory_End();
 #define _CheckMemory_FreeAll() chkmem.FreeAll()
 
 #endif // _CHECK_MEMORY
+
+/**
+ * This function returns a date in the form specified by Qt::ISODate.
+ * If the @p date is invalid an empty string will be returned.
+ *
+ * @param date const reference to date to be converted
+ * @return QString containing the converted date
+ */
+QString dateToString(const QDate& date);
+
+/**
+ * This function returns a date as QDate object as specified by
+ * the parameter @p str. @p str must be in Qt::ISODate format.
+ * If @p str is empty or contains an invalid date, QDate() is
+ * returned.
+ *
+ * @param str date in Qt::ISODate format
+ * @return QDate object
+ */
+QDate stringToDate(const QString& str);
+
+QCString QCStringEmpty(const QString&);
+QString QStringEmpty(const QString&);
+
 #endif

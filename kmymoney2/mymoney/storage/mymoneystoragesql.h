@@ -208,8 +208,8 @@ class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
    */
     void displayError(const QString& message);
   protected:
-    void readFile(QIODevice* qf, IMyMoneySerialize* storage) {};
-    void writeFile(QIODevice* qf, IMyMoneySerialize* storage) {};
+    void readFile(QIODevice*, IMyMoneySerialize*) {};
+    void writeFile(QIODevice*, IMyMoneySerialize*) {};
     void setProgressCallback(void(*callback)(int, int, const QString&));
   private:
     void clean (void);

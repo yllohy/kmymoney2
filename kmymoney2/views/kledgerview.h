@@ -309,16 +309,6 @@ public:
   const QCString accountId(void) { return m_account.id(); }
 
   /**
-    * This method returns the id of the account that is currently
-    * shown by this widget. It simply calls the above method but
-    * the interface must be provided as this class implements the
-    * interface defined in IMyMoneyRegisterParent.
-    *
-    * @return const QCString containing the account's id.
-    */
-  const QCString accountId(const MyMoneyTransaction* const, int match) const { return m_account.id(); }
-
-  /**
     * This method returns a pointer to the transaction data
     * in the ledger of this account. The transaction is identified
     * by the parameter @p idx.

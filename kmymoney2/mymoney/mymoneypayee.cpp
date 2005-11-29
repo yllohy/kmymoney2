@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "mymoneypayee.h"
+#include "mymoneyutils.h"
 #include <kmymoney/mymoneyexception.h>
 
 MyMoneyPayee MyMoneyPayee::null = MyMoneyPayee();
@@ -29,15 +30,17 @@ MyMoneyPayee::MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee)
   m_id = id;
 }
 
-MyMoneyPayee::MyMoneyPayee(const QString& name, const QString& address, const QString& postcode, const QString& telephone, const QString& email, const QString& city, const QString& state)
+MyMoneyPayee::MyMoneyPayee(const QString& name, const QString& address,
+	const QString& city, const QString& state, const QString& postcode,
+	const QString& telephone, const QString& email)
 {
   m_name      = name;
   m_address   = address;
+  m_city      = city;
+  m_state     = state;
   m_postcode  = postcode;
   m_telephone = telephone;
   m_email     = email;
-  m_city      = city;
-  m_state     = state;
 }
 
 MyMoneyPayee::~MyMoneyPayee()
@@ -54,6 +57,8 @@ QDataStream &operator<<(QDataStream &s, const MyMoneyPayee &payee)
 {
   return s << payee.m_name
     << payee.m_address
+    << payee.m_city
+    << payee.m_state
     << payee.m_postcode
     << payee.m_telephone
     << payee.m_email;
@@ -63,6 +68,8 @@ QDataStream &operator>>(QDataStream &s, MyMoneyPayee &payee)
 {
   return s >> payee.m_name
     >> payee.m_address
+    >> payee.m_city
+    >> payee.m_state
     >> payee.m_postcode
     >> payee.m_telephone
     >> payee.m_email;
@@ -72,10 +79,13 @@ QDataStream &operator>>(QDataStream &s, MyMoneyPayee &payee)
 const bool MyMoneyPayee::operator == (const MyMoneyPayee& right) const
 {
   return (MyMoneyObject::operator==(right) &&
-      ((m_address.length() == 0 && right.m_address.length() == 0) || (m_address == right.m_address)) &&
-      ((m_email.length() == 0 && right.m_email.length() == 0) || (m_email == right.m_email)) &&
       ((m_name.length() == 0 && right.m_name.length() == 0) || (m_name == right.m_name)) &&
+      ((m_address.length() == 0 && right.m_address.length() == 0) || (m_address == right.m_address)) &&
+      ((m_city.length() == 0 && right.m_city.length() == 0) || (m_city == right.m_city)) &&
+      ((m_state.length() == 0 && right.m_state.length() == 0) || (m_state == right.m_state)) &&
       ((m_postcode.length() == 0 && right.m_postcode.length() == 0) || (m_postcode == right.m_postcode)) &&
+      ((m_telephone.length() == 0 && right.m_telephone.length() == 0) || (m_telephone == right.m_telephone)) &&
+      ((m_email.length() == 0 && right.m_email.length() == 0) || (m_email == right.m_email)) &&
       ((m_reference.length() == 0 && right.m_reference.length() == 0) || (m_reference == right.m_reference)) );
 }
 
@@ -121,8 +131,7 @@ void MyMoneyPayee::readXML(const QDomElement& node)
   QDomElement addrNode = nodeList.item(0).toElement();
   m_address = addrNode.attribute("street");
   m_city = addrNode.attribute("city");
-  m_postcode = addrNode.attribute("zip");
+  m_postcode = addrNode.attribute("postcode");
   m_state = addrNode.attribute("state");
   m_telephone = addrNode.attribute("telephone");
-
 }

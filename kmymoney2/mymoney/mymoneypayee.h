@@ -29,7 +29,9 @@
 #include <kmymoney/mymoneyobject.h>
 
 /**
-  * This class represents a payee or receiver within the MyMoney engine
+  * This class represents a payee or receiver within the MyMoney engine.
+  * Since it is not payee-specific, it is also used as a generic address
+  * book entry.
   *
   * @author Thomas Baumgart
   */
@@ -39,11 +41,11 @@ private:
   // Simple fields
   QString m_name;
   QString m_address;
+  QString m_city;
+  QString m_state;
   QString m_postcode;
   QString m_telephone;
   QString m_email;
-  QString m_city;
-  QString m_state;
 
   /**
     * This member keeps a reference to an external database
@@ -52,7 +54,7 @@ private:
     * (e.g. encoding the name of the external database into the
     * reference string).
     * If no external database is available it should be kept
-    * emtpy by the application.
+    * empty by the application.
     */
   QString m_reference;
 
@@ -62,30 +64,36 @@ private:
 public:
   MyMoneyPayee();
   MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee);
-  MyMoneyPayee(const QString& name, const QString& address=QString::null, const QString& postcode=QString::null, const QString& telephone=QString::null, const QString& email=QString::null, const QString& city=QString::null, const QString& state=QString::null);
+  MyMoneyPayee(const QString& name,
+	  const QString& address=QString::null,
+	  const QString& city=QString::null,
+	  const QString& state=QString::null,
+	  const QString& postcode=QString::null,
+	  const QString& telephone=QString::null,
+	  const QString& email=QString::null);
   ~MyMoneyPayee();
 
   // Simple get operations
   QString name(void) const            { return m_name; }
   QString address(void) const         { return m_address; }
+  QString city(void) const            { return m_city; }
+  QString state(void) const           { return m_state; }
   QString postcode(void) const        { return m_postcode; }
   QString telephone(void) const       { return m_telephone; }
   QString email(void) const           { return m_email; }
-  QString city(void) const            { return m_city; }
-  QString state(void) const           { return m_state; }
   const QCString id(void) const       { return m_id; };
   const QString reference(void) const { return m_reference; };
 
   // Simple set operations
   void setName(const QString& val)      { m_name = val; }
   void setAddress(const QString& val)   { m_address = val; }
+  void setCity(const QString& val)      { m_city = val; }
+  void setState(const QString& val)     { m_state = val; }
   void setPostcode(const QString& val)  { m_postcode = val; }
   void setTelephone(const QString& val) { m_telephone = val; }
   void setEmail(const QString& val)     { m_email = val; }
   void setReference(const QString& ref) { m_reference = ref; }
   void setId(const QCString& val)       { m_id = val; }
-  void setCity(const QString& val)      { m_city = val; }
-  void setState(const QString& val)     { m_state = val; }
 
   // Copy constructors
   MyMoneyPayee(const MyMoneyPayee&);

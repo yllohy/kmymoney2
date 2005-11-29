@@ -371,7 +371,7 @@ void KLedgerView::refreshView(void)
   refreshView(KMyMoneySettings::transactionForm());
 }
 
-void KLedgerView::refreshView(const bool transactionFormVisible)
+void KLedgerView::refreshView(const bool /* transactionFormVisible */)
 {
   // if we're currently editing a transaction, we don't refresh the view
   // this will screw us, if someone creates a category on the fly, as this

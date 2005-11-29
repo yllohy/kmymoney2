@@ -177,7 +177,7 @@ void KInvestmentView::updateDisplay()
   }
 }
 
-void KInvestmentView::slotItemDoubleClicked(QListViewItem* pItem, const QPoint& /*pos*/, int /*c*/)
+void KInvestmentView::slotItemDoubleClicked(QListViewItem* /*pItem*/, const QPoint& /*pos*/, int /*c*/)
 {
   kmymoney2->action("investment_edit")->activate();
 }
@@ -200,7 +200,7 @@ void KInvestmentView::slotSelectionChanged(QListViewItem *item)
   }
 }
 
-void KInvestmentView::slotListRightMouse(QListViewItem* item, const QPoint& /*point*/, int /*x*/)
+void KInvestmentView::slotListRightMouse(QListViewItem* /*item*/, const QPoint& /*point*/, int /*x*/)
 {
   kmymoney2->selectInvestment();
   KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(investmentTable->selectedItem());

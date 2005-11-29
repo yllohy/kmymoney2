@@ -977,26 +977,6 @@ void MyMoneyStorageXML::writePrice(QDomElement& price, const MyMoneyPrice& p)
   price.setAttribute(QString("source"), p.source());
 }
 
-const QCString MyMoneyStorageXML::QCStringEmpty(const QString& val) const
-{
-  QCString rc;
-
-  if(!val.isEmpty())
-    rc = QCString(val);
-
-  return rc;
-}
-
-const QString MyMoneyStorageXML::QStringEmpty(const QString& val) const
-{
-  QString rc;
-  if(!val.isEmpty())
-  {
-    rc = QString(val);
-  }
-  return rc;
-}
-
 void MyMoneyStorageXML::setProgressCallback(void(*callback)(int, int, const QString&))
 {
   m_progressCallback = callback;

@@ -109,7 +109,7 @@ void MyMoneyKeyValueContainer::readXML(const QDomElement& node)
   m_kvp.clear();
 
   QDomNodeList nodeList = node.elementsByTagName(QString("PAIR"));
-  for(int i = 0; i < nodeList.count(); ++i) {
+  for(unsigned int i = 0; i < nodeList.count(); ++i) {
     const QDomElement& el(nodeList.item(i).toElement());
     m_kvp[QCString(el.attribute(QString("key")))] = el.attribute(QString("value"));
   }

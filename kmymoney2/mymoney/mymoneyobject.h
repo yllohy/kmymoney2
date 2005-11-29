@@ -94,29 +94,6 @@ public:
 
   const bool operator == (const MyMoneyObject& right) const;
 
-  /**
-    * This method returns a date in the form specified by Qt::ISODate.
-    * If the @p date is invalid an empty string will be returned.
-    *
-    * @param date const reference to date to be converted
-    * @return QString containing the converted date
-    */
-  QString dateToString(const QDate& date) const;
-
-  /**
-    * This method returns a date as QDate object as specified by
-    * the parameter @p str. @p str must be in Qt::ISODate format.
-    * If @p str is empty or contains an invalid date, QDate() is
-    * returned.
-    *
-    * @param str date in Qt::ISODate format
-    * @return QDate object
-    */
-  QDate stringToDate(const QString& str) const;
-
-  QCString QCStringEmpty(const QString& val) const;
-  QString QStringEmpty(const QString& val) const;
-
 protected:
   QCString               m_id;
 };

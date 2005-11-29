@@ -294,3 +294,37 @@ void MyMoneyTracer::off(void)
 {
   m_onoff = 0;
 }
+
+QString dateToString(const QDate& date)
+{
+  if(!date.isNull() && date.isValid())
+    return date.toString(Qt::ISODate);
+
+  return QString();
+}
+
+QDate stringToDate(const QString& str)
+{
+  if(str.length()) {
+    QDate date = QDate::fromString(str, Qt::ISODate);
+    if(!date.isNull() && date.isValid())
+      return date;
+  }
+  return QDate();
+}
+
+QCString QCStringEmpty(const QString& val)
+{
+  if(!val.isEmpty())
+    return QCString(val);
+
+  return QCString();
+}
+
+QString QStringEmpty(const QString& val)
+{
+  if(!val.isEmpty())
+    return QString(val);
+
+  return QString();
+}

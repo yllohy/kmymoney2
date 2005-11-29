@@ -729,30 +729,6 @@ KMyMoneyTransaction* KFindTransactionDlg::transaction(const int idx) const
   return 0;
 }
 
-const QCString KFindTransactionDlg::accountId(const MyMoneyTransaction * const transaction, int match) const
-{
-  QValueList<MyMoneySplit>::ConstIterator it;
-  MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneyTransactionFilter filter = m_filter;
-
-  if(filter.match(*transaction, file->storage())) {
-    for(it = filter.matchingSplits().begin(); it != filter.matchingSplits().end(); ++it) {
-      MyMoneyAccount acc = file->account((*it).accountId());
-      switch(acc.accountGroup()) {
-        case MyMoneyAccount::Income:
-        case MyMoneyAccount::Expense:
-          break;
-        default:
-          if(!match--)
-            return (*it).accountId();
-          break;
-      }
-    }
-  }
-  qFatal("KFindTransactionDlg::accountId(): No asset/liability account for transaction. This usually crashes");
-  return QCString();
-}
-
 bool KFindTransactionDlg::focusNextPrevChild(bool next)
 {
   return KFindTransactionDlgDecl::focusNextPrevChild(next);

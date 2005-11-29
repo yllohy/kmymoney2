@@ -1271,9 +1271,9 @@ void PivotTable::dump( const QString& file ) const
   g.close();
 }
 
+#ifdef HAVE_KDCHART
 void PivotTable::drawChart( KReportChartView& _view ) const
 {
-#ifdef HAVE_KDCHART
 
   _view.params().setAxisShowGrid(0,m_config_f.isChartGridLines());
   _view.params().setAxisShowGrid(1,m_config_f.isChartGridLines());
@@ -1559,8 +1559,9 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
   _view.setNewData(data);
   _view.refreshLabels();
-
-#endif
 }
+#else
+void PivotTable::drawChart( KReportChartView& ) const { }
+#endif
 
 } // namespace

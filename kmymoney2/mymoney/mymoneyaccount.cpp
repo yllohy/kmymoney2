@@ -429,7 +429,7 @@ void MyMoneyAccount::readXML(const QDomElement& node)
   QDomNodeList nodeList = node.elementsByTagName(QString("SUBACCOUNTS"));
   if(nodeList.count() > 0) {
     nodeList = nodeList.item(0).toElement().elementsByTagName(QString("SUBACCOUNT"));
-    for(int i = 0; i < nodeList.count(); ++i) {
+    for(unsigned int i = 0; i < nodeList.count(); ++i) {
       addAccountId(QCString(nodeList.item(i).toElement().attribute(QString("id"))));
     }
   }

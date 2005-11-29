@@ -49,39 +49,3 @@ void MyMoneyObject::clearId(void)
 {
   m_id = QCString();
 }
-
-QString MyMoneyObject::dateToString(const QDate& date) const
-{
-  if(!date.isNull() && date.isValid()) {
-    return date.toString(Qt::ISODate);
-  }
-
-  return QString();
-}
-
-QDate MyMoneyObject::stringToDate(const QString& str) const
-{
-  if(str.length()) {
-    QDate date = QDate::fromString(str, Qt::ISODate);
-    if(!date.isNull() && date.isValid()) {
-      return date;
-    }
-  }
-  return QDate();
-}
-
-QCString MyMoneyObject::QCStringEmpty(const QString& val) const
-{
-  if(!val.isEmpty())
-    return QCString(val);
-
-  return QCString();
-}
-
-QString MyMoneyObject::QStringEmpty(const QString& val) const
-{
-  if(!val.isEmpty()) {
-    return QString(val);
-  }
-  return QString();
-}

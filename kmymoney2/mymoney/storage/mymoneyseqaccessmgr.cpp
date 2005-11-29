@@ -955,7 +955,6 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& accou
 const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate& date)
 {
   MyMoneyMoney result(0);
-  bool needRebuildCache = false;
   MyMoneyAccount acc;
 
   if(m_balanceCache[id].valid == false || date != m_balanceCacheDate) {

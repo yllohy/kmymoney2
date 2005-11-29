@@ -807,7 +807,7 @@ void MyMoneySchedule::readXML(const QDomElement& node)
   nodeList = node.elementsByTagName("PAYMENTS");
   if(nodeList.count() > 0) {
     nodeList = nodeList.item(0).toElement().elementsByTagName("PAYMENT");
-    for(int i = 0; i < nodeList.count(); ++i) {
+    for(unsigned int i = 0; i < nodeList.count(); ++i) {
       m_recordedPayments << stringToDate(nodeList.item(i).toElement().attribute(QString("date")));
     }
   }

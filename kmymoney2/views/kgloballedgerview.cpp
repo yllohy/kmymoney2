@@ -89,7 +89,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   //m_toolbar->setMaximumSize(50,20);
   m_toolbar->alignItemRight(1);
   m_toolbar->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
-  KToolBarButton* m_buttonAccount = m_toolbar->getButton(1);
+  // KToolBarButton* m_buttonAccount = m_toolbar->getButton(1);
   
   m_viewLayout->addWidget(m_toolbar);
 

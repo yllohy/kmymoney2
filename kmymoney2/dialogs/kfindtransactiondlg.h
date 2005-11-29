@@ -91,21 +91,6 @@ public:
   KMyMoneyTransaction* transaction(const int idx) const;
 
   /**
-    * This method returns the id of the account that should be
-    * shown by the view. The implementation depends on the type of view
-    * and might return a constant value or a value depending on the
-    * transaction passed as @p transaction.
-    *
-    * @param transaction pointer to a transaction
-    * @param match identifies the number of the matching split within the transaction
-    *              should be used to extract the account information. 0 will use
-    *              the first matching split.
-    *
-    * @return const QCString containing the account's id.
-    */
-  const QCString accountId(const MyMoneyTransaction * const transaction, const int match) const;
-
-  /**
     * This method returns the balance of any visible transaction
     * in the ledger of this account. The balance depends on filters
     * and is automatically calculated when any view option is changed
