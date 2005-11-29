@@ -1,3 +1,8 @@
+2005-11-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added view actions to toggle 'hide reconciled transactions' and
+    'hide unused categories'
+  * Applied patches provided by Bjorn Helgaas
+
 2005-11-27 Ace Jones <acejones@users.sourceforge.net>
   * Install the 48x48 application icon.  Fixes KDE bug #117044.
   * Inverted the sign for expenses and liabilities in reports and charts.
@@ -16,6 +21,7 @@
   * Install kgpgfile.h
   * Removed deprecated method kMyMoneyEdit::getMoneyValue()
   * Use kMyMoneyEdit::setValue() rather than setText() to load values
+  * Changed MyMoneyPayee to use references in constructor
 
 2005-11-24 Ace Jones <acejones@users.sourceforge.net>
   * Added mid- and low-level support for days-based grid reports.  (High-
