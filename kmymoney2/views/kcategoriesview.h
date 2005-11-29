@@ -50,7 +50,6 @@ class KCategoriesView : public kCategoriesViewDecl, MyMoneyObserver  {
 private:
   QString m_lastCat;
   bool m_suspendUpdate;
-  bool m_hideCategory;
 
   QMap<QCString, MyMoneyAccount> m_accountMap;
   QMap<QCString, unsigned long> m_transactionCountMap;

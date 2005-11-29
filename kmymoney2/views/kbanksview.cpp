@@ -46,6 +46,7 @@
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/knewbankdlg.h"
 #include "../kmymoneyutils.h"
+#include "../kmymoneysettings.h"
 #include "../kmymoney2.h"
 
 KAccountsView::KAccountsView(QWidget *parent, const char *name, bool bInstitutionView)
@@ -432,10 +433,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
 {
   accountListView->header()->setFont(KMyMoneyUtils::headerFont());
 
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  m_hideCategory = config->readBoolEntry("HideUnusedCategory", false);
-  bool accountUsed;
+  bool accountUsed = true;
 
   // Disable the note about hidden categories
   m_hiddenCategories->hide();
@@ -628,7 +626,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
         if (m_accountMap[*it].accountList().count() >= 1) {
           accountUsed |= showSubAccounts(m_accountMap[*it].accountList(), accountItem, false);
         }
-        if(accountUsed == false && m_hideCategory == true) {
+        if(accountUsed == false && KMyMoneySettings::hideUnusedCategory() == true) {
           // in case hide category is on and the account or any of it's
           // subaccounts has no split, we can safely remove it and all
           // it's sub-ordinate accounts from the list
@@ -655,7 +653,7 @@ void KAccountsView::refresh(const QCString& selectAccount)
         if (m_accountMap[*it].accountList().count() >= 1) {
           accountUsed |= showSubAccounts(m_accountMap[*it].accountList(), accountItem, false);
         }
-        if(accountUsed == false && m_hideCategory == true) {
+        if(accountUsed == false && KMyMoneySettings::hideUnusedCategory() == true) {
           // in case hide category is on and the account or any of it's
           // subaccounts has no split, we can safely remove it and all
           // it's sub-ordinate accounts from the list
@@ -725,7 +723,7 @@ const bool KAccountsView::showSubAccounts(const QCStringList& accounts, KAccount
       thisAccountUsed |= showSubAccounts(m_accountMap[*it].accountList(), accountItem, used);
     }
 
-    if(thisAccountUsed == false && m_hideCategory == true) {
+    if(thisAccountUsed == false && KMyMoneySettings::hideUnusedCategory() == true) {
       // in case hide category is on and the account nor any of it's
       // subaccounts has a split, we can safely remove it and all
       // it's sub-ordinate accounts from the list

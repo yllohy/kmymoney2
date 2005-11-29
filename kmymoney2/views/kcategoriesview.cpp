@@ -48,6 +48,7 @@
 #include "kcategoriesview.h"
 #include "kbanklistitem.h"
 #include "../kmymoneyutils.h"
+#include "../kmymoneysettings.h"
 #include "../kmymoney2.h"
 
 KCategoriesView::KCategoriesView(QWidget *parent, const char *name )
@@ -110,9 +111,6 @@ void KCategoriesView::slotRefreshView(void)
   ::timetrace("Start KCategoriesView::slotRefreshView");
   MyMoneyTracer tracer("KCategoriesView", "slotRefreshView");
 
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  m_hideCategory = config->readBoolEntry("HideUnusedCategory", false);
   categoryListView->header()->setFont(KMyMoneyUtils::headerFont());
   bool accountUsed;
 
@@ -159,7 +157,7 @@ void KCategoriesView::slotRefreshView(void)
       {
         accountUsed |= showSubAccounts(subAccounts, accountItem, i18n("Income"));
       }
-      if(accountUsed == false && m_hideCategory == true) {
+      if(accountUsed == false && KMyMoneySettings::hideUnusedCategory() == true) {
         // in case hide category is on and the account or any of it's
         // subaccounts has no split, we can safely remove it and all
         // it's sub-ordinate accounts from the list
@@ -183,7 +181,7 @@ void KCategoriesView::slotRefreshView(void)
       {
         accountUsed |= showSubAccounts(subAccounts, accountItem, i18n("Expense"));
       }
-      if(accountUsed == false && m_hideCategory == true) {
+      if(accountUsed == false && KMyMoneySettings::hideUnusedCategory() == true) {
         // in case hide category is on and the account or any of it's
         // subaccounts has no split, we can safely remove it and all
         // it's sub-ordinate accounts from the list
@@ -222,7 +220,7 @@ const bool KCategoriesView::showSubAccounts(const QCStringList& accounts, KAccou
       thisAccountUsed |= showSubAccounts(m_accountMap[*it].accountList(), accountItem, typeName);
     }
 
-    if(thisAccountUsed == false && m_hideCategory == true) {
+    if(thisAccountUsed == false && KMyMoneySettings::hideUnusedCategory() == true) {
       // in case hide category is on and the account nor any of it's
       // subaccounts has a split, we can safely remove it and all
       // it's sub-ordinate accounts from the list

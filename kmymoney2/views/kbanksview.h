@@ -59,7 +59,6 @@ private:
   bool m_suspendUpdate;
   // bool m_bSignals;
   bool m_bViewNormalAccountsView;
-  bool m_hideCategory;
   QCString m_selectedInstitution;
   bool m_bSelectedInstitution;
   void refresh(const QCString& selectAccount);

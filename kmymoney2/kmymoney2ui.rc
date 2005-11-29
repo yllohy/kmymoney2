@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="6" name="kmymoney2" >
+<kpartgui version="7" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Menu icon="fileimport" append="save_merge" name="import" >
@@ -27,6 +27,8 @@
   </Menu>
   <Menu name="view" >
    <Action name="view_show_transaction_detail" />
+   <Action name="view_hide_reconciled_transactions" />
+   <Action name="view_hide_unused_categories" />
   </Menu>
   <Menu name="institution" >
    <text>&amp;Institution</text>

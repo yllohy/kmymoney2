@@ -266,6 +266,8 @@ void KMyMoney2App::initActions()
   // The View menu
   // *************
   new KToggleAction(i18n("Show Transaction Detail"), KShortcut("Ctrl+T"), actionCollection(), "view_show_transaction_detail");
+  new KToggleAction(i18n("Hide reconciled transactions"), "", KShortcut("Ctrl+R"), this, SLOT(slotHideReconciledTransactions()), actionCollection(), "view_hide_reconciled_transactions");
+  new KToggleAction(i18n("Hide unused categories"), "", KShortcut("Ctrl+U"), this, SLOT(slotHideUnusedCategories()), actionCollection(), "view_hide_unused_categories");
 
   // *********************
   // The institutions menu
@@ -280,7 +282,7 @@ void KMyMoney2App::initActions()
   new KAction(i18n("New account..."), "account_add", 0, this, SLOT(slotAccountNew()), actionCollection(), "account_new");
   new KAction(i18n("New category..."), "category_add", 0, this, SLOT(slotCategoryNew()), actionCollection(), "category_new");
   new KAction(i18n("Open ledger"), "account", 0, this, SLOT(slotAccountOpen()), actionCollection(), "account_open");
-  new KAction(i18n("Reconcile..."), "reconcile", 0, this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
+  new KAction(i18n("Reconcile..."), "reconcile", KShortcut("Ctrl+Shift+R"), this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
   new KAction(i18n("Delete account..."), "delete", 0, this, SLOT(slotAccountDelete()), actionCollection(), "account_delete");
   new KAction(i18n("Edit account..."), "edit", 0, this, SLOT(slotAccountEdit()), actionCollection(), "account_edit");
 
@@ -344,8 +346,9 @@ void KMyMoney2App::initActions()
 #endif
 
   // Setup transaction detail switch
-  config->setGroup("List Options");
-  toggleAction("view_show_transaction_detail")->setChecked(config->readBoolEntry("ShowRegisterDetailed", true));
+  toggleAction("view_show_transaction_detail")->setChecked(KMyMoneySettings::showRegisterDetailed());
+  toggleAction("view_hide_reconciled_transactions")->setChecked(KMyMoneySettings::hideReconciledTransactions());
+  toggleAction("view_hide_unused_categories")->setChecked(KMyMoneySettings::hideUnusedCategory());
 
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
   createGUI(QString::null, false);
@@ -437,6 +440,9 @@ void KMyMoney2App::readOptions()
 
   toggleAction("options_show_statusbar")->setChecked(config->readBoolEntry("Show Statusbar", true));
   slotViewStatusBar();
+
+  toggleAction("view_hide_reconciled_transactions")->setChecked(KMyMoneySettings::hideReconciledTransactions());
+  toggleAction("view_hide_unused_categories")->setChecked(KMyMoneySettings::hideUnusedCategory());
 
   // bar position settings
   KToolBar::BarPosition toolBarPos;
@@ -940,6 +946,17 @@ void KMyMoney2App::slotViewStatusBar()
   slotStatusMsg(prevMsg);
 }
 
+void KMyMoney2App::slotHideReconciledTransactions(void)
+{
+  KMyMoneySettings::setHideReconciledTransactions(toggleAction("view_hide_reconciled_transactions")->isChecked());
+  myMoneyView->slotRefreshViews();
+}
+
+void KMyMoney2App::slotHideUnusedCategories(void)
+{
+  KMyMoneySettings::setHideUnusedCategory(toggleAction("view_hide_unused_categories")->isChecked());
+  myMoneyView->slotRefreshViews();
+}
 
 const QString KMyMoney2App::slotStatusMsg(const QString &text)
 {

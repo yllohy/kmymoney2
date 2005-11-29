@@ -492,6 +492,16 @@ public slots:
   void slotViewStatusBar();
 
   /**
+    * Toggles the hide reconciled transactions setting
+    */
+  void slotHideReconciledTransactions(void);
+
+  /**
+    * Toggles the hide unused categories setting
+    */
+  void slotHideUnusedCategories(void);
+
+  /**
     * changes the statusbar contents for the standard label permanently,
     * used to indicate current actions. Returns the previous value for
     * 'stacked' usage.
