@@ -1373,7 +1373,9 @@ void KMyMoneyView::fixLoanAccount(MyMoneyAccount acc)
              "closed.").arg(acc.name()),
         i18n("Account problem"));
     KNewLoanWizard* wiz = new KNewLoanWizard(this);
+    connect(wiz, SIGNAL(newCategory(MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&)));
     wiz->loadWidgets(acc);
+
     if(wiz->exec() == QDialog::Accepted) {
       MyMoneyAccount newAcc = wiz->account();
       acc.setAccountType(newAcc.accountType());

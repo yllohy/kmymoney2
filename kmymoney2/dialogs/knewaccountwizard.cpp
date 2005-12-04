@@ -154,6 +154,8 @@ void KNewAccountWizard::next()
     hide();
 
     KNewLoanWizard* loanWizard = new KNewLoanWizard(0);
+    connect(loanWizard, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
+
     if((rc = loanWizard->exec()) == QDialog::Accepted) {
       m_account = loanWizard->account();
       // copy relevant data into my widgets so that

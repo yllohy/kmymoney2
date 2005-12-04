@@ -2178,6 +2178,7 @@ void KLedgerView::slotCreateSchedule(void)
     // display the dialog and await response
     KEditScheduleDialog *m_keditscheddlg = new KEditScheduleDialog(action,
       schedule, this);
+    connect(m_keditscheddlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
     if (m_keditscheddlg->exec() == QDialog::Accepted) {
       schedule = m_keditscheddlg->schedule();

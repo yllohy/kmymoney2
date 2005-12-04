@@ -149,6 +149,7 @@ void KAccountSelectDlg::slotCreateAccount(void)
     // wizard selected
     KNewAccountWizard* wizard = new KNewAccountWizard(this);
     connect(wizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotCreateInstitution()));
+    // FIXME: connect the newCategory() signal as well
 
     wizard->setAccountName(m_account.name());
     wizard->setAccountType(m_account.accountType());

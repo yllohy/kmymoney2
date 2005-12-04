@@ -2052,8 +2052,23 @@ void KMyMoney2App::slotInstitutionDelete(void)
 
 void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal, MyMoneySchedule& schedule)
 {
+
   try
   {
+    int pos;
+    // check for ':' in the name and use it as separator for a hierarchy
+    while((pos = newAccount.name().find(':')) != -1) {
+      QString part = newAccount.name().left(pos);
+      QString remainder = newAccount.name().mid(pos+1);
+      newAccount.setName(part);
+
+      MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
+      parentAccount = newAccount;
+      newAccount.setParentAccountId(QCString());  // make sure, there's no parent
+      newAccount.clearId();                       // and no id set for adding
+      newAccount.setName(remainder);
+    }
+
     // Check the opening balance
     if (openingBal.isPositive() && newAccount.accountGroup() == MyMoneyAccount::Liability)
     {
@@ -2141,17 +2156,12 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
   }
 }
 
-void KMyMoney2App::slotCategoryNew(void)
+void KMyMoney2App::slotCategoryNew(MyMoneyAccount& account, const MyMoneyAccount& parent)
 {
-  MyMoneyAccount account;
-
-  // Preselect the parent account by looking at the current selected account/category
-  if(!m_selectedAccount.id().isEmpty()
-  && (m_selectedAccount.accountGroup() == MyMoneyAccount::Expense
-    || m_selectedAccount.accountGroup() == MyMoneyAccount::Income)) {
+  if(!parent.id().isEmpty()) {
     try {
-      MyMoneyFile* file = MyMoneyFile::instance();
-      MyMoneyAccount parent = file->account(m_selectedAccount.id());
+      // make sure parent account exists
+      MyMoneyFile::instance()->account(parent.id());
       account.setParentAccountId(parent.id());
       account.setAccountType( parent.accountType() );
     } catch(MyMoneyException *e) {
@@ -2162,13 +2172,33 @@ void KMyMoney2App::slotCategoryNew(void)
   KNewAccountDlg dialog(account, false, true, 0, 0, i18n("Create a new Category"));
 
   if(dialog.exec() == QDialog::Accepted) {
-    MyMoneyAccount newAccount, parentAccount, brokerageAccount;
-    newAccount = dialog.account();
+    MyMoneyAccount parentAccount, brokerageAccount;
+    account = dialog.account();
     parentAccount = dialog.parentAccount();
     MyMoneySchedule schedule;
 
-    createAccount(newAccount, parentAccount, brokerageAccount, MyMoneyMoney(0,1), schedule);
+    createAccount(account, parentAccount, brokerageAccount, MyMoneyMoney(0,1), schedule);
   }
+}
+
+void KMyMoney2App::slotCategoryNew(void)
+{
+  MyMoneyAccount parent;
+  MyMoneyAccount account;
+
+  // Preselect the parent account by looking at the current selected account/category
+  if(!m_selectedAccount.id().isEmpty()
+  && (m_selectedAccount.accountGroup() == MyMoneyAccount::Expense
+    || m_selectedAccount.accountGroup() == MyMoneyAccount::Income)) {
+    try {
+      MyMoneyFile* file = MyMoneyFile::instance();
+      parent = file->account(m_selectedAccount.id());
+    } catch(MyMoneyException *e) {
+      delete e;
+    }
+  }
+
+  slotCategoryNew(account, parent);
 }
 
 void KMyMoney2App::slotAccountNew(void)
@@ -2176,6 +2206,7 @@ void KMyMoney2App::slotAccountNew(void)
   KNewAccountWizard newAccountWizard;
 
   connect(&newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotInstitutionNew()));
+  connect(&newAccountWizard, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
 
   newAccountWizard.setAccountName(QString());
   // Preselect the current selected institution (or none)
@@ -2419,6 +2450,7 @@ void KMyMoney2App::scheduleNew(const QCString& scheduleType)
   MyMoneySchedule schedule;
 
   KEditScheduleDialog dlg(scheduleType, schedule, this);
+  connect(&dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
 
   if (dlg.exec() == QDialog::Accepted) {
     schedule = dlg.schedule();
@@ -2480,6 +2512,8 @@ void KMyMoney2App::slotScheduleEdit(void)
         case MyMoneySchedule::TYPE_DEPOSIT:
         case MyMoneySchedule::TYPE_TRANSFER:
           sched_dlg = new KEditScheduleDialog(action, schedule, this);
+          connect(sched_dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+
           if (sched_dlg->exec() == QDialog::Accepted) {
             MyMoneySchedule sched = sched_dlg->schedule();
             MyMoneyFile::instance()->modifySchedule(sched);
@@ -2499,6 +2533,8 @@ void KMyMoney2App::slotScheduleEdit(void)
         case MyMoneySchedule::TYPE_ANY:
           break;
       }
+      delete sched_dlg;
+      delete loan_wiz;
 
     } catch (MyMoneyException *e) {
       KMessageBox::detailedSorry(this, i18n("Unable to modify schedule '%1'").arg(m_selectedSchedule.name()), e->what());
@@ -2535,8 +2571,9 @@ void KMyMoney2App::slotScheduleEnter(void)
     try {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
 
-      KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule);
-      dlg->exec();
+      KEnterScheduleDialog dlg(this, schedule);
+      connect(&dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+      dlg.exec();
 
     } catch (MyMoneyException *e) {
       KMessageBox::detailedSorry(this, i18n("Unable to enter transaction for schedule '%1'").arg(m_selectedSchedule.name()), e->what());
@@ -2829,6 +2866,7 @@ void KMyMoney2App::slotCheckSchedules(void)
           {
             // 0.8 will feature a list of schedules for a better ui
             KEnterScheduleDialog dlg(0, schedule, schedule.nextPayment(schedule.lastPayment()));
+            connect(&dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
             if (!dlg.exec())
             {
               int r = KMessageBox::warningYesNo(this, i18n("Are you sure you wish to stop this schedule from being entered into the register?\n\nKMyMoney will prompt you again next time it starts unless you manually enter it later."));

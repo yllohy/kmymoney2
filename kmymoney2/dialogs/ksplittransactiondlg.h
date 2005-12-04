@@ -38,7 +38,6 @@
 #include "../mymoney/mymoneymoney.h"
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
-class kMyMoneyCategory;
 class kMyMoneyEdit;
 class kMyMoneyLineEdit;
 
@@ -46,10 +45,10 @@ class kMyMoneyLineEdit;
 
 /**
   * @author Thomas Baumgart
-  * @todo Add account (hierarchy) upon new category
   */
 
-class KSplitTransactionDlg : public kSplitTransactionDlgDecl  {
+class KSplitTransactionDlg : public kSplitTransactionDlgDecl
+{
   Q_OBJECT
 
 public:
@@ -105,7 +104,23 @@ private slots:
   /// used internally to setup the initial size of all widgets
   void initSize(void);
 
-private:
+signals:
+  /**
+    * This signal is emitted, when a new category name has been
+    * entered by the user and this name is not known as account
+    * by the MyMoneyFile object.
+    * Before the signal is emitted, a MyMoneyAccount is constructed
+    * by this object and filled with the desired name. All other members
+    * of MyMoneyAccount will remain in their default state. Upon return,
+    * the connected slot should have created the object in the MyMoneyFile
+    * engine and filled the member @p id.
+    *
+    * @param acc reference to MyMoneyAccount object that caries the name
+    *            and will return information about the created category.
+    */
+  void newCategory(MyMoneyAccount& acc);
+
+  private:
   /**
     * This member keeps a copy of the current selected transaction
     */

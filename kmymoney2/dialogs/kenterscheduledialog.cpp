@@ -70,6 +70,8 @@ KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedul
   connect(m_to, SIGNAL(accountSelected(const QCString&)),
     this, SLOT(slotToActivated(const QCString&)));
   connect(m_date, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkDateInPeriod(const QDate&)));
+
+  connect(m_category, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 }
 
 KEnterScheduleDialog::~KEnterScheduleDialog()
@@ -303,6 +305,7 @@ void KEnterScheduleDialog::slotSplitClicked()
                                                          isDeposit,
                                                          0,
                                                          this);
+    connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
     // Avoid focusIn() events.
     m_memo->setFocus();

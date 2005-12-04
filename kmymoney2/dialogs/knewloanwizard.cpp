@@ -1011,6 +1011,7 @@ void KNewLoanWizard::slotAdditionalFees(void)
   MyMoneyAccount account(QCString("Phony-ID"), MyMoneyAccount());
 
   KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction, account, false, !m_borrowButton->isChecked(), MyMoneyMoney(0));
+  connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
   if(dlg->exec() == QDialog::Accepted) {
     m_transaction = dlg->transaction();

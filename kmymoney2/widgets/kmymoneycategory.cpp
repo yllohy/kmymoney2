@@ -154,37 +154,21 @@ void kMyMoneyCategory::checkForNewCategory(void)
   }
 
   if(newAccount && !m_displayOnly) {
+    MyMoneyAccount acc;
     m_inCreation = true;
 
     if(KMessageBox::questionYesNo(this,
-          QString("<p>")+i18n("The category <b>%1</b> currently does not exist. "
-                "Do you want to create it?").arg(text()), i18n("Create category"),
-                KStdGuiItem::yes(), KStdGuiItem::no(), "CreateNewCategories") == KMessageBox::Yes) {
-      MyMoneyAccount acc;
-      int rc;
-      acc.setName(text());
+      QString("<p>")+i18n("The category <b>%1</b> currently does not exist. "
+           "Do you want to create it?").arg(text()), i18n("Create category"),
+      KStdGuiItem::yes(), KStdGuiItem::no(), "CreateNewCategories") == KMessageBox::Yes) {
+        acc.setName(text());
+        // FIXME maybe add some logic that notifies the user (and through the ML us)
+        // that no slot is connected to this signal.
+        emit newCategory(acc);
 
-      KNewAccountDlg dlg(acc, false, true);
-      rc = dlg.exec();
-      if(rc == QDialog::Accepted) {
-        try {
-          MyMoneyAccount parentAccount;
-          acc = dlg.account();
-          parentAccount = dlg.parentAccount();
-          MyMoneyFile::instance()->addAccount(acc, parentAccount);
-          slotSelectAccount(acc.id());
+    }
+    slotSelectAccount(acc.id());
 
-        } catch(MyMoneyException *e) {
-          KMessageBox::detailedSorry(0, i18n("Unable to add category"),
-              (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
-          delete e;
-          slotSelectAccount(QCString());
-        }
-      } else
-        slotSelectAccount(QCString());
-
-    } else
-      slotSelectAccount(QCString());
     m_inCreation = false;
   }
 }
@@ -254,6 +238,10 @@ void kMyMoneyCategory::slotSelectAccount(const QCString& id)
     m_id = id;
     emit categoryChanged(id);
   }
+}
+
+void kMyMoneyCategory::connectNotify(const char * /* signal */)
+{
 }
 
 #include "kmymoneycategory.moc"

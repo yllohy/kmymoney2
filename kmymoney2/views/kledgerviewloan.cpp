@@ -519,6 +519,7 @@ void KLedgerViewLoan::createEditWidgets(void)
   if(!m_editCategory) {
     m_editCategory = new kMyMoneyCategory(0, "editCategory");
     connect(m_editCategory, SIGNAL(categoryChanged(const QCString&)), this, SLOT(slotCategoryChanged(const QCString&)));
+    connect(m_editCategory, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
   }
   if(!m_editMemo) {
     m_editMemo = new kMyMoneyLineEdit(0, "editMemo", AlignLeft|AlignVCenter);
@@ -925,6 +926,7 @@ void KLedgerViewLoan::slotOpenSplitDialog(void)
                                                        isDeposit,
                                                        0,
                                                        this);
+  connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
   if(dlg->exec()) {
     reloadEditWidgets(dlg->transaction());

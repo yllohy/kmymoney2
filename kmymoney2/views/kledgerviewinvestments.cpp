@@ -982,6 +982,7 @@ void KLedgerViewInvestments::createEditWidgets()
     m_editFeeCategory = new kMyMoneyCategory(0, "editFeeCategory", KMyMoneyUtils::expense);
     m_editMapper.setMapping(m_editFeeCategory, FeeCategory);
     connect(m_editFeeCategory, SIGNAL(categoryChanged(const QCString&)), &m_editMapper, SLOT(map()));
+    connect(m_editCategory, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
   }
 }
 

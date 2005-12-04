@@ -56,7 +56,7 @@ email                : mte@users.sourceforge.net
   #include "../dialogs/ieditscheduledialog.h"
   #include "../widgets/kmymoneyedit.h"
   #define TRY try {
-  #define CATCH } catch (MyMoneyException *e) { 
+  #define CATCH } catch (MyMoneyException *e) {
   #define PASS } catch (MyMoneyException *e) { throw e; }
 #else
   #include "mymoneymoney.h"
@@ -1015,10 +1015,10 @@ void MyMoneyGncReader::setFileHideFactor () {
       m_fileHideFactor = QInputDialog::getDouble (
         i18n ("Disguise your wealth"),
         i18n ("Each monetary value on your file will be multiplied by a random number between 0.01 and 1.99\n"
-	             "with a different value used for each transaction. In addition, to further disguise the true\n"
-		             "values, you may enter a number between %1 and %2 which will be applied to all values.\n"
-		             "These numbers will not be stored in the file.").arg(MINFILEHIDEF).arg(MAXFILEHIDEF),
-        	(1.0 + (int)(1000.0 * rand() / (RAND_MAX + 1.0))) / 100.0,
+                     "with a different value used for each transaction. In addition, to further disguise the true\n"
+                             "values, you may enter a number between %1 and %2 which will be applied to all values.\n"
+                             "These numbers will not be stored in the file.").arg(MINFILEHIDEF).arg(MAXFILEHIDEF),
+                (1.0 + (int)(1000.0 * rand() / (RAND_MAX + 1.0))) / 100.0,
         MINFILEHIDEF, MAXFILEHIDEF, 2);
     }
 }
@@ -1386,7 +1386,7 @@ MyMoneyTransaction MyMoneyGncReader::convertTemplateTransaction (const QString s
   }
   // determine the action type for the splits and link them to the template tx
   /*QCString negativeActionType, positiveActionType;
-  if (!m_splitList.isEmpty()) { // if there are asset splits 
+  if (!m_splitList.isEmpty()) { // if there are asset splits
     positiveActionType = MyMoneySplit::ActionDeposit;
     negativeActionType = MyMoneySplit::ActionWithdrawal;
   } else { // if there are liability splits
@@ -1751,7 +1751,7 @@ void MyMoneyGncReader::terminate () {
       mainCurrency = it.key();
       }
   }
-  
+
   if (mainCurrency != "") {
     /* fix for qt3.3.4?. According to Qt docs, this should return the enum id of the button pressed, and
        indeed it used to do so. However now it seems to return the index of the button. In this case it doesn't matter,
@@ -1808,7 +1808,9 @@ void MyMoneyGncReader::terminate () {
                     QMessageBox::NoButton);
     switch (mb.exec()) {
     case QMessageBox::Yes:
-        KEditScheduleDialog *s = new  KEditScheduleDialog (sc.transaction().splits()[0].action(), sc, 0, "");;
+        KEditScheduleDialog *s = new  KEditScheduleDialog (sc.transaction().splits()[0].action(), sc, 0, "");
+        // FIXME: connect newCategory to something useful, so that we
+        // can create categories from within the dialog
         if (s->exec())
           m_storage->modifySchedule (s->schedule());
         delete s;

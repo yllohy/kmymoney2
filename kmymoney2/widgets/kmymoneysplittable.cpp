@@ -704,6 +704,7 @@ QWidget* kMyMoneySplitTable::createEditWidgets(void)
 
   m_editCategory = new kMyMoneyCategory(0);
   m_editCategory->setFont(cellFont);
+  connect(m_editCategory, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
   m_editMemo = new kMyMoneyLineEdit(0, 0, AlignLeft|AlignVCenter);
   m_editMemo->setFont(cellFont);

@@ -238,6 +238,21 @@ protected slots:
   void slotCategoryNew(void);
 
   /**
+    * Brings up the new category editor and saves the information.
+    * The dialog will be preset with the name and parent account.
+    *
+    * @param account reference of category to be created. The @p name member
+    *                should be filled by the caller. The object will be filled
+    *                with additional information during the creation process
+    *                esp. the @p id member.
+    * @param parent reference to parent account (defaults to none)
+    *
+    * @note Typically, this slot can be connected to the
+    *       kMyMoneyCategory::newCategory(MyMoneyAccount&) signal.
+    */
+  void slotCategoryNew(MyMoneyAccount& account, const MyMoneyAccount& parent = MyMoneyAccount());
+
+  /**
     * Calls the print logic for the current view
     */
   void slotPrintView(void);

@@ -77,20 +77,20 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   setCaption( i18n( "Account register" ) );
 
   KIconLoader *il = KGlobal::iconLoader();
-  
+
   m_toolbar = new KToolBar(this, "LedgerToolBar", true);
   m_toolbar->setIconText(KToolBar::IconTextRight);
 
   m_accountComboBox = new kMyMoneyAccountCombo(m_toolbar, "AccountCombo");
   m_toolbar->insertWidget(1,100,m_accountComboBox);
-  
+
   m_toolbar->insertButton(il->loadIcon("document", KIcon::Small, KIcon::SizeSmall),
                         1,true,i18n("Account"));
   //m_toolbar->setMaximumSize(50,20);
   m_toolbar->alignItemRight(1);
   m_toolbar->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
   // KToolBarButton* m_buttonAccount = m_toolbar->getButton(1);
-  
+
   m_viewLayout->addWidget(m_toolbar);
 
   m_accountStack = new QWidgetStack(this, "AccountStack");
@@ -102,6 +102,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+  connect(view, SIGNAL(newCategory(MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&)));
+
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Savings account
@@ -391,13 +393,13 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
     if(isVisible())
       kmymoney2->selectAccount();
   }
-  
+
   // Now that the ledger view has changed, we have to update the "account" button
   // to point to the correct ledger's account menu.
   KLedgerView* ledgerview = dynamic_cast<KLedgerView*>(m_accountStack->visibleWidget());
   if ( ledgerview )
     m_toolbar->getButton(1)->setPopup(ledgerview->accountMenu());
-    
+
   return rc;
 }
 

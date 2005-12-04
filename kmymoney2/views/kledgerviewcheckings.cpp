@@ -1091,6 +1091,7 @@ void KLedgerViewCheckings::createEditWidgets(void)
   if(!m_editCategory) {
     m_editCategory = new kMyMoneyCategory(0, "Category");
     connect(m_editCategory, SIGNAL(categoryChanged(const QCString&)), this, SLOT(slotCategoryChanged(const QCString&)));
+    connect(m_editCategory, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
   }
   if(!m_editMemo) {
     m_editMemo = new kMyMoneyLineEdit(0, "Memo", AlignLeft|AlignVCenter);
@@ -1417,7 +1418,8 @@ void KLedgerViewCheckings::slotReconciliation(void)
   if(!statementDate.isValid())
     statementDate = QDate::currentDate();
 */
-  KEndingBalanceDlg dlg(m_account);
+  KEndingBalanceDlg dlg(m_account, this);
+  connect(&dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
   if(dlg.exec()) {
     QCString transactionId;
@@ -1730,6 +1732,7 @@ void KLedgerViewCheckings::slotOpenSplitDialog(void)
                                                        transactionDirection(m_split) == Credit,
                                                        0,
                                                        this);
+  connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
   if(dlg->exec()) {
     reloadEditWidgets(dlg->transaction());

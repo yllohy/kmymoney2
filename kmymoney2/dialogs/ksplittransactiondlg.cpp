@@ -49,7 +49,6 @@
 #include "ksplittransactiondlg.h"
 #include "../widgets/kmymoneysplittable.h"
 #include "../dialogs/ksplitcorrectiondlg.h"
-#include "../widgets/kmymoneycategory.h"
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneylineedit.h"
 
@@ -113,6 +112,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   // connect signals with slots
   connect(transactionsTable, SIGNAL(transactionChanged(const MyMoneyTransaction&)),
           this, SLOT(slotSetTransaction(const MyMoneyTransaction&)));
+  connect(transactionsTable, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
   connect(transactionsTable, SIGNAL(returnPressed()), this, SLOT(accept()));
   connect(transactionsTable, SIGNAL(escapePressed()), this, SLOT(reject()));
 

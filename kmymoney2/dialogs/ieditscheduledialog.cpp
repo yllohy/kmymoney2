@@ -183,6 +183,8 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   connect(m_qlineeditMemo, SIGNAL(textChanged(const QString&)),
     this, SLOT(slotMemoChanged(const QString&)));
 
+  connect(m_category, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
+
   slotCheckOkEnabled();
 }
 
@@ -357,6 +359,7 @@ void KEditScheduleDialog::slotSplitClicked()
                                                          isDeposit,
                                                          calculatedValue,
                                                          this);
+    connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
     // Avoid focusIn() events.
     m_qlineeditMemo->setFocus();

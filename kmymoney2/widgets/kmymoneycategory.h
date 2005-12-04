@@ -77,8 +77,16 @@ signals:
     * This signal is emitted, when a new category name has been
     * entered by the user and this name is not known as account
     * by the MyMoneyFile object.
+    * Before the signal is emitted, a MyMoneyAccount is constructed
+    * by this object and filled with the desired name. All other members
+    * of MyMoneyAccount will remain in their default state. Upon return,
+    * the connected slot should have created the object in the MyMoneyFile
+    * engine and filled the member @p id.
+    *
+    * @param acc reference to MyMoneyAccount object that caries the name
+    *            and will return information about the created category.
     */
-  // void newCategory(const QString& category);
+  void newCategory(MyMoneyAccount& acc);
 
   /**
     * This signal is emitted when the user selected a different category.
@@ -133,6 +141,7 @@ protected:
   virtual void keyPressEvent( QKeyEvent * );
   void focusOutEvent(QFocusEvent *ev);
   void focusInEvent(QFocusEvent *ev);
+  void connectNotify(const char * signal);
 
 private:
   void checkForNewCategory(void);
