@@ -44,7 +44,8 @@
 </para>
 
 <para>
-	Enter the category name any notes and click on <guibutton>OK</guibutton> to save the new category.
+	Enter the category name any notes and click on <guibutton>OK</guibutton> to save the new category. To create a complete hierarchy of accounts, separate
+the names by colons (:) as in <emphasis>Bills:Car:Gasoline</emphasis>.
 </para>
 </sect1>
 
