@@ -1,3 +1,7 @@
+2005-12-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by Bjorn Helgaas entitled 'remove
+    superfluous QString() usage'
+
 2005-12-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reworked the category creation from within the widget
   * Allow creation of complete category hierarchy in one step from
