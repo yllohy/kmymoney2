@@ -82,7 +82,7 @@ signals:
     * @param acc reference to MyMoneyAccount object that caries the name
     *            and will return information about the created category.
     */
-  void newCategory(MyMoneyAccount&);
+  void newCategory(MyMoneyAccount& acc);
 
 private:
   MyMoneyAccount m_account;
