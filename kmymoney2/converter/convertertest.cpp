@@ -114,12 +114,12 @@ void ConverterTest::setUp () {
   acLiability = (MyMoneyFile::instance()->liability().id());
   acExpense = (MyMoneyFile::instance()->expense().id());
   acIncome = (MyMoneyFile::instance()->income().id());
-  acChecking = makeAccount(QString("Checking Account"),MyMoneyAccount::Checkings,moCheckingOpen,QDate(2004,5,15),acAsset);
-  acCredit = makeAccount(QString("Credit Card"),MyMoneyAccount::CreditCard,moCreditOpen,QDate(2004,7,15),acLiability);
-  acSolo = makeAccount(QString("Solo"),MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
-  acParent = makeAccount(QString("Parent"),MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
-  acChild = makeAccount(QString("Child"),MyMoneyAccount::Expense,0,QDate(2004,2,11),acParent);
-  acForeign = makeAccount(QString("Foreign"),MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
+  acChecking = makeAccount("Checking Account",MyMoneyAccount::Checkings,moCheckingOpen,QDate(2004,5,15),acAsset);
+  acCredit = makeAccount("Credit Card",MyMoneyAccount::CreditCard,moCreditOpen,QDate(2004,7,15),acLiability);
+  acSolo = makeAccount("Solo",MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
+  acParent = makeAccount("Parent",MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
+  acChild = makeAccount("Child",MyMoneyAccount::Expense,0,QDate(2004,2,11),acParent);
+  acForeign = makeAccount("Foreign",MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
   
   MyMoneyInstitution i("Bank of the World","","","","","","");
   MyMoneyKeyValueContainer ofxsettings;

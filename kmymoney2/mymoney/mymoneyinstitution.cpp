@@ -98,23 +98,23 @@ void MyMoneyInstitution::writeXML(QDomDocument& document, QDomElement& parent) c
 {
   QDomElement el = document.createElement("INSTITUTION");
 
-  el.setAttribute(QString("id"), m_id);
-  el.setAttribute(QString("name"), m_name);
-  el.setAttribute(QString("manager"), m_manager);
-  el.setAttribute(QString("sortcode"), m_sortcode);
+  el.setAttribute("id", m_id);
+  el.setAttribute("name", m_name);
+  el.setAttribute("manager", m_manager);
+  el.setAttribute("sortcode", m_sortcode);
 
   QDomElement address = document.createElement("ADDRESS");
-  address.setAttribute(QString("street"), m_street);
-  address.setAttribute(QString("city"), m_town);
-  address.setAttribute(QString("zip"), m_postcode);
-  address.setAttribute(QString("telephone"), m_telephone);
+  address.setAttribute("street", m_street);
+  address.setAttribute("city", m_town);
+  address.setAttribute("zip", m_postcode);
+  address.setAttribute("telephone", m_telephone);
   el.appendChild(address);
 
 
   QDomElement accounts = document.createElement("ACCOUNTIDS");
   for(QCStringList::ConstIterator it = accountList().begin(); it != accountList().end(); ++it){
     QDomElement temp = document.createElement("ACCOUNTID");
-    temp.setAttribute(QString("id"), (*it));
+    temp.setAttribute("id", (*it));
     accounts.appendChild(temp);
   }
   el.appendChild(accounts);
@@ -133,17 +133,17 @@ void MyMoneyInstitution::writeXML(QDomDocument& document, QDomElement& parent) c
 
 void MyMoneyInstitution::readXML(const QDomElement& node)
 {
-  if(QString("INSTITUTION") != node.tagName())
+  if("INSTITUTION" != node.tagName())
     throw new MYMONEYEXCEPTION("Node was not INSTITUTION");
 
-  m_id = QCStringEmpty(node.attribute(QString("id")));
+  m_id = QCStringEmpty(node.attribute("id"));
   Q_ASSERT(m_id.size());
 
-  m_sortcode = node.attribute(QString("sortcode"));
+  m_sortcode = node.attribute("sortcode");
   m_name = node.attribute("name");
   m_manager = node.attribute("manager");
 
-  QDomNodeList nodeList = node.elementsByTagName(QString("ADDRESS"));
+  QDomNodeList nodeList = node.elementsByTagName("ADDRESS");
   if(nodeList.count() == 0) {
     QString msg = QString("No ADDRESS in institution %1").arg(m_name);
     throw new MYMONEYEXCEPTION(msg);
@@ -157,17 +157,17 @@ void MyMoneyInstitution::readXML(const QDomElement& node)
 
   m_accountList.clear();
 
-  nodeList = node.elementsByTagName(QString("ACCOUNTIDS"));
+  nodeList = node.elementsByTagName("ACCOUNTIDS");
   if(nodeList.count() > 0) {
-    nodeList = nodeList.item(0).toElement().elementsByTagName(QString("ACCOUNTID"));
+    nodeList = nodeList.item(0).toElement().elementsByTagName("ACCOUNTID");
     for(unsigned int i = 0; i < nodeList.count(); ++i) {
-      m_accountList << QCString(nodeList.item(i).toElement().attribute(QString("id")));
+      m_accountList << QCString(nodeList.item(i).toElement().attribute("id"));
     }
   }
 
   m_ofxConnectionSettings = MyMoneyKeyValueContainer();
 
-  nodeList = node.elementsByTagName(QString("OFXSETTINGS"));
+  nodeList = node.elementsByTagName("OFXSETTINGS");
   if(nodeList.count() > 0) {
     QDomNamedNodeMap attributes = nodeList.item(0).toElement().attributes();
     for(unsigned int i = 0; i < attributes.count(); ++i) {
@@ -176,4 +176,3 @@ void MyMoneyInstitution::readXML(const QDomElement& node)
     }
   }
 }
-

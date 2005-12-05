@@ -224,7 +224,7 @@ void MyMoneyAccountLoan::setInterestRate(const QDate& date, const MyMoneyMoney& 
 const MyMoneyAccountLoan::interestDueE MyMoneyAccountLoan::interestCalculation(void) const
 {
   QString payTime(value("interest-calculation"));
-  if(payTime == QString("paymentDue"))
+  if(payTime == "paymentDue")
     return paymentDue;
   return paymentReceived;
 }
@@ -356,19 +356,19 @@ void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
 {
   QDomElement el = document.createElement("ACCOUNT");
 
-  el.setAttribute(QString("parentaccount"), parentAccountId());
-  el.setAttribute(QString("lastreconciled"), dateToString(lastReconciliationDate()));
-  el.setAttribute(QString("lastmodified"), dateToString(lastModified()));
-  el.setAttribute(QString("institution"), institutionId());
-  el.setAttribute(QString("opened"), dateToString(openingDate()));
-  el.setAttribute(QString("number"), number());
-  // el.setAttribute(QString("openingbalance"), openingBalance().toString());
-  el.setAttribute(QString("type"), accountType());
-  el.setAttribute(QString("id"), id());
-  el.setAttribute(QString("name"), name());
-  el.setAttribute(QString("description"), description());
+  el.setAttribute("parentaccount", parentAccountId());
+  el.setAttribute("lastreconciled", dateToString(lastReconciliationDate()));
+  el.setAttribute("lastmodified", dateToString(lastModified()));
+  el.setAttribute("institution", institutionId());
+  el.setAttribute("opened", dateToString(openingDate()));
+  el.setAttribute("number", number());
+  // el.setAttribute("openingbalance", openingBalance().toString());
+  el.setAttribute("type", accountType());
+  el.setAttribute("id", id());
+  el.setAttribute("name", name());
+  el.setAttribute("description", description());
   if(!currencyId().isEmpty())
-    el.setAttribute(QString("currency"), currencyId());
+    el.setAttribute("currency", currencyId());
 
   //Add in subaccount information, if this account has subaccounts.
   if(accountCount())
@@ -378,7 +378,7 @@ void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
     for(it = accountList().begin(); it != accountList().end(); ++it)
     {
       QDomElement temp = document.createElement("SUBACCOUNT");
-      temp.setAttribute(QString("id"), (*it));
+      temp.setAttribute("id", (*it));
       subAccounts.appendChild(temp);
     }
 
@@ -393,22 +393,22 @@ void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
 
 void MyMoneyAccount::readXML(const QDomElement& node)
 {
-  if(QString("ACCOUNT") != node.tagName())
+  if("ACCOUNT" != node.tagName())
     throw new MYMONEYEXCEPTION("Node was not ACCOUNT");
 
-  setName(node.attribute(QString("name")));
+  setName(node.attribute("name"));
 
   // qDebug("Reading information for account %s", acc.name().data());
 
-  setParentAccountId(QCStringEmpty(node.attribute(QString("parentaccount"))));
-  setLastModified(stringToDate(QStringEmpty(node.attribute(QString("lastmodified")))));
-  setLastReconciliationDate(stringToDate(QStringEmpty(node.attribute(QString("lastreconciled")))));
-  setInstitutionId(QCStringEmpty(node.attribute(QString("institution"))));
-  setNumber(QStringEmpty(node.attribute(QString("number"))));
-  setOpeningDate(stringToDate(QStringEmpty(node.attribute(QString("opened")))));
-  setCurrencyId(QCStringEmpty(node.attribute(QString("currency"))));
+  setParentAccountId(QCStringEmpty(node.attribute("parentaccount")));
+  setLastModified(stringToDate(QStringEmpty(node.attribute("lastmodified"))));
+  setLastReconciliationDate(stringToDate(QStringEmpty(node.attribute("lastreconciled"))));
+  setInstitutionId(QCStringEmpty(node.attribute("institution")));
+  setNumber(QStringEmpty(node.attribute("number")));
+  setOpeningDate(stringToDate(QStringEmpty(node.attribute("opened"))));
+  setCurrencyId(QCStringEmpty(node.attribute("currency")));
 
-  QString tmp = QStringEmpty(node.attribute(QString("type")));
+  QString tmp = QStringEmpty(node.attribute("type"));
   bool bOK = false;
   int type = tmp.toInt(&bOK);
   if(bOK) {
@@ -417,27 +417,26 @@ void MyMoneyAccount::readXML(const QDomElement& node)
     qWarning("XMLREADER: Account %s had invalid or no account type information.", name().data());
   }
 
-  // setOpeningBalance(MyMoneyMoney(node.attribute(QString("openingbalance"))));
-  setDescription(node.attribute(QString("description")));
+  // setOpeningBalance(MyMoneyMoney(node.attribute("openingbalance")));
+  setDescription(node.attribute("description"));
 
-  m_id = QCStringEmpty(node.attribute(QString("id")));
+  m_id = QCStringEmpty(node.attribute("id"));
   Q_ASSERT(m_id.size());
   // qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), type, acc.parentAccountId().data());
 
   //  Process any Sub-Account information found inside the account entry.
   m_accountList.clear();
-  QDomNodeList nodeList = node.elementsByTagName(QString("SUBACCOUNTS"));
+  QDomNodeList nodeList = node.elementsByTagName("SUBACCOUNTS");
   if(nodeList.count() > 0) {
-    nodeList = nodeList.item(0).toElement().elementsByTagName(QString("SUBACCOUNT"));
+    nodeList = nodeList.item(0).toElement().elementsByTagName("SUBACCOUNT");
     for(unsigned int i = 0; i < nodeList.count(); ++i) {
-      addAccountId(QCString(nodeList.item(i).toElement().attribute(QString("id"))));
+      addAccountId(QCString(nodeList.item(i).toElement().attribute("id")));
     }
   }
 
   // Process any key value pair
-  nodeList = node.elementsByTagName(QString("KEYVALUEPAIRS"));
+  nodeList = node.elementsByTagName("KEYVALUEPAIRS");
   if(nodeList.count() > 0) {
     MyMoneyKeyValueContainer::readXML(nodeList.item(0).toElement());
   }
 }
-

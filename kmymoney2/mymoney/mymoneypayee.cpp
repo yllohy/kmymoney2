@@ -93,17 +93,17 @@ void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
 {
   QDomElement el = document.createElement("PAYEE");
 
-  el.setAttribute(QString("name"), m_name);
-  el.setAttribute(QString("id"), m_id);
-  el.setAttribute(QString("reference"), m_reference);
-  el.setAttribute(QString("email"), m_email);
+  el.setAttribute("name", m_name);
+  el.setAttribute("id", m_id);
+  el.setAttribute("reference", m_reference);
+  el.setAttribute("email", m_email);
 
   QDomElement address = document.createElement("ADDRESS");
-  address.setAttribute(QString("street"), m_address);
-  address.setAttribute(QString("city"), m_city);
-  address.setAttribute(QString("postcode"), m_postcode);
-  address.setAttribute(QString("state"), m_state);
-  address.setAttribute(QString("telephone"), m_telephone);
+  address.setAttribute("street", m_address);
+  address.setAttribute("city", m_city);
+  address.setAttribute("postcode", m_postcode);
+  address.setAttribute("state", m_state);
+  address.setAttribute("telephone", m_telephone);
 
   el.appendChild(address);
 
@@ -112,7 +112,7 @@ void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
 
 void MyMoneyPayee::readXML(const QDomElement& node)
 {
-  if(QString("PAYEE") != node.tagName())
+  if("PAYEE" != node.tagName())
     throw new MYMONEYEXCEPTION("Node was not PAYEE");
 
   m_id = QCStringEmpty(node.attribute("id"));
@@ -122,7 +122,7 @@ void MyMoneyPayee::readXML(const QDomElement& node)
   m_reference = node.attribute("reference");
   m_email = node.attribute("email");
 
-  QDomNodeList nodeList = node.elementsByTagName(QString("ADDRESS"));
+  QDomNodeList nodeList = node.elementsByTagName("ADDRESS");
   if(nodeList.count() == 0) {
     QString msg = QString("No ADDRESS in payee %1").arg(m_name);
     throw new MYMONEYEXCEPTION(msg);

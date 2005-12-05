@@ -486,12 +486,12 @@ bool MyMoneyReport::read(const QDomElement& e)
   bool result = false;
   
   if ( 
-    QString("REPORT") == e.tagName() 
+    "REPORT" == e.tagName() 
     && 
     (
-      (  e.attribute("type").find(QString("pivottable 1.")) == 0 )
+      (  e.attribute("type").find("pivottable 1.") == 0 )
       ||
-      (  e.attribute("type").find(QString("querytable 1.")) == 0 )
+      (  e.attribute("type").find("querytable 1.") == 0 )
     )
   )      
   {
@@ -571,31 +571,31 @@ bool MyMoneyReport::read(const QDomElement& e)
     while(!child.isNull() && child.isElement())
     {
       QDomElement c = child.toElement();
-      if(QString("TEXT") == c.tagName() && c.hasAttribute("pattern"))
+      if("TEXT" == c.tagName() && c.hasAttribute("pattern"))
       {
         setTextFilter(QRegExp(c.attribute("pattern"),c.attribute("casesensitive","1").toUInt(),!c.attribute("regex","1").toUInt()));
       }
-      if(QString("TYPE") == c.tagName() && c.hasAttribute("type"))
+      if("TYPE" == c.tagName() && c.hasAttribute("type"))
       {
         i = kTypeText.findIndex(c.attribute("type"));
         if ( i != -1 )
           addType(i);
       }
-      if(QString("STATE") == c.tagName() && c.hasAttribute("state"))
+      if("STATE" == c.tagName() && c.hasAttribute("state"))
       {
         i = kStateText.findIndex(c.attribute("state"));
         if ( i != -1 )
           addState(i);
       }
-      if(QString("NUMBER") == c.tagName())
+      if("NUMBER" == c.tagName())
       {
         setNumberFilter(c.attribute("from"),c.attribute("to"));        	
       }
-      if(QString("AMOUNT") == c.tagName())
+      if("AMOUNT" == c.tagName())
       {
         setAmountFilter(MyMoneyMoney(c.attribute("from","0/100")),MyMoneyMoney(c.attribute("to","0/100")));        	
       }
-      if(QString("DATES") == c.tagName())
+      if("DATES" == c.tagName())
       {
         QDate from, to;
         if ( c.hasAttribute("from") )
@@ -604,19 +604,19 @@ bool MyMoneyReport::read(const QDomElement& e)
           to = QDate::fromString(c.attribute("to"),Qt::ISODate);
         MyMoneyTransactionFilter::setDateFilter(from,to);
       }
-      if(QString("PAYEE") == c.tagName() )
+      if("PAYEE" == c.tagName() )
       {
         addPayee(c.attribute("id").latin1());
       }
-      if(QString("CATEGORY") == c.tagName() && c.hasAttribute("id"))
+      if("CATEGORY" == c.tagName() && c.hasAttribute("id"))
       {
         addCategory(c.attribute("id").latin1());
       }
-      if(QString("ACCOUNT") == c.tagName() && c.hasAttribute("id"))
+      if("ACCOUNT" == c.tagName() && c.hasAttribute("id"))
       {
         addAccount(c.attribute("id").latin1());
       }
-      if(QString("ACCOUNTGROUP") == c.tagName() && c.hasAttribute("group"))
+      if("ACCOUNTGROUP" == c.tagName() && c.hasAttribute("group"))
       {
         i = kAccountTypeText.findIndex(c.attribute("group"));
         if ( i != -1 )

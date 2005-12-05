@@ -748,17 +748,17 @@ void MyMoneySchedule::writeXML(QDomDocument& document, QDomElement& parent) cons
 {
   QDomElement el = document.createElement("SCHEDULED_TX");
 
-  el.setAttribute(QString("name"), m_name);
-  el.setAttribute(QString("type"), m_type);
-  el.setAttribute(QString("occurence"), m_occurence);
-  el.setAttribute(QString("paymentType"), m_paymentType);
-  el.setAttribute(QString("startDate"), dateToString(m_startDate));
-  el.setAttribute(QString("endDate"), dateToString(m_endDate));
-  el.setAttribute(QString("fixed"), m_fixed);
-  el.setAttribute(QString("autoEnter"), m_autoEnter);
-  el.setAttribute(QString("id"), id());
-  el.setAttribute(QString("lastPayment"), dateToString(m_lastPayment));
-  el.setAttribute(QString("weekendOption"), m_weekendOption);
+  el.setAttribute("name", m_name);
+  el.setAttribute("type", m_type);
+  el.setAttribute("occurence", m_occurence);
+  el.setAttribute("paymentType", m_paymentType);
+  el.setAttribute("startDate", dateToString(m_startDate));
+  el.setAttribute("endDate", dateToString(m_endDate));
+  el.setAttribute("fixed", m_fixed);
+  el.setAttribute("autoEnter", m_autoEnter);
+  el.setAttribute("id", id());
+  el.setAttribute("lastPayment", dateToString(m_lastPayment));
+  el.setAttribute("weekendOption", m_weekendOption);
 
   //store the payment history for this scheduled task.
   QValueList<QDate> payments = recordedPayments();
@@ -766,7 +766,7 @@ void MyMoneySchedule::writeXML(QDomDocument& document, QDomElement& parent) cons
   QDomElement paymentsElement = document.createElement("PAYMENTS");
   for (it=payments.begin(); it!=payments.end(); ++it) {
     QDomElement paymentEntry = document.createElement("PAYMENT");
-    paymentEntry.setAttribute(QString("date"), dateToString(*it));
+    paymentEntry.setAttribute("date", dateToString(*it));
     paymentsElement.appendChild(paymentEntry);
   }
   el.appendChild(paymentsElement);
@@ -779,10 +779,10 @@ void MyMoneySchedule::writeXML(QDomDocument& document, QDomElement& parent) cons
 
 void MyMoneySchedule::readXML(const QDomElement& node)
 {
-  if(QString("SCHEDULED_TX") != node.tagName())
+  if("SCHEDULED_TX" != node.tagName())
     throw new MYMONEYEXCEPTION("Node was not SCHEDULED_TX");
 
-  m_name = node.attribute(QString("name"));
+  m_name = node.attribute("name");
   m_id = node.attribute("id");
   m_startDate = stringToDate(node.attribute("startDate"));
   m_endDate = stringToDate(node.attribute("endDate"));
@@ -808,7 +808,7 @@ void MyMoneySchedule::readXML(const QDomElement& node)
   if(nodeList.count() > 0) {
     nodeList = nodeList.item(0).toElement().elementsByTagName("PAYMENT");
     for(unsigned int i = 0; i < nodeList.count(); ++i) {
-      m_recordedPayments << stringToDate(nodeList.item(i).toElement().attribute(QString("date")));
+      m_recordedPayments << stringToDate(nodeList.item(i).toElement().attribute("date"));
     }
   }
 }

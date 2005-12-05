@@ -1092,15 +1092,15 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
 
   acc.setParentAccountId (gac->parent().utf8());
   // now determine the account type and its parent id
-  if (QString("BANK") == gac->type()) {
+  if ("BANK" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Checkings);
-  } else if (QString("ASSET") == gac->type()) {
+  } else if ("ASSET" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Asset);
-  } else if (QString("CASH") == gac->type()) {
+  } else if ("CASH" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Cash);
-  } else if (QString("CURRENCY") == gac->type()) {
+  } else if ("CURRENCY" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Cash);
-  } else if (QString("STOCK") == gac->type() || QString("MUTUAL") == gac->type() ) {
+  } else if ("STOCK" == gac->type() || "MUTUAL" == gac->type() ) {
     // gnucash allows a 'broker' account to be denominated as type STOCK, but with
     // a currency balance. We do not need to create a stock account for this
     // actually, the latest version of gnc (1.8.8) doesn't seem to allow you to do
@@ -1110,19 +1110,19 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
     } else {
       acc.setAccountType(MyMoneyAccount::Stock);
     }
-  } else if (QString("EQUITY") == gac->type()) {
+  } else if ("EQUITY" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Equity);
-  } else if (QString("LIABILITY") == gac->type()) {
+  } else if ("LIABILITY" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Liability);
-  } else if (QString("CREDIT") == gac->type()) {
+  } else if ("CREDIT" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::CreditCard);
-  } else if (QString("INCOME") == gac->type()) {
+  } else if ("INCOME" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Income);
-  } else if (QString("EXPENSE") == gac->type()) {
+  } else if ("EXPENSE" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Expense);
-  } else if (QString("RECEIVABLE") == gac->type()) {
+  } else if ("RECEIVABLE" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Asset);
-  } else if (QString("PAYABLE") == gac->type()) {
+  } else if ("PAYABLE" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Liability);
   } else { // we have here an account type we can't currently handle
     QString em =
@@ -1150,7 +1150,7 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
     if (gncdebug) qDebug ("Acct equity search, key = %s, found id = %s",
                             gac->commodity()->id().latin1(), e.id().data());
     acc.setCurrencyId (e.id()); // actually, the security id
-    if (QString("MUTUAL") == gac->type()) {
+    if ("MUTUAL" == gac->type()) {
       e.setSecurityType (MyMoneySecurity::SECURITY_MUTUALFUND);
       if (gncdebug) qDebug ("Setting %s to mutual", e.name().latin1());
       m_storage->modifySecurity (e);
@@ -1273,7 +1273,7 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
   split.setNumber (m_txChequeNo);
   // value and quantity
   MyMoneyMoney splitValue (convBadValue (gsp->value()));
-  if (gsp->value() == QString("-1/0")) { // treat gnc invalid value as zero
+  if (gsp->value() == "-1/0") { // treat gnc invalid value as zero
    // it's not quite a consistency check, but easier to treat it as such
    postMessage ("CC", 4, splitAccount.name().latin1(), m_txDatePosted.toString(Qt::ISODate).latin1());
   }
@@ -1652,7 +1652,7 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
   // payment type, options
   sc.setPaymentType((MyMoneySchedule::paymentTypeE)MyMoneySchedule::STYPE_OTHER);
   sc.setFixed (!m_suspectSchedule); // if any probs were found, set it as variable so user will always be prompted
-  sc.setAutoEnter (gsc->autoCreate() == QString ("y"));
+  sc.setAutoEnter (gsc->autoCreate() == "y");
   // type
   QCString actionType = tx.splits().first().action();
   if (actionType == MyMoneySplit::ActionDeposit) {

@@ -56,7 +56,7 @@ void MyMoneyAccountTest::testConstructor() {
 	r.setNumber("465500");
 	r.setParentAccountId(parent);
 	r.setOpeningBalance(1);
-	r.setValue(QCString("key"), QString("value"));
+	r.setValue(QCString("key"), "value");
 	CPPUNIT_ASSERT(r.m_kvp.count() == 1);
 	CPPUNIT_ASSERT(r.value("key") == "value");
 
@@ -379,7 +379,7 @@ void MyMoneyAccountTest::testWriteXML() {
 	r.setNumber("465500");
 	r.setParentAccountId(parent);
 	r.setInstitutionId(institutionid);
-	r.setValue(QCString("key"), QString("value"));
+	r.setValue(QCString("key"), "value");
 	r.addAccountId("A000002");
 	// CPPUNIT_ASSERT(r.m_kvp.count() == 1);
 	// CPPUNIT_ASSERT(r.value("key") == "value");

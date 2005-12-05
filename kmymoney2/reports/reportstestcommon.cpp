@@ -370,7 +370,7 @@ bool readRCFfromXMLDoc( QValueList<MyMoneyReport>& list, QDomDocument* doc )
       while(!child.isNull() && child.isElement())
       {
         QDomElement childElement = child.toElement();
-        if(QString("REPORTS") == childElement.tagName())
+        if("REPORTS" == childElement.tagName())
         {
     result = true;
           QDomNode subchild = child.firstChild();

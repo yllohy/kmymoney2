@@ -93,8 +93,8 @@ void MyMoneyKeyValueContainer::writeXML(QDomDocument& document, QDomElement& par
   for(it = m_kvp.begin(); it != m_kvp.end(); ++it)
   {
     QDomElement pair = document.createElement("PAIR");
-    pair.setAttribute(QString("key"), it.key());
-    pair.setAttribute(QString("value"), it.data());
+    pair.setAttribute("key", it.key());
+    pair.setAttribute("value", it.data());
     el.appendChild(pair);
   }
 
@@ -103,14 +103,14 @@ void MyMoneyKeyValueContainer::writeXML(QDomDocument& document, QDomElement& par
 
 void MyMoneyKeyValueContainer::readXML(const QDomElement& node)
 {
-  if(QString("KEYVALUEPAIRS") != node.tagName())
+  if("KEYVALUEPAIRS" != node.tagName())
     throw new MYMONEYEXCEPTION("Node was not KEYVALUEPAIRS");
 
   m_kvp.clear();
 
-  QDomNodeList nodeList = node.elementsByTagName(QString("PAIR"));
+  QDomNodeList nodeList = node.elementsByTagName("PAIR");
   for(unsigned int i = 0; i < nodeList.count(); ++i) {
     const QDomElement& el(nodeList.item(i).toElement());
-    m_kvp[QCString(el.attribute(QString("key")))] = el.attribute(QString("value"));
+    m_kvp[QCString(el.attribute("key"))] = el.attribute("value");
   }
 }

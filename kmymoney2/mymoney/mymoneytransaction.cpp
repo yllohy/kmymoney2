@@ -307,12 +307,12 @@ void MyMoneyTransaction::writeXML(QDomDocument& document, QDomElement& parent) c
 {
   QDomElement el = document.createElement("TRANSACTION");
 
-  el.setAttribute(QString("id"), m_id);
-  el.setAttribute(QString("postdate"), dateToString(m_postDate));
-  el.setAttribute(QString("memo"), m_memo);
-  el.setAttribute(QString("entrydate"), dateToString(m_entryDate));
-  el.setAttribute(QString("commodity"), m_commodity);
-  el.setAttribute(QString("bankid"), m_bankID);
+  el.setAttribute("id", m_id);
+  el.setAttribute("postdate", dateToString(m_postDate));
+  el.setAttribute("memo", m_memo);
+  el.setAttribute("entrydate", dateToString(m_entryDate));
+  el.setAttribute("commodity", m_commodity);
+  el.setAttribute("bankid", m_bankID);
 
   QDomElement splits = document.createElement("SPLITS");
   QValueList<MyMoneySplit>::ConstIterator it;
@@ -328,12 +328,12 @@ void MyMoneyTransaction::writeXML(QDomDocument& document, QDomElement& parent) c
 
 void MyMoneyTransaction::readXML(const QDomElement& node)
 {
-  if(QString("TRANSACTION") != node.tagName())
+  if("TRANSACTION" != node.tagName())
     throw new MYMONEYEXCEPTION("Node was not TRANSACTION");
 
   m_nextSplitID = 1;
   m_splits.clear();
-  m_id = QCStringEmpty(node.attribute(QString("id")));
+  m_id = QCStringEmpty(node.attribute("id"));
 
   m_postDate = stringToDate(node.attribute("postdate"));
   m_entryDate = stringToDate(node.attribute("entrydate"));
@@ -342,9 +342,9 @@ void MyMoneyTransaction::readXML(const QDomElement& node)
   m_commodity = QCStringEmpty(node.attribute("commodity"));
 
   //  Process any split information found inside the transaction entry.
-  QDomNodeList nodeList = node.elementsByTagName(QString("SPLITS"));
+  QDomNodeList nodeList = node.elementsByTagName("SPLITS");
   if(nodeList.count() > 0) {
-    nodeList = nodeList.item(0).toElement().elementsByTagName(QString("SPLIT"));
+    nodeList = nodeList.item(0).toElement().elementsByTagName("SPLIT");
     MyMoneySplit s;
     for(unsigned int i = 0; i < nodeList.count(); ++i) {
       s.readXML(nodeList.item(i).toElement());
@@ -353,7 +353,7 @@ void MyMoneyTransaction::readXML(const QDomElement& node)
   }
 
   // Process any key value pair
-  nodeList = node.elementsByTagName(QString("KEYVALUEPAIRS"));
+  nodeList = node.elementsByTagName("KEYVALUEPAIRS");
   if(nodeList.count() > 0) {
     MyMoneyKeyValueContainer::readXML(nodeList.item(0).toElement());
   }
