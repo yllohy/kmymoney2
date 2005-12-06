@@ -1,3 +1,6 @@
+2005-12-05 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Integrate database into menu structure
+
 2005-12-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Bjorn Helgaas entitled 'remove
     superfluous QString() usage'
