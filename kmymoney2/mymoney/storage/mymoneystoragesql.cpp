@@ -25,7 +25,7 @@
 #include <qstringlist.h>
 #include <qiodevice.h>
 #include <qregexp.h>
-#include <qmessagebox.h>
+//#include <qmessagebox.h>
 #include <qdom.h>
 #include <qtextstream.h>
 #include <qbuffer.h>
@@ -39,62 +39,94 @@
 #include "../../kmymoneyutils.h"
 
 //************************ Constructor/Destructor *****************************
-MyMoneyStorageSql::MyMoneyStorageSql (const QString& driverName)
+MyMoneyStorageSql::MyMoneyStorageSql (const QString& driverName, IMyMoneySerialize *storage)
   : QSqlDatabase (driverName, QString("kmmdatabase")) {
   m_majorVersion = 0;
   m_minorVersion = 1;
   m_progressCallback = 0;
-  m_storage = NULL;
+  m_storage = storage;
 }
   
-int MyMoneyStorageSql::open(const QString& dbName,  const QString& hostName,
-                           const QString& userName, const QString& password) {
-  // create the database connection
- // bool isOpen = false;
-  //while (!isOpen) {
+int MyMoneyStorageSql::open(const KURL& url, int mode, bool clear) {
+try {
+      // create the database connection
+  QString dbName = url.path();
+  while (dbName.left(1) == '/') dbName = dbName.right(dbName.length() - 1);
   setDatabaseName(dbName);
-  setHostName(hostName);
-  setUserName(userName);
-  setPassword(password);
+  setHostName(url.host());
+  setUserName(url.user());
+  setPassword(url.pass());
 
-  if (!QSqlDatabase::open()) {
-     /*  // there really should be a way to test if the driver knows about a database before opening it
-      if (lastError().number() == 1049) {
-        createDatabase (driverName(), dbName, hostName, userName, password);
-      } else { 
-        throw  QString ("opening database (%1)").arg(lastError().number());
-    } */
-    if (driverName() == "QMYSQL3") {
-      return (1);
-    } else {
-      return (-1);
-    }
+  switch (mode) {
+    case IO_ReadOnly:    // OpenDatabase menu entry (or open last file)
+    case IO_ReadWrite:   // Save menu entry with database open
+      if (!QSqlDatabase::open()) {
+        buildError(QSqlQuery(), "opening database");
+        return(1);
+      }
+      return (createTables()); // check tables are present, create if not
+    case IO_WriteOnly:   // SaveAs Database - if exists, must be empty, if not will create
+      if (!QSqlDatabase::open()) {
+        if (!createDatabase(url)) {
+          return(1);
+        } else {
+          if (!QSqlDatabase::open()) {
+            buildError(QSqlQuery(), "opening new database");
+            return(1);
+          } else {
+            return (0);
+          }
+        }
+      } else {
+        if (clear) {
+          clean();
+          return (0);
+        } else {
+          return (isEmpty());
+        }
+      }
   }
+  qFatal ("oops in database open");
+  return (1);
+} catch (QString& s) {
+    qDebug(s);
+    return (1);
+}
+}
+
+int MyMoneyStorageSql::createDatabase (const KURL& url) {
+  if (driverName() != "QMYSQL3") {
+    m_error = QString(tr("Cannot currently create database for driver %1")).arg(driverName());
+    return (1);
+  }
+// create the database (only works for mysql at present)
+  QString dbName = url.path();
+  if (dbName.left(1) == '/') dbName = dbName.right(dbName.length() - 1);
+  QSqlDatabase *maindb = QSqlDatabase::addDatabase(driverName());
+  maindb->setDatabaseName ("mysql");
+  maindb->setHostName (url.host());
+  maindb->setUserName (url.user());
+  maindb->setPassword (url.pass());
+  maindb->open();
+  QSqlQuery qm = (maindb->exec());
+  QString qs = QString("CREATE DATABASE %1;").arg(dbName);
+  qm.prepare (qs);
+  if (!qm.exec()) {
+    buildError (qm, "Error in create database %1").arg(dbName);
+    return (1);
+  }
+  QSqlDatabase::removeDatabase (maindb);
+  return (0);
+}
+
+int MyMoneyStorageSql::createTables () {
   // check tables, create if required
   QMapConstIterator<QString, dbTable> tt = m_db.begin();
   while (tt != m_db.end()) {
     if (!tables().contains(tt.key())) createTable (tt.data());
     ++tt;
   }
-  return(0);
-}
-
-void MyMoneyStorageSql::createDatabase (const QString& dbName,
-                                        const QString& hostName, const QString& userName, const QString& password) {
-// create the database (only works for mysql at present)
-  QSqlDatabase *maindb = QSqlDatabase::addDatabase(driverName());
-  maindb->setDatabaseName ("mysql");
-  maindb->setHostName (hostName);
-  maindb->setUserName (userName);
-  maindb->setPassword (password);
-  maindb->open();
-  QSqlQuery qm = (maindb->exec());
-  QString qs = QString("CREATE DATABASE %1;").arg(dbName);
-  qm.prepare (qs);
-  if (!qm.exec()) {
-    throw buildError (qm, "Error in create database %1").arg(dbName);
-  }
-  QSqlDatabase::removeDatabase (maindb);
+  return (0); // any errors will be caught by exception handling
 }
 
 void MyMoneyStorageSql::createTable (const dbTable& t) {
@@ -113,65 +145,32 @@ void MyMoneyStorageSql::createTable (const dbTable& t) {
   QSqlQuery q(this);
   q.prepare (qs);
   if (!q.exec()) throw buildError(q, QString ("creating table %1").arg(t.name()));
+  // check tables, create if required
+  QMapConstIterator<QString, dbTable> tt = m_db.begin();
+  while (tt != m_db.end()) {
+    if (!tables().contains(tt.key())) createTable (tt.data());
+    ++tt;
+  }
 } 
 
-void MyMoneyStorageSql::readFile(void) {
-  signalProgress(0, 1, "Reading file info...");
-  qDebug("readfileinfo");
-  readFileInfo();
-  qDebug("readinst");
-  readInstitutions();
-  qDebug("readpay");
-  readPayees();
-  qDebug("readacc");
-  readAccounts();
-  qDebug("readtrans");
-  readTransactions();
-  qDebug("readsched");
-  readSchedules();
-  qDebug("readsec");
-  readSecurities();
-  qDebug("readpri");
-  readPrices();
-  qDebug("readcur");
-  readCurrencies();
-  qDebug("readrep");
-  readReports();
-  qDebug("done");
-  // make sure the progress bar is not shown any longer
-  signalProgress(-1, -1);
-}
+int MyMoneyStorageSql::isEmpty () {
+  // check all tables are empty
+  QMapConstIterator<QString, dbTable> tt = m_db.begin();
+  int recordCount = 0;
+  while ((tt != m_db.end()) && (recordCount == 0)) {
+    QSqlQuery q(this);
+    q.prepare (QString("select count(*) from %1;").arg((*tt).name()));
+    if (!q.exec()) throw buildError(q, "getting record count");
+    if (!q.next()) throw buildError(q, "retrieving record count");
+    recordCount += q.value(0).toInt();
+    ++tt;
+  }
 
-void MyMoneyStorageSql::writeFile(void) {
-  // initialize record counts and hi ids
-  m_institutions = m_accounts = m_payees = m_transactions = m_splits
-      = m_securities = m_prices = m_currencies = m_schedules  = m_reports = m_kvps = 0;
-  m_hiIdInstitutions = m_hiIdPayees = m_hiIdAccounts = m_hiIdTransactions = 
-      m_hiIdSchedules = m_hiIdSecurities = 0;
-  //clean(); // delete everything from the db (we will use this, after warning, in a 'SaveAs Database' call)
-  qDebug("writeinst");
-  writeInstitutions ();
-  qDebug("writepay");
-  writePayees();
-  qDebug("writeacc");
-  writeAccounts();
-  qDebug("writetrans");
-  writeTransactions();
-  qDebug("writesched");
-  writeSchedules();
-  qDebug("writesec");
-  writeSecurities();
-  qDebug("writepri");
-  writePrices();
-  qDebug("writecur");
-  writeCurrencies();
-  qDebug("writerep");
-  writeReports();
-  qDebug("writefile");
-  writeFileInfo();
-  qDebug("done");
-// make sure the progress bar is not shown any longer
-  signalProgress(-1, -1);
+  if (recordCount != 0) {
+    return (-1); // not empty
+  } else {
+    return (0);
+  }
 }
 
 void MyMoneyStorageSql::clean() {
@@ -183,6 +182,53 @@ void MyMoneyStorageSql::clean() {
     if (!q.exec()) throw buildError(q, QString ("cleaning database"));
     ++it;
   }
+}
+
+//////////////////////////////////////////////////////////////////
+
+bool MyMoneyStorageSql::readFile(void) {
+  try {
+  readFileInfo();
+  readInstitutions();
+  readPayees();
+  readAccounts();
+  readTransactions();
+  readSchedules();
+  readSecurities();
+  readPrices();
+  readCurrencies();
+  readReports();
+  // make sure the progress bar is not shown any longer
+  signalProgress(-1, -1);
+  return true;
+  } catch (QString& s) {
+    return false;
+  }
+}
+
+bool MyMoneyStorageSql::writeFile(void) {
+  // initialize record counts and hi ids
+  m_institutions = m_accounts = m_payees = m_transactions = m_splits
+      = m_securities = m_prices = m_currencies = m_schedules  = m_reports = m_kvps = 0;
+  m_hiIdInstitutions = m_hiIdPayees = m_hiIdAccounts = m_hiIdTransactions = 
+      m_hiIdSchedules = m_hiIdSecurities = 0;
+  try{
+  writeInstitutions ();
+  writePayees();
+  writeAccounts();
+  writeTransactions();
+  writeSchedules();
+  writeSecurities();
+  writePrices();
+  writeCurrencies();
+  writeReports();
+  writeFileInfo();
+// make sure the progress bar is not shown any longer
+  signalProgress(-1, -1);
+  return true;
+} catch (QString& s) {
+  return false;
+}
 }
 
 //------------------------------ Write SQL routines ----------------------------------------
@@ -1210,7 +1256,8 @@ MyMoneyKeyValueContainer MyMoneyStorageSql::readKeyValuePairs (const QString kvp
 }
 
 //****************************************************
-const long long unsigned MyMoneyStorageSql::calcHighId (const long long unsigned i, const QString& id) {
+const long long unsigned MyMoneyStorageSql::calcHighId
+     (const long long unsigned i, const QString& id) {
   QString nid = id;
   long long unsigned high = nid.replace(QRegExp("[A-Z]*"), "").toULongLong();
   return (high > i ? high : i);
@@ -1226,20 +1273,15 @@ void MyMoneyStorageSql::signalProgress(int current, int total, const QString& ms
 }
 
 // **************************** Error display routine *******************************
-QString MyMoneyStorageSql::buildError (const QSqlQuery& q, const QString& message) {
+QString& MyMoneyStorageSql::buildError (const QSqlQuery& q, const QString& message) {
   QString s = QString("Error in %1").arg(message);
   QSqlError e = lastError();
   s += QString ("\nDriver Error: %1").arg(e.driverText());
   s += QString ("\nDatabase Error: %1").arg(e.databaseText());
   s += QString ("\nExecuted: %1").arg(q.executedQuery());
   s += QString ("\nQuery error: %1").arg(q.lastError().text());
-  return (s);
-}
-
-void MyMoneyStorageSql::displayError (const QString& message) {
-  qDebug ("%s", message.latin1());
-  QMessageBox::critical(0, "KMyMoney", message);
-  return;
+  m_error = s;
+  return (m_error);
 }
 
 // ************************* Build table descriptions ****************************

@@ -26,6 +26,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+#include <kurl.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -38,11 +39,14 @@ public:
   KSelectDatabaseDlg(QWidget *parent = 0, const char *name = 0);
   ~KSelectDatabaseDlg();
   
+  const KURL selectedURL();
+
+/* leave these in for now, useful for testing...
   const QString driverName() const {return (listDrivers->currentText().section (' ', 0, 0));}
   const QString dbName() const {return (textDbName->text());}
   const QString hostName() const {return (textHostName->text());}
   const QString userName() const {return (textUserName->text());}
-  const QString password() const {return (textPassword->text());}
+  const QString password() const {return (textPassword->text());} */
     
 public slots:
   void slotDriverSelected(const QString&);

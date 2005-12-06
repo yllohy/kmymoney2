@@ -87,6 +87,7 @@
 #include "../mymoney/storage/mymoneystoragebin.h"
 #include "../mymoney/mymoneyexception.h"
 #include "../mymoney/storage/mymoneystoragexml.h"
+#include "../mymoney/storage/mymoneystoragesql.h"
 #include "../converter/mymoneygncreader.h"
 #include "../mymoney/storage/mymoneystorageanon.h"
 
@@ -405,6 +406,11 @@ bool KMyMoneyView::readFile(const KURL& url)
     return false;
   }
 
+  if (url.protocol() == "sql") { // handle reading of database
+    if (!readDatabase(url)) return false; // error message will have been displayed
+    return (initializeStorage());
+  }
+
   if(url.isLocalFile()) {
     filename = url.path();
 
@@ -559,7 +565,26 @@ bool KMyMoneyView::readFile(const KURL& url)
   // then it will be removed with the next call. Otherwise, it
   // stays untouched on the local filesystem
   KIO::NetAccess::removeTempFile(filename);
+  return (initializeStorage());
+}
 
+bool KMyMoneyView::readDatabase(const KURL& url)
+{
+  MyMoneyStorageSql* reader = new MyMoneyStorageSql (url.queryItems(0,0)["driver"],
+      dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
+  if (reader->open(url, IO_ReadOnly) != 0) {
+    KMessageBox::detailedError (this, i18n("Can't open database %1\n").arg(url.url()), reader->lastError());
+    delete reader;
+    return false;
+  }
+  reader->setProgressCallback(&KMyMoneyView::progressCallback);
+  reader->readFile();
+  reader->setProgressCallback(0);
+  delete reader;
+  return true;
+}
+
+bool KMyMoneyView::initializeStorage() {
   MyMoneyFile::instance()->suspendNotify(true);
   // we check, if we have any currency in the file. If not, we load
   // all the default currencies we know.
@@ -799,8 +824,70 @@ const bool KMyMoneyView::saveFile(const KURL& url)
   return rc;
 }
 
-bool KMyMoneyView::dirty(void)
+const bool KMyMoneyView::saveAsDatabase(const KURL& url)
+{
+  bool rc = false;
+  if (!fileOpen()) {
+    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
+    return (rc);
+  }
+  MyMoneyStorageSql *writer = new MyMoneyStorageSql(url.queryItems(0,0)["driver"],
+      dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
+  bool canWrite = false;
+  switch (writer->open(url, IO_WriteOnly)) {
+      case 0:
+        canWrite = true;
+        break;
+      case -1: // dbase already has data, see if he wants to clear it out
+        if (KMessageBox::warningContinueCancel (0,
+            i18n("Database contains data which must be removed before using SaveAs.\n"
+                "Do you wish to continue?"), "database not empty") == KMessageBox::Continue) {
+          if (writer->open(url, IO_WriteOnly, true) == 0) canWrite = true;
+        } else {
+          delete writer;
+          return false;
+        }
+        break;
+  }
+  if (canWrite) {
+    writer->setProgressCallback(&KMyMoneyView::progressCallback);
+    writer->writeFile();
+    writer->setProgressCallback(0);
+    rc = true;
+  } else {
+    KMessageBox::detailedError (this,
+      i18n("Can't open or create database %1\n"
+          "Retry SaveAsDatabase and click Help"
+          " for further info").arg(url.url()), writer->lastError());
+  }
+  delete writer;
+  return (rc);
+}
 
+const bool KMyMoneyView::saveDatabase(const KURL& url)
+{
+  bool rc = false;
+  if (!fileOpen()) {
+    KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
+    return (rc);
+  }
+  MyMoneyStorageSql *writer = new MyMoneyStorageSql(url.queryItems(0,0)["driver"],
+      dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
+  if (writer->open(url, IO_ReadWrite)) {
+    writer->setProgressCallback(&KMyMoneyView::progressCallback);
+    writer->writeFile();
+    writer->setProgressCallback(0);
+    rc = true;
+  } else {
+    KMessageBox::detailedError (this,
+                                i18n("Can't open database %1 for save\n").arg(url.url()),
+                                writer->lastError());
+  }
+  delete writer;
+  return (rc);
+}
+
+bool KMyMoneyView::dirty(void)
 {
   if (!fileOpen())
     return false;

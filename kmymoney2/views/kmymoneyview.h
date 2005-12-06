@@ -265,6 +265,24 @@ public:
     */
   const bool saveFile(const KURL& url);
   /**
+   * Saves the data into permanent storage on a new or empty SQL database.
+   *
+   * @param url The pseudo of tyhe database
+   *
+   * @retval false save operation failed
+   * @retval true save operation was successful
+   */
+  const bool saveDatabase(const KURL& url);
+  /**
+   * Saves the data into permanent storage on a new or empty SQL database.
+   *
+   * @param url The pseudo of tyhe database
+   *
+   * @retval false save operation failed
+   * @retval true save operation was successful
+   */
+  const bool saveAsDatabase(const KURL& url);
+  /**
     * Call this to find out if the currently open file is native KMM
     *
     * @retval true file is native
@@ -431,6 +449,23 @@ protected slots:
   void slotShowTransactionDetail(bool detailed);
 
 private:
+  /**
+    * This method is called from readFile to read a database file into storage
+    *
+    * @param dbaseURL pseudo-KURL representation of database
+    *
+    * @retval true Database read successfully
+    * @retval false Could not open or read database
+    */
+  bool readDatabase (const KURL& dbaseURL);
+  /**
+    * This method is used after a file or database has been
+    * read into storage, and performs various initialization tasks
+   *
+   * @retval true all went okay
+   * @retval false an exception occurred during this process
+   */
+  bool initializeStorage();
   /**
     * This method is used by saveFile() to store the data
     * either directly in the destination file if it is on

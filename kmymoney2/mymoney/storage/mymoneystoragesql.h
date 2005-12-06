@@ -17,6 +17,10 @@
 #include <qsqlerror.h>
 
 class QIODevice;
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kurl.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -144,75 +148,68 @@ class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
    * @return void
    *
    */
-    MyMoneyStorageSql (const QString& driver);
+    MyMoneyStorageSql (const QString& driver, IMyMoneySerialize *storage);
 
     ~MyMoneyStorageSql() {};
   /**
      * MyMoneyStorageSql - open database file
      *
-     * @param dbName : name of database (file name for SQLite)
-     * @param hostName : name of connected host where server resides
-     * @param userName : name of user for database permission checking
-     * @param password : user's password where required
-     *
+     * @param url pseudo-URL of database to be opened
+     * @param mode open mode, same as for QFile::open
+     * @param clear whether existing data can be deleted
+
      * @return 0 - database successfully opened
-     * @return 1 - database not opened, but may be able to create it
-     * @return -1 - database not opened, cannot create it
+     * @return 1 - database not opened, use lastError function for reason
+     * @return -1 - output database not opened, contains data, clean not specified
      *
    */
-    int open(const QString& dbName, const QString& hostName,
-             const QString& userName, const QString& password);
-  /**
-     * MyMoneyStorageSql create database 
-     *
-     * @param dbName : name of database (file name for SQLite)
-     * @param hostName : name of connected host where server resides
-     * @param userName : name of user for database permission checking
-     * @param password : user's password where required
-     *
-     * @return void
-     *
-   */
-    void createDatabase(const QString& dbName, const QString& hostName,
-                        const QString& userName, const QString& password);
-  /**
-     * MyMoneyStorageSql set storage
-     *
-     * @param storage : pointer to MyMoneySerialize storage 
-     *
-     * @return void
-     *
-   */
-    void setStorage(IMyMoneySerialize *storage) {m_storage = storage;};
+    int open(const KURL& url, int mode, bool clear = false);
   /**
      * MyMoneyStorageSql read all the database into storage
      *
      * @return void
      *
    */
-    void readFile(void);
+    bool readFile(void);
   /**
      * MyMoneyStorageSql write/update the database from storage
      *
      * @return void
      *
    */
-    void writeFile(void);
+    bool writeFile(void);
   /**
-     * MyMoneyStorageSql generalized error display routine
+     * MyMoneyStorageSql generalized error routine
      *
-     * @param message : error message to be displayed
-     *
-     * @return void
+     * @return : error message to be displayed
      *
    */
-    void displayError(const QString& message);
-  protected:
+    const QString& lastError() {return (m_error);};
+    //FIXME: the following should be protected??
+    void setProgressCallback(void(*callback)(int, int, const QString&));
+
+    protected: // the following are just to satisfy the compiler
     void readFile(QIODevice*, IMyMoneySerialize*) {};
     void writeFile(QIODevice*, IMyMoneySerialize*) {};
-    void setProgressCallback(void(*callback)(int, int, const QString&));
+
   private:
-    void clean (void);
+    // open routines
+  /**
+   * MyMoneyStorageSql create database
+   *
+   * @param url pseudo-URL of database to be opened
+   *
+   * @return true - creation successful
+   * @return false - could not create
+   *
+   */
+    int createDatabase(const KURL& url);
+    int createTables();
+    void createTable(const dbTable& t);
+    void clean ();
+    int isEmpty();
+
+    // write routines
     void writeUserInformation(void);
     void writeInstitutions(void);
     void writePayees(void);
@@ -224,21 +221,6 @@ class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
     void writeCurrencies(void);
     void writeFileInfo(void);
     void writeReports(void);
-  
-    void readFileInfo(void);
-    void readUserInformation(void);
-    void readInstitutions(void);
-    void readPayees(void);
-    void readAccounts(void);
-    void readTransactions(void);
-    void readTransaction(MyMoneyTransaction &tx, const QString& tid);
-    void readSchedules(void); 
-    void readSecurities(void);
-    void readPrices(void);
-    void readCurrencies(void);
-    void readReports(void);
-
-    void createTable(const dbTable& t);
   
     void writeInstitution(const MyMoneyInstitution& i, QSqlQuery& q);
     void writePayee(const MyMoneyPayee& p, QSqlQuery& q);
@@ -254,6 +236,20 @@ class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
     void writeKeyValuePairs(const QString& kvpType, const QString& kvpId, const QMap<QCString, QString>& pairs);
     void writeKeyValuePair(const QString& kvpType, const QString& kvpId,
                            const QString& kvpKey, const QString& kvpData);
+    // read routines
+    void readFileInfo(void);
+    void readUserInformation(void);
+    void readInstitutions(void);
+    void readPayees(void);
+    void readAccounts(void);
+    void readTransactions(void);
+    void readTransaction(MyMoneyTransaction &tx, const QString& tid);
+    void readSchedules(void);
+    void readSecurities(void);
+    void readPrices(void);
+    void readCurrencies(void);
+    void readReports(void);
+
     void deleteTransaction(const QString& id);
     void deleteKeyValuePairs(const QString& kvpType, const QString& kvpId);
     const long long unsigned calcHighId (const long long unsigned, const QString&);
@@ -263,12 +259,14 @@ class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
     MyMoneyKeyValueContainer readKeyValuePairs (const QString kvpType, const QString& kvpId);
     
     void signalProgress(int current, int total, const QString& = "");
-    QString buildError (const QSqlQuery&, const QString&);
+    QString& buildError (const QSqlQuery&, const QString&);
     // data 
     dbDef m_db;
     unsigned int m_majorVersion;
     unsigned int m_minorVersion;
     IMyMoneySerialize *m_storage;
+    // error message
+    QString m_error;
     // record counts
     long long unsigned m_institutions;
     long long unsigned m_accounts;

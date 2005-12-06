@@ -102,6 +102,7 @@
 #include "dialogs/knewinvestmentwizard.h"
 #include "dialogs/knewaccountdlg.h"
 #include "dialogs/knewfiledlg.h"
+#include "dialogs/kselectdatabasedlg.h"
 #include "dialogs/kcurrencycalculator.h"
 #include "dialogs/ieditscheduledialog.h"
 #include "dialogs/knewloanwizard.h"
@@ -216,7 +217,7 @@ KMyMoney2App::~KMyMoney2App()
 
 const KURL KMyMoney2App::lastOpenedURL(void)
 {
-  KURL url = m_startDialog ? KURL() : fileName;
+  KURL url = m_startDialog ? KURL() : m_fileName;
 
   if(!url.isValid())
   {
@@ -242,6 +243,8 @@ void KMyMoney2App::initActions()
   KStdAction::quit(this, SLOT(slotFileQuit()), actionCollection());
   KStdAction::print(this, SLOT(slotPrintView()), actionCollection());
 
+  new KAction(i18n("Open database"), "",0,this,SLOT(slotOpenDatabase()),actionCollection(),"open_database");
+  new KAction(i18n("Save as database"), "",0,this,SLOT(slotSaveAsDatabase()),actionCollection(),"saveas_database");
   new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
   new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
   new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
@@ -651,7 +654,7 @@ void KMyMoney2App::slotFileNew()
   if(myMoneyView->fileOpen())
     return;
 
-  fileName = KURL();
+  m_fileName = KURL();
   if(myMoneyView->newFile()) {
     KMessageBox::information(this, QString("<p>") +
                   i18n("The next dialog allows you to add predefined account/category templates to the new file. Different languages are available to select from. You can skip loading any template  now by selecting <b>Cancel</b> from the next dialog. If you wish to add more templates later, you can restart this operation by selecting <b>File/Import/Account Templates</b>."),
@@ -662,7 +665,7 @@ void KMyMoney2App::slotFileNew()
   slotStatusMsg(prevMsg);
   updateCaption();
 
-  emit fileLoaded(fileName);
+  emit fileLoaded(m_fileName);
 }
 
 // General open
@@ -681,6 +684,18 @@ void KMyMoney2App::slotFileOpen()
   delete dialog;
 
   slotStatusMsg(prevMsg);
+}
+
+void KMyMoney2App::slotOpenDatabase() {
+  QString prevMsg = slotStatusMsg(i18n("Open a file."));
+  KSelectDatabaseDlg dialog;
+
+  if(dialog.exec() == QDialog::Accepted) {
+    slotFileOpenRecent(dialog.selectedURL());
+  }
+
+  slotStatusMsg(prevMsg);
+
 }
 
 bool KMyMoney2App::isImportableFile( const KURL& url )
@@ -716,7 +731,7 @@ bool KMyMoney2App::isImportableFile( const KURL& url )
 void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 {
   QString prevMsg = slotStatusMsg(i18n("Loading file..."));
-  KURL lastFile = fileName;
+  KURL lastFile = m_fileName;
 
   // check if there are other instances which might have this file open
   QCStringList list = instanceList();
@@ -739,21 +754,21 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
   if(!duplicate) {
 
 #if KDE_IS_VERSION(3,2,0)
-    if(url.isValid() && KIO::NetAccess::exists(url, true, this)) {
+    if((url.protocol() == "sql") || (url.isValid() && KIO::NetAccess::exists(url, true, this))) {
 #else
-    if(url.isValid() && KIO::NetAccess::exists(url)) {
+    if((url.protocol() == "sql") || (url.isValid() && KIO::NetAccess::exists(url))) {
 #endif
       slotFileClose();
       if(!myMoneyView->fileOpen()) {
         if(myMoneyView->readFile(url)) {
-          if(myMoneyView->isNativeFile()) {
-            fileName = url;
+          if((myMoneyView->isNativeFile() || (url.protocol() == "sql"))) {
+            m_fileName = url;
             KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
             if(p)
               p->addURL( url );
             writeLastUsedFile(url.url());
           } else {
-            fileName = KURL(); // imported files have no filename
+            m_fileName = KURL(); // imported files have no filename
           }
           ::timetrace("Start checking schedules");
           // Check the schedules
@@ -763,7 +778,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 
         updateCaption();
         ::timetrace("Announcing new filename");
-        emit fileLoaded(fileName);
+        emit fileLoaded(m_fileName);
         ::timetrace("Announcing new filename done");
       }
     } else {
@@ -786,13 +801,16 @@ const bool KMyMoney2App::slotFileSave()
 
   QString prevMsg = slotStatusMsg(i18n("Saving file..."));
 
-  if (fileName.isEmpty()) {
+  if (m_fileName.isEmpty()) {
     rc = slotFileSaveAs();
     slotStatusMsg(prevMsg);
     return rc;
   }
-
-  rc = myMoneyView->saveFile(fileName);
+  if (m_fileName.protocol() == "sql") {
+    rc = myMoneyView->saveDatabase(m_fileName);
+  } else {
+    rc = myMoneyView->saveFile(m_fileName);
+  }
   m_autoSaveTimer->stop();
 
   slotStatusMsg(prevMsg);
@@ -850,7 +868,7 @@ const bool KMyMoney2App::slotFileSaveAs()
 
       QFileInfo saveAsInfo(newName);
 
-      fileName = newName;
+      m_fileName = newName;
       rc = myMoneyView->saveFile(newName);
 
       //write the directory used for this file as the default one for next time.
@@ -860,6 +878,21 @@ const bool KMyMoney2App::slotFileSaveAs()
     m_autoSaveTimer->stop();
   }
 
+  slotStatusMsg(prevMsg);
+  updateCaption();
+  return rc;
+}
+
+const bool KMyMoney2App::slotSaveAsDatabase() {
+
+  bool rc = false;
+  QString prevMsg = slotStatusMsg(i18n("Saving file to database..."));
+  KSelectDatabaseDlg dialog;
+
+  if(dialog.exec() == QDialog::Accepted) {
+    rc = myMoneyView->saveAsDatabase(dialog.selectedURL());
+  }
+  m_autoSaveTimer->stop();
   slotStatusMsg(prevMsg);
   updateCaption();
   return rc;
@@ -898,10 +931,10 @@ void KMyMoney2App::slotFileClose()
   selectInvestment(MyMoneyAccount());
 
   myMoneyView->closeFile();
-  fileName = KURL();
+  m_fileName = KURL();
   updateCaption();
 
-  emit fileLoaded(fileName);
+  emit fileLoaded(m_fileName);
 }
 
 void KMyMoney2App::slotFileQuit()
@@ -1231,7 +1264,7 @@ void KMyMoney2App::slotGncImport(void)
       break;
     case KMessageBox::No:
       myMoneyView->closeFile();
-      fileName = KURL();
+      m_fileName = KURL();
       break;
     default:
       return;
@@ -1253,10 +1286,10 @@ void KMyMoney2App::slotGncImport(void)
     // call the importer
     myMoneyView->readFile(dialog->selectedURL());
     // imported files don't have a name
-    fileName = KURL();
+    m_fileName = KURL();
 
     updateCaption();
-    emit fileLoaded(fileName);
+    emit fileLoaded(m_fileName);
   }
   delete dialog;
 
@@ -1681,17 +1714,17 @@ bool KMyMoney2App::initWizard()
       KURL url;
       url = start.getURL();
 
-      fileName = url.url();
+      m_fileName = url.url();
       slotFileOpenRecent(url);
     } else { // Wizard / Template
-      fileName = start.getURL();
+      m_fileName = start.getURL();
     }
 
     //save off directory as the last one used.
-    if(fileName.isLocalFile() && fileName.hasPath())
+    if(m_fileName.isLocalFile() && m_fileName.hasPath())
     {
-      writeLastUsedDir(fileName.path(0));
-      writeLastUsedFile(fileName.path(0));
+      writeLastUsedDir(m_fileName.path(0));
+      writeLastUsedFile(m_fileName.path(0));
     }
 
     return true;
@@ -1721,13 +1754,13 @@ void KMyMoney2App::slotFileBackup()
 
 
 
-  if ( fileName.isEmpty() )
+  if ( m_fileName.isEmpty() )
       return;
 
-  if(!fileName.isLocalFile()) {
+  if(!m_fileName.isLocalFile()) {
     KMessageBox::sorry(this,
                        i18n("The current implementation of the backup functionality only supports local files as source files! Your current source file is '%1'.")
-                            .arg(fileName.url()),
+                            .arg(m_fileName.url()),
 
                        i18n("Local files only"));
     return;
@@ -1741,12 +1774,12 @@ void KMyMoney2App::slotFileBackup()
     m_backupMount = backupDlg->mountCheckBox->isChecked();
     proc.clearArguments();
     m_backupState = BACKUP_MOUNTING;
-    mountpoint = backupDlg->txtMountPoint->text();
+    m_mountpoint = backupDlg->txtMountPoint->text();
 
     if (m_backupMount) {
-      progressCallback(0, 300, i18n("Mounting %1").arg(mountpoint));
+      progressCallback(0, 300, i18n("Mounting %1").arg(m_mountpoint));
       proc << "mount";
-      proc << mountpoint;
+      proc << m_mountpoint;
       proc.start();
 
     } else {
@@ -1776,7 +1809,7 @@ void KMyMoney2App::slotProcessExited()
           QDate::currentDate().year(),
           QDate::currentDate().month(),
           QDate::currentDate().day());
-        QString backupfile = mountpoint + "/" + fileName.fileName(false);
+        QString backupfile = m_mountpoint + "/" + m_fileName.fileName(false);
         KMyMoneyUtils::appendCorrectFileExt(backupfile, today);
 
         // check if file already exists and ask what to do
@@ -1788,10 +1821,10 @@ void KMyMoney2App::slotProcessExited()
             m_backupResult = 1;
 
             if (m_backupMount) {
-              progressCallback(250, 0, i18n("Unmounting %1").arg(mountpoint));
+              progressCallback(250, 0, i18n("Unmounting %1").arg(m_mountpoint));
               proc.clearArguments();
               proc << "umount";
-              proc << mountpoint;
+              proc << m_mountpoint;
               m_backupState = BACKUP_UNMOUNTING;
               proc.start();
             } else {
@@ -1804,7 +1837,7 @@ void KMyMoney2App::slotProcessExited()
 
         if(m_backupResult == 0) {
           progressCallback(50, 0, i18n("Writing %1").arg(backupfile));
-          proc << "cp" << "-f" << fileName.path(0) << backupfile;
+          proc << "cp" << "-f" << m_fileName.path(0) << backupfile;
           m_backupState = BACKUP_COPYING;
           proc.start();
         }
@@ -1813,10 +1846,10 @@ void KMyMoney2App::slotProcessExited()
         KMessageBox::information(this, i18n("Error mounting device"), i18n("Backup"));
         m_backupResult = 1;
         if (m_backupMount) {
-          progressCallback(250, 0, i18n("Unmounting %1").arg(mountpoint));
+          progressCallback(250, 0, i18n("Unmounting %1").arg(m_mountpoint));
           proc.clearArguments();
           proc << "umount";
-          proc << mountpoint;
+          proc << m_mountpoint;
           m_backupState = BACKUP_UNMOUNTING;
           proc.start();
 
@@ -1832,10 +1865,10 @@ void KMyMoney2App::slotProcessExited()
       if(proc.normalExit() && proc.exitStatus() == 0) {
 
         if (m_backupMount) {
-          progressCallback(250, 0, i18n("Unmounting %1").arg(mountpoint));
+          progressCallback(250, 0, i18n("Unmounting %1").arg(m_mountpoint));
           proc.clearArguments();
           proc << "umount";
-          proc << mountpoint;
+          proc << m_mountpoint;
           m_backupState = BACKUP_UNMOUNTING;
           proc.start();
         } else {
@@ -1851,10 +1884,10 @@ void KMyMoney2App::slotProcessExited()
         KMessageBox::information(this, i18n("Error copying file to device"), i18n("Backup"));
 
         if (m_backupMount) {
-          progressCallback(250, 0, i18n("Unmounting %1").arg(mountpoint));
+          progressCallback(250, 0, i18n("Unmounting %1").arg(m_mountpoint));
           proc.clearArguments();
           proc << "umount";
-          proc << mountpoint;
+          proc << m_mountpoint;
           m_backupState = BACKUP_UNMOUNTING;
           proc.start();
 
@@ -2614,7 +2647,7 @@ void KMyMoney2App::updateCaption(bool skipActions)
 {
   QString caption;
 
-  caption = fileName.filename(false);
+  caption = m_fileName.filename(false);
 
   if(caption.isEmpty() && myMoneyView && myMoneyView->fileOpen())
     caption = i18n("Untitled");
@@ -2656,6 +2689,10 @@ void KMyMoney2App::updateActions(void)
   bool fileOpen = myMoneyView->fileOpen();
   bool modified = file->dirty();
 
+  //action("open_database")->setEnabled(true);
+  //action("saveas_database")->setEnabled(fileOpen);
+  action("open_database")->setEnabled(false);
+  action("saveas_database")->setEnabled(false);
   action("file_save")->setEnabled(modified);
   action("file_save_as")->setEnabled(fileOpen);
   action("file_close")->setEnabled(fileOpen);
@@ -3066,7 +3103,7 @@ void KMyMoney2App::createInitialAccount(void)
 
 const QString KMyMoney2App::filename() const
 {
-  return fileName.url();
+  return m_fileName.url();
 }
 
 const QCStringList KMyMoney2App::instanceList(void) const

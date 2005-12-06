@@ -30,6 +30,7 @@
 #include <kurlrequester.h>
 #include <ktextbrowser.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -54,28 +55,47 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
   map["QTDS7"] = QString("Sybase Adaptive Server and Microsoft SQL Server");
 
   QStringList list = QSqlDatabase::drivers();
-  QStringList::Iterator it = list.begin();
-  while(it != list.end()) {
-    QString dname = *it;
-    if (map.keys().contains(dname)) dname = dname + " - " + map[dname];
-    listDrivers->insertItem (dname);
-    ++it;
-  }
+  if (list.count() == 0) {
+    KMessageBox::error (0, i18n("There are no Qt SQL drivers installed in your system.\n"
+        "Please consult documentation for your distro, or visit the Qt web site (www.trolltech.com)"
+            " and search for SQL drivers."),
+        "");
+        buttonOK->setEnabled(false);
+  } else {
+    QStringList::Iterator it = list.begin();
+    while(it != list.end()) {
+      QString dname = *it;
+      if (map.keys().contains(dname)) dname = dname + " - " + map[dname];
+      listDrivers->insertItem (dname);
+      ++it;
+    }
 
-  listDrivers->setCurrentItem (0);
-  slotDriverSelected (listDrivers->currentText());
-  textDbName->setText ("KMyMoney");
-  textHostName->setText ("localhost");
-  textUserName->setText (QString((const char *)cuserid(NULL)));
-  textPassword->setText ("");
-  
-  connect (listDrivers, SIGNAL(highlighted(const QString&)), this, SLOT(slotDriverSelected(const QString &)));
+    listDrivers->setCurrentItem (0);
+    slotDriverSelected (listDrivers->currentText());
+    textDbName->setText ("KMyMoney");
+    textHostName->setText ("localhost");
+    textUserName->setText (QString((const char *)cuserid(NULL)));
+    textPassword->setText ("");
+    buttonOK->setEnabled(true);
+    connect (listDrivers, SIGNAL(highlighted(const QString&)), this, SLOT(slotDriverSelected(const QString &)));
+  }
   connect (buttonHelp, SIGNAL(released()), this, SLOT(slotHelp()));
   connect (buttonSQL, SIGNAL(released()), this, SLOT(slotGenerateSQL()));
   
 }
 
 KSelectDatabaseDlg::~KSelectDatabaseDlg() {}
+
+const KURL KSelectDatabaseDlg::selectedURL() {
+  KURL url;
+  url.setProtocol("sql");
+  url.setUser(textUserName->text());
+  url.setPass(textPassword->text());
+  url.setHost(textHostName->text());
+  url.setPath(textDbName->text());
+  url.setQuery(QString("driver=%1").arg(listDrivers->currentText().section (' ', 0, 0)));
+  return (url);
+}
 
 void KSelectDatabaseDlg::slotDriverSelected (const QString &driver) {
 

@@ -453,6 +453,9 @@ public slots:
 
   void slotFileOpenRecent(const KURL& url);
 
+  /** open a SQL database */
+  void slotOpenDatabase();
+
   /**
     * saves the current document. If it has no name yet, the user
     * will be queried for it.
@@ -469,6 +472,14 @@ public slots:
     * @retval true save operation was successful
     */
   const bool slotFileSaveAs();
+
+  /**
+   * ask the user to select a database and save the current document
+   *
+   * @retval false save operation failed
+   * @retval true save operation was successful
+   */
+  const bool slotSaveAsDatabase();
 
   /** asks for saving if the file is modified, then closes the actual file and window */
   void slotFileCloseWindow();
@@ -753,10 +764,10 @@ private:
   KMyMoneyView *myMoneyView;
 
   /// The URL of the file currently being edited when open.
-  KURL  fileName;
+  KURL  m_fileName;
 
   bool m_startDialog;
-  QString mountpoint;
+  QString m_mountpoint;
 
   KProgress* progressBar;
 
