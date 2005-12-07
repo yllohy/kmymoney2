@@ -185,6 +185,17 @@ public:
   static const QString paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType);
 
   /**
+   * This method is used to convert the schedule weekend option from it's
+   * internal representation into a human readable format.
+   *
+   * @param weekendOption numerical representation of the MyMoneySchedule
+   *                  weekend option
+   *
+   * @return QString representing the human readable format
+   */
+  static const QString weekendOptionToString(MyMoneySchedule::weekendOptionE weekendOption);
+
+  /**
     * This method is used to convert the schedule type from it's
     * internal representation into a human readable format.
     *

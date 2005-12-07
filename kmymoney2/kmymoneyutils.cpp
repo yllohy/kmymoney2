@@ -323,6 +323,24 @@ const QString KMyMoneyUtils::paymentMethodToString(MyMoneySchedule::paymentTypeE
   }
   return text;
 }
+const QString KMyMoneyUtils::weekendOptionToString(MyMoneySchedule::weekendOptionE weekendOption)
+{
+  QString text;
+
+  switch (weekendOption) 
+  {
+    case MyMoneySchedule::MoveFriday:
+      text = i18n("Change the date to the previous Friday");
+      break;
+    case MyMoneySchedule::MoveMonday:
+      text = i18n("Change the date to the next Monday");
+      break;
+    case MyMoneySchedule::MoveNothing:
+      text = i18n("Do Nothing");
+      break;
+  }
+  return text;
+}
 
 const QString KMyMoneyUtils::scheduleTypeToString(MyMoneySchedule::typeE type)
 {
