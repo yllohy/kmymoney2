@@ -144,7 +144,7 @@ void KHomeView::slotRefreshView(void)
 
     KConfig *kconfig = KGlobal::config();
     kconfig->setGroup("Homepage Options");
-    QStringList settings = kconfig->readListEntry("Itemlist");
+    QStringList settings = kconfig->readListEntry("ItemList");
     KMyMoneyUtils::addDefaultHomePageItems(settings);
 
     QStringList::ConstIterator it;
