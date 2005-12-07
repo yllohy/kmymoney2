@@ -92,7 +92,7 @@ const KURL KSelectDatabaseDlg::selectedURL() {
   url.setUser(textUserName->text());
   url.setPass(textPassword->text());
   url.setHost(textHostName->text());
-  url.setPath(textDbName->text());
+  url.setPath("/" + textDbName->text());
   url.setQuery(QString("driver=%1").arg(listDrivers->currentText().section (' ', 0, 0)));
   return (url);
 }

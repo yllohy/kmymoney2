@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-//#define SQLITE 1
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -24,18 +23,12 @@
 #include <qvaluelist.h>
 #include <qstringlist.h>
 #include <qiodevice.h>
-#include <qregexp.h>
-//#include <qmessagebox.h>
-#include <qdom.h>
-#include <qtextstream.h>
-#include <qbuffer.h>
 #include <qcstring.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "mymoneystoragesql.h"
-#include "../mymoneyaccount.h"
 #include "../../kmymoneyutils.h"
 
 //************************ Constructor/Destructor *****************************
@@ -46,12 +39,11 @@ MyMoneyStorageSql::MyMoneyStorageSql (const QString& driverName, IMyMoneySeriali
   m_progressCallback = 0;
   m_storage = storage;
 }
-  
+
 int MyMoneyStorageSql::open(const KURL& url, int mode, bool clear) {
 try {
-      // create the database connection
-  QString dbName = url.path();
-  while (dbName.left(1) == '/') dbName = dbName.right(dbName.length() - 1);
+  // create the database connection
+  QString dbName = url.path().right(url.path().length() - 1); // remove separator slash
   setDatabaseName(dbName);
   setHostName(url.host());
   setUserName(url.user());
@@ -64,20 +56,21 @@ try {
         buildError(QSqlQuery(), "opening database");
         return(1);
       }
-      return (createTables()); // check tables are present, create if not
+      return (createTables()); // check all tables are present, create if not (we may add tables at some time)
     case IO_WriteOnly:   // SaveAs Database - if exists, must be empty, if not will create
       if (!QSqlDatabase::open()) {
-        if (!createDatabase(url)) {
+        if (createDatabase(url) != 0) {
           return(1);
         } else {
           if (!QSqlDatabase::open()) {
             buildError(QSqlQuery(), "opening new database");
             return(1);
           } else {
-            return (0);
+            return(createTables());
           }
         }
       } else {
+        createTables();
         if (clear) {
           clean();
           return (0);
@@ -86,7 +79,7 @@ try {
         }
       }
   }
-  qFatal ("oops in database open");
+  qFatal ("oops in mymoneystoragesql.cpp open");
   return (1);
 } catch (QString& s) {
     qDebug(s);
@@ -100,8 +93,7 @@ int MyMoneyStorageSql::createDatabase (const KURL& url) {
     return (1);
   }
 // create the database (only works for mysql at present)
-  QString dbName = url.path();
-  if (dbName.left(1) == '/') dbName = dbName.right(dbName.length() - 1);
+  QString dbName = url.path().right(url.path().length() - 1); // remove separator slash
   QSqlDatabase *maindb = QSqlDatabase::addDatabase(driverName());
   maindb->setDatabaseName ("mysql");
   maindb->setHostName (url.host());
@@ -145,13 +137,7 @@ void MyMoneyStorageSql::createTable (const dbTable& t) {
   QSqlQuery q(this);
   q.prepare (qs);
   if (!q.exec()) throw buildError(q, QString ("creating table %1").arg(t.name()));
-  // check tables, create if required
-  QMapConstIterator<QString, dbTable> tt = m_db.begin();
-  while (tt != m_db.end()) {
-    if (!tables().contains(tt.key())) createTable (tt.data());
-    ++tt;
-  }
-} 
+}
 
 int MyMoneyStorageSql::isEmpty () {
   // check all tables are empty
@@ -198,6 +184,10 @@ bool MyMoneyStorageSql::readFile(void) {
   readPrices();
   readCurrencies();
   readReports();
+  // this seems to be nonsense, but it clears the dirty flag
+  // as a side-effect.
+  m_storage->setLastModificationDate(m_storage->lastModificationDate());
+  m_storage = NULL;
   // make sure the progress bar is not shown any longer
   signalProgress(-1, -1);
   return true;
@@ -223,7 +213,11 @@ bool MyMoneyStorageSql::writeFile(void) {
   writeCurrencies();
   writeReports();
   writeFileInfo();
-// make sure the progress bar is not shown any longer
+  // this seems to be nonsense, but it clears the dirty flag
+  // as a side-effect.
+  m_storage->setLastModificationDate(m_storage->lastModificationDate());
+  m_storage = NULL;
+  // make sure the progress bar is not shown any longer
   signalProgress(-1, -1);
   return true;
 } catch (QString& s) {
@@ -1276,10 +1270,13 @@ void MyMoneyStorageSql::signalProgress(int current, int total, const QString& ms
 QString& MyMoneyStorageSql::buildError (const QSqlQuery& q, const QString& message) {
   QString s = QString("Error in %1").arg(message);
   QSqlError e = lastError();
+  s += QString ("\nDriver = %1, Host = %2, User = %3, Database = %4")
+      .arg(driverName()).arg(hostName()).arg(userName()).arg(databaseName());
   s += QString ("\nDriver Error: %1").arg(e.driverText());
-  s += QString ("\nDatabase Error: %1").arg(e.databaseText());
+  s += QString ("\nDatabase Error No %1: %2").arg(e.number()).arg(e.databaseText());
+  e = q.lastError();
   s += QString ("\nExecuted: %1").arg(q.executedQuery());
-  s += QString ("\nQuery error: %1").arg(q.lastError().text());
+  s += QString ("\nQuery error No %1: %2").arg(e.number()).arg(e.text());
   m_error = s;
   return (m_error);
 }

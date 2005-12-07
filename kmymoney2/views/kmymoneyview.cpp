@@ -841,7 +841,7 @@ const bool KMyMoneyView::saveAsDatabase(const KURL& url)
       case -1: // dbase already has data, see if he wants to clear it out
         if (KMessageBox::warningContinueCancel (0,
             i18n("Database contains data which must be removed before using SaveAs.\n"
-                "Do you wish to continue?"), "database not empty") == KMessageBox::Continue) {
+                "Do you wish to continue?"), "Database not empty") == KMessageBox::Continue) {
           if (writer->open(url, IO_WriteOnly, true) == 0) canWrite = true;
         } else {
           delete writer;
@@ -873,7 +873,7 @@ const bool KMyMoneyView::saveDatabase(const KURL& url)
   }
   MyMoneyStorageSql *writer = new MyMoneyStorageSql(url.queryItems(0,0)["driver"],
       dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
-  if (writer->open(url, IO_ReadWrite)) {
+  if (writer->open(url, IO_ReadWrite) == 0) {
     writer->setProgressCallback(&KMyMoneyView::progressCallback);
     writer->writeFile();
     writer->setProgressCallback(0);
