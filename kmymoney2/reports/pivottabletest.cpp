@@ -169,7 +169,7 @@ void PivotTableTest::testNetWorthOfsetting()
   filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
   XMLandback(filter);
   PivotTable networth_f( filter );
-  CPPUNIT_ASSERT(networth_f.m_grid["Liability"]["Credit Card"][acCredit][7]==moCreditOpen);
+  CPPUNIT_ASSERT(networth_f.m_grid["Liability"]["Credit Card"][acCredit][7]==-moCreditOpen);
   CPPUNIT_ASSERT(networth_f.m_grid.m_total[0]==moZero);
   CPPUNIT_ASSERT(networth_f.m_grid.m_total[12]==moCheckingOpen+moCreditOpen);
 
@@ -188,7 +188,7 @@ void PivotTableTest::testNetWorthOpeningPrior()
   PivotTable networth_f( filter );
   writeTabletoCSV(networth_f);
 
-  CPPUNIT_ASSERT(networth_f.m_grid["Liability"]["Credit Card"].m_total[0]==moCreditOpen);
+  CPPUNIT_ASSERT(networth_f.m_grid["Liability"]["Credit Card"].m_total[0]==-moCreditOpen);
   CPPUNIT_ASSERT(networth_f.m_grid["Asset"]["Checking Account"].m_total[0]==moCheckingOpen);
   CPPUNIT_ASSERT(networth_f.m_grid.m_total[0]==moCheckingOpen+moCreditOpen);
   CPPUNIT_ASSERT(networth_f.m_grid.m_total[1]==moCheckingOpen+moCreditOpen);
@@ -203,7 +203,7 @@ void PivotTableTest::testNetWorthOpeningPrior()
   filter.setName("Net Worth Opening Prior 2");
   PivotTable networth_f2( filter );
   writeTabletoCSV(networth_f2);
-  CPPUNIT_ASSERT(networth_f2.m_grid["Liability"]["Credit Card"].m_total[0]==moCreditOpen-moParent);
+  CPPUNIT_ASSERT(networth_f2.m_grid["Liability"]["Credit Card"].m_total[0]==-moCreditOpen+moParent);
   CPPUNIT_ASSERT(networth_f2.m_grid["Asset"]["Checking Account"].m_total[0]==moCheckingOpen-moChild);
   CPPUNIT_ASSERT(networth_f2.m_grid.m_total[0]==moCheckingOpen+moCreditOpen-moChild-moParent);
 }
@@ -250,8 +250,8 @@ void PivotTableTest::testSingleTransaction()
   PivotTable spending_f( filter );
   writeTabletoHTML(spending_f,"Spending with Single Transaction.html");
 
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Solo"][acSolo][2]==(-moSolo));
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Solo"].m_total[2]==(-moSolo));
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Solo"][acSolo][2]==moSolo);
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Solo"].m_total[2]==moSolo);
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Solo"].m_total[1]==moZero);
   CPPUNIT_ASSERT(spending_f.m_grid.m_total[2]==(-moSolo));
   CPPUNIT_ASSERT(spending_f.m_grid.m_total.m_total==(-moSolo));
@@ -281,11 +281,11 @@ void PivotTableTest::testSubAccount()
   PivotTable spending_f( filter );
   writeTabletoHTML(spending_f,"Spending with Sub-Account.html");
 
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acParent][3]==(-moParent));
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acChild][3]==(-moChild));
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"].m_total[3]==(-moParent-moChild));
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acParent][3]==moParent);
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acChild][3]==moChild);
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"].m_total[3]==moParent+moChild);
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"].m_total[2]==moZero);
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"].m_total.m_total==(-moParent-moChild));
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"].m_total.m_total==moParent+moChild);
   CPPUNIT_ASSERT(spending_f.m_grid.m_total[3]==(-moParent-moChild));
   CPPUNIT_ASSERT(spending_f.m_grid.m_total.m_total==(-moParent-moChild));
 
@@ -296,7 +296,7 @@ void PivotTableTest::testSubAccount()
   XMLandback(filter);
   PivotTable networth_f( filter );
   writeTabletoHTML(networth_f,"Net Worth with Sub-Account.html");
-  CPPUNIT_ASSERT(networth_f.m_grid["Liability"]["Credit Card"].m_total[3]==-moParent-moChild+moCreditOpen );
+  CPPUNIT_ASSERT(networth_f.m_grid["Liability"]["Credit Card"].m_total[3]==moParent+moChild-moCreditOpen );
   CPPUNIT_ASSERT(networth_f.m_grid.m_total[4] == -moParent-moChild+moCreditOpen+moCheckingOpen );
 
 }
@@ -316,8 +316,8 @@ void PivotTableTest::testFilterIEvsIE()
   XMLandback(filter);
   PivotTable spending_f( filter );
 
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"].m_total[3]==-moChild);
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"].m_total[2]==-moSolo);
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"].m_total[3]==moChild);
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"].m_total[2]==moSolo);
   CPPUNIT_ASSERT(spending_f.m_grid.m_total.m_total==-moSolo-moChild);
 
 }
@@ -357,7 +357,7 @@ void PivotTableTest::testFilterALvsIE()
   PivotTable spending_f( filter );
 
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"].m_total[3]==moZero);
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"].m_total[2]==-moSolo);
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"].m_total[2]==moSolo);
   CPPUNIT_ASSERT(spending_f.m_grid.m_total.m_total==-moSolo);
 }
 
@@ -377,7 +377,7 @@ void PivotTableTest::testFilterAllvsIE()
   PivotTable spending_f( filter );
 
   CPPUNIT_ASSERT(spending_f.m_grid["Expense"].m_total[2]==moZero);
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"].m_total[3]==-moChild);
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"].m_total[3]==moChild);
   CPPUNIT_ASSERT(spending_f.m_grid.m_total.m_total==-moChild);
 }
 
@@ -467,16 +467,16 @@ void PivotTableTest::testMultipleCurrencies()
   writeTabletoCSV(spending_f);
 
   // test single foreign currency
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acCanCash][2]==(-moCanTransaction*moCanPrice));
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acCanCash][3]==(-moCanTransaction*moCanPrice));
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acCanCash][4]==(-moCanTransaction*moCanPrice));
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acCanCash][2]==(moCanTransaction*moCanPrice));
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acCanCash][3]==(moCanTransaction*moCanPrice));
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acCanCash][4]==(moCanTransaction*moCanPrice));
 
   // test multiple foreign currencies under a common parent
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acJpyCash][2]==(-moJpyTransaction*moJpyPrice));
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acJpyCash][3]==(-moJpyTransaction*moJpyPrice));
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acJpyCash][4]==(-moJpyTransaction*moJpyPrice));
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"].m_total[2]==(-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice));
-  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"].m_total.m_total==(-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice-moJpyTransaction*moJpyPrice-moCanTransaction*moCanPrice));
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acJpyCash][2]==(moJpyTransaction*moJpyPrice));
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acJpyCash][3]==(moJpyTransaction*moJpyPrice));
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"][acJpyCash][4]==(moJpyTransaction*moJpyPrice));
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"].m_total[2]==(moJpyTransaction*moJpyPrice + moCanTransaction*moCanPrice));
+  CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Foreign"].m_total.m_total==(moJpyTransaction*moJpyPrice + moCanTransaction*moCanPrice + moJpyTransaction*moJpyPrice + moCanTransaction*moCanPrice + moJpyTransaction*moJpyPrice + moCanTransaction*moCanPrice));
 
   // Test the report type where we DO NOT convert the currency
   filter.setConvertCurrency(false);
@@ -486,12 +486,12 @@ void PivotTableTest::testMultipleCurrencies()
   PivotTable spending_fnc( filter );
   writeTabletoCSV(spending_fnc);
 
-  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][2]==(-moCanTransaction));
-  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][3]==(-moCanTransaction));
-  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][4]==(-moCanTransaction));
-  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][2]==(-moJpyTransaction));
-  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][3]==(-moJpyTransaction));
-  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][4]==(-moJpyTransaction));
+  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][2]==(moCanTransaction));
+  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][3]==(moCanTransaction));
+  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acCanCash][4]==(moCanTransaction));
+  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][2]==(moJpyTransaction));
+  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][3]==(moJpyTransaction));
+  CPPUNIT_ASSERT(spending_fnc.m_grid["Expense"]["Foreign"][acJpyCash][4]==(moJpyTransaction));
 
   filter.setConvertCurrency(true);
   filter.clear();
@@ -560,7 +560,7 @@ void PivotTableTest::testAdvancedFilter()
     PivotTable spending_f( filter );
     writeTabletoHTML(spending_f,"Spending with Payee Filter.html");
     
-    CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acParent][11]==-moThomas);
+    CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acParent][11]==moThomas);
     CPPUNIT_ASSERT(spending_f.m_grid.m_total.m_total==-moThomas);
   }
   // payee (no payee)
@@ -576,7 +576,7 @@ void PivotTableTest::testAdvancedFilter()
     filter.addPayee(QCString());
     XMLandback(filter);
     PivotTable spending_f( filter );
-    CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acParent][11]==-moNoPayee);
+    CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acParent][11]==moNoPayee);
     CPPUNIT_ASSERT(spending_f.m_grid.m_total.m_total==-moNoPayee);
   }
 
@@ -629,7 +629,7 @@ void PivotTableTest::testAdvancedFilter()
     PivotTable networth_f4( filter );
 
     CPPUNIT_ASSERT(networth_f4.m_grid["Asset"].m_total[11] == moCheckingOpen + moChild);
-    CPPUNIT_ASSERT(networth_f4.m_grid["Liability"].m_total[11] == moCreditOpen - moChild);
+    CPPUNIT_ASSERT(networth_f4.m_grid["Liability"].m_total[11] == - moCreditOpen + moChild);
     CPPUNIT_ASSERT(networth_f4.m_grid.m_total[10] == moCheckingOpen + moCreditOpen);
     CPPUNIT_ASSERT(networth_f4.m_grid.m_total[11] == moCheckingOpen + moCreditOpen);
   }
