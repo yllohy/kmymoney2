@@ -14,6 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
+// make sure, that this is defined before we even include any other header file
+#ifndef __STDC_LIMIT_MACROS
+  #define __STDC_LIMIT_MACROS         // force definition of min and max values
+#endif
+
 #include "mymoneymoneytest.h"
 #include <iostream>
 #include <stdint.h>

@@ -174,7 +174,7 @@ KMYMONEY_EXPORT void _CheckMemory_End();
  * @param date const reference to date to be converted
  * @return QString containing the converted date
  */
-QString dateToString(const QDate& date);
+KMYMONEY_EXPORT QString dateToString(const QDate& date);
 
 /**
  * This function returns a date as QDate object as specified by
@@ -185,9 +185,9 @@ QString dateToString(const QDate& date);
  * @param str date in Qt::ISODate format
  * @return QDate object
  */
-QDate stringToDate(const QString& str);
+KMYMONEY_EXPORT QDate stringToDate(const QString& str);
 
-QCString QCStringEmpty(const QString&);
-QString QStringEmpty(const QString&);
+KMYMONEY_EXPORT QCString QCStringEmpty(const QString&);
+KMYMONEY_EXPORT QString QStringEmpty(const QString&);
 
 #endif

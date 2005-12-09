@@ -32,6 +32,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/export.h>
 
 class MyMoneyObserver;
 
@@ -41,7 +42,7 @@ class MyMoneyObserver;
   *
   * @author Thomas Baumgart
   */
-class MyMoneySubject {
+class KMYMONEY_EXPORT MyMoneySubject {
 public: 
   virtual ~MyMoneySubject();
   virtual void attach(MyMoneyObserver*);
