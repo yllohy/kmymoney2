@@ -1,3 +1,8 @@
+2005-12-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed export of symbols missing from patch applied on 2005-11-29
+  * Fixed missing definition in mymoneymoneytest.cpp
+  * Fixed export of symbols in test environment
+
 2005-12-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Trap database errors; provide timing traces
 
