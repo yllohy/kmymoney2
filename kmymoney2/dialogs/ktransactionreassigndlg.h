@@ -31,7 +31,7 @@
 // Project Includes
 
 #include <kmymoney/mymoneypayee.h>
-#include "ktransactionreassigndlgdecl.h"
+#include "kmymoney2/dialogs/ktransactionreassigndlgdecl.h"
 
 /**
  *  Implementation of the dialog that lets the user select a payee in order
