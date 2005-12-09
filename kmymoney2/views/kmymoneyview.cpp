@@ -570,6 +570,8 @@ bool KMyMoneyView::readFile(const KURL& url)
 
 bool KMyMoneyView::readDatabase(const KURL& url)
 {
+  bool rc = false;
+  ::timetrace("start reading database");
   MyMoneyStorageSql* reader = new MyMoneyStorageSql (url.queryItems(0,0)["driver"],
       dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
   if (reader->open(url, IO_ReadOnly) != 0) {
@@ -578,10 +580,17 @@ bool KMyMoneyView::readDatabase(const KURL& url)
     return false;
   }
   reader->setProgressCallback(&KMyMoneyView::progressCallback);
-  reader->readFile();
+  if (!reader->readFile()) {
+    KMessageBox::detailedError (0,
+                                i18n("An unrecoverable error occurred while reading the database"),
+                                reader->lastError().latin1(),
+                                i18n("Database malfunction"));
+    rc = false;
+  }
   reader->setProgressCallback(0);
   delete reader;
-  return true;
+  ::timetrace("done reading database");
+  return (initializeStorage());
 }
 
 bool KMyMoneyView::initializeStorage() {
@@ -851,7 +860,14 @@ const bool KMyMoneyView::saveAsDatabase(const KURL& url)
   }
   if (canWrite) {
     writer->setProgressCallback(&KMyMoneyView::progressCallback);
-    writer->writeFile();
+    if (!writer->writeFile()) {
+      KMessageBox::detailedError (0,
+                                i18n("An unrecoverable error occurred while writing to the database.\n"
+                                    "It may well be corrupt."),
+                                writer->lastError().latin1(),
+                                i18n("Database malfunction"));
+      rc =  false;
+    }
     writer->setProgressCallback(0);
     rc = true;
   } else {
@@ -871,11 +887,19 @@ const bool KMyMoneyView::saveDatabase(const KURL& url)
     KMessageBox::error(this, i18n("Tried to access a file when it's not open"));
     return (rc);
   }
+  ::timetrace("start writing database");
   MyMoneyStorageSql *writer = new MyMoneyStorageSql(url.queryItems(0,0)["driver"],
       dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
   if (writer->open(url, IO_ReadWrite) == 0) {
     writer->setProgressCallback(&KMyMoneyView::progressCallback);
-    writer->writeFile();
+    if (!writer->writeFile()) {
+      KMessageBox::detailedError (0,
+                                  i18n("An unrecoverable error occurred while writing to the database.\n"
+                                      "It may well be corrupt."),
+                                  writer->lastError().latin1(),
+                                  i18n("Database malfunction"));
+      rc = false;
+    }
     writer->setProgressCallback(0);
     rc = true;
   } else {
@@ -884,6 +908,7 @@ const bool KMyMoneyView::saveDatabase(const KURL& url)
                                 writer->lastError());
   }
   delete writer;
+  ::timetrace("done writing database");
   return (rc);
 }
 

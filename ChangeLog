@@ -1,3 +1,6 @@
+2005-12-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Trap database errors; provide timing traces
+
 2005-12-01 Andreas Nicolai <ghorwin@users.sourceforge.net>
   * added new dialog KTransactionReassignDlg
   * new features in payees view:
