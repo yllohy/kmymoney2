@@ -1,3 +1,19 @@
+2005-12-01 Andreas Nicolai <ghorwin@users.sourceforge.net>
+  * added new dialog KTransactionReassignDlg
+  * new features in payees view:
+    - multiple payees can be selected, payee info is only shown
+      when a single payee is selected (otherwise info widget is disabled)
+    - 'in place' renaming is only possible when a single payee is selected
+    - renaming a payee to an existing payees name gives a warning
+    - whitespaces in payee names (entered via 'rename' or 'new payee'
+      actions) are stripped
+    - 'New payee' creates a unique payee name of the format 'New payee [?]'
+    - Action 'Delete payee' is now possible for several selected payees
+    - when payees are deleted and still assigned to transactions, the user
+      can now select an alternative payee who should be used for the
+      transactions
+  * new comparison operator for MyMoneyPayee to find payees by their id
+
 2005-12-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1375112 (Can't configure home page)
 

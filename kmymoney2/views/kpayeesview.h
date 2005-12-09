@@ -1,6 +1,6 @@
 /***************************************************************************
-                          kpayeesview.h  -  description
-                             -------------------
+                          kpayeesview.h
+                          -------------
     begin                : Thu Jan 24 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
     email                : mte@users.sourceforge.net
@@ -9,7 +9,8 @@
                            John C <thetacoturtle@users.sourceforge.net>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
                            Kevin Tambascio <ktambascio@users.sourceforge.net>
- ***************************************************************************/
+                           Andreas Nicolai <Andreas.Nicolai@gmx.net>
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -119,10 +120,11 @@ private:
   bool    m_suspendUpdate;
 };
 
+
 class KPayeesView : public KPayeesViewDecl, MyMoneyObserver
 {
    Q_OBJECT
-public: 
+public:
   KPayeesView(QWidget *parent=0, const char *name=0);
   ~KPayeesView();
   void show();
@@ -149,7 +151,7 @@ public slots:
   void slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
   void slotRefreshView(void);
   void slotReloadView(void);
-  
+
 protected:
   void resizeEvent(QResizeEvent*);
 
@@ -162,15 +164,40 @@ protected slots:
     */
   void showTransactions(void);
 
-  void slotSelectPayee(QListViewItem*);
+  /**
+    * This slot is called whenever the selection in m_payeesList
+    * has been changed.
+    */
+  void slotSelectPayee();
+
+  /**
+    * This slot is called whenever the action "New payee" is executed
+    * from the context menu and adds a new payee with some default name.
+    */
   void slotAddPayee();
+
+  /**
+    * This slot is called whenever the action "Delete payee" is executed
+    * from the context menu, deletes selected payees and reassigns
+    * transactions to an alternative payee.
+    */
   void slotDeletePayee();
-  
+
   /**
     * This slot marks the current selected payee as modified (dirty).
     */
   void slotPayeeDataChanged();
+
+  /**
+    * This slot is called when the name of a payee is changed inside
+    * the payee list view and only a single payee is selected.
+    */
   void slotRenamePayee(QListViewItem *p, int col, const QString& txt);
+
+  /**
+    * Updates the payee data in m_payee from the information in the
+    * payee information widget.
+    */
   void slotUpdatePayee();
 
   void slotTransactionDoubleClicked(QListViewItem *);

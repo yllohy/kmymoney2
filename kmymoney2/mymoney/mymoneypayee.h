@@ -108,4 +108,6 @@ public:
   static MyMoneyPayee null;
 };
 
+inline bool operator==(const MyMoneyPayee& lhs, const QCString& rhs) { return lhs.id() == rhs; }
+
 #endif
