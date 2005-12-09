@@ -2569,8 +2569,6 @@ void KMyMoney2App::slotScheduleEdit(void)
         case MyMoneySchedule::TYPE_ANY:
           break;
       }
-      delete sched_dlg;
-      delete loan_wiz;
 
     } catch (MyMoneyException *e) {
       KMessageBox::detailedSorry(this, i18n("Unable to modify schedule '%1'").arg(m_selectedSchedule.name()), e->what());
