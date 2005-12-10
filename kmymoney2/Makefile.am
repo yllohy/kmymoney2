@@ -8,7 +8,7 @@ kmymoney2_LDADD = $(top_builddir)/kmymoney2/views/libviews.a $(top_builddir)/kmy
 
 SUBDIRS = mymoney widgets dialogs views converter pics icons html templates plugins reports
 
-EXTRA_DIST = kmymoney2ui.rc kmymoney2.desktop lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png mimetype_kmy_64x64.png mimetype_kmy_128x128.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png hi64-app-kmymoney2.png hi128-app-kmymoney2.png tips kmymoney2.kcfg kmymoneysettings.kcfgc
+EXTRA_DIST = kmymoney2ui.rc kmymoney2.desktop lo16-app-kmymoney2.png lo32-app-kmymoney2.png kmymoney_wizard.png mimetype_kmy_16x16.png mimetype_kmy_32x32.png mimetype_kmy_48x48.png mimetype_kmy_64x64.png mimetype_kmy_128x128.png x-kmymoney2.desktop hi16-app-kmymoney2.png hi32-app-kmymoney2.png hi48-app-kmymoney2.png hi64-app-kmymoney2.png hi128-app-kmymoney2.png tips kmymoney2.kcfg kmymoneysettings.kcfgc
 
 # make sure, automatically generated files exist
 BUILT_SOURCES = kmymoneysettings.h
