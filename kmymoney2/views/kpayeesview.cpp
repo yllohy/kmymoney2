@@ -532,7 +532,7 @@ void KPayeesView::slotDeletePayee()
     if (!translist.isEmpty()) {
       // show error message if no payees remain
       if (remaining_payees.isEmpty()) {
-        KMessageBox::sorry(this, i18n("At least on transaction is still referenced by a payee "
+        KMessageBox::sorry(this, i18n("At least one transaction is still referenced by a payee "
           "and you want to delete all payees. However, at least one payee must remain so that "
           "the transactions can be reassigned."));
         return;
