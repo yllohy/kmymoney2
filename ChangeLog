@@ -1,3 +1,8 @@
+2005-12-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed spelling error in payees view
+  * Added reference check logic to objects and engine code
+    Calls at appropriate locations must still be added
+
 2005-12-10 Ace Jones <acejones@users.sourceforge.net>
   * Added a Loan Transactions report.  This shows loan-specific information 
     about transactions in loan accounts.  It doesn't provide future-looking
