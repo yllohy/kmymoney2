@@ -63,7 +63,7 @@ public:
   enum ERowType { eNoRows = 0, eAssetLiability, eExpenseIncome, eCategory, eTopCategory, eAccount, ePayee, eMonth, eWeek, eTopAccount, eAccountByTopAccount, eEquityType, eAccountType, eInstitution };
   enum EReportType { eNoReport = 0, ePivotTable, eQueryTable };
   enum EColumnType { eNoColumns = 0, eDays = 1, eMonths = 1, eBiMonths = 2, eQuarters = 3, eWeeks = 7, eYears = 12 };
-  enum EQueryColumns { eQCnone = 0x0, eQCbegin = 0x1, eQCnumber = 0x1, eQCpayee = 0x2, eQCcategory = 0x4, eQCmemo = 0x8, eQCaccount = 0x10, eQCreconciled=0x20, eQCaction=0x40, eQCshares=0x80, eQCprice=0x100, eQCperformance=0x200, eQCend=0x400 };
+  enum EQueryColumns { eQCnone = 0x0, eQCbegin = 0x1, eQCnumber = 0x1, eQCpayee = 0x2, eQCcategory = 0x4, eQCmemo = 0x8, eQCaccount = 0x10, eQCreconciled=0x20, eQCaction=0x40, eQCshares=0x80, eQCprice=0x100, eQCperformance=0x200, eQCloan=0x400, eQCend=0x400 };
   enum EDetailLevel { eDetailNone = 0, eDetailAll, eDetailTop, eDetailGroup, eDetailTotal, eDetailEnd };
   enum EChartType { eChartNone = 0, eChartLine, eChartBar, eChartPie, eChartRing, eChartStackedBar, eChartEnd };
 
@@ -96,6 +96,7 @@ public:
   bool isFavorite(void) const { return m_favorite; }
   bool isTax(void) const { return m_tax; }
   bool isInvestmentsOnly(void) const { return m_investments; }
+  bool isLoansOnly(void) const { return m_loans; }
   EDetailLevel detailLevel(void) const { return m_detailLevel; }
   EChartType chartType(void) const { return m_chartType; }
   bool isChartDataLabels(void) const { return m_chartDataLabels; }
@@ -117,7 +118,8 @@ public:
   void setQueryColumns( EQueryColumns _qc ) { m_queryColumns = _qc; }
   void setId( const QCString& _id ) { m_id = _id; }
   void setTax(bool _f) { m_tax = _f; }
-  void setInvestmentsOnly(bool _f) { m_investments = _f; }
+  void setInvestmentsOnly(bool _f) { m_investments = _f; if (_f) m_loans = false; }
+  void setLoansOnly(bool _f) { m_loans = _f; if (_f) m_investments = false; }
   void setDetailLevel( EDetailLevel _detail ) { m_detailLevel = _detail; }
   void setChartType ( EChartType _type ) { m_chartType = _type; }
   void setChartDataLabels ( bool _f ) { m_chartDataLabels = _f; }
@@ -321,6 +323,12 @@ private:
     * Whether this report should only include investment accounts
     */
   bool m_investments;
+  /**
+    * Whether this report should only include loan accounts
+    * Applies only to querytable reports.  Mutually exclusive with
+    * m_investments.
+    */
+  bool m_loans;
   /**
     * What sort of algorithm should be used to run the report
     */

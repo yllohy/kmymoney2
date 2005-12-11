@@ -234,6 +234,7 @@ public:
   bool isNewHeader(void) const { return (m_currentGroup != m_previousGroup); }
   bool isSubtotal(void) const { return (m_currentGroup != m_previousGroup) && (!m_previousGroup.isEmpty()); }
   const MyMoneyMoney& subtotal(void) const { return m_previousSubtotal; }
+  const MyMoneyMoney& currenttotal(void) const { return m_currentSubtotal; }
   const unsigned depth(void) const { return m_depth; }
   const QString& name(void) const { return m_currentGroup; }
   const QString& oldName(void) const { return m_previousGroup; }
@@ -383,7 +384,12 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
     m_columns += ",price";
   if ( qc & MyMoneyReport::eQCperformance )
     m_columns += ",startingbal,buys,sells,reinvestincome,cashincome,return";
-
+  if ( qc & MyMoneyReport::eQCloan )
+  {
+    m_columns += ",payment,interest,fees";
+    m_postcolumns = "balance";       
+  }
+   
   QString sort;
   if ( ! m_group.isEmpty() )
     sort += m_group + ",";
@@ -393,7 +399,6 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
 
   TableRow::setSortCriteria(sort);
   qHeapSort(m_transactions);
-
 }
 
 void QueryTable::constructTransactionTable(void)
@@ -507,73 +512,132 @@ void QueryTable::constructTransactionTable(void)
           qaccountrow["investaccount"] = splitaccount.parent().name();
         }
 
-        QValueList<MyMoneySplit>::const_iterator it_split2 = splits.begin();
-        while ( it_split2 != splits.end() )
+        //
+        // handle loans
+        //
+        // Loans only get one line per transaction.  The different splits will all be
+        // placed on a single line
+        //
+        if ( splitaccount.accountType() == MyMoneyAccount::Loan )
         {
-          ReportAccount split2account = (*it_split2).accountId();
-        
-          // Only process this split if it is not the A/L account we're working with anyway
-          if ( (*it_split2).accountId() != (*it_split).accountId() )
+          qaccountrow["account"] = splitaccount.name();
+          qaccountrow["accountid"] = splitaccount.id();
+          qaccountrow["topaccount"] = splitaccount.topParentName();
+          
+          QValueList<MyMoneySplit>::const_iterator it_split2 = splits.begin();
+          while ( it_split2 != splits.end() )
           {
-            // Create one query line for each target account/category
-            // (This is the 'expand categories' behaviour.
-            // 'collapse categories' would entail cramming them all into one
-            // line and calling it "Split Categories").
-
-            TableRow qsplitrow = qaccountrow;
-            qsplitrow["account"] = splitaccount.name();
-            qsplitrow["accountid"] = splitaccount.id();
-            qsplitrow["topaccount"] = splitaccount.topParentName();
-
-            // retrieve the value in the transaction's currency, and convert
-            // to the base currency if needed
-            qsplitrow["value"] = ((-(*it_split2).value())*displayprice).toString();
-            qsplitrow["id"] = (*it_split2).id();
-
-            if (!(*it_split2).memo().isEmpty())
-              qsplitrow["memo"] = (*it_split2).memo();
+            ReportAccount split2account = (*it_split2).accountId();
+          
+            // Put the principal amount in the "value" column
+            if ( (*it_split2).accountId() == (*it_split).accountId() )
+            {
+              qaccountrow["value"] = ((-(*it_split2).value())*displayprice).toString();
+            }
             
-            // handle cash dividends.  these little fellas require very special handling.
-            // the stock account will produce a qaccountrow with zero value & zero shares.
-            // then there will be 2 qsplitrows, a category and a transfer account.  We are
-            // only concerned with the transfer account, and we will NOT show the income
-            // account.  (This may have to be changed later if we feel we need it.)
-
-            if (
-              ( splitaccount.accountType() == MyMoneyAccount::Stock )
-              &&
-              ( (*it_split).action() == MyMoneySplit::ActionDividend || (*it_split).action() == MyMoneySplit::ActionYield )
-              &&
-              ( split2account.isIncomeExpense() )
-            )
+            // Put the payment in the "payment" column
+            else if ( (*it_split2).action() == MyMoneySplit::ActionAmortization )
             {
-              goto skip_addsplit;
+              qaccountrow["payment"] = (-(*it_split2).value()*displayprice).toString();
             }
-
-            // handle sub-categories.  the 'category' field contains the
-            // fully-qualified category hierarchy, e.g. "Computers: Hardware: CPUs"
-            // the 'topparent' field contains just the top-most parent, in this
-            // example "Computers"
-
-            // if this is a transfer (note that in tax reports, we don't want to see transfers)
-            if ( split2account.isAssetLiability() && ! m_config.isTax() )
+            
+            // Put the interest in the "interest" column
+            else if ( (*it_split2).action() == MyMoneySplit::ActionInterest )
             {
-              QString fromto = ((*it_split2).value().isNegative())?"from":"to";
-              qsplitrow["category"] = i18n("Transfer %1 %2").arg(fromto).arg(split2account.fullName());
-              qsplitrow["topcategory"] = split2account.topParentName();
-              qsplitrow["categorytype"] = i18n("Transfer");
-              m_transactions += qsplitrow;
+              qaccountrow["interest"] = (-(*it_split2).value()*displayprice).toString();
             }
-            else if ( m_config.includes( split2account ) )
+            
+            // Put the initial pay-in nowhere (that is, ignore it). This is dangerous, though.
+            // The only way I can tell the initial pay-in apart from fees is if there are
+            // only 2 splits in the transaction.  I wish there was a better way.
+            else if ( splits.count() == 2)
             {
-              qsplitrow["category"] = split2account.fullName();
-              qsplitrow["topcategory"] = split2account.topParentName();
-              qsplitrow["categorytype"] = accountTypeToString(split2account.accountGroup());
-              m_transactions += qsplitrow;
             }
+            
+            // Put everything else in the "fees" column
+            else
+            {
+              MyMoneyMoney currentfees = MyMoneyMoney(qaccountrow["fees"]);
+              MyMoneyMoney morefees = -(*it_split2).value()*displayprice;
+              qaccountrow["fees"] = (currentfees + morefees).toString();
+            }
+            ++it_split2;
           }
+          m_transactions += qaccountrow;
+        }
+        //
+        // Handle all other kinds of accounts
+        //
+        else
+        {      
+          QValueList<MyMoneySplit>::const_iterator it_split2 = splits.begin();
+          while ( it_split2 != splits.end() )
+          {
+            ReportAccount split2account = (*it_split2).accountId();
+          
+            // Only process this split if it is not the A/L account we're working with anyway
+            if ( (*it_split2).accountId() != (*it_split).accountId() )
+            {
+              // Create one query line for each target account/category
+              // (This is the 'expand categories' behaviour.
+              // 'collapse categories' would entail cramming them all into one
+              // line and calling it "Split Categories").
+  
+              TableRow qsplitrow = qaccountrow;
+              qsplitrow["account"] = splitaccount.name();
+              qsplitrow["accountid"] = splitaccount.id();
+              qsplitrow["topaccount"] = splitaccount.topParentName();
+  
+              // retrieve the value in the transaction's currency, and convert
+              // to the base currency if needed
+              qsplitrow["value"] = ((-(*it_split2).value())*displayprice).toString();
+              qsplitrow["id"] = (*it_split2).id();
+  
+              if (!(*it_split2).memo().isEmpty())
+                qsplitrow["memo"] = (*it_split2).memo();
+              
+              // handle cash dividends.  these little fellas require very special handling.
+              // the stock account will produce a qaccountrow with zero value & zero shares.
+              // then there will be 2 qsplitrows, a category and a transfer account.  We are
+              // only concerned with the transfer account, and we will NOT show the income
+              // account.  (This may have to be changed later if we feel we need it.)
+  
+              if (
+                ( splitaccount.accountType() == MyMoneyAccount::Stock )
+                &&
+                ( (*it_split).action() == MyMoneySplit::ActionDividend || (*it_split).action() == MyMoneySplit::ActionYield )
+                &&
+                ( split2account.isIncomeExpense() )
+              )
+              {
+                goto skip_addsplit;
+              }
+  
+              // handle sub-categories.  the 'category' field contains the
+              // fully-qualified category hierarchy, e.g. "Computers: Hardware: CPUs"
+              // the 'topparent' field contains just the top-most parent, in this
+              // example "Computers"
+  
+              // if this is a transfer (note that in tax reports, we don't want to see transfers)
+              if ( split2account.isAssetLiability() && ! m_config.isTax() )
+              {
+                QString fromto = ((*it_split2).value().isNegative())?"from":"to";
+                qsplitrow["category"] = i18n("Transfer %1 %2").arg(fromto).arg(split2account.fullName());
+                qsplitrow["topcategory"] = split2account.topParentName();
+                qsplitrow["categorytype"] = i18n("Transfer");
+                m_transactions += qsplitrow;
+              }
+              else if ( m_config.includes( split2account ) )
+              {
+                qsplitrow["category"] = split2account.fullName();
+                qsplitrow["topcategory"] = split2account.topParentName();
+                qsplitrow["categorytype"] = accountTypeToString(split2account.accountGroup());
+                m_transactions += qsplitrow;
+              }
+            }
 skip_addsplit:
-          ++it_split2;
+            ++it_split2;
+          }
         }
       }
       ++it_split;
@@ -790,6 +854,8 @@ void QueryTable::render( QString& result, QString& csv ) const
   QStringList groups = QStringList::split(",",m_group);
   QStringList columns = QStringList::split(",",m_columns);
   columns += m_subtotal;
+  QStringList postcolumns = QStringList::split(",",m_postcolumns);
+  columns += postcolumns;
 
   //
   // Table header
@@ -820,9 +886,13 @@ void QueryTable::render( QString& result, QString& csv ) const
   i18nHeaders["startingbal"] = i18n("Starting Balance");
   i18nHeaders["endingbal"] = i18n("Ending Balance");
   i18nHeaders["return"] = i18n("Annualized Return");
+  i18nHeaders["fees"] = i18n("Fees");
+  i18nHeaders["interest"] = i18n("Interest");
+  i18nHeaders["payment"] = i18n("Payment");
+  i18nHeaders["balance"] = i18n("Balance");
 
   // the list of columns which represent money, so we can display them correctly
-  QStringList moneyColumns = QStringList::split(",","value,shares,price,latestprice,netinvvalue,buys,sells,cashincome,reinvestincome,startingbal");
+  QStringList moneyColumns = QStringList::split(",","value,shares,price,latestprice,netinvvalue,buys,sells,cashincome,reinvestincome,startingbal,fees,interest,payment,balance");
 
   // the list of columns which represent shares, which is like money except the
   // transaction currency will not be displayed
@@ -907,7 +977,7 @@ void QueryTable::render( QString& result, QString& csv ) const
 
           result += "<tr class=\"sectionfooter\">"
             "<td class=\"left"+ QString::number(((*it_group).depth()-1)) + "\" "
-            "colspan=\"" + QString::number(columns.count()-1) + "\">"+
+            "colspan=\"" + QString::number(columns.count()-1-postcolumns.count()) + "\">"+
             i18n("Total")+" " + (*it_group).oldName() + "</td>"
             "<td>" + subtotal_html + "</td></tr>\n";
           csv += "\"" + i18n("Total") + " " + (*it_group).oldName() + "\",\"" + subtotal_csv + "\"\n";
@@ -939,7 +1009,20 @@ void QueryTable::render( QString& result, QString& csv ) const
     while ( it_column != columns.end() )
     {
       QString data = (*it_row)[*it_column];
+      
+      // The 'balance' column is calculated at render-time
+      if ( *it_column == "balance" )
+      {
+        // Take the balance off the deepest group iterator
+        data = groupIteratorList.back().currenttotal().toString();
+      }
 
+      // Figure out how to render the value in this column, depending on
+      // what its properties are.  
+      //
+      // TODO: This and the i18n headings are handled
+      // as a set of parallel vectors.  Would be much better to make a single
+      // vector of a properties class.
       if ( sharesColumns.contains(*it_column) )
       {
         result += QString("<td>%1</td>")
@@ -962,7 +1045,6 @@ void QueryTable::render( QString& result, QString& csv ) const
         csv += "\"" + (*it_row)["currency"] + " " + MyMoneyMoney(data).formatMoney() + "\",";
 
         MyMoneyMoney::setThousandSeparator(savethsep);
-
       }
       else if ( percentColumns.contains(*it_column) )
       {
@@ -1009,7 +1091,7 @@ void QueryTable::render( QString& result, QString& csv ) const
 
       result += "<tr class=\"sectionfooter\">"
         "<td class=\"left"+ QString::number((*it_group).depth()-1) + "\" "
-        "colspan=\"" + QString::number(columns.count()-1) + "\">"+
+        "colspan=\"" + QString::number(columns.count()-1-postcolumns.count()) + "\">"+
         i18n("Total")+" " + (*it_group).oldName() + "</td>"
         "<td>" + subtotal_html + "</td></tr>\n";
       csv += "\"" + i18n("Total") + " " + (*it_group).oldName() + "\",\"" + subtotal_csv + "\"\n";
@@ -1027,7 +1109,7 @@ void QueryTable::render( QString& result, QString& csv ) const
 
     result += "<tr class=\"sectionfooter\">"
       "<td class=\"left0\" "
-      "colspan=\"" + QString::number(columns.count()-1) + "\">"+
+      "colspan=\"" + QString::number(columns.count()-1-postcolumns.count()) + "\">"+
       i18n("Grand Total") + "</td>"
       "<td>" + grandtotal_html + "</td></tr>\n";
     csv += "\"" + i18n("Grand Total") + "\",\"" + grandtotal_csv + "\"\n";

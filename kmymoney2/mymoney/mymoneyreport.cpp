@@ -36,8 +36,8 @@
  
 const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,assetliability,expenseincome,category,topcategory,account,payee,month,week,topaccount,topaccount-account,equitytype,accounttype,institution",true);
 const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,months,bimonths,quarters,4,5,6,weeks,8,9,10,11,years",true);
-const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,category,memo,account,reconcileflag,action,shares,price,performance",true);
-const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eNoReport };
+const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,category,memo,account,reconcileflag,action,shares,price,performance,loan",true);
+const MyMoneyReport::EReportType MyMoneyReport::kTypeArray[] = { eNoReport, ePivotTable, ePivotTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eQueryTable, eNoReport };
 const QStringList MyMoneyReport::kDetailLevelText = QStringList::split(",","none,all,top,group,total,invalid",true);
 const QStringList MyMoneyReport::kChartTypeText = QStringList::split(",","none,line,bar,pie,ring,stackedbar,invalid",true);
 
@@ -54,6 +54,7 @@ MyMoneyReport::MyMoneyReport(void):
     m_favorite(false),
     m_tax(false),
     m_investments(false),
+    m_loans(false),
     m_reportType(kTypeArray[eExpenseIncome]),
     m_rowType(eExpenseIncome),
     m_columnType(eMonths),
@@ -78,6 +79,7 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
     m_favorite(false),
     m_tax(false),
     m_investments(false),
+    m_loans(false),
     m_reportType(kTypeArray[_rt]),
     m_rowType(_rt),
     m_columnsAreDays(false),
@@ -228,7 +230,9 @@ const bool MyMoneyReport::includes( const MyMoneyAccount& acc ) const
       break;
     case MyMoneyAccount::Asset:
     case MyMoneyAccount::Liability:
-      if ( isInvestmentsOnly() )
+      if ( isLoansOnly() )
+        result = (acc.accountType() == MyMoneyAccount::Loan) && includesAccount( acc.id() );
+      else if ( isInvestmentsOnly() )
         result = (acc.accountType() == MyMoneyAccount::Stock) && includesAccount( acc.id() );
       else if ( isIncludingTransfers() && m_rowType == MyMoneyReport::eExpenseIncome )
         // If transfers are included, ONLY include this account if it is NOT
@@ -266,6 +270,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   e.setAttribute("favorite", m_favorite);
   e.setAttribute("tax", m_tax);
   e.setAttribute("investments", m_investments);
+  e.setAttribute("loans", m_loans);
   e.setAttribute("rowtype", kRowTypeText[m_rowType]);
   e.setAttribute("id", m_id);
   e.setAttribute("datelock", kDateLockText[m_dateLock]);
@@ -279,13 +284,13 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
 
   if ( m_reportType == ePivotTable )
   {
-    e.setAttribute("type","pivottable 1.11");
+    e.setAttribute("type","pivottable 1.12");
     e.setAttribute("detail", kDetailLevelText[m_detailLevel]);
     e.setAttribute("columntype", kColumnTypeText[m_columnType]);
   }
   else if ( m_reportType == eQueryTable )
   {
-    e.setAttribute("type","querytable 1.11");
+    e.setAttribute("type","querytable 1.12");
     
     QStringList columns;
     unsigned qc = m_queryColumns;
@@ -520,6 +525,7 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_favorite = e.attribute("favorite","0").toUInt();
     m_tax = e.attribute("tax","0").toUInt();    
     m_investments = e.attribute("investments","0").toUInt();
+    m_loans = e.attribute("loans","0").toUInt();
     m_includeSchedules = e.attribute("includeschedules","0").toUInt();
     m_columnsAreDays = e.attribute("columnsaredays","0").toUInt();
     

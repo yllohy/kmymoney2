@@ -84,8 +84,18 @@ private:
   QValueList<TableRow> m_transactions;
   const MyMoneyReport& m_config;
   QString m_group;
+  /**
+    * Comma-separated list of columns to place BEFORE the subtotal column
+    */
   QString m_columns;
+  /**
+    * Name of the subtotal column
+    */
   QString m_subtotal;
+  /**
+    * Comma-separated list of columns to place AFTER the subtotal column
+    */
+  QString m_postcolumns;
   QString m_summarize;
   QString m_propagate;
 

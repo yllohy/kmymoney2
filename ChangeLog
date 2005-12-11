@@ -1,3 +1,8 @@
+2005-12-10 Ace Jones <acejones@users.sourceforge.net>
+  * Added a Loan Transactions report.  This shows loan-specific information 
+    about transactions in loan accounts.  It doesn't provide future-looking
+    amortization information or loan summary information.
+
 2005-12-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed export of symbols missing from patch applied on 2005-11-29
   * Fixed missing definition in mymoneymoneytest.cpp

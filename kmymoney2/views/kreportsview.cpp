@@ -891,7 +891,17 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Transactions by Week"),
       i18n("Default Report")
     ));
-
+  
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eAccount,
+      MyMoneyReport::eQCloan,
+      MyMoneyTransactionFilter::allDates,
+      false,
+      i18n("Loan Transactions"),
+      i18n("Default Report")
+    ));
+    list.back().setLoansOnly(true);
+    
     groups.push_back(list);
   }
   {

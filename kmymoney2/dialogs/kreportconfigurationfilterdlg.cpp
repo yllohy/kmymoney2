@@ -209,6 +209,7 @@ void KReportConfigurationFilterDlg::slotSearch()
 
     m_currentState.setTax( m_tab3->m_checkTax->isChecked() );
     m_currentState.setInvestmentsOnly( m_tab3->m_checkInvestments->isChecked() );
+    m_currentState.setLoansOnly( m_tab3->m_checkLoans->isChecked() );
   }
 
   if ( m_tabChart )
@@ -351,6 +352,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
 
     m_tab3->m_checkTax->setChecked( m_initialState.isTax() );
     m_tab3->m_checkInvestments->setChecked( m_initialState.isInvestmentsOnly() );
+    m_tab3->m_checkLoans->setChecked( m_initialState.isLoansOnly() );
   }
 
   if ( m_tabChart )

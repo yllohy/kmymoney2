@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>kMyMoneyReportConfigTab3Decl</class>
 <widget class="QWidget">
     <property name="name">
@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>210</height>
+            <height>214</height>
         </rect>
     </property>
     <property name="caption">
@@ -271,51 +271,13 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout3</cstring>
+                <cstring>layout6</cstring>
             </property>
-            <hbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>m_checkTax</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Include only Tax categories</string>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>&lt;p&gt;Check this box to include only those categories which have been marked to "Include on Tax Reports"&lt;/p&gt;</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer4</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>61</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout4</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
+                <widget class="QCheckBox" row="1" column="0">
                     <property name="name">
                         <cstring>m_checkInvestments</cstring>
                     </property>
@@ -326,24 +288,26 @@
                         <string>&lt;p&gt;Check this box to include only those categories which have been marked to "Include on Tax Reports"&lt;/p&gt;</string>
                     </property>
                 </widget>
-                <spacer>
+                <widget class="QCheckBox" row="0" column="1">
                     <property name="name">
-                        <cstring>spacer5</cstring>
+                        <cstring>m_checkLoans</cstring>
                     </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
+                    <property name="text">
+                        <string>Include only Loan accounts</string>
                     </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
+                </widget>
+                <widget class="QCheckBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>m_checkTax</cstring>
                     </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>161</width>
-                            <height>20</height>
-                        </size>
+                    <property name="text">
+                        <string>Include only Tax categories</string>
                     </property>
-                </spacer>
-            </hbox>
+                    <property name="toolTip" stdset="0">
+                        <string>&lt;p&gt;Check this box to include only those categories which have been marked to "Include on Tax Reports"&lt;/p&gt;</string>
+                    </property>
+                </widget>
+            </grid>
         </widget>
         <spacer>
             <property name="name">
@@ -358,7 +322,7 @@
             <property name="sizeHint">
                 <size>
                     <width>21</width>
-                    <height>20</height>
+                    <height>16</height>
                 </size>
             </property>
         </spacer>
