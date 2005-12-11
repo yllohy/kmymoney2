@@ -39,6 +39,7 @@ class MyMoneyAccountTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testEquality);
 	CPPUNIT_TEST(testWriteXML);
 	CPPUNIT_TEST(testReadXML);
+	CPPUNIT_TEST(testHasReferenceTo);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -60,6 +61,7 @@ public:
 	void testEquality();
 	void testWriteXML();
 	void testReadXML();
+	void testHasReferenceTo();
 };
 
 #endif

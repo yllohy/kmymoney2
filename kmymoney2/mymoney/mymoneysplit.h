@@ -83,6 +83,17 @@ public:
 
   void readXML(const QDomElement& node);
 
+  /**
+    * This method checks if a reference to the given object exists. It returns,
+    * a @p true if the object is referencing the one requested by the
+    * parameter @p id. If it does not, this method returns @p false.
+    *
+    * @param id id of the object to be checked for references
+    * @retval true This object references object with id @p id.
+    * @retval false This object does not reference the object with id @p id.
+    */
+  virtual bool hasReferenceTo(const QCString& id) const;
+
   const MyMoneyMoney shares(void) const { return m_shares; };
   const MyMoneyMoney value(void) const { return m_value; };
   const MyMoneyMoney value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const;

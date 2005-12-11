@@ -35,7 +35,6 @@ void MyMoneyAccountTest::testEmptyConstructor() {
 	CPPUNIT_ASSERT(a.name().isEmpty());
 	CPPUNIT_ASSERT(a.accountType() == MyMoneyAccount::UnknownAccountType);
 	CPPUNIT_ASSERT(a.openingDate() == QDate());
-	CPPUNIT_ASSERT(a.openingBalance() == MyMoneyMoney());
 	CPPUNIT_ASSERT(a.lastModified() == QDate());
 	CPPUNIT_ASSERT(a.lastReconciliationDate() == QDate());
 /* removed with MyMoneyAccount::Transaction
@@ -55,7 +54,6 @@ void MyMoneyAccountTest::testConstructor() {
 	r.setDescription("Desc");
 	r.setNumber("465500");
 	r.setParentAccountId(parent);
-	r.setOpeningBalance(1);
 	r.setValue(QCString("key"), "value");
 	CPPUNIT_ASSERT(r.m_kvp.count() == 1);
 	CPPUNIT_ASSERT(r.value("key") == "value");
@@ -74,12 +72,11 @@ void MyMoneyAccountTest::testConstructor() {
 */
 	CPPUNIT_ASSERT(a.accountList().count() == 0);
 	CPPUNIT_ASSERT(a.parentAccountId() == "Parent");
-	CPPUNIT_ASSERT(a.openingBalance() == MyMoneyMoney(1));
 
-  QMap<QCString, QString> copy;
-  copy = r.pairs();
-  CPPUNIT_ASSERT(copy.count() == 1);
-  CPPUNIT_ASSERT(copy[QCString("key")] == "value");
+	QMap<QCString, QString> copy;
+	copy = r.pairs();
+	CPPUNIT_ASSERT(copy.count() == 1);
+	CPPUNIT_ASSERT(copy[QCString("key")] == "value");
 }
 
 void MyMoneyAccountTest::testSetFunctions() {
@@ -95,7 +92,6 @@ void MyMoneyAccountTest::testSetFunctions() {
 	a.setLastModified(today);
 	a.setDescription("Desc");
 	a.setNumber("123456");
-	a.setOpeningBalance(2);
 	a.setAccountType(MyMoneyAccount::MoneyMarket);
 
 	CPPUNIT_ASSERT(a.name() == "Account");
@@ -103,7 +99,6 @@ void MyMoneyAccountTest::testSetFunctions() {
 	CPPUNIT_ASSERT(a.lastModified() == today);
 	CPPUNIT_ASSERT(a.description() == "Desc");
 	CPPUNIT_ASSERT(a.number() == "123456");
-	CPPUNIT_ASSERT(a.openingBalance() == MyMoneyMoney(2));
 /* removed with MyMoneyAccount::Transaction
 	CPPUNIT_ASSERT(a.transactionList().count() == 0);
 */
@@ -126,7 +121,6 @@ void MyMoneyAccountTest::testCopyConstructor() {
 	r.setDescription("Desc1");
 	r.setNumber("Number");
 	r.setParentAccountId(parent);
-	r.setOpeningBalance(3);
 	r.setValue("Key", "Value");
 
 	MyMoneyAccount a(id, r);
@@ -148,7 +142,6 @@ void MyMoneyAccountTest::testCopyConstructor() {
 	CPPUNIT_ASSERT(b.transactionList().count() == 1);
 */
 	CPPUNIT_ASSERT(b.parentAccountId() == "ParentAccount");
-	CPPUNIT_ASSERT(b.openingBalance() == MyMoneyMoney(3));
 
 /* removed with MyMoneyAccount::Transaction
 	MyMoneyAccount::Transaction tc = b.transaction(0);
@@ -294,7 +287,6 @@ void MyMoneyAccountTest::testEquality()
 	a.setDescription("Desc");
 	a.setInstitutionId("I-ID");
 	a.setOpeningDate(QDate::currentDate());
-	a.setOpeningBalance(100);
 	a.setLastReconciliationDate(QDate::currentDate());
 	a.setAccountType(MyMoneyAccount::Asset);
 	a.setParentAccountId("P-ID");
@@ -328,10 +320,6 @@ void MyMoneyAccountTest::testEquality()
 	b = a;
 
 	a.setOpeningDate(QDate::currentDate().addDays(-1));
-	CPPUNIT_ASSERT(!(b == a));
-	b = a;
-
-	a.setOpeningBalance(200);
 	CPPUNIT_ASSERT(!(b == a));
 	b = a;
 
@@ -482,5 +470,22 @@ void MyMoneyAccountTest::testReadXML() {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
 	}
+}
+
+void MyMoneyAccountTest::testHasReferenceTo(void)
+{
+	MyMoneyAccount a;
+
+	a.setInstitutionId("I0001");
+	a.addAccountId("A_001");
+	a.addAccountId("A_002");
+	a.setParentAccountId("A_Parent");
+	a.setCurrencyId("Currency");
+
+	CPPUNIT_ASSERT(a.hasReferenceTo("I0001") == true);
+	CPPUNIT_ASSERT(a.hasReferenceTo("I0002") == false);
+	CPPUNIT_ASSERT(a.hasReferenceTo("A_001") == false);
+	CPPUNIT_ASSERT(a.hasReferenceTo("A_Parent") == true);
+	CPPUNIT_ASSERT(a.hasReferenceTo("Currency") == true);
 }
 

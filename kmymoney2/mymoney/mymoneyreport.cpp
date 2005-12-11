@@ -33,7 +33,7 @@
 
 #include "mymoneyfile.h"
 #include "mymoneyreport.h"
- 
+
 const QStringList MyMoneyReport::kRowTypeText = QStringList::split(",","none,assetliability,expenseincome,category,topcategory,account,payee,month,week,topaccount,topaccount-account,equitytype,accounttype,institution",true);
 const QStringList MyMoneyReport::kColumnTypeText = QStringList::split(",","none,months,bimonths,quarters,4,5,6,weeks,8,9,10,11,years",true);
 const QStringList MyMoneyReport::kQueryColumnsText = QStringList::split(",","none,number,payee,category,memo,account,reconcileflag,action,shares,price,performance,loan",true);
@@ -61,7 +61,7 @@ MyMoneyReport::MyMoneyReport(void):
     m_columnsAreDays(false),
     m_queryColumns(eQCnone),
     m_dateLock(userDefined),
-    m_accountGroupFilter(false),   
+    m_accountGroupFilter(false),
     m_chartType(eChartLine),
     m_chartDataLabels(true),
     m_chartGridLines(true),
@@ -70,7 +70,7 @@ MyMoneyReport::MyMoneyReport(void):
     m_includeTransfers(false)
 {
 }
-  
+
 MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment ):
     m_name(_name),
     m_comment(_comment),
@@ -155,7 +155,7 @@ void MyMoneyReport::validDateRange(QDate& _db, QDate& _de)
   }
   if ( _db > _de )
     _db = _de;
-} 
+}
 
 void MyMoneyReport::setRowType(ERowType _rt)
 {
@@ -164,7 +164,7 @@ void MyMoneyReport::setRowType(ERowType _rt)
 
   m_accountGroupFilter = false;
   m_accountGroups.clear();
-  
+
   if ( _rt == MyMoneyReport::eAssetLiability )
   {
     addAccountGroup(MyMoneyAccount::Asset);
@@ -206,8 +206,8 @@ void MyMoneyReport::addAccountGroup(MyMoneyAccount::accountTypeE type)
 
 const bool MyMoneyReport::includesAccountGroup( MyMoneyAccount::accountTypeE type ) const
 {
-  bool result = (! m_accountGroupFilter) 
-                || ( isIncludingTransfers() && m_rowType == MyMoneyReport::eExpenseIncome ) 
+  bool result = (! m_accountGroupFilter)
+                || ( isIncludingTransfers() && m_rowType == MyMoneyReport::eExpenseIncome )
                 || m_accountGroups.contains( type );
 
   return result;
@@ -251,10 +251,10 @@ const bool MyMoneyReport::includes( const MyMoneyAccount& acc ) const
 void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) const
 {
   // No matter what changes, be sure to have a 'type' attribute.  Only change
-  // the major type if it becomes impossible to maintain compatability with 
+  // the major type if it becomes impossible to maintain compatability with
   // older versions of the program as new features are added to the reports.
   // Feel free to change the minor type every time a change is made here.
-  
+
   if ( anonymous )
   {
     e.setAttribute("name", m_id);
@@ -276,7 +276,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   e.setAttribute("datelock", kDateLockText[m_dateLock]);
   e.setAttribute("includeschedules",m_includeSchedules);
   e.setAttribute("columnsaredays",m_columnsAreDays);
-  
+
   e.setAttribute("charttype",kChartTypeText[m_chartType]);
   e.setAttribute("chartdatalabels",m_chartDataLabels);
   e.setAttribute("chartgridlines",m_chartGridLines);
@@ -305,11 +305,11 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
     }
     e.setAttribute("querycolumns", columns.join(","));
   }
-     
+
   //
   // Text Filter
   //
-    
+
   QRegExp textfilter;
   if ( textFilter(textfilter))
   {
@@ -333,10 +333,10 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
       QDomElement p = doc->createElement("TYPE");
       p.setAttribute("type", kTypeText[*it_type]);
       e.appendChild(p);
-      
+
       ++it_type;
     }
-  }      
+  }
 
   QValueList<int> statelist;
   if ( states(statelist) && ! statelist.empty() )
@@ -348,14 +348,14 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
       QDomElement p = doc->createElement("STATE");
       p.setAttribute("state", kStateText[*it_state]);
       e.appendChild(p);
-      
+
       ++it_state;
     }
-  }      
+  }
   //
   // Number Filter
   //
-    
+
   QString nrFrom, nrTo;
   if ( numberFilter(nrFrom, nrTo) )
   {
@@ -364,7 +364,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
     f.setAttribute("to", nrTo);
     e.appendChild(f);
   }
-  
+
   //
   // Amount Filter
   //
@@ -381,7 +381,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   //
   // Payees Filter
   //
-  
+
   QCStringList payeelist;
   if ( payees(payeelist) )
   {
@@ -399,16 +399,16 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
         QDomElement p = doc->createElement("PAYEE");
         p.setAttribute("id", *it_payee);
         e.appendChild(p);
-        
+
         ++it_payee;
-      }      
+      }
     }
   }
 
   //
   // Account Groups Filter
   //
-  
+
   QValueList<MyMoneyAccount::accountTypeE> accountgrouplist;
   if ( accountGroups(accountgrouplist) )
   {
@@ -419,15 +419,15 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
       QDomElement p = doc->createElement("ACCOUNTGROUP");
       p.setAttribute("group", kAccountTypeText[*it_group]);
       e.appendChild(p);
-      
+
       ++it_group;
-    }      
+    }
   }
 
   //
   // Accounts Filter
   //
-  
+
   QCStringList accountlist;
   if ( accounts(accountlist) )
   {
@@ -438,15 +438,15 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
       QDomElement p = doc->createElement("ACCOUNT");
       p.setAttribute("id", *it_account);
       e.appendChild(p);
-      
+
       ++it_account;
-    }      
+    }
   }
 
   //
   // Categories Filter
   //
-        
+
   accountlist.clear();
   if ( categories(accountlist) )
   {
@@ -457,15 +457,15 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
       QDomElement p = doc->createElement("CATEGORY");
       p.setAttribute("id", *it_account);
       e.appendChild(p);
-      
+
       ++it_account;
-    }      
+    }
   }
-    
+
   //
   // Date Filter
   //
-    
+
   if ( m_dateLock == userDefined )
   {
     QDate dateFrom, dateTo;
@@ -487,18 +487,18 @@ bool MyMoneyReport::read(const QDomElement& e)
   // compatability.  Any report ever created with any version of KMyMoney
   // should be able to be loaded by this method (as long as it's one of the
   // report types supported in this version, of course)
-        
+
   bool result = false;
-  
-  if ( 
-    "REPORT" == e.tagName() 
-    && 
+
+  if (
+    "REPORT" == e.tagName()
+    &&
     (
       (  e.attribute("type").find("pivottable 1.") == 0 )
       ||
       (  e.attribute("type").find("querytable 1.") == 0 )
     )
-  )      
+  )
   {
     result = true;
     clear();
@@ -506,7 +506,7 @@ bool MyMoneyReport::read(const QDomElement& e)
     int i;
     m_name = e.attribute("name");
     m_comment = e.attribute("comment","Extremely old report");
-    
+
     // Removed the line that screened out loading reports that are called
     // "Default Report".  It's possible for the user to change the comment
     // to this, and we'd hate for it to break as a result.
@@ -515,7 +515,7 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_id = e.attribute("id");
     if ( e.hasAttribute("detail") )
     {
-      i = kDetailLevelText.findIndex(e.attribute("detail","all"));      
+      i = kDetailLevelText.findIndex(e.attribute("detail","all"));
       if ( i != -1 )
         m_detailLevel = static_cast<EDetailLevel>(i);
     }
@@ -523,20 +523,20 @@ bool MyMoneyReport::read(const QDomElement& e)
       setShowSubAccounts( e.attribute("showsubaccounts","0").toUInt() );
     m_convertCurrency = e.attribute("convertcurrency","1").toUInt();
     m_favorite = e.attribute("favorite","0").toUInt();
-    m_tax = e.attribute("tax","0").toUInt();    
+    m_tax = e.attribute("tax","0").toUInt();
     m_investments = e.attribute("investments","0").toUInt();
     m_loans = e.attribute("loans","0").toUInt();
     m_includeSchedules = e.attribute("includeschedules","0").toUInt();
     m_columnsAreDays = e.attribute("columnsaredays","0").toUInt();
-    
-    i = kChartTypeText.findIndex(e.attribute("charttype"));      
+
+    i = kChartTypeText.findIndex(e.attribute("charttype"));
     if ( i != -1 )
       m_chartType = static_cast<EChartType>(i);
-    
+
     m_chartDataLabels = e.attribute("chartdatalabels","1").toUInt();
     m_chartGridLines = e.attribute("chartgridlines","1").toUInt();
     m_chartByDefault = e.attribute("chartbydefault","0").toUInt();
-    
+
     QString datelockstr = e.attribute("datelock","userdefined");
     // Handle the pivot 1.2/query 1.1 case where the values were saved as
     // numbers
@@ -549,17 +549,17 @@ bool MyMoneyReport::read(const QDomElement& e)
         i = userDefined;
     }
     setDateFilter( i );
-    
+
     i = kRowTypeText.findIndex(e.attribute("rowtype","expenseincome"));
     if ( i != -1 )
     {
       setRowType( static_cast<ERowType>(i) );
     }
-    
-    i = kColumnTypeText.findIndex(e.attribute("columntype","months"));      
+
+    i = kColumnTypeText.findIndex(e.attribute("columntype","months"));
     if ( i != -1 )
       setColumnType( static_cast<EColumnType>(i) );
-    
+
     unsigned qc = 0;
     QStringList columns = QStringList::split(",",e.attribute("querycolumns","none"));
     QStringList::const_iterator it_column = columns.begin();
@@ -568,7 +568,7 @@ bool MyMoneyReport::read(const QDomElement& e)
       i = kQueryColumnsText.findIndex(*it_column);
       if ( i > 0 )
         qc |= ( 1 << (i-1) );
-    
+
       ++it_column;
     }
     setQueryColumns( static_cast<EQueryColumns>(qc) );
@@ -595,11 +595,11 @@ bool MyMoneyReport::read(const QDomElement& e)
       }
       if("NUMBER" == c.tagName())
       {
-        setNumberFilter(c.attribute("from"),c.attribute("to"));        	
+        setNumberFilter(c.attribute("from"),c.attribute("to"));
       }
       if("AMOUNT" == c.tagName())
       {
-        setAmountFilter(MyMoneyMoney(c.attribute("from","0/100")),MyMoneyMoney(c.attribute("to","0/100")));        	
+        setAmountFilter(MyMoneyMoney(c.attribute("from","0/100")),MyMoneyMoney(c.attribute("to","0/100")));
       }
       if("DATES" == c.tagName())
       {
@@ -631,7 +631,7 @@ bool MyMoneyReport::read(const QDomElement& e)
       child = child.nextSibling();
     }
   }
-  return result;  
+  return result;
 }
 
 void MyMoneyReport::writeXML(QDomDocument& document, QDomElement& parent) const
@@ -653,5 +653,17 @@ void MyMoneyReport::readXML(const QDomElement& node)
 {
   read(node);
 }
-    
+
+bool MyMoneyReport::hasReferenceTo(const QCString& id) const
+{
+  QCStringList list;
+
+  // collect all ids
+  accounts(list);
+  categories(list);
+  payees(list);
+
+  return (list.contains(id) > 0);
+}
+
 // vim:cin:si:ai:et:ts=2:sw=2:

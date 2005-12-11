@@ -42,6 +42,7 @@
 #include <kmymoney/export.h>
 #include <kmymoney/mymoneymoney.h>
 #include <kmymoney/mymoneyutils.h>
+#include <kmymoney/mymoneyobject.h>
 #include <kmymoney/mymoneykeyvaluecontainer.h>
 
 /**
@@ -51,7 +52,7 @@
   *
   * @author Kevin Tambascio
   */
-class KMYMONEY_EXPORT MyMoneySecurity : public MyMoneyKeyValueContainer
+class KMYMONEY_EXPORT MyMoneySecurity : public MyMoneyObject, public MyMoneyKeyValueContainer
 {
 public:
   MyMoneySecurity();
@@ -81,8 +82,6 @@ public:
     SECURITY_NONE
   } eSECURITYTYPE;
 
-  const QCString id() const  { return m_id; }
-
   const QString  name() const                 { return m_name; }
   void           setName(const String& str)   { m_name = str; }
 
@@ -108,8 +107,22 @@ public:
   void setPartsPerUnit(const int ppu) { m_partsPerUnit = ppu; };
   void setSmallestCashFraction(const int sf) { m_smallestCashFraction = sf; };
 
+  void writeXML(QDomDocument& document, QDomElement& parent) const;
+
+  void readXML(const QDomElement& node);
+
+  /**
+   * This method checks if a reference to the given object exists. It returns,
+   * a @p true if the object is referencing the one requested by the
+   * parameter @p id. If it does not, this method returns @p false.
+   *
+   * @param id id of the object to be checked for references
+   * @retval true This object references object with id @p id.
+   * @retval false This object does not reference the object with id @p id.
+   */
+  bool hasReferenceTo(const QCString& id) const;
+
 protected:
-  QCString              m_id;
   QString               m_name;
   QString               m_tradingSymbol;
   QString               m_tradingMarket;

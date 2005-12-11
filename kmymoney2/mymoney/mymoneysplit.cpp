@@ -155,3 +155,8 @@ void MyMoneySplit::readXML(const QDomElement& node)
   m_account = QCStringEmpty(node.attribute("account"));
   m_number = QStringEmpty(node.attribute("number"));
 }
+
+bool MyMoneySplit::hasReferenceTo(const QCString& id) const
+{
+  return (id == m_account) || (id == m_payee);
+}

@@ -359,3 +359,13 @@ void MyMoneyTransaction::readXML(const QDomElement& node)
   }
 }
 
+bool MyMoneyTransaction::hasReferenceTo(const QCString& id) const
+{
+  QValueList<MyMoneySplit>::const_iterator it;
+  bool rc = (id == m_commodity);
+  for(it = m_splits.begin(); rc == false && it != m_splits.end(); ++it) {
+    rc = (*it).hasReferenceTo(id);
+  }
+
+  return rc;
+}

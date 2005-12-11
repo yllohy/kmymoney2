@@ -888,6 +888,17 @@ public:
     */
   void clearCache(void);
 
+  /**
+    * This method checks, if the given @p object is referenced
+    * by another engine object.
+    *
+    * @param obj const reference to object to be checked
+    *
+    * @retval false @p object is not referenced
+    * @retval true @p institution is referenced
+    */
+  bool isReferenced(const MyMoneyObject& obj) const;
+
 private:
 
   static const int INSTITUTION_ID_SIZE = 6;

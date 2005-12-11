@@ -176,3 +176,10 @@ void MyMoneyInstitution::readXML(const QDomElement& node)
     }
   }
 }
+
+bool MyMoneyInstitution::hasReferenceTo(const QCString& id) const
+{
+  bool rc = false;
+  return rc;
+}
+

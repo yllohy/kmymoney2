@@ -590,26 +590,14 @@ void MyMoneyStorageXML::writeSecurities(QDomElement& equities)
   {
     for(QValueList<MyMoneySecurity>::ConstIterator it = securityList.begin(); it != securityList.end(); ++it)
     {
-      QDomElement security = m_doc->createElement("SECURITY");
-      writeSecurity(security, (*it));
-      equities.appendChild(security);
+      writeSecurity(equities, (*it));
     }
   }
 }
 
 void MyMoneyStorageXML::writeSecurity(QDomElement& securityElement, const MyMoneySecurity& security)
 {
-  securityElement.setAttribute("name", security.name());
-  securityElement.setAttribute("symbol", security.tradingSymbol());
-  securityElement.setAttribute("type", static_cast<int>(security.securityType()));
-  securityElement.setAttribute("id", security.id());
-  securityElement.setAttribute("saf", security.smallestAccountFraction());
-  if(!security.isCurrency())
-    securityElement.setAttribute("trading-currency", security.tradingCurrency());
-
-  //Add in Key-Value Pairs for security
-  QDomElement keyValPairs = writeKeyValuePairs(security.pairs());
-  securityElement.appendChild(keyValPairs);
+  security.writeXML(*m_doc, securityElement);
 }
 
 void MyMoneyStorageXML::readSecurities(QDomElement& securities)
@@ -622,7 +610,8 @@ void MyMoneyStorageXML::readSecurities(QDomElement& securities)
     if("EQUITY" == childElement.tagName()
     || "SECURITY" == childElement.tagName())
     {
-      MyMoneySecurity security = readSecurity(childElement);
+      MyMoneySecurity security;
+      security.readXML(childElement);
 
       //tell the storage objects we have a new security object.
       m_storage->loadSecurity(security);
@@ -644,19 +633,9 @@ void MyMoneyStorageXML::writeCurrencies(QDomElement& currencies)
   {
     for(QValueList<MyMoneySecurity>::ConstIterator it = currencyList.begin(); it != currencyList.end(); ++it)
     {
-      QDomElement currency = m_doc->createElement("CURRENCY");
-      writeCurrency(currency, (*it));
-      currencies.appendChild(currency);
+      writeSecurity(currencies, (*it));
     }
   }
-}
-
-void MyMoneyStorageXML::writeCurrency(QDomElement& currencyElement, const MyMoneySecurity& currency)
-{
-  writeSecurity(currencyElement, currency);
-  currencyElement.setAttribute("ppu", currency.partsPerUnit());
-  currencyElement.setAttribute("scf", currency.smallestCashFraction());
-  currencyElement.setAttribute("saf", currency.smallestAccountFraction());
 }
 
 void MyMoneyStorageXML::readCurrencies(QDomElement& currencies)
@@ -667,83 +646,14 @@ void MyMoneyStorageXML::readCurrencies(QDomElement& currencies)
     QDomElement childElement = child.toElement();
     if("CURRENCY" == childElement.tagName())
     {
-      MyMoneySecurity currency = readCurrency(childElement);
+      MyMoneySecurity currency;
+      currency.readXML(childElement);
 
       //tell the storage objects we have a new currency object.
       m_storage->loadCurrency(currency);
     }
     child = child.nextSibling();
   }
-}
-
-const MyMoneySecurity MyMoneyStorageXML::readCurrency(QDomElement& currencyElement)
-{
-  MyMoneySecurity c(readSecurity(currencyElement));
-
-  c.setPartsPerUnit(currencyElement.attribute("ppu").toInt());
-  c.setSmallestCashFraction(currencyElement.attribute("scf").toInt());
-  c.setSmallestAccountFraction(currencyElement.attribute("saf").toInt());
-
-  return c;
-}
-
-MyMoneySecurity MyMoneyStorageXML::readSecurity(QDomElement& securityElement)
-{
-  QCString id;
-  MyMoneySecurity e;
-
-  e.setName(QStringEmpty(securityElement.attribute("name")));
-  e.setTradingSymbol(QStringEmpty(securityElement.attribute("symbol")));
-  e.setSecurityType(static_cast<MyMoneySecurity::eSECURITYTYPE>(securityElement.attribute("type").toInt()));
-  // some old versions used to store type NONE
-  // let's default this to stock
-  if(e.securityType() == MyMoneySecurity::SECURITY_NONE)
-    e.setSecurityType(MyMoneySecurity::SECURITY_STOCK);
-
-  e.setTradingCurrency(QCStringEmpty(securityElement.attribute("trading-currency")));
-  if(e.tradingCurrency().isEmpty()) {
-    e.setTradingCurrency(m_baseCurrencyId);
-  }
-
-  int saf = securityElement.attribute("saf").toInt();
-  if(saf == 0)
-    saf = 100;
-  e.setSmallestAccountFraction(saf);
-
-  id = QStringEmpty(securityElement.attribute("id"));
-
-  // FIXME: keep the history part for some time. After 0.8 this can be wiped out
-  QDomElement history = findChildElement("HISTORY", securityElement);
-  if(!history.isNull() && history.isElement())
-  {
-    QDomNode child = history.firstChild();
-    while(!child.isNull())
-    {
-      if(child.isElement())
-      {
-        QDomElement childElement = child.toElement();
-        if("ENTRY" == childElement.tagName())
-        {
-          QDate date = getDate(QStringEmpty(childElement.attribute("date")));
-          MyMoneyMoney money(QStringEmpty(childElement.attribute("price")));
-          // e.addPriceHistory(date, money);
-          MyMoneyPrice price(id, m_baseCurrencyId, date, money);
-          m_storage->addPrice(price);
-        }
-      }
-      child = child.nextSibling();
-    }
-  }
-
-  /////////////////////////////////////////////////////////////////////////////////////////
-  //  Process any KeyValue pairs information found inside the security entry.
-  QDomElement keyValPairs = findChildElement("KEYVALUEPAIRS", securityElement);
-  if(!keyValPairs.isNull() && keyValPairs.isElement())
-  {
-    e.setPairs(readKeyValuePairs(keyValPairs));
-  }
-
-  return MyMoneySecurity(id, e);
 }
 
 void MyMoneyStorageXML::readReports(QDomElement& reports)

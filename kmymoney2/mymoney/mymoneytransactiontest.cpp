@@ -458,3 +458,28 @@ void MyMoneyTransactionTest::testReadXML() {
 		CPPUNIT_FAIL("Unexpected exception");
 	}
 }
+
+void MyMoneyTransactionTest::testHasReferenceTo()
+{
+	MyMoneyTransaction t;
+	t.setPostDate(QDate(2001,12,28));
+	t.setEntryDate(QDate(2003,9,29));
+	t.setId("T000000000000000001");
+	t.setBankID("BID");
+	t.setMemo("Wohnung:Miete");
+	t.setCommodity("EUR");
+	t.setValue("key", "value");
+
+	MyMoneySplit s;
+	s.setPayeeId("P000001");
+	s.setShares(MyMoneyMoney(96379, 100));
+	s.setValue(MyMoneyMoney(96379, 100));
+	s.setAction(MyMoneySplit::ActionWithdrawal);
+	s.setAccountId("A000076");
+	s.setReconcileFlag(MyMoneySplit::Reconciled);
+	t.addSplit(s);
+
+	CPPUNIT_ASSERT(t.hasReferenceTo("EUR") == true);
+	CPPUNIT_ASSERT(t.hasReferenceTo("P000001") == true);
+	CPPUNIT_ASSERT(t.hasReferenceTo("A000076") == true);
+}

@@ -46,6 +46,7 @@ class MyMoneyScheduleTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testRemoveSchedule);
 	CPPUNIT_TEST(testWriteXML);
 	CPPUNIT_TEST(testReadXML);
+	CPPUNIT_TEST(testHasReferenceTo);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -76,6 +77,7 @@ public:
 	void testRemoveSchedule();
 	void testWriteXML();
 	void testReadXML();
+	void testHasReferenceTo();
 };
 
 #endif

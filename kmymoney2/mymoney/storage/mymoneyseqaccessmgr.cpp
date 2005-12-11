@@ -1727,3 +1727,48 @@ void MyMoneySeqAccessMgr::clearCache(void)
 {
   m_balanceCache.clear();
 }
+
+bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj) const
+{
+  bool rc = false;
+  const QCString& id = obj.id();
+  QMap<QCString, MyMoneyTransaction>::const_iterator it_t;
+  QMap<QCString, MyMoneyAccount>::const_iterator it_a;
+  QMap<QCString, MyMoneyInstitution>::const_iterator it_i;
+  QMap<QCString, MyMoneyPayee>::const_iterator it_p;
+  QMap<QCString, MyMoneyReport>::const_iterator it_r;
+  QMap<QCString, MyMoneySchedule>::const_iterator it_sch;
+  QMap<QCString, MyMoneySecurity>::const_iterator it_sec;
+
+  // FIXME optimize the list of objects we have to checks
+  //       with a bit of knowledge of the internal structure, we
+  //       could optimize the number of objects we check for references
+
+  // Scan all engine objects for a reference
+  for(it_t = m_transactionList.begin(); !rc && it_t != m_transactionList.end(); ++it_t) {
+    rc = (*it_t).hasReferenceTo(id);
+  }
+  for(it_a = m_accountList.begin(); !rc && it_a != m_accountList.end(); ++it_a) {
+    rc = (*it_a).hasReferenceTo(id);
+  }
+  for(it_i = m_institutionList.begin(); !rc && it_i != m_institutionList.end(); ++it_i) {
+    rc = (*it_i).hasReferenceTo(id);
+  }
+  for(it_p = m_payeeList.begin(); !rc && it_p != m_payeeList.end(); ++it_p) {
+    rc = (*it_p).hasReferenceTo(id);
+  }
+  for(it_r = m_reportList.begin(); !rc && it_r != m_reportList.end(); ++it_r) {
+    rc = (*it_r).hasReferenceTo(id);
+  }
+  for(it_sch = m_scheduleList.begin(); !rc && it_sch != m_scheduleList.end(); ++it_sch) {
+    rc = (*it_sch).hasReferenceTo(id);
+  }
+  for(it_sec = m_securitiesList.begin(); !rc && it_sec != m_securitiesList.end(); ++it_sec) {
+    rc = (*it_sec).hasReferenceTo(id);
+  }
+  for(it_sec = m_currencyList.begin(); !rc && it_sec != m_currencyList.end(); ++it_sec) {
+    rc = (*it_sec).hasReferenceTo(id);
+  }
+  // FIXME add pricelist
+  return rc;
+}

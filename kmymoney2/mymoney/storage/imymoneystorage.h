@@ -770,6 +770,17 @@ public:
     */
   virtual void clearCache(void) = 0;
 
+  /**
+    * This method checks, if the given @p object is referenced
+    * by another engine object.
+    *
+    * @param obj const reference to object to be checked
+    *
+    * @retval false @p object is not referenced
+    * @retval true @p institution is referenced
+    */
+  virtual bool isReferenced(const MyMoneyObject& obj) const = 0;
+
 };
 
 #endif

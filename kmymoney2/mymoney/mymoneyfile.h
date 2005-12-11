@@ -1317,48 +1317,15 @@ public:
   void removeReport(const MyMoneyReport& report);
 
   /**
-    * This method checks, if the given @p security is referenced
+    * This method checks, if the given @p object is referenced
     * by another engine object.
     *
-    * @param security const reference to object to be checked
+    * @param obj const reference to object to be checked
     *
-    * @retval false @p security is not used
-    * @retval true @p security is used
+    * @retval false @p object is not referenced
+    * @retval true @p institution is referenced
     */
-  const bool isReferenced(const MyMoneySecurity& security) const;
-
-  /**
-    * This method checks, if the given @p account is referenced
-    * by another engine object.
-    *
-    * @param account const reference to object to be checked
-    *
-    * @retval false @p account is not used
-    * @retval true @p account is used
-    */
-  const bool isReferenced(const MyMoneyAccount& account) const;
-
-  /**
-    * This method checks, if the given @p institution is referenced
-    * by another engine object.
-    *
-    * @param institution const reference to object to be checked
-    *
-    * @retval false @p institution is not used
-    * @retval true @p institution is used
-    */
-  const bool isReferenced(const MyMoneyInstitution& institution) const;
-
-  /**
-    * This method checks, if the given @p payee is referenced
-    * by another engine object.
-    *
-    * @param payee const reference to object to be checked
-    *
-    * @retval false @p payee is not used
-    * @retval true @p payee is used
-    */
-  const bool isReferenced(const MyMoneyPayee& payee) const;
+  bool isReferenced(const MyMoneyObject& obj) const;
 
   /**
     * This method checks if the given check no &p no is used in

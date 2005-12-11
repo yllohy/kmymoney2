@@ -812,3 +812,8 @@ void MyMoneySchedule::readXML(const QDomElement& node)
     }
   }
 }
+
+bool MyMoneySchedule::hasReferenceTo(const QCString& id) const
+{
+  return m_transaction.hasReferenceTo(id);
+}

@@ -129,7 +129,6 @@ protected:
   virtual void writeSecurity(QDomElement& securityElement, const MyMoneySecurity& security);
 
   virtual void writeCurrencies(QDomElement& currencies);
-  virtual void writeCurrency(QDomElement& currencyElement, const MyMoneySecurity& currency);
 
   void readSecurities(QDomElement& securites);
   MyMoneySecurity readSecurity(QDomElement& securityElement);

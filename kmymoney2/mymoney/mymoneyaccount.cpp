@@ -352,6 +352,14 @@ void MyMoneyAccountLoan::setInterestAccountId(const QCString& /* id */)
 
 }
 
+bool MyMoneyAccountLoan::hasReferenceTo(const QCString& id) const
+{
+  bool rc = MyMoneyAccount::hasReferenceTo(id);
+  if(rc == false) {
+  }
+  return rc;
+}
+
 void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
 {
   QDomElement el = document.createElement("ACCOUNT");
@@ -440,3 +448,9 @@ void MyMoneyAccount::readXML(const QDomElement& node)
     MyMoneyKeyValueContainer::readXML(nodeList.item(0).toElement());
   }
 }
+
+bool MyMoneyAccount::hasReferenceTo(const QCString& id) const
+{
+  return (id == m_institution) || (id == m_parentAccount) || (id == m_currencyId);
+}
+

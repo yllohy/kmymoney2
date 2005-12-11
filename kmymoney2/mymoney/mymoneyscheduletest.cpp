@@ -673,3 +673,48 @@ void MyMoneyScheduleTest::testReadXML() {
 		CPPUNIT_FAIL("Unexpected exception");
 	}
 }
+
+void MyMoneyScheduleTest::testHasReferenceTo()
+{
+	MyMoneySchedule sch;
+	QString ref_ok = QString(
+		"<!DOCTYPE TEST>\n"
+		"<SCHEDULE-CONTAINER>\n"
+		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0002\" name=\"A Name\" fixed=\"1\" occurence=\"4\" >\n"
+		"  <PAYMENTS>\n"
+		"   <PAYMENT date=\"%3\" />\n"
+		"  </PAYMENTS>\n"
+		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		"   <SPLITS>\n"
+		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
+		"   </SPLITS>\n"
+		"   <KEYVALUEPAIRS>\n"
+		"    <PAIR key=\"key\" value=\"value\" />\n"
+		"   </KEYVALUEPAIRS>\n"
+		"  </TRANSACTION>\n"
+		" </SCHEDULED_TX>\n"
+		"</SCHEDULE-CONTAINER>\n"
+	).arg(QDate::currentDate().toString(Qt::ISODate))
+	 .arg(QDate::currentDate().toString(Qt::ISODate))
+	 .arg(QDate::currentDate().toString(Qt::ISODate));
+
+	QDomDocument doc;
+	QDomElement node;
+	doc.setContent(ref_ok);
+	node = doc.documentElement().firstChild().toElement();
+
+	try {
+		sch.readXML(node);
+
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+
+	CPPUNIT_ASSERT(sch.hasReferenceTo("P000001") == true);
+	CPPUNIT_ASSERT(sch.hasReferenceTo("A000276") == true);
+	CPPUNIT_ASSERT(sch.hasReferenceTo("A000076") == true);
+	CPPUNIT_ASSERT(sch.hasReferenceTo("EUR") == true);
+}
+

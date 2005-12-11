@@ -75,6 +75,17 @@ public:
   void clearId(void);
 
   /**
+    * This method must be provided by all derived objects. It returns,
+    * a @p true if the object is referencing the one requested by the
+    * parameter @p id. If it does not, this method returns @p false.
+    *
+    * @param id id of the object to be checked for references
+    * @retval true This object references object with id @p id.
+    * @retval false This object does not reference the object with id @p id.
+    */
+  virtual bool hasReferenceTo(const QCString& id) const = 0;
+
+  /**
     * This method creates a QDomElement for the @p document
     * under the parent node @p parent.
     *

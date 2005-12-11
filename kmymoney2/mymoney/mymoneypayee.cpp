@@ -31,8 +31,8 @@ MyMoneyPayee::MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee)
 }
 
 MyMoneyPayee::MyMoneyPayee(const QString& name, const QString& address,
-	const QString& city, const QString& state, const QString& postcode,
-	const QString& telephone, const QString& email)
+        const QString& city, const QString& state, const QString& postcode,
+        const QString& telephone, const QString& email)
 {
   m_name      = name;
   m_address   = address;
@@ -134,4 +134,10 @@ void MyMoneyPayee::readXML(const QDomElement& node)
   m_postcode = addrNode.attribute("postcode");
   m_state = addrNode.attribute("state");
   m_telephone = addrNode.attribute("telephone");
+}
+
+bool MyMoneyPayee::hasReferenceTo(const QCString& id) const
+{
+  // the payee does not reference any other object
+  return false;
 }

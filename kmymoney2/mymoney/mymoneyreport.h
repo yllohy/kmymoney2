@@ -38,18 +38,18 @@ class QDomDocument;
 #include <kmymoney/export.h>
 
 /**
-  * This class defines a report within the MyMoneyEngine.  The report class 
+  * This class defines a report within the MyMoneyEngine.  The report class
   * contains all the configuration parameters needed to run a report, plus
   * XML serialization.
   *
-  * A report is a transactionfilter, so any report can specify which 
+  * A report is a transactionfilter, so any report can specify which
   * transactions it's interested down to the most minute level of detail.
   * It extends the transactionfilter by providing identification (name,
   * comments, group type, etc) as well as layout information (what kind
   * of layout should be used, how the rows & columns should be presented,
   * currency converted, etc.)
   *
-  * As noted above, this class only provides a report DEFINITION.  The 
+  * As noted above, this class only provides a report DEFINITION.  The
   * generation and presentation of the report itself are left to higher
   * level classes.
   *
@@ -73,7 +73,7 @@ public:
   static const QStringList kDetailLevelText;
   static const QStringList kChartTypeText;
   static const EReportType kTypeArray[];
-  
+
 public:
   MyMoneyReport(void);
   MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment );
@@ -128,7 +128,7 @@ public:
   void setIncludingSchedules( bool _f ) { m_includeSchedules = _f; }
   void setColumnsAreDays( bool _f ) { m_columnsAreDays = _f; }
   void setIncludingTransfers( bool _f ) { m_includeTransfers = _f; }
-  
+
   /**
     * This method allows you to clear the underlying transaction filter
     */
@@ -141,21 +141,21 @@ public:
     * filter.
     */
   void assignFilter(const MyMoneyTransactionFilter& _filter) { MyMoneyTransactionFilter::operator=(_filter); }
-  
+
   /**
     * Set the underlying date filter and LOCK that filter to the specified
     * range.  For example, if @p _u is "CurrentMonth", this report should always
     * be updated to the current month no matter when the report is run.
     *
     * This updating is not entirely automatic, you should update it yourself by
-    * calling updateDateFilter.  
+    * calling updateDateFilter.
     *
     * @param _u The date range constant (MyMoneyTransactionFilter::dateRangeE)
     *          which this report should be locked to.
     */
-  
+
   void setDateFilter(unsigned _u) { m_dateLock = _u; if (_u != userDefined) MyMoneyTransactionFilter::setDateFilter( _u ); }
-  
+
   /**
     * Set the underlying date filter using the start and end dates provided.
     * Note that this does not LOCK to any range like setDateFilter(unsigned)
@@ -165,9 +165,9 @@ public:
     * @param _db The inclusive begin date of the date range
     * @param _de The inclusive end date of the date range
     */
-  
+
   void setDateFilter(const QDate& _db,const QDate& _de) { MyMoneyTransactionFilter::setDateFilter( _db,_de ); }
-  
+
   /**
     * Set the underlying date filter using the 'date lock' property.
     *
@@ -184,7 +184,7 @@ public:
   /**
     * Retrieves a VALID beginning & ending date for this report.
     *
-    * The underlying date filter can return en empty QDate() for either the 
+    * The underlying date filter can return en empty QDate() for either the
     * begin or end date or both.  This is typically unacceptable for reports,
     * which need the REAL begin and end date.
     *
@@ -211,7 +211,7 @@ public:
     * @param type the account group to add to the allowed groups list
     */
   void addAccountGroup(MyMoneyAccount::accountTypeE type);
-  
+
   /**
     * This method returns whether an account group filter has been set,
     * and if so, it returns all the account groups set in the filter.
@@ -253,19 +253,19 @@ public:
     *              masked
     */
   void write(QDomElement& e, QDomDocument *doc, bool anonymous=false) const;
-  
+
   /**
     * This method reads a report from the DOM element @p e, and
     * populates this report with the results.
     *
     * @param e The element from which the report should be read
     *
-    * @return bool True if a report was successfully loaded from the 
-    *    element @p e.  If false is returned, the contents of this report 
+    * @return bool True if a report was successfully loaded from the
+    *    element @p e.  If false is returned, the contents of this report
     *    object are undefined.
     */
   bool read(const QDomElement& e);
-  
+
   /**
     * This method creates a QDomElement for the @p document
     * under the parent node @p parent.  (This version overwrites the
@@ -285,7 +285,18 @@ public:
     * @param node QDomElement containing the data
     */
   virtual void readXML(const QDomElement& node);
-    
+
+  /**
+    * This method checks if a reference to the given object exists. It returns,
+    * a @p true if the object is referencing the one requested by the
+    * parameter @p id. If it does not, this method returns @p false.
+    *
+    * @param id id of the object to be checked for references
+    * @retval true This object references object with id @p id.
+    * @retval false This object does not reference the object with id @p id.
+    */
+  virtual bool hasReferenceTo(const QCString& id) const;
+
 private:
   /**
     * The user-assigned name of the report
@@ -318,7 +329,7 @@ private:
   /**
     * Whether this report should only include categories marked as "Tax"="Yes"
     */
-  bool m_tax;  
+  bool m_tax;
   /**
     * Whether this report should only include investment accounts
     */
@@ -357,7 +368,7 @@ private:
   /**
     * The plain-language description of what the date range should be locked
     * to.  'userDefined' means NO locking, in any other case, the report
-    * will be adjusted to match the date lock.  So if the date lock is 
+    * will be adjusted to match the date lock.  So if the date lock is
     * 'currentMonth', the start and end dates of the underlying filter will
     * be updated to whatever the current month is.  This updating happens
     * automatically when the report is loaded, and should also be done
@@ -395,11 +406,11 @@ private:
     * Whether to include scheduled transactions
     */
   bool m_includeSchedules;
- 
+
   /**
     * Whether to include transfers.  Only applies to Income/Expense reports
     */
   bool m_includeTransfers;
 };
 
-#endif // MYMONEYREPORT_H  
+#endif // MYMONEYREPORT_H

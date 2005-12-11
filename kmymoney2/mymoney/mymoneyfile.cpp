@@ -1842,8 +1842,13 @@ void MyMoneyFile::removeReport(const MyMoneyReport& report)
   addNotification(NotifyClassReport);
 }
 
-const bool MyMoneyFile::isReferenced(const MyMoneySecurity& security) const
+bool MyMoneyFile::isReferenced(const MyMoneyObject& obj) const
 {
+  // FIXME add call to storage object
+  checkStorage();
+  return m_storage->isReferenced(obj);
+
+/*
   // check the account list
   QValueList<MyMoneyAccount> list_a = accountList();
   QValueList<MyMoneyAccount>::ConstIterator it_a;
@@ -1872,7 +1877,7 @@ const bool MyMoneyFile::isReferenced(const MyMoneySecurity& security) const
     || it_p.key().second == security.id())
       return true;
   }
-  return false;
+*/
 }
 
 const bool MyMoneyFile::checkNoUsed(const QCString& accId, const QString& no) const
