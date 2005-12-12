@@ -528,46 +528,80 @@ void KPayeesView::slotDeletePayee()
     QValueList<MyMoneyTransaction> translist = file->transactionList(f);
 //     kdDebug() << "[KPayeesView::slotDeletePayee]  " << translist.count() << " transaction still assigned to payees" << endl;
 
-    // if at least one payee is still referenced, try to reassign transactions first
-    if (!translist.isEmpty()) {
+    // now get a list of all schedules that make use of one of the payees
+    QValueList<MyMoneySchedule> all_schedules = file->scheduleList();
+    QValueList<MyMoneySchedule> used_schedules;
+    for (QValueList<MyMoneySchedule>::ConstIterator it = all_schedules.begin(); 
+         it != all_schedules.end(); ++it) 
+    {
+      // loop over all splits in the transaction of the schedule
+      for (QValueList<MyMoneySplit>::ConstIterator s_it = (*it).transaction().splits().begin(); 
+           s_it != (*it).transaction().splits().end(); ++s_it) 
+      {
+        // is the payee in the split to be deleted?
+        if (std::find(selected_payees.begin(), selected_payees.end(), (*s_it).payeeId()) != selected_payees.end()) 
+          used_schedules.push_back(*it); // remember this schedule
+      }
+    }
+//     kdDebug() << "[KPayeesView::slotDeletePayee]  " << used_schedules.count() << " schedules use one of the selected payees" << endl;
+
+    // if at least one payee is still referenced, we need to reassign its transactions first
+    if (!translist.isEmpty() || !used_schedules.isEmpty()) {
       // show error message if no payees remain
       if (remaining_payees.isEmpty()) {
-        KMessageBox::sorry(this, i18n("At least one transaction is still referenced by a payee "
-          "and you want to delete all payees. However, at least one payee must remain so that "
-          "the transactions can be reassigned."));
+        KMessageBox::sorry(this, i18n("At least one transaction/schedule is still referenced by a payee. "
+          "Currently you have all payees selected. However, at least one payee must remain so "
+          "that the transactions/schedules can be reassigned."));
         return;
       }
       // show transaction reassignment dialog
       KTransactionReassignDlg * dlg = new KTransactionReassignDlg(this);
       int index = dlg->show(remaining_payees);
-      delete dlg; // and kill the dialog again
+      delete dlg; // and kill the dialog
       if (index == -1)
         return; // the user aborted the dialog, so let's abort as well
 
       // remember the id of the selected target payee
       QCString payee_id = remaining_payees[index].id();
-      // now loop over all transactions and reassign payee
+
+      // TODO : check if we have a report that explicitely uses one of our payees
+      //        and issue an appropriate warning
       try {
-        for (QValueList<MyMoneyTransaction>::iterator it = translist.begin();
-             it != translist.end(); ++it) {
+        QValueList<MyMoneySplit>::iterator s_it;
+        // now loop over all transactions and reassign payee
+        for (QValueList<MyMoneyTransaction>::iterator it = translist.begin(); it != translist.end(); ++it) {
           // create a copy of the splits list in the transaction
           QValueList<MyMoneySplit> splits = (*it).splits();
           // loop over all splits
-          for (QValueList<MyMoneySplit>::iterator s_it = splits.begin(); s_it != splits.end(); ++s_it)       {
+          for (s_it = splits.begin(); s_it != splits.end(); ++s_it) {
             // if the split is assigned to one of the selected payees, we need to modify it
-            if ( std::find(selected_payees.begin(), selected_payees.end(), (*s_it).payeeId()) !=
-              selected_payees.end()) {
-//                kdDebug() << "Transaction: " << &(*translist.begin()) - &(*it) << " "
-//                          << "reassigning split from payee '"<< (*s_it).payeeId() << "'" << endl;
-              // first modify payee in current split
-              (*s_it).setPayeeId(payee_id);
+            if ( std::find(selected_payees.begin(), selected_payees.end(), (*s_it).payeeId()) != selected_payees.end()) {
+              (*s_it).setPayeeId(payee_id); // first modify payee in current split
               // then modify the split in our local copy of the transaction list
-              (*it).modifySplit(*s_it); // does not modify the list object 'splits'!
+              (*it).modifySplit(*s_it); // this does not modify the list object 'splits'!
             }
           } // for - Splits
-          // now modify the transaction in the MyMoney object
-          file->modifyTransaction(*it);
+          file->modifyTransaction(*it);  // modify the transaction in the MyMoney object
         } // for - Transactions
+
+        // now loop over all schedules and reassign payees
+        for (QValueList<MyMoneySchedule>::iterator it = used_schedules.begin(); 
+             it != used_schedules.end(); ++it) 
+        {
+          // create copy of transaction in current schedule
+          MyMoneyTransaction trans = (*it).transaction();
+          // create copy of lists of splits
+          QValueList<MyMoneySplit> splits = trans.splits();
+          for (s_it = splits.begin(); s_it != splits.end(); ++s_it) {
+            if ( std::find(selected_payees.begin(), selected_payees.end(), (*s_it).payeeId()) != selected_payees.end()) {
+              (*s_it).setPayeeId(payee_id);
+              trans.modifySplit(*s_it); // does not modify the list object 'splits'!
+            }
+          } // for - Splits
+          // store transaction in current schedule
+          (*it).setTransaction(trans);
+          file->modifySchedule(*it);  // modify the schedule in the MyMoney object
+        } // for - Schedules
       } catch(MyMoneyException *e) {
         KMessageBox::detailedSorry(0, i18n("Unable to reassign payee of transaction/split"),
           (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
