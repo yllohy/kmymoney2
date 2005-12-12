@@ -495,8 +495,10 @@ void KNewAccountDlg::okClicked()
   accept();
 }
 
-const MyMoneyAccount& KNewAccountDlg::account(void) const
+const MyMoneyAccount& KNewAccountDlg::account(void)
 {
+  // assign the right currency to the account
+  m_account.setCurrencyId(m_currency->security().id());
   return m_account;
 }
 

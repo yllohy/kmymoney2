@@ -78,7 +78,7 @@ public:
   /**
     * This method returns the edited account object.
     */
-  const MyMoneyAccount& account(void) const;
+  const MyMoneyAccount& account(void);
 
   /**
     * This method returns the parent account of the edited account object.
