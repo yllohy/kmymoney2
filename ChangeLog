@@ -1,3 +1,8 @@
+2005-12-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied patch provided by Andreas Nicolei to also change the payee
+    within scheduled transactions
+  * Fixed new account dialog to assign currency to returned account object
+
 2005-12-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed spelling error in payees view
   * Added reference check logic to objects and engine code
