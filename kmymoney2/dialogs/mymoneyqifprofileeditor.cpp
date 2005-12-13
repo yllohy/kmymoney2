@@ -175,6 +175,8 @@ void MyMoneyQifProfileEditor::loadWidgets(void)
   m_editDateFormat->insertItem( "%d/%mmm%yy" );
   m_editDateFormat->insertItem( "%d.%m.%yy" );
   m_editDateFormat->insertItem( "%d.%m.%yyyy" );
+  m_editDateFormat->insertItem( "%m.%d.%yy" );
+  m_editDateFormat->insertItem( "%m.%d.%yyyy" );
   m_editDateFormat->insertItem( "%m/%d/%yy" );
   m_editDateFormat->insertItem( "%mmm/%d/%yy" );
   m_editDateFormat->insertItem( "%m/%d/%yyyy" );
