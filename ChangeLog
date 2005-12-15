@@ -1,3 +1,7 @@
+2005-12-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Started to fix KDE #115863 (--enable-final and 'make check' fails)
+    Now we can compile but still get link errors
+
 2005-12-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patch provided by Andreas Nicolei to also change the payee
     within scheduled transactions
