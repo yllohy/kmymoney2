@@ -41,27 +41,9 @@ using namespace reports;
 #include "../mymoney/mymoneyreport.h"
 #include "../mymoney/mymoneystatement.h"
 #include "../mymoney/storage/mymoneystoragexml.h"
+#include "reportstestcommon.h"
 
 namespace test {
-
-class TransactionHelper: public MyMoneyTransaction
-{
-private:
-  QCString m_id;
-public:
-  TransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _value, const QCString& _accountid, const QCString& _categoryid, const QCString& _currencyid = QCString(), const QString& _payee="Test Payee" );
-  ~TransactionHelper();
-  void update(void);
-protected:
-  TransactionHelper(void) {}
-};
-
-class InvTransactionHelper: public TransactionHelper
-{
-public:
-  InvTransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _shares, MyMoneyMoney _value, const QCString& _stockaccountid, const QCString& _transferid, const QCString& _categoryid );
-};
-
 
 TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _value, const QCString& _accountid, const QCString& _categoryid, const QCString& _currencyid, const QString& _payee )
 {
@@ -121,7 +103,7 @@ InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& 
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount stockaccount = file->account(_stockaccountid);
   MyMoneyMoney value = _shares * _price;
-  
+
   setPostDate(_date);
 
   setCommodity("USD");
@@ -145,7 +127,7 @@ InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& 
     s1.setAccountId(_categoryid);
     s1.setShares(-value);
     s1.setValue(-value);
-    
+
     // Split 2 will be the zero-amount investment split that serves to
     // mark this transaction as a cash dividend and note which stock account
     // it belongs to.
@@ -166,7 +148,7 @@ InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& 
   {
     s1.setShares(_shares);
     s1.setAction(MyMoneySplit::ActionBuyShares);
-  
+
     MyMoneySplit s3;
     s3.setAccountId(_transferid);
     s3.setShares(-value);
@@ -176,25 +158,25 @@ InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& 
   addSplit(s1);
 
   //kdDebug(2) << "created transaction, now adding..." << endl;
-  
+
   file->addTransaction(*this);
 
   //kdDebug(2) << "updating price..." << endl;
-    
+
   // update the price, while we're here
   QCString stockid = stockaccount.currencyId();
   QCString basecurrencyid = file->baseCurrency().id();
   MyMoneyPrice price = file->price( stockid, basecurrencyid, _date, true );
   if ( !price.isValid() )
   {
-    MyMoneyPrice newprice( stockid, basecurrencyid, _date, _price, "test" );  
+    MyMoneyPrice newprice( stockid, basecurrencyid, _date, _price, "test" );
     file->addPrice(newprice);
   }
 
   //kdDebug(2) << "successfully added " << id() << endl;
 }
 
-QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency="" )
+QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency )
 {
   MyMoneyAccount info;
 
@@ -230,7 +212,7 @@ QCString makeEquity(const QString& _name, const QString& _symbol )
   equity.setSmallestAccountFraction( 1000 );
   equity.setSecurityType( MyMoneySecurity::SECURITY_NONE /*MyMoneyEquity::ETYPE_STOCK*/ );
   MyMoneyFile::instance()->addSecurity( equity );
- 
+
   return equity.id();
 }
 
@@ -241,7 +223,7 @@ void makeEquityPrice(const QCString& _id, const QDate& _date, const MyMoneyMoney
   MyMoneyPrice price = file->price( _id, basecurrencyid, _date, true );
   if ( !price.isValid() )
   {
-    MyMoneyPrice newprice( _id, basecurrencyid, _date, _price, "test" );  
+    MyMoneyPrice newprice( _id, basecurrencyid, _date, _price, "test" );
     file->addPrice(newprice);
   }
 }
@@ -263,7 +245,7 @@ void writeRCFtoXMLDoc( const MyMoneyReport& filter, QDomDocument* doc )
 
 }
 
-void writeTabletoHTML( const PivotTable& table, const QString& _filename = QString() )
+void writeTabletoHTML( const PivotTable& table, const QString& _filename )
 {
   static unsigned filenumber = 1;
   QString filename = _filename;
@@ -280,7 +262,7 @@ void writeTabletoHTML( const PivotTable& table, const QString& _filename = QStri
 
 }
 
-void writeTabletoHTML( const QueryTable& table, const QString& _filename = QString() )
+void writeTabletoHTML( const QueryTable& table, const QString& _filename )
 {
   static unsigned filenumber = 1;
   QString filename = _filename;
@@ -296,7 +278,7 @@ void writeTabletoHTML( const QueryTable& table, const QString& _filename = QStri
   g.close();
 }
 
-void writeTabletoCSV( const PivotTable& table, const QString& _filename = QString() )
+void writeTabletoCSV( const PivotTable& table, const QString& _filename )
 {
   static unsigned filenumber = 1;
   QString filename = _filename;
@@ -313,7 +295,7 @@ void writeTabletoCSV( const PivotTable& table, const QString& _filename = QStrin
 
 }
 
-void writeTabletoCSV( const QueryTable& table, const QString& _filename = QString() )
+void writeTabletoCSV( const QueryTable& table, const QString& _filename )
 {
   static unsigned filenumber = 1;
   QString filename = _filename;
@@ -330,7 +312,7 @@ void writeTabletoCSV( const QueryTable& table, const QString& _filename = QStrin
 
 }
 
-void writeRCFtoXML( const MyMoneyReport& filter, const QString& _filename = QString() )
+void writeRCFtoXML( const MyMoneyReport& filter, const QString& _filename )
 {
   static unsigned filenum = 1;
   QString filename = _filename;
