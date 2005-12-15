@@ -32,8 +32,6 @@
 #define private public
 #include "querytable.h"
 #undef private
-using namespace reports;
-using namespace test;
 
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneysecurity.h"
@@ -43,44 +41,8 @@ using namespace test;
 #include "../mymoney/mymoneystatement.h"
 #include "../mymoney/storage/mymoneystoragexml.h"
 
-namespace querytabletest
-{
-const MyMoneyMoney moCheckingOpen(0.0);
-const MyMoneyMoney moCreditOpen(0.0);
-const MyMoneyMoney moZero(0.0);
-const MyMoneyMoney moSolo(234.12);
-const MyMoneyMoney moParent1(88.01);
-const MyMoneyMoney moParent2(133.22);
-const MyMoneyMoney moParent(moParent1+moParent2);
-const MyMoneyMoney moChild(14.00);
-const MyMoneyMoney moThomas(5.11);
-const MyMoneyMoney moNoPayee(8944.70);
-
-QCString acAsset;
-QCString acLiability;
-QCString acExpense;
-QCString acIncome;
-QCString acChecking;
-QCString acCredit;
-QCString acSolo;
-QCString acParent;
-QCString acChild;
-QCString acForeign;
-QCString acCanChecking;
-QCString acJpyChecking;
-QCString acCanCash;
-QCString acJpyCash;
-QCString inBank;
-QCString eqStock1;
-QCString eqStock2;
-QCString acInvestment;
-QCString acStock1;
-QCString acStock2;
-QCString acDividends;
-QCString acInterest;
-
-}
-using namespace querytabletest;
+using namespace reports;
+using namespace test;
 
 QueryTableTest::QueryTableTest()
 {

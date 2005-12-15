@@ -33,6 +33,42 @@ class QueryTable;
 
 namespace test {
 
+extern const MyMoneyMoney moCheckingOpen;
+extern const MyMoneyMoney moCreditOpen;
+extern const MyMoneyMoney moConverterCheckingOpen;
+extern const MyMoneyMoney moConverterCreditOpen;
+extern const MyMoneyMoney moZero;
+extern const MyMoneyMoney moSolo;
+extern const MyMoneyMoney moParent1;
+extern const MyMoneyMoney moParent2;
+extern const MyMoneyMoney moParent;
+extern const MyMoneyMoney moChild;
+extern const MyMoneyMoney moThomas;
+extern const MyMoneyMoney moNoPayee;
+
+extern QCString acAsset;
+extern QCString acLiability;
+extern QCString acExpense;
+extern QCString acIncome;
+extern QCString acChecking;
+extern QCString acCredit;
+extern QCString acSolo;
+extern QCString acParent;
+extern QCString acChild;
+extern QCString acForeign;
+extern QCString acCanChecking;
+extern QCString acJpyChecking;
+extern QCString acCanCash;
+extern QCString acJpyCash;
+extern QCString inBank;
+extern QCString eqStock1;
+extern QCString eqStock2;
+extern QCString acInvestment;
+extern QCString acStock1;
+extern QCString acStock2;
+extern QCString acDividends;
+extern QCString acInterest;
+
 class TransactionHelper: public MyMoneyTransaction
 {
 private:

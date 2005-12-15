@@ -54,43 +54,6 @@ ConverterTest::ConverterTest()
 {
 }
 
-namespace convertertest
-{
-
-const MyMoneyMoney moCheckingOpen(1418.0);
-const MyMoneyMoney moCreditOpen(-418.0);
-const MyMoneyMoney moZero(0.0);
-const MyMoneyMoney moSolo(234.12);
-const MyMoneyMoney moParent1(88.01);
-const MyMoneyMoney moParent2(133.22);
-const MyMoneyMoney moParent(moParent1+moParent2);
-const MyMoneyMoney moChild(14.00);
-const MyMoneyMoney moThomas(5.11);
-const MyMoneyMoney moNoPayee(8944.70);
-
-QCString acAsset;
-QCString acLiability;
-QCString acExpense;
-QCString acIncome;
-QCString acChecking;
-QCString acCredit;
-QCString acSolo;
-QCString acParent;
-QCString acChild;
-QCString acForeign;
-QCString acCanChecking;
-QCString acJpyChecking;
-QCString acCanCash;
-QCString acJpyCash;
-QCString inBank;
-QCString eqStock1;
-QCString eqStock2;
-QCString acInvestment;
-QCString acStock1;
-QCString acStock2;
-QCString acDividends;
-
-}
 using namespace convertertest;
 
 void ConverterTest::setUp () {
@@ -114,8 +77,8 @@ void ConverterTest::setUp () {
   acLiability = (MyMoneyFile::instance()->liability().id());
   acExpense = (MyMoneyFile::instance()->expense().id());
   acIncome = (MyMoneyFile::instance()->income().id());
-  acChecking = makeAccount("Checking Account",MyMoneyAccount::Checkings,moCheckingOpen,QDate(2004,5,15),acAsset);
-  acCredit = makeAccount("Credit Card",MyMoneyAccount::CreditCard,moCreditOpen,QDate(2004,7,15),acLiability);
+  acChecking = makeAccount("Checking Account",MyMoneyAccount::Checkings,moConverterCheckingOpen,QDate(2004,5,15),acAsset);
+  acCredit = makeAccount("Credit Card",MyMoneyAccount::CreditCard,moConverterCreditOpen,QDate(2004,7,15),acLiability);
   acSolo = makeAccount("Solo",MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
   acParent = makeAccount("Parent",MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
   acChild = makeAccount("Child",MyMoneyAccount::Expense,0,QDate(2004,2,11),acParent);
