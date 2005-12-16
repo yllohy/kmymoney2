@@ -46,14 +46,14 @@ class QIODevice;
 
 class IMyMoneyStorageFormat;
 
-class dbField {
+class MyMoneyDbField {
   public:
-    dbField (const QString& iname, 
+    MyMoneyDbField (const QString& iname, 
              const QString& itype = QString::null, 
              const bool iprimary = false, 
              const bool inotnull = false,
              const bool ikey = false,
-             const QString &initVersion = "1.0"):
+             const QString &initVersion = "0.1"):
     m_name(iname),
     m_type(itype),
     m_isPrimary(iprimary),
@@ -61,7 +61,7 @@ class dbField {
     m_isKey(ikey),
     m_initVersion(initVersion) 
     {};
-    dbField (void) {};
+    MyMoneyDbField (void) {};
     
     const QString& name(void) const {return (m_name);}
     const QString& type(void) const {return (m_type);}
@@ -77,16 +77,16 @@ class dbField {
     QString m_initVersion;
 };
 
-class dbTable {
+class MyMoneyDbTable {
   public:
-    dbTable (const QString& iname, 
-             const QValueList<dbField>& ifields,
+    MyMoneyDbTable (const QString& iname, 
+             const QValueList<MyMoneyDbField>& ifields,
              const QString& initVersion = "1.0"):
       m_name(iname),
     m_fields(ifields),
     m_initVersion(initVersion)
     {};
-    dbTable (void) {};
+    MyMoneyDbTable (void) {};
     const QString& name(void) const {return (m_name);}
     const QString& insertString(void) const {return (m_insertString);};
     const QString selectAllString(bool terminate = true) const
@@ -94,27 +94,27 @@ class dbTable {
     const QString updateString(void) const {return (m_updateString);};
     void buildSQLStrings(void);
     
-    typedef QValueList<dbField>::const_iterator field_iterator;
+    typedef QValueList<MyMoneyDbField>::const_iterator field_iterator;
     field_iterator begin(void) const {return m_fields.constBegin();}
     field_iterator end(void) const {return m_fields.constEnd(); }
   private:
     QString m_name;
-    QValueList<dbField> m_fields;
+    QValueList<MyMoneyDbField> m_fields;
     QString m_initVersion;
     QString m_insertString; // string to insert a record
     QString m_selectAllString; // to select all fields
     QString m_updateString;  // normal string for record update
 };
 
-class dbDef  {
+class MyMoneyDbDef  {
   friend class MyMoneyStorageSql;
   public:
-    dbDef();
-    ~dbDef() {};
+    MyMoneyDbDef();
+    ~MyMoneyDbDef() {};
   
     void generateSQL (QTextStream& fileName);
   
-    typedef QMap<QString, dbTable>::const_iterator table_iterator;
+    typedef QMap<QString, MyMoneyDbTable>::const_iterator table_iterator;
     table_iterator begin(void) const {return m_tables.constBegin();}
     table_iterator end(void) const {return m_tables.constEnd();}
   
@@ -135,7 +135,7 @@ class dbDef  {
   TABLE(Currencies);
   TABLE(Reports);
   protected:
-  QMap<QString, dbTable> m_tables;
+  QMap<QString, MyMoneyDbTable> m_tables;
 };
 
 class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
@@ -205,7 +205,7 @@ class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
    */
     int createDatabase(const KURL& url);
     int createTables();
-    void createTable(const dbTable& t);
+    void createTable(const MyMoneyDbTable& t);
     void clean ();
     int isEmpty();
 
@@ -226,8 +226,8 @@ class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
     void writePayee(const MyMoneyPayee& p, QSqlQuery& q);
     void writeAccount (const MyMoneyAccount& a, QSqlQuery& q);
     void writeTransaction(const QString& txId, const MyMoneyTransaction& tx, QSqlQuery& q, const QString& type);
-    void writeSplits(const QString& txId, const QValueList<MyMoneySplit>& splitList);
-    void writeSplit(const QString& txId, const MyMoneySplit& split, const int splitId, QSqlQuery& q);
+    void writeSplits(const QString& txId, const QString& type, const QValueList<MyMoneySplit>& splitList);
+    void writeSplit(const QString& txId, const MyMoneySplit& split, const QString& type, const int splitId, QSqlQuery& q);
     void writeSchedule(const MyMoneySchedule& sch, QSqlQuery& q);
     void writeSecurity(const MyMoneySecurity& security, QSqlQuery& q);
     void writePricePair (const QString& from, const QString& to, const MyMoneyPriceEntries& p);
@@ -255,13 +255,13 @@ class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
     const long long unsigned calcHighId (const long long unsigned, const QString&);
     //
     void readTransaction(const QString id);
-    void readSplits(MyMoneyTransaction& tx, const QString& txId);
+    void readSplit (MyMoneySplit& s, const QSqlQuery& q, const MyMoneyDbTable& t);
     MyMoneyKeyValueContainer readKeyValuePairs (const QString kvpType, const QString& kvpId);
     
     void signalProgress(int current, int total, const QString& = "");
     QString& buildError (const QSqlQuery&, const QString&);
     // data 
-    dbDef m_db;
+    MyMoneyDbDef m_db;
     unsigned int m_majorVersion;
     unsigned int m_minorVersion;
     IMyMoneySerialize *m_storage;

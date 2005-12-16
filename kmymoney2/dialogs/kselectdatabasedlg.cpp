@@ -127,7 +127,7 @@ void KSelectDatabaseDlg::slotGenerateSQL () {
   QFile out(fileName);
   if (!out.open(IO_WriteOnly)) return; 
   QTextStream s(&out);
-  dbDef db;
+  MyMoneyDbDef db;
   db.generateSQL(s);
   out.close();
 }

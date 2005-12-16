@@ -2689,14 +2689,8 @@ void KMyMoney2App::updateActions(void)
   MyMoneyFile* file = MyMoneyFile::instance();
   bool fileOpen = myMoneyView->fileOpen();
   bool modified = file->dirty();
-//#define ENABLE_DATABASE
-#ifdef ENABLE_DATABASE
   action("open_database")->setEnabled(true);
   action("saveas_database")->setEnabled(fileOpen);
-#else
-  action("open_database")->setEnabled(false);
-  action("saveas_database")->setEnabled(false);
-#endif
   action("file_save")->setEnabled(modified);
   action("file_save_as")->setEnabled(fileOpen);
   action("file_close")->setEnabled(fileOpen);
