@@ -1,4 +1,6 @@
 2005-12-16 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Document database usage
+2005-12-16 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Implement database code with timing improvements
 
 2005-12-15 Thomas Baumgart <ipwizard@users.sourceforge.net>

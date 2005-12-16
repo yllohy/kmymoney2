@@ -26,6 +26,7 @@
 	<!ENTITY details-widgets SYSTEM "details-widgets.docbook">
 	<!ENTITY details-search SYSTEM "details-search.docbook">
 	<!ENTITY details-formats SYSTEM "details-formats.docbook">
+	<!ENTITY details-database SYSTEM "details-database.docbook">
 	<!ENTITY details-hbciofx SYSTEM "details-hbciofx.docbook">
 	<!ENTITY reference SYSTEM "reference.docbook">
 	<!ENTITY credits SYSTEM "credits.docbook">
@@ -71,7 +72,7 @@
 	<firstname>Tony</firstname>
 	<surname>Bloomfield</surname>
 	<affiliation>
-		<address><email>tonyb.lx@btinternet.com</email></address>
+		<address><email>tonybloom@users.sourceforge.net</email></address>
 	</affiliation>
 </author>
 
@@ -173,6 +174,7 @@ Do NOT change these in the translation. -->
 &details-settings;
 &details-search;
 &details-formats;
+&details-database;
 &reference;
 &credits;
 
