@@ -74,7 +74,7 @@ protected:
     */
   static unsigned int fileVersion(fileVersionDirectionType dir = Reading);
 
-  void readFileInformation(QDomElement fileInfo);
+  void readFileInformation(QDomElement& fileInfo);
   virtual void writeFileInformation(QDomElement& fileInfo);
 
   virtual void writeUserInformation(QDomElement& userInfo);
@@ -104,7 +104,7 @@ protected:
   virtual QDomElement writeKeyValuePairs(const QMap<QCString, QString> pairs);
   virtual QMap<QCString, QString> readKeyValuePairs(QDomElement& element);
 
-  void readUserInformation(QDomElement userElement);
+  void readUserInformation(QDomElement& userElement);
   /** No descriptions */
 
   void readInstitutions(QDomElement& childElement);

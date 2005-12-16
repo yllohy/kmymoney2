@@ -251,7 +251,7 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   m_storage = NULL;
 }
 
-void MyMoneyStorageXML::readFileInformation(QDomElement fileInfo)
+void MyMoneyStorageXML::readFileInformation(QDomElement& fileInfo)
 {
   signalProgress(0, 3, QObject::tr("Loading file information..."));
 
@@ -311,7 +311,7 @@ void MyMoneyStorageXML::writeUserInformation(QDomElement& userInfo)
   userInfo.appendChild(address);
 }
 
-void MyMoneyStorageXML::readUserInformation(QDomElement userElement)
+void MyMoneyStorageXML::readUserInformation(QDomElement& userElement)
 {
   signalProgress(0, 1, QObject::tr("Loading user information..."));
 
