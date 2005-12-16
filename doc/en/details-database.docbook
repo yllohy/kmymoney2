@@ -10,16 +10,16 @@
   <date>2005-12-16</date>
   <releaseinfo>0.9</releaseinfo>
   </chapterinfo>
-  <para/>
   <title>Database Usage</title>
 <sect1 id="details.database.usage">
-  <sect1info>
-  </sect1info>
+<title>Database usage</title>
+<para>
 <caution>
 <para>
 At the time of writing, the software described in this chapter is still in an experimental stage, and loss of data is possible. Please ensure that you have an alternative backup copy of your data before committing to database usage.
 </para>
 </caution>
+</para>
 <sect2><title>Introduction</title>
 <para>As of release 1.0, &kappname; allows you to hold your data in a relational database. One of the advantages of using this industry-standard format is that it may allow you to view your data using one of the graphic front ends such as  OpenOffice.org<trademark class="copyright"/>, perhaps in some format that &kappname; currently doesn't provide. Also, a little knowledge of SQL (Structured Query Language, the language used world-wide to access relational databases) should enable you more easily to extract data to feed into some external program, as for example a budgeting application.</para>
   <para/>
@@ -65,7 +65,9 @@ At the time of writing, the software described in this chapter is still in an ex
   <para/>
 
 <sect3><title>Database Type</title>
+<para>
 This box lists all Qt SQL drivers installed on your system. Select the driver for your database type. If the one you want is not in the list, you need to install the appropriate driver. See your distro documentation, or visit the <ulink url="http://www.trolltech.com/" type="">Trolltech web site</ulink> and search for 'SQL drivers'.
+</para>
 </sect3>
 <sect3><title>Database name</title>
 <para>The default database name is KMyMoney, but you may choose some other name if you like. SQLite has one database per file; selecting this driver opens the file dialog. For database types other than MySQL, the database name must be pre-created, though &kappname; will create all table structures where necessary.</para>
@@ -254,12 +256,14 @@ This box lists all Qt SQL drivers installed on your system. Select the driver fo
   <para>Having data in an industry standard format does give you the ability to modify it outside the &kappname; application. DON'T DO IT unless you really know what you're doing, and always be certain to make a backup copy of your data first. If you get it wrong, &kappname; may not be able to access your data, and you could even end up losing it altogether. You have been warned!</para>
   <para/>
 </sect3>
+
 <sect3><title>Stored queries</title>
   <para/>
   <para>Most database systems allow you to store commonly used queries and procedures, and in some cases, these may be held as tables within your database itself. As you will have guessed from the above, all the tables used by &kappname; begin with the lower-case letters 'kmm'. This standard will be maintained, and only tables beginning with these letters will be updated. Thus provided you avoid these in the naming of your queries etc., you should not experience any problems.</para>
   <para/>
 </sect3>
 </sect2>
+
 <sect2><title>Optimization</title>
 <sect3><title>MySQL</title>
 <para/>
