@@ -354,10 +354,9 @@ void MyMoneyAccountLoan::setInterestAccountId(const QCString& /* id */)
 
 bool MyMoneyAccountLoan::hasReferenceTo(const QCString& id) const
 {
-  bool rc = MyMoneyAccount::hasReferenceTo(id);
-  if(rc == false) {
-  }
-  return rc;
+  return MyMoneyAccount::hasReferenceTo(id)
+         || (id == payee())
+         || (id == schedule());
 }
 
 void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
