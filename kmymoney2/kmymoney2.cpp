@@ -2742,17 +2742,12 @@ void KMyMoney2App::updateActions(void)
   if(!m_selectedAccount.id().isEmpty()) {
     if(!file->isStandardAccount(m_selectedAccount.id())) {
       action("account_edit")->setEnabled(true);
+      action("account_delete")->setEnabled(!file->isReferenced(m_selectedAccount));
       switch(m_selectedAccount.accountGroup()) {
         case MyMoneyAccount::Asset:
         case MyMoneyAccount::Liability:
           action("account_open")->setEnabled(true);
           action("account_reconcile")->setEnabled(true);
-
-          if(m_selectedAccount.accountType() == MyMoneyAccount::Investment) {
-            action("account_delete")->setEnabled((file->transactionCount(m_selectedAccount.id())==0) && (m_selectedAccount.accountList().count() == 0));
-          } else {
-            action("account_delete")->setEnabled(file->transactionCount(m_selectedAccount.id())==0);
-          }
 
           if(m_selectedAccount.accountType() == MyMoneyAccount::Investment)
             action("investment_new")->setEnabled(true);
@@ -2767,7 +2762,6 @@ void KMyMoney2App::updateActions(void)
           break;
 
         default:
-          action("account_delete")->setEnabled(file->transactionCount(m_selectedAccount.id())==0);
           break;
       }
     }
@@ -2775,14 +2769,12 @@ void KMyMoney2App::updateActions(void)
 
   if(!m_selectedInstitution.id().isEmpty()) {
     action("institution_edit")->setEnabled(true);
-    if(m_selectedInstitution.accountList().count() == 0) {
-      action("institution_delete")->setEnabled(true);
-    }
+    action("institution_delete")->setEnabled(!file->isReferenced(m_selectedInstitution));
   }
 
   if(!m_selectedInvestment.id().isEmpty()) {
     action("investment_edit")->setEnabled(true);
-    action("investment_delete")->setEnabled(file->transactionCount(m_selectedInvestment.id())==0);
+    action("investment_delete")->setEnabled(!file->isReferenced(m_selectedInvestment));
     action("investment_manual_price_update")->setEnabled(true);
     try {
       MyMoneySecurity security = MyMoneyFile::instance()->security(m_selectedInvestment.currencyId());
@@ -2797,7 +2789,7 @@ void KMyMoney2App::updateActions(void)
 
   if(!m_selectedSchedule.id().isEmpty()) {
     action("schedule_edit")->setEnabled(true);
-    action("schedule_delete")->setEnabled(true);
+    action("schedule_delete")->setEnabled(!file->isReferenced(m_selectedSchedule));
     if(!m_selectedSchedule.isFinished())
       action("schedule_enter")->setEnabled(true);
   }
