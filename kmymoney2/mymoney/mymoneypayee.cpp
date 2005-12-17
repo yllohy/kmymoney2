@@ -43,11 +43,36 @@ MyMoneyPayee::MyMoneyPayee(const QString& name, const QString& address,
   m_email     = email;
 }
 
+MyMoneyPayee::MyMoneyPayee(const QDomElement& node) :
+  MyMoneyObject(node)
+{
+  if("PAYEE" != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not PAYEE");
+
+  m_name = node.attribute("name");
+  m_reference = node.attribute("reference");
+  m_email = node.attribute("email");
+
+  QDomNodeList nodeList = node.elementsByTagName("ADDRESS");
+  if(nodeList.count() == 0) {
+    QString msg = QString("No ADDRESS in payee %1").arg(m_name);
+    throw new MYMONEYEXCEPTION(msg);
+  }
+
+  QDomElement addrNode = nodeList.item(0).toElement();
+  m_address = addrNode.attribute("street");
+  m_city = addrNode.attribute("city");
+  m_postcode = addrNode.attribute("postcode");
+  m_state = addrNode.attribute("state");
+  m_telephone = addrNode.attribute("telephone");
+}
+
 MyMoneyPayee::~MyMoneyPayee()
 {
 }
 
-MyMoneyPayee::MyMoneyPayee(const MyMoneyPayee& right)
+MyMoneyPayee::MyMoneyPayee(const MyMoneyPayee& right) :
+  MyMoneyObject(right)
 {
   *this = right;
 }
@@ -108,32 +133,6 @@ void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
   el.appendChild(address);
 
   parent.appendChild(el);
-}
-
-void MyMoneyPayee::readXML(const QDomElement& node)
-{
-  if("PAYEE" != node.tagName())
-    throw new MYMONEYEXCEPTION("Node was not PAYEE");
-
-  m_id = QCStringEmpty(node.attribute("id"));
-  Q_ASSERT(m_id.size());
-
-  m_name = node.attribute("name");
-  m_reference = node.attribute("reference");
-  m_email = node.attribute("email");
-
-  QDomNodeList nodeList = node.elementsByTagName("ADDRESS");
-  if(nodeList.count() == 0) {
-    QString msg = QString("No ADDRESS in payee %1").arg(m_name);
-    throw new MYMONEYEXCEPTION(msg);
-  }
-
-  QDomElement addrNode = nodeList.item(0).toElement();
-  m_address = addrNode.attribute("street");
-  m_city = addrNode.attribute("city");
-  m_postcode = addrNode.attribute("postcode");
-  m_state = addrNode.attribute("state");
-  m_telephone = addrNode.attribute("telephone");
 }
 
 bool MyMoneyPayee::hasReferenceTo(const QCString& id) const

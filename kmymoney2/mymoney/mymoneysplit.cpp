@@ -43,6 +43,29 @@ MyMoneySplit::MyMoneySplit()
   m_reconcileFlag = NotReconciled;
 }
 
+MyMoneySplit::MyMoneySplit(const QDomElement& node) :
+  /*
+    * don't call the MyMoneyObject(const QDomElement&) constructor here,
+    * because the splits are stored w/o an id
+    */
+  MyMoneyObject()
+{
+  if("SPLIT" != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not SPLIT");
+
+  clearId();
+
+  m_payee = QCStringEmpty(node.attribute("payee"));
+  m_reconcileDate = stringToDate(QStringEmpty(node.attribute("reconciledate")));
+  m_action = QCStringEmpty(node.attribute("action"));
+  m_reconcileFlag = static_cast<MyMoneySplit::reconcileFlagE>(node.attribute("reconcileflag").toInt());
+  m_memo = QStringEmpty(node.attribute("memo"));
+  m_value = MyMoneyMoney(QStringEmpty(node.attribute("value")));
+  m_shares = MyMoneyMoney(QStringEmpty(node.attribute("shares")));
+  m_account = QCStringEmpty(node.attribute("account"));
+  m_number = QStringEmpty(node.attribute("number"));
+}
+
 MyMoneySplit::~MyMoneySplit()
 {
 }
@@ -136,24 +159,6 @@ void MyMoneySplit::writeXML(QDomDocument& document, QDomElement& parent) const
   el.setAttribute("number", m_number);
 
   parent.appendChild(el);
-}
-
-void MyMoneySplit::readXML(const QDomElement& node)
-{
-  if("SPLIT" != node.tagName())
-    throw new MYMONEYEXCEPTION("Node was not SPLIT");
-
-  clearId();
-
-  m_payee = QCStringEmpty(node.attribute("payee"));
-  m_reconcileDate = stringToDate(QStringEmpty(node.attribute("reconciledate")));
-  m_action = QCStringEmpty(node.attribute("action"));
-  m_reconcileFlag = static_cast<MyMoneySplit::reconcileFlagE>(node.attribute("reconcileflag").toInt());
-  m_memo = QStringEmpty(node.attribute("memo"));
-  m_value = MyMoneyMoney(QStringEmpty(node.attribute("value")));
-  m_shares = MyMoneyMoney(QStringEmpty(node.attribute("shares")));
-  m_account = QCStringEmpty(node.attribute("account"));
-  m_number = QStringEmpty(node.attribute("number"));
 }
 
 bool MyMoneySplit::hasReferenceTo(const QCString& id) const

@@ -71,6 +71,15 @@ public:
           const QString& postcode=QString::null,
           const QString& telephone=QString::null,
           const QString& email=QString::null);
+  /**
+    * This is the constructor for a payee that is described by a
+    * QDomElement (e.g. from a file).
+    *
+    * @param el const reference to the QDomElement from which to
+    *           create the object
+    */
+  MyMoneyPayee(const QDomElement& el);
+
   ~MyMoneyPayee();
 
   // Simple get operations
@@ -102,8 +111,6 @@ public:
   const bool operator == (const MyMoneyPayee &) const;
 
   void writeXML(QDomDocument& document, QDomElement& parent) const;
-
-  void readXML(const QDomElement& node);
 
   /**
     * This method checks if a reference to the given object exists. It returns,

@@ -262,7 +262,7 @@ void MyMoneyInstitutionTest::testReadXML() {
 	doc.setContent(ref_false);
 	node = doc.documentElement().firstChild().toElement();
 	try {
-		i.readXML(node);
+		i = MyMoneyInstitution(node);
 		CPPUNIT_FAIL("Missing expected exception");
 	} catch(MyMoneyException *e) {
 		delete e;
@@ -278,7 +278,7 @@ void MyMoneyInstitutionTest::testReadXML() {
 	try {
 		QCStringList alist;
 		alist << "A000001" << "A000003";
-		i.readXML(node);
+		i = MyMoneyInstitution(node);
 
 		CPPUNIT_ASSERT(i.sortcode() == "sortcode");
 		CPPUNIT_ASSERT(i.id() == "I00001");

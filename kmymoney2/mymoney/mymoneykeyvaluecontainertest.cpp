@@ -134,28 +134,34 @@ void MyMoneyKeyValueContainerTest::testReadXML() {
 		" </KEYVALUE-PAIRS>\n"
 		"</KVP-CONTAINER>\n");
 
+	
 	QDomDocument doc;
 	QDomElement node;
 	doc.setContent(ref_false);
 	node = doc.documentElement().firstChild().toElement();
 
+	// make sure, an empty node does not trigger an exception
 	try {
-		m->readXML(node);
+		MyMoneyKeyValueContainer k(QDomNode());
+	} catch(MyMoneyException *e) {
+		CPPUNIT_FAIL("Unexpected exception");
+		delete e;
+	}
+
+	try {
+		MyMoneyKeyValueContainer k(node);
 		CPPUNIT_FAIL("Missing expected exception");
 	} catch(MyMoneyException *e) {
 		delete e;
 	}
 
-	// make sure the false input does not hurt us
-	CPPUNIT_ASSERT(m->m_kvp.count() == 2);
-
 	doc.setContent(ref_ok);
 	node = doc.documentElement().firstChild().toElement();
 	try {
-		m->readXML(node);
-		CPPUNIT_ASSERT(m->m_kvp.count() == 2);
-		CPPUNIT_ASSERT(m->value("key") == "Value");
-		CPPUNIT_ASSERT(m->value("Key") == "value");
+		MyMoneyKeyValueContainer k(node);
+		CPPUNIT_ASSERT(k.m_kvp.count() == 2);
+		CPPUNIT_ASSERT(k.value("key") == "Value");
+		CPPUNIT_ASSERT(k.value("Key") == "value");
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");

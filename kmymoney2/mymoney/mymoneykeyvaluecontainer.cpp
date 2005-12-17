@@ -28,6 +28,22 @@ MyMoneyKeyValueContainer::MyMoneyKeyValueContainer()
 {
 }
 
+MyMoneyKeyValueContainer::MyMoneyKeyValueContainer(const QDomElement& node)
+{
+  if(!node.isNull()) {
+    if("KEYVALUEPAIRS" != node.tagName())
+      throw new MYMONEYEXCEPTION("Node was not KEYVALUEPAIRS");
+
+    m_kvp.clear();
+
+    QDomNodeList nodeList = node.elementsByTagName("PAIR");
+    for(unsigned int i = 0; i < nodeList.count(); ++i) {
+      const QDomElement& el(nodeList.item(i).toElement());
+      m_kvp[QCString(el.attribute("key"))] = el.attribute("value");
+    }
+  }
+}
+
 MyMoneyKeyValueContainer::~MyMoneyKeyValueContainer()
 {
 }
@@ -99,18 +115,4 @@ void MyMoneyKeyValueContainer::writeXML(QDomDocument& document, QDomElement& par
   }
 
   parent.appendChild(el);
-}
-
-void MyMoneyKeyValueContainer::readXML(const QDomElement& node)
-{
-  if("KEYVALUEPAIRS" != node.tagName())
-    throw new MYMONEYEXCEPTION("Node was not KEYVALUEPAIRS");
-
-  m_kvp.clear();
-
-  QDomNodeList nodeList = node.elementsByTagName("PAIR");
-  for(unsigned int i = 0; i < nodeList.count(); ++i) {
-    const QDomElement& el(nodeList.item(i).toElement());
-    m_kvp[QCString(el.attribute("key"))] = el.attribute("value");
-  }
 }

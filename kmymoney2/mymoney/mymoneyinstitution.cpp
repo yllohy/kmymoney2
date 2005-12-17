@@ -54,6 +54,50 @@ MyMoneyInstitution::MyMoneyInstitution(const QString& name,
   m_sortcode = sortcode;
 }
 
+MyMoneyInstitution::MyMoneyInstitution(const QDomElement& node) :
+  MyMoneyObject(node)
+{
+  if("INSTITUTION" != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not INSTITUTION");
+
+  m_sortcode = node.attribute("sortcode");
+  m_name = node.attribute("name");
+  m_manager = node.attribute("manager");
+
+  QDomNodeList nodeList = node.elementsByTagName("ADDRESS");
+  if(nodeList.count() == 0) {
+    QString msg = QString("No ADDRESS in institution %1").arg(m_name);
+    throw new MYMONEYEXCEPTION(msg);
+  }
+
+  QDomElement addrNode = nodeList.item(0).toElement();
+  m_street = addrNode.attribute("street");
+  m_town = addrNode.attribute("city");
+  m_postcode = addrNode.attribute("zip");
+  m_telephone = addrNode.attribute("telephone");
+
+  m_accountList.clear();
+
+  nodeList = node.elementsByTagName("ACCOUNTIDS");
+  if(nodeList.count() > 0) {
+    nodeList = nodeList.item(0).toElement().elementsByTagName("ACCOUNTID");
+    for(unsigned int i = 0; i < nodeList.count(); ++i) {
+      m_accountList << QCString(nodeList.item(i).toElement().attribute("id"));
+    }
+  }
+
+  m_ofxConnectionSettings = MyMoneyKeyValueContainer();
+
+  nodeList = node.elementsByTagName("OFXSETTINGS");
+  if(nodeList.count() > 0) {
+    QDomNamedNodeMap attributes = nodeList.item(0).toElement().attributes();
+    for(unsigned int i = 0; i < attributes.count(); ++i) {
+      const QDomAttr& it_attr = attributes.item(i).toAttr();
+      m_ofxConnectionSettings.setValue(it_attr.name().utf8(), it_attr.value());
+    }
+  }
+}
+
 MyMoneyInstitution::~MyMoneyInstitution()
 {
 }
@@ -129,52 +173,6 @@ void MyMoneyInstitution::writeXML(QDomDocument& document, QDomElement& parent) c
     el.appendChild(ofxsettings);
   }
   parent.appendChild(el);
-}
-
-void MyMoneyInstitution::readXML(const QDomElement& node)
-{
-  if("INSTITUTION" != node.tagName())
-    throw new MYMONEYEXCEPTION("Node was not INSTITUTION");
-
-  m_id = QCStringEmpty(node.attribute("id"));
-  Q_ASSERT(m_id.size());
-
-  m_sortcode = node.attribute("sortcode");
-  m_name = node.attribute("name");
-  m_manager = node.attribute("manager");
-
-  QDomNodeList nodeList = node.elementsByTagName("ADDRESS");
-  if(nodeList.count() == 0) {
-    QString msg = QString("No ADDRESS in institution %1").arg(m_name);
-    throw new MYMONEYEXCEPTION(msg);
-  }
-
-  QDomElement addrNode = nodeList.item(0).toElement();
-  m_street = addrNode.attribute("street");
-  m_town = addrNode.attribute("city");
-  m_postcode = addrNode.attribute("zip");
-  m_telephone = addrNode.attribute("telephone");
-
-  m_accountList.clear();
-
-  nodeList = node.elementsByTagName("ACCOUNTIDS");
-  if(nodeList.count() > 0) {
-    nodeList = nodeList.item(0).toElement().elementsByTagName("ACCOUNTID");
-    for(unsigned int i = 0; i < nodeList.count(); ++i) {
-      m_accountList << QCString(nodeList.item(i).toElement().attribute("id"));
-    }
-  }
-
-  m_ofxConnectionSettings = MyMoneyKeyValueContainer();
-
-  nodeList = node.elementsByTagName("OFXSETTINGS");
-  if(nodeList.count() > 0) {
-    QDomNamedNodeMap attributes = nodeList.item(0).toElement().attributes();
-    for(unsigned int i = 0; i < attributes.count(); ++i) {
-      const QDomAttr& it_attr = attributes.item(i).toAttr();
-      m_ofxConnectionSettings.setValue(it_attr.name().utf8(), it_attr.value());
-    }
-  }
 }
 
 bool MyMoneyInstitution::hasReferenceTo(const QCString& id) const

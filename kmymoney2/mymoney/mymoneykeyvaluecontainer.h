@@ -54,6 +54,8 @@ class KMYMONEY_EXPORT MyMoneyKeyValueContainer
 {
 public:
   MyMoneyKeyValueContainer();
+  MyMoneyKeyValueContainer(const QDomElement& node);
+
   ~MyMoneyKeyValueContainer();
 
   /**
@@ -123,15 +125,6 @@ public:
     * @param parent reference to QDomElement parent node
     */
   void writeXML(QDomDocument& document, QDomElement& parent) const;
-
-  /**
-    * This method reads in data for the object from the node
-    * The type will be checked and an exception thrown if
-    * it does not match.
-    *
-    * @param node QDomElement containing the data
-    */
-  void readXML(const QDomElement& node);
 
 private:
   /**

@@ -51,6 +51,7 @@
   * or a currency.
   *
   * @author Kevin Tambascio
+  * @author Thomas Baumgart
   */
 class KMYMONEY_EXPORT MyMoneySecurity : public MyMoneyObject, public MyMoneyKeyValueContainer
 {
@@ -58,6 +59,7 @@ public:
   MyMoneySecurity();
   MyMoneySecurity(const QCString& id, const MyMoneySecurity& equity);
   MyMoneySecurity(const QCString& id, const QString& name, const QString& symbol = QString(), const int partsPerUnit = 100, const int smallestCashFraction = 100, const int smallestAccountFraction = 0);
+  MyMoneySecurity(const QDomElement& node);
   virtual ~MyMoneySecurity();
 
   /**
@@ -108,8 +110,6 @@ public:
   void setSmallestCashFraction(const int sf) { m_smallestCashFraction = sf; };
 
   void writeXML(QDomDocument& document, QDomElement& parent) const;
-
-  void readXML(const QDomElement& node);
 
   /**
    * This method checks if a reference to the given object exists. It returns,

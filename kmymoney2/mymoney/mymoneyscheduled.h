@@ -101,6 +101,8 @@ public:
   MyMoneySchedule(const QString& name, typeE type, occurenceE occurence, paymentTypeE paymentType,
         const QDate& startDate, const QDate& endDate, bool fixed, bool autoEnter);
 
+  MyMoneySchedule(const QDomElement& node);
+
   /**
     * Standard destructor
     */
@@ -355,8 +357,6 @@ public:
   QValueList<QDate> recordedPayments(void) const { return m_recordedPayments; }
 
   void writeXML(QDomDocument& document, QDomElement& parent) const;
-
-  void readXML(const QDomElement& node);
 
   /**
     * This method checks if a reference to the given object exists. It returns,

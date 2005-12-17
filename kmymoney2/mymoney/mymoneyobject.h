@@ -44,13 +44,6 @@ class KMYMONEY_EXPORT MyMoneyObject
 {
 public:
   /**
-    * This contructor assigns the id to the MyMoneyObject
-    *
-    * @param id ID of object
-    */
-  MyMoneyObject(const QCString& id);
-
-  /**
     * This is the constructor for the MyMoneyObject object
     */
   MyMoneyObject();
@@ -94,16 +87,31 @@ public:
     */
   virtual void writeXML(QDomDocument& document, QDomElement& parent) const = 0;
 
-  /**
-    * This method reads in data for the object from the node
-    * The type will be checked and an exception thrown if
-    * it does not match.
-    *
-    * @param node QDomElement containing the data
-    */
-  virtual void readXML(const QDomElement& node) = 0;
-
   const bool operator == (const MyMoneyObject& right) const;
+
+protected:
+  /**
+    * This contructor assigns the id to the MyMoneyObject
+    *
+    * @param id ID of object
+    */
+  MyMoneyObject(const QCString& id);
+
+  /**
+   * This contructor reads the id from the @p id attribute of the
+   * QDomElement.
+   *
+   * @param node const reference to the QDomElement from which to
+   *           obtain the id of the object
+   * @param forceId flag to be able to suppress enforcement of an id
+   *           defaults to true which requires the node to have an
+   *           attribute with name @p id. If it does not contain such
+   *           an attribute, an exception will be thrown. If @p forceId
+   *           is false, no check for an id is performed. This will be
+   *           used by objects, which are stored w/o id (eg. splits,
+   *           transactions within schedules)
+   */
+  MyMoneyObject(const QDomElement& node, const bool forceId = true);
 
 protected:
   QCString               m_id;

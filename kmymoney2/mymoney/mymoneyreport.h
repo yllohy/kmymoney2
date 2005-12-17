@@ -77,6 +77,12 @@ public:
 public:
   MyMoneyReport(void);
   MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment );
+  /**
+    * This constructor creates an object based on the data found in the
+    * QDomElement referenced by @p node. If problems arise, the @p id of
+    * the object is cleared (see MyMoneyObject::clearId()).
+    */
+  MyMoneyReport(const QDomElement& node);
 
   // Simple get operations
   const QString& name(void) const { return m_name; }
@@ -275,16 +281,6 @@ public:
     * @param parent reference to QDomElement parent node
     */
   virtual void writeXML(QDomDocument& document, QDomElement& parent) const;
-
-  /**
-    * This method reads in data for the object from the node
-    * The type will be checked and an exception thrown if
-    * it does not match. (This version overwrites the
-    * MMObject base class.)
-    *
-    * @param node QDomElement containing the data
-    */
-  virtual void readXML(const QDomElement& node);
 
   /**
     * This method checks if a reference to the given object exists. It returns,

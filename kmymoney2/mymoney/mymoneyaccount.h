@@ -29,6 +29,7 @@
 #include <qdatetime.h>
 #include <qvaluelist.h>
 #include <qstringlist.h>
+#include <qdom.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -138,6 +139,15 @@ public:
     * @param right account definition
     */
   MyMoneyAccount(const QCString& id, const MyMoneyAccount& right);
+
+  /**
+    * This is the constructor for an account that is described by a
+    * QDomElement (e.g. from a file).
+    *
+    * @param el const reference to the QDomElement from which to
+    *           create the object
+    */
+  MyMoneyAccount(const QDomElement& el);
 
   /**
     * This is the destructor for any MyMoneyAccount object
@@ -450,8 +460,6 @@ public:
   void setCurrencyId(const QCString& id);
 
   void writeXML(QDomDocument& document, QDomElement& parent) const;
-
-  void readXML(const QDomElement& node);
 
   /**
     * This method checks if a reference to the given object exists. It returns,

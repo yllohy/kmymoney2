@@ -436,7 +436,7 @@ void MyMoneyAccountTest::testReadXML() {
 	node = doc.documentElement().firstChild().toElement();
 
 	try {
-		a.readXML(node);
+		a = MyMoneyAccount(node);
 		CPPUNIT_FAIL("Missing expected exception");
 	} catch(MyMoneyException *e) {
 		delete e;
@@ -449,7 +449,7 @@ void MyMoneyAccountTest::testReadXML() {
 	a.setValue("KEY", "VALUE");
 
 	try {
-		a.readXML(node);
+		a = MyMoneyAccount(node);
 		CPPUNIT_ASSERT(a.id() == "A000001");
 		CPPUNIT_ASSERT(a.m_name == "AccountName");
 		CPPUNIT_ASSERT(a.m_parentAccount == "Parent");

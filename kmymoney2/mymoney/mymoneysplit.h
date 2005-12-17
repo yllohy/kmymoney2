@@ -75,13 +75,12 @@ public:
   };
 
   MyMoneySplit();
+  MyMoneySplit(const QDomElement& node);
   ~MyMoneySplit();
 
   bool operator == (const MyMoneySplit&) const;
 
   void writeXML(QDomDocument& document, QDomElement& parent) const;
-
-  void readXML(const QDomElement& node);
 
   /**
     * This method checks if a reference to the given object exists. It returns,

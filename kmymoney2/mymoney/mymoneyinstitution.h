@@ -78,6 +78,15 @@ public:
     */
   MyMoneyInstitution(const QCString ID, const MyMoneyInstitution& right);
 
+  /**
+    * This is the constructor for an institution that is described by a
+    * QDomElement (e.g. from a file).
+    *
+    * @param el const reference to the QDomElement from which to
+    *           create the object
+    */
+  MyMoneyInstitution(const QDomElement& el);
+
   const QString& manager(void) const { return m_manager; }
   const QString& name(void) const { return m_name; }
   const QString& postcode(void) const { return m_postcode; }
@@ -147,8 +156,6 @@ public:
   bool operator == (const MyMoneyInstitution&) const;
 
   void writeXML(QDomDocument& document, QDomElement& parent) const;
-
-  void readXML(const QDomElement& node);
 
   /**
     * This method checks if a reference to the given object exists. It returns,

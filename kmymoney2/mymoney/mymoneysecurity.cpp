@@ -58,10 +58,34 @@ MyMoneySecurity::MyMoneySecurity(const QCString& id, const QString& name, const 
     m_smallestAccountFraction = smallestCashFraction;
 }
 
-MyMoneySecurity::MyMoneySecurity(const QCString& id, const MyMoneySecurity& equity)
+MyMoneySecurity::MyMoneySecurity(const QCString& id, const MyMoneySecurity& equity) :
+  MyMoneyObject(id)
 {
   *this = equity;
   m_id = id;
+}
+
+MyMoneySecurity::MyMoneySecurity(const QDomElement& node) :
+  MyMoneyObject(node),
+  MyMoneyKeyValueContainer(node.elementsByTagName("KEYVALUEPAIRS").item(0).toElement())
+{
+  if(("SECURITY" != node.tagName())
+      && ("EQUITY" != node.tagName())
+      && ("CURRENCY" != node.tagName()))
+    throw new MYMONEYEXCEPTION("Node was not SECURITY or CURRENCY");
+
+  setName(QStringEmpty(node.attribute("name")));
+  setTradingSymbol(QStringEmpty(node.attribute("symbol")));
+  setSecurityType(static_cast<eSECURITYTYPE>(node.attribute("type").toInt()));
+  setSmallestAccountFraction(node.attribute("saf").toInt());
+
+  if(isCurrency()) {
+    setPartsPerUnit(node.attribute("ppu").toInt());
+    setSmallestCashFraction(node.attribute("scf").toInt());
+  } else {
+    setTradingCurrency(QCStringEmpty(node.attribute("trading-currency")));
+    setTradingMarket(QStringEmpty(node.attribute("trading-market")));
+  }
 }
 
 MyMoneySecurity::~MyMoneySecurity()
@@ -114,35 +138,6 @@ void MyMoneySecurity::writeXML(QDomDocument& document, QDomElement& parent) cons
   MyMoneyKeyValueContainer::writeXML(document, el);
 
   parent.appendChild(el);
-}
-
-void MyMoneySecurity::readXML(const QDomElement& node)
-{
-  if(("SECURITY" != node.tagName())
-  && ("EQUITY" != node.tagName())
-  && ("CURRENCY" != node.tagName()))
-    throw new MYMONEYEXCEPTION("Node was not SECURITY or CURRENCY");
-
-  m_id = QCStringEmpty(node.attribute("id"));
-  Q_ASSERT(m_id.size());
-  setName(QStringEmpty(node.attribute("name")));
-  setTradingSymbol(QStringEmpty(node.attribute("symbol")));
-  setSecurityType(static_cast<eSECURITYTYPE>(node.attribute("type").toInt()));
-  setSmallestAccountFraction(node.attribute("saf").toInt());
-
-  if(isCurrency()) {
-    setPartsPerUnit(node.attribute("ppu").toInt());
-    setSmallestCashFraction(node.attribute("scf").toInt());
-  } else {
-    setTradingCurrency(QCStringEmpty(node.attribute("trading-currency")));
-    setTradingMarket(QStringEmpty(node.attribute("trading-market")));
-  }
-
-  // Process any key value pair
-  QDomNodeList nodeList = node.elementsByTagName("KEYVALUEPAIRS");
-  if(nodeList.count() > 0) {
-    MyMoneyKeyValueContainer::readXML(nodeList.item(0).toElement());
-  }
 }
 
 #if 0

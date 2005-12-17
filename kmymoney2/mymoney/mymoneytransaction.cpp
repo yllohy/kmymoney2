@@ -43,6 +43,32 @@ MyMoneyTransaction::MyMoneyTransaction(const QCString id,
     m_entryDate = QDate::currentDate();
 }
 
+MyMoneyTransaction::MyMoneyTransaction(const QDomElement& node, const bool forceId) :
+  MyMoneyObject(node, forceId),
+  MyMoneyKeyValueContainer(node.elementsByTagName("KEYVALUEPAIRS").item(0).toElement())
+{
+  if("TRANSACTION" != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not TRANSACTION");
+
+  m_nextSplitID = 1;
+
+  m_postDate = stringToDate(node.attribute("postdate"));
+  m_entryDate = stringToDate(node.attribute("entrydate"));
+  m_bankID = QStringEmpty(node.attribute("bankid"));
+  m_memo = QStringEmpty(node.attribute("memo"));
+  m_commodity = QCStringEmpty(node.attribute("commodity"));
+
+  //  Process any split information found inside the transaction entry.
+  QDomNodeList nodeList = node.elementsByTagName("SPLITS");
+  if(nodeList.count() > 0) {
+    nodeList = nodeList.item(0).toElement().elementsByTagName("SPLIT");
+    for(unsigned int i = 0; i < nodeList.count(); ++i) {
+      MyMoneySplit s(nodeList.item(i).toElement());
+      addSplit(s);
+    }
+  }
+}
+
 MyMoneyTransaction::~MyMoneyTransaction()
 {
 }
@@ -324,39 +350,6 @@ void MyMoneyTransaction::writeXML(QDomDocument& document, QDomElement& parent) c
   MyMoneyKeyValueContainer::writeXML(document, el);
 
   parent.appendChild(el);
-}
-
-void MyMoneyTransaction::readXML(const QDomElement& node)
-{
-  if("TRANSACTION" != node.tagName())
-    throw new MYMONEYEXCEPTION("Node was not TRANSACTION");
-
-  m_nextSplitID = 1;
-  m_splits.clear();
-  m_id = QCStringEmpty(node.attribute("id"));
-
-  m_postDate = stringToDate(node.attribute("postdate"));
-  m_entryDate = stringToDate(node.attribute("entrydate"));
-  m_bankID = QStringEmpty(node.attribute("bankid"));
-  m_memo = QStringEmpty(node.attribute("memo"));
-  m_commodity = QCStringEmpty(node.attribute("commodity"));
-
-  //  Process any split information found inside the transaction entry.
-  QDomNodeList nodeList = node.elementsByTagName("SPLITS");
-  if(nodeList.count() > 0) {
-    nodeList = nodeList.item(0).toElement().elementsByTagName("SPLIT");
-    MyMoneySplit s;
-    for(unsigned int i = 0; i < nodeList.count(); ++i) {
-      s.readXML(nodeList.item(i).toElement());
-      addSplit(s);
-    }
-  }
-
-  // Process any key value pair
-  nodeList = node.elementsByTagName("KEYVALUEPAIRS");
-  if(nodeList.count() > 0) {
-    MyMoneyKeyValueContainer::readXML(nodeList.item(0).toElement());
-  }
 }
 
 bool MyMoneyTransaction::hasReferenceTo(const QCString& id) const

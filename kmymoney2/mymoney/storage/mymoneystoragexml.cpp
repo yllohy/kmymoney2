@@ -348,8 +348,7 @@ void MyMoneyStorageXML::readInstitutions(QDomElement& institutions)
       QDomElement childElement = child.toElement();
       if("INSTITUTION" == childElement.tagName())
       {
-        MyMoneyInstitution inst;
-        inst.readXML(childElement);
+        MyMoneyInstitution inst(childElement);
 
         //tell the storage objects we have a new institution.
         m_storage->loadInstitution(inst);
@@ -397,8 +396,7 @@ void MyMoneyStorageXML::readPayees(QDomElement& payees)
       QDomElement childElement = child.toElement();
       if("PAYEE" == childElement.tagName())
       {
-        MyMoneyPayee p;
-        p.readXML(childElement);
+        MyMoneyPayee p(childElement);
 
         //tell the storage objects we have a new institution.
         m_storage->loadPayee(p);
@@ -445,8 +443,7 @@ void MyMoneyStorageXML::readAccounts(QDomElement& accounts)
       if(childElement.attribute("currency").isEmpty()) {
         childElement.setAttribute("currency", m_baseCurrencyId);
       }
-      MyMoneyAccount account;
-      account.readXML(childElement);
+      MyMoneyAccount account(childElement);
 
       //tell the storage objects we have a new account.
       m_storage->loadAccount(account);
@@ -500,8 +497,7 @@ void MyMoneyStorageXML::readTransactions(QDomElement& transactions)
     QDomElement childElement = child.toElement();
     if("TRANSACTION" == childElement.tagName())
     {
-      MyMoneyTransaction transaction;
-      transaction.readXML(childElement);
+      MyMoneyTransaction transaction(childElement);
 
       //tell the storage objects we have a new institution.
       m_storage->loadTransaction(transaction);
@@ -550,8 +546,7 @@ void MyMoneyStorageXML::readSchedules(QDomElement& schedules)
     QDomElement childElement = child.toElement();
     if("SCHEDULED_TX" == childElement.tagName())
     {
-      MyMoneySchedule schedule;
-      schedule.readXML(childElement);
+      MyMoneySchedule schedule(childElement);
 
       //tell the storage objects we have a new schedule.
       m_storage->loadSchedule(schedule);
@@ -610,8 +605,7 @@ void MyMoneyStorageXML::readSecurities(QDomElement& securities)
     if("EQUITY" == childElement.tagName()
     || "SECURITY" == childElement.tagName())
     {
-      MyMoneySecurity security;
-      security.readXML(childElement);
+      MyMoneySecurity security(childElement);
 
       //tell the storage objects we have a new security object.
       m_storage->loadSecurity(security);
@@ -646,8 +640,7 @@ void MyMoneyStorageXML::readCurrencies(QDomElement& currencies)
     QDomElement childElement = child.toElement();
     if("CURRENCY" == childElement.tagName())
     {
-      MyMoneySecurity currency;
-      currency.readXML(childElement);
+      MyMoneySecurity currency(childElement);
 
       //tell the storage objects we have a new currency object.
       m_storage->loadCurrency(currency);
@@ -666,8 +659,9 @@ void MyMoneyStorageXML::readReports(QDomElement& reports)
   {
     if(child.isElement())
     {
-      MyMoneyReport report;
-      if ( report.read(child.toElement() ) )
+      MyMoneyReport report(child.toElement());
+
+      if ( !report.id().isEmpty() )
       {
         m_storage->loadReport(report);
 

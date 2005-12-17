@@ -47,6 +47,51 @@ MyMoneyAccount::MyMoneyAccount(const QCString& id, const MyMoneyAccount& right) 
   setId(id);
 }
 
+MyMoneyAccount::MyMoneyAccount(const QDomElement& node) :
+  MyMoneyObject(node),
+  MyMoneyKeyValueContainer(node.elementsByTagName("KEYVALUEPAIRS").item(0).toElement())
+{
+  if("ACCOUNT" != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not ACCOUNT");
+
+  setName(node.attribute("name"));
+
+  // qDebug("Reading information for account %s", acc.name().data());
+
+  setParentAccountId(QCStringEmpty(node.attribute("parentaccount")));
+  setLastModified(stringToDate(QStringEmpty(node.attribute("lastmodified"))));
+  setLastReconciliationDate(stringToDate(QStringEmpty(node.attribute("lastreconciled"))));
+  setInstitutionId(QCStringEmpty(node.attribute("institution")));
+  setNumber(QStringEmpty(node.attribute("number")));
+  setOpeningDate(stringToDate(QStringEmpty(node.attribute("opened"))));
+  setCurrencyId(QCStringEmpty(node.attribute("currency")));
+
+  QString tmp = QStringEmpty(node.attribute("type"));
+  bool bOK = false;
+  int type = tmp.toInt(&bOK);
+  if(bOK) {
+    setAccountType(static_cast<MyMoneyAccount::accountTypeE>(type));
+  } else {
+    qWarning("XMLREADER: Account %s had invalid or no account type information.", name().data());
+  }
+
+  // setOpeningBalance(MyMoneyMoney(node.attribute("openingbalance")));
+  setDescription(node.attribute("description"));
+
+  m_id = QCStringEmpty(node.attribute("id"));
+  // qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), type, acc.parentAccountId().data());
+
+  //  Process any Sub-Account information found inside the account entry.
+  m_accountList.clear();
+  QDomNodeList nodeList = node.elementsByTagName("SUBACCOUNTS");
+  if(nodeList.count() > 0) {
+    nodeList = nodeList.item(0).toElement().elementsByTagName("SUBACCOUNT");
+    for(unsigned int i = 0; i < nodeList.count(); ++i) {
+      addAccountId(QCString(nodeList.item(i).toElement().attribute("id")));
+    }
+  }
+}
+
 void MyMoneyAccount::setName(const QString& name)
 {
   m_name = name;
@@ -396,56 +441,6 @@ void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
   MyMoneyKeyValueContainer::writeXML(document, el);
 
   parent.appendChild(el);
-}
-
-void MyMoneyAccount::readXML(const QDomElement& node)
-{
-  if("ACCOUNT" != node.tagName())
-    throw new MYMONEYEXCEPTION("Node was not ACCOUNT");
-
-  setName(node.attribute("name"));
-
-  // qDebug("Reading information for account %s", acc.name().data());
-
-  setParentAccountId(QCStringEmpty(node.attribute("parentaccount")));
-  setLastModified(stringToDate(QStringEmpty(node.attribute("lastmodified"))));
-  setLastReconciliationDate(stringToDate(QStringEmpty(node.attribute("lastreconciled"))));
-  setInstitutionId(QCStringEmpty(node.attribute("institution")));
-  setNumber(QStringEmpty(node.attribute("number")));
-  setOpeningDate(stringToDate(QStringEmpty(node.attribute("opened"))));
-  setCurrencyId(QCStringEmpty(node.attribute("currency")));
-
-  QString tmp = QStringEmpty(node.attribute("type"));
-  bool bOK = false;
-  int type = tmp.toInt(&bOK);
-  if(bOK) {
-    setAccountType(static_cast<MyMoneyAccount::accountTypeE>(type));
-  } else {
-    qWarning("XMLREADER: Account %s had invalid or no account type information.", name().data());
-  }
-
-  // setOpeningBalance(MyMoneyMoney(node.attribute("openingbalance")));
-  setDescription(node.attribute("description"));
-
-  m_id = QCStringEmpty(node.attribute("id"));
-  Q_ASSERT(m_id.size());
-  // qDebug("Account %s has id of %s, type of %d, parent is %s.", acc.name().data(), id.data(), type, acc.parentAccountId().data());
-
-  //  Process any Sub-Account information found inside the account entry.
-  m_accountList.clear();
-  QDomNodeList nodeList = node.elementsByTagName("SUBACCOUNTS");
-  if(nodeList.count() > 0) {
-    nodeList = nodeList.item(0).toElement().elementsByTagName("SUBACCOUNT");
-    for(unsigned int i = 0; i < nodeList.count(); ++i) {
-      addAccountId(QCString(nodeList.item(i).toElement().attribute("id")));
-    }
-  }
-
-  // Process any key value pair
-  nodeList = node.elementsByTagName("KEYVALUEPAIRS");
-  if(nodeList.count() > 0) {
-    MyMoneyKeyValueContainer::readXML(nodeList.item(0).toElement());
-  }
 }
 
 bool MyMoneyAccount::hasReferenceTo(const QCString& id) const

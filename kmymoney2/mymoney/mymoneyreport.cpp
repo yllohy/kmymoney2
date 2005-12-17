@@ -113,6 +113,13 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
   }
 }
 
+MyMoneyReport::MyMoneyReport(const QDomElement& node) :
+  MyMoneyObject(node)
+{
+  if(!read(node))
+    clearId();
+}
+
 void MyMoneyReport::clear(void)
 {
   m_accountGroupFilter = false;
@@ -291,7 +298,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   else if ( m_reportType == eQueryTable )
   {
     e.setAttribute("type","querytable 1.12");
-    
+
     QStringList columns;
     unsigned qc = m_queryColumns;
     unsigned it_qc = eQCbegin;
@@ -639,19 +646,6 @@ void MyMoneyReport::writeXML(QDomDocument& document, QDomElement& parent) const
   QDomElement el = document.createElement("REPORT");
   write(el,&document,false);
   parent.appendChild(el);
-}
-
-/**
-  * This method reads in data for the object from the node
-  * The type will be checked and an exception thrown if
-  * it does not match. (This version overwrites the
-  * MMObject base class.)
-  *
-  * @param node QDomElement containing the data
-  */
-void MyMoneyReport::readXML(const QDomElement& node)
-{
-  read(node);
 }
 
 bool MyMoneyReport::hasReferenceTo(const QCString& id) const

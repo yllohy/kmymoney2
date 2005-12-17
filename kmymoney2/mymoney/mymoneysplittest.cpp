@@ -227,7 +227,7 @@ void MyMoneySplitTest::testReadXML() {
 	node = doc.documentElement().firstChild().toElement();
 
 	try {
-		s.readXML(node);
+		s = MyMoneySplit(node);
 		CPPUNIT_FAIL("Missing expected exception");
 	} catch(MyMoneyException *e) {
 		delete e;
@@ -237,7 +237,7 @@ void MyMoneySplitTest::testReadXML() {
 	node = doc.documentElement().firstChild().toElement();
 
 	try {
-		s.readXML(node);
+		s = MyMoneySplit(node);
 		CPPUNIT_ASSERT(s.id().isEmpty());
 		CPPUNIT_ASSERT(s.payeeId() == "P000001");
 		CPPUNIT_ASSERT(s.reconcileDate() == QDate());

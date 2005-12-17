@@ -66,6 +66,41 @@ MyMoneySchedule::MyMoneySchedule(const QString& name, typeE type,
   m_weekendOption = MoveNothing;
 }
 
+MyMoneySchedule::MyMoneySchedule(const QDomElement& node) :
+  MyMoneyObject(node)
+{
+  if("SCHEDULED_TX" != node.tagName())
+    throw new MYMONEYEXCEPTION("Node was not SCHEDULED_TX");
+
+  m_name = node.attribute("name");
+  m_startDate = stringToDate(node.attribute("startDate"));
+  m_endDate = stringToDate(node.attribute("endDate"));
+  m_lastPayment = stringToDate(node.attribute("lastPayment"));
+
+  m_type = static_cast<MyMoneySchedule::typeE>(node.attribute("type").toInt());
+  m_paymentType = static_cast<MyMoneySchedule::paymentTypeE>(node.attribute("paymentType").toInt());
+  m_occurence = static_cast<MyMoneySchedule::occurenceE>(node.attribute("occurence").toInt());
+
+  m_autoEnter = static_cast<bool>(node.attribute("autoEnter").toInt());
+  m_fixed = static_cast<bool>(node.attribute("fixed").toInt());
+  m_weekendOption = static_cast<MyMoneySchedule::weekendOptionE>(node.attribute("weekendOption").toInt());
+
+  // read in the associated transaction
+  QDomNodeList nodeList = node.elementsByTagName("TRANSACTION");
+  if(nodeList.count() == 0)
+    throw new MYMONEYEXCEPTION("SCHEDULED_TX has no TRANSACTION node");
+
+  m_transaction = MyMoneyTransaction(nodeList.item(0).toElement(), false);
+
+  // readin the recorded payments
+  nodeList = node.elementsByTagName("PAYMENTS");
+  if(nodeList.count() > 0) {
+    nodeList = nodeList.item(0).toElement().elementsByTagName("PAYMENT");
+    for(unsigned int i = 0; i < nodeList.count(); ++i) {
+      m_recordedPayments << stringToDate(nodeList.item(i).toElement().attribute("date"));
+    }
+  }
+}
 
 void MyMoneySchedule::setStartDate(const QDate& date)
 {
@@ -775,42 +810,6 @@ void MyMoneySchedule::writeXML(QDomDocument& document, QDomElement& parent) cons
   m_transaction.writeXML(document, el);
 
   parent.appendChild(el);
-}
-
-void MyMoneySchedule::readXML(const QDomElement& node)
-{
-  if("SCHEDULED_TX" != node.tagName())
-    throw new MYMONEYEXCEPTION("Node was not SCHEDULED_TX");
-
-  m_name = node.attribute("name");
-  m_id = node.attribute("id");
-  m_startDate = stringToDate(node.attribute("startDate"));
-  m_endDate = stringToDate(node.attribute("endDate"));
-  m_lastPayment = stringToDate(node.attribute("lastPayment"));
-
-  m_type = static_cast<MyMoneySchedule::typeE>(node.attribute("type").toInt());
-  m_paymentType = static_cast<MyMoneySchedule::paymentTypeE>(node.attribute("paymentType").toInt());
-  m_occurence = static_cast<MyMoneySchedule::occurenceE>(node.attribute("occurence").toInt());
-
-  m_autoEnter = static_cast<bool>(node.attribute("autoEnter").toInt());
-  m_fixed = static_cast<bool>(node.attribute("fixed").toInt());
-  m_weekendOption = static_cast<MyMoneySchedule::weekendOptionE>(node.attribute("weekendOption").toInt());
-
-  // read in the associated transaction
-  QDomNodeList nodeList = node.elementsByTagName("TRANSACTION");
-  if(nodeList.count() == 0)
-    throw new MYMONEYEXCEPTION("SCHEDULED_TX has no TRANSACTION node");
-
-  m_transaction.readXML(nodeList.item(0).toElement());
-
-  // readin the recorded payments
-  nodeList = node.elementsByTagName("PAYMENTS");
-  if(nodeList.count() > 0) {
-    nodeList = nodeList.item(0).toElement().elementsByTagName("PAYMENT");
-    for(unsigned int i = 0; i < nodeList.count(); ++i) {
-      m_recordedPayments << stringToDate(nodeList.item(i).toElement().attribute("date"));
-    }
-  }
 }
 
 bool MyMoneySchedule::hasReferenceTo(const QCString& id) const

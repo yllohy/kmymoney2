@@ -260,10 +260,10 @@ void MyMoneyScheduleTest::testOverdue()
 	try {
 		doc.setContent(ref_overdue);
 		node = doc.documentElement().firstChild().toElement();
-		sch_overdue.readXML(node);
+		sch_overdue = MyMoneySchedule(node);
 		doc.setContent(ref_intime);
 		node = doc.documentElement().firstChild().toElement();
-		sch_intime.readXML(node);
+		sch_intime = MyMoneySchedule(node);
 
 		CPPUNIT_ASSERT(sch_overdue.isOverdue() == true);
 		CPPUNIT_ASSERT(sch_intime.isOverdue() == false);
@@ -642,7 +642,7 @@ void MyMoneyScheduleTest::testReadXML() {
 	node = doc.documentElement().firstChild().toElement();
 
 	try {
-		sch.readXML(node);
+		sch = MyMoneySchedule(node);
 		CPPUNIT_FAIL("Missing expected exception");
 	} catch(MyMoneyException *e) {
 		delete e;
@@ -653,7 +653,7 @@ void MyMoneyScheduleTest::testReadXML() {
 
 
 	try {
-		sch.readXML(node);
+		sch = MyMoneySchedule(node);
 		CPPUNIT_ASSERT(sch.id() == "SCH0002");
 		CPPUNIT_ASSERT(sch.transaction().postDate() == QDate(2001,12,28));
 		CPPUNIT_ASSERT(sch.startDate() == QDate::currentDate());
@@ -705,7 +705,7 @@ void MyMoneyScheduleTest::testHasReferenceTo()
 	node = doc.documentElement().firstChild().toElement();
 
 	try {
-		sch.readXML(node);
+		sch = MyMoneySchedule(node);
 
 	} catch(MyMoneyException *e) {
 		delete e;

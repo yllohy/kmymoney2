@@ -21,10 +21,19 @@
 // Project Includes
 
 #include "mymoneyobject.h"
+#include "mymoneyutils.h"
+#include "mymoneyexception.h"
 
 MyMoneyObject::MyMoneyObject(const QCString& id)
 {
   m_id = id;
+}
+
+MyMoneyObject::MyMoneyObject(const QDomElement& el, const bool forceId)
+{
+  m_id = QCStringEmpty(el.attribute("id"));
+  if(m_id.size() == 0 && forceId)
+    throw new MYMONEYEXCEPTION("Node has no ID");
 }
 
 MyMoneyObject::MyMoneyObject()

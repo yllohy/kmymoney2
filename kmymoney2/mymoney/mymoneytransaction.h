@@ -53,6 +53,11 @@ public:
   MyMoneyTransaction();
   MyMoneyTransaction(const QCString id,
                              const MyMoneyTransaction& transaction);
+  /**
+    * @param node reference to QDomNode
+    * @param forceId see MyMoneyObject(const QDomElement&, const bool)
+    */
+  MyMoneyTransaction(const QDomElement& node, const bool forceId = true);
   ~MyMoneyTransaction();
 
 public:
@@ -206,8 +211,6 @@ public:
   static const QCString firstSplitID(void);
 
   void writeXML(QDomDocument& document, QDomElement& parent) const;
-
-  void readXML(const QDomElement& node);
 
   /**
     * This method checks if a reference to the given object exists. It returns,

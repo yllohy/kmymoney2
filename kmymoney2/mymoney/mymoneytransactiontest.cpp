@@ -432,7 +432,7 @@ void MyMoneyTransactionTest::testReadXML() {
 	node = doc.documentElement().firstChild().toElement();
 
 	try {
-		t.readXML(node);
+		t = MyMoneyTransaction(node);
 		CPPUNIT_FAIL("Missing expected exception");
 	} catch(MyMoneyException *e) {
 		delete e;
@@ -443,7 +443,7 @@ void MyMoneyTransactionTest::testReadXML() {
 
 	t.setValue("key", "VALUE");
 	try {
-		t.readXML(node);
+		t = MyMoneyTransaction(node);
 		CPPUNIT_ASSERT(t.m_postDate == QDate(2001,12,28));
 		CPPUNIT_ASSERT(t.m_entryDate == QDate(2003,9,29));
 		CPPUNIT_ASSERT(t.id() == "T000000000000000001");
