@@ -1,6 +1,17 @@
+2005-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * changed readXML methods to a constructor of the resp. MyMoneyXXX object
+  * adopted testcases
+  * Fixed argument to qDebug call in MyMoneyStorageSQL
+
+2005-12-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Implemented MyMoneyAccountLoan::hasReferenceTo()
+  * Added database documentation files to list of distributed files
+  * Fixed markup of database documentation to follow DTD
+  * Use new isReferenced() method to enable certain actions
+  * Applied patch provided by Bjorn Helgaas (passing references)
+
 2005-12-16 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Document database usage
-2005-12-16 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Implement database code with timing improvements
 
 2005-12-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
