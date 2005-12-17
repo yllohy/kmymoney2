@@ -137,6 +137,9 @@ void KCurrencyEditDlg::loadCurrencies(void)
   QValueList<MyMoneySecurity>::ConstIterator it;
   QListViewItem *first = 0;
 
+  QCString localCurrency(localeconv()->int_curr_symbol);
+  localCurrency.truncate(3);
+
   QCString baseCurrency = MyMoneyFile::instance()->baseCurrency().id();
   // construct a transparent 16x16 pixmap
   QPixmap empty(16, 16);
@@ -151,12 +154,9 @@ void KCurrencyEditDlg::loadCurrencies(void)
       p->setPixmap(0, QPixmap( locate("icon","hicolor/16x16/apps/kmymoney2.png")));
     } else {
       p->setPixmap(0, empty);
-// FIXME PRICE
-#if 0
-      if((*it).priceHistory().count() != 0 && first == 0)
-        first = p;
-#endif
     }
+    if ((*it).id() == localCurrency)
+      first = p;
   }
   if(first == 0)
     first = m_currencyList->firstChild();
