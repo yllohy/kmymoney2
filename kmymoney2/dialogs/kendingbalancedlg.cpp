@@ -141,8 +141,8 @@ void KEndingBalanceDlg::slotCheckPageFinished(void)
 
   if(currentPage() == m_interestChargeCheckings) {
     int cnt1, cnt2;
-    cnt1 = !m_interestEdit->text().isEmpty() + !m_interestCategoryEdit->text().isEmpty();
-    cnt2 = !m_chargesEdit->text().isEmpty() + !m_chargesCategoryEdit->text().isEmpty();
+    cnt1 = !m_interestEdit->value().isZero() + !m_interestCategoryEdit->text().isEmpty();
+    cnt2 = !m_chargesEdit->value().isZero() + !m_chargesCategoryEdit->text().isEmpty();
     if(cnt1 == 1 || cnt2 == 1) {
       finishButton()->setEnabled(false);
       nextButton()->setEnabled(false);
