@@ -10,6 +10,7 @@ MOSTLYCLEANFILES = index.cache.bz2 kmymoney2.1.gz index.xml *.aux *.tex *.log **
 
 BUILT_SOURCES = index.cache.bz2 kmymoney2.1.gz $(PDF_TARGET)
 
+CHARSET = 
 KDE_LANG = en
 KDE_DOCS = kmymoney2 - $(DOCBOOK_FILES) $(SCREENSHOT_FILES)
 
@@ -40,7 +41,7 @@ web:
 			cp $$file online-manual; \
 		done; \
 		make clear-files; \
-		cp $(kde_libs_htmldir)/en/common/* common; \
+		cp $(kde_libs_htmldir)/$(KDE_LANG)/common/* common; \
 		tar -cjf online-manual.tar.bz2 common online-manual; \
 		rm -rf index.xml online-manual common; \
 	fi;
@@ -61,7 +62,13 @@ DOCBOOK_DSL = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl
 # we delete them afterwards.
 get-files:
 	if test x$(VPATH) != x.; then \
-		for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do \
+		for file in $(DOCBOOK_FILES); do \
+			cp $(srcdir)/$$file .; \
+			if test -n $(CHARSET); then \
+				recode utf-8..$(CHARSET) $$file; \
+			fi \
+		done; \
+		for file in $(SCREENSHOT_FILES); do \
 			cp $(srcdir)/$$file .; \
 		done; \
 	fi
