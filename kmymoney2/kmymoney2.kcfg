@@ -80,6 +80,10 @@
    <label>Run in expert (accountant) mode</label>
    <default>false</default>
   </entry>
+  <entry name="ShowSplash" type="Bool">
+   <label>Show splash screen during startup</label>
+   <default>true</default>
+  </entry>
  </group>
  <group name="Homepage Options">
   <entry name="ItemList" type="String">

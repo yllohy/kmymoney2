@@ -30,7 +30,6 @@
 #include <klocale.h>
 #include <kstandarddirs.h>
 #include <kapplication.h>
-#include <kconfig.h>
 
 #if KDE_IS_VERSION(3,2,0)
 #include <ksplashscreen.h>
@@ -40,16 +39,14 @@
 // Project Includes
 
 #include "kstartuplogo.h"
+#include "kmymoneysettings.h"
 
 KStartupLogo::KStartupLogo() :
   QObject(0, 0),
   m_splash(0)
 {
-  KConfig* config = kapp->config();
-  config->setGroup("General Options");
-
   // splash screen setting
-  if(config->readBoolEntry("Show Splash", true) == false)
+  if(!KMyMoneySettings::showSplash())
     return;
 
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/startlogo.png");
