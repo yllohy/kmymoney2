@@ -1,7 +1,16 @@
+2005-12-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem with disabled Finish button in reconcile dialog
+  * Added (in)equality operator to MyMoneyPrice
+  * Added support for new Romanian Leu
+  * Added reference check for price table
+
 2005-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * changed readXML methods to a constructor of the resp. MyMoneyXXX object
   * adopted testcases
   * Fixed argument to qDebug call in MyMoneyStorageSQL
+  * Added patch supplied by Bjorn Helgaas to preset the default currency
+    when creating a file
+  * Removed some unused code
 
 2005-12-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Implemented MyMoneyAccountLoan::hasReferenceTo()

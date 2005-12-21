@@ -72,3 +72,18 @@ const bool MyMoneyPrice::isValid(void) const
 {
   return (m_date.isValid() && !m_fromSecurity.isEmpty() && !m_toSecurity.isEmpty());
 }
+
+// Equality operator
+const bool MyMoneyPrice::operator == (const MyMoneyPrice &right) const
+{
+  return ((m_date == right.m_date) &&
+      (m_rate == right.m_rate) &&
+      ((m_fromSecurity.length() == 0 && right.m_fromSecurity.length() == 0) || (m_fromSecurity == right.m_fromSecurity)) &&
+      ((m_toSecurity.length() == 0 && right.m_toSecurity.length() == 0) || (m_toSecurity == right.m_toSecurity)) &&
+      ((m_source.length() == 0 && right.m_source.length() == 0) || (m_source == right.m_source)));
+}
+
+bool MyMoneyPrice::hasReferenceTo(const QCString& id) const
+{
+  return (id == m_fromSecurity) || (id == m_toSecurity);
+}

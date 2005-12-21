@@ -1739,6 +1739,7 @@ bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj) const
   QMap<QCString, MyMoneyReport>::const_iterator it_r;
   QMap<QCString, MyMoneySchedule>::const_iterator it_sch;
   QMap<QCString, MyMoneySecurity>::const_iterator it_sec;
+  MyMoneyPriceList::const_iterator it_pr;
 
   // FIXME optimize the list of objects we have to checks
   //       with a bit of knowledge of the internal structure, we
@@ -1769,6 +1770,11 @@ bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj) const
   for(it_sec = m_currencyList.begin(); !rc && it_sec != m_currencyList.end(); ++it_sec) {
     rc = (*it_sec).hasReferenceTo(id);
   }
-  // FIXME add pricelist
+  // within the pricelist we don't have to scan each entry. Checking the QPair
+  // members of the MyMoneySecurityPair is enough as they are identical to the
+  // two security ids
+  for(it_pr = m_priceList.begin(); !rc && it_pr != m_priceList.end(); ++it_pr) {
+    rc = (it_pr.key().first == id) || (it_pr.key().second == id);
+  }
   return rc;
 }

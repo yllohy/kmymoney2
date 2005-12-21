@@ -1106,7 +1106,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("ERN", i18n("Eritrean Nakfa")), create);
   loadDefaultCurrency(MyMoneySecurity("EEK", i18n("Estonian Kroon")), create);
   loadDefaultCurrency(MyMoneySecurity("ETB", i18n("Ethiopian Birr")), create);
-  loadDefaultCurrency(MyMoneySecurity("EUR", i18n("Euro"),                   QChar(0x20ac)), create);
+  loadDefaultCurrency(MyMoneySecurity("EUR", i18n("Euro"),                   QChar(0x20ac)), true);
   loadDefaultCurrency(MyMoneySecurity("FKP", i18n("Falkland Islands Pound"), QChar(0x00A3)), create);
   loadDefaultCurrency(MyMoneySecurity("FJD", i18n("Fiji Dollar"),            "$"), create);
   loadDefaultCurrency(MyMoneySecurity("GMD", i18n("Gambian Dalasi")), create);
@@ -1171,7 +1171,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("PHP", i18n("Philippine Peso"),        QChar(0x20B1)), create);
   loadDefaultCurrency(MyMoneySecurity("PLN", i18n("Polish Zloty")), create);
   loadDefaultCurrency(MyMoneySecurity("QAR", i18n("Qatari Rial")), create);
-  loadDefaultCurrency(MyMoneySecurity("ROL", i18n("Romanian Leu")), create);
+  loadDefaultCurrency(MyMoneySecurity("RON", i18n("Romanian Leu (new)")), true);
   loadDefaultCurrency(MyMoneySecurity("RUR", i18n("Russian Ruble")), create);
   loadDefaultCurrency(MyMoneySecurity("RWF", i18n("Rwanda Franc")), create);
   loadDefaultCurrency(MyMoneySecurity("WST", i18n("Samoan Tala")), create);
@@ -1226,8 +1226,15 @@ void KMyMoneyView::loadDefaultCurrencies(void)
 void KMyMoneyView::loadAncientCurrency(const QCString& id, const QString& name, const QString& sym, const QDate& date, const MyMoneyMoney& rate, const QCString& newId, const int partsPerUnit, const int smallestCashFraction, const int smallestAccountFraction)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyPrice price(id, newId, date, rate, "KMyMoney");
   try {
+    // make sure if entry exists
     file->currency(id);
+    // make sure we have the right price
+    MyMoneyPrice cmp = file->price(id, newId, date, true);
+    if(cmp != price) {
+      file->addPrice(price);
+    }
   } catch(MyMoneyException *e) {
     delete e;
     try {
@@ -1257,6 +1264,7 @@ void KMyMoneyView::loadAncientCurrencies(void)
   loadAncientCurrency("IEP", i18n("Irish Pound"), QChar(0x00A3), QDate(1998,12,31), MyMoneyMoney(1000000, 787564), "EUR");
   loadAncientCurrency("FIM", i18n("Finnish Markka"), QCString(), QDate(1998,12,31), MyMoneyMoney(100000, 594573), "EUR");
   loadAncientCurrency("GRD", i18n("Greek Drachma"), QChar(0x20AF), QDate(1998,12,31), MyMoneyMoney(100, 34075), "EUR");
+  loadAncientCurrency("ROL", i18n("Romanian Leu"), "ROL", QDate(2005,6,30), MyMoneyMoney(1, 10000), "RON");
 }
 
 void KMyMoneyView::viewUp(void)
