@@ -498,7 +498,8 @@ bool KMyMoneyView::readFile(const KURL& url)
             // of the XML file (e.g. '?<xml' ).
             if((magic0 == MAGIC_0_50 && magic1 == MAGIC_0_51)
             || magic0 < 30) {
-              pReader = new MyMoneyStorageBin;
+              // we do not support this file format anymore
+              pReader = 0;
               m_fileType = KmmBinary;
             } else {
               // Scan the first 70 bytes to see if we find something
@@ -529,7 +530,11 @@ bool KMyMoneyView::readFile(const KURL& url)
               pReader->setProgressCallback(&KMyMoneyView::progressCallback);
               pReader->readFile(qfile, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
             } else {
-              KMessageBox::sorry(this, i18n("File '%1' contains an unknown file format!").arg(filename));
+              if(m_fileType == KmmBinary) {
+                KMessageBox::sorry(this, i18n("File <b>%1</b> contains the old binary format used by KMyMoney. Please use an older version of KMyMoney (0.8.x) that still supports this format to convert it to the new XML based format.").arg(filename));
+              } else {
+                KMessageBox::sorry(this, i18n("File '%1' contains an unknown file format!").arg(filename));
+              }
               rc = false;
             }
           } else {
