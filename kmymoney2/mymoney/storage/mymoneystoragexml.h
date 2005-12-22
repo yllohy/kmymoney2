@@ -74,7 +74,9 @@ protected:
     */
   static unsigned int fileVersion(fileVersionDirectionType dir = Reading);
 
-  void readFileInformation(QDomElement& fileInfo);
+  QValueList<QDomElement> readElements(QString groupTag, QString itemTag = QString());
+
+  void readFileInformation(void);
   virtual void writeFileInformation(QDomElement& fileInfo);
 
   virtual void writeUserInformation(QDomElement& userInfo);
@@ -102,63 +104,35 @@ protected:
   virtual void writeFile(QIODevice* s, IMyMoneySerialize* storage);
 
   virtual QDomElement writeKeyValuePairs(const QMap<QCString, QString> pairs);
-  virtual QMap<QCString, QString> readKeyValuePairs(QDomElement& element);
+  void readKeyValuePairs(void);
 
-  void readUserInformation(QDomElement& userElement);
-  /** No descriptions */
-
-  void readInstitutions(QDomElement& childElement);
-  MyMoneyInstitution readInstitution(const QDomElement& institution);
-
-  void readPayees(QDomElement& payees);
-  MyMoneyPayee readPayee(const QDomElement& payee);
-
-  void readAccounts(QDomElement& accounts);
-  MyMoneyAccount readAccount(const QDomElement& account);
-
-  MyMoneySplit readSplit(QDomElement& splitElement);
-  void readSplits(MyMoneyTransaction& t, QDomElement& splits);
-
-  void readTransactions(QDomElement& transactions);
-  MyMoneyTransaction readTransaction(QDomElement& transaction, const bool withinSchedule = false);
-
-  void readSchedules(QDomElement& schedules);
-  MyMoneySchedule readSchedule(QDomElement& schedule);
+  void readUserInformation(void);
+  void readInstitutions(void);
+  void readPayees(void);
+  void readAccounts(void);
+  void readTransactions(void);
+  void readSchedules(void);
 
   virtual void writeSecurities(QDomElement& securities);
   virtual void writeSecurity(QDomElement& securityElement, const MyMoneySecurity& security);
 
   virtual void writeCurrencies(QDomElement& currencies);
 
-  void readSecurities(QDomElement& securites);
-  MyMoneySecurity readSecurity(QDomElement& securityElement);
+  void readSecurities(void);
+  void readEquities(void);	/* backwards compatibility */
+  void readCurrencies(void);
 
-  void readCurrencies(QDomElement& currencies);
-  const MyMoneySecurity readCurrency(QDomElement& currencyElement);
-
-  void readPrices(QDomElement& prices);
+  void readPrices(void);
   void readPricePair(const QDomElement& pricePair);
   const MyMoneyPrice readPrice(const QCString& from, const QCString& to, const QDomElement& price);
 
-  void readReports(QDomElement& e);
+  void readReports(void);
   virtual void writeReports(QDomElement& e);
 
   QDomElement findChildElement(const QString& name, const QDomElement& root);
 
-  /**
-    * This method converts a valid date into the ISO format. If
-    * the date is invalid an empty string is returned.
-    *
-    * @param date reference to QDate object to be converted
-    * @return QString containing converted date
-    */
-  QString getString(const QDate& date) const;
-
 private:
   void (*m_progressCallback)(int, int, const QString&);
-  const unsigned long extractId(const QCString& txt) const;
-  QDate getDate(const QString& strText) const;
-  const uint getChildCount(const QDomElement& element) const;
 
 protected:
   IMyMoneySerialize *m_storage;

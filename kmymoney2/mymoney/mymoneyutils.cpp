@@ -328,3 +328,15 @@ QString QStringEmpty(const QString& val)
 
   return QString();
 }
+
+const unsigned long extractId(const QCString& txt)
+{
+  int pos;
+  unsigned long rc = 0;
+
+  pos = txt.find(QRegExp("\\d+"), 0);
+  if(pos != -1) {
+    rc = atol(txt.mid(pos));
+  }
+  return rc;
+}
