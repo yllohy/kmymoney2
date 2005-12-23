@@ -243,8 +243,15 @@ protected:
     * hypothetical report that covers all of known time.  In reality an actual
     * report will be a subset of that.
     *
+    * @param column The column
     */
-    unsigned columnValue(const QDate& _date);
+    unsigned columnValue(const QDate& _date) const;
+  /**
+    * Calculate the date of the last day covered by a given column. 
+    *
+    * @param column The column
+    */
+    QDate PivotTable::columnDate(int column) const;
 };
 
 }

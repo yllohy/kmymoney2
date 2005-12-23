@@ -630,22 +630,19 @@ void PivotTable::convertToBaseCurrency( void )
       TInnerGroup::iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
-        QDate valuedate = m_beginDate.addMonths( m_config_f.columnPitch() ).addDays(-1);
         unsigned column = 1;
         while ( column < m_numColumns )
         {
           if ( it_row.data().count() <= column )
             throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::convertToBaseCurrency").arg(column).arg(it_row.data().count()));
 
+          QDate valuedate = columnDate(column);
           double conversionfactor = it_row.key().baseCurrencyPrice(valuedate).toDouble();
           double oldval = it_row.data()[column].toDouble();
           double value = oldval * conversionfactor;
           it_row.data()[column] = MyMoneyMoney( value );
 
           DEBUG_OUTPUT_IF(conversionfactor != 1.0 ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[column].toDouble())));
-
-          // Move to the end of the next period
-          valuedate = valuedate.addDays(1).addMonths( m_config_f.columnPitch() ).addDays(-1);
 
           ++column;
         }
@@ -670,22 +667,19 @@ void PivotTable::convertToDeepCurrency( void )
       TInnerGroup::iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
-        QDate valuedate = m_beginDate.addMonths( m_config_f.columnPitch() ).addDays(-1);
         unsigned column = 1;
         while ( column < m_numColumns )
         {
           if ( it_row.data().count() <= column )
             throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::convertToDeepCurrency").arg(column).arg(it_row.data().count()));
 
+          QDate valuedate = columnDate(column);
           double conversionfactor = it_row.key().deepCurrencyPrice(valuedate).toDouble();
           double oldval = it_row.data()[column].toDouble();
           double value = oldval * conversionfactor;
           it_row.data()[column] = MyMoneyMoney( value );
 
           DEBUG_OUTPUT_IF(conversionfactor != 1.0 ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[column].toDouble())));
-
-          // Move to the end of the next period
-          valuedate = valuedate.addDays(1).addMonths( m_config_f.columnPitch() ).addDays(-1);
 
           ++column;
         }
@@ -861,12 +855,20 @@ void PivotTable::createRow( const QString& outergroup, const ReportAccount& row,
   }
 }
 
-unsigned PivotTable::columnValue(const QDate& _date)
+unsigned PivotTable::columnValue(const QDate& _date) const
 {
   if (m_config_f.isColumnsAreDays())
     return (QDate().daysTo(_date));
   else
     return (_date.year() * 12 + _date.month()); 
+}
+
+QDate PivotTable::columnDate(int column) const
+{
+  if (m_config_f.isColumnsAreDays())
+    return m_beginDate.addDays( m_config_f.columnPitch() * column - 1 ); 
+  else
+    return m_beginDate.addMonths( m_config_f.columnPitch() * column ).addDays(-1); 
 }
 
 QString PivotTable::renderCSV( void ) const
@@ -1565,3 +1567,4 @@ void PivotTable::drawChart( KReportChartView& ) const { }
 #endif
 
 } // namespace
+// vim:cin:si:ai:et:ts=2:sw=2:
