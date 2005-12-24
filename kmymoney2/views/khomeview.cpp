@@ -553,23 +553,25 @@ void KHomeView::showForecast(void)
   QValueList<MyMoneyTransaction>::const_iterator it_t = transactions.begin();
 
   for(; it_t != transactions.end(); ++it_t ) {
-    QValueList<MyMoneySplit> splits = (*it_t).splits();
+    const QValueList<MyMoneySplit>& splits = (*it_t).splits();
     QValueList<MyMoneySplit>::const_iterator it_s = splits.begin();
     for(; it_s != splits.end(); ++it_s ) {
-      MyMoneyAccount acc = file->account((*it_s).accountId());
-      if((acc.accountGroup() == MyMoneyAccount::Asset
-      || acc.accountGroup() == MyMoneyAccount::Liability)
-      && acc.accountType() != MyMoneyAccount::Investment) {
-        dailyBalances balance;
-        balance = accountList[acc.id()];
-        int offset = QDate::currentDate().daysTo((*it_t).postDate())+1;
-        balance[offset] += (*it_s).shares();
-        // check if this is a new account for us
-        if(nameIdx[acc.name()] != acc.id()) {
-          nameIdx[acc.name()] = acc.id();
-          balance[0] = file->balance(acc.id(), QDate::currentDate());
+      if(!(*it_s).shares().isZero()) {
+        MyMoneyAccount acc = file->account((*it_s).accountId());
+        if((acc.accountGroup() == MyMoneyAccount::Asset
+        || acc.accountGroup() == MyMoneyAccount::Liability)
+        && acc.accountType() != MyMoneyAccount::Investment) {
+          dailyBalances balance;
+          balance = accountList[acc.id()];
+          int offset = QDate::currentDate().daysTo((*it_t).postDate())+1;
+          balance[offset] += (*it_s).shares();
+          // check if this is a new account for us
+          if(nameIdx[acc.name()] != acc.id()) {
+            nameIdx[acc.name()] = acc.id();
+            balance[0] = file->balance(acc.id(), QDate::currentDate());
+          }
+          accountList[acc.id()] = balance;
         }
-        accountList[acc.id()] = balance;
       }
     }
     ++txnCount;
@@ -743,7 +745,7 @@ void KHomeView::showForecast(void)
       MyMoneyMoney runningSum;
       int dropZero = -1, dropMinimum = -1;
       QString minimumBalance = acc.value("minimumBalance");
-      MyMoneySecurity currency = file->currency(acc.currencyId());
+      MyMoneySecurity currency = file->security(acc.currencyId());
 
       for(int limit = 30; limit < 91; limit += 30) {
         while(it_b != (*it_a).end() && it_b.key() < limit) {
