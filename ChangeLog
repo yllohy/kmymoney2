@@ -1,7 +1,19 @@
+2005-12-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added #1280473 (Ecryption on a file-by-file basis)
+
 2005-12-25 Ace Jones <acejones@users.sourceforge.net>
-  * Added ability to sort report groups in pivottable reports (e.g. Income, Expense).
+  * Added ability to sort report groups in pivottable reports
+   (e.g. Income, Expense).
   * Forced Income group to come before Expenses in spending reports.
   * Merry Christmas!
+
+2005-12-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Handle stock accounts in forecast
+
+2005-12-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed binary reader (left a message if someone tries to load such a file)
+  * Added balance to MyMoneyAccount as balance cache for all stored transactions
+  * Applied patches provided by Bjorn Helgaas
 
 2005-12-22 Ace Jones <acejones@users.sourceforge.net>
   * Fixed currency conversion in daily/weekly reports  
