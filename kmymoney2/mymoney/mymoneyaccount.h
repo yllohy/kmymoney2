@@ -472,6 +472,30 @@ public:
     */
   virtual bool hasReferenceTo(const QCString& id) const;
 
+  /**
+    * This member returns the balance of this account based on
+    * all transactions stored in the journal.
+    */
+  const MyMoneyMoney& balance(void) const { return m_balance; };
+
+  /**
+    * This method adjusts the balance of this account
+    * according to the difference provided by @p diff.
+    *
+    * @param diff const reference to MyMoneyMoney object containing the
+    *             value to be added to the balance
+    */
+  void adjustBalance(const MyMoneyMoney& diff) { m_balance += diff; };
+
+  /**
+    * This method sets the balance of this account
+    * according to the value provided by @p val.
+    *
+    * @param val const reference to MyMoneyMoney object containing the
+    *             value to be assigned to the balance
+    */
+  void setBalance(const MyMoneyMoney& val) { m_balance = val; };
+
 private:
   /**
     * This member variable identifies the type of account
@@ -483,14 +507,6 @@ private:
     * that this object belongs to.
     */
   QCString m_institution;
-
-#if 0
-  /**
-    * This member variable keeps the ID of the institution under which it
-    * is known inside the MyMoneyFile.
-    */
-  QCString  m_id;
-#endif
 
   /**
     * This member variable keeps the name of the account
@@ -537,16 +553,6 @@ private:
   QDate m_lastReconciliationDate;
 
   /**
-    * This member variable keeps a sorted list of transactions keys
-    * of those transactions that have a split that references
-    * this account and the balance of the account after processing of
-    * the corresponding split.
-    */
-/*
-  QValueList<MyMoneyAccount::Transaction> m_transactionList;
-*/
-
-  /**
     * This member holds the ID's of all sub-ordinate accounts
     */
   QCStringList m_accountList;
@@ -560,6 +566,12 @@ private:
     * This member contains the ID of the currency associated with this account
     */
   QCString m_currencyId;
+
+  /**
+    * This member holds the balance of all transactions stored in the journal
+    * for this account.
+    */
+  MyMoneyMoney    m_balance;
 };
 
 /**

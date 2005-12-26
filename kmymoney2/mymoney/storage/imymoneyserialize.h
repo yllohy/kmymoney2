@@ -367,6 +367,12 @@ public:
     */
   virtual const MyMoneyPriceList& priceList(void) const = 0;
 
+  /**
+    * This method recalculates the balances of all accounts
+    * based on the transactions stored in the engine.
+    */
+  virtual void rebuildAccountBalances(void) = 0;
+
 };
 
 #endif

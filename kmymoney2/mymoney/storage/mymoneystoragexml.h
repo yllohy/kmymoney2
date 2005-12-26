@@ -119,7 +119,7 @@ protected:
   virtual void writeCurrencies(QDomElement& currencies);
 
   void readSecurities(void);
-  void readEquities(void);	/* backwards compatibility */
+  void readEquities(void);  /* backwards compatibility */
   void readCurrencies(void);
 
   void readPrices(void);

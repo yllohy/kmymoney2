@@ -30,16 +30,12 @@ class MyMoneyAccountTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testSetFunctions);
 	CPPUNIT_TEST(testCopyConstructor);
 	CPPUNIT_TEST(testAssignmentConstructor);
-/* removed with MyMoneyAccount::Transaction
-	CPPUNIT_TEST(testTransactionList);
-	CPPUNIT_TEST(testTransactionRetrieval);
-	CPPUNIT_TEST(testBalance);
-*/
 	CPPUNIT_TEST(testSubAccounts);
 	CPPUNIT_TEST(testEquality);
 	CPPUNIT_TEST(testWriteXML);
 	CPPUNIT_TEST(testReadXML);
 	CPPUNIT_TEST(testHasReferenceTo);
+	CPPUNIT_TEST(testAdjustBalance);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -54,14 +50,12 @@ public:
 	void testSetFunctions();
 	void testCopyConstructor();
 	void testAssignmentConstructor();
-	void testTransactionList();
-	void testTransactionRetrieval();
-	void testBalance();
 	void testSubAccounts();
 	void testEquality();
 	void testWriteXML();
 	void testReadXML();
 	void testHasReferenceTo();
+	void testAdjustBalance();
 };
 
 #endif

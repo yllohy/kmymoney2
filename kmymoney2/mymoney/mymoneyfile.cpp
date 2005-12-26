@@ -179,8 +179,12 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
   // get the current setting of this transaction
   MyMoneyTransaction tr = MyMoneyFile::transaction(transaction.id());
 
+  // scan the splits again to update notification list and balance map
+  QMap<QCString, MyMoneyMoney> diffMap;
+
   // and mark all accounts that are referenced
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
+    diffMap[(*it_s).accountId()] -= (*it_s).shares();
     notifyAccountTree((*it_s).accountId());
     if(!(*it_s).payeeId().isEmpty()) {
       addNotification((*it_s).payeeId());
@@ -193,12 +197,16 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
 
   // and mark all accounts that are referenced
   for(it_s = t->splits().begin(); it_s != t->splits().end(); ++it_s) {
+    diffMap[(*it_s).accountId()] += (*it_s).shares();
     notifyAccountTree((*it_s).accountId());
     if(!(*it_s).payeeId().isEmpty()) {
       addNotification((*it_s).payeeId());
       addNotification(NotifyClassPayee);
     }
   }
+
+  updateBalances(diffMap);
+
   addNotification(NotifyClassAccount);
 }
 
@@ -310,12 +318,14 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
 
-  // get the current setting of this transaction
+  // get the engine's idea about this transaction
   MyMoneyTransaction tr = MyMoneyFile::transaction(transaction.id());
   QValueList<MyMoneySplit>::ConstIterator it_s;
 
-  // and mark all accounts that are referenced
+  // scan the splits again to update notification list and balance map
+  QMap<QCString, MyMoneyMoney> diffMap;
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
+    diffMap[(*it_s).accountId()] -= (*it_s).shares();
     notifyAccountTree((*it_s).accountId());
     if(!(*it_s).payeeId().isEmpty()) {
       addNotification((*it_s).payeeId());
@@ -323,6 +333,8 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
     }
   }
   addNotification(NotifyClassAccount);
+
+  updateBalances(diffMap);
 
   m_storage->removeTransaction(transaction);
 }
@@ -678,11 +690,13 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
   QValueList<MyMoneySplit>::ConstIterator it_s;
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
     // the following line will throw an exception if the
-    // account does not exist
+    // account does not exist or is one of the standard accounts
     MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
     if(acc.accountType() == MyMoneyAccount::Loan
     || acc.accountType() == MyMoneyAccount::AssetLoan)
       loanAccountAffected = true;
+    if(isStandardAccount((*it_s).accountId()))
+      throw new MYMONEYEXCEPTION("Cannot store split with standard account");
   }
 
   // change transfer splits between asset/liability and loan accounts
@@ -710,15 +724,34 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
   // then add the transaction to the file global pool
   m_storage->addTransaction(transaction);
 
-  // scan the splits again to update notification list
+  // scan the splits again to update notification list and balance map
+  QMap<QCString, MyMoneyMoney> diffMap;
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+    diffMap[(*it_s).accountId()] += (*it_s).shares();
     notifyAccountTree((*it_s).accountId());
     if(!(*it_s).payeeId().isEmpty()) {
       addNotification((*it_s).payeeId());
       addNotification(NotifyClassPayee);
     }
   }
+  updateBalances(diffMap);
+
   addNotification(NotifyClassAccount);
+}
+
+void MyMoneyFile::updateBalances(const QMap<QCString, MyMoneyMoney>& diffMap)
+{
+  QMap<QCString, MyMoneyMoney>::const_iterator it;
+
+  // update the accounts directly affected by the splits
+  // and collect the ids of the parents
+  for(it = diffMap.begin(); it != diffMap.end(); ++it) {
+    if(!(*it).isZero()) {
+      MyMoneyAccount acc = account(it.key());
+      acc.adjustBalance(*it);
+      m_storage->modifyAccount(acc);
+    }
+  }
 }
 
 const MyMoneyTransaction& MyMoneyFile::transaction(const QCString& id) const

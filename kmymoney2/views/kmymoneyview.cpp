@@ -388,12 +388,13 @@ void KMyMoneyView::ungetString(QIODevice *qfile, char *buf, int len)
   }
 }
 
-bool KMyMoneyView::readFile(const KURL& url)
+bool KMyMoneyView::readFile(const KURL& url, bool& isEncrypted)
 {
   QString filename;
 
   newStorage();
   m_fileOpen = false;
+  isEncrypted = false;
 
   IMyMoneyStorageFormat* pReader = NULL;
 
@@ -460,6 +461,7 @@ bool KMyMoneyView::readFile(const KURL& url)
         if(KGPGFile::GPGAvailable()) {
           qfile = new KGPGFile(filename);
           haveAt = false;
+          isEncrypted = true;
         } else {
           KMessageBox::sorry(this, i18n("GPG is not available for decryption of file '%1'").arg(filename));
           qfile = new QFile(file.name());
@@ -678,14 +680,14 @@ bool KMyMoneyView::initializeStorage() {
   return true;
 }
 
-void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter, bool plaintext)
+void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter, bool plaintext, bool encrypt)
 {
   QIODevice *dev = qfile;
   KFilterBase *base = 0;
 
   bool encryptedOk = true;
   bool encryptRecover = false;
-  if(KMyMoneySettings::writeDataEncrypted()) {
+  if(encrypt) {
     if(!KGPGFile::GPGAvailable()) {
       KMessageBox::sorry(this, i18n("GPG does not seem to be installed on your system. Please make sure, that GPG can be found using the standard search path. This time, encryption is disabled."), i18n("GPG not found"));
       encryptedOk = false;
@@ -717,8 +719,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     }
   }
 
-  if(KMyMoneySettings::writeDataEncrypted()
-  && encryptedOk == true && !plaintext ) {
+  if(encrypt && encryptedOk == true && !plaintext ) {
     qfile->close();
     base++;
     KGPGFile *kgpg = new KGPGFile(qfile->name());
@@ -760,7 +761,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     qfile->close();
 }
 
-const bool KMyMoneyView::saveFile(const KURL& url)
+const bool KMyMoneyView::saveFile(const KURL& url, bool encrypt)
 {
   QString filename = url.path();
 
@@ -815,13 +816,13 @@ const bool KMyMoneyView::saveFile(const KURL& url)
 
       KSaveFile qfile(filename, fmode);
       if(qfile.status() == 0) {
-        saveToLocalFile(qfile.file(), pWriter,plaintext);
+        saveToLocalFile(qfile.file(), pWriter,plaintext, encrypt);
       } else {
         throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
       }
     } else {
       KTempFile tmpfile;
-      saveToLocalFile(tmpfile.file(), pWriter,plaintext);
+      saveToLocalFile(tmpfile.file(), pWriter,plaintext, encrypt);
       if(!KIO::NetAccess::upload(tmpfile.name(), url, NULL))
         throw new MYMONEYEXCEPTION(i18n("Unable to upload to '%1'").arg(url.url()));
       tmpfile.unlink();
@@ -1236,8 +1237,7 @@ void KMyMoneyView::loadAncientCurrency(const QCString& id, const QString& name, 
     // make sure if entry exists
     file->currency(id);
     // make sure we have the right price
-    MyMoneyPrice cmp = file->price(id, newId, date, true);
-    if(cmp != price) {
+    if(file->price(id, newId, date, true) != price) {
       file->addPrice(price);
     }
   } catch(MyMoneyException *e) {
@@ -1245,7 +1245,6 @@ void KMyMoneyView::loadAncientCurrency(const QCString& id, const QString& name, 
     try {
       file->addCurrency(MyMoneySecurity(id, name, sym, partsPerUnit, smallestCashFraction, smallestAccountFraction));
       if(date.isValid()) {
-        MyMoneyPrice price(id, newId, date, rate, "KMyMoney");
         file->addPrice(price);
       }
     } catch(MyMoneyException *e) {

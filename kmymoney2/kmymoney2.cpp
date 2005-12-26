@@ -35,6 +35,7 @@
 #include <qdatetime.h>         // only for performance tests
 #include <qtimer.h>
 #include <qsqlpropertymap.h>
+#include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -123,6 +124,8 @@
 #include "plugins/interfaces/kmmviewinterface.h"
 #include "plugins/interfaces/kmmstatementinterface.h"
 
+#include <libkgpgfile/kgpgfile.h>
+
 #include "kmymoneyutils.h"
 #include "kdecompat.h"
 
@@ -133,6 +136,7 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
  DCOPObject("kmymoney2app"),
  myMoneyView(0),
  m_searchDlg(0),
+ m_currentFileEncrypted(false),
  m_autoSaveTimer(0)
 {
   ::timetrace("start kmymoney2app constructor");
@@ -655,6 +659,7 @@ void KMyMoney2App::slotFileNew()
     return;
 
   m_fileName = KURL();
+  m_currentFileEncrypted = false;
   if(myMoneyView->newFile()) {
     KMessageBox::information(this, QString("<p>") +
                   i18n("The next dialog allows you to add predefined account/category templates to the new file. Different languages are available to select from. You can skip loading any template  now by selecting <b>Cancel</b> from the next dialog. If you wish to add more templates later, you can restart this operation by selecting <b>File/Import/Account Templates</b>."),
@@ -760,7 +765,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 #endif
       slotFileClose();
       if(!myMoneyView->fileOpen()) {
-        if(myMoneyView->readFile(url)) {
+        if(myMoneyView->readFile(url, m_currentFileEncrypted)) {
           if((myMoneyView->isNativeFile() || (url.protocol() == "sql"))) {
             m_fileName = url;
             KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
@@ -809,7 +814,7 @@ const bool KMyMoney2App::slotFileSave()
   if (m_fileName.protocol() == "sql") {
     rc = myMoneyView->saveDatabase(m_fileName);
   } else {
-    rc = myMoneyView->saveFile(m_fileName);
+    rc = myMoneyView->saveFile(m_fileName, m_currentFileEncrypted);
   }
   m_autoSaveTimer->stop();
 
@@ -826,58 +831,85 @@ const bool KMyMoney2App::slotFileSaveAs()
   QString prevDir= ""; // don't prompt file name if not a native file
   if (myMoneyView->isNativeFile()) prevDir = readLastUsedDir();
 
+#if 0
   QString newName=KFileDialog::getSaveFileName(prevDir,//KGlobalSettings::documentPath(),
                                                i18n("*.kmy|KMyMoney files\n""*.xml|XML Files\n""*.ANON.xml|Anonymous Files\n"
 
                                                "*.*|All files"), this, i18n("Save as..."));
+#endif
 
-  //
-  // If there is no file extension, then append a .kmy at the end of the file name.
-  // If there is a file extension, make sure it is .kmy, delete any others.
-  //
-  if(!newName.isEmpty())
-  {
-    // find last . delimiter
-    int nLoc = newName.findRev('.');
-    if(nLoc != -1)
-    {
-      QString strExt, strTemp;
-      strTemp = newName.left(nLoc + 1);
-      strExt = newName.right(newName.length() - (nLoc + 1));
-      if((strExt.find("kmy", 0, FALSE) == -1) && (strExt.find("xml", 0, FALSE) == -1))
-      {
+  QCheckBox* saveEncrypted = new QCheckBox(i18n("Save file encrypted (if supported by filetype)"), 0);
+  saveEncrypted->setEnabled(KGPGFile::GPGAvailable() && KGPGFile::keyAvailable(KMyMoneySettings::gpgRecipient()));
+  if(saveEncrypted->isEnabled())
+    saveEncrypted->setChecked(KMyMoneySettings::writeDataEncrypted());
 
-        strTemp.append("kmy");
-        //append to make complete file name
-        newName = strTemp;
-      }
-    }
-    else
-    {
-      newName.append(".kmy");
-    }
+  // the following code is copied from KFileDialog::getSaveFileName,
+  // adjust to our local needs (filetypes etc.) and
+  // enhanced to show the saveEncrypted checkbox
+  bool specialDir = prevDir.at(0) == ':';
+  KFileDialog dlg( specialDir ? prevDir : QString::null,
+                   i18n("*.kmy|KMyMoney files\n"
+                        "*.xml|XML Files\n"
+                        "*.ANON.xml|Anonymous Files\n"
+                        "*.*|All files"),
+                   this, "filedialog", true, saveEncrypted);
+  if ( !specialDir )
+    dlg.setSelection( prevDir ); // may also be a filename
 
-    // If this is the anonymous file export, just save it, don't actually take the
-    // name, or remember it!
-    if (newName.right(9).lower() == ".anon.xml")
-    {
-      rc = myMoneyView->saveFile(newName);
-    }
-    else
-    {
+  dlg.setOperationMode( KFileDialog::Saving );
+  dlg.setCaption(i18n("Save As"));
 
-      QFileInfo saveAsInfo(newName);
+  if(dlg.exec() == QDialog::Accepted) {
 
-      m_fileName = newName;
-      rc = myMoneyView->saveFile(newName);
-
-      //write the directory used for this file as the default one for next time.
-      writeLastUsedDir(newName);
+    QString newName = dlg.selectedFile();
+    if (!newName.isEmpty()) {
+      KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
+      if(p)
+        p->addURL( newName );
       writeLastUsedFile(newName);
-    }
-    m_autoSaveTimer->stop();
-  }
 
+  // end of copy
+
+      // find last . delimiter
+      int nLoc = newName.findRev('.');
+      if(nLoc != -1)
+      {
+        QString strExt, strTemp;
+        strTemp = newName.left(nLoc + 1);
+        strExt = newName.right(newName.length() - (nLoc + 1));
+        if((strExt.find("kmy", 0, FALSE) == -1) && (strExt.find("xml", 0, FALSE) == -1))
+        {
+
+          strTemp.append("kmy");
+          //append to make complete file name
+          newName = strTemp;
+        }
+      }
+      else
+      {
+        newName.append(".kmy");
+      }
+
+      // If this is the anonymous file export, just save it, don't actually take the
+      // name, or remember it! Don't even try to encrypt it
+      if (newName.right(9).lower() == ".anon.xml")
+      {
+        rc = myMoneyView->saveFile(newName, false);
+      }
+      else
+      {
+        QFileInfo saveAsInfo(newName);
+
+        m_fileName = newName;
+        rc = myMoneyView->saveFile(newName, saveEncrypted->isChecked());
+
+        //write the directory used for this file as the default one for next time.
+        writeLastUsedDir(newName);
+        writeLastUsedFile(newName);
+      }
+      m_autoSaveTimer->stop();
+    }
+  }
   slotStatusMsg(prevMsg);
   updateCaption();
   return rc;
@@ -1287,7 +1319,7 @@ void KMyMoney2App::slotGncImport(void)
 //      return;
 
     // call the importer
-    myMoneyView->readFile(dialog->selectedURL());
+    myMoneyView->readFile(dialog->selectedURL(), m_currentFileEncrypted);
     // imported files don't have a name
     m_fileName = KURL();
 

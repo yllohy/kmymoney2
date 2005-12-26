@@ -37,10 +37,8 @@ void MyMoneyAccountTest::testEmptyConstructor() {
 	CPPUNIT_ASSERT(a.openingDate() == QDate());
 	CPPUNIT_ASSERT(a.lastModified() == QDate());
 	CPPUNIT_ASSERT(a.lastReconciliationDate() == QDate());
-/* removed with MyMoneyAccount::Transaction
-	CPPUNIT_ASSERT(a.transactionList().count() == 0);
-*/
 	CPPUNIT_ASSERT(a.accountList().count() == 0);
+	CPPUNIT_ASSERT(a.balance().isZero());
 }
 
 void MyMoneyAccountTest::testConstructor() {
@@ -55,6 +53,7 @@ void MyMoneyAccountTest::testConstructor() {
 	r.setNumber("465500");
 	r.setParentAccountId(parent);
 	r.setValue(QCString("key"), "value");
+	r.adjustBalance(MyMoneyMoney(1,1));
 	CPPUNIT_ASSERT(r.m_kvp.count() == 1);
 	CPPUNIT_ASSERT(r.value("key") == "value");
 
@@ -67,11 +66,9 @@ void MyMoneyAccountTest::testConstructor() {
 	CPPUNIT_ASSERT(a.lastModified() == QDate::currentDate());
 	CPPUNIT_ASSERT(a.number() == "465500");
 	CPPUNIT_ASSERT(a.description() == "Desc");
-/* removed with MyMoneyAccount::Transaction
-	CPPUNIT_ASSERT(a.transactionList().count() == 0);
-*/
 	CPPUNIT_ASSERT(a.accountList().count() == 0);
 	CPPUNIT_ASSERT(a.parentAccountId() == "Parent");
+	CPPUNIT_ASSERT(a.balance() == MyMoneyMoney(1,1));
 
 	QMap<QCString, QString> copy;
 	copy = r.pairs();
@@ -99,16 +96,10 @@ void MyMoneyAccountTest::testSetFunctions() {
 	CPPUNIT_ASSERT(a.lastModified() == today);
 	CPPUNIT_ASSERT(a.description() == "Desc");
 	CPPUNIT_ASSERT(a.number() == "123456");
-/* removed with MyMoneyAccount::Transaction
-	CPPUNIT_ASSERT(a.transactionList().count() == 0);
-*/
 	CPPUNIT_ASSERT(a.accountType() == MyMoneyAccount::MoneyMarket);
 }
 
 void MyMoneyAccountTest::testCopyConstructor() {
-/* removed with MyMoneyAccount::Transaction
-	MyMoneyAccount::Transaction ta("Trans1", 1000);
-*/
 	QCString id = "A000001";
 	QCString institutionid = "B000001";
 	QCString parent = "ParentAccount";
@@ -125,9 +116,6 @@ void MyMoneyAccountTest::testCopyConstructor() {
 
 	MyMoneyAccount a(id, r);
 	a.setInstitutionId(institutionid);
-/* removed with MyMoneyAccount::Transaction
-	a.addTransaction(ta);
-*/
 
 	MyMoneyAccount b(a);
 
@@ -138,16 +126,8 @@ void MyMoneyAccountTest::testCopyConstructor() {
 	CPPUNIT_ASSERT(b.openingDate() == QDate::currentDate());
 	CPPUNIT_ASSERT(b.description() == "Desc1");
 	CPPUNIT_ASSERT(b.number() == "Number");
-/* removed with MyMoneyAccount::Transaction
-	CPPUNIT_ASSERT(b.transactionList().count() == 1);
-*/
 	CPPUNIT_ASSERT(b.parentAccountId() == "ParentAccount");
 
-/* removed with MyMoneyAccount::Transaction
-	MyMoneyAccount::Transaction tc = b.transaction(0);
-	CPPUNIT_ASSERT(tc.transactionID() == "Trans1");
-	CPPUNIT_ASSERT(tc.balance() == 1000);
-*/
 	CPPUNIT_ASSERT(b.value("Key") == "Value");
 }
 
@@ -174,93 +154,20 @@ void MyMoneyAccountTest::testAssignmentConstructor() {
 	CPPUNIT_ASSERT(b.openingDate() == a.openingDate());
 	CPPUNIT_ASSERT(b.description() == "Bla");
 	CPPUNIT_ASSERT(b.number() == "assigned Number");
-/* removed with MyMoneyAccount::Transaction
-	CPPUNIT_ASSERT(b.transactionList().count() == 0);
-*/
 	CPPUNIT_ASSERT(b.value("Key") == "Value");
 	CPPUNIT_ASSERT(b.accountList().count() == 1);
 	CPPUNIT_ASSERT(b.accountList()[0] == "ChildAccount");
 }
 
-void MyMoneyAccountTest::testTransactionList() {
-/* removed with MyMoneyAccount::Transaction
+void MyMoneyAccountTest::testAdjustBalance() {
 	MyMoneyAccount a;
-	a.setAccountType(MyMoneyAccount::Checkings);
-	MyMoneyAccount::Transaction ta("Trans1", 1000);
-	MyMoneyAccount::Transaction tb("Trans2", 2000);
 
-	CPPUNIT_ASSERT(a.transactionList().count() == 0);
-	a.addTransaction(ta);
-	CPPUNIT_ASSERT(a.transactionList().count() == 1);
-	a.addTransaction(tb);
-	CPPUNIT_ASSERT(a.transactionList().count() == 2);
-
-	a.clearTransactions();
-	CPPUNIT_ASSERT(a.transactionList().count() == 0);
-*/
-}
-
-void MyMoneyAccountTest::testTransactionRetrieval() {
-/* removed with MyMoneyAccount::Transaction
-	MyMoneyAccount a;
-	a.setAccountType(MyMoneyAccount::Checkings);
-	MyMoneyAccount::Transaction ta("Trans1", 1000);
-	MyMoneyAccount::Transaction tb("Trans2", 2000);
-	MyMoneyAccount::Transaction tc;
-
-	a.addTransaction(ta);
-	a.addTransaction(tb);
-
-	// Check access to transactions with numeric index
-
-	try {
-		tc = a.transaction(0);
-		CPPUNIT_ASSERT(tc.transactionID() == "Trans1");
-		CPPUNIT_ASSERT(tc.balance() == 1000);
-		tc = a.transaction(1);
-		CPPUNIT_ASSERT(tc.transactionID() == "Trans2");
-		CPPUNIT_ASSERT(tc.balance() == 3000);
-	} catch(MyMoneyException *e) {
-		CPPUNIT_FAIL("Retrieving existing transaction must not throw exception!");
-	}
-
-	try {
-		tc = a.transaction(2);
-		CPPUNIT_FAIL("Retrieving unknown transaction must throw exception!");
-	} catch(MyMoneyException *e) {
-		delete e;
-	}
-	try {
-		tc = a.transaction(-1);
-		CPPUNIT_FAIL("Retrieving unknown transaction must throw exception!");
-	} catch(MyMoneyException *e) {
-		delete e;
-	}
-*/
-}
-
-void MyMoneyAccountTest::testBalance() {
-/* removed with MyMoneyAccount::Transaction
-	MyMoneyAccount a;
-	a.setAccountType(MyMoneyAccount::Checkings);
-	MyMoneyAccount::Transaction ta("Trans1", 1000);
-	MyMoneyAccount::Transaction tb("Trans2", 2000);
-	MyMoneyAccount::Transaction tc("Trans3", -4000);
-
-	CPPUNIT_ASSERT(a.balance() == 0);
-
-	a.addTransaction(ta);
-	CPPUNIT_ASSERT(a.balance() == 1000);
-
-	a.addTransaction(tb);
-	CPPUNIT_ASSERT(a.balance() == 3000);
-
-	a.addTransaction(tc);
-	CPPUNIT_ASSERT(a.balance() == -1000);
-
-	a.setOpeningBalance(1000);
-	CPPUNIT_ASSERT(a.balance() == 0);
-*/
+	a.adjustBalance(MyMoneyMoney(3,1));
+	CPPUNIT_ASSERT(a.balance() == MyMoneyMoney(3,1));
+	a.adjustBalance(MyMoneyMoney(-5,1));
+	CPPUNIT_ASSERT(a.balance() == MyMoneyMoney(-2,1));
+	a.adjustBalance(MyMoneyMoney(2,1));
+	CPPUNIT_ASSERT(a.balance().isZero());
 }
 
 void MyMoneyAccountTest::testSubAccounts()

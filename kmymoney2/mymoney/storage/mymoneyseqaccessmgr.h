@@ -899,6 +899,12 @@ public:
     */
   bool isReferenced(const MyMoneyObject& obj) const;
 
+  /**
+    * This method recalculates the balances of all accounts
+    * based on the transactions stored in the engine.
+    */
+  void rebuildAccountBalances(void);
+
 private:
 
   static const int INSTITUTION_ID_SIZE = 6;

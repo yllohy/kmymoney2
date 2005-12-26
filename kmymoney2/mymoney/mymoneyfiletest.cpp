@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "mymoneyfiletest.h"
+#include <iostream>
 
 #include <memory>
 #include <unistd.h>
@@ -787,15 +788,11 @@ void MyMoneyFileTest::testAddTransaction () {
 	// check the balance of the accounts
 	a = m->account("A000001");
 	CPPUNIT_ASSERT(a.lastModified() == QDate::currentDate());
-/* removed with MyMoneyAccount::Transaction
-	CPPUNIT_ASSERT(a.balance() == -1000);
+	CPPUNIT_ASSERT(a.balance() == MyMoneyMoney(-1000));
 
-*/
 	MyMoneyAccount b = m->account("A000003");
 	CPPUNIT_ASSERT(b.lastModified() == QDate::currentDate());
-/* removed with MyMoneyAccount::Transaction
-	CPPUNIT_ASSERT(b.balance() == 1000);
-*/
+	CPPUNIT_ASSERT(b.balance() == MyMoneyMoney(1000));
 
 	storage->m_dirty = false;
 
@@ -1205,41 +1202,12 @@ void MyMoneyFileTest::testAddTransactionStd() {
 
 	try {
 		m->addTransaction(t);
-
-		CPPUNIT_ASSERT(observer->updated().count() == 2);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
-		observer->reset();
+		CPPUNIT_FAIL("Missing expected exception!");
 	} catch(MyMoneyException *e) {
 		delete e;
-		CPPUNIT_FAIL("Unexpected exception!");
 	}
 
-	CPPUNIT_ASSERT(t.id() == "T000000000000000001");
-	CPPUNIT_ASSERT(t.postDate() == QDate(2002,2,1));
-	CPPUNIT_ASSERT(t.entryDate() == QDate::currentDate());
-	CPPUNIT_ASSERT(m->dirty() == true);
-
-	// check the balance of the accounts
-	a = m->account("A000001");
-	CPPUNIT_ASSERT(a.lastModified() == QDate::currentDate());
-
-	MyMoneyAccount b = m->account(STD_ACC_EXPENSE);
-	CPPUNIT_ASSERT(b.lastModified() == QDate::currentDate());
-
-	storage->m_dirty = false;
-
-	// locate transaction in MyMoneyFile via id
-
-	try {
-		p = m->transaction("T000000000000000001");
-		CPPUNIT_ASSERT(p.splitCount() == 2);
-		CPPUNIT_ASSERT(p.memo() == "Memotext");
-		CPPUNIT_ASSERT(p.splits()[0].accountId() == "A000001");
-		CPPUNIT_ASSERT(p.splits()[1].accountId() == STD_ACC_EXPENSE);
-	} catch(MyMoneyException *e) {
-		delete e;
-		CPPUNIT_FAIL("Unexpected exception!");
-	}
+	CPPUNIT_ASSERT(m->dirty() == false);
 }
 
 void MyMoneyFileTest::testAttachStorage() {

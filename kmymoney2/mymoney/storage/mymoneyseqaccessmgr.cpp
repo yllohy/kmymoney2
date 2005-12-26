@@ -957,6 +957,11 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate&
   MyMoneyMoney result(0);
   MyMoneyAccount acc;
 
+  if(date.isValid()) {
+    if(m_accountList.find(id) != m_accountList.end())
+      return m_accountList[id].balance();
+    return MyMoneyMoney(0);
+  }
   if(m_balanceCache[id].valid == false || date != m_balanceCacheDate) {
     QMap<QCString, MyMoneyMoney> balances;
     QMap<QCString, MyMoneyMoney>::ConstIterator it_b;
@@ -1584,7 +1589,9 @@ const MyMoneySecurity MyMoneySeqAccessMgr::currency(const QCString& id) const
 
   it = m_currencyList.find(id);
   if(it == m_currencyList.end()) {
-    throw new MYMONEYEXCEPTION(QString("Cannot retrieve currency with unknown id %1").arg(id.data()));
+    MyMoneyException* e = new MYMONEYEXCEPTION(QString("Cannot retrieve currency with unknown id '%1'").arg(id.data()));
+    qDebug("THROW: %s in %s:%ld", e->what().data(), e->file().data(), e->line());
+    throw e;
   }
 
   return *it;
@@ -1726,6 +1733,30 @@ MyMoneyPrice MyMoneySeqAccessMgr::price(const QCString& fromId, const QCString& 
 void MyMoneySeqAccessMgr::clearCache(void)
 {
   m_balanceCache.clear();
+}
+
+void MyMoneySeqAccessMgr::rebuildAccountBalances(void)
+{
+  // reset the balance of all accounts to 0
+  QMap<QCString, MyMoneyAccount>::iterator it_a;
+  for(it_a = m_accountList.begin(); it_a != m_accountList.end(); ++it_a)
+    (*it_a).setBalance(MyMoneyMoney(0));
+
+  // now scan over all transactions and all splits and setup the balances
+  QMap<QCString, MyMoneyTransaction>::const_iterator it_t;
+  for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
+    const QValueList<MyMoneySplit>& splits = (*it_t).splits();
+    QValueList<MyMoneySplit>::const_iterator it_s = splits.begin();
+    for(; it_s != splits.end(); ++it_s ) {
+      if(!(*it_s).shares().isZero()) {
+        const QCString& id = (*it_s).accountId();
+        // locate the account and if present, return it's data
+        if(m_accountList.find(id) != m_accountList.end()) {
+          m_accountList[id].adjustBalance((*it_s).shares());
+        }
+      }
+    }
+  }
 }
 
 bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj) const

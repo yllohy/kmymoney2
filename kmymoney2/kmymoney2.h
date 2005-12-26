@@ -793,6 +793,8 @@ private:
   MyMoneyInstitution    m_selectedInstitution;
   MyMoneySchedule       m_selectedSchedule;
 
+  bool                  m_currentFileEncrypted;
+
   // This is Auto Saving related
   bool                  m_autoSaveEnabled;
   QTimer*               m_autoSaveTimer;

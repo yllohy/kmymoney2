@@ -80,12 +80,12 @@ QValueList<QDomElement> MyMoneyStorageXML::readElements(QString groupTag, QStrin
     {
       for(item = groupElement.firstChild(); !item.isNull(); item = item.nextSibling())
       {
-	if(!item.isElement())
-	  continue;
+        if(!item.isElement())
+          continue;
 
-	QDomElement itemElement = item.toElement();
-	if(itemElement.tagName() == itemTag)
-	  list.append(itemElement);
+        QDomElement itemElement = item.toElement();
+        if(itemElement.tagName() == itemTag)
+          list.append(itemElement);
       }
     }
   }
@@ -127,10 +127,14 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   readTransactions();
   readSchedules();
   readSecurities();
-  readEquities();	/* backwards compatibility; we no longer write these */
+  readEquities(); /* backwards compatibility; we no longer write these */
   readCurrencies();
   readPrices();
   readReports();
+
+  // check if we need to build up the account balances
+  if(fileVersionRead < 2)
+    m_storage->rebuildAccountBalances();
 
   delete m_doc;
   m_doc = NULL;
@@ -257,7 +261,10 @@ void MyMoneyStorageXML::readFileInformation(void)
   temp = findChildElement("VERSION", fileInfo);
   QString strVersion = QStringEmpty(temp.attribute("id"));
   fileVersionRead = strVersion.toUInt(NULL, 16);
-  fileVersionWrite = fileVersionRead;
+  // FIXME The old version stuff used this rather odd number
+  //       We now use increments
+  if(fileVersionRead == VERSION_0_60_XML)
+    fileVersionRead = 1;
   signalProgress(3, 0);
 }
 
@@ -273,14 +280,7 @@ void MyMoneyStorageXML::writeFileInformation(QDomElement& fileInfo)
 
   QDomElement version = m_doc->createElement("VERSION");
 
-  //if we haven't written a file yet, write using the default version.
-  if(!fileVersionWrite)
-  {
-    fileVersionWrite = VERSION_0_60_XML;
-  }
-  QString strVersion;
-  strVersion.setNum(fileVersionWrite, 16);
-  version.setAttribute("id", strVersion);
+  version.setAttribute("id", "1");
   fileInfo.appendChild(version);
 }
 
@@ -628,7 +628,7 @@ void MyMoneyStorageXML::readReports(void)
 
       unsigned long id = extractId(report.id());
       if(id > m_storage->reportId())
-	m_storage->loadReportId(id);
+  m_storage->loadReportId(id);
     }
 
     signalProgress(x++, 0);

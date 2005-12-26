@@ -249,21 +249,24 @@ public:
     *
     * @param url The URL to read from.
     *            If no protocol is specified, file:// is assumed.
+    * @param isEncrypted is used to return, if the file read was encrypted
+    *                    via GPG or not. Only valid, if return code is true
     *
     * @return Whether the read was successfull.
     */
-  bool readFile(const KURL& url);
+  bool readFile(const KURL& url, bool& isEncrypted);
 
   /**
     * Saves the data into permanent storage using the XML format.
     *
     * @param url The URL to save into.
     *            If no protocol is specified, file:// is assumed.
+    * @param encrypt whether to encrypt the file using GPG or not
     *
     * @retval false save operation failed
     * @retval true save operation was successful
     */
-  const bool saveFile(const KURL& url);
+  const bool saveFile(const KURL& url, bool encrypt);
   /**
    * Saves the data into permanent storage on a new or empty SQL database.
    *
@@ -476,10 +479,11 @@ private:
     * @param qf pointer to QFile representing the opened file
     * @param writer pointer to the formatter
     * @param plaintext whether to override any compression & encryption settings
+    * @param encrypt whether to encrypt the file using GPG or not
     *
     * @note This method will close the file when it is written.
     */
-  void saveToLocalFile(QFile* qf, IMyMoneyStorageFormat* writer, bool plaintext=false);
+  void saveToLocalFile(QFile* qf, IMyMoneyStorageFormat* writer, bool plaintext=false, bool encrypt=false);
 
   /**
     * Internal method used by slotAccountNew() and slotAccountCategory().

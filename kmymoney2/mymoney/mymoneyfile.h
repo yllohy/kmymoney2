@@ -1359,6 +1359,8 @@ protected:
     */
   MyMoneyFile();
 
+  void updateBalances(const QMap<QCString, MyMoneyMoney>& map);
+
 private:
   const QCString locateSubAccount(const MyMoneyAccount& base, const QString& category) const;
 
