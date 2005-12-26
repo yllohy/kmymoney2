@@ -121,7 +121,14 @@ private:
     class TOuterGroup: public QMap<QString,TInnerGroup> 
     { 
     public:
-      TOuterGroup(bool inverted=false): m_inverted(inverted) {}
+      TOuterGroup(unsigned _sort=m_kDefaultSortOrder, bool _inverted=false): m_inverted(_inverted), m_sortOrder(_sort) {}
+      int operator<( const TOuterGroup& _right )
+      {
+        if ( m_sortOrder != _right.m_sortOrder )
+          return m_sortOrder < _right.m_sortOrder;
+        else
+          return m_displayName < _right.m_displayName;
+      }
       TGridRow m_total;
       
       // An inverted outergroup means that all values placed in subordinate rows 
@@ -129,6 +136,18 @@ private:
       // means that when the report is summed, the values should be inverted again
       // so that the grand total is really "non-inverted outergroup MINUS inverted outergroup".
       bool m_inverted;
+      
+      // The localized name of the group for display in the report. Outergoups need this
+      // independently, because they will lose their association with the TGrid when the
+      // report is rendered.
+      QString m_displayName;
+
+      // lower numbers sort toward the top of the report. defaults to 100, which is a nice
+      // middle-of-the-road value
+      unsigned m_sortOrder;
+
+      // default sort order
+      static const unsigned m_kDefaultSortOrder;
     };
     class TGrid: public QMap<QString,TOuterGroup> { public: TGridRow m_total; };
 
@@ -253,6 +272,7 @@ protected:
     */
     QDate PivotTable::columnDate(int column) const;
 };
+
 
 }
 #endif

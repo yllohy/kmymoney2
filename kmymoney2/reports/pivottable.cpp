@@ -48,6 +48,8 @@
 
 namespace reports {
 
+const unsigned PivotTable::TOuterGroup::m_kDefaultSortOrder = 100;
+
 const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType)
 {
   QString returnString;
@@ -179,12 +181,12 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   if ( m_config_f.rowType() == MyMoneyReport::eAssetLiability )
   {
     m_grid.insert(accountTypeToString(MyMoneyAccount::Asset),TOuterGroup());
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Liability),TOuterGroup(true));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Liability),TOuterGroup(TOuterGroup::m_kDefaultSortOrder,true));
   }
   else
   {
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Income),TOuterGroup());
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Expense),TOuterGroup(true));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Income),TOuterGroup(TOuterGroup::m_kDefaultSortOrder-2));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Expense),TOuterGroup(TOuterGroup::m_kDefaultSortOrder-1,true));
   }
   //
   // Get opening balances
@@ -1097,15 +1099,34 @@ QString PivotTable::renderHTML( void ) const
     // Outer groups
     //
 
-    // iterate over outer groups
-    TGrid::const_iterator it_outergroup = m_grid.begin();
-    while ( it_outergroup != m_grid.end() )
+    // Need to sort the outergroups.  They can't always be sorted by name.  So we create a list of
+    // map iterators, and sort that.  Then we'll iterate through the map iterators and use those as
+    // before.
+    //
+    // I hope this doesn't bog the performance of reports, given that we're copying the entire report
+    // data.  If this is a perf hit, we could change to storing outergroup pointers, I think.
+    QValueList<TOuterGroup> outergroups;
+    TGrid::const_iterator it_outergroup_map = m_grid.begin();
+    while ( it_outergroup_map != m_grid.end() )
+    {
+      outergroups.push_back(it_outergroup_map.data());
+      
+      // copy the name into the outergroup, because we will now lose any association with
+      // the map iterator
+      outergroups.back().m_displayName = it_outergroup_map.key();
+
+      ++it_outergroup_map;
+    }
+    qHeapSort(outergroups);
+    
+    QValueList<TOuterGroup>::const_iterator it_outergroup = outergroups.begin();
+    while ( it_outergroup != outergroups.end() )
     {
       //
       // Outer Group Header
       //
 
-      result += QString("<tr class=\"sectionheader\"><td class=\"left\"%1>%2</td></tr>\n").arg(colspan).arg(it_outergroup.key());
+      result += QString("<tr class=\"sectionheader\"><td class=\"left\"%1>%2</td></tr>\n").arg(colspan).arg((*it_outergroup).m_displayName);
 
       // Skip the inner groups if the report only calls for outer group totals to be shown
       if ( m_config_f.detailLevel() != MyMoneyReport::eDetailGroup )
@@ -1223,7 +1244,7 @@ QString PivotTable::renderHTML( void ) const
 
       if ( m_config_f.isShowingColumnTotals() )
       {
-        result += QString("<tr class=\"sectionfooter\"><td class=\"left\">%1&nbsp;%2</td>").arg(i18n("Total")).arg(it_outergroup.key());
+        result += QString("<tr class=\"sectionfooter\"><td class=\"left\">%1&nbsp;%2</td>").arg(i18n("Total")).arg((*it_outergroup).m_displayName);
         unsigned column = 1;
         while ( column < m_numColumns )
           result += QString("<td>%1</td>").arg((*it_outergroup).m_total[column++].formatMoney());
