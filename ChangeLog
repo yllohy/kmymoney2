@@ -1,3 +1,8 @@
+2005-12-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1390918 (Can't use more than 2 decimal places in manual price update)
+  * Moved maintenance logic for account's balances from MMFile to MMSeqAccessMgr
+  * Fixed #1318972 (Currency symbol for foreign stock mis-displayed after quote)
+
 2005-12-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added #1280473 (Ecryption on a file-by-file basis)
 
