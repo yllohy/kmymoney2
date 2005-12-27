@@ -49,7 +49,7 @@
 #include "../kmymoneyutils.h"
 #include "../kmymoneysettings.h"
 
-KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMoneySecurity& to, const MyMoneyMoney& value, const MyMoneyMoney& shares, const QDate& date, const int resultFraction, QWidget *parent, const char *name ) :
+KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMoneySecurity& to, const MyMoneyMoney& value, const MyMoneyMoney& shares, const QDate& date, const signed64 resultFraction, QWidget *parent, const char *name ) :
   KCurrencyCalculatorDecl(parent, name),
   m_fromCurrency(from),
   m_toCurrency(to),
@@ -96,7 +96,7 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMo
   }
 
   // fill in initial values
-  m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_toCurrency.smallestAccountFraction())));
+  m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_resultFraction)));
 
   connect(m_amountButton, SIGNAL(clicked()), this, SLOT(slotSetToAmount()));
   connect(m_rateButton, SIGNAL(clicked()), this, SLOT(slotSetExchangeRate()));

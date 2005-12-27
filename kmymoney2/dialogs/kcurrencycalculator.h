@@ -58,7 +58,7 @@ public:
     *
     * @note @p value must not be 0!
     */
-  KCurrencyCalculator(const MyMoneySecurity& from, const MyMoneySecurity& to, const MyMoneyMoney& value, const MyMoneyMoney& shares, const QDate& date, const int resultFraction = 100, QWidget *parent=0, const char *name=0);
+  KCurrencyCalculator(const MyMoneySecurity& from, const MyMoneySecurity& to, const MyMoneyMoney& value, const MyMoneyMoney& shares, const QDate& date, const signed64 resultFraction = 100, QWidget *parent=0, const char *name=0);
   ~KCurrencyCalculator();
 
   const MyMoneyMoney price(void) const;
@@ -80,7 +80,7 @@ private:
   MyMoneySecurity     m_toCurrency;
   MyMoneyMoney        m_result;
   MyMoneyMoney        m_value;
-  int                 m_resultFraction;
+  signed64            m_resultFraction;
 };
 
 #endif

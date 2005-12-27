@@ -717,12 +717,11 @@ const MyMoneyMoney MyMoneyMoney::reduce(void) const
   return out;
 }
 
-const signed64 MyMoneyMoney::precToDenom(const int prec)
+const signed64 MyMoneyMoney::precToDenom(int prec)
 {
-  register int tmpPrec = prec;
   signed64 denom = 1;
 
-  while(tmpPrec--)
+  while(prec--)
     denom *= 10;
 
   return denom;
@@ -733,7 +732,7 @@ const double MyMoneyMoney::toDouble(void) const
   return static_cast<double>(m_num) / static_cast<double>(m_denom);
 }
 
-const int MyMoneyMoney::denomToPrec(int fract)
+const int MyMoneyMoney::denomToPrec(signed64 fract)
 {
   int rc = 0;
   while(fract > 1) {

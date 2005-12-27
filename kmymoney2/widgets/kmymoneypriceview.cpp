@@ -47,6 +47,7 @@
 #include "../dialogs/kupdatestockpricedlg.h"
 #include "../dialogs/kcurrencycalculator.h"
 #include "../dialogs/kequitypriceupdatedlg.h"
+#include "../kmymoneysettings.h"
 #include "../kmymoneyutils.h"
 #include "../mymoney/mymoneyfile.h"
 
@@ -280,7 +281,7 @@ int kMyMoneyPriceView::slotEditPrice(void)
   if(item) {
     MyMoneySecurity from(MyMoneyFile::instance()->security(item->price().from()));
     MyMoneySecurity to(MyMoneyFile::instance()->security(item->price().to()));
-    int fract = to.smallestAccountFraction();
+    signed64 fract = MyMoneyMoney::precToDenom(KMyMoneySettings::pricePrecision());
 
     KCurrencyCalculator calc(from,
                              to,

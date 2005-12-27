@@ -126,12 +126,12 @@ public:
     * @param fract smallest fractional part (e.g. 100 for cents)
     * @return number of precision digits (e.g. 2 for cents)
     */
-  static const int denomToPrec(int fract);
+  static const int denomToPrec(signed64 fract);
 
   const QString toString(void) const;
   void fromString(const QString& str);
   const MyMoneyMoney convert(const signed64 denom = 100, const roundingMethod how = RndRound) const;
-  static const signed64 precToDenom(const int prec);
+  static const signed64 precToDenom(int prec);
   const double toDouble(void) const;
 
   static void setThousandSeparator(const unsigned char);
