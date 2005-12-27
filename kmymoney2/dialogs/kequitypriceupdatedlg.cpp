@@ -338,16 +338,33 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _id, const QString&
         date = QDate::currentDate();
 
       double price = _price;
-      QCString id = item->text(ID_COL).utf8();
-      if ( QString(id).contains(" ") == 0) {
+      QCString id = _id.utf8();
+      MyMoneySecurity sec;
+      if ( _id.contains(" ") == 0) {
         MyMoneySecurity security = MyMoneyFile::instance()->security(id);
         QString factor = security.value("kmm-online-factor");
         if(!factor.isEmpty()) {
           price *= MyMoneyMoney(factor).toDouble();
         }
+        try {
+          sec = MyMoneyFile::instance()->security(id);
+          sec = MyMoneyFile::instance()->security(sec.tradingCurrency());
+        } catch(MyMoneyException *e) {
+          sec = MyMoneySecurity();
+          delete e;
+        }
+
+      } else {
+        QRegExp splitrx("([0-9a-z\\.]+)[^a-z0-9]+([0-9a-z\\.]+)",false /*case sensitive*/);
+        if ( splitrx.search(_id) != -1 ) {
+          try {
+            sec = MyMoneyFile::instance()->security(splitrx.cap(2).utf8());
+          } catch(MyMoneyException *e) {
+            sec = MyMoneySecurity();
+            delete e;
+          }
+        }
       }
-      MyMoneySecurity sec = MyMoneyFile::instance()->security(QCString(_id));
-      sec = MyMoneyFile::instance()->security(sec.tradingCurrency());
       item->setText(PRICE_COL, KGlobal::locale()->formatMoney(price, sec.tradingSymbol(), KMyMoneySettings::pricePrecision()));
       item->setText(DATE_COL, date.toString(Qt::ISODate));
       logStatusMessage(i18n("Price for %1 updated (id %2)").arg(_symbol,_id));
