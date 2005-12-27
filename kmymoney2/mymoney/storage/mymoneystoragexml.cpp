@@ -615,7 +615,7 @@ void MyMoneyStorageXML::readReports(void)
 {
   int x = 0;
 
-  QValueList<QDomElement> list = readElements("INSTITUTIONS", "INSTITUTION");
+  QValueList<QDomElement> list = readElements("REPORTS", "REPORT");
   QValueList<QDomElement>::const_iterator it;
 
   signalProgress(0, list.count(), QObject::tr("Loading reports..."));
