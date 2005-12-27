@@ -460,16 +460,19 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
 
   transaction = newTransaction;
 
+  // adjust the balance of all affected accounts
+  for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s)
+    m_accountList[(*it_s).accountId()].adjustBalance((*it_s).shares());
+
   // mark file as changed
   touch();
 
   if(!skipAccountUpdate) {
     // now update those accounts that need a reference
     // to this transaction
-    QValueList<MyMoneySplit>::ConstIterator it;
-    for(it = transaction.splits().begin(); it != transaction.splits().end(); ++it) {
+    for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
       QMap<QCString, MyMoneyAccount>::Iterator acc;
-      acc = m_accountList.find((*it).accountId());
+      acc = m_accountList.find((*it_s).accountId());
       if(acc != m_accountList.end()) {
         (*acc).touch();
         invalidateBalanceCache((*acc).id());
@@ -633,9 +636,11 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
   // mark all accounts referenced in old and new transaction data
   // as modified
   for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
+    m_accountList[(*it_s).accountId()].adjustBalance(-((*it_s).shares()));
     modifiedAccounts[(*it_s).accountId()] = true;
   }
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+    m_accountList[(*it_s).accountId()].adjustBalance((*it_s).shares());
     modifiedAccounts[(*it_s).accountId()] = true;
   }
 
@@ -730,6 +735,7 @@ void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transactio
   // to be updated after the removal of this transaction
   for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
     modifiedAccounts[(*it_s).accountId()] = true;
+    m_accountList[(*it_s).accountId()].adjustBalance(-((*it_s).shares()));
   }
 
   // FIXME: check if any split is frozen and throw exception
@@ -957,7 +963,7 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate&
   MyMoneyMoney result(0);
   MyMoneyAccount acc;
 
-  if(date.isValid()) {
+  if(!date.isValid()) {
     if(m_accountList.find(id) != m_accountList.end())
       return m_accountList[id].balance();
     return MyMoneyMoney(0);
@@ -1750,7 +1756,7 @@ void MyMoneySeqAccessMgr::rebuildAccountBalances(void)
     for(; it_s != splits.end(); ++it_s ) {
       if(!(*it_s).shares().isZero()) {
         const QCString& id = (*it_s).accountId();
-        // locate the account and if present, return it's data
+        // locate the account and if present, update data
         if(m_accountList.find(id) != m_accountList.end()) {
           m_accountList[id].adjustBalance((*it_s).shares());
         }

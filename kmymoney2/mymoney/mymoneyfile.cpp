@@ -179,12 +179,9 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
   // get the current setting of this transaction
   MyMoneyTransaction tr = MyMoneyFile::transaction(transaction.id());
 
-  // scan the splits again to update notification list and balance map
-  QMap<QCString, MyMoneyMoney> diffMap;
-
+  // scan the splits again to update notification list
   // and mark all accounts that are referenced
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
-    diffMap[(*it_s).accountId()] -= (*it_s).shares();
     notifyAccountTree((*it_s).accountId());
     if(!(*it_s).payeeId().isEmpty()) {
       addNotification((*it_s).payeeId());
@@ -197,15 +194,12 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
 
   // and mark all accounts that are referenced
   for(it_s = t->splits().begin(); it_s != t->splits().end(); ++it_s) {
-    diffMap[(*it_s).accountId()] += (*it_s).shares();
     notifyAccountTree((*it_s).accountId());
     if(!(*it_s).payeeId().isEmpty()) {
       addNotification((*it_s).payeeId());
       addNotification(NotifyClassPayee);
     }
   }
-
-  updateBalances(diffMap);
 
   addNotification(NotifyClassAccount);
 }
@@ -322,10 +316,8 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
   MyMoneyTransaction tr = MyMoneyFile::transaction(transaction.id());
   QValueList<MyMoneySplit>::ConstIterator it_s;
 
-  // scan the splits again to update notification list and balance map
-  QMap<QCString, MyMoneyMoney> diffMap;
+  // scan the splits again to update notification list
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
-    diffMap[(*it_s).accountId()] -= (*it_s).shares();
     notifyAccountTree((*it_s).accountId());
     if(!(*it_s).payeeId().isEmpty()) {
       addNotification((*it_s).payeeId());
@@ -333,8 +325,6 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
     }
   }
   addNotification(NotifyClassAccount);
-
-  updateBalances(diffMap);
 
   m_storage->removeTransaction(transaction);
 }
@@ -724,17 +714,14 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
   // then add the transaction to the file global pool
   m_storage->addTransaction(transaction);
 
-  // scan the splits again to update notification list and balance map
-  QMap<QCString, MyMoneyMoney> diffMap;
+  // scan the splits again to update notification list
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
-    diffMap[(*it_s).accountId()] += (*it_s).shares();
     notifyAccountTree((*it_s).accountId());
     if(!(*it_s).payeeId().isEmpty()) {
       addNotification((*it_s).payeeId());
       addNotification(NotifyClassPayee);
     }
   }
-  updateBalances(diffMap);
 
   addNotification(NotifyClassAccount);
 }
