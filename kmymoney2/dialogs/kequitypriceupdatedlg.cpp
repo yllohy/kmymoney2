@@ -175,7 +175,7 @@ void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair)
         symbol,
         i18n("%1 units in %2").arg(pair.first,pair.second));
       if(pr.isValid()) {
-        item->setText(PRICE_COL, pr.rate().formatMoney(file->currency(pair.second).tradingSymbol()));
+        item->setText(PRICE_COL, pr.rate().formatMoney(file->currency(pair.second).tradingSymbol(), KMyMoneySettings::pricePrecision()));
         item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
       }
       item->setText(ID_COL,id);
@@ -196,7 +196,7 @@ void KEquityPriceUpdateDlg::addInvestment(const MyMoneySecurity& inv)
     MyMoneySecurity currency = file->currency(inv.tradingCurrency());
     MyMoneyPrice pr = file->price(id.utf8(), inv.tradingCurrency());
     if(pr.isValid()) {
-      item->setText(PRICE_COL, pr.rate().formatMoney(currency.tradingSymbol()));
+      item->setText(PRICE_COL, pr.rate().formatMoney(currency.tradingSymbol(), KMyMoneySettings::pricePrecision()));
       item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
     }
     item->setText(ID_COL,id);
@@ -346,7 +346,9 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _id, const QString&
           price *= MyMoneyMoney(factor).toDouble();
         }
       }
-      item->setText(PRICE_COL, KGlobal::locale()->formatMoney(price, "", KMyMoneySettings::pricePrecision()));
+      MyMoneySecurity sec = MyMoneyFile::instance()->security(QCString(_id));
+      sec = MyMoneyFile::instance()->security(sec.tradingCurrency());
+      item->setText(PRICE_COL, KGlobal::locale()->formatMoney(price, sec.tradingSymbol(), KMyMoneySettings::pricePrecision()));
       item->setText(DATE_COL, date.toString(Qt::ISODate));
       logStatusMessage(i18n("Price for %1 updated (id %2)").arg(_symbol,_id));
     }
