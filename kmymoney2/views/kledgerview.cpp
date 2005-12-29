@@ -1849,7 +1849,7 @@ void KLedgerView::createAccountMenu(void)
   m_accountMenu->insertTitle(i18n("Account Options"));
   m_accountMenu->insertItem(kiconloader->loadIcon("viewmag", KIcon::Small), i18n("Account Details ..."), this, SLOT(slotAccountDetail()));
   m_accountMenu->insertItem(kiconloader->loadIcon("reconcile", KIcon::Small), i18n("Reconcile ..."), this, SLOT(slotReconciliation()));
-  m_accountMenu->insertItem(kiconloader->loadIcon("chart", KIcon::Small), i18n("Transaction Report"), this, SLOT(slotGenerateReport()));
+  m_accountMenu->insertItem(kiconloader->loadIcon("view_info", KIcon::Small), i18n("Transaction Report"), this, SLOT(slotGenerateReport()));
 }
 
 void KLedgerView::createContextMenu(void)
