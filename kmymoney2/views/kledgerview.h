@@ -56,6 +56,7 @@ class kMyMoneyCombo;
 class kMyMoneyAccountSelector;
 class KPushButton;
 class KPopupMenu;
+class MyMoneyReport;
 
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
@@ -575,7 +576,16 @@ public slots:
 
   virtual void slotActionSelected(int transactionType) = 0;
 
-protected slots:
+  /**
+    * This method is called, when the user would like the system to generate
+    * a report for this account. Deciding what sort of report is left up to
+    * the implementation of this slot.  For now it just creates a transaction
+    * report.  In the future, it could bring up some UI and present the user
+    * a limited selection of options. 
+    */
+  virtual void slotGenerateReport(void);
+
+  protected slots:
   /**
     * This method marks the split referencing the account in the current
     * selected transaction as not reconciled. Calls markSplit().
@@ -984,6 +994,26 @@ signals:
     * @param transactionId const QCString reference to id of transaction to be selected
     */
   void payeeSelected(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
+
+  /**
+    * This signal is emitted, when a new report has been generated.  A
+    * 'generated' report is halfway between a default report and a custom 
+    * report.  It's created by the system in response to the user's 
+    * request, and it's usually filtered to be a little more specific
+    * than the usual default reports.
+    *
+    * The proper behaviour when getting this signal is to switch to the
+    * reports view and display the report.  But it should NOT be added
+    * to the data file, unless the user customizes it further.  That's
+    * because the user can always come back to the ledger UI to generate
+    * the report again. 
+    *
+    * @param report reference to MyMoneyReport object that contains the report
+    * 		details 
+    */
+
+  void reportGenerated(const MyMoneyReport& report);
+
 };
 
 #endif

@@ -1826,3 +1826,4 @@ int KLedgerViewCheckings::transactionType(const MyMoneyTransaction& t) const
 #undef AMOUNT_DATA_COL
 
 #include "kledgerviewcheckings.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:

@@ -1,3 +1,10 @@
+2005-12-28 Ace Jones <acejones@users.sourceforge.net>
+  * Added a "Transaction Report" option to the Account Menu pull-down in 
+    ledgers.  This allows you to quickly get a report for the current account.
+    This is part of my insidious plan to weave reports throughout the app.
+  * Fixed a bug that prohibited reports from loading, introduced in the 12/22
+    checkin.
+
 2005-12-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1390918 (Can't use more than 2 decimal places in manual price update)
   * Moved maintenance logic for account's balances from MMFile to MMSeqAccessMgr

@@ -49,6 +49,7 @@
 #include <kiconloader.h>
 #include <kcmenumngr.h>
 #include <kcompletionbox.h>
+#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -64,6 +65,7 @@
 #include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneyaccountselector.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyreport.h"
 #include "../dialogs/ieditscheduledialog.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/kcurrencycalculator.h"
@@ -1847,6 +1849,7 @@ void KLedgerView::createAccountMenu(void)
   m_accountMenu->insertTitle(i18n("Account Options"));
   m_accountMenu->insertItem(kiconloader->loadIcon("viewmag", KIcon::Small), i18n("Account Details ..."), this, SLOT(slotAccountDetail()));
   m_accountMenu->insertItem(kiconloader->loadIcon("reconcile", KIcon::Small), i18n("Reconcile ..."), this, SLOT(slotReconciliation()));
+  m_accountMenu->insertItem(kiconloader->loadIcon("chart", KIcon::Small), i18n("Transaction Report"), this, SLOT(slotGenerateReport()));
 }
 
 void KLedgerView::createContextMenu(void)
@@ -2287,4 +2290,22 @@ bool KLedgerView::eventFilter(QObject* o, QEvent* e)
   return rc;
 }
 
+void KLedgerView::slotGenerateReport(void)
+{
+  // Generate a transaction report that contains transactions for only this account.
+  MyMoneyReport report(
+      MyMoneyReport::eAccount,
+      MyMoneyReport::eQCnumber|MyMoneyReport::eQCpayee|MyMoneyReport::eQCcategory,
+      MyMoneyTransactionFilter::yearToDate,
+      false,
+      i18n("%1 YTD Account Transactions").arg(m_account.name()),
+      i18n("Generated Report")
+    );
+  report.setGroup(i18n("Transactions"));
+  report.addAccount(m_account.id());
+
+  emit reportGenerated(report);
+}
+
 #include "kledgerview.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:

@@ -182,7 +182,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_ledgerView, SIGNAL(accountSelected(const QCString&, const QCString&)),
       this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotReloadView()));
-
+  connect(m_ledgerView, SIGNAL(reportGenerated(const MyMoneyReport&)),
+      this, SLOT(slotReportGenerated(const MyMoneyReport&)));
+ 
   // Page 7
   m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),
     DesktopIcon("investments"));
@@ -362,6 +364,12 @@ void KMyMoneyView::slotReportSelected(const QCString& reportid)
 {
   showPage(pageIndex(m_reportsViewFrame));
   m_reportsView->slotOpenReport(reportid);
+}
+
+void KMyMoneyView::slotReportGenerated(const MyMoneyReport& report)
+{
+  showPage(pageIndex(m_reportsViewFrame));
+  m_reportsView->slotOpenReport(report);
 }
 
 bool KMyMoneyView::fileOpen(void)

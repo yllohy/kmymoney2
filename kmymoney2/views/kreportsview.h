@@ -206,6 +206,7 @@ public slots:
   void slotToggleChart(void);
   void slotOpenReport(QListViewItem*);
   void slotOpenReport(const QCString&);
+  void slotOpenReport(const MyMoneyReport&);
   void slotCloseCurrent(void);
   void slotClose(QWidget*);
   void slotCloseAll(void);

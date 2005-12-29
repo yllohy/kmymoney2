@@ -103,6 +103,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
   connect(view, SIGNAL(newCategory(MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&)));
+  connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
+    SIGNAL(reportGenerated(const MyMoneyReport&)));
 
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
@@ -113,6 +115,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+  connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
+    SIGNAL(reportGenerated(const MyMoneyReport&)));
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Credit card account
@@ -122,6 +126,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+  connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
+    SIGNAL(reportGenerated(const MyMoneyReport&)));
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Cash account
@@ -131,6 +137,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+  connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
+    SIGNAL(reportGenerated(const MyMoneyReport&)));
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Asset account
@@ -140,6 +148,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+  connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
+    SIGNAL(reportGenerated(const MyMoneyReport&)));
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Loan account
@@ -158,6 +168,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
   connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+  connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
+    SIGNAL(reportGenerated(const MyMoneyReport&)));
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
 #if 0

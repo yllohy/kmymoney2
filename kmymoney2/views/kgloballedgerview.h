@@ -53,6 +53,7 @@ class kMyMoneyAccountCombo;
 class KLedgerView;
 class KToolBar;
 class KToolBarButton;
+class MyMoneyReport;
 
 /**
   * @author Thomas Baumgart
@@ -189,6 +190,24 @@ signals:
     */
   void accountSelected(const QCString& accountId, const QCString& transactionId);
 
+  /**
+    * This signal is emitted, when a new report has been generated.  A
+    * 'generated' report is halfway between a default report and a custom 
+    * report.  It's created by the system in response to the user's 
+    * request, and it's usually filtered to be a little more specific
+    * than the usual default reports.
+    *
+    * The proper behaviour when getting this signal is to switch to the
+    * reports view and display the report.  But it should NOT be added
+    * to the data file, unless the user customizes it further.  That's
+    * because the user can always come back to the ledger UI to generate
+    * the report again. 
+    *
+    * @param report reference to MyMoneyReport object that contains the report
+    * 		details 
+    */
+
+  void reportGenerated(const MyMoneyReport& report);
 };
 
 #endif

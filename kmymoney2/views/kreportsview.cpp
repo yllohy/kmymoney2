@@ -452,7 +452,7 @@ void KReportsView::slotConfigure(void)
 
   if(tab) {
     MyMoneyReport report = tab->report();
-    if ( report.comment() == i18n("Default Report") )
+    if ( report.comment() == i18n("Default Report") || report.comment() == i18n("Generated Report") )
     {
       report.setComment( i18n("Custom Report") );
       report.setName( report.name() + i18n(" (Customized)") );
@@ -605,6 +605,33 @@ void KReportsView::slotOpenReport(QListViewItem* item)
 
     item->setOpen( ! item->isOpen() );
   }
+}
+
+void KReportsView::slotOpenReport(const MyMoneyReport& report)
+{
+  kdDebug(2) << __func__ << " " << report.name() << endl;
+    KReportTab* page = NULL;
+    
+    // Find the tab which contains the report indicated by this list item
+    int index = 1;
+    while ( index < m_reportTabWidget->count() )
+    {
+      KReportTab* current = dynamic_cast<KReportTab*>(m_reportTabWidget->page(index));
+
+        if ( current->report().name() == report.name() )
+        {
+          page = current;
+          break;
+        }
+
+      ++index;
+    }
+
+    // Show the tab, or create a new one, as needed
+    if ( page )
+      m_reportTabWidget->showPage( page );
+    else
+      addReportTab(report);
 }
 
 void KReportsView::slotToggleChart(void)
@@ -987,3 +1014,4 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
 #undef VIEW_REPORTS
 
 #include "kreportsview.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:

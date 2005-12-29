@@ -58,6 +58,7 @@ class MyMoneyTransaction;
 class KInvestmentView;
 class KReportsView;
 class KMyMoneyViewBase;
+class MyMoneyReport;
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -412,6 +413,14 @@ public slots:
     * @param reportid The ID of the report to be shown
     */
   void slotReportSelected(const QCString& reportid);
+
+  /**
+    * Same as the above, but the caller passes in an actual report 
+    * definition to be shown.
+    *
+    * @param report The report to be shown
+    */
+  void slotReportGenerated(const MyMoneyReport& report);
 
   /**
     * Called whenever the user wishes to reconcile the open account.  It first get some
