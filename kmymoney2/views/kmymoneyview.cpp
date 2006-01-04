@@ -1186,7 +1186,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("PLN", i18n("Polish Zloty")), create);
   loadDefaultCurrency(MyMoneySecurity("QAR", i18n("Qatari Rial")), create);
   loadDefaultCurrency(MyMoneySecurity("RON", i18n("Romanian Leu (new)")), true);
-  loadDefaultCurrency(MyMoneySecurity("RUR", i18n("Russian Ruble")), create);
+  loadDefaultCurrency(MyMoneySecurity("RUB", i18n("Russian Ruble")), create);
   loadDefaultCurrency(MyMoneySecurity("RWF", i18n("Rwanda Franc")), create);
   loadDefaultCurrency(MyMoneySecurity("WST", i18n("Samoan Tala")), create);
   loadDefaultCurrency(MyMoneySecurity("STD", i18n("Sao Tome and Principe Dobra")), create);
@@ -1277,7 +1277,7 @@ void KMyMoneyView::loadAncientCurrencies(void)
   loadAncientCurrency("FIM", i18n("Finnish Markka"), QCString(), QDate(1998,12,31), MyMoneyMoney(100000, 594573), "EUR");
   loadAncientCurrency("GRD", i18n("Greek Drachma"), QChar(0x20AF), QDate(1998,12,31), MyMoneyMoney(100, 34075), "EUR");
   loadAncientCurrency("ROL", i18n("Romanian Leu"), "ROL", QDate(2005,6,30), MyMoneyMoney(1, 10000), "RON");
-}
+  loadAncientCurrency("RUR", i18n("Russian Ruble (old)"), "RUR", QDate(1998, 1, 1), MyMoneyMoney(1, 1000), "RUB");}
 
 void KMyMoneyView::viewUp(void)
 {

@@ -1,3 +1,7 @@
+2006-01-04 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Fix #1393899 (Add support for new Russian Ruble - RUB)
+    Backport to 0.8
+
 2005-12-28 Ace Jones <acejones@users.sourceforge.net>
   * Added a "Transaction Report" option to the Account Menu pull-down in 
     ledgers.  This allows you to quickly get a report for the current account.
