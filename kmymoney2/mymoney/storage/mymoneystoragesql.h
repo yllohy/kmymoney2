@@ -144,6 +144,7 @@ class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
    * MyMoneyStorageSql constructor
    *
    * @param driver : Qt driver name (see QSqlDatabase class)
+   * @param storage : storage area to be used for read/write
    *
    * @return void
    *
