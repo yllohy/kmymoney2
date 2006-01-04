@@ -1186,7 +1186,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("PLN", i18n("Polish Zloty")), create);
   loadDefaultCurrency(MyMoneySecurity("QAR", i18n("Qatari Rial")), create);
   loadDefaultCurrency(MyMoneySecurity("RON", i18n("Romanian Leu (new)")), true);
-  loadDefaultCurrency(MyMoneySecurity("RUB", i18n("Russian Ruble")), create);
+  loadDefaultCurrency(MyMoneySecurity("RUB", i18n("Russian Ruble")), true);
   loadDefaultCurrency(MyMoneySecurity("RWF", i18n("Rwanda Franc")), create);
   loadDefaultCurrency(MyMoneySecurity("WST", i18n("Samoan Tala")), create);
   loadDefaultCurrency(MyMoneySecurity("STD", i18n("Sao Tome and Principe Dobra")), create);
