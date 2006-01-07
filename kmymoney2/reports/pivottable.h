@@ -262,7 +262,7 @@ protected:
     * hypothetical report that covers all of known time.  In reality an actual
     * report will be a subset of that.
     *
-    * @param column The column
+    * @param _date The date
     */
     unsigned columnValue(const QDate& _date) const;
   /**
