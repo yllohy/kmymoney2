@@ -56,6 +56,7 @@
 #include "../mymoney/mymoneyexception.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../dialogs/knewbankdlg.h"
+#include "../dialogs/konlinebankingsetupwizard.h"
 #include "../views/kbanklistitem.h"
 #include "../views/kmymoneyfile.h"
 #include "../kmymoneyutils.h"
@@ -102,6 +103,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     accountNoEdit->setEnabled(false);
 
     m_institutionBox->hide();
+    m_onlineBankingBox->hide();
     m_qcheckboxNoVat->hide();
 
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Income));
@@ -285,6 +287,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   connect(m_qlistviewParentAccounts, SIGNAL(selectionChanged(QListViewItem*)),
     this, SLOT(slotSelectionChanged(QListViewItem*)));
   connect(m_qbuttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
+  connect(m_buttonOnlineSetup, SIGNAL(clicked()), this, SLOT(slotOnlineSetupClicked()));
   connect(typeCombo, SIGNAL(activated(const QString&)),
     this, SLOT(slotAccountTypeChanged(const QString&)));
 
@@ -885,6 +888,12 @@ void KNewAccountDlg::slotNewClicked()
   }
 }
 
+void KNewAccountDlg::slotOnlineSetupClicked(void)
+{
+  KOnlineBankingSetupWizard wiz(this,"onlinebankingsetup");
+  wiz.exec();
+}
+
 void KNewAccountDlg::slotAccountTypeChanged(const QString& typeStr)
 {
   MyMoneyAccount::accountTypeE type;
@@ -962,3 +971,4 @@ void KNewAccountDlg::slotVatAssignmentChanged(bool state)
 }
 
 #include "knewaccountdlg.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:

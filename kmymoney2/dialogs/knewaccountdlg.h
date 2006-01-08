@@ -96,6 +96,7 @@ protected slots:
   void slotVatAssignmentChanged(bool);
   void slotNewClicked();
   void slotCheckFinished(void);
+  void slotOnlineSetupClicked();
 
 private slots:
   void timerDone(void);

@@ -1,3 +1,6 @@
+2006-01-07 Ace Jones <acejones@users.sourceforge.net>
+  * Added UI for OFX online banking account setup 
+
 2006-01-04 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix #1393899 (Add support for new Russian Ruble - RUB)
     Backport to 0.8
