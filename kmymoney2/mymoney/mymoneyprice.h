@@ -108,10 +108,10 @@ public:
     */
   const MyMoneyMoney rate(const QCString& id = QCString()) const;
 
-  const QDate date(void) const { return m_date; };
-  const QString source(void) const { return m_source; };
-  const QCString from(void) const { return m_fromSecurity; };
-  const QCString to(void) const { return m_toSecurity; };
+  const QDate& date(void) const { return m_date; };
+  const QString& source(void) const { return m_source; };
+  const QCString& from(void) const { return m_fromSecurity; };
+  const QCString& to(void) const { return m_toSecurity; };
 
   /**
     * Check whether the object is valid or not. A MyMoneyPrice object
