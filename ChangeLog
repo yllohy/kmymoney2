@@ -1,4 +1,8 @@
-2006-01-07 Ace Jones <acejones@users.sourceforge.net>
+2006-1-11 Robert Wadley <robntina@users.sourceforge.net>
+  * Added 'budget' icons
+  * Added an alternate titlebar image with no logo.
+
+.2006-01-07 Ace Jones <acejones@users.sourceforge.net>
   * Added UI for OFX online banking account setup 
 
 2006-01-04 Tony Bloomfield <tonybloom@users.sourceforge.net>
