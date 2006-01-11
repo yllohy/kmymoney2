@@ -183,11 +183,10 @@ const bool MyMoneyTemplate::importTemplate(void(*callback)(int, int, const QStri
         case MyMoneyAccount::Expense:
           parent = file->expense();
           break;
-#if 0
         case MyMoneyAccount::Equity:
           parent = file->equity();
           break;
-#endif
+
         default:
           KMessageBox::error(qApp->mainWidget(), QString("<p>")+i18n("Invalid top-level account type <b>%1</b> in template file <b>%2</b>!").arg(childElement.attribute("type")).arg(m_source.prettyURL()));
           rc = false;
