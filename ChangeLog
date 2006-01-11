@@ -1,6 +1,8 @@
 2006-1-11 Robert Wadley <robntina@users.sourceforge.net>
   * Added 'budget' icons
   * Added an alternate titlebar image with no logo.
+  * Added new "default_categories-template" to "C" and "en_US". the template in "en_US" contains some additional US specific categories (taxes, etc.)
+  * Renamed existing "default_accounts" to "old-default_accounts" 
 
 .2006-01-07 Ace Jones <acejones@users.sourceforge.net>
   * Added UI for OFX online banking account setup 
