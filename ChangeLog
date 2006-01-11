@@ -1,10 +1,23 @@
-2006-1-11 Robert Wadley <robntina@users.sourceforge.net>
+2006-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow equity accounts in templates
+  * Don't modify account type while reparenting account
+  * Made MyMoneyFile a QObject derivative to be able to emit signals.
+  * Started to replace notifications with signals
+  * Updated some code of KMyMoneyTitleLabel
+  * Complete rewrite of KMyMoneyAccountTree and KMyMoneyAccountTreeItem
+  * Added KMyMoneyAccountTree to the Qt-Designer widget library
+  * Started reworking the views to be more efficient
+  * Removed some unused code and files
+
+2006-01-11 Robert Wadley <robntina@users.sourceforge.net>
   * Added 'budget' icons
   * Added an alternate titlebar image with no logo.
-  * Added new "default_categories-template" to "C" and "en_US". the template in "en_US" contains some additional US specific categories (taxes, etc.)
+  * Added new "default_categories-template" to "C" and "en_US".
+    The template in "en_US" contains some additional US specific
+    categories (taxes, etc.)
   * Renamed existing "default_accounts" to "old-default_accounts" 
 
-.2006-01-07 Ace Jones <acejones@users.sourceforge.net>
+2006-01-07 Ace Jones <acejones@users.sourceforge.net>
   * Added UI for OFX online banking account setup 
 
 2006-01-04 Tony Bloomfield <tonybloom@users.sourceforge.net>
