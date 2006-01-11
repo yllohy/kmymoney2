@@ -36,10 +36,10 @@
 
 #include "kmymoneytitlelabel.h"
 
-kMyMoneyTitleLabel::kMyMoneyTitleLabel(QWidget *parent, const char *name)
- :  QLabel(parent, name),
-    m_bgColor( KGlobalSettings::highlightColor() ),
-    m_textColor( KGlobalSettings::highlightedTextColor() )
+KMyMoneyTitleLabel::KMyMoneyTitleLabel(QWidget *parent, const char *name) :
+  QLabel(parent, name),
+  m_bgColor( KGlobalSettings::highlightColor() ),
+  m_textColor( KGlobalSettings::highlightedTextColor() )
 {
   QFont f = font();
   f.setPointSize(14);
@@ -47,29 +47,33 @@ kMyMoneyTitleLabel::kMyMoneyTitleLabel(QWidget *parent, const char *name)
   setFont(f);
 }
 
-kMyMoneyTitleLabel::~kMyMoneyTitleLabel()
+KMyMoneyTitleLabel::~KMyMoneyTitleLabel()
 {
 }
 
-void kMyMoneyTitleLabel::setLeftImageFile(const QCString& _file)
+void KMyMoneyTitleLabel::setLeftImageFile(const QString& _file)
 {
   m_leftImageFile = _file;
-  QString lfullpath = KGlobal::dirs()->findResource("appdata",QString(m_leftImageFile));
+  QString lfullpath = KGlobal::dirs()->findResource("appdata", m_leftImageFile);
   m_leftImage.load(lfullpath);
   m_leftImage.setAlphaBuffer(true);
 }
 
-void kMyMoneyTitleLabel::setRightImageFile(const QCString& _file)
+void KMyMoneyTitleLabel::setRightImageFile(const QString& _file)
 {
   m_rightImageFile = _file;
-  QString rfullpath = KGlobal::dirs()->findResource("appdata",QString(m_rightImageFile));
+  QString rfullpath = KGlobal::dirs()->findResource("appdata", m_rightImageFile);
   m_rightImage.load(rfullpath);
   m_rightImage.setAlphaBuffer(true);
-  setMinimumHeight( m_rightImage.height() );
-  setMaximumHeight( m_rightImage.height() );
+  if(m_rightImage.height() < 30)
+    setMinimumHeight(30);
+  else {
+    setMinimumHeight( m_rightImage.height() );
+    setMaximumHeight( m_rightImage.height() );
+  }
 }
 
-void kMyMoneyTitleLabel::resizeEvent ( QResizeEvent * )
+void KMyMoneyTitleLabel::resizeEvent ( QResizeEvent * )
 {
   QRect cr = contentsRect();
   QImage output( cr.width(), cr.height(), 32 );
@@ -84,7 +88,7 @@ void kMyMoneyTitleLabel::resizeEvent ( QResizeEvent * )
   setMinimumWidth( m_rightImage.width() );
 }
 
-void kMyMoneyTitleLabel::drawContents(QPainter *p)
+void KMyMoneyTitleLabel::drawContents(QPainter *p)
 {
   // first draw pixmap
   QLabel::drawContents(p);
@@ -94,7 +98,7 @@ void kMyMoneyTitleLabel::drawContents(QPainter *p)
                           0, QString("   ")+m_text, -1, &m_textColor );
 }
 
-void kMyMoneyTitleLabel::setText(const QString& txt)
+void KMyMoneyTitleLabel::setText(const QString& txt)
 {
   m_text = txt;
   update();

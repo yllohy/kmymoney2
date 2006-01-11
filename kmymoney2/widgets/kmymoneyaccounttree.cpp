@@ -23,189 +23,692 @@
 #include <qdragobject.h>
 #include <qtimer.h>
 #include <qcursor.h>
+#include <qheader.h>
+#include <qpainter.h>
+#include <qpixmap.h>
+#include <qstyle.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include <kmessagebox.h>
 #include <klocale.h>
+#include <kglobal.h>
+#include <kstandarddirs.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kmymoneyaccounttree.h"
-#include "../mymoney/mymoneyfile.h"
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneyaccounttree.h>
 
-// FIXME we should really make kaccountlistitem a widget not a view (ipwizard)
-#include "../views/kbanklistitem.h"
+#include "../kmymoneysettings.h"
 
-kMyMoneyAccountTree::kMyMoneyAccountTree(QWidget* parent, const char* name) :
-  KListView(parent, name)
+/**
+  * @todo drag/drop in KMyMoneyAccountTree
+  */
+
+KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char* name) :
+  KListView(parent, name),
+  m_accountConnections(false),
+  m_institutionConnections(false)
 {
-  setDragEnabled(true);
-  setAcceptDrops(true);
+  setRootIsDecorated(true);
+  setAllColumnsShowFocus(true);
+
+  addColumn(i18n("Account"));
+  addColumn(i18n("Balance"));
+  addColumn(i18n("Value"));
+
+  setMultiSelection(false);
+
+  setColumnWidthMode(NameColumn, QListView::Maximum);
+  setColumnWidthMode(BalanceColumn, QListView::Maximum);
+  setColumnWidthMode(ValueColumn, QListView::Maximum);
+
+  setColumnAlignment(BalanceColumn, Qt::AlignRight);
+  setColumnAlignment(ValueColumn, Qt::AlignRight);
+
+  setResizeMode(QListView::AllColumns);
+  setSorting(0);
+
+  header()->setResizeEnabled(true);
+
+  setDragEnabled(false);
+  setAcceptDrops(false);
   setItemsMovable(false);
   setDropVisualizer(false);
   setDropHighlighter(true);
 
+  // setup a default
+  m_baseCurrency.setSmallestAccountFraction(100);
+  m_baseCurrency.setSmallestCashFraction(100);
+
   connect(this, SIGNAL(dropped(QDropEvent*,QListViewItem*,QListViewItem*)), this, SLOT(slotObjectDropped(QDropEvent*,QListViewItem*,QListViewItem*)));
+  connect(this, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotSelectObject(QListViewItem*)));
+  connect(this, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)), this, SLOT(slotOpenContextMenu(QListViewItem*)));
+  connect(this, SIGNAL(doubleClicked(QListViewItem*,const QPoint&,int)), this, SLOT(slotOpenObject(QListViewItem*)));
+
+  // drag and drop timer connections
+  connect( &m_autoopenTimer, SIGNAL( timeout() ), this, SLOT( slotOpenFolder() ) );
+  connect( &m_autoscrollTimer, SIGNAL( timeout() ), this, SLOT( slotAutoScroll() ) );
+
 }
 
-bool kMyMoneyAccountTree::acceptDrag(QDropEvent* event) const
+void KMyMoneyAccountTree::connectNotify(const char * /* s */)
 {
-  bool rc;
+  // update drag and drop settings
+  m_accountConnections = (receivers(SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&))) != 0);
+  m_institutionConnections = (receivers(SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyInstitution&))) != 0);
+  setDragEnabled(m_accountConnections | m_institutionConnections);
+  setAcceptDrops(m_accountConnections | m_institutionConnections);
+}
 
-  if(rc = (acceptDrops() && event->source() == viewport())) {
-    QPoint vp = contentsToViewport(event->pos());
-    QListViewItem *item = itemAt( vp );
-    KAccountListItem* p = dynamic_cast<KAccountListItem*>(item);
-    rc = false;
-    if(p) {
-      QCString id(event->encodedData("text/plain"));
-      MyMoneyAccount accTo, accFrom;
-      try {
-        accTo = MyMoneyFile::instance()->account(p->accountID());
-        accFrom = MyMoneyFile::instance()->account(id);
-        // it does not make sense to reparent an account to oneself
-        // or to reparent it to it's current parent
-        if(accTo.id() != accFrom.id()
-        && accFrom.parentAccountId() != accTo.id()) {
+void KMyMoneyAccountTree::disconnectNotify(const char * /* s */)
+{
+  // update drag and drop settings
+  m_accountConnections = (receivers(SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&))) != 0);
+  m_institutionConnections = (receivers(SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyInstitution&))) != 0);
+  setDragEnabled(m_accountConnections | m_institutionConnections);
+  setAcceptDrops(m_accountConnections | m_institutionConnections);
+}
 
-          rc = accTo.accountGroup() == accFrom.accountGroup();
-          if(rc) {
-            if(accTo.accountType() == MyMoneyAccount::Investment
-            && accFrom.accountType() != MyMoneyAccount::Stock)
-              rc = false;
-            else if(accFrom.accountType() == MyMoneyAccount::Stock
-            && accTo.accountType() != MyMoneyAccount::Investment)
-              rc = false;
-          } else {
-            if(accFrom.accountGroup() == MyMoneyAccount::Income
-            && accTo.accountGroup() == MyMoneyAccount::Expense)
-              rc = true;
+void KMyMoneyAccountTree::setSectionHeader(int sec, const QString& txt)
+{
+  header()->setLabel(sec, txt);
+}
 
-            if(accFrom.accountGroup() == MyMoneyAccount::Expense
-            && accTo.accountGroup() == MyMoneyAccount::Income)
-              rc = true;
+KMyMoneyAccountTreeItem* KMyMoneyAccountTree::selectedItem(void) const
+{
+  return dynamic_cast<KMyMoneyAccountTreeItem *>(KListView::selectedItem());
+}
 
-          }
-        }
+const KMyMoneyAccountTreeItem* KMyMoneyAccountTree::findItem(const QCString& id) const
+{
+  // tried to use a  QListViewItemIterator  but that does not fit
+  // with the constness of this method. Arghhh.
 
-      } catch(MyMoneyException *e) {
-        delete e;
-        try {
-          MyMoneyFile::instance()->institution(p->accountID());
-          rc = true;
-        } catch(MyMoneyException *e) {
-          delete e;
-          rc = p->accountID().isEmpty();
-        }
+  QListViewItem* p = firstChild();
+  while(p) {
+    // item found, check for the id
+    KMyMoneyAccountTreeItem* item = dynamic_cast<KMyMoneyAccountTreeItem*>(p);
+    if(item && item->id() == id)
+      break;
+
+    // item did not match, search the next one
+    QListViewItem* next = p->firstChild();
+    if(!next) {
+      while((next = p->nextSibling()) == 0) {
+        p = p->parent();
+        if(!p)
+          break;
       }
-
     }
+    p = next;
   }
 
-  // QWidget::setCursor(rc ? Qt::pointingHandCursor : Qt::forbiddenCursor);
+  return dynamic_cast<KMyMoneyAccountTreeItem*>(p);
+}
+
+bool KMyMoneyAccountTree::dropAccountOnAccount(const MyMoneyAccount& accFrom, const MyMoneyAccount& accTo) const
+{
+  bool rc = false;
+
+  // it does not make sense to reparent an account to oneself
+  // or to reparent it to it's current parent
+  if(accTo.id() != accFrom.id()
+  && accFrom.parentAccountId() != accTo.id()) {
+    // Moving within a group is generally ok
+    rc = accTo.accountGroup() == accFrom.accountGroup();
+
+    // now check for exceptions
+    if(rc) {
+      if(accTo.accountType() == MyMoneyAccount::Investment
+      && accFrom.accountType() != MyMoneyAccount::Stock)
+        rc = false;
+
+      else if(accFrom.accountType() == MyMoneyAccount::Stock
+      && accTo.accountType() != MyMoneyAccount::Investment)
+        rc = false;
+
+    } else {
+      if(accFrom.accountGroup() == MyMoneyAccount::Income
+      && accTo.accountGroup() == MyMoneyAccount::Expense)
+        rc = true;
+
+      if(accFrom.accountGroup() == MyMoneyAccount::Expense
+      && accTo.accountGroup() == MyMoneyAccount::Income)
+        rc = true;
+    }
+  }
 
   return rc;
 }
 
-void kMyMoneyAccountTree::startDrag()
+bool KMyMoneyAccountTree::acceptDrag(QDropEvent* event) const
+{
+  bool rc;
+
+  if(rc = (acceptDrops() && event->source() == viewport())) {
+    rc = false;
+    KMyMoneyAccountTreeItem* to = dynamic_cast<KMyMoneyAccountTreeItem*>(itemAt( contentsToViewport(event->pos()) ));
+    QCString fromId(event->encodedData("text/plain"));
+    const KMyMoneyAccountTreeItem* from = findItem(fromId);
+
+    // we can only move accounts around
+    if(!from->isAccount())
+      from = 0;
+
+    if(to && from) {
+      const MyMoneyAccount& accFrom = dynamic_cast<const MyMoneyAccount&>(from->itemObject());
+
+      if(to->isAccount() && m_accountConnections) {
+        const MyMoneyAccount& accTo = dynamic_cast<const MyMoneyAccount&>(to->itemObject());
+        rc = dropAccountOnAccount(accFrom, accTo);
+
+      } else if(to->isInstitution() && m_institutionConnections) {
+        // Moving an account to an institution is ok
+        rc = true;
+      }
+    }
+  }
+
+  return rc;
+}
+
+void KMyMoneyAccountTree::startDrag(void)
 {
   QListViewItem* item = currentItem();
-  KAccountListItem* p = dynamic_cast<KAccountListItem*>(item);
+  KMyMoneyAccountTreeItem* p = dynamic_cast<KMyMoneyAccountTreeItem *>(item);
   if(!p)
     return;
 
-  try {
-    MyMoneyAccount acc = MyMoneyFile::instance()->account(p->accountID());
-    QTextDrag* drag = new QTextDrag(acc.id(), viewport());
+  if(p->isAccount()) {
+    QTextDrag* drag = new QTextDrag(p->id(), viewport());
     drag->setSubtype("plain");
+
+    // use the icon that is attached to the item to be dragged
+    QPixmap pixmap(*p->pixmap(0));
+    if(!pixmap.isNull()) {
+      QPoint hotspot( pixmap.width() / 2, pixmap.height() / 2 );
+      drag->setPixmap(pixmap, hotspot);
+    }
 
     if (drag->dragMove() && drag->target() != viewport())
       emit moved();
-
-  } catch(MyMoneyException *e) {
-    // we end up here if the item is an institution also.
-    // drag and drop for institutions is not wanted
-    delete e;
   }
   return;
 }
 
-void kMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* parent, QListViewItem* after)
+void KMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* parent, QListViewItem* after)
 {
-  KAccountListItem* newParent;
+  m_autoopenTimer.stop();
+  slotStopAutoScroll();
+  if(dropHighlighter())
+    cleanItemHighlighter();
+
+  KMyMoneyAccountTreeItem* newParent;
 
   if(after)
-    newParent = dynamic_cast<KAccountListItem*>(after);
+    newParent = dynamic_cast<KMyMoneyAccountTreeItem*>(after);
   else
-    newParent = dynamic_cast<KAccountListItem*>(parent);
+    newParent = dynamic_cast<KMyMoneyAccountTreeItem*>(parent);
 
   // if the drop occurs in the top half of the very first item in the list,
   // parent and after both are 0. This can be used to insert the item to be
   // dropped as the very first element. In our case, this is not possible.
   // Hence we use the first child of the list as the new parent.
   if(!newParent)
-    newParent = dynamic_cast<KAccountListItem*>(firstChild());
+    newParent = dynamic_cast<KMyMoneyAccountTreeItem*>(firstChild());
 
   if(newParent) {
-    QCString id(event->encodedData("text/plain"));
-    try {
-      // keep the account information and call the acutal routine right out
-      // of the main loop. This will reset the focus of the cursor.
-      m_accTo = MyMoneyFile::instance()->account(newParent->accountID());
-      m_accFrom = MyMoneyFile::instance()->account(id);
-      QTimer::singleShot(0, this, SLOT(slotReparentAccount()));
+    QCString fromId(event->encodedData("text/plain"));
+    const KMyMoneyAccountTreeItem* from = findItem(fromId);
 
-    } catch(MyMoneyException *e) {
-      delete e;
-      // might have been a bank that we dropped on. let's check
-      try {
-        // keep the account and institution information and call the acutal
-        // routine right out of the main loop. This will reset the focus of the cursor.
-        m_institution = MyMoneyFile::instance()->institution(newParent->accountID());
-        m_accFrom = MyMoneyFile::instance()->account(id);
-        QTimer::singleShot(0, this, SLOT(slotReparentInstitution()));
+    // we can only move accounts around
+    if(!from->isAccount())
+      from = 0;
 
-      } catch(MyMoneyException *e) {
-        delete e;
-        // we also end up here, if the id of the new parent is empty.
-        // the only case this happens is that we will be removed from the institution
-        MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
-        acc.setInstitutionId(QCString());
-        try {
-          MyMoneyFile::instance()->modifyAccount(acc);
-        } catch(MyMoneyException *e) {
-          QString detail = i18n("%1 caught in %2 at line %3").arg(e->what()).arg(e->file()).arg(e->line());
-          KMessageBox::detailedError(this, i18n("Cannot remove account from institution"), detail, i18n("Error"));
+    if(from) {
+      const MyMoneyAccount& accFrom = dynamic_cast<const MyMoneyAccount&>(from->itemObject());
+      if(newParent->isAccount()) {
+        const MyMoneyAccount& accTo = dynamic_cast<const MyMoneyAccount&>(newParent->itemObject());
+        if(dropAccountOnAccount(accFrom, accTo)) {
+          qDebug("Reparent acc %s to %s", accFrom.name().data(), accTo.name().data());
+          emit reparent(accFrom, accTo);
         }
+
+      } else if(newParent->isInstitution()) {
+        const MyMoneyInstitution& institution = dynamic_cast<const MyMoneyInstitution&>(newParent->itemObject());
+        qDebug("Reparent acc %s to %s", accFrom.name().data(), institution.name().data());
+        emit reparent(accFrom, institution);
       }
     }
   }
 }
 
-void kMyMoneyAccountTree::slotReparentAccount(void)
+void KMyMoneyAccountTree::slotSelectObject(QListViewItem* i)
 {
-  if(KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to move <b>%1</b> to be a sub-account of <b>%2</b>?").arg(m_accFrom.name()).arg(m_accTo.name()), i18n("Moving account")) == KMessageBox::Yes) {
-    try {
-      MyMoneyFile::instance()->reparentAccount(m_accFrom, m_accTo);
-    } catch(MyMoneyException *e) {
-      QString detail = i18n("%1 caught in %2 at line %3").arg(e->what()).arg(e->file()).arg(e->line());
-      KMessageBox::detailedError(this, i18n("Cannot move account"), detail, i18n("Error"));
+  emit selectObject(MyMoneyInstitution());
+  emit selectObject(MyMoneyAccount());
+
+  KMyMoneyAccountTreeItem* item = dynamic_cast<KMyMoneyAccountTreeItem*>(i);
+  if(item != 0) {
+    emit selectObject(item->itemObject());
+  }
+}
+
+void KMyMoneyAccountTree::slotOpenContextMenu(QListViewItem* i)
+{
+  KMyMoneyAccountTreeItem* item = dynamic_cast<KMyMoneyAccountTreeItem *>(i);
+  if(item) {
+    emit openContextMenu(item->itemObject());
+  }
+}
+
+void KMyMoneyAccountTree::slotOpenObject(QListViewItem* i)
+{
+  KMyMoneyAccountTreeItem* item = dynamic_cast<KMyMoneyAccountTreeItem *>(i);
+  if(item) {
+    emit openObject(item->itemObject());
+  }
+}
+
+/* drag and drop support inspired partially from KMail */
+/* --------------------------------------------------- */
+static const int autoscrollMargin = 16;
+static const int initialScrollTime = 30;
+static const int initialScrollAccel = 5;
+static const int autoopenTime = 750;
+
+void KMyMoneyAccountTree::slotOpenFolder(void)
+{
+  m_autoopenTimer.stop();
+  if ( m_dropItem && !m_dropItem->isOpen() ) {
+    m_dropItem->setOpen( TRUE );
+    m_dropItem->repaint();
+  }
+}
+
+void KMyMoneyAccountTree::slotStartAutoScroll(void)
+{
+  if ( !m_autoscrollTimer.isActive() ) {
+    m_autoscrollTime = initialScrollTime;
+    m_autoscrollAccel = initialScrollAccel;
+    m_autoscrollTimer.start( m_autoscrollTime );
+  }
+}
+
+void KMyMoneyAccountTree::slotStopAutoScroll(void)
+{
+  m_autoscrollTimer.stop();
+}
+
+void KMyMoneyAccountTree::slotAutoScroll(void)
+{
+  // don't show a highlighter during scrolling
+  cleanItemHighlighter();
+
+  QPoint p = viewport()->mapFromGlobal( QCursor::pos() );
+
+  if ( m_autoscrollAccel-- <= 0 && m_autoscrollTime ) {
+      m_autoscrollAccel = initialScrollAccel;
+      m_autoscrollTime--;
+      m_autoscrollTimer.start( m_autoscrollTime );
+  }
+  int l = QMAX(1,(initialScrollTime-m_autoscrollTime));
+
+  int dx=0,dy=0;
+  if ( p.y() < autoscrollMargin ) {
+    dy = -l;
+  } else if ( p.y() > visibleHeight()-autoscrollMargin ) {
+    dy = +l;
+  }
+  if ( p.x() < autoscrollMargin ) {
+    dx = -l;
+  } else if ( p.x() > visibleWidth()-autoscrollMargin ) {
+    dx = +l;
+  }
+  if ( dx || dy ) {
+    scrollBy(dx, dy);
+  } else {
+    slotStopAutoScroll();
+  }
+}
+
+void KMyMoneyAccountTree::contentsDragMoveEvent(QDragMoveEvent* e)
+{
+  QPoint vp = contentsToViewport(e->pos());
+  QRect inside_margin((contentsX() > 0) ? autoscrollMargin : 0,
+                      (contentsY() > 0) ? autoscrollMargin : 0,
+    visibleWidth() - ((contentsX() + visibleWidth() < contentsWidth())
+      ? autoscrollMargin*2 : 0),
+    visibleHeight() - ((contentsY() + visibleHeight() < contentsHeight())
+      ? autoscrollMargin*2 : 0));
+
+  bool accepted = false;
+  QListViewItem *i = itemAt( vp );
+  if ( i ) {
+    accepted = acceptDrag(e);
+    if(accepted && !m_autoscrollTimer.isActive()) {
+      if (dropHighlighter()) {
+        QRect tmpRect = drawItemHighlighter(0, i);
+        if (tmpRect != m_lastDropHighlighter) {
+          cleanItemHighlighter();
+          m_lastDropHighlighter = tmpRect;
+          viewport()->repaint(tmpRect);
+        }
+      }
+    }
+    if ( !inside_margin.contains(vp) ) {
+      slotStartAutoScroll();
+      e->accept(QRect(0,0,0,0)); // Keep sending move events
+      m_autoopenTimer.stop();
+
+    } else {
+      if(accepted)
+        e->accept();
+      else
+        e->ignore();
+      if ( i != m_dropItem ) {
+        m_autoopenTimer.stop();
+        m_dropItem = i;
+        m_autoopenTimer.start( autoopenTime );
+      }
+    }
+    if ( accepted ) {
+      switch ( e->action() ) {
+        case QDropEvent::Copy:
+        case QDropEvent::Link:
+          break;
+        case QDropEvent::Move:
+          e->acceptAction();
+          break;
+        default:
+          break;
+      }
+    }
+  } else {
+    e->ignore();
+    m_autoopenTimer.stop();
+    m_dropItem = 0;
+  }
+
+  if(!accepted && dropHighlighter())
+    cleanItemHighlighter();
+}
+
+void KMyMoneyAccountTree::cleanItemHighlighter(void)
+{
+  if(m_lastDropHighlighter.isValid()) {
+    QRect rect=m_lastDropHighlighter;
+    m_lastDropHighlighter = QRect();
+    // make sure, we repaint a bit more. that's important during
+    // autoscroll. if we don't do that, parts of the highlighter
+    // do not get removed
+    rect.moveBy(-1, -1);
+    rect.setSize(rect.size() + QSize(2,2));
+    viewport()->repaint(rect, true);
+  }
+}
+
+void KMyMoneyAccountTree::viewportPaintEvent(QPaintEvent* e)
+{
+  QListView::viewportPaintEvent(e);
+
+  if (m_lastDropHighlighter.isValid() && e->rect().intersects(m_lastDropHighlighter)) {
+    QPainter painter(viewport());
+
+    // This is where we actually draw the drop-highlighter
+    style().drawPrimitive(QStyle::PE_FocusRect, &painter, m_lastDropHighlighter, colorGroup(),
+                          QStyle::Style_FocusAtBorder);
+  }
+}
+
+
+
+
+/****************************************************************************/
+/****************************************************************************/
+/****************************************************************************/
+
+const MyMoneyObject& KMyMoneyAccountTreeItem::itemObject(void) const
+{
+  if(m_type == Institution)
+    return m_institution;
+  return m_account;
+}
+
+KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const QString& txt) :
+  KListViewItem(parent),
+  m_displayFactor(MyMoneyMoney(1)),
+  m_type(Text)
+{
+  setText(0, txt);
+}
+
+KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyInstitution& institution) :
+  KListViewItem(parent),
+  m_displayFactor(MyMoneyMoney(1)),
+  m_institution(institution),
+  m_type(Institution)
+{
+  setText(0, institution.name());
+  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg("bank"))));
+}
+
+KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyAccount& account, const MyMoneySecurity& security, const QString& name) :
+  KListViewItem(parent),
+  m_security(security),
+  m_displayFactor(MyMoneyMoney(1)),
+  m_account(account),
+  m_type(Account)
+{
+  MyMoneyAccount acc(account);
+  if(!name.isEmpty())
+    acc.setName(name);
+  updateAccount(acc, true);
+}
+
+KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent, const MyMoneyAccount& account, const QValueList<MyMoneyPrice>& price, const MyMoneySecurity& security) :
+  KListViewItem(parent),
+  m_price(price),
+  m_security(security),
+  m_displayFactor(MyMoneyMoney(1)),
+  m_account(account),
+  m_type(Account)
+{
+  updateAccount(account, true);
+}
+
+KMyMoneyAccountTreeItem::~KMyMoneyAccountTreeItem()
+{
+}
+
+const QCString& KMyMoneyAccountTreeItem::id(void) const
+{
+  if(m_type == Institution)
+    return m_institution.id();
+  return m_account.id();
+}
+
+void KMyMoneyAccountTreeItem::updatePrice(const MyMoneyPrice& price)
+{
+  MyMoneyMoney oldValue = m_value;
+
+  // FIXME calculate new value based on price information
+
+  // check if we need to tell upstream account objects in the tree
+  // that the value has changed
+  if(oldValue != m_value) {
+    adjustTotalValue(m_value - oldValue);
+    KMyMoneyAccountTree* p = listView();
+    if(p) {
+      p->emitValueChanged();
     }
   }
 }
 
-void kMyMoneyAccountTree::slotReparentInstitution(void)
+void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool forceTotalUpdate)
 {
-  m_accFrom.setInstitutionId(m_institution.id());
-  try {
-    MyMoneyFile::instance()->modifyAccount(m_accFrom);
-  } catch(MyMoneyException *e) {
-    QString detail = i18n("%1 caught in %2 at line %3").arg(e->what()).arg(e->file()).arg(e->line());
-    KMessageBox::detailedError(this, i18n("Cannot move account to institution"), detail, i18n("Error"));
+  // make sure it's for the same object
+  if(account.id() != m_account.id())
+    return;
+
+  QString icon;
+  switch (m_account.accountGroup())
+  {
+    case MyMoneyAccount::Income:
+      icon = "account-types_income";
+      break;
+    case MyMoneyAccount::Expense:
+      icon = "account-types_expense";
+      break;
+    case MyMoneyAccount::Liability:
+      icon = "account-types_liability";
+      break;
+    case MyMoneyAccount::Asset:
+      icon = "account-types_asset";
+      break;
+    default:
+      icon = "account";
   }
+  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon))));
+
+  setText(KMyMoneyAccountTree::NameColumn, account.name());
+
+  // make sure we have the right parent object
+  // for the extended features
+  KMyMoneyAccountTree* lv = listView();
+  if(!lv)
+    return;
+
+  MyMoneyMoney oldValue = m_value;
+  m_account = account;
+  m_balance = account.balance();
+
+  // for income and liability accounts, we reverse the sign
+  switch(m_account.accountGroup()) {
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Liability:
+      m_balance = -m_balance;
+      break;
+
+    default:
+      break;
+  }
+
+  // calculate the new value by running down the price list
+  m_value = m_balance;
+  QValueList<MyMoneyPrice>::const_iterator it_p;
+  QCString security = m_security.id();
+  for(it_p = m_price.begin(); it_p != m_price.end(); ++it_p) {
+    m_value = m_value * (MyMoneyMoney(1,1) / (*it_p).rate(security));
+    if((*it_p).from() == security)
+      security = (*it_p).to();
+    else
+      security = (*it_p).from();
+  }
+
+  // check if we need to update the display of values
+  if(parent() && (isOpen() || m_account.accountList().count() == 0)) {
+    if(m_security.id() != listView()->baseCurrency().id()) {
+      setText(KMyMoneyAccountTree::BalanceColumn, m_balance.formatMoney(m_security.tradingSymbol(), MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction())));
+    }
+    setText(KMyMoneyAccountTree::ValueColumn, m_value.formatMoney(listView()->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(listView()->baseCurrency().smallestAccountFraction())) + "  ");
+  }
+
+  // check if we need to tell upstream account objects in the tree
+  // that the value has changed
+  if(oldValue != m_value || forceTotalUpdate) {
+    adjustTotalValue(m_value - oldValue);
+    lv->emitValueChanged();
+  }
+}
+
+void KMyMoneyAccountTreeItem::setOpen(bool open)
+{
+  // make sure, that we only run through the extened logic if
+  // the parent is a KMyMoneyAccountTree object
+  if(listView()) {
+    // show the top accounts always in total value
+    if((open || m_account.accountList().count() == 0) && parent()) {
+
+      // only show the balance, if its a different security/currency
+      if(m_security.id() != listView()->baseCurrency().id()) {
+        setText(KMyMoneyAccountTree::BalanceColumn, m_balance.formatMoney(m_security.tradingSymbol(), MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction())));
+      }
+      setText(KMyMoneyAccountTree::ValueColumn, m_value.formatMoney(listView()->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(listView()->baseCurrency().smallestAccountFraction())) + "  ");
+
+    } else {
+      setText(KMyMoneyAccountTree::BalanceColumn, " ");
+      if(parent())
+        setText(KMyMoneyAccountTree::ValueColumn, m_totalValue.formatMoney(listView()->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(listView()->baseCurrency().smallestAccountFraction())) + "  ");
+      else
+        setText(KMyMoneyAccountTree::ValueColumn, m_totalValue.formatMoney(listView()->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(listView()->baseCurrency().smallestAccountFraction())));
+    }
+  }
+  KListViewItem::setOpen(open);
+}
+
+void KMyMoneyAccountTreeItem::adjustTotalValue(const MyMoneyMoney& diff)
+{
+  m_totalValue += diff;
+
+  // if the entry has no children, or it is currently not open
+  // we need ot display the value of it
+  if(!firstChild() || (!isOpen() && firstChild())) {
+    if(firstChild())
+      setText(KMyMoneyAccountTree::BalanceColumn, " ");
+    if(parent())
+      setText(KMyMoneyAccountTree::ValueColumn, m_totalValue.formatMoney(listView()->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(listView()->baseCurrency().smallestAccountFraction())) + "  ");
+    else
+      setText(KMyMoneyAccountTree::ValueColumn, m_totalValue.formatMoney(listView()->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(listView()->baseCurrency().smallestAccountFraction())));
+  }
+
+  // now make sure, the upstream accounts also get notified about the value change
+  KMyMoneyAccountTreeItem* p = dynamic_cast<KMyMoneyAccountTreeItem*>(parent());
+  if(p != 0) {
+    p->adjustTotalValue(diff);
+  }
+}
+
+int KMyMoneyAccountTreeItem::compare(QListViewItem* i, int col, bool ascending) const
+{
+  KMyMoneyAccountTreeItem* item = dynamic_cast<KMyMoneyAccountTreeItem*>(i);
+  // do special sorting only if
+  // a) name
+  // b) account
+  // c) and different group
+  // in all other cases use the standard sorting
+  if(col != KMyMoneyAccountTree::NameColumn
+  || item == 0
+  || m_account.accountGroup() == item->m_account.accountGroup())
+    return KListViewItem::compare(i, col, ascending);
+
+  return (m_account.accountGroup() - item->m_account.accountGroup());
+}
+
+void KMyMoneyAccountTreeItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
+{
+  QFont font = KMyMoneySettings::listCellFont();
+
+  QColor colour = KMyMoneySettings::listColor();
+  QColor bgColour = KMyMoneySettings::listBGColor();
+
+  QColorGroup cg2(cg);
+
+  // display base accounts in bold
+  if(!parent())
+    font.setBold(true);
+
+  // strike out closed accounts
+  if(m_account.value(""))            // FIXME: not defined how closed accounts will be marked in engine
+    font.setStrikeOut(true);
+
+  p->setFont(font);
+
+  KListViewItem::paintCell(p, cg2, column, width, align);
 }
 
 #include "kmymoneyaccounttree.moc"

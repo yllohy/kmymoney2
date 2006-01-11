@@ -4,10 +4,12 @@ kinstance.h
 [Init]
 new KInstance("kmmwidgets");
 
-[kMyMoneyTitleLabel]
+[KMyMoneyTitleLabel]
 
 [kMyMoneyEdit]
 
 [kMyMoneyDateInput]
 
 [kMyMoneyPayee]
+
+[KMyMoneyAccountTree]

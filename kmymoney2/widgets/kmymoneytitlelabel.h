@@ -25,7 +25,6 @@
 #include <qimage.h>
 #include <qcolor.h>
 class QPixmap;
-class QCString;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -36,23 +35,24 @@ class QCString;
 /**
 @author ace jones
 */
-class kMyMoneyTitleLabel : public QLabel
+class KMyMoneyTitleLabel : public QLabel
 {
-Q_OBJECT
-Q_PROPERTY( QCString leftImageFile READ leftImageFile WRITE setLeftImageFile DESIGNABLE true )
-Q_PROPERTY( QCString rightImageFile READ rightImageFile WRITE setRightImageFile DESIGNABLE true )
-Q_PROPERTY( QColor bgColor READ bgColor WRITE setBgColor DESIGNABLE true )
-Q_PROPERTY( QString text READ text WRITE setText DESIGNABLE true )
+  Q_OBJECT
+  Q_PROPERTY( QString leftImageFile READ leftImageFile WRITE setLeftImageFile DESIGNABLE true )
+  Q_PROPERTY( QString rightImageFile READ rightImageFile WRITE setRightImageFile DESIGNABLE true )
+  Q_PROPERTY( QColor bgColor READ bgColor WRITE setBgColor DESIGNABLE true )
+  Q_PROPERTY( QString text READ text WRITE setText DESIGNABLE true )
+
 public:
-    kMyMoneyTitleLabel(QWidget *parent = 0, const char *name = 0);
-    ~kMyMoneyTitleLabel();
+    KMyMoneyTitleLabel(QWidget *parent = 0, const char *name = 0);
+    ~KMyMoneyTitleLabel();
 
     void setBgColor(const QColor& _color) { m_bgColor = _color; }
-    void setLeftImageFile(const QCString& _file);
-    void setRightImageFile(const QCString& _file);
+    void setLeftImageFile(const QString& _file);
+    void setRightImageFile(const QString& _file);
 
-    QCString leftImageFile(void) const { return m_leftImageFile; }
-    QCString rightImageFile(void) const { return m_rightImageFile; }
+    const QString& leftImageFile(void) const { return m_leftImageFile; }
+    const QString& rightImageFile(void) const { return m_rightImageFile; }
     QColor bgColor(void) const { return m_bgColor; }
     QString text(void) const { return m_text; }
 
@@ -71,8 +71,8 @@ private:
     QColor m_textColor;
     QString m_text;
 
-    QCString m_leftImageFile;
-    QCString m_rightImageFile;
+    QString m_leftImageFile;
+    QString m_rightImageFile;
 };
 
 #endif
