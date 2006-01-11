@@ -22,12 +22,14 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qwidgetlist.h>
 #include <qdatetime.h>
 #include <qstringlist.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <kcmdlineargs.h>
 #include <kaboutdata.h>
 #include <klocale.h>
@@ -37,8 +39,8 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "mymoney/mymoneyfile.h"
-#include "views/kbanklistitem.h"
 #include "kmymoney2.h"
 #include "kstartuplogo.h"
 #include "kmymoneyutils.h"

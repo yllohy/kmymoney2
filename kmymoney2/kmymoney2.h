@@ -179,7 +179,7 @@ protected slots:
     * This slot modifies the actions according to the specific view passed
     * as argument @p view.
     */
-  void slotSetViewSpecificActions(int view);
+  // void slotSetViewSpecificActions(int view);
 
   void slotShowTipOfTheDay(void);
 
@@ -212,7 +212,7 @@ protected slots:
     * selected institution and brings up the input dialog
     * and saves the information entered.
     */
-  void slotInstitutionEdit(void);
+  void slotInstitutionEdit(const MyMoneyObject& obj = MyMoneyInstitution());
 
   /**
     * Deletes the current selected institution.
@@ -354,14 +354,6 @@ public:
     * @retval QCStringList of process ids
     */
   const QCStringList instanceList(void) const;
-
-  void selectAccount(const MyMoneyAccount& account = MyMoneyAccount());
-
-  void selectInstitution(const MyMoneyInstitution& institution = MyMoneyInstitution());
-
-  void selectInvestment(const MyMoneyAccount& account = MyMoneyAccount());
-
-  void selectSchedule(const MyMoneySchedule& schedule = MyMoneySchedule());
 
   /**
     * Dump a list of the names of all defined KActions to stdout.
@@ -597,19 +589,35 @@ public slots:
   /**
     * This slot opens the selected account in the ledger view
     */
-  void slotAccountOpen(void);
+  void slotAccountOpen(const MyMoneyObject& = MyMoneyAccount());
+
+  /**
+    * This slot reparents account @p src to be a child of account @p dest
+    *
+    * @param src account to be reparented
+    * @param dest new parent
+    */
+  void slotReparentAccount(const MyMoneyAccount& src, const MyMoneyAccount& dest);
+
+  /**
+    * This slot reparents account @p src to be a held at institution @p dest
+    *
+    * @param src account to be reparented
+    * @param dest new parent institution
+    */
+  void slotReparentAccount(const MyMoneyAccount& src, const MyMoneyInstitution& dest);
 
   /**
     * This slot opens the account options menu at the current cursor
     * position.
     */
-  void slotShowAccountContextMenu(void);
+  void slotShowAccountContextMenu(const MyMoneyObject&);
 
   /**
     * This slot opens the institution options menu at the current cursor
     * position.
     */
-  void slotShowInstitutionContextMenu(void);
+  void slotShowInstitutionContextMenu(const MyMoneyObject&);
 
   /**
     * This slot opens the investment options menu at the current cursor
@@ -655,6 +663,14 @@ public slots:
     * This slot fires up the KCalc application
     */
   void slotToolsStartKCalc(void);
+
+  void slotSelectAccount(const MyMoneyObject& account = MyMoneyAccount());
+
+  void slotSelectInstitution(const MyMoneyObject& institution = MyMoneyInstitution());
+
+  void slotSelectInvestment(const MyMoneyAccount& account = MyMoneyAccount());
+
+  void slotSelectSchedule(const MyMoneySchedule& schedule = MyMoneySchedule());
 
 private:
   bool verifyImportedData(const MyMoneyAccount& account);

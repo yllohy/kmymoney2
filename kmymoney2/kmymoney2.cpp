@@ -179,7 +179,6 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
   setCentralWidget(frame);
 
   ::timetrace("done");
-  connect(myMoneyView, SIGNAL(viewActivated(int)), this, SLOT(slotSetViewSpecificActions(int)));
 
   connect(&proc,SIGNAL(processExited(KProcess *)),this,SLOT(slotProcessExited()));
 
@@ -247,8 +246,8 @@ void KMyMoney2App::initActions()
   KStdAction::quit(this, SLOT(slotFileQuit()), actionCollection());
   KStdAction::print(this, SLOT(slotPrintView()), actionCollection());
 
-  new KAction(i18n("Open database"), "",0,this,SLOT(slotOpenDatabase()),actionCollection(),"open_database");
-  new KAction(i18n("Save as database"), "",0,this,SLOT(slotSaveAsDatabase()),actionCollection(),"saveas_database");
+  new KAction(i18n("Open database ..."), "",0,this,SLOT(slotOpenDatabase()),actionCollection(),"open_database");
+  new KAction(i18n("Save as database ..."), "",0,this,SLOT(slotSaveAsDatabase()),actionCollection(),"saveas_database");
   new KAction(i18n("Backup..."), "backup",0,this,SLOT(slotFileBackup()),actionCollection(),"file_backup");
   new KAction(i18n("QIF ..."), "", 0, this, SLOT(slotQifImport()), actionCollection(), "file_import_qif");
   new KAction(i18n("Gnucash ..."), "", 0, this, SLOT(slotGncImport()), actionCollection(), "file_import_gnc");
@@ -961,9 +960,9 @@ void KMyMoney2App::slotFileClose()
       slotFileSave();
   }
 
-  selectAccount(MyMoneyAccount());
-  selectInstitution(MyMoneyInstitution());
-  selectInvestment(MyMoneyAccount());
+  slotSelectAccount(MyMoneyAccount());
+  slotSelectInstitution(MyMoneyInstitution());
+  slotSelectInvestment(MyMoneyAccount());
 
   myMoneyView->closeFile();
   m_fileName = KURL();
@@ -1988,6 +1987,7 @@ void KMyMoney2App::slotKeySettings()
 #endif
 }
 
+#if 0
 void KMyMoney2App::slotSetViewSpecificActions(int view)
 {
   action("file_print")->setEnabled(false);
@@ -1999,6 +1999,7 @@ void KMyMoney2App::slotSetViewSpecificActions(int view)
       break;
   }
 }
+#endif
 
 void KMyMoney2App::slotShowTipOfTheDay(void)
 {
@@ -2081,8 +2082,11 @@ void KMyMoney2App::slotInstitutionNew(void)
     slotInstitutionNew(dlg.institution());
 }
 
-void KMyMoney2App::slotInstitutionEdit(void)
+void KMyMoney2App::slotInstitutionEdit(const MyMoneyObject& obj)
 {
+  if(typeid(obj) != typeid(MyMoneyInstitution))
+    return;
+
   try {
     MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -2093,11 +2097,12 @@ void KMyMoney2App::slotInstitutionEdit(void)
     KNewBankDlg dlg(institution);
     if (dlg.exec()) {
       file->modifyInstitution(dlg.institution());
-      selectInstitution(dlg.institution());
+      slotSelectInstitution(dlg.institution());
     }
 
   } catch(MyMoneyException *e) {
-    KMessageBox::information(this, i18n("Unable to edit institution: %1").arg(e->what()));
+    if(!obj.id().isEmpty())
+      KMessageBox::information(this, i18n("Unable to edit institution: %1").arg(e->what()));
     delete e;
   }
 }
@@ -2458,7 +2463,7 @@ void KMyMoney2App::slotAccountEdit(void)
             file->reparentAccount(account, parent);
           }
           file->modifyAccount(account);
-          selectAccount(account);
+          slotSelectAccount(account);
 
         } catch(MyMoneyException* e) {
           KMessageBox::error( this, i18n("Unable to modify account '%1'. Cause: %2").arg(m_selectedAccount.name()).arg(e->what()));
@@ -2495,8 +2500,11 @@ void KMyMoney2App::slotAccountReconcile(void)
   }
 }
 
-void KMyMoney2App::slotAccountOpen(void)
+void KMyMoney2App::slotAccountOpen(const MyMoneyObject& obj)
 {
+  if(typeid(obj) != typeid(MyMoneyAccount))
+    return;
+
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount account;
 
@@ -2510,6 +2518,30 @@ void KMyMoney2App::slotAccountOpen(void)
     } catch(MyMoneyException *e) {
       delete e;
     }
+  }
+}
+
+void KMyMoney2App::slotReparentAccount(const MyMoneyAccount& _src, const MyMoneyInstitution& _dst)
+{
+  MyMoneyAccount src(_src);
+  src.setInstitutionId(_dst.id());
+  try {
+    MyMoneyFile::instance()->modifyAccount(src);
+  } catch(MyMoneyException* e) {
+    KMessageBox::sorry(this, QString("<p>")+i18n("<b>%1</b> cannot be moved to institution <b>%2</b>. Reason: %3").arg(src.name()).arg(_dst.name()).arg(e->what()));
+    delete e;
+  }
+}
+
+void KMyMoney2App::slotReparentAccount(const MyMoneyAccount& _src, const MyMoneyAccount& _dst)
+{
+  MyMoneyAccount src(_src);
+  MyMoneyAccount dst(_dst);
+  try {
+    MyMoneyFile::instance()->reparentAccount(src, dst);
+  } catch(MyMoneyException* e) {
+    KMessageBox::sorry(this, QString("<p>")+i18n("<b>%1</b> cannot be moved to <b>%2</b>. Reason: %3").arg(src.name()).arg(dst.name()).arg(e->what()));
+    delete e;
   }
 }
 
@@ -2661,13 +2693,20 @@ void KMyMoney2App::slotShowInvestmentContextMenu(void)
   showContextMenu("investment_context_menu");
 }
 
-void KMyMoney2App::slotShowAccountContextMenu(void)
+void KMyMoney2App::slotShowAccountContextMenu(const MyMoneyObject& obj)
 {
+  qDebug("KMyMoney2App::slotShowAccountContextMenu");
+  if(typeid(obj) != typeid(MyMoneyAccount))
+    return;
+
   showContextMenu("account_context_menu");
 }
 
-void KMyMoney2App::slotShowInstitutionContextMenu(void)
+void KMyMoney2App::slotShowInstitutionContextMenu(const MyMoneyObject& obj)
 {
+  if(typeid(obj) != typeid(MyMoneyInstitution))
+    return;
+
   showContextMenu("institution_context_menu");
 }
 
@@ -2827,32 +2866,38 @@ void KMyMoney2App::updateActions(void)
   }
 }
 
-void KMyMoney2App::selectInstitution(const MyMoneyInstitution& institution)
+void KMyMoney2App::slotSelectInstitution(const MyMoneyObject& institution)
 {
-  // qDebug("selectInstitution('%s')", institution.name().data());
-  m_selectedInstitution = institution;
+  if(typeid(institution) != typeid(MyMoneyInstitution))
+    return;
+
+  m_selectedInstitution = dynamic_cast<const MyMoneyInstitution&>(institution);
+  // qDebug("slotSelectInstitution('%s')", m_selectedInstitution.name().data());
   updateActions();
-  emit institutionSelected(institution);
+  emit institutionSelected(m_selectedInstitution);
 }
 
-void KMyMoney2App::selectAccount(const MyMoneyAccount& account)
+void KMyMoney2App::slotSelectAccount(const MyMoneyObject& account)
 {
-  // qDebug("selectAccount('%s')", account.name().data());
-  m_selectedAccount = account;
+  if(typeid(account) != typeid(MyMoneyAccount))
+    return;
+
+  m_selectedAccount = dynamic_cast<const MyMoneyAccount&>(account);
+  // qDebug("slotSelectAccount('%s')", m_selectedAccount.name().data());
   updateActions();
-  emit accountSelected(account);
+  emit accountSelected(m_selectedAccount);
 }
 
-void KMyMoney2App::selectInvestment(const MyMoneyAccount& account)
+void KMyMoney2App::slotSelectInvestment(const MyMoneyAccount& account)
 {
-  // qDebug("selectInvestment('%s')", account.name().data());
+  // qDebug("slotSelectInvestment('%s')", account.name().data());
   m_selectedInvestment = account;
   updateActions();
 }
 
-void KMyMoney2App::selectSchedule(const MyMoneySchedule& schedule)
+void KMyMoney2App::slotSelectSchedule(const MyMoneySchedule& schedule)
 {
-  // qDebug("selectSchedule('%s')", schedule.name().data());
+  // qDebug("slotSelectSchedule('%s')", schedule.name().data());
   m_selectedSchedule = schedule;
   updateActions();
 }
