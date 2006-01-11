@@ -269,7 +269,7 @@ void KNewAccountWizard::accept()
       return;
     }
 
-    KAccountListItem *item = (KAccountListItem*)m_accountListView->selectedItem();
+    KMyMoneyAccountTreeItem *item = dynamic_cast<KMyMoneyAccountTreeItem *>(m_accountListView->selectedItem());
     if (!item)
     {
       KMessageBox::error(this, i18n("Please select the account."));
@@ -298,7 +298,7 @@ void KNewAccountWizard::accept()
     s1.setAction(MyMoneySplit::ActionTransfer);
     s2.setAction(MyMoneySplit::ActionTransfer);
     s1.setAccountId(QCString()/*this_account?*/);  // This needs to be set by caller  (see KMyMoneyView::accountNew)
-    s2.setAccountId(item->accountID());
+    s2.setAccountId(item->id());
     s1.setPayeeId(payeeId);
     s2.setPayeeId(payeeId);
 
@@ -410,7 +410,7 @@ void KNewAccountWizard::loadSubAccountList(KListView* parent, const QCString& ac
   QValueList<MyMoneyAccount>::ConstIterator it;
 
   it = findAccount(accountId);
-  KAccountListItem *topLevelAccount = new KAccountListItem(parent, *it);
+  KMyMoneyAccountTreeItem *topLevelAccount = new KMyMoneyAccountTreeItem(parent, *it);
 
   QCStringList::ConstIterator it_s;
   for(it_s = (*it).accountList().begin(); it_s != (*it).accountList().end(); ++it_s) {
@@ -418,12 +418,12 @@ void KNewAccountWizard::loadSubAccountList(KListView* parent, const QCString& ac
   }
 }
 
-void KNewAccountWizard::loadSubAccountList(KAccountListItem* parent, const QCString& accountId)
+void KNewAccountWizard::loadSubAccountList(KMyMoneyAccountTreeItem* parent, const QCString& accountId)
 {
   QValueList<MyMoneyAccount>::ConstIterator it;
 
   it = findAccount(accountId);
-  KAccountListItem *topLevelAccount = new KAccountListItem(parent, *it);
+  KMyMoneyAccountTreeItem *topLevelAccount = new KMyMoneyAccountTreeItem(parent, *it);
 
   QCStringList::ConstIterator it_s;
   for(it_s = (*it).accountList().begin(); it_s != (*it).accountList().end(); ++it_s) {

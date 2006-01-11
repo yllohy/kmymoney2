@@ -47,17 +47,19 @@
 // Project Includes
 
 #include "knewaccountdlg.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneydateinput.h"
+
+#include <kmymoney/kmymoneyedit.h>
+#include <kmymoney/kmymoneydateinput.h>
+#include <kmymoney/mymoneyexception.h>
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneyaccounttree.h>
+
 #include "../widgets/kmymoneycurrencyselector.h"
 #include "../widgets/kmymoneyequity.h"
 #include "../widgets/kmymoneyaccountselector.h"
 
-#include "../mymoney/mymoneyexception.h"
-#include "../mymoney/mymoneyfile.h"
 #include "../dialogs/knewbankdlg.h"
 #include "../dialogs/konlinebankingsetupwizard.h"
-#include "../views/kbanklistitem.h"
 #include "../views/kmymoneyfile.h"
 #include "../kmymoneyutils.h"
 #include "../kmymoneysettings.h"
@@ -584,7 +586,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
     {
       if(groupType == MyMoneyAccount::Asset || type == MyMoneyAccount::Loan) {
         // Asset
-        KAccountListItem *assetTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
+        KMyMoneyAccountTreeItem *assetTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts,
                           assetAccount);
 
         if(m_parentAccount.id().isEmpty()) {
@@ -601,7 +603,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
               it != assetAccount.accountList().end();
               ++it )
         {
-          KAccountListItem *accountItem = new KAccountListItem(assetTopLevelAccount,
+          KMyMoneyAccountTreeItem *accountItem = new KMyMoneyAccountTreeItem(assetTopLevelAccount,
               file->account(*it));
 
           QCString id = file->account(*it).id();
@@ -623,7 +625,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
 
       if(groupType == MyMoneyAccount::Liability) {
         // Liability
-        KAccountListItem *liabilityTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
+        KMyMoneyAccountTreeItem *liabilityTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts,
                           liabilityAccount);
 
         if(m_parentAccount.id().isEmpty()) {
@@ -640,7 +642,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
               it != liabilityAccount.accountList().end();
               ++it )
         {
-          KAccountListItem *accountItem = new KAccountListItem(liabilityTopLevelAccount,
+          KMyMoneyAccountTreeItem *accountItem = new KMyMoneyAccountTreeItem(liabilityTopLevelAccount,
               file->account(*it));
 
           QCString id = file->account(*it).id();
@@ -664,7 +666,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
     {
       if(groupType == MyMoneyAccount::Income) {
         // Income
-        KAccountListItem *incomeTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
+        KMyMoneyAccountTreeItem *incomeTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts,
                           incomeAccount);
 
         if(m_parentAccount.id().isEmpty()) {
@@ -681,7 +683,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
               it != incomeAccount.accountList().end();
               ++it )
         {
-          KAccountListItem *accountItem = new KAccountListItem(incomeTopLevelAccount,
+          KMyMoneyAccountTreeItem *accountItem = new KMyMoneyAccountTreeItem(incomeTopLevelAccount,
               file->account(*it));
 
           QCString id = file->account(*it).id();
@@ -703,7 +705,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
 
       if(groupType == MyMoneyAccount::Expense) {
         // Expense
-        KAccountListItem *expenseTopLevelAccount = new KAccountListItem(m_qlistviewParentAccounts,
+        KMyMoneyAccountTreeItem *expenseTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts,
                           expenseAccount);
 
         if(m_parentAccount.id().isEmpty()) {
@@ -720,7 +722,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
               it != expenseAccount.accountList().end();
               ++it )
         {
-          KAccountListItem *accountItem = new KAccountListItem(expenseTopLevelAccount,
+          KMyMoneyAccountTreeItem *accountItem = new KMyMoneyAccountTreeItem(expenseTopLevelAccount,
               file->account(*it));
 
           QCString id = file->account(*it).id();
@@ -759,14 +761,14 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
   m_qlistviewParentAccounts->setEnabled(true);
 }
 
-void KNewAccountDlg::showSubAccounts(QCStringList accounts, KAccountListItem *parentItem,
+void KNewAccountDlg::showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeItem *parentItem,
                                      const QCString& parentId, const QCString& accountId)
 {
   MyMoneyFile *file = MyMoneyFile::instance();
 
   for ( QCStringList::ConstIterator it = accounts.begin(); it != accounts.end(); ++it )
   {
-    KAccountListItem *accountItem  = new KAccountListItem(parentItem,
+    KMyMoneyAccountTreeItem *accountItem  = new KMyMoneyAccountTreeItem(parentItem,
           file->account(*it));
 
     QCString id = file->account(*it).id();
@@ -796,13 +798,13 @@ void KNewAccountDlg::resizeEvent(QResizeEvent* e)
 
 void KNewAccountDlg::slotSelectionChanged(QListViewItem *item)
 {
-  KAccountListItem *accountItem = (KAccountListItem*)item;
+  KMyMoneyAccountTreeItem *accountItem = dynamic_cast<KMyMoneyAccountTreeItem*>(item);
   try
   {
     MyMoneyFile *file = MyMoneyFile::instance();
 
     //qDebug("Selected account id: %s", accountItem->accountID().data());
-    m_parentAccount = file->account(accountItem->accountID());
+    m_parentAccount = file->account(accountItem->id());
     m_subAccountLabel->setText(i18n("Is a sub account of %1").arg(m_parentAccount.name()));
     if(m_qlistviewParentAccounts->isEnabled()) {
       m_bSelectedParentAccount = true;

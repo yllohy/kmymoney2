@@ -28,11 +28,11 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyaccount.h"
-#include "../mymoney/mymoneymoney.h"
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneymoney.h>
 
 #include "../dialogs/knewaccountdlgdecl.h"
-#include "../views/kbanklistitem.h"
+class KMyMoneyAccountTreeItem;
 
 /**
   * This dialog lets you create/edit an account.
@@ -45,13 +45,13 @@ private:
   MyMoneyAccount m_parentAccount;
   bool m_bSelectedParentAccount;
 
-  KAccountListItem *m_parentItem;
-  KAccountListItem *m_accountItem;
+  KMyMoneyAccountTreeItem *m_parentItem;
+  KMyMoneyAccountTreeItem *m_accountItem;
   bool m_categoryEditor;
   bool m_isEditing;
 
   void initParentWidget(QCString parentId, const QCString& accountId);
-  void showSubAccounts(QCStringList accounts, KAccountListItem *parentItem, const QCString& parentId, const QCString& accountId);
+  void showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeItem *parentItem, const QCString& parentId, const QCString& accountId);
   void loadInstitutions(const QString&);
   void loadVatAccounts(void);
 

@@ -3,6 +3,7 @@
                              -------------------
     begin                : Thu Jul 4 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
+                           (C) 2005 Thomas Baumgart
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
                            Felix Rodriguez <frodriguez@users.sourceforge.net>
@@ -23,7 +24,6 @@
 #ifndef KNEWACCOUNTWIZARD_H
 #define KNEWACCOUNTWIZARD_H
 
-
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -32,18 +32,20 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneyscheduled.h>
+#include <kmymoney/mymoneyinstitution.h>
+#include <kmymoney/kmymoneyaccounttree.h>
+
 #include "../dialogs/knewaccountwizarddecl.h"
-#include "../mymoney/mymoneyaccount.h"
-#include "../mymoney/mymoneyscheduled.h"
-#include "../mymoney/mymoneyinstitution.h"
-#include "../views/kbanklistitem.h"
 
 /**
-  *@author Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
-class KNewAccountWizard : public KNewAccountWizardDecl  {
-   Q_OBJECT
+class KNewAccountWizard : public KNewAccountWizardDecl
+{
+  Q_OBJECT
 public:
   KNewAccountWizard(QWidget *parent=0, const char *name=0);
   ~KNewAccountWizard();
@@ -178,7 +180,7 @@ signals:
   void newCategory(MyMoneyAccount& acc);
 
 private:
-  void loadSubAccountList(KAccountListItem* parent, const QCString& accountId);
+  void loadSubAccountList(KMyMoneyAccountTreeItem* parent, const QCString& accountId);
   void loadSubAccountList(KListView* parent, const QCString& accountId);
   QValueList<MyMoneyAccount>::ConstIterator findAccount(const QCString& accountId) const;
   void loadAccountList(void);
