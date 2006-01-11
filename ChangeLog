@@ -16,6 +16,7 @@
     The template in "en_US" contains some additional US specific
     categories (taxes, etc.)
   * Renamed existing "default_accounts" to "old-default_accounts" 
+  * Added Joel Webbs schedule E and schedule E templates to en_US
 
 2006-01-07 Ace Jones <acejones@users.sourceforge.net>
   * Added UI for OFX online banking account setup 
