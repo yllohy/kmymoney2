@@ -120,6 +120,34 @@ private:
   bool    m_suspendUpdate;
 };
 
+/**
+  * This class represents an item in the transaction list view. It is used
+  * by the KPayeesView to select between transactions.
+  */
+class KTransactionListItem : public KListViewItem
+{
+public:
+  KTransactionListItem(KListView* view, KTransactionListItem* parent, const QCString& accountId, const QCString& transaction);
+  ~KTransactionListItem();
+
+  const QCString& transactionId(void) const { return m_transactionId; };
+
+  const QCString& accountId(void) const { return m_accountId; };
+
+  /**
+    * use my own paint method
+    */
+  void paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment);
+
+  /**
+    * use my own backgroundColor method
+    */
+  const QColor backgroundColor();
+
+private:
+  QCString m_transactionId;
+  QCString m_accountId;
+};
 
 class KPayeesView : public KPayeesViewDecl, MyMoneyObserver
 {

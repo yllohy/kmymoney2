@@ -1,14 +1,8 @@
 /***************************************************************************
-                          kcategoriesview.cpp  -  description
+                          kinstitutionsview.cpp
                              -------------------
-    begin                : Sun Jan 20 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+    copyright            : (C) 2005 by Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -23,46 +17,45 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qheader.h>
 #include <qlabel.h>
+#include <qtabwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <klocale.h>
 #include <kdebug.h>
+#include <klocale.h>
+#include <kstandarddirs.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include <kmymoney/mymoneyfile.h>
-#include <kmymoney/kmymoneyaccounttree.h>
-#include "kcategoriesview.h"
+#include "kinstitutionsview.h"
 #include "../kmymoneysettings.h"
 #include "../kmymoney2.h"
 
-
-KCategoriesView::KCategoriesView(QWidget *parent, const char *name ) :
-  KCategoriesViewDecl(parent, name),
-  m_incomeItem(0),
-  m_expenseItem(0),
+KInstitutionsView::KInstitutionsView(QWidget *parent, const char *name) :
+  KInstitutionsViewDecl(parent,name),
   m_needReload(false)
 {
-  m_accountTree->setSectionHeader(KMyMoneyAccountTree::NameColumn, i18n("Category"));
+  m_accountTree->header()->setLabel(0, i18n("Institution/Account"));
 
   connect(m_accountTree, SIGNAL(selectObject(const MyMoneyObject&)), this, SIGNAL(selectObject(const MyMoneyObject&)));
   connect(m_accountTree, SIGNAL(openContextMenu(const MyMoneyObject&)), this, SIGNAL(openContextMenu(const MyMoneyObject&)));
-  connect(m_accountTree, SIGNAL(valueChanged(void)), this, SLOT(slotUpdateProfit(void)));
+  connect(m_accountTree, SIGNAL(valueChanged(void)), this, SLOT(slotUpdateNetWorth(void)));
   connect(m_accountTree, SIGNAL(openObject(const MyMoneyObject&)), this, SIGNAL(openObject(const MyMoneyObject&)));
-  connect(m_accountTree, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)), this, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)));
+  connect(m_accountTree, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyInstitution&)), this, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyInstitution&)));
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadAccounts()));
 }
 
-KCategoriesView::~KCategoriesView()
+KInstitutionsView::~KInstitutionsView()
 {
 }
 
-void KCategoriesView::show(void)
+void KInstitutionsView::show(void)
 {
   if(m_needReload) {
     loadAccounts();
@@ -70,7 +63,7 @@ void KCategoriesView::show(void)
   }
 
   // don't forget base class implementation
-  KCategoriesViewDecl::show();
+  KInstitutionsViewDecl::show();
 
   // if we have a selected account, let the application know about it
   KMyMoneyAccountTreeItem *item = m_accountTree->selectedItem();
@@ -79,7 +72,7 @@ void KCategoriesView::show(void)
   }
 }
 
-void KCategoriesView::slotLoadAccounts(void)
+void KInstitutionsView::slotLoadAccounts(void)
 {
   if(isVisible()) {
     loadAccounts();
@@ -88,11 +81,11 @@ void KCategoriesView::slotLoadAccounts(void)
   }
 }
 
-void KCategoriesView::loadAccounts(void)
+void KInstitutionsView::loadAccounts(void)
 {
   QMap<QCString, bool> isOpen;
 
-  ::timetrace("start load categories view");
+  ::timetrace("start load institutions view");
   // remember the id of the current selected item
   KMyMoneyAccountTreeItem *item = m_accountTree->selectedItem();
   QCString selectedItemId = (item) ? item->id() : QCString();
@@ -119,9 +112,6 @@ void KCategoriesView::loadAccounts(void)
   m_securityMap.clear();
   m_transactionCountMap.clear();
 
-  // make sure, the pointers are not pointing to some deleted object
-  m_incomeItem = m_expenseItem = 0;
-
   MyMoneyFile* file = MyMoneyFile::instance();
 
   QValueList<MyMoneyAccount> alist = file->accountList();
@@ -141,23 +131,28 @@ void KCategoriesView::loadAccounts(void)
 
   m_accountTree->setBaseCurrency(file->baseCurrency());
 
-  bool haveUnusedCategories = false;
-
   // create the items
   try {
     const MyMoneySecurity& security = file->baseCurrency();
     m_accountTree->setBaseCurrency(security);
 
-    const MyMoneyAccount& income = file->income();
-    m_incomeItem = new KMyMoneyAccountTreeItem(m_accountTree, income, security, i18n("Income"));
-    haveUnusedCategories |= loadSubAccounts(m_incomeItem, income.accountList());
+    MyMoneyInstitution none;
+    none.setName(i18n("Accounts with no institution assigned"));
+    KMyMoneyAccountTreeItem* noInstitutionItem = new KMyMoneyAccountTreeItem(m_accountTree, none);
+    noInstitutionItem->setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg("bank"))));
 
-    const MyMoneyAccount& expense = file->expense();
-    m_expenseItem = new KMyMoneyAccountTreeItem(m_accountTree, expense, security, i18n("Expense"));
-    haveUnusedCategories |= loadSubAccounts(m_expenseItem, expense.accountList());
+    loadSubAccounts(noInstitutionItem, QCString());
+
+    QValueList<MyMoneyInstitution> list = file->institutionList();
+    QValueList<MyMoneyInstitution>::const_iterator it_i;
+    for(it_i = list.begin(); it_i != list.end(); ++it_i) {
+      KMyMoneyAccountTreeItem* item = new KMyMoneyAccountTreeItem(m_accountTree, *it_i);
+      item->setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg("bank"))));
+      loadSubAccounts(item, (*it_i).id());
+    }
 
   } catch(MyMoneyException *e) {
-    kdDebug(2) << "Problem in accountsview: " << e->what();
+    kdDebug(2) << "Problem in institutions view: " << e->what();
     delete e;
   }
 
@@ -182,85 +177,92 @@ void KCategoriesView::loadAccounts(void)
   m_accountTree->setUpdatesEnabled(true);
   m_accountTree->repaintContents();
 
-  // update the hint if categories are hidden
-  m_hiddenCategories->setShown(haveUnusedCategories);
-
-  ::timetrace("done load categories view");
+  ::timetrace("done load institutions view");
 }
 
-bool KCategoriesView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList)
+void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCString& institutionId)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  bool unused = false;
+  QMap<QCString, MyMoneyAccount>::const_iterator it_a;
+  MyMoneyMoney  value;
 
-  QCStringList::const_iterator it_a;
-  for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
-    const MyMoneyAccount& acc = m_accountMap[*it_a];
-    QValueList<MyMoneyPrice> prices;
-    MyMoneySecurity security = file->baseCurrency();
-    try {
-      if(acc.accountType() == MyMoneyAccount::Stock) {
-        security = m_securityMap[acc.currencyId()];
-        prices += file->price(acc.currencyId(), security.tradingCurrency());
-        if(security.tradingCurrency() != file->baseCurrency().id()) {
-          MyMoneySecurity sec = m_securityMap[security.tradingCurrency()];
-          prices += file->price(sec.id(), file->baseCurrency().id());
+  for(it_a = m_accountMap.begin(); it_a != m_accountMap.end(); ++it_a) {
+    const MyMoneyAccount& acc = *it_a;
+    MyMoneyMoney factor(1,1);
+    switch(acc.accountGroup()) {
+      case MyMoneyAccount::Liability:
+        factor = MyMoneyMoney(-1,1);
+        // tricky fall through here
+
+      case MyMoneyAccount::Asset:
+        if(acc.institutionId() == institutionId) {
+          QValueList<MyMoneyPrice> prices;
+          MyMoneySecurity security = file->baseCurrency();
+          try {
+            if(acc.accountType() == MyMoneyAccount::Stock) {
+              security = m_securityMap[acc.currencyId()];
+              prices += file->price(acc.currencyId(), security.tradingCurrency());
+              if(security.tradingCurrency() != file->baseCurrency().id()) {
+                MyMoneySecurity sec = m_securityMap[security.tradingCurrency()];
+                prices += file->price(sec.id(), file->baseCurrency().id());
+              }
+            } else if(acc.currencyId() != file->baseCurrency().id()) {
+              if(acc.currencyId() != file->baseCurrency().id()) {
+                security = m_securityMap[acc.currencyId()];
+                prices += file->price(acc.currencyId(), file->baseCurrency().id());
+              }
+            }
+
+          } catch(MyMoneyException *e) {
+            kdDebug(2) << __PRETTY_FUNCTION__ << " caught exception while adding " << acc.name() << "[" << acc.id() << "]: " << e->what();
+            delete e;
+          }
+
+          KMyMoneyAccountTreeItem* item = new KMyMoneyAccountTreeItem(parent, acc, prices, security);
+          value += (item->totalValue() * factor);
         }
-      } else if(acc.currencyId() != file->baseCurrency().id()) {
-        if(acc.currencyId() != file->baseCurrency().id()) {
-          security = m_securityMap[acc.currencyId()];
-          prices += file->price(acc.currencyId(), file->baseCurrency().id());
-        }
-      }
+        break;
 
-    } catch(MyMoneyException *e) {
-      kdDebug(2) << __PRETTY_FUNCTION__ << " caught exception while adding " << acc.name() << "[" << acc.id() << "]: " << e->what();
-      delete e;
-    }
-
-    KMyMoneyAccountTreeItem* item = new KMyMoneyAccountTreeItem(parent, acc, prices, security);
-    unused |= loadSubAccounts(item, acc.accountList());
-
-    // no child accounts and not transactions in this account means 'unused'
-    bool thisUnused = (!item->firstChild()) && (m_transactionCountMap[acc.id()] == 0);
-
-    // In case of a category which is unused and we are requested to suppress
-    // the display of those,
-    if(acc.accountGroup() == MyMoneyAccount::Income
-    || acc.accountGroup() == MyMoneyAccount::Expense) {
-      if(KMyMoneySettings::hideUnusedCategory() && thisUnused) {
-        unused = true;
-        delete item;
-      }
+      default:
+        break;
     }
   }
-  return unused;
+
+  // the calulated value for the institution is not correct as
+  // it does not take the negative sign for liability accounts
+  // into account. So we correct this here with the value we
+  // have calculated while filling the list
+  parent->adjustTotalValue(-parent->totalValue());  // load a 0
+  parent->adjustTotalValue(value);                  // now store the new value
 }
 
-void KCategoriesView::slotUpdateProfit(void)
+void KInstitutionsView::slotUpdateNetWorth(void)
 {
-  if(!m_incomeItem || !m_expenseItem)
-    return;
+  MyMoneyMoney netWorth;
 
-  MyMoneyMoney profit = m_incomeItem->totalValue() - m_expenseItem->totalValue();
+  // calculate by going through the account trees top items
+  // and summing up the total value shown there
+  KMyMoneyAccountTreeItem* item = dynamic_cast<KMyMoneyAccountTreeItem*>(m_accountTree->firstChild());
+  while(item) {
+    netWorth += item->totalValue();
+    item = dynamic_cast<KMyMoneyAccountTreeItem*>(item->nextSibling());
+  }
 
-  QString s(i18n("Profit: "));
-  if(profit.isNegative())
-    s = i18n("Loss: ");
+  QString s(i18n("Net Worth: "));
 
   // FIXME figure out how to deal with the approximate
   // if(!(file->totalValueValid(assetAccount.id()) & file->totalValueValid(liabilityAccount.id())))
   //  s += "~ ";
 
   s.replace(QString(" "), QString("&nbsp;"));
-  if(profit.isNegative()) {
+  if(netWorth.isNegative()) {
     s += "<b><font color=\"red\">";
   }
   const MyMoneySecurity& sec = MyMoneyFile::instance()->baseCurrency();
-  QString v(profit.abs().formatMoney(sec.tradingSymbol(), MyMoneyMoney::denomToPrec(sec.smallestAccountFraction())));
+  QString v(netWorth.formatMoney(sec.tradingSymbol(), MyMoneyMoney::denomToPrec(sec.smallestAccountFraction())));
   s += v.replace(QString(" "), QString("&nbsp;"));
-  if(profit.isNegative()) {
+  if(netWorth.isNegative()) {
     s += "</font></b>";
   }
 
@@ -268,5 +270,4 @@ void KCategoriesView::slotUpdateProfit(void)
   m_totalProfitsLabel->setText(s);
 }
 
-#include "kcategoriesview.moc"
-
+#include "kinstitutionsview.moc"

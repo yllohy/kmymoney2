@@ -184,7 +184,7 @@ void KInvestmentView::slotItemDoubleClicked(QListViewItem* /*pItem*/, const QPoi
 
 void KInvestmentView::slotSelectionChanged(QListViewItem *item)
 {
-  kmymoney2->selectInvestment();
+  kmymoney2->slotSelectInvestment();
 
   KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(item);
   if(pItem) {
@@ -192,7 +192,7 @@ void KInvestmentView::slotSelectionChanged(QListViewItem *item)
 
     try {
       MyMoneyAccount account = file->account(pItem->account().id());
-      kmymoney2->selectInvestment(account);
+      kmymoney2->slotSelectInvestment(account);
 
     } catch (MyMoneyException *e) {
       delete e;
@@ -202,10 +202,10 @@ void KInvestmentView::slotSelectionChanged(QListViewItem *item)
 
 void KInvestmentView::slotListRightMouse(QListViewItem* /*item*/, const QPoint& /*point*/, int /*x*/)
 {
-  kmymoney2->selectInvestment();
+  kmymoney2->slotSelectInvestment();
   KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(investmentTable->selectedItem());
   if(pItem) {
-    kmymoney2->selectInvestment(MyMoneyFile::instance()->account(pItem->account().id()));
+    kmymoney2->slotSelectInvestment(MyMoneyFile::instance()->account(pItem->account().id()));
   }
   emit investmentRightMouseClick();
 }
@@ -218,12 +218,12 @@ void KInvestmentView::slotTabSelected(QWidget *pWidget)
   if(pWidget == m_summaryTab) {
     KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(investmentTable->selectedItem());
     if(pItem) {
-      kmymoney2->selectInvestment(MyMoneyFile::instance()->account(pItem->account().id()));
+      kmymoney2->slotSelectInvestment(MyMoneyFile::instance()->account(pItem->account().id()));
     }
     updateDisplay();
 
   } else {
-    kmymoney2->selectInvestment();
+    kmymoney2->slotSelectInvestment();
   }
 }
 
@@ -319,7 +319,7 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString
     // if the account id differs, then we have to do something
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
     if(isVisible())
-      kmymoney2->selectAccount(acc);
+      kmymoney2->slotSelectAccount(acc);
     if(m_accountId != id) {
       // cancel any pending edit operation in the ledger views
       // when switching to a different account
@@ -358,7 +358,7 @@ const bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString
     slotCancelEdit();
     m_accountComboBox->setSelected(QCString());
     if(isVisible())
-      kmymoney2->selectAccount();
+      kmymoney2->slotSelectAccount();
   }
 
   // keep this as the current account if we loaded a different one
@@ -377,11 +377,11 @@ void KInvestmentView::show(void)
   if(!m_accountId.isEmpty()) {
     try {
       MyMoneyAccount acc = MyMoneyFile::instance()->account(m_accountId);
-      kmymoney2->selectAccount(acc);
+      kmymoney2->slotSelectAccount(acc);
       if(m_tab->currentPage() == m_summaryTab) {
         KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(investmentTable->selectedItem());
         if(pItem) {
-          kmymoney2->selectInvestment(MyMoneyFile::instance()->account(pItem->account().id()));
+          kmymoney2->slotSelectInvestment(MyMoneyFile::instance()->account(pItem->account().id()));
         }
       }
     } catch(MyMoneyException* e) {

@@ -16,7 +16,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="kMyMoneyTitleLabel">
+        <widget class="KMyMoneyTitleLabel">
             <property name="name">
                 <cstring>titleLabel</cstring>
             </property>
@@ -163,25 +163,6 @@
             <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image0</pixmap>
-    </customwidget>
-    <customwidget>
-        <class>kMyMoneyTitleLabel</class>
-        <header location="local">../widgets/kmymoneytitlelabel.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-        <property type="String">text</property>
-        <property type="CString">leftImageFile</property>
-        <property type="CString">rightImageFile</property>
     </customwidget>
 </customwidgets>
 <images>

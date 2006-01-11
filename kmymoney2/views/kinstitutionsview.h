@@ -1,15 +1,8 @@
 /***************************************************************************
-                          kcategoriesview.h  -  description
+                             kinstitutionssview.h
                              -------------------
-    begin                : Sun Jan 20 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
-                           (C) 2005 by Thomas Baumgart
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+    copyright            : (C) 2005 by Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -21,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KCATEGORIESVIEW_H
-#define KCATEGORIESVIEW_H
+#ifndef KINSTITUTIONSVIEW_H
+#define KINSTITUTIONSVIEW_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -33,23 +26,27 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/kmymoneyaccounttree.h>
 #include <kmymoney/mymoneyutils.h>
 
-#include "kcategoriesviewdecl.h"
+#include "../views/kinstitutionsviewdecl.h"
 
 /**
-  * @author Michael Edwardes, Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
-class KCategoriesView : public KCategoriesViewDecl
+/**
+  * This class implements the institutions hierarchical 'view'.
+  */
+class KInstitutionsView : public KInstitutionsViewDecl
 {
   Q_OBJECT
-public:
-  KCategoriesView(QWidget *parent=0, const char *name=0);
-  virtual ~KCategoriesView();
+private:
 
+public:
+  KInstitutionsView(QWidget *parent=0, const char *name=0);
+  virtual ~KInstitutionsView();
 
 public slots:
   void slotLoadAccounts(void);
@@ -62,10 +59,10 @@ public slots:
 
 protected:
   void loadAccounts(void);
-  bool loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList);
+  void loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCString& institutionId);
 
 protected slots:
-  void slotUpdateProfit(void);
+  void slotUpdateNetWorth(void);
 
 private:
   /**
@@ -90,26 +87,24 @@ signals:
 
   /**
     * This signal will be emitted when the left mouse button is double
-    * clicked (actually the KDE executed setting is used) on an account.
+    * clicked (actually the KDE executed setting is used) on an account
+    * or institution.
     */
   void openObject(const MyMoneyObject& obj);
 
   /**
     * This signal is emitted, when the user selected to reparent the
-    * account @p acc to be a subordinate account of @p parent.
+    * account @p acc to be a subordinate account of @p institution.
     *
     * @param acc const reference to account to be reparented
-    * @param parent const reference to new parent account
+    * @param institution const reference to new institution
     */
-  void reparent(const MyMoneyAccount&, const MyMoneyAccount&);
+  void reparent(const MyMoneyAccount& acc, const MyMoneyInstitution& institution);
 
 private:
   QMap<QCString, MyMoneyAccount>      m_accountMap;
   QMap<QCString, MyMoneySecurity>     m_securityMap;
   QMap<QCString, unsigned long>       m_transactionCountMap;
-
-  KMyMoneyAccountTreeItem*            m_incomeItem;
-  KMyMoneyAccountTreeItem*            m_expenseItem;
 
   /// set if a view needs to be reloaded during show()
   bool                                m_needReload;

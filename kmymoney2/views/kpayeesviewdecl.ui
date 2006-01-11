@@ -25,7 +25,7 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="kMyMoneyTitleLabel">
+        <widget class="KMyMoneyTitleLabel">
             <property name="name">
                 <cstring>titleLabel</cstring>
             </property>
@@ -514,27 +514,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-    <customwidget>
-        <class>kMyMoneyTitleLabel</class>
-        <header location="local">../widgets/kmymoneytitlelabel.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-        <property type="String">text</property>
-        <property type="CString">leftImageFile</property>
-        <property type="CString">rightImageFile</property>
-    </customwidget>
-</customwidgets>
 <images>
     <image name="image0">
         <data format="XBM.GZ" length="79">789c534e494dcbcc4b554829cdcdad8c2fcf4c29c95030e0524611cd48cd4ccf28010a1797249664262b2467241641a592324b8aa363156c15aab914146aadb90067111b1f</data>

@@ -1,14 +1,8 @@
 /***************************************************************************
-                          kcategoriesview.cpp  -  description
+                          kaccountsview.cpp
                              -------------------
-    begin                : Sun Jan 20 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+    copyright            : (C) 2005 by Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,45 +18,46 @@
 // QT Includes
 
 #include <qlabel.h>
+#include <qtabwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <klocale.h>
 #include <kdebug.h>
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include <kmymoney/mymoneyfile.h>
-#include <kmymoney/kmymoneyaccounttree.h>
-#include "kcategoriesview.h"
+#include "kaccountsview.h"
 #include "../kmymoneysettings.h"
 #include "../kmymoney2.h"
 
-
-KCategoriesView::KCategoriesView(QWidget *parent, const char *name ) :
-  KCategoriesViewDecl(parent, name),
-  m_incomeItem(0),
-  m_expenseItem(0),
+KAccountsView::KAccountsView(QWidget *parent, const char *name) :
+  KAccountsViewDecl(parent,name),
+  m_assetItem(0),
+  m_liabilityItem(0),
   m_needReload(false)
 {
-  m_accountTree->setSectionHeader(KMyMoneyAccountTree::NameColumn, i18n("Category"));
+  // FIXME the code for the icon view is not present yet
+  m_tab->setCurrentPage(0);
+  m_tab->setTabEnabled(m_tab->page(1), false);
 
   connect(m_accountTree, SIGNAL(selectObject(const MyMoneyObject&)), this, SIGNAL(selectObject(const MyMoneyObject&)));
   connect(m_accountTree, SIGNAL(openContextMenu(const MyMoneyObject&)), this, SIGNAL(openContextMenu(const MyMoneyObject&)));
-  connect(m_accountTree, SIGNAL(valueChanged(void)), this, SLOT(slotUpdateProfit(void)));
+  connect(m_accountTree, SIGNAL(valueChanged(void)), this, SLOT(slotUpdateNetWorth(void)));
   connect(m_accountTree, SIGNAL(openObject(const MyMoneyObject&)), this, SIGNAL(openObject(const MyMoneyObject&)));
   connect(m_accountTree, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)), this, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)));
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadAccounts()));
 }
 
-KCategoriesView::~KCategoriesView()
+KAccountsView::~KAccountsView()
 {
 }
 
-void KCategoriesView::show(void)
+void KAccountsView::show(void)
 {
   if(m_needReload) {
     loadAccounts();
@@ -70,7 +65,7 @@ void KCategoriesView::show(void)
   }
 
   // don't forget base class implementation
-  KCategoriesViewDecl::show();
+  KAccountsViewDecl::show();
 
   // if we have a selected account, let the application know about it
   KMyMoneyAccountTreeItem *item = m_accountTree->selectedItem();
@@ -79,7 +74,7 @@ void KCategoriesView::show(void)
   }
 }
 
-void KCategoriesView::slotLoadAccounts(void)
+void KAccountsView::slotLoadAccounts(void)
 {
   if(isVisible()) {
     loadAccounts();
@@ -88,11 +83,11 @@ void KCategoriesView::slotLoadAccounts(void)
   }
 }
 
-void KCategoriesView::loadAccounts(void)
+void KAccountsView::loadAccounts(void)
 {
   QMap<QCString, bool> isOpen;
 
-  ::timetrace("start load categories view");
+  ::timetrace("start load accounts view");
   // remember the id of the current selected item
   KMyMoneyAccountTreeItem *item = m_accountTree->selectedItem();
   QCString selectedItemId = (item) ? item->id() : QCString();
@@ -120,7 +115,7 @@ void KCategoriesView::loadAccounts(void)
   m_transactionCountMap.clear();
 
   // make sure, the pointers are not pointing to some deleted object
-  m_incomeItem = m_expenseItem = 0;
+  m_assetItem = m_liabilityItem = 0;
 
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -148,13 +143,27 @@ void KCategoriesView::loadAccounts(void)
     const MyMoneySecurity& security = file->baseCurrency();
     m_accountTree->setBaseCurrency(security);
 
+    const MyMoneyAccount& asset = file->asset();
+    m_assetItem = new KMyMoneyAccountTreeItem(m_accountTree, asset, security, i18n("Asset"));
+    loadSubAccounts(m_assetItem, asset.accountList());
+
+    const MyMoneyAccount& liability = file->liability();
+    m_liabilityItem = new KMyMoneyAccountTreeItem(m_accountTree, liability, security, i18n("Liability"));
+    loadSubAccounts(m_liabilityItem, liability.accountList());
+
     const MyMoneyAccount& income = file->income();
-    m_incomeItem = new KMyMoneyAccountTreeItem(m_accountTree, income, security, i18n("Income"));
-    haveUnusedCategories |= loadSubAccounts(m_incomeItem, income.accountList());
+    KMyMoneyAccountTreeItem *incomeItem = new KMyMoneyAccountTreeItem(m_accountTree, income, security, i18n("Income"));
+    haveUnusedCategories |= loadSubAccounts(incomeItem, income.accountList());
 
     const MyMoneyAccount& expense = file->expense();
-    m_expenseItem = new KMyMoneyAccountTreeItem(m_accountTree, expense, security, i18n("Expense"));
-    haveUnusedCategories |= loadSubAccounts(m_expenseItem, expense.accountList());
+    KMyMoneyAccountTreeItem *expenseItem = new KMyMoneyAccountTreeItem(m_accountTree, expense, security, i18n("Expense"));
+    haveUnusedCategories |= loadSubAccounts(expenseItem, expense.accountList());
+
+    if(KMyMoneySettings::expertMode()) {
+      const MyMoneyAccount& equity = file->equity();
+      KMyMoneyAccountTreeItem *equityItem = new KMyMoneyAccountTreeItem(m_accountTree, equity, security, i18n("Equity"));
+      loadSubAccounts(equityItem, equity.accountList());
+    }
 
   } catch(MyMoneyException *e) {
     kdDebug(2) << "Problem in accountsview: " << e->what();
@@ -185,10 +194,10 @@ void KCategoriesView::loadAccounts(void)
   // update the hint if categories are hidden
   m_hiddenCategories->setShown(haveUnusedCategories);
 
-  ::timetrace("done load categories view");
+  ::timetrace("done load accounts view");
 }
 
-bool KCategoriesView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList)
+bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -238,29 +247,27 @@ bool KCategoriesView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCS
   return unused;
 }
 
-void KCategoriesView::slotUpdateProfit(void)
+void KAccountsView::slotUpdateNetWorth(void)
 {
-  if(!m_incomeItem || !m_expenseItem)
+  if(!m_assetItem || !m_liabilityItem)
     return;
 
-  MyMoneyMoney profit = m_incomeItem->totalValue() - m_expenseItem->totalValue();
+  MyMoneyMoney netWorth = m_assetItem->totalValue() - m_liabilityItem->totalValue();
 
-  QString s(i18n("Profit: "));
-  if(profit.isNegative())
-    s = i18n("Loss: ");
+  QString s(i18n("Net Worth: "));
 
   // FIXME figure out how to deal with the approximate
   // if(!(file->totalValueValid(assetAccount.id()) & file->totalValueValid(liabilityAccount.id())))
   //  s += "~ ";
 
   s.replace(QString(" "), QString("&nbsp;"));
-  if(profit.isNegative()) {
+  if(netWorth.isNegative()) {
     s += "<b><font color=\"red\">";
   }
   const MyMoneySecurity& sec = MyMoneyFile::instance()->baseCurrency();
-  QString v(profit.abs().formatMoney(sec.tradingSymbol(), MyMoneyMoney::denomToPrec(sec.smallestAccountFraction())));
+  QString v(netWorth.formatMoney(sec.tradingSymbol(), MyMoneyMoney::denomToPrec(sec.smallestAccountFraction())));
   s += v.replace(QString(" "), QString("&nbsp;"));
-  if(profit.isNegative()) {
+  if(netWorth.isNegative()) {
     s += "</font></b>";
   }
 
@@ -268,5 +275,4 @@ void KCategoriesView::slotUpdateProfit(void)
   m_totalProfitsLabel->setText(s);
 }
 
-#include "kcategoriesview.moc"
-
+#include "kaccountsview.moc"

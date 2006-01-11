@@ -1,15 +1,8 @@
 /***************************************************************************
-                          kcategoriesview.h  -  description
+                             kaccountssview.h
                              -------------------
-    begin                : Sun Jan 20 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
-                           (C) 2005 by Thomas Baumgart
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+    copyright            : (C) 2005 by Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -21,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KCATEGORIESVIEW_H
-#define KCATEGORIESVIEW_H
+#ifndef KACCOUNTSSVIEW_H
+#define KACCOUNTSSVIEW_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -37,19 +30,23 @@
 #include <kmymoney/kmymoneyaccounttree.h>
 #include <kmymoney/mymoneyutils.h>
 
-#include "kcategoriesviewdecl.h"
+#include "../views/kaccountsviewdecl.h"
 
 /**
-  * @author Michael Edwardes, Thomas Baumgart
+  * @author Thomas Baumgart
   */
 
-class KCategoriesView : public KCategoriesViewDecl
+/**
+  * This class implements the accounts hierarchical 'view'.
+  */
+class KAccountsView : public KAccountsViewDecl
 {
   Q_OBJECT
-public:
-  KCategoriesView(QWidget *parent=0, const char *name=0);
-  virtual ~KCategoriesView();
+private:
 
+public:
+  KAccountsView(QWidget *parent=0, const char *name=0);
+  virtual ~KAccountsView();
 
 public slots:
   void slotLoadAccounts(void);
@@ -65,7 +62,7 @@ protected:
   bool loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList);
 
 protected slots:
-  void slotUpdateProfit(void);
+  void slotUpdateNetWorth(void);
 
 private:
   /**
@@ -108,8 +105,8 @@ private:
   QMap<QCString, MyMoneySecurity>     m_securityMap;
   QMap<QCString, unsigned long>       m_transactionCountMap;
 
-  KMyMoneyAccountTreeItem*            m_incomeItem;
-  KMyMoneyAccountTreeItem*            m_expenseItem;
+  KMyMoneyAccountTreeItem*            m_assetItem;
+  KMyMoneyAccountTreeItem*            m_liabilityItem;
 
   /// set if a view needs to be reloaded during show()
   bool                                m_needReload;

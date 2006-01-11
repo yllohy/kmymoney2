@@ -32,6 +32,7 @@
 #include <qmultilineedit.h>
 #include <qpixmap.h>
 #include <qtabwidget.h>
+#include <qcursor.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -55,10 +56,11 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneyaccounttree.h>
+
 #include "kpayeesview.h"
-#include "kbanklistitem.h"
 #include "../dialogs/ktransactionreassigndlg.h"
-#include "../mymoney/mymoneyfile.h"
 #include "../kmymoneyutils.h"
 
 // *** KPayeeListItem Implementation ***
@@ -108,6 +110,32 @@ void KPayeeListItem::update(const QCString& /* id */)
     listView()->setSelected(this, true);
   }
 }
+
+KTransactionListItem::KTransactionListItem(KListView* view, KTransactionListItem* parent, const QCString& accountId, const QCString& transactionId) :
+  KListViewItem(view, parent)
+{
+  m_accountId = accountId;
+  m_transactionId = transactionId;
+}
+
+KTransactionListItem::~KTransactionListItem()
+{
+}
+
+void KTransactionListItem::paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment)
+{
+  QColorGroup _cg = cg;
+  _cg.setColor(QColorGroup::Base, backgroundColor());
+  QListViewItem::paintCell(p, _cg, column, width, alignment);
+}
+                                                                                                               const QColor KTransactionListItem::backgroundColor()
+{
+  QColor bgColour = KMyMoneyUtils::backgroundColour();
+  QColor listColour = KMyMoneyUtils::listColour();
+  return isAlternate() ? bgColour : listColour;
+}
+
+
 
 
 // *** KPayeesView Implementation ***
@@ -531,15 +559,15 @@ void KPayeesView::slotDeletePayee()
     // now get a list of all schedules that make use of one of the payees
     QValueList<MyMoneySchedule> all_schedules = file->scheduleList();
     QValueList<MyMoneySchedule> used_schedules;
-    for (QValueList<MyMoneySchedule>::ConstIterator it = all_schedules.begin(); 
-         it != all_schedules.end(); ++it) 
+    for (QValueList<MyMoneySchedule>::ConstIterator it = all_schedules.begin();
+         it != all_schedules.end(); ++it)
     {
       // loop over all splits in the transaction of the schedule
-      for (QValueList<MyMoneySplit>::ConstIterator s_it = (*it).transaction().splits().begin(); 
-           s_it != (*it).transaction().splits().end(); ++s_it) 
+      for (QValueList<MyMoneySplit>::ConstIterator s_it = (*it).transaction().splits().begin();
+           s_it != (*it).transaction().splits().end(); ++s_it)
       {
         // is the payee in the split to be deleted?
-        if (std::find(selected_payees.begin(), selected_payees.end(), (*s_it).payeeId()) != selected_payees.end()) 
+        if (std::find(selected_payees.begin(), selected_payees.end(), (*s_it).payeeId()) != selected_payees.end())
           used_schedules.push_back(*it); // remember this schedule
       }
     }
@@ -585,8 +613,8 @@ void KPayeesView::slotDeletePayee()
         } // for - Transactions
 
         // now loop over all schedules and reassign payees
-        for (QValueList<MyMoneySchedule>::iterator it = used_schedules.begin(); 
-             it != used_schedules.end(); ++it) 
+        for (QValueList<MyMoneySchedule>::iterator it = used_schedules.begin();
+             it != used_schedules.end(); ++it)
         {
           // create copy of transaction in current schedule
           MyMoneyTransaction trans = (*it).transaction();
@@ -719,7 +747,7 @@ void KPayeesView::slotTransactionDoubleClicked(QListViewItem* i)
 {
   KTransactionListItem* item = static_cast<KTransactionListItem *>(i);
   if (item)
-    emit transactionSelected(item->accountID(), item->transactionId());
+    emit transactionSelected(item->accountId(), item->transactionId());
 }
 
 void KPayeesView::slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId, const QCString& transactionId)
@@ -741,7 +769,7 @@ void KPayeesView::slotSelectPayeeAndTransaction(const QCString& payeeId, const Q
 
         KTransactionListItem* item = static_cast<KTransactionListItem*> (m_transactionView->firstChild());
         while(item != 0) {
-          if(item->accountID() == accountId && item->transactionId() == transactionId)
+          if(item->accountId() == accountId && item->transactionId() == transactionId)
             break;
           item = static_cast<KTransactionListItem*> (item->nextSibling());
         }

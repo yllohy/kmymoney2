@@ -327,7 +327,7 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
     // if the account id differs, then we have to do something
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
     if(isVisible())
-      kmymoney2->selectAccount(acc);
+      kmymoney2->slotSelectAccount(acc);
     if(m_accountId != id) {
       // cancel any pending edit operation in the ledger views
       // when switching to a different account
@@ -403,7 +403,7 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
     }
     // no account selected
     if(isVisible())
-      kmymoney2->selectAccount();
+      kmymoney2->slotSelectAccount();
   }
 
   // Now that the ledger view has changed, we have to update the "account" button
@@ -443,7 +443,7 @@ void KGlobalLedgerView::show()
   if(!m_accountId.isEmpty()) {
     try {
       MyMoneyAccount acc = MyMoneyFile::instance()->account(m_accountId);
-      kmymoney2->selectAccount(acc);
+      kmymoney2->slotSelectAccount(acc);
     } catch(MyMoneyException* e) {
       delete e;
     }

@@ -49,6 +49,7 @@ class QVBoxLayout;
 class KHomeView;
 class KAccountsView;
 class KCategoriesView;
+class KInstitutionsView;
 class KPayeesView;
 class KScheduledView;
 class KNewAccountWizard;
@@ -106,7 +107,7 @@ private:
 
   KHomeView *m_homeView;
   KAccountsView *m_accountsView;
-  KAccountsView *m_institutionsView;
+  KInstitutionsView *m_institutionsView;
   KCategoriesView *m_categoriesView;
   KPayeesView *m_payeesView;
   KScheduledView *m_scheduledView;
@@ -323,13 +324,6 @@ public:
   void viewUp(void);
 
   /**
-    * Utility method to retrieve the currently selected account name.
-    *
-    * @return The currently selected account name.
-    */
-  QString currentAccountName(void);
-
-  /**
     * utility method to suspend/activate updates of the MyMoney engine on
     * all views. This is used to speed up operations with lot's of updates
     * of engine data in a short time (e.g. importing data, creating a
@@ -415,7 +409,7 @@ public slots:
   void slotReportSelected(const QCString& reportid);
 
   /**
-    * Same as the above, but the caller passes in an actual report 
+    * Same as the above, but the caller passes in an actual report
     * definition to be shown.
     *
     * @param report The report to be shown
@@ -516,7 +510,7 @@ signals:
   void kmmFilePlugin (unsigned int action);
 };
 
-class kMyMoneyTitleLabel;
+class KMyMoneyTitleLabel;
 
 /**
   * This class is an abstract base class that all specific views
@@ -534,7 +528,7 @@ public:
   void addWidget(QWidget* w);
 
 protected:
-  kMyMoneyTitleLabel*    m_titleLabel;
+  KMyMoneyTitleLabel*    m_titleLabel;
   QVBoxLayout*           m_viewLayout;
 };
 #endif

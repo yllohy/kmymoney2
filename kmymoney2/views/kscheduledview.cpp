@@ -345,7 +345,7 @@ void KScheduledView::slotListViewContextMenu(KListView* /* view */, QListViewIte
       if (!scheduleId.isEmpty()) // Top level item
       {
         MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(scheduleId);
-        kmymoney2->selectSchedule(schedule);
+        kmymoney2->slotSelectSchedule(schedule);
         m_selectedSchedule = schedule.id();
       }
       kmymoney2->showContextMenu("schedule_context_menu");
@@ -468,12 +468,12 @@ void KScheduledView::slotBriefEnterClicked(const MyMoneySchedule& schedule, cons
 
 void KScheduledView::slotSetSelectedItem(QListViewItem* item)
 {
-  kmymoney2->selectSchedule();
+  kmymoney2->slotSelectSchedule();
   KScheduledListItem* schedItem = static_cast<KScheduledListItem*>(item);
   if(item) {
     try {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(schedItem->scheduleId());
-      kmymoney2->selectSchedule(schedule);
+      kmymoney2->slotSelectSchedule(schedule);
       m_selectedSchedule = schedItem->scheduleId();
     } catch(MyMoneyException* e) {
       qDebug("KScheduledView::slotSetSelectedItem: %s", e->what().data());

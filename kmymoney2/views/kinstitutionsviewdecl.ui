@@ -1,15 +1,15 @@
 <!DOCTYPE UI><UI version="3.0">
-<class>KCategoriesViewDecl</class>
+<class>KInstitutionsViewDecl</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>KCategoriesViewDecl</cstring>
+        <cstring>KInstitutionsViewDecl</cstring>
     </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
             <width>610</width>
-            <height>394</height>
+            <height>378</height>
         </rect>
     </property>
     <property name="caption">
@@ -36,7 +36,7 @@
                 </size>
             </property>
             <property name="text">
-                <string>Categories</string>
+                <string>Institutions</string>
             </property>
             <property name="rightImageFile">
                 <cstring></cstring>
@@ -61,17 +61,9 @@
                 <cstring>m_accountTree</cstring>
             </property>
         </widget>
-        <widget class="QLabel">
-            <property name="name">
-                <cstring>m_hiddenCategories</cstring>
-            </property>
-            <property name="text">
-                <string>Note: Unused categories are not shown as selected by settings.</string>
-            </property>
-        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout5</cstring>
+                <cstring>layout2</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -79,7 +71,7 @@
                 </property>
                 <spacer>
                     <property name="name">
-                        <cstring>Spacer1</cstring>
+                        <cstring>Spacer1_2</cstring>
                     </property>
                     <property name="orientation">
                         <enum>Horizontal</enum>
@@ -89,8 +81,8 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>310</width>
-                            <height>16</height>
+                            <width>20</width>
+                            <height>20</height>
                         </size>
                     </property>
                 </spacer>
