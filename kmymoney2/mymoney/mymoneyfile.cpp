@@ -501,9 +501,6 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   if(account.institutionId().length() != 0)
     m_storage->addAccount(institution, account);
 
-  // FIXME: remove next line
-  // createOpeningBalanceTransaction(account, openingBalance);
-
   // parse the complete account tree and collect all
   // account and institution ids and also the pseudo account class
   notifyAccountTree(account.id());
@@ -1131,8 +1128,10 @@ void MyMoneyFile::notify(void)
       notify(it.key());
     }
 
-    if(list.count() > 0)
+    if(list.count() > 0) {
       notify(NotifyClassAnyChange);
+      emit dataChanged();
+    }
 
     clearNotification();
   }
@@ -1960,3 +1959,5 @@ void MyMoneyFile::clearCache(void)
   checkStorage();
   m_storage->clearCache();
 }
+
+#include "mymoneyfile.moc"

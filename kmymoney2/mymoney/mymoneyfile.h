@@ -24,6 +24,7 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qobject.h>
 #include <qstring.h>
 #include <qmap.h>
 #include <qvaluelist.h>
@@ -134,8 +135,9 @@ class MyMoneyTransactionFilter;
   * while the engine code is running. The MyMoneyException:: object
   * describes the problem.
   */
-class KMYMONEY_EXPORT MyMoneyFile
+class KMYMONEY_EXPORT MyMoneyFile : public QObject
 {
+  Q_OBJECT
 public:
 
   class MyMoneyFileSubject : public MyMoneySubject
@@ -1360,6 +1362,13 @@ protected:
   MyMoneyFile();
 
   void updateBalances(const QMap<QCString, MyMoneyMoney>& map);
+
+signals:
+  /**
+    * This signal is emitted whenever any data has been changed in the engine
+    * via any of the methods of this object
+    */
+  void dataChanged(void);
 
 private:
   const QCString locateSubAccount(const MyMoneyAccount& base, const QString& category) const;
