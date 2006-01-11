@@ -83,7 +83,7 @@
   <Action name="investment_manual_price_update" />
  </Menu>
  <Menu name="institution_context_menu">
-  <title>Insitution options</title>
+  <title>Institution options</title>
   <Action name="institution_new" />
   <Action name="institution_edit" />
   <Action name="institution_delete" />
