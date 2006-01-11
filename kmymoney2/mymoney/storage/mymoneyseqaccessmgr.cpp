@@ -699,9 +699,11 @@ void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccoun
   (*newParent).addAccountId(account.id());
   (*childAccount).setParentAccountId(parent.id());
 
+#if 0
   // make sure the type is the same as the new parent. This does not work for stock and investment
   if(account.accountType() != MyMoneyAccount::Stock && account.accountType() != MyMoneyAccount::Investment)
     (*childAccount).setAccountType((*newParent).accountType());
+#endif
 
   parent = *newParent;
   account = *childAccount;
