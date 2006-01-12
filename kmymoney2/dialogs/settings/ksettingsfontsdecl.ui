@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>398</width>
-            <height>264</height>
+            <height>372</height>
         </rect>
     </property>
     <property name="caption">
@@ -99,6 +99,57 @@
                     </property>
                 </widget>
             </grid>
+        </widget>
+        <widget class="QButtonGroup">
+            <property name="name">
+                <cstring>kcfg_iconSize</cstring>
+            </property>
+            <property name="title">
+                <string>Icon size of navigation bar</string>
+            </property>
+            <property name="exclusive">
+                <bool>true</bool>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>radioButton3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Micro (16px)</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>radioButton4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Small (32px)</string>
+                    </property>
+                </widget>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>radioButton5</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Normal (48px)</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QRadioButton">
+                    <property name="name">
+                        <cstring>radioButton6</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Large (64px)</string>
+                    </property>
+                </widget>
+            </vbox>
         </widget>
         <spacer>
             <property name="name">

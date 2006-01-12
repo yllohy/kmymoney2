@@ -84,6 +84,10 @@
    <label>Show splash screen during startup</label>
    <default>true</default>
   </entry>
+  <entry name="iconSize" type="Int">
+   <label>Icon size for view selection</label>
+   <default>2</default>
+  </entry>
  </group>
  <group name="Homepage Options">
   <entry name="ItemList" type="String">

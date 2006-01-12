@@ -118,18 +118,18 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 {
   // the global variable kmymoney2 is not yet assigned. So we construct it here
   QObject* kmymoney2 = parent->parent();
-
+  const int iconSize = (KMyMoneySettings::iconSize()+1)*16;
   newStorage();
 
   // Page 0
   m_homeViewFrame = addVBoxPage( i18n("Home"), i18n("Home"),
-    DesktopIcon("home"));
+    DesktopIcon("home", iconSize));
   m_homeView = new KHomeView(m_homeViewFrame, "HomeView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_homeView, SLOT(slotReloadView()));
 
   // Page 1
   m_institutionsViewFrame = addVBoxPage( i18n("Institutions"), i18n("Institutions"),
-    DesktopIcon("institutions"));
+    DesktopIcon("institutions", iconSize));
   m_institutionsView = new KInstitutionsView(m_institutionsViewFrame, "InstitutionsView");
   connect(m_institutionsView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_institutionsView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectInstitution(const MyMoneyObject&)));
@@ -143,7 +143,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   // Page 2
   m_accountsViewFrame = addVBoxPage( i18n("Accounts"), i18n("Accounts"),
-    DesktopIcon("accounts"));
+    DesktopIcon("accounts", iconSize));
   m_accountsView = new KAccountsView(m_accountsViewFrame, "AccountsView");
   connect(m_accountsView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_accountsView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectInstitution(const MyMoneyObject&)));
@@ -155,13 +155,13 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   // Page 3
   m_scheduleViewFrame = addVBoxPage( i18n("Schedule"), i18n("Bills & Reminders"),
-    DesktopIcon("schedule"));
+    DesktopIcon("schedule", iconSize));
   m_scheduledView = new KScheduledView(m_scheduleViewFrame, "ScheduledView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_scheduledView, SLOT(slotReloadView()));
 
   // Page 4
   m_categoriesViewFrame = addVBoxPage( i18n("Categories"), i18n("Categories"),
-    DesktopIcon("categories"));
+    DesktopIcon("categories", iconSize));
   m_categoriesView = new KCategoriesView(m_categoriesViewFrame, "CategoriesView");
   connect(m_categoriesView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_categoriesView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectInstitution(const MyMoneyObject&)));
@@ -172,13 +172,13 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   // Page 5
   m_payeesViewFrame = addVBoxPage( i18n("Payees"), i18n("Payees"),
-    DesktopIcon("payee"));
+    DesktopIcon("payee", iconSize));
   m_payeesView = new KPayeesView(m_payeesViewFrame, "PayeesView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_payeesView, SLOT(slotReloadView()));
 
   // Page 6
   m_ledgerViewFrame = addVBoxPage( i18n("Ledgers"), i18n("Ledgers"),
-    DesktopIcon("ledger"));
+    DesktopIcon("ledger", iconSize));
   m_ledgerView = new KGlobalLedgerView(m_ledgerViewFrame, "GlobalLedgerView");
   // the next line causes the ledgers to get a hide() signal to be able
   // to end any pending edit activities
@@ -191,7 +191,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   // Page 7
   m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),
-    DesktopIcon("investments"));
+    DesktopIcon("investments", iconSize));
 
   m_investmentView = new KInvestmentView(m_investmentViewFrame, "InvestmentView");
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_investmentView, SLOT(slotCancelEdit()));
@@ -201,7 +201,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
   // Page 8
   m_reportsViewFrame = addVBoxPage(i18n("Reports"), i18n("Reports"),
-    DesktopIcon("report"));
+    DesktopIcon("report", iconSize));
   m_reportsView = new KReportsView(m_reportsViewFrame, "ReportsView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_reportsView, SLOT(slotReloadView()));
 
