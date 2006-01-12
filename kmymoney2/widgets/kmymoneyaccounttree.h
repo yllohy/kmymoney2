@@ -255,6 +255,8 @@ public:
     *               added to.
     * @param account const reference to MyMoneyAccount for which
     *               the KListView entry is constructed
+    * @param security const reference to the security used to show the value. Usually
+    *                 one should pass MyMoneyFile::baseCurrency() here.
     * @param name name of the account to be used instead of the one stored with @p account
     *               If empty, the one stored with @p account will be used. Default: empty
     */
@@ -270,6 +272,8 @@ public:
     *               the KListView entry is constructed
     * @param price price to be used to calculate value (defaults to 1)
     *              This is used for accounts denominated in foreign currencies or stocks
+    * @param security const reference to the security used to show the value. Usually
+    *                 one should pass MyMoneyFile::baseCurrency() here.
     */
   KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent, const MyMoneyAccount& account, const QValueList<MyMoneyPrice>& price = QValueList<MyMoneyPrice>(), const MyMoneySecurity& security = MyMoneySecurity());
 

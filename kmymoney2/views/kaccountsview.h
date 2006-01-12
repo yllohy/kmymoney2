@@ -76,18 +76,24 @@ private:
 signals:
   /**
     * This signal serves as proxy for KMyMoneyAccountTree::selectObject()
+    *
+    * @param obj const reference to object
     */
   void selectObject(const MyMoneyObject&);
 
   /**
     * This signal serves as proxy for
     * KMyMoneyAccountTree::openContextMenu(const MyMoneyObject&)
+    *
+    * @param obj const reference to object
     */
   void openContextMenu(const MyMoneyObject& obj);
 
   /**
     * This signal will be emitted when the left mouse button is double
-    * clicked (actually the KDE executed setting is used) on an account.
+    * clicked (actually the KDE executed setting is used) on an object.
+    *
+    * @param obj const reference to object
     */
   void openObject(const MyMoneyObject& obj);
 
@@ -98,7 +104,7 @@ signals:
     * @param acc const reference to account to be reparented
     * @param parent const reference to new parent account
     */
-  void reparent(const MyMoneyAccount&, const MyMoneyAccount&);
+  void reparent(const MyMoneyAccount& acc, const MyMoneyAccount& parent);
 
 private:
   QMap<QCString, MyMoneyAccount>      m_accountMap;
