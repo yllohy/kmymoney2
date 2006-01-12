@@ -247,20 +247,7 @@ void KMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* pa
   if(dropHighlighter())
     cleanItemHighlighter();
 
-  KMyMoneyAccountTreeItem* newParent;
-
-  if(after)
-    newParent = dynamic_cast<KMyMoneyAccountTreeItem*>(after);
-  else
-    newParent = dynamic_cast<KMyMoneyAccountTreeItem*>(parent);
-
-  // if the drop occurs in the top half of the very first item in the list,
-  // parent and after both are 0. This can be used to insert the item to be
-  // dropped as the very first element. In our case, this is not possible.
-  // Hence we use the first child of the list as the new parent.
-  if(!newParent)
-    newParent = dynamic_cast<KMyMoneyAccountTreeItem*>(firstChild());
-
+  KMyMoneyAccountTreeItem* newParent = dynamic_cast<KMyMoneyAccountTreeItem*>(m_dropItem);
   if(newParent) {
     QCString fromId(event->encodedData("text/plain"));
     const KMyMoneyAccountTreeItem* from = findItem(fromId);
@@ -274,13 +261,11 @@ void KMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* pa
       if(newParent->isAccount()) {
         const MyMoneyAccount& accTo = dynamic_cast<const MyMoneyAccount&>(newParent->itemObject());
         if(dropAccountOnAccount(accFrom, accTo)) {
-          qDebug("Reparent acc %s to %s", accFrom.name().data(), accTo.name().data());
           emit reparent(accFrom, accTo);
         }
 
       } else if(newParent->isInstitution()) {
         const MyMoneyInstitution& institution = dynamic_cast<const MyMoneyInstitution&>(newParent->itemObject());
-        qDebug("Reparent acc %s to %s", accFrom.name().data(), institution.name().data());
         emit reparent(accFrom, institution);
       }
     }
