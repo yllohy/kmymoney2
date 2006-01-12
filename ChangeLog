@@ -1,3 +1,7 @@
+2006-01-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed documentation problems
+  * Added option to resize icons in navigation bar
+
 2006-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow equity accounts in templates
   * Don't modify account type while reparenting account
