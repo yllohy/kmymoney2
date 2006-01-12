@@ -92,7 +92,7 @@ KBankingPlugin::~KBankingPlugin()
 
 void KBankingPlugin::createJobView(void)
 {
-  KMyMoneyViewBase* view = viewInterface()->addPage(i18n("Outbox"), DesktopIcon("onlinebanking"));
+  KMyMoneyViewBase* view = viewInterface()->addPage(i18n("Outbox"), "onlinebanking");
   QWidget* frm = dynamic_cast<QWidget*>(view->parent());
   QWidget* w = new JobView(m_kbanking, view, "JobView");
   viewInterface()->addWidget(view, w);

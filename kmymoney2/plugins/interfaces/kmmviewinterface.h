@@ -58,7 +58,7 @@ public:
     * @param pixmap icon of view
     * @return pointer to KMyMoneyViewBase object
     */
-  KMyMoneyViewBase* addPage(const QString& item, const QPixmap& pixmap);
+  KMyMoneyViewBase* addPage(const QString& item, const QString& icon);
 
   /**
     * This method allows to add a widget to the view

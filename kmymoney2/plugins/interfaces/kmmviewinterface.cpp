@@ -40,9 +40,9 @@ KMyMoneyPlugin::KMMViewInterface::KMMViewInterface(KMyMoney2App* app, KMyMoneyVi
   connect(m_view, SIGNAL(kmmFilePlugin(unsigned int)), this, SIGNAL(kmmFilePlugin(unsigned int)));
 }
 
-KMyMoneyViewBase* KMyMoneyPlugin::KMMViewInterface::addPage(const QString& item, const QPixmap& pixmap)
+KMyMoneyViewBase* KMyMoneyPlugin::KMMViewInterface::addPage(const QString& item, const QString& icon)
 {
-  return m_view->addPage(item, pixmap);
+  return m_view->addPage(item, icon);
 }
 
 void KMyMoneyPlugin::KMMViewInterface::addWidget(KMyMoneyViewBase* view, QWidget* w)

@@ -1748,9 +1748,10 @@ void KMyMoneyView::slotPrintView(void)
     m_reportsView->slotPrintView();
 }
 
-KMyMoneyViewBase* KMyMoneyView::addPage(const QString& title, const QPixmap& pixmap)
+KMyMoneyViewBase* KMyMoneyView::addPage(const QString& title, const QString& icon)
 {
-  QFrame* frm = KJanusWidget::addVBoxPage(title, title, pixmap);
+  const int iconSize = (KMyMoneySettings::iconSize()+1)*16;
+  QFrame* frm = KJanusWidget::addVBoxPage(title, title, DesktopIcon("payee", iconSize));
   return new KMyMoneyViewBase(frm, title.latin1(), title);
 }
 

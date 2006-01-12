@@ -61,7 +61,7 @@ public:
     * This method creates a new page in the application.
     * See KJanusWidget::addPage() for details.
     */
-  virtual KMyMoneyViewBase* addPage(const QString& item, const QPixmap& pixmap) = 0;
+  virtual KMyMoneyViewBase* addPage(const QString& item, const QString& icon) = 0;
 
   /**
     * This method adds a widget to the layout of the view

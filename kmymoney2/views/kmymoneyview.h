@@ -346,7 +346,7 @@ public:
     */
   void enableViews(int state = -1);
 
-  KMyMoneyViewBase* addPage(const QString& title, const QPixmap& pixmap = QPixmap());
+  KMyMoneyViewBase* addPage(const QString& title, const QString& icon = QString());
 
   void addWidget(QWidget* w);
 
