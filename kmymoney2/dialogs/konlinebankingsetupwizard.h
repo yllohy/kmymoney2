@@ -19,9 +19,16 @@
 #define KONLINEBANKINGSETUPWIZARD_H
 
 // ----------------------------------------------------------------------------
+// Library Includes
+
+#include <libofx/libofx.h>
+
+// ----------------------------------------------------------------------------
 // QT Includes
 
 #include <qwidget.h>
+#include <qvaluelist.h>
+#include <qlistview.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -30,6 +37,7 @@
 // Project Includes
 
 #include <../dialogs/konlinebankingsetupdecl.h>
+#include <../mymoney/mymoneykeyvaluecontainer.h>
 
 /**
   * @author Ace Jones 
@@ -52,12 +60,33 @@ class KOnlineBankingSetupWizard : public KOnlineBankingSetupDecl
 {
   Q_OBJECT
 public:
+  class ListViewItem: public MyMoneyKeyValueContainer, public QListViewItem
+  {
+  public:
+    ListViewItem( QListView* parent, const MyMoneyKeyValueContainer& kvps );
+    virtual void x(void);
+  };
+    
   KOnlineBankingSetupWizard(QWidget *parent=0, const char *name=0);
   ~KOnlineBankingSetupWizard();
+
+  bool chosenSettings( MyMoneyKeyValueContainer& settings );
 
 public slots:
   void next();
 
+protected:
+  bool finishAccountPage(void);
+  bool finishLoginPage(void);
+  bool finishFiPage(void);
+
+  static int ofxAccountCallback(struct OfxAccountData data, void * pv);
+  static int ofxStatusCallback(struct OfxStatusData data, void * pv);
+
+private:
+  QValueList<OfxFiServiceInfo> m_bankInfo;
+  QValueList<OfxFiServiceInfo>::const_iterator m_it_info;
+  bool m_fDone;
 };
 
 #endif

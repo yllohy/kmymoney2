@@ -82,7 +82,7 @@ try {
   qFatal ("oops in mymoneystoragesql.cpp open");
   return (1);
 } catch (QString& s) {
-    qDebug(s.data());
+    qDebug("%s",s.data());
     return (1);
 }
 }
@@ -279,7 +279,6 @@ void MyMoneyStorageSql::writeInstitution(const MyMoneyInstitution& i, QSqlQuery&
   q.bindValue(":addressZipcode", i.postcode());
   q.bindValue(":telephone", i.telephone());
   if (!q.exec()) throw buildError(q, QString("writing Institution"));
-  writeKeyValuePairs ("OFXSETTINGS", i.id(), i.ofxConnectionSettings().pairs());
 }
 
 // **** Payees ****
@@ -943,8 +942,6 @@ void MyMoneyStorageSql::readInstitutions(void) {
     while (sq.next()) aList.append(sq.value(0).toString());
     for (QStringList::Iterator it = aList.begin(); it != aList.end(); ++it)
       inst.addAccountId(QCString(*it));
-    // read key/value pairs
-    inst.setOfxConnectionSettings(readKeyValuePairs("OFXSETTINGS", iid));
 
     m_storage->loadInstitution(MyMoneyInstitution(QCString(iid), inst));
     signalProgress (++progress, 0);

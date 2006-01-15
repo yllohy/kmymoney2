@@ -46,18 +46,17 @@
 #include "mymoneyofxconnector.h"
 
 MyMoneyOfxConnector::MyMoneyOfxConnector(const MyMoneyAccount& _account):
-  m_account(_account),
-  m_institution( MyMoneyFile::instance()->institution( _account.institutionId() ) )
+  m_account(_account)
 {
-  m_fiSettings = m_institution.ofxConnectionSettings();
+  m_fiSettings = m_account.onlineBankingSettings();
 }
 
-QString MyMoneyOfxConnector::iban(void) const { return m_fiSettings.value("iban"); }
-QString MyMoneyOfxConnector::fiorg(void) const { return m_fiSettings.value("fiorg"); }
-QString MyMoneyOfxConnector::fiid(void) const { return m_fiSettings.value("fiid"); }
-QString MyMoneyOfxConnector::username(void) const { return m_fiSettings.value("user"); }
+QString MyMoneyOfxConnector::iban(void) const { return m_fiSettings.value("bankid"); }
+QString MyMoneyOfxConnector::fiorg(void) const { return m_fiSettings.value("org"); }
+QString MyMoneyOfxConnector::fiid(void) const { return m_fiSettings.value("fid"); }
+QString MyMoneyOfxConnector::username(void) const { return m_fiSettings.value("username"); }
 QString MyMoneyOfxConnector::password(void) const { return m_fiSettings.value("password"); }
-QString MyMoneyOfxConnector::accountnum(void) const { return m_account.number(); }
+QString MyMoneyOfxConnector::accountnum(void) const { return m_fiSettings.value("accountid"); }
 QString MyMoneyOfxConnector::url(void) const { return m_fiSettings.value("url"); }
  
 AccountType MyMoneyOfxConnector::accounttype(void) const
@@ -108,14 +107,8 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
   OfxAccountInfo account;
   memset(&account,0,sizeof(OfxAccountInfo));
  
-  kdDebug(2) << "sizeof(OfxAccountInfo) == " << sizeof(OfxAccountInfo) << endl;
-  kdDebug(2) << "lengths == " << OFX_BANKID_LENGTH << "," << OFX_BROKERID_LENGTH << "," << OFX_ACCOUNT_ID_LENGTH << endl;
-  
-  kdDebug(2) << "iban().latin1() == " << iban().latin1() << endl;
   strncpy(account.bankid,iban().latin1(),OFX_BANKID_LENGTH-1);
   strncpy(account.brokerid,iban().latin1(),OFX_BROKERID_LENGTH-1);
-  
-  kdDebug(2) << "accountnum().latin1() == " << accountnum().latin1() << endl;
   strncpy(account.accountid,accountnum().latin1(),OFX_ACCOUNT_ID_LENGTH-1);
   account.type = accounttype();
   

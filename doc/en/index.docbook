@@ -40,7 +40,7 @@
 
 <bookinfo>
 <title>The KMyMoney Handbook</title>
-<subtitle>for &kappname; version 0.8</subtitle>
+<subtitle>for &kappname; version 0.9</subtitle>
 
 <authorgroup>
 <author>
@@ -135,7 +135,7 @@ Do NOT change these in the translation. -->
 &kappname;, the personal finances manager for KDE.
 </para>
 <para>
-  This handbook describes &kappname; version 0.8.
+	This handbook describes &kappname; version 0.9.
 </para>
 </abstract>
 

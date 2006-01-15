@@ -569,7 +569,31 @@ void QueryTable::constructTransactionTable(void)
         // Handle all other kinds of accounts
         //
         else
-        {      
+        {
+
+// This is an attempt to fix KDE bug #118729.  But I'm not really happy with it
+// yet, so it remains #if0'd out.
+#if 0        
+          if ( splits.count() <= 2 )
+          {
+          }
+          else
+          {
+            // this is a 'split' transaction.  there are more than one other split
+            // aside from the A/L account we're working with.  In this case, we print
+            // one line for the entire transaction, and then it's up to the user
+            // whether or not to display the split details.
+            qsplitrow["account"] = splitaccount.name();
+            qsplitrow["accountid"] = splitaccount.id();
+            qsplitrow["topaccount"] = splitaccount.topParentName();
+            if (!(*it_split).memo().isEmpty())
+              qsplitrow["memo"] = (*it_split).memo();
+            qsplitrow["category"] = i18n("Split/Multiple Categories");
+            qsplitrow["topcategory"] = i18n("Split");
+            qsplitrow["categorytype"] = i18n("Split");
+          }
+#endif
+
           QValueList<MyMoneySplit>::const_iterator it_split2 = splits.begin();
           while ( it_split2 != splits.end() )
           {

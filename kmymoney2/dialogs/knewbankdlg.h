@@ -47,12 +47,10 @@ public:
 
 protected slots:
   void okClicked();
-  void advancedClicked();
   void institutionNameChanged( const QString &);
 
 private:
   MyMoneyInstitution m_institution;
-  MyMoneyKeyValueContainer m_ofxSettings;
 
 };
 

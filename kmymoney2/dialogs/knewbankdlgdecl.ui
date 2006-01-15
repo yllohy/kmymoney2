@@ -270,14 +270,6 @@ The only required field is the name, which can be the name of a bank like Woolwi
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="KPushButton">
-                    <property name="name">
-                        <cstring>advancedBtn</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Advanced...</string>
-                    </property>
-                </widget>
                 <spacer>
                     <property name="name">
                         <cstring>Spacer1</cstring>

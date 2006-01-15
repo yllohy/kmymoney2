@@ -104,6 +104,7 @@ public:
   const QCString action(void) const { return m_action; };
   const QString number(void) const { return m_number; };
   const bool isAmortizationSplit(void) const { return m_action == ActionAmortization; };
+  const QString bankID(void) const { return m_bankID; };
 
   void setShares(const MyMoneyMoney& shares);
   void setValue(const MyMoneyMoney& value);
@@ -130,6 +131,7 @@ public:
   void setPayeeId(const QCString& payee);
   void setAction(const QCString& action);
   void setNumber(const QString& number);
+  void setBankID(const QString& bankID) { m_bankID = bankID; };
 
   static const char ActionCheck[];
   static const char ActionDeposit[];
@@ -203,6 +205,15 @@ private:
     * the split supplied by the user (e.g. check number, etc.).
     */
   QString       m_number;
+
+  /**
+    * This member keeps the bank's unique ID for the split, so we can
+    * avoid duplicates.  This is only used for electronic statement downloads.
+    *
+    * This should only be set on the split which refers to the account
+    * that was downloaded.
+    */
+  QString m_bankID;
 };
 
 #endif

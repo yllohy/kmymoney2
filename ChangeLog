@@ -1,3 +1,9 @@
+2006-01-16 Ace Jones <acejones@users.sourceforge.net>
+  * Added account setup for OFX direct connect
+  * Revived OFX direct connect (it's been broken since the KAction changes)
+  * OFX direct connect is now officially supproted!
+  * Even added some docs
+
 2006-01-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed documentation problems
   * Added option to resize icons in navigation bar

@@ -584,7 +584,31 @@ public slots:
     * a limited selection of options. 
     */
   virtual void slotGenerateReport(void);
-
+  
+  /**
+    * This method is called to pick the first of two transactions which should be
+    * matched.  Matching is useful for imported transactions. When you already have
+    * the transaction in your file, and you import a new one, the user needs a way to
+    * tell the app that the two transactions are the same.
+    *
+    * Just deleting one of the transactions won't work, because you need to keep the
+    * Bank ID of the imported transaction, so the importer knows not to import it
+    * again next time.
+    */
+  virtual void slotStartMatch(void);
+  
+  /**
+    * This method is called to cancel a match in progress.  Call this after calling
+    * slotStartMatch() but before calling slotEndMatch()
+    */
+  virtual void slotCancelMatch(void);
+  
+  /**
+    * This method is called, to pick the second of two transactions which should
+    * be matched.  It will actually execute the match. 
+    */
+  virtual void slotEndMatch(void);
+  
   protected slots:
   /**
     * This method marks the split referencing the account in the current
@@ -905,6 +929,12 @@ protected:
   QGuardedPtr<KPushButton>  m_registerCancelButton;
   QGuardedPtr<KPushButton>  m_registerMoreButton;
 
+  /**
+    * This member keeps track of the first of two transactions which should be
+    * matched.  See slotStartMatch(). 
+    */
+  MyMoneyTransaction   m_matchTransaction;
+
 private:
   /**
     * This method creates a second split if the current @p m_transaction
@@ -928,6 +958,12 @@ private:
     * @param enabled enable (true) or disable (false) the widgets in the list
     */
   void enableWidgets(QPtrList<QWidget> list, const bool enabled);
+
+ /**
+    * Deletes the current transaction without any user input or verification.
+    * Use with care!! 
+    */
+ void doDeleteTransaction(void);
 
 private:
   /**

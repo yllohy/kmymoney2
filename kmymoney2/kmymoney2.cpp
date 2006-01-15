@@ -109,6 +109,10 @@
 #include "dialogs/knewloanwizard.h"
 #include "dialogs/keditloanwizard.h"
 
+#ifdef USE_OFX_DIRECTCONNECT
+#include "dialogs/kofxdirectconnectdlg.h"
+#endif
+
 #include "views/kmymoneyview.h"
 
 #include "mymoney/mymoneyutils.h"
@@ -1422,7 +1426,12 @@ void KMyMoney2App::slotPluginImport(const QString& format)
 
 void KMyMoney2App::slotAccountUpdateOFX(void)
 {
-#if 0
+  // TODO: This would be a good place to support other protocols and tie into
+  // a plugin.  The "protocol" setting could be used to choose the correct
+  // plugin.  We'd pass the online banking MMKVPC to the plugin, and expect
+  // it to provide a statement which we could then pass to the importer
+  // plugin.  Or better yet it would just provide a MMStatement.
+
 #ifdef USE_OFX_DIRECTCONNECT
   bool accountSuccess=false;
   try
@@ -1430,11 +1439,9 @@ void KMyMoney2App::slotAccountUpdateOFX(void)
     MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyAccount account;
 
-    if(!m_accountId.isEmpty())
+    if(!m_selectedAccount.id().isEmpty())
     {
-      account = file->account(accountId);
-
-      KOfxDirectConnectDlg dlg(account);
+      KOfxDirectConnectDlg dlg(m_selectedAccount);
 
       connect(&dlg, SIGNAL(statementReady(const QString&, const QString&)), this,
         SLOT(slotPluginImport(const QString&, const QString&)));
@@ -1448,7 +1455,6 @@ void KMyMoney2App::slotAccountUpdateOFX(void)
     KMessageBox::information(this,i18n("Error connecting to bank: %1").arg(e->what()));
     delete e;
   }
-#endif
 #endif
 }
 
@@ -2824,11 +2830,8 @@ void KMyMoney2App::updateActions(void)
             action("investment_new")->setEnabled(true);
 
 #ifdef USE_OFX_DIRECTCONNECT
-          if ( !m_selectedAccount.institutionId().isEmpty() ) {
-            MyMoneyInstitution institution = file->institution(m_selectedAccount.institutionId());
-            if ( institution.ofxConnectionSettings().pairs().count() )
-              action("account_update_ofx")->setEnabled(true);
-          }
+          if ( !m_selectedAccount.onlineBankingSettings().value("protocol").isEmpty() )
+            action("account_update_ofx")->setEnabled(true);
 #endif
           break;
 

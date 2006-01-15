@@ -45,7 +45,6 @@
 // Project Includes
 
 #include "knewbankdlg.h"
-#include "kadvancedbanksettingsdlg.h"
 
 KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution, QWidget *parent, const char *name)
   : KNewBankDlgDecl(parent,name,true), m_institution(institution)
@@ -72,17 +71,8 @@ KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution, QWidget *parent, const
   managerEdit->setText(institution.manager());
   sortCodeEdit->setText(institution.sortcode());
 
-  m_ofxSettings = m_institution.ofxConnectionSettings();
-
-#ifndef USE_OFX_DIRECTCONNECT
-  // the 'advanced' button will take the user to set up their OFX Direct Connect
-  // settings, which is only available if KMM is compiled with the new OFX libraries.
-  advancedBtn->hide();
-#endif
-
   connect(okBtn, SIGNAL(clicked()), SLOT(okClicked()));
   connect(cancelBtn, SIGNAL(clicked()), SLOT(reject()));
-  connect(advancedBtn, SIGNAL(clicked()), SLOT(advancedClicked()));
   connect(nameEdit, SIGNAL(textChanged ( const QString & )), SLOT(institutionNameChanged( const QString &)));
   institutionNameChanged( nameEdit->text());
 }
@@ -112,17 +102,7 @@ void KNewBankDlg::okClicked()
   m_institution.setManager(managerEdit->text());
   m_institution.setSortcode(sortCodeEdit->text());
 
-        m_institution.setOfxConnectionSettings(m_ofxSettings);
   accept();
-}
-
-void KNewBankDlg::advancedClicked()
-{
-  // bring up the Advanced Bank Settings dialog
-  KAdvancedBankSettingsDlg dlg(this,"advancedbanksettings");
-  dlg.setValues(m_ofxSettings);
-  if ( dlg.exec() )
-    m_ofxSettings = dlg.values();
 }
 
 const MyMoneyInstitution& KNewBankDlg::institution(void)

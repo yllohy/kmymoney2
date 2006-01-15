@@ -42,6 +42,7 @@
 #include <kiconloader.h>
 #include <kguiitem.h>
 #include <kpushbutton.h>
+#include <kled.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -58,11 +59,17 @@
 #include "../widgets/kmymoneyequity.h"
 #include "../widgets/kmymoneyaccountselector.h"
 
+#include "../mymoney/mymoneyexception.h"
+#include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneykeyvaluecontainer.h"
 #include "../dialogs/knewbankdlg.h"
-#include "../dialogs/konlinebankingsetupwizard.h"
 #include "../views/kmymoneyfile.h"
 #include "../kmymoneyutils.h"
 #include "../kmymoneysettings.h"
+
+#ifdef USE_OFX_DIRECTCONNECT
+#include "../dialogs/konlinebankingsetupwizard.h"
+#endif
 
 #define TAB_GENERAL      0
 #define TAB_TAX          1
@@ -231,6 +238,9 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     }
 
     m_qcheckboxTax->hide();
+    
+    displayOnlineBankingStatus();
+    
   }
 
   // setup the currency / equity widgets
@@ -892,8 +902,26 @@ void KNewAccountDlg::slotNewClicked()
 
 void KNewAccountDlg::slotOnlineSetupClicked(void)
 {
+#ifdef USE_OFX_DIRECTCONNECT
+  // TODO: This is one place to add in logic for other online banking
+  // protocols.  We could have a dialog that asks the user which
+  // protocol to set up for this account, and then call the correct
+  // wizard (using a plugin)
+  //
+  // Or, the wizard itself could ask the user.
+  
   KOnlineBankingSetupWizard wiz(this,"onlinebankingsetup");
   wiz.exec();
+  
+  MyMoneyKeyValueContainer settings;
+  if ( wiz.chosenSettings( settings ) )
+  {
+    m_account.setOnlineBankingSettings( settings );
+    displayOnlineBankingStatus();
+  }
+#else
+  KMessageBox::sorry(this,i18n("This version of KMyMoney has not been compiled with support for online banking"));
+#endif
 }
 
 void KNewAccountDlg::slotAccountTypeChanged(const QString& typeStr)
@@ -970,6 +998,35 @@ void KNewAccountDlg::slotVatAssignmentChanged(bool state)
 {
   m_vatAccount->setEnabled(state);
   m_amountGroup->setEnabled(state);
+}
+
+void KNewAccountDlg::displayOnlineBankingStatus(void)
+{
+// this should be a run-time conditional, checking whether there are any online
+// banking plugins loaded
+#ifdef USE_OFX_DIRECTCONNECT
+    // Set up online banking settings if applicable
+    MyMoneyKeyValueContainer settings = m_account.onlineBankingSettings();
+    QString protocol = settings.value("protocol");
+    if ( ! protocol.isEmpty() )
+    {
+      m_textOnlineStatus->setText(i18n("STATUS: Enabled & configured (%1)").arg(protocol));
+      m_ledOnlineStatus->on();
+
+      QString account = i18n("ACCOUNT: %1").arg(settings.value("accountid"));
+      QString bank = i18n("BANK/BROKER: %1").arg(settings.value("bankname"));
+      QString bankid = settings.value("bankid") + " " + settings.value("branchid");
+      if ( bankid.length() > 1 )
+        bank += " (" + bankid + ")";
+      m_textBank->setText(bank);
+      m_textOnlineAccount->setText(account);
+    }
+    else
+      m_textOnlineStatus->setText(i18n("STATUS: Account not configured"));
+      
+#else
+    m_textOnlineStatus->setText(i18n("STATUS: Disabled.  No online banking services are available"));
+#endif
 }
 
 #include "knewaccountdlg.moc"

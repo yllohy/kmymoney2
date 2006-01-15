@@ -85,17 +85,6 @@ MyMoneyInstitution::MyMoneyInstitution(const QDomElement& node) :
       m_accountList << QCString(nodeList.item(i).toElement().attribute("id"));
     }
   }
-
-  m_ofxConnectionSettings = MyMoneyKeyValueContainer();
-
-  nodeList = node.elementsByTagName("OFXSETTINGS");
-  if(nodeList.count() > 0) {
-    QDomNamedNodeMap attributes = nodeList.item(0).toElement().attributes();
-    for(unsigned int i = 0; i < attributes.count(); ++i) {
-      const QDomAttr& it_attr = attributes.item(i).toAttr();
-      m_ofxConnectionSettings.setValue(it_attr.name().utf8(), it_attr.value());
-    }
-  }
 }
 
 MyMoneyInstitution::~MyMoneyInstitution()
@@ -163,15 +152,6 @@ void MyMoneyInstitution::writeXML(QDomDocument& document, QDomElement& parent) c
   }
   el.appendChild(accounts);
 
-  if(m_ofxConnectionSettings.pairs().count()) {
-    QDomElement ofxsettings = document.createElement("OFXSETTINGS");
-    QMap<QCString,QString>::const_iterator it_key = m_ofxConnectionSettings.pairs().begin();
-    while ( it_key != m_ofxConnectionSettings.pairs().end() ) {
-      ofxsettings.setAttribute(it_key.key(), it_key.data());
-      ++it_key;
-    }
-    el.appendChild(ofxsettings);
-  }
   parent.appendChild(el);
 }
 

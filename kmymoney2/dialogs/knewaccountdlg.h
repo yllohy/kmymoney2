@@ -87,6 +87,7 @@ public:
 
 protected:
   void resizeEvent(QResizeEvent* e);
+  void displayOnlineBankingStatus(void);
 
 protected slots:
   void okClicked();

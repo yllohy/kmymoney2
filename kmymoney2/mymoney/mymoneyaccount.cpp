@@ -28,7 +28,7 @@
 #include <kmymoney/mymoneyaccount.h>
 
 // uncomment the next line for debug purposes only
-// #include <iostream>
+//#include <iostream>
 
 MyMoneyAccount::MyMoneyAccount()
 {
@@ -90,6 +90,16 @@ MyMoneyAccount::MyMoneyAccount(const QDomElement& node) :
       addAccountId(QCString(nodeList.item(i).toElement().attribute("id")));
     }
   }
+
+  nodeList = node.elementsByTagName("ONLINEBANKING");
+  if(nodeList.count() > 0) {
+    QDomNamedNodeMap attributes = nodeList.item(0).toElement().attributes();
+    for(unsigned int i = 0; i < attributes.count(); ++i) {
+      const QDomAttr& it_attr = attributes.item(i).toAttr();
+      m_onlineBankingSettings.setValue(it_attr.name().utf8(), it_attr.value());
+    }
+  }
+
 }
 
 void MyMoneyAccount::setName(const QString& name)
@@ -437,6 +447,18 @@ void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
     el.appendChild(subAccounts);
   }
 
+  // Write online banking settings
+  if(m_onlineBankingSettings.pairs().count()) {
+    QDomElement onlinesettings = document.createElement("ONLINEBANKING");
+    QMap<QCString,QString>::const_iterator it_key = m_onlineBankingSettings.pairs().begin();
+    while ( it_key != m_onlineBankingSettings.pairs().end() ) {
+      onlinesettings.setAttribute(it_key.key(), it_key.data());
+      ++it_key;
+    }
+    el.appendChild(onlinesettings);
+  }
+
+
   //Add in Key-Value Pairs for accounts.
   MyMoneyKeyValueContainer::writeXML(document, el);
 
@@ -448,3 +470,12 @@ bool MyMoneyAccount::hasReferenceTo(const QCString& id) const
   return (id == m_institution) || (id == m_parentAccount) || (id == m_currencyId);
 }
 
+void MyMoneyAccount::setOnlineBankingSettings(const MyMoneyKeyValueContainer& values) 
+{
+  m_onlineBankingSettings = values; 
+}
+
+const MyMoneyKeyValueContainer& MyMoneyAccount::onlineBankingSettings(void) const 
+{ 
+  return m_onlineBankingSettings; 
+}

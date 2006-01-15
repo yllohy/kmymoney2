@@ -496,6 +496,21 @@ public:
     */
   void setBalance(const MyMoneyMoney& val) { m_balance = val; };
 
+  /**
+    * This method sets the kvp's for online banking with this account
+    *
+    * @param values The container of kvp's needed when connecting to this account
+    */
+  void setOnlineBankingSettings(const MyMoneyKeyValueContainer& values);
+
+  /**
+    * This method retrieves the kvp's for online banking with this account
+    *
+    * @return The container of kvp's needed when connecting to this account
+    */
+  const MyMoneyKeyValueContainer& onlineBankingSettings(void) const;
+
+
 private:
   /**
     * This member variable identifies the type of account
@@ -572,6 +587,13 @@ private:
     * for this account.
     */
   MyMoneyMoney    m_balance;
+
+  /**
+    * This member variable keeps the set of kvp's needed to establish
+    * online banking sessions to this account.
+    */
+  MyMoneyKeyValueContainer m_onlineBankingSettings;
+
 };
 
 /**

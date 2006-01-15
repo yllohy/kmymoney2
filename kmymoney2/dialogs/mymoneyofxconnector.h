@@ -71,7 +71,6 @@ protected:
 private:
 //   QString m_body;
   const MyMoneyAccount& m_account;
-  const MyMoneyInstitution& m_institution;
   MyMoneyKeyValueContainer m_fiSettings;
 };
 

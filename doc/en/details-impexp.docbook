@@ -429,7 +429,7 @@ the following sections:
 <sect2><title>How to import a QIF file</title>
 
 <para>
-	To import a QIF file select <guimenuitem>Import</guimenuitem> <guimenuitem>Qif</guimenuitem> from the <guimenu>File</guimenu> menu.
+	To import a QIF file, first ensure you have a valid &kappname; file open.  Then select <guimenuitem>Import</guimenuitem> <guimenuitem>Qif</guimenuitem> from the <guimenu>File</guimenu> menu.
 </para>
 	
 <para>
@@ -687,8 +687,11 @@ Some of your transactions may be flashing red in the ledger.
 <para>
 	If you have installed from RPM, the OFX Imported Plugin is contained within the kmymoney-ofx RPM.  
 	It should be available from whatever source you got the base &kappname; RPM.  
-	If you have built from sources, all you need to do is have the libOFX 0.7 development headers &amp; libraries installed on your system.  
+	If you have built from sources, all you need to do is have the libOFX 0.8.1 development headers &amp; libraries installed on your system.  
 	The &kappname; build process will detect these and compile the plugin.
+</para>
+<para>
+	Should you run into trouble trying to compile &kappname;, and you are certain you have the correct version of libOFX installed, please contact the developers list &devlist; for assistance.  Include a copy of your config.log file, compressed first via gzip.
 </para>
 </sect2>
 
@@ -739,13 +742,34 @@ Some of your transactions may be flashing red in the ledger.
 </para>
 </sect2>
 
-<sect2><title>Direct Connect</title>
+<sect2 id="details.impexp.ofxdirectconnect"><title>Direct Connect</title>
 
 <para>
-	This version of &kappname; does not support the ability to contact your bank directly to obtain statements or make payments.  
-	However, Martin Preuss has created a program called AqBanking to do this for you.  
-	It includes a plugin which integrates seamlessly with &kappname;.  
-	Please visit the AqBanking site for more details.
+	OFX Direct Connect is now supported in &kappname;.
+	This gives you the ability to contact your bank directly to obtain statements.
+	In the future, there will be more help written, and this will be moved to its own section.
+</para>
+<para>
+	To enable this, you must compile &kappname; with the --enable-ofxbanking switch.
+	This requires some additional libraries.  
+	You'll need libxml++-1.0 version 1.0.1 or higher, and libcurl version 7.9.7 or higher.	
+</para>
+<para>
+	Please be warned: Many banks require a separate signup, will give you a separate password or PIN, and may even charge you a separate fee for this service.
+	No bank directly supports &kappname;.
+	You'll have to tell them you want to bank directly from MS Money or Quicken.
+</para>
+<para>
+	The first step is to configure each account you wish to download statements for.
+	Go to the Accounts view, right click on the account you wish to configure, and choose &quot;Edit Account...&quot;.
+	Look for the Online Banking section.
+	Press the <guibutton>Setup...</guibutton> button.
+	This wizard will guide you through choosing a bank, entering your username and password, and selecting an account.
+</para>
+<para>
+	Once you have an account set up with online banking, go to the ledger for that account.
+	Then from the &quot;Account/Category&quot; menu, choose &quot;Online update using OFX...&quot;.
+	This will connect to you bank, and download a statement for the last 60 days.
 </para>
 </sect2>
 

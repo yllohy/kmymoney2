@@ -18,15 +18,21 @@ AC_MSG_RESULT($enable_ofxbanking)
 if test "$enable_ofxplugin" != "no"; then
   AC_CHECK_HEADER([OpenSP/macros.h],[],[AC_MSG_ERROR([cannot find OpenSP headers. Please ensure you have OpenSP installed.])])
   PKG_CHECK_MODULES(OFX,libofx >= 0.8.1)
-  OFX_IMPORTERPLUGIN="ofximport" 
+ OFX_IMPORTERPLUGIN="ofximport" 
 fi
 
 if test "$enable_ofxbanking" != "no"; then
   AC_CHECK_HEADER([OpenSP/macros.h],[],[AC_MSG_ERROR([cannot find OpenSP headers. Please ensure you have OpenSP installed.])])
   PKG_CHECK_MODULES(OFX,libofx >= 0.8.1)
   AC_DEFINE_UNQUOTED(USE_OFX_DIRECTCONNECT, "1", [whether to use OFX directconnect])
-  LIBS="$OFX_LIBS $LIBS"
+  PKG_CHECK_MODULES(LIBXMLPP,libxml++-1.0 >= 1.0.1,
+	[AC_DEFINE(HAVE_LIBXMLPP, 1, [Defined if libxml++ is available])],
+        [AC_MSG_ERROR([libxml++ is required for OFX Direct Connect.])])
+
+  LIBCURL_CHECK_CONFIG([yes],[7.9.7])
+  LIBS="$OFX_LIBS $LIBXMLPP_LIBS $LIBCURL $LIBS"
 fi
+AM_CONDITIONAL(OFXBANKING, test "$enble_ofxbanking" != "no"  )
 AC_SUBST(OFX_LIBS)
 AC_SUBST(OFX_IMPORTERPLUGIN)
 ])

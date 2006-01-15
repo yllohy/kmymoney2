@@ -71,14 +71,14 @@ public:
   const QValueList<MyMoneySplit>& splits(void) const { return m_splits; };
   const unsigned int splitCount(void) const { return m_splits.count(); };
   const QCString commodity(void) const { return m_commodity; };
-  const QString bankID(void) const { return m_bankID; };
+  const QString bankID(void) const /*__attribute__ ((deprecated))*/ { return m_bankID; };
 
   // Simple set operations
   void setPostDate(const QDate& date);
   void setEntryDate(const QDate& date);
   void setMemo(const QString& memo);
   void setCommodity(const QCString& commodityId) { m_commodity = commodityId; };
-  void setBankID(const QString& bankID) { m_bankID = bankID; };
+  void setBankID(const QString& bankID) /*__attribute__ ((deprecated))*/ { m_bankID = bankID; };
 
   bool operator == (const MyMoneyTransaction&) const;
   inline bool operator != (const MyMoneyTransaction& r) const { return !(*this == r); };
@@ -262,6 +262,8 @@ private:
   /**
     * This member keeps the bank's unique ID for the transaction, so we can
     * avoid duplicates.  This is only used for electronic statement downloads.
+    *
+    * Note this is now deprecated!  Bank ID's should be set on splits, not transactions.
     */
   QString m_bankID;
 

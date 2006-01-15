@@ -106,22 +106,6 @@ public:
   void setSortcode(QString code) { m_sortcode = code; }
 
   /**
-    * This method sets the kvp's for OFX Direct Connect sessions to this
-    * institution.
-    *
-    * @param values The container of kvp's needed when connecting to this institution
-    */
-  void setOfxConnectionSettings(const MyMoneyKeyValueContainer& values) { m_ofxConnectionSettings = values; }
-
-  /**
-    * This method retrieves the kvp's for OFX Direct Connect sessions to this
-    * institution.
-    *
-    * @return The container of kvp's needed when connecting to this institution
-    */
-  const MyMoneyKeyValueContainer& ofxConnectionSettings(void) const { return m_ofxConnectionSettings; }
-
-  /**
     * This method adds the id of an account to the account list of
     * this institution It is verified, that the account is only
     * mentioned once.
@@ -217,12 +201,6 @@ private:
     * available at this institution
     */
   QCStringList m_accountList;
-
-  /**
-    * This member variable keeps the set of kvp's needed to establish
-    * OFX Direct Connect sessions to this institution.
-    */
-  MyMoneyKeyValueContainer m_ofxConnectionSettings;
 };
 
 #endif

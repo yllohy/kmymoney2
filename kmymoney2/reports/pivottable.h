@@ -265,6 +265,7 @@ protected:
     * @param _date The date
     */
     unsigned columnValue(const QDate& _date) const;
+
   /**
     * Calculate the date of the last day covered by a given column. 
     *
