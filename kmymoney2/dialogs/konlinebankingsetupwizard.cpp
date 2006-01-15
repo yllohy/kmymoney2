@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef USE_OFX_DIRECTCONNECT
+
 // ----------------------------------------------------------------------------
 // System Includes
 #include <string>
@@ -361,4 +363,6 @@ KOnlineBankingSetupWizard::ListViewItem::ListViewItem( QListView* parent, const 
 }
 
 void KOnlineBankingSetupWizard::ListViewItem::x(void) {}
+
+#endif // USE_OFX_DIRECTCONNECT
 // vim:cin:si:ai:et:ts=2:sw=2:
