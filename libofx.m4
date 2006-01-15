@@ -32,7 +32,7 @@ if test "$enable_ofxbanking" != "no"; then
   LIBCURL_CHECK_CONFIG([yes],[7.9.7])
   LIBS="$OFX_LIBS $LIBXMLPP_LIBS $LIBCURL $LIBS"
 fi
-AM_CONDITIONAL(OFXBANKING, test "$enble_ofxbanking" != "no"  )
+AM_CONDITIONAL(OFXBANKING, test "$enable_ofxbanking" != "no" )
 AC_SUBST(OFX_LIBS)
 AC_SUBST(OFX_IMPORTERPLUGIN)
 ])
