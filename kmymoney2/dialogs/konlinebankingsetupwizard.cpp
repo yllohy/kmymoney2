@@ -364,5 +364,7 @@ KOnlineBankingSetupWizard::ListViewItem::ListViewItem( QListView* parent, const 
 
 void KOnlineBankingSetupWizard::ListViewItem::x(void) {}
 
+#include "konlinebankingsetupwizard.moc"
+
 #endif // USE_OFX_DIRECTCONNECT
 // vim:cin:si:ai:et:ts=2:sw=2:
