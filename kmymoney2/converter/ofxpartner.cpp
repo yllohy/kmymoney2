@@ -51,26 +51,29 @@ vector<string> BankNames(void)
   ValidateIndexCache();
   
   xmlpp::DomParser parser;
-        parser.set_substitute_entities();
-          parser.parse_file(kBankFilename);
-          if ( parser ) 
-          {
-            vector<string> names = NodeParser(parser).Path("fi/prov/name").Text();
-            result.insert(result.end(),names.begin(),names.end());
-          }
-          parser.parse_file(kCcFilename);
-          if ( parser ) 
-          {
-            vector<string> names = NodeParser(parser).Path("fi/prov/name").Text();
-            result.insert(result.end(),names.begin(),names.end());
-          }
-          parser.parse_file(kInvFilename);
-          if ( parser ) 
-          {
-            vector<string> names = NodeParser(parser).Path("fi/prov/name").Text();
-            result.insert(result.end(),names.begin(),names.end());
-          }
+  parser.set_substitute_entities();
+  parser.parse_file(kBankFilename);
+  if ( parser ) 
+  {
+    vector<string> names = NodeParser(parser).Path("fi/prov/name").Text();
+    result.insert(result.end(),names.begin(),names.end());
+  }
+  parser.parse_file(kCcFilename);
+  if ( parser ) 
+  {
+    vector<string> names = NodeParser(parser).Path("fi/prov/name").Text();
+    result.insert(result.end(),names.begin(),names.end());
+  }
+  parser.parse_file(kInvFilename);
+  if ( parser ) 
+  {
+    vector<string> names = NodeParser(parser).Path("fi/prov/name").Text();
+    result.insert(result.end(),names.begin(),names.end());
+  }
 
+  // Add Innovision
+  result.push_back("Innovision");
+          
   // sort the list and remove duplicates, to return one unified list of all supported banks 
   sort(result.begin(),result.end());
   result.erase(unique(result.begin(),result.end()),result.end());
@@ -82,28 +85,33 @@ vector<string> FipidForBank(const string& bank)
   vector<string> result;
 
   xmlpp::DomParser parser;
-          parser.set_substitute_entities();
-          parser.parse_file(kBankFilename);
-          if ( parser ) 
-          {
-            vector<string> fipids = NodeParser(parser).Path("fi/prov").Select("name",bank).Path("guid").Text();
-            if ( ! fipids.back().empty() )
-              result.insert(result.end(),fipids.begin(),fipids.end());
-          }
-          parser.parse_file(kCcFilename);
-          if ( parser ) 
-          {
-            vector<string> fipids = NodeParser(parser).Path("fi/prov").Select("name",bank).Path("guid").Text();
-            if ( ! fipids.back().empty() )
-              result.insert(result.end(),fipids.begin(),fipids.end());
-          }
-          parser.parse_file(kInvFilename);
-          if ( parser ) 
-          {
-            vector<string> fipids = NodeParser(parser).Path("fi/prov").Select("name",bank).Path("guid").Text();
-            if ( ! fipids.back().empty() )
-              result.insert(result.end(),fipids.begin(),fipids.end());
-          }
+  parser.set_substitute_entities();
+  parser.parse_file(kBankFilename);
+  if ( parser ) 
+  {
+    vector<string> fipids = NodeParser(parser).Path("fi/prov").Select("name",bank).Path("guid").Text();
+    if ( ! fipids.back().empty() )
+      result.insert(result.end(),fipids.begin(),fipids.end());
+  }
+  parser.parse_file(kCcFilename);
+  if ( parser ) 
+  {
+    vector<string> fipids = NodeParser(parser).Path("fi/prov").Select("name",bank).Path("guid").Text();
+    if ( ! fipids.back().empty() )
+      result.insert(result.end(),fipids.begin(),fipids.end());
+  }
+  parser.parse_file(kInvFilename);
+  if ( parser ) 
+  {
+    vector<string> fipids = NodeParser(parser).Path("fi/prov").Select("name",bank).Path("guid").Text();
+    if ( ! fipids.back().empty() )
+      result.insert(result.end(),fipids.begin(),fipids.end());
+  }
+
+  // the fipid for Innovision is 1.
+  if ( bank == "Innovision" )
+    result.push_back("1");
+          
   sort(result.begin(),result.end());
   result.erase(unique(result.begin(),result.end()),result.end());
   
@@ -114,6 +122,20 @@ OfxFiServiceInfo ServiceInfo(const std::string& fipid)
 {
   OfxFiServiceInfo result;
   memset(&result,0,sizeof(OfxFiServiceInfo));
+
+  // Hard-coded values for Innovision test server
+  if ( fipid == "1" )
+  {
+    strncpy(result.fid,"00000",OFX_FID_LENGTH-1);
+    strncpy(result.org,"ReferenceFI",OFX_ORG_LENGTH-1);
+    strncpy(result.url,"http://ofx.innovision.com",OFX_URL_LENGTH-1);
+    result.accountlist = 1;
+    result.statements = 1;
+    result.billpay = 1;
+    result.investments = 1;
+
+    return result;
+  }
   
   string url = "http://moneycentral.msn.com/money/2005/mnynet/service/olsvcupd/OnlSvcBrandInfo.aspx?MSNGUID=&GUID=%1&SKU=3&VER=6";
   url.replace(url.find("%1"),2,fipid);
