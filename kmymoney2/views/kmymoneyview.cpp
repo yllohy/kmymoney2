@@ -125,6 +125,13 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_homeViewFrame = addVBoxPage( i18n("Home"), i18n("Home"),
     DesktopIcon("home", iconSize));
   m_homeView = new KHomeView(m_homeViewFrame, "HomeView");
+  connect(m_homeView, SIGNAL(ledgerSelected(const QCString&, const QCString&)),
+          this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
+  connect(m_homeView, SIGNAL(scheduleSelected(const QCString&)),
+    this, SLOT(slotScheduleSelected(const QCString&)));
+  connect(m_homeView, SIGNAL(reportSelected(const QCString&)),
+    this, SLOT(slotReportSelected(const QCString&)));
+
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_homeView, SLOT(slotReloadView()));
 
   // Page 1
@@ -197,6 +204,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_investmentView, SLOT(slotCancelEdit()));
   connect(m_investmentView, SIGNAL(accountSelected(const QCString&, const QCString&)),
       this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
+  connect(m_investmentView, SIGNAL(investmentRightMouseClick()), kmymoney2, SLOT(slotShowInvestmentContextMenu()));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_investmentView, SLOT(slotReloadView()));
 
   // Page 8
@@ -210,15 +218,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
           this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
   connect(m_ledgerView, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
           this, SLOT(slotPayeeSelected(const QCString&, const QCString&, const QCString&)));
-
-  connect(m_homeView, SIGNAL(ledgerSelected(const QCString&, const QCString&)),
-          this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
-
-  connect(m_homeView, SIGNAL(scheduleSelected(const QCString&)),
-    this, SLOT(slotScheduleSelected(const QCString&)));
-
-  connect(m_homeView, SIGNAL(reportSelected(const QCString&)),
-    this, SLOT(slotReportSelected(const QCString&)));
 
   // construct an empty file
   newFile(true);
