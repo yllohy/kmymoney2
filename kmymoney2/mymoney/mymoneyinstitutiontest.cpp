@@ -200,9 +200,6 @@ void MyMoneyInstitutionTest::testWriteXML() {
 
 	n->addAccountId("A000001");
 	n->addAccountId("A000003");
-	kvp.setValue("key", "value");
-	kvp.setValue("Key", "Value");
-	n->setOfxConnectionSettings(kvp);
 
 	QDomDocument doc("TEST");
 	QDomElement el = doc.createElement("INSTITUTION-CONTAINER");
@@ -221,7 +218,6 @@ void MyMoneyInstitutionTest::testWriteXML() {
 		"   <ACCOUNTID id=\"A000001\" />\n"
 		"   <ACCOUNTID id=\"A000003\" />\n"
 		"  </ACCOUNTIDS>\n"
-		"  <OFXSETTINGS key=\"value\" Key=\"Value\" />\n"
 		" </INSTITUTION>\n"
 		"</INSTITUTION-CONTAINER>\n");
 
@@ -239,7 +235,6 @@ void MyMoneyInstitutionTest::testReadXML() {
 		"   <ACCOUNTID id=\"A000001\" />\n"
 		"   <ACCOUNTID id=\"A000003\" />\n"
 		"  </ACCOUNTIDS>\n"
-		"  <OFXSETTINGS key=\"value\" Key=\"Value\" />\n"
 		" </INSTITUTION>\n"
 		"</INSTITUTION-CONTAINER>\n");
 
@@ -252,7 +247,6 @@ void MyMoneyInstitutionTest::testReadXML() {
 		"   <ACCOUNTID id=\"A000001\" />\n"
 		"   <ACCOUNTID id=\"A000003\" />\n"
 		"  </ACCOUNTIDS>\n"
-		"  <OFXSETTINGS key=\"value\" Key=\"Value\" />\n"
 		" </KINSTITUTION>\n"
 		"</INSTITUTION-CONTAINER>\n");
 
@@ -268,9 +262,6 @@ void MyMoneyInstitutionTest::testReadXML() {
 		delete e;
 	}
 
-	MyMoneyKeyValueContainer kvp;
-	kvp.setValue("key", "VALUE");
-	i.setOfxConnectionSettings(kvp);
 	i.addAccountId("TEST");
 
 	doc.setContent(ref_ok);
@@ -289,11 +280,6 @@ void MyMoneyInstitutionTest::testReadXML() {
 		CPPUNIT_ASSERT(i.city() == "town");
 		CPPUNIT_ASSERT(i.telephone() == "telephone");
 		CPPUNIT_ASSERT(i.accountList() == alist);
-		MyMoneyKeyValueContainer kvp;
-		kvp = i.ofxConnectionSettings();
-		CPPUNIT_ASSERT(kvp.value("key") == "value");
-		CPPUNIT_ASSERT(kvp.value("Key") == "Value");
-		CPPUNIT_ASSERT(kvp.value("KEY").isEmpty());
 
 	} catch(MyMoneyException *e) {
 		delete e;

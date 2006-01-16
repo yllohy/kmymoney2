@@ -77,9 +77,6 @@ void QueryTableTest::setUp () {
   acForeign = makeAccount(QString("Foreign"),MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
   
   MyMoneyInstitution i("Bank of the World","","","","","","");
-  MyMoneyKeyValueContainer ofxsettings;
-  ofxsettings.setValue("iban","123456789");
-  i.setOfxConnectionSettings(ofxsettings);
   file->addInstitution(i);
   inBank = i.id();
 }

@@ -1,4 +1,7 @@
 2006-01-16 Ace Jones <acejones@users.sourceforge.net>
+  * Updated unit tests for my last checkin
+
+2006-01-14 Ace Jones <acejones@users.sourceforge.net>
   * Added account setup for OFX direct connect
   * Revived OFX direct connect (it's been broken since the KAction changes)
   * OFX direct connect is now officially supproted!
