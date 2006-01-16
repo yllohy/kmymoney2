@@ -55,7 +55,8 @@ public:
     * with title @p item and icon @p pixmap.
     *
     * @param item Name of view
-    * @param pixmap icon of view
+    * @param icon name for the icon to be used for the view
+    *
     * @return pointer to KMyMoneyViewBase object
     */
   KMyMoneyViewBase* addPage(const QString& item, const QString& icon);

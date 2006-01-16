@@ -79,7 +79,7 @@ signals:
     *
     * @param obj const reference to object
     */
-  void selectObject(const MyMoneyObject&);
+  void selectObject(const MyMoneyObject& obj);
 
   /**
     * This signal serves as proxy for
