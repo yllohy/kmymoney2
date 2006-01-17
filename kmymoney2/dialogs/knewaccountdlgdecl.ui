@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>667</width>
-            <height>597</height>
+            <width>590</width>
+            <height>771</height>
         </rect>
     </property>
     <property name="caption">
@@ -39,7 +39,7 @@
                     </property>
                     <widget class="QLayoutWidget">
                         <property name="name">
-                            <cstring>layout15</cstring>
+                            <cstring>layout16</cstring>
                         </property>
                         <hbox>
                             <property name="name">
@@ -47,7 +47,7 @@
                             </property>
                             <widget class="QLayoutWidget">
                                 <property name="name">
-                                    <cstring>layout14</cstring>
+                                    <cstring>layout15</cstring>
                                 </property>
                                 <vbox>
                                     <property name="name">
@@ -55,15 +55,44 @@
                                     </property>
                                     <widget class="QLayoutWidget">
                                         <property name="name">
-                                            <cstring>layout13</cstring>
+                                            <cstring>layout14</cstring>
                                         </property>
                                         <grid>
                                             <property name="name">
                                                 <cstring>unnamed</cstring>
                                             </property>
-                                            <widget class="QLineEdit" row="3" column="2">
+                                            <widget class="kMyMoneyEdit" row="3" column="1">
                                                 <property name="name">
-                                                    <cstring>descriptionEdit</cstring>
+                                                    <cstring>m_openingBalanceEdit</cstring>
+                                                </property>
+                                                <property name="calculatorButtonVisibility" stdset="0">
+                                                    <bool>false</bool>
+                                                </property>
+                                            </widget>
+                                            <widget class="kMyMoneyEquity" row="6" column="1">
+                                                <property name="name">
+                                                    <cstring>m_equity</cstring>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="5" column="0">
+                                                <property name="name">
+                                                    <cstring>m_currencyText</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Currency:</string>
+                                                </property>
+                                            </widget>
+                                            <widget class="kMyMoneyEdit" row="7" column="1">
+                                                <property name="name">
+                                                    <cstring>minimumBalanceEdit</cstring>
+                                                </property>
+                                                <property name="calculatorButtonVisibility" stdset="0">
+                                                    <bool>false</bool>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLineEdit" row="1" column="1">
+                                                <property name="name">
+                                                    <cstring>accountNameEdit</cstring>
                                                 </property>
                                             </widget>
                                             <widget class="QLabel" row="2" column="0">
@@ -92,7 +121,7 @@
                                                     <string>Date:</string>
                                                 </property>
                                             </widget>
-                                            <widget class="QLabel" row="6" column="0" rowspan="1" colspan="2">
+                                            <widget class="QLabel" row="7" column="0">
                                                 <property name="name">
                                                     <cstring>textLabel1_2</cstring>
                                                 </property>
@@ -100,15 +129,7 @@
                                                     <string>Minimum balance:</string>
                                                 </property>
                                             </widget>
-                                            <widget class="QLabel" row="0" column="0">
-                                                <property name="name">
-                                                    <cstring>textLabel2</cstring>
-                                                </property>
-                                                <property name="text">
-                                                    <string>Type:</string>
-                                                </property>
-                                            </widget>
-                                            <widget class="QLabel" row="3" column="0">
+                                            <widget class="QLabel" row="4" column="0">
                                                 <property name="name">
                                                     <cstring>TextLabel5</cstring>
                                                 </property>
@@ -128,9 +149,25 @@
                                                     <string>Notes:</string>
                                                 </property>
                                             </widget>
-                                            <widget class="kMyMoneyDateInput" row="2" column="2">
+                                            <widget class="QLineEdit" row="4" column="1">
                                                 <property name="name">
-                                                    <cstring>startDateEdit</cstring>
+                                                    <cstring>descriptionEdit</cstring>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="3" column="0">
+                                                <property name="name">
+                                                    <cstring>textLabel1_3</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Opening balance:</string>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLabel" row="0" column="0">
+                                                <property name="name">
+                                                    <cstring>textLabel2</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Type:</string>
                                                 </property>
                                             </widget>
                                             <widget class="QLabel" row="1" column="0">
@@ -159,25 +196,17 @@
                                                     <string>Name:</string>
                                                 </property>
                                             </widget>
-                                            <widget class="kMyMoneyEdit" row="6" column="2">
+                                            <widget class="kMyMoneyDateInput" row="2" column="1">
                                                 <property name="name">
-                                                    <cstring>minimumBalanceEdit</cstring>
-                                                </property>
-                                                <property name="calculatorButtonVisibility" stdset="0">
-                                                    <bool>false</bool>
+                                                    <cstring>startDateEdit</cstring>
                                                 </property>
                                             </widget>
-                                            <widget class="kMyMoneyEquity" row="5" column="2">
-                                                <property name="name">
-                                                    <cstring>m_equity</cstring>
-                                                </property>
-                                            </widget>
-                                            <widget class="kMyMoneyCurrencySelector" row="4" column="2">
+                                            <widget class="kMyMoneyCurrencySelector" row="5" column="1">
                                                 <property name="name">
                                                     <cstring>m_currency</cstring>
                                                 </property>
                                             </widget>
-                                            <widget class="QLabel" row="5" column="0">
+                                            <widget class="QLabel" row="6" column="0">
                                                 <property name="name">
                                                     <cstring>m_equityText</cstring>
                                                 </property>
@@ -185,25 +214,12 @@
                                                     <string>Equity-Symbol:</string>
                                                 </property>
                                             </widget>
-                                            <widget class="QLineEdit" row="1" column="2">
-                                                <property name="name">
-                                                    <cstring>accountNameEdit</cstring>
-                                                </property>
-                                            </widget>
-                                            <widget class="QComboBox" row="0" column="2">
+                                            <widget class="QComboBox" row="0" column="1">
                                                 <property name="name">
                                                     <cstring>typeCombo</cstring>
                                                 </property>
                                                 <property name="enabled">
                                                     <bool>true</bool>
-                                                </property>
-                                            </widget>
-                                            <widget class="QLabel" row="4" column="0">
-                                                <property name="name">
-                                                    <cstring>m_currencyText</cstring>
-                                                </property>
-                                                <property name="text">
-                                                    <string>Currency:</string>
                                                 </property>
                                             </widget>
                                         </grid>
@@ -272,6 +288,9 @@
                                     <widget class="KListView">
                                         <property name="name">
                                             <cstring>m_qlistviewParentAccounts</cstring>
+                                        </property>
+                                        <property name="resizeMode">
+                                            <enum>AllColumns</enum>
                                         </property>
                                     </widget>
                                 </vbox>
@@ -363,14 +382,6 @@
                             </widget>
                         </vbox>
                     </widget>
-
-
-
-
-
-
-
-
                     <widget class="QGroupBox">
                         <property name="name">
                             <cstring>m_onlineBankingBox</cstring>
@@ -498,11 +509,6 @@
                             </widget>
                         </vbox>
                     </widget>
-
-
-
-
-
                 </vbox>
             </widget>
             <widget class="QWidget">
@@ -889,8 +895,32 @@
     </image>
 </images>
 <tabstops>
+    <tabstop>typeCombo</tabstop>
+    <tabstop>accountNameEdit</tabstop>
+    <tabstop>startDateEdit</tabstop>
+    <tabstop>m_openingBalanceEdit</tabstop>
+    <tabstop>descriptionEdit</tabstop>
+    <tabstop>minimumBalanceEdit</tabstop>
+    <tabstop>m_qcheckboxPreferred</tabstop>
+    <tabstop>m_qcheckboxNoVat</tabstop>
+    <tabstop>m_qlistviewParentAccounts</tabstop>
+    <tabstop>m_qcomboboxInstitutions</tabstop>
+    <tabstop>m_qbuttonNew</tabstop>
+    <tabstop>accountNoEdit</tabstop>
+    <tabstop>m_buttonOnlineSetup</tabstop>
     <tabstop>createButton</tabstop>
     <tabstop>cancelButton</tabstop>
+    <tabstop>m_tab</tabstop>
+    <tabstop>m_vatCategory</tabstop>
+    <tabstop>m_vatRate</tabstop>
+    <tabstop>m_vatAssignment</tabstop>
+    <tabstop>m_grossAmount</tabstop>
+    <tabstop>m_qcheckboxTax</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>kmymoneyequity.h</includehint>
+    <includehint>kmymoneycurrencyselector.h</includehint>
+    <includehint>kmymoneyaccountselector.h</includehint>
+</includehints>
 </UI>

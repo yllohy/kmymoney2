@@ -30,6 +30,7 @@
 
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/mymoneymoney.h>
+#include <kmymoney/kmymoneyedit.h>
 
 #include "../dialogs/knewaccountdlgdecl.h"
 class KMyMoneyAccountTreeItem;
@@ -37,8 +38,9 @@ class KMyMoneyAccountTreeItem;
 /**
   * This dialog lets you create/edit an account.
   */
-class KNewAccountDlg : public KNewAccountDlgDecl  {
-   Q_OBJECT
+class KNewAccountDlg : public KNewAccountDlgDecl
+{
+  Q_OBJECT
 
 private:
   MyMoneyAccount m_account;
@@ -84,6 +86,12 @@ public:
     * This method returns the parent account of the edited account object.
     */
   const MyMoneyAccount& parentAccount(void);
+
+  void setOpeningBalance(const MyMoneyMoney& balance);
+
+  const MyMoneyMoney openingBalance(void) const { return m_openingBalanceEdit->value(); };
+
+  void setOpeningBalanceShown(bool shown);
 
 protected:
   void resizeEvent(QResizeEvent* e);

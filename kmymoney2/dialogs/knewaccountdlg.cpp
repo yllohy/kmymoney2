@@ -238,9 +238,9 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     }
 
     m_qcheckboxTax->hide();
-    
+
     displayOnlineBankingStatus();
-    
+
   }
 
   // setup the currency / equity widgets
@@ -378,6 +378,16 @@ void KNewAccountDlg::timerDone(void)
 
 KNewAccountDlg::~KNewAccountDlg()
 {
+}
+
+void KNewAccountDlg::setOpeningBalance(const MyMoneyMoney& balance)
+{
+  m_openingBalanceEdit->setValue(balance);
+}
+
+void KNewAccountDlg::setOpeningBalanceShown(bool shown)
+{
+  m_openingBalanceEdit->setShown(shown);
 }
 
 void KNewAccountDlg::okClicked()
@@ -909,10 +919,10 @@ void KNewAccountDlg::slotOnlineSetupClicked(void)
   // wizard (using a plugin)
   //
   // Or, the wizard itself could ask the user.
-  
+
   KOnlineBankingSetupWizard wiz(this,"onlinebankingsetup");
   wiz.exec();
-  
+
   MyMoneyKeyValueContainer settings;
   if ( wiz.chosenSettings( settings ) )
   {
@@ -1023,7 +1033,7 @@ void KNewAccountDlg::displayOnlineBankingStatus(void)
     }
     else
       m_textOnlineStatus->setText(i18n("STATUS: Account not configured"));
-      
+
 #else
     m_textOnlineStatus->setText(i18n("STATUS: Disabled.  No online banking services are available"));
 #endif

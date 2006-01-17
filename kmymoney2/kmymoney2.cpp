@@ -2457,18 +2457,61 @@ void KMyMoney2App::slotAccountEdit(void)
           category = true;
           break;
       }
+      QCString tid = file->openingBalanceTransaction(m_selectedAccount);
+      MyMoneyTransaction t;
+      MyMoneySplit s0, s1;
       KNewAccountDlg dlg(m_selectedAccount, true, category, 0, 0, caption);
+
+      if(category || m_selectedAccount.accountType() == MyMoneyAccount::Investment) {
+        dlg.setOpeningBalanceShown(false);
+      } else {
+        if(!tid.isEmpty()) {
+          try {
+            t = file->transaction(tid);
+            s0 = t.splitByAccount(m_selectedAccount.id());
+            s1 = t.splitByAccount(m_selectedAccount.id(), false);
+            dlg.setOpeningBalance(s0.shares());
+            if(m_selectedAccount.accountGroup() == MyMoneyAccount::Liability) {
+              dlg.setOpeningBalance(-s0.shares());
+            }
+          } catch(MyMoneyException *e) {
+            kdDebug(2) << "Error retrieving opening balance transaction " << tid << ": " << e->what() << "\n";
+            tid = QCString();
+            delete e;
+          }
+        }
+      }
 
       if (dlg.exec()) {
         try {
           MyMoneyAccount account = dlg.account();
           MyMoneyAccount parent = dlg.parentAccount();
+          MyMoneyMoney bal = dlg.openingBalance();
+          if(m_selectedAccount.accountGroup() == MyMoneyAccount::Liability) {
+            bal = -bal;
+          }
 
           // we need to reparent first, as modify will check for same type
           if(account.parentAccountId() != parent.id()) {
             file->reparentAccount(account, parent);
           }
           file->modifyAccount(account);
+          if(!tid.isEmpty() && dlg.openingBalance().isZero()) {
+            file->removeTransaction(t);
+
+          } else if(!tid.isEmpty() && !dlg.openingBalance().isZero()) {
+            s0.setShares(bal);
+            s0.setValue(bal);
+            t.modifySplit(s0);
+            s1.setShares(-bal);
+            s1.setValue(-bal);
+            t.modifySplit(s1);
+            file->modifyTransaction(t);
+
+          } else if(tid.isEmpty() && !dlg.openingBalance().isZero()){
+            MyMoneyFile::instance()->createOpeningBalanceTransaction(m_selectedAccount, bal);
+          }
+
           slotSelectAccount(account);
 
         } catch(MyMoneyException* e) {
