@@ -128,7 +128,8 @@ void KTransactionListItem::paintCell(QPainter *p, const QColorGroup &cg, int col
   _cg.setColor(QColorGroup::Base, backgroundColor());
   QListViewItem::paintCell(p, _cg, column, width, alignment);
 }
-                                                                                                               const QColor KTransactionListItem::backgroundColor()
+
+const QColor KTransactionListItem::backgroundColor()
 {
   QColor bgColour = KMyMoneyUtils::backgroundColour();
   QColor listColour = KMyMoneyUtils::listColour();
