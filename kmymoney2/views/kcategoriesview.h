@@ -101,7 +101,7 @@ signals:
     * @param acc const reference to account to be reparented
     * @param parent const reference to new parent account
     */
-  void reparent(const MyMoneyAccount&, const MyMoneyAccount&);
+  void reparent(const MyMoneyAccount& acc, const MyMoneyAccount& parent);
 
 private:
   QMap<QCString, MyMoneyAccount>      m_accountMap;
