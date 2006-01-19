@@ -918,9 +918,4 @@
     <tabstop>m_qcheckboxTax</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneyequity.h</includehint>
-    <includehint>kmymoneycurrencyselector.h</includehint>
-    <includehint>kmymoneyaccountselector.h</includehint>
-</includehints>
 </UI>
