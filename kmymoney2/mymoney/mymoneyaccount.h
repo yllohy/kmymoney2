@@ -80,24 +80,6 @@ class KMYMONEY_EXPORT MyMoneyAccount : public MyMoneyObject, public MyMoneyKeyVa
 {
 public:
 
-/*
-  class Transaction
-  {
-  public:
-    Transaction() {};
-    Transaction(const QCString& transaction, const MyMoneyMoney& balance) {
-      m_transaction = transaction;
-      m_balance = balance;
-    };
-    const QCString& transactionID(void) const { return m_transaction; };
-    const MyMoneyMoney& balance(void) const { return m_balance; };
-
-  private:
-    QCString m_transaction;
-    MyMoneyMoney m_balance;
-  };
-*/
-
   /**
     * Account types currently supported.
     */
@@ -252,66 +234,10 @@ public:
   const QDate lastModified(void) const { return m_lastModified; }
 
   /**
-    * This method is used to get the number of transactions
-    * in this account.
-    *
-    * @return number of transactions in the account
-    */
-/*
-  const int transactionCount(void) const { return m_transactionList.count(); }
-*/
-
-  /**
-    * This method returns the current total balance of this account's
-    * transactions. Sub-Accounts are not included.
-    * @return const reference to MyMoneyMoney balance of split values
-    * @see balanceTotal()
-    */
-/*
-  const MyMoneyMoney balance(void) const;
-*/
-
-  /**
     * This method is used to return the ID of the parent account
     * @return QCString with the ID of the parent of this account
     */
   const QCString parentAccountId(void) const { return m_parentAccount; };
-
-  /**
-    * This method is used to return the transaction id and balance
-    * at the given index. If the index is invalid or larger than
-    * the count of transactions in the list, an exception will be
-    * thrown.
-    *
-    * @param idx index of transaction in list
-    * @return id and balance of transaction
-    */
-/*
-  const MyMoneyAccount::Transaction& transaction(const int idx) const;
-*/
-  /**
-    * This method returns the list of transactions and balances
-    * @return const QValueList<MyMoneyAccount::Transaction>& transactionList
-    */
-/*
-  const QValueList<MyMoneyAccount::Transaction>& transactionList(void) const;
-*/
-
-  /**
-    * This method is used by the mymoney engine to add a transaction
-    * of the journal to this account
-    * @param transaction reference to MyMoneyAccount::Transaction
-    */
-/*
-  void addTransaction(const MyMoneyAccount::Transaction& val);
-*/
-
-  /**
-    * This method is used to clear the list of transactions
-    */
-/*
-  void clearTransactions(void);
-*/
 
   /**
     * This method returns the list of the account id's of
@@ -413,26 +339,10 @@ public:
   void setAccountType(const accountTypeE type);
 
   /**
-    * This method returns the account type based on the string that is read from
-    * the XML file.
-    *
-    * @param QCString reference to type from XML file.
-    */
-  // void setAccountTypeByName(const QCString& strType);
-
-  /**
     * This method is used to set a new parent account id
     * @param parent QString reference to new parent account
     */
   void setParentAccountId(const QCString& parent);
-
-#if 0
-  /**
-    * This method is used to set a new account id
-    * @param id QString reference to new id.
-    */
-  void setAccountId(const QCString& id);
-#endif
 
   /**
     * This method is used to update m_lastModified to the current date

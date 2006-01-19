@@ -58,9 +58,6 @@ private:
     */
   QString m_reference;
 
-  // friend QDataStream &operator<<(QDataStream &, const MyMoneyPayee &);
-  // friend QDataStream &operator>>(QDataStream &, MyMoneyPayee &);
-
 public:
   MyMoneyPayee();
   MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee);

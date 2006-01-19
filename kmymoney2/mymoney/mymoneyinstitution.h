@@ -153,10 +153,6 @@ public:
   virtual bool hasReferenceTo(const QCString& id) const;
 
 private:
-  // friend QDataStream& operator << (QDataStream &, const MyMoneyInstitution &);
-  // friend QDataStream& operator >> (QDataStream &, MyMoneyInstitution &);
-
-private:
   // Bank 'fields'
   /**
     * This member variable keeps the name of the institution

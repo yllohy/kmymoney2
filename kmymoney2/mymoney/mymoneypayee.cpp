@@ -77,30 +77,6 @@ MyMoneyPayee::MyMoneyPayee(const MyMoneyPayee& right) :
   *this = right;
 }
 
-#if 0
-QDataStream &operator<<(QDataStream &s, const MyMoneyPayee &payee)
-{
-  return s << payee.m_name
-    << payee.m_address
-    << payee.m_city
-    << payee.m_state
-    << payee.m_postcode
-    << payee.m_telephone
-    << payee.m_email;
-}
-
-QDataStream &operator>>(QDataStream &s, MyMoneyPayee &payee)
-{
-  return s >> payee.m_name
-    >> payee.m_address
-    >> payee.m_city
-    >> payee.m_state
-    >> payee.m_postcode
-    >> payee.m_telephone
-    >> payee.m_email;
-}
-#endif
-
 const bool MyMoneyPayee::operator == (const MyMoneyPayee& right) const
 {
   return (MyMoneyObject::operator==(right) &&

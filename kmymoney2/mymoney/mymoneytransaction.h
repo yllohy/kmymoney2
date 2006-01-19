@@ -285,9 +285,5 @@ private:
     * @return non-unique hash value of the text @p txt
     */
   const unsigned long hash(const QString& txt) const;
-
-  // friend QDataStream &operator<<(QDataStream &, const MyMoneyTransaction &);
-  // friend QDataStream &operator>>(QDataStream &, MyMoneyTransaction &);
-
 };
 #endif
