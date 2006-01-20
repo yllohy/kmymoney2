@@ -64,6 +64,8 @@ web: $(PDF_TARGET)
 		if test ! -z "$(PDF_TARGET)"; then \
 			cp $(PDF_TARGET) phb; \
 		fi; \
+		sed -i s/help:/../g common/kde-default.css; \
+		chmod 664 phb/* common/*; \
 		tar -cjf online-phb.tar.bz2 common phb; \
 		rm -rf index.xml phb common; \
 	fi;
