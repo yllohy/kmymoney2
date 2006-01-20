@@ -127,7 +127,12 @@ for i in `find . -name \*.ui` ;
         <para/>
         <programlisting>   public slots:</programlisting>
         <para/>
-        <para>section. This should include declaration of slots for those methods that will be connected to a Qt signal. See the Qt documentation about signals and slots. An example would be slotHelp() which will be connected to the clicked() signal of the help button of your dialog in the constructor of your dialog.</para>
+        <para>and</para>
+        <para/>
+        <programlisting>   signals:</programlisting>
+        <para/>
+
+        <para>sections if you plan to use the signal/slot mechanism. See the Qt documentation about signals and slots. An example would be slotHelp() which will be connected to the clicked() signal of the help button of your dialog in the constructor of your dialog.</para>
         <para/>
         <para>Terminate the file with</para>
         <para/>
@@ -156,7 +161,7 @@ for i in `find . -name \*.ui` ;
     <sect1 id="dialogs-updating-makefile">
       <title>Updating the Makefile</title>
       <para/>
-      <para>You will need to edit file Makefile.am in the dialogs source folder before building &kappname;. Note that due to the abstruse rules of make, the lists of files should consist of a single logical line, so be careful regarding any editor options which may cause automatic insertion of line breaks. You can however use a continuation character of backslash to spread the list over multiple physical lines.</para>
+      <para>You will need to edit file Makefile.am in the dialogs source folder before building &kappname;. Note that due to the abstruse rules of make, the lists of files should consist of a single logical line, so be careful regarding any editor options which may cause automatic insertion of line breaks. You can however use a continuation character of backslash to spread the list over multiple physical lines. There must be no character following the continuation character, not even a blank.</para>
       <para/>
       <para>- Add &lt;kn&gt;dlgdecl.ui and &lt;kn&gt;dlg.cpp to the libdialogs_a_SOURCES line</para>
       <para>- Add &lt;kn&gt;dlgdecl.ui to EXTRA_DIST</para>
