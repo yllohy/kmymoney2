@@ -1,3 +1,6 @@
+2006-01-19 Ace Jones <acejones@users.sourceforge.net>
+  * Added README.ofx to help people build with OFX support
+
 2006-01-18 Bjorn Helgaas <bjorn.helgaas@hp.com>
   * Remove unused and commented-out code from account, institution, money,
     payee, security, and transaction
