@@ -100,6 +100,7 @@
 #include "kgloballedgerview.h"
 #include "kinvestmentview.h"
 #include "kreportsview.h"
+#include "kbudgetview.h"
 
 #include "../kmymoney2.h"
 #include "../kmymoneyutils.h"
@@ -213,6 +214,12 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_reportsView = new KReportsView(m_reportsViewFrame, "ReportsView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_reportsView, SLOT(slotReloadView()));
 
+  // Page 9
+  m_budgetViewFrame = addVBoxPage(i18n("Budget"), i18n("Budget"),
+    DesktopIcon("budget", iconSize));
+  m_budgetView = new KBudgetView(m_budgetViewFrame, "BudgetView");
+  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_budgetView, SLOT(slotReloadView()));
+
 
   connect(m_payeesView, SIGNAL(transactionSelected(const QCString&, const QCString&)),
           this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
@@ -287,6 +294,7 @@ void KMyMoneyView::enableViews(int state)
   m_scheduleViewFrame->setEnabled(state);
   m_categoriesViewFrame->setEnabled(state);
   m_payeesViewFrame->setEnabled(state);
+  m_budgetViewFrame->setEnabled(state);
   m_ledgerViewFrame->setEnabled(state);
   m_investmentViewFrame->setEnabled(state);
   m_reportsViewFrame->setEnabled(state);
@@ -1288,6 +1296,7 @@ void KMyMoneyView::slotRefreshViews()
   m_categoriesView->slotLoadAccounts();
   m_ledgerView->slotRefreshView();
   m_payeesView->slotRefreshView();
+  m_budgetView->slotRefreshView();
   m_homeView->slotRefreshView();
   m_investmentView->slotRefreshView();
   m_reportsView->slotRefreshView();

@@ -1000,6 +1000,45 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.back().setTax(true);
     groups.push_back(list);
   }
+  {
+    ReportGroup list = i18n("Budgeting");
+
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eBudgetActual,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::currentMonth,
+      false,
+      i18n("Monthly Budgeted vs. Actual"),
+      i18n("Default Report")
+    ));
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eBudgetActual,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::yearToDate,
+      false,
+      i18n("Yearly Budgeted vs. Actual"),
+      i18n("Default Report")
+    ));
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eBudget,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::currentMonth,
+      false,
+      i18n("Monthly Budget"),
+      i18n("Default Report")
+    ));
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eBudget,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::yearToDate,
+      false,
+      i18n("Yearly Budget"),
+      i18n("Default Report")
+    ));
+
+    groups.push_back(list);
+  }
+
 }
 
 // Make sure, that these definitions are only used within this file

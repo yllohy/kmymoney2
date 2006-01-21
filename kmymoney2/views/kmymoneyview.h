@@ -51,6 +51,7 @@ class KAccountsView;
 class KCategoriesView;
 class KInstitutionsView;
 class KPayeesView;
+class KBudgetView;
 class KScheduledView;
 class KNewAccountWizard;
 class KGlobalLedgerView;
@@ -85,7 +86,8 @@ public:
     PayeesView,
     LedgersView,
     InvestmentsView,
-    ReportsView
+    ReportsView,
+    BudgetView
   };
   // file actions for plugin
   enum fileActions {
@@ -110,6 +112,7 @@ private:
   KInstitutionsView *m_institutionsView;
   KCategoriesView *m_categoriesView;
   KPayeesView *m_payeesView;
+  KBudgetView *m_budgetView;
   KScheduledView *m_scheduledView;
   KGlobalLedgerView *m_ledgerView;
   KInvestmentView *m_investmentView;
@@ -120,6 +123,7 @@ private:
   QVBox* m_institutionsViewFrame;
   QVBox* m_categoriesViewFrame;
   QVBox* m_payeesViewFrame;
+  QVBox* m_budgetViewFrame;
   QVBox* m_scheduleViewFrame;
   QVBox* m_ledgerViewFrame;
   QVBox* m_investmentViewFrame;
