@@ -29,7 +29,7 @@ class QListViewItem;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "knewbudgetdlgdecl.h"
+#include "../dialogs/knewbudgetdlgdecl.h"
 
 class KNewBudgetDlg : public KNewBudgetDlgDecl
 {
