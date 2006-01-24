@@ -3,6 +3,8 @@
                           -------------
     begin                : Thu Jan 24 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
+                                    2005 by Andrea Nicolai
+                                    2006 by Thomas Baumgart
     email                : mte@users.sourceforge.net
                            Javier Campos Morales <javi_c@users.sourceforge.net>
                            Felix Rodriguez <frodriguez@users.sourceforge.net>
@@ -40,47 +42,16 @@
 
 #include "kpayeesviewdecl.h"
 #include "kledgerview.h"
-#include "../mymoney/mymoneyobserver.h"
-#include "../mymoney/mymoneypayee.h"
+#include <kmymoney/mymoneypayee.h>
 
 /**
-  *@author Michael Edwardes
+  * @author Michael Edwardes, Thomas Baumgart
   */
 
 /**
-  * This class is a base class that maintains payee information
-  * for the KPayeesListItem.
+  * This class represents an item in the payees list view.
   */
-class KPayeeItem
-{
-public:
-  KPayeeItem() {} ;
-  virtual ~KPayeeItem() {};
-
-  /**
-    * This method allows to set the payees id.
-    *
-    * @param id payee id to be stored in m_payeeID;
-    */
-  void setPayeeID(const QCString& id) { m_payeeID = id; };
-
-  /**
-    * This method returns the payee's id for this object
-    *
-    * @return const QCString of the Id
-    */
-  const QCString payeeID(void) const { return m_payeeID; };
-
-private:
-  QCString    m_payeeID;
-};
-
-
-/**
-  * This class represents an item in the account list view. It is used
-  * by the KPayeesView to select between the payees.
-  */
-class KPayeeListItem : public KListViewItem, public KPayeeItem, MyMoneyObserver
+class KPayeeListItem : public KListViewItem
 {
 public:
   /**
@@ -101,23 +72,10 @@ public:
     */
   void paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align);
 
-  //void paintFocus(QPainter *p, const QColorGroup & cg, const QRect& rect);
-
-  /**
-    * This method is called by the MyMoneyFile object, whenever the
-    * payee that is represented by this object changes within the
-    * MyMoneyFile engine.
-    *
-    * @param id reference to QCString of the payee's id
-    */
-  void update(const QCString& id);
-
-  /**
-    */
-  void suspendUpdate(const bool suspend) { m_suspendUpdate = suspend; };
+  const MyMoneyPayee& payee(void) const { return m_payee; };
 
 private:
-  bool    m_suspendUpdate;
+  MyMoneyPayee  m_payee;
 };
 
 /**
@@ -149,39 +107,24 @@ private:
   QCString m_accountId;
 };
 
-class KPayeesView : public KPayeesViewDecl, MyMoneyObserver
+class KPayeesView : public KPayeesViewDecl
 {
    Q_OBJECT
 public:
   KPayeesView(QWidget *parent=0, const char *name=0);
   ~KPayeesView();
   void show();
-  void update(const QCString &id);
-
-  /**
-    * This method is used to suppress updates for specific times
-    * (e.g. during creation of a new MyMoneyFile object when the
-    * default accounts are loaded). The behaviour of update() is
-    * controlled with the parameter.
-    *
-    * @param suspend Suspend updates or not. Possible values are
-    *
-    * @li true updates are suspended
-    * @li false updates will be performed immediately
-    *
-    * When a true/false transition of the parameter between
-    * calls to this method is detected,
-    * refresh() will be invoked once automatically.
-    */
-  void suspendUpdate(const bool suspend);
 
 public slots:
-  void slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId, const QCString& transactionId);
-  void slotRefreshView(void);
-  void slotReloadView(void);
+  void slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId = QCString(), const QCString& transactionId = QCString());
+  void slotLoadPayees(void);
+  void slotStartRename(void);
 
 protected:
   void resizeEvent(QResizeEvent*);
+  void loadPayees(void);
+  void selectedPayees(QValueList<MyMoneyPayee>& payeesList) const;
+  void ensurePayeeVisible(const QCString& id);
 
 protected slots:
   /**
@@ -197,19 +140,6 @@ protected slots:
     * has been changed.
     */
   void slotSelectPayee();
-
-  /**
-    * This slot is called whenever the action "New payee" is executed
-    * from the context menu and adds a new payee with some default name.
-    */
-  void slotAddPayee();
-
-  /**
-    * This slot is called whenever the action "Delete payee" is executed
-    * from the context menu, deletes selected payees and reassigns
-    * transactions to an alternative payee.
-    */
-  void slotDeletePayee();
 
   /**
     * This slot marks the current selected payee as modified (dirty).
@@ -235,17 +165,19 @@ private slots:
 
   /**
     * This slot receives the signal from the listview control that an item was right-clicked,
-    * Pass this signal along to the main view to display the RMB menu.
+    * If @p item points to a real payee item, emits openContextMenu().
+    *
+    * @param item the item on which the cursor resides
     */
-  void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
+  void slotOpenContextMenu(QListViewItem* item);
 
 private:
   void readConfig(void);
-  void writeConfig(void);
 
 signals:
-  void signalViewActivated();
   void transactionSelected(const QCString& accountId, const QCString& transactionId);
+  void openContextMenu(const MyMoneyObject& obj);
+  void selectObjects(const QValueList<MyMoneyPayee>& payees);
 
 private:
   MyMoneyPayee m_payee;
@@ -267,9 +199,7 @@ private:
     * This member holds the state of the toggle switch used
     * to suppress updates due to MyMoney engine data changes
     */
-  bool m_suspendUpdate;
-
-  KPopupMenu*   m_contextMenu;
+  bool m_needReload;
 };
 
 #endif

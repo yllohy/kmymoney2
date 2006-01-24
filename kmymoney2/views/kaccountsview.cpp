@@ -194,6 +194,10 @@ void KAccountsView::loadAccounts(void)
   // update the hint if categories are hidden
   m_hiddenCategories->setShown(haveUnusedCategories);
 
+  // clear the current contents
+  m_accountMap.clear();
+  m_securityMap.clear();
+  m_transactionCountMap.clear();
   ::timetrace("done load accounts view");
 }
 
@@ -231,7 +235,7 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
     KMyMoneyAccountTreeItem* item = new KMyMoneyAccountTreeItem(parent, acc, prices, security);
     unused |= loadSubAccounts(item, acc.accountList());
 
-    // no child accounts and not transactions in this account means 'unused'
+    // no child accounts and no transactions in this account means 'unused'
     bool thisUnused = (!item->firstChild()) && (m_transactionCountMap[acc.id()] == 0);
 
     // In case of a category which is unused and we are requested to suppress

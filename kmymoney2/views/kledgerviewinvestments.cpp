@@ -806,18 +806,18 @@ void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& /*t*/ )
     case BuyShares:
     case SellShares:
       if(m_editAmount)
-        m_editAmount->loadText(m_split.value().abs().formatMoney());
+        m_editAmount->setValue(m_split.value().abs());
       shares = m_split.shares().abs();
       if(shares.isPositive()) {
         price = m_split.value().abs() / shares;
         if(m_editShares) {
           prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
           m_editShares->setPrecision(prec);
-          m_editShares->loadText(shares.abs().formatMoney("", prec));
+          m_editShares->setValue(shares.abs());
         }
       }
       if(m_editPPS) {
-        m_editPPS->loadText(price.abs().formatMoney("", m_editPPS->precision()));
+        m_editPPS->setValue(price.abs());
       }
       if(m_editCashAccount)
         m_editCashAccount->setSelected(m_accountSplit.accountId());
@@ -825,23 +825,23 @@ void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& /*t*/ )
         m_editFeeCategory->loadAccount(m_feeSplit.accountId());
       }
       if(!m_feeSplit.accountId().isEmpty())
-        m_editFees->loadText(m_feeSplit.value().abs().formatMoney());
+        m_editFees->setValue(m_feeSplit.value().abs());
       break;
 
     case ReinvestDividend:
       if(m_editAmount)
-        m_editAmount->loadText(m_split.value().abs().formatMoney());
+        m_editAmount->setValue(m_split.value().abs());
       shares = m_split.shares().abs();
       if(shares.isPositive()) {
         price = m_split.value().abs() / shares;
         if(m_editShares) {
           prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
           m_editShares->setPrecision(prec);
-          m_editShares->loadText(shares.abs().formatMoney("", prec));
+          m_editShares->setValue(shares.abs());
         }
       }
       if(m_editPPS)
-        m_editPPS->loadText(price.abs().formatMoney("", m_editPPS->precision()));
+        m_editPPS->setValue(price.abs());
       if(m_editCashAccount) {
         // the cash account field is actually used for the interest income
         // in the case of ReinvestDividend. So we have to reload the widget
@@ -852,7 +852,7 @@ void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& /*t*/ )
       if(m_editFeeCategory)
         m_editFeeCategory->loadAccount(m_feeSplit.accountId());
       if(!m_feeSplit.accountId().isEmpty())
-        m_editFees->loadText(m_feeSplit.value().abs().formatMoney());
+        m_editFees->setValue(m_feeSplit.value().abs());
       break;
 
     case Dividend:
@@ -860,7 +860,7 @@ void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& /*t*/ )
       if(m_editFeeCategory)
         m_editFeeCategory->loadAccount(m_interestSplit.accountId());
       if(!m_interestSplit.accountId().isEmpty())
-        m_editFees->loadText((-m_interestSplit.value()).abs().formatMoney());
+        m_editFees->setValue((-m_interestSplit.value()).abs());
       if(m_editCashAccount)
         m_editCashAccount->setSelected(m_accountSplit.accountId());
       break;
@@ -872,7 +872,7 @@ void KLedgerViewInvestments::reloadEditWidgets(const MyMoneyTransaction& /*t*/ )
       if(m_editShares) {
         prec = MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction());
         m_editShares->setPrecision(prec);
-        m_editShares->loadText(shares.abs().formatMoney("", prec));
+        m_editShares->setValue(shares.abs());
       }
       break;
   }
@@ -1828,14 +1828,14 @@ void KLedgerViewInvestments::updateValues(int field)
       if(m_editType->currentItem() != SellShares)
         shares = -shares;
       shares = (total - shares) / price;
-      m_editShares->loadText(shares.abs().formatMoney());
+      m_editShares->setValue(shares.abs());
       break;
 
     case Fees:
       fees = total - (price * shares);
       if(m_editType->currentItem() == SellShares)
         fees = -fees;
-      m_editFees->loadText(fees.abs().formatMoney());
+      m_editFees->setValue(fees.abs());
       break;
 
     case Price:
@@ -1843,7 +1843,7 @@ void KLedgerViewInvestments::updateValues(int field)
       if(m_editType->currentItem() != SellShares)
         price = -price;
       price = (total + price) / shares;
-      m_editPPS->loadText(price.abs().formatMoney());
+      m_editPPS->setValue(price.abs());
       break;
 
     case Total:
@@ -1851,7 +1851,7 @@ void KLedgerViewInvestments::updateValues(int field)
       if(m_editType->currentItem() == SellShares)
         total = -total;
       total = total + (price * shares);
-      m_editAmount->loadText(total.abs().formatMoney());
+      m_editAmount->setValue(total.abs());
       break;
   }
 }

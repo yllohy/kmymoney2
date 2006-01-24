@@ -286,7 +286,7 @@ The first step in this process requires to select the type of investment. The fo
                             </widget>
                         </hbox>
                     </widget>
-                    <widget class="kMyMoneyCurrencySelector" row="5" column="1">
+                    <widget class="KMyMoneyCurrencySelector" row="5" column="1">
                         <property name="name">
                             <cstring>m_tradingCurrencyEdit</cstring>
                         </property>
@@ -473,22 +473,6 @@ The first step in this process requires to select the type of investment. The fo
             <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image0</pixmap>
-    </customwidget>
-    <customwidget>
-        <class>kMyMoneyCurrencySelector</class>
-        <header location="local">../widgets/kmymoneycurrencyselector.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>25</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image1</pixmap>
     </customwidget>
 </customwidgets>
 <images>

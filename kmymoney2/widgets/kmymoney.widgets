@@ -13,3 +13,8 @@ new KInstance("kmmwidgets");
 [kMyMoneyPayee]
 
 [KMyMoneyAccountTree]
+
+[KMyMoneySecuritySelector]
+IncludeFile=kmymoney/kmymoneycurrencyselector.h
+
+[KMyMoneyCurrencySelector]

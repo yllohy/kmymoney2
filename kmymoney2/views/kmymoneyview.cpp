@@ -182,7 +182,11 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_payeesViewFrame = addVBoxPage( i18n("Payees"), i18n("Payees"),
     DesktopIcon("payee", iconSize));
   m_payeesView = new KPayeesView(m_payeesViewFrame, "PayeesView");
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_payeesView, SLOT(slotReloadView()));
+  connect(kmymoney2, SIGNAL(payeeCreated(const QCString&)), m_payeesView, SLOT(slotSelectPayeeAndTransaction(const QCString&)));
+  connect(kmymoney2, SIGNAL(payeeRename()), m_payeesView, SLOT(slotStartRename()));
+  connect(m_payeesView, SIGNAL(openContextMenu(const MyMoneyObject&)), kmymoney2, SLOT(slotShowPayeeContextMenu()));
+  connect(m_payeesView, SIGNAL(selectObjects(const QValueList<MyMoneyPayee>&)), kmymoney2, SLOT(slotSelectPayees(const QValueList<MyMoneyPayee>&)));
+  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_payeesView, SLOT(slotLoadPayees()));
 
   // Page 6
   m_ledgerViewFrame = addVBoxPage( i18n("Ledgers"), i18n("Ledgers"),
@@ -259,6 +263,7 @@ bool KMyMoneyView::showPage(int index)
     kmymoney2->slotSelectAccount();
     kmymoney2->slotSelectInstitution();
     kmymoney2->slotSelectInvestment();
+    kmymoney2->slotSelectPayees(QValueList<MyMoneyPayee>());
   }
 
   // fixup some actions that are dependant on the view
@@ -1294,8 +1299,8 @@ void KMyMoneyView::slotRefreshViews()
 
   m_accountsView->slotLoadAccounts();
   m_categoriesView->slotLoadAccounts();
+  m_payeesView->slotLoadPayees();
   m_ledgerView->slotRefreshView();
-  m_payeesView->slotRefreshView();
   m_budgetView->slotRefreshView();
   m_homeView->slotRefreshView();
   m_investmentView->slotRefreshView();
@@ -1329,7 +1334,7 @@ void KMyMoneyView::suspendUpdate(const bool suspend)
   // m_accountsView->suspendUpdate(suspend);
   // m_categoriesView->suspendUpdate(suspend);
   m_ledgerView->suspendUpdate(suspend);
-  m_payeesView->suspendUpdate(suspend);
+  // m_payeesView->suspendUpdate(suspend);
 }
 
 void KMyMoneyView::slotRememberPage(QWidget* w)

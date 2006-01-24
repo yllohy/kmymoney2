@@ -42,8 +42,8 @@ class QTimer;
 
 #include "mymoney/mymoneyobserver.h"
 #include "mymoney/mymoneyscheduled.h"
-#include "mymoney/mymoneyinstitution.h"
-
+#include <kmymoney/mymoneyinstitution.h>
+#include <kmymoney/mymoneypayee.h>
 class QSignalMapper;
 class KProgress;
 class KMyMoneyView;
@@ -287,6 +287,11 @@ protected slots:
     * Call this slot, if any configuration parameter has changed
     */
   void slotUpdateConfiguration(void);
+
+  /**
+    */
+  void slotPayeeNew(void);
+  void slotPayeeDelete(void);
 
 public:
   /**
@@ -626,6 +631,12 @@ public slots:
   void slotShowInvestmentContextMenu(void);
 
   /**
+    * This slot opens the payee options menu at the current cursor
+    * position.
+    */
+  void slotShowPayeeContextMenu(void);
+
+  /**
     * This slot collects information for a new schedule transaction (bill)
     * and saves it in the engine
     */
@@ -672,6 +683,8 @@ public slots:
 
   void slotSelectSchedule(const MyMoneySchedule& schedule = MyMoneySchedule());
 
+  void slotSelectPayees(const QValueList<MyMoneyPayee>& list);
+
 private:
   bool verifyImportedData(const MyMoneyAccount& account);
 
@@ -700,6 +713,14 @@ signals:
   void fileLoaded(const KURL& url);
 
   /**
+    * This signal is emitted when a list of payees has been selected by
+    * the GUI. If no payee is selected or the selection is removed,
+    * payees is identical to an empty QValueList. This signal is used
+    * by plugins to get information about changes.
+    */
+  void payeesSelected(const QValueList<MyMoneyPayee>& payees);
+
+  /**
     * This signal is emitted when a new account has been selected by
     * the GUI. If no account is selected or the selection is removed,
     * account is identical to MyMoneyAccount(). This signal is used
@@ -714,6 +735,9 @@ signals:
     * by plugins to get information about changes.
     */
   void institutionSelected(const MyMoneyInstitution& institution);
+
+  void payeeRename(void);
+  void payeeCreated(const QCString& id);
 
 public:
   /**
@@ -808,6 +832,7 @@ private:
   MyMoneyAccount        m_selectedInvestment;
   MyMoneyInstitution    m_selectedInstitution;
   MyMoneySchedule       m_selectedSchedule;
+  QValueList<MyMoneyPayee>  m_selectedPayees;
 
   bool                  m_currentFileEncrypted;
 

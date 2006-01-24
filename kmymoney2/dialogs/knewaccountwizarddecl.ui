@@ -1040,7 +1040,7 @@ Select &lt;b&gt;No&lt;/b&gt; if you don't use this account for active stock brok
                                     <property name="name">
                                         <cstring>unnamed</cstring>
                                     </property>
-                                    <widget class="kMyMoneyCurrencySelector">
+                                    <widget class="KMyMoneyCurrencySelector">
                                         <property name="name">
                                             <cstring>m_currencyComboBox</cstring>
                                         </property>
@@ -1413,22 +1413,6 @@ Once the account is successfully created you can enter your transactions on this
             <verstretch>0</verstretch>
         </sizepolicy>
         <pixmap>image5</pixmap>
-    </customwidget>
-    <customwidget>
-        <class>kMyMoneyCurrencySelector</class>
-        <header location="local">../widgets/kmymoneycurrencyselector.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>25</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image6</pixmap>
     </customwidget>
 </customwidgets>
 <images>

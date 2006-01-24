@@ -287,6 +287,7 @@ void KMyMoneyAccountTree::slotOpenContextMenu(QListViewItem* i)
 {
   KMyMoneyAccountTreeItem* item = dynamic_cast<KMyMoneyAccountTreeItem *>(i);
   if(item) {
+    emit selectObject(item->itemObject());
     emit openContextMenu(item->itemObject());
   }
 }

@@ -43,7 +43,7 @@
   * @author Thomas Baumgart
   */
 
-class kMyMoneySecuritySelector : public KComboBox, MyMoneyObserver
+class KMyMoneySecuritySelector : public KComboBox, MyMoneyObserver
 {
   Q_OBJECT
 public:
@@ -58,13 +58,13 @@ public:
     TypeAll        = 0x03
   };
 
-  kMyMoneySecuritySelector(QWidget *parent=0, const char *name=0);
-  kMyMoneySecuritySelector(displayTypeE type = TypeAll, QWidget *parent=0, const char *name=0);
-  virtual ~kMyMoneySecuritySelector();
+  KMyMoneySecuritySelector(QWidget *parent=0, const char *name=0);
+  KMyMoneySecuritySelector(displayTypeE type = TypeAll, QWidget *parent=0, const char *name=0);
+  virtual ~KMyMoneySecuritySelector();
 
-  const MyMoneySecurity security(void) const;
+  const MyMoneySecurity& security(void) const;
   void setSecurity(const MyMoneySecurity& currency);
-  void selectDisplayItem(kMyMoneySecuritySelector::displayItemE item);
+  void selectDisplayItem(KMyMoneySecuritySelector::displayItemE item);
   void setDisplayOnly(const bool disp);
 
   void update(const QCString& id);
@@ -81,11 +81,11 @@ private:
   QValueList<MyMoneySecurity> m_list;
 };
 
-class kMyMoneyCurrencySelector : public kMyMoneySecuritySelector
+class KMyMoneyCurrencySelector : public KMyMoneySecuritySelector
 {
 public:
-  kMyMoneyCurrencySelector(QWidget *parent=0, const char *name=0);
-  virtual ~kMyMoneyCurrencySelector() {};
+  KMyMoneyCurrencySelector(QWidget *parent=0, const char *name=0);
+  virtual ~KMyMoneyCurrencySelector() {};
 };
 
 #endif

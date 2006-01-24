@@ -1,3 +1,15 @@
+2006-01-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1398924 (Incorrect calculation of investment price)
+  * Fixed #1390918 (Can't use more than 2 decimal places in manual price update)
+
+2006-01-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added capability to modify/add the opening balance in the account
+    edit dialog
+  * Renamed kMyMoneyCurrencySelector to KMyMoneyCurrencySelector
+  * Renamed kMyMoneySecuritySelector to KMyMoneySecuritySelector
+  * Added both of the above to Qt designer widgets
+  * Reworked payees view to use new KAction logic
+
 2006-01-21 Darren Gould <darren_gould@linuxmail.org>
   * Initial budgeting view and report mockup 
 

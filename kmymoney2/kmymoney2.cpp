@@ -108,6 +108,7 @@
 #include "dialogs/ieditscheduledialog.h"
 #include "dialogs/knewloanwizard.h"
 #include "dialogs/keditloanwizard.h"
+#include "dialogs/ktransactionreassigndlg.h"
 
 #ifdef USE_OFX_DIRECTCONNECT
 #include "dialogs/kofxdirectconnectdlg.h"
@@ -343,6 +344,10 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Edit schedule..."), "edit", 0, this, SLOT(slotScheduleEdit()), actionCollection(), "schedule_edit");
   new KAction(i18n("Delete schedule..."), "delete", 0, this, SLOT(slotScheduleDelete()), actionCollection(), "schedule_delete");
   new KAction(i18n("Enter schedule..."), "", 0, this, SLOT(slotScheduleEnter()), actionCollection(), "schedule_enter");
+
+  new KAction(i18n("New payee"), "filenew", 0, this, SLOT(slotPayeeNew()), actionCollection(), "payee_new");
+  new KAction(i18n("Rename payee"), "edit", 0, this, SIGNAL(payeeRename()), actionCollection(), "payee_rename");
+  new KAction(i18n("Delete payee"), "delete", 0, this, SLOT(slotPayeeDelete()), actionCollection(), "payee_delete");
 
   // ************************
   // Currently unused actions
@@ -2345,8 +2350,10 @@ void KMyMoney2App::slotManualPriceUpdate(void)
     try {
       MyMoneySecurity security = MyMoneyFile::instance()->security(m_selectedInvestment.currencyId());
       MyMoneySecurity currency = MyMoneyFile::instance()->security(security.tradingCurrency());
+      MyMoneyPrice price = MyMoneyFile::instance()->price(security.id(), currency.id());
+      signed64 fract = MyMoneyMoney::precToDenom(KMyMoneySettings::pricePrecision());
 
-      KCurrencyCalculator calc(security, currency, MyMoneyMoney(1,1), MyMoneyMoney(1,1), QDate::currentDate());
+      KCurrencyCalculator calc(security, currency, MyMoneyMoney(1,1), price.rate(), price.date(), fract);
       calc.setupPriceEditor();
 
       // The dialog takes care of adding the price if necessary
@@ -2729,6 +2736,171 @@ void KMyMoney2App::slotScheduleEnter(void)
   }
 }
 
+void KMyMoney2App::slotPayeeNew(void)
+{
+  try {
+    QString newname = i18n("New Payee");
+    // adjust name until a unique name has been created
+    int count = 0;
+    for(;;) {
+      try {
+        MyMoneyFile::instance()->payeeByName(newname);
+        newname = i18n("New Payee [%1]").arg(++count);
+      } catch(MyMoneyException* e) {
+        delete e;
+        break;
+      }
+    }
+
+    MyMoneyPayee p;
+    p.setName(newname);
+    MyMoneyFile::instance()->addPayee(p);
+    // the callbacks should have made sure, that the payees view has been
+    // updated already. So we search for the id in the list of items
+    // and select it.
+    payeeCreated(p.id());
+  } catch (MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to add payee"),
+      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+  }
+}
+
+void KMyMoney2App::slotPayeeDelete(void)
+{
+  if(m_selectedPayees.isEmpty())
+    return; // shouldn't happen
+
+  MyMoneyFile * file = MyMoneyFile::instance();
+
+  // first create list with all non-selected payees
+  QValueList<MyMoneyPayee> remainingPayees = file->payeeList();
+  QValueList<MyMoneyPayee>::iterator it_p;
+  for(it_p = remainingPayees.begin(); it_p != remainingPayees.end(); ) {
+    if (std::find(m_selectedPayees.begin(), m_selectedPayees.end(), (*it_p)) != m_selectedPayees.end()) {
+      it_p = remainingPayees.erase(it_p);
+    } else {
+      ++it_p;
+    }
+  }
+
+  // get confirmation from user
+  QString prompt;
+  if (m_selectedPayees.size() == 1)
+    prompt = QString("<p>")+i18n("Do you really want to remove the payee <b>%1</b>").arg(m_selectedPayees.front().name());
+  else
+    prompt = i18n("Do you really want to remove all selected payees?");
+
+  if (KMessageBox::questionYesNo(this, prompt, i18n("Remove Payee"))==KMessageBox::No)
+    return;
+
+  // finally remove the payees, but don't signal each change
+  file->suspendNotify(true);
+  try {
+    // create a transaction filter that contains all payees selected for removal
+    MyMoneyTransactionFilter f = MyMoneyTransactionFilter();
+    for (QValueList<MyMoneyPayee>::const_iterator it = m_selectedPayees.begin();
+         it != m_selectedPayees.end(); ++it) {
+      f.addPayee( (*it).id() );
+    }
+    // request a list of all transactions that still use the payees in question
+    QValueList<MyMoneyTransaction> translist = file->transactionList(f);
+//     kdDebug() << "[KPayeesView::slotDeletePayee]  " << translist.count() << " transaction still assigned to payees" << endl;
+
+    // now get a list of all schedules that make use of one of the payees
+    QValueList<MyMoneySchedule> all_schedules = file->scheduleList();
+    QValueList<MyMoneySchedule> used_schedules;
+    for (QValueList<MyMoneySchedule>::ConstIterator it = all_schedules.begin();
+         it != all_schedules.end(); ++it)
+    {
+      // loop over all splits in the transaction of the schedule
+      for (QValueList<MyMoneySplit>::ConstIterator s_it = (*it).transaction().splits().begin();
+           s_it != (*it).transaction().splits().end(); ++s_it)
+      {
+        // is the payee in the split to be deleted?
+        if (std::find(m_selectedPayees.begin(), m_selectedPayees.end(), (*s_it).payeeId()) != m_selectedPayees.end())
+          used_schedules.push_back(*it); // remember this schedule
+      }
+    }
+//     kdDebug() << "[KPayeesView::slotDeletePayee]  " << used_schedules.count() << " schedules use one of the selected payees" << endl;
+
+    // if at least one payee is still referenced, we need to reassign its transactions first
+    if (!translist.isEmpty() || !used_schedules.isEmpty()) {
+      // show error message if no payees remain
+      if (remainingPayees.isEmpty()) {
+        KMessageBox::sorry(this, i18n("At least one transaction/schedule is still referenced by a payee. "
+          "Currently you have all payees selected. However, at least one payee must remain so "
+          "that the transactions/schedules can be reassigned."));
+        return;
+      }
+      // show transaction reassignment dialog
+      KTransactionReassignDlg * dlg = new KTransactionReassignDlg(this);
+      int index = dlg->show(remainingPayees);
+      delete dlg; // and kill the dialog
+      if (index == -1)
+        return; // the user aborted the dialog, so let's abort as well
+
+      // remember the id of the selected target payee
+      QCString payee_id = remainingPayees[index].id();
+
+      // TODO : check if we have a report that explicitely uses one of our payees
+      //        and issue an appropriate warning
+      try {
+        QValueList<MyMoneySplit>::iterator s_it;
+        // now loop over all transactions and reassign payee
+        for (QValueList<MyMoneyTransaction>::iterator it = translist.begin(); it != translist.end(); ++it) {
+          // create a copy of the splits list in the transaction
+          QValueList<MyMoneySplit> splits = (*it).splits();
+          // loop over all splits
+          for (s_it = splits.begin(); s_it != splits.end(); ++s_it) {
+            // if the split is assigned to one of the selected payees, we need to modify it
+            if ( std::find(m_selectedPayees.begin(), m_selectedPayees.end(), (*s_it).payeeId()) != m_selectedPayees.end()) {
+              (*s_it).setPayeeId(payee_id); // first modify payee in current split
+              // then modify the split in our local copy of the transaction list
+              (*it).modifySplit(*s_it); // this does not modify the list object 'splits'!
+            }
+          } // for - Splits
+          file->modifyTransaction(*it);  // modify the transaction in the MyMoney object
+        } // for - Transactions
+
+        // now loop over all schedules and reassign payees
+        for (QValueList<MyMoneySchedule>::iterator it = used_schedules.begin();
+             it != used_schedules.end(); ++it)
+        {
+          // create copy of transaction in current schedule
+          MyMoneyTransaction trans = (*it).transaction();
+          // create copy of lists of splits
+          QValueList<MyMoneySplit> splits = trans.splits();
+          for (s_it = splits.begin(); s_it != splits.end(); ++s_it) {
+            if ( std::find(m_selectedPayees.begin(), m_selectedPayees.end(), (*s_it).payeeId()) != m_selectedPayees.end()) {
+              (*s_it).setPayeeId(payee_id);
+              trans.modifySplit(*s_it); // does not modify the list object 'splits'!
+            }
+          } // for - Splits
+          // store transaction in current schedule
+          (*it).setTransaction(trans);
+          file->modifySchedule(*it);  // modify the schedule in the MyMoney object
+        } // for - Schedules
+      } catch(MyMoneyException *e) {
+        KMessageBox::detailedSorry(0, i18n("Unable to reassign payee of transaction/split"),
+          (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+        delete e;
+      }
+    } // if !translist.isEmpty()
+
+    // now loop over all selected payees and remove them
+    for (QValueList<MyMoneyPayee>::iterator it = m_selectedPayees.begin();
+      it != m_selectedPayees.end(); ++it) {
+      file->removePayee(*it);
+    }
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to remove payee(s)"),
+      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+  }
+  file->suspendNotify(false);
+}
+
 void KMyMoney2App::showContextMenu(const QString& containerName)
 {
   QWidget* w = factory()->container(containerName, this);
@@ -2757,6 +2929,11 @@ void KMyMoney2App::slotShowInstitutionContextMenu(const MyMoneyObject& obj)
     return;
 
   showContextMenu("institution_context_menu");
+}
+
+void KMyMoney2App::slotShowPayeeContextMenu(void)
+{
+  showContextMenu("payee_context_menu");
 }
 
 void KMyMoney2App::slotPrintView(void)
@@ -2859,6 +3036,9 @@ void KMyMoney2App::updateActions(void)
   action("schedule_delete")->setEnabled(false);
   action("schedule_enter")->setEnabled(false);
 
+  action("payee_delete")->setEnabled(false);
+  action("payee_rename")->setEnabled(false);
+
   if(!m_selectedAccount.id().isEmpty()) {
     if(!file->isStandardAccount(m_selectedAccount.id())) {
       action("account_edit")->setEnabled(true);
@@ -2910,6 +3090,18 @@ void KMyMoney2App::updateActions(void)
     if(!m_selectedSchedule.isFinished())
       action("schedule_enter")->setEnabled(true);
   }
+
+  if(m_selectedPayees.count() >= 1) {
+    action("payee_rename")->setEnabled(m_selectedPayees.count() == 1);
+    action("payee_delete")->setEnabled(true);
+  }
+}
+
+void KMyMoney2App::slotSelectPayees(const QValueList<MyMoneyPayee>& list)
+{
+  m_selectedPayees = list;
+  updateActions();
+  emit payeesSelected(m_selectedPayees);
 }
 
 void KMyMoney2App::slotSelectInstitution(const MyMoneyObject& institution)

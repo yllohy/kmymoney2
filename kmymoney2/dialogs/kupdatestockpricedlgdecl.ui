@@ -67,7 +67,7 @@
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="kMyMoneyCurrencySelector">
+                        <widget class="KMyMoneyCurrencySelector">
                             <property name="name">
                                 <cstring>m_currency</cstring>
                             </property>
@@ -131,7 +131,7 @@
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="kMyMoneySecuritySelector">
+                        <widget class="KMyMoneySecuritySelector">
                             <property name="name">
                                 <cstring>m_commodity</cstring>
                             </property>
@@ -264,38 +264,6 @@
         </sizepolicy>
         <pixmap>image0</pixmap>
         <slot access="protected" specifier="">slotDateChosen(QDate date)</slot>
-    </customwidget>
-    <customwidget>
-        <class>kMyMoneyCurrencySelector</class>
-        <header location="local">../widgets/kmymoneycurrencyselector.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>25</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image1</pixmap>
-    </customwidget>
-    <customwidget>
-        <class>kMyMoneySecuritySelector</class>
-        <header location="local">../widgets/kmymoneycurrencyselector.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>25</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image2</pixmap>
     </customwidget>
 </customwidgets>
 <images>
