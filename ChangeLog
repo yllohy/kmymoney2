@@ -1,6 +1,7 @@
 2006-01-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1398924 (Incorrect calculation of investment price)
   * Fixed #1390918 (Can't use more than 2 decimal places in manual price update)
+  * Added setting capability for background of required fields
 
 2006-01-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added capability to modify/add the opening balance in the account

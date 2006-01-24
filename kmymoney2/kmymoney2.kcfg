@@ -138,6 +138,10 @@
    <label>List color</label>
    <default>255,0,0</default>
   </entry>
+  <entry name="requiredFieldColor" type="Color">
+   <label>Background color for required fields</label>
+   <default>255,255,221</default> 
+  </entry>
   <entry name="useSystemFont" type="Bool">
    <label>Use system font</label>
    <default>false</default>
