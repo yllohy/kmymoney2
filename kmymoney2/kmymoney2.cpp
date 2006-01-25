@@ -2794,8 +2794,6 @@ void KMyMoney2App::slotPayeeDelete(void)
   if (KMessageBox::questionYesNo(this, prompt, i18n("Remove Payee"))==KMessageBox::No)
     return;
 
-  // finally remove the payees, but don't signal each change
-  file->suspendNotify(true);
   try {
     // create a transaction filter that contains all payees selected for removal
     MyMoneyTransactionFilter f = MyMoneyTransactionFilter();
@@ -2824,8 +2822,12 @@ void KMyMoney2App::slotPayeeDelete(void)
     }
 //     kdDebug() << "[KPayeesView::slotDeletePayee]  " << used_schedules.count() << " schedules use one of the selected payees" << endl;
 
+    // finally remove the payees, but don't signal each change
+    file->suspendNotify(true);
+
     // if at least one payee is still referenced, we need to reassign its transactions first
     if (!translist.isEmpty() || !used_schedules.isEmpty()) {
+      file->suspendNotify(false);
       // show error message if no payees remain
       if (remainingPayees.isEmpty()) {
         KMessageBox::sorry(this, i18n("At least one transaction/schedule is still referenced by a payee. "
@@ -2833,6 +2835,17 @@ void KMyMoney2App::slotPayeeDelete(void)
           "that the transactions/schedules can be reassigned."));
         return;
       }
+      // sort the payee list by payee's name
+      QMap<QString, MyMoneyPayee>sortMap;
+      QValueList<MyMoneyPayee>::const_iterator it_p;
+      for(it_p = remainingPayees.begin(); it_p != remainingPayees.end(); ++it_p)
+        sortMap[(*it_p).name()] = *it_p;
+      QMap<QString, MyMoneyPayee>::const_iterator it_pm;
+      remainingPayees.clear();
+      for(it_pm = sortMap.begin(); it_pm != sortMap.end(); ++it_pm)
+        remainingPayees << *it_pm;
+      sortMap.clear();
+
       // show transaction reassignment dialog
       KTransactionReassignDlg * dlg = new KTransactionReassignDlg(this);
       int index = dlg->show(remainingPayees);
@@ -2842,6 +2855,9 @@ void KMyMoney2App::slotPayeeDelete(void)
 
       // remember the id of the selected target payee
       QCString payee_id = remainingPayees[index].id();
+
+      // finally remove the payees, but don't signal each change
+      file->suspendNotify(true);
 
       // TODO : check if we have a report that explicitely uses one of our payees
       //        and issue an appropriate warning
@@ -2893,12 +2909,13 @@ void KMyMoney2App::slotPayeeDelete(void)
       it != m_selectedPayees.end(); ++it) {
       file->removePayee(*it);
     }
+    file->suspendNotify(false);
+
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to remove payee(s)"),
       (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
     delete e;
   }
-  file->suspendNotify(false);
 }
 
 void KMyMoney2App::showContextMenu(const QString& containerName)
