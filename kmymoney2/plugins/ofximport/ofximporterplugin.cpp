@@ -52,12 +52,13 @@ QString OfxImporterPlugin::formatName(void) const
 
 QString OfxImporterPlugin::formatFilenameFilter(void) const
 {
-  return "*.ofx *.qfx";
+  return "*.ofx *.qfx *.ofc";
 }
 
 bool OfxImporterPlugin::isMyFormat( const QString& filename ) const
 {
   // filename is an Ofx file if it contains the tag "<OFX>" somewhere.
+  // (or 'OFC'!!)
   bool result = false;
 
   QFile f( filename );
@@ -66,7 +67,8 @@ bool OfxImporterPlugin::isMyFormat( const QString& filename ) const
     QTextStream ts( &f );
 
     while ( !ts.atEnd() && !result )
-      if ( ts.readLine().contains("<OFX>",false) )
+      if ( ts.readLine().contains("<OFX>",false)
+        || ts.readLine().contains("<OFC>",false) )
         result = true;
 
     f.close();
@@ -296,6 +298,11 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
   // of the transaction.  units * unitprice +/- commission.  Easy, right?  Sadly, it seems
   // some ofx creators do not follow this in all circumstances.  Therefore, we have to double-
   // check the total here and adjust it if it's wrong.
+ 
+#if 0 
+  // Even more sadly, this logic is BROKEN.  It consistently results in bogus total
+  // values, because of rounding errors in the price.  A more through solution would
+  // be to test if the comission alone is causing a discrepency, and adjust in that case.
   
   if(data.invtransactiontype_valid==true && data.unitprice_valid)
   {
@@ -306,7 +313,8 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
       t.m_moneyAmount = proper_total;
     }
   }
-    
+#endif
+  
   if ( unhandledtype )
     pofx->addWarning(QString("Transaction %1 has an unsupported type (%2).").arg(t.m_strBankID,type));
   else
