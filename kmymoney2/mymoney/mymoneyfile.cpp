@@ -34,6 +34,8 @@
 // #include "mymoneycurrency.h"
 #include "mymoneyfile.h"
 #include "mymoneyreport.h"
+#include "mymoneybudget.h"
+
 #ifndef HAVE_CONFIG_H
 #define VERSION "UNKNOWN"
 #else
@@ -52,6 +54,7 @@ const QCString MyMoneyFile::NotifyClassAnyChange = "MyMoneyFile::NotifyAnyChange
 const QCString MyMoneyFile::NotifyClassCurrency = "MyMoneyFile::NotifyCurrency";
 const QCString MyMoneyFile::NotifyClassSecurity = "MyMoneyFile::NotifySecurity";
 const QCString MyMoneyFile::NotifyClassReport = "MyMoneyFile::NotifyReport";
+const QCString MyMoneyFile::NotifyClassBudget = "MyMoneyFile::NotifyBudget";
 const QCString MyMoneyFile::NotifyClassPrice = "MyMoneyFile::NotifyPrice";
 
 const QString MyMoneyFile::OpeningBalancesPrefix = "Opening Balances";
@@ -1860,6 +1863,64 @@ void MyMoneyFile::removeReport(const MyMoneyReport& report)
 
   addNotification(NotifyClassReport);
 }
+
+
+const QValueList<MyMoneyBudget> MyMoneyFile::budgetList( void ) const
+{
+  checkStorage();
+
+  return m_storage->budgetList();
+}
+
+void MyMoneyFile::addBudget( MyMoneyBudget& budget )
+{
+  checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  m_storage->addBudget( budget );
+
+  addNotification(NotifyClassBudget);
+}
+
+void MyMoneyFile::modifyBudget( const MyMoneyBudget& budget )
+{
+  checkStorage();
+
+  // automatically notify all observers once this routine is done
+  MyMoneyNotifier notifier(this);
+
+  m_storage->modifyBudget( budget );
+
+  addNotification(NotifyClassBudget);
+}
+
+unsigned MyMoneyFile::countBudgets(void) const
+{
+  checkStorage();
+
+  return m_storage->countBudgets();
+}
+
+MyMoneyBudget MyMoneyFile::budget( const QCString& id ) const
+{
+  checkStorage();
+
+  return m_storage->budget(id);
+}
+
+void MyMoneyFile::removeBudget(const MyMoneyBudget& budget)
+{
+  checkStorage();
+  MyMoneyNotifier notifier(this);
+
+  m_storage->removeBudget(budget);
+
+  addNotification(NotifyClassBudget);
+}
+
+
 
 bool MyMoneyFile::isReferenced(const MyMoneyObject& obj) const
 {

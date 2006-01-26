@@ -35,7 +35,9 @@
 #include "kbudgetviewdecl.h"
 #include "kledgerview.h"
 #include "../mymoney/mymoneyobserver.h"
-#include "../mymoney/mymoneypayee.h"
+#include "../mymoney/mymoneybudget.h"
+#include "../mymoney/mymoneysecurity.h"
+#include "../widgets/kmymoneyaccounttree.h"
 
 /**
   *@author Darren Gould
@@ -72,18 +74,25 @@ public slots:
     * this button
     *
     */
-    virtual void m_bNewBudget_clicked();
-    void slotReloadView(void);
-    void slotRefreshView(void);
+  virtual void m_bNewBudget_clicked();
+  void slotReloadView(void);
+  void slotRefreshView(void);
+  void slotLoadAccounts(void);
 
 protected:
   void resizeEvent(QResizeEvent*);
+  void loadAccounts(void);
+  bool loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList);
 
 private slots:
   void rearrange(void);
 
 signals:
   void signalViewActivated();
+  /**
+    * This signal serves as proxy for KMyMoneyAccountTree::selectObject()
+    */
+  void selectObject(const MyMoneyObject&);
 
 private:
   /**
@@ -91,6 +100,19 @@ private:
     * to suppress updates due to MyMoney engine data changes
     */
   bool m_suspendUpdate;
+  QMap<QCString, MyMoneyAccount>      m_accountMap;
+
+  QMap<QCString, MyMoneySecurity>     m_securityMap;
+  QMap<QCString, unsigned long>       m_transactionCountMap;
+
+  KMyMoneyAccountTreeItem*            m_incomeItem;
+  KMyMoneyAccountTreeItem*            m_expenseItem;
+
+  /// set if a view needs to be reloaded during show()
+  bool                                m_needReload;
+
+  MyMoneyBudget m_currentState;
+
 };
 
 #endif

@@ -42,6 +42,7 @@
 #include <kmymoney/mymoneysecurity.h>
 #include <kmymoney/mymoneyprice.h>
 #include <kmymoney/mymoneyreport.h>
+#include <kmymoney/mymoneybudget.h>
 
 /**
   * @author Thomas Baumgart
@@ -764,6 +765,69 @@ public:
     * @param report const reference to the MyMoneyReport object to be updated
     */
   virtual void removeReport(const MyMoneyReport& report) = 0;
+
+  /**
+    * This method is used to retrieve the list of all budgets
+    * known to the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return QValueList of all MyMoneyBudget objects.
+    */
+  virtual const QValueList<MyMoneyBudget> budgetList( void ) const = 0;
+
+  /**
+    * This method is used to add a new budget to the engine.
+    * It must be sure, that the id of the object is not filled. When the
+    * method returns to the caller, the id will be filled with the
+    * newly created object id value.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param budget reference to the MyMoneyBudget object
+    */
+  virtual void addBudget( MyMoneyBudget& budget ) = 0;
+
+  /**
+    * This method is used to modify an existing MyMoneyBudget
+    * object. Therefor, the id attribute of the object must be set.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param budget const reference to the MyMoneyBudget object to be updated
+    */
+  virtual void modifyBudget( const MyMoneyBudget& budget ) = 0;
+
+  /**
+    * This method returns the number of budgets currently known to file
+    * in the range 0..MAXUINT
+    *
+    * @return number of budgets known to file
+    */
+  virtual unsigned countBudgets( void ) const = 0;
+
+  /**
+    * This method is used to retrieve a single MyMoneyBudget object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneyBudget object
+    * @return MyMoneyBudget object
+    */
+  virtual MyMoneyBudget budget( const QCString& id ) const = 0;
+
+  /**
+    * This method is used to remove an existing MyMoneyBudget object
+    * from the engine. The id attribute of the object must be set.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param budget const reference to the MyMoneyBudget object to be updated
+    */
+  virtual void removeBudget(const MyMoneyBudget& budget) = 0;
+
+
 
   /**
     * Clear all internal caches (used internally for performance measurements)

@@ -45,6 +45,7 @@
 #include <kmymoney/mymoneysecurity.h>
 #include <kmymoney/mymoneyprice.h>
 #include <kmymoney/mymoneyreport.h>
+#include <kmymoney/mymoneybudget.h>
 #include <kmymoney/mymoneyscheduled.h>
 #include <kmymoney/export.h>
 
@@ -1053,6 +1054,13 @@ public:
   static const QCString NotifyClassReport;
 
   /**
+    * MyMoneyFile::NotifyClassBudget
+    * is a special id that will be notified whenever any budget is changed
+    */
+  static const QCString NotifyClassBudget;
+
+
+  /**
     * MyMoneyFile::OpeningBalancesPrefix is a special string used
     * to generate the name for opening balances accounts. See openingBalanceAccount()
     * for details.
@@ -1317,6 +1325,68 @@ public:
     * @param report const reference to the MyMoneyReport object to be updated
     */
   void removeReport(const MyMoneyReport& report);
+
+  /**
+    * This method is used to retrieve the list of all budgets
+    * known to the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return QValueList of all MyMoneyBudget objects.
+    */
+  const QValueList<MyMoneyBudget> budgetList( void ) const;
+
+  /**
+    * Adds a budget to the file-global institution pool. A
+    * respective budget-ID will be generated for this object.
+    * The ID is stored as QString in the object passed as argument.
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param budget The complete budget information in a
+    *        MyMoneyBudget object
+    */
+  void addBudget( MyMoneyBudget& budget );
+
+  /**
+    * Modifies an already existing budget in the file global
+    * budget pool.
+    *
+    * An exception will be thrown upon error conditions.
+    *
+    * @param budget The complete new budget information
+    */
+  void modifyBudget( const MyMoneyBudget& budget );
+
+  /**
+    * This method returns the number of budgets currently known to file
+    * in the range 0..MAXUINT
+    *
+    * @return number of budgets known to file
+    */
+  unsigned countBudgets( void ) const;
+
+  /**
+    * This method is used to retrieve a single MyMoneyBudget object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneyBudget object
+    * @return MyMoneyBudget object
+    */
+  MyMoneyBudget budget( const QCString& id ) const;
+
+  /**
+    * This method is used to remove an existing MyMoneyBudget object
+    * from the engine. The id attribute of the object must be set.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param budget const reference to the MyMoneyBudget object to be updated
+    */
+  void removeBudget(const MyMoneyBudget& budget);
+
 
   /**
     * This method checks, if the given @p object is referenced

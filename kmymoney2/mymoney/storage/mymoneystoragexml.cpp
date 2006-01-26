@@ -40,6 +40,7 @@
 #include "mymoneystoragexml.h"
 #include "../../kmymoneyutils.h"
 #include "../mymoneyreport.h"
+#include "../mymoneybudget.h"
 #include "../mymoneyinstitution.h"
 
 unsigned int MyMoneyStorageXML::fileVersionRead = 0;
@@ -213,6 +214,10 @@ void MyMoneyStorageXML::writeFile(QIODevice* qf, IMyMoneySerialize* storage)
   QDomElement reports = m_doc->createElement("REPORTS");
   writeReports(reports);
   mainElement.appendChild(reports);
+
+  QDomElement budgets = m_doc->createElement("BUDGETS");
+  writeBudgets(budgets);
+  mainElement.appendChild(budgets);
 
   QTextStream stream(qf);
 #if KDE_IS_VERSION(3,2,0)
@@ -641,6 +646,46 @@ void MyMoneyStorageXML::writeReports(QDomElement& parent)
   QValueList<MyMoneyReport>::ConstIterator it;
 
   signalProgress(0, list.count(), QObject::tr("Saving reports..."));
+  unsigned i = 0;
+  for(it = list.begin(); it != list.end(); ++it)
+  {
+    (*it).writeXML(*m_doc, parent);
+    signalProgress(++i, 0);
+  }
+}
+
+
+void MyMoneyStorageXML::readBudgets(void)
+{
+  int x = 0;
+
+  QValueList<QDomElement> list = readElements("BUDGETS", "BUDGET");
+  QValueList<QDomElement>::const_iterator it;
+
+  signalProgress(0, list.count(), QObject::tr("Loading budgets..."));
+  for(it = list.begin(); it != list.end(); ++it)
+  {
+    MyMoneyBudget budget(*it);
+    if(!budget.id().isEmpty())
+    {
+      m_storage->loadBudget(budget);
+
+      unsigned long id = extractId(budget.id());
+      if(id > m_storage->budgetId())
+  m_storage->loadBudgetId(id);
+    }
+
+    signalProgress(x++, 0);
+  }
+}
+
+
+void MyMoneyStorageXML::writeBudgets(QDomElement& parent)
+{
+  const QValueList<MyMoneyBudget> list = m_storage->budgetList();
+  QValueList<MyMoneyBudget>::ConstIterator it;
+
+  signalProgress(0, list.count(), QObject::tr("Saving budgets..."));
   unsigned i = 0;
   for(it = list.begin(); it != list.end(); ++it)
   {

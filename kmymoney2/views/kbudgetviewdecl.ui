@@ -158,7 +158,7 @@
             </property>
             <widget class="KMyMoneyAccountTree">
                 <property name="name">
-                    <cstring>kMyMoneyAccountTree2</cstring>
+                    <cstring>m_accountTree</cstring>
                 </property>
             </widget>
             <widget class="QGroupBox">
@@ -392,7 +392,7 @@
                                             <cstring>m_bApplyBudget</cstring>
                                         </property>
                                         <property name="text">
-                                            <string>Apply Budget</string>
+                                            <string>Appl&amp;y Budget</string>
                                         </property>
                                     </widget>
                                     <spacer>
@@ -480,6 +480,9 @@
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
     <includehint>kmymoneytitlelabel.h</includehint>
+    <includehint>kpushbutton.h</includehint>
+    <includehint>kpushbutton.h</includehint>
     <includehint>kmymoneyaccounttree.h</includehint>
+    <includehint>kpushbutton.h</includehint>
 </includehints>
 </UI>

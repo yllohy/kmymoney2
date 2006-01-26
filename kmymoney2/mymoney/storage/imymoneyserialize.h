@@ -42,6 +42,7 @@
 #include <kmymoney/mymoneysecurity.h>
 #include <kmymoney/mymoneyprice.h>
 #include <kmymoney/mymoneyreport.h>
+#include <kmymoney/mymoneybudget.h>
 
 /**
   * @author Thomas Baumgart
@@ -289,6 +290,7 @@ public:
   virtual void loadSecurity(const MyMoneySecurity& security) = 0;
   virtual void loadCurrency(const MyMoneySecurity& currency) = 0;
   virtual void loadReport( const MyMoneyReport& report ) = 0;
+  virtual void loadBudget( const MyMoneyBudget& budget ) = 0;
 
   virtual const unsigned long accountId(void) = 0;
   virtual const unsigned long transactionId(void) = 0;
@@ -297,6 +299,7 @@ public:
   virtual const unsigned long scheduleId(void) = 0;
   virtual const unsigned long securityId(void) = 0;
   virtual const unsigned long reportId(void) = 0;
+  virtual const unsigned long budgetId(void) = 0;
 
   virtual void loadAccountId(const unsigned long id) = 0;
   virtual void loadTransactionId(const unsigned long id) = 0;
@@ -305,6 +308,7 @@ public:
   virtual void loadScheduleId(const unsigned long id) = 0;
   virtual void loadSecurityId(const unsigned long id) = 0;
   virtual void loadReportId(const unsigned long id) = 0;
+  virtual void loadBudgetId(const unsigned long id) = 0;
 
   /**
     * This method is used to retrieve the whole set of key/value pairs
@@ -354,6 +358,17 @@ public:
     * @return QValueList of all MyMoneyReport objects.
     */
   virtual const QValueList<MyMoneyReport> reportList( void ) const = 0;
+
+  /**
+    * This method is used to retrieve the list of all budgets
+    * known to the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return QValueList of all MyMoneyBudget objects.
+    */
+  virtual const QValueList<MyMoneyBudget> budgetList( void ) const = 0;
+
 
   /**
     * This method adds a price entry to the price list.

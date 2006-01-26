@@ -28,3 +28,4 @@ IMyMoneySerialize::IMyMoneySerialize()
 IMyMoneySerialize::~IMyMoneySerialize()
 {
 }
+

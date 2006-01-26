@@ -129,6 +129,9 @@ protected:
   void readReports(void);
   virtual void writeReports(QDomElement& e);
 
+  void readBudgets(void);
+  virtual void writeBudgets(QDomElement& e);
+
   QDomElement findChildElement(const QString& name, const QDomElement& root);
 
 private:

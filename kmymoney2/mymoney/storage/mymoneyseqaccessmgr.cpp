@@ -39,6 +39,7 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   m_nextScheduleID = 0;
   m_nextSecurityID = 0;
   m_nextReportID = 0;
+  m_nextBudgetID = 0;
   m_user = MyMoneyPayee();
   m_dirty = false;
   m_institutionList.clear();
@@ -1245,6 +1246,11 @@ void MyMoneySeqAccessMgr::loadReportId(const unsigned long id)
   m_nextReportID = id;
 }
 
+void MyMoneySeqAccessMgr::loadBudgetId(const unsigned long id)
+{
+  m_nextBudgetID = id;
+}
+
 const QString MyMoneySeqAccessMgr::value(const QCString& key) const
 {
   return MyMoneyKeyValueContainer::value(key);
@@ -1686,6 +1692,83 @@ void MyMoneySeqAccessMgr::removeReport( const MyMoneyReport& report )
   touch();
 }
 
+const QValueList<MyMoneyBudget> MyMoneySeqAccessMgr::budgetList(void) const
+{
+  return m_budgetList.values();
+}
+
+
+void MyMoneySeqAccessMgr::addBudget( MyMoneyBudget& budget )
+{
+  if(!budget.id().isEmpty())
+    throw new MYMONEYEXCEPTION("transaction already contains an id");
+
+  budget.setId( nextBudgetID() );
+
+  m_budgetList[budget.id()] = budget;
+
+  touch();
+
+}
+
+void MyMoneySeqAccessMgr::loadBudget( const MyMoneyBudget& budget )
+{
+  // in order to be 'loaded', this budget must have an ID, and it must not already
+  // be in the list.
+  if ( budget.id().isEmpty() )
+    throw new MYMONEYEXCEPTION(QString("Unable to load budget %1 with unassigned ID during loadBudget()").arg(budget.name()));
+  if ( m_budgetList.contains(budget.id()) )
+    throw new MYMONEYEXCEPTION(QString("Duplicate budget %1 during loadBudget()").arg(budget.id()));
+
+  m_budgetList[budget.id()] = budget;
+}
+
+void MyMoneySeqAccessMgr::modifyBudget( const MyMoneyBudget& budget )
+{
+  QMap<QCString, MyMoneyBudget>::Iterator it;
+
+  it = m_budgetList.find(budget.id());
+  if(it == m_budgetList.end()) {
+    QString msg = "Unknown budget '" + budget.id() + "'";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+  touch();
+
+  *it = budget;
+}
+
+const QCString MyMoneySeqAccessMgr::nextBudgetID(void)
+{
+  QCString id;
+  id.setNum(++m_nextBudgetID);
+  id = "B" + id.rightJustify(BUDGET_ID_SIZE, '0');
+  return id;
+}
+
+unsigned MyMoneySeqAccessMgr::countBudgets(void) const
+{
+  return m_budgetList.count();
+}
+
+MyMoneyBudget MyMoneySeqAccessMgr::budget( const QCString& _id ) const
+{
+  return m_budgetList[_id];
+}
+
+void MyMoneySeqAccessMgr::removeBudget( const MyMoneyBudget& budget )
+{
+  QMap<QCString, MyMoneyBudget>::Iterator it;
+
+  it = m_budgetList.find(budget.id());
+  if(it == m_budgetList.end()) {
+    QString msg = "Unknown budget '" + budget.id() + "'";
+    throw new MYMONEYEXCEPTION(msg);
+  }
+
+  m_budgetList.remove(it);
+  touch();
+}
+
 void MyMoneySeqAccessMgr::addPrice(const MyMoneyPrice& price)
 {
   MyMoneyPriceEntries::ConstIterator it;
@@ -1776,6 +1859,7 @@ bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj) const
   QMap<QCString, MyMoneyInstitution>::const_iterator it_i;
   QMap<QCString, MyMoneyPayee>::const_iterator it_p;
   QMap<QCString, MyMoneyReport>::const_iterator it_r;
+  QMap<QCString, MyMoneyBudget>::const_iterator it_b;
   QMap<QCString, MyMoneySchedule>::const_iterator it_sch;
   QMap<QCString, MyMoneySecurity>::const_iterator it_sec;
   MyMoneyPriceList::const_iterator it_pr;
@@ -1799,6 +1883,9 @@ bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj) const
   }
   for(it_r = m_reportList.begin(); !rc && it_r != m_reportList.end(); ++it_r) {
     rc = (*it_r).hasReferenceTo(id);
+  }
+  for(it_b = m_budgetList.begin(); !rc && it_b != m_budgetList.end(); ++it_b) {
+    rc = (*it_b).hasReferenceTo(id);
   }
   for(it_sch = m_scheduleList.begin(); !rc && it_sch != m_scheduleList.end(); ++it_sch) {
     rc = (*it_sch).hasReferenceTo(id);

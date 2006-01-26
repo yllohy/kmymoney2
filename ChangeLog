@@ -1,3 +1,12 @@
+2006-01-25 Ace Jones <acejones@users.sourceforge.net>
+  * Modified ofx plugin to accept ofc files
+  * #if0'd out some broken logic in ofx importer.  Some OFX files don't follow
+    the spec wrt totals, and this was a poor attempt to deal with that.  It
+    ended up breaking many more common cases. 
+
+2006-01-25 Darren Gould <darren_gould@gmx.de>
+  * added XML ability and mymoneybudget class for budget feature
+
 2006-01-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1398924 (Incorrect calculation of investment price)
   * Fixed #1390918 (Can't use more than 2 decimal places in manual price update)

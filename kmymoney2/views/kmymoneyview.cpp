@@ -224,7 +224,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_budgetView = new KBudgetView(m_budgetViewFrame, "BudgetView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_budgetView, SLOT(slotReloadView()));
 
-
   connect(m_payeesView, SIGNAL(transactionSelected(const QCString&, const QCString&)),
           this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
   connect(m_ledgerView, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
@@ -1301,7 +1300,7 @@ void KMyMoneyView::slotRefreshViews()
   m_categoriesView->slotLoadAccounts();
   m_payeesView->slotLoadPayees();
   m_ledgerView->slotRefreshView();
-  m_budgetView->slotRefreshView();
+  m_budgetView->slotLoadAccounts();
   m_homeView->slotRefreshView();
   m_investmentView->slotRefreshView();
   m_reportsView->slotRefreshView();

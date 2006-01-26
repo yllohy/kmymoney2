@@ -549,6 +549,7 @@ public:
   virtual void loadScheduleId(const unsigned long id);
   virtual void loadSecurityId(const unsigned long id);
   virtual void loadReportId(const unsigned long id);
+  virtual void loadBudgetId(const unsigned long id);
 
   virtual const unsigned long accountId(void) { return m_nextAccountID; };
   virtual const unsigned long transactionId(void) { return m_nextTransactionID; };
@@ -557,6 +558,7 @@ public:
   virtual const unsigned long scheduleId(void) { return m_nextScheduleID; };
   virtual const unsigned long securityId(void) { return m_nextSecurityID; };
   virtual const unsigned long reportId(void) { return m_nextReportID; };
+  virtual const unsigned long budgetId(void) { return m_nextBudgetID; };
 
 
   /**
@@ -863,6 +865,80 @@ public:
   void removeReport(const MyMoneyReport& report);
 
   /**
+    * This method is used to retrieve the list of all budgets
+    * known to the engine.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @return QValueList of all MyMoneyBudget objects.
+    */
+  const QValueList<MyMoneyBudget> budgetList( void ) const;
+
+  /**
+    * This method is used to add a new budget to the engine.
+    * It must be sure, that the id of the object is not filled. When the
+    * method returns to the caller, the id will be filled with the
+    * newly created object id value.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param budget reference to the MyMoneyBudget object
+    */
+  void addBudget( MyMoneyBudget& budget );
+
+  /**
+    * This method is used to load a budget into the engine.  This is
+    * used when loading from storage, and an ID is already known.  It
+    * is similiar to addBudget, however loadBudget will not assign
+    * a new ID.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param budget reference to the MyMoneyBudget object
+    */
+  void loadBudget( const MyMoneyBudget& budget );
+
+  /**
+    * This method is used to modify an existing MyMoneyBudget
+    * object. Therefore, the id attribute of the object must be set.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param budget const reference to the MyMoneyBudget object to be updated
+    */
+  void modifyBudget( const MyMoneyBudget& budget );
+
+  /**
+    * This method returns the number of budgets currently known to file
+    * in the range 0..MAXUINT
+    *
+    * @return number of budgets known to file
+    */
+  unsigned countBudgets(void) const;
+
+  /**
+    * This method is used to retrieve a single MyMoneyBudget object.
+    * The id of the object must be supplied in the parameter @p id.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param id QCString containing the id of the MyMoneyBudget object
+    * @return MyMoneyBudget object
+    */
+  MyMoneyBudget budget( const QCString& id ) const;
+
+  /**
+    * This method is used to remove an existing MyMoneyBudget object
+    * from the engine. The id attribute of the object must be set.
+    *
+    * An exception will be thrown upon erronous situations.
+    *
+    * @param budget const reference to the MyMoneyBudget object to be updated
+    */
+  void removeBudget(const MyMoneyBudget& budget);
+
+
+  /**
     * This method adds/replaces a price to/from the price list
     */
   void addPrice(const MyMoneyPrice& price);
@@ -914,6 +990,7 @@ private:
   static const int SCHEDULE_ID_SIZE = 6;
   static const int SECURITY_ID_SIZE = 6;
   static const int REPORT_ID_SIZE = 6;
+  static const int BUDGET_ID_SIZE = 6;
 
   static const int YEAR_SIZE = 4;
   static const int MONTH_SIZE = 2;
@@ -992,6 +1069,13 @@ private:
   unsigned long m_nextReportID;
 
   /**
+    * The member variable m_nextBudgetID keeps the number that will be
+    * assigned to the next budget object created.  It is maintained by
+    * nextBudgetID()
+    */
+  unsigned long m_nextBudgetID;
+
+  /**
     * The member variable m_institutionList is the container for the
     * institutions known within this file.
     */
@@ -1056,6 +1140,11 @@ private:
 
   QMap<QCString, MyMoneyReport> m_reportList;
 
+  /**
+    * A list containing all the budget information objects.
+    */
+  QMap<QCString, MyMoneyBudget> m_budgetList;
+
   MyMoneyPriceList              m_priceList;
 
   /**
@@ -1113,6 +1202,13 @@ private:
   const QCString nextSecurityID(void);
 
   const QCString nextReportID(void);
+
+  /**
+    * This method is used to get the next valid ID for a budget object.
+    * @return id for an budget object
+    */
+  const QCString nextBudgetID(void);
+
 
   /**
     * This method re-parents an existing account
