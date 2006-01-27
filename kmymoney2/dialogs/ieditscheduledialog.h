@@ -34,7 +34,7 @@
 #include "../dialogs/keditschedtransdlgdecl.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyscheduled.h"
-
+#include "../widgets/kguiutils.h"
 
 /**
   * @author Michael Edwardes, Thomas Baumgart
@@ -93,7 +93,6 @@ protected slots:
   void slotAutoEnterChanged();
   void slotMemoChanged(const QString& text);
   void slotHelp(void);
-  void slotCheckOkEnabled(void);
 
 signals:
   /**
@@ -160,6 +159,10 @@ private:
   bool checkCategory();
   void checkPayee();
   QCString theAccountId();
+
+  /* To hold list of mandatory fields */
+  kMandatoryFieldGroup *m_requiredFields;
+  
 };
 
 #endif

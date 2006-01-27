@@ -201,6 +201,15 @@ public:
 
   const bool isCalculatorButtonVisible(void) const;
 
+  /**
+   * This method sets the field background colour when it is
+   * a required field
+   *
+   * @param c colour to be set
+   */
+
+  void setPaletteBackgroundColor(QColor c) { m_edit->setPaletteBackgroundColor(c); }
+
 public slots:
   void loadText(const QString& text);
   void setReadOnly(bool ro) { m_edit->setReadOnly(ro); };

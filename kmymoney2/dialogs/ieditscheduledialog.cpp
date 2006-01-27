@@ -86,6 +86,9 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   m_qbuttonSplit->setGuiItem(KMyMoneyUtils::splitGuiItem());
   m_helpButton->setGuiItem(KStdGuiItem::help());
 
+  m_requiredFields = new kMandatoryFieldGroup (this);
+  m_requiredFields->setOkButton(m_qbuttonOK); // button to be enabled when all fields present
+
   m_actionType = action;
   m_schedule = schedule;
   m_transaction = schedule.transaction();
@@ -110,6 +113,11 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     TextLabel1_3->setEnabled(true);
     m_kcomboTo->setEnabled(true);
     m_category->setEnabled(false);
+
+    m_requiredFields->add(m_accountCombo);
+    m_requiredFields->add(m_kcomboTo);
+    m_requiredFields->add(m_kcomboPayTo);
+
     //  transfers now allow splits
     // m_qbuttonSplit->setEnabled(false);
     setCaption(i18n("Edit Transfer Schedule"));
@@ -129,6 +137,10 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     m_category->setEnabled(false);
     m_qbuttonSplit->setEnabled(true);
     m_qcheckboxEnd->setEnabled(false);
+
+    m_requiredFields->add(m_accountCombo);
+    m_requiredFields->add(m_kcomboPayTo);
+
     setCaption(i18n("Edit Loan Payment Schedule"));
   }
   else if (m_actionType == MyMoneySplit::ActionDeposit)
@@ -137,6 +149,11 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     m_qlabelPay2->setEnabled(false);
     TextLabel1_3->setEnabled(true);
     m_kcomboTo->setEnabled(true);
+
+    m_requiredFields->add(m_kcomboTo);
+    m_requiredFields->add(m_category);
+    m_requiredFields->add(m_kcomboPayTo);
+
     setCaption(i18n("Edit Deposit Schedule"));
   }
   else
@@ -146,7 +163,15 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     TextLabel1_3->setEnabled(false);
     m_kcomboTo->setEnabled(false);
     setCaption(i18n("Edit Bill Schedule"));
+
+    m_requiredFields->add(m_accountCombo);
+    m_requiredFields->add(m_kcomboPayTo);
+    m_requiredFields->add(m_category);
+
   }
+
+  m_requiredFields->add(m_scheduleName);
+  m_requiredFields->add(m_kmoneyeditAmount);
 
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(m_qbuttonSplit, SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
@@ -185,12 +210,12 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
 
   connect(m_category, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
-  slotCheckOkEnabled();
 }
 
 KEditScheduleDialog::~KEditScheduleDialog()
 {
   writeConfig();
+  delete m_requiredFields;
 }
 
 void KEditScheduleDialog::readConfig(void)
@@ -845,7 +870,6 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
     KMessageBox::detailedError(this, i18n("Error in slotAmountChanged?"), e->what() + " : " + m_schedule.account().name());
     delete e;
   }
-  slotCheckOkEnabled();
 }
 
 void KEditScheduleDialog::slotAccountChanged(const QCString& id)
@@ -867,13 +891,11 @@ void KEditScheduleDialog::slotAccountChanged(const QCString& id)
       m_transaction.setCommodity(acc.currencyId());
     }
   }
-  slotCheckOkEnabled();
 }
 
 void KEditScheduleDialog::slotScheduleNameChanged(const QString& text)
 {
   m_schedule.setName(text);
-  slotCheckOkEnabled();
 }
 
 void KEditScheduleDialog::slotToChanged(const QCString& id)
@@ -902,7 +924,6 @@ void KEditScheduleDialog::slotToChanged(const QCString& id)
     s.setAccountId(id);
     m_transaction.modifySplit(s);
   }
-  slotCheckOkEnabled();
 }
 
 void KEditScheduleDialog::slotMethodChanged(int item)
@@ -997,7 +1018,6 @@ void KEditScheduleDialog::slotPayeeChanged(const QString& text)
        // KMessageBox::detailedError(this, i18n("Exception in slot PayeeChanged"), e->what());
     delete e;
   }
-  slotCheckOkEnabled();
 }
 
 void KEditScheduleDialog::slotDateChanged(const QDate& date)
@@ -1068,7 +1088,6 @@ void KEditScheduleDialog::slotCategoryChanged(const QString& text)
     QCString id = MyMoneyFile::instance()->categoryToAccount(category);
     if(id.isEmpty() && !category.isEmpty())
     {
-      slotCheckOkEnabled();
       // They are probably still typing
       // The category gets checked in okClicked()
       return;
@@ -1076,7 +1095,6 @@ void KEditScheduleDialog::slotCategoryChanged(const QString& text)
     s.setAccountId(id);
     m_transaction.modifySplit(s);
   }
-  slotCheckOkEnabled();
 }
 
 void KEditScheduleDialog::slotAutoEnterChanged()
@@ -1296,26 +1314,6 @@ QCString KEditScheduleDialog::theAccountId()
   }
 
   return QCString();
-}
-
-void KEditScheduleDialog::slotCheckOkEnabled(void)
-{
-  bool rcEnabled = true;
-
-  if(m_scheduleName->text().length() == 0)
-    rcEnabled = false;
-  if(m_accountCombo->isEnabled() && m_accountCombo->selectedAccounts().count() == 0)
-    rcEnabled = false;
-  if(m_kcomboTo->isEnabled() && m_kcomboTo->selectedAccounts().count() == 0)
-    rcEnabled = false;
-  if(m_category->isEnabled() && m_category->text().length() == 0)
-    rcEnabled = false;
-  if(m_kmoneyeditAmount->text().length() == 0)
-    rcEnabled = false;
-  if (m_kcomboPayTo->isEnabled() && m_kcomboPayTo->text().length() == 0)
-    rcEnabled = false;
-
-  m_qbuttonOK->setEnabled(rcEnabled);
 }
 
 void KEditScheduleDialog::slotHelp(void)
