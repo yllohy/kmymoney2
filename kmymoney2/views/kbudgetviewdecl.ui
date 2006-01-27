@@ -478,11 +478,4 @@
     <slot>m_bNewBudget_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kmymoneytitlelabel.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kmymoneyaccounttree.h</includehint>
-    <includehint>kpushbutton.h</includehint>
-</includehints>
 </UI>
