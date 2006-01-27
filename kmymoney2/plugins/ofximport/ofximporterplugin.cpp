@@ -67,10 +67,12 @@ bool OfxImporterPlugin::isMyFormat( const QString& filename ) const
     QTextStream ts( &f );
 
     while ( !ts.atEnd() && !result )
-      if ( ts.readLine().contains("<OFX>",false)
-        || ts.readLine().contains("<OFC>",false) )
+    {
+      QString line = ts.readLine();
+      if ( line.contains("<OFX>",false)
+        || line.contains("<OFC>",false) )
         result = true;
-
+    }
     f.close();
   }
 
