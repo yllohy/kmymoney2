@@ -679,7 +679,7 @@ public slots:
 
   void slotSelectInstitution(const MyMoneyObject& institution = MyMoneyInstitution());
 
-  void slotSelectInvestment(const MyMoneyAccount& account = MyMoneyAccount());
+  void slotSelectInvestment(const MyMoneyObject& account = MyMoneyAccount());
 
   void slotSelectSchedule(const MyMoneySchedule& schedule = MyMoneySchedule());
 
@@ -727,6 +727,7 @@ signals:
     * by plugins to get information about changes.
     */
   void accountSelected(const MyMoneyAccount& account);
+  void investmentSelected(const MyMoneyAccount& account);
 
   /**
     * This signal is emitted when a new institution has been selected by
@@ -735,6 +736,14 @@ signals:
     * by plugins to get information about changes.
     */
   void institutionSelected(const MyMoneyInstitution& institution);
+
+  /**
+    * This signal is emitted when a new schedule has been selected by
+    * the GUI. If no schedule is selected or the selection is removed,
+    * schedule is identical to MyMoneySchedule(). This signal is used
+    * by plugins to get information about changes.
+    */
+  void scheduleSelected(const MyMoneySchedule& schedule);
 
   void payeeRename(void);
   void payeeCreated(const QCString& id);

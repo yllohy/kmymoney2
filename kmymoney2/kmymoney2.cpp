@@ -2758,7 +2758,7 @@ void KMyMoney2App::slotPayeeNew(void)
     // the callbacks should have made sure, that the payees view has been
     // updated already. So we search for the id in the list of items
     // and select it.
-    payeeCreated(p.id());
+    emit payeeCreated(p.id());
   } catch (MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to add payee"),
       (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
@@ -2937,7 +2937,15 @@ void KMyMoney2App::slotShowAccountContextMenu(const MyMoneyObject& obj)
   if(typeid(obj) != typeid(MyMoneyAccount))
     return;
 
-  showContextMenu("account_context_menu");
+  const MyMoneyAccount& acc = dynamic_cast<const MyMoneyAccount&>(obj);
+
+  // if the selected account is actually a stock account, we
+  // call the right slot instead
+  if(acc.accountType() == MyMoneyAccount::Stock) {
+    showContextMenu("investment_context_menu");
+  } else {
+    showContextMenu("account_context_menu");
+  }
 }
 
 void KMyMoney2App::slotShowInstitutionContextMenu(const MyMoneyObject& obj)
@@ -3132,22 +3140,35 @@ void KMyMoney2App::slotSelectInstitution(const MyMoneyObject& institution)
   emit institutionSelected(m_selectedInstitution);
 }
 
-void KMyMoney2App::slotSelectAccount(const MyMoneyObject& account)
+void KMyMoney2App::slotSelectAccount(const MyMoneyObject& obj)
 {
-  if(typeid(account) != typeid(MyMoneyAccount))
+  if(typeid(obj) != typeid(MyMoneyAccount))
     return;
+  qDebug("KMyMoney2App::slotSelectAccount");
 
-  m_selectedAccount = dynamic_cast<const MyMoneyAccount&>(account);
+  m_selectedAccount = MyMoneyAccount();
+  const MyMoneyAccount& acc = dynamic_cast<const MyMoneyAccount&>(obj);
+  if(acc.accountType() != MyMoneyAccount::Stock)
+    m_selectedAccount = acc;
+
   // qDebug("slotSelectAccount('%s')", m_selectedAccount.name().data());
   updateActions();
   emit accountSelected(m_selectedAccount);
 }
 
-void KMyMoney2App::slotSelectInvestment(const MyMoneyAccount& account)
+void KMyMoney2App::slotSelectInvestment(const MyMoneyObject& obj)
 {
+  if(typeid(obj) != typeid(MyMoneyAccount))
+    return;
+
   // qDebug("slotSelectInvestment('%s')", account.name().data());
-  m_selectedInvestment = account;
+  m_selectedInvestment = MyMoneyAccount();
+  const MyMoneyAccount& acc = dynamic_cast<const MyMoneyAccount&>(obj);
+  if(acc.accountType() == MyMoneyAccount::Stock)
+    m_selectedInvestment = acc;
+
   updateActions();
+  emit investmentSelected(m_selectedInvestment);
 }
 
 void KMyMoney2App::slotSelectSchedule(const MyMoneySchedule& schedule)
@@ -3155,6 +3176,7 @@ void KMyMoney2App::slotSelectSchedule(const MyMoneySchedule& schedule)
   // qDebug("slotSelectSchedule('%s')", schedule.name().data());
   m_selectedSchedule = schedule;
   updateActions();
+  emit scheduleSelected(m_selectedSchedule);
 }
 
 void KMyMoney2App::update(const QCString& /* id */)
