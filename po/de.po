@@ -5378,7 +5378,7 @@ msgstr "Kann Typ nicht ändern"
 
 #: views/kledgerview.cpp:1201 views/kledgerview.cpp:1219
 msgid "&Check"
-msgstr "&Prüfen"
+msgstr "&Scheck"
 
 #: views/kledgerview.cpp:1203
 msgid "&Deposit"
