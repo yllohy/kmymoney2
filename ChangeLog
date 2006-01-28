@@ -1,3 +1,16 @@
+2006-01-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a translation error in the German version (thanks to Karin Capey
+    for reporting)
+  * Fixed 1400746 (Entering scheduled transaction for a loan crashes)
+    (at least shows a somewhat more descriptive error message)
+  * Removed unused code
+  * Show stock accounts in the correct institution if the parent
+    investment account is assigned to an institution
+  * Improved signal handling in KMyMoneyAccountTree
+  * Improved selection of accounts and investments
+  * Reactivated icon tab in accounts view
+  * Added #1058732 (Save Account Icon Position)
+
 2006-01-27 Ace Jones <acejones@users.sourceforge.net>
   * Disallow importing into a stock account.
     Fixes #1395656
@@ -5,6 +18,13 @@
 
 2006-01-27 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Apply required field status/color to edit schedule dialog
+
+2006-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added fixuifiles to the admin directory and included it in Makefiles
+
+2006-01-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Sort list of payees in the Reassign transactions dialog by name
+  * Improved RMB behaviour in some views/widgets
 
 2006-01-25 Ace Jones <acejones@users.sourceforge.net>
   * Modified ofx plugin to accept ofc files
