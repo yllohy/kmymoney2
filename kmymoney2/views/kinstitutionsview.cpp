@@ -120,6 +120,15 @@ void KInstitutionsView::loadAccounts(void)
     m_accountMap[(*it_a).id()] = *it_a;
   }
 
+  // we need to make sure we show stock accounts
+  // under the right institution (the one of the parent account)
+  QMap<QCString, MyMoneyAccount>::iterator it_am;
+  for(it_am = m_accountMap.begin(); it_am != m_accountMap.end(); ++it_am) {
+    if((*it_am).accountType() == MyMoneyAccount::Stock) {
+      (*it_am).setInstitutionId(m_accountMap[(*it_am).parentAccountId()].institutionId());
+    }
+  }
+
   QValueList<MyMoneySecurity> slist = file->currencyList();
   slist += file->securityList();
   QValueList<MyMoneySecurity>::const_iterator it_s;
