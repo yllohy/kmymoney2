@@ -23,6 +23,8 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kiconview.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -37,7 +39,34 @@
   */
 
 /**
-  * This class implements the accounts hierarchical 'view'.
+  * This class represents an item in the account icon view. It is used
+  * by the KAccountsView to select between the accounts using icons.
+  */
+class KMyMoneyAccountIconItem : public KIconViewItem
+{
+public:
+  /**
+    * Constructor to be used to construct an account icon object.
+    *
+    * @param parent pointer to the KIconView object this entry should be
+    *               added to.
+    * @param account const reference to MyMoneyAccount for which
+    *               the KIconView entry is constructed
+    */
+  KMyMoneyAccountIconItem(QIconView *parent, const MyMoneyAccount& account);
+  ~KMyMoneyAccountIconItem();
+
+  const MyMoneyObject& itemObject(void) const { return m_account; };
+
+private:
+  MyMoneyAccount        m_account;
+};
+
+
+
+
+/**
+  * This class implements the accounts hierarchical and iconic 'view'.
   */
 class KAccountsView : public KAccountsViewDecl
 {
@@ -57,21 +86,50 @@ public slots:
     */
   void show(void);
 
+  /**
+    * update the account objects if their icon position has changed since
+    * the last time.
+    *
+    * @param action must be KMyMoneyView::preSave, otherwise this slot is a NOP.
+    */
+  void slotUpdateIconPos(unsigned int action);
+
 protected:
-  void loadAccounts(void);
+  typedef enum {
+    ListView = 0,
+    IconView,
+    // insert new values above this line
+    MaxViewTabs
+  } AccountsViewTab;
+
+  /**
+    * This method loads the accounts for the respective tab.
+    *
+    * @param tab which tab should be loaded
+    */
+  void loadAccounts(AccountsViewTab tab);
+  void loadListView(void);
+  void loadIconView(void);
+
   bool loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList);
+
+  void viewChanged(void);
+
+  /**
+    * This method returns a pointer to the currently selected
+    * account icon or 0 if no icon is selected.
+    */
+  KMyMoneyAccountIconItem* selectedIcon(void) const;
+
+  QPoint point(const QString& str) const;
+  QString point(const QPoint& val) const;
 
 protected slots:
   void slotUpdateNetWorth(void);
-
-private:
-  /**
-    * This method returns an icon according to the account type
-    * passed in the argument @p type.
-    *
-    * @param type account type as defined in MyMoneyAccount::accountTypeE
-    */
-  const QPixmap accountImage(const MyMoneyAccount::accountTypeE type) const;
+  void slotTabChanged(QWidget*);
+  void slotSelectIcon(QIconViewItem* item);
+  void slotOpenContext(QIconViewItem* item);
+  void slotOpenObject(QIconViewItem* item);
 
 signals:
   /**
@@ -107,7 +165,7 @@ signals:
   void reparent(const MyMoneyAccount& acc, const MyMoneyAccount& parent);
 
 private:
-  QMap<QCString, MyMoneyAccount>      m_accountMap;
+  QMap<QString, MyMoneyAccount>       m_accountMap;
   QMap<QCString, MyMoneySecurity>     m_securityMap;
   QMap<QCString, unsigned long>       m_transactionCountMap;
 
@@ -115,7 +173,8 @@ private:
   KMyMoneyAccountTreeItem*            m_liabilityItem;
 
   /// set if a view needs to be reloaded during show()
-  bool                                m_needReload;
+  bool                                m_needReload[MaxViewTabs];
+  bool                                m_haveUnusedCategories;
 };
 
 #endif

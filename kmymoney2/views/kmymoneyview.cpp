@@ -155,9 +155,11 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_accountsView = new KAccountsView(m_accountsViewFrame, "AccountsView");
   connect(m_accountsView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_accountsView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectInstitution(const MyMoneyObject&)));
+  connect(m_accountsView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectInvestment(const MyMoneyObject&)));
   connect(m_accountsView, SIGNAL(openContextMenu(const MyMoneyObject&)), kmymoney2, SLOT(slotShowAccountContextMenu(const MyMoneyObject&)));
   connect(m_accountsView, SIGNAL(openObject(const MyMoneyObject&)), kmymoney2, SLOT(slotAccountOpen(const MyMoneyObject&)));
   connect(m_accountsView, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotReparentAccount(const MyMoneyAccount&, const MyMoneyAccount&)));
+  connect(this, SIGNAL(kmmFilePlugin(unsigned int)), m_accountsView, SLOT(slotUpdateIconPos(unsigned int)));
 
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_accountsView, SLOT(slotLoadAccounts()));
 

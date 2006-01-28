@@ -19,36 +19,95 @@
 
 #include <qlabel.h>
 #include <qtabwidget.h>
+#include <qpixmap.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include <kdebug.h>
 #include <klocale.h>
+#include <kiconloader.h>
+#include <kiconview.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include <kmymoney/mymoneyfile.h>
 #include "kaccountsview.h"
+#include "kmymoneyview.h"
 #include "../kmymoneysettings.h"
 #include "../kmymoney2.h"
+
+
+KMyMoneyAccountIconItem::KMyMoneyAccountIconItem(QIconView *parent, const MyMoneyAccount& account) :
+  KIconViewItem(parent, account.name()),
+  m_account(account)
+{
+  switch(account.accountType()) {
+    default:
+      if(account.accountGroup() == MyMoneyAccount::Asset)
+        setPixmap(DesktopIcon("account-types_asset"));
+      else
+        setPixmap(DesktopIcon("account-types_liability"));
+      break;
+
+    case MyMoneyAccount::Investment:
+      setPixmap(DesktopIcon("account-types_investments"));
+      break;
+
+    case MyMoneyAccount::Checkings:
+      setPixmap(DesktopIcon("account-types_checking"));
+      break;
+    case MyMoneyAccount::Savings:
+      setPixmap(DesktopIcon("account-types_savings"));
+      break;
+
+    case MyMoneyAccount::AssetLoan:
+    case MyMoneyAccount::Loan:
+      setPixmap(DesktopIcon("account-types_loan"));
+      break;
+
+    case MyMoneyAccount::CreditCard:
+      setPixmap(DesktopIcon("account-types_credit-card"));
+      break;
+
+    case MyMoneyAccount::Asset:
+      setPixmap(DesktopIcon("account-types_asset"));
+      break;
+
+    case MyMoneyAccount::Cash:
+      setPixmap(DesktopIcon("account-types_cash"));
+      break;
+  }
+}
+
+KMyMoneyAccountIconItem::~KMyMoneyAccountIconItem()
+{
+}
 
 KAccountsView::KAccountsView(QWidget *parent, const char *name) :
   KAccountsViewDecl(parent,name),
   m_assetItem(0),
-  m_liabilityItem(0),
-  m_needReload(false)
+  m_liabilityItem(0)
 {
-  // FIXME the code for the icon view is not present yet
-  m_tab->setCurrentPage(0);
-  m_tab->setTabEnabled(m_tab->page(1), false);
+  for(int i=0; i < MaxViewTabs; ++i)
+    m_needReload[i] = false;
+
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  m_tab->setCurrentPage(config->readNumEntry("KAccountsView_LastType", 0));
+
+  connect(m_tab, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotTabChanged(QWidget*)));
 
   connect(m_accountTree, SIGNAL(selectObject(const MyMoneyObject&)), this, SIGNAL(selectObject(const MyMoneyObject&)));
   connect(m_accountTree, SIGNAL(openContextMenu(const MyMoneyObject&)), this, SIGNAL(openContextMenu(const MyMoneyObject&)));
   connect(m_accountTree, SIGNAL(valueChanged(void)), this, SLOT(slotUpdateNetWorth(void)));
   connect(m_accountTree, SIGNAL(openObject(const MyMoneyObject&)), this, SIGNAL(openObject(const MyMoneyObject&)));
   connect(m_accountTree, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)), this, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)));
+
+  connect(m_accountIcons, SIGNAL(selectionChanged(QIconViewItem*)), this, SLOT(slotSelectIcon(QIconViewItem*)));
+  connect(m_accountIcons, SIGNAL(rightButtonClicked(QIconViewItem*, const QPoint&)), this, SLOT(slotOpenContext(QIconViewItem*)));
+  connect(m_accountIcons, SIGNAL(executed(QIconViewItem*)), this, SLOT(slotOpenObject(QIconViewItem*)));
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadAccounts()));
 }
@@ -57,37 +116,178 @@ KAccountsView::~KAccountsView()
 {
 }
 
-void KAccountsView::show(void)
-{
-  if(m_needReload) {
-    loadAccounts();
-    m_needReload = false;
-  }
-
-  // don't forget base class implementation
-  KAccountsViewDecl::show();
-
-  // if we have a selected account, let the application know about it
-  KMyMoneyAccountTreeItem *item = m_accountTree->selectedItem();
-  if(item) {
-    emit selectObject(item->itemObject());
-  }
-}
-
 void KAccountsView::slotLoadAccounts(void)
 {
-  if(isVisible()) {
-    loadAccounts();
-  } else {
-    m_needReload = true;
+  m_needReload[ListView] = true;
+  m_needReload[IconView] = true;
+  if(isVisible())
+    slotTabChanged(m_tab->currentPage());
+}
+
+void KAccountsView::slotTabChanged(QWidget* _tab)
+{
+  AccountsViewTab tab = static_cast<AccountsViewTab>(m_tab->indexOf(_tab));
+
+  // remember this setting for startup
+  KConfig *config = KGlobal::config();
+  config->setGroup("Last Use Settings");
+  config->writeEntry("KAccountsView_LastType", tab);
+
+  loadAccounts(tab);
+
+  switch(tab) {
+    case ListView:
+      // update the hint if categories are hidden
+      m_hiddenCategories->setShown(m_haveUnusedCategories);
+      break;
+
+    case IconView:
+      m_hiddenCategories->hide();
+      break;
+
+    default:
+      break;
+  }
+
+  viewChanged();
+}
+
+void KAccountsView::viewChanged(void)
+{
+  KMyMoneyAccountTreeItem* treeItem = m_accountTree->selectedItem();
+  KMyMoneyAccountIconItem* iconItem = selectedIcon();
+
+  emit selectObject(MyMoneyAccount());
+  switch(static_cast<AccountsViewTab>(m_tab->indexOf(m_tab->currentPage()))) {
+    case ListView:
+      // if we have a selected account, let the application know about it
+      if(treeItem) {
+        emit selectObject(treeItem->itemObject());
+      }
+      break;
+
+    case IconView:
+      if(iconItem) {
+        emit selectObject(iconItem->itemObject());
+      }
+      break;
+
+    default:
+      break;
   }
 }
 
-void KAccountsView::loadAccounts(void)
+void KAccountsView::show(void)
+{
+  // don't forget base class implementation
+  KAccountsViewDecl::show();
+  slotTabChanged(m_tab->currentPage());
+  viewChanged();
+}
+
+void KAccountsView::loadAccounts(AccountsViewTab tab)
+{
+  if(m_needReload[tab]) {
+    switch(tab) {
+      case ListView:
+        loadListView();
+        break;
+      case IconView:
+        loadIconView();
+        break;
+      default:
+        break;
+    }
+    m_needReload[tab] = false;
+  }
+}
+
+void KAccountsView::loadIconView(void)
+{
+  ::timetrace("start load accounts icon view");
+
+  // remember the positions of the icons
+  QMap<QCString, QPoint> posMap;
+  KMyMoneyAccountIconItem* p = dynamic_cast<KMyMoneyAccountIconItem*>(m_accountIcons->firstItem());
+  for(;p; p = dynamic_cast<KMyMoneyAccountIconItem*>(p->nextItem()))
+    posMap[p->itemObject().id()] = p->pos();
+
+  // turn off updates to avoid flickering during reload
+  m_accountIcons->setUpdatesEnabled(false);
+  m_accountIcons->setAutoArrange(true);
+
+  // clear the current contents and recreate it
+  m_accountIcons->clear();
+  m_accountMap.clear();
+
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  // get account list and sort by name
+  QValueList<MyMoneyAccount> alist = file->accountList();
+  QValueList<MyMoneyAccount>::const_iterator it_a;
+  for(it_a = alist.begin(); it_a != alist.end(); ++it_a) {
+    m_accountMap[(*it_a).name()] = *it_a;
+  }
+
+  // parse list and add all asset and liability accounts
+  QMap<QString, MyMoneyAccount>::const_iterator it;
+  QPoint loc;
+  for(it = m_accountMap.begin(); it != m_accountMap.end(); ++it) {
+    const QString& pos = (*it).value("kmm-iconpos");
+    KMyMoneyAccountIconItem* item;
+    switch((*it).accountGroup()) {
+      case MyMoneyAccount::Equity:
+        if(!KMyMoneySettings::expertMode())
+          continue;
+        // tricky fall through here
+
+      case MyMoneyAccount::Asset:
+      case MyMoneyAccount::Liability:
+        // don't show stock accounts
+        if((*it).accountType() == MyMoneyAccount::Stock)
+          continue;
+
+        // if we have a position stored with the object and no other
+        // idea of it's current position, then take the one
+        // stored inside the object. Also, turn off auto arrangement
+        if(!pos.isEmpty() && posMap[(*it).id()] == QPoint()) {
+          posMap[(*it).id()] = point(pos);
+        }
+
+        loc = posMap[(*it).id()];
+        if(loc != QPoint()) {
+          m_accountIcons->setAutoArrange(false);
+        }
+
+        item = new KMyMoneyAccountIconItem(m_accountIcons, *it);
+        if(loc != QPoint()) {
+          item->move(loc);
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  // clear the current contents
+  m_accountMap.clear();
+  m_securityMap.clear();
+  m_transactionCountMap.clear();
+
+  m_accountIcons->setAutoArrange(false);
+  // turn updates back on
+  m_accountIcons->setUpdatesEnabled(true);
+  m_accountIcons->repaintContents();
+
+  ::timetrace("done load accounts icon view");
+}
+
+void KAccountsView::loadListView(void)
 {
   QMap<QCString, bool> isOpen;
 
-  ::timetrace("start load accounts view");
+  ::timetrace("start load accounts list view");
   // remember the id of the current selected item
   KMyMoneyAccountTreeItem *item = m_accountTree->selectedItem();
   QCString selectedItemId = (item) ? item->id() : QCString();
@@ -136,7 +336,7 @@ void KAccountsView::loadAccounts(void)
 
   m_accountTree->setBaseCurrency(file->baseCurrency());
 
-  bool haveUnusedCategories = false;
+  m_haveUnusedCategories = false;
 
   // create the items
   try {
@@ -153,11 +353,11 @@ void KAccountsView::loadAccounts(void)
 
     const MyMoneyAccount& income = file->income();
     KMyMoneyAccountTreeItem *incomeItem = new KMyMoneyAccountTreeItem(m_accountTree, income, security, i18n("Income"));
-    haveUnusedCategories |= loadSubAccounts(incomeItem, income.accountList());
+    m_haveUnusedCategories |= loadSubAccounts(incomeItem, income.accountList());
 
     const MyMoneyAccount& expense = file->expense();
     KMyMoneyAccountTreeItem *expenseItem = new KMyMoneyAccountTreeItem(m_accountTree, expense, security, i18n("Expense"));
-    haveUnusedCategories |= loadSubAccounts(expenseItem, expense.accountList());
+    m_haveUnusedCategories |= loadSubAccounts(expenseItem, expense.accountList());
 
     if(KMyMoneySettings::expertMode()) {
       const MyMoneyAccount& equity = file->equity();
@@ -166,7 +366,7 @@ void KAccountsView::loadAccounts(void)
     }
 
   } catch(MyMoneyException *e) {
-    kdDebug(2) << "Problem in accountsview: " << e->what();
+    kdDebug(2) << "Problem in accounts list view: " << e->what();
     delete e;
   }
 
@@ -191,14 +391,11 @@ void KAccountsView::loadAccounts(void)
   m_accountTree->setUpdatesEnabled(true);
   m_accountTree->repaintContents();
 
-  // update the hint if categories are hidden
-  m_hiddenCategories->setShown(haveUnusedCategories);
-
   // clear the current contents
   m_accountMap.clear();
   m_securityMap.clear();
   m_transactionCountMap.clear();
-  ::timetrace("done load accounts view");
+  ::timetrace("done load accounts list view");
 }
 
 bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList)
@@ -278,5 +475,72 @@ void KAccountsView::slotUpdateNetWorth(void)
   m_totalProfitsLabel->setFont(KMyMoneySettings::listCellFont());
   m_totalProfitsLabel->setText(s);
 }
+
+KMyMoneyAccountIconItem* KAccountsView::selectedIcon(void) const
+{
+  return dynamic_cast<KMyMoneyAccountIconItem*>(m_accountIcons->currentItem());
+}
+
+void KAccountsView::slotSelectIcon(QIconViewItem* item)
+{
+  KMyMoneyAccountIconItem* p = dynamic_cast<KMyMoneyAccountIconItem*>(item);
+  if(p)
+    emit selectObject(p->itemObject());
+}
+
+void KAccountsView::slotOpenContext(QIconViewItem* item)
+{
+  KMyMoneyAccountIconItem* p = dynamic_cast<KMyMoneyAccountIconItem*>(item);
+  if(p)
+    emit openContextMenu(p->itemObject());
+}
+
+void KAccountsView::slotOpenObject(QIconViewItem* item)
+{
+  KMyMoneyAccountIconItem* p = dynamic_cast<KMyMoneyAccountIconItem*>(item);
+  if(p)
+    emit openObject(p->itemObject());
+}
+
+QString KAccountsView::point(const QPoint& val) const
+{
+  return QString("%1;%2").arg(val.x()).arg(val.y());
+}
+
+QPoint KAccountsView::point(const QString& val) const
+{
+  QRegExp exp("(\\d+);(\\d+)");
+  int x = 0;
+  int y = 0;
+  if(exp.search(val) != -1) {
+    x = exp.cap(1).toInt();
+    y = exp.cap(2).toInt();
+  }
+  return QPoint(x, y);
+}
+
+void KAccountsView::slotUpdateIconPos(unsigned int action)
+{
+  if(action != KMyMoneyView::preSave)
+    return;
+
+  MyMoneyFile::instance()->suspendNotify(true);
+  KMyMoneyAccountIconItem* p = dynamic_cast<KMyMoneyAccountIconItem*>(m_accountIcons->firstItem());
+  for(;p; p = dynamic_cast<KMyMoneyAccountIconItem*>(p->nextItem())) {
+    const MyMoneyAccount& acc = dynamic_cast<const MyMoneyAccount&>(p->itemObject());
+    if(acc.value("kmm-iconpos") != point(p->pos())) {
+      MyMoneyAccount a(acc);
+      a.setValue("kmm-iconpos", point(p->pos()));
+      try {
+        MyMoneyFile::instance()->modifyAccount(a);
+      } catch(MyMoneyException* e) {
+        kdDebug(2) << "Unable to update icon pos: " << e->what();
+        delete e;
+      }
+    }
+  }
+  MyMoneyFile::instance()->suspendNotify(false);
+}
+
 
 #include "kaccountsview.moc"

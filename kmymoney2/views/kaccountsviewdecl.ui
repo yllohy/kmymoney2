@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KAccountsViewDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -12,9 +12,6 @@
             <height>426</height>
         </rect>
     </property>
-    <property name="caption">
-        <string>Form1</string>
-    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -27,7 +24,7 @@
                 <string>Accounts</string>
             </property>
             <property name="rightImageFile">
-                <cstring>pics/titlelabel_background.png</cstring>
+                <string>pics/titlelabel_background.png</string>
             </property>
         </widget>
         <widget class="Line">
@@ -76,6 +73,28 @@
                 <attribute name="title">
                     <string>Icons</string>
                 </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="KIconView">
+                        <property name="name">
+                            <cstring>m_accountIcons</cstring>
+                        </property>
+                        <property name="arrangement">
+                            <enum>LeftToRight</enum>
+                        </property>
+                        <property name="maxItemTextLength">
+                            <number>30</number>
+                        </property>
+                        <property name="autoArrange">
+                            <bool>true</bool>
+                        </property>
+                        <property name="wordWrapIconText">
+                            <bool>false</bool>
+                        </property>
+                    </widget>
+                </vbox>
             </widget>
         </widget>
         <widget class="QLabel">
