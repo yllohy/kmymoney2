@@ -344,7 +344,7 @@ void kMyMoneyAccountSelector::setOptimizedWidth(void)
   m_listView->setColumnWidth(0, w+28);
 }
 
-const int kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask)
+const int kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMask,MyMoneyAccount::accountTypeE except)
 {
   QValueList<int> typeList;
 
@@ -372,6 +372,11 @@ const int kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMas
     typeList << MyMoneyAccount::Expense;
   }
 
+  if(except)
+  {
+    typeList.remove(except);
+  }
+  
   return loadList(typeList);
 }
 

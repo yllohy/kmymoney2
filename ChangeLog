@@ -1,3 +1,7 @@
+2006-01-27 Ace Jones <acejones@users.sourceforge.net>
+  * Disallow importing into a stock account.
+    Fixes #1395656
+
 2006-01-27 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Apply required field status/color to edit schedule dialog
 

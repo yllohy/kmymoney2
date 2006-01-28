@@ -40,6 +40,7 @@ class KPushButton;
 
 #include <kmymoney/kmymoneyutils.h>
 #include <kmymoney/mymoneyobserver.h>
+#include "../mymoney/mymoneyaccount.h"
 class kMyMoneyAccountCompletion;
 
 /**
@@ -168,9 +169,10 @@ public:
     *
     * @param typeMask bitmask defining which types of accounts
     *                 should be loaded into the widget
+    * @param except account to exclude
     * @return This method returns the number of accounts loaded into the list
     */
-  const int loadList(KMyMoneyUtils::categoryTypeE typeMask);
+  const int loadList(KMyMoneyUtils::categoryTypeE typeMask, MyMoneyAccount::accountTypeE except=MyMoneyAccount::UnknownAccountType);
 
   /**
     * This method loads the set of accounts into the widget

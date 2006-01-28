@@ -56,7 +56,9 @@ KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountT
   // Hide the abort button. It needs to be shown on request by the caller
   // using showAbortButton()
   m_kButtonAbort->hide();
-  m_accountSelector->loadList(accountType);
+
+  // Exclude stock accounts.  You can't import a statement into a stock account.
+  m_accountSelector->loadList(accountType,MyMoneyAccount::Stock);
 
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem skipButtonItem( i18n( "&Skip" ),
