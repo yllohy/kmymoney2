@@ -195,6 +195,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
         break;
       case MyMoneyAccount::Stock:
         m_institutionBox->hide();
+        m_onlineBankingBox->hide();
         typeCombo->setCurrentItem(8);
         break;
 /*
