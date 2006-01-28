@@ -63,6 +63,9 @@ KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedul
   initWidgets();
   calculateInterest();
 
+  if(m_schedule.id().isEmpty())
+    m_buttonOk->setEnabled(false);
+
   connect(m_splitButton, SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
   connect(m_buttonOk, SIGNAL(clicked()), this, SLOT(slotOK()));
   connect(m_from, SIGNAL(accountSelected(const QCString&)),
@@ -134,34 +137,39 @@ void KEnterScheduleDialog::initWidgets()
   {
     try
     {
-    MyMoneySplit amortizationSplit;
-    QValueList<MyMoneySplit>::ConstIterator it_s;
-    for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
-      if((*it_s).value() == MyMoneyMoney::autoCalc
-      && (*it_s).action() == MyMoneySplit::ActionAmortization) {
-        MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
-        switch(acc.accountType()) {
-          case MyMoneyAccount::Loan:
-            m_from->setEnabled(true);
-            m_to->setEnabled(false);
-            m_from->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-            loanAccount = m_from;
-            break;
+      MyMoneySplit amortizationSplit;
+      QValueList<MyMoneySplit>::ConstIterator it_s;
+      for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
+        if((*it_s).value() == MyMoneyMoney::autoCalc
+        && (*it_s).action() == MyMoneySplit::ActionAmortization) {
+          MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
+          switch(acc.accountType()) {
+            case MyMoneyAccount::Loan:
+              m_from->setEnabled(true);
+              m_to->setEnabled(false);
+              m_from->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+              loanAccount = m_from;
+              break;
 
-          case MyMoneyAccount::AssetLoan:
-            m_from->setEnabled(false);
-            m_to->setEnabled(true);
-            m_to->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-            loanAccount = m_to;
-            break;
+            case MyMoneyAccount::AssetLoan:
+              m_from->setEnabled(false);
+              m_to->setEnabled(true);
+              m_to->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+              loanAccount = m_to;
+              break;
 
-          default:
-            qFatal("invalid account type in %s:%d", __FILE__, __LINE__);
-            break;
+            default:
+              qFatal("invalid account type in %s:%d", __FILE__, __LINE__);
+              break;
+          }
+          break;
         }
-        break;
       }
-    }
+      if(loanAccount == 0) {
+        KMessageBox::detailedError(this, i18n("Unable to load schedule details"), i18n("The schedule %1 caused an internal problem. Please contact the developers via e-mail on kmymoney2-developer@lists.sourceforge.net for further instructions mentioning this problem.").arg(m_schedule.id()));
+        m_schedule = MyMoneySchedule();
+        return;
+      }
     }
     catch (MyMoneyException* e)
     {
@@ -361,6 +369,10 @@ bool KEnterScheduleDialog::checkData(void)
   QString messageDetail;
   int noItemsChanged=0;
   QString payeeName;
+
+  // if no schedule is present, we cannot enter it
+  if(m_schedule.id().isEmpty())
+    return false;
 
   if (m_fromAccountId == m_toAccountId)
   {
