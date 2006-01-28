@@ -246,7 +246,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
             // by date?? (ace)
             transactions += tx;
 
-            DEBUG_OUTPUT(QString("Added transaction for schedule %1 on %2").arg((*it_schedule).id()).arg(*it_date));
+            DEBUG_OUTPUT(QString("Added transaction for schedule %1 on %2").arg((*it_schedule).id()).arg((*it_date).toString()));
 
             ++it_date;
           }
