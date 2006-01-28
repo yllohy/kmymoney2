@@ -20,9 +20,6 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
-    <property name="caption">
-        <string>KBudgetViewDecl</string>
-    </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
@@ -115,9 +112,6 @@
                             </property>
                             <property name="text">
                                 <string>&amp;New Budget</string>
-                            </property>
-                            <property name="accel">
-                                <string>Alt+N</string>
                             </property>
                         </widget>
                         <spacer>
