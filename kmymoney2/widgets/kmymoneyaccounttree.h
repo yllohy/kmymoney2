@@ -140,7 +140,7 @@ protected slots:
   void slotSelectObject(QListViewItem *i);
 
   /**
-    * This slot is connected to the accout list view's rightButtonPressed signal
+    * This slot is connected to the accout list view's rightButtonClicked signal
     * and checks if the item pointed to by @p i is either an account or institution
     * and sends out the necessary signal openContextMenu.
     *

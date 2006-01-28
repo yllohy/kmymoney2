@@ -153,7 +153,7 @@ kMyMoneyPriceView::kMyMoneyPriceView(QWidget *parent, const char *name ) :
                         i18n("Delete ..."),
                         this, SLOT(slotDeletePrice()));
 
-  connect(m_priceHistory, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
+  connect(m_priceHistory, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
           this, SLOT(slotListClicked(QListViewItem*, const QPoint&, int)));
   connect(m_priceHistory, SIGNAL(selectionChanged(QListViewItem*)), this, SIGNAL(selectionChanged(QListViewItem*)));
 
