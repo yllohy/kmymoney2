@@ -40,7 +40,7 @@ class KPushButton;
 
 #include <kmymoney/kmymoneyutils.h>
 #include <kmymoney/mymoneyobserver.h>
-#include "../mymoney/mymoneyaccount.h"
+#include <kmymoney/mymoneyaccount.h>
 class kMyMoneyAccountCompletion;
 
 /**
