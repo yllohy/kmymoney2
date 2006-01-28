@@ -201,7 +201,4 @@
 <customwidgets>
 </customwidgets>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kdatetbl.h</includehint>
-</includehints>
 </UI>
