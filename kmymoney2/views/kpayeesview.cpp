@@ -153,11 +153,7 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   connect(emailEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeDataChanged()));
   connect(m_updateButton, SIGNAL(pressed()), this, SLOT(slotUpdatePayee()));
 
-  // somehow, the rightButtonClicked signal does not make it, we use
-  // rightButtonPressed instead to show the context menu
-  // connect(accountListView, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
-  //   this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
-  connect(m_payeesList, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
+  connect(m_payeesList, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotOpenContextMenu(QListViewItem*)));
 
   connect(m_transactionView, SIGNAL(doubleClicked(QListViewItem*)),
