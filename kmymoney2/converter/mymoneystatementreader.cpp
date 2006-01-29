@@ -313,7 +313,9 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         // this security does not exist in the file.
         else
         {
-
+          // This should be rare.  A statement should have a security entry for any
+          // of the securities referred to in the transactions.  The only way to get
+          // here is if that's NOT the case.
           KMessageBox::information(0, i18n("This investment account does not contain the \"%1\" security.  Transactions involving this security will be ignored.").arg(t_in.m_strSecurity),i18n("Security not found"),QString("MissingSecurity%1").arg(t_in.m_strSecurity.stripWhiteSpace()));
 
           return;
