@@ -171,7 +171,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   }
 
   m_requiredFields->add(m_scheduleName);
-  m_requiredFields->add(m_kmoneyeditAmount);
+  m_kmoneyeditAmount->setRequired(m_requiredFields);
 
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(m_qbuttonSplit, SIGNAL(clicked()), this, SLOT(slotSplitClicked()));

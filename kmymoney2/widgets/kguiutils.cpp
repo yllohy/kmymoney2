@@ -33,7 +33,6 @@
 
 #include "kguiutils.h"
 #include "../kmymoneysettings.h"
-#include "kmymoneyedit.h"
 
  /**************************************************************************
   *                                                                        *
@@ -58,12 +57,6 @@ void kMandatoryFieldGroup::add(QWidget *widget)
       connect((QLineEdit*)widget->qt_cast("QLineEdit"),
                SIGNAL(textChanged(const QString&)),
                this, SLOT(changed()));
-    else if (widget->isA("kMyMoneyEdit")) {
-      connect((kMyMoneyEdit*)widget,
-               SIGNAL(textChanged(const QString&)),
-               this, SLOT(changed()));
-      ((kMyMoneyEdit*)widget)->setPaletteBackgroundColor(KMyMoneySettings::requiredFieldColor());
-    }
     else {
       qWarning("MandatoryFieldGroup: unsupported class %s",
                widget->className());
@@ -122,14 +115,6 @@ void kMandatoryFieldGroup::changed()
     if (widget->inherits("QLineEdit")) {
       if (((QLineEdit*)widget->qt_cast("QLineEdit"))->text()
             .isEmpty()) {
-        enable = false;
-        break;
-            }
-            else
-              continue;
-    }
-    if (widget->isA("kMyMoneyEdit")) {
-      if (!((kMyMoneyEdit*)widget)->isValid()) {
         enable = false;
         break;
             }

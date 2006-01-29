@@ -36,6 +36,7 @@ class KPushButton;
 
 // ----------------------------------------------------------------------------
 // Project Includes
+#include "../widgets/kguiutils.h"
 
 class MyMoneyMoney;
 class kMyMoneyCalculator;
@@ -202,13 +203,20 @@ public:
   const bool isCalculatorButtonVisible(void) const;
 
   /**
-   * This method sets the field background colour when it is
-   * a required field
+   * This method applies the mandatory field setting to this widget
    *
-   * @param c colour to be set
+   * @param group mandatory field group
    */
 
-  void setPaletteBackgroundColor(QColor c) { m_edit->setPaletteBackgroundColor(c); }
+  void setRequired (kMandatoryFieldGroup *group) { group->add(m_edit); }
+
+  /**
+   * This method removes the mandatory field setting from this widget
+   *
+   * @param group mandatory field group
+   */
+
+  void setOptional (kMandatoryFieldGroup *group) { group->remove(m_edit); }
 
 public slots:
   void loadText(const QString& text);
