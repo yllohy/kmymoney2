@@ -1,3 +1,6 @@
+2006-01-29 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * A tidier implementation of mandatory fields
+
 2006-01-28 Ace Jones <acejones@users.sourceforge.net>
   * Automatically create securities and stock accounts for securities
     found in an OFX file.  Removes the requirement that the security
