@@ -87,7 +87,21 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
 
     e.appendChild(p);
 
-    ++it_t;
+    ++it_p;
+  }
+
+  // iterate over securities, and add each one
+  QValueList<Security>::const_iterator it_s = m_listSecurities.begin();
+  while ( it_s != m_listSecurities.end() )
+  {
+    QDomElement p = _doc->createElement("SECURITY");
+    p.setAttribute("name", (*it_s).m_strName);
+    p.setAttribute("symbol", (*it_s).m_strSymbol);
+    p.setAttribute("id", (*it_s).m_strId);
+
+    e.appendChild(p);
+
+    ++it_s;
   }
 
 }
@@ -137,7 +151,6 @@ bool MyMoneyStatement::read(const QDomElement& _e)
         }
 
         m_listTransactions += t;
-        child = child.nextSibling();
       }
       else if ( c.tagName() == "PRICE" )
       {
@@ -148,8 +161,18 @@ bool MyMoneyStatement::read(const QDomElement& _e)
         p.m_moneyAmount = c.attribute("amount").toDouble();
 
         m_listPrices += p;
-        child = child.nextSibling();
       }
+      else if ( c.tagName() == "SECURITY" )
+      {
+        MyMoneyStatement::Security s;
+
+        s.m_strName = c.attribute("name");
+        s.m_strSymbol = c.attribute("symbol");
+        s.m_strId = c.attribute("id");
+
+        m_listSecurities += s;
+      }
+      child = child.nextSibling();
     }
   }
 
@@ -236,3 +259,4 @@ bool MyMoneyStatement::readXMLFile( MyMoneyStatement& _s, const QString& _filena
 
   return result;
 }
+// vim:cin:si:ai:et:ts=2:sw=2:

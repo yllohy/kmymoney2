@@ -85,6 +85,7 @@ bool OfxImporterPlugin::import( const QString& filename, QValueList<MyMoneyState
   m_valid = false;
   
   m_statementlist.clear();
+  m_securitylist.clear();
   
   QCString filename_deep( filename.utf8() );
 
@@ -94,6 +95,7 @@ bool OfxImporterPlugin::import( const QString& filename, QValueList<MyMoneyState
   ofx_set_transaction_cb(ctx, ofxTransactionCallback, this);
   ofx_set_statement_cb(ctx, ofxStatementCallback, this);
   ofx_set_account_cb(ctx, ofxAccountCallback, this);
+  ofx_set_security_cb(ctx, ofxSecurityCallback, this);
   ofx_set_status_cb(ctx, ofxStatusCallback, this);
   libofx_proc_file(ctx, filename_deep, AUTODETECT);
   libofx_free_context(ctx);
@@ -410,8 +412,33 @@ int OfxImporterPlugin::ofxAccountCallback(struct OfxAccountData data, void * pv)
     }
   }
 
+  // copy over the securities
+  s.m_listSecurities = pofx->m_securitylist;
+  
 //   kdDebug(2) << __func__ << " return 0" << endl;
   
+  return 0;
+}
+
+int OfxImporterPlugin::ofxSecurityCallback(struct OfxSecurityData data, void* pv)
+{
+  //   kdDebug(2) << __func__ << endl;
+
+  OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
+  MyMoneyStatement::Security sec;
+
+  if(data.unique_id_valid==true){
+    sec.m_strId = data.unique_id;
+  }
+  if(data.secname_valid==true){
+    sec.m_strName = data.secname;
+  }
+  if(data.ticker_valid==true){
+    sec.m_strSymbol = data.ticker;
+  }
+
+  pofx->m_securitylist += sec;
+
   return 0;
 }
 
@@ -460,3 +487,4 @@ int OfxImporterPlugin::ofxStatusCallback(struct OfxStatusData data, void * pv)
 }
 
 #include "ofximporterplugin.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:

@@ -71,6 +71,13 @@ struct MyMoneyStatement
     QString m_strSecurity;
     double m_moneyAmount;
   };
+
+  struct Security
+  {
+    QString m_strName;
+    QString m_strSymbol;
+    QString m_strId;
+  };
   
   QString m_strAccountName;
   QString m_strAccountNumber;
@@ -82,6 +89,7 @@ struct MyMoneyStatement
   
   QValueList<Transaction> m_listTransactions;
   QValueList<Price> m_listPrices;
+  QValueList<Security> m_listSecurities;
   
   void write(QDomElement&,QDomDocument*) const;
   bool read(const QDomElement&);
@@ -92,3 +100,4 @@ struct MyMoneyStatement
 };
 
 #endif
+// vim:cin:si:ai:et:ts=2:sw=2:

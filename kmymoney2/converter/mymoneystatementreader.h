@@ -108,11 +108,8 @@ private:
     */
   void signalProgress(int current, int total, const QString& = "");
   
-  /**
-    * This method scans the m_qifEntry object as a transaction record specified
-    * by Quicken.
-    */
   void processTransactionEntry(const MyMoneyStatement::Transaction&);
+  void processSecurityEntry(const MyMoneyStatement::Security&);
 
   enum SelectCreateMode {
     Create = 0,

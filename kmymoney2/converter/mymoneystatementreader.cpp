@@ -111,6 +111,19 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
   signalProgress(0, s.m_listTransactions.count(), "Importing Statement ...");
 
   //
+  // Process the securities
+  // 
+  if ( s.m_eType == MyMoneyStatement::etInvestment )
+  {
+    QValueList<MyMoneyStatement::Security>::const_iterator it_s = s.m_listSecurities.begin();
+    while ( it_s != s.m_listSecurities.end() )
+    {
+      processSecurityEntry(*it_s);
+      ++it_s;
+    }
+  }
+  
+  //
   // Process the transactions
   //
 
@@ -149,6 +162,41 @@ const bool MyMoneyStatementReader::finishImport(void)
   rc = !m_userAbort;
 
   return rc;
+}
+
+void MyMoneyStatementReader::processSecurityEntry(const MyMoneyStatement::Security& sec_in)
+{
+  // For a security entry, we will just make sure the security exists in the
+  // file. It will not get added to the investment account until it's called
+  // for in a transaction.
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  // check if we already have the security
+  // In a statement, we do not know what type of security this is, so we will
+  // not use type as a matching factor.
+  MyMoneySecurity security;
+  QValueList<MyMoneySecurity> list = file->securityList();
+  QValueList<MyMoneySecurity>::ConstIterator it = list.begin();
+  while ( it != list.end() && security.id().isEmpty() )
+  {
+    if((*it).tradingSymbol() == sec_in.m_strSymbol) 
+      security = *it;
+    ++it;
+  }
+      
+  // if the security was not found, we have to create it while not forgetting
+  // to setup the type
+  if(security.id().isEmpty()) 
+  {
+    security.setName(sec_in.m_strName);
+    security.setTradingSymbol(sec_in.m_strSymbol);
+    security.setSmallestAccountFraction(1000);
+    security.setTradingCurrency(file->baseCurrency().id());
+    security.setValue("kmm-security-id", sec_in.m_strId);
+    security.setValue("kmm-online-source", "Yahoo");
+    security.setSecurityType(MyMoneySecurity::SECURITY_STOCK);
+    file->addSecurity(security);
+  }
 }
 
 void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Transaction& t_in)
@@ -211,7 +259,6 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
           (t_in.m_strSecurity == nametoken)
         )
         {
-          s1.setAccountId(*it_account);
           thisaccount = file->account(*it_account);
           found = true;
 
@@ -229,16 +276,52 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         ++it_account;
       }
 
+      // If there was no stock account under the m_acccount investment account,
+      // add one using the security.
       if (!found)
       {
-        KMessageBox::information(0, i18n("This investment account does not contain the \"%1\" security.  "
-                                          "Transactions involving this security will be ignored.").arg(t_in.m_strSecurity),
-                                    i18n("Security not found"),
-                                    QString("MissingSecurity%1").arg(t_in.m_strSecurity.stripWhiteSpace()));
-        return;
+        // The security should always be available, because the statement file
+        // should separately list all the securities referred to in the file,
+        // and when we found a security, we added it to the file.
+       
+        MyMoneySecurity security;
+        QValueList<MyMoneySecurity> list = MyMoneyFile::instance()->securityList();
+        QValueList<MyMoneySecurity>::ConstIterator it = list.begin();
+        while ( it != list.end() && security.id().isEmpty() )
+        {
+          QString symboltoken = (*it).tradingSymbol() + " ";
+          QString nametoken = " " + (*it).name();
+          if (
+            t_in.m_strSecurity.startsWith(symboltoken,false)
+            ||
+            (t_in.m_strSecurity == nametoken)
+          )
+            security = *it;
+          ++it;
+        }
+      
+        if(!security.id().isEmpty()) 
+        {
+          thisaccount = MyMoneyAccount();
+          thisaccount.setName(security.name());
+          thisaccount.setAccountType(MyMoneyAccount::Stock);
+          thisaccount.setCurrencyId(security.id());
+
+          file->addAccount(thisaccount, m_account);
+          kdDebug(2) << __func__ << ": created account " << thisaccount.id() << " for security " << t_in.m_strSecurity << " under account " << m_account.id() << endl;
+        }
+        // this security does not exist in the file.
+        else
+        {
+
+          KMessageBox::information(0, i18n("This investment account does not contain the \"%1\" security.  Transactions involving this security will be ignored.").arg(t_in.m_strSecurity),i18n("Security not found"),QString("MissingSecurity%1").arg(t_in.m_strSecurity.stripWhiteSpace()));
+
+          return;
+        }
       }
     }
 
+    s1.setAccountId(thisaccount.id());
     if (t_in.m_eAction==MyMoneyStatement::Transaction::eaReinvestDividend)
     {
       s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
@@ -511,7 +594,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       file->addTransaction(t);
     }
   } catch (MyMoneyException *e) {
-    QString message(i18n("Problem adding imported transaction: "));
+    QString message(i18n("Problem adding imported transaction #%1: ").arg(t.bankID()));
     message += e->what();
 
     int result = KMessageBox::warningContinueCancel(0, message);
@@ -701,3 +784,4 @@ const QCString MyMoneyStatementReader::findOrCreateExpenseAccount(const QString&
 }
 
 #include "mymoneystatementreader.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:

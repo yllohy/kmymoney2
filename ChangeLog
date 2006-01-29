@@ -1,3 +1,8 @@
+2006-01-28 Ace Jones <acejones@users.sourceforge.net>
+  * Automatically create securities and stock accounts for securities
+    found in an OFX file.  Removes the requirement that the security
+    already be present in your file before importing.
+
 2006-01-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a translation error in the German version (thanks to Karin Capey
     for reporting)

@@ -111,10 +111,12 @@ protected:
     static int ofxStatementCallback( struct OfxStatementData, void* );
     static int ofxAccountCallback( struct OfxAccountData, void* );
     static int ofxStatusCallback( struct OfxStatusData, void* );
+    static int ofxSecurityCallback( struct OfxSecurityData, void* );
 
 private:
   bool m_valid;
   QValueList<MyMoneyStatement> m_statementlist;
+  QValueList<MyMoneyStatement::Security> m_securitylist;
   QString m_fatalerror;
   QStringList m_infos;
   QStringList m_warnings;
