@@ -189,6 +189,30 @@ void KInstitutionsView::loadAccounts(void)
   ::timetrace("done load institutions view");
 }
 
+void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent)
+{
+  const MyMoneyAccount& account = dynamic_cast<const MyMoneyAccount&>(parent->itemObject());
+  QValueList<QCString>::const_iterator it_a;
+  MyMoneyFile* file = MyMoneyFile::instance();
+  for(it_a = account.accountList().begin(); it_a != account.accountList().end(); ++it_a) {
+    MyMoneyAccount acc = m_accountMap[(*it_a)];
+    if(acc.accountType() != MyMoneyAccount::Stock)
+      continue;
+
+    const MyMoneySecurity& security = m_securityMap[acc.currencyId()];
+    QValueList<MyMoneyPrice> prices;
+    prices += file->price(acc.currencyId(), security.tradingCurrency());
+    if(security.tradingCurrency() != file->baseCurrency().id()) {
+      MyMoneySecurity sec = m_securityMap[security.tradingCurrency()];
+      prices += file->price(sec.id(), file->baseCurrency().id());
+    }
+
+    KMyMoneyAccountTreeItem* item = new KMyMoneyAccountTreeItem(parent, acc, prices, security);
+
+  }
+
+}
+
 void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCString& institutionId)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -205,22 +229,14 @@ void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const Q
         // tricky fall through here
 
       case MyMoneyAccount::Asset:
-        if(acc.institutionId() == institutionId) {
+        if(acc.institutionId() == institutionId
+        && acc.accountType() != MyMoneyAccount::Stock) {
           QValueList<MyMoneyPrice> prices;
           MyMoneySecurity security = file->baseCurrency();
           try {
-            if(acc.accountType() == MyMoneyAccount::Stock) {
+            if(acc.currencyId() != file->baseCurrency().id()) {
               security = m_securityMap[acc.currencyId()];
-              prices += file->price(acc.currencyId(), security.tradingCurrency());
-              if(security.tradingCurrency() != file->baseCurrency().id()) {
-                MyMoneySecurity sec = m_securityMap[security.tradingCurrency()];
-                prices += file->price(sec.id(), file->baseCurrency().id());
-              }
-            } else if(acc.currencyId() != file->baseCurrency().id()) {
-              if(acc.currencyId() != file->baseCurrency().id()) {
-                security = m_securityMap[acc.currencyId()];
-                prices += file->price(acc.currencyId(), file->baseCurrency().id());
-              }
+              prices += file->price(acc.currencyId(), file->baseCurrency().id());
             }
 
           } catch(MyMoneyException *e) {
@@ -229,6 +245,8 @@ void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const Q
           }
 
           KMyMoneyAccountTreeItem* item = new KMyMoneyAccountTreeItem(parent, acc, prices, security);
+          if(acc.accountType() == MyMoneyAccount::Investment)
+            loadSubAccounts(item);
           value += (item->totalValue() * factor);
         }
         break;

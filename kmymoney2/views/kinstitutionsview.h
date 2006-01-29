@@ -59,7 +59,12 @@ public slots:
 
 protected:
   void loadAccounts(void);
+
+  // load accounts that are kept at a specific institution
   void loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCString& institutionId);
+
+  // load stock accounts under the investment account (parent)
+  void loadSubAccounts(KMyMoneyAccountTreeItem* parent);
 
 protected slots:
   void slotUpdateNetWorth(void);
