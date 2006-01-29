@@ -966,7 +966,7 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate&
   MyMoneyMoney result(0);
   MyMoneyAccount acc;
 
-  if(!date.isValid()) {
+  if(!date.isValid() && account(id).accountType() != MyMoneyAccount::Stock) {
     if(m_accountList.find(id) != m_accountList.end())
       return m_accountList[id].balance();
     return MyMoneyMoney(0);
@@ -1018,6 +1018,7 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate&
     result = m_balanceCache[id].balance;
   else
     qDebug("Cache mishit should never happen at this point");
+
   return result;
 }
 
@@ -1904,3 +1905,4 @@ bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj) const
   }
   return rc;
 }
+// vim:cin:si:ai:et:ts=2:sw=2:
