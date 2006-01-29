@@ -19,3 +19,4 @@ kmymoneytest
 *.all_cpp.cpp
 kmymoneysettings.h
 kmymoneysettings.cpp
+*.swp
