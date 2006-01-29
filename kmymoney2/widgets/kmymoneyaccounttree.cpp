@@ -477,6 +477,7 @@ const MyMoneyObject& KMyMoneyAccountTreeItem::itemObject(void) const
 KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const QString& txt) :
   KListViewItem(parent),
   m_displayFactor(MyMoneyMoney(1)),
+  m_totalValue(MyMoneyMoney(0)),
   m_type(Text)
 {
   setText(0, txt);
@@ -486,6 +487,7 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMone
   KListViewItem(parent),
   m_displayFactor(MyMoneyMoney(1)),
   m_institution(institution),
+  m_totalValue(MyMoneyMoney(0)),
   m_type(Institution)
 {
   setText(0, institution.name());
@@ -497,6 +499,7 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMone
   m_security(security),
   m_displayFactor(MyMoneyMoney(1)),
   m_account(account),
+  m_totalValue(MyMoneyMoney(0)),
   m_type(Account)
 {
   MyMoneyAccount acc(account);
@@ -511,6 +514,7 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent
   m_security(security),
   m_displayFactor(MyMoneyMoney(1)),
   m_account(account),
+  m_totalValue(MyMoneyMoney(0)),
   m_type(Account)
 {
   updateAccount(account, true);
@@ -651,7 +655,7 @@ void KMyMoneyAccountTreeItem::adjustTotalValue(const MyMoneyMoney& diff)
   m_totalValue += diff;
 
   // if the entry has no children, or it is currently not open
-  // we need ot display the value of it
+  // we need to display the value of it
   if(!firstChild() || (!isOpen() && firstChild())) {
     if(firstChild())
       setText(KMyMoneyAccountTree::BalanceColumn, " ");
