@@ -182,9 +182,6 @@
                     <property name="text">
                         <string>&amp;New</string>
                     </property>
-                    <property name="accel">
-                        <string>Alt+N</string>
-                    </property>
                 </widget>
                 <widget class="KPushButton">
                     <property name="name">
@@ -192,9 +189,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;Delete</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+D</string>
                     </property>
                 </widget>
                 <spacer>
@@ -220,9 +214,6 @@
                     </property>
                     <property name="text">
                         <string>&amp;Update</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+U</string>
                     </property>
                 </widget>
             </hbox>
