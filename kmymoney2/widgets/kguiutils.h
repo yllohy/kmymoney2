@@ -20,8 +20,10 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qobject.h>
 #include <qvaluelist.h>
+class QWidget;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -33,11 +35,9 @@
 // Project Includes
 
 /**
- * @author Tony Bloomfield
- */ 
+  * @author Tony Bloomfield
+  */
 
-class QPushButton;
-class QWidget;
 
 
 class kMandatoryFieldGroup : public QObject
@@ -61,7 +61,7 @@ class kMandatoryFieldGroup : public QObject
      */
     void remove(QWidget *widget);
     /**
-     * This method designates the button to be enabled when all mandatory fields 
+     * This method designates the button to be enabled when all mandatory fields
      * have been completed
      *
      * @param button pointer to the 'ok' button

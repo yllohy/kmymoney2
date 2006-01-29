@@ -36,11 +36,11 @@ class KPushButton;
 
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "../widgets/kguiutils.h"
 
+#include <kmymoney/kguiutils.h>
+#include <kmymoney/mymoneysecurity.h>
 class MyMoneyMoney;
 class kMyMoneyCalculator;
-#include <kmymoney/mymoneysecurity.h>
 
 #if KDE_VERSION <= KDE_MAKE_VERSION(3,1,0)
   #define KDoubleValidator QDoubleValidator
