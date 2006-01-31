@@ -1,3 +1,8 @@
+2006-01-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed build system to keep po/*.gmo files from being included
+    in the distributioin tar-ball
+  * Include fixuifiles in distribution
+
 2006-01-31 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Experimental - add field descriptor to ledger view
 
