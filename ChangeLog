@@ -2,6 +2,9 @@
   * Fixed build system to keep po/*.gmo files from being included
     in the distributioin tar-ball
   * Include fixuifiles in distribution
+  * Do not recurse into subdirectories that are not part of the
+    project distribution
+  * Updated experimental field descriptor
 
 2006-01-31 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Experimental - add field descriptor to ledger view

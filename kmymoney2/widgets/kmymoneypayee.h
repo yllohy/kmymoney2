@@ -58,10 +58,12 @@ public:
     * the one passed using loadText().
     */
   void resetText(void);
+
   /**
-    * This method is used to turn on the hint display
+    * This method is used to turn on/off the hint display
     */
-  void displayHint();
+  void setHint(const QString& hint) { m_hint = hint; };
+
 public slots:
   /**
     * This slot is used to load the local text copy and the widget with
@@ -91,25 +93,20 @@ protected:
   void focusOutEvent(QFocusEvent *ev);
   virtual void keyPressEvent( QKeyEvent * );
 
+  /** reimplemented */
+  void drawContents( QPainter *);
+
 private:
-  /**
-    * This function turns the hint display on or off
-    * @param setOn true to turn display on, false to turn off
-  */
-  void showHint(bool setOn);
   /**
     * This member keeps the initial value. It is used during
     * resetText() to set the widgets text back to this initial value
     */
   QString m_text;
+
   /**
-    * This member tells us whether to display the hint text or not
-  */
-  bool m_displayHint;
-  /**
-    * This member tells us whether the hint is currently displayed or not
-  */
-  bool m_hintDisplayed;
+    * This member tells what to display as hint as long as the field is empty
+    */
+  QString m_hint;
 };
 
 #endif

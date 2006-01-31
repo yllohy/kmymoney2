@@ -1379,7 +1379,7 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInRegister(void)
   if(m_editSplit) {
     delete m_editSplit;
   }
-  m_editPayee->displayHint();
+  m_editPayee->setHint(i18n("Payee"));
   return focusWidget;
 }
 
