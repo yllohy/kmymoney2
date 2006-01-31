@@ -629,8 +629,9 @@ if test -f Makefile.am.in; then
   rm -f $makefile_wo
 fi
 
-# Suck in the AUTOCONF detection code
-. $admindir/detect-autoconf.sh
+# Call script to find autoconf and freinds. Uses eval since the script outputs
+# sh-compatible code.
+eval `$admindir/detect-autoconf.pl`
 
 ###
 ### Main

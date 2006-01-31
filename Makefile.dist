@@ -26,6 +26,7 @@ all:
 	   exit 1; \
 	fi
 
+	export UNSERMAKE=no
 	$(MAKE) -f admin/Makefile.common cvs
 
 .SILENT:

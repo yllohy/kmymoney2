@@ -43,5 +43,5 @@ merge-messages: check-vpath-environment
 	$(MAKE) -C $(top_srcdir)/po merge
 
 # The following line adds the required admin files
-EXTRA_DIST += admin/Makefile.common admin/cvs.sh admin/detect-autoconf.sh admin/acinclude.m4.in admin/conf.change.pl admin/config.pl admin/libtool.m4.in admin/configure.in.min admin/configure.in.bot.end admin/am_edit admin/debianrules admin/fixuifiles
+EXTRA_DIST += admin/Makefile.common admin/cvs.sh admin/detect-autoconf.pl admin/acinclude.m4.in admin/conf.change.pl admin/config.pl admin/libtool.m4.in admin/configure.in.min admin/configure.in.bot.end admin/am_edit admin/debianrules admin/fixuifiles
 

@@ -5,6 +5,7 @@
   * Do not recurse into subdirectories that are not part of the
     project distribution
   * Updated experimental field descriptor
+  * Updated tool detection logic to the latest version from the KDE repository
 
 2006-01-31 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Experimental - add field descriptor to ledger view
