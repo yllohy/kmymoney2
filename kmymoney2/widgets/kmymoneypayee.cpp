@@ -27,6 +27,7 @@
 // KDE Includes
 
 #include "kdecompat.h"
+#include "klocale.h"
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -53,7 +54,7 @@ kMyMoneyPayee::kMyMoneyPayee(QWidget *parent, const char *name )
   // fake that with every key entered. see also
   // code in keyPressEvent()
   setKeyBinding(SubstringCompletion, KShortcut("Ctrl+T"));
-
+  m_displayHint = false;
   // if used from within Qt Designer library loadList() will fail
   // but we don't care.
   try {
@@ -104,15 +105,17 @@ void kMyMoneyPayee::focusOutEvent(QFocusEvent *ev)
   if(!text().isEmpty() && compObj()->items().contains(text()) == 0)
     emit newPayee(text());
 
-  if(text() != m_text) {
+  if((text() != m_text) && !m_hintDisplayed) {
     emit payeeChanged(text());
   }
+  showHint(true);
   KLineEdit::focusOutEvent(ev);
 }
 
 void kMyMoneyPayee::keyPressEvent( QKeyEvent * ev)
 {
   KLineEdit::keyPressEvent(ev);
+  showHint(false);
   if(ev->isAccepted()) {
     // if the key was accepted by KLineEdit, we fake a substring completion
     // which we set previously to Ctrl+T.
@@ -121,4 +124,29 @@ void kMyMoneyPayee::keyPressEvent( QKeyEvent * ev)
   }
 }
 
+void kMyMoneyPayee::displayHint() {
+  m_displayHint = true;
+  m_hintDisplayed = false;
+  showHint(true);
+}
+
+void kMyMoneyPayee::showHint(bool setOn) {
+  if (setOn) {
+    if (m_displayHint && !m_hintDisplayed && text().isEmpty()) {
+      QFont f = font();
+      f.setItalic(true);
+      setFont(f);
+      setText(i18n("Payee"));
+      m_hintDisplayed = true;
+    }
+  } else {
+    if (m_hintDisplayed) {
+      QFont f = font();
+      f.setItalic(false);
+      setFont(f);
+      clear();
+      m_hintDisplayed = false;
+    }
+  }
+}
 #include "kmymoneypayee.moc"
