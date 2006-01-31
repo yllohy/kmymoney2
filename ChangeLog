@@ -1,3 +1,6 @@
+2006-01-31 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Experimental - add field descriptor to ledger view
+
 2006-01-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show stock accounts as children of corresponding investment account
     in institutions view
