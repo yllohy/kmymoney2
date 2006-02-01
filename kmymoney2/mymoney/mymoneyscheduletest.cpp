@@ -267,7 +267,7 @@ void MyMoneyScheduleTest::testOverdue()
 	QDomDocument doc;
 	QDomElement node;
 
-	std::cout << ref_intime << std::endl;
+	// std::cout << ref_intime << std::endl;
 	try {
 		doc.setContent(ref_overdue);
 		node = doc.documentElement().firstChild().toElement();
