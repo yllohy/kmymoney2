@@ -52,6 +52,7 @@ static KCmdLineOptions options[] =
 {
   { "lang <lang-code>", I18N_NOOP("language to be used"), 0 },
   { "n", I18N_NOOP("don't open last used file"), 0},
+  { "notimers", I18N_NOOP("suppress performance timers"), 0},
 
 #if KMM_DEBUG
   // The following options are only available when compiled in debug mode
@@ -65,6 +66,7 @@ static KCmdLineOptions options[] =
 };
 
 QTime timer;
+bool timers_enabled;
 
 KMyMoney2App* kmymoney2;
 
@@ -83,7 +85,7 @@ int main(int argc, char *argv[])
 
   KAboutData aboutData( "kmymoney2", I18N_NOOP("KMyMoney"),
     VERSION, description, KAboutData::License_GPL,
-    "(c) 2000-2005 The KMyMoney development team", feature,
+    "(c) 2000-2006 The KMyMoney development team", feature,
     "http://kmymoney2.sourceforge.net/",
     "kmymoney2-developer@lists.sourceforge.net");
 
@@ -147,6 +149,8 @@ int main(int argc, char *argv[])
     MyMoneyTracer::on();
 #endif
 
+  timers_enabled = args->isSet("timers");
+	  
   kmymoney2 = 0;
   kmymoney2 = new KMyMoney2App();
   a->setMainWidget( kmymoney2 );
@@ -260,7 +264,10 @@ int main(int argc, char *argv[])
 
 void timetrace(char *txt)
 {
-  qDebug("Timer(%s): %d elapsed", txt, timer.elapsed());
-  timer.restart();
+  if ( timers_enabled )
+  {
+    qDebug("Timer(%s): %d elapsed", txt, timer.elapsed());
+    timer.restart();
+  }
 }
-
+// vim:cin:si:ai:et:ts=2:sw=2:

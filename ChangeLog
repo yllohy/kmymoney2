@@ -1,3 +1,6 @@
+2006-01-31 Ace Jones <acejones@users.sourceforge.net>
+  * Added a --notimers option to get rid of my nemesis, the Timer messages.
+
 2006-01-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed build system to keep po/*.gmo files from being included
     in the distributioin tar-ball
