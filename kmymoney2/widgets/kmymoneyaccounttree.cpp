@@ -199,7 +199,7 @@ bool KMyMoneyAccountTree::acceptDrag(QDropEvent* event) const
     if(!from->isAccount())
       from = 0;
 
-    if(to && from) {
+    if(to && from && !to->isChildOf(from)) {
       const MyMoneyAccount& accFrom = dynamic_cast<const MyMoneyAccount&>(from->itemObject());
 
       if(to->isAccount() && m_accountConnections) {
@@ -529,6 +529,15 @@ const QCString& KMyMoneyAccountTreeItem::id(void) const
   if(m_type == Institution)
     return m_institution.id();
   return m_account.id();
+}
+
+bool KMyMoneyAccountTreeItem::isChildOf(const QListViewItem* const item) const
+{
+  QListViewItem *p = parent();
+  while(p && p != item) {
+    p = p->parent();
+  }
+  return (p != 0);
 }
 
 void KMyMoneyAccountTreeItem::updatePrice(const MyMoneyPrice& price)

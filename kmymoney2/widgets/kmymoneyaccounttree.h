@@ -383,6 +383,18 @@ public:
     */
   void adjustTotalValue(const MyMoneyMoney& diff);
 
+  /**
+    * Checks whether this object is a child of the one passed
+    * by @p item.
+    *
+    * @param item pointer to other KMyMoneyAccountTreeItem that
+    *        should be checked for parent/grand-parenthood of this
+    *        object
+    * @retval true @p this object is a decendant of @p item
+    * @retval false @p this object is no decendant of @p item
+    */
+  bool isChildOf(const QListViewItem* const item) const;
+
 private:
   MyMoneyMoney                      m_balance;
   MyMoneyMoney                      m_value;
