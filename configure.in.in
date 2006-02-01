@@ -94,15 +94,18 @@ rm -rf kmymoney
 mkdir kmymoney
 
 echo Generating symlinks to header files
-CURDIR=`pwd`
-MFILES=$(find $CURDIR/$srcdir -name Makefile.am);
-for mfile in $MFILES; do
-  DIR=$(dirname $mfile)
-  pushd $DIR > /dev/null
-  CD=`pwd`
-  popd > /dev/null
-  if test "$srcdir" == "." -o ${CD:0:${#CURDIR}} != $CURDIR; then
-    HFILES=$(grep -v noinst_HEADERS $mfile | grep _HEADERS)
+CURDIR=
+if test "x${srcdir:0:1}" != "x/"; then
+  CURDIR=`pwd`/
+fi
+BASEDIR=$CURDIR$srcdir
+
+
+while read a; do
+  MFILES=$(find $BASEDIR/$a -name Makefile.am);
+  for MFILE in $MFILES; do
+    DIR=$(dirname $MFILE)
+    HFILES=$(grep -v noinst_HEADERS $MFILE | grep _HEADERS)
     for HFILE in $HFILES; do
       case $HFILE in
         =|*_HEADERS)
@@ -112,6 +115,6 @@ for mfile in $MFILES; do
           ;;
       esac
     done
-  fi
-done
+  done
+done < $srcdir/inst-apps
 
