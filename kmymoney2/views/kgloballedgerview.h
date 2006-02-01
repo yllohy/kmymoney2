@@ -138,7 +138,7 @@ public slots:
     * @retval false selection of account failed
     */
   const bool slotSelectAccount(const QCString& accountId, const QCString& transactionId = QCString(), const bool reconciliation = false);
-  
+
 protected:
   /**
     * This method reloads the account selection combo box of the
@@ -148,7 +148,14 @@ protected:
     * the first account found in the list will be made the current account.
     */
   void loadAccounts(void);
-  
+
+  /**
+    * This method connects the common signals that are needed for all views
+    *
+    * @param view pointer to view to be connected
+    */
+  void setupConnections(KLedgerView* view);
+
 private:
   kMyMoneyAccountCombo* m_accountComboBox;
 
@@ -167,7 +174,7 @@ private:
   QWidgetStack* m_accountStack;
   KLedgerView* m_currentView;
   KToolBar* m_toolbar;
-  
+
 signals:
   /**
     * This signal is emitted whenever this view is activated.
@@ -192,8 +199,8 @@ signals:
 
   /**
     * This signal is emitted, when a new report has been generated.  A
-    * 'generated' report is halfway between a default report and a custom 
-    * report.  It's created by the system in response to the user's 
+    * 'generated' report is halfway between a default report and a custom
+    * report.  It's created by the system in response to the user's
     * request, and it's usually filtered to be a little more specific
     * than the usual default reports.
     *
@@ -201,10 +208,10 @@ signals:
     * reports view and display the report.  But it should NOT be added
     * to the data file, unless the user customizes it further.  That's
     * because the user can always come back to the ledger UI to generate
-    * the report again. 
+    * the report again.
     *
     * @param report reference to MyMoneyReport object that contains the report
-    * 		details 
+    *     details
     */
 
   void reportGenerated(const MyMoneyReport& report);

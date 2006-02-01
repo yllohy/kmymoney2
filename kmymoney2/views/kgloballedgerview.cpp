@@ -98,79 +98,32 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   // Checkings account
   view = m_specificView[MyMoneyAccount::Checkings] = new KLedgerViewCheckings(this, "CheckingsView");
   m_accountStack->addWidget(view, MyMoneyAccount::Checkings);
-  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
-    this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
-  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
-    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(view, SIGNAL(newCategory(MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&)));
-  connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
-    SIGNAL(reportGenerated(const MyMoneyReport&)));
 
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Savings account
   view = m_specificView[MyMoneyAccount::Savings] = new KLedgerViewSavings(this, "SavingsView");
   m_accountStack->addWidget(view, MyMoneyAccount::Savings);
-  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
-    this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
-  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
-    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
-    SIGNAL(reportGenerated(const MyMoneyReport&)));
-  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Credit card account
   view = m_specificView[MyMoneyAccount::CreditCard] = new KLedgerViewCreditCard(this, "CreditCardView");
   m_accountStack->addWidget(view, MyMoneyAccount::CreditCard);
-  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
-    this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
-  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
-    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
-    SIGNAL(reportGenerated(const MyMoneyReport&)));
-  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Cash account
   view = m_specificView[MyMoneyAccount::Cash] = new KLedgerViewCash(this, "CashView");
   m_accountStack->addWidget(view, MyMoneyAccount::Cash);
-  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
-    this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
-  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
-    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
-    SIGNAL(reportGenerated(const MyMoneyReport&)));
-  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Asset account
   view = m_specificView[MyMoneyAccount::Asset] = new KLedgerViewAsset(this, "AssetView");
   m_accountStack->addWidget(view, MyMoneyAccount::Asset);
-  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
-    this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
-  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
-    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
-    SIGNAL(reportGenerated(const MyMoneyReport&)));
-  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Loan account
   view = m_specificView[MyMoneyAccount::Loan] = m_specificView[MyMoneyAccount::AssetLoan] = new KLedgerViewLoan(this, "LoanView");
   m_accountStack->addWidget(view, MyMoneyAccount::Loan);
-  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
-    this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
-  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
-    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
   // Liability account
   view = m_specificView[MyMoneyAccount::Liability] = new KLedgerViewLiability(this, "LiabilityView");
   m_accountStack->addWidget(view, MyMoneyAccount::Liability);
-  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
-    this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
-  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
-    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
-    SIGNAL(reportGenerated(const MyMoneyReport&)));
-  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 
 #if 0
   // FIXME: I removed the below code to enable switching to the investment view
@@ -188,6 +141,11 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
     SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
   // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
 #endif
+
+  // connect signals that are identical for all views
+  for(int i=0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
+    setupConnections(m_specificView[i]);
+  }
 
   m_viewLayout->addWidget(m_accountStack);
   setMinimumHeight(m_accountComboBox->minimumHeight() + m_accountStack->sizeHint().height());
@@ -207,17 +165,26 @@ KGlobalLedgerView::~KGlobalLedgerView()
   delete m_viewLayout;
 }
 
+void KGlobalLedgerView::setupConnections(KLedgerView* view)
+{
+  if(view) {
+    connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
+      this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
+    connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
+      SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
+    connect(view, SIGNAL(newCategory(MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&)));
+    connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
+      SIGNAL(reportGenerated(const MyMoneyReport&)));
+  }
+}
+
 void KGlobalLedgerView::loadInvestmentView(void)
 {
   KLedgerView* view;
   // Investment account
   view = m_specificView[MyMoneyAccount::Investment] = new KLedgerViewInvestments(this, "InvestmentsView");
   m_accountStack->addWidget(view, MyMoneyAccount::Investment);
-  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
-    this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
-  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
-    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
+  setupConnections(view);
 }
 
 void KGlobalLedgerView::slotReloadView(void)
