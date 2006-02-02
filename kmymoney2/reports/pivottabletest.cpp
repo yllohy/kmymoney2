@@ -78,6 +78,10 @@ void PivotTableTest::setUp ()
   acParent = makeAccount(QString("Parent"),MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
   acChild = makeAccount(QString("Child"),MyMoneyAccount::Expense,0,QDate(2004,2,11),acParent);
   acForeign = makeAccount(QString("Foreign"),MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
+
+  acSecondChild = makeAccount(QString("Second Child"),MyMoneyAccount::Expense,0,QDate(2004,2,11),acParent);
+  acGrandChild1 = makeAccount(QString("Grand Child 1"),MyMoneyAccount::Expense,0,QDate(2004,2,11),acChild);
+  acGrandChild2 = makeAccount(QString("Grand Child 2"),MyMoneyAccount::Expense,0,QDate(2004,2,11),acChild);
   
   MyMoneyInstitution i("Bank of the World","","","","","","");
   file->addInstitution(i);
@@ -925,6 +929,54 @@ void PivotTableTest::testInvestment(void)
   {
     CPPUNIT_FAIL(e->what());
     delete e;
+  }
+}
+
+void PivotTableTest::testBudget(void)
+{
+
+  // 1. Budget on A, transations on A
+  {
+    BudgetHelper budget;
+    budget += BudgetEntryHelper( QDate(2006,1,1), acSolo, false, 100.0 );
+  }
+
+  // 2. Budget on B, not applying to sub accounts, transactions on B and B:1
+  {
+    BudgetHelper budget;
+    budget += BudgetEntryHelper( QDate(2006,1,1), acParent, false, 100.0 );
+  }
+
+  //	- Both B and B:1 totals should show up
+  //	- B actuals compare against B budget
+  //	- B:1 actuals compare against 0
+
+  // 3. Budget on C, applying to sub accounts, transactions on C and C:1 and C:1:a
+  {
+    BudgetHelper budget;
+    budget += BudgetEntryHelper( QDate(2006,1,1), acParent, true, 100.0 );
+  }
+
+  //	- Only C totals show up, not C:1 or C:1:a totals
+  //	- C + C:1 totals compare against C budget
+
+  // 4. Budget on D, not applying to sub accounts, budget on D:1 not applying, budget on D:2 applying.  Transactions on D, D:1, D:2, D:2:a, D:2:b
+  {
+    BudgetHelper budget;
+    budget += BudgetEntryHelper( QDate(2006,1,1), acParent, false, 100.0 );
+    budget += BudgetEntryHelper( QDate(2006,1,1), acChild, false, 100.0 );
+    budget += BudgetEntryHelper( QDate(2006,1,1), acSecondChild, true, 100.0 );
+  }
+
+  //	- Totals for D, D:1, D:2 show up.  D:2:a and D:2:b do not
+  //	- D actuals (only) compare against D budget
+  //	- Ditto for D:1
+  //	- D:2 acutals and children compare against D:2 budget
+
+  // 5. Budget on E, no transactions on E
+  {
+    BudgetHelper budget;
+    budget += BudgetEntryHelper( QDate(2006,1,1), acSolo, false, 100.0 );
   }
 }
 

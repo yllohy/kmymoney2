@@ -55,6 +55,9 @@ extern QCString acCredit;
 extern QCString acSolo;
 extern QCString acParent;
 extern QCString acChild;
+extern QCString acSecondChild;
+extern QCString acGrandChild1;
+extern QCString acGrandChild2;
 extern QCString acForeign;
 extern QCString acCanChecking;
 extern QCString acJpyChecking;
@@ -85,6 +88,24 @@ class InvTransactionHelper: public TransactionHelper
 {
 public:
   InvTransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _shares, MyMoneyMoney _value, const QCString& _stockaccountid, const QCString& _transferid, const QCString& _categoryid );
+};
+
+class BudgetEntryHelper
+{
+private:
+  QDate m_date;
+  QCString m_categoryid;
+  bool m_applytosub;
+  MyMoneyMoney m_amount;
+    
+public:
+  BudgetEntryHelper( void ): m_applytosub(false) {} 
+  BudgetEntryHelper( const QDate& _date, const QCString& _categoryid, bool _applytosub, const MyMoneyMoney& _amount ): m_date(_date), m_categoryid(_categoryid), m_applytosub(_applytosub), m_amount(_amount) {}
+};
+
+class BudgetHelper: public QValueList<BudgetEntryHelper>
+{
+  MyMoneyMoney budgetAmount( const QDate& _date, const QCString& _categoryid, bool& _applytosub );
 };
 
 extern QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency="" );

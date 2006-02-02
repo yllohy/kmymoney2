@@ -40,6 +40,7 @@ class PivotTableTest : public CppUnit::TestFixture  {
   CPPUNIT_TEST(testAdvancedFilter);
   CPPUNIT_TEST(testColumnType);
   CPPUNIT_TEST(testInvestment);
+  CPPUNIT_TEST(testBudget);
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -68,6 +69,7 @@ public:
   void testAdvancedFilter();
   void testColumnType();
   void testInvestment();
+  void testBudget();
 };
 
 #endif // PIVOTTABLETEST_H
