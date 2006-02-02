@@ -205,6 +205,7 @@ void KPayeesView::slotRenamePayee(QListViewItem* p , int /* col */, const QStrin
       }
 
       m_payee.setName(new_name);
+      m_newName = new_name;
       MyMoneyFile::instance()->modifyPayee(m_payee);
 
       // the above call to modifyPayee will reload the view so
