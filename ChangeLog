@@ -3,6 +3,7 @@
   * Prevent from dropping a parent account onto one of its children/grand-
     children
   * Support calling of configure with absolute pathname
+  * Fixed #1422382 (Adding payees)
 
 2006-01-31 Ace Jones <acejones@users.sourceforge.net>
   * Added a --notimers option to get rid of my nemesis, the Timer messages.
