@@ -1,3 +1,6 @@
+2006-02-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Extend field descriptor hint to category/memo fields
+
 2006-02-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Update networth manually at the end of institution processing to get
     correct numbers
