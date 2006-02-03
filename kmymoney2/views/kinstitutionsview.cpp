@@ -262,6 +262,11 @@ void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const Q
   // have calculated while filling the list
   parent->adjustTotalValue(-parent->totalValue());  // load a 0
   parent->adjustTotalValue(value);                  // now store the new value
+
+  // we need to call slotUpdateNetWorth() here manually, because
+  // KMyMoneyAccountTreeItem::adjustTotalValue() does not send out
+  // the valueChanged() signal
+  slotUpdateNetWorth();
 }
 
 void KInstitutionsView::slotUpdateNetWorth(void)
