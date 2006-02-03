@@ -101,7 +101,12 @@ private:
     * The fundamental data construct of this class is a 'grid'.  It is organized as follows:
     *
     * A 'Row' is a row of money values, each column is a month.  The first month corresponds to
-    * m_beginDate
+    * m_beginDate.
+    *
+    * A 'Row Pair' is two rows of money values.  Each column is the SAME month.  One row is the
+    * 'actual' values for the period, the other row is the 'budgetted' values for the same
+    * period.  For ease of implementation, a Row Pair is implemented as a Row which contains
+    * another Row.  The inherited Row is the 'actual', the contained row is the 'Budget'.
     *
     * An 'Inner Group' contains a rows for each subordinate account within a single top-level
     * account.  It also contains a mapping from the account descriptor for the subordinate account
@@ -116,12 +121,33 @@ private:
     * A 'Grid' is the set of all Outer Groups contained in this report.
     *
     */
-    class TGridRow: public QValueList<MyMoneyMoney> { public: MyMoneyMoney m_total; };
-    class TInnerGroup: public QMap<ReportAccount,TGridRow> { public: TGridRow m_total; };
+    class TGridRow: public QValueList<MyMoneyMoney> 
+    { 
+    public:
+      TGridRow( unsigned _numcolumns = 0 )
+      {
+        if ( _numcolumns )
+          insert( end(), _numcolumns, 0 );
+      }
+      MyMoneyMoney m_total; 
+    };
+    class TGridRowPair: public TGridRow
+    {
+    public:
+      TGridRowPair( unsigned _numcolumns = 0 ): TGridRow(_numcolumns), m_budget(_numcolumns) {} 
+      TGridRow m_budget;
+    };
+    class TInnerGroup: public QMap<ReportAccount,TGridRowPair> 
+    { 
+    public: 
+      TInnerGroup( unsigned _numcolumns = 0 ): m_total(_numcolumns) {}
+
+      TGridRow m_total; 
+    };
     class TOuterGroup: public QMap<QString,TInnerGroup> 
     { 
     public:
-      TOuterGroup(unsigned _sort=m_kDefaultSortOrder, bool _inverted=false): m_inverted(_inverted), m_sortOrder(_sort) {}
+      TOuterGroup( unsigned _numcolumns = 0, unsigned _sort=m_kDefaultSortOrder, bool _inverted=false): m_total(_numcolumns), m_inverted(_inverted), m_sortOrder(_sort) {} 
       int operator<( const TOuterGroup& _right )
       {
         if ( m_sortOrder != _right.m_sortOrder )
@@ -183,8 +209,9 @@ protected:
     * @param row The row itself
     * @param column The column
     * @param value The value to be added in
+    * @param budget Whether this is a budget value (true) or an actual value (false)
     */
-    inline void assignCell( const QString& outergroup, const ReportAccount& row, unsigned column, MyMoneyMoney value );
+    inline void assignCell( const QString& outergroup, const ReportAccount& row, unsigned column, MyMoneyMoney value, bool budget = false );
 
   /**
     * Record the opening balances of all qualifying accounts into the grid.
@@ -278,3 +305,4 @@ protected:
 }
 #endif
 // PIVOTTABLE_H
+// vim:cin:si:ai:et:ts=2:sw=2:

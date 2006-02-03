@@ -180,14 +180,21 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   //
   if ( m_config_f.rowType() == MyMoneyReport::eAssetLiability )
   {
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Asset),TOuterGroup());
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Liability),TOuterGroup(TOuterGroup::m_kDefaultSortOrder,true));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Asset),TOuterGroup(m_numColumns));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Liability),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder,true));
   }
   else
   {
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Income),TOuterGroup(TOuterGroup::m_kDefaultSortOrder-2));
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Expense),TOuterGroup(TOuterGroup::m_kDefaultSortOrder-1,true));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Income),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder-2));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Expense),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder-1,true));
   }
+
+  //
+  // Initialize grid totals
+  //
+
+  m_grid.m_total = TGridRow(m_numColumns);
+  
   //
   // Get opening balances
   // (for running sum reports only)
@@ -809,7 +816,7 @@ void PivotTable::calculateTotals( void )
 
 }
 
-void PivotTable::assignCell( const QString& outergroup, const ReportAccount& row, unsigned column, MyMoneyMoney value )
+void PivotTable::assignCell( const QString& outergroup, const ReportAccount& row, unsigned column, MyMoneyMoney value, bool budget )
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
   DEBUG_OUTPUT(QString("Parameters: %1,%2,%3,%4").arg(outergroup).arg(row.debugName()).arg(column).arg(DEBUG_SENSITIVE(value.toDouble())));
@@ -830,7 +837,10 @@ void PivotTable::assignCell( const QString& outergroup, const ReportAccount& row
     value = -value;
     
   // Add the value to the grid cell
-  m_grid[outergroup][innergroup][row][column] += value;
+  if ( budget )
+    m_grid[outergroup][innergroup][row].m_budget[column] += value;
+  else
+    m_grid[outergroup][innergroup][row][column] += value;
 
 }
 
@@ -841,16 +851,22 @@ void PivotTable::createRow( const QString& outergroup, const ReportAccount& row,
   // Determine the inner group from the top-most parent account
   QString innergroup( row.topParentName() );
 
-  // fill the row list with blanks if it doesn't already exist.
-  if ( m_grid[outergroup][innergroup][row].isEmpty() )
+  if ( ! m_grid.contains(outergroup) )
   {
-    DEBUG_OUTPUT(QString("m_grid[%1][%2][%3].insert(%4)").arg(outergroup).arg(innergroup).arg(row.debugName()).arg(m_numColumns));
+    DEBUG_OUTPUT(QString("Adding group [%1]").arg(outergroup));
+    m_grid[outergroup] = TOuterGroup(m_numColumns);
+  }
 
-    m_grid[outergroup][innergroup][row].insert( m_grid[outergroup][innergroup][row].end(), m_numColumns, 0 );
-
-    m_grid[outergroup][innergroup].m_total.insert( m_grid[outergroup][innergroup].m_total.end(), m_numColumns, 0 );
-    m_grid[outergroup].m_total.insert( m_grid[outergroup].m_total.end(), m_numColumns, 0 );
-    m_grid.m_total.insert( m_grid.m_total.end(), m_numColumns, 0 );
+  if ( ! m_grid[outergroup].contains(innergroup) )
+  {
+    DEBUG_OUTPUT(QString("Adding group [%1][%2]").arg(outergroup).arg(innergroup));
+    m_grid[outergroup][innergroup] = TInnerGroup(m_numColumns); 
+  }
+  
+  if ( ! m_grid[outergroup][innergroup].contains(row) )
+  {
+    DEBUG_OUTPUT(QString("Adding row [%1][%2][%3]").arg(outergroup).arg(innergroup).arg(row.debugName()));
+    m_grid[outergroup][innergroup][row] = TGridRowPair(m_numColumns);
 
     if ( recursive && !row.isTopLevel() )
         createRow( outergroup, row.parent(), recursive );

@@ -939,12 +939,19 @@ void PivotTableTest::testBudget(void)
   {
     BudgetHelper budget;
     budget += BudgetEntryHelper( QDate(2006,1,1), acSolo, false, 100.0 );
+
+    MyMoneyReport report(MyMoneyReport::eBudgetActual,MyMoneyReport::eMonths,MyMoneyTransactionFilter::yearToDate,
+      false,"Yearly Budgeted vs. Actual","Default Report");
+    PivotTable table(report);
   }
 
   // 2. Budget on B, not applying to sub accounts, transactions on B and B:1
   {
     BudgetHelper budget;
     budget += BudgetEntryHelper( QDate(2006,1,1), acParent, false, 100.0 );
+    MyMoneyReport report(MyMoneyReport::eBudgetActual,MyMoneyReport::eMonths,MyMoneyTransactionFilter::yearToDate,
+      false,"Yearly Budgeted vs. Actual","Default Report");
+    PivotTable table(report);
   }
 
   //	- Both B and B:1 totals should show up
@@ -955,6 +962,9 @@ void PivotTableTest::testBudget(void)
   {
     BudgetHelper budget;
     budget += BudgetEntryHelper( QDate(2006,1,1), acParent, true, 100.0 );
+    MyMoneyReport report(MyMoneyReport::eBudgetActual,MyMoneyReport::eMonths,MyMoneyTransactionFilter::yearToDate,
+      false,"Yearly Budgeted vs. Actual","Default Report");
+    PivotTable table(report);
   }
 
   //	- Only C totals show up, not C:1 or C:1:a totals
@@ -966,6 +976,9 @@ void PivotTableTest::testBudget(void)
     budget += BudgetEntryHelper( QDate(2006,1,1), acParent, false, 100.0 );
     budget += BudgetEntryHelper( QDate(2006,1,1), acChild, false, 100.0 );
     budget += BudgetEntryHelper( QDate(2006,1,1), acSecondChild, true, 100.0 );
+    MyMoneyReport report(MyMoneyReport::eBudgetActual,MyMoneyReport::eMonths,MyMoneyTransactionFilter::yearToDate,
+      false,"Yearly Budgeted vs. Actual","Default Report");
+    PivotTable table(report);
   }
 
   //	- Totals for D, D:1, D:2 show up.  D:2:a and D:2:b do not
@@ -977,6 +990,9 @@ void PivotTableTest::testBudget(void)
   {
     BudgetHelper budget;
     budget += BudgetEntryHelper( QDate(2006,1,1), acSolo, false, 100.0 );
+    MyMoneyReport report(MyMoneyReport::eBudgetActual,MyMoneyReport::eMonths,MyMoneyTransactionFilter::yearToDate,
+      false,"Yearly Budgeted vs. Actual","Default Report");
+    PivotTable table(report);
   }
 }
 
