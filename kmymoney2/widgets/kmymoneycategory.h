@@ -72,6 +72,11 @@ public:
 
   QCString selectedAccountId() const { return m_id; }
 
+  /**
+   * This method is used to turn on/off the hint display
+   */
+  void setHint(const QString& hint) { m_hint = hint; };
+
 signals:
   /**
     * This signal is emitted, when a new category name has been
@@ -109,7 +114,6 @@ signals:
   void signalEsc();
 
   void signalFocusIn(void);
-
 public slots:
   /**
     * Load the widget with the text given in the parameter @p text.
@@ -143,6 +147,9 @@ protected:
   void focusInEvent(QFocusEvent *ev);
   void connectNotify(const char * signal);
 
+  /** reimplemented */
+  void drawContents( QPainter *);
+
 private:
   void checkForNewCategory(void);
 
@@ -161,6 +168,12 @@ private:
   kMyMoneyAccountCompletion* m_accountSelector;
   bool                       m_inCreation;
   bool                       m_displayOnly;
+
+  /**
+   * This member tells what to display as hint as long as the field is empty
+   */
+  QString m_hint;
+
 };
 
 #endif

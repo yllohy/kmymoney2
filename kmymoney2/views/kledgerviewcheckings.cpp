@@ -1380,6 +1380,8 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInRegister(void)
     delete m_editSplit;
   }
   m_editPayee->setHint(i18n("Payee"));
+  m_editCategory->setHint(i18n("Category/Account"));
+  m_editMemo->setHint(i18n("Memo"));
   return focusWidget;
 }
 
