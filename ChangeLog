@@ -1,3 +1,7 @@
+2006-02-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Update networth manually at the end of institution processing to get
+    correct numbers
+
 2006-02-02 Ace Jones <acejones@users.sourceforge.net>
   * Laid the groundwork for budget reports
 
