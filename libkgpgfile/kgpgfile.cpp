@@ -116,6 +116,11 @@ void KGPGFile::addRecipient(const QCString& recipient)
 
 bool KGPGFile::open(int mode)
 {
+  return open(mode, QString(), false);
+}
+
+bool KGPGFile::open(int mode, const QString& cmdArgs, bool skipPasswd)
+{
   bool useOwnPassphrase = (getenv("GPG_AGENT_INFO") == 0);
 
   // qDebug("KGPGFile::open(%d)", mode);
@@ -147,32 +152,35 @@ bool KGPGFile::open(int mode)
   }
 
   QStringList args;
+  if(cmdArgs.isEmpty()) {
+    args << "--homedir" << QString("\"") + m_homedir + QString("\"")
+        << "-q"
+        << "--batch";
 
-  args << "--homedir" << QString("\"") + m_homedir + QString("\"")
-       << "-q"
-       << "--batch";
+    if(isWritable()) {
+      args << "-ea"
+          << "-z" << "6"
+          << "--comment" << QString("\"") + m_comment + QString("\"")
+          << "-o" << QString("\"") + m_fn + QString("\"");
+      QValueList<QCString>::Iterator it;
+      for(it = m_recipient.begin(); it != m_recipient.end(); ++it)
+        args << "-r" << QCString("\"") + *it + QCString("\"");
 
-  if(isWritable()) {
-    args << "-ea"
-         << "-z" << "6"
-         << "--comment" << QString("\"") + m_comment + QString("\"")
-         << "-o" << QString("\"") + m_fn + QString("\"");
-    QValueList<QCString>::Iterator it;
-    for(it = m_recipient.begin(); it != m_recipient.end(); ++it)
-      args << "-r" << QCString("\"") + *it + QCString("\"");
-
-    // some versions of GPG had trouble to replace a file
-    // so we delete it first
-    QFile::remove(m_fn);
+      // some versions of GPG had trouble to replace a file
+      // so we delete it first
+      QFile::remove(m_fn);
+    } else {
+      args << "-da";
+      if(useOwnPassphrase)
+        args << "--passphrase-fd" << "0";
+      args << "--no-default-recipient" << QString("\"") + m_fn + QString("\"");
+    }
   } else {
-    args << "-da";
-    if(useOwnPassphrase)
-      args << "--passphrase-fd" << "0";
-    args << "--no-default-recipient" << QString("\"") + m_fn + QString("\"");
+    args = QStringList::split(" ", cmdArgs);
   }
 
   QCString pwd;
-  if(isReadable() && useOwnPassphrase) {
+  if(isReadable() && useOwnPassphrase && !skipPasswd) {
     if(KPasswordDialog::getPassword(pwd, i18n("Enter passphrase"), 0) == QDialog::Rejected)
       return false;
   }
@@ -185,7 +193,7 @@ bool KGPGFile::open(int mode)
   if(!m_process)
     return false;
 
-  if(isReadable() && useOwnPassphrase) {
+  if(isReadable() && useOwnPassphrase && !skipPasswd) {
     // qDebug("Passphrase is '%s'", pwd.data());
     if(_writeBlock(pwd.data(), pwd.length()) == -1) {
       // qDebug("Sending passphrase failed");
@@ -513,6 +521,43 @@ const bool KGPGFile::keyAvailable(const QString& name)
   }
 
   return false;
+}
+
+void KGPGFile::secretKeyList(QStringList& list)
+{
+  QString output;
+  char  buffer[1024];
+  Q_LONG len;
+
+  list.clear();
+  KGPGFile file;
+  file.open(IO_ReadOnly, "--list-secret-keys --with-colons", true);
+  while((len = file.readBlock(buffer, sizeof(buffer)-1)) != EOF) {
+    buffer[len] = 0;
+    output += QString(buffer);
+  }
+  file.close();
+
+  // now parse the data. it looks like:
+  /*
+    sec::1024:17:9C59DB40B75DD3BA:2001-06-23::::Thomas Baumgart <ipwizard@users.sourceforge.net>:::
+    uid:::::::::Thomas Baumgart <thb@net-bembel.de>:
+    ssb::1024:16:85968A70D1F83C2B:2001-06-23:::::::
+    sec::1024:17:59B0F826D2B08440:2005-01-03:2010-01-02:::KMyMoney emergency data recovery <kmymoney-recover@users.sourceforge.net>:::
+    ssb::2048:16:B3DABDC48C0FE2F3:2005-01-03:::::::
+  */
+  QStringList lines = QStringList::split("\n", output);
+  QStringList::iterator it;
+  QString currentKey;
+  for(it = lines.begin(); it != lines.end(); ++it) {
+    QStringList fields = QStringList::split(":", (*it), true);
+    if(fields[0] == "sec") {
+      currentKey = fields[4];
+      list << QString("%1:%2").arg(currentKey).arg(fields[9]);
+    } else if(fields[0] == "uid") {
+      list << QString("%1:%2").arg(currentKey).arg(fields[9]);
+    }
+  }
 }
 
 /*

@@ -21,6 +21,7 @@
 #include <qfile.h>
 #include <qobject.h>
 #include <qstring.h>
+#include <qstringlist.h>
 
 /**
   * @author Thomas Baumgart
@@ -118,6 +119,19 @@ public:
     */
   static const bool keyAvailable(const QString& name);
 
+  /**
+    * This function returns a list of the secret keys contained
+    * in the keyring. Each list item is devided into two fields
+    * separated by a colon (':'). The first field contains the
+    * key id, the second field the name. The list may contain
+    * multiple entries with the same key-id and different names.
+    *
+    * Example of an entry in the list:
+    *
+    *    "9C59DB40B75DD3BA:Thomas Baumgart <ipwizard@users.sourceforge.net>"
+    */
+  static void secretKeyList(QStringList& list);
+
 #ifdef KMM_DEBUG
   void dumpUngetBuffer(void);
   void dumpBuffer(char *s, int len) const;
@@ -133,6 +147,7 @@ private:
   void init(void);
   const bool startProcess(const QStringList& args);
   Q_LONG _writeBlock(const char *data, Q_ULONG maxlen);
+  bool open(int mode, const QString&, bool skipPasswd);
 
 private:
   QString m_fn;
