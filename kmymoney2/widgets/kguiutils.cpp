@@ -140,4 +140,5 @@ void kMandatoryFieldGroup::clear()
 }
 
 
+#include "kguiutils.moc"
 
