@@ -396,13 +396,13 @@ void KMyMoneyView::ungetString(QIODevice *qfile, char *buf, int len)
   }
 }
 
-bool KMyMoneyView::readFile(const KURL& url, bool& isEncrypted)
+bool KMyMoneyView::readFile(const KURL& url)
 {
   QString filename;
 
   newStorage();
   m_fileOpen = false;
-  isEncrypted = false;
+  bool isEncrypted = false;
 
   IMyMoneyStorageFormat* pReader = NULL;
 
@@ -576,11 +576,16 @@ bool KMyMoneyView::readFile(const KURL& url, bool& isEncrypted)
   if(rc == false)
     return rc;
 
+  // make sure we setup the encryption key correctly
+  if(isEncrypted && MyMoneyFile::instance()->value("kmm-encryption-key").isEmpty()) {
+    MyMoneyFile::instance()->setValue("kmm-encryption-key", KMyMoneySettings::gpgRecipient());
+  }
+
   // if a temporary file was constructed by NetAccess::download,
   // then it will be removed with the next call. Otherwise, it
   // stays untouched on the local filesystem
   KIO::NetAccess::removeTempFile(filename);
-  return (initializeStorage());
+  return initializeStorage();
 }
 
 bool KMyMoneyView::readDatabase(const KURL& url)
@@ -605,7 +610,7 @@ bool KMyMoneyView::readDatabase(const KURL& url)
   reader->setProgressCallback(0);
   delete reader;
   ::timetrace("done reading database");
-  return (initializeStorage());
+  return initializeStorage();
 }
 
 bool KMyMoneyView::initializeStorage() {
@@ -688,14 +693,14 @@ bool KMyMoneyView::initializeStorage() {
   return true;
 }
 
-void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter, bool plaintext, bool encrypt)
+void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter, bool plaintext, const QString& key)
 {
   QIODevice *dev = qfile;
   KFilterBase *base = 0;
 
   bool encryptedOk = true;
   bool encryptRecover = false;
-  if(encrypt) {
+  if(!key.isEmpty()) {
     if(!KGPGFile::GPGAvailable()) {
       KMessageBox::sorry(this, i18n("GPG does not seem to be installed on your system. Please make sure, that GPG can be found using the standard search path. This time, encryption is disabled."), i18n("GPG not found"));
       encryptedOk = false;
@@ -708,13 +713,9 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
         encryptRecover = false;
       }
     }
-    if(KMyMoneySettings::gpgRecipient().length() > 0) {
-      if(!KGPGFile::keyAvailable(KMyMoneySettings::gpgRecipient())) {
-        KMessageBox::sorry(this, QString("<p>")+i18n("You have specified to encrypt your data for the user-id</p><p><center><b>%1</b>.</center></p>Unfortunately, a valid key for this user-id was not found in your keyring. Please make sure to import a valid key for this user-id. This time, encryption is disabled.").arg(KMyMoneySettings::gpgRecipient()), i18n("GPG-Key not found"));
-        encryptedOk = false;
-      }
-    } else {
-      KMessageBox::sorry(this, QString("<p>")+i18n("You have specified to encrypt your data but you have not provided a user-id. Please make sure to setup a valid user id. This time, encryption is disabled."), i18n("GPG-Key not found"));
+
+    if(!KGPGFile::keyAvailable(key)) {
+      KMessageBox::sorry(this, QString("<p>")+i18n("You have specified to encrypt your data for the user-id</p><p><center><b>%1</b>.</center></p>Unfortunately, a valid key for this user-id was not found in your keyring. Please make sure to import a valid key for this user-id. This time, encryption is disabled.").arg(key), i18n("GPG-Key not found"));
       encryptedOk = false;
     }
 
@@ -727,21 +728,24 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     }
   }
 
-  if(encrypt && encryptedOk == true && !plaintext ) {
+  MyMoneyFile::instance()->deletePair("kmm-encryption-key");
+  if(!key.isEmpty() && encryptedOk == true && !plaintext ) {
     qfile->close();
     base++;
     KGPGFile *kgpg = new KGPGFile(qfile->name());
     if(kgpg) {
-      kgpg->addRecipient(KMyMoneySettings::gpgRecipient().latin1());
+      kgpg->addRecipient(key.latin1());
       if(encryptRecover) {
         kgpg->addRecipient(RECOVER_KEY_ID);
       }
+      MyMoneyFile::instance()->setValue("kmm-encryption-key", key);
     }
     dev = kgpg;
     if(!dev || !dev->open(IO_WriteOnly))
       throw new MYMONEYEXCEPTION(i18n("Unable to open file '%1' for writing.").arg(qfile->name()));
 
   } else if(!plaintext) {
+
     base = KFilterBase::findFilterByMimeType( COMPRESSION_MIME_TYPE );
     if(base) {
       base->setDevice(qfile, false);
@@ -769,7 +773,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     qfile->close();
 }
 
-const bool KMyMoneyView::saveFile(const KURL& url, bool encrypt)
+const bool KMyMoneyView::saveFile(const KURL& url, const QString& key)
 {
   QString filename = url.path();
 
@@ -824,13 +828,13 @@ const bool KMyMoneyView::saveFile(const KURL& url, bool encrypt)
 
       KSaveFile qfile(filename, fmode);
       if(qfile.status() == 0) {
-        saveToLocalFile(qfile.file(), pWriter,plaintext, encrypt);
+        saveToLocalFile(qfile.file(), pWriter,plaintext, key);
       } else {
         throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
       }
     } else {
       KTempFile tmpfile;
-      saveToLocalFile(tmpfile.file(), pWriter,plaintext, encrypt);
+      saveToLocalFile(tmpfile.file(), pWriter,plaintext, key);
       if(!KIO::NetAccess::upload(tmpfile.name(), url, NULL))
         throw new MYMONEYEXCEPTION(i18n("Unable to upload to '%1'").arg(url.url()));
       tmpfile.unlink();

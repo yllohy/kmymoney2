@@ -35,7 +35,7 @@
 #include <qdatetime.h>         // only for performance tests
 #include <qtimer.h>
 #include <qsqlpropertymap.h>
-#include <qcheckbox.h>
+#include <qvbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -134,6 +134,7 @@
 #include "kmymoneyutils.h"
 #include "kdecompat.h"
 
+#define RECOVER_KEY_ID        "59B0F826D2B08440"
 #define ID_STATUS_MSG 1
 
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
@@ -141,7 +142,6 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
  DCOPObject("kmymoney2app"),
  myMoneyView(0),
  m_searchDlg(0),
- m_currentFileEncrypted(false),
  m_autoSaveTimer(0)
 {
   ::timetrace("start kmymoney2app constructor");
@@ -667,7 +667,6 @@ void KMyMoney2App::slotFileNew()
     return;
 
   m_fileName = KURL();
-  m_currentFileEncrypted = false;
   if(myMoneyView->newFile()) {
     KMessageBox::information(this, QString("<p>") +
                   i18n("The next dialog allows you to add predefined account/category templates to the new file. Different languages are available to select from. You can skip loading any template  now by selecting <b>Cancel</b> from the next dialog. If you wish to add more templates later, you can restart this operation by selecting <b>File/Import/Account Templates</b>."),
@@ -773,7 +772,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 #endif
       slotFileClose();
       if(!myMoneyView->fileOpen()) {
-        if(myMoneyView->readFile(url, m_currentFileEncrypted)) {
+        if(myMoneyView->readFile(url)) {
           if((myMoneyView->isNativeFile() || (url.protocol() == "sql"))) {
             m_fileName = url;
             KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
@@ -822,7 +821,7 @@ const bool KMyMoney2App::slotFileSave()
   if (m_fileName.protocol() == "sql") {
     rc = myMoneyView->saveDatabase(m_fileName);
   } else {
-    rc = myMoneyView->saveFile(m_fileName, m_currentFileEncrypted);
+    rc = myMoneyView->saveFile(m_fileName, MyMoneyFile::instance()->value("kmm-encryption-key"));
   }
   m_autoSaveTimer->stop();
 
@@ -846,21 +845,36 @@ const bool KMyMoney2App::slotFileSaveAs()
                                                "*.*|All files"), this, i18n("Save as..."));
 #endif
 
-  QCheckBox* saveEncrypted = new QCheckBox(i18n("Save file encrypted (if supported by filetype)"), 0);
-  saveEncrypted->setEnabled(KGPGFile::GPGAvailable() && KGPGFile::keyAvailable(KMyMoneySettings::gpgRecipient()));
-  if(saveEncrypted->isEnabled())
-    saveEncrypted->setChecked(KMyMoneySettings::writeDataEncrypted());
+  QVBox* vbox = new QVBox();
+  QLabel* title = new QLabel(i18n("Encryption key to be used"), vbox);
+  KComboBox* saveEncrypted = new KComboBox(vbox);
+
+  QStringList keyList;
+  KGPGFile::secretKeyList(keyList);
+  saveEncrypted->insertItem(i18n("No encryption"));
+
+  int idx = 0;
+  for(QStringList::iterator it = keyList.begin(); it != keyList.end(); ++it) {
+    QStringList fields = QStringList::split(":", *it);
+    if(fields[0] != RECOVER_KEY_ID) {
+      ++idx;
+      saveEncrypted->insertItem(QString("%1 (0x%2)").arg(fields[1]).arg(fields[0]));
+      if((*it).contains(KMyMoneySettings::gpgRecipient())) {
+        saveEncrypted->setCurrentItem(idx);
+      }
+    }
+  }
 
   // the following code is copied from KFileDialog::getSaveFileName,
   // adjust to our local needs (filetypes etc.) and
-  // enhanced to show the saveEncrypted checkbox
+  // enhanced to show the saveEncrypted combo box
   bool specialDir = prevDir.at(0) == ':';
   KFileDialog dlg( specialDir ? prevDir : QString::null,
                    i18n("*.kmy|KMyMoney files\n"
                         "*.xml|XML Files\n"
                         "*.ANON.xml|Anonymous Files\n"
                         "*.*|All files"),
-                   this, "filedialog", true, saveEncrypted);
+                   this, "filedialog", true, vbox);
   if ( !specialDir )
     dlg.setSelection( prevDir ); // may also be a filename
 
@@ -902,14 +916,22 @@ const bool KMyMoney2App::slotFileSaveAs()
       // name, or remember it! Don't even try to encrypt it
       if (newName.right(9).lower() == ".anon.xml")
       {
-        rc = myMoneyView->saveFile(newName, false);
+        rc = myMoneyView->saveFile(newName);
       }
       else
       {
         QFileInfo saveAsInfo(newName);
 
         m_fileName = newName;
-        rc = myMoneyView->saveFile(newName, saveEncrypted->isChecked());
+        QString encryptionKey;
+        if(saveEncrypted->currentItem() != 0) {
+          QRegExp keyExp(".* \\((.*)\\)");
+          if(keyExp.search(saveEncrypted->currentText()) != -1) {
+            encryptionKey = keyExp.cap(1);
+          }
+        }
+
+        rc = myMoneyView->saveFile(newName, encryptionKey);
 
         //write the directory used for this file as the default one for next time.
         writeLastUsedDir(newName);
@@ -1327,7 +1349,7 @@ void KMyMoney2App::slotGncImport(void)
 //      return;
 
     // call the importer
-    myMoneyView->readFile(dialog->selectedURL(), m_currentFileEncrypted);
+    myMoneyView->readFile(dialog->selectedURL());
     // imported files don't have a name
     m_fileName = KURL();
 

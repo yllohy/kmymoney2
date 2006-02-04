@@ -843,8 +843,6 @@ private:
   MyMoneySchedule       m_selectedSchedule;
   QValueList<MyMoneyPayee>  m_selectedPayees;
 
-  bool                  m_currentFileEncrypted;
-
   // This is Auto Saving related
   bool                  m_autoSaveEnabled;
   QTimer*               m_autoSaveTimer;

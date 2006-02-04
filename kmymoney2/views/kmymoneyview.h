@@ -255,24 +255,24 @@ public:
     *
     * @param url The URL to read from.
     *            If no protocol is specified, file:// is assumed.
-    * @param isEncrypted is used to return, if the file read was encrypted
-    *                    via GPG or not. Only valid, if return code is true
     *
     * @return Whether the read was successfull.
     */
-  bool readFile(const KURL& url, bool& isEncrypted);
+  bool readFile(const KURL& url);
 
   /**
     * Saves the data into permanent storage using the XML format.
     *
     * @param url The URL to save into.
     *            If no protocol is specified, file:// is assumed.
-    * @param encrypt whether to encrypt the file using GPG or not
+    * @param key QString containing the key to be used for encryption
+    *            If @p key is empty, the file will be saved unencrypted
+    *            (the default)
     *
     * @retval false save operation failed
     * @retval true save operation was successful
     */
-  const bool saveFile(const KURL& url, bool encrypt);
+  const bool saveFile(const KURL& url, const QString& key = QString());
   /**
    * Saves the data into permanent storage on a new or empty SQL database.
    *
@@ -486,11 +486,12 @@ private:
     * @param qf pointer to QFile representing the opened file
     * @param writer pointer to the formatter
     * @param plaintext whether to override any compression & encryption settings
-    * @param encrypt whether to encrypt the file using GPG or not
+    * @param key QString containing the key to be used for encryption
+    *            If @p key is empty, the file will be saved unencrypted
     *
     * @note This method will close the file when it is written.
     */
-  void saveToLocalFile(QFile* qf, IMyMoneyStorageFormat* writer, bool plaintext=false, bool encrypt=false);
+  void saveToLocalFile(QFile* qf, IMyMoneyStorageFormat* writer, bool plaintext=false, const QString& key = QString());
 
   /**
     * Internal method used by slotAccountNew() and slotAccountCategory().
