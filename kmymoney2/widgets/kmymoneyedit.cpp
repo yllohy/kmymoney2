@@ -201,6 +201,11 @@ kMyMoneyEdit::~kMyMoneyEdit()
   delete m_calculatorFrame;
 }
 
+KLineEdit * const kMyMoneyEdit::lineedit(void) const
+{
+  return m_edit;
+}
+
 void kMyMoneyEdit::setPrecision(const int prec)
 {
   if(prec >= 0 && prec <= 20) {

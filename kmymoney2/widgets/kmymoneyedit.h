@@ -37,7 +37,6 @@ class KPushButton;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <kmymoney/kguiutils.h>
 #include <kmymoney/mymoneysecurity.h>
 class MyMoneyMoney;
 class kMyMoneyCalculator;
@@ -202,21 +201,7 @@ public:
 
   const bool isCalculatorButtonVisible(void) const;
 
-  /**
-   * This method applies the mandatory field setting to this widget
-   *
-   * @param group mandatory field group
-   */
-
-  void setRequired (kMandatoryFieldGroup *group) { group->add(m_edit); }
-
-  /**
-   * This method removes the mandatory field setting from this widget
-   *
-   * @param group mandatory field group
-   */
-
-  void setOptional (kMandatoryFieldGroup *group) { group->remove(m_edit); }
+  KLineEdit * const lineedit(void) const;
 
 public slots:
   void loadText(const QString& text);
