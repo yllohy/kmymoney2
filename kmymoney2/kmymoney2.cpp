@@ -3144,7 +3144,6 @@ void KMyMoney2App::slotSelectAccount(const MyMoneyObject& obj)
 {
   if(typeid(obj) != typeid(MyMoneyAccount))
     return;
-  qDebug("KMyMoney2App::slotSelectAccount");
 
   m_selectedAccount = MyMoneyAccount();
   const MyMoneyAccount& acc = dynamic_cast<const MyMoneyAccount&>(obj);
