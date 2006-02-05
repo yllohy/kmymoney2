@@ -349,6 +349,11 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Rename payee"), "edit", 0, this, SIGNAL(payeeRename()), actionCollection(), "payee_rename");
   new KAction(i18n("Delete payee"), "delete", 0, this, SLOT(slotPayeeDelete()), actionCollection(), "payee_delete");
 
+  new KAction(i18n("New budget"), "filenew", 0, this, SLOT(slotBudgetNew()), actionCollection(), "budget_new");
+  new KAction(i18n("Rename budget"), "edit", 0, this, SIGNAL(budgetRename()), actionCollection(), "budget_rename");
+  new KAction(i18n("Delete budget"), "delete", 0, this, SLOT(slotBudgetDelete()), actionCollection(), "budget_delete");
+
+
   // ************************
   // Currently unused actions
   // ************************
@@ -2940,6 +2945,37 @@ void KMyMoney2App::slotPayeeDelete(void)
   }
 }
 
+void KMyMoney2App::slotBudgetNew(void)
+{
+    QString newname = i18n("New Budget");
+
+    MyMoneyBudget budget;
+    MyMoneyBudget::AccountGroup account;
+    MyMoneyBudget::PeriodGroup  period;
+    MyMoneyMoney                amount = MyMoneyMoney("123,23");
+
+    period.setAmount ( amount );
+    period.setDate   ( QDate::currentDate(Qt::LocalTime) );
+
+    account.setBudgetLevel( MyMoneyBudget::AccountGroup::eYearly );
+    account.setBudgetSubaccounts( false );
+    account.setDefault( true );
+    account.setId( "A00023" );
+    account.setParentId( "A0001" );
+    account.addPeriod( period );
+    budget.setName(newname);
+    QString date = QString("2006").append("-01-01");
+    budget.setBudgetStart(QDate::fromString(date));
+    budget.setAccount( account, "A00023" );
+
+    MyMoneyFile::instance()->addBudget(budget);
+}
+
+
+void KMyMoney2App::slotBudgetDelete(void)
+{
+}
+
 void KMyMoney2App::showContextMenu(const QString& containerName)
 {
   QWidget* w = factory()->container(containerName, this);
@@ -2981,6 +3017,11 @@ void KMyMoney2App::slotShowInstitutionContextMenu(const MyMoneyObject& obj)
 void KMyMoney2App::slotShowPayeeContextMenu(void)
 {
   showContextMenu("payee_context_menu");
+}
+
+void KMyMoney2App::slotShowBudgetContextMenu(void)
+{
+  showContextMenu("budget_context_menu");
 }
 
 void KMyMoney2App::slotPrintView(void)
@@ -3086,6 +3127,9 @@ void KMyMoney2App::updateActions(void)
   action("payee_delete")->setEnabled(false);
   action("payee_rename")->setEnabled(false);
 
+  action("budget_delete")->setEnabled(true);
+  action("budget_rename")->setEnabled(true);
+
   if(!m_selectedAccount.id().isEmpty()) {
     if(!file->isStandardAccount(m_selectedAccount.id())) {
       action("account_edit")->setEnabled(true);
@@ -3142,6 +3186,7 @@ void KMyMoney2App::updateActions(void)
     action("payee_rename")->setEnabled(m_selectedPayees.count() == 1);
     action("payee_delete")->setEnabled(true);
   }
+
 }
 
 void KMyMoney2App::slotSelectPayees(const QValueList<MyMoneyPayee>& list)

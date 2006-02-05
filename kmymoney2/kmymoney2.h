@@ -44,6 +44,8 @@ class QTimer;
 #include "mymoney/mymoneyscheduled.h"
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneypayee.h>
+#include <kmymoney/mymoneybudget.h>
+
 class QSignalMapper;
 class KProgress;
 class KMyMoneyView;
@@ -292,6 +294,11 @@ protected slots:
     */
   void slotPayeeNew(void);
   void slotPayeeDelete(void);
+
+  /**
+    */
+  void slotBudgetNew(void);
+  void slotBudgetDelete(void);
 
 public:
   /**
@@ -635,6 +642,12 @@ public slots:
     * position.
     */
   void slotShowPayeeContextMenu(void);
+
+  /**
+    * This slot opens the budget options menu at the current cursor
+    * position.
+    */
+  void slotShowBudgetContextMenu(void);
 
   /**
     * This slot collects information for a new schedule transaction (bill)

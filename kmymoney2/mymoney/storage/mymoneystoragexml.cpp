@@ -132,6 +132,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   readCurrencies();
   readPrices();
   readReports();
+  readBudgets();
 
   // check if we need to build up the account balances
   if(fileVersionRead < 2)

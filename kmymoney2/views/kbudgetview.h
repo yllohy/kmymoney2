@@ -40,17 +40,52 @@
 #include "../widgets/kmymoneyaccounttree.h"
 
 /**
+  * @author Darren Gould
+  */
+
+/**
+  * This class represents an item in the budgets list view.
+  */
+class KBudgetListItem : public KListViewItem
+{
+public:
+  /**
+    * Constructor to be used to construct a budget entry object.
+    *
+    * @param parent pointer to the KListView object this entry should be
+    *               added to.
+    * @param budget const reference to MyMoneyBudget for which
+    *               the KListView entry is constructed
+    */
+  KBudgetListItem(KListView *parent, const MyMoneyBudget& budget);
+  ~KBudgetListItem();
+
+  /**
+    * This method is re-implemented from QListViewItem::paintCell().
+    * Besides the standard implementation, the QPainter is set
+    * according to the applications settings.
+    */
+  void paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align);
+
+  const MyMoneyBudget& budget(void) const { return m_budget; };
+
+private:
+  MyMoneyBudget  m_budget;
+};
+
+
+
+/**
   *@author Darren Gould
   */
 
-class KBudgetView : public KBudgetViewDecl, MyMoneyObserver
+class KBudgetView : public KBudgetViewDecl
 {
    Q_OBJECT
 public:
   KBudgetView(QWidget *parent=0, const char *name=0);
   ~KBudgetView();
   void show();
-  virtual void update(const QCString& id);
   /**
     * This method is used to suppress updates for specific times
     * (e.g. during creation of a new MyMoneyFile object when the
@@ -69,23 +104,34 @@ public:
   void suspendUpdate(const bool suspend);
 
 public slots:
-  /**
-    * Displays the New Budget Dialog when the user presses
-    * this button
-    *
-    */
-  virtual void m_bNewBudget_clicked();
   void slotReloadView(void);
   void slotRefreshView(void);
-  void slotLoadAccounts(void);
 
 protected:
   void resizeEvent(QResizeEvent*);
   void loadAccounts(void);
   bool loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList);
+  void loadBudget(void);
+  void ensureBudgetVisible(const QCString& id);
+
+protected slots:
+
+  /**
+    * This slot is called when the name of a budget is changed inside
+    * the budget list view and only a single budget is selected.
+    */
+  void slotRenameBudget(QListViewItem *p, int col, const QString& txt);
 
 private slots:
   void rearrange(void);
+
+  /**
+    * This slot receives the signal from the listview control that an item was right-clicked,
+    * If @p item points to a real payee item, emits openContextMenu().
+    *
+    * @param item the item on which the cursor resides
+    */
+  void slotOpenContextMenu(QListViewItem* i);
 
 signals:
   void signalViewActivated();
@@ -93,6 +139,7 @@ signals:
     * This signal serves as proxy for KMyMoneyAccountTree::selectObject()
     */
   void selectObject(const MyMoneyObject&);
+  void openContextMenu(const MyMoneyObject& obj);
 
 private:
   /**
@@ -111,8 +158,7 @@ private:
   /// set if a view needs to be reloaded during show()
   bool                                m_needReload;
 
-  MyMoneyBudget m_currentState;
-
+  MyMoneyBudget m_budget;
 };
 
 #endif

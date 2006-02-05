@@ -34,6 +34,7 @@ class QDomDocument;
 // Project Includes
 #include <kmymoney/mymoneyobject.h>
 #include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneymoney.h>
 #include <kmymoney/mymoneytransactionfilter.h>
 #include <kmymoney/export.h>
 
@@ -69,13 +70,91 @@ public:
     */
   MyMoneyBudget(const QDomElement& node);
 
+  /**
+    * Helper class for MyMoneyBudget
+    *
+    * This is an abstraction of the PERIOD stored in the BUDGET/ACCOUNT tag in XML
+    *
+    * @author Darren Gould
+    */
+  class PeriodGroup
+  {
+  private:
+    QDate         m_start;
+    MyMoneyMoney  m_amount;
+
+  public:
+    PeriodGroup( void ) {}
+
+    // get functions
+    const QDate&        start ( void ) const { return m_start; }
+    const MyMoneyMoney& amount( void ) const { return m_amount; }
+
+    // set functions
+    void setDate  ( QDate _start )         {m_start  = _start; }
+    void setAmount( MyMoneyMoney _amount ) {m_amount = _amount;}
+  };
+
+  /**
+    * Helper class for MyMoneyBudget
+    *
+    * This is an abstraction of the Account Data stored in the BUDGET tag in XML
+    *
+    * @author Darren Gould
+    */
+  class AccountGroup
+  {
+  public:
+    typedef enum
+    {
+	eNone = 0,
+	eMonthly,
+	eMonthByMonth,
+	eYearly,
+	eMax
+    } eBudgetLevel;
+
+    static const QStringList kBudgetLevelText;
+  private:
+    QString m_id;
+    QString m_parentId;
+
+    eBudgetLevel            m_budgetlevel;
+    bool                    m_budgetsubaccounts;
+    bool                    m_default;
+    QValueList<PeriodGroup> m_periods;
+
+  public:
+    AccountGroup( void ) {}
+
+    // get functions
+    const QString& id( void ) const { return m_id; }
+    const QString& parentid( void ) const { return m_parentId; }
+    const bool& budgetsubaccounts( void ) const { return m_budgetsubaccounts; }
+    const eBudgetLevel& budgetlevel( void ) const { return m_budgetlevel; }
+    const bool& getDefault( void ) const {return m_default;}
+    const QValueList<MyMoneyBudget::PeriodGroup> getPeriods( void ) const {return m_periods;}
+
+    // set functions
+    void setId( QString _id ) {m_id = _id;}
+    void setParentId( QString _id ) {m_parentId = _id;}
+    void setBudgetLevel( eBudgetLevel _level ) {m_budgetlevel = _level;}
+    void setDefault( bool _default ) {m_default = _default;}
+    void setBudgetSubaccounts( bool _b ) {m_budgetsubaccounts = _b;}
+    void addPeriod( PeriodGroup &period ) {m_periods.push_front(period);}
+  };
+
   // Simple get operations
   const QString& name(void) const { return m_name; }
-  QCString id(void) const { return m_id; }
+  const QDate& budgetstart(void) const { return m_start; }
+  const QCString id(void) const { return m_id; }
+  const MyMoneyBudget::AccountGroup & account(const QString _id) const {return m_accounts[_id];}
 
   // Simple set operations
-  void setName(const QString& _s) { m_name = _s; }
-
+  void setName(const QString& _name) { m_name = _name; }
+  void setBudgetStart(const QDate& _start) { m_start = _start; }
+  void setId(const QCString& _id) {m_id = _id;}
+  void setAccount(const AccountGroup &_account, const QString _id) {m_accounts[_id] = _account;}
 
   /**
     * This method writes this Budget to the DOM element @p e,
@@ -87,7 +166,7 @@ public:
     * @param anonymous Whether the sensitive parts of the Budget should be
     *              masked
     */
-  void write(QDomElement& e, QDomDocument *doc, bool anonymous=false) const;
+  void write(QDomElement& e, QDomDocument *doc) const;
 
   /**
     * This method reads a Budget from the DOM element @p e, and
@@ -127,6 +206,19 @@ private:
     * The user-assigned name of the Budget
     */
   QString m_name;
+
+  /**
+    * The user-assigned year of the Budget
+    */
+  QDate m_start;
+
+  /**
+    * Map the budgeted accounts
+    *
+    * Each account Id is stored against the AccountGroup information
+    * 
+    */
+  QMap<QString, AccountGroup> m_accounts;
 };
 
 #endif // MYMONEYBudget_H

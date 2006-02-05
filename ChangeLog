@@ -2,6 +2,10 @@
   * Added feature to retrieve secret keys from GPG keyring
   * Added #1280473 (Encryption on a file-by-file basis)
 
+2006-02-03 Darren Gould <darren_gould@gmx.de>
+  * Added MyMoneyBudget write and readXML capability
+  * Tied XML writing/reading into KBudgetView
+
 2006-02-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Extend field descriptor hint to category/memo fields
 

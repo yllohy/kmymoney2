@@ -78,13 +78,22 @@
                                     </property>
                                 </widget>
                                 <widget class="QComboBox">
-                                    <item>
-                                        <property name="text">
-                                            <string>2006</string>
-                                        </property>
-                                    </item>
                                     <property name="name">
-                                        <cstring>comboBox2</cstring>
+                                        <cstring>m_cbYear</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>7</hsizetype>
+                                            <vsizetype>0</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="currentItem">
+                                        <number>0</number>
+                                    </property>
+                                    <property name="sizeLimit">
+                                        <number>15</number>
                                     </property>
                                 </widget>
                             </vbox>
@@ -103,16 +112,32 @@
                             <property name="name">
                                 <cstring>m_pbOk</cstring>
                             </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>5</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
                             <property name="text">
-                                <string>OK</string>
+                                <string>O&amp;K</string>
                             </property>
                         </widget>
                         <widget class="KPushButton">
                             <property name="name">
                                 <cstring>m_pbCancel</cstring>
                             </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>5</hsizetype>
+                                    <vsizetype>5</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
                             <property name="text">
-                                <string>Cancel</string>
+                                <string>&amp;Cancel</string>
                             </property>
                         </widget>
                     </hbox>
@@ -121,5 +146,30 @@
         </widget>
     </grid>
 </widget>
+<connections>
+    <connection>
+        <sender>m_pbOk</sender>
+        <signal>clicked()</signal>
+        <receiver>KNewBudgetDlgDecl</receiver>
+        <slot>m_pbOk_clicked()</slot>
+    </connection>
+    <connection>
+        <sender>m_pbCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>KNewBudgetDlgDecl</receiver>
+        <slot>m_pbCancel_clicked()</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">knewbudgetdlgdecl.ui.h</include>
+</includes>
+<slots>
+    <slot>m_pbOk_clicked()</slot>
+    <slot>m_pbCancel_clicked()</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
+
+
+
+
 </UI>
