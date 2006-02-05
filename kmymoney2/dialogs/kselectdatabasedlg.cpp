@@ -76,9 +76,9 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
     textDbName->setText ("KMyMoney");
     textHostName->setText ("localhost");
     textUserName->setText("");
-    const char *uptr = (const char *)getpwuid(geteuid())->pw_name;
-    if (uptr != 0)
-      textUserName->setText (QString(uptr));
+    struct passwd * pwd = getpwuid(geteuid());
+    if (pwd != 0)
+      textUserName->setText (QString(pwd->pw_name));
     textPassword->setText ("");
     buttonOK->setEnabled(true);
     connect (listDrivers, SIGNAL(highlighted(const QString&)), this, SLOT(slotDriverSelected(const QString &)));
