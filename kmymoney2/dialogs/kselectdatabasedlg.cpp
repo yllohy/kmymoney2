@@ -14,7 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qlayout.h>
@@ -74,7 +75,10 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
     slotDriverSelected (listDrivers->currentText());
     textDbName->setText ("KMyMoney");
     textHostName->setText ("localhost");
-    textUserName->setText (QString((const char *)cuserid(NULL)));
+    textUserName->setText("");
+    const char *uptr = (const char *)getpwuid(geteuid())->pw_name;
+    if (uptr != 0)
+      textUserName->setText (QString(uptr));
     textPassword->setText ("");
     buttonOK->setEnabled(true);
     connect (listDrivers, SIGNAL(highlighted(const QString&)), this, SLOT(slotDriverSelected(const QString &)));
