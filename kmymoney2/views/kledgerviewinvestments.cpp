@@ -513,6 +513,11 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInRegister(void)
   // place buttons
   setRegisterCellWidget(firstRow+3, 0, m_registerButtonFrame);
 
+  // add field hints
+  //m_editCashAccount->setHint("Account");
+  m_editMemo->setHint("Memo");
+  m_editFeeCategory->setHint("Fee Category");
+
   // show all variable widgets, we hide the ones we
   // don't need for the current case later on again
   m_editPPS->show();
