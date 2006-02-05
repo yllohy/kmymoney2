@@ -515,8 +515,8 @@ QWidget* KLedgerViewInvestments::arrangeEditWidgetsInRegister(void)
 
   // add field hints
   //m_editCashAccount->setHint("Account");
-  m_editMemo->setHint("Memo");
-  m_editFeeCategory->setHint("Fee Category");
+  m_editMemo->setHint(i18n("Memo"));
+  m_editFeeCategory->setHint(i18n("Fee Category"));
 
   // show all variable widgets, we hide the ones we
   // don't need for the current case later on again
