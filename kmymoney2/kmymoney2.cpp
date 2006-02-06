@@ -835,51 +835,57 @@ const bool KMyMoney2App::slotFileSave()
   return rc;
 }
 
+void KMyMoney2App::slotFileSaveAsFilterChanged(const QString& filter)
+{
+  if(filter != "*.kmy") {
+    m_saveEncrypted->setCurrentItem(0);
+    m_saveEncrypted->setEnabled(false);
+  } else {
+    m_saveEncrypted->setEnabled(true);
+  }
+}
+
 const bool KMyMoney2App::slotFileSaveAs()
 {
   bool rc = false;
 
   QString prevMsg = slotStatusMsg(i18n("Saving file with a new filename..."));
   QString prevDir= ""; // don't prompt file name if not a native file
-  if (myMoneyView->isNativeFile()) prevDir = readLastUsedDir();
-
-#if 0
-  QString newName=KFileDialog::getSaveFileName(prevDir,//KGlobalSettings::documentPath(),
-                                               i18n("*.kmy|KMyMoney files\n""*.xml|XML Files\n""*.ANON.xml|Anonymous Files\n"
-
-                                               "*.*|All files"), this, i18n("Save as..."));
-#endif
+  if (myMoneyView->isNativeFile())
+    prevDir = readLastUsedDir();
 
   QVBox* vbox = new QVBox();
-  QLabel* title = new QLabel(i18n("Encryption key to be used"), vbox);
-  KComboBox* saveEncrypted = new KComboBox(vbox);
+  new QLabel(i18n("Encryption key to be used"), vbox);
+  m_saveEncrypted = new KComboBox(vbox);
 
   QStringList keyList;
   KGPGFile::secretKeyList(keyList);
-  saveEncrypted->insertItem(i18n("No encryption"));
+  m_saveEncrypted->insertItem(i18n("No encryption"));
 
   int idx = 0;
   for(QStringList::iterator it = keyList.begin(); it != keyList.end(); ++it) {
     QStringList fields = QStringList::split(":", *it);
     if(fields[0] != RECOVER_KEY_ID) {
       ++idx;
-      saveEncrypted->insertItem(QString("%1 (0x%2)").arg(fields[1]).arg(fields[0]));
+      m_saveEncrypted->insertItem(QString("%1 (0x%2)").arg(fields[1]).arg(fields[0]));
       if((*it).contains(KMyMoneySettings::gpgRecipient())) {
-        saveEncrypted->setCurrentItem(idx);
+        m_saveEncrypted->setCurrentItem(idx);
       }
     }
   }
 
   // the following code is copied from KFileDialog::getSaveFileName,
   // adjust to our local needs (filetypes etc.) and
-  // enhanced to show the saveEncrypted combo box
+  // enhanced to show the m_saveEncrypted combo box
   bool specialDir = prevDir.at(0) == ':';
   KFileDialog dlg( specialDir ? prevDir : QString::null,
-                   i18n("*.kmy|KMyMoney files\n"
-                        "*.xml|XML Files\n"
-                        "*.ANON.xml|Anonymous Files\n"
-                        "*.*|All files"),
+                   QString("%1|%2\n").arg("*.kmy").arg(i18n("KMyMoney (Filefilter)", "KMyMoney files")) +
+                   QString("%1|%2\n").arg("*.xml").arg(i18n("XML (Filefilter)", "XML files")) +
+                   QString("%1|%2\n").arg("*.anon.xml").arg(i18n("Anonymous (Filefilter)", "Anonymous files")) +
+                   QString("%1|%2\n").arg("*").arg(i18n("All files")),
                    this, "filedialog", true, vbox);
+  connect(&dlg, SIGNAL(filterChanged(const QString&)), this, SLOT(slotFileSaveAsFilterChanged(const QString&)));
+
   if ( !specialDir )
     dlg.setSelection( prevDir ); // may also be a filename
 
@@ -929,9 +935,9 @@ const bool KMyMoney2App::slotFileSaveAs()
 
         m_fileName = newName;
         QString encryptionKey;
-        if(saveEncrypted->currentItem() != 0) {
+        if(m_saveEncrypted->currentItem() != 0) {
           QRegExp keyExp(".* \\((.*)\\)");
-          if(keyExp.search(saveEncrypted->currentText()) != -1) {
+          if(keyExp.search(m_saveEncrypted->currentText()) != -1) {
             encryptionKey = keyExp.cap(1);
           }
         }

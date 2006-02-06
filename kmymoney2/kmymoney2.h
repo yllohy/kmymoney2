@@ -36,6 +36,7 @@ class QTimer;
 #include <kprocess.h>
 #include <kurl.h>
 #include <dcopobject.h>
+class KComboBox;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -88,6 +89,8 @@ class KMyMoney2App : public KMainWindow, MyMoneyObserver, public DCOPObject
   K_DCOP
 
 protected slots:
+  void slotFileSaveAsFilterChanged(const QString& filter);
+
   /**
     * This slot is intended to be used as part of auto saving. This is used when the
     * QTimer emits the timeout signal and simply checks that the file is dirty (has
@@ -861,6 +864,9 @@ private:
   QTimer*               m_autoSaveTimer;
   int                   m_autoSavePeriod;
 
+  // Pointer to the combo box used for key selection during
+  // File/Save as
+  KComboBox*            m_saveEncrypted;
 };
 
 extern  KMyMoney2App *kmymoney2;
