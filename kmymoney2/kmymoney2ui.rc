@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="8" name="kmymoney2" >
+<kpartgui version="9" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
