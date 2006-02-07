@@ -46,6 +46,7 @@ class KComboBox;
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneypayee.h>
 #include <kmymoney/mymoneybudget.h>
+#include <kmymoney/kmymoneyplugin.h>
 
 class QSignalMapper;
 class KProgress;
@@ -793,6 +794,8 @@ private:
 
   QSignalMapper *m_pluginSignalMapper;
   QMap<QString,KMyMoneyPlugin::ImporterPlugin*> m_importerPlugins;
+
+  QMap<QString, KMyMoneyPlugin::OnlinePlugin*> m_onlinePlugins;
 
   enum backupStateE {
     BACKUP_IDLE = 0,

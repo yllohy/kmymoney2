@@ -44,7 +44,7 @@
 #include <gwenhywfar/logger.h>
 #include <gwenhywfar/debug.h>
 #include <kbanking/settings.h>
-#include <kbanking/jobview.h>
+#include <kbanking/kbjobview.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -57,7 +57,7 @@ K_EXPORT_COMPONENT_FACTORY( kmm_kbanking,
                             KGenericFactory<KBankingPlugin>( "kmm_kbanking" ) )
 
 KBankingPlugin::KBankingPlugin(QObject *parent, const char* name, const QStringList&) :
-  KMyMoneyPlugin::Plugin(parent, name )
+  KMyMoneyPlugin::OnlinePlugin(parent, name )
 {
   m_kbanking = new KMyMoneyBanking(this, "KMyMoney");
   if(m_kbanking) {
@@ -90,11 +90,19 @@ KBankingPlugin::~KBankingPlugin()
   }
 }
 
+void KBankingPlugin::protocols(QStringList& protocolList) const
+{
+  std::list<std::string> list = m_kbanking->getActiveProviders();
+  std::list<std::string>::iterator it;
+  for(it = list.begin(); it != list.end(); ++it)
+    protocolList << (*it);
+}
+
 void KBankingPlugin::createJobView(void)
 {
   KMyMoneyViewBase* view = viewInterface()->addPage(i18n("Outbox"), "onlinebanking");
   QWidget* frm = dynamic_cast<QWidget*>(view->parent());
-  QWidget* w = new JobView(m_kbanking, view, "JobView");
+  QWidget* w = new KBJobView(m_kbanking, view, "JobView");
   viewInterface()->addWidget(view, w);
   connect(viewInterface(), SIGNAL(viewStateChanged(bool)), frm, SLOT(setEnabled(bool)));
   connect(viewInterface(), SIGNAL(accountSelected(const MyMoneyAccount&)), this, SLOT(slotAccountSelected(const MyMoneyAccount&)));
@@ -103,7 +111,7 @@ void KBankingPlugin::createJobView(void)
   QVBoxLayout* layout = new QVBoxLayout(frm);
   layout->setSpacing( 6 );
   layout->setMargin( 0 );
-  layout->addWidget(new JobView(m_kbanking, frm, "JobView"));
+  layout->addWidget(new KBJobView(m_kbanking, frm, "JobView"));
   connect(viewInterface(), SIGNAL(viewStateChanged(bool)), frm, SLOT(setEnabled(bool)));
 #endif
 
@@ -195,6 +203,7 @@ void KBankingPlugin::slotAccountOnlineUpdate(void)
 
     // TODO: get last statement date
     if(m_kbanking->requestBalance(m_account.id())) {
+      // executeMyJobs();
       if(m_kbanking->requestTransactions(m_account.id(), QDate(), QDate())) {
         // TODO: flash status
       }

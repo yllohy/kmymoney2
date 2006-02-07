@@ -125,7 +125,6 @@
 #include "converter/mymoneystatementreader.h"
 #include "converter/mymoneytemplate.h"
 
-#include "plugins/kmymoneyplugin.h"
 #include "plugins/interfaces/kmmviewinterface.h"
 #include "plugins/interfaces/kmmstatementinterface.h"
 
@@ -3636,6 +3635,13 @@ void KMyMoney2App::loadPlugins(void)
         guiFactory()->addClient(plugin);
         kdDebug() << "Loaded '"
                   << plugin->name() << "' plugin" << endl;
+        KMyMoneyPlugin::OnlinePlugin* op = dynamic_cast<KMyMoneyPlugin::OnlinePlugin *>(plugin);
+        if(op) {
+          m_onlinePlugins[plugin->name()] = op;
+          QStringList protocolList;
+          op->protocols(protocolList);
+          kdDebug() << "It's an online banking plugin and supports '" << protocolList << "'" << endl;
+        }
       } else {
         kdDebug() << "Failed to load '"
                   << service->name() << "' service, error=" << errCode << endl;

@@ -83,6 +83,21 @@ KMyMoneyPlugin::StatementInterface* KMyMoneyPlugin::Plugin::statementInterface()
   return static_cast<StatementInterface*>( parent()->child( 0, "KMyMoneyPlugin::StatementInterface" ) );
 }
 
+
+
+KMyMoneyPlugin::OnlinePlugin::OnlinePlugin(QObject* o, const char* name) :
+  KMyMoneyPlugin::Plugin(o, name)
+{
+}
+
+KMyMoneyPlugin::OnlinePlugin::~OnlinePlugin()
+{
+}
+
+
+
+
+
 KMyMoneyPlugin::ImporterPlugin::ImporterPlugin(QObject* o, const char* name) :
   QObject(o, name)
 {

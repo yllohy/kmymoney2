@@ -39,8 +39,8 @@ class KToggleAction;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kmymoney/viewinterface.h"
-#include "kmymoney/statementinterface.h"
+#include <kmymoney/viewinterface.h>
+#include <kmymoney/statementinterface.h>
 #include <kmymoney/export.h>
 
 namespace KMyMoneyPlugin {
@@ -77,6 +77,16 @@ namespace KMyMoneyPlugin {
     ViewInterface*          viewInterface();
     StatementInterface*     statementInterface();
 
+  };
+
+  class KMYMONEY_EXPORT OnlinePlugin : public Plugin
+  {
+    Q_OBJECT
+  public:
+    OnlinePlugin(QObject* parent, const char* name);
+    virtual ~OnlinePlugin();
+
+    virtual void protocols(QStringList& protocolList) const = 0;
   };
 
 /**

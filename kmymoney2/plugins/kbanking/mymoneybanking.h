@@ -41,7 +41,7 @@ class KBanking;
   * This class represents the KBanking plugin towards KMymoney.
   * All GUI related issues are handled in this object.
   */
-class KBankingPlugin : public KMyMoneyPlugin::Plugin
+class KBankingPlugin : public KMyMoneyPlugin::OnlinePlugin
 {
   Q_OBJECT
 public:
@@ -49,6 +49,8 @@ public:
   virtual ~KBankingPlugin();
 
   bool importStatement(MyMoneyStatement& s);
+
+  void protocols(QStringList& protocolList) const;
 
 protected:
   /**
@@ -130,105 +132,5 @@ private:
   KBankingPlugin* m_parent;
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#if 0
-
-
-
-
-
-#ifdef HAVE_KBANKING
-#  include <kbanking/kbanking.h>
-#  include <kbanking/jobview.h>
-#else
-  class KBanking
-  {
-  public:
-    KBanking(const char *appname, const char *fname) {};
-    virtual ~KBanking() {};
-    bool askMapAccount(const char *id, const char *bankCode, const char *accountId) { return false; };
-    bool requestBalance(const char *accountId) { return false; };
-    bool requestTransactions(const char *accountId,
-                            const QDate &fromDate,
-                            const QDate &toDate) { return false; };
-    bool interactiveImport(void) { return false; }
-    int fini(void) { return 1; };
-  };
-#endif
-
-class KMyMoneyBanking: public KBanking
-{
-public:
-  /**
-    * This method returns a pointer to a KMyMoneyBanking singleton object.
-    * This ensures, that only one KMyMoneyBanking object can exist per task.
-    */
-  static KMyMoneyBanking* instance(void);
-
-  virtual ~KMyMoneyBanking();
-
-  /**
-    * This method returns status information if KBanking is available
-    * at runtime and initialized correctly or not.
-    *
-    * @retval true KBanking is available and initialized
-    * @retval false KBanking is not available
-    */
-  const bool isAvailable(void) const;
-
-  /**
-    * This method starts the KBaning settings dialog if KBanking::isAvailable()
-    * returns true. Otherwise, it just returns.
-    */
-  void settingsDialog(QWidget* parent, const char* name = 0, QWidget::WFlags fl = 0);
-
-  /**
-    * This method creates a KBanking JobView object if KBanking::isAvailable()
-    * returns true. Otherwise, it returns a simple QWidget.
-    */
-  QWidget* createJobView(QWidget* parent, const char* name = 0);
-
-  /**
-    * This method updates the jobview created with createJobView() if KBanking::available()
-    * returns true. Otherwise, it just returns.
-    */
-  void updateJobView(void);
-
-private:
-  KMyMoneyBanking(const char *appname, const char *fname=0);
-
-#ifdef HAVE_KBANKING
-public:
-  virtual bool importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai);
-
-private:
-  const AB_ACCOUNT_STATUS *_getAccountStatus(AB_IMEXPORTER_ACCOUNTINFO *ai);
-
-private:
-  JobView*     m_jobView;
-#endif
-
-};
-#endif // #if 0
 
 #endif
