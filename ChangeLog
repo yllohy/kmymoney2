@@ -1,3 +1,9 @@
+2006-02-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Remove includehints from *.ui files
+  * Added support of equity group to MyMoneyFile::consistencyCheck
+  * Converted --notimers to --timers option
+  * Started adding KMyMoneyPlugin::OnlinePlugin interface
+
 2006-02-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved encryption selection on file-by-file basis
   * Bumped internal version of kmymoney2ui.rc due to recent changes
