@@ -14,10 +14,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
+
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qapplication.h>
@@ -27,6 +31,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <kapplication.h>
 #include <kurlrequester.h>
 #include <ktextbrowser.h>
@@ -35,6 +40,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "kselectdatabasedlg.h"
 #include "../mymoney/storage/mymoneystoragesql.h"
 
@@ -85,7 +91,7 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
   }
   connect (buttonHelp, SIGNAL(released()), this, SLOT(slotHelp()));
   connect (buttonSQL, SIGNAL(released()), this, SLOT(slotGenerateSQL()));
-  
+
 }
 
 KSelectDatabaseDlg::~KSelectDatabaseDlg() {}
@@ -129,7 +135,7 @@ void KSelectDatabaseDlg::slotGenerateSQL () {
       "Select output file");
   if (fileName == "") return;
   QFile out(fileName);
-  if (!out.open(IO_WriteOnly)) return; 
+  if (!out.open(IO_WriteOnly)) return;
   QTextStream s(&out);
   MyMoneyDbDef db;
   db.generateSQL(s);
@@ -181,7 +187,7 @@ void KSelectDatabaseDlg::slotHelp(void) {
   dlg.setCaption(i18n("Selecting a SQL database"));
   unsigned width = QApplication::desktop()->width();
   unsigned height = QApplication::desktop()->height();
-  te.setMinimumSize(width/2,height/2);  
+  te.setMinimumSize(width/2,height/2);
   layout.setResizeMode(QLayout::Minimum);
   dlg.exec();
 }
