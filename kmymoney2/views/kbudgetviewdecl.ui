@@ -642,14 +642,4 @@
     <slot>m_bNewBudget_clicked()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>klistview.h</includehint>
-    <includehint>kactivelabel.h</includehint>
-    <includehint>knuminput.h</includehint>
-    <includehint>kactivelabel.h</includehint>
-    <includehint>kactivelabel.h</includehint>
-    <includehint>klineedit.h</includehint>
-    <includehint>kcombobox.h</includehint>
-    <includehint>klistview.h</includehint>
-</includehints>
 </UI>

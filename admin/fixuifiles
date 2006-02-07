@@ -158,6 +158,43 @@ sub fix_accels($)
   }
 }
 
+# Ensure no auto-added includehints exist
+sub fix_includehints($)
+{
+  my $srcfile = shift @_;
+  open(SRC, "< $srcfile") || die "fix_includehints: couldn't open '$srcfile'\n";
+  my @contents = <SRC>;
+  close(SRC);
+  return if ( !grep( /<includehint>.*<\/includehint>/, @contents ));
+  my @fixedcontents = ();
+
+  my $includesremoved = 0;
+  my $inside_include = 0;
+  # inside_include is 0 before <includehints>
+  # 1 after <includehints>
+  foreach my $line (@contents) {
+      if ( $inside_include == 1 ) {
+          if ( $line =~ m/<includehint>(.*)<\/includehint>/ ) {
+              print "$srcfile: includehint $1 removed\n" if ($verbose);
+              $includesremoved++;
+          }
+      }
+      if ($line =~ m/<includehints>/) {
+          $inside_include = 1;
+      }
+      if ($inside_include == 0) {
+          push @fixedcontents, $line;
+      }
+      $inside_include = 0 if ($inside_include && $line =~ m/<\/includehints>/);
+  }
+  if ($includesremoved) {
+      print "$srcfile: $includesremoved includehints removed\n";
+      open(SRC, "> $srcfile") || die "fix_includehints: couldn't open '$srcfile' for writing\n";
+      print SRC @fixedcontents;
+      close(SRC);
+  }
+}
+
 # Ensure no auto-added caption exists - it's pretty stupid to have to
 # translate Form1 or MyClassName
 sub fix_captions($)
@@ -256,6 +293,7 @@ sub process_ui_file($)
   &fix_version($file) if(!$omit_Qt_check);
   &fix_accels($file);
   &fix_captions($file);
+  &fix_includehints($file);
 }
 
 #############################################################################
