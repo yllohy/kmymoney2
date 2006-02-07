@@ -52,7 +52,7 @@ static KCmdLineOptions options[] =
 {
   { "lang <lang-code>", I18N_NOOP("language to be used"), 0 },
   { "n", I18N_NOOP("don't open last used file"), 0},
-  { "notimers", I18N_NOOP("suppress performance timers"), 0},
+  { "timers", I18N_NOOP("enable performance timers"), 0},
 
 #if KMM_DEBUG
   // The following options are only available when compiled in debug mode
@@ -66,9 +66,9 @@ static KCmdLineOptions options[] =
 };
 
 QTime timer;
-bool timers_enabled;
 
 KMyMoney2App* kmymoney2;
+KCmdLineArgs *args;
 
 int main(int argc, char *argv[])
 {
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
   KStartupLogo* splash = new KStartupLogo();
   a->processEvents();
 
-  KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+  args = KCmdLineArgs::parsedArgs();
 
   // setup the MyMoneyMoney locale settings according to the KDE settings
   MyMoneyMoney::setThousandSeparator(*(KGlobal::locale()->monetaryThousandsSeparator().latin1()));
@@ -149,8 +149,6 @@ int main(int argc, char *argv[])
     MyMoneyTracer::on();
 #endif
 
-  timers_enabled = args->isSet("timers");
-	  
   kmymoney2 = 0;
   kmymoney2 = new KMyMoney2App();
   a->setMainWidget( kmymoney2 );
@@ -264,7 +262,7 @@ int main(int argc, char *argv[])
 
 void timetrace(char *txt)
 {
-  if ( timers_enabled )
+  if ( args->isSet("timers" ))
   {
     qDebug("Timer(%s): %d elapsed", txt, timer.elapsed());
     timer.restart();
