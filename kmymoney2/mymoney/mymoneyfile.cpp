@@ -1399,6 +1399,9 @@ const QStringList MyMoneyFile::consistencyCheck(void)
       case MyMoneyAccount::Income:
         toplevel = income();
         break;
+      case MyMoneyAccount::Equity:
+        toplevel = equity();
+        break;
       default:
         qWarning("%s:%d This should never happen!", __FILE__ , __LINE__);
         break;
