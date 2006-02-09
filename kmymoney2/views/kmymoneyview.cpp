@@ -524,7 +524,7 @@ bool KMyMoneyView::readFile(const KURL& url)
                 else
                   ungetString(qfile, hdr.data(), 70);
                 QRegExp kmyexp("<!DOCTYPE KMYMONEY-FILE>");
-                QRegExp gncexp("<gnc-v(\\d+)>");
+                QRegExp gncexp("<gnc-v(\\d+)");
                 QCString txt(hdr);
                 if(kmyexp.search(txt) != -1) {
                   pReader = new MyMoneyStorageXML;
