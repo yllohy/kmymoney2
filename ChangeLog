@@ -1,3 +1,6 @@
+2006-02-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Read Gnucash V2 files
+
 2006-02-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Remove includehints from *.ui files
   * Added support of equity group to MyMoneyFile::consistencyCheck
