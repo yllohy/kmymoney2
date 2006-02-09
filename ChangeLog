@@ -1,3 +1,7 @@
+2006-02-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by Mathieu Ouridoux to check for a possible difference
+    when ending reconciliation and warn the user
+
 2006-02-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Read Gnucash V2 files
 

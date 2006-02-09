@@ -36,6 +36,7 @@
 #include <kglobal.h>
 #include <klocale.h>
 #include <kpushbutton.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -1671,6 +1672,13 @@ void KLedgerViewCheckings::slotEndReconciliation(void)
   slotCancelEdit();
 
   if(m_inReconciliation == true) {
+    MyMoneyMoney difference(m_differenceLabel->text());
+    if (!difference.isZero()) {
+      QString message = i18n("You are about to finish the reconciliation of this account with a difference between your bank statement and the transactions you have just cleared.\n"
+                             "Are you sure you want to finish the reconciliation ?");
+      if (KMessageBox::questionYesNo(this, message, i18n("Confirm end of reconciliation"), KStdGuiItem::yes(), KStdGuiItem::no()) == KMessageBox::No)
+        return;
+    }
     m_account.setValue("lastStatementBalance", m_endingBalance.toString());
     m_account.setValue("lastStatementDate", m_endingDate.toString(Qt::ISODate));
 
