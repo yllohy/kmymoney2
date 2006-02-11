@@ -1,3 +1,11 @@
+2006-02-11 Andreas Nicolai <Andreas.Nicolai@gmx.net>
+  * Added Feature request #1395262 (Allow customization of Home Page Font Size)
+  * Added : font scaling (adjustable with CTRL + mouse wheel) is now
+            saved on exit and restored on next restart
+  * Added : font scaling can be directly set in "Home" configuration page,
+            also the "remember font size on exit" feature can be turned on
+            and off in the configuration dialog
+
 2006-02-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Mathieu Ouridoux to check for a possible difference
     when ending reconciliation and warn the user

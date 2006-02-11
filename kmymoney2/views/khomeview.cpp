@@ -45,11 +45,13 @@
 #include <kactioncollection.h>
 #include <kapplication.h>
 #include <kmessagebox.h>
+#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "khomeview.h"
 #include "../kmymoneyutils.h"
+#include "../kmymoneysettings.h"
 #include "../mymoney/mymoneyfile.h"
 
 #define VIEW_LEDGER         "ledger"
@@ -74,6 +76,13 @@ KHomeView::KHomeView(QWidget *parent, const char *name ) :
 
 KHomeView::~KHomeView()
 {
+  // if user wants to remember the font size, store it here
+  if (KMyMoneySettings::self()->rememberFontSize())
+  {
+    KMyMoneySettings::self()->setFontSizePercentage(m_part->zoomFactor());
+    //kdDebug() << "Storing font size: " << m_part->zoomFactor() << endl;
+    KMyMoneySettings::self()->writeConfig();
+  }
 }
 
 void KHomeView::show()
@@ -85,7 +94,11 @@ void KHomeView::show()
 
 void KHomeView::slotRefreshView(void)
 {
-  if(MyMoneyFile::instance()->accountList().count() == 0) {
+  m_part->setZoomFactor( KMyMoneySettings::self()->fontSizePercentage() );
+  //kdDebug() << "Setting font size: " << m_part->zoomFactor() << endl;
+
+  if(MyMoneyFile::instance()->accountList().count() == 0)
+  {
     m_part->openURL(m_filename);
 
 #if 0

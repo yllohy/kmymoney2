@@ -94,6 +94,14 @@
   <label>Order of items on homepage</label>
   <default>1,2,3,4,5</default>
   </entry>
+  <entry name="FontSizePercentage" type="Int">
+   <label>Percentage of default font size used for home view HTML page</label>
+   <default>100</default>
+  </entry>
+  <entry name="RememberFontSize" type="Bool">
+   <label>Remember (manually adjusted) font size in home view on program end.</label>
+   <default>true</default>
+  </entry>
  </group>
  <group name="Investment Settings">
  </group>
