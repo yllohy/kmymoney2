@@ -105,7 +105,8 @@ void kMyMoneyRegister::readConfig(void)
   m_bgColor = KMyMoneyUtils::backgroundColour();
   m_gridColor = KMyMoneyUtils::gridColour();
   m_importColor = Qt::yellow;
-
+  m_matchColor = QColor("PaleGreen");
+  
   QFont cellFont = KMyMoneyUtils::cellFont();
   m_headerFont = KMyMoneyUtils::headerFont();
   updateHeaders();
@@ -202,6 +203,9 @@ void kMyMoneyRegister::paintCell(QPainter *p, int row, int col, const QRect& r,
   if(m_transaction != NULL) {
     if(m_transaction->value("Imported").lower() == "true") {
       m_cg.setColor(QColorGroup::Base, m_importColor);
+    }
+    if(m_transaction->value("MatchSelected").lower() == "true") {
+      m_cg.setColor(QColorGroup::Base, m_matchColor);
     }
   }
 
@@ -627,3 +631,4 @@ bool kMyMoneyRegister::focusNextPrevChild(bool next)
 
 
 #include "kmymoneyregister.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:

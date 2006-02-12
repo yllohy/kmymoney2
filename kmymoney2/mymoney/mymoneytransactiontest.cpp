@@ -352,7 +352,6 @@ void MyMoneyTransactionTest::testModifyDuplicateAccount() {
 		unexpectedException(e);
 	}
 }
-
 void MyMoneyTransactionTest::testWriteXML() {
 	MyMoneyTransaction t;
 	t.setPostDate(QDate(2001,12,28));
@@ -370,6 +369,7 @@ void MyMoneyTransactionTest::testWriteXML() {
 	s.setAction(MyMoneySplit::ActionWithdrawal);
 	s.setAccountId("A000076");
 	s.setReconcileFlag(MyMoneySplit::Reconciled);
+	s.setBankID("SPID");
 	t.addSplit(s);
 
 	QDomDocument doc("TEST");
@@ -382,7 +382,7 @@ void MyMoneyTransactionTest::testWriteXML() {
                 "<TRANSACTION-CONTAINER>\n"
 		" <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"  <SPLITS>\n"
-		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" bankid=\"SPID\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"  </SPLITS>\n"
 		"  <KEYVALUEPAIRS>\n"
 		"   <PAIR key=\"key\" value=\"value\" />\n"
@@ -391,7 +391,7 @@ void MyMoneyTransactionTest::testWriteXML() {
                 "</TRANSACTION-CONTAINER>\n"
 
 	);
-
+	
 	CPPUNIT_ASSERT(doc.toString() == ref);
 }
 
@@ -403,7 +403,7 @@ void MyMoneyTransactionTest::testReadXML() {
                 "<TRANSACTION-CONTAINER>\n"
 		" <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"  <SPLITS>\n"
-		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" bankid=\"SPID\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"  </SPLITS>\n"
 		"  <KEYVALUEPAIRS>\n"
 		"   <PAIR key=\"key\" value=\"value\" />\n"
@@ -417,7 +417,7 @@ void MyMoneyTransactionTest::testReadXML() {
                 "<TRANSACTION-CONTAINER>\n"
 		" <TRANS-ACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"  <SPLITS>\n"
-		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" bankid=\"SPID\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"  </SPLITS>\n"
 		"  <KEYVALUEPAIRS>\n"
 		"   <PAIR key=\"key\" value=\"value\" />\n"

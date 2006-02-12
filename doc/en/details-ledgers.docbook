@@ -16,8 +16,8 @@
 <affiliation><address><email>rogerlum@gmail.com</email></address></affiliation>
 </author>
 </authorgroup>
-<date>2005-07-09</date>
-<releaseinfo>0.8</releaseinfo>
+<date>2006-02-11</date>
+<releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
 <title>Ledgers</title>
@@ -294,6 +294,31 @@ Which method you use to enter transactions is up to you and is a matter of perso
 </screenshot>
 </para>
 
+</sect1>
+
+<sect1 id="details.ledgers.match"><title id="details.ledgers.match.title">Matching Transactions</title>
+
+<para>
+When importing transactions via OFX or HBCI, those transactions will sometimes already be in your register.
+If you simply delete the imported transaction, you will find that the next time you import your transactions, the deleted transaction shows up again.
+This is because modern import formats like OFX and HBCI use a &quot;Transaction ID&quot; to identify transactions.
+When you deleted the imported transaction, the transaction ID went with it, so the importer has no way to know this transaction was already imported.
+</para> 
+
+<para>
+The solution is to tell &kappname; that the transactions are the same, using the manual matching interface.
+</para>
+<para>
+To do so, right-click on one of the transactions to be matched.  Choose <guimenuitem>Match Transactions...</guimenuitem> from the context menu.  This flags the selected transaction, and changes the background color to a nice pale green.
+</para>
+<para>
+Next, right-click on the other transaction to be matched.  Choose <guimenuitem>Match with this Transaction</guimenuitem>.  This will match the two transactions together.  The values of both transactions must be the same for the match to work.
+</para>
+
+<para>
+In the future, matching will be made more automatic.
+The importer will automatically match transactions which look like the same, and give you the option to un-match them.
+</para>
 </sect1>
 
 <sect1 id="details.ledgers.cleared"><title>Understanding the Cleared State</title>

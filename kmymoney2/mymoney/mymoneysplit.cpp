@@ -64,6 +64,7 @@ MyMoneySplit::MyMoneySplit(const QDomElement& node) :
   m_shares = MyMoneyMoney(QStringEmpty(node.attribute("shares")));
   m_account = QCStringEmpty(node.attribute("account"));
   m_number = QStringEmpty(node.attribute("number"));
+  m_bankID = QStringEmpty(node.attribute("bankid"));
 }
 
 MyMoneySplit::~MyMoneySplit()
@@ -157,6 +158,7 @@ void MyMoneySplit::writeXML(QDomDocument& document, QDomElement& parent) const
   // el.setAttribute("id", split.id());
   el.setAttribute("account", m_account);
   el.setAttribute("number", m_number);
+  el.setAttribute("bankid", m_bankID);
 
   parent.appendChild(el);
 }
@@ -165,3 +167,4 @@ bool MyMoneySplit::hasReferenceTo(const QCString& id) const
 {
   return (id == m_account) || (id == m_payee);
 }
+// vim:cin:si:ai:et:ts=2:sw=2:

@@ -351,6 +351,15 @@ protected:
   QColor m_gridColor;
   QColor m_errorColor, m_lastErrorColor;
   QColor m_importColor;
+ 
+  /**
+    * This member tells what color a transaction should be displayed as
+    * while the user has selected it for matching.  Since matching is
+    * a two-step process requiring two transactions, this tells the
+    * user which transaction is being matched while they select the
+    * second one.
+    */
+  QColor m_matchColor;
 
   QRect  m_cellRect;
   QRect  m_textRect;
@@ -458,3 +467,5 @@ signals:
 };
 
 #endif
+// vim:cin:si:ai:et:ts=2:sw=2:
+

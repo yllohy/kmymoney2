@@ -557,6 +557,7 @@ void MyMoneyScheduleTest::testWriteXML() {
 	s.setShares(MyMoneyMoney(96379, 100));
 	s.setValue(MyMoneyMoney(96379, 100));
 	s.setAccountId("A000076");
+	s.setBankID("SPID1");
 	s.setReconcileFlag(MyMoneySplit::Reconciled);
 	t.addSplit(s);
 
@@ -564,6 +565,7 @@ void MyMoneyScheduleTest::testWriteXML() {
 	s.setShares(MyMoneyMoney(-96379, 100));
 	s.setValue(MyMoneyMoney(-96379, 100));
 	s.setAccountId("A000276");
+	s.setBankID("SPID2");
 	s.setReconcileFlag(MyMoneySplit::Cleared);
 	s.clearId();
 	t.addSplit(s);
@@ -584,8 +586,8 @@ void MyMoneyScheduleTest::testWriteXML() {
 		"  </PAYMENTS>\n"
 		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"   <SPLITS>\n"
-		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
-		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
+		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" bankid=\"SPID1\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" bankid=\"SPID2\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
 		"   </SPLITS>\n"
 		"   <KEYVALUEPAIRS>\n"
 		"    <PAIR key=\"key\" value=\"value\" />\n"
@@ -612,8 +614,8 @@ void MyMoneyScheduleTest::testReadXML() {
 		"  </PAYMENTS>\n"
 		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"   <SPLITS>\n"
-		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
-		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
+		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" bankid=\"SPID1\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" bankid=\"SPID2\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
 		"   </SPLITS>\n"
 		"   <KEYVALUEPAIRS>\n"
 		"    <PAIR key=\"key\" value=\"value\" />\n"
@@ -634,8 +636,8 @@ void MyMoneyScheduleTest::testReadXML() {
 		"  </PAYMENTS>\n"
 		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"   <SPLITS>\n"
-		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
-		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
+		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" bankid=\"SPID1\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" bankid=\"SPID2\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
 		"   </SPLITS>\n"
 		"   <KEYVALUEPAIRS>\n"
 		"    <PAIR key=\"key\" value=\"value\" />\n"

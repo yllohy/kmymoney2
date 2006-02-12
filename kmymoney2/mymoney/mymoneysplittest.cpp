@@ -190,6 +190,7 @@ void MyMoneySplitTest::testWriteXML() {
 	s.setValue(MyMoneyMoney(96379, 1000));
 	s.setAccountId("A000076");
 	s.setNumber("124");
+	s.setBankID("SPID");
 	s.setAction(MyMoneySplit::ActionDeposit);
 	s.setReconcileFlag(MyMoneySplit::Reconciled);
 
@@ -201,7 +202,7 @@ void MyMoneySplitTest::testWriteXML() {
 	QString ref = QString(
 		"<!DOCTYPE TEST>\n"
 		"<SPLIT-CONTAINER>\n"
-		" <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Deposit\" number=\"124\" reconcileflag=\"2\" memo=\"\" value=\"96379/1000\" account=\"A000076\" />\n"
+		" <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Deposit\" bankid=\"SPID\" number=\"124\" reconcileflag=\"2\" memo=\"\" value=\"96379/1000\" account=\"A000076\" />\n"
 		"</SPLIT-CONTAINER>\n");
 
 	CPPUNIT_ASSERT(doc.toString() == ref);
@@ -212,13 +213,13 @@ void MyMoneySplitTest::testReadXML() {
 	QString ref_ok = QString(
 		"<!DOCTYPE TEST>\n"
 		"<SPLIT-CONTAINER>\n"
-		" <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Deposit\" number=\"124\" reconcileflag=\"2\" memo=\"MyMemo\" value=\"96379/1000\" account=\"A000076\" />\n"
+		" <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Deposit\" bankid=\"SPID\" number=\"124\" reconcileflag=\"2\" memo=\"MyMemo\" value=\"96379/1000\" account=\"A000076\" />\n"
 		"</SPLIT-CONTAINER>\n");
 
 	QString ref_false = QString(
 		"<!DOCTYPE TEST>\n"
 		"<SPLIT-CONTAINER>\n"
-		" <SPLITS payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Deposit\" number=\"124\" reconcileflag=\"2\" memo=\"\" value=\"96379/1000\" account=\"A000076\" />\n"
+		" <SPLITS payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Deposit\" bankid=\"SPID\" number=\"124\" reconcileflag=\"2\" memo=\"\" value=\"96379/1000\" account=\"A000076\" />\n"
 		"</SPLIT-CONTAINER>\n");
 
 	QDomDocument doc;
@@ -244,6 +245,7 @@ void MyMoneySplitTest::testReadXML() {
 		CPPUNIT_ASSERT(s.shares() == MyMoneyMoney(96379, 100));
 		CPPUNIT_ASSERT(s.value() == MyMoneyMoney(96379, 1000));
 		CPPUNIT_ASSERT(s.number() == "124");
+		CPPUNIT_ASSERT(s.bankID() == "SPID");
 		CPPUNIT_ASSERT(s.reconcileFlag() == MyMoneySplit::Reconciled);
 		CPPUNIT_ASSERT(s.action() == MyMoneySplit::ActionDeposit);
 		CPPUNIT_ASSERT(s.accountId() == "A000076");

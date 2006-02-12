@@ -1883,9 +1883,12 @@ void KLedgerView::createContextMenu(void)
                         this, SLOT(slotDeleteTransaction()));
 
   m_contextMenu->insertSeparator();
-  m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Match Transaction..."), this, SLOT(slotStartMatch()));
-  m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Cancel Match"), this, SLOT(slotCancelMatch()));
-  m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Match With This Transaction"), this, SLOT(slotEndMatch()));
+  m_contextMenuStartMatchId = m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Match Transaction..."), this, SLOT(slotStartMatch()));
+  m_contextMenuCancelMatchId = m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Cancel Match"), this, SLOT(slotCancelMatch()));
+  m_contextMenuEndMatchId = m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small), i18n("Match With This Transaction"), this, SLOT(slotEndMatch()));
+ 
+  m_contextMenu->setItemVisible(m_contextMenuCancelMatchId,false);
+  m_contextMenu->setItemVisible(m_contextMenuEndMatchId,false);
   
   m_sortMenu = new KPopupMenu(this);
 
@@ -2321,24 +2324,25 @@ void KLedgerView::slotStartMatch(void)
 {
   Q_CHECK_PTR(m_register);
 
-  // TODO: Dialog box saying, "This transaction has been selected for matching.
-  // Now choose the other transaction to match with and choose "Match With This
-  // Transaction."
-  // 
-  // Should also have a "Help" button which brings up the online help for this
+  KMessageBox::information(this,i18n("This transaction has been selected for matching.  Now select the transaction to match with and choose \"Match With This Transaction.\""),i18n("Match Transaction"),"KLedgerView::slotStartMatch Initial check");
+  
+  // TODO: Add a "Help" button which brings up the online help for this
   // feature.
 
   if ( m_transactionPtr != 0 ) 
   {
     m_matchTransaction = m_transaction;
 
-    // TODO: Now enable cancelMatch & endMatch in the UI
-    // TODO: Now disable startMatch
+    m_matchTransaction.setValue("MatchSelected","true");
+    MyMoneyFile::instance()->modifyTransaction(m_matchTransaction);
+
+    m_contextMenu->setItemVisible(m_contextMenuStartMatchId,false);
+    m_contextMenu->setItemVisible(m_contextMenuCancelMatchId,true);
+    m_contextMenu->setItemVisible(m_contextMenuEndMatchId,true);
   }
   else
   {
-    // TODO: Error dialog saying, "Please select a valid transaction before
-    // trying to match transactions."
+    KMessageBox::sorry(this,i18n("You must first select a valid transaction before trying to match transactions."),i18n("Match Transaction"));
   }
 }
   
@@ -2346,10 +2350,13 @@ void KLedgerView::slotCancelMatch(void)
 {
   Q_CHECK_PTR(m_register);
   
+  m_matchTransaction.deletePair("MatchSelected");
+  MyMoneyFile::instance()->modifyTransaction(m_matchTransaction);
   m_matchTransaction = MyMoneyTransaction();
 
-  // TODO: Now enable start match
-  // TODO: Now disable cancelMatch & endMatch in the UI
+  m_contextMenu->setItemVisible(m_contextMenuStartMatchId,true);
+  m_contextMenu->setItemVisible(m_contextMenuCancelMatchId,false);
+  m_contextMenu->setItemVisible(m_contextMenuEndMatchId,false);
 }
 
 void KLedgerView::slotEndMatch(void)
@@ -2360,7 +2367,8 @@ void KLedgerView::slotEndMatch(void)
   {
     MyMoneyTransaction endMatchTransaction = m_transaction;
 
-    KMessageBox::questionYesNo(this, QString("Match transactions %1 and %2?").arg(m_matchTransaction.id(),endMatchTransaction.id()),i18n("Verify Match"));
+    if ( KMessageBox::questionYesNo(this, QString("Match transactions %1 and %2?").arg(m_matchTransaction.id(),endMatchTransaction.id()),i18n("Verify Match")) == KMessageBox::Yes )
+    {
   
     // TODO: Put up a better verification dialog, which includes the details of the transactions,
     // using something like the dialog from "find transactions".
@@ -2379,21 +2387,12 @@ void KLedgerView::slotEndMatch(void)
     // transaction.  The only thing we'll take from the end transaction
     // are the bank ID's.
     //
-    // Right now, there is a little problem with bankID's.  There is one
-    // bankID for the whole transaction.  Really, they should have been
-    // put in the splits.  I think the way to solve this is to convert
-    // the importer over to the new way, and then say that the matcher
-    // only works with newly imported transactions.  Also, we'll need a
-    // backward compat strategy, so everyone's files aren't broken.  One
-    // way is for the loader to force the bankid onto all of the splits
-    // if it finds one on a transaction.
-    //
-    // So what we have to do here is iterate over the splits in the end
+    // What we have to do here is iterate over the splits in the end
     // transaction, and find the corresponding split in the start
     // transaction.  If there is a bankID in the end split but not the
     // start split, add it to the start split.  If there is a bankID
     // in BOTH, then this transaction cannot be merged (both transactions
-    // were imported, dummy!!)  If the corresponding start split cannot  be
+    // were imported!!)  If the corresponding start split cannot  be
     // found and the end split has a bankID, we should probably just fail.
     // Although we could ADD it to the transaction.
    
@@ -2404,14 +2403,35 @@ void KLedgerView::slotEndMatch(void)
     QValueList<MyMoneySplit>::const_iterator it_split = endSplits.begin();
     while (it_split != endSplits.end())
     {
+      // find the corresponding split in the start transaction
+      MyMoneySplit startSplit;
+      QCString accountid = (*it_split).accountId();
+      try
+      {
+        startSplit = m_matchTransaction.splitByAccount( accountid );
+      }
+      // only exception is thrown if we cannot find a split like this
+      catch(MyMoneyException *e)
+      {
+        delete e;
+        startSplit = (*it_split);
+        startSplit.setId("");
+        m_matchTransaction.addSplit(startSplit);
+      }
+
+      // verify that the amounts are the same, otherwise we should not be
+      // matching!
+      if ( (*it_split).value() != startSplit.value() )
+      {
+        QString accountname = MyMoneyFile::instance()->account(accountid).name(); 
+        throw new MYMONEYEXCEPTION(i18n("Splits for %1 have conflicting values (%2,%3)").arg(accountname).arg((*it_split).value().formatMoney(),startSplit.value().formatMoney()));
+      }
+
       QString bankID = (*it_split).bankID();
       if ( ! bankID.isEmpty() )
       {
-        // find the corresponding split in the start transaction
-        QCString accountid = (*it_split).accountId();
         try
         {
-          MyMoneySplit startSplit = m_matchTransaction.splitByAccount( accountid );
           if ( startSplit.bankID().isEmpty() )
           {
             startSplit.setBankID( bankID );
@@ -2419,8 +2439,8 @@ void KLedgerView::slotEndMatch(void)
           }
           else
           {
-            // TODO: Convert the accountid into an account and report the name of the account in this case
-            throw new MYMONEYEXCEPTION(i18n("Splits for account %1 have a bank ID in both transactions (%1)").arg(accountid));
+            QString accountname = MyMoneyFile::instance()->account(accountid).name(); 
+            throw new MYMONEYEXCEPTION(i18n("Splits for have a bank ID in both transactions").arg(accountname));
           }
         }
         catch(MyMoneyException *e) 
@@ -2445,16 +2465,19 @@ void KLedgerView::slotEndMatch(void)
       delete e;
     }
    
+    m_matchTransaction.deletePair("MatchSelected");
+    MyMoneyFile::instance()->modifyTransaction(m_matchTransaction);
     m_matchTransaction = MyMoneyTransaction(); 
-    // TODO: Now enable start match
-    // TODO: Now disable cancelMatch & endMatch in the UI
+    
+    m_contextMenu->setItemVisible(m_contextMenuStartMatchId,true);
+    m_contextMenu->setItemVisible(m_contextMenuCancelMatchId,false);
+    m_contextMenu->setItemVisible(m_contextMenuEndMatchId,false);
   }
   else
   {
-    // TODO: Error dialog saying, "Please select a valid transaction before
-    // trying to match transactions."
+    KMessageBox::sorry(this,i18n("You must first select a valid transaction before trying to match transactions."),i18n("Match Transaction"));
   }
-
+  }
 }
  
 #include "kledgerview.moc"

@@ -593,7 +593,12 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
 
   MyMoneyMoney oldValue = m_value;
   m_account = account;
-  m_balance = account.balance();
+
+  // account.balance() is not compatable with stock accounts
+  if ( account.accountType() == MyMoneyAccount::Stock )
+    m_balance = MyMoneyFile::instance()->balance(account.id());
+	else
+    m_balance = account.balance();
 
   // for income and liability accounts, we reverse the sign
   switch(m_account.accountGroup()) {
@@ -720,3 +725,4 @@ void KMyMoneyAccountTreeItem::paintCell(QPainter *p, const QColorGroup & cg, int
 }
 
 #include "kmymoneyaccounttree.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:

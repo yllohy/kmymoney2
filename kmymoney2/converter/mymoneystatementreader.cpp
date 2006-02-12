@@ -215,9 +215,20 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   t.setPostDate(t_in.m_datePosted);
   t.setMemo(t_in.m_strMemo);
 
+#if 0
+  // (acejones) removing this code.  keeping it around for reference.
+  // 
+  // this is the OLD way of handling bank ID's, which unfortunately was wrong.
+  // bank ID's actually need to go on the split which corresponds with the
+  // account we're importing into.
+  //
+  // thus anywhere "this account" is put into a split is also where we need
+  // to put the bank ID in.
+  // 
   if ( ! t_in.m_strBankID.isEmpty() )
     t.setBankID(t_in.m_strBankID);
-
+#endif
+  
   MyMoneySplit s1;
 
   s1.setMemo(t_in.m_strMemo);
@@ -324,6 +335,9 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     }
 
     s1.setAccountId(thisaccount.id());
+    if ( ! t_in.m_strBankID.isEmpty() )
+      s1.setBankID(t_in.m_strBankID);
+    
     if (t_in.m_eAction==MyMoneyStatement::Transaction::eaReinvestDividend)
     {
       s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
@@ -415,6 +429,8 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     // if you really want.  The investment-specific information, such as number of shares and action will
     // be discarded in that case.
     s1.setAccountId(m_account.id());
+    if ( ! t_in.m_strBankID.isEmpty() )
+      s1.setBankID(t_in.m_strBankID);
 
     if(!s1.value().isNegative())
       s1.setAction(MyMoneySplit::ActionDeposit);
@@ -588,7 +604,8 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     QValueList<MyMoneyTransaction> list = file->transactionList(filter);
     QValueList<MyMoneyTransaction>::Iterator it;
     for(it = list.begin(); it != list.end(); ++it) {
-      if(t.bankID() == (*it).bankID() && !t.bankID().isNull() && !(*it).bankID().isNull())
+      MyMoneySplit thissplit = (*it).splitByAccount(thisaccount.id());
+      if(t_in.m_strBankID == thissplit.bankID() && !t_in.m_strBankID.isNull() && !thissplit.bankID().isNull())
         break;
     }
     if(it == list.end())
@@ -596,7 +613,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       file->addTransaction(t);
     }
   } catch (MyMoneyException *e) {
-    QString message(i18n("Problem adding imported transaction #%1: ").arg(t.bankID()));
+    QString message(i18n("Problem adding imported transaction #%1: ").arg(t_in.m_strBankID));
     message += e->what();
 
     int result = KMessageBox::warningContinueCancel(0, message);

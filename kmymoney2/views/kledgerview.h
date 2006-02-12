@@ -902,6 +902,22 @@ protected:
     */
   KPopupMenu*   m_contextMenu;
 
+   /**
+    * This member keeps track of the id assigned to the "start match"
+    * context menu item. 
+    */
+  int m_contextMenuStartMatchId;
+   /**
+    * This member keeps track of the id assigned to the "cancel match"
+    * context menu item. 
+    */
+  int m_contextMenuCancelMatchId;
+   /**
+    * This member keeps track of the id assigned to the "end match"
+    * context menu item. 
+    */
+  int m_contextMenuEndMatchId;
+  
   /**
     * This member keeps a pointer to the account popup menu
     */
