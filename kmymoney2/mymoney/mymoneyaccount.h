@@ -41,7 +41,6 @@
 #include "mymoneyutils.h"
 class MyMoneyTransaction;
 class MyMoneyInstitution;
-class MyMoneyFile;
 
 
 /**
@@ -419,7 +418,6 @@ public:
     * @return The container of kvp's needed when connecting to this account
     */
   const MyMoneyKeyValueContainer& onlineBankingSettings(void) const;
-
 
 private:
   /**

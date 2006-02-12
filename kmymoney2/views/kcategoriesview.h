@@ -40,9 +40,25 @@
 #include "kcategoriesviewdecl.h"
 
 /**
+  * @brief  This class contains the implementation of the categories view.
   * @author Michael Edwardes, Thomas Baumgart
+  *
+  * While named "categories view", this view actually displays all accounts
+  * that are children of the global "Income" and "Expense" accounts. Even though
+  * categories are internally just accounts as well, the distinction between
+  * categories and accounts in the user interface is done for better
+  * usability and clarity.
+  *
+  * The main functionality in the categories view is actually implemented
+  * in the KMyMoneyAccountTree. Signals from user actions are connect to
+  * other signals/slots in KCategoriesView and relayed to KMyMoneyView.
+  * A typical example is the selectObject() signal that eventually results
+  * in enabling/disabling the user actions for the categories view.
+  * 
+  * For the categories view three user actions are important (all created in
+  * kmymoney2.cpp): category_new, category_edit and category_delete. They are
+  * accessible from either the main menu or the context menu.
   */
-
 class KCategoriesView : public KCategoriesViewDecl
 {
   Q_OBJECT

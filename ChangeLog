@@ -1,3 +1,16 @@
+2006-02-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Adjusted Andreas' changes here and there a bit and checked in the 
+    whole package
+
+2006-02-12 Andreas Nicolai <Andreas.Nicolai@gmx.net>
+  * Added : categories menu to main menu and category specific context menu
+    to categories view
+  * Added : whole hierarchies of (unused) categories can now be deleted,
+    also the user can again delete an unused category and have its
+    child-categories moved one level up in the hierarchy
+  * Fixed : when account/category got deleted, the actions and currently
+    selected account weren't updated
+
 2006-02-11 Ace Jones <acejones@users.sourceforge.net>
   * Added rudimentary implementation of manual transaction matching
 

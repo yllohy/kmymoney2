@@ -474,6 +474,39 @@ public:
   void removeAccount(const MyMoneyAccount& account);
 
   /**
+    * Deletes existing accounts and their subaccounts recursivly
+    * from the global account pool.
+    * This method expects that all accounts and their subaccounts
+    * are no longer assigned to any transactions or splits.
+    * An exception is thrown in case of a problem deleting an account.
+    *
+    * The optional parameter level is used to keep track of the recursion level.
+    * If the recursion level exceeds 100 (some arbitrary number which seems a good
+    * maximum), an exception is thrown.
+    *
+    * @param account_list Reference to a list of account IDs to be deleted.
+    * @param level Parameter to keep track of recursion level (do not pass a value here).
+    */
+  void removeAccountList(const QCStringList& account_list, unsigned int level = 0);
+
+  /**
+    * This member function checks all accounts identified by account_list
+    * and their subaccounts wether they are assigned to transactions/splits or not.
+    * The function calls itself recursively with the list of sub-accounts of
+    * the currently processed account.
+    *
+    * The optional parameter level is used to keep track of the recursion level.
+    * If the recursion level exceeds 100 (some arbitrary number which seems a good
+    * maximum), an exception is thrown.
+    *
+    * @param account_list  A QCStringList with account IDs that need to be checked.
+    * @param level         (optional) Optional parameter to indicate recursion level.
+    * @return              Returns 'false' if at least one account has been found that
+    *                      is still referenced by a transaction.
+    */
+  bool hasOnlyUnusedAccounts(const QCStringList& account_list, unsigned int level = 0);
+
+  /**
     * Adds a transaction to the file-global transaction pool. A respective
     * transaction-ID will be generated for this object. The ID is stored
     * as QCString in the object passed as argument.

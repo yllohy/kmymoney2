@@ -20,7 +20,10 @@
 
 #include "kdecompat.h"
 
-#include <stdio.h>
+// ----------------------------------------------------------------------------
+// Std C++ / STL Includes
+
+#include <cstdio>
 #include <iostream>
 
 // ----------------------------------------------------------------------------
@@ -290,11 +293,19 @@ void KMyMoney2App::initActions()
   // The accounts menu
   // *****************
   new KAction(i18n("New account..."), "account_add", 0, this, SLOT(slotAccountNew()), actionCollection(), "account_new");
-  new KAction(i18n("New category..."), "category_add", 0, this, SLOT(slotCategoryNew()), actionCollection(), "category_new");
+  // note : action "category_new" is included in this menu but defined below
   new KAction(i18n("Open ledger"), "account", 0, this, SLOT(slotAccountOpen()), actionCollection(), "account_open");
   new KAction(i18n("Reconcile..."), "reconcile", KShortcut("Ctrl+Shift+R"), this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
-  new KAction(i18n("Delete account..."), "delete", 0, this, SLOT(slotAccountDelete()), actionCollection(), "account_delete");
   new KAction(i18n("Edit account..."), "edit", 0, this, SLOT(slotAccountEdit()), actionCollection(), "account_edit");
+  new KAction(i18n("Delete account..."), "delete", 0, this, SLOT(slotAccountDelete()), actionCollection(), "account_delete");
+
+  // *******************
+  // The categories menu
+  // *******************
+  new KAction(i18n("New category..."), "account_add", 0, this, SLOT(slotCategoryNew()), actionCollection(), "category_new");
+  new KAction(i18n("Edit category..."), "edit", 0, this, SLOT(slotAccountEdit()), actionCollection(), "category_edit");
+  new KAction(i18n("Delete category..."), "delete", 0, this, SLOT(slotAccountDelete()), actionCollection(), "category_delete");
+
 
 #ifdef USE_OFX_DIRECTCONNECT
   new KAction(i18n("Online update using OFX..."), "account", 0, this, SLOT(slotAccountUpdateOFX()), actionCollection(), "account_update_ofx");
@@ -2447,34 +2458,117 @@ void KMyMoney2App::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
 
 void KMyMoney2App::slotAccountDelete(void)
 {
-  bool canDelete = false;
-  MyMoneyFile* file = MyMoneyFile::instance();
-  if(!m_selectedAccount.id().isEmpty()) {
-    if(!file->isStandardAccount(m_selectedAccount.id())) {
-      switch(m_selectedAccount.accountGroup()) {
-        case MyMoneyAccount::Asset:
-          if(m_selectedAccount.accountType() == MyMoneyAccount::Investment) {
-            canDelete = (file->transactionCount(m_selectedAccount.id())==0) && (m_selectedAccount.accountList().count() == 0);
-          } else {
-            canDelete = file->transactionCount(m_selectedAccount.id())==0;
-          }
-          break;
+  if (m_selectedAccount.id().isEmpty())
+    return;  // need an account ID
 
-        default:
-          canDelete = file->transactionCount(m_selectedAccount.id())==0;
-          break;
+  MyMoneyFile* file = MyMoneyFile::instance();
+  // can't delete standard accounts or account which still have transactions assigned
+  if (file->isStandardAccount(m_selectedAccount.id())
+  || file->transactionCount(m_selectedAccount.id()) != 0)
+    return;
+
+  switch(m_selectedAccount.accountGroup()) {
+    // special handling for categories to allow deleting of empty subcategories
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Expense:
+    { // open a compound statement here to be able to declare variables
+      // which would otherwise not work within a case label.
+
+      // case A - only a single, unused category without subcats selected
+      if (m_selectedAccount.accountList().isEmpty()) {
+        if (KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to delete category <b>%1</b>?").arg(m_selectedAccount.name())) == KMessageBox::Yes) {
+          try {
+            file->removeAccount(m_selectedAccount);
+          } catch(MyMoneyException* e) {
+            KMessageBox::error( this, i18n("Unable to delete category '%1'. Cause: %2").arg(m_selectedAccount.name()).arg(e->what()));
+            delete e;
+          }
+        }
+        return;
       }
-    }
-  }
-  if(canDelete) {
-    if (KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to delete account <b>%1</b>?").arg(m_selectedAccount.name())) == KMessageBox::Yes) {
+      // case B - we have some subcategories, maybe the user does not want to
+      //          delete them all, but just the category itself?
+      MyMoneyAccount parentAccount = file->account(m_selectedAccount.parentAccountId());
+
+      QCStringList accountsToReparent;
+      int result = KMessageBox::questionYesNoCancel(this, QString("<p>")+
+          i18n("Do you want to delete category <b>%1</b> with all its sub-categories or only "
+               "the category itself? If you only delete the category itself, all its sub-categories "
+               "will be made sub-categories of <b>%2</b>.").arg(m_selectedAccount.name()).arg(parentAccount.name()),
+          QString::null,
+          KGuiItem(i18n("Delete all")),
+          KGuiItem(i18n("Just the category")));
+      if (result == KMessageBox::Cancel)
+        return; // cancel pressed? ok, no delete then...
+      // "No" means "Just the category" and that means we need to reparent all subaccounts
+      bool need_confirmation = false;
+      // case C - User only wants to delete the category itself
+      if (result == KMessageBox::No)
+        accountsToReparent = m_selectedAccount.accountList();
+      else {
+        // case D - User wants to delete all subcategories, now check all subcats of
+        //          m_selectedAccount and remember all that cannot be deleted and
+        //          must be "reparented"
+        for (QCStringList::const_iterator it = m_selectedAccount.accountList().begin();
+          it != m_selectedAccount.accountList().end(); ++it)
+        {
+          // reparent account if a transaction is assigned
+          if (file->transactionCount(*it)!=0)
+            accountsToReparent.push_back(*it);
+          else if (!file->account(*it).accountList().isEmpty()) {
+            // or if we have at least one sub-account that is used for transactions
+            if (!file->hasOnlyUnusedAccounts(file->account(*it).accountList())) {
+              accountsToReparent.push_back(*it);
+              //kdDebug() << "subaccount not empty" << endl;
+            }
+          }
+        }
+        if (!accountsToReparent.isEmpty())
+          need_confirmation = true;
+      }
+      if (!accountsToReparent.isEmpty() && need_confirmation) {
+        if (KMessageBox::questionYesNo(this, QString("<p>")+i18n("Some sub-categories of category <b>%1</b> cannot "
+          "be deleted, because they are still used. They will be made sub-categories of <b>%2</b>. Proceed?").arg(m_selectedAccount.name()).arg(parentAccount.name())) != KMessageBox::Yes) {
+          return; // user gets wet feet...
+        }
+      }
+      // all good, now first reparent selected sub-categories
+      MyMoneyAccount parent = file->account(m_selectedAccount.parentAccountId());
+      for (QCStringList::const_iterator it = accountsToReparent.begin(); it != accountsToReparent.end(); ++it) {
+        MyMoneyAccount child = file->account(*it);
+        file->reparentAccount(child, parent);
+      }
       try {
-        file->removeAccount(m_selectedAccount);
+        // now recursively delete remaining sub-categories
+        file->removeAccountList(m_selectedAccount.accountList());
+        // don't forget to update m_selectedAccount, because we still have a copy of
+        // the old account list, which is no longer valid
+        m_selectedAccount = file->account(m_selectedAccount.id());
       } catch(MyMoneyException* e) {
-        KMessageBox::error( this, i18n("Unable to delete account '%1'. Cause: %2").arg(m_selectedAccount.name()).arg(e->what()));
+        KMessageBox::error( this, i18n("Unable to delete a sub-category of category <b>%1</b>. Reason: %2").arg(m_selectedAccount.name()).arg(e->what()));
         delete e;
+        return;
       }
     }
+    break; // the category/account is deleted after the switch
+
+    default:
+      if (!m_selectedAccount.accountList().isEmpty())
+        return; // can't delete accounts which still have subaccounts
+
+      if (KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to "
+          "delete account <b>%1</b>?").arg(m_selectedAccount.name())) != KMessageBox::Yes) {
+        return; // ok, you don't want to? why did you click then, hmm?
+      }
+  } // switch;
+
+  try {
+    file->removeAccount(m_selectedAccount);
+    m_selectedAccount.clearId();
+    updateActions();
+  } catch(MyMoneyException* e) {
+    KMessageBox::error( this, i18n("Unable to delete account '%1'. Cause: %2").arg(m_selectedAccount.name()).arg(e->what()));
+    delete e;
   }
 }
 
@@ -2996,7 +3090,7 @@ void KMyMoney2App::slotShowInvestmentContextMenu(void)
 
 void KMyMoney2App::slotShowAccountContextMenu(const MyMoneyObject& obj)
 {
-  qDebug("KMyMoney2App::slotShowAccountContextMenu");
+//  qDebug("KMyMoney2App::slotShowAccountContextMenu");
   if(typeid(obj) != typeid(MyMoneyAccount))
     return;
 
@@ -3006,6 +3100,9 @@ void KMyMoney2App::slotShowAccountContextMenu(const MyMoneyObject& obj)
   // call the right slot instead
   if(acc.accountType() == MyMoneyAccount::Stock) {
     showContextMenu("investment_context_menu");
+  } else if(acc.accountType() == MyMoneyAccount::Income
+         || acc.accountType() == MyMoneyAccount::Expense){
+    showContextMenu("category_context_menu");
   } else {
     showContextMenu("account_context_menu");
   }
@@ -3098,9 +3195,6 @@ void KMyMoney2App::updateActions(void)
   action("file_import_template")->setEnabled(fileOpen);
   action("file_export_template")->setEnabled(fileOpen);
 
-  action("institution_new")->setEnabled(fileOpen);
-  action("account_new")->setEnabled(fileOpen);
-  action("category_new")->setEnabled(fileOpen);
 
   action("tools_security_editor")->setEnabled(fileOpen);
   action("tools_currency_editor")->setEnabled(fileOpen);
@@ -3108,15 +3202,21 @@ void KMyMoney2App::updateActions(void)
   action("tools_update_prices")->setEnabled(fileOpen);
   action("tools_consistency_check")->setEnabled(fileOpen);
 
+  action("account_new")->setEnabled(fileOpen);
   action("account_reconcile")->setEnabled(false);
   action("account_edit")->setEnabled(false);
   action("account_delete")->setEnabled(false);
   action("account_open")->setEnabled(false);
 
+  action("category_new")->setEnabled(fileOpen);
+  action("category_edit")->setEnabled(false);
+  action("category_delete")->setEnabled(false);
+
 #ifdef USE_OFX_DIRECTCONNECT
   action("account_update_ofx")->setEnabled(false);
 #endif
 
+  action("institution_new")->setEnabled(fileOpen);
   action("institution_edit")->setEnabled(false);
   action("institution_delete")->setEnabled(false);
   action("investment_new")->setEnabled(false);
@@ -3137,13 +3237,15 @@ void KMyMoney2App::updateActions(void)
 
   if(!m_selectedAccount.id().isEmpty()) {
     if(!file->isStandardAccount(m_selectedAccount.id())) {
-      action("account_edit")->setEnabled(true);
-      action("account_delete")->setEnabled(!file->isReferenced(m_selectedAccount));
       switch(m_selectedAccount.accountGroup()) {
         case MyMoneyAccount::Asset:
         case MyMoneyAccount::Liability:
+        case MyMoneyAccount::Equity:
+          action("account_edit")->setEnabled(true);
+          action("account_delete")->setEnabled(!file->isReferenced(m_selectedAccount));
           action("account_open")->setEnabled(true);
-          action("account_reconcile")->setEnabled(true);
+          if(m_selectedAccount.accountGroup() != MyMoneyAccount::Equity)
+            action("account_reconcile")->setEnabled(true);
 
           if(m_selectedAccount.accountType() == MyMoneyAccount::Investment)
             action("investment_new")->setEnabled(true);
@@ -3153,6 +3255,15 @@ void KMyMoney2App::updateActions(void)
             action("account_update_ofx")->setEnabled(true);
 #endif
           break;
+
+        case MyMoneyAccount::Income :
+        case MyMoneyAccount::Expense :
+          action("category_edit")->setEnabled(true);
+          // enable delete action, if category/account itself has no transactions assigned
+          // we can't check isReferenced() here because we want to allow
+          // deleting of sub-categories
+          action("category_delete")->setEnabled(file->transactionCount(m_selectedAccount.id())==0);
+        break;
 
         default:
           break;

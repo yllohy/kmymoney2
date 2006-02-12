@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="9" name="kmymoney2" >
+<kpartgui version="10" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
@@ -39,15 +39,20 @@
    <Action name="institution_delete" />
   </Menu>
   <Menu name="account" >
-   <text>&amp;Account/Category</text>
+   <text>&amp;Account</text>
    <Action icon="account_add" name="account_new" />
-   <Action icon="account_add" name="category_new" />
    <Action name="account_edit" />
    <Action name="account_delete" />
    <Action name="account_open" />
    <Action name="account_reconcile" />
    <Separator/>
    <Action name="account_update_ofx" />
+  </Menu>
+  <Menu name="category" >
+    <text>&amp;Category</text>
+    <Action name="category_new" />
+    <Action name="category_edit" />
+    <Action name="category_delete" />
   </Menu>
   <Merge/>
   <Menu name="tools" >
@@ -81,6 +86,12 @@
   <Action name="investment_delete" />
   <Action name="investment_online_price_update" />
   <Action name="investment_manual_price_update" />
+ </Menu>
+ <Menu name="category_context_menu">
+   <title>Category options</title>
+   <Action name="category_new" />
+   <Action name="category_edit" />
+   <Action name="category_delete" />
  </Menu>
  <Menu name="institution_context_menu">
   <title>Institution options</title>

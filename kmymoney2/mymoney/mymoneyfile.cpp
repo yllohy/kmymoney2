@@ -26,7 +26,7 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-// #include <kdebug.h>
+#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -361,7 +361,7 @@ void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
   MyMoneyAccount parent;
   MyMoneyAccount acc;
 
-  // check that the account and it's parent exist
+  // check that the account and its parent exist
   // this will throw an exception if the id is unknown
   acc = MyMoneyFile::account(account.id());
   parent = MyMoneyFile::account(account.parentAccountId());
@@ -389,6 +389,54 @@ void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
   addNotification(NotifyClassAccount);
   addNotification(NotifyClassAccountHierarchy);
 }
+
+void MyMoneyFile::removeAccountList(const QCStringList& account_list, unsigned int level) {
+ if (level > 100)
+   throw new MYMONEYEXCEPTION("Too deep recursion in [MyMoneyFile::removeAccountList]!");
+  checkStorage();
+
+  // upon entry, we check that we could proceed with the operation
+  if(!level) {
+    if(!hasOnlyUnusedAccounts(account_list, 0))
+      throw new MYMONEYEXCEPTION("One or more accounts cannot be removed");
+  }
+
+  // NOTE: We don't use a MyMoneyNotifier here, because the caller of this function,
+  //       e.g. KMyMoney2App::slotAccountDelete() will call removeAccount() afterwards
+  //       which will trigger all necessary updates.
+
+  // process all accounts in the list and test if they have transactions assigned
+  for (QCStringList::const_iterator it = account_list.begin(); it != account_list.end(); ++it) {
+    MyMoneyAccount a = m_storage->account(*it);
+    //kdDebug() << "Deleting account '"<< a.name() << "'" << endl;
+
+    // first remove all sub-accounts
+    if (!a.accountList().isEmpty())
+      removeAccountList(a.accountList(), level+1);
+
+    // then remove account itself, but we first have to get
+    // rid of the account list that is still stored in 
+    // the MyMoneyAccount object. Easiest way is to get a fresh copy.
+    a = m_storage->account(*it);
+    //kdDebug() << "Deleting account '"<< a2.name() << "' itself" << endl;
+    m_storage->removeAccount(a);
+  }
+}
+
+bool MyMoneyFile::hasOnlyUnusedAccounts(const QCStringList& account_list, unsigned int level)
+{
+  if (level > 100)
+    throw new MYMONEYEXCEPTION("Too deep recursion in [MyMoneyFile::hasOnlyUnusedAccounts]!");
+  // process all accounts in the list and test if they have transactions assigned
+  for (QCStringList::const_iterator it = account_list.begin(); it != account_list.end(); ++it) {
+    if (transactionCount(*it) != 0)
+      return false; // the current account has a transaction assigned
+    if (!hasOnlyUnusedAccounts(account(*it).accountList(), level+1))
+      return false; // some sub-account has a transaction assigned
+  }
+  return true; // all subaccounts unused
+}
+
 
 void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
 {

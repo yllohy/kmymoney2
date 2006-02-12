@@ -22,13 +22,15 @@
 #include <qregexp.h>
 
 // ----------------------------------------------------------------------------
+// KDE Includes
+
+//#include <kdebug.h>
+
+// ----------------------------------------------------------------------------
 // Project Includes
 
 #include <kmymoney/mymoneyexception.h>
 #include <kmymoney/mymoneyaccount.h>
-
-// uncomment the next line for debug purposes only
-//#include <iostream>
 
 MyMoneyAccount::MyMoneyAccount()
 {
