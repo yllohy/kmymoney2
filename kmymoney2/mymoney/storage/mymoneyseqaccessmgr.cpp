@@ -1701,15 +1701,10 @@ const QValueList<MyMoneyBudget> MyMoneySeqAccessMgr::budgetList(void) const
 
 void MyMoneySeqAccessMgr::addBudget( MyMoneyBudget& budget )
 {
-  if(!budget.id().isEmpty())
-    throw new MYMONEYEXCEPTION("transaction already contains an id");
-
-  budget.setId( nextBudgetID() );
-
-  m_budgetList[budget.id()] = budget;
-
+  MyMoneyBudget newBudget(nextBudgetID(), budget);
+  m_budgetList[newBudget.id()] = newBudget;
   touch();
-
+  budget = newBudget;
 }
 
 void MyMoneySeqAccessMgr::loadBudget( const MyMoneyBudget& budget )
@@ -1722,6 +1717,20 @@ void MyMoneySeqAccessMgr::loadBudget( const MyMoneyBudget& budget )
     throw new MYMONEYEXCEPTION(QString("Duplicate budget %1 during loadBudget()").arg(budget.id()));
 
   m_budgetList[budget.id()] = budget;
+}
+
+
+const MyMoneyBudget& MyMoneySeqAccessMgr::budgetByName(const QString& budget) const
+{
+  QMap<QCString, MyMoneyBudget>::ConstIterator it_p;
+
+  for(it_p = m_budgetList.begin(); it_p != m_budgetList.end(); ++it_p) {
+    if((*it_p).name() == budget) {
+      return *it_p;
+    }
+  }
+
+  throw new MYMONEYEXCEPTION("Unknown budget '" + budget + "'");
 }
 
 void MyMoneySeqAccessMgr::modifyBudget( const MyMoneyBudget& budget )

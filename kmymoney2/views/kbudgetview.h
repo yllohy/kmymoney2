@@ -67,7 +67,7 @@ public:
     */
   void paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align);
 
-  const MyMoneyBudget& budget(void) const { return m_budget; };
+  MyMoneyBudget& budget(void) { return m_budget; };
 
 private:
   MyMoneyBudget  m_budget;
@@ -106,6 +106,8 @@ public:
 public slots:
   void slotReloadView(void);
   void slotRefreshView(void);
+  void slotSelectBudget(void);
+  void slotStartRename(void);
 
 protected:
   void resizeEvent(QResizeEvent*);
@@ -113,33 +115,40 @@ protected:
   bool loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList);
   void loadBudget(void);
   void ensureBudgetVisible(const QCString& id);
+  bool selectedBudget(MyMoneyBudget& budget) const;
 
 protected slots:
 
   /**
     * This slot is called when the name of a budget is changed inside
     * the budget list view and only a single budget is selected.
+    *
+    * @param p The listviewitem containing the budget name
+    * @param col The column where the name is located
+    * @param txt The text of the new name
     */
   void slotRenameBudget(QListViewItem *p, int col, const QString& txt);
 
+  void slotSelectYear(int iYear);
+
 private slots:
-  void rearrange(void);
+  void slotRearrange(void);
 
   /**
     * This slot receives the signal from the listview control that an item was right-clicked,
     * If @p item points to a real payee item, emits openContextMenu().
     *
-    * @param item the item on which the cursor resides
+    * @param i the item on which the cursor resides
     */
   void slotOpenContextMenu(QListViewItem* i);
 
 signals:
   void signalViewActivated();
   /**
-    * This signal serves as proxy for KMyMoneyAccountTree::selectObject()
+    * This signal serves as proxy for KMyMoneyBudgetList::selectObject()
     */
-  void selectObject(const MyMoneyObject&);
   void openContextMenu(const MyMoneyObject& obj);
+  void selectObjects(const QValueList<MyMoneyBudget>& budget);
 
 private:
   /**
@@ -158,7 +167,10 @@ private:
   /// set if a view needs to be reloaded during show()
   bool                                m_needReload;
 
-  MyMoneyBudget m_budget;
+  static const int m_iBudgetYearsAhead;
+  static const int m_iBudgetYearsBack;
+
+  QValueList<int> m_yearList;
 };
 
 #endif

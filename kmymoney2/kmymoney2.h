@@ -702,6 +702,8 @@ public slots:
 
   void slotSelectPayees(const QValueList<MyMoneyPayee>& list);
 
+  void slotSelectBudget(const QValueList<MyMoneyBudget>& list);
+
 private:
   bool verifyImportedData(const MyMoneyAccount& account);
 
@@ -736,6 +738,15 @@ signals:
     * by plugins to get information about changes.
     */
   void payeesSelected(const QValueList<MyMoneyPayee>& payees);
+
+  /**
+    * This signal is emitted when a list of payees has been selected by
+    * the GUI. If no payee is selected or the selection is removed,
+    * payees is identical to an empty QValueList. This signal is used
+    * by plugins to get information about changes.
+    */
+  void budgetSelected(const QValueList<MyMoneyBudget>& budget);
+  void budgetRename(void);
 
   /**
     * This signal is emitted when a new account has been selected by
@@ -861,6 +872,7 @@ private:
   MyMoneyInstitution    m_selectedInstitution;
   MyMoneySchedule       m_selectedSchedule;
   QValueList<MyMoneyPayee>  m_selectedPayees;
+  QValueList<MyMoneyBudget> m_selectedBudget;
 
   // This is Auto Saving related
   bool                  m_autoSaveEnabled;

@@ -1,3 +1,7 @@
+2006-02-12 Darren Gould <darren_gould@gmx.de>
+  * Added new budget, rename budget, delete budget support
+  * Support for changing the budget start date
+
 2006-02-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Adjusted Andreas' changes here and there a bit and checked in the 
     whole package

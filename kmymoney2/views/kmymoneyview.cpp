@@ -226,6 +226,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_budgetView = new KBudgetView(m_budgetViewFrame, "BudgetView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_budgetView, SLOT(slotRefreshView()));
   connect(m_budgetView, SIGNAL(openContextMenu(const MyMoneyObject&)), kmymoney2, SLOT(slotShowBudgetContextMenu()));
+  connect(m_budgetView, SIGNAL(selectObjects(const QValueList<MyMoneyBudget>&)), kmymoney2, SLOT(slotSelectBudget(const QValueList<MyMoneyBudget>&)));
+  connect(kmymoney2, SIGNAL(budgetRename()), m_budgetView, SLOT(slotStartRename()));
 
   connect(m_payeesView, SIGNAL(transactionSelected(const QCString&, const QCString&)),
           this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
@@ -266,6 +268,7 @@ bool KMyMoneyView::showPage(int index)
     kmymoney2->slotSelectInstitution();
     kmymoney2->slotSelectInvestment();
     kmymoney2->slotSelectPayees(QValueList<MyMoneyPayee>());
+    kmymoney2->slotSelectBudget(QValueList<MyMoneyBudget>());
   }
 
   // fixup some actions that are dependant on the view

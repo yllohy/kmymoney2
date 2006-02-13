@@ -3046,33 +3046,75 @@ void KMyMoney2App::slotPayeeDelete(void)
 
 void KMyMoney2App::slotBudgetNew(void)
 {
-    QString newname = i18n("New Budget");
+    QDate date = QDate::currentDate(Qt::LocalTime);
+    date.setYMD(date.year(), 1, 1);
+    QString newname = i18n("Budget %1").arg(QString::number(date.year()));
 
     MyMoneyBudget budget;
-    MyMoneyBudget::AccountGroup account;
-    MyMoneyBudget::PeriodGroup  period;
-    MyMoneyMoney                amount = MyMoneyMoney("123,23");
 
-    period.setAmount ( amount );
-    period.setDate   ( QDate::currentDate(Qt::LocalTime) );
-
-    account.setBudgetLevel( MyMoneyBudget::AccountGroup::eYearly );
-    account.setBudgetSubaccounts( false );
-    account.setDefault( true );
-    account.setId( "A00023" );
-    account.setParentId( "A0001" );
-    account.addPeriod( period );
+    try
+    {
+      int i=1;
+      // Exception thrown when the name is not found
+      while (1)
+      {
+	MyMoneyFile::instance()->budgetByName(newname);
+	newname = i18n("Budget %1 (%2)").arg(QString::number(date.year()), QString::number(i++));
+      }
+    }
+    catch(MyMoneyException *e)
+    {
+      // all ok, the name is unique
+      delete e;
+    }
     budget.setName(newname);
-    QString date = QString("2006").append("-01-01");
-    budget.setBudgetStart(QDate::fromString(date));
-    budget.setAccount( account, "A00023" );
+    budget.setBudgetStart(date);
 
     MyMoneyFile::instance()->addBudget(budget);
 }
 
-
 void KMyMoney2App::slotBudgetDelete(void)
 {
+  if(m_selectedBudget.isEmpty())
+    return; // shouldn't happen
+
+  MyMoneyFile * file = MyMoneyFile::instance();
+
+  // first create list with all non-selected payees
+  QValueList<MyMoneyBudget> remainingBudgets = file->budgetList();
+  QValueList<MyMoneyBudget>::iterator it_p;
+  for(it_p = remainingBudgets.begin(); it_p != remainingBudgets.end(); ) {
+    if (std::find(m_selectedBudget.begin(), m_selectedBudget.end(), (*it_p)) != m_selectedBudget.end()) {
+      it_p = remainingBudgets.erase(it_p);
+    } else {
+      ++it_p;
+    }
+  }
+
+  // get confirmation from user
+  QString prompt;
+  if (m_selectedBudget.size() == 1)
+    prompt = QString("<p>")+i18n("Do you really want to remove the budget <b>%1</b>").arg(m_selectedBudget.front().name());
+  else
+    prompt = i18n("Do you really want to remove all selected budgets?");
+
+  if (KMessageBox::questionYesNo(this, prompt, i18n("Remove Budget"))==KMessageBox::No)
+    return;
+
+  try {
+    // now loop over all selected payees and remove them
+    file->suspendNotify(true);
+    for (QValueList<MyMoneyBudget>::iterator it = m_selectedBudget.begin();
+      it != m_selectedBudget.end(); ++it) {
+      file->removeBudget(*it);
+    }
+    file->suspendNotify(false);
+
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to remove budget(s)"),
+      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
+  }
 }
 
 void KMyMoney2App::showContextMenu(const QString& containerName)
@@ -3232,8 +3274,9 @@ void KMyMoney2App::updateActions(void)
   action("payee_delete")->setEnabled(false);
   action("payee_rename")->setEnabled(false);
 
-  action("budget_delete")->setEnabled(true);
-  action("budget_rename")->setEnabled(true);
+  action("budget_delete")->setEnabled(false);
+  action("budget_rename")->setEnabled(false);
+  action("budget_new")->setEnabled(true);
 
   if(!m_selectedAccount.id().isEmpty()) {
     if(!file->isStandardAccount(m_selectedAccount.id())) {
@@ -3303,6 +3346,17 @@ void KMyMoney2App::updateActions(void)
     action("payee_delete")->setEnabled(true);
   }
 
+  if(m_selectedBudget.count() >= 1) {
+    action("budget_rename")->setEnabled(true);
+    action("budget_delete")->setEnabled(true);
+  }
+}
+
+void KMyMoney2App::slotSelectBudget(const QValueList<MyMoneyBudget>& list)
+{
+  m_selectedBudget = list;
+  updateActions();
+  emit budgetSelected(m_selectedBudget);
 }
 
 void KMyMoney2App::slotSelectPayees(const QValueList<MyMoneyPayee>& list)

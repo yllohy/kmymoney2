@@ -71,6 +71,12 @@ public:
   MyMoneyBudget(const QDomElement& node);
 
   /**
+    * This constructor creates an object based on the data found in the
+    * MyMoneyBudget budget object. 
+    */
+  MyMoneyBudget(const QCString& id, const MyMoneyBudget& budget);
+
+  /**
     * Helper class for MyMoneyBudget
     *
     * This is an abstraction of the PERIOD stored in the BUDGET/ACCOUNT tag in XML

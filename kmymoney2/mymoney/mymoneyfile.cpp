@@ -1935,6 +1935,13 @@ void MyMoneyFile::addBudget( MyMoneyBudget& budget )
   addNotification(NotifyClassBudget);
 }
 
+const MyMoneyBudget& MyMoneyFile::budgetByName(const QString& name) const
+{
+  checkStorage();
+
+  return m_storage->budgetByName(name);
+}
+
 void MyMoneyFile::modifyBudget( const MyMoneyBudget& budget )
 {
   checkStorage();

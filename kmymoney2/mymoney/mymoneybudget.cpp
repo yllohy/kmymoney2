@@ -53,6 +53,12 @@ MyMoneyBudget::MyMoneyBudget(const QDomElement& node) :
     clearId();
 }
 
+MyMoneyBudget::MyMoneyBudget(const QCString& id, const MyMoneyBudget& budget)
+{
+  *this = budget;
+  m_id = id;
+}
+
 MyMoneyBudget::~MyMoneyBudget()
 {
 }

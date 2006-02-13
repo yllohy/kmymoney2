@@ -789,6 +789,17 @@ public:
   virtual void addBudget( MyMoneyBudget& budget ) = 0;
 
   /**
+    * This method is used to retrieve the id to a corresponding
+    * name of a budget
+    * An exception will be thrown upon error conditions.
+    *
+    * @param budget QString reference to name of budget
+    *
+    * @return MyMoneyBudget object of budget
+    */
+  virtual const MyMoneyBudget& budgetByName(const QString& budget) const = 0;
+
+  /**
     * This method is used to modify an existing MyMoneyBudget
     * object. Therefor, the id attribute of the object must be set.
     *

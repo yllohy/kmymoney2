@@ -1381,6 +1381,19 @@ public:
     */
   void addBudget( MyMoneyBudget& budget );
 
+
+  /**
+    * This method is used to retrieve the id to a corresponding
+    * name of a budget.
+    * An exception will be thrown upon error conditions.
+    *
+    * @param budget QString reference to name of budget
+    *
+    * @return MyMoneyBudget refernce to object of budget
+    */
+  const MyMoneyBudget& budgetByName(const QString& budget) const;
+
+
   /**
     * Modifies an already existing budget in the file global
     * budget pool.
