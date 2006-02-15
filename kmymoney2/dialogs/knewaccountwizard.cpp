@@ -87,6 +87,8 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   m_accountListView->setColumnWidthMode(0, QListView::Manual);
   m_accountListView->setResizeMode(QListView::AllColumns);
 
+  m_currencyComboBox->update(QCString());
+
   connect(m_newInstitutionButton, SIGNAL(clicked()), this, SLOT(slotNewInstitution()));
   connect(m_accountTypeListBox, SIGNAL(highlighted(const QString &)), this, SLOT(slotAccountType(const QString &)));
   connect(reminderCheckBox, SIGNAL(toggled(bool)), estimateFrame, SLOT(setEnabled(bool)));
