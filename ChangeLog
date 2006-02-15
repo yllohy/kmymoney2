@@ -1,3 +1,8 @@
+2006-02-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added feature to close/re-open accounts
+  * Fixed currency list in new account wizard
+  * Fixed layout of new account wizard opening balance page
+
 2006-02-12 Darren Gould <darren_gould@gmx.de>
   * Added new budget, rename budget, delete budget support
   * Support for changing the budget start date

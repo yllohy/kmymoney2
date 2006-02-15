@@ -43,42 +43,51 @@ KMyMoneyAccountIconItem::KMyMoneyAccountIconItem(QIconView *parent, const MyMone
   KIconViewItem(parent, account.name()),
   m_account(account)
 {
+  QString pixmap;
+
   switch(account.accountType()) {
     default:
       if(account.accountGroup() == MyMoneyAccount::Asset)
-        setPixmap(DesktopIcon("account-types_asset"));
+        pixmap = "account-types_asset";
       else
-        setPixmap(DesktopIcon("account-types_liability"));
+        pixmap = "account-types_liability";
       break;
 
     case MyMoneyAccount::Investment:
-      setPixmap(DesktopIcon("account-types_investments"));
+      pixmap = "account-types_investments";
       break;
 
     case MyMoneyAccount::Checkings:
-      setPixmap(DesktopIcon("account-types_checking"));
+      pixmap = "account-types_checking";
       break;
     case MyMoneyAccount::Savings:
-      setPixmap(DesktopIcon("account-types_savings"));
+      pixmap = "account-types_savings";
       break;
 
     case MyMoneyAccount::AssetLoan:
     case MyMoneyAccount::Loan:
-      setPixmap(DesktopIcon("account-types_loan"));
+      pixmap = "account-types_loan";
       break;
 
     case MyMoneyAccount::CreditCard:
-      setPixmap(DesktopIcon("account-types_credit-card"));
+      pixmap = "account-types_credit-card";
       break;
 
     case MyMoneyAccount::Asset:
-      setPixmap(DesktopIcon("account-types_asset"));
+      pixmap = "account-types_asset";
       break;
 
     case MyMoneyAccount::Cash:
-      setPixmap(DesktopIcon("account-types_cash"));
+      pixmap = "account-types_cash";
       break;
   }
+  if(m_account.isClosed()) {
+    QPixmap pic = DesktopIcon(pixmap);
+    QPixmap closed = DesktopIcon("account-types_closed");
+    bitBlt(&pic, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
+    setPixmap(pic);
+  } else
+    setPixmap(DesktopIcon(pixmap));
 }
 
 KMyMoneyAccountIconItem::~KMyMoneyAccountIconItem()
@@ -403,6 +412,7 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
   MyMoneyFile* file = MyMoneyFile::instance();
 
   bool unused = false;
+  bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked();
 
   QCStringList::const_iterator it_a;
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
@@ -443,6 +453,11 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
         unused = true;
         delete item;
       }
+    }
+
+    // if the account is closed and we should not show it, we delete the item
+    if(acc.isClosed() && !showClosedAccounts) {
+      delete item;
     }
   }
   return unused;

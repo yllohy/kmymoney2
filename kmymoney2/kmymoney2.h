@@ -445,6 +445,15 @@ protected:
     */
   void updateActions(void);
 
+  /**
+    * This method checks, if an account can be closed or not.
+    *
+    * @param acc reference to MyMoneyAccount object in question
+    * @retval true account can be closed
+    * @retval false account cannot be closed
+    */
+  bool canCloseAccount(const MyMoneyAccount& acc) const;
+
 public slots:
   void slotFileInfoDialog(void);
 
@@ -536,6 +545,11 @@ public slots:
   void slotHideUnusedCategories(void);
 
   /**
+    * Toggles the show all accounts setting
+    */
+  void slotShowAllAccounts(void);
+
+  /**
     * changes the statusbar contents for the standard label permanently,
     * used to indicate current actions. Returns the previous value for
     * 'stacked' usage.
@@ -606,6 +620,16 @@ public slots:
     * This slot opens the selected account in the ledger view
     */
   void slotAccountOpen(const MyMoneyObject& = MyMoneyAccount());
+
+  /**
+    * This slot closes the currently selected account if possible
+    */
+  void slotAccountClose(void);
+
+  /**
+    * This slot re-openes the currently selected account if possible
+    */
+  void slotAccountReopen(void);
 
   /**
     * This slot reparents account @p src to be a child of account @p dest

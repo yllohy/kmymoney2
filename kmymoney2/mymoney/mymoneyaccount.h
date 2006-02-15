@@ -419,6 +419,24 @@ public:
     */
   const MyMoneyKeyValueContainer& onlineBankingSettings(void) const;
 
+  /**
+    * This method sets the closed flag for the account. This is just
+    * an informational flag for the application. It has no other influence
+    * on the behaviour of the account object. The default for
+    * new objects @p open.
+    *
+    * @param isClosed mark the account closed (@p true) or open (@p false).
+    */
+  void setClosed(bool isClosed);
+
+  /**
+    * Return the closed flag for the account.
+    *
+    * @retval false account is marked open (the default for new accounts)
+    * @retval true account is marked closed
+    */
+  bool isClosed(void) const;
+
 private:
   /**
     * This member variable identifies the type of account

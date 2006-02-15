@@ -472,12 +472,25 @@ bool MyMoneyAccount::hasReferenceTo(const QCString& id) const
   return (id == m_institution) || (id == m_parentAccount) || (id == m_currencyId);
 }
 
-void MyMoneyAccount::setOnlineBankingSettings(const MyMoneyKeyValueContainer& values) 
+void MyMoneyAccount::setOnlineBankingSettings(const MyMoneyKeyValueContainer& values)
 {
-  m_onlineBankingSettings = values; 
+  m_onlineBankingSettings = values;
 }
 
-const MyMoneyKeyValueContainer& MyMoneyAccount::onlineBankingSettings(void) const 
-{ 
-  return m_onlineBankingSettings; 
+const MyMoneyKeyValueContainer& MyMoneyAccount::onlineBankingSettings(void) const
+{
+  return m_onlineBankingSettings;
+}
+
+void MyMoneyAccount::setClosed(bool closed)
+{
+  if(closed)
+    setValue("mm-closed", "yes");
+  else
+    deletePair("mm-closed");
+}
+
+bool MyMoneyAccount::isClosed(void) const
+{
+  return !(value("mm-closed").isEmpty());
 }

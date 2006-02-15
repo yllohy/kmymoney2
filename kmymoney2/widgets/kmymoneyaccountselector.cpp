@@ -41,6 +41,7 @@
 // Project Includes
 
 #include "../kmymoneyutils.h"
+#include "../kmymoneysettings.h"
 #include "../mymoney/mymoneyutils.h"
 #include "../mymoney/mymoneyfile.h"
 
@@ -75,7 +76,7 @@ void kMyMoneyListViewItem::paintCell(QPainter *p, const QColorGroup &cg, int col
 
 const QColor kMyMoneyListViewItem::backgroundColor()
 {
-  return isAlternate() ? KMyMoneyUtils::backgroundColour() : KMyMoneyUtils::listColour();
+  return isAlternate() ? KMyMoneySettings::listBGColor() : KMyMoneySettings::listColor();
 }
 
 kMyMoneyCheckListItem::kMyMoneyCheckListItem(QListView* parent, const QString& txt, const QCString& id, Type type) :
@@ -118,7 +119,7 @@ void kMyMoneyCheckListItem::paintCell(QPainter *p, const QColorGroup &cg, int co
 
 const QColor kMyMoneyCheckListItem::backgroundColor()
 {
-  return isAlternate() ? KMyMoneyUtils::backgroundColour() : KMyMoneyUtils::listColour();
+  return isAlternate() ? KMyMoneySettings::listBGColor() : KMyMoneySettings::listColor();
 }
 
 bool kMyMoneyCheckListItem::isAlternate(void)
@@ -376,7 +377,7 @@ const int kMyMoneyAccountSelector::loadList(KMyMoneyUtils::categoryTypeE typeMas
   {
     typeList.remove(except);
   }
-  
+
   return loadList(typeList);
 }
 
@@ -459,7 +460,8 @@ const int kMyMoneyAccountSelector::loadList(QValueList<int> typeList)
       for(it_l = list.begin(); it_l != list.end(); ++it_l) {
         ++count;
         MyMoneyAccount acc = file->account(*it_l);
-        if(m_typeList.contains(acc.accountType())) {
+        if(m_typeList.contains(acc.accountType())
+        && !acc.isClosed()) {
           QListViewItem* subItem = newEntryFactory(item, acc.name(), acc.id());
           if(acc.accountList().count() > 0) {
             subItem->setOpen(true);
@@ -499,9 +501,11 @@ const int kMyMoneyAccountSelector::loadList(const QString& baseName, const QValu
 
   QValueList<QCString>::ConstIterator it;
   for(it = accountIdList.begin(); it != accountIdList.end(); ++it)   {
-    ++count;
     MyMoneyAccount acc = file->account(*it);
+    if(acc.isClosed())
+      continue;
     newEntryFactory(item, acc.name(), acc.id());
+    ++count;
   }
 
   if(m_listView->firstChild()) {
@@ -520,9 +524,15 @@ int kMyMoneyAccountSelector::loadSubAccounts(QListViewItem* parent, const QCStri
   int count = 0;
 
   for(it_l = list.begin(); it_l != list.end(); ++it_l) {
-    ++count;
     MyMoneyAccount acc = file->account(*it_l);
-    if(m_typeList.contains(acc.accountType())) {
+    // don't include stock accounts if not in expert mode
+    if(acc.accountType() == MyMoneyAccount::Stock
+    && !KMyMoneySettings::expertMode())
+      continue;
+
+    if(m_typeList.contains(acc.accountType())
+    && !acc.isClosed()) {
+      ++count;
       QListViewItem* item = newEntryFactory(parent, acc.name(), acc.id());
       if(acc.accountList().count() > 0) {
         item->setOpen(true);

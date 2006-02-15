@@ -31,6 +31,7 @@
    <Action name="view_show_transaction_detail" />
    <Action name="view_hide_reconciled_transactions" />
    <Action name="view_hide_unused_categories" />
+   <Action name="view_show_all_accounts" />
   </Menu>
   <Menu name="institution" >
    <text>&amp;Institution</text>
@@ -45,6 +46,9 @@
    <Action name="account_delete" />
    <Action name="account_open" />
    <Action name="account_reconcile" />
+   <Separator/>
+   <Action name="account_close" />
+   <Action name="account_reopen" />
    <Separator/>
    <Action name="account_update_ofx" />
   </Menu>
@@ -78,6 +82,9 @@
   <Action name="account_open" />
   <Action name="account_edit" />
   <Action name="account_delete" />
+  <Separator/>
+  <Action name="account_close" />
+  <Action name="account_reopen" />
   <Separator/>
   <Action name="account_reconcile" />
   <Separator/>

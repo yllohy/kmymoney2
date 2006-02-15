@@ -581,7 +581,13 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
     default:
       icon = "account";
   }
-  setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon))));
+  if(m_account.isClosed()) {
+    QPixmap pic = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon)));
+    QPixmap closed = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/account-types_closed.png")));
+    bitBlt(&pic, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
+    setPixmap(0, pic);
+  } else
+    setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon))));
 
   setText(KMyMoneyAccountTree::NameColumn, account.name());
 
@@ -597,7 +603,7 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
   // account.balance() is not compatable with stock accounts
   if ( account.accountType() == MyMoneyAccount::Stock )
     m_balance = MyMoneyFile::instance()->balance(account.id());
-	else
+  else
     m_balance = account.balance();
 
   // for income and liability accounts, we reverse the sign

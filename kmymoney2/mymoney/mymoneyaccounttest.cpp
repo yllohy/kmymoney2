@@ -396,3 +396,14 @@ void MyMoneyAccountTest::testHasReferenceTo(void)
 	CPPUNIT_ASSERT(a.hasReferenceTo("Currency") == true);
 }
 
+void MyMoneyAccountTest::testSetClosed(void)
+{
+	MyMoneyAccount a;
+
+	CPPUNIT_ASSERT(a.isClosed() == false);
+	a.setClosed(true);
+	CPPUNIT_ASSERT(a.isClosed() == true);
+	a.setClosed(false);
+	CPPUNIT_ASSERT(a.isClosed() == false);
+}
+

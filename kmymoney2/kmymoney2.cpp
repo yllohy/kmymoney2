@@ -281,6 +281,7 @@ void KMyMoney2App::initActions()
   new KToggleAction(i18n("Show Transaction Detail"), KShortcut("Ctrl+T"), actionCollection(), "view_show_transaction_detail");
   new KToggleAction(i18n("Hide reconciled transactions"), "", KShortcut("Ctrl+R"), this, SLOT(slotHideReconciledTransactions()), actionCollection(), "view_hide_reconciled_transactions");
   new KToggleAction(i18n("Hide unused categories"), "", KShortcut("Ctrl+U"), this, SLOT(slotHideUnusedCategories()), actionCollection(), "view_hide_unused_categories");
+  new KToggleAction(i18n("Show all accounts"), "", KShortcut("Ctrl+A"), this, SLOT(slotShowAllAccounts()), actionCollection(), "view_show_all_accounts");
 
   // *********************
   // The institutions menu
@@ -298,6 +299,8 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Reconcile..."), "reconcile", KShortcut("Ctrl+Shift+R"), this, SLOT(slotAccountReconcile()), actionCollection(), "account_reconcile");
   new KAction(i18n("Edit account..."), "edit", 0, this, SLOT(slotAccountEdit()), actionCollection(), "account_edit");
   new KAction(i18n("Delete account..."), "delete", 0, this, SLOT(slotAccountDelete()), actionCollection(), "account_delete");
+  new KAction(i18n("Close account"), "", 0, this, SLOT(slotAccountClose()), actionCollection(), "account_close");
+  new KAction(i18n("Reopen account"), "", 0, this, SLOT(slotAccountReopen()), actionCollection(), "account_reopen");
 
   // *******************
   // The categories menu
@@ -379,6 +382,7 @@ void KMyMoney2App::initActions()
   toggleAction("view_show_transaction_detail")->setChecked(KMyMoneySettings::showRegisterDetailed());
   toggleAction("view_hide_reconciled_transactions")->setChecked(KMyMoneySettings::hideReconciledTransactions());
   toggleAction("view_hide_unused_categories")->setChecked(KMyMoneySettings::hideUnusedCategory());
+  toggleAction("view_show_all_accounts")->setChecked(false);
 
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
   createGUI(QString::null, false);
@@ -1074,6 +1078,11 @@ void KMyMoney2App::slotHideReconciledTransactions(void)
 void KMyMoney2App::slotHideUnusedCategories(void)
 {
   KMyMoneySettings::setHideUnusedCategory(toggleAction("view_hide_unused_categories")->isChecked());
+  myMoneyView->slotRefreshViews();
+}
+
+void KMyMoney2App::slotShowAllAccounts(void)
+{
   myMoneyView->slotRefreshViews();
 }
 
@@ -2703,6 +2712,54 @@ void KMyMoney2App::slotAccountOpen(const MyMoneyObject& obj)
   }
 }
 
+bool KMyMoney2App::canCloseAccount(const MyMoneyAccount& acc) const
+{
+  // balance must be zero
+  if(!acc.balance().isZero())
+    return false;
+
+  // all children must be already closed
+  QCStringList::const_iterator it_a;
+  for(it_a = acc.accountList().begin(); it_a != acc.accountList().end(); ++it_a) {
+    MyMoneyAccount a = MyMoneyFile::instance()->account(*it_a);
+    if(!a.isClosed()) {
+      return false;
+    }
+  }
+  return true;
+}
+
+void KMyMoney2App::slotAccountClose(void)
+{
+  if(m_selectedAccount.id().isEmpty())
+    return;  // need an account ID
+
+  try {
+    MyMoneyAccount a(m_selectedAccount);
+    a.setClosed(true);
+    MyMoneyFile::instance()->modifyAccount(a);
+  } catch(MyMoneyException* e) {
+    delete e;
+  }
+}
+
+void KMyMoney2App::slotAccountReopen(void)
+{
+  if(m_selectedAccount.id().isEmpty())
+    return;  // need an account ID
+
+  try {
+    MyMoneyAccount a(m_selectedAccount);
+    while(a.isClosed()) {
+      a.setClosed(false);
+      MyMoneyFile::instance()->modifyAccount(a);
+      a = MyMoneyFile::instance()->account(a.parentAccountId());
+    }
+  } catch(MyMoneyException* e) {
+    delete e;
+  }
+}
+
 void KMyMoney2App::slotReparentAccount(const MyMoneyAccount& _src, const MyMoneyInstitution& _dst)
 {
   MyMoneyAccount src(_src);
@@ -3058,8 +3115,8 @@ void KMyMoney2App::slotBudgetNew(void)
       // Exception thrown when the name is not found
       while (1)
       {
-	MyMoneyFile::instance()->budgetByName(newname);
-	newname = i18n("Budget %1 (%2)").arg(QString::number(date.year()), QString::number(i++));
+        MyMoneyFile::instance()->budgetByName(newname);
+        newname = i18n("Budget %1 (%2)").arg(QString::number(date.year()), QString::number(i++));
       }
     }
     catch(MyMoneyException *e)
@@ -3249,6 +3306,8 @@ void KMyMoney2App::updateActions(void)
   action("account_edit")->setEnabled(false);
   action("account_delete")->setEnabled(false);
   action("account_open")->setEnabled(false);
+  action("account_close")->setEnabled(false);
+  action("account_reopen")->setEnabled(false);
 
   action("category_new")->setEnabled(fileOpen);
   action("category_edit")->setEnabled(false);
@@ -3292,6 +3351,11 @@ void KMyMoney2App::updateActions(void)
 
           if(m_selectedAccount.accountType() == MyMoneyAccount::Investment)
             action("investment_new")->setEnabled(true);
+
+          if(m_selectedAccount.isClosed())
+            action("account_reopen")->setEnabled(true);
+          else if(canCloseAccount(m_selectedAccount))
+            action("account_close")->setEnabled(true);
 
 #ifdef USE_OFX_DIRECTCONNECT
           if ( !m_selectedAccount.onlineBankingSettings().value("protocol").isEmpty() )
