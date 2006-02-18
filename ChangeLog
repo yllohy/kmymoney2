@@ -1,3 +1,12 @@
+2006-02-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed documentation problems in MyMoneyBudget
+  * Added KMyMoneyWizard framework
+  * Fixed build system to better support FreeBSD
+
+2006-02-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't show closed accounts on home and institution view
+  * Don't allow to close accounts referenced by schedules
+
 2006-02-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added feature to close/re-open accounts
   * Fixed currency list in new account wizard
