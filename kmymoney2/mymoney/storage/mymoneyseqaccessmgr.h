@@ -904,7 +904,7 @@ public:
     * name of a budget
     * An exception will be thrown upon error conditions.
     *
-    * @param payee QString reference to name of budget
+    * @param budget QString reference to name of budget
     *
     * @return MyMoneyBudget reference to object of budget
     */
