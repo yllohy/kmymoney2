@@ -53,6 +53,7 @@
 #include "../kmymoneyutils.h"
 #include "../kmymoneysettings.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../kmymoney2.h"
 
 #define VIEW_LEDGER         "ledger"
 #define VIEW_SCHEDULE       "schedule"
@@ -407,63 +408,72 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
   QValueList<MyMoneyAccount>::Iterator it;
   QValueList<MyMoneyAccount>::Iterator prevIt;
 
+  bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked();
+
   // get list of all accounts
   accounts = file->accountList();
   for(it = accounts.begin(); it != accounts.end();) {
     prevIt = it;
-    switch((*it).accountType()) {
-      case MyMoneyAccount::Expense:
-      case MyMoneyAccount::Income:
-        // never show a category account
-        // Note: This might be different in a future version when
-        //       the homepage also shows category based information
-        it = accounts.remove(it);
-        break;
-
-      // Asset and Liability accounts are only shown if they
-      // have the preferred flag set
-      case MyMoneyAccount::Asset:
-      case MyMoneyAccount::Liability:
-      case MyMoneyAccount::Investment:
-        // if preferred accounts are requested, then keep in list
-        if((*it).value("PreferredAccount") != "Yes"
-        || (type & Preferred) == 0) {
+    if(!(*it).isClosed() || showClosedAccounts) {
+      switch((*it).accountType()) {
+        case MyMoneyAccount::Expense:
+        case MyMoneyAccount::Income:
+          // never show a category account
+          // Note: This might be different in a future version when
+          //       the homepage also shows category based information
           it = accounts.remove(it);
-        }
-        break;
+          break;
 
-      // Check payment accounts. If payment and preferred is selected,
-      // then always show them. If only payment is selected, then
-      // show only if preferred flag is not set.
-      case MyMoneyAccount::Checkings:
-      case MyMoneyAccount::Savings:
-      case MyMoneyAccount::Cash:
-      case MyMoneyAccount::CreditCard:
-        switch(type & (Payment | Preferred)) {
-          case Payment:
-            if((*it).value("PreferredAccount") == "Yes")
-              it = accounts.remove(it);
-            break;
-
-          case Preferred:
-            if((*it).value("PreferredAccount") != "Yes")
-              it = accounts.remove(it);
-            break;
-
-          case Payment | Preferred:
-            break;
-
-          default:
+        // Asset and Liability accounts are only shown if they
+        // have the preferred flag set
+        case MyMoneyAccount::Asset:
+        case MyMoneyAccount::Liability:
+        case MyMoneyAccount::Investment:
+          // if preferred accounts are requested, then keep in list
+          if((*it).value("PreferredAccount") != "Yes"
+          || (type & Preferred) == 0) {
             it = accounts.remove(it);
-            break;
-        }
-        break;
+          }
+          break;
 
-      // filter all accounts that are not used on homepage views
-      default:
-        it = accounts.remove(it);
-        break;
+        // Check payment accounts. If payment and preferred is selected,
+        // then always show them. If only payment is selected, then
+        // show only if preferred flag is not set.
+        case MyMoneyAccount::Checkings:
+        case MyMoneyAccount::Savings:
+        case MyMoneyAccount::Cash:
+        case MyMoneyAccount::CreditCard:
+          switch(type & (Payment | Preferred)) {
+            case Payment:
+              if((*it).value("PreferredAccount") == "Yes")
+                it = accounts.remove(it);
+              break;
+
+            case Preferred:
+              if((*it).value("PreferredAccount") != "Yes")
+                it = accounts.remove(it);
+              break;
+
+            case Payment | Preferred:
+              break;
+
+            default:
+              it = accounts.remove(it);
+              break;
+          }
+          break;
+
+        // filter all accounts that are not used on homepage views
+        default:
+          it = accounts.remove(it);
+          break;
+      }
+
+    } else if((*it).isClosed()) {
+      // don't show if closed
+      it = accounts.remove(it);
     }
+
     // if we still point to the same account, we better move on ;-)
     if(prevIt == it)
       ++it;

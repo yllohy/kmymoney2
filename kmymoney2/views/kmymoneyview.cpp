@@ -1307,6 +1307,7 @@ void KMyMoneyView::slotRefreshViews()
   KMyMoneyUtils::updateSettings();
 
   m_accountsView->slotLoadAccounts();
+  m_institutionsView->slotLoadAccounts();
   m_categoriesView->slotLoadAccounts();
   m_payeesView->slotLoadPayees();
   m_ledgerView->slotRefreshView();

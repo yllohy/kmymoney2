@@ -206,11 +206,8 @@ void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent)
       MyMoneySecurity sec = m_securityMap[security.tradingCurrency()];
       prices += file->price(sec.id(), file->baseCurrency().id());
     }
-
-    KMyMoneyAccountTreeItem* item = new KMyMoneyAccountTreeItem(parent, acc, prices, security);
-
+    new KMyMoneyAccountTreeItem(parent, acc, prices, security);
   }
-
 }
 
 void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCString& institutionId)
@@ -219,6 +216,7 @@ void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const Q
 
   QMap<QCString, MyMoneyAccount>::const_iterator it_a;
   MyMoneyMoney  value;
+  bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked();
 
   for(it_a = m_accountMap.begin(); it_a != m_accountMap.end(); ++it_a) {
     const MyMoneyAccount& acc = *it_a;
@@ -230,7 +228,8 @@ void KInstitutionsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const Q
 
       case MyMoneyAccount::Asset:
         if(acc.institutionId() == institutionId
-        && acc.accountType() != MyMoneyAccount::Stock) {
+        && acc.accountType() != MyMoneyAccount::Stock
+        && (!acc.isClosed() || showClosedAccounts)) {
           QValueList<MyMoneyPrice> prices;
           MyMoneySecurity security = file->baseCurrency();
           try {
