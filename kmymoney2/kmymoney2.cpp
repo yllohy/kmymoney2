@@ -2726,6 +2726,16 @@ bool KMyMoney2App::canCloseAccount(const MyMoneyAccount& acc) const
       return false;
     }
   }
+
+  // there must be no unfinished schedule referencing the account
+  QValueList<MyMoneySchedule> list = MyMoneyFile::instance()->scheduleList();
+  QValueList<MyMoneySchedule>::const_iterator it_l;
+  for(it_l = list.begin(); it_l != list.end(); ++it_l) {
+    if((*it_l).isFinished())
+      continue;
+    if((*it_l).hasReferenceTo(acc.id()))
+      return false;
+  }
   return true;
 }
 
