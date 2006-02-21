@@ -1053,20 +1053,12 @@ void KMyMoney2App::slotFileQuit()
 
 void KMyMoney2App::slotViewToolBar()
 {
-  QString prevMsg = slotStatusMsg(i18n("Toggling toolbar..."));
-  ///////////////////////////////////////////////////////////////////
-  // turn Toolbar on or off
   toolBar("mainToolBar")->setShown(toggleAction("options_show_toolbar")->isChecked());
-  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotViewStatusBar()
 {
-  QString prevMsg = slotStatusMsg(i18n("Toggle the statusbar..."));
-  ///////////////////////////////////////////////////////////////////
-  //turn Statusbar on or off
   statusBar()->setShown(toggleAction("options_show_statusbar")->isChecked());
-  slotStatusMsg(prevMsg);
 }
 
 void KMyMoney2App::slotHideReconciledTransactions(void)

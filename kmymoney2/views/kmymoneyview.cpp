@@ -1577,7 +1577,7 @@ void KMyMoneyView::fixTransactions(void)
   QValueList<MyMoneySchedule>::Iterator it_x;
   QCStringList interestAccounts;
 
-  kmymoney2->slotStatusMsg(i18n("Fix transactions"));
+  QString prevMsg = kmymoney2->slotStatusMsg(i18n("Fix transactions"));
   kmymoney2->slotStatusProgressBar(0, scheduleList.count() + transactionList.count());
 
   int cnt = 0;
@@ -1757,7 +1757,7 @@ void KMyMoneyView::fixTransactions(void)
   }
 
   kmymoney2->slotStatusProgressBar(-1, -1);
-  kmymoney2->slotStatusMsg(i18n("Ready"));
+  kmymoney2->slotStatusMsg(prevMsg);
 }
 
 void KMyMoneyView::fixDuplicateAccounts(MyMoneyTransaction& t)
