@@ -106,7 +106,7 @@ protected:
   };
 
   void showPayments(void);
-  void showPaymentEntry(const MyMoneySchedule&);
+  void showPaymentEntry(const MyMoneySchedule&, int cnt = 1);
   void showAccounts(paymentTypeE type, const QString& hdr);
   void showAccountEntry(const MyMoneyAccount&);
   void showFavoriteReports();

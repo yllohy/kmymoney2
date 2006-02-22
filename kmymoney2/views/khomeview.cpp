@@ -263,8 +263,16 @@ void KHomeView::showPayments(void)
     tmp = "<tr><th class=\"warning\" colspan=\"3\">" + i18n("Overdue payments") + "</th></tr>\n";
     m_part->write(tmp);
     for(it = overdues.begin(); it != overdues.end(); ++it) {
+      // determine number of overdue payments
+      QDate nextDate = (*it).nextPayment((*it).lastPayment());
+      int cnt = 0;
+      while(nextDate.isValid() && nextDate < QDate::currentDate()) {
+        ++cnt;
+        nextDate = (*it).nextPayment(nextDate);
+      }
+
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
-      showPaymentEntry(*it);
+      showPaymentEntry(*it, cnt);
       m_part->write("</tr>");
       // make sure to not repeat overdues later again
       for(it_f = schedule.begin(); it_f != schedule.end();) {
@@ -368,7 +376,7 @@ void KHomeView::showPayments(void)
   }
 }
 
-void KHomeView::showPaymentEntry(const MyMoneySchedule& sched)
+void KHomeView::showPaymentEntry(const MyMoneySchedule& sched, int cnt)
 {
   QString tmp;
   try {
@@ -382,12 +390,13 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched)
         tmp = QString("<td width=\"20%\">") +
           KGlobal::locale()->formatDate(sched.nextPayment(sched.lastPayment()), true) +
           "</td><td width=\"70%\">" +
-          link(VIEW_SCHEDULE, QString("?id=%1").arg(sched.id())) + sched.name() + linkend() +
-          "</td>" +
-          "<td width=\"10%\" align=\"right\">";
+          link(VIEW_SCHEDULE, QString("?id=%1").arg(sched.id())) + sched.name() + linkend();
+        if(cnt > 1)
+          tmp += i18n(" (%1 payments)").arg(cnt);
+        tmp += "</td><td width=\"10%\" align=\"right\">";
 
         MyMoneySecurity currency = MyMoneyFile::instance()->currency(acc.currencyId());
-        QString amount = sp.value().formatMoney(currency.tradingSymbol());
+        QString amount = (sp.value()*cnt).formatMoney(currency.tradingSymbol());
         amount.replace(" ","&nbsp;");
         tmp += amount;
         tmp += "</td>";
@@ -407,6 +416,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
   QValueList<MyMoneyAccount> accounts;
   QValueList<MyMoneyAccount>::Iterator it;
   QValueList<MyMoneyAccount>::Iterator prevIt;
+  QMap<QString, MyMoneyAccount> nameIdx;
 
   bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked();
 
@@ -474,9 +484,22 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
       it = accounts.remove(it);
     }
 
-    // if we still point to the same account, we better move on ;-)
-    if(prevIt == it)
+    // if we still point to the same account we keep it in the list and move on ;-)
+    if(prevIt == it) {
+      QString key = (*it).name();
+      if(nameIdx[key].id().isEmpty()) {
+        nameIdx[key] = *it;
+
+      } else if(nameIdx[key].id() != (*it).id()) {
+        key = (*it).name() + "[%1]";
+        int dup = 2;
+        while(nameIdx[key.arg(dup)].id().isEmpty()
+        || nameIdx[key.arg(dup)].id() != (*it).id())
+          ++dup;
+        nameIdx[key.arg(dup)] = *it;
+      }
       ++it;
+    }
   }
 
   if(accounts.count() > 0) {
@@ -493,9 +516,10 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
     m_part->write(i18n("Balance"));
     m_part->write("</th></tr>");
 
-    for(it = accounts.begin(); it != accounts.end(); ++it) {
+    QMap<QString, MyMoneyAccount>::const_iterator it_m;
+    for(it_m = nameIdx.begin(); it_m != nameIdx.end(); ++it_m) {
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
-      showAccountEntry(*it);
+      showAccountEntry(*it_m);
       m_part->write("</tr>");
     }
     m_part->write("</table>");
