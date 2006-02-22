@@ -42,6 +42,7 @@
 #include <kstandarddirs.h>
 #include <kmessagebox.h>
 #include <kiconloader.h>
+#include <kinputdialog.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -285,7 +286,20 @@ void KCurrencyEditDlg::slotClose(void)
 
 void KCurrencyEditDlg::slotNewCurrency(void)
 {
-  KMessageBox::sorry(this, i18n("This feature needs to be implemented."), i18n("Implementation missing"));
+  QString id = KInputDialog::getText(i18n("New currency"), i18n("Enter ISO 4217 code for new currency"), QString::null, 0, 0, 0, 0, ">AAA");
+  if(!id.isEmpty()) {
+    MyMoneySecurity currency(id.data(), i18n("New currency"));
+    try {
+      MyMoneyFile::instance()->addCurrency(currency);
+      loadCurrencies();
+      slotSelectCurrency(id.data());
+      m_currencyList->ensureItemVisible(m_currencyList->selectedItem());
+
+    } catch(MyMoneyException* e) {
+      delete e;
+      KMessageBox::sorry(this, i18n("Cannot create new currency."), i18n("New currency"));
+    }
+  }
 }
 
 void KCurrencyEditDlg::slotRenameCurrency(void)
