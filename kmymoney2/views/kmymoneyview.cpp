@@ -1079,6 +1079,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   bool create = MyMoneyFile::instance()->currencyList().count() == 0;
   loadDefaultCurrency(MyMoneySecurity("AFA", i18n("Afghanistan Afghani")), create);
   loadDefaultCurrency(MyMoneySecurity("ALL", i18n("Albanian Lek")), create);
+  loadDefaultCurrency(MyMoneySecurity("ANG", i18n("Netherland Antillian Guilder")), create);
   loadDefaultCurrency(MyMoneySecurity("DZD", i18n("Algerian Dinar")), create);
   loadDefaultCurrency(MyMoneySecurity("ADF", i18n("Andorran Franc")), create);
   loadDefaultCurrency(MyMoneySecurity("ADP", i18n("Andorran Peseta")), create);
