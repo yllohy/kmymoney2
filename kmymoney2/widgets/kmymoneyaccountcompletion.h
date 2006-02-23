@@ -92,6 +92,8 @@ public:
 
   const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const { return m_accountSelector->accountList(list); };
 
+  void removeAccount(const QCString& id) { m_accountSelector->removeAccount(id); }
+
   /**
     * This method returns the list of selected account id's. If
     * no account is selected, the list is empty.

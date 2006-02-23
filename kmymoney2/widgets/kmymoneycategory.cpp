@@ -247,6 +247,11 @@ void kMyMoneyCategory::slotSelectAccount(const QCString& id)
   }
 }
 
+void kMyMoneyCategory::removeAccount(const QCString& id)
+{
+  m_accountSelector->removeAccount(id);
+}
+
 void kMyMoneyCategory::connectNotify(const char * /* signal */)
 {
 }

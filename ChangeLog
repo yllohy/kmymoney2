@@ -1,5 +1,15 @@
+2006-02-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added method to remove account from account selection widget
+
 2006-02-23 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix outdated hyperlink
+
+2006-02-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Sort accounts on homepage in alphabetical order
+  * Show number of overdue payments on homepage and sum-up payments
+    if more than one payment is overdue for a schedule
+  * Added Netherland Antillian Guilder to currency list
+  * Added feature to create new currency entries
 
 2006-02-21 Bjorn Helgaas <bjorn.helgaas@hp.com>
   * Remove needless status bar updates

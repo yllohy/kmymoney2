@@ -287,6 +287,13 @@ public:
     */
   void setOptimizedWidth(void);
 
+  /**
+    * This method removes an account with a given id from the list.
+    *
+    * @param id QCString containing id of account to be removed
+    */
+  void removeAccount(const QCString& id);
+
 public slots:
   /**
     * This slot selects all items that are currently in

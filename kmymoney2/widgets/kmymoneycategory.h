@@ -72,6 +72,8 @@ public:
 
   QCString selectedAccountId() const { return m_id; }
 
+  void removeAccount(const QCString& id);
+
   /**
    * This method is used to turn on/off the hint display
    */

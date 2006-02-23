@@ -579,6 +579,33 @@ bool kMyMoneyAccountSelector::allAccountsSelected(const QListViewItem *item) con
   return true;
 }
 
+void kMyMoneyAccountSelector::removeAccount(const QCString& id)
+{
+  QListViewItem* it_v;
+  QListViewItemIterator it;
+
+  it = QListViewItemIterator(m_listView);
+  while((it_v = it.current()) != 0) {
+    if(it_v->rtti() == 1) {
+      kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
+      if(it_c->type() == QCheckListItem::CheckBox) {
+        if(id == it_c->id()) {
+          delete it_c;
+          return;
+        }
+      }
+    } else if(it_v->rtti() == 0) {
+      kMyMoneyListViewItem* it_c = static_cast<kMyMoneyListViewItem*>(it_v);
+      if(id == it_c->id()) {
+        delete it_c;
+        return;
+      }
+    }
+    it++;
+  }
+  return;
+}
+
 
 void kMyMoneyAccountSelector::selectAllAccounts(const bool state)
 {
