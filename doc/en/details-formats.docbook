@@ -79,8 +79,9 @@ When using GPG encryption, GPG also compresses the file, so no extra compression
 If you have not done so already for mail encryption, you need to generate a key-pair in order to be able to use the GPG encryption feature of &kappname;. Also, <application>GPG</application> must be installed on your system.
 </para>
 <para>
-The details about howto generate a key-pair, howto take care of it are beyond the scope of this document.
- A Mini Howto on this subject can be found at <ulink url="http://webberr.dewinter.com/gnupg_howto/english/GPGMiniHowto.html">http://webberr.dewinter.com/gnupg_howto/english/GPGMiniHowto.html</ulink>.
+The details about how to generate a key-pair and how to take care of it are beyond the scope of this document.
+ A Mini Howto on this subject can be found at <ulink url="http://www.gnupg.org/(en)/documentation/howtos.html">http://www.gnupg.org/(en)/documentation/howtos.html
+</ulink>.
 </para>
 </sect2>
 
