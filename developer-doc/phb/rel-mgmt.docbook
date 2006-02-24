@@ -9,13 +9,13 @@ following chapters explain the steps that are performed during this process.
 <title>Creating a new source version</title>
 <para>
 The process of releasing a new version is to build a source tar-ball archive, verify
-that &app; can be build from it and upload it to the SourceForge File Release System.
+that &app; can be built from it and upload it to the SourceForge File Release System.
 This chapter explains the steps of making sure that the version numbers are set
 correctly, creating the source tar-ball, tagging the repository etc.
 
 <note>
 <para>
-The steps explained apply for both the development branches as well as the
+The steps explained apply to both the development and the
 release branches. For convenience, the examples are based on the
 development branch.
 </para>
@@ -24,14 +24,52 @@ development branch.
 
 <orderedlist>
 <listitem>
+<para>Determine the release number which will identify this release.
+</para>
 <para>
-Visit all subdirectories that contain a shared library and check whether the code/interface of the
-shared library has been changed since the last release. Modify the LIBVERSION setting in each
-Makefile.am according to the following recipe, where
-the LIBVERSION setting controls the libtool versioning system for shared
-libraries. It is constructed out of the triplet CURRENT:REVISION:AGE.
+Two types of versions can be created at this time: a <emphasis>follow-up</emphasis> release or a <emphasis>fresh stable</emphasis>
+release. The follow-up release is based on a previous release with the same major and minor release number. The fresh stable
+release starts a new major and minor release number pair. In the latter case, the major and minor release numbers on the
+development branch in CVS are also adjusted. More details below.
 </para>
 
+<para>
+  <orderedlist>
+    <listitem><para>
+    For follow-up releases increase the micro-release-number by one since the last unstable/stable release.    
+    </para></listitem>
+    <listitem><para>
+    For a fresh stable release, increase the minor release number and set the micro-release number to 0.
+    </para></listitem>
+  </orderedlist>
+</para>
+</listitem>
+
+<listitem>
+<para>Create a new directory for this release
+</para>
+<para>
+Create a new directory specifically for the release process, something like /home/me/distkmm, which will ensure that the following steps are not contaminated by other, existing versions of &app;. From this directory, check out a copy of the app from the CVS branch which forms the basis of this release, e.g. for 0.8.2, the branch will be rel-0-8-branch. The checkout process will create a sub-directory called kmymoney2. This is referred to subsequently as the TLD (top level directory).
+</para>
+</listitem>
+
+<listitem>
+<para>
+Check that the version number is correct.
+</para>
+<para>
+In the TLD, check file configure.in.in for the correct version number. A line near the top should look like</para>
+  <programlisting>AM_INIT_AUTOMAKE(kmymoney2,0.8.3)</programlisting>
+<para>If the last digits don't match the release number, then change them and commit your change to the repository with the message 'Bumped to release x.y.z'.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Verify the libtool version number
+</para>
+<para>Visit all subdirectories that contain a shared library (in the TLD, issue the command 'find .|egrep .so$') and check whether the code or interface of the shared library has been changed since the last release. If so, modify the LIBVERSION setting in each Makefile.am according to the following recipe, where the LIBVERSION setting controls the libtool versioning system for shared libraries. It is constructed out of the triplet CURRENT:REVISION:AGE.
+</para>
 <para>
   <orderedlist>
     <listitem><para>
@@ -55,6 +93,7 @@ libraries. It is constructed out of the triplet CURRENT:REVISION:AGE.
     </para></listitem>
   </orderedlist>
 </para>
+
 <para>
 <caution>
 Make sure to modify the numbers in coordination with changes on the release- and development branch.
@@ -63,66 +102,49 @@ It could well be, that the REVISION must be incremented more than 1 if it has be
 </para>
 </listitem>
 
-
 <listitem>
 <para>
-Make sure that the project version is set correct to the
-version to be created (e.g. 0.5.6) by opening the Help/About dialog box. The correct version number is determined
-by the following rules (see also <link linkend="version-mgmt">Version Management</link> for more details.
+Perform an initial build of the application
+</para>
+<para>
+From the TLD, issue the commands:
 </para>
 
-<note>
-<para>
-Two types of versions can be created at this time: a <emphasis>follow-up</emphasis> release or a <emphasis>fresh stable</emphasis>
-release. The follow-up release is based on a previous release with the same major and minor release number. The fresh stable
-release starts a new major and minor release number pair. In the latter case, the major and minor release numbers on the
-development branch in CVS are also adjusted. More details below.
-</para>
-
-<para>
-  <orderedlist>
-    <listitem><para>
-    For follow-up releases increase the micro-release-number by one since the last unstable/stable release.    
-    </para></listitem>
-    <listitem><para>
-    For a fresh stable release, increase the minor release number and set the micro-release number to 0.
-    </para></listitem>
-  </orderedlist>
-</para>
-</note>
-
-<para>
-If the version number is not correct, change the it in the file
-<filename>configure.in.in</filename>.  Afterwards, run the following commands:
-
-<screen>
+<programlisting>
 <prompt>thb: ~&gt; </prompt><userinput>make -f Makefile.dist</userinput>
 <prompt>thb: ~&gt; </prompt><userinput>./configure <emphasis>&lt;any-options-you-need&gt;</emphasis></userinput>
 <prompt>thb: ~&gt; </prompt><userinput>make</userinput>
-</screen>
- 
+</programlisting>
+<para>
 This will regenerate all files of the application and rebuild everything automatically.
 </para>
 </listitem>
 
 <listitem>
 <para>
-Update the text source file for translations. This is done by running the command:
+Update the text source file for translations.
+</para>
+<para> This is done from the TLD by running the command:
 
-<screen>
+<programlisting>
 <prompt>thb: ~&gt; </prompt><userinput>make package-messages</userinput>
-</screen>
- 
+</programlisting>
+</para>
+<para>
+This will create the file kmymoney2.pot in TLD/po.
 </para>
 </listitem>
 
 <listitem>
 <para>
-Run the command
+Check the distribution
+</para>
+<para>
+From the TLD, run the command
  
-<screen>
+<programlisting>
 <prompt>thb: ~&gt; </prompt><userinput>make distcheck</userinput>
-</screen>
+</programlisting>
  
 This will do the following things automatically and stop on any error:
 </para>
@@ -130,19 +152,19 @@ This will do the following things automatically and stop on any error:
 <para>
 <orderedlist>
 <listitem><para>create a source tar-ball in tgz form</para></listitem>
-<listitem><para>unpack this source tar-ball in a seperate directory</para></listitem>
+<listitem><para>unpack this source tar-ball in a separate directory</para></listitem>
 <listitem><para>run configure on the unpacked source tar-ball</para></listitem>
 <listitem><para>compile and link the configured package</para></listitem>
 <listitem><para>compile and link all testcases</para></listitem>
-<listitem><para>installs the compiled program in a temp directory</para></listitem>
-<listitem><para>checks that all files are installed</para></listitem>
-<listitem><para>uninstalls the package from the temp space</para></listitem>
-<listitem><para>checks that no files are left behind</para></listitem>
+<listitem><para>install the compiled program in a temp directory</para></listitem>
+<listitem><para>check that all files are installed</para></listitem>
+<listitem><para>uninstall the package from the temp space</para></listitem>
+<listitem><para>check that no files are left behind</para></listitem>
 </orderedlist>
 </para>
 
 <para>
-Make sure that everything builds correct. If errors occur, correct them and
+Make sure that everything builds correctly. If errors occur, correct them and
 rerun <command>make distcheck</command>. Once everything is ok, a respective message, that the tar-ball is
 ready for distribution is shown at the end of <command>make distcheck</command>.
 </para>
@@ -150,48 +172,151 @@ ready for distribution is shown at the end of <command>make distcheck</command>.
 
 <listitem>
 <para>
-Add a line with the text <screen>  * Released x.y.z</screen> to the ChangeLog file.
+Update the ChangeLog
+</para>
+<para>
+Add a line with the text
+<programlisting>  * Released x.y.z
+</programlisting>
+to the ChangeLog file.
 </para>
 </listitem>
 
 <listitem>
 <para>
-Checkin the changes you have made in the previous two steps to the CVS repository before you proceed with the next step.
+Commit changes to CVS
+</para>
+<para>
+Commit the pot file created above, and the updated ChangeLog file to the CVS repository before you proceed with the next step. Use the message 'Released x.y.z'.
 </para>
 </listitem>
 
 <listitem>
 <para>
-Tag the version with the applicable tag (e.g. rel-0-5-6)
+Tag the version on CVS
+</para>
+<para>From the TLD, issue the command 'cvs tag rel-x-y-z', where x-y-z is the release number with dots replaced by dashes.
 </para>
 </listitem>
 
 <listitem>
 <para>
-Optimize the size of the tar-ball by compressing it from GZIP to BZIP2 compression. This can be done with the following two commands:
+Update and optimize the size of the tar-ball
+</para>
+<para>As the content has changed since the tar-ball was created in step 4, we need to re-create it. Create a more compressed version using the command:
+</para>
+  <programlisting>
+    <prompt>thb: ~&gt; </prompt><userinput>make dist-bzip2</userinput>
+  </programlisting>
+</listitem>
 
-<screen>
-<prompt>thb: ~&gt; </prompt><userinput>gunzip <emphasis>name-of-tar-ball</emphasis>.tgz</userinput>
-<prompt>thb: ~&gt; </prompt><userinput>bzip2 -9 <emphasis>name-of-tar-ball</emphasis>.tar</userinput>
-</screen>
+<listitem>
+<para>Make a checksum of the tarball
+</para>
+<para>
+This can be done with the following command from the TLD
+</para>
+  <programlisting>
+    <prompt>thb: ~&gt; </prompt><userinput>md5sum <emphasis>name-of-tarball.tar.bz2</emphasis> &gt;/home/me/somewheresafe</userinput>
+  </programlisting>
+</listitem>
+
+<listitem>
+<para>
+Create a Release Note and a release ChangeLog file.
+</para>
+<para> The former should contain a brief description of the release and any new features which have been added. The latter should be a tidied-up version of the application ChangeLog file, though any purely internal changes may be omitted.
 </para>
 </listitem>
 
 <listitem>
 <para>
-Create a release note which should give some short information about the changes since the last release.
-<note>
-In recent releases, I collected all entries from the ChangeLog file and removed the headers of each entry.
-</note>
+Upload the tarball to Sourceforge's 'incoming' directory
+</para>
+<para>
+Upload the tar-ball (bz2-version) to ftp://anonymous:&lt;your-email-address&gt;@upload.sourceforge.net:incoming, making sure to use the binary transfer mode.
+</para>
+<para>
+For GUI users: <emphasis>anonymous</emphasis> is the user-name and 
+<emphasis>your-email-address</emphasis> is the password.
+</para>
+<para>
+For command line FTP, from the TLD:
+<programlisting>
+<prompt>thb: </prompt><userinput>ftp</userinput>
+<prompt>ftp&gt; </prompt><userinput>open upload.sourceforge.net</userinput>
+Connected to osdn.dl.sourceforge.net.
+&lt;snip&gt;
+<prompt>Name (upload.sourceforge.net:tonyb): </prompt><userinput>anonymous</userinput>
+331 Please specify the password.
+<prompt>Password:</prompt><userinput>&lt;enter your sf email name, the bit of the address before the @ sign&gt;</userinput>
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+<prompt>ftp&gt; </prompt><userinput>cd /incoming</userinput>
+250 Directory successfully changed.
+<prompt>ftp&gt; </prompt><userinput>binary</userinput>
+200 Switching to Binary mode.
+<prompt>ftp&gt; </prompt><userinput>put <emphasis>name-of-tarball.tar.bz2</emphasis></userinput>
+<prompt>ftp&gt;</prompt><userinput> quit</userinput>
+</programlisting>
 </para>
 </listitem>
 
 <listitem>
 <para>
-Upload the tar-ball (bz2-version) to ftp://anonymous:&lt;your-email-address&gt;@upload.sourceforge.net:incoming and
-make sure to use the binary transfer mode. For GUI users: <emphasis>anonymous</emphasis> is the user-name and 
-<emphasis>your-email-address</emphasis> is the password. Next pull the uploaded file into the &app; section
+Move the tarball to the Sourceforge File Release System
+</para>
+<para>
+Next pull the uploaded file into the &app; section
 of the File Release System on SourceForge so that the file will be visible to everyone on the internet.
+To do that, load the following URL in your browser
+</para>
+<programlisting>
+https://sourceforge.net/project/admin/editpackages.php?group_id=4708
+</programlisting>
+<para>At the bottom of the page, click on the 'Edit releases' link. If the release (x.y.z) you've built doesn't appear in the list, go back a page and click on the 'Add release' link to add it, then return to 'Edit releases', then click the 'Edit this release' link for your release.</para>
+<para>In Step 1 of the page, set the status to Hidden for now, paste the Release Notes and ChangeLog into the appropriate boxes and Submit.</para>
+<para>In Step 2, select the kmymoney tarball file and Add.</para>
+<para>In Step 3, set Processor to 'platform-independent', File Type to 'source .bz2', and Submit.</para>
+<para/>
+</listitem>
+
+<listitem>
+<para>Check that the upload has worked successfully.
+</para>
+<para>Download a copy of the tarball from
+<programlisting>http://dl.sourceforge.net/sourceforge/kmymoney2/<emphasis>name-of-tarball.</emphasis>tar.bz2</programlisting>
+Save the file in a temp directory, then issue the command
+<programlisting>
+  <prompt>thb: </prompt><userinput>md5sum -c /home/me/somewheresafe &lt;<emphasis>temp-path-to-downloaded-tarball</emphasis></userinput>
+</programlisting>
+where the 'somewheresafe' file is that created in the 'Make a checksum' section above. This should report an OK situation. If not, repeat the previous 2 steps.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Activate tarball on Sourceforge
+</para>
+<para>Once you are happy that the tarball was uploaded okay, and the release announcements are all correct, enter the File Release system again, and set the status to Active.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Update bug lists
+</para>
+<para>If the ChangeLog indicates that any Sourceforge or KDE bugs have been fixed in this release, log on to the respective bug sites and ensure that they are marked as closed.
+</para>
+</listitem>
+
+<listitem>
+<para>
+Announce the release
+</para>
+<para>
+(At this point, you may wish to wait a few hours to allow Sourceforge to populate its mirror sites, thus avoiding complaints to the mailing lists.)
 Announce the presence of the source tar-ball archive as described in
 <link linkend="announce-new-version">Announce new version</link>.
 </para>
@@ -199,39 +324,27 @@ Announce the presence of the source tar-ball archive as described in
 
 <listitem>
 <para>
+Prepare for next release
+</para>
+<para>
 Make sure that you increase the project version to the next version. This is derived as follows:
 </para>
 
 <para>
   <orderedlist>
-    <listitem><para>
-    After a follow-up releases increase the micro-release-number by one since the last unstable/stable release.
-    E.g.: The release you currently work on is called 0.7.3 then set the release number to 0.7.4 here.
-    </para></listitem>
-    <listitem><para>
-    After a fresh stable release, increase the minor release number and set the micro-release number to 0. E.g.:
-    The release you currently work on is called 0.6 then set the release number to 0.7.0 here.
-    </para></listitem>
+  <listitem>
+    <para>After a follow-up release, increase the micro-release-number by one, e.g. if the release you are currently working on is called 0.7.3 then set the release number to 0.7.4. </para>
+  </listitem>
+  <listitem>
+    <para>After a fresh stable release, increase the minor release number and set the micro-release number to 0, e.g.if the release you are currently working on is called 0.6 then set the release number to 0.7.0. </para>
+  </listitem>
   </orderedlist>
 </para>
 
 <para>
-Make those changes in configure.in.in.
-Afterwards, run the following commands:
-
-<screen>
-<prompt>thb: ~&gt; </prompt><userinput>make -f Makefile.dist</userinput>
-<prompt>thb: ~&gt; </prompt><userinput>./configure <emphasis>&lt;any-options-you-need&gt;</emphasis></userinput>
-<prompt>thb: ~&gt; </prompt><userinput>make</userinput>
-</screen>
- 
-This will regenerate all files of the application and rebuild everything automatically.
-</para>
-</listitem>
-
-<listitem>
-<para>
-Check in the changes to configure.in.in into the CVS repository.
+Make the appropriate changes to configure.in.in as described in paragraph 3 above.
+Then rebuild the application as descibed in paragraph 5.
+Finally, check in the updated configure.in.in to the CVS repository.
 </para>
 </listitem>
 </orderedlist>
@@ -239,7 +352,7 @@ Check in the changes to configure.in.in into the CVS repository.
 <note>
 <para>
 The version number in the sandbox is <emphasis>always</emphasis> the
-version number that is currently developed (we're a little ahead here).
+version number that is currently being developed (we're a little ahead of ourselves here).
 </para>
 </note>
 
@@ -338,7 +451,7 @@ The first file is changed rather often between the version tags. All tags
 are on different revisions of the file.
 </para>
 
-<screen>
+<programlisting>
 
 
      *     (1.12) [rel-0-3-8]
@@ -356,7 +469,7 @@ are on different revisions of the file.
    [HEAD]                  [rel-0-4-branch]
 
 
-</screen>
+</programlisting>
 
 <para>
 The second file is not changed at all between the version
@@ -364,7 +477,7 @@ tags. Nevertheless, all tags are available even though now they are on
 the same revision 1.2.
 </para>
 
-<screen>
+<programlisting>
 
 
      *     (1.2) [rel-0-3-8] [rel-0-4]
@@ -376,7 +489,7 @@ the same revision 1.2.
    [HEAD]                   [rel-0-4-branch]
 
 
-</screen>
+</programlisting>
 
 </example>
 
@@ -515,12 +628,12 @@ linkend="create-new-source-version">tar-ball</link> to this directory.
    back out of the source directory to its parent. Then you'll do
    something like:
 
-<screen>
+<programlisting>
 
   <prompt>thb:~&gt; </prompt><userinput>diff -uNr dirname.orig dirname &gt; ../SOURCES/dirname-distroname.patch</userinput>
 
 
-</screen>
+</programlisting>
 
    This will create a patch for you that you can use in your spec file.
    Note that the "distro-name" that you see in the patch name is just an
@@ -556,12 +669,12 @@ Once you have the spec file it's time to try and build your package. The
 usual way to do this is using the following command:
 
 
-<screen>
+<programlisting>
 
   <prompt>thb:~&gt; </prompt><userinput>rpmbuild -ba kmymoney.spec</userinput>
 
 
-</screen>
+</programlisting>
 
 Once the command finishes successfully, you have a source RPM in SRPMS and
 a binary RPM for your distribution in one of the subdirectories of RPMS.
@@ -636,7 +749,7 @@ ASCII armored signature.
 </para>
 
 <para>
-<screen>
+<programlisting>
 
 
   <prompt>thb:~&gt; </prompt><userinput>gpg -b -a kmymoney2-0.5.1-1.i386.rpm</userinput>
@@ -648,7 +761,7 @@ ASCII armored signature.
   <prompt>thb:~&gt; </prompt><userinput></userinput>
 
 
-</screen>
+</programlisting>
 </para>
 
 <para>
@@ -659,7 +772,7 @@ IT</command>.
 </para>
 
 <para>
-<screen>
+<programlisting>
 
    -----BEGIN PGP SIGNATURE-----
    Version: GnuPG v1.0.7 (GNU/Linux)
@@ -669,7 +782,7 @@ IT</command>.
    =qJIP
    -----END PGP SIGNATURE-----
 
-</screen>
+</programlisting>
 </para>
 
 <para>
@@ -685,7 +798,7 @@ shows:
 
 
 <para>
-<screen>
+<programlisting>
 
 
   <prompt>thb:~&gt; </prompt><userinput>gpg --verify kmymoney2-0.5.1-1.i386.rpm.asc</userinput>
@@ -694,7 +807,7 @@ shows:
   <prompt>thb:~&gt; </prompt><userinput></userinput>
 
 
-</screen>
+</programlisting>
 
 <note>
 <para>
