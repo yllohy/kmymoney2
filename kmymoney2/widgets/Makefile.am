@@ -18,24 +18,10 @@ inst_HEADERS = kmymoneydateinput.h kmymoneyedit.h kmymoneytitlelabel.h kmymoneyp
 noinst_HEADERS = kmymoneyregisterinvestment.h kmymoneyequity.h kmymoneyequitycompletion.h kmymoneycompletion.h kmymoneyequityselector.h kmymoneyaccountcombo.h kmymoneyaccountcompletion.h kmymoneypriceview.h kmymoneyregisterloan.h kmymoneyregistersearch.h kmymoneybriefschedule.h kmymoneyscheduleddatetbl.h kmymoneydatetbl.h kmymoneyscheduledcalendar.h kmymoneycalendar.h kmymoneycalculator.h kmymoneycategory.h kmymoneytransactionform.h kmymoneyregistercheckings.h kmymoneyregister.h kmymoneysplittable.h kmymoneycombo.h kmymoneyhlayout.h kmymoneylineedit.h kmymoneyonlinequoteconfig.h kmymoneyaccounttree.h kmymoneygpgconfig.h kmymoneywizard_p.h
 
 # make sure, automatically generated files exist
-BUILT_SOURCES = kupdatestockpricedlgdecl.h knewaccountdlgdecl.h knewequityentrydecl.h kcurrencycalculatordecl.h kequitypriceupdatedlgdecl.h $(WIDGET_MOCS)
-
-.PHONY: kupdatestockpricedlgdecl.h knewaccountdlgdecl.h knewequityentrydecl.h kcurrencycalculatordecl.h kequitypriceupdatedlgdecl.h
-
-kupdatestockpricedlgdecl.h:
-	$(MAKE) -C ../dialogs kupdatestockpricedlgdecl.h
-
-knewaccountdlgdecl.h:
-	$(MAKE) -C ../dialogs knewaccountdlgdecl.h
-
-knewequityentrydecl.h:
-	$(MAKE) -C ../dialogs knewequityentrydecl.h
-
-kcurrencycalculatordecl.h:
-	$(MAKE) -C ../dialogs kcurrencycalculatordecl.h
-
-kequitypriceupdatedlgdecl.h:
-	$(MAKE) -C ../dialogs kequitypriceupdatedlgdecl.h
+BUILT_SOURCES = dialogs
+.PHONY: dialogs
+dialogs:
+	$(MAKE) -C ../dialogs kupdatestockpricedlgdecl.h knewaccountdlgdecl.h knewequityentrydecl.h kcurrencycalculatordecl.h kequitypriceupdatedlgdecl.h
 
 PICS_DIR=kmymoney2/pics
 WIDGET_PNGS = kmymoneytitlelabel.png
