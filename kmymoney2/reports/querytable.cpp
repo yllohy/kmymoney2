@@ -794,7 +794,7 @@ void QueryTable::constructAccountTable(void)
       if ( m_config.isConvertCurrency() )
       {
         // display currency is base currency, so set the price
-        if ( account.isForiegnCurrency() )
+        if ( account.isForeignCurrency() )
           displayprice = account.baseCurrencyPrice(m_config.toDate()).reduce();
       }
       else

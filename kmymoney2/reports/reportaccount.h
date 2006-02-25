@@ -134,7 +134,7 @@ public:
     *
     * @return bool True if this account is in a foreign currency
     */
-  bool isForiegnCurrency( void ) const;
+  bool isForeignCurrency( void ) const;
    
   /**
     * The name of only this account.  No matter how deep the hierarchy, this

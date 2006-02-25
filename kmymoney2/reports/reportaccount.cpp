@@ -151,7 +151,7 @@ MyMoneyMoney ReportAccount::baseCurrencyPrice( const QDate& date ) const
   MyMoneyMoney result(1, 1);
   MyMoneyFile* file = MyMoneyFile::instance();
   
-  if(isForiegnCurrency())
+  if(isForeignCurrency())
   {
     // FIXME: If there is no price for this date, our method will return a 1.0,
     // which will be confusing for the user. We should report an error back to the report.
@@ -203,7 +203,7 @@ QCString ReportAccount::currency( void ) const
   *
   * @return bool True if this account is in a foreign currency
   */
-bool ReportAccount::isForiegnCurrency( void ) const
+bool ReportAccount::isForeignCurrency( void ) const
 {
   return ( currency() != MyMoneyFile::instance()->baseCurrency().id() );
 }

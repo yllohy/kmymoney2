@@ -971,7 +971,7 @@ QString PivotTable::renderCSV( void ) const
 
         innergroupdata += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
 
-        if (m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )
+        if (m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )
           innergroupdata += QString(" (%1)").arg(rowname.currencyId());
 
         innergroupdata += "\"";
@@ -1008,7 +1008,7 @@ QString PivotTable::renderCSV( void ) const
         ReportAccount rowname = (*it_innergroup).begin().key();
 
         result += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
-        if (m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )
+        if (m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )
           result += QString(" (%1)").arg(rowname.currencyId());
         result += "\"";
 
@@ -1573,7 +1573,7 @@ QString PivotTable::renderHTML( void ) const
               .arg((*it_row).m_total.isZero() ? colspan : "")
               .arg(rowname.hierarchyDepth() - 1)
               .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
-              .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
+              .arg((m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
 
             if ( !(*it_row).m_total.isZero() )
               innergroupdata += rowdata;
@@ -1616,7 +1616,7 @@ QString PivotTable::renderHTML( void ) const
               .arg( m_config_f.isShowingSubAccounts() ? "id=\"solo\"" : "" )
               .arg(rowname.hierarchyDepth() - 1)
               .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
-              .arg((m_config_f.isConvertCurrency() || !rowname.isForiegnCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
+              .arg((m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
           }
 
           // Finish the row started above, unless told not to
