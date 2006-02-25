@@ -45,53 +45,6 @@
         <para/>
       </sect2>
     </sect1>
-    <sect1 id="dialogs-patching-ui">
-      <title>Patching the UI</title>
-      <para/>
-      <para>In the UI file, Qt will include on the first line the version of Designer which you are running. If this is greater than 3.0, use the editor of your choice to change this line to read</para>
-      <para>&lt;!DOCTYPE UI&gt;&lt;UI version="3.0" stdsetdef="1"&gt;</para>
-      <para/>
-      <para>Alternatively, use the following shell script to automate the procedure.</para>
-      <para/>
-      <programlisting>
----%&lt;---
-#!/bin/bash
-#
-# &#xA0;chkui
-#
-# scan from the current directory into all subdirs and
-# search for files ending in '.ui'. Check if the files
-# found uses a different UI version than 3.0 and adjust
-# if necessary
-#
-# (C) 2005 Thomas Baumgart
-#
-
-for i in `find . -name \*.ui` ;
-&#xA0; do
-&#xA0; &#xA0; grep "UI version=" $i | grep -v "UI version=\"3.0\""
-&#xA0; &#xA0; if [ $? -eq 0 ]; then
-&#xA0; &#xA0; &#xA0; echo "Fix "$i
-&#xA0; &#xA0; &#xA0; sed -i 's/UI version=".*"/UI version="3.0"/g' $i
-&#xA0; &#xA0; fi
-&#xA0; done
-
----%&lt;---
-      </programlisting>
-      <para/>
-      <para>It may turn out that you have used some functionality which is not available in version 3.0. These cases need to be considered individually. (FIXME: HOWTO: Version dependent code?)</para>
-      <para/>
-      <para>This is also a good time to check that you remembered to remove all the accelerator constants. Scan your file for occurrences similar to the following 3 lines and remove them. Note that only the 'Alt+' accelerator keys are relevant here; 'standard' keys such as F1 for Help can be left unchanged.</para>
-      <para/>
-      <programlisting>
-    &lt;property name="accel"&gt;
-    &lt;string&gt;Alt+K&lt;/string&gt;
-    &lt;/property&gt;
-      </programlisting>
-      <para/>
-      <para>(A handy Perl script which automates some of the above can be found at http://cekirdek.uludag.org.tr/~ismail/pisi-kga-1.0/fixuifiles)</para>
-      <para/>
-    </sect1>
     <sect1 id="dialogs-writing-code">
       <title>Writing code</title>
       <para/>
