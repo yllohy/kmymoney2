@@ -36,14 +36,13 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneyobserver.h"
+#include <kmymoney/mymoneyfile.h>
 
 /**
   * @author Thomas Baumgart
   */
 
-class KMyMoneySecuritySelector : public KComboBox, MyMoneyObserver
+class KMyMoneySecuritySelector : public KComboBox
 {
   Q_OBJECT
 public:
