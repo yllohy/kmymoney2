@@ -50,6 +50,7 @@ public:
   KDChartParams& params(void) { return m_params; }
   QStringList& abscissaNames(void) { return m_abscissaNames; }
   void refreshLabels(void) { m_params.setAxisLabelStringParams( KDChartAxisParams::AxisPosBottom,&m_abscissaNames,0); }
+  void setProperty(int row, int col, int id);
 //   void setCircularLabels(void) { m_params.setAxisLabelStringParams( KDChartAxisParams::AxisPosCircular,&m_abscissaNames,0); }
 
 private:

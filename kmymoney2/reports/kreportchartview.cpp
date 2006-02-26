@@ -41,7 +41,7 @@ KReportChartView::KReportChartView( QWidget* parent, const char* name ): KDChart
     m_params.setChartType( KDChartParams::Line );
     m_params.setLineMarker( true );
     m_params.setAxisLabelStringParams( KDChartAxisParams::AxisPosBottom,&m_abscissaNames,0);
-    
+
     // ********************************************************************
     // set Chart Table Data
     // ********************************************************************
@@ -67,6 +67,11 @@ KReportChartView::KReportChartView( QWidget* parent, const char* name ): KDChart
     setPaletteBackgroundColor( Qt::white );
     setData(&m_data);
     setParams(&m_params);
+}
+
+void KReportChartView::setProperty(int row, int col, int id)
+{
+  m_data.cell(row, col).setPropertySet(id);
 }
 
 #endif
