@@ -468,9 +468,12 @@ bool KMyMoneyView::readFile(const KURL& url)
 
     if(cnt == 2) {
       if(QString(hdr) == QString("\037\213")) {         // gzipped?
+        ::timetrace("detected GZIP");
         qfile = KFilterDev::deviceForFile(filename, COMPRESSION_MIME_TYPE);
       } else if(QString(hdr) == QString("--")){         // PGP ASCII armored?
+        ::timetrace("detected GPG");
         if(KGPGFile::GPGAvailable()) {
+          ::timetrace("have GPG");
           qfile = new KGPGFile(filename);
           haveAt = false;
           isEncrypted = true;
@@ -483,6 +486,7 @@ bool KMyMoneyView::readFile(const KURL& url)
         qfile = new QFile(file.name());
       }
 
+      ::timetrace("open file");
       if(qfile->open(IO_ReadOnly)) {
         try {
           hdr.resize(8);
@@ -516,6 +520,7 @@ bool KMyMoneyView::readFile(const KURL& url)
               pReader = 0;
               m_fileType = KmmBinary;
             } else {
+              ::timetrace("is not binary format");
               // Scan the first 70 bytes to see if we find something
               // we know. For now, we support our own XML format and
               // GNUCash XML format. If the file is smaller, then it
@@ -530,9 +535,11 @@ bool KMyMoneyView::readFile(const KURL& url)
                 QRegExp gncexp("<gnc-v(\\d+)");
                 QCString txt(hdr);
                 if(kmyexp.search(txt) != -1) {
+                  ::timetrace("is XML format");
                   pReader = new MyMoneyStorageXML;
                   m_fileType = KmmXML;
                 } else if(gncexp.search(txt) != -1) {
+                  ::timetrace("is GNC format");
                   loadDefaultCurrencies(); // currency list required for gnc
                   loadAncientCurrencies(); // these too
                   pReader = new MyMoneyGncReader;
@@ -542,7 +549,9 @@ bool KMyMoneyView::readFile(const KURL& url)
             }
             if(pReader) {
               pReader->setProgressCallback(&KMyMoneyView::progressCallback);
+              ::timetrace("read data to memory");
               pReader->readFile(qfile, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
+              ::timetrace("done reading to memory");
             } else {
               if(m_fileType == KmmBinary) {
                 KMessageBox::sorry(this, i18n("File <b>%1</b> contains the old binary format used by KMyMoney. Please use an older version of KMyMoney (0.8.x) that still supports this format to convert it to the new XML based format.").arg(filename));
@@ -1450,6 +1459,14 @@ void KMyMoneyView::fixSchedule(MyMoneySchedule sched)
         MyMoneySplit split = *it_s;
         split.setReconcileDate(QDate());
         split.setReconcileFlag(MyMoneySplit::NotReconciled);
+        t.modifySplit(split);
+        updated = true;
+      }
+      // the schedule logic used to operate only on the value field.
+      // This is now obsolete.
+      if((*it_s).shares().isZero() && !(*it_s).value().isZero()) {
+        MyMoneySplit split = *it_s;
+        split.setShares(split.value());
         t.modifySplit(split);
         updated = true;
       }
