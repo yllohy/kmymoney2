@@ -122,24 +122,36 @@ public:
 
     static const QStringList kBudgetLevelText;
   private:
-    QString m_id;
+    QCString m_id;
     QString m_parentId;
 
-    eBudgetLevel            m_budgetlevel;
-    bool                    m_budgetsubaccounts;
-    bool                    m_default;
-    QValueList<PeriodGroup> m_periods;
+    eBudgetLevel             m_budgetlevel;
+    bool                     m_budgetsubaccounts;
+    bool                     m_default;
+    QMap<QDate, PeriodGroup> m_periods;
 
   public:
     AccountGroup( void ) {}
 
     // get functions
-    const QString& id( void ) const { return m_id; }
+    const QCString& id( void ) const { return m_id; }
     const QString& parentid( void ) const { return m_parentId; }
     const bool& budgetsubaccounts( void ) const { return m_budgetsubaccounts; }
     const eBudgetLevel& budgetlevel( void ) const { return m_budgetlevel; }
     const bool& getDefault( void ) const {return m_default;}
-    const QValueList<MyMoneyBudget::PeriodGroup> getPeriods( void ) const {return m_periods;}
+    const PeriodGroup& getPeriod( const QDate &_date ) const {return m_periods[_date];}
+    const QMap<QDate, PeriodGroup>& getPeriods( void ) const {return m_periods;}
+    const MyMoneyMoney balance( void ) const 
+    {
+      MyMoneyMoney balance;
+
+      QMap<QDate, PeriodGroup>::const_iterator it;
+      for(it = m_periods.begin(); it != m_periods.end(); ++it)
+      {
+        balance += (*it).amount();
+      }
+      return balance;
+    };
 
     // set functions
     void setId( QString _id ) {m_id = _id;}
@@ -147,14 +159,14 @@ public:
     void setBudgetLevel( eBudgetLevel _level ) {m_budgetlevel = _level;}
     void setDefault( bool _default ) {m_default = _default;}
     void setBudgetSubaccounts( bool _b ) {m_budgetsubaccounts = _b;}
-    void addPeriod( PeriodGroup &period ) {m_periods.push_front(period);}
+    void addPeriod( QDate _date, PeriodGroup &period ) {m_periods[_date] = period;}
   };
 
   // Simple get operations
   const QString& name(void) const { return m_name; }
   const QDate& budgetstart(void) const { return m_start; }
   const QCString id(void) const { return m_id; }
-  const MyMoneyBudget::AccountGroup & account(const QString _id) const {return m_accounts[_id];}
+  const AccountGroup & account(const QString _id) const {return m_accounts[_id];}
 
   // Simple set operations
   void setName(const QString& _name) { m_name = _name; }

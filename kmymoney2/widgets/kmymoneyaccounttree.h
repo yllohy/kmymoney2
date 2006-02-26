@@ -395,6 +395,18 @@ public:
     */
   bool isChildOf(const QListViewItem* const item) const;
 
+protected:
+  /**
+    * Returns the current balance of this account.
+    *
+    * This is a virtual function, to allow subclasses to calculate
+    * the balance in different ways.
+    *
+    * @param account Account to get the balance for
+    * @retval Balance of this account
+    */
+  virtual MyMoneyMoney balance( const MyMoneyAccount& account ) const;
+  
 private:
   MyMoneyMoney                      m_balance;
   MyMoneyMoney                      m_value;

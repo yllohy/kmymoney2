@@ -37,7 +37,7 @@
 #include "../mymoney/mymoneyobserver.h"
 #include "../mymoney/mymoneybudget.h"
 #include "../mymoney/mymoneysecurity.h"
-#include "../widgets/kmymoneyaccounttree.h"
+#include "../widgets/kmymoneyaccounttreebudget.h"
 
 /**
   * @author Darren Gould
@@ -73,6 +73,56 @@ private:
   MyMoneyBudget  m_budget;
 };
 
+/**
+  * @author Darren Gould
+  */
+
+/**
+  * This class represents an item in the BudgetAmount list view.
+  */
+class KBudgetAmountListItem : public KListViewItem
+{
+public:
+  /**
+    * Constructor to be used to construct a BudgetAmount entry object.
+    *
+    * @param parent pointer to the KListView object this entry should be
+    *               added to.
+    * @param amount const reference to MyMoneyMoney for which
+    *               the KListView entry is constructed
+    * @param date   const reference to QDate for the budgeted item
+    */
+  KBudgetAmountListItem(KListView *parent, const MyMoneyMoney& amount, const QDate &date);
+
+  /**
+    * Constructor to be used to construct a BudgetAmount entry object.
+    *
+    * @param parent pointer to the KListView object this entry should be
+    *               added to.
+    * @param amount const reference to MyMoneyMoney for which
+    *               the KListView entry is constructed
+    * @param label  const reference to QString for a label for the item
+    */
+  KBudgetAmountListItem(KListView *parent, const MyMoneyMoney& amount, const QDate &date, const QString &label);
+
+  ~KBudgetAmountListItem();
+
+  /**
+    * This method is re-implemented from QListViewItem::paintCell().
+    * Besides the standard implementation, the QPainter is set
+    * according to the applications settings.
+    */
+  void paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align);
+  void setAmount( const QString &newamount);
+
+  MyMoneyMoney& amount(void) { return m_amount; };
+  QDate&        date(void)   { return m_date; };
+
+private:
+  MyMoneyMoney  m_amount;
+  QDate         m_date;
+  QString       m_label;
+};
 
 
 /**
@@ -108,11 +158,12 @@ public slots:
   void slotRefreshView(void);
   void slotSelectBudget(void);
   void slotStartRename(void);
+  void slotBudgetApply(void);
 
 protected:
   void resizeEvent(QResizeEvent*);
   void loadAccounts(void);
-  bool loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList);
+  bool loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, const QCStringList& accountList, const MyMoneyBudget& budget);
   void loadBudget(void);
   void ensureBudgetVisible(const QCString& id);
   bool selectedBudget(MyMoneyBudget& budget) const;
@@ -129,7 +180,33 @@ protected slots:
     */
   void slotRenameBudget(QListViewItem *p, int col, const QString& txt);
 
+  /**
+    * This slot is called when the name of a budget is changed inside
+    * the budget list view and only a single budget is selected.
+    */
+  void slotBudgetedAmount(QListViewItem *p, int col, const QString& newamount);
+
+  /**
+    * This slot is called when the year of a budget is changed inside
+    * the budget list view and only a single budget is selected.
+    */
   void slotSelectYear(int iYear);
+
+  /**
+    * This slot is called when the time span of a budget is changed
+    */
+  void slotSelectTimeSpan(int iTimeSpan);
+
+
+  /**
+    * Select the object pointed to by @p i. This slot emits selectObject signals
+    * with an emtpy MyMoneyAccount and an empty MyMoneyInstitution object
+    * to deselect current selections. If @p i points to a KMyMoneyAccountTreeItem
+    * object, it emits selectObject() for this item.
+    *
+    * @param i pointer to QListViewItem of object to be selected
+    */
+  void slotSelectObject(QListViewItem *i);
 
 private slots:
   void slotRearrange(void);
@@ -151,6 +228,13 @@ signals:
   void selectObjects(const QValueList<MyMoneyBudget>& budget);
 
 private:
+  typedef enum {
+	eNone=-1,
+        eYearly=0,
+        eMonthly=1,
+        eMonthByMonth=2
+  } eTimePeriodColumn;
+
   /**
     * This member holds the state of the toggle switch used
     * to suppress updates due to MyMoney engine data changes
@@ -160,17 +244,17 @@ private:
 
   QMap<QCString, MyMoneySecurity>     m_securityMap;
   QMap<QCString, unsigned long>       m_transactionCountMap;
+  QStringList                         m_yearList;
 
-  KMyMoneyAccountTreeItem*            m_incomeItem;
-  KMyMoneyAccountTreeItem*            m_expenseItem;
+  KMyMoneyAccountTreeBudgetItem*            m_incomeItem;
+  KMyMoneyAccountTreeBudgetItem*            m_expenseItem;
+  KMyMoneyAccountTreeBudgetItem*            m_currentAccountItem;
 
   /// set if a view needs to be reloaded during show()
   bool                                m_needReload;
 
   static const int m_iBudgetYearsAhead;
   static const int m_iBudgetYearsBack;
-
-  QValueList<int> m_yearList;
 };
 
 #endif

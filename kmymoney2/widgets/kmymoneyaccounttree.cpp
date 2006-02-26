@@ -600,11 +600,7 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
   MyMoneyMoney oldValue = m_value;
   m_account = account;
 
-  // account.balance() is not compatable with stock accounts
-  if ( account.accountType() == MyMoneyAccount::Stock )
-    m_balance = MyMoneyFile::instance()->balance(account.id());
-  else
-    m_balance = account.balance();
+  m_balance = balance(account);
 
   // for income and liability accounts, we reverse the sign
   switch(m_account.accountGroup()) {
@@ -643,6 +639,15 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
     adjustTotalValue(m_value - oldValue);
     lv->emitValueChanged();
   }
+}
+
+MyMoneyMoney KMyMoneyAccountTreeItem::balance( const MyMoneyAccount& account ) const
+{
+  // account.balance() is not compatable with stock accounts
+  if ( account.accountType() == MyMoneyAccount::Stock )
+    return MyMoneyFile::instance()->balance(account.id());
+  else
+    return account.balance();
 }
 
 void KMyMoneyAccountTreeItem::setOpen(bool open)

@@ -87,14 +87,14 @@ void MyMoneyBudget::write(QDomElement& e, QDomDocument *doc) const
 		domAccount.setAttribute("budgetlevel", AccountGroup::kBudgetLevelText[it.data().budgetlevel()]);
 	  domAccount.setAttribute("budgetsubaccounts", it.data().budgetsubaccounts());
 
-    const QValueList<PeriodGroup> periods = it.data().getPeriods();
-    QValueList<PeriodGroup>::const_iterator it_per;
+    const QMap<QDate, PeriodGroup> periods = it.data().getPeriods();
+    QMap<QDate, PeriodGroup>::const_iterator it_per;
     for(it_per = periods.begin(); it_per != periods.end(); ++it_per)
     {
       QDomElement domPeriod = doc->createElement("PERIOD");
 
-    	domPeriod.setAttribute("amount", (*it_per).amount().toString());
-	    domPeriod.setAttribute("start", (*it_per).start().toString(Qt::ISODate));
+      domPeriod.setAttribute("amount", (*it_per).amount().toString());
+      domPeriod.setAttribute("start", (*it_per).start().toString(Qt::ISODate));
       domAccount.appendChild(domPeriod);
     }
 
@@ -161,13 +161,13 @@ bool MyMoneyBudget::read(const QDomElement& e)
 
         if("PERIOD" == per.tagName() && per.hasAttribute("amount"))
         {
-	        pGroup.setAmount( MyMoneyMoney(per.attribute("amount")) );
+          pGroup.setAmount( MyMoneyMoney(per.attribute("amount")) );
         }
         if("PERIOD" == per.tagName() && per.hasAttribute("start"))
         {
-	        pGroup.setDate( QDate::fromString(per.attribute("start"), Qt::ISODate) );
+          pGroup.setDate( QDate::fromString(per.attribute("start"), Qt::ISODate) );
+          account.addPeriod(pGroup.start(), pGroup);
         }
-        account.addPeriod(pGroup);
 
         period = period.nextSibling();
       }
@@ -199,5 +199,3 @@ bool MyMoneyBudget::hasReferenceTo(const QCString& id) const
 
   return (list.contains(id) > 0);
 }
-
-// vim:cin:si:ai:et:ts=2:sw=2:

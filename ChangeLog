@@ -1,6 +1,11 @@
 2006-02-24 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Update developer documentation
 
+2006-02-23 Darren Gould <darren_gould@gmx.de>
+   * Added budgeting capability on the account level
+   * hooked up the KMyMoneyAccountTree to the BudgetList
+     (Patch applied by Ace Jones)
+
 2006-02-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added method to remove account from account selection widget
 

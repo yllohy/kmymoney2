@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>645</width>
-            <height>602</height>
+            <height>606</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -24,20 +24,6 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="KMyMoneyTitleLabel" row="0" column="0">
-            <property name="name">
-                <cstring>titleLabel</cstring>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>100</width>
-                    <height>30</height>
-                </size>
-            </property>
-            <property name="text" stdset="0">
-                <string>Budget</string>
-            </property>
-        </widget>
         <widget class="QSplitter" row="1" column="0">
             <property name="name">
                 <cstring>splitter4</cstring>
@@ -127,15 +113,9 @@
                         </widget>
                     </hbox>
                 </widget>
-                <widget class="KMyMoneyAccountTree">
+                <widget class="KMyMoneyAccountTreeBudget">
                     <property name="name">
                         <cstring>m_accountTree</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>0</width>
-                            <height>0</height>
-                        </size>
                     </property>
                 </widget>
             </widget>
@@ -222,8 +202,26 @@
                                         <cstring>unnamed</cstring>
                                     </property>
                                     <widget class="KComboBox">
+                                        <item>
+                                            <property name="text">
+                                                <string>Yearly</string>
+                                            </property>
+                                        </item>
+                                        <item>
+                                            <property name="text">
+                                                <string>Monthly</string>
+                                            </property>
+                                        </item>
+                                        <item>
+                                            <property name="text">
+                                                <string>Month by Month</string>
+                                            </property>
+                                        </item>
                                         <property name="name">
-                                            <cstring>kComboBox1</cstring>
+                                            <cstring>m_dbTimeSpan</cstring>
+                                        </property>
+                                        <property name="enabled">
+                                            <bool>false</bool>
                                         </property>
                                     </widget>
                                     <spacer>
@@ -248,7 +246,7 @@
                             <widget class="KListView">
                                 <column>
                                     <property name="text">
-                                        <string>Month</string>
+                                        <string></string>
                                     </property>
                                     <property name="clickable">
                                         <bool>true</bool>
@@ -268,174 +266,6 @@
                                         <bool>true</bool>
                                     </property>
                                 </column>
-                            <item>
-                                <property name="text">
-                                    <string>Apr</string>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Aug</string>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Dec</string>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Feb</string>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Jan</string>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Jul</string>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Jun</string>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Mar</string>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>May</string>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Nov</string>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Oct</string>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Sep</string>
-                                </property>
-                                <property name="text">
-                                    <string></string>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                                <property name="pixmap">
-                                    <pixmap></pixmap>
-                                </property>
-                            </item>
                                 <property name="name">
                                     <cstring>m_budgetAmountList</cstring>
                                 </property>
@@ -499,25 +329,23 @@
                 </vbox>
             </widget>
         </widget>
+        <widget class="KMyMoneyTitleLabel" row="0" column="0">
+            <property name="name">
+                <cstring>titleLabel</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>100</width>
+                    <height>30</height>
+                </size>
+            </property>
+            <property name="text" stdset="0">
+                <string>Budget</string>
+            </property>
+        </widget>
     </grid>
 </widget>
 <customwidgets>
-    <customwidget>
-        <class>KMyMoneyAccountTree</class>
-        <header location="local">../widgets/kmymoneyaccounttree.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
     <customwidget>
         <class>KMyMoneyTitleLabel</class>
         <header location="local">../widgets/kmymoneytitlelabel.h</header>
@@ -532,18 +360,34 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image1</pixmap>
+        <pixmap>image0</pixmap>
         <property type="String">text</property>
         <property type="CString">leftImageFile</property>
         <property type="CString">rightImageFile</property>
     </customwidget>
+    <customwidget>
+        <class>KMyMoneyAccountTreeBudget</class>
+        <header location="local">../widgets/kmymoneyaccounttreebudget.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image1</pixmap>
+    </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
-        <data format="PNG" length="824">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000002ff49444154388db59531681c4714863f992dde820cb370815b50600f54e8ca0ba43970712a8fb838438a3895634813d238a5ab80e314ae4d0a812060a4226017c27221c8a9da6b8c4fe0e00d28b0571cec82043b85611f78c12966efa4bb8bc085f29a6567df7cef9f7fdeccaec571cc2cbaddee47ae21e2385e5b9b815f1ebcfcd8de6a63ad25cb338af7c52741acb5a4a729a3d723a82ec6bd99d267bf3f23fc1c4cab2442d14a915986e792fdfa59569766573049417784f1b12e8267954dab24b78714450a28beaf941f847c2a14e70a0841035a2d45d641eb027213c210c69756320767794684d6508bef0befde1a860796e4c402333542b4256c0f0cdd1e50b97191458be6e0e27d81563a87c643d8fb2d7793d685d696413cc8a6cae46f65f7d79c7c62b87b4f2e15fd0fb0d302be0fefde4a0d557a5f35e90f84e0334014d590f855c9de4ecee17e4eb319d1ff3a00ec02f8c67299f283307c61e7d06fbf1782d082588a33e1cf1705fd81cf773f3601e1f9bec59e2f4b5c7ef5209f0ac95f16630cfd818067c103b586dd274a726229cee0fe8380d191cb4d1267d3d58aa1de7d258ceae5d7d0a78fdd269a86f0c52d414c49bbe3762c9b686de41560d7a72e41c4795a6486a78f95e4c4151481d686efbe7b3398ac58b1a23868b8c474aaa8068c8e714a8dd06c1af2a9e5d1c38c641c909dba6e08237f19b358a7ac5cf3479bc2e41f257e55d2ffc6a73833746f09e186cfa387904f2cbffc90a2aa9886d0e99464d3c5965b512cebd01f1800f67672e2a392fb0f023a3d883a053ffddcc2340dd65ab452b6074dc2cd15c1cbceb863daed413e353cdfcfd97d92333a12da6d0181ec3443cf753ef3cdd092de0e116ff1a02cdc157338ca9d7b8269461cfee1ba2139b9286e1a427f10110f2d561555b076d18a39383d4d99a4c0cd0b787f20747b214962c8266e3cdcf0e97c59126ec2f6edd089f40a92f115e0d1eb11ba238461dd6a15f32b53666de841965bb203575a3cc15a48c64a965fe57105e3635db8fa96dcffc431172b5d715d7103dc3fea7f015f373c8ee3b57f0135105a0fae7717960000000049454e44ae426082</data>
+        <data format="XPM.GZ" length="950">789ccdd0cd6a83401486e1bd5731e84eca244e5a30845e4221cb40e9e2cc5f34d1c4a85d94d27b2ffa7d8bb6a48b4217195cccc3cb390c2e72b5db3ea97c910ca38cb553ae925ee5feb56ddf9e5f1edf93d41885af48ef92b4534e65cbf94cb4e43d18c8126c48070a5870d6939c3d929ced49ce1e669686b506575c9591ac1792b3a78945b9f6e01e9407709c689622604b063082d68003e8581de859ab996bcf7a062337eb89ab2246f2eab9a99289c5c5f920f16bd95701973ad387e3f76d2c4dab4ff66ab167adbb3f96dfb7d5971f2f10e91aad7bad071f9af1b6fee87f948f4df2098142ba27</data>
     </image>
     <image name="image1">
-        <data format="XPM.GZ" length="950">789ccdd0cd6a83401486e1bd5731e84eca244e5a30845e4221cb40e9e2cc5f34d1c4a85d94d27b2ffa7d8bb6a48b4217195cccc3cb390c2e72b5db3ea97c910ca38cb553ae925ee5feb56ddf9e5f1edf93d41885af48ef92b4534e65cbf94cb4e43d18c8126c48070a5870d6939c3d929ced49ce1e669686b506575c9591ac1792b3a78945b9f6e01e9407709c689622604b063082d68003e8581de859ab996bcf7a062337eb89ab2246f2eab9a99289c5c5f920f16bd95701973ad387e3f76d2c4dab4ff66ab167adbb3f96dfb7d5971f2f10e91aad7bad071f9af1b6fee87f948f4df2098142ba27</data>
+        <data format="PNG" length="1125">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000042c49444154388db5954f6c14551cc73fefcd7476b65bdaae4bb78bb5502a14d404e4801c88182d1c4c2c693da847400f9c24c68b878684238660e2b1e01f12c19493012ef2478c814412d354a46017a8a564bb6da5bbedccee767776e63d0ffb073751d483bfe49799974c3eeffb7ebf37df9fd05a530b2184040cc0042420aaf9a4d0d554800f045a6b256ae0e1e1e1d6bebebe838ee31c48a7d39b5cd7fd075e251cc7617272f2ded8d8d819cff33e0316819259537aead4a9839d5dd6d1784f91f55b0a94830242088404d304292bef68a89f520802a598fecddaa04f1a876f5c250c7c0a64cdeac686e33807e23d45e6b297c8b877f1831542614550b6599835c83c2a81b6786a75134faf2f1169f12997350881d9021d0903e06de0745d3160a6d3e94dbd5b0a64dcbb94b5831d0e3375ab892b1772dcf9790528543f8dd0d367b36768153b5e31503a0f1aecb004580b44ffac58baae8b1714f0833c7638cc8dab303a320f4822ab4c7a37c69196203de3319d5ce1c4d13c733331dedc67a129a154fd128401ab0616d55a130ac3d42d93d1913940d13fd0c9ee0183685c60da01c5421bd72f7a8c8efccef9afd374267ad93d642365be0636a0d28ec7600941d9e6f23917f0e97f23ce5bef35d19ec863da0ed9059b2be70bec196c66dfa10ec0e49b338f7017258651bf95021035c595429bb0903248fe52a2b5b595dd7b4d945cc2340cdca536be389ee3f67886c5798f773fe8e0dac508c989659277a2180da4ca4ff07821058b8b251445d63d6b13ed1098a6417e39cac85197dbe31962ab9bd9f1f22a226d45366f6d0620fdb08c900d281af6110284b20085b414861d905d88f2e52739ee8cbb8022143259d3dd84691730aa2d52da441a8de0c6958068870022a41e9629ad3473fd3b8fdbe319dadb9b4924da994d2d716c7896fbe35152f78b48245d6b2da4507faf582be8eaf159b721cc837b05ae7debb1f79d08cb8b515edad942a22bc4b1c33eb3d34b1c797f06af90a72d16e2f96d9a74aa11dca8586b222d01af0fb60070f6c402d72f15d97f28c6f6d7027a5f5ce6c3233dc4e2ede496b278be4fff608cee8d3e1add806aeca51094cbb06397c1ecc328e746537c7e3ccdb5cb1136bf60635882d4d41c6ec6836ab37efa214f72208ed9f4d7cdd38ee310280542e38b1c43fb6de26b3672e1ec3cc99bcb246f66a938a3241ab3e91f7c861fbf77710b1e5e49915bae974203ba0e9e9c9cbc373d6d6d305a040a89c2a77f50b27d5782bbbf7acccf28349235dd16cf6dd374f7295e1de8a45c02d37499182b01cc0201a085d61a2144d8b2ac8fb6ed340e77240c4261890e04c250185262546d534a032154b59e0ad394e41c98182bf268ce6721ed9f064e0253356f6da2e24c1f030f783c15fe6da680af8021602bd051532ca9b8521488559f61aa86c29343578fbf0264a94c906c7d3409214c20043457a116ff6de6795578012889ff6b98fe016ea0ce1c6a2573410000000049454e44ae426082</data>
     </image>
 </images>
 <slots>

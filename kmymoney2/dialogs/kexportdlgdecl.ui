@@ -504,8 +504,4 @@ You can choose the file's path, the account and the format of the QIF file (prof
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>kpushbutton.h</includehint>
-    <includehint>kcombobox.h</includehint>
-</includehints>
 </UI>

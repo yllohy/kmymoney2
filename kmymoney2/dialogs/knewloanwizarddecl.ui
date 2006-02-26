@@ -5546,7 +5546,4 @@ This page summarizes the data you entered. If you need to modify anything, pleas
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>knuminput.h</includehint>
-</includehints>
 </UI>
