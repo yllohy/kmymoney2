@@ -1,5 +1,14 @@
-2006-02-24 Tony Bloomfield <tonybloom@users.sourceforge.net>
+2006-02-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Reorganized layout of account editor
+  * Added balance history/preview to account editor
+  * Setup shares field for scheduled transactions
+  * Added KReportChartView::setProperty()
+  * Added new timestamp() trace function
+  * Removed MyMoneyObserver functionality from KMyMoneyCurrencySelector
+
+2006-02-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Update developer documentation
+  * Speedup build process
 
 2006-02-23 Darren Gould <darren_gould@gmx.de>
    * Added budgeting capability on the account level
