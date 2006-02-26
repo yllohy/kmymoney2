@@ -16,6 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -29,6 +33,8 @@
 #include <qtabwidget.h>
 #include <qbuttongroup.h>
 #include <qradiobutton.h>
+#include <qtextedit.h>
+#include <qlayout.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
@@ -43,6 +49,7 @@
 #include <kguiitem.h>
 #include <kpushbutton.h>
 #include <kled.h>
+#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -60,19 +67,19 @@
 #include "../widgets/kmymoneyaccountselector.h"
 
 #include "../mymoney/mymoneyexception.h"
-#include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneykeyvaluecontainer.h"
 #include "../dialogs/knewbankdlg.h"
 #include "../views/kmymoneyfile.h"
 #include "../kmymoneyutils.h"
 #include "../kmymoneysettings.h"
 
+#include "../mymoney/mymoneyreport.h"
+#include "../reports/kreportchartview.h"
+#include "../reports/pivottable.h"
+
 #ifdef USE_OFX_DIRECTCONNECT
 #include "../dialogs/konlinebankingsetupwizard.h"
 #endif
-
-#define TAB_GENERAL      0
-#define TAB_TAX          1
 
 KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent,
     const char *name, const char *title)
@@ -107,7 +114,15 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   if (categoryEditor)
   {
 
-    m_qlistviewParentAccounts->setEnabled(true);
+    // get rid of the tabs that are not used for categories
+    QWidget* tab = m_tab->page(m_tab->indexOf(m_balanceTab));
+    if(tab)
+      m_tab->removePage(tab);
+    tab = m_tab->page(m_tab->indexOf(m_institutionTab));
+    if(tab)
+      m_tab->removePage(tab);
+
+    //m_qlistviewParentAccounts->setEnabled(true);
     startDateEdit->setEnabled(false);
     accountNoEdit->setEnabled(false);
 
@@ -145,10 +160,15 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   }
   else
   {
-    QWidget* tab = m_tab->page(TAB_TAX);
-    if(tab) {
+    // get rid of the tabs that are not used for accounts
+    QWidget* tab = m_tab->page(m_tab->indexOf(m_taxTab));
+    if(tab)
       m_tab->removePage(tab);
-    }
+#ifndef HAVE_KDCHART
+    tab = m_tab->page(m_tab->indexOf(m_balanceTab));
+    if(tab)
+      m_tab->removePage(tab);
+#endif
 
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Checkings));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Savings));
@@ -269,7 +289,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   }
 
   initParentWidget(account.parentAccountId(), account.id());
-
   if(m_account.accountType() == MyMoneyAccount::Stock)
     m_qlistviewParentAccounts->setEnabled(false);
 
@@ -361,6 +380,50 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   slotVatChanged(m_vatCategory->isChecked());
   slotVatAssignmentChanged(m_vatAssignment->isChecked());
   slotCheckFinished();
+
+#ifdef HAVE_KDCHART
+  QString balanceReport = QString(
+          "<!DOCTYPE TEST>\n"
+          "<REPORT-CONTAINER>\n"
+          "  <REPORT datelock=\"userdefined\" comment=\"Custom Report\" detail=\"all\" "
+          "charttype=\"line\" tax=\"0\" chartgridlines=\"0\" chartdatalabels=\"0\" investments=\"0\" "
+          "chartbydefault=\"1\" columnsaredays=\"1\" rowtype=\"assetliability\" convertcurrency=\"0\" "
+          "group=\"Net Worth\" type=\"pivottable 1.12\" id=\"Rx\" name=\"BalanceHistory\" "
+          "includeschedules=\"1\" loans=\"0\" favorite=\"0\" columntype=\"months\" >\n"
+          "<ACCOUNTGROUP group=\"asset\" />\n"
+          "<ACCOUNTGROUP group=\"liability\" />"
+          "<ACCOUNT id=\"%1\" />"
+          "<DATES from=\"%2\" to=\"%3\" />\n"
+          "</REPORT>"
+          "</REPORT-CONTAINER>\n")
+            .arg(m_account.id())
+            .arg(QDate::currentDate().addDays(-90).toString(Qt::ISODate))
+            .arg(QDate::currentDate().addDays(+90).toString(Qt::ISODate));
+  QDomDocument doc;
+  QDomElement node;
+  doc.setContent(balanceReport);
+  node = doc.documentElement().firstChild().toElement();
+
+  MyMoneyReport reportCfg = MyMoneyReport(node);
+  reports::PivotTable table(reportCfg);
+
+  reports::KReportChartView* chartWidget = new reports::KReportChartView(m_balanceTab, 0);
+  QVBoxLayout* balanceTabLayout = new QVBoxLayout( m_balanceTab, 11, 6, "m_balanceTabLayout");
+  balanceTabLayout->addWidget(chartWidget);
+
+  table.drawChart(*chartWidget);
+
+  chartWidget->params().setLineMarker(false);
+  chartWidget->params().setLegendPosition(KDChartParams::NoLegend);
+
+  // draw future values in a different line style
+  KDChartPropertySet propSetFutureValue("future value", KDChartParams::KDCHART_PROPSET_NORMAL_DATA);
+  propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
+  const int idPropFutureValue = chartWidget->params().registerProperties(propSetFutureValue);
+  for(int iCell = 90; iCell < 180; ++iCell) {
+    chartWidget->setProperty(0, iCell, idPropFutureValue);
+  }
+#endif
 
   // using a timeout is the only way, I got the 'ensureItemVisible'
   // working when creating the dialog. I assume, this
@@ -607,8 +670,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
     {
       if(groupType == MyMoneyAccount::Asset || type == MyMoneyAccount::Loan) {
         // Asset
-        KMyMoneyAccountTreeItem *assetTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts,
-                          assetAccount);
+        KMyMoneyAccountTreeItem *assetTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts, assetAccount);
 
         if(m_parentAccount.id().isEmpty()) {
           m_parentAccount = assetAccount;
@@ -624,30 +686,31 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
               it != assetAccount.accountList().end();
               ++it )
         {
-          KMyMoneyAccountTreeItem *accountItem = new KMyMoneyAccountTreeItem(assetTopLevelAccount,
-              file->account(*it));
+          MyMoneyAccount acc = file->account(*it);
+          if(acc.isClosed())
+            continue;
 
-          QCString id = file->account(*it).id();
-          if(parentId == id) {
+          KMyMoneyAccountTreeItem *accountItem = new KMyMoneyAccountTreeItem(assetTopLevelAccount, acc);
+
+          if(parentId == acc.id()) {
             m_parentItem = accountItem;
-          } else if(accountId == id) {
+          } else if(accountId == acc.id()) {
             if(m_isEditing)
               accountItem->setSelectable(false);
             m_accountItem = accountItem;
           }
 
-          QCStringList subAccounts = file->account(*it).accountList();
+          QCStringList subAccounts = acc.accountList();
           if (subAccounts.count() >= 1)
           {
-            showSubAccounts(subAccounts, accountItem, parentId, accountId);
+            showSubAccounts(subAccounts, accountItem, parentId, acc.id());
           }
         }
       }
 
       if(groupType == MyMoneyAccount::Liability) {
         // Liability
-        KMyMoneyAccountTreeItem *liabilityTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts,
-                          liabilityAccount);
+        KMyMoneyAccountTreeItem *liabilityTopLevelAccount = new KMyMoneyAccountTreeItem(m_qlistviewParentAccounts, liabilityAccount);
 
         if(m_parentAccount.id().isEmpty()) {
           m_parentAccount = liabilityAccount;
@@ -663,22 +726,24 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
               it != liabilityAccount.accountList().end();
               ++it )
         {
-          KMyMoneyAccountTreeItem *accountItem = new KMyMoneyAccountTreeItem(liabilityTopLevelAccount,
-              file->account(*it));
+          MyMoneyAccount acc = file->account(*it);
+          if(acc.isClosed())
+            continue;
 
-          QCString id = file->account(*it).id();
-          if(parentId == id) {
+          KMyMoneyAccountTreeItem *accountItem = new KMyMoneyAccountTreeItem(liabilityTopLevelAccount, acc);
+
+          if(parentId == acc.id()) {
             m_parentItem = accountItem;
-          } else if(accountId == id) {
+          } else if(accountId == acc.id()) {
             if(m_isEditing)
               accountItem->setSelectable(false);
             m_accountItem = accountItem;
           }
 
-          QCStringList subAccounts = file->account(*it).accountList();
+          QCStringList subAccounts = acc.accountList();
           if (subAccounts.count() >= 1)
           {
-            showSubAccounts(subAccounts, accountItem, parentId, accountId);
+            showSubAccounts(subAccounts, accountItem, parentId, acc.id());
           }
         }
       }
