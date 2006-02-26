@@ -59,6 +59,7 @@ typedef QString String;
 #endif // 0
 
 void timetrace(char *);
+void timestamp(char *);
 
 //class that has utility functions to use throughout the application.
 class MyMoneyUtils

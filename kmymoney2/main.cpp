@@ -259,6 +259,13 @@ int main(int argc, char *argv[])
   return rc;
 }
 
+void timestamp(char *txt)
+{
+  if ( args->isSet("timers" ))
+  {
+    qDebug("Time(%s): %d", txt, timer.elapsed());
+  }
+}
 
 void timetrace(char *txt)
 {
