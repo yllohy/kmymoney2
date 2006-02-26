@@ -846,13 +846,17 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
         val = -val;
       }
 
+      // FIXME settings shares == value does not support multiple currencies
+      //       we need to fix this
       s.setValue(val);
+      s.setShares(val);
       m_transaction.modifySplit(s);
 
       if(m_transaction.splitCount() == 2)
       {
         MyMoneySplit split = m_transaction.splits()[1];
         split.setValue(-s.value());
+        split.setShares(split.value());
         m_transaction.modifySplit(split);
       }
       else if (count >= 3)
