@@ -357,10 +357,10 @@ void KEndingBalanceLoanDlg::next(void)
                                  .arg(KGlobal::locale()->formatDate(m_endDateEdit->getQDate(), true)));
 
     // preload widgets with calculated values if they are empty
-    if(m_amortizationTotalEdit->text().isEmpty())
-      m_amortizationTotalEdit->loadText(amortization.formatMoney());
-    if(m_interestTotalEdit->text().isEmpty())
-      m_interestTotalEdit->loadText(interest.formatMoney());
+    if(m_amortizationTotalEdit->value().isZero() && !amortization.isZero())
+      m_amortizationTotalEdit->setValue(amortization);
+    if(m_interestTotalEdit->value().isZero() && !interest.isZero())
+      m_interestTotalEdit->setValue(interest);
 
   } else if(currentPage() == m_checkPaymentsPage) {
     m_accountEdit->loadList(static_cast<KMyMoneyUtils::categoryTypeE>(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
