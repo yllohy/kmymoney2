@@ -1,3 +1,8 @@
+2006-03-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added MyMoneySplit::isAutoCalc()
+  * Optimization of MyMoneySplit return parameters
+  * Fixed #1441071 (Investment transaction Enter button not enabled)
+
 2006-03-01 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix base currency dialog for GNC import
 
