@@ -1901,6 +1901,8 @@ const bool KLedgerViewInvestments::slotDataChanged(int field)
     m_editFees->setEnabled(!m_editFeeCategory->selectedAccountId().isEmpty());
   }
 
+  updateValues(field);
+
   // check if we can enable the ENTER buttons. the condition heavily
   // depends on the current action
   bool ok = true;
@@ -1977,8 +1979,6 @@ const bool KLedgerViewInvestments::slotDataChanged(int field)
       break;
   }
   enableOkButton(ok);
-
-  updateValues(field);
 
   return m_form->enterButton()->isEnabled();
 }
