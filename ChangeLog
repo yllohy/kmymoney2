@@ -1,3 +1,6 @@
+2006-03-01 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Fix base currency dialog for GNC import
+
 2006-02-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reorganized layout of account editor
   * Added balance history/preview to account editor
