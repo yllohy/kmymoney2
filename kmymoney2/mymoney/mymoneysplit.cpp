@@ -138,7 +138,7 @@ void MyMoneySplit::setNumber(const QString& number)
   m_number = number;
 }
 
-const MyMoneyMoney MyMoneySplit::value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const
+MyMoneyMoney MyMoneySplit::value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const
 {
   return (transactionCurrencyId == splitCurrencyId) ? m_value : m_shares;
 }

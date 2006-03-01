@@ -34,6 +34,7 @@ class MyMoneySplitTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testAmortization);
 	CPPUNIT_TEST(testValue);
 	CPPUNIT_TEST(testSetValue);
+	CPPUNIT_TEST(testIsAutoCalc);
 	CPPUNIT_TEST(testWriteXML);
 	CPPUNIT_TEST(testReadXML);
         CPPUNIT_TEST_SUITE_END();
@@ -55,6 +56,7 @@ public:
 	void testAmortization();
 	void testValue();
 	void testSetValue();
+	void testIsAutoCalc();
 	void testWriteXML();
 	void testReadXML();
 };

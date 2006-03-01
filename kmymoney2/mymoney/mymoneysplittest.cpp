@@ -182,6 +182,18 @@ void MyMoneySplitTest::testSetValue() {
 	CPPUNIT_ASSERT(m->shares() == MyMoneyMoney(3));
 }
 
+void MyMoneySplitTest::testIsAutoCalc() {
+	CPPUNIT_ASSERT(m->isAutoCalc() == false);
+	m->setValue(MyMoneyMoney::autoCalc);
+	CPPUNIT_ASSERT(m->isAutoCalc() == true);
+	m->setShares(MyMoneyMoney::autoCalc);
+	CPPUNIT_ASSERT(m->isAutoCalc() == true);
+	m->setValue(0);
+	CPPUNIT_ASSERT(m->isAutoCalc() == true);
+	m->setShares(1);
+	CPPUNIT_ASSERT(m->isAutoCalc() == false);
+}
+
 void MyMoneySplitTest::testWriteXML() {
 	MyMoneySplit s;
 

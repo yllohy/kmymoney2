@@ -93,18 +93,19 @@ public:
     */
   virtual bool hasReferenceTo(const QCString& id) const;
 
-  const MyMoneyMoney shares(void) const { return m_shares; };
-  const MyMoneyMoney value(void) const { return m_value; };
-  const MyMoneyMoney value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const;
-  const QCString accountId(void) const { return m_account; };
-  const QString memo(void) const { return m_memo; };
-  const reconcileFlagE reconcileFlag(void) const { return m_reconcileFlag; };
-  const QDate reconcileDate(void) const { return m_reconcileDate; };
-  const QCString payeeId(void) const { return m_payee; };
-  const QCString action(void) const { return m_action; };
-  const QString number(void) const { return m_number; };
-  const bool isAmortizationSplit(void) const { return m_action == ActionAmortization; };
-  const QString bankID(void) const { return m_bankID; };
+  const MyMoneyMoney& shares(void) const { return m_shares; }
+  const MyMoneyMoney& value(void) const { return m_value; }
+  MyMoneyMoney value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const;
+  const QCString& accountId(void) const { return m_account; }
+  const QString& memo(void) const { return m_memo; }
+  reconcileFlagE reconcileFlag(void) const { return m_reconcileFlag; }
+  const QDate& reconcileDate(void) const { return m_reconcileDate; }
+  const QCString& payeeId(void) const { return m_payee; }
+  const QCString& action(void) const { return m_action; }
+  const QString& number(void) const { return m_number; }
+  bool isAmortizationSplit(void) const { return m_action == ActionAmortization; }
+  bool isAutoCalc(void) const { return (m_shares == MyMoneyMoney::autoCalc) || (m_value == MyMoneyMoney::autoCalc); }
+  const QString& bankID(void) const { return m_bankID; }
 
   void setShares(const MyMoneyMoney& shares);
   void setValue(const MyMoneyMoney& value);
