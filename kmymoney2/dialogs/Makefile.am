@@ -14,4 +14,4 @@ DISTCLEANFILES= kaccountselectdlgdecl.cpp kbackupdlgdecl.cpp kchooseimportexport
 
 noinst_HEADERS = ieditscheduledialog.h kaccountselectdlg.h kbackupdlg.h kchooseimportexportdlg.h kcsvprogressdlg.h kcurrencycalculator.h kcurrencyeditdlg.h keditequityentrydlg.h keditloanwizard.h kendingbalancedlg.h kenterscheduledialog.h kequitypriceupdatedlg.h kexportdlg.h kfindtransactiondlg.h kgncimportoptionsdlg.h kimportdlg.h kimportverifydlg.h kmymoneypricedlg.h knewaccountdlg.h knewaccountwizard.h knewbankdlg.h knewequityentrydlg.h knewfiledlg.h knewinvestmentwizard.h knewloanwizard.h kofxdirectconnectdlg.h konlinequoteconfigurationdlg.h krecentfileitem.h kreconciledlg.h kreconcilelistitem.h kreportconfigurationfilterdlg.h ksecuritylisteditor.h ksplittransactiondlg.h kstartdlg.h kupdatestockpricedlg.h mymoneyofxconnector.h mymoneyqifprofileeditor.h kgncpricesourcedlg.h kmymoneyfileinfodlg.h kselectdatabasedlg.h ktransactionreassigndlg.h konlinebankingsetupwizard.h knewbudgetdlg.h
 
-SUBDIRS = settings
+SUBDIRS = settings newuserwizard
