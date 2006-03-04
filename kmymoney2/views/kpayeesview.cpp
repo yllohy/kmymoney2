@@ -47,12 +47,6 @@
 #include <kdebug.h>
 
 // ----------------------------------------------------------------------------
-// STL includes
-#include <algorithm>
-// for std::find since the find() functions provided by QValueList do not
-// allow the lookup of a payee based on its id.
-
-// ----------------------------------------------------------------------------
 // Project Includes
 
 #include <kmymoney/mymoneyfile.h>
