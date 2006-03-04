@@ -1,3 +1,8 @@
+2006-03-02 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed a subtle bug in my 2/11 checkin.  When transactions were auto-filled
+    in based on payee, the split bank ID would get brought in, too.  This
+    make it impossible to later match that transaction.
+
 2006-03-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added MyMoneySplit::isAutoCalc()
   * Optimization of MyMoneySplit return parameters

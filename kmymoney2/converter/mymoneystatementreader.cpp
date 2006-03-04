@@ -548,6 +548,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
           MyMoneySplit s(*it_split);
           s.setReconcileFlag(MyMoneySplit::NotReconciled);
           s.setId(QCString());
+          s.setBankID(QString());
 
           if ( t_old.splits().count() == 2 )
           {

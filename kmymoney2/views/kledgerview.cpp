@@ -712,6 +712,7 @@ void KLedgerView::slotPayeeChanged(const QString& name)
               MyMoneySplit s(*it);
               s.setReconcileFlag(MyMoneySplit::NotReconciled);
               s.setId(QCString());
+              s.setBankID(QString());
               if(s.accountId() == m_account.id()) {
                 if(m_editNr && !m_editNr->text().isEmpty()) {
                   s.setNumber(m_editNr->text());
