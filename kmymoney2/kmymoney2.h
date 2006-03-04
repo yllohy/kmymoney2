@@ -304,6 +304,10 @@ protected slots:
   void slotBudgetNew(void);
   void slotBudgetDelete(void);
 
+  /**
+    */
+  void slotNewUserWizard(void);
+
 public:
   /**
     * This method checks if there is at least one asset or liability account
@@ -453,6 +457,17 @@ protected:
     * @retval false account cannot be closed
     */
   bool canCloseAccount(const MyMoneyAccount& acc) const;
+
+  /**
+    * Check if a list contains a payee with a given id
+    *
+    * @param list const reference to value list
+    * @param id const reference to id
+    *
+    * @retval true object has been found
+    * @retval false object is not in list
+    */
+  bool payeeInList(const QValueList<MyMoneyPayee>& list, const QCString& id) const;
 
 public slots:
   void slotFileInfoDialog(void);

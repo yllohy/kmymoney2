@@ -113,6 +113,8 @@
 #include "dialogs/keditloanwizard.h"
 #include "dialogs/ktransactionreassigndlg.h"
 
+#include "dialogs/newuserwizard/knewuserwizard.h"
+
 #ifdef USE_OFX_DIRECTCONNECT
 #include "dialogs/kofxdirectconnectdlg.h"
 #endif
@@ -366,6 +368,7 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Rename budget"), "edit", 0, this, SIGNAL(budgetRename()), actionCollection(), "budget_rename");
   new KAction(i18n("Delete budget"), "delete", 0, this, SLOT(slotBudgetDelete()), actionCollection(), "budget_delete");
 
+  new KAction(i18n("Test new user wizard"), "", KShortcut("Ctrl+G"), this, SLOT(slotNewUserWizard()), actionCollection(), "new_user_wizard");
 
   // ************************
   // Currently unused actions
@@ -2951,6 +2954,20 @@ void KMyMoney2App::slotPayeeNew(void)
   }
 }
 
+bool KMyMoney2App::payeeInList(const QValueList<MyMoneyPayee>& list, const QCString& id) const
+{
+  bool rc = false;
+  QValueList<MyMoneyPayee>::const_iterator it_p = list.begin();
+  while(it_p != list.end()) {
+    if((*it_p).id() == id) {
+      rc = true;
+      break;
+    }
+    ++it_p;
+  }
+  return rc;
+}
+
 void KMyMoney2App::slotPayeeDelete(void)
 {
   if(m_selectedPayees.isEmpty())
@@ -2962,7 +2979,7 @@ void KMyMoney2App::slotPayeeDelete(void)
   QValueList<MyMoneyPayee> remainingPayees = file->payeeList();
   QValueList<MyMoneyPayee>::iterator it_p;
   for(it_p = remainingPayees.begin(); it_p != remainingPayees.end(); ) {
-    if (std::find(m_selectedPayees.begin(), m_selectedPayees.end(), (*it_p)) != m_selectedPayees.end()) {
+    if(m_selectedPayees.find(*it_p) != m_selectedPayees.end()) {
       it_p = remainingPayees.erase(it_p);
     } else {
       ++it_p;
@@ -3001,7 +3018,7 @@ void KMyMoney2App::slotPayeeDelete(void)
            s_it != (*it).transaction().splits().end(); ++s_it)
       {
         // is the payee in the split to be deleted?
-        if (std::find(m_selectedPayees.begin(), m_selectedPayees.end(), (*s_it).payeeId()) != m_selectedPayees.end())
+        if(payeeInList(m_selectedPayees, (*it_p).id()))
           used_schedules.push_back(*it); // remember this schedule
       }
     }
@@ -3055,7 +3072,7 @@ void KMyMoney2App::slotPayeeDelete(void)
           // loop over all splits
           for (s_it = splits.begin(); s_it != splits.end(); ++s_it) {
             // if the split is assigned to one of the selected payees, we need to modify it
-            if ( std::find(m_selectedPayees.begin(), m_selectedPayees.end(), (*s_it).payeeId()) != m_selectedPayees.end()) {
+            if(payeeInList(m_selectedPayees, (*s_it).payeeId())) {
               (*s_it).setPayeeId(payee_id); // first modify payee in current split
               // then modify the split in our local copy of the transaction list
               (*it).modifySplit(*s_it); // this does not modify the list object 'splits'!
@@ -3073,7 +3090,7 @@ void KMyMoney2App::slotPayeeDelete(void)
           // create copy of lists of splits
           QValueList<MyMoneySplit> splits = trans.splits();
           for (s_it = splits.begin(); s_it != splits.end(); ++s_it) {
-            if ( std::find(m_selectedPayees.begin(), m_selectedPayees.end(), (*s_it).payeeId()) != m_selectedPayees.end()) {
+            if(payeeInList(m_selectedPayees, (*s_it).payeeId())) {
               (*s_it).setPayeeId(payee_id);
               trans.modifySplit(*s_it); // does not modify the list object 'splits'!
             }
@@ -3143,7 +3160,7 @@ void KMyMoney2App::slotBudgetDelete(void)
   QValueList<MyMoneyBudget> remainingBudgets = file->budgetList();
   QValueList<MyMoneyBudget>::iterator it_p;
   for(it_p = remainingBudgets.begin(); it_p != remainingBudgets.end(); ) {
-    if (std::find(m_selectedBudget.begin(), m_selectedBudget.end(), (*it_p)) != m_selectedBudget.end()) {
+    if(m_selectedBudget.find(*it_p) != m_selectedBudget.end()) {
       it_p = remainingBudgets.erase(it_p);
     } else {
       ++it_p;
@@ -3174,6 +3191,13 @@ void KMyMoney2App::slotBudgetDelete(void)
       (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
     delete e;
   }
+}
+
+void KMyMoney2App::slotNewUserWizard(void)
+{
+  NewUserWizard::Wizard *wizard = new NewUserWizard::Wizard();
+  wizard->exec();
+  delete wizard;
 }
 
 void KMyMoney2App::showContextMenu(const QString& containerName)
