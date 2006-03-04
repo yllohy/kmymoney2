@@ -79,7 +79,7 @@ KMyMoneyWizardPage* KMyMoneyWizardPage::nextPage(void)
 
 bool KMyMoneyWizardPage::isLastPage(void)
 {
-  return false;
+  return nextPage() == 0;
 }
 
 bool KMyMoneyWizardPage::isComplete(void)
@@ -152,16 +152,24 @@ KMyMoneyWizard::KMyMoneyWizard(QWidget *parent, const char *name, bool modal, WF
 
   // create page layout
   m_pageLayout = new QVBoxLayout(0, 0, 6, "pageLayout");
+
+  // the page will be inserted later dynamically above this spacer
   m_pageLayout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
+  QFrame* line = new QFrame( this, "line" );
+  line->setFrameShadow( QFrame::Sunken );
+  line->setFrameShape( QFrame::HLine );
+  m_pageLayout->addWidget( line );
   m_pageLayout->addLayout(m_buttonLayout);
+
+  // now glue everything together
   hboxLayout->addLayout(m_pageLayout);
   m_wizardLayout->addLayout(hboxLayout);
 
-  resize(QSize(600, 400).expandedTo(minimumSizeHint()));
+  resize(QSize(770, 520).expandedTo(minimumSizeHint()));
   clearWState(WState_Polished);
 
-  m_titleLabel->setText("Title");
+  m_titleLabel->setText("No Title specified");
   m_titleLabel->setRightImageFile("pics/titlelabel_background.png");
 
   m_finishButton->hide();

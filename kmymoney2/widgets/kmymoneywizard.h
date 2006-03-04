@@ -146,9 +146,10 @@ public:
 
   /**
     * This returns, if the current page is the last page of the wizard.
-    * The default implementation returns @p false.
+    * The default implementation returns @p false if nextPage() returns 0,
+    * @p true otherwise.
     *
-    * @retval false more pages follow (default)
+    * @retval false more pages follow
     * @retval true this is the last page of the wizard
     */
   virtual bool isLastPage(void);
