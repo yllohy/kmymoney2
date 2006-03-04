@@ -324,11 +324,17 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         // this security does not exist in the file.
         else
         {
-          // This should be rare.  A statement should have a security entry for any
-          // of the securities referred to in the transactions.  The only way to get
-          // here is if that's NOT the case.
-          KMessageBox::information(0, i18n("This investment account does not contain the \"%1\" security.  Transactions involving this security will be ignored.").arg(t_in.m_strSecurity),i18n("Security not found"),QString("MissingSecurity%1").arg(t_in.m_strSecurity.stripWhiteSpace()));
-
+          if ( t_in.m_strSecurity.isEmpty() )
+          {
+            KMessageBox::information(0, i18n("This imported statement contains investment transactions with no security.  These transactions will be ignored.").arg(t_in.m_strSecurity),i18n("Security not found"),QString("BlankSecurity"));
+          }
+          else
+          {
+            // This should be rare.  A statement should have a security entry for any
+            // of the securities referred to in the transactions.  The only way to get
+            // here is if that's NOT the case.
+            KMessageBox::information(0, i18n("This investment account does not contain the \"%1\" security.  Transactions involving this security will be ignored.").arg(t_in.m_strSecurity),i18n("Security not found"),QString("MissingSecurity%1").arg(t_in.m_strSecurity.stripWhiteSpace()));
+          }
           return;
         }
       }
@@ -407,6 +413,8 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       if ( ! brokerageactid.isEmpty() )
       {
         s1.setAccountId(brokerageactid);
+        if ( ! t_in.m_strBankID.isEmpty() )
+          s1.setBankID(t_in.m_strBankID);
 
         if(!s1.value().isNegative())
           s1.setAction(MyMoneySplit::ActionDeposit);
@@ -512,7 +520,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     // handle it.
     //
 
-    MyMoneyTransactionFilter filter(m_account.id());
+    MyMoneyTransactionFilter filter(thisaccount.id());
     filter.addPayee(payeeid);
     QValueList<MyMoneyTransaction> list = file->transactionList(filter);
     if(!list.empty())
@@ -528,7 +536,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         QValueList<MyMoneyTransaction>::ConstIterator it_trans = list.fromLast();
         while ( it_trans != list.end() )
         {
-          MyMoneySplit s = (*it_trans).splitByAccount(m_account.id());
+          MyMoneySplit s = (*it_trans).splitByAccount(thisaccount.id());
           if ( s.value() == s1.value() )
           {
             t_old = *it_trans;
@@ -543,7 +551,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       {
         // We don't need the split that covers this account,
         // we just need the other ones.
-        if ( (*it_split).accountId() != m_account.id() )
+        if ( (*it_split).accountId() != thisaccount.id() )
         {
           MyMoneySplit s(*it_split);
           s.setReconcileFlag(MyMoneySplit::NotReconciled);
