@@ -223,6 +223,14 @@ public:
     */
   virtual bool hasReferenceTo(const QCString& id) const;
 
+  /**
+    * Checks whether any split contains an autocalc split.
+    *
+    * @retval true at least one split has an autocalc value
+    * @retval false all splits have fixed values
+    */
+  bool hasAutoCalcSplit(void) const;
+
 private:
   static const int SPLIT_ID_SIZE = 4;
 

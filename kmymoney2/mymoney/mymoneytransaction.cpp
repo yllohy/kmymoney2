@@ -363,3 +363,14 @@ bool MyMoneyTransaction::hasReferenceTo(const QCString& id) const
 
   return rc;
 }
+
+bool MyMoneyTransaction::hasAutoCalcSplit(void) const
+{
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    if((*it).isAutoCalc())
+      return true;
+  }
+  return false;
+}

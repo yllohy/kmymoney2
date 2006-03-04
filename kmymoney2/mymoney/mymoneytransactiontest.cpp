@@ -483,3 +483,18 @@ void MyMoneyTransactionTest::testHasReferenceTo()
 	CPPUNIT_ASSERT(t.hasReferenceTo("P000001") == true);
 	CPPUNIT_ASSERT(t.hasReferenceTo("A000076") == true);
 }
+
+void MyMoneyTransactionTest::testAutoCalc()
+{
+	CPPUNIT_ASSERT(m->hasAutoCalcSplit() == false);
+	testAddSplits();
+	CPPUNIT_ASSERT(m->hasAutoCalcSplit() == false);
+        MyMoneySplit split;
+
+        split = m->splits()[0];
+	split.setShares(MyMoneyMoney::autoCalc);
+	split.setValue(MyMoneyMoney::autoCalc);
+	m->modifySplit(split);
+
+	CPPUNIT_ASSERT(m->hasAutoCalcSplit() == true);
+}

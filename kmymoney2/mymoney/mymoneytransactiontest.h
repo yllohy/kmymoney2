@@ -47,6 +47,7 @@ class MyMoneyTransactionTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testIsLoanPayment);
 	CPPUNIT_TEST(testWriteXML);
 	CPPUNIT_TEST(testReadXML);
+	CPPUNIT_TEST(testAutoCalc);
 	CPPUNIT_TEST(testHasReferenceTo);
 #if 0
 	CPPUNIT_TEST(testAddDuplicateAccount);
@@ -80,6 +81,7 @@ public:
 	void testModifyDuplicateAccount();
 	void testWriteXML();
 	void testReadXML();
+	void testAutoCalc();
 	void testHasReferenceTo();
 };
 #endif
