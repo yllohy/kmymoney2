@@ -188,6 +188,10 @@ void KMyMoneyWizard::setTitle(const QString& txt)
 void KMyMoneyWizard::addStep(const QString& text)
 {
   QLabel* step = new QLabel(text, m_stepFrame);
+  step->setFrameStyle(QFrame::Panel | QFrame::Raised);
+  step->setAlignment(Qt::AlignHCenter);
+  step->setFrameStyle(QFrame::Box | QFrame::Sunken);
+  step->setMargin(2);
   m_steps.append(step);
   m_stepLayout->insertWidget(m_steps.count(), step);
 
@@ -210,8 +214,10 @@ void KMyMoneyWizard::selectStep(unsigned int step)
   QFont f = m_steps[0]->font();
   for(it_l = m_steps.begin(); it_l != m_steps.end(); ++it_l) {
     f.setBold(false);
+    (*it_l)->setFrameStyle(QFrame::NoFrame);
     if(--step == 0) {
       f.setBold(true);
+      (*it_l)->setFrameStyle(QFrame::Box | QFrame::Sunken);
     }
     (*it_l)->setFont(f);
   }
