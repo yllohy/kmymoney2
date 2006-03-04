@@ -69,10 +69,12 @@ class kMandatoryFieldGroup : public QObject
     void setOkButton(QPushButton *button);
 
   public slots:
-    void clear();
+    void clear(void);
 
-  private slots:
-    void changed();
+    /**
+      * Force update of ok button
+      */
+    void changed(void);
 
   private:
     QValueList<QWidget *> widgets;

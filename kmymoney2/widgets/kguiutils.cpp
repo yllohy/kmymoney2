@@ -86,7 +86,7 @@ void kMandatoryFieldGroup::setOkButton(QPushButton *button)
 }
 
 
-void kMandatoryFieldGroup::changed()
+void kMandatoryFieldGroup::changed(void)
 {
   if (!okButton)
     return;
@@ -127,7 +127,7 @@ void kMandatoryFieldGroup::changed()
 }
 
 
-void kMandatoryFieldGroup::clear()
+void kMandatoryFieldGroup::clear(void)
 {
   QValueList<QWidget *>::Iterator i;
   for (i = widgets.begin(); i != widgets.end(); ++i)
