@@ -1,3 +1,19 @@
+2006-03-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Present information message, that an account must be specified
+    before splits can be defined while creating a schedule
+  * Don't override amount specified if all splits have been cleared
+    and the split edit dialog has been left with OK back to the schedule dialog
+  * Update OK button in schedule dialog when the last thing required and
+    added are the splits of a split transaction
+  * Allow manual update of KMandatoryFieldGroup
+  * Only show asset and liability accounts in From/To field for schedules
+  * Only show income and expense account in Category field for schedules
+  * Avoid usage of std::find with QValueLists
+  * Added MyMoneyTransaction::hasAutoCalcSplit() and testcase
+  * Fixed Doxygen problems in budget headers
+  * Added start of New User Wizard
+  * Improved KMyMoneyWizard
+
 2006-03-02 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a subtle bug in my 2/11 checkin.  When transactions were auto-filled
     in based on payee, the split bank ID would get brought in, too.  This
