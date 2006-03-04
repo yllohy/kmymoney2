@@ -277,23 +277,18 @@ void KEditScheduleDialog::reloadFromFile(void)
   for (int i = 0; occurMasks[i] != END_OCCURS; i++) m_kcomboFreq->insertItem (KMyMoneyUtils::occurenceToString (occurMasks[i]));
   m_accountCombo->blockSignals(true);
   m_kcomboTo->blockSignals(true);
-  if (m_actionType == MyMoneySplit::ActionTransfer
-  ||  m_actionType == MyMoneySplit::ActionWithdrawal
-  ||  m_actionType == MyMoneySplit::ActionAmortization
-      )
-  {
-    m_accountCombo->loadList
-        ((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  }
-
-  if (m_actionType == MyMoneySplit::ActionDeposit ||
-      m_actionType == MyMoneySplit::ActionTransfer)
-  {
-    m_kcomboTo->loadList
-        ((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  }
+  m_category->blockSignals(true);
+  m_accountCombo->loadList(
+    (KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  m_kcomboTo->loadList(
+    (KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  QValueList<int> categories;
+  categories << MyMoneyAccount::Income;
+  categories << MyMoneyAccount::Expense;
+  m_category->selector()->loadList(categories);
   m_accountCombo->blockSignals(false);
   m_kcomboTo->blockSignals(false);
+  m_category->blockSignals(false);
 
   // Fire off the activated signals.
   if (m_schedule.name().isEmpty() && m_transaction.splitCount() == 0)
@@ -342,6 +337,11 @@ void KEditScheduleDialog::slotSplitClicked()
     else
       isDeposit = false;
     isValidAmount = true;
+  }
+
+  if(theAccountId().isEmpty()) {
+    KMessageBox::information(this, i18n("Please specify the account first before you assign splits."));
+    return;
   }
 
   try
@@ -395,32 +395,37 @@ void KEditScheduleDialog::slotSplitClicked()
 
       MyMoneySplit s;
       QString category;
+      MyMoneyMoney amount;
 
       disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
       switch(m_transaction.splitCount())
       {
         case 2:
-          s = m_transaction.splits()[0];
-          category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+          s = m_transaction.splits()[1];
+          if(!s.accountId().isEmpty()) {
+            category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+            amount = m_transaction.splits()[0].value().abs();
+            m_kmoneyeditAmount->setValue(amount);
+          }
           break;
+
         case 1:
           category = QString();
           m_transaction.removeSplits();
           break;
+
         case 0:
           break;
+
         default:
           category = i18n("Split transaction (category replacement)", "Split transaction");
           connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+          amount = m_transaction.splits()[0].value().abs();
+          m_kmoneyeditAmount->setValue(amount);
           break;
       }
+      m_category->loadText(category);
 
-      m_category->setText(category);
-
-      MyMoneySplit split = m_transaction.splits()[0];
-      MyMoneyMoney amount(split.value());
-      amount = amount.abs();
-      m_kmoneyeditAmount->setValue(amount);
     }
 
     delete dlg;
@@ -431,6 +436,9 @@ void KEditScheduleDialog::slotSplitClicked()
     delete e;
   }
   m_category->blockSignals(false);
+
+  // force update of required group
+  m_requiredFields->changed();
 }
 
 void KEditScheduleDialog::slotWillEndToggled(bool on)
