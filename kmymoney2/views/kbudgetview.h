@@ -101,6 +101,7 @@ public:
     *               added to.
     * @param amount const reference to MyMoneyMoney for which
     *               the KListView entry is constructed
+    * @param date   const reference to QDate for the budgeted item
     * @param label  const reference to QString for a label for the item
     */
   KBudgetAmountListItem(KListView *parent, const MyMoneyMoney& amount, const QDate &date, const QString &label);
@@ -229,10 +230,10 @@ signals:
 
 private:
   typedef enum {
-	eNone=-1,
-        eYearly=0,
-        eMonthly=1,
-        eMonthByMonth=2
+    eNone=-1,
+    eYearly=0,
+    eMonthly=1,
+    eMonthByMonth=2
   } eTimePeriodColumn;
 
   /**
