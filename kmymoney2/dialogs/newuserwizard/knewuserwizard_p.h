@@ -30,14 +30,15 @@
 #include "kcurrencypagedecl.h"
 #include "kpasswordpagedecl.h"
 
-/**
-  * @author Thomas Baumgart
-  */
-
 namespace NewUserWizard {
 
 class Wizard;
 
+/**
+  * The general base class for new user wizard pages
+  *
+  * @author Thomas Baumgart
+  */
 class WizardPage : public KMyMoneyWizardPage
 {
 public:
@@ -49,6 +50,8 @@ protected:
 
 /**
   * The first page of the new user wizard
+  *
+  * @author Thomas Baumgart
   */
 class GeneralPage : public KGeneralPageDecl, public WizardPage
 {
@@ -60,6 +63,8 @@ public:
 
 /**
   * The second page of the new user wizard
+  *
+  * @author Thomas Baumgart
   */
 class CurrencyPage : public KCurrencyPageDecl, public WizardPage
 {
@@ -71,6 +76,8 @@ public:
 
 /**
   * The third page of the new user wizard
+  *
+  * @author Thomas Baumgart
   */
 class PasswordPage : public KPasswordPageDecl, public WizardPage
 {
