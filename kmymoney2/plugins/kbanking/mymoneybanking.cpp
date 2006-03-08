@@ -41,6 +41,8 @@
 // Library Includes
 
 #include <aqbanking/imexporter.h>
+#include <aqbanking/jobgettransactions.h>
+#include <qbanking/qbpickstartdate.h>
 #include <gwenhywfar/logger.h>
 #include <gwenhywfar/debug.h>
 #include <kbanking/settings.h>
@@ -200,13 +202,92 @@ const bool KBankingPlugin::accountIsMapped(const QCString& id)
 void KBankingPlugin::slotAccountOnlineUpdate(void)
 {
   if(!m_account.id().isEmpty()) {
+    AB_ACCOUNT *ba;
+    AB_JOB *job;
+    int rv;
+    int days;
+    int year, month, day;
+    QDate qd;
 
-    // TODO: get last statement date
-    if(m_kbanking->requestBalance(m_account.id())) {
-      // executeMyJobs();
-      if(m_kbanking->requestTransactions(m_account.id(), QDate(), QDate())) {
-        // TODO: flash status
+    /* get AqBanking account */
+    ba=AB_Banking_GetAccountByAlias(m_kbanking->getCInterface(),
+				    m_account.id());
+    if (!ba) {
+      QMessageBox::critical(0,
+			    QWidget::tr("Account Not Mapped"),
+			    QWidget::tr("<qt>"
+					"<p>"
+					"The given application account "
+					"has not been mapped to banking "
+					"accounts."
+					"</p>"
+					"</qt>"
+				       ),
+			    QMessageBox::Ok,QMessageBox::NoButton);
+      return;
+    }
+
+    /* create getTransactions job */
+    job=AB_JobGetTransactions_new(ba);
+    rv=AB_Job_CheckAvailability(job);
+    if (rv) {
+      DBG_ERROR(0, "Job \"GetTransactions\" is not available (%d)", rv);
+      QMessageBox::critical(0,
+			    tr("Job not Available"),
+			    tr("<qt>"
+			       "The update job is not supported by the "
+			       "bank/account/backend.\n"
+			       "</qt>"),
+			    tr("Dismiss"), QString::null);
+      AB_Job_free(job);
+      return;
+    }
+
+    days=AB_JobGetTransactions_GetMaxStoreDays(job);
+    if (days>0) {
+      GWEN_TIME *ti1;
+      GWEN_TIME *ti2;
+
+      ti1=GWEN_CurrentTime();
+      ti2=GWEN_Time_fromSeconds(GWEN_Time_Seconds(ti1)-(60*60*24*days));
+      GWEN_Time_free(ti1);
+      ti1=ti2;
+
+      if (GWEN_Time_GetBrokenDownDate(ti1, &day, &month, &year)) {
+	DBG_ERROR(0, "Bad date");
+	qd=QDate();
       }
+      else
+	qd=QDate(year, month+1, day);
+      GWEN_Time_free(ti1);
+    }
+
+    QBPickStartDate psd(m_kbanking, qd, QDate(), 3, 0,
+			"PickStartDate", true);
+    if (psd.exec()!=QDialog::Accepted) {
+      AB_Job_free(job);
+      return;
+    }
+    qd=psd.getDate();
+    if (qd.isValid()) {
+      GWEN_TIME *ti1;
+
+      ti1=GWEN_Time_new(qd.year(), qd.month()-1, qd.day(), 0, 0, 0, 0);
+      AB_JobGetTransactions_SetFromTime(job, ti1);
+      GWEN_Time_free(ti1);
+    }
+
+    rv=m_kbanking->enqueueJob(job);
+    AB_Job_free(job);
+    if (rv) {
+      DBG_ERROR(0, "Error %d", rv);
+      QMessageBox::critical(0,
+			    tr("Error"),
+			    tr("<qt>"
+			       "Could not enqueue the job.\n"
+			       "</qt>"),
+			    tr("Dismiss"), QString::null);
+      return;
     }
   }
 }
@@ -280,9 +361,6 @@ const AB_ACCOUNT_STATUS* KMyMoneyBanking::_getAccountStatus(AB_IMEXPORTER_ACCOUN
   const AB_ACCOUNT_STATUS *best;
 
   best=0;
-  DBG_NOTICE(0, "Checking account (%s/%s)",
-       AB_ImExporterAccountInfo_GetBankCode(ai),
-       AB_ImExporterAccountInfo_GetAccountNumber(ai));
   ast=AB_ImExporterAccountInfo_GetFirstAccountStatus(ai);
   while(ast) {
     if (!best)
@@ -325,6 +403,11 @@ void KMyMoneyBanking::_xaToStatement(const AB_TRANSACTION *t,
   const GWEN_TIME *ti;
   const GWEN_TIME *startTime=0;
   MyMoneyStatement::Transaction kt;
+
+  // bank's transaction id
+  p=AB_Transaction_GetFiId(t);
+  if (p)
+    kt.m_strBankID=QString("ID ")+QString::fromUtf8(p);
 
   // payee
   s="";
@@ -423,7 +506,7 @@ void KMyMoneyBanking::_xaToStatement(const AB_TRANSACTION *t,
   }
 
   // store transaction
-  DBG_NOTICE(0, "Adding transaction");
+  DBG_INFO(0, "Adding transaction");
   ks.m_listTransactions+=kt;
 }
 
@@ -439,7 +522,7 @@ bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai)
   const AB_VALUE *val;
   const GWEN_TIME *ti;
 
-  DBG_NOTICE(0, "Importing account...");
+  DBG_INFO(0, "Importing account...");
 
   // account number
   p=AB_ImExporterAccountInfo_GetAccountNumber(ai);
@@ -450,6 +533,30 @@ bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai)
   p=AB_ImExporterAccountInfo_GetAccountName(ai);
   if (p)
     ks.m_strAccountName=p;
+
+  // account type
+  switch(AB_ImExporterAccountInfo_GetType(ai)) {
+  case AB_AccountType_Bank:
+    ks.m_eType=MyMoneyStatement::etSavings;
+    break;
+  case AB_AccountType_CreditCard:
+    ks.m_eType=MyMoneyStatement::etCreditCard;
+    break;
+  case AB_AccountType_Checking:
+    ks.m_eType=MyMoneyStatement::etCheckings;
+    break;
+  case AB_AccountType_Savings:
+    ks.m_eType=MyMoneyStatement::etSavings;
+    break;
+  case AB_AccountType_Investment:
+    ks.m_eType=MyMoneyStatement::etInvestment;
+    break;
+  case AB_AccountType_Cash:
+    ks.m_eType=MyMoneyStatement::etNone;
+    break;
+  default:
+    ks.m_eType=MyMoneyStatement::etNone;
+  }
 
   // account status
   ast=_getAccountStatus(ai);
@@ -462,7 +569,7 @@ bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai)
     if (bal) {
       val=AB_Balance_GetValue(bal);
       if (val) {
-        DBG_NOTICE(0, "Importing balance");
+	DBG_INFO(0, "Importing balance");
         ks.m_moneyClosingBalance=AB_Value_GetValue(val);
         p=AB_Value_GetCurrency(val);
         if (p)
