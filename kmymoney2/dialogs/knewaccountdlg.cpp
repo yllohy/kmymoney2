@@ -554,7 +554,7 @@ void KNewAccountDlg::okClicked()
   }
   else
   {
-    if(KMyMoneySettings::hideUnusedCategory()) {
+    if(KMyMoneySettings::hideUnusedCategory() && !m_isEditing) {
       KMessageBox::information(this, i18n("You have selected to suppress the display of unused categories in the KMyMoney configuration dialog. The category you just created will therefore only be shown if it is used. Otherwise, it will be hidden in the accounts/categories view."), i18n("Hidden categories"), "NewHiddenCategory");
     }
   }

@@ -1,5 +1,7 @@
 2006-03-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1447764 (KMyMoney crashes when loading file)
+  * Fixed #1445815 (Hidden category warning when editing a category)
+    Thanks to Ryan Buschert for supplying a patch
 
 2006-03-08 Martin Preuss <aquamaniac@users.sourceforge.net>
   * kbanking.cpp: When importing transactions now also read the FIID
