@@ -792,6 +792,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 #else
     if((url.protocol() == "sql") || (url.isValid() && KIO::NetAccess::exists(url))) {
 #endif
+      myMoneyView->slotCancelEdit();
       slotFileClose();
       if(!myMoneyView->fileOpen()) {
         if(myMoneyView->readFile(url)) {

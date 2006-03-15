@@ -1,4 +1,7 @@
-2004-09-02 Martin Preuss <aquamaniac@users.sourceforge.net>
+2006-03-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1447764 (KMyMoney crashes when loading file)
+
+2006-03-08 Martin Preuss <aquamaniac@users.sourceforge.net>
   * kbanking.cpp: When importing transactions now also read the FIID
     of the transaction (if any) and the account type.
     Replaced my code for KBankingPlugin::slotAccountOnlineUpdate() with a
