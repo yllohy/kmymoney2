@@ -1,3 +1,7 @@
+2006-03-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1398411 (Exchange rate not used when recording a transaction)
+  * Disable transaction edit in context menu when account is closed
+
 2006-03-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1447764 (KMyMoney crashes when loading file)
   * Fixed #1445815 (Hidden category warning when editing a category)
