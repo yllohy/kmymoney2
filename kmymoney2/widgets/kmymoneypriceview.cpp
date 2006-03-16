@@ -256,12 +256,12 @@ void kMyMoneyPriceView::slotNewPrice(void)
   if(item) {
     MyMoneySecurity security;
     security = MyMoneyFile::instance()->security(item->price().from());
-    dlg.m_commodity->setSecurity(security);
+    dlg.m_security->setSecurity(security);
     security = MyMoneyFile::instance()->security(item->price().to());
     dlg.m_currency->setSecurity(security);
   }
   if(dlg.exec()) {
-    MyMoneyPrice price(dlg.m_commodity->security().id(), dlg.m_currency->security().id(), dlg.date(), MyMoneyMoney(1,1));
+    MyMoneyPrice price(dlg.m_security->security().id(), dlg.m_currency->security().id(), dlg.date(), MyMoneyMoney(1,1));
     kMyMoneyPriceItem* p = new kMyMoneyPriceItem(m_priceHistory, price);
     m_priceHistory->setSelected(p, true);
     // If the user cancels the following operation, we delete the new item

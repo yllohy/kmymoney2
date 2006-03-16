@@ -125,6 +125,9 @@ void KNewInvestmentWizard::init(void)
   kMyMoneyMoneyValidator* fractionValidator = new kMyMoneyMoneyValidator(1, 100000, 0, this);
   m_fraction->setValidator(fractionValidator);
 
+  // load the widget with the available currencies
+  m_tradingCurrencyEdit->update(QCString());
+
   // FIXME for now, we don't have online help
   helpButton()->hide();
 

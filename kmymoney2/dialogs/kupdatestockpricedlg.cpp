@@ -64,8 +64,12 @@ void KUpdateStockPriceDlg::init()
   connect(m_okButton, SIGNAL(clicked()), this, SLOT(accept()));
   connect(m_cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 
-  connect(m_commodity, SIGNAL(activated(int)), this, SLOT(slotCheckData()));
+  connect(m_security, SIGNAL(activated(int)), this, SLOT(slotCheckData()));
   connect(m_currency, SIGNAL(activated(int)), this, SLOT(slotCheckData()));
+
+  // load initial values into the selection widgets
+  m_currency->update(QCString());
+  m_security->update(QCString());
 
   slotCheckData();
 }
@@ -78,7 +82,7 @@ int KUpdateStockPriceDlg::exec(void)
 
 void KUpdateStockPriceDlg::slotCheckData(void)
 {
-  QCString from = m_commodity->security().id();
+  QCString from = m_security->security().id();
   QCString to   = m_currency->security().id();
 
   m_okButton->setEnabled(!from.isEmpty() && !to.isEmpty() && from != to);
