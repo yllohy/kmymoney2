@@ -1,6 +1,9 @@
 2006-03-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1398411 (Exchange rate not used when recording a transaction)
   * Disable transaction edit in context menu when account is closed
+  * Create new transaction when first empty entry in ledger is double clicked
+  * Fill buttons with securities/currencies in new price editor dialog
+  * Renamed widget from m_commodity in m_security in price editor dialog
 
 2006-03-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1447764 (KMyMoney crashes when loading file)
