@@ -1737,10 +1737,18 @@ void KLedgerViewCheckings::slotOpenSplitDialog(void)
       isValidAmount = true;
     }
   }
+  int direction = transactionDirection(m_split);
+  if(direction == UnknownDirection) {
+    direction = Debit;
+    if(currentActionTab() == 1) {    // Deposit?
+      direction = Credit;
+    }
+  }
+
   KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
                                                        m_account,
                                                        isValidAmount,
-                                                       transactionDirection(m_split) == Credit,
+                                                       direction,
                                                        0,
                                                        this);
   connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
