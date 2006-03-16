@@ -1170,6 +1170,9 @@ void KLedgerViewInvestments::slotRegisterDoubleClicked(int /* row */,
                                                 int /* button */,
                                                 const QPoint & /* mousePos */)
 {
+  if(static_cast<unsigned> (m_register->currentTransactionIndex()) == m_transactionList.count())
+    slotNew();
+  else
     slotStartEdit();
 }
 
