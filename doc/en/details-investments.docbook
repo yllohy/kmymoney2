@@ -300,6 +300,25 @@ Or you can fetch them electronically, using <link linkend="details.investments.o
 </para>
 </sect2>
 
+<sect2><title>Adjusting a quote</title>
+
+<para>
+	Some online sources do not report the price in a base quantity (e.g.
+	EUR) but in a fraction (e.g. Cent). Using this information as price
+	will produce wrong values for your investments.
+</para>
+<para>
+	If this is the case for your online source, you can use the
+	<guilabel>Factor</guilabel>
+	field to enter an adjusting factor. For the above mentioned example
+	the factor would be 0.01.
+</para>
+<para>
+	The <guilabel>Factor</guilabel> field is only available if a
+	<guibutton>Quote Source</guibutton> has been selected.
+</para>
+</sect2>
+
 <sect2><title>Fetching Quotes</title>
 
 <para>
