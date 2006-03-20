@@ -1454,8 +1454,17 @@ void KMyMoneyView::fixSchedule(MyMoneySchedule sched)
           delete e;
         }
       }
+      // make sure the account exists. If not, remove the split
+      try {
+        MyMoneyFile::instance()->account((*it_s).accountId());
+      } catch(MyMoneyException *e) {
+        kdDebug(2) << __func__ << " " << sched.id() << " " << (*it_s).id() << " removed, because account '" << (*it_s).accountId() << "' does not exist." << endl;
+        t.removeSplit(*it_s);
+        updated = true;
+        delete e;
+      }
       if((*it_s).reconcileFlag() != MyMoneySplit::NotReconciled) {
-        kdDebug(2) << __func__ << " " << t.id() << " " << (*it_s).id() << " should be 'not reconciled'" << endl;
+        kdDebug(2) << __func__ << " " << sched.id() << " " << (*it_s).id() << " should be 'not reconciled'" << endl;
         MyMoneySplit split = *it_s;
         split.setReconcileDate(QDate());
         split.setReconcileFlag(MyMoneySplit::NotReconciled);
