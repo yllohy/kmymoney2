@@ -2,6 +2,9 @@
   * Remove splits from scheduled transactions that reference not existing
     accounts
 
+2006-03-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated online documentation
+
 2006-03-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1398411 (Exchange rate not used when recording a transaction)
   * Disable transaction edit in context menu when account is closed
