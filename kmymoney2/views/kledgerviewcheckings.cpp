@@ -1748,7 +1748,7 @@ void KLedgerViewCheckings::slotOpenSplitDialog(void)
   KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
                                                        m_account,
                                                        isValidAmount,
-                                                       direction,
+                                                       direction == Credit,
                                                        0,
                                                        this);
   connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
