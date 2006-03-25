@@ -496,6 +496,10 @@ void KNewAccountDlg::okClicked()
         delete e;
       }
     }
+    else
+    {
+      m_account.setInstitutionId(QCString());
+    }
   }
 
   m_account.setName(accountNameText);
