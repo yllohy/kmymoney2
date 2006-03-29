@@ -137,7 +137,10 @@ void KSecurityListEditor::fillItem(QListViewItem* item, const MyMoneySecurity& s
   item->setText(MARKET_COL, market);
   item->setText(CURR_COL, tradingCurrency.tradingSymbol());
   item->setText(ACCFRACT_COL, QString::number(security.smallestAccountFraction()));
-  item->setText(CASHFRACT_COL, QString::number(security.smallestCashFraction()));
+
+  // smallestCashFraction is only applicable for currencies
+  if(security.isCurrency())
+    item->setText(CASHFRACT_COL, QString::number(security.smallestCashFraction()));
 }
 
 void KSecurityListEditor::slotUpdateButtons(void)

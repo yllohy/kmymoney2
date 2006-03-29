@@ -1,3 +1,7 @@
+2006-03-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't show invalid smallest cash fraction value in security editor for
+    non currency securities entries
+
 2006-03-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1434611 (Can't edit account to 'No Institution')
 
