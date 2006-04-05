@@ -201,7 +201,7 @@ kMyMoneyEdit::~kMyMoneyEdit()
   delete m_calculatorFrame;
 }
 
-KLineEdit * const kMyMoneyEdit::lineedit(void) const
+KLineEdit* kMyMoneyEdit::lineedit(void) const
 {
   return m_edit;
 }

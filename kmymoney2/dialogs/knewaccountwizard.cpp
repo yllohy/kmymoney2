@@ -188,8 +188,20 @@ void KNewAccountWizard::next()
     if(currentPage() == brokerageAccountPage) {
       setAppropriate(accountDetailsPage, m_brokerageYesButton->isChecked());
     }
+
     KNewAccountWizardDecl::next();
 
+    if(currentPage() == accountNamePage) {
+      m_accountName->setFocus();
+
+    } else if(currentPage() == accountNumberPage) {
+      m_accountNumber->setFocus();
+
+    } else if(currentPage() == accountDetailsPage) {
+      KLineEdit* edit = m_openingBalance->lineedit();
+      if(edit->hasFocus() && !edit->text().isEmpty() && !edit->hasSelectedText())
+        edit->selectAll();
+    }
     // setup the availability of widgets on the selected page
     slotCheckPageFinished();
   }

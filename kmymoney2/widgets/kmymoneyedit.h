@@ -201,7 +201,7 @@ public:
 
   const bool isCalculatorButtonVisible(void) const;
 
-  KLineEdit * const lineedit(void) const;
+  KLineEdit* lineedit(void) const;
 
 public slots:
   void loadText(const QString& text);

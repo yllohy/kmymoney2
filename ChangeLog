@@ -1,3 +1,6 @@
+2006-04-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1439099 (Balance entry on import messed up)
+
 2006-03-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't show invalid smallest cash fraction value in security editor for
     non currency securities entries
