@@ -121,7 +121,7 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
   KGuiItem additionalFeeButtenItem( i18n( "&Additional fees..." ),
                       0, //QIconSet(il->loadIcon("filenew", KIcon::Small, KIcon::SizeSmall)),
                       i18n("Enter additional fees"),
-                      i18n("Use this to add any additional fees other than interest and amortization contained in your periodical payments."));
+                      i18n("Use this to add any additional fees other than principal and interest contained in your periodical payments."));
   m_additionalFeeButton->setGuiItem(additionalFeeButtenItem);
   connect(m_additionalFeeButton, SIGNAL(clicked()), this, SLOT(slotAdditionalFees()));
 
@@ -526,7 +526,7 @@ void KNewLoanWizard::next()
     || m_durationValueEdit->value() == 0)
     && m_paymentEdit->text().isEmpty()) {
       dontLeavePage = true;
-      KMessageBox::error(0, errMsg.arg(i18n("interest and amortization")), i18n("Calculation error"));
+      KMessageBox::error(0, errMsg.arg(i18n("principal and interest")), i18n("Calculation error"));
     } else
       updatePayment();
 
@@ -808,7 +808,7 @@ int KNewLoanWizard::calculateLoan(void)
         val = -val;
       calc.setPmt(val);
 
-      result = i18n("KMyMoney has calculated a periodic payment of %1 to cover amortization and interest.")
+      result = i18n("KMyMoney has calculated a periodic payment of %1 to cover principal and interest.")
                       .arg(m_paymentEdit->text());
 
       val = calc.futureValue();

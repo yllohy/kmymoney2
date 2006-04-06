@@ -1576,7 +1576,7 @@ Select the date when the interest rate for this loan will be modified and the fr
                 </property>
                 <property name="text">
                     <string>
-Please enter the amount you pay for interest and amortization or leave the field empty to calculate it.</string>
+Please enter the amount you pay for principal and interest or leave the field empty to calculate it.</string>
                 </property>
                 <property name="alignment">
                     <set>WordBreak|AlignTop</set>
@@ -1670,7 +1670,7 @@ Please enter the amount you pay for interest and amortization or leave the field
                                     <cstring>TextLabel1_5</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Amortization and interest</string>
+                                    <string>Principal and interest</string>
                                 </property>
                             </widget>
                         </grid>
@@ -1716,7 +1716,7 @@ Please enter the amount you pay for interest and amortization or leave the field
                     <cstring>TextLabel4_5</cstring>
                 </property>
                 <property name="text">
-                    <string>KMyMoney either calculates the new interest rate or the amount for amortization and interest. If you know the amount for amortization and interest then enter it here.
+                    <string>KMyMoney either calculates the new interest rate or the amount for principal and interest. If you know the amount for principal and interest then enter it here.
 
 If KMyMoney should calculate this value for you, then leave the field blank.</string>
                 </property>
@@ -1889,7 +1889,7 @@ Please enter the interest rate or leave the field empty to calculate it.</string
                     <cstring>TextLabel9_4</cstring>
                 </property>
                 <property name="text">
-                    <string>KMyMoney either calculates the new interest rate or the amount for amortization and interest. If you know the interest rate then enter it here.
+                    <string>KMyMoney either calculates the new interest rate or the amount for principal and interest. If you know the interest rate then enter it here.
 
 If KMyMoney should calculate this value for you, then leave the field blank.</string>
                 </property>
@@ -2577,7 +2577,7 @@ When does the actual interest rate get calculated?</string>
                             <cstring>TextLabel10</cstring>
                         </property>
                         <property name="text">
-                            <string>Amortization + Interest:</string>
+                            <string>Principal + Interest:</string>
                         </property>
                         <property name="alignment">
                             <set>AlignVCenter|AlignRight</set>
@@ -2811,7 +2811,7 @@ Please enter the interest rate or leave the field empty to calculate it.</string
                             <cstring>TextLabel10_2</cstring>
                         </property>
                         <property name="text">
-                            <string>Amortization + Interest:</string>
+                            <string>Principal + Interest:</string>
                         </property>
                         <property name="alignment">
                             <set>AlignVCenter|AlignRight</set>
@@ -3050,7 +3050,7 @@ Please enter the term of this loan or leave the field empty to calculate it. The
                             <cstring>TextLabel10_2_2</cstring>
                         </property>
                         <property name="text">
-                            <string>Amortization + Interest:</string>
+                            <string>Principal + Interest:</string>
                         </property>
                         <property name="alignment">
                             <set>AlignVCenter|AlignRight</set>
@@ -3174,7 +3174,7 @@ Please enter the term of this loan or leave the field empty to calculate it. The
                 </property>
                 <property name="text">
                     <string>
-Please enter the amount you pay for interest and amortization or leave the field empty to calculate it.</string>
+Please enter the amount you pay for principal and interest or leave the field empty to calculate it.</string>
                 </property>
                 <property name="alignment">
                     <set>WordBreak|AlignTop</set>
@@ -3216,7 +3216,7 @@ Please enter the amount you pay for interest and amortization or leave the field
                             <cstring>TextLabel1_4_2</cstring>
                         </property>
                         <property name="text">
-                            <string>Interest and amortization</string>
+                            <string>Principal and interest</string>
                         </property>
                     </widget>
                     <widget class="kMyMoneyEdit">
@@ -3284,7 +3284,7 @@ Please enter the amount you pay for interest and amortization or leave the field
                             <cstring>TextLabel10_2_2_2</cstring>
                         </property>
                         <property name="text">
-                            <string>Amortization + Interest:</string>
+                            <string>Principal + Interest:</string>
                         </property>
                         <property name="alignment">
                             <set>AlignVCenter|AlignRight</set>
@@ -3518,7 +3518,7 @@ Please enter the amount of a final amortization payment or leave the field empty
                             <cstring>TextLabel10_2_2_2_2</cstring>
                         </property>
                         <property name="text">
-                            <string>Amortization + Interest:</string>
+                            <string>Principal + Interest:</string>
                         </property>
                         <property name="alignment">
                             <set>AlignVCenter|AlignRight</set>
@@ -3723,7 +3723,7 @@ KMyMoney has calculated the loan as shown in the overview below. You can accept 
                             <cstring>TextLabel10_2_2_2_2_2</cstring>
                         </property>
                         <property name="text">
-                            <string>Amortization + Interest:</string>
+                            <string>Principal + Interest:</string>
                         </property>
                         <property name="alignment">
                             <set>AlignVCenter|AlignRight</set>
@@ -4192,7 +4192,7 @@ If your regular payment contains any additional fees, click on the button "Addit
                             <cstring>TextLabel21_1</cstring>
                         </property>
                         <property name="text">
-                            <string>Amortization + Interest:</string>
+                            <string>Principal + Interest:</string>
                         </property>
                         <property name="alignment">
                             <set>AlignVCenter|AlignRight</set>
@@ -4522,7 +4522,7 @@ KMyMoney has calculated the loan as shown below. If you want to accept these val
                             <cstring>TextLabel6_3_2_2_2_2_2</cstring>
                         </property>
                         <property name="text">
-                            <string>Amortization + Interest:</string>
+                            <string>Principal + Interest:</string>
                         </property>
                         <property name="alignment">
                             <set>WordBreak|AlignVCenter|AlignRight</set>
@@ -5352,7 +5352,7 @@ This page summarizes the data you entered. If you need to modify anything, pleas
                                             <cstring>TextLabel11_4</cstring>
                                         </property>
                                         <property name="text">
-                                            <string>Amortization + Interest:</string>
+                                            <string>Principal + Interest:</string>
                                         </property>
                                         <property name="alignment">
                                             <set>AlignVCenter|AlignRight</set>
