@@ -63,6 +63,14 @@ const QString MyMoneyFile::OpeningBalancesPrefix = "Opening Balances";
 // #include <iostream>
 MyMoneyFile* MyMoneyFile::_instance = 0;
 
+class MyMoneyFilePrivate
+{
+public:
+  MyMoneyFilePrivate() {}
+
+  MyMoneySecurity m_baseCurrency;
+};
+
 MyMoneyFile* const MyMoneyFile::instance()
 {
   if(_instance == 0) {
@@ -75,11 +83,13 @@ MyMoneyFile::MyMoneyFile()
 {
   m_storage = 0;
   m_suspendNotify = false;
+  d = new MyMoneyFilePrivate();
 }
 
 MyMoneyFile::~MyMoneyFile()
 {
   _instance = 0;
+  delete d;
 }
 
 MyMoneyFile::MyMoneyFile(IMyMoneyStorage *storage)
@@ -415,7 +425,7 @@ void MyMoneyFile::removeAccountList(const QCStringList& account_list, unsigned i
       removeAccountList(a.accountList(), level+1);
 
     // then remove account itself, but we first have to get
-    // rid of the account list that is still stored in 
+    // rid of the account list that is still stored in
     // the MyMoneyAccount object. Easiest way is to get a fresh copy.
     a = m_storage->account(*it);
     //kdDebug() << "Deleting account '"<< a2.name() << "' itself" << endl;
@@ -1108,22 +1118,21 @@ const MyMoneyMoney MyMoneyFile::accountValue(const QCString& id, const QDate& da
       e->what().data(), e->file().data(), e->line());
     delete e;
   }
-  return result;
+  return result.convert(baseCurrency().smallestAccountFraction());
 }
 
 const MyMoneyMoney MyMoneyFile::totalValue(const QCString& id, const QDate& date) const
 {
-  QCStringList accounts;
-  QCStringList::ConstIterator it_a;
-
   MyMoneyMoney result(accountValue(id, date));
 
-  try {
-    MyMoneyAccount acc;
+  MyMoneyAccount acc;
 
+  try {
     acc = account(id);
+    QCStringList accounts;
     accounts = acc.accountList();
 
+    QCStringList::ConstIterator it_a;
     for(it_a = accounts.begin(); it_a != accounts.end(); ++it_a) {
       result += totalValue(*it_a, date);
     }
@@ -1731,6 +1740,10 @@ void MyMoneyFile::modifyCurrency(const MyMoneySecurity& currency)
   // automatically notify all observers once this routine is done
   MyMoneyNotifier notifier(this);
 
+  // force reload of base currency object
+  if(currency.id() == d->m_baseCurrency.id())
+    d->m_baseCurrency.clearId();
+
   m_storage->modifyCurrency(currency);
   addNotification(NotifyClassCurrency);
 }
@@ -1746,7 +1759,7 @@ void MyMoneyFile::removeCurrency(const MyMoneySecurity& currency)
   addNotification(NotifyClassCurrency);
 }
 
-const MyMoneySecurity MyMoneyFile::currency(const QCString& id) const
+const MyMoneySecurity& MyMoneyFile::currency(const QCString& id) const
 {
   if(id.isEmpty())
     return baseCurrency();
@@ -1762,13 +1775,15 @@ const QValueList<MyMoneySecurity> MyMoneyFile::currencyList(void) const
   return m_storage->currencyList();
 }
 
-const MyMoneySecurity MyMoneyFile::baseCurrency(void) const
+const MyMoneySecurity& MyMoneyFile::baseCurrency(void) const
 {
-  QCString id = QCString(value("kmm-baseCurrency"));
-  if(id.isEmpty())
-    return MyMoneySecurity();
+  if(d->m_baseCurrency.id().isEmpty()) {
+    QCString id = QCString(value("kmm-baseCurrency"));
+    if(!id.isEmpty())
+      d->m_baseCurrency = currency(id);
+  }
 
-  return currency(id);
+  return d->m_baseCurrency;
 }
 
 void MyMoneyFile::setBaseCurrency(const MyMoneySecurity& curr)

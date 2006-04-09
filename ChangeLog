@@ -1,3 +1,8 @@
+2006-04-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed speed/lockup issue during startup (thanks to Markus Draeger
+    for providing an anonymized file to duplicate the problem)
+  * Improved some interfaces to avoid unnecessary object copying
+
 2006-04-06 Robert Wadley <robntina@users.sourceforge.net>
   * Changed text "Amortization" to "principal" in the new loan wizard.
 

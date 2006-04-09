@@ -739,7 +739,7 @@ public:
     * @param id QCString containing the id of the MyMoneySchedule object
     * @return MyMoneySchedule object
     */
-  const MyMoneySecurity currency(const QCString& id) const;
+  const MyMoneySecurity& currency(const QCString& id) const;
 
   /**
     * This method is used to retrieve the list of all currencies

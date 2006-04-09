@@ -693,7 +693,7 @@ public:
     * @param id QCString containing the id of the MyMoneySecurity object
     * @return MyMoneyCurrency object
     */
-  virtual const MyMoneySecurity currency(const QCString& id) const = 0;
+  virtual const MyMoneySecurity& currency(const QCString& id) const = 0;
 
   /**
     * This method is used to retrieve the list of all currencies

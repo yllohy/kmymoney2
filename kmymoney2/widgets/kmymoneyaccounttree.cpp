@@ -624,6 +624,7 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
     else
       security = (*it_p).from();
   }
+  m_value = m_value.convert(listView()->baseCurrency().smallestAccountFraction());
 
   // check if we need to update the display of values
   if(parent() && (isOpen() || m_account.accountList().count() == 0)) {

@@ -1595,7 +1595,7 @@ void MyMoneySeqAccessMgr::removeCurrency(const MyMoneySecurity& currency)
   touch();
 }
 
-const MyMoneySecurity MyMoneySeqAccessMgr::currency(const QCString& id) const
+const MyMoneySecurity& MyMoneySeqAccessMgr::currency(const QCString& id) const
 {
   if(id.isEmpty()) {
 

@@ -106,7 +106,7 @@ public:
     * @p 3/1 even though the price information kept with the object was @p 1/3, but based on the other
     * conversion direction (from ADF to GBP).
     */
-  const MyMoneyMoney rate(const QCString& id = QCString()) const;
+  const MyMoneyMoney& rate(const QCString& id = QCString()) const;
 
   const QDate& date(void) const { return m_date; };
   const QString& source(void) const { return m_source; };
@@ -145,6 +145,7 @@ private:
   QCString      m_toSecurity;
   QDate         m_date;
   MyMoneyMoney  m_rate;
+  MyMoneyMoney  m_invRate;
   QString       m_source;
 };
 

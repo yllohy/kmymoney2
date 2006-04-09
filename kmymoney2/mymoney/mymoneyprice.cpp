@@ -48,13 +48,17 @@ MyMoneyPrice::MyMoneyPrice(const QCString& from, const QCString& to, const QDate
   m_rate(rate),
   m_source(source)
 {
+  if(!m_rate.isZero())
+    m_invRate = MyMoneyMoney(1,1) / m_rate;
+  else
+    qDebug("Price with zero value created");
 }
 
 MyMoneyPrice::~MyMoneyPrice()
 {
 }
 
-const MyMoneyMoney MyMoneyPrice::rate(const QCString& id) const
+const MyMoneyMoney& MyMoneyPrice::rate(const QCString& id) const
 {
   if(!isValid())
     return MyMoneyMoney(1,1);
@@ -62,7 +66,7 @@ const MyMoneyMoney MyMoneyPrice::rate(const QCString& id) const
   if(id.isEmpty() || id == m_toSecurity)
     return m_rate;
   if(id == m_fromSecurity)
-    return MyMoneyMoney(1,1) / m_rate;
+    return m_invRate;
 
   QString msg = QString("Unknown security id %1 for price info %2/%3.").arg(id).arg(m_fromSecurity).arg(m_toSecurity);
   throw new MYMONEYEXCEPTION(msg);

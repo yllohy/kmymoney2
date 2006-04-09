@@ -55,6 +55,7 @@
 
 class IMyMoneyStorage;
 class MyMoneyTransactionFilter;
+class MyMoneyFilePrivate;
 
 /**
   * This class represents the interface to the MyMoney engine.
@@ -1216,7 +1217,7 @@ public:
     * @param id QCString containing the id of the MyMoneySchedule object
     * @return MyMoneySchedule object
     */
-  const MyMoneySecurity currency(const QCString& id) const;
+  const MyMoneySecurity& currency(const QCString& id) const;
 
   /**
     * This method is used to retrieve the list of all currencies
@@ -1239,7 +1240,7 @@ public:
     *
     * @return MyMoneySecurity describing base currency
     */
-  const MyMoneySecurity baseCurrency(void) const;
+  const MyMoneySecurity& baseCurrency(void) const;
 
   /**
     * This method allows to select the base currency. It does
@@ -1570,6 +1571,8 @@ private:
   /**
     */
   bool m_suspendNotify;
+
+  MyMoneyFilePrivate  *d;
 
   static MyMoneyFile* _instance;
 };
