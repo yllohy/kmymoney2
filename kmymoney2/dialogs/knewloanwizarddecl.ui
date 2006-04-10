@@ -4700,8 +4700,8 @@ KMyMoney has calculated the loan as shown below. If you want to accept these val
                 </property>
                 <property name="text">
                     <string>
-You have selected to record all payments. This also includes the payout transaction. Please select the asset account, to/from which the money should be transferred.
-In case the account does not exist, create a new account. Only asset accounts should be created for this purpose.</string>
+If this loan is for an asset, such as a car or a house, you can create the asset account now. An asset account represents the total value of an asset. The money from this loan will be transfered into the asset account you create or select.
+If this loan is a 'consumer loan' (money to use however you want,) you can use a checking account instead.</string>
                 </property>
                 <property name="alignment">
                     <set>WordBreak|AlignTop</set>

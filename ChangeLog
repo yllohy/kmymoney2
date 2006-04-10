@@ -1,3 +1,6 @@
+2006-04-10 Robert Wadley <robntina@users.sourceforge.net>
+  * Clarified text relating to the "payout transaction" in the new loan wizard.
+
 2006-04-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added backward information from split to transaction
 
