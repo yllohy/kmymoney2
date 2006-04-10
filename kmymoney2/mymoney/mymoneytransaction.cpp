@@ -42,6 +42,11 @@ MyMoneyTransaction::MyMoneyTransaction(const QCString id,
   m_id = id;
   if(m_entryDate == QDate())
     m_entryDate = QDate::currentDate();
+
+  QValueList<MyMoneySplit>::Iterator it;
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    (*it).setTransactionId(id);
+  }
 }
 
 MyMoneyTransaction::MyMoneyTransaction(const QDomElement& node, const bool forceId) :
@@ -117,6 +122,7 @@ void MyMoneyTransaction::addSplit(MyMoneySplit& split)
 */
 
   split.setId(nextSplitID());
+  split.setTransactionId(id());
   m_splits.append(split);
 }
 

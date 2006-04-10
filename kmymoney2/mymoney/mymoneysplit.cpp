@@ -82,7 +82,8 @@ bool MyMoneySplit::operator == (const MyMoneySplit& right) const
     m_reconcileFlag == right.m_reconcileFlag &&
     ((m_number.length() == 0 && right.m_number.length() == 0) || m_number == right.m_number) &&
     m_shares == right.m_shares &&
-    m_value == right.m_value;
+    m_value == right.m_value &&
+    m_transactionId == right.m_transactionId;
 }
 
 void MyMoneySplit::setAccountId(const QCString& account)

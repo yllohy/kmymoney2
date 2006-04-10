@@ -39,6 +39,7 @@ void MyMoneySplitTest::testEmptyConstructor() {
 	CPPUNIT_ASSERT(m->value().isZero());
 	CPPUNIT_ASSERT(m->reconcileFlag() == MyMoneySplit::NotReconciled);
 	CPPUNIT_ASSERT(m->reconcileDate() == QDate());
+	CPPUNIT_ASSERT(m->transactionId().isEmpty());
 }
 
 void MyMoneySplitTest::testSetFunctions() {
@@ -51,6 +52,7 @@ void MyMoneySplitTest::testSetFunctions() {
 	m->setId("MyID");
 	m->setPayeeId("Payee");
 	m->setAction("Action");
+	m->setTransactionId("TestTransaction");
 
 	CPPUNIT_ASSERT(m->accountId() == "Account");
 	CPPUNIT_ASSERT(m->memo() == "Memo");
@@ -61,6 +63,7 @@ void MyMoneySplitTest::testSetFunctions() {
 	CPPUNIT_ASSERT(m->id() == "MyID");
 	CPPUNIT_ASSERT(m->payeeId() == "Payee");
 	CPPUNIT_ASSERT(m->action() == "Action");
+	CPPUNIT_ASSERT(m->transactionId() == "TestTransaction");
 }
 
 
@@ -78,6 +81,7 @@ void MyMoneySplitTest::testCopyConstructor() {
 	CPPUNIT_ASSERT(n.id() == "MyID");
 	CPPUNIT_ASSERT(n.payeeId() == "Payee");
 	CPPUNIT_ASSERT(n.action() == "Action");
+	CPPUNIT_ASSERT(n.transactionId() == "TestTransaction");
 }
 
 void MyMoneySplitTest::testAssignmentConstructor() {
@@ -96,6 +100,7 @@ void MyMoneySplitTest::testAssignmentConstructor() {
 	CPPUNIT_ASSERT(n.id() == "MyID");
 	CPPUNIT_ASSERT(n.payeeId() == "Payee");
 	CPPUNIT_ASSERT(n.action() == "Action");
+	CPPUNIT_ASSERT(n.transactionId() == "TestTransaction");
 }
 
 void MyMoneySplitTest::testEquality() {
@@ -152,6 +157,10 @@ void MyMoneySplitTest::testInequality() {
 
 	n = *m;
 	n.setValue(9876);
+	CPPUNIT_ASSERT(!(n == *m));
+
+	n = *m;
+	n.setTransactionId("NoTransaction");
 	CPPUNIT_ASSERT(!(n == *m));
 }
 

@@ -350,6 +350,7 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
   QValueList<MyMoneySplit>::ConstIterator it_s;
   for(it_s = it_t.splits().begin(); it_s != it_t.splits().end(); ++it_s) {
     s << "   ID = " << (*it_s).id() << "\n";
+    s << "    Transaction = " << (*it_s).transactionId() << "\n";
     s << "    Payee = " << (*it_s).payeeId();
     if(!(*it_s).payeeId().isEmpty()) {
       MyMoneyPayee p = storage->payee((*it_s).payeeId());

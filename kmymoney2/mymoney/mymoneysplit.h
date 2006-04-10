@@ -106,6 +106,7 @@ public:
   bool isAmortizationSplit(void) const { return m_action == ActionAmortization; }
   bool isAutoCalc(void) const { return (m_shares == MyMoneyMoney::autoCalc) || (m_value == MyMoneyMoney::autoCalc); }
   const QString& bankID(void) const { return m_bankID; }
+  const QCString& transactionId(void) const { return m_transactionId; }
 
   void setShares(const MyMoneyMoney& shares);
   void setValue(const MyMoneyMoney& value);
@@ -133,6 +134,7 @@ public:
   void setAction(const QCString& action);
   void setNumber(const QString& number);
   void setBankID(const QString& bankID) { m_bankID = bankID; };
+  void setTransactionId(const QCString& id) { m_transactionId = id; }
 
   static const char ActionCheck[];
   static const char ActionDeposit[];
@@ -215,6 +217,13 @@ private:
     * that was downloaded.
     */
   QString m_bankID;
+
+  /**
+    * This member keeps a backward id to the transaction that this
+    * split can be found in. It is the purpose of the MyMoneyTransaction
+    * object to maintain this member variable.
+    */
+  QCString      m_transactionId;
 };
 
 #endif

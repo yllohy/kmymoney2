@@ -106,6 +106,7 @@ void MyMoneyTransactionTest::testInequality() {
 }
 
 void MyMoneyTransactionTest::testAddSplits() {
+	m->setId("TestID");
 	MyMoneySplit split1, split2;
 	split1.setAccountId("A000001");
 	split2.setAccountId("A000002");
@@ -126,6 +127,10 @@ void MyMoneyTransactionTest::testAddSplits() {
 		CPPUNIT_ASSERT(m->splits()[1].id() == "S0002");
 		CPPUNIT_ASSERT(split1.id() == "S0001");
 		CPPUNIT_ASSERT(split2.id() == "S0002");
+		CPPUNIT_ASSERT(m->splits()[0].transactionId() == "TestID");
+		CPPUNIT_ASSERT(m->splits()[1].transactionId() == "TestID");
+		CPPUNIT_ASSERT(split1.transactionId() == "TestID");
+		CPPUNIT_ASSERT(split2.transactionId() == "TestID");
 
 	} catch(MyMoneyException *e) {
 		unexpectedException(e);
