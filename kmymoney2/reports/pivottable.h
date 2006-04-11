@@ -298,7 +298,7 @@ protected:
     *
     * @param column The column
     */
-    QDate PivotTable::columnDate(int column) const;
+    QDate columnDate(int column) const;
 };
 
 
