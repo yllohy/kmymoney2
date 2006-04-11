@@ -761,7 +761,7 @@ private:
     */
   bool isReady(void);
 
-  void KMyMoney2App::scheduleNew(const QCString& scheduleType);
+  void scheduleNew(const QCString& scheduleType);
 
 signals:
   /**
