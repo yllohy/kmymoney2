@@ -39,8 +39,8 @@ class QLabel;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneysecurity.h"
-#include "../widgets/kmymoneyaccountcombo.h"
+#include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/kmymoneyaccountcombo.h>
 #include "kledgerview.h"
 
 class kMyMoneyEdit;
@@ -269,8 +269,8 @@ private:
   QGuardedPtr<kMyMoneyEdit>         m_editPPS;
   QGuardedPtr<kMyMoneyEdit>         m_editTotalAmount;
   QGuardedPtr<kMyMoneyEdit>         m_editFees;
-  QGuardedPtr<kMyMoneyAccountCombo> m_editStockAccount;
-  QGuardedPtr<kMyMoneyAccountCombo> m_editCashAccount;
+  QGuardedPtr<KMyMoneyAccountCombo> m_editStockAccount;
+  QGuardedPtr<KMyMoneyAccountCombo> m_editCashAccount;
   QGuardedPtr<kMyMoneyCategory>     m_editFeeCategory;
 
   // The stock split is kept in m_split which comes with KLedgerView

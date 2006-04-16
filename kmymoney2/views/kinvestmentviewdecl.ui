@@ -66,7 +66,7 @@
                         <string>Select Account:</string>
                     </property>
                 </widget>
-                <widget class="kMyMoneyAccountCombo">
+                <widget class="KMyMoneyAccountCombo">
                     <property name="name">
                         <cstring>m_accountComboBox</cstring>
                     </property>
@@ -132,7 +132,7 @@
 </widget>
 <customwidgets>
     <customwidget>
-        <class>kMyMoneyAccountCombo</class>
+        <class>KMyMoneyAccountCombo</class>
         <header location="local">../widgets/kmymoneyaccountcombo.h</header>
         <sizehint>
             <width>-1</width>

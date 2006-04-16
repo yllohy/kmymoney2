@@ -35,23 +35,23 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyutils.h"
-#include "kmymoneyaccountcompletion.h"
+#include <kmymoney/kmymoneyutils.h>
+class kMyMoneyAccountCompletion;
 
 /**
   * @author Thomas Baumgart
   */
-class kMyMoneyAccountCombo : public KComboBox
+class KMyMoneyAccountCombo : public KComboBox
 {
   Q_OBJECT
 public:
-  kMyMoneyAccountCombo( QWidget* parent = 0, const char* name = 0 );
-  ~kMyMoneyAccountCombo();
+  KMyMoneyAccountCombo( QWidget* parent = 0, const char* name = 0 );
+  ~KMyMoneyAccountCombo();
 
   /**
     * Method returns how many items are in the account selector list.
     */
-  int count(void) const { return m_selector->accountList().count(); };
+  int count(void) const;
 
   /**
     * This method loads the set of accounts into the widget
@@ -66,10 +66,10 @@ public:
     */
   const int loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear = true);
 
-  const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const { return m_selector->accountList(list); };
+  const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const;
 
   int loadList(KMyMoneyUtils::categoryTypeE typeMask);
-  int loadList(const QValueList<int>& list) { return m_selector->loadList(list); };
+  int loadList(const QValueList<int>& list);
 
   void setSelected(const QCString& id);
   void setSelected(const MyMoneyAccount& acc);
@@ -80,7 +80,7 @@ public:
     *
     * @return list of selected accounts
     */
-  const QCStringList selectedAccounts(void) const { return m_selector->selectedAccounts(); };
+  const QCStringList selectedAccounts(void) const;
 
   virtual void keyPressEvent(QKeyEvent* e);
 

@@ -153,7 +153,7 @@
                                 <string>From:</string>
                             </property>
                         </widget>
-                        <widget class="kMyMoneyAccountCombo" row="0" column="1">
+                        <widget class="KMyMoneyAccountCombo" row="0" column="1">
                             <property name="name">
                                 <cstring>m_accountCombo</cstring>
                             </property>
@@ -193,7 +193,7 @@
                                 <enum>StrongFocus</enum>
                             </property>
                         </widget>
-                        <widget class="kMyMoneyAccountCombo" row="1" column="1">
+                        <widget class="KMyMoneyAccountCombo" row="1" column="1">
                             <property name="name">
                                 <cstring>m_kcomboTo</cstring>
                             </property>
@@ -781,7 +781,7 @@
         <pixmap>image1</pixmap>
     </customwidget>
     <customwidget>
-        <class>kMyMoneyAccountCombo</class>
+        <class>KMyMoneyAccountCombo</class>
         <header location="local">../widgets/kmymoneyaccountcombo.h</header>
         <sizehint>
             <width>-1</width>

@@ -49,7 +49,7 @@ class QHBoxLayout;
 class QGridLayout;
 class QPopupMenu;
 
-class kMyMoneyAccountCombo;
+class KMyMoneyAccountCombo;
 class KLedgerView;
 class KToolBar;
 class KToolBarButton;
@@ -157,7 +157,7 @@ protected:
   void setupConnections(KLedgerView* view);
 
 private:
-  kMyMoneyAccountCombo* m_accountComboBox;
+  KMyMoneyAccountCombo* m_accountComboBox;
 
   /**
     * This member holds the id of the currently selected account

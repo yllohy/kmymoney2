@@ -1,5 +1,7 @@
 2006-04-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added lithuanian translation as provided by Donates Glodenis
+  * Renamed kMyMoneyAccountCombo into KMyMoneyAccountCombo
+  * Added KMyMoneyAccountCombo to designer widgets
 
 2006-04-10 Robert Wadley <robntina@users.sourceforge.net>
   * Clarified text relating to the "payout transaction" in the new loan wizard.

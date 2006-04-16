@@ -154,7 +154,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
                                 <string>Account to export</string>
                             </property>
                         </widget>
-                        <widget class="kMyMoneyAccountCombo">
+                        <widget class="KMyMoneyAccountCombo">
                             <property name="name">
                                 <cstring>m_accountComboBox</cstring>
                             </property>
@@ -479,7 +479,7 @@ You can choose the file's path, the account and the format of the QIF file (prof
         <slot access="protected" specifier="">slotDateChosen(QDate date)</slot>
     </customwidget>
     <customwidget>
-        <class>kMyMoneyAccountCombo</class>
+        <class>KMyMoneyAccountCombo</class>
         <header location="local">../widgets/kmymoneyaccountcombo.h</header>
         <sizehint>
             <width>-1</width>

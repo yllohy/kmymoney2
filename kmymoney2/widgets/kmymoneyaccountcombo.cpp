@@ -38,16 +38,17 @@
 #include "kmymoneyaccountcombo.h"
 #include "kmymoneyaccountcompletion.h"
 
-kMyMoneyAccountCombo::kMyMoneyAccountCombo( QWidget* parent, const char* name ) :
+KMyMoneyAccountCombo::KMyMoneyAccountCombo( QWidget* parent, const char* name ) :
   KComboBox( parent, name ),
+  m_selector(0),
   m_mlbDown(false)
 {
-  QCString myName(name);
-  myName += "/completion";
-  m_selector = new kMyMoneyAccountCompletion(this, myName.data());
+#ifndef KMM_DESIGNER
+  m_selector = new kMyMoneyAccountCompletion(this);
 
   connect(this, SIGNAL(clicked()), this, SLOT(slotButtonPressed()));
   connect(m_selector, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSelected(const QCString&)));
+#endif
 
   // make sure that we can display a minimum of characters
   QFontMetrics fm(font());
@@ -58,16 +59,16 @@ kMyMoneyAccountCombo::kMyMoneyAccountCombo( QWidget* parent, const char* name ) 
   insertItem(QString(""));
 }
 
-kMyMoneyAccountCombo::~kMyMoneyAccountCombo()
+KMyMoneyAccountCombo::~KMyMoneyAccountCombo()
 {
 }
 
-void kMyMoneyAccountCombo::slotButtonPressed(void)
+void KMyMoneyAccountCombo::slotButtonPressed(void)
 {
   m_selector->show();
 }
 
-void kMyMoneyAccountCombo::slotSelected(const QCString& id)
+void KMyMoneyAccountCombo::slotSelected(const QCString& id)
 {
   try {
     MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
@@ -78,7 +79,7 @@ void kMyMoneyAccountCombo::slotSelected(const QCString& id)
   }
 }
 
-void kMyMoneyAccountCombo::setSelected(const QCString& id)
+void KMyMoneyAccountCombo::setSelected(const QCString& id)
 {
   if(!id.isEmpty()) {
     try {
@@ -94,23 +95,23 @@ void kMyMoneyAccountCombo::setSelected(const QCString& id)
   }
 }
 
-void kMyMoneyAccountCombo::setSelected(const MyMoneyAccount& acc)
+void KMyMoneyAccountCombo::setSelected(const MyMoneyAccount& acc)
 {
   m_selector->setSelected(acc.id());
   setText(acc.name());
 }
 
-void kMyMoneyAccountCombo::setText(const QString& txt)
+void KMyMoneyAccountCombo::setText(const QString& txt)
 {
   changeItem(txt, currentItem());
 }
 
-const int kMyMoneyAccountCombo::loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear)
+const int KMyMoneyAccountCombo::loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear)
 {
   return m_selector->loadList(baseName, accountIdList, clear);
 }
 
-int kMyMoneyAccountCombo::loadList(KMyMoneyUtils::categoryTypeE typeMask)
+int KMyMoneyAccountCombo::loadList(KMyMoneyUtils::categoryTypeE typeMask)
 {
   QValueList<int> typeList;
 
@@ -140,7 +141,7 @@ int kMyMoneyAccountCombo::loadList(KMyMoneyUtils::categoryTypeE typeMask)
   return m_selector->loadList(typeList);
 }
 
-void kMyMoneyAccountCombo::keyPressEvent(QKeyEvent* k)
+void KMyMoneyAccountCombo::keyPressEvent(QKeyEvent* k)
 {
   switch(k->key()) {
     case Qt::Key_Tab:
@@ -156,7 +157,7 @@ void kMyMoneyAccountCombo::keyPressEvent(QKeyEvent* k)
   return;
 }
 
-void kMyMoneyAccountCombo::mousePressEvent(QMouseEvent *e)
+void KMyMoneyAccountCombo::mousePressEvent(QMouseEvent *e)
 {
   if ( e->button() != LeftButton ) {
     e->ignore();
@@ -169,7 +170,7 @@ void kMyMoneyAccountCombo::mousePressEvent(QMouseEvent *e)
   }
 }
 
-void kMyMoneyAccountCombo::mouseReleaseEvent(QMouseEvent *e)
+void KMyMoneyAccountCombo::mouseReleaseEvent(QMouseEvent *e)
 {
   if ( e->button() != LeftButton ) {
       e->ignore();
@@ -183,5 +184,25 @@ void kMyMoneyAccountCombo::mouseReleaseEvent(QMouseEvent *e)
     emit clicked();
   }
 }
+
+int KMyMoneyAccountCombo::count(void) const
+{
+  return m_selector->accountList().count();
+}
+
+const QCStringList KMyMoneyAccountCombo::accountList(const QValueList<MyMoneyAccount::accountTypeE>& list) const
+{
+  return m_selector->accountList(list);
+};
+
+int KMyMoneyAccountCombo::loadList(const QValueList<int>& list)
+{
+  return m_selector->loadList(list);
+};
+
+const QCStringList KMyMoneyAccountCombo::selectedAccounts(void) const
+{
+  return m_selector->selectedAccounts();
+};
 
 #include "kmymoneyaccountcombo.moc"

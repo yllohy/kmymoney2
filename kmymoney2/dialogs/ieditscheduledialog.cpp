@@ -36,17 +36,17 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+#include <kmymoney/kmymoneyaccountcombo.h>
+#include <kmymoney/mymoneyinstitution.h>
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneypayee.h>
+#include <kmymoney/kmymoneypayee.h>
+#include <kmymoney/kmymoneyedit.h>
+#include <kmymoney/kmymoneycategory.h>
+#include <kmymoney/kmymoneydateinput.h>
+#include "../widgets/kmymoneyaccountcompletion.h"
 #include "../widgets/kmymoneycombo.h"
-#include "../widgets/kmymoneyaccountcombo.h"
-#include "../mymoney/mymoneyinstitution.h"
-#include "../mymoney/mymoneyaccount.h"
-#include "../mymoney/mymoneypayee.h"
-#include "../widgets/kmymoneyedit.h"
 #include "../dialogs/ksplittransactiondlg.h"
-#include "../widgets/kmymoneypayee.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneycategory.h"
-#include "../widgets/kmymoneydateinput.h"
 #include "ieditscheduledialog.h"
 
 /*

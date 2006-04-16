@@ -81,7 +81,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   m_toolbar = new KToolBar(this, "LedgerToolBar", true);
   m_toolbar->setIconText(KToolBar::IconTextRight);
 
-  m_accountComboBox = new kMyMoneyAccountCombo(m_toolbar, "AccountCombo");
+  m_accountComboBox = new KMyMoneyAccountCombo(m_toolbar, "AccountCombo");
   m_toolbar->insertWidget(1,100,m_accountComboBox);
 
   m_toolbar->insertButton(il->loadIcon("document", KIcon::Small, KIcon::SizeSmall),

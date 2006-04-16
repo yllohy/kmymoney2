@@ -31,9 +31,9 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/mymoneyscheduled.h>
 #include "../dialogs/keditschedtransdlgdecl.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneyscheduled.h"
 #include "../widgets/kguiutils.h"
 
 /**

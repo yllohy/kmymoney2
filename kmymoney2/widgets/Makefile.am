@@ -12,10 +12,10 @@ EXTRA_DIST = kmymoney.widgets kmymoneygpgconfigdecl.ui kmymoneyonlinequoteconfig
 # include the widgets that are available to 3rd party sw (e.g. plugins or
 # Qt designer) here
 instdir=$(includedir)/kmymoney
-inst_HEADERS = kmymoneydateinput.h kmymoneyedit.h kmymoneytitlelabel.h kmymoneypayee.h kmymoneyaccountselector.h kmymoneycategory.h kmymoneyaccounttree.h kmymoneycurrencyselector.h kguiutils.h kmymoneywizard.h kmymoneyaccounttreebudget.h
+inst_HEADERS = kmymoneydateinput.h kmymoneyedit.h kmymoneytitlelabel.h kmymoneypayee.h kmymoneyaccountselector.h kmymoneycategory.h kmymoneyaccounttree.h kmymoneycurrencyselector.h kguiutils.h kmymoneywizard.h kmymoneyaccounttreebudget.h kmymoneyaccountcombo.h
 
 # include the widgets that are only available to KMyMoney here
-noinst_HEADERS = kmymoneyregisterinvestment.h kmymoneyequity.h kmymoneyequitycompletion.h kmymoneycompletion.h kmymoneyequityselector.h kmymoneyaccountcombo.h kmymoneyaccountcompletion.h kmymoneypriceview.h kmymoneyregisterloan.h kmymoneyregistersearch.h kmymoneybriefschedule.h kmymoneyscheduleddatetbl.h kmymoneydatetbl.h kmymoneyscheduledcalendar.h kmymoneycalendar.h kmymoneycalculator.h kmymoneycategory.h kmymoneytransactionform.h kmymoneyregistercheckings.h kmymoneyregister.h kmymoneysplittable.h kmymoneycombo.h kmymoneyhlayout.h kmymoneylineedit.h kmymoneyonlinequoteconfig.h kmymoneyaccounttree.h kmymoneygpgconfig.h kmymoneywizard_p.h kmymoneyaccounttreebudget.h
+noinst_HEADERS = kmymoneyregisterinvestment.h kmymoneyequity.h kmymoneyequitycompletion.h kmymoneycompletion.h kmymoneyequityselector.h kmymoneyaccountcompletion.h kmymoneypriceview.h kmymoneyregisterloan.h kmymoneyregistersearch.h kmymoneybriefschedule.h kmymoneyscheduleddatetbl.h kmymoneydatetbl.h kmymoneyscheduledcalendar.h kmymoneycalendar.h kmymoneycalculator.h kmymoneycategory.h kmymoneytransactionform.h kmymoneyregistercheckings.h kmymoneyregister.h kmymoneysplittable.h kmymoneycombo.h kmymoneyhlayout.h kmymoneylineedit.h kmymoneyonlinequoteconfig.h kmymoneyaccounttree.h kmymoneygpgconfig.h kmymoneywizard_p.h kmymoneyaccounttreebudget.h
 
 # make sure, automatically generated files exist
 BUILT_SOURCES = dialogs
@@ -26,8 +26,8 @@ dialogs:
 PICS_DIR=kmymoney2/pics
 WIDGET_PNGS = kmymoneytitlelabel.png
 
-WIDGET_CPPS=kmymoneytitlelabel.cpp kmymoneyedit.cpp kmymoneycalculator.cpp kmymoneydateinput.cpp kmymoneypayee.cpp kmymoneyaccounttree.cpp kmymoneycurrencyselector.cpp kmymoneyaccounttreebudget.cpp
-WIDGET_MOCS=kmymoneytitlelabel.moc kmymoneyedit.moc kmymoneycalculator.moc kmymoneydateinput.moc kmymoneypayee.moc kmymoneyaccounttree.moc kmymoneycurrencyselector.moc kmymoneyaccounttreebudget.moc
+WIDGET_CPPS=kmymoneytitlelabel.cpp kmymoneyedit.cpp kmymoneycalculator.cpp kmymoneydateinput.cpp kmymoneypayee.cpp kmymoneyaccounttree.cpp kmymoneycurrencyselector.cpp kmymoneyaccounttreebudget.cpp kmymoneyaccountcombo.cpp
+WIDGET_MOCS=kmymoneytitlelabel.moc kmymoneyedit.moc kmymoneycalculator.moc kmymoneydateinput.moc kmymoneypayee.moc kmymoneyaccounttree.moc kmymoneycurrencyselector.moc kmymoneyaccounttreebudget.moc kmymoneyaccountcombo.moc
 
 libkmymoney_la_SOURCES = kmmwidgets.cpp $(WIDGET_CPPS)
 
@@ -43,7 +43,7 @@ kmmwidgets.cpp:	$(srcdir)/kmymoney.widgets
 # but required to let UIC generate the right code for the dialogs and views.
 # Hence the quick hack to include the required objects from the
 # libkmm_mymoney.so directly into libkmymoney.so
-libkmymoney_la_CXXFLAGS = -U_CHECK_MEMORY
+libkmymoney_la_CXXFLAGS = -U_CHECK_MEMORY -DKMM_DESIGNER
 libkmymoney_la_LDFLAGS = `ls ../mymoney/*.lo` $(KDE_LDFLAGS) -rpath $(DESTDIR)$(qt_libraries)/../plugins/designer $(LIB_KDEUI) $(LIB_KDECORE) $(LIB_QT)
 
 if INSTALL_QTDESIGNER_SUPPORT

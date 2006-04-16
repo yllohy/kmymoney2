@@ -936,7 +936,7 @@ void KLedgerViewInvestments::createEditWidgets()
     connect(m_editAmount, SIGNAL(valueChanged(const QString& )), &m_editMapper, SLOT(map()));
   }
   if(!m_editStockAccount) {
-    m_editStockAccount = new kMyMoneyAccountCombo(0, "editStockAccount");
+    m_editStockAccount = new KMyMoneyAccountCombo(0, "editStockAccount");
     m_editStockAccount->setMinimumWidth(0);  // override the widgets default
     m_editStockAccount->loadList(i18n("Investments"), m_account.accountList());
     connect(m_editStockAccount, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotSecurityChanged(const QCString&)));
@@ -963,7 +963,7 @@ void KLedgerViewInvestments::createEditWidgets()
   }
 
   if(!m_editCashAccount) {
-    m_editCashAccount = new kMyMoneyAccountCombo(0, "editCashAccount");
+    m_editCashAccount = new KMyMoneyAccountCombo(0, "editCashAccount");
     m_editCashAccount->setMinimumWidth(0);
     // m_editCashAccount->setFocusPolicy(QWidget::StrongFocus);
 

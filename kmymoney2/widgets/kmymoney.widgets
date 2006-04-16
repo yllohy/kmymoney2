@@ -18,3 +18,6 @@ new KInstance("kmmwidgets");
 IncludeFile=kmymoney/kmymoneycurrencyselector.h
 
 [KMyMoneyCurrencySelector]
+
+[KMyMoneyAccountCombo]
+

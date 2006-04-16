@@ -38,14 +38,14 @@
 // Project Includes
 
 #include "kenterscheduledialog.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneyfinancialcalculator.h"
-#include "../kmymoneyutils.h"
-#include "../widgets/kmymoneyaccountcombo.h"
-#include "../widgets/kmymoneypayee.h"
-#include "../widgets/kmymoneydateinput.h"
-#include "../widgets/kmymoneycategory.h"
+#include <kmymoney/kmymoneyedit.h>
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneyutils.h>
+#include <kmymoney/kmymoneyaccountcombo.h>
+#include <kmymoney/kmymoneypayee.h>
+#include <kmymoney/kmymoneydateinput.h>
+#include <kmymoney/kmymoneycategory.h>
+#include <kmymoney/mymoneyfinancialcalculator.h>
 #include "../dialogs/ksplittransactiondlg.h"
 #include "../dialogs/kconfirmmanualenterdialog.h"
 #include "../dialogs/kcurrencycalculator.h"
@@ -83,7 +83,7 @@ KEnterScheduleDialog::~KEnterScheduleDialog()
 
 void KEnterScheduleDialog::initWidgets()
 {
-  kMyMoneyAccountCombo* loanAccount = 0;
+  KMyMoneyAccountCombo* loanAccount = 0;
 
   // Work around backwards transfers
   try
