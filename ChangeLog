@@ -4,6 +4,7 @@
     to support context translation for UI files. See
     https://sourceforge.net/mailarchive/message.php?msg_id=15450159
     for details
+  * Fixed problem with loan transfers
 
 2006-04-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added lithuanian translation as provided by Donates Glodenis

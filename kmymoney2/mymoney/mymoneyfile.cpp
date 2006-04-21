@@ -750,7 +750,8 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
   // change transfer splits between asset/liability and loan accounts
   // into amortization splits
   if(loanAccountAffected) {
-    for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+    QValueList<MyMoneySplit> list = transaction.splits();
+    for(it_s = list.begin(); it_s != list.end(); ++it_s) {
       if((*it_s).action() == MyMoneySplit::ActionTransfer) {
         MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
 
