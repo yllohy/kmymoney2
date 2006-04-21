@@ -61,3 +61,5 @@ uninstall-local:
 	  rm -rf $(DESTDIR)$(kde_datadir)/$(PICS_DIR)/$$file; \
 	done
 endif
+
+messages: rc.cpp

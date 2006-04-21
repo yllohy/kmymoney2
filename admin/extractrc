@@ -1,0 +1,145 @@
+#! /usr/bin/perl
+#
+# This script extracts messages from designer (.ui) and XMLGIU (.rc) files
+# and writes on standard output (usually redirected to rc.cpp)
+# the equivalent i18n() calls so that xgettext can parse them.
+#
+# This version has been adjusted to support the <comment></comment> contents
+# for i18n context generation by ipwizard@users.sourceforge.net 2006/04/21
+
+# known flags:
+# --tag=name : extract also the tag name
+# --contect=name : give all i18n calls a context name: i18n( "name",...)
+
+$filename = "";
+@filenames = ();
+
+sub writeoutstring
+{
+   print STDOUT "i18n(\"";
+   if (@_[0])
+   {
+      # We have a I18N context
+      print STDOUT @_[0];
+      print STDOUT "\",\"";
+   }
+   print STDOUT @_[1];
+   print STDOUT "\"); // $filename \n";
+}
+
+$extratags = "";
+$context = ""; # I18N context
+
+ARGUMENTS: while (defined ($ARGV[0]))
+{
+   $_ = shift;
+
+   if (/^--tag=(\w+)/) # --tag=name
+   {
+        $extratags .= "|" . $1;
+        next ARGUMENTS;
+   }
+   elsif (/^--context=(\w+)/) # --context=name
+   {
+        $context = $1;
+        next ARGUMENTS;
+   }
+
+   $filename = $_; # maybe check for more options
+
+if (! $filename) {
+   print STDERR "no file to open\n";
+   exit 1;
+}
+
+$string = "";
+$text = "";
+$intext = 0;
+$incomment = 0;
+$linenr = 0;
+$inskippedprop = 0;
+$textpending = 0;
+
+$commentstring = 'comment>';
+
+open(FILE, $filename);
+
+READING: while ( <FILE> ) {
+   $linenr++;
+   if ($linenr == 1 && ($_ !~ /^<!DOCTYPE/) && ($_ !~ /^<\?xml/)) {
+   	last READING;
+   }
+
+   $string .= "\\n" . $_;
+   chomp($string);
+
+   $textstring = '([tT][eE][xX][tT]|title|string|whatsthis|tooltip|label' . $extratags .')>';
+
+   # The 'database' property contains strings that shouldn't be translated
+   if ($inskippedprop == 0 && ($string =~ /<property name=\"database\"/ || $string=~ /<property name=\"associations\"/)) {
+     $inskippedprop = 1;
+   } elsif ($inskippedprop == 1 && ($string =~ /<\/property/)) {
+     $inskippedprop = 0;
+     $string = "";
+   }
+
+   if ($inskippedprop == 0 && $intext == 0) {
+     if ($string =~ /<$textstring/) {
+       $string =~ s/^.*<$textstring//;
+       $intext = 1;
+       $starting_linenr = $linenr;
+     } elsif ($string =~ /<$commentstring/) {
+       $string =~ s/^.*<$commentstring//;
+       $incomment = 1;
+       $textpending = 0;
+     } else {
+       $string = "";
+     }
+   }
+
+   if ($textpending == 1) {
+     writeoutstring("", $text);
+     $textpending = 0;
+   }
+
+   if (($incomment == 1) && ($string =~ /<\/$commentstring/)) {
+     my $ctx = $string;
+     $ctx =~ s/<\/$commentstring.*$//;
+     $ctx =~ s/&lt;/</g;
+     $ctx =~ s/&gt;/>/g;
+     $ctx =~ s/&amp;/&/g; 
+     $ctx =~ s/\\([^n])/\\\\$1/g;
+     writeoutstring($ctx, $text);
+     $string =~ s/^.*<\/$commentstring//;
+     $incomment = 0;
+   }
+
+   if (($intext == 1) && ($string =~ /<\/$textstring/)) {
+     $text = $string;
+     $text =~ s/<\/$textstring.*$//;
+     $text =~ s/&lt;/</g;
+     $text =~ s/&gt;/>/g;
+     $text =~ s/&amp;/&/g; 
+     $text =~ s/\\([^n])/\\\\$1/g;
+     $text =~ s/\"/\\\"/g;
+     if(length($context) != 0) {
+         writeoutstring($context, $text); 
+     } else {
+         $textpending = 1;
+     }
+     $string =~ s/^.*<\/$textstring//;
+     $intext = 0;
+     # Text can be multiline in .ui files (possibly), but we warn about it in XMLGUI .rc files.
+     if ($linenr != $starting_linenr && $filename =~ m/\.rc$/) {
+       print STDERR "there is <text> floating $filename\n";
+     }
+   }
+
+}
+
+if (($intext == 1) || ($incomment == 1) || ($textpending == 1)) {
+ print STDERR "parsing error in $filename $linenr\n";
+ exit 1;
+}
+
+}

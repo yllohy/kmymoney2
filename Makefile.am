@@ -36,6 +36,9 @@ check-vpath-environment:
 		exit 1; \
 	fi;
 
+# we use our own version of extractrc if not otherwise specified
+export EXTRACTRC ?= $(PWD)/admin/extractrc
+
 package-messages: check-vpath-environment
 	$(MAKE) -C $(top_srcdir) -f admin/Makefile.common package-messages
 
@@ -43,5 +46,5 @@ merge-messages: check-vpath-environment
 	$(MAKE) -C $(top_srcdir)/po merge
 
 # The following line adds the required admin files
-EXTRA_DIST += admin/Makefile.common admin/cvs.sh admin/detect-autoconf.pl admin/acinclude.m4.in admin/conf.change.pl admin/config.pl admin/libtool.m4.in admin/configure.in.min admin/configure.in.bot.end admin/am_edit admin/debianrules admin/fixuifiles
+EXTRA_DIST += admin/Makefile.common admin/cvs.sh admin/detect-autoconf.pl admin/acinclude.m4.in admin/conf.change.pl admin/config.pl admin/libtool.m4.in admin/configure.in.min admin/configure.in.bot.end admin/am_edit admin/debianrules admin/fixuifiles admin/extractrc
 

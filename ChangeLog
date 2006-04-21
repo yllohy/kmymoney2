@@ -1,3 +1,10 @@
+2006-04-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed pot generation (strings in ui files in subdirs were not included)
+  * Added logic to extract the comment field from UI string fields
+    to support context translation for UI files. See
+    https://sourceforge.net/mailarchive/message.php?msg_id=15450159
+    for details
+
 2006-04-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added lithuanian translation as provided by Donates Glodenis
   * Renamed kMyMoneyAccountCombo into KMyMoneyAccountCombo

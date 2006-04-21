@@ -16,3 +16,5 @@ DISTCLEANFILES= kgeneralpagedecl.cpp kgeneralpagedecl.h kcurrencypagedecl.cpp kc
 noinst_HEADERS = knewuserwizard.h knewuserwizard_p.h knewuserwizard_p.h
 
 SUBDIRS = 
+
+messages: rc.cpp

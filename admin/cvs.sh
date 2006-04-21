@@ -528,7 +528,7 @@ extract_messages()
 {
 podir=${podir:-$PWD/po}
 files=`find . -name Makefile.am | xargs egrep -l '^messages:' `
-dirs=`for i in $files; do echo \`dirname $i\`; done`
+dirs=`for i in $files; do echo \`dirname $i\`; done | sort -r`
 tmpname="$PWD/messages.log"
 if test -z "$EXTRACTRC"; then EXTRACTRC=extractrc ; fi
 if test -z "$PREPARETIPS"; then PREPARETIPS=preparetips ; fi

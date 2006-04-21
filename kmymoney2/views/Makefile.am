@@ -16,3 +16,4 @@ inst_HEADERS = kmymoneyview.h
 
 noinst_HEADERS = kaccountsview.h kcategoriesview.h kgloballedgerview.h khomeview.h kinvestmentlistitem.h kinvestmentview.h kledgerviewasset.h kledgerviewcash.h kledgerviewcheckings.h kledgerviewcreditcard.h kledgerview.h kledgerviewinvestments.h kledgerviewliability.h kledgerviewloan.h kledgerviewsavings.h kmymoneyfile.h kmymoneytransaction.h kpayeesview.h kreportsview.h kscheduledlistitem.h kscheduledview.h kinstitutionsview.h kbudgetview.h
 
+messages: rc.cpp

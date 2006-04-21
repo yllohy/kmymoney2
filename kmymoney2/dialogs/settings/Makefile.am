@@ -20,3 +20,4 @@ DISTCLEANFILES= ksettingsgeneraldecl.cpp ksettingsgeneraldecl.h ksettingsregiste
 
 noinst_HEADERS = ksettingsgeneral.h ksettingsregister.h ksettingsgpg.h ksettingscolors.h ksettingsfonts.h ksettingsschedules.h ksettingsonlinequotes.h ksettingshome.h
 
+messages: rc.cpp
