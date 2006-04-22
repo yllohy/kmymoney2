@@ -917,6 +917,7 @@ private:
   bool                  m_autoSaveEnabled;
   QTimer*               m_autoSaveTimer;
   int                   m_autoSavePeriod;
+  bool                  m_inAutoSaving;
 
   // Pointer to the combo box used for key selection during
   // File/Save as

@@ -141,12 +141,13 @@
 #define RECOVER_KEY_ID        "59B0F826D2B08440"
 #define ID_STATUS_MSG 1
 
-KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name)
- : KMainWindow(0, name),
- DCOPObject("kmymoney2app"),
- myMoneyView(0),
- m_searchDlg(0),
- m_autoSaveTimer(0)
+KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
+  KMainWindow(0, name),
+  DCOPObject("kmymoney2app"),
+  myMoneyView(0),
+  m_searchDlg(0),
+  m_autoSaveTimer(0),
+  m_inAutoSaving(false)
 {
   ::timetrace("start kmymoney2app constructor");
   // preset the pointer because we need it during the course of this constructor
@@ -3948,17 +3949,21 @@ void KMyMoney2App::loadPlugins(void)
 
 void KMyMoney2App::slotAutoSave()
 {
-  QString prevMsg = slotStatusMsg(i18n("Auto saving ..."));
+  if(!m_inAutoSaving) {
+    m_inAutoSaving = true;
+    QString prevMsg = slotStatusMsg(i18n("Auto saving ..."));
 
-  //calls slotFileSave if needed, and restart the timer
-  //it the file is not saved, reinitializes the countdown.
-  if (myMoneyView->dirty() && m_autoSaveEnabled) {
-    if (!slotFileSave() && m_autoSavePeriod > 0) {
-      m_autoSaveTimer->start(m_autoSavePeriod * 60 * 1000, true);
+    //calls slotFileSave if needed, and restart the timer
+    //it the file is not saved, reinitializes the countdown.
+    if (myMoneyView->dirty() && m_autoSaveEnabled) {
+      if (!slotFileSave() && m_autoSavePeriod > 0) {
+        m_autoSaveTimer->start(m_autoSavePeriod * 60 * 1000, true);
+      }
     }
-  }
 
-  slotStatusMsg(prevMsg);
+    slotStatusMsg(prevMsg);
+    m_inAutoSaving = false;
+  }
 }
 
 #include "kmymoney2.moc"

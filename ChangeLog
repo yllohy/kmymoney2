@@ -1,3 +1,7 @@
+2006-04-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed massive creation of temp files when saving followed by
+    crash of the application
+
 2006-04-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed pot generation (strings in ui files in subdirs were not included)
   * Added logic to extract the comment field from UI string fields
