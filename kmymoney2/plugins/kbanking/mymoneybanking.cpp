@@ -214,15 +214,15 @@ void KBankingPlugin::slotAccountOnlineUpdate(void)
 				    m_account.id());
     if (!ba) {
       QMessageBox::critical(0,
-			    QWidget::tr("Account Not Mapped"),
-			    QWidget::tr("<qt>"
-					"<p>"
-					"The given application account "
-					"has not been mapped to banking "
-					"accounts."
-					"</p>"
-					"</qt>"
-				       ),
+                            i18n("Account Not Mapped"),
+                            i18n("<qt>"
+                                 "<p>"
+                                 "The given application account "
+                                 "has not been mapped to banking "
+                                 "accounts."
+                                 "</p>"
+                                 "</qt>"
+                            ),
 			    QMessageBox::Ok,QMessageBox::NoButton);
       return;
     }
@@ -233,12 +233,12 @@ void KBankingPlugin::slotAccountOnlineUpdate(void)
     if (rv) {
       DBG_ERROR(0, "Job \"GetTransactions\" is not available (%d)", rv);
       QMessageBox::critical(0,
-			    tr("Job not Available"),
-			    tr("<qt>"
-			       "The update job is not supported by the "
-			       "bank/account/backend.\n"
-			       "</qt>"),
-			    tr("Dismiss"), QString::null);
+                            i18n("Job not Available"),
+                            i18n("<qt>"
+                                 "The update job is not supported by the "
+                                 "bank/account/backend.\n"
+                                 "</qt>"),
+                            i18n("Dismiss"), QString::null);
       AB_Job_free(job);
       return;
     }
@@ -282,11 +282,11 @@ void KBankingPlugin::slotAccountOnlineUpdate(void)
     if (rv) {
       DBG_ERROR(0, "Error %d", rv);
       QMessageBox::critical(0,
-			    tr("Error"),
-			    tr("<qt>"
-			       "Could not enqueue the job.\n"
-			       "</qt>"),
-			    tr("Dismiss"), QString::null);
+                            i18n("Error"),
+                            i18n("<qt>"
+                                 "Could not enqueue the job.\n"
+                                 "</qt>"),
+                            i18n("Dismiss"), QString::null);
       return;
     }
   }
