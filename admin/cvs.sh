@@ -565,7 +565,7 @@ for subdir in $dirs; do
    fi
    ) 2>&1 | grep -v '^make\[1\]' > $tmpname
    test -s $tmpname && { echo $subdir ; cat "$tmpname"; }
-   test -f $subdir/rc.cpp && rm -f $subdir/rc.cpp
+   # test -f $subdir/rc.cpp && rm -f $subdir/rc.cpp
    rm -f $subdir/_translatorinfo.cpp
    rm -f $subdir/_transMakefile
 done

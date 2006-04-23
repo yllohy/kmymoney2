@@ -40,7 +40,9 @@ check-vpath-environment:
 export EXTRACTRC ?= $(PWD)/admin/extractrc
 
 package-messages: check-vpath-environment
+	find . -name rc.cpp -exec rm {} \;
 	$(MAKE) -C $(top_srcdir) -f admin/Makefile.common package-messages
+	find . -name rc.cpp -exec rm {} \;
 
 merge-messages: check-vpath-environment
 	$(MAKE) -C $(top_srcdir)/po merge

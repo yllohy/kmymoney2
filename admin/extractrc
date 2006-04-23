@@ -98,7 +98,7 @@ READING: while ( <FILE> ) {
    }
 
    if ($textpending == 1) {
-     writeoutstring("", $text);
+     writeoutstring("", $text) if(length($text) != 0);
      $textpending = 0;
    }
 
@@ -109,7 +109,7 @@ READING: while ( <FILE> ) {
      $ctx =~ s/&gt;/>/g;
      $ctx =~ s/&amp;/&/g; 
      $ctx =~ s/\\([^n])/\\\\$1/g;
-     writeoutstring($ctx, $text);
+     writeoutstring($ctx, $text) if(length($ctx) != 0 && length($text) != 0);
      $string =~ s/^.*<\/$commentstring//;
      $incomment = 0;
    }
