@@ -203,8 +203,10 @@ void MyMoneyStatement::writeXMLFile( const MyMoneyStatement& _s, const QString& 
 {
   static unsigned filenum = 1;
   QString filename = _filename;
-  if ( filename.isEmpty() )
-    filename = QString("statement-%1%2.xml").arg((filenum<10)?"0":"").arg(filenum++);
+  if ( filename.isEmpty() ) {
+    filename = QString("statement-%1%2.xml").arg((filenum<10)?"0":"").arg(filenum);
+    filenum++;
+  }
 
   QDomDocument* doc = new QDomDocument("KMYMONEY-STATEMENT");
   Q_CHECK_PTR(doc);
