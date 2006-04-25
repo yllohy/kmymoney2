@@ -171,7 +171,8 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
   // into amortization splits
   if(loanAccountAffected) {
     tCopy = transaction;
-    for(it_s = tCopy.splits().begin(); it_s != tCopy.splits().end(); ++it_s) {
+    QValueList<MyMoneySplit> list = transaction.splits();
+    for(it_s = list.begin(); it_s != list.end(); ++it_s) {
       if((*it_s).action() == MyMoneySplit::ActionTransfer) {
         MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
 

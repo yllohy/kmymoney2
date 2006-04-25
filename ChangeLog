@@ -1,3 +1,6 @@
+2006-04-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed another location of the lockup for loan transfers
+
 2006-04-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patch provided by Dirk Mueller <dmuell@gmx.net>
 
