@@ -1351,7 +1351,7 @@ from account</string>
                                     <cstring>textLabel3_2</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>The information to create the account has now been collected. Press the &lt;b&gt;Finish&lt;/b&gt; button to acutally create the account or the &lt;b&gt;Back&lt;/b&gt; button to modify the settings. The &lt;b&gt;Cancel&lt;/b&gt; button will dismiss all data and leave this wizard.&lt;br&gt;
+                                    <string>The information to create the account has now been collected. Press the &lt;b&gt;Finish&lt;/b&gt; button to actually create the account or the &lt;b&gt;Back&lt;/b&gt; button to modify the settings. The &lt;b&gt;Cancel&lt;/b&gt; button will dismiss all data and leave this wizard.&lt;br&gt;
 Once the account is successfully created you can enter your transactions on this account.</string>
                                 </property>
                                 <property name="alignment">
