@@ -269,6 +269,10 @@ void KHomeView::showPayments(void)
       while(nextDate.isValid() && nextDate < QDate::currentDate()) {
         ++cnt;
         nextDate = (*it).nextPayment(nextDate);
+        // for single occurence nextDate will not change, so we
+        // better get out of here.
+        if((*it).occurence() == MyMoneySchedule::OCCUR_ONCE)
+          break;
       }
 
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
