@@ -436,80 +436,94 @@ QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& startDate, const QD
       break;
 
     case OCCUR_MONTHLY:
-      while (paymentDate < startDate)
+      while (paymentDate < startDate) {
         paymentDate = paymentDate.addMonths(1);
+        fixDate(paymentDate);
+      }
       while (paymentDate <= endDate)
       {
-        fixDate(paymentDate);
         theDates.append(paymentDate);
         paymentDate = paymentDate.addMonths(1);
+        fixDate(paymentDate);
       }
       break;
 
     case OCCUR_EVERYOTHERMONTH:
-      while (paymentDate < startDate)
+      while (paymentDate < startDate) {
         paymentDate = paymentDate.addMonths(2);
+        fixDate(paymentDate);
+      }
       while (paymentDate <= endDate)
       {
-        fixDate(paymentDate);
         theDates.append(paymentDate);
         paymentDate = paymentDate.addMonths(2);
+        fixDate(paymentDate);
       }
       break;
 
     case OCCUR_QUARTERLY:
     case OCCUR_EVERYTHREEMONTHS:
-      while (paymentDate < startDate)
+      while (paymentDate < startDate) {
         paymentDate = paymentDate.addMonths(3);
+        fixDate(paymentDate);
+      }
       while (paymentDate <= endDate)
       {
-        fixDate(paymentDate);
         theDates.append(paymentDate);
         paymentDate = paymentDate.addMonths(3);
+        fixDate(paymentDate);
       }
       break;
 
     case OCCUR_EVERYFOURMONTHS:
-      while (paymentDate < startDate)
+      while (paymentDate < startDate) {
         paymentDate = paymentDate.addMonths(4);
+        fixDate(paymentDate);
+      }
       while (paymentDate <= endDate)
       {
-        fixDate(paymentDate);
         theDates.append(paymentDate);
         paymentDate = paymentDate.addMonths(4);
+        fixDate(paymentDate);
       }
       break;
 
     case OCCUR_TWICEYEARLY:
-      while (paymentDate < startDate)
+      while (paymentDate < startDate) {
         paymentDate = paymentDate.addMonths(6);
+        fixDate(paymentDate);
+      }
       while (paymentDate <= endDate)
       {
-        fixDate(paymentDate);
         theDates.append(paymentDate);
         paymentDate = paymentDate.addMonths(6);
+        fixDate(paymentDate);
       }
       break;
 
     case OCCUR_YEARLY:
-      while (paymentDate < startDate)
+      while (paymentDate < startDate) {
         paymentDate = paymentDate.addYears(1);
+        fixDate(paymentDate);
+      }
       while (paymentDate <= endDate)
       {
-        fixDate(paymentDate);
         theDates.append(paymentDate);
         paymentDate = paymentDate.addYears(1);
+        fixDate(paymentDate);
       }
       break;
 
     case OCCUR_EVERYOTHERYEAR:
-      while (paymentDate < startDate)
+      while (paymentDate < startDate) {
         paymentDate = paymentDate.addYears(2);
+        fixDate(paymentDate);
+      }
       while (paymentDate <= endDate)
       {
-        fixDate(paymentDate);
         theDates.append(paymentDate);
         paymentDate = paymentDate.addYears(2);
+        fixDate(paymentDate);
       }
       break;
 

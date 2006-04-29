@@ -452,6 +452,45 @@ void MyMoneyScheduleTest::testNextPayment()
 
 void MyMoneyScheduleTest::testPaymentDates()
 {
+	MyMoneySchedule sch;
+	QString ref_ok = QString(
+		"<!DOCTYPE TEST>\n"
+		"<SCHEDULE-CONTAINER>\n"
+
+		"<SCHEDULED_TX startDate=\"2003-12-31\" autoEnter=\"1\" weekendOption=\"0\" lastPayment=\"2006-04-30\" paymentType=\"2\" endDate=\"\" type=\"2\" id=\"SCH000032\" name=\"DSL\" fixed=\"0\" occurence=\"32\" >\n"
+		" <PAYMENTS/>\n"
+		" <TRANSACTION postdate=\"\" bankid=\"\" memo=\"\" id=\"\" commodity=\"EUR\" entrydate=\"2004-01-25\" >\n"
+		"  <SPLITS>\n"
+		"   <SPLIT payee=\"P000076\" reconciledate=\"\" shares=\"1200/100\" action=\"Deposit\" bankid=\"\" number=\"\" reconcileflag=\"0\" memo=\"\" value=\"1200/100\" account=\"A000076\" />\n"
+		"   <SPLIT payee=\"\" reconciledate=\"\" shares=\"-1200/100\" action=\"Deposit\" bankid=\"\" number=\"\" reconcileflag=\"0\" memo=\"\" value=\"-1200/100\" account=\"A000009\" />\n"
+		"  </SPLITS>\n"
+		"  <KEYVALUEPAIRS/>\n"
+		" </TRANSACTION>\n"
+		"</SCHEDULED_TX>\n"
+
+		"</SCHEDULE-CONTAINER>\n"
+	);
+
+	QDomDocument doc;
+	QDomElement node;
+	doc.setContent(ref_ok);
+	node = doc.documentElement().firstChild().toElement();
+
+	QDate startDate(2006,4,28);
+	QDate endDate(2006,7,28);
+
+	try {
+		sch = MyMoneySchedule(node);
+		QDate nextPayment = sch.nextPayment(startDate);
+		QValueList<QDate> list = sch.paymentDates(nextPayment, endDate);
+		CPPUNIT_ASSERT(list.count() == 2);
+		CPPUNIT_ASSERT(list[0] == QDate(2006,5,31));
+		CPPUNIT_ASSERT(list[1] == QDate(2006,6,30));
+
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
 /*
 	MyMoneyScheduled *m = MyMoneyScheduled::instance();
 	CPPUNIT_ASSERT(m!=NULL);
