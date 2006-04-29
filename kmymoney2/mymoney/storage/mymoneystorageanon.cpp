@@ -130,6 +130,9 @@ void MyMoneyStorageANON::writeAccount(QDomElement& account, const MyMoneyAccount
   p.setDescription(hideString(p.description()));
   fakeKeyValuePair(p);
 
+  // Remove the online banking settings entirely.
+  p.setOnlineBankingSettings(MyMoneyKeyValueContainer());
+  
   MyMoneyStorageXML::writeAccount(account, p);
 }
 

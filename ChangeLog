@@ -1,3 +1,7 @@
+2006-04-29 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed #1478758 (ONLINEBANKING tag not anonymized).
+    I just removed it from the anon file entirely.
+
 2006-04-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Add better support for KOffice 1.5 libraries/includes
   * Fixed a problem in MyMoneySchedule::paymentDates() and added testcase
