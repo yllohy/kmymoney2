@@ -1015,7 +1015,8 @@ void KEnterScheduleDialog::slotFromActivated(const QCString& id)
 {
   if (m_schedule.type() != MyMoneySchedule::TYPE_DEPOSIT)
   {
-    // Change the splits because otherwise they wont be found
+    m_fromAccountId = id;
+    // Change the splits because otherwise they won't be found
     // if the user clicks on the split button
     MyMoneySplit s = m_transaction.splits()[0];
     s.setAccountId(id);
@@ -1027,7 +1028,8 @@ void KEnterScheduleDialog::slotToActivated(const QCString& id)
 {
   if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
   {
-    // Change the splits because otherwise they wont be found
+    m_toAccountId = id;
+    // Change the splits because otherwise they won't be found
     // if the user clicks on the split button
     MyMoneySplit s = m_transaction.splits()[0];
     s.setAccountId(id);
