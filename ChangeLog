@@ -1,3 +1,6 @@
+2006-05-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added Skip schedule function
+
 2006-05-01 Ryan Buschert <rbuschert@users.sourceforge.net>
   * Fixed #1463167 (Account change in Enter Schedule Dialog not used)
     (Patch applied by Thomas Baumgart)

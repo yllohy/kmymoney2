@@ -727,6 +727,12 @@ public slots:
   void slotScheduleEnter(void);
 
   /**
+   * This slot allows to skip the next scheduled transaction of
+   * the currently selected schedule
+   */
+  void slotScheduleSkip(void);
+
+  /**
     * This slot fires up the KCalc application
     */
   void slotToolsStartKCalc(void);

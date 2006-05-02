@@ -360,6 +360,7 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Edit schedule..."), "edit", 0, this, SLOT(slotScheduleEdit()), actionCollection(), "schedule_edit");
   new KAction(i18n("Delete schedule..."), "delete", 0, this, SLOT(slotScheduleDelete()), actionCollection(), "schedule_delete");
   new KAction(i18n("Enter schedule..."), "", 0, this, SLOT(slotScheduleEnter()), actionCollection(), "schedule_enter");
+  new KAction(i18n("Skip schedule..."), "player_fwd", 0, this, SLOT(slotScheduleSkip()), actionCollection(), "schedule_skip");
 
   new KAction(i18n("New payee"), "filenew", 0, this, SLOT(slotPayeeNew()), actionCollection(), "payee_new");
   new KAction(i18n("Rename payee"), "edit", 0, this, SIGNAL(payeeRename()), actionCollection(), "payee_rename");
@@ -2909,6 +2910,25 @@ void KMyMoney2App::slotScheduleDelete(void)
   }
 }
 
+void KMyMoney2App::slotScheduleSkip(void)
+{
+  if (!m_selectedSchedule.id().isEmpty()) {
+    try {
+      MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
+      if(!schedule.isFinished()) {
+        QDate next = schedule.nextPayment(schedule.lastPayment());
+        if(next.isValid() && (KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to skip the transaction of schedule <b>%1</b> on <b>%2</b>?").arg(schedule.name()).arg(KGlobal::locale()->formatDate(next, true)))) == KMessageBox::Yes) {
+          schedule.setLastPayment(next);
+          MyMoneyFile::instance()->modifySchedule(schedule);
+        }
+      }
+    } catch (MyMoneyException *e) {
+      KMessageBox::detailedSorry(this, QString("<p>")+i18n("Unable to skip schedule <b>%1</b>").arg(m_selectedSchedule.name()), e->what());
+      delete e;
+    }
+  }
+}
+
 void KMyMoney2App::slotScheduleEnter(void)
 {
   if (!m_selectedSchedule.id().isEmpty()) {
@@ -3357,6 +3377,7 @@ void KMyMoney2App::updateActions(void)
   action("schedule_edit")->setEnabled(false);
   action("schedule_delete")->setEnabled(false);
   action("schedule_enter")->setEnabled(false);
+  action("schedule_skip")->setEnabled(false);
 
   action("payee_delete")->setEnabled(false);
   action("payee_rename")->setEnabled(false);
@@ -3429,8 +3450,10 @@ void KMyMoney2App::updateActions(void)
   if(!m_selectedSchedule.id().isEmpty()) {
     action("schedule_edit")->setEnabled(true);
     action("schedule_delete")->setEnabled(!file->isReferenced(m_selectedSchedule));
-    if(!m_selectedSchedule.isFinished())
+    if(!m_selectedSchedule.isFinished()) {
       action("schedule_enter")->setEnabled(true);
+      action("schedule_skip")->setEnabled(true);
+    }
   }
 
   if(m_selectedPayees.count() >= 1) {
