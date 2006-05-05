@@ -115,7 +115,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   : KJanusWidget(parent, name, KJanusWidget::IconList),
   // m_bankRightClick(false),
   m_inConstructor(true),
-  m_fileOpen(false)
+  m_fileOpen(false),
+  m_fmode(0600)
 {
   // the global variable kmymoney2 is not yet assigned. So we construct it here
   QObject* kmymoney2 = parent->parent();
@@ -446,6 +447,11 @@ bool KMyMoneyView::readFile(const KURL& url)
     KMessageBox::error(this, QString("<p>")+msg, i18n("Filetype Error"));
     return false;
   }
+  m_fmode = 0600;
+  m_fmode |= info.permission(QFileInfo::ReadGroup) ? 040 : 0;
+  m_fmode |= info.permission(QFileInfo::WriteGroup) ? 020 : 0;
+  m_fmode |= info.permission(QFileInfo::ReadOther) ? 004 : 0;
+  m_fmode |= info.permission(QFileInfo::WriteOther) ? 002 : 0;
 
   QIODevice *qfile = 0;
   bool rc = true;
@@ -741,6 +747,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     }
   }
 
+  int mask = umask((~m_fmode) & 0x0777);
   MyMoneyFile::instance()->deletePair("kmm-encryption-key");
   if(!key.isEmpty() && encryptedOk == true && !plaintext ) {
     qfile->close();
@@ -769,6 +776,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
         throw new MYMONEYEXCEPTION(i18n("Unable to open file '%1' for writing.").arg(qfile->name()));
     }
   }
+  umask(mask);
 
   pWriter->setProgressCallback(&KMyMoneyView::progressCallback);
   dev->resetStatus();
@@ -841,13 +849,13 @@ const bool KMyMoneyView::saveFile(const KURL& url, const QString& key)
 
       KSaveFile qfile(filename, fmode);
       if(qfile.status() == 0) {
-        saveToLocalFile(qfile.file(), pWriter,plaintext, key);
+        saveToLocalFile(qfile.file(), pWriter, plaintext, key);
       } else {
         throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
       }
     } else {
       KTempFile tmpfile;
-      saveToLocalFile(tmpfile.file(), pWriter,plaintext, key);
+      saveToLocalFile(tmpfile.file(), pWriter, plaintext, key);
       if(!KIO::NetAccess::upload(tmpfile.name(), url, NULL))
         throw new MYMONEYEXCEPTION(i18n("Unable to upload to '%1'").arg(url.url()));
       tmpfile.unlink();

@@ -133,6 +133,8 @@ private:
 
   bool m_fileOpen;
 
+  int  m_fmode;
+
   // bool m_bankRightClick;
   // MyMoneyInstitution m_accountsInstitution;
 
