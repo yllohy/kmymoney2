@@ -1,3 +1,7 @@
+2006-05-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added general asset and liability accounts to be shown as payment
+    sources for loan schedules
+
 2006-05-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Preserve file permissions for compressed and encrypted files
 
