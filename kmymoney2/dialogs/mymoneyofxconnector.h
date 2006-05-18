@@ -55,7 +55,7 @@ public:
   MyMoneyOfxConnector(const MyMoneyAccount& _account);
   QString url(void) const;
   const QByteArray statementRequest(const QDate& _dtstart) const;
-  const QByteArray MyMoneyOfxConnector::accountInfoRequest(void) const;
+  const QByteArray accountInfoRequest(void) const;
   
   const QByteArray statementResponse(const QDate& _dtstart) const;
   

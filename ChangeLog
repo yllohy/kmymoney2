@@ -1,3 +1,6 @@
+2006-05-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed extra qualifiers as reported by Nico Kruber
+
 2006-05-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added general asset and liability accounts to be shown as payment
     sources for loan schedules
