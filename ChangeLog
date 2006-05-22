@@ -1,3 +1,7 @@
+2006-05-22 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Fix Schedule Payment History storage
+  * Correct account balances on database read
+
 2006-05-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed usage of --enable-final configure option
   * Fixed cvs example in project handbook
