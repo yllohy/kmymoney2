@@ -609,7 +609,7 @@ void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, QSqlQuery& q) 
   QValueList<QDate>::Iterator it;
   for (it=payments.begin(); it!=payments.end(); ++it) {
     q.prepare (m_db.m_tables["kmmSchedulePaymentHistory"].insertString());
-    q.bindValue(":id", sch.id());
+    q.bindValue(":schedId", sch.id());
     q.bindValue(":payDate", (*it));
     if (!q.exec()) throw buildError(q, QString("writing Schedule Payment History"));
   }
