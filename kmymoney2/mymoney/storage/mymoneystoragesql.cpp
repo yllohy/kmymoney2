@@ -184,6 +184,8 @@ bool MyMoneyStorageSql::readFile(void) {
   readSchedules();
   readPrices();
   readReports();
+  
+  m_storage->rebuildAccountBalances();
   // this seems to be nonsense, but it clears the dirty flag
   // as a side-effect.
   m_storage->setLastModificationDate(m_storage->lastModificationDate());
