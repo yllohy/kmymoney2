@@ -1,3 +1,6 @@
+2006-05-23 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed tax transaction report, which was erroneously including transfers
+
 2006-05-22 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix Schedule Payment History storage
   * Correct account balances on database read

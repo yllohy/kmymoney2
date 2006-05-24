@@ -642,14 +642,18 @@ void QueryTable::constructTransactionTable(void)
               // the 'topparent' field contains just the top-most parent, in this
               // example "Computers"
   
-              // if this is a transfer (note that in tax reports, we don't want to see transfers)
-              if ( split2account.isAssetLiability() && ! m_config.isTax() )
+              // if this is a transfer 
+              if ( ! split2account.isIncomeExpense() )
               {
-                QString fromto = ((*it_split2).value().isNegative())?"from":"to";
-                qsplitrow["category"] = i18n("Transfer %1 %2").arg(fromto).arg(split2account.fullName());
-                qsplitrow["topcategory"] = split2account.topParentName();
-                qsplitrow["categorytype"] = i18n("Transfer");
-                m_transactions += qsplitrow;
+                // In tax reports, we don't want to see transfers
+                if ( ! m_config.isTax() )
+                {
+                  QString fromto = ((*it_split2).value().isNegative())?"from":"to";
+                  qsplitrow["category"] = i18n("Transfer %1 %2").arg(fromto).arg(split2account.fullName());
+                  qsplitrow["topcategory"] = split2account.topParentName();
+                  qsplitrow["categorytype"] = i18n("Transfer");
+                  m_transactions += qsplitrow;
+                }
               }
               else if ( m_config.includes( split2account ) )
               {
