@@ -1,3 +1,9 @@
+2006-05-26 Ace Jones <acejones@users.sourceforge.net>
+  * Removed a spacer from the report configuration and find transaction 
+    dialogs.  This allows users to maximize the report config dialog,
+    for better selection of accounts BUT it means the ledger won't be as
+    large in the find transaction dialog.
+
 2006-05-23 Ace Jones <acejones@users.sourceforge.net>
   * Fixed tax transaction report, which was erroneously including transfers
 

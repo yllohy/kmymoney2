@@ -1065,23 +1065,6 @@
                                 <set>AlignTop</set>
                             </property>
                         </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>Spacer33</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Vertical</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>16</width>
-                                    <height>16</height>
-                                </size>
-                            </property>
-                        </spacer>
                     </vbox>
                 </widget>
                 <widget class="QLayoutWidget">
