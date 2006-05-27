@@ -1,3 +1,6 @@
+2006-05-27 Ace Jones <acejones@users.sourceforge.net>
+  * Updated user manual for deleting accounts
+
 2006-05-26 Ace Jones <acejones@users.sourceforge.net>
   * Removed a spacer from the report configuration and find transaction 
     dialogs.  This allows users to maximize the report config dialog,

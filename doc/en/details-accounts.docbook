@@ -276,5 +276,17 @@
 <para>
 	To delete an account, first remove all the transactions from that account in the ledger.  Next,        find the account in the accounts view and after right clicking on the entry to show the popup menu select <guimenuitem>Delete</guimenuitem> from the popup menu.
 </para>
+
+<para>If you are unable to delete account which looks like it has no transactions in it, check your filter.
+See <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure</guimenuitem><guimenuitem>Register</guimenuitem><guimenuitem>Filter</guimenuitem></menuchoice>.
+Clear all filters. Set the start date to 1.1.1900 or so.
+</para>
+
+<para>
+There may be transactions in your ledger that are not shown, for example if you have
+inadvertently typed in the wrong year when making an entry so that an
+entry remains outside the opening date of &kappname;.  This appears beneath
+the ledger page as remaining funds.
+</para>
 </sect1>
 </chapter>
