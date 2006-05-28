@@ -156,6 +156,7 @@ void KReportsView::KReportTab::updateReport(void)
   m_part->end();
 
   drawChart( *m_chartView );
+  m_chartView->update();
 }
 
 QString KReportsView::KReportTab::createTable(const QString& links)
