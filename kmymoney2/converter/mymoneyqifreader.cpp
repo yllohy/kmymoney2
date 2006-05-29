@@ -668,7 +668,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
   tmp = extractLine('#');
   if(!tmp.isEmpty()) 
   {
-    t.setBankID(tmp);
+    t.setBankID("ID " + tmp);
   }
   
   // Collect data for the account's split
