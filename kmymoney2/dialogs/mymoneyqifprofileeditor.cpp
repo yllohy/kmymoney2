@@ -143,6 +143,8 @@ MyMoneyQifProfileEditor::MyMoneyQifProfileEditor(const bool edit, QWidget *paren
   connect(m_editInputFilterLocation, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setFilterScriptImport(const QString&)));
   connect(m_editInputFilterLocation, SIGNAL(urlSelected(const QString&)), m_editInputFilterLocation, SLOT(setURL(const QString&)));
 
+  connect(m_editInputFilterFileType, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setFilterFileType(const QString&)));
+  
   connect(m_editOutputFilterLocation, SIGNAL(textChanged(const QString&)), &m_profile, SLOT(setFilterScriptExport(const QString&)));
   connect(m_editOutputFilterLocation, SIGNAL(urlSelected(const QString&)), m_editOutputFilterLocation, SLOT(setURL(const QString&)));
 
@@ -220,6 +222,7 @@ void MyMoneyQifProfileEditor::loadWidgets(void)
   m_editVoidMark->setEnabled(m_inEdit);
   m_editInputFilterLocation->setEnabled(m_inEdit);
   m_editOutputFilterLocation->setEnabled(m_inEdit);
+  m_editInputFilterFileType->setEnabled(m_inEdit);
 
   if(!m_inEdit) {
     m_renameButton->hide();
@@ -302,7 +305,8 @@ void MyMoneyQifProfileEditor::showProfile(void)
   m_editVoidMark->setText(m_profile.voidMark());
   m_editInputFilterLocation->setURL(m_profile.filterScriptImport());
   m_editOutputFilterLocation->setURL(m_profile.filterScriptExport());
-
+  m_editInputFilterFileType->setText(m_profile.filterFileType());
+	  
   m_editDateFormat->setCurrentText(m_profile.dateFormat());
   m_editApostrophe->setCurrentText(m_profile.apostropheFormat());
 

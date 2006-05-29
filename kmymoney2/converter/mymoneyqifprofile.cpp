@@ -54,6 +54,7 @@ void MyMoneyQifProfile::clear(void)
   m_valueMode = "";
   m_filterScriptImport = "";
   m_filterScriptExport = "";
+  m_filterFileType = "*.qif";
 
   m_decimal.clear();
   m_decimal['$'] =
@@ -97,6 +98,7 @@ void MyMoneyQifProfile::loadProfile(const QString& name)
   m_voidMark = config->readEntry("VoidMark", m_voidMark);
   m_filterScriptImport = config->readEntry("FilterScriptImport", m_filterScriptImport);
   m_filterScriptExport = config->readEntry("FilterScriptExport", m_filterScriptExport);
+  m_filterFileType = config->readEntry("FilterFileType",m_filterFileType);
   
   m_attemptMatchDuplicates = config->readBoolEntry("AttemptMatchDuplicates", m_attemptMatchDuplicates);
 
@@ -139,6 +141,7 @@ void MyMoneyQifProfile::saveProfile(void)
     config->writeEntry("VoidMark", m_voidMark);
     config->writeEntry("FilterScriptImport", m_filterScriptImport);
     config->writeEntry("FilterScriptExport", m_filterScriptExport);
+    config->writeEntry("FilterFileType", m_filterFileType);
     config->writeEntry("AttemptMatchDuplicates", m_attemptMatchDuplicates);
 
     QString tmp;
@@ -590,6 +593,14 @@ void MyMoneyQifProfile::setFilterScriptExport(const QString& script)
     m_isDirty = true;
 
   m_filterScriptExport = script;
+}
+
+void MyMoneyQifProfile::setFilterFileType(const QString& txt)
+{
+  if(m_filterFileType != txt)
+    m_isDirty = true;
+
+  m_filterFileType = txt;
 }
 
 void MyMoneyQifProfile::setAttemptMatchDuplicates(bool f)

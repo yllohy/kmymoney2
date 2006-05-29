@@ -49,6 +49,7 @@
 #include "kimportdlg.h"
 #include "../mymoney/mymoneyfile.h"
 #include "mymoneyqifprofileeditor.h"
+#include "../converter/mymoneyqifprofile.h"
 
 KImportDlg::KImportDlg(QWidget *parent, const char * name)
   : KImportDlgDecl(parent, name, TRUE)
@@ -110,7 +111,12 @@ KImportDlg::~KImportDlg()
 
 void KImportDlg::slotBrowse()
 {
-  QString qstring(KFileDialog::getOpenFileName(KGlobalSettings::documentPath(), "*.qif"));
+  // determine what the browse prefix should be from the current profile
+  
+  MyMoneyQifProfile tmpprofile; 
+  tmpprofile.loadProfile("Profile-" + profile());
+
+  QString qstring(KFileDialog::getOpenFileName(KGlobalSettings::documentPath(), tmpprofile.filterFileType()));
   if (!qstring.isEmpty())
     m_qlineeditFile->setText(qstring);
 }
@@ -268,3 +274,4 @@ void KImportDlg::addCategories(QStringList& strList, const QCString& id, const Q
 
 
 #include "kimportdlg.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:

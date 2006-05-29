@@ -70,6 +70,7 @@ public:
   const QString& voidMark(void) const { return m_voidMark; };
   const QString& filterScriptImport(void) const { return m_filterScriptImport; };
   const QString& filterScriptExport(void) const { return m_filterScriptExport; };
+  const QString& filterFileType(void) const { return m_filterFileType; };
   bool attemptMatchDuplicates(void) const { return m_attemptMatchDuplicates; }
 
   /**
@@ -94,6 +95,7 @@ public slots:
   void setVoidMark(const QString& txt);
   void setFilterScriptImport(const QString& txt);
   void setFilterScriptExport(const QString& txt);
+  void setFilterFileType(const QString& txt);
   void setAttemptMatchDuplicates(bool);
 
 private:
@@ -112,6 +114,7 @@ private:
   QString   m_accountDelimiter;
   QString   m_filterScriptImport;
   QString   m_filterScriptExport;
+  QString   m_filterFileType;  /*< The kind of input files the filter will expect, e.g. "*.qif" */
   QMap<QChar, QChar> m_decimal;
   QMap<QChar, QChar> m_thousands;
   bool      m_attemptMatchDuplicates;
