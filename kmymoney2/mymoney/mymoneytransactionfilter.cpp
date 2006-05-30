@@ -755,6 +755,10 @@ const bool MyMoneyTransactionFilter::translateDateRange(int range, QDate& start,
       start = QDate();
       end = QDate();
       break;
+    case last3ToNext3Months:
+      start = QDate::currentDate().addMonths(-3);
+      end = QDate::currentDate().addMonths(3);
+      break;
     default:
       result = false;
   }
