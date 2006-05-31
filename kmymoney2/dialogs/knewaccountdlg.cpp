@@ -391,29 +391,26 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   slotCheckFinished();
 
 #ifdef HAVE_KDCHART
-  QString balanceReport = QString(
-          "<!DOCTYPE TEST>\n"
-          "<REPORT-CONTAINER>\n"
-          "  <REPORT datelock=\"userdefined\" comment=\"Custom Report\" detail=\"all\" "
-          "charttype=\"line\" tax=\"0\" chartgridlines=\"0\" chartdatalabels=\"0\" investments=\"0\" "
-          "chartbydefault=\"1\" columnsaredays=\"1\" rowtype=\"assetliability\" convertcurrency=\"0\" "
-          "group=\"Net Worth\" type=\"pivottable 1.12\" id=\"Rx\" name=\"BalanceHistory\" "
-          "includeschedules=\"1\" loans=\"0\" favorite=\"0\" columntype=\"months\" >\n"
-          "<ACCOUNTGROUP group=\"asset\" />\n"
-          "<ACCOUNTGROUP group=\"liability\" />"
-          "<ACCOUNT id=\"%1\" />"
-          "<DATES from=\"%2\" to=\"%3\" />\n"
-          "</REPORT>"
-          "</REPORT-CONTAINER>\n")
-            .arg(m_account.id())
-            .arg(QDate::currentDate().addDays(-90).toString(Qt::ISODate))
-            .arg(QDate::currentDate().addDays(+90).toString(Qt::ISODate));
-  QDomDocument doc;
-  QDomElement node;
-  doc.setContent(balanceReport);
-  node = doc.documentElement().firstChild().toElement();
 
-  MyMoneyReport reportCfg = MyMoneyReport(node);
+  MyMoneyReport reportCfg = MyMoneyReport(
+    MyMoneyReport::eAssetLiability,
+    MyMoneyReport::eMonths,
+    MyMoneyTransactionFilter::userDefined, // overridden by the setDateFilter() call below
+    false,
+    i18n("%1 Balance History").arg(m_account.name()),
+    i18n("Generated Report")
+  );
+  reportCfg.setChartByDefault(true);
+  reportCfg.setChartGridLines(false);
+  reportCfg.setChartDataLabels(false);
+  reportCfg.setDetailLevel(MyMoneyReport::eDetailAll);
+  reportCfg.setChartType(MyMoneyReport::eChartLine);
+  reportCfg.setIncludingSchedules( true );
+  reportCfg.addAccount(m_account.id());
+  reportCfg.setColumnsAreDays( true );
+  reportCfg.setConvertCurrency( false );
+  reportCfg.setDateFilter(QDate::currentDate().addDays(-90),QDate::currentDate().addDays(+90));
+  
   reports::PivotTable table(reportCfg);
 
   reports::KReportChartView* chartWidget = new reports::KReportChartView(m_balanceTab, 0);
