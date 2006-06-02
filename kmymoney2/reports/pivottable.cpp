@@ -39,6 +39,7 @@
 // use that text representation in the core data structure of the report. (Ace)
 
 #include <klocale.h>
+#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -1750,12 +1751,12 @@ void PivotTable::drawChart( KReportChartView& _view ) const
   if ( accountseries )
   {
     r = 1;
-    c = m_numColumns;
+    c = m_numColumns - 1;
   }
   else
   {
     c = 1;
-    r = m_numColumns;
+    r = m_numColumns - 1;
   }
   KDChartTableData data( r,c );
 
@@ -1826,9 +1827,9 @@ void PivotTable::drawChart( KReportChartView& _view ) const
             // TODO: This is inefficient. Really we should total up how many rows
             // there will be and allocate it all at once.
             if ( accountseries )
-              data.expand( ++rownum, m_numColumns );
+              data.expand( ++rownum, m_numColumns-1 );
             else
-              data.expand( m_numColumns, ++rownum );
+              data.expand( m_numColumns-1, ++rownum );
 
             ++it_row;
           }
@@ -1838,9 +1839,9 @@ void PivotTable::drawChart( KReportChartView& _view ) const
       }
 
       if ( accountseries )
-        data.expand( rownum-1, m_numColumns );
+        data.expand( rownum-1, m_numColumns-1 );
       else
-        data.expand( m_numColumns, rownum-1 );
+        data.expand( m_numColumns-1, rownum-1 );
 
     }
     break;
@@ -1887,18 +1888,18 @@ void PivotTable::drawChart( KReportChartView& _view ) const
           // TODO: This is inefficient. Really we should total up how many rows
           // there will be and allocate it all at once.
           if ( accountseries )
-            data.expand( ++rownum, m_numColumns );
+            data.expand( ++rownum, m_numColumns-1 );
           else
-            data.expand( m_numColumns, ++rownum );
+            data.expand( m_numColumns-1, ++rownum );
 
           ++it_innergroup;
         }
         ++it_outergroup;
       }
       if ( accountseries )
-        data.expand( rownum-1, m_numColumns );
+        data.expand( rownum-1, m_numColumns-1 );
       else
-        data.expand( m_numColumns, rownum-1 );
+        data.expand( m_numColumns-1, rownum-1 );
 
     }
     break;
@@ -1940,16 +1941,16 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         // TODO: This is inefficient. Really we should total up how many rows
         // there will be and allocate it all at once.
         if ( accountseries )
-          data.expand( ++rownum, m_numColumns );
+          data.expand( ++rownum, m_numColumns-1 );
         else
-          data.expand( m_numColumns, ++rownum );
+          data.expand( m_numColumns-1, ++rownum );
 
         ++it_outergroup;
       }
       if ( accountseries )
-        data.expand( rownum-1, m_numColumns );
+        data.expand( rownum-1, m_numColumns-1 );
       else
-        data.expand( m_numColumns, rownum-1 );
+        data.expand( m_numColumns-1, rownum-1 );
     }
     break;
 
@@ -1983,6 +1984,34 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
   _view.setNewData(data);
   _view.refreshLabels();
+
+#if 0
+  // I have not been able to get this to work (ace)
+  
+  //
+  // Set line to dashed for the future
+  //
+ 
+  if ( accountseries )
+  {
+    // the first column of report which represents a date in the future, or one past the
+    // last column if all columns are in the present day. Only relevant when accountseries==true
+    unsigned futurecolumn = columnValue(QDate::currentDate()) - columnValue(m_beginDate) + 1; 
+
+    // kdDebug(2) << "futurecolumn: " << futurecolumn << endl;
+    // kdDebug(2) << "m_numColumns: " << m_numColumns << endl;
+ 
+    // Properties for line charts whose values are in the future.
+    KDChartPropertySet propSetFutureValue("future value", KDChartParams::KDCHART_PROPSET_NORMAL_DATA);
+    propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
+    const int idPropFutureValue = _view.params().registerProperties(propSetFutureValue);
+
+    for(int col = futurecolumn; col < m_numColumns; ++col) {
+      _view.setProperty(0, col, idPropFutureValue);
+    }
+    
+  }
+#endif
 }
 #else
 void PivotTable::drawChart( KReportChartView& ) const { }
