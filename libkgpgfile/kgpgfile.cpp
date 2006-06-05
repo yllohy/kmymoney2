@@ -190,8 +190,17 @@ bool KGPGFile::open(int mode, const QString& cmdArgs, bool skipPasswd)
     return false;
 
   // qDebug("check GPG process running");
-  if(!m_process)
-    return false;
+  if(!m_process) {
+    // if the process is not present anymore, we have to check
+    // if it was a read operation and we might already have data
+    // and the process finished normally. In that case, we
+    // just continue.
+    if(isReadable()) {
+      if(m_ungetchBuffer.isEmpty())
+        return false;
+    } else
+      return false;
+  }
 
   if(isReadable() && useOwnPassphrase && !skipPasswd) {
     // qDebug("Passphrase is '%s'", pwd.data());
@@ -550,6 +559,7 @@ void KGPGFile::secretKeyList(QStringList& list)
   QStringList::iterator it;
   QString currentKey;
   for(it = lines.begin(); it != lines.end(); ++it) {
+    // qDebug("Parsing: '%s'", (*it).data());
     QStringList fields = QStringList::split(":", (*it), true);
     if(fields[0] == "sec") {
       currentKey = fields[4];
