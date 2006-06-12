@@ -485,51 +485,35 @@ void KGPGFile::slotSendDataToGPG(KProcess *)
 
 const bool KGPGFile::GPGAvailable(void)
 {
-  KGPGFile dummy;
+  QString output;
+  char  buffer[1024];
+  Q_LONG len;
 
-  QStringList args;
-  args << "--version";
-  if(!dummy.startProcess(args)) {
-    return false;
+  KGPGFile file;
+  file.open(IO_ReadOnly, "--version", true);
+  while((len = file.readBlock(buffer, sizeof(buffer)-1)) != EOF) {
+    buffer[len] = 0;
+    output += QString(buffer);
   }
-
-  // wait for the process to finish
-  while(dummy.m_process && dummy.m_process->isRunning()) {
-#if QT_IS_VERSION(3,3,0)
-    // make sure, that the widgets will be gone (really deleted) before we continue
-    QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 100);
-#else
-    kapp->processEvents(10);
-#endif
-  }
-
-  if(dummy.m_exitStatus == 0) {
-    return true;
-  }
-
-  return false;
+  file.close();
+  return !output.isEmpty();
 }
 
 const bool KGPGFile::keyAvailable(const QString& name)
 {
-  KGPGFile dummy;
+  QString output;
+  char  buffer[1024];
+  Q_LONG len;
 
-  QStringList args;
-  args << "--list-keys" << name;
-  if(!dummy.startProcess(args)) {
-    return false;
+  KGPGFile file;
+  QString args = QString("--list-keys %1").arg(name);
+  file.open(IO_ReadOnly, args, true);
+  while((len = file.readBlock(buffer, sizeof(buffer)-1)) != EOF) {
+    buffer[len] = 0;
+    output += QString(buffer);
   }
-
-  // wait for the process to finish
-  while(dummy.m_process && dummy.m_process->isRunning()) {
-    kapp->processEvents(10);
-  }
-
-  if(dummy.m_exitStatus == 0) {
-    return true;
-  }
-
-  return false;
+  file.close();
+  return !output.isEmpty();
 }
 
 void KGPGFile::secretKeyList(QStringList& list)
