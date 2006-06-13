@@ -8,7 +8,7 @@ AC_ARG_WITH(cppunit-prefix,[  --with-cppunit-prefix=PFX   Prefix where CppUnit i
             cppunit_config_prefix="$withval", cppunit_config_prefix="")
 AC_ARG_WITH(cppunit-exec-prefix,[  --with-cppunit-exec-prefix=PFX  Exec prefix where CppUnit is installed (optional)],
             cppunit_config_exec_prefix="$withval", cppunit_config_exec_prefix="")
-AC_MSG_CHECKING(if CPPUNIT tests should be available (default=yes))
+AC_MSG_CHECKING(if CPPUNIT tests should be built (default=yes))
 AC_ARG_ENABLE(cppunit,
               [  --disable-cppunit       Do not try to build with CPPUNIT tests],,
               enable_cppunit=yes)
@@ -16,12 +16,11 @@ AC_MSG_RESULT($enable_cppunit)
 
 if test "x$enable_cppunit" = "xyes"; then
 
-  AC_MSG_CHECKING(if CPPUNIT tests requiring an online connection should be build)
+  AC_MSG_CHECKING(if unit-tests requiring an online connection should be built (default=no))
   AC_ARG_ENABLE(online_tests,
               [  --enable-online-tests   Include online tests with CPPUNIT tests],,
               enable_online_tests=no)
   AC_MSG_RESULT($enable_online_tests)
-fi
 
   if test x$cppunit_config_exec_prefix != x ; then
      cppunit_config_args="$cppunit_config_args --exec-prefix=$cppunit_config_exec_prefix"
@@ -39,11 +38,11 @@ fi
   AC_PATH_PROG(CPPUNIT_CONFIG, cppunit-config, no)
   cppunit_version_min=$1
 
-  AC_MSG_CHECKING(for Cppunit - version >= $cppunit_version_min)
+  AC_MSG_CHECKING(for CPPUNIT - version >= $cppunit_version_min)
   no_cppunit=""
-  if test "x$enable_cppunit" != "xyes"; then
-    no_cppunit=user
-  elif test "$CPPUNIT_CONFIG" = "no" ; then
+  if test "$CPPUNIT_CONFIG" = "no" ; then
+    AC_MSG_RESULT(no)
+    AC_MSG_WARN(Unable to locate cppunit-config. Tests will not be built)
     no_cppunit=yes
   else
     CPPUNIT_CFLAGS=`$CPPUNIT_CONFIG --cflags`
@@ -76,9 +75,13 @@ fi
       AC_MSG_RESULT([$cppunit_major_version.$cppunit_minor_version.$cppunit_micro_version])
     else
       AC_MSG_RESULT(no)
+      AC_MSG_WARN(Minimum version of CPPUNIT couldn't be found. Tests will not be built)
       no_cppunit=yes
     fi
   fi
+else
+  no_cppunit=user
+fi
 
   if test "x$no_cppunit" = x ; then
     ifelse([$2], , :, [$2])

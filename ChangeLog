@@ -1,3 +1,6 @@
+2006-06-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied patch for cppunit.m4 provided by Daniel Calviño Sánchez
+
 2006-06-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed more GPG problems in KGPGFile::GPGAvailable and
     KGPGFile::keyAvailable by applying the same fix as on 2006-06-05
