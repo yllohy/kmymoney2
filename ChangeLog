@@ -1,3 +1,6 @@
+2006-06-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1505732 (Frequent crash on changing/opening file)
+
 2006-06-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patch for cppunit.m4 provided by Daniel Calviño Sánchez
 

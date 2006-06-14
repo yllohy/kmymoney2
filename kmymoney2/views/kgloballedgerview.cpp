@@ -350,13 +350,9 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
 
   } else {
     if(m_specificView[MyMoneyAccount::Checkings] != 0) {
-      // cancel any pending edit operation in the ledger views
-      // when switching to a non existing account
-      slotCancelEdit();
-
-      m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
       m_currentView = m_specificView[MyMoneyAccount::Checkings];
       m_currentView->slotSelectAccount(id);
+      m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
       m_accountComboBox->setSelected(QCString());
 
       // keep this as the current account
