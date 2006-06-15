@@ -15,7 +15,8 @@
 
 2006-06-02 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a small error with the X axis labels in charts.  The label for the
-    first column was repeated after the last column.  
+    first column was repeated after the last column.
+  * Added %mm-%dd-%yyyy QIF date format (Addresses #1449744) 
 
 2006-05-31 Ace Jones <acejones@users.sourceforge.net>
   * Replaced the Edit Account chart generation logic with a safer 
