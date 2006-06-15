@@ -38,6 +38,7 @@
 #include "../mymoney/mymoneybudget.h"
 #include "../mymoney/mymoneysecurity.h"
 #include "../widgets/kmymoneyaccounttreebudget.h"
+#include "../widgets/kmymoneycategory.h"
 
 /**
   * @author Darren Gould
@@ -92,7 +93,7 @@ public:
     *               the KListView entry is constructed
     * @param date   const reference to QDate for the budgeted item
     */
-  KBudgetAmountListItem(KListView *parent, const MyMoneyMoney& amount, const QDate &date);
+  KBudgetAmountListItem(KListView *parent, KMyMoneyAccountTreeBudgetItem *account, const MyMoneyMoney& amount, const QDate &date);
 
   /**
     * Constructor to be used to construct a BudgetAmount entry object.
@@ -104,7 +105,7 @@ public:
     * @param date   const reference to QDate for the budgeted item
     * @param label  const reference to QString for a label for the item
     */
-  KBudgetAmountListItem(KListView *parent, const MyMoneyMoney& amount, const QDate &date, const QString &label);
+  KBudgetAmountListItem(KListView *parent, KMyMoneyAccountTreeBudgetItem *account, const MyMoneyMoney& amount, const QDate &date, const QString &label);
 
   ~KBudgetAmountListItem();
 
@@ -114,12 +115,14 @@ public:
     * according to the applications settings.
     */
   void paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align);
-  void setAmount( const QString &newamount);
+  void setAmount( const MyMoneyMoney &amount );
 
   MyMoneyMoney& amount(void) { return m_amount; };
   QDate&        date(void)   { return m_date; };
+  KMyMoneyAccountTreeBudgetItem* account(void) { return m_account; };
 
 private:
+  KMyMoneyAccountTreeBudgetItem *m_account;
   MyMoneyMoney  m_amount;
   QDate         m_date;
   QString       m_label;
@@ -159,7 +162,6 @@ public slots:
   void slotRefreshView(void);
   void slotSelectBudget(void);
   void slotStartRename(void);
-  void slotBudgetApply(void);
 
 protected:
   void resizeEvent(QResizeEvent*);
@@ -168,6 +170,8 @@ protected:
   void loadBudget(void);
   void ensureBudgetVisible(const QCString& id);
   bool selectedBudget(MyMoneyBudget& budget) const;
+  KMyMoneyAccountTreeBudgetItem* selectedAccount(void) const;
+  void setTimeSpan(KMyMoneyAccountTreeBudgetItem *account, MyMoneyBudget::AccountGroup& accountGroup, int iTimeSpan);
 
 protected slots:
 
@@ -207,7 +211,11 @@ protected slots:
     *
     * @param i pointer to QListViewItem of object to be selected
     */
-  void slotSelectObject(QListViewItem *i);
+  void slotSelectObject();
+
+  void AccountEnter();
+
+  void slotBudgetAmountClicked(QListViewItem *item);
 
 private slots:
   void slotRearrange(void);
@@ -249,7 +257,6 @@ private:
 
   KMyMoneyAccountTreeBudgetItem*            m_incomeItem;
   KMyMoneyAccountTreeBudgetItem*            m_expenseItem;
-  KMyMoneyAccountTreeBudgetItem*            m_currentAccountItem;
 
   /// set if a view needs to be reloaded during show()
   bool                                m_needReload;

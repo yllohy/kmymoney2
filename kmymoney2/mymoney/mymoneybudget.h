@@ -113,17 +113,17 @@ public:
   public:
     typedef enum
     {
-	eNone = 0,
-	eMonthly,
-	eMonthByMonth,
-	eYearly,
-	eMax
+	    eNone = 0,
+      eMonthly,
+      eMonthByMonth,
+      eYearly,
+      eMax
     } eBudgetLevel;
 
     static const QStringList kBudgetLevelText;
   private:
     QCString m_id;
-    QString m_parentId;
+    QCString m_parentId;
 
     eBudgetLevel             m_budgetlevel;
     bool                     m_budgetsubaccounts;
@@ -131,11 +131,11 @@ public:
     QMap<QDate, PeriodGroup> m_periods;
 
   public:
-    AccountGroup( void ) {}
+    AccountGroup( void ): m_budgetlevel(eNone), m_budgetsubaccounts(false), m_default(false) {}
 
     // get functions
     const QCString& id( void ) const { return m_id; }
-    const QString& parentid( void ) const { return m_parentId; }
+    const QCString& parentid( void ) const { return m_parentId; }
     const bool& budgetsubaccounts( void ) const { return m_budgetsubaccounts; }
     const eBudgetLevel& budgetlevel( void ) const { return m_budgetlevel; }
     const bool& getDefault( void ) const {return m_default;}
@@ -165,14 +165,15 @@ public:
   // Simple get operations
   const QString& name(void) const { return m_name; }
   const QDate& budgetstart(void) const { return m_start; }
-  const QCString id(void) const { return m_id; }
-  const AccountGroup & account(const QString _id) const {return m_accounts[_id];}
+  QCString id(void) const { return m_id; }
+  const AccountGroup & account(const QCString _id) const;
+  bool contains(const QCString _id) const { return m_accounts.contains(_id); }
 
   // Simple set operations
   void setName(const QString& _name) { m_name = _name; }
   void setBudgetStart(const QDate& _start) { m_start = _start; }
   void setId(const QCString& _id) {m_id = _id;}
-  void setAccount(const AccountGroup &_account, const QString _id) {m_accounts[_id] = _account;}
+  void setAccount(const AccountGroup &_account, const QCString _id) {m_accounts[_id] = _account;}
 
   /**
     * This method writes this Budget to the DOM element @p e,
@@ -234,7 +235,8 @@ private:
     * Each account Id is stored against the AccountGroup information
     * 
     */
-  QMap<QString, AccountGroup> m_accounts;
+  QMap<QCString, AccountGroup> m_accounts;
 };
 
 #endif // MYMONEYBudget_H
+// vim:cin:si:ai:et:ts=2:sw=2:

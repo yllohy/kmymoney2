@@ -20,13 +20,30 @@
             <verstretch>0</verstretch>
         </sizepolicy>
     </property>
+    <property name="focusPolicy">
+        <enum>TabFocus</enum>
+    </property>
     <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <widget class="KMyMoneyTitleLabel" row="0" column="0">
+            <property name="name">
+                <cstring>titleLabel</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>100</width>
+                    <height>30</height>
+                </size>
+            </property>
+            <property name="text" stdset="0">
+                <string>Budget</string>
+            </property>
+        </widget>
         <widget class="QSplitter" row="1" column="0">
             <property name="name">
-                <cstring>splitter4</cstring>
+                <cstring>splitter3</cstring>
             </property>
             <property name="orientation">
                 <enum>Horizontal</enum>
@@ -121,7 +138,7 @@
             </widget>
             <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>layout10</cstring>
+                    <cstring>layout11</cstring>
                 </property>
                 <vbox>
                     <property name="name">
@@ -150,37 +167,138 @@
                         <property name="title">
                             <string>Amount</string>
                         </property>
-                        <vbox>
+                        <grid>
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
-                            <widget class="QLayoutWidget">
+                            <widget class="QLayoutWidget" row="0" column="0">
                                 <property name="name">
-                                    <cstring>layout8</cstring>
+                                    <cstring>layout7</cstring>
                                 </property>
-                                <hbox>
+                                <vbox>
                                     <property name="name">
                                         <cstring>unnamed</cstring>
                                     </property>
-                                    <widget class="KActiveLabel">
+                                    <widget class="QLayoutWidget">
                                         <property name="name">
-                                            <cstring>kActiveLabel1_6</cstring>
+                                            <cstring>layout8</cstring>
                                         </property>
-                                        <property name="sizePolicy">
-                                            <sizepolicy>
-                                                <hsizetype>0</hsizetype>
-                                                <vsizetype>0</vsizetype>
-                                                <horstretch>0</horstretch>
-                                                <verstretch>0</verstretch>
-                                            </sizepolicy>
+                                        <hbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <widget class="KActiveLabel">
+                                                <property name="name">
+                                                    <cstring>kActiveLabel1_6</cstring>
+                                                </property>
+                                                <property name="sizePolicy">
+                                                    <sizepolicy>
+                                                        <hsizetype>0</hsizetype>
+                                                        <vsizetype>0</vsizetype>
+                                                        <horstretch>0</horstretch>
+                                                        <verstretch>0</verstretch>
+                                                    </sizepolicy>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Account</string>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLineEdit">
+                                                <property name="name">
+                                                    <cstring>m_leAccounts</cstring>
+                                                </property>
+                                            </widget>
+                                        </hbox>
+                                    </widget>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>layout5</cstring>
                                         </property>
-                                        <property name="text">
-                                            <string>Account</string>
+                                        <hbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <widget class="KComboBox">
+                                                <item>
+                                                    <property name="text">
+                                                        <string>Yearly</string>
+                                                    </property>
+                                                </item>
+                                                <item>
+                                                    <property name="text">
+                                                        <string>Monthly</string>
+                                                    </property>
+                                                </item>
+                                                <item>
+                                                    <property name="text">
+                                                        <string>Month by Month</string>
+                                                    </property>
+                                                </item>
+                                                <property name="name">
+                                                    <cstring>m_dbTimeSpan</cstring>
+                                                </property>
+                                                <property name="enabled">
+                                                    <bool>false</bool>
+                                                </property>
+                                            </widget>
+                                            <spacer>
+                                                <property name="name">
+                                                    <cstring>spacer10_3</cstring>
+                                                </property>
+                                                <property name="orientation">
+                                                    <enum>Horizontal</enum>
+                                                </property>
+                                                <property name="sizeType">
+                                                    <enum>MinimumExpanding</enum>
+                                                </property>
+                                                <property name="sizeHint">
+                                                    <size>
+                                                        <width>100</width>
+                                                        <height>20</height>
+                                                    </size>
+                                                </property>
+                                            </spacer>
+                                        </hbox>
+                                    </widget>
+                                    <widget class="KListView">
+                                        <column>
+                                            <property name="text">
+                                                <string></string>
+                                            </property>
+                                            <property name="clickable">
+                                                <bool>true</bool>
+                                            </property>
+                                            <property name="resizable">
+                                                <bool>true</bool>
+                                            </property>
+                                        </column>
+                                        <column>
+                                            <property name="text">
+                                                <string>Amount</string>
+                                            </property>
+                                            <property name="clickable">
+                                                <bool>true</bool>
+                                            </property>
+                                            <property name="resizable">
+                                                <bool>true</bool>
+                                            </property>
+                                        </column>
+                                        <property name="name">
+                                            <cstring>m_budgetAmountList</cstring>
+                                        </property>
+                                        <property name="focusPolicy">
+                                            <enum>TabFocus</enum>
+                                        </property>
+                                        <property name="itemsMovable">
+                                            <bool>false</bool>
+                                        </property>
+                                        <property name="itemsRenameable">
+                                            <bool>false</bool>
                                         </property>
                                     </widget>
-                                    <widget class="KLineEdit">
+                                    <widget class="QCheckBox">
                                         <property name="name">
-                                            <cstring>kLineEdit3</cstring>
+                                            <cstring>m_cbBudgetSubaccounts</cstring>
                                         </property>
                                         <property name="sizePolicy">
                                             <sizepolicy>
@@ -190,158 +308,16 @@
                                                 <verstretch>0</verstretch>
                                             </sizepolicy>
                                         </property>
-                                    </widget>
-                                </hbox>
-                            </widget>
-                            <widget class="QLayoutWidget">
-                                <property name="name">
-                                    <cstring>layout5</cstring>
-                                </property>
-                                <hbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="KComboBox">
-                                        <item>
-                                            <property name="text">
-                                                <string>Yearly</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>Monthly</string>
-                                            </property>
-                                        </item>
-                                        <item>
-                                            <property name="text">
-                                                <string>Month by Month</string>
-                                            </property>
-                                        </item>
-                                        <property name="name">
-                                            <cstring>m_dbTimeSpan</cstring>
-                                        </property>
-                                        <property name="enabled">
-                                            <bool>false</bool>
-                                        </property>
-                                    </widget>
-                                    <spacer>
-                                        <property name="name">
-                                            <cstring>spacer10_3</cstring>
-                                        </property>
-                                        <property name="orientation">
-                                            <enum>Horizontal</enum>
-                                        </property>
-                                        <property name="sizeType">
-                                            <enum>MinimumExpanding</enum>
-                                        </property>
-                                        <property name="sizeHint">
-                                            <size>
-                                                <width>100</width>
-                                                <height>20</height>
-                                            </size>
-                                        </property>
-                                    </spacer>
-                                </hbox>
-                            </widget>
-                            <widget class="KListView">
-                                <column>
-                                    <property name="text">
-                                        <string></string>
-                                    </property>
-                                    <property name="clickable">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="resizable">
-                                        <bool>true</bool>
-                                    </property>
-                                </column>
-                                <column>
-                                    <property name="text">
-                                        <string>Amount</string>
-                                    </property>
-                                    <property name="clickable">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="resizable">
-                                        <bool>true</bool>
-                                    </property>
-                                </column>
-                                <property name="name">
-                                    <cstring>m_budgetAmountList</cstring>
-                                </property>
-                                <property name="itemsMovable">
-                                    <bool>false</bool>
-                                </property>
-                            </widget>
-                            <widget class="QCheckBox">
-                                <property name="name">
-                                    <cstring>m_cbBudgetSubaccounts</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>7</hsizetype>
-                                        <vsizetype>0</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="text">
-                                    <string>Appl&amp;y budgeted amount to subaccounts</string>
-                                </property>
-                            </widget>
-                            <widget class="QLayoutWidget">
-                                <property name="name">
-                                    <cstring>layout4</cstring>
-                                </property>
-                                <hbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="KPushButton">
-                                        <property name="name">
-                                            <cstring>m_bApplyBudget</cstring>
-                                        </property>
                                         <property name="text">
-                                            <string>App&amp;ly Budget</string>
+                                            <string>Appl&amp;y budgeted amount to subaccounts</string>
                                         </property>
                                     </widget>
-                                    <spacer>
-                                        <property name="name">
-                                            <cstring>spacer10_2_2</cstring>
-                                        </property>
-                                        <property name="orientation">
-                                            <enum>Horizontal</enum>
-                                        </property>
-                                        <property name="sizeType">
-                                            <enum>MinimumExpanding</enum>
-                                        </property>
-                                        <property name="sizeHint">
-                                            <size>
-                                                <width>200</width>
-                                                <height>20</height>
-                                            </size>
-                                        </property>
-                                    </spacer>
-                                </hbox>
+                                </vbox>
                             </widget>
-                        </vbox>
+                        </grid>
                     </widget>
                 </vbox>
             </widget>
-        </widget>
-        <widget class="KMyMoneyTitleLabel" row="0" column="0">
-            <property name="name">
-                <cstring>titleLabel</cstring>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>100</width>
-                    <height>30</height>
-                </size>
-            </property>
-            <property name="text" stdset="0">
-                <string>Budget</string>
-            </property>
         </widget>
     </grid>
 </widget>

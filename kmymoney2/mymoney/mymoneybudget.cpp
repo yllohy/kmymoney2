@@ -77,7 +77,7 @@ void MyMoneyBudget::write(QDomElement& e, QDomDocument *doc) const
   e.setAttribute("id",    m_id );
   e.setAttribute("start", m_start.toString(Qt::ISODate) );
 
-  QMap<QString, AccountGroup>::const_iterator it;
+  QMap<QCString, AccountGroup>::const_iterator it;
   for(it = m_accounts.begin(); it != m_accounts.end(); ++it)
   {
     QDomElement domAccount = doc->createElement("ACCOUNT");
@@ -199,3 +199,14 @@ bool MyMoneyBudget::hasReferenceTo(const QCString& id) const
 
   return (list.contains(id) > 0);
 }
+
+const MyMoneyBudget::AccountGroup& MyMoneyBudget::account(const QCString _id) const 
+{
+  static AccountGroup empty;
+
+  if ( m_accounts.contains(_id) )
+    return m_accounts[_id];
+  else
+    return empty;
+}
+// vim:cin:si:ai:et:ts=2:sw=2:

@@ -520,6 +520,31 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent
   updateAccount(account, true);
 }
 
+
+KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyAccount& account, const MyMoneyBudget &budget, const MyMoneySecurity& security, const QString& name) :
+  KListViewItem(parent),
+  m_price(),
+  m_security(security),
+  m_displayFactor(MyMoneyMoney(1)),
+  m_account(account),
+  m_totalValue(MyMoneyMoney(0)),
+  m_type(Account),
+  m_budget(budget)
+{
+}
+
+KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent, const MyMoneyAccount& account, const MyMoneyBudget& budget, const QValueList<MyMoneyPrice>& price, const MyMoneySecurity& security) :
+  KListViewItem(parent),
+  m_price(price),
+  m_security(security),
+  m_displayFactor(MyMoneyMoney(1)),
+  m_account(account),
+  m_totalValue(MyMoneyMoney(0)),
+  m_type(Account),
+  m_budget(budget)
+{
+}
+
 KMyMoneyAccountTreeItem::~KMyMoneyAccountTreeItem()
 {
 }

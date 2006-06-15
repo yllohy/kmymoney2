@@ -36,6 +36,7 @@ class QDragObject;
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneyprice.h>
 #include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/mymoneybudget.h>
 
 class KMyMoneyAccountTreeItem;
 
@@ -277,6 +278,40 @@ public:
     */
   KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent, const MyMoneyAccount& account, const QValueList<MyMoneyPrice>& price = QValueList<MyMoneyPrice>(), const MyMoneySecurity& security = MyMoneySecurity());
 
+  /**
+    * Constructor to be used to construct an account 
+    * entry object for a budget.
+    *
+    * @param parent pointer to the parent KAccountListView object this entry should be
+    *               added to.
+    * @param account const reference to MyMoneyAccount for which
+    *               the KListView entry is constructed
+    * @param budget const reference to the budget to
+    * which the account belongs
+    * @param price price to be used to calculate value (defaults to 1)
+    *              This is used for accounts denominated in foreign currencies or stocks
+    * @param name name of the account to be used instead of the one stored with @p account
+    *               If empty, the one stored with @p account will be used. Default: empty
+    */
+   KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyAccount& account, const MyMoneyBudget &budget, const MyMoneySecurity& security = MyMoneySecurity(), const QString& name = QString());
+
+  /**
+    * Constructor to be used to construct an account 
+    * entry object for a budget.
+    *
+    * @param parent pointer to the parent KAccountListView object this entry should be
+    *               added to.
+    * @param account const reference to MyMoneyAccount for which
+    *               the KListView entry is constructed
+    * @param budget const reference to the budget to
+    * which the account belongs
+    * @param price price to be used to calculate value (defaults to 1)
+    *              This is used for accounts denominated in foreign currencies or stocks
+    * @param security const reference to the security used to show the value. Usually
+    *                 one should pass MyMoneyFile::baseCurrency() here.
+    */
+   KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent, const MyMoneyAccount& account, const MyMoneyBudget& budget, const QValueList<MyMoneyPrice>& price = QValueList<MyMoneyPrice>(), const MyMoneySecurity& security = MyMoneySecurity());
+
   ~KMyMoneyAccountTreeItem();
 
   /**
@@ -419,6 +454,7 @@ private:
   MyMoneyInstitution                m_institution;
 
   KMyMoneyAccountTreeItemType       m_type;
+  MyMoneyBudget m_budget;
 };
 
 #endif
