@@ -887,7 +887,11 @@ const bool KMyMoney2App::slotFileSaveAs()
     QStringList fields = QStringList::split(":", *it);
     if(fields[0] != RECOVER_KEY_ID) {
       ++idx;
-      m_saveEncrypted->insertItem(QString("%1 (0x%2)").arg(fields[1]).arg(fields[0]));
+      // replace parenthesis in name field with brackets
+      QString name = fields[1];
+      name.replace('(', "[");
+      name.replace(')', "]");
+      m_saveEncrypted->insertItem(QString("%1 (0x%2)").arg(name).arg(fields[0]));
       if((*it).contains(KMyMoneySettings::gpgRecipient())) {
         m_saveEncrypted->setCurrentItem(idx);
       }

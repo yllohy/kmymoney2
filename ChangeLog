@@ -1,3 +1,6 @@
+2006-06-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Replace parenthesis with brackets in GPG key information
+
 2006-06-15 Darren Gould <darren_gould@gmx.de>
   * Improvements in budget implementation 
     (Patch applied by Ace Jones)
