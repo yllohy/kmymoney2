@@ -8,6 +8,7 @@
 
 <!-- the chapters -->
 	<!ENTITY introduction SYSTEM "introduction.docbook">
+	<!ENTITY makemostof SYSTEM "makemostof.docbook">
 	<!ENTITY firsttime SYSTEM "firsttime.docbook">
 	<!ENTITY whatsnew SYSTEM "whatsnew.docbook">
 	<!ENTITY details-institutions SYSTEM "details-institutions.docbook">
@@ -110,6 +111,7 @@
 <year>2003</year>
 <year>2004</year>
 <year>2005</year>
+<year>2006</year>
 <holder>The KMyMoney Development Team</holder>
 </copyright>
 
@@ -125,7 +127,7 @@ Please respect the format of the date (DD/MM/YYYY) and of the version
 (V.MM.LL), it could be used by automation scripts.
 Do NOT change these in the translation. -->
 
-<date>07/16/2005</date>
+<date>16/07/2005</date>
 <releaseinfo>0.8</releaseinfo>
 
 <!-- Abstract about this handbook -->
@@ -158,6 +160,7 @@ Do NOT change these in the translation. -->
 -->
 &introduction;
 &whatsnew;
+&makemostof;
 &firsttime;
 &details-institutions;
 &details-accounts;
