@@ -24,7 +24,7 @@
     You will get a more effective system if you spend a little time planning how you are going to use &kappname;, so follow the steps given here.
 </para>
 
-<sect1>
+<sect1 id="makingmostof.basicaccounting">
 <title>Basic Accounting</title>
 
 <para>
@@ -46,7 +46,7 @@
     This will be covered properly in setting up accounts for Businesses.
 </para>
 
-<sect2>
+<sect2 id="makingmostof.basicaccounting.personalaccounts">
 <title>Defining the accounts (personal records)</title>
 
 <para>
@@ -66,7 +66,7 @@
 </para>
 </sect2>
 
-<sect2>
+<sect2 id="makingmostof.basicaccounting.businessaccounts">
 <title>Defining the accounts (business records)</title>
 
 <para>
@@ -75,21 +75,21 @@
 </sect2>
 </sect1>
 
-<sect1>
+<sect1 id="makingmostof.mapping">
 <title>Mapping your finances to &kappname;</title>
 
 <para>
     So, collect up your papers and see the following sections for each item in &kappname;.
 </para>
 
-<sect2>
+<sect2 id="makingmostof.mapping.accounts">
 <title>Accounts</title>
 
 <para>
     These hold a value. Transactions are created against one or more accounts.
 </para>
 
-<sect3>
+<sect3 id="makingmostof.mapping.accounts.asset">
 <title>Accounts - Asset</title>
 
 <para>
@@ -155,7 +155,7 @@ Property, collections, etc.
 </variablelist>
 </sect3>
 
-<sect3>
+<sect3 id="makingmostof.mapping.accounts.liability">
 <title>Accounts - Liability</title>
 
 <para>
@@ -195,7 +195,7 @@ Anything you owe that is not a loan.
 </sect3>
 </sect2>
 
-<sect2>
+<sect2 id="makingmostof.mapping.institutions">
 <title>Institutions</title>
 
 <para>
@@ -203,7 +203,7 @@ Anything you owe that is not a loan.
 </para>
 </sect2>
 
-<sect2>
+<sect2 id="makingmostof.mapping.categories">
 <title>Categories</title>
 
 <para>
@@ -211,7 +211,7 @@ Anything you owe that is not a loan.
 </para>
 </sect2>
 
-<sect2>
+<sect2 id="makingmostof.mapping.subcategories">
 <title>Sub-Categories</title>
 
 <para>
@@ -219,7 +219,7 @@ Anything you owe that is not a loan.
 </para>
 </sect2>
 
-<sect2>
+<sect2 id="makingmostof.mapping.payees">
 <title>Payees</title>
 
 <para>
@@ -227,7 +227,7 @@ Anything you owe that is not a loan.
 </para>
 </sect2>
 
-<sect2>
+<sect2 id="makingmostof.mapping.schedules">
 <title>Scheduled transactions</title>
 
 <para>
