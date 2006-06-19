@@ -89,6 +89,8 @@ public:
     *
     * @param parent pointer to the KListView object this entry should be
     *               added to.
+    * @param account pointer to KMyMoneyAccountTreeBudgetItem that represents
+    *               the account
     * @param amount const reference to MyMoneyMoney for which
     *               the KListView entry is constructed
     * @param date   const reference to QDate for the budgeted item
@@ -100,6 +102,8 @@ public:
     *
     * @param parent pointer to the KListView object this entry should be
     *               added to.
+    * @param account pointer to KMyMoneyAccountTreeBudgetItem that represents
+    *               the account
     * @param amount const reference to MyMoneyMoney for which
     *               the KListView entry is constructed
     * @param date   const reference to QDate for the budgeted item
@@ -204,12 +208,6 @@ protected slots:
 
 
   /**
-    * Select the object pointed to by @p i. This slot emits selectObject signals
-    * with an emtpy MyMoneyAccount and an empty MyMoneyInstitution object
-    * to deselect current selections. If @p i points to a KMyMoneyAccountTreeItem
-    * object, it emits selectObject() for this item.
-    *
-    * @param i pointer to QListViewItem of object to be selected
     */
   void slotSelectObject();
 
