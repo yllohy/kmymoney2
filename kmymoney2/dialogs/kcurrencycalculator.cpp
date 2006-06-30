@@ -206,6 +206,7 @@ void KCurrencyCalculator::updateExample(const MyMoneyMoney& price)
     }
   }
   m_conversionExample->setText(msg);
+  m_okButton->setEnabled(!price.isZero());
 }
 
 void KCurrencyCalculator::accept(void)

@@ -1610,18 +1610,27 @@ void KLedgerView::slotEndEdit(void)
             }
           }
 
-          KCurrencyCalculator calc(fromCurrency,
-                                   toCurrency,
-                                   fromValue,
-                                   toValue,
-                                   m_transaction.postDate(),
-                                   fract,
-                                   this, "currencyCalculator");
-          if(calc.exec() == QDialog::Rejected) {
-            return;
+          if(!fromValue.isZero() && !toValue.isZero()) {
+            // it only makes sense to calculate a price if the value of the transaction differs from 0
+            KCurrencyCalculator calc(fromCurrency,
+                                    toCurrency,
+                                    fromValue,
+                                    toValue,
+                                    m_transaction.postDate(),
+                                    fract,
+                                    this, "currencyCalculator");
+            if(calc.exec() == QDialog::Rejected) {
+              return;
+            }
+            price = calc.price();
+            priceInfo[key] = price;
+          } else {
+            // we end up here, if the transaction value is 0. In this
+            // case, a price of 1 is just what we need for further
+            // processing, but we don't remember it.
+            price = MyMoneyMoney(1,1);
           }
-          price = calc.price();
-          priceInfo[key] = price;
+
         } else {
           price = (*it_p);
         }
