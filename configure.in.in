@@ -1,8 +1,10 @@
-#MIN_CONFIG(3.2)
+#MIN_CONFIG(3.3.1)
 
 AM_INIT_AUTOMAKE(kmymoney2,0.9)
 
 KDE_ENABLE_HIDDEN_VISIBILITY
+
+AM_KDE_MIN_VERSION(3, 2, 1)
 
 dnl
 dnl check for a recent autoconf version
@@ -108,7 +110,7 @@ while read a; do
     HFILES=$(grep -v noinst_HEADERS $MFILE | grep _HEADERS)
     for HFILE in $HFILES; do
       case $HFILE in
-        =|*_HEADERS)
+        =|*_HEADERS|\\)
           ;;
         *)
           ln -s $DIR/$HFILE kmymoney/$HFILE

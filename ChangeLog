@@ -1,5 +1,7 @@
 2006-06-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1514522 (Zero-amounted tarnsfer transaction leads to crash)
+  * Added check for minimum KDE version
+  * Adjusted minimum KDE and QT versions in configure.in.in
 
 2006-06-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Replace parenthesis with brackets in GPG key information
