@@ -180,6 +180,7 @@ public:
   // unary operators
   MyMoneyMoney& operator+= ( const MyMoneyMoney&  Amount );
   MyMoneyMoney& operator-= ( const MyMoneyMoney&  Amount );
+  MyMoneyMoney& operator/= ( const MyMoneyMoney&  Amount );
 
   // conversion
   operator int() const;
@@ -563,6 +564,12 @@ inline MyMoneyMoney& MyMoneyMoney::operator+=(const MyMoneyMoney& AmountInPence)
 inline MyMoneyMoney& MyMoneyMoney::operator-=(const MyMoneyMoney& AmountInPence)
 {
   *this = *this - AmountInPence;
+  return *this;
+}
+
+inline MyMoneyMoney& MyMoneyMoney::operator/=(const MyMoneyMoney& AmountInPence)
+{
+  *this = *this / AmountInPence;
   return *this;
 }
 

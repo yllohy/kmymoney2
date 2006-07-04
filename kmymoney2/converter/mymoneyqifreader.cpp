@@ -668,7 +668,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
   tmp = extractLine('#');
   if(!tmp.isEmpty()) 
   {
-    t.setBankID("ID " + tmp);
+    s1.setBankID("ID " + tmp);
   }
   
   // Collect data for the account's split
@@ -1023,17 +1023,17 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     }
   }
 
+  MyMoneySplit s1;
+  
   // 'M' field: Memo
   QString memo = extractLine('M');
   t.setMemo(memo);
+  s1.setMemo(extractLine('M'));
 
   // '#' field: BankID
   QString bankid = extractLine('#');
   if ( ! bankid.isEmpty() )
-    t.setBankID(bankid);
-
-  MyMoneySplit s1;
-  s1.setMemo(extractLine('M'));
+    s1.setBankID(bankid);
   
   // 'O' field: Fees
   MyMoneyMoney fees = m_qifProfile.value('T', extractLine('O'));
@@ -1283,7 +1283,9 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     QValueList<MyMoneyTransaction> list = file->transactionList(filter);
     QValueList<MyMoneyTransaction>::Iterator it;
     for(it = list.begin(); it != list.end(); ++it) {
-      if(t.bankID() == (*it).bankID() && !t.bankID().isNull() && !(*it).bankID().isNull())
+      //if(t.bankID() == (*it).bankID() && !t.bankID().isNull() && !(*it).bankID().isNull())
+      MyMoneySplit thissplit = (*it).splitByAccount(thisaccount.id());
+      if(t.bankID() == thissplit.bankID() && !t.bankID().isNull() && !thissplit.bankID().isNull())
         break;
     }
     if(it == list.end())

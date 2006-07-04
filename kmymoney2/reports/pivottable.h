@@ -142,7 +142,7 @@ private:
     public: 
       TInnerGroup( unsigned _numcolumns = 0 ): m_total(_numcolumns) {}
 
-      TGridRow m_total; 
+      TGridRowPair m_total; 
     };
     class TOuterGroup: public QMap<QString,TInnerGroup> 
     { 
@@ -155,7 +155,7 @@ private:
         else
           return m_displayName < _right.m_displayName;
       }
-      TGridRow m_total;
+      TGridRowPair m_total;
       
       // An inverted outergroup means that all values placed in subordinate rows 
       // should have their sign inverted from typical cash-flow notation.  Also it
@@ -175,7 +175,7 @@ private:
       // default sort order
       static const unsigned m_kDefaultSortOrder;
     };
-    class TGrid: public QMap<QString,TOuterGroup> { public: TGridRow m_total; };
+    class TGrid: public QMap<QString,TOuterGroup> { public: TGridRowPair m_total; };
 
     TGrid m_grid;
 
@@ -183,7 +183,12 @@ private:
     unsigned m_numColumns;
     QDate m_beginDate;
     QDate m_endDate;
-    
+   
+    // For budget-vs-actual reports only, maps each account to the account which holds
+    // the budget for it.  If an account is not contained in this map, it is not included
+    // in the budget.
+    QMap<QCString,QCString> m_budgetMap;
+  
     MyMoneyReport m_config_f;
 
 protected:
@@ -222,6 +227,17 @@ protected:
     */
     void calculateOpeningBalances( void );
 
+  /**
+    * Calculate busget mapping
+    *
+    * For budget-vs-actual reports, this creates a mapping between each account
+    * in the user's hierarchy and the account where the budget is held for it.
+    * This is needed because the user can budget on a given account for that
+    * account and all its descendants.  Also if NO budget is placed on the
+    * account or any of its parents, the account is not included in the map.
+    */
+    void calculateBudgetMapping( void );
+    
   /**
     * Calculate the running sums.
     *

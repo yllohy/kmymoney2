@@ -193,6 +193,13 @@ bool MyMoneyBudget::hasReferenceTo(const QCString& id) const
   QCStringList list;
 
   // collect all ids
+  
+  // !!! (ace) I think this is wrong.  accounts(list) calls the base class's
+  // accounts() method, but I don't think we ever set the base class's accounts
+  // anywhere!
+  //
+  // And where does this class use payees??
+  
   accounts(list);
   categories(list);
   payees(list);
@@ -209,4 +216,5 @@ const MyMoneyBudget::AccountGroup& MyMoneyBudget::account(const QCString _id) co
   else
     return empty;
 }
+
 // vim:cin:si:ai:et:ts=2:sw=2:

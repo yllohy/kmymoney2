@@ -111,7 +111,9 @@ public:
   bool isIncludingSchedules(void) const { return m_includeSchedules; }
   bool isColumnsAreDays(void) const { return m_columnsAreDays; }
   bool isIncludingTransfers(void) const { return m_includeTransfers; }
-
+  bool hasBudget(void) const { return m_hasBudget; }
+  bool isIncludingBudgetActuals(void) const { return m_includeBudgetActuals; }
+  
   // Simple set operations
   void setName(const QString& _s) { m_name = _s; }
   void setShowSubAccounts(bool _f) { m_detailLevel = _f?eDetailAll:eDetailTop; }
@@ -134,6 +136,19 @@ public:
   void setIncludingSchedules( bool _f ) { m_includeSchedules = _f; }
   void setColumnsAreDays( bool _f ) { m_columnsAreDays = _f; }
   void setIncludingTransfers( bool _f ) { m_includeTransfers = _f; }
+
+  /**
+    * Sets the budget used for this report
+    *
+    * @param _budget The ID of the budget to use, or an empty string
+    * to indicate a budget is NOT included
+    * @param _fa Whether to display actual data alongside the budget.
+    * Setting to false means the report displays ONLY the budget itself.
+    * @warning For now, the budget ID is ignored.  The budget id is
+    * simply checked for any non-empty string, and if so, hasBudget()
+    * will return true.
+    */
+  void setBudget( const QCString& _budget, bool _fa = true ) { m_hasBudget = !_budget.isEmpty(); m_includeBudgetActuals=_fa; }
 
   /**
     * This method allows you to clear the underlying transaction filter
@@ -402,11 +417,24 @@ private:
     * Whether to include scheduled transactions
     */
   bool m_includeSchedules;
-
   /**
     * Whether to include transfers.  Only applies to Income/Expense reports
     */
   bool m_includeTransfers;
+  /**
+    * Whether this report has a budget associated with it
+    *
+    * TODO: Ultimately, the user should be able to select which budget
+    * the report should consider.  Then this will not be a bool, but a
+    * budget ID instead.  For now, choosing a budget is left up to the
+    * report generator.
+    */
+  bool m_hasBudget;
+  /**
+    * Whether this report should print the actual data to go along with
+    * the budget.  This is only valid if the report has a budget.
+    */
+  bool m_includeBudgetActuals;
 };
 
 #endif // MYMONEYREPORT_H

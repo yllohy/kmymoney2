@@ -1,3 +1,9 @@
+2006-07-04 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed bank ID handling in QIF imports (This was the purpose of my 5/29
+    checkin, but that was incomplete)
+  * Added budget-vs-actual report logic (HTML output only, CSV still needs
+    to be written
+
 2006-06-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1514522 (Zero-amounted tarnsfer transaction leads to crash)
   * Added check for minimum KDE version

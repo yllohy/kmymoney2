@@ -1005,11 +1005,21 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     ReportGroup list = i18n("Budgeting");
 
     list.push_back(MyMoneyReport(
+      MyMoneyReport::eExpenseIncome,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::yearToDate,
+      true,
+      i18n("Budget vs. Actual This Year"),
+      i18n("Default Report")
+    ));
+    list.back().setBudget("Any",true);
+
+    list.push_back(MyMoneyReport(
       MyMoneyReport::eBudgetActual,
       MyMoneyReport::eMonths,
       MyMoneyTransactionFilter::currentMonth,
       false,
-      i18n("Monthly Budgeted vs. Actual"),
+      i18n("(Test) Monthly Budgeted vs. Actual"),
       i18n("Default Report")
     ));
     list.push_back(MyMoneyReport(
@@ -1017,7 +1027,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       MyMoneyReport::eMonths,
       MyMoneyTransactionFilter::yearToDate,
       false,
-      i18n("Yearly Budgeted vs. Actual"),
+      i18n("(Test) Yearly Budgeted vs. Actual"),
       i18n("Default Report")
     ));
     list.push_back(MyMoneyReport(
@@ -1025,7 +1035,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       MyMoneyReport::eMonths,
       MyMoneyTransactionFilter::currentMonth,
       false,
-      i18n("Monthly Budget"),
+      i18n("(Test) Monthly Budget"),
       i18n("Default Report")
     ));
     list.push_back(MyMoneyReport(
@@ -1033,7 +1043,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       MyMoneyReport::eMonths,
       MyMoneyTransactionFilter::yearToDate,
       false,
-      i18n("Yearly Budget"),
+      i18n("(Test) Yearly Budget"),
       i18n("Default Report")
     ));
 

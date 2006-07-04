@@ -182,19 +182,19 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   if ( m_config_f.rowType() == MyMoneyReport::eAssetLiability )
   {
     m_grid.insert(accountTypeToString(MyMoneyAccount::Asset),TOuterGroup(m_numColumns));
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Liability),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder,true));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Liability),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder,true /* inverted */));
   }
   else
   {
     m_grid.insert(accountTypeToString(MyMoneyAccount::Income),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder-2));
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Expense),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder-1,true));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Expense),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder-1,true /* inverted */));
   }
 
   //
   // Initialize grid totals
   //
 
-  m_grid.m_total = TGridRow(m_numColumns);
+  m_grid.m_total = TGridRowPair(m_numColumns);
   
   //
   // Get opening balances
@@ -204,6 +204,13 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   if ( m_config_f.isRunningSum() )
     calculateOpeningBalances();
 
+  //
+  // Calculate budget mapping
+  // (for budget-vs-actual reports only)
+  //
+  if ( m_config_f.hasBudget() )
+    calculateBudgetMapping();
+    
   //
   // Populate all transactions into the row/column pivot grid
   //
@@ -627,6 +634,128 @@ void PivotTable::calculateRunningSums( void )
   }
 }
 
+void PivotTable::calculateBudgetMapping( void )
+{
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
+
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  // Only do this if there is at least one budget in the file
+  if ( file->countBudgets() )
+  {
+    // Select a budget
+    //
+    // (Currently, we will choose the first budget in the list.  Ultimately,
+    // we'll need to make this a configuration option for the user)
+    QValueList<MyMoneyBudget> budgets = file->budgetList();
+    const MyMoneyBudget& budget = budgets[0];
+   
+    // Dump the budget
+    //kdDebug(2) << "Budget " << budget.name() << ": " << endl;
+  
+    if ( m_config_f.isIncludingBudgetActuals() )
+    {
+    //
+    // Go through all accounts in the system to build the mapping
+    // 
+
+    QValueList<MyMoneyAccount> accounts = file->accountList(QCStringList(),true /* recursive */);
+    QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
+    while ( it_account != accounts.end() )
+    {
+      QCString id = (*it_account).id();
+      QCString acid = id;
+
+      // If the budget contains this account outright
+      if ( budget.contains(id) )
+      {
+        // Add it to the mapping
+        m_budgetMap[acid] = id;
+
+        //kdDebug(2) << ReportAccount(acid).debugName() << " self-maps / type =" << budget.account(id).budgetlevel() << endl;
+      }
+
+      // Otherwise, search for a parent account which includes sub-accounts
+      else
+      {
+        do
+        {
+          id = file->account(id).parentAccountId();
+          if ( budget.contains(id) )
+          {
+            if ( budget.account(id).budgetsubaccounts() )
+            {
+              m_budgetMap[acid] = id;
+              //kdDebug(2) << ReportAccount(acid).debugName() << " maps to " << ReportAccount(id).debugName() << endl;
+              break;
+            }
+          }
+        }
+        while ( ! id.isEmpty() );
+      }
+
+      ++it_account;
+    } // end while looping through the accounts in the file
+    }
+    
+    if ( m_config_f.isIncludingBudgetActuals() ) 
+    {
+    //
+    // Place the budget values into the budget grid
+    //
+    QValueList<MyMoneyBudget::AccountGroup> baccounts = budget.getaccounts();
+    QValueList<MyMoneyBudget::AccountGroup>::const_iterator it_bacc = baccounts.begin();
+    while ( it_bacc != baccounts.end() )
+    {
+      ReportAccount splitAccount = (*it_bacc).id();
+      MyMoneyAccount::accountTypeE type = splitAccount.accountGroup();
+      QString outergroup = accountTypeToString(type);
+
+      // reverse sign to match common notation for cash flow direction, only for expense/income splits
+      MyMoneyMoney reverse(splitAccount.isIncomeExpense() ? -1 : 1, 1);
+      
+      const QMap<QDate, MyMoneyBudget::PeriodGroup>& periods = (*it_bacc).getPeriods();
+      MyMoneyMoney value = (*periods.begin()).amount() * reverse;
+      unsigned column = 1;
+      
+      // based on the kind of budget it is, deal accordingly
+      switch ( (*it_bacc).budgetlevel() )
+      {
+      case MyMoneyBudget::AccountGroup::eYearly:
+        // divide the single yearly value by 12 and place it in each column
+        value /= 12;  
+      case MyMoneyBudget::AccountGroup::eNone:
+      case MyMoneyBudget::AccountGroup::eMax:
+      case MyMoneyBudget::AccountGroup::eMonthly:
+        // place the single monthly value in each column of the report
+        while ( column < m_numColumns )
+        {
+        
+          assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+          ++column;
+        }
+        break;
+        
+      case MyMoneyBudget::AccountGroup::eMonthByMonth:
+        // place each value in the appropriate column
+        QMap<QDate, MyMoneyBudget::PeriodGroup>::const_iterator it_period = periods.begin();
+        while ( it_period != periods.end() )
+        {
+          value = (*it_period).amount() * reverse;
+          column = columnValue((*it_period).start());
+          assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+
+          ++it_period;
+        }
+        break;
+      }
+      
+      ++it_bacc;
+    }
+    }
+  } // end if there was a budget
+}
+
 void PivotTable::convertToBaseCurrency( void )
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
@@ -704,6 +833,7 @@ void PivotTable::convertToDeepCurrency( void )
 void PivotTable::calculateTotals( void )
 {
   m_grid.m_total.insert( m_grid.m_total.end(), m_numColumns, MyMoneyMoney() );
+  m_grid.m_total.m_budget.insert( m_grid.m_total.m_budget.end(), m_numColumns, MyMoneyMoney() );
 
   //
   // Outer groups
@@ -714,6 +844,7 @@ void PivotTable::calculateTotals( void )
   while ( it_outergroup != m_grid.end() )
   {
     (*it_outergroup).m_total.insert( (*it_outergroup).m_total.end(), m_numColumns, MyMoneyMoney() );
+    (*it_outergroup).m_total.m_budget.insert( (*it_outergroup).m_total.m_budget.end(), m_numColumns, MyMoneyMoney() );
 
     //
     // Inner Groups
@@ -723,6 +854,7 @@ void PivotTable::calculateTotals( void )
     while ( it_innergroup != (*it_outergroup).end() )
     {
       (*it_innergroup).m_total.insert( (*it_innergroup).m_total.end(), m_numColumns, MyMoneyMoney() );
+      (*it_innergroup).m_total.m_budget.insert( (*it_innergroup).m_total.m_budget.end(), m_numColumns, MyMoneyMoney() );
 
       //
       // Rows
@@ -747,6 +879,11 @@ void PivotTable::calculateTotals( void )
           (*it_innergroup).m_total[column] += value;
           (*it_row).m_total += value;
 
+          MyMoneyMoney budget = it_row.data().m_budget[column];
+          (*it_innergroup).m_total.m_budget[column] += budget;
+          (*it_row).m_budget.m_total += value;
+
+          
           ++column;
         }
         ++it_row;
@@ -768,6 +905,10 @@ void PivotTable::calculateTotals( void )
         (*it_outergroup).m_total[column] += value;
         (*it_innergroup).m_total.m_total += value;
 
+        MyMoneyMoney budget = (*it_innergroup).m_total.m_budget[column];
+        (*it_outergroup).m_total.m_budget[column] += budget;
+        (*it_innergroup).m_total.m_budget.m_total += budget;
+        
         ++column;
       }
 
@@ -793,6 +934,14 @@ void PivotTable::calculateTotals( void )
 
       m_grid.m_total[column] += value;
 
+      MyMoneyMoney budget = (*it_outergroup).m_total.m_budget[column];
+      (*it_outergroup).m_total.m_budget.m_total += budget;
+      
+      if ( invert_total )
+        budget = -budget;
+
+      m_grid.m_total.m_budget[column] += budget;
+
       ++column;
     }
 
@@ -812,16 +961,34 @@ void PivotTable::calculateTotals( void )
     MyMoneyMoney value = m_grid.m_total[totalcolumn];
     m_grid.m_total.m_total += value;
 
+    MyMoneyMoney budget = m_grid.m_total.m_budget[totalcolumn];
+    m_grid.m_total.m_budget.m_total += budget;
+
     ++totalcolumn;
   }
 
 }
 
-void PivotTable::assignCell( const QString& outergroup, const ReportAccount& row, unsigned column, MyMoneyMoney value, bool budget )
+void PivotTable::assignCell( const QString& outergroup, const ReportAccount& _row, unsigned column, MyMoneyMoney value, bool budget )
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
-  DEBUG_OUTPUT(QString("Parameters: %1,%2,%3,%4").arg(outergroup).arg(row.debugName()).arg(column).arg(DEBUG_SENSITIVE(value.toDouble())));
+  DEBUG_OUTPUT(QString("Parameters: %1,%2,%3,%4,%5").arg(outergroup).arg(_row.debugName()).arg(column).arg(DEBUG_SENSITIVE(value.toDouble())).arg(budget));
 
+  // for budget reports, if this is the actual value, map it to the account which
+  // holds its budget
+  ReportAccount row = _row;
+  if ( !budget && m_config_f.hasBudget() )
+  {
+    QCString newrow = m_budgetMap[row.id()];
+
+    // if there was no mapping found, then the budget report is not interested
+    // in this account.
+    if ( newrow.isEmpty() )
+      return;
+
+    row = newrow;
+  }
+  
   // ensure the row already exists (and its parental hierarchy)
   createRow( outergroup, row, true );
 
@@ -1484,19 +1651,41 @@ QString PivotTable::renderHTML( void ) const
   result += QString("\n\n<table class=\"report\" cellspacing=\"0\">"
        "<tr class=\"itemheader\">\n<th>%1</th>").arg(i18n("Account"));
 
+  QString headerspan;
+  if ( m_config_f.isIncludingBudgetActuals() )
+    headerspan = " colspan=\"2\"";
+  
   unsigned column = 1;
   while ( column < m_numColumns )
-    result += QString("<th>%1</th>").arg(QString(m_columnHeadings[column++]).replace(QRegExp(" "),"<br>"));
+    result += QString("<th%1>%2</th>").arg(headerspan,QString(m_columnHeadings[column++]).replace(QRegExp(" "),"<br>"));
 
   if ( m_config_f.isShowingRowTotals() )
-    result += QString("<th>%1</th>").arg(i18n("Total"));
+    result += QString("<th%1>%2</th>").arg(headerspan).arg(i18n("Total"));
 
   result += "</tr>\n";
 
+  //
+  // "Budget/Actual" header
+  // 
+  if ( m_config_f.isIncludingBudgetActuals() )
+  {
+    result += "<tr><td></td>";
+
+    unsigned column = 1;
+    while ( column < m_numColumns )
+    {
+      result += QString("<td>%1</td><td>%2</td>").arg(i18n("Budget"),i18n("Actual"));
+      column++;
+    }
+ 
+    if ( m_config_f.isShowingRowTotals() )
+      result += QString("<td>%1</td><td>%2</td>").arg(i18n("Budget"),i18n("Actual"));
+    result += "</tr>";
+  }
+  
   // Skip the body of the report if the report only calls for totals to be shown
   if ( m_config_f.detailLevel() != MyMoneyReport::eDetailTotal )
   {
-
     //
     // Outer groups
     //
@@ -1557,10 +1746,20 @@ QString PivotTable::renderHTML( void ) const
             QString rowdata;
             unsigned column = 1;
             while ( column < m_numColumns )
+            {
+              if ( m_config_f.isIncludingBudgetActuals() )
+                rowdata += QString("<td>%1</td>").arg(it_row.data().m_budget[column].formatMoney());
+              
               rowdata += QString("<td>%1</td>").arg(it_row.data()[column++].formatMoney());
+            }
 
             if ( m_config_f.isShowingRowTotals() )
+            {
+              if ( m_config_f.isIncludingBudgetActuals() )
+                rowdata += QString("<td>%1</td>").arg((*it_row).m_budget.m_total.formatMoney());
+
               rowdata += QString("<td>%1</td>").arg((*it_row).m_total.formatMoney());
+            }
 
             //
             // Row Header
@@ -1571,12 +1770,15 @@ QString PivotTable::renderHTML( void ) const
             innergroupdata += QString("<tr class=\"row-%1\"%2><td%3 class=\"left%4\">%5%6</td>")
               .arg(rownum & 0x01 ? "even" : "odd")
               .arg(rowname.isTopLevel() ? " id=\"topparent\"" : "")
-              .arg((*it_row).m_total.isZero() ? colspan : "")
+              .arg("") //.arg((*it_row).m_total.isZero() ? colspan : "")  // colspan the distance if this row will be blank
               .arg(rowname.hierarchyDepth() - 1)
               .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
               .arg((m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
 
-            if ( !(*it_row).m_total.isZero() )
+            // Don't print this row if it's going to be all zeros
+            // TODO: Uncomment this, and deal with the case where the data
+            // is zero, but the budget is non-zero
+            //if ( !(*it_row).m_total.isZero() )
               innergroupdata += rowdata;
 
             innergroupdata += "</tr>\n";
@@ -1612,7 +1814,7 @@ QString PivotTable::renderHTML( void ) const
             // The right solution is to use style=Xem, and calculate X.  Let's see if anyone complains
             // first :)  Also applies to the row header case above.
             ReportAccount rowname = (*it_innergroup).begin().key();
-            result += QString("<tr class=\"row-%1\"%2><td class=\"left%3\">%4%5</td>")
+            result += QString("<tr class=\"row-%1\"%2><td class=\"left%3\">%5%6</td>")
               .arg(rownum & 0x01 ? "even" : "odd")
               .arg( m_config_f.isShowingSubAccounts() ? "id=\"solo\"" : "" )
               .arg(rowname.hierarchyDepth() - 1)
@@ -1625,10 +1827,19 @@ QString PivotTable::renderHTML( void ) const
           {
             unsigned column = 1;
             while ( column < m_numColumns )
-              result += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
+            {
+              if ( m_config_f.isIncludingBudgetActuals() )
+                result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_budget[column].formatMoney());
 
+              result += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
+            }
+            
             if (  m_config_f.isShowingRowTotals() )
+            {
+              if ( m_config_f.isIncludingBudgetActuals() )
+                result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_budget.m_total.formatMoney());
               result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_total.formatMoney());
+            }
 
             result += "</tr>\n";
           }
@@ -1649,10 +1860,19 @@ QString PivotTable::renderHTML( void ) const
         result += QString("<tr class=\"sectionfooter\"><td class=\"left\">%1&nbsp;%2</td>").arg(i18n("Total")).arg((*it_outergroup).m_displayName);
         unsigned column = 1;
         while ( column < m_numColumns )
+        {
+          if ( m_config_f.isIncludingBudgetActuals() )
+            result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_budget[column].formatMoney());
+
           result += QString("<td>%1</td>").arg((*it_outergroup).m_total[column++].formatMoney());
+        }
 
         if (  m_config_f.isShowingRowTotals() )
+        {
+          if ( m_config_f.isIncludingBudgetActuals() )
+            result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_budget.m_total.formatMoney());
           result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_total.formatMoney());
+        }
 
         result += "</tr>\n";
       }
@@ -1673,10 +1893,19 @@ QString PivotTable::renderHTML( void ) const
     result += QString("<tr class=\"reportfooter\"><td class=\"left\">%1</td>").arg(i18n("Grand Total"));
     unsigned totalcolumn = 1;
     while ( totalcolumn < m_numColumns )
+    {
+      if ( m_config_f.isIncludingBudgetActuals() )
+        result += QString("<td>%1</td>").arg(m_grid.m_total.m_budget[totalcolumn].formatMoney());
+      
       result += QString("<td>%1</td>").arg(m_grid.m_total[totalcolumn++].formatMoney());
+    }
 
     if (  m_config_f.isShowingRowTotals() )
+    {
+      if ( m_config_f.isIncludingBudgetActuals() )
+        result += QString("<td>%1</td>").arg(m_grid.m_total.m_budget.m_total.formatMoney());
       result += QString("<td>%1</td>").arg(m_grid.m_total.m_total.formatMoney());
+    }
 
     result += "</tr>\n";
   }

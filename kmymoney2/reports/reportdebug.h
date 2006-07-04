@@ -35,7 +35,7 @@ namespace reports {
 //#define DEBUG_REPORTS
 
 #define DEBUG_ENABLED_BY_DEFAULT false
-
+ 
 #ifdef DEBUG_REPORTS
 
 // define to filter out account names & transaction amounts

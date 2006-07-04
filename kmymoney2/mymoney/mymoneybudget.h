@@ -136,9 +136,9 @@ public:
     // get functions
     const QCString& id( void ) const { return m_id; }
     const QCString& parentid( void ) const { return m_parentId; }
-    const bool& budgetsubaccounts( void ) const { return m_budgetsubaccounts; }
+    bool budgetsubaccounts( void ) const { return m_budgetsubaccounts; }
     const eBudgetLevel& budgetlevel( void ) const { return m_budgetlevel; }
-    const bool& getDefault( void ) const {return m_default;}
+    bool getDefault( void ) const {return m_default;}
     const PeriodGroup& getPeriod( const QDate &_date ) const {return m_periods[_date];}
     const QMap<QDate, PeriodGroup>& getPeriods( void ) const {return m_periods;}
     const MyMoneyMoney balance( void ) const 
@@ -168,6 +168,7 @@ public:
   QCString id(void) const { return m_id; }
   const AccountGroup & account(const QCString _id) const;
   bool contains(const QCString _id) const { return m_accounts.contains(_id); }
+  QValueList<AccountGroup> getaccounts(void) const { return m_accounts.values(); }
 
   // Simple set operations
   void setName(const QString& _name) { m_name = _name; }

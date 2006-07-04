@@ -67,7 +67,9 @@ MyMoneyReport::MyMoneyReport(void):
     m_chartGridLines(true),
     m_chartByDefault(false),
     m_includeSchedules(false),
-    m_includeTransfers(false)
+    m_includeTransfers(false),
+    m_hasBudget(false),
+    m_includeBudgetActuals(false)
 {
 }
 
@@ -90,7 +92,9 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
     m_chartGridLines(true),
     m_chartByDefault(false),
     m_includeSchedules(false),
-    m_includeTransfers(false)
+    m_includeTransfers(false),
+    m_hasBudget(false),
+    m_includeBudgetActuals(false)
 {
   if ( m_reportType == ePivotTable )
     m_columnType = static_cast<EColumnType>(_ct);
@@ -283,6 +287,9 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   e.setAttribute("datelock", kDateLockText[m_dateLock]);
   e.setAttribute("includeschedules",m_includeSchedules);
   e.setAttribute("columnsaredays",m_columnsAreDays);
+  e.setAttribute("includestransfers",m_includeTransfers);
+  e.setAttribute("hasbudget",m_hasBudget);
+  e.setAttribute("includesactuals",m_includeBudgetActuals);
 
   e.setAttribute("charttype",kChartTypeText[m_chartType]);
   e.setAttribute("chartdatalabels",m_chartDataLabels);
@@ -291,13 +298,13 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
 
   if ( m_reportType == ePivotTable )
   {
-    e.setAttribute("type","pivottable 1.12");
+    e.setAttribute("type","pivottable 1.13");
     e.setAttribute("detail", kDetailLevelText[m_detailLevel]);
     e.setAttribute("columntype", kColumnTypeText[m_columnType]);
   }
   else if ( m_reportType == eQueryTable )
   {
-    e.setAttribute("type","querytable 1.12");
+    e.setAttribute("type","querytable 1.13");
 
     QStringList columns;
     unsigned qc = m_queryColumns;
@@ -535,7 +542,10 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_loans = e.attribute("loans","0").toUInt();
     m_includeSchedules = e.attribute("includeschedules","0").toUInt();
     m_columnsAreDays = e.attribute("columnsaredays","0").toUInt();
-
+    m_includeTransfers = e.attribute("includestransfers","0").toUInt();
+    m_hasBudget = e.attribute("hasbudget","0").toUInt();
+    m_includeBudgetActuals = e.attribute("includesactuals","0").toUInt();
+  
     i = kChartTypeText.findIndex(e.attribute("charttype"));
     if ( i != -1 )
       m_chartType = static_cast<EChartType>(i);
