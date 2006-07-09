@@ -804,7 +804,7 @@ const bool KMyMoneyView::saveFile(const KURL& url, const QString& key)
   }
 
   if(KMessageBox::warningContinueCancel(this, i18n(
-      "Since this version of KMyMoney only writes data files in it's new "
+      "Since this version of KMyMoney only writes data files in its new "
       "format, files written with this version cannot be read by KMyMoney version 0.4. "
       "If you still want to use older versions of KMyMoney with your data files, "
       "please make sure you keep a backup-file of your finance data. "
