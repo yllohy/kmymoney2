@@ -230,20 +230,29 @@ void KInvestmentListItem::update(const QCString& /*id*/)
 
     //column 2 is the net value (price * quantity owned)
     MyMoneyPrice price = file->price(m_account.currencyId(), m_tradingCurrency.id());
-    setText(COLUMN_VALUE_INDEX, (file->balance(m_account.id()) * price.rate()).formatMoney(m_tradingCurrency.tradingSymbol(), prec));
+    if(price.isValid()) {
+      setText(COLUMN_VALUE_INDEX, (file->balance(m_account.id()) * price.rate()).formatMoney(m_tradingCurrency.tradingSymbol(), prec));
+    } else {
+      setText(COLUMN_VALUE_INDEX, "---");
+    }
 
     //column 3 (COLUMN_QUANTITY_INDEX) is the quantity of shares owned
     prec = MyMoneyMoney::denomToPrec(security.smallestAccountFraction());
     setText(COLUMN_QUANTITY_INDEX, file->balance(m_account.id()).formatMoney("", prec));
 
     //column 4 is the current price
-    // Get the price precision from the configuration  
+    // Get the price precision from the configuration
     KConfig *kconfig = KGlobal::config();
     kconfig->setGroup("General Options");
     prec = kconfig->readNumEntry("PricePrecision", 4);
-    
+
 //     prec = MyMoneyMoney::denomToPrec(m_tradingCurrency.smallestAccountFraction());
-    setText(COLUMN_PRICE_INDEX, price.rate().formatMoney(m_tradingCurrency.tradingSymbol(), prec));
+    if(price.isValid()) {
+      setText(COLUMN_PRICE_INDEX, price.rate().formatMoney(m_tradingCurrency.tradingSymbol(), prec));
+    } else {
+      setText(COLUMN_PRICE_INDEX, "---");
+    }
+
 
 // FIXME Implement me
 #if 0

@@ -1,3 +1,6 @@
+2006-07-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't show price/value if price information is invalid
+
 2006-07-04 Ace Jones <acejones@users.sourceforge.net>
   * Fixed bank ID handling in QIF imports (This was the purpose of my 5/29
     checkin, but that was incomplete)
