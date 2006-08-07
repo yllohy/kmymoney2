@@ -88,6 +88,7 @@ void MyMoneyGncReader::setOptions () {
     // set users input options
     m_dropSuspectSchedules = dlg.scheduleOption();
     m_investmentOption = dlg.investmentOption();
+    m_decoder = dlg.decodeOption();
     gncdebug = dlg.generalDebugOption();
     xmldebug = dlg.xmlDebugOption();
     bAnonymize = dlg.anonymizeOption();
@@ -184,6 +185,14 @@ bool GncObject::isDataElement (const QString &elName, const QXmlAttributes& elAt
   return (false);
   PASS
 }
+
+// return the variable string, decoded if required
+const QString GncObject::var (int i) const {
+  return (pMain->m_decoder == 0
+      ? *(m_v.at(i))
+      : pMain->m_decoder->toUnicode (*(m_v.at(i))));
+}
+
 void GncObject::adjustHideFactor () {
   m_moneyHideFactor = pMain->m_fileHideFactor * (1.0 + (int)(200.0 * rand()/(RAND_MAX+1.0))) / 100.0;
 }
@@ -931,6 +940,7 @@ MyMoneyGncReader::MyMoneyGncReader() {
   m_templateList.setAutoDelete (true);
 #endif // _GNCFILEANON
   m_commodityCount = m_priceCount = m_accountCount = m_transactionCount = m_templateCount = m_scheduleCount = 0;
+  m_decoder = 0;
 }
 
 //***************** Destructor *************************
@@ -948,11 +958,11 @@ void MyMoneyGncReader::readFile(QIODevice* pDevice, IMyMoneySerialize* storage) 
   setOptions ();
   // get a file anonymization factor from the user
   if (bAnonymize) setFileHideFactor ();
-  m_defaultPayee = createPayee (i18n("Unknown payee"));
+  //m_defaultPayee = createPayee (i18n("Unknown payee"));
 
-  xr = new XmlReader (this);
+  m_xr = new XmlReader (this);
   try {
-    xr->processFile (pDevice);
+    m_xr->processFile (pDevice);
     terminate (); // do all the wind-up things
   } catch (MyMoneyException *e) {
     QMessageBox::critical (0, PACKAGE, i18n("Import failed\n\n") + e->what(),
@@ -960,7 +970,7 @@ void MyMoneyGncReader::readFile(QIODevice* pDevice, IMyMoneySerialize* storage) 
     qFatal ("%s", e->what().latin1());
   } // end catch
   signalProgress ( -1, -1); // switch off progress bar
-  delete xr;
+  delete m_xr;
   qDebug ("Exiting gnucash importer");
   return ;
 }
@@ -975,13 +985,13 @@ void MyMoneyGncReader::readFile(QString in, QString out) {
   bAnonymize = true;
   // get a file anonymization factor from the user
   setFileHideFactor ();
-  xr = new XmlReader (this);
+  m_xr = new XmlReader (this);
   try {
-    xr->processFile (&pDevice);
+    m_xr->processFile (&pDevice);
   } catch (MyMoneyException *e) {
     qFatal ("%s", e->latin1());
   } // end catch
-  delete xr;
+  delete m_xr;
   pDevice.close();
   outFile.close();
   return ;
@@ -1024,6 +1034,7 @@ void MyMoneyGncReader::setFileHideFactor () {
     }
 }
 #ifndef _GNCFILEANON
+
 //********************************* convertCommodity *******************************************
 void MyMoneyGncReader::convertCommodity (const GncCommodity *gcm) {
   Q_CHECK_PTR (gcm);
@@ -1194,7 +1205,7 @@ void MyMoneyGncReader::convertTransaction (const GncTransaction *gtx) {
   if (m_transactionCount == 0) signalProgress (0, gtx->gncTransactionCount(), i18n("Loading transactions..."));
   // initialize class variables related to transactions
   m_txCommodity = "";
-  m_txPayeeId = m_defaultPayee;
+  m_txPayeeId = "";
   m_potentialTransfer = true;
   m_splitList.clear(); m_liabilitySplitList.clear(); m_otherSplitList.clear();
   // payee, dates, commodity
@@ -1370,12 +1381,16 @@ MyMoneyTransaction MyMoneyGncReader::convertTemplateTransaction (const QString s
 
   // initialize class variables related to transactions
   m_txCommodity = "";
-  m_txPayeeId = m_defaultPayee;
+  m_txPayeeId = "";
   m_potentialTransfer = true;
   m_splitList.clear(); m_liabilitySplitList.clear(); m_otherSplitList.clear();
 
   // payee, dates, commodity
-  if (!gtx->desc().isEmpty()) m_txPayeeId = createPayee (gtx->desc());
+  if (!gtx->desc().isEmpty()) {
+    m_txPayeeId = createPayee (gtx->desc());
+  } else {
+    m_txPayeeId = createPayee (i18n("Unknown payee")); // schedules require a payee tho normal tx's don't. not sure why...
+  }
   tx.setEntryDate(gtx->dateEntered());
   tx.setPostDate(gtx->datePosted());
   m_txDatePosted = tx.postDate();

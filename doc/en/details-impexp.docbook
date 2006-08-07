@@ -366,6 +366,20 @@ These will not necessarily, however, match precisely those reports available in 
 <sect3><title>Scheduled Transactions</title>
 <para>See <link linkend="gncschedules">"Scheduled Transactions"</link> above.</para>
 </sect3>
+<sect3><title>Decoding Options</title>
+<para>
+If your native language is written in letters or symbols which are different from those used in the 'latin'
+(i.e. generally Western European) languages, these will be represented in a special fashion ('encoded') 
+in your GnuCash file. If these letters are not displayed correctly on your screen, then they must be decoded.
+Currently, it is often not possible to detect accurately which form of decoding must be used,
+so you may need to set this option and select an entry from the list.
+In general, the first item in the list will be that which is considered appropriate
+for your locale (i.e. the country and language which was selected as native when your
+operating system was installed), so this should be tried first.
+Since the import process does not overwrite your GnuCash file,
+you are free to experiment with any of these selections.
+</para>
+</sect3>
 <sect3><title>Debug Options</title>
 <para>
 These need only be used in the event of import problems, which in

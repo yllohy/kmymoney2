@@ -152,6 +152,7 @@ class QIODevice;
 #include <qptrstack.h>
 #include <qxml.h>
 #include <qdatetime.h>
+#include <qtextcodec.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -223,7 +224,7 @@ protected:
   // called by isDataElement to set variable pointer
   virtual void dataEl(const QXmlAttributes&) {m_dataPtr = m_v.at(m_state); m_anonClass = m_anonClassList[m_state];};
   // return gnucash data string variable pointer
-  virtual const QString var (int i) const { return (*(m_v.at(i)));};
+  virtual const QString var (int i) const;
   // anonymize data
   virtual QString hide (QString, unsigned int);
   
@@ -651,7 +652,7 @@ public:
 #else
   void readFile (QString, QString);
 #endif // _GNCFILEANON
-
+  QTextCodec *m_decoder;
 protected:
   friend class GncObject; // pity we can't just say GncObject. And compiler doesn't like multiple friends on one line...
   friend class GncFile; // there must be a better way...
@@ -748,7 +749,7 @@ private:
 #else
   QTextStream oStream;
 #endif // _GNCFILEANON
-  XmlReader *xr;
+  XmlReader *m_xr;
   /** to hold the callback pointer for the progress bar */
   void (*m_progressCallback)(int, int, const QString&);
   /** counters for reporting */
@@ -778,7 +779,6 @@ private:
   /**
     * Temporary storage areas for transaction processing
     */
-  QString m_defaultPayee; // kmm is unhappy without a payee though gnc doesn't necessarily have one
   QCString m_txCommodity; // save commodity for current transaction
   QString m_txPayeeId;    // gnc has payee at tx level, we need it at split level
   QDate m_txDatePosted;   // ditto for post date
