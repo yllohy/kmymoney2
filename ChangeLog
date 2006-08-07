@@ -1,3 +1,8 @@
+2006-08-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash importer
+    - Add non UTF-8 support (manual selection)
+    - remove unnecessary "Unknown payee" references
+
 2006-07-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't show price/value if price information is invalid
 
@@ -25,7 +30,7 @@
   * Fixed #1505732 (Frequent crash on changing/opening file)
 
 2006-06-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
-  * Applied patch for cppunit.m4 provided by Daniel Calviño Sánchez
+  * Applied patch for cppunit.m4 provided by Daniel Calviï¿½ Sï¿½chez
 
 2006-06-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed more GPG problems in KGPGFile::GPGAvailable and
