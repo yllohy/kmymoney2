@@ -209,11 +209,6 @@ protected:
   static void checkVersion (const QString&, const QXmlAttributes&);
   // get name of element processed by 'this'
   const QString getElName () const { return (m_elementName);};
-  // return gnucash counts (not always accurate!)
-  int gncCommodityCount() const { return (m_gncCommodityCount);};
-  int gncAccountCount () const { return (m_gncAccountCount);};
-  int gncTransactionCount () const { return (m_gncTransactionCount);};
-  int gncScheduleCount () const { return (m_gncScheduleCount);};
   // pass 'main' pointer to object
   void setPm (MyMoneyGncReader *pM) {pMain = pM;};
   // debug only
@@ -246,11 +241,6 @@ protected:
   enum anonActions {ASIS, SUPPRESS, NXTACC, NXTEQU, NXTPAY, NXTSCHD, MAYBEQ, MONEY1, MONEY2}; // anonymize actions - see hide()
   unsigned int m_anonClass; // class of current data item for anonymizer
   static double m_moneyHideFactor; // a per-transaction factor
-  
-  static int m_gncCommodityCount; // to hold count data from gnc file
-  static int m_gncAccountCount;
-  static int m_gncTransactionCount;
-  static int m_gncScheduleCount;
 };
 
 // *****************************************************************************
@@ -335,6 +325,16 @@ private:
   mutable QPtrList<GncObject> m_kvpList;
   QString m_kvpType;  // type is an XML attribute
 };
+// ************* GncLot********************************************
+// KMM doesn't have support for lots as yet
+class GncLot : public GncObject {
+  public:
+    GncLot ();
+    ~GncLot();
+  protected:
+    friend class MyMoneyGncReader;
+  private:
+};
 
 /** Following are the main objects within the gnucash file, which correspond largely one-for-one
     with similar objects in the kmymoney structure, apart from schedules which gnc splits between
@@ -407,14 +407,14 @@ protected:
   const QString parent () const { return (var(PARENT));};
 private:
   // subsidiary objects/elements
-  enum AccountSubEls {CMDTY, KVP, END_Account_SELS };
+  enum AccountSubEls {CMDTY, KVP, LOTS, END_Account_SELS };
   virtual GncObject *startSubEl();
   virtual void endSubEl(GncObject *);
   virtual void terminate();
   // data elements
   enum AccountDataEls {ID, NAME, DESC, TYPE, PARENT, END_Account_DELS };
   GncCmdtySpec *m_vpCommodity;
-  QPtrList<GncObject> kvpList;
+  QPtrList<GncObject> m_kvpList;
 };
 // ************* GncSplit********************************************
 class GncSplit : public GncObject {
@@ -659,6 +659,8 @@ protected:
   friend class GncDate;
   friend class GncCmdtySpec;
   friend class GncKvp;
+  friend class GncLot;
+  friend class GncCountData;
   friend class GncCommodity;
   friend class GncPrice;
   friend class GncAccount;
@@ -719,6 +721,14 @@ protected:
        N.B. :- option 2 doesn't really work quite as desired at present
   */
   unsigned int m_investmentOption;
+    // set gnucash counts (not always accurate!)
+  void setGncCommodityCount(int i) { m_gncCommodityCount = i;};
+  void setGncAccountCount (int i) { m_gncAccountCount = i;};
+  void setGncTransactionCount (int i) { m_gncTransactionCount = i;};
+  void setGncScheduleCount (int i) { m_gncScheduleCount = i;};
+  void setSmallBusinessFound (bool b) { m_smallBusinessFound = b;};
+  void setBudgetsFound (bool b) { m_budgetsFound = b;};
+  void setLotsFound (bool b) { m_lotsFound = b;};
   /*          Debug Options
     If you don't know what these are, best leave them alone.
        gncdebug - produce general debug messages
@@ -752,6 +762,17 @@ private:
   XmlReader *m_xr;
   /** to hold the callback pointer for the progress bar */
   void (*m_progressCallback)(int, int, const QString&);
+  // counters holding count data from the Gnc 'count-data' section
+  int m_gncCommodityCount;
+  int m_gncAccountCount;
+  int m_gncTransactionCount;
+  int m_gncScheduleCount;
+  
+  // flags indicating detection of features not (yet?) supported
+  bool m_smallBusinessFound;
+  bool m_budgetsFound;
+  bool m_lotsFound;
+  
   /** counters for reporting */
   int m_commodityCount;
   int m_priceCount;

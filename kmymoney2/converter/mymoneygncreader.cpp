@@ -72,11 +72,6 @@ email                : mte@users.sourceforge.net
 #endif // _GNCFILEANON
 
 // init static variables
-// to hold gnucash count data (only used for progress bar)
-int GncObject::m_gncCommodityCount = 0;
-int GncObject::m_gncAccountCount = 0;
-int GncObject::m_gncTransactionCount = 0;
-int GncObject::m_gncScheduleCount = 0;
 double MyMoneyGncReader::m_fileHideFactor = 0.0;
 double GncObject::m_moneyHideFactor;
 
@@ -112,10 +107,6 @@ void MyMoneyGncReader::setOptions () {
 
 GncObject::GncObject () {
   m_v.setAutoDelete (true);
-  m_gncCommodityCount = 0;
-  m_gncAccountCount = 0;
-  m_gncTransactionCount = 0;
-  m_gncScheduleCount = 0;
 }
 
 // Check that the current element is of a version we are coded for
@@ -391,6 +382,14 @@ void GncKvp::endSubEl(GncObject *subObj) {
   m_dataPtr = 0;
   return ;
 }
+//*********************************GncLot*********************************************
+GncLot::GncLot() {
+  m_subElementListCount = 0;
+  m_dataElementListCount = 0;
+}
+
+GncLot::~GncLot() {}
+
 //*********************************GncCountData***************************************
 GncCountData::GncCountData() {
   m_subElementListCount = 0;
@@ -407,17 +406,23 @@ void GncCountData::initiate (const QString&, const QXmlAttributes& elAttrs) {
 }
 
 void GncCountData::terminate () {
+  int i = m_v.at(0)->toInt();
   if (m_countType == "commodity") {
-    m_gncCommodityCount = m_v.at(0)->toInt(); return ;
+    pMain->setGncCommodityCount(i); return ;
   }
   if (m_countType == "account") {
-    m_gncAccountCount = m_v.at(0)->toInt(); return ;
+    pMain->setGncAccountCount(i); return ;
   }
   if (m_countType == "transaction") {
-    m_gncTransactionCount = m_v.at(0)->toInt(); return ;
+    pMain->setGncTransactionCount(i); return ;
   }
   if (m_countType == "schedxaction") {
-    m_gncScheduleCount = m_v.at(0)->toInt(); return ;
+    pMain->setGncScheduleCount(i); return ;
+  }
+  if (i != 0) {
+    if (m_countType == "budget") pMain->setBudgetsFound(true);
+    else if (m_countType.left(7) == "gnc:Gnc") pMain->setSmallBusinessFound(true);
+    else if (pMain->xmldebug) qDebug ("Unknown count type %s", m_countType.latin1());
   }
   return ;
 }
@@ -494,7 +499,7 @@ void GncPrice::terminate() {
 //************* GncAccount********************************************
 GncAccount::GncAccount () {
   m_subElementListCount = END_Account_SELS;
-  static const QString subEls[] = {"act:commodity", "slot"};
+  static const QString subEls[] = {"act:commodity", "slot", "act:lots"};
   m_subElementList = subEls;
   m_dataElementListCount = END_Account_DELS;
   static const QString dataEls[] = {"act:id", "act:name", "act:description",
@@ -502,7 +507,7 @@ GncAccount::GncAccount () {
   m_dataElementList = dataEls;
   static const unsigned int anonClasses[] = {ASIS, NXTACC, SUPPRESS, ASIS, ASIS};
   m_anonClassList = anonClasses;
-  kvpList.setAutoDelete (true);
+  m_kvpList.setAutoDelete (true);
   for (uint i = 0; i < m_dataElementListCount; i++) m_v.append (new QString (""));
   m_vpCommodity = NULL;
 }
@@ -518,6 +523,9 @@ GncObject *GncAccount::startSubEl() {
   switch (m_state) {
   case CMDTY: next = new GncCmdtySpec; break;
   case KVP: next = new GncKvp; break;
+  case LOTS: next = new GncLot();
+             pMain->setLotsFound(true); // we don't handle lots; just set flag to report
+             break;
   default: throw new MYMONEYEXCEPTION ("GncAccount rcvd invalid m_state");
   }
   return (next);
@@ -528,7 +536,7 @@ void GncAccount::endSubEl(GncObject *subObj) {
   if (pMain->xmldebug) qDebug ("Account end subel");
   switch (m_state) {
   case CMDTY: m_vpCommodity = static_cast<GncCmdtySpec *>(subObj); break;
-  case KVP: kvpList.append (subObj);
+  case KVP: m_kvpList.append (subObj);
   }
   return ;
 }
@@ -939,6 +947,9 @@ MyMoneyGncReader::MyMoneyGncReader() {
   m_messageList.setAutoDelete (true);
   m_templateList.setAutoDelete (true);
 #endif // _GNCFILEANON
+// to hold gnucash count data (only used for progress bar)
+  m_gncCommodityCount = m_gncAccountCount = m_gncTransactionCount = m_gncScheduleCount = 0;
+  m_smallBusinessFound = m_budgetsFound = m_lotsFound = false;
   m_commodityCount = m_priceCount = m_accountCount = m_transactionCount = m_templateCount = m_scheduleCount = 0;
   m_decoder = 0;
 }
@@ -1039,7 +1050,7 @@ void MyMoneyGncReader::setFileHideFactor () {
 void MyMoneyGncReader::convertCommodity (const GncCommodity *gcm) {
   Q_CHECK_PTR (gcm);
   MyMoneySecurity equ;
-  if (m_commodityCount == 0) signalProgress (0, gcm->gncCommodityCount(), i18n("Loading commodities..."));
+  if (m_commodityCount == 0) signalProgress (0, m_gncCommodityCount, i18n("Loading commodities..."));
   if (!gcm->isCurrency()) { // currencies should not be present here but...
     equ.setName (gcm->name());
     equ.setTradingSymbol (gcm->id());
@@ -1088,7 +1099,7 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
   TRY
 
   MyMoneyAccount acc;
-  if (m_accountCount == 0) signalProgress (0, gac->gncAccountCount(), i18n("Loading accounts..."));
+  if (m_accountCount == 0) signalProgress (0, m_gncAccountCount, i18n("Loading accounts..."));
   acc.setName(gac->name());
 
   acc.setDescription(gac->desc());
@@ -1104,8 +1115,17 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
 
   acc.setParentAccountId (gac->parent().utf8());
   // now determine the account type and its parent id
-  if ("BANK" == gac->type()) {
+  /* This list taken from
+# Feb 2006: A RELAX NG Compact schema for gnucash "v2" XML files.
+# Copyright (C) 2006 Joshua Sled <jsled@asynchronous.org>
+"NO_TYPE" "BANK" "CASH" "CREDIT" "ASSET" "LIABILITY" "STOCK" "MUTUAL" "CURRENCY"
+"INCOME" "EXPENSE" "EQUITY" "RECEIVABLE" "PAYABLE" "CHECKING" "SAVINGS" "MONEYMRKT" "CREDITLINE" 
+  Some don't seem to be used in practice. Not sure what CREDITLINE s/be converted as.
+  */
+  if ("BANK" == gac->type() || "CHECKING" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Checkings);
+  } else if ("SAVINGS" == gac->type()) {
+    acc.setAccountType(MyMoneyAccount::Savings);
   } else if ("ASSET" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Asset);
   } else if ("CASH" == gac->type()) {
@@ -1136,6 +1156,8 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
     acc.setAccountType(MyMoneyAccount::Asset);
   } else if ("PAYABLE" == gac->type()) {
     acc.setAccountType(MyMoneyAccount::Liability);
+  } else if ("MONEYMRKT" == gac->type()) {
+    acc.setAccountType(MyMoneyAccount::MoneyMarket);
   } else { // we have here an account type we can't currently handle
     QString em =
         i18n("Current importer does not recognize GnuCash account type %1").arg(gac->type());
@@ -1171,7 +1193,7 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
     // NB: In gnc, this selection is per account, in KMM, per security
     // This is unlikely to cause problems in practice. If it does,
     // we probably need to introduce a 'pricing basis' in the account class
-    QPtrListIterator<GncObject> kvpi (gac->kvpList);
+    QPtrListIterator<GncObject> kvpi (gac->m_kvpList);
     GncKvp *k;
     while ((k = static_cast<GncKvp *>(kvpi.current())) != 0) {
       if (k->key().contains("price-source") && k->type() == "string") {
@@ -1182,6 +1204,19 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
       }
     }
   }
+  
+  // check for tax-related status
+  QPtrListIterator<GncObject> kvpi (gac->m_kvpList);
+  GncKvp *k;
+  while ((k = static_cast<GncKvp *>(kvpi.current())) != 0) {
+    if (k->key().contains("tax-related") && k->type() == "integer" && k->value() == "1") {
+      acc.setValue ("Tax", "Yes");
+      break;
+    } else {
+      ++kvpi;
+    }
+  }
+
   // all the details from the file about the account should be known by now.
   // calling addAccount will automatically fill in the account ID.
   m_storage->addAccount(acc);
@@ -1190,6 +1225,7 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
   if (gncdebug) qDebug("Gnucash account %s has id of %s, type of %s, parent is %s",
                          gac->id().latin1(), acc.id().data(),
                          KMyMoneyUtils::accountTypeToString(acc.accountType()).latin1(), acc.parentAccountId().data());
+
   signalProgress (++m_accountCount, 0);
   return ;
   PASS
@@ -1202,7 +1238,7 @@ void MyMoneyGncReader::convertTransaction (const GncTransaction *gtx) {
   MyMoneySplit split;
   unsigned int i;
 
-  if (m_transactionCount == 0) signalProgress (0, gtx->gncTransactionCount(), i18n("Loading transactions..."));
+  if (m_transactionCount == 0) signalProgress (0, m_gncTransactionCount, i18n("Loading transactions..."));
   // initialize class variables related to transactions
   m_txCommodity = "";
   m_txPayeeId = "";
@@ -1581,7 +1617,7 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
   QDate today = QDate::currentDate();
   int numOccurs, remOccurs;
 
-  if (m_scheduleCount == 0) signalProgress (0, gsc->gncScheduleCount(), i18n("Loading schedules..."));
+  if (m_scheduleCount == 0) signalProgress (0, m_gncScheduleCount, i18n("Loading schedules..."));
   // schedule name
   sc.setName(gsc->name());
   // find the transaction template as stored earlier
@@ -1607,7 +1643,11 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
     MyMoneySchedule::occurenceE occ; // equivalent occurence code
     MyMoneySchedule::weekendOptionE wo;
   };
+  /* other intervals supported by gnc according to Josh Sled's schema (see above)
+   "none" "semi_monthly"
+   */
   static convIntvl vi [] = {
+                             {"once", 'o', 1, MyMoneySchedule::OCCUR_ONCE, MyMoneySchedule::MoveNothing },
                              {"daily" , 'd', 1, MyMoneySchedule::OCCUR_DAILY, MyMoneySchedule::MoveNothing },
                              //{"daily_mf", 'd', 1, MyMoneySchedule::OCCUR_DAILY, MyMoneySchedule::MoveMonday }, doesn't work, need new freq in kmm
                              {"weekly", 'w', 1, MyMoneySchedule::OCCUR_WEEKLY, MyMoneySchedule::MoveNothing },
@@ -1861,6 +1901,15 @@ const QString MyMoneyGncReader::buildReportSection (const QString source) {
       s.append (QString::number(m_scCount) + i18n(" possible schedule problems were noted\n"));
       more = true;
     }
+    QString unsupported ("");
+    QString lineSep ("\n  - ");
+    if (m_smallBusinessFound) unsupported.append(lineSep + i18n("Small Business Features (Customers, Invoices, etc.)"));
+    if (m_budgetsFound) unsupported.append(lineSep + i18n("Budgets"));
+    if (m_lotsFound) unsupported.append(lineSep + i18n("Lots"));
+    if (!unsupported.isEmpty()) {
+      unsupported.prepend(i18n("The following features found in your file are not currently supported:"));
+      s.append(unsupported);
+    }
     if (more) s.append (i18n("\n\nPress More for further information"));
   } else { // we need to retrieve the posted messages for this source
     unsigned int i, j;
@@ -1947,6 +1996,8 @@ QDate MyMoneyGncReader::incrDate (QDate lastDate, unsigned char interval, unsign
     return (lastDate.addMonths(intervalCount));
   case 'y':
     return (lastDate.addYears(intervalCount));
+  case 'o': // once-only
+    return (lastDate);
   }
   throw new MYMONEYEXCEPTION (i18n("Internal error - invalid interval char in incrDate"));
   QDate r = QDate(); return (r); // to keep compiler happy
