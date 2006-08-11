@@ -1,3 +1,10 @@
+2006-08-11 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * GnuCash importer changes
+    - Support for GnuCash V2.0 files (maybe incomplete)
+    - Handle additional account and schedule types
+    - Preserve account's tax-related status
+    - Minor coding changes
+
 2006-08-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash importer
     - Add non UTF-8 support (manual selection)
