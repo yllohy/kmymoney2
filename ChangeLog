@@ -1,3 +1,7 @@
+2006-08-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by David Houlden to support automake and
+    autoheader 2.6
+
 2006-08-11 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * GnuCash importer changes
     - Support for GnuCash V2.0 files (maybe incomplete)
