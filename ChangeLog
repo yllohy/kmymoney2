@@ -1,3 +1,6 @@
+2006-08-18 Robert Wadley <robntina@users.sourceforge.net>
+  * added some icons to use in the icon bar for 'show/hide reconcile', 'show/hide unused categories', and 'update prices' (investments)
+
 2006-08-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by David Houlden to support automake and
     autoheader 2.6
