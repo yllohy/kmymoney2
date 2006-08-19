@@ -1,5 +1,10 @@
+2006-08-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Integrated new icons into the application
+  * Changed shortcut for 'show all accounts' to Ctrl+Shift+A
+
 2006-08-18 Robert Wadley <robntina@users.sourceforge.net>
-  * added some icons to use in the icon bar for 'show/hide reconcile', 'show/hide unused categories', and 'update prices' (investments)
+  * added some icons to use in the icon bar for 'show/hide reconcile',
+    'show/hide unused categories', and 'update prices' (investments)
 
 2006-08-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by David Houlden to support automake and
@@ -27,7 +32,7 @@
     to be written
 
 2006-06-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
-  * Fixed #1514522 (Zero-amounted tarnsfer transaction leads to crash)
+  * Fixed #1514522 (Zero-amounted transfer transaction leads to crash)
   * Added check for minimum KDE version
   * Adjusted minimum KDE and QT versions in configure.in.in
 

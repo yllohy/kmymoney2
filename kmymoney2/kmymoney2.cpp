@@ -282,9 +282,9 @@ void KMyMoney2App::initActions()
   // The View menu
   // *************
   new KToggleAction(i18n("Show Transaction Detail"), KShortcut("Ctrl+T"), actionCollection(), "view_show_transaction_detail");
-  new KToggleAction(i18n("Hide reconciled transactions"), "", KShortcut("Ctrl+R"), this, SLOT(slotHideReconciledTransactions()), actionCollection(), "view_hide_reconciled_transactions");
-  new KToggleAction(i18n("Hide unused categories"), "", KShortcut("Ctrl+U"), this, SLOT(slotHideUnusedCategories()), actionCollection(), "view_hide_unused_categories");
-  new KToggleAction(i18n("Show all accounts"), "", KShortcut("Ctrl+A"), this, SLOT(slotShowAllAccounts()), actionCollection(), "view_show_all_accounts");
+  new KToggleAction(i18n("Hide reconciled transactions"), "hide_reconciled", KShortcut("Ctrl+R"), this, SLOT(slotHideReconciledTransactions()), actionCollection(), "view_hide_reconciled_transactions");
+  new KToggleAction(i18n("Hide unused categories"), "hide_categories", KShortcut("Ctrl+U"), this, SLOT(slotHideUnusedCategories()), actionCollection(), "view_hide_unused_categories");
+  new KToggleAction(i18n("Show all accounts"), "", KShortcut("Ctrl+Shift+A"), this, SLOT(slotShowAllAccounts()), actionCollection(), "view_show_all_accounts");
 
   // *********************
   // The institutions menu
