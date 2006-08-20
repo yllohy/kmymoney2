@@ -133,6 +133,8 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
 
   connect(&m_webQuote,SIGNAL(quote(const QString&, const QString&,const QDate&, const double&)),
     this,SLOT(slotReceivedQuote(const QString&, const QString&,const QDate&, const double&)));
+  connect(&m_webQuote,SIGNAL(failed(const QString&, const QString&)),
+    this,SLOT(slotQuoteFailed(const QString&, const QString&)));
   connect(&m_webQuote,SIGNAL(status(const QString&)),
     this,SLOT(logStatusMessage(const QString&)));
   connect(&m_webQuote,SIGNAL(error(const QString&)),
@@ -324,6 +326,61 @@ void KEquityPriceUpdateDlg::slotConfigureClicked()
 {
 }
 
+
+void KEquityPriceUpdateDlg::slotQuoteFailed(const QString& _id, const QString& _symbol)
+{
+  QListViewItem* item = lvEquityList->findItem(_id,ID_COL,Qt::ExactMatch);
+  
+  // Give the user some options
+
+  int result = KMessageBox::questionYesNoCancel(this,i18n("Failed to retrieve a quote for %1 from %2.  Would you like to disable online price updates for this security?").arg(_symbol,item->text(SOURCE_COL)),i18n("Price Update Failed"),KStdGuiItem::yes(),KStdGuiItem::no(),"KEquityPriceUpdateDlg::slotQuoteFailed::Price Update Failed");
+
+  if ( result == KMessageBox::Yes )
+  {
+    // Disable price updates for this security
+
+    // Get this security (by ID)
+    MyMoneySecurity security = MyMoneyFile::instance()->security(_id.utf8());
+    
+    // Set the quote source to blank
+    security.setValue("kmm-online-source",QString());
+    
+    // Re-commit the security
+    MyMoneyFile::instance()->modifySecurity(security);
+  }
+  
+  // As long as the user doesn't want to cancel, move on!
+  if ( result != KMessageBox::Cancel )
+  {
+    QListViewItem* next = NULL;
+    prgOnlineProgress->advance(1);
+    item->listView()->setSelected(item, false);
+ 
+    // launch the NEXT one ... in case of m_fUpdateAll == false, we
+    // need to parse the list to find the next selected one
+    next = item->nextSibling();
+    if ( !m_fUpdateAll )
+    {
+      while(next && !next->isSelected())
+      {
+        prgOnlineProgress->advance(1);
+        next = next->nextSibling();
+      }
+    }
+    if (next)
+    {
+      m_webQuote.launch(next->text(SYMBOL_COL),next->text(ID_COL),next->text(SOURCE_COL));
+    }
+    else
+    {
+      // we've run past the end, reset to the default value.
+      m_fUpdateAll = false;
+      // force progress bar to show 100%
+      prgOnlineProgress->setProgress(prgOnlineProgress->totalSteps());
+    }
+  }
+}
+
 void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _id, const QString& _symbol,const QDate& _date, const double& _price)
 {
   QListViewItem* item = lvEquityList->findItem(_id,ID_COL,Qt::ExactMatch);
@@ -420,3 +477,4 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _id, const QString&
 #undef SOURCE_COL
 
 #include "kequitypriceupdatedlg.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:

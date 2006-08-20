@@ -260,6 +260,7 @@ void WebPriceQuote::slotParseQuote(const QString& _quotedata)
     else
     {
       emit error(i18n("Unable to update price for %1").arg(m_symbol));
+      emit failed( m_id, m_symbol );
     }
   }
 }

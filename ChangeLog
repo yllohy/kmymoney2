@@ -1,3 +1,9 @@
+2006-08-19 Ace Jones <acejones@users.sourceforge.net>
+  * Improved online stock quotes so the "Update all" continues even if
+    one stock is unable to be updated.
+  * Added a dialog to prompt the user whether he wants to disable online
+    quotes for this stock in this case.
+
 2006-08-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Integrated new icons into the application
   * Changed shortcut for 'show all accounts' to Ctrl+Shift+A

@@ -66,6 +66,7 @@ protected slots:
   void logStatusMessage(const QString&);
   void logErrorMessage(const QString&);
   void slotReceivedQuote(const QString&, const QString&,const QDate&, const double&);
+  void slotQuoteFailed(const QString& _id, const QString& _symbol);
 
 protected:
   void addPricePair(const MyMoneySecurityPair& pair);
@@ -77,3 +78,4 @@ private:
 };
 
 #endif
+// vim:cin:si:ai:et:ts=2:sw=2:

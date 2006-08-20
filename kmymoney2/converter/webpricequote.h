@@ -123,6 +123,7 @@ public:
     
 signals:
   void quote(const QString&, const QString&, const QDate&, const double&);
+  void failed(const QString&, const QString&);
   void status(const QString&);
   void error(const QString&);
   
