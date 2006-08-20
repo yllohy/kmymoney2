@@ -141,10 +141,8 @@ install-exec-hook:
 	f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
 	echo "Creating symbolic link from kmymoney -> ./kmymoney2"; \
 	rm -f $(DESTDIR)$(bindir)/kmymoney; \
-	curdir=`pwd`; \
 	cd $(DESTDIR)$(bindir); \
 	ln -s ./$$f kmymoney; \
-	cd $(curdir); \
 	else :; fi; \
 	done
 
