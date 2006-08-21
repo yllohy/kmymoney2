@@ -1,3 +1,7 @@
+2006-08-20 Ace Jones <acejones@users.sourceforge.net>
+  * Added a proper dialog for verifying that the user wants to match 2
+    transactions on the ledger. 
+
 2006-08-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed build environment required for debian builds
   * Default for KBanking support is now enabled

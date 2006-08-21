@@ -69,6 +69,7 @@
 #include "../dialogs/ieditscheduledialog.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/kcurrencycalculator.h"
+#include "../dialogs/kmergetransactionsdlg.h"
 
 #include "../kmymoneysettings.h"
 #include "../kmymoney2.h"
@@ -2389,12 +2390,11 @@ void KLedgerView::slotEndMatch(void)
   {
     MyMoneyTransaction endMatchTransaction = m_transaction;
 
-    if ( KMessageBox::questionYesNo(this, QString("Match transactions %1 and %2?").arg(m_matchTransaction.id(),endMatchTransaction.id()),i18n("Verify Match")) == KMessageBox::Yes )
+    KMergeTransactionsDlg dlg(m_account.id());
+    dlg.addTransaction(m_matchTransaction.id());
+    dlg.addTransaction(endMatchTransaction.id());
+    if (dlg.exec() == QDialog::Accepted)
     {
-
-    // TODO: Put up a better verification dialog, which includes the details of the transactions,
-    // using something like the dialog from "find transactions".
-
     // Now match the transactions.
     //
     // 'Matching' the transactions entails DELETING the end transaction,
@@ -2461,14 +2461,14 @@ void KLedgerView::slotEndMatch(void)
           }
           else
           {
-            QString accountname = MyMoneyFile::instance()->account(accountid).name();
-            throw new MYMONEYEXCEPTION(i18n("Splits for have a bank ID in both transactions").arg(accountname));
+            throw new MYMONEYEXCEPTION(i18n("Splits for have a bank ID in both transactions"));
           }
         }
         catch(MyMoneyException *e)
         {
-          throw new MYMONEYEXCEPTION(i18n("Unable to match all splits (%1)").arg(e->what()));
+          QString estr = e->what(); 
           delete e;
+          throw new MYMONEYEXCEPTION(i18n("Unable to match all splits (%1)").arg(estr));
         }
       }
 
@@ -2495,10 +2495,10 @@ void KLedgerView::slotEndMatch(void)
     m_contextMenu->setItemVisible(m_contextMenuCancelMatchId,false);
     m_contextMenu->setItemVisible(m_contextMenuEndMatchId,false);
   }
+  }
   else
   {
     KMessageBox::sorry(this,i18n("You must first select a valid transaction before trying to match transactions."),i18n("Match Transaction"));
-  }
   }
 }
 
