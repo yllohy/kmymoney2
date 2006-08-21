@@ -1,3 +1,6 @@
+2006-08-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed include path to allow VPATH build environment
+
 2006-08-20 Ace Jones <acejones@users.sourceforge.net>
   * Added a proper dialog for verifying that the user wants to match 2
     transactions on the ledger. 

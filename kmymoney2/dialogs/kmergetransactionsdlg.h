@@ -20,7 +20,7 @@
 
 class QResizeEvent;
 
-#include "kmergetransactionsdlgdecl.h"
+#include "../dialogs/kmergetransactionsdlgdecl.h"
 #include "../widgets/kmymoneyregistersearch.h"
 
 class KMergeTransactionsDlg: public KMergeTransactionsDlgDecl, public IMyMoneyRegisterParent
@@ -28,7 +28,7 @@ class KMergeTransactionsDlg: public KMergeTransactionsDlgDecl, public IMyMoneyRe
   Q_OBJECT
 public:
   KMergeTransactionsDlg(QCString _accountid);
-    
+
   /**
    * Adds this transaction to the dialog
    */
@@ -38,7 +38,7 @@ public:
     * This method is used by the IMyMoneyRegisterParent interface.  It should
     * accept a CONST pointer as a return value, if the function itself is
     * going to be CONST!!!
-    *  
+    *
     * It returns a pointer to the transaction data
     * in the ledger of this account. The transaction is identified
     * by the parameter @p idx.
@@ -54,7 +54,7 @@ public:
     * This method is used by the IMyMoneyRegisterParent interface.  It is not
     * really needed, and should be removed as a required member of the
     * interface.
-    *  
+    *
     * It returns the balance of any visible transaction
     * in the ledger of this account. The balance depends on filters
     * and is automatically calculated when any view option is changed
