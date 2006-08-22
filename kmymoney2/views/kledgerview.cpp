@@ -2461,7 +2461,8 @@ void KLedgerView::slotEndMatch(void)
           }
           else
           {
-            throw new MYMONEYEXCEPTION(i18n("Splits for have a bank ID in both transactions"));
+            QString accountname = MyMoneyFile::instance()->account(accountid).name(); 
+            throw new MYMONEYEXCEPTION(i18n("Splits for %1 have a bank ID in both transactions").arg(accountname));
           }
         }
         catch(MyMoneyException *e)

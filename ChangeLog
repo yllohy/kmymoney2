@@ -1,6 +1,8 @@
+2006-08-21 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed an error message in the merge transactions path. 
+
 2006-08-21 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Correct currency code for Mexican Peso to MXN
-    Backport to 0.8
 
 2006-08-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed include path to allow VPATH build environment
