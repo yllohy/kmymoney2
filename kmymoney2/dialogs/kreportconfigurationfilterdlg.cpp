@@ -171,7 +171,7 @@ void KReportConfigurationFilterDlg::slotSearch()
     bool dy[6] = { true, true, false, false, false, false };
     m_currentState.setColumnType( ct[m_tab2->m_comboColumns->currentItem()] );
     
-    //TODO: This should be implicit in the call above.  MMReport needs fixin'
+    //TODO (Ace) This should be implicit in the call above.  MMReport needs fixin'
     m_currentState.setColumnsAreDays( dy[m_tab2->m_comboColumns->currentItem()] );
 
     m_currentState.setIncludingSchedules( m_tab2->m_checkScheduled->isChecked() );

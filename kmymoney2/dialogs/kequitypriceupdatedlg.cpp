@@ -255,7 +255,7 @@ void KEquityPriceUpdateDlg::slotOKClicked()
         try {
           MyMoneyPrice price(id, security.tradingCurrency(), QDate().fromString(item->text(DATE_COL), Qt::ISODate), rate, item->text(SOURCE_COL));
 
-          // TODO: Better handling of the case where there is already a price
+          // TODO (Ace) Better handling of the case where there is already a price
           // for this date.  Currently, it just overrides the old value.  Really it
           // should check to see if the price is the same and prompt the user.
           MyMoneyFile::instance()->addPrice(price);

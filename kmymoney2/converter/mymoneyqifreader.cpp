@@ -680,7 +680,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
   }
   s1.setMemo(tmp);
   
-  // TODO Deal with currencies more gracefully.  QIF cannot deal with multiple
+  // TODO (Ace) Deal with currencies more gracefully.  QIF cannot deal with multiple
   // currencies, so we should assume that transactions imported into a given
   // account are in THAT ACCOUNT's currency.  If one of those involves a transfer
   // to an account with a different currency, value and shares should be
@@ -1108,7 +1108,7 @@ void MyMoneyQifReader::processInvestmentTransactionEntry()
     kdDebug(2) << "Line " << m_linenumber << ": Security " << securityname << " not found in this account.  Transaction ignored." << endl;
     
     // If the security is not known, notify the user
-    // TODO: A "SelectOrCreateAccount" interface for investments
+    // TODO (Ace) A "SelectOrCreateAccount" interface for investments
     KMessageBox::information(0, i18n("This investment account does not contain the \"%1\" security.  "
                                       "Transactions involving this security will be ignored.").arg(securityname),
                                 i18n("Security not found"),
@@ -1557,7 +1557,7 @@ const QCString MyMoneyQifReader::findOrCreateIncomeAccount(const QString& search
   return result;
 }
 
-// TODO: Combine this and the previous function
+// TODO (Ace) Combine this and the previous function
 
 const QCString MyMoneyQifReader::findOrCreateExpenseAccount(const QString& searchname)
 {
@@ -1962,7 +1962,7 @@ void MyMoneyQifReader::processSecurityEntry(void)
   
   kdDebug(2) << "Line " << m_linenumber << ": Security (" << type << "): " << name << " (" << symbol << ")" << endl;
 
-  // TODO: If this investment isn't already in the account, add it
+  // TODO (Ace) If this investment isn't already in the account, add it
 
   // Add it to our name-to-symbol mapping.  This will allow the investment transaction
   // importer to translate from the QIF file's security name to the symbol, which we

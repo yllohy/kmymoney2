@@ -399,7 +399,7 @@ MyMoneyOfxConnector::Tag MyMoneyOfxConnector::transaction(const MyMoneyTransacti
   //Use this version for bank/cc transactions
   MyMoneySplit s = _t.splitByAccount( m_account.id(), true );
 
-  //TODO: Write "investmentTransaction()"...
+  //TODO (Ace) Write "investmentTransaction()"...
   //Use this version for inv transactions
   //MyMoneySplit s = _t.splitByAccount( m_account.accountList(), true );
 

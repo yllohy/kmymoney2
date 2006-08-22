@@ -163,7 +163,7 @@ void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job* /* e */)
 
     emit statementReady("OFX",m_tmpfile->name());
     
-// TODO: unlink this file, when I'm sure this is all really working.
+// TODO (Ace) unlink this file, when I'm sure this is all really working.
 // in the meantime, I'll leave the file around to assist people in debugging.
 //     m_tmpfile->unlink();
     delete m_tmpfile;

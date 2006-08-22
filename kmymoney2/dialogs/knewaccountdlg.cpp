@@ -989,7 +989,7 @@ void KNewAccountDlg::slotNewClicked()
 void KNewAccountDlg::slotOnlineSetupClicked(void)
 {
 #ifdef USE_OFX_DIRECTCONNECT
-  // TODO: This is one place to add in logic for other online banking
+  // TODO (Ace) This is one place to add in logic for other online banking
   // protocols.  We could have a dialog that asks the user which
   // protocol to set up for this account, and then call the correct
   // wizard (using a plugin)

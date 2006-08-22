@@ -32,7 +32,7 @@ const string kInvFilename = "ofx-inv-index.xml";
 
 void ValidateIndexCache(void)
 {
-  // TODO Check whether these files exist and are recent enough before getting them again
+  // TODO (Ace) Check whether these files exist and are recent enough before getting them again
 
   struct stat filestats;
   if ( stat( kBankFilename.c_str(), &filestats ) || difftime(time(0),filestats.st_mtime) > 7.0*24.0*60.0*60.0 )

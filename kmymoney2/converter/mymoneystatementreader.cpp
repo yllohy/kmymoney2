@@ -208,7 +208,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   // mark it imported for the view
   t.setValue("Imported", "true");
 
-  // TODO: We can get the commodity from the statement!!
+  // TODO (Ace) We can get the commodity from the statement!!
   // Although then we would need UI to verify
   t.setCommodity(m_account.currencyId());
 
