@@ -1,3 +1,7 @@
+2006-08-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Only create the chart in the account dialog, if the resp.
+    tab is available
+
 2006-08-21 Ace Jones <acejones@users.sourceforge.net>
   * Fixed an error message in the merge transactions path. 
 

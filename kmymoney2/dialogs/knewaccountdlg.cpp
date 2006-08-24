@@ -392,42 +392,45 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
 
 #ifdef HAVE_KDCHART
 
-  MyMoneyReport reportCfg = MyMoneyReport(
-    MyMoneyReport::eAssetLiability,
-    MyMoneyReport::eMonths,
-    MyMoneyTransactionFilter::userDefined, // overridden by the setDateFilter() call below
-    false,
-    i18n("%1 Balance History").arg(m_account.name()),
-    i18n("Generated Report")
-  );
-  reportCfg.setChartByDefault(true);
-  reportCfg.setChartGridLines(false);
-  reportCfg.setChartDataLabels(false);
-  reportCfg.setDetailLevel(MyMoneyReport::eDetailAll);
-  reportCfg.setChartType(MyMoneyReport::eChartLine);
-  reportCfg.setIncludingSchedules( true );
-  reportCfg.addAccount(m_account.id());
-  reportCfg.setColumnsAreDays( true );
-  reportCfg.setConvertCurrency( false );
-  reportCfg.setDateFilter(QDate::currentDate().addDays(-90),QDate::currentDate().addDays(+90));
-  
-  reports::PivotTable table(reportCfg);
+  // only create the chart, if the resp. page is still available
+  if(m_tab->indexOf(m_balanceTab) != -1) {
+    MyMoneyReport reportCfg = MyMoneyReport(
+      MyMoneyReport::eAssetLiability,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::userDefined, // overridden by the setDateFilter() call below
+      false,
+      i18n("%1 Balance History").arg(m_account.name()),
+      i18n("Generated Report")
+    );
+    reportCfg.setChartByDefault(true);
+    reportCfg.setChartGridLines(false);
+    reportCfg.setChartDataLabels(false);
+    reportCfg.setDetailLevel(MyMoneyReport::eDetailAll);
+    reportCfg.setChartType(MyMoneyReport::eChartLine);
+    reportCfg.setIncludingSchedules( true );
+    reportCfg.addAccount(m_account.id());
+    reportCfg.setColumnsAreDays( true );
+    reportCfg.setConvertCurrency( false );
+    reportCfg.setDateFilter(QDate::currentDate().addDays(-90),QDate::currentDate().addDays(+90));
 
-  reports::KReportChartView* chartWidget = new reports::KReportChartView(m_balanceTab, 0);
-  QVBoxLayout* balanceTabLayout = new QVBoxLayout( m_balanceTab, 11, 6, "m_balanceTabLayout");
-  balanceTabLayout->addWidget(chartWidget);
+    reports::PivotTable table(reportCfg);
 
-  table.drawChart(*chartWidget);
+    reports::KReportChartView* chartWidget = new reports::KReportChartView(m_balanceTab, 0);
+    QVBoxLayout* balanceTabLayout = new QVBoxLayout( m_balanceTab, 11, 6, "m_balanceTabLayout");
+    balanceTabLayout->addWidget(chartWidget);
 
-  chartWidget->params().setLineMarker(false);
-  chartWidget->params().setLegendPosition(KDChartParams::NoLegend);
+    table.drawChart(*chartWidget);
 
-  // draw future values in a different line style
-  KDChartPropertySet propSetFutureValue("future value", KMM_KDCHART_PROPSET_NORMAL_DATA);
-  propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
-  const int idPropFutureValue = chartWidget->params().registerProperties(propSetFutureValue);
-  for(int iCell = 90; iCell < 180; ++iCell) {
-    chartWidget->setProperty(0, iCell, idPropFutureValue);
+    chartWidget->params().setLineMarker(false);
+    chartWidget->params().setLegendPosition(KDChartParams::NoLegend);
+
+    // draw future values in a different line style
+    KDChartPropertySet propSetFutureValue("future value", KMM_KDCHART_PROPSET_NORMAL_DATA);
+    propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
+    const int idPropFutureValue = chartWidget->params().registerProperties(propSetFutureValue);
+    for(int iCell = 90; iCell < 180; ++iCell) {
+      chartWidget->setProperty(0, iCell, idPropFutureValue);
+    }
   }
 #endif
 
