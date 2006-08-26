@@ -66,7 +66,7 @@ public:
     *         of bounds, 0 will be returned as value. For liability type
     *         accounts, the sign will be inverted for display purposes.
     */
-  virtual const MyMoneyMoney balance(const int) const { return 0; }
+  virtual const MyMoneyMoney balance(const int idx) const { return 0; }
 
   /**
     * This method is used by the IMyMoneyRegisterParent interface.
