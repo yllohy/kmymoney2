@@ -1,3 +1,6 @@
+2006-08-28 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Allow for null return from online price quote source
+
 2006-08-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed duplicate period in kmymoneygpgconfigdecl.ui
 
