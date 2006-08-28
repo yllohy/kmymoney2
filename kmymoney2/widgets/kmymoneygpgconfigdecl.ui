@@ -163,7 +163,7 @@ The &lt;i&gt;Recovery encryption&lt;/i&gt; group is only accessible, if the nece
                     <property name="text">
                         <string>You can specify to encrypt the data also with the KMyMoney recover key. Only the core KMyMoney developers are in posession of the respective private key required to read back such encrypted data.&lt;p&gt;
 
-This mechanism is provided for the case that you have lost your key and cannot access your data anymore. With this option activated, the KMyMoney developers can decrypt the data and supply you with it in a readable form. Please be prepared, that you have to answer a few detailed questions about the contents of your data before we will send it out..</string>
+This mechanism is provided for the case that you have lost your key and cannot access your data anymore. With this option activated, the KMyMoney developers can decrypt the data and supply you with it in a readable form. Please be prepared, that you have to answer a few detailed questions about the contents of your data before we will send it out.</string>
                     </property>
                     <property name="textFormat">
                         <enum>RichText</enum>
