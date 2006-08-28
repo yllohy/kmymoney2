@@ -263,6 +263,11 @@ void WebPriceQuote::slotParseQuote(const QString& _quotedata)
       emit failed( m_id, m_symbol );
     }
   }
+  else
+  {
+    emit error(i18n("Unable to update price for %1").arg(m_symbol));
+    emit failed( m_id, m_symbol );
+  }
 }
 
 QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
@@ -332,7 +337,7 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
   // stands for Hamburg.
   //
   // Here the id for several market places: 2 Frankfurt, 3 Berlin, 4 
-  // Düsseldorf, 5 Hamburg, 6 München/Munich, 7 Hannover, 9 Stuttgart, 10 
+  // Dsseldorf, 5 Hamburg, 6 Mnchen/Munich, 7 Hannover, 9 Stuttgart, 10 
   // Xetra, 32 NASDAQ, 36 NYSE
 
   result["Wallstreet-Online.DE (Hamburg)"] = WebPriceQuoteSource("Wallstreet-Online.DE (Hamburg)", 
