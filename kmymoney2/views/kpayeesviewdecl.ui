@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KPayeesViewDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -9,18 +9,12 @@
             <x>0</x>
             <y>0</y>
             <width>613</width>
-            <height>573</height>
+            <height>661</height>
         </rect>
     </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
-        </property>
-        <property name="margin">
-            <number>11</number>
-        </property>
-        <property name="spacing">
-            <number>6</number>
         </property>
         <widget class="KMyMoneyTitleLabel">
             <property name="name">
@@ -55,7 +49,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout10</cstring>
+                <cstring>layout15</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -426,7 +420,7 @@
                                                             <string>Address:</string>
                                                         </property>
                                                         <property name="alignment">
-                                                            <set>AlignTop</set>
+                                                            <set>AlignTop|AlignLeft</set>
                                                         </property>
                                                     </widget>
                                                     <spacer>
@@ -452,6 +446,156 @@
                                     </widget>
                                 </vbox>
                             </widget>
+                            <widget class="QButtonGroup">
+                                <property name="name">
+                                    <cstring>buttonGroup1</cstring>
+                                </property>
+                                <property name="title">
+                                    <string>Transaction Matching</string>
+                                </property>
+                                <vbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>layout14</cstring>
+                                        </property>
+                                        <hbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <widget class="QRadioButton">
+                                                <property name="name">
+                                                    <cstring>radioNoMatch</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>No matching</string>
+                                                </property>
+                                                <property name="checked">
+                                                    <bool>true</bool>
+                                                </property>
+                                            </widget>
+                                            <spacer>
+                                                <property name="name">
+                                                    <cstring>spacer9</cstring>
+                                                </property>
+                                                <property name="orientation">
+                                                    <enum>Horizontal</enum>
+                                                </property>
+                                                <property name="sizeType">
+                                                    <enum>Expanding</enum>
+                                                </property>
+                                                <property name="sizeHint">
+                                                    <size>
+                                                        <width>151</width>
+                                                        <height>20</height>
+                                                    </size>
+                                                </property>
+                                            </spacer>
+                                        </hbox>
+                                    </widget>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>layout13</cstring>
+                                        </property>
+                                        <hbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <widget class="QRadioButton">
+                                                <property name="name">
+                                                    <cstring>radioNameMatch</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Match on Payee name</string>
+                                                </property>
+                                            </widget>
+                                            <spacer>
+                                                <property name="name">
+                                                    <cstring>spacer8</cstring>
+                                                </property>
+                                                <property name="orientation">
+                                                    <enum>Horizontal</enum>
+                                                </property>
+                                                <property name="sizeType">
+                                                    <enum>Expanding</enum>
+                                                </property>
+                                                <property name="sizeHint">
+                                                    <size>
+                                                        <width>171</width>
+                                                        <height>20</height>
+                                                    </size>
+                                                </property>
+                                            </spacer>
+                                        </hbox>
+                                    </widget>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>layout12</cstring>
+                                        </property>
+                                        <hbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <widget class="QRadioButton">
+                                                <property name="name">
+                                                    <cstring>radioKeyMatch</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Match on key:</string>
+                                                </property>
+                                            </widget>
+                                            <widget class="QLineEdit">
+                                                <property name="name">
+                                                    <cstring>matchKeyEdit</cstring>
+                                                </property>
+                                                <property name="enabled">
+                                                    <bool>true</bool>
+                                                </property>
+                                            </widget>
+                                        </hbox>
+                                    </widget>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>layout11</cstring>
+                                        </property>
+                                        <hbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <widget class="QCheckBox">
+                                                <property name="name">
+                                                    <cstring>checkMatchIgnoreCase</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Ignore Case</string>
+                                                </property>
+                                                <property name="checked">
+                                                    <bool>true</bool>
+                                                </property>
+                                            </widget>
+                                            <spacer>
+                                                <property name="name">
+                                                    <cstring>spacer10_2</cstring>
+                                                </property>
+                                                <property name="orientation">
+                                                    <enum>Horizontal</enum>
+                                                </property>
+                                                <property name="sizeType">
+                                                    <enum>Expanding</enum>
+                                                </property>
+                                                <property name="sizeHint">
+                                                    <size>
+                                                        <width>252</width>
+                                                        <height>20</height>
+                                                    </size>
+                                                </property>
+                                            </spacer>
+                                        </hbox>
+                                    </widget>
+                                </vbox>
+                            </widget>
                             <spacer>
                                 <property name="name">
                                     <cstring>spacer6</cstring>
@@ -465,18 +609,26 @@
                                 <property name="sizeHint">
                                     <size>
                                         <width>21</width>
-                                        <height>31</height>
+                                        <height>50</height>
                                     </size>
                                 </property>
                             </spacer>
                             <widget class="QLayoutWidget">
                                 <property name="name">
-                                    <cstring>layout19</cstring>
+                                    <cstring>layout10</cstring>
                                 </property>
                                 <hbox>
                                     <property name="name">
                                         <cstring>unnamed</cstring>
                                     </property>
+                                    <widget class="KPushButton">
+                                        <property name="name">
+                                            <cstring>m_helpButton</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Help</string>
+                                        </property>
+                                    </widget>
                                     <spacer>
                                         <property name="name">
                                             <cstring>spacer14</cstring>
@@ -489,7 +641,7 @@
                                         </property>
                                         <property name="sizeHint">
                                             <size>
-                                                <width>171</width>
+                                                <width>260</width>
                                                 <height>21</height>
                                             </size>
                                         </property>
@@ -513,7 +665,7 @@
 </widget>
 <images>
     <image name="image0">
-        <data format="XBM.GZ" length="79">789c534e494dcbcc4b554829cdcdad8c2fcf4c29c95030e0524611cd48cd4ccf28010a1797249664262b2467241641a592324b8aa363156c15aab914146aadb90067111b1f</data>
+        <data format="XPM.GZ" length="950">789ccdd0cd6a83401486e1bd5731e84eca244e5a30845e4221cb40e9e2cc5f34d1c4a85d94d27b2ffa7d8bb6a48b4217195cccc3cb390c2e72b5db3ea97c910ca38cb553ae925ee5feb56ddf9e5f1edf93d41885af48ef92b4534e65cbf94cb4e43d18c8126c48070a5870d6939c3d929ced49ce1e669686b506575c9591ac1792b3a78945b9f6e01e9407709c689622604b063082d68003e8581de859ab996bcf7a062337eb89ab2246f2eab9a99289c5c5f920f16bd95701973ad387e3f76d2c4dab4ff66ab167adbb3f96dfb7d5971f2f10e91aad7bad071f9af1b6fee87f948f4df2098142ba27</data>
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>

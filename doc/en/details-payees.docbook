@@ -7,9 +7,14 @@
 <surname>Lum</surname>
 <affiliation><address><email>rogerlum@gmail.com</email></address></affiliation>
 </author>
+<author>
+<firstname>Ace</firstname>
+<surname>Jones</surname>
+<affiliation><address><email>acejones@users.sf.net</email></address></affiliation>
+</author>
 </authorgroup>
-<date>2005-06-01</date>
-<releaseinfo>0.7</releaseinfo>
+<date>2006-08-02</date>
+<releaseinfo>0.9</releaseinfo>
 </chapterinfo>
 
 <title id="details.payees.title">Payees</title>
@@ -57,10 +62,10 @@
 
 </sect1>
 
-<sect1 id="details.payees.personalinformation"><title id="details.payees.personalinformation.title">Viewing Personal Information</title>
+<sect1 id="details.payees.personalinformation"><title id="details.payees.personalinformation.title">Personal Information</title>
 
 <para>
-  To view the personal information associated with a particular payee, select the payee from the list and select the Personal Information tab in the detail area. To modify this information, edit the detail area directly and press the Update button when finished.   
+  To view and edit the personal information associated with a particular payee, select the payee from the list and select the Personal Information tab in the detail area. To modify this information, edit the detail area directly and press the Update button when finished.   
 </para>
 
 <para>
@@ -76,6 +81,53 @@
 	</mediaobject>
 </screenshot>
 </para>
+
+<sect2><title>Transaction Matching Settings</title>
+
+<sect3><title>Overview</title>
+<para>
+&kappname; has the ability to automatically assign the proper payee to imported transactions.
+This can be handy when importing transactions from your bank when the payee name has extra unnecessary characters, or worse if the payee names change.
+</para>
+
+<para>
+For example, let's say your monthly mortgage payment comes in from your bank like this &quot;SUNTRUST BANK       MAPLE VALLEY, GA    111506&quot; one month and then &quot;SUNTRUST BANK       MAPLE VALLEY, GA    121606&quot; the next month.
+You would really like both of those transactions to be assigned simply to your payee &quot;SunTrust&quot;.
+The transaction matching feature is for you!
+</para>
+</sect3>
+
+<sect3><title>Setting up</title>
+<para>
+From the Payee Personal Information tab, you can set the Transaction Matching Settings.  You have 3 major options:
+</para>
+
+<itemizedlist>
+	<listitem><para>No Matching.  Disables the feature for this payee.  This is the default setting for all payees.</para></listitem>
+	<listitem><para>Match on Payee Name.  Enables the feature, and uses the payee name itself as the Match Key</para></listitem>
+	<listitem><para>Match on Key.  Enables the feature, and allows you to enter in a Match Key of your choosing.</para></listitem>
+</itemizedlist>
+
+<para>You can also choose whether you want to ignore the case of the Match Key.  If you choose this option, the Match Key &quot;SunTrust&quot; would match &quot;SUNTRUST BANK&quot; or &quot;SunTrust Bank&quot;</para>
+
+</sect3>
+
+<sect3><title>Importing Transactions</title>
+
+<para>
+When you import transactions using the QIF import, or using a plugin such as OFX or AqBanking, the Match Keys you have set will be considered.
+If the Match Key for one of your payees is found anywhere in the payee of the imported transaction, the corresponding payee from your list will be assigned to that transaction.
+Thus, a Match Key of &quot;SunTrust&quot; will match &quot;SUNTRUST BANK MAPLE VALLEY,GA&quot; or even &quot;MORGENSUNTRUST&amp;LOAN&quot;.
+So choose your Match Keys carefully.
+<note><para>
+If a transaction payee matches more than one Match Key, the behaviour is undefined.
+&kappname; will arbitrarily pick one of the matching payees.
+</para></note>
+</para>
+
+</sect3>
+
+</sect2>
 
 </sect1>
 

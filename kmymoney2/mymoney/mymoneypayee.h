@@ -47,6 +47,12 @@ private:
   QString m_telephone;
   QString m_email;
 
+  // Transaction matching fields
+  bool m_matchingEnabled;  // Whether this payee should be matched at all
+  bool m_usingMatchKey; // If so, whether a key is used (true), or just m_name is used (false)
+  bool m_matchKeyIgnoreCase; // Whether to ignore the case of the match key or name
+  QString m_matchKey; 
+  
   /**
     * This member keeps a reference to an external database
     * (e.g. kaddressbook). It is the responsability of the
@@ -101,6 +107,27 @@ public:
   void setReference(const QString& ref) { m_reference = ref; }
   void setId(const QCString& val)       { m_id = val; }
 
+  /**
+   * Get all match data in one call
+   *
+   * @param key String which will be replaced by the match key to use for this payee
+   * @param ignorecase Bool which will be replaced to indicate whether the match is
+   * case-sensitive (false) or case-insensitive (true)
+   * 
+   * @return whether matching is enabled.  If false, the other outputs are not touched
+   */
+  bool matchData(QString& key, bool& ignorecase) const; 
+
+  /**
+   * Set all match data in one call
+   *
+   * @param enabled Whether matching is enabled at all, if false, all other parameters ignored.
+   * @param usingkey Whether a special key should be used, or false if the name is used
+   * @param ignorecase Whether case should be ignored for the key/name match
+   * @param key The key itself, if applicable
+   */
+  void setMatchData(bool enabled, bool usingkey, bool ignorecase, const QString& key);
+  
   // Copy constructors
   MyMoneyPayee(const MyMoneyPayee&);
 
@@ -126,3 +153,4 @@ public:
 inline bool operator==(const MyMoneyPayee& lhs, const QCString& rhs) { return lhs.id() == rhs; }
 
 #endif
+// vim:cin:si:ai:et:ts=2:sw=2:

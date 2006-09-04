@@ -20,11 +20,12 @@
 
 MyMoneyPayee MyMoneyPayee::null = MyMoneyPayee();
 
-MyMoneyPayee::MyMoneyPayee()
+MyMoneyPayee::MyMoneyPayee(): m_matchingEnabled(false), m_usingMatchKey(false), m_matchKeyIgnoreCase(true)
 {
 }
 
-MyMoneyPayee::MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee)
+MyMoneyPayee::MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee): m_matchingEnabled(false), m_usingMatchKey(false), m_matchKeyIgnoreCase(true)
+
 {
   *this = payee;
   m_id = id;
@@ -32,7 +33,8 @@ MyMoneyPayee::MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee)
 
 MyMoneyPayee::MyMoneyPayee(const QString& name, const QString& address,
         const QString& city, const QString& state, const QString& postcode,
-        const QString& telephone, const QString& email)
+        const QString& telephone, const QString& email): m_matchingEnabled(false), m_usingMatchKey(false), m_matchKeyIgnoreCase(true)
+
 {
   m_name      = name;
   m_address   = address;
@@ -53,6 +55,15 @@ MyMoneyPayee::MyMoneyPayee(const QDomElement& node) :
   m_reference = node.attribute("reference");
   m_email = node.attribute("email");
 
+  m_matchingEnabled = node.attribute("matchingenabled","0").toUInt();
+  if ( m_matchingEnabled )
+  {
+    qDebug("MyMoneyPayee::MyMoneyPayee(const QDomElement& node): Matching enabled for %s",m_name.latin1());
+    m_usingMatchKey = node.attribute("usingmatchkey");
+    m_matchKeyIgnoreCase = node.attribute("matchignorecase");
+    m_matchKey = node.attribute("matchkey"); 
+  }
+  
   QDomNodeList nodeList = node.elementsByTagName("ADDRESS");
   if(nodeList.count() == 0) {
     QString msg = QString("No ADDRESS in payee %1").arg(m_name);
@@ -99,6 +110,14 @@ void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
   el.setAttribute("reference", m_reference);
   el.setAttribute("email", m_email);
 
+  el.setAttribute("matchingenabled", m_matchingEnabled);
+  if ( m_matchingEnabled )
+  {
+    el.setAttribute("usingmatchkey", m_usingMatchKey);
+    el.setAttribute("matchignorecase", m_matchKeyIgnoreCase);
+    el.setAttribute("matchkey", m_matchKey); 
+  }
+  
   QDomElement address = document.createElement("ADDRESS");
   address.setAttribute("street", m_address);
   address.setAttribute("city", m_city);
@@ -116,3 +135,37 @@ bool MyMoneyPayee::hasReferenceTo(const QCString& id) const
   // the payee does not reference any other object
   return false;
 }
+
+
+bool MyMoneyPayee::matchData(QString& key, bool& ignorecase) const
+{
+  if ( m_matchingEnabled )
+  {
+    if ( m_usingMatchKey )
+      key = m_matchKey;
+    else
+      key = m_name;
+
+    ignorecase = m_matchKeyIgnoreCase;
+    qDebug("MyMoneyPayee::matchData key=%s ignorecase=%i",key.latin1(),ignorecase);
+ 
+  }
+  
+  qDebug("MyMoneyPayee::matchData returned %i",m_matchingEnabled);
+  return m_matchingEnabled;
+}
+
+void MyMoneyPayee::setMatchData(bool enabled, bool usingkey, bool ignorecase, const QString& key)
+{
+  qDebug("MyMoneyPayee::setMatchData(%i,%i,%i,%s",enabled,usingkey,ignorecase,key.latin1());
+
+  m_matchingEnabled = enabled;
+  if ( enabled )
+  {
+    m_usingMatchKey = usingkey;
+    if ( usingkey )
+      m_matchKey = key; 
+    m_matchKeyIgnoreCase = ignorecase;
+  } 
+}
+// vim:cin:si:ai:et:ts=2:sw=2:

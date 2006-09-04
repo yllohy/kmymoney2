@@ -119,6 +119,7 @@ public slots:
   void slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId = QCString(), const QCString& transactionId = QCString());
   void slotLoadPayees(void);
   void slotStartRename(void);
+  void slotHelp(void);
 
 protected:
   void resizeEvent(QResizeEvent*);

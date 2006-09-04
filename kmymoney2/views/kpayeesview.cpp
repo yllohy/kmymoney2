@@ -33,6 +33,8 @@
 #include <qpixmap.h>
 #include <qtabwidget.h>
 #include <qcursor.h>
+#include <qcheckbox.h>
+#include <qradiobutton.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -45,6 +47,7 @@
 #include <kguiitem.h>
 #include <kstandarddirs.h>
 #include <kdebug.h>
+#include <kapplication.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -145,8 +148,15 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   connect(postcodeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeDataChanged()));
   connect(telephoneEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeDataChanged()));
   connect(emailEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeDataChanged()));
-  connect(m_updateButton, SIGNAL(pressed()), this, SLOT(slotUpdatePayee()));
 
+  connect(radioNoMatch, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
+  connect(radioNameMatch, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
+  connect(radioKeyMatch, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
+  connect(checkMatchIgnoreCase, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
+  
+  connect(m_updateButton, SIGNAL(pressed()), this, SLOT(slotUpdatePayee()));
+  connect(m_helpButton, SIGNAL(pressed()), this, SLOT(slotHelp()));
+  
   connect(m_payeesList, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotOpenContextMenu(QListViewItem*)));
 
@@ -305,6 +315,22 @@ void KPayeesView::slotSelectPayee()
     emailEdit->setEnabled(true);
     emailEdit->setText(m_payee.email());
 
+    QString key;
+    bool ignorecase = true;
+    bool enabled = m_payee.matchData(key,ignorecase);
+    bool namematch = (enabled && (key == m_payee.name()));
+
+    radioNoMatch->setEnabled(true);
+    radioNoMatch->setChecked(!enabled);
+    radioNameMatch->setEnabled(true);
+    radioNameMatch->setChecked(namematch);
+    radioKeyMatch->setEnabled(true);
+    radioKeyMatch->setChecked(enabled && !namematch);
+    matchKeyEdit->setEnabled(true);
+    matchKeyEdit->setText(key);
+    checkMatchIgnoreCase->setEnabled(true);
+    checkMatchIgnoreCase->setChecked(ignorecase);
+    
     slotPayeeDataChanged();
 
     showTransactions();
@@ -431,6 +457,8 @@ void KPayeesView::showTransactions(void)
 
 void KPayeesView::slotPayeeDataChanged(void)
 {
+  kdDebug(2) << "KPayeesView::slotPayeeDataChanged(void)" << endl;
+
   bool rc = false;
 
   rc |= ((m_payee.email().isEmpty() != emailEdit->text().isEmpty())
@@ -444,6 +472,23 @@ void KPayeesView::slotPayeeDataChanged(void)
   rc |= ((m_payee.name().isEmpty() != m_newName.isEmpty())
       || (!m_newName.isEmpty() && m_payee.name() != m_newName));
 
+  bool ignorecase = true;
+  QString key;
+  bool enabled = m_payee.matchData(key,ignorecase);
+  int newradiostate = radioNameMatch->isChecked()?1:0 + radioKeyMatch->isChecked()?2:0;
+  int oldradiostate = (enabled?1:0) + ((enabled && (key != m_payee.name()))?1:0);
+
+  kdDebug(2) << "enabled=" << enabled << " key=" << key << " m_payee.name()==" << m_payee.name() << endl;
+  kdDebug(2) << "radiostates: old=" << oldradiostate << " new=" << newradiostate << endl;
+  
+  rc |= (newradiostate != oldradiostate);
+
+  if ( enabled )
+  {
+    rc |= (ignorecase != checkMatchIgnoreCase->isChecked());
+    rc |= (key != m_payee.name() && key != matchKeyEdit->text());
+  }
+
   m_updateButton->setEnabled(rc);
 }
 
@@ -456,7 +501,14 @@ void KPayeesView::slotUpdatePayee()
       m_payee.setPostcode(postcodeEdit->text());
       m_payee.setTelephone(telephoneEdit->text());
       m_payee.setEmail(emailEdit->text());
-
+      
+      m_payee.setMatchData(
+          !radioNoMatch->isChecked(),
+          radioKeyMatch->isChecked(),
+          checkMatchIgnoreCase->isChecked(),
+          matchKeyEdit->text()
+      );
+      
       MyMoneyFile::instance()->modifyPayee(m_payee);
 
     } catch(MyMoneyException *e) {
@@ -659,4 +711,10 @@ void KPayeesView::slotOpenContextMenu(QListViewItem* i)
   }
 }
 
+void KPayeesView::slotHelp()
+{
+  kapp->invokeHelp("details.payees.personalinformation");
+}
+
 #include "kpayeesview.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:
