@@ -1,3 +1,6 @@
+2006-09-04 Ace Jones <acejones@users.sourceforge.net>
+  * Minor change to error handling for transaction matching
+
 2006-09-03 Ace Jones <acejones@users.sourceforge.net>
   * UI, engine, and documentation changes to support substring
     payee matching.  Still not functional until the matching itself is added.

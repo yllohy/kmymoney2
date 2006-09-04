@@ -2462,7 +2462,7 @@ void KLedgerView::slotEndMatch(void)
           else
           {
             QString accountname = MyMoneyFile::instance()->account(accountid).name(); 
-            throw new MYMONEYEXCEPTION(i18n("Splits for %1 have a bank ID in both transactions").arg(accountname));
+            throw new MYMONEYEXCEPTION(i18n("Both of these transactions have been imported into %1.  Therefore they cannot be matched.  Matching works with one imported transaction and one non-imported transaction.").arg(accountname));
           }
         }
         catch(MyMoneyException *e)
@@ -2472,6 +2472,8 @@ void KLedgerView::slotEndMatch(void)
           throw new MYMONEYEXCEPTION(i18n("Unable to match all splits (%1)").arg(estr));
         }
       }
+      // TODO (Ace) Add in another error to catch the case where a user
+      // tries to match two hand-entered transactions.
 
       ++it_split;
     }

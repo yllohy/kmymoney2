@@ -306,7 +306,8 @@ When you deleted the imported transaction, the transaction ID went with it, so t
 </para> 
 
 <para>
-The solution is to tell &kappname; that the transactions are the same, using the manual matching interface.
+The solution is to tell &kappname; that the transactions are the same, using the manual matching interface.  
+This allows you to match an imported transaction with a hand-entered (non-imported) transaction.
 </para>
 <para>
 To do so, right-click on one of the transactions to be matched.  Choose <guimenuitem>Match Transactions...</guimenuitem> from the context menu.  This flags the selected transaction, and changes the background color to a nice pale green.
@@ -319,6 +320,11 @@ Next, right-click on the other transaction to be matched.  Choose <guimenuitem>M
 In the future, matching will be made more automatic.
 The importer will automatically match transactions which look like the same, and give you the option to un-match them.
 </para>
+<note><para>
+The matching interface will not allow you to match two transactions which have both been imported.
+Likewise, it won't allow matching between two transactions which have both been entered by hand.
+</para></note>
+
 </sect1>
 
 <sect1 id="details.ledgers.cleared"><title>Understanding the Cleared State</title>
