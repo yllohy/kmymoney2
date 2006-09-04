@@ -213,13 +213,11 @@ void kMyMoneyDateInput::keyPressEvent(QKeyEvent * k)
   KShortcut today(i18n("Enter todays date into date input widget", "T"));
 
   switch(k->key()) {
-    case Key_Up:
     case Key_Equal:
     case Key_Plus:
       slotDateChosen(m_date.addDays(1));
       break;
 
-    case Key_Down:
     case Key_Minus:
       slotDateChosen(m_date.addDays(-1));
       break;
@@ -251,7 +249,7 @@ bool kMyMoneyDateInput::eventFilter(QObject *, QEvent *e)
     m_datePopup->hide();
   else if (e->type() == QEvent::KeyPress) {
     if (QKeyEvent *k = dynamic_cast<QKeyEvent*>(e)) {
-      if (k->key() == Key_Up || k->key() == Key_Down || k->key() == Key_Minus) {
+      if (k->key() == Key_Minus) {
         keyPressEvent(k);
         return true;
       }
