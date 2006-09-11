@@ -13,14 +13,18 @@ AC_DEFUN([AC_PDF_GENERATION], [
   AM_CONDITIONAL(GENERATE_PDF, test "x$enable_pdfdocs" = "xyes")
 
   if test "x$enable_pdfdocs" = "xyes"; then
-    dnl html2ps and ps2pdf
-    AC_CHECK_PROG(found_html2ps, html2ps, yes, no)
-    AC_CHECK_PROG(found_ps2pdf, ps2pdf14, yes, no)
-    AC_CHECK_PROG(found_jade, jade, yes, no)
-    AC_CHECK_PROG(found_pdfjadetex, pdfjadetex, yes, no)
+    AC_ARG_WITH(dblatex-dir, [  --with-dblatex-dir=DIR
+                          uses dblatex from given dir],
+      [lcc_dir="$withval:$withval/bin:$PATH"],
+      [lcc_dir="$PATH"])
+    AC_PATH_PROG(dblatexbin, dblatex, "", $lcc_dir)
+    AC_SUBST(dblatexbin)
+    if test "x$dblatexbin" != "x"; then
+      AC_CHECK_PROG(found_latex, latex, yes, no)
+      AC_CHECK_PROG(found_xsltproc, xsltproc, yes, no)
+    fi
   fi
 
-  AM_CONDITIONAL(HAVE_HTMLCONVERSIONTOOLS, test "x$enable_pdfdocs" = "xyes" -a "x$found_ps2pdf" = "xyes" -a "x$found_html2ps" = "xyes")
-  AM_CONDITIONAL(HAVE_DSSSLCONVERSIONTOOLS, test "x$enable_pdfdocs" = "xyes" -a "x$found_jade" = "xyes" -a "x$found_pdfjadetex" = "xyes")
+  AM_CONDITIONAL(HAVE_DOCCONVERSIONTOOLS, test "x$enable_pdfdocs" = "xyes" -a "x$found_latex" = "xyes" -a "x$found_xsltproc" = "xyes")
 ])
 

@@ -45,17 +45,6 @@ web:
 		rm -rf index.xml online-manual common; \
 	fi;
 
-if HAVE_DSSSLCONVERSIONTOOLS
-PDF_TARGET = kmymoney-user.pdf
-else
-if HAVE_HTMLCONVERSIONTOOLS
-PDF_TARGET = kmymoney-user.pdf
-endif
-endif
-
-if HAVE_DSSSLCONVERSIONTOOLS
-DOCBOOK_DSL = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl
-
 # if we're in a VPATH environment, we need to copy all files over
 # to the build directory. Otherwise, we'll get into trouble. Of course
 # we delete them afterwards.
@@ -77,39 +66,20 @@ clear-files:
 		for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do rm $$file; done;  \
 	fi
 
-index.docbook.tex: $(DOCBOOK_FILES) $(SCREENSHOTFILES)
-	make get-files
-	-jade -t tex -d $(DOCBOOK_DSL) -D `dirname $(KDE_XSL_STYLESHEET)` -D $(kde_libs_htmldir)/en/common index.docbook
-	make clear-files
+if HAVE_DOCCONVERSIONTOOLS
+PDF_TARGET = kmymoney-user.pdf
 
-#index.docbook.tex: index.cache.bz2
-#	-jade -t tex -d $(DOCBOOK_DSL) -D `dirname $(KDE_XSL_STYLESHEET)` -D $(kde_libs_htmldir)/en/common index.docbook
-#
-
-
-kmymoney-user.pdf: index.docbook.tex
-	make get-files
-	@echo "Generating PDF document"
-	@pdfjadetex index.docbook.tex > errorlog
-	@echo "Generating bookmarks"
-	@pdfjadetex index.docbook.tex >> errorlog
-	@echo "Generating page numbers for table of contents"
-	@pdfjadetex index.docbook.tex >> errorlog
-	@mv index.docbook.pdf kmymoney-user.pdf
-	make clear-files
-else
-if HAVE_HTMLCONVERSIONTOOLS
-
-kmymoney-user.pdf: index.html
-	make get-files
-	html2ps -D -t -o index.ps index.html
-	ps2pdf14 index.ps kmymoney-user.pdf
-	rm index.ps
-	make clear-files
+kmymoney-user.pdf: $(DOCBOOK_FILES) $(SCREENSHOT_FILES)
+	$(MAKE) get-files
+	@dblatexbin@ -b pdftex --style kdestyle -o kmymoney-user.pdf \
+		-P latex.output.revhistory=0  -P newtbl.use=1 \
+		-P imagedata.default.scale=pagebound \
+		-P literal.width.ignore=1 \
+		-I $(kde_libs_htmldir)/en \
+		-X \
+		index.docbook
+	$(MAKE) clear-files
 endif
-endif
-
-
 
 
 

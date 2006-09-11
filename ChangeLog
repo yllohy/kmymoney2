@@ -3,6 +3,7 @@
 
 2006-09-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added initial chapter on documentation to PHB (provided by Tom Browder)
+  * Switched to dblatex for PDF file generation
 
 2006-09-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added -lkdeui to the link phase of the kbanking plugin (was missing)

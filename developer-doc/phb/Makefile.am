@@ -8,12 +8,8 @@ MOSTLYCLEANFILES = *.html *.pdf *.ps phb.docbook.tex online-phb.tar.bz2
 
 TARGETS = phb.html
 
-if HAVE_DSSSLCONVERSIONTOOLS
+if HAVE_DOCCONVERSIONTOOLS
 PDF_TARGET = kmymoney-phb.pdf
-else
-if HAVE_HTMLCONVERSIONTOOLS
-PDF_TARGET = kmymoney-phb.pdf
-endif
 endif
 
 .PHONY: all get-files clear-files web
@@ -44,6 +40,7 @@ clear-files:
         fi
 
 
+if HAVE_DOCCONVERSIONTOOLS
 web: $(PDF_TARGET)
 	if test x`which splitup-kde-chunk-online`x != xx; then \
 		rm -rf phb common; \
@@ -69,9 +66,6 @@ web: $(PDF_TARGET)
 		rm -rf index.xml phb common; \
 	fi;
 
-if HAVE_DSSSLCONVERSIONTOOLS
-DOCBOOK_DSL = /usr/share/sgml/docbook/dsssl-stylesheets/print/docbook.dsl
-
 # if we're in a VPATH environment, we need to copy all files over
 # to the build directory. Otherwise, we'll get into trouble. Of course
 # we delete them afterwards.
@@ -86,20 +80,14 @@ phb.docbook.tex: $(DOCBOOK_FILES)
 		for file in $(DOCBOOK_FILES); do rm $$file; done;  \
 	fi
 
-kmymoney-phb.pdf: phb.docbook.tex
-	@echo "Generating PDF document"
-	@pdfjadetex phb.docbook.tex > errorlog
-	@echo "Generating bookmarks"
-	@pdfjadetex phb.docbook.tex >> errorlog
-	@echo "Generating page numbers for table of contents"
-	@pdfjadetex phb.docbook.tex >> errorlog
-	mv phb.docbook.pdf kmymoney-phb.pdf
-	rm phb.docbook.aux phb.docbook.log phb.docbook.out errorlog
-else
-if HAVE_HTMLCONVERSIONTOOLS
-
-kmymoney-phb.pdf: phb.html
-	html2ps -D -t phb.html | ps2pdf14 - phb.pdf
-	mv phb.pdf kmymoney-phb.pdf
-endif
+kmymoney-phb.pdf: $(DOCBOOK_FILES)
+	$(MAKE) get-files
+	@dblatexbin@ -b pdftex --style kdestyle -o kmymoney-phb.pdf \
+		-P latex.output.revhistory=0  -P newtbl.use=1 \
+		-P imagedata.default.scale=pagebound \
+		-P literal.width.ignore=1 \
+		-I $(kde_libs_htmldir)/en \
+		-X \
+		phb.docbook
+	$(MAKE) clear-files
 endif

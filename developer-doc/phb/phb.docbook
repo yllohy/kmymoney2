@@ -4,7 +4,7 @@
  <!ENTITY % addindex "IGNORE">
  <!ENTITY % English "INCLUDE"><!-- change language only here -->
 
-  <!ENTITY version "1.0">
+  <!ENTITY version "1.1">
   <!ENTITY app "<command>KMyMoney</command>">
   <!ENTITY cvs "<command>CVS</command>">
   <!ENTITY ac "<command>autoconf</command>">
@@ -141,6 +141,16 @@ Unfortunately, the only history information is available in &cvs;.
 <listitem><para>Added chapter about <link linkend="translation">translation</link>
 provided by Jochen Rundholz.</para></listitem>
 <listitem><para>Added this version history</para></listitem>
+</itemizedlist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term>2006-09-11, Thomas Baumgart, Rev 1.1</term>
+<listitem>
+<itemizedlist>
+<listitem><para>Added chapter about <link linkend="documentation">documentation</link>
+provided by Tom Browder.</para></listitem>
 </itemizedlist>
 </listitem>
 </varlistentry>
