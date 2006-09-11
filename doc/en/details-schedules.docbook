@@ -156,7 +156,7 @@ At the bottom of the dialog are some optional fields that can modify how the sch
 <sect2>
 <title>Letting &kappname; enter the transaction into the register</title>
 <para>
-	To let &kappname; enter the transaction for you when needed make sure that the check box labelled <guilabel>Enter this into the ledger automatically</guilabel> is checked otherwise when the transaction is due to be entered, &kappname; will open a dialog box asking you to confirm that you want it to be entered.  This behavior is configurable and more information can be found in the Settings section.
+	To let &kappname; enter the transaction for you when needed make sure that the check box labeled <guilabel>Enter this into the ledger automatically</guilabel> is checked otherwise when the transaction is due to be entered, &kappname; will open a dialog box asking you to confirm that you want it to be entered.  This behavior is configurable and more information can be found in the Settings section.
 </para>
 </sect2>
 

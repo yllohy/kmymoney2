@@ -59,10 +59,10 @@
     In some cases a supplier is a Liability, in others it is an Expense. This is something we need to consider and decide for each case. Similarly, you may set up a loan as a Liability, particularly if you transfer the money into your bank account, but it could be an expense if it was to buy some furniture.
 </para>
 <para>
-    Consider how you want to analyse your income and expenses. This will decide how you set them up.
+    Consider how you want to analyze your income and expenses. This will decide how you set them up.
 </para>
 <para>
-    Finally, consider if you want everything in one set of accounts, or two or more. This may depend on the legal framework or just how you want to analyse things. Each set of accounts would be handled separately.
+    Finally, consider if you want everything in one set of accounts, or two or more. This may depend on the legal framework or just how you want to analyze things. Each set of accounts would be handled separately.
 </para>
 </sect2>
 
@@ -177,7 +177,7 @@ Standard credit card account.
 <term>Loan</term>
 <listitem>
 <para>
-Loans made to you, mortages, etc.
+Loans made to you, mortgages, etc.
 </para>
 </listitem>
 </varlistentry>

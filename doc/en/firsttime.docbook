@@ -111,7 +111,7 @@ The view selector consists of up to ten icons in the left side of the main windo
 					</textobject>
 				</inlinemediaobject>
 			</guiicon>
-			A configurable overview of your current financial situtation (or an introduction page when no data exists).
+			A configurable overview of your current financial situation (or an introduction page when no data exists).
 		</para>
 	</listitem>
 
@@ -317,7 +317,7 @@ Because all fields are optional, you can use &kappname; without entering any inf
 </para>
 
 <para>
-	Next &kappname; shows the standard KDE File Open dialog box allowing you to select the appropriate file for your country/region.  This window should list various language dependant directories containing files ending with the file extension 'kmt'.  If no files are listed matching this criteria then please navigate to $KDEDIR/share/apps/kmymoney2.  On a Mandrake 10 System this relates to /usr/share/apps/kmymoney2.
+	Next &kappname; shows the standard KDE File Open dialog box allowing you to select the appropriate file for your country/region.  This window should list various language-dependent directories containing files ending with the file extension 'kmt'.  If no files are listed matching this criteria then please navigate to $KDEDIR/share/apps/kmymoney2.  On a Mandrake 10 System this relates to /usr/share/apps/kmymoney2.
 
 	<screenshot>
 	<mediaobject>
@@ -454,7 +454,7 @@ Now that you have created some accounts and entered transactions its a good idea
 </para>
 
 <para>
-	To backup your file through &kappname; Select <guimenuitem>Backup</guimenuitem> from the <guimenu>File</guimenu> menu and enter the directory where you wish the file to be copied to.  If the directory needs mounting first and you have the sufficient privileges then check the tick box labelled <guilabel>Mount this directory before backing up</guilabel> and click on <guibutton>OK</guibutton>.
+	To backup your file through &kappname; Select <guimenuitem>Backup</guimenuitem> from the <guimenu>File</guimenu> menu and enter the directory where you wish the file to be copied to.  If the directory needs mounting first and you have the sufficient privileges then check the tick box labeled <guilabel>Mount this directory before backing up</guilabel> and click on <guibutton>OK</guibutton>.
 </para>
 
 <para>
@@ -501,7 +501,7 @@ The backtrace is often the single most useful piece of information in solving cr
 <formalpara><title>Try to reproduce it</title><para>Let us know if you were able to do so.  It's useful to know whether the bug only happened once and you couldn't get it to happen again; or whether it happens every time; or whether it happens sometimes but not others.</para>
 </formalpara>
 
-<formalpara><title>Include specific steps</title><para>This is a bad bug: &quot;I entered a transaction, and &kappname; crashed.&quot;  A much better bug is: &quot;Using the transaction form, I entered a new transaction in my Credit Card account.  I selected the Transfer tab, entered in an amount, then changed to the Deposit tab, and back to the Transfer tab.  When I returned to the Transfer tab, &kappname; crashed.  This bug is fully reproducable for me.&quot;</para>
+<formalpara><title>Include specific steps</title><para>This is a bad bug: &quot;I entered a transaction, and &kappname; crashed.&quot;  A much better bug is: &quot;Using the transaction form, I entered a new transaction in my Credit Card account.  I selected the Transfer tab, entered in an amount, then changed to the Deposit tab, and back to the Transfer tab.  When I returned to the Transfer tab, &kappname; crashed.  This bug is fully reproducible for me.&quot;</para>
 </formalpara>
 
 <formalpara><title>Tell us what you expected to happen</title><para>In crashes this is obvious, but in more subtle bugs, sometimes you'll see a bug report that is not obvious what the reporter expected to happen.  Always tell us what you think should have happened.</para>

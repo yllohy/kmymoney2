@@ -108,7 +108,7 @@ When you create an Investment Account, you have the option of creating an associ
   The Investment Summary tab lists your current holdings in this account, along with their price and value.
 </para>
 <para>
-  It's also the place to add, edit or delete indivdual investments from this account.
+  It's also the place to add, edit or delete individual investments from this account.
   Likewise, you can update the price of your investments here either manually or via their online source.
   To perform any of these, right-click the mouse on any of the investments to bring up the <guimenu>Investment Options</guimenu> context menu.
 </para>
@@ -162,7 +162,7 @@ The following activities are supported:
 
 <itemizedlist>
 	<listitem><para>Buy/Sell.  Use to record purchases or sales of individual investments.  This action requires an account to transfer the funds from/to.</para></listitem>
-	<listitem><para>Dividend/Yield.  Also known as a &quot;Cash Dividend&quot;, this action is used for when you receive an interest or dividend disbersement from your investment. This action requires an account to transfer the funds from/to.</para></listitem>
+	<listitem><para>Dividend/Yield.  Also known as a &quot;Cash Dividend&quot;, this action is used for when you receive an interest or dividend disbursement from your investment. This action requires an account to transfer the funds from/to.</para></listitem>
 	<listitem><para>Reinvest Dividend.  This is a dividend where the proceeds are re-invested back into the investment.</para></listitem>
 	<listitem><para>Add/Remove Shares.  A simple increase or decrease in your balance.  This should be used very rarely, because it's uncommon for shares to just show up in your account (or disappear) unless it's a purchase or a sale.</para></listitem>
 	<listitem><para>Split Shares.  Used when the stock is split.  Enter the ratio of the split in the &quot;Split Ratio&quot; field.  For example, in a 3:2 split, enter 1.5</para></listitem>
@@ -172,7 +172,7 @@ The following activities are supported:
 
 <sect2><title>Symbol Name</title>
 <para>
-Each investment transaction must be associated with an indvidual investment.
+Each investment transaction must be associated with an individual investment.
 Choose the investment name when adding or editing a transaction.
 The symbol will be displayed when viewing it.
 </para>
@@ -217,7 +217,7 @@ You have an investment account in EUR, and a brokerage account also in EUR.
 In that account, you hold shares of TietoEnator, which is traded in SEK.
 </para>
 <para>
-When you enter a buy transaction on this investement, use SEK as the currency.  
+When you enter a buy transaction on this investment, use SEK as the currency.
 So if you buy 100 shares at a price of SEK 248.00, for a total of SEK 24,800.00, enter these values in the transaction.
 </para>
 <para>
@@ -370,7 +370,7 @@ Or you can fetch them electronically, using <link linkend="details.investments.o
 <para>
 	Note that the URL can also be a file: URL, which the quote fetcher takes to mean an executable script.  
 	It will pass any command-line arguments to it that you have specified, and feed the stdout to the page parser.
-	For example, you might have a script called getquote.sh that contained custom quote logic, taking the symbol as a single paramenter.
+	For example, you might have a script called getquote.sh that contained custom quote logic, taking the symbol as a single parameter.
 	Your URL would be &quot;file:/path/to/getquote.sh %1&quot;.
 </para>
 <para>

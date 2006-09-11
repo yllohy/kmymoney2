@@ -73,7 +73,7 @@
 	They only include investment accounts.
 </para>
 <itemizedlist>
-      	<listitem><para>Investment Transactions.  Similiar to a Transactions report, and including the share price and quantities.</para></listitem>
+      	<listitem><para>Investment Transactions.  Similar to a Transactions report, and including the share price and quantities.</para></listitem>
       	<listitem><para>Investment Holdings by Account.  Shows the current shares, price, and value for each account.</para></listitem>
       	<listitem><para>Investment Holdings by Type.  Same as the previous report, but organizes the accounts by type (Stock, Mutual Fund, etc)</para></listitem>
       	<listitem><para>Investment Performance by Account.  Shows the annualized performance over any period of time.  

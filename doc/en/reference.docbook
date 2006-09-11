@@ -288,7 +288,7 @@
 <guimenu>Settings</guimenu>
 <guimenuitem>Hide/Show Statusbar </guimenuitem>
 </menuchoice></term>
-<listitem><para><action>Toggles bottom statusbar on or off.</action></para></listitem>
+<listitem><para><action>Toggles bottom status bar on or off.</action></para></listitem>
 </varlistentry>
 
 <varlistentry id="reference.menus.settings.transactiondetail">

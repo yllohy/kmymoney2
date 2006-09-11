@@ -40,7 +40,7 @@ The amount that is lent out is called the &quot;loan amount&quot; or &quot;princ
 
 <formalpara><title>Payments</title>
 <para>
-The return of the principal to the lender is generally not done as a lump sum. Instead, this is generally done by making a series of payments where each payment is a small portion of the entire principal. These payments are called &quot;principal payments&quot; but they are occasonally referred to as &quot;amortization payments&quot; in &kappname;. &quot;Amortization&quot; is defined as the act of paying off a loan in installments. 
+The return of the principal to the lender is generally not done as a lump sum. Instead, this is generally done by making a series of payments where each payment is a small portion of the entire principal. These payments are called &quot;principal payments&quot; but they are occasionally referred to as &quot;amortization payments&quot; in &kappname;. &quot;Amortization&quot; is defined as the act of paying off a loan in installments.
 </para>
 </formalpara>
 
@@ -90,7 +90,7 @@ In this scenario, the loan amount is $25,000.00. The term of the loan is 60 mont
 </para>
 
 <para>
-A &quot;loan schedule&quot; is a chart or table that shows the date that a payment should be made and the amount of each periodic payment.  Often, these schedules break the periodic payment down into it's constituent parts: the principal payment and the interest payment and the recurring fees payment.
+A &quot;loan schedule&quot; is a chart or table that shows the date that a payment should be made and the amount of each periodic payment.  Often, these schedules break the periodic payment down into its constituent parts: the principal payment and the interest payment and the recurring fees payment.
 </para>
 
 </sect1>

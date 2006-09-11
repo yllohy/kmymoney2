@@ -22,7 +22,7 @@
 </author>
 </sect1info>
 					<title>GnuCash Importer</title>
-<sect2><title>Gnucash Files</title>
+<sect2><title>GnuCash Files</title>
 
 <para>
 The &kappname; GnuCash importer handles direct reading of standard (XML)
@@ -377,8 +377,8 @@ These will not necessarily, however, match precisely those reports available in 
 </sect3>
 <sect3><title>Decoding Options</title>
 <para>
-If your native language is written in letters or symbols which are different from those used in the 'latin'
-(i.e. generally Western European) languages, these will be represented in a special fashion ('encoded') 
+If your native language is written in letters or symbols which are different from those used in the 'Latin'
+(i.e., generally Western European) languages, these will be represented in a special fashion ('encoded')
 in your GnuCash file. If these letters are not displayed correctly on your screen, then they must be decoded.
 Currently, it is often not possible to detect accurately which form of decoding must be used,
 so you may need to set this option and select an entry from the list.
@@ -617,8 +617,8 @@ Some of your transactions may be flashing red in the ledger.
 <para>
   As noted previously, one of the major drawbacks of the QIF format is the lack of a unique identifier for each transaction.  
   Thus, if you import a QIF file and some of the transactions are already in your ledger, you may get duplicates.  
-  KMM attempts to get around this by looking for transactions that look similiar to those you already have.
-  If it finds something that looks like the same transaction, it will discard the apparant duplicate.
+KMM attempts to get around this by looking for transactions that look similar to those you already have.
+  If it finds something that looks like the same transaction, it will discard the apparent duplicate.
 </para>
 
 <para>
