@@ -10,6 +10,7 @@
   <!ENTITY ac "<command>autoconf</command>">
   <!ENTITY am "<command>automake</command>">
   <!ENTITY GPG "<command>GPG</command>">
+
   <!ENTITY config-management SYSTEM "cfg-mgmt.docbook">
   <!ENTITY release-management SYSTEM "rel-mgmt.docbook">
   <!ENTITY coding-standards SYSTEM "coding.docbook">
@@ -21,6 +22,7 @@
   <!ENTITY unit-test SYSTEM "unit-test.docbook">
   <!ENTITY test-examples SYSTEM "test-examples.docbook">
   <!ENTITY rpm-example SYSTEM "rpm-example.docbook">
+  <!ENTITY documentation SYSTEM "documentation.docbook">
   <!ENTITY licence SYSTEM "licence.docbook">
   <!ENTITY fdl-licence SYSTEM "fdl-licence">
 ]>
@@ -152,6 +154,7 @@ provided by Jochen Rundholz.</para></listitem>
 &coding-standards;
 &creating-dialogs;
 &unit-test;
+&documentation;
 &translation-hints;
 &error-management;
 &cvs-examples;
