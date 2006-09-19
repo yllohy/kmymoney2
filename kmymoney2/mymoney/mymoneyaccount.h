@@ -37,6 +37,7 @@
 #include <kmymoney/mymoneymoney.h>
 #include <kmymoney/mymoneyobject.h>
 #include <kmymoney/mymoneykeyvaluecontainer.h>
+#include <kmymoney/mymoneysecurity.h>
 #include <kmymoney/export.h>
 #include "mymoneyutils.h"
 class MyMoneyTransaction;
@@ -436,6 +437,17 @@ public:
     * @retval true account is marked closed
     */
   bool isClosed(void) const;
+
+  /**
+    * returns the applicable smallest fraction for this account
+    * for the given security based on the account type.
+    *
+    * @param sec const reference to currency (security)
+    *
+    * @retval sec.smallestCashFraction() for account type Cash
+    * @retval sec.smallestAccountFraction() for all other account types
+    */
+  int fraction(const MyMoneySecurity& sec) const;
 
 private:
   /**

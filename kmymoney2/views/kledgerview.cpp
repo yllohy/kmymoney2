@@ -724,6 +724,7 @@ void KLedgerView::slotPayeeChanged(const QString& name)
               }
               m_transaction.addSplit(s);
             }
+
             if(m_transaction.splitCount() == 2) {
               sp = m_transaction.splitByAccount(m_account.id(), false);
             }
@@ -841,6 +842,11 @@ void KLedgerView::amountChanged(const QString& value, int dir)
     // we need it to recalculate shares/values.
     MyMoneyMoney price = m_split.shares() / m_split.value();
 
+    // remove a possible vat assignment
+    vatUncheck(m_transaction);
+
+    // reload m_split as it might have changed during vatUncheck()
+    m_split = m_transaction.splitByAccount(accountId());
     MyMoneySplit split = m_transaction.splitByAccount(accountId(), false);
     bool checkVat = false;
     if(!split.accountId().isEmpty()) {
@@ -946,6 +952,64 @@ void KLedgerView::slotDepositChanged(const QString& value)
   updateTabBar(m_transaction, m_split);
 }
 
+void KLedgerView::vatUncheck(MyMoneyTransaction& tr)
+{
+  // we only deal with splits that have three splits
+  if(tr.splitCount() != 3)
+    return;
+
+  // if auto vat assignment for this account is turned off
+  // we don't care about unsetting taxes
+  if(m_account.value("NoVat") == "Yes")
+    return;
+
+  MyMoneySplit split = m_transaction.splitByAccount(accountId(), false);
+  // bool checkVat = false;
+  MyMoneySplit a; // account split
+  MyMoneySplit c; // category split
+  MyMoneySplit t; // tax split
+  bool netValue = false;
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
+    if(!acc.value("VatAccount").isEmpty()) {
+      netValue = (acc.value("VatAmount").lower() == "net");
+      c = (*it_s);
+    } else if(!acc.value("VatRate").isEmpty()) {
+      t = (*it_s);
+    } else {
+      a = (*it_s);
+    }
+  }
+
+  // bail out if not all three splits are setup
+  if(a.id().isEmpty() || c.id().isEmpty() || t.id().isEmpty())
+    return;
+
+  // reduce the splits
+  if(netValue) {
+    a.setValue(-c.value());
+    a.setShares(a.value());
+  } else {
+    a.setValue(-(c.value() + t.value()));
+    a.setShares(a.value());
+  }
+  // remove all splits
+  tr.removeSplits();
+  // clear the ids so we can add the splits again
+  a.clearId();
+  c.clearId();
+
+  // make sure the category split has no value so that the vat will be calculated again
+  // when the amount changes
+  c.setValue(MyMoneyMoney());
+  c.setShares(c.value());
+
+  // add the splits
+  tr.addSplit(a);
+  tr.addSplit(c);
+}
+
 void KLedgerView::vatCheck(MyMoneyTransaction& t, MyMoneySplit& split)
 {
   bool needFocusOutEvent = false;
@@ -955,6 +1019,11 @@ void KLedgerView::vatCheck(MyMoneyTransaction& t, MyMoneySplit& split)
     MyMoneyAccount vatAcc = MyMoneyFile::instance()->account(acc.value("VatAccount").latin1());
     MyMoneyMoney vatRate;
     MyMoneyMoney gv, nv;    // gross value, net value
+    MyMoneySecurity asec = MyMoneyFile::instance()->currency(acc.currencyId());
+    MyMoneySecurity vsec = MyMoneyFile::instance()->currency(vatAcc.currencyId());
+    int afract = acc.fraction(asec);
+    int vfract = vatAcc.fraction(vsec);
+
     vatRate.fromString(vatAcc.value("VatRate"));
     if(!vatRate.isZero()) {
       MyMoneySplit vatSplit;
@@ -975,7 +1044,7 @@ void KLedgerView::vatCheck(MyMoneyTransaction& t, MyMoneySplit& split)
         // split value is the gross value
         gv = split.value();
         nv = gv / (MyMoneyMoney(1,1) + vatRate);
-        split.setValue(nv);
+        split.setValue(nv.convert(afract));
         t.modifySplit(split);
 
       } else {
@@ -983,11 +1052,11 @@ void KLedgerView::vatCheck(MyMoneyTransaction& t, MyMoneySplit& split)
         nv = split.value();
         gv = nv * (MyMoneyMoney(1,1) + vatRate);
         MyMoneySplit accSplit = t.splitByAccount(accountId());
-        accSplit.setValue(accSplit.value() - (gv - nv));
+        accSplit.setValue((accSplit.value() - (gv - nv)).convert(afract));
         t.modifySplit(accSplit);
       }
 
-      vatSplit.setValue(vatSplit.value() + (gv - nv));
+      vatSplit.setValue((vatSplit.value() + (gv - nv)).convert(vfract));
       t.modifySplit(vatSplit);
     }
   } catch(MyMoneyException *e) {
@@ -2461,13 +2530,13 @@ void KLedgerView::slotEndMatch(void)
           }
           else
           {
-            QString accountname = MyMoneyFile::instance()->account(accountid).name(); 
+            QString accountname = MyMoneyFile::instance()->account(accountid).name();
             throw new MYMONEYEXCEPTION(i18n("Both of these transactions have been imported into %1.  Therefore they cannot be matched.  Matching works with one imported transaction and one non-imported transaction.").arg(accountname));
           }
         }
         catch(MyMoneyException *e)
         {
-          QString estr = e->what(); 
+          QString estr = e->what();
           delete e;
           throw new MYMONEYEXCEPTION(i18n("Unable to match all splits (%1)").arg(estr));
         }

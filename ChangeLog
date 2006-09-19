@@ -1,3 +1,8 @@
+2006-09-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed rounding problems with automatic VAT assignment
+  * Fixed problem when modifying values in a transaction that has
+    a VAT part.
+
 2006-09-11 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Correct spelling mistakes; patch supplied by Tom Browder
 

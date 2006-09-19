@@ -791,6 +791,7 @@ protected:
   void createRegister(kMyMoneyRegister* reg);
 
   virtual void vatCheck(MyMoneyTransaction& t, MyMoneySplit& s);
+  virtual void vatUncheck(MyMoneyTransaction& t);
 
   /**
     * Depending on the setting of [General Options]:FocusChangeIsEnter this

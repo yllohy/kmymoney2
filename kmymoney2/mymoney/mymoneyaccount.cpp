@@ -494,3 +494,10 @@ bool MyMoneyAccount::isClosed(void) const
 {
   return !(value("mm-closed").isEmpty());
 }
+
+int MyMoneyAccount::fraction(const MyMoneySecurity& sec) const
+{
+  if(m_accountType == Cash)
+    return sec.smallestCashFraction();
+  return sec.smallestAccountFraction();
+}
