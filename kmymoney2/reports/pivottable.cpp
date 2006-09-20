@@ -723,7 +723,8 @@ void PivotTable::calculateBudgetMapping( void )
       {
       case MyMoneyBudget::AccountGroup::eYearly:
         // divide the single yearly value by 12 and place it in each column
-        value /= 12;  
+
+        value /= MyMoneyMoney(12,1);  
       case MyMoneyBudget::AccountGroup::eNone:
       case MyMoneyBudget::AccountGroup::eMax:
       case MyMoneyBudget::AccountGroup::eMonthly:
