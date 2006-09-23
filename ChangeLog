@@ -1,3 +1,6 @@
+2006-09-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a duplicate negation during liability account creation
+
 2006-09-19 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a multiplication bug in budget reporting when the user specified
     a yearly budget amount. 

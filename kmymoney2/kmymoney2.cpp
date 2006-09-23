@@ -2210,15 +2210,14 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
     // Check the opening balance
     if (openingBal.isPositive() && newAccount.accountGroup() == MyMoneyAccount::Liability)
     {
-      openingBal = -openingBal;
       QString message = i18n("This account is a liability and if the "
           "opening balance represents money owed, then it should be negative.  "
           "Negate the amount?\n\n"
           "Please click Yes to change the opening balance to %1,\n"
           "Please click No to leave the amount as %2,\n"
           "Please click Cancel to abort the account creation.")
-          .arg(openingBal.formatMoney())
-          .arg((-openingBal).formatMoney());
+          .arg((-openingBal).formatMoney())
+          .arg(openingBal.formatMoney());
 
       int ans = KMessageBox::questionYesNoCancel(this, message);
       if (ans == KMessageBox::Yes)
