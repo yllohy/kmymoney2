@@ -1777,6 +1777,25 @@ void KMyMoneyView::fixTransactions(void)
         (*it_t).modifySplit(*it_s);
         file->modifyTransaction(*it_t);
       }
+
+      // fix the shares and values to have the correct fraction
+      if(splitAccount.accountType() != MyMoneyAccount::Stock) {
+        MyMoneySecurity sec;
+        try {
+          sec = file->security(splitAccount.currencyId());
+          int fract = splitAccount.fraction(sec);
+          if((*it_s).shares() != (*it_s).shares().convert(fract)) {
+            qDebug("adjusting fraction in %s,%s", (*it_t).id().data(), (*it_s).id().data());
+            (*it_s).setShares((*it_s).shares().convert(fract));
+            (*it_s).setValue((*it_s).value().convert(fract));
+            (*it_t).modifySplit(*it_s);
+            file->modifyTransaction(*it_t);
+          }
+        } catch(MyMoneyException* e) {
+          qDebug("Missing security '%s', split not altered", splitAccount.currencyId().data());
+          delete e;
+        }
+      }
     }
 
 /*

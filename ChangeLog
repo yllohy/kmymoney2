@@ -1,3 +1,6 @@
+2006-09-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fix the shares and values to have the correct fraction during file load
+
 2006-09-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a duplicate negation during liability account creation
 
