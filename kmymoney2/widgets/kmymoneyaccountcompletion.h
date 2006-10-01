@@ -35,13 +35,12 @@ class QListViewItem;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kmymoneyaccountselector.h"
-#include "../widgets/kmymoneycompletion.h"
+#include <kmymoney/kmymoneyaccountselector.h>
+#include "kmymoneycompletion.h"
 
 /**
   * @author Thomas Baumgart
   */
-
 class kMyMoneyAccountCompletion : public kMyMoneyCompletion
 {
   Q_OBJECT
@@ -50,66 +49,15 @@ public:
   kMyMoneyAccountCompletion(QWidget *parent=0, const char *name=0);
   virtual ~kMyMoneyAccountCompletion();
 
-  /**
-    * Re-implemented for internal reasons.  API is unaffected.
-    */
-  virtual void show();
+  const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const { return selector()->accountList(list); }
 
   /**
-    * This method loads the set of accounts into the widget
-    * as defined by the parameter @p accountIdList. @p accountIdList is
-    * a QValueList of account ids.
-    *
-    * @param baseName QString which should be used as group text
-    * @param accountIdList QValueList of QCString account ids
-    *                 which should be loaded into the widget
-    * @param clear if true (default) clears the widget before populating
-    * @return This method returns the number of accounts loaded into the list
+    * reimplemented from kMyMoneyCompletion
     */
-  const int loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear = true);
-
-  /**
-    * This method loads the set of accounts into the widget
-    * as defined by the parameter @p typeList. @p typeList is
-    * a list of ints representing different account types.
-    * See MyMoneyAccount::accountTypeE for possible values.
-    *
-    * @param typeList QValueList conatining the account types to be displayed
-    *
-    * @return This method returns the number of accounts loaded into the list
-    */
-  const int loadList(QValueList<int> typeList);
-
-  const int loadList(void) { return loadList(m_typeList); };
-
-  /**
-    * This method sets the current account with id @p id as
-    * the current selection.
-    *
-    * @param id id of account to be selected
-    */
-  void setSelected(const QCString& id) { m_id = id; m_accountSelector->setSelected(id, true); };
-
-  const QCStringList accountList(const QValueList<MyMoneyAccount::accountTypeE>& list = QValueList<MyMoneyAccount::accountTypeE>()) const { return m_accountSelector->accountList(list); };
-
-  void removeAccount(const QCString& id) { m_accountSelector->removeAccount(id); }
-
-  /**
-    * This method returns the list of selected account id's. If
-    * no account is selected, the list is empty.
-    *
-    * @return list of selected accounts
-    */
-  const QCStringList selectedAccounts(void) const { return m_accountSelector->selectedAccounts(); };
+  kMyMoneyAccountSelector* selector(void) const { return dynamic_cast<kMyMoneyAccountSelector*>(m_selector); }
 
 public slots:
   void slotMakeCompletion(const QString& txt);
-
-private:
-  kMyMoneyAccountSelector*      m_accountSelector;
-  QValueList<int>               m_typeList;
-  QValueList<QCString>          m_accountIdList;
-  QString                       m_baseName;
 };
 
 #endif

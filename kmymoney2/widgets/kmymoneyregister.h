@@ -42,7 +42,6 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-class KLedgerView;
 #include "../views/kmymoneytransaction.h"
 #include "../mymoney/mymoneymoney.h"
 #include "../mymoney/mymoneysplit.h"
@@ -351,7 +350,7 @@ protected:
   QColor m_gridColor;
   QColor m_errorColor, m_lastErrorColor;
   QColor m_importColor;
- 
+
   /**
     * This member tells what color a transaction should be displayed as
     * while the user has selected it for matching.  Since matching is

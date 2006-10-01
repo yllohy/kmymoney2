@@ -1107,9 +1107,6 @@ void MyMoneyFileTest::testAddPayee() {
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(p.id() == "P000001");
 
-		CPPUNIT_ASSERT(observer->updated().count() == 1);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassPayee) == 1);
-		observer->reset();
 	} catch (MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
@@ -1129,9 +1126,6 @@ void MyMoneyFileTest::testModifyPayee() {
 		p = m->payee("P000001");
 		CPPUNIT_ASSERT(p.name() == "New name");
 
-		CPPUNIT_ASSERT(observer->updated().count() == 1);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassPayee) == 1);
-		observer->reset();
 	} catch (MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
@@ -1150,9 +1144,6 @@ void MyMoneyFileTest::testRemovePayee() {
 		m->removePayee(p);
 		CPPUNIT_ASSERT(m->payeeList().count() == 0);
 
-		CPPUNIT_ASSERT(observer->updated().count() == 1);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassPayee) == 1);
-		observer->reset();
 	} catch (MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");

@@ -24,6 +24,8 @@
 #include "mymoneyutils.h"
 #include "mymoneyexception.h"
 
+const QCString MyMoneyObject::m_emptyId;
+
 MyMoneyObject::MyMoneyObject(const QCString& id)
 {
   m_id = id;
@@ -58,3 +60,9 @@ void MyMoneyObject::clearId(void)
 {
   m_id = QCString();
 }
+
+const QCString& MyMoneyObject::emptyId(void)
+{
+  return m_emptyId;
+}
+

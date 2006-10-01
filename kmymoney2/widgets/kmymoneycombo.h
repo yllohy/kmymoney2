@@ -23,6 +23,9 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qtimer.h>
+#include <qmutex.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -31,6 +34,209 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/mymoneyutils.h>
+#include <kmymoney/mymoneysplit.h>
+#include <kmymoney/register.h>
+#include <kmymoney/mymoneyaccount.h>
+
+class kMyMoneyCompletion;
+class KMyMoneySelector;
+class kMyMoneyLineEdit;
+
+/**
+  * @author Thomas Baumgart
+  */
+class KMyMoneyCombo : public KComboBox
+{
+  Q_OBJECT
+public:
+  KMyMoneyCombo(QWidget *w = 0, const char *name=0);
+  KMyMoneyCombo(bool rw, QWidget *w = 0, const char *name=0);
+
+  /**
+    * This method is used to turn on/off the hint display and to setup the appropriate text.
+    * The hint text is shown in a lighter color if the field is otherwise empty and does
+    * not have the keyboard focus.
+    *
+    * @param hint reference to text. If @a hint is empty, no hint will be shown.
+    */
+  void setHint(const QString& hint) const;
+
+  /**
+    * overridden for internal reasons.
+    *
+    * @param editable make combo box editable (@a true) or selectable only (@a false).
+    */
+  void setEditable(bool editable);
+
+  /**
+    * This method returns a pointer to the completion object of the combo box.
+    *
+    * @return pointer to kMyMoneyCompletion or derivative.
+    */
+  kMyMoneyCompletion* completion(void) const;
+
+  /**
+    * This method returns a pointer to the completion object's selector.
+    *
+    * @return pointer to KMyMoneySelector or derivative.
+    */
+  KMyMoneySelector* selector(void) const;
+
+  /**
+    * This method returns the ids of the currently selected items
+    */
+  void selectedItems(QCStringList& list) const;
+
+  /**
+    * This method selects the item with the respective @a id.
+    *
+    * @param id reference to QCString containing the id
+    */
+  void setSelectedItem(const QCString& id);
+
+  /**
+    * This method checks if the position @a pos is part of the
+    * area of the drop down arrow.
+    */
+  bool isInArrowArea(const QPoint& pos) const;
+
+  void setSuppressObjectCreation(bool suppress) { m_canCreateObjects = !suppress; }
+
+public slots:
+  virtual void slotItemSelected(const QCString& id);
+
+protected:
+  /**
+    * reimplemented to support our own popup widget
+    */
+  void mousePressEvent(QMouseEvent *e);
+
+  /**
+    * reimplemented to support our own popup widget
+    */
+  void keyPressEvent(QKeyEvent *e);
+
+  /**
+    * reimplemented to support our own popup widget
+    */
+  void paintEvent(QPaintEvent *);
+
+  /**
+    * reimplemented to support detection of new items
+    */
+  void focusOutEvent(QFocusEvent* );
+
+protected:
+  /**
+    * This member keeps a pointer to the object's completion object
+    */
+  kMyMoneyCompletion*    m_completion;
+
+  /**
+    * Use our own line edit to provide hint functionality
+    */
+  kMyMoneyLineEdit*      m_edit;
+
+  /**
+    * The currently selected item
+    */
+  QCString               m_id;
+
+signals:
+  void itemSelected(const QCString& id);
+  void objectCreation(bool);
+  void createItem(const QString&, QCString&);
+
+private:
+  QTimer                 m_timer;
+  QMutex                 m_focusMutex;
+  bool                   m_canCreateObjects;
+};
+
+/**
+  * @author Thomas Baumgart
+  * This class implements a combo box with the possible states for
+  * reconciliation.
+  */
+class KMyMoneyReconcileCombo : public KMyMoneyCombo
+{
+  Q_OBJECT
+public:
+  KMyMoneyReconcileCombo(QWidget *w = 0, const char *name=0);
+
+  void setState(MyMoneySplit::reconcileFlagE state);
+  MyMoneySplit::reconcileFlagE state(void) const;
+  void removeDontCare(void);
+
+protected slots:
+  void slotSetState(const QCString&);
+};
+
+/**
+  * @author Thomas Baumgart
+  * This class implements a combo box with the possible states for
+  * actions (Deposit, Withdrawal, etc.).
+  */
+class KMyMoneyComboAction : public KMyMoneyCombo
+{
+  Q_OBJECT
+public:
+  KMyMoneyComboAction(QWidget *w = 0, const char *name=0);
+
+  void setAction(int state);
+  int action(void) const;
+  void protectItem(int id, bool protect);
+
+protected slots:
+  void slotSetAction(const QCString&);
+
+signals:
+  void actionSelected(int);
+};
+
+/**
+  * @author Thomas Baumgart
+  * This class implements a combo box with the possible states for
+  * actions (Deposit, Withdrawal, etc.).
+  */
+class KMyMoneyCashFlowCombo : public KMyMoneyCombo
+{
+  Q_OBJECT
+public:
+  /**
+    * Create a combo box that contains the entries "Pay to", "From" and
+    * "  " for don't care. The KMyMoneyRegister::CashFlowDirection is mapped
+    * to the text as follows:
+    *
+    * KMyMoneyRegister::CashFlowDirection
+
+    */
+  KMyMoneyCashFlowCombo(QWidget *w = 0, const char *name=0, MyMoneyAccount::accountTypeE type = MyMoneyAccount::Asset);
+
+  void setDirection(KMyMoneyRegister::CashFlowDirection dir);
+  KMyMoneyRegister::CashFlowDirection direction(void) const { return m_dir; }
+  void removeDontCare(void);
+
+protected slots:
+  void slotSetDirection(const QCString& id);
+
+signals:
+  void directionSelected(KMyMoneyRegister::CashFlowDirection);
+
+private:
+  KMyMoneyRegister::CashFlowDirection   m_dir;
+};
+
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
 
 /**
   * @author Michael Edwardes

@@ -47,7 +47,7 @@ KImportVerifyDlg::KImportVerifyDlg(const MyMoneyAccount& account, QWidget *paren
    m_account(account)
 {
   m_ledgerView->loadInvestmentView();
-  m_ledgerView->slotReloadView();
+  // m_ledgerView->slotReloadView();
   m_ledgerView->slotSelectAccount(account.id());
 
   // add icons to buttons

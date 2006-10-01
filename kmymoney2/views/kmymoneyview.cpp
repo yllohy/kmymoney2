@@ -32,6 +32,7 @@
 
 #include <qcursor.h>
 #include <qregexp.h>
+#include <qlayout.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -89,6 +90,8 @@
 #include "../mymoney/storage/mymoneystoragesql.h"
 #include "../converter/mymoneygncreader.h"
 #include "../mymoney/storage/mymoneystorageanon.h"
+
+#include <kmymoney/transactioneditor.h>
 
 #include "kmymoneyview.h"
 #include "khomeview.h"
@@ -198,9 +201,18 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   // the next line causes the ledgers to get a hide() signal to be able
   // to end any pending edit activities
   connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_ledgerView, SLOT(slotCancelEdit()));
-  connect(m_ledgerView, SIGNAL(accountSelected(const QCString&, const QCString&)),
-      this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotReloadView()));
+  connect(m_ledgerView, SIGNAL(accountSelected(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
+  connect(m_ledgerView, SIGNAL(openContextMenu()), kmymoney2, SLOT(slotShowTransactionContextMenu()));
+  connect(m_ledgerView, SIGNAL(transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>&)), kmymoney2, SLOT(slotSelectTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>&)));
+  connect(m_ledgerView, SIGNAL(newTransaction()), kmymoney2, SLOT(slotTransactionsNew()));
+  connect(m_ledgerView, SIGNAL(cancelOrEndEdit()), kmymoney2, SLOT(slotTransactionsCancelOrEnter()));
+  connect(m_ledgerView, SIGNAL(startEdit()), kmymoney2, SLOT(slotTransactionsEdit()));
+  connect(m_ledgerView, SIGNAL(endEdit()), kmymoney2, SLOT(slotTransactionsEnter()));
+  connect(m_ledgerView, SIGNAL(cancelEdit()), kmymoney2, SLOT(slotTransactionsCancel()));
+
+  //connect(m_ledgerView, SIGNAL(accountSelected(const QCString&, const QCString&)),
+  //    this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
+  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotLoadView()));
   connect(m_ledgerView, SIGNAL(reportGenerated(const MyMoneyReport&)),
       this, SLOT(slotReportGenerated(const MyMoneyReport&)));
 
@@ -242,6 +254,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   QWidget* widget = dynamic_cast<QWidget*>(child("KJanusWidgetTitleLabel", "QLabel"));
   if(widget)
     widget->hide();
+
   // and the separator below it
   widget = dynamic_cast<QWidget*>(child(0, "KSeparator"));
   if(widget)
@@ -270,12 +283,65 @@ bool KMyMoneyView::showPage(int index)
     kmymoney2->slotSelectInvestment();
     kmymoney2->slotSelectPayees(QValueList<MyMoneyPayee>());
     kmymoney2->slotSelectBudget(QValueList<MyMoneyBudget>());
+    kmymoney2->slotSelectTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>());
   }
+
+  // pretend we're in the constructor to avoid calling the
+  // above resets. For some reason which I don't know the reason
+  // of, KJanusWidget::showPage() calls itself recursively. This
+  // screws up the action handling, as items could have been selected
+  // in the meantime. We prevent this by setting the m_inConstructor
+  // to true and reset it to the previos value when we leave this method.
+  bool prevConstructor = m_inConstructor;
+  m_inConstructor = true;
 
   // fixup some actions that are dependant on the view
   kmymoney2->action("file_print")->setEnabled(index == pageIndex(m_reportsViewFrame));
 
-  return KJanusWidget::showPage(index);
+  bool rc = KJanusWidget::showPage(index);
+
+  m_inConstructor = prevConstructor;
+  return rc;
+}
+
+bool KMyMoneyView::canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list) const
+{
+  // we can only edit transactions in the ledger view so
+  // we check that this is the active page
+  bool rc = (activePageIndex() == pageIndex(m_ledgerViewFrame));
+
+  // if this is true, then we check that none of the splits is frozen
+  if(rc) {
+    QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+    for(it_t = list.begin(); rc && it_t != list.end(); ++it_t) {
+      const QValueList<MyMoneySplit>& splits = (*it_t).transaction().splits();
+      QValueList<MyMoneySplit>::const_iterator it_s;
+      for(it_s = splits.begin(); rc && it_s != splits.end(); ++it_s) {
+        if((*it_s).reconcileFlag() == MyMoneySplit::Frozen)
+          rc = false;
+      }
+    }
+  }
+  return rc;
+}
+
+bool KMyMoneyView::createNewTransaction(void)
+{
+  bool rc = false;
+  QValueList<KMyMoneyRegister::SelectedTransaction> list;
+  if(canEditTransactions(list)) {
+    rc = m_ledgerView->selectEmptyTransaction();
+  }
+  return rc;
+}
+
+TransactionEditor* KMyMoneyView::startEdit(const QValueList<KMyMoneyRegister::SelectedTransaction>& list)
+{
+  TransactionEditor* editor = 0;
+  if(canEditTransactions(list)) {
+    editor = m_ledgerView->startEdit(list);
+  }
+  return editor;
 }
 
 void KMyMoneyView::newStorage(void)
@@ -316,6 +382,8 @@ void KMyMoneyView::enableViews(int state)
 void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& transaction)
 {
   MyMoneyAccount acc = MyMoneyFile::instance()->account(accId);
+  kmymoney2->slotSelectAccount(acc);
+
   switch(acc.accountType()) {
     case MyMoneyAccount::Investment:
       showPage(pageIndex(m_investmentViewFrame));
@@ -335,6 +403,8 @@ void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& tra
     case MyMoneyAccount::Asset:
     case MyMoneyAccount::Liability:
     case MyMoneyAccount::AssetLoan:
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Expense:
       showPage(pageIndex(m_ledgerViewFrame));
       m_ledgerView->slotSelectAccount(accId, transaction);
       break;
@@ -342,8 +412,6 @@ void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& tra
     case MyMoneyAccount::CertificateDep:
     case MyMoneyAccount::MoneyMarket:
     case MyMoneyAccount::Currency:
-    case MyMoneyAccount::Income:
-    case MyMoneyAccount::Expense:
       qDebug("No view available for account type %d", acc.accountType());
       break;
 
@@ -359,10 +427,12 @@ void KMyMoneyView::slotPayeeSelected(const QCString& payee, const QCString& acco
   m_payeesView->slotSelectPayeeAndTransaction(payee, account, transaction);
 }
 
-void KMyMoneyView::slotScheduleSelected(const QCString& schedule)
+void KMyMoneyView::slotScheduleSelected(const QCString& scheduleId)
 {
+  MyMoneySchedule sched = MyMoneyFile::instance()->schedule(scheduleId);
+  kmymoney2->slotSelectSchedule(sched);
   showPage(pageIndex(m_scheduleViewFrame));
-  m_scheduledView->slotSelectSchedule(schedule);
+  m_scheduledView->slotSelectSchedule(scheduleId);
 }
 
 void KMyMoneyView::slotReportSelected(const QCString& reportid)
@@ -959,7 +1029,7 @@ bool KMyMoneyView::dirty(void)
   return MyMoneyFile::instance()->dirty();
 }
 
-void KMyMoneyView::slotAccountReconcile(const MyMoneyAccount& account)
+bool KMyMoneyView::startReconciliation(const MyMoneyAccount& account, const MyMoneyMoney& endingBalance)
 {
   bool  ok = true;
 
@@ -974,17 +1044,22 @@ void KMyMoneyView::slotAccountReconcile(const MyMoneyAccount& account)
       case MyMoneyAccount::Asset:
       case MyMoneyAccount::Liability:
         showPage(pageIndex(m_ledgerViewFrame));
-        // for internal reasons, the account must be selected first
-        m_ledgerView->slotSelectAccount(account.id(), QCString(), false);
-
-        // and in a second step the reconciliation mode can be started
-        m_ledgerView->slotSelectAccount(account.id(), QCString(), true);
+        // prepare reconciliation mode
+        m_ledgerView->slotSelectAccount(account.id());
+        m_ledgerView->setReconciliationAccount(account.id(), endingBalance);
         break;
 
       default:
         ok = false;
     }
   }
+  return ok;
+}
+
+void KMyMoneyView::finishReconciliation(const MyMoneyAccount& account)
+{
+  // make sure to re-select the account
+  m_ledgerView->setReconciliationAccount();
 }
 
 bool KMyMoneyView::newFile(const bool createEmtpyFile)
@@ -1328,7 +1403,7 @@ void KMyMoneyView::slotRefreshViews()
   m_institutionsView->slotLoadAccounts();
   m_categoriesView->slotLoadAccounts();
   m_payeesView->slotLoadPayees();
-  m_ledgerView->slotRefreshView();
+  m_ledgerView->slotLoadView();
   m_budgetView->slotRefreshView();
   m_homeView->slotRefreshView();
   m_investmentView->slotRefreshView();
@@ -1855,7 +1930,7 @@ KMyMoneyViewBase::KMyMoneyViewBase(QWidget* parent, const char* name, const QStr
 {
   m_viewLayout = new QVBoxLayout(this);
   m_viewLayout->setSpacing( 6 );
-  m_viewLayout->setMargin( 11 );
+  m_viewLayout->setMargin( 0 );
 
   m_titleLabel = new KMyMoneyTitleLabel( this, "titleLabel" );
   m_titleLabel->setMinimumSize( QSize( 100, 30 ) );

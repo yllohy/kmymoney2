@@ -42,6 +42,7 @@ kMyMoneyLineEdit::~kMyMoneyLineEdit()
 {
 }
 
+#if 0
 /** No descriptions */
 bool kMyMoneyLineEdit::eventFilter(QObject *o , QEvent *e )
 {
@@ -81,6 +82,7 @@ bool kMyMoneyLineEdit::eventFilter(QObject *o , QEvent *e )
   }
   return rc;
 }
+#endif
 
 void kMyMoneyLineEdit::resetText(void)
 {

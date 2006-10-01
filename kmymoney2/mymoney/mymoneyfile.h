@@ -569,6 +569,8 @@ public:
 
   void transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const;
 
+  void transactionList(QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >& list, MyMoneyTransactionFilter& filter) const;
+
   /**
     * This method is used to remove a transaction from the transaction
     * pool (journal).
@@ -1472,6 +1474,8 @@ public:
     */
   void clearCache(void);
 
+  void forceDataChanged(void) { emit dataChanged(); }
+
 protected:
   /**
     * This is the constructor for a new empty file description
@@ -1486,6 +1490,14 @@ signals:
     * via any of the methods of this object
     */
   void dataChanged(void);
+
+  /**
+    * This signal is emitted whenever a new object has been added to the engine.
+    * The dataChanged() signal is emitted before this signal is emitted.
+    *
+    * @note: not all objects are supported as of today (2006-08-23 - ipwizard)
+    */
+  void objectAdded(const MyMoneyObject&);
 
 private:
   const QCString locateSubAccount(const MyMoneyAccount& base, const QString& category) const;

@@ -104,7 +104,7 @@ protected:
   void setText(const QString& txt);
 
 private:
-  kMyMoneyAccountCompletion*    m_selector;
+  kMyMoneyAccountCompletion*    m_completion;
   bool                          m_mlbDown;
 };
 

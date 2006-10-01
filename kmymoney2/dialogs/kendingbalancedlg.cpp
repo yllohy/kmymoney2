@@ -31,10 +31,11 @@
 // Project Includes
 
 #include "kendingbalancedlg.h"
-#include "../mymoney/mymoneysplit.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../widgets/kmymoneycategory.h"
-#include "../widgets/kmymoneyaccountselector.h"
+#include <kmymoney/mymoneysplit.h>
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneycategory.h>
+#include <kmymoney/kmymoneyaccountselector.h>
+#include <kmymoney/mymoneyobjectcontainer.h>
 
 KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *parent, const char *name)
  : KEndingBalanceDlgDecl(parent, name, true)
@@ -283,12 +284,12 @@ void KEndingBalanceLoanDlg::slotCheckPageFinished(void)
       }
     }
   } else if(currentPage() == m_adjustmentTransactionPage) {
-    if(m_accountEdit->selectedAccounts().count() == 0) {
+    if(m_accountEdit->selectedItems().count() == 0) {
       nextButton()->setEnabled(false);
       finishButton()->setEnabled(false);
 
     } else if(m_categoryEdit->isEnabled()
-    && m_categoryEdit->selectedAccounts().count() == 0) {
+    && m_categoryEdit->selectedItems().count() == 0) {
       nextButton()->setEnabled(false);
       finishButton()->setEnabled(false);
     }
@@ -363,8 +364,16 @@ void KEndingBalanceLoanDlg::next(void)
       m_interestTotalEdit->setValue(interest);
 
   } else if(currentPage() == m_checkPaymentsPage) {
+    MyMoneyObjectContainer objects;
+    AccountSet assetSet(&objects), incomeSet(&objects);
+    assetSet.addAccountGroup(MyMoneyAccount::Asset);
+    incomeSet.addAccountGroup(MyMoneyAccount::Income);
+    assetSet.load(m_accountEdit);
+    incomeSet.load(m_categoryEdit);
+#if 0
     m_accountEdit->loadList(static_cast<KMyMoneyUtils::categoryTypeE>(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
     m_categoryEdit->loadList(static_cast<KMyMoneyUtils::categoryTypeE>(KMyMoneyUtils::income | KMyMoneyUtils::expense));
+#endif
     m_categoryEdit->setEnabled(false);
 
     MyMoneyMoney interest = totalInterest(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
@@ -405,10 +414,10 @@ const MyMoneyTransaction KEndingBalanceLoanDlg::adjustmentTransaction(void) cons
     try {
       sAmortization.setAccountId(m_account.id());
       sAmortization.setPayeeId(m_account.payee());
-      sAccount.setAccountId(m_accountEdit->selectedAccounts()[0]);
+      sAccount.setAccountId(m_accountEdit->selectedItems()[0]);
       sAccount.setPayeeId(m_account.payee());
       if(m_categoryEdit->isEnabled())
-        sInterest.setAccountId(m_categoryEdit->selectedAccounts()[0]);
+        sInterest.setAccountId(m_categoryEdit->selectedItems()[0]);
 
       sAccount.setMemo(i18n("Adjustment transaction"));
       sAmortization.setMemo(sAccount.memo());

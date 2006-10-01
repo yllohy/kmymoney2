@@ -31,15 +31,57 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <klineedit.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/kmymoneycombo.h>
+#include <kmymoney/mymoneypayee.h>
+
+class kMyMoneySelector;
 
 /**
+  * This class implements a text based payee selector.
+  * When initially used, the widget has the functionality of a KComboBox object.
+  * Whenever a key is pressed, the set of loaded payees is searched for
+  * payees names which match the currently entered text.
+  *
+  * If any match is found a list selection box is opened and the user can use
+  * the up/down, page-up/page-down keys or the mouse to navigate in the list. If
+  * a payee is selected, the selection box is closed. Other key-strokes are
+  * directed to the parent object to manipulate the text.  The visible contents of
+  * the selection box is updated with every key-stroke.
+  *
+  * This object is a replacement of the kMyMoneyPayee object and should be used
+  * for new code.
+  *
   * @author Thomas Baumgart
   */
+class KMyMoneyPayee : public KMyMoneyCombo
+{
+   Q_OBJECT
+public:
+  KMyMoneyPayee(QWidget* parent = 0, const char* name = 0);
+
+  void loadPayees(const QValueList<MyMoneyPayee>& list);
+};
+
+
+
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+
+
+#include <klineedit.h>
+
+
 class kMyMoneyPayee : public KLineEdit
 {
   Q_OBJECT

@@ -1,0 +1,128 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>KSortOptionDlg</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>KSortOptionDlg</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>511</width>
+            <height>348</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Sort options</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>m_useDefault</cstring>
+            </property>
+            <property name="text">
+                <string>Use default</string>
+            </property>
+        </widget>
+        <widget class="TransactionSortOption">
+            <property name="name">
+                <cstring>m_sortOption</cstring>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout5</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_helpButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Help</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Horizontal Spacing2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>237</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_okButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;OK</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_cancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>m_okButton</sender>
+        <signal>clicked()</signal>
+        <receiver>KSortOptionDlg</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>m_cancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>KSortOptionDlg</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>m_useDefault</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_sortOption</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">ksortoptiondlg.ui.h</include>
+</includes>
+<slots>
+    <slot>setSortOption( const QString &amp; option, const QString &amp; def )</slot>
+</slots>
+<functions>
+    <function access="private" specifier="non virtual">init()</function>
+    <function returnType="QString">sortOption( void ) const</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

@@ -173,7 +173,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
     m_beginDate =  QDate( m_beginDate.year(), m_beginDate.month(), 1 );
     m_endDate = QDate( m_endDate.year(), m_endDate.month(), 1 );
   }
-  
+
   m_numColumns = columnValue(m_endDate) - columnValue(m_beginDate) + 2;
 
   //
@@ -271,11 +271,11 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
       ++it_schedule;
     }
   }
-  
+
   // whether asset & liability transactions are actually to be considered
   // transfers
   bool al_transfers = ( m_config_f.rowType() == MyMoneyReport::eExpenseIncome ) && ( m_config_f.isIncludingTransfers() );
-  
+
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
   unsigned colofs = columnValue(m_beginDate) - 1;
   while ( it_transaction != transactions.end() )
@@ -297,12 +297,17 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
         MyMoneyMoney reverse(splitAccount.isIncomeExpense() ? -1 : 1, 1);
 
         // retrieve the value in the account's underlying currency
-        MyMoneyMoney value = (*it_split).shares() * reverse;
+        // make sure to consider any autocalculation for loan payments
+        MyMoneyMoney value;
+        if((*it_split).shares() != MyMoneyMoney::autoCalc) {
+          value = (*it_split).shares() * reverse;
+        } else {
+        }
 
         // the outer group is the account class (major account type)
         MyMoneyAccount::accountTypeE type = splitAccount.accountGroup();
         QString outergroup = accountTypeToString(type);
-        
+
         // Except in the case of transfers on an income/expense report
         if ( al_transfers && ( type == MyMoneyAccount::Asset || type == MyMoneyAccount::Liability ) )
         {
@@ -468,7 +473,7 @@ void PivotTable::calculateColumnHeadings(void)
   m_columnHeadings.append( "Opening" );
 
   unsigned columnpitch = m_config_f.columnPitch();
-  
+
   // if this is a days-based report
   if (m_config_f.isColumnsAreDays())
   {
@@ -492,15 +497,15 @@ void PivotTable::calculateColumnHeadings(void)
         QDate columnEndDate = columnDate.addDays(columnpitch).addDays(-1);
         if ( columnEndDate > m_endDate )
           columnEndDate = m_endDate;
-      
+
         QString heading = QDate::shortMonthName(columnDate.month()) + "&nbsp;" + QString::number(columnDate.day()) + " - " + QDate::shortMonthName(columnEndDate.month()) + "&nbsp;" + QString::number(columnEndDate.day());
-        
+
         columnDate = columnDate.addDays(columnpitch);
         m_columnHeadings.append( heading);
       }
     }
   }
-  
+
   // else it's a months-based report
   else
   {
@@ -601,6 +606,20 @@ void PivotTable::calculateOpeningBalances( void )
   }
 }
 
+void PivotTable::calculateRunningSums( TInnerGroup::iterator& it_row)
+{
+  MyMoneyMoney runningsum = it_row.data()[0];
+  unsigned column = 1;
+  while ( column < m_numColumns )
+  {
+    if ( it_row.data().count() <= column )
+      throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateRunningSums").arg(column).arg(it_row.data().count()));
+
+    runningsum = ( it_row.data()[column] += runningsum );
+
+    ++column;
+  }
+}
 
 void PivotTable::calculateRunningSums( void )
 {
@@ -615,6 +634,7 @@ void PivotTable::calculateRunningSums( void )
       TInnerGroup::iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
+#if 0
         MyMoneyMoney runningsum = it_row.data()[0];
         unsigned column = 1;
         while ( column < m_numColumns )
@@ -626,6 +646,8 @@ void PivotTable::calculateRunningSums( void )
 
           ++column;
         }
+#endif
+        calculateRunningSums( it_row );
         ++it_row;
       }
       ++it_innergroup;
@@ -929,7 +951,7 @@ void PivotTable::calculateTotals( void )
 
       MyMoneyMoney value = (*it_outergroup).m_total[column];
       (*it_outergroup).m_total.m_total += value;
-      
+
       if ( invert_total )
         value = -value;
 
@@ -1004,7 +1026,7 @@ void PivotTable::assignCell( const QString& outergroup, const ReportAccount& _ro
   // Determine whether the value should be inverted before being placed in the row
   if ( m_grid[outergroup].m_inverted )
     value = -value;
-    
+
   // Add the value to the grid cell
   if ( budget )
     m_grid[outergroup][innergroup][row].m_budget[column] += value;
@@ -1029,9 +1051,9 @@ void PivotTable::createRow( const QString& outergroup, const ReportAccount& row,
   if ( ! m_grid[outergroup].contains(innergroup) )
   {
     DEBUG_OUTPUT(QString("Adding group [%1][%2]").arg(outergroup).arg(innergroup));
-    m_grid[outergroup][innergroup] = TInnerGroup(m_numColumns); 
+    m_grid[outergroup][innergroup] = TInnerGroup(m_numColumns);
   }
-  
+
   if ( ! m_grid[outergroup][innergroup].contains(row) )
   {
     DEBUG_OUTPUT(QString("Adding row [%1][%2][%3]").arg(outergroup).arg(innergroup).arg(row.debugName()));
@@ -1047,15 +1069,15 @@ unsigned PivotTable::columnValue(const QDate& _date) const
   if (m_config_f.isColumnsAreDays())
     return (QDate().daysTo(_date));
   else
-    return (_date.year() * 12 + _date.month()); 
+    return (_date.year() * 12 + _date.month());
 }
 
 QDate PivotTable::columnDate(int column) const
 {
   if (m_config_f.isColumnsAreDays())
-    return m_beginDate.addDays( m_config_f.columnPitch() * column - 1 ); 
+    return m_beginDate.addDays( m_config_f.columnPitch() * column - 1 );
   else
-    return m_beginDate.addMonths( m_config_f.columnPitch() * column ).addDays(-1); 
+    return m_beginDate.addMonths( m_config_f.columnPitch() * column ).addDays(-1);
 }
 
 QString PivotTable::renderCSV( void ) const
@@ -1702,7 +1724,7 @@ QString PivotTable::renderHTML( void ) const
     while ( it_outergroup_map != m_grid.end() )
     {
       outergroups.push_back(it_outergroup_map.data());
-      
+
       // copy the name into the outergroup, because we will now lose any association with
       // the map iterator
       outergroups.back().m_displayName = it_outergroup_map.key();
@@ -1710,7 +1732,7 @@ QString PivotTable::renderHTML( void ) const
       ++it_outergroup_map;
     }
     qHeapSort(outergroups);
-    
+
     QValueList<TOuterGroup>::const_iterator it_outergroup = outergroups.begin();
     while ( it_outergroup != outergroups.end() )
     {

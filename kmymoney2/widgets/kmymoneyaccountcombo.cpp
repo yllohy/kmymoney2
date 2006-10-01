@@ -34,20 +34,21 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyfile.h"
-#include "kmymoneyaccountcombo.h"
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneyaccountcombo.h>
+#include <kmymoney/mymoneyobjectcontainer.h>
 #include "kmymoneyaccountcompletion.h"
 
 KMyMoneyAccountCombo::KMyMoneyAccountCombo( QWidget* parent, const char* name ) :
   KComboBox( parent, name ),
-  m_selector(0),
+  m_completion(0),
   m_mlbDown(false)
 {
 #ifndef KMM_DESIGNER
-  m_selector = new kMyMoneyAccountCompletion(this);
+  m_completion = new kMyMoneyAccountCompletion(this);
 
   connect(this, SIGNAL(clicked()), this, SLOT(slotButtonPressed()));
-  connect(m_selector, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSelected(const QCString&)));
+  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSelected(const QCString&)));
 #endif
 
   // make sure that we can display a minimum of characters
@@ -65,7 +66,7 @@ KMyMoneyAccountCombo::~KMyMoneyAccountCombo()
 
 void KMyMoneyAccountCombo::slotButtonPressed(void)
 {
-  m_selector->show();
+  m_completion->show();
 }
 
 void KMyMoneyAccountCombo::slotSelected(const QCString& id)
@@ -91,13 +92,13 @@ void KMyMoneyAccountCombo::setSelected(const QCString& id)
     }
   } else {
     setText(QString());
-    m_selector->setSelected(id);
+    m_completion->setSelected(id);
   }
 }
 
 void KMyMoneyAccountCombo::setSelected(const MyMoneyAccount& acc)
 {
-  m_selector->setSelected(acc.id());
+  m_completion->setSelected(acc.id());
   setText(acc.name());
 }
 
@@ -108,37 +109,32 @@ void KMyMoneyAccountCombo::setText(const QString& txt)
 
 const int KMyMoneyAccountCombo::loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear)
 {
-  return m_selector->loadList(baseName, accountIdList, clear);
+  MyMoneyObjectContainer objects;
+  AccountSet set(&objects);
+
+  return set.load(m_completion->selector(), baseName, accountIdList, clear);
 }
 
 int KMyMoneyAccountCombo::loadList(KMyMoneyUtils::categoryTypeE typeMask)
 {
+  MyMoneyObjectContainer objects;
+  AccountSet set(&objects);
   QValueList<int> typeList;
 
   if(typeMask & KMyMoneyUtils::asset) {
-    typeList << MyMoneyAccount::Checkings;
-    typeList << MyMoneyAccount::Savings;
-    typeList << MyMoneyAccount::Cash;
-    typeList << MyMoneyAccount::AssetLoan;
-    typeList << MyMoneyAccount::CertificateDep;
-    typeList << MyMoneyAccount::Investment;
-    typeList << MyMoneyAccount::MoneyMarket;
-    typeList << MyMoneyAccount::Asset;
-    typeList << MyMoneyAccount::Currency;
+    set.addAccountGroup(MyMoneyAccount::Asset);
   }
   if(typeMask & KMyMoneyUtils::liability) {
-    typeList << MyMoneyAccount::CreditCard;
-    typeList << MyMoneyAccount::Loan;
-    typeList << MyMoneyAccount::Liability;
+    set.addAccountGroup(MyMoneyAccount::Liability);
   }
   if(typeMask & KMyMoneyUtils::income) {
-    typeList << MyMoneyAccount::Income;
+    set.addAccountGroup(MyMoneyAccount::Income);
   }
   if(typeMask & KMyMoneyUtils::expense) {
-    typeList << MyMoneyAccount::Expense;
+    set.addAccountGroup(MyMoneyAccount::Expense);
   }
 
-  return m_selector->loadList(typeList);
+  return set.load(m_completion->selector());
 }
 
 void KMyMoneyAccountCombo::keyPressEvent(QKeyEvent* k)
@@ -187,22 +183,31 @@ void KMyMoneyAccountCombo::mouseReleaseEvent(QMouseEvent *e)
 
 int KMyMoneyAccountCombo::count(void) const
 {
-  return m_selector->accountList().count();
+  return m_completion->selector()->accountList().count();
 }
 
 const QCStringList KMyMoneyAccountCombo::accountList(const QValueList<MyMoneyAccount::accountTypeE>& list) const
 {
-  return m_selector->accountList(list);
+  return m_completion->selector()->accountList(list);
 };
 
 int KMyMoneyAccountCombo::loadList(const QValueList<int>& list)
 {
-  return m_selector->loadList(list);
+  // FIXME make the caller construct the AccountSet directly
+  MyMoneyObjectContainer objects;
+  AccountSet set(&objects);
+  QValueList<int>::const_iterator it;
+  for(it = list.begin(); it != list.end(); ++it) {
+    set.addAccountType(static_cast<MyMoneyAccount::accountTypeE>(*it));
+  }
+  return set.load(m_completion->selector());
 };
 
 const QCStringList KMyMoneyAccountCombo::selectedAccounts(void) const
 {
-  return m_selector->selectedAccounts();
+  QCStringList list;
+  m_completion->selector()->selectedItems(list);
+  return list;
 };
 
 #include "kmymoneyaccountcombo.moc"

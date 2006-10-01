@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <../widgets/kmymoneyregister.h>
+#include <kmymoney/kmymoneyregister.h>
 
 /**
   * @author Thomas Baumgart

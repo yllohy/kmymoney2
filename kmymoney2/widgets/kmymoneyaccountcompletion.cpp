@@ -24,100 +24,43 @@
 // QT Includes
 
 #include <qapplication.h>
+#include <qregexp.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <klistview.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
-
 #include "kmymoneyaccountcompletion.h"
-
-#define MAX_ITEMS   16
+#include <kmymoney/mymoneyobjectcontainer.h>
 
 kMyMoneyAccountCompletion::kMyMoneyAccountCompletion(QWidget *parent, const char *name ) :
   kMyMoneyCompletion(parent, name)
 {
+  delete m_selector;
+  m_selector = new kMyMoneyAccountSelector(this, 0, 0, false);
+  m_selector->listView()->setFocusProxy(this);
+
+#ifndef KMM_DESIGNER
   // Default is to show all accounts
-  m_typeList << MyMoneyAccount::Checkings;
-  m_typeList << MyMoneyAccount::Savings;
-  m_typeList << MyMoneyAccount::Cash;
-  m_typeList << MyMoneyAccount::AssetLoan;
-  m_typeList << MyMoneyAccount::CertificateDep;
-  m_typeList << MyMoneyAccount::Investment;
-  m_typeList << MyMoneyAccount::MoneyMarket;
-  m_typeList << MyMoneyAccount::Asset;
-  m_typeList << MyMoneyAccount::Currency;
-  m_typeList << MyMoneyAccount::CreditCard;
-  m_typeList << MyMoneyAccount::Loan;
-  m_typeList << MyMoneyAccount::Liability;
-  m_typeList << MyMoneyAccount::Income;
-  m_typeList << MyMoneyAccount::Expense;
+  // FIXME We should leave this also to the caller
+  MyMoneyObjectContainer objects;
+  AccountSet set(&objects);
+  set.addAccountGroup(MyMoneyAccount::Asset);
+  set.addAccountGroup(MyMoneyAccount::Liability);
+  set.addAccountGroup(MyMoneyAccount::Income);
+  set.addAccountGroup(MyMoneyAccount::Expense);
+  set.load(selector());
+#endif
 
-  m_accountSelector = new kMyMoneyAccountSelector(this, 0, 0, false);
-
-  connectSignals(static_cast<QWidget*> (m_accountSelector), m_accountSelector->listView());
+  connectSignals(m_selector, m_selector->listView());
 }
 
 kMyMoneyAccountCompletion::~kMyMoneyAccountCompletion()
 {
-}
-
-const int kMyMoneyAccountCompletion::loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear)
-{
-  m_typeList.clear();
-  m_baseName = baseName;
-  m_accountIdList = accountIdList;
-
-  return m_accountSelector->loadList(baseName, accountIdList, clear);
-}
-
-const int kMyMoneyAccountCompletion::loadList(QValueList<int> typeList)
-{
-  m_typeList = typeList;
-  return m_accountSelector->loadList(typeList);
-}
-
-void kMyMoneyAccountCompletion::show(void)
-{
-  int  count;
-
-  if(m_typeList.isEmpty()) {
-    count = loadList(m_baseName, m_accountIdList)+1;
-  } else {
-    count = loadList(m_typeList);
-
-    // make sure we increase the count by the account groups
-    if((m_typeList.contains(MyMoneyAccount::Checkings)
-      + m_typeList.contains(MyMoneyAccount::Savings)
-      + m_typeList.contains(MyMoneyAccount::Cash)
-      + m_typeList.contains(MyMoneyAccount::AssetLoan)
-      + m_typeList.contains(MyMoneyAccount::CertificateDep)
-      + m_typeList.contains(MyMoneyAccount::Investment)
-      + m_typeList.contains(MyMoneyAccount::MoneyMarket)
-      + m_typeList.contains(MyMoneyAccount::Asset)
-      + m_typeList.contains(MyMoneyAccount::Currency)) > 0)
-      ++count;
-
-    if((m_typeList.contains(MyMoneyAccount::CreditCard)
-      + m_typeList.contains(MyMoneyAccount::Loan)
-      + m_typeList.contains(MyMoneyAccount::Liability)) > 0)
-      ++count;
-
-    if((m_typeList.contains(MyMoneyAccount::Income)) > 0)
-      ++count;
-
-    if((m_typeList.contains(MyMoneyAccount::Expense)) > 0)
-      ++count;
-
-  }
-  if(!m_id.isEmpty())
-    m_accountSelector->setSelected(m_id);
-
-  adjustSize(count);
-
-  kMyMoneyCompletion::show();
 }
 
 void kMyMoneyAccountCompletion::slotMakeCompletion(const QString& txt)
@@ -125,22 +68,39 @@ void kMyMoneyAccountCompletion::slotMakeCompletion(const QString& txt)
   // if(txt.isEmpty() || txt.length() == 0)
   //  return;
 
-  QString account(txt);
-  int pos = txt.findRev(':');
-  if(pos != -1) {
-    account = txt.mid(pos+1);
+  int cnt = 0;
+  QStringList parts = QStringList::split(":", txt);
+  if(txt.contains(":") == 0) {
+    m_lastCompletion = QRegExp(txt, false);
+    cnt = selector()->slotMakeCompletion(txt);
+  } else {
+    QString pattern("^");
+    QStringList::iterator it;
+    for(it = parts.begin(); it != parts.end(); ++it) {
+      if(pattern.length() > 1)
+        pattern += ":";
+      pattern += (*it) + ".*";
+    }
+    pattern += "$";
+    m_lastCompletion = QRegExp(pattern, false);
+    cnt = selector()->slotMakeCompletion(m_lastCompletion);
+    // if we don't have a match, we try it again, but this time
+    // we add a wildcard for the top level
+    if(cnt == 0) {
+      pattern = pattern.insert(1, ".*:");
+      m_lastCompletion = QRegExp(pattern, false);
+      cnt = selector()->slotMakeCompletion(m_lastCompletion);
+    }
   }
 
-  if(m_parent && m_parent->isVisible() && !isVisible())
-    show();
-
-  int count = m_accountSelector->slotMakeCompletion(account);
-
-  if(count != 0) {
-    // don't forget the four group lines
-    adjustSize(count+4);
-  } else {
-    hide();
+  if(m_parent && m_parent->isVisible() && !isVisible() && cnt)
+    show(false);
+  else {
+    if(cnt != 0) {
+      adjustSize();
+    } else {
+      hide();
+    }
   }
 }
 

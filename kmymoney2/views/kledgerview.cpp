@@ -70,6 +70,7 @@
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/kcurrencycalculator.h"
 #include "../dialogs/kmergetransactionsdlg.h"
+#include <kmymoney/mymoneyobjectcontainer.h>
 
 #include "../kmymoneysettings.h"
 #include "../kmymoney2.h"
@@ -1958,7 +1959,7 @@ void KLedgerView::createContextMenu(void)
   accSubMenu->insertTitle(i18n("Account list"));
   m_accountListContextMenu = new kMyMoneyAccountSelector(accSubMenu);
   accSubMenu->insertItem(m_accountListContextMenu);
-  connect(m_accountListContextMenu, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotMoveToAccount(const QCString&)));
+  connect(m_accountListContextMenu, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotMoveToAccount(const QCString&)));
 
 
   m_contextMenu = new KPopupMenu(this);
@@ -2018,7 +2019,7 @@ void KLedgerView::createMoreMenu(void)
   accSubMenu->insertTitle(i18n("Account list"));
   m_accountListMoreMenu = new kMyMoneyAccountSelector(accSubMenu);
   accSubMenu->insertItem(m_accountListMoreMenu);
-  connect(m_accountListMoreMenu, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotMoveToAccount(const QCString&)));
+  connect(m_accountListMoreMenu, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotMoveToAccount(const QCString&)));
 
   m_moreMenu = new KPopupMenu(this);
   m_moreMenu->insertTitle(i18n("Transaction Options"));
@@ -2034,24 +2035,25 @@ void KLedgerView::createMoreMenu(void)
 
 void KLedgerView::loadAccountList(kMyMoneyAccountSelector* accList) const
 {
-  QValueList<int> typeList;
+  MyMoneyObjectContainer objects;
+  AccountSet accountSet(&objects);
+  accountSet.addAccountType(MyMoneyAccount::Checkings);
+  accountSet.addAccountType(MyMoneyAccount::Savings);
+  accountSet.addAccountType(MyMoneyAccount::Cash);
+  accountSet.addAccountType(MyMoneyAccount::AssetLoan);
+  accountSet.addAccountType(MyMoneyAccount::CertificateDep);
+  accountSet.addAccountType(MyMoneyAccount::MoneyMarket);
+  accountSet.addAccountType(MyMoneyAccount::Asset);
+  accountSet.addAccountType(MyMoneyAccount::Currency);
+  accountSet.addAccountType(MyMoneyAccount::CreditCard);
+  accountSet.addAccountType(MyMoneyAccount::Loan);
+  accountSet.addAccountType(MyMoneyAccount::Liability);
 
-  typeList << MyMoneyAccount::Checkings;
-  typeList << MyMoneyAccount::Savings;
-  typeList << MyMoneyAccount::Cash;
-  typeList << MyMoneyAccount::AssetLoan;
-  typeList << MyMoneyAccount::CertificateDep;
-  typeList << MyMoneyAccount::MoneyMarket;
-  typeList << MyMoneyAccount::Asset;
-  typeList << MyMoneyAccount::Currency;
-  typeList << MyMoneyAccount::CreditCard;
-  typeList << MyMoneyAccount::Loan;
-  typeList << MyMoneyAccount::Liability;
-  accList->loadList(typeList);
+  accountSet.load(accList);
   // make those accounts unselectable that we currently reference
   QValueList<MyMoneySplit>::const_iterator it_s;
   for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
-    accList->protectAccount((*it_s).accountId());
+    accList->protectItem((*it_s).accountId());
   }
   // Now update the width of the list
   accList->setOptimizedWidth();

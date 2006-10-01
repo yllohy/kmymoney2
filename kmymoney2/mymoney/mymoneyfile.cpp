@@ -824,8 +824,8 @@ void MyMoneyFile::addPayee(MyMoneyPayee& payee)
 
   m_storage->addPayee(payee);
 
-  addNotification(NotifyClassPayee);
-  addNotification(NotifyClassPayeeSet);
+  emit dataChanged();
+  emit objectAdded(payee);
 }
 
 const MyMoneyPayee& MyMoneyFile::payee(const QCString& id) const
@@ -1226,6 +1226,12 @@ void MyMoneyFile::clearNotification()
 {
   // reset list to be empty
   m_notificationList.clear();
+}
+
+void MyMoneyFile::transactionList(QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >& list, MyMoneyTransactionFilter& filter) const
+{
+  checkStorage();
+  m_storage->transactionList(list, filter);
 }
 
 void MyMoneyFile::transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const

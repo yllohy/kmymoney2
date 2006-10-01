@@ -54,7 +54,7 @@ public:
     */
   virtual void show();
 
-  const int loadList(void) { return m_equitySelector->loadList(); };
+  const int loadList(void) { return m_equitySelector->loadList(); }
 
   /**
     * This method sets the current account with id @p id as
@@ -62,9 +62,9 @@ public:
     *
     * @param id id of account to be selected
     */
-  void setSelected(const QCString& id) { m_id = id; };
+  void setSelected(const QCString& id) { m_id = id; }
 
-  const QCStringList equityList(void) const { return m_equitySelector->accountList(); };
+  void equityList(QCStringList& list) const { return m_equitySelector->itemList(list); }
 
   /**
     * This method returns the list of selected equity id's. If
@@ -72,7 +72,7 @@ public:
     *
     * @return list of selected equity ids
     */
-  const QCStringList selectedEquities(void) const { return m_equitySelector->selectedAccounts(); };
+  void selectedEquities(QCStringList& list) const { return m_equitySelector->selectedItems(list); }
 
 public slots:
   void slotMakeCompletion(const QString& txt);

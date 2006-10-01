@@ -34,6 +34,7 @@
 #include "../mymoney/mymoneyutils.h"
 #include "../mymoney/mymoneytransactionfilter.h"
 #include "../mymoney/mymoneyobserver.h"
+#include <kmymoney/mymoneyobjectcontainer.h>
 
 #include "../dialogs/kfindtransactiondlgdecl.h"
 
@@ -237,6 +238,8 @@ protected:
   MyMoneyTransactionFilter        m_filter;
 
   QMap<QWidget*, QString>         m_helpAnchor;
+
+  MyMoneyObjectContainer          m_objects;
 };
 
 #endif

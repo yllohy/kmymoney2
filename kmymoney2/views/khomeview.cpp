@@ -536,16 +536,26 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
   MyMoneySecurity currency = MyMoneyFile::instance()->currency(acc.currencyId());
 
   QString amount;
+  MyMoneyMoney value;
   if(acc.accountType() == MyMoneyAccount::Investment) {
-    amount = MyMoneyFile::instance()->totalValue(acc.id(), QDate::currentDate()).formatMoney(currency.tradingSymbol());
+    value = MyMoneyFile::instance()->totalValue(acc.id(), QDate::currentDate());
+    amount = value.formatMoney(currency.tradingSymbol());
   } else {
-    amount = MyMoneyFile::instance()->balance(acc.id(), QDate::currentDate()).formatMoney(currency.tradingSymbol());
+    value = MyMoneyFile::instance()->balance(acc.id(), QDate::currentDate());
+    amount = value.formatMoney(currency.tradingSymbol());
   }
   amount.replace(" ","&nbsp;");
 
   tmp = QString("<td width=\"70%\">") +
       link(VIEW_LEDGER, QString("?id=%1").arg(acc.id())) + acc.name() + linkend() + "</td>";
-  tmp += QString("<td width=\"30%\" align=\"right\">%1</td>").arg(amount);
+
+  QString fontStart, fontEnd;
+  if(value.isNegative()) {
+    QColor x = KMyMoneySettings::listNegativeValueColor();
+    fontStart.sprintf("<font color=\"#%02x%02x%02x\">", x.red(), x.green(), x.blue());
+    fontEnd = "</font>";
+  }
+  tmp += QString("<td width=\"30%\" align=\"right\">%1%2%3</td>").arg(fontStart).arg(amount).arg(fontEnd);
   // qDebug("accountEntry = '%s'", tmp.latin1());
   m_part->write(tmp);
 }

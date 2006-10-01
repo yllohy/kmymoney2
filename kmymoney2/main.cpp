@@ -66,6 +66,7 @@ static KCmdLineOptions options[] =
 };
 
 QTime timer;
+bool timersOn = false;
 
 KMyMoney2App* kmymoney2;
 KCmdLineArgs *args;
@@ -147,6 +148,7 @@ int main(int argc, char *argv[])
 #if KMM_DEBUG
   if(args->isSet("trace"))
     MyMoneyTracer::on();
+  timersOn = args->isSet("timers");
 #endif
 
   kmymoney2 = 0;
@@ -261,15 +263,15 @@ int main(int argc, char *argv[])
 
 void timestamp(char *txt)
 {
-  if ( args->isSet("timers" ))
+  if(timersOn)
   {
     qDebug("Time(%s): %d", txt, timer.elapsed());
   }
 }
 
-void timetrace(char *txt)
+void timetrace(const char *txt)
 {
-  if ( args->isSet("timers" ))
+  if(timersOn)
   {
     qDebug("Timer(%s): %d elapsed", txt, timer.elapsed());
     timer.restart();

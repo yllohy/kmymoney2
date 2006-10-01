@@ -42,7 +42,7 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneyaccounttree.h>
 
-#include "../kmymoneysettings.h"
+#include "../kmymoneyglobalsettings.h"
 
 /**
   * @todo drag/drop in KMyMoneyAccountTree
@@ -741,7 +741,7 @@ int KMyMoneyAccountTreeItem::compare(QListViewItem* i, int col, bool ascending) 
 
 void KMyMoneyAccountTreeItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
 {
-  QFont font = KMyMoneySettings::listCellFont();
+  QFont font = KMyMoneyGlobalSettings::listCellFont();
 
   QColor colour = KMyMoneySettings::listColor();
   QColor bgColour = KMyMoneySettings::listBGColor();

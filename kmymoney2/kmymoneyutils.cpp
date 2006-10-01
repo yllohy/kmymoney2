@@ -39,6 +39,7 @@
 #include "kmymoneyutils.h"
 #include "mymoney/mymoneyfile.h"
 #include "mymoney/mymoneyfinancialcalculator.h"
+#include <kmymoney/kmymoneypayee.h>
 
 QColor KMyMoneyUtils::_backgroundColour;
 QColor KMyMoneyUtils::_listColour;
@@ -327,7 +328,7 @@ const QString KMyMoneyUtils::weekendOptionToString(MyMoneySchedule::weekendOptio
 {
   QString text;
 
-  switch (weekendOption) 
+  switch (weekendOption)
   {
     case MyMoneySchedule::MoveFriday:
       text = i18n("Change the date to the previous Friday");

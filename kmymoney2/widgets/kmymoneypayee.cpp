@@ -23,21 +23,54 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qrect.h>
-#include <qpainter.h>
-#include <qpalette.h>
-
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <klocale.h>
-// #include "kdecompat.h"
+#include <klistview.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kmymoneypayee.h"
+#include "kmymoneycompletion.h"
+#include "kmymoneyselector.h"
+
+KMyMoneyPayee::KMyMoneyPayee(QWidget* parent, const char * name) :
+  KMyMoneyCombo(true, parent, name)
+{
+  m_completion = new kMyMoneyCompletion(this);
+  // set to ascending sort
+  selector()->listView()->setSorting(0);
+
+  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
+  connect(this, SIGNAL(textChanged(const QString&)), m_completion, SLOT(slotMakeCompletion(const QString&)));
+}
+
+void KMyMoneyPayee::loadPayees(const QValueList<MyMoneyPayee>& list)
+{
+  selector()->listView()->clear();
+  QValueList<MyMoneyPayee>::const_iterator it;
+  for(it = list.begin(); it != list.end(); ++it) {
+    selector()->newTopItem((*it).name(), QString(), (*it).id());
+  }
+}
+
+
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+
 #include "../mymoney/mymoneyfile.h"
+#include <qrect.h>
+#include <qpainter.h>
+#include <qpalette.h>
+#include <klocale.h>
 
 kMyMoneyPayee::kMyMoneyPayee(QWidget *parent, const char *name )
   : KLineEdit(parent,name)

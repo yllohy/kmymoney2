@@ -61,6 +61,7 @@
 #include <kmymoney/mymoneyexception.h>
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneyaccounttree.h>
+#include <kmymoney/mymoneyobjectcontainer.h>
 
 #include "../widgets/kmymoneycurrencyselector.h"
 #include "../widgets/kmymoneyequity.h"
@@ -587,7 +588,7 @@ void KNewAccountDlg::okClicked()
       m_account.setValue("VatRate", (m_vatRate->value().abs() / MyMoneyMoney(100,1)).toString());
     } else {
       if(m_vatAssignment->isChecked()) {
-        m_account.setValue("VatAccount", m_vatAccount->selectedAccounts().first());
+        m_account.setValue("VatAccount", m_vatAccount->selectedItems().first());
         if(m_netAmount->isChecked())
           m_account.setValue("VatAmount", "Net");
       }
@@ -930,8 +931,10 @@ void KNewAccountDlg::loadVatAccounts(void)
         loadListIncome += (*it).id();
     }
   }
-  m_vatAccount->loadList(i18n("Income"), loadListIncome, true);
-  m_vatAccount->loadList(i18n("Expense"), loadListExpense, false);
+  MyMoneyObjectContainer objects;
+  AccountSet vatSet(&objects);
+  vatSet.load(m_vatAccount, i18n("Income"), loadListIncome, true);
+  vatSet.load(m_vatAccount, i18n("Expense"), loadListExpense, false);
 }
 
 void KNewAccountDlg::loadInstitutions(const QString& name)
@@ -1066,7 +1069,7 @@ void KNewAccountDlg::slotCheckFinished(void)
   if(m_vatCategory->isChecked() && m_vatRate->value() <= MyMoneyMoney(0)) {
     showButton = false;
   } else {
-    if(m_vatAssignment->isChecked() && m_vatAccount->selectedAccounts().isEmpty())
+    if(m_vatAssignment->isChecked() && m_vatAccount->selectedItems().isEmpty())
       showButton = false;
   }
   createButton->setEnabled(showButton);

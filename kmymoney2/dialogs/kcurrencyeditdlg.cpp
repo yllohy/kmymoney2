@@ -49,12 +49,12 @@
 
 #include "kcurrencyeditdlg.h"
 
-#include "../mymoney/mymoneysecurity.h"
-// #include "../mymoney/mymoneycurrency.h"
-#include "../mymoney/mymoneyfile.h"
+#include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneylistviewitem.h>
+#include <kmymoney/kmymoneyaccountselector.h>
+#include <kmymoney/kmymoneylineedit.h>
 
-#include "../widgets/kmymoneyaccountselector.h"
-#include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneypriceview.h"
 
 KCurrencyEditDlg::KCurrencyEditDlg(QWidget *parent, const char *name ) :
@@ -109,7 +109,7 @@ void KCurrencyEditDlg::timerDone(void)
   if(!m_currency.id().isEmpty()) {
     QListViewItem* it;
     for(it = m_currencyList->firstChild(); it; it = it->nextSibling()) {
-      kMyMoneyListViewItem* p = static_cast<kMyMoneyListViewItem *>(it);
+      KMyMoneyListViewItem* p = static_cast<KMyMoneyListViewItem *>(it);
       if(p->id() == m_currency.id()) {
         m_currencyList->ensureItemVisible(it);
         break;
@@ -150,7 +150,7 @@ void KCurrencyEditDlg::loadCurrencies(void)
 
   m_currencyList->clear();
   for(it = list.begin(); it != list.end(); ++it) {
-    kMyMoneyListViewItem* p = new kMyMoneyListViewItem(m_currencyList, (*it).name(), (*it).id());
+    KMyMoneyListViewItem* p = new KMyMoneyListViewItem(m_currencyList, (*it).name(), QString(), (*it).id());
     p->setRenameEnabled(0, true);
 
     if((*it).id() == baseCurrency) {
@@ -201,7 +201,7 @@ void KCurrencyEditDlg::slotSelectCurrency(const QCString& id)
   QListViewItemIterator it(m_currencyList);
 
   while(it.current()) {
-    kMyMoneyListViewItem* p = static_cast<kMyMoneyListViewItem*>(it.current());
+    KMyMoneyListViewItem* p = static_cast<KMyMoneyListViewItem*>(it.current());
     if(p->id() == id) {
       m_currencyList->setSelected(p, true);
       break;
@@ -224,7 +224,7 @@ void KCurrencyEditDlg::slotSelectCurrency(QListViewItem *item)
 
   if(item) {
     try {
-      kMyMoneyListViewItem* p = static_cast<kMyMoneyListViewItem *>(item);
+      KMyMoneyListViewItem* p = static_cast<KMyMoneyListViewItem *>(item);
       m_currency = file->security(p->id());
       m_idLabel->setText(m_currency.id());
       m_symbolEdit->setText(m_currency.tradingSymbol());
@@ -241,7 +241,7 @@ void KCurrencyEditDlg::slotSelectCurrency(QListViewItem *item)
   if(item) {
     try {
       updateCurrency();
-      kMyMoneyListViewItem* p = static_cast<kMyMoneyListViewItem *>(item);
+      KMyMoneyListViewItem* p = static_cast<KMyMoneyListViewItem *>(item);
       m_currency = file->currency(p->id());
       m_idLabel->setText(m_currency.id());
       m_symbolEdit->setText(m_currency.tradingSymbol());
@@ -267,7 +267,7 @@ void KCurrencyEditDlg::slotSetBaseCurrency(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  kMyMoneyListViewItem* p = static_cast<kMyMoneyListViewItem *>(m_currencyList->currentItem());
+  KMyMoneyListViewItem* p = static_cast<KMyMoneyListViewItem *>(m_currencyList->currentItem());
   if(p) {
     QString name = file->currency(p->id()).name();
     QString question = i18n("Do you really want to select %1 as your base currency? This selection can currently not be modified! If unsure, press 'No' now.").arg(name);
@@ -328,7 +328,7 @@ void KCurrencyEditDlg::slotListClicked(QListViewItem* item, const QPoint&, int)
 void KCurrencyEditDlg::slotRenameCurrency(QListViewItem* item, int /* col */, const QString& txt)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  kMyMoneyListViewItem* p = static_cast<kMyMoneyListViewItem *>(item);
+  KMyMoneyListViewItem* p = static_cast<KMyMoneyListViewItem *>(item);
 
   try {
     if(txt != m_currency.name()) {

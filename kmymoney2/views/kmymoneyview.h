@@ -45,6 +45,7 @@ class QVBoxLayout;
 #include <kmymoney/mymoneytransaction.h>
 #include <kmymoney/mymoneyscheduled.h>
 #include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/selectedtransaction.h>
 
 class KHomeView;
 class KAccountsView;
@@ -61,6 +62,7 @@ class KInvestmentView;
 class KReportsView;
 class KMyMoneyViewBase;
 class MyMoneyReport;
+class TransactionEditor;
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -358,6 +360,38 @@ public:
 
   virtual bool showPage(int index);
 
+  /**
+    * check if the current view allows to edit transactions
+    *
+    * @retval true Yes, view allows to enter/edit transactions
+    * @retval false No, view cannot enter/edit transactions
+    */
+  bool canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>&) const;
+
+  TransactionEditor* startEdit(const QValueList<KMyMoneyRegister::SelectedTransaction>&);
+
+  bool createNewTransaction(void);
+
+  /**
+    * Used to start reconciliation of account @a account. It switches the
+    * ledger view into reconciliation mode and updates the view.
+    *
+    * @param account account which should be reconciled
+    * @param endingBalance the ending balance entered for this account
+    *
+    * @retval true Reconciliation started
+    * @retval false Account cannot be reconciled
+    */
+  bool startReconciliation(const MyMoneyAccount& account, const MyMoneyMoney& endingBalance);
+
+  /**
+    * Used to finish reconciliation of account @a account. It switches the
+    * ledger view to normal mode and updates the view.
+    *
+    * @param account account which should be reconciled
+    */
+  void finishReconciliation(const MyMoneyAccount& account);
+
 public slots:
   /**
     * This slot writes information about the page passed as argument @p widget
@@ -421,19 +455,6 @@ public slots:
     * @param report The report to be shown
     */
   void slotReportGenerated(const MyMoneyReport& report);
-
-  /**
-    * Called whenever the user wishes to reconcile the open account.  It first get some
-    * required input and then opens the reconciliation dialog.  The user can edit transactions
-    * as normal in the main view because this dialog is modeless and is updated whenever the
-    * transaction list is changed.
-    *
-    * @see KEndingBalanceDlg
-    * @see KReconcileDlg
-    * @see KMyMoneyFile
-    * @see MyMoneyAccount
-    */
-  void slotAccountReconcile(const MyMoneyAccount&);
 
   /**
     * This slot cancels any edit activity in any view. It will
@@ -533,6 +554,16 @@ public:
   void setTitle(const QString& title);
   QVBoxLayout* layout(void) const { return m_viewLayout; }
   void addWidget(QWidget* w);
+
+  /**
+    * This method is used to edit the currently selected transactions
+    * The default implementation returns @p false which signals to the caller, that
+    * the view was not capable to edit the transactions.
+    *
+    * @retval false view was not capable to edit transactions
+    * @retval true view was capable to edit the transactions and did so
+    */
+  bool editTransactions(const QValueList<MyMoneyTransaction>& transactions) const { return false; }
 
 protected:
   KMyMoneyTitleLabel*    m_titleLabel;

@@ -99,6 +99,7 @@ Click OK to perform the backup. If your system does not use an automounter, make
                             </property>
                             <property name="text">
                                 <string>Mount Point:</string>
+                                <comment>This is the mount point</comment>
                             </property>
                         </widget>
                         <widget class="QLineEdit">

@@ -43,8 +43,9 @@
 #include "knewaccountwizard.h"
 #include "knewaccountdlg.h"
 #include "knewbankdlg.h"
-#include "../mymoney/mymoneyinstitution.h"
-#include "../mymoney/mymoneyfile.h"
+#include <kmymoney/mymoneyinstitution.h>
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/mymoneyobjectcontainer.h>
 #include "../widgets/kmymoneyaccountselector.h"
 
 KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountType, const QString& purpose, QWidget *parent, const char *name )
@@ -58,7 +59,10 @@ KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountT
   m_kButtonAbort->hide();
 
   // Exclude stock accounts.  You can't import a statement into a stock account.
-  m_accountSelector->loadList(accountType,MyMoneyAccount::Stock);
+  MyMoneyObjectContainer objects;
+  AccountSet stockSet(&objects);
+  stockSet.addAccountType(MyMoneyAccount::Stock);
+  stockSet.load(m_accountSelector);
 
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem skipButtonItem( i18n( "&Skip" ),
@@ -101,7 +105,20 @@ KAccountSelectDlg::~KAccountSelectDlg()
 
 void KAccountSelectDlg::update(const QCString& /*id */)
 {
-  m_accountSelector->loadList(m_accountType);
+  MyMoneyObjectContainer objects;
+  AccountSet set(&objects);
+  if(m_accountType & KMyMoneyUtils::asset)
+    set.addAccountGroup(MyMoneyAccount::Asset);
+  if(m_accountType & KMyMoneyUtils::liability)
+    set.addAccountGroup(MyMoneyAccount::Liability);
+  if(m_accountType & KMyMoneyUtils::income)
+    set.addAccountGroup(MyMoneyAccount::Income);
+  if(m_accountType & KMyMoneyUtils::expense)
+    set.addAccountGroup(MyMoneyAccount::Expense);
+  if(m_accountType & KMyMoneyUtils::equity)
+    set.addAccountGroup(MyMoneyAccount::Equity);
+
+  set.load(m_accountSelector);
 }
 
 void KAccountSelectDlg::setDescription(const QString& msg)
@@ -214,7 +231,8 @@ void KAccountSelectDlg::slotCreateAccount(void)
       }
 
       file->addAccount(newAccount, parentAccount);
-      m_accountSelector->loadList(m_accountType);
+      // the next line should be already called through update()
+      // m_accountSelector->loadList(m_accountType);
       m_accountSelector->setSelected(newAccount.id());
 /*
       // widgets are updated in update() by engine's notification
@@ -272,8 +290,8 @@ int KAccountSelectDlg::exec(void)
 const QCString KAccountSelectDlg::selectedAccount(void) const
 {
   QCString rc;
-  if(!m_accountSelector->selectedAccounts().isEmpty())
-    rc = m_accountSelector->selectedAccounts().first();
+  if(!m_accountSelector->selectedItems().isEmpty())
+    rc = m_accountSelector->selectedItems().first();
   return rc;
 }
 

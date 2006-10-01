@@ -33,7 +33,7 @@
 
 #include <kmymoney/mymoneyfile.h>
 #include "kinstitutionsview.h"
-#include "../kmymoneysettings.h"
+#include "../kmymoneyglobalsettings.h"
 #include "../kmymoney2.h"
 
 KInstitutionsView::KInstitutionsView(QWidget *parent, const char *name) :
@@ -297,7 +297,7 @@ void KInstitutionsView::slotUpdateNetWorth(void)
     s += "</font></b>";
   }
 
-  m_totalProfitsLabel->setFont(KMyMoneySettings::listCellFont());
+  m_totalProfitsLabel->setFont(KMyMoneyGlobalSettings::listCellFont());
   m_totalProfitsLabel->setText(s);
 }
 

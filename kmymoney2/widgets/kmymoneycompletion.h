@@ -28,16 +28,18 @@
 
 #include <qwidget.h>
 #include <qvbox.h>
-class KListView;
+#include <qregexp.h>
 class QListViewItem;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+class KListView;
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
-// #include "kmymoneyaccountselector.h"
+class KMyMoneySelector;
 
 /**
   * @author Thomas Baumgart
@@ -54,14 +56,13 @@ public:
   /**
     * Re-implemented for internal reasons.  API is unaffected.
     */
-  virtual void show();
+  virtual void show(void) { show(true); }
+
 
   /**
     * Re-implemented for internal reasons.  API is unaffected.
     */
-  virtual void hide();
-
-  virtual const int loadList(void) = 0;
+  virtual void hide(void);
 
   /**
     * This method sets the current account with id @p id as
@@ -69,7 +70,9 @@ public:
     *
     * @param id id of account to be selected
     */
-  void setSelected(const QCString& id) { m_id = id; };
+  void setSelected(const QCString& id);
+
+  virtual KMyMoneySelector* selector(void) const { return m_selector; }
 
 public slots:
   void slotMakeCompletion(const QString& txt);
@@ -84,11 +87,22 @@ protected:
   virtual bool eventFilter( QObject *, QEvent * );
 
   /**
-    * This method resizes the widget to show a maximum of @p count lines
+    * This method resizes the widget to show a maximum of @p count
+    * or @a MAX_ITEMS items.
+    *
+    * @param count maximum number to be shown if < MAX_ITEMS
     */
   void adjustSize(const int count);
 
+  /**
+    * This method counts the number of items currently visible and
+    * calls adjustSize(count).
+    */
+  void adjustSize(void);
+
   void connectSignals(QWidget *widget, KListView* lv);
+
+  void show(bool presetSelected);
 
 signals:
   void itemSelected(const QCString& id);
@@ -98,6 +112,11 @@ protected:
   QWidget*                    m_widget;
   QCString                    m_id;
   KListView*                  m_lv;
+  KMyMoneySelector*           m_selector;
+  QRegExp                     m_lastCompletion;
+
+  static const int MAX_ITEMS;
+
 };
 
 #endif

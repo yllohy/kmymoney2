@@ -113,8 +113,6 @@ protected:
 
   bool loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStringList& accountList);
 
-  void viewChanged(void);
-
   /**
     * This method returns a pointer to the currently selected
     * account icon or 0 if no icon is selected.

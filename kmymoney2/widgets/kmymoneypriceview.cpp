@@ -58,7 +58,7 @@
 #define SOURCE_COL      4
 
 kMyMoneyPriceItem::kMyMoneyPriceItem(KListView *view, const MyMoneyPrice& pr) :
-  kMyMoneyListViewItem(view, QString(), QCString()),
+  KMyMoneyListViewItem(view, QString(), QString(), QCString()),
   m_pr(pr)
 {
   MyMoneySecurity from, to;

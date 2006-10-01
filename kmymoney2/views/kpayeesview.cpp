@@ -56,7 +56,7 @@
 #include <kmymoney/kmymoneyaccounttree.h>
 
 #include "kpayeesview.h"
-#include "../kmymoneysettings.h"
+#include "../kmymoneyglobalsettings.h"
 
 // *** KPayeeListItem Implementation ***
 
@@ -75,7 +75,7 @@ KPayeeListItem::~KPayeeListItem()
 
 void KPayeeListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
 {
-  p->setFont(KMyMoneySettings::listCellFont());
+  p->setFont(KMyMoneyGlobalSettings::listCellFont());
 
   QColor colour = KMyMoneySettings::listColor();
   QColor bgColour = KMyMoneySettings::listBGColor();
@@ -153,10 +153,10 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   connect(radioNameMatch, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
   connect(radioKeyMatch, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
   connect(checkMatchIgnoreCase, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
-  
+
   connect(m_updateButton, SIGNAL(pressed()), this, SLOT(slotUpdatePayee()));
   connect(m_helpButton, SIGNAL(pressed()), this, SLOT(slotHelp()));
-  
+
   connect(m_payeesList, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotOpenContextMenu(QListViewItem*)));
 
@@ -330,7 +330,7 @@ void KPayeesView::slotSelectPayee()
     matchKeyEdit->setText(key);
     checkMatchIgnoreCase->setEnabled(true);
     checkMatchIgnoreCase->setChecked(ignorecase);
-    
+
     slotPayeeDataChanged();
 
     showTransactions();
@@ -480,7 +480,7 @@ void KPayeesView::slotPayeeDataChanged(void)
 
   kdDebug(2) << "enabled=" << enabled << " key=" << key << " m_payee.name()==" << m_payee.name() << endl;
   kdDebug(2) << "radiostates: old=" << oldradiostate << " new=" << newradiostate << endl;
-  
+
   rc |= (newradiostate != oldradiostate);
 
   if ( enabled )
@@ -501,14 +501,14 @@ void KPayeesView::slotUpdatePayee()
       m_payee.setPostcode(postcodeEdit->text());
       m_payee.setTelephone(telephoneEdit->text());
       m_payee.setEmail(emailEdit->text());
-      
+
       m_payee.setMatchData(
           !radioNoMatch->isChecked(),
           radioKeyMatch->isChecked(),
           checkMatchIgnoreCase->isChecked(),
           matchKeyEdit->text()
       );
-      
+
       MyMoneyFile::instance()->modifyPayee(m_payee);
 
     } catch(MyMoneyException *e) {
@@ -522,7 +522,7 @@ void KPayeesView::slotUpdatePayee()
 
 void KPayeesView::readConfig(void)
 {
-  m_transactionView->setFont(KMyMoneySettings::listCellFont());
+  m_transactionView->setFont(KMyMoneyGlobalSettings::listCellFont());
 
   QFontMetrics fm( KMyMoneySettings::listHeaderFont() );
   int height = fm.lineSpacing()+6;

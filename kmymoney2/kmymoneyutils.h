@@ -41,7 +41,7 @@
 #include <kmymoney/mymoneysecurity.h>
 #include <kmymoney/mymoneyscheduled.h>
 #include <kmymoney/mymoneytransaction.h>
-#include <kmymoney/kmymoneypayee.h>
+class kMyMoneyPayee;
 
 /**
   * @author Thomas Baumgart
@@ -63,7 +63,8 @@ public:
     asset =      0x02,          ///< asset accounts selected
     expense =    0x04,          ///< expense accounts selected
     income =     0x08,          ///< income accounts selected
-    last =       0x10           ///< the leftmost bit in the mask
+    equity =     0x10,          ///< equity accounts selected
+    last =       0x20           ///< the leftmost bit in the mask
   };
 
   enum transactionTypeE {

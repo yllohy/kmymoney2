@@ -91,6 +91,7 @@ class kMyMoneyEdit : public QHBox
 {
   Q_OBJECT
   Q_PROPERTY(bool calculatorButtonVisibility READ isCalculatorButtonVisible WRITE setCalculatorButtonVisible);
+  Q_PROPERTY(bool resetButtonVisibility READ isResetButtonVisible WRITE setResetButtonVisible);
 
 private:
   QString previousText; // keep track of what has been typed
@@ -99,6 +100,7 @@ private:
   QVBox*              m_calculatorFrame;
   KLineEdit*          m_edit;
   KPushButton*        m_calcButton;
+  KPushButton*        m_resetButton;
   int                 m_prec;
   bool                calculatorButtonVisibility;
 
@@ -147,8 +149,6 @@ public:
   MyMoneyMoney value(void) const;
 
   void setValue(const MyMoneyMoney& value);
-
-  void resetText(void);
 
   const bool isValid(void) const;
 
@@ -201,11 +201,15 @@ public:
 
   const bool isCalculatorButtonVisible(void) const;
 
+  const bool isResetButtonVisible(void) const;
+
   KLineEdit* lineedit(void) const;
 
 public slots:
   void loadText(const QString& text);
   void setReadOnly(bool ro) { m_edit->setReadOnly(ro); };
+  void resetText(void);
+  void clearText(void);
 
   void setText(const QString& txt) { setValue(MyMoneyMoney(txt)); };
 
@@ -218,13 +222,13 @@ public slots:
     */
   void setCalculatorButtonVisible(const bool show);
 
-signals: // Signals
+  void setResetButtonVisible(const bool show);
 
-  /** signal is sent, when the tab key is pressed */
-  void signalTab();
-  /** signal is sent, when the Back-tab (Shift-Tab) key is pressed */
-  void signalBackTab();
-  /** signal is sent, when amount has been changed by user */
+signals: // Signals
+  /**
+    * This signal is sent, when the focus leaves this widget and
+    * the amount has been changed by user during this session.
+    */
   void valueChanged(const QString& text);
 
   void textChanged(const QString& text);

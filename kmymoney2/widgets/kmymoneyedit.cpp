@@ -159,6 +159,37 @@ kMyMoneyEdit::kMyMoneyEdit(const MyMoneySecurity& sec, QWidget *parent, const ch
   init();
 }
 
+// converted image from kde3.5.1/share/apps/kdevdesignerpart/pics/designer_resetproperty.png
+static const uchar resetButtonImage[] = {
+  0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A,
+  0x00,0x00,0x00,0x0D,0x49,0x48,0x44,0x52,
+  0x00,0x00,0x00,0x07,0x00,0x00,0x00,0x06,
+  0x08,0x06,0x00,0x00,0x00,0x0F,0x0E,0x84,
+  0x76,0x00,0x00,0x00,0x06,0x62,0x4B,0x47,
+  0x44,0x00,0xFF,0x00,0xFF,0x00,0xFF,0xA0,
+  0xBD,0xA7,0x93,0x00,0x00,0x00,0x09,0x70,
+  0x48,0x59,0x73,0x00,0x00,0x0B,0x13,0x00,
+  0x00,0x0B,0x13,0x01,0x00,0x9A,0x9C,0x18,
+  0x00,0x00,0x00,0x07,0x74,0x49,0x4D,0x45,
+  0x07,0xD6,0x06,0x10,0x09,0x36,0x0C,0x58,
+  0x91,0x11,0x7C,0x00,0x00,0x00,0x64,0x49,
+  0x44,0x41,0x54,0x78,0xDA,0x65,0xC9,0xA1,
+  0x0D,0x02,0x41,0x18,0x84,0xD1,0xF7,0x5F,
+  0x13,0x04,0x9A,0x39,0x43,0x68,0x81,0x02,
+  0x10,0xB8,0x13,0x74,0x80,0xC1,0x21,0x76,
+  0x1D,0xDD,0xD0,0x01,0x65,0x10,0x34,0x9A,
+  0x0C,0x66,0x83,0x61,0x92,0x2F,0x23,0x5E,
+  0x25,0x01,0xBD,0x6A,0xC6,0x1D,0x9B,0x25,
+  0x79,0xC2,0x34,0xE0,0x30,0x00,0x56,0xBD,
+  0x6A,0x0D,0xD5,0x38,0xE1,0xEA,0x7F,0xE7,
+  0x4A,0xA2,0x57,0x1D,0x71,0xC1,0x07,0xBB,
+  0x81,0x8F,0x09,0x96,0xE4,0x86,0x3D,0xDE,
+  0x78,0x8D,0x48,0xF2,0xAB,0xB1,0x1D,0x9F,
+  0xC6,0xFC,0x05,0x46,0x68,0x28,0x6B,0x58,
+  0xEE,0x72,0x0A,0x00,0x00,0x00,0x00,0x49,
+  0x45,0x4E,0x44,0xAE,0x42,0x60,0x82
+};
+
 void kMyMoneyEdit::init(void)
 {
   m_edit = new KLineEdit(this);
@@ -170,7 +201,7 @@ void kMyMoneyEdit::init(void)
   m_edit->setValidator(validator);
   m_edit->setAlignment(AlignRight | AlignVCenter);
 
-  m_calculatorFrame = new QVBox(0,0,WType_Popup);
+  m_calculatorFrame = new QVBox(this, 0, WType_Popup);
 
   m_calculatorFrame->setFrameStyle(QFrame::PopupPanel | QFrame::Raised);
   m_calculatorFrame->setLineWidth(3);
@@ -180,15 +211,27 @@ void kMyMoneyEdit::init(void)
   m_calculatorFrame->hide();
 
   m_calcButton = new KPushButton(QIconSet(QPixmap(KGlobal::iconLoader()->iconPath("kcalc", -KIcon::SizeSmall))), QString(""), this);
+  m_calcButton->setFixedWidth( m_calcButton->sizeHint().width() );
+  m_calcButton->setFixedHeight(m_edit->sizeHint().height());
+
+  QPixmap pixmap;
+  pixmap.loadFromData(resetButtonImage, sizeof(resetButtonImage), "PNG", 0);
+  m_resetButton = new KPushButton(QIconSet(pixmap), QString(""), this);
+  m_resetButton->setFixedWidth( m_resetButton->sizeHint().width() );
+  m_resetButton->setFixedHeight(m_edit->sizeHint().height());
+  m_resetButton->setEnabled(false);
 
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("General Options");
   if(kconfig->readBoolEntry("DontShowCalculatorButton", false) == true)
     setCalculatorButtonVisible(false);
 
+  setSpacing(0);
+
   connect(m_edit, SIGNAL(textChanged(const QString&)), this, SLOT(theTextChanged(const QString&)));
   connect(m_calculator, SIGNAL(signalResultAvailable()), this, SLOT(slotCalculatorResult()));
   connect(m_calcButton, SIGNAL(clicked()), this, SLOT(slotCalculatorOpen()));
+  connect(m_resetButton, SIGNAL(clicked()), this, SLOT(resetText()));
 }
 
 void kMyMoneyEdit::setValidator(const QValidator* v)
@@ -218,14 +261,6 @@ const bool kMyMoneyEdit::isValid(void) const
   return !(m_edit->text().isEmpty());
 }
 
-// KDE_DEPRECATED
-#if 0
-MyMoneyMoney kMyMoneyEdit::getMoneyValue(void)
-{
-  return value();
-}
-#endif
-
 MyMoneyMoney kMyMoneyEdit::value(void) const
 {
   QString txt = m_edit->text();
@@ -243,14 +278,22 @@ void kMyMoneyEdit::setValue(const MyMoneyMoney& value)
 void kMyMoneyEdit::loadText(const QString& txt)
 {
   m_edit->setText(txt);
-  if(isEnabled())
+  if(isEnabled() && !txt.isEmpty())
     ensureFractionalPart();
   m_text = m_edit->text();
+  m_resetButton->setEnabled(false);
+}
+
+void kMyMoneyEdit::clearText(void)
+{
+  m_text = QString();
+  m_edit->setText(m_text);
 }
 
 void kMyMoneyEdit::resetText(void)
 {
   m_edit->setText(m_text);
+  m_resetButton->setEnabled(false);
 }
 
 void kMyMoneyEdit::theTextChanged(const QString & theText)
@@ -281,6 +324,7 @@ void kMyMoneyEdit::theTextChanged(const QString & theText)
     else {
       previousText = l_text;
       emit textChanged(m_edit->text());
+      m_resetButton->setEnabled(true);
     }
   }
 }
@@ -331,23 +375,6 @@ bool kMyMoneyEdit::eventFilter(QObject * /* o */ , QEvent *e )
 
     rc = true;
     switch(k->key()) {
-      default:
-        rc = false;
-        break;
-
-      case Qt::Key_Tab:
-        rc = false;         // we signal, but we also use the standard behaviour
-        if(k->state() & Qt::ShiftButton)
-          emit signalBackTab();
-        else
-          emit signalTab();
-        break;
-
-      case Qt::Key_Backtab:
-        rc = false;         // we signal, but we also use the standard behaviour
-        emit signalBackTab();
-        break;
-
       case Qt::Key_Plus:
       case Qt::Key_Minus:
         if(m_edit->hasSelectedText()) {
@@ -376,6 +403,10 @@ bool kMyMoneyEdit::eventFilter(QObject * /* o */ , QEvent *e )
           m_edit->cut();
         }
         calculatorOpen(k);
+        break;
+
+      default:
+        rc = false;
         break;
     }
 
@@ -453,15 +484,22 @@ void kMyMoneyEdit::hideCalculatorButton(void)
 
 void kMyMoneyEdit::setCalculatorButtonVisible(const bool show)
 {
-  if(show)
-    m_calcButton->show();
-  else
-    m_calcButton->hide();
+  m_calcButton->setShown(show);
+}
+
+void kMyMoneyEdit::setResetButtonVisible(const bool show)
+{
+  m_resetButton->setShown(show);
 }
 
 const bool kMyMoneyEdit::isCalculatorButtonVisible(void) const
 {
   return m_calcButton->isVisible();
+}
+
+const bool kMyMoneyEdit::isResetButtonVisible(void) const
+{
+  return m_resetButton->isVisible();
 }
 
 #include "kmymoneyedit.moc"

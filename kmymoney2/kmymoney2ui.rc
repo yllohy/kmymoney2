@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="12" name="kmymoney2" >
+<kpartgui version="4" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
@@ -45,7 +45,10 @@
    <Action name="account_edit" />
    <Action name="account_delete" />
    <Action name="account_open" />
+   <Separator/>
    <Action name="account_reconcile" />
+   <Action name="account_reconcile_postpone" />
+   <Action name="account_reconcile_finish" />
    <Separator/>
    <Action name="account_close" />
    <Action name="account_reopen" />
@@ -53,10 +56,11 @@
    <Action name="account_update_ofx" />
   </Menu>
   <Menu name="category" >
-    <text>&amp;Category</text>
-    <Action name="category_new" />
-    <Action name="category_edit" />
-    <Action name="category_delete" />
+   <text>&amp;Category</text>
+   <Action name="category_new" />
+   <Action name="category_edit" />
+   <Action name="category_delete" />
+   <Action name="account_open" />
   </Menu>
   <Merge/>
   <Menu name="tools" >
@@ -95,10 +99,11 @@
   <Action name="investment_manual_price_update" />
  </Menu>
  <Menu name="category_context_menu">
-   <title>Category options</title>
-   <Action name="category_new" />
-   <Action name="category_edit" />
-   <Action name="category_delete" />
+  <title>Category options</title>
+  <Action name="category_new" />
+  <Action name="category_edit" />
+  <Action name="category_delete" />
+  <Action name="account_open" />
  </Menu>
  <Menu name="institution_context_menu">
   <title>Institution options</title>
@@ -144,6 +149,29 @@
   <Action name="schedule_new_bill" />
   <Action name="schedule_new_deposit" />
   <Action name="schedule_new_transfer" />
+ </Menu>
+ <Menu name="transaction_context_menu">
+  <title>Transaction options</title>
+  <Action name="transaction_new" />
+  <Action name="transaction_edit" />
+  <Action name="transaction_editsplits" />
+  <Action name="transaction_delete" />
+  <Action name="transaction_duplicate" />
+  <Menu>
+   <text>Mark transaction as...</text>
+   <title>Mark transaction</title>
+   <Action name="transaction_mark_notreconciled"/>
+   <Action name="transaction_mark_cleared"/>
+   <Action name="transaction_mark_reconciled"/>
+  </Menu>
+  <Separator />
+  <Action name="transaction_goto_account"/>
+  <Action name="transaction_goto_payee"/>
+  <Action name="transaction_create_schedule"/>
+  <Separator />
+  <Action name="transaction_start_match" />
+  <Action name="transaction_end_match" />
+  <Action name="transaction_cancel_match" />
  </Menu>
  <ToolBar noMerge="1" name="mainToolBar" fullWidth="true" >
   <text>Main Toolbar</text>

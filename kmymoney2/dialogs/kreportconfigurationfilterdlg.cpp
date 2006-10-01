@@ -520,11 +520,11 @@ void KReportConfigurationFilterDlg::slotReset(void)
   QCStringList accounts;
   if ( m_initialState.accounts(accounts) )
   {
-    m_accountsView->selectAllAccounts(false);
-    m_accountsView->selectAccounts(accounts,true);
+    m_accountsView->selectAllItems(false);
+    m_accountsView->selectItems(accounts,true);
   }
   else
-    m_accountsView->selectAllAccounts(true);
+    m_accountsView->selectAllItems(true);
 
   //
   // Categories Filter
@@ -532,11 +532,11 @@ void KReportConfigurationFilterDlg::slotReset(void)
 
   if ( m_initialState.categories(accounts) )
   {
-    m_categoriesView->selectAllAccounts(false);
-    m_categoriesView->selectAccounts(accounts,true);
+    m_categoriesView->selectAllItems(false);
+    m_categoriesView->selectItems(accounts,true);
   }
   else
-    m_categoriesView->selectAllAccounts(true);
+    m_categoriesView->selectAllItems(true);
 
   //
   // Date Filter

@@ -16,21 +16,24 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
         <widget class="KMyMoneyTitleLabel">
             <property name="name">
                 <cstring>titleLabel</cstring>
             </property>
             <property name="minimumSize">
                 <size>
-                    <width>100</width>
+                    <width>0</width>
                     <height>30</height>
                 </size>
             </property>
-            <property name="rightImageFile" stdset="0">
-                <cstring>pics/titlelabel_background.png</cstring>
-            </property>
-            <property name="text" stdset="0">
+            <property name="text">
                 <string>Payees</string>
+            </property>
+            <property name="rightImageFile">
+                <string>pics/titlelabel_background.png</string>
             </property>
         </widget>
         <widget class="Line">

@@ -41,13 +41,16 @@
 // Project Includes
 
 #include "kfindtransactiondlg.h"
-#include "../widgets/kmymoneyregistersearch.h"
-#include "../widgets/kmymoneydateinput.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneylineedit.h"
-#include "../widgets/kmymoneyaccountselector.h"
-#include "../mymoney/mymoneyfile.h"
+
+#include <kmymoney/kmymoneydateinput.h>
+#include <kmymoney/kmymoneyedit.h>
+#include <kmymoney/kmymoneylineedit.h>
+#include <kmymoney/kmymoneyaccountselector.h>
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneychecklistitem.h>
+
 #include "../mymoney/storage/imymoneystorage.h"
+#include "../widgets/kmymoneyregistersearch.h"
 
 KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
  : KFindTransactionDlgDecl(parent, name, false),
@@ -205,7 +208,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
   m_caseSensitive->setEnabled(!m_textEdit->text().isEmpty());
 
   // Account tab
-  if(!m_accountsView->allAccountsSelected()) {
+  if(!m_accountsView->allItemsSelected()) {
     if(!txt.isEmpty())
       txt += ", ";
     txt += i18n("Account");
@@ -228,7 +231,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
   }
 
   // Categories tab
-  if(!m_categoriesView->allAccountsSelected()) {
+  if(!m_categoriesView->allItemsSelected()) {
     if(!txt.isEmpty())
       txt += ", ";
     txt += i18n("Category");
@@ -297,8 +300,10 @@ const bool KFindTransactionDlg::allItemsSelected(const QListView* view) const
 void KFindTransactionDlg::setupAccountsPage(void)
 {
   m_accountsView->setSelectionMode(QListView::Multi);
-  m_accountsView->loadList(static_cast<KMyMoneyUtils::categoryTypeE>
-                           (KMyMoneyUtils::asset | KMyMoneyUtils::liability));
+  AccountSet accountSet(&m_objects);
+  accountSet.addAccountGroup(MyMoneyAccount::Asset);
+  accountSet.addAccountGroup(MyMoneyAccount::Liability);
+  accountSet.load(m_accountsView);
   connect(m_accountsView, SIGNAL(stateChanged()), this, SLOT(slotUpdateSelections()));
 }
 
@@ -322,7 +327,7 @@ void KFindTransactionDlg::selectItems(QListView* view, const QCStringList& list,
   QListViewItem* it_v;
 
   for(it_v = view->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
-    kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
+    KMyMoneyCheckListItem* it_c = static_cast<KMyMoneyCheckListItem*>(it_v);
     if(it_c->type() == QCheckListItem::CheckBox && list.contains(it_c->id())) {
       it_c->setOn(state);
     }
@@ -335,8 +340,10 @@ void KFindTransactionDlg::selectItems(QListView* view, const QCStringList& list,
 void KFindTransactionDlg::setupCategoriesPage(void)
 {
   m_categoriesView->setSelectionMode(QListView::Multi);
-  m_categoriesView->loadList(static_cast<KMyMoneyUtils::categoryTypeE>
-                           (KMyMoneyUtils::income | KMyMoneyUtils::expense));
+  AccountSet categorySet(&m_objects);
+  categorySet.addAccountGroup(MyMoneyAccount::Income);
+  categorySet.addAccountGroup(MyMoneyAccount::Expense);
+  categorySet.load(m_categoriesView);
   connect(m_categoriesView, SIGNAL(stateChanged()), this, SLOT(slotUpdateSelections()));
 }
 
@@ -355,7 +362,7 @@ void KFindTransactionDlg::selectSubItems(QListViewItem* item, const QCStringList
   QListViewItem* it_v;
 
   for(it_v = item->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
-    kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
+    KMyMoneyCheckListItem* it_c = static_cast<KMyMoneyCheckListItem*>(it_v);
     if(list.contains(it_c->id()))
       it_c->setOn(state);
     selectSubItems(it_v, list, state);
@@ -472,7 +479,7 @@ void KFindTransactionDlg::loadPayees(void)
   list = file->payeeList();
   // load view
   for(it_l = list.begin(); it_l != list.end(); ++it_l) {
-    kMyMoneyCheckListItem* item = new kMyMoneyCheckListItem(m_payeesView, (*it_l).name(), (*it_l).id());
+    KMyMoneyCheckListItem* item = new KMyMoneyCheckListItem(m_payeesView, (*it_l).name(), QString(), (*it_l).id());
     connect(item, SIGNAL(stateChanged(bool)), this, SLOT(slotUpdateSelections()));
     item->setOn(true);
   }
@@ -540,7 +547,7 @@ void KFindTransactionDlg::scanCheckListItems(const QListViewItem* item, const op
 
   for(it_v = item->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
     if(it_v->rtti() == 1) {
-      kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
+      KMyMoneyCheckListItem* it_c = static_cast<KMyMoneyCheckListItem*>(it_v);
       if(it_c->type() == QCheckListItem::CheckBox) {
         if(it_c->isOn())
           addItemToFilter(op, (*it_c).id());
@@ -556,7 +563,7 @@ void KFindTransactionDlg::scanCheckListItems(const QListView* view, const opType
 
   for(it_v = view->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
     if(it_v->rtti() == 1) {
-      kMyMoneyCheckListItem* it_c = static_cast<kMyMoneyCheckListItem*>(it_v);
+      KMyMoneyCheckListItem* it_c = static_cast<KMyMoneyCheckListItem*>(it_v);
       if(it_c->type() == QCheckListItem::CheckBox) {
         if(it_c->isOn())
           addItemToFilter(op, (*it_c).id());
@@ -578,8 +585,8 @@ void KFindTransactionDlg::setupFilter(void)
 
   // Account tab
   // TOM: Why was this commented out? (Ace)
-  if(!m_accountsView->allAccountsSelected()) {
-    m_filter.addAccount(m_accountsView->selectedAccounts());
+  if(!m_accountsView->allItemsSelected()) {
+    m_filter.addAccount(m_accountsView->selectedItems());
   }
 
   // Date tab
@@ -605,8 +612,8 @@ void KFindTransactionDlg::setupFilter(void)
 
   // Categories tab
 
-  if(!m_categoriesView->allAccountsSelected()) {
-    m_filter.addCategory(m_categoriesView->selectedAccounts());
+  if(!m_categoriesView->allItemsSelected()) {
+    m_filter.addCategory(m_categoriesView->selectedItems());
   }
 
   // Payees tab
@@ -843,6 +850,7 @@ void KFindTransactionDlg::slotSelectTransaction(const QCString& transactionId)
 
 void KFindTransactionDlg::update(const QCString& /* id */)
 {
+  m_objects.clear(); // invalidate all objects
   // only calculate the new list if it is currently visible
   if(m_registerFrame->isVisible()) {
     KMyMoneyTransaction *k = transaction(m_register->currentTransactionIndex());

@@ -71,7 +71,9 @@ public:
     NotReconciled = 0,
     Cleared,
     Reconciled,
-    Frozen
+    Frozen,
+    // insert new values above
+    Unknown
   };
 
   MyMoneySplit();

@@ -34,9 +34,8 @@
 
 #include <klocale.h>
 #include <kpushbutton.h>
-#include <kiconloader.h>
-#include <kguiitem.h>
 #include <kcombobox.h>
+#include <kstdguiitem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -72,18 +71,8 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMo
   m_toType->setText(KMyMoneyUtils::securityTypeToString(m_toCurrency.securityType()));
 
   // load button icons
-  KIconLoader* il = KGlobal::iconLoader();
-  KGuiItem cancelButtenItem( i18n( "&Cancel" ),
-                      QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
-                      i18n("Reject any changes"),
-                      i18n("Use this to abort the dialog"));
-  m_cancelButton->setGuiItem(cancelButtenItem);
-
-  KGuiItem okButtenItem( i18n( "&OK" ),
-                      QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
-                      i18n("Accept modifications"),
-                      i18n("Use this to accept the data and possibly update the exchange rate"));
-  m_okButton->setGuiItem(okButtenItem);
+  m_cancelButton->setGuiItem(KStdGuiItem::cancel());
+  m_okButton->setGuiItem(KStdGuiItem::ok());
 
   m_updateButton->setChecked(KMyMoneySettings::priceHistoryUpdate());
 
@@ -116,6 +105,7 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMo
     m_amountButton->hide();
     m_toAmount->hide();
   }
+  m_okButton->setFocus();
 }
 
 KCurrencyCalculator::~KCurrencyCalculator()

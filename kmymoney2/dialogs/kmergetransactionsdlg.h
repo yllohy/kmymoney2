@@ -21,7 +21,7 @@
 class QResizeEvent;
 
 #include "../dialogs/kmergetransactionsdlgdecl.h"
-#include "../widgets/kmymoneyregistersearch.h"
+#include <kmymoney/kmymoneyregistersearch.h>
 
 class KMergeTransactionsDlg: public KMergeTransactionsDlgDecl, public IMyMoneyRegisterParent
 {

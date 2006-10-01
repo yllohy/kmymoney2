@@ -45,11 +45,11 @@ class KPushButton;
 class kMyMoneyCategory;
 class kMyMoneyLineEdit;
 class kMyMoneyEdit;
+class MyMoneyObjectContainer;
 
 /**
   * @author Thomas Baumgart
   */
-
 class kMyMoneySplitTable : public QTable
 {
   Q_OBJECT
@@ -83,6 +83,8 @@ public:
     * @return list of splits
     */
   const QValueList<MyMoneySplit> getSplits(const MyMoneyTransaction& t) const;
+
+  void setup(MyMoneyObjectContainer *objects, const QMap<QCString, MyMoneyMoney>& priceInfo);
 
 protected:
   void contentsMousePressEvent( QMouseEvent* e );
@@ -247,6 +249,9 @@ private:
   QGuardedPtr<QFrame>           m_registerButtonFrame;
   QGuardedPtr<KPushButton>      m_registerEnterButton;
   QGuardedPtr<KPushButton>      m_registerCancelButton;
+
+  MyMoneyObjectContainer*       m_objects;
+  QMap<QCString, MyMoneyMoney>  m_priceInfo;
 };
 
 #endif

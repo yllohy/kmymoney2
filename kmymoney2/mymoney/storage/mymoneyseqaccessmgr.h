@@ -451,6 +451,24 @@ public:
   void transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const;
 
   /**
+    * This method is used to pull a list of transactions from the file
+    * global transaction pool. It returns all those transactions
+    * that match the filter passed as argument. If the filter is empty,
+    * the whole journal will be returned.
+    * The list returned is sorted according to the transactions posting date.
+    * If more than one transaction exists for the same date, the order among
+    * them is undefined.
+    *
+    * The @p list will be cleared by this method.
+    *
+    * @param list reference to list
+    * @param filter MyMoneyTransactionFilter object with the match criteria
+    *
+    * @return set of transactions in form of a QValueList<QPair<MyMoneyTransaction,MyMoneySplit> >
+    */
+  void transactionList(QValueList< QPair<MyMoneyTransaction, MyMoneySplit> >& list, MyMoneyTransactionFilter& filter) const;
+
+  /**
     * Compatibility interface for the previous method.
     */
   QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;

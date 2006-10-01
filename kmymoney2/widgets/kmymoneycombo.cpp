@@ -20,12 +20,422 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qrect.h>
+#include <qstyle.h>
+#include <qpainter.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
+
+#include <klocale.h>
+#include <klistview.h>
+#include <kdebug.h>
+#include <kconfig.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kmymoneycombo.h"
+#include <kmymoney/kmymoneycompletion.h>
+#include <kmymoney/kmymoneylineedit.h>
+#include <kmymoney/mymoneysplit.h>
+#include <kmymoney/registeritem.h>
+#include "kmymoneyselector.h"
+
+KMyMoneyCombo::KMyMoneyCombo(QWidget *w, const char *name) :
+  KComboBox(w, name),
+  m_completion(0),
+  m_edit(0),
+  m_canCreateObjects(false)
+{
+}
+
+KMyMoneyCombo::KMyMoneyCombo(bool rw, QWidget *w, const char *name) :
+  KComboBox(rw, w, name),
+  m_completion(0),
+  m_edit(0),
+  m_canCreateObjects(false)
+{
+  if(rw) {
+    m_edit = new kMyMoneyLineEdit(this, "combo edit");
+    setLineEdit(m_edit);
+  }
+}
+
+void KMyMoneyCombo::slotItemSelected(const QCString& id)
+{
+  if(editable()) {
+    setCurrentText("");
+    if(!id.isEmpty()) {
+      QListViewItem* item = selector()->item(id);
+      if(item)
+        setCurrentText(item->text(0));
+    }
+  }
+
+  m_completion->hide();
+
+  if(m_id != id) {
+    m_id = id;
+    emit itemSelected(id);
+  }
+}
+
+void KMyMoneyCombo::setEditable( bool y)
+{
+  if(y == editable())
+    return;
+
+  KComboBox::setEditable(y);
+
+  // make sure we use our own line edit style
+  if(y) {
+    m_edit = new kMyMoneyLineEdit(this, "combo edit");
+    setLineEdit(m_edit);
+
+  } else {
+    m_edit = 0;
+  }
+}
+
+void KMyMoneyCombo::setHint(const QString& hint) const
+{
+  if(m_edit)
+    m_edit->setHint(hint);
+}
+
+void KMyMoneyCombo::paintEvent(QPaintEvent* ev)
+{
+  KComboBox::paintEvent(ev);
+
+  // if we don't have an edit field, we need to paint the text onto the button
+  if(!m_edit) {
+    if(m_completion) {
+      QCStringList list;
+      selector()->selectedItems(list);
+      if(!list.isEmpty()) {
+        QString str = selector()->item(list[0])->text(0);
+        // we only paint, if the text is longer than 1 char. Assumption
+        // is that length 1 is the blank case so no need to do painting
+        if(str.length() > 1) {
+          QPainter p( this );
+          const QColorGroup & g = colorGroup();
+          p.setPen(g.text());
+
+          QRect re = style().querySubControlMetrics( QStyle::CC_ComboBox, this,
+                                                    QStyle::SC_ComboBoxEditField );
+          re = QStyle::visualRect(re, this);
+          p.setClipRect( re );
+          p.save();
+          p.setFont(font());
+          QFontMetrics fm(font());
+          int x = re.x(), y = re.y() + fm.ascent();
+          p.drawText( x, y, str );
+          p.restore();
+        }
+      }
+    }
+  }
+}
+
+void KMyMoneyCombo::mousePressEvent(QMouseEvent *e)
+{
+  // mostly copied from QCombo::mousePressEvent() and adjusted for our needs
+  if(e->button() != LeftButton)
+    return;
+
+  if(((!editable() || isInArrowArea(mapToGlobal(e->pos()))) && selector()->itemList().count()) && !m_completion->isVisible()) {
+    m_completion->show();
+  }
+
+  if(m_timer.isActive()) {
+    m_timer.stop();
+    m_completion->slotMakeCompletion("");
+  } else {
+    KConfig config( "kcminputrc", true );
+    config.setGroup("KDE");
+    m_timer.start(config.readNumEntry("DoubleClickInterval", 400), true);
+  }
+}
+
+bool KMyMoneyCombo::isInArrowArea(const QPoint& pos) const
+{
+  QRect arrowRect = style().querySubControlMetrics( QStyle::CC_ComboBox, this,
+                                                    QStyle::SC_ComboBoxArrow);
+  arrowRect = QStyle::visualRect(arrowRect, this);
+
+  // Correction for motif style, where arrow is smaller
+  // and thus has a rect that doesn't fit the button.
+  arrowRect.setHeight( QMAX(  height() - (2 * arrowRect.y()), arrowRect.height() ) );
+
+  // if the button is not editable, it covers the whole widget
+  if(!editable())
+    arrowRect = rect();
+
+  return arrowRect.contains(mapFromGlobal(pos));
+}
+
+void KMyMoneyCombo::keyPressEvent(QKeyEvent* e)
+{
+  if((e->key() == Key_F4 && e->state() == 0 ) ||
+     (e->key() == Key_Down && (e->state() & AltButton)) ||
+     (!editable() && e->key() == Key_Space)) {
+    // if we have at least one item in the list, we open the dropdown
+    if(selector()->listView()->firstChild())
+      m_completion->show();
+    e->ignore();
+    return;
+  }
+  KComboBox::keyPressEvent(e);
+}
+
+void KMyMoneyCombo::focusOutEvent(QFocusEvent* e)
+{
+  if(editable() && !currentText().isEmpty()) {
+    if(m_canCreateObjects) {
+      if(!m_completion->selector()->contains(currentText())) {
+        QCString id;
+        // annouce that we go into a possible dialog to create an object
+        // This can be used by upstream widgets to disable filters etc.
+        emit objectCreation(true);
+
+        emit createItem(currentText(), id);
+
+        // Announce that we return from object creation
+        emit objectCreation(false);
+
+        // update the field to a possibly created object
+        setCurrentText("");
+        if(!id.isEmpty()) {
+          QListViewItem* item = m_completion->selector()->item(id);
+          if(item)
+            setCurrentText(item->text(0));
+        }
+
+        // make sure the completion does not show through
+        m_completion->hide();
+      }
+    }
+  }
+
+  KComboBox::focusOutEvent(e);
+
+  // force update of hint and id if there is no text in the widget
+  if(editable() && currentText().isEmpty()) {
+    m_id = QCString();
+    repaint();
+  }
+}
+
+KMyMoneySelector* KMyMoneyCombo::selector(void) const
+{
+  return m_completion->selector();
+}
+
+kMyMoneyCompletion* KMyMoneyCombo::completion(void) const
+{
+  return m_completion;
+}
+
+void KMyMoneyCombo::selectedItems(QCStringList& list) const
+{
+  if(lineEdit() && lineEdit()->text().length() == 0) {
+    list.clear();
+  } else {
+    m_completion->selector()->selectedItems(list);
+  }
+}
+
+void KMyMoneyCombo::setSelectedItem(const QCString& id)
+{
+  m_completion->selector()->setSelected(id, true);
+  m_id = id;
+  update();
+}
+
+
+
+
+KMyMoneyReconcileCombo::KMyMoneyReconcileCombo(QWidget* w, const char* name) :
+  KMyMoneyCombo(false, w, name)
+{
+  m_completion = new kMyMoneyCompletion(this, 0);
+  // connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SIGNAL(itemSelected(const QCString&)));
+
+  // add the items in reverse order of appearance (see KMyMoneySelector::newItem() for details)
+  // selector()->newTopItem(i18n("Frozen"), QString(), "F");
+  selector()->newTopItem(i18n("Reconciled"), QString(), "R");
+  selector()->newTopItem(i18n("Cleared"), QString(), "C");
+  selector()->newTopItem(i18n("Not reconciled"), QString(), " ");
+  selector()->newTopItem(" ", QString(), "U");
+
+  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
+  connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetState(const QCString&)));
+}
+
+void KMyMoneyReconcileCombo::slotSetState(const QCString& state)
+{
+  setSelectedItem(state);
+}
+
+void KMyMoneyReconcileCombo::removeDontCare(void)
+{
+  selector()->removeItem("U");
+}
+
+void KMyMoneyReconcileCombo::setState(MyMoneySplit::reconcileFlagE state)
+{
+  QCString id;
+  switch(state) {
+    case MyMoneySplit::NotReconciled:
+      id = " ";
+      break;
+    case MyMoneySplit::Cleared:
+      id = "C";
+      break;
+    case MyMoneySplit::Reconciled:
+      id = "R";
+      break;
+    case MyMoneySplit::Frozen:
+      id = "F";
+      break;
+    case MyMoneySplit::Unknown:
+      id = "U";
+      break;
+
+    default:
+      kdDebug(2) << "Unknown reconcile state '" << state << "' in KMyMoneyComboReconcile::setState()\n";
+      break;
+  }
+  setSelectedItem(id);
+}
+
+MyMoneySplit::reconcileFlagE KMyMoneyReconcileCombo::state(void) const
+{
+  MyMoneySplit::reconcileFlagE state = MyMoneySplit::NotReconciled;
+
+  QCStringList list;
+  selector()->selectedItems(list);
+  if(!list.isEmpty()) {
+    if(list[0] == "C")
+      state = MyMoneySplit::Cleared;
+    if(list[0] == "R")
+      state = MyMoneySplit::Reconciled;
+    if(list[0] == "F")
+      state = MyMoneySplit::Frozen;
+    if(list[0] == "U")
+      state = MyMoneySplit::Unknown;
+  }
+  return state;
+}
+
+
+KMyMoneyComboAction::KMyMoneyComboAction(QWidget* w, const char* name) :
+  KMyMoneyCombo(false, w, name)
+{
+  m_completion = new kMyMoneyCompletion(this, 0);
+  QCString num;
+  // add the items in reverse order of appearance (see KMyMoneySelector::newItem() for details)
+  selector()->newTopItem(i18n("ATM"), QString(), num.setNum(KMyMoneyRegister::ActionAtm));
+  selector()->newTopItem(i18n("Withdrawal"), QString(), num.setNum(KMyMoneyRegister::ActionWithdrawal));
+  selector()->newTopItem(i18n("Transfer"), QString(), num.setNum(KMyMoneyRegister::ActionTransfer));
+  selector()->newTopItem(i18n("Deposit"), QString(), num.setNum(KMyMoneyRegister::ActionDeposit));
+  selector()->newTopItem(i18n("Cheque"), QString(), num.setNum(KMyMoneyRegister::ActionCheck));
+  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
+  connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetAction(const QCString&)));
+}
+
+void KMyMoneyComboAction::protectItem(int id, bool protect)
+{
+  QCString num;
+  selector()->protectItem(num.setNum(id), protect);
+}
+
+void KMyMoneyComboAction::slotSetAction(const QCString& act)
+{
+  setSelectedItem(act);
+  update();
+  emit actionSelected(action());
+}
+
+void KMyMoneyComboAction::setAction(int action)
+{
+  if(action < 0 || action > 5) {
+    kdDebug(2) << "KMyMoneyComboAction::slotSetAction(" << action << ") invalid. Replaced with 2\n";
+    action = 2;
+  }
+  QCString act;
+  act.setNum(action);
+  setSelectedItem(act);
+}
+
+int KMyMoneyComboAction::action(void) const
+{
+  QCStringList list;
+  selector()->selectedItems(list);
+  if(!list.isEmpty()) {
+    return list[0].toInt();
+  }
+  kdDebug(2) << "KMyMoneyComboAction::action(void): unknown selection\n";
+  return 0;
+}
+
+KMyMoneyCashFlowCombo::KMyMoneyCashFlowCombo(QWidget* w, const char* name, MyMoneyAccount::accountTypeE accountType) :
+  KMyMoneyCombo(false, w, name)
+{
+  m_completion = new kMyMoneyCompletion(this, 0);
+  QCString num;
+  // add the items in reverse order of appearance (see KMyMoneySelector::newItem() for details)
+  if(accountType == MyMoneyAccount::Income || accountType == MyMoneyAccount::Expense) {
+    // this is used for income/expense accounts to just show the reverse sense
+    selector()->newTopItem(i18n("Activity for expense categories", "Paid"), QString(), num.setNum(KMyMoneyRegister::Deposit));
+    selector()->newTopItem(i18n("Activity for income categories", "Received"), QString(), num.setNum(KMyMoneyRegister::Payment));
+  } else {
+    selector()->newTopItem(i18n("From"), QString(), num.setNum(KMyMoneyRegister::Deposit));
+    selector()->newTopItem(i18n("Pay to"), QString(), num.setNum(KMyMoneyRegister::Payment));
+  }
+  selector()->newTopItem(" ", QString(), num.setNum(KMyMoneyRegister::Unknown));
+  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
+  connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetDirection(const QCString&)));
+}
+
+void KMyMoneyCashFlowCombo::setDirection(KMyMoneyRegister::CashFlowDirection dir)
+{
+  m_dir = dir;
+  QCString num;
+  setSelectedItem(num.setNum(dir));
+}
+
+void KMyMoneyCashFlowCombo::slotSetDirection(const QCString& id)
+{
+  QCString num;
+  for(int i = KMyMoneyRegister::Deposit; i <= KMyMoneyRegister::Unknown; ++i) {
+    num.setNum(i);
+    if(num == id) {
+      m_dir = static_cast<KMyMoneyRegister::CashFlowDirection>(i);
+      break;
+    }
+  }
+  emit directionSelected(m_dir);
+  update();
+}
+
+void KMyMoneyCashFlowCombo::removeDontCare(void)
+{
+  QCString num;
+  selector()->removeItem(num.setNum(KMyMoneyRegister::Unknown));
+}
+
+
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+
 #include "../mymoney/mymoneyfile.h"
 
 kMyMoneyCombo::kMyMoneyCombo(QWidget *w, const char *name)

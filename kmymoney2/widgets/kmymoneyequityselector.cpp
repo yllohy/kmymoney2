@@ -28,15 +28,17 @@
 
 #include <klocale.h>
 #include <kpushbutton.h>
+#include <klistview.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kmymoneyequityselector.h"
-#include "../mymoney/mymoneyfile.h"
+#include <kmymoney/kmymoneychecklistitem.h>
+#include <kmymoney/mymoneyfile.h>
 
 kMyMoneyEquitySelector::kMyMoneyEquitySelector(QWidget *parent, const char *name, QWidget::WFlags flags) :
-  kMyMoneyAccountSelector(parent, name, flags, false)
+  KMyMoneySelector(parent, name, flags)
 {
 }
 
@@ -53,13 +55,15 @@ const int kMyMoneyEquitySelector::loadList(void)
 
   m_listView->clear();
 
+#if 0
   if(m_selMode == QListView::Multi) {
     m_incomeCategoriesButton->hide();
     m_expenseCategoriesButton->hide();
   }
+#endif
 
-  kMyMoneyCheckListItem* item = 0;
-  item = new kMyMoneyCheckListItem(m_listView, i18n("Securities"), QCString(), QCheckListItem::Controller);
+  KMyMoneyCheckListItem* item = 0;
+  item = new KMyMoneyCheckListItem(m_listView, i18n("Securities"), QCString(), QCheckListItem::Controller);
   list = file->securityList();
 
   item->setSelectable(false);
@@ -67,7 +71,7 @@ const int kMyMoneyEquitySelector::loadList(void)
   // scan all matching equities found in the engine
   for(it_l = list.begin(); it_l != list.end(); ++it_l) {
     ++count;
-    newEntryFactory(item, (*it_l).tradingSymbol(), (*it_l).id());
+    newItem(item, (*it_l).tradingSymbol(), QString(), (*it_l).id());
   }
 
   if(m_listView->firstChild()) {

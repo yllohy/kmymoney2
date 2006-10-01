@@ -23,54 +23,153 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qapplication.h>
-#include <qvbox.h>
 #include <qrect.h>
 #include <qpainter.h>
 #include <qpalette.h>
+#include <qlayout.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include <klocale.h>
-#include <kmessagebox.h>
+#include <kpushbutton.h>
+#include <kdebug.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kmymoneycategory.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../widgets/kmymoneyaccountcompletion.h"
+#include <kmymoney/mymoneyfile.h>
+#include "kmymoneyaccountcompletion.h"
+
+
+KMyMoneyCategory::KMyMoneyCategory(QWidget* parent, const char * name, bool splitButton) :
+  KMyMoneyCombo(true, parent, name),
+  m_splitButton(0),
+  m_frame(0)
+{
+  if(splitButton) {
+    m_frame = new QFrame(0);
+    m_frame->setFocusProxy(this);
+    QHBoxLayout* layout = new QHBoxLayout(m_frame);
+    // make sure not to use our own overridden version of reparent() here
+    KMyMoneyCombo::reparent(m_frame, getWFlags() & ~WType_Mask, QPoint(0, 0), true);
+    if(parent)
+      m_frame->reparent(parent, QPoint(0, 0), true);
+    m_splitButton = new KPushButton(i18n("Split"), m_frame, "splitButton");
+    layout->addWidget(this, 5);
+    layout->addWidget(m_splitButton);
+  }
+
+  m_completion = new kMyMoneyAccountCompletion(this, 0);
+  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
+  connect(this, SIGNAL(textChanged(const QString&)), m_completion, SLOT(slotMakeCompletion(const QString&)));
+}
+
+KPushButton* KMyMoneyCategory::splitButton(void) const
+{
+  if(!m_splitButton)
+    kdDebug(2) << "Caller requested non existing splitButton\n";
+  return m_splitButton;
+}
+
+void KMyMoneyCategory::reparent(QWidget *parent, WFlags w, const QPoint& pos, bool showIt)
+{
+  if(m_frame)
+    m_frame->reparent(parent, w, pos, showIt);
+  else
+    KMyMoneyCombo::reparent(parent, w, pos, showIt);
+}
+
+kMyMoneyAccountSelector* KMyMoneyCategory::selector(void) const
+{
+  return dynamic_cast<kMyMoneyAccountSelector*>(KMyMoneyCombo::selector());
+}
+
+void KMyMoneyCategory::slotItemSelected(const QCString& id)
+{
+  if(!id.isEmpty())
+    setCurrentText(MyMoneyFile::instance()->accountToCategory(id));
+  else
+    setCurrentText("");
+
+  m_completion->hide();
+
+  if(m_id != id) {
+    m_id = id;
+    emit itemSelected(id);
+  }
+}
+
+void KMyMoneyCategory::focusInEvent(QFocusEvent *ev)
+{
+  KMyMoneyCombo::focusInEvent(ev);
+
+  // make sure, we get a clean state before we automagically move the focus to
+  // some other widget (like for 'split transaction'). We do this by delaying
+  // the emission of the focusIn signal until the next run of the event loop.
+  QTimer::singleShot(0, this, SIGNAL(focusIn()));
+}
+
+
+
+
+
+
+
+
+
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+
+#include <qapplication.h>
+#include <qvbox.h>
+
+#include <kmessagebox.h>
+
+
 #include "../dialogs/knewaccountdlg.h"
+#include <kmymoney/mymoneyobjectcontainer.h>
 
 kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const KMyMoneyUtils::categoryTypeE /*categoryType*/)
   : KLineEdit(parent,name)
 {
   m_inCreation = false;
-  m_accountSelector = new kMyMoneyAccountCompletion(this, 0);
-  m_accountSelector->hide();
+  m_completion = new kMyMoneyAccountCompletion(this, 0);
+  m_completion->hide();
   m_displayOnly = false;
 
   // show all but investment accounts
-  QValueList<int> typeList;
-  typeList << MyMoneyAccount::Checkings;
-  typeList << MyMoneyAccount::Savings;
-  typeList << MyMoneyAccount::Cash;
-  typeList << MyMoneyAccount::AssetLoan;
-  typeList << MyMoneyAccount::CertificateDep;
-  // typeList << MyMoneyAccount::Investment;
-  typeList << MyMoneyAccount::MoneyMarket;
-  typeList << MyMoneyAccount::Asset;
-  typeList << MyMoneyAccount::Currency;
-  typeList << MyMoneyAccount::CreditCard;
-  typeList << MyMoneyAccount::Loan;
-  typeList << MyMoneyAccount::Liability;
-  typeList << MyMoneyAccount::Income;
-  typeList << MyMoneyAccount::Expense;
-  m_accountSelector->loadList(typeList);
+  MyMoneyObjectContainer objects;
+  AccountSet set(&objects);
+  set.addAccountType(MyMoneyAccount::Checkings);
+  set.addAccountType(MyMoneyAccount::Savings);
+  set.addAccountType(MyMoneyAccount::Cash);
+  set.addAccountType(MyMoneyAccount::AssetLoan);
+  set.addAccountType(MyMoneyAccount::CertificateDep);
+  set.addAccountType(MyMoneyAccount::MoneyMarket);
+  set.addAccountType(MyMoneyAccount::Asset);
+  set.addAccountType(MyMoneyAccount::Currency);
 
-  connect(this, SIGNAL(textChanged(const QString&)), m_accountSelector, SLOT(slotMakeCompletion(const QString&)));
-  connect(m_accountSelector, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSelectAccount(const QCString&)));
+  set.addAccountGroup(MyMoneyAccount::Asset);
+  set.removeAccountType(MyMoneyAccount::Investment);
+  set.removeAccountType(MyMoneyAccount::Stock);
+  set.addAccountGroup(MyMoneyAccount::Liability);
+  set.addAccountGroup(MyMoneyAccount::Income);
+  set.addAccountGroup(MyMoneyAccount::Expense);
+
+  set.load(m_completion->selector());
+
+  connect(this, SIGNAL(textChanged(const QString&)), m_completion, SLOT(slotMakeCompletion(const QString&)));
+  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSelectAccount(const QCString&)));
 }
 
 kMyMoneyCategory::~kMyMoneyCategory()
@@ -102,6 +201,7 @@ void kMyMoneyCategory::keyPressEvent( QKeyEvent * ev)
 
 void kMyMoneyCategory::loadAccount(const QCString& id)
 {
+  blockSignals(true);
   m_id = QCString();
   m_displayOnly = false;
   if(!id.isEmpty()) {
@@ -109,16 +209,15 @@ void kMyMoneyCategory::loadAccount(const QCString& id)
       MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
       setText(MyMoneyFile::instance()->accountToCategory(id));
       m_id = id;
-      m_accountSelector->setSelected(id);
+      m_completion->setSelected(id);
     } catch(MyMoneyException *e) {
       qDebug("Account with id %s not found anymore", id.data());
       delete e;
     }
   } else {
-    blockSignals(true);
     KLineEdit::setText(QString());
-    blockSignals(false);
   }
+  blockSignals(false);
 }
 
 void kMyMoneyCategory::loadText(const QString& text)
@@ -178,7 +277,7 @@ void kMyMoneyCategory::checkForNewCategory(void)
 
 void kMyMoneyCategory::focusOutEvent(QFocusEvent *ev)
 {
-  m_accountSelector->hide();
+  m_completion->hide();
 
   if(!m_inCreation)
     checkForNewCategory();
@@ -199,7 +298,7 @@ bool kMyMoneyCategory::eventFilter(QObject* o, QEvent* e)
 {
   // filter out mouse wheel events here as they distract
   // the account completion logic
-  // if(m_accountSelector->isVisible() && (e->type() == QEvent::Wheel)) {
+  // if(m_completion->isVisible() && (e->type() == QEvent::Wheel)) {
   if(e->type() == QEvent::Wheel) {
     qDebug("Eat wheel event");
     QWheelEvent *w = static_cast<QWheelEvent *> (e);
@@ -239,7 +338,7 @@ void kMyMoneyCategory::slotSelectAccount(const QCString& id)
   else
     setText("");
 
-  m_accountSelector->hide();
+  m_completion->hide();
 
   if(m_id != id) {
     m_id = id;
@@ -249,7 +348,7 @@ void kMyMoneyCategory::slotSelectAccount(const QCString& id)
 
 void kMyMoneyCategory::removeAccount(const QCString& id)
 {
-  m_accountSelector->removeAccount(id);
+  m_completion->selector()->removeItem(id);
 }
 
 void kMyMoneyCategory::connectNotify(const char * /* signal */)

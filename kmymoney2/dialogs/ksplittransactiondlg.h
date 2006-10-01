@@ -35,11 +35,14 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneymoney.h"
-#include "../mymoney/mymoneyaccount.h"
-#include "../mymoney/mymoneytransaction.h"
+#include <kmymoney/mymoneymoney.h>
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneytransaction.h>
+#include <kmymoney/mymoneyobjectcontainer.h>
+
 class kMyMoneyEdit;
 class kMyMoneyLineEdit;
+class MyMoneyObjectContainer;
 
 #include "../dialogs/ksplittransactiondlgdecl.h"
 
@@ -56,7 +59,9 @@ public:
                        const MyMoneyAccount& acc,
                        const bool amountValid,
                        const bool deposit,
-                       const MyMoneyMoney& calculatedValue = 0,
+                       const MyMoneyMoney& calculatedValue,
+                       MyMoneyObjectContainer* objects,
+                       const QMap<QCString, MyMoneyMoney>& priceInfo,
                        QWidget* parent = 0, const char* name = 0);
 
   virtual ~KSplitTransactionDlg();
@@ -70,12 +75,6 @@ public:
     *         dialog.
     */
   const MyMoneyTransaction& transaction(void) const { return m_transaction; };
-
-private:
-  /**
-    * This method updates the display of the sums below the register
-    */
-  void updateSums(void);
 
   /**
     * This method calculates the difference between the split that references
@@ -93,6 +92,15 @@ private:
     * @return sum of splits as MyMoneyMoney object
     */
   MyMoneyMoney splitsValue(void);
+
+private:
+  /**
+    * This method updates the display of the sums below the register
+    */
+  void updateSums(void);
+
+public slots:
+  int exec(void);
 
 protected slots:
   void accept();

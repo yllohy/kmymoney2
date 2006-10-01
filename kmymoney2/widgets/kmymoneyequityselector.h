@@ -1,14 +1,9 @@
 /***************************************************************************
-                          kmymoneyequityselector.h  -  description
+                          kmymoneyequityselector.h
                              -------------------
     begin                : Wed 02 June 2004
     copyright            : (C) 2004 by Thomas Baumgart
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+    email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
  ***************************************************************************/
 
 /***************************************************************************
@@ -32,13 +27,13 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "kmymoneyaccountselector.h"
+#include <kmymoney/kmymoneyselector.h>
 
 /**
   * @author Thomas Baumgart
   */
 
-class kMyMoneyEquitySelector : public kMyMoneyAccountSelector
+class kMyMoneyEquitySelector : public KMyMoneySelector
 {
   Q_OBJECT
 

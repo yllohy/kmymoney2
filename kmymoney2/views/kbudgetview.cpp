@@ -48,7 +48,7 @@
 #include "kbudgetview.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
-#include "../kmymoneysettings.h"
+#include "../kmymoneyglobalsettings.h"
 #include "../widgets/kmymoneytitlelabel.h"
 #include "../widgets/kmymoneyedit.h"
 
@@ -68,7 +68,7 @@ KBudgetListItem::~KBudgetListItem()
 
 void KBudgetListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
 {
-  p->setFont(KMyMoneySettings::listCellFont());
+  p->setFont(KMyMoneyGlobalSettings::listCellFont());
 
   QColor colour = KMyMoneySettings::listColor();
   QColor bgColour = KMyMoneySettings::listBGColor();
@@ -127,7 +127,7 @@ void KBudgetAmountListItem::setAmount(const MyMoneyMoney &newamount)
 
 void KBudgetAmountListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
 {
-  p->setFont(KMyMoneySettings::listCellFont());
+  p->setFont(KMyMoneyGlobalSettings::listCellFont());
 
   QColor colour = KMyMoneySettings::listColor();
   QColor bgColour = KMyMoneySettings::listBGColor();

@@ -37,11 +37,11 @@
 
 class kMyMoneyLineEdit : public KLineEdit  {
   Q_OBJECT
-public: 
+public:
   kMyMoneyLineEdit(QWidget *w = 0, const char* name = 0, int alignment = (AlignLeft | AlignVCenter));
   ~kMyMoneyLineEdit();
   /** No descriptions */
-  virtual bool eventFilter(QObject * , QEvent * );
+  // virtual bool eventFilter(QObject * , QEvent * );
 
   /**
     * This method is used to set the value of the widget back to
@@ -64,19 +64,19 @@ signals: // Signals
   /**
     * This signal is emitted when the user presses RETURN while editing
     */
-  void signalEnter();
+  // void signalEnter();
 
   /**
     * This signal is emitted when the user presses ESC while editing
     */
-  void signalEsc();
+  // void signalEsc();
 
   /** No descriptions */
   // void signalNextTransaction();
   /** signal is sent, when the tab key is pressed */
-  void signalTab();
+  // void signalTab();
   /** signal is sent, when the Back-tab (Shift-Tab) key is pressed */
-  void signalBackTab();
+  // void signalBackTab();
 
 protected:
   void focusOutEvent(QFocusEvent *ev);

@@ -38,16 +38,17 @@ class QListViewItem;
 // Project Includes
 
 #include "../widgets/kmymoneypriceviewdecl.h"
-#include "../widgets/kmymoneyaccountselector.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneymoney.h"
-#include "../mymoney/mymoneyprice.h"
+// #include "../widgets/kmymoneyaccountselector.h"
+#include <kmymoney/kmymoneylistviewitem.h>
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/mymoneymoney.h>
+#include <kmymoney/mymoneyprice.h>
 
 /**
   * @author Thomas Baumgart
   */
 
-class kMyMoneyPriceItem : public kMyMoneyListViewItem
+class kMyMoneyPriceItem : public KMyMoneyListViewItem
 {
 public:
   kMyMoneyPriceItem(KListView *, const MyMoneyPrice& pr);

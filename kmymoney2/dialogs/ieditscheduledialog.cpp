@@ -44,6 +44,8 @@
 #include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/kmymoneycategory.h>
 #include <kmymoney/kmymoneydateinput.h>
+#include <kmymoney/mymoneyobjectcontainer.h>
+
 #include "../widgets/kmymoneyaccountcompletion.h"
 #include "../widgets/kmymoneycombo.h"
 #include "../dialogs/ksplittransactiondlg.h"
@@ -282,10 +284,11 @@ void KEditScheduleDialog::reloadFromFile(void)
     (KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
   m_kcomboTo->loadList(
     (KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  QValueList<int> categories;
-  categories << MyMoneyAccount::Income;
-  categories << MyMoneyAccount::Expense;
-  m_category->selector()->loadList(categories);
+  MyMoneyObjectContainer objects;
+  AccountSet categories(&objects);
+  categories.addAccountGroup(MyMoneyAccount::Income);
+  categories.addAccountGroup(MyMoneyAccount::Expense);
+  categories.load(m_category->completion()->selector());
   m_accountCombo->blockSignals(false);
   m_kcomboTo->blockSignals(false);
   m_category->blockSignals(false);
@@ -378,11 +381,15 @@ void KEditScheduleDialog::slotSplitClicked()
 
     m_category->blockSignals(true);
 
+    MyMoneyObjectContainer objects;
+    QMap<QCString, MyMoneyMoney> priceInfo;
     KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
                                                          acc,
                                                          isValidAmount,
                                                          isDeposit,
                                                          calculatedValue,
+                                                         &objects,
+                                                         priceInfo,
                                                          this);
     connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 

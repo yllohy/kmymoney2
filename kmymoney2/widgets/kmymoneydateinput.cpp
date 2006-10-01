@@ -64,7 +64,7 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   m_datePopup->setTimeout(DATE_POPUP_TIMEOUT);
   m_datePopup->setView(new QLabel(KGlobal::locale()->formatDate(m_date), m_datePopup));
 
-  m_dateFrame = new QVBox(0,0,WType_Popup);
+  m_dateFrame = new QVBox(this, 0, WType_Popup);
   m_dateFrame->setFrameStyle(QFrame::PopupPanel | QFrame::Raised);
   m_dateFrame->setLineWidth(3);
   m_dateFrame->hide();
@@ -279,6 +279,11 @@ void kMyMoneyDateInput::slotDateChosen(QDate date)
     // the next line implies a call to slotDateChosenRef() above
     dateEdit->setDate(date);
   }
+}
+
+QDate kMyMoneyDateInput::date(void) const
+{
+  return dateEdit->date();
 }
 
 QDate kMyMoneyDateInput::getQDate(void)

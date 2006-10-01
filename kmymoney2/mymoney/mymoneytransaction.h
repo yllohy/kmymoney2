@@ -65,13 +65,14 @@ public:
   friend QDataStream &operator>>(QDataStream &, MyMoneyTransaction &);
 
   // Simple get operations
-  const QDate entryDate(void) const { return m_entryDate; };
-  const QDate postDate(void) const { return m_postDate; };
-  const QString memo(void) const { return m_memo; };
+  const QDate& entryDate(void) const { return m_entryDate; };
+  const QDate& postDate(void) const { return m_postDate; };
+  const QString& memo(void) const { return m_memo; };
   const QValueList<MyMoneySplit>& splits(void) const { return m_splits; };
+  QValueList<MyMoneySplit>& splits(void) { return m_splits; };
   const unsigned int splitCount(void) const { return m_splits.count(); };
-  const QCString commodity(void) const { return m_commodity; };
-  const QString bankID(void) const /*__attribute__ ((deprecated))*/ { return m_bankID; };
+  const QCString& commodity(void) const { return m_commodity; };
+  const QString& bankID(void) const /*__attribute__ ((deprecated))*/ { return m_bankID; };
 
   // Simple set operations
   void setPostDate(const QDate& date);

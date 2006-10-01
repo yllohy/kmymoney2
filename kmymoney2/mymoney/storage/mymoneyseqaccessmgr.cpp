@@ -878,30 +878,40 @@ void MyMoneySeqAccessMgr::transactionList(QValueList<MyMoneyTransaction>& list, 
 
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
 
-#if 0
-  if(!filter.filterSet().allFilter) {
-    list = m_transactionList.values();
-
-  } else {
-#endif
-    for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-      // This code is used now. It adds the transaction to the list for
-      // each matching split exactly once. This allows to show information
-      // about different splits in the same register view (e.g. search result)
-      //
-      // I have no idea, if this has some impact on the functionality. So far,
-      // I could not see it.  (ipwizard 9/5/2003)
-      if(filter.match(*it_t, this)) {
-        unsigned int cnt = filter.matchingSplits().count();
-        if(cnt > 1) {
-          for(unsigned i=0; i < cnt; ++i)
-            list.append(*it_t);
-        } else {
+  for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
+    // This code is used now. It adds the transaction to the list for
+    // each matching split exactly once. This allows to show information
+    // about different splits in the same register view (e.g. search result)
+    //
+    // I have no idea, if this has some impact on the functionality. So far,
+    // I could not see it.  (ipwizard 9/5/2003)
+    if(filter.match(*it_t, this)) {
+      unsigned int cnt = filter.matchingSplits().count();
+      if(cnt > 1) {
+        for(unsigned i=0; i < cnt; ++i)
           list.append(*it_t);
-        }
+      } else {
+        list.append(*it_t);
       }
     }
-//  }
+  }
+}
+
+void MyMoneySeqAccessMgr::transactionList(QValueList< QPair<MyMoneyTransaction, MyMoneySplit> >& list, MyMoneyTransactionFilter& filter) const
+{
+  list.clear();
+
+  QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
+
+  for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
+    if(filter.match(*it_t, this)) {
+      unsigned int cnt = filter.matchingSplits().count();
+      QValueList<MyMoneySplit>::const_iterator it_s;
+      for(it_s = filter.matchingSplits().begin(); it_s != filter.matchingSplits().end(); ++it_s) {
+        list.append(qMakePair(*it_t, *it_s));
+      }
+    }
+  }
 }
 
 QValueList<MyMoneyTransaction> MyMoneySeqAccessMgr::transactionList(MyMoneyTransactionFilter& filter) const

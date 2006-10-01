@@ -54,10 +54,14 @@
 // Project Includes
 
 #include "kmymoneysplittable.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneycategory.h"
-#include "../widgets/kmymoneylineedit.h"
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneyedit.h>
+#include <kmymoney/kmymoneycategory.h>
+#include <kmymoney/kmymoneylineedit.h>
+#include <kmymoney/mymoneyobjectcontainer.h>
+#include <kmymoney/mymoneysecurity.h>
+
+#include "../dialogs/kcurrencycalculator.h"
 
 #include "../kmymoneyutils.h"
 #include "../mymoney/mymoneyutils.h"
@@ -111,6 +115,12 @@ kMyMoneySplitTable::kMyMoneySplitTable(QWidget *parent, const char *name ) :
 
 kMyMoneySplitTable::~kMyMoneySplitTable()
 {
+}
+
+void kMyMoneySplitTable::setup(MyMoneyObjectContainer *objects, const QMap<QCString, MyMoneyMoney>& priceInfo)
+{
+  m_objects = objects;
+  m_priceInfo = priceInfo;
 }
 
 const QColor kMyMoneySplitTable::rowBackgroundColor(const int row) const
@@ -479,12 +489,10 @@ const QValueList<MyMoneySplit> kMyMoneySplitTable::getSplits(const MyMoneyTransa
   // get list of splits
   list = t.splits();
 
-  // and remove the one for this account
-  for(it = list.begin(); it != list.end(); ++it) {
-    if((*it).accountId() == m_account.id()) {
-      list.remove(it);
-      break;
-    }
+  // and ignore the very first
+  it = list.begin();
+  if(it != list.end()) {
+    list.remove(it);
   }
   return list;
 }
@@ -597,7 +605,7 @@ void kMyMoneySplitTable::slotDeleteSplit(void)
   MYMONEYTRACER(tracer);
   QValueList<MyMoneySplit> list = getSplits(m_transaction);
   if(m_currentRow < static_cast<int> (list.count())) {
-    if(KMessageBox::warningContinueCancel (NULL,
+    if(KMessageBox::warningContinueCancel (this,
         i18n("You are about to delete the selected split. "
             "Do you really want to continue?"),
         i18n("KMyMoney"),
@@ -626,22 +634,79 @@ QWidget* kMyMoneySplitTable::slotStartEdit(void)
 void kMyMoneySplitTable::slotEndEdit(void)
 {
   MYMONEYTRACER(tracer);
+  MyMoneySplit s1 = m_split;
 
   bool needUpdate = false;
   if(m_editCategory->selectedAccountId() != m_split.accountId()) {
-    m_split.setAccountId(m_editCategory->selectedAccountId());
+    s1.setAccountId(m_editCategory->selectedAccountId());
     needUpdate = true;
   }
   if(m_editMemo->text() != m_split.memo()) {
-    m_split.setMemo(m_editMemo->text());
+    s1.setMemo(m_editMemo->text());
     needUpdate = true;
   }
   if(m_editAmount->value() != m_split.value()) {
-    m_split.setValue(m_editAmount->value());
+    s1.setValue(m_editAmount->value());
     needUpdate = true;
   }
 
   if(needUpdate) {
+    if(!s1.value().isZero()) {
+      MyMoneyAccount cat = m_objects->account(s1.accountId());
+      if(cat.currencyId() != m_transaction.commodity()) {
+
+        MyMoneySecurity fromCurrency, toCurrency;
+        MyMoneyMoney fromValue, toValue;
+        fromCurrency = m_objects->security(m_transaction.commodity());
+        toCurrency = m_objects->security(cat.currencyId());
+
+        // determine the fraction required for this category
+        int fract = toCurrency.smallestAccountFraction();
+        if(cat.accountType() == MyMoneyAccount::Cash)
+          fract = toCurrency.smallestCashFraction();
+
+        // display only positive values to the user
+        fromValue = s1.value().abs();
+
+        // if we had a price info in the beginning, we use it here
+        if(m_priceInfo.find(cat.currencyId()) != m_priceInfo.end()) {
+          toValue = (fromValue * m_priceInfo[cat.currencyId()]).convert(fract);
+        }
+
+        // if the shares are still 0, we need to change that
+        if(toValue.isZero()) {
+          MyMoneyPrice price = MyMoneyFile::instance()->price(fromCurrency.id(), toCurrency.id());
+          // if the price is valid calculate the shares. If it is invalid
+          // assume a conversion rate of 1.0
+          if(price.isValid()) {
+            toValue = (price.rate(toCurrency.id()) * fromValue).convert(fract);
+          } else {
+            toValue = fromValue;
+          }
+        }
+
+        // now present all that to the user
+        KCurrencyCalculator calc(fromCurrency,
+                                toCurrency,
+                                fromValue,
+                                toValue,
+                                m_transaction.postDate(),
+                                fract,
+                                this, "currencyCalculator");
+
+        if(calc.exec() == QDialog::Rejected) {
+          return;
+        } else {
+          s1.setShares((s1.value() * calc.price()).convert(fract));
+        }
+
+      } else {
+        s1.setShares(s1.value());
+      }
+    } else
+      s1.setShares(s1.value());
+
+    m_split = s1;
     try {
       if(m_split.id().isEmpty()) {
         m_transaction.addSplit(m_split);

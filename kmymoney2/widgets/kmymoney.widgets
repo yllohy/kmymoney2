@@ -10,8 +10,6 @@ new KInstance("kmmwidgets");
 
 [kMyMoneyDateInput]
 
-[kMyMoneyPayee]
-
 [KMyMoneyAccountTree]
 
 [KMyMoneySecuritySelector]
@@ -19,5 +17,17 @@ IncludeFile=kmymoney/kmymoneycurrencyselector.h
 
 [KMyMoneyCurrencySelector]
 
-[KMyMoneyAccountCombo]
+[Register]
+ImplClass=KMyMoneyRegister::Register
 
+[KMyMoneyCategory]
+
+[KMyMoneyPayee]
+
+[TransactionSortOption]
+
+# deprecated will be removed at some point in time
+
+[kMyMoneyPayee]
+
+[KMyMoneyAccountCombo]

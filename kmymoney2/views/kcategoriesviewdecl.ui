@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0">
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
 <class>KCategoriesViewDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -17,10 +17,7 @@
             <cstring>unnamed</cstring>
         </property>
         <property name="margin">
-            <number>11</number>
-        </property>
-        <property name="spacing">
-            <number>6</number>
+            <number>0</number>
         </property>
         <widget class="KMyMoneyTitleLabel">
             <property name="name">
@@ -29,14 +26,14 @@
             <property name="minimumSize">
                 <size>
                     <width>0</width>
-                    <height>0</height>
+                    <height>30</height>
                 </size>
             </property>
             <property name="text">
                 <string>Categories</string>
             </property>
             <property name="rightImageFile">
-                <cstring></cstring>
+                <string></string>
             </property>
         </widget>
         <widget class="Line">

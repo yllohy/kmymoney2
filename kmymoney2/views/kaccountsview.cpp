@@ -35,7 +35,7 @@
 #include <kmymoney/mymoneyfile.h>
 #include "kaccountsview.h"
 #include "kmymoneyview.h"
-#include "../kmymoneysettings.h"
+#include "../kmymoneyglobalsettings.h"
 #include "../kmymoney2.h"
 
 
@@ -158,11 +158,6 @@ void KAccountsView::slotTabChanged(QWidget* _tab)
       break;
   }
 
-  viewChanged();
-}
-
-void KAccountsView::viewChanged(void)
-{
   KMyMoneyAccountTreeItem* treeItem = m_accountTree->selectedItem();
   KMyMoneyAccountIconItem* iconItem = selectedIcon();
 
@@ -191,7 +186,6 @@ void KAccountsView::show(void)
   // don't forget base class implementation
   KAccountsViewDecl::show();
   slotTabChanged(m_tab->currentPage());
-  viewChanged();
 }
 
 void KAccountsView::loadAccounts(AccountsViewTab tab)
@@ -487,7 +481,7 @@ void KAccountsView::slotUpdateNetWorth(void)
     s += "</font></b>";
   }
 
-  m_totalProfitsLabel->setFont(KMyMoneySettings::listCellFont());
+  m_totalProfitsLabel->setFont(KMyMoneyGlobalSettings::listCellFont());
   m_totalProfitsLabel->setText(s);
 }
 

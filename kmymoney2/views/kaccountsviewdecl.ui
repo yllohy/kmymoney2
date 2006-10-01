@@ -16,6 +16,9 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
         <widget class="KMyMoneyTitleLabel">
             <property name="name">
                 <cstring>titleLabel</cstring>

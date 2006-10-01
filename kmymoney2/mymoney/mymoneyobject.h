@@ -89,6 +89,8 @@ public:
 
   const bool operator == (const MyMoneyObject& right) const;
 
+  static const QCString& emptyId(void);
+
 protected:
   /**
     * This contructor assigns the id to the MyMoneyObject
@@ -115,6 +117,8 @@ protected:
 
 protected:
   QCString               m_id;
+  static const QCString  m_emptyId;
 };
+
 #endif
 

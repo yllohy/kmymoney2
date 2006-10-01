@@ -47,6 +47,7 @@ class KComboBox;
 #include <kmymoney/mymoneypayee.h>
 #include <kmymoney/mymoneybudget.h>
 #include <kmymoney/kmymoneyplugin.h>
+#include <kmymoney/register.h>
 
 class QSignalMapper;
 class KProgress;
@@ -56,6 +57,8 @@ class MyMoneyStatementReader;
 class MyMoneyStatement;
 class IMyMoneyStorage;
 class KFindTransactionDlg;
+class TransactionEditor;
+class KEndingBalanceDlg;
 
 namespace KMyMoneyPlugin { class ImporterPlugin; }
 
@@ -76,11 +79,12 @@ namespace KMyMoneyPlugin { class ImporterPlugin; }
 /**
   * The base class for KMyMoney application windows. It sets up the main
   * window and reads the config file as well as providing a menubar, toolbar
-  * and statusbar.  All functionality is passed down to KMyMoneyView.
+  * and statusbar.
   *
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
+  * @author Thomas Baumgart 2006
   *
   * @short Main application class.
   */
@@ -259,6 +263,20 @@ protected slots:
   void slotCategoryNew(MyMoneyAccount& account, const MyMoneyAccount& parent = MyMoneyAccount());
 
   /**
+    * Brings up the new category editor and saves the information.
+    * The dialog will be preset with the name. The parent defaults to
+    * MyMoneyFile::expense()
+    *
+    * @param name Name of the account to be created. Could include a full hierarchy
+    * @param id reference to storage which will receive the id after successful creation
+    *
+    * @note Typically, this slot can be connected to the
+    *       StdTransactionEditor::createCategory(const QString&, QCString&) or
+    *       KMyMoneyCombo::createItem(const QString&, QCString&) signal.
+    */
+  void slotCategoryNew(const QString& name, QCString& id);
+
+  /**
     * Calls the print logic for the current view
     */
   void slotPrintView(void);
@@ -296,17 +314,84 @@ protected slots:
 
   /**
     */
+  void slotPayeeNew(const QString& newnameBase, QCString& id);
   void slotPayeeNew(void);
+
+  /**
+    */
   void slotPayeeDelete(void);
 
   /**
     */
   void slotBudgetNew(void);
+
+  /**
+    */
   void slotBudgetDelete(void);
 
   /**
     */
   void slotNewUserWizard(void);
+
+  /**
+    */
+  void slotTransactionsNew(void);
+
+  /**
+    */
+  void slotTransactionsEdit(void);
+
+  /**
+    */
+  void slotTransactionsEditSplits(void);
+
+  /**
+    */
+  void slotTransactionsDelete(void);
+
+  /**
+    */
+  void slotTransactionsEnter(void);
+
+  /**
+    */
+  void slotTransactionsCancel(void);
+
+  /**
+    */
+  void slotTransactionsCancelOrEnter(void);
+
+  /**
+    */
+  void slotTransactionDuplicate(void);
+
+  /**
+    */
+  void slotMarkTransactionCleared(void);
+
+  /**
+    */
+  void slotMarkTransactionReconciled(void);
+
+  /**
+    */
+  void slotMarkTransactionNotReconciled(void);
+
+  /**
+    */
+  void slotTransactionGotoAccount(void);
+
+  /**
+    */
+  void slotTransactionGotoPayee(void);
+
+  /**
+    */
+  void slotTransactionCreateSchedule(void);
+
+  /**
+    */
+  void slotTransactionAssignNumber(void);
 
 public:
   /**
@@ -469,6 +554,11 @@ protected:
     */
   bool payeeInList(const QValueList<MyMoneyPayee>& list, const QCString& id) const;
 
+  /**
+    * Mark the selected transactions as provided by @a flag.
+    */
+  void markTransaction(MyMoneySplit::reconcileFlagE flag);
+
 public slots:
   void slotFileInfoDialog(void);
 
@@ -618,7 +708,17 @@ public slots:
   /**
     * This slot starts the reconciliation of the currently selected account
     */
-  void slotAccountReconcile(void);
+  void slotAccountReconcileStart(void);
+
+  /**
+    * This slot finishes a previously started reconciliation
+    */
+  void slotAccountReconcileFinish(void);
+
+  /**
+    * This slot postpones a previously started reconciliations
+    */
+  void slotAccountReconcilePostpone(void);
 
   /**
     * This slot deletes the currently selected account if possible
@@ -693,6 +793,12 @@ public slots:
   void slotShowBudgetContextMenu(void);
 
   /**
+    * This slot opens the transaction options menu at the current cursor
+    * position.
+    */
+  void slotShowTransactionContextMenu(void);
+
+  /**
     * This slot collects information for a new schedule transaction (bill)
     * and saves it in the engine
     */
@@ -749,6 +855,14 @@ public slots:
 
   void slotSelectBudget(const QValueList<MyMoneyBudget>& list);
 
+  void slotSelectTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list);
+
+  void slotStartMatch(void);
+
+  void slotCancelMatch(void);
+
+  void slotEndMatch(void);
+
 private:
   bool verifyImportedData(const MyMoneyAccount& account);
 
@@ -769,6 +883,30 @@ private:
 
   void scheduleNew(const QCString& scheduleType);
 
+  /**
+    * For now, we only allow to edit multiple transactions that have
+    * one or two splits. More than two splits are not very well covered and
+    * we have to think about how this could be handled in a safe way so
+    * that the user does not screw up his data.
+    *
+    * This method checks that this constraint is met.
+    *
+    * @return @a true if editing selected transactions is possible
+    *         @a false if it is not.
+    */
+  bool editTransactionsAllowed(void) const;
+
+  /**
+    * Delete a possibly existing transaction editor but make sure to remove
+    * any reference to it so that we avoid using a half-dead object
+    */
+  void deleteTransactionEditor(void);
+
+  /**
+    * delete all selected transactions w/o further questions
+    */
+  void doDeleteTransactions(void);
+
 signals:
   /**
     * This signal is emitted when a new file is loaded. In the case file
@@ -777,12 +915,20 @@ signals:
   void fileLoaded(const KURL& url);
 
   /**
-    * This signal is emitted when a list of payees has been selected by
+    * This signal is emitted when a payee/list of payees has been selected by
     * the GUI. If no payee is selected or the selection is removed,
-    * payees is identical to an empty QValueList. This signal is used
+    * @p payees is identical to an empty QValueList. This signal is used
     * by plugins to get information about changes.
     */
   void payeesSelected(const QValueList<MyMoneyPayee>& payees);
+
+  /**
+    * This signal is emitted when a transaction/list of transactions has been selected by
+    * the GUI. If no transaction is selected or the selection is removed,
+    * @p transactions is identical to an empty QValueList. This signal is used
+    * by plugins to get information about changes.
+    */
+  void transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>& transactions);
 
   /**
     * This signal is emitted when a list of payees has been selected by
@@ -913,11 +1059,16 @@ private:
   QObject*              m_pluginInterface;
 
   MyMoneyAccount        m_selectedAccount;
+  MyMoneyAccount        m_reconciliationAccount;
   MyMoneyAccount        m_selectedInvestment;
   MyMoneyInstitution    m_selectedInstitution;
   MyMoneySchedule       m_selectedSchedule;
   QValueList<MyMoneyPayee>  m_selectedPayees;
   QValueList<MyMoneyBudget> m_selectedBudget;
+  QValueList<KMyMoneyRegister::SelectedTransaction> m_selectedTransactions;
+
+  QValueList<KMyMoneyRegister::SelectedTransaction> m_editTransactions;
+  KMyMoneyRegister::SelectedTransaction             m_matchTransaction;
 
   // This is Auto Saving related
   bool                  m_autoSaveEnabled;
@@ -928,6 +1079,15 @@ private:
   // Pointer to the combo box used for key selection during
   // File/Save as
   KComboBox*            m_saveEncrypted;
+
+  // pointer to the current transaction editor
+  TransactionEditor*    m_transactionEditor;
+
+  // Reconciliation dialog
+  KEndingBalanceDlg*    m_endingBalanceDlg;
+
+  // id's that need to be remembered
+  QCString              m_accountGoto, m_payeeGoto;
 };
 
 extern  KMyMoney2App *kmymoney2;

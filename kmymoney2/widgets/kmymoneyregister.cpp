@@ -106,7 +106,7 @@ void kMyMoneyRegister::readConfig(void)
   m_gridColor = KMyMoneyUtils::gridColour();
   m_importColor = Qt::yellow;
   m_matchColor = QColor("PaleGreen");
-  
+
   QFont cellFont = KMyMoneyUtils::cellFont();
   m_headerFont = KMyMoneyUtils::headerFont();
   updateHeaders();

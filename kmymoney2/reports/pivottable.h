@@ -47,8 +47,8 @@ class KReportChartView;
   * Expense Type | Sum(Value)
   *   Category   |
   *
-  * This is a middle-layer class, between the UI and the engine.  The 
-  * MyMoneyReport class holds only the CONFIGURATION parameters.  This 
+  * This is a middle-layer class, between the UI and the engine.  The
+  * MyMoneyReport class holds only the CONFIGURATION parameters.  This
   * class actually does the work of retrieving the data from the engine
   * and formatting it for the user.
   *
@@ -78,7 +78,7 @@ public:
     * @return QString CSV string representing the report
     */
     QString renderCSV( void ) const;
-    
+
   /**
     * Render the report to a graphical chart
     *
@@ -88,7 +88,7 @@ public:
     * @param view The KReportChartView into which to draw the chart.
     */
     void drawChart( KReportChartView& view ) const;
-    
+
   /**
     * Dump the report's HTML to a file
     *
@@ -121,33 +121,33 @@ private:
     * A 'Grid' is the set of all Outer Groups contained in this report.
     *
     */
-    class TGridRow: public QValueList<MyMoneyMoney> 
-    { 
+    class TGridRow: public QValueList<MyMoneyMoney>
+    {
     public:
       TGridRow( unsigned _numcolumns = 0 )
       {
         if ( _numcolumns )
           insert( end(), _numcolumns, 0 );
       }
-      MyMoneyMoney m_total; 
+      MyMoneyMoney m_total;
     };
     class TGridRowPair: public TGridRow
     {
     public:
-      TGridRowPair( unsigned _numcolumns = 0 ): TGridRow(_numcolumns), m_budget(_numcolumns) {} 
+      TGridRowPair( unsigned _numcolumns = 0 ): TGridRow(_numcolumns), m_budget(_numcolumns) {}
       TGridRow m_budget;
     };
-    class TInnerGroup: public QMap<ReportAccount,TGridRowPair> 
-    { 
-    public: 
+    class TInnerGroup: public QMap<ReportAccount,TGridRowPair>
+    {
+    public:
       TInnerGroup( unsigned _numcolumns = 0 ): m_total(_numcolumns) {}
 
       TGridRowPair m_total; 
     };
-    class TOuterGroup: public QMap<QString,TInnerGroup> 
-    { 
+    class TOuterGroup: public QMap<QString,TInnerGroup>
+    {
     public:
-      TOuterGroup( unsigned _numcolumns = 0, unsigned _sort=m_kDefaultSortOrder, bool _inverted=false): m_total(_numcolumns), m_inverted(_inverted), m_sortOrder(_sort) {} 
+      TOuterGroup( unsigned _numcolumns = 0, unsigned _sort=m_kDefaultSortOrder, bool _inverted=false): m_total(_numcolumns), m_inverted(_inverted), m_sortOrder(_sort) {}
       int operator<( const TOuterGroup& _right )
       {
         if ( m_sortOrder != _right.m_sortOrder )
@@ -162,7 +162,7 @@ private:
       // means that when the report is summed, the values should be inverted again
       // so that the grand total is really "non-inverted outergroup MINUS inverted outergroup".
       bool m_inverted;
-      
+
       // The localized name of the group for display in the report. Outergoups need this
       // independently, because they will lose their association with the TGrid when the
       // report is rendered.
@@ -251,6 +251,7 @@ protected:
     *   01 03 06 10 15 21 28 36 45 55
     */
     void calculateRunningSums( void );
+    void calculateRunningSums( TInnerGroup::iterator& it_row);
 
   /**
     * Calculate the row and column totals
@@ -286,20 +287,20 @@ protected:
     *   06 15 26 10
     */
     void collapseColumns(void);
-    
+
   /**
     * Determine the proper column headings based on the time periods covered by each column
     *
     */
     void calculateColumnHeadings(void);
-    
+
   /**
     * Helper methods for collapseColumns
     *
     */
     void accumulateColumn(unsigned destcolumn, unsigned sourcecolumn);
-    void clearColumn(unsigned column);  
-  
+    void clearColumn(unsigned column);
+
   /**
     * Calculate the column of a given date.  This is the absolute column in a
     * hypothetical report that covers all of known time.  In reality an actual
@@ -310,7 +311,7 @@ protected:
     unsigned columnValue(const QDate& _date) const;
 
   /**
-    * Calculate the date of the last day covered by a given column. 
+    * Calculate the date of the last day covered by a given column.
     *
     * @param column The column
     */

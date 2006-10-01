@@ -299,16 +299,16 @@ public:
   void setConsiderCategory(const bool check = true);
 
   /**
-    * This method returns the id of the matching splits for the filter.
+    * This method returns a list of the matching splits for the filter.
     * If m_reportAllSplits is set to false, then only the very first
     * split will be returned. Use setReportAllSplits() to change the
     * behaviour.
     *
-    * @return reference to QCString object containing the id of the
-    *         matching split. If multiple split match, only the first
+    * @return reference list of MyMoneySplit objects containing the
+    *         matching splits. If multiple splits match, only the first
     *         one will be returned.
     *
-    * @note an empty id will be returned, if the filter only required
+    * @note an empty list will be returned, if the filter only required
     *       to check the data contained in the MyMoneyTransaction
     *       object (e.g. posting-date, state, etc.).
     *

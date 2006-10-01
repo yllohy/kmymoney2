@@ -1,0 +1,287 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>TransactionSortOption</class>
+<author>Thomas Baumgart &lt;ipwizard@users.sourceforge.net&gt;</author>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>TransactionSortOption</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>486</width>
+            <height>228</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>TransactionSortOptionDecl</string>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout3</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="KListView">
+                    <column>
+                        <property name="text">
+                            <string>Sort options</string>
+                        </property>
+                        <property name="clickable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="resizable">
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <property name="name">
+                        <cstring>m_availableList</cstring>
+                    </property>
+                    <property name="allColumnsShowFocus">
+                        <bool>true</bool>
+                    </property>
+                    <property name="resizeMode">
+                        <enum>AllColumns</enum>
+                    </property>
+                    <property name="itemsMovable">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout5</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>67</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_addButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_removeButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer4</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>21</width>
+                            <height>67</height>
+                        </size>
+                    </property>
+                </spacer>
+            </vbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout4</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="KListView">
+                    <column>
+                        <property name="text">
+                            <string>Sort order</string>
+                        </property>
+                        <property name="clickable">
+                            <bool>true</bool>
+                        </property>
+                        <property name="resizable">
+                            <bool>true</bool>
+                        </property>
+                    </column>
+                    <property name="name">
+                        <cstring>m_selectedList</cstring>
+                    </property>
+                    <property name="allColumnsShowFocus">
+                        <bool>true</bool>
+                    </property>
+                    <property name="resizeMode">
+                        <enum>AllColumns</enum>
+                    </property>
+                    <property name="itemsMovable">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout6</cstring>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer5</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>67</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_upButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_downButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer6</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>20</width>
+                            <height>67</height>
+                        </size>
+                    </property>
+                </spacer>
+            </vbox>
+        </widget>
+    </hbox>
+</widget>
+<connections>
+    <connection>
+        <sender>m_addButton</sender>
+        <signal>clicked()</signal>
+        <receiver>TransactionSortOption</receiver>
+        <slot>slotAddItem()</slot>
+    </connection>
+    <connection>
+        <sender>m_availableList</sender>
+        <signal>selectionChanged(QListViewItem*)</signal>
+        <receiver>TransactionSortOption</receiver>
+        <slot>slotAvailableSelected(QListViewItem*)</slot>
+    </connection>
+    <connection>
+        <sender>m_downButton</sender>
+        <signal>clicked()</signal>
+        <receiver>TransactionSortOption</receiver>
+        <slot>slotDownItem()</slot>
+    </connection>
+    <connection>
+        <sender>m_removeButton</sender>
+        <signal>clicked()</signal>
+        <receiver>TransactionSortOption</receiver>
+        <slot>slotRemoveItem()</slot>
+    </connection>
+    <connection>
+        <sender>m_selectedList</sender>
+        <signal>selectionChanged(QListViewItem*)</signal>
+        <receiver>TransactionSortOption</receiver>
+        <slot>slotSelectedSelected(QListViewItem*)</slot>
+    </connection>
+    <connection>
+        <sender>m_upButton</sender>
+        <signal>clicked()</signal>
+        <receiver>TransactionSortOption</receiver>
+        <slot>slotUpItem()</slot>
+    </connection>
+    <connection>
+        <sender>m_selectedList</sender>
+        <signal>doubleClicked(QListViewItem*)</signal>
+        <receiver>TransactionSortOption</receiver>
+        <slot>toggleDirection(QListViewItem*)</slot>
+    </connection>
+    <connection>
+        <sender>m_selectedList</sender>
+        <signal>spacePressed(QListViewItem*)</signal>
+        <receiver>TransactionSortOption</receiver>
+        <slot>toggleDirection(QListViewItem*)</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">transactionsortoption.ui.h</include>
+</includes>
+<signals>
+    <signal>settingsChanged(const QString&amp;)</signal>
+</signals>
+<slots>
+    <slot>setSettings( const QString &amp; settings )</slot>
+    <slot>toggleDirection( QListViewItem * item )</slot>
+    <slot access="protected" specifier="non virtual">slotAvailableSelected( QListViewItem * item )</slot>
+    <slot access="protected" specifier="non virtual">slotSelectedSelected( QListViewItem * item )</slot>
+    <slot access="protected" specifier="non virtual">slotAddItem( void )</slot>
+    <slot access="protected" specifier="non virtual">slotRemoveItem( void )</slot>
+    <slot access="protected" specifier="non virtual">slotUpItem( void )</slot>
+    <slot access="protected" specifier="non virtual">slotDownItem( void )</slot>
+</slots>
+<functions>
+    <function specifier="non virtual">init()</function>
+    <function access="protected" specifier="non virtual" returnType="QListViewItem *">addEntry( KListView * p, QListViewItem * after, int idx )</function>
+    <function specifier="non virtual" returnType="QString">settings( void ) const</function>
+</functions>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

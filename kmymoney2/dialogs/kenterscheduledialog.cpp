@@ -307,11 +307,15 @@ void KEnterScheduleDialog::slotSplitClicked()
 
     MyMoneyAccount acc = MyMoneyFile::instance()->account(theAccountId());
 
+    MyMoneyObjectContainer objects;
+    QMap<QCString, MyMoneyMoney> priceInfo;
     KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
                                                          acc,
                                                          isValidAmount,
                                                          isDeposit,
                                                          0,
+                                                         &objects,
+                                                         priceInfo,
                                                          this);
     connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 

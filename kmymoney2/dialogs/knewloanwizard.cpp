@@ -45,12 +45,13 @@
 #include "knewloanwizard.h"
 
 #include "../kmymoneyutils.h"
-#include "../widgets/kmymoneylineedit.h"
-#include "../widgets/kmymoneypayee.h"
-#include "../widgets/kmymoneydateinput.h"
+#include <kmymoney/kmymoneylineedit.h>
+#include <kmymoney/kmymoneypayee.h>
+#include <kmymoney/kmymoneydateinput.h>
+#include <kmymoney/kmymoneyedit.h>
+#include <kmymoney/kmymoneyaccountselector.h>
+#include <kmymoney/mymoneyobjectcontainer.h>
 #include "../widgets/kmymoneycombo.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneyaccountselector.h"
 
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/ksplittransactiondlg.h"
@@ -270,7 +271,7 @@ void KNewLoanWizard::slotCheckPageFinished(void)
     }
 
   } else if(currentPage() == m_interestCategoryPage) {
-    if(m_interestAccountEdit->selectedAccounts().count() > 0) {
+    if(m_interestAccountEdit->selectedItems().count() > 0) {
       nextButton()->setEnabled(true);
     }
 
@@ -281,7 +282,7 @@ void KNewLoanWizard::slotCheckPageFinished(void)
   } else if(currentPage() == m_schedulePage) {
     if(m_nextDueDateEdit->getQDate().isValid()
     && m_nextDueDateEdit->getQDate() >= m_firstDueDateEdit->getQDate()
-    && m_paymentAccountEdit->selectedAccounts().count() > 0)
+    && m_paymentAccountEdit->selectedItems().count() > 0)
       nextButton()->setEnabled(true);
 
   } else if(currentPage() == m_assetAccountPage) {
@@ -294,7 +295,7 @@ void KNewLoanWizard::slotCheckPageFinished(void)
       m_assetAccountEdit->setEnabled(true);
       m_paymentDate->setEnabled(true);
       m_createNewAssetButton->setEnabled(true);
-      if(!m_assetAccountEdit->selectedAccounts().isEmpty()
+      if(!m_assetAccountEdit->selectedItems().isEmpty()
       && m_paymentDate->getQDate().isValid())
         nextButton()->setEnabled(true);
     }
@@ -436,7 +437,7 @@ void KNewLoanWizard::updateSummary(void)
 
   // Payment
   try {
-    QCStringList sel = m_interestAccountEdit->selectedAccounts();
+    QCStringList sel = m_interestAccountEdit->selectedItems();
     if(sel.count() != 1)
       throw new MYMONEYEXCEPTION("Need a single selected interest category");
     MyMoneyAccount acc = MyMoneyFile::instance()->account(sel.first());
@@ -450,7 +451,7 @@ void KNewLoanWizard::updateSummary(void)
   m_summaryNextPayment->setText(KGlobal::locale()->formatDate(m_nextDueDateEdit->getQDate(), true));
 
   try {
-    QCStringList sel = m_paymentAccountEdit->selectedAccounts();
+    QCStringList sel = m_paymentAccountEdit->selectedItems();
     if(sel.count() != 1)
       throw new MYMONEYEXCEPTION("Need a single selected payment account");
     MyMoneyAccount acc = MyMoneyFile::instance()->account(sel.first());
@@ -978,31 +979,26 @@ void KNewLoanWizard::slotCreateCategory(void)
 
 void KNewLoanWizard::loadAccountList(void)
 {
+  MyMoneyObjectContainer objects;
+  AccountSet interestSet(&objects), assetSet(&objects), paymentSet(&objects);
+
   if(m_borrowButton->isChecked()) {
-    m_interestAccountEdit->loadList(KMyMoneyUtils::expense);
+    interestSet.addAccountType(MyMoneyAccount::Expense);
   } else {
-    m_interestAccountEdit->loadList(KMyMoneyUtils::income);
+    interestSet.addAccountType(MyMoneyAccount::Income);
   }
+  interestSet.load(m_interestAccountEdit);
 
-  QValueList<int> typeList;
-  typeList << MyMoneyAccount::Checkings;
-  typeList << MyMoneyAccount::Savings;
-  typeList << MyMoneyAccount::Cash;
-  // typeList << MyMoneyAccount::AssetLoan;
-  // typeList << MyMoneyAccount::CertificateDep;
-  // typeList << MyMoneyAccount::Investment;
-  // typeList << MyMoneyAccount::MoneyMarket;
-  typeList << MyMoneyAccount::Asset;
-  typeList << MyMoneyAccount::Currency;
+  assetSet.addAccountType(MyMoneyAccount::Checkings);
+  assetSet.addAccountType(MyMoneyAccount::Savings);
+  assetSet.addAccountType(MyMoneyAccount::Cash);
+  assetSet.addAccountType(MyMoneyAccount::Asset);
+  assetSet.addAccountType(MyMoneyAccount::Currency);
+  assetSet.load(m_assetAccountEdit);
 
-  m_assetAccountEdit->loadList(typeList);
-
-  typeList << MyMoneyAccount::CreditCard;
-  // typeList << MyMoneyAccount::Loan;
-  typeList << MyMoneyAccount::Liability;
-  // typeList << MyMoneyAccount::Income;
-  // typeList << MyMoneyAccount::Expense;
-  m_paymentAccountEdit->loadList(typeList);
+  paymentSet.addAccountType(MyMoneyAccount::CreditCard);
+  paymentSet.addAccountType(MyMoneyAccount::Liability);
+  paymentSet.load(m_paymentAccountEdit);
 }
 
 void KNewLoanWizard::slotAdditionalFees(void)
@@ -1010,7 +1006,9 @@ void KNewLoanWizard::slotAdditionalFees(void)
   // KMessageBox::information(0, QString("Not yet implemented ... if you want to help, contact kmymoney2-developer@lists.sourceforge.net"), QString("Development notice"));
   MyMoneyAccount account(QCString("Phony-ID"), MyMoneyAccount());
 
-  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction, account, false, !m_borrowButton->isChecked(), MyMoneyMoney(0));
+  MyMoneyObjectContainer objects;
+  QMap<QCString, MyMoneyMoney> priceInfo;
+  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction, account, false, !m_borrowButton->isChecked(), MyMoneyMoney(0), &objects, priceInfo);
   connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
   if(dlg->exec() == QDialog::Accepted) {
@@ -1039,8 +1037,8 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
   // setup accounts. at this point, we cannot fill in the id of the
   // account that the amortization will be performed on, because we
   // create the is account. So the id is yet unknown.
-  sPayment.setAccountId(m_paymentAccountEdit->selectedAccounts().first());
-  sInterest.setAccountId(m_interestAccountEdit->selectedAccounts().first());
+  sPayment.setAccountId(m_paymentAccountEdit->selectedItems().first());
+  sInterest.setAccountId(m_interestAccountEdit->selectedItems().first());
 
   // values
   if(m_borrowButton->isChecked()) {
@@ -1210,7 +1208,7 @@ const QCString KNewLoanWizard::initialPaymentAccount(void) const
   if(m_dontCreatePayoutCheckBox->isChecked()) {
     return QCString();
   }
-  return m_assetAccountEdit->selectedAccounts().first();
+  return m_assetAccountEdit->selectedItems().first();
 }
 
 const QDate KNewLoanWizard::initialPaymentDate(void) const

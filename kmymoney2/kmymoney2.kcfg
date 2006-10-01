@@ -88,6 +88,10 @@
    <label>Icon size for view selection</label>
    <default>2</default>
   </entry>
+  <entry name="hiddenViews" type="String">
+   <label>list of hidden views</label>
+   <default/>
+  </entry>
  </group>
  <group name="Homepage Options">
   <entry name="ItemList" type="String">
@@ -118,6 +122,10 @@
    <label>Show a grid in the register</label>
    <default>true</default>
   </entry>
+  <entry name="ShowFancyMarker" type="Bool">
+   <label>Show fancy group markers</label>
+   <default>true</default>
+  </entry>
   <entry name="StartDate" type="DateTime">
    <label>Start date</label>
    <default>QDateTime::fromString("1900-01-01T00:00:00", Qt::ISODate)</default>
@@ -138,12 +146,24 @@
    <label>List grid color</label>
    <default>154,154,154</default>
   </entry>
+  <entry name="importedTransactionColor" type="Color">
+   <label>Background color for imported transactions</label>
+   <default>255,255,0</default>
+  </entry>
+  <entry name="matchedTransactionColor" type="Color">
+   <label>Background color for matched transactions</label>
+   <default>152,251,152</default>
+  </entry>
+  <entry name="listErronousTransactionColor" type="Color">
+   <label>List color for erronous transactions</label>
+   <default>255,0,0</default>
+  </entry>
   <entry name="listMissingConversionRate" type="Color">
-   <label>List color</label>
+   <label>List color for missing conversion rate</label>
    <default>0,0,255</default>
   </entry>
   <entry name="listNegativeValueColor" type="Color">
-   <label>List color</label>
+   <label>List color for negative values</label>
    <default>255,0,0</default>
   </entry>
   <entry name="requiredFieldColor" type="Color">
@@ -159,6 +179,14 @@
   </entry>
   <entry name="listHeaderFont" type="Font">
    <label>Header font</label>
+  </entry>
+  <entry name="sortNormalView" type="String">
+  <label>Sort order of register in normal view</label>
+  <default>1,-4</default>
+  </entry>
+  <entry name="sortReconcileView" type="String">
+  <label>Sort order of register in normal view</label>
+  <default>1,-4</default>
   </entry>
  </group>
  <group name="Schedule Options">

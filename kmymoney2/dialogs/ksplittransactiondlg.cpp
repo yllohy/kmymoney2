@@ -38,10 +38,12 @@
 #include <kglobal.h>
 #include <kconfig.h>
 #include <klocale.h>
-#include <kiconloader.h>
+//#include <kiconloader.h>
+//#include <kguiitem.h>
 #include <kmessagebox.h>
-#include <kguiitem.h>
 #include <kpushbutton.h>
+#include <kactivelabel.h>
+#include <kstdguiitem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -49,14 +51,16 @@
 #include "ksplittransactiondlg.h"
 #include "../widgets/kmymoneysplittable.h"
 #include "../dialogs/ksplitcorrectiondlg.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneylineedit.h"
+#include <kmymoney/kmymoneyedit.h>
+#include <kmymoney/kmymoneylineedit.h>
 
 KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
                                            const MyMoneyAccount& acc,
                                            const bool amountValid,
                                            const bool deposit,
                                            const MyMoneyMoney& calculatedValue,
+                                           MyMoneyObjectContainer* objects,
+                                           const QMap<QCString, MyMoneyMoney>& priceInfo,
                                            QWidget* parent, const char* name)
   : kSplitTransactionDlgDecl(parent, name, true),
   m_transaction(t),
@@ -65,16 +69,6 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   m_isDeposit(deposit),
   m_calculatedValue(calculatedValue)
 {
-  // for deposits, we invert the sign of all splits.
-  // don't forget to revert when we're done ;-)
-  if(m_isDeposit) {
-    for(unsigned i = 0; i < m_transaction.splits().count(); ++i) {
-      MyMoneySplit split = m_transaction.splits()[i];
-      split.setValue(-split.value());
-      m_transaction.modifySplit(split);
-    }
-  }
-
   // add icons to buttons
   KIconLoader *il = KGlobal::iconLoader();
   KGuiItem finishButtenItem( i18n( "&Finish" ),
@@ -103,11 +97,6 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   cancelBtn->setFocusPolicy(QWidget::NoFocus);
   finishBtn->setFocusPolicy(QWidget::NoFocus);
   clearAllBtn->setFocusPolicy(QWidget::NoFocus);
-  transactionsTable->setFocus();
-
-  // initialize the display
-  transactionsTable->setTransaction(m_transaction, m_account);
-  updateSums();
 
   // connect signals with slots
   connect(transactionsTable, SIGNAL(transactionChanged(const MyMoneyTransaction&)),
@@ -119,6 +108,9 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
   connect(finishBtn, SIGNAL(clicked()), this, SLOT(accept()));
   connect(clearAllBtn, SIGNAL(clicked()), this, SLOT(slotClearAllSplits()));
+
+  // pass on those vars
+  transactionsTable->setup(objects, priceInfo);
 
   // Trick: it seems, that the initial sizing of the dialog does
   // not work correctly. At least, the columns do not get displayed
@@ -133,6 +125,113 @@ KSplitTransactionDlg::~KSplitTransactionDlg()
 {
 }
 
+int KSplitTransactionDlg::exec(void)
+{
+  // for deposits, we invert the sign of all splits.
+  // don't forget to revert when we're done ;-)
+  if(m_isDeposit) {
+    for(unsigned i = 0; i < m_transaction.splits().count(); ++i) {
+      MyMoneySplit split = m_transaction.splits()[i];
+      split.setValue(-split.value());
+      split.setShares(-split.shares());
+      m_transaction.modifySplit(split);
+    }
+  }
+
+  int rc;
+  do {
+    transactionsTable->setFocus();
+
+    // initialize the display
+    transactionsTable->setTransaction(m_transaction, m_account);
+    updateSums();
+
+    rc = kSplitTransactionDlgDecl::exec();
+
+    if(rc == QDialog::Accepted) {
+      if(!diffAmount().isZero()) {
+        kSplitCorrectionDlgDecl* corrDlg = new kSplitCorrectionDlgDecl(this, 0, true);
+
+        // add icons to buttons
+        corrDlg->okBtn->setGuiItem(KStdGuiItem::ok());
+        corrDlg->cancelBtn->setGuiItem(KStdGuiItem::cancel());
+
+        MyMoneySplit split = m_transaction.splits()[0];
+        QString total = (-split.value()).formatMoney();
+        QString sums = splitsValue().formatMoney();
+        QString diff = diffAmount().formatMoney();
+
+        // now modify the text items of the dialog to contain the correct values
+        QString q = i18n("The total amount of this transaction is %1 while "
+                                "the sum of the splits is %2. The remaining %3 are "
+                                "unassigned.")
+                    .arg(total)
+                    .arg(sums)
+                    .arg(diff);
+        corrDlg->explanation->setText(q);
+
+        q = i18n("Change &total amount of transaction to %1.").arg(sums);
+        corrDlg->changeBtn->setText(q);
+
+        q = i18n("&Distribute difference of %1 among all splits.").arg(diff);
+        corrDlg->distributeBtn->setText(q);
+        // FIXME remove the following line once distribution among
+        //       all splits is implemented
+        corrDlg->distributeBtn->hide();
+
+
+        // if we have only two splits left, we don't allow leaving sth. unassigned.
+        if(m_transaction.splitCount() < 3) {
+          q = i18n("&Leave total amount of transaction at %1.").arg(total);
+        } else {
+          q = i18n("&Leave %1 unassigned.").arg(diff);
+        }
+        corrDlg->leaveBtn->setText(q);
+
+        if((rc = corrDlg->exec()) == QDialog::Accepted) {
+          QButton* button = corrDlg->buttonGroup->selected();
+          if(button != 0) {
+            switch(corrDlg->buttonGroup->id(button)) {
+              case 0:       // continue to edit
+                rc = QDialog::Rejected;
+                break;
+
+              case 1:       // modify total
+                split.setValue(-splitsValue());
+                split.setShares(-splitsValue());
+                m_transaction.modifySplit(split);
+                break;
+
+              case 2:       // distribute difference
+                qDebug("distribution of difference not yet supported in KSplitTransactionDlg::slotFinishClicked()");
+                break;
+
+              case 3:       // leave unassigned
+                break;
+            }
+          }
+        }
+        delete corrDlg;
+      }
+    } else
+      break;
+
+  } while(rc != QDialog::Accepted);
+
+  // for deposits, we inverted the sign of all splits.
+  // now we revert it back, so that things are left correct
+  if(m_isDeposit) {
+    for(unsigned i = 0; i < m_transaction.splits().count(); ++i) {
+      MyMoneySplit split = m_transaction.splits()[i];
+      split.setValue(-split.value());
+      split.setShares(-split.shares());
+      m_transaction.modifySplit(split);
+    }
+  }
+
+  return rc;
+}
+
 void KSplitTransactionDlg::initSize(void)
 {
   QDialog::resize(width(), height()+1);
@@ -141,92 +240,7 @@ void KSplitTransactionDlg::initSize(void)
 void KSplitTransactionDlg::accept()
 {
   transactionsTable->slotCancelEdit();
-  if(!diffAmount().isZero()) {
-    MyMoneySplit split = m_transaction.splitByAccount(m_account.id());
-    kSplitCorrectionDlgDecl* dlg = new kSplitCorrectionDlgDecl(0, 0, true);
-
-    // add icons to buttons
-    KIconLoader *il = KGlobal::iconLoader();
-    KGuiItem okButtenItem( i18n("&Ok" ),
-                      QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
-                      i18n("Accepts the selected action and continues"),
-                      i18n("Use this to accept the action and perform it"));
-    dlg->okBtn->setGuiItem(okButtenItem);
-
-    KGuiItem cancelButtenItem( i18n( "&Cancel" ),
-                      QIconSet(il->loadIcon("button_cancel", KIcon::Small, KIcon::SizeSmall)),
-                      i18n("Return to split transaction dialog"),
-                      i18n("Use this to continue editing the splits"));
-    dlg->cancelBtn->setGuiItem(cancelButtenItem);
-
-    QString total = (-split.value()).formatMoney();
-    QString sums = splitsValue().formatMoney();
-    QString diff = diffAmount().formatMoney();
-
-    // now modify the text items of the dialog to contain the correct values
-    QString q = i18n("The total amount of this transaction is %1 while "
-                             "the sum of the splits is %2. The remaining %3 are "
-                             "unassigned.")
-                .arg(total)
-                .arg(sums)
-                .arg(diff);
-    dlg->explanation->setText(q);
-
-    q = i18n("&Change total amount of transaction to %1.")
-        .arg(sums);
-    dlg->changeBtn->setText(q);
-
-    q = i18n("&Distribute difference of %1 among all splits.")
-        .arg(diff);
-    dlg->distributeBtn->setText(q);
-    // FIXME remove the following line once distribution among
-    //       all splits is implemented
-    dlg->distributeBtn->hide();
-
-    q = i18n("&Leave %1 unassigned.")
-        .arg(diff);
-    dlg->leaveBtn->setText(q);
-
-    connect(dlg->okBtn, SIGNAL(clicked()), dlg, SLOT(accept()));
-    connect(dlg->cancelBtn, SIGNAL(clicked()), dlg, SLOT(reject()));
-
-    if(dlg->exec() == QDialog::Accepted) {
-      QButton* button = dlg->buttonGroup->selected();
-      if(button != NULL) {
-        switch(dlg->buttonGroup->id(button)) {
-          case 0:       // continue to edit
-            break;
-          case 1:       // modify total
-            split.setValue(-splitsValue());
-            m_transaction.modifySplit(split);
-            kSplitTransactionDlgDecl::accept();
-            break;
-          case 2:       // distribute difference
-            qDebug("distribution of difference not yet supported in KSplitTransactionDlg::slotFinishClicked()");
-            break;
-          case 3:       // leave unassigned
-            qDebug("leave unassigned should be changed to assign to standard account");
-            kSplitTransactionDlgDecl::accept();
-            break;
-        }
-      }
-    }
-    delete dlg;
-
-  } else
-    kSplitTransactionDlgDecl::accept();
-
-  if(result() == Accepted) {
-    // for deposits, we inverted the sign of all splits.
-    // now we revert it back, so that things are left correct
-    if(m_isDeposit) {
-      for(unsigned i = 0; i < m_transaction.splits().count(); ++i) {
-        MyMoneySplit split = m_transaction.splits()[i];
-        split.setValue(-split.value());
-        m_transaction.modifySplit(split);
-      }
-    }
-  }
+  kSplitTransactionDlgDecl::accept();
 }
 
 void KSplitTransactionDlg::reject()
@@ -239,7 +253,7 @@ void KSplitTransactionDlg::reject()
 void KSplitTransactionDlg::slotClearAllSplits()
 {
   int answer;
-  answer = KMessageBox::warningContinueCancel (NULL,
+  answer = KMessageBox::warningContinueCancel (this,
      i18n("You are about to delete all splits of this transaction. "
           "Do you really want to continue?"),
      i18n("KMyMoney"),
@@ -270,7 +284,7 @@ void KSplitTransactionDlg::slotSetTransaction(const MyMoneyTransaction& t)
 void KSplitTransactionDlg::updateSums(void)
 {
   MyMoneyMoney splits(splitsValue());
-  MyMoneySplit split = m_transaction.splitByAccount(m_account.id());
+  MyMoneySplit split = m_transaction.splits()[0];
 
   if(m_amountValid == false) {
     split.setValue(-splits);
@@ -304,7 +318,7 @@ MyMoneyMoney KSplitTransactionDlg::diffAmount(void)
   // if there is an amount specified in the transaction, we need to calculate the
   // difference, otherwise we display the difference as 0 and display the same sum.
   if(m_amountValid) {
-    MyMoneySplit split = m_transaction.splitByAccount(m_account.id());
+    MyMoneySplit split = m_transaction.splits()[0];
 
     diff = -(splitsValue() + split.value());
   }

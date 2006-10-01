@@ -54,8 +54,10 @@ public:
   kMyMoneyDateInput(QWidget *parent=0, const char *name=0, Qt::AlignmentFlags flags=Qt::AlignLeft);
   ~kMyMoneyDateInput();
 
-  // Use this to get the selected date
-  QDate getQDate(void);
+  // Replace calls to this with the new date() method
+  QDate getQDate(void) KDE_DEPRECATED;
+
+  QDate date(void) const;
   void setDate(QDate date);
   void loadDate(const QDate& date);
   void resetDate(void);

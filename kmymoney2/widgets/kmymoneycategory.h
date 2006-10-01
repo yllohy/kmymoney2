@@ -1,14 +1,9 @@
 /***************************************************************************
-                          kmymoneycategory.h  -  description
+                          kmymoneycategory.h
                              -------------------
-    begin                : Sun Aug 11 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+    begin                : Mon Jul 10 2006
+    copyright            : (C) 2006 by Thomas Baumgart
+    email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
  ***************************************************************************/
 
 /***************************************************************************
@@ -26,26 +21,138 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qwidget.h>
+class QWidget;
+class QFrame;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include "kdecompat.h"
-#include <klineedit.h>
+#include <kcombobox.h>
+class KPushButton;
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/mymoneyaccount.h>
+#include "../widgets/kmymoneycombo.h"
 
-#include "../mymoney/mymoneyaccount.h"
-#include "../kmymoneyutils.h"
-class kMyMoneyAccountCompletion;
+class kMyMoneyAccountSelector;
 
 /**
+  * This class implements a text based account/category selector.
+  * When initially used, the widget has the functionality of a KComboBox object.
+  * Whenever a key is pressed, the set of loaded accounts is searched for
+  * accounts which match the currently entered text.
+  *
+  * If any match is found a list selection box is opened and the user can use
+  * the up/down, page-up/page-down keys or the mouse to navigate in the list. If
+  * an account is selected, the selection box is closed. Other key-strokes are
+  * directed to the parent object to manipulate the text.  The visible contents of
+  * the selection box is updated with every key-stroke.
+  *
+  * This object is a replacement of the kMyMoneyCategory object and should be used
+  * for new code.
+  *
   * @author Thomas Baumgart
   */
+class KMyMoneyCategory : public KMyMoneyCombo
+{
+   Q_OBJECT
+public:
+  /**
+    * Standard constructor for the account selection object.
+    *
+    * If parameter @a splitButton is @a true, the widget
+    * will construct a surrounding QFrame and reparent itself to be a child of this
+    * QFrame. It also adds a KPushButton with the word "Split" to the right of the
+    * input field. In this case it is important not to use the pointer to this widget
+    * but it's parent when placing the object in a QLayout, QTable or some such. The
+    * parent widget (the QFrame in this case)can be extracted with the parentWidget()
+    * method.
+    *
+    * Reparenting is handled by the object transparently for both cases.
+    *
+    * Standard usage example (no split button):
+    *
+    * @code
+    * KMyMoneyCategory* category = new KMyMoneyCategory;
+    * category->reparent(newParent);
+    * layout->addWidget(category);
+    * table->setCellWidget(category);
+    * @endcode
+    *
+    * Enhanced usage example (with split button):
+    *
+    * @code
+    * KMyMoneyCategory* category = new KMyMoneyCategory(0, 0, true);
+    * category->reparent(newParent);
+    * layout->addWidget(category->parentWidget());
+    * table->setCellWidget(category->parentWidget());
+    * @endcode
+    */
+  KMyMoneyCategory(QWidget* parent = 0, const char* name = 0, bool splitButton = false);
 
+  /**
+    * This member returns a pointer to the completion object.
+    *
+    * @return pointer to completion's selector object
+    */
+  kMyMoneyAccountSelector* selector(void) const;
+
+  /**
+    * This member returns a pointer to the split button. In case the @a splitButton parameter
+    * of the constructor was @a false, this method prints a warning to stderr and returns 0.
+    */
+  KPushButton* splitButton(void) const;
+
+  /**
+    * Reimplemented for internal reasons
+    */
+  virtual void reparent( QWidget *parent, WFlags, const QPoint &, bool showIt = FALSE );
+
+protected:
+  /**
+    * Reimplemented to support protected category text ("split transactions")
+    *
+    * @sa focusIn()
+    */
+  virtual void focusInEvent(QFocusEvent* ev);
+
+public slots:
+  virtual void slotItemSelected(const QCString& id);
+
+signals:
+  /**
+    * Signal to inform other objects that this object has reached focus.
+    * Used for e.g. to open the split dialog when the focus reaches this
+    * object and it contains the text 'Split transaction'.
+    *
+    * @sa focusInEvent()
+    */
+  void focusIn(void);
+
+private:
+  KPushButton*      m_splitButton;
+  QFrame*           m_frame;
+};
+
+
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+
+
+
+#include "../kmymoneyutils.h"
+#include <klineedit.h>
+class kMyMoneyAccountCompletion;
 /**
   * This class implements a text based account/category selector. The name
   * is kept for historic reasons. When initially used, the widget has the
@@ -68,7 +175,7 @@ public:
 
   virtual bool eventFilter(QObject * , QEvent * );
 
-  kMyMoneyAccountCompletion* selector(void) const { return m_accountSelector; };
+  kMyMoneyAccountCompletion* completion(void) const { return m_completion; };
 
   QCString selectedAccountId() const { return m_id; }
 
@@ -167,7 +274,7 @@ private:
     */
   QCString                   m_id;
 
-  kMyMoneyAccountCompletion* m_accountSelector;
+  kMyMoneyAccountCompletion* m_completion;
   bool                       m_inCreation;
   bool                       m_displayOnly;
 
