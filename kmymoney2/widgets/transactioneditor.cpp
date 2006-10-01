@@ -929,6 +929,8 @@ bool StdTransactionEditor::addVatSplit(MyMoneyTransaction& tr, const MyMoneyMone
 
     // extract the category split from the transaction
     MyMoneyAccount category = m_objects->account(tr.splitByAccount(m_account.id(), false).accountId());
+    if(category.value("VatAccount").isEmpty())
+      return false;
     MyMoneyAccount vatAcc = m_objects->account(category.value("VatAccount").latin1());
     MyMoneySecurity asec = m_objects->security(m_account.currencyId());
     MyMoneySecurity csec = m_objects->security(category.currencyId());
@@ -1469,6 +1471,13 @@ bool StdTransactionEditor::enterTransactions(void)
         if((*it_ts).id().isEmpty()) {
           // add new transaction
           MyMoneyFile::instance()->addTransaction(*it_ts);
+          // if a new transaction has a valid number, keep it with the account
+          QString number = (*it_ts).splits()[0].number();
+          if(!number.isEmpty() && number.toULongLong() != 0) {
+            MyMoneyAccount acc = m_objects->account((*it_ts).splits()[0].accountId());
+            acc.setValue("lastNumberUsed", number);
+            MyMoneyFile::instance()->modifyAccount(acc);
+          }
         } else {
           // modify existing transaction
           MyMoneyFile::instance()->modifyTransaction(*it_ts);
