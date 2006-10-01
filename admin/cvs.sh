@@ -307,6 +307,9 @@ if test -f configure.in.in; then
       if test -n "$line"; then
 	  modulename=`echo $line | sed -e "s#AM_INIT_AUTOMAKE(\([^,]*\),.*#\1#"`
 	  VERSION=`echo $line | sed -e "s#AM_INIT_AUTOMAKE([^,]*, *\([^)]*\)).*#\1#"`
+        if test -z "$KMYMONEY_RELEASE"; then
+            VERSION="$VERSION-CVS";
+        fi
       fi
       sed -e "s#AM_INIT_AUTOMAKE([^@].*#dnl PACKAGE set before#" \
           configure.in.new > configure.in && mv configure.in configure.in.new
