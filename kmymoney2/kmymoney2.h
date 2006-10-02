@@ -763,6 +763,12 @@ public slots:
   void slotReparentAccount(const MyMoneyAccount& src, const MyMoneyInstitution& dest);
 
   /**
+    * This slot creates a transaction report for the selected account
+    * and opens it in the reports view.
+    */
+  void slotAccountTransactionReport(void);
+
+  /**
     * This slot opens the account options menu at the current cursor
     * position.
     */

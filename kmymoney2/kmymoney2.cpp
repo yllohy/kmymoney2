@@ -309,6 +309,7 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Delete account..."), "delete", 0, this, SLOT(slotAccountDelete()), actionCollection(), "account_delete");
   new KAction(i18n("Close account"), "", 0, this, SLOT(slotAccountClose()), actionCollection(), "account_close");
   new KAction(i18n("Reopen account"), "", 0, this, SLOT(slotAccountReopen()), actionCollection(), "account_reopen");
+  new KAction(i18n("Transaction report"), "view_info", 0, this, SLOT(slotAccountTransactionReport()), actionCollection(), "account_transaction_report");
 
   // *******************
   // The categories menu
@@ -2971,6 +2972,26 @@ void KMyMoney2App::slotReparentAccount(const MyMoneyAccount& _src, const MyMoney
   }
 }
 
+void KMyMoney2App::slotAccountTransactionReport(void)
+{
+  // Generate a transaction report that contains transactions for only the
+  // currently selected account.
+  if(!m_selectedAccount.id().isEmpty()) {
+    MyMoneyReport report(
+        MyMoneyReport::eAccount,
+        MyMoneyReport::eQCnumber|MyMoneyReport::eQCpayee|MyMoneyReport::eQCcategory,
+        MyMoneyTransactionFilter::yearToDate,
+        false,
+        i18n("%1 YTD Account Transactions").arg(m_selectedAccount.name()),
+        i18n("Generated Report")
+      );
+    report.setGroup(i18n("Transactions"));
+    report.addAccount(m_selectedAccount.id());
+
+    myMoneyView->slotShowReport(report);
+  }
+}
+
 void KMyMoney2App::scheduleNew(const QCString& scheduleType)
 {
   MyMoneySchedule schedule;
@@ -3973,6 +3994,7 @@ void KMyMoney2App::updateActions(void)
   action("account_open")->setEnabled(false);
   action("account_close")->setEnabled(false);
   action("account_reopen")->setEnabled(false);
+  action("account_transaction_report")->setEnabled(false);
 
   action("category_new")->setEnabled(fileOpen);
   action("category_edit")->setEnabled(false);
@@ -4065,6 +4087,7 @@ void KMyMoney2App::updateActions(void)
         case MyMoneyAccount::Asset:
         case MyMoneyAccount::Liability:
         case MyMoneyAccount::Equity:
+          action("account_transaction_report")->setEnabled(true);
           action("account_edit")->setEnabled(true);
           action("account_delete")->setEnabled(!file->isReferenced(m_selectedAccount));
           action("account_open")->setEnabled(true);

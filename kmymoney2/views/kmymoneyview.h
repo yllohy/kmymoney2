@@ -446,7 +446,7 @@ public slots:
     *
     * @param reportid The ID of the report to be shown
     */
-  void slotReportSelected(const QCString& reportid);
+  void slotShowReport(const QCString& reportid);
 
   /**
     * Same as the above, but the caller passes in an actual report
@@ -454,7 +454,7 @@ public slots:
     *
     * @param report The report to be shown
     */
-  void slotReportGenerated(const MyMoneyReport& report);
+  void slotShowReport(const MyMoneyReport& report);
 
   /**
     * This slot cancels any edit activity in any view. It will

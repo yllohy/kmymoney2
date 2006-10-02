@@ -397,7 +397,6 @@ Register::Register(QWidget *parent, const char *name ) :
 
   connect(this, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(selectItem(int, int, int, const QPoint&)));
   connect(this, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotDoubleClicked(int, int, int, const QPoint&)));
-  connect(this, SIGNAL(contextMenuRequested(int, int, const QPoint&)), this, SLOT(slotContextMenuRequested(int, int, const QPoint&)));
 
   // QTimer::singleShot(500, this, SLOT(slotToggleErronousTransactions()));
 }

@@ -135,7 +135,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_homeView, SIGNAL(scheduleSelected(const QCString&)),
     this, SLOT(slotScheduleSelected(const QCString&)));
   connect(m_homeView, SIGNAL(reportSelected(const QCString&)),
-    this, SLOT(slotReportSelected(const QCString&)));
+    this, SLOT(slotShowReport(const QCString&)));
 
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_homeView, SLOT(slotReloadView()));
 
@@ -213,8 +213,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   //connect(m_ledgerView, SIGNAL(accountSelected(const QCString&, const QCString&)),
   //    this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotLoadView()));
-  connect(m_ledgerView, SIGNAL(reportGenerated(const MyMoneyReport&)),
-      this, SLOT(slotReportGenerated(const MyMoneyReport&)));
 
   // Page 7
   m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),
@@ -435,13 +433,13 @@ void KMyMoneyView::slotScheduleSelected(const QCString& scheduleId)
   m_scheduledView->slotSelectSchedule(scheduleId);
 }
 
-void KMyMoneyView::slotReportSelected(const QCString& reportid)
+void KMyMoneyView::slotShowReport(const QCString& reportid)
 {
   showPage(pageIndex(m_reportsViewFrame));
   m_reportsView->slotOpenReport(reportid);
 }
 
-void KMyMoneyView::slotReportGenerated(const MyMoneyReport& report)
+void KMyMoneyView::slotShowReport(const MyMoneyReport& report)
 {
   showPage(pageIndex(m_reportsViewFrame));
   m_reportsView->slotOpenReport(report);

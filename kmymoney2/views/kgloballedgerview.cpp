@@ -145,14 +145,19 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   m_toolbar->setIconText(KToolBar::IconTextRight);
 
   m_accountComboBox = new KMyMoneyAccountCombo(m_toolbar, "AccountCombo");
-  m_toolbar->insertWidget(1,100,m_accountComboBox);
+  m_toolbar->insertWidget(1, 100, m_accountComboBox);
 
+#if 0
+  // the account button at the right of the toolbar
+  // I leave the code commented here for a while, so that I see
+  // how I can add other  widgets at this point
   KIconLoader *il = KGlobal::iconLoader();
   m_toolbar->insertButton(il->loadIcon("document", KIcon::Small, KIcon::SizeSmall),
                         1,true,i18n("Account"));
   //m_toolbar->setMaximumSize(50,20);
   m_toolbar->alignItemRight(1);
-  m_toolbar->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
+#endif
+  m_toolbar->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   layout()->addWidget(m_toolbarFrame);
 
   // create the register frame

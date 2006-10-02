@@ -1,6 +1,9 @@
 2006-10-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed extra qualifiers in method definitions
   * Added more changes which slipped through in yesterdays checkin
+  * Reduced margin in investments view
+  * Removed account button in ledger view
+  * Added transaction report to account menu
 
 2006-10-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added new ledger logic
