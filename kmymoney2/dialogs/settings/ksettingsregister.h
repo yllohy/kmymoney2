@@ -35,6 +35,10 @@ class KSettingsRegister : public KSettingsRegisterDecl
 public:
   KSettingsRegister(QWidget* parent = 0, const char* name = 0);
   ~KSettingsRegister();
+
+protected slots:
+  void slotLoadNormal(void);
+  void slotLoadReconcile(void);
 };
 #endif
 

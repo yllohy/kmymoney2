@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KSettingsRegisterDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>568</width>
-            <height>350</height>
+            <width>669</width>
+            <height>386</height>
         </rect>
     </property>
     <property name="caption">
@@ -63,7 +63,7 @@
                             <cstring>kcfg_AlwaysShowNrField</cstring>
                         </property>
                         <property name="text">
-                            <string>Always show a No. field in transaction form</string>
+                            <string>Always show a No. field</string>
                         </property>
                     </widget>
                     <widget class="QCheckBox">
@@ -98,6 +98,17 @@
                             <string>Auto fill with previous transaction data</string>
                         </property>
                     </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>kcfg_ShowFancyMarker</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Show fancy group marker</string>
+                        </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Draws a larger header above each group of transaction. The grouping depends on the current sort order.</string>
+                        </property>
+                    </widget>
                     <spacer>
                         <property name="name">
                             <cstring>spacer6</cstring>
@@ -111,7 +122,7 @@
                         <property name="sizeHint">
                             <size>
                                 <width>20</width>
-                                <height>30</height>
+                                <height>20</height>
                             </size>
                         </property>
                     </spacer>
@@ -193,6 +204,112 @@
                             </size>
                         </property>
                     </spacer>
+                </vbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>sorting</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Sorting</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QTabWidget">
+                        <property name="name">
+                            <cstring>tabWidget3</cstring>
+                        </property>
+                        <widget class="QWidget">
+                            <property name="name">
+                                <cstring>tab</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Normal view</string>
+                            </attribute>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="KTextEdit">
+                                    <property name="name">
+                                        <cstring>kcfg_sortNormalView</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="TransactionSortOption">
+                                    <property name="name">
+                                        <cstring>m_sortNormalView</cstring>
+                                    </property>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>spacer5_2</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>16</width>
+                                            <height>21</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                            </hbox>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                                <cstring>tab</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Reconciliation view</string>
+                            </attribute>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="KTextEdit">
+                                    <property name="name">
+                                        <cstring>kcfg_sortReconcileView</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="TransactionSortOption">
+                                    <property name="name">
+                                        <cstring>m_sortReconcileView</cstring>
+                                    </property>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>spacer4</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>16</width>
+                                            <height>21</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                            </hbox>
+                        </widget>
+                    </widget>
+                    <widget class="KActiveLabel">
+                        <property name="name">
+                            <cstring>kActiveLabel2</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Use the &lt;i&gt;left&lt;/i&gt; and &lt;i&gt;right&lt;/i&gt; buttons to add and remove sort options. Use the &lt;i&gt;up&lt;/i&gt; and &lt;i&gt;down&lt;/i&gt; buttons to modify the sort order. Double-Click a selected entry to toggle the sort order between &lt;i&gt;ascending&lt;/i&gt; and &lt;i&gt;descending&lt;/i&gt;.</string>
+                        </property>
+                    </widget>
                 </vbox>
             </widget>
         </widget>

@@ -20,18 +20,45 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <ktextedit.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "ksettingsregister.h"
+#include <kmymoney/transactionsortoption.h>
 
 KSettingsRegister::KSettingsRegister(QWidget* parent, const char* name) :
   KSettingsRegisterDecl(parent, name)
 {
+  kcfg_sortNormalView->hide();
+  kcfg_sortReconcileView->hide();
+
+  // setup connections, so that the sort optios get loaded once the edit fields are filled
+  connect(kcfg_sortNormalView, SIGNAL(textChanged()), this, SLOT(slotLoadNormal()));
+  connect(kcfg_sortReconcileView, SIGNAL(textChanged()), this, SLOT(slotLoadReconcile()));
+
+  // setup connections, so that changes by the user are forwarded to the (hidden) edit fields
+  connect(m_sortNormalView, SIGNAL(settingsChanged(const QString&)), kcfg_sortNormalView, SLOT(setText(const QString&)));
+  connect(m_sortReconcileView, SIGNAL(settingsChanged(const QString&)), kcfg_sortReconcileView, SLOT(setText(const QString&)));
 }
 
 KSettingsRegister::~KSettingsRegister()
 {
+}
+
+void KSettingsRegister::slotLoadNormal(void)
+{
+  // only need this once
+  disconnect(kcfg_sortNormalView, SIGNAL(textChanged()), this, SLOT(slotLoadNormal()));
+  m_sortNormalView->setSettings(kcfg_sortNormalView->text());
+}
+
+void KSettingsRegister::slotLoadReconcile(void)
+{
+  // only need this once
+  disconnect(kcfg_sortReconcileView, SIGNAL(textChanged()), this, SLOT(slotLoadReconcile()));
+  m_sortReconcileView->setSettings(kcfg_sortReconcileView->text());
 }
 
 #include "ksettingsregister.moc"
