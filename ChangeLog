@@ -4,6 +4,7 @@
   * Reduced margin in investments view
   * Removed account button in ledger view
   * Added transaction report to account menu
+  * Fixed a couple register display problems
 
 2006-10-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added new ledger logic

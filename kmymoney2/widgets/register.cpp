@@ -21,6 +21,7 @@
 #include <qstring.h>
 #include <qtimer.h>
 #include <qapplication.h>
+#include <qeventloop.h>
 #include <qtooltip.h>
 // FIXME remove tabbar
 // #include <qtabbar.h>
@@ -954,7 +955,17 @@ void Register::repaintItems(RegisterItem* first, RegisterItem* last)
            rowPos(last->startRow()+last->numRowsRegister()-1) - rowPos(first->startRow()) + rowHeight(last->startRow()+last->numRowsRegister()-1));
 
   QRect r(contentsToViewport(QPoint (cg.x() - 2, cg.y() - 2 )), QSize(cg.width() + 4, cg.height() + 4 ));
+
+  QRect tmp = m_lastRepaintRect | r;
+  if(abs(tmp.height()) > 3000) {
+    // make sure that the previously triggered repaint has been done before we
+    // trigger the next. Not having this used to cause some trouble when changing
+    // the focus within a 2000 item ledger from the last to the first item.
+    QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 10);
+  }
+  m_lastRepaintRect = r;
   QApplication::postEvent( viewport(), new QPaintEvent( r, FALSE ) );
+
 }
 
 void Register::clearSelection(void)
@@ -1270,9 +1281,13 @@ QWidget* Register::cellWidget(int row, int col) const
     return 0;
 
   if(row > numRows() - 1 || col > numCols() - 1) {
-    qWarning("Register::cellWidget(%d,%d) out of bounds", row, col);
+    if(numRows() && numCols())
+      qWarning("Register::cellWidget(%d,%d) out of bounds (%d,%d)", row, col, numRows(), numCols());
     return 0;
   }
+
+  if(!m_cellWidgets.count())
+    return 0;
 
   QWidget* w = 0;
   QPair<int, int> idx = qMakePair(row, col);

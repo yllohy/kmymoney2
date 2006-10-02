@@ -349,6 +349,7 @@ private:
   QValueList<TransactionSortField> m_sortOrder;
   QMap<QPair<int, int>, QWidget*> m_cellWidgets;
   RegisterToolTip*             m_tooltip;
+  QRect                        m_lastRepaintRect;
 };
 
 } // namespace

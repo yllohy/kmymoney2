@@ -65,6 +65,7 @@ public:
   QCString             m_reconciliationAccount;
   MyMoneyMoney         m_endingBalance;
   int                  m_precision;
+  bool                 m_inLoading;
 };
 
 MousePressFilter::MousePressFilter(QWidget* parent, const char* name) :
@@ -120,7 +121,8 @@ bool MousePressFilter::eventFilter(QObject* o, QEvent* e)
 
 
 KGlobalLedgerViewPrivate::KGlobalLedgerViewPrivate() :
-  m_mousePressFilter(0)
+  m_mousePressFilter(0),
+  m_inLoading(false)
 {
 }
 
@@ -335,12 +337,15 @@ KGlobalLedgerView::~KGlobalLedgerView()
 
 void KGlobalLedgerView::slotLoadView(void)
 {
-  m_needReload = true;
-  if(isVisible()) {
-    if(!m_inEditMode) {
-      loadView();
-      m_needReload = false;
-      m_newAccountLoaded = false;
+  if(!d->m_inLoading) {
+    m_needReload = true;
+    if(isVisible()) {
+      if(!m_inEditMode) {
+        d->m_inLoading = true;
+        loadView();
+        m_needReload = false;
+        m_newAccountLoaded = false;
+      }
     }
   }
 }
@@ -613,6 +618,7 @@ void KGlobalLedgerView::slotUpdateViewPos(void)
     m_register->setContentsPos(d->m_startPoint.x(), d->m_startPoint.y());
     m_register->repaintContents();
   }
+  d->m_inLoading = false;
 }
 
 void KGlobalLedgerView::addGroupMarkers(void)
@@ -1253,6 +1259,7 @@ void KGlobalLedgerView::show(void)
 {
   if(m_needReload) {
     if(!m_inEditMode) {
+      d->m_inLoading = true;
       loadView();
       m_needReload = false;
       m_newAccountLoaded = false;

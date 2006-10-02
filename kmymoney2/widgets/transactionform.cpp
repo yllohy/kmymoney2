@@ -201,22 +201,24 @@ void TransactionForm::resize(int col)
 
   // resize the register
   int w = visibleWidth();
+  int nc = numCols();
 
   // check which space we need
-  if(columnWidth(LabelColumn1))
+  if(nc >= LabelColumn1 && columnWidth(LabelColumn1))
     adjustColumn(LabelColumn1);
-  if(columnWidth(LabelColumn2))
+  if(nc >= LabelColumn2 && columnWidth(LabelColumn2))
     adjustColumn(LabelColumn2);
-  if(columnWidth(ValueColumn2))
+  if(nc >= ValueColumn2 && columnWidth(ValueColumn2))
     adjustColumn(ValueColumn2);
 
-  for(int i = 0; i < numCols(); ++i) {
+  for(int i = 0; i < nc; ++i) {
     if(i == col)
       continue;
 
     w -= columnWidth(i);
   }
-  setColumnWidth(col, w);
+  if(col < nc && w >= 0)
+    setColumnWidth(col, w);
 
   setUpdatesEnabled(true);
   repaintContents(false);
@@ -263,7 +265,9 @@ void TransactionForm::adjustColumn(Column col)
       w = QMAX(w, fontMetrics.width(txt)+10);
     }
   }
-  setColumnWidth( col, w );
+
+  if(col < numCols())
+    setColumnWidth( col, w );
 }
 
 void TransactionForm::arrangeEditWidgets(QMap<QString, QWidget*>& editWidgets, KMyMoneyRegister::Transaction* t)

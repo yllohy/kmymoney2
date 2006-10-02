@@ -769,14 +769,15 @@ bool KMyMoneyView::initializeStorage() {
   MyMoneyFile::instance()->suspendNotify(false);
   ::timetrace("done notifications back on");
 
+  ::timetrace("file open");
+  m_fileOpen = true;
+  emit kmmFilePlugin (postOpen);
+
   // if we currently see a different page, then select the right one
   if(page != activePageIndex()) {
     showPage(page);
   }
 
-  ::timetrace("file open");
-  m_fileOpen = true;
-  emit kmmFilePlugin (postOpen);
   return true;
 }
 
