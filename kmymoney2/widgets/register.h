@@ -181,7 +181,7 @@ public:
     *
     * @retval QValueList<RegisterItem*>
     */
-  QValueList<RegisterItem*> Register::selectedItems(void) const;
+  QValueList<RegisterItem*> selectedItems(void) const;
 
   void selectedTransactions(QValueList<SelectedTransaction>& list) const;
 

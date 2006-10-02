@@ -220,7 +220,7 @@ public:
     *
     * @return pointer to newly created object
     */
-  QListViewItem* KMyMoneySelector::newTopItem(const QString& name, const QString& key, const QCString& id);
+  QListViewItem* newTopItem(const QString& name, const QString& key, const QCString& id);
 
   /**
     * This method checks if a given @a item matches the given regular expression @a exp.
