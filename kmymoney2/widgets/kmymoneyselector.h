@@ -163,11 +163,11 @@ public:
     * Protect an entry from selection. Protection is controlled by
     * the parameter @p protect.
     *
-    * @param itemId item's id of the entry to modify the protection for
+    * @param itemId id of item for which to modify the protection
     * @param protect if true, the entry specified by @p accId cannot be
     *                selected. If false, it can be selected. Defaults to @p true.
     */
-  void protectItem(const QCString& accId, const bool protect = true);
+  void protectItem(const QCString& itemId, const bool protect = true);
 
   /**
     * This method modifies the width of the widget to match its optimal size
@@ -201,6 +201,7 @@ public:
     *
     * @param parent pointer to parent item
     * @param name the displayed name
+    * @param key String to be used for completion. If empty defaults to @a name
     * @param id the id used to identify the objects
     *
     * @return pointer to newly created object
@@ -216,6 +217,7 @@ public:
     * @note The new item will be the first one in the selection
     *
     * @param name the displayed name
+    * @param key String to be used for completion. If empty defaults to @a name
     * @param id the id used to identify the objects
     *
     * @return pointer to newly created object
@@ -293,6 +295,7 @@ protected:
   /**
     * Helper method for selectedItems() to traverse the tree.
     *
+    * @param list list of selected ids
     * @param item pointer to item to start with
     */
   void selectedItems(QCStringList& list, QListViewItem* item) const;
@@ -308,6 +311,7 @@ protected:
     * This is a helper method for selectAllItems().
     *
     * @param item pointer to item to start with
+    * @param state selection state (@a true = selected, @a false = not selected)
     */
   void selectAllSubItems(QListViewItem* item, const bool state);
 
@@ -316,7 +320,7 @@ protected:
     *
     * @param item pointer to item to start with
     * @param itemList list of ids to be selected
-    * @param state selection state
+    * @param state selection state (@a true = selected, @a false = not selected)
     */
   void selectSubItems(QListViewItem* item, const QCStringList& itemList, const bool state);
 

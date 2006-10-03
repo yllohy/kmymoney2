@@ -239,9 +239,12 @@ protected:
   MyMoneyMoney removeVatSplit(void);
 
   /**
-    * This method add a VAT split to transaction @a tr if necessary.
+    * This method adds a VAT split to transaction @a tr if necessary.
     *
     * @param tr transaction that the split should be added to
+    * @param amount Amount to be used for the calculation. Depending upon the
+    *               setting of the resp. category, this value is treated as
+    *               either gross or net value.
     * @retval false VAT split has not been added
     * @retval true VAT split has been added
     */

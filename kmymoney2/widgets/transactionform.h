@@ -40,8 +40,6 @@
 #include "../kmymoneysettings.h"
 
 class MyMoneyObjectContainer;
-// FIXME remove tabbar
-// class QTabBar;
 
 namespace KMyMoneyTransactionForm {
 
@@ -60,10 +58,6 @@ typedef enum {
 class TransactionForm : public TransactionEditorContainer
 {
   Q_OBJECT
-
-  // friend class QHeader;
-  // friend class QTableHeader;
-
 public:
   TransactionForm(QWidget *parent = 0, const char *name = 0);
   virtual ~TransactionForm() {}
@@ -72,20 +66,6 @@ public:
     * Override the QTable member function to avoid display of focus
     */
   void paintFocus(QPainter* /*p*/, const QRect& /*cr*/ ) {}
-
-// FIXME remove tabbar
-  /**
-    * This method returns a pointer to the tab bar above the transaction form.
-    * If the tab bar does not exist, it will be created
-    *
-    * @param parent pointer to the parent widget. This must be different from 0
-    * for the very first call of this method. Subsequent calls can leave it 0,
-    * because once the tab bar is created, this value of this parameter is
-    * not used anymore.
-    *
-    * @return pointer to tab bar
-    */
-  // QTabBar* tabBar(QWidget* parent = 0);
 
   QSize tableSize(void) const;
   QSize sizeHint(void) const;
@@ -99,9 +79,6 @@ public:
   void arrangeEditWidgets(QMap<QString, QWidget*>& editWidgets, KMyMoneyRegister::Transaction* t);
   void removeEditWidgets(void);
   void tabOrder(QWidgetList& tabOrderWidgets, KMyMoneyRegister::Transaction* t) const;
-  // FIXME remove tabbar
-  // int action(QMap<QString, QWidget*>& editWidgets) const;
-  // void setProtectedAction(QMap<QString, QWidget*>& editWidgets, ProtectedAction action);
 
   /**
     * reimplemented to prevent normal cell selection behavior
@@ -147,8 +124,6 @@ protected slots:
 
 
 protected:
-// FIXME remove tabbar
-  // QTabBar*                             m_tabBar;
   KMyMoneyRegister::Transaction*       m_transaction;
   int                                  m_rowHeight;
   QColorGroup                          m_cellColorGroup;

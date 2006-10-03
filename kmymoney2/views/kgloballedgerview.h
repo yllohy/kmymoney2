@@ -185,6 +185,7 @@ public:
     *
     * @param accountId id of account for which reconciliation mode is activated.
     *                  Defaults is QCString().
+    * @param endingBalance The calculated ending balance for the statement
     */
   void setReconciliationAccount(const QCString& accountId = QCString(), const MyMoneyMoney& endingBalance = MyMoneyMoney());
 
