@@ -1,5 +1,7 @@
 2006-10-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed documentation problems reported by doxygen
+  * Changed the mark for erroneous transactions to be a white
+    exclamation mark inside a circle (default color is red)
 
 2006-10-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed extra qualifiers in method definitions

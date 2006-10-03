@@ -94,6 +94,8 @@ void Transaction::setFocus(bool focus, bool updateLens)
 
 void Transaction::markAsErronous(QPainter* painter, int row, int col, const QRect& r)
 {
+#if 0
+  // the code for the old corner
   int h = m_parent->rowHeightHint() / 3;
   painter->save();
   QPointArray a(3);
@@ -103,6 +105,22 @@ void Transaction::markAsErronous(QPainter* painter, int row, int col, const QRec
   painter->setPen(Qt::NoPen);
   painter->setBrush(QBrush(KMyMoneySettings::listErronousTransactionColor(), Qt::SolidPattern));
   painter->drawPolygon(a);
+  painter->restore();
+#endif
+
+  const int m = 4;  // margin
+  int h = m_parent->rowHeightHint() - (2*m);
+  QRect cr(QPoint(r.topRight().x() - h - m, m), QSize(h, h));
+  painter->save();
+  painter->setPen(Qt::NoPen);
+  painter->setBrush(QBrush(KMyMoneySettings::listErronousTransactionColor(), Qt::SolidPattern));
+  painter->drawEllipse(cr);
+  painter->setBrush(QBrush(QColor("white"), Qt::SolidPattern));
+  int eh = h/10;
+  QRect er(QPoint(r.topRight().x() - h/2 - eh/2 - m, m + eh), QSize(eh, 5*eh));
+  painter->drawRect(er);
+  er = QRect(QPoint(r.topRight().x() - h/2 - eh/2 - m, m + (7*eh)), QSize(eh, eh));
+  painter->drawRect(er);
   painter->restore();
 }
 
@@ -868,32 +886,19 @@ bool StdTransaction::maybeTip(const QPoint& cpos, int row, int col, QRect& r, QS
   if(!m_erronous)
     return false;
 
-  int h = m_parent->rowHeightHint() / 3;
+  int h = m_parent->rowHeightHint();
   r = m_parent->cellGeometry(m_startRow + row, col);
   // qDebug("r is %d,%d,%d,%d", r.x(), r.y(), r.width(), r.height());
   r.setBottomLeft(QPoint(r.x() + (r.width() - h), r.y() + h));
   // qDebug("r is %d,%d,%d,%d", r.x(), r.y(), r.width(), r.height());
   // qDebug("p is in r = %d", r.contains(cpos));
   if(r.contains(cpos)) {
-    qDebug("Must show tip");
     if(m_transaction.splits().count() < 2) {
-      msg = i18n("<qt>Transaction is missing a category assignment.<qt>");
+      msg = QString("<qt>%1</qt>").arg(i18n("Transaction is missing a category assignment."));
     } else {
-      msg = i18n("<qt>The transaction has a missing assignment of <b>%1</b>.</qt>").arg(m_transaction.splitSum().abs().formatMoney());
+      msg = QString("<qt>%1</qt>").arg(i18n("The transaction has a missing assignment of <b>%1</b>.").arg(m_transaction.splitSum().abs().formatMoney()));
     }
     return true;
   }
-  qDebug("Don't show tip");
   return false;
-#if 0
-  painter->save();
-  QPointArray a(3);
-  a.setPoint(0, r.topRight().x()-h, 0);
-  a.setPoint(1, r.topRight().x(), 0);
-  a.setPoint(2, r.topRight().x(), h);
-  painter->setPen(Qt::NoPen);
-  painter->setBrush(QBrush(KMyMoneySettings::listErronousTransactionColor(), Qt::SolidPattern));
-  painter->drawPolygon(a);
-  painter->restore();
-#endif
 }
