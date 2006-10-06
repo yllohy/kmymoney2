@@ -1,3 +1,6 @@
+2006-10-05 Robert Wadley <robntina@users.sourceforge.net>
+  * updated titlelabel_background.png to reflect 0.9 status
+
 2006-10-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed documentation problems reported by doxygen
   * Changed the mark for erroneous transactions to be a white
