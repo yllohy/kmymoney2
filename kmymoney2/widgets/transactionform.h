@@ -26,6 +26,7 @@
 #include <qvaluevector.h>
 #include <qpalette.h>
 #include <qwidgetlist.h>
+#include <qtabbar.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -42,6 +43,33 @@
 class MyMoneyObjectContainer;
 
 namespace KMyMoneyTransactionForm {
+
+/**
+  * @author Thomas Baumgart
+  */
+class TabBar : public QTabBar
+{
+  Q_OBJECT
+public:
+  typedef enum {
+    SignalNormal = 0,      // standard signal behaviour
+    SignalNever,           // don't signal selection of a tab at all
+    SignalAlways           // always signal selection of a tab
+  } SignalEmissionE;
+
+  TabBar(QWidget* parent = 0, const char* name = 0);
+  virtual ~TabBar() {}
+
+  SignalEmissionE setSignalEmission(SignalEmissionE type);
+
+  void copyTabs(const QTabBar* otabbar);
+
+public slots:
+  virtual void setCurrentTab( QTab * );
+
+private:
+  SignalEmissionE    m_signalType;
+};
 
 typedef enum {
   LabelColumn1 = 0,
@@ -77,13 +105,17 @@ public:
   void resize(int col);
 
   void arrangeEditWidgets(QMap<QString, QWidget*>& editWidgets, KMyMoneyRegister::Transaction* t);
-  void removeEditWidgets(void);
+  void removeEditWidgets(QMap<QString, QWidget*>& editWidgets);
   void tabOrder(QWidgetList& tabOrderWidgets, KMyMoneyRegister::Transaction* t) const;
 
   /**
     * reimplemented to prevent normal cell selection behavior
     */
   void setCurrentCell(int, int) {}
+
+  TabBar* tabBar(QWidget* parent = 0);
+
+  void setupForm(const MyMoneyAccount& acc);
 
 protected:
   /**
@@ -122,11 +154,23 @@ public slots:
 protected slots:
   void resize(void);
 
+  /**
+    * Helper method to convert @a int into @a KMyMoneyRegister::Action
+    */
+  void slotActionSelected(int);
+
+signals:
+  /**
+    * This signal is emitted when a user selects a tab. @a id
+    * contains the tab's id (e.g. KMyMoneyRegister::ActionDeposit)
+    */
+  void newTransaction(KMyMoneyRegister::Action id);
 
 protected:
   KMyMoneyRegister::Transaction*       m_transaction;
   int                                  m_rowHeight;
   QColorGroup                          m_cellColorGroup;
+  TabBar*                              m_tabBar;
 };
 
 

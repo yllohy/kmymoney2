@@ -34,6 +34,10 @@
 class MyMoneyObjectContainer;
 class QTable;
 
+namespace KMyMoneyTransactionForm {
+  class TransactionForm;
+}; // namespace
+
 namespace KMyMoneyRegister {
 
 typedef enum {
@@ -92,8 +96,9 @@ public:
   virtual bool formCellText(QString& /* txt */, int& /* align */, int /* row */, int /* col */) { return false; }
   virtual int formRowHeight(int row);
 
-  virtual void setupForm(QTable* form);
+  virtual void setupForm(KMyMoneyTransactionForm::TransactionForm* form);
   virtual void setupPalette(QMap<QString, QWidget*>& editWidgets);
+  virtual void loadTab(KMyMoneyTransactionForm::TransactionForm* form) = 0;
 
 // FIXME remove tabbar
 #if 0
@@ -143,7 +148,8 @@ public:
 
   bool formCellText(QString& txt, int& align, int row, int col);
   int formRowHeight(int row);
-  void setupForm(QTable* form);
+  void setupForm(KMyMoneyTransactionForm::TransactionForm* form);
+  void loadTab(KMyMoneyTransactionForm::TransactionForm* form);
 
   int numColsForm(void) const { return 4; }
 

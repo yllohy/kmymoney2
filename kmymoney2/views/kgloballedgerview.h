@@ -290,6 +290,7 @@ protected:
 protected slots:
   void slotLeaveEditMode(const QValueList<KMyMoneyRegister::SelectedTransaction>& list);
   void slotNewTransaction(void);
+  void slotNewTransaction(KMyMoneyRegister::Action);
 
   /**
     * Sets the contentsPos of the register to d->m_startPoint or makes

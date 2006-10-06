@@ -221,7 +221,10 @@ void KMyMoneyCombo::focusOutEvent(QFocusEvent* e)
 
   // force update of hint and id if there is no text in the widget
   if(editable() && currentText().isEmpty()) {
+    QCString id = m_id;
     m_id = QCString();
+    if(!id.isEmpty())
+      emit itemSelected(m_id);
     repaint();
   }
 }

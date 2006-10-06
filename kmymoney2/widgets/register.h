@@ -250,7 +250,7 @@ public:
   void ensureItemVisible(RegisterItem* item);
 
   void arrangeEditWidgets(QMap<QString, QWidget*>& editWidgets, Transaction* t);
-  void removeEditWidgets(void);
+  void removeEditWidgets(QMap<QString, QWidget*>& editWidgets);
   void tabOrder(QWidgetList& tabOrderWidgets, KMyMoneyRegister::Transaction* t) const;
 
   int rowHeightHint(void) const;

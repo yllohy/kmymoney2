@@ -1377,12 +1377,20 @@ void Register::setProtectedAction(QMap<QString, QWidget*>& editWidgets, Protecte
 }
 #endif
 
-void Register::removeEditWidgets(void)
+void Register::removeEditWidgets(QMap<QString, QWidget*>& editWidgets)
 {
+  // remove pointers from map
+  QMap<QString, QWidget*>::iterator it;
+  for(it = editWidgets.begin(); it != editWidgets.end(); ) {
+    if((*it)->parentWidget() == this) {
+      editWidgets.remove(it);
+      it = editWidgets.begin();
+    } else
+      ++it;
+  }
+
+  // now delete the widgets
   KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(focusItem());
-
-  // int height = rowHeightHint();
-
   for(int row = t->startRow(); row < t->startRow() + t->numRowsRegister(); ++row) {
     for(int col = 0; col < numCols(); ++col) {
       if(cellWidget(row, col))
@@ -1391,7 +1399,6 @@ void Register::removeEditWidgets(void)
     // make sure to reduce the possibly size to what it was before editing started
     setRowHeight(row, t->rowHeightHint());
   }
-  // updateContents();
 }
 
 void Register::slotToggleErronousTransactions(void)

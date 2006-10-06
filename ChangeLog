@@ -1,3 +1,7 @@
+2006-10-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Brought back the tabbar for the form based input
+  * Fixed number field appearance in transaction form
+
 2006-10-05 Robert Wadley <robntina@users.sourceforge.net>
   * updated titlelabel_background.png to reflect 0.9 status
 

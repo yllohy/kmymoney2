@@ -23,8 +23,7 @@
 #include <qtimer.h>
 #include <qapplication.h>
 #include <qlayout.h>
-// FIXME remove tabbar
-// #include <qtabbar.h>
+#include <qtabbar.h>
 #include <qpalette.h>
 
 // ----------------------------------------------------------------------------
@@ -34,7 +33,6 @@
 #include <kglobal.h>
 #include <kdebug.h>
 #include <kcombobox.h>
-// #include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -50,10 +48,53 @@
 
 using namespace KMyMoneyTransactionForm;
 
+TabBar::TabBar(QWidget* parent, const char* name) :
+  QTabBar(parent, name),
+  m_signalType(SignalNormal)
+{
+}
+
+TabBar::SignalEmissionE TabBar::setSignalEmission(TabBar::SignalEmissionE type)
+{
+  TabBar::SignalEmissionE _type = m_signalType;
+  m_signalType = type;
+  return _type;
+}
+
+void TabBar::setCurrentTab( QTab* tab )
+{
+  if(m_signalType != SignalNormal)
+    blockSignals(true);
+
+  QTabBar::setCurrentTab(tab);
+
+  if(m_signalType != SignalNormal)
+    blockSignals(false);
+
+  if(m_signalType == SignalAlways)
+    emit selected(tab->identifier());
+}
+
+void TabBar::copyTabs(const QTabBar* otabbar)
+{
+  // remove all existing tabs
+  while(count()) {
+    removeTab(tabAt(0));
+  }
+  // now create new ones. copy text, icon and identifier
+  for(int i=0; i < otabbar->count(); ++i) {
+    QTab* otab = otabbar->tabAt(i);
+    QTab* ntab = new QTab(otab->text());
+    addTab(ntab);
+    ntab->setIdentifier(otab->identifier());
+    ntab->setEnabled(otab->isEnabled());
+  }
+  QTabBar::setCurrentTab(otabbar->currentTab());
+}
+
 TransactionForm::TransactionForm(QWidget *parent, const char *name) :
   TransactionEditorContainer(parent, name),
-// FIXME remove tabbar
-  // m_tabBar(0),
+  m_tabBar(0),
   m_transaction(0)
 {
   setBackgroundOrigin(QTable::WindowOrigin);
@@ -77,11 +118,8 @@ TransactionForm::TransactionForm(QWidget *parent, const char *name) :
   p.setDisabled(cg);
   setPalette(p);
 
-  // determine the height of the objects in the table
   kMyMoneyDateInput dateInput(0, "editDate");
-  // FIXME make sure the category has the split button activated
-  //kMyMoneyCategory category(0, "category");
-  KComboBox category(0, "category");
+  KMyMoneyCategory category(0, "category", true);
 
   // extract the maximal sizeHint height
   m_rowHeight = QMAX(dateInput.sizeHint().height(), category.sizeHint().height());
@@ -142,53 +180,94 @@ void TransactionForm::paintCell(QPainter* painter, int row, int col, const QRect
   }
 }
 
-// FIXME remove tabbar
-#if 0
-QTabBar* TransactionForm::tabBar(QWidget* parent)
+TabBar* TransactionForm::tabBar(QWidget* parent)
 {
-  if(!m_tabBar) {
-    m_tabBar = new QTabBar( parent );
+  if(!m_tabBar && parent) {
+    // determine the height of the objects in the table
+    // create the tab bar
+    m_tabBar = new TabBar( parent );
+    m_tabBar->setSignalEmission(TabBar::SignalAlways);
     m_tabBar->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, m_tabBar->sizePolicy().hasHeightForWidth() ) );
-
-    QTab* t = new QTab(i18n("&Check"));
-    t->setIdentifier(KMyMoneyRegister::ActionCheck);
-    m_tabBar->addTab(t);
-    t = new QTab(i18n("&Deposit"));
-    t->setIdentifier(KMyMoneyRegister::ActionDeposit);
-    m_tabBar->addTab(t);
-    t = new QTab(i18n("&Transfer"));
-    t->setIdentifier(KMyMoneyRegister::ActionTransfer);
-    m_tabBar->addTab(t);
-    t = new QTab(i18n("&Witdrawal"));
-    t->setIdentifier(KMyMoneyRegister::ActionWithdrawal);
-    m_tabBar->addTab(t);
-    t = new QTab(i18n("AT&M"));
-    t->setIdentifier(KMyMoneyRegister::ActionAtm);
-    m_tabBar->addTab(t);
-
+    connect(m_tabBar, SIGNAL(selected(int)), this, SLOT(slotActionSelected(int)));
   }
   return m_tabBar;
 }
 
-int TransactionForm::action(QMap<QString, QWidget*>& /* editWidgets */) const
+void TransactionForm::slotActionSelected(int id)
 {
-  return m_tabBar->currentTab();
+  emit newTransaction(static_cast<KMyMoneyRegister::Action>(id));
 }
 
-void TransactionForm::setProtectedAction(QMap<QString, QWidget*>& /* editWidgets */, ProtectedAction action)
+void TransactionForm::setupForm(const MyMoneyAccount& acc)
 {
-  for(int i = 0; i < KMyMoneyRegister::MaxAction; ++i) {
-    m_tabBar->tab(i)->setEnabled(true);
-    if(action == ProtectAll
-    || (action == ProtectTransfer && i == KMyMoneyRegister::ActionTransfer)
-    || (action == ProtectNonTransfer && i != KMyMoneyRegister::ActionTransfer))
-      m_tabBar->tab(i)->setEnabled(false);
+  // remove all tabs from the tabbar
+  QTab* tab;
+  for(tab = m_tabBar->tabAt(0); tab; tab = m_tabBar->tabAt(0)) {
+    m_tabBar->removeTab(tab);
   }
 
-  // force repaint, unfortunately, setEnabled() does not do that for us
-  m_tabBar->update();
+  m_tabBar->show();
+
+  // important: one needs to add the new tabs first and then
+  // change the identifier. Otherwise, addTab() will assign
+  // a different value
+  switch(acc.accountType()) {
+    default:
+      tab = new QTab(i18n("&Deposit"));
+      m_tabBar->addTab(tab);
+      tab->setIdentifier(KMyMoneyRegister::ActionDeposit);
+      tab = new QTab(i18n("&Transfer"));
+      m_tabBar->addTab(tab);
+      tab->setIdentifier(KMyMoneyRegister::ActionTransfer);
+      tab = new QTab(i18n("&Witdrawal"));
+      m_tabBar->addTab(tab);
+      tab->setIdentifier(KMyMoneyRegister::ActionWithdrawal);
+      break;
+
+    case MyMoneyAccount::CreditCard:
+      tab = new QTab(i18n("&Payment"));
+      m_tabBar->addTab(tab);
+      tab->setIdentifier(KMyMoneyRegister::ActionDeposit);
+      tab = new QTab(i18n("&Transfer"));
+      m_tabBar->addTab(tab);
+      tab->setIdentifier(KMyMoneyRegister::ActionTransfer);
+      tab = new QTab(i18n("&Charge"));
+      m_tabBar->addTab(tab);
+      tab->setIdentifier(KMyMoneyRegister::ActionWithdrawal);
+      break;
+
+    case MyMoneyAccount::Liability:
+    case MyMoneyAccount::Loan:
+      tab = new QTab(i18n("&Decrease"));
+      m_tabBar->addTab(tab);
+      tab->setIdentifier(KMyMoneyRegister::ActionDeposit);
+      tab = new QTab(i18n("&Transfer"));
+      m_tabBar->addTab(tab);
+      tab->setIdentifier(KMyMoneyRegister::ActionTransfer);
+      tab = new QTab(i18n("&Increase"));
+      m_tabBar->addTab(tab);
+      tab->setIdentifier(KMyMoneyRegister::ActionWithdrawal);
+      break;
+
+    case MyMoneyAccount::Asset:
+    case MyMoneyAccount::AssetLoan:
+      tab = new QTab(i18n("&Increase"));
+      m_tabBar->addTab(tab);
+      tab->setIdentifier(KMyMoneyRegister::ActionDeposit);
+      tab = new QTab(i18n("&Transfer"));
+      m_tabBar->addTab(tab);
+      tab->setIdentifier(KMyMoneyRegister::ActionTransfer);
+      tab = new QTab(i18n("&Decrease"));
+      m_tabBar->addTab(tab);
+      tab->setIdentifier(KMyMoneyRegister::ActionWithdrawal);
+      break;
+
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Expense:
+      m_tabBar->hide();
+      break;
+  }
 }
-#endif
 
 void TransactionForm::resize(void)
 {
@@ -279,12 +358,19 @@ void TransactionForm::arrangeEditWidgets(QMap<QString, QWidget*>& editWidgets, K
 void TransactionForm::tabOrder(QWidgetList& tabOrderWidgets, KMyMoneyRegister::Transaction* t) const
 {
   t->tabOrderInForm(tabOrderWidgets);
-  // FIXME remove tabbar
-  // tabOrderWidgets.append(m_tabBar);
 }
 
-void TransactionForm::removeEditWidgets(void)
+void TransactionForm::removeEditWidgets(QMap<QString, QWidget*>& editWidgets)
 {
+  QMap<QString, QWidget*>::iterator it;
+  for(it = editWidgets.begin(); it != editWidgets.end(); ) {
+    if((*it)->parentWidget() == this) {
+      editWidgets.remove(it);
+      it = editWidgets.begin();
+    } else
+      ++it;
+  }
+
   for(int row = 0; row < numRows(); ++row) {
     for(int col = 0; col < numCols(); ++col) {
       if(cellWidget(row, col))
@@ -292,6 +378,13 @@ void TransactionForm::removeEditWidgets(void)
     }
   }
   resize(ValueColumn1);
+
+  // delete all remaining edit widgets   (e.g. tabbar)
+  for(it = editWidgets.begin(); it != editWidgets.end(); ) {
+    delete (*it); // ->deleteLater();
+    editWidgets.remove(it);
+    it = editWidgets.begin();
+  }
 }
 
 #include "transactionform.moc"

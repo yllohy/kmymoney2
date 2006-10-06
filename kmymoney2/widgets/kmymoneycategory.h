@@ -93,6 +93,8 @@ public:
     */
   KMyMoneyCategory(QWidget* parent = 0, const char* name = 0, bool splitButton = false);
 
+  virtual ~KMyMoneyCategory();
+
   /**
     * This member returns a pointer to the completion object.
     *

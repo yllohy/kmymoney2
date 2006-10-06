@@ -48,7 +48,7 @@ public:
   TransactionEditorContainer(QWidget* parent, const char* name) : QTable(parent, name) {}
 
   virtual void arrangeEditWidgets(QMap<QString, QWidget*>& editWidgets, KMyMoneyRegister::Transaction* t) = 0;
-  virtual void removeEditWidgets(void) = 0;
+  virtual void removeEditWidgets(QMap<QString, QWidget*>& editWidgets) = 0;
   virtual void tabOrder(QWidgetList& tabOrderWidgets, KMyMoneyRegister::Transaction* t) const = 0;
   // FIXME remove tabbar
   // virtual int action(QMap<QString, QWidget*>& editWidgets) const = 0;

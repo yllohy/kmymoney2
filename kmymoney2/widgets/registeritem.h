@@ -44,6 +44,7 @@ typedef enum {
 } CashFlowDirection;
 
 typedef enum {
+  ActionNone = -1,
   ActionCheck = 0,
   ActionDeposit,
   ActionTransfer,

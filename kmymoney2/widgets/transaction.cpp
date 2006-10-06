@@ -243,7 +243,7 @@ int Transaction::formRowHeight(int /*row*/)
   return 1;
 }
 
-void Transaction::setupForm(QTable* form)
+void Transaction::setupForm(TransactionForm* form)
 {
   m_form = form;
   form->setUpdatesEnabled(false);
@@ -266,6 +266,8 @@ void Transaction::setupForm(QTable* form)
   form->horizontalHeader()->setUpdatesEnabled(true);
   form->verticalHeader()->setUpdatesEnabled(true);
   form->setUpdatesEnabled(true);
+
+  loadTab(form);
 }
 
 void Transaction::setupPalette(QMap<QString, QWidget*>& editWidgets)
@@ -297,7 +299,7 @@ void Transaction::arrangeWidget(QTable* tbl, int row, int col, QWidget* w) const
 bool Transaction::haveNumberField(void) const
 {
   bool rc = true;
-  switch(m_objects->account(m_split.accountId()).accountGroup()) {
+  switch(m_objects->account(m_split.accountId()).accountType()) {
     case MyMoneyAccount::Savings:
     case MyMoneyAccount::Cash:
     case MyMoneyAccount::Loan:
@@ -403,10 +405,43 @@ int StdTransaction::formRowHeight(int /*row*/)
   return m_formRowHeight;
 }
 
-void StdTransaction::setupForm(QTable* _form)
+void StdTransaction::loadTab(TransactionForm* form)
 {
-  KMyMoneyTransactionForm::TransactionForm* form = dynamic_cast<KMyMoneyTransactionForm::TransactionForm*> (_form);
+  TabBar* bar = form->tabBar();
+  bar->setSignalEmission(TabBar::SignalNever);
+  for(int i = 0; i < bar->count(); ++i) {
+    bar->setTabEnabled(bar->tabAt(i)->identifier(), true);
+  }
 
+  // if at least one split is referencing an income or
+  // expense account, we will not call it a transfer
+  QValueList<MyMoneySplit>::const_iterator it_s;
+
+  if(m_transaction.splitCount() > 0) {
+    KMyMoneyRegister::Action action;
+
+    for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
+      if((*it_s).accountId() == m_split.accountId())
+        continue;
+      MyMoneyAccount acc = m_objects->account((*it_s).accountId());
+      if(acc.accountGroup() == MyMoneyAccount::Income
+      || acc.accountGroup() == MyMoneyAccount::Expense) {
+        // otherwise, we have to determine between deposit and withdrawal
+        action = m_split.shares().isNegative() ? ActionWithdrawal : ActionDeposit;
+        break;
+      }
+    }
+    // otherwise, it's a transfer
+    if(it_s == m_transaction.splits().end())
+      action = ActionTransfer;
+
+    bar->QTabBar::setCurrentTab(action);
+  }
+  bar->setSignalEmission(TabBar::SignalAlways);
+}
+
+void StdTransaction::setupForm(TransactionForm* form)
+{
   Transaction::setupForm(form);
 
 // FIXME remove tabbar
@@ -792,6 +827,13 @@ void StdTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidgets)
       edit->setHint(QString());
     if(payee)
       payee->setHint(QString());
+  }
+
+  // drop the tabbar on top of the original
+  KMyMoneyTransactionForm::TransactionForm* form = dynamic_cast<KMyMoneyTransactionForm::TransactionForm*>(m_form);
+  TabBar* w = dynamic_cast<TabBar*>(editWidgets["tabbar"]);
+  if(w) {
+    w->reparent(form->tabBar(), QPoint(0, 0), true);
   }
 }
 

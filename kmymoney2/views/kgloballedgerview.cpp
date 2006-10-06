@@ -66,6 +66,7 @@ public:
   MyMoneyMoney         m_endingBalance;
   int                  m_precision;
   bool                 m_inLoading;
+  KMyMoneyRegister::Action m_action;
 };
 
 MousePressFilter::MousePressFilter(QWidget* parent, const char* name) :
@@ -137,6 +138,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 {
   d = new KGlobalLedgerViewPrivate;
   d->m_mousePressFilter = new MousePressFilter((QWidget*)this);
+  d->m_action = KMyMoneyRegister::ActionNone;
 
   // create the toolbar frame at the top of the view
   m_toolbarFrame = new QFrame(this);
@@ -206,8 +208,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   m_formFrame = new QFrame(this);
   QVBoxLayout* frameLayout = new QVBoxLayout(m_formFrame, 5, 0);
   m_form = new KMyMoneyTransactionForm::TransactionForm(m_formFrame);
-  // FIXME remove tabbar
-  // frameLayout->addWidget(m_form->tabBar(m_formFrame));
+  frameLayout->addWidget(m_form->tabBar(m_formFrame));
   frameLayout->addWidget(m_form);
   m_formFrame->setFrameShape( QFrame::Panel );
   m_formFrame->setFrameShadow( QFrame::Raised );
@@ -221,6 +222,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(m_register, SIGNAL(emptyItemSelected()), this, SLOT(slotNewTransaction()));
   connect(m_register, SIGNAL(aboutToSelectItem(KMyMoneyRegister::RegisterItem*)), this, SIGNAL(cancelOrEndEdit()));
   connect(d->m_mousePressFilter, SIGNAL(mousePressedOnExternalWidget()), this, SIGNAL(cancelOrEndEdit()));
+
+  connect(m_form, SIGNAL(newTransaction(KMyMoneyRegister::Action)), this, SLOT(slotNewTransaction(KMyMoneyRegister::Action)));
 
   // create object container for this view
   m_objects = new MyMoneyObjectContainer();
@@ -425,6 +428,9 @@ void KGlobalLedgerView::loadView(void)
 
   // ... setup the register columns ...
   m_register->setupRegister(m_account);
+
+  // ... setup the form ...
+  m_form->setupForm(m_account);
 
   if(m_account.id().isEmpty()) {
     // if we don't have an account we bail out
@@ -1025,10 +1031,20 @@ void KGlobalLedgerView::slotCancelEdit(void)
 #endif
 }
 
+void KGlobalLedgerView::slotNewTransaction(KMyMoneyRegister::Action id)
+{
+  if(!m_inEditMode) {
+    d->m_action = id;
+    emit newTransaction();
+  }
+}
+
 void KGlobalLedgerView::slotNewTransaction(void)
 {
-  if(!m_inEditMode)
+  if(!m_inEditMode) {
+    d->m_action = KMyMoneyRegister::ActionNone;
     emit newTransaction();
+  }
 }
 
 bool KGlobalLedgerView::selectEmptyTransaction(void)
@@ -1152,7 +1168,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
       connect(editor, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
 
       // create the widgets, place them in the parent and load them with data
-      editor->setup(m_account);
+      editor->setup(m_account, d->m_action);
 
       // setup tab order
       m_tabOrderWidgets.clear();
@@ -1169,11 +1185,14 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
       // of one of our own widgets.
       qApp->installEventFilter(d->m_mousePressFilter);
 
-      // FIXME remove tabbar
-      // connect(m_form->tabBar(), SIGNAL(selected(int)), editor, SLOT(slotUpdateAction(int)));
+      // Check if the editor has some preference on where to set the focus
+      // If not, set the focus to the first widget in the tab order
+      QWidget* focusWidget = editor->firstWidget();
+      if(!focusWidget)
+        focusWidget = m_tabOrderWidgets.first();
 
       // for some reason, this only works reliably if delayed a bit
-      QTimer::singleShot(10, m_tabOrderWidgets.first(), SLOT(setFocus()));
+      QTimer::singleShot(10, focusWidget, SLOT(setFocus()));
     }
   }
   return editor;

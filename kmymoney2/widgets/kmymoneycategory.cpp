@@ -67,6 +67,13 @@ KMyMoneyCategory::KMyMoneyCategory(QWidget* parent, const char * name, bool spli
   connect(this, SIGNAL(textChanged(const QString&)), m_completion, SLOT(slotMakeCompletion(const QString&)));
 }
 
+KMyMoneyCategory::~KMyMoneyCategory()
+{
+  // make sure to wipe out the frame, button and layout
+  if(m_frame && !m_frame->parentWidget())
+    m_frame->deleteLater();
+}
+
 KPushButton* KMyMoneyCategory::splitButton(void) const
 {
   if(!m_splitButton)

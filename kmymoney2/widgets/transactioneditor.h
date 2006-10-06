@@ -56,8 +56,9 @@ public:
     * tried to say with the first sentence above. :(  Maybe this is crap.
     *
     * @param account account that is currently shown in the calling ledget view
+    * @param action default action (defaults to ActionNone).
     */
-  void setup(const MyMoneyAccount& account = MyMoneyAccount());
+  void setup(const MyMoneyAccount& account = MyMoneyAccount(), KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
 
   virtual bool enterTransactions(void) = 0;
   void tabOrder(QWidgetList& tabOrderWidgets) const;
@@ -79,6 +80,7 @@ public:
 
   virtual bool canAssignNumber(void) const;
   virtual void assignNumber(void);
+  virtual QWidget* firstWidget(void) const = 0;
 
 public slots:
   void slotReloadEditWidgets(void);
@@ -90,7 +92,7 @@ public slots:
 
 protected:
   virtual void createEditWidgets(void) = 0;
-  virtual void loadEditWidgets(void) = 0;
+  virtual void loadEditWidgets(KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone) = 0;
   void deleteUnusedEditWidgets(void);
   QWidget* haveWidget(const QString& name) const;
 
@@ -155,6 +157,7 @@ protected:
   MyMoneySplit                                      m_split;
   QDate                                             m_lastPostDate;
   QMap<QCString, MyMoneyMoney>                      m_priceInfo;
+  KMyMoneyRegister::Action                          m_initialAction;
 };
 
 
@@ -168,6 +171,7 @@ public:
   bool enterTransactions(void);
 
   bool isComplete(void) const;
+  QWidget* firstWidget(void) const;
 
 public slots:
   void slotReloadEditWidgets(void);
@@ -181,6 +185,7 @@ protected slots:
   void slotUpdatePayee(const QCString&);
   void slotUpdateCashFlow(KMyMoneyRegister::CashFlowDirection);
   void slotCreateCategory(const QString&, QCString&);
+  void slotUpdateAction(int action);
 
 protected:
   /**
@@ -192,8 +197,11 @@ protected:
   /**
     * This method (re-)loads the widgets with the transaction information
     * contained in @a m_transaction and @a m_split.
+    *
+    * @param action preset the edit wigdets for @a action if no transaction
+    *               is present
     */
-  void loadEditWidgets(void);
+  void loadEditWidgets(KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
 
   void setupCategoryWidget(QCString&);
   void updateAmount(const MyMoneyMoney& value);
