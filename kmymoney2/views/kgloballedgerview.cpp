@@ -1168,11 +1168,9 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
       connect(editor, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
 
       // create the widgets, place them in the parent and load them with data
-      editor->setup(m_account, d->m_action);
-
       // setup tab order
       m_tabOrderWidgets.clear();
-      editor->tabOrder(m_tabOrderWidgets);
+      editor->setup(m_tabOrderWidgets, m_account, d->m_action);
 
       Q_ASSERT(!m_tabOrderWidgets.isEmpty());
 

@@ -62,13 +62,39 @@ public:
 
   SignalEmissionE setSignalEmission(SignalEmissionE type);
 
-  void copyTabs(const QTabBar* otabbar);
+  void copyTabs(const TabBar* otabbar);
+
+  void addTab(QTab* tab, int id);
+
+  void setIdentifier(QTab* tab, int newId);
+
+  QTab* tab(int id) const;
 
 public slots:
+  /**
+    * overridden for internal reasons, API not changed
+    */
+  virtual void setCurrentTab( int );
+
+  /**
+    * overridden for internal reasons, API not changed
+    */
   virtual void setCurrentTab( QTab * );
+
+  /**
+    * overridden for internal reasons, API not changed
+    */
+  virtual void show(void);
+
+protected slots:
+  void slotTabSelected(int id);
+
+signals:
+  void tabSelected(int id);
 
 private:
   SignalEmissionE    m_signalType;
+  QMap<int, int>     m_idMap;
 };
 
 typedef enum {

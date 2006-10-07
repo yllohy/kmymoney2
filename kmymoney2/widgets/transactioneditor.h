@@ -55,13 +55,15 @@ public:
     * no account so all will be shown. I have no idea anymore, what I
     * tried to say with the first sentence above. :(  Maybe this is crap.
     *
+    * @param tabOrderWidgets QWidgetList which will be filled with the pointers
+    *                        to the editWidgets in their tab order
     * @param account account that is currently shown in the calling ledget view
     * @param action default action (defaults to ActionNone).
     */
-  void setup(const MyMoneyAccount& account = MyMoneyAccount(), KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
+  void setup(QWidgetList& tabOrderWidgets, const MyMoneyAccount& account = MyMoneyAccount(), KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
 
   virtual bool enterTransactions(void) = 0;
-  void tabOrder(QWidgetList& tabOrderWidgets) const;
+  // void tabOrder(QWidgetList& tabOrderWidgets) const;
 
   /**
     * This method returns information about the completeness of the data

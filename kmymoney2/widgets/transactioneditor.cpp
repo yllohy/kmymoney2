@@ -89,26 +89,20 @@ void TransactionEditor::deleteUnusedEditWidgets(void)
   }
 }
 
-void TransactionEditor::setup(const MyMoneyAccount& account, KMyMoneyRegister::Action action)
+void TransactionEditor::setup(QWidgetList& tabOrderWidgets, const MyMoneyAccount& account, KMyMoneyRegister::Action action)
 {
   m_account = account;
   m_initialAction = action;
   createEditWidgets();
   m_regForm->arrangeEditWidgets(m_editWidgets, m_item);
+  m_regForm->tabOrder(tabOrderWidgets, m_item);
+  QWidget* w = haveWidget("tabbar");
+  if(w)
+    tabOrderWidgets.append(w);
   loadEditWidgets(action);
   deleteUnusedEditWidgets();
   slotUpdateButtonState();
 }
-
-void TransactionEditor::tabOrder(QWidgetList& tabOrderWidgets) const
-{
-  m_regForm->tabOrder(tabOrderWidgets, m_item);
-  // tab
-  QWidget* w = haveWidget("tabbar");
-  if(w)
-    tabOrderWidgets.append(w);
-}
-
 
 void TransactionEditor::slotReloadEditWidgets(void)
 {
@@ -458,7 +452,7 @@ void StdTransactionEditor::createEditWidgets(void)
     KMyMoneyTransactionForm::TabBar* tabbar = new KMyMoneyTransactionForm::TabBar;
     m_editWidgets["tabbar"] = tabbar;
     tabbar->copyTabs(form->tabBar());
-    connect(tabbar, SIGNAL(selected(int)), this, SLOT(slotUpdateAction(int)));
+    connect(tabbar, SIGNAL(tabSelected(int)), this, SLOT(slotUpdateAction(int)));
   }
 }
 
@@ -520,6 +514,7 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
   // load the payee widget
   KMyMoneyPayee* payee = dynamic_cast<KMyMoneyPayee*>(m_editWidgets["payee"]);
   payee->loadPayees(MyMoneyFile::instance()->payeeList());
+  payee->setSuppressObjectCreation(false);
 
   // load the category widget
   KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
@@ -619,6 +614,10 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
             cashflow->setDirection(KMyMoneyRegister::Payment);
         }
       }
+      TabBar* tabbar = dynamic_cast<TabBar*>(haveWidget("tabbar"));
+      if(tabbar) {
+        tabbar->setCurrentTab(action);
+      }
     }
 
   } else {
@@ -635,6 +634,10 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
       KMyMoneyCashFlowCombo* cashflow = dynamic_cast<KMyMoneyCashFlowCombo*>(w);
       cashflow->setDirection(KMyMoneyRegister::Unknown);
     }
+    if((w = haveWidget("tabbar")) != 0) {
+      w->setEnabled(false);
+    }
+
     category->completion()->setSelected(QCString());
   }
 
@@ -699,7 +702,6 @@ void StdTransactionEditor::slotUpdatePayee(const QCString& payeeId)
   // in case there is no category assigned, no value entered and no
   // memo available, we search for the last transaction of this payee
   // in the account.
-
   if(m_transaction.id().isEmpty()
   && m_splits.count() == 0
   && KMyMoneySettings::autoFillTransaction()) {
@@ -818,7 +820,7 @@ void StdTransactionEditor::slotUpdateCashFlow(KMyMoneyRegister::CashFlowDirectio
   if(categoryLabel) {
     TabBar* tabbar = dynamic_cast<TabBar*>(haveWidget("tabbar"));
     if(categoryLabel->text() != i18n("Category")) {
-      tabbar->QTabBar::setCurrentTab(KMyMoneyRegister::ActionTransfer);
+      tabbar->setCurrentTab(KMyMoneyRegister::ActionTransfer);
       if(dir == KMyMoneyRegister::Deposit) {
         categoryLabel->setText(i18n("Transfer from"));
       } else {
@@ -826,9 +828,9 @@ void StdTransactionEditor::slotUpdateCashFlow(KMyMoneyRegister::CashFlowDirectio
       }
     } else {
       if(dir == KMyMoneyRegister::Deposit)
-        tabbar->QTabBar::setCurrentTab(KMyMoneyRegister::ActionDeposit);
+        tabbar->setCurrentTab(KMyMoneyRegister::ActionDeposit);
       else
-        tabbar->QTabBar::setCurrentTab(KMyMoneyRegister::ActionWithdrawal);
+        tabbar->setCurrentTab(KMyMoneyRegister::ActionWithdrawal);
     }
   }
 }

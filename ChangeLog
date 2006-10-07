@@ -1,3 +1,8 @@
+2006-10-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed crash when turning on the transaction form while ledger view
+    is visible
+  * Fixed problem with payee creation during transaction entry
+
 2006-10-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Brought back the tabbar for the form based input
   * Fixed number field appearance in transaction form

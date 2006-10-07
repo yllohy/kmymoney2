@@ -590,9 +590,13 @@ int KMyMoneySelector::slotMakeCompletion(const QRegExp& exp)
   }
 
   // make the first match the one that is selected
-  if(m_selMode == QListView::Single && firstMatch) {
-    m_listView->setSelected(firstMatch, true);
-    ensureItemVisible(firstMatch);
+  // if we have no match, make sure none is selected
+  if(m_selMode == QListView::Single) {
+    if(firstMatch) {
+      m_listView->setSelected(firstMatch, true);
+      ensureItemVisible(firstMatch);
+    } else
+      m_listView->selectAll(false);
   }
 
   // Get the number of visible nodes for the return code

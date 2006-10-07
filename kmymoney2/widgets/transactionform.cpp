@@ -52,6 +52,7 @@ TabBar::TabBar(QWidget* parent, const char* name) :
   QTabBar(parent, name),
   m_signalType(SignalNormal)
 {
+  connect(this, SIGNAL(selected(int)), this, SLOT(slotTabSelected(int)));
 }
 
 TabBar::SignalEmissionE TabBar::setSignalEmission(TabBar::SignalEmissionE type)
@@ -61,7 +62,28 @@ TabBar::SignalEmissionE TabBar::setSignalEmission(TabBar::SignalEmissionE type)
   return _type;
 }
 
-void TabBar::setCurrentTab( QTab* tab )
+void TabBar::setCurrentTab(int id)
+{
+  QMap<int, int>::const_iterator it;
+  for(it = m_idMap.begin(); it != m_idMap.end(); ++it) {
+    if(*it == id) {
+      QTabBar::setCurrentTab(it.key());
+    }
+  }
+}
+
+QTab* TabBar::tab(int id) const
+{
+  QMap<int, int>::const_iterator it;
+  for(it = m_idMap.begin(); it != m_idMap.end(); ++it) {
+    if(*it == id) {
+      return QTabBar::tab(it.key());
+    }
+  }
+  return 0;
+}
+
+void TabBar::setCurrentTab(QTab* tab)
 {
   if(m_signalType != SignalNormal)
     blockSignals(true);
@@ -75,7 +97,40 @@ void TabBar::setCurrentTab( QTab* tab )
     emit selected(tab->identifier());
 }
 
-void TabBar::copyTabs(const QTabBar* otabbar)
+void TabBar::addTab(QTab* tab, int id)
+{
+  QTabBar::addTab(tab);
+  setIdentifier(tab, id);
+}
+
+void TabBar::setIdentifier(QTab* tab, int newId)
+{
+  m_idMap[tab->identifier()] = newId;
+}
+
+void TabBar::slotTabSelected(int id)
+{
+  QMap<int, int>::const_iterator it;
+  it = m_idMap.find(id);
+  if(it != m_idMap.end())
+    emit tabSelected(*it);
+  else
+    emit tabSelected(id);
+}
+
+void TabBar::show(void)
+{
+  // make sure we don't emit a signal when simply showing the widget
+  if(m_signalType != SignalNormal)
+    blockSignals(true);
+
+  QTabBar::show();
+
+  if(m_signalType != SignalNormal)
+    blockSignals(false);
+}
+
+void TabBar::copyTabs(const TabBar* otabbar)
 {
   // remove all existing tabs
   while(count()) {
@@ -85,17 +140,18 @@ void TabBar::copyTabs(const QTabBar* otabbar)
   for(int i=0; i < otabbar->count(); ++i) {
     QTab* otab = otabbar->tabAt(i);
     QTab* ntab = new QTab(otab->text());
-    addTab(ntab);
+    QTabBar::addTab(ntab);
     ntab->setIdentifier(otab->identifier());
     ntab->setEnabled(otab->isEnabled());
   }
+  m_idMap = otabbar->m_idMap;
   QTabBar::setCurrentTab(otabbar->currentTab());
 }
 
 TransactionForm::TransactionForm(QWidget *parent, const char *name) :
   TransactionEditorContainer(parent, name),
-  m_tabBar(0),
-  m_transaction(0)
+  m_transaction(0),
+  m_tabBar(0)
 {
   setBackgroundOrigin(QTable::WindowOrigin);
   setFrameShape( QTable::NoFrame);
@@ -188,7 +244,7 @@ TabBar* TransactionForm::tabBar(QWidget* parent)
     m_tabBar = new TabBar( parent );
     m_tabBar->setSignalEmission(TabBar::SignalAlways);
     m_tabBar->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)5, (QSizePolicy::SizeType)0, 0, 0, m_tabBar->sizePolicy().hasHeightForWidth() ) );
-    connect(m_tabBar, SIGNAL(selected(int)), this, SLOT(slotActionSelected(int)));
+    connect(m_tabBar, SIGNAL(tabSelected(int)), this, SLOT(slotActionSelected(int)));
   }
   return m_tabBar;
 }
@@ -214,52 +270,40 @@ void TransactionForm::setupForm(const MyMoneyAccount& acc)
   switch(acc.accountType()) {
     default:
       tab = new QTab(i18n("&Deposit"));
-      m_tabBar->addTab(tab);
-      tab->setIdentifier(KMyMoneyRegister::ActionDeposit);
+      m_tabBar->addTab(tab, KMyMoneyRegister::ActionDeposit);
       tab = new QTab(i18n("&Transfer"));
-      m_tabBar->addTab(tab);
-      tab->setIdentifier(KMyMoneyRegister::ActionTransfer);
+      m_tabBar->addTab(tab, KMyMoneyRegister::ActionTransfer);
       tab = new QTab(i18n("&Witdrawal"));
-      m_tabBar->addTab(tab);
-      tab->setIdentifier(KMyMoneyRegister::ActionWithdrawal);
+      m_tabBar->addTab(tab, KMyMoneyRegister::ActionWithdrawal);
       break;
 
     case MyMoneyAccount::CreditCard:
       tab = new QTab(i18n("&Payment"));
-      m_tabBar->addTab(tab);
-      tab->setIdentifier(KMyMoneyRegister::ActionDeposit);
+      m_tabBar->addTab(tab, KMyMoneyRegister::ActionDeposit);
       tab = new QTab(i18n("&Transfer"));
-      m_tabBar->addTab(tab);
-      tab->setIdentifier(KMyMoneyRegister::ActionTransfer);
+      m_tabBar->addTab(tab, KMyMoneyRegister::ActionTransfer);
       tab = new QTab(i18n("&Charge"));
-      m_tabBar->addTab(tab);
-      tab->setIdentifier(KMyMoneyRegister::ActionWithdrawal);
+      m_tabBar->addTab(tab, KMyMoneyRegister::ActionWithdrawal);
       break;
 
     case MyMoneyAccount::Liability:
     case MyMoneyAccount::Loan:
       tab = new QTab(i18n("&Decrease"));
-      m_tabBar->addTab(tab);
-      tab->setIdentifier(KMyMoneyRegister::ActionDeposit);
+      m_tabBar->addTab(tab, KMyMoneyRegister::ActionDeposit);
       tab = new QTab(i18n("&Transfer"));
-      m_tabBar->addTab(tab);
-      tab->setIdentifier(KMyMoneyRegister::ActionTransfer);
+      m_tabBar->addTab(tab, KMyMoneyRegister::ActionTransfer);
       tab = new QTab(i18n("&Increase"));
-      m_tabBar->addTab(tab);
-      tab->setIdentifier(KMyMoneyRegister::ActionWithdrawal);
+      m_tabBar->addTab(tab, KMyMoneyRegister::ActionWithdrawal);
       break;
 
     case MyMoneyAccount::Asset:
     case MyMoneyAccount::AssetLoan:
       tab = new QTab(i18n("&Increase"));
-      m_tabBar->addTab(tab);
-      tab->setIdentifier(KMyMoneyRegister::ActionDeposit);
+      m_tabBar->addTab(tab, KMyMoneyRegister::ActionDeposit);
       tab = new QTab(i18n("&Transfer"));
-      m_tabBar->addTab(tab);
-      tab->setIdentifier(KMyMoneyRegister::ActionTransfer);
+      m_tabBar->addTab(tab, KMyMoneyRegister::ActionTransfer);
       tab = new QTab(i18n("&Decrease"));
-      m_tabBar->addTab(tab);
-      tab->setIdentifier(KMyMoneyRegister::ActionWithdrawal);
+      m_tabBar->addTab(tab, KMyMoneyRegister::ActionWithdrawal);
       break;
 
     case MyMoneyAccount::Income:

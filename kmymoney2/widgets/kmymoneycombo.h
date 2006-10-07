@@ -151,7 +151,12 @@ signals:
 private:
   QTimer                 m_timer;
   QMutex                 m_focusMutex;
+  /**
+    * Flag to control object creation. Use setSuppressObjectCreation()
+    * to modify it's setting. Defaults to @a false.
+    */
   bool                   m_canCreateObjects;
+
 };
 
 /**

@@ -435,7 +435,7 @@ void StdTransaction::loadTab(TransactionForm* form)
     if(it_s == m_transaction.splits().end())
       action = ActionTransfer;
 
-    bar->QTabBar::setCurrentTab(action);
+    bar->setCurrentTab(action);
   }
   bar->setSignalEmission(TabBar::SignalAlways);
 }
