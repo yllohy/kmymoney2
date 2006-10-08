@@ -71,7 +71,7 @@ KReportChartView::KReportChartView( QWidget* parent, const char* name ): KDChart
 
 void KReportChartView::setProperty(int row, int col, int id)
 {
-#if HAVE_KDCHART_SETPROP
+#ifdef HAVE_KDCHART_SETPROP
   m_data.setProp(row, col, id);
 #else
   m_data.cell(row, col).setPropertySet(id);
