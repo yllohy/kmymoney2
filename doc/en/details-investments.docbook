@@ -298,6 +298,17 @@ Or you can fetch them electronically, using <link linkend="details.investments.o
 	Choose the <guibutton>Quote Source</guibutton> tab.  
 	Pick the appropriate source from the drop-down menu.
 </para>
+<para>
+	Later versions of &kappname; contain support for the Finance::Quote package for obtaining
+	online quotes. This is intended primarily as a convenience for those users converting
+	from the GnuCash finance package, which uses it as its native method. If you do select this
+	option, you should see a different list of sources, those supported by Finance::Quote. If
+	the list is empty, it suggests that the package is not properly installed.
+	See their web site at
+	<ulink url="http://finance-quote.sourceforge.net">
+	http://finance-quote.sourceforge.net</ulink>
+	for more information.
+</para>
 </sect2>
 
 <sect2><title>Adjusting a quote</title>

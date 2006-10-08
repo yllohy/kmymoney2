@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>526</width>
-            <height>476</height>
+            <height>607</height>
         </rect>
     </property>
     <property name="caption">
@@ -82,20 +82,45 @@
             </widget>
         </vbox>
     </widget>
-    <widget class="QButtonGroup">
+    <spacer>
         <property name="name">
-            <cstring>buttonGroup2</cstring>
+            <cstring>spacer2</cstring>
+        </property>
+        <property name="orientation">
+            <enum>Vertical</enum>
+        </property>
+        <property name="sizeType">
+            <enum>Expanding</enum>
+        </property>
+        <property name="sizeHint">
+            <size>
+                <width>20</width>
+                <height>20</height>
+            </size>
         </property>
         <property name="geometry">
             <rect>
-                <x>11</x>
-                <y>158</y>
+                <x>200</x>
+                <y>500</y>
+                <width>20</width>
+                <height>20</height>
+            </rect>
+        </property>
+    </spacer>
+    <widget class="QButtonGroup">
+        <property name="name">
+            <cstring>buttonGroup3</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>380</y>
                 <width>410</width>
-                <height>58</height>
+                <height>116</height>
             </rect>
         </property>
         <property name="title">
-            <string>Scheduled Transactions</string>
+            <string>Debug Options</string>
         </property>
         <vbox>
             <property name="name">
@@ -103,10 +128,26 @@
             </property>
             <widget class="QCheckBox">
                 <property name="name">
-                    <cstring>checkSchedules</cstring>
+                    <cstring>checkDebugGeneral</cstring>
                 </property>
                 <property name="text">
-                    <string>Drop suspect scheduled transactions</string>
+                    <string>General debug data</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>checkDebugXML</cstring>
+                </property>
+                <property name="text">
+                    <string>Display XML data</string>
+                </property>
+            </widget>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>checkAnonymize</cstring>
+                </property>
+                <property name="text">
+                    <string>Anonymize data</string>
                 </property>
             </widget>
         </vbox>
@@ -117,8 +158,8 @@
         </property>
         <property name="geometry">
             <rect>
-                <x>11</x>
-                <y>222</y>
+                <x>10</x>
+                <y>300</y>
                 <width>410</width>
                 <height>67</height>
             </rect>
@@ -181,84 +222,14 @@
             </hbox>
         </widget>
     </widget>
-    <widget class="QButtonGroup">
-        <property name="name">
-            <cstring>buttonGroup3</cstring>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>11</x>
-                <y>295</y>
-                <width>410</width>
-                <height>116</height>
-            </rect>
-        </property>
-        <property name="title">
-            <string>Debug Options</string>
-        </property>
-        <vbox>
-            <property name="name">
-                <cstring>unnamed</cstring>
-            </property>
-            <widget class="QCheckBox">
-                <property name="name">
-                    <cstring>checkDebugGeneral</cstring>
-                </property>
-                <property name="text">
-                    <string>General debug data</string>
-                </property>
-            </widget>
-            <widget class="QCheckBox">
-                <property name="name">
-                    <cstring>checkDebugXML</cstring>
-                </property>
-                <property name="text">
-                    <string>Display XML data</string>
-                </property>
-            </widget>
-            <widget class="QCheckBox">
-                <property name="name">
-                    <cstring>checkAnonymize</cstring>
-                </property>
-                <property name="text">
-                    <string>Anonymize data</string>
-                </property>
-            </widget>
-        </vbox>
-    </widget>
-    <spacer>
-        <property name="name">
-            <cstring>spacer2</cstring>
-        </property>
-        <property name="orientation">
-            <enum>Vertical</enum>
-        </property>
-        <property name="sizeType">
-            <enum>Expanding</enum>
-        </property>
-        <property name="sizeHint">
-            <size>
-                <width>20</width>
-                <height>20</height>
-            </size>
-        </property>
-        <property name="geometry">
-            <rect>
-                <x>206</x>
-                <y>417</y>
-                <width>20</width>
-                <height>20</height>
-            </rect>
-        </property>
-    </spacer>
     <widget class="QLayoutWidget">
         <property name="name">
             <cstring>layout12</cstring>
         </property>
         <property name="geometry">
             <rect>
-                <x>11</x>
-                <y>443</y>
+                <x>10</x>
+                <y>530</y>
                 <width>410</width>
                 <height>29</height>
             </rect>
@@ -336,6 +307,67 @@
                 </property>
             </widget>
         </hbox>
+    </widget>
+    <widget class="QButtonGroup">
+        <property name="name">
+            <cstring>buttonGroup2</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>230</y>
+                <width>410</width>
+                <height>58</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string>Scheduled Transactions</string>
+        </property>
+        <vbox>
+            <property name="name">
+                <cstring>unnamed</cstring>
+            </property>
+            <widget class="QCheckBox">
+                <property name="name">
+                    <cstring>checkSchedules</cstring>
+                </property>
+                <property name="text">
+                    <string>Drop suspect scheduled transactions</string>
+                </property>
+            </widget>
+        </vbox>
+    </widget>
+    <widget class="QButtonGroup">
+        <property name="name">
+            <cstring>buttonGroup5</cstring>
+        </property>
+        <property name="geometry">
+            <rect>
+                <x>10</x>
+                <y>160</y>
+                <width>411</width>
+                <height>60</height>
+            </rect>
+        </property>
+        <property name="title">
+            <string>Online price quotes</string>
+        </property>
+        <widget class="QCheckBox">
+            <property name="name">
+                <cstring>checkFinanceQuote</cstring>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>20</y>
+                    <width>391</width>
+                    <height>21</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Use Finance::Quote for share price quotes</string>
+            </property>
+        </widget>
     </widget>
 </widget>
 <connections>

@@ -283,15 +283,18 @@ and multiple currencies.
 </title>
 <para>
 For obtaining online price and currency rate quotations, GnuCash uses
-a package called Finance::Quote. &kappname; does not support this at present, and has
-its own methods, covered in more detail in 
+a package called Finance::Quote. Later versions of &kappname; contain support for this 
+package for obtaining stock quotes, and this will be used by default when importing data.
+You may however elect to convert to the native method used by &kappname;
+which is covered in more detail in 
 <link linkend="details.investments.onlinequotes">online quotes</link>.
-Obtaining a quote requires a currency or stock (ticker)
-symbol, and these are imported unchanged into &kappname;. The source from
-which the quote is to be obtained, however, cannot be imported.
-Instead the following dialog will allow selection of a 'native' &kappname;
+</para>
+<para>
+If you choose to do so, the following dialog will allow selection of a 'native' &kappname;
 price source, or a user-defined source, for each account for which
-online quotes are required.
+online quotes are required. However, the stock (ticker)
+symbol will be imported unchanged. Since this symbol will almost certainly be different in the two packages, it will need to be manually edited after completion of the import process.
+Future currency rate updates will not use Finance::Quote, and will always use the native retrieval method.
 </para>
 <para>
 	<screenshot>
@@ -371,6 +374,10 @@ These will not necessarily, however, match precisely those reports available in 
 
 <sect3><title>Investment Handling</title>
 <para>See <link linkend="gncsecurities">"Securities and Investments"</link> above.</para>
+</sect3>
+<sect3><title>Online Quotes</title>
+<para>Turn this off if you wish to use the native method for future online price quotes.</para>
+<para>See <link linkend="details.impexp.gncquotes">"Online Quotes"</link> above.</para>
 </sect3>
 <sect3><title>Scheduled Transactions</title>
 <para>See <link linkend="gncschedules">"Scheduled Transactions"</link> above.</para>

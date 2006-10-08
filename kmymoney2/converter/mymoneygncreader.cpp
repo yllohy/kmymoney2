@@ -83,6 +83,7 @@ void MyMoneyGncReader::setOptions () {
     // set users input options
     m_dropSuspectSchedules = dlg.scheduleOption();
     m_investmentOption = dlg.investmentOption();
+    m_useFinanceQuote = dlg.quoteOption();
     m_decoder = dlg.decodeOption();
     gncdebug = dlg.generalDebugOption();
     xmldebug = dlg.xmlDebugOption();
@@ -2146,6 +2147,13 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
 
 // get the price source for a stock (gnc account) where online quotes are requested
 void MyMoneyGncReader::getPriceSource (MyMoneySecurity stock, QString gncSource) {
+  // if he wants to use Finance::Quote, no conversion of source name is needed
+  if (m_useFinanceQuote) {
+    stock.setValue ("kmm-online-quote-system", "Finance::Quote");
+    stock.setValue ("kmm-online-source", gncSource.lower());
+    m_storage->modifySecurity(stock);
+    return;
+  }
   // first check if we have already asked about this source
   // (mapSources is initialy empty. We may be able to pre-fill it with some equivalent
   //  sources, if such things do exist. User feedback may help here.)

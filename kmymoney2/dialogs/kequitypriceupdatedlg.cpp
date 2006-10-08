@@ -202,7 +202,10 @@ void KEquityPriceUpdateDlg::addInvestment(const MyMoneySecurity& inv)
       item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
     }
     item->setText(ID_COL,id);
-    item->setText(SOURCE_COL, inv.value("kmm-online-source"));
+    if (inv.value("kmm-online-quote-system") == "Finance::Quote")
+      item->setText(SOURCE_COL, QString("Finance::Quote " + inv.value("kmm-online-source")));
+    else
+      item->setText(SOURCE_COL, inv.value("kmm-online-source"));
 
     // If this investment is denominated in a foreign currency, ensure that
     // the appropriate price pair is also on the list
@@ -344,6 +347,7 @@ void KEquityPriceUpdateDlg::slotQuoteFailed(const QString& _id, const QString& _
     
     // Set the quote source to blank
     security.setValue("kmm-online-source",QString());
+    security.setValue("kmm-online-quote-system",QString());
     
     // Re-commit the security
     MyMoneyFile::instance()->modifySecurity(security);

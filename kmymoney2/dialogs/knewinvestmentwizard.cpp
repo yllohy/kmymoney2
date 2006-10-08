@@ -17,6 +17,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+#include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -68,7 +69,13 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneyAccount& acc, QWidget *
   m_tradingMarket->setCurrentText(m_security.tradingMarket());
   m_fraction->setValue(MyMoneyMoney(m_security.smallestAccountFraction(), 1));
   m_tradingCurrencyEdit->setSecurity(tradingCurrency);
-  m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
+  if (m_security.value("kmm-online-quote-system") == "Finance::Quote") {
+    FinanceQuoteProcess p;
+    m_useFinanceQuote->setChecked(true);
+    m_onlineSourceCombo->setCurrentText(p.niceName(m_security.value("kmm-online-source")));
+  } else {
+    m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
+  }
   if(!m_security.value("kmm-online-factor").isEmpty())
     m_onlineFactor->setValue(MyMoneyMoney(m_security.value("kmm-online-factor")));
   m_investmentIdentification->setText(m_security.value("kmm-security-id"));
@@ -100,8 +107,14 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneySecurity& security, QWi
   m_tradingMarket->setCurrentText(m_security.tradingMarket());
   m_fraction->setValue(MyMoneyMoney(m_security.smallestAccountFraction(), 1));
   m_tradingCurrencyEdit->setSecurity(tradingCurrency);
-
-  m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
+  
+  if (m_security.value("kmm-online-quote-system") == "Finance::Quote") {
+    FinanceQuoteProcess p;
+    m_useFinanceQuote->setChecked(true);
+    m_onlineSourceCombo->setCurrentText(p.niceName(m_security.value("kmm-online-source")));
+  } else {
+    m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
+  }
   if(!m_security.value("kmm-online-factor").isEmpty())
     m_onlineFactor->setValue(MyMoneyMoney(m_security.value("kmm-online-factor")));
   m_investmentIdentification->setText(m_security.value("kmm-security-id"));
@@ -137,7 +150,7 @@ void KNewInvestmentWizard::init(void)
   connect(m_investmentIdentification, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
   connect(m_onlineFactor, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
   connect(m_onlineSourceCombo, SIGNAL(activated(const QString&)), this, SLOT(slotCheckPage(const QString&)));
-
+  connect(m_useFinanceQuote, SIGNAL(toggled(bool)), this, SLOT(slotSourceChanged(bool)));
   m_createAccount = true;
 }
 
@@ -149,6 +162,17 @@ void KNewInvestmentWizard::next(void)
 {
   KNewInvestmentWizardDecl::next();
   slotCheckPage();
+}
+
+void KNewInvestmentWizard::slotSourceChanged(bool useFQ)
+{
+  m_onlineSourceCombo->clear();
+  m_onlineSourceCombo->insertItem(QString(), 0);
+  if (useFQ) {
+    m_onlineSourceCombo->insertStringList( WebPriceQuote::quoteSources( WebPriceQuote::FinanceQuote ) );
+  } else {
+    m_onlineSourceCombo->insertStringList( WebPriceQuote::quoteSources() );
+  }
 }
 
 void KNewInvestmentWizard::slotCheckPage(const QString& txt)
@@ -200,11 +224,19 @@ void KNewInvestmentWizard::createObjects(const QCString& parentId)
   newSecurity.setSmallestAccountFraction(m_fraction->value());
   newSecurity.setTradingCurrency(m_tradingCurrencyEdit->security().id());
   newSecurity.deletePair("kmm-online-source");
+  newSecurity.deletePair("kmm-online-quote-system");
   newSecurity.deletePair("kmm-online-factor");
   newSecurity.deletePair("kmm-security-id");
 
-  if(!m_onlineSourceCombo->currentText().isEmpty())
-    newSecurity.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
+  if(!m_onlineSourceCombo->currentText().isEmpty()) {
+    if (m_useFinanceQuote->isChecked()) {
+      FinanceQuoteProcess p;
+      newSecurity.setValue("kmm-online-quote-system", "Finance::Quote");
+      newSecurity.setValue("kmm-online-source", p.crypticName(m_onlineSourceCombo->currentText()));
+    }else{
+      newSecurity.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
+    }
+  }
   if(m_onlineFactor->isEnabled() && (m_onlineFactor->value() != MyMoneyMoney(1,1)))
     newSecurity.setValue("kmm-online-factor", m_onlineFactor->value().toString());
   if(!m_investmentIdentification->text().isEmpty())

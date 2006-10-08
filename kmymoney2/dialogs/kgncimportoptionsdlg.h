@@ -47,6 +47,7 @@ public:
   ~KGncImportOptionsDlg();
 
   int investmentOption () const {return (buttonInvestGroup->selectedId());};
+  bool quoteOption() const {return (checkFinanceQuote->isChecked());};
   bool scheduleOption () const {return (checkSchedules->isChecked());};
   QTextCodec* decodeOption ();
   bool generalDebugOption () const {return (checkDebugGeneral->isChecked());};

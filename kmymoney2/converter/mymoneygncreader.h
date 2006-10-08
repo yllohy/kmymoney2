@@ -721,6 +721,11 @@ protected:
        N.B. :- option 2 doesn't really work quite as desired at present
   */
   unsigned int m_investmentOption;
+  /**           Online quotes
+    The user has the option to use the Finance::Quote system, as used by GnuCash, to
+    retrieve online share price quotes
+  */
+  bool m_useFinanceQuote;
     // set gnucash counts (not always accurate!)
   void setGncCommodityCount(int i) { m_gncCommodityCount = i;};
   void setGncAccountCount (int i) { m_gncAccountCount = i;};

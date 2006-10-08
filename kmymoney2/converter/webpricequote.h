@@ -62,6 +62,36 @@ private:
 };
 
 /**
+Helper class to run the Finance::Quote process. This is used only for the purpose of obtaining
+a list of valid sources. The actual price quotes are obtained thru WebPriceQuoteProcess.
+The class also contains functions to convert between the rather cryptic source names used
+by the Finance::Quote package, and more user-friendly names.
+
+@author Thomas Baumgart <thb@net-bembel.de> & Ace Jones <acejones@users.sourceforge.net>, Tony B<tonybloom@users.sourceforge.net>
+ */
+class FinanceQuoteProcess: public KProcess
+{
+  Q_OBJECT
+  public:
+    FinanceQuoteProcess(void);
+    void launch (const QString& scriptPath);
+    bool isFinished() { return(m_isDone);};
+    QStringList getSourceList();
+    const QString crypticName(const QString& niceName);
+    const QString niceName(const QString& crypticName);
+
+  public slots:
+    void slotReceivedDataFromFilter(KProcess*, char*, int);
+    void slotProcessExited(KProcess*);
+
+  private:
+    bool m_isDone;
+    QString m_string;
+    typedef QMap<QString, QString> fqNameMap;
+    fqNameMap m_fqNames;
+};
+
+/**
   * @author Thomas Baumgart & Ace Jones
   *
   * This is a helper class to store information about an online source
@@ -98,6 +128,11 @@ public:
   WebPriceQuote( QObject* = 0, const char* = 0 );
   ~WebPriceQuote();
   
+  typedef enum _quoteSystemE {
+    Native=0, 
+    FinanceQuote
+  } quoteSystemE;
+  
   /**
     * This launches a web-based quote update for the given @p _symbol.
     * When the quote is received back from the web source, it will be
@@ -111,15 +146,17 @@ public:
     *                source.
     * @return bool Whether the quote fetch process was launched successfully
     */
+  
   bool launch(const QString& _symbol, const QString& _id, const QString& _source=QString());
 
   /**
     * This returns a list of the names of the quote sources
     * currently defined.
     *
-    * @return QStringList of quote source names
+   * @param _system whether to return Native or Finance::Quote source list
+   * @return QStringList of quote source names
     */
-  static QStringList quoteSources(void);
+  static QStringList quoteSources(const _quoteSystemE _system=Native);
     
 signals:
   void quote(const QString&, const QString&, const QDate&, const double&);
@@ -129,17 +166,24 @@ signals:
   
 protected slots:
   void slotParseQuote(const QString&);
-
+  
 protected:
   static QMap<QString,WebPriceQuoteSource> defaultQuoteSources(void);
   
 private:
+  bool launchNative(const QString& _symbol, const QString& _id, const QString& _source=QString());
+  bool launchFinanceQuote(const QString& _symbol, const QString& _id, const QString& _source=QString());
+  static QStringList quoteSourcesNative();
+  static QStringList quoteSourcesFinanceQuote();
+  
   WebPriceQuoteProcess m_filter;
   QString m_symbol;
   QString m_id;
   QDate m_date;
   double m_price;
-  WebPriceQuoteSource m_source;  
+  WebPriceQuoteSource m_source;
+  static QString m_financeQuoteScriptPath;
+  static QStringList m_financeQuoteSources;
 };
 
 class MyMoneyDateFormat
