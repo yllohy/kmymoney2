@@ -1,3 +1,7 @@
+2006-10-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem with account selection and opening the ledger view
+  * Fixed Tabbar::copyTabs() to use the correct ids and pointers
+
 2006-10-08 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Implement Finance::Quote interface
 

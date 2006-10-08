@@ -403,8 +403,8 @@ void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& tra
     case MyMoneyAccount::AssetLoan:
     case MyMoneyAccount::Income:
     case MyMoneyAccount::Expense:
-      showPage(pageIndex(m_ledgerViewFrame));
       m_ledgerView->slotSelectAccount(accId, transaction);
+      showPage(pageIndex(m_ledgerViewFrame));
       break;
 
     case MyMoneyAccount::CertificateDep:
