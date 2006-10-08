@@ -45,7 +45,7 @@ fi
 
 echo ""
 
-if test -z "${HAVE_DSSSLCONVERSIONTOOLS_TRUE}" || test -z "${HAVE_HTMLCONVERSIONTOOLS_TRUE}"; then
+if test -z "${HAVE_DOCCONVERSIONTOOLS_TRUE}"; then
 	echo "PDF document generation:               yes"
 else
 	echo "PDF document generation:               no"
