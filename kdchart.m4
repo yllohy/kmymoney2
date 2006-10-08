@@ -46,13 +46,33 @@ AC_ARG_ENABLE(charts,
 
     LDFLAGS=$kde_ldflags_safe
     LIBS=$kde_libs_safe
-    CXXFLAGS=$kde_cxxflags_safe
-    AC_LANG_RESTORE
 
     AC_MSG_RESULT($enable_charts)
     if test "x$enable_charts" = "xyes"; then
       LIBS="-lkdchart $LIBS"
+      AC_MSG_CHECKING([if KDChartListTableData::setProp() is available])
+      AC_TRY_COMPILE(
+        [
+          #include <KDChartWidget.h>
+          #include <KDChartTable.h>
+        ],
+        [
+          KDChartTableData m;
+          m.setProp(0,0,0);
+        ],
+        [
+          AC_MSG_RESULT([yes])
+          AC_DEFINE_UNQUOTED(HAVE_KDCHART_SETPROP, "1", [Define if you have KDChartListTableData::setProp method])
+        ],
+        [
+          AC_MSG_RESULT([no])
+        ]
+      )
     fi
+
+    CXXFLAGS=$kde_cxxflags_safe
+    AC_LANG_RESTORE
+
   ],
   [
     enable_charts="no"
