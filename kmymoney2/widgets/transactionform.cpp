@@ -140,12 +140,12 @@ void TabBar::copyTabs(const TabBar* otabbar)
   for(int i=0; i < otabbar->count(); ++i) {
     QTab* otab = otabbar->tabAt(i);
     QTab* ntab = new QTab(otab->text());
-    QTabBar::addTab(ntab);
-    ntab->setIdentifier(otab->identifier());
+    int nid = QTabBar::addTab(ntab);
+    m_idMap[nid] = otabbar->m_idMap[otab->identifier()];
     ntab->setEnabled(otab->isEnabled());
+    if(otab->identifier() == otabbar->currentTab())
+      setCurrentTab(ntab);
   }
-  m_idMap = otabbar->m_idMap;
-  QTabBar::setCurrentTab(otabbar->currentTab());
 }
 
 TransactionForm::TransactionForm(QWidget *parent, const char *name) :
