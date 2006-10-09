@@ -1,3 +1,8 @@
+2006-10-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Modified fancy markers
+  * Modified attention sign to use black on yellow exclamation mark
+  * Fixed logic that causes empty ledgers to show up
+
 2006-10-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem with account selection and opening the ledger view
   * Fixed Tabbar::copyTabs() to use the correct ids and pointers

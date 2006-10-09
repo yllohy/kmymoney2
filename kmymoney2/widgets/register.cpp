@@ -62,6 +62,30 @@ static QString sortOrderText[] = {
 
 using namespace KMyMoneyRegister;
 
+static char fancymarker_bg_image[] = {
+  0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A,
+  0x00,0x00,0x00,0x0D,0x49,0x48,0x44,0x52,
+  0x00,0x00,0x00,0x01,0x00,0x00,0x00,0x31,
+  0x08,0x06,0x00,0x00,0x00,0x1B,0x6F,0xC3,
+  0x24,0x00,0x00,0x00,0x06,0x62,0x4B,0x47,
+  0x44,0x00,0xFF,0x00,0xFF,0x00,0xFF,0xA0,
+  0xBD,0xA7,0x93,0x00,0x00,0x00,0x09,0x70,
+  0x48,0x59,0x73,0x00,0x00,0x0B,0x13,0x00,
+  0x00,0x0B,0x13,0x01,0x00,0x9A,0x9C,0x18,
+  0x00,0x00,0x00,0x07,0x74,0x49,0x4D,0x45,
+  0x07,0xD6,0x0A,0x03,0x16,0x33,0x14,0xA6,
+  0xAC,0x8C,0x52,0x00,0x00,0x00,0x32,0x49,
+  0x44,0x41,0x54,0x08,0xD7,0xD5,0xC4,0xC1,
+  0x09,0x00,0x21,0x10,0x04,0xB0,0x38,0x2B,
+  0x88,0x60,0x67,0xD7,0x7F,0x25,0x36,0x70,
+  0x3F,0xC1,0x12,0xCC,0x23,0xF0,0x05,0x3B,
+  0xD8,0x85,0x55,0x18,0x85,0x5E,0x68,0x77,
+  0xEF,0x68,0x41,0x4E,0x3D,0x18,0xC1,0xFC,
+  0x01,0x30,0x16,0x02,0x88,0x12,0x94,0xEC,
+  0xC3,0x00,0x00,0x00,0x00,0x49,0x45,0x4E,
+  0x44,0xAE,0x42,0x60,0x82
+};
+
 bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
 {
   const QValueList<TransactionSortField>& sortOrder = i1->parent()->sortOrder();
@@ -156,8 +180,25 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
   return rc < 0;
 }
 
-void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /*col*/, const QRect& _r, bool /*selected*/, const QColorGroup& _cg)
+GroupMarker::GroupMarker(Register *parent) :
+  RegisterItem(parent),
+  m_lastCol(2)
 {
+  // convert the backgroud once
+  QByteArray a;
+  a.setRawData(fancymarker_bg_image, sizeof(fancymarker_bg_image));
+  m_bg.loadFromData(a);
+  a.resetRawData(fancymarker_bg_image, sizeof(fancymarker_bg_image));
+}
+
+void GroupMarker::paintRegisterCell(QPainter* painter, int row, int col, const QRect& _r, bool /*selected*/, const QColorGroup& _cg)
+{
+  if(col == m_lastCol+1) {
+    m_lastCol = col;
+    return;
+  }
+  m_lastCol = col;
+
   QRect r(_r);
   painter->save();
   painter->translate(-r.x(), -r.y());
@@ -184,6 +225,7 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /*col*/, con
   painter->setPen(KMyMoneySettings::listGridColor());
   painter->drawLine(cellRect.x(), cellRect.height()-1, cellRect.width(), cellRect.height()-1);
 
+#if 0
   // now draw round rectangle in marker color
   // adjust rectangle a bit before
   cellRect.setX(5);
@@ -196,6 +238,7 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /*col*/, con
   painter->setPen(Qt::NoPen);
   painter->drawRoundRect(cellRect, 2, 25);
 
+#endif
   // now write the text
   painter->setPen(cg.text());
   QFont font = painter->font();
@@ -207,16 +250,22 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /*col*/, con
     font.setPointSize(size*2);
   }
   painter->setFont(font);
-  cellRect.setX(cellRect.x()+5);
-  cellRect.setWidth(cellRect.width()-10);
-  painter->drawText(cellRect, Qt::AlignVCenter | Qt::AlignLeft, m_txt);
+  // cellRect.setX(cellRect.x()+5);
+  // cellRect.setWidth(cellRect.width()-10);
 
+  painter->drawText(cellRect, Qt::AlignVCenter | Qt::AlignCenter, m_txt);
+
+  // cellRect.setX(cellRect.x()-5);
+  // cellRect.setWidth(cellRect.width()+10);
+
+  cellRect.setHeight(m_bg.height());
+  painter->drawTiledPixmap(cellRect, m_bg);
   painter->restore();
 }
 
 int GroupMarker::rowHeightHint(void) const
 {
-  return RegisterItem::rowHeightHint() * 2;
+  return m_bg.height();
 }
 
 FancyDateGroupMarker::FancyDateGroupMarker(Register* parent, const QDate& date, const QString& txt) :

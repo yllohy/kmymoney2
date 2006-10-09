@@ -77,7 +77,7 @@ TransactionSortField textToSortOrder(const QString& text);
 class GroupMarker : public RegisterItem
 {
 public:
-  GroupMarker(Register* parent) : RegisterItem(parent) {}
+  GroupMarker(Register* parent);
   bool isSelectable(void) const { return false; }
   bool canHaveFocus(void) const { return false; }
   int numRows(void) const { return 1; }
@@ -91,6 +91,8 @@ public:
 
 protected:
   QString                  m_txt;
+  QPixmap                  m_bg;
+  int                      m_lastCol;
 };
 
 

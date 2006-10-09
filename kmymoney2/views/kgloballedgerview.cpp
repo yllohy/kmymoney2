@@ -434,6 +434,7 @@ void KGlobalLedgerView::loadView(void)
 
   if(m_account.id().isEmpty()) {
     // if we don't have an account we bail out
+    d->m_inLoading = false;
     setEnabled(false);
     return;
   }
