@@ -273,7 +273,7 @@ void TransactionForm::setupForm(const MyMoneyAccount& acc)
       m_tabBar->addTab(tab, KMyMoneyRegister::ActionDeposit);
       tab = new QTab(i18n("&Transfer"));
       m_tabBar->addTab(tab, KMyMoneyRegister::ActionTransfer);
-      tab = new QTab(i18n("&Witdrawal"));
+      tab = new QTab(i18n("&Withdrawal"));
       m_tabBar->addTab(tab, KMyMoneyRegister::ActionWithdrawal);
       break;
 
