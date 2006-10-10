@@ -1,3 +1,6 @@
+2006-10-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Improved painting of fancy headers
+
 2006-10-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Modified fancy markers
   * Modified attention sign to use black on yellow exclamation mark
