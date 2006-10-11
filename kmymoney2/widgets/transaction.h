@@ -47,7 +47,7 @@ typedef enum {
   DetailColumn,
   SecurityColumn,
   ActivityColumn,
-  MarkColumn,
+  ReconcileFlagColumn,
   PaymentColumn,
   DepositColumn,
   BalanceColumn,

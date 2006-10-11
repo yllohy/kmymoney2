@@ -368,6 +368,14 @@ public:
     */
   bool canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>&) const;
 
+  /**
+    * check if the current view allows to print something
+    *
+    * @retval true Yes, view allows to print
+    * @retval false No, view cannot print
+    */
+  bool canPrint(void);
+
   TransactionEditor* startEdit(const QValueList<KMyMoneyRegister::SelectedTransaction>&);
 
   bool createNewTransaction(void);

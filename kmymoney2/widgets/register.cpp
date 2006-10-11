@@ -431,7 +431,7 @@ Register::Register(QWidget *parent, const char *name ) :
   horizontalHeader()->setLabel(DetailColumn, i18n("Details"));
   horizontalHeader()->setLabel(SecurityColumn, i18n("Security"));
   horizontalHeader()->setLabel(ActivityColumn, i18n("Activity"));
-  horizontalHeader()->setLabel(MarkColumn, i18n("C"));
+  horizontalHeader()->setLabel(ReconcileFlagColumn, i18n("C"));
   horizontalHeader()->setLabel(PaymentColumn, i18n("Payment"));
   horizontalHeader()->setLabel(DepositColumn, i18n("Deposit"));
   horizontalHeader()->setLabel(BalanceColumn, i18n("Balance"));
@@ -492,7 +492,7 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
   showColumn(DateColumn);
   showColumn(DetailColumn);
   showColumn(BalanceColumn);
-  showColumn(MarkColumn);
+  showColumn(ReconcileFlagColumn);
 
   // Number column
   switch(account.accountType()) {
@@ -905,8 +905,8 @@ void Register::resize(int col)
   if(columnWidth(ValueColumn))
     setColumnWidth(ValueColumn, dwidth);
 
-  if(columnWidth(MarkColumn))
-    setColumnWidth(MarkColumn, 20);
+  if(columnWidth(ReconcileFlagColumn))
+    setColumnWidth(ReconcileFlagColumn, 20);
 
   for(int i = 0; i < numCols(); ++i) {
     if(i == col)
@@ -1139,15 +1139,26 @@ void Register::contentsMouseReleaseEvent( QMouseEvent *e )
   QTable::contentsMouseReleaseEvent(e);
 }
 
-void Register::selectItem(int row, int /*col*/, int button, const QPoint& /* mousePos */)
+void Register::selectItem(int row, int col, int button, const QPoint& /* mousePos */)
 {
   if(row >= 0 && (unsigned)row < m_itemIndex.capacity()) {
     RegisterItem* item = m_itemIndex[row];
     // if it has an id, select it
     if(!item->id().isEmpty()) {
       selectItem(item);
-      if((button & Qt::MouseButtonMask) == Qt::RightButton) {
-        emit openContextMenu();
+      Transaction* t = dynamic_cast<Transaction*>(item);
+      switch(button & Qt::MouseButtonMask) {
+        case Qt::RightButton:
+          emit openContextMenu();
+          break;
+
+        case Qt::LeftButton:
+          if(t && col == ReconcileFlagColumn && selectedItemsCount() == 1)
+            emit reconcileStateColumnClicked(t);
+          break;
+
+        default:
+          break;
       }
     }
     // if it does not, send out a signal if it is a transaction

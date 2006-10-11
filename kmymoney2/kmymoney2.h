@@ -471,6 +471,11 @@ public:
     */
   void showContextMenu(const QString& containerName);
 
+  /**
+    * This method updates all KAction items to the current state.
+    */
+  void updateActions(void);
+
 k_dcop:
   const QString filename() const;
 
@@ -528,11 +533,6 @@ protected:
   void createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& newAccount);
 
   void createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal, MyMoneySchedule& schedule);
-
-  /**
-    * This method updates all KAction items to the current state.
-    */
-  void updateActions(void);
 
   /**
     * This method checks, if an account can be closed or not.

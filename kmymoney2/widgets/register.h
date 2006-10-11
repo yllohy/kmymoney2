@@ -318,6 +318,11 @@ signals:
   void aboutToSelectItem(KMyMoneyRegister::RegisterItem* item);
   void editTransaction(void);
   void headerClicked(void);
+  /**
+    * This signal is sent out when the user clicks on the ReconcileStateColumn and
+    * only a single transaction is selected.
+    */
+  void reconcileStateColumnClicked(KMyMoneyRegister::Transaction* item);
 
   /**
     * This signal is sent out, if an item without a transaction id has been selected.

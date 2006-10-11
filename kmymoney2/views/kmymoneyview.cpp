@@ -209,6 +209,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_ledgerView, SIGNAL(startEdit()), kmymoney2, SLOT(slotTransactionsEdit()));
   connect(m_ledgerView, SIGNAL(endEdit()), kmymoney2, SLOT(slotTransactionsEnter()));
   connect(m_ledgerView, SIGNAL(cancelEdit()), kmymoney2, SLOT(slotTransactionsCancel()));
+  connect(m_ledgerView, SIGNAL(markTransactionCleared()), kmymoney2, SLOT(slotMarkTransactionCleared()));
+  connect(m_ledgerView, SIGNAL(markTransactionNotReconciled()), kmymoney2, SLOT(slotMarkTransactionNotReconciled()));
 
   //connect(m_ledgerView, SIGNAL(accountSelected(const QCString&, const QCString&)),
   //    this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
@@ -285,7 +287,7 @@ bool KMyMoneyView::showPage(int index)
   }
 
   // pretend we're in the constructor to avoid calling the
-  // above resets. For some reason which I don't know the reason
+  // above resets. For some reason which I don't know the details
   // of, KJanusWidget::showPage() calls itself recursively. This
   // screws up the action handling, as items could have been selected
   // in the meantime. We prevent this by setting the m_inConstructor
@@ -293,12 +295,22 @@ bool KMyMoneyView::showPage(int index)
   bool prevConstructor = m_inConstructor;
   m_inConstructor = true;
 
-  // fixup some actions that are dependant on the view
-  kmymoney2->action("file_print")->setEnabled(index == pageIndex(m_reportsViewFrame));
-
   bool rc = KJanusWidget::showPage(index);
 
   m_inConstructor = prevConstructor;
+
+  if(!m_inConstructor) {
+    // fixup some actions that are dependant on the view
+    // this does not work during construction
+    kmymoney2->updateActions();
+  }
+
+  return rc;
+}
+
+bool KMyMoneyView::canPrint(void)
+{
+  bool rc = (activePageIndex() == pageIndex(m_reportsViewFrame));
   return rc;
 }
 
@@ -417,6 +429,7 @@ void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& tra
       qDebug("Unknown account type %d in KMyMoneyView::slotLedgerSelected", acc.accountType());
       break;
   }
+  kmymoney2->updateActions();
 }
 
 void KMyMoneyView::slotPayeeSelected(const QCString& payee, const QCString& account, const QCString& transaction)

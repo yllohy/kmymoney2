@@ -1,3 +1,10 @@
+2006-10-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Renamed MarkColumn in register to ReconcileFlagColumn
+  * Update actions when view has been changed
+  * Allow to toggle between cleared/not reconciled during reconciliation
+    by left clicking on the C column
+  * Added new attention marker provided by Rob
+
 2006-10-10 Robert Wadley <robntina@users.sourceforge.net>
   * corrected a minor spelling error.
 

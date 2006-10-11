@@ -298,6 +298,7 @@ protected slots:
     */
   void slotUpdateViewPos(void);
   void slotSortOptions(void);
+  void slotToggleMarkTransactionCleared(KMyMoneyRegister::Transaction* t);
 
 protected:
   /**
@@ -376,6 +377,18 @@ signals:
   void reportGenerated(const MyMoneyReport& report);
 
   void openContextMenu(void);
+
+  /**
+    * This signal is sent out, when the current selected transaction should
+    * be marked "cleared"
+    */
+  void markTransactionCleared(void);
+
+  /**
+    * This signal is sent out, when the current selected transaction should
+    * be marked "not reconciled"
+    */
+  void markTransactionNotReconciled(void);
 };
 
 #endif

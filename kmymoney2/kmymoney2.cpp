@@ -3966,6 +3966,7 @@ void KMyMoney2App::updateActions(void)
   action("file_close")->setEnabled(fileOpen);
   action("view_personal_data")->setEnabled(fileOpen);
   action("file_backup")->setEnabled(fileOpen);
+  action("file_print")->setEnabled(fileOpen && myMoneyView->canPrint());
 #if KMM_DEBUG
   action("view_file_info")->setEnabled(fileOpen);
   action("file_dump")->setEnabled(fileOpen);
