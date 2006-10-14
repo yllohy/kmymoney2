@@ -58,11 +58,7 @@ KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountT
   // using showAbortButton()
   m_kButtonAbort->hide();
 
-  // Exclude stock accounts.  You can't import a statement into a stock account.
-  MyMoneyObjectContainer objects;
-  AccountSet stockSet(&objects);
-  stockSet.addAccountType(MyMoneyAccount::Stock);
-  stockSet.load(m_accountSelector);
+  update(QCString());
 
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem skipButtonItem( i18n( "&Skip" ),

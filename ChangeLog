@@ -1,3 +1,6 @@
+2006-10-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem with account selector dialog
+
 2006-10-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Renamed MarkColumn in register to ReconcileFlagColumn
   * Update actions when view has been changed
