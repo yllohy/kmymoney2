@@ -22,8 +22,6 @@
 #include <qframe.h>
 #include <qlayout.h>
 #include <qtimer.h>
-// FIXME remove tabbar
-// #include <qtabbar.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -398,8 +396,6 @@ void KGlobalLedgerView::loadView(void)
   QValueList<KMyMoneyRegister::SelectedTransaction> list;
   emit transactionsSelected(list);
 
-  m_register->setUpdatesEnabled(false);
-
   QMap<QCString, bool> isSelected;
   QCString focusItemId;
 
@@ -440,6 +436,7 @@ void KGlobalLedgerView::loadView(void)
   }
   setEnabled(true);
 
+  m_register->setUpdatesEnabled(false);
 
   // ... and recreate it
   KMyMoneyRegister::RegisterItem* focusItem = 0;
@@ -584,8 +581,6 @@ void KGlobalLedgerView::loadView(void)
 
   // and tell everyone what's selected
   emit accountSelected(m_account);
-
-  m_register->setUpdatesEnabled(true);
 }
 
 void KGlobalLedgerView::updateSummaryLine(const MyMoneyMoney& actBalance, const MyMoneyMoney& clearedBalance)
@@ -619,6 +614,8 @@ void KGlobalLedgerView::updateSummaryLine(const MyMoneyMoney& actBalance, const 
 
 void KGlobalLedgerView::slotUpdateViewPos(void)
 {
+  m_register->setUpdatesEnabled(true);
+
   if(d->m_startPoint == QPoint(-1, -1)) {
     m_register->ensureItemVisible(m_register->focusItem());
   } else {
@@ -882,17 +879,21 @@ void KGlobalLedgerView::selectTransaction(const QCString& id)
 void KGlobalLedgerView::setReconciliationAccount(const QCString& accountId, const MyMoneyMoney& endingBalance)
 {
   if(d->m_reconciliationAccount != accountId) {
+    d->m_reconciliationAccount = accountId;
+    d->m_endingBalance = endingBalance;
+    m_newAccountLoaded = true;
     if(accountId.isEmpty()) {
       kmymoney2->action("account_reconcile_postpone")->unplug(m_buttonbar);
       kmymoney2->action("account_reconcile_finish")->unplug(m_buttonbar);
     } else {
       kmymoney2->action("account_reconcile_postpone")->plug(m_buttonbar);
       kmymoney2->action("account_reconcile_finish")->plug(m_buttonbar);
+      // when we start reconciliation, we need to reload the view
+      // because no data has been changed. When postponing or finishing
+      // reconciliation, the data change in the engine takes care of updateing
+      // the view.
+      slotLoadView();
     }
-    d->m_reconciliationAccount = accountId;
-    d->m_endingBalance = endingBalance;
-    m_newAccountLoaded = true;
-    slotLoadView();
   }
 }
 

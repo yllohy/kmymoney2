@@ -261,10 +261,6 @@ public:
 
   bool markErronousTransactions(void) const { return (m_markErronousTransactions & 0x01) != 0; }
 
-  // FIXME remove tabbar
-  // int action(QMap<QString, QWidget*>& editWidgets) const;
-  // void setProtectedAction(QMap<QString, QWidget*>& editWidgets, ProtectedAction action);
-
 protected:
   void drawContents(QPainter *p, int cx, int cy, int cw, int ch);
 

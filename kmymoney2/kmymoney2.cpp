@@ -2767,7 +2767,6 @@ void KMyMoney2App::slotAccountReconcileStart(void)
 
 void KMyMoney2App::slotAccountReconcileFinish(void)
 {
-  // TODO add the logic to finish reconciliation
   if(!m_reconciliationAccount.id().isEmpty()) {
     // retrieve list of all transactions that are not reconciled or cleared
     QValueList<QPair<MyMoneyTransaction, MyMoneySplit> > transactionList;
@@ -2795,6 +2794,9 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
       if (KMessageBox::questionYesNo(this, message, i18n("Confirm end of reconciliation"), KStdGuiItem::yes(), KStdGuiItem::no()) == KMessageBox::No)
         return;
     }
+    // Turn off reconciliation mode
+    myMoneyView->finishReconciliation(m_reconciliationAccount);
+
     m_reconciliationAccount.setValue("lastStatementBalance", m_endingBalanceDlg->endingBalance().toString());
     m_reconciliationAccount.setValue("lastStatementDate", m_endingBalanceDlg->statementDate().toString(Qt::ISODate));
 
@@ -2803,6 +2805,8 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
     m_reconciliationAccount.deletePair("statementDate");
 
     try {
+      MyMoneyFile::instance()->blockSignals(true);
+
       // update the account data
       MyMoneyFile::instance()->modifyAccount(m_reconciliationAccount);
 
@@ -2817,6 +2821,10 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
       // walk the list of transactions/splits and mark them as reconciled
       QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it;
       int cnt = transactionList.count();
+
+      // make sure to leave it blocked or unblock if list is emtpy
+      MyMoneyFile::instance()->blockSignals(cnt != 0);
+
       for(it = transactionList.begin(); it != transactionList.end(); ++it) {
         // always retrieve a fresh copy of the transaction because we
         // might have changed it already with another split
@@ -2835,10 +2843,8 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
       qDebug("Unexpected exception when setting cleared to reconcile");
       delete e;
     }
-
   }
   // Turn off reconciliation mode
-  myMoneyView->finishReconciliation(m_reconciliationAccount);
   m_reconciliationAccount = MyMoneyAccount();
   updateActions();
 }
@@ -2846,6 +2852,9 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
 void KMyMoney2App::slotAccountReconcilePostpone(void)
 {
   if(!m_reconciliationAccount.id().isEmpty()) {
+    // Turn off reconciliation mode
+    myMoneyView->finishReconciliation(m_reconciliationAccount);
+
     m_reconciliationAccount.setValue("lastReconciledBalance", m_endingBalanceDlg->previousBalance().toString());
     m_reconciliationAccount.setValue("statementBalance", m_endingBalanceDlg->endingBalance().toString());
     m_reconciliationAccount.setValue("statementDate", m_endingBalanceDlg->statementDate().toString(Qt::ISODate));
@@ -2856,12 +2865,11 @@ void KMyMoney2App::slotAccountReconcilePostpone(void)
       qDebug("Unexpected exception when setting last reconcile info into account");
       delete e;
     }
+
+    m_reconciliationAccount = MyMoneyAccount();
+    updateActions();
   }
 
-  // Turn off reconciliation mode
-  myMoneyView->finishReconciliation(m_reconciliationAccount);
-  m_reconciliationAccount = MyMoneyAccount();
-  updateActions();
 }
 
 void KMyMoney2App::slotAccountOpen(const MyMoneyObject& obj)

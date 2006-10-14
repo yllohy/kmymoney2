@@ -1,5 +1,7 @@
 2006-10-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem with account selector dialog
+  * Fixed display problem when switching to / from reconciliation mode
+  * Fixed flicker problem with QTable
 
 2006-10-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Renamed MarkColumn in register to ReconcileFlagColumn

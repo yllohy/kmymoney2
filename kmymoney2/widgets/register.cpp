@@ -23,8 +23,6 @@
 #include <qapplication.h>
 #include <qeventloop.h>
 #include <qtooltip.h>
-// FIXME remove tabbar
-// #include <qtabbar.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -606,8 +604,6 @@ void Register::sortItems(void)
 
   // force update of the item index (row to item array)
   m_listsDirty = true;
-  // FIXME don't do the updateRegister here directly
-  // updateRegister();
 }
 
 TransactionSortField Register::primarySortKey(void) const
@@ -726,13 +722,16 @@ void Register::setupItemIndex(int rowCount)
 
 void Register::drawContents( QPainter *p, int cx, int cy, int cw, int ch )
 {
-  // qDebug("Register::drawContents(%d,%d,%d,%d) started. updateRegister=%d", cx, cy, cw, ch, m_listsDirty);
+  // the QTable::drawContents() method does not honor the block update flag
+  // so we take care of it here
+  if ( testWState(WState_Visible|WState_BlockUpdates) != WState_Visible )
+    return;
+
   if(m_listsDirty) {
     updateRegister(KMyMoneySettings::ledgerLens() | !KMyMoneySettings::transactionForm());
   }
 
   QTable::drawContents(p, cx, cy, cw, ch);
-  // qDebug("Register::drawContents() end");
 }
 
 void Register::updateRegister(bool forceUpdateRowHeight)
@@ -774,8 +773,7 @@ void Register::updateRegister(bool forceUpdateRowHeight)
     bool updatesEnabled = isUpdatesEnabled();
     setUpdatesEnabled(false);
     setNumRows(rowCount);
-    if(updatesEnabled)
-      setUpdatesEnabled(true);
+    setUpdatesEnabled(updatesEnabled);
 
     // if we need to update the headers, we do it now for all rows
     // again we make sure to suppress screen updates
@@ -846,6 +844,7 @@ void Register::resize(void)
 
 void Register::resize(int col)
 {
+  bool enabled = isUpdatesEnabled();
   setUpdatesEnabled(false);
 
   // resize the register
@@ -916,7 +915,7 @@ void Register::resize(int col)
   }
   setColumnWidth(col, w);
 
-  setUpdatesEnabled(true);
+  setUpdatesEnabled(enabled);
   updateContents();
 }
 
@@ -1279,9 +1278,10 @@ void Register::slotDoubleClicked(int row, int, int, const QPoint&)
 void Register::slotEnsureItemVisible(void)
 {
   // make sure to catch latest changes
+  bool enabled = isUpdatesEnabled();
   setUpdatesEnabled(false);
   updateRegister();
-  setUpdatesEnabled(true);
+  setUpdatesEnabled(enabled);
 
   RegisterItem* item = m_ensureVisibleItem;
   RegisterItem* prev = item->prevItem();
@@ -1420,31 +1420,6 @@ void Register::tabOrder(QWidgetList& tabOrderWidgets, KMyMoneyRegister::Transact
 {
   t->tabOrderInRegister(tabOrderWidgets);
 }
-
-// FIXME remove tabbar
-#if 0
-int Register::action(QMap<QString, QWidget*>& editWidgets) const
-{
-  KMyMoneyComboAction* comboBox = dynamic_cast<KMyMoneyComboAction*>(editWidgets["action"]);
-  Q_ASSERT(comboBox);
-  return comboBox->action();
-}
-
-void Register::setProtectedAction(QMap<QString, QWidget*>& editWidgets, ProtectedAction action)
-{
-  KMyMoneyComboAction* comboBox = dynamic_cast<KMyMoneyComboAction*>(editWidgets["action"]);
-  Q_ASSERT(comboBox);
-
-  for(int i = 0; i < KMyMoneyRegister::MaxAction; ++i) {
-    comboBox->protectItem(i, false);
-    if(action == ProtectAll
-    || (action == ProtectTransfer && i == KMyMoneyRegister::ActionTransfer)
-    || (action == ProtectNonTransfer && i != KMyMoneyRegister::ActionTransfer))
-      comboBox->protectItem(i, true);
-  }
-
-}
-#endif
 
 void Register::removeEditWidgets(QMap<QString, QWidget*>& editWidgets)
 {
