@@ -174,16 +174,20 @@ TransactionForm::TransactionForm(QWidget *parent, const char *name) :
   p.setDisabled(cg);
   setPalette(p);
 
-  kMyMoneyDateInput dateInput(0, "editDate");
-  KMyMoneyCategory category(0, "category", true);
-
-  // extract the maximal sizeHint height
-  m_rowHeight = QMAX(dateInput.sizeHint().height(), category.sizeHint().height());
-
   // never show vertical scroll bars
   setVScrollBarMode(QScrollView::AlwaysOff);
 
   slotSetTransaction(0);
+}
+
+void TransactionForm::drawContents( QPainter *p, int cx, int cy, int cw, int ch )
+{
+  // the QTable::drawContents() method does not honor the block update flag
+  // so we take care of it here
+  if ( testWState(WState_Visible|WState_BlockUpdates) != WState_Visible )
+    return;
+
+  QTable::drawContents(p, cx, cy, cw, ch);
 }
 
 bool TransactionForm::focusNextPrevChild(bool next)
@@ -203,6 +207,7 @@ void TransactionForm::slotSetTransaction(KMyMoneyRegister::Transaction* transact
   if(!KMyMoneySettings::transactionForm())
     return;
 
+  bool enabled = isUpdatesEnabled();
   setUpdatesEnabled(false);
 
   if(m_transaction) {
@@ -215,15 +220,21 @@ void TransactionForm::slotSetTransaction(KMyMoneyRegister::Transaction* transact
     setNumCols(1);
   }
 
+  kMyMoneyDateInput dateInput(0, "editDate");
+  KMyMoneyCategory category(0, "category", true);
+
+  // extract the maximal sizeHint height
+  int height = QMAX(dateInput.sizeHint().height(), category.sizeHint().height());
+
   for(int row = 0; row < numRows(); ++row)
-    QTable::setRowHeight(row, m_rowHeight-4);  // adjust the max by 4 pixels
+    QTable::setRowHeight(row, height);
 
   // adjust vertical size of form table
-  int height = (m_rowHeight-4) * numRows();
+  height *= numRows();
   setMaximumHeight(height);
   setMinimumHeight(height);
 
-  setUpdatesEnabled(true);
+  setUpdatesEnabled(enabled);
 
   // force resizeing of the columns
   QTimer::singleShot(0, this, SLOT(resize()));
@@ -320,6 +331,7 @@ void TransactionForm::resize(void)
 
 void TransactionForm::resize(int col)
 {
+  bool enabled = isUpdatesEnabled();
   setUpdatesEnabled(false);
 
   // resize the register
@@ -343,8 +355,8 @@ void TransactionForm::resize(int col)
   if(col < nc && w >= 0)
     setColumnWidth(col, w);
 
-  setUpdatesEnabled(true);
-  repaintContents(false);
+  setUpdatesEnabled(enabled);
+  updateContents();
 }
 
 // needed to duplicate this here, as the QTable::tableSize method is private :-(

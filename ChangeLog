@@ -1,3 +1,7 @@
+2006-10-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem in the ledger code when loading a different file
+  * Fixed size problem of combo boxes in transaction form
+
 2006-10-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem with account selector dialog
   * Fixed display problem when switching to / from reconciliation mode

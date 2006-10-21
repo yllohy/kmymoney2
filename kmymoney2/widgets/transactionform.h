@@ -145,6 +145,11 @@ public:
 
 protected:
   /**
+    * reimplemented to support QWidget::WState_BlockUpdates
+    */
+  void drawContents(QPainter *p, int cx, int cy, int cw, int ch);
+
+  /**
     * reimplemented to prevent normal mouse press behavior
     */
   void contentsMousePressEvent(QMouseEvent* ev) { ev->ignore(); }
@@ -194,7 +199,6 @@ signals:
 
 protected:
   KMyMoneyRegister::Transaction*       m_transaction;
-  int                                  m_rowHeight;
   QColorGroup                          m_cellColorGroup;
   TabBar*                              m_tabBar;
 };

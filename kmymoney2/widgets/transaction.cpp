@@ -315,7 +315,6 @@ int Transaction::formRowHeight(int /*row*/)
 void Transaction::setupForm(TransactionForm* form)
 {
   m_form = form;
-  form->setUpdatesEnabled(false);
   form->verticalHeader()->setUpdatesEnabled(false);
   form->horizontalHeader()->setUpdatesEnabled(false);
 
@@ -334,7 +333,6 @@ void Transaction::setupForm(TransactionForm* form)
   }
   form->horizontalHeader()->setUpdatesEnabled(true);
   form->verticalHeader()->setUpdatesEnabled(true);
-  form->setUpdatesEnabled(true);
 
   loadTab(form);
 }

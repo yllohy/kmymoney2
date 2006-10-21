@@ -346,7 +346,8 @@ void KGlobalLedgerView::slotLoadView(void)
         d->m_inLoading = true;
         loadView();
         m_needReload = false;
-        m_newAccountLoaded = false;
+        // force a new account if the current one is empty
+        m_newAccountLoaded = m_account.id().isEmpty();
       }
     }
   }
@@ -618,6 +619,7 @@ void KGlobalLedgerView::slotUpdateViewPos(void)
 
   if(d->m_startPoint == QPoint(-1, -1)) {
     m_register->ensureItemVisible(m_register->focusItem());
+    m_register->updateContents();
   } else {
     m_register->setContentsPos(d->m_startPoint.x(), d->m_startPoint.y());
     m_register->repaintContents();
