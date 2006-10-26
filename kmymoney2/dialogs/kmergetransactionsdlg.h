@@ -48,7 +48,7 @@ public:
     *         selected transaction. If idx is out of bounds,
     *         0 will be returned.
     */
-  virtual KMyMoneyTransaction* transaction(const int idx) const { return &(m_transactionList[idx]); }
+  virtual KMyMoneyTransaction* transaction(const int idx) const { return (idx > (m_transactionList.size()-1) || idx < 0) ? 0 : &(m_transactionList[idx]); }
 
   /**
     * This method is used by the IMyMoneyRegisterParent interface.  It is not
