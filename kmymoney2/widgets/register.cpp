@@ -695,7 +695,9 @@ RegisterItem* Register::lastItem(void) const
 void Register::setupItemIndex(int rowCount)
 {
   // setup index array
+  m_itemIndex.clear();
   m_itemIndex.reserve(rowCount);
+
   // fill index array
   rowCount = 0;
   RegisterItem* prev = 0;
@@ -714,7 +716,7 @@ void Register::setupItemIndex(int rowCount)
     prev = item;
     if(item->isVisible()) {
       for(int j = item->numRowsRegister(); j; --j) {
-        m_itemIndex[rowCount++] = item;
+        m_itemIndex.push_back(item);
       }
     }
   }
@@ -782,7 +784,7 @@ void Register::updateRegister(bool forceUpdateRowHeight)
 
       verticalHeader()->setUpdatesEnabled(false);
 
-      for(int i = 0; i < numRows(); ++i) {
+      for(int i = 0; i < rowCount; ++i) {
         RegisterItem* item = itemAtRow(i);
         verticalHeader()->resizeSection(i, item->rowHeightHint());
       }
@@ -809,8 +811,8 @@ int Register::rowHeightHint(void) const
 void Register::paintCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg)
 {
   // determine the item that we need to paint in the row and call it's paintRegisterCell() method
-  if(row < 0 || ((unsigned)row) > m_itemIndex.capacity()) {
-    qDebug("Register::paintCell: row %d out of bounds %d", row, m_itemIndex.capacity());
+  if(row < 0 || ((unsigned)row) > m_itemIndex.size()) {
+    qDebug("Register::paintCell: row %d out of bounds %d", row, m_itemIndex.size());
     return;
   }
 
@@ -1069,7 +1071,8 @@ void Register::doSelectItems(int from, int to, bool selected)
 
 RegisterItem* Register::itemAtRow(int row) const
 {
-  if(row >= 0 && (unsigned)row < m_itemIndex.capacity()) {
+  qDebug("capacity: %d\nsize: %d", m_itemIndex.capacity(), m_itemIndex.size());
+  if(row >= 0 && (unsigned)row < m_itemIndex.size()) {
     return m_itemIndex[row];
   }
   return 0;
@@ -1140,7 +1143,7 @@ void Register::contentsMouseReleaseEvent( QMouseEvent *e )
 
 void Register::selectItem(int row, int col, int button, const QPoint& /* mousePos */)
 {
-  if(row >= 0 && (unsigned)row < m_itemIndex.capacity()) {
+  if(row >= 0 && (unsigned)row < m_itemIndex.size()) {
     RegisterItem* item = m_itemIndex[row];
     // if it has an id, select it
     if(!item->id().isEmpty()) {
@@ -1263,7 +1266,7 @@ void Register::ensureItemVisible(RegisterItem* item)
 
 void Register::slotDoubleClicked(int row, int, int, const QPoint&)
 {
-  if(row >= 0 && (unsigned)row < m_itemIndex.capacity()) {
+  if(row >= 0 && (unsigned)row < m_itemIndex.size()) {
     RegisterItem* p = m_itemIndex[row];
     if(p->isSelectable()) {
       m_ignoreNextButtonRelease = true;

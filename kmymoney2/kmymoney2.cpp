@@ -3466,7 +3466,6 @@ void KMyMoney2App::slotTransactionsDelete(void)
       if(KMessageBox::questionYesNo(this, msg, i18n("Delete transaction")) == KMessageBox::Yes) {
         doDeleteTransactions();
       }
-      slotStatusProgressBar(-1, -1);
       slotStatusMsg(prevMsg);
     }
   }
@@ -3539,6 +3538,7 @@ void KMyMoney2App::doDeleteTransactions(void)
     }
     slotStatusProgressBar(i++, 0);
   }
+  slotStatusProgressBar(-1, -1);
 }
 
 void KMyMoney2App::slotTransactionsNew(void)
@@ -3842,11 +3842,13 @@ void KMyMoney2App::slotEndMatch(void)
         ++it_split;
       }
 
+      bool enabled = MyMoneyFile::instance()->signalsBlocked();
+      MyMoneyFile::instance()->blockSignals(true);
       MyMoneyFile::instance()->modifyTransaction(startMatchTransaction);
+      MyMoneyFile::instance()->blockSignals(enabled);
 
       // Delete the end transaction (which is the current transaction)
       doDeleteTransactions();
-
     }
     catch(MyMoneyException *e)
     {
