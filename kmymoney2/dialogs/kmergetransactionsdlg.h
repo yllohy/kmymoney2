@@ -18,6 +18,8 @@
 #ifndef KMERGETRANSACTIONSDLG_H
 #define KMERGETRANSACTIONSDLG_H
 
+#include <kdebug.h>
+
 class QResizeEvent;
 
 #include "../dialogs/kmergetransactionsdlgdecl.h"
@@ -48,7 +50,14 @@ public:
     *         selected transaction. If idx is out of bounds,
     *         0 will be returned.
     */
-  virtual KMyMoneyTransaction* transaction(const int idx) const { return (idx > (m_transactionList.size()-1) || idx < 0) ? 0 : &(m_transactionList[idx]); }
+  virtual KMyMoneyTransaction* transaction(const int idx) const 
+  {
+    unsigned uidx = static_cast<unsigned>(idx);
+    if ( uidx >= m_transactionList.size() )
+      return NULL;
+    else
+      return &(m_transactionList[uidx]);
+  }
 
   /**
     * This method is used by the IMyMoneyRegisterParent interface.  It is not
@@ -66,7 +75,7 @@ public:
     *         of bounds, 0 will be returned as value. For liability type
     *         accounts, the sign will be inverted for display purposes.
     */
-  virtual const MyMoneyMoney balance(const int idx) const { return 0; }
+  virtual const MyMoneyMoney balance(const int) const { return 0; }
 
   /**
     * This method is used by the IMyMoneyRegisterParent interface.
