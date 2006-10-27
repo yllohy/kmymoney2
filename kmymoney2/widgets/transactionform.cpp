@@ -62,6 +62,15 @@ TabBar::SignalEmissionE TabBar::setSignalEmission(TabBar::SignalEmissionE type)
   return _type;
 }
 
+int TabBar::currentTab(void) const
+{
+  QMap<int, int>::const_iterator it;
+  it = m_idMap.find(QTabBar::currentTab());
+  if(it != m_idMap.end())
+    return *it;
+  return -1;
+}
+
 void TabBar::setCurrentTab(int id)
 {
   QMap<int, int>::const_iterator it;

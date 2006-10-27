@@ -3584,7 +3584,8 @@ void KMyMoney2App::slotTransactionsEditSplits(void)
 
     if(m_transactionEditor) {
       if(m_transactionEditor->slotEditSplits() == QDialog::Accepted) {
-        m_transactionEditor->enterTransactions();
+        QCString id;
+        m_transactionEditor->enterTransactions(id);
       }
     }
     deleteTransactionEditor();
@@ -3610,8 +3611,12 @@ void KMyMoney2App::slotTransactionsEnter(void)
   if(kmymoney2->action("transaction_enter")->isEnabled()) {
     // qDebug("KMyMoney2App::slotTransactionsEnter");
     if(m_transactionEditor) {
-      if(m_transactionEditor->enterTransactions())
+      QCString newId;
+      if(m_transactionEditor->enterTransactions(newId))
         deleteTransactionEditor();
+      if(!newId.isEmpty()) {
+        myMoneyView->slotLedgerSelected(m_selectedAccount.id(), newId);
+      }
     }
     updateActions();
   }

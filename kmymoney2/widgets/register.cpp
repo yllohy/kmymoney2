@@ -477,14 +477,19 @@ bool Register::eventFilter(QObject* o, QEvent* e)
 
 void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColumn)
 {
+  bool enabled = isUpdatesEnabled();
+  setUpdatesEnabled(false);
+
   for(int i = 0; i < MaxColumns; ++i)
     hideColumn(i);
 
   horizontalHeader()->setLabel(PaymentColumn, i18n("Payment made from account", "Payment"));
   horizontalHeader()->setLabel(DepositColumn, i18n("Deposit into account", "Deposit"));
 
-  if(account.id().isEmpty())
+  if(account.id().isEmpty()) {
+    setUpdatesEnabled(enabled);
     return;
+  }
 
   // turn on standard columns
   showColumn(DateColumn);
@@ -559,6 +564,8 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
       m_lastCol = BalanceColumn;
       break;
   }
+
+  setUpdatesEnabled(enabled);
 }
 
 bool Register::focusNextPrevChild(bool next)
@@ -1071,7 +1078,6 @@ void Register::doSelectItems(int from, int to, bool selected)
 
 RegisterItem* Register::itemAtRow(int row) const
 {
-  qDebug("capacity: %d\nsize: %d", m_itemIndex.capacity(), m_itemIndex.size());
   if(row >= 0 && (unsigned)row < m_itemIndex.size()) {
     return m_itemIndex[row];
   }

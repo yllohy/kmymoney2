@@ -70,6 +70,8 @@ public:
 
   QTab* tab(int id) const;
 
+  int currentTab(void) const;
+
 public slots:
   /**
     * overridden for internal reasons, API not changed

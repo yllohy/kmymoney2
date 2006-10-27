@@ -600,23 +600,30 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
 
     slotUpdateCategory(categoryId);
 
-    // try to preset for specific action
-    if(m_transaction.id().isEmpty() && action != KMyMoneyRegister::ActionNone) {
+    // try to preset for specific action if a new transaction is being started
+    if(m_transaction.id().isEmpty()) {
       if((w = haveWidget("categoryLabel")) != 0) {
-        QLabel *categoryLabel = dynamic_cast<QLabel*>(w);
-        if(action == KMyMoneyRegister::ActionTransfer)
-          categoryLabel->setText(i18n("Transfer to"));
-        if((w = haveWidget("cashflow")) != 0) {
-          KMyMoneyCashFlowCombo* cashflow = dynamic_cast<KMyMoneyCashFlowCombo*>(w);
-          if(action == KMyMoneyRegister::ActionDeposit)
-            cashflow->setDirection(KMyMoneyRegister::Deposit);
-          else
-            cashflow->setDirection(KMyMoneyRegister::Payment);
+        TabBar* tabbar = dynamic_cast<TabBar*>(haveWidget("tabbar"));
+        if(action == KMyMoneyRegister::ActionNone) {
+          if(tabbar) {
+            action = static_cast<KMyMoneyRegister::Action>(tabbar->currentTab());
+          }
         }
-      }
-      TabBar* tabbar = dynamic_cast<TabBar*>(haveWidget("tabbar"));
-      if(tabbar) {
-        tabbar->setCurrentTab(action);
+        if(action != KMyMoneyRegister::ActionNone) {
+          QLabel *categoryLabel = dynamic_cast<QLabel*>(w);
+          if(action == KMyMoneyRegister::ActionTransfer)
+            categoryLabel->setText(i18n("Transfer to"));
+          if((w = haveWidget("cashflow")) != 0) {
+            KMyMoneyCashFlowCombo* cashflow = dynamic_cast<KMyMoneyCashFlowCombo*>(w);
+            if(action == KMyMoneyRegister::ActionDeposit)
+              cashflow->setDirection(KMyMoneyRegister::Deposit);
+            else
+              cashflow->setDirection(KMyMoneyRegister::Payment);
+          }
+          if(tabbar) {
+            tabbar->setCurrentTab(action);
+          }
+        }
       }
     }
 
@@ -1523,8 +1530,10 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
   return true;
 }
 
-bool StdTransactionEditor::enterTransactions(void)
+bool StdTransactionEditor::enterTransactions(QCString& newId)
 {
+  newId = QCString();
+
   // make sure to run through all stuff that is tied to 'focusout events'.
   m_regForm->parentWidget()->setFocus();
   QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 10);
@@ -1568,6 +1577,10 @@ bool StdTransactionEditor::enterTransactions(void)
         if((*it_ts).id().isEmpty()) {
           // add new transaction
           MyMoneyFile::instance()->addTransaction(*it_ts);
+
+          // pass the newly assigned id on to the caller
+          newId = (*it_ts).id();
+
           // if a new transaction has a valid number, keep it with the account
           QString number = (*it_ts).splits()[0].number();
           if(!number.isEmpty() && number.toULongLong() != 0) {

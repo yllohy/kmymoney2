@@ -62,7 +62,7 @@ public:
     */
   void setup(QWidgetList& tabOrderWidgets, const MyMoneyAccount& account = MyMoneyAccount(), KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
 
-  virtual bool enterTransactions(void) = 0;
+  virtual bool enterTransactions(QCString&) = 0;
   // void tabOrder(QWidgetList& tabOrderWidgets) const;
 
   /**
@@ -170,7 +170,7 @@ public:
   StdTransactionEditor();
   StdTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
 
-  bool enterTransactions(void);
+  bool enterTransactions(QCString&);
 
   bool isComplete(void) const;
   QWidget* firstWidget(void) const;
