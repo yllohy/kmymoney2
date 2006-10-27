@@ -1194,6 +1194,8 @@ void Register::selectItem(RegisterItem* item)
   if(!item)
     return;
 
+  kdDebug(2) << "Register::selectItem(" << item << "): type is " << typeid(*item).name() << endl;
+  
   Qt::ButtonState buttonState = m_buttonState;
   m_buttonState = Qt::NoButton;
 
@@ -1568,3 +1570,4 @@ void Register::keyPressEvent(QKeyEvent* ev)
 
 #include "register.moc"
 
+// vim:cin:si:ai:et:ts=2:sw=2:
