@@ -191,12 +191,16 @@ int main(int argc, char *argv[])
             if (!client->send(primary, "kmymoney2app", "webConnect(QString,QCString)",data))
               qDebug("Unable to launch WebConnect via DCOP.");
 
+            delete kmymoney2;
+            delete splash;
             break;
           }
         }
 
         if(KMessageBox::questionYesNo(0, i18n("Another instance of KMyMoney is already running. Do you want to quit?")) == KMessageBox::Yes) {
           rc = 1;
+          delete kmymoney2;
+          delete splash;
           break;
         }
       }

@@ -1,3 +1,7 @@
+2006-10-29 Ace Jones <acejones@users.sourceforge.net>
+  * Fixed a memory leak and crash when a second instance of the app
+    is aborted
+
 2006-10-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Optimized register repainting
   * Select a newly created transaction automatically once entered
