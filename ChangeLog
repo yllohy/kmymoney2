@@ -1,3 +1,9 @@
+2006-10-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a memory leak and crash when starting with either '--help'
+    or '--dump-actions'. There is still a leak with '--help' but that
+    remains due to the fact, that exit() is called within the constructor
+    and there is no way to obtain a pointer to the KApplication object
+
 2006-10-29 Ace Jones <acejones@users.sourceforge.net>
   * Fixed a memory leak and crash when a second instance of the app
     is aborted

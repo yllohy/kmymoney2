@@ -26,6 +26,7 @@
 #include <qwidgetlist.h>
 #include <qdatetime.h>
 #include <qstringlist.h>
+#include <qeventloop.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -69,7 +70,16 @@ QTime timer;
 bool timersOn = false;
 
 KMyMoney2App* kmymoney2;
-KCmdLineArgs *args;
+
+static KCmdLineArgs* args = 0;
+
+static void _cleanup(void)
+{
+#ifdef _CHECK_MEMORY
+  chkmem.CheckMemoryLeak( false );
+  _CheckMemory_End();
+#endif
+}
 
 int main(int argc, char *argv[])
 {
@@ -112,6 +122,7 @@ int main(int argc, char *argv[])
 #ifdef _CHECK_MEMORY
   _CheckMemory_Init(0);
 #endif
+  atexit(_cleanup);
 
   KMyMoneyUtils::checkConstants();
 
@@ -158,6 +169,15 @@ int main(int argc, char *argv[])
 #if KMM_DEBUG
   if(args->isSet("dump-actions")) {
     kmymoney2->dumpActions();
+
+    // Before we delete the application, we make sure that we destroy all
+    // widgets by running the event loop for some time to catch all those
+    // widgets that are requested to be destroyed using the deleteLater() method.
+    QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 10);
+
+    delete kmymoney2;
+    delete splash;
+    delete a;
     exit(0);
   }
 #endif
@@ -256,11 +276,6 @@ int main(int argc, char *argv[])
   } while(0);
 
   delete a;
-
-#ifdef _CHECK_MEMORY
-  chkmem.CheckMemoryLeak( false );
-  _CheckMemory_End();
-#endif
 
   return rc;
 }
