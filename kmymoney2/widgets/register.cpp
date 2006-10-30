@@ -1153,7 +1153,11 @@ void Register::selectItem(int row, int col, int button, const QPoint& /* mousePo
     RegisterItem* item = m_itemIndex[row];
     // if it has an id, select it
     if(!item->id().isEmpty()) {
+      QCString id = item->id();
       selectItem(item);
+      // selectItem() might have changed the pointers, so we
+      // need to reconstruct it here
+      item = itemById(id);
       Transaction* t = dynamic_cast<Transaction*>(item);
       switch(button & Qt::MouseButtonMask) {
         case Qt::RightButton:
@@ -1204,14 +1208,17 @@ void Register::selectItem(RegisterItem* item)
   
   Qt::ButtonState buttonState = m_buttonState;
   m_buttonState = Qt::NoButton;
-
+  
   if(item->isSelectable()) {
+    QCString id = item->id();
     int cnt = selectedItemsCount();
     if(buttonState & Qt::LeftButton) {
       switch(buttonState & (Qt::ShiftButton | Qt::ControlButton)) {
         default:
           if((cnt != 1) || ((cnt == 1) && !item->isSelected())) {
             emit aboutToSelectItem(item);
+            // pointer 'item' might have changed. reconstruct it.
+            item = itemById(id);
             unselectItems();
             item->setSelected(true);
             setFocusItem(item);
@@ -1222,12 +1229,16 @@ void Register::selectItem(RegisterItem* item)
         case Qt::ControlButton:
           // toggle selection state of current item
           emit aboutToSelectItem(item);
+          // pointer 'item' might have changed. reconstruct it.
+          item = itemById(id);
           item->setSelected(!item->isSelected());
           setFocusItem(item);
           break;
 
         case Qt::ShiftButton:
           emit aboutToSelectItem(item);
+          // pointer 'item' might have changed. reconstruct it.
+          item = itemById(id);
           unselectItems();
           selectItems(rowToIndex(m_selectAnchor->startRow()), rowToIndex(item->startRow()));
           setFocusItem(item);
@@ -1243,6 +1254,8 @@ void Register::selectItem(RegisterItem* item)
       if(!(buttonState & (Qt::ShiftButton | Qt::ControlButton))) {
         if((cnt > 0) && (!item->isSelected())) {
           emit aboutToSelectItem(item);
+          // pointer 'item' might have changed. reconstruct it.
+          item = itemById(id);
           unselectItems();
           item->setSelected(true);
           setFocusItem(item);
@@ -1252,6 +1265,8 @@ void Register::selectItem(RegisterItem* item)
     } else {
       // we get here when called by application logic
       emit aboutToSelectItem(item);
+      // pointer 'item' might have changed. reconstruct it.
+      item = itemById(id);
       unselectItems();
       item->setSelected(true);
       setFocusItem(item);
@@ -1471,6 +1486,18 @@ void Register::slotToggleErronousTransactions(void)
 
   // restart timer
   QTimer::singleShot(500, this, SLOT(slotToggleErronousTransactions()));
+}
+
+RegisterItem* Register::itemById(const QCString& id) const
+{
+  for(QValueVector<RegisterItem*>::size_type i = 0; i < m_items.size(); ++i) {
+    RegisterItem* item = m_items[i];
+    if(!item)
+      continue;
+    if(item->id() == id)
+      return item;
+  }
+  return 0;
 }
 
 RegisterItem* Register::scrollPage(int key)
