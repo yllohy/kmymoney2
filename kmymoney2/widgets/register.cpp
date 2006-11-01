@@ -1151,31 +1151,31 @@ void Register::selectItem(int row, int col, int button, const QPoint& /* mousePo
 {
   if(row >= 0 && (unsigned)row < m_itemIndex.size()) {
     RegisterItem* item = m_itemIndex[row];
-    // if it has an id, select it
-    if(!item->id().isEmpty()) {
-      QCString id = item->id();
-      selectItem(item);
-      // selectItem() might have changed the pointers, so we
-      // need to reconstruct it here
-      item = itemById(id);
-      Transaction* t = dynamic_cast<Transaction*>(item);
-      switch(button & Qt::MouseButtonMask) {
-        case Qt::RightButton:
-          emit openContextMenu();
-          break;
+    QCString id = item->id();
+    selectItem(item);
+    // selectItem() might have changed the pointers, so we
+    // need to reconstruct it here
+    item = itemById(id);
+    Transaction* t = dynamic_cast<Transaction*>(item);
+    if(t) {
+      if(!id.isEmpty()) {
+        switch(button & Qt::MouseButtonMask) {
+          case Qt::RightButton:
+            emit openContextMenu();
+            break;
 
-        case Qt::LeftButton:
-          if(t && col == ReconcileFlagColumn && selectedItemsCount() == 1)
-            emit reconcileStateColumnClicked(t);
-          break;
+          case Qt::LeftButton:
+            if(t && col == ReconcileFlagColumn && selectedItemsCount() == 1)
+              emit reconcileStateColumnClicked(t);
+            break;
 
-        default:
-          break;
+          default:
+            break;
+        }
+      } else {
+        emit emptyItemSelected();
       }
     }
-    // if it does not, send out a signal if it is a transaction
-    else if(dynamic_cast<Transaction*>(item))
-      emit emptyItemSelected();
   }
 }
 
@@ -1205,10 +1205,10 @@ void Register::selectItem(RegisterItem* item)
     return;
 
   kdDebug(2) << "Register::selectItem(" << item << "): type is " << typeid(*item).name() << endl;
-  
+
   Qt::ButtonState buttonState = m_buttonState;
   m_buttonState = Qt::NoButton;
-  
+
   if(item->isSelectable()) {
     QCString id = item->id();
     int cnt = selectedItemsCount();
@@ -1490,6 +1490,9 @@ void Register::slotToggleErronousTransactions(void)
 
 RegisterItem* Register::itemById(const QCString& id) const
 {
+  if(id.isEmpty())
+    return m_lastItem;
+
   for(QValueVector<RegisterItem*>::size_type i = 0; i < m_items.size(); ++i) {
     RegisterItem* item = m_items[i];
     if(!item)

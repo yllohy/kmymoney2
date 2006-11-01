@@ -3626,7 +3626,7 @@ void KMyMoney2App::slotTransactionsCancelOrEnter(void)
 {
   // qDebug("KMyMoney2App::slotCancelOrEndEdit");
   if(m_transactionEditor) {
-    if(KMyMoneySettings::focusChangeIsEnter()) {
+    if(KMyMoneySettings::focusChangeIsEnter() && kmymoney2->action("transaction_enter")->isEnabled()) {
       slotTransactionsEnter();
     } else {
       slotTransactionsCancel();

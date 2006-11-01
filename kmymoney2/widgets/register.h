@@ -291,7 +291,8 @@ protected:
 
   /**
     * This method determines the pointer to a RegisterItem
-    * based on the item's @a id.
+    * based on the item's @a id. If @a id is empty, this method
+    * returns @a m_lastItem.
     *
     * @param id id of the item to be searched
     * @return pointer to RegisterItem or 0 if not found

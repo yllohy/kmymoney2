@@ -1,3 +1,6 @@
+2006-11-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem with transaction selection
+
 2006-10-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a memory leak and crash when starting with either '--help'
     or '--dump-actions'. There is still a leak with '--help' but that

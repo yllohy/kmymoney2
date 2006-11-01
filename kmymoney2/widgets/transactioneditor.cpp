@@ -1148,11 +1148,14 @@ bool StdTransactionEditor::isComplete(void) const
     if(amount && !(amount->value().isZero()))
       break;
 
-    if(reconcile && reconcile->state() != MyMoneySplit::Unknown)
-      break;
+    // the following two widgets are only checked if we are editing multiple transactions
+    if(m_transactions.count() > 1) {
+      if(reconcile && reconcile->state() != MyMoneySplit::Unknown)
+        break;
 
-    if(cashflow && cashflow->direction() != KMyMoneyRegister::Unknown)
-      break;
+      if(cashflow && cashflow->direction() != KMyMoneyRegister::Unknown)
+        break;
+    }
   }
   return it_w != m_editWidgets.end();
 }
