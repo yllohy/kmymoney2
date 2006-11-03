@@ -1604,6 +1604,13 @@ void Register::keyPressEvent(QKeyEvent* ev)
   }
 }
 
+Transaction* Register::transactionFactory(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split)
+{
+  Transaction* t = 0;
+  t = new KMyMoneyRegister::StdTransaction(parent, objects, transaction, split);
+
+  return t;
+}
 #include "register.moc"
 
 // vim:cin:si:ai:et:ts=2:sw=2:

@@ -1,3 +1,7 @@
+2006-11-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed crash when adding new transactions without transaction form active
+  * Started work on transaction factory for register
+
 2006-11-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem with transaction selection
 

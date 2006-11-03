@@ -261,6 +261,19 @@ public:
 
   bool markErronousTransactions(void) const { return (m_markErronousTransactions & 0x01) != 0; }
 
+  /**
+    * This method creates a specifc transaction according to the
+    * transaction passed in @a transaction.
+    *
+    * @param parent pointer to register where the created object should be added
+    * @param objects pointer to MyMoneyObjectContainer to be used
+    * @param transaction the transaction which should be used to create the object
+    * @param split the split of the transaction which should be used to create the object
+    *
+    * @return pointer to created object (0 upon failure)
+    */
+  static Transaction* transactionFactory(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split);
+
 protected:
   void drawContents(QPainter *p, int cx, int cy, int cw, int ch);
 

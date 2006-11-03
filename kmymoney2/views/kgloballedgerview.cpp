@@ -478,7 +478,7 @@ void KGlobalLedgerView::loadView(void)
     // create the elements for the register
     QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it;
     for(it = m_transactionList.begin(); it != m_transactionList.end(); ++it) {
-      new KMyMoneyRegister::StdTransaction(m_register, m_objects, (*it).first, (*it).second);
+      KMyMoneyRegister::Register::transactionFactory(m_register, m_objects, (*it).first, (*it).second);
     }
 
     // add the group markers
@@ -1143,8 +1143,11 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
     TransactionEditorContainer* parent;
     if(m_formFrame->isVisible())
       parent = m_form;
-    else
+    else {
       parent = m_register;
+      // make sure, the height of the table is correct
+      m_register->updateRegister(KMyMoneySettings::ledgerLens() | !KMyMoneySettings::transactionForm());
+    }
 
     // TODO create the right editor depending on the account type we look at
     editor = new StdTransactionEditor(parent, m_objects, item, list, m_lastPostDate);
