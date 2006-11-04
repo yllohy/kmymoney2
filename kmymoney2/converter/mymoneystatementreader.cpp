@@ -71,6 +71,12 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
   bool result = true;
 
   //
+  // For testing, save the statement to an XML file
+  // (uncomment this line)
+  //
+  //MyMoneyStatement::writeXMLFile(s,"Imported.Xml");
+
+  //
   // Select the account
   //
 
@@ -265,11 +271,12 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         QString nametoken = " " + security.name();
 
         if (
-          t_in.m_strSecurity.startsWith(symboltoken,false)
-          ||
-          (t_in.m_strSecurity == nametoken)
-        )
+          ( t_in.m_strSecurity.startsWith(symboltoken,false) || (t_in.m_strSecurity == nametoken) )
+          &&
+          (t_in.m_eAction != MyMoneyStatement::Transaction::eaCashDividend) // Bug #1581788: Should not update a price for cash dividends
+          )
         {
+          
           thisaccount = file->account(*it_account);
           found = true;
 
