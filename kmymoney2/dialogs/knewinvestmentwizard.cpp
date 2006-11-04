@@ -26,6 +26,7 @@
 #include <kcombobox.h>
 #include <kurlrequester.h>
 #include <klocale.h>
+#include <kapplication.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -141,9 +142,7 @@ void KNewInvestmentWizard::init(void)
   // load the widget with the available currencies
   m_tradingCurrencyEdit->update(QCString());
 
-  // FIXME for now, we don't have online help
-  helpButton()->hide();
-
+  connect(helpButton(),SIGNAL(clicked()), this, SLOT(slotHelp(void)));
   connect(m_investmentName, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
   connect(m_investmentSymbol, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
   connect(m_fraction, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
@@ -195,6 +194,11 @@ void KNewInvestmentWizard::slotCheckPage(void)
     if(m_onlineFactor->isEnabled() && m_onlineFactor->value().isZero())
       setFinishEnabled(m_onlineUpdatePage, false);
   }
+}
+
+void KNewInvestmentWizard::slotHelp(void)
+{
+  kapp->invokeHelp("details.investments.newinvestmentwizard");
 }
 
 void KNewInvestmentWizard::createObjects(const QCString& parentId)

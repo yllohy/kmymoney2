@@ -76,7 +76,7 @@ protected slots:
   void slotCheckPage(void);
   void slotCheckPage(const QString&);
   void slotSourceChanged(bool);
-  
+  void slotHelp(void); 
 private:
   void init(void);
 

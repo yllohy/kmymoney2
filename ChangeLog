@@ -2,6 +2,8 @@
   * Fixed a bug where an invalid price was entered into the system for
     cash dividend investment transactions imported via OFX/AqBanking.
     Hopefully fixes 1581788.
+  * Added online help for new investment wizard.  Partially addresses
+    #1506390.
 
 2006-11-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed crash when adding new transactions without transaction form active
