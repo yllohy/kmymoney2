@@ -267,6 +267,12 @@ void MyMoneyStorageXML::readFileInformation(void)
   temp = findChildElement("VERSION", fileInfo);
   QString strVersion = QStringEmpty(temp.attribute("id"));
   fileVersionRead = strVersion.toUInt(NULL, 16);
+   
+  temp = findChildElement("FIXVERSION", fileInfo);
+  if (temp != QDomElement()) {
+    QString strFixVersion = QStringEmpty(temp.attribute("id"));
+    m_storage->setFileFixVersion (strFixVersion.toUInt());
+  }
   // FIXME The old version stuff used this rather odd number
   //       We now use increments
   if(fileVersionRead == VERSION_0_60_XML)
@@ -288,6 +294,10 @@ void MyMoneyStorageXML::writeFileInformation(QDomElement& fileInfo)
 
   version.setAttribute("id", "1");
   fileInfo.appendChild(version);
+  
+  QDomElement fixVersion = m_doc->createElement("FIXVERSION");
+  fixVersion.setAttribute("id", m_storage->fileFixVersion());
+  fileInfo.appendChild(fixVersion);
 }
 
 void MyMoneyStorageXML::writeUserInformation(QDomElement& userInfo)

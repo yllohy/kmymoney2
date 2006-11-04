@@ -63,9 +63,12 @@ public:
   virtual const MyMoneyPayee& user(void) const = 0;
   virtual const QDate& creationDate(void) const = 0;
   virtual const QDate& lastModificationDate(void) const = 0;
+  virtual const unsigned int currentFixVersion(void) const = 0;
+  virtual const unsigned int fileFixVersion(void) const = 0;
 
   // general set functions
   virtual void setUser(const MyMoneyPayee& user) = 0;
+  virtual void setFileFixVersion(const unsigned int v) = 0;
 
   // methods provided by MyMoneyKeyValueContainer
   virtual void setValue(const QCString& key, const QString& key) = 0;

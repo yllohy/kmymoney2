@@ -202,11 +202,11 @@ private:
 
   /**
     */
-  void fixFile(void);
+  void fixFile_0(void);
 
   /**
     */
-  void fixLoanAccount(MyMoneyAccount acc);
+  void fixLoanAccount_0(MyMoneyAccount acc);
 
   /**
     * This method converts a possible opening balance held with @p
@@ -217,13 +217,13 @@ private:
     *
     * @param account reference to the account object to be checked
     */
-  void fixOpeningBalance(MyMoneyAccount& account);
+  void fixOpeningBalance_0(MyMoneyAccount& account);
 
   /**
     */
-  void fixTransactions(void);
-  void fixSchedule(MyMoneySchedule sched);
-  void fixDuplicateAccounts(MyMoneyTransaction& t);
+  void fixTransactions_0(void);
+  void fixSchedule_0(MyMoneySchedule sched);
+  void fixDuplicateAccounts_0(MyMoneyTransaction& t);
 
   void createSchedule(MyMoneySchedule s, MyMoneyAccount& a);
 

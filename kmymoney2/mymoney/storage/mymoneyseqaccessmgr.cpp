@@ -92,6 +92,10 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   m_balanceCache[STD_ACC_EXPENSE] = balance;
   m_balanceCache[STD_ACC_INCOME] = balance;
   m_balanceCache[STD_ACC_EQUITY] = balance;
+  
+  // initialize for file fixes (see kmymoneyview.cpp)
+  m_currentFixVersion = 1;
+  m_fileFixVersion = 0; // default value if no fix-version in file
 }
 
 MyMoneySeqAccessMgr::~MyMoneySeqAccessMgr()

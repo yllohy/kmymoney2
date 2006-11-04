@@ -93,12 +93,15 @@ public:
   const MyMoneyPayee& user(void) const { return m_user; };
   const QDate& creationDate(void) const { return m_creationDate; };
   const QDate& lastModificationDate(void) const { return m_lastModificationDate; };
+  const unsigned int currentFixVersion(void) const { return m_currentFixVersion; };
+  const unsigned int fileFixVersion(void) const { return m_fileFixVersion; };
+
 
   // general set functions
   void setUser(const MyMoneyPayee& user) { m_user = user; touch(); };
   void setCreationDate(const QDate& val) { m_creationDate = val; touch(); };
   void setLastModificationDate(const QDate& val) { m_lastModificationDate = val; m_dirty = false; };
-
+  void setFileFixVersion(const unsigned int v) { m_fileFixVersion = v; };
   /**
     * This method is used to duplicate the MyMoneySeqAccessMgr object and return
     * a pointer to the newly created copy. The caller of this method is the
@@ -1195,6 +1198,16 @@ private:
     */
   QDate m_lastModificationDate;
 
+  /** 
+    * This member variable contains the current fix level of application
+    * data files. (see kmymoneyview.cpp)
+    */
+  unsigned int m_currentFixVersion;
+  /** 
+   * This member variable contains the current fix level of the
+   *  presently open data file. (see kmymoneyview.cpp)
+   */
+  unsigned int m_fileFixVersion;
   /**
     * This method is used to get the next valid ID for a institution
     * @return id for a institution

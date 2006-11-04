@@ -762,7 +762,17 @@ bool KMyMoneyView::initializeStorage() {
   if(config->readBoolEntry("SkipFix", false) != true) {
     try {
       // Check if we have to modify the file before we allow to work with it
-      fixFile();
+      IMyMoneyStorage* s = MyMoneyFile::instance()->storage();
+      while (s->fileFixVersion() < s->currentFixVersion()) {
+        switch (s->fileFixVersion()) {
+          case 0:
+              fixFile_0();
+              s->setFileFixVersion(1);
+              break;
+          default:
+            throw new MYMONEYEXCEPTION(i18n("Unknown fix level in input file"));
+        }
+      }
     } catch(MyMoneyException *e) {
       delete e;
       MyMoneyFile::instance()->suspendNotify(false);
@@ -1144,7 +1154,7 @@ void KMyMoneyView::selectBaseCurrency(void)
       if((*it).currencyId().isEmpty() || (*it).currencyId().length() == 0) {
         (*it).setCurrencyId(file->baseCurrency().id());
         try {
-          fixOpeningBalance(*it);
+          fixOpeningBalance_0(*it);
           file->modifyAccount(*it);
         } catch(MyMoneyException *e) {
           qDebug("Unable to setup base currency in account %s (%s): %s", (*it).name().latin1(), (*it).id().data(), e->what().latin1());
@@ -1460,7 +1470,10 @@ void KMyMoneyView::slotRememberPage(QWidget* w)
   config->sync();
 }
 
-void KMyMoneyView::fixFile(void)
+/* DO NOT ADD code to this function or any of it's called ones.
+   Instead, create a new function, fixFile_1, and modify the initializeStorage()
+   logic above to call it */
+void KMyMoneyView::fixFile_0(void)
 {
   /* (Ace) I am on a crusade against file fixups.  Whenever we have to fix the
    * file, it is really a warning.  So I'm going to print a debug warning, and
@@ -1480,10 +1493,10 @@ void KMyMoneyView::fixFile(void)
 
   ::timetrace("Fix accounts start");
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
-    fixOpeningBalance(*it_a);
+    fixOpeningBalance_0(*it_a);
     if((*it_a).accountType() == MyMoneyAccount::Loan
     || (*it_a).accountType() == MyMoneyAccount::AssetLoan) {
-      fixLoanAccount(*it_a);
+      fixLoanAccount_0(*it_a);
     }
     // until early before 0.8 release, the equity account was not saved to
     // the file. If we have an equity account with no sub-accounts but
@@ -1504,15 +1517,15 @@ void KMyMoneyView::fixFile(void)
 
   ::timetrace("Fix schedules start");
   for(it_s = scheduleList.begin(); it_s != scheduleList.end(); ++it_s) {
-    fixSchedule(*it_s);
+    fixSchedule_0(*it_s);
   }
 
   ::timetrace("Fix transactions start");
-  fixTransactions();
+  fixTransactions_0();
   ::timetrace("Fix transactions done");
 }
 
-void KMyMoneyView::fixOpeningBalance(MyMoneyAccount& acc)
+void KMyMoneyView::fixOpeningBalance_0(MyMoneyAccount& acc)
 {
   if(!acc.openingBalance().isZero()) {
     try {
@@ -1526,7 +1539,7 @@ void KMyMoneyView::fixOpeningBalance(MyMoneyAccount& acc)
   }
 }
 
-void KMyMoneyView::fixSchedule(MyMoneySchedule sched)
+void KMyMoneyView::fixSchedule_0(MyMoneySchedule sched)
 {
   MyMoneyTransaction t = sched.transaction();
   QValueList<MyMoneySplit> splitList = t.splits();
@@ -1588,7 +1601,7 @@ void KMyMoneyView::fixSchedule(MyMoneySchedule sched)
   }
 }
 
-void KMyMoneyView::fixLoanAccount(MyMoneyAccount acc)
+void KMyMoneyView::fixLoanAccount_0(MyMoneyAccount acc)
 {
   if(acc.value("final-payment").isEmpty()
   || acc.value("term").isEmpty()
@@ -1678,7 +1691,7 @@ void KMyMoneyView::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
   }
 }
 
-void KMyMoneyView::fixTransactions(void)
+void KMyMoneyView::fixTransactions_0(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -1725,7 +1738,7 @@ void KMyMoneyView::fixTransactions(void)
       }
     }
     if(hasDuplicateAccounts) {
-      fixDuplicateAccounts(t);
+      fixDuplicateAccounts_0(t);
     }
     ++cnt;
     if(!(cnt % 10))
@@ -1901,7 +1914,7 @@ void KMyMoneyView::fixTransactions(void)
   kmymoney2->slotStatusMsg(prevMsg);
 }
 
-void KMyMoneyView::fixDuplicateAccounts(MyMoneyTransaction& t)
+void KMyMoneyView::fixDuplicateAccounts_0(MyMoneyTransaction& t)
 {
   qDebug("Duplicate account in transaction %s", t.id().data());
 }

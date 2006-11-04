@@ -259,6 +259,8 @@ class MyMoneyStorageSql : public QSqlDatabase, IMyMoneyStorageFormat {
     void readSplit (MyMoneySplit& s, const QSqlQuery& q, const MyMoneyDbTable& t);
     MyMoneyKeyValueContainer readKeyValuePairs (const QString kvpType, const QString& kvpId);
     
+    void setVersion (const QString& version);
+    
     void signalProgress(int current, int total, const QString& = "");
     QString& buildError (const QSqlQuery&, const QString&);
     // data 

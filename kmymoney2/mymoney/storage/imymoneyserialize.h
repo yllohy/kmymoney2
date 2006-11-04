@@ -60,10 +60,13 @@ public:
   virtual const MyMoneyPayee& user(void) const = 0;
   virtual const QDate& creationDate(void) const = 0;
   virtual const QDate& lastModificationDate(void) const = 0;
+  virtual const unsigned int currentFixVersion(void) const = 0;
+  virtual const unsigned int fileFixVersion(void) const = 0;
 
   // general set functions
   virtual void setUser(const MyMoneyPayee& val) = 0;
   virtual void setCreationDate(const QDate& val) = 0;
+  virtual void setFileFixVersion(const unsigned int v) = 0;
 
   /**
     * This method is used to set the last modification date of

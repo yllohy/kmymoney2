@@ -808,7 +808,9 @@ void MyMoneyStorageSql::writeFileInfo() {
   else
     qs = (m_db.m_tables["kmmFileInfo"].insertString());
   q.prepare(qs);
-  q.bindValue(":version", QString("%1.%2").arg(m_majorVersion).arg(m_minorVersion));
+  q.bindValue(":version", QString("%1.%2")
+      .arg(m_majorVersion)
+          .arg((m_storage->fileFixVersion() + 1)));
   q.bindValue(":created", m_storage->creationDate());
   q.bindValue(":lastModified", m_storage->lastModificationDate());
   q.bindValue(":baseCurrency", m_storage->pairs()["kmm-baseCurrency"]);
@@ -885,7 +887,7 @@ void MyMoneyStorageSql::readFileInfo(void) {
   QValueList<MyMoneyDbField>::const_iterator ft = t.begin();
   int i = 0;
   while (ft != t.end()) {
-    CASE(version)  ;// check version == current version...
+    CASE(version)  setVersion(GETSTRING); // check version == current version...
     CASE(created) m_storage->setCreationDate(QDate::fromString(GETSTRING, Qt::ISODate));
     CASE(lastModified) m_storage->setLastModificationDate(QDate::fromString(GETSTRING, Qt::ISODate));
     CASE(hiInstitutionId) m_storage->loadInstitutionId(GETINT);
@@ -910,6 +912,16 @@ void MyMoneyStorageSql::readFileInfo(void) {
     signalProgress(i,0);
   }
   m_storage->setPairs(readKeyValuePairs("STORAGE", "").pairs());
+}
+
+void MyMoneyStorageSql::setVersion (const QString& version) {
+  m_majorVersion = version.section('.', 0, 0).toUInt();
+  m_minorVersion = version.section('.', 1, 1).toUInt();
+  // Okay, I made a cockup by forgetting to include a fixversion in the database 
+  // design, so we'll use the minor version as fix level (similar to VERSION
+  // and FIXVERSION in XML file format). A second mistake was setting minor version to 1
+  // in the first place, so we need to subtract one on reading and add one on writing (sigh)!!
+  m_storage->setFileFixVersion( m_minorVersion - 1);
 }
 
 void MyMoneyStorageSql::readInstitutions(void) {
