@@ -145,7 +145,7 @@ void MyMoneyQifReader::slotProcessBuffers(void)
     QBuffer databuffer(*it);
     databuffer.open( IO_ReadOnly );
     
-    while ( ! databuffer.atEnd() )
+    while ( ! m_userAbort && ! databuffer.atEnd() )
     {
       QCString line(80);
       databuffer.readLine( line.data(), line.size() );
