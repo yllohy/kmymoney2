@@ -287,6 +287,11 @@ protected slots:
   void slotInvestmentNew(void);
 
   /**
+    * Create a new investment in a given @p parent investment account
+    */
+  void slotInvestmentNew(MyMoneyAccount& account, const MyMoneyAccount& parent);
+
+  /**
     * This slot opens the investment editor to edit the currently
     * selected investment if possible
     */
@@ -888,19 +893,6 @@ private:
   bool isReady(void);
 
   void scheduleNew(const QCString& scheduleType);
-
-  /**
-    * For now, we only allow to edit multiple transactions that have
-    * one or two splits. More than two splits are not very well covered and
-    * we have to think about how this could be handled in a safe way so
-    * that the user does not screw up his data.
-    *
-    * This method checks that this constraint is met.
-    *
-    * @return @a true if editing selected transactions is possible
-    *         @a false if it is not.
-    */
-  bool editTransactionsAllowed(void) const;
 
   /**
     * Delete a possibly existing transaction editor but make sure to remove

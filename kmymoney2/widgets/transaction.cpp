@@ -45,6 +45,7 @@
 #include <kmymoney/transactionform.h>
 #include <kmymoney/kmymoneylineedit.h>
 #include <kmymoney/kmymoneypayee.h>
+#include <kmymoney/transactioneditor.h>
 
 #include "../kmymoneyglobalsettings.h"
 
@@ -139,9 +140,11 @@ Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, cons
   m_split(split),
   m_objects(objects),
   m_uniqueId(m_transaction.id()+m_split.id()),
+  m_formRowHeight(-1),
   m_selected(false),
   m_focus(false),
   m_erronous(false),
+  m_inEdit(false),
   m_form(0)
 {
   // load the payee
@@ -154,20 +157,20 @@ Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, cons
     m_splitCurrencyId = objects->account(m_split.accountId()).currencyId();
 
   // check if transaction is errnous or not
-  m_erronous = m_transaction.splitSum() != MyMoneyMoney(0);
+  m_erronous = !m_transaction.splitSum().isZero();
 }
 
 void Transaction::setFocus(bool focus, bool updateLens)
 {
   if(focus != m_focus) {
     m_focus = focus;
-    if(updateLens) {
-      if(KMyMoneySettings::ledgerLens() || !KMyMoneySettings::transactionForm() || KMyMoneySettings::showRegisterDetailed()) {
-        if(focus)
-          setNumRowsRegister(3);
-        else
-          setNumRowsRegister(KMyMoneySettings::showRegisterDetailed() ? 3 : 1);
-      }
+  }
+  if(updateLens) {
+    if(KMyMoneySettings::ledgerLens() || !KMyMoneySettings::transactionForm() || KMyMoneySettings::showRegisterDetailed()) {
+      if(focus)
+        setNumRowsRegister(numRowsRegister(true));
+      else
+        setNumRowsRegister(numRowsRegister(KMyMoneySettings::showRegisterDetailed()));
     }
   }
 }
@@ -193,7 +196,48 @@ void Transaction::markAsErronous(QPainter* painter, int row, int col, const QRec
 
 }
 
-void Transaction::paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool /*selected*/, const QColorGroup& cg)
+void Transaction::paintRegisterCellSetup(QPainter* painter, int row, int col, QRect& cellRect, QRect& textRect, QColorGroup& cg)
+{
+  if(m_alternate)
+    cg.setColor(QColorGroup::Base, KMyMoneySettings::listColor());
+  else
+    cg.setColor(QColorGroup::Base, KMyMoneySettings::listBGColor());
+
+  if(m_transaction.value("Imported").lower() == "true") {
+    cg.setColor(QColorGroup::Base, KMyMoneySettings::importedTransactionColor());
+  }
+  if(m_transaction.value("MatchSelected").lower() == "true") {
+    cg.setColor(QColorGroup::Base, KMyMoneySettings::matchedTransactionColor());
+  }
+
+  cellRect.setX(0);
+  cellRect.setY(0);
+  cellRect.setWidth(m_parent->columnWidth(col));
+  cellRect.setHeight(m_parent->rowHeight(m_startRow + row));
+
+  textRect = cellRect;
+  textRect.setX(2);
+  // textRect.setY(0);
+  textRect.setWidth(textRect.width()-4);
+  // textRect.setHeight(m_parent->rowHeight(m_startRow + row));
+
+  if(m_selected) {
+    QBrush backgroundBrush(cg.highlight());
+    painter->fillRect(cellRect, backgroundBrush);
+    painter->setPen(cg.highlightedText());
+  } else {
+    QBrush backgroundBrush(cg.base());
+    painter->fillRect(cellRect, backgroundBrush);
+    painter->setPen(cg.text());
+  }
+
+  // do we need to switch to the error color?
+  if(m_erronous && m_parent->markErronousTransactions()) {
+    painter->setPen(KMyMoneySettings::listErronousTransactionColor());
+  }
+}
+
+void Transaction::paintRegisterCellFocus(QPainter* painter, int row, int col, const QRect& r, const QColorGroup& cg)
 {
 
   if(m_focus) {
@@ -307,6 +351,47 @@ void Transaction::paintRegisterCell(QPainter* painter, int row, int col, const Q
   }
 }
 
+void Transaction::registerCellText(QString& txt, int row, int col)
+{
+  int align = 0;
+  registerCellText(txt, align, row, col);
+}
+
+void Transaction::paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool /* selected */, const QColorGroup& _cg)
+{
+  QColorGroup cg(_cg);
+  QRect cellRect(r);
+  QRect textRect;
+
+  paintRegisterCellSetup(painter, row, col, cellRect, textRect, cg);
+
+  int align = Qt::AlignVCenter;
+  QString txt;
+  if(m_transaction != MyMoneyTransaction()) {
+    registerCellText(txt, align, row, col, painter);
+  }
+
+  // make sure, we clear the cell
+  if(txt.isEmpty())
+    painter->drawText(textRect, align, " ");
+  else
+    painter->drawText(textRect, align, txt);
+
+    // if a grid is selected, we paint it right away
+  if (KMyMoneySettings::showGrid()) {
+    painter->save();
+    painter->setPen(KMyMoneySettings::listGridColor());
+    if(col != 0)
+      painter->drawLine(cellRect.x(), 0, cellRect.x(), cellRect.height()-1);
+    if(row == numRowsRegister()-1)
+      painter->drawLine(cellRect.x(), cellRect.height()-1, cellRect.width(), cellRect.height()-1);
+    painter->restore();
+  }
+
+  // take care of standard stuff (e.g. focus)
+  paintRegisterCellFocus(painter, row, col, cellRect, cg);
+}
+
 int Transaction::formRowHeight(int /*row*/)
 {
   return 1;
@@ -326,7 +411,7 @@ void Transaction::setupForm(TransactionForm* form)
     form->setRowHeight(r, formRowHeight(r));
     for(int c = 0; c < numColsForm(); ++c) {
       form->setText(r, c, "x");
-      if(form->columnWidth(c) == 0) {
+      if(r == 0 && form->columnWidth(c) == 0) {
         form->setColumnWidth(c, 10);
       }
     }
@@ -335,6 +420,37 @@ void Transaction::setupForm(TransactionForm* form)
   form->verticalHeader()->setUpdatesEnabled(true);
 
   loadTab(form);
+}
+
+void Transaction::paintFormCell(QPainter* painter, int row, int col, const QRect& /*r*/, bool /*selected*/, const QColorGroup& _cg)
+{
+  if(!m_form)
+    return;
+
+  QRect cellRect = m_form->cellRect(row, col);
+
+  QRect textRect(cellRect);
+  textRect.setX(1);
+  textRect.setY(1);
+  textRect.setWidth(textRect.width()-2);
+  textRect.setHeight(textRect.height()-2);
+
+  painter->fillRect(cellRect, _cg.background());
+  painter->setPen(_cg.text());
+
+  QString txt;
+  int align = Qt::AlignVCenter;
+  bool editField = formCellText(txt, align, row, col, painter);
+
+  if(editField) {
+    painter->fillRect(textRect, _cg.base());
+  }
+  // make sure, we clear the cell
+  if(txt.isEmpty())
+    painter->drawText(textRect, align, " ");
+  else
+    painter->drawText(textRect, align, txt);
+
 }
 
 void Transaction::setupPalette(QMap<QString, QWidget*>& editWidgets)
@@ -388,9 +504,97 @@ bool Transaction::haveNumberField(void) const
   return rc;
 }
 
+bool Transaction::maybeTip(const QPoint& cpos, int row, int col, QRect& r, QString& msg)
+{
+  if(col != DetailColumn || row != 0)
+    return false;
+
+  if(!m_erronous)
+    return false;
+
+  int h = m_parent->rowHeightHint();
+  r = m_parent->cellGeometry(m_startRow + row, col);
+  // qDebug("r is %d,%d,%d,%d", r.x(), r.y(), r.width(), r.height());
+  r.setBottomLeft(QPoint(r.x() + (r.width() - h), r.y() + h));
+  // qDebug("r is %d,%d,%d,%d", r.x(), r.y(), r.width(), r.height());
+  // qDebug("p is in r = %d", r.contains(cpos));
+  if(r.contains(cpos)) {
+    if(m_transaction.splits().count() < 2) {
+      msg = QString("<qt>%1</qt>").arg(i18n("Transaction is missing a category assignment."));
+    } else {
+      msg = QString("<qt>%1</qt>").arg(i18n("The transaction has a missing assignment of <b>%1</b>.").arg(m_transaction.splitSum().abs().formatMoney()));
+    }
+    return true;
+  }
+  return false;
+}
+
+QString Transaction::reconcileState(bool text) const
+{
+  QString txt;
+  if(text) {
+    switch(m_split.reconcileFlag()) {
+      case MyMoneySplit::NotReconciled:
+        txt = i18n("Reconcile state 'Not reconciled'", "Not reconciled");
+        break;
+      case MyMoneySplit::Cleared:
+        txt = i18n("Reconcile state 'Cleared'", "Cleared");
+        break;
+      case MyMoneySplit::Reconciled:
+        txt = i18n("Reconcile state 'Reconciled'", "Reconciled");
+        break;
+      case MyMoneySplit::Frozen:
+        txt = i18n("Reconcile state 'Frozen'", "Frozen");
+        break;
+      default:
+        if(m_transaction != MyMoneyTransaction())
+          txt = i18n("Unknown");
+        break;
+    }
+  } else {
+    switch(m_split.reconcileFlag()) {
+      case MyMoneySplit::NotReconciled:
+        break;
+      case MyMoneySplit::Cleared:
+        txt = i18n("Reconcile flag C", "C");
+        break;
+      case MyMoneySplit::Reconciled:
+        txt = i18n("Reconcile flag R", "R");
+        break;
+      case MyMoneySplit::Frozen:
+        txt = i18n("Reconcile flag F", "F");
+        break;
+      default:
+        txt = i18n("Flag for unknown reconciliation state", "?");
+        break;
+    }
+  }
+  return txt;
+}
+
+void Transaction::startEditMode(void)
+{
+  m_inEdit = true;
+  setNumRowsRegister(numRowsRegister(true));
+}
+
+void Transaction::leaveEditMode(void)
+{
+  m_inEdit = false;
+  setFocus(hasFocus(), true);
+}
+
+void Transaction::singleLineMemo(QString& txt, const MyMoneySplit& split) const
+{
+  txt = split.memo();
+  // remove empty lines
+  txt.replace("\n\n", "\n");
+  // replace '\n' with ", "
+  txt.replace('\n', ", ");
+}
+
 StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split) :
-  Transaction(parent, objects, transaction, split),
-  m_formRowHeight(-1)
+  Transaction(parent, objects, transaction, split)
 {
   try {
     m_categoryHeader = i18n("Category");
@@ -412,37 +616,10 @@ StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects
     delete e;
   }
   m_rowsForm = 5;
-}
 
-// FIXME remove tabbar
-#if 0
-void StdTransaction::setupAction(void)
-{
-  if(m_split.action() == MyMoneySplit::ActionCheck)
-    m_action = ActionCheck;
-  else if(m_split.action() == MyMoneySplit::ActionATM)
-    m_action = ActionAtm;
-  else {
-    // if at least one split is referencing an income or
-    // expense account, we will not call it a transfer
-    QValueList<MyMoneySplit>::const_iterator it_s;
-    for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
-      if((*it_s).accountId() == m_split.accountId())
-        continue;
-      MyMoneyAccount acc = m_objects->account((*it_s).accountId());
-      if(acc.accountGroup() == MyMoneyAccount::Income
-      || acc.accountGroup() == MyMoneyAccount::Expense) {
-        // otherwise, we have to determine between deposit and withdrawal
-        m_action = m_split.shares().isNegative() ? ActionWithdrawal : ActionDeposit;
-        return;
-      }
-    }
-    // otherwise, it's a transfer
-    m_action = ActionTransfer;
-    return;
-  }
+  // setup initial size
+  setNumRowsRegister(numRowsRegister(KMyMoneySettings::showRegisterDetailed()));
 }
-#endif
 
 void StdTransaction::setupFormHeader(const QCString& id)
 {
@@ -464,8 +641,7 @@ int StdTransaction::formRowHeight(int /*row*/)
   if(m_formRowHeight < 0) {
     // determine the height of the objects in the table
     kMyMoneyDateInput dateInput;
-    // FIXME make sure the category has the split button activated
-    kMyMoneyCategory category;
+    KMyMoneyCategory category(0,0,true);
 
     m_formRowHeight = QMAX(dateInput.sizeHint().height(), category.sizeHint().height());
   }
@@ -511,60 +687,11 @@ void StdTransaction::setupForm(TransactionForm* form)
 {
   Transaction::setupForm(form);
 
-// FIXME remove tabbar
-#if 0
-  if(m_action == MaxAction)
-    setupAction();
-#endif
-
   QTableItem* memo = form->item(2, 1);
   memo->setSpan(3, 1);
-
-// FIXME remove tabbar
-#if 0
-  // setup the tab bar for view mode (all tabs enabled)
-  QTabBar* bar = form->tabBar();
-  bar->blockSignals(true);
-  for(int i = ActionCheck; i < MaxAction; ++i) {
-    bar->setTabEnabled(i, true);
-  }
-  bar->setCurrentTab(m_action);
-  bar->blockSignals(false);
-#endif
 }
 
-void StdTransaction::paintFormCell(QPainter* painter, int row, int col, const QRect& /*r*/, bool /*selected*/, const QColorGroup& _cg)
-{
-  if(!m_form)
-    return;
-
-  QRect cellRect = m_form->cellRect(row, col);
-
-  QRect textRect(cellRect);
-  textRect.setX(1);
-  textRect.setY(1);
-  textRect.setWidth(textRect.width()-2);
-  textRect.setHeight(textRect.height()-2);
-
-  painter->fillRect(cellRect, _cg.background());
-  painter->setPen(_cg.text());
-
-  QString txt;
-  int align = Qt::AlignVCenter;
-  bool editField = formCellText(txt, align, row, col);
-
-  if(editField) {
-    painter->fillRect(textRect, _cg.base());
-  }
-  // make sure, we clear the cell
-  if(txt.isEmpty())
-    painter->drawText(textRect, align, " ");
-  else
-    painter->drawText(textRect, align, txt);
-
-}
-
-bool StdTransaction::formCellText(QString& txt, int& align, int row, int col)
+bool StdTransaction::formCellText(QString& txt, int& align, int row, int col, QPainter* /* painter */)
 {
   // if(m_transaction != MyMoneyTransaction()) {
     switch(row) {
@@ -660,24 +787,8 @@ bool StdTransaction::formCellText(QString& txt, int& align, int row, int col)
 
           case 3:
             align |= Qt::AlignRight;
-            switch(m_split.reconcileFlag()) {
-              case MyMoneySplit::NotReconciled:
-                txt = i18n("Reconcile state 'Not reconciled'", "Not reconciled");
-                break;
-              case MyMoneySplit::Cleared:
-                txt = i18n("Reconcile state 'Cleared'", "Cleared");
-                break;
-              case MyMoneySplit::Reconciled:
-                txt = i18n("Reconcile state 'Reconciled'", "Reconciled");
-                break;
-              case MyMoneySplit::Frozen:
-                txt = i18n("Reconcile state 'Frozen'", "Frozen");
-                break;
-              default:
-                if(m_transaction != MyMoneyTransaction())
-                  txt = i18n("Unknown");
-                break;
-            }
+            txt = reconcileState();
+            break;
         }
     }
   // }
@@ -687,181 +798,149 @@ bool StdTransaction::formCellText(QString& txt, int& align, int row, int col)
   return (col == 1 && row < 3) || (col == 3 && row != 3);
 }
 
-void StdTransaction::paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& _cg)
+void StdTransaction::registerCellText(QString& txt, int& align, int row, int col, QPainter* painter)
 {
-  int align = Qt::AlignVCenter;
+  switch(row) {
+    case 0:
+      switch(col) {
+        case NumberColumn:
+          align |= Qt::AlignLeft;
+          if(haveNumberField())
+            txt = m_split.number();
+          break;
 
-  QColorGroup cg(_cg);
-  if(m_alternate)
-    cg.setColor(QColorGroup::Base, KMyMoneySettings::listColor());
-  else
-    cg.setColor(QColorGroup::Base, KMyMoneySettings::listBGColor());
+        case DateColumn:
+          align |= Qt::AlignLeft;
+          txt = KGlobal::locale()->formatDate(m_transaction.postDate(), true);
+          break;
 
-  if(m_transaction.value("Imported").lower() == "true") {
-    cg.setColor(QColorGroup::Base, KMyMoneySettings::importedTransactionColor());
-  }
-  if(m_transaction.value("MatchSelected").lower() == "true") {
-    cg.setColor(QColorGroup::Base, KMyMoneySettings::matchedTransactionColor());
-  }
-
-  QRect cellRect(r);
-  cellRect.setX(0);
-  cellRect.setY(0);
-  cellRect.setWidth(m_parent->columnWidth(col));
-  cellRect.setHeight(m_parent->rowHeight(m_startRow + row));
-
-  QRect textRect(cellRect);
-  textRect.setX(2);
-  textRect.setY(0);
-  textRect.setWidth(textRect.width()-4);
-  // textRect.setHeight(m_parent->rowHeight(m_startRow + row));
-
-  if(m_selected) {
-    QBrush backgroundBrush(cg.highlight());
-    painter->fillRect(cellRect, backgroundBrush);
-    painter->setPen(cg.highlightedText());
-  } else {
-    QBrush backgroundBrush(cg.base());
-    painter->fillRect(cellRect, backgroundBrush);
-    painter->setPen(cg.text());
-  }
-
-  // do we need to switch to the error color?
-  if(m_erronous && m_parent->markErronousTransactions()) {
-    painter->setPen(KMyMoneySettings::listErronousTransactionColor());
-  }
-
-  QString txt;
-  if(m_transaction != MyMoneyTransaction()) {
-    switch(row) {
-      case 0:
-        switch(col) {
-          case NumberColumn:
-            align |= Qt::AlignLeft;
-            if(haveNumberField())
-              txt = m_split.number();
-            break;
-
-          case DateColumn:
-            align |= Qt::AlignLeft;
-            txt = KGlobal::locale()->formatDate(m_transaction.postDate(), true);
-            break;
-
-          case DetailColumn:
-            align |= Qt::AlignLeft;
-            txt = m_payee;
-            if(txt.isEmpty() && m_rowsRegister < 3) {
-              txt = m_split.memo();
-              // remove empty lines
-              txt.replace("\n\n", "\n");
-              // replace '\n' with ", "
-              txt.replace('\n', ", ");
-            }
-            if(txt.isEmpty() && m_rowsRegister < 2) {
-              txt = m_category;
-            }
-            if(m_erronous)
-              markAsErronous(painter, row, col, cellRect);
-            break;
-
-          case ReconcileFlagColumn:
-            align |= Qt::AlignHCenter;
-            switch(m_split.reconcileFlag()) {
-              case MyMoneySplit::NotReconciled:
-                break;
-              case MyMoneySplit::Cleared:
-                txt = i18n("Reconcile flag C", "C");
-                break;
-              case MyMoneySplit::Reconciled:
-                txt = i18n("Reconcile flag R", "R");
-                break;
-              case MyMoneySplit::Frozen:
-                txt = i18n("Reconcile flag F", "F");
-                break;
-              default:
-                txt = i18n("Flag for unknown reconciliation state", "?");
-                break;
-            }
-            break;
-
-          case PaymentColumn:
-            align |= Qt::AlignRight;
-            if(m_split.value().isNegative()) {
-              txt = (-m_split.value(m_transaction.commodity(), m_splitCurrencyId)).formatMoney();
-            }
-            break;
-
-          case DepositColumn:
-            align |= Qt::AlignRight;
-            if(!m_split.value().isNegative()) {
-              txt = m_split.value(m_transaction.commodity(), m_splitCurrencyId).formatMoney();
-            }
-            break;
-
-          case BalanceColumn:
-            align |= Qt::AlignRight;
-            txt = m_balance;
-            break;
-
-          default:
-            break;
-        }
-        break;
-
-      case 1:
-        switch(col) {
-          case DetailColumn:
-            align |= Qt::AlignLeft;
+        case DetailColumn:
+          align |= Qt::AlignLeft;
+          txt = m_payee;
+          if(txt.isEmpty() && m_rowsRegister < 3) {
+            singleLineMemo(txt, m_split);
+          }
+          if(txt.isEmpty() && m_rowsRegister < 2) {
             txt = m_category;
             if(txt.isEmpty() && !m_split.value().isZero()) {
-              painter->setPen(KMyMoneySettings::listErronousTransactionColor());
               txt = i18n("*** UNASSIGNED ***");
+              if(painter)
+                painter->setPen(KMyMoneySettings::listErronousTransactionColor());
             }
-            break;
+          }
+          break;
 
-          default:
-            break;
-        }
-        break;
+        case ReconcileFlagColumn:
+          align |= Qt::AlignHCenter;
+          txt = reconcileState(false);
+          break;
 
-      case 2:
-        switch(col) {
-          case DetailColumn:
-            align |= Qt::AlignLeft;
-            txt = m_split.memo();
-            // remove empty lines
-            txt.replace("\n\n", "\n");
-            // replace '\n' with ", "
-            txt.replace('\n', ", ");
-            break;
+        case PaymentColumn:
+          align |= Qt::AlignRight;
+          if(m_split.value().isNegative()) {
+            txt = (-m_split.value(m_transaction.commodity(), m_splitCurrencyId)).formatMoney();
+          }
+          break;
 
-          default:
-            break;
-        }
-        break;
-    }
+        case DepositColumn:
+          align |= Qt::AlignRight;
+          if(!m_split.value().isNegative()) {
+            txt = m_split.value(m_transaction.commodity(), m_splitCurrencyId).formatMoney();
+          }
+          break;
+
+        case BalanceColumn:
+          align |= Qt::AlignRight;
+          txt = m_balance;
+          break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 1:
+      switch(col) {
+        case DetailColumn:
+          align |= Qt::AlignLeft;
+          txt = m_category;
+          if(txt.isEmpty() && !m_split.value().isZero()) {
+            txt = i18n("*** UNASSIGNED ***");
+            if(painter)
+              painter->setPen(KMyMoneySettings::listErronousTransactionColor());
+          }
+          break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 2:
+      switch(col) {
+        case DetailColumn:
+          align |= Qt::AlignLeft;
+          singleLineMemo(txt, m_split);
+          break;
+
+        default:
+          break;
+      }
+      break;
   }
+}
 
-  // make sure, we clear the cell
-  if(txt.isEmpty())
-    painter->drawText(textRect, align, " ");
-  else
-    painter->drawText(textRect, align, txt);
+int StdTransaction::registerColWidth(int col, const QFontMetrics& cellFontMetrics)
+{
+  QString txt;
+  MyMoneyMoney amount;
+  int nw = 0;
 
-    // if a grid is selected, we paint it right away
-  if (KMyMoneySettings::showGrid()) {
-    painter->save();
-    painter->setPen(KMyMoneySettings::listGridColor());
-    if(col != 0)
-      painter->drawLine(cellRect.x(), 0, cellRect.x(), cellRect.height()-1);
-    if(row == numRowsRegister()-1)
-      painter->drawLine(cellRect.x(), cellRect.height()-1, cellRect.width(), cellRect.height()-1);
-    painter->restore();
+  switch(col) {
+    default:
+      break;
+
+    case NumberColumn:
+      txt = split().number();
+      nw = cellFontMetrics.width(txt+"  ");
+      break;
+
+    case PaymentColumn:
+      amount = split().value();
+      if(amount.isNegative()) {
+        txt = amount.formatMoney();
+        nw = cellFontMetrics.width(txt+"  ");
+      }
+      break;
+
+    case DepositColumn:
+      amount = split().value();
+      if(!amount.isNegative()) {
+        txt = amount.formatMoney();
+        nw = cellFontMetrics.width(txt+"  ");
+      }
+      break;
+
+    case BalanceColumn:
+      txt = balance();
+      nw = cellFontMetrics.width(txt+"  ");
+      break;
   }
+  return nw;
+}
 
+void StdTransaction::paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& _cg)
+{
+  Transaction::paintRegisterCell(painter, row, col, r, selected, _cg);
 
-  // take care of standard stuff (e.g. focus)
-  Transaction::paintRegisterCell(painter, row, col, cellRect, selected, cg);
+  if(m_erronous && painter && row == 0 && col == DetailColumn) {
+    QRect cellRect;
+    cellRect.setX(0);
+    cellRect.setY(0);
+    cellRect.setWidth(m_parent->columnWidth(col));
+    cellRect.setHeight(m_parent->rowHeight(m_startRow + row));
+    markAsErronous(painter, row, col, cellRect);
+  }
 }
 
 void StdTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidgets)
@@ -944,12 +1023,12 @@ void StdTransaction::arrangeWidgetsInRegister(QMap<QString, QWidget*>& editWidge
   if(haveNumberField())
     arrangeWidget(m_parent, m_startRow+0, NumberColumn, editWidgets["number"]);
   arrangeWidget(m_parent, m_startRow + 0, DateColumn, editWidgets["postdate"]);
+  arrangeWidget(m_parent, m_startRow + 1, DateColumn, editWidgets["status"]);
   arrangeWidget(m_parent, m_startRow + 0, DetailColumn, editWidgets["payee"]);
   arrangeWidget(m_parent, m_startRow + 1, DetailColumn, editWidgets["category"]->parentWidget());
   arrangeWidget(m_parent, m_startRow + 2, DetailColumn, editWidgets["memo"]);
   arrangeWidget(m_parent, m_startRow + 0, PaymentColumn, editWidgets["payment"]);
   arrangeWidget(m_parent, m_startRow + 0, DepositColumn, editWidgets["deposit"]);
-  arrangeWidget(m_parent, m_startRow + 1, PaymentColumn, editWidgets["status"]);
 
   // increase the height of the row containing the memo widget
   m_parent->setRowHeight(m_startRow+2, m_parent->rowHeightHint() * 3);
@@ -984,30 +1063,794 @@ void StdTransaction::tabOrderInRegister(QWidgetList& tabOrderWidgets) const
   // deposit
   tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, DepositColumn)));
   // status
-  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 1, PaymentColumn)));
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 1, DateColumn)));
 }
 
-bool StdTransaction::maybeTip(const QPoint& cpos, int row, int col, QRect& r, QString& msg)
+int StdTransaction::numRowsRegister(bool expanded) const
 {
-  if(col != DetailColumn || row != 0)
-    return false;
-
-  if(!m_erronous)
-    return false;
-
-  int h = m_parent->rowHeightHint();
-  r = m_parent->cellGeometry(m_startRow + row, col);
-  // qDebug("r is %d,%d,%d,%d", r.x(), r.y(), r.width(), r.height());
-  r.setBottomLeft(QPoint(r.x() + (r.width() - h), r.y() + h));
-  // qDebug("r is %d,%d,%d,%d", r.x(), r.y(), r.width(), r.height());
-  // qDebug("p is in r = %d", r.contains(cpos));
-  if(r.contains(cpos)) {
-    if(m_transaction.splits().count() < 2) {
-      msg = QString("<qt>%1</qt>").arg(i18n("Transaction is missing a category assignment."));
-    } else {
-      msg = QString("<qt>%1</qt>").arg(i18n("The transaction has a missing assignment of <b>%1</b>.").arg(m_transaction.splitSum().abs().formatMoney()));
+  int numRows = 1;
+  if(expanded) {
+    numRows = 3;
+    if(!m_inEdit) {
+      if(m_payee.isEmpty()) {
+        numRows--;
+      }
+      if(m_split.memo().isEmpty()) {
+        numRows--;
+      }
     }
-    return true;
   }
-  return false;
+  return numRows;
 }
+
+TransactionEditor* StdTransaction::createEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate)
+{
+  return new StdTransactionEditor(regForm, objects, this, list, lastPostDate);
+}
+
+InvestTransaction::InvestTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split) :
+  Transaction(parent, objects, transaction, split)
+{
+  // collect the splits. m_split references the stock account and should already
+  // be set up. m_assetAccountSplit references the corresponding asset account (maybe
+  // empty), m_feeSplits is the list of all expenses and m_interestSplits
+  // the list of all incomes
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+  for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
+    MyMoneyAccount acc = m_objects->account((*it_s).accountId());
+    if((*it_s).id() == m_split.id()) {
+      m_security = m_objects->security(acc.currencyId());
+    } else if(acc.accountGroup() == MyMoneyAccount::Expense) {
+      m_feeSplits.append(*it_s);
+      m_feeAmount += (*it_s).value();
+    } else if(acc.accountGroup() == MyMoneyAccount::Income) {
+      m_interestSplits.append(*it_s);
+      m_interestAmount += (*it_s).value();
+    } else {
+      m_assetAccountSplit = *it_s;
+    }
+  }
+  // check the count of the fee splits and setup the text
+  switch(m_feeSplits.count()) {
+    case 0:
+      break;
+
+    case 1:
+      m_feeCategory = m_objects->accountToCategory(m_feeSplits[0].accountId());
+      break;
+
+    default:
+      m_feeCategory = i18n("Split transaction (category replacement)", "Split transaction");
+      break;
+  }
+
+  // check the count of the interest splits and setup the text
+  switch(m_interestSplits.count()) {
+    case 0:
+      break;
+
+    case 1:
+      m_interestCategory = m_objects->accountToCategory(m_interestSplits[0].accountId());
+      break;
+
+    default:
+      m_interestCategory = i18n("Split transaction (category replacement)", "Split transaction");
+      break;
+  }
+
+  // determine transaction type
+  if(split.action() == MyMoneySplit::ActionAddShares) {
+    m_transactionType = (!split.shares().isNegative()) ? AddShares : RemoveShares;
+  } else if(split.action() == MyMoneySplit::ActionBuyShares) {
+    m_transactionType = (!split.value().isNegative()) ? BuyShares : SellShares;
+  } else if(split.action() == MyMoneySplit::ActionDividend) {
+    m_transactionType = Dividend;
+  } else if(split.action() == MyMoneySplit::ActionReinvestDividend) {
+    m_transactionType = ReinvestDividend;
+  } else if(split.action() == MyMoneySplit::ActionYield) {
+    m_transactionType = Yield;
+  } else if(split.action() == MyMoneySplit::ActionSplitShares) {
+    m_transactionType = SplitShares;
+  } else
+    m_transactionType = BuyShares;
+
+  m_currency.setTradingSymbol("???");
+  try {
+    m_currency = m_objects->security(m_transaction.commodity());
+  } catch(MyMoneyException *e) {
+    delete e;
+  }
+
+  m_rowsForm = 7;
+
+  // setup initial size
+  setNumRowsRegister(numRowsRegister(KMyMoneySettings::showRegisterDetailed()));
+}
+
+int InvestTransaction::formRowHeight(int /*row*/)
+{
+  if(m_formRowHeight < 0) {
+    // determine the height of the objects in the table
+    kMyMoneyDateInput dateInput;
+    KMyMoneyCategory category(0,0,true);
+
+    m_formRowHeight = QMAX(dateInput.sizeHint().height(), category.sizeHint().height());
+  }
+  return m_formRowHeight;
+}
+
+void InvestTransaction::setupForm(TransactionForm* form)
+{
+  Transaction::setupForm(form);
+
+  QTableItem* memo = form->item(5, 1);
+  memo->setSpan(2, 1);
+}
+
+void InvestTransaction::activity(QString& txt, investTransactionTypeE type) const
+{
+  switch(type) {
+    case AddShares:
+      txt = i18n("Add shares");
+      break;
+    case RemoveShares:
+      txt = i18n("Remove shares");
+      break;
+    case BuyShares:
+      txt = i18n("Buy shares");
+      break;
+    case SellShares:
+      txt = i18n("Sell shares");
+      break;
+    case Dividend:
+      txt = i18n("Dividend");
+      break;
+    case ReinvestDividend:
+      txt = i18n("Reinvest Dividend");
+      break;
+    case Yield:
+      txt = i18n("Yield");
+      break;
+    case SplitShares:
+      txt = i18n("Split shares");
+      break;
+    default:
+      txt = i18n("Unknown");
+      break;
+  }
+}
+
+bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col, QPainter* /* painter */)
+{
+  bool fieldEditable = false;
+
+  switch(row) {
+    case 0:
+      switch(col) {
+        case LabelColumn1:
+          align |= Qt::AlignLeft;
+          txt = i18n("Activity");
+          break;
+
+        case ValueColumn1:
+          align |= Qt::AlignLeft;
+          fieldEditable = true;
+          activity(txt, m_transactionType);
+          break;
+
+        case LabelColumn2:
+          align |= Qt::AlignLeft;
+          txt = i18n("Date");
+          break;
+
+        case ValueColumn2:
+          align |= Qt::AlignRight;
+          fieldEditable = true;
+          if(m_transaction != MyMoneyTransaction())
+            txt = KGlobal::locale()->formatDate(m_transaction.postDate(), true);
+          break;
+      }
+      break;
+
+    case 1:
+      switch(col) {
+        case LabelColumn1:
+          align |= Qt::AlignLeft;
+          txt = i18n("Security");
+          break;
+
+        case ValueColumn1:
+          align |= Qt::AlignLeft;
+          fieldEditable = true;
+          txt = m_security.name();
+          break;
+
+        case LabelColumn2:
+          align |= Qt::AlignLeft;
+          if(haveShares()) {
+            txt = i18n("Shares");
+          }
+          break;
+
+        case ValueColumn2:
+          align |= Qt::AlignRight;
+          if((fieldEditable = haveShares()) == true) {
+            txt = m_split.shares().abs().formatMoney("", MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
+          }
+          break;
+      }
+      break;
+
+    case 2:
+      switch(col) {
+        case LabelColumn1:
+          align |= Qt::AlignLeft;
+          if(haveAssetAccount())
+            txt = i18n("Account");
+          break;
+
+        case ValueColumn1:
+          align |= Qt::AlignLeft;
+          if((fieldEditable = haveAssetAccount()) == true) {
+            txt = m_objects->accountToCategory(m_assetAccountSplit.accountId());
+          }
+          break;
+
+        case LabelColumn2:
+          align |= Qt::AlignLeft;
+          if(havePrice())
+            txt = i18n("Price/share");
+          break;
+
+        case ValueColumn2:
+          align |= Qt::AlignRight;
+          if((fieldEditable = havePrice()) == true) {
+            txt = (m_split.value() / m_split.shares()).formatMoney("", KMyMoneyGlobalSettings::pricePrecision());
+          }
+          break;
+      }
+      break;
+
+    case 3:
+      switch(col) {
+        case LabelColumn1:
+          align |= Qt::AlignLeft;
+          if(haveFees())
+            txt = i18n("Fees");
+          break;
+
+        case ValueColumn1:
+          align |= Qt::AlignLeft;
+          if((fieldEditable = haveFees()) == true) {
+            txt = m_feeCategory;
+          }
+          break;
+
+        case LabelColumn2:
+          align |= Qt::AlignLeft;
+          if(haveFees() && !m_feeCategory.isEmpty())
+            txt = i18n("Amount");
+          break;
+
+        case ValueColumn2:
+          align |= Qt::AlignRight;
+          if(haveFees()) {
+            if((fieldEditable = !m_feeCategory.isEmpty()) == true) {
+              txt = m_feeAmount.abs().formatMoney();
+            }
+          }
+          break;
+      }
+      break;
+
+    case 4:
+      switch(col) {
+        case LabelColumn1:
+          align |= Qt::AlignLeft;
+          if(haveInterest())
+            txt = i18n("Interest");
+          break;
+
+        case ValueColumn1:
+          align |= Qt::AlignLeft;
+          if((fieldEditable = haveInterest()) == true) {
+            txt = m_interestCategory;
+          }
+          break;
+
+        case LabelColumn2:
+          align |= Qt::AlignLeft;
+          if(haveInterest() && !m_interestCategory.isEmpty())
+            txt = i18n("Amount");
+          break;
+
+        case ValueColumn2:
+          align |= Qt::AlignRight;
+          if(haveInterest()) {
+            if((fieldEditable = !m_interestCategory.isEmpty()) == true) {
+              txt = m_interestAmount.abs().formatMoney();
+            }
+          }
+          break;
+      }
+      break;
+
+    case 5:
+      switch(col) {
+        case LabelColumn1:
+          align |= Qt::AlignLeft;
+          txt = i18n("Memo");
+          break;
+
+        case ValueColumn1:
+          align &= ~Qt::AlignVCenter;
+          align |= Qt::AlignTop;
+          align |= Qt::AlignLeft;
+          fieldEditable = true;
+          if(m_transaction != MyMoneyTransaction())
+            txt = m_split.memo().section('\n', 0, 2);
+          break;
+
+        case LabelColumn2:
+          align |= Qt::AlignLeft;
+          if(haveAmount())
+            txt = i18n("Total");
+          break;
+
+        case ValueColumn2:
+          align |= Qt::AlignRight;
+          if((fieldEditable = haveAmount()) == true) {
+            txt = m_assetAccountSplit.value().abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+          }
+      }
+      break;
+
+    case 6:
+      switch(col) {
+        case LabelColumn2:
+          align |= Qt::AlignLeft;
+          txt = i18n("Status");
+          break;
+
+        case ValueColumn2:
+          align |= Qt::AlignRight;
+          fieldEditable = true;
+          txt = reconcileState();
+          break;
+      }
+  }
+
+  return fieldEditable;
+}
+
+void InvestTransaction::registerCellText(QString& txt, int& align, int row, int col, QPainter* painter)
+{
+  switch(row) {
+    case 0:
+      switch(col) {
+        case DateColumn:
+          align |= Qt::AlignLeft;
+          txt = KGlobal::locale()->formatDate(m_transaction.postDate(), true);
+          break;
+
+        case DetailColumn:
+          align |= Qt::AlignLeft;
+          activity(txt, m_transactionType);
+          break;
+
+        case SecurityColumn:
+          align |= Qt::AlignLeft;
+          txt = m_security.name();
+          break;
+
+        case ReconcileFlagColumn:
+          align |= Qt::AlignHCenter;
+          txt = reconcileState(false);
+          break;
+
+        case AmountColumn:
+          align |= Qt::AlignRight;
+          if(haveShares())
+            txt = m_split.shares().abs().formatMoney("", MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
+          break;
+
+        case PriceColumn:
+          align |= Qt::AlignRight;
+          if(havePrice() && !m_split.shares().isZero()) {
+            txt = (m_split.value() / m_split.shares()).formatMoney(m_currency.tradingSymbol(), KMyMoneyGlobalSettings::pricePrecision());
+          }
+          break;
+
+        case ValueColumn:
+          align |= Qt::AlignRight;
+          if(haveAmount()) {
+            txt = m_assetAccountSplit.value().abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
+
+          } else if(haveInterest()) {
+            txt = m_interestAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+          }
+          break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 1:
+      switch(col) {
+        case DetailColumn:
+          align |= Qt::AlignLeft;
+          if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()) {
+            txt = m_objects->accountToCategory(m_assetAccountSplit.accountId());
+          } else if(haveInterest() && m_interestSplits.count()) {
+            txt = m_interestCategory;
+          } else if(haveFees() && m_feeSplits.count()) {
+            txt = m_feeCategory;
+          } else
+            singleLineMemo(txt, m_split);
+          break;
+
+        case AmountColumn:
+          align |= Qt::AlignRight;
+          if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()) {
+            txt = m_interestAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+          } else if(haveInterest() && m_interestSplits.count()) {
+            txt = m_interestAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+          } else if(haveFees() && m_feeSplits.count()) {
+            txt = m_feeAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+          }
+          break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 2:
+      switch(col) {
+        case DetailColumn:
+          align |= Qt::AlignLeft;
+          if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()
+          && haveInterest() && m_interestSplits.count()) {
+            txt = m_interestCategory;
+          } else if(haveFees() && m_feeSplits.count()) {
+            txt = m_feeCategory;
+          } else
+            singleLineMemo(txt, m_split);
+          break;
+
+        case AmountColumn:
+          align |= Qt::AlignRight;
+          if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()
+          && haveInterest() && m_interestSplits.count()) {
+            txt = m_interestAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+          } else if(haveFees() && m_feeSplits.count()) {
+            txt = m_feeAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+          }
+          break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 3:
+      switch(col) {
+        case DetailColumn:
+          align |= Qt::AlignLeft;
+          if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()
+          && haveInterest() && m_interestSplits.count()
+          && haveFees() && m_feeSplits.count()) {
+            txt = m_feeCategory;
+          } else
+            singleLineMemo(txt, m_split);
+          break;
+
+        case AmountColumn:
+          align |= Qt::AlignRight;
+          if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()
+          && haveInterest() && m_interestSplits.count()
+          && haveFees() && m_feeSplits.count()) {
+            txt = m_feeAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+          }
+          break;
+
+        default:
+          break;
+      }
+      break;
+
+    case 4:
+      switch(col) {
+        case DetailColumn:
+          align |= Qt::AlignLeft;
+          singleLineMemo(txt, m_split);
+          break;
+
+        default:
+          break;
+      }
+      break;
+  }
+}
+
+int InvestTransaction::registerColWidth(int col, const QFontMetrics& cellFontMetrics)
+{
+  QString txt;
+  MyMoneyMoney amount;
+  int nw = 0;
+
+  // for now just check all rows in that column
+  for(int row = 0; row < m_rowsRegister; ++row) {
+    int w;
+    Transaction::registerCellText(txt, row, col);
+    w = cellFontMetrics.width(txt+"  ");
+    nw = QMAX(nw, w);
+  }
+
+  // TODO the optimized way would be to base the size on the contents of a single row
+  //      as we do it in StdTransaction::registerColWidth()
+#if 0
+  switch(col) {
+    default:
+      break;
+
+    case PriceColumn:
+      if(havePrice()) {
+        txt = (m_split.value() / m_split.shares()).formatMoney("", KMyMoneyGlobalSettings::pricePrecision());
+        nw = cellFontMetrics.width(txt+"  ");
+      }
+      break;
+  }
+#endif
+  return nw;
+}
+
+void InvestTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidgets)
+{
+  if(!m_form || !m_parent)
+    return;
+
+  setupPalette(editWidgets);
+
+  arrangeWidget(m_form, 0, LabelColumn1, editWidgets["cashflow"]);
+  arrangeWidget(m_form, 0, ValueColumn1, editWidgets["payee"]);
+  arrangeWidget(m_form, 1, ValueColumn1, editWidgets["category"]->parentWidget());
+  arrangeWidget(m_form, 2, ValueColumn1, editWidgets["memo"]);
+  if(haveNumberField())
+    arrangeWidget(m_form, 0, ValueColumn2, editWidgets["number"]);
+  arrangeWidget(m_form, 1, ValueColumn2, editWidgets["postdate"]);
+  arrangeWidget(m_form, 2, ValueColumn2, editWidgets["amount"]);
+  arrangeWidget(m_form, 4, ValueColumn2, editWidgets["status"]);
+  arrangeWidget(m_form, 1, LabelColumn1, editWidgets["categoryLabel"]);
+
+  // get rid of the hints. we don't need them for the form
+  QMap<QString, QWidget*>::iterator it;
+  for(it = editWidgets.begin(); it != editWidgets.end(); ++it) {
+    KMyMoneyCombo* combo = dynamic_cast<KMyMoneyCombo*>(*it);
+    kMyMoneyLineEdit* edit = dynamic_cast<kMyMoneyLineEdit*>(*it);
+    KMyMoneyPayee* payee = dynamic_cast<KMyMoneyPayee*>(*it);
+    if(combo)
+      combo->setHint(QString());
+    if(edit)
+      edit->setHint(QString());
+    if(payee)
+      payee->setHint(QString());
+  }
+
+  // drop the tabbar on top of the original
+  KMyMoneyTransactionForm::TransactionForm* form = dynamic_cast<KMyMoneyTransactionForm::TransactionForm*>(m_form);
+  TabBar* w = dynamic_cast<TabBar*>(editWidgets["tabbar"]);
+  if(w) {
+    w->reparent(form->tabBar(), QPoint(0, 0), true);
+  }
+}
+
+void InvestTransaction::tabOrderInForm(QWidgetList& tabOrderWidgets) const
+{
+  // cashflow direction
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(0, LabelColumn1)));
+  // payee
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(0, ValueColumn1)));
+  // make sure to have the category field and the split button as seperate tab order widgets
+  // ok, we have to have some internal knowledge about the KMyMoneyCategory object, but
+  // it's one of our own widgets, so we actually don't care. Just make sure, that we don't
+  // go haywire when someone changes the KMyMoneyCategory object ...
+  QWidget* w = m_form->cellWidget(1, ValueColumn1);
+  tabOrderWidgets.append(focusWidget(w));
+  w = dynamic_cast<QWidget*>(w->child("splitButton"));
+  if(w)
+    tabOrderWidgets.append(w);
+  // memo
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(2, ValueColumn1)));
+  // number
+  if(haveNumberField()) {
+    if((w = focusWidget(m_form->cellWidget(0, ValueColumn2))))
+      tabOrderWidgets.append(w);
+  }
+  // date
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(1, ValueColumn2)));
+  // amount
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(2, ValueColumn2)));
+
+  // state
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(4, ValueColumn2)));
+}
+
+void InvestTransaction::arrangeWidgetsInRegister(QMap<QString, QWidget*>& editWidgets)
+{
+  if(!m_parent)
+    return;
+
+  setupPalette(editWidgets);
+
+  arrangeWidget(m_parent, m_startRow + 0, DateColumn, editWidgets["postdate"]);
+  arrangeWidget(m_parent, m_startRow + 0, DetailColumn, editWidgets["activity"]);
+  // arrangeWidget(m_parent, m_startRow + 1, DetailColumn, editWidgets["category"]->parentWidget());
+  arrangeWidget(m_parent, m_startRow + 4, DetailColumn, editWidgets["memo"]);
+  arrangeWidget(m_parent, m_startRow + 1, DateColumn, editWidgets["status"]);
+
+  // increase the height of the row containing the memo widget
+  m_parent->setRowHeight(m_startRow+4, m_parent->rowHeightHint() * 3);
+}
+
+void InvestTransaction::tabOrderInRegister(QWidgetList& tabOrderWidgets) const
+{
+  QWidget* w;
+
+  // date
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, DateColumn)));
+  // activity
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, DetailColumn)));
+
+#if 0
+  // payee
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, DetailColumn)));
+  // make sure to have the category field and the split button as seperate tab order widgets
+  // ok, we have to have some internal knowledge about the KMyMoneyCategory object, but
+  // it's one of our own widgets, so we actually don't care. Just make sure, that we don't
+  // go haywire when someone changes the KMyMoneyCategory object ...
+  w = m_parent->cellWidget(m_startRow + 1, DetailColumn);
+  tabOrderWidgets.append(focusWidget(w));
+  w = dynamic_cast<QWidget*>(w->child("splitButton"));
+  if(w)
+    tabOrderWidgets.append(w);
+  // payment
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, PaymentColumn)));
+  // deposit
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, DepositColumn)));
+#endif
+  // memo
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 4, DetailColumn)));
+  // status
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 1, DateColumn)));
+}
+
+int InvestTransaction::numRowsRegister(bool expanded) const
+{
+  int numRows = 1;
+  if(expanded) {
+    if(!m_inEdit) {
+      if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty())
+        ++numRows;
+      if(haveInterest() && m_interestSplits.count())
+        ++numRows;
+      if(haveFees() && m_feeSplits.count())
+        ++numRows;
+      if(!m_split.memo().isEmpty())
+        ++numRows;
+    } else
+      numRows = 5;
+  }
+  return numRows;
+}
+
+bool InvestTransaction::haveShares(void) const
+{
+  bool rc = true;
+  switch(m_transactionType) {
+    case Dividend:
+    case Yield:
+    case SplitShares:
+      rc = false;
+      break;
+
+    default:
+      break;
+  }
+  return rc;
+}
+
+bool InvestTransaction::haveFees(void) const
+{
+  bool rc = true;
+  switch(m_transactionType) {
+    case AddShares:
+    case RemoveShares:
+    case SplitShares:
+      rc = false;
+      break;
+
+    default:
+      break;
+  }
+  return rc;
+}
+
+bool InvestTransaction::haveInterest(void) const
+{
+  bool rc = false;
+  switch(m_transactionType) {
+    case SellShares:
+    case Dividend:
+    case ReinvestDividend:
+    case Yield:
+      rc = true;
+      break;
+
+    default:
+      break;
+  }
+  return rc;
+}
+
+bool InvestTransaction::havePrice(void) const
+{
+  bool rc = false;
+  switch(m_transactionType) {
+    case BuyShares:
+    case SellShares:
+    case ReinvestDividend:
+      rc = true;
+      break;
+
+    default:
+      break;
+  }
+  return rc;
+}
+
+bool InvestTransaction::haveAmount(void) const
+{
+  bool rc = false;
+  switch(m_transactionType) {
+    case BuyShares:
+    case SellShares:
+    case Dividend:
+    case Yield:
+      rc = true;
+      break;
+
+    default:
+      break;
+  }
+  return rc;
+}
+
+bool InvestTransaction::haveAssetAccount(void) const
+{
+  bool rc = true;
+  switch(m_transactionType) {
+    case AddShares:
+    case RemoveShares:
+    case SplitShares:
+    case ReinvestDividend:
+      rc = false;
+      break;
+
+    default:
+      break;
+  }
+  return rc;
+}
+
+bool InvestTransaction::haveSplitRatio(void) const
+{
+  return m_transactionType == SplitShares;
+}
+
+TransactionEditor* InvestTransaction::createEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate)
+{
+  return new InvestTransactionEditor(regForm, objects, this, list, lastPostDate);
+}
+

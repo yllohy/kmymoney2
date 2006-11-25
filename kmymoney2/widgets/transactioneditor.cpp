@@ -64,11 +64,13 @@ TransactionEditor::TransactionEditor(TransactionEditorContainer* regForm, MyMone
   m_split(item->split()),
   m_lastPostDate(lastPostDate)
 {
+  m_item->startEditMode();
 }
 
 TransactionEditor::~TransactionEditor()
 {
   m_regForm->removeEditWidgets(m_editWidgets);
+  m_item->leaveEditMode();
 
   // FIXME remove tabbar
   // m_regForm->setProtectedAction(m_editWidgets, ProtectNone);
@@ -1617,6 +1619,91 @@ bool StdTransactionEditor::enterTransactions(QCString& newId)
   return storeTransactions;
 }
 
+
+InvestTransactionEditor::InvestTransactionEditor()
+{
+}
+
+InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
+  TransactionEditor(regForm, objects, item, list, lastPostDate)
+{
+}
+
+void InvestTransactionEditor::createEditWidgets(void)
+{
+  KMyMoneyActivityCombo* activity = new KMyMoneyActivityCombo();
+  m_editWidgets["activity"] = activity;
+  connect(activity, SIGNAL(activitySelected(KMyMoneyRegister::investTransactionTypeE)), this, SLOT(slotUpdateActivity(KMyMoneyRegister::investTransactionTypeE)));
+  connect(activity, SIGNAL(actionSelected(KMyMoneyRegister::investTransactionTypeE)), this, SLOT(slotUpdateButtonState()));
+
+  m_editWidgets["postdate"] = new kMyMoneyDateInput;
+
+  KMyMoneyCategory* security = new KMyMoneyCategory(0, 0, false);
+  security->setHint(i18n("Security"));
+  m_editWidgets["security"] = security;
+  // connect(security, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateSecurity(const QCString&)));
+  connect(security, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
+  connect(security, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateSecurity(const QString&, QCString&)));
+  connect(security, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
+
+  KTextEdit* memo = new KTextEdit;
+  memo->setTabChangesFocus(true);
+  m_editWidgets["memo"] = memo;
+
+  KMyMoneyReconcileCombo* reconcile = new KMyMoneyReconcileCombo;
+  m_editWidgets["status"] = reconcile;
+  connect(reconcile, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateButtonState()));
+
+  // if we don't have more than 1 selected transaction, we don't need
+  // the "don't change" item in some of the combo widgets
+  if(m_transactions.count() < 2) {
+    reconcile->removeDontCare();
+  }
+
+}
+
+void InvestTransactionEditor::slotCreateSecurity(const QString& name, QCString& id)
+{
+  MyMoneyAccount acc, parent;
+  QRegExp exp("([^:]+)");
+  if(exp.search(name) != -1) {
+    acc.setName(exp.cap(1));
+
+    emit createSecurity(acc, m_account);
+
+    // return id
+    id = acc.id();
+  }
+}
+
+void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action */)
+{
+}
+
+QWidget* InvestTransactionEditor::firstWidget(void) const
+{
+  return haveWidget("activity");
+}
+
+bool InvestTransactionEditor::isComplete(void) const
+{
+  return false;
+}
+
+bool InvestTransactionEditor::enterTransactions(QCString& newId)
+{
+  newId = QCString();
+
+  // make sure to run through all stuff that is tied to 'focusout events'.
+  m_regForm->parentWidget()->setFocus();
+  QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 10);
+
+  // we don't need to update our widgets anymore, so we just disconnect the signal
+  disconnect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
+
+  // for now, we don't store the transactions created
+  return false;
+}
 
 #include "transactioneditor.moc"
 

@@ -328,6 +328,8 @@ void TransactionForm::setupForm(const MyMoneyAccount& acc)
 
     case MyMoneyAccount::Income:
     case MyMoneyAccount::Expense:
+    case MyMoneyAccount::Investment:
+    case MyMoneyAccount::Stock:
       m_tabBar->hide();
       break;
   }

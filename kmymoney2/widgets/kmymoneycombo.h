@@ -38,6 +38,7 @@
 #include <kmymoney/mymoneysplit.h>
 #include <kmymoney/register.h>
 #include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/transaction.h>
 
 class kMyMoneyCompletion;
 class KMyMoneySelector;
@@ -182,6 +183,8 @@ protected slots:
   * @author Thomas Baumgart
   * This class implements a combo box with the possible states for
   * actions (Deposit, Withdrawal, etc.).
+  *
+  * @deprecated
   */
 class KMyMoneyComboAction : public KMyMoneyCombo
 {
@@ -211,11 +214,7 @@ class KMyMoneyCashFlowCombo : public KMyMoneyCombo
 public:
   /**
     * Create a combo box that contains the entries "Pay to", "From" and
-    * "  " for don't care. The KMyMoneyRegister::CashFlowDirection is mapped
-    * to the text as follows:
-    *
-    * KMyMoneyRegister::CashFlowDirection
-
+    * "  " for don't care.
     */
   KMyMoneyCashFlowCombo(QWidget *w = 0, const char *name=0, MyMoneyAccount::accountTypeE type = MyMoneyAccount::Asset);
 
@@ -232,6 +231,34 @@ signals:
 private:
   KMyMoneyRegister::CashFlowDirection   m_dir;
 };
+
+/**
+  * @author Thomas Baumgart
+  * This class implements a combo box with the possible activities
+  * for investment transactions (buy, sell, dividend, etc.)
+  */
+class KMyMoneyActivityCombo : public KMyMoneyCombo
+{
+  Q_OBJECT
+public:
+  /**
+    * Create a combo box that contains the entries "Buy", "Sell" etc.
+    */
+  KMyMoneyActivityCombo(QWidget *w = 0, const char *name=0);
+
+  void setActivity(KMyMoneyRegister::investTransactionTypeE activity);
+  KMyMoneyRegister::investTransactionTypeE activity(void) const { return m_activity; }
+
+protected slots:
+  void slotSetActivity(const QCString& id);
+
+signals:
+  void activitySelected(KMyMoneyRegister::investTransactionTypeE);
+
+private:
+  KMyMoneyRegister::investTransactionTypeE  m_activity;
+};
+
 
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --

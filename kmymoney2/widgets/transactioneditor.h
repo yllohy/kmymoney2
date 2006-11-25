@@ -140,6 +140,16 @@ signals:
   void createCategory(MyMoneyAccount& account, const MyMoneyAccount& parent);
 
   /**
+    * This signal is sent out, when a new security (e.g. stock )needs to be created
+    * @a Parent should be the investment account under which the security account
+    * will be created.
+    *
+    * @param account reference to account info. Will be filled by called slot
+    * @param parent reference to parent account
+    */
+  void createSecurity(MyMoneyAccount& account, const MyMoneyAccount& parent);
+
+  /**
     * Signal is emitted, if any of the widgets enters (@a state equals @a true)
     *  or leaves (@a state equals @a false) object creation mode.
     *
@@ -263,6 +273,51 @@ protected:
 private:
   MyMoneyMoney        m_shares;
   bool                m_inUpdateVat;
+};
+
+
+class InvestTransactionEditor : public TransactionEditor
+{
+  Q_OBJECT
+public:
+  InvestTransactionEditor();
+  InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+
+  virtual bool enterTransactions(QCString&);
+
+  /**
+    * This method returns information about the completeness of the data
+    * entered. This can be used to control the availability of the
+    * 'Enter transaction' action.
+    *
+    * @retval true if entering the transaction into the engine
+    * @retval false if not enough information is present to enter the
+    * transaction into the engine
+    *
+    * @sa transactionDataSufficient()
+    */
+  virtual bool isComplete(void) const;
+
+  virtual QWidget* firstWidget(void) const;
+
+protected slots:
+  void slotCreateSecurity(const QString& name, QCString& id);
+
+protected:
+  /**
+    * This method creates all necessary widgets for this transaction editor.
+    * All signals will be connected to the relevant slots.
+    */
+  void createEditWidgets(void);
+
+  /**
+    * This method (re-)loads the widgets with the transaction information
+    * contained in @a m_transaction and @a m_split.
+    *
+    * @param action preset the edit wigdets for @a action if no transaction
+    *               is present
+    */
+  void loadEditWidgets(KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
 };
 
 #endif

@@ -167,6 +167,18 @@ public:
     */
   void loadInvestmentView(void);
 
+  /**
+    * Checks if the list of transactions can be edited in the current context
+    *
+    * @param list list of selected transactions
+    * @param tooltip reference to string receiving the tooltip text
+    *        which explains why the edit function is not available (in case
+    *        of returning @c false)
+    *
+    * @return @c true if edit operation is possible, @c false if not
+    */
+  bool canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const;
+
   TransactionEditor* startEdit(const QValueList<KMyMoneyRegister::SelectedTransaction>& list);
 
   /**

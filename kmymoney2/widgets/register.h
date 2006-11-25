@@ -168,9 +168,14 @@ public:
   virtual ~Register();
 
   /**
-    * add the item @p to the register
+    * add the item @a p to the register
     */
   void addItem(RegisterItem* p);
+
+  /**
+    * insert the item @a p into the register after item @a q
+    */
+  void insertItemAfter(RegisterItem* p, RegisterItem* q);
 
   /**
     * remove the item @p from the register
@@ -274,6 +279,8 @@ public:
     */
   static Transaction* transactionFactory(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split);
 
+  const MyMoneyAccount& account(void) const { return m_account; }
+
 protected:
   void drawContents(QPainter *p, int cx, int cy, int cw, int ch);
 
@@ -366,6 +373,8 @@ protected:
 
   int                          m_markErronousTransactions;
   int                          m_rowHeightHint;
+
+  MyMoneyAccount               m_account;
 
 private:
   bool                         m_listsDirty;

@@ -2400,6 +2400,15 @@ void KMyMoney2App::slotAccountNew(void)
   }
 }
 
+void KMyMoney2App::slotInvestmentNew(MyMoneyAccount& account, const MyMoneyAccount& parent)
+{
+  KNewInvestmentWizard dlg;
+  if(dlg.exec() == QDialog::Accepted) {
+    dlg.createObjects(parent.id());
+    account = dlg.account();
+  }
+}
+
 void KMyMoney2App::slotInvestmentNew(void)
 {
   KNewInvestmentWizard dlg;
@@ -4041,7 +4050,8 @@ void KMyMoney2App::updateActions(void)
   action("budget_rename")->setEnabled(false);
   action("budget_new")->setEnabled(true);
 
-  action("transaction_new")->setEnabled(fileOpen && myMoneyView->canEditTransactions(m_selectedTransactions));
+  QString tooltip;
+  action("transaction_new")->setEnabled(fileOpen && myMoneyView->canEditTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>(), tooltip));
   action("transaction_edit")->setEnabled(false);
   action("transaction_editsplits")->setEnabled(false);
   action("transaction_enter")->setEnabled(false);
@@ -4062,13 +4072,14 @@ void KMyMoney2App::updateActions(void)
     action("transaction_delete")->setEnabled(true);
     if(!m_transactionEditor) {
       action("transaction_duplicate")->setEnabled(true);
-      if(myMoneyView->canEditTransactions(m_selectedTransactions)) {
-        action("transaction_edit")->setEnabled(editTransactionsAllowed());
+      if(myMoneyView->canEditTransactions(m_selectedTransactions, tooltip)) {
+        action("transaction_edit")->setEnabled(true);
         // editing splits is allowed only if we have one transaction selected
         if(m_selectedTransactions.count() == 1) {
           action("transaction_editsplits")->setEnabled(true);
         }
       }
+      action("transaction_edit")->setToolTip(tooltip);
 
       if(!m_accountGoto.isEmpty())
         action("transaction_goto_account")->setEnabled(true);
@@ -4184,37 +4195,6 @@ void KMyMoney2App::updateActions(void)
     action("budget_rename")->setEnabled(true);
     action("budget_delete")->setEnabled(true);
   }
-}
-
-bool KMyMoney2App::editTransactionsAllowed(void) const
-{
-  // FIXME for now, we only allow to edit multiple transactions that have
-  // one or two splits. More than two splits are not very well covered and
-  // we have to think about how this could be handled in a safe way so
-  // that the user does not screw up his data.
-
-  bool rc = false;
-  QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
-
-  switch(m_selectedTransactions.count()) {
-    case 0:
-      break;
-
-    case 1:
-      rc = true;
-      break;
-
-    default:
-      rc = true;
-      for(it_t = m_selectedTransactions.begin(); it_t != m_selectedTransactions.end(); ++it_t) {
-        if((*it_t).transaction().splitCount() > 2) {
-          rc = false;
-          break;
-        }
-      }
-      break;
-  }
-  return rc;
 }
 
 void KMyMoney2App::slotSelectBudget(const QValueList<MyMoneyBudget>& list)

@@ -449,6 +449,11 @@ void KGlobalLedgerView::loadView(void)
     QCString key;
 
     MyMoneyTransactionFilter filter(m_account.id());
+    // if it's an investment account, we also take care of
+    // the sub-accounts (stock accounts)
+    if(m_account.accountType() == MyMoneyAccount::Investment)
+      filter.addAccount(m_account.accountList());
+
     if(isReconciliationAccount()) {
       key = "kmm-sort-reconcile";
       sortOrder = KMyMoneySettings::sortReconcileView();
@@ -543,7 +548,7 @@ void KGlobalLedgerView::loadView(void)
     MyMoneySplit split;
     split.setAccountId(m_account.id());
     split.setReconcileFlag(MyMoneySplit::Unknown);
-    new KMyMoneyRegister::StdTransaction(m_register, m_objects, MyMoneyTransaction(), split);
+    KMyMoneyRegister::Register::transactionFactory(m_register, m_objects, MyMoneyTransaction(), split);
 
     m_register->updateRegister(m_newAccountLoaded);
 
@@ -1133,6 +1138,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
       KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
       if(t && t->isSelected()) {
         m_register->setFocusItem(t);
+        item = t;
         break;
       }
     }
@@ -1145,12 +1151,10 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
       parent = m_form;
     else {
       parent = m_register;
-      // make sure, the height of the table is correct
-      m_register->updateRegister(KMyMoneySettings::ledgerLens() | !KMyMoneySettings::transactionForm());
     }
 
     // TODO create the right editor depending on the account type we look at
-    editor = new StdTransactionEditor(parent, m_objects, item, list, m_lastPostDate);
+    editor = item->createEditor(parent, m_objects, list, m_lastPostDate);
 
     // check that we use the same transaction commodity in all selected transactions
     // if not, we need to update this in the editor's list. The user can also bail out
@@ -1165,6 +1169,11 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
     }
 
     if(editor) {
+      if(parent == m_register) {
+        // make sure, the height of the table is correct
+        m_register->updateRegister(KMyMoneySettings::ledgerLens() | !KMyMoneySettings::transactionForm());
+      }
+
       m_inEditMode = true;
       connect(editor, SIGNAL(transactionDataSufficient(bool)), kmymoney2->action("transaction_enter"), SLOT(setEnabled(bool)));
       connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), editor, SLOT(slotReloadEditWidgets()));
@@ -1173,6 +1182,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
       connect(editor, SIGNAL(objectCreation(bool)), d->m_mousePressFilter, SLOT(setFilterDeactive(bool)));
       connect(editor, SIGNAL(createPayee(const QString&, QCString&)), kmymoney2, SLOT(slotPayeeNew(const QString&, QCString&)));
       connect(editor, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
+      connect(editor, SIGNAL(createSecurity(MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotInvestmentNew(MyMoneyAccount&, const MyMoneyAccount&)));
 
       // create the widgets, place them in the parent and load them with data
       // setup tab order
@@ -1380,6 +1390,62 @@ void KGlobalLedgerView::slotToggleMarkTransactionCleared(KMyMoneyRegister::Trans
         break;
     }
   }
+}
+
+bool KGlobalLedgerView::canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
+{
+  // check if we can edit the list of transactions. We can edit, if
+  //
+  //   a) no mix of standard and investment transactions exist
+  //   b) if a split transaction is selected, this is the only selection
+  //   c) none of the splits is frozen
+  //
+  bool rc = true;
+  int investmentTransactions = 0;
+  int normalTransactions = 0;
+
+  QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+  for(it_t = list.begin(); rc && it_t != list.end(); ++it_t) {
+    if(KMyMoneyUtils::transactionType((*it_t).transaction()) == KMyMoneyUtils::InvestmentTransaction)
+      ++investmentTransactions;
+    else
+      ++normalTransactions;
+
+    // check for a)
+    if(investmentTransactions != 0 && normalTransactions != 0) {
+      tooltip = i18n("Cannot edit investment transactions and non-investment transactions together");
+      rc = false;
+      break;
+    }
+
+    // check for b)
+    if((*it_t).transaction().splitCount() > 2) {
+      if(list.count() > 1) {
+        tooltip = i18n("Cannot edit multiple split transactions at once");
+        rc = false;
+        break;
+      }
+    }
+
+    // check for c)
+    const QValueList<MyMoneySplit>& splits = (*it_t).transaction().splits();
+    QValueList<MyMoneySplit>::const_iterator it_s;
+    for(it_s = splits.begin(); rc && it_s != splits.end(); ++it_s) {
+      if((*it_s).reconcileFlag() == MyMoneySplit::Frozen) {
+        tooltip = i18n("Cannot edit transactions with frozen splits");
+        rc = false;
+      }
+    }
+  }
+
+  // now check that we have the correct account type for investment transactions
+  if(rc == true && investmentTransactions != 0) {
+    if(m_account.accountType() != MyMoneyAccount::Investment) {
+      tooltip = i18n("Cannot edit investment transactions in the context of this account");
+      rc = false;
+    }
+  }
+  return rc;
 }
 
 #include "kgloballedgerview.moc"

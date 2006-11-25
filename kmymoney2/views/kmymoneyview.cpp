@@ -314,23 +314,18 @@ bool KMyMoneyView::canPrint(void)
   return rc;
 }
 
-bool KMyMoneyView::canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list) const
+bool KMyMoneyView::canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
 {
   // we can only edit transactions in the ledger view so
   // we check that this is the active page
+
   bool rc = (activePageIndex() == pageIndex(m_ledgerViewFrame));
 
-  // if this is true, then we check that none of the splits is frozen
   if(rc) {
-    QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
-    for(it_t = list.begin(); rc && it_t != list.end(); ++it_t) {
-      const QValueList<MyMoneySplit>& splits = (*it_t).transaction().splits();
-      QValueList<MyMoneySplit>::const_iterator it_s;
-      for(it_s = splits.begin(); rc && it_s != splits.end(); ++it_s) {
-        if((*it_s).reconcileFlag() == MyMoneySplit::Frozen)
-          rc = false;
-      }
-    }
+    tooltip = i18n("Edit the current selected transactions");
+    rc = m_ledgerView->canEditTransactions(list, tooltip);
+  } else {
+    tooltip = i18n("Editing transactions can only be performed in the ledger view");
   }
   return rc;
 }
@@ -339,7 +334,8 @@ bool KMyMoneyView::createNewTransaction(void)
 {
   bool rc = false;
   QValueList<KMyMoneyRegister::SelectedTransaction> list;
-  if(canEditTransactions(list)) {
+  QString txt;
+  if(canEditTransactions(list, txt)) {
     rc = m_ledgerView->selectEmptyTransaction();
   }
   return rc;
@@ -348,7 +344,8 @@ bool KMyMoneyView::createNewTransaction(void)
 TransactionEditor* KMyMoneyView::startEdit(const QValueList<KMyMoneyRegister::SelectedTransaction>& list)
 {
   TransactionEditor* editor = 0;
-  if(canEditTransactions(list)) {
+  QString txt;
+  if(canEditTransactions(list, txt)) {
     editor = m_ledgerView->startEdit(list);
   }
   return editor;
@@ -1483,8 +1480,10 @@ void KMyMoneyView::fixFile_0(void)
 
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyAccount> accountList = file->accountList();
+  ::timetrace("Have account list");
   QValueList<MyMoneyAccount>::Iterator it_a;
   QValueList<MyMoneySchedule> scheduleList = file->scheduleList();
+  ::timetrace("Have schedule list");
   QValueList<MyMoneySchedule>::Iterator it_s;
 
   MyMoneyAccount equity = file->equity();

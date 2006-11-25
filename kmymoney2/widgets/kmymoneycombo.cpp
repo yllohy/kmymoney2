@@ -429,6 +429,48 @@ void KMyMoneyCashFlowCombo::removeDontCare(void)
 }
 
 
+KMyMoneyActivityCombo::KMyMoneyActivityCombo(QWidget* w, const char* name) :
+  KMyMoneyCombo(false, w, name)
+{
+  m_completion = new kMyMoneyCompletion(this, 0);
+  QCString num;
+  // add the items in reverse order of appearance (see KMyMoneySelector::newItem() for details)
+  selector()->newTopItem(i18n("Split shares"), QString(), num.setNum(KMyMoneyRegister::SplitShares));
+  selector()->newTopItem(i18n("Remove shares"), QString(), num.setNum(KMyMoneyRegister::RemoveShares));
+  selector()->newTopItem(i18n("Add shares"), QString(), num.setNum(KMyMoneyRegister::AddShares));
+  selector()->newTopItem(i18n("Yield"), QString(), num.setNum(KMyMoneyRegister::Yield));
+  selector()->newTopItem(i18n("Reinvest dividend"), QString(), num.setNum(KMyMoneyRegister::ReinvestDividend));
+  selector()->newTopItem(i18n("Dividend"), QString(), num.setNum(KMyMoneyRegister::Dividend));
+  selector()->newTopItem(i18n("Sell shares"), QString(), num.setNum(KMyMoneyRegister::SellShares));
+  selector()->newTopItem(i18n("Buy shares"), QString(), num.setNum(KMyMoneyRegister::BuyShares));
+
+  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
+  connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetDirection(const QCString&)));
+}
+
+void KMyMoneyActivityCombo::setActivity(KMyMoneyRegister::investTransactionTypeE activity)
+{
+  m_activity = activity;
+  QCString num;
+  setSelectedItem(num.setNum(activity));
+}
+
+void KMyMoneyActivityCombo::slotSetActivity(const QCString& id)
+{
+  QCString num;
+  for(int i = KMyMoneyRegister::BuyShares; i <= KMyMoneyRegister::SplitShares; ++i) {
+    num.setNum(i);
+    if(num == id) {
+      m_activity = static_cast<KMyMoneyRegister::investTransactionTypeE>(i);
+      break;
+    }
+  }
+  emit activitySelected(m_activity);
+  update();
+}
+
+
+
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --

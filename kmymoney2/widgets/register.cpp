@@ -426,9 +426,8 @@ Register::Register(QWidget *parent, const char *name ) :
   horizontalHeader()->setLabel(NumberColumn, i18n("No."));
   horizontalHeader()->setLabel(DateColumn, i18n("Date"));
   horizontalHeader()->setLabel(AccountColumn, i18n("Account"));
-  horizontalHeader()->setLabel(DetailColumn, i18n("Details"));
   horizontalHeader()->setLabel(SecurityColumn, i18n("Security"));
-  horizontalHeader()->setLabel(ActivityColumn, i18n("Activity"));
+  horizontalHeader()->setLabel(DetailColumn, i18n("Details"));
   horizontalHeader()->setLabel(ReconcileFlagColumn, i18n("C"));
   horizontalHeader()->setLabel(PaymentColumn, i18n("Payment"));
   horizontalHeader()->setLabel(DepositColumn, i18n("Deposit"));
@@ -477,6 +476,7 @@ bool Register::eventFilter(QObject* o, QEvent* e)
 
 void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColumn)
 {
+  m_account = account;
   bool enabled = isUpdatesEnabled();
   setUpdatesEnabled(false);
 
@@ -494,8 +494,17 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
   // turn on standard columns
   showColumn(DateColumn);
   showColumn(DetailColumn);
-  showColumn(BalanceColumn);
   showColumn(ReconcileFlagColumn);
+
+  // balance
+  switch(account.accountType()) {
+    case MyMoneyAccount::Investment:
+    case MyMoneyAccount::Stock:
+      break;
+    default:
+      showColumn(BalanceColumn);
+      break;
+  }
 
   // Number column
   switch(account.accountType()) {
@@ -531,7 +540,6 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
       break;
 
     case MyMoneyAccount::Investment:
-      showColumn(ActivityColumn);
       showColumn(SecurityColumn);
       showColumn(AmountColumn);
       showColumn(PriceColumn);
@@ -560,6 +568,10 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
   }
 
   switch(account.accountType()) {
+    case MyMoneyAccount::Investment:
+      m_lastCol = ValueColumn;
+      break;
+
     default:
       m_lastCol = BalanceColumn;
       break;
@@ -640,6 +652,33 @@ void Register::clear(void)
   // recalculate row height hint
   QFontMetrics fm( KMyMoneyGlobalSettings::listCellFont() );
   m_rowHeightHint = fm.lineSpacing()+6;
+}
+
+void Register::insertItemAfter(RegisterItem*p, RegisterItem* prev)
+{
+  RegisterItem* next = 0;
+  if(!prev)
+    prev = lastItem();
+
+  if(prev) {
+    next = prev->nextItem();
+    prev->setNextItem(p);
+  }
+  if(next)
+    next->setPrevItem(p);
+
+  p->setPrevItem(prev);
+  p->setNextItem(next);
+
+  if(!m_firstItem)
+    m_firstItem = p;
+  if(!m_lastItem)
+    m_lastItem = p;
+
+  if(prev == m_lastItem)
+    m_lastItem = p;
+
+  m_listsDirty = true;
 }
 
 void Register::addItem(RegisterItem* p)
@@ -801,6 +840,8 @@ void Register::updateRegister(bool forceUpdateRowHeight)
     // add or remove scrollbars as required
     updateScrollBars();
 
+    setUpdatesEnabled(updatesEnabled);
+
     // force resizeing of the columns
     QTimer::singleShot(0, this, SLOT(resize()));
   }
@@ -867,6 +908,10 @@ void Register::resize(int col)
     adjustColumn(DepositColumn);
   if(columnWidth(BalanceColumn))
     adjustColumn(BalanceColumn);
+  if(columnWidth(PriceColumn))
+    adjustColumn(PriceColumn);
+  if(columnWidth(ValueColumn))
+    adjustColumn(ValueColumn);
 
   // make amount columns all the same size
   // only extend the entry columns to make sure they fit
@@ -955,40 +1000,7 @@ void Register::adjustColumn(int col)
         continue;
       Transaction* t = dynamic_cast<Transaction*>(item);
       if(t) {
-        QString txt;
-        MyMoneyMoney amount;
-        int nw = 0;
-
-        switch(col) {
-          default:
-            break;
-
-          case NumberColumn:
-            txt = t->split().number();
-            nw = cellFontMetrics.width(txt+"  ");
-            break;
-
-          case PaymentColumn:
-            amount = t->split().value();
-            if(amount.isNegative()) {
-              txt = amount.formatMoney();
-              nw = cellFontMetrics.width(txt+"  ");
-            }
-            break;
-
-          case DepositColumn:
-            amount = t->split().value();
-            if(!amount.isNegative()) {
-              txt = amount.formatMoney();
-              nw = cellFontMetrics.width(txt+"  ");
-            }
-            break;
-
-          case BalanceColumn:
-            txt = t->balance();
-            nw = cellFontMetrics.width(txt+"  ");
-            break;
-        }
+        int nw = t->registerColWidth(col, cellFontMetrics);
         w = QMAX( w, nw );
       }
     }
@@ -1295,8 +1307,11 @@ void Register::slotDoubleClicked(int row, int, int, const QPoint&)
       m_ignoreNextButtonRelease = true;
       // double click to start editing only works if the focus
       // item is among the selected ones
-      if(m_focusItem->isSelected())
-        emit editTransaction();
+      if(m_focusItem->isSelected()) {
+        // don't emit the signal right away but wait until
+        // we come back to the Qt main loop
+        QTimer::singleShot(0, this, SIGNAL(editTransaction()));
+      }
     }
   }
 }
@@ -1461,7 +1476,7 @@ void Register::removeEditWidgets(QMap<QString, QWidget*>& editWidgets)
 
   // now delete the widgets
   KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(focusItem());
-  for(int row = t->startRow(); row < t->startRow() + t->numRowsRegister(); ++row) {
+  for(int row = t->startRow(); row < t->startRow() + t->numRowsRegister(true); ++row) {
     for(int col = 0; col < numCols(); ++col) {
       if(cellWidget(row, col))
         clearCellWidget(row, col);
@@ -1607,8 +1622,33 @@ void Register::keyPressEvent(QKeyEvent* ev)
 Transaction* Register::transactionFactory(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split)
 {
   Transaction* t = 0;
-  t = new KMyMoneyRegister::StdTransaction(parent, objects, transaction, split);
+  switch(parent->account().accountType()) {
+    case MyMoneyAccount::Checkings:
+    case MyMoneyAccount::Savings:
+    case MyMoneyAccount::Cash:
+    case MyMoneyAccount::CreditCard:
+    case MyMoneyAccount::Loan:
+    case MyMoneyAccount::Asset:
+    case MyMoneyAccount::Liability:
+    case MyMoneyAccount::Currency:
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Expense:
+    case MyMoneyAccount::AssetLoan:
+      t = new KMyMoneyRegister::StdTransaction(parent, objects, transaction, split);
+      break;
 
+    case MyMoneyAccount::Investment:
+      t = new KMyMoneyRegister::InvestTransaction(parent, objects, transaction, split);
+      break;
+
+    case MyMoneyAccount::CertificateDep:
+    case MyMoneyAccount::MoneyMarket:
+    case MyMoneyAccount::Stock:
+    case MyMoneyAccount::Equity:
+    default:
+      qDebug("Register::transactionFactory: invalid accountTypeE %d", parent->account().accountType());
+      break;
+  }
   return t;
 }
 #include "register.moc"

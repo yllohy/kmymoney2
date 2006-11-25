@@ -71,12 +71,14 @@ public:
     */
   void createObjects(const QCString& parentId);
 
+  const MyMoneyAccount& account(void) const { return m_account; }
+
 protected slots:
   void next(void);
   void slotCheckPage(void);
   void slotCheckPage(const QString&);
   void slotSourceChanged(bool);
-  void slotHelp(void); 
+  void slotHelp(void);
 private:
   void init(void);
 

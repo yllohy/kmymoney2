@@ -361,12 +361,17 @@ public:
   virtual bool showPage(int index);
 
   /**
-    * check if the current view allows to edit transactions
+    * check if the current view allows to edit the selected transactions
+    *
+    * @param list list of selected transactions
+    * @param tooltip reference to string receiving the tooltip text
+    *        which explains why the edit function is not available (in case
+    *        of returning @c false)
     *
     * @retval true Yes, view allows to enter/edit transactions
     * @retval false No, view cannot enter/edit transactions
     */
-  bool canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>&) const;
+  bool canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const;
 
   /**
     * check if the current view allows to print something
