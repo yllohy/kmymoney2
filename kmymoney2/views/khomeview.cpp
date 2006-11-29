@@ -31,6 +31,7 @@
 #include <dom/dom_text.h>
 #include <qfile.h>
 #include <qtextstream.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -930,26 +931,13 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
         if(!fname.isEmpty())
           m_part->openURL(fname);
       }
-      else if ( mode == "manual" )
-      {
-        KMessageBox::sorry(qApp->mainWidget(),i18n("There is no user manual yet"),i18n("No manual"));
-      }
       else
         m_part->openURL(m_filename);
 
     } else if(view == "action") {
         KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
         Q_CHECK_PTR(mw);
-        mw->actionCollection()->action( id )->activate();
-
-#if 0
-        // Enable this to get a dump of all action names
-        unsigned idx = mw->actionCollection()->count();
-        while( idx-- )
-        {
-          qDebug("%u: %s\n",idx,mw->actionCollection()->action(idx)->name());
-        }
-#endif
+        QTimer::singleShot(0, mw->actionCollection()->action( id ), SLOT(activate()));
 
     } else if(view == VIEW_HOME) {
       slotRefreshView();
