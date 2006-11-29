@@ -1,3 +1,7 @@
+2006-11-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem with fancy header on weekstartday set to other than Monday
+    Thanks to David Houlden for sending a patch
+
 2006-11-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Prevent autofill if date has been changed by user in transaction editor
 

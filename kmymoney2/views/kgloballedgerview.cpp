@@ -656,7 +656,7 @@ void KGlobalLedgerView::addGroupMarkers(void)
       // b = KLocale::weekStartDay() first day of week (1 = Monday, 7 = Sunday)
       weekStartOfs = today.dayOfWeek() - KGlobal::locale()->weekStartDay();
       if(weekStartOfs < 0) {
-        weekStartOfs = 7 - weekStartOfs;
+        weekStartOfs = 7 + weekStartOfs;
       }
       thisWeek = today.addDays(-weekStartOfs);
       lastWeek = thisWeek.addDays(-7);
