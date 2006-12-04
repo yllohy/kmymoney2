@@ -1,4 +1,4 @@
-# $Id: kbanking.m4,v 1.8 2006/12/04 17:40:35 ipwizard Exp $
+# $Id: kbanking.m4,v 1.9 2006/12/04 17:46:34 ipwizard Exp $
 # (c) 2004 Martin Preuss<martin@libchipcard.de>
 # This function checks for KBanking
 
@@ -23,7 +23,7 @@ if test -z "$4"; then vbld="0"; else vbld="$4"; fi
 
 AC_MSG_CHECKING(if kbanking support desired)
 AC_ARG_ENABLE(kbanking,
-  [  --enable-kbanking       enable kbanking support (default=enabled)],
+  [  --enable-kbanking       enable kbanking support (default=auto)],
   enable_kbanking="$enableval",
   enable_kbanking="auto")
 AC_MSG_RESULT($enable_kbanking)
