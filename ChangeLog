@@ -1,3 +1,6 @@
+2006-12-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Improved detection of KBanking support
+
 2006-11-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem with fancy header on weekstartday set to other than Monday
     Thanks to David Houlden for sending a patch
