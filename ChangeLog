@@ -1,5 +1,13 @@
+2006-12-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Refactoring some code modules
+  * More work on the transaction editor for investment transactions
+    (only works in ledger, crashes in form)
+
 2006-12-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved detection of KBanking support
+
+2006-12-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't allow to edit/create transactions in income or expense ledgers
 
 2006-11-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem with fancy header on weekstartday set to other than Monday

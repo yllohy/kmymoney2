@@ -404,6 +404,8 @@ void KMyMoneyBanking::_xaToStatement(const AB_TRANSACTION *t,
   const GWEN_TIME *startTime=0;
   MyMoneyStatement::Transaction kt;
 
+  kt.m_moneyFees = 0.0;
+
   // bank's transaction id
   p=AB_Transaction_GetFiId(t);
   if (p)

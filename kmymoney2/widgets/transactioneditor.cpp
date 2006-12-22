@@ -53,6 +53,7 @@
 
 #include "../kmymoneysettings.h"
 
+using namespace KMyMoneyRegister;
 using namespace KMyMoneyTransactionForm;
 
 TransactionEditor::TransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
@@ -71,12 +72,10 @@ TransactionEditor::~TransactionEditor()
 {
   m_regForm->removeEditWidgets(m_editWidgets);
   m_item->leaveEditMode();
-
-  // FIXME remove tabbar
-  // m_regForm->setProtectedAction(m_editWidgets, ProtectNone);
   emit finishEdit(m_transactions);
 }
 
+#if 0
 void TransactionEditor::deleteUnusedEditWidgets(void)
 {
   QMap<QString, QWidget*>::iterator it_w;
@@ -90,6 +89,7 @@ void TransactionEditor::deleteUnusedEditWidgets(void)
     }
   }
 }
+#endif
 
 void TransactionEditor::setup(QWidgetList& tabOrderWidgets, const MyMoneyAccount& account, KMyMoneyRegister::Action action)
 {
@@ -102,7 +102,7 @@ void TransactionEditor::setup(QWidgetList& tabOrderWidgets, const MyMoneyAccount
   if(w)
     tabOrderWidgets.append(w);
   loadEditWidgets(action);
-  deleteUnusedEditWidgets();
+  m_editWidgets.removeOrphans();
   slotUpdateButtonState();
 }
 
@@ -117,11 +117,7 @@ void TransactionEditor::slotUpdateButtonState(void)
 
 QWidget* TransactionEditor::haveWidget(const QString& name) const
 {
-  QMap<QString, QWidget*>::const_iterator it_w;
-  it_w = m_editWidgets.find(name);
-  if(it_w != m_editWidgets.end())
-    return *it_w;
-  return 0;
+  return m_editWidgets.haveWidget(name);
 }
 
 int TransactionEditor::slotEditSplits(void)
@@ -293,7 +289,9 @@ bool TransactionEditor::fixTransactionCommodity(const MyMoneyAccount& account)
             }
 
             if(rc == true) {
-              MyMoneyMoney price = (*it_t).split().shares() / (*it_t).split().value();
+              MyMoneyMoney price;
+              if(!(*it_t).split().shares().isZero() && !(*it_t).split().value().isZero())
+                price = (*it_t).split().shares() / (*it_t).split().value();
               QValueList<MyMoneySplit>::iterator it_s;
               MyMoneySplit& mySplit = (*it_t).split();
               for(it_s = (*it_t).transaction().splits().begin(); it_s != (*it_t).transaction().splits().end(); ++it_s) {
@@ -343,6 +341,41 @@ bool TransactionEditor::canAssignNumber(void) const
   kMyMoneyLineEdit* number = dynamic_cast<kMyMoneyLineEdit*>(haveWidget("number"));
   return (number != 0) && (number->text().isEmpty());
 }
+
+void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool allowObjectCreation)
+{
+  disconnect(category, SIGNAL(focusIn()), this, splitEditSlot);
+  if(allowObjectCreation)
+    category->setSuppressObjectCreation(false);
+
+  switch(splits.count()) {
+    case 0:
+      categoryId = QCString();
+      if(!category->currentText().isEmpty()) {
+        category->setCurrentText(QString());
+        // make sure, we don't see the selector
+        category->completion()->hide();
+      }
+      category->completion()->setSelected(QCString());
+      break;
+
+    case 1:
+      categoryId = splits[0].accountId();
+      category->completion()->setSelected(categoryId);
+      category->slotItemSelected(categoryId);
+      break;
+
+    default:
+      categoryId = QCString();
+      category->setCurrentText(i18n("Split transaction (category replacement)", "Split transaction"));
+      connect(category, SIGNAL(focusIn()), this, splitEditSlot);
+      if(allowObjectCreation)
+        category->setSuppressObjectCreation(true);
+      break;
+  }
+}
+
+
 
 StdTransactionEditor::StdTransactionEditor()
 {
@@ -428,13 +461,6 @@ void StdTransactionEditor::createEditWidgets(void)
   connect(cashflow, SIGNAL(directionSelected(KMyMoneyRegister::CashFlowDirection)), this, SLOT(slotUpdateCashFlow(KMyMoneyRegister::CashFlowDirection)));
   connect(cashflow, SIGNAL(directionSelected(KMyMoneyRegister::CashFlowDirection)), this, SLOT(slotUpdateButtonState()));
 
-// FIXME remove tabbar
-#if 0
-  KMyMoneyComboAction* combo = new KMyMoneyComboAction;
-  m_editWidgets["action"] = combo;
-  connect(combo, SIGNAL(actionSelected(int)), this, SLOT(slotUpdateAction(int)));
-#endif
-
   KMyMoneyReconcileCombo* reconcile = new KMyMoneyReconcileCombo;
   m_editWidgets["status"] = reconcile;
   connect(reconcile, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateButtonState()));
@@ -460,35 +486,10 @@ void StdTransactionEditor::createEditWidgets(void)
 
 void StdTransactionEditor::setupCategoryWidget(QCString& categoryId)
 {
-  KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
-  category->setSuppressObjectCreation(false);
-  disconnect(category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
+  TransactionEditor::setupCategoryWidget(dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]), m_splits, categoryId, SLOT(slotEditSplits()));
 
-  switch(m_splits.count()) {
-    case 0:
-      categoryId = QCString();
-      if(!category->currentText().isEmpty()) {
-        category->setCurrentText(QString());
-        // make sure, we don't see the selector
-        category->completion()->hide();
-      }
-      category->completion()->setSelected(QCString());
-      break;
-
-    case 1:
-      categoryId = m_splits[0].accountId();
-      category->completion()->setSelected(categoryId);
-      category->slotItemSelected(categoryId);
-      m_shares = m_splits[0].shares();
-      break;
-
-    default:
-      categoryId = QCString();
-      category->setCurrentText(i18n("Split transaction (category replacement)", "Split transaction"));
-      connect(category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
-      category->setSuppressObjectCreation(true);
-      break;
-  }
+  if(m_splits.count() == 1)
+    m_shares = m_splits[0].shares();
 }
 
 bool StdTransactionEditor::isTransfer(const QCString& accId1, const QCString& accId2) const
@@ -523,12 +524,21 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
   disconnect(category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
   category->setSuppressObjectCreation(false);
 
+  // check if the current transaction has a reference to an equity account
+  bool haveEquityAccount = false;
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  for(it_s = m_transaction.splits().begin(); !haveEquityAccount && it_s != m_transaction.splits().end(); ++it_s) {
+    MyMoneyAccount acc = m_objects->account((*it_s).accountId());
+    if(acc.accountType() == MyMoneyAccount::Equity)
+      haveEquityAccount = true;
+  }
+
   AccountSet aSet(m_objects);
   aSet.addAccountGroup(MyMoneyAccount::Asset);
   aSet.addAccountGroup(MyMoneyAccount::Liability);
   aSet.addAccountGroup(MyMoneyAccount::Income);
   aSet.addAccountGroup(MyMoneyAccount::Expense);
-  if(KMyMoneySettings::expertMode())
+  if(KMyMoneySettings::expertMode() || haveEquityAccount)
     aSet.addAccountGroup(MyMoneyAccount::Equity);
   aSet.load(category->selector());
 
@@ -771,6 +781,13 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
       s.setReconcileDate(QDate());
       s.clearId();
       s.setBankID(QString());
+      // older versions of KMyMoney used to set the action
+      // we don't need this anymore
+      if(s.action() != MyMoneySplit::ActionAmortization
+      && s.action() != MyMoneySplit::ActionInterest)  {
+        s.setAction(QCString());
+      }
+
 #if 0
       // FIXME update check number. The old comment contained
       //
@@ -1087,8 +1104,6 @@ bool StdTransactionEditor::addVatSplit(MyMoneyTransaction& tr, const MyMoneyMone
   } catch(MyMoneyException *e) {
     delete e;
   }
-#if 0
-#endif
   return rc;
 }
 
@@ -1326,7 +1341,10 @@ MyMoneyMoney StdTransactionEditor::amountFromWidget(bool* update) const
   if(update)
     *update = updateValue;
 
-  return value;
+  // determine the max fraction for this account and
+  // adjust the value accordingly
+  const MyMoneySecurity& sec = m_objects->security(m_account.currencyId());
+  return value.convert(m_account.fraction(sec));
 }
 
 bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig)
@@ -1617,92 +1635,6 @@ bool StdTransactionEditor::enterTransactions(QCString& newId)
     }
   }
   return storeTransactions;
-}
-
-
-InvestTransactionEditor::InvestTransactionEditor()
-{
-}
-
-InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
-  TransactionEditor(regForm, objects, item, list, lastPostDate)
-{
-}
-
-void InvestTransactionEditor::createEditWidgets(void)
-{
-  KMyMoneyActivityCombo* activity = new KMyMoneyActivityCombo();
-  m_editWidgets["activity"] = activity;
-  connect(activity, SIGNAL(activitySelected(KMyMoneyRegister::investTransactionTypeE)), this, SLOT(slotUpdateActivity(KMyMoneyRegister::investTransactionTypeE)));
-  connect(activity, SIGNAL(actionSelected(KMyMoneyRegister::investTransactionTypeE)), this, SLOT(slotUpdateButtonState()));
-
-  m_editWidgets["postdate"] = new kMyMoneyDateInput;
-
-  KMyMoneyCategory* security = new KMyMoneyCategory(0, 0, false);
-  security->setHint(i18n("Security"));
-  m_editWidgets["security"] = security;
-  // connect(security, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateSecurity(const QCString&)));
-  connect(security, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
-  connect(security, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateSecurity(const QString&, QCString&)));
-  connect(security, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
-
-  KTextEdit* memo = new KTextEdit;
-  memo->setTabChangesFocus(true);
-  m_editWidgets["memo"] = memo;
-
-  KMyMoneyReconcileCombo* reconcile = new KMyMoneyReconcileCombo;
-  m_editWidgets["status"] = reconcile;
-  connect(reconcile, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateButtonState()));
-
-  // if we don't have more than 1 selected transaction, we don't need
-  // the "don't change" item in some of the combo widgets
-  if(m_transactions.count() < 2) {
-    reconcile->removeDontCare();
-  }
-
-}
-
-void InvestTransactionEditor::slotCreateSecurity(const QString& name, QCString& id)
-{
-  MyMoneyAccount acc, parent;
-  QRegExp exp("([^:]+)");
-  if(exp.search(name) != -1) {
-    acc.setName(exp.cap(1));
-
-    emit createSecurity(acc, m_account);
-
-    // return id
-    id = acc.id();
-  }
-}
-
-void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action */)
-{
-}
-
-QWidget* InvestTransactionEditor::firstWidget(void) const
-{
-  return haveWidget("activity");
-}
-
-bool InvestTransactionEditor::isComplete(void) const
-{
-  return false;
-}
-
-bool InvestTransactionEditor::enterTransactions(QCString& newId)
-{
-  newId = QCString();
-
-  // make sure to run through all stuff that is tied to 'focusout events'.
-  m_regForm->parentWidget()->setFocus();
-  QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 10);
-
-  // we don't need to update our widgets anymore, so we just disconnect the signal
-  disconnect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
-
-  // for now, we don't store the transactions created
-  return false;
 }
 
 #include "transactioneditor.moc"

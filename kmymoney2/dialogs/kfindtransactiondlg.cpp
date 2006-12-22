@@ -258,6 +258,9 @@ void KFindTransactionDlg::slotUpdateSelections(void)
     txt += i18n("Details");
   }
 
+  // disable the search button if no selection is made
+  m_searchButton->setDisabled(txt.isEmpty());
+
   if(txt.isEmpty()) {
     txt = i18n("(None)");
   }
@@ -656,6 +659,7 @@ void KFindTransactionDlg::slotSearch(void)
 
 void KFindTransactionDlg::slotRefreshView(void)
 {
+  MyMoneyMoney deposit, payment;
   try {
     QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(m_filter);
     QValueList<MyMoneyTransaction>::ConstIterator it;
@@ -676,8 +680,17 @@ void KFindTransactionDlg::slotRefreshView(void)
       k.setSplitId(m_filter.matchingSplits()[ofs].id());
       MyMoneyAccount acc = MyMoneyFile::instance()->account(m_filter.matchingSplits()[ofs].accountId());
       if(acc.accountGroup() == MyMoneyAccount::Asset
-      || acc.accountGroup() == MyMoneyAccount::Liability)
+      || acc.accountGroup() == MyMoneyAccount::Liability) {
         m_transactionList.append(k);
+        { // debug stuff
+          const MyMoneySplit& split = m_filter.matchingSplits()[ofs];
+          if(split.shares().isNegative()) {
+            payment += split.shares().abs();
+          } else {
+            deposit += split.shares().abs();
+          }
+        }
+      }
 
     }
   } catch(MyMoneyException *e) {
@@ -722,8 +735,8 @@ void KFindTransactionDlg::slotRefreshView(void)
     delete e;
     return;
   }
-  m_foundText->setText(i18n(QString("Found %1 matching transactions")
-                      .arg(m_transactionPtrVector.count())));
+  m_foundText->setText(i18n(QString("Found %1 matching transactions (D %2 / P %3 = %4)")
+                      .arg(m_transactionPtrVector.count()).arg(deposit.formatMoney()).arg(payment.formatMoney()).arg((deposit-payment).formatMoney())));
   m_register->setTransactionCount(m_transactionPtrVector.count());
   m_register->setCurrentTransactionIndex(0);
   m_registerFrame->show();

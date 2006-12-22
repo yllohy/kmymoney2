@@ -168,7 +168,8 @@ bool kMyMoneyAccountSelector::contains(const QString& txt) const
                      i18n("Liability") + "|" +
                      i18n("Income")+ "|" +
                      i18n("Expense")+ "|" +
-                     i18n("Equity");
+                     i18n("Equity") + "|" +
+                     i18n("Security");
 
   while((it_v = it.current()) != 0) {
     QRegExp exp(QString("(%1):%2").arg(baseName).arg(txt));
@@ -324,10 +325,14 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
   if((m_typeList.contains(MyMoneyAccount::Expense)) > 0)
     typeMask |= KMyMoneyUtils::expense;
 
+  if((m_typeList.contains(MyMoneyAccount::Equity)) > 0)
+    typeMask |= KMyMoneyUtils::equity;
+
   KListView* lv = selector->listView();
   lv->clear();
   m_count = 0;
   QString key;
+  QListViewItem* after = 0;
 
   for(int mask = 0x01; mask != KMyMoneyUtils::last; mask <<= 1) {
     QListViewItem* item = 0;
@@ -367,17 +372,20 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
 
     if(typeMask & mask & KMyMoneyUtils::equity) {
       ++m_count;
-      item = selector->newItem(i18n("Equity accounts"));
+      item = selector->newItem(i18n("Equity accounts"), after);
       key = i18n("Equity");
       list = file->equity().accountList();
     }
 
+    if(!after)
+      after = item;
+
     if(item != 0) {
       // scan all matching accounts found in the engine
       for(it_l = list.begin(); it_l != list.end(); ++it_l) {
+        const MyMoneyAccount& acc = m_objects->account(*it_l);
         ++m_count;
         ++count;
-        const MyMoneyAccount& acc = m_objects->account(*it_l);
         if(m_typeList.contains(acc.accountType())
         && !acc.isClosed()) {
           QString tmpKey;
@@ -424,7 +432,9 @@ int AccountSet::load(kMyMoneyAccountSelector* selector, const QString& baseName,
     const MyMoneyAccount& acc = m_objects->account(*it);
     if(acc.isClosed())
       continue;
-    selector->newItem(item, acc.name(), baseName, acc.id());
+    QString tmpKey;
+    tmpKey = baseName + ":" + acc.name();
+    selector->newItem(item, acc.name(), tmpKey, acc.id());
     ++m_count;
     ++count;
   }

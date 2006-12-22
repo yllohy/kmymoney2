@@ -49,7 +49,7 @@ const int LinesPerMemo = 3;
 static QString sortOrderText[] = {
   I18N_NOOP("Unknown"),
   I18N_NOOP("Post date"),
-  I18N_NOOP("Entry date"),
+  I18N_NOOP("Date entered"),
   I18N_NOOP("Payee"),
   I18N_NOOP("Amount"),
   I18N_NOOP("Number"),

@@ -445,7 +445,7 @@ KMyMoneyActivityCombo::KMyMoneyActivityCombo(QWidget* w, const char* name) :
   selector()->newTopItem(i18n("Buy shares"), QString(), num.setNum(KMyMoneyRegister::BuyShares));
 
   connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
-  connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetDirection(const QCString&)));
+  connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetActivity(const QCString&)));
 }
 
 void KMyMoneyActivityCombo::setActivity(KMyMoneyRegister::investTransactionTypeE activity)

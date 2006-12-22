@@ -35,6 +35,8 @@
 #include <klocale.h>
 #include <kpushbutton.h>
 #include <kdebug.h>
+#include <kiconloader.h>
+#include <kguiitem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -57,7 +59,13 @@ KMyMoneyCategory::KMyMoneyCategory(QWidget* parent, const char * name, bool spli
     KMyMoneyCombo::reparent(m_frame, getWFlags() & ~WType_Mask, QPoint(0, 0), true);
     if(parent)
       m_frame->reparent(parent, QPoint(0, 0), true);
-    m_splitButton = new KPushButton(i18n("Split"), m_frame, "splitButton");
+
+    // create button
+    KGuiItem splitButtonItem("",
+        QIconSet(KGlobal::iconLoader()->loadIcon("split_transaction", KIcon::Small,
+        KIcon::SizeSmall)), "", "");
+    m_splitButton = new KPushButton(splitButtonItem, m_frame, "splitButton");
+
     layout->addWidget(this, 5);
     layout->addWidget(m_splitButton);
   }
@@ -76,9 +84,14 @@ KMyMoneyCategory::~KMyMoneyCategory()
 
 KPushButton* KMyMoneyCategory::splitButton(void) const
 {
-  if(!m_splitButton)
-    kdDebug(2) << "Caller requested non existing splitButton\n";
   return m_splitButton;
+}
+
+void KMyMoneyCategory::setPalette(const QPalette& palette)
+{
+  if(m_frame)
+    m_frame->setPalette(palette);
+  KMyMoneyCombo::setPalette(palette);
 }
 
 void KMyMoneyCategory::reparent(QWidget *parent, WFlags w, const QPoint& pos, bool showIt)
@@ -119,8 +132,29 @@ void KMyMoneyCategory::focusInEvent(QFocusEvent *ev)
   QTimer::singleShot(0, this, SIGNAL(focusIn()));
 }
 
+KMyMoneySecurity::KMyMoneySecurity(QWidget* parent, const char * name) :
+  KMyMoneyCategory(parent, name, false)
+{
+}
 
+KMyMoneySecurity::~KMyMoneySecurity()
+{
+}
 
+void KMyMoneySecurity::slotItemSelected(const QCString& id)
+{
+  if(!id.isEmpty())
+    setCurrentText(MyMoneyFile::instance()->account(id).name());
+  else
+    setCurrentText("");
+
+  m_completion->hide();
+
+  if(m_id != id) {
+    m_id = id;
+    emit itemSelected(id);
+  }
+}
 
 
 

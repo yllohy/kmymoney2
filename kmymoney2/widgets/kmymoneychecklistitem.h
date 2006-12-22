@@ -42,6 +42,7 @@ class KMyMoneyCheckListItem : public QObject, public QCheckListItem
   Q_OBJECT
 public:
   KMyMoneyCheckListItem(QListView *parent, const QString& txt, const QString& key, const QCString& id, Type type = QCheckListItem::CheckBox);
+  KMyMoneyCheckListItem(QListView *parent, QListViewItem* after, const QString& txt, const QString& key, const QCString& id, Type type = QCheckListItem::CheckBox);
   KMyMoneyCheckListItem(QListViewItem *parent, const QString& txt, const QString& key, const QCString& id, Type type = QCheckListItem::CheckBox);
   ~KMyMoneyCheckListItem();
 

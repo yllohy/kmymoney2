@@ -539,6 +539,8 @@ protected:
 
   void createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal, MyMoneySchedule& schedule);
 
+  void createCategory(MyMoneyAccount& account, const MyMoneyAccount& parent);
+
   /**
     * This method checks, if an account can be closed or not.
     *

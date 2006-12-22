@@ -74,6 +74,34 @@ const QString& sortOrderToText(TransactionSortField idx);
 TransactionSortField textToSortOrder(const QString& text);
 
 
+class QWidgetContainer : public QMap<QString, QWidget*>
+{
+public:
+  QWidgetContainer() {};
+
+  QWidget* haveWidget(const QString& name) const {
+    QWidgetContainer::const_iterator it_w;
+    it_w = find(name);
+    if(it_w != end())
+      return *it_w;
+    return 0;
+  }
+
+  void removeOrphans(void) {
+    QWidgetContainer::iterator it_w;
+    for(it_w = begin(); it_w != end(); ) {
+      if((*it_w) && (*it_w)->parent())
+        ++it_w;
+      else {
+        delete (*it_w);
+        remove(it_w);
+        it_w = begin();
+      }
+    }
+  }
+
+};
+
 class GroupMarker : public RegisterItem
 {
 public:

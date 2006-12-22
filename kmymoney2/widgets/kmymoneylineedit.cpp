@@ -42,48 +42,6 @@ kMyMoneyLineEdit::~kMyMoneyLineEdit()
 {
 }
 
-#if 0
-/** No descriptions */
-bool kMyMoneyLineEdit::eventFilter(QObject *o , QEvent *e )
-{
-  bool rc = KLineEdit::eventFilter(o, e);
-
-  if(rc == false) {
-    if(e->type() == QEvent::KeyPress) {
-      QKeyEvent *k = static_cast<QKeyEvent *> (e);
-      rc = true;
-      switch(k->key()) {
-        case Qt::Key_Return:
-        case Qt::Key_Enter:
-          emit signalEnter();
-          break;
-
-        case Qt::Key_Escape:
-          emit signalEsc();
-          break;
-
-        case Qt::Key_Tab:
-          rc = false;
-          if(k->state() & Qt::ShiftButton)
-            emit signalBackTab();
-          else
-            emit signalTab();
-          break;
-
-        case Qt::Key_Backtab:
-          rc = false;
-          emit signalBackTab();
-          break;
-
-        default:
-          rc = false;
-      }
-    }
-  }
-  return rc;
-}
-#endif
-
 void kMyMoneyLineEdit::resetText(void)
 {
   setText(m_text);

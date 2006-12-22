@@ -109,9 +109,14 @@ public:
   KPushButton* splitButton(void) const;
 
   /**
-    * Reimplemented for internal reasons
+    * Reimplemented for internal reasons. No API change
     */
   virtual void reparent( QWidget *parent, WFlags, const QPoint &, bool showIt = FALSE );
+
+  /**
+    * Reimplemented for internal reasons. No API change.
+    */
+  virtual void setPalette(const QPalette& palette);
 
 protected:
   /**
@@ -139,6 +144,18 @@ private:
   QFrame*           m_frame;
 };
 
+
+class KMyMoneySecurity : public KMyMoneyCategory
+{
+  Q_OBJECT
+public:
+  KMyMoneySecurity(QWidget* parent = 0, const char* name = 0);
+  virtual ~KMyMoneySecurity();
+
+public slots:
+  virtual void slotItemSelected(const QCString& id);
+
+};
 
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --

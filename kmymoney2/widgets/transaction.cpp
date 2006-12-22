@@ -20,9 +20,6 @@
 
 #include <qstring.h>
 #include <qpainter.h>
-#include <qpalette.h>
-// FIXME remove tabbar
-// #include <qtabbar.h>
 #include <qwidgetlist.h>
 
 // ----------------------------------------------------------------------------
@@ -46,6 +43,7 @@
 #include <kmymoney/kmymoneylineedit.h>
 #include <kmymoney/kmymoneypayee.h>
 #include <kmymoney/transactioneditor.h>
+#include <kmymoney/investtransactioneditor.h>
 
 #include "../kmymoneyglobalsettings.h"
 
@@ -145,12 +143,14 @@ Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, cons
   m_focus(false),
   m_erronous(false),
   m_inEdit(false),
+  m_inRegisterEdit(false),
   m_form(0)
 {
   // load the payee
   if(!m_split.payeeId().isEmpty()) {
     m_payee = m_objects->payee(m_split.payeeId()).name();
   }
+  m_payeeHeader = m_split.shares().isNegative() ? i18n("Pay to") : i18n("From");
 
   // load the currency
   if(!m_transaction.id().isEmpty())
@@ -367,7 +367,7 @@ void Transaction::paintRegisterCell(QPainter* painter, int row, int col, const Q
 
   int align = Qt::AlignVCenter;
   QString txt;
-  if(m_transaction != MyMoneyTransaction()) {
+  if(m_transaction != MyMoneyTransaction() && !m_inRegisterEdit) {
     registerCellText(txt, align, row, col, painter);
   }
 
@@ -453,15 +453,30 @@ void Transaction::paintFormCell(QPainter* painter, int row, int col, const QRect
 
 }
 
-void Transaction::setupPalette(QMap<QString, QWidget*>& editWidgets)
+void Transaction::setupPalette(const QPalette& palette, QMap<QString, QWidget*>& editWidgets)
+{
+  QMap<QString, QWidget*>::iterator it_w;
+  for(it_w = editWidgets.begin(); it_w != editWidgets.end(); ++it_w) {
+    if(*it_w) {
+      (*it_w)->setPalette(palette);
+    }
+  }
+}
+
+void Transaction::setupFormPalette(QMap<QString, QWidget*>& editWidgets)
+{
+  setupPalette(m_parent->palette(), editWidgets);
+}
+
+void Transaction::setupRegisterPalette(QMap<QString, QWidget*>& editWidgets)
 {
   // make sure, we're using the right palette
   QPalette palette = m_parent->palette();
-  QMap<QString, QWidget*>::iterator it_w;
-  for(it_w = editWidgets.begin(); it_w != editWidgets.end(); ++it_w) {
-    if(*it_w)
-      (*it_w)->setPalette(palette);
-  }
+
+  // use the highlight color as background
+  palette.setColor(QPalette::Active, QColorGroup::Background, palette.color(QPalette::Active, QColorGroup::Highlight));
+
+  setupPalette(palette, editWidgets);
 }
 
 QWidget* Transaction::focusWidget(QWidget* w) const
@@ -477,6 +492,8 @@ void Transaction::arrangeWidget(QTable* tbl, int row, int col, QWidget* w) const
 {
   if(w)
     tbl->setCellWidget(row, col, w);
+  else
+    qDebug("No widget for %d,%d", row, col);
 }
 
 bool Transaction::haveNumberField(void) const
@@ -581,6 +598,7 @@ void Transaction::startEditMode(void)
 void Transaction::leaveEditMode(void)
 {
   m_inEdit = false;
+  m_inRegisterEdit = false;
   setFocus(hasFocus(), true);
 }
 
@@ -616,6 +634,28 @@ StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects
     delete e;
   }
   m_rowsForm = 5;
+
+  if(KMyMoneyUtils::transactionType(m_transaction) == KMyMoneyUtils::InvestmentTransaction) {
+    MyMoneySplit split = KMyMoneyUtils::stockSplit(m_transaction);
+    m_payee = m_objects->account(split.accountId()).name();
+    QString addon;
+    if(split.action() == MyMoneySplit::ActionBuyShares) {
+      if(split.value().isNegative()) {
+        addon = i18n("Sell");
+      } else {
+        addon = i18n("Buy");
+      }
+    } else if(split.action() == MyMoneySplit::ActionDividend) {
+        addon = i18n("Dividend");
+    } else if(split.action() == MyMoneySplit::ActionYield) {
+        addon = i18n("Yield");
+    }
+    if(!addon.isEmpty()) {
+      m_payee += QString(" (%1)").arg(addon);
+    }
+    m_payeeHeader = i18n("Activity");
+    m_category = i18n("Investment transaction");
+  }
 
   // setup initial size
   setNumRowsRegister(numRowsRegister(KMyMoneySettings::showRegisterDetailed()));
@@ -699,7 +739,7 @@ bool StdTransaction::formCellText(QString& txt, int& align, int row, int col, QP
         switch(col) {
           case LabelColumn1:
             align |= Qt::AlignLeft;
-            txt = m_split.shares().isNegative() ? i18n("Pay to") : i18n("From");
+            txt = m_payeeHeader;
             break;
 
           case ValueColumn1:
@@ -948,7 +988,7 @@ void StdTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidgets)
   if(!m_form || !m_parent)
     return;
 
-  setupPalette(editWidgets);
+  setupFormPalette(editWidgets);
 
   arrangeWidget(m_form, 0, LabelColumn1, editWidgets["cashflow"]);
   arrangeWidget(m_form, 0, ValueColumn1, editWidgets["payee"]);
@@ -1018,7 +1058,7 @@ void StdTransaction::arrangeWidgetsInRegister(QMap<QString, QWidget*>& editWidge
   if(!m_parent)
     return;
 
-  setupPalette(editWidgets);
+  setupRegisterPalette(editWidgets);
 
   if(haveNumberField())
     arrangeWidget(m_parent, m_startRow+0, NumberColumn, editWidgets["number"]);
@@ -1085,6 +1125,7 @@ int StdTransaction::numRowsRegister(bool expanded) const
 
 TransactionEditor* StdTransaction::createEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate)
 {
+  m_inRegisterEdit = regForm == m_parent;
   return new StdTransactionEditor(regForm, objects, this, list, lastPostDate);
 }
 
@@ -1611,7 +1652,7 @@ void InvestTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidget
   if(!m_form || !m_parent)
     return;
 
-  setupPalette(editWidgets);
+  setupFormPalette(editWidgets);
 
   arrangeWidget(m_form, 0, LabelColumn1, editWidgets["cashflow"]);
   arrangeWidget(m_form, 0, ValueColumn1, editWidgets["payee"]);
@@ -1682,12 +1723,20 @@ void InvestTransaction::arrangeWidgetsInRegister(QMap<QString, QWidget*>& editWi
   if(!m_parent)
     return;
 
-  setupPalette(editWidgets);
+  setupRegisterPalette(editWidgets);
 
   arrangeWidget(m_parent, m_startRow + 0, DateColumn, editWidgets["postdate"]);
+  arrangeWidget(m_parent, m_startRow + 0, SecurityColumn, editWidgets["security"]);
   arrangeWidget(m_parent, m_startRow + 0, DetailColumn, editWidgets["activity"]);
-  // arrangeWidget(m_parent, m_startRow + 1, DetailColumn, editWidgets["category"]->parentWidget());
+  arrangeWidget(m_parent, m_startRow + 1, DetailColumn, editWidgets["asset-account"]);
+  arrangeWidget(m_parent, m_startRow + 2, DetailColumn, editWidgets["interest-account"]->parentWidget());
+  arrangeWidget(m_parent, m_startRow + 3, DetailColumn, editWidgets["fee-account"]->parentWidget());
   arrangeWidget(m_parent, m_startRow + 4, DetailColumn, editWidgets["memo"]);
+  arrangeWidget(m_parent, m_startRow + 0, AmountColumn, editWidgets["shares"]);
+  arrangeWidget(m_parent, m_startRow + 0, PriceColumn, editWidgets["price"]);
+  arrangeWidget(m_parent, m_startRow + 2, AmountColumn, editWidgets["interest-amount"]);
+  arrangeWidget(m_parent, m_startRow + 3, AmountColumn, editWidgets["fee-amount"]);
+  arrangeWidget(m_parent, m_startRow + 0, ValueColumn, editWidgets["total"]);
   arrangeWidget(m_parent, m_startRow + 1, DateColumn, editWidgets["status"]);
 
   // increase the height of the row containing the memo widget
@@ -1700,8 +1749,41 @@ void InvestTransaction::tabOrderInRegister(QWidgetList& tabOrderWidgets) const
 
   // date
   tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, DateColumn)));
+  // security
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, SecurityColumn)));
   // activity
   tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, DetailColumn)));
+  // shares
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, AmountColumn)));
+  // price
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, PriceColumn)));
+  // asset account
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 1, DetailColumn)));
+
+  // make sure to have the category fields and the split button as seperate tab order widgets
+  // ok, we have to have some internal knowledge about the KMyMoneyCategory object, but
+  // it's one of our own widgets, so we actually don't care. Just make sure, that we don't
+  // go haywire when someone changes the KMyMoneyCategory object ...
+  w = m_parent->cellWidget(m_startRow + 2, DetailColumn);    // interest account
+  tabOrderWidgets.append(focusWidget(w));
+  w = dynamic_cast<QWidget*>(w->child("splitButton"));
+  if(w)
+    tabOrderWidgets.append(w);
+
+  // interest amount
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 2, AmountColumn)));
+
+  w = m_parent->cellWidget(m_startRow + 3, DetailColumn);    // fee account
+  tabOrderWidgets.append(focusWidget(w));
+  w = dynamic_cast<QWidget*>(w->child("splitButton"));
+  if(w)
+    tabOrderWidgets.append(w);
+
+  // fee amount
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 3, AmountColumn)));
+
+  // memo
+  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 4, DetailColumn)));
 
 #if 0
   // payee
@@ -1720,8 +1802,6 @@ void InvestTransaction::tabOrderInRegister(QWidgetList& tabOrderWidgets) const
   // deposit
   tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, DepositColumn)));
 #endif
-  // memo
-  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 4, DetailColumn)));
   // status
   tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 1, DateColumn)));
 }
@@ -1851,6 +1931,9 @@ bool InvestTransaction::haveSplitRatio(void) const
 
 TransactionEditor* InvestTransaction::createEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate)
 {
-  return new InvestTransactionEditor(regForm, objects, this, list, lastPostDate);
+  m_inRegisterEdit = regForm == m_parent;
+  InvestTransactionEditor* editor = new InvestTransactionEditor(regForm, objects, this, list, lastPostDate);
+  editor->setSplits(m_assetAccountSplit, m_interestSplits, m_feeSplits);
+  return editor;
 }
 

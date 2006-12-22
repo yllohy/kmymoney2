@@ -21,6 +21,8 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qpalette.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -165,7 +167,8 @@ public:
   virtual int formRowHeight(int row);
 
   virtual void setupForm(KMyMoneyTransactionForm::TransactionForm* form);
-  virtual void setupPalette(QMap<QString, QWidget*>& editWidgets);
+  virtual void setupFormPalette(QMap<QString, QWidget*>& editWidgets);
+  virtual void setupRegisterPalette(QMap<QString, QWidget*>& editWidgets);
   virtual void loadTab(KMyMoneyTransactionForm::TransactionForm* form) = 0;
 
   virtual void arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidgets) = 0;
@@ -235,6 +238,8 @@ protected:
     */
   void singleLineMemo(QString& txt, const MyMoneySplit& split) const;
 
+  virtual void setupPalette(const QPalette& palette, QMap<QString, QWidget*>& editWidgets);
+
 protected:
   MyMoneyTransaction      m_transaction;
   MyMoneySplit            m_split;
@@ -242,6 +247,7 @@ protected:
   QTable*                 m_form;
   QString                 m_category;
   QString                 m_payee;
+  QString                 m_payeeHeader;
   QString                 m_balance;
   QString                 m_categoryHeader;
   QCString                m_splitCurrencyId;
@@ -251,6 +257,7 @@ protected:
   bool                    m_focus;
   bool                    m_erronous;
   bool                    m_inEdit;
+  bool                    m_inRegisterEdit;
 };
 
 class StdTransaction : public Transaction

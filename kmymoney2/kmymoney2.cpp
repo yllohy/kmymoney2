@@ -355,7 +355,7 @@ void KMyMoney2App::initActions()
   // ***************************
   new KAction(i18n("New transaction button", "New"), "filenew", QKeySequence(Qt::CTRL | Qt::Key_Insert), this, SLOT(slotTransactionsNew()), actionCollection(), "transaction_new");
   new KAction(i18n("Edit transaction button", "Edit"), "edit", KShortcut("Return"), this, SLOT(slotTransactionsEdit()), actionCollection(), "transaction_edit");
-  new KAction(i18n("Edit split button", "Edit splits"), "", 0, this, SLOT(slotTransactionsEditSplits()), actionCollection(), "transaction_editsplits");
+  new KAction(i18n("Edit split button", "Edit splits"), "split_transaction", 0, this, SLOT(slotTransactionsEditSplits()), actionCollection(), "transaction_editsplits");
   new KAction(i18n("Enter transaction", "Enter"), "button_ok", KShortcut("Ctrl+Return"), this, SLOT(slotTransactionsEnter()), actionCollection(), "transaction_enter");
   new KAction(i18n("Cancel transaction edit", "Cancel"), "button_cancel", 0, this, SLOT(slotTransactionsCancel()), actionCollection(), "transaction_cancel");
   new KAction(i18n("Delete transaction", "Delete"), "delete", 0, this, SLOT(slotTransactionsDelete()), actionCollection(), "transaction_delete");
@@ -2334,6 +2334,36 @@ void KMyMoney2App::slotCategoryNew(const QString& name, QCString& id)
 
 void KMyMoney2App::slotCategoryNew(MyMoneyAccount& account, const MyMoneyAccount& parent)
 {
+  if(KMessageBox::questionYesNo(this,
+    QString("<qt>")+i18n("The category <b>%1</b> currently does not exist as sub-account of <b>%2</b>. "
+          "Do you want to create it?").arg(account.name()).arg(parent.name())+QString("</qt>"), i18n("Create category"),
+    KStdGuiItem::yes(), KStdGuiItem::no(), "CreateNewCategories") == KMessageBox::Yes) {
+    createCategory(account, parent);
+  }
+}
+
+void KMyMoney2App::slotCategoryNew(void)
+{
+  MyMoneyAccount parent;
+  MyMoneyAccount account;
+
+  // Preselect the parent account by looking at the current selected account/category
+  if(!m_selectedAccount.id().isEmpty()
+  && (m_selectedAccount.accountGroup() == MyMoneyAccount::Expense
+    || m_selectedAccount.accountGroup() == MyMoneyAccount::Income)) {
+    try {
+      MyMoneyFile* file = MyMoneyFile::instance();
+      parent = file->account(m_selectedAccount.id());
+    } catch(MyMoneyException *e) {
+      delete e;
+    }
+  }
+
+  createCategory(account, parent);
+}
+
+void KMyMoney2App::createCategory(MyMoneyAccount& account, const MyMoneyAccount& parent)
+{
   if(!parent.id().isEmpty()) {
     try {
       // make sure parent account exists
@@ -2355,26 +2385,6 @@ void KMyMoney2App::slotCategoryNew(MyMoneyAccount& account, const MyMoneyAccount
 
     createAccount(account, parentAccount, brokerageAccount, MyMoneyMoney(0,1), schedule);
   }
-}
-
-void KMyMoney2App::slotCategoryNew(void)
-{
-  MyMoneyAccount parent;
-  MyMoneyAccount account;
-
-  // Preselect the parent account by looking at the current selected account/category
-  if(!m_selectedAccount.id().isEmpty()
-  && (m_selectedAccount.accountGroup() == MyMoneyAccount::Expense
-    || m_selectedAccount.accountGroup() == MyMoneyAccount::Income)) {
-    try {
-      MyMoneyFile* file = MyMoneyFile::instance();
-      parent = file->account(m_selectedAccount.id());
-    } catch(MyMoneyException *e) {
-      delete e;
-    }
-  }
-
-  slotCategoryNew(account, parent);
 }
 
 void KMyMoney2App::slotAccountNew(void)
@@ -2402,10 +2412,15 @@ void KMyMoney2App::slotAccountNew(void)
 
 void KMyMoney2App::slotInvestmentNew(MyMoneyAccount& account, const MyMoneyAccount& parent)
 {
-  KNewInvestmentWizard dlg;
-  if(dlg.exec() == QDialog::Accepted) {
-    dlg.createObjects(parent.id());
-    account = dlg.account();
+  if(KMessageBox::questionYesNo(this,
+    QString("<qt>")+i18n("The security <b>%1</b> currently does not exist as sub-account of <b>%2</b>. "
+          "Do you want to create it?").arg(account.name()).arg(parent.name())+QString("</qt>"), i18n("Create category"),
+    KStdGuiItem::yes(), KStdGuiItem::no(), "CreateNewInvestments") == KMessageBox::Yes) {
+    KNewInvestmentWizard dlg;
+    if(dlg.exec() == QDialog::Accepted) {
+      dlg.createObjects(parent.id());
+      account = dlg.account();
+    }
   }
 }
 

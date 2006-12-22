@@ -299,6 +299,11 @@ protected:
     */
   void updateSummaryLine(const MyMoneyMoney& actBalance, const MyMoneyMoney& clearedBalance);
 
+  /**
+    * setup the default action according to the current account type
+    */
+  void setupDefaultAction(void);
+
 protected slots:
   void slotLeaveEditMode(const QValueList<KMyMoneyRegister::SelectedTransaction>& list);
   void slotNewTransaction(void);

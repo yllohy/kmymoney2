@@ -193,6 +193,12 @@ public:
   QListViewItem* newItem(const QString& name, const QString& key = QString(), const QCString& id = QCString(), QCheckListItem::Type type = QCheckListItem::RadioButtonController);
 
   /**
+    * Same as above, but create the item following the item pointed to by @c after.
+    * If @c after is 0, then behave as previous method
+    */
+  QListViewItem* newItem(const QString& name, QListViewItem* after, const QString& key = QString(), const QCString& id = QCString(), QCheckListItem::Type type = QCheckListItem::RadioButtonController);
+
+  /**
     * This method creates a new selectable object depending on the
     * selection mode. This is either a KListViewItem for single
     * selection mode or a KMyMoneyCheckListItem for multi selection mode

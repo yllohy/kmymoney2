@@ -840,7 +840,7 @@ void KGlobalLedgerView::loadAccounts(void)
       QCStringList::Iterator it;
       for(it = list.begin(); it != list.end(); ++it) {
         MyMoneyAccount a = file->account(*it);
-        if(a.accountType() != MyMoneyAccount::Investment) {
+        if(a.accountType() != MyMoneyAccount::Stock) {
           if(a.value("PreferredAccount") == "Yes") {
             m_account = a;
             break;
@@ -1051,8 +1051,19 @@ void KGlobalLedgerView::slotNewTransaction(KMyMoneyRegister::Action id)
 void KGlobalLedgerView::slotNewTransaction(void)
 {
   if(!m_inEditMode) {
-    d->m_action = KMyMoneyRegister::ActionNone;
+    setupDefaultAction();
     emit newTransaction();
+  }
+}
+
+void KGlobalLedgerView::setupDefaultAction(void)
+{
+  switch(m_account.accountType()) {
+    // TODO if we want a different action for different account types
+    //      we can add cases here
+    default:
+      d->m_action = KMyMoneyRegister::ActionWithdrawal;
+      break;
   }
 }
 
@@ -1068,6 +1079,7 @@ bool KGlobalLedgerView::selectEmptyTransaction(void)
       m_register->selectItem(m_register->lastItem());
       m_register->updateRegister();
     }
+    setupDefaultAction();
     rc = true;
   }
   return rc;
@@ -1404,6 +1416,12 @@ bool KGlobalLedgerView::canEditTransactions(const QValueList<KMyMoneyRegister::S
   int investmentTransactions = 0;
   int normalTransactions = 0;
 
+  if(m_account.accountGroup() == MyMoneyAccount::Income
+  || m_account.accountGroup() == MyMoneyAccount::Expense) {
+    tooltip = i18n("Cannot edit transactions in the context of a category.");
+    rc = false;
+  }
+
   QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
   for(it_t = list.begin(); rc && it_t != list.end(); ++it_t) {
     if(KMyMoneyUtils::transactionType((*it_t).transaction()) == KMyMoneyUtils::InvestmentTransaction)
@@ -1413,7 +1431,7 @@ bool KGlobalLedgerView::canEditTransactions(const QValueList<KMyMoneyRegister::S
 
     // check for a)
     if(investmentTransactions != 0 && normalTransactions != 0) {
-      tooltip = i18n("Cannot edit investment transactions and non-investment transactions together");
+      tooltip = i18n("Cannot edit investment transactions and non-investment transactions together.");
       rc = false;
       break;
     }
@@ -1421,7 +1439,7 @@ bool KGlobalLedgerView::canEditTransactions(const QValueList<KMyMoneyRegister::S
     // check for b)
     if((*it_t).transaction().splitCount() > 2) {
       if(list.count() > 1) {
-        tooltip = i18n("Cannot edit multiple split transactions at once");
+        tooltip = i18n("Cannot edit multiple split transactions at once.");
         rc = false;
         break;
       }
@@ -1432,7 +1450,7 @@ bool KGlobalLedgerView::canEditTransactions(const QValueList<KMyMoneyRegister::S
     QValueList<MyMoneySplit>::const_iterator it_s;
     for(it_s = splits.begin(); rc && it_s != splits.end(); ++it_s) {
       if((*it_s).reconcileFlag() == MyMoneySplit::Frozen) {
-        tooltip = i18n("Cannot edit transactions with frozen splits");
+        tooltip = i18n("Cannot edit transactions with frozen splits.");
         rc = false;
       }
     }
@@ -1441,7 +1459,7 @@ bool KGlobalLedgerView::canEditTransactions(const QValueList<KMyMoneyRegister::S
   // now check that we have the correct account type for investment transactions
   if(rc == true && investmentTransactions != 0) {
     if(m_account.accountType() != MyMoneyAccount::Investment) {
-      tooltip = i18n("Cannot edit investment transactions in the context of this account");
+      tooltip = i18n("Cannot edit investment transactions in the context of this account.");
       rc = false;
     }
   }

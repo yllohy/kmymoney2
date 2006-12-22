@@ -103,12 +103,22 @@ void KMyMoneySelector::slotItemSelected(QListViewItem *item)
   }
 }
 
-QListViewItem* KMyMoneySelector::newItem(const QString& name, const QString& key, const QCString& id, QCheckListItem::Type type)
+QListViewItem* KMyMoneySelector::newItem(const QString& name, QListViewItem* after, const QString& key, const QCString& id, QCheckListItem::Type type)
 {
-  QListViewItem* item = new KMyMoneyCheckListItem(m_listView, name, key, id, type);
+  QListViewItem* item;
+  if(after)
+    item = new KMyMoneyCheckListItem(m_listView, after, name, key, id, type);
+  else
+    item = new KMyMoneyCheckListItem(m_listView, name, key, id, type);
+
   item->setSelectable(!id.isEmpty());
   item->setOpen(true);
   return item;
+}
+
+QListViewItem* KMyMoneySelector::newItem(const QString& name, const QString& key, const QCString& id, QCheckListItem::Type type)
+{
+  return newItem(name, 0, key, id, type);
 }
 
 QListViewItem* KMyMoneySelector::newTopItem(const QString& name, const QString& key, const QCString& id)

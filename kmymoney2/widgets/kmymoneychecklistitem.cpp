@@ -52,6 +52,17 @@ KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListViewItem* parent, const QStrin
     m_key = txt;
 }
 
+KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListView* parent, QListViewItem* after, const QString& txt, const QString& key, const QCString& id, Type type) :
+  QCheckListItem(parent, after, txt, type),
+  m_key(key),
+  m_id(id)
+{
+  setOn(true);
+  m_known = false;
+  if(key.isEmpty())
+    m_key = txt;
+}
+
 KMyMoneyCheckListItem::~KMyMoneyCheckListItem()
 {
 }

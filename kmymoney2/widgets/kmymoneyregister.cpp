@@ -574,6 +574,7 @@ void kMyMoneyRegister::updateHeaders(void)
 
 void kMyMoneyRegister::slotBlinkInvalid(void)
 {
+#if 0
   // setup the color invalid transactions will be drawn in
   if(m_errorColor == m_textColor) {
     m_errorColor = QColor(255, 0, 0);
@@ -602,6 +603,7 @@ void kMyMoneyRegister::slotBlinkInvalid(void)
       }
     }
   }
+#endif
 }
 
 void kMyMoneyRegister::setCurrentDateIndex(const int idx)

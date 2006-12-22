@@ -37,6 +37,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/kmymoneylineedit.h>
 #include "kmymoneyedit.h"
 #include "kmymoneycalculator.h"
 #include "../mymoney/mymoneymoney.h"
@@ -192,7 +193,8 @@ static const uchar resetButtonImage[] = {
 
 void kMyMoneyEdit::init(void)
 {
-  m_edit = new KLineEdit(this);
+  // m_edit = new KLineEdit(this);
+  m_edit = new kMyMoneyLineEdit(this);
   m_edit->installEventFilter(this);
   setFocusProxy(m_edit);
 
@@ -500,6 +502,12 @@ const bool kMyMoneyEdit::isCalculatorButtonVisible(void) const
 const bool kMyMoneyEdit::isResetButtonVisible(void) const
 {
   return m_resetButton->isVisible();
+}
+
+void kMyMoneyEdit::setHint(const QString& hint) const
+{
+  if(m_edit)
+    m_edit->setHint(hint);
 }
 
 #include "kmymoneyedit.moc"

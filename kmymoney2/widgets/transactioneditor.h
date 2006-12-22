@@ -34,7 +34,9 @@
 #include <kmymoney/transactioneditorcontainer.h>
 #include <kmymoney/register.h>
 #include <kmymoney/mymoneyobjectcontainer.h>
+
 class KCurrencyExchange;
+class KMyMoneyCategory;
 
 class TransactionEditor : public QObject
 {
@@ -78,7 +80,7 @@ public:
     */
   virtual bool isComplete(void) const = 0;
 
-  bool fixTransactionCommodity(const MyMoneyAccount& account);
+  virtual bool fixTransactionCommodity(const MyMoneyAccount& account);
 
   virtual bool canAssignNumber(void) const;
   virtual void assignNumber(void);
@@ -95,8 +97,8 @@ public slots:
 protected:
   virtual void createEditWidgets(void) = 0;
   virtual void loadEditWidgets(KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone) = 0;
-  void deleteUnusedEditWidgets(void);
   QWidget* haveWidget(const QString& name) const;
+  void setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool allowObjectCreation = true);
 
 protected slots:
   void slotUpdateButtonState(void);
@@ -162,7 +164,7 @@ protected:
   QValueList<KMyMoneyRegister::SelectedTransaction> m_transactions;
   TransactionEditorContainer*                       m_regForm;
   KMyMoneyRegister::Transaction*                    m_item;
-  QMap<QString, QWidget*>                           m_editWidgets;
+  KMyMoneyRegister::QWidgetContainer                m_editWidgets;
   MyMoneyObjectContainer*                           m_objects;
   MyMoneyAccount                                    m_account;
   MyMoneyTransaction                                m_transaction;
@@ -275,49 +277,5 @@ private:
   bool                m_inUpdateVat;
 };
 
-
-class InvestTransactionEditor : public TransactionEditor
-{
-  Q_OBJECT
-public:
-  InvestTransactionEditor();
-  InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
-
-  virtual bool enterTransactions(QCString&);
-
-  /**
-    * This method returns information about the completeness of the data
-    * entered. This can be used to control the availability of the
-    * 'Enter transaction' action.
-    *
-    * @retval true if entering the transaction into the engine
-    * @retval false if not enough information is present to enter the
-    * transaction into the engine
-    *
-    * @sa transactionDataSufficient()
-    */
-  virtual bool isComplete(void) const;
-
-  virtual QWidget* firstWidget(void) const;
-
-protected slots:
-  void slotCreateSecurity(const QString& name, QCString& id);
-
-protected:
-  /**
-    * This method creates all necessary widgets for this transaction editor.
-    * All signals will be connected to the relevant slots.
-    */
-  void createEditWidgets(void);
-
-  /**
-    * This method (re-)loads the widgets with the transaction information
-    * contained in @a m_transaction and @a m_split.
-    *
-    * @param action preset the edit wigdets for @a action if no transaction
-    *               is present
-    */
-  void loadEditWidgets(KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
-};
 
 #endif

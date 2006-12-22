@@ -37,6 +37,7 @@ class KPushButton;
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/kmymoneylineedit.h>
 #include <kmymoney/mymoneysecurity.h>
 class MyMoneyMoney;
 class kMyMoneyCalculator;
@@ -98,7 +99,7 @@ private:
   QString m_text;       // keep track of what was the original value
   kMyMoneyCalculator* m_calculator;
   QVBox*              m_calculatorFrame;
-  KLineEdit*          m_edit;
+  kMyMoneyLineEdit*   m_edit;
   KPushButton*        m_calcButton;
   KPushButton*        m_resetButton;
   int                 m_prec;
@@ -204,6 +205,8 @@ public:
   const bool isResetButtonVisible(void) const;
 
   KLineEdit* lineedit(void) const;
+
+  void setHint(const QString& hint) const;
 
 public slots:
   void loadText(const QString& text);
