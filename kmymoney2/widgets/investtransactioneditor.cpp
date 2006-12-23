@@ -69,7 +69,7 @@ public:
     delete m_activity;
   }
 
-  void InvestTransactionEditorPrivate::activityFactory(KMyMoneyRegister::investTransactionTypeE type)
+  void activityFactory(KMyMoneyRegister::investTransactionTypeE type)
   {
     if(!m_activity || type != m_activity->type()) {
       delete m_activity;

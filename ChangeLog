@@ -1,3 +1,6 @@
+2006-12-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed extra qualification error
+
 2006-12-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Refactoring some code modules
   * More work on the transaction editor for investment transactions
