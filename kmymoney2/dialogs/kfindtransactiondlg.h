@@ -164,6 +164,7 @@ protected slots:
 
 signals:
   void transactionSelected(const QCString& accountId, const QCString& transactionId);
+  void selectionEmpty(bool isEmpty);
 
 protected:
   enum opTypeE {

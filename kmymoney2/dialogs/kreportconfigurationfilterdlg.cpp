@@ -91,7 +91,10 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     //
 
 
+    disconnect(SIGNAL(selectionEmpty(bool)));
     m_searchButton->setText( tr2i18n( "OK" ) );
+    m_searchButton->setEnabled(true);
+
     m_searchButton->disconnect();
     m_resetButton->disconnect();
     m_closeButton->disconnect();
@@ -170,14 +173,14 @@ void KReportConfigurationFilterDlg::slotSearch()
     MyMoneyReport::EColumnType ct[6] = { MyMoneyReport::eDays, MyMoneyReport::eWeeks, MyMoneyReport::eMonths, MyMoneyReport::eBiMonths, MyMoneyReport::eQuarters, MyMoneyReport::eYears };
     bool dy[6] = { true, true, false, false, false, false };
     m_currentState.setColumnType( ct[m_tab2->m_comboColumns->currentItem()] );
-    
+
     //TODO (Ace) This should be implicit in the call above.  MMReport needs fixin'
     m_currentState.setColumnsAreDays( dy[m_tab2->m_comboColumns->currentItem()] );
 
     m_currentState.setIncludingSchedules( m_tab2->m_checkScheduled->isChecked() );
-    
+
     m_currentState.setIncludingTransfers( m_tab2->m_checkTransfers->isChecked() );
-    
+
   }
   else if ( m_tab3 )
   {

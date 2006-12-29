@@ -110,6 +110,8 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   m_helpButton->setGuiItem(helpButtonItem);
 
   // readConfig();
+  connect(this, SIGNAL(selectionEmpty(bool)),  m_searchButton, SLOT(setDisabled(bool)));
+
   slotUpdateSelections();
 
   QTimer::singleShot(0, this, SLOT(slotRightSize()));
@@ -259,7 +261,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
   }
 
   // disable the search button if no selection is made
-  m_searchButton->setDisabled(txt.isEmpty());
+  emit selectionEmpty(txt.isEmpty());
 
   if(txt.isEmpty()) {
     txt = i18n("(None)");
@@ -422,8 +424,8 @@ void KFindTransactionDlg::slotDateChanged(void)
 {
   int idx;
   for(idx = untilToday; idx < userDefined; ++idx) {
-    if(m_fromDate->getQDate() == m_startDates[idx]
-    && m_toDate->getQDate() == m_endDates[idx]) {
+    if(m_fromDate->date() == m_startDates[idx]
+    && m_toDate->date() == m_endDates[idx]) {
       break;
     }
   }
@@ -594,7 +596,7 @@ void KFindTransactionDlg::setupFilter(void)
 
   // Date tab
   if(m_dateRange->currentItem() != 0) {
-    m_filter.setDateFilter(m_fromDate->getQDate(), m_toDate->getQDate());
+    m_filter.setDateFilter(m_fromDate->date(), m_toDate->date());
   }
 
   // Amount tab

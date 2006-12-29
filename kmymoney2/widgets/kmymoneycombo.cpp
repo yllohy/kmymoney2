@@ -205,6 +205,7 @@ void KMyMoneyCombo::focusOutEvent(QFocusEvent* e)
 
         // update the field to a possibly created object
         setCurrentText("");
+        m_id = id;
         if(!id.isEmpty()) {
           QListViewItem* item = m_completion->selector()->item(id);
           if(item)
