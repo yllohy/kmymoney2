@@ -2,6 +2,7 @@
   * Fixed problem introduced with changes made on 2006-12-14 and keep
     the OK button in the report configuration enabled at all times
   * Added support for automake 1.10
+  * Use KMessageBox for questions when deleting a report
 
 2006-12-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed extra qualification error

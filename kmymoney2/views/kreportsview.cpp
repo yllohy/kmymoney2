@@ -58,6 +58,7 @@
 #include <kfiledialog.h>
 #include <kmessagebox.h>
 #include <klistview.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -515,7 +516,7 @@ void KReportsView::slotDelete(void)
     MyMoneyReport report = tab->report();
     if ( ! report.id().isEmpty() )
     {
-      if ( QMessageBox::Ok == QMessageBox::warning(this,i18n("Delete Report?"),QString(i18n("Are you sure you want to delete %1?  There is no way to recover it!")).arg(report.name()), QMessageBox::Ok, QMessageBox::Cancel) )
+      if ( KMessageBox::Continue == KMessageBox::warningContinueCancel(this, QString("<qt>")+i18n("Are you sure you want to delete report <b>%1</b>?  There is no way to recover it!").arg(report.name())+QString("</qt>"), i18n("Delete Report?")))
       {
         MyMoneyFile::instance()->removeReport(report);
         slotClose(tab);
@@ -523,7 +524,7 @@ void KReportsView::slotDelete(void)
       }
     }
     else
-      QMessageBox::warning(this,i18n("Delete Report?"),QString(i18n("Sorry, %1 is a default report.  You may not delete it.")).arg(report.name()), QMessageBox::Ok, 0);
+      KMessageBox::information(this, QString("<qt>")+i18n("Sorry, <b>%1</b> is a default report.  You may not delete it.").arg(report.name())+QString("</qt>"), i18n("Delete Report?"));
   }
 }
 
@@ -612,7 +613,7 @@ void KReportsView::slotOpenReport(const MyMoneyReport& report)
 {
   kdDebug(2) << __func__ << " " << report.name() << endl;
     KReportTab* page = NULL;
-    
+
     // Find the tab which contains the report indicated by this list item
     int index = 1;
     while ( index < m_reportTabWidget->count() )
@@ -840,7 +841,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     ));
     list.back().setIncludingSchedules( true );
     list.back().setColumnsAreDays( true );
-  
+
 #ifdef HAVE_KDCHART
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAssetLiability,
@@ -919,7 +920,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Transactions by Week"),
       i18n("Default Report")
     ));
-  
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAccount,
       MyMoneyReport::eQCloan,
@@ -929,7 +930,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Default Report")
     ));
     list.back().setLoansOnly(true);
-    
+
     groups.push_back(list);
   }
   {
