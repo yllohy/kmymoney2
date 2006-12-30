@@ -16,13 +16,19 @@ AC_ARG_ENABLE(ofxbanking,
 AC_MSG_RESULT($enable_ofxbanking)
 
 if test "$enable_ofxplugin" != "no"; then
+  ac_save_CFLAGS="$CFLAGS"
+  CFLAGS="$CFLAGS $all_includes $USER_INCLUDES"
   AC_CHECK_HEADER([OpenSP/macros.h],[],[AC_MSG_ERROR([cannot find OpenSP headers. Please ensure you have OpenSP installed.])])
+  CFLAGS="$ac_save_CFLAGS"
   PKG_CHECK_MODULES(OFX,libofx >= 0.8.1)
  OFX_IMPORTERPLUGIN="ofximport" 
 fi
 
 if test "$enable_ofxbanking" != "no"; then
+  ac_save_CFLAGS="$CFLAGS"
+  CFLAGS="$CFLAGS $all_includes $USER_INCLUDES"
   AC_CHECK_HEADER([OpenSP/macros.h],[],[AC_MSG_ERROR([cannot find OpenSP headers. Please ensure you have OpenSP installed.])])
+  CFLAGS="$ac_save_CFLAGS"
   PKG_CHECK_MODULES(OFX,libofx >= 0.8.1)
   AC_DEFINE_UNQUOTED(USE_OFX_DIRECTCONNECT, 1, [whether to use OFX directconnect])
   PKG_CHECK_MODULES(LIBXMLPP,libxml++-1.0 >= 1.0.1,

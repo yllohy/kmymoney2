@@ -1,3 +1,6 @@
+2006-12-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Use include path given with --with-extra-includes during OpenSP detection
+
 2006-12-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem introduced with changes made on 2006-12-14 and keep
     the OK button in the report configuration enabled at all times
