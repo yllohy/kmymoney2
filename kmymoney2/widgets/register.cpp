@@ -55,7 +55,9 @@ static QString sortOrderText[] = {
   I18N_NOOP("Number"),
   I18N_NOOP("Entry order"),
   I18N_NOOP("Type"),
-  I18N_NOOP("Category")
+  I18N_NOOP("Category"),
+  I18N_NOOP("Reconcile state")
+  // add new values above this line
   };
 
 using namespace KMyMoneyRegister;
@@ -160,6 +162,10 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
 
       case CategorySort:
         rc = QString::localeAwareCompare(i1->sortCategory(), i2->sortCategory());
+        break;
+
+      case ReconcileStateSort:
+        rc = static_cast<int>(i1->sortReconcileState()) - static_cast<int>(i2->sortReconcileState());
         break;
 
       default:

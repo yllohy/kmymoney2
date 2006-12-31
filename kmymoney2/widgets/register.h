@@ -57,6 +57,7 @@ typedef enum {
   EntryOrderSort,       //< sort by entry order
   TypeSort,             //< sort by CashFlowDirection
   CategorySort,         //< sort by Category
+  ReconcileStateSort,   //< sort by reconciliation state
   // insert new values in front of this line
   MaxSortFields
 } TransactionSortField;

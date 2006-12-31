@@ -182,7 +182,7 @@
   </entry>
   <entry name="sortNormalView" type="String">
   <label>Sort order of register in normal view</label>
-  <default>1,-4</default>
+  <default>1,-9,-4</default>
   </entry>
   <entry name="sortReconcileView" type="String">
   <label>Sort order of register in normal view</label>

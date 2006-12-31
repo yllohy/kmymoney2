@@ -33,6 +33,7 @@
 // Project Includes
 
 #include <kmymoney/mymoneymoney.h>
+#include <kmymoney/mymoneysplit.h>
 #include <kmymoney/mymoneyobject.h>
 
 namespace KMyMoneyRegister {
@@ -86,6 +87,7 @@ public:
   virtual const QCString& sortEntryOrder(void) const { return nullCString; }
   virtual CashFlowDirection sortType(void) const { return Deposit; }
   virtual const QString& sortCategory(void) const { return QString::null; }
+  virtual MyMoneySplit::reconcileFlagE sortReconcileState(void) const { return MyMoneySplit::MaxReconcileState; }
 
   /**
     * This method sets the row offset of the item in the register

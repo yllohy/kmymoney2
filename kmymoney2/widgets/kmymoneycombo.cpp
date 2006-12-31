@@ -305,7 +305,6 @@ void KMyMoneyReconcileCombo::setState(MyMoneySplit::reconcileFlagE state)
     case MyMoneySplit::Unknown:
       id = "U";
       break;
-
     default:
       kdDebug(2) << "Unknown reconcile state '" << state << "' in KMyMoneyComboReconcile::setState()\n";
       break;

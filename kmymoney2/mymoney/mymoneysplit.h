@@ -68,12 +68,13 @@ public:
     * the engine and a split must not be changed anymore.
     */
   enum reconcileFlagE {
+    Unknown = -1,
     NotReconciled = 0,
     Cleared,
     Reconciled,
     Frozen,
     // insert new values above
-    Unknown
+    MaxReconcileState
   };
 
   MyMoneySplit();

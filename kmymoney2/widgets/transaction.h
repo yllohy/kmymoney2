@@ -99,6 +99,7 @@ public:
   virtual const QCString& sortEntryOrder(void) const { return m_uniqueId; }
   virtual CashFlowDirection sortType(void) const { return m_split.shares().isPositive() ? Deposit : Payment; }
   virtual const QString& sortCategory(void) const { return m_category; }
+  virtual MyMoneySplit::reconcileFlagE sortReconcileState(void) const { return m_split.reconcileFlag(); }
 
   virtual const QCString& id(void) { return m_transaction.id(); }
   const MyMoneyTransaction& transaction(void) const { return m_transaction; }

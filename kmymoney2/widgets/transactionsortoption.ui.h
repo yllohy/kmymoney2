@@ -31,10 +31,10 @@ void TransactionSortOption::init()
   m_removeButton->setIconSet(QIconSet(il->loadIcon("1leftarrow", KIcon::Small, KIcon::SizeSmall)));
   m_upButton->setIconSet(QIconSet(il->loadIcon("1uparrow", KIcon::Small, KIcon::SizeSmall)));
   m_downButton->setIconSet(QIconSet(il->loadIcon("1downarrow", KIcon::Small, KIcon::SizeSmall)));
-  
+
   // don't allow sorting of the selected entries
   m_selectedList->setSortColumn(-1);
-  
+
   // defaults to "post date, value" sorting
   // setSettings(QString("1,4"));
   setSettings(QString());
@@ -54,7 +54,7 @@ void TransactionSortOption::setSettings(const QString& settings)
 {
   m_availableList->clear();
   m_selectedList->clear();
-  
+
   QStringList list = QStringList::split(',', settings);
   QMap<int, bool> selectedMap;
 
@@ -66,7 +66,7 @@ void TransactionSortOption::setSettings(const QString& settings)
     selectedMap[abs(val)] = true;
     last = addEntry(m_selectedList, last, val);
   }
-  
+
   // fill available list
   QMap<int, bool>::const_iterator it_m;
   for(int i = static_cast<int>(KMyMoneyRegister::PostDateSort);
@@ -74,7 +74,7 @@ void TransactionSortOption::setSettings(const QString& settings)
     if(selectedMap.find(i) == selectedMap.end()) {
       int val = i;
       if(i == static_cast<int>(KMyMoneyRegister::ValueSort))
-	val = -val;
+        val = -val;
       addEntry(m_availableList, 0, val);
     }
   }
@@ -84,7 +84,7 @@ QListViewItem* TransactionSortOption::addEntry( KListView * p, QListViewItem* af
 {
   QString txt = KMyMoneyRegister::sortOrderToText(static_cast<KMyMoneyRegister::TransactionSortField>(abs(idx)));
   if(txt.isEmpty())
-    txt = "Unknown";		// i18n should be handled in sortOptionToText()
+    txt = "Unknown";    // i18n should be handled in sortOptionToText()
 
   return new SortOptionListItem(p, after, txt, idx);
 }
@@ -117,7 +117,7 @@ void TransactionSortOption::slotAvailableSelected( QListViewItem * item )
   m_removeButton->setDisabled(true);
   m_upButton->setDisabled(true);
   m_downButton->setDisabled(true);
-  
+
   QListViewItem* p = m_selectedList->currentItem();
   if(p) {
     m_selectedList->setSelected(p, false);
@@ -135,7 +135,7 @@ void TransactionSortOption::slotSelectedSelected( QListViewItem * item )
     m_upButton->setEnabled(false);
     m_downButton->setEnabled(false);
   }
-  
+
   QListViewItem* p = m_availableList->currentItem();
   if(p) {
     m_availableList->setSelected(p, false);
