@@ -1,6 +1,8 @@
 2006-01-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use Enter/Return as shortcut to start and finish editing transactions
   * Improved ledger update to avoid unnecessary resize checks
+  * Fixed some more spots where we need to escape special chars before
+    passing text as pattern to QRegExp
 
 2006-01-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Escape special chars in names before using the text as pattern for QRegExp

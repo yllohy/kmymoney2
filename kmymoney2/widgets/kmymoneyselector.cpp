@@ -507,7 +507,7 @@ void KMyMoneySelector::slotShowSelected(void)
 
 int KMyMoneySelector::slotMakeCompletion(const QString& txt)
 {
-  return slotMakeCompletion(QRegExp(txt, false));
+  return slotMakeCompletion(QRegExp(QRegExp::escape(txt), false));
 }
 
 bool KMyMoneySelector::match(const QRegExp& exp, QListViewItem* item) const

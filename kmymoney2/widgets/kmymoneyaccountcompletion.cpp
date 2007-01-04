@@ -71,7 +71,7 @@ void kMyMoneyAccountCompletion::slotMakeCompletion(const QString& txt)
   int cnt = 0;
   QStringList parts = QStringList::split(":", txt);
   if(txt.contains(":") == 0) {
-    m_lastCompletion = QRegExp(txt, false);
+    m_lastCompletion = QRegExp(QRegExp::escape(txt), false);
     cnt = selector()->slotMakeCompletion(txt);
   } else {
     QString pattern("^");
@@ -79,7 +79,7 @@ void kMyMoneyAccountCompletion::slotMakeCompletion(const QString& txt)
     for(it = parts.begin(); it != parts.end(); ++it) {
       if(pattern.length() > 1)
         pattern += ":";
-      pattern += (*it) + ".*";
+      pattern += QRegExp::escape(*it) + ".*";
     }
     pattern += "$";
     m_lastCompletion = QRegExp(pattern, false);
