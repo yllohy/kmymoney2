@@ -592,7 +592,9 @@ QString Transaction::reconcileState(bool text) const
 void Transaction::startEditMode(void)
 {
   m_inEdit = true;
-  setNumRowsRegister(numRowsRegister(true));
+  // only update the number of lines displayed if we edit inside the register
+  if(m_inRegisterEdit)
+    setNumRowsRegister(numRowsRegister(true));
 }
 
 void Transaction::leaveEditMode(void)
