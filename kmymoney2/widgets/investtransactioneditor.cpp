@@ -114,7 +114,7 @@ InvestTransactionEditor::~InvestTransactionEditor()
   delete d;
 }
 
-InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
+InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::InvestTransaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
   TransactionEditor(regForm, objects, item, list, lastPostDate)
 {
   d = new InvestTransactionEditorPrivate;
@@ -138,15 +138,10 @@ InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* reg
     m_split = MyMoneySplit();
     d->activityFactory(BuyShares);
   }
+  // collect the dissected splits
+  item->splits(m_assetAccountSplit, m_interestSplits, m_feeSplits);
 }
 
-
-void InvestTransactionEditor::setSplits(const MyMoneySplit& assetAccountSplit, const QValueList<MyMoneySplit>& interestSplits, const QValueList<MyMoneySplit>& feeSplits)
-{
-  m_assetAccountSplit = assetAccountSplit;
-  m_interestSplits = interestSplits;
-  m_feeSplits = feeSplits;
-}
 
 void InvestTransactionEditor::createEditWidgets(void)
 {
@@ -392,22 +387,15 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
 {
   QCString id;
 
-  // date
   kMyMoneyDateInput* postDate = dynamic_cast<kMyMoneyDateInput*>(haveWidget("postdate"));
-  postDate->setDate(m_transaction.postDate());
-
-  // security
+  KMyMoneyReconcileCombo* reconcile = dynamic_cast<KMyMoneyReconcileCombo*>(haveWidget("status"));
   KMyMoneySecurity* security = dynamic_cast<KMyMoneySecurity*>(haveWidget("security"));
-  security->setSuppressObjectCreation(false);    // allow object creation on the fly
-  AccountSet aSet(m_objects);
-  aSet.load(security->selector(), i18n("Security"), m_account.accountList(), true);
-  security->completion()->setSelected(m_split.accountId());
-  security->slotItemSelected(m_split.accountId());
-
-  // activity
   KMyMoneyActivityCombo* activity = dynamic_cast<KMyMoneyActivityCombo*>(haveWidget("activity"));
-  activity->setActivity(d->m_activity->type());
-  slotUpdateActivity(activity->activity());
+  KMyMoneyCategory* asset = dynamic_cast<KMyMoneyCategory*>(haveWidget("asset-account"));
+  KTextEdit* memo = dynamic_cast<KTextEdit*>(m_editWidgets["memo"]);
+  kMyMoneyEdit* value;
+  KMyMoneyCategory* interest = dynamic_cast<KMyMoneyCategory*>(haveWidget("interest-account"));
+  KMyMoneyCategory* fees = dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account"));
 
   // check if the current transaction has a reference to an equity account
   bool haveEquityAccount = false;
@@ -419,7 +407,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
   }
 
   // asset-account
-  KMyMoneyCategory* asset = dynamic_cast<KMyMoneyCategory*>(haveWidget("asset-account"));
+  AccountSet aSet(m_objects);
   aSet.clear();
   aSet.addAccountType(MyMoneyAccount::Checkings);
   aSet.addAccountType(MyMoneyAccount::Savings);
@@ -429,55 +417,106 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
   if(KMyMoneySettings::expertMode() || haveEquityAccount)
     aSet.addAccountGroup(MyMoneyAccount::Equity);
   aSet.load(asset->selector());
-  asset->completion()->setSelected(m_assetAccountSplit.accountId());
-  asset->slotItemSelected(m_assetAccountSplit.accountId());
 
-  // interest-account
-  KMyMoneyCategory* interest = dynamic_cast<KMyMoneyCategory*>(haveWidget("interest-account"));
-  aSet.clear();
-  aSet.addAccountGroup(MyMoneyAccount::Income);
-  aSet.load(interest->selector());
-  setupCategoryWidget(interest, m_interestSplits, id, SLOT(slotEditInterestSplits()));
-  slotUpdateInterestVisibility(interest->currentText());
+  // security
+  security->setSuppressObjectCreation(false);    // allow object creation on the fly
+  aSet.load(security->selector(), i18n("Security"), m_account.accountList(), true);
 
-  // fee-account
-  KMyMoneyCategory* fees = dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account"));
-  aSet.clear();
-  aSet.addAccountGroup(MyMoneyAccount::Expense);
-  aSet.load(fees->selector());
-  setupCategoryWidget(fees, m_feeSplits, id, SLOT(slotEditFeeSplits()));
-  slotUpdateFeeVisibility(fees->currentText());
+  if(m_transactions.count() < 2) {
+    // date
+    postDate->setDate(m_transaction.postDate());
 
-  // memo
-  dynamic_cast<KTextEdit*>(m_editWidgets["memo"])->setText(m_split.memo());
+    // security
+    security->completion()->setSelected(m_split.accountId());
+    security->slotItemSelected(m_split.accountId());
 
-  // shares
-  kMyMoneyEdit* value = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
-  // don't set the value if the number of shares is zero so that
-  // we can see the hint
-  if(!m_split.shares().isZero())
-    value->setValue(m_split.shares().abs());
+    // activity
+    activity->setActivity(d->m_activity->type());
+    slotUpdateActivity(activity->activity());
 
-  // price
-  value = dynamic_cast<kMyMoneyEdit*>(haveWidget("price"));
-  if(!m_split.shares().isZero()) {
-    value->setValue(m_split.value() / m_split.shares());
+    asset->completion()->setSelected(m_assetAccountSplit.accountId());
+    asset->slotItemSelected(m_assetAccountSplit.accountId());
+
+    // interest-account
+    aSet.clear();
+    aSet.addAccountGroup(MyMoneyAccount::Income);
+    aSet.load(interest->selector());
+    setupCategoryWidget(interest, m_interestSplits, id, SLOT(slotEditInterestSplits()));
+    slotUpdateInterestVisibility(interest->currentText());
+
+    // fee-account
+    aSet.clear();
+    aSet.addAccountGroup(MyMoneyAccount::Expense);
+    aSet.load(fees->selector());
+    setupCategoryWidget(fees, m_feeSplits, id, SLOT(slotEditFeeSplits()));
+    slotUpdateFeeVisibility(fees->currentText());
+
+    // memo
+    memo->setText(m_split.memo());
+
+    // shares
+    // don't set the value if the number of shares is zero so that
+    // we can see the hint
+    value = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+    if(!m_split.shares().isZero())
+      value->setValue(m_split.shares().abs());
+
+    // price
+    value = dynamic_cast<kMyMoneyEdit*>(haveWidget("price"));
+    if(!m_split.shares().isZero()) {
+      value->setValue(m_split.value() / m_split.shares());
+    }
+
+    // fee amount
+    value = dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount"));
+    value->setValue(subtotal(m_feeSplits).abs());
+
+    // interest amount
+    value = dynamic_cast<kMyMoneyEdit*>(haveWidget("interest-amount"));
+    value->setValue(subtotal(m_interestSplits).abs());
+
+    // total
+    slotUpdateTotalAmount();
+
+    // status
+    reconcile->setState(m_split.reconcileFlag());
+  } else {
+    postDate->loadDate(QDate());
+    reconcile->setState(MyMoneySplit::Unknown);
+    memo->setText(QString());
+
+    // We don't allow to change the activity
+    activity->setActivity(d->m_activity->type());
+    slotUpdateActivity(activity->activity());
+    activity->setDisabled(true);
+
+    // scan the list of selected transactions and check that they have
+    // the same activity.
+    QValueList<KMyMoneyRegister::SelectedTransaction>::iterator it_t = m_transactions.begin();
+    const QCString& action = m_item->split().action();
+    bool isNegative = m_item->split().shares().isNegative();
+    bool allSameActivity = true;
+    for(it_t = m_transactions.begin(); allSameActivity && (it_t != m_transactions.end()); ++it_t) {
+      allSameActivity = (action == (*it_t).split().action() && (*it_t).split().shares().isNegative() == isNegative);
+    }
+
+    QStringList fields;
+    fields << "shares" << "price" << "fee-amount" << "interest-amount";
+    QStringList::const_iterator it_f;
+    for(it_f = fields.begin(); it_f != fields.end(); ++it_f) {
+      value = dynamic_cast<kMyMoneyEdit*>(haveWidget((*it_f)));
+      value->setText("");
+    }
+
+    // if this is not the case, disable some more widgets
+    if(!allSameActivity) {
+      fields << "asset-account" << "fee-account" << "interest-account";
+      QStringList::const_iterator it_f;
+      for(it_f = fields.begin(); it_f != fields.end(); ++it_f) {
+        haveWidget(*it_f)->setDisabled(true);
+      }
+    }
   }
-
-  // fee amount
-  value = dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount"));
-  value->setValue(subtotal(m_feeSplits).abs());
-
-  // interest amount
-  value = dynamic_cast<kMyMoneyEdit*>(haveWidget("interest-amount"));
-  value->setValue(subtotal(m_interestSplits).abs());
-
-  // total
-  slotUpdateTotalAmount();
-
-  // status
-  KMyMoneyReconcileCombo* reconcile = dynamic_cast<KMyMoneyReconcileCombo*>(haveWidget("status"));
-  reconcile->setState(m_split.reconcileFlag());
 }
 
 QWidget* InvestTransactionEditor::firstWidget(void) const

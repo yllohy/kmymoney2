@@ -361,6 +361,32 @@ public:
   virtual bool showPage(int index);
 
   /**
+    * check if the current view allows to create a transaction
+    *
+    * @param list list of selected transactions
+    * @param tooltip reference to string receiving the tooltip text
+    *        which explains why the modify function is not available (in case
+    *        of returning @c false)
+    *
+    * @retval true Yes, view allows to create a transaction (tooltip is not changed)
+    * @retval false No, view cannot to create a transaction (tooltip is updated with message)
+    */
+  bool canCreateTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const;
+
+  /**
+    * check if the current view allows to modify (edit/delete) the selected transactions
+    *
+    * @param list list of selected transactions
+    * @param tooltip reference to string receiving the tooltip text
+    *        which explains why the modify function is not available (in case
+    *        of returning @c false)
+    *
+    * @retval true Yes, view allows to edit/delete transactions (tooltip is not changed)
+    * @retval false No, view cannot edit/delete transactions (tooltip is updated with message)
+    */
+  bool canModifyTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const;
+
+  /**
     * check if the current view allows to edit the selected transactions
     *
     * @param list list of selected transactions

@@ -369,10 +369,23 @@ protected slots:
 signals:
   void selectionChanged(void);
   void selectionChanged(const QValueList<KMyMoneyRegister::SelectedTransaction>& list);
+  /**
+    * This signal is emitted when the focus and selection changes to @p item.
+    *
+    * @param item pointer to transaction that received the focus and was selected
+    */
   void focusChanged(KMyMoneyRegister::Transaction* item);
+
+  /**
+    * This signal is emitted when the focus changes but the selection remains
+    * the same. This usually happens when the focus is changed using the keyboard.
+    */
+  void focusChanged(void);
+
   void aboutToSelectItem(KMyMoneyRegister::RegisterItem* item);
   void editTransaction(void);
   void headerClicked(void);
+
   /**
     * This signal is sent out when the user clicks on the ReconcileStateColumn and
     * only a single transaction is selected.
@@ -408,6 +421,7 @@ protected:
 private:
   bool                         m_listsDirty;
   bool                         m_ignoreNextButtonRelease;
+  bool                         m_needInitialColumnResize;
   Qt::ButtonState              m_buttonState;
   Column                       m_lastCol;
   QValueList<TransactionSortField> m_sortOrder;

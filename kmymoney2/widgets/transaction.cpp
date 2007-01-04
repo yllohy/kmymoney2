@@ -1929,11 +1929,16 @@ bool InvestTransaction::haveSplitRatio(void) const
   return m_transactionType == SplitShares;
 }
 
+void InvestTransaction::splits(MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& feeSplits) const
+{
+  assetAccountSplit = m_assetAccountSplit;
+  interestSplits = m_interestSplits;
+  feeSplits = m_feeSplits;
+}
+
 TransactionEditor* InvestTransaction::createEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate)
 {
   m_inRegisterEdit = regForm == m_parent;
-  InvestTransactionEditor* editor = new InvestTransactionEditor(regForm, objects, this, list, lastPostDate);
-  editor->setSplits(m_assetAccountSplit, m_interestSplits, m_feeSplits);
-  return editor;
+  return new InvestTransactionEditor(regForm, objects, this, list, lastPostDate);
 }
 

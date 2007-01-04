@@ -37,7 +37,7 @@ class InvestTransactionEditor : public TransactionEditor
   Q_OBJECT
 public:
   InvestTransactionEditor();
-  InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+  InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::InvestTransaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
   virtual ~InvestTransactionEditor();
 
   virtual bool enterTransactions(QCString&);
@@ -56,8 +56,6 @@ public:
   virtual bool isComplete(void) const;
 
   virtual QWidget* firstWidget(void) const;
-
-  void setSplits(const MyMoneySplit& assetAccountSplit, const QValueList<MyMoneySplit>& interestSplits, const QValueList<MyMoneySplit>& feeSplits);
 
   virtual bool fixTransactionCommodity(const MyMoneyAccount& account) { return true; }
 

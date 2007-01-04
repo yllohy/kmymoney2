@@ -47,7 +47,22 @@
 #include "kmymoneydateinput.h"
 
 namespace {
-  const int DATE_POPUP_TIMEOUT = 2*1000;
+  const int DATE_POPUP_TIMEOUT = 1500;
+}
+
+bool KMyMoneyDateEdit::event(QEvent* e)
+{
+  // make sure that we keep the current date setting of a kMyMoneyDateInput object
+  // across the QDateEdit::event(FocusOutEvent)
+
+  kMyMoneyDateInput* p = dynamic_cast<kMyMoneyDateInput*>(parentWidget());
+  if(e->type() == QEvent::FocusOut && p) {
+    QDate d = p->date();
+    QDateEdit::event(e);
+    p->loadDate(d);
+  } else {
+    QDateEdit::event(e);
+  }
 }
 
 kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::AlignmentFlags flags)
@@ -56,9 +71,10 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   m_qtalignment = flags;
   m_date = QDate::currentDate();
 
-  dateEdit = new QDateEdit(m_date, this, "dateEdit");
+  dateEdit = new KMyMoneyDateEdit(m_date, this, "dateEdit");
   setFocusProxy(dateEdit);
   focusWidget()->installEventFilter(this); // To get dateEdit's FocusIn/Out and some KeyPress events
+  dateEdit->installEventFilter(this); // To get dateEdit's FocusIn/Out and some KeyPress events
 
   m_datePopup = new KPassivePopup(dateEdit, "m_datePopup");
   m_datePopup->setTimeout(DATE_POPUP_TIMEOUT);
@@ -263,12 +279,12 @@ void kMyMoneyDateInput::slotDateChosenRef(const QDate& date)
 {
   if(date.isValid()) {
     emit dateChanged(date);
-    m_date=date;
+    m_date = date;
 
     QLabel *lbl = static_cast<QLabel*>(m_datePopup->view());
     lbl->setText(KGlobal::locale()->formatDate(date));
     lbl->adjustSize();
-    if (m_datePopup->isVisible() || hasFocus())
+    if(m_datePopup->isVisible() || hasFocus())
       m_datePopup->show(); // Repaint
   }
 }

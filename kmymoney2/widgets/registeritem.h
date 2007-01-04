@@ -74,6 +74,8 @@ public:
 
   virtual bool canHaveFocus(void) const = 0;
   virtual bool hasFocus(void) const { return false; }
+  virtual bool hasEditorOpen(void) const { return false; }
+
   virtual void setFocus(bool /*focus*/, bool updateLens = true) { updateLens = false; };
 
   virtual bool isErronous(void) const = 0;

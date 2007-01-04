@@ -41,6 +41,20 @@ class KPassivePopup;
 // Some ideas/code have been borrowed from Calendar-0.13 (phoenix.bmedesign.com/~qt)
 
 /**
+  * Provided to be able to catch the focusOut events before the contents gets changed
+  */
+class KMyMoneyDateEdit : public QDateEdit
+{
+  Q_OBJECT
+public:
+  KMyMoneyDateEdit(const QDate& date, QWidget *parent=0, const char *name=0) : QDateEdit(date, parent, name) {}
+
+protected:
+  /** reimplemented for internal reasons */
+  bool event(QEvent* e);
+};
+
+/**
   * This class provides the general widget used for date selection
   * throughout the KMyMoney project. It provides an QDateEdit widget
   * which is based on an edit field with spin boxes and adds a QPushButton
@@ -48,7 +62,7 @@ class KPassivePopup;
   */
 class kMyMoneyDateInput : public QHBox
 {
-   Q_OBJECT
+  Q_OBJECT
 
 public:
   kMyMoneyDateInput(QWidget *parent=0, const char *name=0, Qt::AlignmentFlags flags=Qt::AlignLeft);

@@ -1,5 +1,16 @@
+2006-01-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Use Enter/Return as shortcut to start and finish editing transactions
+  * Improved ledger update to avoid unnecessary resize checks
+
 2006-01-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Escape special chars in names before using the text as pattern for QRegExp
+
+2007-01-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added Slovenian Tolar to the ancient currencies
+
+2007-01-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Happy New Year!!
+  * Changed KMyMoney2App::updateActions() into slotUpdateActions()
 
 2006-12-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added reconciliation state to the ledger sort options

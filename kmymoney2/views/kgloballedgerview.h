@@ -168,6 +168,19 @@ public:
   void loadInvestmentView(void);
 
   /**
+    * Checks if a list of transactions can be modified (edit/delete) in the current context
+    *
+    * @param list list of selected transactions
+    * @param tooltip reference to string receiving the tooltip text
+    *        which explains why the modify function is not available (in case
+    *        of returning @c false)
+    *
+    * @retval true Yes, view allows to edit/delete transactions (tooltip is not changed)
+    * @retval false No, view cannot edit/delete transactions (tooltip is updated with message)
+    */
+  bool canModifyTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const;
+
+  /**
     * Checks if the list of transactions can be edited in the current context
     *
     * @param list list of selected transactions
@@ -278,8 +291,6 @@ protected:
     */
   bool focusNextPrevChild(bool next);
 
-  bool eventFilter(QObject* o, QEvent* e);
-
   /**
     * Returns @a true if setReconciliationAccount() has been called for
     * the current loaded account.
@@ -371,7 +382,6 @@ signals:
   void transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>&);
   void newTransaction(void);
   void startEdit(void);
-  void cancelEdit(void);
   void endEdit(void);
   void cancelOrEndEdit(void);
 

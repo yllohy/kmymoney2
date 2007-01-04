@@ -476,11 +476,6 @@ public:
     */
   void showContextMenu(const QString& containerName);
 
-  /**
-    * This method updates all KAction items to the current state.
-    */
-  void updateActions(void);
-
 k_dcop:
   const QString filename() const;
 
@@ -542,7 +537,12 @@ protected:
   void createCategory(MyMoneyAccount& account, const MyMoneyAccount& parent);
 
   /**
-    * This method checks, if an account can be closed or not.
+    * This method checks, if an account can be closed or not. An account
+    * can be closed if:
+    *
+    * - the balance is zero and
+    * - all children are already closed and
+    * - there is no unfinished schedule referencing the account
     *
     * @param acc reference to MyMoneyAccount object in question
     * @retval true account can be closed
@@ -875,6 +875,11 @@ public slots:
   void slotCancelMatch(void);
 
   void slotEndMatch(void);
+
+  /**
+    * This method updates all KAction items to the current state.
+    */
+  void slotUpdateActions(void);
 
 private:
   bool verifyImportedData(const MyMoneyAccount& account);

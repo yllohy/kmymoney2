@@ -87,6 +87,8 @@ public:
 
   bool canHaveFocus(void) const { return true; }
   bool hasFocus(void) const { return m_focus; }
+  bool hasEditorOpen(void) const { return m_inEdit; }
+
   void setFocus(bool focus, bool updateLens = true);
 
   bool isErronous(void) const { return m_erronous; }
@@ -335,6 +337,8 @@ public:
   int numRowsRegister(void) const { return RegisterItem::numRowsRegister(); }
 
   TransactionEditor* createEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+
+  void splits(MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& feeSplits) const;
 
 protected:
   bool haveShares(void) const;

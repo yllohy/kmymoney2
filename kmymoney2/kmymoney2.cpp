@@ -247,6 +247,8 @@ const KURL KMyMoney2App::lastOpenedURL(void)
 
 void KMyMoney2App::initActions()
 {
+  KAction* p;
+
   // *************
   // The File menu
   // *************
@@ -354,10 +356,17 @@ void KMyMoney2App::initActions()
   // Actions w/o main menu entry
   // ***************************
   new KAction(i18n("New transaction button", "New"), "filenew", QKeySequence(Qt::CTRL | Qt::Key_Insert), this, SLOT(slotTransactionsNew()), actionCollection(), "transaction_new");
-  new KAction(i18n("Edit transaction button", "Edit"), "edit", KShortcut("Return"), this, SLOT(slotTransactionsEdit()), actionCollection(), "transaction_edit");
+
+  // we use Return as the same shortcut for Edit and Enter. Therefore, we don't allow
+  // to change them (The standard KDE dialog complains anyway if you want to assign
+  // the same shortcut to two actions)
+  p = new KAction(i18n("Edit transaction button", "Edit"), "edit", KShortcut("Return"), this, SLOT(slotTransactionsEdit()), actionCollection(), "transaction_edit");
+  p->setShortcutConfigurable(false);
+  p = new KAction(i18n("Enter transaction", "Enter"), "button_ok", KShortcut("Return"), this, SLOT(slotTransactionsEnter()), actionCollection(), "transaction_enter");
+  p->setShortcutConfigurable(false);
+
   new KAction(i18n("Edit split button", "Edit splits"), "split_transaction", 0, this, SLOT(slotTransactionsEditSplits()), actionCollection(), "transaction_editsplits");
-  new KAction(i18n("Enter transaction", "Enter"), "button_ok", KShortcut("Ctrl+Return"), this, SLOT(slotTransactionsEnter()), actionCollection(), "transaction_enter");
-  new KAction(i18n("Cancel transaction edit", "Cancel"), "button_cancel", 0, this, SLOT(slotTransactionsCancel()), actionCollection(), "transaction_cancel");
+  new KAction(i18n("Cancel transaction edit", "Cancel"), "button_cancel", KShortcut("Escape"), this, SLOT(slotTransactionsCancel()), actionCollection(), "transaction_cancel");
   new KAction(i18n("Delete transaction", "Delete"), "delete", 0, this, SLOT(slotTransactionsDelete()), actionCollection(), "transaction_delete");
   new KAction(i18n("Duplicate transaction", "Duplicate"), "editcopy", 0, this, SLOT(slotTransactionDuplicate()), actionCollection(), "transaction_duplicate");
   new KAction(i18n("Match Transaction..."), "", 0, this, SLOT(slotStartMatch()), actionCollection(), "transaction_start_match");
@@ -2638,7 +2647,7 @@ void KMyMoney2App::slotAccountDelete(void)
   try {
     file->removeAccount(m_selectedAccount);
     m_selectedAccount.clearId();
-    updateActions();
+    slotUpdateActions();
   } catch(MyMoneyException* e) {
     KMessageBox::error( this, i18n("Unable to delete account '%1'. Cause: %2").arg(m_selectedAccount.name()).arg(e->what()));
     delete e;
@@ -2775,7 +2784,7 @@ void KMyMoney2App::slotAccountReconcileStart(void)
               }
 
               m_reconciliationAccount = account;
-              updateActions();
+              slotUpdateActions();
             }
           }
           break;
@@ -2870,7 +2879,7 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
   }
   // Turn off reconciliation mode
   m_reconciliationAccount = MyMoneyAccount();
-  updateActions();
+  slotUpdateActions();
 }
 
 void KMyMoney2App::slotAccountReconcilePostpone(void)
@@ -2891,7 +2900,7 @@ void KMyMoney2App::slotAccountReconcilePostpone(void)
     }
 
     m_reconciliationAccount = MyMoneyAccount();
-    updateActions();
+    slotUpdateActions();
   }
 
 }
@@ -3573,7 +3582,7 @@ void KMyMoney2App::slotTransactionsNew(void)
   if(kmymoney2->action("transaction_new")->isEnabled()) {
     if(myMoneyView->createNewTransaction()) {
       m_transactionEditor = myMoneyView->startEdit(m_selectedTransactions);
-      updateActions();
+      slotUpdateActions();
     }
   }
 }
@@ -3585,7 +3594,7 @@ void KMyMoney2App::slotTransactionsEdit(void)
   // if the action is enabled
   if(kmymoney2->action("transaction_edit")->isEnabled()) {
     m_transactionEditor = myMoneyView->startEdit(m_selectedTransactions);
-    updateActions();
+    slotUpdateActions();
   }
 }
 
@@ -3604,7 +3613,7 @@ void KMyMoney2App::slotTransactionsEditSplits(void)
   // if the action is enabled
   if(kmymoney2->action("transaction_editsplits")->isEnabled()) {
     m_transactionEditor = myMoneyView->startEdit(m_selectedTransactions);
-    updateActions();
+    slotUpdateActions();
 
     if(m_transactionEditor) {
       if(m_transactionEditor->slotEditSplits() == QDialog::Accepted) {
@@ -3613,7 +3622,7 @@ void KMyMoney2App::slotTransactionsEditSplits(void)
       }
     }
     deleteTransactionEditor();
-    updateActions();
+    slotUpdateActions();
   }
 }
 
@@ -3624,7 +3633,7 @@ void KMyMoney2App::slotTransactionsCancel(void)
   if(kmymoney2->action("transaction_cancel")->isEnabled()) {
     // qDebug("KMyMoney2App::slotTransactionsCancel");
     deleteTransactionEditor();
-    updateActions();
+    slotUpdateActions();
   }
 }
 
@@ -3642,7 +3651,7 @@ void KMyMoney2App::slotTransactionsEnter(void)
         myMoneyView->slotLedgerSelected(m_selectedAccount.id(), newId);
       }
     }
-    updateActions();
+    slotUpdateActions();
   }
 }
 
@@ -3739,7 +3748,7 @@ void KMyMoney2App::slotTransactionGotoAccount(void)
         transactionId = m_selectedTransactions[0].transaction().id();
       }
       // make sure to pass a copy, as myMoneyView->slotLedgerSelected() overrides
-      // m_accountGoto while calling updateActions()
+      // m_accountGoto while calling slotUpdateActions()
       QCString accountId = m_accountGoto;
       myMoneyView->slotLedgerSelected(accountId, transactionId);
     } catch(MyMoneyException* e) {
@@ -3757,7 +3766,7 @@ void KMyMoney2App::slotTransactionGotoPayee(void)
         transactionId = m_selectedTransactions[0].transaction().id();
       }
       // make sure to pass copies, as myMoneyView->slotPayeeSelected() overrides
-      // m_payeeGoto and m_selectedAccount while calling updateActions()
+      // m_payeeGoto and m_selectedAccount while calling slotUpdateActions()
       QCString payeeId = m_payeeGoto;
       QCString accountId = m_selectedAccount.id();
       myMoneyView->slotPayeeSelected(payeeId, accountId, transactionId);
@@ -3989,11 +3998,11 @@ void KMyMoney2App::updateCaption(bool skipActions)
 
   if(!skipActions) {
     myMoneyView->enableViews();
-    updateActions();
+    slotUpdateActions();
   }
 }
 
-void KMyMoney2App::updateActions(void)
+void KMyMoney2App::slotUpdateActions(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   bool fileOpen = myMoneyView->fileOpen();
@@ -4065,8 +4074,10 @@ void KMyMoney2App::updateActions(void)
   action("budget_rename")->setEnabled(false);
   action("budget_new")->setEnabled(true);
 
-  QString tooltip;
-  action("transaction_new")->setEnabled(fileOpen && myMoneyView->canEditTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>(), tooltip));
+  QString tooltip = i18n("Create a new transaction");
+  action("transaction_new")->setEnabled(fileOpen && myMoneyView->canCreateTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>(), tooltip));
+  action("transaction_new")->setToolTip(tooltip);
+
   action("transaction_edit")->setEnabled(false);
   action("transaction_editsplits")->setEnabled(false);
   action("transaction_enter")->setEnabled(false);
@@ -4084,7 +4095,10 @@ void KMyMoney2App::updateActions(void)
   action("transaction_assign_number")->setEnabled(false);
 
   if(!m_selectedTransactions.isEmpty()) {
-    action("transaction_delete")->setEnabled(true);
+    tooltip = i18n("Delete the current selected transactions");
+    action("transaction_delete")->setEnabled(myMoneyView->canModifyTransactions(m_selectedTransactions, tooltip));
+    action("transaction_delete")->setToolTip(tooltip);
+
     if(!m_transactionEditor) {
       action("transaction_duplicate")->setEnabled(true);
       if(myMoneyView->canEditTransactions(m_selectedTransactions, tooltip)) {
@@ -4215,14 +4229,14 @@ void KMyMoney2App::updateActions(void)
 void KMyMoney2App::slotSelectBudget(const QValueList<MyMoneyBudget>& list)
 {
   m_selectedBudget = list;
-  updateActions();
+  slotUpdateActions();
   emit budgetSelected(m_selectedBudget);
 }
 
 void KMyMoney2App::slotSelectPayees(const QValueList<MyMoneyPayee>& list)
 {
   m_selectedPayees = list;
-  updateActions();
+  slotUpdateActions();
   emit payeesSelected(m_selectedPayees);
 }
 
@@ -4277,7 +4291,7 @@ void KMyMoney2App::slotSelectTransactions(const QValueList<KMyMoneyRegister::Sel
   if(m_accountGoto.isEmpty())
     action("transaction_goto_account")->setText(i18n("Goto account"));
 
-  updateActions();
+  slotUpdateActions();
   emit transactionsSelected(m_selectedTransactions);
 }
 
@@ -4288,7 +4302,7 @@ void KMyMoney2App::slotSelectInstitution(const MyMoneyObject& institution)
 
   m_selectedInstitution = dynamic_cast<const MyMoneyInstitution&>(institution);
   // qDebug("slotSelectInstitution('%s')", m_selectedInstitution.name().data());
-  updateActions();
+  slotUpdateActions();
   emit institutionSelected(m_selectedInstitution);
 }
 
@@ -4303,7 +4317,7 @@ void KMyMoney2App::slotSelectAccount(const MyMoneyObject& obj)
     m_selectedAccount = acc;
 
   // qDebug("slotSelectAccount('%s')", m_selectedAccount.name().data());
-  updateActions();
+  slotUpdateActions();
   emit accountSelected(m_selectedAccount);
 }
 
@@ -4318,7 +4332,7 @@ void KMyMoney2App::slotSelectInvestment(const MyMoneyObject& obj)
   if(acc.accountType() == MyMoneyAccount::Stock)
     m_selectedInvestment = acc;
 
-  updateActions();
+  slotUpdateActions();
   emit investmentSelected(m_selectedInvestment);
 }
 
@@ -4326,7 +4340,7 @@ void KMyMoney2App::slotSelectSchedule(const MyMoneySchedule& schedule)
 {
   // qDebug("slotSelectSchedule('%s')", schedule.name().data());
   m_selectedSchedule = schedule;
-  updateActions();
+  slotUpdateActions();
   emit scheduleSelected(m_selectedSchedule);
 }
 

@@ -422,6 +422,7 @@ Register::Register(QWidget *parent, const char *name ) :
   m_rowHeightHint(0),
   m_listsDirty(false),
   m_ignoreNextButtonRelease(false),
+  m_needInitialColumnResize(false),
   m_buttonState(Qt::ButtonState(0))
 {
   m_tooltip = new RegisterToolTip(viewport(), this);
@@ -496,6 +497,8 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
     setUpdatesEnabled(enabled);
     return;
   }
+
+  m_needInitialColumnResize = true;
 
   // turn on standard columns
   showColumn(DateColumn);
@@ -848,8 +851,13 @@ void Register::updateRegister(bool forceUpdateRowHeight)
 
     setUpdatesEnabled(updatesEnabled);
 
-    // force resizeing of the columns
-    QTimer::singleShot(0, this, SLOT(resize()));
+    // force resizeing of the columns if necessary
+    if(m_needInitialColumnResize) {
+      QTimer::singleShot(0, this, SLOT(resize()));
+      m_needInitialColumnResize = false;
+    } else {
+      updateContents();
+    }
   }
   ::timetrace("Done updateing register");
 }
@@ -935,18 +943,25 @@ void Register::resize(int col)
   if(dwidth < columnWidth(ValueColumn))
     dwidth = columnWidth(ValueColumn);
 
+  int swidth = columnWidth(SecurityColumn);
+  if(swidth > 0)
+    adjustColumn(SecurityColumn);
+
   // Resize the date and money fields to either
   // a) the size required by the input widget if no transaction form is shown
   // b) the adjusted value for the input widget if the transaction form is visible
   if(!KMyMoneySettings::transactionForm()) {
-    kMyMoneyDateInput* dateField = new kMyMoneyDateInput(0);
-    kMyMoneyEdit* valField = new kMyMoneyEdit(0);
+    kMyMoneyDateInput* dateField = new kMyMoneyDateInput;
+    kMyMoneyEdit* valField = new kMyMoneyEdit;
 
     dateField->setFont(KMyMoneyGlobalSettings::listCellFont());
     setColumnWidth(DateColumn, dateField->minimumSizeHint().width());
     valField->setMinimumWidth(ewidth);
     ewidth = valField->minimumSizeHint().width();
 
+    if(swidth > 0) {
+      swidth = columnWidth(SecurityColumn) + 40;
+    }
     delete valField;
     delete dateField;
   } else {
@@ -960,12 +975,15 @@ void Register::resize(int col)
   if(columnWidth(BalanceColumn))
     setColumnWidth(BalanceColumn, dwidth);
   if(columnWidth(PriceColumn))
-    setColumnWidth(PriceColumn, ewidth);
+    setColumnWidth(PriceColumn, ewidth - 40);
   if(columnWidth(ValueColumn))
     setColumnWidth(ValueColumn, dwidth);
 
   if(columnWidth(ReconcileFlagColumn))
     setColumnWidth(ReconcileFlagColumn, 20);
+
+  if(swidth > 0)
+    setColumnWidth(SecurityColumn, swidth);
 
   for(int i = 0; i < numCols(); ++i) {
     if(i == col)
@@ -1169,6 +1187,11 @@ void Register::selectItem(int row, int col, int button, const QPoint& /* mousePo
 {
   if(row >= 0 && (unsigned)row < m_itemIndex.size()) {
     RegisterItem* item = m_itemIndex[row];
+
+    // don't support selecting when the item has an editor
+    if(item->hasEditorOpen())
+      return;
+
     QCString id = item->id();
     selectItem(item);
     // selectItem() might have changed the pointers, so we
@@ -1222,7 +1245,7 @@ void Register::selectItem(RegisterItem* item)
   if(!item)
     return;
 
-  kdDebug(2) << "Register::selectItem(" << item << "): type is " << typeid(*item).name() << endl;
+  // kdDebug(2) << "Register::selectItem(" << item << "): type is " << typeid(*item).name() << endl;
 
   Qt::ButtonState buttonState = m_buttonState;
   m_buttonState = Qt::NoButton;
@@ -1617,6 +1640,7 @@ void Register::keyPressEvent(QKeyEvent* ev)
     case Qt::Key_Up:
       setFocusItem(scrollPage(ev->key()));
       ensureItemVisible(m_focusItem);
+      emit focusChanged();
       break;
 
     default:

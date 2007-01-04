@@ -109,9 +109,9 @@ protected slots:
   void slotAccountTypeChanged(const QString& type);
   void slotVatChanged(bool);
   void slotVatAssignmentChanged(bool);
-  void slotNewClicked();
+  void slotNewClicked(void);
   void slotCheckFinished(void);
-  void slotOnlineSetupClicked();
+  void slotOnlineSetupClicked(void);
 
 private slots:
   void timerDone(void);

@@ -302,7 +302,7 @@ bool KMyMoneyView::showPage(int index)
   if(!m_inConstructor) {
     // fixup some actions that are dependant on the view
     // this does not work during construction
-    kmymoney2->updateActions();
+    kmymoney2->slotUpdateActions();
   }
 
   return rc;
@@ -314,18 +314,41 @@ bool KMyMoneyView::canPrint(void)
   return rc;
 }
 
-bool KMyMoneyView::canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
+bool KMyMoneyView::canCreateTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
 {
-  // we can only edit transactions in the ledger view so
+  // we can only create transactions in the ledger view so
+  // we check that this is the active page
+
+  bool rc = (activePageIndex() == pageIndex(m_ledgerViewFrame));
+  if(!rc)
+    tooltip = i18n("Creating transactions can only be performed in the ledger view");
+  return rc;
+}
+
+bool KMyMoneyView::canModifyTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
+{
+  // we can only modify transactions in the ledger view so
   // we check that this is the active page
 
   bool rc = (activePageIndex() == pageIndex(m_ledgerViewFrame));
 
   if(rc) {
+    rc = m_ledgerView->canModifyTransactions(list, tooltip);
+  } else {
+    tooltip = i18n("Modifying transactions can only be performed in the ledger view");
+  }
+  return rc;
+}
+
+bool KMyMoneyView::canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
+{
+  bool rc;
+  // we can only edit transactions in the ledger view so
+  // we check that this is the active page
+
+  if((rc = canModifyTransactions(list, tooltip)) == true) {
     tooltip = i18n("Edit the current selected transactions");
     rc = m_ledgerView->canEditTransactions(list, tooltip);
-  } else {
-    tooltip = i18n("Editing transactions can only be performed in the ledger view");
   }
   return rc;
 }
@@ -426,7 +449,7 @@ void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& tra
       qDebug("Unknown account type %d in KMyMoneyView::slotLedgerSelected", acc.accountType());
       break;
   }
-  kmymoney2->updateActions();
+  kmymoney2->slotUpdateActions();
 }
 
 void KMyMoneyView::slotPayeeSelected(const QCString& payee, const QCString& account, const QCString& transaction)
@@ -1315,7 +1338,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("SLL", i18n("Sierra Leone Leone")), create);
   loadDefaultCurrency(MyMoneySecurity("SGD", i18n("Singapore Dollar"),       "$"), create);
   loadDefaultCurrency(MyMoneySecurity("SKK", i18n("Slovak Koruna")), create);
-  loadDefaultCurrency(MyMoneySecurity("SIT", i18n("Slovenian Tolar")), create);
+  // loadDefaultCurrency(MyMoneySecurity("SIT", i18n("Slovenian Tolar")), create);
   loadDefaultCurrency(MyMoneySecurity("SBD", i18n("Solomon Islands Dollar"), "$"), create);
   loadDefaultCurrency(MyMoneySecurity("SOS", i18n("Somali Shilling")), create);
   loadDefaultCurrency(MyMoneySecurity("ZAR", i18n("South African Rand")), create);
@@ -1397,7 +1420,9 @@ void KMyMoneyView::loadAncientCurrencies(void)
   loadAncientCurrency("FIM", i18n("Finnish Markka"), QCString(), QDate(1998,12,31), MyMoneyMoney(100000, 594573), "EUR");
   loadAncientCurrency("GRD", i18n("Greek Drachma"), QChar(0x20AF), QDate(1998,12,31), MyMoneyMoney(100, 34075), "EUR");
   loadAncientCurrency("ROL", i18n("Romanian Leu"), "ROL", QDate(2005,6,30), MyMoneyMoney(1, 10000), "RON");
-  loadAncientCurrency("RUR", i18n("Russian Ruble (old)"), "RUR", QDate(1998, 1, 1), MyMoneyMoney(1, 1000), "RUB");}
+  loadAncientCurrency("RUR", i18n("Russian Ruble (old)"), "RUR", QDate(1998, 1, 1), MyMoneyMoney(1, 1000), "RUB");
+  loadAncientCurrency("SIT", i18n("Slovenian Tolar"), "SIT", QDate(2006,12,31), MyMoneyMoney(100, 23964), "EUR");
+}
 
 void KMyMoneyView::viewUp(void)
 {
