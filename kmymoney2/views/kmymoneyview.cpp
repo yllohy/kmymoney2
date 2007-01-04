@@ -358,7 +358,7 @@ bool KMyMoneyView::createNewTransaction(void)
   bool rc = false;
   QValueList<KMyMoneyRegister::SelectedTransaction> list;
   QString txt;
-  if(canEditTransactions(list, txt)) {
+  if(canCreateTransactions(list, txt)) {
     rc = m_ledgerView->selectEmptyTransaction();
   }
   return rc;
