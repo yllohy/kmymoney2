@@ -100,6 +100,13 @@ protected:
   QWidget* haveWidget(const QString& name) const;
   void setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool allowObjectCreation = true);
 
+  /**
+    * This method returns the next (check) number for the current account
+    *
+    * @return incremented number or 1 if no previous number available
+    */
+  QString TransactionEditor::nextNumber(void) const;
+
 protected slots:
   void slotUpdateButtonState(void);
 

@@ -318,16 +318,24 @@ bool TransactionEditor::fixTransactionCommodity(const MyMoneyAccount& account)
   return rc;
 }
 
+QString TransactionEditor::nextNumber(void) const
+{
+  QString number;
+  QRegExp exp(QString("(.*\\D)?(\\d+)(\\D.*)?"));
+  qDebug("Last number used is '%s'", m_account.value("lastNumberUsed").data());
+  if(exp.search(m_account.value("lastNumberUsed")) != -1) {
+    number = QString("%1%2%3").arg(exp.cap(1)).arg(exp.cap(2).toULongLong() + 1).arg(exp.cap(3));
+  } else {
+    number = "1";
+  }
+  return number;
+}
+
 void TransactionEditor::assignNumber(void)
 {
   if(canAssignNumber()) {
     kMyMoneyLineEdit* number = dynamic_cast<kMyMoneyLineEdit*>(haveWidget("number"));
-    QRegExp exp(QString("(.*\\D)?(\\d+)(\\D.*)?"));
-    if(exp.search(m_account.value("lastNumberUsed")) != -1) {
-      number->loadText(QString("%1%2%3").arg(exp.cap(1)).arg(exp.cap(2).toULongLong() + 1).arg(exp.cap(3)));
-    } else {
-      number->loadText("1");
-    }
+    number->loadText(nextNumber());
   }
 }
 
@@ -783,7 +791,6 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
         s.setAction(QCString());
       }
 
-#if 0
       // FIXME update check number. The old comment contained
       //
       // <quote>
@@ -793,13 +800,13 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
       // to the transaction.
       // </quote>
 
-      if(m_editNr && !m_editNr->text().isEmpty()) {
-        s.setNumber(m_editNr->text());
+      kMyMoneyLineEdit* editNr = dynamic_cast<kMyMoneyLineEdit*>(haveWidget("number"));
+      if(editNr && !editNr->text().isEmpty()) {
+        s.setNumber(editNr->text());
       } else if(!s.number().isEmpty()) {
-        unsigned64 no = MyMoneyFile::instance()->highestCheckNo(s.accountId()).toULongLong();
-        s.setNumber(QString::number(no+1));
+        s.setNumber(nextNumber());
       }
-#endif
+
       m_transaction.addSplit(s);
       if(s.accountId() == m_account.id() && m_split == MyMoneySplit()) {
         m_split = s;
