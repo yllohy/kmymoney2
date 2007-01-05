@@ -90,6 +90,7 @@ public:
   virtual CashFlowDirection sortType(void) const { return Deposit; }
   virtual const QString& sortCategory(void) const { return QString::null; }
   virtual MyMoneySplit::reconcileFlagE sortReconcileState(void) const { return MyMoneySplit::MaxReconcileState; }
+  virtual const QString& sortSecurity(void) const { return QString::null; }
 
   /**
     * This method sets the row offset of the item in the register

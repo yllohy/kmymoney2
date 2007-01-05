@@ -1,3 +1,15 @@
+2006-01-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Return references to QStrings instead of copies in MyMoneySecurity
+  * Added sort by security for investment accounts
+  * Removed external visibility of sorting by 'entry date'. The user
+    can use 'entry order' instead. Internally we still need it.
+  * Fixed broken handling of Return and Escape during edit.
+  * Disconnect edit widgets from editor object in editor's dtor to
+    prevent crashes
+  * Added GroupMarkers for Reconciled state
+  * Improved auto check number handling
+  * Added default Ctrl+Shift+Space to mark a transaction reconciled
+
 2006-01-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use Enter/Return as shortcut to start and finish editing transactions
   * Improved ledger update to avoid unnecessary resize checks

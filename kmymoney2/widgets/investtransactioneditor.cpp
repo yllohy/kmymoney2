@@ -211,6 +211,8 @@ void InvestTransactionEditor::createEditWidgets(void)
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount()));
 
   value = new kMyMoneyEdit;
+  // TODO once we have the selected transactions as array of Transaction
+  // we can allow multiple splits for fee and interest
   value->setResetButtonVisible(false);
   m_editWidgets["fee-amount"] = value;
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateFeeAmount(const QString&)));
@@ -218,6 +220,8 @@ void InvestTransactionEditor::createEditWidgets(void)
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount()));
 
   value = new kMyMoneyEdit;
+  // TODO once we have the selected transactions as array of Transaction
+  // we can allow multiple splits for fee and interest
   value->setResetButtonVisible(false);
   m_editWidgets["interest-amount"] = value;
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateInterestAmount(const QString&)));
@@ -508,7 +512,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
       value->setText("");
     }
 
-    // if this is not the case, disable some more widgets
+    // if we have transactions with different activities, disable some more widgets
     if(!allSameActivity) {
       fields << "asset-account" << "fee-account" << "interest-account";
       QStringList::const_iterator it_f;

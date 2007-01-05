@@ -169,6 +169,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   layout()->setStretchFactor(m_registerFrame, 2);
   m_register = new KMyMoneyRegister::Register(m_registerFrame);
   registerFrameLayout->addWidget(m_register);
+  m_register->installEventFilter(this);
   connect(m_register, SIGNAL(openContextMenu()), this, SIGNAL(openContextMenu()));
   connect(m_register, SIGNAL(headerClicked()), this, SLOT(slotSortOptions()));
   connect(m_register, SIGNAL(reconcileStateColumnClicked(KMyMoneyRegister::Transaction*)), this, SLOT(slotToggleMarkTransactionCleared(KMyMoneyRegister::Transaction*)));
@@ -682,6 +683,15 @@ void KGlobalLedgerView::addGroupMarkers(void)
       }
       break;
 
+    case KMyMoneyRegister::ReconcileStateSort:
+      if(KMyMoneySettings::showFancyMarker()) {
+        new KMyMoneyRegister::ReconcileGroupMarker(m_register, MyMoneySplit::NotReconciled);
+        new KMyMoneyRegister::ReconcileGroupMarker(m_register, MyMoneySplit::Cleared);
+        new KMyMoneyRegister::ReconcileGroupMarker(m_register, MyMoneySplit::Reconciled);
+        new KMyMoneyRegister::ReconcileGroupMarker(m_register, MyMoneySplit::Frozen);
+      }
+      break;
+
     case KMyMoneyRegister::PayeeSort:
       if(KMyMoneySettings::showFancyMarker()) {
         while(p) {
@@ -714,6 +724,25 @@ void KGlobalLedgerView::addGroupMarkers(void)
           name = it.key();
           if(name.isEmpty()) {
             name = i18n("Unknown category", "Unknown");
+          }
+          new KMyMoneyRegister::CategoryGroupMarker(m_register, name);
+        }
+      }
+      break;
+
+    case KMyMoneyRegister::SecuritySort:
+      if(KMyMoneySettings::showFancyMarker()) {
+        while(p) {
+          t = dynamic_cast<KMyMoneyRegister::InvestTransaction*>(p);
+          if(t) {
+            list[t->sortSecurity()] = 1;
+          }
+          p = p->nextItem();
+        }
+        for(it = list.begin(); it != list.end(); ++it) {
+          name = it.key();
+          if(name.isEmpty()) {
+            name = i18n("Unknown security", "Unknown");
           }
           new KMyMoneyRegister::CategoryGroupMarker(m_register, name);
         }
@@ -1203,6 +1232,11 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
 
       Q_ASSERT(!m_tabOrderWidgets.isEmpty());
 
+      // install event filter in all taborder widgets
+      for(QWidget* w = m_tabOrderWidgets.first(); w; w = m_tabOrderWidgets.next()) {
+        w->installEventFilter(this);
+      }
+
       // Install a filter that checks if a mouse press happened outside
       // of one of our own widgets.
       qApp->installEventFilter(d->m_mousePressFilter);
@@ -1317,6 +1351,53 @@ void KGlobalLedgerView::show(void)
   KMyMoneyViewBase::show();
 }
 
+bool KGlobalLedgerView::eventFilter(QObject* o, QEvent* e)
+{
+  bool rc = false;
+
+  if(e->type() == QEvent::KeyPress) {
+    QKeyEvent *k = static_cast<QKeyEvent*>(e);
+    if(m_inEditMode) {
+      // qDebug("object = %s, key = %d", o->className(), k->key());
+      if(m_tabOrderWidgets.findRef(dynamic_cast<QWidget*>(o)) != -1) {
+        if((k->state() & Qt::KeyButtonMask) == 0) {
+          switch(k->key()) {
+            case Qt::Key_Escape:
+              kmymoney2->action("transaction_cancel")->activate();
+              rc = true;
+              break;
+
+            case Qt::Key_Return:
+              kmymoney2->action("transaction_enter")->activate();
+              rc = true;
+              break;
+          }
+        }
+      } else if(o == m_register) {
+        // we hide all key press events from the register
+        // while editing a transaction
+        rc = true;
+      }
+    } else {
+      if(o == m_register) {
+        if((k->state() & Qt::KeyButtonMask) == 0) {
+          switch(k->key()) {
+            case Qt::Key_Return:
+              kmymoney2->action("transaction_edit")->activate();
+              rc = true;
+              break;
+          }
+        }
+      }
+    }
+  }
+
+  if(!rc)
+    rc = KMyMoneyViewBase::eventFilter(o, e);
+
+  return rc;
+}
+
 void KGlobalLedgerView::slotSortOptions(void)
 {
   KSortOptionDlg* dlg = new KSortOptionDlg(this);
@@ -1376,6 +1457,9 @@ void KGlobalLedgerView::slotToggleMarkTransactionCleared(KMyMoneyRegister::Trans
 
 bool KGlobalLedgerView::canModifyTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
 {
+  if(m_register->focusItem() == 0)
+    return false;
+
   if(!m_register->focusItem()->isSelected()) {
     tooltip = i18n("Cannot modify transaction with focus if it is not selected.");
     return false;

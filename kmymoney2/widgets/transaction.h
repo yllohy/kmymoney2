@@ -308,6 +308,8 @@ public:
   InvestTransaction(Register* parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split);
   virtual ~InvestTransaction() {};
 
+  virtual const QString& sortSecurity(void) const { return m_security.name(); }
+
   // virtual void paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
 
   bool formCellText(QString& txt, int& align, int row, int col, QPainter* painter = 0);

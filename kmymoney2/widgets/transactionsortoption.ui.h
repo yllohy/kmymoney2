@@ -47,8 +47,16 @@ void TransactionSortOption::init()
 
 /**
   * Setup the two lists according to the elements found in @a list.
-  * If negative, the will show up in the available list, if positive,
-  * they show up in the selected list.
+  * If an item is negative, it will show up in the available list,
+  * if positive, it shows up in the selected list.
+  *
+  * Special care is taken about the two values @a EntryDateSort and
+  * @a EntryOrderSort. These two entries cannot (should not) exist
+  * alone. Inside this widget, only the @a EntryOrderSort is used.
+  *
+  * setSettings() takes care of hiding the @a EntryDateSort item and if
+  * it exists in @p settings without @a EntryOrderSort being present, it
+  * will add @a EntryOrderSort.
   */
 void TransactionSortOption::setSettings(const QString& settings)
 {
@@ -61,9 +69,23 @@ void TransactionSortOption::setSettings(const QString& settings)
   // fill selected list
   QStringList::const_iterator it_s;
   QListViewItem* last = 0;
+  int dateSign = 1;
   for(it_s = list.begin(); it_s != list.end(); ++it_s) {
     int val = (*it_s).toInt();
     selectedMap[abs(val)] = true;
+    // skip EntryDateSort but keep sign
+    if(abs(val) == static_cast<int>(KMyMoneyRegister::EntryDateSort)) {
+      dateSign = (val < 0) ? -1 : 1;
+      continue;
+    }
+    last = addEntry(m_selectedList, last, val);
+  }
+
+  // make sure to create EntryOrderSort if missing but required
+  if(selectedMap.find(static_cast<int>(KMyMoneyRegister::EntryDateSort)) != selectedMap.end()
+  && selectedMap.find(static_cast<int>(KMyMoneyRegister::EntryOrderSort)) == selectedMap.end()) {
+    int val = dateSign * static_cast<int>(KMyMoneyRegister::EntryOrderSort);
+    selectedMap[static_cast<int>(KMyMoneyRegister::EntryOrderSort)] = true;
     last = addEntry(m_selectedList, last, val);
   }
 
@@ -71,6 +93,10 @@ void TransactionSortOption::setSettings(const QString& settings)
   QMap<int, bool>::const_iterator it_m;
   for(int i = static_cast<int>(KMyMoneyRegister::PostDateSort);
       i < static_cast<int>(KMyMoneyRegister::MaxSortFields); ++i) {
+    // Never add EntryDateSort
+    if(i == static_cast<int>(KMyMoneyRegister::EntryDateSort))
+      continue;
+    // Only add those, that are not present in the list of selected items
     if(selectedMap.find(i) == selectedMap.end()) {
       int val = i;
       if(i == static_cast<int>(KMyMoneyRegister::ValueSort))
@@ -103,6 +129,12 @@ QString TransactionSortOption::settings( void ) const
   QString rc;
   SortOptionListItem* item = dynamic_cast<SortOptionListItem*>(m_selectedList->firstChild());
   while(item) {
+    int option = KMyMoneyRegister::textToSortOrder(item->text(0));
+    // if we look at the EntryOrderSort option, we have to make
+    // sure, that the EntryDateSort is prepended
+    if(option == KMyMoneyRegister::EntryOrderSort) {
+      rc  += QString::number(static_cast<int>(KMyMoneyRegister::EntryDateSort)*item->direction())+",";
+    }
     rc += QString::number(KMyMoneyRegister::textToSortOrder(item->text(0))*item->direction());
     item = dynamic_cast<SortOptionListItem*>(item->itemBelow());
     if(item != 0)

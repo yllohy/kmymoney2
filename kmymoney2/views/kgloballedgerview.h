@@ -291,6 +291,8 @@ protected:
     */
   bool focusNextPrevChild(bool next);
 
+  bool eventFilter(QObject* o, QEvent* e);
+
   /**
     * Returns @a true if setReconciliationAccount() has been called for
     * the current loaded account.

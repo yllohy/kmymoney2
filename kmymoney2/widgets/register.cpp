@@ -56,7 +56,8 @@ static QString sortOrderText[] = {
   I18N_NOOP("Entry order"),
   I18N_NOOP("Type"),
   I18N_NOOP("Category"),
-  I18N_NOOP("Reconcile state")
+  I18N_NOOP("Reconcile state"),
+  I18N_NOOP("Security")
   // add new values above this line
   };
 
@@ -99,7 +100,7 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
 {
   const QValueList<TransactionSortField>& sortOrder = i1->parent()->sortOrder();
   QValueList<TransactionSortField>::const_iterator it;
-  int rc;
+  int rc = 0;
   bool ok1, ok2;
   Q_ULLONG n1, n2;
 
@@ -168,9 +169,12 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
         rc = static_cast<int>(i1->sortReconcileState()) - static_cast<int>(i2->sortReconcileState());
         break;
 
+      case SecuritySort:
+        rc = QString::localeAwareCompare(i1->sortSecurity(), i2->sortSecurity());
+        break;
+
       default:
         qDebug("Invalid sort key %d", *it);
-        rc = 0;
         break;
     }
 
@@ -366,6 +370,29 @@ CategoryGroupMarker::CategoryGroupMarker(Register* parent, const QString& catego
   GroupMarker(parent)
 {
   m_txt = category;
+}
+
+ReconcileGroupMarker::ReconcileGroupMarker(Register* parent, MyMoneySplit::reconcileFlagE state) :
+  GroupMarker(parent),
+  m_state(state)
+{
+  switch(state) {
+    case MyMoneySplit::NotReconciled:
+      m_txt = i18n("Reconcile state 'Not reconciled'", "Not reconciled");
+      break;
+    case MyMoneySplit::Cleared:
+      m_txt = i18n("Reconcile state 'Cleared'", "Cleared");
+      break;
+    case MyMoneySplit::Reconciled:
+      m_txt = i18n("Reconcile state 'Reconciled'", "Reconciled");
+      break;
+    case MyMoneySplit::Frozen:
+      m_txt = i18n("Reconcile state 'Frozen'", "Frozen");
+      break;
+    default:
+      m_txt = i18n("Unknown");
+      break;
+  }
 }
 
 class RegisterToolTip : public QToolTip
@@ -1189,7 +1216,8 @@ void Register::selectItem(int row, int col, int button, const QPoint& /* mousePo
     RegisterItem* item = m_itemIndex[row];
 
     // don't support selecting when the item has an editor
-    if(item->hasEditorOpen())
+    // or the item itself is not selectable
+    if(item->hasEditorOpen() || !item->isSelectable())
       return;
 
     QCString id = item->id();

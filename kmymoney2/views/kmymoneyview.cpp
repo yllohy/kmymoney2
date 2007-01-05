@@ -208,7 +208,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_ledgerView, SIGNAL(cancelOrEndEdit()), kmymoney2, SLOT(slotTransactionsCancelOrEnter()));
   connect(m_ledgerView, SIGNAL(startEdit()), kmymoney2, SLOT(slotTransactionsEdit()));
   connect(m_ledgerView, SIGNAL(endEdit()), kmymoney2, SLOT(slotTransactionsEnter()));
-  connect(m_ledgerView, SIGNAL(cancelEdit()), kmymoney2, SLOT(slotTransactionsCancel()));
   connect(m_ledgerView, SIGNAL(markTransactionCleared()), kmymoney2, SLOT(slotMarkTransactionCleared()));
   connect(m_ledgerView, SIGNAL(markTransactionNotReconciled()), kmymoney2, SLOT(slotMarkTransactionNotReconciled()));
 

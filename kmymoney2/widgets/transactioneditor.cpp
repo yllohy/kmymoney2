@@ -70,26 +70,17 @@ TransactionEditor::TransactionEditor(TransactionEditorContainer* regForm, MyMone
 
 TransactionEditor::~TransactionEditor()
 {
+  // Make sure the widgets do not send out signals to the editor anymore
+  // After all, the editor is about to die
+  QMap<QString, QWidget*>::iterator it_w;
+  for(it_w = m_editWidgets.begin(); it_w != m_editWidgets.end(); ++it_w) {
+    (*it_w)->disconnect(this);
+  }
+
   m_regForm->removeEditWidgets(m_editWidgets);
   m_item->leaveEditMode();
   emit finishEdit(m_transactions);
 }
-
-#if 0
-void TransactionEditor::deleteUnusedEditWidgets(void)
-{
-  QMap<QString, QWidget*>::iterator it_w;
-  for(it_w = m_editWidgets.begin(); it_w != m_editWidgets.end(); ) {
-    if((*it_w) && (*it_w)->parent())
-      ++it_w;
-    else {
-      delete (*it_w);
-      m_editWidgets.remove(it_w);
-      it_w = m_editWidgets.begin();
-    }
-  }
-}
-#endif
 
 void TransactionEditor::setup(QWidgetList& tabOrderWidgets, const MyMoneyAccount& account, KMyMoneyRegister::Action action)
 {
@@ -331,8 +322,12 @@ void TransactionEditor::assignNumber(void)
 {
   if(canAssignNumber()) {
     kMyMoneyLineEdit* number = dynamic_cast<kMyMoneyLineEdit*>(haveWidget("number"));
-    Q_ULLONG num = m_account.value("lastNumberUsed").toULongLong();
-    number->loadText(QString::number(num + 1));
+    QRegExp exp(QString("(.*\\D)?(\\d+)(\\D.*)?"));
+    if(exp.search(m_account.value("lastNumberUsed")) != -1) {
+      number->loadText(QString("%1%2%3").arg(exp.cap(1)).arg(exp.cap(2).toULongLong() + 1).arg(exp.cap(3)));
+    } else {
+      number->loadText("1");
+    }
   }
 }
 
@@ -1612,10 +1607,9 @@ bool StdTransactionEditor::enterTransactions(QCString& newId)
 
           // if a new transaction has a valid number, keep it with the account
           QString number = (*it_ts).splits()[0].number();
-          if(!number.isEmpty() && number.toULongLong() != 0) {
-            MyMoneyAccount acc = m_objects->account((*it_ts).splits()[0].accountId());
-            acc.setValue("lastNumberUsed", number);
-            MyMoneyFile::instance()->modifyAccount(acc);
+          if(!number.isEmpty()) {
+            m_account.setValue("lastNumberUsed", number);
+            MyMoneyFile::instance()->modifyAccount(m_account);
           }
         } else {
           // modify existing transaction

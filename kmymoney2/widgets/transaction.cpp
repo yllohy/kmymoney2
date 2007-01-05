@@ -490,9 +490,12 @@ QWidget* Transaction::focusWidget(QWidget* w) const
 
 void Transaction::arrangeWidget(QTable* tbl, int row, int col, QWidget* w) const
 {
-  if(w)
+  if(w) {
     tbl->setCellWidget(row, col, w);
-  else
+    // remove the widget from the QTable's eventFilter so that all
+    // events will be directed to the edit widget
+    w->removeEventFilter(tbl);
+  } else
     qDebug("No widget for %d,%d", row, col);
 }
 

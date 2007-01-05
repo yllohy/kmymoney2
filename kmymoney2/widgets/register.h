@@ -58,6 +58,7 @@ typedef enum {
   TypeSort,             //< sort by CashFlowDirection
   CategorySort,         //< sort by Category
   ReconcileStateSort,   //< sort by reconciliation state
+  SecuritySort,         //< sort by security (only useful for investment accounts)
   // insert new values in front of this line
   MaxSortFields
 } TransactionSortField;
@@ -165,8 +166,17 @@ class CategoryGroupMarker : public GroupMarker
 public:
   CategoryGroupMarker(Register* parent, const QString& category);
   const QString& sortCategory(void) const { return m_txt; }
+  const QString& sortSecurity(void) const { return m_txt; }
 };
 
+class ReconcileGroupMarker : public GroupMarker
+{
+public:
+  ReconcileGroupMarker(Register* parent, MyMoneySplit::reconcileFlagE state);
+  virtual MyMoneySplit::reconcileFlagE sortReconcileState(void) const { return m_state; }
+private:
+  MyMoneySplit::reconcileFlagE  m_state;
+};
 
 
 class ItemPtrVector : public QValueVector<RegisterItem *>

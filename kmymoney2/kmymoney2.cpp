@@ -360,20 +360,20 @@ void KMyMoney2App::initActions()
   // we use Return as the same shortcut for Edit and Enter. Therefore, we don't allow
   // to change them (The standard KDE dialog complains anyway if you want to assign
   // the same shortcut to two actions)
-  p = new KAction(i18n("Edit transaction button", "Edit"), "edit", KShortcut("Return"), this, SLOT(slotTransactionsEdit()), actionCollection(), "transaction_edit");
+  p = new KAction(i18n("Edit transaction button", "Edit"), "edit", 0, this, SLOT(slotTransactionsEdit()), actionCollection(), "transaction_edit");
   p->setShortcutConfigurable(false);
-  p = new KAction(i18n("Enter transaction", "Enter"), "button_ok", KShortcut("Return"), this, SLOT(slotTransactionsEnter()), actionCollection(), "transaction_enter");
+  p = new KAction(i18n("Enter transaction", "Enter"), "button_ok", 0, this, SLOT(slotTransactionsEnter()), actionCollection(), "transaction_enter");
   p->setShortcutConfigurable(false);
 
   new KAction(i18n("Edit split button", "Edit splits"), "split_transaction", 0, this, SLOT(slotTransactionsEditSplits()), actionCollection(), "transaction_editsplits");
-  new KAction(i18n("Cancel transaction edit", "Cancel"), "button_cancel", KShortcut("Escape"), this, SLOT(slotTransactionsCancel()), actionCollection(), "transaction_cancel");
+  new KAction(i18n("Cancel transaction edit", "Cancel"), "button_cancel", 0, this, SLOT(slotTransactionsCancel()), actionCollection(), "transaction_cancel");
   new KAction(i18n("Delete transaction", "Delete"), "delete", 0, this, SLOT(slotTransactionsDelete()), actionCollection(), "transaction_delete");
   new KAction(i18n("Duplicate transaction", "Duplicate"), "editcopy", 0, this, SLOT(slotTransactionDuplicate()), actionCollection(), "transaction_duplicate");
   new KAction(i18n("Match Transaction..."), "", 0, this, SLOT(slotStartMatch()), actionCollection(), "transaction_start_match");
   new KAction(i18n("Cancel Match"), "", 0, this, SLOT(slotCancelMatch()), actionCollection(), "transaction_cancel_match");
   new KAction(i18n("Match With This Transaction"), "", 0, this, SLOT(slotEndMatch()), actionCollection(), "transaction_end_match");
   new KAction(i18n("Mark transaction cleared", "Cleared"), 0, KShortcut("Ctrl+Space"), this, SLOT(slotMarkTransactionCleared()), actionCollection(), "transaction_mark_cleared");
-  new KAction(i18n("Mark transaction reconciled", "Reconciled"), "", 0, this, SLOT(slotMarkTransactionReconciled()), actionCollection(), "transaction_mark_reconciled");
+  new KAction(i18n("Mark transaction reconciled", "Reconciled"), "", KShortcut("Ctrl+Shift+Space"), this, SLOT(slotMarkTransactionReconciled()), actionCollection(), "transaction_mark_reconciled");
   new KAction(i18n("Mark transaction not reconciled", "Not reconciled"), "", 0, this, SLOT(slotMarkTransactionNotReconciled()), actionCollection(), "transaction_mark_notreconciled");
   new KAction(i18n("Goto account"), "goto", 0, this, SLOT(slotTransactionGotoAccount()), actionCollection(), "transaction_goto_account");
   new KAction(i18n("Goto payee"), "goto", 0, this, SLOT(slotTransactionGotoPayee()), actionCollection(), "transaction_goto_payee");
@@ -3576,7 +3576,6 @@ void KMyMoney2App::doDeleteTransactions(void)
 
 void KMyMoney2App::slotTransactionsNew(void)
 {
-  qDebug("KMyMoney2App::slotTransactionsNew()");
   // since we jump here via code, we have to make sure to react only
   // if the action is enabled
   if(kmymoney2->action("transaction_new")->isEnabled()) {
@@ -3631,6 +3630,8 @@ void KMyMoney2App::slotTransactionsCancel(void)
   // since we jump here via code, we have to make sure to react only
   // if the action is enabled
   if(kmymoney2->action("transaction_cancel")->isEnabled()) {
+    // make sure, we block the enter function
+    action("transaction_enter")->setEnabled(false);
     // qDebug("KMyMoney2App::slotTransactionsCancel");
     deleteTransactionEditor();
     slotUpdateActions();
