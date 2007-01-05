@@ -84,20 +84,20 @@ public:
     SECURITY_NONE
   } eSECURITYTYPE;
 
-  const QString  name() const                 { return m_name; }
+  const QString& name() const                 { return m_name; }
   void           setName(const String& str)   { m_name = str; }
 
-  const QString   tradingSymbol() const               { return m_tradingSymbol; }
+  const QString&  tradingSymbol() const               { return m_tradingSymbol; }
   void            setTradingSymbol(const String& str) { m_tradingSymbol = str; }
 
   const eSECURITYTYPE securityType() const                 { return m_securityType; }
   void          setSecurityType(const eSECURITYTYPE& s)   { m_securityType = s; }
   const bool    isCurrency(void) const { return m_securityType == SECURITY_CURRENCY; };
 
-  const QString tradingMarket() const  { return m_tradingMarket; }
-  void          setTradingMarket(const QString& str) { m_tradingMarket = str; }
+  const QString& tradingMarket() const  { return m_tradingMarket; }
+  void           setTradingMarket(const QString& str) { m_tradingMarket = str; }
 
-  const QCString  tradingCurrency(void) const { return m_tradingCurrency; };
+  const QCString& tradingCurrency(void) const { return m_tradingCurrency; };
   void            setTradingCurrency(const QCString& str) { m_tradingCurrency = str; };
 
   const int smallestAccountFraction(void) const { return m_smallestAccountFraction; };
