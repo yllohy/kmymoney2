@@ -430,6 +430,8 @@ public:
     */
   bool isChildOf(const QListViewItem* const item) const;
 
+  void setReconciliation(bool);
+
 protected:
   /**
     * Returns the current balance of this account.
@@ -454,7 +456,9 @@ private:
   MyMoneyInstitution                m_institution;
 
   KMyMoneyAccountTreeItemType       m_type;
-  MyMoneyBudget m_budget;
+  MyMoneyBudget                     m_budget;
+
+  bool                              m_reconcileFlag;
 };
 
 #endif

@@ -4152,8 +4152,8 @@ void KMyMoney2App::slotUpdateActions(void)
             if(m_reconciliationAccount.id().isEmpty()) {
               action("account_reconcile")->setEnabled(true);
             } else {
-              action("account_reconcile_finish")->setEnabled(true);
-              action("account_reconcile_postpone")->setEnabled(true);
+              action("account_reconcile_finish")->setEnabled(m_selectedAccount == m_reconciliationAccount);
+              action("account_reconcile_postpone")->setEnabled(m_selectedAccount == m_reconciliationAccount);
             }
           }
 

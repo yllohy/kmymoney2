@@ -575,6 +575,15 @@ signals:
      * occur. The Action parameter distinguishes between them.
      */
   void kmmFilePlugin (unsigned int action);
+
+  /**
+    * Signal is emitted when reconciliation starts or ends. In case of end,
+    * @a account is MyMoneyAccount()
+    *
+    * @param account account for which reconciliation starts or MyMoneyAccount()
+    *                if reconciliation ends.
+    */
+  void reconciliationStarts(const MyMoneyAccount& account);
 };
 
 class KMyMoneyTitleLabel;

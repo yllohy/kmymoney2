@@ -164,7 +164,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_accountsView, SIGNAL(openObject(const MyMoneyObject&)), kmymoney2, SLOT(slotAccountOpen(const MyMoneyObject&)));
   connect(m_accountsView, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotReparentAccount(const MyMoneyAccount&, const MyMoneyAccount&)));
   connect(this, SIGNAL(kmmFilePlugin(unsigned int)), m_accountsView, SLOT(slotUpdateIconPos(unsigned int)));
-
+  connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&)), m_accountsView, SLOT(slotReconcileAccount(const MyMoneyAccount&)));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_accountsView, SLOT(slotLoadAccounts()));
 
   // Page 3
@@ -1094,6 +1094,8 @@ bool KMyMoneyView::startReconciliation(const MyMoneyAccount& account, const MyMo
         ok = false;
     }
   }
+  emit reconciliationStarts(account);
+
   return ok;
 }
 
@@ -1101,6 +1103,8 @@ void KMyMoneyView::finishReconciliation(const MyMoneyAccount& account)
 {
   // make sure to re-select the account
   m_ledgerView->setReconciliationAccount();
+
+  emit reconciliationStarts(MyMoneyAccount());
 }
 
 bool KMyMoneyView::newFile(const bool createEmtpyFile)

@@ -94,6 +94,8 @@ public slots:
     */
   void slotUpdateIconPos(unsigned int action);
 
+  void slotReconcileAccount(const MyMoneyAccount& acc);
+
 protected:
   typedef enum {
     ListView = 0,
@@ -163,6 +165,7 @@ signals:
   void reparent(const MyMoneyAccount& acc, const MyMoneyAccount& parent);
 
 private:
+  MyMoneyAccount                      m_reconciliationAccount;
   QMap<QString, MyMoneyAccount>       m_accountMap;
   QMap<QCString, MyMoneySecurity>     m_securityMap;
   QMap<QCString, unsigned long>       m_transactionCountMap;

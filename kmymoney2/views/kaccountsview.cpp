@@ -434,6 +434,9 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
     }
 
     KMyMoneyAccountTreeItem* item = new KMyMoneyAccountTreeItem(parent, acc, prices, security);
+    if(acc.id() == m_reconciliationAccount.id())
+      item->setReconciliation(true);
+
     unused |= loadSubAccounts(item, acc.accountList());
 
     // no child accounts and no transactions in this account means 'unused'
@@ -455,6 +458,34 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
     }
   }
   return unused;
+}
+
+void KAccountsView::slotReconcileAccount(const MyMoneyAccount& acc)
+{
+  // scan through the list of accounts and mark all non
+  // expanded and re-select the one that was probably selected before
+  QListViewItemIterator it_lvi(m_accountTree);
+  KMyMoneyAccountTreeItem* item;
+  while(it_lvi.current()) {
+    item = dynamic_cast<KMyMoneyAccountTreeItem*>(it_lvi.current());
+    if(item) {
+      item->setReconciliation(false);
+    }
+    ++it_lvi;
+  }
+
+  m_reconciliationAccount = acc;
+  if(!acc.id().isEmpty()) {
+    it_lvi = QListViewItemIterator(m_accountTree);
+    while(it_lvi.current()) {
+      item = dynamic_cast<KMyMoneyAccountTreeItem*>(it_lvi.current());
+      if(item && item->itemObject().id() == acc.id()) {
+        item->setReconciliation(true);
+        break;
+      }
+      ++it_lvi;
+    }
+  }
 }
 
 void KAccountsView::slotUpdateNetWorth(void)

@@ -478,7 +478,8 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const QStrin
   KListViewItem(parent),
   m_displayFactor(MyMoneyMoney(1)),
   m_totalValue(MyMoneyMoney(0)),
-  m_type(Text)
+  m_type(Text),
+  m_reconcileFlag(false)
 {
   setText(0, txt);
 }
@@ -488,7 +489,8 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMone
   m_displayFactor(MyMoneyMoney(1)),
   m_institution(institution),
   m_totalValue(MyMoneyMoney(0)),
-  m_type(Institution)
+  m_type(Institution),
+  m_reconcileFlag(false)
 {
   setText(0, institution.name());
   setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg("bank"))));
@@ -500,7 +502,8 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMone
   m_displayFactor(MyMoneyMoney(1)),
   m_account(account),
   m_totalValue(MyMoneyMoney(0)),
-  m_type(Account)
+  m_type(Account),
+  m_reconcileFlag(false)
 {
   MyMoneyAccount acc(account);
   if(!name.isEmpty())
@@ -515,7 +518,8 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent
   m_displayFactor(MyMoneyMoney(1)),
   m_account(account),
   m_totalValue(MyMoneyMoney(0)),
-  m_type(Account)
+  m_type(Account),
+  m_reconcileFlag(false)
 {
   updateAccount(account, true);
 }
@@ -529,7 +533,8 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMone
   m_account(account),
   m_totalValue(MyMoneyMoney(0)),
   m_type(Account),
-  m_budget(budget)
+  m_budget(budget),
+  m_reconcileFlag(false)
 {
 }
 
@@ -541,7 +546,8 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent
   m_account(account),
   m_totalValue(MyMoneyMoney(0)),
   m_type(Account),
-  m_budget(budget)
+  m_budget(budget),
+  m_reconcileFlag(false)
 {
 }
 
@@ -582,6 +588,14 @@ void KMyMoneyAccountTreeItem::updatePrice(const MyMoneyPrice& price)
   }
 }
 
+void KMyMoneyAccountTreeItem::setReconciliation(bool on)
+{
+  if(m_reconcileFlag == on)
+    return;
+  m_reconcileFlag = on;
+  updateAccount(m_account);
+}
+
 void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool forceTotalUpdate)
 {
   // make sure it's for the same object
@@ -609,6 +623,11 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
   if(m_account.isClosed()) {
     QPixmap pic = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon)));
     QPixmap closed = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/account-types_closed.png")));
+    bitBlt(&pic, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
+    setPixmap(0, pic);
+  } else if(m_reconcileFlag) {
+    QPixmap pic = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon)));
+    QPixmap closed = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/account-types_reconcile.png")));
     bitBlt(&pic, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
     setPixmap(0, pic);
   } else
