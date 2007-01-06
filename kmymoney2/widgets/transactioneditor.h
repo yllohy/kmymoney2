@@ -105,7 +105,7 @@ protected:
     *
     * @return incremented number or 1 if no previous number available
     */
-  QString TransactionEditor::nextNumber(void) const;
+  QString nextNumber(void) const;
 
 protected slots:
   void slotUpdateButtonState(void);
