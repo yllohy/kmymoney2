@@ -172,7 +172,7 @@ bool kMyMoneyAccountSelector::contains(const QString& txt) const
                      i18n("Security");
 
   while((it_v = it.current()) != 0) {
-    QRegExp exp(QString("(?:%1):%2").arg(baseName).arg(QRegExp::escape(txt)));
+    QRegExp exp(QString("^(?:%1):%2$").arg(baseName).arg(QRegExp::escape(txt)));
     if(it_v->rtti() == 1) {
       KMyMoneyCheckListItem* it_c = dynamic_cast<KMyMoneyCheckListItem*>(it_v);
       if(exp.search(it_c->key()) != -1) {
