@@ -29,6 +29,7 @@
 #include <qcombobox.h>
 #include <qlineedit.h>
 #include <qlabel.h>
+#include <qlayout.h>
 #include <qmultilineedit.h>
 #include <qpixmap.h>
 #include <qtabwidget.h>
@@ -54,6 +55,7 @@
 
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneyaccounttree.h>
+#include "../widgets/klistviewsearchline.h"
 
 #include "kpayeesview.h"
 #include "../kmymoneyglobalsettings.h"
@@ -108,7 +110,7 @@ void KTransactionListItem::paintCell(QPainter *p, const QColorGroup &cg, int col
   QListViewItem::paintCell(p, _cg, column, width, alignment);
 }
 
-const QColor KTransactionListItem::backgroundColor()
+const QColor KTransactionListItem::backgroundColor(void)
 {
   return isAlternate() ? KMyMoneySettings::listBGColor() : KMyMoneySettings::listColor();
 }
@@ -120,8 +122,15 @@ const QColor KTransactionListItem::backgroundColor()
 
 KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   KPayeesViewDecl(parent,name),
-  m_needReload(false)
+  m_needReload(false),
+  m_needConnection(true),
+  m_updatesQueued(0)
 {
+  // create the searchline widget
+  // and insert it into the existing layout
+  m_searchWidget = new KListViewSearchLineWidget(m_payeesList, this);
+  KPayeesViewDeclLayout->insertWidget(2, m_searchWidget);
+
   m_transactionView->setSorting(-1);
   m_transactionView->setAllColumnsShowFocus(true);
   m_transactionView->setColumnWidthMode(2, QListView::Manual);
@@ -170,6 +179,21 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
 
 KPayeesView::~KPayeesView()
 {
+}
+
+void KPayeesView::slotQueueUpdate(void)
+{
+  m_updatesQueued++;
+  // The KListViewSearchLineWidget has an internal timer for update purposes
+  // of 200 ms, so we should be safe with 250 ms here
+  QTimer::singleShot(250, this, SLOT(slotActivateUpdate()));
+}
+
+void KPayeesView::slotActivateUpdate(void)
+{
+  --m_updatesQueued;
+  if(m_updatesQueued == 0)
+    slotSelectPayee();
 }
 
 void KPayeesView::slotStartRename(void)
@@ -252,7 +276,7 @@ void KPayeesView::ensurePayeeVisible(const QCString& id)
 
 void KPayeesView::selectedPayees(QValueList<MyMoneyPayee>& payeesList) const
 {
-  QListViewItemIterator it_l(m_payeesList, QListViewItemIterator::Selected);
+  QListViewItemIterator it_l(m_payeesList, QListViewItemIterator::Selected | QListViewItemIterator::Visible);
   QListViewItem* it_v;
   while((it_v = it_l.current()) != 0) {
     KPayeeListItem* item = dynamic_cast<KPayeeListItem*>(it_v);
@@ -262,7 +286,7 @@ void KPayeesView::selectedPayees(QValueList<MyMoneyPayee>& payeesList) const
   }
 }
 
-void KPayeesView::slotSelectPayee()
+void KPayeesView::slotSelectPayee(void)
 {
   // check if the content of a currently selected payee was modified
   // and ask to store the data
@@ -492,7 +516,7 @@ void KPayeesView::slotPayeeDataChanged(void)
   m_updateButton->setEnabled(rc);
 }
 
-void KPayeesView::slotUpdatePayee()
+void KPayeesView::slotUpdatePayee(void)
 {
   if(m_updateButton->isEnabled()) {
     try {
@@ -535,8 +559,17 @@ void KPayeesView::readConfig(void)
            KMyMoneySettings::focusChangeIsEnter() ? QListView::Accept : QListView::Reject);
 }
 
-void KPayeesView::show()
+void KPayeesView::show(void)
 {
+  // since we could not construct the connection in our own ctor,
+  // we set it up now. The widgets of the KListViewSearchLineWidget must exist by now.
+  // If you want to learn about the details, see the source of KListViewSearchLineWidget's
+  // constructor
+  if(m_needConnection) {
+    connect(m_searchWidget->searchLine(), SIGNAL(textChanged(const QString&)), this, SLOT(slotQueueUpdate(void)));
+    m_needConnection = false;
+  }
+
   if(m_needReload) {
     loadPayees();
     m_needReload = false;
@@ -711,7 +744,7 @@ void KPayeesView::slotOpenContextMenu(QListViewItem* i)
   }
 }
 
-void KPayeesView::slotHelp()
+void KPayeesView::slotHelp(void)
 {
   kapp->invokeHelp("details.payees.personalinformation");
 }

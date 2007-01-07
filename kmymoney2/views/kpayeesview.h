@@ -44,6 +44,8 @@
 #include "kledgerview.h"
 #include <kmymoney/mymoneypayee.h>
 
+class KListViewSearchLineWidget;
+
 /**
   * @author Michael Edwardes, Thomas Baumgart
   */
@@ -109,11 +111,12 @@ private:
 
 class KPayeesView : public KPayeesViewDecl
 {
-   Q_OBJECT
+  Q_OBJECT
+
 public:
   KPayeesView(QWidget *parent=0, const char *name=0);
   ~KPayeesView();
-  void show();
+  void show(void);
 
 public slots:
   void slotSelectPayeeAndTransaction(const QCString& payeeId, const QCString& accountId = QCString(), const QCString& transactionId = QCString());
@@ -140,12 +143,12 @@ protected slots:
     * This slot is called whenever the selection in m_payeesList
     * has been changed.
     */
-  void slotSelectPayee();
+  void slotSelectPayee(void);
 
   /**
     * This slot marks the current selected payee as modified (dirty).
     */
-  void slotPayeeDataChanged();
+  void slotPayeeDataChanged(void);
 
   /**
     * This slot is called when the name of a payee is changed inside
@@ -157,7 +160,7 @@ protected slots:
     * Updates the payee data in m_payee from the information in the
     * payee information widget.
     */
-  void slotUpdatePayee();
+  void slotUpdatePayee(void);
 
   void slotTransactionDoubleClicked(QListViewItem *);
 
@@ -171,6 +174,10 @@ private slots:
     * @param item the item on which the cursor resides
     */
   void slotOpenContextMenu(QListViewItem* item);
+
+  void slotQueueUpdate(void);
+
+  void slotActivateUpdate(void);
 
 private:
   void readConfig(void);
@@ -201,6 +208,17 @@ private:
     * to suppress updates due to MyMoney engine data changes
     */
   bool m_needReload;
+
+  /**
+    * Search widget for the list
+    */
+  KListViewSearchLineWidget*  m_searchWidget;
+  bool m_needConnection;
+
+  /**
+    * Counting semaphore to collect updates
+    */
+  int m_updatesQueued;
 };
 
 #endif
