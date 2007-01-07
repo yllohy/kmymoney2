@@ -33,6 +33,6 @@ all:
 	fi
 
 	export UNSERMAKE=no
-	$(MAKE) -f admin/Makefile.common cvs
+	UNSERMAKE=no $(MAKE) -f admin/Makefile.common cvs
 
 .SILENT:
