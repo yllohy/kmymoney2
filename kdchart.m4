@@ -26,7 +26,7 @@ AC_ARG_ENABLE(charts,
 
     LDFLAGS="$LDFLAGS -L$qt_libdir $all_libraries $USER_LDFLAGS $KDE_MT_LDFLAGS"
     LIBS="-lkdchart $LIBS $LIBQT $KDE_MT_LIBS"
-    CXXFLAGS="$CXXFLAGS -I$prefix/include -I$kde_includes $all_includes"
+    CXXFLAGS="$CXXFLAGS -I. -I$prefix/include -I$kde_includes $all_includes"
 
     AC_TRY_LINK(
       [#include <KDChartWidget.h>],
