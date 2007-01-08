@@ -565,8 +565,7 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
 
     QCString payeeId = m_split.payeeId();
     if(!payeeId.isEmpty()) {
-      payee->completion()->setSelected(payeeId);
-      payee->slotItemSelected(payeeId);
+      payee->setSelectedItem(payeeId);
     }
 
     m_splits.clear();
@@ -713,8 +712,7 @@ void StdTransactionEditor::slotReloadEditWidgets(void)
   payee->loadPayees(MyMoneyFile::instance()->payeeList());
 
   if(!payeeId.isEmpty()) {
-    payee->completion()->setSelected(payeeId);
-    payee->slotItemSelected(payeeId);
+    payee->setSelectedItem(payeeId);
   }
 }
 

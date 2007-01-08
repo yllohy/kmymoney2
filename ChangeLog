@@ -1,5 +1,6 @@
 2006-01-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added detection for libxml++-2.6 in libofx.m4
+  * Fixed Tony's pesky payee problem
 
 2006-01-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added speed search to the payees view

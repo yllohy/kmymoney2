@@ -104,7 +104,7 @@ public:
 
   void setSuppressObjectCreation(bool suppress) { m_canCreateObjects = !suppress; }
 
-public slots:
+protected slots:
   virtual void slotItemSelected(const QCString& id);
 
 protected:

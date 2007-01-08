@@ -64,12 +64,15 @@ KMyMoneyCombo::KMyMoneyCombo(bool rw, QWidget *w, const char *name) :
 void KMyMoneyCombo::slotItemSelected(const QCString& id)
 {
   if(editable()) {
+    bool blocked = signalsBlocked();
+    blockSignals(true);
     setCurrentText("");
     if(!id.isEmpty()) {
       QListViewItem* item = selector()->item(id);
       if(item)
         setCurrentText(item->text(0));
     }
+    blockSignals(blocked);
   }
 
   m_completion->hide();
@@ -252,7 +255,9 @@ void KMyMoneyCombo::selectedItems(QCStringList& list) const
 void KMyMoneyCombo::setSelectedItem(const QCString& id)
 {
   m_completion->selector()->setSelected(id, true);
-  m_id = id;
+  blockSignals(true);
+  slotItemSelected(id);
+  blockSignals(false);
   update();
 }
 
