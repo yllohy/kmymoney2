@@ -1,3 +1,6 @@
+2006-01-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added detection for libxml++-2.6 in libofx.m4
+
 2006-01-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added speed search to the payees view
   * Fixed prevention of using unsermake on some systems

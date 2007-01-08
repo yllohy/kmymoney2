@@ -31,9 +31,12 @@ if test "$enable_ofxbanking" != "no"; then
   CFLAGS="$ac_save_CFLAGS"
   PKG_CHECK_MODULES(OFX,libofx >= 0.8.1)
   AC_DEFINE_UNQUOTED(USE_OFX_DIRECTCONNECT, 1, [whether to use OFX directconnect])
-  PKG_CHECK_MODULES(LIBXMLPP,libxml++-1.0 >= 1.0.1,
+  PKG_CHECK_MODULES(LIBXMLPP, libxml++-1.0 >= 1.0.1,
+    [AC_DEFINE(HAVE_LIBXMLPP, 1, [Defined if libxml++ is available])],
+    [PKG_CHECK_MODULES(LIBXMLPP,libxml++-2.6 >= 1.0.1,
 	[AC_DEFINE(HAVE_LIBXMLPP, 1, [Defined if libxml++ is available])],
-        [AC_MSG_ERROR([libxml++-1.0 is required for OFX Direct Connect.])])
+        [AC_MSG_ERROR([libxml++-1.0 or libxml++-2.6 is required for OFX Direct Connect.])])
+    ])
 
   LIBCURL_CHECK_CONFIG([yes],[7.9.7])
   LIBS="$OFX_LIBS $LIBXMLPP_LIBS $LIBCURL $LIBS"
