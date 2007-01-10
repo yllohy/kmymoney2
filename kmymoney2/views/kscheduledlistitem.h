@@ -56,8 +56,8 @@ public:
     *
     * @see MyMoneySchedule
     */
-  KScheduledListItem(KListView *parent, const char *description);
-  
+  KScheduledListItem(KListView *parent, const QString& description);
+
   /**
     * This constructor is used to create a child of one of the children
     * created by the above method.
@@ -94,7 +94,7 @@ protected:
 private:
   /// The schedule's id.
   QCString m_id;
-/*  
+/*
   bool m_even;
 */
   bool m_base;

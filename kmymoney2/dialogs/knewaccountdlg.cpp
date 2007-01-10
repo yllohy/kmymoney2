@@ -91,8 +91,7 @@
 #define KMM_KDCHART_PROPSET_NORMAL_DATA KDCHART_PROPSET_NORMAL_DATA
 #endif
 
-KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent,
-    const char *name, const char *title)
+KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent, const char *name, const QString& title)
   : KNewAccountDlgDecl(parent,name,true),
     m_account(account),
     m_bSelectedParentAccount(false),

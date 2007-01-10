@@ -40,10 +40,9 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../kmymoneyutils.h"
 
-KScheduledListItem::KScheduledListItem(KListView *parent, const char *name)
+KScheduledListItem::KScheduledListItem(KListView *parent, const QString& name)
  : KListViewItem(parent,name)/*, m_even(false)*/, m_base(true)
 {
-  setText(0, name);
   if (name == i18n("Bills"))
     setPixmap(0, KMyMoneyUtils::billScheduleIcon(KIcon::Small));
   else if (name == i18n("Deposits"))

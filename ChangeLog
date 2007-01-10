@@ -1,3 +1,7 @@
+2006-01-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Support all UTF-8 characters in schedule list items and account editor
+    dialog caption
+
 2006-01-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added detection for libxml++-2.6 in libofx.m4
   * Fixed Tony's pesky payee problem
