@@ -1037,6 +1037,15 @@ void Register::adjustColumn(int col)
     w += topHeader->iconSet( col )->pixmap().width();
   w = QMAX( w, 20 );
 
+  int maxWidth = 0;
+  switch(col) {
+    case NumberColumn:
+      maxWidth = cellFontMetrics.width("0123456789");
+      break;
+    default:
+      break;
+  }
+
   // check for date column
   if(col == DateColumn) {
     QString txt = KGlobal::locale()->formatDate(QDate(6999,12,29), true);
@@ -1053,9 +1062,16 @@ void Register::adjustColumn(int col)
       if(t) {
         int nw = t->registerColWidth(col, cellFontMetrics);
         w = QMAX( w, nw );
+        if(maxWidth) {
+          if(w > maxWidth) {
+            w = maxWidth;
+            break;
+          }
+        }
       }
     }
   }
+
   setColumnWidth( col, w );
 
   ::timetrace(msg.arg("Done").arg(col));

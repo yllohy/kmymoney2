@@ -93,6 +93,7 @@ class kMyMoneyEdit : public QHBox
   Q_OBJECT
   Q_PROPERTY(bool calculatorButtonVisibility READ isCalculatorButtonVisible WRITE setCalculatorButtonVisible);
   Q_PROPERTY(bool resetButtonVisibility READ isResetButtonVisible WRITE setResetButtonVisible);
+  Q_PROPERTY(bool allowEmpty READ isEmptyAllowed WRITE setAllowEmpty);
 
 private:
   QString previousText; // keep track of what has been typed
@@ -104,6 +105,7 @@ private:
   KPushButton*        m_resetButton;
   int                 m_prec;
   bool                calculatorButtonVisibility;
+  bool                allowEmpty;
 
 private:
   /**
@@ -182,27 +184,24 @@ public:
   QWidget* focusWidget(void) const;
 
   /**
-    * This method allows to show/hide the calculator button of the widget.
-    * The parameter @p show controls the behavior. Default is to show the
-    * button.
+    * This method allows to modify the behavior of the widget
+    * such that it accepts an empty value (all blank) or not.
+    * The default is to not accept an emtpy input and to
+    * convert an empty field into 0.00 upon loss of focus.
     *
-    * @param show if true, button is shown, if false it is hidden
+    * @param allowed if @a true, empty input is allowed, if @a false
+    *                emtpy input will be converted to 0.00
     */
-  void showCalculatorButton(const bool show = true) KDE_DEPRECATED;
-
-  /**
-    * This method allows to hide the calculator button. It is
-    * provided as convenience function and is equivilant to @p
-    * showCalculatorButton(false).
-    */
-  void hideCalculatorButton(void) KDE_DEPRECATED;
+  void setEmptyAllowed(bool allowed = true);
 
   /** Overloaded for internal reasons. The API is not affected. */
   void setValidator(const QValidator* v);
 
-  const bool isCalculatorButtonVisible(void) const;
+  bool isCalculatorButtonVisible(void) const;
 
-  const bool isResetButtonVisible(void) const;
+  bool isResetButtonVisible(void) const;
+
+  bool isEmptyAllowed(void) const;
 
   KLineEdit* lineedit(void) const;
 

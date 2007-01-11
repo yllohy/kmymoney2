@@ -40,7 +40,7 @@
 KNewEquityEntryDlg::KNewEquityEntryDlg(QWidget *parent, const char *name)
   : kNewEquityEntryDecl(parent, name, TRUE)
 {
-  edtFraction->hideCalculatorButton();
+  edtFraction->setCalculatorButtonVisible(false);
   edtFraction->setPrecision(0);
   edtFraction->loadText("100");
 

@@ -193,7 +193,7 @@ static const uchar resetButtonImage[] = {
 
 void kMyMoneyEdit::init(void)
 {
-  // m_edit = new KLineEdit(this);
+  allowEmpty = false;
   m_edit = new kMyMoneyLineEdit(this);
   m_edit->installEventFilter(this);
   setFocusProxy(m_edit);
@@ -413,7 +413,8 @@ bool kMyMoneyEdit::eventFilter(QObject * /* o */ , QEvent *e )
     }
 
   } else if(e->type() == QEvent::FocusOut) {
-    ensureFractionalPart();
+    if(!m_edit->text().isEmpty() || !allowEmpty)
+      ensureFractionalPart();
 
     if(MyMoneyMoney(m_edit->text()) != MyMoneyMoney(m_text)) {
       emit valueChanged(m_edit->text());
@@ -474,16 +475,6 @@ QWidget* kMyMoneyEdit::focusWidget(void) const
   return w;
 }
 
-void kMyMoneyEdit::showCalculatorButton(const bool show)
-{
-  setCalculatorButtonVisible(show);
-}
-
-void kMyMoneyEdit::hideCalculatorButton(void)
-{
-  setCalculatorButtonVisible(false);
-}
-
 void kMyMoneyEdit::setCalculatorButtonVisible(const bool show)
 {
   m_calcButton->setShown(show);
@@ -494,14 +485,24 @@ void kMyMoneyEdit::setResetButtonVisible(const bool show)
   m_resetButton->setShown(show);
 }
 
-const bool kMyMoneyEdit::isCalculatorButtonVisible(void) const
+void kMyMoneyEdit::setEmptyAllowed(bool allowed)
+{
+  allowEmpty = allowed;
+}
+
+bool kMyMoneyEdit::isCalculatorButtonVisible(void) const
 {
   return m_calcButton->isVisible();
 }
 
-const bool kMyMoneyEdit::isResetButtonVisible(void) const
+bool kMyMoneyEdit::isResetButtonVisible(void) const
 {
   return m_resetButton->isVisible();
+}
+
+bool kMyMoneyEdit::isEmptyAllowed(void) const
+{
+  return allowEmpty;
 }
 
 void kMyMoneyEdit::setHint(const QString& hint) const

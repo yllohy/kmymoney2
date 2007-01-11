@@ -63,7 +63,7 @@ KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneySecurity& selectedSecurity
   edtEquityName->setText(m_selectedSecurity.name());
   edtMarketSymbol->setText(m_selectedSecurity.tradingSymbol());
   edtFraction->setPrecision(0);
-  edtFraction->hideCalculatorButton();
+  edtFraction->setCalculatorButtonVisible(false);
   edtFraction->loadText(QString::number(m_selectedSecurity.smallestAccountFraction()));
   cmbInvestmentType->setCurrentItem((int)m_selectedSecurity.securityType());
   // FIXME PRICE

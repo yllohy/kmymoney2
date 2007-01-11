@@ -268,7 +268,7 @@ bool TransactionEditor::fixTransactionCommodity(const MyMoneyAccount& account)
             QString msg;
             if(firstTimeMultiCurrency) {
               firstTimeMultiCurrency = false;
-              if(m_transactions.count() == 1) {
+              if(!isMultiSelection()) {
                 msg = i18n("This transaction has more than two splits and is originally based on a different currency (%1). Using this account to modify the transaction may result in rounding errors. Do you want to continue?").arg(osec.name());
               } else {
                 msg = i18n("At least one of the selected transactions has more than two splits and is originally based on a different currency (%1). Using this account to modify the transactions may result in rounding errors. Do you want to continue?").arg(osec.name());
@@ -378,6 +378,96 @@ void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QV
   }
 }
 
+bool TransactionEditor::enterTransactions(QCString& newId)
+{
+  newId = QCString();
+
+  // make sure to run through all stuff that is tied to 'focusout events'.
+  m_regForm->parentWidget()->setFocus();
+  QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 10);
+
+  // we don't need to update our widgets anymore, so we just disconnect the signal
+  disconnect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
+
+  QValueList<KMyMoneyRegister::SelectedTransaction>::iterator it_t;
+  MyMoneyTransaction t;
+  bool newTransactionCreated = false;
+
+  // make sure, that only a single new transaction can be created.
+  // we need to update m_transactions to contain the new transaction
+  // which is then stored in the variable t when we leave the loop.
+  // m_transactions will be sent out in finishEdit() and forces
+  // the new transaction to be selected in the ledger view
+
+  // collect the transactions to be stored in the engine in a local
+  // list first, so that the user has a chance to interrupt the storage
+  // process
+  QValueList<MyMoneyTransaction> list;
+  bool storeTransactions = true;
+
+  // collect transactions
+  for(it_t = m_transactions.begin(); storeTransactions && !newTransactionCreated && it_t != m_transactions.end(); ++it_t) {
+    storeTransactions = createTransaction(t, (*it_t).transaction(), (*it_t).split());
+    // if the transaction was created successfully, append it to the list
+    if(storeTransactions)
+      list.append(t);
+
+    // if we created a new transaction keep that in mind
+    if(t.id().isEmpty())
+      newTransactionCreated = true;
+  }
+
+  // if not interrupted by user, continue to store them in the engine
+  if(storeTransactions) {
+    int cnt = list.count();
+    int i = 0;
+    emit statusMsg(i18n("Storeing transactions"));
+    emit statusProgress(0, cnt);
+
+    QValueList<MyMoneyTransaction>::iterator it_ts;
+    for(it_ts = list.begin(); it_ts != list.end(); ++it_ts) {
+      // turn on signals before we modify the last entry in the list
+      cnt--;
+      MyMoneyFile::instance()->blockSignals(cnt != 0);
+      try {
+        if((*it_ts).id().isEmpty()) {
+          // add new transaction
+          MyMoneyFile::instance()->addTransaction(*it_ts);
+
+          // pass the newly assigned id on to the caller
+          newId = (*it_ts).id();
+
+          // if a new transaction has a valid number, keep it with the account
+          QString number = (*it_ts).splits()[0].number();
+          if(!number.isEmpty()) {
+            m_account.setValue("lastNumberUsed", number);
+            MyMoneyFile::instance()->modifyAccount(m_account);
+          }
+        } else {
+          // modify existing transaction
+          MyMoneyFile::instance()->modifyTransaction(*it_ts);
+        }
+      } catch(MyMoneyException * e) {
+        qDebug("Unable to store transaction within engine: %s", e->what().latin1());
+        delete e;
+        if(!cnt)
+          MyMoneyFile::instance()->forceDataChanged();
+      }
+      emit statusProgress(i++, 0);
+    }
+    emit statusProgress(-1, -1);
+    emit statusMsg(QString());
+
+    // update m_transactions to contain the newly created transaction so that
+    // it is selected as the current one
+    if(newTransactionCreated) {
+      m_transactions.clear();
+      KMyMoneyRegister::SelectedTransaction s((*it_ts), (*it_ts).splits()[0]);
+      m_transactions.append(s);
+    }
+  }
+  return storeTransactions;
+}
 
 
 StdTransactionEditor::StdTransactionEditor()
@@ -470,7 +560,7 @@ void StdTransactionEditor::createEditWidgets(void)
 
   // if we don't have more than 1 selected transaction, we don't need
   // the "don't change" item in some of the combo widgets
-  if(m_transactions.count() < 2) {
+  if(!isMultiSelection()) {
     reconcile->removeDontCare();
     cashflow->removeDontCare();
   }
@@ -550,7 +640,7 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
   if(!m_account.id().isEmpty())
     category->selector()->removeItem(m_account.id());
 
-  if(m_transactions.count() < 2) {
+  if(!isMultiSelection()) {
     dynamic_cast<KTextEdit*>(m_editWidgets["memo"])->setText(m_split.memo());
     if(m_transaction.postDate().isValid())
       dynamic_cast<kMyMoneyDateInput*>(m_editWidgets["postdate"])->setDate(m_transaction.postDate());
@@ -646,10 +736,14 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
     dynamic_cast<KMyMoneyReconcileCombo*>(m_editWidgets["status"])->setState(MyMoneySplit::Unknown);
     if(haveWidget("deposit")) {
       dynamic_cast<kMyMoneyEdit*>(m_editWidgets["deposit"])->loadText("");
+      dynamic_cast<kMyMoneyEdit*>(m_editWidgets["deposit"])->setEmptyAllowed();
       dynamic_cast<kMyMoneyEdit*>(m_editWidgets["payment"])->loadText("");
+      dynamic_cast<kMyMoneyEdit*>(m_editWidgets["payment"])->setEmptyAllowed();
     }
-    if((w = haveWidget("amount")) != 0)
+    if((w = haveWidget("amount")) != 0) {
       dynamic_cast<kMyMoneyEdit*>(w)->loadText("");
+      dynamic_cast<kMyMoneyEdit*>(w)->setEmptyAllowed();
+    }
 
     if((w = haveWidget("cashflow")) != 0) {
       KMyMoneyCashFlowCombo* cashflow = dynamic_cast<KMyMoneyCashFlowCombo*>(w);
@@ -986,7 +1080,7 @@ void StdTransactionEditor::updateVAT(bool amountChanged)
     return;
 
   // we don't do anything if we have multiple transactions selected
-  if(m_transactions.count() != 1)
+  if(isMultiSelection())
     return;
 
   // if auto vat assignment for this account is turned off
@@ -1172,7 +1266,7 @@ bool StdTransactionEditor::isComplete(void) const
       break;
 
     // the following two widgets are only checked if we are editing multiple transactions
-    if(m_transactions.count() > 1) {
+    if(isMultiSelection()) {
       if(reconcile && reconcile->state() != MyMoneySplit::Unknown)
         break;
 
@@ -1349,8 +1443,6 @@ MyMoneyMoney StdTransactionEditor::amountFromWidget(bool* update) const
 
 bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig)
 {
-  bool multiSelection = m_transactions.count() > 1;
-
   // extract price info from original transaction
   m_priceInfo.clear();
   QValueList<MyMoneySplit>::const_iterator it_s;
@@ -1391,19 +1483,19 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
   //       by the user
   KTextEdit* memo = dynamic_cast<KTextEdit*>(m_editWidgets["memo"]);
   if(memo) {
-    if(!multiSelection || (multiSelection && !memo->text().isEmpty() ) )
+    if(!isMultiSelection() || (isMultiSelection() && !memo->text().isEmpty() ) )
       s0.setMemo(memo->text());
   }
 
   kMyMoneyLineEdit* number = dynamic_cast<kMyMoneyLineEdit*>(haveWidget("number"));
   if(number) {
-    if(!multiSelection || (multiSelection && !number->text().isEmpty() ) )
+    if(!isMultiSelection() || (isMultiSelection() && !number->text().isEmpty() ) )
       s0.setNumber(number->text());
   }
 
   KMyMoneyPayee* payee = dynamic_cast<KMyMoneyPayee*>(m_editWidgets["payee"]);
   QCString payeeId;
-  if(!multiSelection || (multiSelection && !payee->currentText().isEmpty())) {
+  if(!isMultiSelection() || (isMultiSelection() && !payee->currentText().isEmpty())) {
     QCStringList list;
     payee->selectedItems(list);
     if(list.count() > 0) {
@@ -1448,7 +1540,7 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
   // FIXME in multiSelection we currently only support transactions with one
   // or two splits. So we check the original transaction and extract the other
   // split or create it
-  if(multiSelection) {
+  if(isMultiSelection()) {
     if(torig.splitCount() == 2) {
       QValueList<MyMoneySplit>::const_iterator it_s;
       for(it_s = torig.splits().begin(); it_s != torig.splits().end(); ++it_s) {
@@ -1466,9 +1558,9 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
     }
   }
 
-  if(multiSelection || splits.count() == 1) {
+  if(isMultiSelection() || splits.count() == 1) {
     KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
-    if(!multiSelection || (multiSelection && !category->currentText().isEmpty())) {
+    if(!isMultiSelection() || (isMultiSelection() && !category->currentText().isEmpty())) {
       QCString categoryId;
       QCStringList list;
       category->selectedItems(list);
@@ -1481,7 +1573,7 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
     // if the first split has a memo but the second split is empty,
     // we just copy the memo text over
     if(memo) {
-      if(!multiSelection || (multiSelection && !memo->text().isEmpty())) {
+      if(!isMultiSelection() || (isMultiSelection() && !memo->text().isEmpty())) {
         if(s1.memo().isEmpty())
           s1.setMemo(memo->text());
       }
@@ -1559,82 +1651,6 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
   return true;
 }
 
-bool StdTransactionEditor::enterTransactions(QCString& newId)
-{
-  newId = QCString();
-
-  // make sure to run through all stuff that is tied to 'focusout events'.
-  m_regForm->parentWidget()->setFocus();
-  QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 10);
-
-  // we don't need to update our widgets anymore, so we just disconnect the signal
-  disconnect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
-
-  QValueList<KMyMoneyRegister::SelectedTransaction>::iterator it_t;
-  MyMoneyTransaction t;
-  bool newTransactionCreated = false;
-
-  // make sure, that only a single new transaction can be created.
-  // we need to update m_transactions to contain the new transaction
-  // which is then stored in the variable t when we leave the loop.
-  // m_transactions will be sent out in finishEdit() and forces
-  // the new transaction to be selected in the ledger view
-
-  // collect the transactions to be stored in the engine in a local
-  // list first, so that the user has a chance to interrupt the storage
-  // process
-  QValueList<MyMoneyTransaction> list;
-  bool storeTransactions = true;
-
-  // collect transactions
-  for(it_t = m_transactions.begin(); storeTransactions && !newTransactionCreated && it_t != m_transactions.end(); ++it_t) {
-    storeTransactions = createTransaction(t, (*it_t).transaction(), (*it_t).split());
-    // if the transaction was created successfully, append it to the list
-    if(storeTransactions)
-      list.append(t);
-
-    // if we created a new transaction keep that in mind
-    if(t.id().isEmpty())
-      newTransactionCreated = true;
-  }
-
-  // if not interrupted by user, continue to store them in the engine
-  if(storeTransactions) {
-    QValueList<MyMoneyTransaction>::iterator it_ts;
-    for(it_ts = list.begin(); it_ts != list.end(); ++it_ts) {
-      try {
-        if((*it_ts).id().isEmpty()) {
-          // add new transaction
-          MyMoneyFile::instance()->addTransaction(*it_ts);
-
-          // pass the newly assigned id on to the caller
-          newId = (*it_ts).id();
-
-          // if a new transaction has a valid number, keep it with the account
-          QString number = (*it_ts).splits()[0].number();
-          if(!number.isEmpty()) {
-            m_account.setValue("lastNumberUsed", number);
-            MyMoneyFile::instance()->modifyAccount(m_account);
-          }
-        } else {
-          // modify existing transaction
-          MyMoneyFile::instance()->modifyTransaction(*it_ts);
-        }
-      } catch(MyMoneyException * e) {
-        qDebug("Unable to store transaction within engine: %s", e->what().latin1());
-        delete e;
-      }
-    }
-    // update m_transactions to contain the newly created transaction so that
-    // it is selected as the current one
-    if(newTransactionCreated) {
-      m_transactions.clear();
-      KMyMoneyRegister::SelectedTransaction s((*it_ts), (*it_ts).splits()[0]);
-      m_transactions.append(s);
-    }
-  }
-  return storeTransactions;
-}
 
 #include "transactioneditor.moc"
 

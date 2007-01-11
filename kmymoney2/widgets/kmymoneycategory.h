@@ -118,6 +118,16 @@ public:
     */
   virtual void setPalette(const QPalette& palette);
 
+  /**
+    * Force the text field to show the text for split transaction.
+    */
+  void setSplitTransaction(void);
+
+  /**
+    * Check if the text field contains the text for a split transaction
+    */
+  bool isSplitTransaction(void) const;
+
 protected:
   /**
     * Reimplemented to support protected category text ("split transactions")

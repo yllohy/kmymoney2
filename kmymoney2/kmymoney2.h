@@ -683,7 +683,7 @@ public slots:
     *                 100% mark
     * @param total the total value (100%)
     */
-  void slotStatusProgressBar(const int current, const int total = 0);
+  void slotStatusProgressBar(int current, int total = 0);
 
   /** No descriptions */
   void slotProcessExited();

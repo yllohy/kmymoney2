@@ -34,13 +34,13 @@ class InvestTransactionEditorPrivate;
 
 class InvestTransactionEditor : public TransactionEditor
 {
+  friend class InvestTransactionEditorPrivate;
+
   Q_OBJECT
 public:
   InvestTransactionEditor();
   InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::InvestTransaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
   virtual ~InvestTransactionEditor();
-
-  virtual bool enterTransactions(QCString&);
 
   /**
     * This method returns information about the completeness of the data
@@ -58,6 +58,8 @@ public:
   virtual QWidget* firstWidget(void) const;
 
   virtual bool fixTransactionCommodity(const MyMoneyAccount& account) { return true; }
+
+  static void dissectTransaction(const MyMoneyTransaction& transaction, const MyMoneySplit& split, MyMoneyObjectContainer* objects, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency, KMyMoneyRegister::investTransactionTypeE& transactionType);
 
 protected slots:
   void slotCreateSecurity(const QString& name, QCString& id);
@@ -91,7 +93,13 @@ protected:
     */
   void loadEditWidgets(KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
 
+  void activityFactory(KMyMoneyRegister::investTransactionTypeE type);
+
   MyMoneyMoney subtotal(const QValueList<MyMoneySplit>& splits) const;
+
+  bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig);
+
+private:
 
 private:
   MyMoneySplit                              m_assetAccountSplit;
@@ -99,6 +107,7 @@ private:
   QValueList<MyMoneySplit>                  m_feeSplits;
   MyMoneySecurity                           m_security;
   MyMoneySecurity                           m_currency;
+  KMyMoneyRegister::investTransactionTypeE  m_transactionType;
   InvestTransactionEditorPrivate*           d;
 };
 

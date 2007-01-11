@@ -60,53 +60,29 @@ using namespace KMyMoneyTransactionForm;
 using namespace Invest;
 
 class InvestTransactionEditorPrivate {
+  friend class Invest::Activity;
+
 public:
-  InvestTransactionEditorPrivate() {
-    m_activity = 0;
+  InvestTransactionEditorPrivate(InvestTransactionEditor* parent) :
+    m_parent(parent),
+    m_activity(0)
+  {
   }
 
   ~InvestTransactionEditorPrivate() {
     delete m_activity;
   }
 
-  void activityFactory(KMyMoneyRegister::investTransactionTypeE type)
-  {
-    if(!m_activity || type != m_activity->type()) {
-      delete m_activity;
-      switch(type) {
-        default:
-        case BuyShares:
-          m_activity = new Buy;
-          break;
-        case SellShares:
-          m_activity = new Sell;
-          break;
-        case Dividend:
-        case Yield:
-          m_activity = new Div;
-          break;
-        case ReinvestDividend:
-          m_activity = new Reinvest;
-          break;
-        case AddShares:
-          m_activity = new Add;
-          break;
-        case RemoveShares:
-          m_activity = new Remove;
-          break;
-        case SplitShares:
-          m_activity = new Split;
-          break;
-      }
-    }
-  }
-  Activity*      m_activity;
+  QWidget* haveWidget(const QString& name) { m_parent->haveWidget(name); }
+
+  InvestTransactionEditor* m_parent;
+  Activity*                m_activity;
 };
 
 
 InvestTransactionEditor::InvestTransactionEditor()
 {
-  d = new InvestTransactionEditorPrivate;
+  d = new InvestTransactionEditorPrivate(this);
 }
 
 InvestTransactionEditor::~InvestTransactionEditor()
@@ -117,31 +93,98 @@ InvestTransactionEditor::~InvestTransactionEditor()
 InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::InvestTransaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
   TransactionEditor(regForm, objects, item, list, lastPostDate)
 {
-  d = new InvestTransactionEditorPrivate;
+  d = new InvestTransactionEditorPrivate(this);
 
-  // determine transaction type
-  const MyMoneySplit& split = item->split();
-  if(split.action() == MyMoneySplit::ActionAddShares) {
-    d->activityFactory(!split.shares().isNegative() ? AddShares : RemoveShares);
-  } else if(split.action() == MyMoneySplit::ActionBuyShares) {
-    d->activityFactory(!split.shares().isNegative() ? BuyShares : SellShares);
-  } else if(split.action() == MyMoneySplit::ActionDividend) {
-    d->activityFactory(Dividend);
-  } else if(split.action() == MyMoneySplit::ActionReinvestDividend) {
-    d->activityFactory(ReinvestDividend);
-  } else if(split.action() == MyMoneySplit::ActionYield) {
-    d->activityFactory(Yield);
-  } else if(split.action() == MyMoneySplit::ActionSplitShares) {
-    d->activityFactory(SplitShares);
-  } else {
-    // we get here if we create an editor for a new transaction. So setup the defaults
-    m_split = MyMoneySplit();
-    d->activityFactory(BuyShares);
-  }
-  // collect the dissected splits
-  item->splits(m_assetAccountSplit, m_interestSplits, m_feeSplits);
+  // dissect the transaction into its type, splits, currency, security etc.
+  dissectTransaction(m_transaction, m_split, m_objects,
+                     m_assetAccountSplit,
+                     m_feeSplits,
+                     m_interestSplits,
+                     m_security,
+                     m_currency,
+                     m_transactionType);
+
+  // determine initial activity object
+  activityFactory(m_transactionType);
 }
 
+void InvestTransactionEditor::activityFactory(KMyMoneyRegister::investTransactionTypeE type)
+{
+  if(!d->m_activity || type != d->m_activity->type()) {
+    delete d->m_activity;
+    switch(type) {
+      default:
+      case BuyShares:
+        d->m_activity = new Buy(this);
+        break;
+      case SellShares:
+        d->m_activity = new Sell(this);
+        break;
+      case Dividend:
+      case Yield:
+        d->m_activity = new Div(this);
+        break;
+      case ReinvestDividend:
+        d->m_activity = new Reinvest(this);
+        break;
+      case AddShares:
+        d->m_activity = new Add(this);
+        break;
+      case RemoveShares:
+        d->m_activity = new Remove(this);
+        break;
+      case SplitShares:
+        d->m_activity = new Split(this);
+        break;
+    }
+  }
+}
+
+void InvestTransactionEditor::dissectTransaction(const MyMoneyTransaction& transaction, const MyMoneySplit& split, MyMoneyObjectContainer* objects, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency, KMyMoneyRegister::investTransactionTypeE& transactionType)
+{
+  // collect the splits. split references the stock account and should already
+  // be set up. assetAccountSplit references the corresponding asset account (maybe
+  // empty), feeSplits is the list of all expenses and interestSplits
+  // the list of all incomes
+  QValueList<MyMoneySplit>::ConstIterator it_s;
+  for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+    MyMoneyAccount acc = objects->account((*it_s).accountId());
+    if((*it_s).id() == split.id()) {
+      security = objects->security(acc.currencyId());
+    } else if(acc.accountGroup() == MyMoneyAccount::Expense) {
+      feeSplits.append(*it_s);
+      // feeAmount += (*it_s).value();
+    } else if(acc.accountGroup() == MyMoneyAccount::Income) {
+      interestSplits.append(*it_s);
+      // interestAmount += (*it_s).value();
+    } else {
+      assetAccountSplit = *it_s;
+    }
+  }
+
+  // determine transaction type
+  if(split.action() == MyMoneySplit::ActionAddShares) {
+    transactionType = (!split.shares().isNegative()) ? AddShares : RemoveShares;
+  } else if(split.action() == MyMoneySplit::ActionBuyShares) {
+    transactionType = (!split.value().isNegative()) ? BuyShares : SellShares;
+  } else if(split.action() == MyMoneySplit::ActionDividend) {
+    transactionType = Dividend;
+  } else if(split.action() == MyMoneySplit::ActionReinvestDividend) {
+    transactionType = ReinvestDividend;
+  } else if(split.action() == MyMoneySplit::ActionYield) {
+    transactionType = Yield;
+  } else if(split.action() == MyMoneySplit::ActionSplitShares) {
+    transactionType = SplitShares;
+  } else
+    transactionType = BuyShares;
+
+  currency.setTradingSymbol("???");
+  try {
+    currency = objects->security(transaction.commodity());
+  } catch(MyMoneyException *e) {
+    delete e;
+  }
+}
 
 void InvestTransactionEditor::createEditWidgets(void)
 {
@@ -360,6 +403,7 @@ void InvestTransactionEditor::slotCreateFeeCategory(const QString& name, QCStrin
 
 void InvestTransactionEditor::slotUpdateFeeCategory(const QCString& id)
 {
+  haveWidget("fee-amount")->setDisabled(id.isEmpty());
 }
 
 void InvestTransactionEditor::slotUpdateFeeVisibility(const QString& txt)
@@ -369,6 +413,7 @@ void InvestTransactionEditor::slotUpdateFeeVisibility(const QString& txt)
 
 void InvestTransactionEditor::slotUpdateInterestCategory(const QCString& id)
 {
+  haveWidget("interest-amount")->setDisabled(id.isEmpty());
 }
 
 void InvestTransactionEditor::slotUpdateInterestVisibility(const QString& txt)
@@ -426,7 +471,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
   security->setSuppressObjectCreation(false);    // allow object creation on the fly
   aSet.load(security->selector(), i18n("Security"), m_account.accountList(), true);
 
-  if(m_transactions.count() < 2) {
+  if(!isMultiSelection()) {
     // date
     postDate->setDate(m_transaction.postDate());
 
@@ -510,6 +555,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
     for(it_f = fields.begin(); it_f != fields.end(); ++it_f) {
       value = dynamic_cast<kMyMoneyEdit*>(haveWidget((*it_f)));
       value->setText("");
+      value->setEmptyAllowed();
     }
 
     // if we have transactions with different activities, disable some more widgets
@@ -598,7 +644,7 @@ void InvestTransactionEditor::slotUpdateTotalAmount(void)
 void InvestTransactionEditor::slotUpdateActivity(KMyMoneyRegister::investTransactionTypeE activity)
 {
   // create new activity object if required
-  d->activityFactory(activity);
+  activityFactory(activity);
 
   KMyMoneyCategory* cat;
 
@@ -613,7 +659,7 @@ void InvestTransactionEditor::slotUpdateActivity(KMyMoneyRegister::investTransac
   haveWidget("price")->hide();
   haveWidget("total")->hide();
 
-  d->m_activity->showWidgets(m_editWidgets);
+  d->m_activity->showWidgets();
 
   cat = dynamic_cast<KMyMoneyCategory*>(haveWidget("interest-account"));
   if(cat->parentWidget()->isVisible())
@@ -624,18 +670,36 @@ void InvestTransactionEditor::slotUpdateActivity(KMyMoneyRegister::investTransac
     slotUpdateFeeVisibility(cat->currentText());
 }
 
-bool InvestTransactionEditor::enterTransactions(QCString& newId)
+bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig)
 {
-  newId = QCString();
+  t = torig;
 
-  // make sure to run through all stuff that is tied to 'focusout events'.
-  m_regForm->parentWidget()->setFocus();
-  QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 10);
+  t.removeSplits();
+  t.setCommodity(m_account.currencyId());
 
-  // we don't need to update our widgets anymore, so we just disconnect the signal
-  disconnect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
+  kMyMoneyDateInput* postDate = dynamic_cast<kMyMoneyDateInput*>(m_editWidgets["postdate"]);
+  if(postDate->date().isValid()) {
+    t.setPostDate(postDate->date());
+  }
 
-  // for now, we don't store the transactions created
+  // we start with the previous values, make sure we can add them later on
+  MyMoneySplit s0 = sorig;
+  s0.clearId();
+
+  // make sure we reference this account here
+  s0.setAccountId(m_account.id());
+
+  // memo and number field are special: if we have multiple transactions selected
+  // and the edit field is empty, we treat it as "not modified".
+  // FIXME a better approach would be to have a 'dirty' flag with the widgets
+  //       which identifies if the originally loaded value has been modified
+  //       by the user
+  KTextEdit* memo = dynamic_cast<KTextEdit*>(m_editWidgets["memo"]);
+  if(memo) {
+    if(!isMultiSelection() || (isMultiSelection() && !memo->text().isEmpty() ) )
+      s0.setMemo(memo->text());
+  }
+
   return false;
 }
 

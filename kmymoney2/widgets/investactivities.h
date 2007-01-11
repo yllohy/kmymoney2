@@ -28,79 +28,94 @@
 // Project Includes
 
 #include <kmymoney/register.h>
+#include <kmymoney/investtransactioneditor.h>
 
 namespace Invest {
 
 class Activity
 {
-protected:
-  Activity() {}
 public:
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const = 0;
-  virtual void showWidgets(const KMyMoneyRegister::QWidgetContainer& editWidgets) const = 0;
+  virtual void showWidgets(void) const = 0;
   virtual bool isComplete(void) const = 0;
+
+protected:
+  Activity(InvestTransactionEditor* editor) { m_parent = editor; }
+  QWidget* haveWidget(const QString& name) const { return m_parent->haveWidget(name); }
+  bool haveAssetAccount(void) const;
+  bool haveFees(bool optional = false) const { return haveCategoryAndAmount("fee-account", "fee-amount", optional); }
+  bool haveInterest(bool optional = false) const { return haveCategoryAndAmount("interest-account", "interest-amount", optional); }
+  bool haveShares(void) const;
+  bool havePrice(void) const;
+  bool isMultiSelection(void) const { return m_parent->isMultiSelection(); }
+
+private:
+  bool haveCategoryAndAmount(const QString& category, const QString& amount, bool optional) const;
+
+protected:
+  InvestTransactionEditor*    m_parent;
 };
 
 class Buy : public Activity
 {
 public:
-  Buy() : Activity() {}
+  Buy(InvestTransactionEditor* editor) : Activity(editor) {}
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::BuyShares; }
-  virtual void showWidgets(const KMyMoneyRegister::QWidgetContainer& editWidgets) const;
+  virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
 };
 
 class Sell : public Activity
 {
 public:
-  Sell() : Activity() {}
+  Sell(InvestTransactionEditor* editor) : Activity(editor) {}
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::SellShares; }
-  virtual void showWidgets(const KMyMoneyRegister::QWidgetContainer& editWidgets) const;
+  virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
 };
 
 class Div : public Activity
 {
 public:
-  Div() : Activity() {}
+  Div(InvestTransactionEditor* editor) : Activity(editor) {}
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::Dividend; }
-  virtual void showWidgets(const KMyMoneyRegister::QWidgetContainer& editWidgets) const;
+  virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
 };
 
 class Reinvest : public Activity
 {
 public:
-  Reinvest() : Activity() {}
+  Reinvest(InvestTransactionEditor* editor) : Activity(editor) {}
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::ReinvestDividend; }
-  virtual void showWidgets(const KMyMoneyRegister::QWidgetContainer& editWidgets) const;
+  virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
 };
 
 class Add : public Activity
 {
 public:
-  Add() : Activity() {}
+  Add(InvestTransactionEditor* editor) : Activity(editor) {}
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::AddShares; }
-  virtual void showWidgets(const KMyMoneyRegister::QWidgetContainer& editWidgets) const;
+  virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
 };
 
 class Remove : public Activity
 {
 public:
-  Remove() : Activity() {}
+  Remove(InvestTransactionEditor* editor) : Activity(editor) {}
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::RemoveShares; }
-  virtual void showWidgets(const KMyMoneyRegister::QWidgetContainer& editWidgets) const;
+  virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
 };
 
 class Split : public Activity
 {
 public:
-  Split() : Activity() {}
+  Split(InvestTransactionEditor* editor) : Activity(editor) {}
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::SplitShares; }
-  virtual void showWidgets(const KMyMoneyRegister::QWidgetContainer& editWidgets) const;
+  virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
 };
 

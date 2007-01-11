@@ -53,7 +53,7 @@ class MyMoneyQifWriter : public QObject
 {
   Q_OBJECT
 
-public: 
+public:
   MyMoneyQifWriter();
   ~MyMoneyQifWriter();
 
@@ -129,7 +129,7 @@ signals:
     * @param current see above
     * @param max see above
     */
-  void signalProgress(const int current, const int max);
+  void signalProgress(int current, int max);
 
 private:
   MyMoneyQifProfile m_qifProfile;

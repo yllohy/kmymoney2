@@ -110,6 +110,8 @@ public:
   void setBalance(const QString& balance) { m_balance = balance; }
   const QString& balance(void) const { return m_balance; }
 
+  virtual int rowHeightHint(void) const;
+
   /**
     * This method sets the general paramaters required for the painting of a cell
     * in the register. These are:
@@ -168,6 +170,7 @@ public:
   void registerCellText(QString& txt, int row, int col);
 
   virtual int formRowHeight(int row);
+  virtual int formRowHeight(void) const;
 
   virtual void setupForm(KMyMoneyTransactionForm::TransactionForm* form);
   virtual void setupFormPalette(QMap<QString, QWidget*>& editWidgets);
@@ -275,7 +278,6 @@ public:
   void registerCellText(QString& txt, int& align, int row, int col, QPainter* painter = 0);
 
   int registerColWidth(int col, const QFontMetrics& cellFontMetrics);
-  int formRowHeight(int row);
   void setupForm(KMyMoneyTransactionForm::TransactionForm* form);
   void loadTab(KMyMoneyTransactionForm::TransactionForm* form);
 
@@ -316,7 +318,6 @@ public:
   void registerCellText(QString& txt, int& align, int row, int col, QPainter* painter = 0);
 
   int registerColWidth(int col, const QFontMetrics& cellFontMetrics);
-  int formRowHeight(int row);
   void setupForm(KMyMoneyTransactionForm::TransactionForm* form);
 
   /**

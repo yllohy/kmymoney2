@@ -132,6 +132,16 @@ void KMyMoneyCategory::focusInEvent(QFocusEvent *ev)
   QTimer::singleShot(0, this, SIGNAL(focusIn()));
 }
 
+void KMyMoneyCategory::setSplitTransaction(void)
+{
+  setCurrentText(i18n("Split transaction (category replacement)", "Split transaction"));
+}
+
+bool KMyMoneyCategory::isSplitTransaction(void) const
+{
+  return currentText() == i18n("Split transaction (category replacement)", "Split transaction");
+}
+
 KMyMoneySecurity::KMyMoneySecurity(QWidget* parent, const char * name) :
   KMyMoneyCategory(parent, name, false)
 {

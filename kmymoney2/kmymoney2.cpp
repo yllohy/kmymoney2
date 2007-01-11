@@ -1131,6 +1131,8 @@ const QString KMyMoney2App::slotStatusMsg(const QString &text)
   QString msg = m_statusMsg;
 
   m_statusMsg = text;
+  if(m_statusMsg.isEmpty())
+    m_statusMsg = i18n("Ready.");
   statusBar()->clear();
   statusBar()->changeItem(text, ID_STATUS_MSG);
 
@@ -1139,7 +1141,7 @@ const QString KMyMoney2App::slotStatusMsg(const QString &text)
 
 void KMyMoney2App::ready(void)
 {
-  slotStatusMsg(i18n("Ready."));
+  slotStatusMsg(QString());
 }
 
 bool KMyMoney2App::isReady(void)
@@ -1147,7 +1149,7 @@ bool KMyMoney2App::isReady(void)
   return m_statusMsg == i18n("Ready.");
 }
 
-void KMyMoney2App::slotStatusProgressBar(const int current, const int total)
+void KMyMoney2App::slotStatusProgressBar(int current, int total)
 {
   if(total == -1 && current == -1) {      // reset
     progressBar->reset();
@@ -1773,7 +1775,7 @@ void KMyMoney2App::slotQifExport()
   if(dlg->exec()) {
 
     MyMoneyQifWriter writer;
-    connect(&writer, SIGNAL(signalProgress(const int, const int)), this, SLOT(slotStatusProgressBar(const int, const int)));
+    connect(&writer, SIGNAL(signalProgress(int, int)), this, SLOT(slotStatusProgressBar(int, int)));
 
     writer.write(dlg->filename(), dlg->profile(), dlg->accountId(),
            dlg->accountSelected(), dlg->categorySelected(),
@@ -3581,6 +3583,10 @@ void KMyMoney2App::slotTransactionsNew(void)
   if(kmymoney2->action("transaction_new")->isEnabled()) {
     if(myMoneyView->createNewTransaction()) {
       m_transactionEditor = myMoneyView->startEdit(m_selectedTransactions);
+      if(m_transactionEditor) {
+        connect(m_transactionEditor, SIGNAL(statusProgress(int, int)), this, SLOT(slotStatusProgressBar(int, int)));
+        connect(m_transactionEditor, SIGNAL(statusMsg(const QString&)), this, SLOT(slotStatusMsg(const QString&)));
+      }
       slotUpdateActions();
     }
   }

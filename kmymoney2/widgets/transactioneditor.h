@@ -64,7 +64,7 @@ public:
     */
   void setup(QWidgetList& tabOrderWidgets, const MyMoneyAccount& account = MyMoneyAccount(), KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
 
-  virtual bool enterTransactions(QCString&) = 0;
+  virtual bool enterTransactions(QCString&);
   // void tabOrder(QWidgetList& tabOrderWidgets) const;
 
   /**
@@ -80,11 +80,30 @@ public:
     */
   virtual bool isComplete(void) const = 0;
 
+  /**
+    * This method returns information if the editor is started with multiple transactions
+    * being selected or not.
+    *
+    * @retval false only a single transaction was selected when the editor was started
+    * @retval true multiple transactions were selected when the editor was started
+    */
+  virtual bool isMultiSelection(void) const { return m_transactions.count() > 1; }
+
   virtual bool fixTransactionCommodity(const MyMoneyAccount& account);
 
   virtual bool canAssignNumber(void) const;
   virtual void assignNumber(void);
+
+  /**
+    * Returns a pointer to the widget that should receive
+    * the focus after the editor has been started.
+    */
   virtual QWidget* firstWidget(void) const = 0;
+
+  /**
+    * Returns a pointer to a widget by name
+    */
+  QWidget* haveWidget(const QString& name) const;
 
 public slots:
   void slotReloadEditWidgets(void);
@@ -97,7 +116,6 @@ public slots:
 protected:
   virtual void createEditWidgets(void) = 0;
   virtual void loadEditWidgets(KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone) = 0;
-  QWidget* haveWidget(const QString& name) const;
   void setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool allowObjectCreation = true);
 
   /**
@@ -106,6 +124,20 @@ protected:
     * @return incremented number or 1 if no previous number available
     */
   QString nextNumber(void) const;
+
+  /**
+    * This method creates a transaction based on the contents of the current widgets,
+    * the splits in m_split in single selection mode or an existing transaction/split
+    * and the contents of the widgets in multi selection mode.
+    *
+    * The split referencing the current account is returned as the first split in the
+    * transaction's split list.
+    *
+    * @param t reference to created transaction
+    * @param torig the original transaction
+    * @param sorig the original split
+    */
+  virtual bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig) = 0;
 
 protected slots:
   void slotUpdateButtonState(void);
@@ -166,6 +198,10 @@ signals:
     */
   void objectCreation(bool state);
 
+  void statusMsg(const QString& txt);
+
+  void statusProgress(int cnt, int base);
+
 protected:
   QValueList<MyMoneySplit>                          m_splits;
   QValueList<KMyMoneyRegister::SelectedTransaction> m_transactions;
@@ -188,8 +224,6 @@ class StdTransactionEditor : public TransactionEditor
 public:
   StdTransactionEditor();
   StdTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
-
-  bool enterTransactions(QCString&);
 
   bool isComplete(void) const;
   QWidget* firstWidget(void) const;

@@ -394,7 +394,22 @@ void Transaction::paintRegisterCell(QPainter* painter, int row, int col, const Q
 
 int Transaction::formRowHeight(int /*row*/)
 {
-  return 1;
+  if(m_formRowHeight < 0) {
+    m_formRowHeight = formRowHeight();
+  }
+  return m_formRowHeight;
+}
+
+int Transaction::formRowHeight(void) const
+{
+  if(m_formRowHeight < 0) {
+    // determine the height of the objects in the table
+    kMyMoneyDateInput dateInput;
+    KMyMoneyCategory category(0,0,true);
+
+    return QMAX(dateInput.sizeHint().height(), category.sizeHint().height());
+  }
+  return m_formRowHeight;
 }
 
 void Transaction::setupForm(TransactionForm* form)
@@ -616,6 +631,12 @@ void Transaction::singleLineMemo(QString& txt, const MyMoneySplit& split) const
   txt.replace('\n', ", ");
 }
 
+int Transaction::rowHeightHint(void) const
+{
+  return m_inEdit ? formRowHeight()-4 : RegisterItem::rowHeightHint();
+}
+
+
 StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split) :
   Transaction(parent, objects, transaction, split)
 {
@@ -679,18 +700,6 @@ void StdTransaction::setupFormHeader(const QCString& id)
       m_categoryHeader = i18n("Category");
       break;
   }
-}
-
-int StdTransaction::formRowHeight(int /*row*/)
-{
-  if(m_formRowHeight < 0) {
-    // determine the height of the objects in the table
-    kMyMoneyDateInput dateInput;
-    KMyMoneyCategory category(0,0,true);
-
-    m_formRowHeight = QMAX(dateInput.sizeHint().height(), category.sizeHint().height());
-  }
-  return m_formRowHeight;
 }
 
 void StdTransaction::loadTab(TransactionForm* form)
@@ -1137,25 +1146,23 @@ TransactionEditor* StdTransaction::createEditor(TransactionEditorContainer* regF
 InvestTransaction::InvestTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split) :
   Transaction(parent, objects, transaction, split)
 {
-  // collect the splits. m_split references the stock account and should already
-  // be set up. m_assetAccountSplit references the corresponding asset account (maybe
-  // empty), m_feeSplits is the list of all expenses and m_interestSplits
-  // the list of all incomes
+  // dissect the transaction into its type, splits, currency, security etc.
+  InvestTransactionEditor::dissectTransaction(m_transaction, m_split, m_objects,
+                     m_assetAccountSplit,
+                     m_feeSplits,
+                     m_interestSplits,
+                     m_security,
+                     m_currency,
+                     m_transactionType);
+
   QValueList<MyMoneySplit>::ConstIterator it_s;
-  for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
-    MyMoneyAccount acc = m_objects->account((*it_s).accountId());
-    if((*it_s).id() == m_split.id()) {
-      m_security = m_objects->security(acc.currencyId());
-    } else if(acc.accountGroup() == MyMoneyAccount::Expense) {
-      m_feeSplits.append(*it_s);
-      m_feeAmount += (*it_s).value();
-    } else if(acc.accountGroup() == MyMoneyAccount::Income) {
-      m_interestSplits.append(*it_s);
-      m_interestAmount += (*it_s).value();
-    } else {
-      m_assetAccountSplit = *it_s;
-    }
+  for(it_s = m_feeSplits.begin(); it_s != m_feeSplits.end(); ++it_s) {
+    m_feeAmount += (*it_s).value();
   }
+  for(it_s = m_interestSplits.begin(); it_s != m_interestSplits.end(); ++it_s) {
+    m_interestAmount += (*it_s).value();
+  }
+
   // check the count of the fee splits and setup the text
   switch(m_feeSplits.count()) {
     case 0:
@@ -1184,45 +1191,10 @@ InvestTransaction::InvestTransaction(Register *parent, MyMoneyObjectContainer* o
       break;
   }
 
-  // determine transaction type
-  if(split.action() == MyMoneySplit::ActionAddShares) {
-    m_transactionType = (!split.shares().isNegative()) ? AddShares : RemoveShares;
-  } else if(split.action() == MyMoneySplit::ActionBuyShares) {
-    m_transactionType = (!split.value().isNegative()) ? BuyShares : SellShares;
-  } else if(split.action() == MyMoneySplit::ActionDividend) {
-    m_transactionType = Dividend;
-  } else if(split.action() == MyMoneySplit::ActionReinvestDividend) {
-    m_transactionType = ReinvestDividend;
-  } else if(split.action() == MyMoneySplit::ActionYield) {
-    m_transactionType = Yield;
-  } else if(split.action() == MyMoneySplit::ActionSplitShares) {
-    m_transactionType = SplitShares;
-  } else
-    m_transactionType = BuyShares;
-
-  m_currency.setTradingSymbol("???");
-  try {
-    m_currency = m_objects->security(m_transaction.commodity());
-  } catch(MyMoneyException *e) {
-    delete e;
-  }
-
   m_rowsForm = 7;
 
   // setup initial size
   setNumRowsRegister(numRowsRegister(KMyMoneySettings::showRegisterDetailed()));
-}
-
-int InvestTransaction::formRowHeight(int /*row*/)
-{
-  if(m_formRowHeight < 0) {
-    // determine the height of the objects in the table
-    kMyMoneyDateInput dateInput;
-    KMyMoneyCategory category(0,0,true);
-
-    m_formRowHeight = QMAX(dateInput.sizeHint().height(), category.sizeHint().height());
-  }
-  return m_formRowHeight;
 }
 
 void InvestTransaction::setupForm(TransactionForm* form)
@@ -1539,7 +1511,7 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
         case AmountColumn:
           align |= Qt::AlignRight;
           if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()) {
-            txt = m_interestAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
+            // txt = m_interestAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
           } else if(haveInterest() && m_interestSplits.count()) {
             txt = m_interestAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
           } else if(haveFees() && m_feeSplits.count()) {
@@ -1659,16 +1631,19 @@ void InvestTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidget
 
   setupFormPalette(editWidgets);
 
-  arrangeWidget(m_form, 0, LabelColumn1, editWidgets["cashflow"]);
-  arrangeWidget(m_form, 0, ValueColumn1, editWidgets["payee"]);
-  arrangeWidget(m_form, 1, ValueColumn1, editWidgets["category"]->parentWidget());
-  arrangeWidget(m_form, 2, ValueColumn1, editWidgets["memo"]);
-  if(haveNumberField())
-    arrangeWidget(m_form, 0, ValueColumn2, editWidgets["number"]);
-  arrangeWidget(m_form, 1, ValueColumn2, editWidgets["postdate"]);
-  arrangeWidget(m_form, 2, ValueColumn2, editWidgets["amount"]);
-  arrangeWidget(m_form, 4, ValueColumn2, editWidgets["status"]);
-  arrangeWidget(m_form, 1, LabelColumn1, editWidgets["categoryLabel"]);
+  arrangeWidget(m_form, 0, ValueColumn1, editWidgets["activity"]);
+  arrangeWidget(m_form, 0, ValueColumn2, editWidgets["postdate"]);
+  arrangeWidget(m_form, 1, ValueColumn1, editWidgets["security"]);
+  arrangeWidget(m_form, 1, ValueColumn2, editWidgets["shares"]);
+  arrangeWidget(m_form, 2, ValueColumn1, editWidgets["asset-account"]);
+  arrangeWidget(m_form, 2, ValueColumn2, editWidgets["price"]);
+  arrangeWidget(m_form, 3, ValueColumn1, editWidgets["fee-account"]->parentWidget());
+  arrangeWidget(m_form, 3, ValueColumn2, editWidgets["fee-amount"]);
+  arrangeWidget(m_form, 4, ValueColumn1, editWidgets["interest-account"]->parentWidget());
+  arrangeWidget(m_form, 4, ValueColumn2, editWidgets["interest-amount"]);
+  arrangeWidget(m_form, 5, ValueColumn1, editWidgets["memo"]);
+  arrangeWidget(m_form, 5, ValueColumn2, editWidgets["total"]);
+  arrangeWidget(m_form, 6, ValueColumn2, editWidgets["status"]);
 
   // get rid of the hints. we don't need them for the form
   QMap<QString, QWidget*>::iterator it;
@@ -1683,44 +1658,59 @@ void InvestTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidget
     if(payee)
       payee->setHint(QString());
   }
-
-  // drop the tabbar on top of the original
-  KMyMoneyTransactionForm::TransactionForm* form = dynamic_cast<KMyMoneyTransactionForm::TransactionForm*>(m_form);
-  TabBar* w = dynamic_cast<TabBar*>(editWidgets["tabbar"]);
-  if(w) {
-    w->reparent(form->tabBar(), QPoint(0, 0), true);
-  }
 }
 
 void InvestTransaction::tabOrderInForm(QWidgetList& tabOrderWidgets) const
 {
-  // cashflow direction
-  tabOrderWidgets.append(focusWidget(m_form->cellWidget(0, LabelColumn1)));
-  // payee
+  // activity
   tabOrderWidgets.append(focusWidget(m_form->cellWidget(0, ValueColumn1)));
-  // make sure to have the category field and the split button as seperate tab order widgets
+
+  // date
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(0, ValueColumn2)));
+
+  // security
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(1, ValueColumn1)));
+
+  // shares
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(1, ValueColumn2)));
+
+  // account
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(2, ValueColumn1)));
+
+  // price
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(2, ValueColumn2)));
+
+  // make sure to have the fee category field and the split button as seperate tab order widgets
   // ok, we have to have some internal knowledge about the KMyMoneyCategory object, but
   // it's one of our own widgets, so we actually don't care. Just make sure, that we don't
   // go haywire when someone changes the KMyMoneyCategory object ...
-  QWidget* w = m_form->cellWidget(1, ValueColumn1);
+  QWidget* w = m_form->cellWidget(3, ValueColumn1);
   tabOrderWidgets.append(focusWidget(w));
   w = dynamic_cast<QWidget*>(w->child("splitButton"));
   if(w)
     tabOrderWidgets.append(w);
+
+  // fee amount
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(3, ValueColumn2)));
+
+  // the same applies for the interest categories
+  w = m_form->cellWidget(4, ValueColumn1);
+  tabOrderWidgets.append(focusWidget(w));
+  w = dynamic_cast<QWidget*>(w->child("splitButton"));
+  if(w)
+    tabOrderWidgets.append(w);
+
+  // interest amount
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(4, ValueColumn2)));
+
   // memo
-  tabOrderWidgets.append(focusWidget(m_form->cellWidget(2, ValueColumn1)));
-  // number
-  if(haveNumberField()) {
-    if((w = focusWidget(m_form->cellWidget(0, ValueColumn2))))
-      tabOrderWidgets.append(w);
-  }
-  // date
-  tabOrderWidgets.append(focusWidget(m_form->cellWidget(1, ValueColumn2)));
-  // amount
-  tabOrderWidgets.append(focusWidget(m_form->cellWidget(2, ValueColumn2)));
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(5, ValueColumn1)));
+
+  // total
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(5, ValueColumn2)));
 
   // state
-  tabOrderWidgets.append(focusWidget(m_form->cellWidget(4, ValueColumn2)));
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(6, ValueColumn2)));
 }
 
 void InvestTransaction::arrangeWidgetsInRegister(QMap<QString, QWidget*>& editWidgets)
@@ -1790,23 +1780,6 @@ void InvestTransaction::tabOrderInRegister(QWidgetList& tabOrderWidgets) const
   // memo
   tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 4, DetailColumn)));
 
-#if 0
-  // payee
-  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, DetailColumn)));
-  // make sure to have the category field and the split button as seperate tab order widgets
-  // ok, we have to have some internal knowledge about the KMyMoneyCategory object, but
-  // it's one of our own widgets, so we actually don't care. Just make sure, that we don't
-  // go haywire when someone changes the KMyMoneyCategory object ...
-  w = m_parent->cellWidget(m_startRow + 1, DetailColumn);
-  tabOrderWidgets.append(focusWidget(w));
-  w = dynamic_cast<QWidget*>(w->child("splitButton"));
-  if(w)
-    tabOrderWidgets.append(w);
-  // payment
-  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, PaymentColumn)));
-  // deposit
-  tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 0, DepositColumn)));
-#endif
   // status
   tabOrderWidgets.append(focusWidget(m_parent->cellWidget(m_startRow + 1, DateColumn)));
 }
