@@ -1,24 +1,24 @@
-2006-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2007-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * More investment ledger work
 
-2006-01-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2007-01-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Support all UTF-8 characters in schedule list items and account editor
     dialog caption
 
-2006-01-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2007-01-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added detection for libxml++-2.6 in libofx.m4
   * Fixed Tony's pesky payee problem
 
-2006-01-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2007-01-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added speed search to the payees view
   * Fixed prevention of using unsermake on some systems
 
-2006-01-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2007-01-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Only allow postpone and finish reconciliation in account for
     which the reconciliation has been started
   * Mark that account in the accounts view
 
-2006-01-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2007-01-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Return references to QStrings instead of copies in MyMoneySecurity
   * Added sort by security for investment accounts
   * Removed external visibility of sorting by 'entry date'. The user
@@ -30,13 +30,13 @@
   * Improved auto check number handling
   * Added default Ctrl+Shift+Space to mark a transaction reconciled
 
-2006-01-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2007-01-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use Enter/Return as shortcut to start and finish editing transactions
   * Improved ledger update to avoid unnecessary resize checks
   * Fixed some more spots where we need to escape special chars before
     passing text as pattern to QRegExp
 
-2006-01-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+2007-01-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Escape special chars in names before using the text as pattern for QRegExp
 
 2007-01-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
