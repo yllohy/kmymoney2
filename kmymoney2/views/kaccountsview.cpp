@@ -41,7 +41,25 @@
 
 KMyMoneyAccountIconItem::KMyMoneyAccountIconItem(QIconView *parent, const MyMoneyAccount& account) :
   KIconViewItem(parent, account.name()),
-  m_account(account)
+  m_account(account),
+  m_reconcileFlag(false)
+{
+  updateAccount(account);
+}
+
+KMyMoneyAccountIconItem::~KMyMoneyAccountIconItem()
+{
+}
+
+void KMyMoneyAccountIconItem::setReconciliation(bool on)
+{
+  if(m_reconcileFlag == on)
+    return;
+  m_reconcileFlag = on;
+  updateAccount(m_account);
+}
+
+void KMyMoneyAccountIconItem::updateAccount(const MyMoneyAccount& account)
 {
   QString pixmap;
 
@@ -81,17 +99,16 @@ KMyMoneyAccountIconItem::KMyMoneyAccountIconItem(QIconView *parent, const MyMone
       pixmap = "account-types_cash";
       break;
   }
-  if(m_account.isClosed()) {
-    QPixmap pic = DesktopIcon(pixmap);
-    QPixmap closed = DesktopIcon("account-types_closed");
-    bitBlt(&pic, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
-    setPixmap(pic);
-  } else
-    setPixmap(DesktopIcon(pixmap));
-}
 
-KMyMoneyAccountIconItem::~KMyMoneyAccountIconItem()
-{
+  QPixmap pic = DesktopIcon(pixmap);
+  if(m_account.isClosed()) {
+    QPixmap overlay = DesktopIcon("account-types_closed");
+    bitBlt(&pic, 0, 0, &overlay, 0, 0, overlay.width(), overlay.height(), Qt::CopyROP, false);
+  } else if(m_reconcileFlag) {
+    QPixmap overlay = DesktopIcon("account-types_reconcile");
+    bitBlt(&pic, 0, 0, &overlay, 0, 0, overlay.width(), overlay.height(), Qt::CopyROP, false);
+  }
+  setPixmap(pic);
 }
 
 KAccountsView::KAccountsView(QWidget *parent, const char *name) :
@@ -263,6 +280,9 @@ void KAccountsView::loadIconView(void)
         }
 
         item = new KMyMoneyAccountIconItem(m_accountIcons, *it);
+        if((*it).id() == m_reconciliationAccount.id())
+          item->setReconciliation(true);
+
         if(loc != QPoint()) {
           item->move(loc);
         }
@@ -460,7 +480,7 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
   return unused;
 }
 
-void KAccountsView::slotReconcileAccount(const MyMoneyAccount& acc)
+void KAccountsView::slotReconcileAccount(const MyMoneyAccount& acc, const MyMoneyMoney& /* endingBalance */)
 {
   // scan through the list of accounts and mark all non
   // expanded and re-select the one that was probably selected before
@@ -474,8 +494,17 @@ void KAccountsView::slotReconcileAccount(const MyMoneyAccount& acc)
     ++it_lvi;
   }
 
+  // scan trough the icon list and do the same thing
+  KMyMoneyAccountIconItem* icon = dynamic_cast<KMyMoneyAccountIconItem*>(m_accountIcons->firstItem());
+  for(;icon; icon = dynamic_cast<KMyMoneyAccountIconItem*>(icon->nextItem())) {
+    icon->setReconciliation(false);
+  }
+
   m_reconciliationAccount = acc;
+
   if(!acc.id().isEmpty()) {
+    // scan through the list of accounts and mark
+    // the one that is currently reconciled
     it_lvi = QListViewItemIterator(m_accountTree);
     while(it_lvi.current()) {
       item = dynamic_cast<KMyMoneyAccountTreeItem*>(it_lvi.current());
@@ -484,6 +513,15 @@ void KAccountsView::slotReconcileAccount(const MyMoneyAccount& acc)
         break;
       }
       ++it_lvi;
+    }
+
+    // scan trough the icon list and do the same thing
+    icon = dynamic_cast<KMyMoneyAccountIconItem*>(m_accountIcons->firstItem());
+    for(;icon; icon = dynamic_cast<KMyMoneyAccountIconItem*>(icon->nextItem())) {
+      if(icon->itemObject().id() == acc.id()) {
+        icon->setReconciliation(true);
+        break;
+      }
     }
   }
 }

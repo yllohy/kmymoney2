@@ -912,13 +912,17 @@ void KGlobalLedgerView::selectTransaction(const QCString& id)
   }
 }
 
-void KGlobalLedgerView::setReconciliationAccount(const QCString& accountId, const MyMoneyMoney& endingBalance)
+void KGlobalLedgerView::slotSetReconcileAccount(const MyMoneyAccount& acc, const MyMoneyMoney& endingBalance)
 {
-  if(d->m_reconciliationAccount != accountId) {
-    d->m_reconciliationAccount = accountId;
+  if(d->m_reconciliationAccount != acc.id()) {
+    // make sure the account is selected
+    if(!acc.id().isEmpty())
+      slotSelectAccount(acc.id());
+
+    d->m_reconciliationAccount = acc.id();
     d->m_endingBalance = endingBalance;
     m_newAccountLoaded = true;
-    if(accountId.isEmpty()) {
+    if(acc.id().isEmpty()) {
       kmymoney2->action("account_reconcile_postpone")->unplug(m_buttonbar);
       kmymoney2->action("account_reconcile_finish")->unplug(m_buttonbar);
     } else {

@@ -582,8 +582,10 @@ signals:
     *
     * @param account account for which reconciliation starts or MyMoneyAccount()
     *                if reconciliation ends.
+    * @param endingBalance collected ending balance when reconciliation starts
+    *                0 otherwise
     */
-  void reconciliationStarts(const MyMoneyAccount& account);
+  void reconciliationStarts(const MyMoneyAccount& account, const MyMoneyMoney& endingBalance);
 };
 
 class KMyMoneyTitleLabel;

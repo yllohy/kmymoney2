@@ -57,6 +57,8 @@ public slots:
     */
   void show(void);
 
+  void slotReconcileAccount(const MyMoneyAccount& acc, const MyMoneyMoney& endingBalance);
+
 protected:
   void loadAccounts(void);
 
@@ -107,6 +109,7 @@ signals:
   void reparent(const MyMoneyAccount& acc, const MyMoneyInstitution& institution);
 
 private:
+  MyMoneyAccount                      m_reconciliationAccount;
   QMap<QCString, MyMoneyAccount>      m_accountMap;
   QMap<QCString, MyMoneySecurity>     m_securityMap;
   QMap<QCString, unsigned long>       m_transactionCountMap;

@@ -150,6 +150,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_institutionsView, SIGNAL(openObject(const MyMoneyObject&)), kmymoney2, SLOT(slotInstitutionEdit(const MyMoneyObject&)));
   connect(m_institutionsView, SIGNAL(openObject(const MyMoneyObject&)), kmymoney2, SLOT(slotAccountOpen(const MyMoneyObject&)));
   connect(m_institutionsView, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyInstitution&)), kmymoney2, SLOT(slotReparentAccount(const MyMoneyAccount&, const MyMoneyInstitution&)));
+  connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const MyMoneyMoney&)), m_institutionsView, SLOT(slotReconcileAccount(const MyMoneyAccount&, const MyMoneyMoney&)));
 
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_institutionsView, SLOT(slotLoadAccounts()));
 
@@ -164,7 +165,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_accountsView, SIGNAL(openObject(const MyMoneyObject&)), kmymoney2, SLOT(slotAccountOpen(const MyMoneyObject&)));
   connect(m_accountsView, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotReparentAccount(const MyMoneyAccount&, const MyMoneyAccount&)));
   connect(this, SIGNAL(kmmFilePlugin(unsigned int)), m_accountsView, SLOT(slotUpdateIconPos(unsigned int)));
-  connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&)), m_accountsView, SLOT(slotReconcileAccount(const MyMoneyAccount&)));
+  connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const MyMoneyMoney&)), m_accountsView, SLOT(slotReconcileAccount(const MyMoneyAccount&, const MyMoneyMoney&)));
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_accountsView, SLOT(slotLoadAccounts()));
 
   // Page 3
@@ -210,6 +211,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_ledgerView, SIGNAL(endEdit()), kmymoney2, SLOT(slotTransactionsEnter()));
   connect(m_ledgerView, SIGNAL(markTransactionCleared()), kmymoney2, SLOT(slotMarkTransactionCleared()));
   connect(m_ledgerView, SIGNAL(markTransactionNotReconciled()), kmymoney2, SLOT(slotMarkTransactionNotReconciled()));
+  connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const MyMoneyMoney&)), m_ledgerView, SLOT(slotSetReconcileAccount(const MyMoneyAccount&, const MyMoneyMoney&)));
 
   //connect(m_ledgerView, SIGNAL(accountSelected(const QCString&, const QCString&)),
   //    this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
@@ -1086,15 +1088,17 @@ bool KMyMoneyView::startReconciliation(const MyMoneyAccount& account, const MyMo
       case MyMoneyAccount::Liability:
         showPage(pageIndex(m_ledgerViewFrame));
         // prepare reconciliation mode
+        emit reconciliationStarts(account, endingBalance);
+#if 0
         m_ledgerView->slotSelectAccount(account.id());
         m_ledgerView->setReconciliationAccount(account.id(), endingBalance);
+#endif
         break;
 
       default:
         ok = false;
     }
   }
-  emit reconciliationStarts(account);
 
   return ok;
 }
@@ -1102,9 +1106,10 @@ bool KMyMoneyView::startReconciliation(const MyMoneyAccount& account, const MyMo
 void KMyMoneyView::finishReconciliation(const MyMoneyAccount& account)
 {
   // make sure to re-select the account
+#if 0
   m_ledgerView->setReconciliationAccount();
-
-  emit reconciliationStarts(MyMoneyAccount());
+#endif
+  emit reconciliationStarts(MyMoneyAccount(), MyMoneyMoney());
 }
 
 bool KMyMoneyView::newFile(const bool createEmtpyFile)

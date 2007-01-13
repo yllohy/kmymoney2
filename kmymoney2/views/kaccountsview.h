@@ -56,10 +56,28 @@ public:
   KMyMoneyAccountIconItem(QIconView *parent, const MyMoneyAccount& account);
   ~KMyMoneyAccountIconItem();
 
+  /**
+    * This method is loads new information into the item and updates the fields
+    *
+    * @param account the account data for the object to be updated
+    * @param forceTotalUpdate set to true to force update of total values
+    *                         (used in constructor, should not be necessary to
+    *                          be set by application code)
+    *
+    * @note if account.id() is not equal to the current account id
+    *       then this method returns immediately
+    */
+  void updateAccount(const MyMoneyAccount& account);
+
   const MyMoneyObject& itemObject(void) const { return m_account; };
+
+  void setReconciliation(bool);
+
+protected:
 
 private:
   MyMoneyAccount        m_account;
+  bool                  m_reconcileFlag;
 };
 
 
@@ -94,7 +112,7 @@ public slots:
     */
   void slotUpdateIconPos(unsigned int action);
 
-  void slotReconcileAccount(const MyMoneyAccount& acc);
+  void slotReconcileAccount(const MyMoneyAccount& acc, const MyMoneyMoney& endingBalance);
 
 protected:
   typedef enum {

@@ -203,17 +203,6 @@ public:
     */
   bool selectEmptyTransaction(void);
 
-  /**
-    * Switch to reconciliation mode for account with id @a accountId.
-    * If @a accountId is QCString() (the default), reconciliation mode
-    * is turned off.
-    *
-    * @param accountId id of account for which reconciliation mode is activated.
-    *                  Defaults is QCString().
-    * @param endingBalance The calculated ending balance for the statement
-    */
-  void setReconciliationAccount(const QCString& accountId = QCString(), const MyMoneyMoney& endingBalance = MyMoneyMoney());
-
 public slots:
   void show(void);
 
@@ -240,6 +229,18 @@ public slots:
     * @retval false selection of account failed
     */
   const bool slotSelectAccount(const QCString& accountId, const QCString& transactionId = QCString());
+
+  /**
+   * Switch to reconciliation mode for account @a account.
+   * If @a account is MyMoneyAccount() (the default), reconciliation mode
+   * is turned off.
+   *
+   * @param account account for which reconciliation mode is activated.
+   *                Default  is MyMoneyAccount().
+   * @param endingBalance The calculated ending balance for the statement
+   *                Default ist 0.
+   */
+  void slotSetReconcileAccount(const MyMoneyAccount& account = MyMoneyAccount(), const MyMoneyMoney& endingBalance = MyMoneyMoney());
 
 protected:
   /**
