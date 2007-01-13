@@ -103,7 +103,7 @@ public:
   virtual const QString& sortCategory(void) const { return m_category; }
   virtual MyMoneySplit::reconcileFlagE sortReconcileState(void) const { return m_split.reconcileFlag(); }
 
-  virtual const QCString& id(void) { return m_transaction.id(); }
+  virtual const QCString& id(void) const { return m_uniqueId; }
   const MyMoneyTransaction& transaction(void) const { return m_transaction; }
   const MyMoneySplit& split(void) const { return m_split; }
 

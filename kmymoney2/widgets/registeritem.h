@@ -142,7 +142,7 @@ public:
   virtual void paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg) = 0;
   virtual void paintFormCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg) = 0;
 
-  virtual const QCString& id(void) { return MyMoneyObject::emptyId(); }
+  virtual const QCString& id(void) const { return MyMoneyObject::emptyId(); }
 
   /**
     * Sets the parent of this item to be the register @p parent

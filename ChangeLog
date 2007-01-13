@@ -1,6 +1,7 @@
 2007-01-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added new reconcile overlay icon provided by Rob
   * Added display of reconcile overlay to institution and account icon view
+  * Fixed a problem with selecting transactions
 
 2007-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * More investment ledger work
