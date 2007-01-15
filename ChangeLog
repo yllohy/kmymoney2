@@ -1,3 +1,6 @@
+2007-01-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added framework for RegisterSearchLine object (not yet functional)
+
 2007-01-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added new reconcile overlay icon provided by Rob
   * Added display of reconcile overlay to institution and account icon view

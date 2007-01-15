@@ -50,6 +50,8 @@
 #include <kmymoney/selectedtransaction.h>
 
 #include <kmymoney/kmymoneyglobalsettings.h>
+
+#include "../widgets/registersearchline.h"
 #include "../dialogs/ksortoptiondlg.h"
 #include "../kmymoney2.h"
 
@@ -148,6 +150,9 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 
   m_accountComboBox = new KMyMoneyAccountCombo(m_toolbar, "AccountCombo");
   m_toolbar->insertWidget(1, 100, m_accountComboBox);
+
+  // insert search line widget
+  new KMyMoneyRegister::RegisterSearchLineWidget(0, m_toolbar);
 
 #if 0
   // the account button at the right of the toolbar
