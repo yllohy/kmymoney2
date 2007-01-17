@@ -278,7 +278,7 @@ bool KMyMoneyView::showPage(int index)
 {
   // reset all selected items before showing the selected view
   // but not while we're in our own constructor
-  if(!m_inConstructor) {
+  if(!m_inConstructor && index != activePageIndex()) {
     kmymoney2->slotSelectAccount();
     kmymoney2->slotSelectInstitution();
     kmymoney2->slotSelectInvestment();
@@ -413,7 +413,6 @@ void KMyMoneyView::enableViews(int state)
 void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& transaction)
 {
   MyMoneyAccount acc = MyMoneyFile::instance()->account(accId);
-  kmymoney2->slotSelectAccount(acc);
 
   switch(acc.accountType()) {
     case MyMoneyAccount::Investment:
@@ -422,8 +421,11 @@ void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& tra
       break;
 
     case MyMoneyAccount::Stock:
+      // if a stock account is selected, we show the
+      // the corresponding parent (investment) account
       showPage(pageIndex(m_investmentViewFrame));
-      m_investmentView->slotSelectAccount(accId, transaction);
+      acc = MyMoneyFile::instance()->account(acc.parentAccountId());
+      m_investmentView->slotSelectAccount(acc.id(), transaction);
       break;
 
     case MyMoneyAccount::Checkings:
@@ -436,8 +438,8 @@ void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& tra
     case MyMoneyAccount::AssetLoan:
     case MyMoneyAccount::Income:
     case MyMoneyAccount::Expense:
-      m_ledgerView->slotSelectAccount(accId, transaction);
       showPage(pageIndex(m_ledgerViewFrame));
+      m_ledgerView->slotSelectAccount(accId, transaction);
       break;
 
     case MyMoneyAccount::CertificateDep:
@@ -450,7 +452,6 @@ void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& tra
       qDebug("Unknown account type %d in KMyMoneyView::slotLedgerSelected", acc.accountType());
       break;
   }
-  kmymoney2->slotUpdateActions();
 }
 
 void KMyMoneyView::slotPayeeSelected(const QCString& payee, const QCString& account, const QCString& transaction)

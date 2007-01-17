@@ -3651,11 +3651,12 @@ void KMyMoney2App::slotTransactionsEnter(void)
   if(kmymoney2->action("transaction_enter")->isEnabled()) {
     // qDebug("KMyMoney2App::slotTransactionsEnter");
     if(m_transactionEditor) {
+      QCString accountId = m_selectedAccount.id();
       QCString newId;
       if(m_transactionEditor->enterTransactions(newId))
         deleteTransactionEditor();
       if(!newId.isEmpty()) {
-        myMoneyView->slotLedgerSelected(m_selectedAccount.id(), newId);
+        myMoneyView->slotLedgerSelected(accountId, newId);
       }
     }
     slotUpdateActions();
@@ -4158,8 +4159,8 @@ void KMyMoney2App::slotUpdateActions(void)
             if(m_reconciliationAccount.id().isEmpty()) {
               action("account_reconcile")->setEnabled(true);
             } else {
-              action("account_reconcile_finish")->setEnabled(m_selectedAccount == m_reconciliationAccount);
-              action("account_reconcile_postpone")->setEnabled(m_selectedAccount == m_reconciliationAccount);
+              action("account_reconcile_finish")->setEnabled(m_selectedAccount.id() == m_reconciliationAccount.id());
+              action("account_reconcile_postpone")->setEnabled(m_selectedAccount.id() == m_reconciliationAccount.id());
             }
           }
 
