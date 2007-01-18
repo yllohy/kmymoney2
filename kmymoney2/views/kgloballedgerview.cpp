@@ -151,9 +151,6 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   m_accountComboBox = new KMyMoneyAccountCombo(m_toolbar, "AccountCombo");
   m_toolbar->insertWidget(1, 100, m_accountComboBox);
 
-  // insert search line widget
-  new KMyMoneyRegister::RegisterSearchLineWidget(0, m_toolbar);
-
 #if 0
   // the account button at the right of the toolbar
   // I leave the code commented here for a while, so that I see
@@ -178,6 +175,9 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(m_register, SIGNAL(openContextMenu()), this, SIGNAL(openContextMenu()));
   connect(m_register, SIGNAL(headerClicked()), this, SLOT(slotSortOptions()));
   connect(m_register, SIGNAL(reconcileStateColumnClicked(KMyMoneyRegister::Transaction*)), this, SLOT(slotToggleMarkTransactionCleared(KMyMoneyRegister::Transaction*)));
+
+  // insert search line widget
+  new KMyMoneyRegister::RegisterSearchLineWidget(0, m_toolbar);
 
   // create the summary frame
   m_summaryFrame = new QFrame(this);
@@ -239,6 +239,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   d->m_mousePressFilter->addWidget(m_buttonFrame);
   d->m_mousePressFilter->addWidget(m_summaryFrame);
   d->m_mousePressFilter->addWidget(m_registerFrame);
+
 
 #if 0
   m_currentView = 0;
@@ -564,7 +565,7 @@ void KGlobalLedgerView::loadView(void)
       // make sure to skip the empty entry at the end if anything else exists
       // otherwise point to that emtpy line
       p = m_register->lastItem();
-      if(p->prevItem()) {
+      if(p && p->prevItem()) {
         do {
           p = p->prevItem();
         } while(p && !dynamic_cast<KMyMoneyRegister::Transaction*>(p));
@@ -956,6 +957,11 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
     if(m_account.id() != id) {
       try {
         m_account = MyMoneyFile::instance()->account(id);
+        // if a stock account is selected, we show the
+        // the corresponding parent (investment) account
+        if(m_account.accountType() == MyMoneyAccount::Stock) {
+          m_account = MyMoneyFile::instance()->account(m_account.parentAccountId());
+        }
         m_newAccountLoaded = true;
         slotLoadView();
       } catch(MyMoneyException* e) {
@@ -969,90 +975,6 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
     selectTransaction(transactionId);
   }
   return rc;
-
-#if 0
-    // if the account id differs, then we have to do something
-    MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
-    if(m_accountId != id) {
-      // cancel any pending edit operation in the ledger views
-      // when switching to a different account
-      slotCancelEdit();
-
-      if(m_specificView[acc.accountType()] != 0) {
-        // loan and asset-loan share a view. So there's
-        // only one widget on the widget stack. Make sure
-        // we pick the right one
-        int viewType = acc.accountType();
-        if(viewType == MyMoneyAccount::AssetLoan)
-          viewType = MyMoneyAccount::Loan;
-        m_accountStack->raiseWidget(viewType);
-        m_currentView = m_specificView[acc.accountType()];
-        m_currentView->slotSelectAccount(id);
-        if(!transactionId.isEmpty())
-          m_currentView->selectTransaction(transactionId);
-        m_accountComboBox->setSelected(acc);
-
-        // keep this as the current account
-        m_accountId = id;
-
-        rc = true;
-      } else {
-        // keep the current selection ...
-        if(!m_accountId.isEmpty()) {
-          acc = MyMoneyFile::instance()->account(m_accountId);
-          m_accountComboBox->setSelected(acc);
-        } else
-          m_accountComboBox->setSelected(QCString());
-        // ... and let's see, if someone else can handle this request
-        emit accountSelected(id, transactionId);
-      }
-    } else {
-#if KDE_VERSION < 310
-      // in KDE 3.1 and above, QWidgetStack::show() takes care of this
-      m_accountStack->raiseWidget(acc.accountType());
-#endif
-      rc = true;
-
-      // keep this as the current account
-      m_accountId = id;
-
-      if(reconciliation == true && m_currentView)
-        m_currentView->slotReconciliation();
-      if(!transactionId.isEmpty()) {
-        // cancel any pending edit operation in the ledger views
-        // when switching to a specific transaction
-        slotCancelEdit();
-        m_currentView->selectTransaction(transactionId);
-      }
-    }
-
-  } else {
-    if(m_specificView[MyMoneyAccount::Checkings] != 0) {
-      m_currentView = m_specificView[MyMoneyAccount::Checkings];
-      m_currentView->slotSelectAccount(id);
-      m_accountStack->raiseWidget(MyMoneyAccount::Checkings);
-      m_accountComboBox->setSelected(QCString());
-
-      // keep this as the current account
-      m_accountId = QCString();
-
-      if(reconciliation == true && m_currentView)
-        m_currentView->slotReconciliation();
-
-    } else {
-      qFatal("Houston: we have a serious problem in KGlobalLedgerView");
-    }
-    // no account selected
-    if(isVisible())
-      kmymoney2->slotSelectAccount();
-  }
-
-  // Now that the ledger view has changed, we have to update the "account" button
-  // to point to the correct ledger's account menu.
-  KLedgerView* ledgerview = dynamic_cast<KLedgerView*>(m_accountStack->visibleWidget());
-  if ( ledgerview )
-    m_toolbar->getButton(1)->setPopup(ledgerview->accountMenu());
-#endif
 }
 
 void KGlobalLedgerView::suspendUpdate(const bool /*suspend*/)

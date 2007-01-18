@@ -188,6 +188,8 @@ public:
   MyMoneyObjectContainer* objects(void) const { return m_objects; }
   bool haveNumberField(void) const;
 
+  bool matches(const QString&) const;
+
   /**
     * Checks if the mouse hovered over an area that has a tooltip associated with it.
     * The mouse position is given in relative coordinates to the @a startRow and the

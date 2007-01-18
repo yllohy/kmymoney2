@@ -119,6 +119,8 @@ public:
 
   int rowHeightHint(void) const;
 
+  bool matches(const QString&) const { return true; }
+
 protected:
   QString                  m_txt;
   QPixmap                  m_bg;
@@ -200,7 +202,9 @@ class Register : public TransactionEditorContainer
 
   // friend class QHeader;
   // friend class QTableHeader;
-  friend class Item;
+  // friend class RegisterItem;
+  friend class StdTransaction;
+  friend class InvestTransaction;
 
 public:
   Register(QWidget *parent = 0, const char *name = 0);
@@ -284,8 +288,10 @@ public:
   Column lastCol(void) const { return m_lastCol; }
 
   RegisterItem* firstItem(void) const;
+  RegisterItem* firstVisibleItem(void) const;
   RegisterItem* nextItem(RegisterItem*) const;
   RegisterItem* lastItem(void) const;
+  RegisterItem* lastVisibleItem(void) const;
   RegisterItem* prevItem(RegisterItem*) const;
   RegisterItem* itemAtRow(int row) const;
 
@@ -320,6 +326,8 @@ public:
 
   const MyMoneyAccount& account(void) const { return m_account; }
 
+  void repaintItems(RegisterItem* first = 0, RegisterItem* last = 0);
+
 protected:
   void drawContents(QPainter *p, int cx, int cy, int cw, int ch);
 
@@ -327,7 +335,6 @@ protected:
   void unselectItems(int from = -1, int to = -1) { doSelectItems(from, to, false); }
   void selectItems(int from, int to) { doSelectItems(from, to, true); }
   void doSelectItems(int from, int to, bool selected);
-  void repaintItems(RegisterItem* first = 0, RegisterItem* last = 0);
   int selectedItemsCount(void) const;
 
   void focusOutEvent(QFocusEvent*);
@@ -411,6 +418,11 @@ signals:
     * This signal is sent out, if the user selects an item with the right mouse button
     */
   void openContextMenu(void);
+
+  /**
+    * This signal is sent out when a new item has been added to the register
+    */
+  void itemAdded(RegisterItem* item);
 
 protected:
   ItemPtrVector                m_items;

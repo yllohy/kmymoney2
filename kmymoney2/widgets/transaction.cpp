@@ -137,14 +137,14 @@ Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, cons
   m_transaction(transaction),
   m_split(split),
   m_objects(objects),
+  m_form(0),
   m_uniqueId(m_transaction.id()+m_split.id()),
   m_formRowHeight(-1),
   m_selected(false),
   m_focus(false),
   m_erronous(false),
   m_inEdit(false),
-  m_inRegisterEdit(false),
-  m_form(0)
+  m_inRegisterEdit(false)
 {
   // load the payee
   if(!m_split.payeeId().isEmpty()) {
@@ -637,6 +637,30 @@ int Transaction::rowHeightHint(void) const
 }
 
 
+bool Transaction::matches(const QString& txt) const
+{
+  if(txt.isEmpty() || m_transaction.splitCount() == 0)
+    return true;
+
+  const QValueList<MyMoneySplit>&list = m_transaction.splits();
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  for(it_s = list.begin(); it_s != list.end(); ++it_s) {
+    // check if the text is contained in one of the fields
+    // memo, value, number, payee
+    if((*it_s).memo().contains(txt)
+       || (*it_s).value().formatMoney().contains(txt)
+       || (*it_s).number().contains(txt))
+      return true;
+
+    if(!(*it_s).payeeId().isEmpty()) {
+      const MyMoneyPayee& payee = m_objects->payee((*it_s).payeeId());
+      if(payee.name().contains(txt))
+        return true;
+    }
+  }
+  return false;
+}
+
 StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split) :
   Transaction(parent, objects, transaction, split)
 {
@@ -685,6 +709,8 @@ StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects
 
   // setup initial size
   setNumRowsRegister(numRowsRegister(KMyMoneySettings::showRegisterDetailed()));
+
+  emit parent->itemAdded(this);
 }
 
 void StdTransaction::setupFormHeader(const QCString& id)
@@ -1195,6 +1221,8 @@ InvestTransaction::InvestTransaction(Register *parent, MyMoneyObjectContainer* o
 
   // setup initial size
   setNumRowsRegister(numRowsRegister(KMyMoneySettings::showRegisterDetailed()));
+
+  emit parent->itemAdded(this);
 }
 
 void InvestTransaction::setupForm(TransactionForm* form)

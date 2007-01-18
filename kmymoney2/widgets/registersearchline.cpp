@@ -76,6 +76,23 @@ RegisterSearchLine::~RegisterSearchLine()
   delete d;
 }
 
+void RegisterSearchLine::setRegister(Register* reg)
+{
+  if(d->reg) {
+    disconnect(d->reg, SIGNAL(destroyed()), this, SLOT(registerDestroyed()));
+    disconnect(d->reg, SIGNAL(itemAdded(RegisterItem*)), this, SLOT(itemAdded(RegisterItem*)));
+  }
+
+  d->reg = reg;
+
+  if(reg) {
+    connect(reg, SIGNAL(destroyed()), this, SLOT(registerDestroyed()));
+    connect(reg, SIGNAL(itemAdded(RegisterItem*)), this, SLOT(itemAdded(RegisterItem*)));
+  }
+
+  setEnabled(reg != 0);
+}
+
 void RegisterSearchLine::queueSearch(const QString& search)
 {
   d->queuedSearches++;
@@ -95,10 +112,35 @@ void RegisterSearchLine::updateSearch(const QString& s)
   if(!d->reg)
     return;
 
+  d->search = s.isNull() ? text() : s;
+
+  // keep track of the current focus item
+  RegisterItem* focusItem = d->reg->focusItem();
+
+  RegisterItem* p = d->reg->firstItem();
+  int cnt = 0;
+  for(; p; p = p->nextItem()) {
+    p->setVisible(p->matches(s));
+    if(p->matches(s))
+      ++cnt;
+  }
+  qDebug("RegisterSearchLine::updateSearch() %d items visible", cnt);
+
+  d->reg->updateRegister(true);
+  d->reg->repaintContents();
+  // d->reg->repaintItems();
+  qDebug("Register has %d rows", d->reg->numRows());
+
+  // if focus item is still visible, then make sure we have
+  // it on screen
+  if(focusItem && focusItem->isVisible()) {
+    d->reg->ensureItemVisible(focusItem);
+  }
 }
 
 bool RegisterSearchLine::itemMatches(const RegisterItem* item, const QString& s) const
 {
+  return item->matches(s);
 }
 
 void RegisterSearchLine::itemAdded(RegisterItem* item) const

@@ -168,6 +168,8 @@ public:
   RegisterItem* nextItem(void) const { return m_next; }
   RegisterItem* prevItem(void) const { return m_prev; }
 
+  virtual bool matches(const QString&) const = 0;
+
   /**
     * Checks if the mouse hovered over an area that has a tooltip associated with it.
     * The mouse position is given in relative coordinates to the @a startRow and the

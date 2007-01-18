@@ -1,3 +1,15 @@
+2007-01-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem that postpone and finish reconciliation are disabled
+    whenever the corresponding account object changes (e.g. due to change
+    of a transaction)
+  * More work on the RegisterSearchLine widget
+
+2007-01-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem with actions being disabled after a transaction
+    has been entered
+  * Open ledger for investment account if one of its stock accounts
+    is selected
+
 2007-01-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added framework for RegisterSearchLine object (not yet functional)
 

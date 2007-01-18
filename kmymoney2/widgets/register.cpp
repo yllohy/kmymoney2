@@ -769,9 +769,25 @@ RegisterItem* Register::firstItem(void) const
   return m_firstItem;
 }
 
+RegisterItem* Register::firstVisibleItem(void) const
+{
+  RegisterItem* p = m_firstItem;
+  while(p && !p->isVisible())
+    p = p->nextItem();
+  return p;
+}
+
 RegisterItem* Register::lastItem(void) const
 {
   return m_lastItem;
+}
+
+RegisterItem* Register::lastVisibleItem(void) const
+{
+  RegisterItem* p = m_lastItem;
+  while(p && !p->isVisible())
+    p = p->prevItem();
+  return p;
 }
 
 void Register::setupItemIndex(int rowCount)
@@ -1059,7 +1075,7 @@ void Register::adjustColumn(int col)
       if(!item)
         continue;
       Transaction* t = dynamic_cast<Transaction*>(item);
-      if(t) {
+      if(t && t->isVisible()) {
         int nw = t->registerColWidth(col, cellFontMetrics);
         w = QMAX( w, nw );
         if(maxWidth) {
@@ -1080,8 +1096,8 @@ void Register::adjustColumn(int col)
 void Register::repaintItems(RegisterItem* first, RegisterItem* last)
 {
   if(first == 0 && last == 0) {
-    first = firstItem();
-    last = lastItem();
+    first = firstVisibleItem();
+    last = lastVisibleItem();
   }
 
   if(first == 0)
@@ -1165,12 +1181,12 @@ RegisterItem* Register::itemAtRow(int row) const
 
 int Register::rowToIndex(int row) const
 {
-  for(unsigned i = 0; i < m_items.size(); ++i) {
-    RegisterItem* const item = m_items[i];
-    if(!item)
-      continue;
-    if(row >= item->startRow() && row < (item->startRow() + item->numRowsRegister()))
-      return i;
+  RegisterItem* p = itemAtRow(row);
+  if(p) {
+    for(unsigned i = 0; i < m_items.size(); ++i) {
+      if(p == m_items[i])
+        return i;
+    }
   }
   return -1;
 }

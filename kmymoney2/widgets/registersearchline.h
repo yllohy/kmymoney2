@@ -68,6 +68,14 @@ public:
     */
   ~RegisterSearchLine();
 
+  /**
+    * Sets the KMyMoneyRegister that is filtered by this search line.
+    * If @a reg is null then the widget will be disabled.
+    *
+    * @see KMyMoneyRegister()
+    */
+  void setRegister(Register* reg);
+
 protected:
   virtual bool itemMatches(const RegisterItem* item, const QString& s) const;
 
