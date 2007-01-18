@@ -117,25 +117,23 @@ void RegisterSearchLine::updateSearch(const QString& s)
   // keep track of the current focus item
   RegisterItem* focusItem = d->reg->focusItem();
 
+  bool enabled = d->reg->isUpdatesEnabled();
+  d->reg->setUpdatesEnabled(false);
+
   RegisterItem* p = d->reg->firstItem();
-  int cnt = 0;
   for(; p; p = p->nextItem()) {
     p->setVisible(p->matches(s));
-    if(p->matches(s))
-      ++cnt;
   }
-  qDebug("RegisterSearchLine::updateSearch() %d items visible", cnt);
-
-  d->reg->updateRegister(true);
-  d->reg->repaintContents();
-  // d->reg->repaintItems();
-  qDebug("Register has %d rows", d->reg->numRows());
+  d->reg->suppressAdjacentMarkers();
+  d->reg->updateAlternate();
+  d->reg->setUpdatesEnabled(enabled);
 
   // if focus item is still visible, then make sure we have
   // it on screen
   if(focusItem && focusItem->isVisible()) {
     d->reg->ensureItemVisible(focusItem);
-  }
+  } else
+    d->reg->updateContents();
 }
 
 bool RegisterSearchLine::itemMatches(const RegisterItem* item, const QString& s) const
@@ -232,10 +230,6 @@ void RegisterSearchLineWidget::positionInToolBar(void)
 
     for(int index = 0; index < widgetCount; index++) {
       int id = toolBar->idAt(index);
-      qDebug("toolbar has %p", toolBar);
-      qDebug("id at %d is %d", index, toolBar->idAt(index));
-      qDebug("widget has %p", toolBar->getWidget(id));
-      qDebug("this   has %p", this);
       if(toolBar->getWidget(id) == this) {
         toolBar->setItemAutoSized(id);
         if(!d->clearButton) {

@@ -769,25 +769,9 @@ RegisterItem* Register::firstItem(void) const
   return m_firstItem;
 }
 
-RegisterItem* Register::firstVisibleItem(void) const
-{
-  RegisterItem* p = m_firstItem;
-  while(p && !p->isVisible())
-    p = p->nextItem();
-  return p;
-}
-
 RegisterItem* Register::lastItem(void) const
 {
   return m_lastItem;
-}
-
-RegisterItem* Register::lastVisibleItem(void) const
-{
-  RegisterItem* p = m_lastItem;
-  while(p && !p->isVisible())
-    p = p->prevItem();
-  return p;
 }
 
 void Register::setupItemIndex(int rowCount)
@@ -812,11 +796,11 @@ void Register::setupItemIndex(int rowCount)
     item->setPrevItem(prev);
     item->setNextItem(0);
     prev = item;
-    if(item->isVisible()) {
+    // if(item->isVisible()) {
       for(int j = item->numRowsRegister(); j; --j) {
         m_itemIndex.push_back(item);
       }
-    }
+    // }
   }
 }
 
@@ -834,6 +818,42 @@ void Register::drawContents( QPainter *p, int cx, int cy, int cw, int ch )
   QTable::drawContents(p, cx, cy, cw, ch);
 }
 
+void Register::updateAlternate(void) const
+{
+  bool alternate = false;
+  for(QValueVector<RegisterItem*>::size_type i = 0; i < m_items.size(); ++i) {
+    RegisterItem* item = m_items[i];
+    if(!item)
+      continue;
+    if(item->isVisible()) {
+      item->setAlternate(alternate);
+      alternate ^= true;
+    }
+  }
+}
+
+void Register::suppressAdjacentMarkers(void)
+{
+  bool lastWasGroupMarker = false;
+  KMyMoneyRegister::RegisterItem* p = lastItem();
+  KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
+  if(t && t->transaction().id().isEmpty()) {
+    lastWasGroupMarker = true;
+    p = p->prevItem();
+  }
+  while(p) {
+    KMyMoneyRegister::GroupMarker* m = dynamic_cast<KMyMoneyRegister::GroupMarker*>(p);
+    if(m) {
+      if(lastWasGroupMarker) {
+        m->setVisible(false);
+      }
+      lastWasGroupMarker = true;
+    } else if(p->isVisible())
+      lastWasGroupMarker = false;
+    p = p->prevItem();
+  }
+}
+
 void Register::updateRegister(bool forceUpdateRowHeight)
 {
   ::timetrace("Update register");
@@ -844,25 +864,22 @@ void Register::updateRegister(bool forceUpdateRowHeight)
     int rowCount = 0;
     // determine the number of rows we need to display all items
     // while going through the list, check for erronous transactions
-    bool alternate = false;
     for(QValueVector<RegisterItem*>::size_type i = 0; i < m_items.size(); ++i) {
       RegisterItem* item = m_items[i];
       if(!item)
         continue;
-      if(item->isVisible()) {
-        item->setStartRow(rowCount);
-        item->setNeedResize();
-        item->setAlternate(alternate);
-        alternate ^= true;
-        rowCount += item->numRowsRegister();
+      item->setStartRow(rowCount);
+      item->setNeedResize();
+      rowCount += item->numRowsRegister();
 
-        if(item->isErronous()) {
-          if(!m_firstErronous)
-            m_firstErronous = item;
-          m_lastErronous = item;
-        }
+      if(item->isErronous()) {
+        if(!m_firstErronous)
+          m_firstErronous = item;
+        m_lastErronous = item;
       }
     }
+
+    updateAlternate();
 
     // create item index
     setupItemIndex(rowCount);
@@ -873,7 +890,6 @@ void Register::updateRegister(bool forceUpdateRowHeight)
     bool updatesEnabled = isUpdatesEnabled();
     setUpdatesEnabled(false);
     setNumRows(rowCount);
-    setUpdatesEnabled(updatesEnabled);
 
     // if we need to update the headers, we do it now for all rows
     // again we make sure to suppress screen updates
@@ -1075,7 +1091,7 @@ void Register::adjustColumn(int col)
       if(!item)
         continue;
       Transaction* t = dynamic_cast<Transaction*>(item);
-      if(t && t->isVisible()) {
+      if(t) {
         int nw = t->registerColWidth(col, cellFontMetrics);
         w = QMAX( w, nw );
         if(maxWidth) {
@@ -1096,8 +1112,8 @@ void Register::adjustColumn(int col)
 void Register::repaintItems(RegisterItem* first, RegisterItem* last)
 {
   if(first == 0 && last == 0) {
-    first = firstVisibleItem();
-    last = lastVisibleItem();
+    first = firstItem();
+    last = lastItem();
   }
 
   if(first == 0)
@@ -1181,12 +1197,12 @@ RegisterItem* Register::itemAtRow(int row) const
 
 int Register::rowToIndex(int row) const
 {
-  RegisterItem* p = itemAtRow(row);
-  if(p) {
-    for(unsigned i = 0; i < m_items.size(); ++i) {
-      if(p == m_items[i])
-        return i;
-    }
+  for(unsigned i = 0; i < m_items.size(); ++i) {
+    RegisterItem* const item = m_items[i];
+    if(!item)
+      continue;
+    if(row >= item->startRow() && row < (item->startRow() + item->numRowsRegister()))
+      return i;
   }
   return -1;
 }

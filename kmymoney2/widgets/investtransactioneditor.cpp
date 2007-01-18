@@ -241,7 +241,7 @@ void InvestTransactionEditor::createEditWidgets(void)
   value->setHint(i18n("Shares"));
   value->setResetButtonVisible(false);
   m_editWidgets["shares"] = value;
-  connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateShares(const QString&)));
+  connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount(const QString&)));
   connect(value, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount()));
 
@@ -249,7 +249,7 @@ void InvestTransactionEditor::createEditWidgets(void)
   value->setHint(i18n("Price"));
   value->setResetButtonVisible(false);
   m_editWidgets["price"] = value;
-  connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdatePrice(const QString&)));
+  connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount(const QString&)));
   connect(value, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount()));
 
@@ -258,7 +258,6 @@ void InvestTransactionEditor::createEditWidgets(void)
   // we can allow multiple splits for fee and interest
   value->setResetButtonVisible(false);
   m_editWidgets["fee-amount"] = value;
-  connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateFeeAmount(const QString&)));
   connect(value, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount()));
 
@@ -267,7 +266,6 @@ void InvestTransactionEditor::createEditWidgets(void)
   // we can allow multiple splits for fee and interest
   value->setResetButtonVisible(false);
   m_editWidgets["interest-amount"] = value;
-  connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateInterestAmount(const QString&)));
   connect(value, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount()));
 
@@ -571,7 +569,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
 
 QWidget* InvestTransactionEditor::firstWidget(void) const
 {
-  return haveWidget("postdate");
+  return 0; // let the creator use the first widget in the tab order
 }
 
 bool InvestTransactionEditor::isComplete(void) const
@@ -700,7 +698,48 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
       s0.setMemo(memo->text());
   }
 
-  return false;
+  MyMoneySplit assetAccountSplit;
+  QValueList<MyMoneySplit> feeSplits;
+  QValueList<MyMoneySplit> interestSplits;
+  MyMoneySecurity security, currency;
+  KMyMoneyRegister::investTransactionTypeE transactionType;
+
+  // extract the splits from the original transaction
+  dissectTransaction(torig, sorig, m_objects,
+                     assetAccountSplit,
+                     feeSplits,
+                     interestSplits,
+                     security,
+                     currency,
+                     transactionType);
+
+  // check if the trading currency is the same if the security has changed
+  // in case it differs, check that we have a price (request from user)
+  // and convert all splits
+  // TODO
+
+  // do the conversions here
+  // TODO
+
+  // keep the current activity object and create a new one
+  // that can be destroyed later on
+  Activity* activity = d->m_activity;
+  d->m_activity = 0;      // make sure we create a new one
+  activityFactory(activity->type());
+
+  // if the activity is not set in the combo widget, we keep
+  // the one which is used in the original transaction
+  KMyMoneyActivityCombo* activityCombo = dynamic_cast<KMyMoneyActivityCombo*>(haveWidget("activity"));
+  if(activityCombo->activity() == KMyMoneyRegister::UnknownTransactionType) {
+    activityFactory(transactionType);
+  }
+
+  // call the creation logic for the current selected activity
+  bool rc = d->m_activity->createTransaction(t, s0, assetAccountSplit, feeSplits, interestSplits, security, currency);
+
+  // now switch back to the original activity
+  delete d->m_activity;
+  d->m_activity = activity;
 }
 
 #include "investtransactioneditor.moc"

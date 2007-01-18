@@ -61,6 +61,7 @@ public:
   KGlobalLedgerViewPrivate();
 
   MousePressFilter*    m_mousePressFilter;
+  KMyMoneyRegister::RegisterSearchLineWidget* m_registerSearchLine;
   QPoint               m_startPoint;
   QCString             m_reconciliationAccount;
   MyMoneyMoney         m_endingBalance;
@@ -123,6 +124,7 @@ bool MousePressFilter::eventFilter(QObject* o, QEvent* e)
 
 KGlobalLedgerViewPrivate::KGlobalLedgerViewPrivate() :
   m_mousePressFilter(0),
+  m_registerSearchLine(0),
   m_inLoading(false)
 {
 }
@@ -177,7 +179,8 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(m_register, SIGNAL(reconcileStateColumnClicked(KMyMoneyRegister::Transaction*)), this, SLOT(slotToggleMarkTransactionCleared(KMyMoneyRegister::Transaction*)));
 
   // insert search line widget
-  new KMyMoneyRegister::RegisterSearchLineWidget(0, m_toolbar);
+
+  d->m_registerSearchLine = new KMyMoneyRegister::RegisterSearchLineWidget(m_register, m_toolbar);
 
   // create the summary frame
   m_summaryFrame = new QFrame(this);
@@ -422,7 +425,8 @@ void KGlobalLedgerView::loadView(void)
 
     // remember the upper left corner of the viewport
     d->m_startPoint = QPoint(m_register->contentsX(), m_register->contentsY());
-  }
+  } else
+    d->m_registerSearchLine->searchLine()->setText(QString());
 
   // clear the current contents ...
   clear();

@@ -116,6 +116,12 @@ bool Buy::isComplete(void) const
   return rc;
 }
 
+bool Buy::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
+{
+  qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  return false;
+}
+
 void Sell::showWidgets(void) const
 {
   KMyMoneyCategory* cat;
@@ -140,6 +146,12 @@ bool Sell::isComplete(void) const
   return rc;
 }
 
+bool Sell::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
+{
+  qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  return false;
+}
+
 void Div::showWidgets(void) const
 {
   KMyMoneyCategory* cat;
@@ -155,6 +167,12 @@ bool Div::isComplete(void) const
   rc &= haveAssetAccount();
   rc &= haveInterest(false);
   return rc;
+}
+
+bool Div::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
+{
+  qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  return false;
 }
 
 void Reinvest::showWidgets(void) const
@@ -179,6 +197,12 @@ bool Reinvest::isComplete(void) const
   return rc;
 }
 
+bool Reinvest::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
+{
+  qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  return false;
+}
+
 void Add::showWidgets(void) const
 {
   haveWidget("shares")->show();
@@ -189,6 +213,12 @@ bool Add::isComplete(void) const
   bool rc = Activity::isComplete();
   rc &= haveShares();
   return rc;
+}
+
+bool Add::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
+{
+  qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  return false;
 }
 
 void Remove::showWidgets(void) const
@@ -203,6 +233,12 @@ bool Remove::isComplete(void) const
   return rc;
 }
 
+bool Remove::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
+{
+  qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  return false;
+}
+
 void Split::showWidgets(void) const
 {
   // FIXME do we need a split ratio widget?
@@ -215,6 +251,12 @@ bool Split::isComplete(void) const
   rc = false; // TODO to be implemented
 
   return rc;
+}
+
+bool Split::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
+{
+  qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  return false;
 }
 
 

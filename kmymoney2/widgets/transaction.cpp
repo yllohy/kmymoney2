@@ -642,22 +642,40 @@ bool Transaction::matches(const QString& txt) const
   if(txt.isEmpty() || m_transaction.splitCount() == 0)
     return true;
 
+  QString s(txt);
+  s.replace(MyMoneyMoney::thousandSeparator(), QString());
+
   const QValueList<MyMoneySplit>&list = m_transaction.splits();
   QValueList<MyMoneySplit>::const_iterator it_s;
   for(it_s = list.begin(); it_s != list.end(); ++it_s) {
     // check if the text is contained in one of the fields
-    // memo, value, number, payee
-    if((*it_s).memo().contains(txt)
-       || (*it_s).value().formatMoney().contains(txt)
-       || (*it_s).number().contains(txt))
+    // memo, number, payee, account
+    if((*it_s).memo().contains(txt, false)
+       || (*it_s).number().contains(txt, false))
       return true;
 
     if(!(*it_s).payeeId().isEmpty()) {
       const MyMoneyPayee& payee = m_objects->payee((*it_s).payeeId());
-      if(payee.name().contains(txt))
+      if(payee.name().contains(txt, false))
+        return true;
+    }
+    const MyMoneyAccount& acc = m_objects->account((*it_s).accountId());
+    if(acc.name().contains(txt, false))
+      return true;
+
+    if(!s.isEmpty()) {
+      // check if any of the value field matches if a value has been entered
+      QString r = (*it_s).value().formatMoney();
+      r.replace(MyMoneyMoney::thousandSeparator(), QString());
+      if(r.contains(s, false))
+        return true;
+      r = (*it_s).shares().formatMoney();
+      r.replace(MyMoneyMoney::thousandSeparator(), QString());
+      if(r.contains(s, false))
         return true;
     }
   }
+
   return false;
 }
 

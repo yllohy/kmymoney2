@@ -270,7 +270,18 @@ public:
 
   void updateRegister(bool forceUpdateRowHeight = false);
 
-  void adjustColumn(int col);
+  /**
+    * Assign all visible items an alternate background color
+    */
+  void updateAlternate(void) const;
+
+  /**
+    * make sure, we only show a single marker in a row
+    * through hiding unused ones
+    */
+  void suppressAdjacentMarkers(void);
+
+   void adjustColumn(int col);
 
   void setupRegister(const MyMoneyAccount& account, bool showAccountColumn = false);
 

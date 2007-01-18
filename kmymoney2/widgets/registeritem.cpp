@@ -85,12 +85,25 @@ void RegisterItem::setVisible(bool visible)
     return;
 
   m_visible = visible;
-  if(m_parent)
-    m_parent->forceUpdateLists();
+  if(m_parent) {
+    if(visible) {
+      for(int i = startRow(); i < startRow() + numRowsRegister(); ++i) {
+        m_parent->showRow(i);
+      }
+    } else {
+      for(int i = startRow(); i < startRow() + numRowsRegister(); ++i) {
+        m_parent->hideRow(i);
+      }
+    }
+    // m_parent->forceUpdateLists();
+  }
 }
 
 int RegisterItem::rowHeightHint(void) const
 {
+  if(!m_visible)
+    return 0;
+
   if(m_parent) {
     return m_parent->rowHeightHint();
   }

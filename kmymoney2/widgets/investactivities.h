@@ -38,6 +38,7 @@ public:
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const = 0;
   virtual void showWidgets(void) const = 0;
   virtual bool isComplete(void) const = 0;
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency) = 0;
 
 protected:
   Activity(InvestTransactionEditor* editor) { m_parent = editor; }
@@ -63,6 +64,7 @@ public:
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::BuyShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 class Sell : public Activity
@@ -72,6 +74,7 @@ public:
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::SellShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 class Div : public Activity
@@ -81,6 +84,7 @@ public:
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::Dividend; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 class Reinvest : public Activity
@@ -90,6 +94,7 @@ public:
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::ReinvestDividend; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 class Add : public Activity
@@ -99,6 +104,7 @@ public:
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::AddShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 class Remove : public Activity
@@ -108,6 +114,7 @@ public:
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::RemoveShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 class Split : public Activity
@@ -117,6 +124,7 @@ public:
   virtual KMyMoneyRegister::investTransactionTypeE type(void) const { return KMyMoneyRegister::SplitShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 } // namespace Invest
