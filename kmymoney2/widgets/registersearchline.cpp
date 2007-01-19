@@ -133,7 +133,7 @@ void RegisterSearchLine::updateSearch(const QString& s)
   if(focusItem && focusItem->isVisible()) {
     d->reg->ensureItemVisible(focusItem);
   } else
-    d->reg->updateContents();
+    d->reg->repaintContents();
 }
 
 bool RegisterSearchLine::itemMatches(const RegisterItem* item, const QString& s) const
