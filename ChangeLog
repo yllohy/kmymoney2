@@ -1,3 +1,6 @@
+2007-01-21 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Correct record counts
+
 2007-01-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Finished work on the RegisterSearchLine widget
   * More work on the investment transaction editor

@@ -350,11 +350,11 @@ void MyMoneyStorageSql::writeAccounts() {
   } else {
     q.prepare (m_db.m_tables["kmmAccounts"].updateString());
   }
-  writeAccount(m_storage->asset(), q);
-  writeAccount(m_storage->liability(), q);
-  writeAccount(m_storage->expense(), q);
-  writeAccount(m_storage->income(), q);
-  writeAccount(m_storage->equity(), q);
+  writeAccount(m_storage->asset(), q); ++m_accounts;
+  writeAccount(m_storage->liability(), q); ++m_accounts;
+  writeAccount(m_storage->expense(), q); ++m_accounts;
+  writeAccount(m_storage->income(), q); ++m_accounts;
+  writeAccount(m_storage->equity(), q); ++m_accounts;
   int i = 0;
   for(it = list.begin(); it != list.end(); ++it, ++i) {
     if (dbList.contains((*it).id())) {
