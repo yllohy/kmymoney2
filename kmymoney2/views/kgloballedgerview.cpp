@@ -140,7 +140,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 {
   d = new KGlobalLedgerViewPrivate;
   d->m_mousePressFilter = new MousePressFilter((QWidget*)this);
-  d->m_action = KMyMoneyRegister::ActionNone;
+  setupDefaultAction();
 
   // create the toolbar frame at the top of the view
   m_toolbarFrame = new QFrame(this);
@@ -1043,7 +1043,6 @@ bool KGlobalLedgerView::selectEmptyTransaction(void)
       m_register->selectItem(m_register->lastItem());
       m_register->updateRegister();
     }
-    setupDefaultAction();
     rc = true;
   }
   return rc;
@@ -1184,6 +1183,9 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
 
       // for some reason, this only works reliably if delayed a bit
       QTimer::singleShot(10, focusWidget, SLOT(setFocus()));
+
+      // make sure to have the default action preset for next round
+      setupDefaultAction();
     }
   }
   return editor;

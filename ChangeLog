@@ -1,3 +1,6 @@
+2007-01-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed tab display when starting to create a new transaction via the tab
+
 2007-01-21 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Correct record counts
 
