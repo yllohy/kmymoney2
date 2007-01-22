@@ -129,6 +129,32 @@ void MyMoneySplit::setPayeeId(const QCString& payee)
   m_payee = payee;
 }
 
+void MyMoneySplit::setAction(investTransactionTypeE type)
+{
+  switch(type) {
+    case BuyShares:
+    case SellShares:
+      setAction(ActionBuyShares);
+      break;
+    case Dividend:
+      setAction(ActionDividend);
+      break;
+    case Yield:
+      setAction(ActionYield);
+      break;
+    case ReinvestDividend:
+      setAction(ActionReinvestDividend);
+      break;
+    case AddShares:
+    case RemoveShares:
+      setAction(ActionAddShares);
+      break;
+    case MyMoneySplit::SplitShares:
+      setAction(ActionSplitShares);
+      break;
+  }
+}
+
 void MyMoneySplit::setAction(const QCString& action)
 {
   m_action = action;

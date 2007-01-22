@@ -59,7 +59,9 @@ public:
 
   virtual bool fixTransactionCommodity(const MyMoneyAccount& account) { return true; }
 
-  static void dissectTransaction(const MyMoneyTransaction& transaction, const MyMoneySplit& split, MyMoneyObjectContainer* objects, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency, KMyMoneyRegister::investTransactionTypeE& transactionType);
+  void totalAmount(MyMoneyMoney& amount) const;
+
+  static void dissectTransaction(const MyMoneyTransaction& transaction, const MyMoneySplit& split, MyMoneyObjectContainer* objects, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency, MyMoneySplit::investTransactionTypeE& transactionType);
 
 protected slots:
   void slotCreateSecurity(const QString& name, QCString& id);
@@ -69,7 +71,7 @@ protected slots:
   int slotEditInterestSplits(void);
   int slotEditFeeSplits(void);
 
-  void slotUpdateActivity(KMyMoneyRegister::investTransactionTypeE);
+  void slotUpdateActivity(MyMoneySplit::investTransactionTypeE);
   void slotUpdateSecurity(const QCString& stockId);
   void slotUpdateInterestCategory(const QCString& id);
   void slotUpdateInterestVisibility(const QString&);
@@ -93,7 +95,7 @@ protected:
     */
   void loadEditWidgets(KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
 
-  void activityFactory(KMyMoneyRegister::investTransactionTypeE type);
+  void activityFactory(MyMoneySplit::investTransactionTypeE type);
 
   MyMoneyMoney subtotal(const QValueList<MyMoneySplit>& splits) const;
 
@@ -107,7 +109,7 @@ private:
   QValueList<MyMoneySplit>                  m_feeSplits;
   MyMoneySecurity                           m_security;
   MyMoneySecurity                           m_currency;
-  KMyMoneyRegister::investTransactionTypeE  m_transactionType;
+  MyMoneySplit::investTransactionTypeE      m_transactionType;
   InvestTransactionEditorPrivate*           d;
 };
 

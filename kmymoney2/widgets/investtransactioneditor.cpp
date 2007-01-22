@@ -108,39 +108,39 @@ InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* reg
   activityFactory(m_transactionType);
 }
 
-void InvestTransactionEditor::activityFactory(KMyMoneyRegister::investTransactionTypeE type)
+void InvestTransactionEditor::activityFactory(MyMoneySplit::investTransactionTypeE type)
 {
   if(!d->m_activity || type != d->m_activity->type()) {
     delete d->m_activity;
     switch(type) {
       default:
-      case BuyShares:
+      case MyMoneySplit::BuyShares:
         d->m_activity = new Buy(this);
         break;
-      case SellShares:
+      case MyMoneySplit::SellShares:
         d->m_activity = new Sell(this);
         break;
-      case Dividend:
-      case Yield:
+      case MyMoneySplit::Dividend:
+      case MyMoneySplit::Yield:
         d->m_activity = new Div(this);
         break;
-      case ReinvestDividend:
+      case MyMoneySplit::ReinvestDividend:
         d->m_activity = new Reinvest(this);
         break;
-      case AddShares:
+      case MyMoneySplit::AddShares:
         d->m_activity = new Add(this);
         break;
-      case RemoveShares:
+      case MyMoneySplit::RemoveShares:
         d->m_activity = new Remove(this);
         break;
-      case SplitShares:
+      case MyMoneySplit::SplitShares:
         d->m_activity = new Split(this);
         break;
     }
   }
 }
 
-void InvestTransactionEditor::dissectTransaction(const MyMoneyTransaction& transaction, const MyMoneySplit& split, MyMoneyObjectContainer* objects, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency, KMyMoneyRegister::investTransactionTypeE& transactionType)
+void InvestTransactionEditor::dissectTransaction(const MyMoneyTransaction& transaction, const MyMoneySplit& split, MyMoneyObjectContainer* objects, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency, MyMoneySplit::investTransactionTypeE& transactionType)
 {
   // collect the splits. split references the stock account and should already
   // be set up. assetAccountSplit references the corresponding asset account (maybe
@@ -164,19 +164,19 @@ void InvestTransactionEditor::dissectTransaction(const MyMoneyTransaction& trans
 
   // determine transaction type
   if(split.action() == MyMoneySplit::ActionAddShares) {
-    transactionType = (!split.shares().isNegative()) ? AddShares : RemoveShares;
+    transactionType = (!split.shares().isNegative()) ? MyMoneySplit::AddShares : MyMoneySplit::RemoveShares;
   } else if(split.action() == MyMoneySplit::ActionBuyShares) {
-    transactionType = (!split.value().isNegative()) ? BuyShares : SellShares;
+    transactionType = (!split.value().isNegative()) ? MyMoneySplit::BuyShares : MyMoneySplit::SellShares;
   } else if(split.action() == MyMoneySplit::ActionDividend) {
-    transactionType = Dividend;
+    transactionType = MyMoneySplit::Dividend;
   } else if(split.action() == MyMoneySplit::ActionReinvestDividend) {
-    transactionType = ReinvestDividend;
+    transactionType = MyMoneySplit::ReinvestDividend;
   } else if(split.action() == MyMoneySplit::ActionYield) {
-    transactionType = Yield;
+    transactionType = MyMoneySplit::Yield;
   } else if(split.action() == MyMoneySplit::ActionSplitShares) {
-    transactionType = SplitShares;
+    transactionType = MyMoneySplit::SplitShares;
   } else
-    transactionType = BuyShares;
+    transactionType = MyMoneySplit::BuyShares;
 
   currency.setTradingSymbol("???");
   try {
@@ -190,8 +190,8 @@ void InvestTransactionEditor::createEditWidgets(void)
 {
   KMyMoneyActivityCombo* activity = new KMyMoneyActivityCombo();
   m_editWidgets["activity"] = activity;
-  connect(activity, SIGNAL(activitySelected(KMyMoneyRegister::investTransactionTypeE)), this, SLOT(slotUpdateActivity(KMyMoneyRegister::investTransactionTypeE)));
-  connect(activity, SIGNAL(activitySelected(KMyMoneyRegister::investTransactionTypeE)), this, SLOT(slotUpdateButtonState()));
+  connect(activity, SIGNAL(activitySelected(MyMoneySplit::investTransactionTypeE)), this, SLOT(slotUpdateActivity(MyMoneySplit::investTransactionTypeE)));
+  connect(activity, SIGNAL(activitySelected(MyMoneySplit::investTransactionTypeE)), this, SLOT(slotUpdateButtonState()));
 
   m_editWidgets["postdate"] = new kMyMoneyDateInput;
 
@@ -607,39 +607,43 @@ void InvestTransactionEditor::slotUpdateSecurity(const QCString& stockId)
   slotUpdateTotalAmount();
 }
 
+void InvestTransactionEditor::totalAmount(MyMoneyMoney& amount) const
+{
+  KMyMoneyActivityCombo* activityCombo = dynamic_cast<KMyMoneyActivityCombo*>(haveWidget("activity"));
+  kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+  kMyMoneyEdit* priceEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("price"));
+  kMyMoneyEdit* feesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount"));
+  kMyMoneyEdit* interestEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("interest-amount"));
+
+  if(activityCombo->activity() != MyMoneySplit::ReinvestDividend) {
+    amount = sharesEdit->value().abs() * priceEdit->value().abs();
+  }
+
+  if(feesEdit->isVisible()) {
+    MyMoneyMoney fee = feesEdit->value();
+    if(activityCombo->activity() == MyMoneySplit::BuyShares)
+      amount += fee;
+    else
+      amount -= fee;
+  }
+
+  if(interestEdit->isVisible()) {
+    amount += interestEdit->value();
+  }
+}
+
 void InvestTransactionEditor::slotUpdateTotalAmount(void)
 {
   QLabel* total = dynamic_cast<QLabel*>(haveWidget("total"));
 
   if(total && total->isVisible()) {
-    KMyMoneyActivityCombo* activityCombo = dynamic_cast<KMyMoneyActivityCombo*>(haveWidget("activity"));
-    kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
-    kMyMoneyEdit* priceEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("price"));
-    kMyMoneyEdit* feesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount"));
-    kMyMoneyEdit* interestEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("interest-amount"));
-
     MyMoneyMoney amount;
-    if(activityCombo->activity() != ReinvestDividend) {
-      amount = sharesEdit->value().abs() * priceEdit->value().abs();
-    }
-
-    if(feesEdit->isVisible()) {
-      MyMoneyMoney fee = feesEdit->value();
-      if(activityCombo->activity() == BuyShares)
-        amount += fee;
-      else
-        amount -= fee;
-    }
-
-    if(interestEdit->isVisible()) {
-      amount += interestEdit->value();
-    }
-
+    totalAmount(amount);
     total->setText(amount.formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction())));
   }
 }
 
-void InvestTransactionEditor::slotUpdateActivity(KMyMoneyRegister::investTransactionTypeE activity)
+void InvestTransactionEditor::slotUpdateActivity(MyMoneySplit::investTransactionTypeE activity)
 {
   // create new activity object if required
   activityFactory(activity);
@@ -702,7 +706,7 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
   QValueList<MyMoneySplit> feeSplits;
   QValueList<MyMoneySplit> interestSplits;
   MyMoneySecurity security, currency;
-  KMyMoneyRegister::investTransactionTypeE transactionType;
+  MyMoneySplit::investTransactionTypeE transactionType;
 
   // extract the splits from the original transaction
   dissectTransaction(torig, sorig, m_objects,
@@ -730,7 +734,7 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
   // if the activity is not set in the combo widget, we keep
   // the one which is used in the original transaction
   KMyMoneyActivityCombo* activityCombo = dynamic_cast<KMyMoneyActivityCombo*>(haveWidget("activity"));
-  if(activityCombo->activity() == KMyMoneyRegister::UnknownTransactionType) {
+  if(activityCombo->activity() == MyMoneySplit::UnknownTransactionType) {
     activityFactory(transactionType);
   }
 
@@ -740,6 +744,8 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
   // now switch back to the original activity
   delete d->m_activity;
   d->m_activity = activity;
+
+  return rc;
 }
 
 #include "investtransactioneditor.moc"

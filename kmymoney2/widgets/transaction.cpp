@@ -1251,31 +1251,31 @@ void InvestTransaction::setupForm(TransactionForm* form)
   memo->setSpan(2, 1);
 }
 
-void InvestTransaction::activity(QString& txt, investTransactionTypeE type) const
+void InvestTransaction::activity(QString& txt, MyMoneySplit::investTransactionTypeE type) const
 {
   switch(type) {
-    case AddShares:
+    case MyMoneySplit::AddShares:
       txt = i18n("Add shares");
       break;
-    case RemoveShares:
+    case MyMoneySplit::RemoveShares:
       txt = i18n("Remove shares");
       break;
-    case BuyShares:
+    case MyMoneySplit::BuyShares:
       txt = i18n("Buy shares");
       break;
-    case SellShares:
+    case MyMoneySplit::SellShares:
       txt = i18n("Sell shares");
       break;
-    case Dividend:
+    case MyMoneySplit::Dividend:
       txt = i18n("Dividend");
       break;
-    case ReinvestDividend:
+    case MyMoneySplit::ReinvestDividend:
       txt = i18n("Reinvest Dividend");
       break;
-    case Yield:
+    case MyMoneySplit::Yield:
       txt = i18n("Yield");
       break;
-    case SplitShares:
+    case MyMoneySplit::SplitShares:
       txt = i18n("Split shares");
       break;
     default:
@@ -1853,9 +1853,9 @@ bool InvestTransaction::haveShares(void) const
 {
   bool rc = true;
   switch(m_transactionType) {
-    case Dividend:
-    case Yield:
-    case SplitShares:
+    case MyMoneySplit::Dividend:
+    case MyMoneySplit::Yield:
+    case MyMoneySplit::SplitShares:
       rc = false;
       break;
 
@@ -1869,9 +1869,9 @@ bool InvestTransaction::haveFees(void) const
 {
   bool rc = true;
   switch(m_transactionType) {
-    case AddShares:
-    case RemoveShares:
-    case SplitShares:
+    case MyMoneySplit::AddShares:
+    case MyMoneySplit::RemoveShares:
+    case MyMoneySplit::SplitShares:
       rc = false;
       break;
 
@@ -1885,10 +1885,10 @@ bool InvestTransaction::haveInterest(void) const
 {
   bool rc = false;
   switch(m_transactionType) {
-    case SellShares:
-    case Dividend:
-    case ReinvestDividend:
-    case Yield:
+    case MyMoneySplit::SellShares:
+    case MyMoneySplit::Dividend:
+    case MyMoneySplit::ReinvestDividend:
+    case MyMoneySplit::Yield:
       rc = true;
       break;
 
@@ -1902,9 +1902,9 @@ bool InvestTransaction::havePrice(void) const
 {
   bool rc = false;
   switch(m_transactionType) {
-    case BuyShares:
-    case SellShares:
-    case ReinvestDividend:
+    case MyMoneySplit::BuyShares:
+    case MyMoneySplit::SellShares:
+    case MyMoneySplit::ReinvestDividend:
       rc = true;
       break;
 
@@ -1918,10 +1918,10 @@ bool InvestTransaction::haveAmount(void) const
 {
   bool rc = false;
   switch(m_transactionType) {
-    case BuyShares:
-    case SellShares:
-    case Dividend:
-    case Yield:
+    case MyMoneySplit::BuyShares:
+    case MyMoneySplit::SellShares:
+    case MyMoneySplit::Dividend:
+    case MyMoneySplit::Yield:
       rc = true;
       break;
 
@@ -1935,10 +1935,10 @@ bool InvestTransaction::haveAssetAccount(void) const
 {
   bool rc = true;
   switch(m_transactionType) {
-    case AddShares:
-    case RemoveShares:
-    case SplitShares:
-    case ReinvestDividend:
+    case MyMoneySplit::AddShares:
+    case MyMoneySplit::RemoveShares:
+    case MyMoneySplit::SplitShares:
+    case MyMoneySplit::ReinvestDividend:
       rc = false;
       break;
 
@@ -1950,7 +1950,7 @@ bool InvestTransaction::haveAssetAccount(void) const
 
 bool InvestTransaction::haveSplitRatio(void) const
 {
-  return m_transactionType == SplitShares;
+  return m_transactionType == MyMoneySplit::SplitShares;
 }
 
 void InvestTransaction::splits(MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& feeSplits) const

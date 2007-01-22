@@ -246,17 +246,17 @@ public:
     */
   KMyMoneyActivityCombo(QWidget *w = 0, const char *name=0);
 
-  void setActivity(KMyMoneyRegister::investTransactionTypeE activity);
-  KMyMoneyRegister::investTransactionTypeE activity(void) const { return m_activity; }
+  void setActivity(MyMoneySplit::investTransactionTypeE activity);
+  MyMoneySplit::investTransactionTypeE activity(void) const { return m_activity; }
 
 protected slots:
   void slotSetActivity(const QCString& id);
 
 signals:
-  void activitySelected(KMyMoneyRegister::investTransactionTypeE);
+  void activitySelected(MyMoneySplit::investTransactionTypeE);
 
 private:
-  KMyMoneyRegister::investTransactionTypeE  m_activity;
+  MyMoneySplit::investTransactionTypeE  m_activity;
 };
 
 

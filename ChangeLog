@@ -2,6 +2,8 @@
   * Allow column resizing in accounts, categories and institution view
   * Remember column sizes of these views between sessions
   * Added sort indicator to the lists in the above mentioned views
+  * Moved investTransactionTypeE from KMyMoneyRegister to MyMoneySplit
+  * Fixed path to title label background image
 
 2007-01-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed tab display when starting to create a new transaction via the tab

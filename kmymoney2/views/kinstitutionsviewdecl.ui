@@ -33,7 +33,7 @@
                 <string>Institutions</string>
             </property>
             <property name="rightImageFile">
-                <string></string>
+                <string>pics/titlelabel_background.png</string>
             </property>
         </widget>
         <widget class="Line">

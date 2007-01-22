@@ -70,8 +70,10 @@ KListViewSearchLine::KListViewSearchLine(QWidget *parent, KListView *listView, c
         connect(listView, SIGNAL(destroyed()),
                 this, SLOT(listViewDeleted()));
 
+#if KDE_IS_VERSION(3,3,0)
         connect(listView, SIGNAL(itemAdded(QListViewItem *)),
                 this, SLOT(itemAdded(QListViewItem *)));
+#endif
     }
     else
         setEnabled(false);
@@ -181,8 +183,10 @@ void KListViewSearchLine::setListView(KListView *lv)
         disconnect(d->listView, SIGNAL(destroyed()),
                    this, SLOT(listViewDeleted()));
 
+#if KDE_IS_VERSION(3,3,0)
         disconnect(d->listView, SIGNAL(itemAdded(QListViewItem *)),
                    this, SLOT(itemAdded(QListViewItem *)));
+#endif
     }
 
     d->listView = lv;
@@ -191,8 +195,10 @@ void KListViewSearchLine::setListView(KListView *lv)
         connect(d->listView, SIGNAL(destroyed()),
                 this, SLOT(listViewDeleted()));
 
+#if KDE_IS_VERSION(3,3,0)
         connect(d->listView, SIGNAL(itemAdded(QListViewItem *)),
                 this, SLOT(itemAdded(QListViewItem *)));
+#endif
     }
 
     setEnabled(bool(lv));
@@ -241,41 +247,41 @@ QPopupMenu *KListViewSearchLine::createPopupMenu()
 
         popup->insertSeparator();
         popup->insertItem(i18n("Search Columns"), subMenu);
-    
+
         subMenu->insertItem(i18n("All Visible Columns"), KLISTVIEWSEARCHLINE_ALLVISIBLECOLUMNS_ID);
         subMenu->insertSeparator();
-    
+
         bool allColumnsAreSearchColumns = true;
-	// TODO Make the entry order match the actual column order
-	QHeader* const header = d->listView->header();
-	int visibleColumns = 0;
-	for(int i = 0; i < d->listView->columns(); i++) {
-	    if(d->listView->columnWidth(i)>0) {
-	        QString columnText = d->listView->columnText(i);
-	        if(columnText.isEmpty()) {
-		    int visiblePosition=1;
-		    for(int j = 0; j < header->mapToIndex(i); j++)
-		        if(d->listView->columnWidth(header->mapToSection(j))>0)
-		            visiblePosition++;
-		    columnText = i18n("Column number %1","Column No. %1").arg(visiblePosition);
-	        }
+  // TODO Make the entry order match the actual column order
+  QHeader* const header = d->listView->header();
+  int visibleColumns = 0;
+  for(int i = 0; i < d->listView->columns(); i++) {
+      if(d->listView->columnWidth(i)>0) {
+          QString columnText = d->listView->columnText(i);
+          if(columnText.isEmpty()) {
+        int visiblePosition=1;
+        for(int j = 0; j < header->mapToIndex(i); j++)
+            if(d->listView->columnWidth(header->mapToSection(j))>0)
+                visiblePosition++;
+        columnText = i18n("Column number %1","Column No. %1").arg(visiblePosition);
+          }
                 subMenu->insertItem(columnText, visibleColumns);
-	        if(d->searchColumns.isEmpty() || d->searchColumns.find(i) != d->searchColumns.end())
-		    subMenu->setItemChecked(visibleColumns, true);
+          if(d->searchColumns.isEmpty() || d->searchColumns.find(i) != d->searchColumns.end())
+        subMenu->setItemChecked(visibleColumns, true);
                 else
                     allColumnsAreSearchColumns = false;
-	        visibleColumns++;
-	    }
+          visibleColumns++;
+      }
         }
         subMenu->setItemChecked(KLISTVIEWSEARCHLINE_ALLVISIBLECOLUMNS_ID, allColumnsAreSearchColumns);
-    
+
         // searchColumnsMenuActivated() relies on one possible "all" representation
         if(allColumnsAreSearchColumns && !d->searchColumns.isEmpty())
             d->searchColumns.clear();
     }
-    
-    return popup;   
-}    
+
+    return popup;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // protected slots

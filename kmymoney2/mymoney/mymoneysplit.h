@@ -77,6 +77,18 @@ public:
     MaxReconcileState
   };
 
+  typedef enum {
+    UnknownTransactionType = -1,
+    BuyShares = 0,
+    SellShares,
+    Dividend,
+    ReinvestDividend,
+    Yield,
+    AddShares,
+    RemoveShares,
+    SplitShares
+  } investTransactionTypeE;
+
   MyMoneySplit();
   MyMoneySplit(const QDomElement& node);
   ~MyMoneySplit();
@@ -135,6 +147,7 @@ public:
   void setReconcileDate(const QDate date);
   void setPayeeId(const QCString& payee);
   void setAction(const QCString& action);
+  void setAction(investTransactionTypeE type);
   void setNumber(const QString& number);
   void setBankID(const QString& bankID) { m_bankID = bankID; };
   void setTransactionId(const QCString& id) { m_transactionId = id; }

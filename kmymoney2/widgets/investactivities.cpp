@@ -119,6 +119,21 @@ bool Buy::isComplete(void) const
 bool Buy::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
 {
   qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  if(!isComplete())
+    return false;
+
+  kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+  kMyMoneyEdit* priceEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("price"));
+
+  s0.setAction(MyMoneySplit::BuyShares);
+  if(isMultiSelection()) {
+  } else {
+    MyMoneyMoney total;
+    m_parent->totalAmount(total);
+    s0.setShares(-sharesEdit->value().abs());
+    MyMoneyMoney value = s0.shares() * priceEdit->value().abs();
+    s0.setValue(value);
+  }
   return false;
 }
 
@@ -149,6 +164,8 @@ bool Sell::isComplete(void) const
 bool Sell::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
 {
   qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  if(!isComplete())
+    return false;
   return false;
 }
 
@@ -172,6 +189,8 @@ bool Div::isComplete(void) const
 bool Div::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
 {
   qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  if(!isComplete())
+    return false;
   return false;
 }
 
@@ -200,6 +219,8 @@ bool Reinvest::isComplete(void) const
 bool Reinvest::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
 {
   qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  if(!isComplete())
+    return false;
   return false;
 }
 
@@ -218,6 +239,8 @@ bool Add::isComplete(void) const
 bool Add::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
 {
   qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  if(!isComplete())
+    return false;
   return false;
 }
 
@@ -236,6 +259,8 @@ bool Remove::isComplete(void) const
 bool Remove::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
 {
   qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  if(!isComplete())
+    return false;
   return false;
 }
 
@@ -256,6 +281,8 @@ bool Split::isComplete(void) const
 bool Split::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
 {
   qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
+  if(!isComplete())
+    return false;
   return false;
 }
 

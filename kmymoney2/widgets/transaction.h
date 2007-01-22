@@ -63,18 +63,6 @@ typedef enum {
   MaxColumns
 } Column;
 
-typedef enum {
-  UnknownTransactionType = -1,
-  BuyShares = 0,
-  SellShares,
-  Dividend,
-  ReinvestDividend,
-  Yield,
-  AddShares,
-  RemoveShares,
-  SplitShares
-} investTransactionTypeE;
-
 class Transaction : public RegisterItem
 {
 public:
@@ -361,7 +349,7 @@ protected:
     * @param txt reference to QString where to store the result
     * @param type activity represented as investTransactionTypeE
     */
-  void activity(QString& txt, investTransactionTypeE type) const;
+  void activity(QString& txt, MyMoneySplit::investTransactionTypeE type) const;
 
 private:
   QValueList<MyMoneySplit>  m_feeSplits;
@@ -369,7 +357,7 @@ private:
   MyMoneySplit              m_assetAccountSplit;
   MyMoneySecurity           m_security;
   MyMoneySecurity           m_currency;
-  investTransactionTypeE    m_transactionType;
+  MyMoneySplit::investTransactionTypeE    m_transactionType;
   QString                   m_feeCategory;
   QString                   m_interestCategory;
   MyMoneyMoney              m_feeAmount;

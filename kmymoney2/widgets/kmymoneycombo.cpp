@@ -440,20 +440,20 @@ KMyMoneyActivityCombo::KMyMoneyActivityCombo(QWidget* w, const char* name) :
   m_completion = new kMyMoneyCompletion(this, 0);
   QCString num;
   // add the items in reverse order of appearance (see KMyMoneySelector::newItem() for details)
-  selector()->newTopItem(i18n("Split shares"), QString(), num.setNum(KMyMoneyRegister::SplitShares));
-  selector()->newTopItem(i18n("Remove shares"), QString(), num.setNum(KMyMoneyRegister::RemoveShares));
-  selector()->newTopItem(i18n("Add shares"), QString(), num.setNum(KMyMoneyRegister::AddShares));
-  selector()->newTopItem(i18n("Yield"), QString(), num.setNum(KMyMoneyRegister::Yield));
-  selector()->newTopItem(i18n("Reinvest dividend"), QString(), num.setNum(KMyMoneyRegister::ReinvestDividend));
-  selector()->newTopItem(i18n("Dividend"), QString(), num.setNum(KMyMoneyRegister::Dividend));
-  selector()->newTopItem(i18n("Sell shares"), QString(), num.setNum(KMyMoneyRegister::SellShares));
-  selector()->newTopItem(i18n("Buy shares"), QString(), num.setNum(KMyMoneyRegister::BuyShares));
+  selector()->newTopItem(i18n("Split shares"), QString(), num.setNum(MyMoneySplit::SplitShares));
+  selector()->newTopItem(i18n("Remove shares"), QString(), num.setNum(MyMoneySplit::RemoveShares));
+  selector()->newTopItem(i18n("Add shares"), QString(), num.setNum(MyMoneySplit::AddShares));
+  selector()->newTopItem(i18n("Yield"), QString(), num.setNum(MyMoneySplit::Yield));
+  selector()->newTopItem(i18n("Reinvest dividend"), QString(), num.setNum(MyMoneySplit::ReinvestDividend));
+  selector()->newTopItem(i18n("Dividend"), QString(), num.setNum(MyMoneySplit::Dividend));
+  selector()->newTopItem(i18n("Sell shares"), QString(), num.setNum(MyMoneySplit::SellShares));
+  selector()->newTopItem(i18n("Buy shares"), QString(), num.setNum(MyMoneySplit::BuyShares));
 
   connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
   connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetActivity(const QCString&)));
 }
 
-void KMyMoneyActivityCombo::setActivity(KMyMoneyRegister::investTransactionTypeE activity)
+void KMyMoneyActivityCombo::setActivity(MyMoneySplit::investTransactionTypeE activity)
 {
   m_activity = activity;
   QCString num;
@@ -463,10 +463,10 @@ void KMyMoneyActivityCombo::setActivity(KMyMoneyRegister::investTransactionTypeE
 void KMyMoneyActivityCombo::slotSetActivity(const QCString& id)
 {
   QCString num;
-  for(int i = KMyMoneyRegister::BuyShares; i <= KMyMoneyRegister::SplitShares; ++i) {
+  for(int i = MyMoneySplit::BuyShares; i <= MyMoneySplit::SplitShares; ++i) {
     num.setNum(i);
     if(num == id) {
-      m_activity = static_cast<KMyMoneyRegister::investTransactionTypeE>(i);
+      m_activity = static_cast<MyMoneySplit::investTransactionTypeE>(i);
       break;
     }
   }

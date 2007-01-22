@@ -191,6 +191,26 @@ void MyMoneySplitTest::testSetValue() {
 	CPPUNIT_ASSERT(m->shares() == MyMoneyMoney(3));
 }
 
+void MyMoneySplitTest::testSetAction() {
+	CPPUNIT_ASSERT(m->action() == QCString());
+	m->setAction(MyMoneySplit::BuyShares);
+	CPPUNIT_ASSERT(m->action() == MyMoneySplit::ActionBuyShares);
+	m->setAction(MyMoneySplit::SellShares);
+	CPPUNIT_ASSERT(m->action() == MyMoneySplit::ActionBuyShares);
+	m->setAction(MyMoneySplit::Dividend);
+	CPPUNIT_ASSERT(m->action() == MyMoneySplit::ActionDividend);
+	m->setAction(MyMoneySplit::Yield);
+	CPPUNIT_ASSERT(m->action() == MyMoneySplit::ActionYield);
+	m->setAction(MyMoneySplit::ReinvestDividend);
+	CPPUNIT_ASSERT(m->action() == MyMoneySplit::ActionReinvestDividend);
+	m->setAction(MyMoneySplit::AddShares);
+	CPPUNIT_ASSERT(m->action() == MyMoneySplit::ActionAddShares);
+	m->setAction(MyMoneySplit::RemoveShares);
+	CPPUNIT_ASSERT(m->action() == MyMoneySplit::ActionAddShares);
+	m->setAction(MyMoneySplit::SplitShares);
+	CPPUNIT_ASSERT(m->action() == MyMoneySplit::ActionSplitShares);
+}
+
 void MyMoneySplitTest::testIsAutoCalc() {
 	CPPUNIT_ASSERT(m->isAutoCalc() == false);
 	m->setValue(MyMoneyMoney::autoCalc);

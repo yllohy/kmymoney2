@@ -33,8 +33,8 @@ class QPixmap;
 // Project Includes
 
 /**
-@author ace jones
-*/
+  * @author ace jones
+  */
 class KMyMoneyTitleLabel : public QLabel
 {
   Q_OBJECT
@@ -44,35 +44,35 @@ class KMyMoneyTitleLabel : public QLabel
   Q_PROPERTY( QString text READ text WRITE setText DESIGNABLE true )
 
 public:
-    KMyMoneyTitleLabel(QWidget *parent = 0, const char *name = 0);
-    ~KMyMoneyTitleLabel();
+  KMyMoneyTitleLabel(QWidget *parent = 0, const char *name = 0);
+  ~KMyMoneyTitleLabel();
 
-    void setBgColor(const QColor& _color) { m_bgColor = _color; }
-    void setLeftImageFile(const QString& _file);
-    void setRightImageFile(const QString& _file);
+  void setBgColor(const QColor& _color) { m_bgColor = _color; }
+  void setLeftImageFile(const QString& _file);
+  void setRightImageFile(const QString& _file);
 
-    const QString& leftImageFile(void) const { return m_leftImageFile; }
-    const QString& rightImageFile(void) const { return m_rightImageFile; }
-    QColor bgColor(void) const { return m_bgColor; }
-    QString text(void) const { return m_text; }
+  const QString& leftImageFile(void) const { return m_leftImageFile; }
+  const QString& rightImageFile(void) const { return m_rightImageFile; }
+  QColor bgColor(void) const { return m_bgColor; }
+  QString text(void) const { return m_text; }
 
 public slots:
-    virtual void setText(const QString& txt);
+  virtual void setText(const QString& txt);
 
 protected:
-    void updatePixmap(void);
-    virtual void resizeEvent ( QResizeEvent * );
-    void drawContents(QPainter *);
+  void updatePixmap(void);
+  virtual void resizeEvent ( QResizeEvent * );
+  void drawContents(QPainter *);
 
 private:
-    QImage m_leftImage;
-    QImage m_rightImage;
-    QColor m_bgColor;
-    QColor m_textColor;
-    QString m_text;
+  QImage m_leftImage;
+  QImage m_rightImage;
+  QColor m_bgColor;
+  QColor m_textColor;
+  QString m_text;
 
-    QString m_leftImageFile;
-    QString m_rightImageFile;
+  QString m_leftImageFile;
+  QString m_rightImageFile;
 };
 
 #endif
