@@ -95,7 +95,6 @@ void RegisterItem::setVisible(bool visible)
         m_parent->hideRow(i);
       }
     }
-    // m_parent->forceUpdateLists();
   }
 }
 

@@ -62,14 +62,15 @@ KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char* name) :
 
   setMultiSelection(false);
 
-  setColumnWidthMode(NameColumn, QListView::Maximum);
-  setColumnWidthMode(BalanceColumn, QListView::Maximum);
-  setColumnWidthMode(ValueColumn, QListView::Maximum);
+  setColumnWidthMode(NameColumn, QListView::Manual);
+  setColumnWidthMode(BalanceColumn, QListView::Manual);
+  setColumnWidthMode(ValueColumn, QListView::Manual);
 
   setColumnAlignment(BalanceColumn, Qt::AlignRight);
   setColumnAlignment(ValueColumn, Qt::AlignRight);
 
-  setResizeMode(QListView::AllColumns);
+  setResizeMode(QListView::LastColumn);
+  setShowSortIndicator(true);
   setSorting(0);
 
   header()->setResizeEnabled(true);

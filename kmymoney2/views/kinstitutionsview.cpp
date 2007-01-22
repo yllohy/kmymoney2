@@ -49,10 +49,19 @@ KInstitutionsView::KInstitutionsView(QWidget *parent, const char *name) :
   connect(m_accountTree, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyInstitution&)), this, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyInstitution&)));
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadAccounts()));
+
+  // make sure to use the previous settings. If no settings are found
+  // we use equal distribution of all fields as an initial setting
+  m_accountTree->setColumnWidth(0, 0);
+  m_accountTree->restoreLayout(KGlobal::config(), "Institution View Settings");
+  if(m_accountTree->columnWidth(0) == 0) {
+    m_accountTree->setResizeMode(QListView::AllColumns);
+  }
 }
 
 KInstitutionsView::~KInstitutionsView()
 {
+  m_accountTree->saveLayout(KGlobal::config(), "Institution View Settings");
 }
 
 void KInstitutionsView::show(void)
@@ -70,6 +79,8 @@ void KInstitutionsView::show(void)
   if(item) {
     emit selectObject(item->itemObject());
   }
+
+  m_accountTree->setResizeMode(QListView::LastColumn);
 }
 
 void KInstitutionsView::slotLoadAccounts(void)

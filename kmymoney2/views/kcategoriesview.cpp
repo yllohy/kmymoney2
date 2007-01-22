@@ -56,10 +56,19 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name ) :
   connect(m_accountTree, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)), this, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)));
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadAccounts()));
+
+  // make sure to use the previous settings. If no settings are found
+  // we use equal distribution of all fields as an initial setting
+  m_accountTree->setColumnWidth(0, 0);
+  m_accountTree->restoreLayout(KGlobal::config(), "Category View Settings");
+  if(m_accountTree->columnWidth(0) == 0) {
+    m_accountTree->setResizeMode(QListView::AllColumns);
+  }
 }
 
 KCategoriesView::~KCategoriesView()
 {
+  m_accountTree->saveLayout(KGlobal::config(), "Category View Settings");
 }
 
 void KCategoriesView::show(void)
@@ -77,6 +86,8 @@ void KCategoriesView::show(void)
   if(item) {
     emit selectObject(item->itemObject());
   }
+
+  m_accountTree->setResizeMode(QListView::LastColumn);
 }
 
 void KCategoriesView::slotLoadAccounts(void)

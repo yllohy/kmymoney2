@@ -1,3 +1,8 @@
+2007-01-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow column resizing in accounts, categories and institution view
+  * Remember column sizes of these views between sessions
+  * Added sort indicator to the lists in the above mentioned views
+
 2007-01-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed tab display when starting to create a new transaction via the tab
 
