@@ -557,7 +557,6 @@ void KGlobalLedgerView::loadView(void)
     // add a last empty entry for new transactions
     // leave some information about the current account
     MyMoneySplit split;
-    split.setAccountId(m_account.id());
     split.setReconcileFlag(MyMoneySplit::Unknown);
     KMyMoneyRegister::Register::transactionFactory(m_register, m_objects, MyMoneyTransaction(), split);
 

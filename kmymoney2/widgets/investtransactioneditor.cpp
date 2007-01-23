@@ -416,7 +416,15 @@ void InvestTransactionEditor::slotUpdateInterestCategory(const QCString& id)
 
 void InvestTransactionEditor::slotUpdateInterestVisibility(const QString& txt)
 {
-  haveWidget("interest-amount")->setHidden(txt.isEmpty());
+  KMyMoneyCategory* interest = dynamic_cast<KMyMoneyCategory*>(haveWidget("interest-account"));
+  if(dynamic_cast<Reinvest*>(d->m_activity)) {
+    interest->splitButton()->hide();
+    haveWidget("interest-amount")->setHidden(true);
+  } else {
+    haveWidget("interest-amount")->setHidden(txt.isEmpty());
+    // FIXME once we can handle split interest, we need to uncomment the next line
+    // interest->splitButton()->show();
+  }
 }
 
 void InvestTransactionEditor::slotCreateInterestCategory(const QString& name, QCString& id)
@@ -526,7 +534,10 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
     slotUpdateTotalAmount();
 
     // status
+    if(m_split.reconcileFlag() == MyMoneySplit::Unknown)
+      m_split.setReconcileFlag(MyMoneySplit::NotReconciled);
     reconcile->setState(m_split.reconcileFlag());
+
   } else {
     postDate->loadDate(QDate());
     reconcile->setState(MyMoneySplit::Unknown);
@@ -615,9 +626,7 @@ void InvestTransactionEditor::totalAmount(MyMoneyMoney& amount) const
   kMyMoneyEdit* feesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount"));
   kMyMoneyEdit* interestEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("interest-amount"));
 
-  if(activityCombo->activity() != MyMoneySplit::ReinvestDividend) {
-    amount = sharesEdit->value().abs() * priceEdit->value().abs();
-  }
+  amount = sharesEdit->value().abs() * priceEdit->value().abs();
 
   if(feesEdit->isVisible()) {
     MyMoneyMoney fee = feesEdit->value();
@@ -672,24 +681,107 @@ void InvestTransactionEditor::slotUpdateActivity(MyMoneySplit::investTransaction
     slotUpdateFeeVisibility(cat->currentText());
 }
 
+bool InvestTransactionEditor::setupPrice(const MyMoneyTransaction& t, MyMoneySplit& split)
+{
+  MyMoneyAccount acc = m_objects->account(split.accountId());
+  if(acc.currencyId() != t.commodity()) {
+    MyMoneySecurity toCurrency(m_objects->security(acc.currencyId()));
+    int fract = toCurrency.smallestAccountFraction();
+    if(acc.accountType() == MyMoneyAccount::Cash)
+      fract = toCurrency.smallestCashFraction();
+
+    QMap<QCString, MyMoneyMoney>::Iterator it_p;
+    QCString key = t.commodity() + "-" + acc.currencyId();
+    qDebug("key is '%s'", key.data());
+    it_p = m_priceInfo.find(key);
+
+    // if it's not found, then collect it from the user first
+    MyMoneyMoney price;
+    if(it_p == m_priceInfo.end()) {
+      MyMoneySecurity fromCurrency = m_objects->security(t.commodity());
+      MyMoneyMoney fromValue, toValue;
+
+      fromValue = split.value();
+      MyMoneyPrice priceInfo = MyMoneyFile::instance()->price(fromCurrency.id(), toCurrency.id());
+      toValue = split.value() * priceInfo.rate();
+      qDebug("fromValue = %s", fromValue.toString().data());
+      qDebug("price     = %s", priceInfo.rate().toString().data());
+      qDebug("toValue   = %s", toValue.toString().data());
+
+      KCurrencyCalculator calc(fromCurrency,
+                                toCurrency,
+                                fromValue,
+                                toValue,
+                                t.postDate(),
+                                fract,
+                                m_regForm, "currencyCalculator");
+
+      if(calc.exec() == QDialog::Rejected) {
+        return false;
+      }
+      price = calc.price();
+      m_priceInfo[key] = price;
+    } else {
+      price = (*it_p);
+    }
+
+    // update shares if the transaction commodity is the currency
+    // of the current selected account
+    split.setShares((split.value() * price).convert(fract));
+  } else
+    split.setShares(split.value());
+
+  return true;
+}
+
 bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig)
 {
+  // we start with the previous values, make sure we can add them later on
   t = torig;
+  MyMoneySplit s0 = sorig;
+  s0.clearId();
+
+  KMyMoneySecurity* sec = dynamic_cast<KMyMoneySecurity*>(m_editWidgets["security"]);
+  if(!isMultiSelection() || (isMultiSelection() && !sec->currentText().isEmpty())) {
+    QCString securityId;
+    QCStringList list;
+    sec->selectedItems(list);
+    if(!list.isEmpty()) {
+      securityId = list[0];
+      s0.setAccountId(securityId);
+      MyMoneyAccount stockAccount = m_objects->account(securityId);
+      QCString currencyId = stockAccount.currencyId();
+      MyMoneySecurity security = m_objects->security(currencyId);
+
+      t.setCommodity(security.tradingCurrency());
+    } else {
+      qDebug("InvestTransactionEditor::createTransaction: no security selected!");
+      return false;
+    }
+  }
+
+  // extract price info from original transaction
+  m_priceInfo.clear();
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  if(!torig.id().isEmpty()) {
+    for(it_s = torig.splits().begin(); it_s != torig.splits().end(); ++it_s) {
+      if((*it_s).id() != sorig.id()) {
+        MyMoneyAccount cat = m_objects->account((*it_s).accountId());
+        if(cat.currencyId() != m_account.currencyId()) {
+          if(!(*it_s).shares().isZero() && !(*it_s).value().isZero()) {
+            m_priceInfo[cat.currencyId()] = ((*it_s).shares() / (*it_s).value()).reduce();
+          }
+        }
+      }
+    }
+  }
 
   t.removeSplits();
-  t.setCommodity(m_account.currencyId());
 
   kMyMoneyDateInput* postDate = dynamic_cast<kMyMoneyDateInput*>(m_editWidgets["postdate"]);
   if(postDate->date().isValid()) {
     t.setPostDate(postDate->date());
   }
-
-  // we start with the previous values, make sure we can add them later on
-  MyMoneySplit s0 = sorig;
-  s0.clearId();
-
-  // make sure we reference this account here
-  s0.setAccountId(m_account.id());
 
   // memo and number field are special: if we have multiple transactions selected
   // and the edit field is empty, we treat it as "not modified".
@@ -738,12 +830,41 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
     activityFactory(transactionType);
   }
 
+  // if we mark the split reconciled here, we'll use today's date if no reconciliation date is given
+  KMyMoneyReconcileCombo* status = dynamic_cast<KMyMoneyReconcileCombo*>(m_editWidgets["status"]);
+  if(status->state() != MyMoneySplit::Unknown)
+    s0.setReconcileFlag(status->state());
+
+  if(s0.reconcileFlag() == MyMoneySplit::Reconciled && !s0.reconcileDate().isValid())
+    s0.setReconcileDate(QDate::currentDate());
+
   // call the creation logic for the current selected activity
-  bool rc = d->m_activity->createTransaction(t, s0, assetAccountSplit, feeSplits, interestSplits, security, currency);
+  bool rc = d->m_activity->createTransaction(t, s0, assetAccountSplit, feeSplits, m_feeSplits, interestSplits, m_interestSplits, security, currency);
 
   // now switch back to the original activity
   delete d->m_activity;
   d->m_activity = activity;
+
+  // add the splits to the transaction
+  if(rc) {
+    if(!assetAccountSplit.accountId().isEmpty()) {
+      assetAccountSplit.clearId();
+      t.addSplit(assetAccountSplit);
+    }
+
+    t.addSplit(s0);
+
+    QValueList<MyMoneySplit>::iterator it_s;
+    for(it_s = feeSplits.begin(); it_s != feeSplits.end(); ++it_s) {
+      (*it_s).clearId();
+      t.addSplit(*it_s);
+    }
+
+    for(it_s = interestSplits.begin(); it_s != interestSplits.end(); ++it_s) {
+      (*it_s).clearId();
+      t.addSplit(*it_s);
+    }
+  }
 
   return rc;
 }

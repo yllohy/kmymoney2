@@ -1,3 +1,6 @@
+2007-01-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * More work on invest transaction editor
+
 2007-01-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow column resizing in accounts, categories and institution view
   * Remember column sizes of these views between sessions

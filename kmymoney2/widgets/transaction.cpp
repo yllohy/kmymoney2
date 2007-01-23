@@ -1368,7 +1368,7 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
 
         case ValueColumn2:
           align |= Qt::AlignRight;
-          if((fieldEditable = havePrice()) == true) {
+          if((fieldEditable = havePrice()) == true && !m_split.shares().isZero()) {
             txt = (m_split.value() / m_split.shares()).formatMoney("", KMyMoneyGlobalSettings::pricePrecision());
           }
           break;

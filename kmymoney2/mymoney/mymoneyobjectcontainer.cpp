@@ -78,13 +78,15 @@ const QString MyMoneyObjectContainer::accountToCategory(const QCString& accountI
   MyMoneyAccount acc;
   QString rc;
 
-  acc = account(accountId);
-  do {
-    if(!rc.isEmpty())
-      rc = QString(CATEGORY_SEPERATOR) + rc;
-    rc = acc.name() + rc;
-    acc = account(acc.parentAccountId());
-  } while(!MyMoneyFile::instance()->isStandardAccount(acc.id()));
+  if(!accountId.isEmpty()) {
+    acc = account(accountId);
+    do {
+      if(!rc.isEmpty())
+        rc = QString(CATEGORY_SEPERATOR) + rc;
+      rc = acc.name() + rc;
+      acc = account(acc.parentAccountId());
+    } while(!MyMoneyFile::instance()->isStandardAccount(acc.id()));
+  }
 
   return rc;
 }

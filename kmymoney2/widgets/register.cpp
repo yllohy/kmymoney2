@@ -1728,6 +1728,8 @@ void Register::keyPressEvent(QKeyEvent* ev)
 Transaction* Register::transactionFactory(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split)
 {
   Transaction* t = 0;
+  MyMoneySplit s = split;
+
   switch(parent->account().accountType()) {
     case MyMoneyAccount::Checkings:
     case MyMoneyAccount::Savings:
@@ -1740,7 +1742,9 @@ Transaction* Register::transactionFactory(Register *parent, MyMoneyObjectContain
     case MyMoneyAccount::Income:
     case MyMoneyAccount::Expense:
     case MyMoneyAccount::AssetLoan:
-      t = new KMyMoneyRegister::StdTransaction(parent, objects, transaction, split);
+      if(s.accountId().isEmpty())
+        s.setAccountId(parent->account().id());
+      t = new KMyMoneyRegister::StdTransaction(parent, objects, transaction, s);
       break;
 
     case MyMoneyAccount::Investment:

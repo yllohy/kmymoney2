@@ -47,7 +47,7 @@ public:
     *
     * @return @p true if creation was successful, @p false otherwise
     */
-  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency) = 0;
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency) = 0;
 
 protected:
   Activity(InvestTransactionEditor* editor) { m_parent = editor; }
@@ -58,12 +58,14 @@ protected:
   bool haveShares(void) const;
   bool havePrice(void) const;
   bool isMultiSelection(void) const { return m_parent->isMultiSelection(); }
-
-private:
+  bool createCategorySplits(const MyMoneyTransaction& t, KMyMoneyCategory* cat, kMyMoneyEdit* amount, MyMoneyMoney factor, QValueList<MyMoneySplit>&splits, const QValueList<MyMoneySplit>& osplits ) const;
+  void createAssetAccountSplit(MyMoneySplit& split, const MyMoneySplit& stockSplit) const;
+  MyMoneyMoney sumSplits(const MyMoneySplit& s0, const QValueList<MyMoneySplit>& feeSplits, const QValueList<MyMoneySplit>& interestSplits) const;
   bool haveCategoryAndAmount(const QString& category, const QString& amount, bool optional) const;
 
 protected:
-  InvestTransactionEditor*    m_parent;
+  InvestTransactionEditor*      m_parent;
+  QMap<QCString, MyMoneyMoney>  m_priceInfo;
 };
 
 class Buy : public Activity
@@ -73,7 +75,7 @@ public:
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::BuyShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
-  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 class Sell : public Activity
@@ -83,7 +85,7 @@ public:
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::SellShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
-  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 class Div : public Activity
@@ -93,7 +95,7 @@ public:
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::Dividend; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
-  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 class Reinvest : public Activity
@@ -103,7 +105,7 @@ public:
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::ReinvestDividend; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
-  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 class Add : public Activity
@@ -113,7 +115,7 @@ public:
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::AddShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
-  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 class Remove : public Activity
@@ -123,7 +125,7 @@ public:
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::RemoveShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
-  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 class Split : public Activity
@@ -133,7 +135,7 @@ public:
   virtual MyMoneySplit::investTransactionTypeE type(void) const { return MyMoneySplit::SplitShares; }
   virtual void showWidgets(void) const;
   virtual bool isComplete(void) const;
-  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
+  virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency);
 };
 
 } // namespace Invest

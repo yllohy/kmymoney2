@@ -63,6 +63,8 @@ public:
 
   static void dissectTransaction(const MyMoneyTransaction& transaction, const MyMoneySplit& split, MyMoneyObjectContainer* objects, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency, MyMoneySplit::investTransactionTypeE& transactionType);
 
+  bool setupPrice(const MyMoneyTransaction& t, MyMoneySplit& split);
+
 protected slots:
   void slotCreateSecurity(const QString& name, QCString& id);
   void slotCreateFeeCategory(const QString& name, QCString& id);
