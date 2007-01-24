@@ -824,7 +824,7 @@ void MyMoneyStorageSql::writeFileInfo() {
   q.bindValue(":currencies", m_currencies);
   q.bindValue(":schedules", m_schedules);
   q.bindValue(":reports", m_reports);
-  q.bindValue(":kvps", m_kvps);
+  q.bindValue(":kvps", m_kvps + m_storage->pairs().count());
   q.bindValue(":dateRangeStart", QDate());
   q.bindValue(":dateRangeEnd", QDate());
   q.bindValue(":hiInstitutionId", (m_storage->institutionId() > m_hiIdInstitutions ? m_storage->institutionId() : m_hiIdInstitutions));
