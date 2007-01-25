@@ -18,8 +18,12 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qlabel.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
+
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -110,8 +114,8 @@ bool Activity::createCategorySplits(const MyMoneyTransaction& t, KMyMoneyCategor
         s1.setValue(amount->value() * factor);
         if(!s1.value().isZero()) {
           rc = m_parent->setupPrice(t, s1);
-          splits.append(s1);
         }
+        splits.append(s1);
       }
     } else {
       splits = osplits;
@@ -149,6 +153,16 @@ MyMoneyMoney Activity::sumSplits(const MyMoneySplit& s0, const QValueList<MyMone
   return total;
 }
 
+void Activity::setLabelText(const QString& idx, const QString& txt) const
+{
+  QLabel* w = dynamic_cast<QLabel*>(haveWidget(idx));
+  if(w) {
+    w->setText(txt);
+  } else {
+    qDebug("Unknown QLabel named '%s'", idx.data());
+  }
+}
+
 void Buy::showWidgets(void) const
 {
   KMyMoneyCategory* cat;
@@ -158,6 +172,11 @@ void Buy::showWidgets(void) const
   haveWidget("shares")->show();
   haveWidget("price")->show();
   haveWidget("total")->show();
+  setLabelText("fee-label", i18n("Fees"));
+  setLabelText("asset-label", i18n("Account"));
+  setLabelText("shares-label", i18n("Shares"));
+  setLabelText("price-label", i18n("Price/share"));
+  setLabelText("total-label", i18n("Total"));
 }
 
 bool Buy::isComplete(void) const
@@ -221,6 +240,13 @@ void Sell::showWidgets(void) const
   haveWidget("shares")->show();
   haveWidget("price")->show();
   haveWidget("total")->show();
+
+  setLabelText("fee-label", i18n("Fees"));
+  setLabelText("interest-label", i18n("Interest"));
+  setLabelText("asset-label", i18n("Account"));
+  setLabelText("shares-label", i18n("Shares"));
+  setLabelText("price-label", i18n("Price/share"));
+  setLabelText("total-label", i18n("Total"));
 }
 
 bool Sell::isComplete(void) const
@@ -283,6 +309,10 @@ void Div::showWidgets(void) const
   cat->parentWidget()->show();
   haveWidget("asset-account")->show();
   haveWidget("total")->show();
+
+  setLabelText("interest-label", i18n("Interest"));
+  setLabelText("asset-label", i18n("Account"));
+  setLabelText("total-label", i18n("Total"));
 }
 
 bool Div::isComplete(void) const
@@ -329,6 +359,12 @@ void Reinvest::showWidgets(void) const
   haveWidget("shares")->show();
   haveWidget("price")->show();
   haveWidget("total")->show();
+
+  setLabelText("fee-label", i18n("Fees"));
+  setLabelText("interest-label", i18n("Interest"));
+  setLabelText("shares-label", i18n("Shares"));
+  setLabelText("price-label", i18n("Price/share"));
+  setLabelText("total-label", i18n("Total"));
 }
 
 bool Reinvest::isComplete(void) const
@@ -357,7 +393,7 @@ bool Reinvest::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMone
     price = (s0.value() / s0.shares()).reduce();
 
   if(!isMultiSelection() || (isMultiSelection() && !sharesEdit->text().isEmpty())) {
-    shares = -sharesEdit->value().abs();
+    shares = sharesEdit->value().abs();
     s0.setShares(shares);
     s0.setValue((shares * price).reduce());
   }
@@ -372,15 +408,18 @@ bool Reinvest::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMone
   if(!createCategorySplits(t, dynamic_cast<KMyMoneyCategory*>(haveWidget("interest-account")), dynamic_cast<kMyMoneyEdit*>(haveWidget("interest-amount")), MyMoneyMoney(-1,1), interestSplits, m_interestSplits))
     return false;
 
-#if 0
-  // createAssetAccountSplit(assetAccountSplit, s0);
-
-  MyMoneyMoney total = sumSplits(s0, feeSplits, interestSplits);
-  assetAccountSplit.setValue(-total);
-
-  if(!m_parent->setupPrice(t, assetAccountSplit))
+  if(interestSplits.count() != 1) {
+    qDebug("more or less than one interest split in Reinvest::createTransaction. Not created.");
     return false;
-#endif
+  }
+
+  MyMoneySplit& s1 = interestSplits[0];
+
+  MyMoneyMoney total = sumSplits(s0, feeSplits, QValueList<MyMoneySplit>());
+  s1.setValue(-total);
+
+  if(!m_parent->setupPrice(t, s1))
+    return false;
 
   return true;
 }
@@ -388,6 +427,7 @@ bool Reinvest::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMone
 void Add::showWidgets(void) const
 {
   haveWidget("shares")->show();
+  setLabelText("shares-label", i18n("Shares"));
 }
 
 bool Add::isComplete(void) const
@@ -399,15 +439,25 @@ bool Add::isComplete(void) const
 
 bool Add::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
 {
-  qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
   if(!isComplete())
     return false;
-  return false;
+
+  kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+
+  s0.setAction(MyMoneySplit::AddShares);
+  s0.setShares(sharesEdit->value().abs());
+  s0.setValue(MyMoneyMoney(0, 1));
+
+  feeSplits.clear();
+  interestSplits.clear();
+
+  return true;
 }
 
 void Remove::showWidgets(void) const
 {
   haveWidget("shares")->show();
+  setLabelText("shares-label", i18n("Shares"));
 }
 
 bool Remove::isComplete(void) const
@@ -419,32 +469,47 @@ bool Remove::isComplete(void) const
 
 bool Remove::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
 {
-  qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
   if(!isComplete())
     return false;
-  return false;
+
+  kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+
+  s0.setAction(MyMoneySplit::AddShares);
+  s0.setShares(-(sharesEdit->value().abs()));
+  s0.setValue(MyMoneyMoney(0, 1));
+
+  feeSplits.clear();
+  interestSplits.clear();
+
+  return true;
 }
 
 void Split::showWidgets(void) const
 {
-  // FIXME do we need a split ratio widget?
+  // TODO do we need a special split ratio widget?
   haveWidget("shares")->show();
+  setLabelText("shares-label", i18n("Ratio 1/"));
 }
 
 bool Split::isComplete(void) const
 {
   bool rc = Activity::isComplete();
-  rc = false; // TODO to be implemented
-
+  rc &= haveShares();
   return rc;
 }
 
 bool Split::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency)
 {
-  qDebug("%s not yet implemented", __PRETTY_FUNCTION__);
-  if(!isComplete())
-    return false;
-  return false;
+  kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+
+  s0.setAction(MyMoneySplit::SplitShares);
+  s0.setShares(sharesEdit->value().abs());
+  s0.setValue(MyMoneyMoney(0, 1));
+
+  feeSplits.clear();
+  interestSplits.clear();
+
+  return true;
 }
 
 

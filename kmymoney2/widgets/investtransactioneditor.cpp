@@ -241,7 +241,6 @@ void InvestTransactionEditor::createEditWidgets(void)
   value->setHint(i18n("Shares"));
   value->setResetButtonVisible(false);
   m_editWidgets["shares"] = value;
-  connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount(const QString&)));
   connect(value, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount()));
 
@@ -249,7 +248,6 @@ void InvestTransactionEditor::createEditWidgets(void)
   value->setHint(i18n("Price"));
   value->setResetButtonVisible(false);
   m_editWidgets["price"] = value;
-  connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount(const QString&)));
   connect(value, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount()));
 
@@ -269,13 +267,45 @@ void InvestTransactionEditor::createEditWidgets(void)
   connect(value, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount()));
 
+  KMyMoneyReconcileCombo* reconcile = new KMyMoneyReconcileCombo;
+  m_editWidgets["status"] = reconcile;
+  connect(reconcile, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateButtonState()));
+
   QLabel* label = new QLabel("", 0);
   label->setAlignment(Qt::AlignVCenter | Qt::AlignRight | Qt::DontClip);
   m_editWidgets["total"] = label;
 
-  KMyMoneyReconcileCombo* reconcile = new KMyMoneyReconcileCombo;
-  m_editWidgets["status"] = reconcile;
-  connect(reconcile, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateButtonState()));
+  label = new QLabel("", 0);
+  label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
+  m_editWidgets["total-label"] = label;
+
+  label = new QLabel("", 0);
+  label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
+  m_editWidgets["asset-label"] = label;
+
+  label = new QLabel("", 0);
+  label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
+  m_editWidgets["fee-label"] = label;
+
+  label = new QLabel("", 0);
+  label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
+  m_editWidgets["fee-amount-label"] = label;
+
+  label = new QLabel("", 0);
+  label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
+  m_editWidgets["interest-label"] = label;
+
+  label = new QLabel("", 0);
+  label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
+  m_editWidgets["interest-amount-label"] = label;
+
+  label = new QLabel("", 0);
+  label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
+  m_editWidgets["price-label"] = label;
+
+  label = new QLabel("", 0);
+  label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
+  m_editWidgets["shares-label"] = label;
 
   // if we don't have more than 1 selected transaction, we don't need
   // the "don't change" item in some of the combo widgets
@@ -407,6 +437,9 @@ void InvestTransactionEditor::slotUpdateFeeCategory(const QCString& id)
 void InvestTransactionEditor::slotUpdateFeeVisibility(const QString& txt)
 {
   haveWidget("fee-amount")->setHidden(txt.isEmpty());
+  QWidget* w = haveWidget("fee-amount-label");
+  if(w)
+    w->setShown(haveWidget("fee-amount")->isVisible());
 }
 
 void InvestTransactionEditor::slotUpdateInterestCategory(const QCString& id)
@@ -425,6 +458,9 @@ void InvestTransactionEditor::slotUpdateInterestVisibility(const QString& txt)
     // FIXME once we can handle split interest, we need to uncomment the next line
     // interest->splitButton()->show();
   }
+  QWidget* w = haveWidget("interest-amount-label");
+  if(w)
+    w->setShown(haveWidget("interest-amount")->isVisible());
 }
 
 void InvestTransactionEditor::slotCreateInterestCategory(const QString& name, QCString& id)
@@ -629,15 +665,21 @@ void InvestTransactionEditor::totalAmount(MyMoneyMoney& amount) const
   amount = sharesEdit->value().abs() * priceEdit->value().abs();
 
   if(feesEdit->isVisible()) {
-    MyMoneyMoney fee = feesEdit->value();
-    if(activityCombo->activity() == MyMoneySplit::BuyShares)
-      amount += fee;
-    else
-      amount -= fee;
+    MyMoneyMoney fee = feesEdit->value().abs();
+    MyMoneyMoney factor(-1,1);
+    switch(activityCombo->activity()) {
+      case MyMoneySplit::BuyShares:
+      case MyMoneySplit::ReinvestDividend:
+        factor = MyMoneyMoney(1,1);
+        break;
+      default:
+        break;
+    }
+    amount += (fee * factor);
   }
 
   if(interestEdit->isVisible()) {
-    amount += interestEdit->value();
+    amount += interestEdit->value().abs();
   }
 }
 
@@ -663,12 +705,28 @@ void InvestTransactionEditor::slotUpdateActivity(MyMoneySplit::investTransaction
   // category widgets)
   haveWidget("interest-account")->parentWidget()->hide();
   haveWidget("fee-account")->parentWidget()->hide();
-  haveWidget("asset-account")->hide();
-  haveWidget("interest-amount")->hide();
-  haveWidget("fee-amount")->hide();
-  haveWidget("shares")->hide();
-  haveWidget("price")->hide();
-  haveWidget("total")->hide();
+
+  QStringList dynwidgets;
+  dynwidgets << "total-label" << "asset-label" << "fee-label" << "fee-amount-label" << "interest-label" << "interest-amount-label" << "price-label" << "shares-label";
+
+  // hiding labels works by clearing them. hide() does not do the job
+  // as the underlying text in the QTable object will shine through
+  QStringList::const_iterator it_s;
+  for(it_s = dynwidgets.begin(); it_s != dynwidgets.end(); ++it_s) {
+    QLabel* w = dynamic_cast<QLabel*>(haveWidget(*it_s));
+    if(w)
+      w->setText(" ");
+  }
+
+  // real widgets can be hidden
+  dynwidgets.clear();
+  dynwidgets << "asset-account" << "interest-amount" << "fee-amount" << "shares" << "price" << "total";
+
+  for(it_s = dynwidgets.begin(); it_s != dynwidgets.end(); ++it_s) {
+    QWidget* w = haveWidget(*it_s);
+    if(w)
+      w->hide();
+  }
 
   d->m_activity->showWidgets();
 
@@ -692,7 +750,6 @@ bool InvestTransactionEditor::setupPrice(const MyMoneyTransaction& t, MyMoneySpl
 
     QMap<QCString, MyMoneyMoney>::Iterator it_p;
     QCString key = t.commodity() + "-" + acc.currencyId();
-    qDebug("key is '%s'", key.data());
     it_p = m_priceInfo.find(key);
 
     // if it's not found, then collect it from the user first
@@ -704,9 +761,6 @@ bool InvestTransactionEditor::setupPrice(const MyMoneyTransaction& t, MyMoneySpl
       fromValue = split.value();
       MyMoneyPrice priceInfo = MyMoneyFile::instance()->price(fromCurrency.id(), toCurrency.id());
       toValue = split.value() * priceInfo.rate();
-      qDebug("fromValue = %s", fromValue.toString().data());
-      qDebug("price     = %s", priceInfo.rate().toString().data());
-      qDebug("toValue   = %s", toValue.toString().data());
 
       KCurrencyCalculator calc(fromCurrency,
                                 toCurrency,

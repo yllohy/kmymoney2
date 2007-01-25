@@ -41,6 +41,7 @@
 #include <kmymoney/kmymoneydateinput.h>
 #include <kmymoney/transactionform.h>
 #include <kmymoney/kmymoneylineedit.h>
+#include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/kmymoneypayee.h>
 #include <kmymoney/transactioneditor.h>
 #include <kmymoney/investtransactioneditor.h>
@@ -457,11 +458,15 @@ void Transaction::paintFormCell(QPainter* painter, int row, int col, const QRect
   int align = Qt::AlignVCenter;
   bool editField = formCellText(txt, align, row, col, painter);
 
-  if(editField) {
+  // if we have an editable field and don't currently edit the transaction
+  // show the background in a different color
+  if(editField && !m_inEdit) {
     painter->fillRect(textRect, _cg.base());
   }
+
   // make sure, we clear the cell
-  if(txt.isEmpty())
+  // in case of an editable field and edit mode, we just clear the field
+  if(txt.isEmpty() || (editField && m_inEdit))
     painter->drawText(textRect, align, " ");
   else
     painter->drawText(textRect, align, txt);
@@ -1333,6 +1338,8 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
           align |= Qt::AlignLeft;
           if(haveShares()) {
             txt = i18n("Shares");
+          } else if(haveSplitRatio()) {
+            txt = i18n("Ratio");
           }
           break;
 
@@ -1340,6 +1347,8 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
           align |= Qt::AlignRight;
           if((fieldEditable = haveShares()) == true) {
             txt = m_split.shares().abs().formatMoney("", MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
+          } else if(haveSplitRatio()) {
+            txt = QString("1 / %1").arg(m_split.shares().abs().formatMoney(""));
           }
           break;
       }
@@ -1516,6 +1525,9 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
           align |= Qt::AlignRight;
           if(haveShares())
             txt = m_split.shares().abs().formatMoney("", MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
+          else if(haveSplitRatio()) {
+            txt = QString("1 / %1").arg(m_split.shares().abs().formatMoney(""));
+          }
           break;
 
         case PriceColumn:
@@ -1677,6 +1689,7 @@ void InvestTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidget
 
   setupFormPalette(editWidgets);
 
+  // arrange the edit widgets
   arrangeWidget(m_form, 0, ValueColumn1, editWidgets["activity"]);
   arrangeWidget(m_form, 0, ValueColumn2, editWidgets["postdate"]);
   arrangeWidget(m_form, 1, ValueColumn1, editWidgets["security"]);
@@ -1691,16 +1704,29 @@ void InvestTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidget
   arrangeWidget(m_form, 5, ValueColumn2, editWidgets["total"]);
   arrangeWidget(m_form, 6, ValueColumn2, editWidgets["status"]);
 
+  // arrange dynamic labels
+  arrangeWidget(m_form, 1, LabelColumn2, editWidgets["shares-label"]);
+  arrangeWidget(m_form, 2, LabelColumn1, editWidgets["asset-label"]);
+  arrangeWidget(m_form, 2, LabelColumn2, editWidgets["price-label"]);
+  arrangeWidget(m_form, 3, LabelColumn1, editWidgets["fee-label"]);
+  arrangeWidget(m_form, 3, LabelColumn2, editWidgets["fee-amount-label"]);
+  arrangeWidget(m_form, 4, LabelColumn1, editWidgets["interest-label"]);
+  arrangeWidget(m_form, 4, LabelColumn2, editWidgets["interest-amount-label"]);
+  arrangeWidget(m_form, 5, LabelColumn2, editWidgets["total-label"]);
+
   // get rid of the hints. we don't need them for the form
   QMap<QString, QWidget*>::iterator it;
   for(it = editWidgets.begin(); it != editWidgets.end(); ++it) {
     KMyMoneyCombo* combo = dynamic_cast<KMyMoneyCombo*>(*it);
-    kMyMoneyLineEdit* edit = dynamic_cast<kMyMoneyLineEdit*>(*it);
+    kMyMoneyLineEdit* lineedit = dynamic_cast<kMyMoneyLineEdit*>(*it);
+    kMyMoneyEdit* edit = dynamic_cast<kMyMoneyEdit*>(*it);
     KMyMoneyPayee* payee = dynamic_cast<KMyMoneyPayee*>(*it);
     if(combo)
       combo->setHint(QString());
     if(edit)
       edit->setHint(QString());
+    if(lineedit)
+      lineedit->setHint(QString());
     if(payee)
       payee->setHint(QString());
   }

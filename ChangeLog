@@ -1,3 +1,6 @@
+2007-01-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * More work on invest transaction editor (should be functional now)
+
 2007-01-24 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix another database record count error
 

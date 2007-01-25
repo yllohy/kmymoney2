@@ -62,6 +62,7 @@ protected:
   void createAssetAccountSplit(MyMoneySplit& split, const MyMoneySplit& stockSplit) const;
   MyMoneyMoney sumSplits(const MyMoneySplit& s0, const QValueList<MyMoneySplit>& feeSplits, const QValueList<MyMoneySplit>& interestSplits) const;
   bool haveCategoryAndAmount(const QString& category, const QString& amount, bool optional) const;
+  void setLabelText(const QString& idx, const QString& txt) const;
 
 protected:
   InvestTransactionEditor*      m_parent;
