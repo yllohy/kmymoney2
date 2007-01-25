@@ -120,6 +120,8 @@ void RegisterSearchLine::updateSearch(const QString& s)
   bool enabled = d->reg->isUpdatesEnabled();
   d->reg->setUpdatesEnabled(false);
 
+  bool scrollBarVisible = d->reg->verticalScrollBar()->isVisible();
+
   RegisterItem* p = d->reg->firstItem();
   for(; p; p = p->nextItem()) {
     p->setVisible(p->matches(s));
@@ -134,6 +136,13 @@ void RegisterSearchLine::updateSearch(const QString& s)
     d->reg->ensureItemVisible(focusItem);
   } else
     d->reg->repaintContents();
+
+  d->reg->updateScrollBars();
+
+  // if the scrollbar's visibility changed, we need to resize the contents
+  if(scrollBarVisible != d->reg->verticalScrollBar()->isVisible()) {
+    d->reg->resize(DetailColumn);
+  }
 }
 
 bool RegisterSearchLine::itemMatches(const RegisterItem* item, const QString& s) const
