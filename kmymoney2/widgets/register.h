@@ -108,6 +108,7 @@ class GroupMarker : public RegisterItem
 {
 public:
   GroupMarker(Register* parent);
+  ~GroupMarker();
   bool isSelectable(void) const { return false; }
   bool canHaveFocus(void) const { return false; }
   int numRows(void) const { return 1; }
@@ -123,8 +124,10 @@ public:
 
 protected:
   QString                  m_txt;
-  QPixmap                  m_bg;
-  int                      m_lastCol;
+  unsigned int             m_drawCounter;
+
+  static QPixmap*          m_bg;
+  static int               m_bgRefCnt;
 };
 
 
@@ -339,6 +342,8 @@ public:
 
   void repaintItems(RegisterItem* first = 0, RegisterItem* last = 0);
 
+  unsigned int drawCounter(void) const { return m_drawCounter; }
+
 protected:
   void drawContents(QPainter *p, int cx, int cy, int cw, int ch);
 
@@ -461,6 +466,7 @@ private:
   QMap<QPair<int, int>, QWidget*> m_cellWidgets;
   RegisterToolTip*             m_tooltip;
   QRect                        m_lastRepaintRect;
+  unsigned int                 m_drawCounter;
 };
 
 } // namespace

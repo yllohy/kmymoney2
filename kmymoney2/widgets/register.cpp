@@ -96,6 +96,9 @@ static char fancymarker_bg_image[] = {
   0x4E,0x44,0xAE,0x42,0x60,0x82
 };
 
+QPixmap* GroupMarker::m_bg = 0;
+int GroupMarker::m_bgRefCnt = 0;
+
 bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
 {
   const QValueList<TransactionSortField>& sortOrder = i1->parent()->sortOrder();
@@ -199,22 +202,36 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
 
 GroupMarker::GroupMarker(Register *parent) :
   RegisterItem(parent),
-  m_lastCol(2)
+  m_drawCounter(parent->drawCounter()-1)   // make sure we get painted the first time around
 {
   // convert the backgroud once
-  QByteArray a;
-  a.setRawData(fancymarker_bg_image, sizeof(fancymarker_bg_image));
-  m_bg.loadFromData(a);
-  a.resetRawData(fancymarker_bg_image, sizeof(fancymarker_bg_image));
+  if(m_bg == 0) {
+    m_bg = new QPixmap;
+    QByteArray a;
+    a.setRawData(fancymarker_bg_image, sizeof(fancymarker_bg_image));
+    m_bg->loadFromData(a);
+    a.resetRawData(fancymarker_bg_image, sizeof(fancymarker_bg_image));
+  }
+  ++m_bgRefCnt;
+}
+
+GroupMarker::~GroupMarker()
+{
+  --m_bgRefCnt;
+  if(!m_bgRefCnt) {
+    delete m_bg;
+    m_bg = 0;
+  }
 }
 
 void GroupMarker::paintRegisterCell(QPainter* painter, int row, int col, const QRect& _r, bool /*selected*/, const QColorGroup& _cg)
 {
-  if(col == m_lastCol+1) {
-    m_lastCol = col;
+  // avoid painting the marker twice for the same update round
+  unsigned int drawCounter = m_parent->drawCounter();
+  if(m_drawCounter == drawCounter) {
     return;
   }
-  m_lastCol = col;
+  m_drawCounter = drawCounter;
 
   QRect r(_r);
   painter->save();
@@ -275,14 +292,25 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int col, const Q
   // cellRect.setX(cellRect.x()-5);
   // cellRect.setWidth(cellRect.width()+10);
 
-  cellRect.setHeight(m_bg.height());
-  painter->drawTiledPixmap(cellRect, m_bg);
+  cellRect.setHeight(m_bg->height());
+  int curWidth = m_bg->width();
+  if(curWidth < cellRect.width()) {
+    QPixmap* newPic = new QPixmap(cellRect.width(), cellRect.height());
+    int x = 0;
+    while(x < cellRect.width()) {
+      copyBlt(newPic, x, 0, m_bg, 0, 0, curWidth, m_bg->height());
+      x += curWidth;
+    }
+    delete m_bg;
+    m_bg = newPic;
+  }
+  painter->drawPixmap(cellRect, *m_bg);
   painter->restore();
 }
 
 int GroupMarker::rowHeightHint(void) const
 {
-  return m_bg.height();
+  return m_bg->height();
 }
 
 FancyDateGroupMarker::FancyDateGroupMarker(Register* parent, const QDate& date, const QString& txt) :
@@ -450,7 +478,8 @@ Register::Register(QWidget *parent, const char *name ) :
   m_listsDirty(false),
   m_ignoreNextButtonRelease(false),
   m_needInitialColumnResize(false),
-  m_buttonState(Qt::ButtonState(0))
+  m_buttonState(Qt::ButtonState(0)),
+  m_drawCounter(0)
 {
   m_tooltip = new RegisterToolTip(viewport(), this);
 
@@ -815,6 +844,7 @@ void Register::drawContents( QPainter *p, int cx, int cy, int cw, int ch )
     updateRegister(KMyMoneySettings::ledgerLens() | !KMyMoneySettings::transactionForm());
   }
 
+  ++m_drawCounter;
   QTable::drawContents(p, cx, cy, cw, ch);
 }
 
