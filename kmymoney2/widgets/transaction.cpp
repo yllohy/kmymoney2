@@ -145,7 +145,8 @@ Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, cons
   m_focus(false),
   m_erronous(false),
   m_inEdit(false),
-  m_inRegisterEdit(false)
+  m_inRegisterEdit(false),
+  m_showBalance(true)
 {
   // load the payee
   if(!m_split.payeeId().isEmpty()) {
@@ -684,6 +685,51 @@ bool Transaction::matches(const QString& txt) const
   return false;
 }
 
+void Transaction::setVisible(bool visible)
+{
+  if(visible != isVisible()) {
+    RegisterItem::setVisible(visible);
+    RegisterItem* p;
+    Transaction* t;
+    if(!visible) {
+      // if we are hidden, we need to inform all previous transactions
+      // about it so that they don't show the balance
+      p = prevItem();
+      while(p) {
+        t = dynamic_cast<Transaction*>(p);
+        if(t) {
+          if(!t->m_showBalance)
+            break;
+          t->m_showBalance = false;
+        }
+        p = p->prevItem();
+      }
+    } else {
+      // if we are shown, we need to check if the next transaction
+      // is visible and change the display of the balance
+      p = this;
+      do {
+        p = p->nextItem();
+        t = dynamic_cast<Transaction*>(p);
+      } while(!t && p);
+
+      if(t && t->m_showBalance) {
+        m_showBalance = true;
+        p = prevItem();
+        while(p && p->isVisible()) {
+          t = dynamic_cast<Transaction*>(p);
+          if(t) {
+            if(t->m_showBalance)
+              break;
+            t->m_showBalance = true;
+          }
+          p = p->prevItem();
+        }
+      }
+    }
+  }
+}
+
 StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split) :
   Transaction(parent, objects, transaction, split)
 {
@@ -954,7 +1000,10 @@ void StdTransaction::registerCellText(QString& txt, int& align, int row, int col
 
         case BalanceColumn:
           align |= Qt::AlignRight;
-          txt = m_balance;
+          if(m_showBalance)
+            txt = m_balance;
+          else
+            txt = "----";
           break;
 
         default:

@@ -213,6 +213,8 @@ public:
     */
   virtual TransactionEditor* createEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) = 0;
 
+  virtual void setVisible(bool visible);
+
 protected:
   virtual void markAsErronous(QPainter* p, int row, int col, const QRect& r);
 
@@ -254,6 +256,7 @@ protected:
   bool                    m_erronous;
   bool                    m_inEdit;
   bool                    m_inRegisterEdit;
+  bool                    m_showBalance;
 };
 
 class StdTransaction : public Transaction

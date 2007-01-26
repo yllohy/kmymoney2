@@ -161,7 +161,7 @@ public:
   void setNeedResize(void) { m_needResize = true; }
 
   bool isVisible(void) const { return m_visible; }
-  void setVisible(bool visible);
+  virtual void setVisible(bool visible);
 
   void setNextItem(RegisterItem* p) { m_next = p; }
   void setPrevItem(RegisterItem* p) { m_prev = p; }
