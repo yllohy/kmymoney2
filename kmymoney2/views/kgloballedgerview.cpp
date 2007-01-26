@@ -452,7 +452,7 @@ void KGlobalLedgerView::loadView(void)
 
   // ... and recreate it
   KMyMoneyRegister::RegisterItem* focusItem = 0;
-  MyMoneyMoney actBalance, clearedBalance;
+  MyMoneyMoney actBalance, clearedBalance, futureBalance;
   try {
     // setup the filter to select the transactions we want to display
     // and update the sort order
@@ -535,7 +535,7 @@ void KGlobalLedgerView::loadView(void)
     // of transactions backward. Also re-select a transaction if it was
     // selected before and setup the focus item.
     MyMoneyMoney balance = MyMoneyFile::instance()->balance(m_account.id());
-    actBalance = clearedBalance = balance;
+    actBalance = clearedBalance = futureBalance = balance;
     p = m_register->lastItem();
     while(p) {
       KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
@@ -549,6 +549,9 @@ void KGlobalLedgerView::loadView(void)
         balance -= split.shares();
         if(split.reconcileFlag() == MyMoneySplit::NotReconciled) {
           clearedBalance -= split.shares();
+        }
+        if(t->transaction().postDate() > QDate::currentDate()) {
+          actBalance -= split.shares();
         }
       }
       p = p->prevItem();
