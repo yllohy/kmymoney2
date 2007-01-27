@@ -333,10 +333,11 @@ public:
     * @param objects pointer to MyMoneyObjectContainer to be used
     * @param transaction the transaction which should be used to create the object
     * @param split the split of the transaction which should be used to create the object
+    * @param uniqueId an int that will be used to construct the id of the item
     *
     * @return pointer to created object (0 upon failure)
     */
-  static Transaction* transactionFactory(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split);
+  static Transaction* transactionFactory(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
 
   const MyMoneyAccount& account(void) const { return m_account; }
 

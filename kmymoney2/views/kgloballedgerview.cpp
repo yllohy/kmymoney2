@@ -493,8 +493,10 @@ void KGlobalLedgerView::loadView(void)
 
     // create the elements for the register
     QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it;
+    QMap<QCString, int>uniqueMap;
     for(it = m_transactionList.begin(); it != m_transactionList.end(); ++it) {
-      KMyMoneyRegister::Register::transactionFactory(m_register, m_objects, (*it).first, (*it).second);
+      uniqueMap[(*it).first.id()]++;
+      KMyMoneyRegister::Register::transactionFactory(m_register, m_objects, (*it).first, (*it).second, uniqueMap[(*it).first.id()]);
     }
 
     // add the group markers
@@ -561,7 +563,7 @@ void KGlobalLedgerView::loadView(void)
     // leave some information about the current account
     MyMoneySplit split;
     split.setReconcileFlag(MyMoneySplit::Unknown);
-    KMyMoneyRegister::Register::transactionFactory(m_register, m_objects, MyMoneyTransaction(), split);
+    KMyMoneyRegister::Register::transactionFactory(m_register, m_objects, MyMoneyTransaction(), split, 0);
 
     m_register->updateRegister(m_newAccountLoaded);
 

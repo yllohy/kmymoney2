@@ -133,13 +133,13 @@ static char attentionSign[] = {
   0x42,0x60,0x82
 };
 
-Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split) :
+Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
   RegisterItem(parent),
   m_transaction(transaction),
   m_split(split),
   m_objects(objects),
   m_form(0),
-  m_uniqueId(m_transaction.id()+m_split.id()),
+  m_uniqueId(m_transaction.id()+"-"),
   m_formRowHeight(-1),
   m_selected(false),
   m_focus(false),
@@ -160,6 +160,10 @@ Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, cons
 
   // check if transaction is errnous or not
   m_erronous = !m_transaction.splitSum().isZero();
+
+  QCString id;
+  id.setNum(uniqueId);
+  m_uniqueId += id.rightJustify(3, '0');
 }
 
 void Transaction::setFocus(bool focus, bool updateLens)
@@ -730,8 +734,8 @@ void Transaction::setVisible(bool visible)
   }
 }
 
-StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split) :
-  Transaction(parent, objects, transaction, split)
+StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
+  Transaction(parent, objects, transaction, split, uniqueId)
 {
   try {
     m_categoryHeader = i18n("Category");
@@ -1241,8 +1245,8 @@ TransactionEditor* StdTransaction::createEditor(TransactionEditorContainer* regF
   return new StdTransactionEditor(regForm, objects, this, list, lastPostDate);
 }
 
-InvestTransaction::InvestTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split) :
-  Transaction(parent, objects, transaction, split)
+InvestTransaction::InvestTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
+  Transaction(parent, objects, transaction, split, uniqueId)
 {
   // dissect the transaction into its type, splits, currency, security etc.
   InvestTransactionEditor::dissectTransaction(m_transaction, m_split, m_objects,

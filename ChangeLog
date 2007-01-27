@@ -1,3 +1,10 @@
+2007-01-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't rely on the split id to generate a unique id for a ledger entry
+    It could change while updating a modifed transaction in the engine
+    and would therefor not be reselected after the update
+  * Setup the base currency correctly after loading a new file
+  * Removed unused code
+
 2007-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't show a balance in the ledger if an entry has been skipped due
   * Optimized painting of group markers

@@ -1755,7 +1755,7 @@ void Register::keyPressEvent(QKeyEvent* ev)
   }
 }
 
-Transaction* Register::transactionFactory(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split)
+Transaction* Register::transactionFactory(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId)
 {
   Transaction* t = 0;
   MyMoneySplit s = split;
@@ -1774,11 +1774,11 @@ Transaction* Register::transactionFactory(Register *parent, MyMoneyObjectContain
     case MyMoneyAccount::AssetLoan:
       if(s.accountId().isEmpty())
         s.setAccountId(parent->account().id());
-      t = new KMyMoneyRegister::StdTransaction(parent, objects, transaction, s);
+      t = new KMyMoneyRegister::StdTransaction(parent, objects, transaction, s, uniqueId);
       break;
 
     case MyMoneyAccount::Investment:
-      t = new KMyMoneyRegister::InvestTransaction(parent, objects, transaction, split);
+      t = new KMyMoneyRegister::InvestTransaction(parent, objects, transaction, split, uniqueId);
       break;
 
     case MyMoneyAccount::CertificateDep:

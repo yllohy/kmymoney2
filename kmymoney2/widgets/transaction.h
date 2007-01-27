@@ -66,7 +66,7 @@ typedef enum {
 class Transaction : public RegisterItem
 {
 public:
-  Transaction(Register* parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split);
+  Transaction(Register* parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
   virtual ~Transaction() {};
 
   bool isSelectable(void) const { return true; }
@@ -262,7 +262,7 @@ protected:
 class StdTransaction : public Transaction
 {
 public:
-  StdTransaction(Register* parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split);
+  StdTransaction(Register* parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
   virtual ~StdTransaction() {};
 
   virtual void paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
@@ -300,7 +300,7 @@ private:
 class InvestTransaction : public Transaction
 {
 public:
-  InvestTransaction(Register* parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split);
+  InvestTransaction(Register* parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
   virtual ~InvestTransaction() {};
 
   virtual const QString& sortSecurity(void) const { return m_security.name(); }
