@@ -367,8 +367,6 @@ void KAccountsView::loadListView(void)
 
   m_transactionCountMap = file->transactionCountMap();
 
-  m_accountTree->setBaseCurrency(file->baseCurrency());
-
   m_haveUnusedCategories = false;
 
   // create the items

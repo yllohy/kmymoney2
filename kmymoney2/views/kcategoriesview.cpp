@@ -150,8 +150,6 @@ void KCategoriesView::loadAccounts(void)
 
   m_transactionCountMap = file->transactionCountMap();
 
-  m_accountTree->setBaseCurrency(file->baseCurrency());
-
   bool haveUnusedCategories = false;
 
   // create the items
