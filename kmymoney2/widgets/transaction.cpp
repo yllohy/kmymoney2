@@ -139,7 +139,7 @@ Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, cons
   m_split(split),
   m_objects(objects),
   m_form(0),
-  m_uniqueId(m_transaction.id()+"-"),
+  m_uniqueId(m_transaction.id()),
   m_formRowHeight(-1),
   m_selected(false),
   m_focus(false),
@@ -161,9 +161,12 @@ Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, cons
   // check if transaction is errnous or not
   m_erronous = !m_transaction.splitSum().isZero();
 
-  QCString id;
-  id.setNum(uniqueId);
-  m_uniqueId += id.rightJustify(3, '0');
+  if(!m_uniqueId.isEmpty()) {
+    m_uniqueId += "-";
+    QCString id;
+    id.setNum(uniqueId);
+    m_uniqueId += id.rightJustify(3, '0');
+  }
 }
 
 void Transaction::setFocus(bool focus, bool updateLens)
