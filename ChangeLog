@@ -7,6 +7,7 @@
   * Fixed list background color usage and setting
   * Fixed loading ledger for specific account from home page
   * Added a status combo box to the register quick filter
+  * Fixed initial column width problem in accounts, categories and institutions
 
 2007-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't show a balance in the ledger if an entry has been skipped due
