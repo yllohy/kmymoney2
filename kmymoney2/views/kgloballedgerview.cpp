@@ -971,6 +971,7 @@ const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCStri
           m_account = MyMoneyFile::instance()->account(m_account.parentAccountId());
         }
         m_newAccountLoaded = true;
+        d->m_inLoading = false;    // force load no matter what stage a previous load is
         slotLoadView();
       } catch(MyMoneyException* e) {
         qDebug("Unable to retrieve account %s", id.data());
