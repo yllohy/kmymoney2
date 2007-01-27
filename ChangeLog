@@ -4,6 +4,7 @@
     and would therefor not be reselected after the update
   * Setup the base currency correctly after loading a new file
   * Removed unused code
+  * Fixed list background color usage and setting
 
 2007-01-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't show a balance in the ledger if an entry has been skipped due

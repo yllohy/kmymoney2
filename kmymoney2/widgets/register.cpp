@@ -251,9 +251,10 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int col, const Q
   // clear out cell rectangle
   QColorGroup cg(_cg);
   if(m_alternate)
-    cg.setColor(QColorGroup::Base, KMyMoneySettings::listColor());
+    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listColor());
   else
-    cg.setColor(QColorGroup::Base, KMyMoneySettings::listBGColor());
+    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
+
   QBrush backgroundBrush(cg.base());
   painter->fillRect(cellRect, backgroundBrush);
   painter->setPen(KMyMoneySettings::listGridColor());

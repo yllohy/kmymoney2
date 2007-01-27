@@ -46,3 +46,19 @@ QFont KMyMoneyGlobalSettings::listHeaderFont(void)
     return KMyMoneySettings::listHeaderFont();
   }
 }
+
+QColor KMyMoneyGlobalSettings::listColor(void)
+{
+  if(useSystemColors())
+    return KGlobalSettings::baseColor();
+  else
+    return KMyMoneySettings::listColor();
+}
+
+QColor KMyMoneyGlobalSettings::listBGColor(void)
+{
+  if(useSystemColors())
+    return KGlobalSettings::alternateBackgroundColor();
+  else
+    return KMyMoneySettings::listBGColor();
+}

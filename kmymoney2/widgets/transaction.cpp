@@ -205,9 +205,9 @@ void Transaction::markAsErronous(QPainter* painter, int row, int col, const QRec
 void Transaction::paintRegisterCellSetup(QPainter* painter, int row, int col, QRect& cellRect, QRect& textRect, QColorGroup& cg)
 {
   if(m_alternate)
-    cg.setColor(QColorGroup::Base, KMyMoneySettings::listColor());
+    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listColor());
   else
-    cg.setColor(QColorGroup::Base, KMyMoneySettings::listBGColor());
+    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
 
   if(m_transaction.value("Imported").lower() == "true") {
     cg.setColor(QColorGroup::Base, KMyMoneySettings::importedTransactionColor());

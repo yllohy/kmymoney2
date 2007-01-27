@@ -761,14 +761,16 @@ int KMyMoneyAccountTreeItem::compare(QListViewItem* i, int col, bool ascending) 
 
 void KMyMoneyAccountTreeItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
 {
-  QFont font = KMyMoneyGlobalSettings::listCellFont();
-
-  QColor colour = KMyMoneySettings::listColor();
-  QColor bgColour = KMyMoneySettings::listBGColor();
-
   QColorGroup cg2(cg);
 
+  if(isAlternate())
+    cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listColor());
+  else
+    cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
+
+
   // display base accounts in bold
+  QFont font = KMyMoneyGlobalSettings::listCellFont();
   if(!parent())
     font.setBold(true);
 
@@ -778,7 +780,7 @@ void KMyMoneyAccountTreeItem::paintCell(QPainter *p, const QColorGroup & cg, int
 
   p->setFont(font);
 
-  KListViewItem::paintCell(p, cg2, column, width, align);
+  QListViewItem::paintCell(p, cg2, column, width, align);
 }
 
 #include "kmymoneyaccounttree.moc"

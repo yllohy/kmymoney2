@@ -134,6 +134,10 @@
    <label>Hide reconciled transactions</label>
    <default>false</default>
   </entry>
+  <entry name="useSystemColors" type="Bool">
+   <label>Use system colors</label>
+   <default>false</default>
+  </entry>
   <entry name="listColor" type="Color">
    <label>List color</label>
    <default>240,240,240</default>

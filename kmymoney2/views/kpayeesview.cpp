@@ -77,17 +77,14 @@ KPayeeListItem::~KPayeeListItem()
 
 void KPayeeListItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
 {
-  p->setFont(KMyMoneyGlobalSettings::listCellFont());
-
-  QColor colour = KMyMoneySettings::listColor();
-  QColor bgColour = KMyMoneySettings::listBGColor();
-
   QColorGroup cg2(cg);
 
-  if (isAlternate())
-    cg2.setColor(QColorGroup::Base, colour);
+  if(isAlternate())
+    cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listColor());
   else
-    cg2.setColor(QColorGroup::Base, bgColour);
+    cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
+
+  p->setFont(KMyMoneyGlobalSettings::listCellFont());
 
   QListViewItem::paintCell(p, cg2, column, width, align);
 }
@@ -112,7 +109,7 @@ void KTransactionListItem::paintCell(QPainter *p, const QColorGroup &cg, int col
 
 const QColor KTransactionListItem::backgroundColor(void)
 {
-  return isAlternate() ? KMyMoneySettings::listBGColor() : KMyMoneySettings::listColor();
+  return isAlternate() ? KMyMoneyGlobalSettings::listBGColor() : KMyMoneyGlobalSettings::listColor();
 }
 
 

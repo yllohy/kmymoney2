@@ -38,6 +38,7 @@
 
 #include "kscheduledlistitem.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../kmymoneyglobalsettings.h"
 #include "../kmymoneyutils.h"
 
 KScheduledListItem::KScheduledListItem(KListView *parent, const QString& name)
@@ -162,10 +163,10 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
 {
   QColorGroup cg2(cg);
 
-  QColor colour = KMyMoneyUtils::listColour();
-  QColor bgColour = KMyMoneyUtils::backgroundColour();
+  QColor colour = KMyMoneyGlobalSettings::listColor();
+  QColor bgColour = KMyMoneyGlobalSettings::listBGColor();
   QColor textColour = KGlobalSettings::textColor();
-  QFont cellFont = KMyMoneyUtils::cellFont();
+  QFont cellFont = KMyMoneyGlobalSettings::listCellFont();
 
   // avoid colorizing lines that do not contain a schedule
   if(!m_schedule.id().isEmpty()) {
@@ -217,8 +218,8 @@ void KScheduledListItem::paintBranches(QPainter* p, const QColorGroup& cg, int/*
   // qDebug("paintBranches(%d,%d,%d)", w, y, h);
   QColorGroup cg2(cg);
 
-  QColor colour = KMyMoneyUtils::listColour();
-  QColor bgColour = KMyMoneyUtils::backgroundColour();
+  QColor colour = KMyMoneyGlobalSettings::listColor();
+  QColor bgColour = KMyMoneyGlobalSettings::listBGColor();
 
   if (isAlternate())
   {

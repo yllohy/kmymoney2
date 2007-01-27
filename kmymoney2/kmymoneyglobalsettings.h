@@ -37,5 +37,7 @@ class KMyMoneyGlobalSettings : public KMyMoneySettings
 public:
   static QFont listCellFont(void);
   static QFont listHeaderFont(void);
+  static QColor listColor(void);
+  static QColor listBGColor(void);
 };
 #endif
