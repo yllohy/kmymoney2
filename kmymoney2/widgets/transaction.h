@@ -71,7 +71,7 @@ public:
 
   bool isSelectable(void) const { return true; }
   bool isSelected(void) const { return m_selected; }
-  void setSelected(bool selected) { m_selected = selected; }
+  void setSelected(bool selected);
 
   bool canHaveFocus(void) const { return true; }
   bool hasFocus(void) const { return m_focus; }

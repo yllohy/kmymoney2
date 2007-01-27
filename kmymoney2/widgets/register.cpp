@@ -1242,7 +1242,7 @@ void Register::selectedTransactions(QValueList<SelectedTransaction>& list) const
 {
   for(unsigned i = 0; i < m_items.size(); ++i) {
     RegisterItem* const item = m_items[i];
-    if(item && item->isSelected()) {
+    if(item && item->isSelected() && item->isVisible()) {
       Transaction* t = dynamic_cast<Transaction*>(item);
       if(t) {
         SelectedTransaction s(t->transaction(), t->split());
@@ -1258,7 +1258,7 @@ QValueList<RegisterItem*> Register::selectedItems(void) const
 
   RegisterItem* item = m_firstItem;
   while(item) {
-    if(item && item->isSelected()) {
+    if(item && item->isSelected() && item->isVisible()) {
       list << item;
     }
     item = item->nextItem();
@@ -1271,7 +1271,7 @@ int Register::selectedItemsCount(void) const
   int cnt = 0;
   RegisterItem* item = m_firstItem;
   while(item) {
-    if(item->isSelected())
+    if(item->isSelected() && item->isVisible())
       ++cnt;
     item = item->nextItem();
   }

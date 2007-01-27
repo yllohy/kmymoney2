@@ -81,14 +81,19 @@ protected:
 
 public slots:
   virtual void updateSearch(const QString& s = QString::null);
+  virtual void reset(void);
 
 protected slots:
   void queueSearch(const QString& search);
   void activateSearch(void);
+  void slotStatusChanged(int);
 
 private slots:
   void itemAdded(RegisterItem* item) const;
   void registerDestroyed(void);
+
+private:
+  void init(Register* reg);
 
 private:
   class RegisterSearchLinePrivate;

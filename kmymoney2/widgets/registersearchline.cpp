@@ -42,19 +42,44 @@ class RegisterSearchLine::RegisterSearchLinePrivate
 public:
   RegisterSearchLinePrivate() :
     reg(0),
-    queuedSearches(0) {}
+    combo(0),
+    queuedSearches(0),
+    status(0) {}
 
   Register* reg;
+  QComboBox* combo;
   QString search;
   int queuedSearches;
+  int status;
 };
 
 RegisterSearchLine::RegisterSearchLine(QWidget* parent, Register* reg, const char* name) :
   KLineEdit(parent, name)
 {
+  init(reg);
+}
+
+RegisterSearchLine::RegisterSearchLine(QWidget* parent, const char* name) :
+    KLineEdit(parent, name)
+{
+  init(0);
+}
+
+void RegisterSearchLine::init(Register *reg)
+{
   d = new RegisterSearchLinePrivate;
   d->reg = reg;
   connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(queueSearch(const QString&)));
+
+  QLabel* label = new QLabel(i18n("label for status combo", "Stat&us"), parentWidget());
+  d->combo = new QComboBox(parentWidget());
+  d->combo->insertItem(SmallIcon("run"), i18n("Any status"));
+  d->combo->insertItem(SmallIcon("fileimport"), i18n("Imported"));
+  d->combo->insertItem(SmallIcon("attention"), i18n("Erroneous"));
+  d->combo->setCurrentItem(0);
+  connect(d->combo, SIGNAL(activated(int)), this, SLOT(slotStatusChanged(int)));
+
+  label->setBuddy(d->combo);
 
   if(reg) {
     connect(reg, SIGNAL(destroyed()), this, SLOT(registerDestroyed()));
@@ -62,13 +87,6 @@ RegisterSearchLine::RegisterSearchLine(QWidget* parent, Register* reg, const cha
   } else {
     setEnabled(false);
   }
-}
-
-RegisterSearchLine::RegisterSearchLine(QWidget* parent, const char* name) :
-    KLineEdit(parent, name)
-{
-  d = new RegisterSearchLinePrivate;
-  setEnabled(false);
 }
 
 RegisterSearchLine::~RegisterSearchLine()
@@ -91,6 +109,12 @@ void RegisterSearchLine::setRegister(Register* reg)
   }
 
   setEnabled(reg != 0);
+}
+
+void RegisterSearchLine::slotStatusChanged(int status)
+{
+  d->status = status;
+  updateSearch();
 }
 
 void RegisterSearchLine::queueSearch(const QString& search)
@@ -124,7 +148,7 @@ void RegisterSearchLine::updateSearch(const QString& s)
 
   RegisterItem* p = d->reg->firstItem();
   for(; p; p = p->nextItem()) {
-    p->setVisible(p->matches(s));
+    p->setVisible(itemMatches(p, s));
   }
   d->reg->suppressAdjacentMarkers();
   d->reg->updateAlternate();
@@ -147,7 +171,30 @@ void RegisterSearchLine::updateSearch(const QString& s)
 
 bool RegisterSearchLine::itemMatches(const RegisterItem* item, const QString& s) const
 {
+  const Transaction* t = dynamic_cast<const Transaction*>(item);
+  if(t) {
+    switch(d->status) {
+      default:
+        break;
+      case 1:    // Imported
+        if(t->transaction().value("Imported").lower() != "true")
+          return false;
+        break;
+      case 2:    // Erroneous
+        if(t->transaction().splitSum().isZero())
+          return false;
+        break;
+    }
+  }
+
   return item->matches(s);
+}
+
+void RegisterSearchLine::reset(void)
+{
+  clear();
+  d->combo->setCurrentItem(0);
+  slotStatusChanged(0);
 }
 
 void RegisterSearchLine::itemAdded(RegisterItem* item) const
@@ -216,7 +263,7 @@ void RegisterSearchLineWidget::createWidgets(void)
   label->setBuddy(d->searchLine);
   label->show();
 
-  connect(d->clearButton, SIGNAL(clicked()), d->searchLine, SLOT(clear()));
+  connect(d->clearButton, SIGNAL(clicked()), d->searchLine, SLOT(reset()));
 }
 
 

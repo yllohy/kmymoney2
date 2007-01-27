@@ -737,6 +737,12 @@ void Transaction::setVisible(bool visible)
   }
 }
 
+void Transaction::setSelected(bool selected)
+{
+  if(!selected || (selected && isVisible()))
+    m_selected = selected;
+}
+
 StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
   Transaction(parent, objects, transaction, split, uniqueId)
 {
