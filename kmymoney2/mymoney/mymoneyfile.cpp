@@ -107,6 +107,9 @@ void MyMoneyFile::attachStorage(IMyMoneyStorage* const storage)
     throw new MYMONEYEXCEPTION("Storage must not be 0");
 
   m_storage = storage;
+
+  // force reload of base currency
+  d->m_baseCurrency = MyMoneySecurity();
 }
 
 void MyMoneyFile::detachStorage(IMyMoneyStorage* const /* storage */)

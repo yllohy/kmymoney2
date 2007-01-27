@@ -1240,6 +1240,7 @@ void MyMoneyFileTest::testAttachStorage() {
 	delete file;
 }
 
+
 void MyMoneyFileTest::testAccount2Category() {
 	testReparentAccount();
 	CPPUNIT_ASSERT(m->accountToCategory("A000001") == "Account2:Account1");
@@ -1457,6 +1458,24 @@ void MyMoneyFileTest::testBaseCurrency(void)
 	} catch(MyMoneyException *e) {
 		unexpectedException(e);
 	}
+
+	// check if it gets reset when attaching a new storage
+	m->detachStorage(storage);
+
+	MyMoneySeqAccessMgr* newStorage = new MyMoneySeqAccessMgr;
+	m->attachStorage(newStorage);
+
+	ref = m->baseCurrency();
+	CPPUNIT_ASSERT(ref.id().isEmpty());
+
+	m->detachStorage(newStorage);
+	delete newStorage;
+
+	m->attachStorage(storage);
+	ref = m->baseCurrency();
+	CPPUNIT_ASSERT(ref.id() == "EUR");
+	CPPUNIT_ASSERT(ref.name() == "Euro");
+	CPPUNIT_ASSERT(ref.tradingSymbol() == QChar(0x20ac));
 }
 
 void MyMoneyFileTest::testOpeningBalanceNoBase(void)
