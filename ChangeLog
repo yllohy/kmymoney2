@@ -1,3 +1,8 @@
+2007-01-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Reset the status filter when pressing the clear button
+  * Use the full width for the filter
+  * Prevent a crash when clearing a register
+
 2007-01-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't rely on the split id to generate a unique id for a ledger entry
     It could change while updating a modifed transaction in the engine

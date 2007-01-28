@@ -426,7 +426,7 @@ void KGlobalLedgerView::loadView(void)
     // remember the upper left corner of the viewport
     d->m_startPoint = QPoint(m_register->contentsX(), m_register->contentsY());
   } else
-    d->m_registerSearchLine->searchLine()->setText(QString());
+    d->m_registerSearchLine->searchLine()->reset();
 
   // clear the current contents ...
   clear();

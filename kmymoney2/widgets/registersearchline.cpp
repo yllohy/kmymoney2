@@ -246,7 +246,7 @@ RegisterSearchLine* RegisterSearchLineWidget::createSearchLine(Register* reg)
 
 void RegisterSearchLineWidget::createWidgets(void)
 {
-  // positionInToolBar();
+  positionInToolBar();
   if(!d->clearButton) {
     d->clearButton = new QToolButton(this);
     QIconSet icon = SmallIconSet(QApplication::reverseLayout() ? "clear_left" : "locationbar_erase");

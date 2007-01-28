@@ -702,6 +702,7 @@ TransactionSortField Register::primarySortKey(void) const
 void Register::clear(void)
 {
   m_firstErronous = m_lastErronous = 0;
+  m_ensureVisibleItem = 0;
 
   RegisterItem* p;
   while((p = firstItem()) != 0) {
@@ -1454,6 +1455,11 @@ void Register::slotDoubleClicked(int row, int, int, const QPoint&)
 
 void Register::slotEnsureItemVisible(void)
 {
+  // if clear() has been called since the timer was
+  // started, we just ignore the call
+  if(!m_ensureVisibleItem)
+    return;
+
   // make sure to catch latest changes
   bool enabled = isUpdatesEnabled();
   setUpdatesEnabled(false);
