@@ -148,7 +148,7 @@ void RegisterSearchLine::updateSearch(const QString& s)
 
   RegisterItem* p = d->reg->firstItem();
   for(; p; p = p->nextItem()) {
-    p->setVisible(itemMatches(p, s));
+    p->setVisible(itemMatches(p, d->search));
   }
   d->reg->suppressAdjacentMarkers();
   d->reg->updateAlternate();
