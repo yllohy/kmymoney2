@@ -32,12 +32,15 @@
 // Project Includes
 
 #include "kmymoneylistviewitem.h"
-#include "../kmymoneysettings.h"
+#include "kmymoneychecklistitem.h"
+#include "../kmymoneyglobalsettings.h"
 
 KMyMoneyListViewItem::KMyMoneyListViewItem(QListView* parent, const QString& txt, const QString& key, const QCString& id) :
   KListViewItem(parent, txt),
   m_key(key),
-  m_id(id)
+  m_id(id),
+  m_isKnown(0),
+  m_isOdd(0)
 {
   if(key.isEmpty())
     m_key = txt;
@@ -46,7 +49,9 @@ KMyMoneyListViewItem::KMyMoneyListViewItem(QListView* parent, const QString& txt
 KMyMoneyListViewItem::KMyMoneyListViewItem(QListViewItem* parent, const QString& txt, const QString& key, const QCString& id) :
   KListViewItem(parent, txt),
   m_key(key),
-  m_id(id)
+  m_id(id),
+  m_isKnown(0),
+  m_isOdd(0)
 {
   if(key.isEmpty())
     m_key = txt;
@@ -69,7 +74,52 @@ void KMyMoneyListViewItem::paintCell(QPainter *p, const QColorGroup &cg, int col
 
 const QColor KMyMoneyListViewItem::backgroundColor()
 {
-  return isAlternate() ? KMyMoneySettings::listBGColor() : KMyMoneySettings::listColor();
+  return isAlternate() ? KMyMoneyGlobalSettings::listBGColor() : KMyMoneyGlobalSettings::listColor();
+}
+
+bool KMyMoneyListViewItem::isAlternate(void)
+{
+// logic taken from KListViewItem::isAlternate()
+  KMyMoneyCheckListItem* ciAbove;
+  KMyMoneyListViewItem* liAbove;
+  ciAbove = dynamic_cast<KMyMoneyCheckListItem*> (itemAbove());
+  liAbove = dynamic_cast<KMyMoneyListViewItem*> (itemAbove());
+
+  m_isKnown = ciAbove ? ciAbove->m_isKnown : (liAbove ? liAbove->m_isKnown : true);
+  if(m_isKnown) {
+    m_isOdd = ciAbove ? !ciAbove->m_isOdd : (liAbove ? !liAbove->m_isOdd : false);
+  } else {
+    KMyMoneyCheckListItem* clItem;
+    KMyMoneyListViewItem* liItem;
+    bool previous = true;
+    if(QListViewItem::parent()) {
+      clItem = dynamic_cast<KMyMoneyCheckListItem *>(QListViewItem::parent());
+      liItem = dynamic_cast<KMyMoneyListViewItem*>(QListViewItem::parent());
+      if(clItem)
+        previous = clItem->m_isOdd;
+      else
+        previous = liItem->m_isOdd;
+      clItem = dynamic_cast<KMyMoneyCheckListItem *>(QListViewItem::parent()->firstChild());
+      liItem = dynamic_cast<KMyMoneyListViewItem*>(QListViewItem::parent()->firstChild());
+    } else {
+      clItem = dynamic_cast<KMyMoneyCheckListItem *>(listView()->firstChild());
+      liItem = dynamic_cast<KMyMoneyListViewItem*>(QListViewItem::parent()->firstChild());
+    }
+    while(clItem || liItem) {
+      if(clItem) {
+        clItem->m_isOdd = previous = !previous;
+        clItem->m_isKnown = true;
+        clItem = dynamic_cast<KMyMoneyCheckListItem *>(clItem->nextSibling());
+        liItem = dynamic_cast<KMyMoneyListViewItem *>(clItem->nextSibling());
+      } else if(liItem) {
+        liItem->m_isOdd = previous = !previous;
+        liItem->m_isKnown = true;
+        clItem = dynamic_cast<KMyMoneyCheckListItem *>(liItem->nextSibling());
+        liItem = dynamic_cast<KMyMoneyListViewItem *>(liItem->nextSibling());
+      }
+    }
+  }
+  return m_isOdd;
 }
 
 #include "kmymoneylistviewitem.moc"

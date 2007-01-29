@@ -31,6 +31,8 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+class KMyMoneyCheckListItem;
+
 /**
   * This class implements a derived version of a QListViewItem that
   * allows the storage of an engine object id with the object
@@ -39,6 +41,8 @@
   */
 class KMyMoneyListViewItem : public QObject, public KListViewItem
 {
+  friend class KMyMoneyCheckListItem;
+
   Q_OBJECT
 public:
   KMyMoneyListViewItem(QListView *parent, const QString& txt, const QString& key, const QCString& id);
@@ -62,9 +66,20 @@ public:
     */
   const QString& key(void) const { return m_key; }
 
+
+  /**
+    * Reimplemented for internal reasons
+    */
+  bool isAlternate(void);
+
 private:
   QString              m_key;
   QCString             m_id;
+  // copied from KListViewItem()
+  unsigned int         m_isOdd : 1;
+  unsigned int         m_isKnown : 1;
+  unsigned int         m_unused : 30;
+
 };
 
 #endif

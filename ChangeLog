@@ -1,3 +1,6 @@
+2007-01-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Some more fixes on the background color
+
 2007-01-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reset the status filter when pressing the clear button
   * Use the full width for the filter

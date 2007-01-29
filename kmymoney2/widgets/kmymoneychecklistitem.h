@@ -30,6 +30,8 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+class KMyMoneyListViewItem;
+
 /**
   * This class implements a derived version of a QCheckListItem that
   * allows the storage of an engine object id with the object and emits
@@ -39,6 +41,8 @@
   */
 class KMyMoneyCheckListItem : public QObject, public QCheckListItem
 {
+  friend class KMyMoneyListViewItem;
+
   Q_OBJECT
 public:
   KMyMoneyCheckListItem(QListView *parent, const QString& txt, const QString& key, const QCString& id, Type type = QCheckListItem::CheckBox);
@@ -78,8 +82,8 @@ private:
   QString              m_key;
   QCString             m_id;
   // copied from KListViewItem()
-  unsigned int         m_odd : 1;
-  unsigned int         m_known : 1;
+  unsigned int         m_isOdd : 1;
+  unsigned int         m_isKnown : 1;
   unsigned int         m_unused : 30;
 };
 

@@ -28,15 +28,17 @@
 // Project Includes
 
 #include "kmymoneychecklistitem.h"
-#include "../kmymoneysettings.h"
+#include "kmymoneylistviewitem.h"
+#include "../kmymoneyglobalsettings.h"
 
 KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListView* parent, const QString& txt, const QString& key, const QCString& id, Type type) :
   QCheckListItem(parent, txt, type),
   m_key(key),
-  m_id(id)
+  m_id(id),
+  m_isOdd(0),
+  m_isKnown(0)
 {
   setOn(true);
-  m_known = false;
   if(key.isEmpty())
     m_key = txt;
 }
@@ -44,10 +46,11 @@ KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListView* parent, const QString& t
 KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListViewItem* parent, const QString& txt, const QString& key, const QCString& id, Type type) :
   QCheckListItem(parent, txt, type),
   m_key(key),
-  m_id(id)
+  m_id(id),
+  m_isOdd(0),
+  m_isKnown(0)
 {
   setOn(true);
-  m_known = false;
   if(key.isEmpty())
     m_key = txt;
 }
@@ -55,10 +58,11 @@ KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListViewItem* parent, const QStrin
 KMyMoneyCheckListItem::KMyMoneyCheckListItem(QListView* parent, QListViewItem* after, const QString& txt, const QString& key, const QCString& id, Type type) :
   QCheckListItem(parent, after, txt, type),
   m_key(key),
-  m_id(id)
+  m_id(id),
+  m_isOdd(0),
+  m_isKnown(0)
 {
   setOn(true);
-  m_known = false;
   if(key.isEmpty())
     m_key = txt;
 }
@@ -87,34 +91,52 @@ void KMyMoneyCheckListItem::paintCell(QPainter *p, const QColorGroup &cg, int co
 
 const QColor KMyMoneyCheckListItem::backgroundColor()
 {
-  return isAlternate() ? KMyMoneySettings::listBGColor() : KMyMoneySettings::listColor();
+  return isAlternate() ? KMyMoneyGlobalSettings::listBGColor() : KMyMoneyGlobalSettings::listColor();
 }
 
 bool KMyMoneyCheckListItem::isAlternate(void)
 {
 // logic taken from KListViewItem::isAlternate()
-  KMyMoneyCheckListItem* above;
-  above = dynamic_cast<KMyMoneyCheckListItem*> (itemAbove());
-  m_known = above ? above->m_known : true;
-  if(m_known) {
-    m_odd = above ? !above->m_odd : false;
+  KMyMoneyCheckListItem* ciAbove;
+  KMyMoneyListViewItem* liAbove;
+  ciAbove = dynamic_cast<KMyMoneyCheckListItem*> (itemAbove());
+  liAbove = dynamic_cast<KMyMoneyListViewItem*> (itemAbove());
+
+  m_isKnown = ciAbove ? ciAbove->m_isKnown : (liAbove ? liAbove->m_isKnown : true);
+  if(m_isKnown) {
+    m_isOdd = ciAbove ? !ciAbove->m_isOdd : (liAbove ? !liAbove->m_isOdd : false);
   } else {
-    KMyMoneyCheckListItem* item;
+    KMyMoneyCheckListItem* clItem;
+    KMyMoneyListViewItem* liItem;
     bool previous = true;
     if(QListViewItem::parent()) {
-      item = dynamic_cast<KMyMoneyCheckListItem *>(QListViewItem::parent());
-      previous = item->m_odd;
-      item = dynamic_cast<KMyMoneyCheckListItem *>(QListViewItem::parent()->firstChild());
+      clItem = dynamic_cast<KMyMoneyCheckListItem *>(QListViewItem::parent());
+      liItem = dynamic_cast<KMyMoneyListViewItem*>(QListViewItem::parent());
+      if(clItem)
+        previous = clItem->m_isOdd;
+      else
+        previous = liItem->m_isOdd;
+      clItem = dynamic_cast<KMyMoneyCheckListItem *>(QListViewItem::parent()->firstChild());
+      liItem = dynamic_cast<KMyMoneyListViewItem*>(QListViewItem::parent()->firstChild());
     } else {
-      item = dynamic_cast<KMyMoneyCheckListItem *>(listView()->firstChild());
+      clItem = dynamic_cast<KMyMoneyCheckListItem *>(listView()->firstChild());
+      liItem = dynamic_cast<KMyMoneyListViewItem*>(QListViewItem::parent()->firstChild());
     }
-    while(item) {
-      item->m_odd = previous = !previous;
-      item->m_known = true;
-      item = dynamic_cast<KMyMoneyCheckListItem *>(item->nextSibling());
+    while(clItem || liItem) {
+      if(clItem) {
+        clItem->m_isOdd = previous = !previous;
+        clItem->m_isKnown = true;
+        clItem = dynamic_cast<KMyMoneyCheckListItem *>(clItem->nextSibling());
+        liItem = dynamic_cast<KMyMoneyListViewItem *>(clItem->nextSibling());
+      } else if(liItem) {
+        liItem->m_isOdd = previous = !previous;
+        liItem->m_isKnown = true;
+        clItem = dynamic_cast<KMyMoneyCheckListItem *>(liItem->nextSibling());
+        liItem = dynamic_cast<KMyMoneyListViewItem *>(liItem->nextSibling());
+      }
     }
   }
-  return m_odd;
+  return m_isOdd;
 }
 
 #include "kmymoneychecklistitem.moc"
