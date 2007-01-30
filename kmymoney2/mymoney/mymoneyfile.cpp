@@ -92,7 +92,8 @@ MyMoneyFile::~MyMoneyFile()
   delete d;
 }
 
-MyMoneyFile::MyMoneyFile(IMyMoneyStorage *storage)
+MyMoneyFile::MyMoneyFile(IMyMoneyStorage *storage) :
+  d(new MyMoneyFilePrivate)
 {
   m_storage = 0;
   attachStorage(storage);
