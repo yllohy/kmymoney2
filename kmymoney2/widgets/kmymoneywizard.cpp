@@ -52,9 +52,9 @@ void KMyMoneyWizardPagePrivate::emitCompleteStateChanged(void)
 
 KMyMoneyWizardPage::KMyMoneyWizardPage(unsigned int step, QWidget* widget, const char* name) :
   m_step(step),
-  m_widget(widget)
+  m_widget(widget),
+  d(new KMyMoneyWizardPagePrivate(widget, name))
 {
-  d = new KMyMoneyWizardPagePrivate(widget, name);
   widget->hide();
 }
 

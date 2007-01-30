@@ -248,7 +248,7 @@ protected:
 
 private:
   class kMyMoneyCalendarPrivate;
-  kMyMoneyCalendarPrivate *d;
+  kMyMoneyCalendarPrivate* const d;
   // calculate ISO 8601 week number
   int weekOfYear(QDate);
 

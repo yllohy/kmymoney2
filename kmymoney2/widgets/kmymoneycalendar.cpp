@@ -91,10 +91,11 @@ public:
     QPushButton *userButton2;
 };
 
-kMyMoneyCalendar::kMyMoneyCalendar(QWidget *parent, const char *name )
-  : QFrame(parent,name), table(0)
+kMyMoneyCalendar::kMyMoneyCalendar(QWidget *parent, const char *name ) :
+  QFrame(parent,name),
+  table(0),
+  d(new kMyMoneyCalendarPrivate)
 {
-  d = new kMyMoneyCalendarPrivate();
 }
 
 kMyMoneyCalendar::~kMyMoneyCalendar()

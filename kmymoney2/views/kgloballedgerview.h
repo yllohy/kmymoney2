@@ -341,7 +341,7 @@ protected:
   static QDate         m_lastPostDate;
 
 private:
-  KGlobalLedgerViewPrivate*     d;
+  KGlobalLedgerViewPrivate* const d;
 
   // frames
   QFrame*                       m_toolbarFrame;

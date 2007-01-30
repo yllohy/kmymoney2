@@ -210,7 +210,7 @@ protected:
 private:
   unsigned int     m_step;
   QWidget*         m_widget;
-  KMyMoneyWizardPagePrivate* d;
+  KMyMoneyWizardPagePrivate* const d;
 };
 
 

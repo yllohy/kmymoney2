@@ -79,11 +79,11 @@ MyMoneyFile* const MyMoneyFile::instance()
   return _instance;
 }
 
-MyMoneyFile::MyMoneyFile()
+MyMoneyFile::MyMoneyFile() :
+  d(new MyMoneyFilePrivate)
 {
   m_storage = 0;
   m_suspendNotify = false;
-  d = new MyMoneyFilePrivate();
 }
 
 MyMoneyFile::~MyMoneyFile()

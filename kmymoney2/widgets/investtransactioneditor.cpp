@@ -80,9 +80,9 @@ public:
 };
 
 
-InvestTransactionEditor::InvestTransactionEditor()
+InvestTransactionEditor::InvestTransactionEditor() :
+  d(new InvestTransactionEditorPrivate(this))
 {
-  d = new InvestTransactionEditorPrivate(this);
 }
 
 InvestTransactionEditor::~InvestTransactionEditor()
@@ -91,10 +91,9 @@ InvestTransactionEditor::~InvestTransactionEditor()
 }
 
 InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::InvestTransaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
-  TransactionEditor(regForm, objects, item, list, lastPostDate)
+  TransactionEditor(regForm, objects, item, list, lastPostDate),
+  d(new InvestTransactionEditorPrivate(this))
 {
-  d = new InvestTransactionEditorPrivate(this);
-
   // dissect the transaction into its type, splits, currency, security etc.
   dissectTransaction(m_transaction, m_split, m_objects,
                      m_assetAccountSplit,

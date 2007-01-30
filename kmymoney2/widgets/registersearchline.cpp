@@ -54,20 +54,21 @@ public:
 };
 
 RegisterSearchLine::RegisterSearchLine(QWidget* parent, Register* reg, const char* name) :
-  KLineEdit(parent, name)
+  KLineEdit(parent, name),
+  d(new RegisterSearchLinePrivate)
 {
   init(reg);
 }
 
 RegisterSearchLine::RegisterSearchLine(QWidget* parent, const char* name) :
-    KLineEdit(parent, name)
+  KLineEdit(parent, name),
+  d(new RegisterSearchLinePrivate)
 {
   init(0);
 }
 
 void RegisterSearchLine::init(Register *reg)
 {
-  d = new RegisterSearchLinePrivate;
   d->reg = reg;
   connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(queueSearch(const QString&)));
 
@@ -224,9 +225,9 @@ class RegisterSearchLineWidget::RegisterSearchLineWidgetPrivate
 
 
 RegisterSearchLineWidget::RegisterSearchLineWidget(Register* reg, QWidget* parent, const char* name) :
-  QHBox(parent, name)
+  QHBox(parent, name),
+  d(new RegisterSearchLineWidgetPrivate)
 {
-  d = new RegisterSearchLineWidgetPrivate;
   d->reg = reg;
   setSpacing(5);
   QTimer::singleShot(0, this, SLOT(createWidgets()));

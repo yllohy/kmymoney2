@@ -97,7 +97,7 @@ private:
 
 private:
   class RegisterSearchLinePrivate;
-  RegisterSearchLinePrivate* d;
+  RegisterSearchLinePrivate* const d;
 };
 
 /**
@@ -146,7 +146,7 @@ private slots:
 
 private:
   class RegisterSearchLineWidgetPrivate;
-  RegisterSearchLineWidgetPrivate* d;
+  RegisterSearchLineWidgetPrivate* const d;
 };
 
 } // namespace

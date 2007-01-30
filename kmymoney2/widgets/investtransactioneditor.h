@@ -112,7 +112,7 @@ private:
   MyMoneySecurity                           m_security;
   MyMoneySecurity                           m_currency;
   MyMoneySplit::investTransactionTypeE      m_transactionType;
-  InvestTransactionEditorPrivate*           d;
+  InvestTransactionEditorPrivate* const     d;
 };
 
 #endif

@@ -1584,7 +1584,7 @@ private:
     */
   bool m_suspendNotify;
 
-  MyMoneyFilePrivate  *d;
+  MyMoneyFilePrivate* const d;
 
   static MyMoneyFile* _instance;
 };

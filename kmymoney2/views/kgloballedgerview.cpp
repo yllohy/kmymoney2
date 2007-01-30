@@ -136,9 +136,9 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   m_objects(0),
   m_needReload(false),
   m_newAccountLoaded(true),
-  m_inEditMode(false)
+  m_inEditMode(false),
+  d(new KGlobalLedgerViewPrivate)
 {
-  d = new KGlobalLedgerViewPrivate;
   d->m_mousePressFilter = new MousePressFilter((QWidget*)this);
   setupDefaultAction();
 
