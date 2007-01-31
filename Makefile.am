@@ -38,11 +38,14 @@ check-vpath-environment:
 
 # we use our own version of extractrc if not otherwise specified
 export EXTRACTRC ?= $(PWD)/admin/extractrc
+# we use our the KDE version of xgettext if not otherwise specified
+export XGETTEXT ?= `kde-config --exec-prefix`/kde-xgettext
 
 package-messages: check-vpath-environment
 	find . -name rc.cpp -exec rm {} \;
 	$(MAKE) -C $(top_srcdir) -f admin/Makefile.common package-messages
 	find . -name rc.cpp -exec rm {} \;
+	@if test `grep '"_: ' po/kmymoney2.pot | wc -l` -le 5; then echo -e "It seems that context i18n's are not translated correctly.\n'$(XGETTEXT)' has been used for translation."; exit 1; fi;
 
 merge-messages: check-vpath-environment
 	$(MAKE) -C $(top_srcdir)/po merge

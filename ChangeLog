@@ -1,6 +1,8 @@
 2007-01-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added logic to accept imported transactions
   * Added transaction menu to menu bar
+  * Use kde-xgettext as default and check that i18n(c,s) has been extracted
+    correctly during 'make package-messages'
 
 2007-01-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Converted the private data d-pointers to be of type "* const d"
