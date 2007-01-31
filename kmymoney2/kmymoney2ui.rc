@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="13" name="kmymoney2" >
+<kpartgui version="14" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
@@ -63,6 +63,30 @@
    <Action name="category_edit" />
    <Action name="category_delete" />
    <Action name="account_open" />
+  </Menu>
+  <Menu name="transaction" >
+   <text>&amp;Transaction</text>
+   <Action name="transaction_new" />
+   <Action name="transaction_edit" />
+   <Action name="transaction_editsplits" />
+   <Action name="transaction_delete" />
+   <Action name="transaction_duplicate" />
+   <Menu>
+    <text>Mark transaction as...</text>
+    <title>Mark transaction</title>
+    <Action name="transaction_mark_notreconciled"/>
+    <Action name="transaction_mark_cleared"/>
+    <Action name="transaction_mark_reconciled"/>
+   </Menu>
+   <Separator />
+   <Action name="transaction_goto_account"/>
+   <Action name="transaction_goto_payee"/>
+   <Action name="transaction_create_schedule"/>
+   <Separator />
+   <Action name="transaction_start_match" />
+   <Action name="transaction_end_match" />
+   <Action name="transaction_cancel_match" />
+   <Action name="transaction_accept" />
   </Menu>
   <Merge/>
   <Menu name="tools" >
@@ -180,6 +204,7 @@
   <Action name="transaction_start_match" />
   <Action name="transaction_end_match" />
   <Action name="transaction_cancel_match" />
+  <Action name="transaction_accept" />
  </Menu>
  <ToolBar noMerge="1" name="mainToolBar" fullWidth="true" >
   <text>Main Toolbar</text>

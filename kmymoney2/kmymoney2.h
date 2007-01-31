@@ -398,6 +398,11 @@ protected slots:
     */
   void slotTransactionAssignNumber(void);
 
+  /**
+    * Accept the selected transactions that are marked as 'imported' and remove the flag
+    */
+  void slotTransactionsAccept(void);
+
 public:
   /**
     * This method checks if there is at least one asset or liability account
@@ -856,6 +861,8 @@ public slots:
     */
   void slotToolsStartKCalc(void);
 
+  void slotResetSelections(void);
+
   void slotSelectAccount(const MyMoneyObject& account = MyMoneyAccount());
 
   void slotSelectInstitution(const MyMoneyObject& institution = MyMoneyInstitution());
@@ -911,6 +918,12 @@ private:
     * delete all selected transactions w/o further questions
     */
   void doDeleteTransactions(void);
+
+  /**
+    * Returns @a true if at least one of the selected transactions has
+    * the status flag 'imported' set, @a false otherwise
+    */
+  bool haveImportedTransactionSelected(void) const;
 
 signals:
   /**
@@ -1052,7 +1065,7 @@ private:
   int m_nextUpdate;
 
   IMyMoneyStorage*  m_engineBackup;
-  MyMoneyQifReader* m_reader;
+  MyMoneyQifReader* m_qifReader;
   MyMoneyStatementReader* m_smtReader;
   KFindTransactionDlg* m_searchDlg;
 

@@ -178,6 +178,7 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   ::timetrace("create view");
   myMoneyView = new KMyMoneyView(frame, "KMyMoneyView");
   layout->addWidget(myMoneyView, 10);
+  connect(myMoneyView, SIGNAL(aboutToShowPage(QWidget*)), this, SLOT(slotResetSelections()));
 
   ///////////////////////////////////////////////////////////////////
   // call inits to invoke all other construction parts
@@ -204,7 +205,7 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
 
   m_backupState = BACKUP_IDLE;
 
-  m_reader = 0;
+  m_qifReader = 0;
   m_smtReader = 0;
   m_engineBackup = 0;
 
@@ -225,7 +226,7 @@ KMyMoney2App::~KMyMoney2App()
   MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAnyChange, this);
 
   delete m_searchDlg;
-  delete m_reader;
+  delete m_qifReader;
   delete m_engineBackup;
   delete m_transactionEditor;
   delete m_endingBalanceDlg;
@@ -375,6 +376,8 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Mark transaction cleared", "Cleared"), 0, KShortcut("Ctrl+Space"), this, SLOT(slotMarkTransactionCleared()), actionCollection(), "transaction_mark_cleared");
   new KAction(i18n("Mark transaction reconciled", "Reconciled"), "", KShortcut("Ctrl+Shift+Space"), this, SLOT(slotMarkTransactionReconciled()), actionCollection(), "transaction_mark_reconciled");
   new KAction(i18n("Mark transaction not reconciled", "Not reconciled"), "", 0, this, SLOT(slotMarkTransactionNotReconciled()), actionCollection(), "transaction_mark_notreconciled");
+  new KAction(i18n("Remove 'import' flag from transaction", "Accept"), "", 0, this, SLOT(slotTransactionsAccept()), actionCollection(), "transaction_accept");
+
   new KAction(i18n("Goto account"), "goto", 0, this, SLOT(slotTransactionGotoAccount()), actionCollection(), "transaction_goto_account");
   new KAction(i18n("Goto payee"), "goto", 0, this, SLOT(slotTransactionGotoPayee()), actionCollection(), "transaction_goto_payee");
   new KAction(i18n("Create schedule..."), "bookmark_add", 0, this, SLOT(slotTransactionCreateSchedule()), actionCollection(), "transaction_create_schedule");
@@ -1312,15 +1315,15 @@ void KMyMoney2App::loadAccountTemplates(const QStringList& filelist)
 
 void KMyMoney2App::slotQifImport()
 {
-  if(m_reader == 0) {
+  if(m_qifReader == 0) {
     // FIXME: the menu entry for qif import should be disabled here
 
     KImportDlg* dlg = new KImportDlg(0);
 
     if(dlg->exec()) {
       slotStatusMsg(i18n("Importing file..."));
-      m_reader = new MyMoneyQifReader;
-      connect(m_reader, SIGNAL(importFinished()), this, SLOT(slotQifImportFinished()));
+      m_qifReader = new MyMoneyQifReader;
+      connect(m_qifReader, SIGNAL(importFinished()), this, SLOT(slotQifImportFinished()));
 
       myMoneyView->suspendUpdate(true);
 
@@ -1329,18 +1332,20 @@ void KMyMoney2App::slotQifImport()
         delete m_engineBackup;
       m_engineBackup = MyMoneyFile::instance()->storage()->duplicate();
 
-      m_reader->setFilename(dlg->filename());
+      m_qifReader->setFilename(dlg->filename());
 
-      m_reader->setProfile(dlg->profile());
-      m_reader->setAutoCreatePayee(dlg->autoCreatePayee());
-      m_reader->setProgressCallback(&progressCallback);
+      m_qifReader->setProfile(dlg->profile());
+      m_qifReader->setAutoCreatePayee(dlg->autoCreatePayee());
+      m_qifReader->setProgressCallback(&progressCallback);
 
       // disable all standard widgets during the import
       setEnabled(false);
 
-      m_reader->startImport();
+      m_qifReader->startImport();
     }
     delete dlg;
+
+    slotUpdateActions();
   }
 }
 
@@ -1349,10 +1354,12 @@ void KMyMoney2App::slotQifImportFinished(void)
   MyMoneyFile* file = MyMoneyFile::instance();
 
   myMoneyView->suspendUpdate(false);
-  if(m_reader != 0) {
+  if(m_qifReader != 0) {
+    m_qifReader->finishImport();
+#if 0
     // fixme: re-enable the QIF import menu options
-    if(m_reader->finishImport()) {
-      if(verifyImportedData(m_reader->account())) {
+    if(m_qifReader->finishImport()) {
+      if(verifyImportedData(m_qifReader->account())) {
         // keep the new data set, destroy the backup copy
         delete m_engineBackup;
         m_engineBackup = 0;
@@ -1372,6 +1379,7 @@ void KMyMoney2App::slotQifImportFinished(void)
       m_engineBackup = 0;
 
     }
+#endif
 
     // update the views as they might still contain invalid data
     // from the import session. The same applies for the window caption
@@ -1379,14 +1387,15 @@ void KMyMoney2App::slotQifImportFinished(void)
     updateCaption();
 
     // slotStatusMsg(prevMsg);
-    delete m_reader;
-    m_reader = 0;
+    delete m_qifReader;
+    m_qifReader = 0;
   }
   slotStatusProgressBar(-1, -1);
   ready();
 
   // re-enable all standard widgets
   setEnabled(true);
+  slotUpdateActions();
 }
 
 void KMyMoney2App::slotGncImport(void)
@@ -3747,6 +3756,36 @@ void KMyMoney2App::markTransaction(MyMoneySplit::reconcileFlagE flag)
   slotStatusProgressBar(-1, -1);
 }
 
+void KMyMoney2App::slotTransactionsAccept(void)
+{
+  QValueList<KMyMoneyRegister::SelectedTransaction> list = m_selectedTransactions;
+  QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+  int cnt = list.count();
+  int i = 0;
+  slotStatusProgressBar(0, cnt);
+  for(it_t = list.begin(); it_t != list.end(); ++it_t) {
+    // turn on signals before we modify the last entry in the list
+    cnt--;
+    MyMoneyFile::instance()->blockSignals(cnt != 0);
+
+    try {
+      MyMoneyTransaction t = (*it_t).transaction();
+      if(t.value("Imported").lower() == "true") {
+        t.deletePair("Imported");
+        MyMoneyFile::instance()->modifyTransaction(t);
+      } else if(!cnt)
+        MyMoneyFile::instance()->forceDataChanged();
+
+    } catch(MyMoneyException* e) {
+      delete e;
+      if(!cnt)
+        MyMoneyFile::instance()->forceDataChanged();
+    }
+    slotStatusProgressBar(i++, 0);
+  }
+  slotStatusProgressBar(-1, -1);
+}
+
 void KMyMoney2App::slotTransactionGotoAccount(void)
 {
   if(!m_accountGoto.isEmpty()) {
@@ -4029,11 +4068,13 @@ void KMyMoney2App::slotUpdateActions(void)
 #endif
 
   action("edit_find_transaction")->setEnabled(fileOpen);
-  action("file_export_qif")->setEnabled(fileOpen);
-  action("file_import_qif")->setEnabled(fileOpen);
-  action("file_import_gnc")->setEnabled(true);
-  action("file_import_template")->setEnabled(fileOpen);
-  action("file_export_template")->setEnabled(fileOpen);
+
+  bool importRunning = (m_qifReader != 0) || (m_smtReader != 0);
+  action("file_export_qif")->setEnabled(fileOpen && !importRunning);
+  action("file_import_qif")->setEnabled(fileOpen && !importRunning);
+  action("file_import_gnc")->setEnabled(!importRunning);
+  action("file_import_template")->setEnabled(fileOpen && !importRunning);
+  action("file_export_template")->setEnabled(fileOpen && !importRunning);
 
 
   action("tools_security_editor")->setEnabled(fileOpen);
@@ -4101,6 +4142,8 @@ void KMyMoney2App::slotUpdateActions(void)
   action("transaction_goto_account")->setEnabled(false);
   action("transaction_goto_payee")->setEnabled(false);
   action("transaction_assign_number")->setEnabled(false);
+  action("transaction_accept")->setEnabled(false);
+  action("transaction_create_schedule")->setEnabled(false);
 
   if(!m_selectedTransactions.isEmpty()) {
     tooltip = i18n("Delete the current selected transactions");
@@ -4108,7 +4151,6 @@ void KMyMoney2App::slotUpdateActions(void)
     action("transaction_delete")->setToolTip(tooltip);
 
     if(!m_transactionEditor) {
-      action("transaction_duplicate")->setEnabled(true);
       if(myMoneyView->canEditTransactions(m_selectedTransactions, tooltip)) {
         action("transaction_edit")->setEnabled(true);
         // editing splits is allowed only if we have one transaction selected
@@ -4132,7 +4174,9 @@ void KMyMoney2App::slotUpdateActions(void)
             action("transaction_end_match")->setEnabled(true);
         }
       }
-
+      action("transaction_accept")->setEnabled(haveImportedTransactionSelected());
+      action("transaction_duplicate")->setEnabled(true);
+      action("transaction_create_schedule")->setEnabled(true);
       action("transaction_mark_cleared")->setEnabled(true);
       action("transaction_mark_reconciled")->setEnabled(true);
       action("transaction_mark_notreconciled")->setEnabled(true);
@@ -4232,6 +4276,27 @@ void KMyMoney2App::slotUpdateActions(void)
     action("budget_rename")->setEnabled(true);
     action("budget_delete")->setEnabled(true);
   }
+}
+
+void KMyMoney2App::slotResetSelections(void)
+{
+  slotSelectAccount();
+  slotSelectInstitution();
+  slotSelectInvestment();
+  slotSelectPayees(QValueList<MyMoneyPayee>());
+  slotSelectBudget(QValueList<MyMoneyBudget>());
+  slotSelectTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>());
+  slotUpdateActions();
+}
+
+bool KMyMoney2App::haveImportedTransactionSelected(void) const
+{
+  QValueList< KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+  for(it_t = m_selectedTransactions.begin(); it_t != m_selectedTransactions.end(); ++it_t) {
+    if((*it_t).transaction().value("Imported").lower() == "true")
+      return true;
+  }
+  return false;
 }
 
 void KMyMoney2App::slotSelectBudget(const QValueList<MyMoneyBudget>& list)
