@@ -6,6 +6,7 @@
 
 2007-01-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Converted the private data d-pointers to be of type "* const d"
+  * Fixed a bunch of missing i18n() calls as reported by Patrick Petit
 
 2007-01-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Some more fixes on the background color

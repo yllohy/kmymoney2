@@ -548,7 +548,7 @@ void KEnterScheduleDialog::checkCategory()
     if(id.isEmpty() && !category.isEmpty())
     {
       // Create the category
-      QString message = QString("The category '%1' does not exist.  Create?").arg(m_category->text());
+      QString message = i18n("The category '%1' does not exist.  Create?").arg(m_category->text());
       if (KMessageBox::questionYesNo(this, message) == KMessageBox::Yes)
       {
         MyMoneyAccount base;

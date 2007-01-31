@@ -648,7 +648,7 @@ void QueryTable::constructTransactionTable(void)
                 // In tax reports, we don't want to see transfers
                 if ( ! m_config.isTax() )
                 {
-                  QString fromto = ((*it_split2).value().isNegative())?"from":"to";
+                  QString fromto = ((*it_split2).value().isNegative())?i18n("from"):i18n("to");
                   qsplitrow["category"] = i18n("Transfer %1 %2").arg(fromto).arg(split2account.fullName());
                   qsplitrow["topcategory"] = split2account.topParentName();
                   qsplitrow["categorytype"] = i18n("Transfer");

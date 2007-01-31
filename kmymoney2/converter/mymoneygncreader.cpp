@@ -1835,11 +1835,11 @@ void MyMoneyGncReader::terminate () {
   // produce the sections in message boxes
   bool exit = false;
   for (i = 0; (i < sectionsToReport.count()) && !exit; i++) {
-    QString button0Text = "More";
-    if (i + 1 == sectionsToReport.count()) button0Text = "Done"; // last section
+    QString button0Text = i18n("More");
+    if (i + 1 == sectionsToReport.count()) button0Text = i18n("Done"); // last section
     switch (QMessageBox::information (0, PACKAGE,
                                       buildReportSection (*sectionsToReport.at(i)),
-                                      button0Text, "Save Report", "Cancel",
+                                      button0Text, i18n("Save Report"), i18n("Cancel"),
                                       0, 2))    // Enter == button 0, Escape == button 2
     {
     case 0:

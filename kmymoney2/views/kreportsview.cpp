@@ -252,7 +252,7 @@ KReportsView::KReportsView(QWidget *parent, const char *name )
   m_listTabLayout = ( new QVBoxLayout( m_listTab, 11, 6, "indextabLayout") );
   m_reportListView = new KListView( m_listTab, "m_reportListView" );
   m_listTabLayout->addWidget( m_reportListView );
-  m_reportTabWidget->insertTab( m_listTab, "Reports" );
+  m_reportTabWidget->insertTab( m_listTab, i18n("Reports") );
 
   m_reportListView->addColumn(i18n("Report"));
   m_reportListView->addColumn(i18n("Comment"));
