@@ -889,7 +889,7 @@ public slots:
   void slotUpdateActions(void);
 
 private:
-  bool verifyImportedData(const MyMoneyAccount& account);
+  // bool verifyImportedData(const MyMoneyAccount& account);
 
   /**
     * Load the status bar with the 'ready' message. This is hold in a single

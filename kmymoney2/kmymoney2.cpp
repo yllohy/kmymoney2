@@ -1738,6 +1738,8 @@ void KMyMoney2App::slotStatementImportFinished(void)
 
   myMoneyView->suspendUpdate(false);
   if(m_smtReader != 0) {
+    m_smtReader->finishImport();
+#if 0
     if(m_smtReader->finishImport()) {
       if(verifyImportedData(m_smtReader->account())) {
         // keep the new data set, destroy the backup copy
@@ -1759,6 +1761,7 @@ void KMyMoney2App::slotStatementImportFinished(void)
       m_engineBackup = 0;
     }
 
+#endif
     // update the views as they might still contain invalid data
     // from the import session. The same applies for the window caption
     myMoneyView->slotRefreshViews();
@@ -2139,6 +2142,7 @@ void KMyMoney2App::slotQifProfileEditor(void)
 
 }
 
+#if 0
 bool KMyMoney2App::verifyImportedData(const MyMoneyAccount& account)
 {
   bool rc;
@@ -2148,6 +2152,7 @@ bool KMyMoney2App::verifyImportedData(const MyMoneyAccount& account)
   delete dialog;
   return rc;
 }
+#endif
 
 void KMyMoney2App::slotToolsStartKCalc(void)
 {
