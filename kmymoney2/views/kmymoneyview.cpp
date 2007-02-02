@@ -212,6 +212,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_ledgerView, SIGNAL(markTransactionCleared()), kmymoney2, SLOT(slotMarkTransactionCleared()));
   connect(m_ledgerView, SIGNAL(markTransactionNotReconciled()), kmymoney2, SLOT(slotMarkTransactionNotReconciled()));
   connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const MyMoneyMoney&)), m_ledgerView, SLOT(slotSetReconcileAccount(const MyMoneyAccount&, const MyMoneyMoney&)));
+  connect(m_ledgerView, SIGNAL(matchTransactionSelected(const MyMoneyTransaction&)), kmymoney2, SLOT(slotSelectMatchTransaction(const MyMoneyTransaction&)));
+  connect(kmymoney2, SIGNAL(startMatchTransaction(const MyMoneyTransaction&)), m_ledgerView, SLOT(slotStartMatchTransaction(const MyMoneyTransaction&)));
+  connect(kmymoney2, SIGNAL(cancelMatchTransaction(void)), m_ledgerView, SLOT(slotCancelMatchTransaction()));
 
   //connect(m_ledgerView, SIGNAL(accountSelected(const QCString&, const QCString&)),
   //    this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));

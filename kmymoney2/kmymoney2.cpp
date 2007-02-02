@@ -371,7 +371,7 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Delete transaction", "Delete"), "delete", 0, this, SLOT(slotTransactionsDelete()), actionCollection(), "transaction_delete");
   new KAction(i18n("Duplicate transaction", "Duplicate"), "editcopy", 0, this, SLOT(slotTransactionDuplicate()), actionCollection(), "transaction_duplicate");
   new KAction(i18n("Match Transaction..."), "", 0, this, SLOT(slotStartMatch()), actionCollection(), "transaction_start_match");
-  new KAction(i18n("Cancel Match"), "", 0, this, SLOT(slotCancelMatch()), actionCollection(), "transaction_cancel_match");
+  new KAction(i18n("Cancel Match"), "", 0, this, SIGNAL(cancelMatchTransaction()), actionCollection(), "transaction_cancel_match");
   new KAction(i18n("Match With This Transaction"), "", 0, this, SLOT(slotEndMatch()), actionCollection(), "transaction_end_match");
   new KAction(i18n("Mark transaction cleared", "Cleared"), 0, KShortcut("Ctrl+Space"), this, SLOT(slotMarkTransactionCleared()), actionCollection(), "transaction_mark_cleared");
   new KAction(i18n("Mark transaction reconciled", "Reconciled"), "", KShortcut("Ctrl+Shift+Space"), this, SLOT(slotMarkTransactionReconciled()), actionCollection(), "transaction_mark_reconciled");
@@ -3684,30 +3684,10 @@ void KMyMoney2App::slotTransactionsCancelOrEnter(void)
   }
 }
 
-void KMyMoney2App::slotStartMatch(void)
+void KMyMoney2App::slotSelectMatchTransaction(const MyMoneyTransaction& t)
 {
-  m_matchTransaction = m_selectedTransactions[0];
-
-  MyMoneyTransaction t = m_matchTransaction.transaction();
-  t.setValue("MatchSelected", "true");
-  try {
-    MyMoneyFile::instance()->modifyTransaction(t);
-  } catch(MyMoneyException *e) {
-    delete e;
-    m_matchTransaction = KMyMoneyRegister::SelectedTransaction();
-  }
-}
-
-void KMyMoney2App::slotCancelMatch(void)
-{
-  MyMoneyTransaction t = m_matchTransaction.transaction();
-  t.deletePair("MatchSelected");
-  try {
-    MyMoneyFile::instance()->modifyTransaction(t);
-  } catch(MyMoneyException *e) {
-    delete e;
-  }
-  m_matchTransaction = KMyMoneyRegister::SelectedTransaction();
+  m_matchTransaction = t;
+  slotUpdateActions();
 }
 
 void KMyMoney2App::slotMarkTransactionCleared(void)
@@ -3834,9 +3814,15 @@ void KMyMoney2App::slotTransactionAssignNumber(void)
     m_transactionEditor->assignNumber();
 }
 
+void KMyMoney2App::slotStartMatch(void)
+{
+  if(m_selectedTransactions.count() > 0)
+    emit startMatchTransaction(m_selectedTransactions[0].transaction());
+}
+
 void KMyMoney2App::slotEndMatch(void)
 {
-  MyMoneyTransaction startMatchTransaction = m_matchTransaction.transaction();
+  MyMoneyTransaction startMatchTransaction = m_matchTransaction;
   MyMoneyTransaction endMatchTransaction = m_selectedTransactions[0].transaction();
 
   KMergeTransactionsDlg dlg(m_selectedAccount.id());
@@ -3941,9 +3927,7 @@ void KMyMoney2App::slotEndMatch(void)
       delete e;
     }
 
-    startMatchTransaction.deletePair("MatchSelected");
-    MyMoneyFile::instance()->modifyTransaction(startMatchTransaction);
-    m_matchTransaction = KMyMoneyRegister::SelectedTransaction();
+    emit cancelMatchTransaction();
   }
 }
 
@@ -4165,12 +4149,12 @@ void KMyMoney2App::slotUpdateActions(void)
       if(!m_payeeGoto.isEmpty())
         action("transaction_goto_payee")->setEnabled(true);
 
-      if(m_selectedTransactions.count() == 1) {
-        if(m_matchTransaction.transaction().id().isEmpty()) {
+      if(m_selectedTransactions.count() == 1 && action("transaction_edit")->isEnabled()) {
+        if(m_matchTransaction.id().isEmpty()) {
           action("transaction_start_match")->setEnabled(true);
         } else {
           action("transaction_cancel_match")->setEnabled(true);
-          if(m_selectedTransactions[0].transaction().id() != m_matchTransaction.transaction().id())
+          if(m_selectedTransactions[0].transaction().id() != m_matchTransaction.id())
             action("transaction_end_match")->setEnabled(true);
         }
       }

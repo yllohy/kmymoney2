@@ -242,6 +242,18 @@ public slots:
    */
   void slotSetReconcileAccount(const MyMoneyAccount& account = MyMoneyAccount(), const MyMoneyMoney& endingBalance = MyMoneyMoney());
 
+  /**
+    * Mark the transaction referenced by @p t for transaction matching
+    * If another transaction is already marked, the mark will be removed
+    * there.
+    */
+  void slotStartMatchTransaction(const MyMoneyTransaction& t);
+
+  /**
+    * Remove all matching marks from all transactions in the register.
+    */
+  void slotCancelMatchTransaction(void);
+
 protected:
   /**
     * This method reloads the account selection combo box of the
@@ -366,6 +378,7 @@ private:
     */
   QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >  m_transactionList;
 
+  MyMoneyTransaction              m_matchTransaction;
   MyMoneyObjectContainer*         m_objects;
 
   QLabel*                         m_leftSummaryLabel;
@@ -383,6 +396,7 @@ private:
 signals:
   void accountSelected(const MyMoneyObject&);
   void transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>&);
+  void matchTransactionSelected(const MyMoneyTransaction&);
   void newTransaction(void);
   void startEdit(void);
   void endEdit(void);

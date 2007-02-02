@@ -146,7 +146,8 @@ Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, cons
   m_erronous(false),
   m_inEdit(false),
   m_inRegisterEdit(false),
-  m_showBalance(true)
+  m_showBalance(true),
+  m_matchMark(false)
 {
   // load the payee
   if(!m_split.payeeId().isEmpty()) {
@@ -215,7 +216,7 @@ void Transaction::paintRegisterCellSetup(QPainter* painter, int row, int col, QR
   if(m_transaction.value("Imported").lower() == "true") {
     cg.setColor(QColorGroup::Base, KMyMoneySettings::importedTransactionColor());
   }
-  if(m_transaction.value("MatchSelected").lower() == "true") {
+  if(m_matchMark) {
     cg.setColor(QColorGroup::Base, KMyMoneySettings::matchedTransactionColor());
   }
 
@@ -741,6 +742,14 @@ void Transaction::setSelected(bool selected)
 {
   if(!selected || (selected && isVisible()))
     m_selected = selected;
+}
+
+void Transaction::setMatchMark(bool mark)
+{
+  bool prevMark = m_matchMark;
+  m_matchMark = mark;
+  if(prevMark != mark && m_parent)
+    m_parent->updateContents();
 }
 
 StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :

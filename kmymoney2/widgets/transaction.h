@@ -215,6 +215,9 @@ public:
 
   virtual void setVisible(bool visible);
 
+  virtual void setMatchMark(bool mark);
+  bool hasMatchMark(void) const { return m_matchMark; }
+
 protected:
   virtual void markAsErronous(QPainter* p, int row, int col, const QRect& r);
 
@@ -257,6 +260,7 @@ protected:
   bool                    m_inEdit;
   bool                    m_inRegisterEdit;
   bool                    m_showBalance;
+  bool                    m_matchMark;
 };
 
 class StdTransaction : public Transaction

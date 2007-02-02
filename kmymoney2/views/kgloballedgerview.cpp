@@ -133,11 +133,11 @@ QDate KGlobalLedgerView::m_lastPostDate;
 
 KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   : KMyMoneyViewBase(parent, name, i18n("Ledgers")),
+  d(new KGlobalLedgerViewPrivate),
   m_objects(0),
   m_needReload(false),
   m_newAccountLoaded(true),
-  m_inEditMode(false),
-  d(new KGlobalLedgerViewPrivate)
+  m_inEditMode(false)
 {
   d->m_mousePressFilter = new MousePressFilter((QWidget*)this);
   setupDefaultAction();
@@ -406,6 +406,8 @@ void KGlobalLedgerView::loadView(void)
   // no transaction selected
   QValueList<KMyMoneyRegister::SelectedTransaction> list;
   emit transactionsSelected(list);
+  // no match transaction selected
+  m_matchTransaction = MyMoneyTransaction();
 
   QMap<QCString, bool> isSelected;
   QCString focusItemId;
@@ -422,6 +424,11 @@ void KGlobalLedgerView::loadView(void)
     // remember the item that has the focus
     if(m_register->focusItem())
       focusItemId = m_register->focusItem()->id();
+
+    // remember if a transaction has a match mark
+    KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(item);
+    if(t && t->hasMatchMark())
+      m_matchTransaction = t->transaction();
 
     // remember the upper left corner of the viewport
     d->m_startPoint = QPoint(m_register->contentsX(), m_register->contentsY());
@@ -544,8 +551,13 @@ void KGlobalLedgerView::loadView(void)
       if(t) {
         if(isSelected.contains(t->id()))
           t->setSelected(true);
+
+        if(t->transaction().id() == m_matchTransaction.id())
+          t->setMatchMark(true);
+
         if(t->id() == focusItemId)
           focusItem = t;
+
         t->setBalance(balance.formatMoney("", d->m_precision));
         const MyMoneySplit& split = t->split();
         balance -= split.shares();
@@ -602,6 +614,32 @@ void KGlobalLedgerView::loadView(void)
 
   // and tell everyone what's selected
   emit accountSelected(m_account);
+  emit matchTransactionSelected(m_matchTransaction);
+}
+
+void KGlobalLedgerView::slotStartMatchTransaction(const MyMoneyTransaction& tr)
+{
+  KMyMoneyRegister::RegisterItem* p = m_register->firstItem();
+
+  emit matchTransactionSelected(MyMoneyTransaction());
+
+  while(p) {
+    KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
+    if(t) {
+      bool matches = (t->transaction().id() == tr.id()) && (!tr.id().isEmpty());
+      t->setMatchMark(matches);
+      if(matches) {
+        m_matchTransaction = t->transaction();
+        emit matchTransactionSelected(m_matchTransaction);
+      }
+    }
+    p = p->nextItem();
+  }
+}
+
+void KGlobalLedgerView::slotCancelMatchTransaction(void)
+{
+  slotStartMatchTransaction(MyMoneyTransaction());
 }
 
 void KGlobalLedgerView::updateSummaryLine(const MyMoneyMoney& actBalance, const MyMoneyMoney& clearedBalance)
@@ -1287,6 +1325,7 @@ void KGlobalLedgerView::show(void)
     QValueList<KMyMoneyRegister::SelectedTransaction> list;
     m_register->selectedTransactions(list);
     emit transactionsSelected(list);
+    emit matchTransactionSelected(m_matchTransaction);
   }
 
   // don't forget base class implementation

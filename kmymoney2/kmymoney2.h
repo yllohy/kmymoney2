@@ -877,9 +877,9 @@ public slots:
 
   void slotSelectTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list);
 
-  void slotStartMatch(void);
+  void slotSelectMatchTransaction(const MyMoneyTransaction& t);
 
-  void slotCancelMatch(void);
+  void slotStartMatch(void);
 
   void slotEndMatch(void);
 
@@ -985,6 +985,9 @@ signals:
   void payeeRename(void);
   void payeeCreated(const QCString& id);
 
+  void startMatchTransaction(const MyMoneyTransaction& t);
+  void cancelMatchTransaction(void);
+
 public:
   /**
     * This method retrieves a pointer to a KAction object from actionCollection().
@@ -1086,7 +1089,7 @@ private:
   QValueList<KMyMoneyRegister::SelectedTransaction> m_selectedTransactions;
 
   QValueList<KMyMoneyRegister::SelectedTransaction> m_editTransactions;
-  KMyMoneyRegister::SelectedTransaction             m_matchTransaction;
+  MyMoneyTransaction                                m_matchTransaction;
 
   // This is Auto Saving related
   bool                  m_autoSaveEnabled;
