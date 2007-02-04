@@ -1423,7 +1423,7 @@ MyMoneyMoney StdTransactionEditor::amountFromWidget(bool* update) const
     kMyMoneyEdit* deposit = dynamic_cast<kMyMoneyEdit*>(m_editWidgets["deposit"]);
     kMyMoneyEdit* payment = dynamic_cast<kMyMoneyEdit*>(m_editWidgets["payment"]);
     // if both fields do not contain text -> no need to update
-    if(!(deposit->text().isEmpty() && payment->text().isEmpty()))
+    if(!(deposit->lineedit()->text().isEmpty() && payment->lineedit()->text().isEmpty()))
       updateValue = true;
 
     if(deposit->value().isPositive())
@@ -1511,6 +1511,8 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
     // for this account, the shares and value is the same
     s0.setValue(value);
     s0.setShares(value);
+  } else {
+    value = s0.value();
   }
 
   // if we mark the split reconciled here, we'll use today's date if no reconciliation date is given
@@ -1534,7 +1536,11 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
 
   MyMoneySplit s1;
   if(torig.splitCount() < 2 && splits.count() == 0) {
+    s1.setMemo(s0.memo());
     splits.append(s1);
+
+    // make sure we will fill the value and share fields later on
+    updateValue = true;
   }
 
   // FIXME in multiSelection we currently only support transactions with one

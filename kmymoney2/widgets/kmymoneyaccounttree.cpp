@@ -775,7 +775,7 @@ void KMyMoneyAccountTreeItem::paintCell(QPainter *p, const QColorGroup & cg, int
     font.setBold(true);
 
   // strike out closed accounts
-  if(m_account.value(""))            // FIXME: not defined how closed accounts will be marked in engine
+  if(m_account.isClosed())
     font.setStrikeOut(true);
 
   p->setFont(font);
