@@ -387,9 +387,9 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
   if ( qc & MyMoneyReport::eQCloan )
   {
     m_columns += ",payment,interest,fees";
-    m_postcolumns = "balance";       
+    m_postcolumns = "balance";
   }
-   
+
   QString sort;
   if ( ! m_group.isEmpty() )
     sort += m_group + ",";
@@ -455,7 +455,7 @@ void QueryTable::constructTransactionTable(void)
     else
       if((*it_transaction).commodity() != file->baseCurrency().id())
         qtransactionrow["currency"] = (*it_transaction).commodity();
-       
+
     // A table row ALWAYS has one asset/liability account.  A transaction
     // will generate one table row for each A/L account.
     //
@@ -523,37 +523,37 @@ void QueryTable::constructTransactionTable(void)
           qaccountrow["account"] = splitaccount.name();
           qaccountrow["accountid"] = splitaccount.id();
           qaccountrow["topaccount"] = splitaccount.topParentName();
-          
+
           QValueList<MyMoneySplit>::const_iterator it_split2 = splits.begin();
           while ( it_split2 != splits.end() )
           {
             ReportAccount split2account = (*it_split2).accountId();
-          
+
             // Put the principal amount in the "value" column
             if ( (*it_split2).accountId() == (*it_split).accountId() )
             {
               qaccountrow["value"] = ((-(*it_split2).value())*displayprice).toString();
             }
-            
+
             // Put the payment in the "payment" column
             else if ( (*it_split2).action() == MyMoneySplit::ActionAmortization )
             {
               qaccountrow["payment"] = (-(*it_split2).value()*displayprice).toString();
             }
-            
+
             // Put the interest in the "interest" column
             else if ( (*it_split2).action() == MyMoneySplit::ActionInterest )
             {
               qaccountrow["interest"] = (-(*it_split2).value()*displayprice).toString();
             }
-            
+
             // Put the initial pay-in nowhere (that is, ignore it). This is dangerous, though.
             // The only way I can tell the initial pay-in apart from fees is if there are
             // only 2 splits in the transaction.  I wish there was a better way.
             else if ( splits.count() == 2)
             {
             }
-            
+
             // Put everything else in the "fees" column
             else
             {
@@ -573,7 +573,7 @@ void QueryTable::constructTransactionTable(void)
 
 // This is an attempt to fix KDE bug #118729.  But I'm not really happy with it
 // yet, so it remains #if0'd out.
-#if 0        
+#if 0
           if ( splits.count() <= 2 )
           {
           }
@@ -598,7 +598,7 @@ void QueryTable::constructTransactionTable(void)
           while ( it_split2 != splits.end() )
           {
             ReportAccount split2account = (*it_split2).accountId();
-          
+
             // Only process this split if it is not the A/L account we're working with anyway
             if ( (*it_split2).accountId() != (*it_split).accountId() )
             {
@@ -606,26 +606,26 @@ void QueryTable::constructTransactionTable(void)
               // (This is the 'expand categories' behaviour.
               // 'collapse categories' would entail cramming them all into one
               // line and calling it "Split Categories").
-  
+
               TableRow qsplitrow = qaccountrow;
               qsplitrow["account"] = splitaccount.name();
               qsplitrow["accountid"] = splitaccount.id();
               qsplitrow["topaccount"] = splitaccount.topParentName();
-  
+
               // retrieve the value in the transaction's currency, and convert
               // to the base currency if needed
               qsplitrow["value"] = ((-(*it_split2).value())*displayprice).toString();
               qsplitrow["id"] = (*it_split2).id();
-  
+
               if (!(*it_split2).memo().isEmpty())
                 qsplitrow["memo"] = (*it_split2).memo();
-              
+
               // handle cash dividends.  these little fellas require very special handling.
               // the stock account will produce a qaccountrow with zero value & zero shares.
               // then there will be 2 qsplitrows, a category and a transfer account.  We are
               // only concerned with the transfer account, and we will NOT show the income
               // account.  (This may have to be changed later if we feel we need it.)
-  
+
               if (
                 ( splitaccount.accountType() == MyMoneyAccount::Stock )
                 &&
@@ -636,13 +636,13 @@ void QueryTable::constructTransactionTable(void)
               {
                 goto skip_addsplit;
               }
-  
+
               // handle sub-categories.  the 'category' field contains the
               // fully-qualified category hierarchy, e.g. "Computers: Hardware: CPUs"
               // the 'topparent' field contains just the top-most parent, in this
               // example "Computers"
-  
-              // if this is a transfer 
+
+              // if this is a transfer
               if ( ! split2account.isIncomeExpense() )
               {
                 // In tax reports, we don't want to see transfers
@@ -678,7 +678,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneySecurity security = file->security(account.currencyId());
-  
+
   result["equitytype"] = KMyMoneyUtils::securityTypeToString(security.securityType());
 
   //
@@ -782,7 +782,7 @@ void QueryTable::constructAccountTable(void)
   while ( it_account != accounts.end() )
   {
     ReportAccount account = *it_account;
-    
+
     // Note, "Investment" accounts are never included in account rows because
     // they don't contain anything by themselves.  In reports, they are only
     // useful as a "topaccount" aggregator of stock accounts
@@ -806,7 +806,7 @@ void QueryTable::constructAccountTable(void)
         // display currency is the account's deep currency.  display this fact in the report
         qaccountrow["currency"] = account.currency();
       }
-      
+
       qaccountrow["account"] = account.name();
       qaccountrow["accountid"] = account.id();
       qaccountrow["topaccount"] = account.topParentName();
@@ -819,14 +819,14 @@ void QueryTable::constructAccountTable(void)
       qaccountrow["value"] = ( netprice.reduce() * shares.reduce() ).toString();
 
       QCString iid = (*it_account).institutionId();
-      
+
       // If an account does not have an institution, get it from the top-parent.
       if ( iid.isEmpty() && ! account.isTopLevel() )
       {
         ReportAccount topaccount = account.topParent();
         iid = topaccount.institutionId();
       }
-      
+
       if ( iid.isEmpty() )
         qaccountrow["institution"] = "None";
       else
@@ -925,9 +925,12 @@ void QueryTable::render( QString& result, QString& csv ) const
   // the list of columns which represent shares, which is like money except the
   // transaction currency will not be displayed
   QStringList sharesColumns = QStringList::split(",","shares");
-  
+
   // the list of columns which represent a percentage, so we can display them correctly
   QStringList percentColumns = QStringList::split(",","return");
+
+  // the list of columns which represent dates, so we can display them correctly
+  QStringList dateColumns = QStringList::split(",", "postdate,entrydate");
 
   result += "<table class=\"report\">\n<tr class=\"itemheader\">";
 
@@ -1037,7 +1040,7 @@ void QueryTable::render( QString& result, QString& csv ) const
     while ( it_column != columns.end() )
     {
       QString data = (*it_row)[*it_column];
-      
+
       // The 'balance' column is calculated at render-time
       if ( *it_column == "balance" )
       {
@@ -1046,7 +1049,7 @@ void QueryTable::render( QString& result, QString& csv ) const
       }
 
       // Figure out how to render the value in this column, depending on
-      // what its properties are.  
+      // what its properties are.
       //
       // TODO: This and the i18n headings are handled
       // as a set of parallel vectors.  Would be much better to make a single
@@ -1080,6 +1083,20 @@ void QueryTable::render( QString& result, QString& csv ) const
           .arg((MyMoneyMoney(data) * MyMoneyMoney(100,1)).formatMoney());
 
         csv += (MyMoneyMoney(data) * MyMoneyMoney(100,1)).formatMoney() + "%,";
+      }
+      else if ( dateColumns.contains(*it_column) )
+      {
+        // if we have a locale() then use its date formatter
+        if(KGlobal::locale()) {
+          result += QString("<td class=\"left\">%1</td>")
+            .arg(KGlobal::locale()->formatDate(QDate::fromString(data, Qt::ISODate), true));
+        } else {
+          // this should be used for the testcases where we don't have
+          // a KApplication environment and KGlobal::locale() returns 0
+          result += QString("<td class=\"left\">%1</td>")
+            .arg(data);
+        }
+        csv += "\""+ data + "\",";
       }
       else
       {
