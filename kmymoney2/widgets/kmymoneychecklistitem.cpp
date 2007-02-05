@@ -120,7 +120,7 @@ bool KMyMoneyCheckListItem::isAlternate(void)
       liItem = dynamic_cast<KMyMoneyListViewItem*>(QListViewItem::parent()->firstChild());
     } else {
       clItem = dynamic_cast<KMyMoneyCheckListItem *>(listView()->firstChild());
-      liItem = dynamic_cast<KMyMoneyListViewItem*>(QListViewItem::parent()->firstChild());
+      liItem = dynamic_cast<KMyMoneyListViewItem*>(listView()->firstChild());
     }
     while(clItem || liItem) {
       if(clItem) {

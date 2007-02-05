@@ -1,3 +1,7 @@
+2007-02-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed crash in KMyMoneyListViewItem::isAlternate() and
+    KMyMoneyCheckListItem::isAlternate()
+
 2007-02-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved handling of category assignment in mulit selection
   * Fixed detection of closed accounts in the account tree widget
