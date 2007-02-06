@@ -827,11 +827,11 @@ void Register::setupItemIndex(int rowCount)
     item->setPrevItem(prev);
     item->setNextItem(0);
     prev = item;
-    // if(item->isVisible()) {
+    if(item->isVisible()) {
       for(int j = item->numRowsRegister(); j; --j) {
         m_itemIndex.push_back(item);
       }
-    // }
+    }
   }
 }
 
@@ -902,7 +902,8 @@ void Register::updateRegister(bool forceUpdateRowHeight)
         continue;
       item->setStartRow(rowCount);
       item->setNeedResize();
-      rowCount += item->numRowsRegister();
+      if(item->isVisible())
+        rowCount += item->numRowsRegister();
 
       if(item->isErronous()) {
         if(!m_firstErronous)

@@ -158,6 +158,7 @@ void RegisterSearchLine::updateSearch(const QString& s)
   // if focus item is still visible, then make sure we have
   // it on screen
   if(focusItem && focusItem->isVisible()) {
+    d->reg->updateContents();
     d->reg->ensureItemVisible(focusItem);
   } else
     d->reg->repaintContents();
