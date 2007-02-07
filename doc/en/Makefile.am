@@ -49,21 +49,25 @@ web:
 # to the build directory. Otherwise, we'll get into trouble. Of course
 # we delete them afterwards.
 get-files:
-	if test x$(VPATH) != x.; then \
-		for file in $(DOCBOOK_FILES); do \
-			cp $(srcdir)/$$file .; \
-			if test -n $(CHARSET); then \
-				recode utf-8..$(CHARSET) $$file; \
-			fi \
-		done; \
-		for file in $(SCREENSHOT_FILES); do \
-			cp $(srcdir)/$$file .; \
-		done; \
+	if test -n "$(VPATH)" ; then \
+		if test x$(VPATH) != x.; then \
+			for file in $(DOCBOOK_FILES); do \
+				cp $(srcdir)/$$file .; \
+				if test -n $(CHARSET); then \
+					recode utf-8..$(CHARSET) $$file; \
+				fi \
+			done; \
+			for file in $(SCREENSHOT_FILES); do \
+				cp $(srcdir)/$$file .; \
+			done; \
+		fi \
 	fi
 
 clear-files:
-	if test x$(VPATH) != x.; then \
-		for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do rm $$file; done;  \
+	if test -n "$(VPATH)" ; then \
+		if test x$(VPATH) != x.; then \
+			for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do rm $$file; done;  \
+		fi \
 	fi
 
 if HAVE_DOCCONVERSIONTOOLS

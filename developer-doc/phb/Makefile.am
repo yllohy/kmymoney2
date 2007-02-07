@@ -28,16 +28,20 @@ phb.html:	$(DOCBOOK_FILES)
 # to the build directory. Otherwise, we'll get into trouble. Of course
 # we delete them afterwards.
 get-files:
-	if test x$(VPATH) != x.; then \
-		for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do \
-			cp $(srcdir)/$$file .; \
-		done; \
+	if test -n "$(VPATH)" ; then \
+		if test x$(VPATH) != x.; then \
+			for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do \
+				cp $(srcdir)/$$file .; \
+			done; \
+		fi \
 	fi
 
 clear-files:
-	if test x$(VPATH) != x.; then \
-		for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do rm $$file; done;  \
-        fi
+	if test -n "$(VPATH)" ; then \
+		if test x$(VPATH) != x.; then \
+			for file in $(DOCBOOK_FILES) $(SCREENSHOT_FILES); do rm $$file; done;  \
+		fi \
+	fi
 
 
 if HAVE_DOCCONVERSIONTOOLS
