@@ -93,8 +93,8 @@ public:
     * Overridden so we can emit the activated signal.
     *
     * @return Nothing.
-  **/
-  void show();
+    */
+  void show(void);
 
 protected:
   /**
@@ -120,6 +120,12 @@ public slots:
 
   void slotRefreshView(void);
   void slotReloadView(void) { if(isVisible()) slotRefreshView(); };
+
+  /**
+    * Print the current view
+    */
+  void slotPrintView(void);
+
 };
 
 #endif

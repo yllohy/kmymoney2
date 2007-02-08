@@ -87,11 +87,17 @@ KHomeView::~KHomeView()
   }
 }
 
-void KHomeView::show()
+void KHomeView::show(void)
 {
   slotRefreshView();
   QWidget::show();
   emit signalViewActivated();
+}
+
+void KHomeView::slotPrintView(void)
+{
+  if(m_part && m_part->view())
+    m_part->view()->print();
 }
 
 void KHomeView::slotRefreshView(void)

@@ -314,7 +314,10 @@ bool KMyMoneyView::showPage(int index)
 
 bool KMyMoneyView::canPrint(void)
 {
-  bool rc = (activePageIndex() == pageIndex(m_reportsViewFrame));
+  bool rc = (
+              activePageIndex() == pageIndex(m_reportsViewFrame) ||
+              activePageIndex() == pageIndex(m_homeViewFrame)
+            );
   return rc;
 }
 
@@ -1959,6 +1962,8 @@ void KMyMoneyView::slotPrintView(void)
 {
   if(pageIndex(m_reportsViewFrame) == activePageIndex())
     m_reportsView->slotPrintView();
+  else if(pageIndex(m_homeViewFrame) == activePageIndex())
+    m_homeView->slotPrintView();
 }
 
 KMyMoneyViewBase* KMyMoneyView::addPage(const QString& title, const QString& icon)
