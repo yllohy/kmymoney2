@@ -354,6 +354,14 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
     "%m %d %y" // dateformat
   );
 
+  result["Yahoo France"] = WebPriceQuoteSource("Yahoo France",
+    "http://fr.finance.yahoo.com/d/quotes.csv?s=%251&f=sl1d1",
+    "([^;]*).*",             // symbolregexp
+    "[^;]*.([^;]*),*",       // priceregexp
+    "[^;]*.[^;]*.([^;]*),*", // dateregexp
+    "%m %d %y"               // dateformat
+  );
+
   result["Globe & Mail"] = WebPriceQuoteSource("Globe & Mail",
     "http://globefunddb.theglobeandmail.com/gishome/plsql/gis.price_history?pi_fund_id=%1",
     QString(),  // symbolregexp

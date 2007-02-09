@@ -394,7 +394,7 @@ Or you can fetch them electronically, using <link linkend="details.investments.o
 <para>
 	If you do feel up to the challenge, here's how it works.  
 	The quote sources are contained in the settings dialog.  
-	Choose <menuchoice><guimenu>Tools</guimenu><guimenuitem>Configure &kappname;</guimenuitem></menuchoice>.  
+	Choose <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure &kappname;</guimenuitem></menuchoice>.  
 	From there, choose the <guilabel>Online Quotes</guilabel> section.  
 	You can choose an existing source to edit, or create a new one.  
 	When you are done with your changes, be sure to press the <guibutton>Update</guibutton> button before exiting the dialog.
