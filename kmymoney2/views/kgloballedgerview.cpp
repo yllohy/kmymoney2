@@ -1349,6 +1349,7 @@ bool KGlobalLedgerView::eventFilter(QObject* o, QEvent* e)
               break;
 
             case Qt::Key_Return:
+            case Qt::Key_Enter:
               kmymoney2->action("transaction_enter")->activate();
               rc = true;
               break;
@@ -1364,6 +1365,7 @@ bool KGlobalLedgerView::eventFilter(QObject* o, QEvent* e)
         if((k->state() & Qt::KeyButtonMask) == 0) {
           switch(k->key()) {
             case Qt::Key_Return:
+            case Qt::Key_Enter:
               kmymoney2->action("transaction_edit")->activate();
               rc = true;
               break;
