@@ -89,6 +89,7 @@ void RegisterItem::setVisible(bool visible)
     if(visible) {
       for(int i = startRow(); i < startRow() + numRowsRegister(); ++i) {
         m_parent->showRow(i);
+        m_parent->setRowHeight(i, rowHeightHint());
       }
     } else {
       for(int i = startRow(); i < startRow() + numRowsRegister(); ++i) {

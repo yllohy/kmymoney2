@@ -311,6 +311,9 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int col, const Q
 
 int GroupMarker::rowHeightHint(void) const
 {
+  if(!m_visible)
+    return 0;
+
   return m_bg->height();
 }
 
@@ -328,6 +331,9 @@ SimpleDateGroupMarker::SimpleDateGroupMarker(Register* parent, const QDate& date
 
 int SimpleDateGroupMarker::rowHeightHint(void) const
 {
+  if(!m_visible)
+    return 0;
+
   return RegisterItem::rowHeightHint() / 2;
 }
 
@@ -827,10 +833,8 @@ void Register::setupItemIndex(int rowCount)
     item->setPrevItem(prev);
     item->setNextItem(0);
     prev = item;
-    if(item->isVisible()) {
-      for(int j = item->numRowsRegister(); j; --j) {
-        m_itemIndex.push_back(item);
-      }
+    for(int j = item->numRowsRegister(); j; --j) {
+      m_itemIndex.push_back(item);
     }
   }
 }
@@ -902,8 +906,7 @@ void Register::updateRegister(bool forceUpdateRowHeight)
         continue;
       item->setStartRow(rowCount);
       item->setNeedResize();
-      if(item->isVisible())
-        rowCount += item->numRowsRegister();
+      rowCount += item->numRowsRegister();
 
       if(item->isErronous()) {
         if(!m_firstErronous)
@@ -933,6 +936,11 @@ void Register::updateRegister(bool forceUpdateRowHeight)
 
       for(int i = 0; i < rowCount; ++i) {
         RegisterItem* item = itemAtRow(i);
+        if(item->isVisible()) {
+          showRow(i);
+        } else {
+          hideRow(i);
+        }
         verticalHeader()->resizeSection(i, item->rowHeightHint());
       }
       verticalHeader()->setUpdatesEnabled(true);
@@ -1345,7 +1353,10 @@ void Register::setFocusItem(RegisterItem* focusItem)
 
     m_focusItem = focusItem;
     m_focusItem->setFocus(true);
-    repaintItems(m_focusItem);
+    if(m_listsDirty)
+      updateRegister(KMyMoneySettings::ledgerLens() | !KMyMoneySettings::transactionForm());
+    ensureItemVisible(m_focusItem);
+    // repaintItems(m_focusItem);
   }
 }
 
@@ -1469,16 +1480,20 @@ void Register::slotEnsureItemVisible(void)
 
   RegisterItem* item = m_ensureVisibleItem;
   RegisterItem* prev = item->prevItem();
+  while(prev && !prev->isVisible())
+    prev = prev->prevItem();
   RegisterItem* next = item->nextItem();
+  while(next && !next->isVisible())
+    next = next->nextItem();
 
   int rowPrev, rowNext;
   rowPrev = item->startRow();
   rowNext = item->startRow() + item->numRowsRegister() - 1;
 
   if(prev)
-    rowPrev -= prev->numRowsRegister();
+    rowPrev = prev->startRow();
   if(next)
-    rowNext += next->numRowsRegister();
+    rowNext = next->startRow() + next->numRowsRegister() - 1;
 
   if(rowPrev < 0)
     rowPrev = 0;

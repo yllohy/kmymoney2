@@ -174,7 +174,7 @@ void RegisterSearchLine::updateSearch(const QString& s)
 bool RegisterSearchLine::itemMatches(const RegisterItem* item, const QString& s) const
 {
   const Transaction* t = dynamic_cast<const Transaction*>(item);
-  if(t) {
+  if(t && !t->transaction().id().isEmpty()) {
     switch(d->status) {
       default:
         break;
