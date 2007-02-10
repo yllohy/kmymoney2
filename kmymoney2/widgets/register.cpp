@@ -1356,7 +1356,7 @@ void Register::setFocusItem(RegisterItem* focusItem)
     if(m_listsDirty)
       updateRegister(KMyMoneySettings::ledgerLens() | !KMyMoneySettings::transactionForm());
     ensureItemVisible(m_focusItem);
-    // repaintItems(m_focusItem);
+    repaintItems(m_focusItem);
   }
 }
 
