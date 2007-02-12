@@ -498,7 +498,18 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   // make sure, that the parent account exists
   // if not, an exception is thrown. If it exists,
   // get a copy of the current data
-  MyMoneyFile::account(parent.id());
+  MyMoneyAccount acc = MyMoneyFile::account(parent.id());
+
+  // check if the selected name is currently not among the child accounts
+  // if we find one, then return it as the new account
+  QCStringList::const_iterator it_a;
+  for(it_a = acc.accountList().begin(); it_a != acc.accountList().end(); ++it_a) {
+    MyMoneyAccount a = MyMoneyFile::account(*it_a);
+    if(account.name() == a.name()) {
+      account = a;
+      return;
+    }
+  }
 
 #if 0
   // make sure that no account with the same name and type exist

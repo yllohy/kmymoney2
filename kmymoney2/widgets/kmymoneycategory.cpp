@@ -107,12 +107,17 @@ kMyMoneyAccountSelector* KMyMoneyCategory::selector(void) const
   return dynamic_cast<kMyMoneyAccountSelector*>(KMyMoneyCombo::selector());
 }
 
-void KMyMoneyCategory::slotItemSelected(const QCString& id)
+void KMyMoneyCategory::setCurrentText(const QCString& id)
 {
   if(!id.isEmpty())
     setCurrentText(MyMoneyFile::instance()->accountToCategory(id));
   else
-    setCurrentText("");
+    setCurrentText();
+}
+
+void KMyMoneyCategory::slotItemSelected(const QCString& id)
+{
+  setCurrentText(id);
 
   m_completion->hide();
 
@@ -151,19 +156,12 @@ KMyMoneySecurity::~KMyMoneySecurity()
 {
 }
 
-void KMyMoneySecurity::slotItemSelected(const QCString& id)
+void KMyMoneySecurity::setCurrentText(const QCString& id)
 {
   if(!id.isEmpty())
-    setCurrentText(MyMoneyFile::instance()->account(id).name());
+    KMyMoneyCategory::setCurrentText(MyMoneyFile::instance()->account(id).name());
   else
-    setCurrentText("");
-
-  m_completion->hide();
-
-  if(m_id != id) {
-    m_id = id;
-    emit itemSelected(id);
-  }
+    KMyMoneyCategory::setCurrentText();
 }
 
 

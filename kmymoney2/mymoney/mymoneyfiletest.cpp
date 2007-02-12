@@ -1306,6 +1306,8 @@ void MyMoneyFileTest::testAddEquityAccount() {
 	} catch(MyMoneyException *e) {
 		unexpectedException(e);
 	}
+	// keep a copy for later use
+	m_inv = i;
 
 	// make sure, that only equity accounts can be children to it
 	MyMoneyAccount a;
@@ -1343,6 +1345,7 @@ void MyMoneyFileTest::testAddEquityAccount() {
 	try {
 		observer->reset();
 		hierarchyObserver->reset();
+		a.setName("Teststock");
 		a.setAccountType(MyMoneyAccount::Stock);
 		m->addAccount(a,i);
 	} catch(MyMoneyException *e) {
@@ -1387,7 +1390,7 @@ void MyMoneyFileTest::testReparentEquity() {
 
 	// now check the good case
 	MyMoneyAccount stock = m->account("A000002");
-	MyMoneyAccount inv = m->account("A000003");
+	MyMoneyAccount inv = m->account(m_inv.id());
 	try {
 		observer->reset();
 		hierarchyObserver->reset();
@@ -1400,11 +1403,11 @@ void MyMoneyFileTest::testReparentEquity() {
 void MyMoneyFileTest::testReparentEquity(QValueList<MyMoneyAccount::accountTypeE>& list, MyMoneyAccount& parent)
 {
 	MyMoneyAccount a;
-	a.setName("Testaccount");
 	MyMoneyAccount stock = m->account("A000002");
 
 	QValueList<MyMoneyAccount::accountTypeE>::Iterator it;
 	for(it = list.begin(); it != list.end(); ++it) {
+		a.setName(QString("Testaccount %1").arg(*it));
 		a.setAccountType(*it);
 		try {
 			m->addAccount(a, parent);

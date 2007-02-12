@@ -128,6 +128,11 @@ public:
     */
   bool isSplitTransaction(void) const;
 
+  /**
+    * overridden for internal reasons, no API change
+    */
+  void setCurrentText(const QString& txt = QString()) { KMyMoneyCombo::setCurrentText(txt); }
+
 protected:
   /**
     * Reimplemented to support protected category text ("split transactions")
@@ -135,6 +140,11 @@ protected:
     * @sa focusIn()
     */
   virtual void focusInEvent(QFocusEvent* ev);
+
+  /**
+    * set the widgets text area based on the item with the given @a id.
+    */
+  virtual void setCurrentText(const QCString& id);
 
 public slots:
   virtual void slotItemSelected(const QCString& id);
@@ -162,9 +172,16 @@ public:
   KMyMoneySecurity(QWidget* parent = 0, const char* name = 0);
   virtual ~KMyMoneySecurity();
 
-public slots:
-  virtual void slotItemSelected(const QCString& id);
+  /**
+    * overridden for internal reasons, no API change
+    */
+  void setCurrentText(const QString& txt = QString()) { KMyMoneyCategory::setCurrentText(txt); }
 
+protected:
+  /**
+    * set the widgets text area based on the item with the given @a id.
+    */
+  virtual void setCurrentText(const QCString& id);
 };
 
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --

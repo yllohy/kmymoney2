@@ -355,7 +355,7 @@ void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QV
     case 0:
       categoryId = QCString();
       if(!category->currentText().isEmpty()) {
-        category->setCurrentText(QString());
+        category->setCurrentText();
         // make sure, we don't see the selector
         category->completion()->hide();
       }

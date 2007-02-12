@@ -61,17 +61,22 @@ KMyMoneyCombo::KMyMoneyCombo(bool rw, QWidget *w, const char *name) :
   }
 }
 
-void KMyMoneyCombo::slotItemSelected(const QCString& id)
+void KMyMoneyCombo::setCurrentText(const QCString& id)
 {
-  if(editable()) {
-    bool blocked = signalsBlocked();
-    blockSignals(true);
-    setCurrentText("");
+    setCurrentText();
     if(!id.isEmpty()) {
       QListViewItem* item = selector()->item(id);
       if(item)
         setCurrentText(item->text(0));
     }
+}
+
+void KMyMoneyCombo::slotItemSelected(const QCString& id)
+{
+  if(editable()) {
+    bool blocked = signalsBlocked();
+    blockSignals(true);
+    setCurrentText(id);
     blockSignals(blocked);
   }
 
@@ -207,13 +212,8 @@ void KMyMoneyCombo::focusOutEvent(QFocusEvent* e)
         emit objectCreation(false);
 
         // update the field to a possibly created object
-        setCurrentText("");
         m_id = id;
-        if(!id.isEmpty()) {
-          QListViewItem* item = m_completion->selector()->item(id);
-          if(item)
-            setCurrentText(item->text(0));
-        }
+        setCurrentText(id);
 
         // make sure the completion does not show through
         m_completion->hide();

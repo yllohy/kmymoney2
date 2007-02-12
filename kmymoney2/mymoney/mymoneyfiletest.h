@@ -93,6 +93,7 @@ protected:
 	MyMoneySeqAccessMgr*	storage;
 	TestObserverSet *observer;
 	TestObserverSet *hierarchyObserver;
+	MyMoneyAccount  m_inv;
 
 public:
 	MyMoneyFileTest ();

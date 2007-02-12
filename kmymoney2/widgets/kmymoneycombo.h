@@ -104,6 +104,11 @@ public:
 
   void setSuppressObjectCreation(bool suppress) { m_canCreateObjects = !suppress; }
 
+  /**
+    * overridden for internal reasons, no API change
+    */
+  void setCurrentText(const QString& txt = QString()) { KComboBox::setCurrentText(txt); }
+
 protected slots:
   virtual void slotItemSelected(const QCString& id);
 
@@ -127,6 +132,11 @@ protected:
     * reimplemented to support detection of new items
     */
   void focusOutEvent(QFocusEvent* );
+
+  /**
+    * set the widgets text area based on the item with the given @a id.
+    */
+  virtual void setCurrentText(const QCString& id);
 
 protected:
   /**
