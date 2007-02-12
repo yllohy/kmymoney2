@@ -577,7 +577,7 @@ void KGlobalLedgerView::loadView(void)
     split.setReconcileFlag(MyMoneySplit::Unknown);
     KMyMoneyRegister::Register::transactionFactory(m_register, m_objects, MyMoneyTransaction(), split, 0);
 
-    m_register->updateRegister(m_newAccountLoaded);
+    m_register->updateRegister(true);
 
     if(focusItem) {
       m_register->selectItem(focusItem);
