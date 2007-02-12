@@ -1,3 +1,7 @@
+2007-02-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added account column to ledger view of categories
+  * Improved the 'goto account' function
+
 2007-02-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved handling of hidden transactions in the register
   * Allow usage of enter key on numeric keypad to enter transactions

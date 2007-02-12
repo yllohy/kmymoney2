@@ -327,7 +327,9 @@ bool KMyMoneyView::canCreateTransactions(const QValueList<KMyMoneyRegister::Sele
   // we check that this is the active page
 
   bool rc = (activePageIndex() == pageIndex(m_ledgerViewFrame));
-  if(!rc)
+  if(rc)
+    rc = m_ledgerView->canCreateTransactions(tooltip);
+  else
     tooltip = i18n("Creating transactions can only be performed in the ledger view");
   return rc;
 }

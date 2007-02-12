@@ -1438,6 +1438,16 @@ void KGlobalLedgerView::slotToggleMarkTransactionCleared(KMyMoneyRegister::Trans
   }
 }
 
+bool KGlobalLedgerView::canCreateTransactions(QString& tooltip) const
+{
+  bool rc = true;
+  if(m_account.accountGroup() == MyMoneyAccount::Income
+  || m_account.accountGroup() == MyMoneyAccount::Expense) {
+    tooltip = i18n("Cannot edit transactions in the context of a category.");
+    rc = false;
+  }
+}
+
 bool KGlobalLedgerView::canModifyTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
 {
   if(m_register->focusItem() == 0)

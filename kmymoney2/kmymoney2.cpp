@@ -4326,20 +4326,32 @@ void KMyMoney2App::slotSelectTransactions(const QValueList<KMyMoneyRegister::Sel
     try {
       QValueList<MyMoneySplit>::const_iterator it_s;
       const MyMoneyTransaction& t = m_selectedTransactions[0].transaction();
+      // if the first selected transaction has 2 splits, we use the 'other' side
+      // of the transaction as the target for the 'goto account'
       if(t.splitCount() == 2) {
         const MyMoneySplit& sp = m_selectedTransactions[0].split();
         for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
           if((*it_s).id() != sp.id()) {
             MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
-            if(acc.accountGroup() == MyMoneyAccount::Asset
-            || acc.accountGroup() == MyMoneyAccount::Liability) {
-              m_accountGoto = acc.id();
-              QString name = acc.name();
-              name.replace(QRegExp("&(?!&)"), "&&");
-              action("transaction_goto_account")->setText(i18n("Goto '%1'").arg(name));
-            }
+            m_accountGoto = acc.id();
+            QString name = acc.name();
+            name.replace(QRegExp("&(?!&)"), "&&");
+            action("transaction_goto_account")->setText(i18n("Goto '%1'").arg(name));
             break;
           }
+        }
+      } else {
+        // if more than two splits are involved, we check if the first split
+        // references a different account than the one we currently look at.
+        // If so, we select it, otherwise the function 'goto account' is not available.
+        const MyMoneySplit& sp0 = t.splits()[0];
+        const MyMoneySplit& sp = m_selectedTransactions[0].split();
+        if(sp.id() != sp0.id()) {
+          MyMoneyAccount acc = MyMoneyFile::instance()->account(sp0.accountId());
+          m_accountGoto = acc.id();
+          QString name = acc.name();
+          name.replace(QRegExp("&(?!&)"), "&&");
+          action("transaction_goto_account")->setText(i18n("Goto '%1'").arg(name));
         }
       }
     } catch(MyMoneyException* e) {

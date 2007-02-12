@@ -149,6 +149,9 @@ Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, cons
   m_showBalance(true),
   m_matchMark(false)
 {
+  // load the account
+  m_account = objects->account(m_split.accountId());
+
   // load the payee
   if(!m_split.payeeId().isEmpty()) {
     m_payee = m_objects->payee(m_split.payeeId()).name();
@@ -157,7 +160,7 @@ Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, cons
 
   // load the currency
   if(!m_transaction.id().isEmpty())
-    m_splitCurrencyId = objects->account(m_split.accountId()).currencyId();
+    m_splitCurrencyId = m_account.currencyId();
 
   // check if transaction is errnous or not
   m_erronous = !m_transaction.splitSum().isZero();
@@ -531,7 +534,7 @@ void Transaction::arrangeWidget(QTable* tbl, int row, int col, QWidget* w) const
 bool Transaction::haveNumberField(void) const
 {
   bool rc = true;
-  switch(m_objects->account(m_split.accountId()).accountType()) {
+  switch(m_account.accountType()) {
     case MyMoneyAccount::Savings:
     case MyMoneyAccount::Cash:
     case MyMoneyAccount::Loan:
@@ -992,11 +995,14 @@ void StdTransaction::registerCellText(QString& txt, int& align, int row, int col
             singleLineMemo(txt, m_split);
           }
           if(txt.isEmpty() && m_rowsRegister < 2) {
-            txt = m_category;
-            if(txt.isEmpty() && !m_split.value().isZero()) {
-              txt = i18n("*** UNASSIGNED ***");
-              if(painter)
-                painter->setPen(KMyMoneySettings::listErronousTransactionColor());
+            if(m_account.accountType() != MyMoneyAccount::Income
+            && m_account.accountType() != MyMoneyAccount::Expense) {
+              txt = m_category;
+              if(txt.isEmpty() && !m_split.value().isZero()) {
+                txt = i18n("*** UNASSIGNED ***");
+                if(painter)
+                  painter->setPen(KMyMoneySettings::listErronousTransactionColor());
+              }
             }
           }
           break;
@@ -1026,6 +1032,10 @@ void StdTransaction::registerCellText(QString& txt, int& align, int row, int col
             txt = m_balance;
           else
             txt = "----";
+          break;
+
+        case AccountColumn:
+          txt = m_objects->account(m_transaction.splits()[0].accountId()).name();
           break;
 
         default:
@@ -1097,6 +1107,11 @@ int StdTransaction::registerColWidth(int col, const QFontMetrics& cellFontMetric
 
     case BalanceColumn:
       txt = balance();
+      nw = cellFontMetrics.width(txt+"  ");
+      break;
+
+    case AccountColumn:
+      txt = m_objects->account(m_transaction.splits()[0].accountId()).name();
       nw = cellFontMetrics.width(txt+"  ");
       break;
   }
@@ -1251,6 +1266,14 @@ int StdTransaction::numRowsRegister(bool expanded) const
       }
       if(m_split.memo().isEmpty()) {
         numRows--;
+      }
+      // For income and expense accounts that only have
+      // two splits we only show one line, because the
+      // account name is already contained in the account column.
+      if(m_account.accountType() == MyMoneyAccount::Income
+      || m_account.accountType() == MyMoneyAccount::Expense) {
+        if(numRows > 2 && m_transaction.splitCount() == 2)
+          numRows = 1;
       }
     }
   }

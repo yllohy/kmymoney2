@@ -168,6 +168,18 @@ public:
   void loadInvestmentView(void);
 
   /**
+    * Checks if new transactions can be created in the current context
+    *
+    * @param tooltip reference to string receiving the tooltip text
+    *        which explains why the modify function is not available (in case
+    *        of returning @c false)
+    *
+    * @retval true Yes, view allows to create transactions (tooltip is not changed)
+    * @retval false No, view does not support creation of transactions (tooltip is updated with message)
+    */
+  bool canCreateTransactions(QString& tooltip) const;
+
+  /**
     * Checks if a list of transactions can be modified (edit/delete) in the current context
     *
     * @param list list of selected transactions

@@ -601,6 +601,15 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
       break;
   }
 
+  switch(account.accountType()) {
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Expense:
+      showAccountColumn = true;
+      break;
+    default:
+      break;
+  }
+
   if(showAccountColumn)
     showColumn(AccountColumn);
 
@@ -1016,6 +1025,8 @@ void Register::resize(int col)
 
   // check which space we need
   adjustColumn(NumberColumn);
+  if(columnWidth(AccountColumn))
+    adjustColumn(AccountColumn);
   if(columnWidth(PaymentColumn))
     adjustColumn(PaymentColumn);
   if(columnWidth(DepositColumn))
@@ -1250,8 +1261,19 @@ int Register::rowToIndex(int row) const
 
 void Register::selectedTransactions(QValueList<SelectedTransaction>& list) const
 {
+  if(m_focusItem->isSelected() && m_focusItem->isVisible()) {
+    Transaction* t = dynamic_cast<Transaction*>(m_focusItem);
+    if(t) {
+      SelectedTransaction s(t->transaction(), t->split());
+      list << s;
+    }
+  }
+
   for(unsigned i = 0; i < m_items.size(); ++i) {
     RegisterItem* const item = m_items[i];
+    // make sure, we don't include the focus item twice
+    if(item == m_focusItem)
+      continue;
     if(item && item->isSelected() && item->isVisible()) {
       Transaction* t = dynamic_cast<Transaction*>(item);
       if(t) {

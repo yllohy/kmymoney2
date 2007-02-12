@@ -236,6 +236,13 @@ public:
     */
   QValueList<RegisterItem*> selectedItems(void) const;
 
+  /**
+    * Construct a list of all currently selected transactions in the register.
+    * If the current item carrying the focus (see focusItem() ) is selected
+    * it will be the first one contained in the list.
+    *
+    * @param list reference to QValueList receiving the SelectedTransaction()'s
+    */
   void selectedTransactions(QValueList<SelectedTransaction>& list) const;
 
   QString text(int row, int col) const;

@@ -34,6 +34,7 @@
 #include <kmymoney/mymoneysplit.h>
 #include <kmymoney/mymoneysecurity.h>
 #include <kmymoney/selectedtransaction.h>
+#include <kmymoney/mymoneyaccount.h>
 
 class MyMoneyObjectContainer;
 class QTable;
@@ -244,6 +245,7 @@ protected:
 protected:
   MyMoneyTransaction      m_transaction;
   MyMoneySplit            m_split;
+  MyMoneyAccount          m_account;
   MyMoneyObjectContainer* m_objects;
   QTable*                 m_form;
   QString                 m_category;
