@@ -1446,6 +1446,7 @@ bool KGlobalLedgerView::canCreateTransactions(QString& tooltip) const
     tooltip = i18n("Cannot edit transactions in the context of a category.");
     rc = false;
   }
+  return rc;
 }
 
 bool KGlobalLedgerView::canModifyTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
