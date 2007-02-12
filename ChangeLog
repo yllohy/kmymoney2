@@ -3,6 +3,8 @@
   * Improved the 'goto account' function
   * Fixed creation of account hierarchies if parts of the hierarchy already
     exist
+  * Allow modification of check number while entering scheduled transactions
+    of type 'write check'
 
 2007-02-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved handling of hidden transactions in the register

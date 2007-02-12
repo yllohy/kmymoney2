@@ -46,6 +46,7 @@
 #include <kmymoney/kmymoneyaccountcompletion.h>
 #include <kmymoney/kmymoneyaccountselector.h>
 #include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneyutils.h>
 #include <kmymoney/transactionform.h>
 
 #include "../dialogs/ksplittransactiondlg.h"
@@ -318,24 +319,11 @@ bool TransactionEditor::fixTransactionCommodity(const MyMoneyAccount& account)
   return rc;
 }
 
-QString TransactionEditor::nextNumber(void) const
-{
-  QString number;
-  QRegExp exp(QString("(.*\\D)?(\\d+)(\\D.*)?"));
-  qDebug("Last number used is '%s'", m_account.value("lastNumberUsed").data());
-  if(exp.search(m_account.value("lastNumberUsed")) != -1) {
-    number = QString("%1%2%3").arg(exp.cap(1)).arg(exp.cap(2).toULongLong() + 1).arg(exp.cap(3));
-  } else {
-    number = "1";
-  }
-  return number;
-}
-
 void TransactionEditor::assignNumber(void)
 {
   if(canAssignNumber()) {
     kMyMoneyLineEdit* number = dynamic_cast<kMyMoneyLineEdit*>(haveWidget("number"));
-    number->loadText(nextNumber());
+    number->loadText(KMyMoneyUtils::nextCheckNumber(m_account));
   }
 }
 
@@ -896,7 +884,7 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
       if(editNr && !editNr->text().isEmpty()) {
         s.setNumber(editNr->text());
       } else if(!s.number().isEmpty()) {
-        s.setNumber(nextNumber());
+        s.setNumber(KMyMoneyUtils::nextCheckNumber(m_account));
       }
 
       m_transaction.addSplit(s);

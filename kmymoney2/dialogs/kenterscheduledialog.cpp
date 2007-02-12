@@ -85,6 +85,10 @@ void KEnterScheduleDialog::initWidgets()
 {
   KMyMoneyAccountCombo* loanAccount = 0;
 
+  m_number->setText(QString());
+  m_number->hide();
+  m_numberLabel->hide();
+
   // Work around backwards transfers
   try
   {
@@ -198,6 +202,13 @@ void KEnterScheduleDialog::initWidgets()
   {
     if (m_schedule.account().name().isEmpty())
       return;
+
+    if(m_schedule.paymentType() == MyMoneySchedule::STYPE_WRITECHEQUE) {
+      m_number->show();
+      m_numberLabel->show();
+
+      m_number->setText(KMyMoneyUtils::nextCheckNumber(m_schedule.account()));
+    }
 
     if (m_schedule.type() == MyMoneySchedule::TYPE_TRANSFER)
     {
@@ -790,12 +801,16 @@ void KEnterScheduleDialog::commitTransaction()
 
       // If we are writing a check, we adjust the split's
       // number to the highest number used in this account plus one
-      if(m_schedule.paymentType() == MyMoneySchedule::STYPE_WRITECHEQUE) {
-        MyMoneySplit s = m_transaction.splitByAccount(m_schedule.account().id(), true);
+      if(m_schedule.paymentType() == MyMoneySchedule::STYPE_WRITECHEQUE
+      && !m_number->text().isEmpty()) {
+        MyMoneyAccount acc = m_schedule.account();
+        MyMoneySplit s = m_transaction.splitByAccount(acc.id(), true);
         s.setAction(MyMoneySplit::ActionCheck);
-        unsigned64 no = MyMoneyFile::instance()->highestCheckNo(s.accountId()).toULongLong();
-        s.setNumber(QString::number(no+1));
+        s.setNumber(m_number->text());
         m_transaction.modifySplit(s);
+
+        acc.setValue("lastNumberUsed", m_number->text());
+        MyMoneyFile::instance()->modifyAccount(acc);
       }
 
       MyMoneyFile::instance()->addTransaction(m_transaction);

@@ -433,6 +433,11 @@ public:
     */
   static void calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTransaction& transaction, const QMap<QCString, MyMoneyMoney>& balances);
 
+  /**
+    * Return next check number for account @a acc.
+    */
+  static QString nextCheckNumber(const MyMoneyAccount& acc);
+
 private:
   static QColor _backgroundColour;
   static QColor _listColour;

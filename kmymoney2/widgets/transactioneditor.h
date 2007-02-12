@@ -119,13 +119,6 @@ protected:
   void setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool allowObjectCreation = true);
 
   /**
-    * This method returns the next (check) number for the current account
-    *
-    * @return incremented number or 1 if no previous number available
-    */
-  QString nextNumber(void) const;
-
-  /**
     * This method creates a transaction based on the contents of the current widgets,
     * the splits in m_split in single selection mode or an existing transaction/split
     * and the contents of the widgets in multi selection mode.
