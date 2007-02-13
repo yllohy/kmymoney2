@@ -31,7 +31,6 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "storage/mymoneyseqaccessmgr.h"
-// #include "mymoneycurrency.h"
 #include "mymoneyfile.h"
 #include "mymoneyreport.h"
 #include "mymoneybudget.h"
@@ -41,8 +40,6 @@
 #else
 #include "config.h"
 #endif
-
-#define CATEGORY_SEPERATOR ":"
 
 const QCString MyMoneyFile::NotifyClassAccount = "MyMoneyFile::NotifyAccount";
 const QCString MyMoneyFile::NotifyClassPayee = "MyMoneyFile::NotifyPayee";
@@ -58,6 +55,7 @@ const QCString MyMoneyFile::NotifyClassBudget = "MyMoneyFile::NotifyBudget";
 const QCString MyMoneyFile::NotifyClassPrice = "MyMoneyFile::NotifyPrice";
 
 const QString MyMoneyFile::OpeningBalancesPrefix = "Opening Balances";
+const QString MyMoneyFile::AccountSeperator = ":";
 
 // include the following line to get a 'cout' for debug purposes
 // #include <iostream>
@@ -1277,7 +1275,7 @@ const QString MyMoneyFile::accountToCategory(const QCString& accountId) const
   acc = account(accountId);
   do {
     if(!rc.isEmpty())
-      rc = QString(CATEGORY_SEPERATOR) + rc;
+      rc = AccountSeperator + rc;
     rc = acc.name() + rc;
     acc = account(acc.parentAccountId());
   } while(!isStandardAccount(acc.id()));
@@ -1285,15 +1283,21 @@ const QString MyMoneyFile::accountToCategory(const QCString& accountId) const
   return rc;
 }
 
-const QCString MyMoneyFile::categoryToAccount(const QString& category) const
+const QCString MyMoneyFile::categoryToAccount(const QString& category, MyMoneyAccount::accountTypeE type) const
 {
   QCString id;
 
   // search the category in the expense accounts and if it is not found, try
   // to locate it in the income accounts
-  id = locateSubAccount(MyMoneyFile::instance()->expense(), category);
-  if(id.isEmpty())
+  if(type == MyMoneyAccount::UnknownAccountType
+  || type == MyMoneyAccount::Expense) {
+    id = locateSubAccount(MyMoneyFile::instance()->expense(), category);
+  }
+
+  if((id.isEmpty() && type == MyMoneyAccount::UnknownAccountType)
+  || type == MyMoneyAccount::Income) {
     id = locateSubAccount(MyMoneyFile::instance()->income(), category);
+  }
 
   return id;
 }
@@ -1313,22 +1317,22 @@ const QCString MyMoneyFile::nameToAccount(const QString& name) const
 
 const QString MyMoneyFile::parentName(const QString& name) const
 {
-  return name.section(CATEGORY_SEPERATOR, 0, -2);
+  return name.section(AccountSeperator, 0, -2);
 }
 
 const QCString MyMoneyFile::locateSubAccount(const MyMoneyAccount& base, const QString& category) const
 {
   MyMoneyAccount nextBase;
   QString level, remainder;
-  level = category.section(CATEGORY_SEPERATOR, 0, 0);
-  remainder = category.section(CATEGORY_SEPERATOR, 1);
+  level = category.section(AccountSeperator, 0, 0);
+  remainder = category.section(AccountSeperator, 1);
 
   QCStringList list = base.accountList();
   QCStringList::ConstIterator it_a;
 
   for(it_a = list.begin(); it_a != list.end(); ++it_a) {
     nextBase = account(*it_a);
-    if(nextBase.name().lower() == level.lower()) {
+    if(nextBase.name() == level) {
       if(remainder.isEmpty()) {
         return nextBase.id();
       }
@@ -1627,7 +1631,7 @@ QCString MyMoneyFile::createCategory(const MyMoneyAccount& base, const QString& 
   if(base.id() != expense().id() && base.id() != income().id())
     throw MYMONEYEXCEPTION("Invalid base category");
 
-  QStringList subAccounts = QStringList::split(CATEGORY_SEPERATOR, name);
+  QStringList subAccounts = QStringList::split(AccountSeperator, name);
   QStringList::Iterator it;
   for (it = subAccounts.begin(); it != subAccounts.end(); ++it)
   {
@@ -1639,7 +1643,7 @@ QCString MyMoneyFile::createCategory(const MyMoneyAccount& base, const QString& 
     if (it == subAccounts.begin())
       categoryText += *it;
     else
-      categoryText += (":" + *it);
+      categoryText += (AccountSeperator + *it);
 
     // Only create the account if it doesn't exist
     try

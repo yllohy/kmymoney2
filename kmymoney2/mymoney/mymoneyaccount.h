@@ -266,6 +266,12 @@ public:
   void removeAccountId(const QCString& account);
 
   /**
+    * This method is used to remove all accounts from the list of
+    * sub-ordinate accounts.
+    */
+  void removeAccountIds(void);
+
+  /**
     * This method is used to modify the date of the last
     * modification access.
     * @param date date of last modification

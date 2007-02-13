@@ -389,7 +389,7 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
         if(m_typeList.contains(acc.accountType())
         && !acc.isClosed()) {
           QString tmpKey;
-          tmpKey = key + ":" + acc.name();
+          tmpKey = key + MyMoneyFile::AccountSeperator + acc.name();
           QListViewItem* subItem = selector->newItem(item, acc.name(), tmpKey, acc.id());
           if(acc.accountList().count() > 0) {
             subItem->setOpen(true);
@@ -433,7 +433,7 @@ int AccountSet::load(kMyMoneyAccountSelector* selector, const QString& baseName,
     if(acc.isClosed())
       continue;
     QString tmpKey;
-    tmpKey = baseName + ":" + acc.name();
+    tmpKey = baseName + MyMoneyFile::AccountSeperator + acc.name();
     selector->newItem(item, acc.name(), tmpKey, acc.id());
     ++m_count;
     ++count;
@@ -463,7 +463,7 @@ int AccountSet::loadSubAccounts(kMyMoneyAccountSelector* selector, QListViewItem
     if(m_typeList.contains(acc.accountType())
     && !acc.isClosed()) {
       QString tmpKey;
-      tmpKey = key + ":" + acc.name();
+      tmpKey = key + MyMoneyFile::AccountSeperator + acc.name();
       ++count;
       ++m_count;
       QListViewItem* item = selector->newItem(parent, acc.name(), tmpKey, acc.id());

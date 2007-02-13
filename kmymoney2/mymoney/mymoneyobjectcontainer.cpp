@@ -23,8 +23,6 @@
 #include <kmymoney/mymoneyobjectcontainer.h>
 #include <kmymoney/mymoneyfile.h>
 
-#define CATEGORY_SEPERATOR ":"
-
 MyMoneyObjectContainer::MyMoneyObjectContainer()
 {
 }
@@ -82,7 +80,7 @@ const QString MyMoneyObjectContainer::accountToCategory(const QCString& accountI
     acc = account(accountId);
     do {
       if(!rc.isEmpty())
-        rc = QString(CATEGORY_SEPERATOR) + rc;
+        rc = MyMoneyFile::AccountSeperator + rc;
       rc = acc.name() + rc;
       acc = account(acc.parentAccountId());
     } while(!MyMoneyFile::instance()->isStandardAccount(acc.id()));

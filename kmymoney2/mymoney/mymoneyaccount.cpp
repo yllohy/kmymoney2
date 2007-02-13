@@ -160,6 +160,11 @@ void MyMoneyAccount::addAccountId(const QCString& account)
     m_accountList += account;
 }
 
+void MyMoneyAccount::removeAccountIds(void)
+{
+  m_accountList.clear();
+}
+
 void MyMoneyAccount::removeAccountId(const QCString& account)
 {
   QCStringList::Iterator it;

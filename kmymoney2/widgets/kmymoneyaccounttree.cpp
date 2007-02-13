@@ -181,6 +181,21 @@ bool KMyMoneyAccountTree::dropAccountOnAccount(const MyMoneyAccount& accFrom, co
       && accTo.accountGroup() == MyMoneyAccount::Income)
         rc = true;
     }
+
+    // if it's generally ok to drop here, make sure that
+    // the accTo does not have a child with the same name
+    const KMyMoneyAccountTreeItem* to = findItem(accTo.id());
+    if(to) {
+      to = dynamic_cast<KMyMoneyAccountTreeItem*> (to->firstChild());
+      while(to && rc) {
+        if(to->isAccount()) {
+          const MyMoneyAccount& acc = dynamic_cast<const MyMoneyAccount&>(to->itemObject());
+          if(acc.name() == accFrom.name())
+            rc = false;
+        }
+        to = dynamic_cast<KMyMoneyAccountTreeItem*> (to->nextSibling());
+      }
+    }
   }
 
   return rc;

@@ -526,16 +526,21 @@ void KNewAccountDlg::okClicked()
 
     if(!file->nameToAccount(accountNameText).isEmpty()
     && (file->nameToAccount(accountNameText) != m_account.id())) {
-      KMessageBox::error(this, i18n("Account with that name already exists."));
+      KMessageBox::error(this, QString("<qt>")+i18n("An account named <b>%1</b> already exists. You cannot create a second account with the same name.").arg(accountNameText)+QString("</qt>"));
       return;
     }
   }
   else
   {
     acctype = MyMoneyFile::instance()->accountGroup(parent.accountType());
-    if(!file->categoryToAccount(accountNameText).isEmpty()
-    && (file->categoryToAccount(accountNameText) != m_account.id())) {
-      KMessageBox::error(this, i18n("Category with that name already exists."));
+    QString newName;
+    if(!MyMoneyFile::instance()->isStandardAccount(parent.id())) {
+      newName = MyMoneyFile::instance()->accountToCategory(parent.id()) + MyMoneyFile::AccountSeperator;
+    }
+    newName += accountNameText;
+    if(!file->categoryToAccount(newName, acctype).isEmpty()
+    && (file->categoryToAccount(newName, acctype) != m_account.id())) {
+      KMessageBox::error(this, QString("<qt>")+i18n("A category named <b>%1</b> already exists. You cannot create a second category with the same name.").arg(newName)+QString("</qt>"));
       return;
     }
   }

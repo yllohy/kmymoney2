@@ -2247,7 +2247,7 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
   {
     int pos;
     // check for ':' in the name and use it as separator for a hierarchy
-    while((pos = newAccount.name().find(':')) != -1) {
+    while((pos = newAccount.name().find(MyMoneyFile::AccountSeperator)) != -1) {
       QString part = newAccount.name().left(pos);
       QString remainder = newAccount.name().mid(pos+1);
       newAccount.setName(part);
@@ -2256,6 +2256,7 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
       parentAccount = newAccount;
       newAccount.setParentAccountId(QCString());  // make sure, there's no parent
       newAccount.clearId();                       // and no id set for adding
+      newAccount.removeAccountIds();              // and no sub-account ids
       newAccount.setName(remainder);
     }
 

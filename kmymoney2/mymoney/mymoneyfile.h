@@ -780,7 +780,7 @@ public:
     * @return QCString of the corresponding account. If account was not found
     *         the return value will be an empty string.
     */
-  const QCString categoryToAccount(const QString& category) const;
+  const QCString categoryToAccount(const QString& category, MyMoneyAccount::accountTypeE type = MyMoneyAccount::UnknownAccountType) const;
 
   /**
     * This method is used to convert a string representing an asset or
@@ -1102,6 +1102,12 @@ public:
     * for details.
     */
   static const QString OpeningBalancesPrefix;
+
+  /**
+    * MyMoneyFile::AccountSeperator is used as the seperator
+    * between account names to form a hierarchy.
+    */
+  static const QString AccountSeperator;
 
   /**
     * createCategory creates a category from a text name.

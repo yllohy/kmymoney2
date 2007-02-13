@@ -36,6 +36,7 @@
 
 #include "kmymoneyaccountcompletion.h"
 #include <kmymoney/mymoneyobjectcontainer.h>
+#include <kmymoney/mymoneyfile.h>
 
 kMyMoneyAccountCompletion::kMyMoneyAccountCompletion(QWidget *parent, const char *name ) :
   kMyMoneyCompletion(parent, name)
@@ -69,8 +70,8 @@ void kMyMoneyAccountCompletion::slotMakeCompletion(const QString& txt)
   //  return;
 
   int cnt = 0;
-  QStringList parts = QStringList::split(":", txt);
-  if(txt.contains(":") == 0) {
+  QStringList parts = QStringList::split(MyMoneyFile::AccountSeperator, txt);
+  if(txt.contains(MyMoneyFile::AccountSeperator) == 0) {
     m_lastCompletion = QRegExp(QRegExp::escape(txt), false);
     cnt = selector()->slotMakeCompletion(txt);
   } else {
@@ -78,7 +79,7 @@ void kMyMoneyAccountCompletion::slotMakeCompletion(const QString& txt)
     QStringList::iterator it;
     for(it = parts.begin(); it != parts.end(); ++it) {
       if(pattern.length() > 1)
-        pattern += ":";
+        pattern += MyMoneyFile::AccountSeperator;
       pattern += QRegExp::escape(*it) + ".*";
     }
     pattern += "$";
@@ -87,7 +88,7 @@ void kMyMoneyAccountCompletion::slotMakeCompletion(const QString& txt)
     // if we don't have a match, we try it again, but this time
     // we add a wildcard for the top level
     if(cnt == 0) {
-      pattern = pattern.insert(1, ".*:");
+      pattern = pattern.insert(1, QString(".*")+MyMoneyFile::AccountSeperator);
       m_lastCompletion = QRegExp(pattern, false);
       cnt = selector()->slotMakeCompletion(m_lastCompletion);
     }

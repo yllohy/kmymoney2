@@ -100,7 +100,7 @@ KImportDlg::KImportDlg(QWidget *parent, const char * name)
   m_scanButton->hide();
   m_accountComboBox->hide();
   m_textLabel->hide();
-  
+
   // setup button enable status
   slotFileTextChanged(m_qlineeditFile->text());
 }
@@ -112,8 +112,8 @@ KImportDlg::~KImportDlg()
 void KImportDlg::slotBrowse()
 {
   // determine what the browse prefix should be from the current profile
-  
-  MyMoneyQifProfile tmpprofile; 
+
+  MyMoneyQifProfile tmpprofile;
   tmpprofile.loadProfile("Profile-" + profile());
 
   QString qstring(KFileDialog::getOpenFileName(KGlobalSettings::documentPath(), tmpprofile.filterFileType()));
@@ -202,7 +202,7 @@ void KImportDlg::loadProfiles(const bool selectLast)
   MyMoneyQifProfileEditor* edit = new MyMoneyQifProfileEditor(true, 0, 0);
   edit->slotOk();
   delete edit;
-  
+
   QString current = m_profileComboBox->currentText();
 
   m_profileComboBox->clear();
@@ -268,7 +268,7 @@ void KImportDlg::addCategories(QStringList& strList, const QCString& id, const Q
   for(it_a = accList.begin(); it_a != accList.end(); ++it_a) {
     account = file->account(*it_a);
     strList << leadIn + account.name();
-    addCategories(strList, *it_a, leadIn + account.name() + ":");
+    addCategories(strList, *it_a, leadIn + account.name() + MyMoneyFile::AccountSeperator);
   }
 }
 

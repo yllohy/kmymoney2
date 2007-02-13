@@ -1,3 +1,9 @@
+2007-02-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Prevent creation of accounts with the same name and the same parent
+  * Prevent moving an account to a destination that already has an
+    account with the same name
+  * Replaced ":" with MyMoneyFile::AccountSeperator where appropriate
+
 2007-02-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added account column to ledger view of categories
   * Improved the 'goto account' function
