@@ -1443,7 +1443,7 @@ bool KGlobalLedgerView::canCreateTransactions(QString& tooltip) const
   bool rc = true;
   if(m_account.accountGroup() == MyMoneyAccount::Income
   || m_account.accountGroup() == MyMoneyAccount::Expense) {
-    tooltip = i18n("Cannot edit transactions in the context of a category.");
+    tooltip = i18n("Cannot create transactions in the context of a category.");
     rc = false;
   }
   return rc;
