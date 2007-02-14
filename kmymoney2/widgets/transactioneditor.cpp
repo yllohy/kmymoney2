@@ -1380,9 +1380,8 @@ void StdTransactionEditor::checkPayeeInSplit(MyMoneySplit& s, const QCString& pa
     return;
 
   MyMoneyAccount acc = m_objects->account(s.accountId());
-  if(acc.accountGroup() == MyMoneyAccount::Income
-  || acc.accountGroup() == MyMoneyAccount::Expense) {
-    s.setPayeeId(QCString());
+  if(acc.isCategory()) {
+    s.setPayeeId(payeeId);
   } else {
     if(s.payeeId().isEmpty())
       s.setPayeeId(payeeId);

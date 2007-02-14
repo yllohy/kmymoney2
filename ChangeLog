@@ -1,3 +1,6 @@
+2007-02-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Assign the payee to category splits no matter what
+
 2007-02-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Prevent creation of accounts with the same name and the same parent
   * Prevent moving an account to a destination that already has an

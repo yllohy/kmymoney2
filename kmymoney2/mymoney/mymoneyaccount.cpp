@@ -506,3 +506,9 @@ int MyMoneyAccount::fraction(const MyMoneySecurity& sec) const
     return sec.smallestCashFraction();
   return sec.smallestAccountFraction();
 }
+
+bool MyMoneyAccount::isCategory(void) const
+{
+  return m_accountType == Income || m_accountType == Expense;
+}
+

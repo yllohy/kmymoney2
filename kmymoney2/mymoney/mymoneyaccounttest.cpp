@@ -407,3 +407,59 @@ void MyMoneyAccountTest::testSetClosed(void)
 	CPPUNIT_ASSERT(a.isClosed() == false);
 }
 
+void MyMoneyAccountTest::testIsCategory(void)
+{
+	MyMoneyAccount a;
+
+	a.setAccountType(MyMoneyAccount::UnknownAccountType);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::Checkings);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::Savings);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::Cash);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::CreditCard);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::Loan);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::CertificateDep);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::Investment);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::MoneyMarket);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::Asset);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::Liability);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::Currency);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::Income);
+	CPPUNIT_ASSERT(a.isCategory() == true);
+
+	a.setAccountType(MyMoneyAccount::Expense);
+	CPPUNIT_ASSERT(a.isCategory() == true);
+
+	a.setAccountType(MyMoneyAccount::AssetLoan);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::Stock);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+
+	a.setAccountType(MyMoneyAccount::Equity);
+	CPPUNIT_ASSERT(a.isCategory() == false);
+}
+

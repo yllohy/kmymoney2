@@ -455,6 +455,15 @@ public:
     */
   int fraction(const MyMoneySecurity& sec) const;
 
+  /**
+    * This method returns @a true if the account type is
+    * either Income or Expense
+    *
+    * @retval true account is of type income or expense
+    * @retval false for all other account types
+    */
+  bool isCategory(void) const;
+
 private:
   /**
     * This member variable identifies the type of account
