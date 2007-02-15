@@ -454,7 +454,7 @@ void MyMoneyScheduleTest::testNextPayment()
 	try {
 		sch = MyMoneySchedule(node);
 		CPPUNIT_ASSERT(sch.nextPayment(QDate(2007,2,14)) == QDate(2007,2,17));
-		CPPUNIT_ASSERT(sch.nextPayment(QDate(2007,2,17)) == QDate(2007,2,17));
+		CPPUNIT_ASSERT(sch.nextPayment(QDate(2007,2,17)) == QDate(2008,2,17));
 		CPPUNIT_ASSERT(sch.nextPayment(QDate(2007,2,18)) == QDate(2008,2,17));
 
 	} catch(MyMoneyException *e) {

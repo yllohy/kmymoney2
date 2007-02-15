@@ -249,7 +249,7 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
     } else {
       // if the first payment date is past the given ref date,
       // then that's what we're looking for
-      if(paymentDate >= refDate)
+      if(paymentDate > refDate)
         return paymentDate;
     }
   }

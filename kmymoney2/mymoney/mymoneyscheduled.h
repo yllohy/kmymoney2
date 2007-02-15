@@ -310,7 +310,8 @@ public:
     * @param refDate the reference date from which the next payment
     *                date will be calculated (defaults to current date)
     *
-    * @return QDate The date the next payment is due. In case of an error or
+    * @return QDate The date the next payment is due. This date is
+    *         always past @a refDate.  In case of an error or
     *         if there is no more payment then an empty/invalid QDate()
     *         will be returned.
     */
