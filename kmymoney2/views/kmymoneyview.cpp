@@ -1375,8 +1375,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("TOP", i18n("Tongan Pa'anga")), create);
   loadDefaultCurrency(MyMoneySecurity("TTD", i18n("Trinidad and Tobago Dollar"), "$"), create);
   loadDefaultCurrency(MyMoneySecurity("TND", i18n("Tunisian Dinar"),         "TND", 1000, 1000), create);
-  loadDefaultCurrency(MyMoneySecurity("TRL", i18n("Turkish Lira")), create);
-  loadDefaultCurrency(MyMoneySecurity("YTL", i18n("Turkish Lira (new)")), create);
+  loadDefaultCurrency(MyMoneySecurity("TRY", i18n("Turkish Lira (new)"), "YTL"), true);
   loadDefaultCurrency(MyMoneySecurity("TMM", i18n("Turkmenistan Manat")), create);
   loadDefaultCurrency(MyMoneySecurity("USD", i18n("US Dollar"),              "$"), create);
   loadDefaultCurrency(MyMoneySecurity("UGX", i18n("Uganda Shilling")), create);
@@ -1436,9 +1435,15 @@ void KMyMoneyView::loadAncientCurrencies(void)
   loadAncientCurrency("IEP", i18n("Irish Pound"), QChar(0x00A3), QDate(1998,12,31), MyMoneyMoney(1000000, 787564), "EUR");
   loadAncientCurrency("FIM", i18n("Finnish Markka"), QCString(), QDate(1998,12,31), MyMoneyMoney(100000, 594573), "EUR");
   loadAncientCurrency("GRD", i18n("Greek Drachma"), QChar(0x20AF), QDate(1998,12,31), MyMoneyMoney(100, 34075), "EUR");
+
   loadAncientCurrency("ROL", i18n("Romanian Leu"), "ROL", QDate(2005,6,30), MyMoneyMoney(1, 10000), "RON");
+
   loadAncientCurrency("RUR", i18n("Russian Ruble (old)"), "RUR", QDate(1998, 1, 1), MyMoneyMoney(1, 1000), "RUB");
+
   loadAncientCurrency("SIT", i18n("Slovenian Tolar"), "SIT", QDate(2006,12,31), MyMoneyMoney(100, 23964), "EUR");
+
+  // Source: http://www.tf-portfoliosolutions.net/products/turkishlira.aspx
+  loadAncientCurrency("TRL", i18n("Turkish Lira"), "TL", QDate(2004,12,31), MyMoneyMoney(1,1000000), "TRY");
 }
 
 void KMyMoneyView::viewUp(void)

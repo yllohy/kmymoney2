@@ -424,7 +424,43 @@ void MyMoneyScheduleTest::testGetOverdue()
 }
 
 void MyMoneyScheduleTest::testNextPayment()
+/* 
+ * Test for a schedule where a payment hasn't yet been made. 
+ * First payment is in the future.
+*/
 {
+	MyMoneySchedule sch;
+	QString future_sched = QString(
+		"<!DOCTYPE TEST>\n"
+		"<SCHEDULE-CONTAINER>\n"
+		"<SCHEDULED_TX startDate=\"2007-02-17\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH000058\" name=\"Car Tax\" fixed=\"1\" occurence=\"16384\" >\n"
+		"  <PAYMENTS/>\n"
+		"  <TRANSACTION postdate=\"\" bankid=\"\" memo=\"\" id=\"\" commodity=\"GBP\" entrydate=\"\" >\n"
+		"  <SPLITS>\n"
+		"    <SPLIT payee=\"P000044\" reconciledate=\"\" shares=\"-15000/100\" action=\"Withdrawal\" bankid=\"\" number=\"\" reconcileflag=\"0\" memo=\"\" value=\"-15000/100\" account=\"A000155\" />\n"
+		"    <SPLIT payee=\"\" reconciledate=\"\" shares=\"15000/100\" action=\"Withdrawal\" bankid=\"\" number=\"\" reconcileflag=\"0\" memo=\"\" value=\"15000/100\" account=\"A000182\" />\n"
+		"  </SPLITS>\n"
+		"  <KEYVALUEPAIRS/>\n"
+		"  </TRANSACTION>\n"
+		"</SCHEDULED_TX>\n"
+		"</SCHEDULE-CONTAINER>\n"
+	);
+
+	QDomDocument doc;
+	QDomElement node;
+	doc.setContent(future_sched);
+	node = doc.documentElement().firstChild().toElement();
+
+	try {
+		sch = MyMoneySchedule(node);
+		CPPUNIT_ASSERT(sch.nextPayment(QDate(2007,2,14)) == QDate(2007,2,17));
+		CPPUNIT_ASSERT(sch.nextPayment(QDate(2007,2,17)) == QDate(2007,2,17));
+		CPPUNIT_ASSERT(sch.nextPayment(QDate(2007,2,18)) == QDate(2008,2,17));
+
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
 /*
 	MyMoneyScheduled *m = MyMoneyScheduled::instance();
 	CPPUNIT_ASSERT(m!=NULL);

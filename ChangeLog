@@ -1,5 +1,12 @@
+2007-02-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Switched to a newer splash screen
+  * Added (a bit improved) patch and testcase provided by David Houlden
+  * Corrected ISO code for new turkish lira and added old turkish lira
+    to the list of ancient currencies
+
 2007-02-14 Robert Wadley <robntina@users.sourceforge.net>
-  * Adjusted the size of the welcome page images (I got a large monitor for Christmas and the image breaks apart when viewed full screen.
+  * Adjusted the size of the welcome page images (I got a large monitor for
+    Christmas and the image breaks apart when viewed full screen.
   * Added some images to the pics directory to be used, or not, when needed.
 
 2007-02-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
