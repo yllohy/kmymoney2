@@ -403,6 +403,13 @@ protected slots:
     */
   void slotTransactionsAccept(void);
 
+  /**
+    * This slot triggers an update of all views and restarts
+    * a single shot timer to call itself again at beginning of
+    * the next day.
+    */
+  void slotDateChanged(void);
+
 public:
   /**
     * This method checks if there is at least one asset or liability account

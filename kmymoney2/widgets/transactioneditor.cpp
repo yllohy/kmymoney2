@@ -67,6 +67,7 @@ TransactionEditor::TransactionEditor(TransactionEditorContainer* regForm, MyMone
   m_lastPostDate(lastPostDate)
 {
   m_item->startEditMode();
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotUpdateAccount()));
 }
 
 TransactionEditor::~TransactionEditor()
@@ -81,6 +82,12 @@ TransactionEditor::~TransactionEditor()
   m_regForm->removeEditWidgets(m_editWidgets);
   m_item->leaveEditMode();
   emit finishEdit(m_transactions);
+}
+
+void TransactionEditor::slotUpdateAccount(void)
+{
+  // reload m_account as it might have been changed
+  m_account = MyMoneyFile::instance()->account(m_account.id());
 }
 
 void TransactionEditor::setup(QWidgetList& tabOrderWidgets, const MyMoneyAccount& account, KMyMoneyRegister::Action action)

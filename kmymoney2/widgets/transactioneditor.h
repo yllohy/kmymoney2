@@ -134,6 +134,7 @@ protected:
 
 protected slots:
   void slotUpdateButtonState(void);
+  void slotUpdateAccount(void);
 
 signals:
   /**

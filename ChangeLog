@@ -1,6 +1,9 @@
+2007-02-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Force a view reload at midnight
+  * Fixed a problem when adding new transactions with a number filled in
+
 2007-02-14 Robert Wadley <robntina@users.sourceforge.net>
   * added new title label for cvs version
-
 
 2007-02-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Switched to a newer splash screen

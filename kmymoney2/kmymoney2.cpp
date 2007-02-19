@@ -219,6 +219,9 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
 
   // make sure, we get a note when the engine changes state
   MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAnyChange, this);
+
+  // kickstart date change timer
+  slotDateChanged();
 }
 
 KMyMoney2App::~KMyMoney2App()
@@ -4876,6 +4879,15 @@ void KMyMoney2App::slotAutoSave()
     slotStatusMsg(prevMsg);
     m_inAutoSaving = false;
   }
+}
+
+void KMyMoney2App::slotDateChanged(void)
+{
+  QDateTime dt = QDateTime::currentDateTime();
+  QDateTime nextDay( QDate(dt.date().addDays(1)), QTime(0, 0, 0) );
+
+  QTimer::singleShot(dt.secsTo(nextDay)*1000, this, SLOT(slotDateChanged()));
+  myMoneyView->slotRefreshViews();
 }
 
 #include "kmymoney2.moc"
