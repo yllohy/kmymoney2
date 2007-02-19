@@ -1,6 +1,8 @@
 2007-02-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Force a view reload at midnight
   * Fixed a problem when adding new transactions with a number filled in
+  * Start the loan edit wizard when editing a loan account
+  * Removed some unnecessary files
 
 2007-02-14 Robert Wadley <robntina@users.sourceforge.net>
   * added new title label for cvs version
