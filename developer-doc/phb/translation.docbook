@@ -39,7 +39,7 @@ You don't need to worry what exactly &cvs; does, for a translater it
 is more or less only a file system from where
 you can download the files you need. For &app; you can either go to the &cvs;
 page and call the &cvs; web front end or follow
-<ulink url="http://cvs.sourceforge.net/viewcvs.py/kmymoney2/">this link</ulink>.
+<ulink url="http://kmymoney2.cvs.sourceforge.net/kmymoney2/kmymoney2/po/?pathrev=rel-0-8-branch">this link</ulink>.
 I would recommend to download the pot and po file of the latest stable version
 (at the moment 0.8), not any older files and not the one which is under
 development at the moment. In order to test your translation later you should

@@ -1,3 +1,6 @@
+2007-02-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated PHB to have correct CVS examples
+
 2007-02-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Force a view reload at midnight
   * Fixed a problem when adding new transactions with a number filled in
