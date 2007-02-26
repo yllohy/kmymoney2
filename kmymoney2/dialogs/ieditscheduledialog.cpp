@@ -205,6 +205,8 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     this, SLOT(slotEstimateChanged()));
   connect(m_category, SIGNAL(textChanged(const QString&)),
     this, SLOT(slotCategoryChanged(const QString&)));
+  connect(m_category, SIGNAL(categoryChanged(const QCString&)),
+    this, SLOT(slotCategoryChanged(const QCString& )));
   connect(m_qcheckboxAuto, SIGNAL(clicked()),
     this, SLOT(slotAutoEnterChanged()));
   connect(m_qlineeditMemo, SIGNAL(textChanged(const QString&)),
@@ -1089,6 +1091,22 @@ void KEditScheduleDialog::slotEstimateChanged()
 }
 
   m_schedule.setFixed(!m_qcheckboxEstimate->isChecked());
+}
+
+void KEditScheduleDialog::slotCategoryChanged(const QCString& id)
+{
+  if(!id.isEmpty()) {
+    int count = m_transaction.splitCount();
+    if (count == 0)
+    {
+      createSplits();
+    }
+
+    // Dont worry about transfers
+    MyMoneySplit s = m_transaction.splits()[1];
+    s.setAccountId(id);
+    m_transaction.modifySplit(s);
+  }
 }
 
 void KEditScheduleDialog::slotCategoryChanged(const QString& text)

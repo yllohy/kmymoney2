@@ -90,6 +90,10 @@ protected slots:
   void slotFrequencyChanged(int);
   void slotEstimateChanged();
   void slotCategoryChanged(const QString&);
+  /**
+    * the category with @a id has been selected.
+    */
+  void slotCategoryChanged(const QCString& id);
   void slotAutoEnterChanged();
   void slotMemoChanged(const QString& text);
   void slotHelp(void);
@@ -162,7 +166,7 @@ private:
 
   /* To hold list of mandatory fields */
   kMandatoryFieldGroup *m_requiredFields;
-  
+
 };
 
 #endif
