@@ -27,6 +27,7 @@
 // QT Includes
 
 #include <qstring.h>
+#include <qbitarray.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -56,6 +57,22 @@
   */
 class IMyMoneyStorage {
 public:
+
+  typedef enum {
+    RefCheckAccount = 0,
+    RefCheckInstitution,
+    RefCheckPayee,
+    RefCheckTransaction,
+    RefCheckReport,
+    RefCheckBudget,
+    RefCheckSchedule,
+    RefCheckSecurity,
+    RefCheckCurrency,
+    RefCheckPrice,
+    // insert new entries above this line
+    MaxRefCheckBits
+  } ReferenceCheckBits;
+
   IMyMoneyStorage();
   virtual ~IMyMoneyStorage();
 
@@ -841,11 +858,13 @@ public:
     * by another engine object.
     *
     * @param obj const reference to object to be checked
+    * @param skipCheck QBitArray with ReferenceCheckBits set for which
+    *                  the check should be skipped
     *
     * @retval false @p object is not referenced
     * @retval true @p institution is referenced
     */
-  virtual bool isReferenced(const MyMoneyObject& obj) const = 0;
+  virtual bool isReferenced(const MyMoneyObject& obj, const QBitArray& skipCheck = QBitArray()) const = 0;
 
 };
 

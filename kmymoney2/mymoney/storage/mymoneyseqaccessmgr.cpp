@@ -92,7 +92,7 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   m_balanceCache[STD_ACC_EXPENSE] = balance;
   m_balanceCache[STD_ACC_INCOME] = balance;
   m_balanceCache[STD_ACC_EQUITY] = balance;
-  
+
   // initialize for file fixes (see kmymoneyview.cpp)
   m_currentFixVersion = 1;
   m_fileFixVersion = 0; // default value if no fix-version in file
@@ -1874,7 +1874,7 @@ void MyMoneySeqAccessMgr::rebuildAccountBalances(void)
   }
 }
 
-bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj) const
+bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj, const QBitArray& skipCheck) const
 {
   bool rc = false;
   const QCString& id = obj.id();
@@ -1893,38 +1893,59 @@ bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj) const
   //       could optimize the number of objects we check for references
 
   // Scan all engine objects for a reference
-  for(it_t = m_transactionList.begin(); !rc && it_t != m_transactionList.end(); ++it_t) {
-    rc = (*it_t).hasReferenceTo(id);
+  if(!skipCheck[RefCheckTransaction]) {
+    for(it_t = m_transactionList.begin(); !rc && it_t != m_transactionList.end(); ++it_t) {
+      rc = (*it_t).hasReferenceTo(id);
+    }
   }
-  for(it_a = m_accountList.begin(); !rc && it_a != m_accountList.end(); ++it_a) {
-    rc = (*it_a).hasReferenceTo(id);
+
+  if(!skipCheck[RefCheckAccount]) {
+    for(it_a = m_accountList.begin(); !rc && it_a != m_accountList.end(); ++it_a) {
+      rc = (*it_a).hasReferenceTo(id);
+    }
   }
-  for(it_i = m_institutionList.begin(); !rc && it_i != m_institutionList.end(); ++it_i) {
-    rc = (*it_i).hasReferenceTo(id);
+  if(!skipCheck[RefCheckInstitution]) {
+    for(it_i = m_institutionList.begin(); !rc && it_i != m_institutionList.end(); ++it_i) {
+      rc = (*it_i).hasReferenceTo(id);
+    }
   }
-  for(it_p = m_payeeList.begin(); !rc && it_p != m_payeeList.end(); ++it_p) {
-    rc = (*it_p).hasReferenceTo(id);
+  if(!skipCheck[RefCheckPayee]) {
+    for(it_p = m_payeeList.begin(); !rc && it_p != m_payeeList.end(); ++it_p) {
+      rc = (*it_p).hasReferenceTo(id);
+    }
   }
-  for(it_r = m_reportList.begin(); !rc && it_r != m_reportList.end(); ++it_r) {
-    rc = (*it_r).hasReferenceTo(id);
+  if(!skipCheck[RefCheckReport]) {
+    for(it_r = m_reportList.begin(); !rc && it_r != m_reportList.end(); ++it_r) {
+      rc = (*it_r).hasReferenceTo(id);
+    }
   }
-  for(it_b = m_budgetList.begin(); !rc && it_b != m_budgetList.end(); ++it_b) {
-    rc = (*it_b).hasReferenceTo(id);
+  if(!skipCheck[RefCheckBudget]) {
+    for(it_b = m_budgetList.begin(); !rc && it_b != m_budgetList.end(); ++it_b) {
+      rc = (*it_b).hasReferenceTo(id);
+    }
   }
-  for(it_sch = m_scheduleList.begin(); !rc && it_sch != m_scheduleList.end(); ++it_sch) {
-    rc = (*it_sch).hasReferenceTo(id);
+  if(!skipCheck[RefCheckSchedule]) {
+    for(it_sch = m_scheduleList.begin(); !rc && it_sch != m_scheduleList.end(); ++it_sch) {
+      rc = (*it_sch).hasReferenceTo(id);
+    }
   }
-  for(it_sec = m_securitiesList.begin(); !rc && it_sec != m_securitiesList.end(); ++it_sec) {
-    rc = (*it_sec).hasReferenceTo(id);
+  if(!skipCheck[RefCheckSecurity]) {
+    for(it_sec = m_securitiesList.begin(); !rc && it_sec != m_securitiesList.end(); ++it_sec) {
+      rc = (*it_sec).hasReferenceTo(id);
+    }
   }
-  for(it_sec = m_currencyList.begin(); !rc && it_sec != m_currencyList.end(); ++it_sec) {
-    rc = (*it_sec).hasReferenceTo(id);
+  if(!skipCheck[RefCheckCurrency]) {
+    for(it_sec = m_currencyList.begin(); !rc && it_sec != m_currencyList.end(); ++it_sec) {
+      rc = (*it_sec).hasReferenceTo(id);
+    }
   }
   // within the pricelist we don't have to scan each entry. Checking the QPair
   // members of the MyMoneySecurityPair is enough as they are identical to the
   // two security ids
-  for(it_pr = m_priceList.begin(); !rc && it_pr != m_priceList.end(); ++it_pr) {
-    rc = (it_pr.key().first == id) || (it_pr.key().second == id);
+  if(!skipCheck[RefCheckPrice]) {
+    for(it_pr = m_priceList.begin(); !rc && it_pr != m_priceList.end(); ++it_pr) {
+      rc = (it_pr.key().first == id) || (it_pr.key().second == id);
+    }
   }
   return rc;
 }

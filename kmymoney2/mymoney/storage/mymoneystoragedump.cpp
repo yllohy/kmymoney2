@@ -176,7 +176,6 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     s << "\n";
 
     s << "  Opening data = " << (*it_a).openingDate().toString(Qt::ISODate) << "\n";
-    s << "  Opening balance = " << (*it_a).openingBalance().formatMoney() << "\n";
     s << "  Last modified = " << (*it_a).lastModified().toString(Qt::ISODate) << "\n";
     s << "  Last reconciled = " << (*it_a).lastReconciliationDate().toString(Qt::ISODate) << "\n";
     s << "  Balance = " << (*it_a).balance().formatMoney() << "\n";

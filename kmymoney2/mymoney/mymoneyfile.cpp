@@ -2022,11 +2022,11 @@ void MyMoneyFile::removeBudget(const MyMoneyBudget& budget)
 
 
 
-bool MyMoneyFile::isReferenced(const MyMoneyObject& obj) const
+bool MyMoneyFile::isReferenced(const MyMoneyObject& obj, const QBitArray& skipChecks) const
 {
   // FIXME add call to storage object
   checkStorage();
-  return m_storage->isReferenced(obj);
+  return m_storage->isReferenced(obj, skipChecks);
 
 /*
   // check the account list

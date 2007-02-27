@@ -1002,11 +1002,13 @@ public:
     * by another engine object.
     *
     * @param obj const reference to object to be checked
+    * @param skipCheck QBitArray with ReferenceCheckBits set for which
+    *                  the check should be skipped
     *
     * @retval false @p object is not referenced
     * @retval true @p institution is referenced
     */
-  bool isReferenced(const MyMoneyObject& obj) const;
+  bool isReferenced(const MyMoneyObject& obj, const QBitArray& skipCheck = QBitArray()) const;
 
   /**
     * This method recalculates the balances of all accounts
@@ -1198,12 +1200,12 @@ private:
     */
   QDate m_lastModificationDate;
 
-  /** 
+  /**
     * This member variable contains the current fix level of application
     * data files. (see kmymoneyview.cpp)
     */
   unsigned int m_currentFixVersion;
-  /** 
+  /**
    * This member variable contains the current fix level of the
    *  presently open data file. (see kmymoneyview.cpp)
    */

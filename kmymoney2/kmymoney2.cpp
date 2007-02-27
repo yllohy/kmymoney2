@@ -4215,6 +4215,7 @@ void KMyMoney2App::slotUpdateActions(void)
     }
   }
 
+  QBitArray skip(IMyMoneyStorage::MaxRefCheckBits);
   if(!m_selectedAccount.id().isEmpty()) {
     if(!file->isStandardAccount(m_selectedAccount.id())) {
       switch(m_selectedAccount.accountGroup()) {
@@ -4251,10 +4252,11 @@ void KMyMoney2App::slotUpdateActions(void)
         case MyMoneyAccount::Income :
         case MyMoneyAccount::Expense :
           action("category_edit")->setEnabled(true);
-          // enable delete action, if category/account itself has no transactions assigned
-          // we can't check isReferenced() here because we want to allow
+          // enable delete action, if category/account itself is not referenced
+          // by any object except accounts, because we want to allow
           // deleting of sub-categories
-          action("category_delete")->setEnabled(file->transactionCount(m_selectedAccount.id())==0);
+          skip.setBit(IMyMoneyStorage::RefCheckAccount);
+          action("category_delete")->setEnabled(!file->isReferenced(m_selectedAccount, skip));
           action("account_open")->setEnabled(true);
         break;
 
