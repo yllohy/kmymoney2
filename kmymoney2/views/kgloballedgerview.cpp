@@ -1486,6 +1486,12 @@ bool KGlobalLedgerView::canEditTransactions(const QValueList<KMyMoneyRegister::S
 
   QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
   for(it_t = list.begin(); rc && it_t != list.end(); ++it_t) {
+    if((*it_t).transaction().id().isEmpty()) {
+      tooltip = QString();
+      rc = false;
+      continue;
+    }
+
     if(KMyMoneyUtils::transactionType((*it_t).transaction()) == KMyMoneyUtils::InvestmentTransaction)
       ++investmentTransactions;
     else

@@ -377,7 +377,7 @@ TransactionEditor* KMyMoneyView::startEdit(const QValueList<KMyMoneyRegister::Se
 {
   TransactionEditor* editor = 0;
   QString txt;
-  if(canEditTransactions(list, txt)) {
+  if(canEditTransactions(list, txt) || canCreateTransactions(list, txt)) {
     editor = m_ledgerView->startEdit(list);
   }
   return editor;

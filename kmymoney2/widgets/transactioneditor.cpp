@@ -425,6 +425,11 @@ bool TransactionEditor::enterTransactions(QCString& newId)
       cnt--;
       MyMoneyFile::instance()->blockSignals(cnt != 0);
       try {
+        // if we have a categorization, make sure we remove
+        // the 'imported' flag automagically
+        if((*it_ts).splitCount() > 1)
+          (*it_ts).deletePair("Imported");
+
         if((*it_ts).id().isEmpty()) {
           // add new transaction
           MyMoneyFile::instance()->addTransaction(*it_ts);

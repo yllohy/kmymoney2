@@ -4173,7 +4173,7 @@ void KMyMoney2App::slotUpdateActions(void)
 
   if(!m_selectedTransactions.isEmpty()) {
     tooltip = i18n("Delete the current selected transactions");
-    action("transaction_delete")->setEnabled(myMoneyView->canModifyTransactions(m_selectedTransactions, tooltip));
+    action("transaction_delete")->setEnabled(myMoneyView->canModifyTransactions(m_selectedTransactions, tooltip) && !m_selectedTransactions[0].transaction().id().isEmpty());
     action("transaction_delete")->setToolTip(tooltip);
 
     if(!m_transactionEditor) {
