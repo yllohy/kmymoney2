@@ -1,3 +1,6 @@
+2007-03-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem detecting finished schedules
+
 2007-02-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Automagically remove the yellow 'imported' background when a
     transaction is modified and has a category

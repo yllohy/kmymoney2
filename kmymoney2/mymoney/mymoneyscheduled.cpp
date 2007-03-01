@@ -749,8 +749,14 @@ bool MyMoneySchedule::isOverdue() const
 
 bool MyMoneySchedule::isFinished() const
 {
-  if (m_endDate.isValid() && m_lastPayment >= m_endDate)
-    return true;
+  if (m_endDate.isValid()) {
+    if(m_lastPayment >= m_endDate)
+      return true;
+
+    QDate next = nextPayment(m_lastPayment);
+    if(!next.isValid() || next > m_endDate)
+      return true;
+  }
 
   // Check to see if its a once off payment
   if (m_occurence == MyMoneySchedule::OCCUR_ONCE && m_lastPayment.isValid())
