@@ -92,6 +92,7 @@
 #include "../mymoney/storage/mymoneystorageanon.h"
 
 #include <kmymoney/transactioneditor.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
 
 #include "kmymoneyview.h"
 #include "khomeview.h"
@@ -107,7 +108,6 @@
 
 #include "../kmymoney2.h"
 #include "../kmymoneyutils.h"
-#include "../kmymoneysettings.h"
 
 #include <libkgpgfile/kgpgfile.h>
 
@@ -796,9 +796,15 @@ bool KMyMoneyView::initializeStorage() {
       while (s->fileFixVersion() < s->currentFixVersion()) {
         switch (s->fileFixVersion()) {
           case 0:
-              fixFile_0();
-              s->setFileFixVersion(1);
-              break;
+            fixFile_0();
+            s->setFileFixVersion(1);
+            break;
+
+          case 1:
+            fixFile_1();
+            s->setFileFixVersion(2);
+            break;
+
           default:
             throw new MYMONEYEXCEPTION(i18n("Unknown fix level in input file"));
         }
@@ -1515,8 +1521,77 @@ void KMyMoneyView::slotRememberPage(QWidget* w)
 }
 
 /* DO NOT ADD code to this function or any of it's called ones.
-   Instead, create a new function, fixFile_1, and modify the initializeStorage()
+   Instead, create a new function, fixFile_n, and modify the initializeStorage()
    logic above to call it */
+void KMyMoneyView::fixFile_1(void)
+{
+  // we need to fix reports. If the account filter list contains
+  // investment accounts, we need to add the stock accounts to the list
+  // as well if we don't have the expert mode enabled
+  if(!KMyMoneyGlobalSettings::expertMode()) {
+    try {
+      QValueList<MyMoneyReport> reports = MyMoneyFile::instance()->reportList();
+      QValueList<MyMoneyReport>::iterator it_r;
+      for(it_r = reports.begin(); it_r != reports.end(); ++it_r) {
+        QCStringList list;
+        (*it_r).accounts(list);
+        QCStringList missing;
+        QCStringList::const_iterator it_a, it_b;
+        for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+          MyMoneyAccount acc = MyMoneyFile::instance()->account(*it_a);
+          if(acc.accountType() == MyMoneyAccount::Investment) {
+            for(it_b = acc.accountList().begin(); it_b != acc.accountList().end(); ++it_b) {
+              if(!list.contains(*it_b)) {
+                missing.append(*it_b);
+              }
+            }
+          }
+        }
+        if(!missing.isEmpty()) {
+          (*it_r).addAccount(missing);
+          MyMoneyFile::instance()->modifyReport(*it_r);
+        }
+      }
+    } catch(MyMoneyException* e) {
+      delete e;
+    }
+  }
+}
+
+#if 0
+  if(!m_accountsView->allItemsSelected()) {
+    // retrieve a list of selected accounts
+          QCStringList list;
+          m_accountsView->selectedItems(list);
+
+    // if we're not in expert mode, we need to make sure
+    // that all stock accounts for the selected investment
+    // account are also selected
+          if(!KMyMoneyGlobalSettings::expertMode()) {
+            QCStringList missing;
+            QCStringList::const_iterator it_a, it_b;
+            for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+              MyMoneyAccount acc = MyMoneyFile::instance()->account(*it_a);
+              if(acc.accountType() == MyMoneyAccount::Investment) {
+                for(it_b = acc.accountList().begin(); it_b != acc.accountList().end(); ++it_b) {
+                  if(!list.contains(*it_b)) {
+                    missing.append(*it_b);
+                  }
+                }
+              }
+            }
+            list += missing;
+          }
+
+          m_filter.addAccount(list);
+        }
+
+#endif
+
+
+
+
+
 void KMyMoneyView::fixFile_0(void)
 {
   /* (Ace) I am on a crusade against file fixups.  Whenever we have to fix the

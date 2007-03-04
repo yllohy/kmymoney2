@@ -48,9 +48,11 @@
 #include <kmymoney/kmymoneyaccountselector.h>
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneychecklistitem.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
 
 #include "../mymoney/storage/imymoneystorage.h"
 #include "../widgets/kmymoneyregistersearch.h"
+
 
 KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
  : KFindTransactionDlgDecl(parent, name, false),
@@ -589,9 +591,31 @@ void KFindTransactionDlg::setupFilter(void)
   }
 
   // Account tab
-  // TOM: Why was this commented out? (Ace)
   if(!m_accountsView->allItemsSelected()) {
-    m_filter.addAccount(m_accountsView->selectedItems());
+    // retrieve a list of selected accounts
+    QCStringList list;
+    m_accountsView->selectedItems(list);
+
+    // if we're not in expert mode, we need to make sure
+    // that all stock accounts for the selected investment
+    // account are also selected
+    if(!KMyMoneyGlobalSettings::expertMode()) {
+      QCStringList missing;
+      QCStringList::const_iterator it_a, it_b;
+      for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+        MyMoneyAccount acc = MyMoneyFile::instance()->account(*it_a);
+        if(acc.accountType() == MyMoneyAccount::Investment) {
+          for(it_b = acc.accountList().begin(); it_b != acc.accountList().end(); ++it_b) {
+            if(!list.contains(*it_b)) {
+              missing.append(*it_b);
+            }
+          }
+        }
+      }
+      list += missing;
+    }
+
+    m_filter.addAccount(list);
   }
 
   // Date tab
@@ -616,7 +640,6 @@ void KFindTransactionDlg::setupFilter(void)
   }
 
   // Categories tab
-
   if(!m_categoriesView->allItemsSelected()) {
     m_filter.addCategory(m_categoriesView->selectedItems());
   }

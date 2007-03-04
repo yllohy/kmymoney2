@@ -1,3 +1,7 @@
+2007-03-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Include children of investment accounts (stock accounts) inthe
+    reports if the expert mode is not enabled
+
 2007-03-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem detecting finished schedules
 
