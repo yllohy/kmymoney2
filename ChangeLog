@@ -3,6 +3,7 @@
     reports if the expert mode is not enabled
   * Fixed a bunch of warnings
   * Improved handling of multiple selected transactions
+  * Applied some (modified) patches provided by Demitrios Vassaras
 
 2007-03-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem detecting finished schedules

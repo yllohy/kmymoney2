@@ -2062,8 +2062,9 @@ bool MyMoneyFile::isReferenced(const MyMoneyObject& obj, const QBitArray& skipCh
 
 const bool MyMoneyFile::checkNoUsed(const QCString& accId, const QString& no) const
 {
-  // by definition, an empty number is not used
-  if(no.isEmpty())
+  // by definition, an empty string or a non-numeric string is not used
+  QRegExp exp(QString("(.*\\D)?(\\d+)(\\D.*)?"));
+  if(no.isEmpty() || exp.search(no) == -1)
     return false;
 
   MyMoneyTransactionFilter filter;

@@ -109,6 +109,19 @@ void TransactionEditor::slotReloadEditWidgets(void)
 {
 }
 
+void TransactionEditor::slotNumberChanged(const QString& txt)
+{
+  kMyMoneyLineEdit* number = dynamic_cast<kMyMoneyLineEdit*>(haveWidget("number"));
+
+  if(number) {
+    if(MyMoneyFile::instance()->checkNoUsed(m_account.id(), txt)) {
+      if(KMessageBox::questionYesNo(m_regForm, QString("<qt>")+i18n("The number <b>%1</b> has already been used in account <b>%2</b>. Do you want to replace it with the next available number?").arg(txt).arg(m_account.name())+QString("</qt>"), i18n("Duplicate number")) == KMessageBox::Yes) {
+        number->loadText(KMyMoneyUtils::nextCheckNumber(m_account));
+      }
+    }
+  }
+}
+
 void TransactionEditor::slotUpdateButtonState(void)
 {
   emit transactionDataSufficient(isComplete());
@@ -527,6 +540,7 @@ void StdTransactionEditor::createEditWidgets(void)
     kMyMoneyLineEdit* number = new kMyMoneyLineEdit;
     number->setHint(i18n("Number"));
     m_editWidgets["number"] = number;
+    connect(number, SIGNAL(lineChanged(const QString&)), this, SLOT(slotNumberChanged(const QString&)));
   }
 
   m_editWidgets["postdate"] = new kMyMoneyDateInput;

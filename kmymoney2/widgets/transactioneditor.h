@@ -135,6 +135,7 @@ protected:
 protected slots:
   void slotUpdateButtonState(void);
   void slotUpdateAccount(void);
+  void slotNumberChanged(const QString&);
 
 signals:
   /**
