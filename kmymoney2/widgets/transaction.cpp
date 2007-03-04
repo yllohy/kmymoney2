@@ -188,7 +188,7 @@ void Transaction::setFocus(bool focus, bool updateLens)
   }
 }
 
-void Transaction::markAsErronous(QPainter* painter, int row, int col, const QRect& r)
+void Transaction::markAsErronous(QPainter* painter, int /* row */, int /* col */, const QRect& r)
 {
   const int m = 2;  // margin
   int h = m_parent->rowHeightHint() - (2*m);
@@ -367,7 +367,7 @@ void Transaction::paintRegisterCellFocus(QPainter* painter, int row, int col, co
 void Transaction::registerCellText(QString& txt, int row, int col)
 {
   int align = 0;
-  registerCellText(txt, align, row, col);
+  registerCellText(txt, align, row, col, 0);
 }
 
 void Transaction::paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool /* selected */, const QColorGroup& _cg)
@@ -1590,7 +1590,7 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
   return fieldEditable;
 }
 
-void InvestTransaction::registerCellText(QString& txt, int& align, int row, int col, QPainter* painter)
+void InvestTransaction::registerCellText(QString& txt, int& align, int row, int col, QPainter* /* painter */)
 {
   switch(row) {
     case 0:

@@ -403,7 +403,7 @@ void TransactionForm::adjustColumn(Column col)
     // scan through the rows
     for ( int i = numRows()-1; i >= 0; --i ) {
       int align;
-      m_transaction->formCellText(txt, align, i, static_cast<int>(col));
+      m_transaction->formCellText(txt, align, i, static_cast<int>(col), 0);
       QWidget* cw = cellWidget(i, col);
       if(cw) {
         w = QMAX(w, cw->sizeHint().width()+10);

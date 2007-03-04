@@ -73,7 +73,7 @@ public:
     delete m_activity;
   }
 
-  QWidget* haveWidget(const QString& name) { m_parent->haveWidget(name); }
+  QWidget* haveWidget(const QString& name) { return m_parent->haveWidget(name); }
 
   InvestTransactionEditor* m_parent;
   Activity*                m_activity;

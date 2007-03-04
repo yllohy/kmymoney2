@@ -149,9 +149,9 @@ public:
 
   virtual void paintFormCell(QPainter* /* painter */, int /* row */, int /* col */, const QRect& /* r */, bool /* selected */, const QColorGroup& /* cg */);
 
-  virtual bool formCellText(QString& /* txt */, int& /* align */, int /* row */, int /* col */, QPainter* painter = 0) { return false; }
-  virtual void registerCellText(QString& /* txt */, int& /* align */, int /* row */, int /* col */, QPainter* painter = 0) {}
-  virtual int registerColWidth(int col, const QFontMetrics& cellFontMetrics) { return 0; }
+  virtual bool formCellText(QString& /* txt */, int& /* align */, int /* row */, int /* col */, QPainter* /* painter */) { return false; }
+  virtual void registerCellText(QString& /* txt */, int& /* align */, int /* row */, int /* col */, QPainter* /* painter */) {}
+  virtual int registerColWidth(int /* col */, const QFontMetrics& /* cellFontMetrics */) { return 0; }
 
   /**
     * Helper method for the above method.
@@ -322,7 +322,7 @@ public:
   /**
     * provide NOP here as the investment transaction form does not supply a tab
     */
-  void loadTab(KMyMoneyTransactionForm::TransactionForm* form) {}
+  void loadTab(KMyMoneyTransactionForm::TransactionForm* /* form */) {}
 
   int numColsForm(void) const { return 4; }
 

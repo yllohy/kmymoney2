@@ -589,7 +589,7 @@ void kMyMoneySplitTable::slotDuplicateSplit(void)
   QValueList<MyMoneySplit> list = getSplits(m_transaction);
   if(m_currentRow < static_cast<int> (list.count())) {
     MyMoneySplit split = list[m_currentRow];
-    split.setId(QCString());
+    split.clearId();
     try {
       m_transaction.addSplit(split);
       emit transactionChanged(m_transaction);

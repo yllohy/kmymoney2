@@ -57,7 +57,7 @@ public:
 
   virtual QWidget* firstWidget(void) const;
 
-  virtual bool fixTransactionCommodity(const MyMoneyAccount& account) { return true; }
+  virtual bool fixTransactionCommodity(const MyMoneyAccount& /* account */) { return true; }
 
   void totalAmount(MyMoneyMoney& amount) const;
 

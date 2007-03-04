@@ -181,7 +181,7 @@ public:
     *
     * If no tooltip is available, @a false will be returned.
     */
-  virtual bool maybeTip(const QPoint& relpos, int row, int col, QRect& r, QString& msg) { return false; }
+  virtual bool maybeTip(const QPoint& /* relpos */, int /* row */, int /* col */, QRect& /* r */, QString& /* msg */) { return false; }
 
 protected:
   /// This method serves as helper for all constructors
