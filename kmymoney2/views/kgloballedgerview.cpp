@@ -546,6 +546,7 @@ void KGlobalLedgerView::loadView(void)
     MyMoneyMoney balance = MyMoneyFile::instance()->balance(m_account.id());
     actBalance = clearedBalance = futureBalance = balance;
     p = m_register->lastItem();
+    focusItem = p;
     while(p) {
       KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
       if(t) {
@@ -580,16 +581,12 @@ void KGlobalLedgerView::loadView(void)
     m_register->updateRegister(true);
 
     if(focusItem) {
-      m_register->selectItem(focusItem);
+      m_register->selectItem(focusItem, true);
     } else {
       // make sure to skip the empty entry at the end if anything else exists
       // otherwise point to that emtpy line
       p = m_register->lastItem();
-      if(p && p->prevItem()) {
-        do {
-          p = p->prevItem();
-        } while(p && !dynamic_cast<KMyMoneyRegister::Transaction*>(p));
-      }
+      m_register->setFocusItem(p);
       m_register->selectItem(p);
       focusItem = p;
     }

@@ -270,7 +270,14 @@ public:
 
   RegisterItem* focusItem(void) const { return m_focusItem; }
   void setFocusItem(RegisterItem* focusItem);
-  void selectItem(RegisterItem* item);
+
+  /**
+    * Select @a item and unselect all others if @a dontChangeSelections
+    * is @a false. If m_buttonState differs from Qt::NoButton (method is
+    * called as a result of a mouse button press), then the setting of
+    * @a dontChangeSelections has no effect.
+    */
+  void selectItem(RegisterItem* item, bool dontChangeSelections = false);
 
   /**
     * Clears all items in the register. All objects

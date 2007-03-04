@@ -224,7 +224,7 @@ GroupMarker::~GroupMarker()
   }
 }
 
-void GroupMarker::paintRegisterCell(QPainter* painter, int row, int col, const QRect& _r, bool /*selected*/, const QColorGroup& _cg)
+void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /* col */, const QRect& _r, bool /*selected*/, const QColorGroup& _cg)
 {
   // avoid painting the marker twice for the same update round
   unsigned int drawCounter = m_parent->drawCounter();
@@ -1261,7 +1261,7 @@ int Register::rowToIndex(int row) const
 
 void Register::selectedTransactions(QValueList<SelectedTransaction>& list) const
 {
-  if(m_focusItem->isSelected() && m_focusItem->isVisible()) {
+  if(m_focusItem && m_focusItem->isSelected() && m_focusItem->isVisible()) {
     Transaction* t = dynamic_cast<Transaction*>(m_focusItem);
     if(t) {
       SelectedTransaction s(t->transaction(), t->split());
@@ -1382,7 +1382,7 @@ void Register::setFocusItem(RegisterItem* focusItem)
   }
 }
 
-void Register::selectItem(RegisterItem* item)
+void Register::selectItem(RegisterItem* item, bool dontChangeSelections)
 {
   if(!item)
     return;
@@ -1450,7 +1450,8 @@ void Register::selectItem(RegisterItem* item)
       emit aboutToSelectItem(item);
       // pointer 'item' might have changed. reconstruct it.
       item = itemById(id);
-      unselectItems();
+      if(!dontChangeSelections)
+        unselectItems();
       item->setSelected(true);
       setFocusItem(item);
       m_selectAnchor = item;
