@@ -544,6 +544,11 @@ void KGlobalLedgerView::loadView(void)
     // of transactions backward. Also re-select a transaction if it was
     // selected before and setup the focus item.
     MyMoneyMoney balance = MyMoneyFile::instance()->balance(m_account.id());
+    MyMoneyMoney factor(1,1);
+    if(m_account.accountGroup() == MyMoneyAccount::Liability)
+      factor = -factor;
+
+    balance = balance * factor;
     actBalance = clearedBalance = futureBalance = balance;
     p = m_register->lastItem();
     focusItem = p;
@@ -561,12 +566,12 @@ void KGlobalLedgerView::loadView(void)
 
         t->setBalance(balance.formatMoney("", d->m_precision));
         const MyMoneySplit& split = t->split();
-        balance -= split.shares();
+        balance -= split.shares() * factor;
         if(split.reconcileFlag() == MyMoneySplit::NotReconciled) {
-          clearedBalance -= split.shares();
+          clearedBalance -= split.shares() * factor;
         }
         if(t->transaction().postDate() > QDate::currentDate()) {
-          actBalance -= split.shares();
+          actBalance -= split.shares() * factor;
         }
       }
       p = p->prevItem();
@@ -970,6 +975,9 @@ void KGlobalLedgerView::slotSetReconcileAccount(const MyMoneyAccount& acc, const
 
     d->m_reconciliationAccount = acc.id();
     d->m_endingBalance = endingBalance;
+    if(acc.accountGroup() == MyMoneyAccount::Liability)
+      d->m_endingBalance = -endingBalance;
+
     m_newAccountLoaded = true;
     if(acc.id().isEmpty()) {
       kmymoney2->action("account_reconcile_postpone")->unplug(m_buttonbar);
