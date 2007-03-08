@@ -55,7 +55,7 @@ public:
 
   const MyMoneyMoney endingBalance(void) const;
   const MyMoneyMoney previousBalance(void) const;
-  const QDate statementDate(void) const { return m_statementDate->getQDate(); };
+  const QDate statementDate(void) const { return m_statementDate->date(); };
 
   const MyMoneyTransaction interestTransaction(void) const;
   const MyMoneyTransaction chargeTransaction(void) const;
@@ -112,14 +112,14 @@ public:
     * by the user. The value returned is only valid if the dialog returned
     * with QDialog::accept.
     */
-  const QDate startDate(void) const { return m_startDateEdit->getQDate(); };
+  const QDate startDate(void) const { return m_startDateEdit->date(); };
 
   /**
     * This method returns the ending date of the statement as provided
     * by the user. The value returned is only valid if the dialog returned
     * with QDialog::accept.
     */
-  const QDate endDate(void) const { return m_endDateEdit->getQDate(); };
+  const QDate endDate(void) const { return m_endDateEdit->date(); };
 
 protected:
   const MyMoneyMoney totalInterest(const QDate& start, const QDate& end) const;

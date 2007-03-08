@@ -204,7 +204,7 @@ const MyMoneyTransaction KEndingBalanceDlg::createTransaction(const int sign, kM
 
     t.addSplit(s1);
     t.addSplit(s2);
-    t.setPostDate(m_statementDate->getQDate());
+    t.setPostDate(m_statementDate->date());
 
   } catch(MyMoneyException *e) {
     qDebug("%s", e->what().data());
@@ -264,8 +264,8 @@ void KEndingBalanceLoanDlg::slotCheckPageFinished(void)
   finishButton()->setEnabled(true);
 
   if(currentPage() == m_checkPaymentsPage) {
-    MyMoneyMoney interest = totalInterest(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
-    MyMoneyMoney amortization = totalAmortization(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
+    MyMoneyMoney interest = totalInterest(m_startDateEdit->date(), m_endDateEdit->date());
+    MyMoneyMoney amortization = totalAmortization(m_startDateEdit->date(), m_endDateEdit->date());
 
     if(interest == m_interestTotalEdit->value()
     && amortization == m_amortizationTotalEdit->value()) {
@@ -348,14 +348,14 @@ void KEndingBalanceLoanDlg::next(void)
   bool dontLeavePage = false;
 
   if(currentPage() == m_startPageLoan) {
-    MyMoneyMoney interest = totalInterest(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
-    MyMoneyMoney amortization = totalAmortization(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
+    MyMoneyMoney interest = totalInterest(m_startDateEdit->date(), m_endDateEdit->date());
+    MyMoneyMoney amortization = totalAmortization(m_startDateEdit->date(), m_endDateEdit->date());
 
     m_loanOverview->setText(i18n("KMyMoney has calculated the following amounts for "
                                  "interest and amortization according to recorded payments "
                                  "between %1 and %2.")
-                                 .arg(KGlobal::locale()->formatDate(m_startDateEdit->getQDate(), true))
-                                 .arg(KGlobal::locale()->formatDate(m_endDateEdit->getQDate(), true)));
+                                 .arg(KGlobal::locale()->formatDate(m_startDateEdit->date(), true))
+                                 .arg(KGlobal::locale()->formatDate(m_endDateEdit->date(), true)));
 
     // preload widgets with calculated values if they are empty
     if(m_amortizationTotalEdit->value().isZero() && !amortization.isZero())
@@ -376,7 +376,7 @@ void KEndingBalanceLoanDlg::next(void)
 #endif
     m_categoryEdit->setEnabled(false);
 
-    MyMoneyMoney interest = totalInterest(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
+    MyMoneyMoney interest = totalInterest(m_startDateEdit->date(), m_endDateEdit->date());
     if(interest != m_interestTotalEdit->value()) {
       m_categoryEdit->setEnabled(true);
     }
@@ -392,8 +392,8 @@ const MyMoneyTransaction KEndingBalanceLoanDlg::adjustmentTransaction(void) cons
 {
   MyMoneyTransaction t;
 
-  MyMoneyMoney interest = totalInterest(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
-  MyMoneyMoney amortization = totalAmortization(m_startDateEdit->getQDate(), m_endDateEdit->getQDate());
+  MyMoneyMoney interest = totalInterest(m_startDateEdit->date(), m_endDateEdit->date());
+  MyMoneyMoney amortization = totalAmortization(m_startDateEdit->date(), m_endDateEdit->date());
 
   if(interest != m_interestTotalEdit->value()
   || amortization != m_amortizationTotalEdit->value()) {
@@ -432,7 +432,7 @@ const MyMoneyTransaction KEndingBalanceLoanDlg::adjustmentTransaction(void) cons
       if(!sInterest.value().isZero())
         t.addSplit(sInterest);
 
-      t.setPostDate(m_endDateEdit->getQDate());
+      t.setPostDate(m_endDateEdit->date());
 
     } catch(MyMoneyException *e) {
       qDebug("Unable to create adjustment transaction for loan reconciliation: %s", e->what().data());
