@@ -22,6 +22,7 @@
 #include <qcheckbox.h>
 #include <qtimer.h>
 #include <qtabwidget.h>
+#include <qlayout.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -64,9 +65,9 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   // by moving the dialog by (-45,-45).
   m_register->setParent(this);
   m_register->installEventFilter(this);
-  m_registerFrame->hide();
+  m_tabWidget->setTabEnabled(m_resultPage, false);
+
   KFindTransactionDlgDecl::update();
-  resize(minimumSizeHint());
 
   move(x()-45, y()-45);
 
@@ -115,8 +116,6 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   connect(this, SIGNAL(selectionEmpty(bool)),  m_searchButton, SLOT(setDisabled(bool)));
 
   slotUpdateSelections();
-
-  QTimer::singleShot(0, this, SLOT(slotRightSize()));
 
   // setup the connections
   connect(m_searchButton, SIGNAL(clicked()), this, SLOT(slotSearch()));
@@ -181,19 +180,13 @@ void KFindTransactionDlg::slotReset(void)
   m_nrButton->setChecked(true);
   m_nrRangeButton->setChecked(false);
 
-  m_registerFrame->hide();
+  m_tabWidget->setTabEnabled(m_resultPage, false);
+  m_tabWidget->setCurrentPage(m_tabWidget->indexOf(m_criteriaTab));
 
   // the following call implies a call to slotUpdateSelections,
   // that's why we call it last
   m_dateRange->setCurrentItem(allDates);
   slotDateRangeChanged(allDates);
-
-  QTimer::singleShot(0, this, SLOT(slotRightSize()));
-}
-
-void KFindTransactionDlg::slotRightSize(void)
-{
-  resize(minimumSize());
 }
 
 void KFindTransactionDlg::slotUpdateSelections(void)
@@ -764,7 +757,18 @@ void KFindTransactionDlg::slotRefreshView(void)
                       .arg(m_transactionPtrVector.count()).arg(deposit.formatMoney()).arg(payment.formatMoney()).arg((deposit-payment).formatMoney())));
   m_register->setTransactionCount(m_transactionPtrVector.count());
   m_register->setCurrentTransactionIndex(0);
-  m_registerFrame->show();
+
+  m_tabWidget->setTabEnabled(m_resultPage, true);
+  m_tabWidget->setCurrentPage(m_tabWidget->indexOf(m_resultPage));
+
+  QTimer::singleShot(10, this, SLOT(slotRightSize()));
+}
+
+void KFindTransactionDlg::slotRightSize(void)
+{
+  QSize size(width(), height());
+  QResizeEvent ev(size, size);
+  resizeEvent(&ev);
 }
 
 KMyMoneyTransaction* KFindTransactionDlg::transaction(const int idx) const
@@ -890,7 +894,8 @@ void KFindTransactionDlg::update(const QCString& /* id */)
 {
   m_objects.clear(); // invalidate all objects
   // only calculate the new list if it is currently visible
-  if(m_registerFrame->isVisible()) {
+
+  if(m_tabWidget->isTabEnabled(m_resultPage)) {
     KMyMoneyTransaction *k = transaction(m_register->currentTransactionIndex());
     QCString id = k->id();
 

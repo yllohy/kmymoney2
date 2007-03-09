@@ -1,3 +1,6 @@
+2007-03-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Improved layout of find transaction dialog
+
 2007-03-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Replaced getQDate() with date() in ending balance dialog
   * Fixed reconciliation of liability accounts
