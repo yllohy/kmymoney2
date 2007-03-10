@@ -75,7 +75,7 @@ public:
   /**
     */
   const bool autoCreatePayee(void) const { return m_payeeCreation->isChecked(); };
-    
+
 protected slots:
   /** Called to let the user browse for a QIF file to import from. */
   void slotBrowse();
@@ -123,9 +123,6 @@ private:
 
   void readConfig(void);
   void writeConfig(void);
-
-  bool fileExists(KURL url);
-
 };
 
 #endif

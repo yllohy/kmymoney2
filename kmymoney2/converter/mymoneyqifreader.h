@@ -35,6 +35,7 @@
 
 #include <ktempfile.h>
 #include <kprocess.h>
+#include <kurl.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
@@ -51,7 +52,7 @@ class MyMoneyQifReader : public QObject
 {
   Q_OBJECT
 
-public: 
+public:
   MyMoneyQifReader();
   ~MyMoneyQifReader();
 
@@ -62,9 +63,9 @@ public:
     * the file is send through this filter and the result
     * is stored in the m_tempFile file.
     *
-    * @param name path and name of the file to be imported
+    * @param name URL of the file to be imported
     */
-  void setFilename(const QString& name);
+  void setURL(const KURL& url);
 
   /**
     * This method is used to store the name of the profile into the object.
@@ -121,7 +122,7 @@ public:
     *               or turned off (@p false)
     */
   void setAutoCreatePayee(const bool create);
-  
+
   const MyMoneyAccount& account() const { return m_account; };
 
   void setProgressCallback(void(*callback)(int, int, const QString&));
@@ -159,7 +160,7 @@ private:
     * by Quicken.
     */
   void processCategoryEntry(void);
-  
+
   /**
     * This method scans the m_qifEntry object as a transaction record specified
     * by Quicken.
@@ -171,7 +172,7 @@ private:
     * record specified by Quicken.
     */
   void processInvestmentTransactionEntry(void);
-  
+
   /**
     * This method scans the m_qifEntry object as a price record specified
     * by Quicken.
@@ -191,7 +192,7 @@ private:
     * be collected.
     */
   void processQifEntry(void);
-  
+
   /**
     * This method is used to get the account id of the split for
     * a transaction from the text found in the QIF $ or L record.
@@ -271,7 +272,7 @@ private:
     * @return QCString id of the found or created account
     */
   static const QCString findOrCreateIncomeAccount(const QString& searchname);
-  
+
   /**
     * This method looks up the @p searchname account by name and returns its id
     * if it was found.  If it was not found, it creates a new expense account using
@@ -281,15 +282,15 @@ private:
     * @return QCString id of the found or created account
     */
   static const QCString findOrCreateExpenseAccount(const QString& searchname);
-  
+
   void processQifLine(void);
-  
+
 signals:
   /**
     * This signal will be emitted when the import is finished.
     */
   void importFinished(void);
-  
+
 private slots:
   void slotSendDataToFilter(void);
   void slotReceivedDataFromFilter(KProcess* /* proc */, char *buff, int len);
@@ -297,7 +298,7 @@ private slots:
   // void slotReceivedDataFromFilter(void);
   // void slotReceivedErrorFromFilter(void);
   void slotProcessBuffers(void);
-  
+
   /**
     * This slot is used to be informed about the end of the filtering process.
     * It emits the signal importFinished()
@@ -319,6 +320,7 @@ private:
 
   KProcess                m_filter;
   QString                 m_filename;
+  KURL                    m_url;
   MyMoneyQifProfile       m_qifProfile;
   MyMoneyAccount          m_account;
   unsigned long           m_transactionsSkipped;
@@ -344,7 +346,7 @@ private:
   QValueList<MyMoneyTransaction> m_transactionCache;
 
   QValueList<QByteArray>  m_data;
-          
+
   void (*m_progressCallback)(int, int, const QString&);
 };
 

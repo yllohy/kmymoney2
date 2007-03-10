@@ -1335,7 +1335,7 @@ void KMyMoney2App::slotQifImport()
         delete m_engineBackup;
       m_engineBackup = MyMoneyFile::instance()->storage()->duplicate();
 
-      m_qifReader->setFilename(dlg->filename());
+      m_qifReader->setURL(dlg->filename());
 
       m_qifReader->setProfile(dlg->profile());
       m_qifReader->setAutoCreatePayee(dlg->autoCreatePayee());

@@ -20,15 +20,18 @@
 
 // ----------------------------------------------------------------------------
 // QT Headers
+
 #include <qlineedit.h>
 #include <qtextstream.h>
 #include <qprogressbar.h>
 #include <qlabel.h>
 #include <qbuttongroup.h>
 #include <qpixmap.h>
+#include <qapplication.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
+
 #include <kglobalsettings.h>
 #include <kpushbutton.h>
 #include <kcombobox.h>
@@ -37,17 +40,14 @@
 #include <klocale.h>
 #include <kglobal.h>
 #include <kiconloader.h>
-
-#if QT_VERSION > 300
+#include <kio/netaccess.h>
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
 
 // ----------------------------------------------------------------------------
 // Project Headers
+
 #include "kimportdlg.h"
-#include "../mymoney/mymoneyfile.h"
+#include <kmymoney/mymoneyfile.h>
 #include "mymoneyqifprofileeditor.h"
 #include "../converter/mymoneyqifprofile.h"
 
@@ -116,9 +116,18 @@ void KImportDlg::slotBrowse()
   MyMoneyQifProfile tmpprofile;
   tmpprofile.loadProfile("Profile-" + profile());
 
-  QString qstring(KFileDialog::getOpenFileName(KGlobalSettings::documentPath(), tmpprofile.filterFileType()));
-  if (!qstring.isEmpty())
-    m_qlineeditFile->setText(qstring);
+  KFileDialog dialog(KGlobalSettings::documentPath(),
+                     i18n("%1|Import files\n%2|All files (*.*)").arg(tmpprofile.filterFileType()).arg("*"),
+                     this, i18n("Import File..."), true);
+  dialog.setMode(KFile::File | KFile::ExistingOnly);
+
+  if(dialog.exec() == QDialog::Accepted) {
+#if KDE_IS_VERSION(3,4,0)
+    m_qlineeditFile->setText(dialog.selectedURL().pathOrURL());
+#else
+    m_qlineeditFile->setText(dialog.selectedURL().prettyURL(0, StripFileProtocol));
+#endif
+  }
 }
 
 void KImportDlg::slotOkClicked()
@@ -150,7 +159,7 @@ void KImportDlg::writeConfig(void)
 /** Make sure the text input is ok */
 void KImportDlg::slotFileTextChanged(const QString& text)
 {
-  if (!text.isEmpty() && fileExists(text)) {
+  if (!text.isEmpty() && KIO::NetAccess::exists(text, true, qApp->mainWidget())) {
     // m_qcomboboxDateFormat->setEnabled(true);
     m_qbuttonOk->setEnabled(true);
     m_scanButton->setEnabled(true);
@@ -160,21 +169,6 @@ void KImportDlg::slotFileTextChanged(const QString& text)
     m_qbuttonOk->setEnabled(false);
     m_scanButton->setEnabled(false);
   }
-}
-
-bool KImportDlg::fileExists(KURL url)
-{
-  if (url.isLocalFile()) {
-    // Lets make sure it exists first
-    if (url.fileName().length()>=1) {
-      QFile f(url.directory(false,true)+url.fileName());
-      return f.exists();
-    }
-  }
-  // We don't bother checking URL's or showing them
-  // because at the moment MyMoneyFile can't read them
-  // anyway
-  return false;
 }
 
 void KImportDlg::slotNewProfile(void)

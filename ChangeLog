@@ -1,3 +1,6 @@
+2007-03-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added network transparent file access to import dialog
+
 2007-03-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved layout of find transaction dialog
 

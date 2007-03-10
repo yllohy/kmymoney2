@@ -39,6 +39,7 @@
 #include <kconfig.h>
 #include <kdebug.h>
 #include <kprogress.h>
+#include <kio/netaccess.h>
 
 // ----------------------------------------------------------------------------
 // Project Headers
@@ -89,9 +90,9 @@ void MyMoneyQifReader::setAutoCreatePayee(const bool create)
   m_autoCreatePayee = create;
 }
 
-void MyMoneyQifReader::setFilename(const QString& name)
+void MyMoneyQifReader::setURL(const KURL& url)
 {
-  m_filename = name;
+  m_url = url;
 }
 
 void MyMoneyQifReader::setProfile(const QString& profile)
@@ -210,8 +211,16 @@ const bool MyMoneyQifReader::startImport(void)
   m_userAbort = false;
   m_pos = 0;
   m_linenumber = 0;
-
+  m_filename = QString::null;
   m_data.clear();
+
+  if(!KIO::NetAccess::download(m_url, m_filename, NULL)) {
+    KMessageBox::detailedError(0,
+                               i18n("Error while loading file '%1'!").arg(m_url.prettyURL()),
+                               KIO::NetAccess::lastErrorString(),
+                               i18n("File access error"));
+    return false;
+  }
 
   m_file = new QFile(m_filename);
   if(m_file->open(IO_ReadOnly)) {
@@ -302,6 +311,11 @@ const bool MyMoneyQifReader::finishImport(void)
     qWarning("MyMoneyQifReader::finishImport() must not be called while the filter\n\tprocess is still running.");
   }
 #endif
+
+  // if a temporary file was constructed by NetAccess::download,
+  // then it will be removed with the next call. Otherwise, it
+  // stays untouched on the local filesystem
+  KIO::NetAccess::removeTempFile(m_filename);
 
   // Add the transaction entries
   KProgressDialog dlg(0,"transactionaddprogress",i18n("Adding transactions"),i18n("Now adding the transactions to your ledger..."));
