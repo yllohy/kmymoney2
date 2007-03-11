@@ -125,7 +125,7 @@ void KImportDlg::slotBrowse()
 #if KDE_IS_VERSION(3,4,0)
     m_qlineeditFile->setText(dialog.selectedURL().pathOrURL());
 #else
-    m_qlineeditFile->setText(dialog.selectedURL().prettyURL(0, StripFileProtocol));
+    m_qlineeditFile->setText(dialog.selectedURL().prettyURL(0, KURL::StripFileProtocol));
 #endif
   }
 }
