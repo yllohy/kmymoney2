@@ -1,11 +1,9 @@
 /***************************************************************************
                           kmymoneycombo.h  -  description
                              -------------------
-    begin                : Sat May 5 2001
-    copyright            : (C) 2001 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                             Javier Campos Morales <javi_c@ctv.es>
-                             Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+    begin                : Mon Mar 12 2007
+    copyright            : (C) 2007 by Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -39,6 +37,7 @@
 #include <kmymoney/register.h>
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/transaction.h>
+#include <kmymoney/mymoneypayee.h>
 
 class kMyMoneyCompletion;
 class KMyMoneySelector;
@@ -90,6 +89,18 @@ public:
   void selectedItems(QCStringList& list) const;
 
   /**
+    * This method returns the id of the first selected item.
+    * Usage makes usually only sense when the selection mode
+    * of the associated KMyMoneySelector is QListView::Single.
+    *
+    * @sa KMyMoneySelector::setSelectionMode()
+    *
+    * @param id reference to QCString containing the id. If no item
+    *           is selected id will be empty.
+    */
+  void selectedItem(QCString& id) const;
+
+  /**
     * This method selects the item with the respective @a id.
     *
     * @param id reference to QCString containing the id
@@ -108,6 +119,11 @@ public:
     * overridden for internal reasons, no API change
     */
   void setCurrentText(const QString& txt = QString()) { KComboBox::setCurrentText(txt); }
+
+  /**
+    * overridden to set the background color of the lineedit as well
+    */
+  void setPaletteBackgroundColor(const QColor& color);
 
 protected slots:
   virtual void slotItemSelected(const QCString& id);
@@ -137,6 +153,16 @@ protected:
     * set the widgets text area based on the item with the given @a id.
     */
   virtual void setCurrentText(const QCString& id);
+
+  /**
+    * Overridden for internal reasons, no API change
+    */
+  void connectNotify(const char* signal);
+
+  /**
+    * Overridden for internal reasons, no API change
+    */
+  void disconnectNotify(const char* signal);
 
 protected:
   /**
@@ -269,6 +295,33 @@ private:
   MyMoneySplit::investTransactionTypeE  m_activity;
 };
 
+/**
+  * This class implements a text based payee selector.
+  * When initially used, the widget has the functionality of a KComboBox object.
+  * Whenever a key is pressed, the set of loaded payees is searched for
+  * payees names which match the currently entered text.
+  *
+  * If any match is found a list selection box is opened and the user can use
+  * the up/down, page-up/page-down keys or the mouse to navigate in the list. If
+  * a payee is selected, the selection box is closed. Other key-strokes are
+  * directed to the parent object to manipulate the text.  The visible contents of
+  * the selection box is updated with every key-stroke.
+  *
+  * This object is a replacement of the kMyMoneyPayee object and should be used
+  * for new code.
+  *
+  * @author Thomas Baumgart
+  */
+class KMyMoneyPayeeCombo : public KMyMoneyCombo
+{
+   Q_OBJECT
+public:
+  KMyMoneyPayeeCombo(QWidget* parent = 0, const char* name = 0);
+
+  void loadPayees(const QValueList<MyMoneyPayee>& list);
+};
+
+
 
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
@@ -279,6 +332,16 @@ private:
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+
+/***************************************************************************
+                          kmymoneycombo.h  -  description
+                             -------------------
+    begin                : Sat May 5 2001
+    copyright            : (C) 2001 by Michael Edwardes
+    email                : mte@users.sourceforge.net
+                             Javier Campos Morales <javi_c@ctv.es>
+                             Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+ ***************************************************************************/
 
 /**
   * @author Michael Edwardes

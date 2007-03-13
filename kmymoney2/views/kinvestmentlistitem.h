@@ -34,10 +34,10 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneysecurity.h"
-#include "../mymoney/mymoneyaccount.h"
-#include "../mymoney/mymoneytransaction.h"
-#include "../mymoney/mymoneyobserver.h"
+#include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneytransaction.h>
+#include <kmymoney/mymoneyobserver.h>
 
 //indexes for the various columns on the summary view
 #define COLUMN_NAME_INDEX       0
@@ -53,10 +53,10 @@
 #define COLUMN_YTDGAIN_INDEX    10
 
 /**
-  *@author Kevin Tambascio
+  * @author Kevin Tambascio
+  * @author Thomas Baumgart
   */
-
-class KInvestmentListItem : public KListViewItem, public MyMoneyObserver
+class KInvestmentListItem : public KListViewItem
 {
 public:
   KInvestmentListItem(KListView* parent, const MyMoneyAccount& security);
@@ -65,8 +65,6 @@ public:
   QCString securityId() const { return m_account.currencyId(); };
   const MyMoneyAccount& account(void) const { return m_account; };
   const MyMoneySecurity tradingCurrency(void) const { return m_tradingCurrency; };
-
-  void update(const QCString& id);
 
 protected:
   void paintCell(QPainter * p, const QColorGroup & cg, int column, int width, int align);

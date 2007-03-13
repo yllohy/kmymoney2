@@ -1083,6 +1083,7 @@ void KLedgerViewCheckings::fillForm(void)
 
 void KLedgerViewCheckings::createEditWidgets(void)
 {
+#if 0
   if(!m_editPayee) {
     m_editPayee = new kMyMoneyPayee(0, "Payee");
     connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
@@ -1142,10 +1143,12 @@ void KLedgerViewCheckings::createEditWidgets(void)
       m_editType->insertItem(txt);
     }
   }
+#endif
 }
 
 void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
 {
+#if 0
   MyMoneyMoney amount;
   QString payee;
 
@@ -1219,6 +1222,7 @@ void KLedgerViewCheckings::reloadEditWidgets(const MyMoneyTransaction& t)
       m_editDeposit->loadText(amount.formatMoney());
     }
   }
+#endif
 }
 
 void KLedgerViewCheckings::autoIncCheckNumber(void)
@@ -1272,6 +1276,7 @@ const bool KLedgerViewCheckings::showNrField(const MyMoneyTransaction& t, const 
 
 QWidget* KLedgerViewCheckings::arrangeEditWidgetsInForm(void)
 {
+#if 0
   // make sure, that the category has an associated button
   QTableItem* item;
   kMyMoneyTransactionFormTable* table = m_form->table();
@@ -1333,12 +1338,13 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInForm(void)
   addToTabOrder(m_editNr);
   addToTabOrder(m_editDate);
   addToTabOrder(m_editAmount);
-
-  return m_editPayee;
+#endif
+  return m_editCategory;
 }
 
 QWidget* KLedgerViewCheckings::arrangeEditWidgetsInRegister(void)
 {
+#if 0
   QWidget* focusWidget = m_editDate;
   int firstRow = m_register->currentTransactionIndex() * m_register->rpt();
 
@@ -1383,7 +1389,8 @@ QWidget* KLedgerViewCheckings::arrangeEditWidgetsInRegister(void)
   m_editPayee->setHint(i18n("Payee"));
   m_editCategory->setHint(i18n("Category/Account"));
   m_editMemo->setHint(i18n("Memo"));
-  return focusWidget;
+#endif
+  return m_editNr;
 }
 
 void KLedgerViewCheckings::destroyWidgets(void)

@@ -356,8 +356,12 @@ bool TransactionEditor::canAssignNumber(void) const
 void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool allowObjectCreation)
 {
   disconnect(category, SIGNAL(focusIn()), this, splitEditSlot);
+#if 0
+  // FIXME must deal with the logic that suppressObjectCreation is
+  // automatically turned off when the createItem() signal is connected
   if(allowObjectCreation)
     category->setSuppressObjectCreation(false);
+#endif
 
   switch(splits.count()) {
     case 0:
@@ -380,8 +384,12 @@ void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QV
       categoryId = QCString();
       category->setCurrentText(i18n("Split transaction (category replacement)", "Split transaction"));
       connect(category, SIGNAL(focusIn()), this, splitEditSlot);
+#if 0
+  // FIXME must deal with the logic that suppressObjectCreation is
+  // automatically turned off when the createItem() signal is connected
       if(allowObjectCreation)
         category->setSuppressObjectCreation(true);
+#endif
       break;
   }
 }
@@ -495,7 +503,7 @@ StdTransactionEditor::StdTransactionEditor(TransactionEditorContainer* regForm, 
 
 void StdTransactionEditor::createEditWidgets(void)
 {
-  KMyMoneyPayee* payee = new KMyMoneyPayee;
+  KMyMoneyPayeeCombo* payee = new KMyMoneyPayeeCombo;
   payee->setHint(i18n("Payer/Receiver"));
   m_editWidgets["payee"] = payee;
   connect(payee, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
@@ -622,14 +630,12 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
   QWidget* w;
 
   // load the payee widget
-  KMyMoneyPayee* payee = dynamic_cast<KMyMoneyPayee*>(m_editWidgets["payee"]);
+  KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(m_editWidgets["payee"]);
   payee->loadPayees(MyMoneyFile::instance()->payeeList());
-  payee->setSuppressObjectCreation(false);
 
   // load the category widget
   KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
   disconnect(category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
-  category->setSuppressObjectCreation(false);
 
   // check if the current transaction has a reference to an equity account
   bool haveEquityAccount = false;
@@ -786,11 +792,8 @@ void StdTransactionEditor::slotReloadEditWidgets(void)
 {
   // reload category widget
   KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
-  QCStringList list;
-  category->selectedItems(list);
   QCString categoryId;
-  if(!list.isEmpty())
-    categoryId = list[0];
+  category->selectedItem(categoryId);
 
   AccountSet aSet(m_objects);
   aSet.addAccountGroup(MyMoneyAccount::Asset);
@@ -811,11 +814,9 @@ void StdTransactionEditor::slotReloadEditWidgets(void)
 
 
   // reload payee widget
-  KMyMoneyPayee* payee = dynamic_cast<KMyMoneyPayee*>(m_editWidgets["payee"]);
-  payee->selectedItems(list);
+  KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(m_editWidgets["payee"]);
   QCString payeeId;
-  if(!list.isEmpty())
-    payeeId = list[0];
+  payee->selectedItem(payeeId);
 
   payee->loadPayees(MyMoneyFile::instance()->payeeList());
 
@@ -1264,7 +1265,7 @@ bool StdTransactionEditor::isComplete(void) const
 {
   QMap<QString, QWidget*>::const_iterator it_w;
   for(it_w = m_editWidgets.begin(); it_w != m_editWidgets.end(); ++it_w) {
-    KMyMoneyPayee* payee = dynamic_cast<KMyMoneyPayee*>(*it_w);
+    KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(*it_w);
     KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(*it_w);
     kMyMoneyEdit* amount = dynamic_cast<kMyMoneyEdit*>(*it_w);
     KMyMoneyReconcileCombo* reconcile = dynamic_cast<KMyMoneyReconcileCombo*>(*it_w);
@@ -1506,14 +1507,10 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
       s0.setNumber(number->text());
   }
 
-  KMyMoneyPayee* payee = dynamic_cast<KMyMoneyPayee*>(m_editWidgets["payee"]);
+  KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(m_editWidgets["payee"]);
   QCString payeeId;
   if(!isMultiSelection() || (isMultiSelection() && !payee->currentText().isEmpty())) {
-    QCStringList list;
-    payee->selectedItems(list);
-    if(list.count() > 0) {
-      payeeId = list[0];
-    }
+    payee->selectedItem(payeeId);
     s0.setPayeeId(payeeId);
   }
 
@@ -1581,11 +1578,7 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
     KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
     if(!isMultiSelection() || (isMultiSelection() && !category->currentText().isEmpty())) {
       QCString categoryId;
-      QCStringList list;
-      category->selectedItems(list);
-      if(!list.isEmpty()) {
-        categoryId = list[0];
-      }
+      category->selectedItem(categoryId);
       s1.setAccountId(categoryId);
     }
 

@@ -118,7 +118,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
 
     m_requiredFields->add(m_accountCombo);
     m_requiredFields->add(m_kcomboTo);
-    m_requiredFields->add(m_kcomboPayTo);
+    m_requiredFields->add(m_payee);
 
     //  transfers now allow splits
     // m_qbuttonSplit->setEnabled(false);
@@ -141,7 +141,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     m_qcheckboxEnd->setEnabled(false);
 
     m_requiredFields->add(m_accountCombo);
-    m_requiredFields->add(m_kcomboPayTo);
+    m_requiredFields->add(m_payee);
 
     setCaption(i18n("Edit Loan Payment Schedule"));
   }
@@ -154,7 +154,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
 
     m_requiredFields->add(m_kcomboTo);
     m_requiredFields->add(m_category);
-    m_requiredFields->add(m_kcomboPayTo);
+    m_requiredFields->add(m_payee);
 
     setCaption(i18n("Edit Deposit Schedule"));
   }
@@ -167,7 +167,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     setCaption(i18n("Edit Bill Schedule"));
 
     m_requiredFields->add(m_accountCombo);
-    m_requiredFields->add(m_kcomboPayTo);
+    m_requiredFields->add(m_payee);
     m_requiredFields->add(m_category);
 
   }
@@ -195,7 +195,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     this, SLOT(slotToChanged(const QCString&)));
   connect(m_kcomboMethod, SIGNAL(activated(int)),
     this, SLOT(slotMethodChanged(int)));
-  connect(m_kcomboPayTo, SIGNAL(textChanged(const QString&)),
+  connect(m_payee, SIGNAL(textChanged(const QString&)),
     this, SLOT(slotPayeeChanged(const QString&)));
   connect(m_kdateinputDue, SIGNAL(dateChanged(const QDate&)),
     this, SLOT(slotDateChanged(const QDate&)));
@@ -213,13 +213,43 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     this, SLOT(slotMemoChanged(const QString&)));
 
   connect(m_category, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
-
+  connect(m_payee, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
 }
 
 KEditScheduleDialog::~KEditScheduleDialog()
 {
   writeConfig();
   delete m_requiredFields;
+}
+
+void KEditScheduleDialog::slotReloadEditWidgets(void)
+{
+#if 0
+  // TODO: reload the account and category widgets
+  // reload category widget
+  KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
+  QCString categoryId;
+  category->selectedItem(categoryId);
+
+  AccountSet aSet(m_objects);
+  aSet.addAccountGroup(MyMoneyAccount::Asset);
+  aSet.addAccountGroup(MyMoneyAccount::Liability);
+  aSet.addAccountGroup(MyMoneyAccount::Income);
+  aSet.addAccountGroup(MyMoneyAccount::Expense);
+  if(KMyMoneySettings::expertMode())
+    aSet.addAccountGroup(MyMoneyAccount::Equity);
+  aSet.load(category->selector());
+#endif
+
+  // reload payee widget
+  QCString payeeId;
+  m_payee->selectedItem(payeeId);
+
+  m_payee->loadPayees(MyMoneyFile::instance()->payeeList());
+
+  if(!payeeId.isEmpty()) {
+    m_payee->setSelectedItem(payeeId);
+  }
 }
 
 void KEditScheduleDialog::readConfig(void)
@@ -233,7 +263,7 @@ void KEditScheduleDialog::writeConfig(void)
 {
   KConfig *config = KGlobal::config();
   config->setGroup("Last Use Settings");
-//  config->writeEntry("LastPayee", m_kcomboPayTo->currentText());
+//  config->writeEntry("LastPayee", m_payee->currentText());
   config->sync();
 }
 
@@ -483,10 +513,10 @@ void KEditScheduleDialog::okClicked()
     return;
   }
 
-  if (m_kcomboPayTo->text().isEmpty())
+  if (m_payee->currentText().isEmpty())
   {
     KMessageBox::information(this, i18n("Please fill in the payee field."));
-    m_kcomboPayTo->setFocus();
+    m_payee->setFocus();
     return;
   }
 
@@ -504,7 +534,7 @@ void KEditScheduleDialog::okClicked()
     return;
   }
 
-  if (m_qcheckboxEnd->isChecked() && !m_kdateinputFinal->getQDate().isValid())
+  if (m_qcheckboxEnd->isChecked() && !m_kdateinputFinal->date().isValid())
   {
     KMessageBox::information(this, i18n("Please fill in ending date"));
     m_kdateinputFinal->setFocus();
@@ -615,8 +645,8 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
       {
         try {
         m_transaction.removeSplits();
-        s2.setId(QCString());
-        s1.setId(QCString());
+        s2.clearId();
+        s1.clearId();
         m_transaction.addSplit(s2);
         m_transaction.addSplit(s1);
         } catch (MyMoneyException *e)
@@ -645,7 +675,12 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
        // MyMoneyFile::instance()->account(m_transaction.splits()[1].accountId()).name());
       m_kcomboTo->setSelected (m_toAccountId);
     }
-    m_kcomboPayTo->loadText(MyMoneyFile::instance()->payee(m_transaction.splitByAccount(theAccountId()).payeeId()).name());
+    m_payee->loadPayees(MyMoneyFile::instance()->payeeList());
+    m_payee->setSelectedItem(m_transaction.splitByAccount(theAccountId()).payeeId());
+
+#if 0
+    m_payee->loadText(MyMoneyFile::instance()->payee(m_transaction.splitByAccount(theAccountId()).payeeId()).name());
+#endif
 
     m_kdateinputDue->setDate(m_schedule.nextPayment(m_schedule.lastPayment())/*m_schedule.startDate()*/);
 
@@ -795,7 +830,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
 void KEditScheduleDialog::slotRemainingChanged(const QString& text)
 {
   // Make sure the required fields are set
-  m_schedule.setStartDate(m_kdateinputDue->getQDate());
+  m_schedule.setStartDate(m_kdateinputDue->date());
   m_schedule.setOccurence(comboToOccurence());
 
   if (m_schedule.transactionsRemaining() != text.toInt())
@@ -807,7 +842,7 @@ void KEditScheduleDialog::slotRemainingChanged(const QString& text)
 void KEditScheduleDialog::slotEndDateChanged(const QDate& date)
 {
   // Make sure the required fields are set
-  m_schedule.setStartDate(m_kdateinputDue->getQDate());
+  m_schedule.setStartDate(m_kdateinputDue->date());
   m_schedule.setOccurence(comboToOccurence());
 
   if (m_schedule.endDate() != date)
@@ -1043,7 +1078,7 @@ void KEditScheduleDialog::slotPayeeChanged(const QString& text)
 
 void KEditScheduleDialog::slotDateChanged(const QDate& date)
 {
-  if (m_kdateinputDue->getQDate() <= QDate::currentDate() &&
+  if (m_kdateinputDue->date() <= QDate::currentDate() &&
       m_qcheckboxAuto->isChecked())
   {
     KMessageBox::error(this, i18n("The schedule can not be automatically entered when the start date is on or before todays date."));
@@ -1136,7 +1171,7 @@ void KEditScheduleDialog::slotCategoryChanged(const QString& text)
 
 void KEditScheduleDialog::slotAutoEnterChanged()
 {
-  if (m_kdateinputDue->getQDate() <= QDate::currentDate())
+  if (m_kdateinputDue->date() <= QDate::currentDate())
   {
     if (m_qcheckboxAuto->isChecked())
     {
@@ -1312,17 +1347,21 @@ bool KEditScheduleDialog::checkCategory()
 void KEditScheduleDialog::checkPayee()
 {
   QCString payeeId;
+  m_payee->selectedItem(payeeId);
+#if 0
   try
   {
-    payeeId = MyMoneyFile::instance()->payeeByName(m_kcomboPayTo->text()).id();
+    payeeId = MyMoneyFile::instance()->payeeByName(m_payee->text()).id();
   }
   catch (MyMoneyException *e)
   {
-    MyMoneyPayee payee(m_kcomboPayTo->text());
+    MyMoneyPayee payee(m_payee->text());
     MyMoneyFile::instance()->addPayee(payee);
     payeeId = payee.id();
     delete e;
   }
+#endif
+
   MyMoneySplit s = m_transaction.splits()[0];
   s.setPayeeId(payeeId);
   m_transaction.modifySplit(s);

@@ -1,14 +1,9 @@
 /***************************************************************************
                           kinvestmentview.cpp  -  description
                              -------------------
-    begin                : Tue Jan 29 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+    begin                : Mon Mar 12 2007
+    copyright            : (C) 2007 by Thomas Baumgart
+    email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
  ***************************************************************************/
 
 /***************************************************************************
@@ -23,48 +18,23 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qlayout.h>
-#include <qtabwidget.h>
-#include <qheader.h>
-#include <qlistbox.h>
-#include <qcursor.h>
-#include <qcheckbox.h>
-
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include "kdecompat.h"
-#include <kdebug.h>
-#include <kglobal.h>
-#include <kconfig.h>
-#include <klocale.h>
-#include <kiconloader.h>
-#include <klistview.h>
-#include <kpopupmenu.h>
-#include <kmessagebox.h>
-#include <knuminput.h>
-#include <kcombobox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneyutils.h"
-#include "../mymoney/mymoneysecurity.h"
-#include "../mymoney/mymoneytransaction.h"
-#include "../mymoney/mymoneyinvesttransaction.h"
-#include "../mymoney/mymoneyaccount.h"
-
-// #include "../dialogs/knewequityentrydlg.h"
-#include "../dialogs/kupdatestockpricedlg.h"
-#include "../dialogs/keditequityentrydlg.h"
-#include "../dialogs/knewaccountdlg.h"
-#include "../dialogs/kequitypriceupdatedlg.h"
-#include "../dialogs/knewinvestmentwizard.h"
-#include "../dialogs/kcurrencycalculator.h"
-
-#include "../widgets/kmymoneyaccountcombo.h"
-#include "../widgets/kmymoneycurrencyselector.h"
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/mymoneyutils.h>
+#include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/mymoneytransaction.h>
+#include <kmymoney/mymoneyinvesttransaction.h>
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
+#include <kmymoney/kmymoneyaccountcombo.h>
+#include <kmymoney/kmymoneycurrencyselector.h>
 
 #include "../kmymoney2.h"
 
@@ -72,114 +42,65 @@
 #include "kinvestmentlistitem.h"
 #include "kledgerviewinvestments.h"
 
+class KInvestmentViewPrivate
+{
+public:
+  KInvestmentViewPrivate() :
+    m_needReload(false),
+    m_newAccountLoaded(false),
+    m_recursion(false),
+    m_precision(2) {}
+
+  MyMoneyAccount    m_account;
+  bool              m_needReload;
+  bool              m_newAccountLoaded;
+  bool              m_recursion;
+  int               m_precision;
+};
+
+
 
 KInvestmentView::KInvestmentView(QWidget *parent, const char *name) :
-  kInvestmentViewDecl(parent,name),
-  m_popMenu(0)
+  KInvestmentViewDecl(parent,name),
+  d(new KInvestmentViewPrivate)
 {
-  // FIXME: check if we really want to remove the margin
-  // kInvestmentViewDeclLayout->setMargin(0);
+  m_table->setRootIsDecorated(false);
+  // m_table->setColumnText(0, i18n("Symbol"));
+  m_table->addColumn(i18n("Name"));
+  m_table->addColumn(i18n("Symbol"));
 
-  initSummaryTab();
-  initTransactionTab();
+  int col = m_table->addColumn(i18n("Value"));
+  m_table->setColumnAlignment(col, Qt::AlignRight);
 
-  // never show a horizontal scroll bar
-  // investmentTable->setHScrollBarMode(QScrollView::AlwaysOff);
+  col = m_table->addColumn(i18n("Quantity"));
+  m_table->setColumnAlignment(col, Qt::AlignRight);
 
-  //no sorting yet...
-  // investmentTable->setSorting(-1);
+  col = m_table->addColumn(i18n("Price"));
+  m_table->setColumnAlignment(col, Qt::AlignRight);
 
-  connect(investmentTable, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
+  m_table->setMultiSelection(false);
+  m_table->setColumnWidthMode(0, QListView::Maximum);
+  m_table->header()->setResizeEnabled(true);
+  m_table->setAllColumnsShowFocus(true);
+  m_table->setShowSortIndicator(true);
+  m_table->restoreLayout(KGlobal::config(), "Investment Settings");
+
+  connect(m_table, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
-  connect(investmentTable, SIGNAL(selectionChanged(QListViewItem *)), this, SLOT(slotSelectionChanged(QListViewItem *)));
+  connect(m_table, SIGNAL(selectionChanged(QListViewItem *)), this, SLOT(slotSelectionChanged(QListViewItem *)));
 
   connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)),
     this, SLOT(slotSelectAccount(const QCString&)));
 
-  connect(m_tab, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotTabSelected(QWidget*)));
+  connect(m_table, SIGNAL(doubleClicked(QListViewItem*,const QPoint&, int)), kmymoney2->action("investment_edit"), SLOT(activate()));
 
-  connect(investmentTable, SIGNAL(doubleClicked(QListViewItem*,const QPoint&, int)), this, SLOT(slotItemDoubleClicked(QListViewItem*,const QPoint&, int)));
-
-  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
-  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccountHierarchy, this);
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadView()));
 }
 
 KInvestmentView::~KInvestmentView()
 {
-  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccountHierarchy, this);
-  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccount, this);
-
-  investmentTable->saveLayout(KGlobal::config(), "Investment Settings");
-}
-
-void KInvestmentView::initSummaryTab(void)
-{
-  investmentTable->setRootIsDecorated(false);
-  investmentTable->setColumnText(0, i18n("Symbol"));
-  investmentTable->addColumn(i18n("Name"));
-  investmentTable->addColumn(i18n("Symbol"));
-
-  int col = investmentTable->addColumn(i18n("Value"));
-  investmentTable->setColumnAlignment(col, Qt::AlignRight);
-
-  col = investmentTable->addColumn(i18n("Quantity"));
-  investmentTable->setColumnAlignment(col, Qt::AlignRight);
-
-  col = investmentTable->addColumn(i18n("Price"));
-  investmentTable->setColumnAlignment(col, Qt::AlignRight);
-#if 0
-  investmentTable->addColumn(i18n("Cost Basis"));
-  investmentTable->addColumn(i18n("$ Gain"));
-  investmentTable->addColumn(i18n("1 Week %"));
-  investmentTable->addColumn(i18n("4 Weeks %"));
-  investmentTable->addColumn(i18n("3 Months %"));
-  investmentTable->addColumn(i18n("YTD %"));
-#endif
-
-  investmentTable->setMultiSelection(false);
-  investmentTable->setColumnWidthMode(0, QListView::Maximum);
-  investmentTable->header()->setResizeEnabled(true);
-  investmentTable->setAllColumnsShowFocus(true);
-  investmentTable->setShowSortIndicator(true);
-  investmentTable->restoreLayout(KGlobal::config(), "Investment Settings");
-}
-
-void KInvestmentView::initTransactionTab(void)
-{
-  QHBoxLayout* m_TransactionTabLayout = new QHBoxLayout( m_transactionTab, 0, 2, "m_summaryTabLayout");
-
-  m_ledgerView = new KLedgerViewInvestments(m_transactionTab, "ledgerview");
-  m_TransactionTabLayout->addWidget(m_ledgerView);
-}
-
-void KInvestmentView::updateDisplay()
-{
-  //remove all current items
-  investmentTable->clear();
-
-  if(m_account.id().isEmpty())
-    return;
-
-  MyMoneyFile* file = MyMoneyFile::instance();
-  try {
-    m_account = file->account(m_account.id());
-    QCStringList securities = m_account.accountList();
-
-    for(QCStringList::ConstIterator it = securities.begin(); it != securities.end(); ++it) {
-      MyMoneyAccount acc = file->account(*it);
-      new KInvestmentListItem(investmentTable, acc);
-    }
-  } catch(MyMoneyException* e) {
-    qDebug("KInvestmentView::updateDisplay() - selected account does not exist anymore");
-    m_account = MyMoneyAccount();
-    m_accountId = QCString();
-    delete e;
-  }
-}
-
-void KInvestmentView::slotItemDoubleClicked(QListViewItem* /*pItem*/, const QPoint& /*pos*/, int /*c*/)
-{
-  kmymoney2->action("investment_edit")->activate();
+  m_table->saveLayout(KGlobal::config(), "Investment Settings");
+  delete d;
 }
 
 void KInvestmentView::slotSelectionChanged(QListViewItem *item)
@@ -188,10 +109,8 @@ void KInvestmentView::slotSelectionChanged(QListViewItem *item)
 
   KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(item);
   if(pItem) {
-    MyMoneyFile *file = MyMoneyFile::instance();
-
     try {
-      MyMoneyAccount account = file->account(pItem->account().id());
+      MyMoneyAccount account = MyMoneyFile::instance()->account(pItem->account().id());
       kmymoney2->slotSelectInvestment(account);
 
     } catch (MyMoneyException *e) {
@@ -203,94 +122,42 @@ void KInvestmentView::slotSelectionChanged(QListViewItem *item)
 void KInvestmentView::slotListRightMouse(QListViewItem* /*item*/, const QPoint& /*point*/, int /*x*/)
 {
   kmymoney2->slotSelectInvestment();
-  KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(investmentTable->selectedItem());
+  KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(m_table->selectedItem());
   if(pItem) {
     kmymoney2->slotSelectInvestment(MyMoneyFile::instance()->account(pItem->account().id()));
   }
   emit investmentRightMouseClick();
 }
 
-void KInvestmentView::slotTabSelected(QWidget *pWidget)
+void KInvestmentView::slotLoadView(void)
 {
-  // make sure any editing action ends
-  slotCancelEdit();
-
-  if(pWidget == m_summaryTab) {
-    KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(investmentTable->selectedItem());
-    if(pItem) {
-      kmymoney2->slotSelectInvestment(MyMoneyFile::instance()->account(pItem->account().id()));
-    }
-    updateDisplay();
-
-  } else {
-    kmymoney2->slotSelectInvestment();
+  d->m_needReload = true;
+  if(isVisible()) {
+    loadView();
+    d->m_needReload = false;
+    // force a new account if the current one is empty
+    d->m_newAccountLoaded = d->m_account.id().isEmpty();
   }
-}
-
-void KInvestmentView::slotReloadView(void)
-{
-  ::timetrace("Start KInvestmentView::slotReloadView");
-  // make sure to determine the current account from scratch
-  m_account = MyMoneyAccount();
-  m_accountId = QCString();
-
-  slotRefreshView();
-  ::timetrace("Done KInvestmentView::slotReloadView");
-}
-
-void KInvestmentView::slotRefreshView(void)
-{
-  QCString id = m_account.id();
-
-  // qDebug("KGlobalLedgerView::slotRefreshView()");
-
-  // load the combobox from scratch and determine the current account
-  loadAccounts();
-
-  // if the current account differs from the previous selection
-  // then select the correct ledgerview first and force loading
-  // the newly selected account
-  if(m_account.id() != id && !id.isEmpty()) {
-    slotSelectAccount(m_account.id());
-  } else if(m_account.id().isEmpty()) {
-    slotSelectAccount(QCString());
-    m_ledgerView->refreshView();
-    updateDisplay();
-  } else {
-    m_ledgerView->refreshView();
-    updateDisplay();
-  }
-
-  // Enable selection widget if we have at least one account
-  m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
-
-  // Enable rest of view only, if we have at least one investment account
-  QValueList<MyMoneyAccount::accountTypeE> typeList;
-  typeList << MyMoneyAccount::Investment;
-  m_tab->setEnabled(m_accountComboBox->accountList(typeList).count() > 0);
 }
 
 void KInvestmentView::loadAccounts(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneyAccount acc;
 
   // check if the current account still exists and make it the
   // current account
-  if(!m_accountId.isEmpty()) {
+  if(!d->m_account.id().isEmpty()) {
     try {
-      acc = file->account(m_accountId);
-      m_accountId = acc.id();
+      d->m_account = file->account(d->m_account.id());
     } catch(MyMoneyException *e) {
       delete e;
-      m_accountId = QCString();
-      acc = MyMoneyAccount();
+      d->m_account = MyMoneyAccount();
     }
   }
 
   m_accountComboBox->loadList((KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
 
-  if(acc.id().isEmpty()) {
+  if(d->m_account.id().isEmpty()) {
     QCStringList list = m_accountComboBox->accountList();
     if(list.count()) {
       QCStringList::Iterator it;
@@ -298,118 +165,154 @@ void KInvestmentView::loadAccounts(void)
         MyMoneyAccount a = file->account(*it);
         if(a.accountType() == MyMoneyAccount::Investment) {
           if(a.value("PreferredAccount") == "Yes") {
-            acc = a;
+            d->m_account = a;
             break;
-          } else if(acc.id().isEmpty()) {
-            acc = a;
+          } else if(d->m_account.id().isEmpty()) {
+            d->m_account = a;
           }
         }
       }
     }
   }
 
-  slotSelectAccount(acc.id());
+  if(!d->m_account.id().isEmpty()) {
+    m_accountComboBox->setSelected(d->m_account);
+    try {
+      MyMoneySecurity sec = MyMoneyFile::instance()->security(d->m_account.currencyId());
+      d->m_precision = MyMoneyMoney::denomToPrec(d->m_account.fraction(sec));
+    } catch(MyMoneyException *e) {
+      qDebug("Security %s for account %s not found", d->m_account.currencyId().data(), d->m_account.name().data());
+      delete e;
+      d->m_precision = 2;
+    }
+  }
 }
 
-const bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString& transactionId, const bool /* reconciliation*/)
+
+bool KInvestmentView::slotSelectAccount(const MyMoneyObject& obj)
 {
-  bool    rc = false;
+  if(typeid(obj) != typeid(MyMoneyAccount))
+    return false;
+
+  if(d->m_recursion)
+    return false;
+
+  d->m_recursion = true;
+  const MyMoneyAccount& acc = dynamic_cast<const MyMoneyAccount&>(obj);
+  bool rc = slotSelectAccount(acc.id());
+  d->m_recursion = false;
+  return rc;
+}
+
+bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString& transactionId, const bool /* reconciliation*/)
+{
+  bool    rc = true;
 
   if(!id.isEmpty()) {
     // if the account id differs, then we have to do something
-    MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
-    if(isVisible())
-      kmymoney2->slotSelectAccount(acc);
-    if(m_accountId != id) {
-      // cancel any pending edit operation in the ledger views
-      // when switching to a different account
-      slotCancelEdit();
-
-      // if we have a stock account here, we need to get it's parent
-      if(acc.accountType() == MyMoneyAccount::Stock) {
-        acc = MyMoneyFile::instance()->account(acc.parentAccountId());
-      }
-      if(acc.accountType() == MyMoneyAccount::Investment) {
-        m_account = acc;
-        m_accountComboBox->setSelected(acc);
-        m_ledgerView->slotSelectAccount(acc.id());
-        if(!transactionId.isEmpty()) {
-          m_tab->showPage(m_transactionTab);
-          m_ledgerView->selectTransaction(transactionId);
+    if(d->m_account.id() != id) {
+      try {
+        d->m_account = MyMoneyFile::instance()->account(id);
+        // if a stock account is selected, we show the
+        // the corresponding parent (investment) account
+        if(d->m_account.accountType() == MyMoneyAccount::Stock) {
+          d->m_account = MyMoneyFile::instance()->account(d->m_account.parentAccountId());
         }
-        updateDisplay();
-        rc = true;
-      } else {
-        // keep the current selection ...
-        if(!m_accountId.isEmpty()) {
-          acc = MyMoneyFile::instance()->account(m_accountId);
-          m_accountComboBox->setSelected(acc);
-        } else
-          m_accountComboBox->setSelected(QCString());
-        // ... and let's see, if someone else can handle this request
-        emit accountSelected(id, transactionId);
+        // TODO if we don't have an investment account, then we should switch to the ledger view
+        d->m_newAccountLoaded = true;
+        if(d->m_account.accountType() == MyMoneyAccount::Investment) {
+          slotLoadView();
+        } else {
+          emit accountSelected(id, transactionId);
+          d->m_account = MyMoneyAccount();
+          d->m_needReload = true;
+          rc = false;
+        }
+
+      } catch(MyMoneyException* e) {
+        qDebug("Unable to retrieve account %s", id.data());
+        delete e;
+        rc = false;
       }
     } else {
-      rc = true;
+      emit accountSelected(d->m_account);
     }
-  } else {
-    // cancel any pending edit operation in the ledger views
-    // when switching to a non existing account
-    slotCancelEdit();
-    m_accountComboBox->setSelected(QCString());
-    if(isVisible())
-      kmymoney2->slotSelectAccount();
   }
-
-  // keep this as the current account if we loaded a different one
-  if(rc == true)
-    m_accountId = id;
 
   return rc;
 }
 
-void KInvestmentView::show(void)
+void KInvestmentView::clear(void)
 {
-  // only show selection box if filled with at least one account
-  m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
+  // setup header font
+  QFont font = KMyMoneyGlobalSettings::listHeaderFont();
+  QFontMetrics fm( font );
+  int height = fm.lineSpacing()+6;
+  m_table->header()->setMinimumHeight(height);
+  m_table->header()->setMaximumHeight(height);
+  m_table->header()->setFont(font);
 
-  // if we have a selected account, notify the application about it
-  if(!m_accountId.isEmpty()) {
-    try {
-      MyMoneyAccount acc = MyMoneyFile::instance()->account(m_accountId);
-      kmymoney2->slotSelectAccount(acc);
-      if(m_tab->currentPage() == m_summaryTab) {
-        KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(investmentTable->selectedItem());
-        if(pItem) {
-          kmymoney2->slotSelectInvestment(MyMoneyFile::instance()->account(pItem->account().id()));
-        }
-      }
-    } catch(MyMoneyException* e) {
-      delete e;
+  // setup cell font
+  font = KMyMoneyGlobalSettings::listCellFont();
+  m_table->setFont(font);
+
+  // clear the table
+  m_table->clear();
+
+  // and the selected account in the combo box
+  m_accountComboBox->setSelected(QCString());
+}
+
+void KInvestmentView::loadView(void)
+{
+  // no account selected
+  emit accountSelected(MyMoneyAccount());
+
+  // clear the current contents ...
+  clear();
+
+  // ... load the combobox widget and select current account ...
+  loadAccounts();
+
+  if(d->m_account.id().isEmpty()) {
+    // if we don't have an account we bail out
+    setEnabled(false);
+    return;
+  }
+  setEnabled(true);
+
+  MyMoneyFile* file = MyMoneyFile::instance();
+  try {
+    d->m_account = file->account(d->m_account.id());
+    QCStringList securities = d->m_account.accountList();
+
+    for(QCStringList::ConstIterator it = securities.begin(); it != securities.end(); ++it) {
+      MyMoneyAccount acc = file->account(*it);
+      new KInvestmentListItem(m_table, acc);
     }
+  } catch(MyMoneyException* e) {
+    qDebug("KInvestmentView::loadView() - selected account does not exist anymore");
+    d->m_account = MyMoneyAccount();
+    delete e;
   }
 
-  QWidget::show();
-  emit signalViewActivated();
+  // and tell everyone what's selected
+  emit accountSelected(d->m_account);
 }
 
-void KInvestmentView::update(const QCString& id)
+void KInvestmentView::show(void)
 {
-  if(m_tab->isEnabled()) {
-    QCString lastUsed = m_account.id();
-    loadAccounts();
-    if(m_account.id() != lastUsed) {
-      slotRefreshView();
-    } else if(id == MyMoneyFile::NotifyClassAccountHierarchy) {
-      updateDisplay();
-    }
-  } else
-    slotRefreshView();
-}
+  if(d->m_needReload) {
+    loadView();
+    d->m_needReload = false;
+    d->m_newAccountLoaded = false;
 
-void KInvestmentView::slotCancelEdit(void)
-{
-  m_ledgerView->slotCancelEdit();
+  } else {
+    emit accountSelected(d->m_account);
+  }
+
+  // don't forget base class implementation
+  KInvestmentViewDecl::show();
 }
 
 #include "kinvestmentview.moc"

@@ -49,7 +49,6 @@
 #include "../widgets/kmymoneydateinput.h"
 #include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneycategory.h"
-#include "../widgets/kmymoneypayee.h"
 #include "../widgets/kmymoneycurrencyselector.h"
 
 #include "../mymoney/mymoneyinstitution.h"
@@ -99,13 +98,17 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   connect(m_payee, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
   connect(m_amount, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
 
-  connect(m_payee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
+  connect(m_payee, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
   connect(m_currencyComboBox, SIGNAL(activated(int)), this, SLOT(slotCurrencyChanged(int)));
   connect(m_priceButton, SIGNAL(clicked()), this, SLOT(slotPriceUpdate()));
+
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
 
   // always select the first item and show the appropriate note
   loadAccountTypes();
   loadPaymentMethods();
+
+  slotReloadEditWidgets();
 
   m_accountTypeListBox->setCurrentItem(0);
   setOpeningBalance(MyMoneyMoney(0,1));
@@ -118,6 +121,36 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
 
 KNewAccountWizard::~KNewAccountWizard()
 {
+}
+
+void KNewAccountWizard::slotReloadEditWidgets(void)
+{
+#if 0
+  // TODO: reload the account and category widgets
+  // reload category widget
+  KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
+  QCString categoryId;
+  category->selectedItem(categoryId);
+
+  AccountSet aSet(m_objects);
+  aSet.addAccountGroup(MyMoneyAccount::Asset);
+  aSet.addAccountGroup(MyMoneyAccount::Liability);
+  aSet.addAccountGroup(MyMoneyAccount::Income);
+  aSet.addAccountGroup(MyMoneyAccount::Expense);
+  if(KMyMoneySettings::expertMode())
+    aSet.addAccountGroup(MyMoneyAccount::Equity);
+  aSet.load(category->selector());
+#endif
+
+  // reload payee widget
+  QCString payeeId;
+  m_payee->selectedItem(payeeId);
+
+  m_payee->loadPayees(MyMoneyFile::instance()->payeeList());
+
+  if(!payeeId.isEmpty()) {
+    m_payee->setSelectedItem(payeeId);
+  }
 }
 
 void KNewAccountWizard::next()
@@ -157,6 +190,7 @@ void KNewAccountWizard::next()
 
     KNewLoanWizard* loanWizard = new KNewLoanWizard(0);
     connect(loanWizard, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
+    connect(loanWizard, SIGNAL(createPayee(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
 
     if((rc = loanWizard->exec()) == QDialog::Accepted) {
       m_account = loanWizard->account();
@@ -238,10 +272,10 @@ void KNewAccountWizard::accept()
     if(m_brokerageYesButton->isChecked()) {
       m_brokerage.setName(m_account.name()+i18n(" (Brokerage)"));
     }
-    m_brokerage.setOpeningDate(m_openingDate->getQDate());
+    m_brokerage.setOpeningDate(m_openingDate->date());
   } else {
     // m_account.setOpeningBalance(MyMoneyMoney(openingBalance->text()));
-    m_account.setOpeningDate(m_openingDate->getQDate());
+    m_account.setOpeningDate(m_openingDate->date());
   }
 
   if(m_preferredAccount->isChecked())
@@ -276,7 +310,7 @@ void KNewAccountWizard::accept()
       return;
     }
 
-    if (m_payee->text().isEmpty())
+    if (m_payee->currentText().isEmpty())
     {
       KMessageBox::error(this, i18n("Please enter the payee name."));
       m_payee->setFocus();
@@ -293,18 +327,7 @@ void KNewAccountWizard::accept()
 
     // Create the schedule transaction
     QCString payeeId;
-
-    try
-    {
-      payeeId = MyMoneyFile::instance()->payeeByName(m_payee->text()).id();
-    }
-    catch (MyMoneyException *e)
-    {
-      MyMoneyPayee payee(m_payee->text());
-      MyMoneyFile::instance()->addPayee(payee);
-      payeeId = payee.id();
-      delete e;
-    }
+    m_payee->selectedItem(payeeId);
 
     MyMoneySplit s1, s2;
     s1.setValue(m_amount->value());
@@ -348,7 +371,7 @@ void KNewAccountWizard::accept()
                                    MyMoneySchedule::TYPE_TRANSFER,
                                    MyMoneySchedule::OCCUR_MONTHLY,
                                    paymentType,
-                                   m_date->getQDate(),
+                                   m_date->date(),
                                    QDate(),
                                    false,
                                    false);
@@ -637,7 +660,7 @@ void KNewAccountWizard::slotCheckPageFinished(void)
     if(reminderCheckBox->isChecked()) {
       if(m_amount->text().isEmpty()
       || m_name->text().isEmpty()
-      || m_payee->text().isEmpty()
+      || m_payee->currentText().isEmpty()
       || m_accountListView->selectedItem() == 0) {
         finishButton()->setEnabled(false);
       }
@@ -646,11 +669,6 @@ void KNewAccountWizard::slotCheckPageFinished(void)
   else if(currentPage() == summaryPage) {
     finishButton()->setDefault(true);
   }
-}
-
-void KNewAccountWizard::slotNewPayee(const QString& payeeName)
-{
-  KMyMoneyUtils::newPayee(this, m_payee, payeeName);
 }
 
 void KNewAccountWizard::slotCurrencyChanged(int)

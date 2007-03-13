@@ -25,16 +25,18 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <klistview.h>
-#include <kglobal.h>
-#include <kconfig.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
+#include <kmymoney/kmymoneyglobalsettings.h>
+
 #include "kinvestmentlistitem.h"
 
-#include "../mymoney/mymoneysecurity.h"
-#include "../mymoney/mymoneyfile.h"
+#include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/mymoneyfile.h>
 
 KInvestmentListItem::KInvestmentListItem(KListView* parent, const MyMoneyAccount& account)
   : KListViewItem(parent)
@@ -49,20 +51,49 @@ KInvestmentListItem::KInvestmentListItem(KListView* parent, const MyMoneyAccount
   m_listView = parent;
 
   MyMoneySecurity security;
-  security = MyMoneyFile::instance()->security(m_account.currencyId());
-  m_tradingCurrency = MyMoneyFile::instance()->security(security.tradingCurrency());
+  MyMoneyFile* file = MyMoneyFile::instance();
 
-  update(account.id());
-  MyMoneyFile::instance()->attach(m_account.id(), this);
-  MyMoneyFile::instance()->attach(m_account.currencyId(), this);
-  MyMoneyFile::instance()->attach(m_tradingCurrency.id(), this);
+  security = file->security(m_account.currencyId());
+  m_tradingCurrency = file->security(security.tradingCurrency());
+
+  int prec = MyMoneyMoney::denomToPrec(m_tradingCurrency.smallestAccountFraction());
+
+  QValueList<MyMoneyTransaction> transactionList;
+  // FIXME PRICE
+  // equity_price_history history = equity.priceHistory();
+
+  //column 0 (COLUMN_NAME_INDEX) is the name of the stock
+  setText(COLUMN_NAME_INDEX, m_account.name());
+
+  //column 1 (COLUMN_SYMBOL_INDEX) is the ticker symbol
+  setText(COLUMN_SYMBOL_INDEX, security.tradingSymbol());
+
+  //column 2 is the net value (price * quantity owned)
+  MyMoneyPrice price = file->price(m_account.currencyId(), m_tradingCurrency.id());
+  if(price.isValid()) {
+    setText(COLUMN_VALUE_INDEX, (file->balance(m_account.id()) * price.rate()).formatMoney(m_tradingCurrency.tradingSymbol(), prec));
+  } else {
+    setText(COLUMN_VALUE_INDEX, "---");
+  }
+
+  //column 3 (COLUMN_QUANTITY_INDEX) is the quantity of shares owned
+  prec = MyMoneyMoney::denomToPrec(security.smallestAccountFraction());
+  setText(COLUMN_QUANTITY_INDEX, file->balance(m_account.id()).formatMoney("", prec));
+
+  //column 4 is the current price
+  // Get the price precision from the configuration
+  prec = KMyMoneyGlobalSettings::pricePrecision();
+
+  // prec = MyMoneyMoney::denomToPrec(m_tradingCurrency.smallestAccountFraction());
+  if(price.isValid()) {
+    setText(COLUMN_PRICE_INDEX, price.rate().formatMoney(m_tradingCurrency.tradingSymbol(), prec));
+  } else {
+    setText(COLUMN_PRICE_INDEX, "---");
+  }
 }
 
 KInvestmentListItem::~KInvestmentListItem()
 {
-  MyMoneyFile::instance()->detach(m_tradingCurrency.id(), this);
-  MyMoneyFile::instance()->detach(m_account.currencyId(), this);
-  MyMoneyFile::instance()->detach(m_account.id(), this);
 }
 
 // FIXME PRICE
@@ -199,105 +230,5 @@ void KInvestmentListItem::paintCell(QPainter * p, const QColorGroup & cg, int co
   else
   {
     QListViewItem::paintCell(p, cg, column, width, align);
-  }
-}
-
-void KInvestmentListItem::update(const QCString& /*id*/)
-{
-  MyMoneyFile* file = MyMoneyFile::instance();
-
-  try {
-    MyMoneySecurity security;
-    m_account = file->account(m_account.id());
-    security = file->security(m_account.currencyId());
-    MyMoneySecurity tradingCurrency = MyMoneyFile::instance()->security(security.tradingCurrency());
-    if(m_tradingCurrency.id() != tradingCurrency.id()) {
-      file->detach(m_tradingCurrency.id(), this);
-      m_tradingCurrency = tradingCurrency;
-      file->attach(m_tradingCurrency.id(), this);
-    }
-    int prec = MyMoneyMoney::denomToPrec(m_tradingCurrency.smallestAccountFraction());
-
-    QValueList<MyMoneyTransaction> transactionList;
-    // FIXME PRICE
-    // equity_price_history history = equity.priceHistory();
-
-    //column 0 (COLUMN_NAME_INDEX) is the name of the stock
-    setText(COLUMN_NAME_INDEX, m_account.name());
-
-    //column 1 (COLUMN_SYMBOL_INDEX) is the ticker symbol
-    setText(COLUMN_SYMBOL_INDEX, security.tradingSymbol());
-
-    //column 2 is the net value (price * quantity owned)
-    MyMoneyPrice price = file->price(m_account.currencyId(), m_tradingCurrency.id());
-    if(price.isValid()) {
-      setText(COLUMN_VALUE_INDEX, (file->balance(m_account.id()) * price.rate()).formatMoney(m_tradingCurrency.tradingSymbol(), prec));
-    } else {
-      setText(COLUMN_VALUE_INDEX, "---");
-    }
-
-    //column 3 (COLUMN_QUANTITY_INDEX) is the quantity of shares owned
-    prec = MyMoneyMoney::denomToPrec(security.smallestAccountFraction());
-    setText(COLUMN_QUANTITY_INDEX, file->balance(m_account.id()).formatMoney("", prec));
-
-    //column 4 is the current price
-    // Get the price precision from the configuration
-    KConfig *kconfig = KGlobal::config();
-    kconfig->setGroup("General Options");
-    prec = kconfig->readNumEntry("PricePrecision", 4);
-
-//     prec = MyMoneyMoney::denomToPrec(m_tradingCurrency.smallestAccountFraction());
-    if(price.isValid()) {
-      setText(COLUMN_PRICE_INDEX, price.rate().formatMoney(m_tradingCurrency.tradingSymbol(), prec));
-    } else {
-      setText(COLUMN_PRICE_INDEX, "---");
-    }
-
-
-// FIXME Implement me
-#if 0
-    //column 4 (COLUMN_COSTBASIS_INDEX) is the cost basis
-    if(transactionList.isEmpty())
-    {
-      MyMoneyMoney money;
-      setText(COLUMN_COSTBASIS_INDEX, money.formatMoney());
-    }
-    else //find all the transactions that added/removed shares, and find the total number owned.
-    {
-
-    }
-
-    //column 5 (COLUMN_RAWGAIN_INDEX) is the loss/gain that has occurred over the life of the ownership
-    if(transactionList.isEmpty())
-    {
-      MyMoneyMoney money;
-      setText(COLUMN_RAWGAIN_INDEX, money.formatMoney());
-    }
-    else //find all the transactions that added/removed shares, and find the total number owned.
-    {
-
-    }
-#endif
-
-// FIXME PRICE
-#if 0
-    if(history.isEmpty())
-    {
-      setText(COLUMN_1WEEKGAIN_INDEX, QString("0.0%"));
-      setText(COLUMN_4WEEKGAIN_INDEX, QString("0.0%"));
-      setText(COLUMN_3MONGAIN_INDEX, QString("0.0%"));
-      setText(COLUMN_YTDGAIN_INDEX, QString("0.0%"));
-    }
-    else
-    {
-      setText(COLUMN_1WEEKGAIN_INDEX, calculate1WeekGain(history));
-      setText(COLUMN_4WEEKGAIN_INDEX, calculate4WeekGain(history));
-      setText(COLUMN_3MONGAIN_INDEX, calculate3MonthGain(history));
-      setText(COLUMN_YTDGAIN_INDEX, calculateYTDGain(history));
-    }
-#endif
-
-  } catch(MyMoneyException *e) {
-    delete e;
   }
 }

@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>320</width>
+            <width>531</width>
             <height>429</height>
         </rect>
     </property>
@@ -239,6 +239,14 @@
                     <property name="name">
                         <cstring>unnamed</cstring>
                     </property>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>kcfg_syncLedgerInvestment</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Synchronize account selection of ledger and investment view</string>
+                        </property>
+                    </widget>
                     <widget class="KLineEdit">
                         <property name="name">
                             <cstring>kcfg_hiddenViews</cstring>

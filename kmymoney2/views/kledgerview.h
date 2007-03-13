@@ -47,7 +47,7 @@ class QWidgetStack;
 
 class kMyMoneyTransactionForm;
 class kMyMoneyTransactionFormTable;
-class kMyMoneyPayee;
+//class kMyMoneyPayee;
 class kMyMoneyCategory;
 class kMyMoneyEdit;
 class kMyMoneyLineEdit;
@@ -581,10 +581,10 @@ public slots:
     * a report for this account. Deciding what sort of report is left up to
     * the implementation of this slot.  For now it just creates a transaction
     * report.  In the future, it could bring up some UI and present the user
-    * a limited selection of options. 
+    * a limited selection of options.
     */
   virtual void slotGenerateReport(void);
-  
+
   /**
     * This method is called to pick the first of two transactions which should be
     * matched.  Matching is useful for imported transactions. When you already have
@@ -596,19 +596,19 @@ public slots:
     * again next time.
     */
   virtual void slotStartMatch(void);
-  
+
   /**
     * This method is called to cancel a match in progress.  Call this after calling
     * slotStartMatch() but before calling slotEndMatch()
     */
   virtual void slotCancelMatch(void);
-  
+
   /**
     * This method is called, to pick the second of two transactions which should
-    * be matched.  It will actually execute the match. 
+    * be matched.  It will actually execute the match.
     */
   virtual void slotEndMatch(void);
-  
+
   protected slots:
   /**
     * This method marks the split referencing the account in the current
@@ -872,7 +872,7 @@ protected:
   /*
    * The following members are pointers to the edit widgets
    */
-  QGuardedPtr<kMyMoneyPayee>        m_editPayee;      ///< pointer to payee edit widget
+  //QGuardedPtr<kMyMoneyPayee>        m_editPayee;      ///< pointer to payee edit widget
   QGuardedPtr<kMyMoneyCategory>     m_editCategory;   ///< pointer to category edit widget
   QGuardedPtr<kMyMoneyLineEdit>     m_editMemo;       ///< pointer to memo edit widget
   QGuardedPtr<kMyMoneyEdit>         m_editAmount;     ///< pointer to amount edit widget
@@ -905,20 +905,20 @@ protected:
 
    /**
     * This member keeps track of the id assigned to the "start match"
-    * context menu item. 
+    * context menu item.
     */
   int m_contextMenuStartMatchId;
    /**
     * This member keeps track of the id assigned to the "cancel match"
-    * context menu item. 
+    * context menu item.
     */
   int m_contextMenuCancelMatchId;
    /**
     * This member keeps track of the id assigned to the "end match"
-    * context menu item. 
+    * context menu item.
     */
   int m_contextMenuEndMatchId;
-  
+
   /**
     * This member keeps a pointer to the account popup menu
     */
@@ -948,7 +948,7 @@ protected:
 
   /**
     * This member keeps track of the first of two transactions which should be
-    * matched.  See slotStartMatch(). 
+    * matched.  See slotStartMatch().
     */
   MyMoneyTransaction   m_matchTransaction;
 
@@ -978,7 +978,7 @@ private:
 
  /**
     * Deletes the current transaction without any user input or verification.
-    * Use with care!! 
+    * Use with care!!
     */
  void doDeleteTransaction(void);
 
@@ -1050,8 +1050,8 @@ signals:
 
   /**
     * This signal is emitted, when a new report has been generated.  A
-    * 'generated' report is halfway between a default report and a custom 
-    * report.  It's created by the system in response to the user's 
+    * 'generated' report is halfway between a default report and a custom
+    * report.  It's created by the system in response to the user's
     * request, and it's usually filtered to be a little more specific
     * than the usual default reports.
     *
@@ -1059,10 +1059,10 @@ signals:
     * reports view and display the report.  But it should NOT be added
     * to the data file, unless the user customizes it further.  That's
     * because the user can always come back to the ledger UI to generate
-    * the report again. 
+    * the report again.
     *
     * @param report reference to MyMoneyReport object that contains the report
-    * 		details 
+    *     details
     */
 
   void reportGenerated(const MyMoneyReport& report);

@@ -97,6 +97,7 @@ protected slots:
   void slotAutoEnterChanged();
   void slotMemoChanged(const QString& text);
   void slotHelp(void);
+  void slotReloadEditWidgets(void);
 
 signals:
   /**
@@ -114,6 +115,14 @@ signals:
     */
   void newCategory(MyMoneyAccount& acc);
 
+  /**
+    * This signal is sent out, when a new payee needs to be created
+    * @sa KMyMoneyCombo::createItem()
+    *
+    * @param txt The name of the payee to be created
+    * @param id A connected slot should store the id of the created object in this variable
+    */
+  void createPayee(const QString& txt, QCString& id);
 
 private:
   /// Save the current account ids (there must be a better way...)

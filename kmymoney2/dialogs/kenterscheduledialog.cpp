@@ -73,8 +73,11 @@ KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedul
   connect(m_to, SIGNAL(accountSelected(const QCString&)),
     this, SLOT(slotToActivated(const QCString&)));
   connect(m_date, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkDateInPeriod(const QDate&)));
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
 
   connect(m_category, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
+  connect(m_payee, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
+
 }
 
 KEnterScheduleDialog::~KEnterScheduleDialog()
@@ -101,8 +104,8 @@ void KEnterScheduleDialog::initWidgets()
       if (s1.value().isNegative())
       {
         transaction.removeSplits();
-        s2.setId(QCString());
-        s1.setId(QCString());
+        s2.clearId();
+        s1.clearId();
         transaction.addSplit(s2);
         transaction.addSplit(s1);
         m_schedule.setTransaction(transaction);
@@ -114,8 +117,8 @@ void KEnterScheduleDialog::initWidgets()
       if (s1.value().isPositive())
       {
         transaction.removeSplits();
-        s2.setId(QCString());
-        s1.setId(QCString());
+        s2.clearId();
+        s1.clearId();
         transaction.addSplit(s2);
         transaction.addSplit(s1);
         m_schedule.setTransaction(transaction);
@@ -235,7 +238,11 @@ void KEnterScheduleDialog::initWidgets()
       m_to->setEnabled(false);
     }
 
-    m_payee->setText(MyMoneyFile::instance()->payee(m_transaction.splitByAccount(m_schedule.account().id()).payeeId()).name());
+    m_payee->loadPayees(MyMoneyFile::instance()->payeeList());
+    m_payee->setSelectedItem(m_transaction.splitByAccount(m_schedule.account().id()).payeeId());
+
+    //  m_payee->setText(MyMoneyFile::instance()->payee(m_transaction.splitByAccount(m_schedule.account().id()).payeeId()).name());
+
     if (m_schedDate.isValid())
       m_date->setDate(m_schedDate);
     else
@@ -275,6 +282,36 @@ void KEnterScheduleDialog::slotOK()
     // Commit this transaction to file.
     commitTransaction();
     accept();
+  }
+}
+
+void KEnterScheduleDialog::slotReloadEditWidgets(void)
+{
+#if 0
+  // TODO: reload the account and category widgets
+  // reload category widget
+  KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
+  QCString categoryId;
+  category->selectedItem(categoryId);
+
+  AccountSet aSet(m_objects);
+  aSet.addAccountGroup(MyMoneyAccount::Asset);
+  aSet.addAccountGroup(MyMoneyAccount::Liability);
+  aSet.addAccountGroup(MyMoneyAccount::Income);
+  aSet.addAccountGroup(MyMoneyAccount::Expense);
+  if(KMyMoneySettings::expertMode())
+    aSet.addAccountGroup(MyMoneyAccount::Equity);
+  aSet.load(category->selector());
+#endif
+
+  // reload payee widget
+  QCString payeeId;
+  m_payee->selectedItem(payeeId);
+
+  m_payee->loadPayees(MyMoneyFile::instance()->payeeList());
+
+  if(!payeeId.isEmpty()) {
+    m_payee->setSelectedItem(payeeId);
   }
 }
 
@@ -383,7 +420,7 @@ bool KEnterScheduleDialog::checkData(void)
 {
   QString messageDetail;
   int noItemsChanged=0;
-  QString payeeName;
+  QCString payeeOld, payeeNew;
 
   // if no schedule is present, we cannot enter it
   if(m_schedule.id().isEmpty())
@@ -396,19 +433,19 @@ bool KEnterScheduleDialog::checkData(void)
     return false;
   }
 
-  if (!checkDateInPeriod(m_date->getQDate()))
+  if (!checkDateInPeriod(m_date->date()))
     return false;
 
   try
   {
-    payeeName = MyMoneyFile::instance()->payee(m_schedule.transaction().splitByAccount(
-      m_schedule.account().id()).payeeId()).name();
+    payeeOld = m_schedule.transaction().splitByAccount(m_schedule.account().id()).payeeId();
+    m_payee->selectedItem(payeeNew);
 
-    if (m_payee->text() != payeeName)
+    if (payeeOld != payeeNew)
     {
       noItemsChanged++;
       messageDetail += i18n("Payee changed.  Old: \"%1\", New: \"%2\"")
-        .arg(payeeName).arg(m_payee->text()) + QString("\n");
+        .arg(MyMoneyFile::instance()->payee(payeeOld).name()).arg(m_payee->currentText()) + QString("\n");
     }
 
     if (  (m_schedule.type() == MyMoneySchedule::TYPE_TRANSFER ||
@@ -591,7 +628,7 @@ void KEnterScheduleDialog::commitTransaction()
 
   try
   {
-    m_schedDate = m_date->getQDate();
+    m_schedDate = m_date->date();
     if (!m_schedDate.isValid())
       m_schedDate = m_schedule.nextPayment(m_schedule.lastPayment());
 
@@ -694,6 +731,8 @@ void KEnterScheduleDialog::commitTransaction()
         if(acc.accountType() == MyMoneyAccount::Cash)
           fract = currency.smallestCashFraction();
 
+#if 0
+// Commented so that the payee also gets recorded with categories
         MyMoneyAccount::accountTypeE accType = file->accountGroup(acc.accountType());
         switch(accType) {
           case MyMoneyAccount::Asset:
@@ -705,6 +744,7 @@ void KEnterScheduleDialog::commitTransaction()
             m_transaction.modifySplit(*it);
             break;
         }
+#endif
 
         if(m_transaction.commodity() != acc.currencyId()) {
           // different currencies, try to find recent price info
@@ -831,6 +871,8 @@ void KEnterScheduleDialog::commitTransaction()
 void KEnterScheduleDialog::setPayee()
 {
   QCString payeeId;
+  m_payee->selectedItem(payeeId);
+#if 0
   try
   {
     payeeId = MyMoneyFile::instance()->payeeByName(m_payee->text()).id();
@@ -842,6 +884,7 @@ void KEnterScheduleDialog::setPayee()
     payeeId = payee.id();
     delete e;
   }
+#endif
   MyMoneySplit s = m_transaction.splits()[0];
   s.setPayeeId(payeeId);
   m_transaction.modifySplit(s);
@@ -953,17 +996,8 @@ void KEnterScheduleDialog::createSplits()
 {
   if (m_transaction.splitCount() == 0)
   {
-    MyMoneyFile *file = MyMoneyFile::instance();
-
     QCString payeeId;
-    try
-    {
-      payeeId = file->payeeByName(m_payee->text()).id();
-    }
-    catch (MyMoneyException *e)
-    {
-      delete e;
-    }
+    m_payee->selectedItem(payeeId);
 
     MyMoneySplit split1;
     split1.setAccountId(theAccountId());

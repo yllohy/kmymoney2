@@ -26,38 +26,32 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qptrlist.h>
-
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kpopupmenu.h>
-
 // ----------------------------------------------------------------------------
 // Project Includes
-#include "kinvestmentlistitem.h"
-#include "../mymoney/mymoneysecurity.h"
-#include "../mymoney/mymoneyaccount.h"
-#include "../mymoney/mymoneyobserver.h"
+
+#include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/mymoneyaccount.h>
 #include "kinvestmentviewdecl.h"
+#include "kinvestmentlistitem.h"
 
 class MyMoneyTransaction;
 class MyMoneyInvestTransaction;
-class KLedgerView;
+class KInvestmentViewPrivate;
 
 /**
   * @author Kevin Tambascio
   */
 
-class KInvestmentView : public kInvestmentViewDecl, MyMoneyObserver
+class KInvestmentView : public KInvestmentViewDecl
 {
   Q_OBJECT
 
 public:
   KInvestmentView(QWidget *parent=0, const char *name=0);
   ~KInvestmentView();
-
-  void update(const QCString& id);
 
   /**
     * Start reconciliation for the account in the current view
@@ -70,15 +64,7 @@ public slots:
     * All existing data in the view will be discarded.
     * Call this e.g. if a new file has been loaded.
     */
-  void slotReloadView(void);
-
-  /**
-    * This slot is used to refresh the view with data from the MyMoneyFile
-    * engine. All data in the view (e.g. current account) will be kept if
-    * still available. Call this, e.g. if the global view settings have
-    * been changed.
-    */
-  void slotRefreshView(void);
+  void slotLoadView(void);
 
   /**
     * This slot is used to select the correct ledger view type for
@@ -94,15 +80,14 @@ public slots:
     * @retval true selection of account referenced by @p id succeeded
     * @retval false selection of account failed
     */
-  const bool slotSelectAccount(const QCString& accountId, const QCString& transactionId = QCString(), const bool reconciliation = false);
-
-  void show(void);
+  bool slotSelectAccount(const QCString& accountId, const QCString& transactionId = QCString(), const bool reconciliation = false);
 
   /**
-    * This slot cancels any edit activity in any view. It will
-    * be called e.g. before entering the settings dialog.
+    * This method is provided for convenience and acts as the method above.
     */
-  void slotCancelEdit(void);
+  bool slotSelectAccount(const MyMoneyObject& acc);
+
+  void show(void);
 
 protected:
   /**
@@ -115,46 +100,34 @@ protected:
   void loadAccounts(void);
 
   /**
-    * This methods updates the display of the investment overview.
+    * clear the view
     */
-  void updateDisplay();
+  void clear(void);
+
+  void loadView(void);
 
 protected slots:
-
-  /**
-    * This slot receives the signal from the listview control that an item was double-clicked,
-    */
-  void slotItemDoubleClicked(QListViewItem* pItem, const QPoint& pos, int c);
-
   /**
     * This slot receives the signal from the listview control that an item was right-clicked,
     */
   void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
 
-  void slotTabSelected(QWidget *pWidget);
-
   void slotSelectionChanged(QListViewItem *item);
 
-signals:
-  void signalViewActivated(void);
 
+signals:
   /**
     * This signal is emitted, if an account has been selected
     * which cannot handled by this view.
     */
   void accountSelected(const QCString& accountId, const QCString& transactionId);
 
+  void accountSelected(const MyMoneyObject&);
+
   void investmentRightMouseClick(void);
 
 private:
-  void initSummaryTab(void);
-  void initTransactionTab(void);
-
-private:
-  KPopupMenu*       m_popMenu;
-  KLedgerView*      m_ledgerView;
-  MyMoneyAccount    m_account;
-  QCString          m_accountId;
+  KInvestmentViewPrivate*    d;
 };
 
 #endif

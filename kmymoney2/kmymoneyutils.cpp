@@ -555,38 +555,6 @@ int KMyMoneyUtils::occurenceToFrequency(const MyMoneySchedule::occurenceE occure
   return rc;
 }
 
-void KMyMoneyUtils::newPayee(QWidget* parent, kMyMoneyPayee* payeeEdit, const QString& payeeName)
-{
-  MyMoneyFile* file = MyMoneyFile::instance();
-  MyMoneyPayee payee;
-
-  if(!payeeEdit)
-    return;
-
-  // Ask the user if that is what he intended to do?
-  QString msg = i18n("Do you want to add '%1' as payee/receiver ?").arg(payeeName);
-
-  if(KMessageBox::questionYesNo(parent, msg, i18n("New payee/receiver"),KStdGuiItem::yes(),KStdGuiItem::no(),"NewPayee") == KMessageBox::Yes) {
-    // for now, we just add the payee to the pool. In the future,
-    // we could open a dialog and ask for all the other attributes
-    // of the payee.
-    payee.setName(payeeName);
-
-    try {
-      file->addPayee(payee);
-      payeeEdit->loadList();
-
-    } catch(MyMoneyException *e) {
-      KMessageBox::detailedSorry(0, i18n("Unable to add payee/receiver"),
-        (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
-      delete e;
-
-      payeeEdit->resetText();
-    }
-  } else
-    payeeEdit->resetText();
-}
-
 const QColor KMyMoneyUtils::defaultBackgroundColour(void)
 {
   return KGlobalSettings::baseColor();

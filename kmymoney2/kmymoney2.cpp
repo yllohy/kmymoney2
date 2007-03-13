@@ -2758,6 +2758,8 @@ void KMyMoney2App::slotAccountEdit(void)
         }
       } else {
         KEditLoanWizard* wizard = new KEditLoanWizard(m_selectedAccount);
+        connect(wizard, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+        connect(wizard, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
         if(wizard->exec() == QDialog::Accepted) {
           MyMoneyFile* file = MyMoneyFile::instance();
           MyMoneySchedule sch = file->schedule(m_selectedAccount.value("schedule").latin1());
@@ -3092,6 +3094,7 @@ void KMyMoney2App::scheduleNew(const QCString& scheduleType)
 
   KEditScheduleDialog dlg(scheduleType, schedule, this);
   connect(&dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+  connect(&dlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
 
   if (dlg.exec() == QDialog::Accepted) {
     schedule = dlg.schedule();
@@ -3154,6 +3157,7 @@ void KMyMoney2App::slotScheduleEdit(void)
         case MyMoneySchedule::TYPE_TRANSFER:
           sched_dlg = new KEditScheduleDialog(action, schedule, this);
           connect(sched_dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+          connect(sched_dlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
 
           if (sched_dlg->exec() == QDialog::Accepted) {
             MyMoneySchedule sched = sched_dlg->schedule();
@@ -3164,6 +3168,8 @@ void KMyMoney2App::slotScheduleEdit(void)
 
         case MyMoneySchedule::TYPE_LOANPAYMENT:
           loan_wiz = new KEditLoanWizard(schedule.account(2));
+          connect(loan_wiz, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+          connect(loan_wiz, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
           if (loan_wiz->exec() == QDialog::Accepted) {
             MyMoneyFile::instance()->modifySchedule(loan_wiz->schedule());
             MyMoneyFile::instance()->modifyAccount(loan_wiz->account());
@@ -3231,6 +3237,8 @@ void KMyMoney2App::slotScheduleEnter(void)
 
       KEnterScheduleDialog dlg(this, schedule);
       connect(&dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+      connect(&dlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
+
       dlg.exec();
 
     } catch (MyMoneyException *e) {
@@ -4526,6 +4534,7 @@ void KMyMoney2App::slotCheckSchedules(void)
             // 0.8 will feature a list of schedules for a better ui
             KEnterScheduleDialog dlg(0, schedule, schedule.nextPayment(schedule.lastPayment()));
             connect(&dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+            connect(&dlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
             if (!dlg.exec())
             {
               int r = KMessageBox::warningYesNo(this, i18n("Are you sure you wish to stop this schedule from being entered into the register?\n\nKMyMoney will prompt you again next time it starts unless you manually enter it later."));

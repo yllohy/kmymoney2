@@ -54,7 +54,6 @@
 #include "../widgets/kmymoneylineedit.h"
 #include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneycategory.h"
-#include "../widgets/kmymoneypayee.h"
 #include "../widgets/kmymoneyequity.h"
 
 #include "../kmymoneysettings.h"

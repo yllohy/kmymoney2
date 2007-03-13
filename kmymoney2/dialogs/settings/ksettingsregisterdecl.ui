@@ -265,23 +265,6 @@
                                         <cstring>m_sortReconcileView</cstring>
                                     </property>
                                 </widget>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacer4</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Horizontal</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Expanding</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>16</width>
-                                            <height>21</height>
-                                        </size>
-                                    </property>
-                                </spacer>
                             </hbox>
                         </widget>
                     </widget>

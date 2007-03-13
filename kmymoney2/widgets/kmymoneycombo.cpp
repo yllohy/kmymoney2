@@ -1,11 +1,9 @@
 /***************************************************************************
                           kmymoneycombo.cpp  -  description
                              -------------------
-    begin                : Sat May 5 2001
-    copyright            : (C) 2001 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                             Javier Campos Morales <javi_c@ctv.es>
-                             Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+    begin                : Mon Mar 12 2007
+    copyright            : (C) 2007 by Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -34,6 +32,7 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "kmymoneycombo.h"
 #include <kmymoney/kmymoneycompletion.h>
 #include <kmymoney/kmymoneylineedit.h>
@@ -88,7 +87,7 @@ void KMyMoneyCombo::slotItemSelected(const QCString& id)
   }
 }
 
-void KMyMoneyCombo::setEditable( bool y)
+void KMyMoneyCombo::setEditable(bool y)
 {
   if(y == editable())
     return;
@@ -99,6 +98,7 @@ void KMyMoneyCombo::setEditable( bool y)
   if(y) {
     m_edit = new kMyMoneyLineEdit(this, "combo edit");
     setLineEdit(m_edit);
+    m_edit->setPaletteBackgroundColor(paletteBackgroundColor());
 
   } else {
     m_edit = 0;
@@ -142,6 +142,14 @@ void KMyMoneyCombo::paintEvent(QPaintEvent* ev)
         }
       }
     }
+  }
+}
+
+void KMyMoneyCombo::setPaletteBackgroundColor(const QColor& color)
+{
+  KComboBox::setPaletteBackgroundColor(color);
+  if(m_edit) {
+    m_edit->setPaletteBackgroundColor(color);
   }
 }
 
@@ -196,6 +204,20 @@ void KMyMoneyCombo::keyPressEvent(QKeyEvent* e)
   KComboBox::keyPressEvent(e);
 }
 
+void KMyMoneyCombo::connectNotify(const char* signal)
+{
+  if(signal && !strcmp(signal, SIGNAL(createItem(const QString&,QCString&)))) {
+    m_canCreateObjects = true;
+  }
+}
+
+void KMyMoneyCombo::disconnectNotify(const char* signal)
+{
+  if(signal && !strcmp(signal, SIGNAL(createItem(const QString&,QCString&)))) {
+    m_canCreateObjects = false;
+  }
+}
+
 void KMyMoneyCombo::focusOutEvent(QFocusEvent* e)
 {
   if(editable() && !currentText().isEmpty()) {
@@ -241,6 +263,18 @@ KMyMoneySelector* KMyMoneyCombo::selector(void) const
 kMyMoneyCompletion* KMyMoneyCombo::completion(void) const
 {
   return m_completion;
+}
+
+void KMyMoneyCombo::selectedItem(QCString& id) const
+{
+  id = QCString();
+
+  QCStringList list;
+  selectedItems(list);
+
+  if(list.count() > 0) {
+    id = list[0];
+  }
 }
 
 void KMyMoneyCombo::selectedItems(QCStringList& list) const
@@ -474,6 +508,26 @@ void KMyMoneyActivityCombo::slotSetActivity(const QCString& id)
   update();
 }
 
+KMyMoneyPayeeCombo::KMyMoneyPayeeCombo(QWidget* parent, const char * name) :
+  KMyMoneyCombo(true, parent, name)
+{
+  m_completion = new kMyMoneyCompletion(this);
+
+  // set to ascending sort
+  selector()->listView()->setSorting(0);
+
+  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
+  connect(this, SIGNAL(textChanged(const QString&)), m_completion, SLOT(slotMakeCompletion(const QString&)));
+}
+
+void KMyMoneyPayeeCombo::loadPayees(const QValueList<MyMoneyPayee>& list)
+{
+  selector()->listView()->clear();
+  QValueList<MyMoneyPayee>::const_iterator it;
+  for(it = list.begin(); it != list.end(); ++it) {
+    selector()->newTopItem((*it).name(), QString(), (*it).id());
+  }
+}
 
 
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
@@ -485,6 +539,16 @@ void KMyMoneyActivityCombo::slotSetActivity(const QCString& id)
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+
+/***************************************************************************
+                          kmymoneycombo.cpp  -  description
+                             -------------------
+    begin                : Sat May 5 2001
+    copyright            : (C) 2001 by Michael Edwardes
+    email                : mte@users.sourceforge.net
+                             Javier Campos Morales <javi_c@ctv.es>
+                             Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+ ***************************************************************************/
 
 #include "../mymoney/mymoneyfile.h"
 

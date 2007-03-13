@@ -18,6 +18,7 @@
 // ----------------------------------------------------------------------------
 // QT Includes
  // No need for QDateEdit, QSpinBox, etc., since these always return values
+
 #include <qcheckbox.h>
 #include <qcombobox.h>
 #include <qlineedit.h>
@@ -40,6 +41,9 @@
   * Mark Summerfield in Qt Quarterly                                       *
   * http://doc.trolltech.com/qq/qq11-mandatoryfields.html                  *
   *                                                                        *
+  * Enhanced by Thomas Baumgart to support the lineedit field of a         *
+  * a QComboBox.                                                           *
+  *                                                                        *
   **************************************************************************/
 
 void kMandatoryFieldGroup::add(QWidget *widget)
@@ -49,19 +53,28 @@ void kMandatoryFieldGroup::add(QWidget *widget)
       connect((QCheckBox*)widget->qt_cast("QCheckBox"),
                SIGNAL(clicked()),
                this, SLOT(changed()));
-    else if (widget->inherits("QComboBox"))
-      connect((QComboBox*)widget->qt_cast("QComboBox"),
-               SIGNAL(highlighted(int)),
-               this, SLOT(changed()));
+
+    else if (widget->inherits("QComboBox")) {
+      QComboBox* combo = (QComboBox*)widget->qt_cast("QComboBox");
+      QLineEdit* lineedit = combo->lineEdit();
+      if(lineedit) {
+        connect(lineedit, SIGNAL(textChanged(const QString&)), this, SLOT(changed()));
+      } else {
+        connect(combo, SIGNAL(highlighted(int)), this, SLOT(changed()));
+      }
+    }
+
     else if (widget->inherits("QLineEdit"))
       connect((QLineEdit*)widget->qt_cast("QLineEdit"),
                SIGNAL(textChanged(const QString&)),
                this, SLOT(changed()));
+
     else {
       qWarning("MandatoryFieldGroup: unsupported class %s",
                widget->className());
       return;
     }
+
     widget->setPaletteBackgroundColor(KMyMoneySettings::requiredFieldColor());
     widgets.append(widget);
     changed();

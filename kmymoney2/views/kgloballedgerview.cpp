@@ -67,6 +67,7 @@ public:
   MyMoneyMoney         m_endingBalance;
   int                  m_precision;
   bool                 m_inLoading;
+  bool                 m_recursion;
   KMyMoneyRegister::Action m_action;
 };
 
@@ -125,7 +126,8 @@ bool MousePressFilter::eventFilter(QObject* o, QEvent* e)
 KGlobalLedgerViewPrivate::KGlobalLedgerViewPrivate() :
   m_mousePressFilter(0),
   m_registerSearchLine(0),
-  m_inLoading(false)
+  m_inLoading(false),
+  m_recursion(false)
 {
 }
 
@@ -999,8 +1001,22 @@ bool KGlobalLedgerView::isReconciliationAccount(void) const
   return m_account.id() == d->m_reconciliationAccount;
 }
 
+bool KGlobalLedgerView::slotSelectAccount(const MyMoneyObject& obj)
+{
+  if(typeid(obj) != typeid(MyMoneyAccount))
+    return false;
 
-const bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCString& transactionId)
+  if(d->m_recursion)
+    return false;
+
+  d->m_recursion = true;
+  const MyMoneyAccount& acc = dynamic_cast<const MyMoneyAccount&>(obj);
+  bool rc = slotSelectAccount(acc.id());
+  d->m_recursion = false;
+  return rc;
+}
+
+bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCString& transactionId)
 {
   bool    rc = true;
 

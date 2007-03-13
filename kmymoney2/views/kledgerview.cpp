@@ -57,7 +57,6 @@
 #include "kledgerview.h"
 #include "../widgets/kmymoneyregister.h"
 #include "../widgets/kmymoneytransactionform.h"
-#include "../widgets/kmymoneypayee.h"
 #include "../widgets/kmymoneycategory.h"
 #include "../widgets/kmymoneyedit.h"
 #include "../widgets/kmymoneylineedit.h"
@@ -669,6 +668,7 @@ bool KLedgerView::selectTransaction(const QCString& transactionId)
 
 void KLedgerView::slotPayeeChanged(const QString& name)
 {
+#if 0
   if(!m_editPayee)
     return;
 
@@ -774,6 +774,7 @@ void KLedgerView::slotPayeeChanged(const QString& name)
     delete e;
     m_editPayee->resetText();
   }
+#endif
 }
 
 void KLedgerView::slotMemoChanged(const QString& memo)
@@ -1299,7 +1300,7 @@ const QString KLedgerView::action2str(const QCString &action, const bool showHot
 
 void KLedgerView::slotNewPayee(const QString& payeeName)
 {
-  KMyMoneyUtils::newPayee(this, m_editPayee, payeeName);
+  // KMyMoneyUtils::newPayee(this, m_editPayee, payeeName);
 }
 
 int KLedgerView::transactionDirection(const MyMoneySplit& split)

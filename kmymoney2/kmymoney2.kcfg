@@ -84,6 +84,10 @@
    <label>Show splash screen during startup</label>
    <default>true</default>
   </entry>
+  <entry name="syncLedgerInvestment" type="Bool">
+   <label>Synchronize account in ledger and investment view</label>
+   <default>true</default>
+  </entry>
   <entry name="iconSize" type="Int">
    <label>Icon size for view selection</label>
    <default>2</default>

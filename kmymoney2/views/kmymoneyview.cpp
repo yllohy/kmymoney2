@@ -225,11 +225,11 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
     DesktopIcon("investments", iconSize));
 
   m_investmentView = new KInvestmentView(m_investmentViewFrame, "InvestmentView");
-  connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_investmentView, SLOT(slotCancelEdit()));
   connect(m_investmentView, SIGNAL(accountSelected(const QCString&, const QCString&)),
       this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
+  connect(m_investmentView, SIGNAL(accountSelected(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_investmentView, SIGNAL(investmentRightMouseClick()), kmymoney2, SLOT(slotShowInvestmentContextMenu()));
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_investmentView, SLOT(slotReloadView()));
+  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_investmentView, SLOT(slotLoadView()));
 
   // Page 8
   m_reportsViewFrame = addVBoxPage(i18n("Reports"), i18n("Reports"),
@@ -1471,6 +1471,16 @@ void KMyMoneyView::slotRefreshViews()
   // force update of settings
   KMyMoneyUtils::updateSettings();
 
+  // turn off sync between ledger and investment view
+  disconnect(m_investmentView, SIGNAL(accountSelected(const MyMoneyObject&)), m_ledgerView, SLOT(slotSelectAccount(const MyMoneyObject&)));
+  disconnect(m_ledgerView, SIGNAL(accountSelected(const MyMoneyObject&)), m_investmentView, SLOT(slotSelectAccount(const MyMoneyObject&)));
+
+  // TODO turn sync between ledger and investment view if selected by user
+  if(KMyMoneyGlobalSettings::syncLedgerInvestment()) {
+    connect(m_investmentView, SIGNAL(accountSelected(const MyMoneyObject&)), m_ledgerView, SLOT(slotSelectAccount(const MyMoneyObject&)));
+    connect(m_ledgerView, SIGNAL(accountSelected(const MyMoneyObject&)), m_investmentView, SLOT(slotSelectAccount(const MyMoneyObject&)));
+  }
+
   m_accountsView->slotLoadAccounts();
   m_institutionsView->slotLoadAccounts();
   m_categoriesView->slotLoadAccounts();
@@ -1478,7 +1488,7 @@ void KMyMoneyView::slotRefreshViews()
   m_ledgerView->slotLoadView();
   m_budgetView->slotRefreshView();
   m_homeView->slotRefreshView();
-  m_investmentView->slotRefreshView();
+  m_investmentView->slotLoadView();
   m_reportsView->slotRefreshView();
 
   m_scheduledView->slotReloadView();
@@ -1495,8 +1505,6 @@ void KMyMoneyView::slotCancelEdit(void) const
 {
   if(m_ledgerView != 0)
     m_ledgerView->slotCancelEdit();
-  if(m_investmentView != 0)
-    m_investmentView->slotCancelEdit();
 }
 
 void KMyMoneyView::progressCallback(int current, int total, const QString& msg)
@@ -1739,6 +1747,7 @@ void KMyMoneyView::fixLoanAccount_0(MyMoneyAccount acc)
         i18n("Account problem"));
     KNewLoanWizard* wiz = new KNewLoanWizard(this);
     connect(wiz, SIGNAL(newCategory(MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&)));
+    connect(wiz, SIGNAL(createPayee(const QString&, QCString&)), kmymoney2, SIGNAL(slotPayeeNew(const QString&, QCString&)));
     wiz->loadWidgets(acc);
 
     if(wiz->exec() == QDialog::Accepted) {

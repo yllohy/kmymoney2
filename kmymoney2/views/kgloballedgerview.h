@@ -240,7 +240,12 @@ public slots:
     * @retval true selection of account referenced by @p id succeeded
     * @retval false selection of account failed
     */
-  const bool slotSelectAccount(const QCString& accountId, const QCString& transactionId = QCString());
+  bool slotSelectAccount(const QCString& accountId, const QCString& transactionId = QCString());
+
+  /**
+    * This method is provided for convenience and acts as the method above.
+    */
+  bool slotSelectAccount(const MyMoneyObject& acc);
 
   /**
    * Switch to reconciliation mode for account @a account.

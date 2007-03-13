@@ -22,12 +22,11 @@ ImplClass=KMyMoneyRegister::Register
 
 [KMyMoneyCategory]
 
-[KMyMoneyPayee]
+[KMyMoneyPayeeCombo]
+IncludeFile=kmymoney/kmymoneycombo.h
 
 [TransactionSortOption]
 
 # deprecated will be removed at some point in time
-
-[kMyMoneyPayee]
 
 [KMyMoneyAccountCombo]

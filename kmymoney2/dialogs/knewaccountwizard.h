@@ -156,9 +156,10 @@ protected slots:
   void slotNewInstitution(void);
   void slotAccountType(const QString& sel);
   void slotCheckPageFinished(void);
-  void slotNewPayee(const QString&);
+  // void slotNewPayee(const QString&);
   void slotCurrencyChanged(int);
   void slotPriceUpdate(void);
+  void slotReloadEditWidgets(void);
 
   void help(void);
 
@@ -178,6 +179,15 @@ signals:
     *            and will return information about the created category.
     */
   void newCategory(MyMoneyAccount& acc);
+
+  /**
+    * This signal is sent out, when a new payee needs to be created
+    * @sa KMyMoneyCombo::createItem()
+    *
+    * @param txt The name of the payee to be created
+    * @param id A connected slot should store the id of the created object in this variable
+    */
+  void createPayee(const QString& txt, QCString& id);
 
 private:
   void loadSubAccountList(KMyMoneyAccountTreeItem* parent, const QCString& accountId);

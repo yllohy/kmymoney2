@@ -106,10 +106,8 @@ bool Activity::createCategorySplits(const MyMoneyTransaction& t, KMyMoneyCategor
       splits.clear();
       MyMoneySplit s1;
       QCString categoryId;
-      QCStringList list;
-      cat->selectedItems(list);
-      if(!list.isEmpty()) {
-        categoryId = list[0];
+      cat->selectedItem(categoryId);
+      if(!categoryId.isEmpty()) {
         s1.setAccountId(categoryId);
         s1.setValue(amount->value() * factor);
         if(!s1.value().isZero()) {
@@ -129,11 +127,7 @@ void Activity::createAssetAccountSplit(MyMoneySplit& split, const MyMoneySplit& 
   KMyMoneyCategory* cat = dynamic_cast<KMyMoneyCategory*>(haveWidget("asset-account"));
   if(!isMultiSelection() || (isMultiSelection() && !cat->currentText().isEmpty())) {
     QCString categoryId;
-    QCStringList list;
-    cat->selectedItems(list);
-    if(!list.isEmpty()) {
-      categoryId = list[0];
-    }
+    cat->selectedItem(categoryId);
     split.setAccountId(categoryId);
   }
   split.setMemo(stockSplit.memo());

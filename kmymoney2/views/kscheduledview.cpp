@@ -460,6 +460,7 @@ void KScheduledView::slotBriefEnterClicked(const MyMoneySchedule& schedule, cons
 {
   KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule, date);
   connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&)));
+  connect(dlg, SIGNAL(createPayee(const QString&, QCString&)), kmymoney2, SLOT(slotPayeeNew(const QString&, QCString&)));
   if (dlg->exec())
   {
     refresh(false);

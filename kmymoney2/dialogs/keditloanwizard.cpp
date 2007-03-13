@@ -45,7 +45,6 @@
 #include "../widgets/kmymoneycombo.h"
 #include "../widgets/kmymoneyaccountselector.h"
 #include "../widgets/kmymoneydateinput.h"
-#include "../widgets/kmymoneypayee.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../kmymoneyutils.h"
 
@@ -166,7 +165,7 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
       if(!(*it_s).payeeId().isEmpty()) {
         try {
           payee = file->payee((*it_s).payeeId());
-          m_payeeEdit->setText(payee.name());
+          m_payeeEdit->setSelectedItem(payee.id());
         } catch(MyMoneyException *e) {
           delete e;
           qWarning("Payee for schedule has been deleted");
@@ -367,7 +366,7 @@ void KEditLoanWizard::next()
     MyMoneySplit split;
     MyMoneyTransactionFilter filter(m_account.id());
 
-    filter.setDateFilter(QDate(), m_effectiveChangeDateEdit->getQDate().addDays(-1));
+    filter.setDateFilter(QDate(), m_effectiveChangeDateEdit->date().addDays(-1));
     list = MyMoneyFile::instance()->transactionList(filter);
 
     for(it = list.begin(); it != list.end(); ++it) {
@@ -415,8 +414,8 @@ void KEditLoanWizard::slotCheckPageFinished(void)
   // appropriate, we just have to disable it.
 
   if(currentPage() == m_effectiveDatePage) {
-    if(m_effectiveChangeDateEdit->getQDate() < m_account.openingDate()
-    || m_effectiveChangeDateEdit->getQDate() > QDate::currentDate())
+    if(m_effectiveChangeDateEdit->date() < m_account.openingDate()
+    || m_effectiveChangeDateEdit->date() > QDate::currentDate())
       nextButton()->setEnabled(false);
 
   } else if(currentPage() == m_interestEditPage) {
@@ -433,11 +432,11 @@ void KEditLoanWizard::updateEditSummary(void)
   m_additionalFees7->setText(m_summaryAdditionalFees->text());
   m_totalPayment7->setText(m_summaryTotalPeriodicPayment->text());
   m_interestRate7->setText(m_summaryInterestRate->text());
-  m_startDateChanges->setText(KGlobal::locale()->formatDate(m_effectiveChangeDateEdit->getQDate(), true));
+  m_startDateChanges->setText(KGlobal::locale()->formatDate(m_effectiveChangeDateEdit->date(), true));
 
   // calculate the number of affected transactions
   MyMoneyTransactionFilter filter(m_account.id());
-  filter.setDateFilter(m_effectiveChangeDateEdit->getQDate(), QDate());
+  filter.setDateFilter(m_effectiveChangeDateEdit->date(), QDate());
 
   int count = 0;
   QValueList<MyMoneyTransaction> list;
@@ -467,8 +466,8 @@ const MyMoneySchedule KEditLoanWizard::schedule(void) const
   MyMoneySchedule sched = m_schedule;
   sched.setTransaction(transaction());
   sched.setOccurence(KMyMoneyUtils::stringToOccurence(m_paymentFrequencyUnitEdit->currentText()));
-  if(m_nextDueDateEdit->getQDate() < m_schedule.startDate())
-    sched.setStartDate(m_nextDueDateEdit->getQDate());
+  if(m_nextDueDateEdit->date() < m_schedule.startDate())
+    sched.setStartDate(m_nextDueDateEdit->date());
 
   return sched;
 }
@@ -486,21 +485,14 @@ const MyMoneyAccount KEditLoanWizard::account(void) const
   acc.setFinalPayment(MyMoneyMoney(m_finalPaymentEdit->text()));
   acc.setTerm(term());
   acc.setPeriodicPayment(m_paymentEdit->value());
-  acc.setInterestRate(m_effectiveChangeDateEdit->getQDate(), m_interestRateEdit->value());
+  acc.setInterestRate(m_effectiveChangeDateEdit->date(), m_interestRateEdit->value());
 
-  if(!m_payeeEdit->text().isEmpty()) {
-    try {
-      acc.setPayee(MyMoneyFile::instance()->payeeByName(m_payeeEdit->text()).id());
-    } catch(MyMoneyException *e) {
-      delete e;
-      qWarning("%s(%d): Someone has removed the selected payee", __FILE__, __LINE__);
-      acc.setPayee(QCString());
-    }
-  } else
-    acc.setPayee(QCString());
+  QCString payeeId;
+  m_payeeEdit->selectedItem(payeeId);
+  acc.setPayee(payeeId);
 
   if(m_variableInterestButton->isChecked()) {
-    acc.setNextInterestChange(m_interestChangeDateEdit->getQDate());
+    acc.setNextInterestChange(m_interestChangeDateEdit->date());
     acc.setInterestChangeFrequency(m_interestFrequencyAmountEdit->value(),
                                    m_interestFrequencyUnitEdit->currentItem());
   }

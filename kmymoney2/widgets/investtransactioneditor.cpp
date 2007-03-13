@@ -797,10 +797,8 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
   KMyMoneySecurity* sec = dynamic_cast<KMyMoneySecurity*>(m_editWidgets["security"]);
   if(!isMultiSelection() || (isMultiSelection() && !sec->currentText().isEmpty())) {
     QCString securityId;
-    QCStringList list;
-    sec->selectedItems(list);
-    if(!list.isEmpty()) {
-      securityId = list[0];
+    sec->selectedItem(securityId);
+    if(!securityId.isEmpty()) {
       s0.setAccountId(securityId);
       MyMoneyAccount stockAccount = m_objects->account(securityId);
       QCString currencyId = stockAccount.currencyId();

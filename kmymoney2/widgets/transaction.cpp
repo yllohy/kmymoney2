@@ -1155,7 +1155,7 @@ void StdTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidgets)
   for(it = editWidgets.begin(); it != editWidgets.end(); ++it) {
     KMyMoneyCombo* combo = dynamic_cast<KMyMoneyCombo*>(*it);
     kMyMoneyLineEdit* edit = dynamic_cast<kMyMoneyLineEdit*>(*it);
-    KMyMoneyPayee* payee = dynamic_cast<KMyMoneyPayee*>(*it);
+    KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(*it);
     if(combo)
       combo->setHint(QString());
     if(edit)
@@ -1814,7 +1814,7 @@ void InvestTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidget
     KMyMoneyCombo* combo = dynamic_cast<KMyMoneyCombo*>(*it);
     kMyMoneyLineEdit* lineedit = dynamic_cast<kMyMoneyLineEdit*>(*it);
     kMyMoneyEdit* edit = dynamic_cast<kMyMoneyEdit*>(*it);
-    KMyMoneyPayee* payee = dynamic_cast<KMyMoneyPayee*>(*it);
+    KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(*it);
     if(combo)
       combo->setHint(QString());
     if(edit)

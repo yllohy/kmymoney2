@@ -68,7 +68,8 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
   connect(m_lendButton, SIGNAL(clicked()), this, SLOT(slotAssetLoan()));
 
   connect(m_nameEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished()));
-  connect(m_payeeEdit, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
+  // connect(m_payeeEdit, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
+  connect(m_payeeEdit, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
 
   connect(m_previousPaymentButton, SIGNAL(clicked()), this, SLOT(slotPaymentsMade()));
   connect(m_noPreviousPaymentButton, SIGNAL(clicked()), this, SLOT(slotNoPaymentsMade()));
@@ -91,9 +92,13 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
   connect(m_assetAccountEdit,  SIGNAL(stateChanged()), this, SLOT(slotCheckPageFinished()));
   connect(m_dontCreatePayoutCheckBox,  SIGNAL(clicked()), this, SLOT(slotCheckPageFinished()));
 
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
+
   loadComboBoxes();
 
   resetCalculator();
+
+  slotReloadEditWidgets();
 
   // As default we assume a liability loan, with fixed interest rate,
   // with a first payment due on the 30th of this month. All payments
@@ -197,10 +202,12 @@ void KNewLoanWizard::resetCalculator(void)
   m_additionalCost->setText(MyMoneyMoney(0).formatMoney());
 }
 
+#if 0
 void KNewLoanWizard::slotNewPayee(const QString& payeeName)
 {
   KMyMoneyUtils::newPayee(this, m_payeeEdit, payeeName);
 }
+#endif
 
 void KNewLoanWizard::slotLiabilityLoan(void)
 {
@@ -276,12 +283,12 @@ void KNewLoanWizard::slotCheckPageFinished(void)
     }
 
   } else if(currentPage() == m_firstPaymentPage) {
-    if(m_firstDueDateEdit->getQDate().isValid())
+    if(m_firstDueDateEdit->date().isValid())
       nextButton()->setEnabled(true);
 
   } else if(currentPage() == m_schedulePage) {
-    if(m_nextDueDateEdit->getQDate().isValid()
-    && m_nextDueDateEdit->getQDate() >= m_firstDueDateEdit->getQDate()
+    if(m_nextDueDateEdit->date().isValid()
+    && m_nextDueDateEdit->date() >= m_firstDueDateEdit->date()
     && m_paymentAccountEdit->selectedItems().count() > 0)
       nextButton()->setEnabled(true);
 
@@ -296,7 +303,7 @@ void KNewLoanWizard::slotCheckPageFinished(void)
       m_paymentDate->setEnabled(true);
       m_createNewAssetButton->setEnabled(true);
       if(!m_assetAccountEdit->selectedItems().isEmpty()
-      && m_paymentDate->getQDate().isValid())
+      && m_paymentDate->date().isValid())
         nextButton()->setEnabled(true);
     }
   } else
@@ -416,11 +423,13 @@ void KNewLoanWizard::updateSummary(void)
   else
     m_summaryLoanType->setText(i18n("lend"));
 
-  m_summaryFirstPayment->setText(KGlobal::locale()->formatDate(m_firstDueDateEdit->getQDate(), true));
-  if(m_payeeEdit->text().isEmpty()) {
+  m_summaryFirstPayment->setText(KGlobal::locale()->formatDate(m_firstDueDateEdit->date(), true));
+  QCString payeeId;
+  m_payeeEdit->selectedItem(payeeId);
+  if(payeeId.isEmpty()) {
     m_summaryPayee->setText(i18n("not assigned"));
   } else {
-    m_summaryPayee->setText(m_payeeEdit->text());
+    m_summaryPayee->setText(m_payeeEdit->currentText());
   }
 
   // Calculation
@@ -448,7 +457,7 @@ void KNewLoanWizard::updateSummary(void)
   }
   m_summaryAdditionalFees->setText(m_additionalCost->text());
   m_summaryTotalPeriodicPayment->setText(m_periodicPayment->text());
-  m_summaryNextPayment->setText(KGlobal::locale()->formatDate(m_nextDueDateEdit->getQDate(), true));
+  m_summaryNextPayment->setText(KGlobal::locale()->formatDate(m_nextDueDateEdit->date(), true));
 
   try {
     QCStringList sel = m_paymentAccountEdit->selectedItems();
@@ -550,17 +559,17 @@ void KNewLoanWizard::next()
   } else if(currentPage() == m_additionalFeesPage) {
     m_nextDueDateEdit->setEnabled(true);
     if(m_allPaymentsButton->isChecked() || m_noPreviousPaymentButton->isChecked()) {
-      m_nextDueDateEdit->setDate(m_firstDueDateEdit->getQDate());
+      m_nextDueDateEdit->setDate(m_firstDueDateEdit->date());
       m_nextDueDateEdit->setEnabled(false);
       setAppropriate(m_assetAccountPage, true);
     } else {
-      QDate nextPayment(QDate::currentDate().year(), 1, m_firstDueDateEdit->getQDate().day());
+      QDate nextPayment(QDate::currentDate().year(), 1, m_firstDueDateEdit->date().day());
       m_nextDueDateEdit->setDate(nextPayment);
       setAppropriate(m_assetAccountPage, false);
       m_assetAccountEdit->slotDeselectAllAccounts();
     }
-    if(m_nextDueDateEdit->getQDate() < m_firstDueDateEdit->getQDate()) {
-      m_nextDueDateEdit->setDate(m_firstDueDateEdit->getQDate());
+    if(m_nextDueDateEdit->date() < m_firstDueDateEdit->date()) {
+      m_nextDueDateEdit->setDate(m_firstDueDateEdit->date());
     }
 
   } else if(currentPage() == m_schedulePage) {
@@ -1055,16 +1064,10 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
   sInterest.setAction(MyMoneySplit::ActionInterest);
 
   // payee
-  if(!m_payeeEdit->text().isEmpty()) {
-    try {
-      QCString payeeId = MyMoneyFile::instance()->payeeByName(m_payeeEdit->text()).id();
-      sPayment.setPayeeId(payeeId);
-      sAmortization.setPayeeId(payeeId);
-
-    } catch(MyMoneyException *e) {
-      delete e;
-    }
-  }
+  QCString payeeId;
+  m_payeeEdit->selectedItem(payeeId);
+  sPayment.setPayeeId(payeeId);
+  sAmortization.setPayeeId(payeeId);
 
   // IMPORTANT: Payment split must be the first one, because
   //            the schedule view expects it this way during display
@@ -1078,7 +1081,7 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
   for(it = m_transaction.splits().begin(); it != m_transaction.splits().end(); ++it) {
     if((*it).accountId() != account.id()) {
       MyMoneySplit sp = (*it);
-      sp.setId(QCString());
+      sp.clearId();
       t.addSplit(sp);
       sPayment.setValue(sPayment.value()-sp.value());
       t.modifySplit(sPayment);
@@ -1093,7 +1096,7 @@ const MyMoneySchedule KNewLoanWizard::schedule() const
                         MyMoneySchedule::TYPE_LOANPAYMENT,
                         KMyMoneyUtils::stringToOccurence(m_paymentFrequencyUnitEdit->currentText()),
                         MyMoneySchedule::STYPE_OTHER,
-                        m_nextDueDateEdit->getQDate(),
+                        m_nextDueDateEdit->date(),
                         QDate(),
                         false,
                         false);
@@ -1108,7 +1111,7 @@ const MyMoneyAccount KNewLoanWizard::account(void) const
   MyMoneyAccountLoan acc;
 
   acc.setName(m_nameEdit->text());
-  acc.setOpeningDate(m_firstDueDateEdit->getQDate());
+  acc.setOpeningDate(m_firstDueDateEdit->date());
   if(m_allPaymentsButton->isChecked()) {
     acc.setOpeningBalance(0);
   } else {
@@ -1121,7 +1124,7 @@ const MyMoneyAccount KNewLoanWizard::account(void) const
     acc.setAccountType(MyMoneyAccount::AssetLoan);
   }
   acc.setLoanAmount(m_loanAmountEdit->value());
-  acc.setInterestRate(m_firstDueDateEdit->getQDate(), m_interestRateEdit->value());
+  acc.setInterestRate(m_firstDueDateEdit->date(), m_interestRateEdit->value());
   if(m_interestOnReceptionButton->isChecked())
     acc.setInterestCalculation(MyMoneyAccountLoan::paymentReceived);
   else
@@ -1132,23 +1135,46 @@ const MyMoneyAccount KNewLoanWizard::account(void) const
   acc.setTerm(term());
   acc.setPeriodicPayment(m_paymentEdit->value());
 
-  if(!m_payeeEdit->text().isEmpty()) {
-    try {
-      acc.setPayee(MyMoneyFile::instance()->payeeByName(m_payeeEdit->text()).id());
-    } catch(MyMoneyException *e) {
-      delete e;
-      qWarning("%s(%d): Someone has removed the selected payee", __FILE__, __LINE__);
-      acc.setPayee(QCString());
-    }
-  } else
-    acc.setPayee(QCString());
+  QCString payeeId;
+  m_payeeEdit->selectedItem(payeeId);
+  acc.setPayee(payeeId);
 
   if(m_variableInterestButton->isChecked()) {
-    acc.setNextInterestChange(m_interestChangeDateEdit->getQDate());
+    acc.setNextInterestChange(m_interestChangeDateEdit->date());
     acc.setInterestChangeFrequency(m_interestFrequencyAmountEdit->value(),
                                    m_interestFrequencyUnitEdit->currentItem());
   }
   return acc;
+}
+
+void KNewLoanWizard::slotReloadEditWidgets(void)
+{
+#if 0
+  // TODO: reload the account and category widgets
+  // reload category widget
+  KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
+  QCString categoryId;
+  category->selectedItem(categoryId);
+
+  AccountSet aSet(m_objects);
+  aSet.addAccountGroup(MyMoneyAccount::Asset);
+  aSet.addAccountGroup(MyMoneyAccount::Liability);
+  aSet.addAccountGroup(MyMoneyAccount::Income);
+  aSet.addAccountGroup(MyMoneyAccount::Expense);
+  if(KMyMoneySettings::expertMode())
+    aSet.addAccountGroup(MyMoneyAccount::Equity);
+  aSet.load(category->selector());
+#endif
+
+  // reload payee widget
+  QCString payeeId;
+  m_payeeEdit->selectedItem(payeeId);
+
+  m_payeeEdit->loadPayees(MyMoneyFile::instance()->payeeList());
+
+  if(!payeeId.isEmpty()) {
+    m_payeeEdit->setSelectedItem(payeeId);
+  }
 }
 
 void KNewLoanWizard::loadWidgets(const MyMoneyAccount& account)
@@ -1216,7 +1242,7 @@ const QDate KNewLoanWizard::initialPaymentDate(void) const
   if(m_dontCreatePayoutCheckBox->isChecked()) {
     return QDate();
   }
-  return m_paymentDate->getQDate();
+  return m_paymentDate->date();
 }
 
 #include "knewloanwizard.moc"

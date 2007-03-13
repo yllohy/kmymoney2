@@ -1,3 +1,9 @@
+2007-03-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed transaction tab from investment view
+  * Removed references to kMyMoneyPayee and replaced them with 
+    the new widget KMyMoneyPayeeCombo
+  * Added option to synchronize the account in the ledger and investment view
+
 2007-03-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added network transparent file access to import dialog
 

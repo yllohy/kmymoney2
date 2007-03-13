@@ -41,7 +41,6 @@
 #include <kmymoney/mymoneysecurity.h>
 #include <kmymoney/mymoneyscheduled.h>
 #include <kmymoney/mymoneytransaction.h>
-class kMyMoneyPayee;
 
 /**
   * @author Thomas Baumgart
@@ -236,33 +235,6 @@ public:
     * @param list reference to QStringList containing the option list
     */
   static void addDefaultHomePageItems(QStringList& list);
-
-  /**
-    * This methods ask the user if a new payee should be added to the
-    * storage object. The widget is updated.
-    *
-    * @param parent pointer to the widget which should be the parent widget
-    *               for message boxes etc.
-    * @param payeeEdit pointer to the payee edit widget
-    * @param payeeName new name of the payee.
-    *
-    * Usually, one would connect the kMyMoneyPayee::newPayee() signal to a slot
-    * in a view or dialog which call this helper method. Here's an example:
-    *
-    * @code
-    *   :
-    *   // this could be somewhere in the constructor
-    *   connect(m_payeeEdit, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
-    *   :
-    *   :
-    * xxx::slotNewPayee(const QString& payeeName)
-    * {
-    *   KMyMoneyUtils::newPayee(this, m_payeeEdit, payeeName);
-    * }
-    *
-    * @endcode
-    */
-  static void newPayee(QWidget* parent, kMyMoneyPayee* payeeEdit, const QString& payeeName);
 
   /**
     * Retrieve a KDE KGuiItem for the split button

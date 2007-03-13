@@ -510,6 +510,7 @@ void KLedgerViewLoan::fillForm(void)
 
 void KLedgerViewLoan::createEditWidgets(void)
 {
+#if 0
   if(!m_editPayee) {
     m_editPayee = new kMyMoneyPayee(0, "editPayee");
     connect(m_editPayee, SIGNAL(newPayee(const QString&)), this, SLOT(slotNewPayee(const QString&)));
@@ -546,6 +547,7 @@ void KLedgerViewLoan::createEditWidgets(void)
     m_editSplit = new KPushButton(i18n("Split"), 0, "editSplit");
     connect(m_editSplit, SIGNAL(clicked()), this, SLOT(slotOpenSplitDialog()));
   }
+#endif
 }
 
 void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
@@ -636,7 +638,7 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
   if(m_split.action() == MyMoneySplit::ActionAmortization && amount.isNegative()) {
     amount = -amount;
   }
-
+#if 0
   if(m_editPayee)
     m_editPayee->loadText(payee);
   if(m_editMemo)
@@ -647,6 +649,7 @@ void KLedgerViewLoan::reloadEditWidgets(const MyMoneyTransaction& t)
     m_editDate->loadDate(m_transactionPtr->postDate());
   if(m_editNr)
     m_editNr->loadText(m_split.number());
+#endif
 }
 
 void KLedgerViewLoan::loadEditWidgets(void)
@@ -689,6 +692,7 @@ void KLedgerViewLoan::loadEditWidgets(void)
 
 QWidget* KLedgerViewLoan::arrangeEditWidgetsInForm(void)
 {
+#if 0
   // make sure, that the category has an associated button
   QTableItem* item;
   kMyMoneyTransactionFormTable* table = m_form->table();
@@ -738,12 +742,13 @@ QWidget* KLedgerViewLoan::arrangeEditWidgetsInForm(void)
   addToTabOrder(m_editNr);
   addToTabOrder(m_editDate);
   addToTabOrder(m_editAmount);
-
-  return m_editPayee;
+#endif
+  return m_editCategory;
 }
 
 QWidget* KLedgerViewLoan::arrangeEditWidgetsInRegister(void)
 {
+#if 0
   int   firstRow = m_register->currentTransactionIndex() * m_register->rpt();
 
   // place edit widgets in the register
@@ -773,6 +778,7 @@ QWidget* KLedgerViewLoan::arrangeEditWidgetsInRegister(void)
     delete m_editSplit;
     m_editSplit = 0;
   }
+#endif
   return m_editDate;
 }
 

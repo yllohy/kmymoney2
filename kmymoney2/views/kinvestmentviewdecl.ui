@@ -1,15 +1,15 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>kInvestmentViewDecl</class>
+<class>KInvestmentViewDecl</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>kInvestmentViewDecl</cstring>
+        <cstring>KInvestmentViewDecl</cstring>
     </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
             <width>707</width>
-            <height>382</height>
+            <height>346</height>
         </rect>
     </property>
     <property name="caption">
@@ -93,43 +93,17 @@
                 </spacer>
             </hbox>
         </widget>
-        <widget class="QTabWidget">
+        <widget class="KListView">
             <property name="name">
-                <cstring>m_tab</cstring>
+                <cstring>m_table</cstring>
             </property>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>m_summaryTab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Investment Summary</string>
-                </attribute>
-                <hbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="KListView">
-                        <property name="name">
-                            <cstring>investmentTable</cstring>
-                        </property>
-                        <property name="font">
-                            <font>
-                            </font>
-                        </property>
-                        <property name="toolTip" stdset="0">
-                            <string>Summary of the equities contained in this account, showing your holdings and their most recent price.</string>
-                        </property>
-                    </widget>
-                </hbox>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>m_transactionTab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Investment Transactions</string>
-                </attribute>
-            </widget>
+            <property name="font">
+                <font>
+                </font>
+            </property>
+            <property name="toolTip" stdset="0">
+                <string>Summary of the equities contained in this account, showing your holdings and their most recent price.</string>
+            </property>
         </widget>
     </vbox>
 </widget>
