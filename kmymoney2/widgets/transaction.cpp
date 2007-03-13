@@ -42,7 +42,6 @@
 #include <kmymoney/transactionform.h>
 #include <kmymoney/kmymoneylineedit.h>
 #include <kmymoney/kmymoneyedit.h>
-#include <kmymoney/kmymoneypayee.h>
 #include <kmymoney/transactioneditor.h>
 #include <kmymoney/investtransactioneditor.h>
 
