@@ -46,7 +46,6 @@
 
 #include "../kmymoneyutils.h"
 #include <kmymoney/kmymoneylineedit.h>
-#include <kmymoney/kmymoneypayee.h>
 #include <kmymoney/kmymoneydateinput.h>
 #include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/kmymoneyaccountselector.h>

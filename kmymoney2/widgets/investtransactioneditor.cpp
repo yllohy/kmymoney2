@@ -38,7 +38,6 @@
 // Project Includes
 
 #include <kmymoney/investtransactioneditor.h>
-#include <kmymoney/kmymoneypayee.h>
 #include <kmymoney/kmymoneycategory.h>
 #include <kmymoney/kmymoneydateinput.h>
 #include <kmymoney/kmymoneyedit.h>

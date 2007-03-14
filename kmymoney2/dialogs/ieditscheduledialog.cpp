@@ -40,7 +40,6 @@
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/mymoneypayee.h>
-#include <kmymoney/kmymoneypayee.h>
 #include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/kmymoneycategory.h>
 #include <kmymoney/kmymoneydateinput.h>

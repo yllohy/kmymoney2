@@ -36,10 +36,10 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/mymoneyfinancialcalculator.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
 #include "kmymoneyutils.h"
-#include "mymoney/mymoneyfile.h"
-#include "mymoney/mymoneyfinancialcalculator.h"
-#include <kmymoney/kmymoneypayee.h>
 
 QColor KMyMoneyUtils::_backgroundColour;
 QColor KMyMoneyUtils::_listColour;

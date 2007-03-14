@@ -42,7 +42,6 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneyutils.h>
 #include <kmymoney/kmymoneyaccountcombo.h>
-#include <kmymoney/kmymoneypayee.h>
 #include <kmymoney/kmymoneydateinput.h>
 #include <kmymoney/kmymoneycategory.h>
 #include <kmymoney/mymoneyfinancialcalculator.h>
