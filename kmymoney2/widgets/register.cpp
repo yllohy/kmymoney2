@@ -644,6 +644,12 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
       horizontalHeader()->setLabel(PaymentColumn, i18n("Increase of asset/liability value", "Increase"));
       horizontalHeader()->setLabel(DepositColumn, i18n("Decrease of asset/liability value", "Decrease"));
       break;
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Expense:
+      horizontalHeader()->setLabel(PaymentColumn, i18n("Income"));
+      horizontalHeader()->setLabel(DepositColumn, i18n("Expense"));
+      break;
+
     default:
       break;
   }
