@@ -47,6 +47,8 @@
 #include "reportdebug.h"
 #include "kreportchartview.h"
 
+extern bool newReports;    // for debug purposes in main.cpp
+
 namespace reports {
 
 const unsigned PivotTable::TOuterGroup::m_kDefaultSortOrder = 100;
@@ -195,7 +197,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   //
 
   m_grid.m_total = TGridRowPair(m_numColumns);
-  
+
   //
   // Get opening balances
   // (for running sum reports only)
@@ -210,21 +212,34 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   //
   if ( m_config_f.hasBudget() )
     calculateBudgetMapping();
-    
+
   //
   // Populate all transactions into the row/column pivot grid
   //
 
-  m_config_f.setReportAllSplits(false);
-  m_config_f.setConsiderCategory(true);
   QValueList<MyMoneyTransaction> transactions;
-  try {
-    transactions = file->transactionList(m_config_f);
-  } catch(MyMoneyException *e) {
-    qDebug("ERR: %s thrown in %s(%ld)", e->what().data(), e->file().data(), e->line());
-    throw e;
+  QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >  splitList;
+  if(!newReports) {
+    m_config_f.setReportAllSplits(false);
+    m_config_f.setConsiderCategory(true);
+    try {
+      transactions = file->transactionList(m_config_f);
+    } catch(MyMoneyException *e) {
+      qDebug("ERR: %s thrown in %s(%ld)", e->what().data(), e->file().data(), e->line());
+      throw e;
+    }
+  } else { // new Reports
+    m_config_f.setReportAllSplits(true);
+    m_config_f.setConsiderCategory(true);
+    try {
+      file->transactionList(splitList, m_config_f);
+    } catch(MyMoneyException *e) {
+      qDebug("ERR: %s thrown in %s(%ld)", e->what().data(), e->file().data(), e->line());
+      throw e;
+    }
   }
   DEBUG_OUTPUT(QString("Found %1 matching transactions").arg(transactions.count()));
+
 
   // Include scheduled transactions if required
   if ( m_config_f.isIncludingSchedules() )
@@ -257,9 +272,17 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
           {
             tx.setPostDate(*it_date);
 
-            // ???? Does this violate an assumption that transactions are sorted
-            // by date?? (ace)
-            transactions += tx;
+            if(!newReports) {
+              // ???? Does this violate an assumption that transactions are sorted
+              // by date?? (ace)
+              transactions += tx;
+            } else {
+              unsigned int cnt = schedulefilter.matchingSplits().count();
+              QValueList<MyMoneySplit>::const_iterator it_s;
+              for(it_s = schedulefilter.matchingSplits().begin(); it_s != schedulefilter.matchingSplits().end(); ++it_s) {
+                splitList.append(qMakePair(tx, *it_s));
+              }
+            }
 
             DEBUG_OUTPUT(QString("Added transaction for schedule %1 on %2").arg((*it_schedule).id()).arg((*it_date).toString()));
 
@@ -276,6 +299,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   // transfers
   bool al_transfers = ( m_config_f.rowType() == MyMoneyReport::eExpenseIncome ) && ( m_config_f.isIncludingTransfers() );
 
+  if(!newReports) {
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
   unsigned colofs = columnValue(m_beginDate) - 1;
   while ( it_transaction != transactions.end() )
@@ -322,6 +346,51 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
     }
 
     ++it_transaction;
+  }
+  } else {    // newReports
+  // create the elements for the register
+  QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it_t = splitList.begin();
+
+  unsigned colofs = columnValue(m_beginDate) - 1;
+  while ( it_t != splitList.end() )
+  {
+    QDate postdate = (*it_t).first.postDate();
+    unsigned column = columnValue(postdate) - colofs;
+
+    ReportAccount splitAccount = (*it_t).second.accountId();
+
+    // Each split must be further filtered, because if even one split matches,
+    // the ENTIRE transaction is returned with all splits (even non-matching ones)
+    if ( m_config_f.includes( splitAccount ) )
+    {
+      // reverse sign to match common notation for cash flow direction, only for expense/income splits
+      MyMoneyMoney reverse(splitAccount.isIncomeExpense() ? -1 : 1, 1);
+
+      // retrieve the value in the account's underlying currency
+      // make sure to consider any autocalculation for loan payments
+      MyMoneyMoney value;
+      if((*it_t).second.shares() != MyMoneyMoney::autoCalc) {
+        value = (*it_t).second.shares() * reverse;
+      } else {
+      }
+
+      // the outer group is the account class (major account type)
+      MyMoneyAccount::accountTypeE type = splitAccount.accountGroup();
+      QString outergroup = accountTypeToString(type);
+
+      // Except in the case of transfers on an income/expense report
+      if ( al_transfers && ( type == MyMoneyAccount::Asset || type == MyMoneyAccount::Liability ) )
+      {
+        outergroup = i18n("Transfers");
+        value = -value;
+      }
+      // add the value to its correct position in the pivot table
+      assignCell( outergroup, splitAccount, column, value );
+
+    }
+
+    ++it_t;
+  }
   }
 
   //
@@ -671,15 +740,15 @@ void PivotTable::calculateBudgetMapping( void )
     // we'll need to make this a configuration option for the user)
     QValueList<MyMoneyBudget> budgets = file->budgetList();
     const MyMoneyBudget& budget = budgets[0];
-   
+
     // Dump the budget
     //kdDebug(2) << "Budget " << budget.name() << ": " << endl;
-  
+
     if ( m_config_f.isIncludingBudgetActuals() )
     {
     //
     // Go through all accounts in the system to build the mapping
-    // 
+    //
 
     QValueList<MyMoneyAccount> accounts = file->accountList(QCStringList(),true /* recursive */);
     QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
@@ -719,8 +788,8 @@ void PivotTable::calculateBudgetMapping( void )
       ++it_account;
     } // end while looping through the accounts in the file
     }
-    
-    if ( m_config_f.isIncludingBudgetActuals() ) 
+
+    if ( m_config_f.isIncludingBudgetActuals() )
     {
     //
     // Place the budget values into the budget grid
@@ -735,30 +804,30 @@ void PivotTable::calculateBudgetMapping( void )
 
       // reverse sign to match common notation for cash flow direction, only for expense/income splits
       MyMoneyMoney reverse(splitAccount.isIncomeExpense() ? -1 : 1, 1);
-      
+
       const QMap<QDate, MyMoneyBudget::PeriodGroup>& periods = (*it_bacc).getPeriods();
       MyMoneyMoney value = (*periods.begin()).amount() * reverse;
       unsigned column = 1;
-      
+
       // based on the kind of budget it is, deal accordingly
       switch ( (*it_bacc).budgetlevel() )
       {
       case MyMoneyBudget::AccountGroup::eYearly:
         // divide the single yearly value by 12 and place it in each column
 
-        value /= MyMoneyMoney(12,1);  
+        value /= MyMoneyMoney(12,1);
       case MyMoneyBudget::AccountGroup::eNone:
       case MyMoneyBudget::AccountGroup::eMax:
       case MyMoneyBudget::AccountGroup::eMonthly:
         // place the single monthly value in each column of the report
         while ( column < m_numColumns )
         {
-        
+
           assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
           ++column;
         }
         break;
-        
+
       case MyMoneyBudget::AccountGroup::eMonthByMonth:
         // place each value in the appropriate column
         QMap<QDate, MyMoneyBudget::PeriodGroup>::const_iterator it_period = periods.begin();
@@ -772,7 +841,7 @@ void PivotTable::calculateBudgetMapping( void )
         }
         break;
       }
-      
+
       ++it_bacc;
     }
     }
@@ -906,7 +975,7 @@ void PivotTable::calculateTotals( void )
           (*it_innergroup).m_total.m_budget[column] += budget;
           (*it_row).m_budget.m_total += value;
 
-          
+
           ++column;
         }
         ++it_row;
@@ -931,7 +1000,7 @@ void PivotTable::calculateTotals( void )
         MyMoneyMoney budget = (*it_innergroup).m_total.m_budget[column];
         (*it_outergroup).m_total.m_budget[column] += budget;
         (*it_innergroup).m_total.m_budget.m_total += budget;
-        
+
         ++column;
       }
 
@@ -959,7 +1028,7 @@ void PivotTable::calculateTotals( void )
 
       MyMoneyMoney budget = (*it_outergroup).m_total.m_budget[column];
       (*it_outergroup).m_total.m_budget.m_total += budget;
-      
+
       if ( invert_total )
         budget = -budget;
 
@@ -1011,7 +1080,7 @@ void PivotTable::assignCell( const QString& outergroup, const ReportAccount& _ro
 
     row = newrow;
   }
-  
+
   // ensure the row already exists (and its parental hierarchy)
   createRow( outergroup, row, true );
 
@@ -1677,7 +1746,7 @@ QString PivotTable::renderHTML( void ) const
   QString headerspan;
   if ( m_config_f.isIncludingBudgetActuals() )
     headerspan = " colspan=\"2\"";
-  
+
   unsigned column = 1;
   while ( column < m_numColumns )
     result += QString("<th%1>%2</th>").arg(headerspan,QString(m_columnHeadings[column++]).replace(QRegExp(" "),"<br>"));
@@ -1689,7 +1758,7 @@ QString PivotTable::renderHTML( void ) const
 
   //
   // "Budget/Actual" header
-  // 
+  //
   if ( m_config_f.isIncludingBudgetActuals() )
   {
     result += "<tr><td></td>";
@@ -1700,12 +1769,12 @@ QString PivotTable::renderHTML( void ) const
       result += QString("<td>%1</td><td>%2</td>").arg(i18n("Budget"),i18n("Actual"));
       column++;
     }
- 
+
     if ( m_config_f.isShowingRowTotals() )
       result += QString("<td>%1</td><td>%2</td>").arg(i18n("Budget"),i18n("Actual"));
     result += "</tr>";
   }
-  
+
   // Skip the body of the report if the report only calls for totals to be shown
   if ( m_config_f.detailLevel() != MyMoneyReport::eDetailTotal )
   {
@@ -1772,7 +1841,7 @@ QString PivotTable::renderHTML( void ) const
             {
               if ( m_config_f.isIncludingBudgetActuals() )
                 rowdata += QString("<td>%1</td>").arg(it_row.data().m_budget[column].formatMoney());
-              
+
               rowdata += QString("<td>%1</td>").arg(it_row.data()[column++].formatMoney());
             }
 
@@ -1856,7 +1925,7 @@ QString PivotTable::renderHTML( void ) const
 
               result += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
             }
-            
+
             if (  m_config_f.isShowingRowTotals() )
             {
               if ( m_config_f.isIncludingBudgetActuals() )
@@ -1919,7 +1988,7 @@ QString PivotTable::renderHTML( void ) const
     {
       if ( m_config_f.isIncludingBudgetActuals() )
         result += QString("<td>%1</td>").arg(m_grid.m_total.m_budget[totalcolumn].formatMoney());
-      
+
       result += QString("<td>%1</td>").arg(m_grid.m_total[totalcolumn++].formatMoney());
     }
 
@@ -2239,20 +2308,20 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
 #if 0
   // I have not been able to get this to work (ace)
-  
+
   //
   // Set line to dashed for the future
   //
- 
+
   if ( accountseries )
   {
     // the first column of report which represents a date in the future, or one past the
     // last column if all columns are in the present day. Only relevant when accountseries==true
-    unsigned futurecolumn = columnValue(QDate::currentDate()) - columnValue(m_beginDate) + 1; 
+    unsigned futurecolumn = columnValue(QDate::currentDate()) - columnValue(m_beginDate) + 1;
 
     // kdDebug(2) << "futurecolumn: " << futurecolumn << endl;
     // kdDebug(2) << "m_numColumns: " << m_numColumns << endl;
- 
+
     // Properties for line charts whose values are in the future.
     KDChartPropertySet propSetFutureValue("future value", KDChartParams::KDCHART_PROPSET_NORMAL_DATA);
     propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
@@ -2261,7 +2330,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
     for(int col = futurecolumn; col < m_numColumns; ++col) {
       _view.setProperty(0, col, idPropFutureValue);
     }
-    
+
   }
 #endif
 }
