@@ -1222,6 +1222,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
       connect(editor, SIGNAL(createPayee(const QString&, QCString&)), kmymoney2, SLOT(slotPayeeNew(const QString&, QCString&)));
       connect(editor, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
       connect(editor, SIGNAL(createSecurity(MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotInvestmentNew(MyMoneyAccount&, const MyMoneyAccount&)));
+      connect(editor, SIGNAL(lastPostDateUsed(const QDate&)), this, SLOT(slotKeepPostDate(const QDate&)));
 
       // create the widgets, place them in the parent and load them with data
       // setup tab order
@@ -1457,6 +1458,11 @@ void KGlobalLedgerView::slotToggleMarkTransactionCleared(KMyMoneyRegister::Trans
         break;
     }
   }
+}
+
+void KGlobalLedgerView::slotKeepPostDate(const QDate& date)
+{
+  m_lastPostDate = date;
 }
 
 bool KGlobalLedgerView::canCreateTransactions(QString& tooltip) const

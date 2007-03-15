@@ -381,7 +381,7 @@ void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QV
 
     default:
       categoryId = QCString();
-      category->setCurrentText(i18n("Split transaction (category replacement)", "Split transaction"));
+      category->setSplitTransaction();
       connect(category, SIGNAL(focusIn()), this, splitEditSlot);
 #if 0
   // FIXME must deal with the logic that suppressObjectCreation is
@@ -463,6 +463,10 @@ bool TransactionEditor::enterTransactions(QCString& newId)
             m_account.setValue("lastNumberUsed", number);
             MyMoneyFile::instance()->modifyAccount(m_account);
           }
+
+          // send out the post date of this transaction
+          emit lastPostDateUsed((*it_ts).postDate());
+
         } else {
           // modify existing transaction
           MyMoneyFile::instance()->modifyTransaction(*it_ts);

@@ -197,6 +197,13 @@ signals:
 
   void statusProgress(int cnt, int base);
 
+  /**
+    * This signal is sent out for each newly added transaction
+    *
+    * @param date the post date of the newly created transaction
+    */
+  void lastPostDateUsed(const QDate& date);
+
 protected:
   QValueList<MyMoneySplit>                          m_splits;
   QValueList<KMyMoneyRegister::SelectedTransaction> m_transactions;

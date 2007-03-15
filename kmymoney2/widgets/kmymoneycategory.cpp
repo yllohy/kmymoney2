@@ -113,6 +113,7 @@ void KMyMoneyCategory::setCurrentText(const QCString& id)
     setCurrentText(MyMoneyFile::instance()->accountToCategory(id));
   else
     setCurrentText();
+  setSuppressObjectCreation(false);
 }
 
 void KMyMoneyCategory::slotItemSelected(const QCString& id)
@@ -140,6 +141,7 @@ void KMyMoneyCategory::focusInEvent(QFocusEvent *ev)
 void KMyMoneyCategory::setSplitTransaction(void)
 {
   setCurrentText(i18n("Split transaction (category replacement)", "Split transaction"));
+  setSuppressObjectCreation(true);
 }
 
 bool KMyMoneyCategory::isSplitTransaction(void) const

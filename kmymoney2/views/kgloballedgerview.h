@@ -360,6 +360,8 @@ protected slots:
   void slotSortOptions(void);
   void slotToggleMarkTransactionCleared(KMyMoneyRegister::Transaction* t);
 
+  void slotKeepPostDate(const QDate&);
+
 protected:
   /**
     * This member keeps the date that was used as the last posting date.

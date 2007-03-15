@@ -6,6 +6,8 @@
   * Changed the way splits are selected for pivot table based reports
     This is only available when KMyMoney is started with option --newreports
     and has been compiled with --enable-debug=yes or --enable-debug=full
+  * Re-use post date of a new transaction for next new transaction
+  * Fixed a problem when autofilling a split transaction
 
 2007-03-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a couple problems introduced with yesterdays changes
