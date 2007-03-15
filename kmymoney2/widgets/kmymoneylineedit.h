@@ -3,9 +3,11 @@
                              -------------------
     begin                : Wed May 9 2001
     copyright            : (C) 2001 by Michael Edwardes
+                               2006 by Thomas Baumgart
     email                : mte@users.sourceforge.net
-                             Javier Campos Morales <javi_c@ctv.es>
-                             Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+                           Javier Campos Morales <javi_c@ctv.es>
+                           Felix Rodriguez <frodriguez@mail.wesleyan.edu>
+                           Thomas Baumgart <ipwizard@users.sourceforge.net>
  ***************************************************************************/
 
 /***************************************************************************
@@ -32,16 +34,28 @@
 // Project Includes
 
 /**
-  *@author Michael Edwardes
+  * This class represents a special verson of a KLineEdit object that
+  * supports the display of a hint if the display area is empty. It also
+  * overrides the comma key on the numeric keypad with the currently
+  * selected monetaryDecimalSymbol if selected during creation of the object.
+  *
+  * @author Michael Edwardes
+  * @author Thomas Baumgart
   */
-
-class kMyMoneyLineEdit : public KLineEdit  {
+class kMyMoneyLineEdit : public KLineEdit
+{
   Q_OBJECT
 public:
-  kMyMoneyLineEdit(QWidget *w = 0, const char* name = 0, int alignment = (AlignLeft | AlignVCenter));
+  /**
+    * @param w pointer to parent
+    * @param name pointer to name of object
+    * @param forceMonetaryDecimalSymbol if @a true, the numeric keypad comma key will have a fixed
+    *            value and does not follow the keyboard layout (default: @p false)
+    * @param alignment Controls the alignment of the text. Default is Qt::AlignLeft | Qt::AlignVCenter.
+    *                  See Qt::AlignmentFlags for other possible values.
+    */
+  kMyMoneyLineEdit(QWidget *w = 0, const char* name = 0, bool forceMonetaryDecimalSymbol = false, int alignment = (AlignLeft | AlignVCenter));
   ~kMyMoneyLineEdit();
-  /** No descriptions */
-  // virtual bool eventFilter(QObject * , QEvent * );
 
   /**
     * This method is used to set the value of the widget back to
@@ -58,43 +72,64 @@ public:
 public slots:
   void loadText(const QString& text);
 
-signals: // Signals
+signals:
+  /**
+    * This signal is emitted when the focus leaves the object and the text
+    * has been changed. The new text is passed as @a str.
+    */
   void lineChanged(const QString& str);
-
-  /**
-    * This signal is emitted when the user presses RETURN while editing
-    */
-  // void signalEnter();
-
-  /**
-    * This signal is emitted when the user presses ESC while editing
-    */
-  // void signalEsc();
-
-  /** No descriptions */
-  // void signalNextTransaction();
-  /** signal is sent, when the tab key is pressed */
-  // void signalTab();
-  /** signal is sent, when the Back-tab (Shift-Tab) key is pressed */
-  // void signalBackTab();
 
 protected:
   void focusOutEvent(QFocusEvent *ev);
 
-  /** reimplemented */
+  /** reimplemented to support the hint display */
   void drawContents( QPainter *);
+
+  /**
+    * Overridden so that the period key on the numeric keypad always sends
+    * out the currently selected monetary decimal symbol instead of the
+    * key defined by the keymap.
+    *
+    * Example: If you have set the keymap (keyboard layout) as English, then
+    * the numeric keypad will send a period but if you have set the keymap to
+    * be German, the same key will send a comma.
+    *
+    * @param ev pointer to current QKeyEvent
+    */
+  void keyPressEvent(QKeyEvent* ev);
+
+  /**
+    * Overridden so that the period key on the numeric keypad always sends
+    * out the currently selected monetary decimal symbol instead of the
+    * key defined by the keymap.
+    *
+    * Example: If you have set the keymap (keyboard layout) as English, then
+    * the numeric keypad will send a period but if you have set the keymap to
+    * be German, the same key will send a comma.
+    *
+    * @param ev pointer to current QKeyEvent
+    */
+  void keyReleaseEvent(QKeyEvent* ev);
 
 private:
   /**
     * This member keeps the initial value. It is used during
     * resetText() to set the widgets text back to this initial value
+    * and as comparison during focusOutEvent() to emit the lineChanged
+    * signal if the current text is different.
     */
   QString m_text;
 
   /**
-   * This member tells what to display as hint as long as the field is empty
-   */
+    * This member tells what to display as hint as long as the field is empty
+    */
   QString m_hint;
+
+  /**
+    * This member keeps the status if overriding the numeric keypad comma key
+    * is requested or not.
+    */
+  bool m_forceMonetaryDecimalSymbol;
 };
 
 #endif

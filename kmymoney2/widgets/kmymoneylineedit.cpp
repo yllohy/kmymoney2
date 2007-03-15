@@ -19,12 +19,15 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qrect.h>
 #include <qpainter.h>
 #include <qpalette.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
+#include <kglobal.h>
 #include <klocale.h>
 
 // ----------------------------------------------------------------------------
@@ -32,8 +35,9 @@
 
 #include "kmymoneylineedit.h"
 
-kMyMoneyLineEdit::kMyMoneyLineEdit(QWidget *w, const char* name, int alignment)
-  : KLineEdit(w, name)
+kMyMoneyLineEdit::kMyMoneyLineEdit(QWidget *w, const char* name, bool forceMonetaryDecimalSymbol, int alignment) :
+  KLineEdit(w, name),
+  m_forceMonetaryDecimalSymbol(forceMonetaryDecimalSymbol)
 {
   setAlignment(alignment);
 }
@@ -66,6 +70,56 @@ void kMyMoneyLineEdit::focusOutEvent(QFocusEvent *ev)
   // force update of hint
   if(text().isEmpty())
     repaint();
+}
+
+void kMyMoneyLineEdit::keyReleaseEvent(QKeyEvent* k)
+{
+  if(m_forceMonetaryDecimalSymbol) {
+    if(k->state() & Qt::Keypad) {
+      if(k->key() == Qt::Key_Comma
+      || k->key() == Qt::Key_Period) {
+        if(KGlobal::locale()->monetaryDecimalSymbol() == ",") {
+          QKeyEvent newk(k->type(), Qt::Key_Comma, ',', k->state(), ",", k->isAutoRepeat(), k->count());
+          KLineEdit::keyReleaseEvent(&newk);
+          k->ignore();
+          return;
+        }
+
+        if(KGlobal::locale()->monetaryDecimalSymbol() == ".") {
+          QKeyEvent newk(k->type(), Qt::Key_Comma, ',', k->state(), ".", k->isAutoRepeat(), k->count());
+          KLineEdit::keyReleaseEvent(&newk);
+          k->ignore();
+          return;
+        }
+      }
+    }
+  }
+  KLineEdit::keyReleaseEvent(k);
+}
+
+void kMyMoneyLineEdit::keyPressEvent(QKeyEvent* k)
+{
+  if(m_forceMonetaryDecimalSymbol) {
+    if(k->state() & Qt::Keypad) {
+      if(k->key() == Qt::Key_Comma
+      || k->key() == Qt::Key_Period) {
+        if(KGlobal::locale()->monetaryDecimalSymbol() == ",") {
+          QKeyEvent newk(k->type(), Qt::Key_Comma, ',', k->state(), ",", k->isAutoRepeat(), k->count());
+          KLineEdit::keyPressEvent(&newk);
+          k->ignore();
+          return;
+        }
+
+        if(KGlobal::locale()->monetaryDecimalSymbol() == ".") {
+          QKeyEvent newk(k->type(), Qt::Key_Period, '.', k->state(), ".", k->isAutoRepeat(), k->count());
+          KLineEdit::keyPressEvent(&newk);
+          k->ignore();
+          return;
+        }
+      }
+    }
+  }
+  KLineEdit::keyPressEvent(k);
 }
 
 void kMyMoneyLineEdit::drawContents( QPainter *p)

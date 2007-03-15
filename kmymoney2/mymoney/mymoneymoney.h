@@ -116,8 +116,10 @@ public:
     *
     * @param currency The currency symbol (default "")
     * @param prec The number of fractional digits (default 2)
+    * @param showThousandSeparator should the thousandSeparator symbol be inserted
+    *                              (@a true) or not (@a false)
     */
-  const QString formatMoney(const QString currency = QString(), const int prec = 2) const;
+  const QString formatMoney(const QString& currency = QString(), const int prec = 2, bool showThousandSeparator = true) const;
 
   /**
     * This method is used to convert the smallest fraction information into

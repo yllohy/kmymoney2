@@ -171,7 +171,7 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
     m_num = -m_num;
 }
 
-const QString MyMoneyMoney::formatMoney(const QString currency, const int prec) const
+const QString MyMoneyMoney::formatMoney(const QString& currency, const int prec, bool showThousandSeparator) const
 {
   QString res;
   QString tmpCurrency = currency;
@@ -212,9 +212,11 @@ const QString MyMoneyMoney::formatMoney(const QString currency, const int prec) 
   } else
     res = QString("%1").arg((long)left);
 
-  int pos = res.length();
-  while((0 < (pos -= 3)) && thousandSeparator())
-    res.insert(pos, thousandSeparator());
+  if(showThousandSeparator) {
+    int pos = res.length();
+    while((0 < (pos -= 3)) && thousandSeparator())
+      res.insert(pos, thousandSeparator());
+  }
 
   if(prec > 0) {
     if(decimalSeparator())

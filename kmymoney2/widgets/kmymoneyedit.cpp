@@ -120,7 +120,7 @@ QValidator::State kMyMoneyMoneyValidator::validate( QString & input, int & _p ) 
   if(decPos != -1) {
     if(decimals() == 0)
       return Invalid;
-    if((s.length() - decPos) > decimals())
+    if(((int)(s.length()) - decPos) > decimals())
       return Invalid;
   }
 
@@ -194,7 +194,7 @@ static const uchar resetButtonImage[] = {
 void kMyMoneyEdit::init(void)
 {
   allowEmpty = false;
-  m_edit = new kMyMoneyLineEdit(this);
+  m_edit = new kMyMoneyLineEdit(this, 0, true);
   m_edit->installEventFilter(this);
   setFocusProxy(m_edit);
 
@@ -273,7 +273,8 @@ MyMoneyMoney kMyMoneyEdit::value(void) const
 
 void kMyMoneyEdit::setValue(const MyMoneyMoney& value)
 {
-  QString txt = value.formatMoney("", m_prec);
+  // load the value into the widget but don't use thousandsSeparators
+  QString txt = value.formatMoney("", m_prec, false);
   loadText(txt);
 }
 
