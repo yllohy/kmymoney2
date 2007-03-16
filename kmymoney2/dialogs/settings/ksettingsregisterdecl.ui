@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>669</width>
-            <height>386</height>
+            <width>560</width>
+            <height>353</height>
         </rect>
     </property>
     <property name="caption">
@@ -28,7 +28,7 @@
                     <cstring>tab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>General</string>
+                    <string>Display</string>
                 </attribute>
                 <vbox>
                     <property name="name">
@@ -68,42 +68,10 @@
                     </widget>
                     <widget class="QCheckBox">
                         <property name="name">
-                            <cstring>kcfg_CopyTypeToNr</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Insert transaction type into No. field for new transactions</string>
-                        </property>
-                    </widget>
-                    <widget class="QCheckBox">
-                        <property name="name">
-                            <cstring>kcfg_AutoIncCheckNumber</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Auto increment check number</string>
-                        </property>
-                    </widget>
-                    <widget class="QCheckBox">
-                        <property name="name">
-                            <cstring>kcfg_FocusChangeIsEnter</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Keep changes when selecting a different transaction/split</string>
-                        </property>
-                    </widget>
-                    <widget class="QCheckBox">
-                        <property name="name">
-                            <cstring>kcfg_AutoFillTransaction</cstring>
-                        </property>
-                        <property name="text">
-                            <string>Auto fill with previous transaction data</string>
-                        </property>
-                    </widget>
-                    <widget class="QCheckBox">
-                        <property name="name">
                             <cstring>kcfg_ShowFancyMarker</cstring>
                         </property>
                         <property name="text">
-                            <string>Show fancy group marker</string>
+                            <string>Show group header between transactions</string>
                         </property>
                         <property name="whatsThis" stdset="0">
                             <string>Draws a larger header above each group of transaction. The grouping depends on the current sort order.</string>
@@ -122,7 +90,7 @@
                         <property name="sizeHint">
                             <size>
                                 <width>20</width>
-                                <height>20</height>
+                                <height>30</height>
                             </size>
                         </property>
                     </spacer>
@@ -200,7 +168,7 @@
                         <property name="sizeHint">
                             <size>
                                 <width>20</width>
-                                <height>70</height>
+                                <height>20</height>
                             </size>
                         </property>
                     </spacer>
@@ -276,6 +244,68 @@
                             <string>Use the &lt;i&gt;left&lt;/i&gt; and &lt;i&gt;right&lt;/i&gt; buttons to add and remove sort options. Use the &lt;i&gt;up&lt;/i&gt; and &lt;i&gt;down&lt;/i&gt; buttons to modify the sort order. Double-Click a selected entry to toggle the sort order between &lt;i&gt;ascending&lt;/i&gt; and &lt;i&gt;descending&lt;/i&gt;.</string>
                         </property>
                     </widget>
+                </vbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>TabPage</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Data entry</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>kcfg_CopyTypeToNr</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Insert transaction type into No. field for new transactions</string>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>kcfg_AutoIncCheckNumber</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Auto increment check number</string>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>kcfg_AutoFillTransaction</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Auto fill with previous transaction data</string>
+                        </property>
+                    </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>kcfg_FocusChangeIsEnter</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Keep changes when selecting a different transaction/split</string>
+                        </property>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer4</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>20</width>
+                                <height>140</height>
+                            </size>
+                        </property>
+                    </spacer>
                 </vbox>
             </widget>
         </widget>

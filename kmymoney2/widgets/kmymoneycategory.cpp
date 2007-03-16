@@ -1,14 +1,9 @@
 /***************************************************************************
                           kmymoneycategory.cpp  -  description
                              -------------------
-    begin                : Sun Aug 11 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+    begin                : Mon Jul 10 2006
+    copyright            : (C) 2006 by Thomas Baumgart
+    email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
  ***************************************************************************/
 
 /***************************************************************************
@@ -180,6 +175,19 @@ void KMyMoneySecurity::setCurrentText(const QCString& id)
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
 // -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
+
+/***************************************************************************
+                          kmymoneycategory.cpp  -  description
+                             -------------------
+    begin                : Sun Aug 11 2002
+    copyright            : (C) 2000-2002 by Michael Edwardes
+    email                : mte@users.sourceforge.net
+                           Javier Campos Morales <javi_c@users.sourceforge.net>
+                           Felix Rodriguez <frodriguez@users.sourceforge.net>
+                           John C <thetacoturtle@users.sourceforge.net>
+                           Thomas Baumgart <ipwizard@users.sourceforge.net>
+                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+ ***************************************************************************/
 
 #include <qapplication.h>
 #include <qvbox.h>

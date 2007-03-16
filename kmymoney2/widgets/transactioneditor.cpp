@@ -47,11 +47,10 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneyutils.h>
 #include <kmymoney/transactionform.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
 
 #include "../dialogs/ksplittransactiondlg.h"
 #include "../dialogs/kcurrencycalculator.h"
-
-#include "../kmymoneysettings.h"
 
 using namespace KMyMoneyRegister;
 using namespace KMyMoneyTransactionForm;
@@ -352,7 +351,7 @@ bool TransactionEditor::canAssignNumber(void) const
   return (number != 0) && (number->text().isEmpty());
 }
 
-void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool allowObjectCreation)
+void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool /* allowObjectCreation */)
 {
   disconnect(category, SIGNAL(focusIn()), this, splitEditSlot);
 #if 0
@@ -672,8 +671,15 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
     else
       dynamic_cast<kMyMoneyDateInput*>(m_editWidgets["postdate"])->setDate(QDate::currentDate());
 
-    if((w = haveWidget("number")) != 0)
+    if((w = haveWidget("number")) != 0) {
       dynamic_cast<kMyMoneyLineEdit*>(w)->loadText(m_split.number());
+      if(m_transaction.id().isEmpty()                            // new transaction
+      && dynamic_cast<kMyMoneyLineEdit*>(w)->text().isEmpty()    // no number filled in
+      && m_account.accountType() == MyMoneyAccount::Checkings    // checkings account
+      && KMyMoneyGlobalSettings::autoIncCheckNumber()) {         // and auto inc number turned on?
+        assignNumber();
+      }
+    }
     dynamic_cast<KMyMoneyReconcileCombo*>(m_editWidgets["status"])->setState(m_split.reconcileFlag());
 
     QCString payeeId = m_split.payeeId();

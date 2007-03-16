@@ -1,3 +1,7 @@
+2007-03-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added logic for auto increment of check number to transaction editor
+  * Rearranged the register settings dialog (added new tab)
+
 2007-03-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Control character that is produced by the comma on the numeric keypad
     to be the monetary decimal symbol regardless of keyboard layout
