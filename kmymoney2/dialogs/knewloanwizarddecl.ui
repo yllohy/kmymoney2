@@ -4687,9 +4687,8 @@ KMyMoney has calculated the loan as shown below. If you want to accept these val
                     <cstring>TextLabel10_4_2</cstring>
                 </property>
                 <property name="text">
-                    <string>
-If this loan is for an asset, such as a car or a house, you can create the asset account now. An asset account represents the total value of an asset. The money from this loan will be transfered into the asset account you create or select.
-If this loan is a 'consumer loan' (money to use however you want,) you can use a checking account instead.</string>
+                    <string>If this loan is for an asset, such as a car or a house, you can create the asset account now. An asset account represents the total value of an asset. The money from this loan will be transfered into the asset account you create or select.
+If this loan is a 'consumer loan' (money to use however you want), you can use a checking account instead.</string>
                 </property>
                 <property name="alignment">
                     <set>WordBreak|AlignTop</set>
@@ -5475,10 +5474,142 @@ This page summarizes the data you entered. If you need to modify anything, pleas
         </sizepolicy>
         <pixmap>image0</pixmap>
     </customwidget>
+    <customwidget>
+        <class>KMyMoneyPayeeCombo</class>
+        <header location="local">kmymoney/kmymoneycombo.h</header>
+        <sizehint>
+            <width>-1</width>
+            <height>-1</height>
+        </sizehint>
+        <container>0</container>
+        <sizepolicy>
+            <hordata>5</hordata>
+            <verdata>5</verdata>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+        <pixmap>image1</pixmap>
+        <signal>destroyed()</signal>
+        <signal>destroyed(QObject*)</signal>
+        <signal>activated(int)</signal>
+        <signal>highlighted(int)</signal>
+        <signal>activated(const QString&amp;)</signal>
+        <signal>highlighted(const QString&amp;)</signal>
+        <signal>textChanged(const QString&amp;)</signal>
+        <signal>returnPressed()</signal>
+        <signal>returnPressed(const QString&amp;)</signal>
+        <signal>completion(const QString&amp;)</signal>
+        <signal>substringCompletion(const QString&amp;)</signal>
+        <signal>textRotation(KCompletionBase::KeyBindingType)</signal>
+        <signal>completionModeChanged(KGlobalSettings::Completion)</signal>
+        <signal>aboutToShowContextMenu(QPopupMenu*)</signal>
+        <signal>itemSelected(const QCString&amp;)</signal>
+        <signal>objectCreation(bool)</signal>
+        <signal>createItem(const QString&amp;,QCString&amp;)</signal>
+        <slot access="public" specifier="">deleteLater()</slot>
+        <slot access="private" specifier="">cleanupEventFilter(QObject*)</slot>
+        <slot access="public" specifier="">setEnabled(bool)</slot>
+        <slot access="public" specifier="">setDisabled(bool)</slot>
+        <slot access="public" specifier="">setCaption(const QString&amp;)</slot>
+        <slot access="public" specifier="">setIcon(const QPixmap&amp;)</slot>
+        <slot access="public" specifier="">setIconText(const QString&amp;)</slot>
+        <slot access="public" specifier="">setMouseTracking(bool)</slot>
+        <slot access="public" specifier="">setFocus()</slot>
+        <slot access="public" specifier="">clearFocus()</slot>
+        <slot access="public" specifier="">setUpdatesEnabled(bool)</slot>
+        <slot access="public" specifier="">update()</slot>
+        <slot access="public" specifier="">update(int,int,int,int)</slot>
+        <slot access="public" specifier="">update(const QRect&amp;)</slot>
+        <slot access="public" specifier="">repaint()</slot>
+        <slot access="public" specifier="">repaint(bool)</slot>
+        <slot access="public" specifier="">repaint(int,int,int,int)</slot>
+        <slot access="public" specifier="">repaint(int,int,int,int,bool)</slot>
+        <slot access="public" specifier="">repaint(const QRect&amp;)</slot>
+        <slot access="public" specifier="">repaint(const QRect&amp;,bool)</slot>
+        <slot access="public" specifier="">repaint(const QRegion&amp;)</slot>
+        <slot access="public" specifier="">repaint(const QRegion&amp;,bool)</slot>
+        <slot access="public" specifier="">show()</slot>
+        <slot access="public" specifier="">hide()</slot>
+        <slot access="public" specifier="">setShown(bool)</slot>
+        <slot access="public" specifier="">setHidden(bool)</slot>
+        <slot access="public" specifier="">iconify()</slot>
+        <slot access="public" specifier="">showMinimized()</slot>
+        <slot access="public" specifier="">showMaximized()</slot>
+        <slot access="public" specifier="">showFullScreen()</slot>
+        <slot access="public" specifier="">showNormal()</slot>
+        <slot access="public" specifier="">polish()</slot>
+        <slot access="public" specifier="">constPolish()</slot>
+        <slot access="public" specifier="">close()</slot>
+        <slot access="public" specifier="">raise()</slot>
+        <slot access="public" specifier="">lower()</slot>
+        <slot access="public" specifier="">stackUnder(QWidget*)</slot>
+        <slot access="public" specifier="">move(int,int)</slot>
+        <slot access="public" specifier="">move(const QPoint&amp;)</slot>
+        <slot access="public" specifier="">resize(int,int)</slot>
+        <slot access="public" specifier="">resize(const QSize&amp;)</slot>
+        <slot access="public" specifier="">setGeometry(int,int,int,int)</slot>
+        <slot access="public" specifier="">setGeometry(const QRect&amp;)</slot>
+        <slot access="public" specifier="">adjustSize()</slot>
+        <slot access="private" specifier="">focusProxyDestroyed()</slot>
+        <slot access="public" specifier="">clear()</slot>
+        <slot access="public" specifier="">clearValidator()</slot>
+        <slot access="public" specifier="">clearEdit()</slot>
+        <slot access="public" specifier="">setEditText(const QString&amp;)</slot>
+        <slot access="private" specifier="">internalActivate(int)</slot>
+        <slot access="private" specifier="">internalHighlight(int)</slot>
+        <slot access="private" specifier="">internalClickTimeout()</slot>
+        <slot access="private" specifier="">returnPressed()</slot>
+        <slot access="public" specifier="">rotateText(KCompletionBase::KeyBindingType)</slot>
+        <slot access="public" specifier="">setCompletedText(const QString&amp;)</slot>
+        <slot access="public" specifier="">setCompletedItems(const QStringList&amp;)</slot>
+        <slot access="public" specifier="">setCurrentItem(const QString&amp;)</slot>
+        <slot access="public" specifier="">setCurrentItem(const QString&amp;,bool)</slot>
+        <slot access="public" specifier="">setCurrentItem(const QString&amp;,bool,int)</slot>
+        <slot access="public" specifier="">setCurrentItem(int)</slot>
+        <slot access="protected" specifier="">itemSelected(QListBoxItem*)</slot>
+        <slot access="protected" specifier="">makeCompletion(const QString&amp;)</slot>
+        <slot access="private" specifier="">lineEditDeleted()</slot>
+        <slot access="protected" specifier="">slotItemSelected(const QCString&amp;)</slot>
+        <property type="CString">name</property>
+        <property type="Bool">enabled</property>
+        <property type="Rect">geometry</property>
+        <property type="SizePolicy">sizePolicy</property>
+        <property type="Size">minimumSize</property>
+        <property type="Size">maximumSize</property>
+        <property type="Size">sizeIncrement</property>
+        <property type="Size">baseSize</property>
+        <property type="Color">paletteForegroundColor</property>
+        <property type="Color">paletteBackgroundColor</property>
+        <property type="Pixmap">paletteBackgroundPixmap</property>
+        <property type="Palette">palette</property>
+        <property type="BackgroundOrigin">backgroundOrigin</property>
+        <property type="Font">font</property>
+        <property type="Cursor">cursor</property>
+        <property type="String">caption</property>
+        <property type="Pixmap">icon</property>
+        <property type="String">iconText</property>
+        <property type="Bool">mouseTracking</property>
+        <property type="FocusPolicy">focusPolicy</property>
+        <property type="Bool">acceptDrops</property>
+        <property type="Bool">editable</property>
+        <property type="Int">currentItem</property>
+        <property type="Int">sizeLimit</property>
+        <property type="Int">maxCount</property>
+        <property type="Policy">insertionPolicy</property>
+        <property type="Bool">autoCompletion</property>
+        <property type="Bool">duplicatesEnabled</property>
+        <property type="Bool">autoMask</property>
+        <property type="Bool">autoCompletion</property>
+        <property type="Bool">contextMenuEnabled</property>
+        <property type="Bool">urlDropsEnabled</property>
+    </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
         <data format="PNG" length="1114">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000042149444154789c8d95c18b1c4514c67fbb29e5b54ea05b26da1d36b08d096e8b11261871837bc8e282ac7ac82187e049a317e32d37110992bf42123c694eea414c0e0bf1b0ec6c402139485a54e8810c54c10e741146fa110bd643f74c12bd642e4d75f77cf5d5ef7dafdfc2ce7087d9eff32fdfdff74e5114104011e489d6e952cce5cfbe5998692dec0c77b87aedd3fddd9f2b3efce02291082209aa3504685022e4ffd7a000a82a765c515615ce95acae659c3f7765c100ec6e575cf8f822e991025f3b6a6f890c484f181ccfc1583428f5d4e2fe84da039aa04121b40eb32483a0ec6e5bce9f8385d36fa7fb9b1b17c8f31cbfe7a95c45be94520c72b2141a1caa160d1666e24ea94aa11ee7685054159d2ada34d41387c40dc63b8844f0b5c73a4bb19cb3f9de001f2aac1fa23aa209168c004224902e29d22ff1e38abbdb275055c4800610233867311a1491847a62c98f66ac6f14d8e99072f22daa15b68a8108424d6422e24c88e3966fbce4c9d786945b27f0be0103ed13c16004d59a2c4d58df28a87548e9aee2274ab95d60c7193c9a0281fc959ae2a4450364a9e2572c7a2b43438374ef2dd2154012d050514dbec7396578a3130d9d6850066f0ad9d186f2d78cdbbb799b0a202f2c48d3aebbb418310240b112637588574bf54b8efaa4fd9b691dacbf5b305813542bae63a9eee4c4694d967b5494eca8c7ef0933bdc5d90e6a2caa0e3f013b7adce9fa5b03d637561113a30106a71d18c5fd9677058338ad01e91c0b8b743b880182ce19cd9c0e5e2b583fbdda565d3d04cfedad180942133af201b2bc3588e111c680068f489780ce69b192b279768088524f2b3458ea694d3de99a4323bc976ed34eb86b98c51993f6be10f77240c99685cd731991f1582df15aa15a213d583f5313a7806988fb8a0640e336359d9e9933568bf44062214ba19e2a7652a13d8b068ff596b807182189234e9da9f1ceb78c81b28c3ac6fe21e306c58e41d5118952acd6a0c2f56b9e6a5c72f346cdcd6b19a3bf8010010d714f89533b674c90c7189b598eab12a45fb5c75b8253672b863fbcccf5af93b6904119fe9851bf5153ac3a746ae7b9d5698c1dc58f313e70e4707ce9d84bafa2f79fc23fb8c7c1438ef04031a2642fee21060ec69ee47020796ecaa12313ccd333d1b67935047acf2be3bb11aa010dbe656cc755dbe3b772084a7ebc6d5711253b593dfcc0cc8fcd3cafda455512c7f200ec56cbfac0f1d7d34b7fdf0f98fd88a92a7e9cb0e70cc933c0b38a2c823ea0bd76c70c016adb67f47bc2a117a6d40abeea33fa23c2fb867edfb413e4a34fded94ffb3991c46dc7754cd3634ad2af490b857f5a5137126a97e02a8120a485235b6a28ef80bd077ee2b9f2d54fed04595dcbd8ddb6c4bd87334c10cadb2064e856177e7864e669fbe1df154a0142839f7ad2e5b6880bff1da66eece78e315d959f609da670f98befe6c3f45fb42672c9acff7f660000000049454e44ae426082</data>
+    </image>
+    <image name="image1">
+        <data format="PNG" length="953">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000038049444154789cb5954f681c7514c73fb319eb1b49e53798c20e44d985409393ace025d843725cec610511f5d414a4205eea456c2908b5a2bd09c5433420a4c941680f427a08989e361731814a47487057589d8144e67728ceabdd763cfc667793d4bf071ffc1876f6cde77de7bd37ef7945513030cff32ac018e00315c02bcfdf59519e47401f785814c5236f00bef8fec5a767a667ce596b1792343999ddcbfe81e7cc5a4b67a7b3bbf9ede60a7dbe007e05eefb03a5cb5f2e9f8b9ee56353cfa9a1685f114aedbe8304e535ef9754df69ec7698d245b9b4755b03e053202b5d19b3d62e987a4e6ad7c8b20ea00481923f10d29e90ed2b20841350af2b320e5a0690e31045b005af01d7878a013f49939335b4845a8240b87bc7b0f1b525deb68096ae426d5a986f1966e780bebb2f02c0734078507125bb97a17d1d42db1bb0f259ea1e1a17ead306f121e929dd1f94a58f52d2aee18d337220a8cb18706c00f69c160802b87b474aa832f77295664b084f00a2a846b46fe5ac2ca6acada654ab359aaf86801d80c700af72108c0ff90361e3a61d42df7c4b08230b62c9f6846f6e66345b010bef5401e1c6aac5ee8f0a5cb2bcd1cf129cf684f87b8b3186664bc0b7e0835ac3d25525deb6647b70f67cc8e6baf38d6397a68356e188b9ea2b51ad7cfd127aed8a2ba299105e382588c99969b88a255d2d13f91760d7a7ce41c4e5344b0cd7ae28f1b60b2802f5c9c0fdef0f607230157fae389c708e9d9ea21ab2791ba7d408d5aa21ed592e5f4888b742921dd70d512d388a391c27efbbe6af4d09dd5da57d2ba7f97a40b667983d25449301972f40dab57cf8760755c54c088d464ed23bd4728f2b967168b60c002b8b29edf59cb3e7431a73506b64bcfb411d5335586bd1be32dfaa124d3d26f86866dc673a3b0769cf70633565e96acae6ba3033232090ec24e8be0e9ffc6ec3d2391d21fee10f65002eacb52338ca2b670453adb1f695eb86787b14dc4c08cd568df686c5aaa20ad60ea105500cc19d9dce6eb7c314c747f0664b989d8b886343d275f7a3c980c68b39d114cc9f8e9c483f23de52805f808740e1154581e779013eef355e924b5154b65a9fe1c894411b1e4a9c22be602dc45b4a922a36e53af039f023e5a07f0237993e017e62b415feedf91958065ac0f3c08981e20a6e2a85c033e535a01c28470b7cc48af2f57320c36d906cb89a3ccff3812781a74ae831fedbcefbbd84ff06dcf7feaf65fa072f36954b309390920000000049454e44ae426082</data>
     </image>
 </images>
 <layoutdefaults spacing="6" margin="11"/>

@@ -316,7 +316,7 @@ void KNewLoanWizard::slotCheckPageFinished(void)
 void KNewLoanWizard::updateLoanAmount(void)
 {
   QString txt;
-  if(m_loanAmountEdit->text().isEmpty()) {
+  if(m_loanAmountEdit->lineedit()->text().isEmpty()) {
     txt = QString("<") + i18n("calculate") + QString(">");
   } else {
     txt = m_loanAmountEdit->value().formatMoney();
@@ -331,7 +331,7 @@ void KNewLoanWizard::updateLoanAmount(void)
 void KNewLoanWizard::updateInterestRate(void)
 {
   QString txt;
-  if(m_interestRateEdit->text().isEmpty()) {
+  if(m_interestRateEdit->lineedit()->text().isEmpty()) {
     txt = QString("<") + i18n("calculate") + QString(">");
   } else {
     txt = m_interestRateEdit->value().formatMoney("", 3) + QString("%");
@@ -362,7 +362,7 @@ void KNewLoanWizard::updateDuration(void)
 void KNewLoanWizard::updatePayment(void)
 {
   QString txt;
-  if(m_paymentEdit->text().isEmpty()) {
+  if(m_paymentEdit->lineedit()->text().isEmpty()) {
     txt = QString("<") + i18n("calculate") + QString(">");
   } else {
     txt = m_paymentEdit->value().formatMoney();
@@ -378,7 +378,7 @@ void KNewLoanWizard::updatePayment(void)
 void KNewLoanWizard::updateFinalPayment(void)
 {
   QString txt;
-  if(m_finalPaymentEdit->text().isEmpty()) {
+  if(m_finalPaymentEdit->lineedit()->text().isEmpty()) {
     txt = QString("<") + i18n("calculate") + QString(">");
   } else {
     txt = m_finalPaymentEdit->value().formatMoney();
@@ -506,7 +506,7 @@ void KNewLoanWizard::next()
   } else if(currentPage() == m_loanAmountPage) {
     m_interestRateEdit->setFocus();
     if(m_thisYearPaymentButton->isChecked()
-    && m_loanAmountEdit->text().isEmpty()) {
+    && m_loanAmountEdit->lineedit()->text().isEmpty()) {
       errMsg = i18n("You selected, that payments have already been made towards this loan. "
                     "This requires you to enter the loan amount exactly as found on your "
                     "last statement.");
@@ -517,16 +517,16 @@ void KNewLoanWizard::next()
 
   } else if(currentPage() == m_interestPage) {
 
-    if(m_loanAmountEdit->text().isEmpty()
-    && m_interestRateEdit->text().isEmpty()) {
+    if(m_loanAmountEdit->lineedit()->text().isEmpty()
+    && m_interestRateEdit->lineedit()->text().isEmpty()) {
       dontLeavePage = true;
       KMessageBox::error(0, errMsg.arg(i18n("interest rate")), i18n("Calculation error"));
     } else
       updateInterestRate();
 
   } else if(currentPage() == m_durationPage) {
-    if((m_loanAmountEdit->text().isEmpty()
-    || m_interestRateEdit->text().isEmpty())
+    if((m_loanAmountEdit->lineedit()->text().isEmpty()
+    || m_interestRateEdit->lineedit()->text().isEmpty())
     && m_durationValueEdit->value() == 0) {
       dontLeavePage = true;
       KMessageBox::error(0, errMsg.arg(i18n("term")), i18n("Calculation error"));
@@ -534,21 +534,21 @@ void KNewLoanWizard::next()
       updateDuration();
 
   } else if(currentPage() == m_paymentPage) {
-    if((m_loanAmountEdit->text().isEmpty()
-    || m_interestRateEdit->text().isEmpty()
+    if((m_loanAmountEdit->lineedit()->text().isEmpty()
+    || m_interestRateEdit->lineedit()->text().isEmpty()
     || m_durationValueEdit->value() == 0)
-    && m_paymentEdit->text().isEmpty()) {
+    && m_paymentEdit->lineedit()->text().isEmpty()) {
       dontLeavePage = true;
       KMessageBox::error(0, errMsg.arg(i18n("principal and interest")), i18n("Calculation error"));
     } else
       updatePayment();
 
   } else if(currentPage() == m_finalPaymentPage) {
-    if((m_loanAmountEdit->text().isEmpty()
-    || m_interestRateEdit->text().isEmpty()
+    if((m_loanAmountEdit->lineedit()->text().isEmpty()
+    || m_interestRateEdit->lineedit()->text().isEmpty()
     || m_durationValueEdit->value() == 0
-    || m_paymentEdit->text().isEmpty())
-    && m_finalPaymentEdit->text().isEmpty()) {
+    || m_paymentEdit->lineedit()->text().isEmpty())
+    && m_finalPaymentEdit->lineedit()->text().isEmpty()) {
       // if two fields are empty and one of them is the final payment
       // we assume the final payment to be 0 instead of presenting a
       m_finalPaymentEdit->setValue(MyMoneyMoney(0, 1));
@@ -765,26 +765,26 @@ int KNewLoanWizard::calculateLoan(void)
   calc.setCF(PF);
 
 
-  if(!m_loanAmountEdit->text().isEmpty()) {
+  if(!m_loanAmountEdit->lineedit()->text().isEmpty()) {
     val = static_cast<long double> (m_loanAmountEdit->value().abs().toDouble());
     if(m_borrowButton->isChecked())
       val = -val;
     calc.setPv(val);
   }
 
-  if(!m_interestRateEdit->text().isEmpty()) {
+  if(!m_interestRateEdit->lineedit()->text().isEmpty()) {
     val = static_cast<long double> (m_interestRateEdit->value().abs().toDouble());
     calc.setIr(val);
   }
 
-  if(!m_paymentEdit->text().isEmpty()) {
+  if(!m_paymentEdit->lineedit()->text().isEmpty()) {
     val = static_cast<long double> (m_paymentEdit->value().abs().toDouble());
     if(m_lendButton->isChecked())
       val = -val;
     calc.setPmt(val);
   }
 
-  if(!m_finalPaymentEdit->text().isEmpty()) {
+  if(!m_finalPaymentEdit->lineedit()->text().isEmpty()) {
     val = static_cast<long double> (m_finalPaymentEdit->value().abs().toDouble());
     if(m_lendButton->isChecked())
       val = -val;
@@ -797,21 +797,21 @@ int KNewLoanWizard::calculateLoan(void)
 
   // setup of parameters is done, now do the calculation
   try {
-    if(m_loanAmountEdit->text().isEmpty()) {
+    if(m_loanAmountEdit->lineedit()->text().isEmpty()) {
       // calculate the amount of the loan out of the other information
       val = calc.presentValue();
       m_loanAmountEdit->loadText(MyMoneyMoney(static_cast<double>(val)).abs().formatMoney());
       result = i18n("KMyMoney has calculated the amount of the loan as %1.")
-                        .arg(m_loanAmountEdit->text());
+                        .arg(m_loanAmountEdit->lineedit()->text());
 
-    } else if(m_interestRateEdit->text().isEmpty()) {
+    } else if(m_interestRateEdit->lineedit()->text().isEmpty()) {
       // calculate the interest rate out of the other information
       val = calc.interestRate();
       m_interestRateEdit->loadText(MyMoneyMoney(static_cast<double>(val)).abs().formatMoney("", 3));
       result = i18n("KMyMoney has calculated the interest rate to %1%.")
-                        .arg(m_interestRateEdit->text());
+                        .arg(m_interestRateEdit->lineedit()->text());
 
-    } else if(m_paymentEdit->text().isEmpty()) {
+    } else if(m_paymentEdit->lineedit()->text().isEmpty()) {
       // calculate the periodical amount of the payment out of the other information
       val = calc.payment();
       m_paymentEdit->setValue(MyMoneyMoney(static_cast<double>(val)).abs());
@@ -822,7 +822,7 @@ int KNewLoanWizard::calculateLoan(void)
       calc.setPmt(val);
 
       result = i18n("KMyMoney has calculated a periodic payment of %1 to cover principal and interest.")
-                      .arg(m_paymentEdit->text());
+                      .arg(m_paymentEdit->lineedit()->text());
 
       val = calc.futureValue();
       if((m_borrowButton->isChecked() && val < 0 && fabsl(val) >= fabsl(calc.payment()))
@@ -834,7 +834,7 @@ int KNewLoanWizard::calculateLoan(void)
         m_finalPaymentEdit->loadText(refVal.abs().formatMoney());
         result += QString(" ");
         result += i18n("The number of payments has been decremented and the final payment has been modified to %1.")
-                      .arg(m_finalPaymentEdit->text());
+                      .arg(m_finalPaymentEdit->lineedit()->text());
       } else if((m_borrowButton->isChecked() && val < 0 && fabsl(val) < fabsl(calc.payment()))
              || (m_lendButton->isChecked() && val > 0 && fabs(val) < fabs(calc.payment()))) {
         m_finalPaymentEdit->loadText(MyMoneyMoney(0,1).formatMoney());
@@ -842,7 +842,7 @@ int KNewLoanWizard::calculateLoan(void)
         MyMoneyMoney refVal(static_cast<double>(val));
         m_finalPaymentEdit->loadText(refVal.abs().formatMoney());
         result += i18n("The final payment has been modified to %1.")
-                      .arg(m_finalPaymentEdit->text());
+                      .arg(m_finalPaymentEdit->lineedit()->text());
       }
 
     } else if(m_durationValueEdit->value() == 0) {
@@ -862,7 +862,7 @@ int KNewLoanWizard::calculateLoan(void)
         MyMoneyMoney refVal(static_cast<double>(val));
         m_finalPaymentEdit->loadText(refVal.abs().formatMoney());
         result += i18n("The final payment has been modified to %1.")
-                      .arg(m_finalPaymentEdit->text());
+                      .arg(m_finalPaymentEdit->lineedit()->text());
       }
 
     } else {
@@ -895,7 +895,7 @@ int KNewLoanWizard::calculateLoan(void)
       result = i18n("KMyMoney has calculated a final payment of %1 for this loan.")
                         .arg(refVal.abs().formatMoney());
 
-      if(!m_finalPaymentEdit->text().isEmpty()) {
+      if(!m_finalPaymentEdit->lineedit()->text().isEmpty()) {
         if((m_finalPaymentEdit->value().abs() - refVal.abs()).abs().toDouble() > 1) {
           throw new MYMONEYEXCEPTION("incorrect fincancial calculation");
         }

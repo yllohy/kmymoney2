@@ -159,7 +159,7 @@ public:
 
   /**
     * This method returns the value of the edit field in "numerator/denominator" format.
-    *
+    * If you want to get the text of the edit field, use lineedit()->text() instead.
     */
   QString text(void) const { return value().toString(); };
 
