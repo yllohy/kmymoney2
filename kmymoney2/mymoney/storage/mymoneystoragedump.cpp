@@ -74,7 +74,9 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   s << "-------------\n";
   s << "accounts = " << _storage->accountList().count() <<", next id = " << _storage->accountId() << "\n";
   MyMoneyTransactionFilter filter;
-  QValueList<MyMoneyTransaction> list_t = storage->transactionList(filter);
+  filter.setReportAllSplits(false);
+  QValueList<MyMoneyTransaction> list_t;
+  storage->transactionList(list_t, filter);
   QValueList<MyMoneyTransaction>::ConstIterator it_t;
   s << "transactions = " << list_t.count() << ", next id = " << _storage->transactionId() << "\n";
   QMap<int,int> xferCount;

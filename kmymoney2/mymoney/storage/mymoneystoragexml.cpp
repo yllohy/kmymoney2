@@ -267,7 +267,7 @@ void MyMoneyStorageXML::readFileInformation(void)
   temp = findChildElement("VERSION", fileInfo);
   QString strVersion = QStringEmpty(temp.attribute("id"));
   fileVersionRead = strVersion.toUInt(NULL, 16);
-   
+
   temp = findChildElement("FIXVERSION", fileInfo);
   if (temp != QDomElement()) {
     QString strFixVersion = QStringEmpty(temp.attribute("id"));
@@ -294,7 +294,7 @@ void MyMoneyStorageXML::writeFileInformation(QDomElement& fileInfo)
 
   version.setAttribute("id", "1");
   fileInfo.appendChild(version);
-  
+
   QDomElement fixVersion = m_doc->createElement("FIXVERSION");
   fixVersion.setAttribute("id", m_storage->fileFixVersion());
   fileInfo.appendChild(fixVersion);
@@ -485,7 +485,10 @@ void MyMoneyStorageXML::readTransactions(void)
 void MyMoneyStorageXML::writeTransactions(QDomElement& transactions)
 {
   MyMoneyTransactionFilter filter;
-  const QValueList<MyMoneyTransaction> list = m_storage->transactionList(filter);
+  filter.setReportAllSplits(false);
+  QValueList<MyMoneyTransaction> list;
+  m_storage->transactionList(list, filter);
+
   QValueList<MyMoneyTransaction>::ConstIterator it;
 
   signalProgress(0, list.count(), QObject::tr("Saving transactions..."));

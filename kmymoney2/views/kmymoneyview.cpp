@@ -1832,7 +1832,9 @@ void KMyMoneyView::fixTransactions_0(void)
   QValueList<MyMoneySchedule> scheduleList = file->scheduleList();
   ::timetrace("fixTransactions: get transaction list");
   MyMoneyTransactionFilter filter;
-  QValueList<MyMoneyTransaction> transactionList = file->transactionList(filter);
+  filter.setReportAllSplits( false );
+  QValueList<MyMoneyTransaction> transactionList;
+  file->transactionList(transactionList, filter);
   ::timetrace("fixTransactions: have list");
 
   QValueList<MyMoneySchedule>::Iterator it_x;

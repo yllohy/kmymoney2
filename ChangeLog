@@ -7,6 +7,8 @@
     is out of bounds
   * Resolved some compiler warnings
   * Provide --newreports option also in non-debug versions
+  * Fixed a severe bug which I introduced on 03-15 with the reportAllSplits
+    change. Files written with this version could not be read in again.
 
 2007-03-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added logic for auto increment of check number to transaction editor

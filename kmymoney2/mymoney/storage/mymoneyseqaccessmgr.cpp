@@ -967,7 +967,7 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& accou
   else
     filter.addAccount(account);
 
-  list = transactionList(filter);
+  transactionList(list, filter);
   if(idx < 0 || idx >= static_cast<int> (list.count()))
     throw new MYMONEYEXCEPTION("Unknown idx for transaction");
 
@@ -998,7 +998,7 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate&
     MyMoneyTransactionFilter filter;
     filter.setDateFilter(QDate(), date);
     filter.setReportAllSplits(false);
-    list = transactionList(filter);
+    transactionList(list, filter);
 
     for(it_t = list.begin(); it_t != list.end(); ++it_t) {
       for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s){

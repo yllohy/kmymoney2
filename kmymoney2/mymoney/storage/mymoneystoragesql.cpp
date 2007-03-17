@@ -410,7 +410,7 @@ void MyMoneyStorageSql::writeAccount(const MyMoneyAccount& acc, QSqlQuery& q) {
 }
 
 // **** Transactions and Splits ****
-void MyMoneyStorageSql::writeTransactions() {
+void MyMoneyStorageSql::writeTransactions(void) {
   // first, get a list of what's on the database (see writeInstitutions)
   QValueList<QString> dbList;
   QSqlQuery q(this);
@@ -419,7 +419,9 @@ void MyMoneyStorageSql::writeTransactions() {
   while (q.next()) dbList.append(q.value(0).toString());
 
   MyMoneyTransactionFilter filter;
-  const QValueList<MyMoneyTransaction> list = m_storage->transactionList(filter);
+  filter.setReportAllSplits(false);
+  QValueList<MyMoneyTransaction> list;
+  m_storage->transactionList(list, filter);
   signalProgress(0, list.count(), "Writing Transactions...");
   QValueList<MyMoneyTransaction>::ConstIterator it;
   int i = 0;

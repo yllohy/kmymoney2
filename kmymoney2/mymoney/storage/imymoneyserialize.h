@@ -108,11 +108,11 @@ public:
     * that match the filter passed as argument. If the filter is empty,
     * the whole journal will be returned.
     *
+    * @param list reference to QValueList<MyMoneyTransaction> receiving
+    *             the set of transactions
     * @param filter MyMoneyTransactionFilter object with the match criteria
-    *
-    * @return set of transactions in form of a QValueList<MyMoneyTransaction>
     */
-  virtual QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const = 0;
+  virtual void transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const = 0;
 
   /**
     * This method is used to pull a list of transactions from the file
