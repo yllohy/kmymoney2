@@ -184,7 +184,7 @@ bool MyMoneyStorageSql::readFile(void) {
   readSchedules();
   readPrices();
   readReports();
-  
+
   m_storage->rebuildAccountBalances();
   // this seems to be nonsense, but it clears the dirty flag
   // as a side-effect.
@@ -917,7 +917,7 @@ void MyMoneyStorageSql::readFileInfo(void) {
 void MyMoneyStorageSql::setVersion (const QString& version) {
   m_majorVersion = version.section('.', 0, 0).toUInt();
   m_minorVersion = version.section('.', 1, 1).toUInt();
-  // Okay, I made a cockup by forgetting to include a fixversion in the database 
+  // Okay, I made a cockup by forgetting to include a fixversion in the database
   // design, so we'll use the minor version as fix level (similar to VERSION
   // and FIXVERSION in XML file format). A second mistake was setting minor version to 1
   // in the first place, so we need to subtract one on reading and add one on writing (sigh)!!
@@ -1090,7 +1090,7 @@ void MyMoneyStorageSql::readTransactions(void) {
 }
 
 void MyMoneyStorageSql::readSplit (MyMoneySplit& s, const QSqlQuery& q, const MyMoneyDbTable& t) {
-  s.setId(QCString(""));
+  s.clearId();
   QValueList<MyMoneyDbField>::const_iterator ft = t.begin();
   int i = 0;
   while (ft != t.end()) {
