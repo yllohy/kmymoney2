@@ -29,6 +29,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qlayout.h>
 #include <qdatetime.h>
 #include <qregexp.h>
@@ -62,13 +63,14 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/mymoneyreport.h>
+
 #include "kreportsview.h"
 #include "../reports/pivottable.h"
 #include "../reports/querytable.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneyreport.h"
 #include "../dialogs/kreportconfigurationfilterdlg.h"
-#include "../widgets/kmymoneytitlelabel.h"
 #include "../kmymoneyutils.h"
 
 using namespace reports;
@@ -91,7 +93,8 @@ KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& re
   m_layout( new QVBoxLayout( this, 11, 6, "reporttablayout" ) ),
   m_report( report ),
   m_deleteMe( false ),
-  m_showingChart( false )
+  m_showingChart( false ),
+  m_needReload( true )
 {
   if ( ! KReportChartView::implemented() || m_report.reportType() != MyMoneyReport::ePivotTable )
   {
@@ -148,6 +151,24 @@ void KReportsView::KReportTab::saveAs( const QString& filename )
       QTextStream(&file) <<  createTable();
     file.close();
   }
+}
+
+void KReportsView::KReportTab::loadTab(void)
+{
+  m_needReload = true;
+  if(isVisible()) {
+    updateReport();
+    m_needReload = false;
+  }
+}
+
+void KReportsView::KReportTab::show(void)
+{
+  if(m_needReload) {
+    updateReport();
+    m_needReload = false;
+  }
+  QWidget::show();
 }
 
 void KReportsView::KReportTab::updateReport(void)
@@ -239,14 +260,13 @@ void KReportsView::KReportTab::toggleChart(void)
   * KReportsView Implementation
   */
 
-KReportsView::KReportsView(QWidget *parent, const char *name )
- : KMyMoneyViewBase(parent, name, i18n("Reports"))
+KReportsView::KReportsView(QWidget *parent, const char *name ) :
+  KMyMoneyViewBase(parent, name, i18n("Reports")),
+  m_needReload(false)
 {
   m_reportTabWidget = new KTabWidget( this, "m_reportTabWidget" );
   m_viewLayout->addWidget( m_reportTabWidget );
-#if KDE_IS_VERSION(3,2,0)
   m_reportTabWidget->setHoverCloseButton( true );
-#endif
 
   m_listTab = (new QWidget( m_reportTabWidget, "indextab" ));
   m_listTabLayout = ( new QVBoxLayout( m_listTab, 11, 6, "indextabLayout") );
@@ -260,16 +280,16 @@ KReportsView::KReportsView(QWidget *parent, const char *name )
   m_reportListView->setAllColumnsShowFocus(true);
   m_reportListView->setRootIsDecorated(true);
 
-#if KDE_IS_VERSION(3,2,0)
   connect( m_reportTabWidget, SIGNAL(closeRequest(QWidget*)),
     this, SLOT(slotClose(QWidget*)) );
-#endif
   connect(m_reportListView, SIGNAL(doubleClicked(QListViewItem*)),
     this, SLOT(slotOpenReport(QListViewItem*)));
   connect(m_reportListView, SIGNAL(returnPressed(QListViewItem*)),
     this, SLOT(slotOpenReport(QListViewItem*)));
   connect( m_reportListView, SIGNAL(contextMenu(KListView*,QListViewItem*,const QPoint &)),
     this, SLOT(slotListContextMenu(KListView*,QListViewItem*,const QPoint &)));
+
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadView()));
 }
 
 KReportsView::~KReportsView()
@@ -278,14 +298,37 @@ KReportsView::~KReportsView()
 
 void KReportsView::show()
 {
-  slotRefreshView();
-  QWidget::show();
-  emit signalViewActivated();
+  if(m_needReload) {
+    loadView();
+    m_needReload = false;
+  }
+
+  KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
+  if(tab)
+    emit reportSelected(tab->report());
+  else
+    emit reportSelected(MyMoneyReport());
+
+  // don't forget base class implementation
+  KMyMoneyViewBase::show();
 }
 
-void KReportsView::slotRefreshView(void)
+void KReportsView::slotLoadView(void)
 {
-  ::timetrace("Start KReportsView::slotRefreshView");
+  m_needReload = true;
+  if(isVisible()) {
+    loadView();
+    m_needReload = false;
+  }
+}
+
+
+void KReportsView::loadView(void)
+{
+  ::timetrace("Start KReportsView::loadView");
+
+  // TODO remember expanded items of the list
+
   //
   // Rebuild the list page
   //
@@ -365,8 +408,10 @@ void KReportsView::slotRefreshView(void)
     ++it_report;
   }
 
+  // TODO re-expand items of the list which were expanded before we got to this method
+
   //
-  // Go through the tabs to update all the reports, or delete them if needed
+  // Go through the tabs to set their update flag or delete them if needed
   //
 
   int index = 1;
@@ -380,23 +425,22 @@ void KReportsView::slotRefreshView(void)
       --index;
     }
     else
-      tab->updateReport();
+      tab->loadTab();
     ++index;
   }
-  ::timetrace("Done KReportsView::slotRefreshView");
+  ::timetrace("Done KReportsView::loadView");
 }
 
 void KReportsView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
 {
   QString view = url.fileName(false);
-  QCString id = url.queryItem("id").data();
   QCString command = url.queryItem("command").data();
 
   if(view == VIEW_REPORTS) {
 
-    if ( command.isEmpty() )
-      slotRefreshView();
-    else if ( command == "print" )
+    if ( command.isEmpty() ) {
+      // slotRefreshView();
+    } else if ( command == "print" )
       slotPrintView();
     else if ( command == "copy" )
       slotCopyView();
@@ -471,7 +515,6 @@ void KReportsView::slotConfigure(void)
       {
         MyMoneyFile::instance()->modifyReport(newreport);
         tab->modifyReport(newreport);
-        slotRefreshView();
 
         m_reportTabWidget->changeTab( tab, newreport.name() );
         m_reportTabWidget->showPage(tab);
@@ -495,7 +538,7 @@ void KReportsView::slotDuplicate(void)
     dupe.setName( QString(i18n("Copy of %1")).arg(dupe.name()) );
     if ( dupe.comment() == i18n("Default Report") )
       dupe.setComment( i18n("Custom Report") );
-    dupe.setId(QCString());
+    dupe.clearId();
 
     KReportConfigurationFilterDlg dlg(dupe);
     if (dlg.exec())
@@ -520,7 +563,7 @@ void KReportsView::slotDelete(void)
       {
         MyMoneyFile::instance()->removeReport(report);
         slotClose(tab);
-        slotRefreshView();
+        // slotRefreshView();
       }
     }
     else
@@ -693,7 +736,7 @@ void KReportsView::addReportTab(const MyMoneyReport& report)
   if ( report.id().isEmpty() )
     tab->control()->buttonDelete->setEnabled(false);
 
-  slotRefreshView();
+  // slotRefreshView();
 
   m_reportTabWidget->showPage(tab);
 

@@ -607,7 +607,7 @@ void MyMoneyFile::createOpeningBalanceTransaction(const MyMoneyAccount& acc, con
     s.setValue(balance);
     t.addSplit(s);
 
-    s.setId(QCString());
+    s.clearId();
     s.setAccountId(openAcc.id());
     s.setShares(-balance);
     s.setValue(-balance);
@@ -2022,7 +2022,7 @@ void MyMoneyFile::removeBudget(const MyMoneyBudget& budget)
 
 
 
-bool MyMoneyFile::isReferenced(const MyMoneyObject& obj, const QBitArray& skipChecks) const
+bool MyMoneyFile::isReferenced(const MyMoneyObject& obj, const MyMoneyFileBitArray& skipChecks) const
 {
   // FIXME add call to storage object
   checkStorage();

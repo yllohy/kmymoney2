@@ -1,3 +1,13 @@
+2007-03-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added method to remove the buttons from a kMyMoneyAccountSelector
+  * Correctly fill the account selectors in the new loan wizard
+  * Replaced setId(QCString()) with clearId()
+  * Update reports only when required
+  * Provide MyMoneyFileBitArray to suppress warning when index to QBitArray
+    is out of bounds
+  * Resolved some compiler warnings
+  * Provide --newreports option also in non-debug versions
+
 2007-03-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added logic for auto increment of check number to transaction editor
   * Rearranged the register settings dialog (added new tab)

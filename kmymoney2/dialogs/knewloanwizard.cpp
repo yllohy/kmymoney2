@@ -114,6 +114,10 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
   m_paymentFrequencyUnitEdit->setCurrentItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_MONTHLY));
   m_firstDueDateEdit->loadDate(QDate(QDate::currentDate().year(),QDate::currentDate().month(),30));
 
+  m_paymentAccountEdit->removeButtons();
+  m_assetAccountEdit->removeButtons();
+  m_interestAccountEdit->removeButtons();
+
   // load button icons
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem createCategoryButtenItem( i18n( "&Create..." ),
@@ -988,7 +992,7 @@ void KNewLoanWizard::slotCreateCategory(void)
 void KNewLoanWizard::loadAccountList(void)
 {
   MyMoneyObjectContainer objects;
-  AccountSet interestSet(&objects), assetSet(&objects), paymentSet(&objects);
+  AccountSet interestSet(&objects), assetSet(&objects);
 
   if(m_borrowButton->isChecked()) {
     interestSet.addAccountType(MyMoneyAccount::Expense);
@@ -1004,9 +1008,9 @@ void KNewLoanWizard::loadAccountList(void)
   assetSet.addAccountType(MyMoneyAccount::Currency);
   assetSet.load(m_assetAccountEdit);
 
-  paymentSet.addAccountType(MyMoneyAccount::CreditCard);
-  paymentSet.addAccountType(MyMoneyAccount::Liability);
-  paymentSet.load(m_paymentAccountEdit);
+  assetSet.addAccountType(MyMoneyAccount::CreditCard);
+  assetSet.addAccountType(MyMoneyAccount::Liability);
+  assetSet.load(m_paymentAccountEdit);
 }
 
 void KNewLoanWizard::slotAdditionalFees(void)

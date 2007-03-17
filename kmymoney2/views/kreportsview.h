@@ -27,35 +27,34 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qvaluevector.h>
 #include <qwidget.h>
+
 class QVBoxLayout;
 class QListViewItem;
-class kMyMoneyTitleLabel;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <khtml_part.h>
 #include <klistview.h>
-
-#if KDE_IS_VERSION(3,2,0)
-  #include <ktabwidget.h>
-#else
-  #include <qtabwidget.h>
-  // In the case of KDE < 3.2, we only have the basic QTabWidget.
-  #define KTabWidget QTabWidget
-#endif
+#include <ktabwidget.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyscheduled.h"
-#include "../mymoney/mymoneyaccount.h"
-#include "../mymoney/mymoneyreport.h"
+#include <kmymoney/mymoneyscheduled.h>
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneyreport.h>
 #include "../widgets/kmymoneyreportcontroldecl.h"
 #include "../reports/kreportchartview.h"
 #include "../views/kmymoneyview.h"
+
 class MyMoneyReport;
+
+namespace KReportView {
+};
 
 /**
   * Displays a page where reports can be placed.
@@ -67,8 +66,46 @@ class MyMoneyReport;
 class KReportsView : public KMyMoneyViewBase
 {
   Q_OBJECT
-
 public:
+
+  /**
+    * Helper class for KReportView.
+    *
+    * This is the widget which displays a single report in the TabWidget that comprises this view.
+    *
+    * @author Ace Jones
+    */
+
+  class KReportTab: public QWidget
+  {
+  private:
+    KHTMLPart* m_part;
+    reports::KReportChartView* m_chartView;
+    kMyMoneyReportControlDecl* m_control;
+    QVBoxLayout* m_layout;
+    MyMoneyReport m_report;
+    bool m_deleteMe;
+    bool m_showingChart;
+    bool m_needReload;
+
+  public:
+    KReportTab(KTabWidget* parent, const MyMoneyReport& report );
+    const MyMoneyReport& report(void) const { return m_report; }
+    void print(void);
+    void toggleChart(void);
+    void copyToClipboard(void);
+    void saveAs( const QString& filename );
+    void updateReport(void);
+    QString createTable(const QString& links=QString());
+    void drawChart(reports::KReportChartView& _chartView );
+    const kMyMoneyReportControlDecl* control(void) const { return m_control; }
+    bool isReadyToDelete(void) const { return m_deleteMe; }
+    void setReadyToDelete(bool f) { m_deleteMe = f; }
+    void modifyReport( const MyMoneyReport& report ) { m_report = report; }
+    void show(void);
+    void loadTab(void);
+  };
+
   /**
     * Helper class for KReportView.
     *
@@ -101,41 +138,6 @@ public:
   /**
     * Helper class for KReportView.
     *
-    * This is the widget which displays a single report in the TabWidget that comprises this view.
-    *
-    * @author Ace Jones
-    */
-
-  class KReportTab: public QWidget
-  {
-  private:
-    KHTMLPart* m_part;
-    reports::KReportChartView* m_chartView;
-    kMyMoneyReportControlDecl* m_control;
-    QVBoxLayout* m_layout;
-    MyMoneyReport m_report;
-    bool m_deleteMe;
-    bool m_showingChart;
-
-  public:
-    KReportTab(KTabWidget* parent, const MyMoneyReport& report );
-    const MyMoneyReport& report(void) const { return m_report; }
-    void print(void);
-    void toggleChart(void);
-    void copyToClipboard(void);
-    void saveAs( const QString& filename );
-    void updateReport(void);
-    QString createTable(const QString& links=QString());
-    void drawChart(reports::KReportChartView& _chartView );
-    const kMyMoneyReportControlDecl* control(void) const { return m_control; }
-    bool isReadyToDelete(void) const { return m_deleteMe; }
-    void setReadyToDelete(bool f) { m_deleteMe = f; }
-    void modifyReport( const MyMoneyReport& report ) { m_report = report; }
-  };
-
-  /**
-    * Helper class for KReportView.
-    *
     * This is a named list of reports, which will be one section
     * in the list of default reports
     *
@@ -152,13 +154,11 @@ public:
   };
 
 private:
-  // QVBoxLayout *m_qvboxlayoutPage;
   KTabWidget* m_reportTabWidget;
   KListView* m_reportListView;
   QWidget* m_listTab;
   QVBoxLayout* m_listTabLayout;
-  kMyMoneyTitleLabel* titleLabel;
-  QFrame* titleLine;
+  bool m_needReload;
 
 public:
   /**
@@ -183,7 +183,7 @@ public:
   ~KReportsView();
 
   /**
-    * Overridden so we can emit the activated signal.
+    * Overridden so we can reload the view if necessary.
     *
     * @return Nothing.
     */
@@ -191,16 +191,16 @@ public:
 
 protected:
   void addReportTab(const MyMoneyReport&);
+  void loadView(void);
   static void defaultReports(QValueList<ReportGroup>&);
 
 public slots:
   void slotOpenURL(const KURL &url, const KParts::URLArgs& args);
 
-  void slotRefreshView(void);
+  void slotLoadView(void);
   void slotPrintView(void);
   void slotCopyView(void);
   void slotSaveView(void);
-  void slotReloadView(void) { slotRefreshView(); };
   void slotConfigure(void);
   void slotDuplicate(void);
   void slotToggleChart(void);
@@ -219,9 +219,11 @@ public slots:
 
 signals:
   /**
-    * This signal is emitted whenever this view is activated.
+    * This signal is emitted whenever a report is selected
     */
-  void signalViewActivated(void);
+  void reportSelected(const MyMoneyReport&);
+
+
 };
 
 #endif

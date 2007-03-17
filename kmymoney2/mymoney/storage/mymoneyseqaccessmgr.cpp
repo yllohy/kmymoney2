@@ -909,7 +909,6 @@ void MyMoneySeqAccessMgr::transactionList(QValueList< QPair<MyMoneyTransaction, 
 
   for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
     if(filter.match(*it_t, this)) {
-      unsigned int cnt = filter.matchingSplits().count();
       QValueList<MyMoneySplit>::const_iterator it_s;
       for(it_s = filter.matchingSplits().begin(); it_s != filter.matchingSplits().end(); ++it_s) {
         list.append(qMakePair(*it_t, *it_s));
@@ -1874,7 +1873,7 @@ void MyMoneySeqAccessMgr::rebuildAccountBalances(void)
   }
 }
 
-bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj, const QBitArray& skipCheck) const
+bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj, const MyMoneyFileBitArray& skipCheck) const
 {
   bool rc = false;
   const QCString& id = obj.id();

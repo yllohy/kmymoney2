@@ -321,7 +321,7 @@ bool KMyMoneyView::canPrint(void)
   return rc;
 }
 
-bool KMyMoneyView::canCreateTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
+bool KMyMoneyView::canCreateTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& /* list */, QString& tooltip) const
 {
   // we can only create transactions in the ledger view so
   // we check that this is the active page
@@ -1118,12 +1118,8 @@ bool KMyMoneyView::startReconciliation(const MyMoneyAccount& account, const MyMo
   return ok;
 }
 
-void KMyMoneyView::finishReconciliation(const MyMoneyAccount& account)
+void KMyMoneyView::finishReconciliation(const MyMoneyAccount& /* account */)
 {
-  // make sure to re-select the account
-#if 0
-  m_ledgerView->setReconciliationAccount();
-#endif
   emit reconciliationStarts(MyMoneyAccount(), MyMoneyMoney());
 }
 
@@ -1489,7 +1485,7 @@ void KMyMoneyView::slotRefreshViews()
   m_budgetView->slotRefreshView();
   m_homeView->slotRefreshView();
   m_investmentView->slotLoadView();
-  m_reportsView->slotRefreshView();
+  m_reportsView->slotLoadView();
 
   m_scheduledView->slotReloadView();
 }

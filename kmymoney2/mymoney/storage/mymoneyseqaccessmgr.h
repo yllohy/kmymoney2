@@ -1008,7 +1008,7 @@ public:
     * @retval false @p object is not referenced
     * @retval true @p institution is referenced
     */
-  bool isReferenced(const MyMoneyObject& obj, const QBitArray& skipCheck = QBitArray()) const;
+  bool isReferenced(const MyMoneyObject& obj, const MyMoneyFileBitArray& skipCheck = MyMoneyFileBitArray()) const;
 
   /**
     * This method recalculates the balances of all accounts

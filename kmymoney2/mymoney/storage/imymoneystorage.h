@@ -47,6 +47,24 @@
 
 /**
   * @author Thomas Baumgart
+  *
+  * A simple replacement for QBitArray that does not bark if testBit()
+  * is called with an index out of bounds. It silently returns false
+  * in that case, otherwise calls the base classes implementation.
+  */
+class MyMoneyFileBitArray : public QBitArray
+{
+public:
+  MyMoneyFileBitArray() : QBitArray() {}
+  MyMoneyFileBitArray(int size) : QBitArray(size) {}
+  bool testBit(uint index) const;
+  bool operator[](int index) const { return testBit(index); }
+  bool at(uint index) const { return testBit(index); }
+};
+
+
+/**
+  * @author Thomas Baumgart
   */
 
 /**
@@ -858,13 +876,13 @@ public:
     * by another engine object.
     *
     * @param obj const reference to object to be checked
-    * @param skipCheck QBitArray with ReferenceCheckBits set for which
+    * @param skipCheck MyMoneyFileBitArray with ReferenceCheckBits set for which
     *                  the check should be skipped
     *
     * @retval false @p object is not referenced
     * @retval true @p institution is referenced
     */
-  virtual bool isReferenced(const MyMoneyObject& obj, const QBitArray& skipCheck = QBitArray()) const = 0;
+  virtual bool isReferenced(const MyMoneyObject& obj, const MyMoneyFileBitArray& skipCheck = MyMoneyFileBitArray()) const = 0;
 
 };
 

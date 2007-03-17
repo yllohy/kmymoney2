@@ -98,6 +98,11 @@ public:
     */
   virtual bool contains(const QString& txt) const;
 
+  /**
+    * This method removes all the buttons of the widget
+    */
+  void removeButtons(void);
+
 public slots:
   /**
     * This slot selects all items that are currently in

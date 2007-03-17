@@ -1448,13 +1448,13 @@ public:
     * by another engine object.
     *
     * @param obj const reference to object to be checked
-    * @param skipCheck QBitArray with ReferenceCheckBits set for which
+    * @param skipCheck MyMoneyFileBitArray with ReferenceCheckBits set for which
     *                  the check should be skipped
     *
     * @retval false @p object is not referenced
     * @retval true @p institution is referenced
     */
-  bool isReferenced(const MyMoneyObject& obj, const QBitArray& skipCheck = QBitArray()) const;
+  bool isReferenced(const MyMoneyObject& obj, const MyMoneyFileBitArray& skipCheck = MyMoneyFileBitArray()) const;
 
   /**
     * This method checks if the given check no &p no is used in

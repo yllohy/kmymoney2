@@ -92,6 +92,14 @@ kMyMoneyAccountSelector::~kMyMoneyAccountSelector()
 {
 }
 
+void kMyMoneyAccountSelector::removeButtons(void)
+{
+  delete m_allAccountsButton;
+  delete m_incomeCategoriesButton;
+  delete m_expenseCategoriesButton;
+  delete m_noAccountButton;
+}
+
 void kMyMoneyAccountSelector::selectCategories(const bool income, const bool expense)
 {
   QListViewItem* it_v;

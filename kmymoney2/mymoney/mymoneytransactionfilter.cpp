@@ -459,20 +459,26 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
 
 const int MyMoneyTransactionFilter::splitState(const MyMoneySplit& split) const
 {
+  int rc = notReconciled;
+
   switch(split.reconcileFlag()) {
+    default:
     case MyMoneySplit::NotReconciled:
-      return notReconciled;
+      break;;
 
     case MyMoneySplit::Cleared:
-      return cleared;
+      rc = cleared;
+      break;
 
     case MyMoneySplit::Reconciled:
-      return reconciled;
+      rc = reconciled;
+      break;
 
     case MyMoneySplit::Frozen:
-      return frozen;
+      rc = frozen;
+      break;
   }
-  return notReconciled;
+  return rc;
 }
 
 const int MyMoneyTransactionFilter::splitType(const IMyMoneyStorage* const storage, const MyMoneyTransaction& t, const MyMoneySplit& split) const

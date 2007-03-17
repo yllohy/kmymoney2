@@ -54,12 +54,12 @@ static KCmdLineOptions options[] =
   { "lang <lang-code>", I18N_NOOP("language to be used"), 0 },
   { "n", I18N_NOOP("don't open last used file"), 0},
   { "timers", I18N_NOOP("enable performance timers"), 0},
+  { "newreports", I18N_NOOP("use the new split based report logic"), 0},
 
 #if KMM_DEBUG
   // The following options are only available when compiled in debug mode
   { "trace", I18N_NOOP("turn on program traces"), 0},
   { "dump-actions", I18N_NOOP("dump the names of all defined KAction objects to stdout and quit"), 0},
-  { "newreports", I18N_NOOP("use the new split based report logic"), 0},
 #endif
 
   // INSERT YOUR COMMANDLINE OPTIONS HERE
@@ -182,8 +182,8 @@ int main(int argc, char *argv[])
     delete a;
     exit(0);
   }
-  newReports = args->isSet("newreports");
 #endif
+  newReports = args->isSet("newreports");
 
   int rc = 0;
 

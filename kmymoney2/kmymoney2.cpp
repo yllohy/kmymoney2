@@ -4223,7 +4223,7 @@ void KMyMoney2App::slotUpdateActions(void)
     }
   }
 
-  QBitArray skip(IMyMoneyStorage::MaxRefCheckBits);
+  MyMoneyFileBitArray skip(IMyMoneyStorage::MaxRefCheckBits);
   if(!m_selectedAccount.id().isEmpty()) {
     if(!file->isStandardAccount(m_selectedAccount.id())) {
       switch(m_selectedAccount.accountGroup()) {
