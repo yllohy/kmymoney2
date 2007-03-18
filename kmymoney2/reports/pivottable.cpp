@@ -47,6 +47,7 @@
 #include "reportdebug.h"
 #include "kreportchartview.h"
 
+// FIXME don't forget to remove the variable declaration in main.cpp and kmymoneytest.cpp
 extern bool newReports;    // for debug purposes in main.cpp
 
 namespace reports {
@@ -218,25 +219,13 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   //
 
   QValueList<MyMoneyTransaction> transactions;
-  QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >  splitList;
-  if(!newReports) {
-    m_config_f.setReportAllSplits(false);
-    m_config_f.setConsiderCategory(true);
-    try {
-      transactions = file->transactionList(m_config_f);
-    } catch(MyMoneyException *e) {
-      qDebug("ERR: %s thrown in %s(%ld)", e->what().data(), e->file().data(), e->line());
-      throw e;
-    }
-  } else { // new Reports
-    m_config_f.setReportAllSplits(true);
-    m_config_f.setConsiderCategory(true);
-    try {
-      file->transactionList(splitList, m_config_f);
-    } catch(MyMoneyException *e) {
-      qDebug("ERR: %s thrown in %s(%ld)", e->what().data(), e->file().data(), e->line());
-      throw e;
-    }
+  m_config_f.setReportAllSplits(false);
+  m_config_f.setConsiderCategory(true);
+  try {
+    transactions = file->transactionList(m_config_f);
+  } catch(MyMoneyException *e) {
+    qDebug("ERR: %s thrown in %s(%ld)", e->what().data(), e->file().data(), e->line());
+    throw e;
   }
   DEBUG_OUTPUT(QString("Found %1 matching transactions").arg(transactions.count()));
 
@@ -272,17 +261,9 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
           {
             tx.setPostDate(*it_date);
 
-            if(!newReports) {
-              // ???? Does this violate an assumption that transactions are sorted
-              // by date?? (ace)
-              transactions += tx;
-            } else {
-              unsigned int cnt = schedulefilter.matchingSplits().count();
-              QValueList<MyMoneySplit>::const_iterator it_s;
-              for(it_s = schedulefilter.matchingSplits().begin(); it_s != schedulefilter.matchingSplits().end(); ++it_s) {
-                splitList.append(qMakePair(tx, *it_s));
-              }
-            }
+            // ???? Does this violate an assumption that transactions are sorted
+            // by date?? (ace)
+            transactions += tx;
 
             DEBUG_OUTPUT(QString("Added transaction for schedule %1 on %2").arg((*it_schedule).id()).arg((*it_date).toString()));
 
@@ -315,7 +296,7 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
 
       // Each split must be further filtered, because if even one split matches,
       // the ENTIRE transaction is returned with all splits (even non-matching ones)
-      if ( m_config_f.includes( splitAccount ) )
+      if ( m_config_f.includes( splitAccount ))
       {
         // reverse sign to match common notation for cash flow direction, only for expense/income splits
         MyMoneyMoney reverse(splitAccount.isIncomeExpense() ? -1 : 1, 1);
@@ -348,48 +329,52 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
     ++it_transaction;
   }
   } else {    // newReports
-  // create the elements for the register
-  QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it_t = splitList.begin();
-
+  QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
   unsigned colofs = columnValue(m_beginDate) - 1;
-  while ( it_t != splitList.end() )
+  while ( it_transaction != transactions.end() )
   {
-    QDate postdate = (*it_t).first.postDate();
+    QDate postdate = (*it_transaction).postDate();
     unsigned column = columnValue(postdate) - colofs;
 
-    ReportAccount splitAccount = (*it_t).second.accountId();
-
-    // Each split must be further filtered, because if even one split matches,
-    // the ENTIRE transaction is returned with all splits (even non-matching ones)
-    if ( m_config_f.includes( splitAccount ) )
+    QValueList<MyMoneySplit> splits = (*it_transaction).splits();
+    QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
+    while ( it_split != splits.end() )
     {
-      // reverse sign to match common notation for cash flow direction, only for expense/income splits
-      MyMoneyMoney reverse(splitAccount.isIncomeExpense() ? -1 : 1, 1);
+      ReportAccount splitAccount = (*it_split).accountId();
 
-      // retrieve the value in the account's underlying currency
-      // make sure to consider any autocalculation for loan payments
-      MyMoneyMoney value;
-      if((*it_t).second.shares() != MyMoneyMoney::autoCalc) {
-        value = (*it_t).second.shares() * reverse;
-      } else {
-      }
-
-      // the outer group is the account class (major account type)
-      MyMoneyAccount::accountTypeE type = splitAccount.accountGroup();
-      QString outergroup = accountTypeToString(type);
-
-      // Except in the case of transfers on an income/expense report
-      if ( al_transfers && ( type == MyMoneyAccount::Asset || type == MyMoneyAccount::Liability ) )
+      // Each split must be further filtered, because if even one split matches,
+      // the ENTIRE transaction is returned with all splits (even non-matching ones)
+      if ( m_config_f.includes( splitAccount ) && m_config_f.match(&(*it_split), MyMoneyFile::instance()->storage()))
       {
-        outergroup = i18n("Transfers");
-        value = -value;
-      }
-      // add the value to its correct position in the pivot table
-      assignCell( outergroup, splitAccount, column, value );
+        // reverse sign to match common notation for cash flow direction, only for expense/income splits
+        MyMoneyMoney reverse(splitAccount.isIncomeExpense() ? -1 : 1, 1);
 
+        // retrieve the value in the account's underlying currency
+        // make sure to consider any autocalculation for loan payments
+        MyMoneyMoney value;
+        if((*it_split).shares() != MyMoneyMoney::autoCalc) {
+          value = (*it_split).shares() * reverse;
+        } else {
+        }
+
+        // the outer group is the account class (major account type)
+        MyMoneyAccount::accountTypeE type = splitAccount.accountGroup();
+        QString outergroup = accountTypeToString(type);
+
+        // Except in the case of transfers on an income/expense report
+        if ( al_transfers && ( type == MyMoneyAccount::Asset || type == MyMoneyAccount::Liability ) )
+        {
+          outergroup = i18n("Transfers");
+          value = -value;
+        }
+        // add the value to its correct position in the pivot table
+        assignCell( outergroup, splitAccount, column, value );
+
+      }
+      ++it_split;
     }
 
-    ++it_t;
+    ++it_transaction;
   }
   }
 

@@ -279,10 +279,25 @@ public:
     * @param storage pointer to object of IMyMoneyStorage class
     *
     * @retval true The transaction matches the filter set
-    * @retval false The transaction does not match at least of of
+    * @retval false The transaction does not match at least one of
     *               the filters in the filter set
     */
   const bool match(const MyMoneyTransaction& transaction, const IMyMoneyStorage* const storage);
+
+  /**
+    * This method is used to check a specific split against the
+    * text and amount filter. The split will match if all specified and
+    * checked filters match. If the filter is cleared using the clear()
+    * method, any split matches.
+    *
+    * @param sp pointer to the split to be checked
+    * @param storage pointer to object of IMyMoneyStorage class
+    *
+    * @retval true The split matches the filter set
+    * @retval false The split does not match at least one of
+    *               the filters in the filter set
+    */
+  bool match(const MyMoneySplit * const sp, const IMyMoneyStorage* const storage) const;
 
   /**
     * This method is used to switch the amount of splits reported

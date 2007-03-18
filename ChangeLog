@@ -2,6 +2,11 @@
   * Preload payee widget for new schedules
   * Only send out update signal from engine after list of price updates
     has been processed to speed up the operation
+  * Modified the way splits are selected for pivot table reports back to
+    original code but added a filter for text and amount range.
+  * Fixed testcase support (global newReport variable)
+  * Send out MyMoneyFile::dataChanged() once a new file is loaded
+  * Use a non-null account id when creating InvestmentTransaction objects
 
 2007-03-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added method to remove the buttons from a kMyMoneyAccountSelector

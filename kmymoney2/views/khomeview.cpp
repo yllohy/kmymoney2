@@ -74,6 +74,8 @@ KHomeView::KHomeView(QWidget *parent, const char *name ) :
 //   m_part->openURL(m_filename);
   connect(m_part->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
           this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)));
+
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotRefreshView()));
 }
 
 KHomeView::~KHomeView()

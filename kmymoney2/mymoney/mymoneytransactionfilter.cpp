@@ -218,6 +218,43 @@ const QValueList<MyMoneySplit>& MyMoneyTransactionFilter::matchingSplits(void) c
   return m_matchingSplits;
 }
 
+bool MyMoneyTransactionFilter::match(const MyMoneySplit * const sp, const IMyMoneyStorage* const storage) const
+{
+  bool rc = true;
+
+  // check if the text is contained in one of the fields
+  // memo, value, number, payee, account, date
+  if(m_filterSet.singleFilter.textFilter) {
+    bool textMatch = false;
+    const MyMoneyAccount& acc = storage->account(sp->accountId());
+    if(sp->memo().contains(m_text)
+    || sp->value().formatMoney().contains(m_text)
+    || sp->number().contains(m_text))
+      textMatch = true;
+
+    if(!textMatch && acc.name().contains(m_text))
+      textMatch = true;
+
+    if(!textMatch && !sp->payeeId().isEmpty()) {
+      const MyMoneyPayee& payee = storage->payee(sp->payeeId());
+      if(payee.name().contains(m_text))
+        textMatch = true;
+    }
+
+    if(!textMatch)
+      rc = false;
+  }
+
+  if(rc && m_filterSet.singleFilter.amountFilter) {
+    if(sp->value().abs() < m_fromAmount)
+      rc = false;
+    if(sp->value().abs() > m_toAmount)
+      rc = false;
+  }
+
+  return rc;
+}
+
 const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction, const IMyMoneyStorage* const storage)
 {
   QValueList<MyMoneySplit>::ConstIterator it;
@@ -353,7 +390,22 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
   // check if we still have something to do
   if(filterSet.allFilter != 0) {
     for(sp = matchingSplits.first(); sp != 0;) {
-      MyMoneySplit* removeSplit = 0;
+      MyMoneySplit* removeSplit = match(sp, storage) ? 0 : sp;
+
+      const MyMoneyAccount& acc = storage->account(sp->accountId());
+
+      // Determine if this account is a category or an account
+      bool isCategory = false;
+      switch(acc.accountGroup()) {
+        case MyMoneyAccount::Income:
+        case MyMoneyAccount::Expense:
+          isCategory = true;
+        default:
+          break;
+      }
+
+#if 0
+      // TODO code moved to match() and should be removed here
       const MyMoneyAccount& acc = storage->account(sp->accountId());
 
       // Determine if this account is a category or an account
@@ -394,6 +446,7 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
         if(sp->value().abs() > m_toAmount)
           removeSplit = sp;
       }
+#endif
 
       if(!isCategory && !removeSplit) {
         // check the payee list

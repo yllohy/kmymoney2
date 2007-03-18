@@ -137,8 +137,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_homeView, SIGNAL(reportSelected(const QCString&)),
     this, SLOT(slotShowReport(const QCString&)));
 
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_homeView, SLOT(slotReloadView()));
-
   // Page 1
   m_institutionsViewFrame = addVBoxPage( i18n("Institutions"), i18n("Institutions"),
     DesktopIcon("institutions", iconSize));
@@ -152,8 +150,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_institutionsView, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyInstitution&)), kmymoney2, SLOT(slotReparentAccount(const MyMoneyAccount&, const MyMoneyInstitution&)));
   connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const MyMoneyMoney&)), m_institutionsView, SLOT(slotReconcileAccount(const MyMoneyAccount&, const MyMoneyMoney&)));
 
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_institutionsView, SLOT(slotLoadAccounts()));
-
   // Page 2
   m_accountsViewFrame = addVBoxPage( i18n("Accounts"), i18n("Accounts"),
     DesktopIcon("accounts", iconSize));
@@ -166,7 +162,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_accountsView, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotReparentAccount(const MyMoneyAccount&, const MyMoneyAccount&)));
   connect(this, SIGNAL(kmmFilePlugin(unsigned int)), m_accountsView, SLOT(slotUpdateIconPos(unsigned int)));
   connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const MyMoneyMoney&)), m_accountsView, SLOT(slotReconcileAccount(const MyMoneyAccount&, const MyMoneyMoney&)));
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_accountsView, SLOT(slotLoadAccounts()));
 
   // Page 3
   m_scheduleViewFrame = addVBoxPage( i18n("Schedule"), i18n("Bills & Reminders"),
@@ -181,7 +176,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_categoriesView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_categoriesView, SIGNAL(selectObject(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectInstitution(const MyMoneyObject&)));
   connect(m_categoriesView, SIGNAL(openContextMenu(const MyMoneyObject&)), kmymoney2, SLOT(slotShowAccountContextMenu(const MyMoneyObject&)));
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_categoriesView, SLOT(slotLoadAccounts()));
   connect(m_categoriesView, SIGNAL(openObject(const MyMoneyObject&)), kmymoney2, SLOT(slotAccountOpen(const MyMoneyObject&)));
   connect(m_categoriesView, SIGNAL(reparent(const MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotReparentAccount(const MyMoneyAccount&, const MyMoneyAccount&)));
 
@@ -193,7 +187,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(kmymoney2, SIGNAL(payeeRename()), m_payeesView, SLOT(slotStartRename()));
   connect(m_payeesView, SIGNAL(openContextMenu(const MyMoneyObject&)), kmymoney2, SLOT(slotShowPayeeContextMenu()));
   connect(m_payeesView, SIGNAL(selectObjects(const QValueList<MyMoneyPayee>&)), kmymoney2, SLOT(slotSelectPayees(const QValueList<MyMoneyPayee>&)));
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_payeesView, SLOT(slotLoadPayees()));
+  connect(m_payeesView, SIGNAL(transactionSelected(const QCString&, const QCString&)),
+          this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
 
   // Page 6
   m_ledgerViewFrame = addVBoxPage( i18n("Ledgers"), i18n("Ledgers"),
@@ -213,12 +208,11 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_ledgerView, SIGNAL(markTransactionNotReconciled()), kmymoney2, SLOT(slotMarkTransactionNotReconciled()));
   connect(this, SIGNAL(reconciliationStarts(const MyMoneyAccount&, const MyMoneyMoney&)), m_ledgerView, SLOT(slotSetReconcileAccount(const MyMoneyAccount&, const MyMoneyMoney&)));
   connect(m_ledgerView, SIGNAL(matchTransactionSelected(const MyMoneyTransaction&)), kmymoney2, SLOT(slotSelectMatchTransaction(const MyMoneyTransaction&)));
+  connect(m_ledgerView, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
+          this, SLOT(slotPayeeSelected(const QCString&, const QCString&, const QCString&)));
+
   connect(kmymoney2, SIGNAL(startMatchTransaction(const MyMoneyTransaction&)), m_ledgerView, SLOT(slotStartMatchTransaction(const MyMoneyTransaction&)));
   connect(kmymoney2, SIGNAL(cancelMatchTransaction(void)), m_ledgerView, SLOT(slotCancelMatchTransaction()));
-
-  //connect(m_ledgerView, SIGNAL(accountSelected(const QCString&, const QCString&)),
-  //    this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_ledgerView, SLOT(slotLoadView()));
 
   // Page 7
   m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),
@@ -229,13 +223,11 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
       this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
   connect(m_investmentView, SIGNAL(accountSelected(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_investmentView, SIGNAL(investmentRightMouseClick()), kmymoney2, SLOT(slotShowInvestmentContextMenu()));
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_investmentView, SLOT(slotLoadView()));
 
   // Page 8
   m_reportsViewFrame = addVBoxPage(i18n("Reports"), i18n("Reports"),
     DesktopIcon("report", iconSize));
   m_reportsView = new KReportsView(m_reportsViewFrame, "ReportsView");
-  connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_reportsView, SLOT(slotReloadView()));
 
   // Page 9
   m_budgetViewFrame = addVBoxPage(i18n("Budget"), i18n("Budget"),
@@ -246,10 +238,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_budgetView, SIGNAL(selectObjects(const QValueList<MyMoneyBudget>&)), kmymoney2, SLOT(slotSelectBudget(const QValueList<MyMoneyBudget>&)));
   connect(kmymoney2, SIGNAL(budgetRename()), m_budgetView, SLOT(slotStartRename()));
 
-  connect(m_payeesView, SIGNAL(transactionSelected(const QCString&, const QCString&)),
-          this, SLOT(slotLedgerSelected(const QCString&, const QCString&)));
-  connect(m_ledgerView, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
-          this, SLOT(slotPayeeSelected(const QCString&, const QCString&, const QCString&)));
 
   // construct an empty file
   newFile(true);
@@ -831,6 +819,9 @@ bool KMyMoneyView::initializeStorage() {
   ::timetrace("file open");
   m_fileOpen = true;
   emit kmmFilePlugin (postOpen);
+
+  // inform everyone about new data
+  MyMoneyFile::instance()->forceDataChanged();
 
   // if we currently see a different page, then select the right one
   if(page != activePageIndex()) {
