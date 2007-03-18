@@ -621,6 +621,9 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
 {
   try
   {
+    // preload the widgets with current available data
+    m_payee->loadPayees(MyMoneyFile::instance()->payeeList());
+
     if (m_schedule.account().name().isEmpty())
       return;
 
@@ -674,7 +677,6 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
        // MyMoneyFile::instance()->account(m_transaction.splits()[1].accountId()).name());
       m_kcomboTo->setSelected (m_toAccountId);
     }
-    m_payee->loadPayees(MyMoneyFile::instance()->payeeList());
     m_payee->setSelectedItem(m_transaction.splitByAccount(theAccountId()).payeeId());
 
 #if 0
