@@ -497,6 +497,11 @@ void KMyMoneySelector::ensureItemVisible(const QListViewItem *it_v)
   // and call QListView::ensureItemVisible() about 10ms later in
   // the slot slotShowSelected.  (ipwizard, 12/29/2003)
   m_visibleItem = it_v;
+
+  // FIXME the following line has been added to find a bug which
+  //       I could not duplicate. It can be removed once we caught it.
+  m_listView->ensureItemVisible(m_visibleItem);
+
   QTimer::singleShot(10, this, SLOT(slotShowSelected()));
 }
 

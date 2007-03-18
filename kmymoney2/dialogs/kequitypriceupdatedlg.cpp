@@ -237,36 +237,44 @@ void KEquityPriceUpdateDlg::slotOKClicked()
   QListViewItem* item = lvEquityList->firstChild();
   while ( item )
   {
+    // turn on signals before we modify the last entry in the list
+    MyMoneyFile::instance()->blockSignals(item->nextSibling() != 0);
+
     MyMoneyMoney rate(item->text(PRICE_COL));
     if ( !rate.isZero() )
     {
       QCString id = item->text(ID_COL).utf8();
+      QString name;
 
-      // if the ID has a space, then this is TWO ID's, so it's a currency quote
-      if ( QString(id).contains(" ") )
-      {
-        QStringList ids = QStringList::split(" ",QString(id));
-        QCString fromid = ids[0].utf8();
-        QCString toid = ids[1].utf8();
-        MyMoneyPrice price(fromid,toid,QDate().fromString(item->text(DATE_COL), Qt::ISODate),rate,item->text(SOURCE_COL));
-        file->addPrice(price);
-      }
-      else
-      // otherwise, it's a security quote
-      {
-        MyMoneySecurity security = MyMoneyFile::instance()->security(id);
-        try {
+      try {
+        // if the ID has a space, then this is TWO ID's, so it's a currency quote
+        if ( QString(id).contains(" ") )
+        {
+          QStringList ids = QStringList::split(" ",QString(id));
+          QCString fromid = ids[0].utf8();
+          QCString toid = ids[1].utf8();
+          name = QString("%1 --> %2").arg(fromid).arg(toid);
+          MyMoneyPrice price(fromid,toid,QDate().fromString(item->text(DATE_COL), Qt::ISODate),rate,item->text(SOURCE_COL));
+          file->addPrice(price);
+        }
+        else
+        // otherwise, it's a security quote
+        {
+          MyMoneySecurity security = MyMoneyFile::instance()->security(id);
+          name = security.name();
           MyMoneyPrice price(id, security.tradingCurrency(), QDate().fromString(item->text(DATE_COL), Qt::ISODate), rate, item->text(SOURCE_COL));
 
           // TODO (Ace) Better handling of the case where there is already a price
           // for this date.  Currently, it just overrides the old value.  Really it
           // should check to see if the price is the same and prompt the user.
           MyMoneyFile::instance()->addPrice(price);
-
-        } catch(MyMoneyException *e) {
-          qDebug("Unable to add price information for %s", security.name().data());
-          delete e;
         }
+
+      } catch(MyMoneyException *e) {
+        qDebug("Unable to add price information for %s", name.data());
+        delete e;
+        if(!item->nextSibling())
+          MyMoneyFile::instance()->forceDataChanged();
       }
     }
     item = item->nextSibling();
@@ -333,7 +341,7 @@ void KEquityPriceUpdateDlg::slotConfigureClicked()
 void KEquityPriceUpdateDlg::slotQuoteFailed(const QString& _id, const QString& _symbol)
 {
   QListViewItem* item = lvEquityList->findItem(_id,ID_COL,Qt::ExactMatch);
-  
+
   // Give the user some options
 
   int result = KMessageBox::questionYesNoCancel(this,i18n("Failed to retrieve a quote for %1 from %2.  Would you like to disable online price updates for this security?").arg(_symbol,item->text(SOURCE_COL)),i18n("Price Update Failed"),KStdGuiItem::yes(),KStdGuiItem::no(),"KEquityPriceUpdateDlg::slotQuoteFailed::Price Update Failed");
@@ -344,22 +352,22 @@ void KEquityPriceUpdateDlg::slotQuoteFailed(const QString& _id, const QString& _
 
     // Get this security (by ID)
     MyMoneySecurity security = MyMoneyFile::instance()->security(_id.utf8());
-    
+
     // Set the quote source to blank
     security.setValue("kmm-online-source",QString());
     security.setValue("kmm-online-quote-system",QString());
-    
+
     // Re-commit the security
     MyMoneyFile::instance()->modifySecurity(security);
   }
-  
+
   // As long as the user doesn't want to cancel, move on!
   if ( result != KMessageBox::Cancel )
   {
     QListViewItem* next = NULL;
     prgOnlineProgress->advance(1);
     item->listView()->setSelected(item, false);
- 
+
     // launch the NEXT one ... in case of m_fUpdateAll == false, we
     // need to parse the list to find the next selected one
     next = item->nextSibling();

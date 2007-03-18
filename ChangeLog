@@ -1,5 +1,7 @@
 2007-03-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Preload payee widget for new schedules
+  * Only send out update signal from engine after list of price updates
+    has been processed to speed up the operation
 
 2007-03-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added method to remove the buttons from a kMyMoneyAccountSelector
