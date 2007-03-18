@@ -1148,9 +1148,9 @@ void MyMoneySeqAccessMgr::loadTransaction(const MyMoneyTransaction& tr)
 
   it = m_transactionList.find(key);
   if(it != m_transactionList.end()) {
-    QString msg = "Duplicate transaction  '";
-    msg += tr.id() + "' during loadTransaction()";
-    throw new MYMONEYEXCEPTION(msg);
+    QString msg = QString("Duplicate transaction '%1' during loadTransaction(). Discarded.").arg(tr.id());
+    qDebug("%s", msg.data());
+    return;
   }
   m_transactionList[key] = tr;
   m_transactionKeys[tr.id()] = key;
