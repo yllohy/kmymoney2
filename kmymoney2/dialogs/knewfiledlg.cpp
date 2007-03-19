@@ -43,7 +43,7 @@
 
 #include "knewfiledlg.h"
 
-KNewFileDlg::KNewFileDlg(QWidget *parent, const char *name, const char *title)
+KNewFileDlg::KNewFileDlg(QWidget *parent, const char *name, const QString& title)
   : KNewFileDlgDecl(parent,name,true)
 {
   init(title);
@@ -51,7 +51,7 @@ KNewFileDlg::KNewFileDlg(QWidget *parent, const char *name, const char *title)
 
 KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
   QString userTown, QString userCounty, QString userPostcode, QString userTelephone,
-  QString userEmail, QWidget *parent, const char *name, const char *title)
+  QString userEmail, QWidget *parent, const char *name, const QString& title)
   : KNewFileDlgDecl(parent,name,true)
 {
   userNameEdit->setText(userName);
@@ -65,13 +65,13 @@ KNewFileDlg::KNewFileDlg(QString userName, QString userStreet,
   init(title);
 }
 
-void KNewFileDlg::init(const char* title)
+void KNewFileDlg::init(const QString& title)
 {
   bool showLoadButton = false;
   okBtn->setGuiItem(KStdGuiItem::ok());
   cancelBtn->setGuiItem(KStdGuiItem::cancel());
 
-  if (title)
+  if (!title.isEmpty())
     setCaption(title);
 
 #if KDE_IS_VERSION( 3, 1, 90 )

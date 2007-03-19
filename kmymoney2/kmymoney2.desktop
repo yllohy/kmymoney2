@@ -5,6 +5,7 @@ Exec=kmymoney2
 Comment=Personal Finance Manager
 Comment[de]=Persönlicher Finanzassistent
 Comment[fr]=Gestionnaire de finances personnelles
+Comment[ru]=Учёт финансов
 MimeType=application/x-kmymoney;application/vnd.intu.qfx;application/x-ofx
 Type=Application
 DocPath=kmymoney2/index.html

@@ -34,10 +34,10 @@
 class KNewFileDlg : public KNewFileDlgDecl  {
    Q_OBJECT
 public:
-  KNewFileDlg(QWidget *parent=0, const char *name=0, const char *title=0);
+  KNewFileDlg(QWidget *parent=0, const char *name=0, const QString& title=QString());
   KNewFileDlg(QString userName, QString userStreet,
     QString userTown, QString userCounty, QString userPostcode, QString userTelephone,
-    QString userEmail, QWidget *parent=0, const char *name=0, const char *title=0);
+    QString userEmail, QWidget *parent=0, const char *name=0, const QString& title=QString());
   ~KNewFileDlg();
 
   KPushButton* cancelButton(void) { return cancelBtn; };
@@ -53,7 +53,7 @@ public:
 
 protected:
   /// helper method for constructors
-  void init(const char* title);
+  void init(const QString& title);
 
 protected slots:
   void okClicked();

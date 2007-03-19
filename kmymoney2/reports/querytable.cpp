@@ -828,7 +828,7 @@ void QueryTable::constructAccountTable(void)
       }
 
       if ( iid.isEmpty() )
-        qaccountrow["institution"] = "None";
+        qaccountrow["institution"] = i18n("None");
       else
         qaccountrow["institution"] = file->institution(iid).name();
 
