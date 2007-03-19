@@ -62,7 +62,8 @@ TransactionEditor::TransactionEditor(TransactionEditorContainer* regForm, MyMone
   m_objects(objects),
   m_transaction(item->transaction()),
   m_split(item->split()),
-  m_lastPostDate(lastPostDate)
+  m_lastPostDate(lastPostDate),
+  m_openEditSplits(false)
 {
   m_item->startEditMode();
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotUpdateAccount()));
@@ -1339,72 +1340,79 @@ int StdTransactionEditor::slotEditSplits(void)
 {
   int rc = QDialog::Rejected;
 
-  // force focus change to update all data
-  QWidget* w = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"])->splitButton();
-  if(w)
-    w->setFocus();
+  if(!m_openEditSplits) {
+    // only get in here in a single instance
+    m_openEditSplits = true;
 
-  kMyMoneyEdit* amount = dynamic_cast<kMyMoneyEdit*>(haveWidget("amount"));
-  kMyMoneyEdit* deposit = dynamic_cast<kMyMoneyEdit*>(haveWidget("deposit"));
-  kMyMoneyEdit* payment = dynamic_cast<kMyMoneyEdit*>(haveWidget("payment"));
-  KMyMoneyCashFlowCombo* cashflow = 0;
-  KMyMoneyRegister::CashFlowDirection dir = KMyMoneyRegister::Unknown;
-  bool isValidAmount = false;
+    // force focus change to update all data
+    QWidget* w = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"])->splitButton();
+    if(w)
+      w->setFocus();
 
-  if(amount) {
-    isValidAmount = amount->text().length() != 0;
-    cashflow = dynamic_cast<KMyMoneyCashFlowCombo*>(haveWidget("cashflow"));
-    if(cashflow)
-      dir = cashflow->direction();
+    kMyMoneyEdit* amount = dynamic_cast<kMyMoneyEdit*>(haveWidget("amount"));
+    kMyMoneyEdit* deposit = dynamic_cast<kMyMoneyEdit*>(haveWidget("deposit"));
+    kMyMoneyEdit* payment = dynamic_cast<kMyMoneyEdit*>(haveWidget("payment"));
+    KMyMoneyCashFlowCombo* cashflow = 0;
+    KMyMoneyRegister::CashFlowDirection dir = KMyMoneyRegister::Unknown;
+    bool isValidAmount = false;
 
-  } else {
-    if(deposit) {
-      if (deposit->text().length() != 0) {
-        isValidAmount = true;
-        dir = KMyMoneyRegister::Deposit;
+    if(amount) {
+      isValidAmount = amount->text().length() != 0;
+      cashflow = dynamic_cast<KMyMoneyCashFlowCombo*>(haveWidget("cashflow"));
+      if(cashflow)
+        dir = cashflow->direction();
+
+    } else {
+      if(deposit) {
+        if (deposit->text().length() != 0) {
+          isValidAmount = true;
+          dir = KMyMoneyRegister::Deposit;
+        }
+      }
+      if(payment) {
+        if (payment->text().length() != 0) {
+          isValidAmount = true;
+          dir = KMyMoneyRegister::Payment;
+        }
+      }
+      if(!deposit || !payment) {
+        qDebug("Internal error: deposit(%p) & payment(%p) widgets not found but required", deposit, payment);
+        return rc;
       }
     }
-    if(payment) {
-      if (payment->text().length() != 0) {
-        isValidAmount = true;
-        dir = KMyMoneyRegister::Payment;
+
+    if(dir == KMyMoneyRegister::Unknown)
+      dir = KMyMoneyRegister::Payment;
+
+    MyMoneyTransaction transaction;
+    if(createTransaction(transaction, m_transaction, m_split)) {
+      MyMoneyMoney value;
+
+      KSplitTransactionDlg* dlg = new KSplitTransactionDlg(transaction,
+                                                          m_account,
+                                                          isValidAmount,
+                                                          dir == KMyMoneyRegister::Deposit,
+                                                          0,
+                                                          m_objects,
+                                                          m_priceInfo,
+                                                          m_regForm);
+      // connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
+
+      if((rc = dlg->exec()) == QDialog::Accepted) {
+        m_transaction = dlg->transaction();
+        m_split = m_transaction.splits()[0];
+        loadEditWidgets();
       }
-    }
-    if(!deposit || !payment) {
-      qDebug("Internal error: deposit(%p) & payment(%p) widgets not found but required", deposit, payment);
-      return rc;
-    }
-  }
 
-  if(dir == KMyMoneyRegister::Unknown)
-    dir = KMyMoneyRegister::Payment;
-
-  MyMoneyTransaction transaction;
-  if(createTransaction(transaction, m_transaction, m_split)) {
-    MyMoneyMoney value;
-
-    KSplitTransactionDlg* dlg = new KSplitTransactionDlg(transaction,
-                                                        m_account,
-                                                        isValidAmount,
-                                                        dir == KMyMoneyRegister::Deposit,
-                                                        0,
-                                                        m_objects,
-                                                        m_priceInfo,
-                                                        m_regForm);
-    // connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
-
-    if((rc = dlg->exec()) == QDialog::Accepted) {
-      m_transaction = dlg->transaction();
-      m_split = m_transaction.splits()[0];
-      loadEditWidgets();
+      delete dlg;
     }
 
-    delete dlg;
-  }
+    // focus jumps into the memo field
+    if((w = haveWidget("memo")) != 0) {
+      w->setFocus();
+    }
 
-  // focus jumps into the memo field
-  if((w = haveWidget("memo")) != 0) {
-    w->setFocus();
+    m_openEditSplits = false;
   }
 
   return rc;

@@ -217,6 +217,7 @@ protected:
   QDate                                             m_lastPostDate;
   QMap<QCString, MyMoneyMoney>                      m_priceInfo;
   KMyMoneyRegister::Action                          m_initialAction;
+  bool                                              m_openEditSplits;
 };
 
 

@@ -2,6 +2,7 @@
   * Added some russian files as provided by Andrey Cherepanov
   * Fixed title of new file dialog to be based on QString rather than char*
   * Fixed a few other i18n problems reported by Andrey Cherepanov
+  * Fixed duplicate opening of split edit dialog in some circumstances
 
 2007-03-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Preload payee widget for new schedules
