@@ -45,12 +45,14 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/mymoneyfile.h>
+
+#include <kmymoney/kmymoneyglobalsettings.h>
+#include <kmymoney/kmymoneytitlelabel.h>
+#include <kmymoney/kmymoneyedit.h>
+
 #include "kbudgetview.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../mymoney/storage/mymoneyseqaccessmgr.h"
-#include "../kmymoneyglobalsettings.h"
-#include "../widgets/kmymoneytitlelabel.h"
-#include "../widgets/kmymoneyedit.h"
+#include "../dialogs/knewbudgetdlg.h"
 
 // *** KBudgetListItem Implementation ***
 KBudgetListItem::KBudgetListItem(KListView *parent, const MyMoneyBudget& budget) :
@@ -58,6 +60,8 @@ KBudgetListItem::KBudgetListItem(KListView *parent, const MyMoneyBudget& budget)
   m_budget(budget)
 {
   setText(0, budget.name());
+  setText(1, QString("%1").arg(budget.budgetstart().year()));
+
   // allow in column rename
   setRenameEnabled(0, true);
 }
@@ -129,8 +133,8 @@ void KBudgetAmountListItem::paintCell(QPainter *p, const QColorGroup & cg, int c
 {
   p->setFont(KMyMoneyGlobalSettings::listCellFont());
 
-  QColor colour = KMyMoneySettings::listColor();
-  QColor bgColour = KMyMoneySettings::listBGColor();
+  QColor colour = KMyMoneyGlobalSettings::listColor();
+  QColor bgColour = KMyMoneyGlobalSettings::listBGColor();
 
   QColorGroup cg2(cg);
 
@@ -148,8 +152,7 @@ const int KBudgetView::m_iBudgetYearsAhead = 5;
 const int KBudgetView::m_iBudgetYearsBack = 3;
 
 KBudgetView::KBudgetView(QWidget *parent, const char *name )
-  : KBudgetViewDecl(parent,name),
-    m_suspendUpdate(false)
+  : KBudgetViewDecl(parent,name)
 {
   m_budgetAmountList->setSorting(-1);
   m_accountTree->setSorting(-1);
@@ -158,14 +161,12 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name )
   m_budgetAmountList->setAllColumnsShowFocus(true);
   m_budgetAmountList->setTabOrderedRenaming(true);
 
-  titleLabel->setRightImageFile("pics/titlelabel_background.png" );
-
   connect(m_budgetList, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotOpenContextMenu(QListViewItem*)));
   connect(m_budgetList, SIGNAL(itemRenamed(QListViewItem*,int,const QString&)), this, SLOT(slotRenameBudget(QListViewItem*,int,const QString&)));
   connect(m_budgetList, SIGNAL(selectionChanged()), this, SLOT(slotSelectBudget()));
 
-  connect(m_dlYear, SIGNAL(activated(int)), this, SLOT(slotSelectYear(int)));
+  //connect(m_dlYear, SIGNAL(activated(int)), this, SLOT(slotSelectYear(int)));
 
   connect(m_dbTimeSpan, SIGNAL(activated(int)), this, SLOT(slotSelectTimeSpan(int)));
 
@@ -187,7 +188,6 @@ KBudgetView::~KBudgetView()
 void KBudgetView::show()
 {
   QTimer::singleShot(50, this, SLOT(slotRearrange()));
-  emit signalViewActivated();
   QWidget::show();
   slotRefreshView();
 }
@@ -237,7 +237,7 @@ void KBudgetView::loadBudget(void)
   int iStartYear = date.year() - m_iBudgetYearsBack;
 
   m_yearList.clear();
-  m_dlYear->clear();
+  //m_dlYear->clear();
   for (int i=0; i<m_iBudgetYearsAhead + m_iBudgetYearsBack; i++)
     m_yearList += QString::number(iStartYear+i);
 
@@ -260,13 +260,13 @@ void KBudgetView::loadBudget(void)
     }
   }
   m_yearList.sort();
-  m_dlYear->insertStringList(m_yearList);
+  //m_dlYear->insertStringList(m_yearList);
 
   if (currentItem)
   {
     int iYear = currentItem->budget().budgetstart().year();
-    if (m_yearList.findIndex(QString::number(iYear)) >= 0)
-      m_dlYear->setCurrentItem(m_yearList.findIndex(QString::number(iYear)));
+    //if (m_yearList.findIndex(QString::number(iYear)) >= 0)
+    //  m_dlYear->setCurrentItem(m_yearList.findIndex(QString::number(iYear)));
 
     m_budgetList->setCurrentItem(currentItem);
   }
@@ -506,8 +506,8 @@ bool KBudgetView::selectedBudget(MyMoneyBudget& budget) const
   if(item)
   {
     budget = item->budget();
-    if (m_yearList.findIndex(QString::number(budget.budgetstart().year())) >= 0)
-      m_dlYear->setCurrentItem(m_yearList.findIndex(QString::number(budget.budgetstart().year())));
+    //if (m_yearList.findIndex(QString::number(budget.budgetstart().year())) >= 0)
+      //m_dlYear->setCurrentItem(m_yearList.findIndex(QString::number(budget.budgetstart().year())));
   }
   m_accountTree->setEnabled(true);
 
@@ -527,7 +527,8 @@ KMyMoneyAccountTreeBudgetItem* KBudgetView::selectedAccount(void) const
   KMyMoneyAccountTreeBudgetItem* item = dynamic_cast<KMyMoneyAccountTreeBudgetItem*>(it_v);
   if(item)
   {
-    if (item->id() == STD_ACC_EXPENSE || item->id() == STD_ACC_INCOME )
+    if(item->id() == MyMoneyFile::instance()->expense().id()
+    || item->id() == MyMoneyFile::instance()->income().id())
       return NULL;
 
     m_dbTimeSpan->setEnabled(true);
@@ -618,7 +619,8 @@ void KBudgetView::slotSelectYear(int iYear)
   if (!selectedBudget(budget))
     return;
 
-  QDate date(m_dlYear->text(iYear).toInt(), 1, 1);
+  //QDate date(m_dlYear->text(iYear).toInt(), 1, 1);
+  QDate date(iYear, 1, 1);
   budget.setBudgetStart(date);
 
   MyMoneyFile::instance()->modifyBudget(budget);
@@ -721,6 +723,7 @@ void KBudgetView::slotSelectObject()
     {
       m_accountTree->setSelected(account, true);
       m_accountTree->setOpen(account, true);
+
     }
     else
     {
@@ -732,6 +735,9 @@ void KBudgetView::slotSelectObject()
   if (account)
   {
     QCString id = account->id();
+    //(marce) This updates the name of the category in the panel on the right of the view
+    m_leAccounts->setText(MyMoneyFile::instance()->account(id).name());
+
 
     //(ace) kCategoryWidget not currently defined
     //m_leAccounts->blockSignals(true);
@@ -852,5 +858,58 @@ void KBudgetView::slotBudgetAmountClicked(QListViewItem *item)
     item->startRename(1);
   }
 }
+
+void KBudgetView::bNewBudget_clicked()
+{
+  KNewBudgetDlg* mydialog = new KNewBudgetDlg( this, i18n("New budget dialog"));
+
+  if(mydialog->exec() == QDialog::Accepted) {
+    MyMoneyBudget budget;
+    QDate mydate = QDate(mydialog->getYear().toInt(),1 ,1);
+
+    budget.setName(mydialog->getName());
+    budget.setBudgetStart(mydate);
+
+   //TODO: check that no other budget in the storage with the same name and year exists
+    MyMoneyFile::instance()->addBudget(budget);
+  }
+  delete mydialog;
+}
+
+void KBudgetView::bEditBudget_clicked()
+{
+  slotStartRename( );
+}
+
+void KBudgetView::bDeleteBudget_clicked()
+{
+  QListViewItemIterator it_l(m_budgetList, QListViewItemIterator::Selected);
+  QListViewItem* it_v;
+  if((it_v = it_l.current()) != 0) {
+    //The item in the list "it_v" is the budget the user has selected (highlighted in the list)
+    //First, we take budget list from the storage
+    QValueList<MyMoneyBudget> allBudgetsList = MyMoneyFile::instance()->budgetList();
+    //Then we travel the list (=iterate) in a quest for the first budget with the same name and year than our one.
+    QValueList<MyMoneyBudget>::iterator it_allBL = allBudgetsList.begin();
+    for (it_allBL = allBudgetsList.begin(); it_allBL != allBudgetsList.end(); it_allBL++){
+      if(((*it_allBL).name() == it_v->text(0))
+      && ((*it_allBL).budgetstart().year() == it_v->text(1).toInt())) {
+        //with the budget located at it_allBL, request confirmation from user
+        QString prompt = QString("<qt>")+i18n("Do you really want to remove the budget <b>%1</b> for year <b>%2</b>").arg((*it_allBL).name()).arg((*it_allBL).budgetstart().year())+QString("</qt>");
+        if (KMessageBox::questionYesNo(this, prompt, i18n("Remove Budget"))==KMessageBox::No)
+          return;
+
+        // now the obliteration operation itself
+        try {
+          MyMoneyFile::instance()->removeBudget(*it_allBL);
+        } catch (MyMoneyException *e) {
+          KMessageBox::detailedSorry(0, i18n("Unable to remove budget(s)"), (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+          delete e;
+        }
+      }
+    }
+  }
+}
+
 
 #include "kbudgetview.moc"

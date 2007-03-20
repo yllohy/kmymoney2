@@ -43,7 +43,7 @@
       <directoryradio>executable</directoryradio>
       <customdirectory>/</customdirectory>
       <mainprogram>kmymoney2/kmymoney2</mainprogram>
-      <programargs/>
+      <programargs>--newreports</programargs>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <envvars/>
@@ -132,6 +132,7 @@
     <display>
       <staticmembers>false</staticmembers>
       <demanglenames>true</demanglenames>
+      <outputradix>10</outputradix>
     </display>
   </kdevdebugger>
   <kdevcvsservice>
@@ -155,6 +156,22 @@
       <argumentsHintDelay>400</argumentsHintDelay>
       <headerCompletionDelay>250</headerCompletionDelay>
     </codecompletion>
+    <qt>
+      <used>false</used>
+      <version>3</version>
+      <root>/usr/lib/qt3</root>
+    </qt>
+    <creategettersetter>
+      <prefixGet/>
+      <prefixSet>set</prefixSet>
+      <prefixVariable>m_,_</prefixVariable>
+      <parameterName>theValue</parameterName>
+      <inlineGet>true</inlineGet>
+      <inlineSet>true</inlineSet>
+    </creategettersetter>
+    <designerintegration>
+      <qtdesigner/>
+    </designerintegration>
   </kdevcppsupport>
   <cppsupportpart>
     <filetemplates>

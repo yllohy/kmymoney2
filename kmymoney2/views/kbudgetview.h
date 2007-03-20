@@ -167,6 +167,14 @@ public slots:
   void slotSelectBudget(void);
   void slotStartRename(void);
 
+  /**
+    * These slots are for the implementing the functionality of buttons in the visual design of the view
+    */
+  void bNewBudget_clicked();
+  void bEditBudget_clicked();
+  void bDeleteBudget_clicked();
+
+
 protected:
   void resizeEvent(QResizeEvent*);
   void loadAccounts(void);
@@ -215,6 +223,7 @@ protected slots:
 
   void slotBudgetAmountClicked(QListViewItem *item);
 
+
 private slots:
   void slotRearrange(void);
 
@@ -227,7 +236,6 @@ private slots:
   void slotOpenContextMenu(QListViewItem* i);
 
 signals:
-  void signalViewActivated();
   /**
     * This signal serves as proxy for KMyMoneyBudgetList::selectObject()
     */
@@ -242,11 +250,6 @@ private:
     eMonthByMonth=2
   } eTimePeriodColumn;
 
-  /**
-    * This member holds the state of the toggle switch used
-    * to suppress updates due to MyMoney engine data changes
-    */
-  bool m_suspendUpdate;
   QMap<QCString, MyMoneyAccount>      m_accountMap;
 
   QMap<QCString, MyMoneySecurity>     m_securityMap;
