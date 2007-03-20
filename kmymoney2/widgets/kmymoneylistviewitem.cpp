@@ -39,8 +39,8 @@ KMyMoneyListViewItem::KMyMoneyListViewItem(QListView* parent, const QString& txt
   KListViewItem(parent, txt),
   m_key(key),
   m_id(id),
-  m_isKnown(0),
-  m_isOdd(0)
+  m_isOdd(0),
+  m_isKnown(0)
 {
   if(key.isEmpty())
     m_key = txt;
@@ -50,8 +50,8 @@ KMyMoneyListViewItem::KMyMoneyListViewItem(QListViewItem* parent, const QString&
   KListViewItem(parent, txt),
   m_key(key),
   m_id(id),
-  m_isKnown(0),
-  m_isOdd(0)
+  m_isOdd(0),
+  m_isKnown(0)
 {
   if(key.isEmpty())
     m_key = txt;
@@ -109,8 +109,8 @@ bool KMyMoneyListViewItem::isAlternate(void)
       if(clItem) {
         clItem->m_isOdd = previous = !previous;
         clItem->m_isKnown = true;
-        clItem = dynamic_cast<KMyMoneyCheckListItem *>(clItem->nextSibling());
         liItem = dynamic_cast<KMyMoneyListViewItem *>(clItem->nextSibling());
+        clItem = dynamic_cast<KMyMoneyCheckListItem *>(clItem->nextSibling());
       } else if(liItem) {
         liItem->m_isOdd = previous = !previous;
         liItem->m_isKnown = true;

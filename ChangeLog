@@ -3,6 +3,7 @@
   * Respect global price precision setting in price edit widget in
     investment transaction editor
   * Added some budget view patches provided by mvillarino
+  * Fixed a crash in KMyMoneyCheckListItem and KMyMoneyListViewItem
 
 2007-03-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added some russian files as provided by Andrey Cherepanov

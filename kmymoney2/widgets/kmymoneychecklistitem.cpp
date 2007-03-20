@@ -126,8 +126,8 @@ bool KMyMoneyCheckListItem::isAlternate(void)
       if(clItem) {
         clItem->m_isOdd = previous = !previous;
         clItem->m_isKnown = true;
-        clItem = dynamic_cast<KMyMoneyCheckListItem *>(clItem->nextSibling());
         liItem = dynamic_cast<KMyMoneyListViewItem *>(clItem->nextSibling());
+        clItem = dynamic_cast<KMyMoneyCheckListItem *>(clItem->nextSibling());
       } else if(liItem) {
         liItem->m_isOdd = previous = !previous;
         liItem->m_isKnown = true;
