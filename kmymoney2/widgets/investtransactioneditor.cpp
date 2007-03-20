@@ -50,7 +50,7 @@
 #include "../dialogs/ksplittransactiondlg.h"
 #include "../dialogs/kcurrencycalculator.h"
 
-#include "../kmymoneysettings.h"
+#include "../kmymoneyglobalsettings.h"
 
 #include "investactivities.h"
 
@@ -245,6 +245,7 @@ void InvestTransactionEditor::createEditWidgets(void)
   value = new kMyMoneyEdit;
   value->setHint(i18n("Price"));
   value->setResetButtonVisible(false);
+  value->setPrecision(KMyMoneyGlobalSettings::pricePrecision());
   m_editWidgets["price"] = value;
   connect(value, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
   connect(value, SIGNAL(valueChanged(const QString&)), this, SLOT(slotUpdateTotalAmount()));

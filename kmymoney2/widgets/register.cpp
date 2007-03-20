@@ -1092,7 +1092,7 @@ void Register::resize(int col)
   if(columnWidth(BalanceColumn))
     setColumnWidth(BalanceColumn, dwidth);
   if(columnWidth(PriceColumn))
-    setColumnWidth(PriceColumn, ewidth - 40);
+    setColumnWidth(PriceColumn, ewidth);
   if(columnWidth(ValueColumn))
     setColumnWidth(ValueColumn, dwidth);
 
