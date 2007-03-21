@@ -22,6 +22,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qtextedit.h>
@@ -29,14 +30,17 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
+#include <kglobal.h>
 #include <klocale.h>
 #include <kiconloader.h>
 #include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
+#include <kmymoney/mymoneyscheduled.h>
 #include "kmymoneybriefschedule.h"
-#include "../mymoney/mymoneyscheduled.h"
 #include "../kmymoneyutils.h"
 
 KMyMoneyBriefSchedule::KMyMoneyBriefSchedule(QWidget *parent, const char *name )
@@ -102,13 +106,13 @@ void KMyMoneyBriefSchedule::loadSchedule()
       {
         int transactions = sched.paymentDates(m_date, sched.endDate()).count()-1;
         text = i18n("Payment on %1 for %2 with %3 transactions remaining occuring %4.")
-                .arg(m_date.toString())
+                .arg(KGlobal::locale()->formatDate(m_date, true))
                 .arg(amount.formatMoney())
                 .arg(QString::number(transactions))
                 .arg(KMyMoneyUtils::occurenceToString(sched.occurence()));
       } else {
         text = i18n("Payment on %1 for %2 occuring %4.")
-                .arg(m_date.toString())
+                .arg(KGlobal::locale()->formatDate(m_date, true))
                 .arg(amount.formatMoney())
                 .arg(KMyMoneyUtils::occurenceToString(sched.occurence()));
       }
