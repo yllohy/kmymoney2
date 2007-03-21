@@ -73,8 +73,10 @@ public:
 
   typedef enum {
     NameColumn = 0,
-    BalanceColumn = 1,
-    ValueColumn = 2
+    TaxReportColumn,
+    VatCategoryColumn,
+    BalanceColumn,
+    ValueColumn
   } KMyMoneyAccountTreeColumn;
 
 public slots:

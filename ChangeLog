@@ -1,5 +1,7 @@
 2007-03-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use KDE conrolled date format for kschedulebriefwidget
+  * Fixed a problem with category creation during transaction entry
+  * Added two new columns to category and accounts view
 
 2007-03-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed column width of price in investment register

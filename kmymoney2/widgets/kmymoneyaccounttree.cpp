@@ -34,6 +34,7 @@
 #include <kmessagebox.h>
 #include <klocale.h>
 #include <kglobal.h>
+#include <kiconloader.h>
 #include <kstandarddirs.h>
 
 // ----------------------------------------------------------------------------
@@ -41,12 +42,7 @@
 
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneyaccounttree.h>
-
-#include "../kmymoneyglobalsettings.h"
-
-/**
-  * @todo drag/drop in KMyMoneyAccountTree
-  */
+#include <kmymoney/kmymoneyglobalsettings.h>
 
 KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char* name) :
   KListView(parent, name),
@@ -57,15 +53,21 @@ KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char* name) :
   setAllColumnsShowFocus(true);
 
   addColumn(i18n("Account"));
+  addColumn(i18n("Column heading for category in tax report", "Tax"));
+  addColumn(i18n("Column heading for VAT category", "VAT"));
   addColumn(i18n("Balance"));
   addColumn(i18n("Value"));
 
   setMultiSelection(false);
 
   setColumnWidthMode(NameColumn, QListView::Manual);
+  setColumnWidthMode(TaxReportColumn, QListView::Manual);
+  setColumnWidthMode(VatCategoryColumn, QListView::Manual);
   setColumnWidthMode(BalanceColumn, QListView::Manual);
   setColumnWidthMode(ValueColumn, QListView::Manual);
 
+  setColumnAlignment(TaxReportColumn, Qt::AlignHCenter);
+  setColumnAlignment(VatCategoryColumn, Qt::AlignHCenter);
   setColumnAlignment(BalanceColumn, Qt::AlignRight);
   setColumnAlignment(ValueColumn, Qt::AlignRight);
 
@@ -256,7 +258,7 @@ void KMyMoneyAccountTree::startDrag(void)
   return;
 }
 
-void KMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* parent, QListViewItem* after)
+void KMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* /* parent */, QListViewItem* /* after */)
 {
   m_autoopenTimer.stop();
   slotStopAutoScroll();
@@ -492,8 +494,8 @@ const MyMoneyObject& KMyMoneyAccountTreeItem::itemObject(void) const
 
 KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const QString& txt) :
   KListViewItem(parent),
-  m_displayFactor(MyMoneyMoney(1)),
   m_totalValue(MyMoneyMoney(0)),
+  m_displayFactor(MyMoneyMoney(1)),
   m_type(Text),
   m_reconcileFlag(false)
 {
@@ -502,9 +504,9 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const QStrin
 
 KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyInstitution& institution) :
   KListViewItem(parent),
+  m_totalValue(MyMoneyMoney(0)),
   m_displayFactor(MyMoneyMoney(1)),
   m_institution(institution),
-  m_totalValue(MyMoneyMoney(0)),
   m_type(Institution),
   m_reconcileFlag(false)
 {
@@ -515,9 +517,9 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMone
 KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyAccount& account, const MyMoneySecurity& security, const QString& name) :
   KListViewItem(parent),
   m_security(security),
+  m_totalValue(MyMoneyMoney(0)),
   m_displayFactor(MyMoneyMoney(1)),
   m_account(account),
-  m_totalValue(MyMoneyMoney(0)),
   m_type(Account),
   m_reconcileFlag(false)
 {
@@ -531,9 +533,9 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent
   KListViewItem(parent),
   m_price(price),
   m_security(security),
+  m_totalValue(MyMoneyMoney(0)),
   m_displayFactor(MyMoneyMoney(1)),
   m_account(account),
-  m_totalValue(MyMoneyMoney(0)),
   m_type(Account),
   m_reconcileFlag(false)
 {
@@ -541,13 +543,13 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent
 }
 
 
-KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyAccount& account, const MyMoneyBudget &budget, const MyMoneySecurity& security, const QString& name) :
+KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyAccount& account, const MyMoneyBudget &budget, const MyMoneySecurity& security, const QString& /* name */) :
   KListViewItem(parent),
   m_price(),
   m_security(security),
+  m_totalValue(MyMoneyMoney(0)),
   m_displayFactor(MyMoneyMoney(1)),
   m_account(account),
-  m_totalValue(MyMoneyMoney(0)),
   m_type(Account),
   m_budget(budget),
   m_reconcileFlag(false)
@@ -558,9 +560,9 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent
   KListViewItem(parent),
   m_price(price),
   m_security(security),
+  m_totalValue(MyMoneyMoney(0)),
   m_displayFactor(MyMoneyMoney(1)),
   m_account(account),
-  m_totalValue(MyMoneyMoney(0)),
   m_type(Account),
   m_budget(budget),
   m_reconcileFlag(false)
@@ -619,6 +621,9 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
     return;
 
   QString icon;
+  QPixmap checkMark = QPixmap(KGlobal::iconLoader()->loadIcon("ok", KIcon::Small));
+  MyMoneyMoney vatRate;
+
   switch (m_account.accountGroup())
   {
     case MyMoneyAccount::Income:
@@ -635,19 +640,38 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
       break;
     default:
       icon = "account";
+      break;
   }
+
+  switch(m_account.accountType()) {
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Expense:
+      if(m_account.value("Tax").lower() == "yes")
+        setPixmap(KMyMoneyAccountTree::TaxReportColumn, checkMark);
+      if(!m_account.value("VatAccount").isEmpty()) {
+        setPixmap(KMyMoneyAccountTree::VatCategoryColumn, checkMark);
+      }
+      if(!m_account.value("VatRate").isEmpty()) {
+        vatRate = MyMoneyMoney(m_account.value("VatRate")) * MyMoneyMoney(100,1);
+        setText(KMyMoneyAccountTree::VatCategoryColumn, QString("%1 %").arg(vatRate.formatMoney("", 1)));
+      }
+      break;
+    default:
+      break;
+  }
+
   if(m_account.isClosed()) {
     QPixmap pic = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon)));
     QPixmap closed = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/account-types_closed.png")));
     bitBlt(&pic, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
-    setPixmap(0, pic);
+    setPixmap(KMyMoneyAccountTree::NameColumn, pic);
   } else if(m_reconcileFlag) {
     QPixmap pic = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon)));
     QPixmap closed = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/account-types_reconcile.png")));
     bitBlt(&pic, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
-    setPixmap(0, pic);
+    setPixmap(KMyMoneyAccountTree::NameColumn, pic);
   } else
-    setPixmap(0, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon))));
+    setPixmap(KMyMoneyAccountTree::NameColumn, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon))));
 
   setText(KMyMoneyAccountTree::NameColumn, account.name());
 
