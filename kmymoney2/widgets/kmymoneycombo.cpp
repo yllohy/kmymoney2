@@ -267,14 +267,7 @@ kMyMoneyCompletion* KMyMoneyCombo::completion(void) const
 
 void KMyMoneyCombo::selectedItem(QCString& id) const
 {
-  id = QCString();
-
-  QCStringList list;
-  selectedItems(list);
-
-  if(list.count() > 0) {
-    id = list[0];
-  }
+  id = m_id;
 }
 
 void KMyMoneyCombo::selectedItems(QCStringList& list) const
