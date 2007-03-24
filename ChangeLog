@@ -4,6 +4,8 @@
     - multiple currencies
     - automatic calculation of start end ending balance of statement
   * Fixed a problem when loading non VAT transactions into the editor
+  * Clear the memo for the second split during autofill to allow overriding
+    the text by the user
 
 2007-03-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated kmymoney2.desktop
