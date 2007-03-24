@@ -351,16 +351,13 @@ KGlobalLedgerView::~KGlobalLedgerView()
 
 void KGlobalLedgerView::slotLoadView(void)
 {
-  if(!d->m_inLoading) {
-    m_needReload = true;
-    if(isVisible()) {
-      if(!m_inEditMode) {
-        d->m_inLoading = true;
-        loadView();
-        m_needReload = false;
-        // force a new account if the current one is empty
-        m_newAccountLoaded = m_account.id().isEmpty();
-      }
+  m_needReload = true;
+  if(isVisible()) {
+    if(!m_inEditMode) {
+      loadView();
+      m_needReload = false;
+      // force a new account if the current one is empty
+      m_newAccountLoaded = m_account.id().isEmpty();
     }
   }
 }
@@ -414,7 +411,9 @@ void KGlobalLedgerView::loadView(void)
   QMap<QCString, bool> isSelected;
   QCString focusItemId;
 
-  d->m_startPoint = QPoint(-1, -1);
+  if(!d->m_inLoading)
+    d->m_startPoint = QPoint(-1, -1);
+
   if(!m_newAccountLoaded) {
     // remember the current selected transactions
     KMyMoneyRegister::RegisterItem* item = m_register->firstItem();
@@ -433,7 +432,8 @@ void KGlobalLedgerView::loadView(void)
       m_matchTransaction = t->transaction();
 
     // remember the upper left corner of the viewport
-    d->m_startPoint = QPoint(m_register->contentsX(), m_register->contentsY());
+    if(!d->m_inLoading)
+      d->m_startPoint = QPoint(m_register->contentsX(), m_register->contentsY());
   } else
     d->m_registerSearchLine->searchLine()->reset();
 
@@ -451,7 +451,6 @@ void KGlobalLedgerView::loadView(void)
 
   if(m_account.id().isEmpty()) {
     // if we don't have an account we bail out
-    d->m_inLoading = false;
     setEnabled(false);
     return;
   }
@@ -614,7 +613,10 @@ void KGlobalLedgerView::loadView(void)
       d->m_startPoint = QPoint(0, 0);
     }
   }
-  QTimer::singleShot(0, this, SLOT(slotUpdateViewPos()));
+  if(!d->m_inLoading) {
+    QTimer::singleShot(0, this, SLOT(slotUpdateViewPos()));
+    d->m_inLoading = true;
+  }
 
   // and tell everyone what's selected
   emit accountSelected(m_account);
@@ -1030,7 +1032,6 @@ bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCString& tr
           m_account = MyMoneyFile::instance()->account(m_account.parentAccountId());
         }
         m_newAccountLoaded = true;
-        d->m_inLoading = false;    // force load no matter what stage a previous load is
         slotLoadView();
       } catch(MyMoneyException* e) {
         qDebug("Unable to retrieve account %s", id.data());
@@ -1336,7 +1337,6 @@ void KGlobalLedgerView::show(void)
 {
   if(m_needReload) {
     if(!m_inEditMode) {
-      d->m_inLoading = true;
       loadView();
       m_needReload = false;
       m_newAccountLoaded = false;

@@ -802,8 +802,7 @@ void StdTransactionEditor::slotReloadEditWidgets(void)
 {
   // reload category widget
   KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
-  QCString categoryId;
-  category->selectedItem(categoryId);
+  QCString categoryId = category->selectedItem();
 
   AccountSet aSet(m_objects);
   aSet.addAccountGroup(MyMoneyAccount::Asset);
@@ -825,8 +824,7 @@ void StdTransactionEditor::slotReloadEditWidgets(void)
 
   // reload payee widget
   KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(m_editWidgets["payee"]);
-  QCString payeeId;
-  payee->selectedItem(payeeId);
+  QCString payeeId = payee->selectedItem();
 
   payee->loadPayees(MyMoneyFile::instance()->payeeList());
 
@@ -1133,9 +1131,12 @@ void StdTransactionEditor::updateVAT(bool amountChanged)
   } else {
     // otherwise, we need a category
     KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
-    QCStringList list;
-    category->selectedItems(list);
-    if(list.isEmpty())
+    if(category->selectedItem().isEmpty())
+      return;
+
+    // if no VAT account is associated with this category/account, then we bail out
+    MyMoneyAccount cat = MyMoneyFile::instance()->account(category->selectedItem());
+    if(cat.value("VatAccount").isEmpty())
       return;
 
     newAmount = amount;
@@ -1527,7 +1528,7 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
   KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(m_editWidgets["payee"]);
   QCString payeeId;
   if(!isMultiSelection() || (isMultiSelection() && !payee->currentText().isEmpty())) {
-    payee->selectedItem(payeeId);
+    payeeId = payee->selectedItem();
     s0.setPayeeId(payeeId);
   }
 
@@ -1594,9 +1595,7 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
   if(isMultiSelection() || splits.count() == 1) {
     KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
     if(!isMultiSelection() || (isMultiSelection() && !category->currentText().isEmpty())) {
-      QCString categoryId;
-      category->selectedItem(categoryId);
-      s1.setAccountId(categoryId);
+      s1.setAccountId(category->selectedItem());
     }
 
     // if the first split has a memo but the second split is empty,
@@ -1610,57 +1609,10 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
 
     if(updateValue && !s1.accountId().isEmpty()) {
       s1.setValue(-value);
-      if(!value.isZero()) {
-        MyMoneyAccount cat = m_objects->account(s1.accountId());
-        if(cat.currencyId() != m_transaction.commodity()) {
-
-          MyMoneySecurity fromCurrency, toCurrency;
-          MyMoneyMoney fromValue, toValue;
-          fromCurrency = m_objects->security(m_transaction.commodity());
-          toCurrency = m_objects->security(cat.currencyId());
-
-          // determine the fraction required for this category
-          int fract = cat.fraction(toCurrency);
-
-          // display only positive values to the user
-          fromValue = s1.value().abs();
-
-          // if we had a price info in the beginning, we use it here
-          if(m_priceInfo.find(cat.currencyId()) != m_priceInfo.end()) {
-            toValue = (fromValue * m_priceInfo[cat.currencyId()]).convert(fract);
-          }
-
-          // if the shares are still 0, we need to change that
-          if(toValue.isZero()) {
-            MyMoneyPrice price = MyMoneyFile::instance()->price(fromCurrency.id(), toCurrency.id());
-            // if the price is valid calculate the shares. If it is invalid
-            // assume a conversion rate of 1.0
-            if(price.isValid()) {
-              toValue = (price.rate(toCurrency.id()) * fromValue).convert(fract);
-            } else {
-              toValue = fromValue;
-            }
-          }
-
-          // now present all that to the user
-          KCurrencyCalculator calc(fromCurrency,
-                                  toCurrency,
-                                  fromValue,
-                                  toValue,
-                                  m_transaction.postDate(),
-                                  fract,
-                                  m_regForm, "currencyCalculator");
-
-          if(calc.exec() == QDialog::Rejected) {
-            return false;
-          }
-          s1.setShares((s1.value() * calc.price()).convert(fract));
-
-        } else {
-          s1.setShares(-value);
-        }
-      } else
-        s1.setShares(-value);
+      MyMoneyMoney shares;
+      if(!KCurrencyCalculator::setupSplitPrice(shares, m_transaction, s1, m_priceInfo, m_regForm))
+        return false;
+      s1.setShares(shares);
     }
 
     checkPayeeInSplit(s1, payeeId);

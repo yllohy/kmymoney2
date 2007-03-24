@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KEndingBalanceDlgDecl</class>
 <widget class="QWizard">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>490</width>
-            <height>365</height>
+            <width>589</width>
+            <height>465</height>
         </rect>
     </property>
     <property name="caption">
@@ -529,21 +529,12 @@ All information you have entered into this wizard will be shown and all transact
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <property name="margin">
-                <number>11</number>
-            </property>
-            <property name="spacing">
-                <number>6</number>
-            </property>
-            <widget class="QLabel">
+            <widget class="KActiveLabel">
                 <property name="name">
-                    <cstring>TextLabel5</cstring>
+                    <cstring>m_enterInformationLabel</cstring>
                 </property>
                 <property name="text">
-                    <string>Please enter the following fields with the information as you find them on your statement.</string>
-                </property>
-                <property name="alignment">
-                    <set>WordBreak|AlignTop</set>
+                    <string>x</string>
                 </property>
             </widget>
             <spacer>
@@ -558,8 +549,8 @@ All information you have entered into this wizard will be shown and all transact
                 </property>
                 <property name="sizeHint">
                     <size>
-                        <width>0</width>
-                        <height>22</height>
+                        <width>20</width>
+                        <height>50</height>
                     </size>
                 </property>
             </spacer>
@@ -680,8 +671,8 @@ All information you have entered into this wizard will be shown and all transact
                 </property>
                 <property name="sizeHint">
                     <size>
-                        <width>0</width>
-                        <height>16</height>
+                        <width>16</width>
+                        <height>87</height>
                     </size>
                 </property>
             </spacer>
@@ -706,21 +697,26 @@ All information you have entered into this wizard will be shown and all transact
             <property name="name">
                 <cstring>unnamed</cstring>
             </property>
-            <property name="margin">
-                <number>11</number>
-            </property>
-            <property name="spacing">
-                <number>6</number>
-            </property>
-            <widget class="QLabel">
+            <widget class="KActiveLabel">
                 <property name="name">
-                    <cstring>TextLabel9</cstring>
+                    <cstring>kActiveLabel1</cstring>
                 </property>
                 <property name="text">
                     <string>If necessary, enter information about interest or charges here. KMyMoney will create transactions and cleares them directly for you.</string>
                 </property>
-                <property name="alignment">
-                    <set>WordBreak|AlignTop</set>
+            </widget>
+            <widget class="Line">
+                <property name="name">
+                    <cstring>Line2</cstring>
+                </property>
+                <property name="frameShape">
+                    <enum>HLine</enum>
+                </property>
+                <property name="frameShadow">
+                    <enum>Sunken</enum>
+                </property>
+                <property name="orientation">
+                    <enum>Horizontal</enum>
                 </property>
             </widget>
             <spacer>
@@ -735,24 +731,18 @@ All information you have entered into this wizard will be shown and all transact
                 </property>
                 <property name="sizeHint">
                     <size>
-                        <width>0</width>
-                        <height>29</height>
+                        <width>16</width>
+                        <height>16</height>
                     </size>
                 </property>
             </spacer>
             <widget class="QLayoutWidget">
                 <property name="name">
-                    <cstring>Layout17</cstring>
+                    <cstring>layout17</cstring>
                 </property>
                 <hbox>
                     <property name="name">
                         <cstring>unnamed</cstring>
-                    </property>
-                    <property name="margin">
-                        <number>0</number>
-                    </property>
-                    <property name="spacing">
-                        <number>6</number>
                     </property>
                     <spacer>
                         <property name="name">
@@ -766,184 +756,163 @@ All information you have entered into this wizard will be shown and all transact
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>51</width>
-                                <height>0</height>
+                                <width>60</width>
+                                <height>20</height>
                             </size>
                         </property>
                     </spacer>
                     <widget class="QLayoutWidget">
                         <property name="name">
-                            <cstring>Layout16</cstring>
+                            <cstring>layout16</cstring>
                         </property>
-                        <grid>
+                        <vbox>
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
-                            <property name="margin">
-                                <number>0</number>
-                            </property>
-                            <property name="spacing">
-                                <number>6</number>
-                            </property>
-                            <widget class="QLabel" row="0" column="0">
+                            <widget class="QLayoutWidget">
                                 <property name="name">
-                                    <cstring>TextLabel10</cstring>
+                                    <cstring>layout15</cstring>
                                 </property>
-                                <property name="text">
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>textLabel1</cstring>
+                                        </property>
+                                        <property name="sizePolicy">
+                                            <sizepolicy>
+                                                <hsizetype>1</hsizetype>
+                                                <vsizetype>5</vsizetype>
+                                                <horstretch>0</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                        <property name="text">
+                                            <string>Payee</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="KMyMoneyPayeeCombo">
+                                        <property name="name">
+                                            <cstring>m_payeeEdit</cstring>
+                                        </property>
+                                        <property name="sizePolicy">
+                                            <sizepolicy>
+                                                <hsizetype>5</hsizetype>
+                                                <vsizetype>0</vsizetype>
+                                                <horstretch>1</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                    </widget>
+                                </hbox>
+                            </widget>
+                            <widget class="QGroupBox">
+                                <property name="name">
+                                    <cstring>groupBox1</cstring>
+                                </property>
+                                <property name="title">
                                     <string>Interest</string>
                                 </property>
-                                <property name="alignment">
-                                    <set>AlignTop</set>
-                                </property>
-                            </widget>
-                            <widget class="QLayoutWidget" row="0" column="1">
-                                <property name="name">
-                                    <cstring>Layout14</cstring>
-                                </property>
                                 <vbox>
                                     <property name="name">
                                         <cstring>unnamed</cstring>
                                     </property>
                                     <property name="margin">
-                                        <number>0</number>
+                                        <number>2</number>
                                     </property>
-                                    <property name="spacing">
-                                        <number>6</number>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>TextLabel14</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Amount</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="kMyMoneyEdit">
-                                        <property name="name">
-                                            <cstring>m_interestEdit</cstring>
-                                        </property>
-                                    </widget>
-                                </vbox>
-                            </widget>
-                            <widget class="QLayoutWidget" row="0" column="2">
-                                <property name="name">
-                                    <cstring>Layout15</cstring>
-                                </property>
-                                <vbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <property name="margin">
-                                        <number>0</number>
-                                    </property>
-                                    <property name="spacing">
-                                        <number>6</number>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>TextLabel15</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Category</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="kMyMoneyCategory">
+                                    <widget class="KMyMoneyCategory">
                                         <property name="name">
                                             <cstring>m_interestCategoryEdit</cstring>
                                         </property>
-                                        <property name="minimumSize">
-                                            <size>
-                                                <width>0</width>
-                                                <height>0</height>
-                                            </size>
+                                        <property name="sizePolicy">
+                                            <sizepolicy>
+                                                <hsizetype>5</hsizetype>
+                                                <vsizetype>0</vsizetype>
+                                                <horstretch>0</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
                                         </property>
+                                    </widget>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>layout18</cstring>
+                                        </property>
+                                        <hbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <widget class="kMyMoneyEdit">
+                                                <property name="name">
+                                                    <cstring>m_interestEdit</cstring>
+                                                </property>
+                                                <property name="resetButtonVisibility" stdset="0">
+                                                    <bool>false</bool>
+                                                </property>
+                                            </widget>
+                                            <widget class="kMyMoneyDateInput">
+                                                <property name="name">
+                                                    <cstring>m_interestDateEdit</cstring>
+                                                </property>
+                                            </widget>
+                                        </hbox>
                                     </widget>
                                 </vbox>
                             </widget>
-                            <widget class="Line" row="1" column="0" rowspan="1" colspan="3">
+                            <widget class="QGroupBox">
                                 <property name="name">
-                                    <cstring>Line2</cstring>
+                                    <cstring>groupBox2</cstring>
                                 </property>
-                                <property name="frameShape">
-                                    <enum>HLine</enum>
-                                </property>
-                                <property name="frameShadow">
-                                    <enum>Sunken</enum>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                            </widget>
-                            <widget class="QLabel" row="2" column="0">
-                                <property name="name">
-                                    <cstring>TextLabel11</cstring>
-                                </property>
-                                <property name="text">
+                                <property name="title">
                                     <string>Charges</string>
                                 </property>
-                                <property name="alignment">
-                                    <set>AlignTop</set>
-                                </property>
-                            </widget>
-                            <widget class="QLayoutWidget" row="2" column="1">
-                                <property name="name">
-                                    <cstring>Layout12</cstring>
-                                </property>
                                 <vbox>
                                     <property name="name">
                                         <cstring>unnamed</cstring>
                                     </property>
                                     <property name="margin">
-                                        <number>0</number>
+                                        <number>2</number>
                                     </property>
-                                    <property name="spacing">
-                                        <number>6</number>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>TextLabel12</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Amount</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="kMyMoneyEdit">
-                                        <property name="name">
-                                            <cstring>m_chargesEdit</cstring>
-                                        </property>
-                                    </widget>
-                                </vbox>
-                            </widget>
-                            <widget class="QLayoutWidget" row="2" column="2">
-                                <property name="name">
-                                    <cstring>Layout13</cstring>
-                                </property>
-                                <vbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <property name="margin">
-                                        <number>0</number>
-                                    </property>
-                                    <property name="spacing">
-                                        <number>6</number>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>TextLabel13</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Category</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="kMyMoneyCategory">
+                                    <widget class="KMyMoneyCategory">
                                         <property name="name">
                                             <cstring>m_chargesCategoryEdit</cstring>
                                         </property>
+                                        <property name="sizePolicy">
+                                            <sizepolicy>
+                                                <hsizetype>5</hsizetype>
+                                                <vsizetype>0</vsizetype>
+                                                <horstretch>0</horstretch>
+                                                <verstretch>0</verstretch>
+                                            </sizepolicy>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLayoutWidget">
+                                        <property name="name">
+                                            <cstring>layout19</cstring>
+                                        </property>
+                                        <hbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <widget class="kMyMoneyEdit">
+                                                <property name="name">
+                                                    <cstring>m_chargesEdit</cstring>
+                                                </property>
+                                                <property name="resetButtonVisibility" stdset="0">
+                                                    <bool>false</bool>
+                                                </property>
+                                            </widget>
+                                            <widget class="kMyMoneyDateInput">
+                                                <property name="name">
+                                                    <cstring>m_chargesDateEdit</cstring>
+                                                </property>
+                                            </widget>
+                                        </hbox>
                                     </widget>
                                 </vbox>
                             </widget>
-                        </grid>
+                        </vbox>
                     </widget>
                     <spacer>
                         <property name="name">
@@ -957,8 +926,8 @@ All information you have entered into this wizard will be shown and all transact
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>45</width>
-                                <height>0</height>
+                                <width>60</width>
+                                <height>20</height>
                             </size>
                         </property>
                     </spacer>
@@ -976,8 +945,8 @@ All information you have entered into this wizard will be shown and all transact
                 </property>
                 <property name="sizeHint">
                     <size>
-                        <width>0</width>
-                        <height>14</height>
+                        <width>16</width>
+                        <height>16</height>
                     </size>
                 </property>
             </spacer>
@@ -985,39 +954,6 @@ All information you have entered into this wizard will be shown and all transact
     </widget>
 </widget>
 <customwidgets>
-    <customwidget>
-        <class>kMyMoneyDateInput</class>
-        <header location="local">../widgets/kmymoneydateinput.h</header>
-        <sizehint>
-            <width>120</width>
-            <height>25</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>1</hordata>
-            <verdata>1</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-        <slot access="protected" specifier="">slotDateChosen(QDate date)</slot>
-    </customwidget>
-    <customwidget>
-        <class>kMyMoneyEdit</class>
-        <header location="local">../widgets/kmymoneyedit.h</header>
-        <sizehint>
-            <width>90</width>
-            <height>25</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>1</hordata>
-            <verdata>1</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
     <customwidget>
         <class>kMyMoneyAccountSelector</class>
         <header location="global">../widgets/kmymoneyaccountselector.h</header>
@@ -1032,30 +968,11 @@ All information you have entered into this wizard will be shown and all transact
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
         </sizepolicy>
-        <pixmap>image1</pixmap>
-    </customwidget>
-    <customwidget>
-        <class>kMyMoneyCategory</class>
-        <header location="local">../widgets/kmymoneycategory.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image1</pixmap>
+        <pixmap>image0</pixmap>
     </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
-        <data format="PNG" length="256">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b000000c749444154789cad55db1184200c4c180bb005eab1cd6b8112b40d4bf1bee2486ef3006fbf1c93ece605f07eece4e1a4ed42ff2b35f6e2961132e46309941952ed8f628a761a21f56217cb20b04a45fe276d97f8ffb422431ad96e62a4ee057a83131bcc38431a6d057f8eb5cb36438afcb5cded719614011e9088308374c61aa9adb0e0651b5552b4b29efaacb099312ad5da5b2d50a93124463b2adf516fbb8cbd1354a9b1b667c8a787674144f9f982bcb93635ba8cb3fd1b2616f251013403fee763fabce8bff0aa6c989d7e67440000000049454e44ae426082</data>
-    </image>
-    <image name="image1">
         <data format="PNG" length="1114">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000042149444154789c8d95c18b1c4514c67fbb29e5b54ea05b26da1d36b08d096e8b11261871837bc8e282ac7ac82187e049a317e32d37110992bf42123c694eea414c0e0bf1b0ec6c402139485a54e8810c54c10e741146fa110bd643f74c12bd642e4d75f77cf5d5ef7dafdfc2ce7087d9eff32fdfdff74e5114104011e489d6e952cce5cfbe5998692dec0c77b87aedd3fddd9f2b3efce02291082209aa3504685022e4ffd7a000a82a765c515615ce95acae659c3f7765c100ec6e575cf8f822e991025f3b6a6f890c484f181ccfc1583428f5d4e2fe84da039aa04121b40eb32483a0ec6e5bce9f8385d36fa7fb9b1b17c8f31cbfe7a95c45be94520c72b2141a1caa160d1666e24ea94aa11ee7685054159d2ada34d41387c40dc63b8844f0b5c73a4bb19cb3f9de001f2aac1fa23aa209168c004224902e29d22ff1e38abbdb275055c4800610233867311a1491847a62c98f66ac6f14d8e99072f22daa15b68a8108424d6422e24c88e3966fbce4c9d786945b27f0be0103ed13c16004d59a2c4d58df28a87548e9aee2274ab95d60c7193c9a0281fc959ae2a4450364a9e2572c7a2b43438374ef2dd2154012d050514dbec7396578a3130d9d6850066f0ad9d186f2d78cdbbb799b0a202f2c48d3aebbb418310240b112637588574bf54b8efaa4fd9b691dacbf5b305813542bae63a9eee4c4694d967b5494eca8c7ef0933bdc5d90e6a2caa0e3f013b7adce9fa5b03d637561113a30106a71d18c5fd9677058338ad01e91c0b8b743b880182ce19cd9c0e5e2b583fbdda565d3d04cfedad180942133af201b2bc3588e111c680068f489780ce69b192b279768088524f2b3458ea694d3de99a4323bc976ed34eb86b98c51993f6be10f77240c99685cd731991f1582df15aa15a213d583f5313a7806988fb8a0640e336359d9e9933568bf44062214ba19e2a7652a13d8b068ff596b807182189234e9da9f1ceb78c81b28c3ac6fe21e306c58e41d5118952acd6a0c2f56b9e6a5c72f346cdcd6b19a3bf8010010d714f89533b674c90c7189b598eab12a45fb5c75b8253672b863fbcccf5af93b6904119fe9851bf5153ac3a746ae7b9d5698c1dc58f313e70e4707ce9d84bafa2f79fc23fb8c7c1438ef04031a2642fee21060ec69ee47020796ecaa12313ccd333d1b67935047acf2be3bb11aa010dbe656cc755dbe3b772084a7ebc6d5711253b593dfcc0cc8fcd3cafda455512c7f200ec56cbfac0f1d7d34b7fdf0f98fd88a92a7e9cb0e70cc933c0b38a2c823ea0bd76c70c016adb67f47bc2a117a6d40abeea33fa23c2fb867edfb413e4a34fded94ffb3991c46dc7754cd3634ad2af490b857f5a5137126a97e02a8120a485235b6a28ef80bd077ee2b9f2d54fed04595dcbd8ddb6c4bd87334c10cadb2064e856177e7864e669fbe1df154a0142839f7ad2e5b6880bff1da66eece78e315d959f609da670f98befe6c3f45fb42672c9acff7f660000000049454e44ae426082</data>
     </image>
 </images>

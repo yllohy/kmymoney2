@@ -256,9 +256,6 @@ protected slots:
     *                with additional information during the creation process
     *                esp. the @p id member.
     * @param parent reference to parent account (defaults to none)
-    *
-    * @note Typically, this slot can be connected to the
-    *       kMyMoneyCategory::newCategory(MyMoneyAccount&) signal.
     */
   void slotCategoryNew(MyMoneyAccount& account, const MyMoneyAccount& parent = MyMoneyAccount());
 

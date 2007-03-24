@@ -401,6 +401,7 @@ bool InvestTransactionEditor::createPseudoTransaction(MyMoneyTransaction& t, con
 
 int InvestTransactionEditor::slotEditInterestSplits(void)
 {
+  return 0;
 }
 
 void InvestTransactionEditor::slotCreateSecurity(const QString& name, QCString& id)
@@ -796,8 +797,7 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
 
   KMyMoneySecurity* sec = dynamic_cast<KMyMoneySecurity*>(m_editWidgets["security"]);
   if(!isMultiSelection() || (isMultiSelection() && !sec->currentText().isEmpty())) {
-    QCString securityId;
-    sec->selectedItem(securityId);
+    QCString securityId = sec->selectedItem();
     if(!securityId.isEmpty()) {
       s0.setAccountId(securityId);
       MyMoneyAccount stockAccount = m_objects->account(securityId);

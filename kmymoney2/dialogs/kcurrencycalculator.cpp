@@ -41,12 +41,75 @@
 // Project Includes
 
 #include "kcurrencycalculator.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneydateinput.h"
-#include "../widgets/kmymoneycurrencyselector.h"
-#include "../mymoney/mymoneyprice.h"
+
+#include <kmymoney/kmymoneyedit.h>
+#include <kmymoney/kmymoneydateinput.h>
+#include <kmymoney/kmymoneycurrencyselector.h>
+#include <kmymoney/mymoneyprice.h>
+#include <kmymoney/mymoneytransaction.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
+
 #include "../kmymoneyutils.h"
-#include "../kmymoneysettings.h"
+
+bool KCurrencyCalculator::setupSplitPrice(MyMoneyMoney& shares, const MyMoneyTransaction& t, const MyMoneySplit& s, const QMap<QCString, MyMoneyMoney>& priceInfo, QWidget* parentWidget)
+{
+  bool rc = true;
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  if(!s.value().isZero()) {
+    MyMoneyAccount cat = file->account(s.accountId());
+    if(cat.currencyId() != t.commodity()) {
+
+      MyMoneySecurity fromCurrency, toCurrency;
+      MyMoneyMoney fromValue, toValue;
+      fromCurrency = file->security(t.commodity());
+      toCurrency = file->security(cat.currencyId());
+
+      // determine the fraction required for this category
+      int fract = cat.fraction(toCurrency);
+
+      // display only positive values to the user
+      fromValue = s.value().abs();
+
+      // if we had a price info in the beginning, we use it here
+      if(priceInfo.find(cat.currencyId()) != priceInfo.end()) {
+        toValue = (fromValue * priceInfo[cat.currencyId()]).convert(fract);
+      }
+
+      // if the shares are still 0, we need to change that
+      if(toValue.isZero()) {
+        MyMoneyPrice price = file->price(fromCurrency.id(), toCurrency.id());
+        // if the price is valid calculate the shares. If it is invalid
+        // assume a conversion rate of 1.0
+        if(price.isValid()) {
+          toValue = (price.rate(toCurrency.id()) * fromValue).convert(fract);
+        } else {
+          toValue = fromValue;
+        }
+      }
+
+      // now present all that to the user
+      KCurrencyCalculator calc(fromCurrency,
+                              toCurrency,
+                              fromValue,
+                              toValue,
+                              t.postDate(),
+                              fract,
+                              parentWidget, "currencyCalculator");
+
+      if(calc.exec() == QDialog::Rejected) {
+        rc = false;
+      } else
+        shares = (s.value() * calc.price()).convert(fract);
+
+    } else {
+      shares = s.value();
+    }
+  } else
+    shares = s.value();
+
+  return rc;
+}
 
 KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMoneySecurity& to, const MyMoneyMoney& value, const MyMoneyMoney& shares, const QDate& date, const signed64 resultFraction, QWidget *parent, const char *name ) :
   KCurrencyCalculatorDecl(parent, name),
@@ -207,11 +270,11 @@ void KCurrencyCalculator::accept(void)
     slotUpdateResult(QString());
 
   if(m_updateButton->isChecked()) {
-    MyMoneyPrice pr = MyMoneyFile::instance()->price(m_fromCurrency.id(), m_toCurrency.id(), m_dateEdit->getQDate());
+    MyMoneyPrice pr = MyMoneyFile::instance()->price(m_fromCurrency.id(), m_toCurrency.id(), m_dateEdit->date());
     if(!pr.isValid()
-    || pr.date() != m_dateEdit->getQDate()
-    || (pr.date() == m_dateEdit->getQDate() && pr.rate(m_fromCurrency.id()) != price())) {
-      pr = MyMoneyPrice(m_fromCurrency.id(), m_toCurrency.id(), m_dateEdit->getQDate(), price(), i18n("User"));
+    || pr.date() != m_dateEdit->date()
+    || (pr.date() == m_dateEdit->date() && pr.rate(m_fromCurrency.id()) != price())) {
+      pr = MyMoneyPrice(m_fromCurrency.id(), m_toCurrency.id(), m_dateEdit->date(), price(), i18n("User"));
       MyMoneyFile::instance()->addPrice(pr);
     }
   }

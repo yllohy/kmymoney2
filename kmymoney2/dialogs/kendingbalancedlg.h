@@ -35,16 +35,21 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../widgets/kmymoneyedit.h"
-#include "../mymoney/mymoneyaccount.h"
-#include "../widgets/kmymoneydateinput.h"
+class kMyMoneyEdit;
+#include <kmymoney/kmymoneydateinput.h>
+#include <kmymoney/mymoneyaccount.h>
 #include "../dialogs/kendingbalancedlgdecl.h"
+
+class KEndingBalanceDlgPrivate;
+class KEndingBalanceLoanDlgPrivate;
 
 /**
   * This dialog is wizard based and used to enter additional
   * information required to start the reconciliation process.
-  * This version is implements the behaviour for checkings,
+  * This version implements the behaviour for checkings,
   * savings and credit card accounts.
+  *
+  * @author Thomas Baumgart
   */
 class KEndingBalanceDlg : public KEndingBalanceDlgDecl
 {
@@ -57,36 +62,35 @@ public:
   const MyMoneyMoney previousBalance(void) const;
   const QDate statementDate(void) const { return m_statementDate->date(); };
 
-  const MyMoneyTransaction interestTransaction(void) const;
-  const MyMoneyTransaction chargeTransaction(void) const;
+  const MyMoneyTransaction interestTransaction(void);
+  const MyMoneyTransaction chargeTransaction(void);
 
 protected:
-  const MyMoneyTransaction createTransaction(const int sign, kMyMoneyEdit *amountEdit, kMyMoneyCategory *categoryEdit) const;
+  bool createTransaction(MyMoneyTransaction& t, const int sign, kMyMoneyEdit *amountEdit, KMyMoneyCategory *categoryEdit, kMyMoneyDateInput* dateEdit);
   const MyMoneyMoney adjustedReturnValue(const MyMoneyMoney& v) const;
+  void createCategory(const QString& txt, QCString& id, const MyMoneyAccount& parent);
 
 protected slots:
   void slotCheckPageFinished(void);
+  void slotReloadEditWidgets(void);
   void help(void);
+  void slotCreateInterestCategory(const QString& txt, QCString& id);
+  void slotCreateChargesCategory(const QString& txt, QCString& id);
+  void accept(void);
 
 signals:
   /**
-    * This signal is emitted, when a new category name has been
-    * entered by the user and this name is not known as account
-    * by the MyMoneyFile object.
-    * Before the signal is emitted, a MyMoneyAccount is constructed
-    * by this object and filled with the desired name. All other members
-    * of MyMoneyAccount will remain in their default state. Upon return,
-    * the connected slot should have created the object in the MyMoneyFile
-    * engine and filled the member @p id.
-    *
-    * @param acc reference to MyMoneyAccount object that caries the name
-    *            and will return information about the created category.
+    * proxy signal for KMyMoneyPayeeCombo::createItem(const QString&, QCString&)
     */
-  void newCategory(MyMoneyAccount& acc);
+  void createPayee(const QString&, QCString&);
+
+  /**
+    * emit when a category is about to be created
+    */
+  void createCategory(MyMoneyAccount& acc, const MyMoneyAccount& parent);
 
 private:
-  MyMoneyAccount m_account;
-  QMap<QWidget*, QString>         m_helpAnchor;
+  KEndingBalanceDlgPrivate* d;
 };
 
 /**
@@ -133,8 +137,7 @@ protected slots:
   void help(void);
 
 private:
-  MyMoneyAccountLoan m_account;
-  QMap<QWidget*, QString>         m_helpAnchor;
+  KEndingBalanceLoanDlgPrivate*  d;
 };
 
 #endif

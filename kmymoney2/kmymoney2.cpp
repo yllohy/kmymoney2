@@ -2812,7 +2812,8 @@ void KMyMoney2App::slotAccountReconcileStart(void)
         case MyMoneyAccount::Asset:
         case MyMoneyAccount::Liability:
 
-          connect(m_endingBalanceDlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+          connect(m_endingBalanceDlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
+          connect(m_endingBalanceDlg, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
 
           if(m_endingBalanceDlg->exec() == QDialog::Accepted) {
             if(myMoneyView->startReconciliation(account, m_endingBalanceDlg->endingBalance())) {
@@ -2882,6 +2883,10 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
       if (KMessageBox::questionYesNo(this, message, i18n("Confirm end of reconciliation"), KStdGuiItem::yes(), KStdGuiItem::no()) == KMessageBox::No)
         return;
     }
+
+    // refresh object
+    m_reconciliationAccount = MyMoneyFile::instance()->account(m_reconciliationAccount.id());
+
     // Turn off reconciliation mode
     myMoneyView->finishReconciliation(m_reconciliationAccount);
 
@@ -2940,6 +2945,9 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
 void KMyMoney2App::slotAccountReconcilePostpone(void)
 {
   if(!m_reconciliationAccount.id().isEmpty()) {
+    // update the account data
+    MyMoneyFile::instance()->modifyAccount(m_reconciliationAccount);
+
     // Turn off reconciliation mode
     myMoneyView->finishReconciliation(m_reconciliationAccount);
 

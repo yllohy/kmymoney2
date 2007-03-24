@@ -109,6 +109,9 @@ void MyMoneyFile::attachStorage(IMyMoneyStorage* const storage)
 
   // force reload of base currency
   d->m_baseCurrency = MyMoneySecurity();
+
+  // notify application about new data availability
+  emit dataChanged();
 }
 
 void MyMoneyFile::detachStorage(IMyMoneyStorage* const /* storage */)

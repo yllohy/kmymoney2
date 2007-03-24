@@ -1,3 +1,13 @@
+2007-03-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated reconciliation wizard to support
+    - entry of payee
+    - multiple currencies
+    - automatic calculation of start end ending balance of statement
+  * Fixed a problem when loading non VAT transactions into the editor
+
+2007-03-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated kmymoney2.desktop
+
 2007-03-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use KDE conrolled date format for kschedulebriefwidget
   * Fixed a problem with category creation during transaction entry

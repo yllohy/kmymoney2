@@ -98,7 +98,19 @@ public:
     * @param id reference to QCString containing the id. If no item
     *           is selected id will be empty.
     */
-  void selectedItem(QCString& id) const;
+  void selectedItem(QCString& id) const KDE_DEPRECATED;
+
+  /**
+    * This method returns the id of the first selected item.
+    * Usage makes usually only sense when the selection mode
+    * of the associated KMyMoneySelector is QListView::Single.
+    *
+    * @sa KMyMoneySelector::setSelectionMode()
+    *
+    * @return reference to QCString containing the id. If no item
+    *         is selected the QCString will be empty.
+    */
+  const QCString& selectedItem(void) const { return m_id; }
 
   /**
     * This method selects the item with the respective @a id.
