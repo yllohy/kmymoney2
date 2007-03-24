@@ -71,6 +71,8 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
   MyMoneySecurity currency = MyMoneyFile::instance()->security(account.currencyId());
   m_enterInformationLabel->setText(QString("<qt>")+i18n("Please enter the following fields with the information as you find them on your statement. Make sure to enter all values in <b>%1</b>.").arg(currency.name())+QString("</qt>"));
 
+  m_statementDate->setDate(QDate::currentDate());
+
   // If the previous reconciliation was postponed,
   // we show a different first page
   value = account.value("lastReconciledBalance");
@@ -115,7 +117,14 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
       }
     }
 
-    // value = account.value("lastStatementBalance");
+    // if the last statement has been entered long enough ago (more than one month),
+    // then take the last statement date and add one month and use that as statement
+    // date.
+    QDate lastStatementDate = QDate::fromString(account.value("lastStatementDate"), Qt::ISODate);
+    if(lastStatementDate.addMonths(1) < QDate::currentDate()) {
+      m_statementDate->setDate(lastStatementDate.addMonths(1));
+    }
+
     setAppropriate(m_startPageCheckings, true);
     setAppropriate(m_pagePreviousPostpone, false);
     setAppropriate(m_interestChargeCheckings, true);
@@ -146,7 +155,6 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
     m_endingBalance->setValue(endBalance);
   }
 
-  m_statementDate->setDate(QDate::currentDate());
   value = account.value("statementDate");
   if(!value.isEmpty())
     m_statementDate->setDate(QDate::fromString(value, Qt::ISODate));

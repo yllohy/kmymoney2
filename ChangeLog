@@ -3,6 +3,8 @@
     - entry of payee
     - multiple currencies
     - automatic calculation of start end ending balance of statement
+    - set the statement date to the same day of the following month if
+      the time span since the last statement is larger than a month
   * Fixed a problem when loading non VAT transactions into the editor
   * Clear the memo for the second split during autofill to allow overriding
     the text by the user
