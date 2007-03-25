@@ -173,6 +173,15 @@ void KReportsView::KReportTab::show(void)
 
 void KReportsView::KReportTab::updateReport(void)
 {
+  // reload the report from the engine. It might have
+  // been changed by the user
+
+  try {
+    m_report = MyMoneyFile::instance()->report(m_report.id());
+  } catch(MyMoneyException* e) {
+    delete e;
+  }
+
   m_part->begin();
   m_part->write(createTable());
   m_part->end();
