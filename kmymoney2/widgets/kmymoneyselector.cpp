@@ -74,11 +74,17 @@ KMyMoneySelector::~KMyMoneySelector()
 {
 }
 
+void KMyMoneySelector::clear(void)
+{
+  m_listView->clear();
+  m_visibleItem = 0;
+}
+
 void KMyMoneySelector::setSelectionMode(const QListView::SelectionMode mode)
 {
   if(m_selMode != mode) {
     m_selMode = mode;
-    m_listView->clear();
+    clear();
 
     // make sure, it's either Multi or Single
     if(mode != QListView::Multi) {
@@ -498,16 +504,13 @@ void KMyMoneySelector::ensureItemVisible(const QListViewItem *it_v)
   // the slot slotShowSelected.  (ipwizard, 12/29/2003)
   m_visibleItem = it_v;
 
-  // FIXME the following line has been added to find a bug which
-  //       I could not duplicate. It can be removed once we caught it.
-  m_listView->ensureItemVisible(m_visibleItem);
-
-  QTimer::singleShot(10, this, SLOT(slotShowSelected()));
+  QTimer::singleShot(100, this, SLOT(slotShowSelected()));
 }
 
 void KMyMoneySelector::slotShowSelected(void)
 {
-  m_listView->ensureItemVisible(m_visibleItem);
+  if(m_listView && m_visibleItem)
+    m_listView->ensureItemVisible(m_visibleItem);
 }
 
 int KMyMoneySelector::slotMakeCompletion(const QString& txt)

@@ -1,5 +1,6 @@
 2007-03-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Update report if report configuration has been changed
+  * Avoid possible usage of invalid pointer in KMyMoneySelector
 
 2007-03-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated reconciliation wizard to support

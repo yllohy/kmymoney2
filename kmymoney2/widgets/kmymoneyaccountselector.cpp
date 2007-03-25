@@ -336,8 +336,8 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
   if((m_typeList.contains(MyMoneyAccount::Equity)) > 0)
     typeMask |= KMyMoneyUtils::equity;
 
+  selector->clear();
   KListView* lv = selector->listView();
-  lv->clear();
   m_count = 0;
   QString key;
   QListViewItem* after = 0;
@@ -426,10 +426,9 @@ int AccountSet::load(kMyMoneyAccountSelector* selector, const QString& baseName,
   QListViewItem* item = 0;
 
   m_typeList.clear();
-  KListView* lv = selector->listView();
   if(clear) {
     m_count = 0;
-    lv->clear();
+    selector->clear();
   }
 
   item = selector->newItem(baseName);
@@ -447,6 +446,7 @@ int AccountSet::load(kMyMoneyAccountSelector* selector, const QString& baseName,
     ++count;
   }
 
+  KListView* lv = selector->listView();
   if(lv->firstChild()) {
     lv->setCurrentItem(lv->firstChild());
     lv->clearSelection();

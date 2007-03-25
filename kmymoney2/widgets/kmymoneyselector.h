@@ -270,6 +270,11 @@ public:
     */
   virtual bool contains(const QString& txt) const;
 
+  /**
+    * Clears all items of the selector and the associated listview.
+    */
+  virtual void clear(void);
+
 public slots:
   /**
     * This slot selects all items that are currently in

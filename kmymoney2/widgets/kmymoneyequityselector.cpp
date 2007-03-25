@@ -53,7 +53,7 @@ const int kMyMoneyEquitySelector::loadList(void)
   MyMoneyFile* file = MyMoneyFile::instance();
   int count = 0;
 
-  m_listView->clear();
+  clear();
 
 #if 0
   if(m_selMode == QListView::Multi) {
