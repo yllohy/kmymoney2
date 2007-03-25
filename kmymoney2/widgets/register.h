@@ -266,7 +266,7 @@ public:
   /**
     * Override the QTable member function to avoid functionality
     */
-  void updateCell(int row, int col) {}
+  void updateCell(int /* row */, int /* col */) {}
 
   RegisterItem* focusItem(void) const { return m_focusItem; }
   void setFocusItem(RegisterItem* focusItem);
