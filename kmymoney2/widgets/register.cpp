@@ -1061,8 +1061,10 @@ void Register::resize(int col)
     dwidth = columnWidth(ValueColumn);
 
   int swidth = columnWidth(SecurityColumn);
-  if(swidth > 0)
+  if(swidth > 0) {
     adjustColumn(SecurityColumn);
+    swidth = columnWidth(SecurityColumn);
+  }
 
   // Resize the date and money fields to either
   // a) the size required by the input widget if no transaction form is shown
