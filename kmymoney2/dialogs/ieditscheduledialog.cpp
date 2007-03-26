@@ -221,6 +221,8 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   connect(m_qlineeditMemo, SIGNAL(textChanged(const QString&)),
     this, SLOT(slotMemoChanged(const QString&)));
 
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
+
   connect(m_payee, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
   connect(m_category, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createCategory(const QString&, QCString&)));
 }
@@ -233,22 +235,13 @@ KEditScheduleDialog::~KEditScheduleDialog()
 
 void KEditScheduleDialog::slotReloadEditWidgets(void)
 {
-#if 0
-  // TODO: reload the account and category widgets
-  // reload category widget
-  KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
-  QCString categoryId;
-  category->selectedItem(categoryId);
+  QCString categoryId = m_category->selectedItem();
 
-  AccountSet aSet(m_objects);
-  aSet.addAccountGroup(MyMoneyAccount::Asset);
-  aSet.addAccountGroup(MyMoneyAccount::Liability);
+  MyMoneyObjectContainer objects;
+  AccountSet aSet(&objects);
   aSet.addAccountGroup(MyMoneyAccount::Income);
   aSet.addAccountGroup(MyMoneyAccount::Expense);
-  if(KMyMoneySettings::expertMode())
-    aSet.addAccountGroup(MyMoneyAccount::Equity);
-  aSet.load(category->selector());
-#endif
+  aSet.load(m_category->selector());
 
   // reload payee widget
   QCString payeeId = m_payee->selectedItem();
