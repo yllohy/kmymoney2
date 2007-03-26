@@ -1216,7 +1216,10 @@ QString PivotTable::renderCSV( void ) const
 
         innergroupdata += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
 
-        if (m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )
+        // if we don't convert the currencies to the base currency and the
+        // current row contains a foreign currency, then we append the currency
+        // to the name of the account
+        if (!m_config_f.isConvertCurrency() && rowname.isForeignCurrency() )
           innergroupdata += QString(" (%1)").arg(rowname.currencyId());
 
         innergroupdata += "\"";
@@ -1253,7 +1256,7 @@ QString PivotTable::renderCSV( void ) const
         ReportAccount rowname = (*it_innergroup).begin().key();
 
         result += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
-        if (m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )
+        if (!m_config_f.isConvertCurrency() && rowname.isForeignCurrency() )
           result += QString(" (%1)").arg(rowname.currencyId());
         result += "\"";
 

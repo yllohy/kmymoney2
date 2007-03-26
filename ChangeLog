@@ -1,6 +1,8 @@
 2007-03-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Support empty thousand separator setting
   * Added new category widget to enter/edit schedule dialogs
+  * Don't append currency id to account name if not foreign currency
+    when creating CSV export of pivottable reports
 
 2007-03-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Update report if report configuration has been changed
