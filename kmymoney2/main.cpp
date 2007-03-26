@@ -130,9 +130,8 @@ int main(int argc, char *argv[])
 
   KApplication* a = new KApplication();
 
-  if(KGlobal::locale()->monetaryThousandsSeparator().isEmpty()
-  || KGlobal::locale()->monetaryDecimalSymbol().isEmpty()) {
-    KMessageBox::error(0, i18n("Either the monetary decimal symbol or the monetary thousands separator are not correctly set in the KDE Control Center's Country/Region & Language settings. Please set to reasonable values and start KMyMoney again."), i18n("Invalid settings"));
+  if(KGlobal::locale()->monetaryDecimalSymbol().isEmpty()) {
+    KMessageBox::error(0, i18n("The monetary decimal symbol is not correctly set in the KDE Control Center's Country/Region & Language settings. Please set it to a reasonable value and start KMyMoney again."), i18n("Invalid settings"));
     delete a;
     exit(1);
   }
