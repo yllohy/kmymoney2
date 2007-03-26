@@ -58,17 +58,17 @@ class kMyMoneyAccountSelector;
   */
 class KMyMoneyCategory : public KMyMoneyCombo
 {
-   Q_OBJECT
+  Q_OBJECT
 public:
   /**
     * Standard constructor for the account selection object.
     *
     * If parameter @a splitButton is @a true, the widget
     * will construct a surrounding QFrame and reparent itself to be a child of this
-    * QFrame. It also adds a KPushButton with the word "Split" to the right of the
+    * QFrame. It also adds a KPushButton with the "Split" icon to the right of the
     * input field. In this case it is important not to use the pointer to this widget
     * but it's parent when placing the object in a QLayout, QTable or some such. The
-    * parent widget (the QFrame in this case)can be extracted with the parentWidget()
+    * parent widget (the QFrame in this case) can be extracted with the parentWidget()
     * method.
     *
     * Reparenting is handled by the object transparently for both cases.

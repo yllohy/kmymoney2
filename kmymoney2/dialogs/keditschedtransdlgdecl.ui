@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>712</width>
-            <height>544</height>
+            <height>602</height>
         </rect>
     </property>
     <property name="caption">
@@ -56,7 +56,7 @@
         </widget>
         <widget class="QGroupBox">
             <property name="name">
-                <cstring>GroupBox2</cstring>
+                <cstring>m_paymentGroupBox</cstring>
             </property>
             <property name="title">
                 <string>Payment Information</string>
@@ -77,14 +77,6 @@
                     </property>
                     <property name="text">
                         <string>Next due date:</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>TextLabel1_3</cstring>
-                    </property>
-                    <property name="text">
-                        <string>To:</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="0" column="0">
@@ -155,122 +147,54 @@
                         <enum>StrongFocus</enum>
                     </property>
                 </widget>
-                <widget class="QLayoutWidget" row="4" column="0" rowspan="1" colspan="4">
+                <widget class="QLabel" row="2" column="0">
                     <property name="name">
-                        <cstring>layout10</cstring>
+                        <cstring>TextLabel4</cstring>
                     </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>label1</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>4</hsizetype>
-                                    <vsizetype>4</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>110</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>110</width>
-                                    <height>30</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Category:</string>
-                            </property>
-                        </widget>
-                        <widget class="kMyMoneyCategory">
-                            <property name="name">
-                                <cstring>m_category</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>5</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
-                            </property>
-                        </widget>
-                        <widget class="KPushButton">
-                            <property name="name">
-                                <cstring>m_qbuttonSplit</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Split</string>
-                            </property>
-                        </widget>
-                    </hbox>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>4</hsizetype>
+                            <vsizetype>4</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>110</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>110</width>
+                            <height>30</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Method:</string>
+                    </property>
                 </widget>
-                <widget class="QLayoutWidget" row="5" column="0" rowspan="1" colspan="4">
+                <widget class="QLabel" row="2" column="2">
                     <property name="name">
-                        <cstring>Layout34</cstring>
+                        <cstring>TextLabel7</cstring>
                     </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>TextLabel1_2</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>4</hsizetype>
-                                    <vsizetype>4</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>110</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="maximumSize">
-                                <size>
-                                    <width>110</width>
-                                    <height>30</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Memo:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit">
-                            <property name="name">
-                                <cstring>m_qlineeditMemo</cstring>
-                            </property>
-                        </widget>
-                    </hbox>
+                    <property name="text">
+                        <string>Frequency:</string>
+                    </property>
+                </widget>
+                <widget class="KMyMoneyPayeeCombo" row="0" column="3">
+                    <property name="name">
+                        <cstring>m_payee</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="2">
+                    <property name="name">
+                        <cstring>TextLabel2_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Pay to:</string>
+                    </property>
                 </widget>
                 <widget class="QLayoutWidget" row="3" column="0" rowspan="1" colspan="4">
                     <property name="name">
@@ -332,9 +256,92 @@
                         </widget>
                     </hbox>
                 </widget>
-                <widget class="QLabel" row="2" column="0">
+                <widget class="kMyMoneyCombo" row="2" column="1">
                     <property name="name">
-                        <cstring>TextLabel4</cstring>
+                        <cstring>m_kcomboMethod</cstring>
+                    </property>
+                    <property name="focusPolicy">
+                        <enum>StrongFocus</enum>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>TextLabel1_3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>To:</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="5" column="0">
+                    <property name="name">
+                        <cstring>layout13</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>TextLabel1_2</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>4</hsizetype>
+                                    <vsizetype>4</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>110</width>
+                                    <height>30</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Memo:</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer9</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>20</width>
+                                    <height>31</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </vbox>
+                </widget>
+                <widget class="kMyMoneyCombo" row="2" column="3">
+                    <property name="name">
+                        <cstring>m_kcomboFreq</cstring>
+                    </property>
+                    <property name="focusPolicy">
+                        <enum>StrongFocus</enum>
+                    </property>
+                </widget>
+                <widget class="KTextEdit" row="5" column="1" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>m_qlineeditMemo</cstring>
+                    </property>
+                </widget>
+                <widget class="KMyMoneyCategory" row="4" column="1" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>m_category</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="0">
+                    <property name="name">
+                        <cstring>label1</cstring>
                     </property>
                     <property name="sizePolicy">
                         <sizepolicy>
@@ -357,60 +364,7 @@
                         </size>
                     </property>
                     <property name="text">
-                        <string>Method:</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="2">
-                    <property name="name">
-                        <cstring>TextLabel7</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Frequency:</string>
-                    </property>
-                </widget>
-                <widget class="KMyMoneyPayeeCombo" row="0" column="3">
-                    <property name="name">
-                        <cstring>m_payee</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="2">
-                    <property name="name">
-                        <cstring>TextLabel2_3</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Pay to:</string>
-                    </property>
-                </widget>
-                <widget class="kMyMoneyCombo" row="2" column="1">
-                    <property name="name">
-                        <cstring>m_kcomboMethod</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="focusPolicy">
-                        <enum>StrongFocus</enum>
-                    </property>
-                </widget>
-                <widget class="kMyMoneyCombo" row="2" column="3">
-                    <property name="name">
-                        <cstring>m_kcomboFreq</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>3</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="focusPolicy">
-                        <enum>StrongFocus</enum>
+                        <string>Category:</string>
                     </property>
                 </widget>
             </grid>
@@ -633,7 +587,7 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>16</width>
+                    <width>20</width>
                     <height>16</height>
                 </size>
             </property>
@@ -720,22 +674,6 @@
         </sizepolicy>
         <pixmap>image0</pixmap>
     </customwidget>
-    <customwidget>
-        <class>kMyMoneyCategory</class>
-        <header location="local">../widgets/kmymoneycategory.h</header>
-        <sizehint>
-            <width>-1</width>
-            <height>-1</height>
-        </sizehint>
-        <container>0</container>
-        <sizepolicy>
-            <hordata>5</hordata>
-            <verdata>5</verdata>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-        </sizepolicy>
-        <pixmap>image0</pixmap>
-    </customwidget>
 </customwidgets>
 <images>
     <image name="image0">
@@ -751,8 +689,6 @@
     <tabstop>m_kcomboFreq</tabstop>
     <tabstop>m_kmoneyeditAmount</tabstop>
     <tabstop>m_qcheckboxEstimate</tabstop>
-    <tabstop>m_category</tabstop>
-    <tabstop>m_qlineeditMemo</tabstop>
     <tabstop>m_qcheckboxAuto</tabstop>
     <tabstop>m_qcheckboxEnd</tabstop>
     <tabstop>m_qlineeditRemaining</tabstop>

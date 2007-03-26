@@ -19,23 +19,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qcheckbox.h>
 #include <qlabel.h>
+#include <qlayout.h>
+#include <qgroupbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
-#include <kpushbutton.h>
+
 #include <kstdguiitem.h>
 #include <kconfig.h>
 #include <kmessagebox.h>
 #include <knumvalidator.h>
 #include <klocale.h>
 #include <kapplication.h>
+#include <ktextedit.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include <kmymoney/kmymoneyaccountcombo.h>
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneyaccount.h>
@@ -44,9 +50,9 @@
 #include <kmymoney/kmymoneycategory.h>
 #include <kmymoney/kmymoneydateinput.h>
 #include <kmymoney/mymoneyobjectcontainer.h>
+#include <kmymoney/kmymoneycombo.h>
 
 #include "../widgets/kmymoneyaccountcompletion.h"
-#include "../widgets/kmymoneycombo.h"
 #include "../dialogs/ksplittransactiondlg.h"
 #include "ieditscheduledialog.h"
 
@@ -79,12 +85,20 @@ MyMoneySchedule::occurenceE KEditScheduleDialog::occurMasks[] = {
   (MyMoneySchedule::occurenceE) END_OCCURS };
 
 KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySchedule& schedule, QWidget *parent, const char *name)
- : kEditScheduledTransferDlgDecl(parent,name, true)
+ : kEditScheduledTransferDlgDecl(parent, name, true)
 {
+  // Since we cannot create a category widget with the split button in designer,
+  // we recreate the category widget here and replace it in the layout
+  m_paymentGroupBoxLayout->remove(m_category);
+  delete m_category;
+  m_category = new KMyMoneyCategory(m_paymentGroupBox, "m_category", true);
+
+  // make sure to drop the surrounding frame into the layout
+  m_paymentGroupBoxLayout->addMultiCellWidget( m_category->parentWidget(), 4, 4, 1, 3 );
+
   // Set the icon sets for the buttons
   m_qbuttonOK->setGuiItem(KStdGuiItem::ok());
   m_qbuttonCancel->setGuiItem(KStdGuiItem::cancel());
-  m_qbuttonSplit->setGuiItem(KMyMoneyUtils::splitGuiItem());
   m_helpButton->setGuiItem(KStdGuiItem::help());
 
   m_requiredFields = new kMandatoryFieldGroup (this);
@@ -119,8 +133,6 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     m_requiredFields->add(m_kcomboTo);
     m_requiredFields->add(m_payee);
 
-    //  transfers now allow splits
-    // m_qbuttonSplit->setEnabled(false);
     setCaption(i18n("Edit Transfer Schedule"));
   }
   else if (m_actionType == MyMoneySplit::ActionAmortization)
@@ -136,7 +148,6 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     TextLabel7->setEnabled(false);
     m_kcomboFreq->setEnabled(false);
     m_category->setEnabled(false);
-    m_qbuttonSplit->setEnabled(true);
     m_qcheckboxEnd->setEnabled(false);
 
     m_requiredFields->add(m_accountCombo);
@@ -175,7 +186,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   m_requiredFields->add(m_kmoneyeditAmount->lineedit());
 
   connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
-  connect(m_qbuttonSplit, SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
+  connect(m_category->splitButton(), SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
   connect(m_qcheckboxEnd, SIGNAL(toggled(bool)), this, SLOT(slotWillEndToggled(bool)));
   connect(m_qbuttonOK, SIGNAL(clicked()), this, SLOT(okClicked()));
   connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotHelp()));
@@ -202,17 +213,16 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     this, SLOT(slotFrequencyChanged(int)));
   connect(m_qcheckboxEstimate, SIGNAL(clicked()),
     this, SLOT(slotEstimateChanged()));
-  connect(m_category, SIGNAL(textChanged(const QString&)),
-    this, SLOT(slotCategoryChanged(const QString&)));
-  connect(m_category, SIGNAL(categoryChanged(const QCString&)),
+  // connect(m_category, SIGNAL(textChanged(const QString&)), this, SLOT(slotCategoryChanged(const QString&)));
+  connect(m_category, SIGNAL(itemSelected(const QCString&)),
     this, SLOT(slotCategoryChanged(const QCString& )));
   connect(m_qcheckboxAuto, SIGNAL(clicked()),
     this, SLOT(slotAutoEnterChanged()));
   connect(m_qlineeditMemo, SIGNAL(textChanged(const QString&)),
     this, SLOT(slotMemoChanged(const QString&)));
 
-  connect(m_category, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
   connect(m_payee, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
+  connect(m_category, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createCategory(const QString&, QCString&)));
 }
 
 KEditScheduleDialog::~KEditScheduleDialog()
@@ -241,8 +251,7 @@ void KEditScheduleDialog::slotReloadEditWidgets(void)
 #endif
 
   // reload payee widget
-  QCString payeeId;
-  m_payee->selectedItem(payeeId);
+  QCString payeeId = m_payee->selectedItem();
 
   m_payee->loadPayees(MyMoneyFile::instance()->payeeList());
 
@@ -319,7 +328,7 @@ void KEditScheduleDialog::reloadFromFile(void)
   AccountSet categories(&objects);
   categories.addAccountGroup(MyMoneyAccount::Income);
   categories.addAccountGroup(MyMoneyAccount::Expense);
-  categories.load(m_category->completion()->selector());
+  categories.load(m_category->selector());
   m_accountCombo->blockSignals(false);
   m_kcomboTo->blockSignals(false);
   m_category->blockSignals(false);
@@ -441,28 +450,28 @@ void KEditScheduleDialog::slotSplitClicked()
         case 2:
           s = m_transaction.splits()[1];
           if(!s.accountId().isEmpty()) {
-            category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+            m_category->setSelectedItem(s.accountId());
             amount = m_transaction.splits()[0].value().abs();
             m_kmoneyeditAmount->setValue(amount);
           }
           break;
 
         case 1:
-          category = QString();
+          m_category->setSelectedItem(QCString());
           m_transaction.removeSplits();
           break;
 
         case 0:
+          m_category->setSelectedItem(QCString());
           break;
 
         default:
-          category = i18n("Split transaction (category replacement)", "Split transaction");
+          m_category->setSplitTransaction();
           connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           amount = m_transaction.splits()[0].value().abs();
           m_kmoneyeditAmount->setValue(amount);
           break;
       }
-      m_category->loadText(category);
 
     }
 
@@ -526,7 +535,7 @@ void KEditScheduleDialog::okClicked()
     return;
   }
 
-  if (m_actionType != MyMoneySplit::ActionTransfer && m_category->text().isEmpty())
+  if (m_actionType != MyMoneySplit::ActionTransfer && m_category->selectedItem().isEmpty())
   {
     KMessageBox::information(this, i18n("Please fill in the category field."));
     m_category->setFocus();
@@ -770,15 +779,16 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
     {
       if (m_transaction.splitCount() >= 3)
       {
-        m_category->loadText(i18n("Split transaction (category replacement)", "Split transaction"));
+        m_category->setSplitTransaction();
         connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
       }
       else if(m_actionType == MyMoneySplit::ActionAmortization)
       {
-        m_category->loadText(i18n("Loan payment"));
+        m_category->setCurrentText(i18n("Loan payment"));
+        connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
       }
       else
-        m_category->loadAccount(m_transaction.splitByAccount(theAccountId(), false).accountId());
+        m_category->setSelectedItem(m_transaction.splitByAccount(theAccountId(), false).accountId());
     }
 
     m_qlineeditMemo->setText(m_transaction.splitByAccount(theAccountId()).memo());
@@ -917,7 +927,7 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
         KMessageBox::information(this, i18n("All split data lost.  Please re-enter splits"));
         disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
         m_transaction.removeSplits();
-        m_category->setText(QString());
+        m_category->setSelectedItem(QCString());
         m_category->setFocus();
       }
     }
@@ -1255,17 +1265,17 @@ bool KEditScheduleDialog::checkCategory()
   bool exitDialog = true;
 
   // Make sure a category has been set
-  if (m_category->text() != i18n("Split transaction (category replacement)", "Split transaction") && !m_category->text().isEmpty())
+  if (m_category->isSplitTransaction() && !m_category->selectedItem().isEmpty())
   {
     bool invalid=false;
-    QCString categoryId = MyMoneyFile::instance()->categoryToAccount(m_category->text());
-    if (categoryId.isEmpty())
+    QCString categoryId = m_category->selectedItem();
+    if (m_category->selectedItem().isEmpty())
       invalid = true;
 
     if (invalid)
     {
       // Create the category
-      QString message = QString("The category '%1' does not exist.  Create?").arg(m_category->text());
+      QString message = QString("The category '%1' does not exist.  Create?").arg(m_category->currentText());
       if (KMessageBox::questionYesNo(this, message) == KMessageBox::Yes)
       {
         MyMoneyAccount base;
@@ -1274,7 +1284,7 @@ bool KEditScheduleDialog::checkCategory()
         else
           base = MyMoneyFile::instance()->expense();
 
-        categoryId = MyMoneyFile::instance()->createCategory(base, m_category->text());
+        categoryId = MyMoneyFile::instance()->createCategory(base, m_category->currentText());
 
         // Modify the split
         MyMoneySplit s = m_transaction.splits()[1];
@@ -1300,7 +1310,7 @@ bool KEditScheduleDialog::checkCategory()
         {
           QString message = i18n("You have specified an %1 category for a %2 schedule. Do you want to keep it that way?").arg(type).arg(stype);
           if(KMessageBox::warningYesNo(this, message, i18n("Verify category type")) == KMessageBox::No) {
-            m_category->setText(QString());
+            m_category->setSelectedItem(QCString());
             m_category->setFocus();
             exitDialog = false;
           }
@@ -1308,9 +1318,9 @@ bool KEditScheduleDialog::checkCategory()
       }
       else
       {
-        m_category->setText(QString());
+        m_category->setSelectedItem(QCString());
         m_category->setFocus();
-       exitDialog = false;
+        exitDialog = false;
       }
     }
     else
@@ -1334,7 +1344,7 @@ bool KEditScheduleDialog::checkCategory()
       {
         QString message = i18n("You have specified an %1 category for a %2 schedule. Do you want to keep it that way?").arg(type).arg(stype);
         if(KMessageBox::warningYesNo(this, message, i18n("Verify category type")) == KMessageBox::No) {
-          m_category->setText(QString());
+          m_category->setSelectedItem(QCString());
           m_category->setFocus();
           exitDialog = false;
         }
@@ -1347,8 +1357,7 @@ bool KEditScheduleDialog::checkCategory()
 
 void KEditScheduleDialog::checkPayee()
 {
-  QCString payeeId;
-  m_payee->selectedItem(payeeId);
+  QCString payeeId = m_payee->selectedItem();
 #if 0
   try
   {

@@ -26,6 +26,8 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
+#include <qlayout.h>
+#include <qgroupbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -33,6 +35,7 @@
 #include <klocale.h>
 #include <kmessagebox.h>
 #include <kpushbutton.h>
+#include <ktextedit.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -53,6 +56,16 @@ KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedul
   const QDate& date)
   : kEnterScheduleDialogDecl(parent, "kenterscheduledialog"), m_schedDate(date)
 {
+  // Since we cannot create a category widget with the split button in designer,
+  // we recreate the category widget here and replace it in the layout
+  m_detailsGroupLayout->remove(m_category);
+  delete m_category;
+  m_category = new KMyMoneyCategory(m_detailsGroup, "m_category", true);
+
+  // make sure to drop the surrounding frame into the layout
+  m_detailsGroupLayout->addWidget(m_category->parentWidget(), 3, 1);
+
+
   m_schedule = schedule;
   m_transaction = schedule.transaction();
 
@@ -65,18 +78,20 @@ KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedul
   if(m_schedule.id().isEmpty())
     m_buttonOk->setEnabled(false);
 
-  connect(m_splitButton, SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
+  connect(m_category->splitButton(), SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
+
   connect(m_buttonOk, SIGNAL(clicked()), this, SLOT(slotOK()));
+
   connect(m_from, SIGNAL(accountSelected(const QCString&)),
     this, SLOT(slotFromActivated(const QCString&)));
   connect(m_to, SIGNAL(accountSelected(const QCString&)),
     this, SLOT(slotToActivated(const QCString&)));
   connect(m_date, SIGNAL(dateChanged(const QDate&)), this, SLOT(checkDateInPeriod(const QDate&)));
+
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
 
-  connect(m_category, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
   connect(m_payee, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
-
+  connect(m_category, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createCategory(const QString&, QCString&)));
 }
 
 KEnterScheduleDialog::~KEnterScheduleDialog()
@@ -130,7 +145,8 @@ void KEnterScheduleDialog::initWidgets()
     delete e;
   }
 
-  m_splitButton->setGuiItem(KMyMoneyUtils::splitGuiItem());
+  // FIXME
+  // m_splitButton->setGuiItem(KMyMoneyUtils::splitGuiItem());
   m_buttonOk->setGuiItem(KStdGuiItem::ok());
   m_buttonCancel->setGuiItem(KStdGuiItem::cancel());
   m_buttonHelp->setGuiItem(KStdGuiItem::help());
@@ -254,12 +270,13 @@ void KEnterScheduleDialog::initWidgets()
 
     if (m_transaction.splitCount() >= 3)
     {
-      m_category->setText(i18n("Split transaction (category replacement)", "Split transaction"));
+      m_category->setSplitTransaction();
+      // m_category->setText(i18n("Split transaction (category replacement)", "Split transaction"));
       connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
     }
     else if (m_schedule.type() != MyMoneySchedule::TYPE_TRANSFER)
     {
-        m_category->setText(MyMoneyFile::instance()->accountToCategory(m_transaction.splitByAccount(m_schedule.account().id(), false).accountId()));
+        m_category->setSelectedItem(m_transaction.splitByAccount(m_schedule.account().id(), false).accountId());
     }
 
     m_memo->setText(m_transaction.splitByAccount(m_schedule.account().id()).memo());
@@ -304,8 +321,7 @@ void KEnterScheduleDialog::slotReloadEditWidgets(void)
 #endif
 
   // reload payee widget
-  QCString payeeId;
-  m_payee->selectedItem(payeeId);
+  QCString payeeId = m_payee->selectedItem();
 
   m_payee->loadPayees(MyMoneyFile::instance()->payeeList());
 
@@ -374,30 +390,28 @@ void KEnterScheduleDialog::slotSplitClicked()
       m_transaction = dlg->transaction();
 
       MyMoneySplit s;
-      QString category;
 
       switch(m_transaction.splitCount())
       {
         case 2:
           s = m_transaction.splitByAccount(theAccountId(), false);
-          category = MyMoneyFile::instance()->accountToCategory(s.accountId());
+          m_category->setSelectedItem(s.accountId());
           disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
         case 1:
-          category = QString();
+          m_category->setSelectedItem(QCString());
           m_transaction.removeSplits();
           disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
         case 0:
+          m_category->setCurrentText(QString());
           disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
         default:
-          category = i18n("Split transaction (category replacement)", "Split transaction");
+          m_category->setSplitTransaction();
           connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
           break;
       }
-
-      m_category->setText(category);
 
       MyMoneySplit split = m_transaction.splitByAccount(theAccountId());
       MyMoneyMoney amount(split.value());
@@ -438,7 +452,7 @@ bool KEnterScheduleDialog::checkData(void)
   try
   {
     payeeOld = m_schedule.transaction().splitByAccount(m_schedule.account().id()).payeeId();
-    m_payee->selectedItem(payeeNew);
+    payeeNew = m_payee->selectedItem();
 
     if (payeeOld != payeeNew)
     {
@@ -482,11 +496,11 @@ bool KEnterScheduleDialog::checkData(void)
         category = MyMoneyFile::instance()->accountToCategory(m_schedule.transaction()
           .splitByAccount(m_schedule.account().id(), false).accountId());
 
-      if (category != m_category->text())
+      if (category != m_category->currentText())
       {
         noItemsChanged++;
         messageDetail += i18n("Category changed.  Old: \"%1\", New: \"%2\"")
-          .arg(category).arg(m_category->text()) + QString("\n");
+          .arg(category).arg(m_category->currentText()) + QString("\n");
       }
     }
 
@@ -587,15 +601,14 @@ bool KEnterScheduleDialog::checkData(void)
 
 void KEnterScheduleDialog::checkCategory()
 {
-  if (m_category->text() != i18n("Split transaction (category replacement)", "Split transaction") &&
+  if (m_category->isSplitTransaction() &&
       m_schedule.type() != MyMoneySchedule::TYPE_TRANSFER)
   {
-    QString category = m_category->text();
-    QCString id = MyMoneyFile::instance()->categoryToAccount(category);
-    if(id.isEmpty() && !category.isEmpty())
+    QCString id = m_category->selectedItem();
+    if(id.isEmpty() && !m_category->currentText().isEmpty())
     {
       // Create the category
-      QString message = i18n("The category '%1' does not exist.  Create?").arg(m_category->text());
+      QString message = i18n("The category '%1' does not exist.  Create?").arg(m_category->currentText());
       if (KMessageBox::questionYesNo(this, message) == KMessageBox::Yes)
       {
         MyMoneyAccount base;
@@ -604,11 +617,11 @@ void KEnterScheduleDialog::checkCategory()
         else
           base = MyMoneyFile::instance()->expense();
 
-        id = MyMoneyFile::instance()->createCategory(base, m_category->text());
+        id = MyMoneyFile::instance()->createCategory(base, m_category->currentText());
       }
       else
       {
-        m_category->setText(QString());
+        m_category->setSelectedItem(QCString());
         m_category->setFocus();
         return;
       }
@@ -869,8 +882,7 @@ void KEnterScheduleDialog::commitTransaction()
 
 void KEnterScheduleDialog::setPayee()
 {
-  QCString payeeId;
-  m_payee->selectedItem(payeeId);
+  QCString payeeId = m_payee->selectedItem();
 #if 0
   try
   {
@@ -995,8 +1007,7 @@ void KEnterScheduleDialog::createSplits()
 {
   if (m_transaction.splitCount() == 0)
   {
-    QCString payeeId;
-    m_payee->selectedItem(payeeId);
+    QCString payeeId = m_payee->selectedItem();
 
     MyMoneySplit split1;
     split1.setAccountId(theAccountId());

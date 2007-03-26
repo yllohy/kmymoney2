@@ -3101,7 +3101,7 @@ void KMyMoney2App::scheduleNew(const QCString& scheduleType)
   MyMoneySchedule schedule;
 
   KEditScheduleDialog dlg(scheduleType, schedule, this);
-  connect(&dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+  connect(&dlg, SIGNAL(createCategory(const QString&, QCString&)), this, SLOT(slotCategoryNew(const QString&, QCString&)));
   connect(&dlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
 
   if (dlg.exec() == QDialog::Accepted) {
@@ -3164,7 +3164,7 @@ void KMyMoney2App::slotScheduleEdit(void)
         case MyMoneySchedule::TYPE_DEPOSIT:
         case MyMoneySchedule::TYPE_TRANSFER:
           sched_dlg = new KEditScheduleDialog(action, schedule, this);
-          connect(sched_dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+          connect(sched_dlg, SIGNAL(createCategory(const QString&, QCString&)), this, SLOT(slotCategoryNew(const QString&, QCString&)));
           connect(sched_dlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
 
           if (sched_dlg->exec() == QDialog::Accepted) {
@@ -3244,7 +3244,7 @@ void KMyMoney2App::slotScheduleEnter(void)
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
 
       KEnterScheduleDialog dlg(this, schedule);
-      connect(&dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+      connect(&dlg, SIGNAL(createCategory(const QString&, QCString&)), this, SLOT(slotCategoryNew(const QString&, QCString&)));
       connect(&dlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
 
       dlg.exec();
@@ -4541,7 +4541,7 @@ void KMyMoney2App::slotCheckSchedules(void)
           {
             // 0.8 will feature a list of schedules for a better ui
             KEnterScheduleDialog dlg(0, schedule, schedule.nextPayment(schedule.lastPayment()));
-            connect(&dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+            connect(&dlg, SIGNAL(createCategory(const QString&, QCString&)), this, SLOT(slotCategoryNew(const QString&, QCString&)));
             connect(&dlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
             if (!dlg.exec())
             {
