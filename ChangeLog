@@ -1,5 +1,6 @@
 2007-03-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Code cleanup (remove unused code)
+  * Don't try to reload default reports from the engine
 
 2007-03-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Support empty thousand separator setting

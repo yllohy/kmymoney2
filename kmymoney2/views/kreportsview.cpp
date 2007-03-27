@@ -177,7 +177,9 @@ void KReportsView::KReportTab::updateReport(void)
   // been changed by the user
 
   try {
-    m_report = MyMoneyFile::instance()->report(m_report.id());
+    // Don't try to reload default reports from the engine
+    if(!m_report.id().isEmpty())
+      m_report = MyMoneyFile::instance()->report(m_report.id());
   } catch(MyMoneyException* e) {
     delete e;
   }
