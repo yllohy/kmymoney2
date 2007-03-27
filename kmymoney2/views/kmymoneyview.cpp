@@ -194,9 +194,6 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_ledgerViewFrame = addVBoxPage( i18n("Ledgers"), i18n("Ledgers"),
     DesktopIcon("ledger", iconSize));
   m_ledgerView = new KGlobalLedgerView(m_ledgerViewFrame, "GlobalLedgerView");
-  // the next line causes the ledgers to get a hide() signal to be able
-  // to end any pending edit activities
-  connect(this, SIGNAL(aboutToShowPage(QWidget*)), m_ledgerView, SLOT(slotCancelEdit()));
   connect(m_ledgerView, SIGNAL(accountSelected(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_ledgerView, SIGNAL(openContextMenu()), kmymoney2, SLOT(slotShowTransactionContextMenu()));
   connect(m_ledgerView, SIGNAL(transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>&)), kmymoney2, SLOT(slotSelectTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>&)));
@@ -1488,23 +1485,9 @@ void KMyMoneyView::slotShowTransactionDetail(bool detailed)
 }
 
 
-void KMyMoneyView::slotCancelEdit(void) const
-{
-  if(m_ledgerView != 0)
-    m_ledgerView->slotCancelEdit();
-}
-
 void KMyMoneyView::progressCallback(int current, int total, const QString& msg)
 {
   kmymoney2->progressCallback(current, total, msg);
-}
-
-void KMyMoneyView::suspendUpdate(const bool suspend)
-{
-  // m_accountsView->suspendUpdate(suspend);
-  // m_categoriesView->suspendUpdate(suspend);
-  m_ledgerView->suspendUpdate(suspend);
-  // m_payeesView->suspendUpdate(suspend);
 }
 
 void KMyMoneyView::slotRememberPage(QWidget* w)

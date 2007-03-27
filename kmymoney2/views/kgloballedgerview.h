@@ -139,33 +139,10 @@ public:
   ~KGlobalLedgerView();
 
   /**
-    * utility method to suspend/activate updates of the MyMoney engine on
-    * all views. This is used to speed up operations with lot's of updates
-    * of engine data in a short time (e.g. importing data, creating a
-    * new file).
-    *
-    * @param suspend Suspend updates or not. Possible values are
-    *
-    * @li true updates are suspended
-    * @li false updates will be performed immediately
-    */
-  void suspendUpdate(const bool suspend);
-
-  /**
     * This method returns the id of the currently selected account
     * or QCString() if none is selected.
     */
   const QCString accountId(void) const { return m_account.id(); }
-
-  /**
-    * This method allows to see investment transactions within
-    * the stack (useful for the import verification).
-    *
-    * @note should be removed when we have a better import transaction
-    *       matcher
-    * @deprecated
-    */
-  void loadInvestmentView(void);
 
   /**
     * Checks if new transactions can be created in the current context
@@ -217,11 +194,6 @@ public:
 
 public slots:
   void show(void);
-
-  /**
-    * This slot cancels any edit session in the ledger views when called.
-    */
-  void slotCancelEdit(void);
 
   /**
     * This method loads the view with data from the MyMoney engine.
@@ -282,13 +254,6 @@ protected:
   void loadAccounts(void);
 
   /**
-    * This method connects the common signals that are needed for all views
-    *
-    * @param view pointer to view to be connected
-    */
-  void setupConnections(KLedgerView* view);
-
-  /**
     * This method clears the register, form, transaction list and object container. See @sa m_register,
     * @sa m_transactionList, @sa m_objects
     */
@@ -302,11 +267,6 @@ protected:
     * This method creates group marker items and adds them to the register
     */
   void addGroupMarkers(void);
-
-  /**
-    * This method removes all group marker items from the register
-    */
-  void removeGroupMarkers(void);
 
   void selectTransaction(const QCString& id);
 

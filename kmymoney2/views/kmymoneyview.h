@@ -333,19 +333,6 @@ public:
   void viewUp(void);
 
   /**
-    * utility method to suspend/activate updates of the MyMoney engine on
-    * all views. This is used to speed up operations with lot's of updates
-    * of engine data in a short time (e.g. importing data, creating a
-    * new file).
-    *
-    * @param suspend Suspend updates or not. Possible values are
-    *
-    * @li true updates are suspended
-    * @li false updates will be performed immediately
-    */
-  void suspendUpdate(const bool suspend);
-
-  /**
     * This method allows to set the enable state of all views (except home view)
     * The argument @p state controls the availability.
     *
@@ -495,12 +482,6 @@ public slots:
     * @param report The report to be shown
     */
   void slotShowReport(const MyMoneyReport& report);
-
-  /**
-    * This slot cancels any edit activity in any view. It will
-    * be called e.g. before entering the settings dialog.
-    */
-  void slotCancelEdit(void) const;
 
   /**
     * This slot prints the current view.

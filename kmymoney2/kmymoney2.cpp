@@ -93,7 +93,6 @@
 #include "dialogs/kexportdlg.h"
 #include "dialogs/kimportdlg.h"
 #include "dialogs/mymoneyqifprofileeditor.h"
-#include "dialogs/kimportverifydlg.h"
 #include "dialogs/kenterscheduledialog.h"
 #include "dialogs/kmymoneypricedlg.h"
 #include "dialogs/kcurrencyeditdlg.h"
@@ -832,7 +831,6 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
 #else
     if((url.protocol() == "sql") || (url.isValid() && KIO::NetAccess::exists(url))) {
 #endif
-      myMoneyView->slotCancelEdit();
       slotFileClose();
       if(!myMoneyView->fileOpen()) {
         if(myMoneyView->readFile(url)) {
@@ -1328,8 +1326,6 @@ void KMyMoney2App::slotQifImport()
       m_qifReader = new MyMoneyQifReader;
       connect(m_qifReader, SIGNAL(importFinished()), this, SLOT(slotQifImportFinished()));
 
-      myMoneyView->suspendUpdate(true);
-
       // construct a copy of the current engine
       if(m_engineBackup)
         delete m_engineBackup;
@@ -1356,7 +1352,6 @@ void KMyMoney2App::slotQifImportFinished(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  myMoneyView->suspendUpdate(false);
   if(m_qifReader != 0) {
     m_qifReader->finishImport();
 #if 0
@@ -1683,8 +1678,6 @@ bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
   m_smtReader = new MyMoneyStatementReader;
   connect(m_smtReader, SIGNAL(importFinished()), this, SLOT(slotStatementImportFinished()));
 
-  myMoneyView->suspendUpdate(true);
-
   // construct a copy of the current engine
   if(m_engineBackup)
     delete m_engineBackup;
@@ -1739,7 +1732,6 @@ void KMyMoney2App::slotStatementImportFinished(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  myMoneyView->suspendUpdate(false);
   if(m_smtReader != 0) {
     m_smtReader->finishImport();
 #if 0
@@ -2144,18 +2136,6 @@ void KMyMoney2App::slotQifProfileEditor(void)
   delete editor;
 
 }
-
-#if 0
-bool KMyMoney2App::verifyImportedData(const MyMoneyAccount& account)
-{
-  bool rc;
-  KImportVerifyDlg *dialog = new KImportVerifyDlg(account, this);
-  dialog->setProgressCallback(progressCallback);
-  rc = (dialog->exec() == QDialog::Accepted);
-  delete dialog;
-  return rc;
-}
-#endif
 
 void KMyMoney2App::slotToolsStartKCalc(void)
 {

@@ -244,103 +244,6 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   d->m_mousePressFilter->addWidget(m_buttonFrame);
   d->m_mousePressFilter->addWidget(m_summaryFrame);
   d->m_mousePressFilter->addWidget(m_registerFrame);
-
-
-#if 0
-  m_currentView = 0;
-  KLedgerView* view;
-
-  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i)
-    m_specificView[i] = 0;
-
-  if ( !name )
-    setName( "Account register" );
-
-  setCaption( i18n( "Account register" ) );
-
-  KIconLoader *il = KGlobal::iconLoader();
-
-  m_toolbar = new KToolBar(this, "LedgerToolBar", true);
-  m_toolbar->setIconText(KToolBar::IconTextRight);
-
-  m_accountComboBox = new KMyMoneyAccountCombo(m_toolbar, "AccountCombo");
-  m_toolbar->insertWidget(1,100,m_accountComboBox);
-
-  m_toolbar->insertButton(il->loadIcon("document", KIcon::Small, KIcon::SizeSmall),
-                        1,true,i18n("Account"));
-  //m_toolbar->setMaximumSize(50,20);
-  m_toolbar->alignItemRight(1);
-  m_toolbar->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Fixed);
-  // KToolBarButton* m_buttonAccount = m_toolbar->getButton(1);
-
-  m_viewLayout->addWidget(m_toolbar);
-
-  m_accountStack = new QWidgetStack(this, "AccountStack");
-
-  // Checkings account
-  view = m_specificView[MyMoneyAccount::Checkings] = new KLedgerViewCheckings(this, "CheckingsView");
-  m_accountStack->addWidget(view, MyMoneyAccount::Checkings);
-
-  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
-
-  // Savings account
-  view = m_specificView[MyMoneyAccount::Savings] = new KLedgerViewSavings(this, "SavingsView");
-  m_accountStack->addWidget(view, MyMoneyAccount::Savings);
-
-  // Credit card account
-  view = m_specificView[MyMoneyAccount::CreditCard] = new KLedgerViewCreditCard(this, "CreditCardView");
-  m_accountStack->addWidget(view, MyMoneyAccount::CreditCard);
-
-  // Cash account
-  view = m_specificView[MyMoneyAccount::Cash] = new KLedgerViewCash(this, "CashView");
-  m_accountStack->addWidget(view, MyMoneyAccount::Cash);
-
-  // Asset account
-  view = m_specificView[MyMoneyAccount::Asset] = new KLedgerViewAsset(this, "AssetView");
-  m_accountStack->addWidget(view, MyMoneyAccount::Asset);
-
-  // Loan account
-  view = m_specificView[MyMoneyAccount::Loan] = m_specificView[MyMoneyAccount::AssetLoan] = new KLedgerViewLoan(this, "LoanView");
-  m_accountStack->addWidget(view, MyMoneyAccount::Loan);
-
-  // Liability account
-  view = m_specificView[MyMoneyAccount::Liability] = new KLedgerViewLiability(this, "LiabilityView");
-  m_accountStack->addWidget(view, MyMoneyAccount::Liability);
-
-#if 0
-  // FIXME: I removed the below code to enable switching to the investment view
-  // when an investment account is selected via the combo box.  People reported,
-  // that the comboboxes on the globalledgerview and the investmentview are not
-  // in sync.  Not providing an investment ledger view within the global ledger view
-  // solves this problem.
-
-  // Investment account
-  view = m_specificView[MyMoneyAccount::Investment] = new KLedgerViewInvestments(this, "InvestmentsView");
-  m_accountStack->addWidget(view, MyMoneyAccount::Investment);
-  connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
-    this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
-  connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
-    SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-  // connect(this, SIGNAL(cancelEdit()), view, SLOT(slotCancelEdit()));
-#endif
-
-  // connect signals that are identical for all views
-  for(int i=0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
-    setupConnections(m_specificView[i]);
-  }
-
-  m_viewLayout->addWidget(m_accountStack);
-  setMinimumHeight(m_accountComboBox->minimumHeight() + m_accountStack->sizeHint().height());
-
-  m_accountId = QCString();
-
-  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
-
-  // setup connections
-  connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)),
-          this, SLOT(slotSelectAccount(const QCString&)));
-#endif
-  // setup connections
 }
 
 KGlobalLedgerView::~KGlobalLedgerView()
@@ -812,97 +715,12 @@ void KGlobalLedgerView::addGroupMarkers(void)
   }
 }
 
-void KGlobalLedgerView::removeGroupMarkers(void)
-{
-  qDebug("KGlobalLedgerView::removeGroupMarkers(void) not yet implemented");
-}
-
 void KGlobalLedgerView::resizeEvent(QResizeEvent* ev)
 {
   m_register->resize(KMyMoneyRegister::DetailColumn);
   m_form->resize(KMyMoneyTransactionForm::ValueColumn1);
   KMyMoneyViewBase::resizeEvent(ev);
 }
-
-void KGlobalLedgerView::setupConnections(KLedgerView*  /*view*/)
-{
-#if 0
-  if(view) {
-    connect(view, SIGNAL(accountAndTransactionSelected(const QCString&, const QCString&)),
-      this, SLOT(slotSelectAccount(const QCString&, const QCString&)));
-    connect(view, SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)),
-      SIGNAL(payeeSelected(const QCString&, const QCString&, const QCString&)));
-    connect(view, SIGNAL(newCategory(MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&)));
-    connect(view, SIGNAL(reportGenerated(const MyMoneyReport&)),
-      SIGNAL(reportGenerated(const MyMoneyReport&)));
-  }
-#endif
-}
-
-void KGlobalLedgerView::loadInvestmentView(void)
-{
-#if 0
-  KLedgerView* view;
-  // Investment account
-  view = m_specificView[MyMoneyAccount::Investment] = new KLedgerViewInvestments(this, "InvestmentsView");
-  m_accountStack->addWidget(view, MyMoneyAccount::Investment);
-  setupConnections(view);
-#endif
-}
-
-#if 0
-void KGlobalLedgerView::slotReloadView(void)
-{
-  ::timetrace("Start KGlobalLedgerView::slotReloadView");
-  // qDebug("KGlobalLedgerView::slotReloadView()");
-
-  // make sure to determine the current account from scratch
-  m_accountId = QCString();
-
-  slotRefreshView();
-  ::timetrace("Done KGlobalLedgerView::slotReloadView");
-}
-
-void KGlobalLedgerView::slotRefreshView(void)
-{
-  QCString id = m_accountId;
-
-  // qDebug("KGlobalLedgerView::slotRefreshView()");
-
-  // load the combobox from scratch and determine the current account
-  loadAccounts();
-
-  // if the current account differs from the previous selection
-  // then select the correct ledgerview first and force loading
-  // the newly selected account
-  if(m_accountId != id) {
-    id = m_accountId;
-    m_accountId = QCString();
-    slotSelectAccount(id);
-  } else if(m_accountId.isEmpty()) {
-    m_accountId = QCString();
-    slotSelectAccount(m_accountId);
-  } else if(m_currentView != 0) {
-    m_currentView->refreshView();
-  } else
-    qFatal("Houston: we have a problem in KGlobalLedgerView::slotRefreshView()");
-
-  // Enable rest of view only, if we have at least one account out of this group
-  QValueList<MyMoneyAccount::accountTypeE> typeList;
-  typeList << MyMoneyAccount::Checkings;
-  typeList << MyMoneyAccount::Savings;
-  typeList << MyMoneyAccount::Cash;
-  typeList << MyMoneyAccount::CreditCard;
-  typeList << MyMoneyAccount::Loan;
-  typeList << MyMoneyAccount::Asset;
-  typeList << MyMoneyAccount::Liability;
-  typeList << MyMoneyAccount::Currency;
-  typeList << MyMoneyAccount::AssetLoan;
-  m_accountStack->setEnabled(m_accountComboBox->accountList(typeList).count() > 0);
-
-  m_accountComboBox->setEnabled(m_accountComboBox->count() > 0);
-}
-#endif
 
 void KGlobalLedgerView::loadAccounts(void)
 {
@@ -1044,29 +862,6 @@ bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCString& tr
     selectTransaction(transactionId);
   }
   return rc;
-}
-
-void KGlobalLedgerView::suspendUpdate(const bool /*suspend*/)
-{
-#if 0
-  for(int i = 0; i < MyMoneyAccount::MaxAccountTypes; ++i) {
-    if(m_specificView[i] != 0)
-      m_specificView[i]->suspendUpdate(suspend);
-  }
-#endif
-}
-
-
-void KGlobalLedgerView::slotCancelEdit(void)
-{
-#if 0
-  // cancel any pending edit operation in the ledger views
-  if(m_accountStack->isVisible()) {
-    KLedgerView* view = dynamic_cast<KLedgerView*>(m_accountStack->visibleWidget());
-    Q_CHECK_PTR(view);
-    view->slotCancelEdit();
-  }
-#endif
 }
 
 void KGlobalLedgerView::slotNewTransaction(KMyMoneyRegister::Action id)
