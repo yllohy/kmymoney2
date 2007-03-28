@@ -302,7 +302,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     m_qlistviewParentAccounts->setEnabled(false);
 
   if (!categoryEditor)
-    loadInstitutions(institutionName);
+    slotLoadInstitutions(institutionName);
 
   accountNameEdit->setFocus();
 
@@ -342,6 +342,8 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   connect(m_vatAssignment, SIGNAL(toggled(bool)), this, SLOT(slotCheckFinished()));
   connect(m_vatRate, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckFinished()));
   connect(m_vatAccount, SIGNAL(stateChanged()), this, SLOT(slotCheckFinished()));
+
+  connect(m_qcomboboxInstitutions, SIGNAL(activated(const QString&)), this, SLOT(slotLoadInstitutions(const QString&)));
 
   m_vatCategory->setChecked(false);
   m_vatAssignment->setChecked(false);
@@ -941,12 +943,14 @@ void KNewAccountDlg::loadVatAccounts(void)
   vatSet.load(m_vatAccount, i18n("Expense"), loadListExpense, false);
 }
 
-void KNewAccountDlg::loadInstitutions(const QString& name)
+void KNewAccountDlg::slotLoadInstitutions(const QString& name)
 {
   int id=-1, counter=0;
   m_qcomboboxInstitutions->clear();
+  QString bic;
   // Are we forcing the user to use institutions?
   m_qcomboboxInstitutions->insertItem(i18n("<No Institution>"));
+  m_bicValue->setText(" ");
   try
   {
     MyMoneyFile *file = MyMoneyFile::instance();
@@ -955,8 +959,10 @@ void KNewAccountDlg::loadInstitutions(const QString& name)
     QValueList<MyMoneyInstitution>::ConstIterator institutionIterator;
     for (institutionIterator = list.begin(), counter=1; institutionIterator != list.end(); ++institutionIterator, counter++)
     {
-      if ((*institutionIterator).name() == name)
+      if ((*institutionIterator).name() == name) {
         id = counter;
+        m_bicValue->setText((*institutionIterator).value("bic"));
+      }
       m_qcomboboxInstitutions->insertItem((*institutionIterator).name());
     }
 
@@ -985,7 +991,7 @@ void KNewAccountDlg::slotNewClicked()
 
       institution = dlg.institution();
       file->addInstitution(institution);
-      loadInstitutions(institution.name());
+      slotLoadInstitutions(institution.name());
     }
     catch (MyMoneyException *e)
     {

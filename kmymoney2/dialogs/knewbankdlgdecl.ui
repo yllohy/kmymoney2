@@ -1,10 +1,18 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KNewBankDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
         <cstring>kNewBankDlgDecl</cstring>
     </property>
-   <property name="caption">
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>631</width>
+            <height>344</height>
+        </rect>
+    </property>
+    <property name="caption">
         <string>New Institution Dialog</string>
     </property>
     <property name="sizeGripEnabled">
@@ -20,52 +28,6 @@
         <property name="spacing">
             <number>6</number>
         </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>Layout10</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-               <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLabel1_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Adding a new institution.
-
-The only required field is the name, which can be the name of a bank like Woolwich, or a descriptive name like Family Cash Accounts.</string>
-                    </property>
-                    <property name="alignment">
-                        <set>WordBreak|AlignVCenter</set>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="Line">
-            <property name="name">
-                <cstring>Line1</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Raised</enum>
-            </property>
-            <property name="lineWidth">
-                <number>1</number>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
         <widget class="QGroupBox">
             <property name="name">
                 <cstring>GroupBox1</cstring>
@@ -73,7 +35,7 @@ The only required field is the name, which can be the name of a bank like Woolwi
             <property name="title">
                 <string>Institution Details</string>
             </property>
-            <vbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
@@ -83,161 +45,134 @@ The only required field is the name, which can be the name of a bank like Woolwi
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QLayoutWidget">
+                <widget class="QLabel" row="4" column="0">
                     <property name="name">
-                        <cstring>layout10</cstring>
+                        <cstring>TextLabel5</cstring>
                     </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLineEdit" row="5" column="1">
-                            <property name="name">
-                                <cstring>sortCodeEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="4" column="0">
-                            <property name="name">
-                                <cstring>TextLabel5</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Telephone/Fax:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="1" column="1">
-                            <property name="name">
-                                <cstring>cityEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="3" column="0">
-                            <property name="name">
-                                <cstring>TextLabel4</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Postal Code:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="4" column="1">
-                            <property name="name">
-                                <cstring>telephoneEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="3" column="1">
-                            <property name="name">
-                                <cstring>postcodeEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>TextLabel2</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>City:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>TextLabel3</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Street:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="2" column="1">
-                            <property name="name">
-                                <cstring>streetEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>TextLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Name:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="6" column="0">
-                            <property name="name">
-                                <cstring>TextLabel7</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Managers name:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="5" column="0">
-                            <property name="name">
-                                <cstring>TextLabel6</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>100</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Routing Number:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="0" column="1">
-                            <property name="name">
-                                <cstring>nameEdit</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLineEdit" row="6" column="1">
-                            <property name="name">
-                                <cstring>managerEdit</cstring>
-                            </property>
-                        </widget>
-                    </grid>
+                    <property name="minimumSize">
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Telephone/Fax:</string>
+                    </property>
                 </widget>
-            </vbox>
-        </widget>
-        <widget class="Line">
-            <property name="name">
-                <cstring>Line1_2</cstring>
-            </property>
-            <property name="frameShape">
-                <enum>HLine</enum>
-            </property>
-            <property name="frameShadow">
-                <enum>Raised</enum>
-            </property>
-            <property name="lineWidth">
-                <number>1</number>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>TextLabel4</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Postal Code:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>TextLabel2</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>City:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>TextLabel3</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Street:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>TextLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Name:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="6" column="0">
+                    <property name="name">
+                        <cstring>TextLabel7</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>BIC</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="5" column="0">
+                    <property name="name">
+                        <cstring>TextLabel6</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Routing Number:</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="3" column="1">
+                    <property name="name">
+                        <cstring>postcodeEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="4" column="1">
+                    <property name="name">
+                        <cstring>telephoneEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="5" column="1">
+                    <property name="name">
+                        <cstring>sortCodeEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="6" column="1">
+                    <property name="name">
+                        <cstring>bicEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="2" column="1">
+                    <property name="name">
+                        <cstring>streetEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>cityEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="0" column="1">
+                    <property name="name">
+                        <cstring>nameEdit</cstring>
+                    </property>
+                </widget>
+            </grid>
         </widget>
         <spacer>
             <property name="name">
@@ -256,6 +191,23 @@ The only required field is the name, which can be the name of a bank like Woolwi
                 </size>
             </property>
         </spacer>
+        <widget class="Line">
+            <property name="name">
+                <cstring>Line1_2</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
+            </property>
+            <property name="lineWidth">
+                <number>1</number>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
         <widget class="QLayoutWidget">
             <property name="name">
                 <cstring>Layout51</cstring>
@@ -311,13 +263,6 @@ The only required field is the name, which can be the name of a bank like Woolwi
     </vbox>
 </widget>
 <tabstops>
-    <tabstop>nameEdit</tabstop>
-    <tabstop>cityEdit</tabstop>
-    <tabstop>streetEdit</tabstop>
-    <tabstop>postcodeEdit</tabstop>
-    <tabstop>telephoneEdit</tabstop>
-    <tabstop>sortCodeEdit</tabstop>
-    <tabstop>managerEdit</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

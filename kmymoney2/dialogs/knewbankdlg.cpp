@@ -21,7 +21,6 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qlineedit.h>
 #include <qlabel.h>
 #include <qpixmap.h>
 
@@ -30,20 +29,17 @@
 
 #include <kglobal.h>
 #include <klocale.h>
-#if QT_VERSION > 300
 #include <kstandarddirs.h>
-#else
-#include <kstddirs.h>
-#endif
-
 #include <kmessagebox.h>
 #include <kpushbutton.h>
 #include <kiconloader.h>
 #include <kguiitem.h>
+#include <klineedit.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/mymoneyinstitution.h>
 #include "knewbankdlg.h"
 
 KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution, QWidget *parent, const char *name)
@@ -68,7 +64,7 @@ KNewBankDlg::KNewBankDlg(MyMoneyInstitution& institution, QWidget *parent, const
   streetEdit->setText(institution.street());
   postcodeEdit->setText(institution.postcode());
   telephoneEdit->setText(institution.telephone());
-  managerEdit->setText(institution.manager());
+  bicEdit->setText(institution.value("bic"));
   sortCodeEdit->setText(institution.sortcode());
 
   connect(okBtn, SIGNAL(clicked()), SLOT(okClicked()));
@@ -99,7 +95,7 @@ void KNewBankDlg::okClicked()
   m_institution.setStreet(streetEdit->text());
   m_institution.setPostcode(postcodeEdit->text());
   m_institution.setTelephone(telephoneEdit->text());
-  m_institution.setManager(managerEdit->text());
+  m_institution.setValue("bic", bicEdit->text());
   m_institution.setSortcode(sortCodeEdit->text());
 
   accept();

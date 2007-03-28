@@ -55,7 +55,8 @@ MyMoneyInstitution::MyMoneyInstitution(const QString& name,
 }
 
 MyMoneyInstitution::MyMoneyInstitution(const QDomElement& node) :
-  MyMoneyObject(node)
+  MyMoneyObject(node),
+  MyMoneyKeyValueContainer(node.elementsByTagName("KEYVALUEPAIRS").item(0).toElement())
 {
   if("INSTITUTION" != node.tagName())
     throw new MYMONEYEXCEPTION("Node was not INSTITUTION");
@@ -151,6 +152,9 @@ void MyMoneyInstitution::writeXML(QDomDocument& document, QDomElement& parent) c
     accounts.appendChild(temp);
   }
   el.appendChild(accounts);
+
+  //Add in Key-Value Pairs for institutions.
+  MyMoneyKeyValueContainer::writeXML(document, el);
 
   parent.appendChild(el);
 }

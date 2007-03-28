@@ -44,7 +44,7 @@ class MyMoneyMoney;
   *
   * @author Thomas Baumgart
   */
-class KMYMONEY_EXPORT MyMoneyInstitution : public MyMoneyObject
+class KMYMONEY_EXPORT MyMoneyInstitution : public MyMoneyObject, public MyMoneyKeyValueContainer
 {
 public:
   /**

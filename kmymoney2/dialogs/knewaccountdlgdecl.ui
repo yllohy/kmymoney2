@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KNewAccountDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>671</width>
-            <height>535</height>
+            <width>654</width>
+            <height>493</height>
         </rect>
     </property>
     <property name="caption">
@@ -394,13 +394,18 @@
                             </widget>
                             <widget class="QLayoutWidget">
                                 <property name="name">
-                                    <cstring>layout18</cstring>
+                                    <cstring>layout14</cstring>
                                 </property>
-                                <hbox>
+                                <grid>
                                     <property name="name">
                                         <cstring>unnamed</cstring>
                                     </property>
-                                    <widget class="QLabel">
+                                    <widget class="KLineEdit" row="2" column="1">
+                                        <property name="name">
+                                            <cstring>accountNoEdit</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="2" column="0">
                                         <property name="name">
                                             <cstring>TextLabel2_2</cstring>
                                         </property>
@@ -420,12 +425,36 @@
                                             <string>Number:</string>
                                         </property>
                                     </widget>
-                                    <widget class="QLineEdit">
+                                    <widget class="QLabel" row="0" column="0">
                                         <property name="name">
-                                            <cstring>accountNoEdit</cstring>
+                                            <cstring>textLabel1_4</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>BIC</string>
                                         </property>
                                     </widget>
-                                </hbox>
+                                    <widget class="KLineEdit" row="1" column="1">
+                                        <property name="name">
+                                            <cstring>ibanEdit</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="1" column="0">
+                                        <property name="name">
+                                            <cstring>textLabel3</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>IBAN</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLabel" row="0" column="1">
+                                        <property name="name">
+                                            <cstring>m_bicValue</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>x</string>
+                                        </property>
+                                    </widget>
+                                </grid>
                             </widget>
                         </vbox>
                     </widget>
@@ -554,7 +583,7 @@
                         <property name="sizeHint">
                             <size>
                                 <width>21</width>
-                                <height>61</height>
+                                <height>30</height>
                             </size>
                         </property>
                     </spacer>

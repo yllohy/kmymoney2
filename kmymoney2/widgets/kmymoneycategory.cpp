@@ -195,7 +195,7 @@ void KMyMoneySecurity::setCurrentText(const QCString& id)
 #include <kmessagebox.h>
 
 
-#include "../dialogs/knewaccountdlg.h"
+// #include "../dialogs/knewaccountdlg.h"
 #include <kmymoney/mymoneyobjectcontainer.h>
 
 kMyMoneyCategory::kMyMoneyCategory(QWidget *parent, const char *name, const KMyMoneyUtils::categoryTypeE /*categoryType*/)

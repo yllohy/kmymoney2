@@ -60,7 +60,6 @@ private:
 
   void initParentWidget(QCString parentId, const QCString& accountId);
   void showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeItem *parentItem, const QCString& parentId, const QCString& accountId);
-  void loadInstitutions(const QString&);
   void loadVatAccounts(void);
 
 public:
@@ -112,6 +111,7 @@ protected slots:
   void slotNewClicked(void);
   void slotCheckFinished(void);
   void slotOnlineSetupClicked(void);
+  void slotLoadInstitutions(const QString&);
 
 private slots:
   void timerDone(void);
