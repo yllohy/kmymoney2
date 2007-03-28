@@ -2,6 +2,7 @@
   * Added BIC and IBAN fields to institution and account dialogs
   * Removed manager field from institution dialog
   * Add new columns to account / category view
+  * Mark mandatory fields in account and institution edit dialogs
 
 2007-03-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Code cleanup (remove unused code)

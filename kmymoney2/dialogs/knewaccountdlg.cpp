@@ -62,6 +62,9 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneyaccounttree.h>
 #include <kmymoney/mymoneyobjectcontainer.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
+#include <kmymoney/mymoneyreport.h>
+#include <kmymoney/kguiutils.h>
 
 #include "../widgets/kmymoneycurrencyselector.h"
 #include "../widgets/kmymoneyequity.h"
@@ -72,9 +75,7 @@
 #include "../dialogs/knewbankdlg.h"
 #include "../views/kmymoneyfile.h"
 #include "../kmymoneyutils.h"
-#include "../kmymoneysettings.h"
 
-#include "../mymoney/mymoneyreport.h"
 #include "../reports/kreportchartview.h"
 #include "../reports/pivottable.h"
 
@@ -247,6 +248,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     accountNoEdit->setText(account.number());
     m_qcheckboxPreferred->setChecked(account.value("PreferredAccount") == "Yes");
     m_qcheckboxNoVat->setChecked(account.value("NoVat") == "Yes");
+    ibanEdit->setText(account.value("iban"));
 
     // we do not allow to change the account type once an account
     // was created. Same applies to currency.
@@ -436,6 +438,10 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   }
 #endif
 
+  kMandatoryFieldGroup* requiredFields = new kMandatoryFieldGroup (this);
+  requiredFields->setOkButton(createButton); // button to be enabled when all fields present
+  requiredFields->add(accountNameEdit);
+
   // using a timeout is the only way, I got the 'ensureItemVisible'
   // working when creating the dialog. I assume, this
   // has something to do with the delayed update of the display somehow.
@@ -515,6 +521,10 @@ void KNewAccountDlg::okClicked()
 
   m_account.setName(accountNameText);
   m_account.setNumber(accountNoEdit->text());
+  if(ibanEdit->text().isEmpty())
+    m_account.deletePair("iban");
+  else
+    m_account.setValue("iban", ibanEdit->text());
 
   MyMoneyAccount::accountTypeE acctype;
   if (!m_categoryEditor)
