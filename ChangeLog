@@ -1,6 +1,7 @@
 2007-03-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added BIC and IBAN fields to institution and account dialogs
   * Removed manager field from institution dialog
+  * Add new columns to account / category view
 
 2007-03-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Code cleanup (remove unused code)

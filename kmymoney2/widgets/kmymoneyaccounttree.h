@@ -73,6 +73,7 @@ public:
 
   typedef enum {
     NameColumn = 0,
+    TypeColumn,
     TaxReportColumn,
     VatCategoryColumn,
     BalanceColumn,

@@ -44,6 +44,8 @@
 #include <kmymoney/kmymoneyaccounttree.h>
 #include <kmymoney/kmymoneyglobalsettings.h>
 
+#include <kmymoney/kmymoneyutils.h>
+
 KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char* name) :
   KListView(parent, name),
   m_accountConnections(false),
@@ -53,6 +55,7 @@ KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char* name) :
   setAllColumnsShowFocus(true);
 
   addColumn(i18n("Account"));
+  addColumn(i18n("Type"));
   addColumn(i18n("Column heading for category in tax report", "Tax"));
   addColumn(i18n("Column heading for VAT category", "VAT"));
   addColumn(i18n("Balance"));
@@ -61,12 +64,14 @@ KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char* name) :
   setMultiSelection(false);
 
   setColumnWidthMode(NameColumn, QListView::Manual);
+  setColumnWidthMode(TypeColumn, QListView::Manual);
   setColumnWidthMode(TaxReportColumn, QListView::Manual);
   setColumnWidthMode(VatCategoryColumn, QListView::Manual);
   setColumnWidthMode(BalanceColumn, QListView::Manual);
   setColumnWidthMode(ValueColumn, QListView::Manual);
 
   setColumnAlignment(TaxReportColumn, Qt::AlignHCenter);
+  setColumnAlignment(TypeColumn, Qt::AlignLeft);
   setColumnAlignment(VatCategoryColumn, Qt::AlignHCenter);
   setColumnAlignment(BalanceColumn, Qt::AlignRight);
   setColumnAlignment(ValueColumn, Qt::AlignRight);
@@ -674,6 +679,10 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
     setPixmap(KMyMoneyAccountTree::NameColumn, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon))));
 
   setText(KMyMoneyAccountTree::NameColumn, account.name());
+#ifndef KMM_DESIGNER
+  if(!MyMoneyFile::instance()->isStandardAccount(m_account.id()))
+    setText(KMyMoneyAccountTree::TypeColumn, KMyMoneyUtils::accountTypeToString(account.accountType()));
+#endif
 
   // make sure we have the right parent object
   // for the extended features
