@@ -50,7 +50,7 @@ class MyMoneyObjectContainer;
   * @author Thomas Baumgart
   */
 
-class KSplitTransactionDlg : public kSplitTransactionDlgDecl
+class KSplitTransactionDlg : public KSplitTransactionDlgDecl
 {
   Q_OBJECT
 
@@ -107,28 +107,31 @@ protected slots:
   void reject();
   void slotClearAllSplits();
   void slotSetTransaction(const MyMoneyTransaction& t);
+  void slotCreateCategory(const QString& txt, QCString& id);
 
-private slots:
   /// used internally to setup the initial size of all widgets
   void initSize(void);
 
 signals:
   /**
-    * This signal is emitted, when a new category name has been
-    * entered by the user and this name is not known as account
-    * by the MyMoneyFile object.
-    * Before the signal is emitted, a MyMoneyAccount is constructed
-    * by this object and filled with the desired name. All other members
-    * of MyMoneyAccount will remain in their default state. Upon return,
-    * the connected slot should have created the object in the MyMoneyFile
-    * engine and filled the member @p id.
+    * This signal is sent out, when a new category needs to be created
+    * Depending on the setting of either a payment or deposit, the parent
+    * account will be preset to Expense or Income.
     *
-    * @param acc reference to MyMoneyAccount object that caries the name
-    *            and will return information about the created category.
+    * @param account reference to account info. Will be filled by called slot
+    * @param parent reference to parent account
     */
-  void newCategory(MyMoneyAccount& acc);
+  void createCategory(MyMoneyAccount& account, const MyMoneyAccount& parent);
 
-  private:
+  /**
+    * Signal is emitted, if any of the widgets enters (@a state equals @a true)
+    *  or leaves (@a state equals @a false) object creation mode.
+    *
+    * @param state Enter (@a true) or leave (@a false) object creation
+    */
+  void objectCreation(bool state);
+
+private:
   /**
     * This member keeps a copy of the current selected transaction
     */

@@ -31,15 +31,11 @@
 #include <qapplication.h>
 #include <qtimer.h>
 #include <qlayout.h>
-
-#if QT_IS_VERSION(3,3,0)
 #include <qeventloop.h>
-#endif
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kconfig.h>
 #include <kglobal.h>
 #include <klocale.h>
 #include <kiconloader.h>
@@ -57,13 +53,14 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/kmymoneycategory.h>
+#include <kmymoney/kmymoneyaccountselector.h>
 #include <kmymoney/kmymoneylineedit.h>
 #include <kmymoney/mymoneyobjectcontainer.h>
 #include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
 
 #include "../dialogs/kcurrencycalculator.h"
 
-#include "../kmymoneyutils.h"
 #include "../mymoney/mymoneyutils.h"
 
 kMyMoneySplitTable::kMyMoneySplitTable(QWidget *parent, const char *name ) :
@@ -90,7 +87,7 @@ kMyMoneySplitTable::kMyMoneySplitTable(QWidget *parent, const char *name ) :
   setColumnStretchable(2, false);
   horizontalHeader()->setResizeEnabled(false);
   horizontalHeader()->setMovingEnabled(false);
-  horizontalHeader()->setFont(KMyMoneyUtils::headerFont());
+  horizontalHeader()->setFont(KMyMoneyGlobalSettings::listHeaderFont());
 
   setVScrollBarMode(QScrollView::AlwaysOn);
   // never show a horizontal scroll bar
@@ -125,23 +122,17 @@ void kMyMoneySplitTable::setup(MyMoneyObjectContainer *objects, const QMap<QCStr
 
 const QColor kMyMoneySplitTable::rowBackgroundColor(const int row) const
 {
-  return (row % 2) ? KMyMoneyUtils::listColour() : KMyMoneyUtils::backgroundColour();
+  return (row % 2) ? KMyMoneyGlobalSettings::listColor() : KMyMoneyGlobalSettings::listBGColor();
 }
 
 void kMyMoneySplitTable::paintCell(QPainter *p, int row, int col, const QRect& r, bool /*selected*/)
 {
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-  const bool bShowGrid = config->readBoolEntry("ShowGrid", true);
-
-  QColor defaultGridColor = KMyMoneyUtils::gridColour();
-
   QColorGroup g = colorGroup();
   QColor textColor;
 
   g.setColor(QColorGroup::Base, rowBackgroundColor(row));
 
-  p->setFont(KMyMoneyUtils::cellFont());
+  p->setFont(KMyMoneyGlobalSettings::listCellFont());
 
   QString firsttext = text(row, col);
   QString qstringCategory;
@@ -178,8 +169,8 @@ void kMyMoneySplitTable::paintCell(QPainter *p, int row, int col, const QRect& r
     p->fillRect(rr,backgroundBrush);
   }
 
-  if (bShowGrid) {
-    p->setPen(defaultGridColor);
+  if (KMyMoneyGlobalSettings::showGrid()) {
+    p->setPen(KMyMoneyGlobalSettings::listGridColor());
     if(col != 0)
       p->drawLine(rr.x(), 0, rr.x(), rr.height()-1);    // left frame
     p->drawLine(rr.x(), rr.y(), rr.width(), 0);         // bottom frame
@@ -459,8 +450,15 @@ void kMyMoneySplitTable::setNumRows(int irows)
 {
   QTable::setNumRows(irows);
 
-  QFontMetrics fm( KMyMoneyUtils::cellFont() );
-  int height = fm.lineSpacing()+2;
+  // determine row height according to the edit widgets
+  // we use the category widget as the base
+  QFontMetrics fm( KMyMoneyGlobalSettings::listCellFont() );
+  int height = fm.lineSpacing()+6;
+#if 0
+  // recalculate row height hint
+  KMyMoneyCategory cat;
+  height = QMAX(cat.sizeHint().height(), height);
+#endif
 
   verticalHeader()->setUpdatesEnabled(false);
 
@@ -637,8 +635,8 @@ void kMyMoneySplitTable::slotEndEdit(void)
   MyMoneySplit s1 = m_split;
 
   bool needUpdate = false;
-  if(m_editCategory->selectedAccountId() != m_split.accountId()) {
-    s1.setAccountId(m_editCategory->selectedAccountId());
+  if(m_editCategory->selectedItem() != m_split.accountId()) {
+    s1.setAccountId(m_editCategory->selectedItem());
     needUpdate = true;
   }
   if(m_editMemo->text() != m_split.memo()) {
@@ -741,37 +739,38 @@ const bool kMyMoneySplitTable::isEditMode(void) const
 void kMyMoneySplitTable::destroyEditWidgets(void)
 {
   MYMONEYTRACER(tracer);
+
+  disconnect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadEditWidgets()));
+
   clearCellWidget(m_currentRow, 0);
   clearCellWidget(m_currentRow, 1);
   clearCellWidget(m_currentRow, 2);
   clearCellWidget(m_currentRow+1, 0);
   m_editMode = false;
 
-#if QT_IS_VERSION(3,3,0)
-  // make sure, that the widgets will be gone (really deleted) before we continue
   QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 100);
-#else
-  qApp->processEvents(10);
-#endif
-
 }
 
 QWidget* kMyMoneySplitTable::createEditWidgets(void)
 {
   MYMONEYTRACER(tracer);
 
-  QFont cellFont = KMyMoneyUtils::cellFont();
+  QFont cellFont = KMyMoneyGlobalSettings::listCellFont();
   m_tabOrderWidgets.clear();
 
   // create the widgets
   m_editAmount = new kMyMoneyEdit(0);
   m_editAmount->setFont(cellFont);
+  m_editAmount->setResetButtonVisible(false);
 
-  m_editCategory = new kMyMoneyCategory(0);
+  m_editCategory = new KMyMoneyCategory();
+  m_editCategory->setHint(i18n("Category"));
   m_editCategory->setFont(cellFont);
-  connect(m_editCategory, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
+  connect(m_editCategory, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createCategory(const QString&, QCString&)));
+  connect(m_editCategory, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
 
   m_editMemo = new kMyMoneyLineEdit(0, 0, AlignLeft|AlignVCenter);
+  m_editMemo->setHint(i18n("Memo"));
   m_editMemo->setFont(cellFont);
 
   // create buttons for the mouse users
@@ -801,7 +800,7 @@ QWidget* kMyMoneySplitTable::createEditWidgets(void)
   addToTabOrder(m_registerCancelButton);
 
   if(!m_split.accountId().isEmpty()) {
-    m_editCategory->slotSelectAccount(m_split.accountId());
+    m_editCategory->setSelectedItem(m_split.accountId());
   } else {
     // check if the transaction is balanced or not. If not,
     // assign the remainder to the amount.
@@ -828,16 +827,44 @@ QWidget* kMyMoneySplitTable::createEditWidgets(void)
   setCellWidget(m_currentRow, 2, m_editAmount);
   setCellWidget(m_currentRow+1, 0, m_registerButtonFrame);
 
+  // load e.g. the category widget with the account list
+  slotLoadEditWidgets();
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadEditWidgets()));
+
   // setup the keyboard filter for all widgets
   for(QWidget* w = m_tabOrderWidgets.first(); w; w = m_tabOrderWidgets.next()) {
     w->installEventFilter(this);
   }
 
   m_editCategory->setFocus();
-  m_editCategory->selectAll();
+  m_editCategory->lineEdit()->selectAll();
   m_editMode = true;
 
   return m_editCategory;
+}
+
+void kMyMoneySplitTable::slotLoadEditWidgets(void)
+{
+  // reload category widget
+  QCString categoryId = m_editCategory->selectedItem();
+
+  AccountSet aSet(m_objects);
+  aSet.addAccountGroup(MyMoneyAccount::Asset);
+  aSet.addAccountGroup(MyMoneyAccount::Liability);
+  aSet.addAccountGroup(MyMoneyAccount::Income);
+  aSet.addAccountGroup(MyMoneyAccount::Expense);
+  if(KMyMoneyGlobalSettings::expertMode())
+    aSet.addAccountGroup(MyMoneyAccount::Equity);
+  aSet.load(m_editCategory->selector());
+
+  // if an account is specified then remove it from the widget so that the user
+  // cannot create a transfer with from and to account being the same account
+  if(!m_account.id().isEmpty())
+    m_editCategory->selector()->removeItem(m_account.id());
+
+  if(!categoryId.isEmpty())
+    m_editCategory->setSelectedItem(categoryId);
+
 }
 
 void kMyMoneySplitTable::addToTabOrder(QWidget* w)
@@ -882,6 +909,7 @@ bool kMyMoneySplitTable::focusNextPrevChild(bool next)
 
   return rc;
 }
+
 
 
 #include "kmymoneysplittable.moc"

@@ -1,15 +1,15 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
-<class>kSplitTransactionDlgDecl</class>
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>KSplitTransactionDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>kSplitTransactionDlgDecl</cstring>
+        <cstring>KSplitTransactionDlgDecl</cstring>
     </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>617</width>
-            <height>327</height>
+            <width>735</width>
+            <height>382</height>
         </rect>
     </property>
     <property name="caption">

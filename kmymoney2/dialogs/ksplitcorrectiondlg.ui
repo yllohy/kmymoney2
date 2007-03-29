@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>kSplitCorrectionDlgDecl</class>
+<class>KSplitCorrectionDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>kSplitCorrectionDlgDecl</cstring>
+        <cstring>KSplitCorrectionDlgDecl</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -231,13 +231,13 @@
     <connection>
         <sender>okBtn</sender>
         <signal>clicked()</signal>
-        <receiver>kSplitCorrectionDlgDecl</receiver>
+        <receiver>KSplitCorrectionDlgDecl</receiver>
         <slot>accept()</slot>
     </connection>
     <connection>
         <sender>cancelBtn</sender>
         <signal>clicked()</signal>
-        <receiver>kSplitCorrectionDlgDecl</receiver>
+        <receiver>KSplitCorrectionDlgDecl</receiver>
         <slot>reject()</slot>
     </connection>
 </connections>

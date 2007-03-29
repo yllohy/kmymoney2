@@ -49,10 +49,12 @@
 // Project Includes
 
 #include "ksplittransactiondlg.h"
-#include "../widgets/kmymoneysplittable.h"
-#include "../dialogs/ksplitcorrectiondlg.h"
 #include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/kmymoneylineedit.h>
+#include <kmymoney/mymoneyfile.h>
+
+#include "../widgets/kmymoneysplittable.h"
+#include "../dialogs/ksplitcorrectiondlg.h"
 
 KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
                                            const MyMoneyAccount& acc,
@@ -62,7 +64,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
                                            MyMoneyObjectContainer* objects,
                                            const QMap<QCString, MyMoneyMoney>& priceInfo,
                                            QWidget* parent, const char* name)
-  : kSplitTransactionDlgDecl(parent, name, true),
+  : KSplitTransactionDlgDecl(parent, name, true),
   m_transaction(t),
   m_account(acc),
   m_amountValid(amountValid),
@@ -101,7 +103,9 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   // connect signals with slots
   connect(transactionsTable, SIGNAL(transactionChanged(const MyMoneyTransaction&)),
           this, SLOT(slotSetTransaction(const MyMoneyTransaction&)));
-  connect(transactionsTable, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
+  connect(transactionsTable, SIGNAL(createCategory(const QString&, QCString&)), this, SLOT(slotCreateCategory(const QString&, QCString&)));
+  connect(transactionsTable, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
+
   connect(transactionsTable, SIGNAL(returnPressed()), this, SLOT(accept()));
   connect(transactionsTable, SIGNAL(escapePressed()), this, SLOT(reject()));
 
@@ -146,11 +150,11 @@ int KSplitTransactionDlg::exec(void)
     transactionsTable->setTransaction(m_transaction, m_account);
     updateSums();
 
-    rc = kSplitTransactionDlgDecl::exec();
+    rc = KSplitTransactionDlgDecl::exec();
 
     if(rc == QDialog::Accepted) {
       if(!diffAmount().isZero()) {
-        kSplitCorrectionDlgDecl* corrDlg = new kSplitCorrectionDlgDecl(this, 0, true);
+        KSplitCorrectionDlgDecl* corrDlg = new KSplitCorrectionDlgDecl(this, 0, true);
 
         // add icons to buttons
         corrDlg->okBtn->setGuiItem(KStdGuiItem::ok());
@@ -240,14 +244,14 @@ void KSplitTransactionDlg::initSize(void)
 void KSplitTransactionDlg::accept()
 {
   transactionsTable->slotCancelEdit();
-  kSplitTransactionDlgDecl::accept();
+  KSplitTransactionDlgDecl::accept();
 }
 
 void KSplitTransactionDlg::reject()
 {
   // cancel any edit activity in the split register
   transactionsTable->slotCancelEdit();
-  kSplitTransactionDlgDecl::reject();
+  KSplitTransactionDlgDecl::reject();
 }
 
 void KSplitTransactionDlg::slotClearAllSplits()
@@ -323,6 +327,26 @@ MyMoneyMoney KSplitTransactionDlg::diffAmount(void)
     diff = -(splitsValue() + split.value());
   }
   return diff;
+}
+
+void KSplitTransactionDlg::slotCreateCategory(const QString& name, QCString& id)
+{
+  MyMoneyAccount acc, parent;
+  acc.setName(name);
+
+  if(m_isDeposit)
+    parent = MyMoneyFile::instance()->income();
+  else
+    parent = MyMoneyFile::instance()->expense();
+
+  // TODO extract possible first part of a hierarchy and check if it is one
+  // of our top categories. If so, remove it and select the parent
+  // according to this information.
+
+  emit createCategory(acc, parent);
+
+  // return id
+  id = acc.id();
 }
 
 #include "ksplittransactiondlg.moc"

@@ -1405,7 +1405,8 @@ int StdTransactionEditor::slotEditSplits(void)
                                                           m_objects,
                                                           m_priceInfo,
                                                           m_regForm);
-      // connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
+      connect(dlg, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
+      connect(dlg, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), this, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)));
 
       if((rc = dlg->exec()) == QDialog::Accepted) {
         m_transaction = dlg->transaction();
