@@ -1,5 +1,6 @@
 2007-03-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated split transaction dialog to use new KMyMoneyCategory object
+  * Added budget view changes as provided by MVillarino
 
 2007-03-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added BIC and IBAN fields to institution and account dialogs

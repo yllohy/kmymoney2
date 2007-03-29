@@ -173,7 +173,12 @@ public slots:
   void bNewBudget_clicked();
   void bEditBudget_clicked();
   void bDeleteBudget_clicked();
-
+  
+  /**
+    *This is to update the information about the checkbox "budget amount integrates subaccounts" into the file, when the user clicks the check box
+   */
+  void cb_includesSubaccounts_clicked();
+    
 
 protected:
   void resizeEvent(QResizeEvent*);

@@ -28,6 +28,7 @@
 #include <qtabwidget.h>
 #include <qlistbox.h>
 #include <kcombobox.h>
+#include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -169,6 +170,8 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name )
   //connect(m_dlYear, SIGNAL(activated(int)), this, SLOT(slotSelectYear(int)));
 
   connect(m_dbTimeSpan, SIGNAL(activated(int)), this, SLOT(slotSelectTimeSpan(int)));
+
+  connect(m_cbBudgetSubaccounts, SIGNAL(clicked()), this, SLOT(cb_includesSubaccounts_clicked()));
 
   connect(m_accountTree, SIGNAL(selectionChanged()), this, SLOT(slotSelectObject()));
 
@@ -414,6 +417,7 @@ void KBudgetView::loadAccounts(void)
 
   // update the hint if budget are hidden
   //m_hiddenBudgets->setShown(haveUnusedBudgets);
+
   slotSelectObject();
 
   ::timetrace("done load budgets view");
@@ -737,6 +741,8 @@ void KBudgetView::slotSelectObject()
     QCString id = account->id();
     //(marce) This updates the name of the category in the panel on the right of the view
     m_leAccounts->setText(MyMoneyFile::instance()->account(id).name());
+    //(marce) Enable checkbox "budget amount includes subaccounts" according to current budget setup
+    m_cbBudgetSubaccounts->setChecked(budget.account( id ).budgetsubaccounts());
 
 
     //(ace) kCategoryWidget not currently defined
@@ -911,5 +917,25 @@ void KBudgetView::bDeleteBudget_clicked()
   }
 }
 
+
+void KBudgetView::cb_includesSubaccounts_clicked()
+{
+
+  MyMoneyBudget budget;
+
+  if (!selectedBudget(budget))
+    return;
+
+  QCString accountID = selectedAccount()->id();
+  // now, we get a reference to the accountgroup, to mofify its atribute,
+  // and then put the resulting account group instead of the original
+
+  MyMoneyBudget::AccountGroup auxiliarAccount = budget.account(accountID);
+  auxiliarAccount.setBudgetSubaccounts( m_cbBudgetSubaccounts->isChecked());
+  budget.setAccount( auxiliarAccount , accountID);
+  //sure, if the file is not modified, no work is done.
+  MyMoneyFile::instance()->modifyBudget(budget);
+
+}
 
 #include "kbudgetview.moc"
