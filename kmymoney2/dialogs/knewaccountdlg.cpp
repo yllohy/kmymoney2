@@ -536,11 +536,15 @@ void KNewAccountDlg::okClicked()
     && file->accountGroup(parent.accountType()) == MyMoneyAccount::Asset)
       acctype = MyMoneyAccount::AssetLoan;
 
+#if 0
+    // we do allow the same name for different accounts, so
+    // we don't need this check anymore.
     if(!file->nameToAccount(accountNameText).isEmpty()
     && (file->nameToAccount(accountNameText) != m_account.id())) {
       KMessageBox::error(this, QString("<qt>")+i18n("An account named <b>%1</b> already exists. You cannot create a second account with the same name.").arg(accountNameText)+QString("</qt>"));
       return;
     }
+#endif
   }
   else
   {
@@ -961,6 +965,8 @@ void KNewAccountDlg::slotLoadInstitutions(const QString& name)
   // Are we forcing the user to use institutions?
   m_qcomboboxInstitutions->insertItem(i18n("<No Institution>"));
   m_bicValue->setText(" ");
+  ibanEdit->setEnabled(false);
+  accountNoEdit->setEnabled(false);
   try
   {
     MyMoneyFile *file = MyMoneyFile::instance();
@@ -971,6 +977,8 @@ void KNewAccountDlg::slotLoadInstitutions(const QString& name)
     {
       if ((*institutionIterator).name() == name) {
         id = counter;
+        ibanEdit->setEnabled(true);
+        accountNoEdit->setEnabled(true);
         m_bicValue->setText((*institutionIterator).value("bic"));
       }
       m_qcomboboxInstitutions->insertItem((*institutionIterator).name());

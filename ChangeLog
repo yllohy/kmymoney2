@@ -1,5 +1,7 @@
 2007-03-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some problems around the latest changes
+  * Get rid of annoying message that account with same name already exists
+  * Corrected items in budget time period combo box
 
 2007-03-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated split transaction dialog to use new KMyMoneyCategory object
