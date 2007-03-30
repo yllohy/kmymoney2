@@ -19,6 +19,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef KEDITSCHEDULEDIALOG_H
 #define KEDITSCHEDULEDIALOG_H
 
@@ -65,7 +66,7 @@ protected slots:
   /**
     * Called when the split button is clicked
     **/
-  void slotSplitClicked();
+  void slotEditSplits(void);
 
   /**
     * Called when the 'will end at some time' check box is clicked.
@@ -75,7 +76,7 @@ protected slots:
   /**
     * Called when the OK button is clicked.
     **/
-  void okClicked();
+  void okClicked(void);
 
   void slotRemainingChanged(const QString& text);
   void slotEndDateChanged(const QDate& date);
@@ -88,13 +89,13 @@ protected slots:
   void slotPayeeChanged(const QString&);
   void slotDateChanged(const QDate&);
   void slotFrequencyChanged(int);
-  void slotEstimateChanged();
+  void slotEstimateChanged(void);
   void slotCategoryChanged(const QString&);
   /**
     * the category with @a id has been selected.
     */
   void slotCategoryChanged(const QCString& id);
-  void slotAutoEnterChanged();
+  void slotAutoEnterChanged(void);
   void slotMemoChanged(const QString& text);
   void slotHelp(void);
   void slotReloadEditWidgets(void);
@@ -119,19 +120,6 @@ signals:
   void createPayee(const QString& txt, QCString& id);
 
 private:
-  /// Save the current account ids (there must be a better way...)
-  QCString m_fromAccountId, m_toAccountId;
-  /// Save last payee used for convenience
-  QString m_lastPayee;
-
-  /// The transaction details
-  MyMoneyTransaction m_transaction;
-
-  /// The schedule details.
-  MyMoneySchedule m_schedule;
-
-  /// the action
-  QCString m_actionType;
   // occurrences in order
   static MyMoneySchedule::occurenceE occurMasks[];
 
@@ -147,25 +135,31 @@ private:
   void reloadFromFile(void);
 
   /**
-    * Read stored settings.
-    **/
-  void readConfig(void);
-
-  /**
-    * Write setting to config file.
-    **/
-  void writeConfig(void);
-
-  /**
-    * Reloads the qidgets from the global schedule.
+    * Reloads the widgets from the global schedule.
     **/
   void loadWidgetsFromSchedule(void);
 
   MyMoneySchedule::occurenceE comboToOccurence(void);
-  void createSplits();
-  bool checkCategory();
-  void checkPayee();
-  QCString theAccountId();
+  void createSplits(void);
+  bool checkCategory(void);
+  void checkPayee(void);
+  QCString theAccountId(void);
+
+private:
+  /// Save the current account ids (there must be a better way...)
+  QCString m_fromAccountId, m_toAccountId;
+
+  /// Save last payee used for convenience
+  QString m_lastPayee;
+
+  /// The transaction details
+  MyMoneyTransaction m_transaction;
+
+  /// The schedule details.
+  MyMoneySchedule m_schedule;
+
+  /// the action
+  QCString m_actionType;
 
   /* To hold list of mandatory fields */
   kMandatoryFieldGroup *m_requiredFields;

@@ -53,8 +53,8 @@ public:
   void commitTransaction();
 
 protected slots:
-  void slotOK();
-  void slotSplitClicked();
+  void slotOK(void);
+  void slotEditSplits(void);
   void slotFromActivated(const QCString&);
   void slotToActivated(const QCString&);
 

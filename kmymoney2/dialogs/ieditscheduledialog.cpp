@@ -32,7 +32,6 @@
 // KDE Includes
 
 #include <kstdguiitem.h>
-#include <kconfig.h>
 #include <kmessagebox.h>
 #include <knumvalidator.h>
 #include <klocale.h>
@@ -104,6 +103,47 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   m_requiredFields = new kMandatoryFieldGroup (this);
   m_requiredFields->setOkButton(m_qbuttonOK); // button to be enabled when all fields present
 
+  connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(m_category->splitButton(), SIGNAL(clicked()), this, SLOT(slotEditSplits()));
+  connect(m_qcheckboxEnd, SIGNAL(toggled(bool)), this, SLOT(slotWillEndToggled(bool)));
+  connect(m_qbuttonOK, SIGNAL(clicked()), this, SLOT(okClicked()));
+  connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotHelp()));
+
+  connect(m_qlineeditRemaining, SIGNAL(textChanged(const QString&)),
+    this, SLOT(slotRemainingChanged(const QString&)));
+  connect(m_kdateinputFinal, SIGNAL(dateChanged(const QDate&)),
+    this, SLOT(slotEndDateChanged(const QDate&)));
+  connect(m_kmoneyeditAmount, SIGNAL(valueChanged(const QString&)),
+    this, SLOT(slotAmountChanged(const QString&)));
+  connect(m_accountCombo, SIGNAL(accountSelected(const QCString&)),
+    this, SLOT(slotAccountChanged(const QCString&)));
+  connect(m_scheduleName, SIGNAL(textChanged(const QString&)),
+    this, SLOT(slotScheduleNameChanged(const QString&)));
+  connect(m_kcomboTo, SIGNAL(accountSelected(const QCString&)),
+    this, SLOT(slotToChanged(const QCString&)));
+  connect(m_kcomboMethod, SIGNAL(activated(int)),
+    this, SLOT(slotMethodChanged(int)));
+  connect(m_payee, SIGNAL(textChanged(const QString&)),
+    this, SLOT(slotPayeeChanged(const QString&)));
+  connect(m_kdateinputDue, SIGNAL(dateChanged(const QDate&)),
+    this, SLOT(slotDateChanged(const QDate&)));
+  connect(m_kcomboFreq, SIGNAL(activated(int)),
+    this, SLOT(slotFrequencyChanged(int)));
+  connect(m_qcheckboxEstimate, SIGNAL(clicked()),
+    this, SLOT(slotEstimateChanged()));
+  // connect(m_category, SIGNAL(textChanged(const QString&)), this, SLOT(slotCategoryChanged(const QString&)));
+  connect(m_category, SIGNAL(itemSelected(const QCString&)),
+    this, SLOT(slotCategoryChanged(const QCString& )));
+  connect(m_qcheckboxAuto, SIGNAL(clicked()),
+    this, SLOT(slotAutoEnterChanged()));
+  connect(m_qlineeditMemo, SIGNAL(textChanged(const QString&)),
+    this, SLOT(slotMemoChanged(const QString&)));
+
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
+
+  connect(m_payee, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
+  connect(m_category, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createCategory(const QString&, QCString&)));
+
   m_actionType = action;
   m_schedule = schedule;
   m_transaction = schedule.transaction();
@@ -117,7 +157,6 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   KIntValidator *validator = new KIntValidator(1, 32768, this);
   m_qlineeditRemaining->setValidator(validator);
 
-  readConfig();
   reloadFromFile();
   loadWidgetsFromSchedule();
 
@@ -179,57 +218,14 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     m_requiredFields->add(m_accountCombo);
     m_requiredFields->add(m_payee);
     m_requiredFields->add(m_category);
-
   }
 
   m_requiredFields->add(m_scheduleName);
   m_requiredFields->add(m_kmoneyeditAmount->lineedit());
-
-  connect(m_qbuttonCancel, SIGNAL(clicked()), this, SLOT(reject()));
-  connect(m_category->splitButton(), SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
-  connect(m_qcheckboxEnd, SIGNAL(toggled(bool)), this, SLOT(slotWillEndToggled(bool)));
-  connect(m_qbuttonOK, SIGNAL(clicked()), this, SLOT(okClicked()));
-  connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotHelp()));
-
-  connect(m_qlineeditRemaining, SIGNAL(textChanged(const QString&)),
-    this, SLOT(slotRemainingChanged(const QString&)));
-  connect(m_kdateinputFinal, SIGNAL(dateChanged(const QDate&)),
-    this, SLOT(slotEndDateChanged(const QDate&)));
-  connect(m_kmoneyeditAmount, SIGNAL(valueChanged(const QString&)),
-    this, SLOT(slotAmountChanged(const QString&)));
-  connect(m_accountCombo, SIGNAL(accountSelected(const QCString&)),
-    this, SLOT(slotAccountChanged(const QCString&)));
-  connect(m_scheduleName, SIGNAL(textChanged(const QString&)),
-    this, SLOT(slotScheduleNameChanged(const QString&)));
-  connect(m_kcomboTo, SIGNAL(accountSelected(const QCString&)),
-    this, SLOT(slotToChanged(const QCString&)));
-  connect(m_kcomboMethod, SIGNAL(activated(int)),
-    this, SLOT(slotMethodChanged(int)));
-  connect(m_payee, SIGNAL(textChanged(const QString&)),
-    this, SLOT(slotPayeeChanged(const QString&)));
-  connect(m_kdateinputDue, SIGNAL(dateChanged(const QDate&)),
-    this, SLOT(slotDateChanged(const QDate&)));
-  connect(m_kcomboFreq, SIGNAL(activated(int)),
-    this, SLOT(slotFrequencyChanged(int)));
-  connect(m_qcheckboxEstimate, SIGNAL(clicked()),
-    this, SLOT(slotEstimateChanged()));
-  // connect(m_category, SIGNAL(textChanged(const QString&)), this, SLOT(slotCategoryChanged(const QString&)));
-  connect(m_category, SIGNAL(itemSelected(const QCString&)),
-    this, SLOT(slotCategoryChanged(const QCString& )));
-  connect(m_qcheckboxAuto, SIGNAL(clicked()),
-    this, SLOT(slotAutoEnterChanged()));
-  connect(m_qlineeditMemo, SIGNAL(textChanged(const QString&)),
-    this, SLOT(slotMemoChanged(const QString&)));
-
-  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
-
-  connect(m_payee, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
-  connect(m_category, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createCategory(const QString&, QCString&)));
 }
 
 KEditScheduleDialog::~KEditScheduleDialog()
 {
-  writeConfig();
   delete m_requiredFields;
 }
 
@@ -251,21 +247,6 @@ void KEditScheduleDialog::slotReloadEditWidgets(void)
   if(!payeeId.isEmpty()) {
     m_payee->setSelectedItem(payeeId);
   }
-}
-
-void KEditScheduleDialog::readConfig(void)
-{
-  KConfig *config = KGlobal::config();
-  config->setGroup("Last Use Settings");
-//  m_lastPayee = config->readEntry("LastPayee");
-}
-
-void KEditScheduleDialog::writeConfig(void)
-{
-  KConfig *config = KGlobal::config();
-  config->setGroup("Last Use Settings");
-//  config->writeEntry("LastPayee", m_payee->currentText());
-  config->sync();
 }
 
 void KEditScheduleDialog::reloadFromFile(void)
@@ -361,10 +342,15 @@ void KEditScheduleDialog::createSecondSplit(void)
 /*
  * Cribbed from : KLedgerViewCheckings::slotOpenSplitDialog(void)
  */
-void KEditScheduleDialog::slotSplitClicked()
+void KEditScheduleDialog::slotEditSplits(void)
 {
   bool isDeposit = false;
   bool isValidAmount = false;
+
+  // force focus change to update all data
+  QWidget* w = m_category->splitButton();
+  if(w)
+    w->setFocus();
 
   if(m_kmoneyeditAmount->text().length() != 0)
   {
@@ -426,9 +412,6 @@ void KEditScheduleDialog::slotSplitClicked()
                                                          this);
     connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
-    // Avoid focusIn() events.
-    m_qlineeditMemo->setFocus();
-
     if(dlg->exec())
     {
       m_transaction = dlg->transaction();
@@ -437,7 +420,7 @@ void KEditScheduleDialog::slotSplitClicked()
       QString category;
       MyMoneyMoney amount;
 
-      disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+      disconnect(m_category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
       switch(m_transaction.splitCount())
       {
         case 2:
@@ -460,7 +443,7 @@ void KEditScheduleDialog::slotSplitClicked()
 
         default:
           m_category->setSplitTransaction();
-          connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+          connect(m_category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
           amount = m_transaction.splits()[0].value().abs();
           m_kmoneyeditAmount->setValue(amount);
           break;
@@ -475,6 +458,12 @@ void KEditScheduleDialog::slotSplitClicked()
     KMessageBox::detailedError(this, i18n("Exception in slot split clicked"), e->what());
     delete e;
   }
+
+  // focus jumps into the memo field
+  if(m_qlineeditMemo) {
+    m_qlineeditMemo->setFocus();
+  }
+
   m_category->blockSignals(false);
 
   // force update of required group
@@ -502,7 +491,7 @@ void KEditScheduleDialog::slotWillEndToggled(bool on)
   }
 }
 
-void KEditScheduleDialog::okClicked()
+void KEditScheduleDialog::okClicked(void)
 {
   // force focus change to update all data
   m_qbuttonOK->setFocus();
@@ -773,12 +762,13 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
       if (m_transaction.splitCount() >= 3)
       {
         m_category->setSplitTransaction();
-        connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+        connect(m_category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
       }
       else if(m_actionType == MyMoneySplit::ActionAmortization)
       {
         m_category->setCurrentText(i18n("Loan payment"));
-        connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+        m_category->setSuppressObjectCreation(true);
+        connect(m_category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
       }
       else
         m_category->setSelectedItem(m_transaction.splitByAccount(theAccountId(), false).accountId());
@@ -857,7 +847,7 @@ void KEditScheduleDialog::slotEndDateChanged(const QDate& date)
   }
 }
 
-MyMoneySchedule::occurenceE KEditScheduleDialog::comboToOccurence()
+MyMoneySchedule::occurenceE KEditScheduleDialog::comboToOccurence(void)
 {
   return (occurMasks [m_kcomboFreq->currentItem()]);
 }
@@ -918,7 +908,7 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
       else if (count >= 3)
       {
         KMessageBox::information(this, i18n("All split data lost.  Please re-enter splits"));
-        disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+        disconnect(m_category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
         m_transaction.removeSplits();
         m_category->setSelectedItem(QCString());
         m_category->setFocus();
@@ -1112,7 +1102,7 @@ void KEditScheduleDialog::slotFrequencyChanged(int)
   m_schedule.setOccurence(comboToOccurence());
 }
 
-void KEditScheduleDialog::slotEstimateChanged()
+void KEditScheduleDialog::slotEstimateChanged(void)
 {
   if (m_qcheckboxAuto->isChecked())
   {
@@ -1173,7 +1163,7 @@ void KEditScheduleDialog::slotCategoryChanged(const QString& text)
   }
 }
 
-void KEditScheduleDialog::slotAutoEnterChanged()
+void KEditScheduleDialog::slotAutoEnterChanged(void)
 {
   if (m_kdateinputDue->date() <= QDate::currentDate())
   {
@@ -1225,7 +1215,7 @@ void KEditScheduleDialog::slotMemoChanged(const QString& text)
   }
 }
 
-void KEditScheduleDialog::createSplits()
+void KEditScheduleDialog::createSplits(void)
 {
   if (m_transaction.splitCount() == 0)
   {
@@ -1253,7 +1243,7 @@ void KEditScheduleDialog::createSplits()
   }
 }
 
-bool KEditScheduleDialog::checkCategory()
+bool KEditScheduleDialog::checkCategory(void)
 {
   bool exitDialog = true;
 
@@ -1348,7 +1338,7 @@ bool KEditScheduleDialog::checkCategory()
   return exitDialog;
 }
 
-void KEditScheduleDialog::checkPayee()
+void KEditScheduleDialog::checkPayee(void)
 {
   QCString payeeId = m_payee->selectedItem();
 #if 0
@@ -1377,7 +1367,7 @@ void KEditScheduleDialog::checkPayee()
   }
 }
 
-QCString KEditScheduleDialog::theAccountId()
+QCString KEditScheduleDialog::theAccountId(void)
 {
   if (m_actionType == MyMoneySplit::ActionTransfer ||
       m_actionType == MyMoneySplit::ActionAmortization ||

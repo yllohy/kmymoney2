@@ -69,16 +69,7 @@ KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedul
   m_schedule = schedule;
   m_transaction = schedule.transaction();
 
-  // initWidgets must be called before calculateInterst, because
-  // the internals of initWidgets require the unmodified splits
-  // with the setting of automatically calculated values
-  initWidgets();
-  calculateInterest();
-
-  if(m_schedule.id().isEmpty())
-    m_buttonOk->setEnabled(false);
-
-  connect(m_category->splitButton(), SIGNAL(clicked()), this, SLOT(slotSplitClicked()));
+  connect(m_category->splitButton(), SIGNAL(clicked()), this, SLOT(slotEditSplits()));
 
   connect(m_buttonOk, SIGNAL(clicked()), this, SLOT(slotOK()));
 
@@ -92,6 +83,15 @@ KEnterScheduleDialog::KEnterScheduleDialog(QWidget *parent, const MyMoneySchedul
 
   connect(m_payee, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createPayee(const QString&, QCString&)));
   connect(m_category, SIGNAL(createItem(const QString&, QCString&)), this, SIGNAL(createCategory(const QString&, QCString&)));
+
+  // initWidgets must be called before calculateInterst, because
+  // the internals of initWidgets require the unmodified splits
+  // with the setting of automatically calculated values
+  initWidgets();
+  calculateInterest();
+
+  if(m_schedule.id().isEmpty())
+    m_buttonOk->setEnabled(false);
 }
 
 KEnterScheduleDialog::~KEnterScheduleDialog()
@@ -272,7 +272,7 @@ void KEnterScheduleDialog::initWidgets()
     {
       m_category->setSplitTransaction();
       // m_category->setText(i18n("Split transaction (category replacement)", "Split transaction"));
-      connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+      connect(m_category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
     }
     else if (m_schedule.type() != MyMoneySchedule::TYPE_TRANSFER)
     {
@@ -291,7 +291,7 @@ void KEnterScheduleDialog::initWidgets()
   }
 }
 
-void KEnterScheduleDialog::slotOK()
+void KEnterScheduleDialog::slotOK(void)
 {
   if (checkData())
   {
@@ -330,7 +330,7 @@ void KEnterScheduleDialog::slotReloadEditWidgets(void)
   }
 }
 
-void KEnterScheduleDialog::slotSplitClicked()
+void KEnterScheduleDialog::slotEditSplits(void)
 {
   bool isDeposit = false;
   bool isValidAmount = false;
@@ -396,20 +396,20 @@ void KEnterScheduleDialog::slotSplitClicked()
         case 2:
           s = m_transaction.splitByAccount(theAccountId(), false);
           m_category->setSelectedItem(s.accountId());
-          disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+          disconnect(m_category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
           break;
         case 1:
           m_category->setSelectedItem(QCString());
           m_transaction.removeSplits();
-          disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+          disconnect(m_category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
           break;
         case 0:
           m_category->setCurrentText(QString());
-          disconnect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+          disconnect(m_category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
           break;
         default:
           m_category->setSplitTransaction();
-          connect(m_category, SIGNAL(signalFocusIn()), this, SLOT(slotSplitClicked()));
+          connect(m_category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
           break;
       }
 
@@ -605,6 +605,10 @@ void KEnterScheduleDialog::checkCategory()
       m_schedule.type() != MyMoneySchedule::TYPE_TRANSFER)
   {
     QCString id = m_category->selectedItem();
+#if 0
+    // the following part is not used anymore, as the category field
+    // should always contain a valid category or identification of a
+    // split transaction.
     if(id.isEmpty() && !m_category->currentText().isEmpty())
     {
       // Create the category
@@ -626,6 +630,7 @@ void KEnterScheduleDialog::checkCategory()
         return;
       }
     }
+#endif
 
     // Modify the split
     MyMoneySplit s = m_transaction.splits()[1];
