@@ -53,7 +53,6 @@ class QFrame;
 class QLabel;
 
 class KMyMoneyAccountCombo;
-class KLedgerView;
 class KToolBar;
 class KToolBarButton;
 class MyMoneyReport;
