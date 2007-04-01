@@ -462,7 +462,7 @@ public:
     * @retval true account is of type income or expense
     * @retval false for all other account types
     */
-  bool isCategory(void) const KDE_DEPRECATED;
+  bool isCategory(void) const __attribute__ ((deprecated));
 
   /**
     * This method returns @a true if the account type is
