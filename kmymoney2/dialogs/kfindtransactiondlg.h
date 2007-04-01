@@ -30,10 +30,9 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../views/kledgerview.h"
-#include "../mymoney/mymoneyutils.h"
-#include "../mymoney/mymoneytransactionfilter.h"
-#include "../mymoney/mymoneyobserver.h"
+// #include "../views/kledgerview.h"
+#include <kmymoney/mymoneyutils.h>
+#include <kmymoney/mymoneytransactionfilter.h>
 #include <kmymoney/mymoneyobjectcontainer.h>
 
 #include "../dialogs/kfindtransactiondlgdecl.h"
@@ -81,55 +80,18 @@ public:
   KFindTransactionDlg(QWidget *parent=0, const char *name=0);
   ~KFindTransactionDlg() {}
 
-  /**
-    * This method returns a pointer to the transaction data
-    * in the ledger of this account. The transaction is identified
-    * by the parameter @p idx.
-    *
-    * @param idx index into ledger starting at 0
-    * @return pointer to MyMoneyTransaction object representing the
-    *         selected transaction. If idx is out of bounds,
-    *         0 will be returned.
-    */
-  KMyMoneyTransaction* transaction(const int idx) const;
-
-  /**
-    * This method returns the balance of any visible transaction
-    * in the ledger of this account. The balance depends on filters
-    * and is automatically calculated when any view option is changed
-    * (e.g. filters, sort order, etc.)
-    *
-    * @param idx index into the ledger starting at 0
-    * @return Value of the balance for the account after the selected
-    *         transaction has been taken into account. If idx is out
-    *         of bounds, 0 will be returned as value. For liability type
-    *         accounts, the sign will be inverted for display purposes.
-    *
-    * @note Currently the fixed value 0 will be returned as the balance
-    *       is not shown in the find transaction dialog but the method
-    *       must be provided as part of the IMyMoneyRegisterParent interface.
-    */
-  const MyMoneyMoney balance(const int idx) const;
-
-  /**
-    * This method is called by the engine whenever a required notification
-    * is sent out for this object. Attachment of the observer is performed
-    * within the constructor, detachment within the destructor of this
-    * object.
-    */
-  void update(const QCString& id);
-
   virtual bool eventFilter( QObject *o, QEvent *e );
 
 public slots:
-  void slotUpdateSelections(void);
-  void slotReset(void);
+  void show(void);
 
 protected:
   void resizeEvent(QResizeEvent*);
-  // bool focusNextPrevChild(bool next);
 
 protected slots:
+  void slotReset(void);
+  void slotUpdateSelections(void);
+
   void slotDateRangeChanged(int);
   void slotDateChanged(void);
 
@@ -147,14 +109,10 @@ protected slots:
   void slotRefreshView(void);
 
   /**
-    *
+    * This slot selects the current selected transaction/split and emits
+    * the signal @a transactionSelected(const QCString& accountId, const QCString& transactionId)
     */
-  // void slotRegisterClicked(int row, int col, int button, const QPoint &mousePos);
-  // void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
-  // void slotNextTransaction(void);
-  // void slotPreviousTransaction(void);
   void slotSelectTransaction(void);
-  // void slotSelectTransaction(const QCString& id);
 
   void slotRightSize(void);
 
@@ -188,14 +146,16 @@ protected:
   void selectItems(QListView* view, const QCStringList& list, const bool state);
   void selectSubItems(QListViewItem* item, const QCStringList& list, const bool state);
 
-  void readConfig(void);
-  void writeConfig(void);
-
   /**
     * This method loads the m_payeesView with the payees name
     * found in the engine.
     */
   void loadPayees(void);
+
+  /**
+    * This method loads the register with the matching transactions
+    */
+  void loadView(void);
 
   /**
     * This method returns information about the selection state
@@ -223,26 +183,14 @@ protected:
     * This member holds a list of all transactions matching the filter criteria
     */
   QValueList<QPair<MyMoneyTransaction, MyMoneySplit> > m_transactionList;
-#if 0
-  /**
-    * This member keeps a vector of pointers to all visible (filtered)
-    * transaction in m_transactionList in sorted order. Sorting is done
-    * in KTransactionPtrVector::compareItems
-    */
-  KTransactionPtrVector           m_transactionPtrVector;
-
-  /**
-    * This member keeps a pointer to the currently selected transaction
-    * It is NULL, if an empty (new) transaction is selected.
-    */
-  KMyMoneyTransaction*            m_transactionPtr;
-#endif
 
   MyMoneyTransactionFilter        m_filter;
 
   QMap<QWidget*, QString>         m_helpAnchor;
 
   MyMoneyObjectContainer          m_objects;
+
+  bool                            m_needReload;
 };
 
 #endif

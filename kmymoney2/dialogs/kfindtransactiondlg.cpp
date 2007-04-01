@@ -1,7 +1,7 @@
 /***************************************************************************
                           kfindtransactiondlg.cpp
                              -------------------
-    copyright            : (C) 2003 by Thomas Baumgart
+    copyright            : (C) 2003, 2007 by Thomas Baumgart
     email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
@@ -53,8 +53,9 @@
 #include <kmymoney/register.h>
 #include <kmymoney/transaction.h>
 
-KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
- : KFindTransactionDlgDecl(parent, name, false)
+KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name) :
+  KFindTransactionDlgDecl(parent, name, false),
+  m_needReload(false)
 {
   m_register->installEventFilter(this);
   m_tabWidget->setTabEnabled(m_resultPage, false);
@@ -122,6 +123,9 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   connect(m_resetButton, SIGNAL(clicked()), m_categoriesView, SLOT(slotSelectAllAccounts()));
   connect(m_closeButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
   connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotShowHelp()));
+
+  // get signal about engine changes
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotRefreshView()));
 
   m_textEdit->setFocus();
 }
@@ -654,6 +658,24 @@ void KFindTransactionDlg::slotSearch(void)
 }
 
 void KFindTransactionDlg::slotRefreshView(void)
+{
+  m_needReload = true;
+  if(isVisible()) {
+    loadView();
+    m_needReload = false;
+  }
+}
+
+void KFindTransactionDlg::show(void)
+{
+  if(m_needReload) {
+    loadView();
+    m_needReload = false;
+  }
+  KFindTransactionDlgDecl::show();
+}
+
+void KFindTransactionDlg::loadView(void)
 {
   // setup sort order
   m_register->setSortOrder(KMyMoneySettings::sortSearchView());
