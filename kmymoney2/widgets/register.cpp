@@ -1518,6 +1518,11 @@ void Register::slotDoubleClicked(int row, int, int, const QPoint&)
       m_ignoreNextButtonRelease = true;
       // double click to start editing only works if the focus
       // item is among the selected ones
+      if(!focusItem()) {
+        setFocusItem(p);
+        p->setSelected(true);
+      }
+
       if(m_focusItem->isSelected()) {
         // don't emit the signal right away but wait until
         // we come back to the Qt main loop
