@@ -122,6 +122,8 @@ protected slots:
     */
   void slotShowHelp(void);
 
+  void slotSortOptions(void);
+
 signals:
   void transactionSelected(const QCString& accountId, const QCString& transactionId);
 

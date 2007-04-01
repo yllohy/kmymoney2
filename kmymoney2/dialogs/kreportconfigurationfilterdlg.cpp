@@ -63,7 +63,7 @@
 
 #include "kreportconfigurationfilterdlg.h"
 #include <kmymoney/kmymoneydateinput.h>
-#include <kmymoney/kmymoneyedit.h>>
+#include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/kmymoneylineedit.h>
 #include <kmymoney/kmymoneyaccountselector.h>
 #include <kmymoney/mymoneyfile.h>

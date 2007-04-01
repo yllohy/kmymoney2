@@ -3,6 +3,8 @@
     ReportAccount to its base class MyMoneyAccount
   * Added filter option 'last 11 months' which covers the last 11 full months
   * Reworked the search transaction dialog to use the new register code
+  * Added sort feature to search register
+  * Fixed the institution testcases to support KVPs
 
 2007-03-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some problems around the latest changes

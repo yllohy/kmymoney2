@@ -44,4 +44,10 @@ QString KSortOptionDlg::sortOption(void) const
     rc = m_sortOption->settings();
   }
   return rc;
-}  
+}
+
+void KSortOptionDlg::hideDefaultButton(void)
+{
+  m_useDefault->hide();
+}
+ 

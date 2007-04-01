@@ -200,6 +200,7 @@ void MyMoneyInstitutionTest::testWriteXML() {
 
 	n->addAccountId("A000001");
 	n->addAccountId("A000003");
+	n->setValue(QCString("key"), "value");
 
 	QDomDocument doc("TEST");
 	QDomElement el = doc.createElement("INSTITUTION-CONTAINER");
@@ -218,6 +219,9 @@ void MyMoneyInstitutionTest::testWriteXML() {
 		"   <ACCOUNTID id=\"A000001\" />\n"
 		"   <ACCOUNTID id=\"A000003\" />\n"
 		"  </ACCOUNTIDS>\n"
+                "  <KEYVALUEPAIRS>\n"
+                "   <PAIR key=\"key\" value=\"value\" />\n"
+                "  </KEYVALUEPAIRS>\n"
 		" </INSTITUTION>\n"
 		"</INSTITUTION-CONTAINER>\n");
 
@@ -235,6 +239,9 @@ void MyMoneyInstitutionTest::testReadXML() {
 		"   <ACCOUNTID id=\"A000001\" />\n"
 		"   <ACCOUNTID id=\"A000003\" />\n"
 		"  </ACCOUNTIDS>\n"
+                "  <KEYVALUEPAIRS>\n"
+                "   <PAIR key=\"key\" value=\"value\" />\n"
+                "  </KEYVALUEPAIRS>\n"
 		" </INSTITUTION>\n"
 		"</INSTITUTION-CONTAINER>\n");
 
@@ -280,6 +287,7 @@ void MyMoneyInstitutionTest::testReadXML() {
 		CPPUNIT_ASSERT(i.city() == "town");
 		CPPUNIT_ASSERT(i.telephone() == "telephone");
 		CPPUNIT_ASSERT(i.accountList() == alist);
+		CPPUNIT_ASSERT(i.value(QCString("key")) == "value");
 
 	} catch(MyMoneyException *e) {
 		delete e;

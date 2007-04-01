@@ -53,6 +53,8 @@
 #include <kmymoney/register.h>
 #include <kmymoney/transaction.h>
 
+#include "ksortoptiondlg.h"
+
 KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name) :
   KFindTransactionDlgDecl(parent, name, false),
   m_needReload(false)
@@ -113,6 +115,7 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name) :
   m_register->setSelectionMode(QTable::Single);
 
   connect(m_register, SIGNAL(editTransaction()), this, SLOT(slotSelectTransaction()));
+  connect(m_register, SIGNAL(headerClicked()), this, SLOT(slotSortOptions()));
 
   slotUpdateSelections();
 
@@ -818,6 +821,24 @@ void KFindTransactionDlg::slotShowHelp(void)
 
   kapp->invokeHelp(anchor);
 }
+
+void KFindTransactionDlg::slotSortOptions(void)
+{
+  KSortOptionDlg* dlg = new KSortOptionDlg(this);
+
+  dlg->setSortOption(KMyMoneyGlobalSettings::sortSearchView(), QString());
+  dlg->hideDefaultButton();
+
+  if(dlg->exec() == QDialog::Accepted) {
+    QString sortOrder = dlg->sortOption();
+    if(sortOrder != KMyMoneyGlobalSettings::sortSearchView()) {
+      KMyMoneyGlobalSettings::setSortSearchView(sortOrder);
+      slotRefreshView();
+    }
+  }
+  delete dlg;
+}
+
 
 // vim:cin:si:ai:et:ts=2:sw=2:
 

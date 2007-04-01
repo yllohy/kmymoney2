@@ -123,6 +123,7 @@
 <functions>
     <function access="private" specifier="non virtual">init()</function>
     <function returnType="QString">sortOption( void ) const</function>
+    <function>hideDefaultButton( void )</function>
 </functions>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
