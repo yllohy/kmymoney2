@@ -127,7 +127,7 @@ public:
     * @return QCString The account's currency trading symbol
     */
   QCString currency( void ) const;
-    
+
   /**
     * Determine if this account's deep currency is different from the file's
     * base currency
@@ -135,7 +135,7 @@ public:
     * @return bool True if this account is in a foreign currency
     */
   bool isForeignCurrency( void ) const;
-   
+
   /**
     * The name of only this account.  No matter how deep the hierarchy, this
     * method only returns the last name in the list, which is the engine name]
@@ -186,14 +186,14 @@ public:
     * @return ReportAccount The account of the top parent
     */
   ReportAccount topParent( void ) const;
-  
+
   /**
     * Returns a report account containing the immediate parent account
     *
     * @return ReportAccount The account of the immediate parent
     */
   ReportAccount parent( void ) const;
-  
+
   /**
     * Returns the number of accounts in this account's hierarchy.  If this is a
     * Top Category, it returns 1.  If it's parent is a Top Category, returns 2,
@@ -202,9 +202,6 @@ public:
     * @return unsigned Hierarchy depth
     */
   unsigned hierarchyDepth( void ) const;
-
-  bool isIncomeExpense(void) const;
-  bool isAssetLiability(void) const;
 
 protected:
   /**

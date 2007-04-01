@@ -99,21 +99,21 @@ void ReportAccount::calculateAccountHierarchy( void )
 MyMoneyMoney ReportAccount::deepCurrencyPrice( const QDate& date ) const
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
-  
+
   MyMoneyMoney result(1, 1);
   MyMoneyFile* file = MyMoneyFile::instance();
-  
+
   MyMoneySecurity undersecurity = file->security( currencyId() );
   if ( ! undersecurity.isCurrency() )
   {
     // FIXME: If there is no price for this date, our method will return a 1.0,
     // which will be confusing for the user. We should report an error back to the report.
-    // This will require an error-handling mechanism, which I don't have right now.   
+    // This will require an error-handling mechanism, which I don't have right now.
     MyMoneyPrice price = file->price(undersecurity.id(),undersecurity.tradingCurrency(),date);
     if ( price.isValid() )
     {
       result = price.rate();
-  
+
       DEBUG_OUTPUT(QString("Converting under %1 to deep %2, price on %3 is %4")
         .arg(undersecurity.name())
         .arg(file->security(undersecurity.tradingCurrency()).name())
@@ -128,7 +128,7 @@ MyMoneyMoney ReportAccount::deepCurrencyPrice( const QDate& date ) const
         .arg(date.toString()));
     }
   }
-  
+
   return result;
 }
 
@@ -150,17 +150,17 @@ MyMoneyMoney ReportAccount::baseCurrencyPrice( const QDate& date ) const
 
   MyMoneyMoney result(1, 1);
   MyMoneyFile* file = MyMoneyFile::instance();
-  
+
   if(isForeignCurrency())
   {
     // FIXME: If there is no price for this date, our method will return a 1.0,
     // which will be confusing for the user. We should report an error back to the report.
-    // This will require an error-handling mechanism, which I don't have right now.   
+    // This will require an error-handling mechanism, which I don't have right now.
     MyMoneyPrice price = file->price(currency(), file->baseCurrency().id(), date);
     if(price.isValid())
     {
       result = price.rate();
-    
+
       DEBUG_OUTPUT(QString("Converting deep %1 to base %2, price on %3 is %4")
         .arg(file->currency(currency()).name())
         .arg(file->baseCurrency().name())
@@ -187,12 +187,12 @@ MyMoneyMoney ReportAccount::baseCurrencyPrice( const QDate& date ) const
 QCString ReportAccount::currency( void ) const
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  
+
   // First, get the deep currency
   MyMoneySecurity deepcurrency = file->security( currencyId() );
   if ( ! deepcurrency.isCurrency() )
     deepcurrency = file->security( deepcurrency.tradingCurrency() );
-  
+
   // Return the deep currency's ID
   return deepcurrency.id();
 }
@@ -316,15 +316,5 @@ QString ReportAccount::topParentName( void ) const
 {
   return m_nameHierarchy.first();
 }
-
-bool ReportAccount::isIncomeExpense(void) const
-{
-  return (accountGroup() == MyMoneyAccount::Income || accountGroup() == MyMoneyAccount::Expense);
-}                         
-
-bool ReportAccount::isAssetLiability(void) const
-{
-  return (accountGroup() == MyMoneyAccount::Asset || accountGroup() == MyMoneyAccount::Liability);
-}                         
 
 }  // end namespace reports

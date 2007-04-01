@@ -225,6 +225,20 @@ void MyMoneyAccount::setCurrencyId(const QCString& id)
   m_currencyId = id;
 }
 
+bool MyMoneyAccount::isAssetLiability(void) const
+{
+  return accountGroup() == Asset || accountGroup() == Liability;
+}
+
+bool MyMoneyAccount::isIncomeExpense(void) const
+{
+  return accountGroup() == Income || accountGroup() == Expense;
+}
+
+
+
+
+
 MyMoneyAccountLoan::MyMoneyAccountLoan(const MyMoneyAccount& acc)
  : MyMoneyAccount(acc)
 {

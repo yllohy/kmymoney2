@@ -462,7 +462,25 @@ public:
     * @retval true account is of type income or expense
     * @retval false for all other account types
     */
-  bool isCategory(void) const;
+  bool isCategory(void) const KDE_DEPRECATED;
+
+  /**
+    * This method returns @a true if the account type is
+    * either Income or Expense
+    *
+    * @retval true account is of type income or expense
+    * @retval false for all other account types
+    */
+  bool isIncomeExpense(void) const;
+
+  /**
+    * This method returns @a true if the account type is
+    * either Asset or Liability
+    *
+    * @retval true account is of type asset or liability
+    * @retval false for all other account types
+   */
+  bool isAssetLiability(void) const;
 
 private:
   /**
