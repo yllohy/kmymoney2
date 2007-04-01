@@ -28,9 +28,10 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneytransaction.h"
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/mymoneytransaction.h>
 #include "kmergetransactionsdlg.h"
+#include "../widgets/kmymoneyregistersearch.h"
 
 KMergeTransactionsDlg::KMergeTransactionsDlg(QCString _accountid): m_displayaccountid(_accountid)
 {

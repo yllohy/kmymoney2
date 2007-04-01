@@ -27,6 +27,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qvariant.h>
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
@@ -45,6 +46,7 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+
 #include <kapplication.h>
 #include <kpushbutton.h>
 #include <klineedit.h>
@@ -53,22 +55,23 @@
 #include <kguiitem.h>
 #include <kiconloader.h>
 #include <kdebug.h>
+#include <kstdguiitem.h>
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "kreportconfigurationfilterdlg.h"
-#include "../widgets/kmymoneyregistersearch.h"
-#include "../widgets/kmymoneydateinput.h"
-#include "../widgets/kmymoneyedit.h"
-#include "../widgets/kmymoneylineedit.h"
-#include "../widgets/kmymoneyaccountselector.h"
+#include <kmymoney/kmymoneydateinput.h>
+#include <kmymoney/kmymoneyedit.h>>
+#include <kmymoney/kmymoneylineedit.h>
+#include <kmymoney/kmymoneyaccountselector.h>
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/mymoneyreport.h>
 #include "../widgets/kmymoneyreportconfigtab1decl.h"
 #include "../widgets/kmymoneyreportconfigtab2decl.h"
 #include "../widgets/kmymoneyreportconfigtab3decl.h"
 #include "../widgets/kmymoneyreportconfigtabchartdecl.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../mymoney/storage/imymoneystorage.h"
-#include "../mymoney/mymoneyreport.h"
 
 KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
   MyMoneyReport report, QWidget *parent, const char *name)
@@ -83,7 +86,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     // Rework labelling
     //
 
-    setCaption( tr2i18n( "Report Configuration" ) );
+    setCaption( i18n( "Report Configuration" ) );
     delete TextLabel1;
 
     //
@@ -92,7 +95,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
 
 
     disconnect(SIGNAL(selectionEmpty(bool)));
-    m_searchButton->setText( tr2i18n( "OK" ) );
+    m_searchButton->setGuiItem( KStdGuiItem::ok() );
     m_searchButton->setEnabled(true);
 
     m_searchButton->disconnect();
