@@ -340,7 +340,7 @@ void KEditScheduleDialog::createSecondSplit(void)
 }
 
 /*
- * Cribbed from : KLedgerViewCheckings::slotOpenSplitDialog(void)
+ * Cribbed from : KGlobalLedgerView::slotEditSplits(void)
  */
 void KEditScheduleDialog::slotEditSplits(void)
 {
