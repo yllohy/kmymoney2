@@ -85,13 +85,13 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   m_searchButton->setGuiItem(KStdGuiItem::find());
   m_resetButton->setGuiItem(KStdGuiItem::reset());
 #else
+  KIconLoader* il = KGlobal::iconLoader();
   KGuiItem searchButtonItem( i18n( "&Search" ),
                     QIconSet(il->loadIcon("find", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Start the search"),
                     i18n("Takes the current criteria and searches for matching transactions."));
   m_searchButton->setGuiItem(searchButtonItem);
 
-  KIconLoader* il = KGlobal::iconLoader();
   KGuiItem resetButtonItem( i18n( "&Reset" ),
                             QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
                             i18n("Reset all settings"),
