@@ -482,6 +482,8 @@ Register::Register(QWidget *parent, const char *name ) :
   m_lastErronous(0),
   m_markErronousTransactions(0),
   m_rowHeightHint(0),
+  m_ledgerLensForced(false),
+  m_selectionMode(Multi),
   m_listsDirty(false),
   m_ignoreNextButtonRelease(false),
   m_needInitialColumnResize(false),
@@ -542,6 +544,30 @@ bool Register::eventFilter(QObject* o, QEvent* e)
   }
 
   return QTable::eventFilter(o, e);
+}
+
+void Register::setupRegister(const MyMoneyAccount& account, const QValueList<Column>& cols)
+{
+  m_account = account;
+  bool enabled = isUpdatesEnabled();
+  setUpdatesEnabled(false);
+
+  for(int i = 0; i < MaxColumns; ++i)
+    hideColumn(i);
+
+  m_needInitialColumnResize = true;
+
+  m_lastCol = static_cast<Column>(0);
+  QValueList<Column>::const_iterator it_c;
+  for(it_c = cols.begin(); it_c != cols.end(); ++it_c) {
+    if((*it_c) > MaxColumns)
+      continue;
+    showColumn(*it_c);
+    if(*it_c > m_lastCol)
+      m_lastCol = *it_c;
+  }
+
+  setUpdatesEnabled(enabled);
 }
 
 void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColumn)
@@ -740,6 +766,8 @@ void Register::clear(void)
   // recalculate row height hint
   QFontMetrics fm( KMyMoneyGlobalSettings::listCellFont() );
   m_rowHeightHint = fm.lineSpacing()+6;
+
+  m_needInitialColumnResize = true;
 }
 
 void Register::insertItemAfter(RegisterItem*p, RegisterItem* prev)
@@ -1030,7 +1058,8 @@ void Register::resize(int col)
   int w = visibleWidth();
 
   // check which space we need
-  adjustColumn(NumberColumn);
+  if(columnWidth(NumberColumn))
+    adjustColumn(NumberColumn);
   if(columnWidth(AccountColumn))
     adjustColumn(AccountColumn);
   if(columnWidth(PaymentColumn))
@@ -1404,36 +1433,38 @@ void Register::selectItem(RegisterItem* item, bool dontChangeSelections)
     QCString id = item->id();
     int cnt = selectedItemsCount();
     if(buttonState & Qt::LeftButton) {
-      switch(buttonState & (Qt::ShiftButton | Qt::ControlButton)) {
-        default:
-          if((cnt != 1) || ((cnt == 1) && !item->isSelected())) {
-            emit aboutToSelectItem(item);
-            // pointer 'item' might have changed. reconstruct it.
-            item = itemById(id);
-            unselectItems();
-            item->setSelected(true);
-            setFocusItem(item);
-          }
-          m_selectAnchor = item;
-          break;
-
-        case Qt::ControlButton:
-          // toggle selection state of current item
-          emit aboutToSelectItem(item);
-          // pointer 'item' might have changed. reconstruct it.
-          item = itemById(id);
-          item->setSelected(!item->isSelected());
-          setFocusItem(item);
-          break;
-
-        case Qt::ShiftButton:
+      if(!(buttonState & (Qt::ShiftButton | Qt::ControlButton))) {
+        if((cnt != 1) || ((cnt == 1) && !item->isSelected())) {
           emit aboutToSelectItem(item);
           // pointer 'item' might have changed. reconstruct it.
           item = itemById(id);
           unselectItems();
-          selectItems(rowToIndex(m_selectAnchor->startRow()), rowToIndex(item->startRow()));
+          item->setSelected(true);
           setFocusItem(item);
-          break;
+        }
+        m_selectAnchor = item;
+      }
+
+      if(m_selectionMode == Multi) {
+        switch(buttonState & (Qt::ShiftButton | Qt::ControlButton)) {
+          case Qt::ControlButton:
+            // toggle selection state of current item
+            emit aboutToSelectItem(item);
+            // pointer 'item' might have changed. reconstruct it.
+            item = itemById(id);
+            item->setSelected(!item->isSelected());
+            setFocusItem(item);
+            break;
+
+          case Qt::ShiftButton:
+            emit aboutToSelectItem(item);
+            // pointer 'item' might have changed. reconstruct it.
+            item = itemById(id);
+            unselectItems();
+            selectItems(rowToIndex(m_selectAnchor->startRow()), rowToIndex(item->startRow()));
+            setFocusItem(item);
+            break;
+        }
       }
     } else if(buttonState & Qt::RightButton) {
       // if the right button is pressed then only change the
@@ -1800,7 +1831,8 @@ void Register::keyPressEvent(QKeyEvent* ev)
     case Qt::Key_Up:
       setFocusItem(scrollPage(ev->key()));
       ensureItemVisible(m_focusItem);
-      emit focusChanged();
+      if(m_selectionMode == Single)
+        selectItem(m_focusItem);
       break;
 
     default:
@@ -1815,6 +1847,11 @@ Transaction* Register::transactionFactory(Register *parent, MyMoneyObjectContain
   MyMoneySplit s = split;
   if(s.accountId().isEmpty())
     s.setAccountId(parent->account().id());
+
+  if(parent->account() == MyMoneyAccount()) {
+    t = new KMyMoneyRegister::StdTransaction(parent, objects, transaction, s, uniqueId);
+    return t;
+  }
 
   switch(parent->account().accountType()) {
     case MyMoneyAccount::Checkings:
@@ -1845,6 +1882,158 @@ Transaction* Register::transactionFactory(Register *parent, MyMoneyObjectContain
   }
   return t;
 }
+
+void Register::addGroupMarkers(void)
+{
+  QMap<QString, int> list;
+  QMap<QString, int>::const_iterator it;
+  KMyMoneyRegister::RegisterItem* p = firstItem();
+  KMyMoneyRegister::Transaction* t;
+  QString name;
+  QDate today;
+  QDate yesterday, thisWeek, lastWeek;
+  QDate thisMonth, lastMonth;
+  QDate thisYear;
+  int weekStartOfs;
+
+  switch(primarySortKey()) {
+    case KMyMoneyRegister::PostDateSort:
+    case KMyMoneyRegister::EntryDateSort:
+      today = QDate::currentDate();
+      thisMonth.setYMD(today.year(), today.month(), 1);
+      lastMonth = thisMonth.addMonths(-1);
+      yesterday = today.addDays(-1);
+      // a = QDate::dayOfWeek()      todays weekday (1 = Monday, 7 = Sunday)
+      // b = KLocale::weekStartDay() first day of week (1 = Monday, 7 = Sunday)
+      weekStartOfs = today.dayOfWeek() - KGlobal::locale()->weekStartDay();
+      if(weekStartOfs < 0) {
+        weekStartOfs = 7 + weekStartOfs;
+      }
+      thisWeek = today.addDays(-weekStartOfs);
+      lastWeek = thisWeek.addDays(-7);
+      thisYear.setYMD(today.year(), 1, 1);
+      if(KMyMoneySettings::showFancyMarker()) {
+        new KMyMoneyRegister::FancyDateGroupMarker(this, thisYear, i18n("This year"));
+        new KMyMoneyRegister::FancyDateGroupMarker(this, lastMonth, i18n("Last month"));
+        new KMyMoneyRegister::FancyDateGroupMarker(this, thisMonth, i18n("This month"));
+        new KMyMoneyRegister::FancyDateGroupMarker(this, lastWeek, i18n("Last week"));
+        new KMyMoneyRegister::FancyDateGroupMarker(this, thisWeek, i18n("This week"));
+        new KMyMoneyRegister::FancyDateGroupMarker(this, yesterday, i18n("Yesterday"));
+        new KMyMoneyRegister::FancyDateGroupMarker(this, today, i18n("Today"));
+        new KMyMoneyRegister::FancyDateGroupMarker(this, today.addDays(1), i18n("Future transactions"));
+      } else {
+        new KMyMoneyRegister::SimpleDateGroupMarker(this, today.addDays(1), i18n("Future transactions"));
+      }
+      break;
+
+    case KMyMoneyRegister::TypeSort:
+      if(KMyMoneySettings::showFancyMarker()) {
+        new KMyMoneyRegister::TypeGroupMarker(this, KMyMoneyRegister::Deposit, m_account.accountType());
+        new KMyMoneyRegister::TypeGroupMarker(this, KMyMoneyRegister::Payment, m_account.accountType());
+      }
+      break;
+
+    case KMyMoneyRegister::ReconcileStateSort:
+      if(KMyMoneySettings::showFancyMarker()) {
+        new KMyMoneyRegister::ReconcileGroupMarker(this, MyMoneySplit::NotReconciled);
+        new KMyMoneyRegister::ReconcileGroupMarker(this, MyMoneySplit::Cleared);
+        new KMyMoneyRegister::ReconcileGroupMarker(this, MyMoneySplit::Reconciled);
+        new KMyMoneyRegister::ReconcileGroupMarker(this, MyMoneySplit::Frozen);
+      }
+      break;
+
+    case KMyMoneyRegister::PayeeSort:
+      if(KMyMoneySettings::showFancyMarker()) {
+        while(p) {
+          t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
+          if(t) {
+            list[t->sortPayee()] = 1;
+          }
+          p = p->nextItem();
+        }
+        for(it = list.begin(); it != list.end(); ++it) {
+          name = it.key();
+          if(name.isEmpty()) {
+            name = i18n("Unknown payee", "Unknown");
+          }
+          new KMyMoneyRegister::PayeeGroupMarker(this, name);
+        }
+      }
+      break;
+
+    case KMyMoneyRegister::CategorySort:
+      if(KMyMoneySettings::showFancyMarker()) {
+        while(p) {
+          t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
+          if(t) {
+            list[t->sortCategory()] = 1;
+          }
+          p = p->nextItem();
+        }
+        for(it = list.begin(); it != list.end(); ++it) {
+          name = it.key();
+          if(name.isEmpty()) {
+            name = i18n("Unknown category", "Unknown");
+          }
+          new KMyMoneyRegister::CategoryGroupMarker(this, name);
+        }
+      }
+      break;
+
+    case KMyMoneyRegister::SecuritySort:
+      if(KMyMoneySettings::showFancyMarker()) {
+        while(p) {
+          t = dynamic_cast<KMyMoneyRegister::InvestTransaction*>(p);
+          if(t) {
+            list[t->sortSecurity()] = 1;
+          }
+          p = p->nextItem();
+        }
+        for(it = list.begin(); it != list.end(); ++it) {
+          name = it.key();
+          if(name.isEmpty()) {
+            name = i18n("Unknown security", "Unknown");
+          }
+          new KMyMoneyRegister::CategoryGroupMarker(this, name);
+        }
+      }
+      break;
+
+      default: // no markers supported
+        break;
+  }
+}
+
+void Register::removeUnwantedGroupMarkers(void)
+{
+  // remove all trailing group markers
+  KMyMoneyRegister::RegisterItem* p = lastItem();
+  while(p) {
+    KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
+    if(t)
+      break;
+    KMyMoneyRegister::RegisterItem* q = p;
+    p = p->prevItem();
+    delete q;
+  }
+
+  // remove all adjacent group markers
+  bool lastWasGroupMarker = false;
+  p = lastItem();
+  while(p) {
+    KMyMoneyRegister::GroupMarker* m = dynamic_cast<KMyMoneyRegister::GroupMarker*>(p);
+    p = p->prevItem();
+    if(m) {
+      if(lastWasGroupMarker) {
+        delete m;
+      }
+      lastWasGroupMarker = true;
+    } else
+      lastWasGroupMarker = false;
+  }
+}
+
+
 #include "register.moc"
 
 // vim:cin:si:ai:et:ts=2:sw=2:

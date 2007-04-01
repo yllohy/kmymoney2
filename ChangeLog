@@ -1,3 +1,9 @@
+2007-03-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Moved isAssetLiability and isIncomeExpense from
+    ReportAccount to its base class MyMoneyAccount
+  * Added filter option 'last 11 months' which covers the last 11 full months
+  * Reworked the search transaction dialog to use the new register code
+
 2007-03-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some problems around the latest changes
   * Get rid of annoying message that account with same name already exists

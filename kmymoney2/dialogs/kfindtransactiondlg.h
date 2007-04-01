@@ -44,8 +44,8 @@ class QListViewItem;
 /**
   * @author Thomas Baumgart
   */
-
-class KFindTransactionDlg : public KFindTransactionDlgDecl, public IMyMoneyRegisterParent, public MyMoneyObserver {
+class KFindTransactionDlg : public KFindTransactionDlgDecl
+{
   Q_OBJECT
 public:
 
@@ -72,12 +72,14 @@ public:
     next6Months,
     next12Months,
     userDefined,
+    last3ToNext3Months,
+    last11Months,
     // insert new constants above of this line
     dateOptionCount
   };
 
   KFindTransactionDlg(QWidget *parent=0, const char *name=0);
-  ~KFindTransactionDlg();
+  ~KFindTransactionDlg() {}
 
   /**
     * This method returns a pointer to the transaction data
@@ -125,7 +127,7 @@ public slots:
 
 protected:
   void resizeEvent(QResizeEvent*);
-  bool focusNextPrevChild(bool next);
+  // bool focusNextPrevChild(bool next);
 
 protected slots:
   void slotDateRangeChanged(int);
@@ -147,12 +149,12 @@ protected slots:
   /**
     *
     */
-  void slotRegisterClicked(int row, int col, int button, const QPoint &mousePos);
-  void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
-  void slotNextTransaction(void);
-  void slotPreviousTransaction(void);
+  // void slotRegisterClicked(int row, int col, int button, const QPoint &mousePos);
+  // void slotRegisterDoubleClicked(int row, int col, int button, const QPoint &mousePos);
+  // void slotNextTransaction(void);
+  // void slotPreviousTransaction(void);
   void slotSelectTransaction(void);
-  void slotSelectTransaction(const QCString& id);
+  // void slotSelectTransaction(const QCString& id);
 
   void slotRightSize(void);
 
@@ -164,7 +166,6 @@ protected slots:
 
 signals:
   void transactionSelected(const QCString& accountId, const QCString& transactionId);
-  void selectionEmpty(bool isEmpty);
 
 protected:
   enum opTypeE {
@@ -221,8 +222,8 @@ protected:
   /**
     * This member holds a list of all transactions matching the filter criteria
     */
-  QValueList<KMyMoneyTransaction> m_transactionList;
-
+  QValueList<QPair<MyMoneyTransaction, MyMoneySplit> > m_transactionList;
+#if 0
   /**
     * This member keeps a vector of pointers to all visible (filtered)
     * transaction in m_transactionList in sorted order. Sorting is done
@@ -235,6 +236,7 @@ protected:
     * It is NULL, if an empty (new) transaction is selected.
     */
   KMyMoneyTransaction*            m_transactionPtr;
+#endif
 
   MyMoneyTransactionFilter        m_filter;
 

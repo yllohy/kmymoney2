@@ -35,7 +35,7 @@
 #include <klineedit.h>
 #include <klistview.h>
 #include <kcombobox.h>
-#include <kguiitem.h>
+#include <kstdguiitem.h>
 #include <kiconloader.h>
 
 // ----------------------------------------------------------------------------
@@ -50,26 +50,17 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneychecklistitem.h>
 #include <kmymoney/kmymoneyglobalsettings.h>
-
-#include "../mymoney/storage/imymoneystorage.h"
-#include "../widgets/kmymoneyregistersearch.h"
-
+#include <kmymoney/register.h>
+#include <kmymoney/transaction.h>
 
 KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
- : KFindTransactionDlgDecl(parent, name, false),
-  m_transactionPtr(0)
+ : KFindTransactionDlgDecl(parent, name, false)
 {
-  // hide the transaction register and make sure the dialog is
-  // displayed as small as can be. We make sure that the larger
-  // version (with the transaction register) will also fit on the screen
-  // by moving the dialog by (-45,-45).
-  m_register->setParent(this);
   m_register->installEventFilter(this);
   m_tabWidget->setTabEnabled(m_resultPage, false);
 
-  KFindTransactionDlgDecl::update();
-
-  move(x()-45, y()-45);
+  // 'cause we don't have a separate setupTextPage
+  connect(m_textEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
 
   setupAccountsPage();
   setupCategoriesPage();
@@ -87,66 +78,52 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name)
   m_helpAnchor[m_payeeTab] = QString("details.search.payee");
   m_helpAnchor[m_detailsTab] = QString("details.search.details");
 
-  KIconLoader* il = KGlobal::iconLoader();
-  KGuiItem resetButtonItem( i18n( "&Reset" ),
-                    QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Reset all settings"),
-                    i18n("Use this to reset all settings to the state they were when the dialog was opened."));
-  m_resetButton->setGuiItem(resetButtonItem);
+  m_closeButton->setGuiItem(KStdGuiItem::close());
+  m_helpButton->setGuiItem(KStdGuiItem::help());
 
-  KGuiItem closeButtonItem( i18n( "&Close" ),
-                    QIconSet(il->loadIcon("fileclose", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Close the dialog"),
-                    i18n("Leave the dialog and return to where you came from."));
-  m_closeButton->setGuiItem(closeButtonItem);
-
+#if KDE_IS_VERSION(3,4,0)
+  m_searchButton->setGuiItem(KStdGuiItem::find());
+  m_resetButton->setGuiItem(KStdGuiItem::reset());
+#else
   KGuiItem searchButtonItem( i18n( "&Search" ),
                     QIconSet(il->loadIcon("find", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Start the search"),
                     i18n("Takes the current criteria and searches for matching transactions."));
   m_searchButton->setGuiItem(searchButtonItem);
 
-  KGuiItem helpButtonItem (i18n("&Help"),
-                    QIconSet(il->loadIcon("help", KIcon::Small, KIcon::SizeSmall)),
-                    i18n("Open online help"),
-                    i18n("Opens the online help and shows detailed information about transaction searching."));
-  m_helpButton->setGuiItem(helpButtonItem);
+  KIconLoader* il = KGlobal::iconLoader();
+  KGuiItem resetButtonItem( i18n( "&Reset" ),
+                            QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
+                            i18n("Reset all settings"),
+                            i18n("Use this to reset all settings to the state they were when the dialog was opened."));
+  m_resetButton->setGuiItem(resetButtonItem);
+#endif
 
-  // readConfig();
-  connect(this, SIGNAL(selectionEmpty(bool)),  m_searchButton, SLOT(setDisabled(bool)));
+
+  // setup the register
+  QValueList<KMyMoneyRegister::Column> cols;
+  cols << KMyMoneyRegister::DateColumn;
+  cols << KMyMoneyRegister::AccountColumn;
+  cols << KMyMoneyRegister::DetailColumn;
+  cols << KMyMoneyRegister::ReconcileFlagColumn;
+  cols << KMyMoneyRegister::PaymentColumn;
+  cols << KMyMoneyRegister::DepositColumn;
+  m_register->setupRegister(MyMoneyAccount(), cols);
+  m_register->setSelectionMode(QTable::Single);
+
+  connect(m_register, SIGNAL(editTransaction()), this, SLOT(slotSelectTransaction()));
 
   slotUpdateSelections();
 
   // setup the connections
   connect(m_searchButton, SIGNAL(clicked()), this, SLOT(slotSearch()));
-
   connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
   connect(m_resetButton, SIGNAL(clicked()), m_accountsView, SLOT(slotSelectAllAccounts()));
   connect(m_resetButton, SIGNAL(clicked()), m_categoriesView, SLOT(slotSelectAllAccounts()));
-
   connect(m_closeButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
-
   connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotShowHelp()));
 
-  connect(m_textEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateSelections()));
-
-  connect(m_register, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterClicked(int, int, int, const QPoint&)));
-  connect(m_register, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotRegisterDoubleClicked(int, int, int, const QPoint&)));
-
-  connect(m_register, SIGNAL(signalNextTransaction()), this, SLOT(slotNextTransaction()));
-  connect(m_register, SIGNAL(signalPreviousTransaction()), this, SLOT(slotPreviousTransaction()));
-  connect(m_register, SIGNAL(signalSelectTransaction(const QCString&)), this, SLOT(slotSelectTransaction(const QCString&)));
-
   m_textEdit->setFocus();
-
-  // make sure, we get a note when the engine changes state
-  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAnyChange, this);
-}
-
-KFindTransactionDlg::~KFindTransactionDlg()
-{
-  // detach ourself from the engine
-  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAnyChange, this);
 }
 
 void KFindTransactionDlg::slotReset(void)
@@ -256,7 +233,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
   }
 
   // disable the search button if no selection is made
-  emit selectionEmpty(txt.isEmpty());
+  m_searchButton->setDisabled(txt.isEmpty());
 
   if(txt.isEmpty()) {
     txt = i18n("(None)");
@@ -384,6 +361,7 @@ void KFindTransactionDlg::setupDatePage(void)
   MyMoneyTransactionFilter::translateDateRange(last30Days,m_startDates[last30Days],m_endDates[last30Days]);
   MyMoneyTransactionFilter::translateDateRange(last3Months,m_startDates[last3Months],m_endDates[last3Months]);
   MyMoneyTransactionFilter::translateDateRange(last6Months,m_startDates[last6Months],m_endDates[last6Months]);
+  MyMoneyTransactionFilter::translateDateRange(last11Months,m_startDates[last11Months],m_endDates[last11Months]);
   MyMoneyTransactionFilter::translateDateRange(last12Months,m_startDates[last12Months],m_endDates[last12Months]);
   MyMoneyTransactionFilter::translateDateRange(next7Days,m_startDates[next7Days],m_endDates[next7Days]);
   MyMoneyTransactionFilter::translateDateRange(next30Days,m_startDates[next30Days],m_endDates[next30Days]);
@@ -677,86 +655,56 @@ void KFindTransactionDlg::slotSearch(void)
 
 void KFindTransactionDlg::slotRefreshView(void)
 {
+  // setup sort order
+  m_register->setSortOrder(KMyMoneySettings::sortSearchView());
+
+  // clear out old data
+  m_objects.clear();
+  m_register->clear();
+
+  // retrieve the list from the engine
+  MyMoneyFile::instance()->transactionList(m_transactionList, m_filter);
+
+    // create the elements for the register
+  QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it;
+  QMap<QCString, int>uniqueMap;
   MyMoneyMoney deposit, payment;
-  try {
-    QValueList<MyMoneyTransaction> list = MyMoneyFile::instance()->transactionList(m_filter);
-    QValueList<MyMoneyTransaction>::ConstIterator it;
 
-    m_transactionList.clear();
-    QCString lastId;
-    int ofs = 0;
+  int splitCount = 0;
+  for(it = m_transactionList.begin(); it != m_transactionList.end(); ++it) {
+    const MyMoneySplit& split = (*it).second;
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(split.accountId());
+    if(acc.isAssetLiability()) {
+      ++splitCount;
+      uniqueMap[(*it).first.id()]++;
 
-    for(it = list.begin(); it != list.end(); ++it) {
-      KMyMoneyTransaction k(*it);
-      m_filter.match(*it, MyMoneyFile::instance()->storage());
-      if(lastId != (*it).id()) {
-        ofs = 0;
-        lastId = (*it).id();
-      } else
-        ofs++;
-
-      k.setSplitId(m_filter.matchingSplits()[ofs].id());
-      MyMoneyAccount acc = MyMoneyFile::instance()->account(m_filter.matchingSplits()[ofs].accountId());
-      if(acc.accountGroup() == MyMoneyAccount::Asset
-      || acc.accountGroup() == MyMoneyAccount::Liability) {
-        m_transactionList.append(k);
-        { // debug stuff
-          const MyMoneySplit& split = m_filter.matchingSplits()[ofs];
-          if(split.shares().isNegative()) {
-            payment += split.shares().abs();
-          } else {
-            deposit += split.shares().abs();
-          }
-        }
-      }
-
-    }
-  } catch(MyMoneyException *e) {
-    delete e;
-    return;
-  }
-
-  QValueList<KMyMoneyTransaction>::ConstIterator it_t;
-
-  // setup the pointer vector
-  m_transactionPtrVector.clear();
-  m_transactionPtrVector.resize(m_transactionList.size());
-
-  int i;
-  for(i = 0, it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-    m_transactionPtrVector.insert(i, &(*it_t));
-    ++i;
-  }
-
-  // sort the transactions
-  m_transactionPtrVector.sort();
-
-  bool dateMarkPlaced = false;
-  m_register->setCurrentDateIndex();    // turn off date mark
-
-  try {
-    // the trick is to go backwards ;-)
-
-    while(--i >= 0) {
-      if(m_transactionPtrVector.sortType() == KTransactionPtrVector::SortPostDate) {
-        if(m_transactionPtrVector[i]->postDate() > QDate::currentDate()) {
-          m_register->setCurrentDateIndex(i+1);
-
-        } else if(dateMarkPlaced == false) {
-          m_register->setCurrentDateIndex(i+1);
-          dateMarkPlaced = true;
+      KMyMoneyRegister::Register::transactionFactory(m_register, &m_objects, (*it).first, (*it).second, uniqueMap[(*it).first.id()]);
+      { // debug stuff
+        if(split.shares().isNegative()) {
+          payment += split.shares().abs();
+        } else {
+          deposit += split.shares().abs();
         }
       }
     }
-  } catch(MyMoneyException *e) {
-    qWarning("Unexpected exception in KFindTransactionDlg::refreshView");
-    delete e;
-    return;
   }
+
+    // add the group markers
+  m_register->addGroupMarkers();
+
+    // sort the transactions according to the sort setting
+  m_register->sortItems();
+
+    // remove trailing and adjacent markers
+  m_register->removeUnwantedGroupMarkers();
+
+  // turn on the ledger lens for the register
+  m_register->setLedgerLensForced();
+
+  m_register->updateRegister(true);
+
   m_foundText->setText(i18n(QString("Found %1 matching transactions (D %2 / P %3 = %4)")
-                      .arg(m_transactionPtrVector.count()).arg(deposit.formatMoney()).arg(payment.formatMoney()).arg((deposit-payment).formatMoney())));
-  m_register->setTransactionCount(m_transactionPtrVector.count());
-  m_register->setCurrentTransactionIndex(0);
+                      .arg(splitCount).arg(deposit.formatMoney()).arg(payment.formatMoney()).arg((deposit-payment).formatMoney())));
 
   m_tabWidget->setTabEnabled(m_resultPage, true);
   m_tabWidget->setCurrentPage(m_tabWidget->indexOf(m_resultPage));
@@ -766,21 +714,7 @@ void KFindTransactionDlg::slotRefreshView(void)
 
 void KFindTransactionDlg::slotRightSize(void)
 {
-  QSize size(width(), height());
-  QResizeEvent ev(size, size);
-  resizeEvent(&ev);
-}
-
-KMyMoneyTransaction* KFindTransactionDlg::transaction(const int idx) const
-{
-  if(idx >= 0 && static_cast<unsigned> (idx) < m_transactionPtrVector.count())
-    return m_transactionPtrVector[idx];
-  return 0;
-}
-
-bool KFindTransactionDlg::focusNextPrevChild(bool next)
-{
-  return KFindTransactionDlgDecl::focusNextPrevChild(next);
+  m_register->updateContents();
 }
 
 void KFindTransactionDlg::resizeEvent(QResizeEvent* ev)
@@ -817,91 +751,15 @@ void KFindTransactionDlg::resizeEvent(QResizeEvent* ev)
 }
 
 
-void KFindTransactionDlg::slotRegisterClicked(int row, int /* col */, int /* button */, const QPoint& /* mousePos */)
-{
-  if(m_register->setCurrentTransactionRow(row) == true) {
-    m_register->ensureTransactionVisible();
-    m_register->repaintContents(false);
-  }
-}
-
-void KFindTransactionDlg::slotRegisterDoubleClicked(int row,
-                                                    int /* col */,
-                                                    int /* button */,
-                                                    const QPoint & /* mousePos */)
-{
-  if(m_register->setCurrentTransactionRow(row) == true) {
-    m_register->ensureTransactionVisible();
-    m_register->repaintContents(false);
-  }
-  slotSelectTransaction();
-}
-
 void KFindTransactionDlg::slotSelectTransaction(void)
 {
-  KMyMoneyTransaction *k = transaction(m_register->currentTransactionIndex());
-  if(k != 0) {
-    emit transactionSelected(k->splitById(k->splitId()).accountId(), k->id());
-    hide();
-  }
-}
-
-void KFindTransactionDlg::slotNextTransaction(void)
-{
-  if(static_cast<unsigned> (m_register->currentTransactionIndex() + 1) <= m_transactionPtrVector.count()) {
-    m_register->setCurrentTransactionIndex(m_register->currentTransactionIndex()+1);
-    m_register->ensureTransactionVisible();
-    m_register->repaintContents(false);
-  }
-}
-
-void KFindTransactionDlg::slotPreviousTransaction(void)
-{
-  if(m_register->currentTransactionIndex() > 0) {
-    m_register->setCurrentTransactionIndex(m_register->currentTransactionIndex()-1);
-    m_register->ensureTransactionVisible();
-    m_register->repaintContents(false);
-  }
-}
-
-void KFindTransactionDlg::slotSelectTransaction(const QCString& transactionId)
-{
-  int   idx = -1;
-
-  if(!transactionId.isEmpty()) {
-    for(unsigned i = 0; i < m_transactionPtrVector.count(); ++i) {
-      if(m_transactionPtrVector[i]->id() == transactionId) {
-        idx = i;
-        break;
-      }
+  QValueList<KMyMoneyRegister::RegisterItem*> list = m_register->selectedItems();
+  if(!list.isEmpty()) {
+    KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(list[0]);
+    if(t) {
+      emit transactionSelected(t->split().accountId(), t->transaction().id());
+      hide();
     }
-  } else {
-    if(m_transactionPtrVector.count() > 0) {
-      idx = m_transactionPtrVector.count()-1;
-    }
-  }
-
-  if(idx != -1) {
-    // qDebug("KLedgerView::selectTransaction index is %d", idx);
-    m_transactionPtr = m_transactionPtrVector[idx];
-    m_register->setCurrentTransactionIndex(idx);
-    m_register->ensureTransactionVisible();
-    m_register->repaintContents(false);
-  }
-}
-
-void KFindTransactionDlg::update(const QCString& /* id */)
-{
-  m_objects.clear(); // invalidate all objects
-  // only calculate the new list if it is currently visible
-
-  if(m_tabWidget->isTabEnabled(m_resultPage)) {
-    KMyMoneyTransaction *k = transaction(m_register->currentTransactionIndex());
-    QCString id = k->id();
-
-    slotRefreshView();
-
-    slotSelectTransaction(id);
   }
 }
 
@@ -928,11 +786,6 @@ bool KFindTransactionDlg::eventFilter(QObject* o, QEvent* e)
     }
   }
   return rc;
-}
-
-const MyMoneyMoney KFindTransactionDlg::balance(const int /* idx */) const
-{
-  return 0;
 }
 
 void KFindTransactionDlg::slotShowHelp(void)

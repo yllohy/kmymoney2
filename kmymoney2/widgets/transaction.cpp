@@ -178,7 +178,10 @@ void Transaction::setFocus(bool focus, bool updateLens)
     m_focus = focus;
   }
   if(updateLens) {
-    if(KMyMoneySettings::ledgerLens() || !KMyMoneySettings::transactionForm() || KMyMoneySettings::showRegisterDetailed()) {
+    if(KMyMoneySettings::ledgerLens()
+    || !KMyMoneySettings::transactionForm()
+    || KMyMoneySettings::showRegisterDetailed()
+    || m_parent->m_ledgerLensForced) {
       if(focus)
         setNumRowsRegister(numRowsRegister(true));
       else
@@ -1034,7 +1037,8 @@ void StdTransaction::registerCellText(QString& txt, int& align, int row, int col
           break;
 
         case AccountColumn:
-          txt = m_objects->account(m_transaction.splits()[0].accountId()).name();
+          // txt = m_objects->account(m_transaction.splits()[0].accountId()).name();
+          txt = m_objects->account(m_split.accountId()).name();
           break;
 
         default:
@@ -1110,7 +1114,8 @@ int StdTransaction::registerColWidth(int col, const QFontMetrics& cellFontMetric
       break;
 
     case AccountColumn:
-      txt = m_objects->account(m_transaction.splits()[0].accountId()).name();
+      // txt = m_objects->account(m_transaction.splits()[0].accountId()).name();
+      txt = m_objects->account(m_split.accountId()).name();
       nw = cellFontMetrics.width(txt+"  ");
       break;
   }

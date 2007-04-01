@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>560</width>
+            <width>566</width>
             <height>353</height>
         </rect>
     </property>
@@ -28,7 +28,7 @@
                     <cstring>tab</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Display</string>
+                    <string>Displa&amp;y</string>
                 </attribute>
                 <vbox>
                     <property name="name">
@@ -47,7 +47,7 @@
                             <cstring>kcfg_LedgerLens</cstring>
                         </property>
                         <property name="text">
-                            <string>Use the ledger lens</string>
+                            <string>&amp;Use the ledger lens</string>
                         </property>
                     </widget>
                     <widget class="QCheckBox">
@@ -63,7 +63,7 @@
                             <cstring>kcfg_AlwaysShowNrField</cstring>
                         </property>
                         <property name="text">
-                            <string>Always show a No. field</string>
+                            <string>&amp;Always show a No. field</string>
                         </property>
                     </widget>
                     <widget class="QCheckBox">
@@ -71,7 +71,7 @@
                             <cstring>kcfg_ShowFancyMarker</cstring>
                         </property>
                         <property name="text">
-                            <string>Show group header between transactions</string>
+                            <string>Show group header &amp;between transactions</string>
                         </property>
                         <property name="whatsThis" stdset="0">
                             <string>Draws a larger header above each group of transaction. The grouping depends on the current sort order.</string>
@@ -235,6 +235,29 @@
                                 </widget>
                             </hbox>
                         </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                                <cstring>TabPage</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Search view</string>
+                            </attribute>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="KTextEdit">
+                                    <property name="name">
+                                        <cstring>kcfg_sortSearchView</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="TransactionSortOption">
+                                    <property name="name">
+                                        <cstring>m_sortSearchView</cstring>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
                     </widget>
                     <widget class="KActiveLabel">
                         <property name="name">
@@ -251,7 +274,7 @@
                     <cstring>TabPage</cstring>
                 </property>
                 <attribute name="title">
-                    <string>Data entry</string>
+                    <string>D&amp;ata entry</string>
                 </attribute>
                 <vbox>
                     <property name="name">

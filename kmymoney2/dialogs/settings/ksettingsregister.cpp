@@ -37,10 +37,12 @@ KSettingsRegister::KSettingsRegister(QWidget* parent, const char* name) :
   // setup connections, so that the sort optios get loaded once the edit fields are filled
   connect(kcfg_sortNormalView, SIGNAL(textChanged()), this, SLOT(slotLoadNormal()));
   connect(kcfg_sortReconcileView, SIGNAL(textChanged()), this, SLOT(slotLoadReconcile()));
+  connect(kcfg_sortSearchView, SIGNAL(textChanged()), this, SLOT(slotLoadSearch()));
 
   // setup connections, so that changes by the user are forwarded to the (hidden) edit fields
   connect(m_sortNormalView, SIGNAL(settingsChanged(const QString&)), kcfg_sortNormalView, SLOT(setText(const QString&)));
   connect(m_sortReconcileView, SIGNAL(settingsChanged(const QString&)), kcfg_sortReconcileView, SLOT(setText(const QString&)));
+  connect(m_sortSearchView, SIGNAL(settingsChanged(const QString&)), kcfg_sortSearchView, SLOT(setText(const QString&)));
 }
 
 KSettingsRegister::~KSettingsRegister()
@@ -59,6 +61,13 @@ void KSettingsRegister::slotLoadReconcile(void)
   // only need this once
   disconnect(kcfg_sortReconcileView, SIGNAL(textChanged()), this, SLOT(slotLoadReconcile()));
   m_sortReconcileView->setSettings(kcfg_sortReconcileView->text());
+}
+
+void KSettingsRegister::slotLoadSearch(void)
+{
+  // only need this once
+  disconnect(kcfg_sortSearchView, SIGNAL(textChanged()), this, SLOT(slotLoadSearch()));
+  m_sortSearchView->setSettings(kcfg_sortSearchView->text());
 }
 
 #include "ksettingsregister.moc"

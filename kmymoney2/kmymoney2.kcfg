@@ -196,6 +196,10 @@
   <label>Sort order of register in normal view</label>
   <default>1,-4</default>
   </entry>
+  <entry name="sortSearchView" type="String">
+  <label>Sort order of register in search dialog</label>
+  <default>1,-9,-4</default>
+  </entry>
  </group>
  <group name="Schedule Options">
  </group>

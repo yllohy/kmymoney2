@@ -411,37 +411,13 @@ void KGlobalLedgerView::loadView(void)
     }
 
     // add the group markers
-    addGroupMarkers();
+    m_register->addGroupMarkers();
 
     // sort the transactions according to the sort setting
     m_register->sortItems();
 
-    // remove all trailing group markers
-    KMyMoneyRegister::RegisterItem* p = m_register->lastItem();
-    while(p) {
-      KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
-      if(t)
-        break;
-      KMyMoneyRegister::RegisterItem* q = p;
-      p = p->prevItem();
-      delete q;
-    }
-
-    // remove all adjacent group markers
-    bool lastWasGroupMarker = false;
-    p = m_register->lastItem();
-    while(p) {
-      KMyMoneyRegister::GroupMarker* m = dynamic_cast<KMyMoneyRegister::GroupMarker*>(p);
-      p = p->prevItem();
-      if(m) {
-        if(lastWasGroupMarker) {
-          delete m;
-        }
-        lastWasGroupMarker = true;
-      } else
-        lastWasGroupMarker = false;
-    }
-
+    // remove trailing and adjacent markers
+    m_register->removeUnwantedGroupMarkers();
 
     // determine balances (actual, cleared). We do this by getting the actual
     // balance of all entered transactions from the engine and walk the list
@@ -454,7 +430,7 @@ void KGlobalLedgerView::loadView(void)
 
     balance = balance * factor;
     actBalance = clearedBalance = futureBalance = balance;
-    p = m_register->lastItem();
+    KMyMoneyRegister::RegisterItem* p = m_register->lastItem();
     focusItem = p;
     while(p) {
       KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
@@ -594,126 +570,6 @@ void KGlobalLedgerView::slotUpdateViewPos(void)
   d->m_inLoading = false;
 }
 
-void KGlobalLedgerView::addGroupMarkers(void)
-{
-  QMap<QString, int> list;
-  QMap<QString, int>::const_iterator it;
-  KMyMoneyRegister::RegisterItem* p = m_register->firstItem();
-  KMyMoneyRegister::Transaction* t;
-  QString name;
-  QDate today;
-  QDate yesterday, thisWeek, lastWeek;
-  QDate thisMonth, lastMonth;
-  QDate thisYear;
-  int weekStartOfs;
-
-  switch(m_register->primarySortKey()) {
-    case KMyMoneyRegister::PostDateSort:
-    case KMyMoneyRegister::EntryDateSort:
-      today = QDate::currentDate();
-      thisMonth.setYMD(today.year(), today.month(), 1);
-      lastMonth = thisMonth.addMonths(-1);
-      yesterday = today.addDays(-1);
-      // a = QDate::dayOfWeek()      todays weekday (1 = Monday, 7 = Sunday)
-      // b = KLocale::weekStartDay() first day of week (1 = Monday, 7 = Sunday)
-      weekStartOfs = today.dayOfWeek() - KGlobal::locale()->weekStartDay();
-      if(weekStartOfs < 0) {
-        weekStartOfs = 7 + weekStartOfs;
-      }
-      thisWeek = today.addDays(-weekStartOfs);
-      lastWeek = thisWeek.addDays(-7);
-      thisYear.setYMD(today.year(), 1, 1);
-      if(KMyMoneySettings::showFancyMarker()) {
-        new KMyMoneyRegister::FancyDateGroupMarker(m_register, thisYear, i18n("This year"));
-        new KMyMoneyRegister::FancyDateGroupMarker(m_register, lastMonth, i18n("Last month"));
-        new KMyMoneyRegister::FancyDateGroupMarker(m_register, thisMonth, i18n("This month"));
-        new KMyMoneyRegister::FancyDateGroupMarker(m_register, lastWeek, i18n("Last week"));
-        new KMyMoneyRegister::FancyDateGroupMarker(m_register, thisWeek, i18n("This week"));
-        new KMyMoneyRegister::FancyDateGroupMarker(m_register, yesterday, i18n("Yesterday"));
-        new KMyMoneyRegister::FancyDateGroupMarker(m_register, today, i18n("Today"));
-        new KMyMoneyRegister::FancyDateGroupMarker(m_register, today.addDays(1), i18n("Future transactions"));
-      } else {
-        new KMyMoneyRegister::SimpleDateGroupMarker(m_register, today.addDays(1), i18n("Future transactions"));
-      }
-      break;
-
-    case KMyMoneyRegister::TypeSort:
-      if(KMyMoneySettings::showFancyMarker()) {
-        new KMyMoneyRegister::TypeGroupMarker(m_register, KMyMoneyRegister::Deposit, m_account.accountType());
-        new KMyMoneyRegister::TypeGroupMarker(m_register, KMyMoneyRegister::Payment, m_account.accountType());
-      }
-      break;
-
-    case KMyMoneyRegister::ReconcileStateSort:
-      if(KMyMoneySettings::showFancyMarker()) {
-        new KMyMoneyRegister::ReconcileGroupMarker(m_register, MyMoneySplit::NotReconciled);
-        new KMyMoneyRegister::ReconcileGroupMarker(m_register, MyMoneySplit::Cleared);
-        new KMyMoneyRegister::ReconcileGroupMarker(m_register, MyMoneySplit::Reconciled);
-        new KMyMoneyRegister::ReconcileGroupMarker(m_register, MyMoneySplit::Frozen);
-      }
-      break;
-
-    case KMyMoneyRegister::PayeeSort:
-      if(KMyMoneySettings::showFancyMarker()) {
-        while(p) {
-          t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
-          if(t) {
-            list[t->sortPayee()] = 1;
-          }
-          p = p->nextItem();
-        }
-        for(it = list.begin(); it != list.end(); ++it) {
-          name = it.key();
-          if(name.isEmpty()) {
-            name = i18n("Unknown payee", "Unknown");
-          }
-          new KMyMoneyRegister::PayeeGroupMarker(m_register, name);
-        }
-      }
-      break;
-
-    case KMyMoneyRegister::CategorySort:
-      if(KMyMoneySettings::showFancyMarker()) {
-        while(p) {
-          t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
-          if(t) {
-            list[t->sortCategory()] = 1;
-          }
-          p = p->nextItem();
-        }
-        for(it = list.begin(); it != list.end(); ++it) {
-          name = it.key();
-          if(name.isEmpty()) {
-            name = i18n("Unknown category", "Unknown");
-          }
-          new KMyMoneyRegister::CategoryGroupMarker(m_register, name);
-        }
-      }
-      break;
-
-    case KMyMoneyRegister::SecuritySort:
-      if(KMyMoneySettings::showFancyMarker()) {
-        while(p) {
-          t = dynamic_cast<KMyMoneyRegister::InvestTransaction*>(p);
-          if(t) {
-            list[t->sortSecurity()] = 1;
-          }
-          p = p->nextItem();
-        }
-        for(it = list.begin(); it != list.end(); ++it) {
-          name = it.key();
-          if(name.isEmpty()) {
-            name = i18n("Unknown security", "Unknown");
-          }
-          new KMyMoneyRegister::CategoryGroupMarker(m_register, name);
-        }
-      }
-      break;
-
-    default: // no markers supported
-      break;
-  }
-}
 
 void KGlobalLedgerView::resizeEvent(QResizeEvent* ev)
 {

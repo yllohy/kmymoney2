@@ -68,7 +68,7 @@ while (<>)
 	chomp;
 	next if /^(#|\s*$)/;
 	
-	if (/^\s*\[([A-Za-z_][A-Za-z0-9_]*)\]\s*$/)
+	if (/^\s*\[([A-Za-z_][A-Za-z0-9_:]*)\]\s*$/)
 	{
 		addwidget if $class;
 		%defs = {};

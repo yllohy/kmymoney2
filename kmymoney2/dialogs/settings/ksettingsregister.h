@@ -39,6 +39,7 @@ public:
 protected slots:
   void slotLoadNormal(void);
   void slotLoadReconcile(void);
+  void slotLoadSearch(void);
 };
 #endif
 

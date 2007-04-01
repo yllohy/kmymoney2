@@ -206,6 +206,7 @@ class Register : public TransactionEditorContainer
   // friend class QHeader;
   // friend class QTableHeader;
   // friend class RegisterItem;
+  friend class Transaction;
   friend class StdTransaction;
   friend class InvestTransaction;
 
@@ -298,9 +299,25 @@ public:
     */
   void suppressAdjacentMarkers(void);
 
-   void adjustColumn(int col);
+  /**
+    * Adjusts column @a col so that all data fits in width.
+    */
+  void adjustColumn(int col);
 
+  /**
+    * Convenience method to setup the register to show the columns
+    * based on the account type of @a account. If @a showAccountColumn
+    * is @a true then the account column is shown independant of the
+    * account type. If @a account does not have an @a id, all columns
+    * will be hidden.
+    */
   void setupRegister(const MyMoneyAccount& account, bool showAccountColumn = false);
+
+  /**
+    * Show the columns contained in @a cols for @a account. @a account
+    * can be left empty ( MyMoneyAccount() ) e.g. for the search dialog.
+    */
+  void Register::setupRegister(const MyMoneyAccount& account, const QValueList<Column>& cols);
 
   void setSortOrder(const QString& order);
   const QValueList<TransactionSortField>& sortOrder(void) const { return m_sortOrder; }
@@ -358,6 +375,26 @@ public:
   void repaintItems(RegisterItem* first = 0, RegisterItem* last = 0);
 
   unsigned int drawCounter(void) const { return m_drawCounter; }
+
+  /**
+    * This method creates group marker items and adds them to the register
+    */
+  void addGroupMarkers(void);
+
+  /**
+    * This method removes all trailing group markers and in a second
+    * run reduces all adjacent group markers to show only one. In that
+    * case the last one will remain.
+    */
+  void removeUnwantedGroupMarkers(void);
+
+  void setLedgerLensForced(bool forced=true) { m_ledgerLensForced = forced; }
+
+  /**
+    * Sets the selection mode to @a mode. Supported modes are QTable::Single and
+    * QTable::Multi. QTable::Multi is the default when the object is created.
+    */
+  void setSelectionMode(SelectionMode mode) { m_selectionMode = mode; }
 
 protected:
   void drawContents(QPainter *p, int cx, int cy, int cw, int ch);
@@ -470,6 +507,9 @@ protected:
   int                          m_rowHeightHint;
 
   MyMoneyAccount               m_account;
+
+  bool                         m_ledgerLensForced;
+  SelectionMode                m_selectionMode;
 
 private:
   bool                         m_listsDirty;

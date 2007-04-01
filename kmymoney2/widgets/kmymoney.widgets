@@ -17,8 +17,9 @@ IncludeFile=kmymoney/kmymoneycurrencyselector.h
 
 [KMyMoneyCurrencySelector]
 
-[Register]
-ImplClass=KMyMoneyRegister::Register
+[KMyMoneyRegister::Register]
+IconSet=register.png
+IncludeFile=kmymoney/register.h
 
 [KMyMoneyCategory]
 

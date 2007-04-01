@@ -263,11 +263,6 @@ protected:
 
   void resizeEvent(QResizeEvent*);
 
-  /**
-    * This method creates group marker items and adds them to the register
-    */
-  void addGroupMarkers(void);
-
   void selectTransaction(const QCString& id);
 
   /**
