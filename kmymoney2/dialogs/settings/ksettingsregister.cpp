@@ -31,8 +31,10 @@
 KSettingsRegister::KSettingsRegister(QWidget* parent, const char* name) :
   KSettingsRegisterDecl(parent, name)
 {
+  // hide the internally used text fields
   kcfg_sortNormalView->hide();
   kcfg_sortReconcileView->hide();
+  kcfg_sortSearchView->hide();
 
   // setup connections, so that the sort optios get loaded once the edit fields are filled
   connect(kcfg_sortNormalView, SIGNAL(textChanged()), this, SLOT(slotLoadNormal()));
