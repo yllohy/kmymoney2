@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="14" name="kmymoney2" >
+<kpartgui version="15" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
@@ -97,6 +97,9 @@
    <Action name="tools_update_prices" />
    <Action name="tools_consistency_check" />
    <Action name="tools_performancetest" />
+   <Separator/>
+   <Action name="debug_traces" />
+   <Action name="debug_timers" />
   </Menu>
   <Menu name="settings" >
    <Action append="show_merge" name="settings_enable_messages" />

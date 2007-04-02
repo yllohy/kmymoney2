@@ -2462,9 +2462,9 @@ void KLedgerView::slotEndMatch(void)
   {
     MyMoneyTransaction endMatchTransaction = m_transaction;
 
-    KMergeTransactionsDlg dlg(m_account.id());
-    dlg.addTransaction(m_matchTransaction.id());
-    dlg.addTransaction(endMatchTransaction.id());
+    KMergeTransactionsDlg dlg(m_account);
+    dlg.addTransaction(m_matchTransaction);
+    dlg.addTransaction(endMatchTransaction);
     if (dlg.exec() == QDialog::Accepted)
     {
     // Now match the transactions.

@@ -18,11 +18,11 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qpushbutton.h>
-
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kpushbutton.h>
+#include <kstdguiitem.h>
 #include <kapplication.h>
 
 // ----------------------------------------------------------------------------
@@ -30,22 +30,59 @@
 
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/mymoneytransaction.h>
-#include "kmergetransactionsdlg.h"
-#include "../widgets/kmymoneyregistersearch.h"
+#include <kmymoney/kmymoneyglobalsettings.h>
 
-KMergeTransactionsDlg::KMergeTransactionsDlg(QCString _accountid): m_displayaccountid(_accountid)
+#include "kmergetransactionsdlg.h"
+
+KMergeTransactionsDlg::KMergeTransactionsDlg(const MyMoneyAccount& _account, QWidget* parent, const char* name) :
+  KMergeTransactionsDlgDecl(parent, name),
+  m_account(_account)
 {
-  m_register->setParent(this);
+  // clear current register contents
+  m_register->clear();
+
+  // setup header font
+  QFont font = KMyMoneyGlobalSettings::listHeaderFont();
+  QFontMetrics fm( font );
+  int height = fm.lineSpacing()+6;
+  m_register->horizontalHeader()->setMinimumHeight(height);
+  m_register->horizontalHeader()->setMaximumHeight(height);
+  m_register->horizontalHeader()->setFont(font);
+
+  // setup cell font
+  font = KMyMoneyGlobalSettings::listCellFont();
+  m_register->setFont(font);
+
+  // ... setup the register columns ...
+  m_register->setupRegister(m_account);
+
+  // setup buttons
+  m_helpButton->setGuiItem(KStdGuiItem::help());
+  buttonOk->setGuiItem(KStdGuiItem::ok());
+  buttonCancel->setGuiItem(KStdGuiItem::cancel());
 
   connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotHelp()));
 }
 
-void KMergeTransactionsDlg::addTransaction(const QCString& id)
+void KMergeTransactionsDlg::addTransaction(const MyMoneyTransaction& t)
 {
-  KMyMoneyTransaction ktx(MyMoneyFile::instance()->transaction(id));
-  ktx.setSplitId(ktx.splitByAccount(m_displayaccountid).id());
-  m_transactionList += ktx;
-  m_register->setTransactionCount(m_transactionList.count());
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+    if((*it_s).accountId() == m_account.id()) {
+      KMyMoneyRegister::Transaction* tr = KMyMoneyRegister::Register::transactionFactory(m_register, &m_objects, t, (*it_s), 0);
+      // force full detail display
+      tr->setNumRowsRegister(tr->numRowsRegister(true));
+      break;
+    }
+  }
+}
+
+int KMergeTransactionsDlg::exec(void)
+{
+  m_register->updateRegister(true);
+  m_register->updateContents();
+
+  return KMergeTransactionsDlgDecl::exec();
 }
 
 void KMergeTransactionsDlg::slotHelp(void)
@@ -56,7 +93,7 @@ void KMergeTransactionsDlg::slotHelp(void)
 void KMergeTransactionsDlg::show(void)
 {
   KMergeTransactionsDlgDecl::show();
-  resizeRegister();
+  m_register->resize(KMyMoneyRegister::DetailColumn);
 }
 
 void KMergeTransactionsDlg::resizeEvent(QResizeEvent* ev)
@@ -65,33 +102,7 @@ void KMergeTransactionsDlg::resizeEvent(QResizeEvent* ev)
   KMergeTransactionsDlgDecl::resizeEvent(ev);
 
   // resize the register
-  resizeRegister();
-}
-
-void KMergeTransactionsDlg::resizeRegister(void)
-{
-  int w = m_register->visibleWidth();
-
-  int m_debitWidth = 80;
-  int m_creditWidth = 80;
-
-  m_register->adjustColumn(0);
-  m_register->adjustColumn(1);
-  m_register->adjustColumn(2);
-
-  m_register->setColumnWidth(4, m_debitWidth);
-  m_register->setColumnWidth(5, m_creditWidth);
-
-  for(int i = 0; i < m_register->numCols(); ++i) {
-    switch(i) {
-      default:
-        w -= m_register->columnWidth(i);
-        break;
-      case 3:     // skip the one, we want to set
-        break;
-    }
-  }
-  m_register->setColumnWidth(3, w);
+  m_register->resize(KMyMoneyRegister::DetailColumn);
 }
 
 #include "kmergetransactionsdlg.moc"

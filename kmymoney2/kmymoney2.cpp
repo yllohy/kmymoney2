@@ -407,8 +407,12 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Rename budget"), "edit", 0, this, SIGNAL(budgetRename()), actionCollection(), "budget_rename");
   new KAction(i18n("Delete budget"), "delete", 0, this, SLOT(slotBudgetDelete()), actionCollection(), "budget_delete");
 
-  new KAction(i18n("Test new user wizard"), "", KShortcut("Ctrl+G"), this, SLOT(slotNewUserWizard()), actionCollection(), "new_user_wizard");
+  new KAction("Test new user wizard", "", KShortcut("Ctrl+G"), this, SLOT(slotNewUserWizard()), actionCollection(), "new_user_wizard");
 
+#ifdef KMM_DEBUG
+  new KToggleAction("Debug Traces", "", 0, this, SLOT(slotToggleTraces()), actionCollection(), "debug_traces");
+  new KToggleAction("Debug Timers", "", 0, this, SLOT(slotToggleTimers()), actionCollection(), "debug_timers");
+#endif
   // ************************
   // Currently unused actions
   // ************************
@@ -1126,6 +1130,17 @@ void KMyMoney2App::slotHideUnusedCategories(void)
 void KMyMoney2App::slotShowAllAccounts(void)
 {
   myMoneyView->slotRefreshViews();
+}
+
+void KMyMoney2App::slotToggleTraces(void)
+{
+  MyMoneyTracer::onOff(toggleAction("debug_traces")->isChecked() ? 1 : 0);
+}
+
+void KMyMoney2App::slotToggleTimers(void)
+{
+  extern bool timersOn; // main.cpp
+  timersOn = toggleAction("debug_timers")->isChecked();
 }
 
 const QString KMyMoney2App::slotStatusMsg(const QString &text)
@@ -3863,9 +3878,9 @@ void KMyMoney2App::slotEndMatch(void)
   MyMoneyTransaction startMatchTransaction = m_matchTransaction;
   MyMoneyTransaction endMatchTransaction = m_selectedTransactions[0].transaction();
 
-  KMergeTransactionsDlg dlg(m_selectedAccount.id());
-  dlg.addTransaction(startMatchTransaction.id());
-  dlg.addTransaction(endMatchTransaction.id());
+  KMergeTransactionsDlg dlg(m_selectedAccount);
+  dlg.addTransaction(startMatchTransaction);
+  dlg.addTransaction(endMatchTransaction);
   if (dlg.exec() == QDialog::Accepted)
   {
     // Now match the transactions.

@@ -285,6 +285,11 @@ void MyMoneyTracer::printf(const char *format, ...) const
   }
 }
 
+void MyMoneyTracer::onOff(int onOff)
+{
+  m_onoff = onOff;
+}
+
 void MyMoneyTracer::on(void)
 {
   m_onoff = 1;

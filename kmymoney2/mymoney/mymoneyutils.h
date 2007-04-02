@@ -91,6 +91,7 @@ public:
 
   static void off(void);
   static void on(void);
+  static void onOff(int onOff);
 
 private:
   QString m_className;

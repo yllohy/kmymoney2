@@ -18,24 +18,36 @@
 #ifndef KMERGETRANSACTIONSDLG_H
 #define KMERGETRANSACTIONSDLG_H
 
-#include <kdebug.h>
+// ----------------------------------------------------------------------------
+// QT Includes
 
 class QResizeEvent;
 
-#include "../widgets/kmymoneyregister.h"
+// ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kdebug.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
+#include <kmymoney/register.h>
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneyobjectcontainer.h>
+
 #include "../dialogs/kmergetransactionsdlgdecl.h"
 
-class KMergeTransactionsDlg: public KMergeTransactionsDlgDecl, public IMyMoneyRegisterParent
+class KMergeTransactionsDlg: public KMergeTransactionsDlgDecl
 {
   Q_OBJECT
 public:
-  KMergeTransactionsDlg(QCString _accountid);
+  KMergeTransactionsDlg(const MyMoneyAccount& account, QWidget* parent = 0, const char* name = 0);
 
   /**
-   * Adds this transaction to the dialog
+   * Adds the transaction @a t to the dialog
    */
-  void addTransaction(const QCString& id);
-
+  void addTransaction(const MyMoneyTransaction& t);
+#if 0
   /**
     * This method is used by the IMyMoneyRegisterParent interface.  It should
     * accept a CONST pointer as a return value, if the function itself is
@@ -50,7 +62,7 @@ public:
     *         selected transaction. If idx is out of bounds,
     *         0 will be returned.
     */
-  virtual KMyMoneyTransaction* transaction(const int idx) const 
+  virtual KMyMoneyTransaction* transaction(const int idx) const
   {
     unsigned uidx = static_cast<unsigned>(idx);
     if ( uidx >= m_transactionList.size() )
@@ -58,30 +70,8 @@ public:
     else
       return &(m_transactionList[uidx]);
   }
-
-  /**
-    * This method is used by the IMyMoneyRegisterParent interface.  It is not
-    * really needed, and should be removed as a required member of the
-    * interface.
-    *
-    * It returns the balance of any visible transaction
-    * in the ledger of this account. The balance depends on filters
-    * and is automatically calculated when any view option is changed
-    * (e.g. filters, sort order, etc.)
-    *
-    * @param idx index into the ledger starting at 0
-    * @return Value of the balance for the account after the selected
-    *         transaction has been taken into account. If idx is out
-    *         of bounds, 0 will be returned as value. For liability type
-    *         accounts, the sign will be inverted for display purposes.
-    */
-  virtual const MyMoneyMoney balance(const int) const { return 0; }
-
-  /**
-    * This method is used by the IMyMoneyRegisterParent interface.
-    */
-  virtual bool focusNextPrevChild(bool next) { return KMergeTransactionsDlgDecl::focusNextPrevChild(next); }
-
+#endif
+  int exec(void);
   void show(void);
 
 public slots:
@@ -89,18 +79,19 @@ public slots:
 
 protected:
   void resizeEvent(QResizeEvent* ev);
-  void resizeRegister(void);
+  // void resizeRegister(void);
 
 private:
+  MyMoneyObjectContainer    m_objects;
   /**
    * The list of transactions which are to be displayed by the dialog
    */
-  mutable QValueList<KMyMoneyTransaction> m_transactionList;
+  // mutable QValueList<KMyMoneyTransaction> m_transactionList;
 
   /**
-   * The ID of the account in which the transactions are displayed
-   */
-  QCString m_displayaccountid;
+    * The account in which the transactions are displayed
+    */
+  MyMoneyAccount m_account;
 };
 
 #endif // KMERGETRANSACTIONSDLG_H

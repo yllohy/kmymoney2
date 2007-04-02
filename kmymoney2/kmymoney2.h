@@ -123,6 +123,16 @@ protected slots:
   void slotPerformanceTest(void);
 
   /**
+    * Debugging only: turn on/off traces
+    */
+  void slotToggleTraces(void);
+
+  /**
+    * Debugging only: turn on/off timers
+    */
+  void slotToggleTimers(void);
+
+  /**
     * Called when the user asks for the personal information.
     */
   void slotFileViewPersonal();
@@ -669,6 +679,7 @@ public slots:
     * Toggles the show all accounts setting
     */
   void slotShowAllAccounts(void);
+
 
   /**
     * changes the statusbar contents for the standard label permanently,
