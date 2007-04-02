@@ -1211,8 +1211,10 @@ bool StdTransactionEditor::addVatSplit(MyMoneyTransaction& tr, const MyMoneyMone
         // split value is the gross value
         gv = amount;
         nv = gv / (MyMoneyMoney(1,1) + vatRate);
-        cat.setShares(-nv.convert(fract));
-        cat.setValue(cat.shares());
+        MyMoneySplit catSplit = tr.splitByAccount(m_account.id(), false);
+        catSplit.setShares(-nv.convert(fract));
+        catSplit.setValue(catSplit.shares());
+        tr.modifySplit(catSplit);
 
       } else {
         // split value is the net value
