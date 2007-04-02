@@ -1206,7 +1206,7 @@ bool StdTransactionEditor::addVatSplit(MyMoneyTransaction& tr, const MyMoneyMone
 
       tax.setAccountId(vatAcc.id());
 
-      qDebug("vat amount is '%s'", category.value("VatAmount").latin1());
+      // qDebug("vat amount is '%s'", category.value("VatAmount").latin1());
       if(category.value("VatAmount").lower() != QString("net")) {
         // split value is the gross value
         gv = amount;
@@ -1275,8 +1275,10 @@ MyMoneyMoney StdTransactionEditor::removeVatSplit(void)
   m_splits.append(c);
 
   // ... make sure that the widget is updated ...
-  QCString id;
-  setupCategoryWidget(id);
+  // I dropped this, because it caused the split transaction editor
+  // to show up whenever the amount had been changed. (ipwizard)
+  // QCString id;
+  // setupCategoryWidget(id);
 
   // ... and return the updated amount
   return amount;

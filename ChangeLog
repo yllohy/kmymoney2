@@ -1,3 +1,6 @@
+2007-04-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed automatic VAT assignment when gross amount was selected
+
 2007-03-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Moved isAssetLiability and isIncomeExpense from
     ReportAccount to its base class MyMoneyAccount
