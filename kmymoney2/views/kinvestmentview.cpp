@@ -22,6 +22,7 @@
 // KDE Includes
 
 #include "kdecompat.h"
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -40,7 +41,7 @@
 
 #include "kinvestmentview.h"
 #include "kinvestmentlistitem.h"
-#include "kledgerviewinvestments.h"
+// #include "kledgerviewinvestments.h"
 
 class KInvestmentViewPrivate
 {

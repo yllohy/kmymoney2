@@ -41,7 +41,7 @@
 // Project Includes
 
 #include "kpayeesviewdecl.h"
-#include "kledgerview.h"
+#include "kmymoneytransaction.h"
 #include <kmymoney/mymoneypayee.h>
 
 class KListViewSearchLineWidget;
@@ -49,6 +49,94 @@ class KListViewSearchLineWidget;
 /**
   * @author Michael Edwardes, Thomas Baumgart
   */
+
+/**
+  * This class is used to store a sorted vector of pointers to
+  * the transactions that are visible in a ledger view. When the
+  * vector is created, the sort method is set to SortPostDate.
+  * The sort type can be changed using the method setSortType().
+  */
+class KTransactionPtrVector : public QPtrVector<KMyMoneyTransaction> {
+public:
+  /**
+    * This enumerator defines the possible sort methods.
+    * Possible values are:
+    *
+    */
+  enum TransactionSortE {
+    SortEntryDate = 0,      /**< Sort the vector so that the transactions appear sorted
+                              *  according to their entry date
+                              */
+    SortPostDate,           /**< Sort the vector so that the transactions appear sorted
+                              *     according to their post date
+                              */
+    SortTypeNr,             /**< Sort the vector so that the transactions appear sorted
+                              *     according to their action and nr
+                              */
+    SortReceiver,           /**< Sort the vector so that the transactions appear sorted
+                              *     according to their receiver
+                              */
+    SortValue,              /**< Sort the vector so that the transactions appear sorted
+                              *     according to their value
+                              */
+    SortNr,                 /**< Sort the vector so that the transactions appear sorted
+                              *     according to nr field contents
+                              */
+    SortEntryOrder          /**< Sort the vector so that the transactions appear sorted
+                              *     according to order of entry
+                              */
+  };
+
+  KTransactionPtrVector() { m_sortType = SortPostDate; };
+  ~KTransactionPtrVector() {};
+
+  /**
+    * This method is used to set a different sort type.
+    * The vector is resorted. See KTransactionPtrVector::TransactionSortE
+    * for possible values.
+    */
+  void setSortType(const TransactionSortE type);
+
+  /**
+    * This method returns the current sort type.
+    *
+    * @return transactionSortE value of sort order. See
+    *         KTransactionPtrVector::TransactionSortE for possible values.
+    */
+  const TransactionSortE sortType(void) const { return m_sortType; };
+
+  /**
+    * This method is used to set the account id to have a chance to
+    * get information about the split referencing the current account
+    * during the sort phase.
+    */
+  void setAccountId(const QCString& id);
+
+  /**
+    * This method is used to set the payee id to have a chance to
+    * get information about the split referencing the current payee
+    * during the sort phase.
+    */
+  void setPayeeId(const QCString& id);
+
+protected:
+  int compareItems(KTransactionPtrVector::Item d1, KTransactionPtrVector::Item d2);
+
+private:
+  int compareItems(const QCString& s1, const QCString& s2) const;
+  int compareItems(const QString& s1, const QString& s2) const;
+
+private:
+  enum {
+    AccountMode = 0,
+    PayeeMode
+  };
+  short             m_idMode;
+  QCString          m_id;
+  TransactionSortE  m_sortType;
+};
+
+
 
 /**
   * This class represents an item in the payees list view.

@@ -32,7 +32,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneytransaction.h"
+#include <kmymoney/mymoneytransaction.h>
 
 /**
   * @author Thomas Baumgart

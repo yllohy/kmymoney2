@@ -317,7 +317,7 @@ public:
     * Show the columns contained in @a cols for @a account. @a account
     * can be left empty ( MyMoneyAccount() ) e.g. for the search dialog.
     */
-  void Register::setupRegister(const MyMoneyAccount& account, const QValueList<Column>& cols);
+  void setupRegister(const MyMoneyAccount& account, const QValueList<Column>& cols);
 
   void setSortOrder(const QString& order);
   const QValueList<TransactionSortField>& sortOrder(void) const { return m_sortOrder; }
