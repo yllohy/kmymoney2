@@ -83,8 +83,9 @@ MyMoneySchedule::occurenceE KEditScheduleDialog::occurMasks[] = {
   MyMoneySchedule::OCCUR_EVERYOTHERYEAR,
   (MyMoneySchedule::occurenceE) END_OCCURS };
 
-KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySchedule& schedule, QWidget *parent, const char *name)
- : kEditScheduledTransferDlgDecl(parent, name, true)
+KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySchedule& schedule, QWidget *parent, const char *name) :
+  kEditScheduledTransferDlgDecl(parent, name, true),
+  m_cancelSave(false)
 {
   // Since we cannot create a category widget with the split button in designer,
   // we recreate the category widget here and replace it in the layout
@@ -412,7 +413,7 @@ void KEditScheduleDialog::slotEditSplits(void)
                                                          this);
     connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
-    if(dlg->exec())
+    if(dlg->exec() == QDialog::Accepted)
     {
       m_transaction = dlg->transaction();
 
@@ -449,6 +450,8 @@ void KEditScheduleDialog::slotEditSplits(void)
           break;
       }
 
+    } else {
+      m_cancelSave = true;
     }
 
     delete dlg;
@@ -493,8 +496,16 @@ void KEditScheduleDialog::slotWillEndToggled(bool on)
 
 void KEditScheduleDialog::okClicked(void)
 {
+  m_cancelSave = false;
+
   // force focus change to update all data
   m_qbuttonOK->setFocus();
+
+  // looks like m_cancelSave could never become true, but
+  // the above setFocus() could trigger slotEditSplit() which
+  // sets this variable to true under certain circumstances.
+  if(m_cancelSave)
+    return;
 
   if (m_scheduleName->text().isEmpty())
   {
@@ -517,7 +528,7 @@ void KEditScheduleDialog::okClicked(void)
     return;
   }
 
-  if (m_actionType != MyMoneySplit::ActionTransfer && m_category->selectedItem().isEmpty())
+  if (m_actionType != MyMoneySplit::ActionTransfer && m_transaction.splitCount() < 2)
   {
     KMessageBox::information(this, i18n("Please fill in the category field."));
     m_category->setFocus();
@@ -907,11 +918,10 @@ void KEditScheduleDialog::slotAmountChanged(const QString&)
       }
       else if (count >= 3)
       {
-        KMessageBox::information(this, i18n("All split data lost.  Please re-enter splits"));
-        disconnect(m_category, SIGNAL(focusIn()), this, SLOT(slotEditSplits()));
-        m_transaction.removeSplits();
-        m_category->setSelectedItem(QCString());
-        m_category->setFocus();
+        if(!m_transaction.splitSum().isZero()) {
+          KMessageBox::information(this, i18n("Your recent change caused the split transaction to contain some unassigned amount. You will now be directed to the split transaction editor to resolve the issue."), i18n("Unassigned amount"), "ScheduleSplitsumNotZero");
+          slotEditSplits();
+        }
       }
     }
   }

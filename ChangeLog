@@ -1,3 +1,6 @@
+2007-04-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Schedule editor does not wipe out split transaction when amount was changed
+
 2007-04-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed automatic VAT assignment when gross amount was selected
   * Merge transaction dialog uses new register code

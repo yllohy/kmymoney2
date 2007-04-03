@@ -164,6 +164,7 @@ private:
   /* To hold list of mandatory fields */
   kMandatoryFieldGroup *m_requiredFields;
 
+  bool                  m_cancelSave;
 };
 
 #endif
