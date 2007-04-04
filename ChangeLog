@@ -4,6 +4,7 @@
   * Clicking the reconciliaiont column now toggle through the possible
     reconciliation states. Same applies for Ctrl-Space.
   * Mark transaction cleared now has a shortcut of Alt-Ctrl-Space
+  * Fixed autofill problem
 
 2007-04-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Schedule editor does not wipe out split transaction when amount was changed

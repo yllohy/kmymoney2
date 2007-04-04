@@ -892,6 +892,7 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
 
     m_transaction.removeSplits();
     m_split = MyMoneySplit();
+    MyMoneySplit otherSplit;
     QValueList<MyMoneySplit>::ConstIterator it;
     for(it = t.splits().begin(); it != t.splits().end(); ++it) {
       MyMoneySplit s(*it);
@@ -933,10 +934,23 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
       m_transaction.addSplit(s);
       if(s.accountId() == m_account.id() && m_split == MyMoneySplit()) {
         m_split = s;
+      } else {
+        otherSplit = s;
       }
     }
+
+    // make sure to extract the right action
+    KMyMoneyRegister::Action action;
+    action = m_split.shares().isNegative() ? KMyMoneyRegister::ActionWithdrawal : KMyMoneyRegister::ActionDeposit;
+
+    if(m_transaction.splitCount() == 2) {
+      MyMoneyAccount acc = m_objects->account(otherSplit.accountId());
+      if(acc.isAssetLiability())
+        action = KMyMoneyRegister::ActionTransfer;
+    }
+
     // now setup the widgets with the new data
-    loadEditWidgets();
+    loadEditWidgets(action);
   }
 
   // focus jumps into the category field
