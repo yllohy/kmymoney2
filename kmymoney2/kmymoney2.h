@@ -379,6 +379,10 @@ protected slots:
 
   /**
     */
+  void slotToggleReconciliationFlag(void);
+
+  /**
+    */
   void slotMarkTransactionCleared(void);
 
   /**
@@ -581,7 +585,14 @@ protected:
   bool payeeInList(const QValueList<MyMoneyPayee>& list, const QCString& id) const;
 
   /**
-    * Mark the selected transactions as provided by @a flag.
+    * Mark the selected transactions as provided by @a flag. If
+    * flag is @a MyMoneySplit::Unknown, the future state depends
+    * on the current stat of the split's flag accoring to the
+    * following table:
+    *
+    * - NotReconciled --> Cleared
+    * - Cleared --> Reconciled
+    * - Reconciled --> NotReconciled
     */
   void markTransaction(MyMoneySplit::reconcileFlagE flag);
 

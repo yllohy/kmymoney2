@@ -178,7 +178,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   m_register->installEventFilter(this);
   connect(m_register, SIGNAL(openContextMenu()), this, SIGNAL(openContextMenu()));
   connect(m_register, SIGNAL(headerClicked()), this, SLOT(slotSortOptions()));
-  connect(m_register, SIGNAL(reconcileStateColumnClicked(KMyMoneyRegister::Transaction*)), this, SLOT(slotToggleMarkTransactionCleared(KMyMoneyRegister::Transaction*)));
+  connect(m_register, SIGNAL(reconcileStateColumnClicked(KMyMoneyRegister::Transaction*)), this, SLOT(slotToggleTransactionMark(KMyMoneyRegister::Transaction*)));
 
   // insert search line widget
 
@@ -1095,19 +1095,10 @@ void KGlobalLedgerView::slotSortOptions(void)
   delete dlg;
 }
 
-void KGlobalLedgerView::slotToggleMarkTransactionCleared(KMyMoneyRegister::Transaction* t)
+void KGlobalLedgerView::slotToggleTransactionMark(KMyMoneyRegister::Transaction* t)
 {
-  if(isReconciliationAccount()) {
-    switch(t->split().reconcileFlag()) {
-      case MyMoneySplit::NotReconciled:
-        emit markTransactionCleared();
-        break;
-      case MyMoneySplit::Cleared:
-        emit markTransactionNotReconciled();
-        break;
-      default:
-        break;
-    }
+  if(!m_inEditMode) {
+    emit toggleReconciliationFlag();
   }
 }
 

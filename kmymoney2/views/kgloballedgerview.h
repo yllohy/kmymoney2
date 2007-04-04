@@ -312,7 +312,7 @@ protected slots:
     */
   void slotUpdateViewPos(void);
   void slotSortOptions(void);
-  void slotToggleMarkTransactionCleared(KMyMoneyRegister::Transaction* t);
+  void slotToggleTransactionMark(KMyMoneyRegister::Transaction* t);
 
   void slotKeepPostDate(const QDate&);
 
@@ -397,15 +397,9 @@ signals:
 
   /**
     * This signal is sent out, when the current selected transaction should
-    * be marked "cleared"
+    * be marked different
     */
-  void markTransactionCleared(void);
-
-  /**
-    * This signal is sent out, when the current selected transaction should
-    * be marked "not reconciled"
-    */
-  void markTransactionNotReconciled(void);
+  void toggleReconciliationFlag(void);
 };
 
 #endif

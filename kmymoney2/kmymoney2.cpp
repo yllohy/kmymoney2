@@ -375,7 +375,8 @@ void KMyMoney2App::initActions()
   new KAction(i18n("Match Transaction..."), "", 0, this, SLOT(slotStartMatch()), actionCollection(), "transaction_start_match");
   new KAction(i18n("Cancel Match"), "", 0, this, SIGNAL(cancelMatchTransaction()), actionCollection(), "transaction_cancel_match");
   new KAction(i18n("Match With This Transaction"), "", 0, this, SLOT(slotEndMatch()), actionCollection(), "transaction_end_match");
-  new KAction(i18n("Mark transaction cleared", "Cleared"), 0, KShortcut("Ctrl+Space"), this, SLOT(slotMarkTransactionCleared()), actionCollection(), "transaction_mark_cleared");
+  new KAction(i18n("Toggle reconciliation flag", "Toggle"), 0, KShortcut("Ctrl+Space"), this, SLOT(slotToggleReconciliationFlag()), actionCollection(), "transaction_mark_toggle");
+  new KAction(i18n("Mark transaction cleared", "Cleared"), 0, KShortcut("Ctrl+Alt+Space"), this, SLOT(slotMarkTransactionCleared()), actionCollection(), "transaction_mark_cleared");
   new KAction(i18n("Mark transaction reconciled", "Reconciled"), "", KShortcut("Ctrl+Shift+Space"), this, SLOT(slotMarkTransactionReconciled()), actionCollection(), "transaction_mark_reconciled");
   new KAction(i18n("Mark transaction not reconciled", "Not reconciled"), "", 0, this, SLOT(slotMarkTransactionNotReconciled()), actionCollection(), "transaction_mark_notreconciled");
   new KAction(i18n("Remove 'import' flag from transaction", "Accept"), "", 0, this, SLOT(slotTransactionsAccept()), actionCollection(), "transaction_accept");
@@ -3743,6 +3744,11 @@ void KMyMoney2App::slotSelectMatchTransaction(const MyMoneyTransaction& t)
   slotUpdateActions();
 }
 
+void KMyMoney2App::slotToggleReconciliationFlag(void)
+{
+  markTransaction(MyMoneySplit::Unknown);
+}
+
 void KMyMoney2App::slotMarkTransactionCleared(void)
 {
   markTransaction(MyMoneySplit::Cleared);
@@ -3775,7 +3781,24 @@ void KMyMoney2App::markTransaction(MyMoneySplit::reconcileFlagE flag)
       MyMoneyTransaction t = MyMoneyFile::instance()->transaction((*it_t).transaction().id());
       MyMoneySplit sp = t.splitById((*it_t).split().id());
       if(sp.reconcileFlag() != flag) {
-        sp.setReconcileFlag(flag);
+        if(flag == MyMoneySplit::Unknown) {
+          switch(sp.reconcileFlag()) {
+            case MyMoneySplit::NotReconciled:
+              sp.setReconcileFlag(MyMoneySplit::Cleared);
+              break;
+            case MyMoneySplit::Cleared:
+              sp.setReconcileFlag(MyMoneySplit::Reconciled);
+              break;
+            case MyMoneySplit::Reconciled:
+              sp.setReconcileFlag(MyMoneySplit::NotReconciled);
+              break;
+            default:
+              break;
+          }
+        } else {
+          sp.setReconcileFlag(flag);
+        }
+
         t.modifySplit(sp);
         MyMoneyFile::instance()->modifyTransaction(t);
       }
