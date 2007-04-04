@@ -79,13 +79,17 @@ void RegisterItem::setNumRowsRegister(int rows)
   }
 }
 
-void RegisterItem::setVisible(bool visible)
+bool RegisterItem::markVisible(bool visible)
 {
   if(m_visible == visible)
-    return;
-
+    return false;
   m_visible = visible;
-  if(m_parent) {
+  return true;
+}
+
+void RegisterItem::setVisible(bool visible)
+{
+  if(markVisible(visible) && m_parent) {
     if(visible) {
       for(int i = startRow(); i < startRow() + numRowsRegister(); ++i) {
         m_parent->showRow(i);

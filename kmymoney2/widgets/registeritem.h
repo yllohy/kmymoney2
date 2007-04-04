@@ -68,6 +68,8 @@ public:
   RegisterItem(Register* parent);
   virtual ~RegisterItem();
 
+  virtual const char* className(void) = 0;
+
   virtual bool isSelectable(void) const = 0;
   virtual bool isSelected(void) const { return false; }
   virtual void setSelected(bool /* selected*/) {}
@@ -161,7 +163,19 @@ public:
   void setNeedResize(void) { m_needResize = true; }
 
   bool isVisible(void) const { return m_visible; }
+
+  /**
+    * Marks the item visible depending on @a visible and
+    * updates the underlying register object
+    */
   virtual void setVisible(bool visible);
+
+  /**
+    * Marks the item visible depending on @a visible but
+    * does not update the underlying register object. Returns
+    * true, if visibility has changed.
+    */
+  virtual bool markVisible(bool visible);
 
   void setNextItem(RegisterItem* p) { m_next = p; }
   void setPrevItem(RegisterItem* p) { m_prev = p; }

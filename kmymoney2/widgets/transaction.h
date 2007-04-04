@@ -70,6 +70,8 @@ public:
   Transaction(Register* parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
   virtual ~Transaction() {};
 
+  virtual const char* className(void) { return "Transaction"; }
+
   bool isSelectable(void) const { return true; }
   bool isSelected(void) const { return m_selected; }
   void setSelected(bool selected);
@@ -271,6 +273,7 @@ public:
   StdTransaction(Register* parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
   virtual ~StdTransaction() {};
 
+  virtual const char* className(void) { return "StdTransaction"; }
   virtual void paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
 
   bool formCellText(QString& txt, int& align, int row, int col, QPainter* painter = 0);
@@ -310,6 +313,7 @@ public:
   virtual ~InvestTransaction() {};
 
   virtual const QString& sortSecurity(void) const { return m_security.name(); }
+  virtual const char* className(void) { return "InvestTransaction"; }
 
   // virtual void paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
 

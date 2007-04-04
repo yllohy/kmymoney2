@@ -1,3 +1,6 @@
+2007-04-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a long pending problem with the visibility of group markers
+
 2007-04-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Schedule editor does not wipe out split transaction when amount was changed
   * Cleanup (removed unused files)

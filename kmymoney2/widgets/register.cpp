@@ -2012,12 +2012,13 @@ void Register::addGroupMarkers(void)
 void Register::removeUnwantedGroupMarkers(void)
 {
   // remove all trailing group markers
+  KMyMoneyRegister::RegisterItem* q;
   KMyMoneyRegister::RegisterItem* p = lastItem();
   while(p) {
+    q = p;
     KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
     if(t)
       break;
-    KMyMoneyRegister::RegisterItem* q = p;
     p = p->prevItem();
     delete q;
   }
@@ -2026,14 +2027,16 @@ void Register::removeUnwantedGroupMarkers(void)
   bool lastWasGroupMarker = false;
   p = lastItem();
   while(p) {
+    q = p;
     KMyMoneyRegister::GroupMarker* m = dynamic_cast<KMyMoneyRegister::GroupMarker*>(p);
     p = p->prevItem();
     if(m) {
+      m->markVisible(true);
       if(lastWasGroupMarker) {
-        delete m;
+        m->markVisible(false);
       }
       lastWasGroupMarker = true;
-    } else
+    } else if(q->isVisible())
       lastWasGroupMarker = false;
   }
 }

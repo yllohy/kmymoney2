@@ -113,6 +113,8 @@ public:
   bool canHaveFocus(void) const { return false; }
   int numRows(void) const { return 1; }
 
+  virtual const char* className(void) { return "GroupMarker"; }
+
   bool isErronous(void) const { return false; }
 
   void paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
@@ -138,6 +140,7 @@ public:
 
   virtual const QDate& sortPostDate(void) const { return m_date; }
   virtual const QDate& sortEntryDate(void) const { return m_date; }
+  virtual const char* className(void) { return "FancyDateGroupMarker"; }
 private:
   QDate                    m_date;
 };
@@ -148,6 +151,7 @@ public:
   SimpleDateGroupMarker(Register* parent, const QDate& date, const QString& txt);
   void paintRegisterCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg);
   int rowHeightHint(void) const;
+  virtual const char* className(void) { return "SimpleDateGroupMarker"; }
 };
 
 class TypeGroupMarker : public GroupMarker
@@ -172,6 +176,8 @@ public:
   CategoryGroupMarker(Register* parent, const QString& category);
   const QString& sortCategory(void) const { return m_txt; }
   const QString& sortSecurity(void) const { return m_txt; }
+
+  virtual const char* className(void) { return "CategoryGroupMarker"; }
 };
 
 class ReconcileGroupMarker : public GroupMarker
