@@ -1470,7 +1470,7 @@ void KMyMoneyView::slotRefreshViews()
   m_payeesView->slotLoadPayees();
   m_ledgerView->slotLoadView();
   m_budgetView->slotRefreshView();
-  m_homeView->slotRefreshView();
+  m_homeView->slotLoadView();
   m_investmentView->slotLoadView();
   m_reportsView->slotLoadView();
 

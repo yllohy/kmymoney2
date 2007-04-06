@@ -44,6 +44,7 @@
 #include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/transactioneditor.h>
 #include <kmymoney/investtransactioneditor.h>
+#include <kmymoney/kmymoneyutils.h>
 
 #include "../kmymoneyglobalsettings.h"
 

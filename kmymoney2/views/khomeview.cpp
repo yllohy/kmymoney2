@@ -64,7 +64,8 @@
 
 KHomeView::KHomeView(QWidget *parent, const char *name ) :
   KMyMoneyViewBase(parent, name, i18n("Home")),
-  m_showAllSchedules(false)
+  m_showAllSchedules(false),
+  m_needReload(true)
 {
   m_part = new KHTMLPart(this, "htmlpart_km2");
   m_viewLayout->addWidget(m_part->view());
@@ -75,7 +76,7 @@ KHomeView::KHomeView(QWidget *parent, const char *name ) :
   connect(m_part->browserExtension(), SIGNAL(openURLRequest(const KURL&, const KParts::URLArgs&)),
           this, SLOT(slotOpenURL(const KURL&, const KParts::URLArgs&)));
 
-  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotRefreshView()));
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadView()));
 }
 
 KHomeView::~KHomeView()
@@ -89,11 +90,22 @@ KHomeView::~KHomeView()
   }
 }
 
+void KHomeView::slotLoadView(void)
+{
+  m_needReload = true;
+  if(isVisible()) {
+    loadView();
+    m_needReload = false;
+  }
+}
+
 void KHomeView::show(void)
 {
-  slotRefreshView();
+  if(m_needReload) {
+    loadView();
+    m_needReload = false;
+  }
   QWidget::show();
-  emit signalViewActivated();
 }
 
 void KHomeView::slotPrintView(void)
@@ -102,7 +114,7 @@ void KHomeView::slotPrintView(void)
     m_part->view()->print();
 }
 
-void KHomeView::slotRefreshView(void)
+void KHomeView::loadView(void)
 {
   m_part->setZoomFactor( KMyMoneySettings::self()->fontSizePercentage() );
   //kdDebug() << "Setting font size: " << m_part->zoomFactor() << endl;
@@ -924,7 +936,7 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
         emit scheduleSelected(id);
       if(!mode.isEmpty()) {
         m_showAllSchedules = (mode == QCString("full"));
-        slotRefreshView();
+        loadView();
       }
 
     } else if(view == VIEW_REPORTS) {
@@ -948,7 +960,7 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
         QTimer::singleShot(0, mw->actionCollection()->action( id ), SLOT(activate()));
 
     } else if(view == VIEW_HOME) {
-      slotRefreshView();
+      loadView();
 
     } else {
       qDebug("Unknown view '%s' in KHomeView::slotOpenURL()", view.latin1());

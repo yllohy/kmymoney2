@@ -1,3 +1,10 @@
+2007-04-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem when creating new investment transactions
+  * Only update home page if visible
+
+2007-04-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed code of old kMyMoneyCategory widget
+
 2007-04-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a long pending problem with the visibility of group markers
   * Always allow click on reconciliation column to change reconciliation state

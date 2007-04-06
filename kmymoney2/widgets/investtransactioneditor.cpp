@@ -511,6 +511,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
 
   // security
   security->setSuppressObjectCreation(false);    // allow object creation on the fly
+  aSet.clear();
   aSet.load(security->selector(), i18n("Security"), m_account.accountList(), true);
 
   if(!isMultiSelection()) {
@@ -518,6 +519,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
     postDate->setDate(m_transaction.postDate());
 
     // security
+    qDebug("Security is '%s'", m_split.accountId().data());
     security->completion()->setSelected(m_split.accountId());
     security->slotItemSelected(m_split.accountId());
 
