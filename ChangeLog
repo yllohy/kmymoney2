@@ -1,6 +1,7 @@
 2007-04-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem when creating new investment transactions
   * Only update home page if visible
+  * Don't jump to investment view after editing investment transactions
 
 2007-04-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed code of old kMyMoneyCategory widget

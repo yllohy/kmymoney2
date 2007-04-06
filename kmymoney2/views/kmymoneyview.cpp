@@ -402,23 +402,18 @@ void KMyMoneyView::enableViews(int state)
   emit viewStateChanged(state != 0);
 }
 
-void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& transaction)
+void KMyMoneyView::slotLedgerSelected(const QCString& _accId, const QCString& transaction)
 {
-  MyMoneyAccount acc = MyMoneyFile::instance()->account(accId);
+  MyMoneyAccount acc = MyMoneyFile::instance()->account(_accId);
+  QCString accId(_accId);
 
   switch(acc.accountType()) {
-    case MyMoneyAccount::Investment:
-      showPage(pageIndex(m_investmentViewFrame));
-      m_investmentView->slotSelectAccount(accId, transaction);
-      break;
-
     case MyMoneyAccount::Stock:
       // if a stock account is selected, we show the
       // the corresponding parent (investment) account
-      showPage(pageIndex(m_investmentViewFrame));
       acc = MyMoneyFile::instance()->account(acc.parentAccountId());
-      m_investmentView->slotSelectAccount(acc.id(), transaction);
-      break;
+      accId = acc.id();
+      // tricky fall through here
 
     case MyMoneyAccount::Checkings:
     case MyMoneyAccount::Savings:
@@ -430,6 +425,7 @@ void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& tra
     case MyMoneyAccount::AssetLoan:
     case MyMoneyAccount::Income:
     case MyMoneyAccount::Expense:
+    case MyMoneyAccount::Investment:
       showPage(pageIndex(m_ledgerViewFrame));
       m_ledgerView->slotSelectAccount(accId, transaction);
       break;
@@ -437,7 +433,7 @@ void KMyMoneyView::slotLedgerSelected(const QCString& accId, const QCString& tra
     case MyMoneyAccount::CertificateDep:
     case MyMoneyAccount::MoneyMarket:
     case MyMoneyAccount::Currency:
-      qDebug("No view available for account type %d", acc.accountType());
+      qDebug("No ledger view available for account type %d", acc.accountType());
       break;
 
     default:
