@@ -93,20 +93,14 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     // Rework the buttons
     //
 
-
+    // the Ok button is always enabled
     disconnect(SIGNAL(selectionEmpty(bool)));
     m_searchButton->setGuiItem( KStdGuiItem::ok() );
     m_searchButton->setEnabled(true);
 
-    m_searchButton->disconnect();
-    m_resetButton->disconnect();
+    // reconnect the close button
     m_closeButton->disconnect();
-    m_helpButton->disconnect();
-    m_helpButton->show();
-    connect(m_searchButton, SIGNAL(clicked()), this, SLOT(slotSearch()));
-    connect(m_resetButton, SIGNAL(clicked()), this, SLOT(slotReset()));
     connect(m_closeButton, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotHelp()));
 
     //
     // Add new tabs
@@ -150,7 +144,7 @@ KReportConfigurationFilterDlg::~KReportConfigurationFilterDlg()
 {
 }
 
-void KReportConfigurationFilterDlg::slotSearch()
+void KReportConfigurationFilterDlg::slotSearch(void)
 {
   // setup the filter from the dialog widgets
   setupFilter();
@@ -566,12 +560,10 @@ void KReportConfigurationFilterDlg::slotReset(void)
     slotDateRangeChanged(allDates);
   }
 
-  //QTimer::singleShot(0, this, SLOT(slotRightSize()));
-
   slotRightSize();
 }
 
-void KReportConfigurationFilterDlg::slotHelp(void)
+void KReportConfigurationFilterDlg::slotShowHelp(void)
 {
   kapp->invokeHelp("details.reports.config");
 }

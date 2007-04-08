@@ -89,7 +89,16 @@ protected:
   void resizeEvent(QResizeEvent*);
 
 protected slots:
-  void slotReset(void);
+  virtual void slotReset(void);
+  virtual void slotSearch(void);
+
+  /**
+    * This slot opens the detailed help page in khelpcenter. The
+    * anchor for the information is taken from m_helpAnchor.
+    */
+  virtual void slotShowHelp(void);
+
+
   void slotUpdateSelections(void);
 
   void slotDateRangeChanged(int);
@@ -104,8 +113,6 @@ protected slots:
   void slotNrSelected(void);
   void slotNrRangeSelected(void);
 
-  void slotSearch(void);
-
   void slotRefreshView(void);
 
   /**
@@ -116,16 +123,16 @@ protected slots:
 
   void slotRightSize(void);
 
-  /**
-    * This slot opens the detailed help page in khelpcenter. The
-    * anchor for the information is taken from m_helpAnchor.
-    */
-  void slotShowHelp(void);
-
   void slotSortOptions(void);
 
 signals:
   void transactionSelected(const QCString& accountId, const QCString& transactionId);
+
+  /**
+    * This signal is sent out when no selection has been made. It is
+    * used to control the state of the Search button.
+    */
+  void selectionEmpty(bool);
 
 protected:
   enum opTypeE {

@@ -32,15 +32,15 @@ class kMyMoneyReportConfigTab3Decl;
 class kMyMoneyReportConfigTabChartDecl;
 
 /**
-@author Ace Jones
-*/
+  * @author Ace Jones
+  */
 class KReportConfigurationFilterDlg : public KFindTransactionDlg
 {
 Q_OBJECT
 public:
     KReportConfigurationFilterDlg(MyMoneyReport report, QWidget *parent = 0, const char *name = 0);
     ~KReportConfigurationFilterDlg();
-  
+
     const MyMoneyReport& getConfig(void) const { return m_currentState; }
 
 protected:
@@ -48,15 +48,15 @@ protected:
     kMyMoneyReportConfigTab2Decl* m_tab2;
     kMyMoneyReportConfigTab3Decl* m_tab3;
     kMyMoneyReportConfigTabChartDecl* m_tabChart;
-    
+
     MyMoneyReport m_initialState;
     MyMoneyReport m_currentState;
 
 protected slots:
   void slotReset(void);
   void slotSearch(void);
-  void slotHelp(void);
-        
+  void slotShowHelp(void);
+
 };
 
 #endif

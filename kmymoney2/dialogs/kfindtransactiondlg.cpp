@@ -127,8 +127,13 @@ KFindTransactionDlg::KFindTransactionDlg(QWidget *parent, const char *name) :
   connect(m_closeButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
   connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotShowHelp()));
 
+  // only allow searches when a selection has been made
+  connect(this, SIGNAL(selectionEmpty(bool)), m_searchButton, SLOT(setDisabled(bool)));
+
   // get signal about engine changes
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotRefreshView()));
+
+  slotUpdateSelections();
 
   m_textEdit->setFocus();
 }
@@ -240,7 +245,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
   }
 
   // disable the search button if no selection is made
-  m_searchButton->setDisabled(txt.isEmpty());
+  emit selectionEmpty(txt.isEmpty());
 
   if(txt.isEmpty()) {
     txt = i18n("(None)");

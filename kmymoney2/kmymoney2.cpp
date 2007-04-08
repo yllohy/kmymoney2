@@ -4196,6 +4196,7 @@ void KMyMoney2App::slotUpdateActions(void)
   action("transaction_cancel_match")->setEnabled(false);
   action("transaction_end_match")->setEnabled(false);
   action("transaction_duplicate")->setEnabled(false);
+  action("transaction_mark_toggle")->setEnabled(false);
   action("transaction_mark_cleared")->setEnabled(false);
   action("transaction_mark_reconciled")->setEnabled(false);
   action("transaction_mark_notreconciled")->setEnabled(false);
@@ -4240,6 +4241,7 @@ void KMyMoney2App::slotUpdateActions(void)
       action("transaction_mark_cleared")->setEnabled(true);
       action("transaction_mark_reconciled")->setEnabled(true);
       action("transaction_mark_notreconciled")->setEnabled(true);
+      action("transaction_mark_toggle")->setEnabled(true);
     } else {
       action("transaction_assign_number")->setEnabled(m_transactionEditor->canAssignNumber());
       action("transaction_new")->setEnabled(false);

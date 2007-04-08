@@ -1,3 +1,6 @@
+2007-04-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem with the Ok button in the report configuration dialog
+
 2007-04-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem when creating new investment transactions
   * Only update home page if visible
