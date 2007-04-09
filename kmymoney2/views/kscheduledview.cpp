@@ -48,14 +48,14 @@
 #include "kscheduledview.h"
 #include "kscheduledlistitem.h"
 #include "../widgets/kmymoneyscheduleddatetbl.h"
-#include "../dialogs/kenterscheduledialog.h"
-#include "../kmymoneyutils.h"
-#include "../kmymoneysettings.h"
+// #include "../dialogs/kenterscheduledialog.h"
+#include <kmymoney/kmymoneyutils.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
 
 #include "../kmymoney2.h"
 
 KScheduledView::KScheduledView(QWidget *parent, const char *name )
- : kScheduledViewDecl(parent,name, false),
+ : KScheduledViewDecl(parent,name, false),
  m_openBills(true),
  m_openDeposits(true),
  m_openTransfers(true),
@@ -70,10 +70,10 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   m_qlistviewScheduled->addColumn(i18n("Frequency"));
   m_qlistviewScheduled->addColumn(i18n("Payment Method"));
   m_qlistviewScheduled->setMultiSelection(false);
-  m_qlistviewScheduled->header()->setResizeEnabled(false);
+  m_qlistviewScheduled->header()->setResizeEnabled(true);
   m_qlistviewScheduled->setAllColumnsShowFocus(true);
   // never show a horizontal scroll bar
-  m_qlistviewScheduled->setHScrollBarMode(QScrollView::AlwaysOff);
+  // m_qlistviewScheduled->setHScrollBarMode(QScrollView::AlwaysOff);
   m_qlistviewScheduled->setSorting(-1);
   m_qlistviewScheduled->setColumnAlignment(3, Qt::AlignRight);
 
@@ -112,12 +112,11 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
 
   connect(m_calendar, SIGNAL(enterClicked(const MyMoneySchedule&, const QDate&)), this, SLOT(slotBriefEnterClicked(const MyMoneySchedule&, const QDate&)));
 
-  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassSchedule, this);
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadView()));
 }
 
 KScheduledView::~KScheduledView()
 {
-  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassSchedule, this);
   writeConfig();
 }
 
@@ -274,20 +273,24 @@ void KScheduledView::slotTimerDone(void)
 
 void KScheduledView::slotReloadView(void)
 {
-  m_qbuttonNew->setEnabled(true);
-  m_tabWidget->setEnabled(true);
+  m_needReload = true;
+  if(isVisible()) {
+    m_qbuttonNew->setEnabled(true);
+    m_tabWidget->setEnabled(true);
 
-  refresh(true, m_selectedSchedule);
+    refresh(true, m_selectedSchedule);
 
-  QTimer::singleShot(50, this, SLOT(slotRearrange()));
-  QWidget::show();
+    m_needReload = false;
+    QTimer::singleShot(50, this, SLOT(slotRearrange()));
+  }
 }
 
 void KScheduledView::show()
 {
-  slotReloadView();
+  KScheduledViewDecl::show();
 
-  emit signalViewActivated();
+  if(m_needReload)
+    slotReloadView();
 }
 
 void KScheduledView::slotRearrange(void)
@@ -297,6 +300,7 @@ void KScheduledView::slotRearrange(void)
 
 void KScheduledView::resizeEvent(QResizeEvent* e)
 {
+#if 0
   m_qlistviewScheduled->setColumnWidth(1, 100);
   m_qlistviewScheduled->setColumnWidth(2, 100);
   m_qlistviewScheduled->setColumnWidth(3, 80);
@@ -304,9 +308,10 @@ void KScheduledView::resizeEvent(QResizeEvent* e)
   m_qlistviewScheduled->setColumnWidth(5, 100);
   m_qlistviewScheduled->setColumnWidth(6, 120);
   m_qlistviewScheduled->setColumnWidth(0, m_qlistviewScheduled->visibleWidth()-620);
+#endif
 
   // call base class resizeEvent()
-  kScheduledViewDecl::resizeEvent(e);
+  KScheduledViewDecl::resizeEvent(e);
 }
 
 
@@ -320,6 +325,8 @@ void KScheduledView::readConfig(void)
   m_openLoans = config->readBoolEntry("KScheduleView_openLoans", true);
 
   m_qlistviewScheduled->header()->setFont(KMyMoneySettings::listHeaderFont());
+  m_qlistviewScheduled->restoreLayout(KGlobal::config(), "Schedule View Settings");
+
 }
 
 void KScheduledView::writeConfig(void)
@@ -331,6 +338,8 @@ void KScheduledView::writeConfig(void)
   config->writeEntry("KScheduleView_openTransfers", m_openTransfers);
   config->writeEntry("KScheduleView_openLoans", m_openLoans);
   config->sync();
+
+  m_qlistviewScheduled->saveLayout(KGlobal::config(), "Schedule View Settings");
 }
 
 void KScheduledView::slotListViewContextMenu(KListView* /* view */, QListViewItem *item, const QPoint& /* pos */)
@@ -345,10 +354,10 @@ void KScheduledView::slotListViewContextMenu(KListView* /* view */, QListViewIte
       if (!scheduleId.isEmpty()) // Top level item
       {
         MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(scheduleId);
-        kmymoney2->slotSelectSchedule(schedule);
+        emit scheduleSelected(schedule);
         m_selectedSchedule = schedule.id();
       }
-      kmymoney2->showContextMenu("schedule_context_menu");
+      emit openContextMenu();
     } catch (MyMoneyException *e)
     {
       KMessageBox::detailedSorry(this, i18n("Error activating context menu"), e->what());
@@ -357,7 +366,7 @@ void KScheduledView::slotListViewContextMenu(KListView* /* view */, QListViewIte
   }
   else
   {
-    kmymoney2->showContextMenu("schedule_context_menu");
+    emit openContextMenu();
   }
 }
 
@@ -458,38 +467,24 @@ void KScheduledView::slotSelectSchedule(const QCString& schedule)
 
 void KScheduledView::slotBriefEnterClicked(const MyMoneySchedule& schedule, const QDate& date)
 {
-  KEnterScheduleDialog *dlg = new KEnterScheduleDialog(this, schedule, date);
-  connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&)));
-  connect(dlg, SIGNAL(createPayee(const QString&, QCString&)), kmymoney2, SLOT(slotPayeeNew(const QString&, QCString&)));
-  if (dlg->exec())
-  {
-    refresh(false);
-  }
+  emit scheduleSelected(schedule);
+  emit enterSchedule();
 }
 
 void KScheduledView::slotSetSelectedItem(QListViewItem* item)
 {
-  kmymoney2->slotSelectSchedule();
+  emit scheduleSelected(MyMoneySchedule());
   KScheduledListItem* schedItem = static_cast<KScheduledListItem*>(item);
   if(item) {
     try {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(schedItem->scheduleId());
-      kmymoney2->slotSelectSchedule(schedule);
+      emit scheduleSelected(schedule);
       m_selectedSchedule = schedItem->scheduleId();
     } catch(MyMoneyException* e) {
       qDebug("KScheduledView::slotSetSelectedItem: %s", e->what().data());
       delete e;
     }
   }
-}
-
-void KScheduledView::update(const QCString& /* id */)
-{
-  KScheduledListItem *p = dynamic_cast<KScheduledListItem*>(m_qlistviewScheduled->selectedItem());
-  QCString schedId;
-  if(p)
-    schedId = p->scheduleId();
-  refresh(true, schedId);
 }
 
 

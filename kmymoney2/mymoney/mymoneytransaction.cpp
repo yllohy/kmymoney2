@@ -188,6 +188,7 @@ void MyMoneyTransaction::removeSplit(const MyMoneySplit& split)
 void MyMoneyTransaction::removeSplits(void)
 {
   m_splits.clear();
+  m_nextSplitID = 1;
 }
 
 const MyMoneySplit& MyMoneyTransaction::splitByPayee(const QCString& payeeId) const

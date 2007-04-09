@@ -33,12 +33,8 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kscheduledviewdecl.h"
-//#include "../dialogs/keditscheduledbilldlg.h"
-//#include "../dialogs/keditscheduleddepositdlg.h"
-//#include "../dialogs/keditscheduledtransferdlg.h"
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/mymoneyaccount.h>
-#include <kmymoney/mymoneyobserver.h>
 #include "../widgets/kmymoneyscheduledcalendar.h"
 
 class KPopupMenu;
@@ -49,11 +45,11 @@ class KPopupMenu;
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.26 2005/11/15 19:52:42 ipwizard Exp $
+  * $Id: kscheduledview.h,v 1.27 2007/04/09 17:22:01 ipwizard Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
-class KScheduledView : public kScheduledViewDecl, MyMoneyObserver
+class KScheduledView : public KScheduledViewDecl
 {
   Q_OBJECT
 
@@ -78,10 +74,9 @@ public slots:
   void slotReloadView();
 
 signals:
-  /**
-    * Emitted when this view is shown.
-    */
-  void signalViewActivated();
+  void scheduleSelected(const MyMoneySchedule& schedule);
+  void openContextMenu(void);
+  void enterSchedule(void);
 
 protected:
   /**
@@ -150,6 +145,7 @@ private:
   bool m_openDeposits;
   bool m_openTransfers;
   bool m_openLoans;
+  bool m_needReload;
 };
 
 #endif

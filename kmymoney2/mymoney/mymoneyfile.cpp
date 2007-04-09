@@ -2125,4 +2125,20 @@ void MyMoneyFile::clearCache(void)
   m_storage->clearCache();
 }
 
+bool MyMoneyFile::isTransfer(const MyMoneyTransaction& t) const
+{
+  bool rc = false;
+  if(t.splitCount() == 2) {
+    QValueList<MyMoneySplit>::const_iterator it_s;
+    for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+      MyMoneyAccount acc = account((*it_s).accountId());
+      if(acc.isIncomeExpense())
+        break;
+    }
+    if(it_s == t.splits().end())
+      rc = true;
+  }
+  return rc;
+}
+
 #include "mymoneyfile.moc"

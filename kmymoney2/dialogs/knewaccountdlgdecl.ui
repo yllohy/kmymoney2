@@ -617,6 +617,140 @@
             </widget>
             <widget class="QWidget">
                 <property name="name">
+                    <cstring>m_limitsTab</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Limits</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <widget class="KActiveLabel">
+                        <property name="name">
+                            <cstring>kActiveLabel1</cstring>
+                        </property>
+                        <property name="text">
+                            <string>This page allows to setup certain limits. KMyMoney will warn you when the account balance reaches a limit.</string>
+                        </property>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout16</cstring>
+                        </property>
+                        <grid>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel" row="0" column="0">
+                                <property name="name">
+                                    <cstring>textLabel2_2</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Type</string>
+                                </property>
+                            </widget>
+                            <widget class="kMyMoneyEdit" row="2" column="2">
+                                <property name="name">
+                                    <cstring>m_minBalanceAbsoluteEdit</cstring>
+                                </property>
+                                <property name="resetButtonVisibility" stdset="0">
+                                    <bool>false</bool>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="2">
+                                <property name="name">
+                                    <cstring>textLabel3_2</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Absolute limit</string>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="3" column="0">
+                                <property name="name">
+                                    <cstring>m_maxCreditLabel</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Maximum credit limit</string>
+                                </property>
+                            </widget>
+                            <widget class="kMyMoneyEdit" row="3" column="1">
+                                <property name="name">
+                                    <cstring>m_maxCreditEarlyEdit</cstring>
+                                </property>
+                                <property name="resetButtonVisibility" stdset="0">
+                                    <bool>false</bool>
+                                </property>
+                            </widget>
+                            <widget class="kMyMoneyEdit" row="3" column="2">
+                                <property name="name">
+                                    <cstring>m_maxCreditAbsoluteEdit</cstring>
+                                </property>
+                                <property name="resetButtonVisibility" stdset="0">
+                                    <bool>false</bool>
+                                </property>
+                            </widget>
+                            <widget class="kMyMoneyEdit" row="2" column="1">
+                                <property name="name">
+                                    <cstring>m_minBalanceEarlyEdit</cstring>
+                                </property>
+                                <property name="resetButtonVisibility" stdset="0">
+                                    <bool>false</bool>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="2" column="0">
+                                <property name="name">
+                                    <cstring>m_minBalanceLabel</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Minimum balance</string>
+                                </property>
+                            </widget>
+                            <widget class="Line" row="1" column="0" rowspan="1" colspan="3">
+                                <property name="name">
+                                    <cstring>line2</cstring>
+                                </property>
+                                <property name="frameShape">
+                                    <enum>HLine</enum>
+                                </property>
+                                <property name="frameShadow">
+                                    <enum>Sunken</enum>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                            </widget>
+                            <widget class="QLabel" row="0" column="1">
+                                <property name="name">
+                                    <cstring>textLabel4</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Early warning</string>
+                                </property>
+                            </widget>
+                        </grid>
+                    </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer10_3</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>20</width>
+                                <height>30</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </vbox>
+            </widget>
+            <widget class="QWidget">
+                <property name="name">
                     <cstring>m_taxTab</cstring>
                 </property>
                 <attribute name="title">

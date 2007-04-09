@@ -168,6 +168,9 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
     DesktopIcon("schedule", iconSize));
   m_scheduledView = new KScheduledView(m_scheduleViewFrame, "ScheduledView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_scheduledView, SLOT(slotReloadView()));
+  connect(m_scheduledView, SIGNAL(scheduleSelected(const MyMoneySchedule&)), kmymoney2, SLOT(slotSelectSchedule(const MyMoneySchedule&)));
+  connect(m_scheduledView, SIGNAL(openContextMenu()), kmymoney2, SLOT(slotShowScheduleContextMenu()));
+  connect(m_scheduledView, SIGNAL(enterSchedule()), kmymoney2, SLOT(slotScheduleEnter()));
 
   // Page 4
   m_categoriesViewFrame = addVBoxPage( i18n("Categories"), i18n("Categories"),

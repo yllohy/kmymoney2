@@ -93,7 +93,8 @@
 #include "dialogs/kexportdlg.h"
 #include "dialogs/kimportdlg.h"
 #include "dialogs/mymoneyqifprofileeditor.h"
-#include "dialogs/kenterscheduledialog.h"
+#include "dialogs/kenterscheduledlg.h"
+#include "dialogs/kconfirmmanualenterdlg.h"
 #include "dialogs/kmymoneypricedlg.h"
 #include "dialogs/kcurrencyeditdlg.h"
 #include "dialogs/kequitypriceupdatedlg.h"
@@ -3239,12 +3240,70 @@ void KMyMoney2App::slotScheduleEnter(void)
     try {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
 
-      KEnterScheduleDialog dlg(this, schedule);
-      connect(&dlg, SIGNAL(createCategory(const QString&, QCString&)), this, SLOT(slotCategoryNew(const QString&, QCString&)));
-      connect(&dlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
+      KEnterScheduleDlg dlg(this, schedule);
+      m_transactionEditor = dlg.startEdit();
+      if(m_transactionEditor) {
+        MyMoneyTransaction torig, taccepted;
+        m_transactionEditor->createTransaction(torig, dlg.transaction(), schedule.transaction().splits()[0]);
+        // force actions to be available no matter what (will be updated according to the state during
+        // slotTransactionsEnter or slotTransactionsCancel)
+        kmymoney2->action("transaction_cancel")->setEnabled(true);
+        kmymoney2->action("transaction_enter")->setEnabled(true);
 
-      dlg.exec();
+        KConfirmManualEnterDlg::Action action = KConfirmManualEnterDlg::ModifyOnce;
+        for(;;) {
+          if(dlg.exec() == QDialog::Accepted) {
+            m_transactionEditor->createTransaction(taccepted, torig, torig.splits()[0]);
+            // make sure to suppress comparison of some data: postDate
+            torig.setPostDate(taccepted.postDate());
+            if(torig != taccepted) {
+              KConfirmManualEnterDlg cdlg(schedule, this);
+              cdlg.loadTransactions(torig, taccepted);
+              if(cdlg.exec() == QDialog::Accepted) {
+                action = cdlg.action();
+                break;
+              }
+              // the user has choosen 'cancel' during confirmation,
+              // we go back to the editor
+              continue;
+            }
+          } else {
+            slotTransactionsCancel();
+          }
+          break;
+        }
 
+        // if we still have the editor around here, the user did not cancel
+        if(m_transactionEditor) {
+          MyMoneyFile::instance()->blockSignals(true);
+          MyMoneyTransaction t;
+          // add the new transaction
+          switch(action) {
+            case KConfirmManualEnterDlg::UseOriginal:
+              // setup widgets with original transaction data
+              m_transactionEditor->setTransaction(dlg.transaction(), dlg.transaction().splits()[0]);
+              // and create a transaction based on that data
+              taccepted = MyMoneyTransaction();
+              m_transactionEditor->createTransaction(taccepted, dlg.transaction(), dlg.transaction().splits()[0]);
+              break;
+
+            case KConfirmManualEnterDlg::ModifyAlways:
+              schedule.setTransaction(taccepted);
+              break;
+
+            case KConfirmManualEnterDlg::ModifyOnce:
+              break;
+          }
+
+          QCString newId;
+          if(m_transactionEditor->enterTransactions(newId))
+            deleteTransactionEditor();
+
+          schedule.setLastPayment(schedule.nextPayment(schedule.lastPayment()));
+          MyMoneyFile::instance()->blockSignals(false);
+          MyMoneyFile::instance()->modifySchedule(schedule);
+        }
+      }
     } catch (MyMoneyException *e) {
       KMessageBox::detailedSorry(this, i18n("Unable to enter transaction for schedule '%1'").arg(m_selectedSchedule.name()), e->what());
       delete e;
@@ -3716,8 +3775,6 @@ void KMyMoney2App::slotTransactionsEnter(void)
     if(m_transactionEditor) {
       QCString accountId = m_selectedAccount.id();
       QCString newId;
-      if(m_transactionEditor->enterTransactions(newId))
-        deleteTransactionEditor();
       if(!newId.isEmpty()) {
         myMoneyView->slotLedgerSelected(accountId, newId);
       }
@@ -4024,6 +4081,11 @@ void KMyMoney2App::slotShowTransactionContextMenu(void)
 void KMyMoney2App::slotShowInvestmentContextMenu(void)
 {
   showContextMenu("investment_context_menu");
+}
+
+void KMyMoney2App::slotShowScheduleContextMenu(void)
+{
+  showContextMenu("schedule_context_menu");
 }
 
 void KMyMoney2App::slotShowAccountContextMenu(const MyMoneyObject& obj)
@@ -4543,6 +4605,8 @@ void KMyMoney2App::slotCheckSchedules(void)
     QValueList<MyMoneySchedule> scheduleList =  file->scheduleList();
     QValueList<MyMoneySchedule>::Iterator it;
 
+#if 0
+    // FIXME once the new enter schedule dialog is up and running, add it here
     for (it=scheduleList.begin(); it!=scheduleList.end(); ++it)
     {
       // Get the copy in the file because it might be modified by commitTransaction
@@ -4577,6 +4641,7 @@ void KMyMoney2App::slotCheckSchedules(void)
         }
       }
     }
+#endif
     MyMoneyFile::instance()->suspendNotify(false);
     slotStatusMsg(prevMsg);
     updateCaption();

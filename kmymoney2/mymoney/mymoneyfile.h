@@ -453,6 +453,13 @@ public:
   const bool isStandardAccount(const QCString& id) const;
 
   /**
+    * Returns @a true, if transaction @t is a transfer transaction.
+    * A transfer transaction has two splits, both referencing either
+    * an asset, a liability or an equity account.
+    */
+  bool isTransfer(const MyMoneyTransaction& t) const;
+
+  /**
     * This method is used to set the name for the specified standard account
     * within the storage area. An exception will be thrown, if an error
     * occurs

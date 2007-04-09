@@ -131,6 +131,9 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     tab = m_tab->page(m_tab->indexOf(m_institutionTab));
     if(tab)
       m_tab->removePage(tab);
+    tab = m_tab->page(m_tab->indexOf(m_limitsTab));
+    if(tab)
+      m_tab->removePage(tab);
 
     //m_qlistviewParentAccounts->setEnabled(true);
     startDateEdit->setEnabled(false);
@@ -179,6 +182,45 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     if(tab)
       m_tab->removePage(tab);
 #endif
+
+    bool haveMinBalance = false;
+    bool haveMaxCredit = false;
+    switch(m_account.accountType()) {
+      case MyMoneyAccount::Savings:
+      case MyMoneyAccount::Cash:
+        haveMinBalance = true;
+        break;
+
+      case MyMoneyAccount::Checkings:
+        haveMinBalance = true;
+        haveMaxCredit = true;
+        break;
+
+      case MyMoneyAccount::CreditCard:
+        haveMaxCredit = true;
+        break;
+
+      default:
+        // no limit available, so we might get rid of the tab
+        tab = m_tab->page(m_tab->indexOf(m_limitsTab));
+        if(tab)
+          m_tab->removePage(tab);
+        // don't try to hide the widgets we just wiped
+        // in the next step
+        haveMaxCredit = haveMinBalance = true;
+        break;
+    }
+
+    if(!haveMaxCredit) {
+      m_maxCreditLabel->hide();
+      m_maxCreditEarlyEdit->hide();
+      m_maxCreditAbsoluteEdit->hide();
+    }
+    if(!haveMinBalance) {
+      m_minBalanceLabel->hide();
+      m_minBalanceEarlyEdit->hide();
+      m_minBalanceAbsoluteEdit->hide();
+    }
 
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Checkings));
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Savings));
@@ -248,7 +290,11 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     accountNoEdit->setText(account.number());
     m_qcheckboxPreferred->setChecked(account.value("PreferredAccount") == "Yes");
     m_qcheckboxNoVat->setChecked(account.value("NoVat") == "Yes");
-    ibanEdit->setText(account.value("iban"));
+    loadKVP("iban", ibanEdit);
+    loadKVP("minBalanceAbsolute", m_minBalanceAbsoluteEdit);
+    loadKVP("minBalanceEarly", m_minBalanceEarlyEdit);
+    loadKVP("maxCreditAbsolute", m_maxCreditAbsoluteEdit);
+    loadKVP("maxCreditEarly", m_maxCreditEarlyEdit);
 
     // we do not allow to change the account type once an account
     // was created. Same applies to currency.
@@ -521,10 +567,11 @@ void KNewAccountDlg::okClicked()
 
   m_account.setName(accountNameText);
   m_account.setNumber(accountNoEdit->text());
-  if(ibanEdit->text().isEmpty())
-    m_account.deletePair("iban");
-  else
-    m_account.setValue("iban", ibanEdit->text());
+  storeKVP("iban", ibanEdit);
+  storeKVP("minBalanceAbsolute", m_minBalanceAbsoluteEdit);
+  storeKVP("minBalanceEarly", m_minBalanceEarlyEdit);
+  storeKVP("maxCreditAbsolute", m_maxCreditAbsoluteEdit);
+  storeKVP("maxCreditEarly", m_maxCreditEarlyEdit);
 
   MyMoneyAccount::accountTypeE acctype;
   if (!m_categoryEditor)
@@ -566,7 +613,7 @@ void KNewAccountDlg::okClicked()
 
   if (!m_categoryEditor)
   {
-    m_account.setOpeningDate(startDateEdit->getQDate());
+    m_account.setOpeningDate(startDateEdit->date());
     if(m_account.accountType() == MyMoneyAccount::Stock) {
       m_account.setCurrencyId(m_equity->id());
     } else {
@@ -616,6 +663,44 @@ void KNewAccountDlg::okClicked()
   }
 
   accept();
+}
+
+void KNewAccountDlg::loadKVP(const QCString& key, kMyMoneyEdit* widget)
+{
+  if(!widget)
+    return;
+
+  if(m_account.value(key).isEmpty()) {
+    widget->clearText();
+  } else {
+    widget->setValue(MyMoneyMoney(m_account.value(key)));
+  }
+}
+
+void KNewAccountDlg::loadKVP(const QCString& key, KLineEdit* widget)
+{
+  if(!widget)
+    return;
+
+  widget->setText(m_account.value(key));
+}
+
+void KNewAccountDlg::storeKVP(const QCString& key, const QString& text, const QString& value)
+{
+  if(text.isEmpty())
+    m_account.deletePair(key);
+  else
+    m_account.setValue(key, value);
+}
+
+void KNewAccountDlg::storeKVP(const QCString& key, kMyMoneyEdit* widget)
+{
+  storeKVP(key, widget->lineedit()->text(), widget->text());
+}
+
+void KNewAccountDlg::storeKVP(const QCString& key, KLineEdit* widget)
+{
+  storeKVP(key, widget->text(), widget->text());
 }
 
 const MyMoneyAccount& KNewAccountDlg::account(void)

@@ -206,6 +206,13 @@ int TransactionEditor::slotEditSplits(void)
   }
 #endif
 
+void TransactionEditor::setTransaction(const MyMoneyTransaction& t, const MyMoneySplit& s)
+{
+  m_transaction = t;
+  m_split = s;
+  loadEditWidgets();
+}
+
 bool TransactionEditor::fixTransactionCommodity(const MyMoneyAccount& account)
 {
   bool rc = true;

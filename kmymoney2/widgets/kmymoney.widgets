@@ -21,6 +21,10 @@ IncludeFile=kmymoney/kmymoneycurrencyselector.h
 IconSet=register.png
 IncludeFile=kmymoney/register.h
 
+[KMyMoneyTransactionForm::TransactionForm]
+IconSet=transactionform.png
+IncludeFile=kmymoney/transactionform.h
+
 [KMyMoneyCategory]
 
 [KMyMoneyPayeeCombo]

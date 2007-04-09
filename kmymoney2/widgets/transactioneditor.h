@@ -65,7 +65,22 @@ public:
   void setup(QWidgetList& tabOrderWidgets, const MyMoneyAccount& account = MyMoneyAccount(), KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
 
   virtual bool enterTransactions(QCString&);
-  // void tabOrder(QWidgetList& tabOrderWidgets) const;
+
+  /**
+    * This method creates a transaction based on the contents of the current widgets,
+    * the splits in m_split in single selection mode or an existing transaction/split
+    * and the contents of the widgets in multi selection mode.
+    *
+    * The split referencing the current account is returned as the first split in the
+    * transaction's split list.
+    *
+    * @param t reference to created transaction
+    * @param torig the original transaction
+    * @param sorig the original split
+    *
+    * @note Usually not used directly. If unsure, use enterTransactions() instead.
+    */
+  virtual bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig) = 0;
 
   /**
     * This method returns information about the completeness of the data
@@ -105,6 +120,8 @@ public:
     */
   QWidget* haveWidget(const QString& name) const;
 
+  void setTransaction(const MyMoneyTransaction& t, const MyMoneySplit& s);
+
 public slots:
   void slotReloadEditWidgets(void);
 
@@ -117,20 +134,6 @@ protected:
   virtual void createEditWidgets(void) = 0;
   virtual void loadEditWidgets(KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone) = 0;
   void setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool allowObjectCreation = true);
-
-  /**
-    * This method creates a transaction based on the contents of the current widgets,
-    * the splits in m_split in single selection mode or an existing transaction/split
-    * and the contents of the widgets in multi selection mode.
-    *
-    * The split referencing the current account is returned as the first split in the
-    * transaction's split list.
-    *
-    * @param t reference to created transaction
-    * @param torig the original transaction
-    * @param sorig the original split
-    */
-  virtual bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig) = 0;
 
 protected slots:
   void slotUpdateButtonState(void);
@@ -231,6 +234,20 @@ public:
   bool isComplete(void) const;
   QWidget* firstWidget(void) const;
 
+  /**
+    * This method creates a transaction based on the contents of the current widgets,
+    * the splits in m_split in single selection mode or an existing transaction/split
+    * and the contents of the widgets in multi selection mode.
+    *
+    * The split referencing the current account is returned as the first split in the
+    * transaction's split list.
+    *
+    * @param t reference to created transaction
+    * @param torig the original transaction
+    * @param sorig the original split
+    */
+  bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig);
+
 public slots:
   void slotReloadEditWidgets(void);
   int slotEditSplits(void);
@@ -264,20 +281,6 @@ protected:
   void setupCategoryWidget(QCString&);
   void updateAmount(const MyMoneyMoney& value);
   bool isTransfer(const QCString& accId1, const QCString& accId2) const;
-
-  /**
-    * This method creates a transaction based on the contents of the current widgets,
-    * the splits in m_split in single selection mode or an existing transaction/split
-    * and the contents of the widgets in multi selection mode.
-    *
-    * The split referencing the current account is returned as the first split in the
-    * transaction's split list.
-    *
-    * @param t reference to created transaction
-    * @param torig the original transaction
-    * @param sorig the original split
-    */
-  bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig);
 
   void checkPayeeInSplit(MyMoneySplit& s, const QCString& payeeId);
 

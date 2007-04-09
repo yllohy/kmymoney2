@@ -65,6 +65,22 @@ public:
 
   bool setupPrice(const MyMoneyTransaction& t, MyMoneySplit& split);
 
+  /**
+    * This method creates a transaction based on the contents of the current widgets,
+    * the splits in m_split in single selection mode or an existing transaction/split
+    * and the contents of the widgets in multi selection mode.
+    *
+    * The split referencing the current account is returned as the first split in the
+    * transaction's split list.
+    *
+    * @param t reference to created transaction
+    * @param torig the original transaction
+    * @param sorig the original split
+    *
+    * @note Usually not used directly. If unsure, use enterTransactions() instead.
+    */
+  bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig);
+
 protected slots:
   void slotCreateSecurity(const QString& name, QCString& id);
   void slotCreateFeeCategory(const QString& name, QCString& id);
@@ -100,8 +116,6 @@ protected:
   void activityFactory(MyMoneySplit::investTransactionTypeE type);
 
   MyMoneyMoney subtotal(const QValueList<MyMoneySplit>& splits) const;
-
-  bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig);
 
 private:
 

@@ -61,6 +61,11 @@ private:
   void initParentWidget(QCString parentId, const QCString& accountId);
   void showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeItem *parentItem, const QCString& parentId, const QCString& accountId);
   void loadVatAccounts(void);
+  void storeKVP(const QCString& key, kMyMoneyEdit* widget);
+  void storeKVP(const QCString& key, KLineEdit* widget);
+  void storeKVP(const QCString& key, const QString& text, const QString& value);
+  void loadKVP(const QCString& key, kMyMoneyEdit* widget);
+  void loadKVP(const QCString& key, KLineEdit* widget);
 
 public:
   /**

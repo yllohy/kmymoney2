@@ -1,3 +1,11 @@
+2007-04-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added minimum balance and maximum credit fields to account editor
+    (not functional yet - storage works)
+  * Reworked the 'Enter schedule transaction' dialog to use new transaction
+    editor
+  * Update schedules view only if visible
+  * Allow individual column resize in schedules view
+
 2007-04-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem with the Ok button in the report configuration dialog
 

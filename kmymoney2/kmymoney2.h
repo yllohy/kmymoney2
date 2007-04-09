@@ -813,6 +813,12 @@ public slots:
   void slotShowAccountContextMenu(const MyMoneyObject&);
 
   /**
+    * This slot opens the schedule options menu at the current cursor
+    * position.
+    */
+  void slotShowScheduleContextMenu(void);
+
+  /**
     * This slot opens the institution options menu at the current cursor
     * position.
     */
