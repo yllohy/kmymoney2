@@ -3775,6 +3775,8 @@ void KMyMoney2App::slotTransactionsEnter(void)
     if(m_transactionEditor) {
       QCString accountId = m_selectedAccount.id();
       QCString newId;
+      if(m_transactionEditor->enterTransactions(newId))
+        deleteTransactionEditor();
       if(!newId.isEmpty()) {
         myMoneyView->slotLedgerSelected(accountId, newId);
       }
