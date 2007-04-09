@@ -264,7 +264,15 @@ TransactionEditor* KEnterScheduleDlg::startEdit(void)
     // create the widgets, place them in the parent and load them with data
     // setup tab order
     d->m_tabOrderWidgets.clear();
-    editor->setup(d->m_tabOrderWidgets, d->m_schedule.account(), KMyMoneyRegister::ActionWithdrawal);
+    KMyMoneyRegister::Action action = KMyMoneyRegister::ActionWithdrawal;
+    switch(d->m_schedule.type()) {
+      case MyMoneySchedule::TYPE_DEPOSIT:
+        action = KMyMoneyRegister::ActionDeposit;
+        break;
+      default:
+        break;
+    }
+    editor->setup(d->m_tabOrderWidgets, d->m_schedule.account(), action);
 
     Q_ASSERT(!d->m_tabOrderWidgets.isEmpty());
 
