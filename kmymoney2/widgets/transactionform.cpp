@@ -213,9 +213,6 @@ void TransactionForm::slotSetTransaction(KMyMoneyRegister::Transaction* transact
 {
   m_transaction = transaction;
 
-  if(!KMyMoneySettings::transactionForm())
-    return;
-
   bool enabled = isUpdatesEnabled();
   setUpdatesEnabled(false);
 
