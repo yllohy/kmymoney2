@@ -108,7 +108,7 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneySecurity& security, QWi
   m_tradingMarket->setCurrentText(m_security.tradingMarket());
   m_fraction->setValue(MyMoneyMoney(m_security.smallestAccountFraction(), 1));
   m_tradingCurrencyEdit->setSecurity(tradingCurrency);
-  
+
   if (m_security.value("kmm-online-quote-system") == "Finance::Quote") {
     FinanceQuoteProcess p;
     m_useFinanceQuote->setChecked(true);
@@ -263,13 +263,14 @@ void KNewInvestmentWizard::createObjects(const QCString& parentId)
   if(m_createAccount) {
     // now that the security exists, we can add the account to store it
     m_account.setName(m_investmentName->text());
-    m_account.setAccountType(MyMoneyAccount::Stock);
+    if(m_account.accountType() == MyMoneyAccount::UnknownAccountType)
+      m_account.setAccountType(MyMoneyAccount::Stock);
     m_account.setCurrencyId(m_security.id());
 
-    MyMoneyAccount parent = file->account(parentId);
-    if(m_account.id().isEmpty())
+    if(m_account.id().isEmpty()) {
+      MyMoneyAccount parent = file->account(parentId);
       file->addAccount(m_account, parent);
-    else
+    } else
       file->modifyAccount(m_account);
   }
 }
