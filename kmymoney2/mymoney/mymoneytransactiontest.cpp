@@ -503,3 +503,17 @@ void MyMoneyTransactionTest::testAutoCalc()
 
 	CPPUNIT_ASSERT(m->hasAutoCalcSplit() == true);
 }
+
+void MyMoneyTransactionTest::testIsStockSplit()
+{
+	CPPUNIT_ASSERT(m->isStockSplit() == false);
+	testAddSplits();
+	CPPUNIT_ASSERT(m->isStockSplit() == false);
+	m->removeSplits();
+	MyMoneySplit s;
+	s.setShares(MyMoneyMoney(1,2));
+	s.setAction(MyMoneySplit::ActionSplitShares);
+	m->addSplit(s);
+	CPPUNIT_ASSERT(m->isStockSplit() == true);
+}
+

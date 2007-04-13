@@ -298,6 +298,11 @@ const unsigned long MyMoneyTransaction::hash(const QString& txt) const
   return h;
 }
 
+bool MyMoneyTransaction::isStockSplit(void) const
+{
+  return (m_splits.count() == 1 && m_splits[0].action() == MyMoneySplit::ActionSplitShares);
+}
+
 const bool MyMoneyTransaction::isDuplicate(const MyMoneyTransaction& r) const
 {
   bool rc = true;

@@ -495,6 +495,7 @@ Register::Register(QWidget *parent, const char *name ) :
   setNumCols(MaxColumns);
   setCurrentCell(0, 1);
 
+  // keep the following list in sync with KMyMoneyRegister::Column in transaction.h
   horizontalHeader()->setLabel(NumberColumn, i18n("No."));
   horizontalHeader()->setLabel(DateColumn, i18n("Date"));
   horizontalHeader()->setLabel(AccountColumn, i18n("Account"));
@@ -503,10 +504,10 @@ Register::Register(QWidget *parent, const char *name ) :
   horizontalHeader()->setLabel(ReconcileFlagColumn, i18n("C"));
   horizontalHeader()->setLabel(PaymentColumn, i18n("Payment"));
   horizontalHeader()->setLabel(DepositColumn, i18n("Deposit"));
-  horizontalHeader()->setLabel(BalanceColumn, i18n("Balance"));
   horizontalHeader()->setLabel(AmountColumn, i18n("Amount"));
   horizontalHeader()->setLabel(PriceColumn, i18n("Price"));
   horizontalHeader()->setLabel(ValueColumn, i18n("Value"));
+  horizontalHeader()->setLabel(BalanceColumn, i18n("Balance"));
 
   setLeftMargin(0);
   verticalHeader()->hide();
@@ -596,7 +597,6 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
 
   // balance
   switch(account.accountType()) {
-    case MyMoneyAccount::Investment:
     case MyMoneyAccount::Stock:
       break;
     default:
@@ -650,7 +650,7 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
       showColumn(SecurityColumn);
       showColumn(AmountColumn);
       showColumn(PriceColumn);
-      showColumn(ValueColumn);
+      // showColumn(ValueColumn);
       break;
   }
 

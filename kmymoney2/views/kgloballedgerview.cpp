@@ -363,7 +363,8 @@ void KGlobalLedgerView::loadView(void)
 
   // ... and recreate it
   KMyMoneyRegister::RegisterItem* focusItem = 0;
-  MyMoneyMoney actBalance, clearedBalance, futureBalance;
+  QMap<QCString, MyMoneyMoney> actBalance, clearedBalance, futureBalance;
+  QMap<QCString, MyMoneyMoney>::iterator it_b;
   try {
     // setup the filter to select the transactions we want to display
     // and update the sort order
@@ -407,7 +408,8 @@ void KGlobalLedgerView::loadView(void)
     QMap<QCString, int>uniqueMap;
     for(it = m_transactionList.begin(); it != m_transactionList.end(); ++it) {
       uniqueMap[(*it).first.id()]++;
-      KMyMoneyRegister::Register::transactionFactory(m_register, m_objects, (*it).first, (*it).second, uniqueMap[(*it).first.id()]);
+      KMyMoneyRegister::Transaction* t = KMyMoneyRegister::Register::transactionFactory(m_register, m_objects, (*it).first, (*it).second, uniqueMap[(*it).first.id()]);
+      actBalance[t->split().accountId()] = MyMoneyMoney(0,1);
     }
 
     // add the group markers
@@ -423,13 +425,19 @@ void KGlobalLedgerView::loadView(void)
     // balance of all entered transactions from the engine and walk the list
     // of transactions backward. Also re-select a transaction if it was
     // selected before and setup the focus item.
-    MyMoneyMoney balance = MyMoneyFile::instance()->balance(m_account.id());
+
     MyMoneyMoney factor(1,1);
     if(m_account.accountGroup() == MyMoneyAccount::Liability)
       factor = -factor;
 
-    balance = balance * factor;
-    actBalance = clearedBalance = futureBalance = balance;
+    for(it_b = actBalance.begin(); it_b != actBalance.end(); ++it_b) {
+      MyMoneyMoney balance = MyMoneyFile::instance()->balance(it_b.key());
+      balance = balance * factor;
+      clearedBalance[it_b.key()] =
+      futureBalance[it_b.key()] =
+      (*it_b) = balance;
+    }
+
     KMyMoneyRegister::RegisterItem* p = m_register->lastItem();
     focusItem = p;
     while(p) {
@@ -444,15 +452,22 @@ void KGlobalLedgerView::loadView(void)
         if(t->id() == focusItemId)
           focusItem = t;
 
+        MyMoneyMoney balance = futureBalance[t->split().accountId()];
         t->setBalance(balance.formatMoney("", d->m_precision));
         const MyMoneySplit& split = t->split();
-        balance -= split.shares() * factor;
+        // if this split is a stock split, we can't just add the amount of shares
+        if(t->transaction().isStockSplit()) {
+          balance /= split.shares();
+        } else {
+          balance -= split.shares() * factor;
+        }
         if(split.reconcileFlag() == MyMoneySplit::NotReconciled) {
-          clearedBalance -= split.shares() * factor;
+          clearedBalance[t->split().accountId()] -= split.shares() * factor;
         }
         if(t->transaction().postDate() > QDate::currentDate()) {
-          actBalance -= split.shares() * factor;
+          actBalance[t->split().accountId()] -= split.shares() * factor;
         }
+        futureBalance[t->split().accountId()] = balance;
       }
       p = p->prevItem();
     }
@@ -527,12 +542,19 @@ void KGlobalLedgerView::slotCancelMatchTransaction(void)
   slotStartMatchTransaction(MyMoneyTransaction());
 }
 
-void KGlobalLedgerView::updateSummaryLine(const MyMoneyMoney& actBalance, const MyMoneyMoney& clearedBalance)
+void KGlobalLedgerView::updateSummaryLine(const QMap<QCString, MyMoneyMoney>& actBalance, const QMap<QCString, MyMoneyMoney>& clearedBalance)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
+  m_leftSummaryLabel->show();
+  m_centerSummaryLabel->show();
+  m_rightSummaryLabel->show();
+
   if(isReconciliationAccount()) {
-    m_leftSummaryLabel->setText(i18n("Statement: %1").arg(d->m_endingBalance.formatMoney("", d->m_precision)));
-    m_centerSummaryLabel->setText(i18n("Cleared: %1").arg(clearedBalance.formatMoney("", d->m_precision)));
-    m_rightSummaryLabel->setText(i18n("Difference: %1").arg((clearedBalance - d->m_endingBalance).formatMoney("", d->m_precision)));
+    if(m_account.accountType() != MyMoneyAccount::Investment) {
+      m_leftSummaryLabel->setText(i18n("Statement: %1").arg(d->m_endingBalance.formatMoney("", d->m_precision)));
+      m_centerSummaryLabel->setText(i18n("Cleared: %1").arg(clearedBalance[m_account.id()].formatMoney("", d->m_precision)));
+      m_rightSummaryLabel->setText(i18n("Difference: %1").arg((clearedBalance[m_account.id()] - d->m_endingBalance).formatMoney("", d->m_precision)));
+    }
   } else {
     // update summary line in normal mode
     QDate reconcileDate = m_account.lastReconciliationDate();
@@ -551,8 +573,29 @@ void KGlobalLedgerView::updateSummaryLine(const MyMoneyMoney& actBalance, const 
       m_leftSummaryLabel->setText(i18n("Never reconciled"));
     }
 
-    m_centerSummaryLabel->setText(i18n("Cleared: %1").arg(clearedBalance.formatMoney("", d->m_precision)));
-    m_rightSummaryLabel->setText(i18n("Balance: %1").arg(actBalance.formatMoney("", d->m_precision)));
+    if(m_account.accountType() != MyMoneyAccount::Investment) {
+      m_centerSummaryLabel->setText(i18n("Cleared: %1").arg(clearedBalance[m_account.id()].formatMoney("", d->m_precision)));
+      m_rightSummaryLabel->setText(i18n("Balance: %1").arg(actBalance[m_account.id()].formatMoney("", d->m_precision)));
+    } else {
+      m_centerSummaryLabel->hide();
+      MyMoneyMoney balance;
+      MyMoneySecurity base = file->baseCurrency();
+      QMap<QCString, MyMoneyMoney>::const_iterator it_b;
+      for(it_b = actBalance.begin(); it_b != actBalance.end(); ++it_b) {
+        MyMoneyAccount stock = file->account(it_b.key());
+        MyMoneySecurity sec = file->security(stock.currencyId());
+        MyMoneyMoney rate;
+        MyMoneyPrice priceInfo;
+        priceInfo = file->price(sec.id(), sec.tradingCurrency());
+        rate = priceInfo.rate(sec.tradingCurrency());
+        if(sec.tradingCurrency() != base.id()) {
+          priceInfo = file->price(sec.tradingCurrency(), base.id());
+          rate = rate * priceInfo.rate(base.id());
+        }
+        balance += ((*it_b) * rate).convert(base.smallestAccountFraction());
+      }
+      m_rightSummaryLabel->setText(i18n("Investment value: %1").arg(balance.formatMoney(base.tradingSymbol(), d->m_precision)));
+    }
   }
 }
 
@@ -1095,7 +1138,7 @@ void KGlobalLedgerView::slotSortOptions(void)
   delete dlg;
 }
 
-void KGlobalLedgerView::slotToggleTransactionMark(KMyMoneyRegister::Transaction* t)
+void KGlobalLedgerView::slotToggleTransactionMark(KMyMoneyRegister::Transaction* /* t */)
 {
   if(!m_inEditMode) {
     emit toggleReconciliationFlag();

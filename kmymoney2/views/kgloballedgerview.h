@@ -291,10 +291,10 @@ protected:
     * the given values. The contents shown differs between reconciliation
     * mode and normal mode.
     *
-    * @param actBalance value to be used as actual balance
-    * @param clearedBalance value to be used as cleared balance
+    * @param actBalance map of account indexed values to be used as actual balance
+    * @param clearedBalance map of account indexed values to be used as cleared balance
     */
-  void updateSummaryLine(const MyMoneyMoney& actBalance, const MyMoneyMoney& clearedBalance);
+  void updateSummaryLine(const QMap<QCString, MyMoneyMoney>& actBalance, const QMap<QCString, MyMoneyMoney>& clearedBalance);
 
   /**
     * setup the default action according to the current account type

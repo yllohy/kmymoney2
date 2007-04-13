@@ -47,6 +47,8 @@ namespace KMyMoneyTransactionForm {
 
 namespace KMyMoneyRegister {
 
+// keep the following list in sync with code in the constructor
+// of KMyMoneyRegister::Register in register.cpp
 typedef enum {
   NumberColumn = 0,
   DateColumn,
@@ -56,10 +58,10 @@ typedef enum {
   ReconcileFlagColumn,
   PaymentColumn,
   DepositColumn,
-  BalanceColumn,
   AmountColumn,
   PriceColumn,
   ValueColumn,
+  BalanceColumn,
   // insert new values above this line
   MaxColumns
 } Column;

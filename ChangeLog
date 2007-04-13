@@ -1,3 +1,7 @@
+2007-04-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added display of investment value
+  * Added balance display for investments
+
 2007-04-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added minimum balance and maximum credit fields to account editor
     (not functional yet - storage works)

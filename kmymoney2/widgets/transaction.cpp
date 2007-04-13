@@ -1646,6 +1646,14 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
           }
           break;
 
+        case BalanceColumn:
+          align |= Qt::AlignRight;
+          if(m_showBalance)
+            txt = m_balance;
+          else
+            txt = "----";
+          break;
+
         default:
           break;
       }
