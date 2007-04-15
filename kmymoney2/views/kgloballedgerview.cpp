@@ -581,20 +581,23 @@ void KGlobalLedgerView::updateSummaryLine(const QMap<QCString, MyMoneyMoney>& ac
       MyMoneyMoney balance;
       MyMoneySecurity base = file->baseCurrency();
       QMap<QCString, MyMoneyMoney>::const_iterator it_b;
+      bool approx = false;
       for(it_b = actBalance.begin(); it_b != actBalance.end(); ++it_b) {
         MyMoneyAccount stock = file->account(it_b.key());
         MyMoneySecurity sec = file->security(stock.currencyId());
         MyMoneyMoney rate;
         MyMoneyPrice priceInfo;
         priceInfo = file->price(sec.id(), sec.tradingCurrency());
+        approx |= !priceInfo.isValid();
         rate = priceInfo.rate(sec.tradingCurrency());
         if(sec.tradingCurrency() != base.id()) {
           priceInfo = file->price(sec.tradingCurrency(), base.id());
+          approx |= !priceInfo.isValid();
           rate = rate * priceInfo.rate(base.id());
         }
         balance += ((*it_b) * rate).convert(base.smallestAccountFraction());
       }
-      m_rightSummaryLabel->setText(i18n("Investment value: %1").arg(balance.formatMoney(base.tradingSymbol(), d->m_precision)));
+      m_rightSummaryLabel->setText(i18n("Investment value: %1%2").arg(approx ? "~" : "").arg(balance.formatMoney(base.tradingSymbol(), d->m_precision)));
     }
   }
 }

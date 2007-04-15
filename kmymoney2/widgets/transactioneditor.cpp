@@ -446,11 +446,14 @@ bool TransactionEditor::enterTransactions(QCString& newId)
     emit statusMsg(i18n("Storeing transactions"));
     emit statusProgress(0, cnt);
 
+    // maybe someone else blocked the signals already
+    bool blocked = MyMoneyFile::instance()->signalsBlocked();
+
     QValueList<MyMoneyTransaction>::iterator it_ts;
     for(it_ts = list.begin(); it_ts != list.end(); ++it_ts) {
       // turn on signals before we modify the last entry in the list
       cnt--;
-      MyMoneyFile::instance()->blockSignals(cnt != 0);
+      MyMoneyFile::instance()->blockSignals((cnt != 0) || blocked);
       try {
         // if we have a categorization, make sure we remove
         // the 'imported' flag automagically

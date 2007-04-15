@@ -1,3 +1,6 @@
+2007-04-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Reactivated the automatic entry of scheduled transactions after file open
+
 2007-04-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added display of investment value
   * Added balance display for investments

@@ -77,7 +77,7 @@
 // Project Includes
 
 #include "kmymoney2.h"
-#include "kmymoneysettings.h"
+#include "kmymoneyglobalsettings.h"
 #include "kmymoney2_stub.h"
 
 #include "dialogs/kstartdlg.h"
@@ -1271,10 +1271,11 @@ void KMyMoney2App::slotLoadAccountTemplates(void)
   dialog->setCaption(i18n("Select account template(s)"));
 
   if(dialog->exec() == QDialog::Accepted) {
-    MyMoneyFile::instance()->suspendNotify(true);
+
+    MyMoneyFile::instance()->blockSignals(true);
     loadAccountTemplates(dialog->selectedFiles());
-    MyMoneyFile::instance()->suspendNotify(false);
-    myMoneyView->slotRefreshViews();
+    MyMoneyFile::instance()->blockSignals(false);
+    MyMoneyFile::instance()->forceDataChanged();
   }
   delete dialog;
 
@@ -3432,11 +3433,11 @@ void KMyMoney2App::slotPayeeDelete(void)
 //     kdDebug() << "[KPayeesView::slotDeletePayee]  " << used_schedules.count() << " schedules use one of the selected payees" << endl;
 
     // finally remove the payees, but don't signal each change
-    file->suspendNotify(true);
+    file->blockSignals(true);
 
     // if at least one payee is still referenced, we need to reassign its transactions first
     if (!translist.isEmpty() || !used_schedules.isEmpty()) {
-      file->suspendNotify(false);
+      file->blockSignals(false);
       // show error message if no payees remain
       if (remainingPayees.isEmpty()) {
         KMessageBox::sorry(this, i18n("At least one transaction/schedule is still referenced by a payee. "
@@ -3466,7 +3467,7 @@ void KMyMoney2App::slotPayeeDelete(void)
       QCString payee_id = remainingPayees[index].id();
 
       // finally remove the payees, but don't signal each change
-      file->suspendNotify(true);
+      file->blockSignals(true);
 
       // TODO : check if we have a report that explicitely uses one of our payees
       //        and issue an appropriate warning
@@ -3518,7 +3519,10 @@ void KMyMoney2App::slotPayeeDelete(void)
       it != m_selectedPayees.end(); ++it) {
       file->removePayee(*it);
     }
-    file->suspendNotify(false);
+    file->blockSignals(false);
+
+    // make sure, everyone receives a notice about the bulk change
+    file->forceDataChanged();
 
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to remove payee(s)"),
@@ -3584,20 +3588,22 @@ void KMyMoney2App::slotBudgetDelete(void)
   if (KMessageBox::questionYesNo(this, prompt, i18n("Remove Budget"))==KMessageBox::No)
     return;
 
+  file->blockSignals(true);
   try {
     // now loop over all selected payees and remove them
-    file->suspendNotify(true);
     for (QValueList<MyMoneyBudget>::iterator it = m_selectedBudget.begin();
       it != m_selectedBudget.end(); ++it) {
       file->removeBudget(*it);
     }
-    file->suspendNotify(false);
 
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to remove budget(s)"),
       (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
     delete e;
   }
+  file->blockSignals(false);
+  // make sure everyone receives a notification about the bulk changes
+  file->forceDataChanged();
 }
 
 void KMyMoney2App::slotNewUserWizard(void)
@@ -4597,9 +4603,8 @@ void KMyMoney2App::slotFileConsitencyCheck(void)
 
 void KMyMoney2App::slotCheckSchedules(void)
 {
-  if(KMyMoneySettings::checkSchedule() == true) {
+  if(KMyMoneyGlobalSettings::checkSchedule() == true) {
 
-    MyMoneyFile::instance()->suspendNotify(true);
     QString prevMsg = slotStatusMsg(i18n("Checking for overdue schedules..."));
     MyMoneyFile *file = MyMoneyFile::instance();
     QDate checkDate = QDate::currentDate().addDays(KMyMoneySettings::checkSchedulePreview());
@@ -4607,44 +4612,56 @@ void KMyMoney2App::slotCheckSchedules(void)
     QValueList<MyMoneySchedule> scheduleList =  file->scheduleList();
     QValueList<MyMoneySchedule>::Iterator it;
 
-#if 0
-    // FIXME once the new enter schedule dialog is up and running, add it here
-    for (it=scheduleList.begin(); it!=scheduleList.end(); ++it)
-    {
+    for (it=scheduleList.begin(); it!=scheduleList.end(); ++it) {
       // Get the copy in the file because it might be modified by commitTransaction
       MyMoneySchedule schedule = file->schedule((*it).id());
 
-      if (schedule.autoEnter())
-      {
-        while ((schedule.nextPayment(schedule.lastPayment()) <= checkDate) && !schedule.isFinished())
-        {
-          if (schedule.isFixed())
-          {
-            KEnterScheduleDialog dlg(0, schedule, schedule.nextPayment(schedule.lastPayment()));
-            dlg.commitTransaction();
-          }
-          else
-          {
-            // 0.8 will feature a list of schedules for a better ui
-            KEnterScheduleDialog dlg(0, schedule, schedule.nextPayment(schedule.lastPayment()));
-            connect(&dlg, SIGNAL(createCategory(const QString&, QCString&)), this, SLOT(slotCategoryNew(const QString&, QCString&)));
-            connect(&dlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
-            if (!dlg.exec())
-            {
-              int r = KMessageBox::warningYesNo(this, i18n("Are you sure you wish to stop this schedule from being entered into the register?\n\nKMyMoney will prompt you again next time it starts unless you manually enter it later."));
-              if (r == KMessageBox::Yes)
-              {
-                break;
+      if(schedule.autoEnter()) {
+        try {
+          while ((schedule.nextPayment(schedule.lastPayment()) <= checkDate) && !schedule.isFinished()) {
+            KEnterScheduleDlg dlg(this, schedule);
+            m_transactionEditor = dlg.startEdit();
+            if(m_transactionEditor) {
+              MyMoneyTransaction torig, taccepted;
+              m_transactionEditor->createTransaction(torig, dlg.transaction(), schedule.transaction().splits()[0]);
+              // force actions to be available no matter what (will be updated according to the state during
+              // slotTransactionsEnter or slotTransactionsCancel)
+              kmymoney2->action("transaction_cancel")->setEnabled(true);
+              kmymoney2->action("transaction_enter")->setEnabled(true);
+
+              // if the schedule is not fixed (amount is an estimate) then
+              // present the data to the user and let him/her update it
+              if(!schedule.isFixed()) {
+                if(dlg.exec() == QDialog::Rejected) {
+                  if(KMessageBox::warningYesNo(this, i18n("Are you sure you wish to stop this schedule from being entered into the register?\n\nKMyMoney will prompt you again next time it starts unless you manually enter it later.")) == KMessageBox::Yes) {
+                    slotTransactionsCancel();
+                    break; // break out of the while loop
+                  }
+                }
+              }
+
+              // if we still have the editor around here, the user did not cancel
+              if(m_transactionEditor) {
+                bool blocked = MyMoneyFile::instance()->signalsBlocked();
+                MyMoneyFile::instance()->blockSignals(true);
+
+                // add the new transaction
+                QCString newId;
+                if(m_transactionEditor->enterTransactions(newId))
+                  deleteTransactionEditor();
+
+                schedule.setLastPayment(schedule.nextPayment(schedule.lastPayment()));
+                MyMoneyFile::instance()->blockSignals(blocked);
+                MyMoneyFile::instance()->modifySchedule(schedule);
               }
             }
+            schedule = file->schedule((*it).id()); // get a copy of the modified schedule
           }
-
-          schedule = file->schedule((*it).id()); // get a copy of the modified schedule
+        } catch(MyMoneyException* e) {
+          delete e;
         }
       }
     }
-#endif
-    MyMoneyFile::instance()->suspendNotify(false);
     slotStatusMsg(prevMsg);
     updateCaption();
   }
