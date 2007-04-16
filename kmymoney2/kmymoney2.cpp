@@ -2,7 +2,9 @@
                           kmymoney2.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
+                           (C) 2007 by Thomas Baumgart
     email                : mte@users.sourceforge.net
+                           ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -111,7 +113,7 @@
 #include "dialogs/ieditscheduledialog.h"
 #include "dialogs/knewloanwizard.h"
 #include "dialogs/keditloanwizard.h"
-#include "dialogs/ktransactionreassigndlg.h"
+#include "dialogs/kpayeereassigndlg.h"
 #include "dialogs/kmergetransactionsdlg.h"
 #include "dialogs/kendingbalancedlg.h"
 
@@ -3456,7 +3458,7 @@ void KMyMoney2App::slotPayeeDelete(void)
       }
 
       // show transaction reassignment dialog
-      KTransactionReassignDlg * dlg = new KTransactionReassignDlg(this);
+      KPayeeReassignDlg * dlg = new KPayeeReassignDlg(this);
       QCString payee_id = dlg->show(remainingPayees);
       delete dlg; // and kill the dialog
       if (payee_id.isEmpty())

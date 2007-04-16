@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>KTransactionReassignDlgDecl</class>
+<class>KPayeeReassignDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>KTransactionReassignDlgDecl</cstring>
+        <cstring>KPayeeReassignDlgDecl</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -161,13 +161,13 @@
     <connection>
         <sender>buttonOk</sender>
         <signal>clicked()</signal>
-        <receiver>KTransactionReassignDlgDecl</receiver>
+        <receiver>KPayeeReassignDlgDecl</receiver>
         <slot>accept()</slot>
     </connection>
     <connection>
         <sender>buttonCancel</sender>
         <signal>clicked()</signal>
-        <receiver>KTransactionReassignDlgDecl</receiver>
+        <receiver>KPayeeReassignDlgDecl</receiver>
         <slot>reject()</slot>
     </connection>
 </connections>

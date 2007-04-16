@@ -1,8 +1,9 @@
 /***************************************************************************
-                          ktransactionreassigndlg.cpp
+                          kpayeereassigndlg.cpp
                              -------------------
-    copyright            : (C) 2005 by Andreas Nicolai, Thomas Baumgart
-    author               : Andreas Nicolai
+    copyright            : (C) 2005 by Andreas Nicolai
+                           (C) 2007 by Thomas Baumgart
+    author               : Andreas Nicolai, Thomas Baumgart
     email                : ghorwin@users.sourceforge.net
                            ipwizard@users.sourceforge.net
  ***************************************************************************/
@@ -33,12 +34,12 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "ktransactionreassigndlg.h"
+#include "kpayeereassigndlg.h"
 #include <kmymoney/kmymoneycombo.h>
 #include <kmymoney/kguiutils.h>
 
-KTransactionReassignDlg::KTransactionReassignDlg( QWidget* parent, const char* name) :
-  KTransactionReassignDlgDecl( parent, name)
+KPayeeReassignDlg::KPayeeReassignDlg( QWidget* parent, const char* name) :
+  KPayeeReassignDlgDecl( parent, name)
 {
   buttonOk->setGuiItem(KStdGuiItem::ok());
   buttonCancel->setGuiItem(KStdGuiItem::cancel());
@@ -47,11 +48,11 @@ KTransactionReassignDlg::KTransactionReassignDlg( QWidget* parent, const char* n
   mandatory->setOkButton(buttonOk);
 }
 
-KTransactionReassignDlg::~KTransactionReassignDlg()
+KPayeeReassignDlg::~KPayeeReassignDlg()
 {
 }
 
-QCString KTransactionReassignDlg::show(const QValueList<MyMoneyPayee>& payeeslist)
+QCString KPayeeReassignDlg::show(const QValueList<MyMoneyPayee>& payeeslist)
 {
   if (payeeslist.isEmpty())
    return QCString(); // no payee available? nothing can be selected...
@@ -67,7 +68,7 @@ QCString KTransactionReassignDlg::show(const QValueList<MyMoneyPayee>& payeeslis
 }
 
 
-void KTransactionReassignDlg::accept(void)
+void KPayeeReassignDlg::accept(void)
 {
   // force update of payeeCombo
   buttonOk->setFocus();
@@ -75,8 +76,8 @@ void KTransactionReassignDlg::accept(void)
   if(payeeCombo->selectedItem().isEmpty()) {
     KMessageBox::information(this, i18n("This dialog does not allow to create new payees. Please pick a payee from the list."), i18n("Payee creation"));
   } else {
-    KTransactionReassignDlgDecl::accept();
+    KPayeeReassignDlgDecl::accept();
   }
 }
 
-#include "ktransactionreassigndlg.moc"
+#include "kpayeereassigndlg.moc"

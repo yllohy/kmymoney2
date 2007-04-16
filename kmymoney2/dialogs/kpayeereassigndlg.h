@@ -1,8 +1,9 @@
 /***************************************************************************
-                          ktransactionreassigndlg.cpp
+                          kpayeereassigndlg.cpp
                              -------------------
-    copyright            : (C) 2005 by Andreas Nicolai, Thomas Baumgart
-    author               : Andreas Nicolai
+    copyright            : (C) 2005 by Andreas Nicolai
+                           (C) 2007 by Thomas Baumgart
+    author               : Andreas Nicolai, Thomas Baumgart
     email                : ghorwin@users.sourceforge.net
                            ipwizard@users.sourceforge.net
  ***************************************************************************/
@@ -16,8 +17,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KTRANSACTIONREASSIGNDLG_H
-#define KTRANSACTIONREASSIGNDLG_H
+#ifndef KPAYEEREASSIGNDLG_H
+#define KPAYEEREASSIGNDLG_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -32,21 +33,21 @@
 // Project Includes
 
 #include <kmymoney/mymoneypayee.h>
-#include "kmymoney2/dialogs/ktransactionreassigndlgdecl.h"
+#include "kmymoney2/dialogs/kpayeereassigndlgdecl.h"
 
 /**
  *  Implementation of the dialog that lets the user select a payee in order
  *  to re-assign transactions (for instance, if payees are deleted).
  */
-class KTransactionReassignDlg : public KTransactionReassignDlgDecl
+class KPayeeReassignDlg : public KPayeeReassignDlgDecl
 {
   Q_OBJECT
 public:
   /** Default constructor */
-  KTransactionReassignDlg( QWidget* parent = 0, const char* name = 0);
+  KPayeeReassignDlg( QWidget* parent = 0, const char* name = 0);
 
   /** Destructor */
-  ~KTransactionReassignDlg();
+  ~KPayeeReassignDlg();
 
   /**
     * This function sets up the dialog, lets the user select a payee and returns
@@ -64,4 +65,4 @@ protected:
 
 };
 
-#endif // KTRANSACTIONREASSIGNDLG_H
+#endif // KPAYEEREASSIGNDLG_H
