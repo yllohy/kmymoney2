@@ -28,6 +28,7 @@
 #include <qsqldatabase.h>
 #include <qfiledialog.h>
 #include <qstatusbar.h>
+#include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -91,10 +92,14 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
   }
   connect (buttonHelp, SIGNAL(released()), this, SLOT(slotHelp()));
   connect (buttonSQL, SIGNAL(released()), this, SLOT(slotGenerateSQL()));
-
+  checkPreLoad->setChecked(false);
 }
 
 KSelectDatabaseDlg::~KSelectDatabaseDlg() {}
+
+void KSelectDatabaseDlg::setMode (int openMode) {
+  checkPreLoad->setEnabled (openMode == IO_ReadWrite);
+}
 
 const KURL KSelectDatabaseDlg::selectedURL() {
   KURL url;
@@ -103,7 +108,10 @@ const KURL KSelectDatabaseDlg::selectedURL() {
   url.setPass(textPassword->text());
   url.setHost(textHostName->text());
   url.setPath("/" + textDbName->text());
-  url.setQuery(QString("driver=%1").arg(listDrivers->currentText().section (' ', 0, 0)));
+  QString qs = QString("driver=%1&mode=single")
+      .arg(listDrivers->currentText().section (' ', 0, 0));
+  if (checkPreLoad->isChecked()) qs.append("&options=loadAll");
+  url.setQuery(qs);
   return (url);
 }
 
@@ -127,7 +135,7 @@ void KSelectDatabaseDlg::slotBrowse () { // relevant for SQLite only
 }
 
 void KSelectDatabaseDlg::slotGenerateSQL () {
-  QString fileName = QFileDialog::getOpenFileName(
+  QString fileName = QFileDialog::getSaveFileName(
       "",
       "All files (*.*)",
       this,
@@ -138,7 +146,7 @@ void KSelectDatabaseDlg::slotGenerateSQL () {
   if (!out.open(IO_WriteOnly)) return;
   QTextStream s(&out);
   MyMoneyDbDef db;
-  db.generateSQL(s);
+  s << db.generateSQL(listDrivers->currentText().section (' ', 0, 0));
   out.close();
 }
 

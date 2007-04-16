@@ -38,7 +38,8 @@ Q_OBJECT
 public:
   KSelectDatabaseDlg(QWidget *parent = 0, const char *name = 0);
   ~KSelectDatabaseDlg();
-  
+
+  void setMode(int openMode);
   const KURL selectedURL();
 
 /* leave these in for now, useful for testing...

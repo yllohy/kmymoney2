@@ -43,6 +43,7 @@
 #include <kmymoney/mymoneyprice.h>
 #include <kmymoney/mymoneyreport.h>
 #include <kmymoney/mymoneybudget.h>
+#include "mymoneystoragesql.h"
 
 /**
   * @author Thomas Baumgart
@@ -67,6 +68,17 @@ public:
   virtual void setUser(const MyMoneyPayee& val) = 0;
   virtual void setCreationDate(const QDate& val) = 0;
   virtual void setFileFixVersion(const unsigned int v) = 0;
+  /**
+   * This method is used to get a SQL reader for subsequent database access
+   */
+  virtual MyMoneyStorageSql *connectToDatabase
+      (const KURL& url) = 0;
+  /**
+    * This method is used when a database file is open, and the data is to
+    * be saved in a different file or format. It will ensure that all data
+    * from the database is available in memory to enable it to be written.
+    */
+  virtual void fillStorage() = 0;
 
   /**
     * This method is used to set the last modification date of
@@ -129,6 +141,11 @@ public:
     */
   // virtual const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const = 0;
 
+  /**
+   * This method returns whether a given transaction is already in memory, to avoid
+   * reloading it from the database
+   */
+  virtual bool isDuplicateTransaction(const QCString&) const = 0;
   /**
     * This method returns a list of the payees
     * inside a MyMoneyStorage object
@@ -286,6 +303,7 @@ public:
   virtual void addTransaction(MyMoneyTransaction& transaction, const bool skipAccountUpdate = false) = 0;
 
   virtual void loadAccount(const MyMoneyAccount& acc) = 0;
+  virtual void loadAccount(const MyMoneyAccount& acc, const unsigned long txCount) = 0;
   virtual void loadTransaction(const MyMoneyTransaction& tr) = 0;
   virtual void loadInstitution(const MyMoneyInstitution& inst) = 0;
   virtual void loadPayee(const MyMoneyPayee& payee) = 0;

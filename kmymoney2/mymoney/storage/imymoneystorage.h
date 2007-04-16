@@ -884,6 +884,10 @@ public:
     */
   virtual bool isReferenced(const MyMoneyObject& obj, const MyMoneyFileBitArray& skipCheck = MyMoneyFileBitArray()) const = 0;
 
+  /**
+    * This method is provided to allow closing of the database before logoff
+    */
+  virtual void close(void) = 0;
 };
 
 #endif

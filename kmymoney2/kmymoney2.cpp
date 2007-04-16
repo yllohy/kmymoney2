@@ -567,6 +567,8 @@ bool KMyMoney2App::queryClose()
     else if (ans==KMessageBox::Yes)
       return slotFileSave();
   }
+  if (myMoneyView->isSyncDatabase())
+    slotFileClose(); // close off the database
   return true;
 }
 
@@ -768,6 +770,7 @@ void KMyMoney2App::slotFileOpen()
 void KMyMoney2App::slotOpenDatabase() {
   QString prevMsg = slotStatusMsg(i18n("Open a file."));
   KSelectDatabaseDlg dialog;
+  dialog.setMode(IO_ReadWrite);
 
   if(dialog.exec() == QDialog::Accepted) {
     slotFileOpenRecent(dialog.selectedURL());
@@ -840,7 +843,7 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
       slotFileClose();
       if(!myMoneyView->fileOpen()) {
         if(myMoneyView->readFile(url)) {
-          if((myMoneyView->isNativeFile() || (url.protocol() == "sql"))) {
+          if((myMoneyView->isNativeFile())) {
             m_fileName = url;
             KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
             if(p)
@@ -885,11 +888,11 @@ const bool KMyMoney2App::slotFileSave()
     slotStatusMsg(prevMsg);
     return rc;
   }
-  if (m_fileName.protocol() == "sql") {
+  /*if (myMoneyView->isDatabase()) {
     rc = myMoneyView->saveDatabase(m_fileName);
-  } else {
-    rc = myMoneyView->saveFile(m_fileName, MyMoneyFile::instance()->value("kmm-encryption-key"));
-  }
+    // the 'save' function is no longer relevant for a database*/
+  rc = myMoneyView->saveFile(m_fileName, MyMoneyFile::instance()->value("kmm-encryption-key"));
+
   m_autoSaveTimer->stop();
 
   slotStatusMsg(prevMsg);
@@ -910,7 +913,9 @@ void KMyMoney2App::slotFileSaveAsFilterChanged(const QString& filter)
 const bool KMyMoney2App::slotFileSaveAs()
 {
   bool rc = false;
-
+  // in event of it being a database, ensure that all data is read into storage for saveas
+  if (myMoneyView->isSyncDatabase())
+        dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage())->fillStorage();
   QString prevMsg = slotStatusMsg(i18n("Saving file with a new filename..."));
   QString prevDir= ""; // don't prompt file name if not a native file
   if (myMoneyView->isNativeFile())
@@ -1025,8 +1030,12 @@ const bool KMyMoney2App::slotFileSaveAs()
 const bool KMyMoney2App::slotSaveAsDatabase() {
 
   bool rc = false;
+  // in event of it being a database, ensure that all data is read into storage for saveas
+  if (myMoneyView->isSyncDatabase())
+    dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage())->fillStorage();
   QString prevMsg = slotStatusMsg(i18n("Saving file to database..."));
   KSelectDatabaseDlg dialog;
+  dialog.setMode(IO_WriteOnly);
   KURL url;
 
   if(dialog.exec() == QDialog::Accepted) {
@@ -4173,11 +4182,11 @@ void KMyMoney2App::slotUpdateActions(void)
   bool modified = file->dirty();
   action("open_database")->setEnabled(true);
   action("saveas_database")->setEnabled(fileOpen);
-  action("file_save")->setEnabled(modified);
+  action("file_save")->setEnabled(modified && !myMoneyView->isSyncDatabase());
   action("file_save_as")->setEnabled(fileOpen);
   action("file_close")->setEnabled(fileOpen);
   action("view_personal_data")->setEnabled(fileOpen);
-  action("file_backup")->setEnabled(fileOpen);
+  action("file_backup")->setEnabled(fileOpen && !myMoneyView->isDatabase());
   action("file_print")->setEnabled(fileOpen && myMoneyView->canPrint());
 #if KMM_DEBUG
   action("view_file_info")->setEnabled(fileOpen);

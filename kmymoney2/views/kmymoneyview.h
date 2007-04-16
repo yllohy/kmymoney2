@@ -109,6 +109,11 @@ private:
     CategoryNew
   };
 
+  typedef enum storageTypeE { // not used but keep for future implementation
+    Memory = 0,
+    Database
+  } _storageType;
+
   KHomeView *m_homeView;
   KAccountsView *m_accountsView;
   KInstitutionsView *m_institutionsView;
@@ -144,10 +149,13 @@ private:
   typedef enum _fileTypeE {
     KmmBinary = 0, // native, binary
     KmmXML,        // native, XML
+    KmmDbFile,     // database used as file, pretty much redundant now
+    KmmDbSingleUser,    // database with some data maintained in memory
+    KmmDbMultiUser,   // 'proper' database support not implemented
     /* insert new native file types above this line */
     MaxNativeFileType,
     /* and non-native types below */
-    GncXML
+    GncXML         // Gnucash XML
   }fileTypeE;
   fileTypeE m_fileType;
 
@@ -188,7 +196,7 @@ private:
     * object. It calls removeStorage() to remove a possibly attached
     * storage object.
     */
-  void newStorage(void);
+  void newStorage(storageTypeE = Memory);
 
   /**
     * This method removes an attached storage from the MyMoneyFile
@@ -286,16 +294,17 @@ public:
    * @retval false save operation failed
    * @retval true save operation was successful
    */
-  const bool saveDatabase(const KURL& url);
+  //const bool saveDatabase(const KURL& url); This no longer relevant
   /**
    * Saves the data into permanent storage on a new or empty SQL database.
    *
-   * @param url The pseudo of tyhe database
+   * @param url The pseudo URL of the database
    *
    * @retval false save operation failed
    * @retval true save operation was successful
    */
   const bool saveAsDatabase(const KURL& url);
+
   /**
     * Call this to find out if the currently open file is native KMM
     *
@@ -303,6 +312,25 @@ public:
     * @retval false file is foreign
     */
   const bool isNativeFile() { return (m_fileType < MaxNativeFileType);};
+
+  /**
+   * Call this to find out if the currently open file is a sql database
+   *
+   * @retval true file is database
+   * @retval false file is serial
+   */
+  const bool isDatabase()
+    { return ((m_fileType == KmmDbFile) || (m_fileType == KmmDbSingleUser) || (m_fileType == KmmDbMultiUser));};
+
+  /**
+   * Call this to find out if the currently open file is a SQL database
+    * opened in sync mode (i.e. updates writen to database as they happen)
+   *
+   * @retval true file is synchronous
+   * @retval false file is asynchronous
+   */
+  const bool isSyncDatabase()
+  { return ((m_fileType == KmmDbSingleUser) || (m_fileType == KmmDbMultiUser));};
 
   /**
     * Call this to see if the MyMoneyFile contains any unsaved data.
@@ -504,17 +532,18 @@ protected slots:
 
 private:
   /**
-    * This method is called from readFile to read a database file into storage
-    *
-    * @param dbaseURL pseudo-KURL representation of database
-    *
-    * @retval true Database read successfully
-    * @retval false Could not open or read database
-    */
-  bool readDatabase (const KURL& dbaseURL);
+   * This method is called from readFile to open a database file which
+   * is to be processed in 'proper' database mode, i.e. in-place updates
+   *
+   * @param dbaseURL pseudo-KURL representation of database
+   *
+   * @retval true Database opened successfully
+   * @retval false Could not open or read database
+   */
+  bool openDatabase (const KURL& dbaseURL);
   /**
-    * This method is used after a file or database has been
-    * read into storage, and performs various initialization tasks
+   * This method is used after a file or database has been
+   * read into storage, and performs various initialization tasks
    *
    * @retval true all went okay
    * @retval false an exception occurred during this process

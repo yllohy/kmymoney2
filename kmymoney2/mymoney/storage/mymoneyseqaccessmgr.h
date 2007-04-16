@@ -31,6 +31,7 @@
 
 #include "imymoneystorage.h"
 #include "imymoneyserialize.h"
+#include "mymoneystoragesql.h"
 
 /**
   * @author Thomas Baumgart
@@ -97,11 +98,23 @@ public:
   const unsigned int fileFixVersion(void) const { return m_fileFixVersion; };
 
 
-  // general set functions
-  void setUser(const MyMoneyPayee& user) { m_user = user; touch(); };
+  // general set functionsACCOUNT_ID_SIZE
+  void setUser(const MyMoneyPayee& user) { m_user = user;
+        touch(); if (m_sql != 0) m_sql->modifyUserInfo(user);};
   void setCreationDate(const QDate& val) { m_creationDate = val; touch(); };
   void setLastModificationDate(const QDate& val) { m_lastModificationDate = val; m_dirty = false; };
   void setFileFixVersion(const unsigned int v) { m_fileFixVersion = v; };
+  /**
+    * This method is used to get a SQL reader for subsequent database access
+    */
+  MyMoneyStorageSql *connectToDatabase (const KURL& url);
+   /**
+   * This method is used when a database file is open, and the data is to
+   * be saved in a different file or format. It will ensure that all data
+   * from the database is available in memory to enable it to be written.
+   */
+  virtual void fillStorage() {m_sql->fillStorage();};
+
   /**
     * This method is used to duplicate the MyMoneySeqAccessMgr object and return
     * a pointer to the newly created copy. The caller of this method is the
@@ -495,6 +508,12 @@ public:
   // const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const;
 
   /**
+    * This method returns whether a given transaction is already in memory, to avoid
+    * reloading it from the database
+    */
+  bool isDuplicateTransaction(const QCString& id) const {return (m_transactionKeys.contains(id));};
+
+  /**
     * This method returns the number of transactions currently known to file
     * in the range 0..MAXUINT
     *
@@ -556,6 +575,7 @@ public:
   const MyMoneyAccount& equity(void) const { return account(STD_ACC_EQUITY); };
 
   virtual void loadAccount(const MyMoneyAccount& acc);
+  virtual void loadAccount(const MyMoneyAccount& acc, const unsigned long txCount);
   virtual void loadTransaction(const MyMoneyTransaction& tr);
   virtual void loadInstitution(const MyMoneyInstitution& inst);
   virtual void loadPayee(const MyMoneyPayee& payee);
@@ -1266,6 +1286,19 @@ private:
     *                of all modified objects are send
     */
   void reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent, const bool sendNotification);
+  /**
+   * This method will close a database and log the use roff
+   */
+  void close(void) {if (m_sql != 0) m_sql->close();};
+  /**
+    * This contains the interface with SQL reader for database access
+    */
+  MyMoneyStorageSql* m_sql;
+  /**
+    * This member variable is set when all transactions have been read from the database.
+    * This is would be probably the case when doing, for e.g., a full report,
+    * or after some types of transaction search which cannot be easily implemented in SQL
+    */
+  bool m_transactionListFull;
 };
-
 #endif

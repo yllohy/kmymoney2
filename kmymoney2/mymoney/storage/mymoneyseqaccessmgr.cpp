@@ -9,6 +9,7 @@
                            John C <thetacoturtle@users.sourceforge.net>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
                            Kevin Tambascio <ktambascio@users.sourceforge.net>
+                           Tony Bloomfield <tonybloom@users.sourceforge.net> the database stuff
  ***************************************************************************/
 
 /***************************************************************************
@@ -22,7 +23,13 @@
 
 #include "mymoneyseqaccessmgr.h"
 #include "../mymoneytransactionfilter.h"
+#include "../mymoneycategory.h"
 #include <qvaluevector.h>
+
+#define TRY try {
+#define CATCH } catch (MyMoneyException *e) {
+#define PASS } catch (MyMoneyException *e) { throw; }
+#define IFDBASE if (m_sql != 0)
 
 const bool MyMoneyBalanceCacheItem::operator ==(const MyMoneyBalanceCacheItem & right) const
 {
@@ -96,10 +103,14 @@ MyMoneySeqAccessMgr::MyMoneySeqAccessMgr()
   // initialize for file fixes (see kmymoneyview.cpp)
   m_currentFixVersion = 2;
   m_fileFixVersion = 0; // default value if no fix-version in file
+  // for database access
+  m_sql = 0;
+  m_transactionListFull = false;
 }
 
 MyMoneySeqAccessMgr::~MyMoneySeqAccessMgr()
 {
+    delete m_sql;
 }
 
 MyMoneySeqAccessMgr* const MyMoneySeqAccessMgr::duplicate(void)
@@ -107,6 +118,14 @@ MyMoneySeqAccessMgr* const MyMoneySeqAccessMgr::duplicate(void)
   MyMoneySeqAccessMgr* that = new MyMoneySeqAccessMgr();
   *that = *this;
   return that;
+}
+  /**
+ * This method is used to get a SQL reader for subsequent database access
+   */
+MyMoneyStorageSql *MyMoneySeqAccessMgr::connectToDatabase
+      (const KURL& url) {
+  m_sql = new MyMoneyStorageSql (this, url);
+  return m_sql;
 }
 
 const bool MyMoneySeqAccessMgr::isStandardAccount(const QCString& id) const
@@ -172,6 +191,7 @@ void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& account)
   MyMoneyAccount newAccount(nextAccountID(), account);
   m_accountList[newAccount.id()] = newAccount;
   touch();
+  IFDBASE m_sql->addAccount(newAccount);
   account = newAccount;
 }
 
@@ -181,13 +201,14 @@ void MyMoneySeqAccessMgr::addPayee(MyMoneyPayee& payee)
   MyMoneyPayee newPayee(nextPayeeID(), payee);
   m_payeeList[newPayee.id()] = newPayee;
   touch();
+  IFDBASE m_sql->addPayee(newPayee);
   payee = newPayee;
 }
 
 const MyMoneyPayee& MyMoneySeqAccessMgr::payee(const QCString& id) const
 {
   QMap<QCString, MyMoneyPayee>::ConstIterator it;
-
+  IFDBASE m_sql->readPayees(id);
   it = m_payeeList.find(id);
   if(it == m_payeeList.end())
     throw new MYMONEYEXCEPTION("Unknown payee '" + id + "'");
@@ -199,6 +220,9 @@ const MyMoneyPayee& MyMoneySeqAccessMgr::payeeByName(const QString& payee) const
 {
   if(payee.isEmpty())
     return MyMoneyPayee::null;
+  TRY
+  IFDBASE m_sql->readPayees();
+  PASS
 
   QMap<QCString, MyMoneyPayee>::ConstIterator it_p;
 
@@ -215,12 +239,14 @@ void MyMoneySeqAccessMgr::modifyPayee(const MyMoneyPayee& payee)
 {
   QMap<QCString, MyMoneyPayee>::Iterator it;
 
+  IFDBASE m_sql->readPayees(payee.id());
   it = m_payeeList.find(payee.id());
   if(it == m_payeeList.end()) {
     QString msg = "Unknown payee '" + payee.id() + "'";
     throw new MYMONEYEXCEPTION(msg);
   }
   touch();
+  IFDBASE m_sql->modifyPayee(payee);
   *it = payee;
 }
 
@@ -229,7 +255,7 @@ void MyMoneySeqAccessMgr::removePayee(const MyMoneyPayee& payee)
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
   QValueList<MyMoneySplit>::ConstIterator it_s;
   QMap<QCString, MyMoneyPayee>::Iterator it_p;
-
+  IFDBASE m_sql->readPayees(payee.id());
   it_p = m_payeeList.find(payee.id());
   if(it_p == m_payeeList.end()) {
     QString msg = "Unknown payee '" + payee.id() + "'";
@@ -237,6 +263,11 @@ void MyMoneySeqAccessMgr::removePayee(const MyMoneyPayee& payee)
   }
 
   // scan all transactions to check if the payee is still referenced
+  IFDBASE {
+    MyMoneyTransactionFilter f;
+    f.addPayee(payee.id());
+    m_sql->readTransactions(f); // make sure they're all here
+  }
   for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
     // scan all splits of this transaction
     for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
@@ -248,10 +279,14 @@ void MyMoneySeqAccessMgr::removePayee(const MyMoneyPayee& payee)
 
   m_payeeList.remove(it_p);
   touch();
+  IFDBASE m_sql->removePayee(payee);
 }
 
 const QValueList<MyMoneyPayee> MyMoneySeqAccessMgr::payeeList(void) const
 {
+  TRY
+  IFDBASE m_sql->readPayees();
+  PASS
   return m_payeeList.values();
 }
 
@@ -285,6 +320,7 @@ void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& parent, MyMoneyAccount& acc
   m_balanceCache[account.id()] = balance;
 
   touch();
+  IFDBASE m_sql->modifyAccount(account);
 }
 
 void MyMoneySeqAccessMgr::addAccount(MyMoneyInstitution& institution, MyMoneyAccount& account)
@@ -308,6 +344,7 @@ void MyMoneySeqAccessMgr::addAccount(MyMoneyInstitution& institution, MyMoneyAcc
   account = *theAccount;
 
   touch();
+  IFDBASE m_sql->modifyAccount(account);
 }
 
 void MyMoneySeqAccessMgr::addInstitution(MyMoneyInstitution& institution)
@@ -318,6 +355,7 @@ void MyMoneySeqAccessMgr::addInstitution(MyMoneyInstitution& institution)
 
   // mark file as changed
   touch();
+  IFDBASE m_sql->addInstitution (newInstitution);
 
   // return new data
   institution = newInstitution;
@@ -325,6 +363,8 @@ void MyMoneySeqAccessMgr::addInstitution(MyMoneyInstitution& institution)
 
 const unsigned int MyMoneySeqAccessMgr::transactionCount(const QCString& account) const
 {
+  IFDBASE return (m_sql->transactionCount(account));
+
   unsigned int cnt = 0;
 
   if(account.length() == 0) {
@@ -360,6 +400,8 @@ const unsigned int MyMoneySeqAccessMgr::transactionCount(const QCString& account
 
 const QMap<QCString, unsigned long> MyMoneySeqAccessMgr::transactionCountMap(void) const
 {
+  IFDBASE return (m_sql->transactionCountMap());
+
   QMap<QCString, unsigned long> map;
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
   QValueList<MyMoneySplit>::ConstIterator it_s;
@@ -471,6 +513,7 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
 
   // mark file as changed
   touch();
+  IFDBASE m_sql->addTransaction(transaction);
 
   if(!skipAccountUpdate) {
     // now update those accounts that need a reference
@@ -499,7 +542,7 @@ const QCString MyMoneySeqAccessMgr::transactionKey(const MyMoneyTransaction& t) 
 
 void MyMoneySeqAccessMgr::touch(void)
 {
-  m_dirty = true;
+  if (m_sql == 0) m_dirty = true;
   m_lastModificationDate = QDate::currentDate();
 }
 
@@ -507,6 +550,10 @@ const bool MyMoneySeqAccessMgr::hasActiveSplits(const QCString& id) const
 {
   QMap<QCString, MyMoneyTransaction>::ConstIterator it;
 
+  IFDBASE {
+    MyMoneyTransactionFilter f(id);
+    m_sql->readTransactions(f);
+  }
   for(it = m_transactionList.begin(); it != m_transactionList.end(); ++it) {
     if((*it).accountReferenced(id)) {
       return true;
@@ -572,7 +619,7 @@ void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account, const boo
 
       // mark file as changed
       touch();
-
+      IFDBASE m_sql->modifyAccount(account);
     } else
       throw new MYMONEYEXCEPTION("Invalid information for update");
 
@@ -591,7 +638,7 @@ void MyMoneySeqAccessMgr::modifyInstitution(const MyMoneyInstitution& institutio
 
     // mark file as changed
     touch();
-
+    IFDBASE m_sql->modifyInstitution(institution);
   } else
     throw new MYMONEYEXCEPTION("unknown institution");
 }
@@ -659,6 +706,7 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
 
   // mark file as changed
   touch();
+  IFDBASE m_sql->modifyTransaction(transaction);
 
   // now update the accounts
   QMap<QCString, bool>::ConstIterator it_a;
@@ -715,6 +763,7 @@ void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccoun
 
   // mark file as changed
   touch();
+  IFDBASE m_sql->modifyAccount(account);
 }
 
 void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transaction)
@@ -764,7 +813,7 @@ void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transactio
 
   // mark file as changed
   touch();
-}
+  IFDBASE m_sql->removeTransaction(transaction);}
 
 void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
 {
@@ -845,6 +894,7 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
 
     // mark file as changed
     touch();
+    IFDBASE m_sql->removeAccount(account);
   }
 }
 
@@ -872,6 +922,7 @@ void MyMoneySeqAccessMgr::removeInstitution(const MyMoneyInstitution& institutio
 
     // mark file as changed
     touch();
+    IFDBASE m_sql->removeInstitution(institution);
   } else
     throw new MYMONEYEXCEPTION("invalid institution");
 }
@@ -879,6 +930,9 @@ void MyMoneySeqAccessMgr::removeInstitution(const MyMoneyInstitution& institutio
 void MyMoneySeqAccessMgr::transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const
 {
   list.clear();
+  TRY
+  IFDBASE m_sql->readTransactions(filter);
+  PASS
 
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
 
@@ -904,6 +958,9 @@ void MyMoneySeqAccessMgr::transactionList(QValueList<MyMoneyTransaction>& list, 
 void MyMoneySeqAccessMgr::transactionList(QValueList< QPair<MyMoneyTransaction, MyMoneySplit> >& list, MyMoneyTransactionFilter& filter) const
 {
   list.clear();
+  TRY
+  IFDBASE m_sql->readTransactions(filter);
+  PASS
 
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
 
@@ -978,24 +1035,26 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate&
 {
   MyMoneyMoney result(0);
   MyMoneyAccount acc;
-
+  if (date != QDate()) qDebug ("request balance for %s at %s", id.data(), date.toString(Qt::ISODate).latin1());
   if(!date.isValid() && account(id).accountType() != MyMoneyAccount::Stock) {
     if(m_accountList.find(id) != m_accountList.end())
       return m_accountList[id].balance();
     return MyMoneyMoney(0);
   }
-  if(m_balanceCache[id].valid == false || date != m_balanceCacheDate) {
+  if(m_balanceCache[id].valid == false || date != m_balanceCacheDate || m_sql != 0) {
     QMap<QCString, MyMoneyMoney> balances;
     QMap<QCString, MyMoneyMoney>::ConstIterator it_b;
-
-    m_balanceCache.clear();
-    m_balanceCacheDate = date;
+    if (date != m_balanceCacheDate) {
+      m_balanceCache.clear();
+      m_balanceCacheDate = date;
+    }
 
     QValueList<MyMoneyTransaction> list;
     QValueList<MyMoneyTransaction>::ConstIterator it_t;
     QValueList<MyMoneySplit>::ConstIterator it_s;
 
     MyMoneyTransactionFilter filter;
+    IFDBASE filter.addAccount(id);
     filter.setDateFilter(QDate(), date);
     filter.setReportAllSplits(false);
     transactionList(list, filter);
@@ -1018,11 +1077,13 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate&
     }
 
     // fill all accounts w/o transactions to zero
-    QMap<QCString, MyMoneyAccount>::ConstIterator it_a;
-    for(it_a = m_accountList.begin(); it_a != m_accountList.end(); ++it_a) {
-      if(m_balanceCache[(*it_a).id()].valid == false) {
-        MyMoneyBalanceCacheItem balance(MyMoneyMoney(0,1));
-        m_balanceCache[(*it_a).id()] = balance;
+    if (m_sql != 0) {
+      QMap<QCString, MyMoneyAccount>::ConstIterator it_a;
+      for(it_a = m_accountList.begin(); it_a != m_accountList.end(); ++it_a) {
+        if(m_balanceCache[(*it_a).id()].valid == false) {
+          MyMoneyBalanceCacheItem balance(MyMoneyMoney(0,1));
+          m_balanceCache[(*it_a).id()] = balance;
+        }
       }
     }
   }
@@ -1141,6 +1202,17 @@ void MyMoneySeqAccessMgr::loadAccount(const MyMoneyAccount& acc)
     m_balanceCache[acc.id()] = MyMoneyBalanceCacheItem(acc.openingBalance());
 }
 
+void MyMoneySeqAccessMgr::loadAccount(const MyMoneyAccount& acc, const unsigned long txCount) {
+  //DBGPRT(QString("load account %1 with balance %2; txcount %3")
+      //.arg(acc.id()).arg(acc.balance().toString()).arg(txCount));
+  loadAccount(acc);
+//  m_balanceCache[acc.id()] = MyMoneyBalanceCacheItem(acc.balance());
+//  m_balanceCacheDate = QDate::currentDate();
+
+  //m_transactionCountMap[acc.id()] = txCount;
+  //m_transactionCount += txCount;
+  //dumpCache();
+}
 void MyMoneySeqAccessMgr::loadTransaction(const MyMoneyTransaction& tr)
 {
   QMap<QCString, MyMoneyTransaction>::ConstIterator it;
@@ -1148,6 +1220,7 @@ void MyMoneySeqAccessMgr::loadTransaction(const MyMoneyTransaction& tr)
 
   it = m_transactionList.find(key);
   if(it != m_transactionList.end()) {
+    IFDBASE return; // transaction already loaded
     QString msg = QString("Duplicate transaction '%1' during loadTransaction(). Discarded.").arg(tr.id());
     qDebug("%s", msg.data());
     return;
@@ -1308,6 +1381,7 @@ void MyMoneySeqAccessMgr::addSchedule(MyMoneySchedule& sched)
 
   // mark file as changed
   touch();
+  IFDBASE m_sql->addSchedule(sched);
 }
 
 void MyMoneySeqAccessMgr::modifySchedule(const MyMoneySchedule& sched)
@@ -1323,6 +1397,7 @@ void MyMoneySeqAccessMgr::modifySchedule(const MyMoneySchedule& sched)
   *it = sched;
   // mark file as changed
   touch();
+  IFDBASE m_sql->modifySchedule(sched);
 }
 
 void MyMoneySeqAccessMgr::removeSchedule(const MyMoneySchedule& sched)
@@ -1339,6 +1414,7 @@ void MyMoneySeqAccessMgr::removeSchedule(const MyMoneySchedule& sched)
 
   m_scheduleList.remove(it);
   touch();
+  IFDBASE m_sql->removeSchedule(sched);
 }
 
 const MyMoneySchedule MyMoneySeqAccessMgr::schedule(const QCString& id) const
@@ -1513,6 +1589,7 @@ void MyMoneySeqAccessMgr::addSecurity(MyMoneySecurity& security)
   m_securitiesList[newSecurity.id()] = newSecurity;
 
   touch();
+  IFDBASE m_sql->addSecurity(newSecurity);
   security = newSecurity;
 }
 
@@ -1530,6 +1607,7 @@ void MyMoneySeqAccessMgr::modifySecurity(const MyMoneySecurity& security)
 
   m_securitiesList[security.id()] = security;
   touch();
+  IFDBASE m_sql->modifySecurity(security);
 }
 
 void MyMoneySeqAccessMgr::removeSecurity(const MyMoneySecurity& security)
@@ -1548,6 +1626,7 @@ void MyMoneySeqAccessMgr::removeSecurity(const MyMoneySecurity& security)
 
   m_securitiesList.erase(security.id());
   touch();
+  IFDBASE m_sql->removeSecurity(security);
 }
 
 const MyMoneySecurity MyMoneySeqAccessMgr::security(const QCString& id) const
@@ -1578,6 +1657,7 @@ void MyMoneySeqAccessMgr::addCurrency(const MyMoneySecurity& currency)
 
   m_currencyList[currency.id()] = currency;
   touch();
+  IFDBASE m_sql->addCurrency(currency);
 }
 
 void MyMoneySeqAccessMgr::modifyCurrency(const MyMoneySecurity& currency)
@@ -1591,6 +1671,7 @@ void MyMoneySeqAccessMgr::modifyCurrency(const MyMoneySecurity& currency)
 
   *it = currency;
   touch();
+  IFDBASE m_sql->modifyCurrency(currency);
 }
 
 void MyMoneySeqAccessMgr::removeCurrency(const MyMoneySecurity& currency)
@@ -1606,6 +1687,7 @@ void MyMoneySeqAccessMgr::removeCurrency(const MyMoneySecurity& currency)
 
   m_currencyList.remove(it);
   touch();
+  IFDBASE m_sql->removeCurrency(currency);
 }
 
 const MyMoneySecurity& MyMoneySeqAccessMgr::currency(const QCString& id) const
@@ -1645,6 +1727,7 @@ void MyMoneySeqAccessMgr::addReport( MyMoneyReport& report )
   m_reportList[report.id()] = report;
 
   touch();
+  IFDBASE m_sql->addReport(report);
 
 }
 
@@ -1670,6 +1753,7 @@ void MyMoneySeqAccessMgr::modifyReport( const MyMoneyReport& report )
     throw new MYMONEYEXCEPTION(msg);
   }
   touch();
+  IFDBASE m_sql->modifyReport(report);
 
   *it = report;
 }
@@ -1704,6 +1788,7 @@ void MyMoneySeqAccessMgr::removeReport( const MyMoneyReport& report )
 
   m_reportList.remove(it);
   touch();
+  IFDBASE m_sql->removeReport(report);
 }
 
 const QValueList<MyMoneyBudget> MyMoneySeqAccessMgr::budgetList(void) const
@@ -1718,6 +1803,7 @@ void MyMoneySeqAccessMgr::addBudget( MyMoneyBudget& budget )
   m_budgetList[newBudget.id()] = newBudget;
   touch();
   budget = newBudget;
+  IFDBASE m_sql->addBudget(budget);
 }
 
 void MyMoneySeqAccessMgr::loadBudget( const MyMoneyBudget& budget )
@@ -1756,7 +1842,7 @@ void MyMoneySeqAccessMgr::modifyBudget( const MyMoneyBudget& budget )
     throw new MYMONEYEXCEPTION(msg);
   }
   touch();
-
+  IFDBASE m_sql->modifyBudget(budget);
   *it = budget;
 }
 
@@ -1790,13 +1876,13 @@ void MyMoneySeqAccessMgr::removeBudget( const MyMoneyBudget& budget )
 
   m_budgetList.remove(it);
   touch();
+  IFDBASE m_sql->removeBudget(budget);
 }
 
 void MyMoneySeqAccessMgr::addPrice(const MyMoneyPrice& price)
 {
   MyMoneyPriceEntries::ConstIterator it;
   it = m_priceList[MyMoneySecurityPair(price.from(), price.to())].find(price.date());
-
   // do not replace, if the information did not change.
   if(it != m_priceList[MyMoneySecurityPair(price.from(), price.to())].end()) {
     if((*it).rate() == price.rate()
@@ -1806,12 +1892,14 @@ void MyMoneySeqAccessMgr::addPrice(const MyMoneyPrice& price)
 
   m_priceList[MyMoneySecurityPair(price.from(), price.to())][price.date()] = price;
   touch();
+  IFDBASE m_sql->addPrice(price);
 }
 
 void MyMoneySeqAccessMgr::removePrice(const MyMoneyPrice& price)
 {
   m_priceList[MyMoneySecurityPair(price.from(), price.to())].remove(price.date());
   touch();
+  IFDBASE m_sql->removePrice(price);
 }
 
 const MyMoneyPriceList& MyMoneySeqAccessMgr::priceList(void) const
@@ -1893,6 +1981,17 @@ bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj, const MyMoneyFi
 
   // Scan all engine objects for a reference
   if(!skipCheck[RefCheckTransaction]) {
+    IFDBASE {
+      MyMoneyTransactionFilter f;
+      if (typeid(obj) == typeid(MyMoneyAccount)) {
+        f.addAccount(obj.id());
+      } else if (typeid(obj) == typeid(MyMoneyCategory)) {
+        f.addCategory(obj.id());
+      } else if (typeid(obj) == typeid(MyMoneyPayee)) {
+        f.addPayee(obj.id());
+      } // if it's anything else, I guess we just read everything
+      m_sql->readTransactions(f);
+    }
     for(it_t = m_transactionList.begin(); !rc && it_t != m_transactionList.end(); ++it_t) {
       rc = (*it_t).hasReferenceTo(id);
     }
@@ -1909,6 +2008,7 @@ bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj, const MyMoneyFi
     }
   }
   if(!skipCheck[RefCheckPayee]) {
+    IFDBASE m_sql->readPayees(obj.id());
     for(it_p = m_payeeList.begin(); !rc && it_p != m_payeeList.end(); ++it_p) {
       rc = (*it_p).hasReferenceTo(id);
     }
@@ -1948,4 +2048,9 @@ bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj, const MyMoneyFi
   }
   return rc;
 }
+#undef TRY
+#undef CATCH
+#undef PASS
+#undef IFDBASE
+
 // vim:cin:si:ai:et:ts=2:sw=2:
