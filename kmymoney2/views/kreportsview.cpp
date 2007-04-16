@@ -338,7 +338,27 @@ void KReportsView::loadView(void)
 {
   ::timetrace("Start KReportsView::loadView");
 
-  // TODO remember expanded items of the list
+  // remember the id of the current selected item and the
+  // items that are shown 'expanded'
+  QMap<QString, bool> isOpen;
+  QListViewItem *item = m_reportListView->selectedItem();
+  QString selectedPage = (item) ? item->text(0) : QString();
+
+  // keep a map of all 'expanded' accounts
+  QListViewItemIterator it_lvi(m_reportListView);
+  while(it_lvi.current()) {
+    item = it_lvi.current();
+    if(item && item->isOpen()) {
+      isOpen[item->text(0)] = true;
+    }
+    ++it_lvi;
+  }
+
+  // remember the upper left corner of the viewport
+  QPoint startPoint = m_reportListView->viewportToContents(QPoint(0, 0));
+
+  // turn off updates to avoid flickering during reload
+  m_reportListView->setUpdatesEnabled(false);
 
   //
   // Rebuild the list page
@@ -347,9 +367,8 @@ void KReportsView::loadView(void)
   unsigned pagenumber = 1;
 
   // Default Reports
-
   QString pagename = "9. " + i18n("Charts");
-  KListViewItem* chartnode = new KListViewItem(m_reportListView,pagename);
+  KListViewItem* chartnode = new KListViewItem(m_reportListView, pagename);
 
   QMap<QString,KListViewItem*> groupitems;
   QValueList<ReportGroup> defaultreports;
@@ -359,7 +378,8 @@ void KReportsView::loadView(void)
   {
     QString groupname = (*it_group).name();
     QString pagename = QString::number(pagenumber++) + ". " + groupname;
-    KListViewItem* curnode = new KListViewItem(m_reportListView,pagename);
+    KListViewItem* curnode = new KListViewItem(m_reportListView, pagename);
+    curnode->setOpen(isOpen.find(pagename) != isOpen.end());
     groupitems[groupname] = curnode;
 
     QValueList<MyMoneyReport>::const_iterator it_report = (*it_group).begin();
@@ -367,7 +387,9 @@ void KReportsView::loadView(void)
     {
       MyMoneyReport report = *it_report;
       report.setGroup(groupname);
-      new KReportListItem( curnode, report );
+      KReportListItem* r = new KReportListItem( curnode, report );
+      if(report.name() == selectedPage)
+        m_reportListView->setSelected(r, true);
 
       // ALSO place it into the Charts list if it's displayed as a chart by default
       if ( (*it_report).isChartByDefault() )
@@ -382,11 +404,13 @@ void KReportsView::loadView(void)
   // Rename the charts item to place it at this point in the list.
   pagename = QString::number(pagenumber++) + ". " + i18n("Charts");
   chartnode->setText(0,pagename);
+  chartnode->setOpen(isOpen.find(pagename) != isOpen.end());
 
   // Custom reports
 
   pagename = QString::number(pagenumber++) + ". " + i18n("Favorite Reports");
   KListViewItem* favoritenode = new KListViewItem(m_reportListView,pagename);
+  favoritenode->setOpen(isOpen.find(pagename) != isOpen.end());
   KListViewItem* orphannode = NULL;
 
   QValueList<MyMoneyReport> customreports = MyMoneyFile::instance()->reportList();
@@ -403,7 +427,7 @@ void KReportsView::loadView(void)
       if ( ! orphannode )
       {
         QString pagename = QString::number(pagenumber++) + ". " + i18n("Old Customized Reports");
-        orphannode = new KListViewItem(m_reportListView,pagename);
+        orphannode = new KListViewItem(m_reportListView, pagename);
       }
       new KReportListItem( orphannode, *it_report );
     }
@@ -419,7 +443,12 @@ void KReportsView::loadView(void)
     ++it_report;
   }
 
-  // TODO re-expand items of the list which were expanded before we got to this method
+  // reposition viewport
+  m_reportListView->setContentsPos(startPoint.x(), startPoint.y());
+
+  // turn updates back on
+  m_reportListView->setUpdatesEnabled(true);
+  m_reportListView->repaintContents();
 
   //
   // Go through the tabs to set their update flag or delete them if needed

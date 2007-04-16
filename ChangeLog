@@ -1,3 +1,6 @@
+2007-04-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Keep expanded items in reports view expanded when reloading
+
 2007-04-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reactivated the automatic entry of scheduled transactions after file open
 
