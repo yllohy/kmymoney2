@@ -240,6 +240,11 @@ void KMyMoneyCombo::focusOutEvent(QFocusEvent* e)
         // make sure the completion does not show through
         m_completion->hide();
       }
+
+    // else if we cannot create objects, and the current text is not
+    // in the list, then we clear the text and the selection.
+    } else if(!m_completion->selector()->contains(currentText())) {
+      setCurrentText(QString());
     }
   }
 

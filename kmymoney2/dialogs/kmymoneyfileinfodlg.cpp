@@ -61,3 +61,4 @@ KMyMoneyFileInfoDlg::~KMyMoneyFileInfoDlg()
 {
 }
 
+#include "kmymoneyfileinfodlg.moc"

@@ -3445,26 +3445,13 @@ void KMyMoney2App::slotPayeeDelete(void)
           "that the transactions/schedules can be reassigned."));
         return;
       }
-      // sort the payee list by payee's name
-      QMap<QString, MyMoneyPayee>sortMap;
-      QValueList<MyMoneyPayee>::const_iterator it_p;
-      for(it_p = remainingPayees.begin(); it_p != remainingPayees.end(); ++it_p)
-        sortMap[(*it_p).name()] = *it_p;
-      QMap<QString, MyMoneyPayee>::const_iterator it_pm;
-      remainingPayees.clear();
-      for(it_pm = sortMap.begin(); it_pm != sortMap.end(); ++it_pm)
-        remainingPayees << *it_pm;
-      sortMap.clear();
 
       // show transaction reassignment dialog
       KTransactionReassignDlg * dlg = new KTransactionReassignDlg(this);
-      int index = dlg->show(remainingPayees);
+      QCString payee_id = dlg->show(remainingPayees);
       delete dlg; // and kill the dialog
-      if (index == -1)
+      if (payee_id.isEmpty())
         return; // the user aborted the dialog, so let's abort as well
-
-      // remember the id of the selected target payee
-      QCString payee_id = remainingPayees[index].id();
 
       // finally remove the payees, but don't signal each change
       file->blockSignals(true);

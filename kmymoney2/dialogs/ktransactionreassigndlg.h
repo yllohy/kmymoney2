@@ -23,6 +23,7 @@
 // QT Includes
 
 #include <qvaluelist.h>
+#include <qcstring.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -49,14 +50,18 @@ public:
 
   /**
     * This function sets up the dialog, lets the user select a payee and returns
-    * the index of the selected payee in the payeeslist.
+    * the id of the selected payee in the payeeslist.
     *
     * @param payeeslist reference to QValueList of MyMoneyPayee objects to be contained in the list
     *
-    * @return Returns the index of the selected payee in the list or -1 if
-    *         the dialog was aborted. -1 is also returned if the payeeslist is empty.
+    * @return Returns the id of the selected payee in the list or QCString() if
+    *         the dialog was aborted. QCString() is also returned if the payeeslist is empty.
     */
-  int show(const QValueList<MyMoneyPayee>& payeeslist);
+  QCString show(const QValueList<MyMoneyPayee>& payeeslist);
+
+protected:
+  void accept(void);
+
 };
 
 #endif // KTRANSACTIONREASSIGNDLG_H
