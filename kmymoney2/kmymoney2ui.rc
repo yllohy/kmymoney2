@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="15" name="kmymoney2" >
+<kpartgui version="16" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
@@ -149,11 +149,13 @@
   <Action name="account_new"/>
  </Menu>
  <Menu name="payee_context_menu">
+  <title>Payee options</title>
   <Action name="payee_new" />
   <Action name="payee_rename" />
   <Action name="payee_delete" />
  </Menu>
  <Menu name="budget_context_menu">
+  <title>Budget options</title>
    <Action name="budget_new" />
    <Action name="budget_rename" />
    <Action name="budget_delete" />
