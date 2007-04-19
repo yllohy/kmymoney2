@@ -1,19 +1,19 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>KPayeeReassignDlgDecl</class>
+<class>KCategoryReassignDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>KPayeeReassignDlgDecl</cstring>
+        <cstring>KCategoryeReassignDlgDecl</cstring>
     </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
             <width>392</width>
-            <height>286</height>
+            <height>308</height>
         </rect>
     </property>
     <property name="caption">
-        <string>Reassign payees</string>
+        <string>Reassign categories</string>
     </property>
     <property name="sizeGripEnabled">
         <bool>false</bool>
@@ -36,7 +36,7 @@
                 </size>
             </property>
             <property name="text">
-                <string>The transactions associated with the selected payees need to be re-assigned to a different payee before the selected payees can be deleted. Please select a payee from the list below.</string>
+                <string>The transactions/schedules associated with the selected category need to be re-assigned to a different category before the selected category can be deleted. Please select a category from the list below.</string>
             </property>
             <property name="alignment">
                 <set>WordBreak|AlignJustify|AlignTop</set>
@@ -64,12 +64,12 @@
                 <cstring>textLabel2</cstring>
             </property>
             <property name="text">
-                <string>Available payees:</string>
+                <string>Available categories:</string>
             </property>
         </widget>
-        <widget class="KMyMoneyPayeeCombo">
+        <widget class="KMyMoneyCategory">
             <property name="name">
-                <cstring>payeeCombo</cstring>
+                <cstring>m_category</cstring>
             </property>
         </widget>
         <spacer>
@@ -161,13 +161,13 @@
     <connection>
         <sender>buttonOk</sender>
         <signal>clicked()</signal>
-        <receiver>KPayeeReassignDlgDecl</receiver>
+        <receiver>KCategoryeReassignDlgDecl</receiver>
         <slot>accept()</slot>
     </connection>
     <connection>
         <sender>buttonCancel</sender>
         <signal>clicked()</signal>
-        <receiver>KPayeeReassignDlgDecl</receiver>
+        <receiver>KCategoryeReassignDlgDecl</receiver>
         <slot>reject()</slot>
     </connection>
 </connections>

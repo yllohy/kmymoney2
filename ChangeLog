@@ -1,3 +1,8 @@
+2007-04-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed matching transaction logic to work with investment transactions
+  * Allow deletion of categories even with transactions assigned on the GUI
+    level. Re-assign them prior to deletion.
+
 2007-04-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added missing headers to option menus
 

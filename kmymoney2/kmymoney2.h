@@ -957,6 +957,13 @@ private:
     */
   bool haveImportedTransactionSelected(void) const;
 
+  /**
+    * Exchanges all references in transaction @a _t to account @a fromId
+    * into references to account @a toId. Returns @a true if at least
+    * one split has been changed, @a false otherwise.
+    */
+  bool exchangeAccountInTransaction(MyMoneyTransaction& _t, const QCString& fromId, const QCString& toId);
+
 signals:
   /**
     * This signal is emitted when a new file is loaded. In the case file

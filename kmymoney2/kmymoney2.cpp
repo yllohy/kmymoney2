@@ -114,6 +114,7 @@
 #include "dialogs/knewloanwizard.h"
 #include "dialogs/keditloanwizard.h"
 #include "dialogs/kpayeereassigndlg.h"
+#include "dialogs/kcategoryreassigndlg.h"
 #include "dialogs/kmergetransactionsdlg.h"
 #include "dialogs/kendingbalancedlg.h"
 
@@ -2567,6 +2568,21 @@ void KMyMoney2App::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
   }
 }
 
+bool KMyMoney2App::exchangeAccountInTransaction(MyMoneyTransaction& _t, const QCString& fromId, const QCString& toId)
+{
+  bool rc = false;
+  MyMoneyTransaction t(_t);
+  QValueList<MyMoneySplit>::iterator it_s;
+  for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+    if((*it_s).accountId() == fromId) {
+      (*it_s).setAccountId(toId);
+      _t.modifySplit(*it_s);
+      rc = true;
+    }
+  }
+  return rc;
+}
+
 void KMyMoney2App::slotAccountDelete(void)
 {
   if (m_selectedAccount.id().isEmpty())
@@ -2574,8 +2590,91 @@ void KMyMoney2App::slotAccountDelete(void)
 
   MyMoneyFile* file = MyMoneyFile::instance();
   // can't delete standard accounts or account which still have transactions assigned
-  if (file->isStandardAccount(m_selectedAccount.id())
-  || file->transactionCount(m_selectedAccount.id()) != 0)
+  if (file->isStandardAccount(m_selectedAccount.id()))
+    return;
+
+  // make sure we only allow transactions in a 'category' (income/expense account)
+  switch(m_selectedAccount.accountType()) {
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Expense:
+      break;
+
+    default:
+      // if the account still has transactions
+      if(file->transactionCount(m_selectedAccount.id()) != 0) {
+        return;
+      }
+      break;
+  }
+
+  // if we get here and still have transactions referencing the account, we
+  // need to check with the user to possibly re-assign them to a different account
+  bool needAskUser = true;
+  bool exit = false;
+  if(file->transactionCount(m_selectedAccount.id()) != 0) {
+    // show transaction reassignment dialog
+
+    needAskUser = false;
+    KCategoryReassignDlg* dlg = new KCategoryReassignDlg(this);
+    QCString categoryId = dlg->show(m_selectedAccount);
+    delete dlg; // and kill the dialog
+    if (categoryId.isEmpty())
+      return; // the user aborted the dialog, so let's abort as well
+
+    MyMoneyAccount newCategory = file->account(categoryId);
+    file->blockSignals(true);
+    QString prevMsg = slotStatusMsg(i18n("Adjusting transactions ..."));
+    try {
+      /*
+        m_selectedAccount.id() is the old id, categoryId the new one
+        Now search all transactions and schedules that reference m_selectedAccount.id()
+        and replace that with categoryId.
+      */
+      // get the list of all transactions that reference the old account
+      MyMoneyTransactionFilter filter(m_selectedAccount.id());
+      filter.setReportAllSplits(false);
+      QValueList<MyMoneyTransaction> tlist;
+      QValueList<MyMoneyTransaction>::iterator it_t;
+      file->transactionList(tlist, filter);
+
+      slotStatusProgressBar(0, tlist.count());
+      int cnt = 0;
+      for(it_t = tlist.begin(); it_t != tlist.end(); ++it_t) {
+        slotStatusProgressBar(++cnt, 0);
+        MyMoneyTransaction t = (*it_t);
+        if(exchangeAccountInTransaction(t, m_selectedAccount.id(), categoryId))
+          file->modifyTransaction(t);
+      }
+      slotStatusProgressBar(tlist.count(), 0);
+
+      // now fix all schedules
+      slotStatusMsg(i18n("Adjusting schedules ..."));
+      QValueList<MyMoneySchedule> slist = file->scheduleList(m_selectedAccount.id());
+      QValueList<MyMoneySchedule>::iterator it_s;
+
+      cnt = 0;
+      slotStatusProgressBar(0, slist.count());
+      for(it_s = slist.begin(); it_s != slist.end(); ++it_s) {
+        slotStatusProgressBar(++cnt, 0);
+        MyMoneyTransaction t = (*it_s).transaction();
+        if(exchangeAccountInTransaction(t, m_selectedAccount.id(), categoryId)) {
+          (*it_s).setTransaction(t);
+          file->modifySchedule(*it_s);
+        }
+      }
+      slotStatusProgressBar(slist.count(), 0);
+
+    } catch(MyMoneyException  *e) {
+      KMessageBox::error( this, i18n("Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3").arg(m_selectedAccount.name()).arg(newCategory.name()).arg(e->what()));
+      delete e;
+      exit = true;
+    }
+    file->blockSignals(false);
+    slotStatusProgressBar(-1, -1);
+    slotStatusMsg(prevMsg);
+  }
+
+  if(exit)
     return;
 
   switch(m_selectedAccount.accountGroup()) {
@@ -2587,11 +2686,11 @@ void KMyMoney2App::slotAccountDelete(void)
 
       // case A - only a single, unused category without subcats selected
       if (m_selectedAccount.accountList().isEmpty()) {
-        if (KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to delete category <b>%1</b>?").arg(m_selectedAccount.name())) == KMessageBox::Yes) {
+        if (!needAskUser || (KMessageBox::questionYesNo(this, QString("<qt>")+i18n("Do you really want to delete category <b>%1</b>?").arg(m_selectedAccount.name())+QString("</qt>")) == KMessageBox::Yes)) {
           try {
             file->removeAccount(m_selectedAccount);
           } catch(MyMoneyException* e) {
-            KMessageBox::error( this, i18n("Unable to delete category '%1'. Cause: %2").arg(m_selectedAccount.name()).arg(e->what()));
+            KMessageBox::error( this, QString("<qt>")+i18n("Unable to delete category <b>%1</b>. Cause: %2").arg(m_selectedAccount.name()).arg(e->what())+QString("</qt>"));
             delete e;
           }
         }
@@ -2602,10 +2701,10 @@ void KMyMoney2App::slotAccountDelete(void)
       MyMoneyAccount parentAccount = file->account(m_selectedAccount.parentAccountId());
 
       QCStringList accountsToReparent;
-      int result = KMessageBox::questionYesNoCancel(this, QString("<p>")+
+      int result = KMessageBox::questionYesNoCancel(this, QString("<qt>")+
           i18n("Do you want to delete category <b>%1</b> with all its sub-categories or only "
                "the category itself? If you only delete the category itself, all its sub-categories "
-               "will be made sub-categories of <b>%2</b>.").arg(m_selectedAccount.name()).arg(parentAccount.name()),
+               "will be made sub-categories of <b>%2</b>.").arg(m_selectedAccount.name()).arg(parentAccount.name())+QString("</qt>"),
           QString::null,
           KGuiItem(i18n("Delete all")),
           KGuiItem(i18n("Just the category")));
@@ -3992,9 +4091,49 @@ void KMyMoney2App::slotEndMatch(void)
     // found and the end split has a bankID, we should probably just fail.
     // Although we could ADD it to the transaction.
 
+    // ipwizard: Don't know if iterating over the transactions is a good idea.
+    // In case of a split transaction recorded with KMyMoney and the transaction
+    // data being imported consisting only of a single category assignment, this
+    // does not make much sense. The same applies for investment transactions
+    // stored in KMyMoney against imported transactions. I think a better solution
+    // is to just base the match on the splits referencing the same (currently
+    // selected) account.
+
     try
     {
+      // the match is based on the current selected account, so we look for the splits
+      // in both transactions for this account and match it based on that.
 
+      MyMoneySplit startSplit = startMatchTransaction.splitByAccount(m_selectedAccount.id());
+      MyMoneySplit endSplit = m_selectedTransactions[0].split();
+
+      // verify that the amounts are the same, otherwise we should not be matching!
+      if ( startSplit.shares() != endSplit.shares() ) {
+        throw new MYMONEYEXCEPTION(i18n("Splits for %1 have conflicting values (%2,%3)").arg(m_selectedAccount.name()).arg(startSplit.shares().formatMoney(),endSplit.shares().formatMoney()));
+      }
+
+      // ipwizard: I took over the code to keep the bank id found in the endMatchTransaction
+      // This won't work for HBCI nor QIF imports as they don't setup this information. It sure
+      // makes sense for OFX.
+      const QString& bankID = endSplit.bankID();
+      if ( ! bankID.isEmpty() ) {
+        try {
+          if ( startSplit.bankID().isEmpty() ) {
+            startSplit.setBankID( bankID );
+            startMatchTransaction.modifySplit(startSplit);
+          } else {
+            throw new MYMONEYEXCEPTION(i18n("Both of these transactions have been imported into %1.  Therefore they cannot be matched.  Matching works with one imported transaction and one non-imported transaction.").arg(m_selectedAccount.name()));
+          }
+        } catch(MyMoneyException *e) {
+          QString estr = e->what();
+          delete e;
+          throw new MYMONEYEXCEPTION(i18n("Unable to match all splits (%1)").arg(estr));
+        }
+      }
+      // TODO (Ace) Add in another error to catch the case where a user
+      // tries to match two hand-entered transactions.
+
+#if 0 // Ace's original code
       QValueList<MyMoneySplit> endSplits = endMatchTransaction.splits();
       QValueList<MyMoneySplit>::const_iterator it_split = endSplits.begin();
       while (it_split != endSplits.end())
@@ -4051,6 +4190,7 @@ void KMyMoney2App::slotEndMatch(void)
 
         ++it_split;
       }
+#endif
 
       bool enabled = MyMoneyFile::instance()->signalsBlocked();
       MyMoneyFile::instance()->blockSignals(true);
@@ -4294,7 +4434,7 @@ void KMyMoney2App::slotUpdateActions(void)
       if(!m_payeeGoto.isEmpty())
         action("transaction_goto_payee")->setEnabled(true);
 
-      if(m_selectedTransactions.count() == 1 && action("transaction_edit")->isEnabled()) {
+      if(m_selectedTransactions.count() == 1 /* && action("transaction_edit")->isEnabled() */) {
         if(m_matchTransaction.id().isEmpty()) {
           action("transaction_start_match")->setEnabled(true);
         } else {
@@ -4358,8 +4498,11 @@ void KMyMoney2App::slotUpdateActions(void)
           action("category_edit")->setEnabled(true);
           // enable delete action, if category/account itself is not referenced
           // by any object except accounts, because we want to allow
-          // deleting of sub-categories
+          // deleting of sub-categories. Also, we allow transactions and schedules
+          // to be present because we can re-assign them during the delete process
           skip.setBit(IMyMoneyStorage::RefCheckAccount);
+          skip.setBit(IMyMoneyStorage::RefCheckTransaction);
+          skip.setBit(IMyMoneyStorage::RefCheckSchedule);
           action("category_delete")->setEnabled(!file->isReferenced(m_selectedAccount, skip));
           action("account_open")->setEnabled(true);
         break;
