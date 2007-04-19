@@ -123,6 +123,15 @@ void KMyMoneyCategory::slotItemSelected(const QCString& id)
   }
 }
 
+void KMyMoneyCategory::focusOutEvent(QFocusEvent *ev)
+{
+  if(isSplitTransaction()) {
+    KComboBox::focusOutEvent(ev);
+  } else {
+    KMyMoneyCombo::focusOutEvent(ev);
+  }
+}
+
 void KMyMoneyCategory::focusInEvent(QFocusEvent *ev)
 {
   KMyMoneyCombo::focusInEvent(ev);

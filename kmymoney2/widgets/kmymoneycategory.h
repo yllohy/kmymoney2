@@ -142,6 +142,11 @@ protected:
   virtual void focusInEvent(QFocusEvent* ev);
 
   /**
+    * Reimplemented to support protected category text ("split transactions")
+    */
+  virtual void focusOutEvent(QFocusEvent* ev);
+
+  /**
     * set the widgets text area based on the item with the given @a id.
     */
   virtual void setCurrentText(const QCString& id);

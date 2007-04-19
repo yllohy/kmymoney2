@@ -1299,10 +1299,12 @@ MyMoneyMoney StdTransactionEditor::removeVatSplit(void)
   m_splits.append(c);
 
   // ... make sure that the widget is updated ...
-  // I dropped this, because it caused the split transaction editor
-  // to show up whenever the amount had been changed. (ipwizard)
-  // QCString id;
-  // setupCategoryWidget(id);
+  // block the signals to avoid popping up the split editor dialog
+  // for nothing
+  m_editWidgets["category"]->blockSignals(true);
+  QCString id;
+  setupCategoryWidget(id);
+  m_editWidgets["category"]->blockSignals(false);
 
   // ... and return the updated amount
   return amount;
@@ -1462,7 +1464,7 @@ void StdTransactionEditor::checkPayeeInSplit(MyMoneySplit& s, const QCString& pa
     return;
 
   MyMoneyAccount acc = m_objects->account(s.accountId());
-  if(acc.isCategory()) {
+  if(acc.isIncomeExpense()) {
     s.setPayeeId(payeeId);
   } else {
     if(s.payeeId().isEmpty())
