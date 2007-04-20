@@ -1,3 +1,6 @@
+2007-04-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Support 'goto account' also to stock accounts and back
+
 2007-04-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed matching transaction logic to work with investment transactions
   * Allow deletion of categories even with transactions assigned on the GUI
