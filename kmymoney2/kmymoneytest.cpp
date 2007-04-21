@@ -167,6 +167,11 @@ int main(int /* argc */, char** /* argv */ )
   return rc;
 }
 
+// required for the testcases (mymoneystoragesql references it)
+void timetrace(const char *txt)
+{
+}
+
 #if 0
 #ifdef HAVE_LIBOFX
 
