@@ -58,7 +58,7 @@ KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountT
   // using showAbortButton()
   m_kButtonAbort->hide();
 
-  update(QCString());
+  slotReloadWidget();
 
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem skipButtonItem( i18n( "&Skip" ),
@@ -86,7 +86,7 @@ KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountT
   m_kButtonAbort->setGuiItem(abortButtenItem);
 
 
-  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAccount, this);
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadWidget()));
 
   connect(m_createButton, SIGNAL(clicked()), this, SLOT(slotCreateAccount()));
   connect(m_qbuttonOk, SIGNAL(clicked()), this, SLOT(accept()));
@@ -96,10 +96,9 @@ KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountT
 
 KAccountSelectDlg::~KAccountSelectDlg()
 {
-  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAccount, this);
 }
 
-void KAccountSelectDlg::update(const QCString& /*id */)
+void KAccountSelectDlg::slotReloadWidget(void)
 {
   MyMoneyObjectContainer objects;
   AccountSet set(&objects);
@@ -262,10 +261,7 @@ void KAccountSelectDlg::setMode(const int mode)
 
 void KAccountSelectDlg::showAbortButton(const bool visible)
 {
-  if(visible)
-    m_kButtonAbort->show();
-  else
-    m_kButtonAbort->hide();
+  m_kButtonAbort->setShown(visible);
 }
 
 int KAccountSelectDlg::exec(void)

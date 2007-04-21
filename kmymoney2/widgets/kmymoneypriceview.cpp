@@ -157,9 +157,9 @@ kMyMoneyPriceView::kMyMoneyPriceView(QWidget *parent, const char *name ) :
           this, SLOT(slotListClicked(QListViewItem*, const QPoint&, int)));
   connect(m_priceHistory, SIGNAL(selectionChanged(QListViewItem*)), this, SIGNAL(selectionChanged(QListViewItem*)));
 
-  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassPrice, this);
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadWidget()));
 
-  update(QCString());
+  slotReloadWidget();
 
   // If the widget is shown, the size must be fixed a little later
   // to be appropriate. I saw this in some other places and the only
@@ -171,7 +171,6 @@ kMyMoneyPriceView::kMyMoneyPriceView(QWidget *parent, const char *name ) :
 
 kMyMoneyPriceView::~kMyMoneyPriceView()
 {
-  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassPrice, this);
 }
 
 void kMyMoneyPriceView::slotTimerDone(void)
@@ -183,7 +182,7 @@ void kMyMoneyPriceView::slotTimerDone(void)
   resize(width()+1, height()+1);
 }
 
-void kMyMoneyPriceView::update(const QCString& /* id */)
+void kMyMoneyPriceView::slotReloadWidget(void)
 {
   m_priceHistory->clear();
 
@@ -312,7 +311,7 @@ void kMyMoneyPriceView::slotShowAllPrices(bool enabled)
 {
   if(m_showAll != enabled) {
     m_showAll = enabled;
-    update(QCString());
+    slotReloadWidget();
   }
 }
 

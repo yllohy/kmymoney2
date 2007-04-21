@@ -45,14 +45,13 @@
 
 #include "../dialogs/kupdatestockpricedlgdecl.h"
 
-#include "../mymoney/mymoneyprice.h"
-#include "../widgets/kmymoneydateinput.h"
-#include "../widgets/kmymoneyedit.h"
+#include <kmymoney/mymoneyprice.h>
+#include <kmymoney/kmymoneydateinput.h>
+#include <kmymoney/kmymoneyedit.h>
 
 /**
   * @author Kevin Tambascio
   */
-
 class KUpdateStockPriceDlg : public kUpdateStockPriceDecl
 {
   Q_OBJECT
@@ -61,7 +60,7 @@ public:
   KUpdateStockPriceDlg(QWidget* parent = NULL,  const char* name = NULL);
   ~KUpdateStockPriceDlg();
 
-  const QDate date() const { return m_date->getQDate(); };
+  const QDate date() const { return m_date->date(); };
   const MyMoneyMoney price(void) const;
 
 public slots:

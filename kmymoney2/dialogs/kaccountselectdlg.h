@@ -32,23 +32,22 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../widgets/kmymoneycombo.h"
+#include <kmymoney/kmymoneycombo.h>
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/kmymoneyutils.h>
 #include "../dialogs/kaccountselectdlgdecl.h"
-#include "../mymoney/mymoneyobserver.h"
-#include "../mymoney/mymoneyaccount.h"
-#include "../kmymoneyutils.h"
+
 /**
   * @author Thomas Baumgart
   */
 
-class KAccountSelectDlg : public KAccountSelectDlgDecl, MyMoneyObserver
+class KAccountSelectDlg : public KAccountSelectDlgDecl
 {
    Q_OBJECT
-public: 
+public:
   KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE type, const QString& purpose = "General", QWidget *parent=0, const char *name=0);
   ~KAccountSelectDlg();
 
@@ -115,14 +114,14 @@ public:
     * @retval true Dialog was left using the 'Abort' button
     */
   const bool aborted(void) const { return m_aborted; };
-  
+
 public slots:
   /**
     * Reimplemented from QDialog
     */
   int exec();
-  
-protected slots:    
+
+protected slots:
   /**
     * This slot is used to fire up the new account wizard and preset it
     * with the values found in m_account. If an account was created using
@@ -134,20 +133,16 @@ protected slots:
     * This slot is used to fire up the new institution dialog
     */
   void slotCreateInstitution(void);
-  
+
   /**
     * This slot is used to react on the abort button
     */
   void abort(void);
-    
-private:
+
   /**
-    * This is the method which will be called by the engine if the accounts are changed.
-    * It calls loadAccounts() to reload the account selection combo box.
-    *
-    * @param acc reference to const QCString containing an account id
+    * This is the slot which will be called if the engine data is changed.
     */
-  void update(const QCString& acc);
+  void slotReloadWidget(void);
 
 private:
   QString         m_purpose;

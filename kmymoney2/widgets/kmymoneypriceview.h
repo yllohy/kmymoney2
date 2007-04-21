@@ -3,12 +3,7 @@
                              -------------------
     begin                : Wed Mar 24 2004
     copyright            : (C) 2004 by Thomas Baumgart
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
+    email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
  ***************************************************************************/
 
 /***************************************************************************
@@ -38,7 +33,6 @@ class QListViewItem;
 // Project Includes
 
 #include "../widgets/kmymoneypriceviewdecl.h"
-// #include "../widgets/kmymoneyaccountselector.h"
 #include <kmymoney/kmymoneylistviewitem.h>
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/mymoneymoney.h>
@@ -63,14 +57,12 @@ private:
 };
 
 
-class kMyMoneyPriceView : public kMyMoneyPriceViewDecl, public MyMoneyObserver
+class kMyMoneyPriceView : public kMyMoneyPriceViewDecl
 {
    Q_OBJECT
 public:
   kMyMoneyPriceView(QWidget *parent=0, const char *name=0);
   ~kMyMoneyPriceView();
-
-  void update(const QCString& id);
 
 signals:
   /**
@@ -90,6 +82,7 @@ protected slots:
   int slotEditPrice(void);
   void slotShowAllPrices(bool enabled);
   void slotOnlinePriceUpdate(void);
+  void slotReloadWidget(void);
 
 private slots:
   void slotTimerDone(void);

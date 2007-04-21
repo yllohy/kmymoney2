@@ -41,8 +41,7 @@ class KComboBox;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "mymoney/mymoneyobserver.h"
-#include "mymoney/mymoneyscheduled.h"
+#include <kmymoney/mymoneyscheduled.h>
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneypayee.h>
 #include <kmymoney/mymoneybudget.h>
@@ -88,7 +87,7 @@ namespace KMyMoneyPlugin { class ImporterPlugin; }
   *
   * @short Main application class.
   */
-class KMyMoney2App : public KMainWindow, MyMoneyObserver, public DCOPObject
+class KMyMoney2App : public KMainWindow, public DCOPObject
 {
   Q_OBJECT
   K_DCOP
@@ -102,7 +101,7 @@ protected slots:
     * received modifications to it's contents), and call the apropriate method to
     * save the file. Furthermore, re-starts the timer (possibly not needed).
     * @author mvillarino 2005
-    * @see KMyMoney2App::update(), MyMoneyFile::instance()->attach()
+    * @see KMyMoney2App::slotDataChanged()
     */
   void slotAutoSave();
 
@@ -421,6 +420,12 @@ protected slots:
     */
   void slotDateChanged(void);
 
+  /**
+    * This slot will be called when the engine data changed
+    * and the application object needs to update it's state.
+    */
+  void slotDataChanged(void);
+
 public:
   /**
     * This method checks if there is at least one asset or liability account
@@ -463,12 +468,6 @@ public:
     * Returns whether there is an importer available that can handle this file
     */
   bool isImportableFile( const KURL& url );
-
-  /**
-    * This function will be called by the engine when the engine data changed
-    * and the application object needs to update it's state.
-    */
-  virtual void update(const QCString& id);
 
   /**
     * This method is used to update the caption of the application window.

@@ -221,7 +221,7 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   connect(m_autoSaveTimer, SIGNAL(timeout()), this, SLOT(slotAutoSave()));
 
   // make sure, we get a note when the engine changes state
-  MyMoneyFile::instance()->attach(MyMoneyFile::NotifyClassAnyChange, this);
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotDataChanged()));
 
   // kickstart date change timer
   slotDateChanged();
@@ -229,8 +229,6 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
 
 KMyMoney2App::~KMyMoney2App()
 {
-  MyMoneyFile::instance()->detach(MyMoneyFile::NotifyClassAnyChange, this);
-
   delete m_searchDlg;
   delete m_qifReader;
   delete m_engineBackup;
@@ -4690,7 +4688,7 @@ void KMyMoney2App::slotSelectSchedule(const MyMoneySchedule& schedule)
   emit scheduleSelected(m_selectedSchedule);
 }
 
-void KMyMoney2App::update(const QCString& /* id */)
+void KMyMoney2App::slotDataChanged(void)
 {
   // As this method is called everytime the MyMoneyFile instance
   // notifies a modification, it's the perfect place to start the timer if needed
