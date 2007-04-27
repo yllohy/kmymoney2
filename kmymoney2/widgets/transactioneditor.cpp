@@ -877,8 +877,8 @@ void StdTransactionEditor::slotUpdatePayee(const QCString& payeeId)
 
     // check if date has been altered by user
     kMyMoneyDateInput* postDate = dynamic_cast<kMyMoneyDateInput*>(m_editWidgets["postdate"]);
-    if((m_lastPostDate.isValid() && (m_lastPostDate != postDate->date()))
-    || postDate->date() != QDate::currentDate())
+    if((m_lastPostDate.isValid() && (postDate->date() != m_lastPostDate))
+    || (!m_lastPostDate.isValid() && (postDate->date() != QDate::currentDate())))
       return;
 
     // if we got here, we have to autofill

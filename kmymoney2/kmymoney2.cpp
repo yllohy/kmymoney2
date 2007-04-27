@@ -4616,6 +4616,10 @@ void KMyMoney2App::slotSelectTransactions(const QValueList<KMyMoneyRegister::Sel
         if((*it_s).id() != sp.id()) {
           MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
           if(!acc.isIncomeExpense()) {
+            // for stock accounts we show the portfolio account
+            if(acc.accountType() == MyMoneyAccount::Stock) {
+              acc = MyMoneyFile::instance()->account(acc.parentAccountId());
+            }
             m_accountGoto = acc.id();
             QString name = acc.name();
             name.replace(QRegExp("&(?!&)"), "&&");

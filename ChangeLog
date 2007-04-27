@@ -1,5 +1,7 @@
 2007-04-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added moldavian leu as currency
+  * Fixed an autofill problem
+  * Show the investment account for the 'goto account' feature
 
 2007-04-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed all references to MyMoneyObserver and MyMoneySubject
