@@ -1358,6 +1358,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("MRO", i18n("Mauritanian Ouguiya"),    "MRO", 5, 5), create);
   loadDefaultCurrency(MyMoneySecurity("MUR", i18n("Mauritius Rupee")), create);
   loadDefaultCurrency(MyMoneySecurity("MXN", i18n("Mexican Peso"),           "$"), create);
+  loadDefaultCurrency(MyMoneySecurity("MDL", i18n("Moldavian Leu")), create);
   loadDefaultCurrency(MyMoneySecurity("MNT", i18n("Mongolian Tugrik"),       QChar(0x20AE)), create);
   loadDefaultCurrency(MyMoneySecurity("MAD", i18n("Moroccan Dirham")), create);
   loadDefaultCurrency(MyMoneySecurity("MZM", i18n("Mozambique Metical")), create);
