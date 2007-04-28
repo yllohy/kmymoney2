@@ -141,19 +141,13 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
     value = account.value("statementBalance");
     endBalance = MyMoneyMoney(value);
   }
+  m_previousBalance->setValue(startBalance);
+  m_endingBalance->setValue(endBalance);
 
   // We don't need to add the default into the list (see ::help() why)
   // m_helpAnchor[m_startPageCheckings] = QString("");
   d->m_helpAnchor[m_interestChargeCheckings] = QString("details.reconcile.wizard.interest");
   d->m_helpAnchor[m_statementInfoPageCheckings] = QString("details.reconcile.wizard.statement");
-
-  if(d->m_account.accountGroup() == MyMoneyAccount::Liability) {
-    m_previousBalance->setValue(-startBalance);
-    m_endingBalance->setValue(-endBalance);
-  } else {
-    m_previousBalance->setValue(startBalance);
-    m_endingBalance->setValue(endBalance);
-  }
 
   value = account.value("statementDate");
   if(!value.isEmpty())
