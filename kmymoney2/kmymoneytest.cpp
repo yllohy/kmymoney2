@@ -21,6 +21,9 @@
 
 #ifdef HAVE_LIBCPPUNIT
 
+#include <kcmdlineargs.h>
+#include <kapplication.h>
+
 #include "cppunit/TextTestRunner.h"
 #include "cppunit/TextTestResult.h"
 #include "cppunit/TestSuite.h"
@@ -97,10 +100,15 @@ void unexpectedException(MyMoneyException *e)
 //       needed in the PivotTable constructor anymore
 bool newReports = true;
 
-int main(int /* argc */, char** /* argv */ )
+int main(int testargc, char** testargv)
 {
   int rc = 0;
+
 #ifdef HAVE_LIBCPPUNIT
+  // we seem to need a KApplication object to use KGlobal::locale()
+  KCmdLineArgs::init(testargc, testargv, testargv[0], "UNIT TESTS", "", "0.1");
+  KApplication::disableAutoDcopRegistration();
+  KApplication app(false, false);
 
 #ifdef _CHECK_MEMORY
   _CheckMemory_Init(0);
@@ -129,7 +137,7 @@ int main(int /* argc */, char** /* argv */ )
 
   // converter tests
   CPPUNIT_TEST_SUITE_REGISTRATION(ConverterTest);
-  
+
   // off we go
   CppUnit::TestFactoryRegistry &registry =
     CppUnit::TestFactoryRegistry::getRegistry();

@@ -121,13 +121,21 @@ private:
     * A 'Grid' is the set of all Outer Groups contained in this report.
     *
     */
-    class TGridRow: public QValueList<MyMoneyMoney>
+    class TCell: public MyMoneyMoney
+    {
+    public:
+      TCell() {};
+      TCell(const MyMoneyMoney& value) : MyMoneyMoney(value) {}
+      MyMoneyMoney m_stockSplit;
+      MyMoneyMoney m_postSplit;
+    };
+    class TGridRow: public QValueList<TCell>
     {
     public:
       TGridRow( unsigned _numcolumns = 0 )
       {
         if ( _numcolumns )
-          insert( end(), _numcolumns, 0 );
+          insert( end(), _numcolumns, TCell() );
       }
       MyMoneyMoney m_total;
     };
@@ -142,7 +150,7 @@ private:
     public:
       TInnerGroup( unsigned _numcolumns = 0 ): m_total(_numcolumns) {}
 
-      TGridRowPair m_total; 
+      TGridRowPair m_total;
     };
     class TOuterGroup: public QMap<QString,TInnerGroup>
     {
@@ -156,8 +164,8 @@ private:
           return m_displayName < _right.m_displayName;
       }
       TGridRowPair m_total;
-      
-      // An inverted outergroup means that all values placed in subordinate rows 
+
+      // An inverted outergroup means that all values placed in subordinate rows
       // should have their sign inverted from typical cash-flow notation.  Also it
       // means that when the report is summed, the values should be inverted again
       // so that the grand total is really "non-inverted outergroup MINUS inverted outergroup".
@@ -183,12 +191,12 @@ private:
     unsigned m_numColumns;
     QDate m_beginDate;
     QDate m_endDate;
-   
+
     // For budget-vs-actual reports only, maps each account to the account which holds
     // the budget for it.  If an account is not contained in this map, it is not included
     // in the budget.
     QMap<QCString,QCString> m_budgetMap;
-  
+
     MyMoneyReport m_config_f;
 
 protected:
@@ -214,9 +222,12 @@ protected:
     * @param row The row itself
     * @param column The column
     * @param value The value to be added in
-    * @param budget Whether this is a budget value (true) or an actual value (false)
+    * @param budget Whether this is a budget value (@p true) or an actual
+    *               value (@p false). Defaults to @p false.
+    * @param stockSplit Wheter this is a stock split (@p true) or an actual
+    *                   value (@p false). Defaults to @p false.
     */
-    inline void assignCell( const QString& outergroup, const ReportAccount& row, unsigned column, MyMoneyMoney value, bool budget = false );
+    inline void assignCell( const QString& outergroup, const ReportAccount& row, unsigned column, MyMoneyMoney value, bool budget = false, bool stockSplit = false );
 
   /**
     * Record the opening balances of all qualifying accounts into the grid.
@@ -237,7 +248,7 @@ protected:
     * account or any of its parents, the account is not included in the map.
     */
     void calculateBudgetMapping( void );
-    
+
   /**
     * Calculate the running sums.
     *

@@ -51,7 +51,7 @@ PivotTableTest::PivotTableTest()
 {
 }
 
-void PivotTableTest::setUp () 
+void PivotTableTest::setUp ()
 {
   storage = new MyMoneySeqAccessMgr;
   file = MyMoneyFile::instance();
@@ -82,7 +82,7 @@ void PivotTableTest::setUp ()
   acSecondChild = makeAccount(QString("Second Child"),MyMoneyAccount::Expense,0,QDate(2004,2,11),acParent);
   acGrandChild1 = makeAccount(QString("Grand Child 1"),MyMoneyAccount::Expense,0,QDate(2004,2,11),acChild);
   acGrandChild2 = makeAccount(QString("Grand Child 2"),MyMoneyAccount::Expense,0,QDate(2004,2,11),acChild);
-  
+
   MyMoneyInstitution i("Bank of the World","","","","","","");
   file->addInstitution(i);
   inBank = i.id();
@@ -416,7 +416,7 @@ void PivotTableTest::testMultipleCurrencies()
   IMyMoneyStorageFormat& interface = xml;
   interface.writeFile(&g, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
   g.close();
-#endif  
+#endif
 
   MyMoneyReport filter;
   filter.setRowType( MyMoneyReport::eExpenseIncome );
@@ -424,9 +424,9 @@ void PivotTableTest::testMultipleCurrencies()
   filter.setShowSubAccounts(true);
   filter.setName("Multiple Currency Spending Rerport (with currency conversion)");
   XMLandback(filter);
-  
+
   PivotTable spending_f( filter );
-  
+
   writeTabletoCSV(spending_f);
 
   // test single foreign currency
@@ -497,7 +497,7 @@ void PivotTableTest::testAdvancedFilter()
   {
     TransactionHelper t1( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
     TransactionHelper t2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
-  
+
     MyMoneyReport filter;
     filter.setRowType( MyMoneyReport::eExpenseIncome );
     filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
@@ -513,7 +513,7 @@ void PivotTableTest::testAdvancedFilter()
     TransactionHelper t2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
     TransactionHelper t3( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
     TransactionHelper t4( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moThomas, acCredit, acParent, QCString(), "Thomas Baumgart" );
-    
+
     MyMoneyReport filter;
     filter.setRowType( MyMoneyReport::eExpenseIncome );
     filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
@@ -522,7 +522,7 @@ void PivotTableTest::testAdvancedFilter()
     XMLandback(filter);
     PivotTable spending_f( filter );
     writeTabletoHTML(spending_f,"Spending with Payee Filter.html");
-    
+
     CPPUNIT_ASSERT(spending_f.m_grid["Expense"]["Parent"][acParent][11]==moThomas);
     CPPUNIT_ASSERT(spending_f.m_grid.m_total.m_total==-moThomas);
   }
@@ -823,23 +823,28 @@ void PivotTableTest::testColumnType()
   filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setColumnType(MyMoneyReport::eMonths);
   filter.setColumnsAreDays(true);
-  
+
   XMLandback(filter);
   PivotTable spending_days( filter );
-  writeTabletoHTML(spending_days,"Spending by Days.html");  
+  writeTabletoHTML(spending_days,"Spending by Days.html");
 
   CPPUNIT_ASSERT(spending_days.m_grid.m_total[4] == -moParent2);
   CPPUNIT_ASSERT(spending_days.m_grid.m_total[13] == -moSolo);
-  CPPUNIT_ASSERT(spending_days.m_grid.m_total.m_total == -moSolo-moParent2); 
-  
+  CPPUNIT_ASSERT(spending_days.m_grid.m_total.m_total == -moSolo-moParent2);
+
+  unsigned save_dayweekstart = KGlobal::locale()->weekStartDay();
+  KGlobal::locale()->setWeekStartDay(2);
+
   filter.setDateFilter(QDate(2004,7,2),QDate(2004,8,1));
   filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setColumnType(static_cast<MyMoneyReport::EColumnType>(7));
   filter.setColumnsAreDays(true);
-  
+
   XMLandback(filter);
   PivotTable spending_weeks( filter );
   writeTabletoHTML(spending_weeks,"Spending by Weeks.html");
+
+  KGlobal::locale()->setWeekStartDay(save_dayweekstart);
 
   CPPUNIT_ASSERT(spending_weeks.m_grid.m_total[0] == moZero);
   CPPUNIT_ASSERT(spending_weeks.m_grid.m_total[1] == -moParent2);
@@ -849,17 +854,17 @@ void PivotTableTest::testColumnType()
   CPPUNIT_ASSERT(spending_weeks.m_grid.m_total[5] == moZero);
   CPPUNIT_ASSERT(spending_weeks.m_grid.m_total.m_total == -moSolo-moParent-moParent2);
 
-    
+
 }
 
 void PivotTableTest::testInvestment(void)
 {
-  try 
+  try
   {
   // Equities
   eqStock1 = makeEquity("Stock1","STK1");
   eqStock2 = makeEquity("Stock2","STK2");
-  
+
   // Accounts
   acInvestment = makeAccount("Investment",MyMoneyAccount::Investment,moZero,QDate(2004,1,1),acAsset);
   acStock1 = makeAccount("Stock 1",MyMoneyAccount::Stock,moZero,QDate(2004,1,1),acInvestment,eqStock1);
@@ -889,8 +894,8 @@ void PivotTableTest::testInvestment(void)
   XMLandback(networth_r);
   PivotTable networth(networth_r);
 
-  networth.dump("networth_i.html");  
-  
+  networth.dump("networth_i.html");
+
   CPPUNIT_ASSERT(networth.m_grid["Asset"]["Investment"].m_total[1]==moZero);
   // 1000 shares @ $100.00
   CPPUNIT_ASSERT(networth.m_grid["Asset"]["Investment"].m_total[2]==MyMoneyMoney(100000.0));
@@ -920,12 +925,12 @@ void PivotTableTest::testInvestment(void)
   interface.writeFile(&g, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
   g.close();
 
-  invtran.dump("invtran.html","<html><head></head><body>%1</body></html>");  
+  invtran.dump("invtran.html","<html><head></head><body>%1</body></html>");
   invhold.dump("invhold.html","<html><head></head><body>%1</body></html>");
-#endif    
-  
+#endif
+
   }
-  catch(MyMoneyException *e) 
+  catch(MyMoneyException *e)
   {
     CPPUNIT_FAIL(e->what());
     delete e;
@@ -954,9 +959,9 @@ void PivotTableTest::testBudget(void)
     PivotTable table(report);
   }
 
-  //	- Both B and B:1 totals should show up
-  //	- B actuals compare against B budget
-  //	- B:1 actuals compare against 0
+  //  - Both B and B:1 totals should show up
+  //  - B actuals compare against B budget
+  //  - B:1 actuals compare against 0
 
   // 3. Budget on C, applying to sub accounts, transactions on C and C:1 and C:1:a
   {
@@ -967,8 +972,8 @@ void PivotTableTest::testBudget(void)
     PivotTable table(report);
   }
 
-  //	- Only C totals show up, not C:1 or C:1:a totals
-  //	- C + C:1 totals compare against C budget
+  //  - Only C totals show up, not C:1 or C:1:a totals
+  //  - C + C:1 totals compare against C budget
 
   // 4. Budget on D, not applying to sub accounts, budget on D:1 not applying, budget on D:2 applying.  Transactions on D, D:1, D:2, D:2:a, D:2:b
   {
@@ -981,10 +986,10 @@ void PivotTableTest::testBudget(void)
     PivotTable table(report);
   }
 
-  //	- Totals for D, D:1, D:2 show up.  D:2:a and D:2:b do not
-  //	- D actuals (only) compare against D budget
-  //	- Ditto for D:1
-  //	- D:2 acutals and children compare against D:2 budget
+  //  - Totals for D, D:1, D:2 show up.  D:2:a and D:2:b do not
+  //  - D actuals (only) compare against D budget
+  //  - Ditto for D:1
+  //  - D:2 acutals and children compare against D:2 budget
 
   // 5. Budget on E, no transactions on E
   {

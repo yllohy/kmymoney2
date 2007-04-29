@@ -623,10 +623,10 @@ QString KMyMoneyUtils::variableCSS(void)
 
   QString css;
   css += "<style type=\"text/css\">\n<!--\n";
-
-  css += QString(".row-even { font-family: verdana, arial, helvetica; background-color: %1; color: %2; padding-top: 2px; padding-left: 20px; }\n").arg(backgroundColour().name()).arg(tcolor.name());
-  css += QString(".row-odd { font-family: verdana, arial, helvetica; background-color: %1; color: %2; padding-top: 2px; padding-left: 20px; }\n").arg(listColour().name()).arg(tcolor.name());
-
+  css += QString(".row-even, .item0 { background-color: %1; color: %2 }\n")
+    .arg((KMyMoneyGlobalSettings::listBGColor()).name()).arg(tcolor.name());
+  css += QString(".row-odd, .item1  { background-color: %1; color: %2 }\n")
+    .arg((KMyMoneyGlobalSettings::listColor()).name()).arg(tcolor.name());
   css += "-->\n</style>\n";
   return css;
 }
