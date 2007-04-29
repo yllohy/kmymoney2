@@ -2,6 +2,7 @@
   * Applied patches to the report logic provided by Demitrios Vassaras
   * Introduced TCell as the list member for TGridRows and initial code
     to support stock splits in reports (not working yet)
+  * Re-enabled the value column in the investment register
 
 2007-04-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sign problem when reconciling liability accounts

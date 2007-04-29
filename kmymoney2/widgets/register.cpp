@@ -650,7 +650,7 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
       showColumn(SecurityColumn);
       showColumn(AmountColumn);
       showColumn(PriceColumn);
-      // showColumn(ValueColumn);
+      showColumn(ValueColumn);
       break;
   }
 
