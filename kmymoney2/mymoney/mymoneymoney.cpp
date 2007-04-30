@@ -188,8 +188,9 @@ const QString MyMoneyMoney::formatMoney(const QString& currency, const int prec,
   // Once we really support multiple currencies then this method will
   // be much better than using KGlobal::locale()->formatMoney.
   bool bNegative = false;
-  signed64 left = (signed64)(m_64Value / denom);
-  long right = (long)(m_64Value % denom);
+  signed64 left = m_64Value / denom;
+  signed64 right = m_64Value % denom;
+
   if (right < 0){
     right = -right;
     bNegative = true;
@@ -222,7 +223,17 @@ const QString MyMoneyMoney::formatMoney(const QString& currency, const int prec,
     if(decimalSeparator())
       res += decimalSeparator();
 
-    res += QString("%1").arg(right).rightJustify(prec, '0', true);
+    // using
+    //
+    //   res += QString("%1").arg(right).rightJustify(prec, '0', true);
+    //
+    // caused some weird results if right was rather large. Eg: right being
+    // 666600000 should have appended a 0, but instead it prepended a 0. With
+    // res being "2," the result wasn't "2,6666000000" as expected, but rather
+    // "2,0666600000" which was not usable. The code below works for me.
+    QString rs  = QString("%1").arg(right);
+    rs = rs.rightJustify(prec, '0', true);
+    res += rs;
   }
 
   signPosition signpos = bNegative ? _negativeMonetarySignPosition : _positiveMonetarySignPosition;

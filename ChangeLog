@@ -1,3 +1,7 @@
+2007-04-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem with displaying numbers with high precision
+  * Added testcase to check for precision
+
 2007-04-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patches to the report logic provided by Demitrios Vassaras
   * Introduced TCell as the list member for TGridRows and initial code
