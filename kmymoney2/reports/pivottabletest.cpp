@@ -1001,4 +1001,101 @@ void PivotTableTest::testBudget(void)
   }
 }
 
+void PivotTableTest::testCellAddValue(void)
+{
+  PivotTable::TCell a;
+  CPPUNIT_ASSERT(a == MyMoneyMoney(0,1));
+  CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(1,1));
+  CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(0,1));
+  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(0,1).formatMoney());
+
+  PivotTable::TCell b(MyMoneyMoney(13,10));
+  CPPUNIT_ASSERT(b == MyMoneyMoney(13,10));
+  CPPUNIT_ASSERT(b.m_stockSplit == MyMoneyMoney(1,1));
+  CPPUNIT_ASSERT(b.m_postSplit == MyMoneyMoney(0,1));
+  CPPUNIT_ASSERT(b.formatMoney() == MyMoneyMoney(13,10).formatMoney());
+
+  PivotTable::TCell s(b);
+  CPPUNIT_ASSERT(s == MyMoneyMoney(13,10));
+  CPPUNIT_ASSERT(s.m_stockSplit == MyMoneyMoney(1,1));
+  CPPUNIT_ASSERT(s.m_postSplit == MyMoneyMoney(0,1));
+  CPPUNIT_ASSERT(s.formatMoney() == MyMoneyMoney(13,10).formatMoney());
+
+  s = PivotTable::TCell::stockSplit(MyMoneyMoney(1,2));
+  CPPUNIT_ASSERT(s == MyMoneyMoney(0,1));
+  CPPUNIT_ASSERT(s.m_stockSplit == MyMoneyMoney(1,2));
+  CPPUNIT_ASSERT(s.m_postSplit == MyMoneyMoney(0,1));
+  CPPUNIT_ASSERT(s.formatMoney() == MyMoneyMoney(0,1).formatMoney());
+  
+  a += MyMoneyMoney(1,1);
+  a += MyMoneyMoney(2,1);
+  CPPUNIT_ASSERT(a == MyMoneyMoney(3,1));
+  CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(1,1));
+  CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(0,1));
+  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(3,1).formatMoney());
+
+  a += s;
+  CPPUNIT_ASSERT(a == MyMoneyMoney(3,1));
+  CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(1,2));
+  CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(0,1));
+  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(15,10).formatMoney());
+
+  a += MyMoneyMoney(3,1);
+  a += MyMoneyMoney(3,1);
+  CPPUNIT_ASSERT(a == MyMoneyMoney(3,1));
+  CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(1,2));
+  CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(6,1));
+  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(75,10).formatMoney());
+}
+
+void PivotTableTest::testCellAddCell(void)
+{
+  PivotTable::TCell a,b;
+
+  a += MyMoneyMoney(3,1);
+  a += PivotTable::TCell::stockSplit(MyMoneyMoney(2,1));
+  a += MyMoneyMoney(4,1);
+
+  CPPUNIT_ASSERT(a == MyMoneyMoney(3,1));
+  CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(2,1));
+  CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(4,1));
+  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(10,1).formatMoney());
+
+  b += MyMoneyMoney(4,1);
+  b += PivotTable::TCell::stockSplit(MyMoneyMoney(4,1));
+  b += MyMoneyMoney(16,1);
+  
+  CPPUNIT_ASSERT(b == MyMoneyMoney(4,1));
+  CPPUNIT_ASSERT(b.m_stockSplit == MyMoneyMoney(4,1));
+  CPPUNIT_ASSERT(b.m_postSplit == MyMoneyMoney(16,1));
+  CPPUNIT_ASSERT(b.formatMoney() == MyMoneyMoney(32,1).formatMoney());
+
+  a += b;
+
+  CPPUNIT_ASSERT(a == MyMoneyMoney(3,1));
+  CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(8,1));
+  CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(48,1));
+  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(72,1).formatMoney());
+}
+
+void PivotTableTest::testCellRunningSum(void)
+{
+  PivotTable::TCell a;
+  MyMoneyMoney runningSum(12,10);
+
+  a += MyMoneyMoney(3,1);
+  a += PivotTable::TCell::stockSplit(MyMoneyMoney(125,100));
+  a += MyMoneyMoney(134,10);
+
+  CPPUNIT_ASSERT(a.m_stockSplit != MyMoneyMoney(1,1));
+  CPPUNIT_ASSERT(a.m_postSplit != MyMoneyMoney(0,1));
+
+  runningSum = a.calculateRunningSum(runningSum);
+
+  CPPUNIT_ASSERT(runningSum == MyMoneyMoney(1865,100));
+  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(1865,100).formatMoney());
+  CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(1,1));
+  CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(0,1));
+}
+
 // vim:cin:si:ai:et:ts=2:sw=2:

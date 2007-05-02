@@ -410,6 +410,12 @@ public:
     */
   static QString nextCheckNumber(const MyMoneyAccount& acc);
 
+  /**
+    * Returns the text representing the reconcile flag. If @a text is @p true
+    * then the full text will be returned otherwise a short form (usually one character).
+    */
+  static QString reconcileStateToString(MyMoneySplit::reconcileFlagE flag, bool text = false);
+
 private:
   static QColor _backgroundColour;
   static QColor _listColour;

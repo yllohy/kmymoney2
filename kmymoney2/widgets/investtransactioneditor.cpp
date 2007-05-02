@@ -450,15 +450,20 @@ void InvestTransactionEditor::slotUpdateInterestCategory(const QCString& id)
 void InvestTransactionEditor::slotUpdateInterestVisibility(const QString& txt)
 {
   KMyMoneyCategory* interest = dynamic_cast<KMyMoneyCategory*>(haveWidget("interest-account"));
+  QWidget* w = haveWidget("interest-amount-label");
+
   if(dynamic_cast<Reinvest*>(d->m_activity)) {
     interest->splitButton()->hide();
     haveWidget("interest-amount")->setHidden(true);
+    // for the reinvest case, we don't ever hide the label do avoid a shine through
+    // of the underlying transaction data.
+    w = 0;
   } else {
     haveWidget("interest-amount")->setHidden(txt.isEmpty());
     // FIXME once we can handle split interest, we need to uncomment the next line
     // interest->splitButton()->show();
   }
-  QWidget* w = haveWidget("interest-amount-label");
+
   if(w)
     w->setShown(haveWidget("interest-amount")->isVisible());
 }

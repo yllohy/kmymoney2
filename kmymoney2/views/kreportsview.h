@@ -47,6 +47,8 @@ class QListViewItem;
 #include <kmymoney/mymoneyscheduled.h>
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/mymoneyreport.h>
+#include "../reports/pivottable.h"
+#include "../reports/querytable.h"
 #include "../widgets/kmymoneyreportcontroldecl.h"
 #include "../reports/kreportchartview.h"
 #include "../views/kmymoneyview.h"
@@ -87,6 +89,8 @@ public:
     bool m_deleteMe;
     bool m_showingChart;
     bool m_needReload;
+    reports::PivotTable* m_pivotTable;
+    reports::QueryTable* m_queryTable;
 
   public:
     KReportTab(KTabWidget* parent, const MyMoneyReport& report );

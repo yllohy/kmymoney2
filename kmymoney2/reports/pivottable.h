@@ -124,8 +124,14 @@ private:
     class TCell: public MyMoneyMoney
     {
     public:
-      TCell() {};
-      TCell(const MyMoneyMoney& value) : MyMoneyMoney(value) {}
+      TCell() : m_stockSplit(MyMoneyMoney(1,1)) {};
+      TCell(const MyMoneyMoney& value) : MyMoneyMoney(value), m_stockSplit(MyMoneyMoney(1,1)) {}
+      static TCell stockSplit(const MyMoneyMoney& factor);
+      TCell operator += (const TCell& right);
+      TCell operator += (const MyMoneyMoney& value);
+      const QString formatMoney(const QString& currency = QString(), const int prec = 2, bool showThousandSeparator = true) const;
+      MyMoneyMoney calculateRunningSum(const MyMoneyMoney& runningSum);
+    private:
       MyMoneyMoney m_stockSplit;
       MyMoneyMoney m_postSplit;
     };

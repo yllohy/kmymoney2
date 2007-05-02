@@ -33,6 +33,7 @@
 // Project Includes
 
 #include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneyutils.h>
 #include "kconfirmmanualenterdlg.h"
 
 KConfirmManualEnterDlg::KConfirmManualEnterDlg(const MyMoneySchedule& schedule, QWidget* parent, const char* name) :
@@ -139,6 +140,10 @@ void KConfirmManualEnterDlg::loadTransactions(const MyMoneyTransaction& to, cons
     QString mo, mn;
     mo = to.splits()[0].memo();
     mn = tn.splits()[0].memo();
+    if(mo.isEmpty())
+       mo = QString("<i>")+i18n("empty")+QString("</i>");
+    if(mn.isEmpty())
+       mn = QString("<i>")+i18n("empty")+QString("</i>");
     if (mo != mn)
     {
       noItemsChanged++;
@@ -152,6 +157,16 @@ void KConfirmManualEnterDlg::loadTransactions(const MyMoneyTransaction& to, cons
       noItemsChanged++;
       messageDetail += i18n("Amount changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>")
         .arg(ao.formatMoney()).arg(an.formatMoney());
+    }
+
+    MyMoneySplit::reconcileFlagE fo, fn;
+    fo = to.splits()[0].reconcileFlag();
+    fn = tn.splits()[0].reconcileFlag();
+    if(fo != fn) {
+      noItemsChanged++;
+      messageDetail += i18n("Reconciliation flag changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>")
+        .arg(KMyMoneyUtils::reconcileStateToString(fo, true))
+        .arg(KMyMoneyUtils::reconcileStateToString(fn, true));
     }
   }
   catch (MyMoneyException *e)

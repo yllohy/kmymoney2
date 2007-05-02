@@ -816,4 +816,44 @@ QString KMyMoneyUtils::nextCheckNumber(const MyMoneyAccount& acc)
   return number;
 }
 
-
+QString KMyMoneyUtils::reconcileStateToString(MyMoneySplit::reconcileFlagE flag, bool text)
+{
+  QString txt;
+  if(text) {
+    switch(flag) {
+      case MyMoneySplit::NotReconciled:
+        txt = i18n("Reconcile state 'Not reconciled'", "Not reconciled");
+        break;
+      case MyMoneySplit::Cleared:
+        txt = i18n("Reconcile state 'Cleared'", "Cleared");
+        break;
+      case MyMoneySplit::Reconciled:
+        txt = i18n("Reconcile state 'Reconciled'", "Reconciled");
+        break;
+      case MyMoneySplit::Frozen:
+        txt = i18n("Reconcile state 'Frozen'", "Frozen");
+        break;
+      default:
+        txt = i18n("Unknown");
+        break;
+    }
+  } else {
+    switch(flag) {
+      case MyMoneySplit::NotReconciled:
+        break;
+      case MyMoneySplit::Cleared:
+        txt = i18n("Reconcile flag C", "C");
+        break;
+      case MyMoneySplit::Reconciled:
+        txt = i18n("Reconcile flag R", "R");
+        break;
+      case MyMoneySplit::Frozen:
+        txt = i18n("Reconcile flag F", "F");
+        break;
+      default:
+        txt = i18n("Flag for unknown reconciliation state", "?");
+        break;
+    }
+  }
+  return txt;
+}

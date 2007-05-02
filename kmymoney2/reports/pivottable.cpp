@@ -154,6 +154,50 @@ void Debug::output( const QString& _text )
 
 //////////////////////////////////////////////////////////////////////
 
+PivotTable::TCell PivotTable::TCell::operator += (const TCell& right)
+{
+  const MyMoneyMoney& r = static_cast<const MyMoneyMoney&>(right);
+  *this += r;
+  m_postSplit = m_postSplit * right.m_stockSplit;
+  m_stockSplit = m_stockSplit * right.m_stockSplit;
+  m_postSplit += right.m_postSplit;
+  return *this;
+}
+
+PivotTable::TCell PivotTable::TCell::operator += (const MyMoneyMoney& value)
+{
+  if(m_stockSplit != MyMoneyMoney(1,1))
+    m_postSplit += value;
+  else
+    MyMoneyMoney::operator += (value);
+  return *this;
+}
+
+PivotTable::TCell PivotTable::TCell::stockSplit(const MyMoneyMoney& factor)
+{
+  TCell s;
+  s.m_stockSplit = factor;
+  return s;
+}
+
+const QString PivotTable::TCell::formatMoney(const QString& currency, const int prec, bool showThousandSeparator) const
+{
+  // construct the result
+  MyMoneyMoney res = (*this * m_stockSplit) + m_postSplit;
+  return res.formatMoney(currency, prec, showThousandSeparator);
+}
+
+MyMoneyMoney PivotTable::TCell::calculateRunningSum(const MyMoneyMoney& runningSum)
+{
+  MyMoneyMoney::operator += (runningSum);
+  MyMoneyMoney::operator = ((*this * m_stockSplit) + m_postSplit);
+  m_postSplit = MyMoneyMoney(0,1);
+  m_stockSplit = MyMoneyMoney(1,1);
+  return *this;
+}
+
+//////////////////////////////////////////////////////////////////////
+
 PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   m_config_f( _config_f )
 {
@@ -681,14 +725,14 @@ void PivotTable::calculateOpeningBalances( void )
 
 void PivotTable::calculateRunningSums( TInnerGroup::iterator& it_row)
 {
-  MyMoneyMoney runningsum = it_row.data()[0];
+  MyMoneyMoney runningsum = it_row.data()[0].calculateRunningSum(MyMoneyMoney(0,1));
   unsigned column = 1;
   while ( column < m_numColumns )
   {
     if ( it_row.data().count() <= column )
       throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateRunningSums").arg(column).arg(it_row.data().count()));
 
-    runningsum = ( it_row.data()[column] += runningsum );
+    runningsum = it_row.data()[column].calculateRunningSum(runningsum);
 
     ++column;
   }
@@ -1107,10 +1151,7 @@ void PivotTable::assignCell( const QString& outergroup, const ReportAccount& _ro
     else
       m_grid[outergroup][innergroup][row][column] += value;
   } else {
-    MyMoneyMoney balance;
-    balance = m_grid[outergroup][innergroup][row][column];
-    balance /= value;
-    m_grid[outergroup][innergroup][row][column] = value;
+    m_grid[outergroup][innergroup][row][column] += TCell::stockSplit(value);
   }
 
 }

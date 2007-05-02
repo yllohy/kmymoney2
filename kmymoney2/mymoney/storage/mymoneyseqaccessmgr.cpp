@@ -1,15 +1,11 @@
 /***************************************************************************
-                          imymoneystoragestream.cpp  -  description
+                          mymoneyseqaccessmgr.cpp
                              -------------------
     begin                : Sun May 5 2002
     copyright            : (C) 2000-2002 by Michael Edwardes
+                               2002 Thomas Baumgart
     email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
-                           Tony Bloomfield <tonybloom@users.sourceforge.net> the database stuff
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,7 +20,6 @@
 #include "mymoneyseqaccessmgr.h"
 #include "../mymoneytransactionfilter.h"
 #include "../mymoneycategory.h"
-#include <qvaluevector.h>
 
 #define TRY try {
 #define CATCH } catch (MyMoneyException *e) {

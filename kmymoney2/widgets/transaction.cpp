@@ -586,44 +586,12 @@ bool Transaction::maybeTip(const QPoint& cpos, int row, int col, QRect& r, QStri
 
 QString Transaction::reconcileState(bool text) const
 {
-  QString txt;
-  if(text) {
-    switch(m_split.reconcileFlag()) {
-      case MyMoneySplit::NotReconciled:
-        txt = i18n("Reconcile state 'Not reconciled'", "Not reconciled");
-        break;
-      case MyMoneySplit::Cleared:
-        txt = i18n("Reconcile state 'Cleared'", "Cleared");
-        break;
-      case MyMoneySplit::Reconciled:
-        txt = i18n("Reconcile state 'Reconciled'", "Reconciled");
-        break;
-      case MyMoneySplit::Frozen:
-        txt = i18n("Reconcile state 'Frozen'", "Frozen");
-        break;
-      default:
-        if(m_transaction != MyMoneyTransaction())
-          txt = i18n("Unknown");
-        break;
-    }
-  } else {
-    switch(m_split.reconcileFlag()) {
-      case MyMoneySplit::NotReconciled:
-        break;
-      case MyMoneySplit::Cleared:
-        txt = i18n("Reconcile flag C", "C");
-        break;
-      case MyMoneySplit::Reconciled:
-        txt = i18n("Reconcile flag R", "R");
-        break;
-      case MyMoneySplit::Frozen:
-        txt = i18n("Reconcile flag F", "F");
-        break;
-      default:
-        txt = i18n("Flag for unknown reconciliation state", "?");
-        break;
-    }
-  }
+  QString txt = KMyMoneyUtils::reconcileStateToString(m_split.reconcileFlag(), text);
+
+  if((text == true)
+  && (txt == i18n("Unknown"))
+  && (m_transaction == MyMoneyTransaction()))
+    txt = QString();
   return txt;
 }
 

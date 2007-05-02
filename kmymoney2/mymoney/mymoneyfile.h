@@ -199,8 +199,10 @@ public:
     *
     * @param state if @p true, no notifications will be send out,
     *              if @p false, notifications will be send out.
+    * @deprecated
+    * @note use Object::blockSignals instead
     */
-  void suspendNotify(const bool state);
+  void suspendNotify(const bool state) __attribute__ ((deprecated));
 
   /**
     * This method is used to attach a storage to the MyMoneyFile object
@@ -829,7 +831,7 @@ public:
     *
     * @see detach
     */
-  void attach(const QCString& id, MyMoneyObserver* observer);
+  void attach(const QCString& id, MyMoneyObserver* observer) __attribute__ ((deprecated));
 
   /**
     * This method is used to detach an observer from a subject
@@ -842,7 +844,7 @@ public:
     *
     * @see attach
     */
-  void detach(const QCString& id, MyMoneyObserver* observer);
+  void detach(const QCString& id, MyMoneyObserver* observer) __attribute__ ((deprecated));
 
   /**
     * This method is used to create a new payee

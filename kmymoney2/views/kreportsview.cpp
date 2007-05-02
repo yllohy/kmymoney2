@@ -68,7 +68,6 @@
 #include <kmymoney/mymoneyreport.h>
 
 #include "kreportsview.h"
-#include "../reports/pivottable.h"
 #include "../reports/querytable.h"
 #include "../dialogs/kreportconfigurationfilterdlg.h"
 #include "../kmymoneyutils.h"
@@ -94,7 +93,9 @@ KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& re
   m_report( report ),
   m_deleteMe( false ),
   m_showingChart( false ),
-  m_needReload( true )
+  m_needReload( true ),
+  m_pivotTable(0),
+  m_queryTable(0)
 {
   if ( ! KReportChartView::implemented() || m_report.reportType() != MyMoneyReport::ePivotTable )
   {
@@ -143,12 +144,12 @@ void KReportsView::KReportTab::saveAs( const QString& filename )
     if ( QFileInfo(filename).extension(false).lower() == "csv")
     {
       if ( m_report.reportType() == MyMoneyReport::ePivotTable )
-        QTextStream(&file) << PivotTable( m_report ).renderCSV();
+        QTextStream(&file) << m_pivotTable->renderCSV();
       else if ( m_report.reportType() == MyMoneyReport::eQueryTable )
-        QTextStream(&file) << QueryTable( m_report ).renderCSV();
+        QTextStream(&file) << m_queryTable->renderCSV();
     }
     else
-      QTextStream(&file) <<  createTable();
+      QTextStream(&file) << createTable();
     file.close();
   }
 }
@@ -157,16 +158,16 @@ void KReportsView::KReportTab::loadTab(void)
 {
   m_needReload = true;
   if(isVisible()) {
-    updateReport();
     m_needReload = false;
+    updateReport();
   }
 }
 
 void KReportsView::KReportTab::show(void)
 {
   if(m_needReload) {
-    updateReport();
     m_needReload = false;
+    updateReport();
   }
   QWidget::show();
 }
@@ -182,6 +183,17 @@ void KReportsView::KReportTab::updateReport(void)
       m_report = MyMoneyFile::instance()->report(m_report.id());
   } catch(MyMoneyException* e) {
     delete e;
+  }
+
+  delete m_pivotTable;
+  delete m_queryTable;
+  m_pivotTable = 0;
+  m_queryTable = 0;
+
+  if ( m_report.reportType() == MyMoneyReport::ePivotTable ) {
+    m_pivotTable = new PivotTable(m_report);
+  } else if ( m_report.reportType() == MyMoneyReport::eQueryTable ) {
+    m_queryTable = new QueryTable(m_report);
   }
 
   m_part->begin();
@@ -210,10 +222,10 @@ QString KReportsView::KReportTab::createTable(const QString& links)
     html += header;
     html += links;
 
-    if ( m_report.reportType() == MyMoneyReport::ePivotTable )
-      html += PivotTable( m_report ).renderHTML();
-    else if ( m_report.reportType() == MyMoneyReport::eQueryTable )
-      html += QueryTable( m_report ).renderHTML();
+    if ( m_report.reportType() == MyMoneyReport::ePivotTable ) {
+      html += m_pivotTable->renderHTML();
+    } else if ( m_report.reportType() == MyMoneyReport::eQueryTable )
+      html += m_queryTable->renderHTML();
 
     html += footer;
   }
@@ -238,8 +250,9 @@ QString KReportsView::KReportTab::createTable(const QString& links)
 
 void KReportsView::KReportTab::drawChart(reports::KReportChartView& _chartView )
 {
-  if ( m_report.reportType() == MyMoneyReport::ePivotTable )
-    PivotTable( m_report ).drawChart(_chartView);
+  if ( m_report.reportType() == MyMoneyReport::ePivotTable ) {
+    m_pivotTable->drawChart(_chartView);
+  }
   else if ( m_report.reportType() == MyMoneyReport::eQueryTable )
     ; // no action for query table
 }

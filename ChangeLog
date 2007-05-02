@@ -1,3 +1,10 @@
+2007-05-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added support for stock splits to the pivot table based reports
+  * Improved performance (only create pivot table once) of report update
+  * Improved display of delta for changed scheduled transaction during
+    schedule entry
+  * Fixed a label display problem in the investment transaction editor
+
 2007-04-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem with displaying numbers with high precision
   * Added testcase to check for precision

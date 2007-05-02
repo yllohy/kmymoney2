@@ -237,6 +237,7 @@ void Sell::showWidgets(void) const
 
   setLabelText("fee-label", i18n("Fees"));
   setLabelText("interest-label", i18n("Interest"));
+  setLabelText("interest-amount-label", i18n("Amount"));
   setLabelText("asset-label", i18n("Account"));
   setLabelText("shares-label", i18n("Shares"));
   setLabelText("price-label", i18n("Price/share"));
@@ -304,6 +305,7 @@ void Div::showWidgets(void) const
   haveWidget("asset-account")->show();
   haveWidget("total")->show();
 
+  setLabelText("interest-amount-label", i18n("Amount"));
   setLabelText("interest-label", i18n("Interest"));
   setLabelText("asset-label", i18n("Account"));
   setLabelText("total-label", i18n("Total"));
