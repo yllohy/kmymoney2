@@ -94,6 +94,7 @@ public:
 
   public:
     KReportTab(KTabWidget* parent, const MyMoneyReport& report );
+    ~KReportTab();
     const MyMoneyReport& report(void) const { return m_report; }
     void print(void);
     void toggleChart(void);

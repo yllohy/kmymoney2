@@ -1,3 +1,9 @@
+2007-05-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Renamed --newreports option into --oldreports
+  * Use new split based report logic by default
+  * Fixed crash when reports were opened
+  * Grey out 'Create schedule' as long as it is not implemented
+
 2007-05-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added support for stock splits to the pivot table based reports
   * Improved performance (only create pivot table once) of report update

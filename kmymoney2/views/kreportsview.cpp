@@ -123,6 +123,12 @@ KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& re
 #endif
 }
 
+KReportsView::KReportTab::~KReportTab()
+{
+  delete m_pivotTable;
+  delete m_queryTable;
+}
+
 void KReportsView::KReportTab::print(void)
 {
   if(m_part && m_part->view())
