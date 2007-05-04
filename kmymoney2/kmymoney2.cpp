@@ -4443,7 +4443,8 @@ void KMyMoney2App::slotUpdateActions(void)
       }
       action("transaction_accept")->setEnabled(haveImportedTransactionSelected());
       action("transaction_duplicate")->setEnabled(true);
-      action("transaction_create_schedule")->setEnabled(true);
+      // TODO once the feature is available just uncomment the following line
+      // action("transaction_create_schedule")->setEnabled(true);
       action("transaction_mark_cleared")->setEnabled(true);
       action("transaction_mark_reconciled")->setEnabled(true);
       action("transaction_mark_notreconciled")->setEnabled(true);
