@@ -58,16 +58,16 @@ bool KCurrencyCalculator::setupSplitPrice(MyMoneyMoney& shares, const MyMoneyTra
 
   if(!s.value().isZero()) {
     MyMoneyAccount cat = file->account(s.accountId());
+    MyMoneySecurity toCurrency;
+    toCurrency = file->security(cat.currencyId());
+    // determine the fraction required for this category/account
+    int fract = cat.fraction(toCurrency);
+
     if(cat.currencyId() != t.commodity()) {
 
-      MyMoneySecurity fromCurrency, toCurrency;
+      MyMoneySecurity fromCurrency;
       MyMoneyMoney fromValue, toValue;
       fromCurrency = file->security(t.commodity());
-      toCurrency = file->security(cat.currencyId());
-
-      // determine the fraction required for this category
-      int fract = cat.fraction(toCurrency);
-
       // display only positive values to the user
       fromValue = s.value().abs();
 
@@ -103,7 +103,7 @@ bool KCurrencyCalculator::setupSplitPrice(MyMoneyMoney& shares, const MyMoneyTra
         shares = (s.value() * calc.price()).convert(fract);
 
     } else {
-      shares = s.value();
+      shares = s.value().convert(fract);
     }
   } else
     shares = s.value();

@@ -371,8 +371,10 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
     if((*it_s).value() == MyMoneyMoney::autoCalc)
       s << "    Value = will be calculated" << "\n";
     else
-      s << "    Value = " << (*it_s).value().formatMoney() << "\n";
-    s << "    Shares = " <<  (*it_s).shares().formatMoney() << "\n";
+      s << "    Value = " << (*it_s).value().formatMoney()
+                          << " (" << (*it_s).value().toString() << ")\n";
+    s << "    Shares = " <<  (*it_s).shares().formatMoney()
+                         << " (" << (*it_s).shares().toString() << ")\n";
     s << "    Action = '" << (*it_s).action() << "'\n";
     s << "    Nr = '" << (*it_s).number() << "'\n";
     s << "    ReconcileFlag = '" << reconcileToString((*it_s).reconcileFlag()) << "'\n";

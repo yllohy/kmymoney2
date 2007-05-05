@@ -749,12 +749,10 @@ void InvestTransactionEditor::slotUpdateActivity(MyMoneySplit::investTransaction
 bool InvestTransactionEditor::setupPrice(const MyMoneyTransaction& t, MyMoneySplit& split)
 {
   MyMoneyAccount acc = m_objects->account(split.accountId());
-  if(acc.currencyId() != t.commodity()) {
-    MyMoneySecurity toCurrency(m_objects->security(acc.currencyId()));
-    int fract = toCurrency.smallestAccountFraction();
-    if(acc.accountType() == MyMoneyAccount::Cash)
-      fract = toCurrency.smallestCashFraction();
+  MyMoneySecurity toCurrency(m_objects->security(acc.currencyId()));
+  int fract = acc.fraction(toCurrency);
 
+  if(acc.currencyId() != t.commodity()) {
     QMap<QCString, MyMoneyMoney>::Iterator it_p;
     QCString key = t.commodity() + "-" + acc.currencyId();
     it_p = m_priceInfo.find(key);
@@ -789,8 +787,9 @@ bool InvestTransactionEditor::setupPrice(const MyMoneyTransaction& t, MyMoneySpl
     // update shares if the transaction commodity is the currency
     // of the current selected account
     split.setShares((split.value() * price).convert(fract));
-  } else
-    split.setShares(split.value());
+  } else {
+    split.setShares(split.value().convert(fract));
+  }
 
   return true;
 }
@@ -922,6 +921,14 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
       (*it_s).clearId();
       t.addSplit(*it_s);
     }
+  }
+
+  // adjust the value to the smallestAccountFraction found
+  // for the commodity of the transaction.
+  for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+    MyMoneySplit s = (*it_s);
+    s.setValue((*it_s).value().convert(currency.smallestAccountFraction()));
+    t.modifySplit(s);
   }
 
   return rc;

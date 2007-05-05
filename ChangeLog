@@ -1,3 +1,6 @@
+2007-05-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed rounding problem when entering investment transactions
+
 2007-05-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Renamed --newreports option into --oldreports
   * Use new split based report logic by default
