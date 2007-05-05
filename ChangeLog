@@ -1,3 +1,6 @@
+2007-05-05 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Fix crash when saving new file after database activity
+
 2007-05-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed rounding problem when entering investment transactions
 

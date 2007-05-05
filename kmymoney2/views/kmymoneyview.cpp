@@ -1193,6 +1193,7 @@ bool KMyMoneyView::newFile(const bool createEmtpyFile)
     while(MyMoneyFile::instance()->baseCurrency().id().isEmpty())
       selectBaseCurrency();
 
+    m_fileType = KmmXML; // assume native type until saved
     m_fileOpen = true;
   }
   return true;
