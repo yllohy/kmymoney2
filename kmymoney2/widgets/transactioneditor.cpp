@@ -1512,7 +1512,7 @@ MyMoneyMoney StdTransactionEditor::amountFromWidget(bool* update) const
   return value.convert(m_account.fraction(sec));
 }
 
-bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig)
+bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig, bool skipPriceDialog)
 {
   // extract price info from original transaction
   m_priceInfo.clear();
@@ -1649,8 +1649,13 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
     if(updateValue && !s1.accountId().isEmpty()) {
       s1.setValue(-value);
       MyMoneyMoney shares;
-      if(!KCurrencyCalculator::setupSplitPrice(shares, m_transaction, s1, m_priceInfo, m_regForm))
-        return false;
+      if(!skipPriceDialog) {
+        if(!KCurrencyCalculator::setupSplitPrice(shares, m_transaction, s1, m_priceInfo, m_regForm))
+          return false;
+      } else {
+        MyMoneyAccount cat = MyMoneyFile::instance()->account(s1.accountId());
+        shares = (s1.value() * m_priceInfo[cat.currencyId()]).reduce();
+      }
       s1.setShares(shares);
     }
 

@@ -77,10 +77,14 @@ public:
     * @param t reference to created transaction
     * @param torig the original transaction
     * @param sorig the original split
+    * @param skipPriceDialog if @p true the user will not be requested for price information
+    *                        (defaults to @p false)
+    *
+    * @return @p false if aborted by user, @p true otherwise
     *
     * @note Usually not used directly. If unsure, use enterTransactions() instead.
     */
-  virtual bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig) = 0;
+  virtual bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig, bool skipPriceDialog = false) = 0;
 
   /**
     * This method returns information about the completeness of the data
@@ -245,8 +249,14 @@ public:
     * @param t reference to created transaction
     * @param torig the original transaction
     * @param sorig the original split
+    * @param skipPriceDialog if @p true the user will not be requested for price information
+    *                        (defaults to @p false)
+    *
+    * @return @p false if aborted by user, @p true otherwise
+    *
+    * @note Usually not used directly. If unsure, use enterTransactions() instead.
     */
-  bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig);
+  bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig, bool skipPriceDialog = false);
 
 public slots:
   void slotReloadEditWidgets(void);

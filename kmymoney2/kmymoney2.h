@@ -595,6 +595,13 @@ protected:
     */
   void markTransaction(MyMoneySplit::reconcileFlagE flag);
 
+  /**
+    * This slot allows to enter the next scheduled transaction of
+    * the given schedule
+    */
+  bool enterSchedule(MyMoneySchedule& s, bool autoEnter = false);
+
+
 public slots:
   void slotFileInfoDialog(void);
 

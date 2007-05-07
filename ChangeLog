@@ -1,3 +1,7 @@
+2007-05-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Add all features to auto schedule enter
+  * Prevent asking too many times for conversion rate during schedule entry
+
 2007-05-05 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix crash when saving new file after database activity
 

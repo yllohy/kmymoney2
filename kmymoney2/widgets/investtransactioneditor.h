@@ -77,9 +77,14 @@ public:
     * @param torig the original transaction
     * @param sorig the original split
     *
+    * @param skipPriceDialog if @p true the user will not be requested for price information
+    *                        (defaults to @p false)
+    *
+    * @return @p false if aborted by user, @p true otherwise
+    *
     * @note Usually not used directly. If unsure, use enterTransactions() instead.
     */
-  bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig);
+  bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig, bool skipPriceDialog = false);
 
 protected slots:
   void slotCreateSecurity(const QString& name, QCString& id);
