@@ -182,6 +182,10 @@ MyMoneyTransaction KEnterScheduleDlg::transaction(void)
         amortizationSplit.setValue(amortization);
         interestSplit.setValue(interest);
 
+        // FIXME: for now we only assume loans to be in the base currency
+        amortizationSplit.setShares(amortization);
+        interestSplit.setShares(interest);
+
         t.modifySplit(amortizationSplit);
         t.modifySplit(interestSplit);
       }
