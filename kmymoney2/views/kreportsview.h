@@ -89,8 +89,7 @@ public:
     bool m_deleteMe;
     bool m_showingChart;
     bool m_needReload;
-    reports::PivotTable* m_pivotTable;
-    reports::QueryTable* m_queryTable;
+    reports::ReportTable* m_table;
 
   public:
     KReportTab(KTabWidget* parent, const MyMoneyReport& report );
@@ -102,7 +101,6 @@ public:
     void saveAs( const QString& filename );
     void updateReport(void);
     QString createTable(const QString& links=QString());
-    void drawChart(reports::KReportChartView& _chartView );
     const kMyMoneyReportControlDecl* control(void) const { return m_control; }
     bool isReadyToDelete(void) const { return m_deleteMe; }
     void setReadyToDelete(bool f) { m_deleteMe = f; }

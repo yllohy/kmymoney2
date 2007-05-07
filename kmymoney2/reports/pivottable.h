@@ -31,11 +31,10 @@
 // Project Includes
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyreport.h"
+#include "reporttable.h"
 #include "reportaccount.h"
 
 namespace reports {
-
-class KReportChartView;
 
 /**
   * Calculates a 'pivot table' of information about the transaction database.
@@ -56,7 +55,7 @@ class KReportChartView;
   *
   * @short
 **/
-class PivotTable
+class PivotTable : public ReportTable
 {
 public:
   /**
@@ -94,7 +93,7 @@ public:
     *
     * @param file The filename to dump into
     */
-    void dump( const QString& file ) const;
+    void dump( const QString& file, const QString& context=QString()) const;
 
 private:
   /**

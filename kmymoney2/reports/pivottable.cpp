@@ -2064,7 +2064,7 @@ QString PivotTable::renderHTML( void ) const
   return result;
 }
 
-void PivotTable::dump( const QString& file ) const
+void PivotTable::dump( const QString& file, const QString& /* context */) const
 {
   QFile g( file );
   g.open( IO_WriteOnly );

@@ -20,6 +20,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qstringlist.h>
 
 // ----------------------------------------------------------------------------
@@ -27,7 +28,9 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "../mymoney/mymoneyreport.h"
+#include "reporttable.h"
 
 namespace reports {
 
@@ -46,13 +49,15 @@ class ReportAccount;
   * @short
 **/
 
-class QueryTable
+class QueryTable : public ReportTable
 {
 public:
   QueryTable(const MyMoneyReport&);
   QString renderHTML( void ) const;
   QString renderCSV( void ) const;
+  void drawChart( KReportChartView& view ) const {}
   void dump( const QString& file, const QString& context=QString() ) const;
+
 public:
   /**
     * Contains a single row in the table.
@@ -68,7 +73,7 @@ public:
     bool operator<=( const TableRow& ) const;
     bool operator>( const TableRow& ) const;
     bool operator==( const TableRow& ) const;
-    
+
     static void setSortCriteria( const QString& _criteria ) { m_sortCriteria = QStringList::split(",",_criteria); }
   private:
     static QStringList m_sortCriteria;
