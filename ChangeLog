@@ -1,4 +1,7 @@
-2007-05-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
+2007-05-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed indentation problem in reports
+
+2007-05-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Add all features to auto schedule enter
   * Prevent asking too many times for conversion rate during schedule entry
   * Created interface class for PivotTable and QueryTable called ReportTable

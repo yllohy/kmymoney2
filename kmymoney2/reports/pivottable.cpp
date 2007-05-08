@@ -1914,7 +1914,7 @@ QString PivotTable::renderHTML( void ) const
 
             ReportAccount rowname = it_row.key();
 
-            innergroupdata += QString("<tr class=\"row-%1\"%2><td%3 class=\"left%4\">%5%6</td>")
+            innergroupdata += QString("<tr class=\"row-%1\"%2><td%3 class=\"left\" style=\"text-indent: %4.0em\">%5%6</td>")
               .arg(rownum & 0x01 ? "even" : "odd")
               .arg(rowname.isTopLevel() ? " id=\"topparent\"" : "")
               .arg("") //.arg((*it_row).m_total.isZero() ? colspan : "")  // colspan the distance if this row will be blank
@@ -1960,8 +1960,10 @@ QString PivotTable::renderHTML( void ) const
             // of classes I can define in the .CSS file, and the user can theoretically nest deeper.
             // The right solution is to use style=Xem, and calculate X.  Let's see if anyone complains
             // first :)  Also applies to the row header case above.
+            // FIXED: I found it in one of my reports and changed it to the proposed method.
+            // This works for me (ipwizard)
             ReportAccount rowname = (*it_innergroup).begin().key();
-            result += QString("<tr class=\"row-%1\"%2><td class=\"left%3\">%5%6</td>")
+            result += QString("<tr class=\"row-%1\"%2><td class=\"left\" style=\"text-indent: %3.0em;\">%5%6</td>")
               .arg(rownum & 0x01 ? "even" : "odd")
               .arg( m_config_f.isShowingSubAccounts() ? "id=\"solo\"" : "" )
               .arg(rowname.hierarchyDepth() - 1)

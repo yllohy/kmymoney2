@@ -1153,7 +1153,7 @@ void QueryTable::render( QString& result, QString& csv ) const
     MyMoneyMoney::setThousandSeparator(savethsep);
 
     result += "<tr class=\"sectionfooter\">"
-      "<td class=\"left0\" "
+      "<td class=\"left\" "
       "colspan=\"" + QString::number(columns.count()-1-postcolumns.count()) + "\">"+
       i18n("Grand Total") + "</td>"
       "<td>" + grandtotal_html + "</td></tr>\n";
