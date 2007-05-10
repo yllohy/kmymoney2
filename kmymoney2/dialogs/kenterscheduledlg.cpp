@@ -197,6 +197,8 @@ MyMoneyTransaction KEnterScheduleDlg::transaction(void)
     delete e;
   }
 
+  t.clearId();
+  t.setEntryDate(QDate());
   t.setPostDate(dueDate);
   return t;
 }
