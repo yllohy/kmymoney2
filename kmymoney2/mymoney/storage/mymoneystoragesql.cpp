@@ -1025,6 +1025,7 @@ void MyMoneyStorageSql::writeTransaction(const QString& txId, const MyMoneyTrans
   writeSplits(txId, type, splitList);
 
   //Add in Key-Value Pairs for transactions.
+  deleteKeyValuePairs("TRANSACTION", txId);
   writeKeyValuePairs("TRANSACTION", txId, tx.pairs());
   m_hiIdTransactions = calcHighId(m_hiIdTransactions, tx.id());
 }

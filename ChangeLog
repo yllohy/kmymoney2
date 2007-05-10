@@ -1,3 +1,7 @@
+2007-05-10 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Retain status of imported transactions
+    Patch supplied by Fernando Vilas
+
 2007-05-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed indentation problem in reports
 
