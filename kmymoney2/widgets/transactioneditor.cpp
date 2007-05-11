@@ -625,13 +625,7 @@ bool StdTransactionEditor::isTransfer(const QCString& accId1, const QCString& ac
   if(accId1.isEmpty() || accId2.isEmpty())
     return false;
 
-  MyMoneyAccount acc1 = m_objects->account(accId1);
-  MyMoneyAccount acc2 = m_objects->account(accId2);
-
-  bool isCat1 = (acc1.accountGroup() == MyMoneyAccount::Income) || (acc1.accountGroup() == MyMoneyAccount::Expense);
-  bool isCat2 = (acc2.accountGroup() == MyMoneyAccount::Income) || (acc2.accountGroup() == MyMoneyAccount::Expense);
-
-  return isCat1 == isCat2;
+  return m_objects->account(accId1).isIncomeExpense() == m_objects->account(accId2).isIncomeExpense();
 }
 
 void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
@@ -767,6 +761,15 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
           if(tabbar) {
             tabbar->setCurrentTab(action);
           }
+        }
+      }
+    } else {
+      TabBar* tabbar = dynamic_cast<TabBar*>(haveWidget("tabbar"));
+      if(tabbar) {
+        if(!isTransfer(m_split.accountId(), categoryId)) {
+          tabbar->setCurrentTab(m_split.value().isNegative() ? KMyMoneyRegister::ActionWithdrawal : KMyMoneyRegister::ActionDeposit);
+        } else {
+          tabbar->setCurrentTab(KMyMoneyRegister::ActionTransfer);
         }
       }
     }
