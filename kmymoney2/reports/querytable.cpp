@@ -240,6 +240,8 @@ public:
   const QString& oldName(void) const { return m_previousGroup; }
   const QString& groupField(void) const { return m_groupField; }
   const QString& subtotalField(void) const { return m_subtotalField; }
+  // ***DV*** HACK make the currentGroup test different but look the same
+  void force (void) { m_currentGroup += " "; }
 private:
   MyMoneyMoney m_currentSubtotal;
   MyMoneyMoney m_previousSubtotal;
@@ -306,6 +308,13 @@ const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType
 
 QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
 {
+  // seperated into its own method to allow debugging (setting breakpoints
+  // directly in ctors somehow does not work for me (ipwizard))
+  init();
+}
+
+void QueryTable::init(void)
+{
   switch ( m_config.rowType() )
   {
     case MyMoneyReport::eAccountByTopAccount:
@@ -315,6 +324,19 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
       constructAccountTable();
       m_columns="account";
       break;
+
+    case MyMoneyReport::eAccount:
+      constructTransactionTable();
+      m_columns="accountid,postdate";
+      break;
+
+    case MyMoneyReport::ePayee:
+    case MyMoneyReport::eMonth:
+    case MyMoneyReport::eWeek:
+      constructTransactionTable();
+      m_columns="postdate,account";
+      break;
+
     default:
       constructTransactionTable();
       m_columns="postdate";
@@ -362,6 +384,20 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
     throw new MYMONEYEXCEPTION("QueryTable::QueryTable(): unhandled row type");
   }
 
+  QString sort = m_group + "," + m_columns + ",id,rank";
+
+  switch (m_config.rowType()) {
+    case MyMoneyReport::eAccountByTopAccount:
+    case MyMoneyReport::eEquityType:
+    case MyMoneyReport::eAccountType:
+    case MyMoneyReport::eInstitution:
+      m_columns="account";
+      break;
+
+    default:
+      m_columns="postdate";
+  }
+
   unsigned qc = m_config.queryColumns();
 
   if ( qc & MyMoneyReport::eQCnumber )
@@ -390,287 +426,410 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
     m_postcolumns = "balance";
   }
 
-  QString sort;
-  if ( ! m_group.isEmpty() )
-    sort += m_group + ",";
-  sort += m_columns;
-  if ( ! m_subtotal.isEmpty() )
-    sort += "," + m_subtotal;
-
   TableRow::setSortCriteria(sort);
   qHeapSort(m_transactions);
 }
 
 void QueryTable::constructTransactionTable(void)
 {
-  //
-  // Translate the transaction & split list
-  // into a database-style table, which we can then query later SQL-style.
-  //
-
   MyMoneyFile* file = MyMoneyFile::instance();
 
   MyMoneyReport report(m_config);
   report.setReportAllSplits(false);
   report.setConsiderCategory(true);
-  QValueList<MyMoneyTransaction> transactions = file->transactionList( report );
-  QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
-  while ( it_transaction != transactions.end() )
-  {
-    TableRow qtransactionrow;
 
-    qtransactionrow["id"] = (*it_transaction).id();
-    qtransactionrow["entrydate"] = (*it_transaction).entryDate().toString(Qt::ISODate);
-    qtransactionrow["commodity"] = (*it_transaction).commodity();
+  bool use_summary = true;
+  bool use_transfers = true;
 
-    QDate postdate = (*it_transaction).postDate();
-    qtransactionrow["postdate"] = postdate.toString(Qt::ISODate);
+  switch (m_config.rowType()) {
+  case MyMoneyReport::eCategory:
+  case MyMoneyReport::eTopCategory:
+    use_summary = false;
+    use_transfers = false;
+  default:
+    // gcc complains without "default"
+    break;
+  }
 
-    QDate month = QDate( postdate.year(), postdate.month(), 1);
-    qtransactionrow["month"] = i18n("Month of %1").arg(month.toString(Qt::ISODate));
+  // support for opening and closing balances
+  QMap<QString, MyMoneyAccount> accts;
 
-    QDate week = postdate.addDays( 1 - postdate.dayOfWeek() );
-    qtransactionrow["week"] = i18n("Week of %1").arg(week.toString(Qt::ISODate));
+  QValueList<MyMoneyTransaction> T = file->transactionList(report);
+  QValueList<MyMoneyTransaction>::const_iterator it, T_end;
+  T_end = T.end();
 
-    // There is a subtle difference between the way this report deals with
-    // foreign currencies and the way pivot tables do.  In this transaction
-    // report, if you choose not to convert to base currency, all values
-    // are reported in the TRANSACTION currency, because it's a transaction-
-    // based report.  With pivots, values are reported in the ACCOUNT's
-    // currency, because it's an account-based report.
+  for (it = T.begin(); it != T_end; ++it) {
 
-    // displayprice is the price of the transaction currency in the DISPLAY
-    // currency.  That is, if we are converting currency then it's the price
-    // of the transaction currency in base currency.  If we're not converting,
-    // then the display currency IS the transaction currency so it's 1.0
-    MyMoneyMoney displayprice(1.0);
-    if ( report.isConvertCurrency() )
-    {
-      if((*it_transaction).commodity() != file->baseCurrency().id())
-      {
-        MyMoneySecurity currency = file->currency((*it_transaction).commodity());
-        displayprice = file->price(currency.id(),file->baseCurrency().id(),QDate::currentDate()).rate();
+    TableRow qA, qS;
+    QDate pd;
+
+    qA["id"] = qS["id"] = (* it).id();
+    qA["entrydate"] = qS["entrydate"] = (* it).entryDate().toString(Qt::ISODate);
+    qA["postdate"] = qS["postdate"] = (* it).postDate().toString(Qt::ISODate);
+    qA["commodity"] = qS["commodity"] = (* it).commodity();
+
+    pd = (* it).postDate();
+    qA["month"] = qS["month"] = i18n("Month of %1").arg(QDate(pd.year(),pd.month(),1).toString(Qt::ISODate));
+    qA["week"] = qS["week"] = i18n("Week of %1").arg(pd.addDays(1-pd.dayOfWeek()).toString(Qt::ISODate));
+
+    MyMoneyMoney xr(1.0);
+    qA["currency"] = qS["currency"] = "";
+
+    if((* it).commodity() != file->baseCurrency().id()) {
+      if (report.isConvertCurrency()) {
+        MyMoneySecurity c = file->currency((* it).commodity());
+        xr = file->price(c.id(), file->baseCurrency().id(), QDate::currentDate()).rate();
+      }
+      else {
+        qA["currency"] = qS["currency"] = (* it).commodity();
       }
     }
-    else
-      if((*it_transaction).commodity() != file->baseCurrency().id())
-        qtransactionrow["currency"] = (*it_transaction).commodity();
 
-    // A table row ALWAYS has one asset/liability account.  A transaction
-    // will generate one table row for each A/L account.
-    //
-    // Likewise, a table row ALWAYS has one E/I category.  In the case of complex
-    // multi-split transactions, another table, the 'splits table' will be used to
-    // hold the extra info in case the user wants to see it.  (Someday when this is
-    // written)
-    //
-    // Splits table handling differs depending on what the user has asked for.
-    // If the user wants transactions BY CATEGORY, then multiple table row
-    // are generated, one for each category.
-    //
-    // For now, implementing the simple case...which is one row per-A/L account
-    // per E/I category.
+    // to handle splits, we decide on which account to base the split
+    // (a reference point or point of view so to speak). here we take the
+    // first account that is a stock account (or the first account that is
+    // not an income or expense account if there is no stock account) to be
+    // the account (qA) that will have the sub-item "split" entries. we add
+    // one transaction entry (qS) for each subsequent entry in the split.
+    // In case we find a loan account along the way, we keep it but override
+    // it if we find another non-loan, non-income and non-expense account.
 
-    QValueList<MyMoneySplit> splits = (*it_transaction).splits();
-    QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
-    while ( it_split != splits.end() )
-    {
-      ReportAccount splitaccount = (*it_split).accountId();
-      // Loop through the splits once for every asset/liability account.
-      // Create one table row for each such account
-      // But skip the account if it is not present in the filter.
-      // Also skip the account if we only want investments & it's not an investmet account
-      if ( splitaccount.isAssetLiability() && m_config.includes(splitaccount) )
-      {
-        TableRow qaccountrow = qtransactionrow;
+    const QValueList<MyMoneySplit>& S = (* it).splits();
+    QValueList<MyMoneySplit>::const_iterator myBegin, is, S_end;
+    S_end = S.end();
 
-        // These items are relevant for each A/L split
-        QCString payeeid = (*it_split).payeeId();
-        if ( payeeid.isEmpty() )
-          qaccountrow["payee"] = i18n("[Empty Payee]");
-        else
-          qaccountrow["payee"] = file->payee(payeeid).name().simplifyWhiteSpace();
+    myBegin = S_end;
 
-        qaccountrow["reconciledate"] = (*it_split).reconcileDate().toString(Qt::ISODate);
-        qaccountrow["reconcileflag"] = kReconcileTextChar[(*it_split).reconcileFlag()];
-        qaccountrow["number"] = (*it_split).number();
-        qaccountrow["action"] = (*it_split).action();
-        qaccountrow["memo"] = (*it_split).memo();
+    bool myBeginIsLoan = false;
+    for (is = S.begin(); is != S_end; ++is) {
+      ReportAccount a = (* is).accountId();
+      if (a.accountType() == MyMoneyAccount::Stock)
+        break;
+      if ((myBegin == S_end || myBeginIsLoan == true) && ! a.isIncomeExpense()) {
+        myBegin = is;
+        myBeginIsLoan = a.isLoan();
+      }
+    }
 
-        // handle investments
-        if ( splitaccount.accountType() == MyMoneyAccount::Stock )
-        {
-          MyMoneyMoney shares = (*it_split).shares();
-          qaccountrow["shares"] = shares.toString();
-          if ( ! shares.isZero() )
-            qaccountrow["price"] = ((*it_split).value()*displayprice / shares).toString();
-          else
-            qaccountrow["price"] = MyMoneyMoney().toString();
-          if ( (*it_split).action() == MyMoneySplit::ActionBuyShares && shares.isNegative() )
-            // note this is not localized because neither is MyMoneySplit::action()
-            qaccountrow["action"] = "Sell";
-          qaccountrow["investaccount"] = splitaccount.parent().name();
-        }
+    // select our "reference" split
+    if (is == S_end) is = myBegin; else myBegin = is;
 
-        //
-        // handle loans
-        //
-        // Loans only get one line per transaction.  The different splits will all be
-        // placed on a single line
-        //
-        if ( splitaccount.accountType() == MyMoneyAccount::Loan )
-        {
-          qaccountrow["account"] = splitaccount.name();
-          qaccountrow["accountid"] = splitaccount.id();
-          qaccountrow["topaccount"] = splitaccount.topParentName();
 
-          QValueList<MyMoneySplit>::const_iterator it_split2 = splits.begin();
-          while ( it_split2 != splits.end() )
-          {
-            ReportAccount split2account = (*it_split2).accountId();
+    ReportAccount a = (* is).accountId();
 
-            // Put the principal amount in the "value" column
-            if ( (*it_split2).accountId() == (*it_split).accountId() )
-            {
-              qaccountrow["value"] = ((-(*it_split2).value())*displayprice).toString();
-            }
+    // a loan transaction get special treatment. the splits of a loan
+    // transaction are placed on one line in the reference account (qA).
+    // however, we process the matching split entries (qS) normally.
 
-            // Put the payment in the "payment" column
-            else if ( (*it_split2).action() == MyMoneySplit::ActionAmortization )
-            {
-              qaccountrow["payment"] = (-(*it_split2).value()*displayprice).toString();
-            }
+    bool loan_special_case = a.isLoan();
 
-            // Put the interest in the "interest" column
-            else if ( (*it_split2).action() == MyMoneySplit::ActionInterest )
-            {
-              qaccountrow["interest"] = (-(*it_split2).value()*displayprice).toString();
-            }
-
-            // Put the initial pay-in nowhere (that is, ignore it). This is dangerous, though.
-            // The only way I can tell the initial pay-in apart from fees is if there are
-            // only 2 splits in the transaction.  I wish there was a better way.
-            else if ( splits.count() == 2)
-            {
-            }
-
-            // Put everything else in the "fees" column
-            else
-            {
-              MyMoneyMoney currentfees = MyMoneyMoney(qaccountrow["fees"]);
-              MyMoneyMoney morefees = -(*it_split2).value()*displayprice;
-              qaccountrow["fees"] = (currentfees + morefees).toString();
-            }
-            ++it_split2;
-          }
-          m_transactions += qaccountrow;
-        }
-        //
-        // Handle all other kinds of accounts
-        //
-        else
-        {
-
-// This is an attempt to fix KDE bug #118729.  But I'm not really happy with it
-// yet, so it remains #if0'd out.
 #if 0
-          if ( splits.count() <= 2 )
-          {
-          }
-          else
-          {
-            // this is a 'split' transaction.  there are more than one other split
-            // aside from the A/L account we're working with.  In this case, we print
-            // one line for the entire transaction, and then it's up to the user
-            // whether or not to display the split details.
-            qsplitrow["account"] = splitaccount.name();
-            qsplitrow["accountid"] = splitaccount.id();
-            qsplitrow["topaccount"] = splitaccount.topParentName();
-            if (!(*it_split).memo().isEmpty())
-              qsplitrow["memo"] = (*it_split).memo();
-            qsplitrow["category"] = i18n("Split/Multiple Categories");
-            qsplitrow["topcategory"] = i18n("Split");
-            qsplitrow["categorytype"] = i18n("Split");
-          }
+    // a stock dividend and yield transaction is also a special case.
+    // [dv: the original comment follows]
+    // handle cash dividends. these little fellas require very special handling.
+    // the stock account will produce a row with zero value & zero shares. Then
+    // there will be 2 split rows, a category and a transfer account. We are
+    // only concerned with the transfer account, and we will NOT show the income
+    // account. (This may have to be changed later if we feel we need it.)
+
+    // [dv: this special case just doesn't make sense to me -- it seems to
+    // violate the "zero sum" transaction concept. for now, then, the stock
+    // dividend / yield special case goes unimplemented.]
+
+    bool stock_special_case =
+      ((a.accountType() == MyMoneyAccount::Stock) &&
+       ((* is).action() == MyMoneySplit::ActionDividend ||
+        (* is).action() == MyMoneySplit::ActionYield));
 #endif
 
-          QValueList<MyMoneySplit>::const_iterator it_split2 = splits.begin();
-          while ( it_split2 != splits.end() )
-          {
-            ReportAccount split2account = (*it_split2).accountId();
+    bool include_me = true;
+    QString a_fullname = "";
+    QString a_memo = "";
 
-            // Only process this split if it is not the A/L account we're working with anyway
-            if ( (*it_split2).accountId() != (*it_split).accountId() )
-            {
-              // Create one query line for each target account/category
-              // (This is the 'expand categories' behaviour.
-              // 'collapse categories' would entail cramming them all into one
-              // line and calling it "Split Categories").
+    do {
 
-              TableRow qsplitrow = qaccountrow;
-              qsplitrow["account"] = splitaccount.name();
-              qsplitrow["accountid"] = splitaccount.id();
-              qsplitrow["topaccount"] = splitaccount.topParentName();
+      ReportAccount a = (* is).accountId();
+      QCString i = a.institutionId();
+      QCString p = (* is).payeeId();
 
-              // retrieve the value in the transaction's currency, and convert
-              // to the base currency if needed
-              qsplitrow["value"] = ((-(*it_split2).value())*displayprice).toString();
-              qsplitrow["id"] = (*it_split2).id();
+      if (a.accountType() == MyMoneyAccount::Stock) {
 
-              if (!(*it_split2).memo().isEmpty())
-                qsplitrow["memo"] = (*it_split2).memo();
+        // use the institution of the parent for stock accounts
+        i = a.parent().institutionId();
 
-              // handle cash dividends.  these little fellas require very special handling.
-              // the stock account will produce a qaccountrow with zero value & zero shares.
-              // then there will be 2 qsplitrows, a category and a transfer account.  We are
-              // only concerned with the transfer account, and we will NOT show the income
-              // account.  (This may have to be changed later if we feel we need it.)
+        MyMoneyMoney sh = (* is).shares();
 
-              if (
-                ( splitaccount.accountType() == MyMoneyAccount::Stock )
-                &&
-                ( (*it_split).action() == MyMoneySplit::ActionDividend || (*it_split).action() == MyMoneySplit::ActionYield )
-                &&
-                ( split2account.isIncomeExpense() )
-              )
-              {
-                goto skip_addsplit;
-              }
+        qA["shares"] = sh.isZero() ? "" : sh.toString();
+        qA["price"] = sh.isZero() ? "" : ((* is).value()*xr/sh).toString();
 
-              // handle sub-categories.  the 'category' field contains the
-              // fully-qualified category hierarchy, e.g. "Computers: Hardware: CPUs"
-              // the 'topparent' field contains just the top-most parent, in this
-              // example "Computers"
+        qA["action"] = (* is).action();
 
-              // if this is a transfer
-              if ( ! split2account.isIncomeExpense() )
-              {
-                // In tax reports, we don't want to see transfers
-                if ( ! m_config.isTax() )
-                {
-                  QString fromto = ((*it_split2).value().isNegative())?i18n("from"):i18n("to");
-                  qsplitrow["category"] = i18n("Transfer %1 %2").arg(fromto).arg(split2account.fullName());
-                  qsplitrow["topcategory"] = split2account.topParentName();
-                  qsplitrow["categorytype"] = i18n("Transfer");
-                  m_transactions += qsplitrow;
-                }
-              }
-              else if ( m_config.includes( split2account ) )
-              {
-                qsplitrow["category"] = split2account.fullName();
-                qsplitrow["topcategory"] = split2account.topParentName();
-                qsplitrow["categorytype"] = accountTypeToString(split2account.accountGroup());
-                m_transactions += qsplitrow;
-              }
+        if (((*is).action() == MyMoneySplit::ActionBuyShares) && sh.isNegative())
+          qA["action"] = "Sell";
+
+        qA["investaccount"] = a.parent().name();
+      }
+
+      if (is == myBegin) {
+
+        include_me = m_config.includes(a);
+        a_fullname = a.fullName();
+        a_memo = (* is).memo();
+
+        qA["account"] = a.name();
+        qA["accountid"] = a.id();
+        qA["topaccount"] = a.topParentName();
+
+        qA["institution"] = i.isEmpty()
+          ? i18n("No Institution")
+          : file->institution(i).name();
+
+        qA["payee"] = p.isEmpty()
+          ? i18n("[Empty Payee]")
+          : file->payee(p).name().simplifyWhiteSpace();
+
+        qA["reconciledate"] = (* is).reconcileDate().toString(Qt::ISODate);
+        qA["reconcileflag"] = kReconcileTextChar[(* is).reconcileFlag()];
+        qA["number"] = (* is).number();
+        // qA["action"] = (* is).action();
+        qA["memo"] = a_memo;
+
+        qS["reconciledate"] = qA["reconciledate"];
+        qS["reconcileflag"] = qA["reconcileflag"];
+        qS["number"] = qA["number"];
+        // qS["action"] = qA["action"];
+
+        qS["topcategory"] = a.topParentName();
+        qS["categorytype"] = i18n("Transfer");
+
+        // only include the configured accounts
+        if (include_me) {
+
+          if (loan_special_case) {
+
+            // put the principal amount in the "value" column
+            qA["value"] = ((-(* is).value()) * xr).toString();
+            qA["rank"] = "0";
+            qA["split"] = "";
+
+          }
+          else {
+
+            if ((S.count() > 2) && use_summary) {
+
+              // add the "summarized" split transaction
+              // this is the sub-total of the split detail
+              qA["value"] = ((* is).value() * xr).toString();
+              qA["rank"] = "0";
+              qA["category"] = i18n("[Split Transaction]");
+              qA["topcategory"] = i18n("Split");
+              qA["categorytype"] = i18n("Split");
+
+              m_transactions += qA;
             }
-skip_addsplit:
-            ++it_split2;
+          }
+
+          // track accts that will need opening and closing balances
+          accts.insert (a.id(), a);
+        }
+
+      }
+      else {
+
+        if (include_me) {
+
+          if (loan_special_case) {
+
+            if ((*is).action() == MyMoneySplit::ActionAmortization) {
+              // put the payment in the "payment" column
+              qA["payment"] = ((-(* is).value()) * xr).toString();
+            }
+            else if ((*is).action() == MyMoneySplit::ActionInterest) {
+              // put the interest in the "interest" column
+              qA["interest"] = ((-(* is).value()) * xr).toString();
+            }
+            else if (S.count() > 2) {
+              // [dv: This comment carried from the original code. I am
+              // not exactly clear on what it means or why we do this.]
+              // Put the initial pay-in nowhere (that is, ignore it). This
+              // is dangerous, though. The only way I can tell the initial
+              // pay-in apart from fees is if there are only 2 splits in
+              // the transaction.  I wish there was a better way.
+            }
+            else {
+              // accumulate everything else in the "fees" column
+              MyMoneyMoney n0 = MyMoneyMoney(qA["fees"]);
+              MyMoneyMoney n1 = ((-(* is).value()) * xr).toString();
+              qA["fees"] = (n0 + n1).toString();
+            }
+
+          }
+          else {
+
+            if ((S.count() > 2) && use_summary) {
+              qA["value"] = "";
+              qA["split"] = ((-(* is).value()) * xr).toString();
+              qA["rank"] = "1";
+            }
+            else {
+              qA["split"] = "";
+              qA["value"] = ((-(* is).value()) * xr).toString();
+              qA["rank"] = "0";
+            }
+
+            qA ["memo"] = (* is).memo();
+
+            if (! a.isIncomeExpense()) {
+              qA["category"] = ((* is).value().isNegative())
+                ? i18n("Transfer from %1").arg(a.fullName())
+                : i18n("Transfer to %1").arg(a.fullName());
+              qA["topcategory"] = a.topParentName();
+              qA["categorytype"] = i18n("Transfer");
+            }
+            else {
+              qA ["category"] = a.fullName();
+              qA ["topcategory"] = a.topParentName();
+              qA ["categorytype"] = accountTypeToString(a.accountGroup());
+            }
+
+            if (use_transfers || a.isIncomeExpense())
+              m_transactions += qA;
+          }
+        }
+
+        if (m_config.includes(a) && use_transfers) {
+          if (! a.isIncomeExpense()) {
+
+            qS["value"] = ((* is).value() * xr).toString();
+            qS["rank"] = "0";
+
+            qS["account"] = a.name();
+            qS["accountid"] = a.id();
+            qS["topaccount"] = a.topParentName();
+
+            qS["category"] = ((* is).value().isNegative())
+              ? i18n("Transfer to %1").arg(a_fullname)
+              : i18n("Transfer from %1").arg(a_fullname);
+
+            qS["institution"] = i.isEmpty()
+              ? i18n("No Institution")
+              : file->institution(i).name();
+
+            qS["memo"] = (* is).memo().isEmpty()
+              ? a_memo
+              : (* is).memo();
+
+            qS["payee"] = p.isEmpty()
+              ? qA["payee"]
+              : file->payee(p).name().simplifyWhiteSpace();
+
+            m_transactions += qS;
+
+            // track accts that will need opening and closing balances
+            accts.insert (a.id(), a);
           }
         }
       }
-      ++it_split;
+
+      if (loan_special_case) {
+        m_transactions += qA;
+      }
+
+      ++is;
+      // look for wrap-around
+      if (is == S_end) is = S.begin();
+
+    } while (is != myBegin);
+  }
+
+  // now run through our accts list and add opening and closing balances
+
+  switch (m_config.rowType()) {
+  case MyMoneyReport::eAccount:
+  case MyMoneyReport::eTopAccount:
+    break;
+// case MyMoneyReport::eCategory:
+// case MyMoneyReport::eTopCategory:
+// case MyMoneyReport::ePayee:
+// case MyMoneyReport::eMonth:
+// case MyMoneyReport::eWeek:
+  default:
+    return;
+  }
+
+  QDate date0;
+  QDate date1;
+
+  report.validDateRange(date0, date1);
+  QString date0s = date0.toString(Qt::ISODate);
+  QString date1s = date1.toString(Qt::ISODate);
+  date0 = date0.addDays(-1);
+
+  QMap<QString, MyMoneyAccount>::const_iterator ia, accts_end;
+  accts_end = accts.end();
+
+  for (ia = accts.begin(); ia != accts_end; ++ia) {
+
+    TableRow qA;
+
+    ReportAccount a = (* ia);
+
+    QCString i = a.institutionId();
+
+    // use the institution of the parent for stock accounts
+    if (a.accountType() == MyMoneyAccount::Stock)
+      i = a.parent().institutionId();
+
+    MyMoneyMoney b0,b1, s0,s1, p0,p1;
+
+    if (a.accountType() == MyMoneyAccount::Stock) {
+      MyMoneySecurity s = file->security(a.currencyId());
+      s0 = file->balance(a.id(),date0);
+      s1 = file->balance(a.id(),date1);
+      p0 = file->price(s.id(), QCString(), date0).rate();
+      p1 = file->price(s.id(), QCString(), date1).rate();
+      b0 = s0 * p0;
+      b1 = s1 * p1;
     }
-    ++it_transaction;
+    else {
+      b0 = file->balance(a.id(),date0);
+      b1 = file->balance(a.id(),date1);
+    }
+
+    MyMoneyMoney xr(1.0);
+
+    // adjust exchange rate
+    if (m_config.isConvertCurrency() && a.isForeignCurrency())
+      xr = a.baseCurrencyPrice(m_config.toDate()).reduce();
+
+    // don't show currency if we're converting or if it's not foreign
+    qA["currency"] = (m_config.isConvertCurrency() || ! a.isForeignCurrency()) ? "" : a.currency();
+
+    qA["accountid"] = a.id();
+    qA["account"] = a.name();
+    qA["topaccount"] = a.topParentName();
+    qA["institution"] = i.isEmpty() ? i18n("No Institution") : file->institution(i).name();
+    qA["rank"] = "-2";
+
+    if (a.accountType() == MyMoneyAccount::Stock) {
+      qA["price"] = (p0 * xr).toString();
+      qA["shares"] = s0.toString();
+    }
+
+    qA["postdate"] = date0s;
+    qA["balance"] = (b0 * xr).toString();
+    qA["id"] = "A";
+    m_transactions += qA;
+
+    if (a.accountType() == MyMoneyAccount::Stock) {
+      qA["price"] = (p1 * xr).toString();
+      qA["shares"] = s1.toString();
+    }
+
+    qA["postdate"] = date1s;
+    qA["balance"] = (b1 * xr).toString();
+    qA["id"] = "Z";
+    m_transactions += qA;
   }
 }
 
@@ -790,6 +949,9 @@ void QueryTable::constructAccountTable(void)
     {
       TableRow qaccountrow;
 
+      // help for sort and render functions
+      qaccountrow["rank"] = "0";
+
       //
       // Handle currency conversion
       //
@@ -849,7 +1011,6 @@ void QueryTable::constructAccountTable(void)
     ++it_account;
   }
 }
-
 void QueryTable::render( QString& result, QString& csv ) const
 {
 //   MyMoneyMoney::signPosition savesignpos = MyMoneyMoney::negativeMonetarySignPosition();
@@ -932,7 +1093,7 @@ void QueryTable::render( QString& result, QString& csv ) const
   // the list of columns which represent dates, so we can display them correctly
   QStringList dateColumns = QStringList::split(",", "postdate,entrydate");
 
-  result += "<table class=\"report\">\n<tr class=\"itemheader\">";
+  result += "<table class=\"report\">\n<thead><tr class=\"itemheader\">";
 
   QStringList::const_iterator it_column = columns.begin();
   while ( it_column != columns.end() )
@@ -945,7 +1106,7 @@ void QueryTable::render( QString& result, QString& csv ) const
     ++it_column;
   }
 
-  result += "</tr>\n";
+  result += "</tr></thead>\n";
   csv = csv.left( csv.length() - 1 );
   csv += "\n";
 
@@ -973,12 +1134,22 @@ void QueryTable::render( QString& result, QString& csv ) const
   //
 
   bool row_odd = true;
-  QValueList<TableRow>::const_iterator it_row = m_transactions.begin();
-  while ( it_row != m_transactions.end() )
-  {
+
+  // ***DV***
+  for (QValueList<TableRow>::const_iterator it_row = m_transactions.begin();
+       it_row != m_transactions.end();
+       ++it_row) {
+
     //
     // Process Groups
     //
+
+    // ***DV*** HACK to force a subtotal and header, since this render doesn't
+    // always detect a group change for different accounts with the same name
+    // (as occurs with the same stock purchased from different investment accts)
+    if (it_row != m_transactions.begin())
+    if (((* it_row)["rank"] == "-2") && ((* it_row)["id"] == "A"))
+      (groupIteratorList.last()).force();
 
     // There's a subtle bug here.  If an earlier group gets a new group,
     // then we need to force all the downstream groups to get one too.
@@ -990,6 +1161,7 @@ void QueryTable::render( QString& result, QString& csv ) const
       (*it_group).update(*it_row);
       ++it_group;
     }
+
     // Do subtotals backwards
     if ( m_config.isConvertCurrency() )
     {
@@ -1002,20 +1174,26 @@ void QueryTable::render( QString& result, QString& csv ) const
             grandtotal += (*it_group).subtotal();
 
           QString subtotal_html = (*it_group).subtotal().formatMoney();
-          MyMoneyMoney::setThousandSeparator('\0');
-          QString subtotal_csv = (*it_group).subtotal().formatMoney();
-          MyMoneyMoney::setThousandSeparator(savethsep);
+          QString subtotal_csv = (*it_group).subtotal().formatMoney("", 2, true);
 
-          result += "<tr class=\"sectionfooter\">"
+          // ***DV*** HACK fix the side-effiect from .force() method above
+          QString oldName = QString((*it_group).oldName()).stripWhiteSpace();
+
+          result +=
+            "<tr class=\"sectionfooter\">"
             "<td class=\"left"+ QString::number(((*it_group).depth()-1)) + "\" "
-            "colspan=\"" + QString::number(columns.count()-1-postcolumns.count()) + "\">"+
-            i18n("Total")+" " + (*it_group).oldName() + "</td>"
+            "colspan=\"" +
+          QString::number(columns.count()-1-postcolumns.count()) + "\">"+
+            i18n("Total")+" " + oldName + "</td>"
             "<td>" + subtotal_html + "</td></tr>\n";
-          csv += "\"" + i18n("Total") + " " + (*it_group).oldName() + "\",\"" + subtotal_csv + "\"\n";
+
+          csv +=
+            "\""+ i18n("Total")+ " "+ oldName + "\",\""+ subtotal_csv + "\"\n";
         }
         --it_group;
       }
     }
+
     // And headers forwards
     it_group = groupIteratorList.begin();
     while ( it_group != groupIteratorList.end() )
@@ -1031,15 +1209,64 @@ void QueryTable::render( QString& result, QString& csv ) const
       }
       ++it_group;
     }
+
     //
     // Columns
     //
 
-    result += QString("<tr class=\"%1\">").arg(row_odd?"row-odd ":"row-even");
+    // ***DV***
+    if (m_config.isConvertCurrency() && ((* it_row)["rank"] == "-2"))
+      continue;
+
+    bool need_label = true;
+
+    // ***DV***
+    if ((* it_row)["rank"] == "0") row_odd = ! row_odd;
+
+    if ((* it_row)["rank"] == "-2")
+      result += QString("<tr class=\"item%1\">").arg((* it_row)["id"]);
+    else
+    if ((* it_row)["rank"] == "1")
+      result += QString("<tr class=\"%1\">").arg(row_odd?"item1":"item0");
+    else
+      result += QString("<tr class=\"%1\">").arg(row_odd?"row-odd ":"row-even");
+
     QStringList::const_iterator it_column = columns.begin();
     while ( it_column != columns.end() )
     {
       QString data = (*it_row)[*it_column];
+
+      // ***DV***
+      if ((* it_row)["rank"] == "1") {
+        if (* it_column == "value") data = (* it_row)["split"];
+        if (* it_column == "postdate") data = "";
+        if (* it_column == "number") data = "";
+        if (* it_column == "payee") data = "";
+        if (* it_column == "action") data = "";
+        if (* it_column == "shares") data = "";
+        if (* it_column == "price") data = "";
+      }
+
+      // ***DV***
+      if ((* it_row)["rank"] == "-2") {
+        if (* it_column == "value") data = (* it_row)["balance"];
+        if (need_label) {
+          if ((* it_column == "payee") ||
+              (* it_column == "category") ||
+              (* it_column == "memo")) {
+            if ((* it_row)["shares"] != "") {
+              data = ((* it_row)["id"] == "A")
+                ? i18n("Initial Market Value")
+                : i18n("Ending Market Value");
+            } else {
+              data = ((* it_row)["id"] == "A")
+                ? i18n("Opening Balance")
+                : i18n("Closing Balance");
+            }
+            need_label = false;
+          }
+        }
+      }
 
       // The 'balance' column is calculated at render-time
       if ( *it_column == "balance" )
@@ -1056,52 +1283,51 @@ void QueryTable::render( QString& result, QString& csv ) const
       // vector of a properties class.
       if ( sharesColumns.contains(*it_column) )
       {
-        result += QString("<td>%1</td>")
-          .arg(MyMoneyMoney(data).formatMoney());
-
-        MyMoneyMoney::setThousandSeparator('\0');
-
-        csv += "\"" + MyMoneyMoney(data).formatMoney() + "\",";
-
-        MyMoneyMoney::setThousandSeparator(savethsep);
+        if (data.isEmpty()) {
+          result += QString("<td></td>");
+          csv += "\"\",";
+        }
+        else {
+          result += QString("<td>%1</td>").arg(MyMoneyMoney(data).formatMoney("",3));
+          csv += "\"" + MyMoneyMoney(data).formatMoney("", 3, true) + "\",";
+        }
       }
       else if ( moneyColumns.contains(*it_column) )
       {
-        result += QString("<td>%1&nbsp;%2</td>")
-          .arg((*it_row)["currency"])
-          .arg(MyMoneyMoney(data).formatMoney());
+        if (data.isEmpty()) {
+          result += QString("<td></td>");
+          csv += "\"\",";
+        }
+        else {
+          result += QString("<td>%1&nbsp;%2%3</td>")
+            .arg((*it_row)["currency"])
+            .arg(MyMoneyMoney(data).formatMoney())
+            .arg((* it_row)["rank"] == "1" ? "&nbsp;&nbsp;" : "");
 
-        MyMoneyMoney::setThousandSeparator('\0');
-
-        csv += "\"" + (*it_row)["currency"] + " " + MyMoneyMoney(data).formatMoney() + "\",";
-
-        MyMoneyMoney::setThousandSeparator(savethsep);
+          csv += "\"" + (*it_row)["currency"] + " " + MyMoneyMoney(data).formatMoney("", 2, true) + "\",";
+        }
       }
       else if ( percentColumns.contains(*it_column) )
       {
-        result += QString("<td>%1%</td>")
-          .arg((MyMoneyMoney(data) * MyMoneyMoney(100,1)).formatMoney());
-
-        csv += (MyMoneyMoney(data) * MyMoneyMoney(100,1)).formatMoney() + "%,";
+        data = (MyMoneyMoney(data) * MyMoneyMoney(100,1)).formatMoney();
+        result += QString("<td>%1%</td>").arg(data);
+        csv += data + "%,";
       }
       else if ( dateColumns.contains(*it_column) )
       {
-        // if we have a locale() then use its date formatter
-        if(KGlobal::locale()) {
-          result += QString("<td class=\"left\">%1</td>")
-            .arg(KGlobal::locale()->formatDate(QDate::fromString(data, Qt::ISODate), true));
-        } else {
-          // this should be used for the testcases where we don't have
-          // a KApplication environment and KGlobal::locale() returns 0
-          result += QString("<td class=\"left\">%1</td>")
-            .arg(data);
-        }
+        // do this before we possibly change data
         csv += "\""+ data + "\",";
+
+        // if we have a locale() then use its date formatter
+        if (KGlobal::locale() && ! data.isEmpty()) {
+          QDate qd = QDate::fromString(data, Qt::ISODate);
+          data = KGlobal::locale()->formatDate(qd, true);
+        }
+        result += QString("<td class=\"left\">%1</td>").arg(data);
       }
       else
       {
-        result += QString("<td class=\"left\">%1</td>")
-          .arg(data);
+        result += QString("<td class=\"left\">%1</td>").arg(data);
         csv += "\""+ data + "\",";
       }
       ++it_column;
@@ -1110,8 +1336,6 @@ void QueryTable::render( QString& result, QString& csv ) const
     result += "</tr>\n";
     csv = csv.left( csv.length() - 1 ); // remove final comma
     csv += "\n";
-    row_odd = ! row_odd;
-    ++it_row;
   }
 
   //
@@ -1153,7 +1377,7 @@ void QueryTable::render( QString& result, QString& csv ) const
     MyMoneyMoney::setThousandSeparator(savethsep);
 
     result += "<tr class=\"sectionfooter\">"
-      "<td class=\"left\" "
+      "<td class=\"left0\" "
       "colspan=\"" + QString::number(columns.count()-1-postcolumns.count()) + "\">"+
       i18n("Grand Total") + "</td>"
       "<td>" + grandtotal_html + "</td></tr>\n";
