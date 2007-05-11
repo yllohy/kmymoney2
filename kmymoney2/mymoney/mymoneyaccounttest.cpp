@@ -407,59 +407,171 @@ void MyMoneyAccountTest::testSetClosed(void)
 	CPPUNIT_ASSERT(a.isClosed() == false);
 }
 
-void MyMoneyAccountTest::testIsCategory(void)
+void MyMoneyAccountTest::testIsIncomeExpense(void)
 {
 	MyMoneyAccount a;
 
 	a.setAccountType(MyMoneyAccount::UnknownAccountType);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::Checkings);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::Savings);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::Cash);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::CreditCard);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::Loan);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::CertificateDep);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::Investment);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::MoneyMarket);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::Asset);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::Liability);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::Currency);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::Income);
-	CPPUNIT_ASSERT(a.isCategory() == true);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == true);
 
 	a.setAccountType(MyMoneyAccount::Expense);
-	CPPUNIT_ASSERT(a.isCategory() == true);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == true);
 
 	a.setAccountType(MyMoneyAccount::AssetLoan);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::Stock);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
 
 	a.setAccountType(MyMoneyAccount::Equity);
-	CPPUNIT_ASSERT(a.isCategory() == false);
+	CPPUNIT_ASSERT(a.isIncomeExpense() == false);
+}
+
+void MyMoneyAccountTest::testIsAssetLiability(void)
+{
+	MyMoneyAccount a;
+
+	a.setAccountType(MyMoneyAccount::UnknownAccountType);
+	CPPUNIT_ASSERT(a.isAssetLiability() == false);
+
+	a.setAccountType(MyMoneyAccount::Checkings);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::Savings);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::Cash);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::CreditCard);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::Loan);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::CertificateDep);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::Investment);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::MoneyMarket);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::Asset);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::Liability);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::Currency);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::Income);
+	CPPUNIT_ASSERT(a.isAssetLiability() == false);
+
+	a.setAccountType(MyMoneyAccount::Expense);
+	CPPUNIT_ASSERT(a.isAssetLiability() == false);
+
+	a.setAccountType(MyMoneyAccount::AssetLoan);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::Stock);
+	CPPUNIT_ASSERT(a.isAssetLiability() == true);
+
+	a.setAccountType(MyMoneyAccount::Equity);
+	CPPUNIT_ASSERT(a.isAssetLiability() == false);
+}
+
+void MyMoneyAccountTest::testIsLoan(void)
+{
+	MyMoneyAccount a;
+
+	a.setAccountType(MyMoneyAccount::UnknownAccountType);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::Checkings);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::Savings);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::Cash);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::CreditCard);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::Loan);
+	CPPUNIT_ASSERT(a.isLoan() == true);
+
+	a.setAccountType(MyMoneyAccount::CertificateDep);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::Investment);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::MoneyMarket);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::Asset);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::Liability);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::Currency);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::Income);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::Expense);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::AssetLoan);
+	CPPUNIT_ASSERT(a.isLoan() == true);
+
+	a.setAccountType(MyMoneyAccount::Stock);
+	CPPUNIT_ASSERT(a.isLoan() == false);
+
+	a.setAccountType(MyMoneyAccount::Equity);
+	CPPUNIT_ASSERT(a.isLoan() == false);
 }
 

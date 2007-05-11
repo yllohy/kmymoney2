@@ -235,6 +235,10 @@ bool MyMoneyAccount::isIncomeExpense(void) const
   return accountGroup() == Income || accountGroup() == Expense;
 }
 
+bool MyMoneyAccount::isLoan(void) const
+{
+  return accountType() == Loan || accountType() == AssetLoan;
+}
 
 
 

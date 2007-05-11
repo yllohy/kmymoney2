@@ -461,6 +461,8 @@ public:
     *
     * @retval true account is of type income or expense
     * @retval false for all other account types
+    *
+    * @deprecated use isIncomeExpense() instead
     */
   bool isCategory(void) const __attribute__ ((deprecated));
 
@@ -481,6 +483,15 @@ public:
     * @retval false for all other account types
    */
   bool isAssetLiability(void) const;
+
+  /**
+    * This method returns @a true if the account type is
+    * either AssetLoan or Loan
+    *
+    * @retval true account is of type Loan or AssetLoan
+    * @retval false for all other account types
+   */
+  bool isLoan(void) const;
 
 private:
   /**
