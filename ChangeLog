@@ -1,6 +1,7 @@
 2007-05-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed presetting the tabbar when starting to edit an existing transaction
   * Applied remaining patches to the report logic provided by Demitrios Vassaras
+  * Allow investment transactions to be performed against credit card accounts
 
 2007-05-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Clear some transaction attributes before entering a schedule
