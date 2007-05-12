@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>kMyMoneyReportConfigTab3Decl</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,9 +8,17 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>600</width>
-            <height>214</height>
+            <width>617</width>
+            <height>267</height>
         </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>1</hsizetype>
+            <vsizetype>1</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
     </property>
     <property name="caption">
         <string>Rows/Columns Tab</string>
@@ -27,7 +35,7 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout40</cstring>
+                <cstring>layout11</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -36,6 +44,18 @@
                 <widget class="QLabel">
                     <property name="name">
                         <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="font">
+                        <font>
+                        </font>
                     </property>
                     <property name="text">
                         <string>Organize by:</string>
@@ -80,6 +100,17 @@
                     <property name="name">
                         <cstring>m_comboOrganizeBy</cstring>
                     </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
                     <property name="toolTip" stdset="0">
                         <string>&lt;p&gt;Choose how to group the transactions in this report&lt;/p&gt;</string>
                     </property>
@@ -96,8 +127,8 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>283</width>
-                            <height>20</height>
+                            <width>358</width>
+                            <height>16</height>
                         </size>
                     </property>
                 </spacer>
@@ -105,7 +136,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout41</cstring>
+                <cstring>layout4</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -114,6 +145,17 @@
                 <widget class="QButtonGroup">
                     <property name="name">
                         <cstring>buttonGroup1</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
                     </property>
                     <property name="title">
                         <string>Show Columns</string>
@@ -124,6 +166,9 @@
                     <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
+                        </property>
+                        <property name="spacing">
+                            <number>2</number>
                         </property>
                         <widget class="QCheckBox" row="1" column="1">
                             <property name="name">
@@ -140,79 +185,6 @@
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>&lt;p&gt;Select this option to show the Memo column&lt;/p&gt;</string>
-                            </property>
-                        </widget>
-                        <widget class="QCheckBox" row="1" column="0">
-                            <property name="name">
-                                <cstring>m_checkPayee</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>0</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Payee</string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>&lt;p&gt;Select this option to show the Payee column&lt;/p&gt;</string>
-                            </property>
-                        </widget>
-                        <widget class="QCheckBox" row="0" column="0">
-                            <property name="name">
-                                <cstring>m_checkNumber</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>0</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Number</string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>&lt;p&gt;Select this option to show the Number column&lt;/p&gt;</string>
-                            </property>
-                        </widget>
-                        <widget class="QCheckBox" row="0" column="1">
-                            <property name="name">
-                                <cstring>m_checkCategory</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>0</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="text">
-                                <string>Category</string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>&lt;p&gt;Select this option to show the Category column&lt;/p&gt;</string>
-                            </property>
-                        </widget>
-                        <widget class="QCheckBox" row="1" column="2">
-                            <property name="name">
-                                <cstring>m_checkReconciled</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Reconciled</string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>&lt;p&gt;Select this option to show the Reconciled column&lt;/p&gt;</string>
-                            </property>
-                        </widget>
-                        <widget class="QCheckBox" row="0" column="2">
-                            <property name="name">
-                                <cstring>m_checkAccount</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Account</string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>&lt;p&gt;Select this option to show the Account column&lt;/p&gt;</string>
                             </property>
                         </widget>
                         <widget class="QCheckBox" row="0" column="4">
@@ -248,6 +220,79 @@
                                 <string>&lt;p&gt;Select this option to show the Price column for investments&lt;/p&gt;</string>
                             </property>
                         </widget>
+                        <widget class="QCheckBox" row="1" column="2">
+                            <property name="name">
+                                <cstring>m_checkReconciled</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Reconciled</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>&lt;p&gt;Select this option to show the Reconciled column&lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="2">
+                            <property name="name">
+                                <cstring>m_checkAccount</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Account</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>&lt;p&gt;Select this option to show the Account column&lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="0">
+                            <property name="name">
+                                <cstring>m_checkNumber</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Number</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>&lt;p&gt;Select this option to show the Number column&lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="0">
+                            <property name="name">
+                                <cstring>m_checkPayee</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Payee</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>&lt;p&gt;Select this option to show the Payee column&lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="1">
+                            <property name="name">
+                                <cstring>m_checkCategory</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>Category</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>&lt;p&gt;Select this option to show the Category column&lt;/p&gt;</string>
+                            </property>
+                        </widget>
                     </grid>
                 </widget>
                 <spacer>
@@ -262,7 +307,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>283</width>
+                            <width>205</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -271,12 +316,20 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout6</cstring>
+                <cstring>layout10</cstring>
             </property>
             <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
+                <widget class="QCheckBox" row="2" column="0">
+                    <property name="name">
+                        <cstring>m_checkLoans</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Include only Loan accounts</string>
+                    </property>
+                </widget>
                 <widget class="QCheckBox" row="1" column="0">
                     <property name="name">
                         <cstring>m_checkInvestments</cstring>
@@ -290,10 +343,13 @@
                 </widget>
                 <widget class="QCheckBox" row="0" column="1">
                     <property name="name">
-                        <cstring>m_checkLoans</cstring>
+                        <cstring>m_checkHideSplitDetails</cstring>
                     </property>
                     <property name="text">
-                        <string>Include only Loan accounts</string>
+                        <string>Hide Split Transaction Details</string>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Do not display the individual transactions that make up a split transaction</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox" row="0" column="0">
@@ -311,7 +367,7 @@
         </widget>
         <spacer>
             <property name="name">
-                <cstring>spacer11</cstring>
+                <cstring>spacer4</cstring>
             </property>
             <property name="orientation">
                 <enum>Vertical</enum>
@@ -321,12 +377,23 @@
             </property>
             <property name="sizeHint">
                 <size>
-                    <width>21</width>
+                    <width>20</width>
                     <height>16</height>
                 </size>
             </property>
         </spacer>
     </vbox>
 </widget>
+<connections>
+    <connection>
+        <sender>m_checkHideSplitDetails</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>kMyMoneyReportConfigTab3Decl</receiver>
+        <slot>m_checkHideSplit_stateChanged(int)</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>m_checkHideSplit_stateChanged( int )</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

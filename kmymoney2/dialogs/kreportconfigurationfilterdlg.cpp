@@ -186,6 +186,10 @@ void KReportConfigurationFilterDlg::slotSearch(void)
 
     unsigned qc = MyMoneyReport::eQCnone;
 
+    if (m_currentState.queryColumns() & MyMoneyReport::eQCloan)
+      // once a loan report, always a loan report
+      qc = MyMoneyReport::eQCloan;
+
     if ( m_tab3->m_checkNumber->isChecked() )
       qc |= MyMoneyReport::eQCnumber;
     if ( m_tab3->m_checkPayee->isChecked() )
@@ -210,6 +214,9 @@ void KReportConfigurationFilterDlg::slotSearch(void)
     m_currentState.setTax( m_tab3->m_checkTax->isChecked() );
     m_currentState.setInvestmentsOnly( m_tab3->m_checkInvestments->isChecked() );
     m_currentState.setLoansOnly( m_tab3->m_checkLoans->isChecked() );
+
+    m_currentState.setDetailLevel(m_tab3->m_checkHideSplitDetails->isChecked() ?
+        MyMoneyReport::eDetailNone : MyMoneyReport::eDetailAll);
   }
 
   if ( m_tabChart )
@@ -353,6 +360,9 @@ void KReportConfigurationFilterDlg::slotReset(void)
     m_tab3->m_checkTax->setChecked( m_initialState.isTax() );
     m_tab3->m_checkInvestments->setChecked( m_initialState.isInvestmentsOnly() );
     m_tab3->m_checkLoans->setChecked( m_initialState.isLoansOnly() );
+
+    m_tab3->m_checkHideSplitDetails->setChecked
+      (m_initialState.detailLevel() == MyMoneyReport::eDetailNone);
   }
 
   if ( m_tabChart )
