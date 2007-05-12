@@ -43,6 +43,7 @@
 #define CATCH } catch (MyMoneyException *e) {
 #define PASS } catch (MyMoneyException *e) { throw; }
 #define ECATCH }
+#define DBG  // qDebug
 //********************** THE CURRENT VERSION OF THE DATABASE LAYOUT **********************
 unsigned int MyMoneyDbDef::m_currentVersion = 1;
 
@@ -58,6 +59,7 @@ bool MyMoneySqlQuery::exec () {
 //************************ Constructor/Destructor *****************************
 MyMoneyStorageSql::MyMoneyStorageSql (IMyMoneySerialize *storage, const KURL& url)
   : QSqlDatabase (url.queryItem("driver"), QString("kmmdatabase")) {
+  DBG("*** Entering MyMoneyStorageSql::MyMoneyStorageSql");
   m_majorVersion = 0;
   m_minorVersion = 1;
   m_progressCallback = 0;
@@ -83,6 +85,7 @@ MyMoneyStorageSql::MyMoneyStorageSql (IMyMoneySerialize *storage, const KURL& ur
 }
 
 int MyMoneyStorageSql::open(const KURL& url, int openMode, bool clear) {
+  DBG("*** Entering MyMoneyStorageSql::open");
 try {
   int rc = 0;
   QString driverName = url.queryItem("driver");
@@ -174,6 +177,7 @@ try {
 }
 
 void MyMoneyStorageSql::close(bool logoff) {
+  DBG("*** Entering MyMoneyStorageSql::close");
   if (logoff) {
     m_logonUser = QString();
     writeFileInfo();
@@ -183,6 +187,7 @@ void MyMoneyStorageSql::close(bool logoff) {
 }
 
 int MyMoneyStorageSql::createDatabase (const KURL& url) {
+  DBG("*** Entering MyMoneyStorageSql::createDatabase");
   if (driverName() == "QSQLITE") return(0); // not needed for sqlite
   if (driverName() != "QMYSQL3") {
     m_error = QString(i18n("Cannot currently create database for driver %1")).arg(driverName());
@@ -208,6 +213,7 @@ int MyMoneyStorageSql::createDatabase (const KURL& url) {
 }
 
 int MyMoneyStorageSql::upgradeDb() {
+  DBG("*** Entering MyMoneyStorageSql::upgradeDb");
   //signalProgress(0, 1, QObject::tr("Upgrading database..."));
   MyMoneySqlQuery q(this);
   q.prepare ("SELECT version FROM kmmFileInfo;");
@@ -243,6 +249,7 @@ int MyMoneyStorageSql::upgradeDb() {
 }
 
 int MyMoneyStorageSql::upgradeToV1() {
+  DBG("*** Entering MyMoneyStorageSql::upgradeToV1");
   if (m_dbType == Sqlite) qFatal("SQLite upgrade NYI");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
@@ -418,6 +425,7 @@ int MyMoneyStorageSql::upgradeToV1() {
 }
 
 long long unsigned MyMoneyStorageSql::getRecCount (const QString& table) {
+  DBG("*** Entering MyMoneyStorageSql::getRecCount");
   MyMoneySqlQuery q(this);
   q.prepare(QString("SELECT COUNT(*) FROM %1;").arg(table));
   if ((!q.exec()) || (!q.next())) {
@@ -428,6 +436,7 @@ long long unsigned MyMoneyStorageSql::getRecCount (const QString& table) {
 }
 
 int MyMoneyStorageSql::createTables () {
+  DBG("*** Entering MyMoneyStorageSql::createTables");
   // check tables, create if required
   // convert everything to lower case, since SQL standard is case insensitive
   // table and column names (when not delimited), but some DBMSs disagree.
@@ -449,6 +458,7 @@ int MyMoneyStorageSql::createTables () {
 }
 
 void MyMoneyStorageSql::createTable (const MyMoneyDbTable& t) {
+  DBG("*** Entering MyMoneyStorageSql::createTable");
 // create the tables
   QStringList ql = QStringList::split('\n', t.generateCreateSQL(driverName()));
   MyMoneySqlQuery q(this);
@@ -459,6 +469,7 @@ void MyMoneyStorageSql::createTable (const MyMoneyDbTable& t) {
 }
 
 int MyMoneyStorageSql::isEmpty () {
+  DBG("*** Entering MyMoneyStorageSql::isEmpty");
   // check all tables are empty
   QMapConstIterator<QString, MyMoneyDbTable> tt = m_db.begin();
   int recordCount = 0;
@@ -479,6 +490,7 @@ int MyMoneyStorageSql::isEmpty () {
 }
 
 void MyMoneyStorageSql::clean() {
+  DBG("*** Entering MyMoneyStorageSql::clean");
 // delete all existing records
   QMapConstIterator<QString, MyMoneyDbTable> it = m_db.begin();
   while (it != m_db.end()) {
@@ -492,6 +504,7 @@ void MyMoneyStorageSql::clean() {
 //////////////////////////////////////////////////////////////////
 
 bool MyMoneyStorageSql::readFile(void) {
+  DBG("*** Entering MyMoneyStorageSql::readFile");
   m_displayStatus = true;
   try {
     readFileInfo();
@@ -540,6 +553,7 @@ bool MyMoneyStorageSql::readFile(void) {
 
 // The following is called from 'SaveAsDatabase'
 bool MyMoneyStorageSql::writeFile(void) {
+  DBG("*** Entering MyMoneyStorageSql::writeFile");
   // initialize record counts and hi ids
   m_institutions = m_accounts = m_payees = m_transactions = m_splits
       = m_securities = m_prices = m_currencies = m_schedules  = m_reports = m_kvps = m_budgets = 0;
@@ -572,6 +586,7 @@ bool MyMoneyStorageSql::writeFile(void) {
 }
 // --------------- SQL Transaction (commit unit) handling -----------------------------------
 void MyMoneyStorageSql::startCommitUnit (const QString& callingFunction) {
+  DBG("*** Entering MyMoneyStorageSql::startCommitUnit");
   if (m_commitUnitStack.isEmpty()) {
     MyMoneySqlQuery q(this);
     q.prepare(m_startCommitUnitStatement);
@@ -581,6 +596,7 @@ void MyMoneyStorageSql::startCommitUnit (const QString& callingFunction) {
 }
 
 void MyMoneyStorageSql::endCommitUnit (const QString& callingFunction) {
+  DBG("*** Entering MyMoneyStorageSql::endCommitUnit");
   if (callingFunction != m_commitUnitStack.top())
     qFatal(QString("%1 - %2 s/be %3").arg(__func__).arg(callingFunction).arg(m_commitUnitStack.top()));
   m_commitUnitStack.pop();
@@ -592,6 +608,7 @@ void MyMoneyStorageSql::endCommitUnit (const QString& callingFunction) {
 }
 
 void MyMoneyStorageSql::cancelCommitUnit (const QString& callingFunction) {
+  DBG("*** Entering MyMoneyStorageSql::cancelCommitUnit");
   if (callingFunction != m_commitUnitStack.top())
     qDebug(QString("%1 - %2 s/be %3").arg(__func__).arg(callingFunction).arg(m_commitUnitStack.top()));
   if (m_commitUnitStack.isEmpty()) return;
@@ -603,6 +620,7 @@ void MyMoneyStorageSql::cancelCommitUnit (const QString& callingFunction) {
 
 /////////////////////////////////////////////////////////////////////
 void MyMoneyStorageSql::fillStorage() {
+  DBG("*** Entering MyMoneyStorageSql::fillStorage");
   if (!m_transactionListRead)  // make sure we have loaded everything
     readTransactions();
   if (!m_payeeListRead)
@@ -612,6 +630,7 @@ void MyMoneyStorageSql::fillStorage() {
 //------------------------------ Write SQL routines ----------------------------------------
 // **** Institutions ****
 void MyMoneyStorageSql::writeInstitutions() {
+  DBG("*** Entering MyMoneyStorageSql::writeInstitutions");
   // first, get a list of what's on the database
   // anything not in the list needs to be inserted
   // anything which is will be updated and removed from the list
@@ -653,6 +672,7 @@ void MyMoneyStorageSql::writeInstitutions() {
 }
 
 void MyMoneyStorageSql::addInstitution(const MyMoneyInstitution& inst) {
+  DBG("*** Entering MyMoneyStorageSql::addInstitution");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmInstitutions"].insertString());
@@ -663,6 +683,7 @@ void MyMoneyStorageSql::addInstitution(const MyMoneyInstitution& inst) {
 }
 
 void MyMoneyStorageSql::modifyInstitution(const MyMoneyInstitution& inst) {
+  DBG("*** Entering MyMoneyStorageSql::modifyInstitution");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmInstitutions"].updateString());
@@ -673,6 +694,7 @@ void MyMoneyStorageSql::modifyInstitution(const MyMoneyInstitution& inst) {
 }
 
 void MyMoneyStorageSql::removeInstitution(const MyMoneyInstitution& inst) {
+  DBG("*** Entering MyMoneyStorageSql::removeInstitution");
   startCommitUnit(__func__);
   deleteKeyValuePairs("OFXSETTINGS", inst.id());
   MyMoneySqlQuery q(this);
@@ -685,6 +707,7 @@ void MyMoneyStorageSql::removeInstitution(const MyMoneyInstitution& inst) {
 }
 
 void MyMoneyStorageSql::writeInstitution(const MyMoneyInstitution& i, MyMoneySqlQuery& q) {
+  DBG("*** Entering MyMoneyStorageSql::writeInstitution");
   q.bindValue(":id", i.id());
   q.bindValue(":name", i.name());
   q.bindValue(":manager", i.manager());
@@ -699,6 +722,7 @@ void MyMoneyStorageSql::writeInstitution(const MyMoneyInstitution& i, MyMoneySql
 
 // **** Payees ****
 void MyMoneyStorageSql::writePayees() {
+  DBG("*** Entering MyMoneyStorageSql::writePayees");
   // first, get a list of what's on the database (see writeInstitutions)
   QValueList<QString> dbList;
   MyMoneySqlQuery q(this);
@@ -735,6 +759,7 @@ void MyMoneyStorageSql::writePayees() {
 }
 
 void MyMoneyStorageSql::addPayee(const MyMoneyPayee& payee) {
+  DBG("*** Entering MyMoneyStorageSql::addPayee");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmPayees"].insertString());
@@ -745,6 +770,7 @@ void MyMoneyStorageSql::addPayee(const MyMoneyPayee& payee) {
 }
 
 void MyMoneyStorageSql::modifyPayee(const MyMoneyPayee& payee) {
+  DBG("*** Entering MyMoneyStorageSql::modifyPayee");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmPayees"].updateString());
@@ -754,6 +780,7 @@ void MyMoneyStorageSql::modifyPayee(const MyMoneyPayee& payee) {
 }
 
 void MyMoneyStorageSql::modifyUserInfo(const MyMoneyPayee& payee) {
+  DBG("*** Entering MyMoneyStorageSql::modifyUserInfo");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmPayees"].updateString());
@@ -763,6 +790,7 @@ void MyMoneyStorageSql::modifyUserInfo(const MyMoneyPayee& payee) {
 }
 
 void MyMoneyStorageSql::removePayee(const MyMoneyPayee& payee) {
+  DBG("*** Entering MyMoneyStorageSql::removePayee");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmPayees"].deleteString());
@@ -774,6 +802,7 @@ void MyMoneyStorageSql::removePayee(const MyMoneyPayee& payee) {
 }
 
 void MyMoneyStorageSql::writePayee(const MyMoneyPayee& p, MyMoneySqlQuery& q, bool isUserInfo) {
+  DBG("*** Entering MyMoneyStorageSql::writePayee");
   if (isUserInfo) {
     q.bindValue(":id", "USER");
   } else {
@@ -793,6 +822,7 @@ void MyMoneyStorageSql::writePayee(const MyMoneyPayee& p, MyMoneySqlQuery& q, bo
 
 // **** Accounts ****
 void MyMoneyStorageSql::writeAccounts() {
+  DBG("*** Entering MyMoneyStorageSql::writeAccounts");
   // first, get a list of what's on the database (see writeInstitutions)
   QValueList<QString> dbList;
   MyMoneySqlQuery q(this);
@@ -841,6 +871,7 @@ void MyMoneyStorageSql::writeAccounts() {
 }
 
 void MyMoneyStorageSql::addAccount(const MyMoneyAccount& acc) {
+  DBG("*** Entering MyMoneyStorageSql::addAccount");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmAccounts"].insertString());
@@ -851,6 +882,7 @@ void MyMoneyStorageSql::addAccount(const MyMoneyAccount& acc) {
 }
 
 void MyMoneyStorageSql::modifyAccount(const MyMoneyAccount& acc) {
+  DBG("*** Entering MyMoneyStorageSql::modifyAccount");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmAccounts"].updateString());
@@ -861,6 +893,7 @@ void MyMoneyStorageSql::modifyAccount(const MyMoneyAccount& acc) {
 }
 
 void MyMoneyStorageSql::removeAccount(const MyMoneyAccount& acc) {
+  DBG("*** Entering MyMoneyStorageSql::removeAccount");
   startCommitUnit(__func__);
   deleteKeyValuePairs("ACCOUNT", acc.id());
   MyMoneySqlQuery q(this);
@@ -873,6 +906,7 @@ void MyMoneyStorageSql::removeAccount(const MyMoneyAccount& acc) {
 }
 
 void MyMoneyStorageSql::writeAccount(const MyMoneyAccount& acc, MyMoneySqlQuery& q) {
+  DBG("*** Entering MyMoneyStorageSql::writeAccount");
   q.bindValue(":id", acc.id());
   q.bindValue(":institutionId", acc.institutionId());
   q.bindValue(":parentId", acc.parentAccountId());
@@ -902,6 +936,7 @@ void MyMoneyStorageSql::writeAccount(const MyMoneyAccount& acc, MyMoneySqlQuery&
 
 // **** Transactions and Splits ****
 void MyMoneyStorageSql::writeTransactions() {
+  DBG("*** Entering MyMoneyStorageSql::writeTransactions");
   // first, get a list of what's on the database (see writeInstitutions)
   QValueList<QString> dbList;
   MyMoneySqlQuery q(this);
@@ -937,6 +972,7 @@ void MyMoneyStorageSql::writeTransactions() {
 }
 
 void MyMoneyStorageSql::addTransaction (const MyMoneyTransaction& tx) {
+  DBG("*** Entering MyMoneyStorageSql::addTransaction");
   startCommitUnit(__func__);
   // add the transaction and splits
   MyMoneySqlQuery q(this);
@@ -956,6 +992,7 @@ void MyMoneyStorageSql::addTransaction (const MyMoneyTransaction& tx) {
 }
 
 void MyMoneyStorageSql::modifyTransaction (const MyMoneyTransaction& tx) {
+  DBG("*** Entering MyMoneyStorageSql::modifyTransaction");
   startCommitUnit(__func__);
   // remove the splits of the old tx from the count table
   MyMoneySqlQuery q(this);
@@ -982,6 +1019,7 @@ void MyMoneyStorageSql::modifyTransaction (const MyMoneyTransaction& tx) {
 }
 
 void MyMoneyStorageSql::removeTransaction(const MyMoneyTransaction& tx) {
+  DBG("*** Entering MyMoneyStorageSql::removeTransaction");
   startCommitUnit(__func__);
   deleteTransaction(tx.id());
   m_transactions--;
@@ -999,6 +1037,7 @@ void MyMoneyStorageSql::removeTransaction(const MyMoneyTransaction& tx) {
 }
 
 void MyMoneyStorageSql::deleteTransaction(const QString& id) {
+  DBG("*** Entering MyMoneyStorageSql::deleteTransaction");
   MyMoneySqlQuery q(this);
   q.prepare("DELETE FROM kmmSplits WHERE transactionId = :transactionId;");
   q.bindValue(":transactionId", id);
@@ -1011,6 +1050,7 @@ void MyMoneyStorageSql::deleteTransaction(const QString& id) {
 }
 
 void MyMoneyStorageSql::writeTransaction(const QString& txId, const MyMoneyTransaction& tx, MyMoneySqlQuery& q, const QString& type) {
+  DBG("*** Entering MyMoneyStorageSql::writeTransaction");
   q.bindValue(":id", txId);
   q.bindValue(":txType", type);
   q.bindValue(":postDate", tx.postDate());
@@ -1031,6 +1071,7 @@ void MyMoneyStorageSql::writeTransaction(const QString& txId, const MyMoneyTrans
 }
 
 void MyMoneyStorageSql::writeSplits(const QString& txId, const QString& type, const QValueList<MyMoneySplit>& splitList) {
+  DBG("*** Entering MyMoneyStorageSql::writeSplits");
   // first, get a list of what's on the database (see writeInstitutions)
   QValueList<unsigned int> dbList;
   MyMoneySqlQuery q(this);
@@ -1067,6 +1108,7 @@ void MyMoneyStorageSql::writeSplits(const QString& txId, const QString& type, co
 
 void MyMoneyStorageSql::writeSplit(const QString& txId, const MyMoneySplit& split,
                                    const QString& type, const int splitId, MyMoneySqlQuery& q) {
+  DBG("*** Entering MyMoneyStorageSql::writeSplit");
   q.bindValue(":transactionId", txId);
   q.bindValue(":txType", type);
   q.bindValue(":splitId", splitId);
@@ -1087,6 +1129,7 @@ void MyMoneyStorageSql::writeSplit(const QString& txId, const MyMoneySplit& spli
 
 // **** Schedules ****
 void MyMoneyStorageSql::writeSchedules() {
+  DBG("*** Entering MyMoneyStorageSql::writeSchedules");
   // first, get a list of what's on the database (see writeInstitutions)
   QValueList<QString> dbList;
   MyMoneySqlQuery q(this);
@@ -1120,6 +1163,7 @@ void MyMoneyStorageSql::writeSchedules() {
 }
 
 void MyMoneyStorageSql::addSchedule(const MyMoneySchedule& sched) {
+  DBG("*** Entering MyMoneyStorageSql::addSchedule");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmSchedules"].insertString());
@@ -1130,6 +1174,7 @@ void MyMoneyStorageSql::addSchedule(const MyMoneySchedule& sched) {
 }
 
 void MyMoneyStorageSql::modifySchedule(const MyMoneySchedule& sched) {
+  DBG("*** Entering MyMoneyStorageSql::modifySchedule");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmSchedules"].updateString());
@@ -1139,6 +1184,7 @@ void MyMoneyStorageSql::modifySchedule(const MyMoneySchedule& sched) {
 }
 
 void MyMoneyStorageSql::removeSchedule(const MyMoneySchedule& sched) {
+  DBG("*** Entering MyMoneyStorageSql::removeSchedule");
   startCommitUnit(__func__);
   deleteSchedule(sched.id());
   m_schedules--;
@@ -1147,6 +1193,7 @@ void MyMoneyStorageSql::removeSchedule(const MyMoneySchedule& sched) {
 }
 
 void MyMoneyStorageSql::deleteSchedule (const QString& id) {
+  DBG("*** Entering MyMoneyStorageSql::deleteSchedule");
   deleteTransaction(id);
   MyMoneySqlQuery q(this);
   q.prepare("DELETE FROM kmmSchedulePaymentHistory WHERE schedId = :id");
@@ -1158,6 +1205,7 @@ void MyMoneyStorageSql::deleteSchedule (const QString& id) {
 }
 
 void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuery& q, bool insert) {
+  DBG("*** Entering MyMoneyStorageSql::writeSchedule");
   q.bindValue(":id", sch.id());
   q.bindValue(":name", sch.name());
   q.bindValue(":type", sch.type());
@@ -1212,6 +1260,7 @@ void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuer
 
 // **** Securities ****
 void MyMoneyStorageSql::writeSecurities() {
+  DBG("*** Entering MyMoneyStorageSql::writeSecurities");
   // first, get a list of what's on the database (see writeInstitutions)
   QValueList<QString> dbList;
   MyMoneySqlQuery q(this);
@@ -1249,6 +1298,7 @@ void MyMoneyStorageSql::writeSecurities() {
 }
 
 void MyMoneyStorageSql::addSecurity(const MyMoneySecurity& sec) {
+  DBG("*** Entering MyMoneyStorageSql::addSecurity");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmSecurities"].insertString());
@@ -1259,6 +1309,7 @@ void MyMoneyStorageSql::addSecurity(const MyMoneySecurity& sec) {
 }
 
 void MyMoneyStorageSql::modifySecurity(const MyMoneySecurity& sec) {
+  DBG("*** Entering MyMoneyStorageSql::modifySecurity");
   startCommitUnit(__func__);
   deleteKeyValuePairs("SECURITY", sec.id());
   MyMoneySqlQuery q(this);
@@ -1269,6 +1320,7 @@ void MyMoneyStorageSql::modifySecurity(const MyMoneySecurity& sec) {
 }
 
 void MyMoneyStorageSql::removeSecurity(const MyMoneySecurity& sec) {
+  DBG("*** Entering MyMoneyStorageSql::removeSecurity");
   startCommitUnit(__func__);
   deleteKeyValuePairs("SECURITY", sec.id());
   MyMoneySqlQuery q(this);
@@ -1281,6 +1333,7 @@ void MyMoneyStorageSql::removeSecurity(const MyMoneySecurity& sec) {
 }
 
 void MyMoneyStorageSql::writeSecurity(const MyMoneySecurity& security, MyMoneySqlQuery& q) {
+  DBG("*** Entering MyMoneyStorageSql::writeSecurity");
   q.bindValue(":id", security.id());
   q.bindValue(":name", security.name());
   q.bindValue(":symbol", security.tradingSymbol());
@@ -1298,6 +1351,7 @@ void MyMoneyStorageSql::writeSecurity(const MyMoneySecurity& security, MyMoneySq
 
 // **** Prices ****
 void MyMoneyStorageSql::writePrices() {
+  DBG("*** Entering MyMoneyStorageSql::writePrices");
   // due to difficulties in matching and determining deletes
   // easiest way is to delete all and re-insert
   MyMoneySqlQuery q(this);
@@ -1314,6 +1368,7 @@ void MyMoneyStorageSql::writePrices() {
 }
 
 void MyMoneyStorageSql::writePricePair(const MyMoneyPriceEntries& p) {
+  DBG("*** Entering MyMoneyStorageSql::writePricePair");
   MyMoneyPriceEntries::ConstIterator it;
   for(it = p.begin(); it != p.end(); ++it) {
     writePrice (*it);
@@ -1322,6 +1377,7 @@ void MyMoneyStorageSql::writePricePair(const MyMoneyPriceEntries& p) {
 }
 
 void MyMoneyStorageSql::addPrice(const MyMoneyPrice& p) {
+  DBG("*** Entering MyMoneyStorageSql::addPrice");
   if (m_readingPrices) return;
   // the app always calls addPrice, whether or not there is already one there
   startCommitUnit(__func__);
@@ -1354,6 +1410,7 @@ void MyMoneyStorageSql::addPrice(const MyMoneyPrice& p) {
 }
 
 void MyMoneyStorageSql::removePrice(const MyMoneyPrice& p) {
+  DBG("*** Entering MyMoneyStorageSql::removePrice");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmPrices"].deleteString());
@@ -1367,6 +1424,7 @@ void MyMoneyStorageSql::removePrice(const MyMoneyPrice& p) {
 }
 
 void MyMoneyStorageSql::writePrice(const MyMoneyPrice& p) {
+  DBG("*** Entering MyMoneyStorageSql::writePrice");
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmPrices"].insertString());
   q.bindValue(":fromId", p.from());
@@ -1380,6 +1438,7 @@ void MyMoneyStorageSql::writePrice(const MyMoneyPrice& p) {
 
 // **** Currencies ****
 void MyMoneyStorageSql::writeCurrencies() {
+  DBG("*** Entering MyMoneyStorageSql::writeCurrencies");
   // first, get a list of what's on the database (see writeInstitutions)
   QValueList<QString> dbList;
   MyMoneySqlQuery q(this);
@@ -1412,6 +1471,7 @@ void MyMoneyStorageSql::writeCurrencies() {
 }
 
 void MyMoneyStorageSql::addCurrency(const MyMoneySecurity& sec) {
+  DBG("*** Entering MyMoneyStorageSql::addCurrency");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmCurrencies"].insertString());
@@ -1422,6 +1482,7 @@ void MyMoneyStorageSql::addCurrency(const MyMoneySecurity& sec) {
 }
 
 void MyMoneyStorageSql::modifyCurrency(const MyMoneySecurity& sec) {
+  DBG("*** Entering MyMoneyStorageSql::modifyCurrency");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmCurrencies"].updateString());
@@ -1431,6 +1492,7 @@ void MyMoneyStorageSql::modifyCurrency(const MyMoneySecurity& sec) {
 }
 
 void MyMoneyStorageSql::removeCurrency(const MyMoneySecurity& sec) {
+  DBG("*** Entering MyMoneyStorageSql::removeCurrency");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmCurrencies"].deleteString());
@@ -1442,6 +1504,7 @@ void MyMoneyStorageSql::removeCurrency(const MyMoneySecurity& sec) {
 }
 
 void MyMoneyStorageSql::writeCurrency(const MyMoneySecurity& currency, MyMoneySqlQuery& q) {
+  DBG("*** Entering MyMoneyStorageSql::writeCurrency");
   q.bindValue(":ISOcode", currency.id());
   q.bindValue(":name", currency.name());
   q.bindValue(":type", static_cast<int>(currency.securityType()));
@@ -1461,6 +1524,7 @@ void MyMoneyStorageSql::writeCurrency(const MyMoneySecurity& currency, MyMoneySq
 
 
 void MyMoneyStorageSql::writeReports() {
+  DBG("*** Entering MyMoneyStorageSql::writeReports");
   // first, get a list of what's on the database (see writeInstitutions)
   QValueList<QString> dbList;
   MyMoneySqlQuery q(this);
@@ -1494,6 +1558,7 @@ void MyMoneyStorageSql::writeReports() {
 }
 
 void MyMoneyStorageSql::addReport(const MyMoneyReport& rep) {
+  DBG("*** Entering MyMoneyStorageSql::addReport");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmReportConfig"].insertString());
@@ -1504,6 +1569,7 @@ void MyMoneyStorageSql::addReport(const MyMoneyReport& rep) {
 }
 
 void MyMoneyStorageSql::modifyReport(const MyMoneyReport& rep) {
+  DBG("*** Entering MyMoneyStorageSql::modifyReport");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmReportConfig"].updateString());
@@ -1513,6 +1579,7 @@ void MyMoneyStorageSql::modifyReport(const MyMoneyReport& rep) {
 }
 
 void MyMoneyStorageSql::removeReport(const MyMoneyReport& rep) {
+  DBG("*** Entering MyMoneyStorageSql::removeReport");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmReportConfig"].deleteString());
@@ -1524,6 +1591,7 @@ void MyMoneyStorageSql::removeReport(const MyMoneyReport& rep) {
 }
 
 void MyMoneyStorageSql::writeReport (const MyMoneyReport& rep, MyMoneySqlQuery& q) {
+  DBG("*** Entering MyMoneyStorageSql::writeReport");
   QDomDocument d; // create a dummy XML document
   QDomElement e = d.createElement("REPORTS");
   d.appendChild (e);
@@ -1534,6 +1602,7 @@ void MyMoneyStorageSql::writeReport (const MyMoneyReport& rep, MyMoneySqlQuery& 
 }
 
 void MyMoneyStorageSql::writeBudgets() {
+  DBG("*** Entering MyMoneyStorageSql::writeBudgets");
   // first, get a list of what's on the database (see writeInstitutions)
   QValueList<QString> dbList;
   MyMoneySqlQuery q(this);
@@ -1567,6 +1636,7 @@ void MyMoneyStorageSql::writeBudgets() {
 }
 
 void MyMoneyStorageSql::addBudget(const MyMoneyBudget& bud) {
+  DBG("*** Entering MyMoneyStorageSql::addBudget");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmBudgetConfig"].insertString());
@@ -1577,6 +1647,7 @@ void MyMoneyStorageSql::addBudget(const MyMoneyBudget& bud) {
 }
 
 void MyMoneyStorageSql::modifyBudget(const MyMoneyBudget& bud) {
+  DBG("*** Entering MyMoneyStorageSql::modifyBudget");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmBudgetConfig"].updateString());
@@ -1586,6 +1657,7 @@ void MyMoneyStorageSql::modifyBudget(const MyMoneyBudget& bud) {
 }
 
 void MyMoneyStorageSql::removeBudget(const MyMoneyBudget& bud) {
+  DBG("*** Entering MyMoneyStorageSql::removeBudget");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmBudgetConfig"].deleteString());
@@ -1597,6 +1669,7 @@ void MyMoneyStorageSql::removeBudget(const MyMoneyBudget& bud) {
 }
 
 void MyMoneyStorageSql::writeBudget (const MyMoneyBudget& bud, MyMoneySqlQuery& q) {
+  DBG("*** Entering MyMoneyStorageSql::writeBudget");
   QDomDocument d; // create a dummy XML document
   QDomElement e = d.createElement("BUDGETS");
   d.appendChild (e);
@@ -1609,6 +1682,7 @@ void MyMoneyStorageSql::writeBudget (const MyMoneyBudget& bud, MyMoneySqlQuery& 
 }
 
 void MyMoneyStorageSql::writeFileInfo() {
+  DBG("*** Entering MyMoneyStorageSql::writeFileInfo");
   // we have no real way of knowing when these change, so re-write them every time
   deleteKeyValuePairs("STORAGE", "");
   writeKeyValuePairs("STORAGE", "", m_storage->pairs());
@@ -1659,6 +1733,7 @@ void MyMoneyStorageSql::writeFileInfo() {
 
 // **** Key/value pairs ****
 void MyMoneyStorageSql::writeKeyValuePairs(const QString& kvpType, const QString& kvpId, const QMap<QCString,  QString>& pairs) {
+  DBG("*** Entering MyMoneyStorageSql::writeKeyValuePairs");
   QMap<QCString, QString>::const_iterator it;
   for(it = pairs.begin(); it != pairs.end(); ++it) {
     writeKeyValuePair (kvpType, kvpId, it.key(), it.data());
@@ -1666,6 +1741,7 @@ void MyMoneyStorageSql::writeKeyValuePairs(const QString& kvpType, const QString
 }
 
 void MyMoneyStorageSql::writeKeyValuePair (const QString& kvpType, const QString& kvpId, const QString& kvpKey, const QString& kvpData) {
+  DBG("*** Entering MyMoneyStorageSql::writeKeyValuePair");
   MyMoneySqlQuery q(this);
   q.prepare (m_db.m_tables["kmmKeyValuePairs"].insertString());
   q.bindValue(":kvpType", kvpType);
@@ -1677,6 +1753,7 @@ void MyMoneyStorageSql::writeKeyValuePair (const QString& kvpType, const QString
 }
 
 void MyMoneyStorageSql::deleteKeyValuePairs (const QString& kvpType, const QString& kvpId) {
+  DBG("*** Entering MyMoneyStorageSql::deleteKeyValuePairs");
   MyMoneySqlQuery q(this);
   q.prepare ("DELETE FROM kmmKeyValuePairs WHERE kvpType = :kvpType AND kvpId = :kvpId;");
   q.bindValue(":kvpType", kvpType);
@@ -1694,6 +1771,7 @@ void MyMoneyStorageSql::deleteKeyValuePairs (const QString& kvpType, const QStri
 #define GETULL q.value(i).toULongLong()
 
 void MyMoneyStorageSql::readFileInfo(void) {
+  DBG("*** Entering MyMoneyStorageSql::readFileInfo");
   signalProgress(0, 18, QObject::tr("Loading file information..."));
   MyMoneyDbTable t = m_db.m_tables["kmmFileInfo"];
   MyMoneySqlQuery q(this);
@@ -1736,6 +1814,7 @@ void MyMoneyStorageSql::readFileInfo(void) {
 }
 
 void MyMoneyStorageSql::setVersion (const QString& version) {
+  DBG("*** Entering MyMoneyStorageSql::setVersion");
   m_majorVersion = version.section('.', 0, 0).toUInt();
   m_minorVersion = version.section('.', 1, 1).toUInt();
   // Okay, I made a cockup by forgetting to include a fixversion in the database
@@ -1746,6 +1825,7 @@ void MyMoneyStorageSql::setVersion (const QString& version) {
 }
 
 void MyMoneyStorageSql::readInstitutions(void) {
+  DBG("*** Entering MyMoneyStorageSql::readInstitutions");
   signalProgress(0, m_institutions, QObject::tr("Loading institutions..."));
   int progress = 0;
   MyMoneyDbTable t = m_db.m_tables["kmmInstitutions"];
@@ -1785,12 +1865,14 @@ void MyMoneyStorageSql::readInstitutions(void) {
 }
 
 void MyMoneyStorageSql::readPayees (const QCString& id) {
+  DBG("*** Entering MyMoneyStorageSql::readPayees");
   QValueList<QCString> list;
   list.append(id);
   readPayees(list);
 }
 
 void MyMoneyStorageSql::readPayees(const QValueList<QCString> pid) {
+  DBG("*** Entering MyMoneyStorageSql::readPayees");
   if (m_displayStatus) {
     signalProgress(0, m_payees, QObject::tr("Loading payees..."));
   } else {
@@ -1847,6 +1929,7 @@ void MyMoneyStorageSql::readPayees(const QValueList<QCString> pid) {
 }
 
 void MyMoneyStorageSql::readAccounts(void) {
+  DBG("*** Entering MyMoneyStorageSql::readAccounts");
   signalProgress(0, m_accounts, QObject::tr("Loading accounts..."));
   int progress = 0;
   MyMoneyDbTable t = m_db.m_tables["kmmAccounts"];
@@ -1905,6 +1988,7 @@ void MyMoneyStorageSql::readAccounts(void) {
 }
 
 void MyMoneyStorageSql::readTransactions(const QString& tidList, const QString& dateClause) {
+  DBG("*** Entering MyMoneyStorageSql::readTransactions");
   if (m_transactionListRead) return; // all list already in memory
   if (m_displayStatus) signalProgress(0, m_transactions, QObject::tr("Loading transactions..."));
   int progress = 0;
@@ -1988,6 +2072,7 @@ void MyMoneyStorageSql::readTransactions(const QString& tidList, const QString& 
 }
 
 void MyMoneyStorageSql::readTransactions(const MyMoneyTransactionFilter& filter) {
+  DBG("*** Entering MyMoneyStorageSql::readTransactions");
   // analyze the filter
   if (m_transactionListRead) return; // all list already in memory
   // if the filter is restricted to certain accounts/categories
@@ -2152,6 +2237,7 @@ void MyMoneyStorageSql::readTransactions(const MyMoneyTransactionFilter& filter)
 }
 
 const unsigned long MyMoneyStorageSql::transactionCount (const QCString& aid) {
+  DBG("*** Entering MyMoneyStorageSql::transactionCount");
   if (aid.length() == 0)
     return m_transactions;
   else
@@ -2159,6 +2245,7 @@ const unsigned long MyMoneyStorageSql::transactionCount (const QCString& aid) {
 }
 
 void MyMoneyStorageSql::readSplit (MyMoneySplit& s, const MyMoneySqlQuery& q, const MyMoneyDbTable& t) {
+  DBG("*** Entering MyMoneyStorageSql::readSplit");
   s.setId(QCString(""));
   MyMoneyDbTable::field_iterator ft = t.begin();
   int i = 0;
@@ -2185,6 +2272,7 @@ void MyMoneyStorageSql::readSplit (MyMoneySplit& s, const MyMoneySqlQuery& q, co
 }
 
 void MyMoneyStorageSql::readSchedules(void) {
+  DBG("*** Entering MyMoneyStorageSql::readSchedules");
   signalProgress(0, m_schedules, QObject::tr("Loading schedules..."));
   int progress = 0;
   MyMoneyDbTable t = m_db.m_tables["kmmSchedules"];
@@ -2261,6 +2349,7 @@ void MyMoneyStorageSql::readSchedules(void) {
 }
 
 void MyMoneyStorageSql::readSecurities(void) {
+  DBG("*** Entering MyMoneyStorageSql::readSecurities");
   signalProgress(0, m_securities, QObject::tr("Loading securities..."));
   int progress = 0;
   MyMoneyDbTable t = m_db.m_tables["kmmSecurities"];
@@ -2300,6 +2389,7 @@ void MyMoneyStorageSql::readSecurities(void) {
 }
 
 void MyMoneyStorageSql::readPrices(void) {
+  DBG("*** Entering MyMoneyStorageSql::readPrices");
   signalProgress(0, m_prices, QObject::tr("Loading prices..."));
   int progress = 0;
   m_readingPrices = true;
@@ -2332,6 +2422,7 @@ void MyMoneyStorageSql::readPrices(void) {
 }
 
 void MyMoneyStorageSql::readCurrencies(void) {
+  DBG("*** Entering MyMoneyStorageSql::readCurrencies");
   signalProgress(0, m_currencies, QObject::tr("Loading currencies..."));
   int progress = 0;
   MyMoneyDbTable t = m_db.m_tables["kmmCurrencies"];
@@ -2365,6 +2456,7 @@ void MyMoneyStorageSql::readCurrencies(void) {
 }
 
 void MyMoneyStorageSql::readReports(void) {
+  DBG("*** Entering MyMoneyStorageSql::readReports");
   signalProgress(0, m_reports, QObject::tr("Loading reports..."));
   int progress = 0;
   MyMoneyDbTable t = m_db.m_tables["kmmReportConfig"];
@@ -2390,6 +2482,7 @@ void MyMoneyStorageSql::readReports(void) {
 }
 
 void MyMoneyStorageSql::readBudgets(void) {
+  DBG("*** Entering MyMoneyStorageSql::readBudgets");
   signalProgress(0, m_budgets, QObject::tr("Loading budgets..."));
   int progress = 0;
   MyMoneyDbTable t = m_db.m_tables["kmmBudgetConfig"];
@@ -2413,6 +2506,7 @@ void MyMoneyStorageSql::readBudgets(void) {
 }
 
 MyMoneyKeyValueContainer MyMoneyStorageSql::readKeyValuePairs (const QString kvpType, const QString& kvpId) {
+  DBG("*** Entering MyMoneyStorageSql::readKeyValuePairs");
   MyMoneyKeyValueContainer list;
   MyMoneySqlQuery q(this);
   q.prepare ("SELECT kvpKey, kvpData from kmmKeyValuePairs where kvpType = :type and kvpId = :id;");
@@ -2424,6 +2518,7 @@ MyMoneyKeyValueContainer MyMoneyStorageSql::readKeyValuePairs (const QString kvp
 }
 
 QMap<QString, MyMoneyKeyValueContainer> MyMoneyStorageSql::readKeyValuePairs (const QString kvpType, const QStringList& kvpIdList) {
+  DBG("*** Entering MyMoneyStorageSql::readKeyValuePairs");
   QMap<QString, MyMoneyKeyValueContainer> retval;
 
   MyMoneySqlQuery q(this);
@@ -2451,6 +2546,7 @@ QMap<QString, MyMoneyKeyValueContainer> MyMoneyStorageSql::readKeyValuePairs (co
 //****************************************************
 const long long unsigned MyMoneyStorageSql::calcHighId
      (const long long unsigned i, const QString& id) {
+  DBG("*** Entering MyMoneyStorageSql::calcHighId");
   QString nid = id;
   long long unsigned high = nid.replace(QRegExp("[A-Z]*"), "").toULongLong();
   return (high > i ? high : i);
