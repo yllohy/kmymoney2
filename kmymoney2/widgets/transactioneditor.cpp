@@ -463,9 +463,10 @@ bool TransactionEditor::enterTransactions(QCString& newId)
         if((*it_ts).id().isEmpty()) {
           // add new transaction
           MyMoneyFile::instance()->addTransaction(*it_ts);
-
           // pass the newly assigned id on to the caller
           newId = (*it_ts).id();
+          // refresh account object for transactional changes
+          m_account = MyMoneyFile::instance()->account(m_account.id());
 
           // if a new transaction has a valid number, keep it with the account
           QString number = (*it_ts).splits()[0].number();
