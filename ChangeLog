@@ -2,6 +2,9 @@
   * Added patch update to QueryTable provided by Demitrios Vassaras
   * Make inclusion of specific accounts (tax, investment or loan)
     in reports mutually exclusive
+  * Added ability to 'Save as...' to a network drive
+  * Check if save operation would override a file and ask the user for
+    confirmation
 
 2007-05-12 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Additional database debug options

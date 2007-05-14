@@ -966,12 +966,9 @@ const bool KMyMoney2App::slotFileSaveAs()
 
   if(dlg.exec() == QDialog::Accepted) {
 
-    QString newName = dlg.selectedFile();
-    if (!newName.isEmpty()) {
-      KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
-      if(p)
-        p->addURL( newName );
-      writeLastUsedFile(newName);
+    KURL newURL = dlg.selectedURL();
+    if (!newURL.isEmpty()) {
+      QString newName = newURL.prettyURL();
 
   // end of copy
 
@@ -995,34 +992,39 @@ const bool KMyMoney2App::slotFileSaveAs()
         newName.append(".kmy");
       }
 
-      // If this is the anonymous file export, just save it, don't actually take the
-      // name, or remember it! Don't even try to encrypt it
-      if (newName.right(9).lower() == ".anon.xml")
-      {
-        rc = myMoneyView->saveFile(newName);
-      }
-      else
-      {
-        QFileInfo saveAsInfo(newName);
+      if(okToWriteFile(newName)) {
+        KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
+        if(p)
+          p->addURL( newName );
 
-        m_fileName = newName;
-        QString encryptionKey;
-        if(m_saveEncrypted->currentItem() != 0) {
-          QRegExp keyExp(".* \\((.*)\\)");
-          if(keyExp.search(m_saveEncrypted->currentText()) != -1) {
-            encryptionKey = keyExp.cap(1);
-          }
+        // If this is the anonymous file export, just save it, don't actually take the
+        // name, or remember it! Don't even try to encrypt it
+        if (newName.right(9).lower() == ".anon.xml")
+        {
+          rc = myMoneyView->saveFile(newName);
         }
+        else
+        {
 
-        rc = myMoneyView->saveFile(newName, encryptionKey);
+          m_fileName = newName;
+          QString encryptionKey;
+          if(m_saveEncrypted->currentItem() != 0) {
+            QRegExp keyExp(".* \\((.*)\\)");
+            if(keyExp.search(m_saveEncrypted->currentText()) != -1) {
+              encryptionKey = keyExp.cap(1);
+            }
+          }
 
-        //write the directory used for this file as the default one for next time.
-        writeLastUsedDir(newName);
-        writeLastUsedFile(newName);
+          rc = myMoneyView->saveFile(newName, encryptionKey);
+          //write the directory used for this file as the default one for next time.
+          writeLastUsedDir(newName);
+          writeLastUsedFile(newName);
+        }
+        m_autoSaveTimer->stop();
       }
-      m_autoSaveTimer->stop();
     }
   }
+
   slotStatusMsg(prevMsg);
   updateCaption();
   return rc;
@@ -1324,9 +1326,11 @@ void KMyMoney2App::slotSaveAccountTemplates(void)
       newName.append(".kmt");
     }
 
-    MyMoneyTemplate templ;
-    templ.exportTemplate(&progressCallback);
-    templ.saveTemplate(newName);
+    if(okToWriteFile(newName)) {
+      MyMoneyTemplate templ;
+      templ.exportTemplate(&progressCallback);
+      templ.saveTemplate(newName);
+    }
   }
   slotStatusMsg(prevMsg);
 }
@@ -1808,17 +1812,30 @@ void KMyMoney2App::slotQifExport()
   KExportDlg* dlg = new KExportDlg(0);
 
   if(dlg->exec()) {
+    if(okToWriteFile(dlg->filename())) {
+      MyMoneyQifWriter writer;
+      connect(&writer, SIGNAL(signalProgress(int, int)), this, SLOT(slotStatusProgressBar(int, int)));
 
-    MyMoneyQifWriter writer;
-    connect(&writer, SIGNAL(signalProgress(int, int)), this, SLOT(slotStatusProgressBar(int, int)));
-
-    writer.write(dlg->filename(), dlg->profile(), dlg->accountId(),
-           dlg->accountSelected(), dlg->categorySelected(),
-           dlg->startDate(), dlg->endDate());
+      writer.write(dlg->filename(), dlg->profile(), dlg->accountId(),
+            dlg->accountSelected(), dlg->categorySelected(),
+            dlg->startDate(), dlg->endDate());
+    }
   }
   delete dlg;
 
   slotStatusMsg(prevMsg);
+}
+
+bool KMyMoney2App::okToWriteFile(const KURL& url)
+{
+  // check if the file exists and warn the user
+  bool reallySaveFile = true;
+
+  if(KIO::NetAccess::exists(url, true, this)) {
+    if(KMessageBox::warningYesNo(this, QString("<qt>")+i18n("The file <b>%1</b> already exists. Do you really want to override it?").arg(url.prettyURL(0, KURL::StripFileProtocol))+QString("</qt>"), i18n("File already exists")) != KMessageBox::Yes)
+      reallySaveFile = false;
+  }
+  return reallySaveFile;
 }
 
 void KMyMoney2App::slotSettings()

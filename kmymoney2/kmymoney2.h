@@ -503,6 +503,14 @@ k_dcop:
 
   void webConnect(const QString&, const QCString& asn_id);
 
+  /**
+    * Checks if the file with the @a url already exists. If so,
+    * the user is asked if he/she wants to override the file.
+    * If the user's answer is negative, @p false will be returned.
+    * @p true will be returned in all other cases.
+    */
+  bool okToWriteFile(const KURL& url);
+
 protected:
   /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration
    * file
