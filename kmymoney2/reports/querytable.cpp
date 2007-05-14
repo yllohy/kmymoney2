@@ -310,6 +310,7 @@ QueryTable::QueryTable(const MyMoneyReport& _report): m_config(_report)
 {
   // seperated into its own method to allow debugging (setting breakpoints
   // directly in ctors somehow does not work for me (ipwizard))
+  // TODO: remove the init() method and move the code back to the ctor
   init();
 }
 
@@ -438,16 +439,22 @@ void QueryTable::constructTransactionTable(void)
   report.setReportAllSplits(false);
   report.setConsiderCategory(true);
 
-  bool use_summary = true;
-  bool use_transfers = true;
+  bool use_transfers;
+  bool use_summary;
+  bool hide_details;
 
   switch (m_config.rowType()) {
   case MyMoneyReport::eCategory:
   case MyMoneyReport::eTopCategory:
     use_summary = false;
     use_transfers = false;
+    hide_details = false;
+    break;
+
   default:
-    // gcc complains without "default"
+    use_summary = true;
+    use_transfers = true;
+    hide_details = (m_config.detailLevel() == MyMoneyReport::eDetailNone);
     break;
   }
 
@@ -487,27 +494,28 @@ void QueryTable::constructTransactionTable(void)
 
     // to handle splits, we decide on which account to base the split
     // (a reference point or point of view so to speak). here we take the
-    // first account that is a stock account (or the first account that is
-    // not an income or expense account if there is no stock account) to be
-    // the account (qA) that will have the sub-item "split" entries. we add
+    // first account that is a stock account or loan account (or the first account
+    // that is not an income or expense account if there is no stock or loan account)
+    // to be the account (qA) that will have the sub-item "split" entries. we add
     // one transaction entry (qS) for each subsequent entry in the split.
-    // In case we find a loan account along the way, we keep it but override
-    // it if we find another non-loan, non-income and non-expense account.
 
     const QValueList<MyMoneySplit>& S = (* it).splits();
     QValueList<MyMoneySplit>::const_iterator myBegin, is, S_end;
     S_end = S.end();
 
     myBegin = S_end;
-
-    bool myBeginIsLoan = false;
     for (is = S.begin(); is != S_end; ++is) {
       ReportAccount a = (* is).accountId();
+      // always put split with a "stock" account if it exists
       if (a.accountType() == MyMoneyAccount::Stock)
         break;
-      if ((myBegin == S_end || myBeginIsLoan == true) && ! a.isIncomeExpense()) {
+
+      // prefer to put splits with a "loan" account if it exists
+      if(a.isLoan())
         myBegin = is;
-        myBeginIsLoan = a.isLoan();
+
+      if((myBegin == S_end) && ! a.isIncomeExpense()) {
+        myBegin = is;
       }
     }
 
@@ -517,14 +525,15 @@ void QueryTable::constructTransactionTable(void)
 
     ReportAccount a = (* is).accountId();
 
-    // a loan transaction get special treatment. the splits of a loan
-    // transaction are placed on one line in the reference account (qA).
-    // however, we process the matching split entries (qS) normally.
+    // for "loan" reports, the loan transaction gets special treatment.
+    // the splits of a loan transaction are placed on one line in the
+    // reference (loan) account (qA). however, we process the matching
+    // split entries (qS) normally.
 
-    bool loan_special_case = a.isLoan();
+    bool loan_special_case = ((m_config.queryColumns() & MyMoneyReport::eQCloan) && a.isLoan());
 
 #if 0
-    // a stock dividend and yield transaction is also a special case.
+    // a stock dividend or yield transaction is also a special case.
     // [dv: the original comment follows]
     // handle cash dividends. these little fellas require very special handling.
     // the stock account will produce a row with zero value & zero shares. Then
@@ -662,8 +671,18 @@ void QueryTable::constructTransactionTable(void)
               MyMoneyMoney n1 = ((-(* is).value()) * xr).toString();
               qA["fees"] = (n0 + n1).toString();
             }
+            // we don't add qA here for a loan transaction. we'll add one
+            // qA afer all of the split components have been processed.
+            // (see below)
 
           }
+
+          //--- special case to hide split transaction details
+          else if (hide_details && (S.count() > 2)) {
+            // essentially, don't add any qA entries
+          }
+
+          //--- default case includes all transaction details
           else {
 
             if ((S.count() > 2) && use_summary) {
@@ -731,30 +750,31 @@ void QueryTable::constructTransactionTable(void)
         }
       }
 
-      if (loan_special_case) {
-        m_transactions += qA;
-      }
-
       ++is;
       // look for wrap-around
       if (is == S_end) is = S.begin();
 
     } while (is != myBegin);
+
+    if (loan_special_case) {
+      m_transactions += qA;
+    }
   }
 
   // now run through our accts list and add opening and closing balances
 
   switch (m_config.rowType()) {
-  case MyMoneyReport::eAccount:
-  case MyMoneyReport::eTopAccount:
-    break;
-// case MyMoneyReport::eCategory:
-// case MyMoneyReport::eTopCategory:
-// case MyMoneyReport::ePayee:
-// case MyMoneyReport::eMonth:
-// case MyMoneyReport::eWeek:
-  default:
-    return;
+    case MyMoneyReport::eAccount:
+    case MyMoneyReport::eTopAccount:
+      break;
+
+    // case MyMoneyReport::eCategory:
+    // case MyMoneyReport::eTopCategory:
+    // case MyMoneyReport::ePayee:
+    // case MyMoneyReport::eMonth:
+    // case MyMoneyReport::eWeek:
+    default:
+      return;
   }
 
   QDate date0;
@@ -1183,7 +1203,7 @@ void QueryTable::render( QString& result, QString& csv ) const
             "<tr class=\"sectionfooter\">"
             "<td class=\"left"+ QString::number(((*it_group).depth()-1)) + "\" "
             "colspan=\"" +
-          QString::number(columns.count()-1-postcolumns.count()) + "\">"+
+            QString::number(columns.count()-1-postcolumns.count()) + "\">"+
             i18n("Total")+" " + oldName + "</td>"
             "<td>" + subtotal_html + "</td></tr>\n";
 
@@ -1238,13 +1258,16 @@ void QueryTable::render( QString& result, QString& csv ) const
 
       // ***DV***
       if ((* it_row)["rank"] == "1") {
-        if (* it_column == "value") data = (* it_row)["split"];
-        if (* it_column == "postdate") data = "";
-        if (* it_column == "number") data = "";
-        if (* it_column == "payee") data = "";
-        if (* it_column == "action") data = "";
-        if (* it_column == "shares") data = "";
-        if (* it_column == "price") data = "";
+        if (* it_column == "value")
+          data = (* it_row)["split"];
+        else if(*it_column == "postdate"
+        || *it_column == "number"
+        || *it_column == "payee"
+        || *it_column == "action"
+        || *it_column == "shares"
+        || *it_column == "price"
+        || *it_column == "account")
+          data = "";
       }
 
       // ***DV***
@@ -1295,15 +1318,15 @@ void QueryTable::render( QString& result, QString& csv ) const
       else if ( moneyColumns.contains(*it_column) )
       {
         if (data.isEmpty()) {
-          result += QString("<td></td>");
+          result += QString("<td%1></td>")
+            .arg((*it_column == "value") ? " class=\"value\"" : "");
           csv += "\"\",";
         }
         else {
-          result += QString("<td>%1&nbsp;%2%3</td>")
+          result += QString("<td%1>%2&nbsp;%3</td>")
+            .arg((*it_column == "value") ? " class=\"value\"" : "")
             .arg((*it_row)["currency"])
-            .arg(MyMoneyMoney(data).formatMoney())
-            .arg((* it_row)["rank"] == "1" ? "&nbsp;&nbsp;" : "");
-
+            .arg(MyMoneyMoney(data).formatMoney());
           csv += "\"" + (*it_row)["currency"] + " " + MyMoneyMoney(data).formatMoney("", 2, true) + "\",";
         }
       }

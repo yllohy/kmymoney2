@@ -386,14 +386,41 @@
 </widget>
 <connections>
     <connection>
-        <sender>m_checkHideSplitDetails</sender>
-        <signal>stateChanged(int)</signal>
-        <receiver>kMyMoneyReportConfigTab3Decl</receiver>
-        <slot>m_checkHideSplit_stateChanged(int)</slot>
+        <sender>m_checkTax</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_checkInvestments</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_checkTax</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_checkLoans</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_checkInvestments</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_checkTax</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_checkInvestments</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_checkLoans</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_checkLoans</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_checkTax</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_checkLoans</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_checkInvestments</receiver>
+        <slot>setDisabled(bool)</slot>
     </connection>
 </connections>
-<slots>
-    <slot>m_checkHideSplit_stateChanged( int )</slot>
-</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

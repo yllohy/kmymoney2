@@ -297,3 +297,5 @@ tr.itemZ td { font-style: italic }
 tr.itemA td { border-bottom: 1px dotted gray }
 tr.itemZ td { border-top:    1px dotted gray }
 
+.item0 .value,
+.item1 .value { padding-right: 2em }
