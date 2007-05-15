@@ -1,3 +1,6 @@
+2007-05-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Better detection of write errors in GPGFile component
+
 2007-05-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch update to QueryTable provided by Demitrios Vassaras
   * Make inclusion of specific accounts (tax, investment or loan)

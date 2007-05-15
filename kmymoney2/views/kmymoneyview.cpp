@@ -870,6 +870,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
 {
   QIODevice *dev = qfile;
   KFilterBase *base = 0;
+  QIODevice *statusDevice = dev;
 
   bool encryptedOk = true;
   bool encryptRecover = false;
@@ -916,22 +917,27 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
       }
       MyMoneyFile::instance()->setValue("kmm-encryption-key", key);
     }
-    dev = kgpg;
+    statusDevice = dev = kgpg;
     MyMoneyFile::instance()->blockSignals(blocked);
-    if(!dev || !dev->open(IO_WriteOnly))
+    if(!dev || !dev->open(IO_WriteOnly)) {
+      delete dev;
       throw new MYMONEYEXCEPTION(i18n("Unable to open file '%1' for writing.").arg(qfile->name()));
+    }
 
   } else if(!plaintext) {
 
     base = KFilterBase::findFilterByMimeType( COMPRESSION_MIME_TYPE );
     if(base) {
-      base->setDevice(qfile, false);
       qfile->close();
+      base->setDevice(qfile, false);
       // we need to reopen the file to set the mode inside the filter stuff
       dev = new KFilterDev(base, true);
       MyMoneyFile::instance()->blockSignals(blocked);
-      if(!dev || !dev->open(IO_WriteOnly))
+      if(!dev || !dev->open(IO_WriteOnly)) {
+        delete dev;
         throw new MYMONEYEXCEPTION(i18n("Unable to open file '%1' for writing.").arg(qfile->name()));
+      }
+      statusDevice = base->device();
     }
   }
   umask(mask);
@@ -941,7 +947,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
   dev->resetStatus();
   pWriter->writeFile(dev, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));
   MyMoneyFile::instance()->blockSignals(blocked);
-  if(dev->status() != IO_Ok) {
+  if(statusDevice->status() != IO_Ok) {
     throw new MYMONEYEXCEPTION(i18n("Failure while writing to '%1'").arg(qfile->name()));
   }
   pWriter->setProgressCallback(0);
@@ -949,6 +955,10 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
   if(base != 0) {
     dev->flush();
     dev->close();
+    if(statusDevice->status() != IO_Ok) {
+      delete dev;
+      throw new MYMONEYEXCEPTION(i18n("Failure while writing to '%1'").arg(qfile->name()));
+    }
     delete dev;
   } else
     qfile->close();
@@ -1009,7 +1019,13 @@ const bool KMyMoneyView::saveFile(const KURL& url, const QString& key)
 
       KSaveFile qfile(filename, fmode);
       if(qfile.status() == 0) {
-        saveToLocalFile(qfile.file(), pWriter, plaintext, key);
+        try {
+          saveToLocalFile(qfile.file(), pWriter, plaintext, key);
+        } catch (MyMoneyException* e) {
+          qfile.abort();
+          delete e;
+          throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
+        }
       } else {
         throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
       }

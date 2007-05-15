@@ -420,6 +420,8 @@ void KGPGFile::slotGPGExited(KProcess* )
   if(m_process) {
     if(m_process->normalExit()) {
       m_exitStatus = m_process->exitStatus();
+      if(m_exitStatus != 0)
+        setStatus(IO_UnspecifiedError);
     } else {
       m_exitStatus = -1;
     }
