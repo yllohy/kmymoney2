@@ -866,10 +866,10 @@ void KMyMoney2App::slotFileOpenRecent(const KURL& url)
       }
     } else {
       slotFileClose();
-      KMessageBox::sorry(this, QString("<p>")+i18n("<b>%1</b> is either an invalid filename or the file does not exist. You can open another file or create a new one.").arg(url.url()), i18n("File not found"));
+      KMessageBox::sorry(this, QString("<p>")+i18n("<b>%1</b> is either an invalid filename or the file does not exist. You can open another file or create a new one.").arg(url.prettyURL(0, KURL::StripFileProtocol)), i18n("File not found"));
     }
   } else {
-    KMessageBox::sorry(this, QString("<p>")+i18n("File <b>%1</b> is already opened in another instance of KMyMoney").arg(url.url()), i18n("Duplicate open"));
+    KMessageBox::sorry(this, QString("<p>")+i18n("File <b>%1</b> is already opened in another instance of KMyMoney").arg(url.prettyURL(0, KURL::StripFileProtocol)), i18n("Duplicate open"));
   }
   slotStatusMsg(prevMsg);
 }
@@ -968,7 +968,7 @@ const bool KMyMoney2App::slotFileSaveAs()
 
     KURL newURL = dlg.selectedURL();
     if (!newURL.isEmpty()) {
-      QString newName = newURL.prettyURL();
+      QString newName = newURL.prettyURL(0, KURL::StripFileProtocol);
 
   // end of copy
 
@@ -1045,7 +1045,7 @@ const bool KMyMoney2App::slotSaveAsDatabase() {
     url = dialog.selectedURL();
     rc = myMoneyView->saveAsDatabase(url);
   }
-  if (rc) writeLastUsedFile(url.prettyURL());
+  if (rc) writeLastUsedFile(url.prettyURL(0, KURL::StripFileProtocol));
   m_autoSaveTimer->stop();
   slotStatusMsg(prevMsg);
   updateCaption();
@@ -1544,12 +1544,12 @@ void KMyMoney2App::slotPluginImport(const QString& format)
         }
         else
         {
-          KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  The plugin returned the following error: %3").arg(dialog->selectedURL().prettyURL(),format,plugin->lastError()), i18n("Importing error"));
+          KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  The plugin returned the following error: %3").arg(dialog->selectedURL().prettyURL(0, KURL::StripFileProtocol),format,plugin->lastError()), i18n("Importing error"));
         }
       }
       else
       {
-          KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  This file is not the correct format.").arg(dialog->selectedURL().prettyURL(),format), i18n("Incorrect format"));
+          KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  This file is not the correct format.").arg(dialog->selectedURL().prettyURL(0, KURL::StripFileProtocol),format), i18n("Incorrect format"));
       }
     }
     slotStatusMsg(prevMsg);
@@ -1613,12 +1613,12 @@ void KMyMoney2App::slotPluginImport(const QString& format, const QString& url)
       }
       else
       {
-        KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  The plugin returned the following error: %3").arg(url,format,plugin->lastError()), i18n("Importing error"));
+        KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  The plugin returned the following error: %3").arg(url, format, plugin->lastError()), i18n("Importing error"));
       }
     }
     else
     {
-        KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  This file is not the correct format.").arg(url,format), i18n("Incorrect format"));
+        KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  This file is not the correct format.").arg(url, format), i18n("Incorrect format"));
     }
     slotStatusMsg(prevMsg);
   }
