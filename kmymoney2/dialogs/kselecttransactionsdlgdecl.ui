@@ -1,19 +1,19 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>KMergeTransactionsDlgDecl</class>
+<class>KSelectTransactionsDlgDecl</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>KMergeTransactionsDlgDecl</cstring>
+        <cstring>KSelectTransactionsDlgDecl</cstring>
     </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
             <width>800</width>
-            <height>306</height>
+            <height>294</height>
         </rect>
     </property>
     <property name="caption">
-        <string>Merge Transactions</string>
+        <string>xxx</string>
     </property>
     <property name="sizeGripEnabled">
         <bool>true</bool>
@@ -22,12 +22,12 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLabel">
+        <widget class="KActiveLabel">
             <property name="name">
-                <cstring>textLabel1</cstring>
+                <cstring>m_description</cstring>
             </property>
             <property name="text">
-                <string>Are you sure you wish to merge these transactions?</string>
+                <string>xxx</string>
             </property>
         </widget>
         <widget class="KMyMoneyRegister::Register">
@@ -104,13 +104,13 @@
     <connection>
         <sender>buttonOk</sender>
         <signal>clicked()</signal>
-        <receiver>KMergeTransactionsDlgDecl</receiver>
+        <receiver>KSelectTransactionsDlgDecl</receiver>
         <slot>accept()</slot>
     </connection>
     <connection>
         <sender>buttonCancel</sender>
         <signal>clicked()</signal>
-        <receiver>KMergeTransactionsDlgDecl</receiver>
+        <receiver>KSelectTransactionsDlgDecl</receiver>
         <slot>reject()</slot>
     </connection>
 </connections>

@@ -24,6 +24,8 @@
 #include <kpushbutton.h>
 #include <kstdguiitem.h>
 #include <kapplication.h>
+#include <kactivelabel.h>
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -35,11 +37,19 @@
 #include "kmergetransactionsdlg.h"
 
 KMergeTransactionsDlg::KMergeTransactionsDlg(const MyMoneyAccount& _account, QWidget* parent, const char* name) :
-  KMergeTransactionsDlgDecl(parent, name),
+  KSelectTransactionsDlgDecl(parent, name),
   m_account(_account)
 {
+
+  // setup descriptive texts
+  setCaption(i18n("Merge Transactions"));
+  m_description->setText(i18n("Are you sure you wish to merge these transactions?"));
+
   // clear current register contents
   m_register->clear();
+
+  // no selection possible
+  // m_register->setSelectionMode(None);
 
   // setup header font
   QFont font = KMyMoneyGlobalSettings::listHeaderFont();
@@ -82,7 +92,7 @@ int KMergeTransactionsDlg::exec(void)
   m_register->updateRegister(true);
   m_register->updateContents();
 
-  return KMergeTransactionsDlgDecl::exec();
+  return KSelectTransactionsDlgDecl::exec();
 }
 
 void KMergeTransactionsDlg::slotHelp(void)
@@ -92,14 +102,14 @@ void KMergeTransactionsDlg::slotHelp(void)
 
 void KMergeTransactionsDlg::show(void)
 {
-  KMergeTransactionsDlgDecl::show();
+  KSelectTransactionsDlgDecl::show();
   m_register->resize(KMyMoneyRegister::DetailColumn);
 }
 
 void KMergeTransactionsDlg::resizeEvent(QResizeEvent* ev)
 {
   // don't forget the resizer
-  KMergeTransactionsDlgDecl::resizeEvent(ev);
+  KSelectTransactionsDlgDecl::resizeEvent(ev);
 
   // resize the register
   m_register->resize(KMyMoneyRegister::DetailColumn);

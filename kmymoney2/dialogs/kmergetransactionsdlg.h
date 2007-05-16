@@ -35,9 +35,9 @@ class QResizeEvent;
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/mymoneyobjectcontainer.h>
 
-#include "../dialogs/kmergetransactionsdlgdecl.h"
+#include "../dialogs/kselecttransactionsdlgdecl.h"
 
-class KMergeTransactionsDlg: public KMergeTransactionsDlgDecl
+class KMergeTransactionsDlg: public KSelectTransactionsDlgDecl
 {
   Q_OBJECT
 public:
