@@ -1429,6 +1429,9 @@ void Register::selectItem(RegisterItem* item, bool dontChangeSelections)
   Qt::ButtonState buttonState = m_buttonState;
   m_buttonState = Qt::NoButton;
 
+  if(m_selectionMode == NoSelection)
+    return;
+
   if(item->isSelectable()) {
     QCString id = item->id();
     int cnt = selectedItemsCount();
@@ -1520,7 +1523,8 @@ void Register::slotDoubleClicked(int row, int, int, const QPoint&)
       // item is among the selected ones
       if(!focusItem()) {
         setFocusItem(p);
-        p->setSelected(true);
+        if(m_selectionMode != NoSelection)
+          p->setSelected(true);
       }
 
       if(m_focusItem->isSelected()) {
@@ -1745,6 +1749,12 @@ RegisterItem* Register::itemById(const QCString& id) const
 
 RegisterItem* Register::scrollPage(int key)
 {
+  // make sure we have a focus item
+  if(!m_focusItem)
+    setFocusItem(m_firstItem);
+  if(!m_focusItem)
+    return 0;
+
   RegisterItem* item = m_focusItem;
   RegisterItem* newItem = item;
   int height = 0;
@@ -1821,11 +1831,13 @@ void Register::keyPressEvent(QKeyEvent* ev)
 {
   switch(ev->key()) {
     case Qt::Key_Space:
-      // get the state out of the event ...
-      m_buttonState = ev->state();
-      // ... and pretend that we have pressed the left mouse button ;)
-      m_buttonState = static_cast<Qt::ButtonState>(m_buttonState | Qt::LeftButton);
-      selectItem(m_focusItem);
+      if(m_selectionMode != NoSelection) {
+        // get the state out of the event ...
+        m_buttonState = ev->state();
+        // ... and pretend that we have pressed the left mouse button ;)
+        m_buttonState = static_cast<Qt::ButtonState>(m_buttonState | Qt::LeftButton);
+        selectItem(m_focusItem);
+      }
       break;
 
     case Qt::Key_PageUp:

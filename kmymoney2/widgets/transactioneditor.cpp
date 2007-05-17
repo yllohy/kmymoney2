@@ -51,6 +51,7 @@
 
 #include "../dialogs/ksplittransactiondlg.h"
 #include "../dialogs/kcurrencycalculator.h"
+#include "../dialogs/kselecttransactionsdlg.h"
 
 using namespace KMyMoneyRegister;
 using namespace KMyMoneyTransactionForm;
@@ -900,71 +901,102 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
     // ok, we found at least one previous transaction. now we clear out
     // what we have collected so far and add those splits from
     // the previous transaction.
-    // TODO add logic to allow selection
+    QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator  it_t;
+    QMap<QString, const MyMoneyTransaction* > uniqList;
 
-    MyMoneyTransaction t = list.last().first;
+    for(it_t = list.begin(); it_t != list.end(); ++it_t) {
+      uniqList[(*it_t).first.accountSignature()] = &((*it_t).first);
+    }
 
-    m_transaction.removeSplits();
-    m_split = MyMoneySplit();
-    MyMoneySplit otherSplit;
-    QValueList<MyMoneySplit>::ConstIterator it;
-    for(it = t.splits().begin(); it != t.splits().end(); ++it) {
-      MyMoneySplit s(*it);
-      s.setReconcileFlag(MyMoneySplit::NotReconciled);
-      s.setReconcileDate(QDate());
-      s.clearId();
-      s.setBankID(QString());
-      // older versions of KMyMoney used to set the action
-      // we don't need this anymore
-      if(s.action() != MyMoneySplit::ActionAmortization
-      && s.action() != MyMoneySplit::ActionInterest)  {
-        s.setAction(QCString());
+    MyMoneyTransaction t;
+    if(uniqList.count() == 1) {
+      t = list.last().first;
+    } else {
+      KSelectTransactionsDlg dlg(m_account, m_regForm);
+      dlg.setCaption(i18n("Select autofill transaction"));
+
+      QMap<QString, const MyMoneyTransaction*>::const_iterator it_u;
+      for(it_u = uniqList.begin(); it_u != uniqList.end(); ++it_u) {
+        dlg.addTransaction(*(*it_u));
       }
 
-      // FIXME update check number. The old comment contained
-      //
-      // <quote>
-      // If a check number is already specified by the user it is
-      // used. If the input field is empty and the previous transaction
-      // contains a checknumber, the next usuable check no will be assigned
-      // to the transaction.
-      // </quote>
+      // setup sort order
+      dlg.m_register->setSortOrder("1,-9,-4");
+      // sort the transactions according to the sort setting
+      dlg.m_register->sortItems();
 
-      kMyMoneyLineEdit* editNr = dynamic_cast<kMyMoneyLineEdit*>(haveWidget("number"));
-      if(editNr && !editNr->text().isEmpty()) {
-        s.setNumber(editNr->text());
-      } else if(!s.number().isEmpty()) {
-        s.setNumber(KMyMoneyUtils::nextCheckNumber(m_account));
-      }
+      // and select the last item
+      if(dlg.m_register->lastItem())
+        dlg.m_register->selectItem(dlg.m_register->lastItem());
 
-      // if the transaction has exactly two splits, remove
-      // the memo text of the split that does not reference
-      // the current account. This allows the user to change
-      // the autofilled memo text which will then also be used
-      // in this split. See createTransaction() for this logic.
-      if(s.accountId() != m_account.id() && t.splitCount() == 2)
-        s.setMemo(QString());
-
-      m_transaction.addSplit(s);
-      if(s.accountId() == m_account.id() && m_split == MyMoneySplit()) {
-        m_split = s;
-      } else {
-        otherSplit = s;
+      if(dlg.exec() == QDialog::Accepted) {
+        t = dlg.transaction();
       }
     }
 
-    // make sure to extract the right action
-    KMyMoneyRegister::Action action;
-    action = m_split.shares().isNegative() ? KMyMoneyRegister::ActionWithdrawal : KMyMoneyRegister::ActionDeposit;
+    if(t != MyMoneyTransaction()) {
+      m_transaction.removeSplits();
+      m_split = MyMoneySplit();
+      MyMoneySplit otherSplit;
+      QValueList<MyMoneySplit>::ConstIterator it;
+      for(it = t.splits().begin(); it != t.splits().end(); ++it) {
+        MyMoneySplit s(*it);
+        s.setReconcileFlag(MyMoneySplit::NotReconciled);
+        s.setReconcileDate(QDate());
+        s.clearId();
+        s.setBankID(QString());
+        // older versions of KMyMoney used to set the action
+        // we don't need this anymore
+        if(s.action() != MyMoneySplit::ActionAmortization
+        && s.action() != MyMoneySplit::ActionInterest)  {
+          s.setAction(QCString());
+        }
 
-    if(m_transaction.splitCount() == 2) {
-      MyMoneyAccount acc = m_objects->account(otherSplit.accountId());
-      if(acc.isAssetLiability())
-        action = KMyMoneyRegister::ActionTransfer;
+        // FIXME update check number. The old comment contained
+        //
+        // <quote>
+        // If a check number is already specified by the user it is
+        // used. If the input field is empty and the previous transaction
+        // contains a checknumber, the next usuable check no will be assigned
+        // to the transaction.
+        // </quote>
+
+        kMyMoneyLineEdit* editNr = dynamic_cast<kMyMoneyLineEdit*>(haveWidget("number"));
+        if(editNr && !editNr->text().isEmpty()) {
+          s.setNumber(editNr->text());
+        } else if(!s.number().isEmpty()) {
+          s.setNumber(KMyMoneyUtils::nextCheckNumber(m_account));
+        }
+
+        // if the transaction has exactly two splits, remove
+        // the memo text of the split that does not reference
+        // the current account. This allows the user to change
+        // the autofilled memo text which will then also be used
+        // in this split. See createTransaction() for this logic.
+        if(s.accountId() != m_account.id() && t.splitCount() == 2)
+          s.setMemo(QString());
+
+        m_transaction.addSplit(s);
+        if(s.accountId() == m_account.id() && m_split == MyMoneySplit()) {
+          m_split = s;
+        } else {
+          otherSplit = s;
+        }
+      }
+
+      // make sure to extract the right action
+      KMyMoneyRegister::Action action;
+      action = m_split.shares().isNegative() ? KMyMoneyRegister::ActionWithdrawal : KMyMoneyRegister::ActionDeposit;
+
+      if(m_transaction.splitCount() == 2) {
+        MyMoneyAccount acc = m_objects->account(otherSplit.accountId());
+        if(acc.isAssetLiability())
+          action = KMyMoneyRegister::ActionTransfer;
+      }
+
+      // now setup the widgets with the new data
+      loadEditWidgets(action);
     }
-
-    // now setup the widgets with the new data
-    loadEditWidgets(action);
   }
 
   // focus jumps into the category field

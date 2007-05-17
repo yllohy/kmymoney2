@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>800</width>
-            <height>294</height>
+            <width>794</width>
+            <height>456</height>
         </rect>
     </property>
     <property name="caption">
@@ -33,6 +33,14 @@
         <widget class="KMyMoneyRegister::Register">
             <property name="name">
                 <cstring>m_register</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>3</verstretch>
+                </sizepolicy>
             </property>
             <property name="numRows">
                 <number>0</number>

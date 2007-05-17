@@ -22,7 +22,6 @@
 // KDE Includes
 
 #include <kpushbutton.h>
-#include <kstdguiitem.h>
 #include <kapplication.h>
 #include <kactivelabel.h>
 #include <klocale.h>
@@ -30,89 +29,26 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <kmymoney/mymoneyfile.h>
-#include <kmymoney/mymoneytransaction.h>
-#include <kmymoney/kmymoneyglobalsettings.h>
-
 #include "kmergetransactionsdlg.h"
 
-KMergeTransactionsDlg::KMergeTransactionsDlg(const MyMoneyAccount& _account, QWidget* parent, const char* name) :
-  KSelectTransactionsDlgDecl(parent, name),
-  m_account(_account)
+KMergeTransactionsDlg::KMergeTransactionsDlg(const MyMoneyAccount& account, QWidget* parent, const char* name) :
+  KSelectTransactionsDlg(account, parent, name)
 {
 
   // setup descriptive texts
   setCaption(i18n("Merge Transactions"));
   m_description->setText(i18n("Are you sure you wish to merge these transactions?"));
 
-  // clear current register contents
-  m_register->clear();
-
   // no selection possible
-  // m_register->setSelectionMode(None);
+  m_register->setSelectionMode(QTable::NoSelection);
 
-  // setup header font
-  QFont font = KMyMoneyGlobalSettings::listHeaderFont();
-  QFontMetrics fm( font );
-  int height = fm.lineSpacing()+6;
-  m_register->horizontalHeader()->setMinimumHeight(height);
-  m_register->horizontalHeader()->setMaximumHeight(height);
-  m_register->horizontalHeader()->setFont(font);
-
-  // setup cell font
-  font = KMyMoneyGlobalSettings::listCellFont();
-  m_register->setFont(font);
-
-  // ... setup the register columns ...
-  m_register->setupRegister(m_account);
-
-  // setup buttons
-  m_helpButton->setGuiItem(KStdGuiItem::help());
-  buttonOk->setGuiItem(KStdGuiItem::ok());
-  buttonCancel->setGuiItem(KStdGuiItem::cancel());
-
-  connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotHelp()));
-}
-
-void KMergeTransactionsDlg::addTransaction(const MyMoneyTransaction& t)
-{
-  QValueList<MyMoneySplit>::const_iterator it_s;
-  for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
-    if((*it_s).accountId() == m_account.id()) {
-      KMyMoneyRegister::Transaction* tr = KMyMoneyRegister::Register::transactionFactory(m_register, &m_objects, t, (*it_s), 0);
-      // force full detail display
-      tr->setNumRowsRegister(tr->numRowsRegister(true));
-      break;
-    }
-  }
-}
-
-int KMergeTransactionsDlg::exec(void)
-{
-  m_register->updateRegister(true);
-  m_register->updateContents();
-
-  return KSelectTransactionsDlgDecl::exec();
+  // override default and enable ok button right away
+  buttonOk->setEnabled(true);
 }
 
 void KMergeTransactionsDlg::slotHelp(void)
 {
   kapp->invokeHelp("details.ledgers.match");
-}
-
-void KMergeTransactionsDlg::show(void)
-{
-  KSelectTransactionsDlgDecl::show();
-  m_register->resize(KMyMoneyRegister::DetailColumn);
-}
-
-void KMergeTransactionsDlg::resizeEvent(QResizeEvent* ev)
-{
-  // don't forget the resizer
-  KSelectTransactionsDlgDecl::resizeEvent(ev);
-
-  // resize the register
-  m_register->resize(KMyMoneyRegister::DetailColumn);
 }
 
 #include "kmergetransactionsdlg.moc"

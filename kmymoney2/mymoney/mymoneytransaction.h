@@ -237,6 +237,23 @@ public:
     */
   bool hasAutoCalcSplit(void) const;
 
+  /**
+    * Returns a signature consisting of the account ids and the
+    * number of times they occur in the transaction if @a includeSplitCount
+    * is @true. The signature is independant from the order of splits.
+    *
+    * Example: Having splits referencing the account B, A and B, the returned
+    * value will be "A-B" if @p includeSplitCount is @p false or A*1-B*2 if it
+    * is @p true.
+    *
+    * The same result will be returned if the list of splits is A, B, B.
+    *
+    * @param includeSplitCount if @p true, the string @p *n with @p n being
+    *        the number of splits referencing this account. The default for
+    *        this parameter is @p false.
+    */
+  QString accountSignature(bool includeSplitCount = false) const;
+
 private:
   static const int SPLIT_ID_SIZE = 4;
 
