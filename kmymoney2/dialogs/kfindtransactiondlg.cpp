@@ -704,17 +704,15 @@ void KFindTransactionDlg::loadView(void)
   for(it = m_transactionList.begin(); it != m_transactionList.end(); ++it) {
     const MyMoneySplit& split = (*it).second;
     MyMoneyAccount acc = MyMoneyFile::instance()->account(split.accountId());
-    if(acc.isAssetLiability()) {
-      ++splitCount;
-      uniqueMap[(*it).first.id()]++;
+    ++splitCount;
+    uniqueMap[(*it).first.id()]++;
 
-      KMyMoneyRegister::Register::transactionFactory(m_register, &m_objects, (*it).first, (*it).second, uniqueMap[(*it).first.id()]);
-      { // debug stuff
-        if(split.shares().isNegative()) {
-          payment += split.shares().abs();
-        } else {
-          deposit += split.shares().abs();
-        }
+    KMyMoneyRegister::Register::transactionFactory(m_register, &m_objects, (*it).first, (*it).second, uniqueMap[(*it).first.id()]);
+    { // debug stuff
+      if(split.shares().isNegative()) {
+        payment += split.shares().abs();
+      } else {
+        deposit += split.shares().abs();
       }
     }
   }

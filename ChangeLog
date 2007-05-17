@@ -1,6 +1,7 @@
 2007-05-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added dialog to select the transaction to be used for autofill if
     multiple transactions exist for the same payee
+  * Show all matching splits in find transaction dialog
 
 2007-05-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use prettyURL() where appropriate

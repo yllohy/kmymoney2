@@ -246,9 +246,8 @@ bool MyMoneyTransactionFilter::match(const MyMoneySplit * const sp, const IMyMon
   }
 
   if(rc && m_filterSet.singleFilter.amountFilter) {
-    if(sp->value().abs() < m_fromAmount)
-      rc = false;
-    if(sp->value().abs() > m_toAmount)
+    if(((sp->value().abs() < m_fromAmount) || sp->value().abs() > m_toAmount)
+    && ((sp->shares().abs() < m_fromAmount) || sp->shares().abs() > m_toAmount))
       rc = false;
   }
 
