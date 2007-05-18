@@ -34,7 +34,7 @@ CLEANFILES = kmmwidgets.cpp
 
 .PHONY: dialogs settings widgets
 dialogs:
-	$(MAKE) -C ../dialogs kupdatestockpricedlgdecl.h knewaccountdlgdecl.h knewequityentrydecl.h kcurrencycalculatordecl.h kequitypriceupdatedlgdecl.h ksplittransactiondlgdecl.h
+	$(MAKE) -C ../dialogs kupdatestockpricedlgdecl.h knewaccountdlgdecl.h knewequityentrydecl.h kcurrencycalculatordecl.h kequitypriceupdatedlgdecl.h ksplittransactiondlgdecl.h kselecttransactionsdlgdecl.h
 
 settings:
 	$(MAKE) -C .. kmymoneysettings.h
