@@ -149,8 +149,28 @@ void KReportsView::KReportTab::saveAs( const QString& filename )
     {
       QTextStream(&file) << m_table->renderCSV();
     }
-    else
-      QTextStream(&file) << createTable();
+    else {
+      QTextStream stream(&file);
+      QRegExp exp("(.*)(<link.*css\" href=)\"(.*)\">(<meta.*utf-8\" />)(.*)");
+      QString table = createTable();
+      if(exp.search(table) != -1) {
+        QFile cssFile(exp.cap(3));
+        if(cssFile.open(IO_ReadOnly)) {
+          QTextStream cssStream(&cssFile);
+          stream << exp.cap(1);
+          stream << exp.cap(4);
+          stream << endl << "<style type=\"text/css\">" << endl << "<!--" << endl;
+          stream << cssStream.read();
+          stream << "-->" << endl << "</style>" << endl;
+          stream << exp.cap(5);
+          cssFile.close();
+        } else {
+          stream << table;
+        }
+      } else {
+        stream << table;
+      }
+    }
     file.close();
   }
 }
@@ -205,7 +225,11 @@ void KReportsView::KReportTab::updateReport(void)
 
 QString KReportsView::KReportTab::createTable(const QString& links)
 {
-  QString filename = KGlobal::dirs()->findResource("appdata", "html/kmymoney2.css");
+  QString filename;
+  if(!MyMoneyFile::instance()->value("reportstylesheet").isEmpty())
+    filename = KGlobal::dirs()->findResource("appdata", QString("html/%1").arg(MyMoneyFile::instance()->value("reportstylesheet")));
+  if(filename.isEmpty())
+    filename = KGlobal::dirs()->findResource("appdata", "html/kmymoney2.css");
   QString header = QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">\n") +
     QString("<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"%1\">").arg(filename);
 
@@ -243,17 +267,6 @@ QString KReportsView::KReportTab::createTable(const QString& links)
   return html;
 
 }
-
-#if 0
-void KReportsView::KReportTab::drawChart(reports::KReportChartView& _chartView )
-{
-  if ( m_report.reportType() == MyMoneyReport::ePivotTable ) {
-    m_pivotTable->drawChart(_chartView);
-  }
-  else if ( m_report.reportType() == MyMoneyReport::eQueryTable )
-    ; // no action for query table
-}
-#endif
 
 void KReportsView::KReportTab::toggleChart(void)
 {

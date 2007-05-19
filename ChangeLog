@@ -1,3 +1,6 @@
+2007-05-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Include style sheet contents in exported HTML reports
+
 2007-05-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added dialog to select the transaction to be used for autofill if
     multiple transactions exist for the same payee
