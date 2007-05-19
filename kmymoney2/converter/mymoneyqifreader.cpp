@@ -325,23 +325,21 @@ const bool MyMoneyQifReader::finishImport(void)
   dlg.show();
   kapp->processEvents();
   MyMoneyFile* file = MyMoneyFile::instance();
-  file->suspendNotify(true);
   QValueList<MyMoneyTransaction>::iterator it = m_transactionCache.begin();
-  while( it != m_transactionCache.end() )
-  {
-    if ( dlg.wasCancelled() )
-    {
-      m_userAbort = true;
-      rc = false;
-      break;
-    }
-    file->addTransaction(*it);
-    dlg.progressBar()->advance(1);
-    ++it;
-  }
   try
   {
-    file->suspendNotify(false);
+    while( it != m_transactionCache.end() )
+    {
+      if ( dlg.wasCancelled() )
+      {
+        m_userAbort = true;
+        rc = false;
+        break;
+      }
+      file->addTransaction(*it);
+      dlg.progressBar()->advance(1);
+      ++it;
+    }
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to add transactions"),
     (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));

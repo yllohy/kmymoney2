@@ -182,35 +182,35 @@ public:
     *         an internal account
     * @see setInstitution
     */
-  const QCString institutionId(void) const { return m_institution; }
+  const QCString& institutionId(void) const { return m_institution; }
 
   /**
     * This method returns the name of the account
     * @return name of account
     * @see setName()
     */
-  const QString name(void) const { return m_name; }
+  const QString& name(void) const { return m_name; }
 
   /**
     * This method returns the number of the account at the institution
     * @return number of account at the institution
     * @see setNumber
     */
-  const QString number(void) const { return m_number; }
+  const QString& number(void) const { return m_number; }
 
   /**
     * This method returns the descriptive text of the account.
     * @return description of account
     * @see setDescription
     */
-  const QString description(void) const { return m_description; }
+  const QString& description(void) const { return m_description; }
 
   /**
     * This method returns the opening date of this account
     * @return date of opening of this account as const QDate value
     * @see setOpeningDate()
     */
-  const QDate openingDate(void) const { return m_openingDate; }
+  const QDate& openingDate(void) const { return m_openingDate; }
 
   /**
     * This method is used to return the opening balance of an account
@@ -224,20 +224,20 @@ public:
     * @return date of last reconciliation as const QDate value
     * @see setLastReconciliationDate
     */
-  const QDate lastReconciliationDate(void) const { return m_lastReconciliationDate; }
+  const QDate& lastReconciliationDate(void) const { return m_lastReconciliationDate; }
 
   /**
     * This method returns the date the account was last modified
     * @return date of last modification as const QDate value
     * @see setLastModified
     */
-  const QDate lastModified(void) const { return m_lastModified; }
+  const QDate& lastModified(void) const { return m_lastModified; }
 
   /**
     * This method is used to return the ID of the parent account
     * @return QCString with the ID of the parent of this account
     */
-  const QCString parentAccountId(void) const { return m_parentAccount; };
+  const QCString& parentAccountId(void) const { return m_parentAccount; };
 
   /**
     * This method returns the list of the account id's of
@@ -366,7 +366,7 @@ public:
     *
     * @return id of currency
     */
-  const QCString currencyId(void) const { return m_currencyId; };
+  const QCString& currencyId(void) const { return m_currencyId; };
 
   /**
     * This method sets the id of the currency used with this account.

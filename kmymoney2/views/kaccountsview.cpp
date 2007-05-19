@@ -612,7 +612,6 @@ void KAccountsView::slotUpdateIconPos(unsigned int action)
   if(action != KMyMoneyView::preSave)
     return;
 
-  MyMoneyFile::instance()->suspendNotify(true);
   KMyMoneyAccountIconItem* p = dynamic_cast<KMyMoneyAccountIconItem*>(m_accountIcons->firstItem());
   for(;p; p = dynamic_cast<KMyMoneyAccountIconItem*>(p->nextItem())) {
     const MyMoneyAccount& acc = dynamic_cast<const MyMoneyAccount&>(p->itemObject());
@@ -627,7 +626,6 @@ void KAccountsView::slotUpdateIconPos(unsigned int action)
       }
     }
   }
-  MyMoneyFile::instance()->suspendNotify(false);
 }
 
 

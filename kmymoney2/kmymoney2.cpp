@@ -2931,45 +2931,38 @@ void KMyMoney2App::slotAccountReconcileStart(void)
       if(m_endingBalanceDlg)
         delete m_endingBalanceDlg;
       m_endingBalanceDlg = new KEndingBalanceDlg(account, this);
-      switch(file->accountGroup(account.accountType())) {
-        case MyMoneyAccount::Asset:
-        case MyMoneyAccount::Liability:
+      if(account.isAssetLiability()) {
+        connect(m_endingBalanceDlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
+        connect(m_endingBalanceDlg, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
 
-          connect(m_endingBalanceDlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
-          connect(m_endingBalanceDlg, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
+        if(m_endingBalanceDlg->exec() == QDialog::Accepted) {
+          if(myMoneyView->startReconciliation(account, m_endingBalanceDlg->endingBalance())) {
 
-          if(m_endingBalanceDlg->exec() == QDialog::Accepted) {
-            if(myMoneyView->startReconciliation(account, m_endingBalanceDlg->endingBalance())) {
-
-              // check if the user requests us to create interest
-              // or charge transactions.
-              MyMoneyTransaction ti = m_endingBalanceDlg->interestTransaction();
-              MyMoneyTransaction tc = m_endingBalanceDlg->chargeTransaction();
-              if(ti != MyMoneyTransaction()) {
-                try {
-                  MyMoneyFile::instance()->addTransaction(ti);
-                } catch(MyMoneyException *e) {
-                  qWarning("interest transaction not stored: '%s'", e->what().data());
-                  delete e;
-                }
+            // check if the user requests us to create interest
+            // or charge transactions.
+            MyMoneyTransaction ti = m_endingBalanceDlg->interestTransaction();
+            MyMoneyTransaction tc = m_endingBalanceDlg->chargeTransaction();
+            if(ti != MyMoneyTransaction()) {
+              try {
+                MyMoneyFile::instance()->addTransaction(ti);
+              } catch(MyMoneyException *e) {
+                qWarning("interest transaction not stored: '%s'", e->what().data());
+                delete e;
               }
-              if(tc != MyMoneyTransaction()) {
-                try {
-                  MyMoneyFile::instance()->addTransaction(tc);
-                } catch(MyMoneyException *e) {
-                  qWarning("charge transaction not stored: '%s'", e->what().data());
-                  delete e;
-                }
-              }
-
-              m_reconciliationAccount = account;
-              slotUpdateActions();
             }
-          }
-          break;
+            if(tc != MyMoneyTransaction()) {
+              try {
+                MyMoneyFile::instance()->addTransaction(tc);
+              } catch(MyMoneyException *e) {
+                qWarning("charge transaction not stored: '%s'", e->what().data());
+                delete e;
+              }
+            }
 
-        default:
-          break;
+            m_reconciliationAccount = account;
+            slotUpdateActions();
+          }
+        }
       }
     } catch(MyMoneyException *e) {
       delete e;

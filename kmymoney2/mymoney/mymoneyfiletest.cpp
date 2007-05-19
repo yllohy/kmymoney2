@@ -26,8 +26,6 @@ MyMoneyFileTest:: MyMoneyFileTest () {};
 
 
 void MyMoneyFileTest::setUp () {
-	observer = new TestObserverSet;
-	hierarchyObserver = new TestObserverSet;
 	storage = new MyMoneySeqAccessMgr;
 	m = MyMoneyFile::instance();
 	m->attachStorage(storage);
@@ -37,8 +35,6 @@ void MyMoneyFileTest::tearDown () {
 	m->detachStorage(storage);
 	delete m;
 	delete storage;
-	delete observer;
-	delete hierarchyObserver;
 }
 
 void MyMoneyFileTest::testEmptyConstructor() {
@@ -363,18 +359,11 @@ void MyMoneyFileTest::testAddAccounts() {
 	institution = m->institution("I000001");
 	CPPUNIT_ASSERT(institution.id() == "I000001");
 
-	m->attach("I000001", observer);
-	m->attach("I000002", observer);
-	m->attach(MyMoneyFile::NotifyClassAccount, observer);
-	m->attach(MyMoneyFile::NotifyClassAccountHierarchy, hierarchyObserver);
-
 	a.setName("Account1");
 	a.setInstitutionId(institution.id());
 
 	try {
 		MyMoneyAccount parent = m->asset();
-		observer->reset();
-		hierarchyObserver->reset();
 		m->addAccount(a, parent);
 		CPPUNIT_ASSERT(m->accountCount() == 6);
 		CPPUNIT_ASSERT(a.parentAccountId() == "AStd::Asset");
@@ -388,14 +377,6 @@ void MyMoneyFileTest::testAddAccounts() {
 		CPPUNIT_ASSERT(institution.accountCount() == 1);
 		CPPUNIT_ASSERT(institution.accountList()[0] == "A000001");
 
-		CPPUNIT_ASSERT(observer->updated().count() == 2);
-		CPPUNIT_ASSERT(observer->updated().contains("I000001") == 1);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
-
-		CPPUNIT_ASSERT(hierarchyObserver->updated().count() == 1);
-		CPPUNIT_ASSERT(hierarchyObserver->updated().contains(MyMoneyFile::NotifyClassAccountHierarchy) == 1);
-		observer->reset();
-		hierarchyObserver->reset();
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -409,8 +390,6 @@ void MyMoneyFileTest::testAddAccounts() {
 	} catch(MyMoneyException *e) {
 		delete e;
 	}
-
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
 
 	// check that we can modify the local object and
 	// reload it from the file
@@ -428,7 +407,6 @@ void MyMoneyFileTest::testAddAccounts() {
 	CPPUNIT_ASSERT(c.institutionId() == "I000001");
 
 	CPPUNIT_ASSERT(m->dirty() == false);
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
 
 	// add a second account
 	institution = m->institution("I000002");
@@ -454,10 +432,6 @@ void MyMoneyFileTest::testAddAccounts() {
 		CPPUNIT_ASSERT(m->asset().accountList()[0] == "A000001");
 		CPPUNIT_ASSERT(m->asset().accountList()[1] == "A000002");
 
-		CPPUNIT_ASSERT(observer->updated().count() == 2);
-		CPPUNIT_ASSERT(observer->updated().contains("I000002") == 1);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
-		observer->reset();
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -476,9 +450,6 @@ void MyMoneyFileTest::testModifyAccount() {
 	testAddAccounts();
 	storage->m_dirty = false;
 
-	observer->reset();
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
-
 	MyMoneyAccount p = m->account("A000001");
 	MyMoneyInstitution institution;
 
@@ -494,9 +465,6 @@ void MyMoneyFileTest::testModifyAccount() {
 		CPPUNIT_ASSERT(p.accountType() == MyMoneyAccount::Checkings);
 		CPPUNIT_ASSERT(p.name() == "New account name");
 
-		CPPUNIT_ASSERT(observer->updated().count() == 2);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
-		observer->reset();
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -522,9 +490,6 @@ void MyMoneyFileTest::testModifyAccount() {
 		CPPUNIT_ASSERT(institution.accountList()[0] == "A000002");
 		CPPUNIT_ASSERT(institution.accountList()[1] == "A000001");
 
-		CPPUNIT_ASSERT(observer->updated().count() == 3);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
-		observer->reset();
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -545,12 +510,6 @@ void MyMoneyFileTest::testReparentAccount() {
 	testAddAccounts();
 	storage->m_dirty = false;
 
-	observer->reset();
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
-
-	hierarchyObserver->reset();
-	CPPUNIT_ASSERT(hierarchyObserver->updated().count() == 0);
-
 	MyMoneyAccount p = m->account("A000001");
 	MyMoneyAccount q = m->account("A000002");
 	MyMoneyAccount o = m->account(p.parentAccountId());
@@ -568,14 +527,6 @@ void MyMoneyFileTest::testReparentAccount() {
 		CPPUNIT_ASSERT(p.id() == "A000001");
 		CPPUNIT_ASSERT(q.accountList()[0] == p.id());
 		
-		CPPUNIT_ASSERT(observer->updated().count() == 3);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
-
-		CPPUNIT_ASSERT(hierarchyObserver->updated().count() == 1);
-		CPPUNIT_ASSERT(hierarchyObserver->updated().contains(MyMoneyFile::NotifyClassAccountHierarchy) == 1);
-		observer->reset();
-		hierarchyObserver->reset();
-
 		o = m->account(o.id());
 		CPPUNIT_ASSERT(o.accountCount() == 1);
 	} catch(MyMoneyException *e) {
@@ -601,12 +552,6 @@ void MyMoneyFileTest::testRemoveAccount() {
 	testAddAccounts();
 	storage->m_dirty = false;
 
-	observer->reset();
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
-
-	hierarchyObserver->reset();
-	CPPUNIT_ASSERT(hierarchyObserver->updated().count() == 0);
-
 	QString id;
 	MyMoneyAccount p = m->account("A000001");
 
@@ -629,13 +574,6 @@ void MyMoneyFileTest::testRemoveAccount() {
 		institution = m->institution("I000002");
 		CPPUNIT_ASSERT(institution.accountCount() == 1);
 
-		CPPUNIT_ASSERT(observer->updated().count() == 1);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
-
-		CPPUNIT_ASSERT(hierarchyObserver->updated().count() == 1);
-		CPPUNIT_ASSERT(hierarchyObserver->updated().contains(MyMoneyFile::NotifyClassAccountHierarchy) == 1);
-		observer->reset();
-		hierarchyObserver->reset();
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -766,15 +704,9 @@ void MyMoneyFileTest::testAddTransaction () {
 */
 	storage->m_dirty = false;
 
-	observer->reset();
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
-
 	try {
 		m->addTransaction(t);
 
-		CPPUNIT_ASSERT(observer->updated().count() == 2);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
-		observer->reset();
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -804,7 +736,6 @@ void MyMoneyFileTest::testAddTransaction () {
 		CPPUNIT_ASSERT(p.memo() == "Memotext");
 		CPPUNIT_ASSERT(p.splits()[0].accountId() == "A000001");
 		CPPUNIT_ASSERT(p.splits()[1].accountId() == "A000003");
-		CPPUNIT_ASSERT(observer->updated().count() == 0);
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -819,7 +750,6 @@ void MyMoneyFileTest::testAddTransaction () {
 		CPPUNIT_ASSERT(p.memo() == "Memotext");
 		CPPUNIT_ASSERT(p.splits()[0].accountId() == "A000001");
 		CPPUNIT_ASSERT(p.splits()[1].accountId() == "A000003");
-		CPPUNIT_ASSERT(observer->updated().count() == 0);
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -832,7 +762,6 @@ void MyMoneyFileTest::testAddTransaction () {
 		CPPUNIT_ASSERT(p.memo() == "Memotext");
 		CPPUNIT_ASSERT(p.splits()[0].accountId() == "A000001");
 		CPPUNIT_ASSERT(p.splits()[1].accountId() == "A000003");
-		CPPUNIT_ASSERT(observer->updated().count() == 0);
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -863,18 +792,12 @@ void MyMoneyFileTest::testModifyTransactionSimple() {
 	t.setMemo("New Memotext");
 	storage->m_dirty = false;
 
-	observer->reset();
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
-
 	try {
 		m->modifyTransaction(t);
 		t = m->transaction("T000000000000000001");
 		CPPUNIT_ASSERT(t.memo() == "New Memotext");
 		CPPUNIT_ASSERT(m->dirty() == true);
 
-		CPPUNIT_ASSERT(observer->updated().count() == 2);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
-		observer->reset();
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -889,8 +812,6 @@ void MyMoneyFileTest::testModifyTransactionNewPostDate() {
 	MyMoneyTransaction t = m->transaction("T000000000000000001");
 	t.setPostDate(QDate(2004,2,1));
 	storage->m_dirty = false;
-	observer->reset();
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
 
 	try {
 		m->modifyTransaction(t);
@@ -900,9 +821,6 @@ void MyMoneyFileTest::testModifyTransactionNewPostDate() {
 		CPPUNIT_ASSERT(t.id() == "T000000000000000001");
 		CPPUNIT_ASSERT(m->dirty() == true);
 
-		CPPUNIT_ASSERT(observer->updated().count() == 2);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
-		observer->reset();
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -921,8 +839,6 @@ void MyMoneyFileTest::testModifyTransactionNewAccount() {
 	t.modifySplit(s);
 
 	storage->m_dirty = false;
-	observer->reset();
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
 	try {
 /* removed with MyMoneyAccount::Transaction
 		CPPUNIT_ASSERT(m->account("A000001").transactionCount() == 1);
@@ -950,9 +866,6 @@ void MyMoneyFileTest::testModifyTransactionNewAccount() {
 		CPPUNIT_ASSERT(m->transactionList(f2).count() == 1);
 		CPPUNIT_ASSERT(m->transactionList(f3).count() == 1);
 
-		CPPUNIT_ASSERT(observer->updated().count() == 3);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
-		observer->reset();
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -966,8 +879,6 @@ void MyMoneyFileTest::testRemoveTransaction () {
 	t = m->transaction("T000000000000000001");
 
 	storage->m_dirty = false;
-	observer->reset();
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
 	try {
 		m->removeTransaction(t);
 		CPPUNIT_ASSERT(m->dirty() == true);
@@ -984,9 +895,6 @@ void MyMoneyFileTest::testRemoveTransaction () {
 		CPPUNIT_ASSERT(m->transactionList(f2).count() == 0);
 		CPPUNIT_ASSERT(m->transactionList(f3).count() == 0);
 
-		CPPUNIT_ASSERT(observer->updated().count() == 2);
-		CPPUNIT_ASSERT(observer->updated().contains(MyMoneyFile::NotifyClassAccount) == 1);
-		observer->reset();
 	} catch(MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception!");
@@ -1096,10 +1004,6 @@ void MyMoneyFileTest::testSetAccountName() {
 void MyMoneyFileTest::testAddPayee() {
 	MyMoneyPayee p;
 
-	m->attach(MyMoneyFile::NotifyClassPayee, observer);
-	observer->reset();
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
-
 	p.setName("THB");
 	CPPUNIT_ASSERT(m->dirty() == false);
 	try {
@@ -1117,7 +1021,6 @@ void MyMoneyFileTest::testModifyPayee() {
 	MyMoneyPayee p;
 
 	testAddPayee();
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
 
 	p = m->payee("P000001");
 	p.setName("New name");
@@ -1137,7 +1040,6 @@ void MyMoneyFileTest::testRemovePayee() {
 
 	testAddPayee();
 	CPPUNIT_ASSERT(m->payeeList().count() == 1);
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
 
 	p = m->payee("P000001");
 	try {
@@ -1188,8 +1090,6 @@ void MyMoneyFileTest::testAddTransactionStd() {
 	t.setState(MyMoneyCheckingTransaction::Cleared);
 */
 	storage->m_dirty = false;
-	observer->reset();
-	CPPUNIT_ASSERT(observer->updated().count() == 0);
 
 	try {
 		m->addTransaction(t);
@@ -1300,8 +1200,6 @@ void MyMoneyFileTest::testAddEquityAccount() {
 
 	try {
 		MyMoneyAccount parent = m->asset();
-		observer->reset();
-		hierarchyObserver->reset();
 		m->addAccount(i, parent);
 	} catch(MyMoneyException *e) {
 		unexpectedException(e);
@@ -1333,8 +1231,6 @@ void MyMoneyFileTest::testAddEquityAccount() {
 		a.setAccountType(*it);
 		try {
 			char	msg[100];
-			observer->reset();
-			hierarchyObserver->reset();
 			m->addAccount(a, i);
 			sprintf(msg, "Can add non-equity type %d to investment", *it);
 			CPPUNIT_FAIL(msg);
@@ -1343,8 +1239,6 @@ void MyMoneyFileTest::testAddEquityAccount() {
 		}
 	}
 	try {
-		observer->reset();
-		hierarchyObserver->reset();
 		a.setName("Teststock");
 		a.setAccountType(MyMoneyAccount::Stock);
 		m->addAccount(a,i);
@@ -1392,8 +1286,6 @@ void MyMoneyFileTest::testReparentEquity() {
 	MyMoneyAccount stock = m->account("A000002");
 	MyMoneyAccount inv = m->account(m_inv.id());
 	try {
-		observer->reset();
-		hierarchyObserver->reset();
 		m->reparentAccount(stock, inv);
 	} catch(MyMoneyException *e) {
 		unexpectedException(e);
@@ -1412,8 +1304,6 @@ void MyMoneyFileTest::testReparentEquity(QValueList<MyMoneyAccount::accountTypeE
 		try {
 			m->addAccount(a, parent);
 			char	msg[100];
-			observer->reset();
-			hierarchyObserver->reset();
 			m->reparentAccount(stock, a);
 			sprintf(msg, "Can reparent stock to non-investment type %d account", *it);
 			CPPUNIT_FAIL(msg);

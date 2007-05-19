@@ -766,8 +766,8 @@ bool KMyMoneyView::openDatabase (const KURL& url) {
   return initializeStorage();
 }
 
-bool KMyMoneyView::initializeStorage() {
-  MyMoneyFile::instance()->suspendNotify(true);
+bool KMyMoneyView::initializeStorage()
+{
   // we check, if we have any currency in the file. If not, we load
   // all the default currencies we know.
   loadDefaultCurrencies();
@@ -834,7 +834,6 @@ bool KMyMoneyView::initializeStorage() {
       }
     } catch(MyMoneyException *e) {
       delete e;
-      MyMoneyFile::instance()->suspendNotify(false);
       return false;
     }
   } else {
@@ -846,10 +845,6 @@ bool KMyMoneyView::initializeStorage() {
   // if there's no asset account, then automatically start the
   // new account wizard
   // kmymoney2->createInitialAccount();
-
-  ::timetrace("done fixing file");
-  MyMoneyFile::instance()->suspendNotify(false);
-  ::timetrace("done notifications back on");
 
   ::timetrace("file open");
   m_fileOpen = true;
@@ -1143,22 +1138,14 @@ bool KMyMoneyView::startReconciliation(const MyMoneyAccount& account, const MyMo
     ok = false;
 
   // check if we can reconcile this account
-  // it make's sense for asset and liability accounts
+  // it makes sense for asset and liability accounts only
   if(ok == true) {
-    switch(MyMoneyFile::instance()->accountGroup(account.accountType())) {
-      case MyMoneyAccount::Asset:
-      case MyMoneyAccount::Liability:
-        showPage(pageIndex(m_ledgerViewFrame));
-        // prepare reconciliation mode
-        emit reconciliationStarts(account, endingBalance);
-#if 0
-        m_ledgerView->slotSelectAccount(account.id());
-        m_ledgerView->setReconciliationAccount(account.id(), endingBalance);
-#endif
-        break;
-
-      default:
-        ok = false;
+    if(account.isAssetLiability()) {
+      showPage(pageIndex(m_ledgerViewFrame));
+      // prepare reconciliation mode
+      emit reconciliationStarts(account, endingBalance);
+    } else {
+      ok = false;
     }
   }
 

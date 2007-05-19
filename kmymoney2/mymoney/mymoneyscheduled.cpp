@@ -587,15 +587,9 @@ MyMoneyAccount MyMoneySchedule::account(int cnt) const
   for(it = splits.begin(); it != splits.end() && (acc.id().isEmpty() || cnt); ++it) {
     try {
       acc = file->account((*it).accountId());
-      switch(file->accountGroup(acc.accountType())) {
-        case MyMoneyAccount::Liability:
-        case MyMoneyAccount::Asset:
+      if(acc.isAssetLiability())
           --cnt;
-          break;
 
-        default:
-          break;
-      }
       if(!cnt)
         return acc;
     } catch(MyMoneyException *e) {

@@ -1,7 +1,7 @@
 /***************************************************************************
                           mymoneyfile.h
                              -------------------
-    copyright            : (C) 2002 by Thomas Baumgart
+    copyright            : (C) 2002, 2007 by Thomas Baumgart
     email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
@@ -39,8 +39,6 @@
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/mymoneytransaction.h>
 #include <kmymoney/mymoneypayee.h>
-#include <kmymoney/mymoneyobserver.h>
-#include <kmymoney/mymoneysubject.h>
 #include <kmymoney/mymoneykeyvaluecontainer.h>
 #include <kmymoney/mymoneysecurity.h>
 #include <kmymoney/mymoneyprice.h>
@@ -124,9 +122,8 @@ class MyMoneyFilePrivate;
   * given accountId references one of the or not. setAccountName() is used
   * to specify a name for the standard accounts from the GUI.
   *
-  * The methods attach() and detach() provide the necessary functions
-  * for an external observer to be attached and detached to and from
-  * an object of the engine.
+  * The MyMoneyFile object emits the dataChanged() signal when data
+  * has been changed.
   *
   * For abritrary values that have to be stored with the storage object
   * but are of importance to the application only, the object is derived
@@ -141,14 +138,6 @@ class KMYMONEY_EXPORT MyMoneyFile : public QObject
 {
   Q_OBJECT
 public:
-
-  class MyMoneyFileSubject : public MyMoneySubject
-  {
-  public:
-    MyMoneyFileSubject() {};
-    ~MyMoneyFileSubject() {};
-  };
-
 
   class MyMoneyNotifier
   {
@@ -187,22 +176,6 @@ public:
 
   // general set functions
   void setUser(const MyMoneyPayee& user);
-
-  /**
-    * This method can be used to turn on/off the notifications
-    * of the engine. During bulk-updates it's sometimes useful
-    * to turn off notifications for an improved performance.
-    *
-    * Engine notifications that are generated while the notifications
-    * are suspended will be postponed until the notifications are
-    * re-enabled.
-    *
-    * @param state if @p true, no notifications will be send out,
-    *              if @p false, notifications will be send out.
-    * @deprecated
-    * @note use Object::blockSignals instead
-    */
-  void suspendNotify(const bool state) __attribute__ ((deprecated));
 
   /**
     * This method is used to attach a storage to the MyMoneyFile object
@@ -415,14 +388,6 @@ public:
     * @param parent  MyMoneyAccount reference to new parent account
     */
   void reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent);
-
-  /**
-    * This converts the account type into one of the four
-    * major account types liability, asset, expense or income
-    * @param type actual account type
-    * @return accountTypeE of major account type
-    */
-  const MyMoneyAccount::accountTypeE accountGroup(MyMoneyAccount::accountTypeE type) const;
 
   /**
     * moves splits from one account to another
@@ -814,39 +779,6 @@ public:
   const QString parentName(const QString& name) const;
 
   /**
-    * This method is used to attach an observer to a subject
-    * represented by it's id. Whenever the object represented
-    * by the id changes it's state, the observers method
-    * ::update(const QCString& id) is called with id set to
-    * the value passed as argument to attach. This allows an
-    * object of the GUI to observe multiple objects with the
-    * ability to know which object changed. If it observes
-    * multiple objects, it's update(const QCString& id) method
-    * is called multiple times if more than one object is changed
-    * during a single operation.
-    *
-    * @param id reference to id of the subject from which
-    *           notifications should be activated
-    * @param observer pointer to object observing the subject
-    *
-    * @see detach
-    */
-  void attach(const QCString& id, MyMoneyObserver* observer) __attribute__ ((deprecated));
-
-  /**
-    * This method is used to detach an observer from a subject
-    * represented by it's id. If an object observes more than one
-    * subject, it must call this method multiple times.
-    *
-    * @param id reference to id of the subject from which
-    *           notifications were activated
-    * @param observer pointer to object observing the subject
-    *
-    * @see attach
-    */
-  void detach(const QCString& id, MyMoneyObserver* observer) __attribute__ ((deprecated));
-
-  /**
     * This method is used to create a new payee
     *
     * An exception will be thrown upon error conditions
@@ -1012,98 +944,6 @@ public:
                                      const bool overdue = false) const;
 
   const QStringList consistencyCheck(void);
-
-  /**
-    * MyMoneyFile::NotifyClassAccount
-    * is a special id that will be notified whenever any account is changed.
-    * The typical usage is in the account tree, that must be notified about
-    * all changes of any account.
-    *
-    * @code
-    * MyAccountTreeClass tree;  // MyAccountTreeClass is derived from MyMoneyObserver
-    * MyMoneyFile *file = MyMoneyFile::instance();
-    *
-    * file->attach(MyMoneyFile::NotifyClassAccount, &tree);
-    * // from now on, the tree.update() method will be called, whenever an
-    * // account in the storage area is changed.
-    *
-    * file->detach(MyMoneyFile::NotifyClassAccount, &tree);
-    * // the change notification will not be performed anymore.
-    * @endcode
-    */
-  static const QCString NotifyClassAccount;
-
-  /**
-    * MyMoneyFile::NotifyClassAccount
-    * is a special id that will be notified whenever the accounthierarchy is
-    * changed.
-    * The typical usage is in the account tree, that must be reconstructed
-    * upon this type of change.
-    */
-  static const QCString NotifyClassAccountHierarchy;
-
-  /**
-    * MyMoneyFile::NotifyClassPayee
-    * is a special id that will be notified whenever any account is add,
-    * changed or removed from the engine
-    */
-  static const QCString NotifyClassPayee;
-
-  /**
-    * MyMoneyFile::NotifyClassPayeeSet
-    * is a special id that will be notified whenever any account is add
-    * or removed from the engine
-    */
-  static const QCString NotifyClassPayeeSet;
-
-  /**
-    * MyMoneyFile::NotifyClassPayee
-    * is a special id that will be notified whenever any account is changed
-    */
-  static const QCString NotifyClassInstitution;
-
-  /**
-    * MyMoneyFile::NotifyClassSchedule
-    * is a special id that will be notified whenever any schedule is changed
-    */
-  static const QCString NotifyClassSchedule;
-
-  /**
-    * MyMoneyFile::NotifyClassAnyChange
-    * is a special id that will be notified whenever any object of the engine changes
-    */
-  static const QCString NotifyClassAnyChange;
-
-  /**
-    * MyMoneyFile::NotifyClassCurrency
-    * is a special id that will be notified whenever any currency is changed
-    */
-  static const QCString NotifyClassCurrency;
-
-  /**
-    * MyMoneyFile::NotifyClassSecurity
-    * is a special id that will be notified whenever any security is changed
-    */
-  static const QCString NotifyClassSecurity;
-
-  /**
-    * MyMoneyFile::NotifyClassPrice
-    * is a special id that will be notified whenever a price is changed
-    */
-  static const QCString NotifyClassPrice;
-
-  /**
-    * MyMoneyFile::NotifyClassReport
-    * is a special id that will be notified whenever any report is changed
-    */
-  static const QCString NotifyClassReport;
-
-  /**
-    * MyMoneyFile::NotifyClassBudget
-    * is a special id that will be notified whenever any budget is changed
-    */
-  static const QCString NotifyClassBudget;
-
 
   /**
     * MyMoneyFile::OpeningBalancesPrefix is a special string used
@@ -1586,21 +1426,8 @@ private:
   IMyMoneyStorage *m_storage;
 
   /**
-    * This member variable keeps a set of all subjects known to
-    * the object (accounts, institutions, etc)
+    * This member points to the private data
     */
-  QMap<QCString, MyMoneyFileSubject> m_subjects;
-
-  /**
-    * This member keeps a list of ids to notify after an
-    * operation is completed.
-    */
-  QMap<QCString, bool> m_notificationList;
-
-  /**
-    */
-  bool m_suspendNotify;
-
   MyMoneyFilePrivate* const d;
 
   static MyMoneyFile* _instance;

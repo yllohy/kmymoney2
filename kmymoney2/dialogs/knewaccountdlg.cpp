@@ -580,7 +580,7 @@ void KNewAccountDlg::okClicked()
     // If it's a loan, check if the parent is asset or liability. In
     // case of asset, we change the account type to be AssetLoan
     if(acctype == MyMoneyAccount::Loan
-    && file->accountGroup(parent.accountType()) == MyMoneyAccount::Asset)
+    && parent.accountGroup() == MyMoneyAccount::Asset)
       acctype = MyMoneyAccount::AssetLoan;
 
 #if 0
@@ -595,7 +595,7 @@ void KNewAccountDlg::okClicked()
   }
   else
   {
-    acctype = MyMoneyFile::instance()->accountGroup(parent.accountType());
+    acctype = parent.accountGroup();
     QString newName;
     if(!MyMoneyFile::instance()->isStandardAccount(parent.id())) {
       newName = MyMoneyFile::instance()->accountToCategory(parent.id()) + MyMoneyFile::AccountSeperator;
@@ -778,7 +778,7 @@ void KNewAccountDlg::initParentWidget(QCString parentId, const QCString& account
   MyMoneyAccount::accountTypeE type;
   MyMoneyAccount::accountTypeE groupType;
   type = KMyMoneyUtils::stringToAccountType(typeCombo->currentText());
-  groupType = file->accountGroup(type);
+  groupType = MyMoneyAccount::accountGroup(type);
 
   m_qlistviewParentAccounts->clear();
 
@@ -1140,7 +1140,7 @@ void KNewAccountDlg::slotAccountTypeChanged(const QString& typeStr)
     oldType = m_account.accountType();
     if(oldType != type) {
       QCString parentId;
-      switch(file->accountGroup(type)) {
+      switch(MyMoneyAccount::accountGroup(type)) {
         case MyMoneyAccount::Asset:
           parentId = file->asset().id();
           break;

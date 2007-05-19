@@ -2,7 +2,7 @@
                           mymoneyfile.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
-                           (C) 2002 by Thomas Baumgart
+                           (C) 2002, 2007 by Thomas Baumgart
     email                : mte@users.sourceforge.net
                            ipwizard@users.sourceforge.net
  ***************************************************************************/
@@ -34,25 +34,13 @@
 #include "mymoneyfile.h"
 #include "mymoneyreport.h"
 #include "mymoneybudget.h"
+#include "mymoneyobjectcontainer.h"
 
 #ifndef HAVE_CONFIG_H
 #define VERSION "UNKNOWN"
 #else
 #include "config.h"
 #endif
-
-const QCString MyMoneyFile::NotifyClassAccount = "MyMoneyFile::NotifyAccount";
-const QCString MyMoneyFile::NotifyClassPayee = "MyMoneyFile::NotifyPayee";
-const QCString MyMoneyFile::NotifyClassPayeeSet = "MyMoneyFile::NotifyPayeeSet";
-const QCString MyMoneyFile::NotifyClassInstitution = "MyMoneyFile::NotifyInstitution";
-const QCString MyMoneyFile::NotifyClassAccountHierarchy = "MyMoneyFile::NotifyAccountHierarchy";
-const QCString MyMoneyFile::NotifyClassSchedule = "MyMoneyFile::NotifySchedule";
-const QCString MyMoneyFile::NotifyClassAnyChange = "MyMoneyFile::NotifyAnyChange";
-const QCString MyMoneyFile::NotifyClassCurrency = "MyMoneyFile::NotifyCurrency";
-const QCString MyMoneyFile::NotifyClassSecurity = "MyMoneyFile::NotifySecurity";
-const QCString MyMoneyFile::NotifyClassReport = "MyMoneyFile::NotifyReport";
-const QCString MyMoneyFile::NotifyClassBudget = "MyMoneyFile::NotifyBudget";
-const QCString MyMoneyFile::NotifyClassPrice = "MyMoneyFile::NotifyPrice";
 
 const QString MyMoneyFile::OpeningBalancesPrefix = "Opening Balances";
 const QString MyMoneyFile::AccountSeperator = ":";
@@ -66,7 +54,15 @@ class MyMoneyFilePrivate
 public:
   MyMoneyFilePrivate() {}
 
-  MyMoneySecurity m_baseCurrency;
+  MyMoneySecurity        m_baseCurrency;
+  MyMoneyObjectContainer m_cache;
+
+  /**
+    * This member keeps a list of ids to notify after an
+    * operation is completed.
+    */
+  QMap<QCString, bool>   m_notificationList;
+
 };
 
 MyMoneyFile* const MyMoneyFile::instance()
@@ -81,7 +77,6 @@ MyMoneyFile::MyMoneyFile() :
   d(new MyMoneyFilePrivate)
 {
   m_storage = 0;
-  m_suspendNotify = false;
 }
 
 MyMoneyFile::~MyMoneyFile()
@@ -110,12 +105,16 @@ void MyMoneyFile::attachStorage(IMyMoneyStorage* const storage)
   // force reload of base currency
   d->m_baseCurrency = MyMoneySecurity();
 
+  // and the whole cache
+  d->m_cache.clear();
+
   // notify application about new data availability
   emit dataChanged();
 }
 
 void MyMoneyFile::detachStorage(IMyMoneyStorage* const /* storage */)
 {
+  d->m_cache.clear();
   m_storage = 0;
 }
 
@@ -131,25 +130,24 @@ void MyMoneyFile::addInstitution(MyMoneyInstitution& institution)
 
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->addInstitution(institution);
 
-  addNotification(NotifyClassInstitution);
+  addNotification(institution.id());
 }
 
 void MyMoneyFile::modifyInstitution(const MyMoneyInstitution& institution)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->modifyInstitution(institution);
 
   addNotification(institution.id());
-  addNotification(NotifyClassInstitution);
 }
 
 void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
@@ -181,8 +179,7 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
       if((*it_s).action() == MyMoneySplit::ActionTransfer) {
         MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
 
-        if(acc.accountGroup() == MyMoneyAccount::Asset
-        || acc.accountGroup() == MyMoneyAccount::Liability) {
+        if(acc.isAssetLiability()) {
           MyMoneySplit s = (*it_s);
           s.setAction(MyMoneySplit::ActionAmortization);
           tCopy.modifySplit(s);
@@ -192,7 +189,7 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
     }
   }
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   // get the current setting of this transaction
@@ -201,11 +198,8 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
   // scan the splits again to update notification list
   // and mark all accounts that are referenced
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
-    notifyAccountTree((*it_s).accountId());
-    if(!(*it_s).payeeId().isEmpty()) {
-      addNotification((*it_s).payeeId());
-      addNotification(NotifyClassPayee);
-    }
+    addNotification((*it_s).accountId());
+    addNotification((*it_s).payeeId());
   }
 
   // perform modification
@@ -213,14 +207,9 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
 
   // and mark all accounts that are referenced
   for(it_s = t->splits().begin(); it_s != t->splits().end(); ++it_s) {
-    notifyAccountTree((*it_s).accountId());
-    if(!(*it_s).payeeId().isEmpty()) {
-      addNotification((*it_s).payeeId());
-      addNotification(NotifyClassPayee);
-    }
+    addNotification((*it_s).accountId());
+    addNotification((*it_s).payeeId());
   }
-
-  addNotification(NotifyClassAccount);
 }
 
 void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
@@ -235,7 +224,7 @@ void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
   if(account.accountType() != acc.accountType())
     throw new MYMONEYEXCEPTION("Unable to change account type");
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   // if the account was moved to another insitution, we notify
@@ -243,36 +232,11 @@ void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
   if(acc.institutionId() != account.institutionId()) {
     addNotification(acc.institutionId());
     addNotification(account.institutionId());
-    addNotification(NotifyClassInstitution);
   }
 
   m_storage->modifyAccount(account);
 
-  notifyAccountTree(account.id());
-  addNotification(NotifyClassAccount);
-}
-
-const MyMoneyAccount::accountTypeE MyMoneyFile::accountGroup(MyMoneyAccount::accountTypeE type) const
-{
-  switch(type) {
-    case MyMoneyAccount::Checkings:
-    case MyMoneyAccount::Savings:
-    case MyMoneyAccount::Cash:
-    case MyMoneyAccount::Currency:
-    case MyMoneyAccount::Investment:
-    case MyMoneyAccount::MoneyMarket:
-    case MyMoneyAccount::CertificateDep:
-    case MyMoneyAccount::AssetLoan:
-    case MyMoneyAccount::Stock:
-      return MyMoneyAccount::Asset;
-
-    case MyMoneyAccount::CreditCard:
-    case MyMoneyAccount::Loan:
-      return MyMoneyAccount::Liability;
-
-    default:
-      return type;
-  }
+  addNotification(account.id());
 }
 
 void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent)
@@ -283,7 +247,7 @@ void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& paren
   if(isStandardAccount(account.id()))
     throw new MYMONEYEXCEPTION("Unable to reparent the standard account groups");
 
-  if(accountGroup(account.accountType()) == accountGroup(parent.accountType())
+  if(account.accountGroup() == parent.accountGroup()
   || (account.accountType() == MyMoneyAccount::Income && parent.accountType() == MyMoneyAccount::Expense)
   || (account.accountType() == MyMoneyAccount::Expense && parent.accountType() == MyMoneyAccount::Income)) {
 
@@ -293,18 +257,17 @@ void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& paren
     if(parent.accountType() == MyMoneyAccount::Investment && account.accountType() != MyMoneyAccount::Stock)
       throw new MYMONEYEXCEPTION("Unable to reparent non-stock to investment account");
 
-    // automatically notify all observers once this routine is done
+    // clear all changed objects from cache
     MyMoneyNotifier notifier(this);
 
-    // remember current account tree
-    notifyAccountTree(account.id());
+    // keep a notification of the current parent
+    addNotification(account.parentAccountId());
 
     m_storage->reparentAccount(account, parent);
 
-    // and also keep the new one
-    notifyAccountTree(account.id());
-    addNotification(NotifyClassAccount);
-    addNotification(NotifyClassAccountHierarchy);
+    // and also keep one for the account itself and the new parent
+    addNotification(account.id());
+    addNotification(parent.id());
 
   } else
     throw new MYMONEYEXCEPTION("Unable to reparent to different account type");
@@ -328,7 +291,7 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   // get the engine's idea about this transaction
@@ -337,13 +300,9 @@ void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
 
   // scan the splits again to update notification list
   for(it_s = tr.splits().begin(); it_s != tr.splits().end(); ++it_s) {
-    notifyAccountTree((*it_s).accountId());
-    if(!(*it_s).payeeId().isEmpty()) {
-      addNotification((*it_s).payeeId());
-      addNotification(NotifyClassPayee);
-    }
+    addNotification((*it_s).accountId());
+    addNotification((*it_s).payeeId());
   }
-  addNotification(NotifyClassAccount);
 
   m_storage->removeTransaction(transaction);
 }
@@ -390,20 +349,18 @@ void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
     throw new MYMONEYEXCEPTION("Unable to remove account with active splits");
   }
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   // collect all sub-ordinate accounts for notification
   QCStringList::ConstIterator it;
   for(it = acc.accountList().begin(); it != acc.accountList().end(); ++it)
-    notifyAccountTree(*it);
-  notifyAccountTree(parent.id());
+    addNotification(*it);
+  // don't forget the parent and a possible institution
+  addNotification(parent.id());
+  addNotification(account.institutionId());
 
   m_storage->removeAccount(account);
-
-  // also notify the pseudo account class
-  addNotification(NotifyClassAccount);
-  addNotification(NotifyClassAccountHierarchy);
 }
 
 void MyMoneyFile::removeAccountList(const QCStringList& account_list, unsigned int level) {
@@ -415,11 +372,10 @@ void MyMoneyFile::removeAccountList(const QCStringList& account_list, unsigned i
   if(!level) {
     if(!hasOnlyUnusedAccounts(account_list, 0))
       throw new MYMONEYEXCEPTION("One or more accounts cannot be removed");
-  }
 
-  // NOTE: We don't use a MyMoneyNotifier here, because the caller of this function,
-  //       e.g. KMyMoney2App::slotAccountDelete() will call removeAccount() afterwards
-  //       which will trigger all necessary updates.
+    // NOTE: We don't use a MyMoneyNotifier here, but rather clear the whole cache
+    d->m_cache.clear();
+  }
 
   // process all accounts in the list and test if they have transactions assigned
   for (QCStringList::const_iterator it = account_list.begin(); it != account_list.end(); ++it) {
@@ -458,14 +414,12 @@ void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   addNotification(institution.id());
 
   m_storage->removeInstitution(institution);
-
-  addNotification(NotifyClassInstitution);
 }
 
 void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
@@ -485,8 +439,6 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   if(account.id().length() != 0)
     throw new MYMONEYEXCEPTION("New account must have no id");
 
-// removed with MyMoneyAccount::Transaction
-//  || account.transactionList().count() != 0
   if(account.accountList().count() != 0)
     throw new MYMONEYEXCEPTION("New account must have no sub-accounts");
 
@@ -512,26 +464,6 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
     }
   }
 
-#if 0
-  // make sure that no account with the same name and type exist
-  // asset andliability as well as income and expense are considered
-  // the same type in this aspect.
-  switch(account.accountGroup()) {
-    case MyMoneyAccount::Income:
-    case MyMoneyAccount::Expense:
-      if(!categoryToAccount(account.name()).isEmpty())
-        throw new MYMONEYEXCEPTION("Account with that name already exists");
-      // for now, we only support income/expense accounts in the base currency
-      account.setCurrencyId(baseCurrency().id());
-      break;
-
-    default:
-      if(!nameToAccount(account.name()).isEmpty())
-        throw new MYMONEYEXCEPTION("Account with that name already exists");
-      break;
-  }
-#endif
-
   // FIXME: make sure, that the parent has the same type
   // I left it out here because I don't know, if there is
   // a tight coupling between e.g. checking accounts and the
@@ -552,7 +484,7 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   && parent.accountType() == MyMoneyAccount::Investment)
     throw new MYMONEYEXCEPTION("Investment account can only have stock accounts as children");
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   // if an institution is set, verify that it exists
@@ -576,14 +508,13 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   m_storage->addAccount(account);
   m_storage->addAccount(parent, account);
 
-  if(account.institutionId().length() != 0)
+  if(account.institutionId().length() != 0) {
     m_storage->addAccount(institution, account);
+    addNotification(institution.id());
+  }
 
-  // parse the complete account tree and collect all
-  // account and institution ids and also the pseudo account class
-  notifyAccountTree(account.id());
-  addNotification(NotifyClassAccount);
-  addNotification(NotifyClassAccountHierarchy);
+  addNotification(account.id());
+  addNotification(parent.id());
 }
 
 void MyMoneyFile::createOpeningBalanceTransaction(const MyMoneyAccount& acc, const MyMoneyMoney& balance)
@@ -735,7 +666,7 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   // perform some checks to see that the transaction stuff is OK. For
@@ -757,8 +688,7 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
     // the following line will throw an exception if the
     // account does not exist or is one of the standard accounts
     MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
-    if(acc.accountType() == MyMoneyAccount::Loan
-    || acc.accountType() == MyMoneyAccount::AssetLoan)
+    if(acc.isLoan())
       loanAccountAffected = true;
     if(isStandardAccount((*it_s).accountId()))
       throw new MYMONEYEXCEPTION("Cannot store split with standard account");
@@ -772,8 +702,7 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
       if((*it_s).action() == MyMoneySplit::ActionTransfer) {
         MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
 
-        if(acc.accountGroup() == MyMoneyAccount::Asset
-        || acc.accountGroup() == MyMoneyAccount::Liability) {
+        if(acc.isAssetLiability()) {
           MyMoneySplit s = (*it_s);
           s.setAction(MyMoneySplit::ActionAmortization);
           transaction.modifySplit(s);
@@ -792,14 +721,9 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
 
   // scan the splits again to update notification list
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
-    notifyAccountTree((*it_s).accountId());
-    if(!(*it_s).payeeId().isEmpty()) {
-      addNotification((*it_s).payeeId());
-      addNotification(NotifyClassPayee);
-    }
+    addNotification((*it_s).accountId());
+    addNotification((*it_s).payeeId());
   }
-
-  addNotification(NotifyClassAccount);
 }
 
 void MyMoneyFile::updateBalances(const QMap<QCString, MyMoneyMoney>& diffMap)
@@ -835,7 +759,7 @@ void MyMoneyFile::addPayee(MyMoneyPayee& payee)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->addPayee(payee);
@@ -862,25 +786,24 @@ void MyMoneyFile::modifyPayee(const MyMoneyPayee& payee)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  m_storage->modifyPayee(payee);
+  addNotification(payee.id());
 
-  addNotification(NotifyClassPayee);
+  m_storage->modifyPayee(payee);
 }
 
 void MyMoneyFile::removePayee(const MyMoneyPayee& payee)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  m_storage->removePayee(payee);
+  addNotification(payee.id());
 
-  addNotification(NotifyClassPayee);
-  addNotification(NotifyClassPayeeSet);
+  m_storage->removePayee(payee);
 }
 
 const QValueList<MyMoneyAccount> MyMoneyFile::accountList(const QCStringList& idlist, const bool recursive) const
@@ -905,11 +828,10 @@ void MyMoneyFile::setUser(const MyMoneyPayee& user)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->setUser(user);
-  addNotification(NotifyClassAnyChange);
 }
 
 bool MyMoneyFile::dirty(void) const
@@ -938,7 +860,6 @@ void MyMoneyFile::ensureDefaultCurrency(MyMoneyAccount& acc) const
   if(acc.currencyId().isEmpty()) {
     if(!baseCurrency().id().isEmpty())
       acc.setCurrencyId(baseCurrency().id());
-    // m_storage->modifyAccount(acc);
   }
 }
 
@@ -1163,85 +1084,32 @@ const MyMoneyMoney MyMoneyFile::totalValue(const QCString& id, const QDate& date
   return result;
 }
 
-void MyMoneyFile::attach(const QCString& id, MyMoneyObserver* observer)
-{
-  // qDebug("attach 0x%08lX for %s", (unsigned long) observer, id.data());
-  QMap<QCString, MyMoneyFileSubject>::Iterator it_s;
-
-  // make sure an entry for the subject with the id exists
-  m_subjects[id];
-
-  it_s = m_subjects.find(id);
-  (*it_s).attach(observer);
-}
-
-void MyMoneyFile::detach(const QCString& id, MyMoneyObserver* observer)
-{
-  // qDebug("detach 0x%08lX for %s", (unsigned long) observer, id.data());
-  QMap<QCString, MyMoneyFileSubject>::Iterator it_s;
-
-  it_s = m_subjects.find(id);
-  if(it_s != m_subjects.end())
-    (*it_s).detach(observer);
-}
-
-void MyMoneyFile::notify(const QCString& id)
-{
-  QMap<QCString, MyMoneyFileSubject>::Iterator it_s;
-
-  it_s = m_subjects.find(id);
-  if(it_s != m_subjects.end()) {
-    (*it_s).notify(id);
-  }
-}
-
 void MyMoneyFile::notify(void)
 {
-  if(!m_suspendNotify) {
-    QMap<QCString, bool>::ConstIterator it;
-    // keep a local copy so that the called update()
-    // members can modify the original list
-    QMap<QCString, bool> list = m_notificationList;
-    for(it = list.begin(); it != list.end(); ++it) {
-      notify(it.key());
-    }
-
-    if(list.count() > 0) {
-      notify(NotifyClassAnyChange);
-      emit dataChanged();
-    }
-
-    clearNotification();
+  QMap<QCString, bool>::ConstIterator it;
+  // keep a local copy so that the called update()
+  // members can modify the original list
+  for(it = d->m_notificationList.begin(); it != d->m_notificationList.end(); ++it) {
+    // TODO remove the stuff from the cache
   }
-}
 
-void MyMoneyFile::notifyAccountTree(const QCString& id)
-{
-  checkStorage();
+  // TODO once we have start/commit/rollback-Transaction in place, the
+  // emission of dataChanged() should go to commitTransaction()
+  emit dataChanged();
 
-  QCString accId = id;
-  MyMoneyAccount acc;
-
-  for(;;) {
-    addNotification(accId);
-    if(isStandardAccount(accId))
-      break;
-    acc = account(accId);
-    addNotification(acc.institutionId());
-    accId = acc.parentAccountId();
-  }
+  clearNotification();
 }
 
 void MyMoneyFile::addNotification(const QCString& id)
 {
   if(!id.isEmpty())
-    m_notificationList[id] = true;
+    d->m_notificationList[id] = true;
 }
 
 void MyMoneyFile::clearNotification()
 {
   // reset list to be empty
-  m_notificationList.clear();
+  d->m_notificationList.clear();
 }
 
 void MyMoneyFile::transactionList(QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >& list, MyMoneyTransactionFilter& filter) const
@@ -1356,60 +1224,57 @@ void MyMoneyFile::setValue(const QCString& key, const QString& val)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->setValue(key, val);
-
-  addNotification(NotifyClassAnyChange);
 }
 
 void MyMoneyFile::deletePair(const QCString& key)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->deletePair(key);
-
-  addNotification(NotifyClassAnyChange);
 }
 
 void MyMoneyFile::addSchedule(MyMoneySchedule& sched)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->addSchedule(sched);
 
-  addNotification(NotifyClassSchedule);
+  addNotification(sched.id());
 }
 
 void MyMoneyFile::modifySchedule(const MyMoneySchedule& sched)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->modifySchedule(sched);
 
-  addNotification(NotifyClassSchedule);
+  addNotification(sched.id());
 }
 
 void MyMoneyFile::removeSchedule(const MyMoneySchedule& sched)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
+
+  addNotification(sched.id());
 
   m_storage->removeSchedule(sched);
 
-  addNotification(NotifyClassSchedule);
 }
 
 const MyMoneySchedule MyMoneyFile::schedule(const QCString& id) const
@@ -1444,7 +1309,6 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   MyMoneyAccount parent;
   MyMoneyAccount child;
   MyMoneyAccount toplevel;
-  MyMoneyAccount::accountTypeE group;
 
   QCString parentId;
   QStringList rc;
@@ -1455,7 +1319,7 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   // check that we have a storage object
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   // get the current list of accounts
@@ -1472,8 +1336,7 @@ const QStringList MyMoneyFile::consistencyCheck(void)
       continue;
     }
 
-    group = accountGroup((*it_a).accountType());
-    switch(group) {
+    switch((*it_a).accountGroup()) {
       case MyMoneyAccount::Asset:
         toplevel = asset();
         break;
@@ -1498,7 +1361,7 @@ const QStringList MyMoneyFile::consistencyCheck(void)
     parentId = (*it_a).parentAccountId();
     try {
       parent = account(parentId);
-      if(group != accountGroup(parent.accountType())) {
+      if((*it_a).accountGroup() != parent.accountGroup()) {
         problemCount++;
         if(problemAccount != (*it_a).name()) {
           problemAccount = (*it_a).name();
@@ -1604,16 +1467,13 @@ const QStringList MyMoneyFile::consistencyCheck(void)
     if(accountRebuild.contains((*it_a).id())) {
       try {
         m_storage->modifyAccount(*it_a, true);
-        notifyAccountTree((*it_a).id());
+        addNotification((*it_a).id());
       } catch (MyMoneyException *e) {
         delete e;
         rc << QString("  * Unable to update account data for account %1 in engine").arg((*it_a).name());
       }
     }
   }
-
-  addNotification(NotifyClassAccount);
-  addNotification(NotifyClassAccountHierarchy);
 
   // add more checks here
 
@@ -1686,50 +1546,37 @@ QValueList<MyMoneySchedule> MyMoneyFile::scheduleListEx( int scheduleTypes,
   return m_storage->scheduleListEx(scheduleTypes, scheduleOcurrences, schedulePaymentTypes, startDate, accounts);
 }
 
-void MyMoneyFile::suspendNotify(const bool state)
-{
-  bool prevState = m_suspendNotify;
-  m_suspendNotify = state;
-
-  if(state == false && prevState == true) {
-    notify();
-  }
-  // qDebug("Notification turned %s", state ? "off" : "on");
-}
-
-
 void MyMoneyFile::addSecurity(MyMoneySecurity& security)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->addSecurity(security);
-  addNotification(NotifyClassSecurity);
+  addNotification(security.id());
 }
 
 void MyMoneyFile::modifySecurity(const MyMoneySecurity& security)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->modifySecurity(security);
   addNotification(security.id());
-  addNotification(NotifyClassSecurity);
 }
 
 void MyMoneyFile::removeSecurity(const MyMoneySecurity& security)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
+  addNotification(security.id());
   m_storage->removeSecurity(security);
-  addNotification(NotifyClassSecurity);
 }
 
 const MyMoneySecurity MyMoneyFile::security(const QCString& id) const
@@ -1756,18 +1603,18 @@ void MyMoneyFile::addCurrency(const MyMoneySecurity& currency)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->addCurrency(currency);
-  addNotification(NotifyClassCurrency);
+  addNotification(currency.id());
 }
 
 void MyMoneyFile::modifyCurrency(const MyMoneySecurity& currency)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   // force reload of base currency object
@@ -1775,18 +1622,18 @@ void MyMoneyFile::modifyCurrency(const MyMoneySecurity& currency)
     d->m_baseCurrency.clearId();
 
   m_storage->modifyCurrency(currency);
-  addNotification(NotifyClassCurrency);
+  addNotification(currency.id());
 }
 
 void MyMoneyFile::removeCurrency(const MyMoneySecurity& currency)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
+  addNotification(currency.id());
   m_storage->removeCurrency(currency);
-  addNotification(NotifyClassCurrency);
 }
 
 const MyMoneySecurity& MyMoneyFile::currency(const QCString& id) const
@@ -1821,38 +1668,28 @@ void MyMoneyFile::setBaseCurrency(const MyMoneySecurity& curr)
   // make sure the currency exists
   MyMoneySecurity c = currency(curr.id());
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   setValue("kmm-baseCurrency", curr.id());
-
-  addNotification(NotifyClassCurrency);
 }
 
 void MyMoneyFile::addPrice(const MyMoneyPrice& price)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->addPrice(price);
-
-  addNotification(NotifyClassPrice);
-  addNotification(price.from());
-  addNotification(price.to());
 }
 
 void MyMoneyFile::removePrice(const MyMoneyPrice& price)
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
-
-  addNotification(NotifyClassPrice);
-  addNotification(price.from());
-  addNotification(price.to());
 
   m_storage->removePrice(price);
 }
@@ -1916,24 +1753,24 @@ void MyMoneyFile::addReport( MyMoneyReport& report )
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->addReport( report );
 
-  addNotification(NotifyClassReport);
+  addNotification(report.id());
 }
 
 void MyMoneyFile::modifyReport( const MyMoneyReport& report )
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->modifyReport( report );
 
-  addNotification(NotifyClassReport);
+  addNotification(report.id());
 }
 
 unsigned MyMoneyFile::countReports(void) const
@@ -1955,9 +1792,8 @@ void MyMoneyFile::removeReport(const MyMoneyReport& report)
   checkStorage();
   MyMoneyNotifier notifier(this);
 
+  addNotification(report.id());
   m_storage->removeReport(report);
-
-  addNotification(NotifyClassReport);
 }
 
 
@@ -1972,12 +1808,12 @@ void MyMoneyFile::addBudget( MyMoneyBudget& budget )
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->addBudget( budget );
 
-  addNotification(NotifyClassBudget);
+  addNotification(budget.id());
 }
 
 const MyMoneyBudget& MyMoneyFile::budgetByName(const QString& name) const
@@ -1991,12 +1827,12 @@ void MyMoneyFile::modifyBudget( const MyMoneyBudget& budget )
 {
   checkStorage();
 
-  // automatically notify all observers once this routine is done
+  // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->modifyBudget( budget );
 
-  addNotification(NotifyClassBudget);
+  addNotification(budget.id());
 }
 
 unsigned MyMoneyFile::countBudgets(void) const
@@ -2018,49 +1854,16 @@ void MyMoneyFile::removeBudget(const MyMoneyBudget& budget)
   checkStorage();
   MyMoneyNotifier notifier(this);
 
+  addNotification(budget.id());
   m_storage->removeBudget(budget);
-
-  addNotification(NotifyClassBudget);
 }
 
 
 
 bool MyMoneyFile::isReferenced(const MyMoneyObject& obj, const MyMoneyFileBitArray& skipChecks) const
 {
-  // FIXME add call to storage object
   checkStorage();
   return m_storage->isReferenced(obj, skipChecks);
-
-/*
-  // check the account list
-  QValueList<MyMoneyAccount> list_a = accountList();
-  QValueList<MyMoneyAccount>::ConstIterator it_a;
-  for(it_a = list_a.begin(); it_a != list_a.end(); ++it_a) {
-    if((*it_a).currencyId() == security.id())
-      return true;
-  }
-
-  // check the security list
-  QValueList<MyMoneySecurity> list_s = securityList();
-  list_s += currencyList();
-  QValueList<MyMoneySecurity>::ConstIterator it_s;
-  for(it_s = list_s.begin(); it_s != list_s.end(); ++it_s) {
-    // don't check myself
-    if((*it_s).id() == security.id())
-      continue;
-    if((*it_s).tradingCurrency() == security.id())
-      return true;
-  }
-
-  // check the price list
-  MyMoneyPriceList list_p = priceList();
-  MyMoneyPriceList::ConstIterator it_p;
-  for(it_p = list_p.begin(); it_p != list_p.end(); ++it_p) {
-    if(it_p.key().first == security.id()
-    || it_p.key().second == security.id())
-      return true;
-  }
-*/
 }
 
 const bool MyMoneyFile::checkNoUsed(const QCString& accId, const QString& no) const

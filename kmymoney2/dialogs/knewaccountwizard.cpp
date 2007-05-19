@@ -282,8 +282,7 @@ void KNewAccountWizard::accept()
     m_account.setValue("PreferredAccount", "Yes");
 
   // setup parent account
-  MyMoneyAccount::accountTypeE type = MyMoneyFile::instance()->accountGroup(m_accountType);
-  switch(type) {
+  switch(MyMoneyAccount::accountGroup(m_accountType)) {
     default:
     case MyMoneyAccount::Asset:
       m_parent = MyMoneyFile::instance()->asset();

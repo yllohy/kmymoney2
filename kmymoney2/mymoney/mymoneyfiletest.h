@@ -27,24 +27,6 @@
 #undef private
 #undef protected
 
-class TestObserverSet : public MyMoneyObserver
-{
-public:
-        TestObserverSet() { m_updated.clear(); }
-        void update(const QCString& id) {
-		m_updated.append(id);
-		// cout << id << endl;
-	};
-        const QCStringList& updated(void) { return m_updated; };
-        void reset(void) {
-		m_updated.clear();
-		// cout << "Reset" << endl;
-	};
-private:
-        QCStringList m_updated;
-};
-
-
 class MyMoneyFileTest : public CppUnit::TestFixture  {
         CPPUNIT_TEST_SUITE(MyMoneyFileTest);
 	CPPUNIT_TEST(testEmptyConstructor);
@@ -91,8 +73,6 @@ class MyMoneyFileTest : public CppUnit::TestFixture  {
 protected:
 	MyMoneyFile	*m;
 	MyMoneySeqAccessMgr*	storage;
-	TestObserverSet *observer;
-	TestObserverSet *hierarchyObserver;
 	MyMoneyAccount  m_inv;
 
 public:
