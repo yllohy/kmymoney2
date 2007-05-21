@@ -1,3 +1,7 @@
+2007-05-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed crash when closing the passive popup of the date edit widget
+    during transaction editing
+
 2007-05-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Include style sheet contents in exported HTML reports
   * Prepare integration of general object cache in MyMoneyFile layer

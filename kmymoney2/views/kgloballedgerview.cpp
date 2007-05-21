@@ -34,6 +34,7 @@
 #include <kiconloader.h>
 #include <ktoolbar.h>
 #include <ktoolbarbutton.h>
+#include <kpassivepopup.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -92,6 +93,10 @@ bool MousePressFilter::isChildOf( QWidget* child, QWidget *parent )
 {
   while(child) {
     if(child == parent)
+      return true;
+    // If one of the ancestors is a KPassivePopup then it's as
+    // if it is a child of our own
+    if(dynamic_cast<KPassivePopup*>(child))
       return true;
     child = child->parentWidget();
   }
