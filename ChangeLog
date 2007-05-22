@@ -1,3 +1,7 @@
+2007-05-22 Thomas Baumgart <ipwizard@users.sourceforge.net>a
+  * Added new account template files for Spain (Spanish and Galician)
+    as provided by MVillarino
+
 2007-05-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed crash when closing the passive popup of the date edit widget
     during transaction editing
