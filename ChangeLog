@@ -1,4 +1,8 @@
-2007-05-22 Thomas Baumgart <ipwizard@users.sourceforge.net>a
+2007-05-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't include splits referencing deselected categories in transaction
+    report by category
+
+2007-05-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added new account template files for Spain (Spanish and Galician)
     as provided by MVillarino
 
