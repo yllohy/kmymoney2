@@ -30,20 +30,20 @@
 #include "kcurrencypagedecl.h"
 #include "kpasswordpagedecl.h"
 
-class NewUserWizard;
+class Wizard;
 
-namespace NewUserWizardPages {
+namespace NewUserWizard {
 
 /**
   * The first page of the new user wizard
   *
   * @author Thomas Baumgart
   */
-class GeneralPage : public KGeneralPageDecl, public WizardPage<NewUserWizard>
+class GeneralPage : public KGeneralPageDecl, public WizardPage<Wizard>
 {
   Q_OBJECT
 public:
-  GeneralPage(NewUserWizard* parent, const char* name = 0);
+  GeneralPage(Wizard* parent, const char* name = 0);
   KMyMoneyWizardPage* nextPage(void);
 };
 
@@ -52,11 +52,11 @@ public:
   *
   * @author Thomas Baumgart
   */
-class CurrencyPage : public KCurrencyPageDecl, public WizardPage<NewUserWizard>
+class CurrencyPage : public KCurrencyPageDecl, public WizardPage<Wizard>
 {
   Q_OBJECT
 public:
-  CurrencyPage(NewUserWizard* parent, const char* name = 0);
+  CurrencyPage(Wizard* parent, const char* name = 0);
   KMyMoneyWizardPage* nextPage(void);
 };
 
@@ -65,11 +65,11 @@ public:
   *
   * @author Thomas Baumgart
   */
-class PasswordPage : public KPasswordPageDecl, public WizardPage<NewUserWizard>
+class PasswordPage : public KPasswordPageDecl, public WizardPage<Wizard>
 {
   Q_OBJECT
 public:
-  PasswordPage(NewUserWizard* parent, const char* name = 0);
+  PasswordPage(Wizard* parent, const char* name = 0);
 };
 
 } // namespace

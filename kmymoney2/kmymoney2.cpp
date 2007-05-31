@@ -3801,7 +3801,7 @@ void KMyMoney2App::slotBudgetDelete(void)
 
 void KMyMoney2App::slotNewUserWizard(void)
 {
-  NewUserWizard *wizard = new NewUserWizard();
+  NewUserWizard::Wizard *wizard = new NewUserWizard::Wizard();
   wizard->exec();
   delete wizard;
 }

@@ -29,9 +29,9 @@
 #include "knewuserwizard.h"
 #include "knewuserwizard_p.h"
 
-using namespace NewUserWizardPages;
+using namespace NewUserWizard;
 
-NewUserWizard::NewUserWizard(QWidget *parent, const char *name, bool modal, WFlags flags)
+NewUserWizard::Wizard::Wizard(QWidget *parent, const char *name, bool modal, WFlags flags)
   : KMyMoneyWizard(parent, name, modal, flags)
 {
   setTitle(i18n("KMyMoney New User Setup"));
@@ -46,9 +46,9 @@ NewUserWizard::NewUserWizard(QWidget *parent, const char *name, bool modal, WFla
   setFirstPage(m_generalPage);
 }
 
-GeneralPage::GeneralPage(NewUserWizard* wizard, const char* name) :
+GeneralPage::GeneralPage(Wizard* wizard, const char* name) :
   KGeneralPageDecl(wizard),
-  WizardPage<NewUserWizard>(1, this, wizard, name)
+  WizardPage<Wizard>(1, this, wizard, name)
 {
 }
 
@@ -57,9 +57,9 @@ KMyMoneyWizardPage* GeneralPage::nextPage(void)
   return m_wizard->m_currencyPage;
 }
 
-CurrencyPage::CurrencyPage(NewUserWizard* wizard, const char* name) :
+CurrencyPage::CurrencyPage(Wizard* wizard, const char* name) :
   KCurrencyPageDecl(wizard),
-  WizardPage<NewUserWizard>(2, this, wizard, name)
+  WizardPage<Wizard>(2, this, wizard, name)
 {
 }
 
@@ -68,9 +68,9 @@ KMyMoneyWizardPage* CurrencyPage::nextPage(void)
   return m_wizard->m_passwordPage;
 }
 
-PasswordPage::PasswordPage(NewUserWizard* wizard, const char* name) :
+PasswordPage::PasswordPage(Wizard* wizard, const char* name) :
   KPasswordPageDecl(wizard),
-  WizardPage<NewUserWizard>(3, this, wizard, name)
+  WizardPage<Wizard>(3, this, wizard, name)
 {
 }
 

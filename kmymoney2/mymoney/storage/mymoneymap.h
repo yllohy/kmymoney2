@@ -211,7 +211,9 @@ private:
 
       void undo(void)
       {
-        m_container->remove(m_key);
+        // m_container->remove(m_key) does not work on GCC 4.0.2
+        // using this-> to access those member does the trick
+        this->m_container->remove(this->m_key);
       }
   };
 
@@ -226,7 +228,7 @@ private:
 
       void undo(void)
       {
-        (*m_container)[m_key] = m_obj;
+        (*(this->m_container))[this->m_key] = this->m_obj;
       }
   };
 
@@ -241,7 +243,7 @@ private:
 
       void undo(void)
       {
-        (*m_container)[m_key] = m_obj;
+        (*(this->m_container))[this->m_key] = this->m_obj;
       }
   };
 
