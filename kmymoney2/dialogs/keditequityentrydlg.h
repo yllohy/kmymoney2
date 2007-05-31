@@ -44,7 +44,7 @@
   * @author Kevin Tambascio
   */
 
-class KEditEquityEntryDlg : public kEditEquityEntryDecl
+class KEditEquityEntryDlg : public KEditEquityEntryDecl
 {
   Q_OBJECT
 public:

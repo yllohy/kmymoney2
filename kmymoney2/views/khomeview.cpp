@@ -119,7 +119,9 @@ void KHomeView::loadView(void)
   m_part->setZoomFactor( KMyMoneySettings::self()->fontSizePercentage() );
   //kdDebug() << "Setting font size: " << m_part->zoomFactor() << endl;
 
-  if(MyMoneyFile::instance()->accountList().count() == 0)
+  QValueList<MyMoneyAccount> list;
+  MyMoneyFile::instance()->accountList(list);
+  if(list.count() == 0)
   {
     m_part->openURL(m_filename);
 
@@ -446,7 +448,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
   bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked();
 
   // get list of all accounts
-  accounts = file->accountList();
+  file->accountList(accounts);
   for(it = accounts.begin(); it != accounts.end();) {
     prevIt = it;
     if(!(*it).isClosed() || showClosedAccounts) {

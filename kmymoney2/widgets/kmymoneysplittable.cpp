@@ -55,7 +55,6 @@
 #include <kmymoney/kmymoneycategory.h>
 #include <kmymoney/kmymoneyaccountselector.h>
 #include <kmymoney/kmymoneylineedit.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include <kmymoney/mymoneysecurity.h>
 #include <kmymoney/kmymoneyglobalsettings.h>
 
@@ -114,9 +113,8 @@ kMyMoneySplitTable::~kMyMoneySplitTable()
 {
 }
 
-void kMyMoneySplitTable::setup(MyMoneyObjectContainer *objects, const QMap<QCString, MyMoneyMoney>& priceInfo)
+void kMyMoneySplitTable::setup(const QMap<QCString, MyMoneyMoney>& priceInfo)
 {
-  m_objects = objects;
   m_priceInfo = priceInfo;
 }
 
@@ -512,7 +510,7 @@ void kMyMoneySplitTable::slotUpdateData(const MyMoneyTransaction& t)
       try {
         colText = MyMoneyFile::instance()->accountToCategory((*it).accountId());
       } catch(MyMoneyException *e) {
-        qDebug("Unexpected exception in KSplitTransactionDlg::updateSplit()");
+        qDebug("Unexpected exception in kMyMoneySplitTable::slotUpdateData()");
         delete e;
       }
     }
@@ -631,6 +629,8 @@ QWidget* kMyMoneySplitTable::slotStartEdit(void)
 
 void kMyMoneySplitTable::slotEndEdit(void)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
+
   MYMONEYTRACER(tracer);
   MyMoneySplit s1 = m_split;
 
@@ -650,13 +650,13 @@ void kMyMoneySplitTable::slotEndEdit(void)
 
   if(needUpdate) {
     if(!s1.value().isZero()) {
-      MyMoneyAccount cat = m_objects->account(s1.accountId());
+      MyMoneyAccount cat = file->account(s1.accountId());
       if(cat.currencyId() != m_transaction.commodity()) {
 
         MyMoneySecurity fromCurrency, toCurrency;
         MyMoneyMoney fromValue, toValue;
-        fromCurrency = m_objects->security(m_transaction.commodity());
-        toCurrency = m_objects->security(cat.currencyId());
+        fromCurrency = file->security(m_transaction.commodity());
+        toCurrency = file->security(cat.currencyId());
 
         // determine the fraction required for this category
         int fract = toCurrency.smallestAccountFraction();
@@ -848,7 +848,7 @@ void kMyMoneySplitTable::slotLoadEditWidgets(void)
   // reload category widget
   QCString categoryId = m_editCategory->selectedItem();
 
-  AccountSet aSet(m_objects);
+  AccountSet aSet;
   aSet.addAccountGroup(MyMoneyAccount::Asset);
   aSet.addAccountGroup(MyMoneyAccount::Liability);
   aSet.addAccountGroup(MyMoneyAccount::Income);

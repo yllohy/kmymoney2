@@ -669,7 +669,8 @@ void PivotTable::calculateOpeningBalances( void )
 
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  const QValueList<MyMoneyAccount>& accounts = file->accountList();
+  QValueList<MyMoneyAccount> accounts;
+  file->accountList(accounts);
 
   QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
 
@@ -798,7 +799,8 @@ void PivotTable::calculateBudgetMapping( void )
     // Go through all accounts in the system to build the mapping
     //
 
-    QValueList<MyMoneyAccount> accounts = file->accountList(QCStringList(),true /* recursive */);
+    QValueList<MyMoneyAccount> accounts;
+    file->accountList(accounts);
     QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
     while ( it_account != accounts.end() )
     {

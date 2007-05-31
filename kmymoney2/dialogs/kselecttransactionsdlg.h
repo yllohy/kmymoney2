@@ -33,7 +33,6 @@ class QResizeEvent;
 
 #include <kmymoney/register.h>
 #include <kmymoney/mymoneyaccount.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 
 #include "../dialogs/kselecttransactionsdlgdecl.h"
 
@@ -64,8 +63,6 @@ protected:
   void resizeEvent(QResizeEvent* ev);
 
 private:
-  MyMoneyObjectContainer    m_objects;
-
   /**
     * The account in which the transactions are displayed
     */

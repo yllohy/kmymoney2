@@ -31,9 +31,9 @@
 // Project Includes
 
 #include "kcategoryreassigndlg.h"
+#include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneycategory.h>
 #include <kmymoney/kmymoneyaccountselector.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include <kmymoney/kguiutils.h>
 
 KCategoryReassignDlg::KCategoryReassignDlg( QWidget* parent, const char* name) :
@@ -55,8 +55,7 @@ QCString KCategoryReassignDlg::show(const MyMoneyAccount& category)
   if (category.id().isEmpty())
    return QCString(); // no payee available? nothing can be selected...
 
-  MyMoneyObjectContainer objects;
-  AccountSet set(&objects);
+  AccountSet set;
   set.addAccountGroup(MyMoneyAccount::Income);
   set.addAccountGroup(MyMoneyAccount::Expense);
   set.load(m_category->selector());
@@ -69,7 +68,7 @@ QCString KCategoryReassignDlg::show(const MyMoneyAccount& category)
   QCStringList::const_iterator it_a;
   m_category->selector()->itemList(list);
   for(it_a = list.begin(); it_a != list.end(); ++it_a) {
-    MyMoneyAccount acc = objects.account(*it_a);
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(*it_a);
     if(acc.currencyId() != category.currencyId())
       m_category->selector()->removeItem(*it_a);
   }

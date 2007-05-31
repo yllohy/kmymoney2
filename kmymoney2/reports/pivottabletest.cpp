@@ -57,6 +57,7 @@ void PivotTableTest::setUp ()
   file = MyMoneyFile::instance();
   file->attachStorage(storage);
 
+  MyMoneyFileTransaction ft;
   file->addCurrency(MyMoneySecurity("CAD", "Canadian Dollar",        "C$"));
   file->addCurrency(MyMoneySecurity("USD", "US Dollar",              "$"));
   file->addCurrency(MyMoneySecurity("JPY", "Japanese Yen",           QChar(0x00A5), 100, 1));
@@ -86,6 +87,7 @@ void PivotTableTest::setUp ()
   MyMoneyInstitution i("Bank of the World","","","","","","");
   file->addInstitution(i);
   inBank = i.id();
+  ft.commit();
 }
 
 void PivotTableTest::tearDown ()

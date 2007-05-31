@@ -88,6 +88,7 @@ class InvTransactionHelper: public TransactionHelper
 {
 public:
   InvTransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _shares, MyMoneyMoney _value, const QCString& _stockaccountid, const QCString& _transferid, const QCString& _categoryid );
+  void init( const QDate& _date, const QCString& _action, MyMoneyMoney _shares, MyMoneyMoney _value, const QCString& _stockaccountid, const QCString& _transferid, const QCString& _categoryid );
 };
 
 class BudgetEntryHelper

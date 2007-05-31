@@ -412,6 +412,7 @@ void KPayeesView::slotRenamePayee(QListViewItem* p , int /* col */, const QStrin
   // create a copy of the new name without appended whitespaces
   QString new_name = txt.stripWhiteSpace();
   if (m_payee.name() != new_name) {
+    MyMoneyFileTransaction ft;
     try {
       // check if we already have a payee with the new name
       try {
@@ -444,6 +445,7 @@ void KPayeesView::slotRenamePayee(QListViewItem* p , int /* col */, const QStrin
       // out of sight due to the rename operation
       ensurePayeeVisible(m_payee.id());
 
+      ft.commit();
 
     } catch(MyMoneyException *e) {
       KMessageBox::detailedSorry(0, i18n("Unable to modify payee"),
@@ -719,6 +721,7 @@ void KPayeesView::slotPayeeDataChanged(void)
 void KPayeesView::slotUpdatePayee(void)
 {
   if(m_updateButton->isEnabled()) {
+    MyMoneyFileTransaction ft;
     try {
       m_payee.setName(m_newName);
       m_payee.setAddress(addressEdit->text());
@@ -734,6 +737,7 @@ void KPayeesView::slotUpdatePayee(void)
       );
 
       MyMoneyFile::instance()->modifyPayee(m_payee);
+      ft.commit();
 
     } catch(MyMoneyException *e) {
       KMessageBox::detailedSorry(0, i18n("Unable to modify payee"),

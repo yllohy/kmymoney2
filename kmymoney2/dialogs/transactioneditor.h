@@ -33,7 +33,6 @@
 
 #include <kmymoney/transactioneditorcontainer.h>
 #include <kmymoney/register.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 
 class KCurrencyExchange;
 class KMyMoneyCategory;
@@ -43,7 +42,7 @@ class TransactionEditor : public QObject
   Q_OBJECT
 public:
   TransactionEditor() {};
-  TransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+  TransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
   virtual ~TransactionEditor();
 
   /**
@@ -217,7 +216,6 @@ protected:
   TransactionEditorContainer*                       m_regForm;
   KMyMoneyRegister::Transaction*                    m_item;
   KMyMoneyRegister::QWidgetContainer                m_editWidgets;
-  MyMoneyObjectContainer*                           m_objects;
   MyMoneyAccount                                    m_account;
   MyMoneyTransaction                                m_transaction;
   MyMoneySplit                                      m_split;
@@ -233,7 +231,7 @@ class StdTransactionEditor : public TransactionEditor
   Q_OBJECT
 public:
   StdTransactionEditor();
-  StdTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+  StdTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
 
   bool isComplete(void) const;
   QWidget* firstWidget(void) const;

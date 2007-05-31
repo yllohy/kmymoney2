@@ -61,13 +61,11 @@
 #include <kmymoney/mymoneyexception.h>
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneyaccounttree.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include <kmymoney/kmymoneyglobalsettings.h>
 #include <kmymoney/mymoneyreport.h>
 #include <kmymoney/kguiutils.h>
 
 #include "../widgets/kmymoneycurrencyselector.h"
-#include "../widgets/kmymoneyequity.h"
 #include "../widgets/kmymoneyaccountselector.h"
 
 #include "../mymoney/mymoneyexception.h"
@@ -164,9 +162,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     }
     m_qcheckboxPreferred->hide();
     m_currency->setEnabled(false);
-    m_equityText->hide();
-    m_equity->hide();
-    minimumBalanceEdit->hide();
 
     m_qcheckboxTax->setChecked(account.value("Tax") == "Yes");
     loadVatAccounts();
@@ -295,6 +290,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     loadKVP("minBalanceEarly", m_minBalanceEarlyEdit);
     loadKVP("maxCreditAbsolute", m_maxCreditAbsoluteEdit);
     loadKVP("maxCreditEarly", m_maxCreditEarlyEdit);
+    loadKVP("lastNumberUsed", m_lastCheckNumberUsed);
 
     // we do not allow to change the account type once an account
     // was created. Same applies to currency.
@@ -308,11 +304,11 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       m_qcheckboxPreferred->hide();
       m_currencyText->hide();
       m_currency->hide();
-      minimumBalanceEdit->hide();
     } else {
-      m_equityText->hide();
-      m_equity->hide();
-      minimumBalanceEdit->setValue(MyMoneyMoney(account.value("minimumBalance")));
+      // use the old field and override a possible new value
+      if(!MyMoneyMoney(account.value("minimumBalance")).isZero()) {
+        m_minBalanceAbsoluteEdit->setValue(MyMoneyMoney(account.value("minimumBalance")));
+      }
     }
 
     m_qcheckboxTax->hide();
@@ -321,12 +317,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
 
   }
 
-  // setup the currency / equity widgets
-  if(account.accountType() == MyMoneyAccount::Stock) {
-    m_equity->loadEquity(account.currencyId());
-  } else {
-    m_currency->setSecurity(file->currency(account.currencyId()));
-  }
+  m_currency->setSecurity(file->currency(account.currencyId()));
 
   // Load the institutions
   // then the accounts
@@ -381,8 +372,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     this, SLOT(slotAccountTypeChanged(const QString&)));
 
   connect(accountNameEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckFinished()));
-  // connect(m_equity, SIGNAL(equityChanged(const QCString&)), this, SLOT(slotCheckFinished()));
-  connect(m_equity, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckFinished()));
 
   connect(m_vatCategory, SIGNAL(toggled(bool)), this, SLOT(slotVatChanged(bool)));
   connect(m_vatAssignment, SIGNAL(toggled(bool)), this, SLOT(slotVatAssignmentChanged(bool)));
@@ -453,7 +442,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       i18n("Generated Report")
     );
     reportCfg.setChartByDefault(true);
-    reportCfg.setChartGridLines(false);
+    reportCfg.setChartGridLines(true);
     reportCfg.setChartDataLabels(false);
     reportCfg.setDetailLevel(MyMoneyReport::eDetailAll);
     reportCfg.setChartType(MyMoneyReport::eChartLine);
@@ -572,6 +561,9 @@ void KNewAccountDlg::okClicked()
   storeKVP("minBalanceEarly", m_minBalanceEarlyEdit);
   storeKVP("maxCreditAbsolute", m_maxCreditAbsoluteEdit);
   storeKVP("maxCreditEarly", m_maxCreditEarlyEdit);
+  storeKVP("lastNumberUsed", m_lastCheckNumberUsed);
+  // delete a previous version of the minimumbalance information
+  storeKVP("minimumBalance", QString(), QString());
 
   MyMoneyAccount::accountTypeE acctype;
   if (!m_categoryEditor)
@@ -614,11 +606,7 @@ void KNewAccountDlg::okClicked()
   if (!m_categoryEditor)
   {
     m_account.setOpeningDate(startDateEdit->date());
-    if(m_account.accountType() == MyMoneyAccount::Stock) {
-      m_account.setCurrencyId(m_equity->id());
-    } else {
-      m_account.setCurrencyId(m_currency->security().id());
-    }
+    m_account.setCurrencyId(m_currency->security().id());
 
     if(m_qcheckboxPreferred->isChecked())
       m_account.setValue("PreferredAccount", "Yes");
@@ -629,8 +617,8 @@ void KNewAccountDlg::okClicked()
     else
       m_account.deletePair("NoVat");
 
-    if(minimumBalanceEdit->isVisible()) {
-      m_account.setValue("minimumBalance", minimumBalanceEdit->value().toString());
+    if(m_minBalanceAbsoluteEdit->isVisible()) {
+      m_account.setValue("minimumBalance", m_minBalanceAbsoluteEdit->value().toString());
     }
   }
   else
@@ -1024,7 +1012,8 @@ void KNewAccountDlg::slotSelectionChanged(QListViewItem *item)
 
 void KNewAccountDlg::loadVatAccounts(void)
 {
-  QValueList<MyMoneyAccount> list = MyMoneyFile::instance()->accountList();
+  QValueList<MyMoneyAccount> list;
+  MyMoneyFile::instance()->accountList(list);
   QValueList<MyMoneyAccount>::Iterator it;
   QCStringList loadListExpense;
   QCStringList loadListIncome;
@@ -1036,8 +1025,7 @@ void KNewAccountDlg::loadVatAccounts(void)
         loadListIncome += (*it).id();
     }
   }
-  MyMoneyObjectContainer objects;
-  AccountSet vatSet(&objects);
+  AccountSet vatSet;
   vatSet.load(m_vatAccount, i18n("Income"), loadListIncome, true);
   vatSet.load(m_vatAccount, i18n("Expense"), loadListExpense, false);
 }
@@ -1088,19 +1076,20 @@ void KNewAccountDlg::slotNewClicked()
   KNewBankDlg dlg(institution, this);
   if (dlg.exec())
   {
+    MyMoneyFileTransaction ft;
     try
     {
       MyMoneyFile *file = MyMoneyFile::instance();
 
       institution = dlg.institution();
       file->addInstitution(institution);
+      ft.commit();
       slotLoadInstitutions(institution.name());
     }
     catch (MyMoneyException *e)
     {
       delete e;
       KMessageBox::information(this, i18n("Cannot add institution"));
-      return;
     }
   }
 }
@@ -1171,12 +1160,6 @@ void KNewAccountDlg::slotCheckFinished(void)
 
   if(accountNameEdit->text().length() == 0) {
     showButton = false;
-  }
-
-  if(m_account.accountType() == MyMoneyAccount::Stock) {
-    if(m_equity->text().length() == 0) {
-      showButton = false;
-    }
   }
 
   if(m_vatCategory->isChecked() && m_vatRate->value() <= MyMoneyMoney(0)) {

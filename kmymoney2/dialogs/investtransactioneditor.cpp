@@ -89,12 +89,12 @@ InvestTransactionEditor::~InvestTransactionEditor()
   delete d;
 }
 
-InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::InvestTransaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
-  TransactionEditor(regForm, objects, item, list, lastPostDate),
+InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::InvestTransaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
+  TransactionEditor(regForm, item, list, lastPostDate),
   d(new InvestTransactionEditorPrivate(this))
 {
   // dissect the transaction into its type, splits, currency, security etc.
-  dissectTransaction(m_transaction, m_split, m_objects,
+  dissectTransaction(m_transaction, m_split,
                      m_assetAccountSplit,
                      m_feeSplits,
                      m_interestSplits,
@@ -138,17 +138,18 @@ void InvestTransactionEditor::activityFactory(MyMoneySplit::investTransactionTyp
   }
 }
 
-void InvestTransactionEditor::dissectTransaction(const MyMoneyTransaction& transaction, const MyMoneySplit& split, MyMoneyObjectContainer* objects, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency, MyMoneySplit::investTransactionTypeE& transactionType)
+void InvestTransactionEditor::dissectTransaction(const MyMoneyTransaction& transaction, const MyMoneySplit& split, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency, MyMoneySplit::investTransactionTypeE& transactionType)
 {
   // collect the splits. split references the stock account and should already
   // be set up. assetAccountSplit references the corresponding asset account (maybe
   // empty), feeSplits is the list of all expenses and interestSplits
   // the list of all incomes
+  MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneySplit>::ConstIterator it_s;
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
-    MyMoneyAccount acc = objects->account((*it_s).accountId());
+    MyMoneyAccount acc = file->account((*it_s).accountId());
     if((*it_s).id() == split.id()) {
-      security = objects->security(acc.currencyId());
+      security = file->security(acc.currencyId());
     } else if(acc.accountGroup() == MyMoneyAccount::Expense) {
       feeSplits.append(*it_s);
       // feeAmount += (*it_s).value();
@@ -178,7 +179,7 @@ void InvestTransactionEditor::dissectTransaction(const MyMoneyTransaction& trans
 
   currency.setTradingSymbol("???");
   try {
-    currency = objects->security(transaction.commodity());
+    currency = file->security(transaction.commodity());
   } catch(MyMoneyException *e) {
     delete e;
   }
@@ -497,13 +498,13 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
   bool haveEquityAccount = false;
   QValueList<MyMoneySplit>::const_iterator it_s;
   for(it_s = m_transaction.splits().begin(); !haveEquityAccount && it_s != m_transaction.splits().end(); ++it_s) {
-    MyMoneyAccount acc = m_objects->account((*it_s).accountId());
+    MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
     if(acc.accountType() == MyMoneyAccount::Equity)
       haveEquityAccount = true;
   }
 
   // asset-account
-  AccountSet aSet(m_objects);
+  AccountSet aSet;
   aSet.clear();
   aSet.addAccountType(MyMoneyAccount::Checkings);
   aSet.addAccountType(MyMoneyAccount::Savings);
@@ -646,9 +647,10 @@ MyMoneyMoney InvestTransactionEditor::subtotal(const QValueList<MyMoneySplit>& s
 
 void InvestTransactionEditor::slotUpdateSecurity(const QCString& stockId)
 {
-  MyMoneyAccount stock = m_objects->account(stockId);
-  m_security = m_objects->security(stock.currencyId());
-  m_currency = m_objects->security(m_security.tradingCurrency());
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyAccount stock = file->account(stockId);
+  m_security = file->security(stock.currencyId());
+  m_currency = file->security(m_security.tradingCurrency());
   bool currencyKnown = !m_currency.id().isEmpty();
   if(!currencyKnown) {
     m_currency.setTradingSymbol("???");
@@ -749,8 +751,9 @@ void InvestTransactionEditor::slotUpdateActivity(MyMoneySplit::investTransaction
 
 bool InvestTransactionEditor::setupPrice(const MyMoneyTransaction& t, MyMoneySplit& split)
 {
-  MyMoneyAccount acc = m_objects->account(split.accountId());
-  MyMoneySecurity toCurrency(m_objects->security(acc.currencyId()));
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyAccount acc = file->account(split.accountId());
+  MyMoneySecurity toCurrency(file->security(acc.currencyId()));
   int fract = acc.fraction(toCurrency);
 
   if(acc.currencyId() != t.commodity()) {
@@ -761,7 +764,7 @@ bool InvestTransactionEditor::setupPrice(const MyMoneyTransaction& t, MyMoneySpl
     // if it's not found, then collect it from the user first
     MyMoneyMoney price;
     if(it_p == m_priceInfo.end()) {
-      MyMoneySecurity fromCurrency = m_objects->security(t.commodity());
+      MyMoneySecurity fromCurrency = file->security(t.commodity());
       MyMoneyMoney fromValue, toValue;
 
       fromValue = split.value();
@@ -797,6 +800,7 @@ bool InvestTransactionEditor::setupPrice(const MyMoneyTransaction& t, MyMoneySpl
 
 bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig, bool /* skipPriceDialog */)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
   // we start with the previous values, make sure we can add them later on
   t = torig;
   MyMoneySplit s0 = sorig;
@@ -807,9 +811,9 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
     QCString securityId = sec->selectedItem();
     if(!securityId.isEmpty()) {
       s0.setAccountId(securityId);
-      MyMoneyAccount stockAccount = m_objects->account(securityId);
+      MyMoneyAccount stockAccount = file->account(securityId);
       QCString currencyId = stockAccount.currencyId();
-      MyMoneySecurity security = m_objects->security(currencyId);
+      MyMoneySecurity security = file->security(currencyId);
 
       t.setCommodity(security.tradingCurrency());
     } else {
@@ -824,7 +828,7 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
   if(!torig.id().isEmpty()) {
     for(it_s = torig.splits().begin(); it_s != torig.splits().end(); ++it_s) {
       if((*it_s).id() != sorig.id()) {
-        MyMoneyAccount cat = m_objects->account((*it_s).accountId());
+        MyMoneyAccount cat = file->account((*it_s).accountId());
         if(cat.currencyId() != m_account.currencyId()) {
           if(!(*it_s).shares().isZero() && !(*it_s).value().isZero()) {
             m_priceInfo[cat.currencyId()] = ((*it_s).shares() / (*it_s).value()).reduce();
@@ -859,7 +863,7 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
   MyMoneySplit::investTransactionTypeE transactionType;
 
   // extract the splits from the original transaction
-  dissectTransaction(torig, sorig, m_objects,
+  dissectTransaction(torig, sorig,
                      assetAccountSplit,
                      feeSplits,
                      interestSplits,

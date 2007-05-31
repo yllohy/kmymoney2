@@ -10,10 +10,10 @@ libstorage_a_SOURCES = imymoneystorageformat.cpp mymoneystoragexml.cpp mymoneyst
 instdir=$(includedir)/kmymoney
 inst_HEADERS = imymoneystorage.h imymoneyserialize.h imymoneystorageformat.h
 
-noinst_HEADERS = mymoneyseqaccessmgr.h mymoneystorageanon.h mymoneystoragedump.h mymoneystoragexml.h mymoneyseqaccessmgrtest.h mymoneystoragesql.h mymoneystoragebin.h
+noinst_HEADERS = mymoneyseqaccessmgr.h mymoneystorageanon.h mymoneystoragedump.h mymoneystoragexml.h mymoneyseqaccessmgrtest.h mymoneystoragesql.h mymoneystoragebin.h mymoneymap.h mymoneymaptest.h
 
 if CPPUNIT
 check_LIBRARIES = libstoragetest.a
 
-libstoragetest_a_SOURCES = mymoneyseqaccessmgrtest.cpp
+libstoragetest_a_SOURCES = mymoneyseqaccessmgrtest.cpp mymoneymaptest.cpp
 endif

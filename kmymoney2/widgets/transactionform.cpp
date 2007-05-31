@@ -37,7 +37,6 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include <kmymoney/kmymoneydateinput.h>
 #include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/kmymoneycategory.h>

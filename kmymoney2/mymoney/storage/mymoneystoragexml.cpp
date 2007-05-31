@@ -104,6 +104,7 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
 
   m_storage = storage;
 
+  qDebug("start reading file");
   m_doc = new QDomDocument;
   Q_CHECK_PTR(m_doc);
   if(!m_doc->setContent(pDevice, FALSE))
@@ -120,19 +121,30 @@ void MyMoneyStorageXML::readFile(QIODevice* pDevice, IMyMoneySerialize* storage)
   readKeyValuePairs();
   m_baseCurrencyId = m_storage->pairs()["kmm-baseCurrency"];
 
+  qDebug("start parsing contents");
   readFileInformation();
   readUserInformation();
+  qDebug("reading institutions");
   readInstitutions();
+  qDebug("reading payees");
   readPayees();
+  qDebug("reading accounts");
   readAccounts();
+  qDebug("reading transactions");
   readTransactions();
+  qDebug("reading schedules");
   readSchedules();
+  qDebug("reading securities");
   readSecurities();
-  readEquities(); /* backwards compatibility; we no longer write these */
+  qDebug("reading currencies");
   readCurrencies();
+  qDebug("reading prices");
   readPrices();
+  qDebug("reading reports");
   readReports();
+  qDebug("reading budgets");
   readBudgets();
+  qDebug("reading done");
 
   // check if we need to build up the account balances
   if(fileVersionRead < 2)
@@ -349,19 +361,24 @@ void MyMoneyStorageXML::readInstitutions(void)
 
   QValueList<QDomElement> list = readElements("INSTITUTIONS", "INSTITUTION");
   QValueList<QDomElement>::const_iterator it;
+  QMap<QCString, MyMoneyInstitution> iList;
+  unsigned long lastId = 0;
 
   signalProgress(0, list.count(), QObject::tr("Loading institutions..."));
   for(it = list.begin(); it != list.end(); ++it)
   {
     MyMoneyInstitution inst(*it);
-    m_storage->loadInstitution(inst);
+    iList[inst.id()] = inst;
 
     unsigned long id = extractId(inst.id().data());
-    if(id > m_storage->institutionId())
-      m_storage->loadInstitutionId(id);
+    if(id > lastId)
+      lastId = id;
 
     signalProgress(x++, 0);
   }
+
+  m_storage->loadInstitutions(iList);
+  m_storage->loadInstitutionId(lastId);
 }
 
 void MyMoneyStorageXML::writeInstitutions(QDomElement& institutions)
@@ -384,19 +401,22 @@ void MyMoneyStorageXML::readPayees(void)
 
   QValueList<QDomElement> list = readElements("PAYEES", "PAYEE");
   QValueList<QDomElement>::const_iterator it;
+  QMap<QCString, MyMoneyPayee> pList;
+  unsigned long lastId;
 
   signalProgress(0, list.count(), QObject::tr("Loading payees..."));
   for(it = list.begin(); it != list.end(); ++it)
   {
     MyMoneyPayee payee(*it);
-    m_storage->loadPayee(payee);
-
+    pList[payee.id()] = payee;
     unsigned long id = extractId(payee.id().data());
-    if(id > m_storage->payeeId())
-      m_storage->loadPayeeId(id);
-
+    if(id > lastId)
+      lastId = id;
     signalProgress(x++, 0);
   }
+
+  m_storage->loadPayees(pList);
+  m_storage->loadPayeeId(lastId);
 }
 
 void MyMoneyStorageXML::writePayees(QDomElement& payees)
@@ -419,6 +439,8 @@ void MyMoneyStorageXML::readAccounts(void)
 
   QValueList<QDomElement> list = readElements("ACCOUNTS", "ACCOUNT");
   QValueList<QDomElement>::iterator it;
+  QMap<QCString, MyMoneyAccount> aList;
+  unsigned long lastId = 0;
 
   signalProgress(0, list.count(), QObject::tr("Loading accounts..."));
   for(it = list.begin(); it != list.end(); ++it)
@@ -427,19 +449,21 @@ void MyMoneyStorageXML::readAccounts(void)
       (*it).setAttribute("currency", m_baseCurrencyId);
 
     MyMoneyAccount account(*it);
-    m_storage->loadAccount(account);
-
+    aList[account.id()] = account;
     unsigned long id = extractId(account.id().data());
-    if(id > m_storage->accountId())
-      m_storage->loadAccountId(id);
-
+    if(id > lastId)
+      lastId = id;
     signalProgress(x++, 0);
   }
+
+  m_storage->loadAccounts(aList);
+  m_storage->loadAccountId(lastId);
 }
 
 void MyMoneyStorageXML::writeAccounts(QDomElement& accounts)
 {
-  const QValueList<MyMoneyAccount> list = m_storage->accountList();
+  QValueList<MyMoneyAccount> list;
+  m_storage->accountList(list);
   QValueList<MyMoneyAccount>::ConstIterator it;
 
   writeAccount(accounts, m_storage->asset());
@@ -467,19 +491,23 @@ void MyMoneyStorageXML::readTransactions(void)
 
   QValueList<QDomElement> list = readElements("TRANSACTIONS", "TRANSACTION");
   QValueList<QDomElement>::const_iterator it;
+  QMap<QCString, MyMoneyTransaction> tList;
+  unsigned long lastId = 0;
 
   signalProgress(0, list.count(), QObject::tr("Loading transactions..."));
   for(it = list.begin(); it != list.end(); ++it)
   {
     MyMoneyTransaction transaction(*it);
-    m_storage->loadTransaction(transaction);
+
+    tList[transaction.uniqueSortKey()] = transaction;
 
     unsigned long id = extractId(transaction.id().data());
-    if(id > m_storage->transactionId())
-      m_storage->loadTransactionId(id);
-
+    if(id > lastId)
+      lastId = id;
     signalProgress(x++, 0);
   }
+  m_storage->loadTransactions(tList);
+  m_storage->loadTransactionId(lastId);
 }
 
 void MyMoneyStorageXML::writeTransactions(QDomElement& transactions)
@@ -512,19 +540,23 @@ void MyMoneyStorageXML::readSchedules(void)
 
   QValueList<QDomElement> list = readElements("SCHEDULES", "SCHEDULED_TX");
   QValueList<QDomElement>::const_iterator it;
+  QMap<QCString, MyMoneySchedule> sList;
+  unsigned long lastId = 0;
 
   signalProgress(0, list.count(), QObject::tr("Loading schedules..."));
   for(it = list.begin(); it != list.end(); ++it)
   {
     MyMoneySchedule schedule(*it);
-    m_storage->loadSchedule(schedule);
+    sList[schedule.id()] = schedule;
 
     unsigned long id = extractId(schedule.id().data());
-    if(id > m_storage->scheduleId())
-      m_storage->loadScheduleId(id);
+    if(id > lastId)
+      lastId = id;
 
     signalProgress(x++, 0);
   }
+  m_storage->loadSchedules(sList);
+  m_storage->loadScheduleId(lastId);
 }
 
 void MyMoneyStorageXML::writeSchedules(QDomElement& scheduled)
@@ -566,40 +598,39 @@ void MyMoneyStorageXML::readSecurities(void)
 
   QValueList<QDomElement> list = readElements("SECURITIES", "SECURITY");
   QValueList<QDomElement>::const_iterator it;
+  QMap<QCString, MyMoneySecurity> sList;
+  unsigned long lastId = 0;
 
   signalProgress(0, list.count(), QObject::tr("Loading securities..."));
   for(it = list.begin(); it != list.end(); ++it)
   {
     MyMoneySecurity security(*it);
-    m_storage->loadSecurity(security);
+    sList[security.id()] = security;
 
     unsigned long id = extractId(security.id().data());
-    if(id > m_storage->securityId())
-      m_storage->loadSecurityId(id);
+    if(id > lastId)
+      lastId = id;
 
     signalProgress(x++, 0);
   }
-}
 
-void MyMoneyStorageXML::readEquities(void)
-{
-  int x = 0;
-
-  QValueList<QDomElement> list = readElements("EQUITIES", "EQUITY");
-  QValueList<QDomElement>::const_iterator it;
-
-  signalProgress(0, list.count(), QObject::tr("Loading equities..."));
+  // some older versions of KMyMoney used to store additional securites under
+  // the EQUITIES node. So we just read thos as well
+  list = readElements("EQUITIES", "EQUITY");
   for(it = list.begin(); it != list.end(); ++it)
   {
     MyMoneySecurity security(*it);
-    m_storage->loadSecurity(security);
+    sList[security.id()] = security;
 
     unsigned long id = extractId(security.id().data());
-    if(id > m_storage->securityId())
-      m_storage->loadSecurityId(id);
+    if(id > lastId)
+      lastId = id;
 
     signalProgress(x++, 0);
   }
+
+  m_storage->loadSecurities(sList);
+  m_storage->loadSecurityId(lastId);
 }
 
 void MyMoneyStorageXML::writeCurrencies(QDomElement& currencies)
@@ -620,14 +651,18 @@ void MyMoneyStorageXML::readCurrencies(void)
 
   QValueList<QDomElement> list = readElements("CURRENCIES", "CURRENCY");
   QValueList<QDomElement>::const_iterator it;
+  QMap<QCString, MyMoneySecurity> cList;
+  unsigned long lastId = 0;
 
   signalProgress(0, list.count(), QObject::tr("Loading currencies..."));
   for(it = list.begin(); it != list.end(); ++it)
   {
     MyMoneySecurity currency(*it);
-    m_storage->loadCurrency(currency);
+    cList[currency.id()] = currency;
     signalProgress(x++, 0);
   }
+
+  m_storage->loadCurrencies(cList);
 }
 
 void MyMoneyStorageXML::readReports(void)
@@ -636,22 +671,23 @@ void MyMoneyStorageXML::readReports(void)
 
   QValueList<QDomElement> list = readElements("REPORTS", "REPORT");
   QValueList<QDomElement>::const_iterator it;
+  QMap<QCString, MyMoneyReport> rList;
+  unsigned long lastId = 0;
 
   signalProgress(0, list.count(), QObject::tr("Loading reports..."));
   for(it = list.begin(); it != list.end(); ++it)
   {
     MyMoneyReport report(*it);
-    if(!report.id().isEmpty())
-    {
-      m_storage->loadReport(report);
+    rList[report.id()] = report;
 
-      unsigned long id = extractId(report.id());
-      if(id > m_storage->reportId())
-  m_storage->loadReportId(id);
-    }
+    unsigned long id = extractId(report.id().data());
+    if(id > lastId)
+      lastId = id;
 
     signalProgress(x++, 0);
   }
+  m_storage->loadReports(rList);
+  m_storage->loadReportId(lastId);
 }
 
 void MyMoneyStorageXML::writeReports(QDomElement& parent)
@@ -675,22 +711,23 @@ void MyMoneyStorageXML::readBudgets(void)
 
   QValueList<QDomElement> list = readElements("BUDGETS", "BUDGET");
   QValueList<QDomElement>::const_iterator it;
+  QMap<QCString, MyMoneyBudget> bList;
+  unsigned long lastId = 0;
 
   signalProgress(0, list.count(), QObject::tr("Loading budgets..."));
   for(it = list.begin(); it != list.end(); ++it)
   {
     MyMoneyBudget budget(*it);
-    if(!budget.id().isEmpty())
-    {
-      m_storage->loadBudget(budget);
+    bList[budget.id()] = budget;
 
-      unsigned long id = extractId(budget.id());
-      if(id > m_storage->budgetId())
-  m_storage->loadBudgetId(id);
-    }
+    unsigned long id = extractId(budget.id().data());
+    if(id > lastId)
+      lastId = id;
 
     signalProgress(x++, 0);
   }
+  m_storage->loadBudgets(bList);
+  m_storage->loadBudgetId(lastId);
 }
 
 

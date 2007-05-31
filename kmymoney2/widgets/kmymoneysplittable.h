@@ -46,7 +46,6 @@ class KPushButton;
 class KMyMoneyCategory;
 class kMyMoneyLineEdit;
 class kMyMoneyEdit;
-class MyMoneyObjectContainer;
 
 /**
   * @author Thomas Baumgart
@@ -85,7 +84,7 @@ public:
     */
   const QValueList<MyMoneySplit> getSplits(const MyMoneyTransaction& t) const;
 
-  void setup(MyMoneyObjectContainer *objects, const QMap<QCString, MyMoneyMoney>& priceInfo);
+  void setup(const QMap<QCString, MyMoneyMoney>& priceInfo);
 
 protected:
   void contentsMousePressEvent( QMouseEvent* e );
@@ -254,7 +253,6 @@ private:
   QGuardedPtr<KPushButton>      m_registerEnterButton;
   QGuardedPtr<KPushButton>      m_registerCancelButton;
 
-  MyMoneyObjectContainer*       m_objects;
   QMap<QCString, MyMoneyMoney>  m_priceInfo;
 };
 

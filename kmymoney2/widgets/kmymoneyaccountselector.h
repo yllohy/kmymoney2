@@ -35,7 +35,7 @@ class KPushButton;
 
 class kMyMoneyAccountCompletion;
 class AccountSet;
-class MyMoneyObjectContainer;
+class MyMoneyFile;
 
 /**
   * This class implements an account/category selector. It is based
@@ -157,7 +157,7 @@ protected:
 class AccountSet
 {
 public:
-  AccountSet(MyMoneyObjectContainer* objects);
+  AccountSet();
 
   void addAccountType(MyMoneyAccount::accountTypeE type);
   void addAccountGroup(MyMoneyAccount::accountTypeE type);
@@ -175,7 +175,7 @@ protected:
 
 private:
   int                                      m_count;
-  MyMoneyObjectContainer*                  m_objects;
+  MyMoneyFile*                             m_file;
   QValueList<MyMoneyAccount::accountTypeE> m_typeList;
 };
 #endif

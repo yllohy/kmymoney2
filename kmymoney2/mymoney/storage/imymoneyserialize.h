@@ -91,20 +91,13 @@ public:
   virtual void setLastModificationDate(const QDate& val) = 0;
 
   /**
-    * This method returns a list of accounts inside a MyMoneyFile object.
-    * An optional parameter is a list of id's. If this list is emtpy (the default)
-    * the returned list contains all accounts, otherwise only those referenced
-    * in the id-list.
+    * This method returns a list of accounts inside the storage object.
     *
-    * @param idlist QCStringList of account ids of those accounts that
-    *        should be returned. If this list is empty, all accounts
-    *        currently known will be returned.
+    * @param list reference to QValueList receiving the account objects
     *
-    * @param recursive if @p true, then recurse in all found accounts. The default is @p false
-    *
-    * @return QValueList containing the account objects
+    * @note The standard accounts will not be returned
     */
-  virtual const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList(), const bool recursive = false) const = 0;
+  virtual void accountList(QValueList<MyMoneyAccount>& list) = 0;
 
   /**
     * This method returns a list of the institutions
@@ -246,25 +239,6 @@ public:
   virtual void addPayee(MyMoneyPayee& payee) = 0;
 
   /**
-    * This method is used to add an account to an institution. The account
-    * data will be updated to contain the correct id of the referenced institution
-    * and the account will be added to the list of accounts held at the
-    * referenced institution. The objects passed as arguments will be updated
-    * accordingly.
-    *
-    * An exception will be thrown upon error conditions.
-    *
-    * @param institution MyMoneyInstitution the account should be added to
-    * @param account MyMoneyAccount to be added
-    *
-    * @deprecated This method is only provided as long as we provide
-    *             the version 0.4 binary reader. As soon as we deprecate
-    *             this compatability mode this method will disappear from
-    *             this interface!
-    */
-  virtual void addAccount(MyMoneyInstitution& institution, MyMoneyAccount& account) = 0;
-
-  /**
     * Adds an institution to the storage. A
     * respective institution-ID will be generated within this record.
     * The ID is stored as QString in the object passed as argument.
@@ -302,16 +276,15 @@ public:
     */
   virtual void addTransaction(MyMoneyTransaction& transaction, const bool skipAccountUpdate = false) = 0;
 
-  virtual void loadAccount(const MyMoneyAccount& acc) = 0;
-  virtual void loadAccount(const MyMoneyAccount& acc, const unsigned long txCount) = 0;
-  virtual void loadTransaction(const MyMoneyTransaction& tr) = 0;
-  virtual void loadInstitution(const MyMoneyInstitution& inst) = 0;
-  virtual void loadPayee(const MyMoneyPayee& payee) = 0;
-  virtual void loadSchedule(const MyMoneySchedule& sched) = 0;
-  virtual void loadSecurity(const MyMoneySecurity& security) = 0;
-  virtual void loadCurrency(const MyMoneySecurity& currency) = 0;
-  virtual void loadReport( const MyMoneyReport& report ) = 0;
-  virtual void loadBudget( const MyMoneyBudget& budget ) = 0;
+  virtual void loadAccounts(const QMap<QCString, MyMoneyAccount>& map) = 0;
+  virtual void loadTransactions(const QMap<QCString, MyMoneyTransaction>& map) = 0;
+  virtual void loadInstitutions(const QMap<QCString, MyMoneyInstitution>& map) = 0;
+  virtual void loadPayees(const QMap<QCString, MyMoneyPayee>& map) = 0;
+  virtual void loadSchedules(const QMap<QCString, MyMoneySchedule>& map) = 0;
+  virtual void loadSecurities(const QMap<QCString, MyMoneySecurity>& map) = 0;
+  virtual void loadCurrencies(const QMap<QCString, MyMoneySecurity>& map) = 0;
+  virtual void loadReports( const QMap<QCString, MyMoneyReport>& reports ) = 0;
+  virtual void loadBudgets( const QMap<QCString, MyMoneyBudget>& budgets ) = 0;
 
   virtual const unsigned long accountId(void) = 0;
   virtual const unsigned long transactionId(void) = 0;

@@ -528,157 +528,48 @@ void KMyMoneyPayeeCombo::loadPayees(const QValueList<MyMoneyPayee>& list)
 }
 
 
-// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
-// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
-// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
-// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
-// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
-// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
-// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
-// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
-// -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF -- -- EOF --
-
-/***************************************************************************
-                          kmymoneycombo.cpp  -  description
-                             -------------------
-    begin                : Sat May 5 2001
-    copyright            : (C) 2001 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                             Javier Campos Morales <javi_c@ctv.es>
-                             Felix Rodriguez <frodriguez@mail.wesleyan.edu>
- ***************************************************************************/
-
-#include "../mymoney/mymoneyfile.h"
-
-kMyMoneyCombo::kMyMoneyCombo(QWidget *w, const char *name)
-  : KComboBox(w, name)
+KMyMoneyGeneralCombo::KMyMoneyGeneralCombo(QWidget* w, const char* name) :
+  KMyMoneyCombo(false, w, name),
+  m_min(999999),
+  m_max(-1)
 {
-  init();
+  m_completion = new kMyMoneyCompletion(this, 0);
+  QCString num;
+  // add the items in reverse order of appearance (see KMyMoneySelector::newItem() for details)
+
+  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
+  connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetItem(const QCString&)));
 }
 
-kMyMoneyCombo::kMyMoneyCombo(bool rw, QWidget *w, const char *name)
-  : KComboBox(rw, w, name)
+void KMyMoneyGeneralCombo::insertItem(const QString& txt, int id)
 {
-  init();
+  QCString num;
+  selector()->newTopItem(txt, QString(), num.setNum(id));
+  if(id > m_max)
+    m_max = id;
+  if(id < m_min)
+    m_min = id;
 }
 
-void kMyMoneyCombo::init(void)
+void KMyMoneyGeneralCombo::setItem(int id)
 {
-  m_type = NONE;
-  connect(this, SIGNAL(activated(int)), SLOT(slotCheckValidSelection(int)));
+  m_id = id;
+  QCString num;
+  setSelectedItem(num.setNum(id));
 }
 
-kMyMoneyCombo::~kMyMoneyCombo()
+void KMyMoneyGeneralCombo::slotSetItem(const QCString& id)
 {
-}
-
-void kMyMoneyCombo::loadCurrentItem(const int item)
-{
-  m_prevItem = m_item = item;
-  resetCurrentItem();
-}
-
-void kMyMoneyCombo::resetCurrentItem(void)
-{
-  m_prevItem = m_item;
-  setCurrentItem(m_item);
-}
-
-void kMyMoneyCombo::setCurrentItem(const QString& str)
-{
-  int i=0;
-
-  for(; i < count(); ++i) {
-    if(str == text(i)) {
-      KComboBox::setCurrentItem(i);
-      m_prevItem = i;
+  QCString num;
+  for(int i = m_min; i <= m_max; ++i) {
+    num.setNum(i);
+    if(num == id) {
+      m_id = i;
       break;
     }
   }
-
-  // if not found, select the first one
-  if(i == count()) {
-    qDebug("kMyMoneyCombo::setCurrentItem: '%s' not found", str.latin1());
-    KComboBox::setCurrentItem(0);
-    m_prevItem = 0;
-  }
-}
-
-void kMyMoneyCombo::slotCheckValidSelection(int id)
-{
-  QString txt = text(id);
-  if(txt.left(4) == "--- "
-  && txt.right(4) == " ---") {
-    if(id < count()-1) {
-      KComboBox::setCurrentItem(id+1);
-    } else {
-      KComboBox::setCurrentItem(id-1);
-    }
-  }
-}
-
-void kMyMoneyCombo::focusOutEvent(QFocusEvent *ev)
-{
-  // if the current text is not in the list of
-  // possible completions, we have a new payee
-  // and signal that to the outside world.
-  if(currentItem() != m_prevItem) {
-    emit selectionChanged(currentItem());
-    m_prevItem = currentItem();
-  }
-  KComboBox::focusOutEvent(ev);
-}
-
-void kMyMoneyCombo::loadAccounts(bool asset, bool liability)
-{
-  try
-  {
-    MyMoneyFile* file = MyMoneyFile::instance();
-
-    MyMoneyAccount acc;
-    QCStringList::ConstIterator it_s;
-
-    if (asset)
-    {
-      acc = file->asset();
-      for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
-      {
-        MyMoneyAccount a = file->account(*it_s);
-        KComboBox::insertItem(a.name());
-      }
-    }
-
-    if (liability)
-    {
-      acc = file->liability();
-      for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s)
-      {
-        MyMoneyAccount a = file->account(*it_s);
-        KComboBox::insertItem(a.name());
-      }
-    }
-
-    m_type = ACCOUNT;
-  }
-  catch (MyMoneyException *e)
-  {
-    delete e;
-  }
-}
-
-QCString kMyMoneyCombo::currentAccountId(void)
-{
-  try
-  {
-    if (m_type == ACCOUNT)
-      return MyMoneyFile::instance()->nameToAccount(currentText());
-  }
-  catch (MyMoneyException *e)
-  {
-    delete e;
-  }
-
-  return "";
+  emit itemSelected(m_id);
+  update();
 }
 
 #include "kmymoneycombo.moc"

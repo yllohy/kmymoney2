@@ -38,11 +38,9 @@
 #include <kmymoney/mymoneymoney.h>
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/mymoneytransaction.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 
 class kMyMoneyEdit;
 class kMyMoneyLineEdit;
-class MyMoneyObjectContainer;
 
 #include "../dialogs/ksplittransactiondlgdecl.h"
 
@@ -60,7 +58,6 @@ public:
                        const bool amountValid,
                        const bool deposit,
                        const MyMoneyMoney& calculatedValue,
-                       MyMoneyObjectContainer* objects,
                        const QMap<QCString, MyMoneyMoney>& priceInfo,
                        QWidget* parent = 0, const char* name = 0);
 

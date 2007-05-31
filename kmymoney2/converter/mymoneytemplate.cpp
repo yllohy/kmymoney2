@@ -217,7 +217,7 @@ const bool MyMoneyTemplate::createAccounts(MyMoneyAccount& parent, QDomNode acco
         QValueList<MyMoneyAccount>::ConstIterator it;
         it = subAccountList.end();
         if(!parent.accountList().isEmpty()) {
-          subAccountList = MyMoneyFile::instance()->accountList(parent.accountList());
+          MyMoneyFile::instance()->accountList(subAccountList, parent.accountList());
           for(it = subAccountList.begin(); it != subAccountList.end(); ++it) {
             if((*it).name() == accountElement.attribute("name")) {
               acc = *it;
@@ -320,7 +320,8 @@ const bool MyMoneyTemplate::addAccountStructure(QDomElement& parent, const MyMon
 
   // any child accounts?
   if(acc.accountList().count() > 0) {
-    QValueList<MyMoneyAccount> list = MyMoneyFile::instance()->accountList(acc.accountList(), false);
+    QValueList<MyMoneyAccount> list;
+    MyMoneyFile::instance()->accountList(list, acc.accountList(), false);
     QValueList<MyMoneyAccount>::Iterator it;
     for(it = list.begin(); it != list.end(); ++it) {
       addAccountStructure(account, *it);

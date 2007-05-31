@@ -275,7 +275,14 @@ void KCurrencyCalculator::accept(void)
     || pr.date() != m_dateEdit->date()
     || (pr.date() == m_dateEdit->date() && pr.rate(m_fromCurrency.id()) != price())) {
       pr = MyMoneyPrice(m_fromCurrency.id(), m_toCurrency.id(), m_dateEdit->date(), price(), i18n("User"));
-      MyMoneyFile::instance()->addPrice(pr);
+      MyMoneyFileTransaction ft;
+      try {
+        MyMoneyFile::instance()->addPrice(pr);
+        ft.commit();
+      } catch(MyMoneyException *e) {
+        qDebug("Cannot add price");
+        delete e;
+      }
     }
   }
 

@@ -1,3 +1,18 @@
+2007-05-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * !!! Note SQL support is broken with this version. Will be fixed later. !!!
+  * Move MyMoneyObjectContainer to MyMoneyFile and make it a general cache
+  * Added start/commit/reject Transaction to seq access mgr
+  * Added 'last check number used' to accounts editor
+  * Don't allow to move stock accounts in institution view
+  * Modified new account wizard to use new widgets
+  * Modified new loan wizard ot use new widgets and fixed a bunch
+    of problems with unassigned share field where a value was present 
+  * New account wizard did not set shares on credit card payment
+  * Added color setting for background of ledger markers
+  * Moved the transaction editor code from widgets/ to dialogs/
+  * Reduced circular dependencies between widgets/ and dialogs/ to a single one
+  * Removed some unused files
+
 2007-05-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't include splits referencing deselected categories in transaction
     report by category
@@ -5,6 +20,7 @@
 2007-05-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added new account template files for Spain (Spanish and Galician)
     as provided by MVillarino
+  * Fixed #1723325 (Cannot quit the program)
 
 2007-05-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed crash when closing the passive popup of the date edit widget

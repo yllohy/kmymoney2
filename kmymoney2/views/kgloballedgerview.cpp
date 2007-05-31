@@ -46,7 +46,6 @@
 #include <kmymoney/kmymoneyaccountcombo.h>
 #include <kmymoney/kmymoneytitlelabel.h>
 #include <kmymoney/register.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include <kmymoney/transactioneditor.h>
 #include <kmymoney/selectedtransaction.h>
 
@@ -141,7 +140,6 @@ QDate KGlobalLedgerView::m_lastPostDate;
 KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   : KMyMoneyViewBase(parent, name, i18n("Ledgers")),
   d(new KGlobalLedgerViewPrivate),
-  m_objects(0),
   m_needReload(false),
   m_newAccountLoaded(true),
   m_inEditMode(false)
@@ -240,10 +238,6 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 
   connect(m_form, SIGNAL(newTransaction(KMyMoneyRegister::Action)), this, SLOT(slotNewTransaction(KMyMoneyRegister::Action)));
 
-  // create object container for this view
-  m_objects = new MyMoneyObjectContainer();
-  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), m_objects, SLOT(clear()));
-
   // setup mouse press filter
   d->m_mousePressFilter->addWidget(m_formFrame);
   d->m_mousePressFilter->addWidget(m_buttonFrame);
@@ -253,7 +247,6 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 
 KGlobalLedgerView::~KGlobalLedgerView()
 {
-  delete m_objects;
   delete d;
 }
 
@@ -292,9 +285,6 @@ void KGlobalLedgerView::clear(void)
 
   // the selected transactions list
   m_transactionList.clear();
-
-  // the object cache
-  m_objects->clear();
 
   // and the selected account in the combo box
   m_accountComboBox->setSelected(QCString());
@@ -408,13 +398,17 @@ void KGlobalLedgerView::loadView(void)
     // retrieve the list from the engine
     MyMoneyFile::instance()->transactionList(m_transactionList, filter);
 
+    kmymoney2->slotStatusProgressBar(0, m_transactionList.count());
+
     // create the elements for the register
     QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it;
     QMap<QCString, int>uniqueMap;
+    int i = 0;
     for(it = m_transactionList.begin(); it != m_transactionList.end(); ++it) {
       uniqueMap[(*it).first.id()]++;
-      KMyMoneyRegister::Transaction* t = KMyMoneyRegister::Register::transactionFactory(m_register, m_objects, (*it).first, (*it).second, uniqueMap[(*it).first.id()]);
+      KMyMoneyRegister::Transaction* t = KMyMoneyRegister::Register::transactionFactory(m_register, (*it).first, (*it).second, uniqueMap[(*it).first.id()]);
       actBalance[t->split().accountId()] = MyMoneyMoney(0,1);
+      kmymoney2->slotStatusProgressBar(++i, 0);
     }
 
     // add the group markers
@@ -481,7 +475,7 @@ void KGlobalLedgerView::loadView(void)
     // leave some information about the current account
     MyMoneySplit split;
     split.setReconcileFlag(MyMoneySplit::Unknown);
-    KMyMoneyRegister::Register::transactionFactory(m_register, m_objects, MyMoneyTransaction(), split, 0);
+    KMyMoneyRegister::Register::transactionFactory(m_register, MyMoneyTransaction(), split, 0);
 
     m_register->updateRegister(true);
 
@@ -497,6 +491,7 @@ void KGlobalLedgerView::loadView(void)
     }
 
     updateSummaryLine(actBalance, clearedBalance);
+    kmymoney2->slotStatusProgressBar(-1, -1);
 
   } catch(MyMoneyException *e) {
     delete e;
@@ -896,7 +891,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
     }
 
     // TODO create the right editor depending on the account type we look at
-    editor = item->createEditor(parent, m_objects, list, m_lastPostDate);
+    editor = item->createEditor(parent, list, m_lastPostDate);
 
     // check that we use the same transaction commodity in all selected transactions
     // if not, we need to update this in the editor's list. The user can also bail out
@@ -1135,8 +1130,10 @@ void KGlobalLedgerView::slotSortOptions(void)
       } else {
         m_account.setValue(key, sortOrder);
       }
+      MyMoneyFileTransaction ft;
       try {
         MyMoneyFile::instance()->modifyAccount(m_account);
+        ft.commit();
       } catch(MyMoneyException* e) {
         qDebug("Unable to update sort order for account '%s': %s", m_account.name().latin1(), e->what().latin1());
         delete e;

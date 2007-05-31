@@ -46,11 +46,12 @@
 #include "../dialogs/kaccountselectdlg.h"
 #include "../kmymoney2.h"
 
-MyMoneyStatementReader::MyMoneyStatementReader()
+MyMoneyStatementReader::MyMoneyStatementReader() :
+  m_userAbort(false),
+  m_autoCreatePayee(false),
+  m_ft(0),
+  m_progressCallback(0)
 {
-  m_progressCallback = 0;
-  m_userAbort = false;
-  m_autoCreatePayee = false;
 }
 
 MyMoneyStatementReader::~MyMoneyStatementReader()
@@ -111,6 +112,8 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
       break;
   }
 
+  m_ft = new MyMoneyFileTransaction();
+
   if ( !m_userAbort )
     m_userAbort = ! selectOrCreateAccount(Select, m_account);
 
@@ -118,7 +121,7 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
 
   //
   // Process the securities
-  // 
+  //
   if ( s.m_eType == MyMoneyStatement::etInvestment )
   {
     QValueList<MyMoneyStatement::Security>::const_iterator it_s = s.m_listSecurities.begin();
@@ -128,7 +131,7 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
       ++it_s;
     }
   }
-  
+
   //
   // Process the transactions
   //
@@ -167,6 +170,12 @@ const bool MyMoneyStatementReader::finishImport(void)
   signalProgress(-1, -1);
   rc = !m_userAbort;
 
+  // finish the transaction
+  if(rc)
+    m_ft->commit();
+  delete m_ft;
+  m_ft = 0;
+
   return rc;
 }
 
@@ -185,14 +194,14 @@ void MyMoneyStatementReader::processSecurityEntry(const MyMoneyStatement::Securi
   QValueList<MyMoneySecurity>::ConstIterator it = list.begin();
   while ( it != list.end() && security.id().isEmpty() )
   {
-    if((*it).tradingSymbol() == sec_in.m_strSymbol) 
+    if((*it).tradingSymbol() == sec_in.m_strSymbol)
       security = *it;
     ++it;
   }
-      
+
   // if the security was not found, we have to create it while not forgetting
   // to setup the type
-  if(security.id().isEmpty()) 
+  if(security.id().isEmpty())
   {
     security.setName(sec_in.m_strName);
     security.setTradingSymbol(sec_in.m_strSymbol);
@@ -223,18 +232,18 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
 #if 0
   // (acejones) removing this code.  keeping it around for reference.
-  // 
+  //
   // this is the OLD way of handling bank ID's, which unfortunately was wrong.
   // bank ID's actually need to go on the split which corresponds with the
   // account we're importing into.
   //
   // thus anywhere "this account" is put into a split is also where we need
   // to put the bank ID in.
-  // 
+  //
   if ( ! t_in.m_strBankID.isEmpty() )
     t.setBankID(t_in.m_strBankID);
 #endif
-  
+
   MyMoneySplit s1;
 
   s1.setMemo(t_in.m_strMemo);
@@ -276,7 +285,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
           (t_in.m_eAction != MyMoneyStatement::Transaction::eaCashDividend) // Bug #1581788: Should not update a price for cash dividends
           )
         {
-          
+
           thisaccount = file->account(*it_account);
           found = true;
 
@@ -301,7 +310,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         // The security should always be available, because the statement file
         // should separately list all the securities referred to in the file,
         // and when we found a security, we added it to the file.
-       
+
         MyMoneySecurity security;
         QValueList<MyMoneySecurity> list = MyMoneyFile::instance()->securityList();
         QValueList<MyMoneySecurity>::ConstIterator it = list.begin();
@@ -317,8 +326,8 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
             security = *it;
           ++it;
         }
-      
-        if(!security.id().isEmpty()) 
+
+        if(!security.id().isEmpty())
         {
           thisaccount = MyMoneyAccount();
           thisaccount.setName(security.name());
@@ -350,7 +359,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     s1.setAccountId(thisaccount.id());
     if ( ! t_in.m_strBankID.isEmpty() )
       s1.setBankID(t_in.m_strBankID);
-    
+
     if (t_in.m_eAction==MyMoneyStatement::Transaction::eaReinvestDividend)
     {
       s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
@@ -562,7 +571,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         {
           MyMoneySplit s(*it_split);
           s.setReconcileFlag(MyMoneySplit::NotReconciled);
-          s.setId(QCString());
+          s.clearId();
           s.setBankID(QString());
 
           if ( t_old.splits().count() == 2 )
@@ -657,7 +666,8 @@ bool MyMoneyStatementReader::selectOrCreateAccount(const SelectCreateMode /*mode
   if ( ! accountNumber.isEmpty() )
   {
     // Get a list of all accounts
-    QValueList<MyMoneyAccount> accounts = file->accountList(QCStringList());
+    QValueList<MyMoneyAccount> accounts;
+    file->accountList(accounts);
 
     // Iterate through them
     QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
@@ -722,7 +732,14 @@ bool MyMoneyStatementReader::selectOrCreateAccount(const SelectCreateMode /*mode
       if ( ! accountNumber.isEmpty() && account.value("StatementKey") != accountNumber )
       {
         account.setValue("StatementKey",accountNumber);
-        MyMoneyFile::instance()->modifyAccount(account);
+        MyMoneyFileTransaction ft;
+        try {
+          MyMoneyFile::instance()->modifyAccount(account);
+          ft.commit();
+        } catch(MyMoneyException* e) {
+          qDebug("Updating account in MyMoneyStatementReader::selectOrCreateAccount failed");
+          delete e;
+        }
       }
     }
     else

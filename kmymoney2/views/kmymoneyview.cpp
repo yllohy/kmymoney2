@@ -658,8 +658,10 @@ bool KMyMoneyView::readFile(const KURL& url)
                   m_fileType = KmmXML;
                 } else if(gncexp.search(txt) != -1) {
                   ::timetrace("is GNC format");
+                  MyMoneyFileTransaction ft;
                   loadDefaultCurrencies(); // currency list required for gnc
                   loadAncientCurrencies(); // these too
+                  ft.commit();
                   pReader = new MyMoneyGncReader;
                   m_fileType = GncXML;
                 }
@@ -768,10 +770,20 @@ bool KMyMoneyView::openDatabase (const KURL& url) {
 
 bool KMyMoneyView::initializeStorage()
 {
+  bool blocked = MyMoneyFile::instance()->signalsBlocked();
+  MyMoneyFile::instance()->blockSignals(true);
+
   // we check, if we have any currency in the file. If not, we load
   // all the default currencies we know.
-  loadDefaultCurrencies();
-  loadAncientCurrencies();
+  MyMoneyFileTransaction ft;
+  try {
+    loadDefaultCurrencies();
+    loadAncientCurrencies();
+    ft.commit();
+  } catch(MyMoneyException *e) {
+    delete e;
+    return false;
+  }
 
   // make sure, we have a base currency and all accounts are
   // also assigned to a currency.
@@ -813,6 +825,7 @@ bool KMyMoneyView::initializeStorage()
   // by setting the entry in kmymoney2rc to true
   config->setGroup("General Options");
   if(config->readBoolEntry("SkipFix", false) != true) {
+    MyMoneyFileTransaction ft;
     try {
       // Check if we have to modify the file before we allow to work with it
       IMyMoneyStorage* s = MyMoneyFile::instance()->storage();
@@ -832,6 +845,7 @@ bool KMyMoneyView::initializeStorage()
             throw new MYMONEYEXCEPTION(i18n("Unknown fix level in input file"));
         }
       }
+      ft.commit();
     } catch(MyMoneyException *e) {
       delete e;
       return false;
@@ -839,6 +853,7 @@ bool KMyMoneyView::initializeStorage()
   } else {
     qDebug("Skipping automatic transaction fix!");
   }
+  MyMoneyFile::instance()->blockSignals(blocked);
 
   // FIXME: we need to check, if it's necessary to have this
   //        automatic funcitonality
@@ -851,6 +866,7 @@ bool KMyMoneyView::initializeStorage()
   emit kmmFilePlugin (postOpen);
 
   // inform everyone about new data
+  MyMoneyFile::instance()->preloadCache();
   MyMoneyFile::instance()->forceDataChanged();
 
   // if we currently see a different page, then select the right one
@@ -900,6 +916,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
   int mask = umask((~m_fmode) & 0x0777);
   bool blocked = MyMoneyFile::instance()->signalsBlocked();
   MyMoneyFile::instance()->blockSignals(true);
+  MyMoneyFileTransaction ft;
   MyMoneyFile::instance()->deletePair("kmm-encryption-key");
   if(!key.isEmpty() && encryptedOk == true && !plaintext ) {
     qfile->close();
@@ -936,6 +953,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     }
   }
   umask(mask);
+  ft.commit();
 
   MyMoneyFile::instance()->blockSignals(true);
   pWriter->setProgressCallback(&KMyMoneyView::progressCallback);
@@ -1186,10 +1204,13 @@ bool KMyMoneyView::newFile(const bool createEmtpyFile)
       user.setTelephone(newFileDlg.userTelephoneText);
     if(newFileDlg.userEmailText.length() != 0)
       user.setEmail(newFileDlg.userEmailText);
+
+    MyMoneyFileTransaction ft;
     file->setUser(user);
 
     loadDefaultCurrencies();
     loadAncientCurrencies();
+    ft.commit();
 
     // Stay in this endless loop until we have a base currency,
     // as without it the application does not work anymore.
@@ -1214,7 +1235,8 @@ void KMyMoneyView::selectBaseCurrency(void)
 
   if(!file->baseCurrency().id().isEmpty()) {
     // check that all accounts have a currency
-    QValueList<MyMoneyAccount> list = file->accountList();
+    QValueList<MyMoneyAccount> list;
+    file->accountList(list);
     QValueList<MyMoneyAccount>::Iterator it;
 
     // don't forget those standard accounts
@@ -1224,12 +1246,15 @@ void KMyMoneyView::selectBaseCurrency(void)
     list << file->expense();
     list << file->equity();
 
+
     for(it = list.begin(); it != list.end(); ++it) {
       if((*it).currencyId().isEmpty() || (*it).currencyId().length() == 0) {
         (*it).setCurrencyId(file->baseCurrency().id());
+        MyMoneyFileTransaction ft;
         try {
           fixOpeningBalance_0(*it);
           file->modifyAccount(*it);
+          ft.commit();
         } catch(MyMoneyException *e) {
           qDebug("Unable to setup base currency in account %s (%s): %s", (*it).name().latin1(), (*it).id().data(), e->what().latin1());
           delete e;
@@ -1243,18 +1268,21 @@ void KMyMoneyView::loadDefaultCurrency(const MyMoneySecurity& currency, const bo
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneySecurity sec;
+  MyMoneyFileTransaction ft;
   try {
     sec = file->currency(currency.id());
     if(sec.name() != currency.name()) {
       sec.setName(currency.name());
       file->modifyCurrency(sec);
     }
+    ft.commit();
   } catch (MyMoneyException* e) {
     delete e;
     try {
       if(create) {
         file->addCurrency(currency);
       }
+      ft.commit();
     } catch (MyMoneyException* e) {
       qDebug("Error %s loading default currency", e->what().data());
       delete e;
@@ -1438,6 +1466,7 @@ void KMyMoneyView::loadAncientCurrency(const QCString& id, const QString& name, 
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyPrice price(id, newId, date, rate, "KMyMoney");
+  MyMoneyFileTransaction ft;
   try {
     // make sure if entry exists
     file->currency(id);
@@ -1445,6 +1474,7 @@ void KMyMoneyView::loadAncientCurrency(const QCString& id, const QString& name, 
     if(file->price(id, newId, date, true) != price) {
       file->addPrice(price);
     }
+    ft.commit();
   } catch(MyMoneyException *e) {
     delete e;
     try {
@@ -1452,6 +1482,7 @@ void KMyMoneyView::loadAncientCurrency(const QCString& id, const QString& name, 
       if(date.isValid()) {
         file->addPrice(price);
       }
+      ft.commit();
     } catch(MyMoneyException *e) {
       qDebug("Error loading currency: %s", e->what().data());
       delete e;
@@ -1627,7 +1658,8 @@ void KMyMoneyView::fixFile_0(void)
    */
 
   MyMoneyFile* file = MyMoneyFile::instance();
-  QValueList<MyMoneyAccount> accountList = file->accountList();
+  QValueList<MyMoneyAccount> accountList;
+  file->accountList(accountList);
   ::timetrace("Have account list");
   QValueList<MyMoneyAccount>::Iterator it_a;
   QValueList<MyMoneySchedule> scheduleList = file->scheduleList();
@@ -1798,6 +1830,7 @@ void KMyMoneyView::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
   // Remember to modify the first split to reference the newly created account
   if (!newSchedule.name().isEmpty())
   {
+    MyMoneyFileTransaction ft;
     try
     {
       // We assume at least 2 splits in the transaction
@@ -1825,11 +1858,11 @@ void KMyMoneyView::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
 
       // in case of a loan account, we keep a reference to this
       // schedule in the account
-      if(newAccount.accountType() == MyMoneyAccount::Loan
-      || newAccount.accountType() == MyMoneyAccount::AssetLoan) {
+      if(newAccount.isLoan()) {
         newAccount.setValue("schedule", newSchedule.id());
         MyMoneyFile::instance()->modifyAccount(newAccount);
       }
+      ft.commit();
     }
     catch (MyMoneyException *e)
     {

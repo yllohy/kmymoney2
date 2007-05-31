@@ -25,10 +25,12 @@ MyMoneySeqAccessMgrTest::MyMoneySeqAccessMgrTest()
 void MyMoneySeqAccessMgrTest::setUp()
 {
 	m = new MyMoneySeqAccessMgr;
+	m->startTransaction();
 }
 
 void MyMoneySeqAccessMgrTest::tearDown()
 {
+	m->commitTransaction();
 	delete m;
 }
 
@@ -277,8 +279,9 @@ void MyMoneySeqAccessMgrTest::testAccount2Institution() {
 
 	// try to add to a false institution
 	MyMoneyInstitution fake("Unknown ID", i);
+	a.setInstitutionId(fake.id());
 	try {
-		m->addAccount(fake, a);
+		m->modifyAccount(a);
 		CPPUNIT_FAIL("Exception expected");
 	} catch (MyMoneyException *e) {
 		delete e;
@@ -288,12 +291,13 @@ void MyMoneySeqAccessMgrTest::testAccount2Institution() {
 	// now try to do it with a real institution
 	try {
 		CPPUNIT_ASSERT(i.accountList().count() == 0);
-		m->addAccount(i, a);
+		a.setInstitutionId(i.id());
+		m->modifyAccount(a);
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(a.institutionId() == i.id());
 		b = m->account("A000001");
 		CPPUNIT_ASSERT(b.institutionId() == i.id());
-		CPPUNIT_ASSERT(i.accountList().count() == 1);
+		CPPUNIT_ASSERT(i.accountList().count() == 0);
 	} catch (MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
@@ -726,11 +730,22 @@ void MyMoneySeqAccessMgrTest::testRemoveUnusedAccount() {
 		delete e;
 	}
 
-	// now really remove an account
+	// try to remove the account still attached to the institution
 	try {
-		CPPUNIT_ASSERT(i.accountCount() == 1);
+		m->removeAccount(a);
+		CPPUNIT_FAIL("Exception expected");
+	} catch (MyMoneyException *e) {
+		delete e;
+	}
+
+	// now really remove an account
+
+	try {
+		CPPUNIT_ASSERT(i.accountCount() == 0);
 		CPPUNIT_ASSERT(m->accountCount() == 7);
 
+		a.setInstitutionId(QCString());
+		m->modifyAccount(a);
 		m->removeAccount(a);
 		CPPUNIT_ASSERT(m->accountCount() == 6);
 		CPPUNIT_ASSERT(m->dirty() == true);
@@ -766,8 +781,9 @@ void MyMoneySeqAccessMgrTest::testRemoveInstitution() {
 	try {
 		i = m->institution("I000001");
 		a = m->account("A000006");
-		m->addAccount(i, a);
-		CPPUNIT_ASSERT(i.accountCount() == 1);
+		a.setInstitutionId(i.id());
+		m->modifyAccount(a);
+		CPPUNIT_ASSERT(i.accountCount() == 0);
 	} catch (MyMoneyException *e) {
 		delete e;
 		CPPUNIT_FAIL("Unexpected exception");
@@ -777,6 +793,8 @@ void MyMoneySeqAccessMgrTest::testRemoveInstitution() {
 	// now remove the institution and see if the account survived ;-)
 	try {
 		m->removeInstitution(i);
+		a.setInstitutionId(QCString());
+		m->modifyAccount(a);
 		a = m->account("A000006");
 		CPPUNIT_ASSERT(m->dirty() == true);
 		CPPUNIT_ASSERT(a.institutionId().isEmpty());
@@ -1499,31 +1517,19 @@ void MyMoneySeqAccessMgrTest::testCurrencyList()
 
 void MyMoneySeqAccessMgrTest::testAccountList()
 {
-	CPPUNIT_ASSERT(m->accountList().count() == 0);
+	QValueList<MyMoneyAccount> accounts;
+	m->accountList(accounts);
+	CPPUNIT_ASSERT(accounts.count() == 0);
 	testAddNewAccount();
-	CPPUNIT_ASSERT(m->accountList().count() == 2);
+	accounts.clear();
+	m->accountList(accounts);
+	CPPUNIT_ASSERT(accounts.count() == 2);
 
 	MyMoneyAccount a = m->account("A000001");
 	MyMoneyAccount b = m->account("A000002");
 	m->reparentAccount(b, a);
-	CPPUNIT_ASSERT(m->accountList().count() == 2);
-	CPPUNIT_ASSERT(m->accountList(QCStringList(), true).count() == 2);
-
-	QCStringList list;
-	list << "A000001";
-	QValueList<MyMoneyAccount> accList = m->accountList(list);
-	CPPUNIT_ASSERT(accList.count() == 1);
-	CPPUNIT_ASSERT(accList.first().id() == "A000001");
-	list.clear();
-	list << "A000002";
-	accList = m->accountList(list);
-	CPPUNIT_ASSERT(accList.count() == 1);
-	CPPUNIT_ASSERT(accList.first().id() == "A000002");
-	list.clear();
-	list << "A000001";
-	accList = m->accountList(list, true);
-	CPPUNIT_ASSERT(accList.count() == 2);
-	CPPUNIT_ASSERT(accList.first().id() == "A000001");
-	CPPUNIT_ASSERT(accList.last().id() == "A000002");
+	accounts.clear();
+	m->accountList(accounts);
+	CPPUNIT_ASSERT(accounts.count() == 2);
 }
 

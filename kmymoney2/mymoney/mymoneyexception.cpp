@@ -24,6 +24,7 @@
 
 MyMoneyException::MyMoneyException(const QString& msg, const QString& file, const unsigned long line)
 {
+  // qDebug("MyMoneyException(%s,%s,%d)", msg.data(), file.data(), line);
   m_msg = msg;
   m_file = file;
   m_line = line;

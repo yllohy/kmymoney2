@@ -1,9 +1,9 @@
 <!DOCTYPE UI><UI version="3.0" stdsetdef="1">
-<class>kEditEquityEntryDecl</class>
+<class>KEditEquityEntryDecl</class>
 <author>Kevin Tambascio </author>
 <widget class="QDialog">
     <property name="name">
-        <cstring>kEditEquityEntryDecl</cstring>
+        <cstring>KEditEquityEntryDecl</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -140,7 +140,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="kMyMoneyPriceView">
+                <widget class="KMyMoneyPriceView">
                     <property name="name">
                         <cstring>kpvPriceHistory</cstring>
                     </property>
@@ -278,7 +278,7 @@
         <pixmap>image0</pixmap>
     </customwidget>
     <customwidget>
-        <class>kMyMoneyPriceView</class>
+        <class>KMyMoneyPriceView</class>
         <header location="local">../widgets/kmymoneypriceview.h</header>
         <sizehint>
             <width>-1</width>

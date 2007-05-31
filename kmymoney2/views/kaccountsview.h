@@ -184,7 +184,6 @@ signals:
 
 private:
   MyMoneyAccount                      m_reconciliationAccount;
-  QMap<QString, MyMoneyAccount>       m_accountMap;
   QMap<QCString, MyMoneySecurity>     m_securityMap;
   QMap<QCString, unsigned long>       m_transactionCountMap;
 

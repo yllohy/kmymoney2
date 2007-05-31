@@ -33,7 +33,6 @@
 // #include "../views/kledgerview.h"
 #include <kmymoney/mymoneyutils.h>
 #include <kmymoney/mymoneytransactionfilter.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 
 #include "../dialogs/kfindtransactiondlgdecl.h"
 
@@ -196,8 +195,6 @@ protected:
   MyMoneyTransactionFilter        m_filter;
 
   QMap<QWidget*, QString>         m_helpAnchor;
-
-  MyMoneyObjectContainer          m_objects;
 
   bool                            m_needReload;
 };

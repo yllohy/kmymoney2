@@ -32,6 +32,7 @@
 #include <klistview.h>
 #include <kiconloader.h>
 #include <kguiitem.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -40,7 +41,11 @@
 #include "kupdatestockpricedlg.h"
 #include "kcurrencycalculator.h"
 #include "../widgets/kmymoneypriceview.h"
-#include "../dialogs/kequitypriceupdatedlg.h"
+#include "kequitypriceupdatedlg.h"
+#include <kmymoney/kmymoneycurrencyselector.h>
+#include <kmymoney/mymoneyfile.h>
+
+#include "../kmymoneyglobalsettings.h"
 
 #define COMMODITY_COL     0
 #define CURRENCY_COL      1
@@ -77,13 +82,15 @@ KMyMoneyPriceDlg::KMyMoneyPriceDlg(QWidget* parent, const char *name) :
   m_closeButton->setGuiItem(okButtenItem);
 
   connect(m_closeButton, SIGNAL(clicked()), this, SLOT(accept()));
-  connect(m_editButton, SIGNAL(clicked()), m_priceList, SLOT(slotEditPrice()));
-  connect(m_deleteButton, SIGNAL(clicked()), m_priceList, SLOT(slotDeletePrice()));
-  connect(m_newButton, SIGNAL(clicked()), m_priceList, SLOT(slotNewPrice()));
+  connect(m_editButton, SIGNAL(clicked()), this, SLOT(slotEditPrice()));
+  connect(m_priceList, SIGNAL(editPrice()), this, SLOT(slotEditPrice()));
+  connect(m_deleteButton, SIGNAL(clicked()), this, SLOT(slotDeletePrice()));
+  connect(m_priceList, SIGNAL(deletePrice()), this, SLOT(slotDeletePrice()));
+  connect(m_newButton, SIGNAL(clicked()), this, SLOT(slotNewPrice()));
+  connect(m_priceList, SIGNAL(newPrice()), this, SLOT(slotNewPrice()));
   connect(m_priceList, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotSelectPrice(QListViewItem*)));
-  connect(m_onlineQuoteButton, SIGNAL(clicked()), this, SLOT(slotEquityPriceUpdate()));
-
-  connect(m_showAllPrices, SIGNAL(toggled(bool)), m_priceList, SLOT(slotShowAllPrices(bool)));
+  connect(m_onlineQuoteButton, SIGNAL(clicked()), this, SLOT(slotOnlinePriceUpdate()));
+  connect(m_priceList, SIGNAL(onlinePriceUpdate()), this, SLOT(slotOnlinePriceUpdate()));
 
   slotSelectPrice(0);
 
@@ -95,6 +102,28 @@ KMyMoneyPriceDlg::~KMyMoneyPriceDlg()
 {
 }
 
+void KMyMoneyPriceDlg::slotLoadWidgets(void)
+{
+  m_priceList->clear();
+
+  MyMoneyPriceList list = MyMoneyFile::instance()->priceList();
+  MyMoneyPriceList::ConstIterator it_l;
+  for(it_l = list.begin(); it_l != list.end(); ++it_l) {
+    MyMoneyPriceEntries::ConstIterator it_e;
+    if(m_showAllPrices->isChecked()) {
+      for(it_e = (*it_l).begin(); it_e != (*it_l).end(); ++it_e) {
+        new KMyMoneyPriceItem(m_priceList, *it_e);
+      }
+    } else {
+      if((*it_l).count() > 0) {
+        it_e = (*it_l).end();
+        --it_e;
+        new KMyMoneyPriceItem(m_priceList, *it_e);
+      }
+    }
+  }
+}
+
 void KMyMoneyPriceDlg::slotSelectPrice(QListViewItem * item)
 {
   m_currentItem = item;
@@ -103,7 +132,7 @@ void KMyMoneyPriceDlg::slotSelectPrice(QListViewItem * item)
 
   // Modification of automatically added entries is not allowed
   if(item) {
-    kMyMoneyPriceItem* priceitem = dynamic_cast<kMyMoneyPriceItem*>(item);
+    KMyMoneyPriceItem* priceitem = dynamic_cast<KMyMoneyPriceItem*>(item);
     if(priceitem && (priceitem->price().source() == "KMyMoney")) {
       m_editButton->setEnabled(false);
       m_deleteButton->setEnabled(false);
@@ -111,10 +140,86 @@ void KMyMoneyPriceDlg::slotSelectPrice(QListViewItem * item)
   }
 }
 
-void KMyMoneyPriceDlg::slotEquityPriceUpdate()
+void KMyMoneyPriceDlg::slotNewPrice(void)
 {
-  KEquityPriceUpdateDlg dlg(this);
-  dlg.exec();
+  KUpdateStockPriceDlg dlg(this);
+  KMyMoneyPriceItem* item = dynamic_cast<KMyMoneyPriceItem*>(m_priceList->selectedItem());
+  if(item) {
+    MyMoneySecurity security;
+    security = MyMoneyFile::instance()->security(item->price().from());
+    dlg.m_security->setSecurity(security);
+    security = MyMoneyFile::instance()->security(item->price().to());
+    dlg.m_currency->setSecurity(security);
+  }
+
+  if(dlg.exec()) {
+    MyMoneyPrice price(dlg.m_security->security().id(), dlg.m_currency->security().id(), dlg.date(), MyMoneyMoney(1,1));
+    KMyMoneyPriceItem* p = new KMyMoneyPriceItem(m_priceList, price);
+    m_priceList->setSelected(p, true);
+    // If the user cancels the following operation, we delete the new item
+    // and re-select any previously selected one
+    if(slotEditPrice() == QDialog::Rejected) {
+      delete p;
+      if(item)
+        m_priceList->setSelected(item, true);
+    }
+  }
+}
+
+int KMyMoneyPriceDlg::slotEditPrice(void)
+{
+  int rc = QDialog::Rejected;
+  KMyMoneyPriceItem* item = dynamic_cast<KMyMoneyPriceItem*>(m_priceList->selectedItem());
+  if(item) {
+    MyMoneySecurity from(MyMoneyFile::instance()->security(item->price().from()));
+    MyMoneySecurity to(MyMoneyFile::instance()->security(item->price().to()));
+    signed64 fract = MyMoneyMoney::precToDenom(KMyMoneySettings::pricePrecision());
+
+    KCurrencyCalculator calc(from,
+                             to,
+                             MyMoneyMoney(1,1),
+                             item->price().rate(),
+                             item->price().date(),
+                             fract,
+                             this, "currencyCalculator");
+    // we always want to update the price, that's why we're here
+    calc.m_updateButton->setChecked(true);
+    calc.m_updateButton->hide();
+
+    rc = calc.exec();
+  }
+  return rc;
+}
+
+
+void KMyMoneyPriceDlg::slotDeletePrice(void)
+{
+  KMyMoneyPriceItem* item = dynamic_cast<KMyMoneyPriceItem*>(m_priceList->selectedItem());
+  if(item) {
+    if(KMessageBox::questionYesNo(this, i18n("Do you really want to delete the selected price entry?"), i18n("Delete price information"), KStdGuiItem::yes(), KStdGuiItem::no(), "DeletePrice") == KMessageBox::Yes) {
+      MyMoneyFileTransaction ft;
+      try {
+        MyMoneyFile::instance()->removePrice(item->price());
+        ft.commit();
+      } catch(MyMoneyException *e) {
+        qDebug("Cannot delete price");
+        delete e;
+      }
+    }
+  }
+}
+
+void KMyMoneyPriceDlg::slotOnlinePriceUpdate(void)
+{
+  KMyMoneyPriceItem* item = dynamic_cast<KMyMoneyPriceItem*>(m_priceList->selectedItem());
+  if(item)
+  {
+    KEquityPriceUpdateDlg dlg(this, (item->text(COMMODITY_COL)+" "+item->text(CURRENCY_COL)).utf8());
+    dlg.exec();
+  } else {
+    KEquityPriceUpdateDlg dlg(this);
+    dlg.exec();
+  }
 }
 
 // This function is not needed.  However, removing the KUpdateStockPriceDlg

@@ -42,6 +42,12 @@ class KMyMoneyWizardPagePrivate;
 /**
   * @author Thomas Baumgart (C) 2006
   *
+  * @note: the following documentation is somewhat outdated
+  * as of May 2007. Wizards should use a namespace
+  * for the pages and can use the WizardPage<T> template class.
+  * See the NewUserWizard class and NewUserWizardPages namespace
+  * as an example of this setup.
+  *
   * This class represents the base class for wizard pages for the
   * KMyMoneyWizard. One cannot create a wizard page directly, but
   * must derive from it. The KMyMoneyWizardPage class provides the
@@ -211,6 +217,27 @@ private:
   unsigned int     m_step;
   QWidget*         m_widget;
   KMyMoneyWizardPagePrivate* const d;
+};
+
+
+
+/**
+  * The general base class for new user wizard pages
+  *
+  * @author Thomas Baumgart
+  */
+template <class T>
+class WizardPage : public KMyMoneyWizardPage
+{
+public:
+  WizardPage(unsigned int step, QWidget* widget, T* parent, const char* name) :
+    KMyMoneyWizardPage(step, widget, name),
+    m_wizard(parent)
+  {
+  }
+
+protected:
+  T*    m_wizard;
 };
 
 

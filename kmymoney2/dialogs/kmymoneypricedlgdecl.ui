@@ -35,7 +35,7 @@
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="kMyMoneyPriceView">
+                        <widget class="KMyMoneyPriceView">
                             <property name="name">
                                 <cstring>m_priceList</cstring>
                             </property>
@@ -188,7 +188,7 @@
 </widget>
 <customwidgets>
     <customwidget>
-        <class>kMyMoneyPriceView</class>
+        <class>KMyMoneyPriceView</class>
         <header location="local">../widgets/kmymoneypriceview.h</header>
         <sizehint>
             <width>-1</width>

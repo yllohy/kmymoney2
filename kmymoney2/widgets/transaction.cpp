@@ -34,7 +34,7 @@
 #include <kmymoney/transaction.h>
 #include <kmymoney/mymoneytransaction.h>
 #include <kmymoney/mymoneysplit.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
+#include <kmymoney/mymoneyfile.h>
 #include <kmymoney/mymoneypayee.h>
 #include <kmymoney/register.h>
 #include <kmymoney/kmymoneycategory.h>
@@ -133,11 +133,10 @@ static char attentionSign[] = {
   0x42,0x60,0x82
 };
 
-Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
+Transaction::Transaction(Register *parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
   RegisterItem(parent),
   m_transaction(transaction),
   m_split(split),
-  m_objects(objects),
   m_form(0),
   m_uniqueId(m_transaction.id()),
   m_formRowHeight(-1),
@@ -149,12 +148,15 @@ Transaction::Transaction(Register *parent, MyMoneyObjectContainer* objects, cons
   m_showBalance(true),
   m_matchMark(false)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
+
   // load the account
-  m_account = objects->account(m_split.accountId());
+  if(!m_split.accountId().isEmpty())
+    m_account = file->account(m_split.accountId());
 
   // load the payee
   if(!m_split.payeeId().isEmpty()) {
-    m_payee = m_objects->payee(m_split.payeeId()).name();
+    m_payee = file->payee(m_split.payeeId()).name();
   }
   m_payeeHeader = m_split.shares().isNegative() ? i18n("Pay to") : i18n("From");
 
@@ -630,6 +632,7 @@ bool Transaction::matches(const QString& txt) const
   if(txt.isEmpty() || m_transaction.splitCount() == 0)
     return true;
 
+  MyMoneyFile* file = MyMoneyFile::instance();
   QString s(txt);
   s.replace(MyMoneyMoney::thousandSeparator(), QString());
 
@@ -643,11 +646,11 @@ bool Transaction::matches(const QString& txt) const
       return true;
 
     if(!(*it_s).payeeId().isEmpty()) {
-      const MyMoneyPayee& payee = m_objects->payee((*it_s).payeeId());
+      const MyMoneyPayee& payee = file->payee((*it_s).payeeId());
       if(payee.name().contains(txt, false))
         return true;
     }
-    const MyMoneyAccount& acc = m_objects->account((*it_s).accountId());
+    const MyMoneyAccount& acc = file->account((*it_s).accountId());
     if(acc.name().contains(txt, false))
       return true;
 
@@ -726,8 +729,8 @@ void Transaction::setMatchMark(bool mark)
     m_parent->updateContents();
 }
 
-StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
-  Transaction(parent, objects, transaction, split, uniqueId)
+StdTransaction::StdTransaction(Register *parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
+  Transaction(parent, transaction, split, uniqueId)
 {
   try {
     m_categoryHeader = i18n("Category");
@@ -752,7 +755,7 @@ StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects
 
   if(KMyMoneyUtils::transactionType(m_transaction) == KMyMoneyUtils::InvestmentTransaction) {
     MyMoneySplit split = KMyMoneyUtils::stockSplit(m_transaction);
-    m_payee = m_objects->account(split.accountId()).name();
+    m_payee = MyMoneyFile::instance()->account(split.accountId()).name();
     QString addon;
     if(split.action() == MyMoneySplit::ActionBuyShares) {
       if(split.value().isNegative()) {
@@ -780,8 +783,8 @@ StdTransaction::StdTransaction(Register *parent, MyMoneyObjectContainer* objects
 
 void StdTransaction::setupFormHeader(const QCString& id)
 {
-  m_category = m_objects->accountToCategory(id);
-  switch(m_objects->account(id).accountGroup()) {
+  m_category = MyMoneyFile::instance()->accountToCategory(id);
+  switch(MyMoneyFile::instance()->account(id).accountGroup()) {
     case MyMoneyAccount::Asset:
     case MyMoneyAccount::Liability:
       m_categoryHeader = m_split.shares().isNegative() ? i18n("Transfer to") : i18n("Transfer from");
@@ -811,7 +814,7 @@ void StdTransaction::loadTab(TransactionForm* form)
     for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
       if((*it_s).accountId() == m_split.accountId())
         continue;
-      MyMoneyAccount acc = m_objects->account((*it_s).accountId());
+      MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
       if(acc.accountGroup() == MyMoneyAccount::Income
       || acc.accountGroup() == MyMoneyAccount::Expense) {
         // otherwise, we have to determine between deposit and withdrawal
@@ -1007,7 +1010,7 @@ void StdTransaction::registerCellText(QString& txt, int& align, int row, int col
 
         case AccountColumn:
           // txt = m_objects->account(m_transaction.splits()[0].accountId()).name();
-          txt = m_objects->account(m_split.accountId()).name();
+          txt = MyMoneyFile::instance()->account(m_split.accountId()).name();
           break;
 
         default:
@@ -1084,7 +1087,7 @@ int StdTransaction::registerColWidth(int col, const QFontMetrics& cellFontMetric
 
     case AccountColumn:
       // txt = m_objects->account(m_transaction.splits()[0].accountId()).name();
-      txt = m_objects->account(m_split.accountId()).name();
+      txt = MyMoneyFile::instance()->account(m_split.accountId()).name();
       nw = cellFontMetrics.width(txt+"  ");
       break;
   }
@@ -1253,17 +1256,17 @@ int StdTransaction::numRowsRegister(bool expanded) const
   return numRows;
 }
 
-TransactionEditor* StdTransaction::createEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate)
+TransactionEditor* StdTransaction::createEditor(TransactionEditorContainer* regForm, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate)
 {
   m_inRegisterEdit = regForm == m_parent;
-  return new StdTransactionEditor(regForm, objects, this, list, lastPostDate);
+  return new StdTransactionEditor(regForm, this, list, lastPostDate);
 }
 
-InvestTransaction::InvestTransaction(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
-  Transaction(parent, objects, transaction, split, uniqueId)
+InvestTransaction::InvestTransaction(Register *parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
+  Transaction(parent, transaction, split, uniqueId)
 {
   // dissect the transaction into its type, splits, currency, security etc.
-  InvestTransactionEditor::dissectTransaction(m_transaction, m_split, m_objects,
+  InvestTransactionEditor::dissectTransaction(m_transaction, m_split,
                      m_assetAccountSplit,
                      m_feeSplits,
                      m_interestSplits,
@@ -1285,7 +1288,7 @@ InvestTransaction::InvestTransaction(Register *parent, MyMoneyObjectContainer* o
       break;
 
     case 1:
-      m_feeCategory = m_objects->accountToCategory(m_feeSplits[0].accountId());
+      m_feeCategory = MyMoneyFile::instance()->accountToCategory(m_feeSplits[0].accountId());
       break;
 
     default:
@@ -1299,7 +1302,7 @@ InvestTransaction::InvestTransaction(Register *parent, MyMoneyObjectContainer* o
       break;
 
     case 1:
-      m_interestCategory = m_objects->accountToCategory(m_interestSplits[0].accountId());
+      m_interestCategory = MyMoneyFile::instance()->accountToCategory(m_interestSplits[0].accountId());
       break;
 
     default:
@@ -1432,7 +1435,7 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
         case ValueColumn1:
           align |= Qt::AlignLeft;
           if((fieldEditable = haveAssetAccount()) == true) {
-            txt = m_objects->accountToCategory(m_assetAccountSplit.accountId());
+            txt = MyMoneyFile::instance()->accountToCategory(m_assetAccountSplit.accountId());
           }
           break;
 
@@ -1632,7 +1635,7 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
         case DetailColumn:
           align |= Qt::AlignLeft;
           if(haveAssetAccount() && !m_assetAccountSplit.accountId().isEmpty()) {
-            txt = m_objects->accountToCategory(m_assetAccountSplit.accountId());
+            txt = MyMoneyFile::instance()->accountToCategory(m_assetAccountSplit.accountId());
           } else if(haveInterest() && m_interestSplits.count()) {
             txt = m_interestCategory;
           } else if(haveFees() && m_feeSplits.count()) {
@@ -2061,9 +2064,9 @@ void InvestTransaction::splits(MyMoneySplit& assetAccountSplit, QValueList<MyMon
   feeSplits = m_feeSplits;
 }
 
-TransactionEditor* InvestTransaction::createEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate)
+TransactionEditor* InvestTransaction::createEditor(TransactionEditorContainer* regForm, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate)
 {
   m_inRegisterEdit = regForm == m_parent;
-  return new InvestTransactionEditor(regForm, objects, this, list, lastPostDate);
+  return new InvestTransactionEditor(regForm, this, list, lastPostDate);
 }
 

@@ -545,7 +545,7 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_includeTransfers = e.attribute("includestransfers","0").toUInt();
     m_hasBudget = e.attribute("hasbudget","0").toUInt();
     m_includeBudgetActuals = e.attribute("includesactuals","0").toUInt();
-  
+
     i = kChartTypeText.findIndex(e.attribute("charttype"));
     if ( i != -1 )
       m_chartType = static_cast<EChartType>(i);

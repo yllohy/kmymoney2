@@ -36,7 +36,6 @@
 
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneyaccountcombo.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include "kmymoneyaccountcompletion.h"
 
 KMyMoneyAccountCombo::KMyMoneyAccountCombo( QWidget* parent, const char* name ) :
@@ -109,16 +108,14 @@ void KMyMoneyAccountCombo::setText(const QString& txt)
 
 const int KMyMoneyAccountCombo::loadList(const QString& baseName, const QValueList<QCString>& accountIdList, const bool clear)
 {
-  MyMoneyObjectContainer objects;
-  AccountSet set(&objects);
+  AccountSet set;
 
   return set.load(m_completion->selector(), baseName, accountIdList, clear);
 }
 
 int KMyMoneyAccountCombo::loadList(KMyMoneyUtils::categoryTypeE typeMask)
 {
-  MyMoneyObjectContainer objects;
-  AccountSet set(&objects);
+  AccountSet set;
   QValueList<int> typeList;
 
   if(typeMask & KMyMoneyUtils::asset) {
@@ -194,8 +191,7 @@ const QCStringList KMyMoneyAccountCombo::accountList(const QValueList<MyMoneyAcc
 int KMyMoneyAccountCombo::loadList(const QValueList<int>& list)
 {
   // FIXME make the caller construct the AccountSet directly
-  MyMoneyObjectContainer objects;
-  AccountSet set(&objects);
+  AccountSet set;
   QValueList<int>::const_iterator it;
   for(it = list.begin(); it != list.end(); ++it) {
     set.addAccountType(static_cast<MyMoneyAccount::accountTypeE>(*it));

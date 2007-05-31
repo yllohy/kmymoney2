@@ -56,7 +56,6 @@ class KMyMoneyAccountCombo;
 class KToolBar;
 class KToolBarButton;
 class MyMoneyReport;
-class MyMoneyObjectContainer;
 class TransactionEditor;
 
 class KGlobalLedgerViewPrivate;
@@ -253,8 +252,8 @@ protected:
   void loadAccounts(void);
 
   /**
-    * This method clears the register, form, transaction list and object container. See @sa m_register,
-    * @sa m_transactionList, @sa m_objects
+    * This method clears the register, form, transaction list. See @sa m_register,
+    * @sa m_transactionList
     */
   void clear(void);
 
@@ -352,7 +351,6 @@ private:
   QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >  m_transactionList;
 
   MyMoneyTransaction              m_matchTransaction;
-  MyMoneyObjectContainer*         m_objects;
 
   QLabel*                         m_leftSummaryLabel;
   QLabel*                         m_centerSummaryLabel;

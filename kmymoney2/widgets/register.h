@@ -42,7 +42,6 @@
 #include <kmymoney/selectedtransaction.h>
 #include <kmymoney/transactionsortoption.h>
 
-class MyMoneyObjectContainer;
 class RegisterToolTip;
 
 namespace KMyMoneyRegister {
@@ -367,14 +366,13 @@ public:
     * transaction passed in @a transaction.
     *
     * @param parent pointer to register where the created object should be added
-    * @param objects pointer to MyMoneyObjectContainer to be used
     * @param transaction the transaction which should be used to create the object
     * @param split the split of the transaction which should be used to create the object
     * @param uniqueId an int that will be used to construct the id of the item
     *
     * @return pointer to created object (0 upon failure)
     */
-  static Transaction* transactionFactory(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
+  static Transaction* transactionFactory(Register *parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
 
   const MyMoneyAccount& account(void) const { return m_account; }
 

@@ -605,7 +605,7 @@ void KMyMoney2App::slotPerformanceTest(void)
   for(int i = 0; i < 1000; ++i) {
     QValueList<MyMoneyAccount> list;
     timer.start();
-    list = MyMoneyFile::instance()->accountList();
+    MyMoneyFile::instance()->accountList(list);
     measurement[i != 0] += timer.elapsed();
   }
   std::cerr << "accountList()" << std::endl;
@@ -733,21 +733,21 @@ void KMyMoney2App::slotFileNew()
   QString prevMsg = slotStatusMsg(i18n("Creating new document..."));
 
   slotFileClose();
-  if(myMoneyView->fileOpen())
-    return;
+  if(!myMoneyView->fileOpen()) {
 
-  m_fileName = KURL();
-  if(myMoneyView->newFile()) {
-    KMessageBox::information(this, QString("<p>") +
-                  i18n("The next dialog allows you to add predefined account/category templates to the new file. Different languages are available to select from. You can skip loading any template  now by selecting <b>Cancel</b> from the next dialog. If you wish to add more templates later, you can restart this operation by selecting <b>File/Import/Account Templates</b>."),
-                  i18n("Load predefined accounts/categories"));
-    slotLoadAccountTemplates();
+    m_fileName = KURL();
+    if(myMoneyView->newFile()) {
+      KMessageBox::information(this, QString("<p>") +
+                    i18n("The next dialog allows you to add predefined account/category templates to the new file. Different languages are available to select from. You can skip loading any template  now by selecting <b>Cancel</b> from the next dialog. If you wish to add more templates later, you can restart this operation by selecting <b>File/Import/Account Templates</b>."),
+                    i18n("Load predefined accounts/categories"));
+      slotLoadAccountTemplates();
+    }
+
+    updateCaption();
+
+    emit fileLoaded(m_fileName);
   }
-
   slotStatusMsg(prevMsg);
-  updateCaption();
-
-  emit fileLoaded(m_fileName);
 }
 
 // General open
@@ -1058,9 +1058,10 @@ void KMyMoney2App::slotFileCloseWindow()
 
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));
-    if (answer == KMessageBox::Cancel)
+    if (answer == KMessageBox::Cancel) {
+      slotStatusMsg(prevMsg);
       return;
-    else if (answer == KMessageBox::Yes)
+    } else if (answer == KMessageBox::Yes)
       slotFileSave();
   }
 
@@ -1222,14 +1223,12 @@ void KMyMoney2App::progressCallback(int current, int total, const QString& msg)
 
 void KMyMoney2App::slotFileViewPersonal()
 {
-  QString prevMsg = slotStatusMsg(i18n("Viewing personal data..."));
-
-
   if ( !myMoneyView->fileOpen() ) {
-
     KMessageBox::information(this, i18n("No KMyMoneyFile open"));
     return;
   }
+
+  QString prevMsg = slotStatusMsg(i18n("Viewing personal data..."));
 
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyPayee user = file->user();
@@ -1284,10 +1283,9 @@ void KMyMoney2App::slotLoadAccountTemplates(void)
 
   if(dialog->exec() == QDialog::Accepted) {
 
-    MyMoneyFile::instance()->blockSignals(true);
+    MyMoneyFileTransaction ft;
     loadAccountTemplates(dialog->selectedFiles());
-    MyMoneyFile::instance()->blockSignals(false);
-    MyMoneyFile::instance()->forceDataChanged();
+    ft.commit();
   }
   delete dialog;
 
@@ -1687,8 +1685,8 @@ void KMyMoney2App::slotStatementImport()
   {
     // re-enable all standard widgets
     setEnabled(true);
-    slotStatusMsg(prevMsg);
   }
+  slotStatusMsg(prevMsg);
 }
 
 bool KMyMoney2App::slotStatementImport(const QString& url)
@@ -2208,9 +2206,13 @@ void KMyMoney2App::slotCloseSearchDialog(void)
 
 void KMyMoney2App::slotInstitutionNew(MyMoneyInstitution institution)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  MyMoneyFileTransaction ft;
+
   try {
-    MyMoneyFile* file = MyMoneyFile::instance();
     file->addInstitution(institution);
+    ft.commit();
 
   } catch (MyMoneyException *e) {
     KMessageBox::information(this, i18n("Cannot add institution: %1").arg(e->what()));
@@ -2241,8 +2243,16 @@ void KMyMoney2App::slotInstitutionEdit(const MyMoneyObject& obj)
     // bankSuccess is not checked anymore because m_file->institution will throw anyway
     KNewBankDlg dlg(institution);
     if (dlg.exec()) {
-      file->modifyInstitution(dlg.institution());
-      slotSelectInstitution(dlg.institution());
+      MyMoneyFileTransaction ft;
+      try {
+        file->modifyInstitution(dlg.institution());
+        ft.commit();
+        slotSelectInstitution(dlg.institution());
+
+      } catch(MyMoneyException *e) {
+        KMessageBox::information(this, i18n("Unable to store institution: %1").arg(e->what()));
+        delete e;
+      }
     }
 
   } catch(MyMoneyException *e) {
@@ -2254,14 +2264,21 @@ void KMyMoney2App::slotInstitutionEdit(const MyMoneyObject& obj)
 
 void KMyMoney2App::slotInstitutionDelete(void)
 {
+  MyMoneyFile *file = MyMoneyFile::instance();
   try {
-    MyMoneyFile *file = MyMoneyFile::instance();
 
     MyMoneyInstitution institution = file->institution(m_selectedInstitution.id());
     if ((KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to delete institution <b>%1</b> ?").arg(institution.name()))) == KMessageBox::No)
       return;
-    file->removeInstitution(institution);
+    MyMoneyFileTransaction ft;
 
+    try {
+      file->removeInstitution(institution);
+      ft.commit();
+    } catch (MyMoneyException *e) {
+      KMessageBox::information(this, i18n("Unable to delete institution: %1").arg(e->what()));
+      delete e;
+    }
   } catch (MyMoneyException *e) {
     KMessageBox::information(this, i18n("Unable to delete institution: %1").arg(e->what()));
     delete e;
@@ -2270,6 +2287,7 @@ void KMyMoney2App::slotInstitutionDelete(void)
 
 void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal, MyMoneySchedule& schedule)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
 
   try
   {
@@ -2280,7 +2298,7 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
       QString remainder = newAccount.name().mid(pos+1);
       newAccount.setName(part);
 
-      MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
+      file->addAccount(newAccount, parentAccount);
       parentAccount = newAccount;
       newAccount.setParentAccountId(QCString());  // make sure, there's no parent
       newAccount.clearId();                       // and no id set for adding
@@ -2309,67 +2327,77 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
         return;
     }
 
-    MyMoneyFile::instance()->addAccount(newAccount, parentAccount);
+    MyMoneyFileTransaction ft;
 
-    // We MUST add the schedule AFTER adding the account because
-    // otherwise an unknown account exception will be thrown.
-    createSchedule(schedule, newAccount);
+    try {
+      file->addAccount(newAccount, parentAccount);
 
-    // in case of a loan account, we add the initial payment
-    if((newAccount.accountType() == MyMoneyAccount::Loan
-    || newAccount.accountType() == MyMoneyAccount::AssetLoan)
-    && !newAccount.value("kmm-loan-payment-acc").isEmpty()
-    && !newAccount.value("kmm-loan-payment-date").isEmpty()) {
-      MyMoneyAccountLoan acc(newAccount);
-      MyMoneyTransaction t;
-      MyMoneySplit a, b;
-      a.setAccountId(acc.id());
-      b.setAccountId(acc.value("kmm-loan-payment-acc").latin1());
-      a.setValue(acc.loanAmount());
-      if(acc.accountType() == MyMoneyAccount::Loan)
-        a.setValue(-a.value());
-      b.setValue(-a.value());
-      a.setMemo(i18n("Loan payout"));
-      b.setMemo(i18n("Loan payout"));
-      t.setPostDate(QDate::fromString(acc.value("kmm-loan-payment-date"), Qt::ISODate));
-      try {
-        newAccount.deletePair("kmm-loan-payment-acc");
-        newAccount.deletePair("kmm-loan-payment-date");
-        MyMoneyFile::instance()->modifyAccount(newAccount);
+      // We MUST add the schedule AFTER adding the account because
+      // otherwise an unknown account exception will be thrown.
+      createSchedule(schedule, newAccount);
 
-        t.addSplit(a);
-        t.addSplit(b);
-        MyMoneyFile::instance()->addTransaction(t);
-      } catch(MyMoneyException *e) {
-        qDebug("Cannot add loan payout transaction: %s", e->what().latin1());
-        delete e;
-      }
-      MyMoneyFile::instance()->createOpeningBalanceTransaction(newAccount, openingBal);
+      // in case of a loan account, we add the initial payment
+      if((newAccount.accountType() == MyMoneyAccount::Loan
+      || newAccount.accountType() == MyMoneyAccount::AssetLoan)
+      && !newAccount.value("kmm-loan-payment-acc").isEmpty()
+      && !newAccount.value("kmm-loan-payment-date").isEmpty()) {
+        MyMoneyAccountLoan acc(newAccount);
+        MyMoneyTransaction t;
+        MyMoneySplit a, b;
+        a.setAccountId(acc.id());
+        b.setAccountId(acc.value("kmm-loan-payment-acc").latin1());
+        a.setValue(acc.loanAmount());
+        if(acc.accountType() == MyMoneyAccount::Loan)
+          a.setValue(-a.value());
+        a.setShares(a.value());
+        b.setValue(-a.value());
+        b.setShares(b.value());
+        a.setMemo(i18n("Loan payout"));
+        b.setMemo(i18n("Loan payout"));
+        t.setPostDate(QDate::fromString(acc.value("kmm-loan-payment-date"), Qt::ISODate));
+        try {
+          newAccount.deletePair("kmm-loan-payment-acc");
+          newAccount.deletePair("kmm-loan-payment-date");
+          MyMoneyFile::instance()->modifyAccount(newAccount);
 
-    // in case of an investment account we check if we should create
-    // a brokerage account
-    } else if(newAccount.accountType() == MyMoneyAccount::Investment
-            && !brokerageAccount.name().isEmpty()) {
-      try {
-        MyMoneyFile::instance()->addAccount(brokerageAccount, parentAccount);
+          t.addSplit(a);
+          t.addSplit(b);
+          MyMoneyFile::instance()->addTransaction(t);
+        } catch(MyMoneyException *e) {
+          qDebug("Cannot add loan payout transaction: %s", e->what().latin1());
+          delete e;
+        }
+        file->createOpeningBalanceTransaction(newAccount, openingBal);
 
-        // set a link from the investment account to the brokerage account
-        newAccount.setValue("kmm-brokerage-account", brokerageAccount.id());
-        MyMoneyFile::instance()->modifyAccount(newAccount);
-        MyMoneyFile::instance()->createOpeningBalanceTransaction(brokerageAccount, openingBal);
-      } catch(MyMoneyException *e) {
-        qDebug("Cannot add brokerage account: %s", e->what().latin1());
-        delete e;
-      }
-    } else
-      MyMoneyFile::instance()->createOpeningBalanceTransaction(newAccount, openingBal);
+      // in case of an investment account we check if we should create
+      // a brokerage account
+      } else if(newAccount.accountType() == MyMoneyAccount::Investment
+              && !brokerageAccount.name().isEmpty()) {
+        try {
+          file->addAccount(brokerageAccount, parentAccount);
+
+          // set a link from the investment account to the brokerage account
+          newAccount.setValue("kmm-brokerage-account", brokerageAccount.id());
+          file->modifyAccount(newAccount);
+          file->createOpeningBalanceTransaction(brokerageAccount, openingBal);
+        } catch(MyMoneyException *e) {
+          qDebug("Cannot add brokerage account: %s", e->what().latin1());
+          delete e;
+        }
+      } else
+        file->createOpeningBalanceTransaction(newAccount, openingBal);
+
+      ft.commit();
+
+    } catch (MyMoneyException *e) {
+      KMessageBox::information(this, i18n("Unable to add account: %1").arg(e->what()));
+      delete e;
+    }
 
   }
   catch (MyMoneyException *e)
   {
-    QString message("Unable to add account: ");
-    message += e->what();
-    KMessageBox::information(this, message);
+    KMessageBox::information(this, i18n("Unable to add account: %1").arg(e->what()));
     delete e;
   }
 }
@@ -2402,11 +2430,9 @@ void KMyMoney2App::slotCategoryNew(void)
   MyMoneyAccount account;
 
   // Preselect the parent account by looking at the current selected account/category
-  if(!m_selectedAccount.id().isEmpty()
-  && (m_selectedAccount.accountGroup() == MyMoneyAccount::Expense
-    || m_selectedAccount.accountGroup() == MyMoneyAccount::Income)) {
+  if(!m_selectedAccount.id().isEmpty() && m_selectedAccount.isIncomeExpense()) {
+    MyMoneyFile* file = MyMoneyFile::instance();
     try {
-      MyMoneyFile* file = MyMoneyFile::instance();
       parent = file->account(m_selectedAccount.id());
     } catch(MyMoneyException *e) {
       delete e;
@@ -2447,6 +2473,7 @@ void KMyMoney2App::slotAccountNew(void)
 
   connect(&newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotInstitutionNew()));
   connect(&newAccountWizard, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
+  connect(&newAccountWizard, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
 
   newAccountWizard.setAccountName(QString());
   // Preselect the current selected institution (or none)
@@ -2497,10 +2524,13 @@ void KMyMoney2App::slotInvestmentEdit(void)
 void KMyMoney2App::slotInvestmentDelete(void)
 {
   if(KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to delete the investment <b>%1</b>?").arg(m_selectedInvestment.name()), i18n("Delete investment"), KStdGuiItem::yes(), KStdGuiItem::no(), "DeleteInvestment") == KMessageBox::Yes) {
+    MyMoneyFile* file = MyMoneyFile::instance();
+    MyMoneyFileTransaction ft;
     try {
-      MyMoneyFile::instance()->removeAccount(m_selectedInvestment);
+      file->removeAccount(m_selectedInvestment);
+      ft.commit();
     } catch(MyMoneyException *e) {
-      qDebug("Cannot delete investment: %s", e->what().latin1());
+      KMessageBox::information(this, i18n("Unable to delete investment: %1").arg(e->what()));
       delete e;
     }
   }
@@ -2537,6 +2567,7 @@ void KMyMoney2App::slotManualPriceUpdate(void)
 
 void KMyMoney2App::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& newAccount)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
   // Add the schedule only if one exists
   //
   // Remember to modify the first split to reference the newly created account
@@ -2565,14 +2596,21 @@ void KMyMoney2App::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
       }
       newSchedule.setTransaction(t);
 
-      MyMoneyFile::instance()->addSchedule(newSchedule);
+      MyMoneyFileTransaction ft;
+      try {
+        file->addSchedule(newSchedule);
 
-      // in case of a loan account, we keep a reference to this
-      // schedule in the account
-      if(newAccount.accountType() == MyMoneyAccount::Loan
-      || newAccount.accountType() == MyMoneyAccount::AssetLoan) {
-        newAccount.setValue("schedule", newSchedule.id());
-        MyMoneyFile::instance()->modifyAccount(newAccount);
+        // in case of a loan account, we keep a reference to this
+        // schedule in the account
+        if(newAccount.accountType() == MyMoneyAccount::Loan
+        || newAccount.accountType() == MyMoneyAccount::AssetLoan) {
+          newAccount.setValue("schedule", newSchedule.id());
+          file->modifyAccount(newAccount);
+        }
+        ft.commit();
+      } catch (MyMoneyException *e) {
+        KMessageBox::information(this, i18n("Unable to add schedule: "), e->what());
+        delete e;
       }
     }
     catch (MyMoneyException *e)
@@ -2626,6 +2664,9 @@ void KMyMoney2App::slotAccountDelete(void)
   // need to check with the user to possibly re-assign them to a different account
   bool needAskUser = true;
   bool exit = false;
+
+  MyMoneyFileTransaction ft;
+
   if(file->transactionCount(m_selectedAccount.id()) != 0) {
     // show transaction reassignment dialog
 
@@ -2637,7 +2678,6 @@ void KMyMoney2App::slotAccountDelete(void)
       return; // the user aborted the dialog, so let's abort as well
 
     MyMoneyAccount newCategory = file->account(categoryId);
-    file->blockSignals(true);
     QString prevMsg = slotStatusMsg(i18n("Adjusting transactions ..."));
     try {
       /*
@@ -2684,7 +2724,6 @@ void KMyMoney2App::slotAccountDelete(void)
       delete e;
       exit = true;
     }
-    file->blockSignals(false);
     slotStatusProgressBar(-1, -1);
     slotStatusMsg(prevMsg);
   }
@@ -2791,6 +2830,7 @@ void KMyMoney2App::slotAccountDelete(void)
     file->removeAccount(m_selectedAccount);
     m_selectedAccount.clearId();
     slotUpdateActions();
+    ft.commit();
   } catch(MyMoneyException* e) {
     KMessageBox::error( this, i18n("Unable to delete account '%1'. Cause: %2").arg(m_selectedAccount.name()).arg(e->what()));
     delete e;
@@ -2842,8 +2882,10 @@ void KMyMoney2App::slotAccountEdit(void)
           }
         }
 
-        if (dlg.exec()) {
+        if (dlg.exec() == QDialog::Accepted) {
           try {
+            MyMoneyFileTransaction ft;
+
             MyMoneyAccount account = dlg.account();
             MyMoneyAccount parent = dlg.parentAccount();
             MyMoneyMoney bal = dlg.openingBalance();
@@ -2869,8 +2911,10 @@ void KMyMoney2App::slotAccountEdit(void)
               file->modifyTransaction(t);
 
             } else if(tid.isEmpty() && !dlg.openingBalance().isZero()){
-              MyMoneyFile::instance()->createOpeningBalanceTransaction(m_selectedAccount, bal);
+              file->createOpeningBalanceTransaction(m_selectedAccount, bal);
             }
+
+            ft.commit();
 
             slotSelectAccount(account);
 
@@ -2884,19 +2928,21 @@ void KMyMoney2App::slotAccountEdit(void)
         connect(wizard, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
         connect(wizard, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
         if(wizard->exec() == QDialog::Accepted) {
-          MyMoneyFile* file = MyMoneyFile::instance();
           MyMoneySchedule sch = file->schedule(m_selectedAccount.value("schedule").latin1());
           if(!(m_selectedAccount == wizard->account())
           || !(sch == wizard->schedule())) {
+            MyMoneyFileTransaction ft;
             try {
               file->modifyAccount(wizard->account());
               sch = wizard->schedule();
               try {
                 file->schedule(sch.id());
                 file->modifySchedule(sch);
+                ft.commit();
               } catch (MyMoneyException *e) {
                 try {
                   file->addSchedule(sch);
+                  ft.commit();
                 } catch (MyMoneyException *f) {
                   qDebug("Cannot add schedule: '%s'", f->what().data());
                   delete f;
@@ -2942,21 +2988,18 @@ void KMyMoney2App::slotAccountReconcileStart(void)
             // or charge transactions.
             MyMoneyTransaction ti = m_endingBalanceDlg->interestTransaction();
             MyMoneyTransaction tc = m_endingBalanceDlg->chargeTransaction();
-            if(ti != MyMoneyTransaction()) {
-              try {
+            MyMoneyFileTransaction ft;
+            try {
+              if(ti != MyMoneyTransaction()) {
                 MyMoneyFile::instance()->addTransaction(ti);
-              } catch(MyMoneyException *e) {
-                qWarning("interest transaction not stored: '%s'", e->what().data());
-                delete e;
               }
-            }
-            if(tc != MyMoneyTransaction()) {
-              try {
+              if(tc != MyMoneyTransaction()) {
                 MyMoneyFile::instance()->addTransaction(tc);
-              } catch(MyMoneyException *e) {
-                qWarning("charge transaction not stored: '%s'", e->what().data());
-                delete e;
               }
+              ft.commit();
+            } catch(MyMoneyException *e) {
+              qWarning("interest transaction not stored: '%s'", e->what().data());
+              delete e;
             }
 
             m_reconciliationAccount = account;
@@ -2972,6 +3015,8 @@ void KMyMoney2App::slotAccountReconcileStart(void)
 
 void KMyMoney2App::slotAccountReconcileFinish(void)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
+
   if(!m_reconciliationAccount.id().isEmpty()) {
     // retrieve list of all transactions that are not reconciled or cleared
     QValueList<QPair<MyMoneyTransaction, MyMoneySplit> > transactionList;
@@ -2979,7 +3024,7 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
     filter.addState(MyMoneyTransactionFilter::cleared);
     filter.addState(MyMoneyTransactionFilter::notReconciled);
     filter.setReportAllSplits(true);
-    MyMoneyFile::instance()->transactionList(transactionList, filter);
+    file->transactionList(transactionList, filter);
 
     MyMoneyMoney balance = MyMoneyFile::instance()->balance(m_reconciliationAccount.id());
     MyMoneyMoney actBalance, clearedBalance;
@@ -3000,8 +3045,10 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
         return;
     }
 
+    MyMoneyFileTransaction ft;
+
     // refresh object
-    m_reconciliationAccount = MyMoneyFile::instance()->account(m_reconciliationAccount.id());
+    m_reconciliationAccount = file->account(m_reconciliationAccount.id());
 
     // Turn off reconciliation mode
     myMoneyView->finishReconciliation(m_reconciliationAccount);
@@ -3014,10 +3061,8 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
     m_reconciliationAccount.deletePair("statementDate");
 
     try {
-      MyMoneyFile::instance()->blockSignals(true);
-
       // update the account data
-      MyMoneyFile::instance()->modifyAccount(m_reconciliationAccount);
+      file->modifyAccount(m_reconciliationAccount);
 
       // collect the list of cleared splits for this account
       filter.clear();
@@ -3025,29 +3070,24 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
       filter.setConsiderCategory(false);
       filter.addState(MyMoneyTransactionFilter::cleared);
       filter.setReportAllSplits(true);
-      MyMoneyFile::instance()->transactionList(transactionList, filter);
+      file->transactionList(transactionList, filter);
 
       // walk the list of transactions/splits and mark them as reconciled
       QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it;
-      int cnt = transactionList.count();
-
-      // make sure to leave it blocked or unblock if list is emtpy
-      MyMoneyFile::instance()->blockSignals(cnt != 0);
 
       for(it = transactionList.begin(); it != transactionList.end(); ++it) {
         // always retrieve a fresh copy of the transaction because we
         // might have changed it already with another split
-        MyMoneyTransaction t = MyMoneyFile::instance()->transaction((*it).first.id());
+        MyMoneyTransaction t = file->transaction((*it).first.id());
         MyMoneySplit sp = (*it).second;
         sp.setReconcileFlag(MyMoneySplit::Reconciled);
         sp.setReconcileDate(m_endingBalanceDlg->statementDate());
         t.modifySplit(sp);
 
-        // make sure to update views only on the last in the list
-        --cnt;
-        MyMoneyFile::instance()->blockSignals(cnt != 0);
-        MyMoneyFile::instance()->modifyTransaction(t);
+        file->modifyTransaction(t);
       }
+      ft.commit();
+
     } catch(MyMoneyException *e) {
       qDebug("Unexpected exception when setting cleared to reconcile");
       delete e;
@@ -3060,9 +3100,12 @@ void KMyMoney2App::slotAccountReconcileFinish(void)
 
 void KMyMoney2App::slotAccountReconcilePostpone(void)
 {
+  MyMoneyFileTransaction ft;
+  MyMoneyFile* file = MyMoneyFile::instance();
+
   if(!m_reconciliationAccount.id().isEmpty()) {
     // update the account data
-    MyMoneyFile::instance()->modifyAccount(m_reconciliationAccount);
+    file->modifyAccount(m_reconciliationAccount);
 
     // Turn off reconciliation mode
     myMoneyView->finishReconciliation(m_reconciliationAccount);
@@ -3072,16 +3115,17 @@ void KMyMoney2App::slotAccountReconcilePostpone(void)
     m_reconciliationAccount.setValue("statementDate", m_endingBalanceDlg->statementDate().toString(Qt::ISODate));
 
     try {
-      MyMoneyFile::instance()->modifyAccount(m_reconciliationAccount);
+      file->modifyAccount(m_reconciliationAccount);
+      ft.commit();
+      m_reconciliationAccount = MyMoneyAccount();
+      slotUpdateActions();
     } catch(MyMoneyException *e) {
       qDebug("Unexpected exception when setting last reconcile info into account");
       delete e;
+      ft.rollback();
+      m_reconciliationAccount = file->account(m_reconciliationAccount.id());
     }
-
-    m_reconciliationAccount = MyMoneyAccount();
-    slotUpdateActions();
   }
-
 }
 
 void KMyMoney2App::slotAccountOpen(const MyMoneyObject& obj)
@@ -3142,10 +3186,12 @@ void KMyMoney2App::slotAccountClose(void)
   if(m_selectedAccount.id().isEmpty())
     return;  // need an account ID
 
+  MyMoneyFileTransaction ft;
   try {
     MyMoneyAccount a(m_selectedAccount);
     a.setClosed(true);
     MyMoneyFile::instance()->modifyAccount(a);
+    ft.commit();
   } catch(MyMoneyException* e) {
     delete e;
   }
@@ -3156,13 +3202,16 @@ void KMyMoney2App::slotAccountReopen(void)
   if(m_selectedAccount.id().isEmpty())
     return;  // need an account ID
 
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyFileTransaction ft;
   try {
     MyMoneyAccount a(m_selectedAccount);
     while(a.isClosed()) {
       a.setClosed(false);
-      MyMoneyFile::instance()->modifyAccount(a);
-      a = MyMoneyFile::instance()->account(a.parentAccountId());
+      file->modifyAccount(a);
+      a = file->account(a.parentAccountId());
     }
+    ft.commit();
   } catch(MyMoneyException* e) {
     delete e;
   }
@@ -3172,8 +3221,10 @@ void KMyMoney2App::slotReparentAccount(const MyMoneyAccount& _src, const MyMoney
 {
   MyMoneyAccount src(_src);
   src.setInstitutionId(_dst.id());
+  MyMoneyFileTransaction ft;
   try {
     MyMoneyFile::instance()->modifyAccount(src);
+    ft.commit();
   } catch(MyMoneyException* e) {
     KMessageBox::sorry(this, QString("<p>")+i18n("<b>%1</b> cannot be moved to institution <b>%2</b>. Reason: %3").arg(src.name()).arg(_dst.name()).arg(e->what()));
     delete e;
@@ -3184,8 +3235,10 @@ void KMyMoney2App::slotReparentAccount(const MyMoneyAccount& _src, const MyMoney
 {
   MyMoneyAccount src(_src);
   MyMoneyAccount dst(_dst);
+  MyMoneyFileTransaction ft;
   try {
     MyMoneyFile::instance()->reparentAccount(src, dst);
+    ft.commit();
   } catch(MyMoneyException* e) {
     KMessageBox::sorry(this, QString("<p>")+i18n("<b>%1</b> cannot be moved to <b>%2</b>. Reason: %3").arg(src.name()).arg(dst.name()).arg(e->what()));
     delete e;
@@ -3222,8 +3275,10 @@ void KMyMoney2App::scheduleNew(const QCString& scheduleType)
 
   if (dlg.exec() == QDialog::Accepted) {
     schedule = dlg.schedule();
+    MyMoneyFileTransaction ft;
     try {
       MyMoneyFile::instance()->addSchedule(schedule);
+      ft.commit();
 
     } catch (MyMoneyException *e) {
       KMessageBox::error(this, i18n("Unable to add schedule: "), e->what());
@@ -3275,6 +3330,8 @@ void KMyMoney2App::slotScheduleEdit(void)
       KEditScheduleDialog* sched_dlg = 0;
       KEditLoanWizard* loan_wiz = 0;
 
+      MyMoneyFileTransaction ft;
+
       switch (schedule.type()) {
         case MyMoneySchedule::TYPE_BILL:
         case MyMoneySchedule::TYPE_DEPOSIT:
@@ -3304,6 +3361,7 @@ void KMyMoney2App::slotScheduleEdit(void)
         case MyMoneySchedule::TYPE_ANY:
           break;
       }
+      ft.commit();
 
     } catch (MyMoneyException *e) {
       KMessageBox::detailedSorry(this, i18n("Unable to modify schedule '%1'").arg(m_selectedSchedule.name()), e->what());
@@ -3315,6 +3373,7 @@ void KMyMoney2App::slotScheduleEdit(void)
 void KMyMoney2App::slotScheduleDelete(void)
 {
   if (!m_selectedSchedule.id().isEmpty()) {
+    MyMoneyFileTransaction ft;
     try {
       MyMoneySchedule sched = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
       QString msg = QString("<p>")+i18n("Are you sure you want to delete the schedule <b>%1</b>?").arg(m_selectedSchedule.name());
@@ -3326,6 +3385,7 @@ void KMyMoney2App::slotScheduleDelete(void)
         return;
 
       MyMoneyFile::instance()->removeSchedule(sched);
+      ft.commit();
 
     } catch (MyMoneyException *e) {
       KMessageBox::detailedSorry(this, i18n("Unable to remove schedule '%1'").arg(m_selectedSchedule.name()), e->what());
@@ -3337,6 +3397,7 @@ void KMyMoney2App::slotScheduleDelete(void)
 void KMyMoney2App::slotScheduleSkip(void)
 {
   if (!m_selectedSchedule.id().isEmpty()) {
+    MyMoneyFileTransaction ft;
     try {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
       if(!schedule.isFinished()) {
@@ -3346,6 +3407,7 @@ void KMyMoney2App::slotScheduleSkip(void)
           MyMoneyFile::instance()->modifySchedule(schedule);
         }
       }
+      ft.commit();
     } catch (MyMoneyException *e) {
       KMessageBox::detailedSorry(this, QString("<p>")+i18n("Unable to skip schedule <b>%1</b>").arg(m_selectedSchedule.name()), e->what());
       delete e;
@@ -3417,35 +3479,39 @@ bool KMyMoney2App::enterSchedule(MyMoneySchedule& schedule, bool autoEnter)
 
         // if we still have the editor around here, the user did not cancel
         if(m_transactionEditor) {
-          bool signalsBlocked = MyMoneyFile::instance()->signalsBlocked();
-          MyMoneyFile::instance()->blockSignals(true);
-          MyMoneyTransaction t;
-          // add the new transaction
-          switch(action) {
-            case KConfirmManualEnterDlg::UseOriginal:
-              // setup widgets with original transaction data
-              m_transactionEditor->setTransaction(dlg.transaction(), dlg.transaction().splits()[0]);
-              // and create a transaction based on that data
-              taccepted = MyMoneyTransaction();
-              m_transactionEditor->createTransaction(taccepted, dlg.transaction(), dlg.transaction().splits()[0], true);
-              break;
+          MyMoneyFileTransaction ft;
+          try {
+            MyMoneyTransaction t;
+            // add the new transaction
+            switch(action) {
+              case KConfirmManualEnterDlg::UseOriginal:
+                // setup widgets with original transaction data
+                m_transactionEditor->setTransaction(dlg.transaction(), dlg.transaction().splits()[0]);
+                // and create a transaction based on that data
+                taccepted = MyMoneyTransaction();
+                m_transactionEditor->createTransaction(taccepted, dlg.transaction(), dlg.transaction().splits()[0], true);
+                break;
 
-            case KConfirmManualEnterDlg::ModifyAlways:
-              schedule.setTransaction(taccepted);
-              break;
+              case KConfirmManualEnterDlg::ModifyAlways:
+                schedule.setTransaction(taccepted);
+                break;
 
-            case KConfirmManualEnterDlg::ModifyOnce:
-              break;
+              case KConfirmManualEnterDlg::ModifyOnce:
+                break;
+            }
+
+            QCString newId;
+            if(m_transactionEditor->enterTransactions(newId))
+              deleteTransactionEditor();
+
+            schedule.setLastPayment(schedule.nextPayment(schedule.lastPayment()));
+            MyMoneyFile::instance()->modifySchedule(schedule);
+            rc = true;
+            ft.commit();
+          } catch (MyMoneyException *e) {
+            KMessageBox::detailedSorry(this, i18n("Unable to enter transaction for schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+            delete e;
           }
-
-          QCString newId;
-          if(m_transactionEditor->enterTransactions(newId))
-            deleteTransactionEditor();
-
-          schedule.setLastPayment(schedule.nextPayment(schedule.lastPayment()));
-          MyMoneyFile::instance()->blockSignals(signalsBlocked);
-          MyMoneyFile::instance()->modifySchedule(schedule);
-          rc = true;
         }
       }
     } catch (MyMoneyException *e) {
@@ -3469,6 +3535,7 @@ void KMyMoney2App::slotPayeeNew(const QString& newnameBase, QCString& id)
   }
 
   if(doit) {
+    MyMoneyFileTransaction ft;
     try {
       QString newname(newnameBase);
       // adjust name until a unique name has been created
@@ -3487,6 +3554,7 @@ void KMyMoney2App::slotPayeeNew(const QString& newnameBase, QCString& id)
       p.setName(newname);
       MyMoneyFile::instance()->addPayee(p);
       id = p.id();
+      ft.commit();
     } catch (MyMoneyException *e) {
       KMessageBox::detailedSorry(this, i18n("Unable to add payee"),
         QString("%1 thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
@@ -3548,6 +3616,7 @@ void KMyMoney2App::slotPayeeDelete(void)
   if (KMessageBox::questionYesNo(this, prompt, i18n("Remove Payee"))==KMessageBox::No)
     return;
 
+  MyMoneyFileTransaction ft;
   try {
     // create a transaction filter that contains all payees selected for removal
     MyMoneyTransactionFilter f = MyMoneyTransactionFilter();
@@ -3576,12 +3645,8 @@ void KMyMoney2App::slotPayeeDelete(void)
     }
 //     kdDebug() << "[KPayeesView::slotDeletePayee]  " << used_schedules.count() << " schedules use one of the selected payees" << endl;
 
-    // finally remove the payees, but don't signal each change
-    file->blockSignals(true);
-
     // if at least one payee is still referenced, we need to reassign its transactions first
     if (!translist.isEmpty() || !used_schedules.isEmpty()) {
-      file->blockSignals(false);
       // show error message if no payees remain
       if (remainingPayees.isEmpty()) {
         KMessageBox::sorry(this, i18n("At least one transaction/schedule is still referenced by a payee. "
@@ -3596,9 +3661,6 @@ void KMyMoney2App::slotPayeeDelete(void)
       delete dlg; // and kill the dialog
       if (payee_id.isEmpty())
         return; // the user aborted the dialog, so let's abort as well
-
-      // finally remove the payees, but don't signal each change
-      file->blockSignals(true);
 
       // TODO : check if we have a report that explicitely uses one of our payees
       //        and issue an appropriate warning
@@ -3650,10 +3712,7 @@ void KMyMoney2App::slotPayeeDelete(void)
       it != m_selectedPayees.end(); ++it) {
       file->removePayee(*it);
     }
-    file->blockSignals(false);
-
-    // make sure, everyone receives a notice about the bulk change
-    file->forceDataChanged();
+    ft.commit();
 
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to remove payee(s)"),
@@ -3664,31 +3723,36 @@ void KMyMoney2App::slotPayeeDelete(void)
 
 void KMyMoney2App::slotBudgetNew(void)
 {
-    QDate date = QDate::currentDate(Qt::LocalTime);
-    date.setYMD(date.year(), 1, 1);
-    QString newname = i18n("Budget %1").arg(QString::number(date.year()));
+  QDate date = QDate::currentDate(Qt::LocalTime);
+  date.setYMD(date.year(), 1, 1);
+  QString newname = i18n("Budget %1").arg(QString::number(date.year()));
 
-    MyMoneyBudget budget;
+  MyMoneyBudget budget;
 
-    try
-    {
-      int i=1;
-      // Exception thrown when the name is not found
-      while (1)
-      {
-        MyMoneyFile::instance()->budgetByName(newname);
-        newname = i18n("Budget %1 (%2)").arg(QString::number(date.year()), QString::number(i++));
-      }
+  // make sure we have a unique name
+  try {
+    int i=1;
+    // Exception thrown when the name is not found
+    while (1) {
+      MyMoneyFile::instance()->budgetByName(newname);
+      newname = i18n("Budget %1 (%2)").arg(QString::number(date.year()), QString::number(i++));
     }
-    catch(MyMoneyException *e)
-    {
-      // all ok, the name is unique
-      delete e;
-    }
+  } catch(MyMoneyException *e) {
+    // all ok, the name is unique
+    delete e;
+  }
+
+  MyMoneyFileTransaction ft;
+  try {
     budget.setName(newname);
     budget.setBudgetStart(date);
 
     MyMoneyFile::instance()->addBudget(budget);
+    ft.commit();
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to add budget: %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+    delete e;
+  }
 }
 
 void KMyMoney2App::slotBudgetDelete(void)
@@ -3698,6 +3762,7 @@ void KMyMoney2App::slotBudgetDelete(void)
 
   MyMoneyFile * file = MyMoneyFile::instance();
 
+  // FIXME: adjust the following comment
   // first create list with all non-selected payees
   QValueList<MyMoneyBudget> remainingBudgets = file->budgetList();
   QValueList<MyMoneyBudget>::iterator it_p;
@@ -3719,27 +3784,24 @@ void KMyMoney2App::slotBudgetDelete(void)
   if (KMessageBox::questionYesNo(this, prompt, i18n("Remove Budget"))==KMessageBox::No)
     return;
 
-  file->blockSignals(true);
+  MyMoneyFileTransaction ft;
   try {
-    // now loop over all selected payees and remove them
+    // now loop over all selected budgets and remove them
     for (QValueList<MyMoneyBudget>::iterator it = m_selectedBudget.begin();
       it != m_selectedBudget.end(); ++it) {
       file->removeBudget(*it);
     }
+    ft.commit();
 
   } catch(MyMoneyException *e) {
-    KMessageBox::detailedSorry(0, i18n("Unable to remove budget(s)"),
-      (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to remove budget: %1, thrown in %2:%3").      arg(e->what()).arg(e->file()).arg(e->line()));
     delete e;
   }
-  file->blockSignals(false);
-  // make sure everyone receives a notification about the bulk changes
-  file->forceDataChanged();
 }
 
 void KMyMoney2App::slotNewUserWizard(void)
 {
-  NewUserWizard::Wizard *wizard = new NewUserWizard::Wizard();
+  NewUserWizard *wizard = new NewUserWizard();
   wizard->exec();
   delete wizard;
 }
@@ -3777,31 +3839,29 @@ void KMyMoney2App::slotTransactionDuplicate(void)
     int cnt = m_selectedTransactions.count();
     QString prevMsg = slotStatusMsg(i18n("Duplicating transactions"));
     slotStatusProgressBar(0, cnt);
-    for(it_t = list.begin(); it_t != list.end(); ++it_t) {
-      MyMoneyTransaction t = (*it_t).transaction();
-      QValueList<MyMoneySplit>::iterator it_s;
-      // wipe out any reconciliation information
-      for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
-        (*it_s).setReconcileFlag(MyMoneySplit::NotReconciled);
-        (*it_s).setReconcileDate(QDate());
-      }
-      // clear invalid data
-      t.setEntryDate(QDate());
-      t.clearId();
-      // and set the post date to today
-      t.setPostDate(QDate::currentDate());
+    MyMoneyFileTransaction ft;
+    try {
+      for(it_t = list.begin(); it_t != list.end(); ++it_t) {
+        MyMoneyTransaction t = (*it_t).transaction();
+        QValueList<MyMoneySplit>::iterator it_s;
+        // wipe out any reconciliation information
+        for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+          (*it_s).setReconcileFlag(MyMoneySplit::NotReconciled);
+          (*it_s).setReconcileDate(QDate());
+        }
+        // clear invalid data
+        t.setEntryDate(QDate());
+        t.clearId();
+        // and set the post date to today
+        t.setPostDate(QDate::currentDate());
 
-      // allow signals only on the very last item in the list
-      --cnt;
-      MyMoneyFile::instance()->blockSignals(cnt != 0);
-
-      try {
         MyMoneyFile::instance()->addTransaction(t);
-      } catch(MyMoneyException* e) {
-        qDebug("Unable to duplicate transaction: %s", e->what().data());
-        delete e;
+        slotStatusProgressBar(i++, 0);
       }
-      slotStatusProgressBar(i++, 0);
+      ft.commit();
+    } catch(MyMoneyException* e) {
+      KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to duplicate transaction(s): %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+      delete e;
     }
     // TODO select the newly created entry in the ledger view
 
@@ -3818,19 +3878,16 @@ void KMyMoney2App::doDeleteTransactions(void)
   int cnt = list.count();
   int i = 0;
   slotStatusProgressBar(0, cnt);
-  for(it_t = list.begin(); it_t != list.end(); ++it_t) {
-    // turn on signals before we modify the last entry in the list
-    cnt--;
-    MyMoneyFile::instance()->blockSignals(cnt != 0);
-
-    try {
+  MyMoneyFileTransaction ft;
+  try {
+    for(it_t = list.begin(); it_t != list.end(); ++it_t) {
       MyMoneyFile::instance()->removeTransaction((*it_t).transaction());
-    } catch(MyMoneyException* e) {
-      delete e;
-      if(!cnt)
-        MyMoneyFile::instance()->forceDataChanged();
+      slotStatusProgressBar(i++, 0);
     }
-    slotStatusProgressBar(i++, 0);
+    ft.commit();
+  } catch(MyMoneyException* e) {
+      KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to delete transaction(s): %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+    delete e;
   }
   slotStatusProgressBar(-1, -1);
 }
@@ -3881,8 +3938,15 @@ void KMyMoney2App::slotTransactionsEditSplits(void)
 
     if(m_transactionEditor) {
       if(m_transactionEditor->slotEditSplits() == QDialog::Accepted) {
-        QCString id;
-        m_transactionEditor->enterTransactions(id);
+        MyMoneyFileTransaction ft;
+        try {
+          QCString id;
+          m_transactionEditor->enterTransactions(id);
+          ft.commit();
+        } catch(MyMoneyException* e) {
+          KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to modify transaction: %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+          delete e;
+        }
       }
     }
     deleteTransactionEditor();
@@ -3967,12 +4031,13 @@ void KMyMoney2App::markTransaction(MyMoneySplit::reconcileFlagE flag)
   int cnt = list.count();
   int i = 0;
   slotStatusProgressBar(0, cnt);
-  for(it_t = list.begin(); it_t != list.end(); ++it_t) {
-    // turn on signals before we modify the last entry in the list
-    cnt--;
-    MyMoneyFile::instance()->blockSignals(cnt != 0);
+  MyMoneyFileTransaction ft;
+  try {
+    for(it_t = list.begin(); it_t != list.end(); ++it_t) {
+      // turn on signals before we modify the last entry in the list
+      cnt--;
+      MyMoneyFile::instance()->blockSignals(cnt != 0);
 
-    try {
       // get a fresh copy
       MyMoneyTransaction t = MyMoneyFile::instance()->transaction((*it_t).transaction().id());
       MyMoneySplit sp = t.splitById((*it_t).split().id());
@@ -3998,14 +4063,14 @@ void KMyMoney2App::markTransaction(MyMoneySplit::reconcileFlagE flag)
         t.modifySplit(sp);
         MyMoneyFile::instance()->modifyTransaction(t);
       }
-    } catch(MyMoneyException* e) {
-      delete e;
-      if(!cnt)
-        MyMoneyFile::instance()->forceDataChanged();
+      slotStatusProgressBar(i++, 0);
     }
-    slotStatusProgressBar(i++, 0);
+    slotStatusProgressBar(-1, -1);
+    ft.commit();
+  } catch(MyMoneyException* e) {
+    KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to modify transaction: %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+    delete e;
   }
-  slotStatusProgressBar(-1, -1);
 }
 
 void KMyMoney2App::slotTransactionsAccept(void)
@@ -4015,27 +4080,22 @@ void KMyMoney2App::slotTransactionsAccept(void)
   int cnt = list.count();
   int i = 0;
   slotStatusProgressBar(0, cnt);
-  for(it_t = list.begin(); it_t != list.end(); ++it_t) {
-    // turn on signals before we modify the last entry in the list
-    cnt--;
-    MyMoneyFile::instance()->blockSignals(cnt != 0);
-
-    try {
+  MyMoneyFileTransaction ft;
+  try {
+    for(it_t = list.begin(); it_t != list.end(); ++it_t) {
       MyMoneyTransaction t = (*it_t).transaction();
       if(t.value("Imported").lower() == "true") {
         t.deletePair("Imported");
         MyMoneyFile::instance()->modifyTransaction(t);
-      } else if(!cnt)
-        MyMoneyFile::instance()->forceDataChanged();
-
-    } catch(MyMoneyException* e) {
-      delete e;
-      if(!cnt)
-        MyMoneyFile::instance()->forceDataChanged();
+      }
+      slotStatusProgressBar(i++, 0);
     }
-    slotStatusProgressBar(i++, 0);
+    slotStatusProgressBar(-1, -1);
+    ft.commit();
+  } catch(MyMoneyException* e) {
+    KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to accept transaction: %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+    delete e;
   }
-  slotStatusProgressBar(-1, -1);
 }
 
 void KMyMoney2App::slotTransactionGotoAccount(void)
@@ -4133,6 +4193,7 @@ void KMyMoney2App::slotEndMatch(void)
     // is to just base the match on the splits referencing the same (currently
     // selected) account.
 
+    MyMoneyFileTransaction ft;
     try
     {
       // the match is based on the current selected account, so we look for the splits
@@ -4233,6 +4294,7 @@ void KMyMoney2App::slotEndMatch(void)
 
       // Delete the end transaction (which is the current transaction)
       doDeleteTransactions();
+      ft.commit();
     }
     catch(MyMoneyException *e)
     {
@@ -4743,23 +4805,27 @@ void KMyMoney2App::slotCurrencyDialog(void)
 {
   KCurrencyEditDlg dlg(this, "Currency Editor");
   dlg.exec();
-
-  myMoneyView->slotRefreshViews();
 }
 
 void KMyMoney2App::slotPriceDialog(void)
 {
   KMyMoneyPriceDlg dlg(this, "Price Editor");
   dlg.exec();
-
-  myMoneyView->slotRefreshViews();
 }
 
 void KMyMoney2App::slotFileConsitencyCheck(void)
 {
   QString prevMsg = slotStatusMsg(i18n("Running consistency check..."));
 
-  QStringList msg = MyMoneyFile::instance()->consistencyCheck();
+  QStringList msg;
+  MyMoneyFileTransaction ft;
+  try {
+    msg = MyMoneyFile::instance()->consistencyCheck();
+    ft.commit();
+  } catch(MyMoneyException *e) {
+    msg = i18n("Consistency check failed: %1").arg(e->what());
+    delete e;
+  }
 
   KMessageBox::warningContinueCancelList(0, "Result", msg, i18n("Consistency check result"));
 
@@ -4964,6 +5030,8 @@ void KMyMoney2App::webConnect(const QString& url, const QCString& asn_id)
     if ( it_plugin == m_importerPlugins.end() )
       if ( MyMoneyStatement::isStatementFile( url ) )
         slotStatementImport(url);
+
+    slotStatusMsg(prevMsg);
   }
 }
 

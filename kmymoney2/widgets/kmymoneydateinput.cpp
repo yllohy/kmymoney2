@@ -76,9 +76,9 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   focusWidget()->installEventFilter(this); // To get dateEdit's FocusIn/Out and some KeyPress events
   dateEdit->installEventFilter(this); // To get dateEdit's FocusIn/Out and some KeyPress events
 
-  m_datePopup = new KPassivePopup(dateEdit, "m_datePopup");
+  m_datePopup = new KPassivePopup(dateEdit, "datePopup");
   m_datePopup->setTimeout(DATE_POPUP_TIMEOUT);
-  m_datePopup->setView(new QLabel(KGlobal::locale()->formatDate(m_date), m_datePopup));
+  m_datePopup->setView(new QLabel(KGlobal::locale()->formatDate(m_date), m_datePopup, "datePopupLabel"));
 
   m_dateFrame = new QVBox(this, 0, WType_Popup);
   m_dateFrame->setFrameStyle(QFrame::PopupPanel | QFrame::Raised);

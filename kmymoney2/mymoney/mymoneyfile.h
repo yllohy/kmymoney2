@@ -214,6 +214,32 @@ public:
   IMyMoneyStorage* const storage(void) const { return m_storage; };
 
   /**
+    * This method must be called before any single change or a series of changes
+    * in the underlying storage area is performed.
+    * Once all changes are complete (i.e. the transaction is completed),
+    * commitTransaction() must be called to finalize all changes. If an error occurs
+    * during the processing of the changes call rollbackTransaction() to undo the
+    * changes done so far.
+    */
+  void startTransaction(void);
+
+  /**
+    * This method returns whether a transaction has been started (@a true)
+    * or not (@a false).
+    */
+  bool hasTransaction(void) const;
+
+  /**
+    * @sa startTransaction()
+    */
+  void commitTransaction(void);
+
+  /**
+    * @sa startTransaction()
+    */
+  void rollbackTransaction(void);
+
+  /**
     * This method is used to return the standard liability account
     * @return MyMoneyAccount liability account(group)
     */
@@ -721,15 +747,14 @@ public:
     * the returned list contains all accounts, otherwise only those referenced
     * in the id-list.
     *
+    * @param list reference to QValueList receiving the account objects
     * @param idlist QCStringList of account ids of those accounts that
     *        should be returned. If this list is empty, all accounts
     *        currently known will be returned.
     *
     * @param recursive if @p true, then recurse in all found accounts. The default is @p false
-    *
-    * @return QValueList containing the account objects
     */
-  const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList(), const bool recursive = false) const;
+  void accountList(QValueList<MyMoneyAccount>& list, const QCStringList& idlist = QCStringList(), const bool recursive = false) const;
 
   /**
     * This method is used to convert an account id to a string representation
@@ -1333,6 +1358,8 @@ public:
 
   void forceDataChanged(void) { emit dataChanged(); }
 
+  void preloadCache(void);
+
 protected:
   /**
     * This is the constructor for a new empty file description
@@ -1347,14 +1374,6 @@ signals:
     * via any of the methods of this object
     */
   void dataChanged(void);
-
-  /**
-    * This signal is emitted whenever a new object has been added to the engine.
-    * The dataChanged() signal is emitted before this signal is emitted.
-    *
-    * @note: not all objects are supported as of today (2006-08-23 - ipwizard)
-    */
-  void objectAdded(const MyMoneyObject&);
 
 private:
   const QCString locateSubAccount(const MyMoneyAccount& base, const QString& category) const;
@@ -1378,7 +1397,7 @@ private:
 private:
   /**
     * This method is used to add an id to the list of objects
-    * to be notified. If id is empty, then nothing is added to the list.
+    * to be removed from the cache. If id is empty, then nothing is added to the list.
     *
     * @param id id of object to be notified
     * @see attach, detach
@@ -1391,24 +1410,10 @@ private:
   void clearNotification(void);
 
   /**
-    * This method is used to notify the objects observing
-    * a specific id
-    */
-  void notify(const QCString& id);
-
-  /**
-    * This method is used to notify all objects observing
-    * any object contained in m_notificationList.
+    * This method is used to clear all
+    * objects mentioned in m_notificationList from the cache.
     */
   void notify(void);
-
-  /**
-    * This method is used to add the account with id 'id'
-    * and all it's parent account's ids to the notification list.
-    *
-    * @param id account's id
-    */
-  void notifyAccountTree(const QCString& id);
 
   /**
     * This method checks if a storage object is attached and
@@ -1418,6 +1423,13 @@ private:
     if(m_storage == 0)
       throw new MYMONEYEXCEPTION("No storage object attached to MyMoneyFile");
   }
+
+  /**
+    * This method checks that a transaction has been started with
+    * startTransaction() and throws an exception otherwise. Calls
+    * checkStorage() to make sure a storage object is present and attached.
+    */
+  void checkTransaction(const char* txt) const;
 
 private:
   /**
@@ -1432,5 +1444,20 @@ private:
 
   static MyMoneyFile* _instance;
 };
+
+class KMYMONEY_EXPORT MyMoneyFileTransaction
+{
+public:
+  MyMoneyFileTransaction();
+  ~MyMoneyFileTransaction();
+  void commit(void);
+  void rollback(void);
+  void restart(void);
+
+private:
+  bool m_isNested;
+  bool m_needRollback;
+};
+
 #endif
 

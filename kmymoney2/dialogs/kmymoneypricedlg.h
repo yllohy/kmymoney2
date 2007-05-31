@@ -44,12 +44,13 @@ public:
   KMyMoneyPriceDlg(QWidget* parent, const char *name);
   ~KMyMoneyPriceDlg();
 
-public slots:
+protected slots:
   void slotSelectPrice(QListViewItem* item);
-  void slotEquityPriceUpdate();
-
-protected:
-  void loadList(void);
+  void slotNewPrice(void);
+  void slotDeletePrice(void);
+  int slotEditPrice(void);
+  void slotLoadWidgets(void);
+  void slotOnlinePriceUpdate(void);
 
 private:
   QListViewItem*    m_currentItem;

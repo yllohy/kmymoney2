@@ -44,6 +44,7 @@
 
 #include <kmymoney/mymoneymoney.h>
 #include <kmymoney/export.h>
+
 /**
   * @author Thomas Baumgart
   */

@@ -972,10 +972,12 @@ void MyMoneyGncReader::readFile(QIODevice* pDevice, IMyMoneySerialize* storage) 
   if (bAnonymize) setFileHideFactor ();
   //m_defaultPayee = createPayee (i18n("Unknown payee"));
 
+  MyMoneyFileTransaction ft;
   m_xr = new XmlReader (this);
   try {
     m_xr->processFile (pDevice);
     terminate (); // do all the wind-up things
+    ft.commit();
   } catch (MyMoneyException *e) {
     QMessageBox::critical (0, PACKAGE, i18n("Import failed\n\n") + e->what(),
                            QMessageBox::Abort, QMessageBox::NoButton , QMessageBox::NoButton);
@@ -1120,7 +1122,7 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
 # Feb 2006: A RELAX NG Compact schema for gnucash "v2" XML files.
 # Copyright (C) 2006 Joshua Sled <jsled@asynchronous.org>
 "NO_TYPE" "BANK" "CASH" "CREDIT" "ASSET" "LIABILITY" "STOCK" "MUTUAL" "CURRENCY"
-"INCOME" "EXPENSE" "EQUITY" "RECEIVABLE" "PAYABLE" "CHECKING" "SAVINGS" "MONEYMRKT" "CREDITLINE" 
+"INCOME" "EXPENSE" "EQUITY" "RECEIVABLE" "PAYABLE" "CHECKING" "SAVINGS" "MONEYMRKT" "CREDITLINE"
   Some don't seem to be used in practice. Not sure what CREDITLINE s/be converted as.
   */
   if ("BANK" == gac->type() || "CHECKING" == gac->type()) {
@@ -1205,7 +1207,7 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
       }
     }
   }
-  
+
   // check for tax-related status
   QPtrListIterator<GncObject> kvpi (gac->m_kvpList);
   GncKvp *k;
@@ -1758,7 +1760,7 @@ void MyMoneyGncReader::terminate () {
   signalProgress (0, m_accountCount, i18n ("Reorganizing accounts..."));
   QValueList<MyMoneyAccount> list;
   QValueList<MyMoneyAccount>::Iterator acc;
-  list = m_storage->accountList();
+  m_storage->accountList(list);
   for (acc = list.begin(); acc != list.end(); ++acc) {
     if ((*acc).parentAccountId() == m_storage->asset().id()) {
       MyMoneyAccount assets = m_storage->asset();
@@ -2089,7 +2091,7 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
     QStringList accList;
     QValueList<MyMoneyAccount> list;
     QValueList<MyMoneyAccount>::Iterator acc;
-    list = m_storage->accountList();
+    m_storage->accountList(list);
     // build a list of candidates for the input box
     for (acc = list.begin(); acc != list.end(); ++acc) {
       //      if (((*acc).accountGroup() == MyMoneyAccount::Asset) && ((*acc).accountType() != MyMoneyAccount::Stock)) accList.append ((*acc).name());

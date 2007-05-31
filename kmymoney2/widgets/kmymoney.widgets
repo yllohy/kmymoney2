@@ -32,6 +32,9 @@ IncludeFile=kmymoney/kmymoneycombo.h
 
 [TransactionSortOption]
 
+[KMyMoneyGeneralCombo]
+IncludeFile=kmymoney/kmymoneycombo.h
+
 # deprecated will be removed at some point in time
 
 [KMyMoneyAccountCombo]

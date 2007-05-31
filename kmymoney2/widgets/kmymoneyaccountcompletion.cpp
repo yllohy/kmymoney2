@@ -35,7 +35,6 @@
 // Project Includes
 
 #include "kmymoneyaccountcompletion.h"
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include <kmymoney/mymoneyfile.h>
 
 kMyMoneyAccountCompletion::kMyMoneyAccountCompletion(QWidget *parent, const char *name ) :
@@ -48,8 +47,7 @@ kMyMoneyAccountCompletion::kMyMoneyAccountCompletion(QWidget *parent, const char
 #ifndef KMM_DESIGNER
   // Default is to show all accounts
   // FIXME We should leave this also to the caller
-  MyMoneyObjectContainer objects;
-  AccountSet set(&objects);
+  AccountSet set;
   set.addAccountGroup(MyMoneyAccount::Asset);
   set.addAccountGroup(MyMoneyAccount::Liability);
   set.addAccountGroup(MyMoneyAccount::Income);

@@ -39,7 +39,7 @@ class InvestTransactionEditor : public TransactionEditor
   Q_OBJECT
 public:
   InvestTransactionEditor();
-  InvestTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::InvestTransaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+  InvestTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::InvestTransaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
   virtual ~InvestTransactionEditor();
 
   /**
@@ -61,7 +61,7 @@ public:
 
   void totalAmount(MyMoneyMoney& amount) const;
 
-  static void dissectTransaction(const MyMoneyTransaction& transaction, const MyMoneySplit& split, MyMoneyObjectContainer* objects, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency, MyMoneySplit::investTransactionTypeE& transactionType);
+  static void dissectTransaction(const MyMoneyTransaction& transaction, const MyMoneySplit& split, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency, MyMoneySplit::investTransactionTypeE& transactionType);
 
   bool setupPrice(const MyMoneyTransaction& t, MyMoneySplit& split);
 

@@ -43,13 +43,17 @@
 // Project Includes
 
 #include "kmymoneypriceview.h"
+#include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/mymoneyfile.h>
+#include "../kmymoneyglobalsettings.h"
+#if 0
 #include "../widgets/kmymoneycurrencyselector.h"
 #include "../dialogs/kupdatestockpricedlg.h"
 #include "../dialogs/kcurrencycalculator.h"
 #include "../dialogs/kequitypriceupdatedlg.h"
-#include "../kmymoneysettings.h"
 #include "../kmymoneyutils.h"
 #include "../mymoney/mymoneyfile.h"
+#endif
 
 #define COMMODITY_COL   0
 #define CURRENCY_COL    1
@@ -57,7 +61,7 @@
 #define PRICE_COL       3
 #define SOURCE_COL      4
 
-kMyMoneyPriceItem::kMyMoneyPriceItem(KListView *view, const MyMoneyPrice& pr) :
+KMyMoneyPriceItem::KMyMoneyPriceItem(KListView *view, const MyMoneyPrice& pr) :
   KMyMoneyListViewItem(view, QString(), QString(), QCString()),
   m_pr(pr)
 {
@@ -87,9 +91,9 @@ kMyMoneyPriceItem::kMyMoneyPriceItem(KListView *view, const MyMoneyPrice& pr) :
   }
 }
 
-int kMyMoneyPriceItem::compare(QListViewItem* i, int col, bool ascending) const
+int KMyMoneyPriceItem::compare(QListViewItem* i, int col, bool ascending) const
 {
-  kMyMoneyPriceItem* item = static_cast<kMyMoneyPriceItem*>(i);
+  KMyMoneyPriceItem* item = static_cast<KMyMoneyPriceItem*>(i);
   int rc = 0;
 
   switch(col) {
@@ -114,24 +118,24 @@ int kMyMoneyPriceItem::compare(QListViewItem* i, int col, bool ascending) const
   return rc;
 }
 
-kMyMoneyPriceView::kMyMoneyPriceView(QWidget *parent, const char *name ) :
-  kMyMoneyPriceViewDecl(parent,name),
+KMyMoneyPriceView::KMyMoneyPriceView(QWidget *parent, const char *name ) :
+  KListView(parent,name),
   m_contextMenu(0),
   m_showAll(false)
 {
-  m_priceHistory->addColumn(i18n("Commodity"));
-  m_priceHistory->addColumn(i18n("Currency"));
-  m_priceHistory->addColumn(i18n("Date"));
-  m_priceHistory->addColumn(i18n("Price"));
-  m_priceHistory->addColumn(i18n("Source"));
-  m_priceHistory->setAllColumnsShowFocus(true);
-  m_priceHistory->setMultiSelection(false);
-  m_priceHistory->setColumnWidthMode(0, QListView::Maximum);
-  m_priceHistory->setColumnWidthMode(1, QListView::Maximum);
-  m_priceHistory->setShowSortIndicator(true);
-  m_priceHistory->setSorting(COMMODITY_COL);
+  addColumn(i18n("Commodity"));
+  addColumn(i18n("Currency"));
+  addColumn(i18n("Date"));
+  addColumn(i18n("Price"));
+  addColumn(i18n("Source"));
+  setAllColumnsShowFocus(true);
+  setMultiSelection(false);
+  setColumnWidthMode(0, QListView::Maximum);
+  setColumnWidthMode(1, QListView::Maximum);
+  setShowSortIndicator(true);
+  setSorting(COMMODITY_COL);
 
-  m_priceHistory->header()->setFont(KMyMoneyUtils::headerFont());
+  header()->setFont(KMyMoneyGlobalSettings::listHeaderFont());
 
   KIconLoader *kiconloader = KGlobal::iconLoader();
 
@@ -139,27 +143,26 @@ kMyMoneyPriceView::kMyMoneyPriceView(QWidget *parent, const char *name ) :
   m_contextMenu->insertTitle(i18n("Price Options"));
   m_contextMenu->insertItem(kiconloader->loadIcon("filenew", KIcon::Small),
                         i18n("New ..."),
-                        this, SLOT(slotNewPrice()));
+                        this, SIGNAL(newPrice()));
 
   m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small),
                         i18n("Edit ..."),
-                        this, SLOT(slotEditPrice()));
+                        this, SIGNAL(editPrice()));
 
   m_contextMenu->insertItem(kiconloader->loadIcon("connect_creating", KIcon::Small),
                         i18n("Online Price Update ..."),
-                        this, SLOT(slotOnlinePriceUpdate()));
+                        this, SIGNAL(onlinePriceUpdate()));
 
   m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
                         i18n("Delete ..."),
-                        this, SLOT(slotDeletePrice()));
+                        this, SIGNAL(deletePrice()));
 
-  connect(m_priceHistory, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
+  connect(this, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
           this, SLOT(slotListClicked(QListViewItem*, const QPoint&, int)));
-  connect(m_priceHistory, SIGNAL(selectionChanged(QListViewItem*)), this, SIGNAL(selectionChanged(QListViewItem*)));
 
-  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadWidget()));
+  // connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadWidget()));
 
-  slotReloadWidget();
+  // slotReloadWidget();
 
   // If the widget is shown, the size must be fixed a little later
   // to be appropriate. I saw this in some other places and the only
@@ -169,11 +172,11 @@ kMyMoneyPriceView::kMyMoneyPriceView(QWidget *parent, const char *name ) :
   QTimer::singleShot(50, this, SLOT(slotTimerDone()));
 }
 
-kMyMoneyPriceView::~kMyMoneyPriceView()
+KMyMoneyPriceView::~KMyMoneyPriceView()
 {
 }
 
-void kMyMoneyPriceView::slotTimerDone(void)
+void KMyMoneyPriceView::slotTimerDone(void)
 {
   // the resize operation does the trick to adjust
   // all widgets in the view to the size they should
@@ -182,7 +185,8 @@ void kMyMoneyPriceView::slotTimerDone(void)
   resize(width()+1, height()+1);
 }
 
-void kMyMoneyPriceView::slotReloadWidget(void)
+#if 0
+void KMyMoneyPriceView::slotReloadWidget(void)
 {
   m_priceHistory->clear();
 
@@ -203,24 +207,23 @@ void kMyMoneyPriceView::slotReloadWidget(void)
     }
   }
 }
+#endif
 
-void kMyMoneyPriceView::resizeEvent(QResizeEvent* e)
+void KMyMoneyPriceView::resizeEvent(QResizeEvent* e)
 {
-  int w = m_priceHistory->visibleWidth()/5;
+  int w = visibleWidth()/5;
 
-  m_priceHistory->setColumnWidth(0, w);
-  m_priceHistory->setColumnWidth(1, w);
-  m_priceHistory->setColumnWidth(2, w);
-  m_priceHistory->setColumnWidth(3, w);
-  m_priceHistory->setColumnWidth(4, w);
-  m_priceHistory->resizeContents(
-    m_priceHistory->visibleWidth(),
-    m_priceHistory->contentsHeight());
+  setColumnWidth(0, w);
+  setColumnWidth(1, w);
+  setColumnWidth(2, w);
+  setColumnWidth(3, w);
+  setColumnWidth(4, w);
+  resizeContents(visibleWidth(), contentsHeight());
 
-  kMyMoneyPriceViewDecl::resizeEvent(e);
+  KListView::resizeEvent(e);
 }
 
-void kMyMoneyPriceView::slotListClicked(QListViewItem* item, const QPoint&, int)
+void KMyMoneyPriceView::slotListClicked(QListViewItem* item, const QPoint&, int)
 {
   int editId = m_contextMenu->idAt(2);
   int updateId = m_contextMenu->idAt(3);
@@ -229,7 +232,7 @@ void kMyMoneyPriceView::slotListClicked(QListViewItem* item, const QPoint&, int)
   m_contextMenu->setItemEnabled(editId, item != 0);
   m_contextMenu->setItemEnabled(delId, item != 0);
 
-  kMyMoneyPriceItem* priceitem = dynamic_cast<kMyMoneyPriceItem*>(m_priceHistory->selectedItem());
+  KMyMoneyPriceItem* priceitem = dynamic_cast<KMyMoneyPriceItem*>(item);
   if(priceitem) {
     MyMoneySecurity security;
     security = MyMoneyFile::instance()->security(priceitem->price().from());
@@ -248,7 +251,8 @@ void kMyMoneyPriceView::slotListClicked(QListViewItem* item, const QPoint&, int)
   m_contextMenu->exec(QCursor::pos());
 }
 
-void kMyMoneyPriceView::slotNewPrice(void)
+#if 0
+void KMyMoneyPriceView::slotNewPrice(void)
 {
   KUpdateStockPriceDlg dlg(this);
   kMyMoneyPriceItem* item = dynamic_cast<kMyMoneyPriceItem*>(m_priceHistory->selectedItem());
@@ -273,7 +277,7 @@ void kMyMoneyPriceView::slotNewPrice(void)
   }
 }
 
-int kMyMoneyPriceView::slotEditPrice(void)
+int KMyMoneyPriceView::slotEditPrice(void)
 {
   int rc = QDialog::Rejected;
   kMyMoneyPriceItem* item = dynamic_cast<kMyMoneyPriceItem*>(m_priceHistory->selectedItem());
@@ -298,16 +302,24 @@ int kMyMoneyPriceView::slotEditPrice(void)
   return rc;
 }
 
-void kMyMoneyPriceView::slotDeletePrice(void)
+void KMyMoneyPriceView::slotDeletePrice(void)
 {
   kMyMoneyPriceItem* item = dynamic_cast<kMyMoneyPriceItem*>(m_priceHistory->selectedItem());
   if(item) {
-    if(KMessageBox::questionYesNo(this, i18n("Do you really want to delete the selected price entry?"), i18n("Delete price information"), KStdGuiItem::yes(), KStdGuiItem::no(), "DeletePrice") == KMessageBox::Yes)
-      MyMoneyFile::instance()->removePrice(item->price());
+    if(KMessageBox::questionYesNo(this, i18n("Do you really want to delete the selected price entry?"), i18n("Delete price information"), KStdGuiItem::yes(), KStdGuiItem::no(), "DeletePrice") == KMessageBox::Yes) {
+      MyMoneyFileTransaction ft;
+      try {
+        MyMoneyFile::instance()->removePrice(item->price());
+        ft.commit();
+      } catch(MyMoneyException *e) {
+        qDebug("Cannot delete price");
+        delete e;
+      }
+    }
   }
 }
 
-void kMyMoneyPriceView::slotShowAllPrices(bool enabled)
+void KMyMoneyPriceView::slotShowAllPrices(bool enabled)
 {
   if(m_showAll != enabled) {
     m_showAll = enabled;
@@ -315,9 +327,9 @@ void kMyMoneyPriceView::slotShowAllPrices(bool enabled)
   }
 }
 
-void kMyMoneyPriceView::slotOnlinePriceUpdate(void)
+void KMyMoneyPriceView::slotOnlinePriceUpdate(void)
 {
-  kMyMoneyPriceItem* item = dynamic_cast<kMyMoneyPriceItem*>(m_priceHistory->selectedItem());
+  KMyMoneyPriceItem* item = dynamic_cast<KMyMoneyPriceItem*>(m_priceHistory->selectedItem());
   if(item)
   {
     KEquityPriceUpdateDlg dlg(this, (item->text(COMMODITY_COL)+" "+item->text(CURRENCY_COL)).utf8());
@@ -325,5 +337,6 @@ void kMyMoneyPriceView::slotOnlinePriceUpdate(void)
   }
 }
 
+#endif
 
 #include "kmymoneypriceview.moc"

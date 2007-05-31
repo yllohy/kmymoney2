@@ -37,7 +37,6 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneycategory.h>
 #include <kmymoney/kmymoneyaccountselector.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 
 #include "../dialogs/kcurrencycalculator.h"
 
@@ -251,8 +250,7 @@ void KEndingBalanceDlg::slotReloadEditWidgets(void)
   // load the payee and category widgets with data from the engine
   m_payeeEdit->loadPayees(MyMoneyFile::instance()->payeeList());
 
-  MyMoneyObjectContainer m_objects;
-  AccountSet aSet(&m_objects);
+  AccountSet aSet;
   aSet.addAccountGroup(MyMoneyAccount::Income);
   aSet.load(m_interestCategoryEdit->selector());
 
@@ -491,8 +489,7 @@ void KEndingBalanceLoanDlg::next(void)
       m_interestTotalEdit->setValue(interest);
 
   } else if(currentPage() == m_checkPaymentsPage) {
-    MyMoneyObjectContainer objects;
-    AccountSet assetSet(&objects), incomeSet(&objects);
+    AccountSet assetSet, incomeSet;
     assetSet.addAccountGroup(MyMoneyAccount::Asset);
     incomeSet.addAccountGroup(MyMoneyAccount::Income);
     assetSet.load(m_accountEdit);

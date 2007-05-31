@@ -49,7 +49,6 @@
 #include <kmymoney/kmymoneydateinput.h>
 #include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/kmymoneyaccountselector.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include "../widgets/kmymoneycombo.h"
 
 #include "../dialogs/knewaccountdlg.h"
@@ -110,7 +109,7 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
   m_interestOnReceptionButton->animateClick();
 
   m_interestFrequencyAmountEdit->setValue(1);
-  m_interestFrequencyUnitEdit->setCurrentItem(i18n("Years"));
+  m_interestFrequencyUnitEdit->setItem(static_cast<int>(MyMoneyAccountLoan::changeYearly));
   m_paymentFrequencyUnitEdit->setCurrentItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_MONTHLY));
   m_firstDueDateEdit->loadDate(QDate(QDate::currentDate().year(),QDate::currentDate().month(),30));
 
@@ -204,13 +203,6 @@ void KNewLoanWizard::resetCalculator(void)
 
   m_additionalCost->setText(MyMoneyMoney(0).formatMoney());
 }
-
-#if 0
-void KNewLoanWizard::slotNewPayee(const QString& payeeName)
-{
-  KMyMoneyUtils::newPayee(this, m_payeeEdit, payeeName);
-}
-#endif
 
 void KNewLoanWizard::slotLiabilityLoan(void)
 {
@@ -427,9 +419,7 @@ void KNewLoanWizard::updateSummary(void)
     m_summaryLoanType->setText(i18n("lend"));
 
   m_summaryFirstPayment->setText(KGlobal::locale()->formatDate(m_firstDueDateEdit->date(), true));
-  QCString payeeId;
-  m_payeeEdit->selectedItem(payeeId);
-  if(payeeId.isEmpty()) {
+  if(m_payeeEdit->selectedItem().isEmpty()) {
     m_summaryPayee->setText(i18n("not assigned"));
   } else {
     m_summaryPayee->setText(m_payeeEdit->currentText());
@@ -618,10 +608,10 @@ void KNewLoanWizard::next()
 
 void KNewLoanWizard::loadComboBoxes(void)
 {
-  m_interestFrequencyUnitEdit->insertItem(i18n("Days"));
-  m_interestFrequencyUnitEdit->insertItem(i18n("Weeks"));
-  m_interestFrequencyUnitEdit->insertItem(i18n("Months"));
-  m_interestFrequencyUnitEdit->insertItem(i18n("Years"));
+  m_interestFrequencyUnitEdit->insertItem(i18n("Days"), static_cast<int>(MyMoneyAccountLoan::changeDaily));
+  m_interestFrequencyUnitEdit->insertItem(i18n("Weeks"), static_cast<int>(MyMoneyAccountLoan::changeWeekly));
+  m_interestFrequencyUnitEdit->insertItem(i18n("Months"), static_cast<int>(MyMoneyAccountLoan::changeMonthly));
+  m_interestFrequencyUnitEdit->insertItem(i18n("Years"), static_cast<int>(MyMoneyAccountLoan::changeYearly));
 
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_DAILY));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_WEEKLY));
@@ -635,9 +625,9 @@ void KNewLoanWizard::loadComboBoxes(void)
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_TWICEYEARLY));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_YEARLY));
 
-  m_durationUnitEdit->insertItem(i18n("Months"));
-  m_durationUnitEdit->insertItem(i18n("Years"));
-  m_durationUnitEdit->insertItem(i18n("Payments"));
+  m_durationUnitEdit->insertItem(i18n("Months"), static_cast<int>(MyMoneySchedule::OCCUR_MONTHLY));
+  m_durationUnitEdit->insertItem(i18n("Years"), static_cast<int>(MyMoneySchedule::OCCUR_YEARLY));
+  m_durationUnitEdit->insertItem(i18n("Payments"), static_cast<int>(MyMoneySchedule::OCCUR_ONCE));
 
 }
 
@@ -937,15 +927,15 @@ const QString KNewLoanWizard::updateTermWidgets(const long double val)
   switch(unit) {
     case MyMoneySchedule::OCCUR_MONTHLY:
       valString = i18n("one month", "%n months", vl);
-      m_durationUnitEdit->setCurrentItem(i18n("Months"));
+      m_durationUnitEdit->setItem(static_cast<int>(MyMoneySchedule::OCCUR_MONTHLY));
       break;
     case MyMoneySchedule::OCCUR_YEARLY:
       valString = i18n("one year", "%n years", vl);
-      m_durationUnitEdit->setCurrentItem(i18n("Years"));
+      m_durationUnitEdit->setItem(static_cast<int>(MyMoneySchedule::OCCUR_YEARLY));
       break;
     default:
       valString = i18n("one payment", "%n payments", vl);
-      m_durationUnitEdit->setCurrentItem(i18n("Payments"));
+      m_durationUnitEdit->setItem(static_cast<int>(MyMoneySchedule::OCCUR_ONCE));
       break;
   }
   m_durationValueEdit->setValue(vl);
@@ -970,19 +960,19 @@ void KNewLoanWizard::slotCreateCategory(void)
   if(dlg->exec() == QDialog::Accepted) {
     acc = dlg->account();
 
+    MyMoneyFileTransaction ft;
     try {
       QCString id;
       id = file->createCategory(base, acc.name());
       if(id.isEmpty())
         throw new MYMONEYEXCEPTION("failure while creating the account hierarchy");
 
-      loadAccountList();
+      ft.commit();
+
       m_interestAccountEdit->setSelected(id);
 
     } catch (MyMoneyException *e) {
-      QString message("Unable to add account: ");
-      message += e->what();
-      KMessageBox::information(this, message);
+      KMessageBox::information(this, i18n("Unable to add account: %1").arg(e->what()));
       delete e;
     }
   }
@@ -991,8 +981,7 @@ void KNewLoanWizard::slotCreateCategory(void)
 
 void KNewLoanWizard::loadAccountList(void)
 {
-  MyMoneyObjectContainer objects;
-  AccountSet interestSet(&objects), assetSet(&objects);
+  AccountSet interestSet, assetSet;
 
   if(m_borrowButton->isChecked()) {
     interestSet.addAccountType(MyMoneyAccount::Expense);
@@ -1018,9 +1007,8 @@ void KNewLoanWizard::slotAdditionalFees(void)
   // KMessageBox::information(0, QString("Not yet implemented ... if you want to help, contact kmymoney2-developer@lists.sourceforge.net"), QString("Development notice"));
   MyMoneyAccount account(QCString("Phony-ID"), MyMoneyAccount());
 
-  MyMoneyObjectContainer objects;
   QMap<QCString, MyMoneyMoney> priceInfo;
-  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction, account, false, !m_borrowButton->isChecked(), MyMoneyMoney(0), &objects, priceInfo);
+  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction, account, false, !m_borrowButton->isChecked(), MyMoneyMoney(0), priceInfo);
   connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
   if(dlg->exec() == QDialog::Accepted) {
@@ -1048,7 +1036,7 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
   MyMoneySplit sPayment, sInterest, sAmortization;
   // setup accounts. at this point, we cannot fill in the id of the
   // account that the amortization will be performed on, because we
-  // create the is account. So the id is yet unknown.
+  // create the account. So the id is yet unknown.
   sPayment.setAccountId(m_paymentAccountEdit->selectedItems().first());
   sInterest.setAccountId(m_interestAccountEdit->selectedItems().first());
 
@@ -1060,6 +1048,14 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
   }
   sInterest.setValue(MyMoneyMoney::autoCalc);
   sAmortization.setValue(MyMoneyMoney::autoCalc);
+  // don't forget the shares
+  sPayment.setShares(sPayment.value());
+  sInterest.setShares(sInterest.value());
+  sAmortization.setShares(sAmortization.value());
+
+  // setup the commodity
+  MyMoneyAccount acc = MyMoneyFile::instance()->account(sPayment.accountId());
+  t.setCommodity(acc.currencyId());
 
   // actions
   sPayment.setAction(MyMoneySplit::ActionAmortization);
@@ -1067,8 +1063,7 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
   sInterest.setAction(MyMoneySplit::ActionInterest);
 
   // payee
-  QCString payeeId;
-  m_payeeEdit->selectedItem(payeeId);
+  QCString payeeId = m_payeeEdit->selectedItem();
   sPayment.setPayeeId(payeeId);
   sAmortization.setPayeeId(payeeId);
 
@@ -1087,6 +1082,7 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
       sp.clearId();
       t.addSplit(sp);
       sPayment.setValue(sPayment.value()-sp.value());
+      sPayment.setShares(sPayment.value());
       t.modifySplit(sPayment);
     }
   }
@@ -1138,40 +1134,23 @@ const MyMoneyAccount KNewLoanWizard::account(void) const
   acc.setTerm(term());
   acc.setPeriodicPayment(m_paymentEdit->value());
 
-  QCString payeeId;
-  m_payeeEdit->selectedItem(payeeId);
-  acc.setPayee(payeeId);
+  acc.setPayee(m_payeeEdit->selectedItem());
 
   if(m_variableInterestButton->isChecked()) {
     acc.setNextInterestChange(m_interestChangeDateEdit->date());
     acc.setInterestChangeFrequency(m_interestFrequencyAmountEdit->value(),
-                                   m_interestFrequencyUnitEdit->currentItem());
+                                   m_interestFrequencyUnitEdit->item());
   }
   return acc;
 }
 
 void KNewLoanWizard::slotReloadEditWidgets(void)
 {
-#if 0
-  // TODO: reload the account and category widgets
-  // reload category widget
-  KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
-  QCString categoryId;
-  category->selectedItem(categoryId);
-
-  AccountSet aSet(m_objects);
-  aSet.addAccountGroup(MyMoneyAccount::Asset);
-  aSet.addAccountGroup(MyMoneyAccount::Liability);
-  aSet.addAccountGroup(MyMoneyAccount::Income);
-  aSet.addAccountGroup(MyMoneyAccount::Expense);
-  if(KMyMoneySettings::expertMode())
-    aSet.addAccountGroup(MyMoneyAccount::Equity);
-  aSet.load(category->selector());
-#endif
+  // load the various account widgets
+  loadAccountList();
 
   // reload payee widget
-  QCString payeeId;
-  m_payeeEdit->selectedItem(payeeId);
+  QCString payeeId = m_payeeEdit->selectedItem();
 
   m_payeeEdit->loadPayees(MyMoneyFile::instance()->payeeList());
 
@@ -1210,12 +1189,12 @@ int KNewLoanWizard::term(void) const
 
   if(m_durationValueEdit->value() != 0) {
     factor = 1;
-    switch(m_durationUnitEdit->currentItem()) {
-      case 1: // years
+    switch(m_durationUnitEdit->item()) {
+      case MyMoneySchedule::OCCUR_YEARLY: // years
         factor = 12;
         // tricky fall through here
 
-      case 0: // months
+      case MyMoneySchedule::OCCUR_MONTHLY: // months
         factor *= 30;
         factor *= m_durationValueEdit->value();
         // factor now is the duration in days. we divide this by the
@@ -1224,7 +1203,7 @@ int KNewLoanWizard::term(void) const
                             m_paymentFrequencyUnitEdit->currentText()));;
         break;
 
-      case 2: // payments
+      case MyMoneySchedule::OCCUR_ONCE: // payments
         factor = m_durationValueEdit->value();
         break;
     }

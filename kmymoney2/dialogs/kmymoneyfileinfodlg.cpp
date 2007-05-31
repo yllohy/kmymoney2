@@ -47,7 +47,9 @@ KMyMoneyFileInfoDlg::KMyMoneyFileInfoDlg(QWidget *parent, const char *name )
 
   m_payeeCount->setText(QString("%1").arg(storage->payeeList().count()));
   m_institutionCount->setText(QString("%1").arg(storage->institutionList().count()));
-  m_accountCount->setText(QString("%1").arg(storage->accountList().count()));
+  QValueList<MyMoneyAccount> a_list;
+  storage->accountList(a_list);
+  m_accountCount->setText(QString("%1").arg(a_list.count()));
 
   MyMoneyTransactionFilter filter;
   filter.setReportAllSplits(false);

@@ -27,15 +27,11 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kglobal.h>
 #include <klocale.h>
-#include <kconfig.h>
-#include <knuminput.h>
-#include <klistview.h>
+#include <kglobal.h>
 #include <kpushbutton.h>
-#include <klineedit.h>
-#include <kcombobox.h>
 #include <kiconloader.h>
+#include <kcombobox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -45,7 +41,7 @@
 #include "../widgets/kmymoneypriceview.h"
 
 KEditEquityEntryDlg::KEditEquityEntryDlg(const MyMoneySecurity& selectedSecurity, QWidget *parent, const char *name)
-  : kEditEquityEntryDecl(parent, name, true)
+  : KEditEquityEntryDecl(parent, name, true)
 {
   m_selectedSecurity = selectedSecurity;
 

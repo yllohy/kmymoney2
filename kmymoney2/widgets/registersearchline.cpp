@@ -74,9 +74,13 @@ void RegisterSearchLine::init(Register *reg)
 
   QLabel* label = new QLabel(i18n("label for status combo", "Stat&us"), parentWidget());
   d->combo = new QComboBox(parentWidget());
+  // don't change the order of the following lines unless updating
+  // the case labels in RegisterSearchLine::itemMatches() at the same time
   d->combo->insertItem(SmallIcon("run"), i18n("Any status"));
   d->combo->insertItem(SmallIcon("fileimport"), i18n("Imported"));
   d->combo->insertItem(SmallIcon("attention"), i18n("Erroneous"));
+  d->combo->insertItem(i18n("Not reconcoled"));
+  d->combo->insertItem(i18n("Cleared"));
   d->combo->setCurrentItem(0);
   connect(d->combo, SIGNAL(activated(int)), this, SLOT(slotStatusChanged(int)));
 
@@ -184,6 +188,15 @@ bool RegisterSearchLine::itemMatches(const RegisterItem* item, const QString& s)
         break;
       case 2:    // Erroneous
         if(t->transaction().splitSum().isZero())
+          return false;
+        break;
+      case 3:    // Not reconciled
+        if(t->split().reconcileFlag() != MyMoneySplit::NotReconciled)
+          return false;
+        break;
+
+      case 4:    // Cleared
+        if(t->split().reconcileFlag() != MyMoneySplit::Cleared)
           return false;
         break;
     }

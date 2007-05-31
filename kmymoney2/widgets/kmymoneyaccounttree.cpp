@@ -230,8 +230,9 @@ bool KMyMoneyAccountTree::acceptDrag(QDropEvent* event) const
         rc = dropAccountOnAccount(accFrom, accTo);
 
       } else if(to->isInstitution() && m_institutionConnections) {
-        // Moving an account to an institution is ok
-        rc = true;
+        // Moving a non-stock account to an institution is ok
+        if(accFrom.accountType() != MyMoneyAccount::Stock)
+          rc = true;
       }
     }
   }
@@ -288,8 +289,10 @@ void KMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* /*
         }
 
       } else if(newParent->isInstitution()) {
-        const MyMoneyInstitution& institution = dynamic_cast<const MyMoneyInstitution&>(newParent->itemObject());
-        emit reparent(accFrom, institution);
+        if(accFrom.accountType() != MyMoneyAccount::Stock) {
+          const MyMoneyInstitution& institution = dynamic_cast<const MyMoneyInstitution&>(newParent->itemObject());
+          emit reparent(accFrom, institution);
+        }
       }
     }
   }

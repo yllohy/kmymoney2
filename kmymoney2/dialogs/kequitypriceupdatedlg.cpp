@@ -235,18 +235,19 @@ void KEquityPriceUpdateDlg::slotOKClicked()
   QValueList<MyMoneySecurity> equities = file->securityList();
 
   QListViewItem* item = lvEquityList->firstChild();
-  while ( item )
-  {
-    // turn on signals before we modify the last entry in the list
-    MyMoneyFile::instance()->blockSignals(item->nextSibling() != 0);
-
-    MyMoneyMoney rate(item->text(PRICE_COL));
-    if ( !rate.isZero() )
+  MyMoneyFileTransaction ft;
+  QString name;
+  try {
+    while ( item )
     {
-      QCString id = item->text(ID_COL).utf8();
-      QString name;
+      // turn on signals before we modify the last entry in the list
+      MyMoneyFile::instance()->blockSignals(item->nextSibling() != 0);
 
-      try {
+      MyMoneyMoney rate(item->text(PRICE_COL));
+      if ( !rate.isZero() )
+      {
+        QCString id = item->text(ID_COL).utf8();
+
         // if the ID has a space, then this is TWO ID's, so it's a currency quote
         if ( QString(id).contains(" ") )
         {
@@ -270,14 +271,14 @@ void KEquityPriceUpdateDlg::slotOKClicked()
           MyMoneyFile::instance()->addPrice(price);
         }
 
-      } catch(MyMoneyException *e) {
-        qDebug("Unable to add price information for %s", name.data());
-        delete e;
-        if(!item->nextSibling())
-          MyMoneyFile::instance()->forceDataChanged();
       }
+      item = item->nextSibling();
     }
-    item = item->nextSibling();
+    ft.commit();
+
+  } catch(MyMoneyException *e) {
+    qDebug("Unable to add price information for %s", name.data());
+    delete e;
   }
 
   accept();

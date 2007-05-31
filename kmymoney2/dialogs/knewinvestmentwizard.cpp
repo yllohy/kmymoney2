@@ -27,6 +27,7 @@
 #include <kurlrequester.h>
 #include <klocale.h>
 #include <kapplication.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -219,59 +220,66 @@ void KNewInvestmentWizard::createObjects(const QCString& parentId)
     }
   }
 
-  // update all relevant attributes only, if we create a stock
-  // account and the security is unknown or we modifiy the security
-  MyMoneySecurity newSecurity(m_security);
-  newSecurity.setName(m_investmentName->text());
-  newSecurity.setTradingSymbol(m_investmentSymbol->text());
-  newSecurity.setTradingMarket(m_tradingMarket->currentText());
-  newSecurity.setSmallestAccountFraction(m_fraction->value());
-  newSecurity.setTradingCurrency(m_tradingCurrencyEdit->security().id());
-  newSecurity.deletePair("kmm-online-source");
-  newSecurity.deletePair("kmm-online-quote-system");
-  newSecurity.deletePair("kmm-online-factor");
-  newSecurity.deletePair("kmm-security-id");
+  MyMoneyFileTransaction ft;
+  try {
+    // update all relevant attributes only, if we create a stock
+    // account and the security is unknown or we modifiy the security
+    MyMoneySecurity newSecurity(m_security);
+    newSecurity.setName(m_investmentName->text());
+    newSecurity.setTradingSymbol(m_investmentSymbol->text());
+    newSecurity.setTradingMarket(m_tradingMarket->currentText());
+    newSecurity.setSmallestAccountFraction(m_fraction->value());
+    newSecurity.setTradingCurrency(m_tradingCurrencyEdit->security().id());
+    newSecurity.deletePair("kmm-online-source");
+    newSecurity.deletePair("kmm-online-quote-system");
+    newSecurity.deletePair("kmm-online-factor");
+    newSecurity.deletePair("kmm-security-id");
 
-  if(!m_onlineSourceCombo->currentText().isEmpty()) {
-    if (m_useFinanceQuote->isChecked()) {
-      FinanceQuoteProcess p;
-      newSecurity.setValue("kmm-online-quote-system", "Finance::Quote");
-      newSecurity.setValue("kmm-online-source", p.crypticName(m_onlineSourceCombo->currentText()));
-    }else{
-      newSecurity.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
+    if(!m_onlineSourceCombo->currentText().isEmpty()) {
+      if (m_useFinanceQuote->isChecked()) {
+        FinanceQuoteProcess p;
+        newSecurity.setValue("kmm-online-quote-system", "Finance::Quote");
+        newSecurity.setValue("kmm-online-source", p.crypticName(m_onlineSourceCombo->currentText()));
+      }else{
+        newSecurity.setValue("kmm-online-source", m_onlineSourceCombo->currentText());
+      }
     }
-  }
-  if(m_onlineFactor->isEnabled() && (m_onlineFactor->value() != MyMoneyMoney(1,1)))
-    newSecurity.setValue("kmm-online-factor", m_onlineFactor->value().toString());
-  if(!m_investmentIdentification->text().isEmpty())
-    newSecurity.setValue("kmm-security-id", m_investmentIdentification->text());
+    if(m_onlineFactor->isEnabled() && (m_onlineFactor->value() != MyMoneyMoney(1,1)))
+      newSecurity.setValue("kmm-online-factor", m_onlineFactor->value().toString());
+    if(!m_investmentIdentification->text().isEmpty())
+      newSecurity.setValue("kmm-security-id", m_investmentIdentification->text());
 
-  if(m_security.id().isEmpty() || newSecurity != m_security) {
-    m_security = newSecurity;
+    if(m_security.id().isEmpty() || newSecurity != m_security) {
+      m_security = newSecurity;
 
-    // if the security was not found, we have to create it while not forgetting
-    // to setup the type
-    if(m_security.id().isEmpty()) {
-      m_security.setSecurityType(type);
-      file->addSecurity(m_security);
+      // if the security was not found, we have to create it while not forgetting
+      // to setup the type
+      if(m_security.id().isEmpty()) {
+        m_security.setSecurityType(type);
+        file->addSecurity(m_security);
 
-    } else {
-      file->modifySecurity(m_security);
+      } else {
+        file->modifySecurity(m_security);
+      }
     }
-  }
 
-  if(m_createAccount) {
-    // now that the security exists, we can add the account to store it
-    m_account.setName(m_investmentName->text());
-    if(m_account.accountType() == MyMoneyAccount::UnknownAccountType)
-      m_account.setAccountType(MyMoneyAccount::Stock);
-    m_account.setCurrencyId(m_security.id());
+    if(m_createAccount) {
+      // now that the security exists, we can add the account to store it
+      m_account.setName(m_investmentName->text());
+      if(m_account.accountType() == MyMoneyAccount::UnknownAccountType)
+        m_account.setAccountType(MyMoneyAccount::Stock);
+      m_account.setCurrencyId(m_security.id());
 
-    if(m_account.id().isEmpty()) {
-      MyMoneyAccount parent = file->account(parentId);
-      file->addAccount(m_account, parent);
-    } else
-      file->modifyAccount(m_account);
+      if(m_account.id().isEmpty()) {
+        MyMoneyAccount parent = file->account(parentId);
+        file->addAccount(m_account, parent);
+      } else
+        file->modifyAccount(m_account);
+    }
+    ft.commit();
+  } catch(MyMoneyException* e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to create all objects for the investment"), QString("%1 caugt in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+    delete e;
   }
 }
 

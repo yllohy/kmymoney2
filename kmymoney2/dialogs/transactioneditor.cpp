@@ -56,11 +56,10 @@
 using namespace KMyMoneyRegister;
 using namespace KMyMoneyTransactionForm;
 
-TransactionEditor::TransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
+TransactionEditor::TransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
   m_transactions(list),
   m_regForm(regForm),
   m_item(item),
-  m_objects(objects),
   m_transaction(item->transaction()),
   m_split(item->split()),
   m_lastPostDate(lastPostDate),
@@ -220,16 +219,22 @@ bool TransactionEditor::fixTransactionCommodity(const MyMoneyAccount& account)
   bool firstTimeMultiCurrency = true;
   m_account = account;
 
+  MyMoneyFile* file = MyMoneyFile::instance();
+
   // determine the max fraction for this account
-  MyMoneySecurity sec = m_objects->security(m_account.currencyId());
+  MyMoneySecurity sec = file->security(m_account.currencyId());
   int fract = m_account.fraction(sec);
 
   // scan the list of selected transactions
   QValueList<KMyMoneyRegister::SelectedTransaction>::iterator it_t;
   for(it_t = m_transactions.begin(); (rc == true) && (it_t != m_transactions.end()); ++it_t) {
+    // there was a time when the schedule editor did not setup the transaction commodity
+    // let's give a helping hand here for those old schedules
+    if((*it_t).transaction().commodity().isEmpty())
+      (*it_t).transaction().setCommodity(m_account.currencyId());
     // we need to check things only if a different commodity is used
     if(m_account.currencyId() != (*it_t).transaction().commodity()) {
-      MyMoneySecurity osec = m_objects->security((*it_t).transaction().commodity());
+      MyMoneySecurity osec = file->security((*it_t).transaction().commodity());
       switch((*it_t).transaction().splitCount()) {
         case 0:
           // new transaction, guess nothing's here yet ;)
@@ -404,13 +409,14 @@ void TransactionEditor::setupCategoryWidget(KMyMoneyCategory* category, const QV
 bool TransactionEditor::enterTransactions(QCString& newId)
 {
   newId = QCString();
+  MyMoneyFile* file = MyMoneyFile::instance();
 
   // make sure to run through all stuff that is tied to 'focusout events'.
   m_regForm->parentWidget()->setFocus();
   QApplication::eventLoop()->processEvents(QEventLoop::ExcludeUserInput, 10);
 
   // we don't need to update our widgets anymore, so we just disconnect the signal
-  disconnect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
+  disconnect(file, SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
 
   QValueList<KMyMoneyRegister::SelectedTransaction>::iterator it_t;
   MyMoneyTransaction t;
@@ -442,20 +448,15 @@ bool TransactionEditor::enterTransactions(QCString& newId)
 
   // if not interrupted by user, continue to store them in the engine
   if(storeTransactions) {
-    int cnt = list.count();
     int i = 0;
     emit statusMsg(i18n("Storeing transactions"));
-    emit statusProgress(0, cnt);
+    emit statusProgress(0, list.count());
 
-    // maybe someone else blocked the signals already
-    bool blocked = MyMoneyFile::instance()->signalsBlocked();
+    MyMoneyFileTransaction ft;
 
-    QValueList<MyMoneyTransaction>::iterator it_ts;
-    for(it_ts = list.begin(); it_ts != list.end(); ++it_ts) {
-      // turn on signals before we modify the last entry in the list
-      cnt--;
-      MyMoneyFile::instance()->blockSignals((cnt != 0) || blocked);
-      try {
+    try {
+      QValueList<MyMoneyTransaction>::iterator it_ts;
+      for(it_ts = list.begin(); it_ts != list.end(); ++it_ts) {
         // if we have a categorization, make sure we remove
         // the 'imported' flag automagically
         if((*it_ts).splitCount() > 1)
@@ -463,17 +464,17 @@ bool TransactionEditor::enterTransactions(QCString& newId)
 
         if((*it_ts).id().isEmpty()) {
           // add new transaction
-          MyMoneyFile::instance()->addTransaction(*it_ts);
+          file->addTransaction(*it_ts);
           // pass the newly assigned id on to the caller
           newId = (*it_ts).id();
           // refresh account object for transactional changes
-          m_account = MyMoneyFile::instance()->account(m_account.id());
+          m_account = file->account(m_account.id());
 
           // if a new transaction has a valid number, keep it with the account
           QString number = (*it_ts).splits()[0].number();
           if(!number.isEmpty()) {
             m_account.setValue("lastNumberUsed", number);
-            MyMoneyFile::instance()->modifyAccount(m_account);
+            file->modifyAccount(m_account);
           }
 
           // send out the post date of this transaction
@@ -481,26 +482,30 @@ bool TransactionEditor::enterTransactions(QCString& newId)
 
         } else {
           // modify existing transaction
-          MyMoneyFile::instance()->modifyTransaction(*it_ts);
+          file->modifyTransaction(*it_ts);
         }
-      } catch(MyMoneyException * e) {
-        qDebug("Unable to store transaction within engine: %s", e->what().latin1());
-        delete e;
-        if(!cnt)
-          MyMoneyFile::instance()->forceDataChanged();
       }
       emit statusProgress(i++, 0);
+
+      // update m_transactions to contain the newly created transaction so that
+      // it is selected as the current one
+      if(newTransactionCreated) {
+        m_transactions.clear();
+        KMyMoneyRegister::SelectedTransaction s((*it_ts), (*it_ts).splits()[0]);
+        m_transactions.append(s);
+      }
+
+      ft.commit();
+
+    } catch(MyMoneyException * e) {
+      qDebug("Unable to store transaction within engine: %s", e->what().latin1());
+      delete e;
+      newTransactionCreated = false;
     }
+
     emit statusProgress(-1, -1);
     emit statusMsg(QString());
 
-    // update m_transactions to contain the newly created transaction so that
-    // it is selected as the current one
-    if(newTransactionCreated) {
-      m_transactions.clear();
-      KMyMoneyRegister::SelectedTransaction s((*it_ts), (*it_ts).splits()[0]);
-      m_transactions.append(s);
-    }
   }
   return storeTransactions;
 }
@@ -510,8 +515,8 @@ StdTransactionEditor::StdTransactionEditor()
 {
 }
 
-StdTransactionEditor::StdTransactionEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
-  TransactionEditor(regForm, objects, item, list, lastPostDate),
+StdTransactionEditor::StdTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
+  TransactionEditor(regForm, item, list, lastPostDate),
   m_inUpdateVat(false)
 {
 }
@@ -627,7 +632,7 @@ bool StdTransactionEditor::isTransfer(const QCString& accId1, const QCString& ac
   if(accId1.isEmpty() || accId2.isEmpty())
     return false;
 
-  return m_objects->account(accId1).isIncomeExpense() == m_objects->account(accId2).isIncomeExpense();
+  return MyMoneyFile::instance()->account(accId1).isIncomeExpense() == MyMoneyFile::instance()->account(accId2).isIncomeExpense();
 }
 
 void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
@@ -650,12 +655,12 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
   bool haveEquityAccount = false;
   QValueList<MyMoneySplit>::const_iterator it_s;
   for(it_s = m_transaction.splits().begin(); !haveEquityAccount && it_s != m_transaction.splits().end(); ++it_s) {
-    MyMoneyAccount acc = m_objects->account((*it_s).accountId());
+    MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
     if(acc.accountType() == MyMoneyAccount::Equity)
       haveEquityAccount = true;
   }
 
-  AccountSet aSet(m_objects);
+  AccountSet aSet;
   aSet.addAccountGroup(MyMoneyAccount::Asset);
   aSet.addAccountGroup(MyMoneyAccount::Liability);
   aSet.addAccountGroup(MyMoneyAccount::Income);
@@ -819,7 +824,7 @@ void StdTransactionEditor::slotReloadEditWidgets(void)
   KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
   QCString categoryId = category->selectedItem();
 
-  AccountSet aSet(m_objects);
+  AccountSet aSet;
   aSet.addAccountGroup(MyMoneyAccount::Asset);
   aSet.addAccountGroup(MyMoneyAccount::Liability);
   aSet.addAccountGroup(MyMoneyAccount::Income);
@@ -989,7 +994,7 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
       action = m_split.shares().isNegative() ? KMyMoneyRegister::ActionWithdrawal : KMyMoneyRegister::ActionDeposit;
 
       if(m_transaction.splitCount() == 2) {
-        MyMoneyAccount acc = m_objects->account(otherSplit.accountId());
+        MyMoneyAccount acc = MyMoneyFile::instance()->account(otherSplit.accountId());
         if(acc.isAssetLiability())
           action = KMyMoneyRegister::ActionTransfer;
       }
@@ -1075,9 +1080,8 @@ void StdTransactionEditor::slotUpdateCategory(const QCString& id)
     }
 
     if(!id.isEmpty()) {
-      MyMoneyAccount acc = m_objects->account(id);
-      if(acc.accountGroup() == MyMoneyAccount::Asset
-      || acc.accountGroup() == MyMoneyAccount::Liability
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+      if(acc.isAssetLiability()
       || acc.accountGroup() == MyMoneyAccount::Equity) {
         if(tabbar) {
           tabbar->tab(KMyMoneyRegister::ActionDeposit)->setEnabled(false);
@@ -1239,19 +1243,20 @@ bool StdTransactionEditor::addVatSplit(MyMoneyTransaction& tr, const MyMoneyMone
     return false;
 
   bool rc = false;
+  MyMoneyFile* file = MyMoneyFile::instance();
 
   try {
     MyMoneySplit cat;  // category
     MyMoneySplit tax;  // tax
 
     // extract the category split from the transaction
-    MyMoneyAccount category = m_objects->account(tr.splitByAccount(m_account.id(), false).accountId());
+    MyMoneyAccount category = file->account(tr.splitByAccount(m_account.id(), false).accountId());
     if(category.value("VatAccount").isEmpty())
       return false;
-    MyMoneyAccount vatAcc = m_objects->account(category.value("VatAccount").latin1());
-    MyMoneySecurity asec = m_objects->security(m_account.currencyId());
-    MyMoneySecurity csec = m_objects->security(category.currencyId());
-    MyMoneySecurity vsec = m_objects->security(vatAcc.currencyId());
+    MyMoneyAccount vatAcc = file->account(category.value("VatAccount").latin1());
+    MyMoneySecurity asec = file->security(m_account.currencyId());
+    MyMoneySecurity csec = file->security(category.currencyId());
+    MyMoneySecurity vsec = file->security(vatAcc.currencyId());
     if(asec.id() != csec.id() || asec.id() != vsec.id()) {
       qDebug("Auto VAT assignment only works if all three accounts use the same currency.");
       return false;
@@ -1309,7 +1314,7 @@ MyMoneyMoney StdTransactionEditor::removeVatSplit(void)
   bool netValue = false;
   QValueList<MyMoneySplit>::const_iterator it_s;
   for(it_s = m_splits.begin(); it_s != m_splits.end(); ++it_s) {
-    MyMoneyAccount acc = m_objects->account((*it_s).accountId());
+    MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
     if(!acc.value("VatAccount").isEmpty()) {
       netValue = (acc.value("VatAmount").lower() == "net");
       c = (*it_s);
@@ -1468,7 +1473,6 @@ int StdTransactionEditor::slotEditSplits(void)
                                                           isValidAmount,
                                                           dir == KMyMoneyRegister::Deposit,
                                                           0,
-                                                          m_objects,
                                                           m_priceInfo,
                                                           m_regForm);
       connect(dlg, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
@@ -1499,7 +1503,7 @@ void StdTransactionEditor::checkPayeeInSplit(MyMoneySplit& s, const QCString& pa
   if(s.accountId().isEmpty() || payeeId.isEmpty())
     return;
 
-  MyMoneyAccount acc = m_objects->account(s.accountId());
+  MyMoneyAccount acc = MyMoneyFile::instance()->account(s.accountId());
   if(acc.isIncomeExpense()) {
     s.setPayeeId(payeeId);
   } else {
@@ -1544,7 +1548,7 @@ MyMoneyMoney StdTransactionEditor::amountFromWidget(bool* update) const
 
   // determine the max fraction for this account and
   // adjust the value accordingly
-  const MyMoneySecurity& sec = m_objects->security(m_account.currencyId());
+  const MyMoneySecurity& sec = MyMoneyFile::instance()->security(m_account.currencyId());
   return value.convert(m_account.fraction(sec));
 }
 
@@ -1556,7 +1560,7 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
   if(!torig.id().isEmpty()) {
     for(it_s = torig.splits().begin(); it_s != torig.splits().end(); ++it_s) {
       if((*it_s).id() != sorig.id()) {
-        MyMoneyAccount cat = m_objects->account((*it_s).accountId());
+        MyMoneyAccount cat = MyMoneyFile::instance()->account((*it_s).accountId());
         if(cat.currencyId() != m_account.currencyId()) {
           if(!(*it_s).shares().isZero() && !(*it_s).value().isZero()) {
             m_priceInfo[cat.currencyId()] = ((*it_s).shares() / (*it_s).value()).reduce();

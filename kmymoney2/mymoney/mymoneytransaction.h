@@ -254,6 +254,27 @@ public:
     */
   QString accountSignature(bool includeSplitCount = false) const;
 
+  QCString uniqueSortKey(void) const;
+
+private:
+  /**
+    * This method returns the next id to be used for a split
+    */
+  const QCString nextSplitID(void);
+
+  /**
+    * This module implements an algorithm used by P.J. Weinberger
+    * for fast hashing. Source: COMPILERS by Alfred V. Aho,
+    * pages 435-437.
+    *
+    * It converts the string passed in @p txt into a non-unique
+    * unsigned long integer value.
+    *
+    * @param txt the text to be hashed
+    * @return non-unique hash value of the text @p txt
+    */
+  const unsigned long hash(const QString& txt) const;
+
 private:
   static const int SPLIT_ID_SIZE = 4;
 
@@ -298,23 +319,9 @@ private:
     */
   QString m_bankID;
 
-private:
-  /**
-    * This method returns the next id to be used for a split
-    */
-  const QCString nextSplitID(void);
-
-  /**
-    * This module implements an algorithm used by P.J. Weinberger
-    * for fast hashing. Source: COMPILERS by Alfred V. Aho,
-    * pages 435-437.
-    *
-    * It converts the string passed in @p txt into a non-unique
-    * unsigned long integer value.
-    *
-    * @param txt the text to be hashed
-    * @return non-unique hash value of the text @p txt
-    */
-  const unsigned long hash(const QString& txt) const;
+  /** constants for unique sort key */
+  static const int YEAR_SIZE = 4;
+  static const int MONTH_SIZE = 2;
+  static const int DAY_SIZE = 2;
 };
 #endif

@@ -956,7 +956,8 @@ void QueryTable::constructAccountTable(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  QValueList<MyMoneyAccount> accounts = file->accountList();
+  QValueList<MyMoneyAccount> accounts;
+  file->accountList(accounts);
   QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
   while ( it_account != accounts.end() )
   {

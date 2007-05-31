@@ -195,20 +195,6 @@ public:
   virtual const QValueList<MyMoneyPayee> payeeList(void) const = 0;
 
   /**
-    * This method is used to add an account to an institution. The account
-    * data will be updated to contain the correct id of the referenced institution
-    * and the account will be added to the list of accounts held at the
-    * referenced institution. The objects passed as arguments will be updated
-    * accordingly.
-    *
-    * An exception will be thrown upon error conditions.
-    *
-    * @param institution MyMoneyInstitution the account should be added to
-    * @param account MyMoneyAccount to be added
-    */
-  virtual void addAccount(MyMoneyInstitution& institution, MyMoneyAccount& account) = 0;
-
-  /**
     * Returns the account addressed by it's id.
     *
     * An exception will be thrown upon error conditions.
@@ -490,20 +476,13 @@ public:
   virtual const unsigned int institutionCount(void) const = 0;
 
   /**
-    * This method returns a list of accounts inside a MyMoneyFile object.
-    * An optional parameter is a list of id's. If this list is emtpy (the default)
-    * the returned list contains all accounts, otherwise only those referenced
-    * in the id-list.
+    * This method returns a list of accounts inside the storage object.
     *
-    * @param idlist QCStringList of account ids of those accounts that
-    *        should be returned. If this list is empty, all accounts
-    *        currently known will be returned.
+    * @param list reference to QValueList receiving the account objects
     *
-    * @param recursive if @p true, then recurse in all found accounts. The default is @p false
-    *
-    * @return QValueList containing the account objects
+    * @note The standard accounts will not be returned
     */
-  virtual const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList(), const bool recursive = false) const = 0;
+  virtual void accountList(QValueList<MyMoneyAccount>& list) = 0;
 
   /**
     * This method is used to return the standard liability account
@@ -888,6 +867,13 @@ public:
     * This method is provided to allow closing of the database before logoff
     */
   virtual void close(void) = 0;
+
+  /**
+    * These methods have to be provided to allow transaction safe data handling.
+    */
+  virtual void startTransaction(void) = 0;
+  virtual void commitTransaction(void) = 0;
+  virtual void rollbackTransaction(void) = 0;
 };
 
 #endif

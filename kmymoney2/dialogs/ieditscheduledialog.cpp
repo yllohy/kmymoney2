@@ -48,7 +48,6 @@
 #include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/kmymoneycategory.h>
 #include <kmymoney/kmymoneydateinput.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include <kmymoney/kmymoneycombo.h>
 
 #include "../widgets/kmymoneyaccountcompletion.h"
@@ -122,13 +121,13 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     this, SLOT(slotScheduleNameChanged(const QString&)));
   connect(m_kcomboTo, SIGNAL(accountSelected(const QCString&)),
     this, SLOT(slotToChanged(const QCString&)));
-  connect(m_kcomboMethod, SIGNAL(activated(int)),
+  connect(m_kcomboMethod, SIGNAL(itemSelected(int)),
     this, SLOT(slotMethodChanged(int)));
   connect(m_payee, SIGNAL(textChanged(const QString&)),
     this, SLOT(slotPayeeChanged(const QString&)));
   connect(m_kdateinputDue, SIGNAL(dateChanged(const QDate&)),
     this, SLOT(slotDateChanged(const QDate&)));
-  connect(m_kcomboFreq, SIGNAL(activated(int)),
+  connect(m_kcomboFreq, SIGNAL(itemSelected(int)),
     this, SLOT(slotFrequencyChanged(int)));
   connect(m_qcheckboxEstimate, SIGNAL(clicked()),
     this, SLOT(slotEstimateChanged()));
@@ -137,8 +136,7 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     this, SLOT(slotCategoryChanged(const QCString& )));
   connect(m_qcheckboxAuto, SIGNAL(clicked()),
     this, SLOT(slotAutoEnterChanged()));
-  connect(m_qlineeditMemo, SIGNAL(textChanged(const QString&)),
-    this, SLOT(slotMemoChanged(const QString&)));
+  connect(m_qtexteditMemo, SIGNAL(textChanged()), this, SLOT(slotMemoChanged()));
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
 
@@ -234,8 +232,7 @@ void KEditScheduleDialog::slotReloadEditWidgets(void)
 {
   QCString categoryId = m_category->selectedItem();
 
-  MyMoneyObjectContainer objects;
-  AccountSet aSet(&objects);
+  AccountSet aSet;
   aSet.addAccountGroup(MyMoneyAccount::Income);
   aSet.addAccountGroup(MyMoneyAccount::Expense);
   aSet.load(m_category->selector());
@@ -255,11 +252,11 @@ void KEditScheduleDialog::reloadFromFile(void)
   if (m_actionType == MyMoneySplit::ActionTransfer
   ||  m_actionType == MyMoneySplit::ActionAmortization)
   {
-    m_kcomboMethod->insertItem(i18n("Direct Debit"));
-    m_kcomboMethod->insertItem(i18n("Direct Deposit"));
-    m_kcomboMethod->insertItem(i18n("Manual Deposit"));
-    m_kcomboMethod->insertItem(i18n("Write Check"));
-    m_kcomboMethod->insertItem(i18n("Other"));
+    m_kcomboMethod->insertItem(i18n("Other"), MyMoneySchedule::STYPE_OTHER);
+    m_kcomboMethod->insertItem(i18n("Write Check"), MyMoneySchedule::STYPE_WRITECHEQUE);
+    m_kcomboMethod->insertItem(i18n("Manual Deposit"), MyMoneySchedule::STYPE_MANUALDEPOSIT);
+    m_kcomboMethod->insertItem(i18n("Direct Deposit"), MyMoneySchedule::STYPE_DIRECTDEPOSIT);
+    m_kcomboMethod->insertItem(i18n("Direct Debit"), MyMoneySchedule::STYPE_DIRECTDEBIT);
 
     if (m_actionType == MyMoneySplit::ActionAmortization)
     {
@@ -272,9 +269,9 @@ void KEditScheduleDialog::reloadFromFile(void)
   }
   else if (m_actionType == MyMoneySplit::ActionDeposit)
   {
-    m_kcomboMethod->insertItem(i18n("Direct Deposit"));
-    m_kcomboMethod->insertItem(i18n("Manual Deposit"));
-    m_kcomboMethod->insertItem(i18n("Other"));
+    m_kcomboMethod->insertItem(i18n("Other"), MyMoneySchedule::STYPE_OTHER);
+    m_kcomboMethod->insertItem(i18n("Manual Deposit"), MyMoneySchedule::STYPE_MANUALDEPOSIT);
+    m_kcomboMethod->insertItem(i18n("Direct Deposit"), MyMoneySchedule::STYPE_DIRECTDEPOSIT);
 
     m_paymentMethod->insertItem(i18n("Check"));
     m_paymentMethod->insertItem(i18n("Deposit"));
@@ -282,16 +279,18 @@ void KEditScheduleDialog::reloadFromFile(void)
   }
   else // Withdrawal
   {
-    m_kcomboMethod->insertItem(i18n("Direct Debit"));
-    m_kcomboMethod->insertItem(i18n("Write Check"));
-    m_kcomboMethod->insertItem(i18n("Other"));
+    m_kcomboMethod->insertItem(i18n("Other"), MyMoneySchedule::STYPE_OTHER);
+    m_kcomboMethod->insertItem(i18n("Write Check"), MyMoneySchedule::STYPE_WRITECHEQUE);
+    m_kcomboMethod->insertItem(i18n("Direct Debit"), MyMoneySchedule::STYPE_DIRECTDEBIT);
 
     m_paymentMethod->insertItem(i18n("Check"));
     m_paymentMethod->insertItem(i18n("Transfer"));
     m_paymentMethod->insertItem(i18n("Withdrawal"));
     m_paymentMethod->insertItem(i18n("ATM"));
   }
-  for (int i = 0; occurMasks[i] != END_OCCURS; i++) m_kcomboFreq->insertItem (KMyMoneyUtils::occurenceToString (occurMasks[i]));
+  for (int i = 0; occurMasks[i] != END_OCCURS; i++)
+    m_kcomboFreq->insertItem (KMyMoneyUtils::occurenceToString (occurMasks[i]), occurMasks[i]);
+
   m_accountCombo->blockSignals(true);
   m_kcomboTo->blockSignals(true);
   m_category->blockSignals(true);
@@ -299,8 +298,8 @@ void KEditScheduleDialog::reloadFromFile(void)
     (KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
   m_kcomboTo->loadList(
     (KMyMoneyUtils::categoryTypeE)(KMyMoneyUtils::asset | KMyMoneyUtils::liability));
-  MyMoneyObjectContainer objects;
-  AccountSet categories(&objects);
+
+  AccountSet categories;
   categories.addAccountGroup(MyMoneyAccount::Income);
   categories.addAccountGroup(MyMoneyAccount::Expense);
   categories.load(m_category->selector());
@@ -401,14 +400,12 @@ void KEditScheduleDialog::slotEditSplits(void)
 
     m_category->blockSignals(true);
 
-    MyMoneyObjectContainer objects;
     QMap<QCString, MyMoneyMoney> priceInfo;
     KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction,
                                                          acc,
                                                          isValidAmount,
                                                          isDeposit,
                                                          calculatedValue,
-                                                         &objects,
                                                          priceInfo,
                                                          this);
     connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
@@ -463,8 +460,8 @@ void KEditScheduleDialog::slotEditSplits(void)
   }
 
   // focus jumps into the memo field
-  if(m_qlineeditMemo) {
-    m_qlineeditMemo->setFocus();
+  if(m_qtexteditMemo) {
+    m_qtexteditMemo->setFocus();
   }
 
   m_category->blockSignals(false);
@@ -475,7 +472,7 @@ void KEditScheduleDialog::slotEditSplits(void)
 
 void KEditScheduleDialog::slotWillEndToggled(bool on)
 {
-  if (m_kcomboFreq->currentItem()==0)
+  if (m_kcomboFreq->selectedItem() == static_cast<int>(MyMoneySchedule::OCCUR_ONCE))
   {
     KMessageBox::error(this, i18n("The frequency of this schedule must be set to something other than Once"));
     m_qcheckboxEnd->blockSignals(true);
@@ -687,81 +684,17 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
 
     m_kdateinputDue->setDate(m_schedule.nextPayment(m_schedule.lastPayment())/*m_schedule.startDate()*/);
 
-    int method=0;
-    if (m_actionType == MyMoneySplit::ActionTransfer
-    ||  m_actionType == MyMoneySplit::ActionAmortization)
-    {
-      switch (m_schedule.paymentType())
-      {
-        case MyMoneySchedule::STYPE_DIRECTDEBIT:
-          method = 0;
-          m_kcomboMethod->setCurrentItem(0);
-          break;
-        case MyMoneySchedule::STYPE_DIRECTDEPOSIT:
-          method = 1;
-          m_kcomboMethod->setCurrentItem(1);
-          break;
-        case MyMoneySchedule::STYPE_MANUALDEPOSIT:
-          method = 2;
-          m_kcomboMethod->setCurrentItem(2);
-          break;
-        case MyMoneySchedule::STYPE_WRITECHEQUE:
-          method = 3;
-          m_kcomboMethod->setCurrentItem(3);
-          break;
-        case MyMoneySchedule::STYPE_OTHER:
-          method = 4;
-          m_kcomboMethod->setCurrentItem(4);
-          break;
-        default:
-          break;
-      }
-    }
-    else if (m_actionType == MyMoneySplit::ActionDeposit)
-    {
-      switch (m_schedule.paymentType())
-      {
-        case MyMoneySchedule::STYPE_DIRECTDEPOSIT:
-          method = 0;
-          m_kcomboMethod->setCurrentItem(0);
-          break;
-        case MyMoneySchedule::STYPE_MANUALDEPOSIT:
-          method = 1;
-          m_kcomboMethod->setCurrentItem(1);
-          break;
-        case MyMoneySchedule::STYPE_OTHER:
-          method = 2;
-          m_kcomboMethod->setCurrentItem(2);
-          break;
-        default:
-          break;
-      }
-    }
-    else
-    {
-      switch (m_schedule.paymentType())
-      {
-        case MyMoneySchedule::STYPE_DIRECTDEBIT:
-          method = 0;
-          m_kcomboMethod->setCurrentItem(0);
-          break;
-        case MyMoneySchedule::STYPE_WRITECHEQUE:
-          method = 1;
-          m_kcomboMethod->setCurrentItem(1);
-          break;
-        case MyMoneySchedule::STYPE_OTHER:
-          method = 2;
-          m_kcomboMethod->setCurrentItem(2);
-          break;
-        default:
-          break;
+    m_kcomboMethod->setItem(m_schedule.paymentType());
+
+    m_kcomboFreq->setItem(MyMoneySchedule::OCCUR_MONTHLY);
+    int frequency;
+    for (frequency = 0; occurMasks[frequency] != END_OCCURS; frequency++) {
+      if (occurMasks[frequency] == m_schedule.occurence()) {
+        m_kcomboFreq->setItem(m_schedule.occurence());
+        break;
       }
     }
 
-    int frequency=0;
-    for (frequency = 0; occurMasks[frequency] != END_OCCURS; frequency++) if (occurMasks[frequency] == m_schedule.occurence()) break;
-    if (occurMasks[frequency] == END_OCCURS) frequency = 0;
-    m_kcomboFreq->setCurrentItem(frequency);
 
     MyMoneyMoney amount = m_transaction.splitByAccount(theAccountId()).value();
     amount = amount.abs();
@@ -785,7 +718,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
         m_category->setSelectedItem(m_transaction.splitByAccount(theAccountId(), false).accountId());
     }
 
-    m_qlineeditMemo->setText(m_transaction.splitByAccount(theAccountId()).memo());
+    m_qtexteditMemo->setText(m_transaction.splitByAccount(theAccountId()).memo());
     m_qcheckboxAuto->setChecked(m_schedule.autoEnter());
     m_qcheckboxEnd->setChecked(m_schedule.willEnd());
     if (m_schedule.willEnd())
@@ -824,7 +757,7 @@ void KEditScheduleDialog::loadWidgetsFromSchedule(void)
 
     // Quick hack
     slotFrequencyChanged(frequency);
-    slotMethodChanged(method);
+    // slotMethodChanged(method);
   } catch (MyMoneyException *e)
   {
     KMessageBox::detailedError(this, i18n("Exception in loadWidgetsFromSchedule(2)"), e->what());
@@ -836,7 +769,7 @@ void KEditScheduleDialog::slotRemainingChanged(const QString& text)
 {
   // Make sure the required fields are set
   m_schedule.setStartDate(m_kdateinputDue->date());
-  m_schedule.setOccurence(comboToOccurence());
+  m_schedule.setOccurence(static_cast<MyMoneySchedule::occurenceE>(m_kcomboFreq->item()));
 
   if (m_schedule.transactionsRemaining() != text.toInt())
   {
@@ -848,7 +781,7 @@ void KEditScheduleDialog::slotEndDateChanged(const QDate& date)
 {
   // Make sure the required fields are set
   m_schedule.setStartDate(m_kdateinputDue->date());
-  m_schedule.setOccurence(comboToOccurence());
+  m_schedule.setOccurence(static_cast<MyMoneySchedule::occurenceE>(m_kcomboFreq->item()));
 
   if (m_schedule.endDate() != date)
   {
@@ -858,10 +791,12 @@ void KEditScheduleDialog::slotEndDateChanged(const QDate& date)
   }
 }
 
+#if 0
 MyMoneySchedule::occurenceE KEditScheduleDialog::comboToOccurence(void)
 {
   return (occurMasks [m_kcomboFreq->currentItem()]);
 }
+#endif
 
 void KEditScheduleDialog::slotAmountChanged(const QString&)
 {
@@ -983,13 +918,17 @@ void KEditScheduleDialog::slotToChanged(const QCString& id)
     MyMoneySplit s = m_transaction.splits()[0];
     s.setAccountId(id);
     m_transaction.modifySplit(s);
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(id);
+    m_transaction.setCommodity(acc.currencyId());
   }
 }
 
 void KEditScheduleDialog::slotMethodChanged(int item)
 {
+  m_schedule.setPaymentType(static_cast<MyMoneySchedule::paymentTypeE>(item));
   if (m_actionType == MyMoneySplit::ActionTransfer)
   {
+#if 0
     switch (item)
     {
       case 0:
@@ -1011,11 +950,12 @@ void KEditScheduleDialog::slotMethodChanged(int item)
         m_schedule.setPaymentType(MyMoneySchedule::STYPE_ANY);
         break;
     }
-
+#endif
     m_schedule.setType(MyMoneySchedule::TYPE_TRANSFER);
   }
   else if (m_actionType == MyMoneySplit::ActionDeposit)
   {
+#if 0
     switch (item)
     {
       case 0:
@@ -1031,11 +971,12 @@ void KEditScheduleDialog::slotMethodChanged(int item)
         m_schedule.setPaymentType(MyMoneySchedule::STYPE_ANY);
         break;
     }
-
+#endif
     m_schedule.setType(MyMoneySchedule::TYPE_DEPOSIT);
   }
   else
   {
+#if 0
     switch (item)
     {
       case 0:
@@ -1051,7 +992,7 @@ void KEditScheduleDialog::slotMethodChanged(int item)
         m_schedule.setPaymentType(MyMoneySchedule::STYPE_ANY);
         break;
     }
-
+#endif
     m_schedule.setType(MyMoneySchedule::TYPE_BILL);
   }
 }
@@ -1103,13 +1044,14 @@ void KEditScheduleDialog::slotDateChanged(const QDate& date)
 
 void KEditScheduleDialog::slotFrequencyChanged(int)
 {
-  if (m_qcheckboxEnd->isChecked() && m_kcomboFreq->currentItem() == 0)
+  if (m_qcheckboxEnd->isChecked()
+  && m_kcomboFreq->item() == static_cast<int>(MyMoneySchedule::OCCUR_ONCE))
   {
     KMessageBox::error(this, i18n("The end date can not be set for occurences set to Once"));
     m_qcheckboxEnd->setChecked(false);
   }
 
-  m_schedule.setOccurence(comboToOccurence());
+  m_schedule.setOccurence(static_cast<MyMoneySchedule::occurenceE>(m_kcomboFreq->item()));
 }
 
 void KEditScheduleDialog::slotEstimateChanged(void)
@@ -1205,8 +1147,10 @@ void KEditScheduleDialog::slotAutoEnterChanged(void)
   m_schedule.setAutoEnter(m_qcheckboxAuto->isChecked());
 }
 
-void KEditScheduleDialog::slotMemoChanged(const QString& text)
+void KEditScheduleDialog::slotMemoChanged(void)
 {
+  const QString& text = m_qtexteditMemo->text();
+
   int count = m_transaction.splitCount();
   if (count == 0)
   {

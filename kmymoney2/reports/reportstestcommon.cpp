@@ -95,6 +95,7 @@ TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _actio
     bool haspayee = ! _payee.isEmpty();
     MyMoneyPayee payeeTest = file->payeeByName(_payee);
 
+    MyMoneyFileTransaction ft;
     setPostDate(_date);
 
     QCString currencyid = _currencyid;
@@ -125,19 +126,29 @@ TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _actio
     addSplit(splitRight);
 
     MyMoneyFile::instance()->addTransaction(*this);
+    ft.commit();
 }
 
 TransactionHelper::~TransactionHelper()
 {
+  MyMoneyFileTransaction ft;
   MyMoneyFile::instance()->removeTransaction(*this);
+  ft.commit();
 }
 
 void TransactionHelper::update(void)
 {
+  MyMoneyFileTransaction ft;
   MyMoneyFile::instance()->modifyTransaction(*this);
+  ft.commit();
 }
 
 InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _shares, MyMoneyMoney _price, const QCString& _stockaccountid, const QCString& _transferid, const QCString& _categoryid )
+{
+  init(_date, _action, _shares, _price, _stockaccountid, _transferid, _categoryid);
+}
+
+void InvTransactionHelper::init( const QDate& _date, const QCString& _action, MyMoneyMoney _shares, MyMoneyMoney _price, const QCString& _stockaccountid, const QCString& _transferid, const QCString& _categoryid )
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount stockaccount = file->account(_stockaccountid);
@@ -198,6 +209,7 @@ InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& 
 
   //kdDebug(2) << "created transaction, now adding..." << endl;
 
+  MyMoneyFileTransaction ft;
   file->addTransaction(*this);
 
   //kdDebug(2) << "updating price..." << endl;
@@ -211,13 +223,14 @@ InvTransactionHelper::InvTransactionHelper( const QDate& _date, const QCString& 
     MyMoneyPrice newprice( stockid, basecurrencyid, _date, _price, "test" );
     file->addPrice(newprice);
   }
-
+  ft.commit();
   //kdDebug(2) << "successfully added " << id() << endl;
 }
 
 QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency )
 {
   MyMoneyAccount info;
+  MyMoneyFileTransaction ft;
 
   info.setName(_name);
   info.setAccountType(_type);
@@ -230,27 +243,32 @@ QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, 
 
   MyMoneyAccount parent = MyMoneyFile::instance()->account(_parent);
   MyMoneyFile::instance()->addAccount( info, parent );
+  ft.commit();
 
   return info.id();
 }
 
 void makePrice(const QCString& _currencyid, const QDate& _date, const MyMoneyMoney& _price )
 {
+  MyMoneyFileTransaction ft;
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneySecurity curr = file->currency(_currencyid);
   MyMoneyPrice price(file->baseCurrency().id(), _currencyid, _date, _price, "test");
   file->addPrice(price);
+  ft.commit();
 }
 
 QCString makeEquity(const QString& _name, const QString& _symbol )
 {
   MyMoneySecurity equity;
+  MyMoneyFileTransaction ft;
 
   equity.setName( _name );
   equity.setTradingSymbol( _symbol );
   equity.setSmallestAccountFraction( 1000 );
   equity.setSecurityType( MyMoneySecurity::SECURITY_NONE /*MyMoneyEquity::ETYPE_STOCK*/ );
   MyMoneyFile::instance()->addSecurity( equity );
+  ft.commit();
 
   return equity.id();
 }
@@ -258,6 +276,7 @@ QCString makeEquity(const QString& _name, const QString& _symbol )
 void makeEquityPrice(const QCString& _id, const QDate& _date, const MyMoneyMoney& _price )
 {
   MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyFileTransaction ft;
   QCString basecurrencyid = file->baseCurrency().id();
   MyMoneyPrice price = file->price( _id, basecurrencyid, _date, true );
   if ( !price.isValid() )
@@ -265,6 +284,7 @@ void makeEquityPrice(const QCString& _id, const QDate& _date, const MyMoneyMoney
     MyMoneyPrice newprice( _id, basecurrencyid, _date, _price, "test" );
     file->addPrice(newprice);
   }
+  ft.commit();
 }
 
 void writeRCFtoXMLDoc( const MyMoneyReport& filter, QDomDocument* doc )

@@ -188,11 +188,13 @@ void KSecurityListEditor::slotDeleteSecurity(void)
       dontAsk = "DeleteSecurity";
     }
     if(KMessageBox::questionYesNo(this, msg, i18n("Delete security"), KStdGuiItem::yes(), KStdGuiItem::no(), dontAsk) == KMessageBox::Yes) {
+      MyMoneyFileTransaction ft;
       try {
         if(security.isCurrency())
           MyMoneyFile::instance()->removeCurrency(security);
         else
           MyMoneyFile::instance()->removeSecurity(security);
+        ft.commit();
         slotLoadList();
       } catch(MyMoneyException *e) {
         delete e;

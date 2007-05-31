@@ -72,6 +72,7 @@ MyMoneyQifReader::MyMoneyQifReader()
   m_warnedInvestment = false;
   m_warnedSecurity = false;
   m_warnedPrice = false;
+  m_ft = 0;
 
   connect(&m_filter, SIGNAL(wroteStdin(KProcess*)), this, SLOT(slotSendDataToFilter()));
   connect(&m_filter, SIGNAL(receivedStdout(KProcess*, char*, int)), this, SLOT(slotReceivedDataFromFilter(KProcess*, char*, int)));
@@ -81,6 +82,8 @@ MyMoneyQifReader::MyMoneyQifReader()
 
 MyMoneyQifReader::~MyMoneyQifReader()
 {
+  if(m_ft)
+    delete m_ft;
   if(m_file)
     delete m_file;
 }
@@ -225,6 +228,8 @@ const bool MyMoneyQifReader::startImport(void)
   m_file = new QFile(m_filename);
   if(m_file->open(IO_ReadOnly)) {
 
+    m_ft = new MyMoneyFileTransaction();
+
 #ifdef DEBUG_IMPORT
     Q_LONG len;
 
@@ -259,6 +264,8 @@ const bool MyMoneyQifReader::startImport(void)
       rc = true;
     } else {
       qDebug("starting filter failed :-(");
+      delete m_ft;
+      m_ft = 0;
     }
 #endif
   }
@@ -346,6 +353,11 @@ const bool MyMoneyQifReader::finishImport(void)
     delete e;
     rc = false;
   }
+
+  if(rc)
+    m_ft->commit();
+  delete m_ft;
+  m_ft = 0;
   return rc;
 }
 
@@ -778,7 +790,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
     MyMoneySplit s2 = s1;
     s2.setValue(-s1.value());
     s2.setShares(-s1.value());
-    s2.setId(QCString());
+    s2.clearId();
 
     // standard transaction
     tmp = extractLine('L');
@@ -844,7 +856,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
 
     for(count = 1; !extractLine('$', count).isEmpty(); ++count) {
       MyMoneySplit s2 = s1;
-      s2.setId(QCString());
+      s2.clearId();
       s2.setValue(-m_qifProfile.value('$', extractLine('$', count)));
       s2.setShares(-m_qifProfile.value('$', extractLine('$', count)));
       s2.setMemo(extractLine('E', count));

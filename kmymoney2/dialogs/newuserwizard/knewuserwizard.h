@@ -30,17 +30,21 @@
   * @author Thomas Baumgart
   */
 
-namespace NewUserWizard {
+namespace NewUserWizardPages {
 
 class GeneralPage;
 class CurrencyPage;
 class PasswordPage;
 
-class Wizard : public KMyMoneyWizard
+};
+
+using namespace NewUserWizardPages;
+
+class NewUserWizard : public KMyMoneyWizard
 {
   Q_OBJECT
 public:
-  Wizard(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags flags = 0);
+  NewUserWizard(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags flags = 0);
 
 private:
 
@@ -53,5 +57,4 @@ private:
   friend class PasswordPage;
 };
 
-} // namespace
 #endif

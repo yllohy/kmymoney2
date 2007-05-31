@@ -21,7 +21,6 @@
 // Project Includes
 
 #include <kmymoney/mymoneyobjectcontainer.h>
-#include <kmymoney/mymoneyfile.h>
 
 MyMoneyObjectContainer::MyMoneyObjectContainer()
 {
@@ -32,7 +31,7 @@ MyMoneyObjectContainer::~MyMoneyObjectContainer()
   clear();
 }
 
-void MyMoneyObjectContainer::clear(void)
+void MyMoneyObjectContainer::clear(IMyMoneyStorage* storage)
 {
   // delete all objects
   QMap<QCString, MyMoneyObject const *>::const_iterator it;
@@ -42,9 +41,44 @@ void MyMoneyObjectContainer::clear(void)
 
   // then delete the pointers to them
   m_map.clear();
+
+  if(storage)
+    m_storage = storage;
 }
 
+void MyMoneyObjectContainer::clear(const QCString& id)
+{
+  QMap<QCString, MyMoneyObject const *>::iterator it;
+  it = m_map.find(id);
+  if(it != m_map.end()) {
+    delete (*it);
+    m_map.erase(it);
+  }
+}
 
+#define listMethod(a, T) \
+void MyMoneyObjectContainer::a(QValueList<T>& list) \
+{ \
+  QMap<QCString, const MyMoneyObject*>::const_iterator it; \
+  for(it = m_map.begin(); it != m_map.end(); ++it) { \
+    const T* node = dynamic_cast<const T*>(*it); \
+    if(node) { \
+      list.append(*node); \
+    } \
+  } \
+}
+
+#define preloadMethod(a, T) \
+void MyMoneyObjectContainer::preload##a(const QValueList<T>& list) \
+{ \
+  QValueList<T>::const_iterator it; \
+  for(it = list.begin(); it != list.end(); ++it) { \
+    delete m_map[(*it).id()]; \
+    m_map[(*it).id()] = new T(*it); \
+  } \
+}
+
+#if 0
 #define objectAccessMethod(a, T) \
 const T& MyMoneyObjectContainer::a(const QCString& id) \
 { \
@@ -54,7 +88,7 @@ const T& MyMoneyObjectContainer::a(const QCString& id) \
   if(it == m_map.end()) { \
     /* not found, need to load from engine */ \
     try { \
-      const T& x = MyMoneyFile::instance()->a(id); \
+      const T& x = m_storage->a(id); \
       m_map[id] = new T(x); \
       return dynamic_cast<const T&>(*m_map[id]); \
     } catch(MyMoneyException * e) { \
@@ -65,28 +99,37 @@ const T& MyMoneyObjectContainer::a(const QCString& id) \
   } \
   return dynamic_cast<const T&>(*(*it)); \
 }
+#endif
+
+#define objectAccessMethod(a, T) \
+const T& MyMoneyObjectContainer::a(const QCString& id) \
+{ \
+  static T nullElement; \
+  if(id.isEmpty()) \
+    return nullElement; \
+  QMap<QCString, MyMoneyObject const *>::const_iterator it; \
+  it = m_map.find(id); \
+  if(it == m_map.end()) { \
+    /* not found, need to load from engine */ \
+    const T& x = m_storage->a(id); \
+    m_map[id] = new T(x); \
+    return dynamic_cast<const T&>(*m_map[id]); \
+  } \
+  return dynamic_cast<const T&>(*(*it)); \
+}
 
 objectAccessMethod(account, MyMoneyAccount)
-objectAccessMethod(transaction, MyMoneyTransaction)
 objectAccessMethod(payee, MyMoneyPayee)
 objectAccessMethod(security, MyMoneySecurity)
+objectAccessMethod(institution, MyMoneyInstitution)
 
-const QString MyMoneyObjectContainer::accountToCategory(const QCString& accountId)
-{
-  MyMoneyAccount acc;
-  QString rc;
+preloadMethod(Account, MyMoneyAccount)
+preloadMethod(Payee, MyMoneyPayee)
+preloadMethod(Institution, MyMoneyInstitution)
+preloadMethod(Security, MyMoneySecurity)
 
-  if(!accountId.isEmpty()) {
-    acc = account(accountId);
-    do {
-      if(!rc.isEmpty())
-        rc = MyMoneyFile::AccountSeperator + rc;
-      rc = acc.name() + rc;
-      acc = account(acc.parentAccountId());
-    } while(!MyMoneyFile::instance()->isStandardAccount(acc.id()));
-  }
-
-  return rc;
-}
+listMethod(account, MyMoneyAccount);
+listMethod(payee, MyMoneyPayee);
+listMethod(institution, MyMoneyInstitution);
 
 #include "mymoneyobjectcontainer.moc"

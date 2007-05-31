@@ -289,7 +289,7 @@ const bool KFindTransactionDlg::allItemsSelected(const QListView* view) const
 void KFindTransactionDlg::setupAccountsPage(void)
 {
   m_accountsView->setSelectionMode(QListView::Multi);
-  AccountSet accountSet(&m_objects);
+  AccountSet accountSet;
   accountSet.addAccountGroup(MyMoneyAccount::Asset);
   accountSet.addAccountGroup(MyMoneyAccount::Liability);
   accountSet.load(m_accountsView);
@@ -329,7 +329,7 @@ void KFindTransactionDlg::selectItems(QListView* view, const QCStringList& list,
 void KFindTransactionDlg::setupCategoriesPage(void)
 {
   m_categoriesView->setSelectionMode(QListView::Multi);
-  AccountSet categorySet(&m_objects);
+  AccountSet categorySet;
   categorySet.addAccountGroup(MyMoneyAccount::Income);
   categorySet.addAccountGroup(MyMoneyAccount::Expense);
   categorySet.load(m_categoriesView);
@@ -689,7 +689,6 @@ void KFindTransactionDlg::loadView(void)
   m_register->setSortOrder(KMyMoneySettings::sortSearchView());
 
   // clear out old data
-  m_objects.clear();
   m_register->clear();
 
   // retrieve the list from the engine
@@ -707,7 +706,7 @@ void KFindTransactionDlg::loadView(void)
     ++splitCount;
     uniqueMap[(*it).first.id()]++;
 
-    KMyMoneyRegister::Register::transactionFactory(m_register, &m_objects, (*it).first, (*it).second, uniqueMap[(*it).first.id()]);
+    KMyMoneyRegister::Register::transactionFactory(m_register, (*it).first, (*it).second, uniqueMap[(*it).first.id()]);
     { // debug stuff
       if(split.shares().isNegative()) {
         payment += split.shares().abs();

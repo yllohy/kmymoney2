@@ -219,7 +219,7 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
   int amt = m_account.interestChangeFrequency(&changeFrequencyUnit);
   if(amt != -1) {
     m_interestFrequencyAmountEdit->setValue(amt);
-    m_interestFrequencyUnitEdit->loadCurrentItem(changeFrequencyUnit);
+    m_interestFrequencyUnitEdit->setItem(changeFrequencyUnit);
   }
 
   // keep track, if the loan should be fully repayed
@@ -487,9 +487,7 @@ const MyMoneyAccount KEditLoanWizard::account(void) const
   acc.setPeriodicPayment(m_paymentEdit->value());
   acc.setInterestRate(m_effectiveChangeDateEdit->date(), m_interestRateEdit->value());
 
-  QCString payeeId;
-  m_payeeEdit->selectedItem(payeeId);
-  acc.setPayee(payeeId);
+  acc.setPayee(m_payeeEdit->selectedItem());
 
   if(m_variableInterestButton->isChecked()) {
     acc.setNextInterestChange(m_interestChangeDateEdit->date());

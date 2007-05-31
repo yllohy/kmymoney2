@@ -96,7 +96,7 @@ protected slots:
     */
   void slotCategoryChanged(const QCString& id);
   void slotAutoEnterChanged(void);
-  void slotMemoChanged(const QString& text);
+  void slotMemoChanged(void);
   void slotHelp(void);
   void slotReloadEditWidgets(void);
 

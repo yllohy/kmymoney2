@@ -357,7 +357,8 @@ void KBudgetView::loadAccounts(void)
 
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  QValueList<MyMoneyAccount> alist = file->accountList();
+  QValueList<MyMoneyAccount> alist;
+  file->accountList(alist);
   QValueList<MyMoneyAccount>::const_iterator it_a;
   for(it_a = alist.begin(); it_a != alist.end(); ++it_a) {
     m_accountMap[(*it_a).id()] = *it_a;
@@ -576,6 +577,7 @@ void KBudgetView::slotRenameBudget(QListViewItem* p , int /*col*/, const QString
   // create a copy of the new name without appended whitespaces
   QString new_name = txt.stripWhiteSpace();
   if (pBudget->budget().name() != new_name) {
+    MyMoneyFileTransaction ft;
     try {
       // check if we already have a payee with the new name
       try {
@@ -606,6 +608,9 @@ void KBudgetView::slotRenameBudget(QListViewItem* p , int /*col*/, const QString
       // make sure, that the record is visible even if it moved
       // out of sight due to the rename operation
       //ensureBudgetVisible((QCString)(pBudget->budget.id()));
+
+      ft.commit();
+
     } catch(MyMoneyException *e) {
       KMessageBox::detailedSorry(0, i18n("Unable to modify budget"),
         (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
@@ -627,7 +632,14 @@ void KBudgetView::slotSelectYear(int iYear)
   QDate date(iYear, 1, 1);
   budget.setBudgetStart(date);
 
-  MyMoneyFile::instance()->modifyBudget(budget);
+  MyMoneyFileTransaction ft;
+  try {
+    MyMoneyFile::instance()->modifyBudget(budget);
+    ft.commit();
+  } catch(MyMoneyException *e) {
+    qDebug("Unable to select year for budget");
+    delete e;
+  }
 }
 
 void KBudgetView::slotSelectTimeSpan(int iTimeSpan)
@@ -640,28 +652,35 @@ void KBudgetView::slotSelectTimeSpan(int iTimeSpan)
   if ((account=selectedAccount()) == NULL)
     return;
 
-  MyMoneyBudget::AccountGroup accountGroup;
-  accountGroup.setId( account->id() );
+  MyMoneyFileTransaction ft;
+  try {
+    MyMoneyBudget::AccountGroup accountGroup;
+    accountGroup.setId( account->id() );
 
-  switch (iTimeSpan)
-  {
-    case eMonthByMonth:
-      accountGroup.setBudgetLevel(MyMoneyBudget::AccountGroup::eMonthByMonth);
-      break;
-    case eYearly:
-      accountGroup.setBudgetLevel(MyMoneyBudget::AccountGroup::eYearly);
-      break;
-    case eMonthly:
-      accountGroup.setBudgetLevel(MyMoneyBudget::AccountGroup::eMonthly);
-      break;
-    default:
-      return;
+    switch (iTimeSpan)
+    {
+      case eMonthByMonth:
+        accountGroup.setBudgetLevel(MyMoneyBudget::AccountGroup::eMonthByMonth);
+        break;
+      case eYearly:
+        accountGroup.setBudgetLevel(MyMoneyBudget::AccountGroup::eYearly);
+        break;
+      case eMonthly:
+        accountGroup.setBudgetLevel(MyMoneyBudget::AccountGroup::eMonthly);
+        break;
+      default:
+        return;
+    }
+
+    setTimeSpan(account, accountGroup, iTimeSpan);
+
+    budget.setAccount(accountGroup, account->id());
+    MyMoneyFile::instance()->modifyBudget(budget);
+    ft.commit();
+  } catch(MyMoneyException *e) {
+    qDebug("Unable to select time span for budget");
+    delete e;
   }
-
-  setTimeSpan(account, accountGroup, iTimeSpan);
-
-  budget.setAccount(accountGroup, account->id());
-  MyMoneyFile::instance()->modifyBudget(budget);
 }
 
 void KBudgetView::setTimeSpan(KMyMoneyAccountTreeBudgetItem *account, MyMoneyBudget::AccountGroup &accountGroup, int iTimeSpan)
@@ -834,7 +853,14 @@ void KBudgetView::slotBudgetedAmount(QListViewItem *p, int col, const QString& n
         accountGroup.addPeriod(item->date(), period);
         budget.setAccount(accountGroup, account->id());
 
-        MyMoneyFile::instance()->modifyBudget(budget);
+        MyMoneyFileTransaction ft;
+        try {
+          MyMoneyFile::instance()->modifyBudget(budget);
+          ft.commit();
+        } catch(MyMoneyException *e) {
+          qDebug("Unable to modify budget amount");
+          delete e;
+        }
       }
       else
         item->setAmount(item->amount());
@@ -876,8 +902,15 @@ void KBudgetView::bNewBudget_clicked()
     budget.setName(mydialog->getName());
     budget.setBudgetStart(mydate);
 
-   //TODO: check that no other budget in the storage with the same name and year exists
-    MyMoneyFile::instance()->addBudget(budget);
+    // TODO: check that no other budget in the storage with the same name and year exists
+    MyMoneyFileTransaction ft;
+    try {
+      MyMoneyFile::instance()->addBudget(budget);
+      ft.commit();
+    } catch(MyMoneyException* e) {
+      qDebug("Unable to add new budget");
+      delete e;
+    }
   }
   delete mydialog;
 }
@@ -906,8 +939,10 @@ void KBudgetView::bDeleteBudget_clicked()
           return;
 
         // now the obliteration operation itself
+        MyMoneyFileTransaction ft;
         try {
           MyMoneyFile::instance()->removeBudget(*it_allBL);
+          ft.commit();
         } catch (MyMoneyException *e) {
           KMessageBox::detailedSorry(0, i18n("Unable to remove budget(s)"), (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
           delete e;

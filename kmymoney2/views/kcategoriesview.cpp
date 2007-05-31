@@ -128,7 +128,6 @@ void KCategoriesView::loadAccounts(void)
 
   // clear the current contents and recreate it
   m_accountTree->clear();
-  m_accountMap.clear();
   m_securityMap.clear();
   m_transactionCountMap.clear();
 
@@ -136,12 +135,6 @@ void KCategoriesView::loadAccounts(void)
   m_incomeItem = m_expenseItem = 0;
 
   MyMoneyFile* file = MyMoneyFile::instance();
-
-  QValueList<MyMoneyAccount> alist = file->accountList();
-  QValueList<MyMoneyAccount>::const_iterator it_a;
-  for(it_a = alist.begin(); it_a != alist.end(); ++it_a) {
-    m_accountMap[(*it_a).id()] = *it_a;
-  }
 
   QValueList<MyMoneySecurity> slist = file->currencyList();
   slist += file->securityList();
@@ -168,7 +161,7 @@ void KCategoriesView::loadAccounts(void)
     haveUnusedCategories |= loadSubAccounts(m_expenseItem, expense.accountList());
 
   } catch(MyMoneyException *e) {
-    kdDebug(2) << "Problem in accountsview: " << e->what();
+    kdDebug(2) << "Problem in categoriesview: " << e->what();
     delete e;
   }
 
@@ -207,7 +200,7 @@ bool KCategoriesView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCS
 
   QCStringList::const_iterator it_a;
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
-    const MyMoneyAccount& acc = m_accountMap[*it_a];
+    const MyMoneyAccount& acc = file->account(*it_a);
     QValueList<MyMoneyPrice> prices;
     MyMoneySecurity security = file->baseCurrency();
     try {

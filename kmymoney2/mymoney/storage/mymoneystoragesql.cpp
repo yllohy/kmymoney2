@@ -830,7 +830,8 @@ void MyMoneyStorageSql::writeAccounts() {
   if (!q.exec()) throw buildError (q, __func__, "building Account list");
   while (q.next()) dbList.append(q.value(0).toString());
 
-  const QValueList<MyMoneyAccount> list = m_storage->accountList();
+  QValueList<MyMoneyAccount> list;
+  m_storage->accountList(list);
   QValueList<MyMoneyAccount>::ConstIterator it;
   signalProgress(0, list.count(), "Writing Accounts...");
   if (dbList.isEmpty()) { // new table, insert standard accounts
@@ -1858,7 +1859,8 @@ void MyMoneyStorageSql::readInstitutions(void) {
     for (QStringList::Iterator it = aList.begin(); it != aList.end(); ++it)
       inst.addAccountId(QCString(*it));
     TRY
-    m_storage->loadInstitution(MyMoneyInstitution(QCString(iid), inst));
+    // FIXME: Adapt to new interface make sure, to take care of the securities as well
+    // m_storage->loadInstitution(MyMoneyInstitution(QCString(iid), inst));
     PASS
     signalProgress (++progress, 0);
   }
@@ -1918,7 +1920,8 @@ void MyMoneyStorageSql::readPayees(const QValueList<QCString> pid) {
       PASS
     } else {
       TRY
-        m_storage->loadPayee(MyMoneyPayee(QCString(pid), payee));
+        // FIXME: Adapt to new interface make sure, to take care of the securities as well
+        // m_storage->loadPayee(MyMoneyPayee(QCString(pid), payee));
       CATCH
         delete e; // ignore duplicates
       ECATCH
@@ -1976,11 +1979,12 @@ void MyMoneyStorageSql::readAccounts(void) {
     TRY
     if (m_mode > 0) {
       acc.setBalance(MyMoneyMoney(balance));
-      m_storage->loadAccount(MyMoneyAccount(QCString(aid), acc),
-            txCount);
+      // FIXME: Adapt to new interface make sure, to take care of the securities as well
+      // m_storage->loadAccount(MyMoneyAccount(QCString(aid), acc));
       if (acc.value("PreferredAccount") == "Yes") m_preferred.addAccount(aid);
     } else  {
-      m_storage->loadAccount(MyMoneyAccount(QCString(aid), acc));
+      // FIXME: Adapt to new interface make sure, to take care of the securities as well
+      // m_storage->loadAccount(MyMoneyAccount(QCString(aid), acc));
     }
     PASS
     signalProgress(++progress, 0);
@@ -2058,7 +2062,8 @@ void MyMoneyStorageSql::readTransactions(const QString& tidList, const QString& 
        i != txMap.end(); ++i) {
          i.data().setPairs(kvpMap[i.key()].pairs());
          TRY
-             m_storage->loadTransaction(MyMoneyTransaction(QCString(i.key()), i.data()));
+             // FIXME: Adapt to new interface make sure, to take care of the securities as well
+             // m_storage->loadTransaction(MyMoneyTransaction(QCString(i.key()), i.data()));
          PASS
              if (m_displayStatus) signalProgress(++progress, 0);
        }
@@ -2342,7 +2347,8 @@ void MyMoneyStorageSql::readSchedules(void) {
     if (!sq.exec()) throw buildError (q, __func__, QString("reading schedule payment history"));
     while (sq.next()) s.recordPayment (sq.value(0).toDate());
     TRY
-    m_storage->loadSchedule(s);
+    // FIXME: Adapt to new interface make sure, to take care of the securities as well
+    // m_storage->loadSchedule(s);
     PASS
     signalProgress(++progress, 0);
   }
@@ -2382,7 +2388,9 @@ void MyMoneyStorageSql::readSecurities(void) {
     e.setPairs(readKeyValuePairs("SECURITY", eid).pairs());
   //tell the storage objects we have a new security object.
     TRY
-    m_storage->loadSecurity(MyMoneySecurity(eid,e));
+    // FIXME: Adapt to new interface make sure, to take care of the currencies as well
+    //   see MyMoneyStorageXML::readSecurites()
+    // m_storage->loadSecurity(MyMoneySecurity(eid,e));
     PASS
     signalProgress(++progress, 0);
   }
@@ -2449,7 +2457,7 @@ void MyMoneyStorageSql::readCurrencies(void) {
     }
     c.setTradingSymbol(QString(symbol, 3).stripWhiteSpace());
     TRY
-    m_storage->loadCurrency(MyMoneySecurity(id, c));
+    // m_storage->loadCurrency(MyMoneySecurity(id, c));
     PASS
     signalProgress(++progress, 0);
   }
@@ -2463,6 +2471,7 @@ void MyMoneyStorageSql::readReports(void) {
   MyMoneySqlQuery q(this);
   q.prepare (QString(t.selectAllString(true)));
   if (!q.exec()) throw buildError (q, __func__, QString("reading reports"));
+  QMap<QCString, MyMoneyReport> rList;
   while (q.next()) {
     MyMoneyDbTable::field_iterator ft = t.begin();
     int i = 0;
@@ -2475,10 +2484,14 @@ void MyMoneyStorageSql::readReports(void) {
     child = child.firstChild();
     MyMoneyReport report;
     TRY
-    if (report.read(child.toElement())) m_storage->loadReport(report);
+    // Not sure, if this change is correct and what this should really be.
+    // According to my understanding it should work - ipwizard
+    if (report.read(child.toElement()))
+      rList[report.id()] = report;
     PASS
     signalProgress(++progress, 0);
   }
+  m_storage->loadReports(rList);
 }
 
 void MyMoneyStorageSql::readBudgets(void) {
@@ -2489,6 +2502,7 @@ void MyMoneyStorageSql::readBudgets(void) {
   MyMoneySqlQuery q(this);
   q.prepare (QString(t.selectAllString(true)));
   if (!q.exec()) throw buildError (q, __func__, QString("reading budgets"));
+  QMap<QCString, MyMoneyBudget> budgets;
   while (q.next()) {
     MyMoneyDbTable::field_iterator ft = t.begin();
     int i = 0;
@@ -2500,9 +2514,10 @@ void MyMoneyStorageSql::readBudgets(void) {
     QDomNode child = d.firstChild();
     child = child.firstChild();
     MyMoneyBudget budget (child.toElement());
-    m_storage->loadBudget(budget);
+    budgets[budget.id()] = budget;
     signalProgress(++progress, 0);
   }
+  m_storage->loadBudgets(budgets);
 }
 
 MyMoneyKeyValueContainer MyMoneyStorageSql::readKeyValuePairs (const QString kvpType, const QString& kvpId) {

@@ -44,16 +44,18 @@
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneystatement.h"
 
-/** This is a pared-down version of a MyMoneyQifReader object
-  *
-  * @author Ace Jones 
-  */
+class MyMoneyFileTransaction;
 
+/**
+  * This is a pared-down version of a MyMoneyQifReader object
+  *
+  * @author Ace Jones
+  */
 class MyMoneyStatementReader : public QObject
 {
   Q_OBJECT
 
-public: 
+public:
   MyMoneyStatementReader();
   ~MyMoneyStatementReader();
 
@@ -94,7 +96,7 @@ public:
     *               or turned off (@p false)
     */
   void setAutoCreatePayee(const bool create);
-  
+
   const MyMoneyAccount& account() const { return m_account; };
 
   void setProgressCallback(void(*callback)(int, int, const QString&));
@@ -107,7 +109,7 @@ private:
     * For a parameter description see KMyMoneyView::progressCallback().
     */
   void signalProgress(int current, int total, const QString& = "");
-  
+
   void processTransactionEntry(const MyMoneyStatement::Transaction&);
   void processSecurityEntry(const MyMoneyStatement::Security&);
 
@@ -138,21 +140,22 @@ private:
     */
   static const QCString findOrCreateIncomeAccount(const QString& searchname);
   static const QCString findOrCreateExpenseAccount(const QString& searchname);
-  
+
 signals:
   /**
     * This signal will be emitted when the import is finished.
     */
   void importFinished(void);
-  
+
 private:
-  
+
   MyMoneyAccount          m_account;
   QStringList             m_dontAskAgain;
   bool                    m_skipAccount;
   bool                    m_userAbort;
   bool                    m_autoCreatePayee;
-          
+  MyMoneyFileTransaction* m_ft;
+
   void (*m_progressCallback)(int, int, const QString&);
 };
 

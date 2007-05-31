@@ -33,7 +33,6 @@ class QResizeEvent;
 
 #include <kmymoney/register.h>
 #include <kmymoney/mymoneyaccount.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 
 #include "../dialogs/kselecttransactionsdlg.h"
 
@@ -43,7 +42,7 @@ class KMergeTransactionsDlg: public KSelectTransactionsDlg
 public:
   KMergeTransactionsDlg(const MyMoneyAccount& account, QWidget* parent = 0, const char* name = 0);
 
-  bool eventFilter(QObject* o, QEvent* e) { return false; }
+  bool eventFilter(QObject* , QEvent* ) { return false; }
 
 public slots:
   void slotHelp();

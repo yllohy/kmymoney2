@@ -36,7 +36,6 @@
 #include <kmymoney/selectedtransaction.h>
 #include <kmymoney/mymoneyaccount.h>
 
-class MyMoneyObjectContainer;
 class QTable;
 class TransactionEditor;
 class TransactionEditorContainer;
@@ -69,7 +68,7 @@ typedef enum {
 class Transaction : public RegisterItem
 {
 public:
-  Transaction(Register* parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
+  Transaction(Register* parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
   virtual ~Transaction() {};
 
   virtual const char* className(void) { return "Transaction"; }
@@ -178,7 +177,6 @@ public:
   QWidget* focusWidget(QWidget*) const;
   void arrangeWidget(QTable* tbl, int row, int col, QWidget* w) const;
 
-  MyMoneyObjectContainer* objects(void) const { return m_objects; }
   bool haveNumberField(void) const;
 
   bool matches(const QString&) const;
@@ -216,7 +214,7 @@ public:
   /**
     * This method creates an editor for the transaction
     */
-  virtual TransactionEditor* createEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) = 0;
+  virtual TransactionEditor* createEditor(TransactionEditorContainer* regForm, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) = 0;
 
   virtual void setVisible(bool visible);
 
@@ -250,7 +248,6 @@ protected:
   MyMoneyTransaction      m_transaction;
   MyMoneySplit            m_split;
   MyMoneyAccount          m_account;
-  MyMoneyObjectContainer* m_objects;
   QTable*                 m_form;
   QString                 m_category;
   QString                 m_payee;
@@ -272,7 +269,7 @@ protected:
 class StdTransaction : public Transaction
 {
 public:
-  StdTransaction(Register* parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
+  StdTransaction(Register* parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
   virtual ~StdTransaction() {};
 
   virtual const char* className(void) { return "StdTransaction"; }
@@ -299,7 +296,7 @@ public:
     */
   int numRowsRegister(void) const { return RegisterItem::numRowsRegister(); }
 
-  TransactionEditor* createEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+  TransactionEditor* createEditor(TransactionEditorContainer* regForm, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
 
 protected:
 
@@ -311,7 +308,7 @@ private:
 class InvestTransaction : public Transaction
 {
 public:
-  InvestTransaction(Register* parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
+  InvestTransaction(Register* parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId);
   virtual ~InvestTransaction() {};
 
   virtual const QString& sortSecurity(void) const { return m_security.name(); }
@@ -344,7 +341,7 @@ public:
     */
   int numRowsRegister(void) const { return RegisterItem::numRowsRegister(); }
 
-  TransactionEditor* createEditor(TransactionEditorContainer* regForm, MyMoneyObjectContainer* objects, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+  TransactionEditor* createEditor(TransactionEditorContainer* regForm, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
 
   void splits(MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& feeSplits) const;
 

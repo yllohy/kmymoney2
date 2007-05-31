@@ -38,7 +38,6 @@
 #include <kmymoney/register.h>
 #include <kmymoney/transactionform.h>
 #include <kmymoney/transaction.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include <kmymoney/transactioneditor.h>
 #include <kmymoney/kmymoneyutils.h>
 #include <kmymoney/mymoneyfinancialcalculator.h>
@@ -51,7 +50,6 @@ public:
   KEnterScheduleDlgPrivate() : m_item(0), m_showWarningOnce(true) {};
   ~KEnterScheduleDlgPrivate() {};
 
-  MyMoneyObjectContainer         m_objects;
   MyMoneySchedule                m_schedule;
   KMyMoneyRegister::Transaction* m_item;
   QWidgetList                    m_tabOrderWidgets;
@@ -81,7 +79,7 @@ KEnterScheduleDlg::KEnterScheduleDlg(QWidget *parent, const MyMoneySchedule& sch
 
   // ... now add the transaction to register and form ...
   MyMoneyTransaction t = transaction();
-  d->m_item = KMyMoneyRegister::Register::transactionFactory(m_register, &d->m_objects, t, d->m_schedule.transaction().splits()[0], 0);
+  d->m_item = KMyMoneyRegister::Register::transactionFactory(m_register, t, d->m_schedule.transaction().splits()[0], 0);
   m_register->selectItem(d->m_item);
   m_form->slotSetTransaction(d->m_item);
 
@@ -245,7 +243,7 @@ TransactionEditor* KEnterScheduleDlg::startEdit(void)
 {
   QValueList<KMyMoneyRegister::SelectedTransaction> list;
   m_register->selectedTransactions(list);
-  TransactionEditor* editor = d->m_item->createEditor(m_form, &d->m_objects, list, QDate());
+  TransactionEditor* editor = d->m_item->createEditor(m_form, list, QDate());
 
   // check that we use the same transaction commodity in all selected transactions
   // if not, we need to update this in the editor's list. The user can also bail out

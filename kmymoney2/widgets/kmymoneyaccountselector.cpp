@@ -43,7 +43,6 @@
 #include "kmymoneyaccountselector.h"
 #include <kmymoney/mymoneyutils.h>
 #include <kmymoney/mymoneyfile.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include <kmymoney/kmymoneylistviewitem.h>
 #include <kmymoney/kmymoneychecklistitem.h>
 
@@ -240,9 +239,9 @@ void kMyMoneyAccountSelector::update(const QCString& /* id */)
 }
 #endif
 
-AccountSet::AccountSet(MyMoneyObjectContainer* objects) :
+AccountSet::AccountSet() :
   m_count(0),
-  m_objects(objects)
+  m_file(MyMoneyFile::instance())
 {
 }
 
@@ -299,7 +298,6 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
 {
   QCStringList list;
   QCStringList::ConstIterator it_l;
-  MyMoneyFile* file = MyMoneyFile::instance();
   int count = 0;
   int typeMask = 0;
   QCString currentId;
@@ -348,21 +346,21 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
       ++m_count;
       item = selector->newItem(i18n("Asset accounts"));
       key = i18n("Asset");
-      list = file->asset().accountList();
+      list = m_file->asset().accountList();
     }
 
     if(typeMask & mask & KMyMoneyUtils::liability) {
       ++m_count;
       item = selector->newItem(i18n("Liability accounts"));
       key = i18n("Liability");
-      list = file->liability().accountList();
+      list = m_file->liability().accountList();
     }
 
     if(typeMask & mask & KMyMoneyUtils::income) {
       ++m_count;
       item = selector->newItem(i18n("Income categories"));
       key = i18n("Income");
-      list = file->income().accountList();
+      list = m_file->income().accountList();
       if(selector->selectionMode() == QListView::Multi) {
         selector->m_incomeCategoriesButton->show();
       }
@@ -372,7 +370,7 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
       ++m_count;
       item = selector->newItem(i18n("Expense categories"));
       key = i18n("Expense");
-      list = file->expense().accountList();
+      list = m_file->expense().accountList();
       if(selector->selectionMode() == QListView::Multi) {
         selector->m_expenseCategoriesButton->show();
       }
@@ -382,7 +380,7 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
       ++m_count;
       item = selector->newItem(i18n("Equity accounts"), after);
       key = i18n("Equity");
-      list = file->equity().accountList();
+      list = m_file->equity().accountList();
     }
 
     if(!after)
@@ -391,7 +389,7 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
     if(item != 0) {
       // scan all matching accounts found in the engine
       for(it_l = list.begin(); it_l != list.end(); ++it_l) {
-        const MyMoneyAccount& acc = m_objects->account(*it_l);
+        const MyMoneyAccount& acc = m_file->account(*it_l);
         ++m_count;
         ++count;
         if(m_typeList.contains(acc.accountType())
@@ -436,7 +434,7 @@ int AccountSet::load(kMyMoneyAccountSelector* selector, const QString& baseName,
 
   QValueList<QCString>::ConstIterator it;
   for(it = accountIdList.begin(); it != accountIdList.end(); ++it)   {
-    const MyMoneyAccount& acc = m_objects->account(*it);
+    const MyMoneyAccount& acc = m_file->account(*it);
     if(acc.isClosed())
       continue;
     QString tmpKey;
@@ -462,7 +460,7 @@ int AccountSet::loadSubAccounts(kMyMoneyAccountSelector* selector, QListViewItem
   int count = 0;
 
   for(it_l = list.begin(); it_l != list.end(); ++it_l) {
-    const MyMoneyAccount& acc = m_objects->account(*it_l);
+    const MyMoneyAccount& acc = m_file->account(*it_l);
     // don't include stock accounts if not in expert mode
     if(acc.accountType() == MyMoneyAccount::Stock
     && !KMyMoneySettings::expertMode())

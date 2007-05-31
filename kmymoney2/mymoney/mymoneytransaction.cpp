@@ -406,3 +406,14 @@ QString MyMoneyTransaction::accountSignature(bool includeSplitCount) const
   }
   return rc;
 }
+
+QCString MyMoneyTransaction::uniqueSortKey(void) const
+{
+  QCString year, month, day, key;
+  const QDate& postdate = postDate();
+  year = year.setNum(postdate.year()).rightJustify(YEAR_SIZE, '0');
+  month = month.setNum(postdate.month()).rightJustify(MONTH_SIZE, '0');
+  day = day.setNum(postdate.day()).rightJustify(DAY_SIZE, '0');
+  key = year + "-" + month + "-" + day + "-" + m_id;
+  return key;
+}

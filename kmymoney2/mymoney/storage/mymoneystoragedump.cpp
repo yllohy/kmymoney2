@@ -72,7 +72,9 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
 
   s << "Internal-Info\n";
   s << "-------------\n";
-  s << "accounts = " << _storage->accountList().count() <<", next id = " << _storage->accountId() << "\n";
+  QValueList<MyMoneyAccount> list_a;
+  storage->accountList(list_a);
+  s << "accounts = " << list_a.count() <<", next id = " << _storage->accountId() << "\n";
   MyMoneyTransactionFilter filter;
   filter.setReportAllSplits(false);
   QValueList<MyMoneyTransaction> list_t;
@@ -137,7 +139,6 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
   s << "Accounts" << "\n";
   s << "--------" << "\n";
 
-  QValueList<MyMoneyAccount> list_a = storage->accountList();
   list_a.push_front(storage->equity());
   list_a.push_front(storage->expense());
   list_a.push_front(storage->income());

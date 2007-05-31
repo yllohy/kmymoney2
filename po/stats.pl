@@ -78,12 +78,14 @@ $country{"fr"} = "France";
 $country{"gl"} = "Galicia";
 $country{"it"} = "Italy";
 $country{"lt"} = "Lithuania";
+$country{"nl"} = "Netherlands";
 $country{"pl"} = "Poland";
 $country{"pt_BR"} = "Brazil";
 $country{"pt_PT"} = "Portugal";
 $country{"ru"} = "Russia";
 $country{"sk"} = "Slovakia";
 $country{"sl"} = "Slovenia";
+$country{"zh_CN"} = "China";
 
 $language{"ca"} = "Catalan";
 $language{"cs"} = "Czech";
@@ -96,12 +98,14 @@ $language{"fr"} = "French";
 $language{"gl"} = "Galician";
 $language{"it"} = "Italian";
 $language{"lt"} = "Lithuanian";
+$language{"nl"} = "Dutch";
 $language{"pl"} = "Polish";
 $language{"pt_BR"} = "Portuguese (Brazil)";
 $language{"pt_PT"} = "Portuguese (Portugal)";
 $language{"ru"} = "Russian";
 $language{"sk"} = "Slovak";
 $language{"sl"} = "Slovenian";
+$language{"zh_CN"} = "Simplified Chinese";
 
 $flags{"es_AR"} = "ar";
 $flags{"en_GB"} = "gb";
@@ -109,6 +113,7 @@ $flags{"pt_BR"} = "br";
 $flags{"pt_PT"} = "pt";
 $flags{"da"} = "dk";
 $flags{"gl"} = "Galicia";
+$flags{"zh_CN"} = "cn";
 
 open(IN, "< $basedir/kmymoney2.pot") or die("POT file not found.");
 while(<IN>) {

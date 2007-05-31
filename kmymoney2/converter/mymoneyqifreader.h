@@ -44,10 +44,11 @@
 #include "../mymoney/mymoneyaccount.h"
 #include "../mymoney/mymoneytransaction.h"
 
+class MyMoneyFileTransaction;
+
 /**
   * @author Thomas Baumgart
   */
-
 class MyMoneyQifReader : public QObject
 {
   Q_OBJECT
@@ -348,6 +349,8 @@ private:
   QValueList<QByteArray>  m_data;
 
   void (*m_progressCallback)(int, int, const QString&);
+
+  MyMoneyFileTransaction* m_ft;
 };
 
 #endif

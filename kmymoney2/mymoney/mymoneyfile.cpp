@@ -27,6 +27,7 @@
 // KDE Includes
 
 #include <kdebug.h>
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -42,7 +43,7 @@
 #include "config.h"
 #endif
 
-const QString MyMoneyFile::OpeningBalancesPrefix = "Opening Balances";
+const QString MyMoneyFile::OpeningBalancesPrefix = I18N_NOOP("Opening Balances");
 const QString MyMoneyFile::AccountSeperator = ":";
 
 // include the following line to get a 'cout' for debug purposes
@@ -52,8 +53,11 @@ MyMoneyFile* MyMoneyFile::_instance = 0;
 class MyMoneyFilePrivate
 {
 public:
-  MyMoneyFilePrivate() {}
+  MyMoneyFilePrivate() :
+    m_inTransaction(false)
+  {}
 
+  bool                   m_inTransaction;
   MyMoneySecurity        m_baseCurrency;
   MyMoneyObjectContainer m_cache;
 
@@ -106,7 +110,7 @@ void MyMoneyFile::attachStorage(IMyMoneyStorage* const storage)
   d->m_baseCurrency = MyMoneySecurity();
 
   // and the whole cache
-  d->m_cache.clear();
+  d->m_cache.clear(storage);
 
   // notify application about new data availability
   emit dataChanged();
@@ -116,6 +120,49 @@ void MyMoneyFile::detachStorage(IMyMoneyStorage* const /* storage */)
 {
   d->m_cache.clear();
   m_storage = 0;
+}
+
+void MyMoneyFile::startTransaction(void)
+{
+  checkStorage();
+  if(d->m_inTransaction) {
+    throw new MYMONEYEXCEPTION("Already started a transaction!");
+  }
+
+  m_storage->startTransaction();
+  d->m_inTransaction = true;
+}
+
+bool MyMoneyFile::hasTransaction(void) const
+{
+  return d->m_inTransaction;
+}
+
+void MyMoneyFile::checkTransaction(const char* txt) const
+{
+  checkStorage();
+  if(!d->m_inTransaction) {
+    throw new MYMONEYEXCEPTION(QString("No transaction started for %1").arg(txt));
+  }
+}
+
+void MyMoneyFile::commitTransaction(void)
+{
+  checkTransaction(__PRETTY_FUNCTION__);
+
+  m_storage->commitTransaction();
+  d->m_inTransaction = false;
+  preloadCache();
+  emit dataChanged();
+}
+
+void MyMoneyFile::rollbackTransaction(void)
+{
+  checkTransaction(__PRETTY_FUNCTION__);
+
+  m_storage->rollbackTransaction();
+  d->m_inTransaction = false;
+  preloadCache();
 }
 
 void MyMoneyFile::addInstitution(MyMoneyInstitution& institution)
@@ -128,7 +175,7 @@ void MyMoneyFile::addInstitution(MyMoneyInstitution& institution)
   || institution.id().length() != 0)
     throw new MYMONEYEXCEPTION("Not a new institution");
 
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -140,7 +187,7 @@ void MyMoneyFile::addInstitution(MyMoneyInstitution& institution)
 
 void MyMoneyFile::modifyInstitution(const MyMoneyInstitution& institution)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -152,7 +199,7 @@ void MyMoneyFile::modifyInstitution(const MyMoneyInstitution& institution)
 
 void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   const MyMoneyTransaction* t = &transaction;
   MyMoneyTransaction tCopy;
@@ -164,9 +211,7 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
     // the following line will throw an exception if the
     // account does not exist
     MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
-    if((acc.accountType() == MyMoneyAccount::Loan
-    || acc.accountType() == MyMoneyAccount::AssetLoan)
-    && ((*it_s).action() == MyMoneySplit::ActionTransfer))
+    if(acc.isLoan() && ((*it_s).action() == MyMoneySplit::ActionTransfer))
       loanAccountAffected = true;
   }
 
@@ -214,7 +259,7 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
 
 void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // check that it's not one of the standard account groups
   if(isStandardAccount(account.id()))
@@ -230,6 +275,12 @@ void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
   // if the account was moved to another insitution, we notify
   // the old one as well as the new one and the structure change
   if(acc.institutionId() != account.institutionId()) {
+    MyMoneyInstitution inst = institution(acc.institutionId());
+    inst.removeAccountId(acc.id());
+    modifyInstitution(inst);
+    inst = institution(account.institutionId());
+    inst.addAccountId(acc.id());
+    modifyInstitution(inst);
     addNotification(acc.institutionId());
     addNotification(account.institutionId());
   }
@@ -241,7 +292,7 @@ void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
 
 void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& parent)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // check that it's not one of the standard account groups
   if(isStandardAccount(account.id()))
@@ -275,21 +326,17 @@ void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& paren
 
 const MyMoneyInstitution& MyMoneyFile::institution(const QCString& id) const
 {
-  checkStorage();
-
-  return m_storage->institution(id);
+  return d->m_cache.institution(id);
 }
 
 const MyMoneyAccount& MyMoneyFile::account(const QCString& id) const
 {
-  checkStorage();
-
-  return m_storage->account(id);
+  return d->m_cache.account(id);
 }
 
 void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -324,22 +371,25 @@ const bool MyMoneyFile::isStandardAccount(const QCString& id) const
 
 void MyMoneyFile::setAccountName(const QCString& id, const QString& name) const
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   m_storage->setAccountName(id, name);
 }
 
 void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   MyMoneyAccount parent;
   MyMoneyAccount acc;
+  MyMoneyInstitution institution;
 
   // check that the account and its parent exist
   // this will throw an exception if the id is unknown
   acc = MyMoneyFile::account(account.id());
   parent = MyMoneyFile::account(account.parentAccountId());
+  if(!acc.institutionId().isEmpty())
+    institution = MyMoneyFile::institution(acc.institutionId());
 
   // check that it's not one of the standard account groups
   if(isStandardAccount(account.id()))
@@ -360,13 +410,19 @@ void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
   addNotification(parent.id());
   addNotification(account.institutionId());
 
-  m_storage->removeAccount(account);
+  if(!institution.id().isEmpty()) {
+    institution.removeAccountId(account.id());
+    m_storage->modifyInstitution(institution);
+  }
+  acc.setInstitutionId(QCString());
+  m_storage->removeAccount(acc);
 }
 
 void MyMoneyFile::removeAccountList(const QCStringList& account_list, unsigned int level) {
  if (level > 100)
    throw new MYMONEYEXCEPTION("Too deep recursion in [MyMoneyFile::removeAccountList]!");
-  checkStorage();
+
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // upon entry, we check that we could proceed with the operation
   if(!level) {
@@ -412,19 +468,31 @@ bool MyMoneyFile::hasOnlyUnusedAccounts(const QCStringList& account_list, unsign
 
 void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   addNotification(institution.id());
 
+  QValueList<QCString>::ConstIterator it_a;
+  MyMoneyInstitution inst = MyMoneyFile::institution(institution.id());
+
+  bool blocked = signalsBlocked();
+  blockSignals(true);
+  for(it_a = inst.accountList().begin(); it_a != inst.accountList().end(); ++it_a) {
+    MyMoneyAccount acc = account(*it_a);
+    acc.setInstitutionId(QCString());
+    modifyAccount(acc);
+  }
+  blockSignals(blocked);
+
   m_storage->removeInstitution(institution);
 }
 
 void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   MyMoneyInstitution institution;
 
@@ -509,7 +577,8 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   m_storage->addAccount(parent, account);
 
   if(account.institutionId().length() != 0) {
-    m_storage->addAccount(institution, account);
+    institution.addAccountId(account.id());
+    m_storage->modifyInstitution(institution);
     addNotification(institution.id());
   }
 
@@ -522,6 +591,8 @@ void MyMoneyFile::createOpeningBalanceTransaction(const MyMoneyAccount& acc, con
   // if the opening balance is not zero, we need
   // to create the respective transaction
   if(!balance.isZero()) {
+    checkTransaction(__PRETTY_FUNCTION__);
+
     MyMoneySecurity currency = security(acc.currencyId());
     MyMoneyAccount openAcc = openingBalanceAccount(currency);
 
@@ -608,7 +679,18 @@ const MyMoneyAccount MyMoneyFile::openingBalanceAccount(const MyMoneySecurity& s
   catch(MyMoneyException *e)
   {
     delete e;
-    return createOpeningBalanceAccount(security);
+    MyMoneyFileTransaction ft;
+    MyMoneyAccount acc;
+
+    try {
+      acc = createOpeningBalanceAccount(security);
+      ft.commit();
+
+    } catch(MyMoneyException* e) {
+      qDebug("Unable to create opening balance account for security %s", security.id().data());
+      delete e;
+    }
+    return acc;
   }
 }
 
@@ -623,12 +705,12 @@ const MyMoneyAccount MyMoneyFile::openingBalanceAccount_internal(const MyMoneySe
     throw new MYMONEYEXCEPTION("Opening balance for non currencies not supported");
 
   MyMoneyAccount acc;
-  QRegExp match(QString("^%1").arg(MyMoneyFile::OpeningBalancesPrefix));
+  QRegExp match(QString("^%1").arg(i18n(MyMoneyFile::OpeningBalancesPrefix)));
 
   QValueList<MyMoneyAccount> accounts;
   QValueList<MyMoneyAccount>::Iterator it;
 
-  accounts = accountList(equity().accountList(), true);
+  accountList(accounts, equity().accountList(), true);
 
   for(it = accounts.begin(); it != accounts.end(); ++it) {
     if(match.search((*it).name()) != -1) {
@@ -648,8 +730,10 @@ const MyMoneyAccount MyMoneyFile::openingBalanceAccount_internal(const MyMoneySe
 
 const MyMoneyAccount MyMoneyFile::createOpeningBalanceAccount(const MyMoneySecurity& security)
 {
+  checkTransaction(__PRETTY_FUNCTION__);
+
   MyMoneyAccount acc;
-  QString name = MyMoneyFile::OpeningBalancesPrefix;
+  QString name(i18n(MyMoneyFile::OpeningBalancesPrefix));
   if(security.id() != baseCurrency().id()) {
     name += QString(" (%1)").arg(security.id());
   }
@@ -664,7 +748,7 @@ const MyMoneyAccount MyMoneyFile::createOpeningBalanceAccount(const MyMoneySecur
 
 void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -757,22 +841,17 @@ const MyMoneyTransaction& MyMoneyFile::transaction(const QCString& account, cons
 
 void MyMoneyFile::addPayee(MyMoneyPayee& payee)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   m_storage->addPayee(payee);
-
-  emit dataChanged();
-  emit objectAdded(payee);
 }
 
 const MyMoneyPayee& MyMoneyFile::payee(const QCString& id) const
 {
-  checkStorage();
-
-  return m_storage->payee(id);
+  return d->m_cache.payee(id);
 }
 
 const MyMoneyPayee& MyMoneyFile::payeeByName(const QString& name) const
@@ -784,7 +863,7 @@ const MyMoneyPayee& MyMoneyFile::payeeByName(const QString& name) const
 
 void MyMoneyFile::modifyPayee(const MyMoneyPayee& payee)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -796,7 +875,7 @@ void MyMoneyFile::modifyPayee(const MyMoneyPayee& payee)
 
 void MyMoneyFile::removePayee(const MyMoneyPayee& payee)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -806,18 +885,42 @@ void MyMoneyFile::removePayee(const MyMoneyPayee& payee)
   m_storage->removePayee(payee);
 }
 
-const QValueList<MyMoneyAccount> MyMoneyFile::accountList(const QCStringList& idlist, const bool recursive) const
+void MyMoneyFile::accountList(QValueList<MyMoneyAccount>& list, const QCStringList& idlist, const bool recursive) const
 {
-  checkStorage();
+  if(idlist.isEmpty()) {
+    d->m_cache.account(list);
+    QValueList<MyMoneyAccount>::Iterator it;
+    QValueList<MyMoneyAccount>::Iterator next;
+    for(it = list.begin(); it != list.end(); ) {
+      if(isStandardAccount( (*it).id() )) {
+        it = list.erase(it);
+      } else {
+        ++it;
+      }
+    }
+  } else {
+    QValueList<MyMoneyAccount>::ConstIterator it;
+    QValueList<MyMoneyAccount> list_a;
+    d->m_cache.account(list_a);
 
-  return m_storage->accountList(idlist, recursive);
+    for(it = list_a.begin(); it != list_a.end(); ++it) {
+      if(!isStandardAccount((*it).id())) {
+        if(idlist.findIndex((*it).id()) != -1) {
+          list.append(*it);
+          if(recursive == true) {
+            accountList(list, (*it).accountList(), true);
+          }
+        }
+      }
+    }
+  }
 }
 
 const QValueList<MyMoneyInstitution> MyMoneyFile::institutionList(void) const
 {
-  checkStorage();
-
-  return m_storage->institutionList();
+  QValueList<MyMoneyInstitution> list;
+  d->m_cache.institution(list);
+  return list;
 }
 
 // general get functions
@@ -826,7 +929,7 @@ const MyMoneyPayee& MyMoneyFile::user(void) const { checkStorage(); return m_sto
 // general set functions
 void MyMoneyFile::setUser(const MyMoneyPayee& user)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1090,13 +1193,8 @@ void MyMoneyFile::notify(void)
   // keep a local copy so that the called update()
   // members can modify the original list
   for(it = d->m_notificationList.begin(); it != d->m_notificationList.end(); ++it) {
-    // TODO remove the stuff from the cache
+    d->m_cache.clear(it.key());
   }
-
-  // TODO once we have start/commit/rollback-Transaction in place, the
-  // emission of dataChanged() should go to commitTransaction()
-  emit dataChanged();
-
   clearNotification();
 }
 
@@ -1126,16 +1224,16 @@ void MyMoneyFile::transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyT
 
 QValueList<MyMoneyTransaction> MyMoneyFile::transactionList(MyMoneyTransactionFilter& filter) const
 {
-  checkStorage();
-
-  return m_storage->transactionList(filter);
+  QValueList<MyMoneyTransaction> list;
+  transactionList(list, filter);
+  return list;
 }
 
 const QValueList<MyMoneyPayee> MyMoneyFile::payeeList(void) const
 {
-  checkStorage();
-
-  return m_storage->payeeList();
+  QValueList<MyMoneyPayee> list;
+  d->m_cache.payee(list);
+  return list;
 }
 
 const QString MyMoneyFile::accountToCategory(const QCString& accountId) const
@@ -1143,14 +1241,15 @@ const QString MyMoneyFile::accountToCategory(const QCString& accountId) const
   MyMoneyAccount acc;
   QString rc;
 
-  acc = account(accountId);
-  do {
-    if(!rc.isEmpty())
-      rc = AccountSeperator + rc;
-    rc = acc.name() + rc;
-    acc = account(acc.parentAccountId());
-  } while(!isStandardAccount(acc.id()));
-
+  if(!accountId.isEmpty()) {
+    acc = account(accountId);
+    do {
+      if(!rc.isEmpty())
+        rc = AccountSeperator + rc;
+      rc = acc.name() + rc;
+      acc = account(acc.parentAccountId());
+    } while(!acc.id().isEmpty() && !isStandardAccount(acc.id()));
+  }
   return rc;
 }
 
@@ -1222,7 +1321,7 @@ const QString MyMoneyFile::value(const QCString& key) const
 
 void MyMoneyFile::setValue(const QCString& key, const QString& val)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1232,7 +1331,7 @@ void MyMoneyFile::setValue(const QCString& key, const QString& val)
 
 void MyMoneyFile::deletePair(const QCString& key)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1242,7 +1341,7 @@ void MyMoneyFile::deletePair(const QCString& key)
 
 void MyMoneyFile::addSchedule(MyMoneySchedule& sched)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1254,7 +1353,7 @@ void MyMoneyFile::addSchedule(MyMoneySchedule& sched)
 
 void MyMoneyFile::modifySchedule(const MyMoneySchedule& sched)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1266,7 +1365,7 @@ void MyMoneyFile::modifySchedule(const MyMoneySchedule& sched)
 
 void MyMoneyFile::removeSchedule(const MyMoneySchedule& sched)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1317,13 +1416,13 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   QString problemAccount;
 
   // check that we have a storage object
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
   // get the current list of accounts
-  list = accountList();
+  accountList(list);
   // add the standard accounts
   list << MyMoneyFile::instance()->asset();
   list << MyMoneyFile::instance()->liability();
@@ -1488,6 +1587,8 @@ const QStringList MyMoneyFile::consistencyCheck(void)
 
 QCString MyMoneyFile::createCategory(const MyMoneyAccount& base, const QString& name)
 {
+  checkTransaction(__PRETTY_FUNCTION__);
+
   MyMoneyAccount parent = base;
   QString categoryText;
 
@@ -1548,7 +1649,7 @@ QValueList<MyMoneySchedule> MyMoneyFile::scheduleListEx( int scheduleTypes,
 
 void MyMoneyFile::addSecurity(MyMoneySecurity& security)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1559,7 +1660,7 @@ void MyMoneyFile::addSecurity(MyMoneySecurity& security)
 
 void MyMoneyFile::modifySecurity(const MyMoneySecurity& security)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1570,7 +1671,7 @@ void MyMoneyFile::modifySecurity(const MyMoneySecurity& security)
 
 void MyMoneyFile::removeSecurity(const MyMoneySecurity& security)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1584,12 +1685,7 @@ const MyMoneySecurity MyMoneyFile::security(const QCString& id) const
   if(id.isEmpty())
     return baseCurrency();
 
-  checkStorage();
-
-  MyMoneySecurity e = m_storage->security(id);
-  if(e.id().isEmpty())
-    e = m_storage->currency(id);
-  return e;
+  return d->m_cache.security(id);
 }
 
 const QValueList<MyMoneySecurity> MyMoneyFile::securityList(void) const
@@ -1601,7 +1697,7 @@ const QValueList<MyMoneySecurity> MyMoneyFile::securityList(void) const
 
 void MyMoneyFile::addCurrency(const MyMoneySecurity& currency)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1612,7 +1708,7 @@ void MyMoneyFile::addCurrency(const MyMoneySecurity& currency)
 
 void MyMoneyFile::modifyCurrency(const MyMoneySecurity& currency)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1627,7 +1723,7 @@ void MyMoneyFile::modifyCurrency(const MyMoneySecurity& currency)
 
 void MyMoneyFile::removeCurrency(const MyMoneySecurity& currency)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1676,7 +1772,7 @@ void MyMoneyFile::setBaseCurrency(const MyMoneySecurity& curr)
 
 void MyMoneyFile::addPrice(const MyMoneyPrice& price)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1686,7 +1782,7 @@ void MyMoneyFile::addPrice(const MyMoneyPrice& price)
 
 void MyMoneyFile::removePrice(const MyMoneyPrice& price)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1728,14 +1824,12 @@ const MyMoneyPriceList MyMoneyFile::priceList(void) const
 
 const bool MyMoneyFile::hasAccount(const QCString& id, const QString& name) const
 {
-  checkStorage();
-
-  MyMoneyAccount acc = m_storage->account(id);
+  MyMoneyAccount acc = d->m_cache.account(id);
   QCStringList list = acc.accountList();
   QCStringList::ConstIterator it;
   bool rc = false;
   for(it = list.begin(); rc == false && it != list.end(); ++it) {
-    MyMoneyAccount a = m_storage->account(*it);
+    MyMoneyAccount a = d->m_cache.account(*it);
     if(a.name() == name)
       rc = true;
   }
@@ -1751,7 +1845,7 @@ const QValueList<MyMoneyReport> MyMoneyFile::reportList( void ) const
 
 void MyMoneyFile::addReport( MyMoneyReport& report )
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1763,7 +1857,7 @@ void MyMoneyFile::addReport( MyMoneyReport& report )
 
 void MyMoneyFile::modifyReport( const MyMoneyReport& report )
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1789,7 +1883,7 @@ MyMoneyReport MyMoneyFile::report( const QCString& id ) const
 
 void MyMoneyFile::removeReport(const MyMoneyReport& report)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
   MyMoneyNotifier notifier(this);
 
   addNotification(report.id());
@@ -1806,7 +1900,7 @@ const QValueList<MyMoneyBudget> MyMoneyFile::budgetList( void ) const
 
 void MyMoneyFile::addBudget( MyMoneyBudget& budget )
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1825,7 +1919,7 @@ const MyMoneyBudget& MyMoneyFile::budgetByName(const QString& name) const
 
 void MyMoneyFile::modifyBudget( const MyMoneyBudget& budget )
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
@@ -1851,7 +1945,7 @@ MyMoneyBudget MyMoneyFile::budget( const QCString& id ) const
 
 void MyMoneyFile::removeBudget(const MyMoneyBudget& budget)
 {
-  checkStorage();
+  checkTransaction(__PRETTY_FUNCTION__);
   MyMoneyNotifier notifier(this);
 
   addNotification(budget.id());
@@ -1926,6 +2020,20 @@ void MyMoneyFile::clearCache(void)
 {
   checkStorage();
   m_storage->clearCache();
+  d->m_cache.clear();
+}
+
+void MyMoneyFile::preloadCache(void)
+{
+  checkStorage();
+
+  d->m_cache.clear();
+  QValueList<MyMoneyAccount> a_list;
+  m_storage->accountList(a_list);
+  d->m_cache.preloadAccount(a_list);
+  d->m_cache.preloadPayee(m_storage->payeeList());
+  d->m_cache.preloadInstitution(m_storage->institutionList());
+  d->m_cache.preloadSecurity(m_storage->securityList() + m_storage->currencyList());
 }
 
 bool MyMoneyFile::isTransfer(const MyMoneyTransaction& t) const
@@ -1943,5 +2051,43 @@ bool MyMoneyFile::isTransfer(const MyMoneyTransaction& t) const
   }
   return rc;
 }
+
+
+MyMoneyFileTransaction::MyMoneyFileTransaction() :
+  m_isNested(MyMoneyFile::instance()->hasTransaction()),
+  m_needRollback(!m_isNested)
+{
+  if(!m_isNested)
+    MyMoneyFile::instance()->startTransaction();
+}
+
+MyMoneyFileTransaction::~MyMoneyFileTransaction()
+{
+  rollback();
+}
+
+void MyMoneyFileTransaction::restart(void)
+{
+  rollback();
+
+  m_needRollback = !m_isNested;
+  if(!m_isNested)
+    MyMoneyFile::instance()->startTransaction();
+}
+
+void MyMoneyFileTransaction::commit(void)
+{
+  if(!m_isNested)
+    MyMoneyFile::instance()->commitTransaction();
+  m_needRollback = false;
+}
+
+void MyMoneyFileTransaction::rollback(void)
+{
+  if(m_needRollback)
+    MyMoneyFile::instance()->rollbackTransaction();
+  m_needRollback = false;
+}
+
 
 #include "mymoneyfile.moc"

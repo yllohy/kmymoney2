@@ -78,14 +78,6 @@ KNewAccountWizard::KNewAccountWizard(QWidget *parent, const char *name )
   m_helpAnchor[accountPaymentPage] = QString("firsttime-accwiz5.1");
   //m_helpAnchor[summaryPage] = QString("");
 
-  m_accountListView->setRootIsDecorated(true);
-  m_accountListView->setAllColumnsShowFocus(true);
-  m_accountListView->addColumn(i18n("Account"));
-  m_accountListView->setMultiSelection(false);
-  m_accountListView->header()->setResizeEnabled(false);
-  m_accountListView->setColumnWidthMode(0, QListView::Manual);
-  m_accountListView->setResizeMode(QListView::AllColumns);
-
   m_currencyComboBox->update(QCString());
 
   connect(m_newInstitutionButton, SIGNAL(clicked()), this, SLOT(slotNewInstitution()));
@@ -125,26 +117,11 @@ KNewAccountWizard::~KNewAccountWizard()
 
 void KNewAccountWizard::slotReloadEditWidgets(void)
 {
-#if 0
-  // TODO: reload the account and category widgets
-  // reload category widget
-  KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
-  QCString categoryId;
-  category->selectedItem(categoryId);
-
-  AccountSet aSet(m_objects);
-  aSet.addAccountGroup(MyMoneyAccount::Asset);
-  aSet.addAccountGroup(MyMoneyAccount::Liability);
-  aSet.addAccountGroup(MyMoneyAccount::Income);
-  aSet.addAccountGroup(MyMoneyAccount::Expense);
-  if(KMyMoneySettings::expertMode())
-    aSet.addAccountGroup(MyMoneyAccount::Equity);
-  aSet.load(category->selector());
-#endif
+  // load the various account widgets
+  loadAccountList();
 
   // reload payee widget
-  QCString payeeId;
-  m_payee->selectedItem(payeeId);
+  QCString payeeId = m_payee->selectedItem();
 
   m_payee->loadPayees(MyMoneyFile::instance()->payeeList());
 
@@ -316,17 +293,15 @@ void KNewAccountWizard::accept()
       return;
     }
 
-    KMyMoneyAccountTreeItem *item = dynamic_cast<KMyMoneyAccountTreeItem *>(m_accountListView->selectedItem());
-    if (!item)
+    if (m_paymentAccount->selectedItem().isEmpty())
     {
       KMessageBox::error(this, i18n("Please select the account."));
-      m_accountListView->setFocus();
+      m_paymentAccount->setFocus();
       return;
     }
 
     // Create the schedule transaction
-    QCString payeeId;
-    m_payee->selectedItem(payeeId);
+    QCString payeeId = m_payee->selectedItem();
 
     MyMoneySplit s1, s2;
     s1.setValue(m_amount->value());
@@ -334,7 +309,7 @@ void KNewAccountWizard::accept()
     s1.setAction(MyMoneySplit::ActionTransfer);
     s2.setAction(MyMoneySplit::ActionTransfer);
     s1.setAccountId(QCString()/*this_account?*/);  // This needs to be set by caller  (see KMyMoneyView::accountNew)
-    s2.setAccountId(item->id());
+    s2.setAccountId(m_paymentAccount->selectedItem());
     s1.setPayeeId(payeeId);
     s2.setPayeeId(payeeId);
 
@@ -384,8 +359,6 @@ void KNewAccountWizard::accept()
 int KNewAccountWizard::exec()
 {
   int rc;
-
-  m_accountListView->header()->setFont(KMyMoneyUtils::headerFont());
 
   // currently, we don't have help for these pages :-(
   setHelpEnabled(brokerageAccountPage, false);
@@ -481,16 +454,9 @@ QValueList<MyMoneyAccount>::ConstIterator KNewAccountWizard::findAccount(const Q
 
 void KNewAccountWizard::loadAccountList(void)
 {
-  m_accountListView->clear();
-
-  m_accountList = MyMoneyFile::instance()->accountList();
-
-  MyMoneyAccount acc = MyMoneyFile::instance()->asset();
-
-  QCStringList::ConstIterator it_s;
-  for(it_s = acc.accountList().begin(); it_s != acc.accountList().end(); ++it_s) {
-    loadSubAccountList(m_accountListView, (*it_s));
-  }
+  AccountSet set;
+  set.addAccountGroup(MyMoneyAccount::Asset);
+  set.load(m_paymentAccount->selector());
 }
 
 void KNewAccountWizard::loadAccountTypes(void)
@@ -631,11 +597,11 @@ void KNewAccountWizard::setAccountType(const MyMoneyAccount::accountTypeE type)
 void KNewAccountWizard::loadPaymentMethods()
 {
   m_method->clear();
-  m_method->insertItem(i18n("Direct Debit"));
-  m_method->insertItem(i18n("Direct Deposit"));
-  m_method->insertItem(i18n("Manual Deposit"));
-  m_method->insertItem(i18n("Write Check"));
-  m_method->insertItem(i18n("Other"));
+  m_method->insertItem(i18n("Other"), MyMoneySchedule::STYPE_OTHER);
+  m_method->insertItem(i18n("Write Check"), MyMoneySchedule::STYPE_WRITECHEQUE);
+  m_method->insertItem(i18n("Manual Deposit"), MyMoneySchedule::STYPE_MANUALDEPOSIT);
+  m_method->insertItem(i18n("Direct Deposit"), MyMoneySchedule::STYPE_DIRECTDEPOSIT);
+  m_method->insertItem(i18n("Direct Debit"), MyMoneySchedule::STYPE_DIRECTDEBIT);
 }
 
 void KNewAccountWizard::showPage(QWidget* page)
@@ -660,7 +626,7 @@ void KNewAccountWizard::slotCheckPageFinished(void)
       if(m_amount->text().isEmpty()
       || m_name->text().isEmpty()
       || m_payee->currentText().isEmpty()
-      || m_accountListView->selectedItem() == 0) {
+      || m_paymentAccount->selectedItem().isEmpty()) {
         finishButton()->setEnabled(false);
       }
     }

@@ -61,7 +61,6 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
                                            const bool amountValid,
                                            const bool deposit,
                                            const MyMoneyMoney& calculatedValue,
-                                           MyMoneyObjectContainer* objects,
                                            const QMap<QCString, MyMoneyMoney>& priceInfo,
                                            QWidget* parent, const char* name)
   : KSplitTransactionDlgDecl(parent, name, true),
@@ -114,7 +113,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   connect(clearAllBtn, SIGNAL(clicked()), this, SLOT(slotClearAllSplits()));
 
   // pass on those vars
-  transactionsTable->setup(objects, priceInfo);
+  transactionsTable->setup(priceInfo);
 
   // Trick: it seems, that the initial sizing of the dialog does
   // not work correctly. At least, the columns do not get displayed

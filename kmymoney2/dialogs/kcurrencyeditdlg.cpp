@@ -186,8 +186,10 @@ void KCurrencyEditDlg::updateCurrency(void)
   if(!m_currency.id().isEmpty()) {
     if(m_symbolEdit->text() != m_currency.tradingSymbol()) {
       m_currency.setTradingSymbol(m_symbolEdit->text());
+      MyMoneyFileTransaction ft;
       try {
         MyMoneyFile::instance()->modifyCurrency(m_currency);
+        ft.commit();
       } catch(MyMoneyException *e) {
         qWarning("Updateing the currency failed!");
         delete e;
@@ -272,7 +274,9 @@ void KCurrencyEditDlg::slotSetBaseCurrency(void)
     QString name = file->currency(p->id()).name();
     QString question = i18n("Do you really want to select %1 as your base currency? This selection can currently not be modified! If unsure, press 'No' now.").arg(name);
     if(KMessageBox::questionYesNo(this, question, i18n("Select base currency")) == KMessageBox::Yes) {
+      MyMoneyFileTransaction ft;
       file->setBaseCurrency(file->currency(p->id()));
+      ft.commit();
       accept();
     }
   }
@@ -335,8 +339,15 @@ void KCurrencyEditDlg::slotRenameCurrency(QListViewItem* item, int /* col */, co
       qDebug("Renaming");
       MyMoneySecurity currency = file->currency(p->id());
       currency.setName(txt);
-      file->modifyCurrency(currency);
-      m_currency = currency;
+      MyMoneyFileTransaction ft;
+      try {
+        file->modifyCurrency(currency);
+        m_currency = currency;
+        ft.commit();
+      } catch(MyMoneyException* e) {
+        qDebug("Renaming currency failed");
+        delete e;
+      }
     }
   } catch(MyMoneyException *e) {
     delete e;

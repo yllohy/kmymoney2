@@ -30,34 +30,20 @@
 #include "kcurrencypagedecl.h"
 #include "kpasswordpagedecl.h"
 
-namespace NewUserWizard {
+class NewUserWizard;
 
-class Wizard;
-
-/**
-  * The general base class for new user wizard pages
-  *
-  * @author Thomas Baumgart
-  */
-class WizardPage : public KMyMoneyWizardPage
-{
-public:
-  WizardPage(unsigned int step, QWidget* widget, Wizard* parent, const char* name);
-
-protected:
-  Wizard*    m_wizard;
-};
+namespace NewUserWizardPages {
 
 /**
   * The first page of the new user wizard
   *
   * @author Thomas Baumgart
   */
-class GeneralPage : public KGeneralPageDecl, public WizardPage
+class GeneralPage : public KGeneralPageDecl, public WizardPage<NewUserWizard>
 {
   Q_OBJECT
 public:
-  GeneralPage(Wizard* parent, const char* name = 0);
+  GeneralPage(NewUserWizard* parent, const char* name = 0);
   KMyMoneyWizardPage* nextPage(void);
 };
 
@@ -66,11 +52,11 @@ public:
   *
   * @author Thomas Baumgart
   */
-class CurrencyPage : public KCurrencyPageDecl, public WizardPage
+class CurrencyPage : public KCurrencyPageDecl, public WizardPage<NewUserWizard>
 {
   Q_OBJECT
 public:
-  CurrencyPage(Wizard* parent, const char* name = 0);
+  CurrencyPage(NewUserWizard* parent, const char* name = 0);
   KMyMoneyWizardPage* nextPage(void);
 };
 
@@ -79,11 +65,11 @@ public:
   *
   * @author Thomas Baumgart
   */
-class PasswordPage : public KPasswordPageDecl, public WizardPage
+class PasswordPage : public KPasswordPageDecl, public WizardPage<NewUserWizard>
 {
   Q_OBJECT
 public:
-  PasswordPage(Wizard* parent, const char* name = 0);
+  PasswordPage(NewUserWizard* parent, const char* name = 0);
 };
 
 } // namespace

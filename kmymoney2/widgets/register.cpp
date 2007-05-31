@@ -34,7 +34,6 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include <kmymoney/kmymoneydateinput.h>
 #include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/kmymoneycategory.h>
@@ -250,10 +249,7 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /* col */, c
 
   // clear out cell rectangle
   QColorGroup cg(_cg);
-  if(m_alternate)
-    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listColor());
-  else
-    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
+  cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::groupMarkerColor());
 
   QBrush backgroundBrush(cg.base());
   painter->fillRect(cellRect, backgroundBrush);
@@ -1858,13 +1854,13 @@ void Register::keyPressEvent(QKeyEvent* ev)
   }
 }
 
-Transaction* Register::transactionFactory(Register *parent, MyMoneyObjectContainer* objects, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId)
+Transaction* Register::transactionFactory(Register *parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId)
 {
   Transaction* t = 0;
   MyMoneySplit s = split;
 
   if(parent->account() == MyMoneyAccount()) {
-    t = new KMyMoneyRegister::StdTransaction(parent, objects, transaction, s, uniqueId);
+    t = new KMyMoneyRegister::StdTransaction(parent, transaction, s, uniqueId);
     return t;
   }
 
@@ -1882,11 +1878,11 @@ Transaction* Register::transactionFactory(Register *parent, MyMoneyObjectContain
     case MyMoneyAccount::AssetLoan:
       if(s.accountId().isEmpty())
         s.setAccountId(parent->account().id());
-      t = new KMyMoneyRegister::StdTransaction(parent, objects, transaction, s, uniqueId);
+      t = new KMyMoneyRegister::StdTransaction(parent, transaction, s, uniqueId);
       break;
 
     case MyMoneyAccount::Investment:
-      t = new KMyMoneyRegister::InvestTransaction(parent, objects, transaction, s, uniqueId);
+      t = new KMyMoneyRegister::InvestTransaction(parent, transaction, s, uniqueId);
       break;
 
     case MyMoneyAccount::CertificateDep:

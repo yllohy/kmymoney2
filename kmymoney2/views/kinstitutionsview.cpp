@@ -128,7 +128,8 @@ void KInstitutionsView::loadAccounts(void)
 
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  QValueList<MyMoneyAccount> alist = file->accountList();
+  QValueList<MyMoneyAccount> alist;
+  file->accountList(alist);
   QValueList<MyMoneyAccount>::const_iterator it_a;
   for(it_a = alist.begin(); it_a != alist.end(); ++it_a) {
     m_accountMap[(*it_a).id()] = *it_a;

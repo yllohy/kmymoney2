@@ -54,7 +54,7 @@
   * other signals/slots in KCategoriesView and relayed to KMyMoneyView.
   * A typical example is the selectObject() signal that eventually results
   * in enabling/disabling the user actions for the categories view.
-  * 
+  *
   * For the categories view three user actions are important (all created in
   * kmymoney2.cpp): category_new, category_edit and category_delete. They are
   * accessible from either the main menu or the context menu.
@@ -120,7 +120,6 @@ signals:
   void reparent(const MyMoneyAccount& acc, const MyMoneyAccount& parent);
 
 private:
-  QMap<QCString, MyMoneyAccount>      m_accountMap;
   QMap<QCString, MyMoneySecurity>     m_securityMap;
   QMap<QCString, unsigned long>       m_transactionCountMap;
 

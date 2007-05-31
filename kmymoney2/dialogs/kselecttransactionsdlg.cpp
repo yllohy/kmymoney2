@@ -92,7 +92,7 @@ void KSelectTransactionsDlg::addTransaction(const MyMoneyTransaction& t)
   QValueList<MyMoneySplit>::const_iterator it_s;
   for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
     if((*it_s).accountId() == m_account.id()) {
-      KMyMoneyRegister::Transaction* tr = KMyMoneyRegister::Register::transactionFactory(m_register, &m_objects, t, (*it_s), 0);
+      KMyMoneyRegister::Transaction* tr = KMyMoneyRegister::Register::transactionFactory(m_register, t, (*it_s), 0);
       // force full detail display
       tr->setNumRowsRegister(tr->numRowsRegister(true));
       break;

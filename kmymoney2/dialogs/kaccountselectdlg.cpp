@@ -45,7 +45,6 @@
 #include "knewbankdlg.h"
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneyfile.h>
-#include <kmymoney/mymoneyobjectcontainer.h>
 #include "../widgets/kmymoneyaccountselector.h"
 
 KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountType, const QString& purpose, QWidget *parent, const char *name )
@@ -100,8 +99,7 @@ KAccountSelectDlg::~KAccountSelectDlg()
 
 void KAccountSelectDlg::slotReloadWidget(void)
 {
-  MyMoneyObjectContainer objects;
-  AccountSet set(&objects);
+  AccountSet set;
   if(m_accountType & KMyMoneyUtils::asset)
     set.addAccountGroup(MyMoneyAccount::Asset);
   if(m_accountType & KMyMoneyUtils::liability)
@@ -138,12 +136,14 @@ void KAccountSelectDlg::slotCreateInstitution(void)
 
   KNewBankDlg dlg(institution, this);
   if (dlg.exec()) {
+    MyMoneyFileTransaction ft;
     try {
       MyMoneyFile* file = MyMoneyFile::instance();
 
       institution = dlg.institution();
 
       file->addInstitution(institution);
+      ft.commit();
     } catch (MyMoneyException *e) {
       KMessageBox::information(this, i18n("Cannot add institution: ")+e->what());
       delete e;
@@ -159,6 +159,7 @@ void KAccountSelectDlg::slotCreateAccount(void)
   int dialogResult;
   const bool isCategory = m_accountType & (KMyMoneyUtils::expense | KMyMoneyUtils::income);
 
+  MyMoneyFileTransaction ft;
   if(!isCategory) {
     // wizard selected
     KNewAccountWizard* wizard = new KNewAccountWizard(this);
@@ -236,13 +237,12 @@ void KAccountSelectDlg::slotCreateAccount(void)
       else
         m_accountComboBox->setCurrentItem(newAccount.name());
 */
+      ft.commit();
       accept();
     }
     catch (MyMoneyException *e)
     {
-      QString message("Unable to add account: ");
-      message += e->what();
-      KMessageBox::information(this, message);
+      KMessageBox::information(this, i18n("Unable to add account: %1").arg(e->what()));
       delete e;
     }
   }

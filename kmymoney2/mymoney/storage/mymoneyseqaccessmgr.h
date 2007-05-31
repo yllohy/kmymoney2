@@ -32,6 +32,7 @@
 #include "imymoneystorage.h"
 #include "imymoneyserialize.h"
 #include "mymoneystoragesql.h"
+#include "mymoneymap.h"
 
 /**
   * @author Thomas Baumgart
@@ -98,7 +99,7 @@ public:
   const unsigned int fileFixVersion(void) const { return m_fileFixVersion; };
 
 
-  // general set functionsACCOUNT_ID_SIZE
+  // general set functions
   void setUser(const MyMoneyPayee& user) { m_user = user;
         touch(); if (m_sql != 0) m_sql->modifyUserInfo(user);};
   void setCreationDate(const QDate& val) { m_creationDate = val; touch(); };
@@ -233,20 +234,6 @@ public:
     * @param account the account to be added
     */
   void addAccount(MyMoneyAccount& parent, MyMoneyAccount& account);
-
-  /**
-    * This method is used to add an account to an institution. The account
-    * data will be updated to contain the correct id of the referenced institution
-    * and the account will be added to the list of accounts held at the
-    * referenced institution. The objects passed as arguments will be updated
-    * accordingly.
-    *
-    * An exception will be thrown upon error conditions.
-    *
-    * @param institution MyMoneyInstitution the account should be added to
-    * @param account MyMoneyAccount to be added
-    */
-  void addAccount(MyMoneyInstitution& institution, MyMoneyAccount& account);
 
   /**
     * Adds an institution to the storage. A
@@ -433,20 +420,13 @@ public:
   const QValueList<MyMoneyInstitution> institutionList(void) const;
 
   /**
-    * This method returns a list of accounts inside a MyMoneyFile object.
-    * An optional parameter is a list of id's. If this list is emtpy (the default)
-    * the returned list contains all accounts, otherwise only those referenced
-    * in the id-list.
+    * This method returns a list of accounts inside the storage object.
     *
-    * @param idlist QCStringList of account ids of those accounts that
-    *        should be returned. If this list is empty, all accounts
-    *        currently known will be returned.
+    * @param list reference to QValueList receiving the account objects
     *
-    * @param recursive if @p true, then recurse in all found accounts. The default is @p false
-    *
-    * @return QValueList containing the account objects
+    * @note The standard accounts will not be returned
     */
-  const QValueList<MyMoneyAccount> accountList(const QCStringList& idlist = QCStringList(), const bool recursive = false) const;
+  void accountList(QValueList<MyMoneyAccount>& list);
 
   /**
     * This method is used to pull a list of transactions from the file
@@ -490,28 +470,10 @@ public:
   QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;
 
   /**
-    * This method is used to pull a list of transactions from the file
-    * global transaction pool. It returns either the whole journal or
-    * the set of transaction referenced by a specific account depending
-    * on the argument given.
-    *
-    * @param account QCString reference to account id. If account is empty
-    +                all transactions (the journal) is returned. If account
-    *                is not empty it returns the set of transactions
-    *                that have splits in this account.
-    *
-    * @return set of transactions in form of a QValueList<MyMoneyTransaction>
-    *
-    * @note This function is provided for convenience and historic reasons. It
-    *       makes use of the above mentioned method.
-    */
-  // const QValueList<MyMoneyTransaction> transactionList(const QCString& account = "") const;
-
-  /**
     * This method returns whether a given transaction is already in memory, to avoid
     * reloading it from the database
     */
-  bool isDuplicateTransaction(const QCString& id) const {return (m_transactionKeys.contains(id));};
+  bool isDuplicateTransaction(const QCString& id) const { return m_transactionKeys.contains(id); }
 
   /**
     * This method returns the number of transactions currently known to file
@@ -574,14 +536,13 @@ public:
     */
   const MyMoneyAccount& equity(void) const { return account(STD_ACC_EQUITY); };
 
-  virtual void loadAccount(const MyMoneyAccount& acc);
-  virtual void loadAccount(const MyMoneyAccount& acc, const unsigned long txCount);
-  virtual void loadTransaction(const MyMoneyTransaction& tr);
-  virtual void loadInstitution(const MyMoneyInstitution& inst);
-  virtual void loadPayee(const MyMoneyPayee& payee);
-  virtual void loadSchedule(const MyMoneySchedule& sched);
-  virtual void loadSecurity(const MyMoneySecurity& security);
-  virtual void loadCurrency(const MyMoneySecurity& currency);
+  virtual void loadAccounts(const QMap<QCString, MyMoneyAccount>& acc);
+  virtual void loadTransactions(const QMap<QCString, MyMoneyTransaction>& map);
+  virtual void loadInstitutions(const QMap<QCString, MyMoneyInstitution>& map);
+  virtual void loadPayees(const QMap<QCString, MyMoneyPayee>& map);
+  virtual void loadSchedules(const QMap<QCString, MyMoneySchedule>& map);
+  virtual void loadSecurities(const QMap<QCString, MyMoneySecurity>& map);
+  virtual void loadCurrencies(const QMap<QCString, MyMoneySecurity>& map);
 
   virtual void loadAccountId(const unsigned long id);
   virtual void loadTransactionId(const unsigned long id);
@@ -688,19 +649,6 @@ public:
     * @param security MyMoneySecurity filled with data
     */
   virtual void addSecurity(MyMoneySecurity& security);
-
-#if 0
-  /**
-    * This method is used to add a new security object to the engine.
-    * The ID of the object is the trading symbol, so there is no need for an additional
-    * ID since the symbol is guaranteed to be unique.
-    *
-    * An exception will be thrown upon erronous situations.
-    *
-    * @param security reference to the MyMoneySecurity object
-    */
-  void addSecurity(MyMoneySecurity& security);
-#endif
 
   /**
     * This method is used to modify an existing MyMoneySchedule
@@ -855,16 +803,14 @@ public:
   void addReport( MyMoneyReport& report );
 
   /**
-    * This method is used to load a report into the engine.  This is
-    * used when loading from storage, and an ID is already known.  It
-    * is similiar to addReport, however loadReport will not assign
-    * a new ID.
+    * This method is used to load a set of reports into the engine.  This is
+    * used when loading from storage, and an ID is already known.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param report reference to the MyMoneyReport object
+    * @param reports reference to the map of MyMoneyReport objects
     */
-  void loadReport( const MyMoneyReport& report );
+  void loadReports( const QMap<QCString, MyMoneyReport>& reports );
 
   /**
     * This method is used to modify an existing MyMoneyReport
@@ -928,17 +874,14 @@ public:
   void addBudget( MyMoneyBudget& budget );
 
   /**
-    * This method is used to load a budget into the engine.  This is
-    * used when loading from storage, and an ID is already known.  It
-    * is similiar to addBudget, however loadBudget will not assign
-    * a new ID.
+    * This method is used to load a set of budgets into the engine.  This is
+    * used when loading from storage, and an ID is already known.
     *
     * An exception will be thrown upon erronous situations.
     *
-    * @param budget reference to the MyMoneyBudget object
+    * @param budgets reference to the map of MyMoneyBudget object
     */
-  void loadBudget( const MyMoneyBudget& budget );
-
+  void loadBudgets(const QMap<QCString, MyMoneyBudget>& budgets);
 
   /**
     * This method is used to retrieve the id to a corresponding
@@ -1036,6 +979,10 @@ public:
     */
   void rebuildAccountBalances(void);
 
+  virtual void startTransaction(void);
+  virtual void commitTransaction(void);
+  virtual void rollbackTransaction(void);
+
 private:
 
   static const int INSTITUTION_ID_SIZE = 6;
@@ -1046,18 +993,6 @@ private:
   static const int SECURITY_ID_SIZE = 6;
   static const int REPORT_ID_SIZE = 6;
   static const int BUDGET_ID_SIZE = 6;
-
-  static const int YEAR_SIZE = 4;
-  static const int MONTH_SIZE = 2;
-  static const int DAY_SIZE = 2;
-
-  /**
-    * This method is used to generate the sort-key for a transaction
-    *
-    * @param transaction reference to the transaction
-    * @return key as QString
-    */
-  const QCString transactionKey(const MyMoneyTransaction& transaction) const;
 
   /**
     * This method is used to set the dirty flag and update the
@@ -1134,13 +1069,13 @@ private:
     * The member variable m_institutionList is the container for the
     * institutions known within this file.
     */
-  QMap<QCString, MyMoneyInstitution> m_institutionList;
+  MyMoneyMap<QCString, MyMoneyInstitution> m_institutionList;
 
   /**
     * The member variable m_accountList is the container for the accounts
     * known within this file.
     */
-  QMap<QCString, MyMoneyAccount> m_accountList;
+  MyMoneyMap<QCString, MyMoneyAccount> m_accountList;
 
   /**
     * The member variable m_balanceCache is the container for the
@@ -1160,24 +1095,24 @@ private:
     * transactions within this file.
     * @see m_transactionKeys
     */
-  QMap<QCString, MyMoneyTransaction> m_transactionList;
+  MyMoneyMap<QCString, MyMoneyTransaction> m_transactionList;
 
   /**
     * The member variable m_transactionKeys is used to convert
     * transaction id's into the corresponding key used in m_transactionList.
     * @see m_transactionList;
     */
-  QMap<QCString, QCString> m_transactionKeys;
+  MyMoneyMap<QCString, QCString> m_transactionKeys;
 
   /**
     * A list containing all the payees that have been used
     */
-  QMap<QCString, MyMoneyPayee> m_payeeList;
+  MyMoneyMap<QCString, MyMoneyPayee> m_payeeList;
 
   /**
     * A list containing all the scheduled transactions
     */
-  QMap<QCString, MyMoneySchedule> m_scheduleList;
+  MyMoneyMap<QCString, MyMoneySchedule> m_scheduleList;
 
   /**
     * A list containing all the security information objects.  Each object
@@ -1186,19 +1121,19 @@ private:
     * to determine the cost basis for sales, as well as the source of
     * information for reports in a security account.
     */
-  QMap<QCString, MyMoneySecurity> m_securitiesList;
+  MyMoneyMap<QCString, MyMoneySecurity> m_securitiesList;
 
   /**
     * A list containing all the currency information objects.
     */
-  QMap<QCString, MyMoneySecurity> m_currencyList;
+  MyMoneyMap<QCString, MyMoneySecurity> m_currencyList;
 
-  QMap<QCString, MyMoneyReport> m_reportList;
+  MyMoneyMap<QCString, MyMoneyReport> m_reportList;
 
   /**
     * A list containing all the budget information objects.
     */
-  QMap<QCString, MyMoneyBudget> m_budgetList;
+  MyMoneyMap<QCString, MyMoneyBudget> m_budgetList;
 
   MyMoneyPriceList              m_priceList;
 

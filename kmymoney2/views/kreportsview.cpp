@@ -575,9 +575,11 @@ void KReportsView::slotConfigure(void)
       MyMoneyReport newreport = dlg.getConfig();
 
       // If this report has an ID, then MODIFY it, otherwise ADD it
+      MyMoneyFileTransaction ft;
       if ( ! newreport.id().isEmpty() )
       {
         MyMoneyFile::instance()->modifyReport(newreport);
+        ft.commit();
         tab->modifyReport(newreport);
 
         m_reportTabWidget->changeTab( tab, newreport.name() );
@@ -586,6 +588,7 @@ void KReportsView::slotConfigure(void)
       else
       {
         MyMoneyFile::instance()->addReport(newreport);
+        ft.commit();
         new KReportListItem( m_reportListView, newreport );
         addReportTab(newreport);
       }
@@ -608,9 +611,16 @@ void KReportsView::slotDuplicate(void)
     if (dlg.exec())
     {
       dupe = dlg.getConfig();
-      MyMoneyFile::instance()->addReport(dupe);
-      new KReportListItem( m_reportListView, dupe );
-      addReportTab(dupe);
+      MyMoneyFileTransaction ft;
+      try {
+        MyMoneyFile::instance()->addReport(dupe);
+        ft.commit();
+        new KReportListItem( m_reportListView, dupe );
+        addReportTab(dupe);
+      } catch(MyMoneyException* e) {
+        qDebug("Cannot add report");
+        delete e;
+      }
     }
   }
 }
@@ -625,9 +635,13 @@ void KReportsView::slotDelete(void)
     {
       if ( KMessageBox::Continue == KMessageBox::warningContinueCancel(this, QString("<qt>")+i18n("Are you sure you want to delete report <b>%1</b>?  There is no way to recover it!").arg(report.name())+QString("</qt>"), i18n("Delete Report?")))
       {
-        MyMoneyFile::instance()->removeReport(report);
+        // close the tab and then remove the report so that it is not
+        // generated again during the following loadView() call
         slotClose(tab);
-        // slotRefreshView();
+
+        MyMoneyFileTransaction ft;
+        MyMoneyFile::instance()->removeReport(report);
+        ft.commit();
       }
     }
     else

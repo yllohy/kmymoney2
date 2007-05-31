@@ -250,21 +250,22 @@ void KAccountsView::loadIconView(void)
 
   // clear the current contents and recreate it
   m_accountIcons->clear();
-  m_accountMap.clear();
+  QMap<QString, MyMoneyAccount> accountMap;
 
   MyMoneyFile* file = MyMoneyFile::instance();
 
   // get account list and sort by name
-  QValueList<MyMoneyAccount> alist = file->accountList();
+  QValueList<MyMoneyAccount> alist;
+  file->accountList(alist);
   QValueList<MyMoneyAccount>::const_iterator it_a;
   for(it_a = alist.begin(); it_a != alist.end(); ++it_a) {
-    m_accountMap[(*it_a).name()] = *it_a;
+    accountMap[(*it_a).name()] = *it_a;
   }
 
   // parse list and add all asset and liability accounts
   QMap<QString, MyMoneyAccount>::const_iterator it;
   QPoint loc;
-  for(it = m_accountMap.begin(); it != m_accountMap.end(); ++it) {
+  for(it = accountMap.begin(); it != accountMap.end(); ++it) {
     const QString& pos = (*it).value("kmm-iconpos");
     KMyMoneyAccountIconItem* item;
     switch((*it).accountGroup()) {
@@ -306,7 +307,6 @@ void KAccountsView::loadIconView(void)
   }
 
   // clear the current contents
-  m_accountMap.clear();
   m_securityMap.clear();
   m_transactionCountMap.clear();
 
@@ -345,7 +345,6 @@ void KAccountsView::loadListView(void)
 
   // clear the current contents and recreate it
   m_accountTree->clear();
-  m_accountMap.clear();
   m_securityMap.clear();
   m_transactionCountMap.clear();
 
@@ -354,19 +353,12 @@ void KAccountsView::loadListView(void)
 
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  QValueList<MyMoneyAccount> alist = file->accountList();
-  QValueList<MyMoneyAccount>::const_iterator it_a;
-  for(it_a = alist.begin(); it_a != alist.end(); ++it_a) {
-    m_accountMap[(*it_a).id()] = *it_a;
-  }
-
   QValueList<MyMoneySecurity> slist = file->currencyList();
   slist += file->securityList();
   QValueList<MyMoneySecurity>::const_iterator it_s;
   for(it_s = slist.begin(); it_s != slist.end(); ++it_s) {
     m_securityMap[(*it_s).id()] = *it_s;
   }
-
   m_transactionCountMap = file->transactionCountMap();
 
   m_haveUnusedCategories = false;
@@ -425,7 +417,6 @@ void KAccountsView::loadListView(void)
   m_accountTree->repaintContents();
 
   // clear the current contents
-  m_accountMap.clear();
   m_securityMap.clear();
   m_transactionCountMap.clear();
   ::timetrace("done load accounts list view");
@@ -440,7 +431,7 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
 
   QCStringList::const_iterator it_a;
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
-    const MyMoneyAccount& acc = m_accountMap[*it_a];
+    const MyMoneyAccount& acc = file->account(*it_a);
     QValueList<MyMoneyPrice> prices;
     MyMoneySecurity security = file->baseCurrency();
     try {
@@ -474,8 +465,7 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
 
     // In case of a category which is unused and we are requested to suppress
     // the display of those,
-    if(acc.accountGroup() == MyMoneyAccount::Income
-    || acc.accountGroup() == MyMoneyAccount::Expense) {
+    if(acc.isIncomeExpense()) {
       if(KMyMoneySettings::hideUnusedCategory() && thisUnused) {
         unused = true;
         delete item;
@@ -618,8 +608,10 @@ void KAccountsView::slotUpdateIconPos(unsigned int action)
     if(acc.value("kmm-iconpos") != point(p->pos())) {
       MyMoneyAccount a(acc);
       a.setValue("kmm-iconpos", point(p->pos()));
+      MyMoneyFileTransaction ft;
       try {
         MyMoneyFile::instance()->modifyAccount(a);
+        ft.commit();
       } catch(MyMoneyException* e) {
         kdDebug(2) << "Unable to update icon pos: " << e->what();
         delete e;

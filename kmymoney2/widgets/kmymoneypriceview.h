@@ -22,54 +22,46 @@
 // QT Includes
 
 #include <qwidget.h>
-class QListViewItem;
+// class QListViewItem;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include <kpopupmenu.h>
+#include <klistview.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../widgets/kmymoneypriceviewdecl.h"
 #include <kmymoney/kmymoneylistviewitem.h>
-#include <kmymoney/mymoneyfile.h>
-#include <kmymoney/mymoneymoney.h>
+//#include <kmymoney/mymoneymoney.h>
 #include <kmymoney/mymoneyprice.h>
 
 /**
   * @author Thomas Baumgart
   */
 
-class kMyMoneyPriceItem : public KMyMoneyListViewItem
+class KMyMoneyPriceItem : public KMyMoneyListViewItem
 {
 public:
-  kMyMoneyPriceItem(KListView *, const MyMoneyPrice& pr);
-  ~kMyMoneyPriceItem() {};
+  KMyMoneyPriceItem(KListView *, const MyMoneyPrice& pr);
+  ~KMyMoneyPriceItem() {};
 
   int compare(QListViewItem *p, int col, bool ascending) const;
 
-  const MyMoneyPrice price(void) const { return m_pr; };
+  const MyMoneyPrice& price(void) const { return m_pr; };
 
 private:
   MyMoneyPrice  m_pr;
 };
 
 
-class kMyMoneyPriceView : public kMyMoneyPriceViewDecl
+class KMyMoneyPriceView : public KListView
 {
    Q_OBJECT
 public:
-  kMyMoneyPriceView(QWidget *parent=0, const char *name=0);
-  ~kMyMoneyPriceView();
-
-signals:
-  /**
-    * This signal is a forward of the listview's clicked() signal.
-    * See QListView::clicked() for details.
-    */
-  void selectionChanged(QListViewItem* item);
+  KMyMoneyPriceView(QWidget *parent=0, const char *name=0);
+  ~KMyMoneyPriceView();
 
 protected:
   /// the resize event
@@ -77,15 +69,15 @@ protected:
 
 protected slots:
   void slotListClicked(QListViewItem* item, const QPoint&, int);
-  void slotNewPrice(void);
-  void slotDeletePrice(void);
-  int slotEditPrice(void);
-  void slotShowAllPrices(bool enabled);
-  void slotOnlinePriceUpdate(void);
-  void slotReloadWidget(void);
 
 private slots:
   void slotTimerDone(void);
+
+signals:
+  void newPrice(void);
+  void deletePrice(void);
+  void editPrice(void);
+  void onlinePriceUpdate(void);
 
 private:
   KPopupMenu*     m_contextMenu;

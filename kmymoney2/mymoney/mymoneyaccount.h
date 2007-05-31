@@ -593,6 +593,13 @@ public:
     paymentReceived
   };
 
+  enum interestChangeUnitE {
+    changeDaily = 0,
+    changeWeekly,
+    changeMonthly,
+    changeYearly
+  };
+
   MyMoneyAccountLoan() {};
   MyMoneyAccountLoan(const MyMoneyAccount&);
   ~MyMoneyAccountLoan() {};

@@ -33,9 +33,11 @@
 #include <kmymoney/export.h>
 #include <kmymoney/mymoneytransaction.h>
 #include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneypayee.h>
 #include <kmymoney/mymoneyobject.h>
 #include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/imymoneystorage.h>
 
 /**
   * @author Thomas Baumgart
@@ -51,17 +53,26 @@ public:
   MyMoneyObjectContainer();
   ~MyMoneyObjectContainer();
 
-  const MyMoneyTransaction& transaction(const QCString& id);
   const MyMoneyAccount& account(const QCString& id);
-  const QString accountToCategory(const QCString& accountId);
   const MyMoneyPayee& payee(const QCString& id);
   const MyMoneySecurity& security(const QCString& id);
+  const MyMoneyInstitution& institution(const QCString& id);
 
-public slots:
-  void clear(void);
+  void account(QValueList<MyMoneyAccount>& list);
+  void payee(QValueList<MyMoneyPayee>& list);
+  void institution(QValueList<MyMoneyInstitution>& list);
+
+  void preloadAccount(const QValueList<MyMoneyAccount>& list);
+  void preloadPayee(const QValueList<MyMoneyPayee>& list);
+  void preloadInstitution(const QValueList<MyMoneyInstitution>& list);
+  void preloadSecurity(const QValueList<MyMoneySecurity>& list);
+
+  void clear(const QCString& id);
+  void clear(IMyMoneyStorage* storage = 0);
 
 private:
   QMap<QCString, MyMoneyObject const *>  m_map;
+  IMyMoneyStorage*                       m_storage;
 };
 
 #endif
