@@ -1690,7 +1690,7 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
       s1.setValue(-value);
       MyMoneyMoney shares;
       if(!skipPriceDialog) {
-        if(!KCurrencyCalculator::setupSplitPrice(shares, m_transaction, s1, m_priceInfo, m_regForm))
+        if(!KCurrencyCalculator::setupSplitPrice(shares, t, s1, m_priceInfo, m_regForm))
           return false;
       } else {
         MyMoneyAccount cat = MyMoneyFile::instance()->account(s1.accountId());
