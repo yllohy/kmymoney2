@@ -1,3 +1,6 @@
+2007-06-02 Robert Wadley <robntina@users.sourceforge.net>
+  * added a "forcast" icon
+
 2007-05-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * !!! Note SQL support is broken with this version. Will be fixed later. !!!
   * Move MyMoneyObjectContainer to MyMoneyFile and make it a general cache
