@@ -70,7 +70,6 @@
         </account>
         <account name="Bienes i servicios diversos" type="13">
             <account name="Cuidado personal" type="13"/>
-            <account name="Prostitución" type="13"/>
             <account name="Efectos persoais n.e.p." type="13"/>
             <account name="Protección social" type="13"/>
             <account name="Seguros" type="13"/>

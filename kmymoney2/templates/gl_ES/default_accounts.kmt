@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE KMYMONEY-TEMPLATE>
 <kmymoney-account-template>
-  <title></title>
-  <shortdesc></shortdesc>
-  <longdesc></longdesc>
+  <title>Contas de uso xeral</title>
+  <shortdesc>Contas de ingresos, gastos, e activos de exemplo</shortdesc>
+  <longdesc>As contas de gasto definidas neste modelo seguen a estrutura das empregadas a nível europeu desde 1998 para definir o índice harmonizado de prezos no consumidor, as de ingresos son un subconxunto das que o autor deste ficheiro usou con maior frecuencia, ao igual que as de activos. Non se inclúe nengún pasivo. Para máis información acerca das categorías de gasto consulte: http://eur-lex.europa.eu/LexUriServ/site/pt/oj/1998/l_214/l_21419980731pt00120022.pdf</longdesc>
   <accounts>
     <account name="" type="13">
-        <account name="Alimentos e bebidas non alcohólicas" type="13" description="tralará">
+        <account name="Alimentos e bebidas non alcohólicas" type="13" description="">
             <account name="Alimentos" type="13"/>
             <account name="Bebidas non alcohólicas" type="13"/>
         </account>
@@ -70,8 +70,7 @@
         </account>
         <account name="Bens e servizos diversos" type="13">
             <account name="Coidado persoal" type="13"/>
-            <account name="Prostitución" type="13"/>
-            <account name="Efeitos persoais n.e.p." type="13"/>
+            <account name="Artigos persoais n.e.p." type="13"/>
             <account name="Protección social" type="13"/>
             <account name="Seguros" type="13"/>
             <account name="Servizos financeiros n.e.p." type="13"/>
