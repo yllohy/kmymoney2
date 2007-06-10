@@ -228,15 +228,6 @@ public:
   static const int stringToHomePageItem(const QString& txt);
 
   /**
-    * This method is used to add home page items to a list that
-    * does not contain all of them. Missing items will be added
-    * at the end as positive values turning the options on.
-    *
-    * @param list reference to QStringList containing the option list
-    */
-  static void addDefaultHomePageItems(QStringList& list);
-
-  /**
     * Retrieve a KDE KGuiItem for the split button
     *
     * @return The KGuiItem that can be used to display the icon and text for a split button.
