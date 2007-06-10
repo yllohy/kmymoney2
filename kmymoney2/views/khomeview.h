@@ -69,6 +69,7 @@ protected:
   void showAccountEntry(const MyMoneyAccount&);
   void showFavoriteReports();
   void showForecast(void);
+  void showNetWorthGraph(void);
 
   const QString link(const QString& view, const QString& query) const;
   const QString linkend(void) const;

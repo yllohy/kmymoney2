@@ -32,6 +32,7 @@
 #include <qfile.h>
 #include <qtextstream.h>
 #include <qtimer.h>
+#include <qbuffer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -47,6 +48,7 @@
 #include <kapplication.h>
 #include <kmessagebox.h>
 #include <kdebug.h>
+#include <kmdcodec.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -55,12 +57,26 @@
 #include "../kmymoneysettings.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../kmymoney2.h"
+#include "../reports/kreportchartview.h"
+#include "../reports/pivottable.h"
+#include "../kmymoneyglobalsettings.h"
+
 
 #define VIEW_LEDGER         "ledger"
 #define VIEW_SCHEDULE       "schedule"
 #define VIEW_WELCOME        "welcome"
 #define VIEW_HOME           "home"
 #define VIEW_REPORTS        "reports"
+
+// in KOffice version < 1.5 KDCHART_PROPSET_NORMAL_DATA was a static const
+// but in 1.5 this has been changed into a #define'd value. So we have to
+// make sure, we use the right one.
+#ifndef KDCHART_PROPSET_NORMAL_DATA
+#define KMM_KDCHART_PROPSET_NORMAL_DATA KDChartParams::KDCHART_PROPSET_NORMAL_DATA
+#else
+#define KMM_KDCHART_PROPSET_NORMAL_DATA KDCHART_PROPSET_NORMAL_DATA
+#endif
+
 
 KHomeView::KHomeView(QWidget *parent, const char *name ) :
   KMyMoneyViewBase(parent, name, i18n("Home")),
@@ -175,14 +191,9 @@ void KHomeView::loadView(void)
     m_part->begin();
     m_part->write(header);
 
-    QString temp(i18n("Your Financial Summary"));
-    QString financialPic = QString("<h2>%1</h2>").arg(temp);
-    m_part->write(financialPic);
+    m_part->write(QString("<h2>%1</h2>").arg(i18n("Your Financial Summary")));
 
-    KConfig *kconfig = KGlobal::config();
-    kconfig->setGroup("Homepage Options");
-    QStringList settings = kconfig->readListEntry("ItemList");
-    KMyMoneyUtils::addDefaultHomePageItems(settings);
+    QStringList settings = QStringList::split(",", KMyMoneyGlobalSettings::itemList());
 
     QStringList::ConstIterator it;
 
@@ -213,6 +224,9 @@ void KHomeView::loadView(void)
           case 5:          // forecast
             showForecast();
             break;
+            case 6:        // net worth graph over all accounts
+            showNetWorthGraph();
+            break;
         }
         m_part->write("<div class=\"gap\">&nbsp;</div>\n");
       }
@@ -224,6 +238,78 @@ void KHomeView::loadView(void)
     m_part->end();
 
   }
+}
+
+void KHomeView::showNetWorthGraph(void)
+{
+#ifdef HAVE_KDCHART
+  m_part->write(QString("<div class=\"itemheader\">%1</div>\n").arg(i18n("Networth Forecast")));
+
+  MyMoneyReport reportCfg = MyMoneyReport(
+      MyMoneyReport::eAssetLiability,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::userDefined, // overridden by the setDateFilter() call below
+      false,
+      i18n("Networth Forecast"),
+      i18n("Generated Report"));
+
+  reportCfg.setChartByDefault(true);
+  reportCfg.setChartGridLines(false);
+  reportCfg.setChartDataLabels(false);
+  reportCfg.setDetailLevel(MyMoneyReport::eDetailTotal);
+  reportCfg.setChartType(MyMoneyReport::eChartLine);
+  reportCfg.setIncludingSchedules( true );
+  reportCfg.addAccountGroup(MyMoneyAccount::Asset);
+  reportCfg.addAccountGroup(MyMoneyAccount::Liability);
+  reportCfg.setColumnsAreDays( true );
+  reportCfg.setConvertCurrency( false );
+  reportCfg.setDateFilter(QDate::currentDate().addDays(-10),QDate::currentDate().addDays(+90));
+
+  reports::PivotTable table(reportCfg);
+
+  reports::KReportChartView* chartWidget = new reports::KReportChartView(0, 0);
+
+  table.drawChart(*chartWidget);
+
+  chartWidget->params().setLineMarker(false);
+  chartWidget->params().setLegendPosition(KDChartParams::NoLegend);
+
+    // draw future values in a different line style
+  KDChartPropertySet propSetLastValue("last value", KMM_KDCHART_PROPSET_NORMAL_DATA);
+  KDChartPropertySet propSetFutureValue("future value", KMM_KDCHART_PROPSET_NORMAL_DATA);
+  propSetLastValue.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignBottom);
+  propSetLastValue.setExtraLinesWidth(KDChartPropertySet::OwnID, -4);
+  // propSetLastValue.setShowMarker(KDChartPropertySet::OwnID, true);
+  // propSetLastValue.setMarkerStyle(KDChartPropertySet::OwnID, KDChartParams::LineMarkerDiamond);
+
+  propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
+  const int idPropFutureValue = chartWidget->params().registerProperties(propSetFutureValue);
+  const int idPropLastValue = chartWidget->params().registerProperties(propSetLastValue);
+  for(int iCell = 10; iCell < 100; ++iCell) {
+    chartWidget->setProperty(0, iCell, idPropFutureValue);
+  }
+  chartWidget->setProperty(0, 10, idPropLastValue);
+
+  // Adjust the size
+  if(width() < chartWidget->width()) {
+    int nh;
+    nh = (width()*chartWidget->height() ) / chartWidget->width();
+    chartWidget->resize(width()-40, nh);
+  }
+
+  QPixmap pm(chartWidget->width(), chartWidget->height());
+  pm.fill();
+  QPainter p(&pm);
+  chartWidget->paintTo(p);
+
+  QByteArray ba;
+  QBuffer buffer( ba );
+  buffer.open( IO_WriteOnly );
+  pm.save( &buffer, "PNG" ); // writes pixmap into ba in PNG format
+
+  m_part->write(QString("<center><IMG SRC=\"data:image/png;base64,%1\" ALT=\"Networth\"></center>").arg(KCodecs::base64Encode(ba)));
+  delete chartWidget;
+#endif
 }
 
 void KHomeView::showPayments(void)
@@ -270,21 +356,17 @@ void KHomeView::showPayments(void)
     ++d_it;
   }
 
-  QString tmp;
-  tmp = "<div class=\"itemheader\">" + i18n("Payments") + "</div>\n";
-  m_part->write(tmp);
+  m_part->write(QString("<div class=\"itemheader\">%1</div>\n").arg(i18n("Payments")));
 
   if(overdues.count() > 0) {
-    tmp = "<div class=\"gap\">&nbsp;</div>\n";
-    m_part->write(tmp);
+    m_part->write("<div class=\"gap\">&nbsp;</div>\n");
 
     qBubbleSort(overdues);
     QValueList<MyMoneySchedule>::Iterator it;
     QValueList<MyMoneySchedule>::Iterator it_f;
 
     m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
-    tmp = "<tr><th class=\"warning\" colspan=\"3\">" + i18n("Overdue payments") + "</th></tr>\n";
-    m_part->write(tmp);
+    m_part->write(QString("<tr><th class=\"warning\" colspan=\"3\">%1</th></tr>\n").arg(i18n("Overdue payments")));
     for(it = overdues.begin(); it != overdues.end(); ++it) {
       // determine number of overdue payments
       QDate nextDate = (*it).nextPayment((*it).lastPayment());
@@ -333,8 +415,7 @@ void KHomeView::showPayments(void)
     {
       m_part->write("<div class=\"gap\">&nbsp;</div>\n");
       m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
-      tmp = "<tr class=\"item\"><th class=\"left\" colspan=\"3\">" + i18n("Todays payments") + "</th></tr>\n";
-      m_part->write(tmp);
+      m_part->write(QString("<tr class=\"item\"><th class=\"left\" colspan=\"3\">%1</th></tr>\n").arg(i18n("Todays payments")));
 
       for(t_it = todays.begin(); t_it != todays.end(); ++t_it) {
         m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
@@ -351,8 +432,7 @@ void KHomeView::showPayments(void)
       QValueList<MyMoneySchedule>::Iterator it;
 
       m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
-      tmp = "<tr class=\"item\"><th class=\"left\" colspan=\"3\">" + i18n("Future payments") + "</th></tr>\n";
-      m_part->write(tmp);
+      m_part->write(QString("<tr class=\"item\"><th class=\"left\" colspan=\"3\">%1</th></tr>\n").arg(i18n("Future payments")));
 
       // show all or the first 6 entries
       int cnt;

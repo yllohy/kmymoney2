@@ -446,7 +446,10 @@ const QString KMyMoneyUtils::homePageItemToString(const int idx)
       rc = i18n("Favorite reports");
       break;
     case 5:
-      rc = i18n("Forecast");
+      rc = i18n("Account forecast");
+      break;
+    case 6:
+      rc = i18n("Networth forecast");
       break;
     default:
       rc = "";
@@ -466,19 +469,11 @@ const int KMyMoneyUtils::stringToHomePageItem(const QString& txt)
     idx = 3;
   else if(txt == i18n("Favorite reports"))
     idx = 4;
-  else if(txt == i18n("Forecast"))
+  else if(txt == i18n("Account forecast"))
     idx = 5;
+  else if(txt == i18n("Networth forecast"))
+    idx = 6;
   return idx;
-}
-
-void KMyMoneyUtils::addDefaultHomePageItems(QStringList& list)
-{
-  for(int i = 1; i <= KMyMoneyUtils::maxHomePageItems; ++i) {
-    if(list.find(QString::number(i)) != list.end()
-    || list.find(QString::number(-i)) != list.end())
-      continue;
-    list.append(QString::number(i));
-  }
 }
 
 bool KMyMoneyUtils::appendCorrectFileExt(QString& str, const QString& strExtToUse)
