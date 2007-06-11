@@ -39,5 +39,6 @@ public:
   static QFont listHeaderFont(void);
   static QColor listColor(void);
   static QColor listBGColor(void);
+  static QStringList itemList(void);
 };
 #endif

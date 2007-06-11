@@ -17,6 +17,8 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qregexp.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -61,4 +63,24 @@ QColor KMyMoneyGlobalSettings::listBGColor(void)
     return KGlobalSettings::alternateBackgroundColor();
   else
     return KMyMoneySettings::listBGColor();
+}
+
+QStringList KMyMoneyGlobalSettings::itemList(void)
+{
+  bool prevValue = self()->useDefaults(true);
+  QStringList all = QStringList::split(",", KMyMoneySettings::itemList());
+  self()->useDefaults(prevValue);
+  QStringList list = QStringList::split(",", KMyMoneySettings::itemList());
+
+  // now add all from 'all' that are missing in 'list'
+  QRegExp exp("-?(.*)");
+  QStringList::iterator it_s;
+  for(it_s = all.begin(); it_s != all.end(); ++it_s) {
+    exp.search(*it_s);
+    QString bla = exp.cap(1);
+    if(!list.contains(exp.cap(1)) && !list.contains(QString("-%1").arg(exp.cap(1)))) {
+      list << *it_s;
+    }
+  }
+  return list;
 }

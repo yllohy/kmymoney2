@@ -35,7 +35,7 @@
 // Project Includes
 
 #include "ksettingshome.h"
-#include "kmymoney2/kmymoneysettings.h"
+#include "kmymoney2/kmymoneyglobalsettings.h"
 #include "kmymoney2/kmymoneyutils.h"
 
 KSettingsHome::KSettingsHome(QWidget* parent, const char* name) :
@@ -85,8 +85,7 @@ void KSettingsHome::slotLoadItems(void)
   if(m_noNeedToUpdateList)
     return;
 
-  QStringList list = QStringList::split(",", kcfg_ItemList->text());
-
+  QStringList list = KMyMoneyGlobalSettings::itemList();
   QStringList::ConstIterator it;
   int w = 0;
   m_homePageList->clear();
