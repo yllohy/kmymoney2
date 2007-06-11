@@ -193,7 +193,7 @@ void KHomeView::loadView(void)
 
     m_part->write(QString("<h2>%1</h2>").arg(i18n("Your Financial Summary")));
 
-    QStringList settings = QStringList::split(",", KMyMoneyGlobalSettings::itemList());
+    QStringList settings = KMyMoneyGlobalSettings::itemList();
 
     QStringList::ConstIterator it;
 
