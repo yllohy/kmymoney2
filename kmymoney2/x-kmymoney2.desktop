@@ -4,6 +4,7 @@ Comment=KMyMoney File
 Comment[de]=KMyMoney-Datei
 Comment[fr]=Fichier KMyMoney
 Comment[ru]=Файл KMyMoney
+Comment[zh_CN]=KMyMoney文件
 Icon=kmy
 Type=MimeType
 MimeType=application/x-kmymoney

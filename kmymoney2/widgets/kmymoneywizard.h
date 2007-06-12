@@ -148,7 +148,7 @@ public:
     *
     * @return pointer to next wizard page
     */
-  virtual KMyMoneyWizardPage* nextPage(void);
+  virtual KMyMoneyWizardPage* nextPage(void) const;
 
   /**
     * This returns, if the current page is the last page of the wizard.
@@ -158,7 +158,7 @@ public:
     * @retval false more pages follow
     * @retval true this is the last page of the wizard
     */
-  virtual bool isLastPage(void);
+  virtual bool isLastPage(void) const;
 
   /**
     * This returns, if all necessary data for this page has been
@@ -169,7 +169,7 @@ public:
     * @retval false more data required from the user before we can proceed
     * @retval true all data available, we allow to switch to the next page
     */
-  virtual bool isComplete(void);
+  virtual bool isComplete(void) const;
 
   /**
     * This method returns the step to which this page belongs.

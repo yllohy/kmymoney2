@@ -1,0 +1,90 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>KPreferencePageDecl</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>KPreferencePageDecl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>600</width>
+            <height>288</height>
+        </rect>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="KActiveLabel">
+            <property name="name">
+                <cstring>kActiveLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>If you would like to review or change any preference settings for KMyMoney at this time, you can do so here. If not just click &lt;b&gt;Next&lt;/b&gt;.</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout1</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>51</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>m_openConfigButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Open Configuration Dialog</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer2</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>31</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="KActiveLabel">
+            <property name="name">
+                <cstring>kActiveLabel2</cstring>
+            </property>
+            <property name="text">
+                <string>You can change the configuration options at any time using the configuration dialog. Just select the &lt;b&gt;Configure KMyMoney ...&lt;/b&gt; option in the &lt;b&gt;Settings&lt;/b&gt; menu.</string>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

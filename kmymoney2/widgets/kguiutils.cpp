@@ -101,42 +101,39 @@ void kMandatoryFieldGroup::setOkButton(QPushButton *button)
 
 void kMandatoryFieldGroup::changed(void)
 {
-  if (!okButton)
-    return;
   bool enable = true;
   QValueList<QWidget *>::ConstIterator i;
   for (i = widgets.begin(); i != widgets.end(); ++i) {
     QWidget *widget = *i;
     if (widget->inherits("QCheckBox")) {
-      if (((QCheckBox*)widget->qt_cast("QCheckBox"))->state() ==
-            QButton::NoChange) {
+      if (((QCheckBox*)widget->qt_cast("QCheckBox"))->state() == QButton::NoChange) {
         enable = false;
         break;
-            }
-            else
-              continue;
+      } else
+        continue;
     }
     if (widget->inherits("QComboBox")) {
-      if (((QComboBox*)widget->qt_cast("QComboBox"))->currentText()
-            .isEmpty()) {
+      if (((QComboBox*)widget->qt_cast("QComboBox"))->currentText().isEmpty()) {
         enable = false;
         break;
-            }
-            else
-              continue;
+      } else
+        continue;
     }
     if (widget->inherits("QLineEdit")) {
-      if (((QLineEdit*)widget->qt_cast("QLineEdit"))->text()
-            .isEmpty()) {
+      if (((QLineEdit*)widget->qt_cast("QLineEdit"))->text().isEmpty()) {
         enable = false;
         break;
-            }
-            else
-              continue;
+      } else
+        continue;
     }
   }
 
-  okButton->setEnabled(enable);
+  if (okButton)
+    okButton->setEnabled(enable);
+  m_enabled = enable;
+
+  emit stateChanged();
+  emit stateChanged(enable);
 }
 
 
@@ -149,6 +146,7 @@ void kMandatoryFieldGroup::clear(void)
   if (okButton) {
     okButton->setEnabled(true);
     okButton = 0;
+    m_enabled = true;
   }
 }
 

@@ -1,8 +1,8 @@
 /***************************************************************************
-                             knewuserwizard.h
+                             accounts.h
                              -------------------
-    begin                : Sat Feb 18 2006
-    copyright            : (C) 2006 Thomas Baumgart
+    begin                : Fri Jun  1 2007
+    copyright            : (C) 2007 Thomas Baumgart
     email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
  ***************************************************************************/
 
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KNEWUSERWIZARD_H
-#define KNEWUSERWIZARD_H
+#ifndef ACCOUNTS_H
+#define ACCOUNTS_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -24,45 +24,19 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include <kmymoney/kmymoneywizard.h>
+#include "accountsdecl.h"
 
 /**
   * @author Thomas Baumgart
   */
-
-namespace NewUserWizard {
-
-class GeneralPage;
-class CurrencyPage;
-class AccountPage;
-class CategoriesPage;
-class PreferencePage;
-class FilePage;
-
-class Wizard : public KMyMoneyWizard
+class Accounts : public AccountsDecl
 {
-  friend class GeneralPage;
-  friend class CurrencyPage;
-  friend class AccountPage;
-  friend class CategoriesPage;
-  friend class PreferencePage;
-  friend class FilePage;
-
   Q_OBJECT
 public:
-  Wizard(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags flags = 0);
+  Accounts(QWidget* parent = 0, const char* name = 0);
 
 private:
-
-  GeneralPage*      m_generalPage;
-  CurrencyPage*     m_currencyPage;
-  AccountPage*      m_accountPage;
-  CategoriesPage*   m_categoriesPage;
-  PreferencePage*   m_preferencePage;
-  FilePage*         m_filePage;
 };
-
-}; // namespace
 
 
 #endif

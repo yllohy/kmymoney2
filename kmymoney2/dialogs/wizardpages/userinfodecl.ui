@@ -1,0 +1,211 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>UserInfoDecl</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>UserInfoDecl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>603</width>
+            <height>374</height>
+        </rect>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="KActiveLabel" row="0" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>kActiveLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>&lt;p&gt;Use the fields below to enter some information about yourself.&lt;/p&gt;
+
+&lt;p&gt;All information is optional and only used to personalize your KMyMoney file.&lt;/p&gt;</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>m_userNameEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel" row="3" column="0">
+            <property name="name">
+                <cstring>TextLabel3</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>100</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>Town:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="4" column="0">
+            <property name="name">
+                <cstring>TextLabel4</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>100</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>County/State:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="2" column="0">
+            <property name="name">
+                <cstring>TextLabel2</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>100</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>Street:</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>m_streetEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="6" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>m_emailEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="3" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>m_townEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="5" column="1" rowspan="1" colspan="3">
+            <property name="name">
+                <cstring>m_telephoneEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel" row="6" column="0">
+            <property name="name">
+                <cstring>TextLabel7</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>100</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>Email:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="5" column="0">
+            <property name="name">
+                <cstring>TextLabel6</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>100</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>Telephone:</string>
+            </property>
+        </widget>
+        <widget class="QLabel" row="1" column="0">
+            <property name="name">
+                <cstring>TextLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>Your name:</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget" row="7" column="0" rowspan="1" colspan="4">
+            <property name="name">
+                <cstring>layout22</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="KPushButton">
+                    <property name="name">
+                        <cstring>kabcBtn</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Load from Addressbook</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer11</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>305</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <spacer row="8" column="2">
+            <property name="name">
+                <cstring>spacer5</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>16</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="QLineEdit" row="4" column="1">
+            <property name="name">
+                <cstring>m_countyEdit</cstring>
+            </property>
+        </widget>
+        <widget class="QLabel" row="4" column="2">
+            <property name="name">
+                <cstring>TextLabel5</cstring>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>100</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property name="text">
+                <string>Postal Code:</string>
+            </property>
+        </widget>
+        <widget class="QLineEdit" row="4" column="3">
+            <property name="name">
+                <cstring>m_postcodeEdit</cstring>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

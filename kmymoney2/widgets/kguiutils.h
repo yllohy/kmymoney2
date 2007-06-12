@@ -37,48 +37,58 @@ class QWidget;
 /**
   * @author Tony Bloomfield
   */
-
-
-
 class kMandatoryFieldGroup : public QObject
 {
   Q_OBJECT
 
-  public:
-    kMandatoryFieldGroup(QObject *parent)
-  : QObject(parent), okButton(0) {}
+public:
+  kMandatoryFieldGroup(QObject *parent) :
+    QObject(parent), okButton(0), m_enabled(true) {}
 
-    /**
-     * This method adds a widget to the list of mandatory fields for the current dialog
-     *
-     * @param widget pointer to the widget to be added
-   */
-    void add(QWidget *widget);
-    /**
-     * This method removes a widget form the list of mandatory fields for the current dialog
-     *
-     * @param widget pointer to the widget to be removed
-     */
-    void remove(QWidget *widget);
-    /**
-     * This method designates the button to be enabled when all mandatory fields
-     * have been completed
-     *
-     * @param button pointer to the 'ok' button
-     */
-    void setOkButton(QPushButton *button);
+  /**
+    * This method adds a widget to the list of mandatory fields for the current dialog
+    *
+    * @param widget pointer to the widget to be added
+    */
+  void add(QWidget *widget);
 
-  public slots:
-    void clear(void);
+  /**
+    * This method removes a widget form the list of mandatory fields for the current dialog
+    *
+    * @param widget pointer to the widget to be removed
+    */
+  void remove(QWidget *widget);
 
-    /**
-      * Force update of ok button
-      */
-    void changed(void);
+  /**
+    * This method designates the button to be enabled when all mandatory fields
+    * have been completed
+    *
+    * @param button pointer to the 'ok' button
+    */
+  void setOkButton(QPushButton *button);
 
-  private:
-    QValueList<QWidget *> widgets;
-    QPushButton *okButton;
+  /**
+    * This method returns if all requirements for the mandatory group
+    * have been fulfilled (@p true) or not (@p false).
+    */
+  bool isEnabled(void) const { return m_enabled; }
+
+public slots:
+  void clear(void);
+
+  /**
+    * Force update of ok button
+    */
+  void changed(void);
+
+signals:
+  void stateChanged(void);
+  void stateChanged(bool state);
+
+private:
+  QValueList<QWidget *> widgets;
+  QPushButton*          okButton;
+  bool                  m_enabled;
 };
 
 #endif // KGUIUTILS_H

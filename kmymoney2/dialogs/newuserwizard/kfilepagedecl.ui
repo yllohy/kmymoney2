@@ -1,0 +1,60 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>KFilePageDecl</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>KFilePageDecl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>600</width>
+            <height>303</height>
+        </rect>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="KActiveLabel">
+            <property name="name">
+                <cstring>kActiveLabel1</cstring>
+            </property>
+            <property name="text">
+                <string>KMyMoney will store your financial data in a file on the disk. A standard filename within your KDE user environment will be the default. This is just provided for convenience and you can choose any other location here.</string>
+            </property>
+        </widget>
+        <widget class="KURLRequester">
+            <property name="name">
+                <cstring>m_dataFileEdit</cstring>
+            </property>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer1</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>41</height>
+                </size>
+            </property>
+        </spacer>
+        <widget class="KActiveLabel">
+            <property name="name">
+                <cstring>kActiveLabel2</cstring>
+            </property>
+            <property name="text">
+                <string>This finishes the setup of your KMyMoney environment. You can now press the Finish button and start using KMyMoney to record your financial transactions.</string>
+            </property>
+        </widget>
+    </vbox>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

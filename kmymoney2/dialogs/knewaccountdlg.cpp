@@ -50,6 +50,7 @@
 #include <kpushbutton.h>
 #include <kled.h>
 #include <kdebug.h>
+#include <kglobalsettings.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -94,6 +95,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   : KNewAccountDlgDecl(parent,name,true),
     m_account(account),
     m_bSelectedParentAccount(false),
+    m_chartWidget(0),
     m_categoryEditor(categoryEditor),
     m_isEditing(isEditing)
 {
@@ -119,6 +121,8 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   typeCombo->setEnabled(true);
   MyMoneyFile *file = MyMoneyFile::instance();
 
+  bool haveMinBalance = false;
+  bool haveMaxCredit = false;
   if (categoryEditor)
   {
 
@@ -178,8 +182,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       m_tab->removePage(tab);
 #endif
 
-    bool haveMinBalance = false;
-    bool haveMaxCredit = false;
     switch(m_account.accountType()) {
       case MyMoneyAccount::Savings:
       case MyMoneyAccount::Cash:
@@ -380,6 +382,16 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   connect(m_vatRate, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckFinished()));
   connect(m_vatAccount, SIGNAL(stateChanged()), this, SLOT(slotCheckFinished()));
 
+  connect(m_minBalanceEarlyEdit->lineedit(), SIGNAL(textChanged(const QString&)), this, SLOT(slotMarkersChanged()));
+  connect(m_minBalanceAbsoluteEdit->lineedit(), SIGNAL(textChanged(const QString&)), this, SLOT(slotMarkersChanged()));
+  connect(m_maxCreditEarlyEdit->lineedit(), SIGNAL(textChanged(const QString&)), this, SLOT(slotMarkersChanged()));
+  connect(m_maxCreditAbsoluteEdit->lineedit(), SIGNAL(textChanged(const QString&)), this, SLOT(slotMarkersChanged()));
+
+  connect(m_minBalanceEarlyEdit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAdjustMinBalanceAbsoluteEdit(const QString&)));
+  connect(m_minBalanceAbsoluteEdit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAdjustMinBalanceEarlyEdit(const QString&)));
+  connect(m_maxCreditEarlyEdit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAdjustMaxCreditAbsoluteEdit(const QString&)));
+  connect(m_maxCreditAbsoluteEdit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAdjustMaxCreditEarlyEdit(const QString&)));
+
   connect(m_qcomboboxInstitutions, SIGNAL(activated(const QString&)), this, SLOT(slotLoadInstitutions(const QString&)));
 
   m_vatCategory->setChecked(false);
@@ -442,34 +454,58 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       i18n("Generated Report")
     );
     reportCfg.setChartByDefault(true);
-    reportCfg.setChartGridLines(true);
+    reportCfg.setChartGridLines(false);
     reportCfg.setChartDataLabels(false);
-    reportCfg.setDetailLevel(MyMoneyReport::eDetailAll);
+    reportCfg.setDetailLevel(MyMoneyReport::eDetailTotal);
     reportCfg.setChartType(MyMoneyReport::eChartLine);
     reportCfg.setIncludingSchedules( true );
-    reportCfg.addAccount(m_account.id());
+    if(m_account.accountType() == MyMoneyAccount::Investment) {
+      QCStringList::const_iterator it_a;
+      for(it_a = m_account.accountList().begin(); it_a != m_account.accountList().end(); ++it_a)
+        reportCfg.addAccount(*it_a);
+    } else
+      reportCfg.addAccount(m_account.id());
     reportCfg.setColumnsAreDays( true );
     reportCfg.setConvertCurrency( false );
     reportCfg.setDateFilter(QDate::currentDate().addDays(-90),QDate::currentDate().addDays(+90));
 
     reports::PivotTable table(reportCfg);
 
-    reports::KReportChartView* chartWidget = new reports::KReportChartView(m_balanceTab, 0);
+    m_chartWidget = new reports::KReportChartView(m_balanceTab, 0);
+
     QVBoxLayout* balanceTabLayout = new QVBoxLayout( m_balanceTab, 11, 6, "m_balanceTabLayout");
-    balanceTabLayout->addWidget(chartWidget);
+    balanceTabLayout->addWidget(m_chartWidget);
 
-    table.drawChart(*chartWidget);
+    table.drawChart(*m_chartWidget);
 
-    chartWidget->params().setLineMarker(false);
-    chartWidget->params().setLegendPosition(KDChartParams::NoLegend);
+    m_chartWidget->params().setLineMarker(false);
+    m_chartWidget->params().setLegendPosition(KDChartParams::NoLegend);
+    m_chartWidget->params().setLineWidth(2);
+    m_chartWidget->params().setDataColor(0, KGlobalSettings::textColor());
 
     // draw future values in a different line style
     KDChartPropertySet propSetFutureValue("future value", KMM_KDCHART_PROPSET_NORMAL_DATA);
+    KDChartPropertySet propSetLastValue("last value", KMM_KDCHART_PROPSET_NORMAL_DATA);
+
+    propSetLastValue.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignBottom);
+    propSetLastValue.setExtraLinesWidth(KDChartPropertySet::OwnID, -4);
+    propSetLastValue.setExtraLinesColor(KDChartPropertySet::OwnID, KMyMoneyGlobalSettings::listGridColor());
     propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
-    const int idPropFutureValue = chartWidget->params().registerProperties(propSetFutureValue);
-    for(int iCell = 90; iCell < 180; ++iCell) {
-      chartWidget->setProperty(0, iCell, idPropFutureValue);
-    }
+
+    m_idPropFutureValue = m_chartWidget->params().registerProperties(propSetFutureValue);
+    m_idPropLastValue = m_chartWidget->params().registerProperties(propSetLastValue);
+
+    KDChartPropertySet propSetMinBalance("min balance", m_idPropLastValue);
+    propSetMinBalance.setLineStyle(KDChartPropertySet::OwnID, Qt::NoPen);
+    propSetMinBalance.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignRight);
+    m_idPropMinBalance = m_chartWidget->params().registerProperties(propSetMinBalance);
+
+    KDChartPropertySet propSetMaxCredit("max credit", m_idPropMinBalance);
+    propSetMaxCredit.setExtraLinesColor(KDChartPropertySet::OwnID, KMyMoneyGlobalSettings::listNegativeValueColor());
+    propSetMaxCredit.setExtraLinesStyle(KDChartPropertySet::OwnID, Qt::DotLine);
+    m_idPropMaxCredit = m_chartWidget->params().registerProperties(propSetMaxCredit);
+
+    slotMarkersChanged();
   }
 #endif
 
@@ -490,10 +526,6 @@ void KNewAccountDlg::timerDone(void)
   // KNewAccountDlgDecl::resizeEvent(0);
   m_qlistviewParentAccounts->setColumnWidth(0, m_qlistviewParentAccounts->visibleWidth());
   m_qlistviewParentAccounts->repaintContents(false);
-}
-
-KNewAccountDlg::~KNewAccountDlg()
-{
 }
 
 void KNewAccountDlg::setOpeningBalance(const MyMoneyMoney& balance)
@@ -1215,6 +1247,111 @@ void KNewAccountDlg::displayOnlineBankingStatus(void)
 #else
     m_textOnlineStatus->setText(i18n("STATUS: Disabled.  No online banking services are available"));
 #endif
+}
+
+void KNewAccountDlg::slotMarkersChanged(void)
+{
+#ifdef HAVE_KDCHART
+  // add another row for markers if required or remove it if not necessary
+  // see http://www.klaralvdalens-datakonsult.se/kdchart/ProgrammersManual/KDChart.pdf
+  // Chapter 6, "Adding separate Lines/Markers".
+
+  bool needRow = false;
+  bool haveMinBalance = false;
+  bool haveMaxCredit = false;
+  MyMoneyMoney minBalance, maxCredit;
+  MyMoneyMoney factor(1,1);
+  if(m_account.accountGroup() == MyMoneyAccount::Asset)
+    factor = -factor;
+
+  if(m_maxCreditLabel->isVisible()) {
+    if(m_maxCreditEarlyEdit->text().length()) {
+      needRow = true;
+      haveMaxCredit = true;
+      maxCredit = m_maxCreditEarlyEdit->value() * factor;
+    }
+    if(m_maxCreditAbsoluteEdit->text().length()) {
+      needRow = true;
+      haveMaxCredit = true;
+      maxCredit = m_maxCreditAbsoluteEdit->value() * factor;
+    }
+  }
+
+  if(m_minBalanceLabel->isVisible()) {
+    if(m_minBalanceEarlyEdit->text().length()) {
+      needRow = true;
+      haveMinBalance = true;
+      minBalance = m_minBalanceEarlyEdit->value();
+    }
+    if(m_minBalanceAbsoluteEdit->text().length()) {
+      needRow = true;
+      haveMinBalance = true;
+      minBalance = m_minBalanceAbsoluteEdit->value();
+    }
+  }
+
+  KDChartTableDataBase* data = m_chartWidget->data();
+  if(!needRow && data->usedRows() == 2) {
+    data->expand( data->usedRows()-1, data->usedCols() );
+  } else if(needRow && data->usedRows() == 1) {
+    data->expand( data->usedRows()+1, data->usedCols() );
+  }
+
+  if(needRow) {
+    if(haveMinBalance) {
+      data->setCell(1, 0, minBalance.toDouble());
+      m_chartWidget->setProperty(1, 0, m_idPropMinBalance);
+    }
+    if(haveMaxCredit) {
+      data->setCell(1, 1, maxCredit.toDouble());
+      m_chartWidget->setProperty(1, 1, m_idPropMaxCredit);
+    }
+  }
+
+  for(int iCell = 91; iCell < 180; ++iCell) {
+    m_chartWidget->setProperty(0, iCell, m_idPropFutureValue);
+  }
+  m_chartWidget->setProperty(0, 90, m_idPropLastValue);
+#endif
+}
+
+void KNewAccountDlg::adjustEditWidgets(kMyMoneyEdit* dst, kMyMoneyEdit* src, char mode)
+{
+  MyMoneyMoney factor(1,1);
+  if(m_account.accountGroup() == MyMoneyAccount::Asset)
+    factor = -factor;
+
+  switch(mode) {
+    case '<':
+      if(src->value()*factor < dst->value()*factor)
+        dst->setValue(src->value());
+      break;
+
+    case '>':
+      if(src->value()*factor > dst->value()*factor)
+        dst->setValue(src->value());
+      break;
+  }
+}
+
+void KNewAccountDlg::slotAdjustMinBalanceAbsoluteEdit(const QString&)
+{
+  adjustEditWidgets(m_minBalanceAbsoluteEdit, m_minBalanceEarlyEdit, '<');
+}
+
+void KNewAccountDlg::slotAdjustMinBalanceEarlyEdit(const QString&)
+{
+  adjustEditWidgets(m_minBalanceEarlyEdit, m_minBalanceAbsoluteEdit, '>');
+}
+
+void KNewAccountDlg::slotAdjustMaxCreditAbsoluteEdit(const QString&)
+{
+  adjustEditWidgets(m_maxCreditAbsoluteEdit, m_maxCreditEarlyEdit, '<');
+}
+
+void KNewAccountDlg::slotAdjustMaxCreditEarlyEdit(const QString&)
+{
+  adjustEditWidgets(m_maxCreditEarlyEdit, m_maxCreditAbsoluteEdit, '>');
 }
 
 #include "knewaccountdlg.moc"

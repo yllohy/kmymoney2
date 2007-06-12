@@ -2,6 +2,8 @@ KDE_OPTIONS = noautodist
 
 INCLUDES = $(all_includes) -I$(top_srcdir) -I. @LIBXMLPP_CFLAGS@ @LIBCURL_CPPFLAGS@
 
+instdir=$(includedir)/kmymoney
+
 noinst_LIBRARIES = libconverter.a
 libconverter_a_METASOURCES = AUTO
 
@@ -13,7 +15,9 @@ endif
 
 EXTRA_DIST = 
 
-noinst_HEADERS = convertertest.h imymoneyreader.h mymoneyofxstatement.h mymoneyqifprofile.h mymoneyqifreader.h mymoneyqifwriter.h mymoneystatementreader.h mymoneytemplate.h webpricequote.h mymoneygncreader.h nodeparser.h ofxpartner.h
+inst_HEADERS = mymoneytemplate.h
+
+noinst_HEADERS = convertertest.h imymoneyreader.h mymoneyofxstatement.h mymoneyqifprofile.h mymoneyqifreader.h mymoneyqifwriter.h mymoneystatementreader.h webpricequote.h mymoneygncreader.h nodeparser.h ofxpartner.h
 
 if CPPUNIT
 check_LIBRARIES = libconvertertest.a

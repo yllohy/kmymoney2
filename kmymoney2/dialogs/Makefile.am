@@ -17,6 +17,6 @@ noinst_HEADERS = ieditscheduledialog.h kaccountselectdlg.h kbackupdlg.h kchoosei
 instdir=$(includedir)/kmymoney
 inst_HEADERS = transactioneditor.h investtransactioneditor.h
 
-SUBDIRS = settings newuserwizard
+SUBDIRS = settings wizardpages newuserwizard
 
 messages: rc.cpp

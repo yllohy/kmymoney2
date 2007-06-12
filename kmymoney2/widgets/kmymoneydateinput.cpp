@@ -90,6 +90,7 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   for(unsigned i = 0; i < dateFormat.length(); ++i) {
     // DD.MM.YYYY is %d.%m.%y
     // dD.mM.YYYY is %e.%n.%y
+    // SHORTWEEKDAY, dD SHORTMONTH YYYY is %a, %e %b %Y
     if(dateFormat[i] == 'y' || dateFormat[i] == 'm' || dateFormat[i] == 'n' || dateFormat[i] == 'd' || dateFormat[i] == 'e') {
       if(dateFormat[i] == 'n')
         dateFormat[i] = 'm';
@@ -116,6 +117,7 @@ kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::Alig
   } else {
     dateEdit->setOrder(QDateEdit::YMD);
     m_focusDatePart = 2;
+    separator = '-';
   }
   dateEdit->setSeparator(separator);
 

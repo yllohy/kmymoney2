@@ -40,6 +40,9 @@
 
 #include "../dialogs/knewaccountdlgdecl.h"
 class KMyMoneyAccountTreeItem;
+namespace reports {
+  class KReportChartView;
+};
 
 /**
   * This dialog lets you create/edit an account.
@@ -55,8 +58,14 @@ private:
 
   KMyMoneyAccountTreeItem *m_parentItem;
   KMyMoneyAccountTreeItem *m_accountItem;
+  reports::KReportChartView* m_chartWidget;
   bool m_categoryEditor;
   bool m_isEditing;
+
+  int m_idPropFutureValue;
+  int m_idPropLastValue;
+  int m_idPropMaxCredit;
+  int m_idPropMinBalance;
 
   void initParentWidget(QCString parentId, const QCString& accountId);
   void showSubAccounts(QCStringList accounts, KMyMoneyAccountTreeItem *parentItem, const QCString& parentId, const QCString& accountId);
@@ -85,7 +94,6 @@ public:
     * @param title Caption of the object (passed to QDialog). Default is empty string.
     */
   KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bool categoryEditor, QWidget *parent=0, const char *name=0, const QString& title=QString::null);
-  ~KNewAccountDlg();
 
   /**
     * This method returns the edited account object.
@@ -106,6 +114,7 @@ public:
 protected:
   void resizeEvent(QResizeEvent* e);
   void displayOnlineBankingStatus(void);
+  void adjustEditWidgets(kMyMoneyEdit* dst, kMyMoneyEdit* src, char mode);
 
 protected slots:
   void okClicked();
@@ -117,6 +126,11 @@ protected slots:
   void slotCheckFinished(void);
   void slotOnlineSetupClicked(void);
   void slotLoadInstitutions(const QString&);
+  void slotMarkersChanged(void);
+  void slotAdjustMinBalanceAbsoluteEdit(const QString&);
+  void slotAdjustMinBalanceEarlyEdit(const QString&);
+  void slotAdjustMaxCreditAbsoluteEdit(const QString&);
+  void slotAdjustMaxCreditEarlyEdit(const QString&);
 
 private slots:
   void timerDone(void);

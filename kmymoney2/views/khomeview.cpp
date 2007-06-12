@@ -49,6 +49,7 @@
 #include <kmessagebox.h>
 #include <kdebug.h>
 #include <kmdcodec.h>
+#include <kglobalsettings.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -273,12 +274,15 @@ void KHomeView::showNetWorthGraph(void)
 
   chartWidget->params().setLineMarker(false);
   chartWidget->params().setLegendPosition(KDChartParams::NoLegend);
+  chartWidget->params().setLineWidth(2);
+  chartWidget->params().setDataColor(0, KGlobalSettings::textColor());
 
     // draw future values in a different line style
   KDChartPropertySet propSetLastValue("last value", KMM_KDCHART_PROPSET_NORMAL_DATA);
   KDChartPropertySet propSetFutureValue("future value", KMM_KDCHART_PROPSET_NORMAL_DATA);
   propSetLastValue.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignBottom);
   propSetLastValue.setExtraLinesWidth(KDChartPropertySet::OwnID, -4);
+  propSetLastValue.setExtraLinesColor(KDChartPropertySet::OwnID, KMyMoneyGlobalSettings::listGridColor());
   // propSetLastValue.setShowMarker(KDChartPropertySet::OwnID, true);
   // propSetLastValue.setMarkerStyle(KDChartPropertySet::OwnID, KDChartParams::LineMarkerDiamond);
 
@@ -298,7 +302,7 @@ void KHomeView::showNetWorthGraph(void)
   }
 
   QPixmap pm(chartWidget->width(), chartWidget->height());
-  pm.fill();
+  pm.fill(KGlobalSettings::baseColor());
   QPainter p(&pm);
   chartWidget->paintTo(p);
 

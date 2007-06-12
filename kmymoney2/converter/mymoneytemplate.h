@@ -22,6 +22,8 @@
 // QT Includes
 
 #include <qdom.h>
+class QFile;
+class QListViewItem;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -31,8 +33,8 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyaccount.h"
-#include "../mymoney/mymoneyfile.h"
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneyfile.h>
 
 /**
   * @author Thomas Baumgart
@@ -51,17 +53,24 @@ public:
   MyMoneyTemplate(const KURL& url);
   ~MyMoneyTemplate();
 
-  const bool loadTemplate(const KURL& url);
-  const bool saveTemplate(const KURL& url);
-  const bool importTemplate(void(*callback)(int, int, const QString&));
-  const bool exportTemplate(void(*callback)(int, int, const QString&));
+  bool loadTemplate(const KURL& url);
+  bool saveTemplate(const KURL& url);
+  bool importTemplate(void(*callback)(int, int, const QString&));
+  bool exportTemplate(void(*callback)(int, int, const QString&));
+
+  const QString& title(void) const { return m_title; }
+  const QString& shortDescription(void) const { return m_shortDesc; }
+  const QString& longDescription(void) const { return m_longDesc; }
+
+  void hierarchy(QMap<QString, QListViewItem*>& list);
 
 protected:
-  const bool loadDescription(void);
-  const bool createAccounts(MyMoneyAccount& parent, QDomNode account);
-  const bool setFlags(MyMoneyAccount& acc, QDomNode flags);
-  const bool saveToLocalFile(QFile* qfile);
-  const bool addAccountStructure(QDomElement& parent, const MyMoneyAccount& acc);
+  bool loadDescription(void);
+  bool createAccounts(MyMoneyAccount& parent, QDomNode account);
+  bool setFlags(MyMoneyAccount& acc, QDomNode flags);
+  bool saveToLocalFile(QFile* qfile);
+  bool addAccountStructure(QDomElement& parent, const MyMoneyAccount& acc);
+  bool hierarchy(QMap<QString, QListViewItem*>& list, const QString& parent, QDomNode account);
 
   /**
     * This method is used to update the progress information. It

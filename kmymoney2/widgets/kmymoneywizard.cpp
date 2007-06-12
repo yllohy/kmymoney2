@@ -72,17 +72,17 @@ void KMyMoneyWizardPage::resetPage(void)
 {
 }
 
-KMyMoneyWizardPage* KMyMoneyWizardPage::nextPage(void)
+KMyMoneyWizardPage* KMyMoneyWizardPage::nextPage(void) const
 {
   return 0;
 }
 
-bool KMyMoneyWizardPage::isLastPage(void)
+bool KMyMoneyWizardPage::isLastPage(void) const
 {
   return nextPage() == 0;
 }
 
-bool KMyMoneyWizardPage::isComplete(void)
+bool KMyMoneyWizardPage::isComplete(void) const
 {
   return true;
 }

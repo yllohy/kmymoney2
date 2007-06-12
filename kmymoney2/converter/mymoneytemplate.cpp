@@ -52,15 +52,11 @@ MyMoneyTemplate::~MyMoneyTemplate()
 {
 }
 
-const bool MyMoneyTemplate::loadTemplate(const KURL& url)
+bool MyMoneyTemplate::loadTemplate(const KURL& url)
 {
   QString filename;
 
-#if KDE_IS_VERSION(3,2,0)
   if(!url.isValid()) {
-#else
-  if(url.isMalformed()) {
-#endif
     qDebug("Invalid template URL '%s'", url.url().latin1());
     return false;
   }
@@ -71,11 +67,7 @@ const bool MyMoneyTemplate::loadTemplate(const KURL& url)
 
   } else {
     bool rc;
-#if KDE_IS_VERSION(3,2,0)
     rc = KIO::NetAccess::download(url, filename, qApp->mainWidget());
-#else
-    rc = KIO::NetAccess::download(url, filename);
-#endif
     if(!rc) {
       KMessageBox::detailedError(qApp->mainWidget(),
              i18n("Error while loading file '%1'!").arg(url.url()),
@@ -117,7 +109,7 @@ const bool MyMoneyTemplate::loadTemplate(const KURL& url)
   return rc;
 }
 
-const bool MyMoneyTemplate::loadDescription(void)
+bool MyMoneyTemplate::loadDescription(void)
 {
   int validMask = 0x00;
   const int validAccount = 0x01;
@@ -156,7 +148,65 @@ const bool MyMoneyTemplate::loadDescription(void)
   return validMask == validHeader;
 }
 
-const bool MyMoneyTemplate::importTemplate(void(*callback)(int, int, const QString&))
+bool MyMoneyTemplate::hierarchy(QMap<QString, QListViewItem*>& list, const QString& parent, QDomNode account)
+{
+  bool rc = true;
+  while(rc == true && !account.isNull()) {
+    if(account.isElement()) {
+      QDomElement accountElement = account.toElement();
+      if(accountElement.tagName() == "account") {
+        QString name = QString("%1:%2").arg(parent).arg(accountElement.attribute("name"));
+        list[name] = 0;
+        hierarchy(list, name, account.firstChild());
+      }
+    }
+    account = account.nextSibling();
+  }
+  return rc;
+}
+
+void MyMoneyTemplate::hierarchy(QMap<QString, QListViewItem*>& list)
+{
+  bool rc = !m_accounts.isNull();
+  QDomNode accounts = m_accounts;
+  while(rc == true && !accounts.isNull() && accounts.isElement()) {
+    QDomElement childElement = accounts.toElement();
+    if(childElement.tagName() == "account"
+    && childElement.attribute("name") == "") {
+      switch(childElement.attribute("type").toUInt()) {
+        case MyMoneyAccount::Asset:
+          list[i18n("Asset")] = 0;
+          rc = hierarchy(list, i18n("Asset"), childElement.firstChild());
+          break;
+        case MyMoneyAccount::Liability:
+          list[i18n("Liability")] = 0;
+          rc = hierarchy(list, i18n("Liability"), childElement.firstChild());
+          break;
+        case MyMoneyAccount::Income:
+          list[i18n("Income")] = 0;
+          rc = hierarchy(list, i18n("Income"), childElement.firstChild());
+          break;
+        case MyMoneyAccount::Expense:
+          list[i18n("Expense")] = 0;
+          rc = hierarchy(list, i18n("Expense"), childElement.firstChild());
+          break;
+        case MyMoneyAccount::Equity:
+          list[i18n("Equity")] = 0;
+          rc = hierarchy(list, i18n("Equity"), childElement.firstChild());
+          break;
+
+        default:
+          rc = false;
+          break;
+      }
+    } else {
+      rc = false;
+    }
+    accounts = accounts.nextSibling();
+  }
+}
+
+bool MyMoneyTemplate::importTemplate(void(*callback)(int, int, const QString&))
 {
   m_progressCallback = callback;
   bool rc = !m_accounts.isNull();
@@ -204,7 +254,7 @@ const bool MyMoneyTemplate::importTemplate(void(*callback)(int, int, const QStri
   return rc;
 }
 
-const bool MyMoneyTemplate::createAccounts(MyMoneyAccount& parent, QDomNode account)
+bool MyMoneyTemplate::createAccounts(MyMoneyAccount& parent, QDomNode account)
 {
   bool rc = true;
   while(rc == true && !account.isNull()) {
@@ -244,7 +294,7 @@ const bool MyMoneyTemplate::createAccounts(MyMoneyAccount& parent, QDomNode acco
   return rc;
 }
 
-const bool MyMoneyTemplate::setFlags(MyMoneyAccount& acc, QDomNode flags)
+bool MyMoneyTemplate::setFlags(MyMoneyAccount& acc, QDomNode flags)
 {
   bool rc = true;
   while(rc == true && !flags.isNull()) {
@@ -272,7 +322,7 @@ void MyMoneyTemplate::signalProgress(int current, int total, const QString& msg)
     (*m_progressCallback)(current, total, msg);
 }
 
-const bool MyMoneyTemplate::exportTemplate(void(*callback)(int, int, const QString&))
+bool MyMoneyTemplate::exportTemplate(void(*callback)(int, int, const QString&))
 {
   m_progressCallback = callback;
 
@@ -305,7 +355,7 @@ const bool MyMoneyTemplate::exportTemplate(void(*callback)(int, int, const QStri
   return true;
 }
 
-const bool MyMoneyTemplate::addAccountStructure(QDomElement& parent, const MyMoneyAccount& acc)
+bool MyMoneyTemplate::addAccountStructure(QDomElement& parent, const MyMoneyAccount& acc)
 {
   QDomElement account = m_doc.createElement("account");
   parent.appendChild(account);
@@ -330,7 +380,7 @@ const bool MyMoneyTemplate::addAccountStructure(QDomElement& parent, const MyMon
   return true;
 }
 
-const bool MyMoneyTemplate::saveTemplate(const KURL& url)
+bool MyMoneyTemplate::saveTemplate(const KURL& url)
 {
   QString filename;
 
@@ -360,17 +410,11 @@ const bool MyMoneyTemplate::saveTemplate(const KURL& url)
   return true;
 }
 
-const bool MyMoneyTemplate::saveToLocalFile(QFile* qfile)
+bool MyMoneyTemplate::saveToLocalFile(QFile* qfile)
 {
   QTextStream stream(qfile);
-#if KDE_IS_VERSION(3,2,0)
   stream.setEncoding(QTextStream::UnicodeUTF8);
   stream << m_doc.toString();
-#else
-  //stream.setEncoding(QTextStream::Locale);
-  QCString temp = m_doc.toCString();
-  stream << temp.data();
-#endif
 
   return true;
 }

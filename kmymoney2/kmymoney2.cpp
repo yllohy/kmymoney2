@@ -1273,6 +1273,11 @@ void KMyMoney2App::slotLoadAccountTemplates(void)
 
   // create a dialog that drops the user in the base directory for templates
   QLabel* label = new QLabel(i18n("Change into one of the directories and select the desired file."), 0);
+  QStringList list = KGlobal::dirs()->findDirs("appdata", "templates");
+  QStringList::iterator it;
+  for(it = list.begin(); it != list.end(); ++it)
+    qDebug("%s", (*it).data());
+#if 0
   KFileDialog* dialog = new KFileDialog(KGlobal::dirs()->findResourceDir("appdata", "templates/README")+"templates",
                                         i18n("*.kmt|Account templates"),
                                         this, "defaultaccounts",
@@ -1288,6 +1293,7 @@ void KMyMoney2App::slotLoadAccountTemplates(void)
     ft.commit();
   }
   delete dialog;
+#endif
 
   slotStatusMsg(prevMsg);
 }
@@ -1844,7 +1850,7 @@ void KMyMoney2App::slotSettings()
 
   // otherwise, we have to create it
   KConfigDialog* dlg = new KConfigDialog(this, "KMyMoney-Settings", KMyMoneySettings::self(),
-    KDialogBase::IconList, KDialogBase::Default | KDialogBase::Ok | KDialogBase::Cancel | KDialogBase::Help);
+    KDialogBase::IconList, KDialogBase::Default | KDialogBase::Ok | KDialogBase::Cancel | KDialogBase::Help, KDialogBase::Ok, true);
 
   // create the pages ...
   KSettingsGeneral* generalPage = new KSettingsGeneral();
