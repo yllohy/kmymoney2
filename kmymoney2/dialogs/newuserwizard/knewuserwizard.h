@@ -21,15 +21,22 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+class QString;
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include <kmymoney/kmymoneywizard.h>
+#include <kmymoney/mymoneysecurity.h>
+class MyMoneyPayee;
+class MyMoneyInstitution;
+class MyMoneyAccount;
+class MyMoneyMoney;
+class MyMoneyTemplate;
 
 /**
   * @author Thomas Baumgart
   */
-
 namespace NewUserWizard {
 
 class GeneralPage;
@@ -39,6 +46,13 @@ class CategoriesPage;
 class PreferencePage;
 class FilePage;
 
+/**
+  * @author Thomas Baumgart
+  *
+  * This class implements the new user wizard which is used to gather
+  * some initial information from the user who creates a new KMyMoney
+  * 'file'.
+  */
 class Wizard : public KMyMoneyWizard
 {
   friend class GeneralPage;
@@ -51,9 +65,47 @@ class Wizard : public KMyMoneyWizard
   Q_OBJECT
 public:
   Wizard(QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags flags = 0);
+  /**
+    * Returns the personal information of the user (e.g. name, address, etc.)
+    */
+  MyMoneyPayee user(void) const;
+
+  /**
+    * Returns the URL that the user has chosen to store the file
+    */
+  QString url(void) const;
+
+  /**
+    * Returns the information about an institution if entered by
+    * the user. If the name field is empty, then he did not enter
+    * such information.
+    */
+  MyMoneyInstitution institution(void) const;
+
+  /**
+    * Returns the information about a checking account if entered by
+    * the user. If the name field is empty, then he did not enter
+    * such information.
+    */
+  MyMoneyAccount account(void) const;
+
+  /**
+    * Returns the opening balance value provided by the user. not enter
+    */
+  MyMoneyMoney openingBalance(void) const;
+
+  /**
+    * Returns the security to be used as base currency.
+    */
+  MyMoneySecurity baseCurrency(void) const;
+
+  /**
+    * Returns a list of templates including accounts to be created
+    */
+  QValueList<MyMoneyTemplate> templates(void) const;
 
 private:
-
+  MyMoneySecurity   m_baseCurrency;
   GeneralPage*      m_generalPage;
   CurrencyPage*     m_currencyPage;
   AccountPage*      m_accountPage;

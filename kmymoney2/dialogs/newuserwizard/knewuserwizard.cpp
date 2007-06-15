@@ -25,6 +25,7 @@
 #include <qcheckbox.h>
 #include <qpushbutton.h>
 #include <qdir.h>
+#include <qlabel.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -36,6 +37,8 @@
 #include <ktextedit.h>
 #include <kuser.h>
 #include <kurlrequester.h>
+#include <kio/netaccess.h>
+#include <kurl.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -46,6 +49,12 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kguiutils.h>
 #include <kmymoney/kmymoneyaccounttree.h>
+#include <kmymoney/mymoneypayee.h>
+#include <kmymoney/mymoneymoney.h>
+#include <kmymoney/mymoneyinstitution.h>
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/kmymoneydateinput.h>
+#include <kmymoney/kmymoneyedit.h>
 
 #include "../../kmymoney2.h"
 
@@ -72,10 +81,63 @@ NewUserWizard::Wizard::Wizard(QWidget *parent, const char *name, bool modal, WFl
   setFirstPage(m_generalPage);
 }
 
+MyMoneyPayee NewUserWizard::Wizard::user(void) const
+{
+  return m_generalPage->user();
+}
+
+QString NewUserWizard::Wizard::url(void) const
+{
+  return m_filePage->m_dataFileEdit->url();
+}
+
+MyMoneyInstitution NewUserWizard::Wizard::institution(void) const
+{
+  MyMoneyInstitution inst;
+  if(m_accountPage->m_haveCheckingAccountButton->isChecked()) {
+    if(m_accountPage->m_institutionNameEdit->text().length()) {
+      inst.setName(m_accountPage->m_institutionNameEdit->text());
+      if(m_accountPage->m_institutionNumberEdit->text().length())
+        inst.setSortcode(m_accountPage->m_institutionNumberEdit->text());
+    }
+  }
+  return inst;
+}
+
+MyMoneyAccount NewUserWizard::Wizard::account(void) const
+{
+  MyMoneyAccount acc;
+  if(m_accountPage->m_haveCheckingAccountButton->isChecked()) {
+    acc.setName(m_accountPage->m_accountNameEdit->text());
+    if(m_accountPage->m_accountNumberEdit->text().length())
+      acc.setNumber(m_accountPage->m_accountNumberEdit->text());
+    acc.setOpeningDate(m_accountPage->m_openingDateEdit->date());
+    acc.setCurrencyId(m_baseCurrency.id());
+    acc.setAccountType(MyMoneyAccount::Checkings);
+  }
+  return acc;
+}
+
+MyMoneyMoney NewUserWizard::Wizard::openingBalance(void) const
+{
+  return m_accountPage->m_openingBalanceEdit->value();
+}
+
+MyMoneySecurity NewUserWizard::Wizard::baseCurrency(void) const
+{
+  return m_baseCurrency;
+}
+
+QValueList<MyMoneyTemplate> NewUserWizard::Wizard::templates(void) const
+{
+  return m_categoriesPage->selectedTemplates();
+}
+
 GeneralPage::GeneralPage(Wizard* wizard, const char* name) :
   UserInfo(wizard),
   WizardPage<Wizard>(1, this, wizard, name)
 {
+  m_userNameEdit->setFocus();
 }
 
 KMyMoneyWizardPage* GeneralPage::nextPage(void) const
@@ -125,6 +187,8 @@ CurrencyPage::CurrencyPage(Wizard* wizard, const char* name) :
 
 KMyMoneyWizardPage* CurrencyPage::nextPage(void) const
 {
+  m_wizard->m_baseCurrency = MyMoneyFile::instance()->security(selectedCurrency());
+  m_wizard->m_accountPage->m_accountCurrencyLabel->setText(m_wizard->m_baseCurrency.tradingSymbol());
   return m_wizard->m_accountPage;
 }
 
@@ -137,6 +201,7 @@ AccountPage::AccountPage(Wizard* wizard, const char* name) :
   connect(m_mandatoryGroup, SIGNAL(stateChanged()), object(), SIGNAL(completeStateChanged()));
   connect(m_haveCheckingAccountButton, SIGNAL(toggled(bool)), object(), SIGNAL(completeStateChanged()));
   m_accountNameEdit->setFocus();
+  m_openingDateEdit->setDate(QDate(QDate::currentDate().year(),1,1));
 }
 
 KMyMoneyWizardPage* AccountPage::nextPage(void) const
@@ -269,6 +334,18 @@ void CategoriesPage::slotLoadHierarchy(void)
   }
 }
 
+QValueList<MyMoneyTemplate> CategoriesPage::selectedTemplates(void) const
+{
+  QValueList<MyMoneyTemplate> list;
+  QListViewItemIterator it(m_groupList, QListViewItemIterator::Selected);
+  QListViewItem* it_v;
+  while((it_v = it.current()) != 0) {
+    list << m_templates[it_v->text(2)];
+    ++it;
+  }
+  return list;
+}
+
 PreferencePage::PreferencePage(Wizard* wizard, const char* name) :
   KPreferencePageDecl(wizard),
   WizardPage<Wizard>(4, this, wizard, name)
@@ -296,7 +373,23 @@ FilePage::FilePage(Wizard* wizard, const char* name) :
 
 bool FilePage::isComplete(void) const
 {
-  return m_mandatoryGroup->isEnabled();
+  bool rc = m_mandatoryGroup->isEnabled();
+  if(rc) {
+    // if a filename is present, check that
+    // a) the file does not exist
+    // b) the directory does exist
+    rc = !KIO::NetAccess::exists(m_dataFileEdit->url(), false, m_wizard);
+    if(rc) {
+      QRegExp exp("(.*)/(.*)");
+      rc = false;
+      if(exp.search(m_dataFileEdit->url()) != -1) {
+        if(exp.cap(2).length() > 0) {
+          rc = KIO::NetAccess::exists(exp.cap(1), true, m_wizard);
+        }
+      }
+    }
+  }
+  return rc;
 }
 
 #include "knewuserwizard.moc"

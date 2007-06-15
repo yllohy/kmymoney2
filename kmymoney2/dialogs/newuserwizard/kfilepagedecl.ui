@@ -20,6 +20,9 @@
             <property name="name">
                 <cstring>kActiveLabel1</cstring>
             </property>
+            <property name="focusPolicy">
+                <enum>NoFocus</enum>
+            </property>
             <property name="text">
                 <string>KMyMoney will store your financial data in a file on the disk. A standard filename within your KDE user environment will be the default. This is just provided for convenience and you can choose any other location here.</string>
             </property>
@@ -49,6 +52,9 @@
         <widget class="KActiveLabel">
             <property name="name">
                 <cstring>kActiveLabel2</cstring>
+            </property>
+            <property name="focusPolicy">
+                <enum>NoFocus</enum>
             </property>
             <property name="text">
                 <string>This finishes the setup of your KMyMoney environment. You can now press the Finish button and start using KMyMoney to record your financial transactions.</string>

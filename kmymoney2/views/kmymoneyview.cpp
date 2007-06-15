@@ -1178,48 +1178,8 @@ void KMyMoneyView::finishReconciliation(const MyMoneyAccount& /* account */)
 bool KMyMoneyView::newFile(const bool createEmtpyFile)
 {
   closeFile();
-
-  MyMoneyFile *file = MyMoneyFile::instance();
-
-  if(!createEmtpyFile) {
-    KNewFileDlg newFileDlg(this, "NewFileDlg", i18n("Create new KMyMoney file"));
-    // newFileDlg.cancelButton()->hide();
-
-    // still have to work on the cancellation of a new file
-    if(newFileDlg.exec() == QDialog::Rejected)
-      return false;
-
-    MyMoneyPayee user = file->user();
-    if(newFileDlg.userNameText.length() != 0)
-      user.setName(newFileDlg.userNameText);
-    if(newFileDlg.userStreetText.length() != 0)
-      user.setAddress(newFileDlg.userStreetText);
-    if(newFileDlg.userTownText.length() != 0)
-      user.setCity(newFileDlg.userTownText);
-    if(newFileDlg.userCountyText.length() != 0)
-      user.setState(newFileDlg.userCountyText);
-    if(newFileDlg.userPostcodeText.length() != 0)
-      user.setPostcode(newFileDlg.userPostcodeText);
-    if(newFileDlg.userTelephoneText.length() != 0)
-      user.setTelephone(newFileDlg.userTelephoneText);
-    if(newFileDlg.userEmailText.length() != 0)
-      user.setEmail(newFileDlg.userEmailText);
-
-    MyMoneyFileTransaction ft;
-    file->setUser(user);
-
-    loadDefaultCurrencies();
-    loadAncientCurrencies();
-    ft.commit();
-
-    // Stay in this endless loop until we have a base currency,
-    // as without it the application does not work anymore.
-    while(MyMoneyFile::instance()->baseCurrency().id().isEmpty())
-      selectBaseCurrency();
-
-    m_fileType = KmmXML; // assume native type until saved
-    m_fileOpen = true;
-  }
+  m_fileType = KmmXML; // assume native type until saved
+  m_fileOpen = true;
   return true;
 }
 

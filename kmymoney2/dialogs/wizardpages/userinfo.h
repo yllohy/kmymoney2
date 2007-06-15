@@ -25,6 +25,7 @@
 // Project Includes
 
 #include "userinfodecl.h"
+class MyMoneyPayee;
 
 /**
   * @author Thomas Baumgart
@@ -34,6 +35,7 @@ class UserInfo : public UserInfoDecl
   Q_OBJECT
 public:
   UserInfo(QWidget* parent = 0, const char* name = 0);
+  MyMoneyPayee UserInfo::user(void) const;
 
 private:
 };

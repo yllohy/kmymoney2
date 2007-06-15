@@ -68,9 +68,9 @@ MyMoneyReport::MyMoneyReport(void):
     m_chartByDefault(false),
     m_includeSchedules(false),
     m_includeTransfers(false),
-    m_includeUnusedAccounts(false),
     m_hasBudget(false),
-    m_includeBudgetActuals(false)
+    m_includeBudgetActuals(false),
+    m_includeUnusedAccounts(false)
 {
 }
 
@@ -94,9 +94,9 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss,
     m_chartByDefault(false),
     m_includeSchedules(false),
     m_includeTransfers(false),
-    m_includeUnusedAccounts(false),
     m_hasBudget(false),
-    m_includeBudgetActuals(false)
+    m_includeBudgetActuals(false),
+    m_includeUnusedAccounts(false)
 {
   if ( m_reportType == ePivotTable )
     m_columnType = static_cast<EColumnType>(_ct);

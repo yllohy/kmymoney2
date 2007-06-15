@@ -20,13 +20,16 @@
             <property name="name">
                 <cstring>kActiveLabel1</cstring>
             </property>
+            <property name="focusPolicy">
+                <enum>NoFocus</enum>
+            </property>
             <property name="text">
                 <string>&lt;p&gt;Use the fields below to enter some information about yourself.&lt;/p&gt;
 
 &lt;p&gt;All information is optional and only used to personalize your KMyMoney file.&lt;/p&gt;</string>
             </property>
         </widget>
-        <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="3">
+        <widget class="KLineEdit" row="1" column="1" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>m_userNameEdit</cstring>
             </property>
@@ -73,22 +76,22 @@
                 <string>Street:</string>
             </property>
         </widget>
-        <widget class="QLineEdit" row="2" column="1" rowspan="1" colspan="3">
+        <widget class="KLineEdit" row="2" column="1" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>m_streetEdit</cstring>
             </property>
         </widget>
-        <widget class="QLineEdit" row="6" column="1" rowspan="1" colspan="3">
+        <widget class="KLineEdit" row="6" column="1" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>m_emailEdit</cstring>
             </property>
         </widget>
-        <widget class="QLineEdit" row="3" column="1" rowspan="1" colspan="3">
+        <widget class="KLineEdit" row="3" column="1" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>m_townEdit</cstring>
             </property>
         </widget>
-        <widget class="QLineEdit" row="5" column="1" rowspan="1" colspan="3">
+        <widget class="KLineEdit" row="5" column="1" rowspan="1" colspan="3">
             <property name="name">
                 <cstring>m_telephoneEdit</cstring>
             </property>
@@ -181,7 +184,7 @@
                 </size>
             </property>
         </spacer>
-        <widget class="QLineEdit" row="4" column="1">
+        <widget class="KLineEdit" row="4" column="1">
             <property name="name">
                 <cstring>m_countyEdit</cstring>
             </property>
@@ -200,12 +203,23 @@
                 <string>Postal Code:</string>
             </property>
         </widget>
-        <widget class="QLineEdit" row="4" column="3">
+        <widget class="KLineEdit" row="4" column="3">
             <property name="name">
                 <cstring>m_postcodeEdit</cstring>
             </property>
         </widget>
     </grid>
 </widget>
+<tabstops>
+    <tabstop>m_userNameEdit</tabstop>
+    <tabstop>m_streetEdit</tabstop>
+    <tabstop>m_townEdit</tabstop>
+    <tabstop>m_countyEdit</tabstop>
+    <tabstop>m_postcodeEdit</tabstop>
+    <tabstop>m_telephoneEdit</tabstop>
+    <tabstop>m_emailEdit</tabstop>
+    <tabstop>kabcBtn</tabstop>
+    <tabstop>kActiveLabel1</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -22,15 +22,31 @@
 // KDE Includes
 
 #include <klocale.h>
+#include <klineedit.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "userinfo.h"
+#include <kmymoney/mymoneypayee.h>
 
 UserInfo::UserInfo(QWidget* parent, const char* name) :
   UserInfoDecl(parent, name)
 {
+  m_userNameEdit->setFocus();
+}
+
+MyMoneyPayee UserInfo::user(void) const
+{
+  MyMoneyPayee user;
+  user.setName(m_userNameEdit->text());
+  user.setAddress(m_streetEdit->text());
+  user.setCity(m_townEdit->text());
+  user.setState(m_countyEdit->text());
+  user.setPostcode(m_postcodeEdit->text());
+  user.setTelephone(m_telephoneEdit->text());
+  user.setEmail(m_emailEdit->text());
+  return user;
 }
 
 #include "userinfo.moc"

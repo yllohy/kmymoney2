@@ -278,16 +278,17 @@ void KHomeView::showNetWorthGraph(void)
   chartWidget->params().setDataColor(0, KGlobalSettings::textColor());
 
     // draw future values in a different line style
-  KDChartPropertySet propSetLastValue("last value", KMM_KDCHART_PROPSET_NORMAL_DATA);
   KDChartPropertySet propSetFutureValue("future value", KMM_KDCHART_PROPSET_NORMAL_DATA);
+  propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
+  const int idPropFutureValue = chartWidget->params().registerProperties(propSetFutureValue);
+
+  KDChartPropertySet propSetLastValue("last value", idPropFutureValue);
   propSetLastValue.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignBottom);
   propSetLastValue.setExtraLinesWidth(KDChartPropertySet::OwnID, -4);
   propSetLastValue.setExtraLinesColor(KDChartPropertySet::OwnID, KMyMoneyGlobalSettings::listGridColor());
   // propSetLastValue.setShowMarker(KDChartPropertySet::OwnID, true);
   // propSetLastValue.setMarkerStyle(KDChartPropertySet::OwnID, KDChartParams::LineMarkerDiamond);
 
-  propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
-  const int idPropFutureValue = chartWidget->params().registerProperties(propSetFutureValue);
   const int idPropLastValue = chartWidget->params().registerProperties(propSetLastValue);
   for(int iCell = 10; iCell < 100; ++iCell) {
     chartWidget->setProperty(0, iCell, idPropFutureValue);

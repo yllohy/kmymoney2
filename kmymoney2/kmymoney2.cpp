@@ -733,16 +733,71 @@ void KMyMoney2App::slotFileNew()
   QString prevMsg = slotStatusMsg(i18n("Creating new document..."));
 
   slotFileClose();
+
   if(!myMoneyView->fileOpen()) {
+    // next line required until we move all file handling out of KMyMoneyView
+    myMoneyView->newFile();
 
     m_fileName = KURL();
-    if(myMoneyView->newFile()) {
-      KMessageBox::information(this, QString("<p>") +
-                    i18n("The next dialog allows you to add predefined account/category templates to the new file. Different languages are available to select from. You can skip loading any template  now by selecting <b>Cancel</b> from the next dialog. If you wish to add more templates later, you can restart this operation by selecting <b>File/Import/Account Templates</b>."),
-                    i18n("Load predefined accounts/categories"));
-      slotLoadAccountTemplates();
-    }
+    updateCaption();
 
+    // before we create the wizard, we need to preload the currencies
+    MyMoneyFileTransaction ft;
+    myMoneyView->loadDefaultCurrencies();
+    myMoneyView->loadAncientCurrencies();
+    ft.commit();
+
+    NewUserWizard::Wizard *wizard = new NewUserWizard::Wizard();
+
+    if(wizard->exec() == QDialog::Accepted) {
+      MyMoneyFile* file = MyMoneyFile::instance();
+      ft.restart();
+      try {
+        // store the user info
+        file->setUser(wizard->user());
+
+        // setup base currency
+        file->setBaseCurrency(wizard->baseCurrency());
+
+        // create a possible institution
+        MyMoneyInstitution inst = wizard->institution();
+        if(inst.name().length()) {
+          file->addInstitution(inst);
+        }
+
+        // create a possible checking account
+        MyMoneyAccount acc = wizard->account();
+        if(acc.name().length()) {
+          acc.setInstitutionId(inst.id());
+          MyMoneyAccount asset = file->asset();
+          file->addAccount(acc, asset);
+
+          // create possible opening balance transaction
+          if(!wizard->openingBalance().isZero()) {
+            file->createOpeningBalanceTransaction(acc, wizard->openingBalance());
+          }
+        }
+
+        // import the account templates
+        QValueList<MyMoneyTemplate> templates = wizard->templates();
+        QValueList<MyMoneyTemplate>::iterator it_t;
+        for(it_t = templates.begin(); it_t != templates.end(); ++it_t) {
+          (*it_t).importTemplate(&progressCallback);
+        }
+
+        m_fileName = KURL(wizard->url());
+        ft.commit();
+      } catch(MyMoneyException* e) {
+        delete e;
+        // next line required until we move all file handling out of KMyMoneyView
+        myMoneyView->closeFile();
+      }
+
+    } else {
+      // next line required until we move all file handling out of KMyMoneyView
+      myMoneyView->closeFile();
+    }
+    delete wizard;
     updateCaption();
 
     emit fileLoaded(m_fileName);
@@ -4402,9 +4457,7 @@ void KMyMoney2App::updateCaption(bool skipActions)
   }
 
 #if KMM_DEBUG
-  QString sizeMsg;
-  sizeMsg.sprintf(" (%d x %d)", width(), height());
-  caption += sizeMsg;
+  caption += QString(" (%1 x %2)").arg(width()).arg(height());
 #endif
 
   caption = kapp->makeStdCaption(caption, false, modified);

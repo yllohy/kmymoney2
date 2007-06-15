@@ -163,11 +163,6 @@ private:
   void ungetString(QIODevice *qfile, char * buf, int len);
 
   /**
-    * This method preloads all known currencies into the engine.
-    */
-  void loadDefaultCurrencies(void);
-
-  /**
     * This method creates the currency @p curr if it does not exist and
     * @p create is @p true. If the currency already exists, it checks
     * if the name is equal. If it is not, the name of the object in the
@@ -183,8 +178,6 @@ private:
     *
     */
   void loadAncientCurrency(const QCString& id, const QString& name, const QString& sym, const QDate& date, const MyMoneyMoney& rate, const QCString& newId, const int partsPerUnit = 100, const int smallestCashFraction = 100, const int smallestAccountFraction = 0);
-
-  void loadAncientCurrencies(void);
 
   /**
     * if no base currency is defined, start the dialog and force it to be set
@@ -447,6 +440,13 @@ public:
     */
   void finishReconciliation(const MyMoneyAccount& account);
 
+  /**
+    * This method preloads all known currencies into the engine.
+    */
+  void loadDefaultCurrencies(void);
+
+  void loadAncientCurrencies(void);
+
 public slots:
   /**
     * This slot writes information about the page passed as argument @p widget
@@ -597,6 +597,7 @@ signals:
     *                0 otherwise
     */
   void reconciliationStarts(const MyMoneyAccount& account, const MyMoneyMoney& endingBalance);
+
 };
 
 class KMyMoneyTitleLabel;

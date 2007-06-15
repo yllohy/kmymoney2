@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>411</height>
+            <height>481</height>
         </rect>
     </property>
     <vbox>
@@ -19,6 +19,9 @@
         <widget class="KActiveLabel">
             <property name="name">
                 <cstring>kActiveLabel2</cstring>
+            </property>
+            <property name="focusPolicy">
+                <enum>NoFocus</enum>
             </property>
             <property name="text">
                 <string>A typical KMyMoney user maintains a checking a account with some institution and uses it to receive money or pay bills. If this is not the case, please deselect the checkbox below and continue on the next page.</string>
@@ -42,96 +45,186 @@
             <property name="frameShadow">
                 <enum>Plain</enum>
             </property>
-            <vbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
                 <property name="margin">
                     <number>0</number>
                 </property>
-                <widget class="KActiveLabel">
+                <widget class="KLineEdit" row="5" column="1">
+                    <property name="name">
+                        <cstring>m_institutionNameEdit</cstring>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>The name of the instititution that issued the account.</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="6" column="1">
+                    <property name="name">
+                        <cstring>m_institutionNumberEdit</cstring>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Each institution has a routing number. Enter it here. If uncertain, leave the field blank. You can modify it later.</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="5" column="0">
+                    <property name="name">
+                        <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Name of the institution</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="6" column="0">
+                    <property name="name">
+                        <cstring>textLabel4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Routing number</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="2" column="1">
+                    <property name="name">
+                        <cstring>m_accountNumberEdit</cstring>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>In general the institution that issued the account also issued a number for it. Enter it here. If uncertain, you can modify this entry later.</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>m_accountNameEdit</cstring>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Enter a descriptive name that will be used by KMyMoney to identify your checking account.</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Opening date</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="3" column="1">
+                    <property name="name">
+                        <cstring>layout3</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="kMyMoneyDateInput">
+                            <property name="name">
+                                <cstring>m_openingDateEdit</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enter the date from when on you plan to keep track of the transactions in that account. This is usually the date of the last statement. If uncertain, leave as is.</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer5</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>81</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </hbox>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Number of the account</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Name of the account</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="0">
+                    <property name="name">
+                        <cstring>textLabel2_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Opening balance</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="4" column="1">
+                    <property name="name">
+                        <cstring>layout5</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>m_accountCurrencyLabel</cstring>
+                            </property>
+                            <property name="text">
+                                <string>xxx</string>
+                            </property>
+                        </widget>
+                        <widget class="kMyMoneyEdit">
+                            <property name="name">
+                                <cstring>m_openingBalanceEdit</cstring>
+                            </property>
+                            <property name="resetButtonVisibility" stdset="0">
+                                <bool>false</bool>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enter the opening balance of the account. This is usually the ending balance of the last statement. If uncertain, leave as is.</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer6</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>200</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                    </hbox>
+                </widget>
+                <widget class="KActiveLabel" row="0" column="0" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>kActiveLabel1</cstring>
+                    </property>
+                    <property name="focusPolicy">
+                        <enum>NoFocus</enum>
                     </property>
                     <property name="text">
                         <string>The fields below allow you to enter some information about your checking account. Once this wizard finishes, the account will be created for you within KMyMoney.</string>
                     </property>
                 </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout1</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="KLineEdit" row="2" column="1">
-                            <property name="name">
-                                <cstring>m_institutionNameEdit</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>The name of the instititution that issued the account.</string>
-                            </property>
-                        </widget>
-                        <widget class="KLineEdit" row="1" column="1">
-                            <property name="name">
-                                <cstring>m_accountNumberEdit</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>In general the institution that issued the account also issued a number for it. Enter it here. If uncertain, you can modify this entry later.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Name of the account</string>
-                            </property>
-                        </widget>
-                        <widget class="KLineEdit" row="0" column="1">
-                            <property name="name">
-                                <cstring>m_accountNameEdit</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Enter a descriptive name that will be used by KMyMoney to identify your checking account.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="3" column="0">
-                            <property name="name">
-                                <cstring>textLabel4</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Routing number</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>textLabel2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Number of the account</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>textLabel3</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Name of the institution</string>
-                            </property>
-                        </widget>
-                        <widget class="KLineEdit" row="3" column="1">
-                            <property name="name">
-                                <cstring>m_institutionNumberEdit</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Each institution has a routing number. Enter it here. If uncertain, leave the field blank. You can modify it later.</string>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-            </vbox>
+            </grid>
         </widget>
         <spacer>
             <property name="name">
@@ -160,5 +253,16 @@
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>m_accountNameEdit</tabstop>
+    <tabstop>m_accountNumberEdit</tabstop>
+    <tabstop>m_openingDateEdit</tabstop>
+    <tabstop>m_openingBalanceEdit</tabstop>
+    <tabstop>m_institutionNameEdit</tabstop>
+    <tabstop>m_institutionNumberEdit</tabstop>
+    <tabstop>m_haveCheckingAccountButton</tabstop>
+    <tabstop>kActiveLabel2</tabstop>
+    <tabstop>kActiveLabel1</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

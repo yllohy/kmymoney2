@@ -96,6 +96,7 @@ class CategoriesPage : public Accounts, public WizardPage<Wizard>
 public:
   CategoriesPage(Wizard* parent, const char* name = 0);
   KMyMoneyWizardPage* nextPage(void) const;
+  QValueList<MyMoneyTemplate> selectedTemplates(void) const;
 
 protected:
   void loadTemplateList(void);
