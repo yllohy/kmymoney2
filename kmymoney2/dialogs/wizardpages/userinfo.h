@@ -35,7 +35,7 @@ class UserInfo : public UserInfoDecl
   Q_OBJECT
 public:
   UserInfo(QWidget* parent = 0, const char* name = 0);
-  MyMoneyPayee UserInfo::user(void) const;
+  MyMoneyPayee user(void) const;
 
 private:
 };
