@@ -913,7 +913,7 @@ void KHomeView::showForecast(void)
       dailyBalances::Iterator it_b = (*it_a).begin();
       MyMoneyMoney runningSum;
       int dropZero = -1, dropMinimum = -1;
-      QString minimumBalance = acc.value("minimumBalance");
+      QString minimumBalance = acc.value("minBalanceAbsolute");
       MyMoneySecurity currency = file->security(acc.currencyId());
 
       for(int limit = 30; limit < 91; limit += 30) {
