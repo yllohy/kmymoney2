@@ -111,9 +111,10 @@ public:
   bool isIncludingSchedules(void) const { return m_includeSchedules; }
   bool isColumnsAreDays(void) const { return m_columnsAreDays; }
   bool isIncludingTransfers(void) const { return m_includeTransfers; }
+  bool isIncludingUnusedAccounts(void) const { return m_includeUnusedAccounts; }
   bool hasBudget(void) const { return m_hasBudget; }
   bool isIncludingBudgetActuals(void) const { return m_includeBudgetActuals; }
-  
+
   // Simple set operations
   void setName(const QString& _s) { m_name = _s; }
   void setShowSubAccounts(bool _f) { m_detailLevel = _f?eDetailAll:eDetailTop; }
@@ -136,6 +137,7 @@ public:
   void setIncludingSchedules( bool _f ) { m_includeSchedules = _f; }
   void setColumnsAreDays( bool _f ) { m_columnsAreDays = _f; }
   void setIncludingTransfers( bool _f ) { m_includeTransfers = _f; }
+  void setIncludingUnusedAccounts( bool _f ) { m_includeUnusedAccounts = _f; }
 
   /**
     * Sets the budget used for this report
@@ -435,6 +437,11 @@ private:
     * the budget.  This is only valid if the report has a budget.
     */
   bool m_includeBudgetActuals;
+  /**
+    * Whether this report should include all accounts and not only
+    * accounts with transactions.
+    */
+  bool m_includeUnusedAccounts;
 };
 
 #endif // MYMONEYREPORT_H

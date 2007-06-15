@@ -235,6 +235,12 @@ protected:
     inline void assignCell( const QString& outergroup, const ReportAccount& row, unsigned column, MyMoneyMoney value, bool budget = false, bool stockSplit = false );
 
   /**
+    * Create a row for each included account. This is used when
+    * the config parameter isIncludingUnusedAccount() is true
+    */
+    void createAccountRows(void);
+
+  /**
     * Record the opening balances of all qualifying accounts into the grid.
     *
     * For accounts opened before the report period, places the balance into the '0' column.
@@ -244,7 +250,7 @@ protected:
     void calculateOpeningBalances( void );
 
   /**
-    * Calculate busget mapping
+    * Calculate budget mapping
     *
     * For budget-vs-actual reports, this creates a mapping between each account
     * in the user's hierarchy and the account where the budget is held for it.

@@ -178,6 +178,8 @@ void KReportConfigurationFilterDlg::slotSearch(void)
 
     m_currentState.setIncludingTransfers( m_tab2->m_checkTransfers->isChecked() );
 
+    m_currentState.setIncludingUnusedAccounts( m_tab2->m_checkUnused->isChecked() );
+
   }
   else if ( m_tab3 )
   {
@@ -310,6 +312,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
     }
     m_tab2->m_checkScheduled->setChecked( m_currentState.isIncludingSchedules() );
     m_tab2->m_checkTransfers->setChecked( m_currentState.isIncludingTransfers() );
+    m_tab2->m_checkUnused->setChecked( m_currentState.isIncludingUnusedAccounts() );
   }
   else if ( m_tab3 )
   {

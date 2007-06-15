@@ -290,6 +290,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   e.setAttribute("includestransfers",m_includeTransfers);
   e.setAttribute("hasbudget",m_hasBudget);
   e.setAttribute("includesactuals",m_includeBudgetActuals);
+  e.setAttribute("includeunused", m_includeUnusedAccounts);
 
   e.setAttribute("charttype",kChartTypeText[m_chartType]);
   e.setAttribute("chartdatalabels",m_chartDataLabels);
@@ -298,13 +299,13 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
 
   if ( m_reportType == ePivotTable )
   {
-    e.setAttribute("type","pivottable 1.13");
+    e.setAttribute("type","pivottable 1.14");
     e.setAttribute("detail", kDetailLevelText[m_detailLevel]);
     e.setAttribute("columntype", kColumnTypeText[m_columnType]);
   }
   else if ( m_reportType == eQueryTable )
   {
-    e.setAttribute("type","querytable 1.13");
+    e.setAttribute("type","querytable 1.14");
 
     QStringList columns;
     unsigned qc = m_queryColumns;
@@ -545,6 +546,7 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_includeTransfers = e.attribute("includestransfers","0").toUInt();
     m_hasBudget = e.attribute("hasbudget","0").toUInt();
     m_includeBudgetActuals = e.attribute("includesactuals","0").toUInt();
+    m_includeUnusedAccounts = e.attribute("includeunused", "0").toUInt();
 
     i = kChartTypeText.findIndex(e.attribute("charttype"));
     if ( i != -1 )

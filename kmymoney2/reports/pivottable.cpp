@@ -238,6 +238,11 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   {
     m_grid.insert(accountTypeToString(MyMoneyAccount::Income),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder-2));
     m_grid.insert(accountTypeToString(MyMoneyAccount::Expense),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder-1,true /* inverted */));
+    //
+    // Create rows for income/expense reports with all accounts included
+    //
+    if(m_config_f.isIncludingUnusedAccounts())
+      createAccountRows();
   }
 
   //
@@ -650,6 +655,35 @@ void PivotTable::calculateColumnHeadings(void)
         }
       }
     }
+  }
+}
+
+void PivotTable::createAccountRows(void)
+{
+  DEBUG_ENTER(__PRETTY_FUNCTION__);
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  QValueList<MyMoneyAccount> accounts;
+  file->accountList(accounts);
+
+  QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
+
+  while ( it_account != accounts.end() )
+  {
+    ReportAccount account = *it_account;
+
+    // only include this item if its account group is included in this report
+    // and if the report includes this account
+    if ( m_config_f.includes( *it_account ) )
+    {
+      DEBUG_OUTPUT(QString("Includes account %1").arg(account.name()));
+
+      // the row group is the account class (major account type)
+      QString outergroup = accountTypeToString(account.accountGroup());
+      // place into the 'opening' column...
+      assignCell( outergroup, account, 0, MyMoneyMoney() );
+    }
+    ++it_account;
   }
 }
 
