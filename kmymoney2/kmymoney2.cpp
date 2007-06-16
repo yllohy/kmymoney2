@@ -148,9 +148,20 @@
 #define RECOVER_KEY_ID        "59B0F826D2B08440"
 #define ID_STATUS_MSG 1
 
+class KMyMoneyPrivate
+{
+public:
+  KMyMoneyPrivate() :
+    m_moveToAccountSelector(0)
+  {}
+
+  kMyMoneyAccountSelector* m_moveToAccountSelector;
+};
+
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   KMainWindow(0, name),
   DCOPObject("kmymoney2app"),
+  d(new KMyMoneyPrivate),
   myMoneyView(0),
   m_searchDlg(0),
   m_autoSaveTimer(0),
@@ -177,6 +188,8 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   initStatusBar();
   ::timetrace("init actions");
   initActions();
+
+  initDynamicMenus();
 
   ::timetrace("create view");
   myMoneyView = new KMyMoneyView(frame, "KMyMoneyView");
@@ -234,6 +247,8 @@ KMyMoney2App::~KMyMoney2App()
   delete m_engineBackup;
   delete m_transactionEditor;
   delete m_endingBalanceDlg;
+  delete d->m_moveToAccountSelector;
+  delete d;
 }
 
 const KURL KMyMoney2App::lastOpenedURL(void)
@@ -250,7 +265,21 @@ const KURL KMyMoney2App::lastOpenedURL(void)
   return url;
 }
 
-void KMyMoney2App::initActions()
+void KMyMoney2App::initDynamicMenus(void)
+{
+  QWidget* w = factory()->container("transaction_move_menu", this);
+  QPopupMenu *menu = dynamic_cast<QPopupMenu*>(w);
+  if(menu) {
+    d->m_moveToAccountSelector = new kMyMoneyAccountSelector(menu, 0, 0, false);
+    menu->insertItem(d->m_moveToAccountSelector);
+    connect(d->m_moveToAccountSelector, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotMoveToAccount(const QCString&)));
+    connect(this, SIGNAL(accountSelected(const MyMoneyAccount&)), this, SLOT(slotUpdateMoveToAccountMenu()));
+    connect(this, SIGNAL(transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>&)), this, SLOT(slotUpdateMoveToAccountMenu()));
+    connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotUpdateMoveToAccountMenu()));
+  }
+}
+
+void KMyMoney2App::initActions(void)
 {
   KAction* p;
 
@@ -501,36 +530,28 @@ void KMyMoney2App::initStatusBar()
   slotStatusProgressBar(-1, -1);
 }
 
-void KMyMoney2App::saveOptions()
+void KMyMoney2App::saveOptions(void)
 {
   config->setGroup("General Options");
   config->writeEntry("Geometry", size());
-  config->writeEntry("Show Toolbar", toggleAction("options_show_toolbar")->isChecked());
   config->writeEntry("Show Statusbar", toggleAction("options_show_statusbar")->isChecked());
-  config->writeEntry("ToolBarPos", (int) toolBar("mainToolBar")->barPos());
+  toolBar("mainToolBar")->saveSettings(config, "mainToolBar");
 
   dynamic_cast<KRecentFilesAction*>(action("file_open_recent"))->saveEntries(config,"Recent Files");
 }
 
 
-void KMyMoney2App::readOptions()
+void KMyMoney2App::readOptions(void)
 {
+  toolBar("mainToolBar")->applySettings(config, "mainToolBar");
+  toggleAction("options_show_toolbar")->setChecked(toolBar("mainToolBar")->isShown());
+
   config->setGroup("General Options");
-
-  // bar status settings
-  toggleAction("options_show_toolbar")->setChecked(config->readBoolEntry("Show Toolbar", true));
-  slotViewToolBar();
-
   toggleAction("options_show_statusbar")->setChecked(config->readBoolEntry("Show Statusbar", true));
   slotViewStatusBar();
 
   toggleAction("view_hide_reconciled_transactions")->setChecked(KMyMoneySettings::hideReconciledTransactions());
   toggleAction("view_hide_unused_categories")->setChecked(KMyMoneySettings::hideUnusedCategory());
-
-  // bar position settings
-  KToolBar::BarPosition toolBarPos;
-  toolBarPos=(KToolBar::BarPosition) config->readNumEntry("ToolBarPos", KToolBar::Top);
-  toolBar("mainToolBar")->setBarPos(toolBarPos);
 
   // initialize the recent file list
   KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
@@ -4207,6 +4228,82 @@ void KMyMoney2App::slotTransactionAssignNumber(void)
     m_transactionEditor->assignNumber();
 }
 
+void KMyMoney2App::slotMoveToAccount(const QCString& id)
+{
+  // close the menu, if it is still open
+  QWidget* w = factory()->container("transaction_move_menu", this);
+  if(w) {
+    if(w->isVisible()) {
+      w->close();
+    }
+  }
+
+  if(m_selectedTransactions.count() > 0 && m_selectedAccount.isAssetLiability()) {
+    MyMoneyFileTransaction ft;
+    try {
+      QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+      for(it_t = m_selectedTransactions.begin(); it_t != m_selectedTransactions.end(); ++it_t) {
+        QValueList<MyMoneySplit>::const_iterator it_s;
+        bool changed = false;
+        MyMoneyTransaction t = (*it_t).transaction();
+        for(it_s = (*it_t).transaction().splits().begin(); it_s != (*it_t).transaction().splits().end(); ++it_s) {
+          if((*it_s).accountId() == m_selectedAccount.id()) {
+            MyMoneySplit s = (*it_s);
+            s.setAccountId(id);
+            t.modifySplit(s);
+            changed = true;
+          }
+        }
+        if(changed) {
+          MyMoneyFile::instance()->modifyTransaction(t);
+        }
+      }
+      ft.commit();
+    } catch(MyMoneyException *e) {
+      delete e;
+    }
+  }
+}
+
+void KMyMoney2App::slotUpdateMoveToAccountMenu(void)
+{
+  if(!m_selectedAccount.id().isEmpty()) {
+    AccountSet accountSet;
+    accountSet.addAccountType(MyMoneyAccount::Checkings);
+    accountSet.addAccountType(MyMoneyAccount::Savings);
+    accountSet.addAccountType(MyMoneyAccount::Cash);
+    accountSet.addAccountType(MyMoneyAccount::AssetLoan);
+    accountSet.addAccountType(MyMoneyAccount::CertificateDep);
+    accountSet.addAccountType(MyMoneyAccount::MoneyMarket);
+    accountSet.addAccountType(MyMoneyAccount::Asset);
+    accountSet.addAccountType(MyMoneyAccount::Currency);
+    accountSet.addAccountType(MyMoneyAccount::CreditCard);
+    accountSet.addAccountType(MyMoneyAccount::Loan);
+    accountSet.addAccountType(MyMoneyAccount::Liability);
+
+    accountSet.load(d->m_moveToAccountSelector);
+    // remove those accounts that we currently reference
+    QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+    for(it_t = m_selectedTransactions.begin(); it_t != m_selectedTransactions.end(); ++it_t) {
+      QValueList<MyMoneySplit>::const_iterator it_s;
+      for(it_s = (*it_t).transaction().splits().begin(); it_s != (*it_t).transaction().splits().end(); ++it_s) {
+        d->m_moveToAccountSelector->removeItem((*it_s).accountId());
+      }
+    }
+    // remove those accounts from the list that are denominated
+    // in a different currency
+    QCStringList list = d->m_moveToAccountSelector->accountList();
+    QValueList<QCString>::const_iterator it_a;
+    for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+      MyMoneyAccount acc = MyMoneyFile::instance()->account(*it_a);
+      if(acc.currencyId() != m_selectedAccount.currencyId())
+        d->m_moveToAccountSelector->removeItem((*it_a));
+    }
+    // Now update the width of the list
+    d->m_moveToAccountSelector->setOptimizedWidth();
+  }
+}
+
 void KMyMoney2App::slotStartMatch(void)
 {
   if(m_selectedTransactions.count() > 0)
@@ -4477,6 +4574,8 @@ void KMyMoney2App::slotUpdateActions(void)
   MyMoneyFile* file = MyMoneyFile::instance();
   bool fileOpen = myMoneyView->fileOpen();
   bool modified = file->dirty();
+  QWidget* w;
+
   action("open_database")->setEnabled(true);
   action("saveas_database")->setEnabled(fileOpen);
   action("file_save")->setEnabled(modified && !myMoneyView->isSyncDatabase());
@@ -4569,6 +4668,10 @@ void KMyMoney2App::slotUpdateActions(void)
   action("transaction_accept")->setEnabled(false);
   action("transaction_create_schedule")->setEnabled(false);
 
+  w = factory()->container("transaction_move_menu", this);
+  if(w)
+    w->setEnabled(false);
+
   if(!m_selectedTransactions.isEmpty()) {
     tooltip = i18n("Delete the current selected transactions");
     action("transaction_delete")->setEnabled(myMoneyView->canModifyTransactions(m_selectedTransactions, tooltip) && !m_selectedTransactions[0].transaction().id().isEmpty());
@@ -4606,6 +4709,11 @@ void KMyMoney2App::slotUpdateActions(void)
       action("transaction_mark_reconciled")->setEnabled(true);
       action("transaction_mark_notreconciled")->setEnabled(true);
       action("transaction_mark_toggle")->setEnabled(true);
+      if(m_selectedAccount.isAssetLiability()) {
+        w = factory()->container("transaction_move_menu", this);
+        if(w)
+          w->setEnabled(true);
+      }
     } else {
       action("transaction_assign_number")->setEnabled(m_transactionEditor->canAssignNumber());
       action("transaction_new")->setEnabled(false);

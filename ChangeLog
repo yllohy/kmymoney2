@@ -1,3 +1,7 @@
+2007-06-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added 'Move to account ...' logic
+  * Keep track of all toolbar attributes
+
 2007-06-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added new user wizard logic
 

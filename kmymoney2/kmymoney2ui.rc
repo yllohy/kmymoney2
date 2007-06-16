@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="16" name="kmymoney2" >
+<kpartgui version="17" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
@@ -194,6 +194,11 @@
   <Action name="transaction_editsplits" />
   <Action name="transaction_delete" />
   <Action name="transaction_duplicate" />
+  <Menu name="transaction_move_menu">
+   <text>Move transaction to...</text>
+   <title>Select account</title>
+   <ActionList name="transaction_move" />
+  </Menu>
   <Menu>
    <text>Mark transaction as...</text>
    <title>Mark transaction</title>

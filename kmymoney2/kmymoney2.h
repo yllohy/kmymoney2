@@ -58,6 +58,7 @@ class IMyMoneyStorage;
 class KFindTransactionDlg;
 class TransactionEditor;
 class KEndingBalanceDlg;
+class KMyMoneyPrivate;
 
 namespace KMyMoneyPlugin { class ImporterPlugin; }
 
@@ -426,6 +427,10 @@ protected slots:
     */
   void slotDataChanged(void);
 
+  void slotMoveToAccount(const QCString& id);
+
+  void slotUpdateMoveToAccountMenu(void);
+
 public:
   /**
     * This method checks if there is at least one asset or liability account
@@ -515,7 +520,7 @@ protected:
   /** save general Options like all bar positions and status as well as the geometry and the recent file list to the configuration
    * file
    */
-  void saveOptions();
+  void saveOptions(void);
 
   /**
     * Creates the interfaces necessary for the plugins to work. Therefore,
@@ -531,14 +536,17 @@ protected:
 
   /** read general Options again and initialize all variables like the recent file list
    */
-  void readOptions();
+  void readOptions(void);
 
   /** initializes the KActions of the application */
-  void initActions();
+  void initActions(void);
+
+  /** initializes the dynamic menus (account selectors) */
+  void initDynamicMenus(void);
 
   /** sets up the statusbar for the main window by initialzing a statuslabel.
    */
-  void initStatusBar();
+  void initStatusBar(void);
 
   /** queryClose is called by KTMainWindow on each closeEvent of a window. Against the
    * default implementation (only returns true), this calles saveModified() on the document object to ask if the document shall
@@ -546,7 +554,7 @@ protected:
    * @see KTMainWindow#queryClose
    * @see KTMainWindow#closeEvent
    */
-  virtual bool queryClose();
+  virtual bool queryClose(void);
 
   /** queryExit is called by KTMainWindow when the last window of the application is going to be closed during the closeEvent().
    * Against the default implementation that just returns true, this calls saveOptions() to save the settings of the last window's
@@ -554,7 +562,7 @@ protected:
    * @see KTMainWindow#queryExit
    * @see KTMainWindow#closeEvent
    */
-  virtual bool queryExit();
+  virtual bool queryExit(void);
 
   void slotCheckSchedules(void);
 
@@ -1064,6 +1072,7 @@ public:
 
 
 private:
+  KMyMoneyPrivate*  d;
   /** the configuration object of the application */
 
   KConfig *config;
