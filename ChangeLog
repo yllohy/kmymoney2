@@ -1,5 +1,6 @@
 2007-06-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added hook for trend based forecast on homepage
+  * Added some details about the account types to the file info dialog
 
 2007-06-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed creation of KMyMoneyWizard buttons to work when the KDE

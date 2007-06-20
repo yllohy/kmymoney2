@@ -24,12 +24,15 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <klistview.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include "kmymoneyfileinfodlg.h"
 #include <kmymoney/imymoneystorage.h>
 #include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneyutils.h>
 
 KMyMoneyFileInfoDlg::KMyMoneyFileInfoDlg(QWidget *parent, const char *name )
  : KMyMoneyFileInfoDlgDecl(parent, name)
@@ -47,9 +50,26 @@ KMyMoneyFileInfoDlg::KMyMoneyFileInfoDlg(QWidget *parent, const char *name )
 
   m_payeeCount->setText(QString("%1").arg(storage->payeeList().count()));
   m_institutionCount->setText(QString("%1").arg(storage->institutionList().count()));
+
   QValueList<MyMoneyAccount> a_list;
   storage->accountList(a_list);
   m_accountCount->setText(QString("%1").arg(a_list.count()));
+
+  QMap<MyMoneyAccount::accountTypeE, int> accountMap;
+  QMap<MyMoneyAccount::accountTypeE, int> accountMapClosed;
+  QValueList<MyMoneyAccount>::const_iterator it_a;
+  for(it_a = a_list.begin(); it_a != a_list.end(); ++it_a) {
+    accountMap[(*it_a).accountType()] = accountMap[(*it_a).accountType()] + 1;
+    accountMapClosed[(*it_a).accountType()] = accountMapClosed[(*it_a).accountType()] + 0;
+    if((*it_a).isClosed())
+      accountMapClosed[(*it_a).accountType()] = accountMapClosed[(*it_a).accountType()] + 1;
+  }
+
+  QMap<MyMoneyAccount::accountTypeE, int>::const_iterator it_m;
+  for(it_m = accountMap.begin(); it_m != accountMap.end(); ++it_m) {
+    new KListViewItem(m_accountView, KMyMoneyUtils::accountTypeToString(it_m.key()), QString("%1").arg(*it_m), QString("%1").arg(accountMapClosed[it_m.key()]));
+  }
+
 
   MyMoneyTransactionFilter filter;
   filter.setReportAllSplits(false);
