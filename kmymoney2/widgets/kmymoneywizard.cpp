@@ -96,31 +96,19 @@ KMyMoneyWizard::KMyMoneyWizard(QWidget *parent, const char *name, bool modal, WF
   setSizeGripEnabled(true);
 
   // create buttons
-  m_cancelButton = new KPushButton(this, i18n("&Cancel"));
-  m_backButton = new KPushButton(this, i18n("&Back"));
-  m_nextButton = new KPushButton(this, i18n("&Next"));
-  m_finishButton = new KPushButton(this, i18n("&Finish"));
-  m_helpButton = new KPushButton(this, i18n("&Help"));
+  m_cancelButton = new KPushButton(i18n("&Cancel"), this);
+  m_backButton = new KPushButton(i18n("&Back"), this);
+  m_nextButton = new KPushButton(i18n("&Next"), this);
+  m_finishButton = new KPushButton(i18n("&Finish"), this);
+  m_helpButton = new KPushButton(i18n("&Help"), this);
 
-  bool useIcons = KGlobalSettings::showIconsOnPushButtons();
-
-  if ( useIcons )
+  if ( KGlobalSettings::showIconsOnPushButtons() )
   {
-    KGuiItem back = KStdGuiItem::back( KStdGuiItem::UseRTL );
-    KGuiItem forward = KStdGuiItem::forward( KStdGuiItem::UseRTL );
-
-    m_backButton->setIconSet( back.iconSet() );
-    m_nextButton->setIconSet( forward.iconSet() );
-
+    m_backButton->setIconSet( KStdGuiItem::back( KStdGuiItem::UseRTL ).iconSet() );
+    m_nextButton->setIconSet( KStdGuiItem::forward( KStdGuiItem::UseRTL ).iconSet() );
     m_finishButton->setIconSet( SmallIconSet( "apply" ) );
     m_cancelButton->setIconSet( SmallIconSet( "button_cancel" ) );
     m_helpButton->setIconSet( SmallIconSet( "help" ) );
-
-    m_backButton->setText( i18n( "&Back" ) );
-    m_nextButton->setText( i18n( "&Next" ) );
-    m_finishButton->setText( i18n( "&Finish" ) );
-    m_cancelButton->setText( i18n( "&Cancel" ) );
-    m_helpButton->setText( i18n( "&Help" ) );
   }
 
   // create button layout
