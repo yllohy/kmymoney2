@@ -446,10 +446,13 @@ const QString KMyMoneyUtils::homePageItemToString(const int idx)
       rc = i18n("Favorite reports");
       break;
     case 5:
-      rc = i18n("Account forecast");
+      rc = i18n("Forecast (schedule)");
       break;
     case 6:
       rc = i18n("Networth forecast");
+      break;
+    case 7:
+      rc = i18n("Forecast (history)");
       break;
     default:
       rc = "";
@@ -469,10 +472,12 @@ const int KMyMoneyUtils::stringToHomePageItem(const QString& txt)
     idx = 3;
   else if(txt == i18n("Favorite reports"))
     idx = 4;
-  else if(txt == i18n("Account forecast"))
+  else if(txt == i18n("Forecast (schedule)"))
     idx = 5;
   else if(txt == i18n("Networth forecast"))
     idx = 6;
+  else if(txt == i18n("Forecast (history)"))
+    idx = 7;
   return idx;
 }
 

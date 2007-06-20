@@ -68,7 +68,8 @@ protected:
   void showAccounts(paymentTypeE type, const QString& hdr);
   void showAccountEntry(const MyMoneyAccount&);
   void showFavoriteReports();
-  void showForecast(void);
+  void showScheduleBasedForecast(void);
+  void showTrendBasedForecast(void);
   void showNetWorthGraph(void);
 
   const QString link(const QString& view, const QString& query) const;

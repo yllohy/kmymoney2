@@ -1,3 +1,10 @@
+2007-06-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added hook for trend based forecast on homepage
+
+2007-06-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed creation of KMyMoneyWizard buttons to work when the KDE
+    global setting 'icons on buttons' has been turned off
+
 2007-06-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added 'Move to account ...' logic
   * Keep track of all toolbar attributes

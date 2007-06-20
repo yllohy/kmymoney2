@@ -222,11 +222,14 @@ void KHomeView::loadView(void)
           case 4:         // favorite reports
             showFavoriteReports();
             break;
-          case 5:          // forecast
-            showForecast();
+          case 5:         // forecast (schedule based)
+            showScheduleBasedForecast();
             break;
-            case 6:        // net worth graph over all accounts
+          case 6:         // net worth graph over all accounts
             showNetWorthGraph();
+            break;
+          case 7:         // forecast (based on history)
+            showTrendBasedForecast();
             break;
         }
         m_part->write("<div class=\"gap\">&nbsp;</div>\n");
@@ -701,7 +704,14 @@ void KHomeView::showFavoriteReports(void)
   }
 }
 
-void KHomeView::showForecast(void)
+void KHomeView::showTrendBasedForecast(void)
+{
+    m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Trend based forecast")));
+
+    m_part->write("<p>This is a hook provided for further development</p>");
+}
+
+void KHomeView::showScheduleBasedForecast(void)
 {
   typedef QMap<int, MyMoneyMoney> dailyBalances;
   QMap<QCString, dailyBalances> accountList;
@@ -886,7 +896,7 @@ void KHomeView::showForecast(void)
     int i = 0;
 
     // Now output header
-    m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("90 day forecast")));
+    m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("90 day schedule based forecast")));
     m_part->write("<table width=\"95%\" cellspacing=\"0\" cellpadding=\"2\">");
     m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
     m_part->write(i18n("Account"));
