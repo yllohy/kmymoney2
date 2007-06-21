@@ -1,5 +1,6 @@
 2007-06-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed price dialog loading
+  * Fixed deleting accounts that have no sub-accounts
 
 2007-06-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added hook for trend based forecast on homepage

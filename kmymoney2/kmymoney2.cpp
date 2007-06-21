@@ -2825,6 +2825,9 @@ void KMyMoney2App::slotAccountDelete(void)
         if (!needAskUser || (KMessageBox::questionYesNo(this, QString("<qt>")+i18n("Do you really want to delete category <b>%1</b>?").arg(m_selectedAccount.name())+QString("</qt>")) == KMessageBox::Yes)) {
           try {
             file->removeAccount(m_selectedAccount);
+            ft.commit();
+            m_selectedAccount.clearId();
+            slotUpdateActions();
           } catch(MyMoneyException* e) {
             KMessageBox::error( this, QString("<qt>")+i18n("Unable to delete category <b>%1</b>. Cause: %2").arg(m_selectedAccount.name()).arg(e->what())+QString("</qt>"));
             delete e;
@@ -2879,12 +2882,12 @@ void KMyMoney2App::slotAccountDelete(void)
         }
       }
       // all good, now first reparent selected sub-categories
-      MyMoneyAccount parent = file->account(m_selectedAccount.parentAccountId());
-      for (QCStringList::const_iterator it = accountsToReparent.begin(); it != accountsToReparent.end(); ++it) {
-        MyMoneyAccount child = file->account(*it);
-        file->reparentAccount(child, parent);
-      }
       try {
+        MyMoneyAccount parent = file->account(m_selectedAccount.parentAccountId());
+        for (QCStringList::const_iterator it = accountsToReparent.begin(); it != accountsToReparent.end(); ++it) {
+          MyMoneyAccount child = file->account(*it);
+          file->reparentAccount(child, parent);
+        }
         // now recursively delete remaining sub-categories
         file->removeAccountList(m_selectedAccount.accountList());
         // don't forget to update m_selectedAccount, because we still have a copy of
