@@ -1,3 +1,6 @@
+2007-06-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed price dialog loading
+
 2007-06-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added hook for trend based forecast on homepage
   * Added some details about the account types to the file info dialog

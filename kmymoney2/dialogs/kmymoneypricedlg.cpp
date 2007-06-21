@@ -92,6 +92,8 @@ KMyMoneyPriceDlg::KMyMoneyPriceDlg(QWidget* parent, const char *name) :
   connect(m_onlineQuoteButton, SIGNAL(clicked()), this, SLOT(slotOnlinePriceUpdate()));
   connect(m_priceList, SIGNAL(onlinePriceUpdate()), this, SLOT(slotOnlinePriceUpdate()));
 
+  connect(m_showAllPrices, SIGNAL(toggled(bool)), this, SLOT(slotLoadWidgets()));
+  slotLoadWidgets();
   slotSelectPrice(0);
 
   // FIXME: for now, we don't have the logic to delete all prices in a given date range
