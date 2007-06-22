@@ -1,3 +1,6 @@
+2007-06-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed update of price editor when deleting prices
+
 2007-06-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed price dialog loading
   * Fixed deleting accounts that have no sub-accounts

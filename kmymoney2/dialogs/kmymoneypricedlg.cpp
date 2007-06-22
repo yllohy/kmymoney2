@@ -93,6 +93,8 @@ KMyMoneyPriceDlg::KMyMoneyPriceDlg(QWidget* parent, const char *name) :
   connect(m_priceList, SIGNAL(onlinePriceUpdate()), this, SLOT(slotOnlinePriceUpdate()));
 
   connect(m_showAllPrices, SIGNAL(toggled(bool)), this, SLOT(slotLoadWidgets()));
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadWidgets()));
+
   slotLoadWidgets();
   slotSelectPrice(0);
 
@@ -224,8 +226,12 @@ void KMyMoneyPriceDlg::slotOnlinePriceUpdate(void)
   }
 }
 
+#if 0
 // This function is not needed.  However, removing the KUpdateStockPriceDlg
 // instantiation below causes link failures:
+
+// This seems to be fixed, so I #if 0'ed it out. Let's see, if someone
+// complains and if not, we get rid of this whole block one day. (2007-06-22 ipwizard)
 //
 // kmymoney2/widgets/kmymoneypriceview.cpp:179: undefined reference to
 // `KUpdateStockPriceDlg::KUpdateStockPriceDlg[in-charge](QWidget*, char const*)'
@@ -235,6 +241,7 @@ void KEditEquityEntryDlg_useless(void)
 {
   delete new KUpdateStockPriceDlg();
 }
+#endif
 
 // Make sure, that these definitions are only used within this file
 // this does not seem to be necessary, but when building RPMs the
