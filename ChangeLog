@@ -6,6 +6,8 @@
     the "kmm-encryption-key" is missing in the file (could happen when
     reading rather old files)
   * replace QDate::shortMonthName() with KGlobal::locale()->monthName()
+  * Only assign check numbers for scheduled payments, if payment type
+    is 'write check'.
 
 2007-06-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed update of price editor when deleting prices

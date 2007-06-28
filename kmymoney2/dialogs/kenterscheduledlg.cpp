@@ -41,6 +41,7 @@
 #include <kmymoney/transactioneditor.h>
 #include <kmymoney/kmymoneyutils.h>
 #include <kmymoney/mymoneyfinancialcalculator.h>
+#include <kmymoney/kmymoneylineedit.h>
 
 #include "../kmymoney2.h"
 
@@ -277,6 +278,14 @@ TransactionEditor* KEnterScheduleDlg::startEdit(void)
         break;
     }
     editor->setup(d->m_tabOrderWidgets, d->m_schedule.account(), action);
+
+    // if it's not a check, then we need to clear
+    // a possibly assigned check number
+    if(d->m_schedule.paymentType() != MyMoneySchedule::STYPE_WRITECHEQUE) {
+      QWidget* w = editor->haveWidget("number");
+      if(w)
+        dynamic_cast<kMyMoneyLineEdit*>(w)->loadText(QString());
+    }
 
     Q_ASSERT(!d->m_tabOrderWidgets.isEmpty());
 
