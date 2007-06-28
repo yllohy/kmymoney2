@@ -74,6 +74,7 @@ public:
 
   virtual Q_LONG readBlock(char *data, Q_ULONG maxlen);
   virtual Q_LONG writeBlock(const char *data, Q_ULONG maxlen);
+  virtual QByteArray readAll(void);
 
   virtual int getch(void);
   virtual int putch(int c);

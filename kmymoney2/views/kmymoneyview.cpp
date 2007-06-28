@@ -711,7 +711,9 @@ bool KMyMoneyView::readFile(const KURL& url)
 
   // make sure we setup the encryption key correctly
   if(isEncrypted && MyMoneyFile::instance()->value("kmm-encryption-key").isEmpty()) {
+    MyMoneyFileTransaction ft;
     MyMoneyFile::instance()->setValue("kmm-encryption-key", KMyMoneySettings::gpgRecipient());
+    ft.commit();
   }
 
   // if a temporary file was constructed by NetAccess::download,

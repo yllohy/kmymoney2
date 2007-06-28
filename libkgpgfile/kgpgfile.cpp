@@ -414,6 +414,23 @@ Q_LONG KGPGFile::readBlock(char *data, Q_ULONG maxlen)
   return maxlen - m_readRemain;
 }
 
+QByteArray KGPGFile::readAll(void)
+{
+  // use a larger blocksize than in the QIODevice version
+  const int blocksize = 8192;
+  int nread = 0;
+  QByteArray ba;
+  while ( !atEnd() ) {
+    ba.resize( nread + blocksize );
+    int r = readBlock( ba.data()+nread, blocksize );
+    if ( r < 0 )
+      return QByteArray();
+    nread += r;
+  }
+  ba.resize( nread );
+  return ba;
+}
+
 void KGPGFile::slotGPGExited(KProcess* )
 {
   // qDebug("GPG finished");

@@ -954,7 +954,7 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate&
 {
   MyMoneyMoney result(0);
   MyMoneyAccount acc;
-  if (date != QDate()) qDebug ("request balance for %s at %s", id.data(), date.toString(Qt::ISODate).latin1());
+  // if (date != QDate()) qDebug ("request balance for %s at %s", id.data(), date.toString(Qt::ISODate).latin1());
   if(!date.isValid() && account(id).accountType() != MyMoneyAccount::Stock) {
     if(m_accountList.find(id) != m_accountList.end())
       return m_accountList[id].balance();
@@ -996,13 +996,11 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate&
     }
 
     // fill all accounts w/o transactions to zero
-    if (m_sql != 0) {
-      QMap<QCString, MyMoneyAccount>::ConstIterator it_a;
-      for(it_a = m_accountList.begin(); it_a != m_accountList.end(); ++it_a) {
-        if(m_balanceCache[(*it_a).id()].valid == false) {
-          MyMoneyBalanceCacheItem balance(MyMoneyMoney(0,1));
-          m_balanceCache[(*it_a).id()] = balance;
-        }
+    QMap<QCString, MyMoneyAccount>::ConstIterator it_a;
+    for(it_a = m_accountList.begin(); it_a != m_accountList.end(); ++it_a) {
+      if(m_balanceCache[(*it_a).id()].valid == false) {
+        MyMoneyBalanceCacheItem balance(MyMoneyMoney(0,1));
+        m_balanceCache[(*it_a).id()] = balance;
       }
     }
   }
@@ -1097,88 +1095,96 @@ void MyMoneySeqAccessMgr::invalidateBalanceCache(const QCString& id)
 void MyMoneySeqAccessMgr::loadAccounts(const QMap<QCString, MyMoneyAccount>& map)
 {
   m_accountList = map;
-}
 
-#if 0
-void MyMoneySeqAccessMgr::loadAccount(const MyMoneyAccount& acc)
-{
-  if(acc.id() == asset().id()
-  || acc.id() == liability().id()
-  || acc.id() == expense().id()
-  || acc.id() == income().id()
-  || acc.id() == equity().id()) {
-    m_accountList.modify(acc.id(), acc);
-    return;
+  // scan the map to identify the last used id
+  QMap<QCString, MyMoneyAccount>::const_iterator it_a;
+  QCString lastId;
+  for(it_a = map.begin(); it_a != map.end(); ++it_a) {
+    if((*it_a).id() > lastId)
+      lastId = (*it_a).id();
   }
 
-  QMap<QCString, MyMoneyAccount>::ConstIterator it;
-
-  it = m_accountList.find(acc.id());
-  if(it != m_accountList.end()) {
-    QString msg = "Duplicate account  '";
-    msg += acc.id() + "' during loadAccount()";
-    throw new MYMONEYEXCEPTION(msg);
+  int pos = lastId.find(QRegExp("\\d+"), 0);
+  if(pos != -1) {
+    m_nextAccountID = atol(lastId.mid(pos));
   }
-  m_accountList.modify(acc.id(), acc);
 }
-#endif
 
 void MyMoneySeqAccessMgr::loadTransactions(const QMap<QCString, MyMoneyTransaction>& map)
 {
   m_transactionList = map;
 
-  // now fill the key map
+  // now fill the key map and
+  // identify the last used id
+  QCString lastId;
   QMap<QCString, QCString> keys;
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
   for(it_t = map.begin(); it_t != map.end(); ++it_t) {
     keys[(*it_t).id()] = it_t.key();
+    if((*it_t).id() > lastId)
+      lastId = (*it_t).id();
   }
   m_transactionKeys = keys;
+
+
+  int pos = lastId.find(QRegExp("\\d+"), 0);
+  if(pos != -1) {
+    m_nextTransactionID = atol(lastId.mid(pos));
+  }
 }
 
 void MyMoneySeqAccessMgr::loadInstitutions(const QMap<QCString, MyMoneyInstitution>& map)
 {
   m_institutionList = map;
-}
 
-#if 0
-void MyMoneySeqAccessMgr::loadInstitution(const MyMoneyInstitution& inst)
-{
-  QMap<QCString, MyMoneyInstitution>::ConstIterator it;
-
-  it = m_institutionList.find(inst.id());
-  if(it != m_institutionList.end()) {
-    QString msg = "Duplicate institution  '";
-    msg += inst.id() + "' during loadInstitution()";
-    throw new MYMONEYEXCEPTION(msg);
+  // scan the map to identify the last used id
+  QMap<QCString, MyMoneyInstitution>::const_iterator it_i;
+  QCString lastId;
+  for(it_i = map.begin(); it_i != map.end(); ++it_i) {
+    if((*it_i).id() > lastId)
+      lastId = (*it_i).id();
   }
-  m_institutionList.insert(inst.id(), inst);
+
+  int pos = lastId.find(QRegExp("\\d+"), 0);
+  if(pos != -1) {
+    m_nextInstitutionID = atol(lastId.mid(pos));
+  }
 }
-#endif
 
 void MyMoneySeqAccessMgr::loadPayees(const QMap<QCString, MyMoneyPayee>& map)
 {
   m_payeeList = map;
-}
 
-#if 0
-void MyMoneySeqAccessMgr::loadPayee(const MyMoneyPayee& payee)
-{
-  QMap<QCString, MyMoneyPayee>::ConstIterator it;
-
-  it = m_payeeList.find(payee.id());
-  if(it != m_payeeList.end()) {
-    QString msg = "Duplicate payee  '";
-    msg += payee.id() + "' during loadPayee()";
-    throw new MYMONEYEXCEPTION(msg);
+  // scan the map to identify the last used id
+  QMap<QCString, MyMoneyPayee>::const_iterator it_p;
+  QCString lastId;
+  for(it_p = map.begin(); it_p != map.end(); ++it_p) {
+    if((*it_p).id() > lastId)
+      lastId = (*it_p).id();
   }
-  m_payeeList.insert(payee.id(), payee);
+
+  int pos = lastId.find(QRegExp("\\d+"), 0);
+  if(pos != -1) {
+    m_nextPayeeID = atol(lastId.mid(pos));
+  }
 }
-#endif
 
 void MyMoneySeqAccessMgr::loadSecurities(const QMap<QCString, MyMoneySecurity>& map)
 {
   m_securitiesList = map;
+
+  // scan the map to identify the last used id
+  QMap<QCString, MyMoneySecurity>::const_iterator it_s;
+  QCString lastId;
+  for(it_s = map.begin(); it_s != map.end(); ++it_s) {
+    if((*it_s).id() > lastId)
+      lastId = (*it_s).id();
+  }
+
+  int pos = lastId.find(QRegExp("\\d+"), 0);
+  if(pos != -1) {
+    m_nextSecurityID = atol(lastId.mid(pos));
+  }
 }
 
 void MyMoneySeqAccessMgr::loadCurrencies(const QMap<QCString, MyMoneySecurity>& map)
@@ -1403,6 +1409,19 @@ const QValueList<MyMoneySchedule> MyMoneySeqAccessMgr::scheduleList(
 void MyMoneySeqAccessMgr::loadSchedules(const QMap<QCString, MyMoneySchedule>& map)
 {
   m_scheduleList = map;
+
+  // scan the map to identify the last used id
+  QMap<QCString, MyMoneySchedule>::const_iterator it_s;
+  QCString lastId;
+  for(it_s = map.begin(); it_s != map.end(); ++it_s) {
+    if((*it_s).id() > lastId)
+      lastId = (*it_s).id();
+  }
+
+  int pos = lastId.find(QRegExp("\\d+"), 0);
+  if(pos != -1) {
+    m_nextScheduleID = atol(lastId.mid(pos));
+  }
 }
 
 void MyMoneySeqAccessMgr::loadScheduleId(const unsigned long id)
@@ -1608,6 +1627,19 @@ void MyMoneySeqAccessMgr::addReport( MyMoneyReport& report )
 void MyMoneySeqAccessMgr::loadReports(const QMap<QCString, MyMoneyReport>& map)
 {
   m_reportList = map;
+
+  // scan the map to identify the last used id
+  QMap<QCString, MyMoneyReport>::const_iterator it_r;
+  QCString lastId;
+  for(it_r = map.begin(); it_r != map.end(); ++it_r) {
+    if((*it_r).id() > lastId)
+      lastId = (*it_r).id();
+  }
+
+  int pos = lastId.find(QRegExp("\\d+"), 0);
+  if(pos != -1) {
+    m_nextReportID = atol(lastId.mid(pos));
+  }
 }
 
 void MyMoneySeqAccessMgr::modifyReport( const MyMoneyReport& report )
@@ -1676,6 +1708,19 @@ void MyMoneySeqAccessMgr::addBudget( MyMoneyBudget& budget )
 void MyMoneySeqAccessMgr::loadBudgets(const QMap<QCString, MyMoneyBudget>& map)
 {
   m_budgetList = map;
+
+  // scan the map to identify the last used id
+  QMap<QCString, MyMoneyBudget>::const_iterator it_b;
+  QCString lastId;
+  for(it_b = map.begin(); it_b != map.end(); ++it_b) {
+    if((*it_b).id() > lastId)
+      lastId = (*it_b).id();
+  }
+
+  int pos = lastId.find(QRegExp("\\d+"), 0);
+  if(pos != -1) {
+    m_nextBudgetID = atol(lastId.mid(pos));
+  }
 }
 
 const MyMoneyBudget& MyMoneySeqAccessMgr::budgetByName(const QString& budget) const

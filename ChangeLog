@@ -1,3 +1,11 @@
+2007-06-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Rewrote the XML parser to be based on a SAX model
+  * Provide readAll() with larger block sizes in KGPGFile
+  * Fixed problem with balance cache mishits
+  * Fixed crash when reading an encrypted file that does not contain
+    the "kmm-encryption-key" is missing in the file (could happen when
+    reading rather old files)
+
 2007-06-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed update of price editor when deleting prices
 

@@ -2,12 +2,9 @@
                           mymoneystoragexml.h  -  description
                              -------------------
     begin                : Thu Oct 24 2002
-    copyright            : (C) 2000-2002 by Michael Edwardes
-    email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
-                           Thomas Baumgart <ipwizard@users.sourceforge.net>
+    copyright            : (C) 2002 by Kevin Tambascio
+                           (C) 2004 by Thomas Baumgart
+    email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
                            Kevin Tambascio <ktambascio@users.sourceforge.net>
  ***************************************************************************/
 
@@ -35,6 +32,8 @@ class QIODevice;
 
 #include "imymoneyserialize.h"
 #include "imymoneystorageformat.h"
+class MyMoneyStorageXMLPrivate;
+class MyMoneyXmlContentHandler;
 
 /**
   *@author Kevin Tambascio (ktambascio@users.sourceforge.net)
@@ -45,6 +44,7 @@ class QIODevice;
 
 class MyMoneyStorageXML : public IMyMoneyStorageFormat
 {
+  friend class MyMoneyXmlContentHandler;
 public:
   MyMoneyStorageXML();
   virtual ~MyMoneyStorageXML();
@@ -76,7 +76,7 @@ protected:
 
   QValueList<QDomElement> readElements(QString groupTag, QString itemTag = QString());
 
-  void readFileInformation(void);
+  bool readFileInformation(const QDomElement& fileInfo);
   virtual void writeFileInformation(QDomElement& fileInfo);
 
   virtual void writeUserInformation(QDomElement& userInfo);
@@ -100,36 +100,23 @@ protected:
   virtual void writeSchedules(QDomElement& scheduled);
   virtual void writeSchedule(QDomElement& scheduledTx, const MyMoneySchedule& tx);
 
-  virtual void readFile(QIODevice* s, IMyMoneySerialize* storage);
-  virtual void writeFile(QIODevice* s, IMyMoneySerialize* storage);
-
-  virtual QDomElement writeKeyValuePairs(const QMap<QCString, QString> pairs);
-  void readKeyValuePairs(void);
-
-  void readUserInformation(void);
-  void readInstitutions(void);
-  void readPayees(void);
-  void readAccounts(void);
-  void readTransactions(void);
-  void readSchedules(void);
+  virtual void writeReports(QDomElement& e);
+  virtual void writeBudgets(QDomElement& e);
 
   virtual void writeSecurities(QDomElement& securities);
   virtual void writeSecurity(QDomElement& securityElement, const MyMoneySecurity& security);
 
   virtual void writeCurrencies(QDomElement& currencies);
 
-  void readSecurities(void);
-  void readCurrencies(void);
+  virtual QDomElement writeKeyValuePairs(const QMap<QCString, QString> pairs);
 
-  void readPrices(void);
+  virtual void readFile(QIODevice* s, IMyMoneySerialize* storage);
+  virtual void writeFile(QIODevice* s, IMyMoneySerialize* storage);
+
+  bool readUserInformation(const QDomElement& userElement);
+
   void readPricePair(const QDomElement& pricePair);
   const MyMoneyPrice readPrice(const QCString& from, const QCString& to, const QDomElement& price);
-
-  void readReports(void);
-  virtual void writeReports(QDomElement& e);
-
-  void readBudgets(void);
-  virtual void writeBudgets(QDomElement& e);
 
   QDomElement findChildElement(const QString& name, const QDomElement& root);
 
@@ -141,6 +128,7 @@ protected:
   QDomDocument *m_doc;
 
 private:
+  MyMoneyStorageXMLPrivate*  d;
 
   /**
     * This member is used to store the file version information
@@ -153,25 +141,6 @@ private:
     * to be used when writing a file.
     */
   static unsigned int fileVersionWrite;
-
-  /**
-    * This member variable signals, if the MyMoneyFile object is
-    * protected by a password
-    */
-  bool m_passwordProtected;
-
-  /**
-    * This member keeps a copy of the password required to access
-    * the MyMoneyFile object.
-    */
-  QString m_password;
-
-  /**
-    * This member variable signals, if the MyMoneyFile object is
-    * encrypted on the permanent storage device
-    */
-  bool m_encrypted;
-
   /**
     * This member keeps the id of the base currency. We need this
     * temporarily to convert the price history from the old to the
