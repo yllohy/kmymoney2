@@ -594,7 +594,7 @@ void PivotTable::calculateColumnHeadings(void)
       unsigned column = 1;
       while ( column++ < m_numColumns )
       {
-        QString heading = QDate::shortMonthName(columnDate.month()) + " " + QString::number(columnDate.day());
+        QString heading = KGlobal::locale()->monthName(columnDate.month(), true) + " " + QString::number(columnDate.day());
         columnDate = columnDate.addDays(1);
         m_columnHeadings.append( heading);
       }
@@ -611,11 +611,11 @@ void PivotTable::calculateColumnHeadings(void)
       {
         if (((dow % columnpitch) == 0) || (day == m_endDate))
         {
-          m_columnHeadings.append (
-            QDate::shortMonthName(prv.month()) + "&nbsp;" +
-            QString::number(prv.day()) + " - " +
-            QDate::shortMonthName(day.month()) + "&nbsp;" +
-            QString::number(day.day()));
+          m_columnHeadings.append(QString("%1&nbsp;%2 - %3&nbsp;%4")
+            .arg(KGlobal::locale()->monthName(prv.month(), true))
+            .arg(prv.day())
+            .arg(KGlobal::locale()->monthName(day.month(), true))
+            .arg(day.day()));
           prv = day.addDays(1);
         }
         day = day.addDays(1);
@@ -642,9 +642,9 @@ void PivotTable::calculateColumnHeadings(void)
       unsigned column = 1;
       while ( column++ < m_numColumns )
       {
-        QString heading = QDate::shortMonthName(1+segment*columnpitch);
+        QString heading = KGlobal::locale()->monthName(1+segment*columnpitch, true);
         if ( columnpitch != 1 )
-          heading += "-" + QDate::shortMonthName((1+segment)*columnpitch);
+          heading += "-" + KGlobal::locale()->monthName((1+segment)*columnpitch, true);
         if ( includeyear )
           heading += " " + QString::number(year);
         m_columnHeadings.append( heading);

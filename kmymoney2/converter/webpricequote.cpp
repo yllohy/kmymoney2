@@ -790,7 +790,8 @@ QDate MyMoneyDateFormat::convertString(const QString& _in, bool _strict, unsigne
         unsigned i = 1;
         while ( i <= 12 )
         {
-          if (  QDate::shortMonthName(i).lower() == *it_scanned || QDate::longMonthName(i).lower() == *it_scanned )
+          if (KGlobal::locale()->monthName(i, true).lower() == *it_scanned
+          || KGlobal::locale()->monthName(i).lower() == *it_scanned )
             month = i;
           ++i;
         }

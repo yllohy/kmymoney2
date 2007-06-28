@@ -77,7 +77,7 @@ void MyMoneyQifProfile::clear(void)
   m_profileName = "";
   m_profileDescription = "";
   m_profileType = "Bank";
-  
+
   m_attemptMatchDuplicates = true;
 }
 
@@ -99,12 +99,12 @@ void MyMoneyQifProfile::loadProfile(const QString& name)
   m_filterScriptImport = config->readEntry("FilterScriptImport", m_filterScriptImport);
   m_filterScriptExport = config->readEntry("FilterScriptExport", m_filterScriptExport);
   m_filterFileType = config->readEntry("FilterFileType",m_filterFileType);
-  
+
   m_attemptMatchDuplicates = config->readBoolEntry("AttemptMatchDuplicates", m_attemptMatchDuplicates);
 
   // make sure, we remove any old stuff for now
   config->deleteEntry("FilterScript");
-  
+
   QString tmp = QString(m_decimal['Q']) + m_decimal['T'] + m_decimal['I'] +
                 m_decimal['$'] + m_decimal['O'];
   tmp = config->readEntry("Decimal", tmp);
@@ -149,7 +149,7 @@ void MyMoneyQifProfile::saveProfile(void)
     tmp = QString(m_decimal['Q']) + m_decimal['T'] + m_decimal['I'] +
                   m_decimal['$'] + m_decimal['O'];
     config->writeEntry("Decimal", tmp);
-    tmp = QString(m_thousands['Q']) + m_thousands['T'] + m_thousands['I'] + 
+    tmp = QString(m_thousands['Q']) + m_thousands['T'] + m_thousands['I'] +
                 m_thousands['$'] + m_thousands['O'];
     config->writeEntry("Thousand", tmp);
   }
@@ -303,7 +303,7 @@ const QString MyMoneyQifProfile::date(const QDate& datein) const
             if(delim)
               buffer += delim;
             if(maskLen == 3)
-              buffer += datein.shortMonthName(datein.month());
+              buffer += KGlobal::locale()->monthName(datein.month(), true);
             else
               buffer += QString::number(datein.month());
             break;
@@ -378,7 +378,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
     }
   }
 
-  
+
   part = 0;
   delim = 0;
   bool prevWasChar = false;
@@ -423,7 +423,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
       return QDate();
     }
   }
-  
+
   QString msg;
   for(i = 0; i < 3; ++i) {
     switch(formatParts[i][0].latin1()) {
@@ -439,7 +439,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
             msg = "Invalid numeric character in month string";
         } else {
           for(j = 1; j <= 12; ++j) {
-            if(QDate::shortMonthName(j).lower() == formatParts[i].lower()) {
+            if(KGlobal::locale()->monthName(j, true).lower() == formatParts[i].lower()) {
               mon = j;
               ok = true;
               break;
@@ -530,7 +530,7 @@ const QString MyMoneyQifProfile::twoDigitYear(const QChar delim, int yr) const
     buffer += "0";
 
   buffer += QString::number(yr);
-  return buffer;  
+  return buffer;
 }
 
 const QString MyMoneyQifProfile::value(const QChar& def, const MyMoneyMoney& valuein) const
@@ -546,7 +546,7 @@ const QString MyMoneyQifProfile::value(const QChar& def, const MyMoneyMoney& val
   MyMoneyMoney::setDecimalSeparator(amountDecimal(def));
   MyMoneyMoney::setThousandSeparator(amountThousands(def));
   MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::BeforeQuantityMoney);
-  
+
   res = valuein.formatMoney();
 
   MyMoneyMoney::setDecimalSeparator(_decimalSeparator);
@@ -583,7 +583,7 @@ void MyMoneyQifProfile::setFilterScriptImport(const QString& script)
 {
   if(m_filterScriptImport != script)
     m_isDirty = true;
-    
+
   m_filterScriptImport = script;
 }
 
@@ -607,8 +607,8 @@ void MyMoneyQifProfile::setAttemptMatchDuplicates(bool f)
 {
   if ( m_attemptMatchDuplicates != f )
     m_isDirty = true;
-  
-  m_attemptMatchDuplicates = f;    
+
+  m_attemptMatchDuplicates = f;
 }
 
 #include "mymoneyqifprofile.moc"
