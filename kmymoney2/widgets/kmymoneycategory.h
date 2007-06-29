@@ -38,6 +38,7 @@ class KPushButton;
 #include "../widgets/kmymoneycombo.h"
 
 class kMyMoneyAccountSelector;
+class KMyMoneyCategoryPrivate;
 
 /**
   * This class implements a text based account/category selector.
@@ -153,6 +154,8 @@ protected:
 
 public slots:
   virtual void slotItemSelected(const QCString& id);
+  virtual void setEnabled(bool);
+  virtual void setDisabled(bool);
 
 signals:
   /**
@@ -165,8 +168,7 @@ signals:
   void focusIn(void);
 
 private:
-  KPushButton*      m_splitButton;
-  QFrame*           m_frame;
+  KMyMoneyCategoryPrivate*  d;
 };
 
 

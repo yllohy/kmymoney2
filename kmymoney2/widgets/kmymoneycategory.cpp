@@ -40,29 +40,40 @@
 #include <kmymoney/mymoneyfile.h>
 #include "kmymoneyaccountcompletion.h"
 
+class KMyMoneyCategoryPrivate
+{
+public:
+  KMyMoneyCategoryPrivate() :
+    splitButton(0),
+    frame(0),
+    recursive(false) {}
+
+  KPushButton*      splitButton;
+  QFrame*           frame;
+  bool              recursive;
+};
 
 KMyMoneyCategory::KMyMoneyCategory(QWidget* parent, const char * name, bool splitButton) :
   KMyMoneyCombo(true, parent, name),
-  m_splitButton(0),
-  m_frame(0)
+  d(new KMyMoneyCategoryPrivate)
 {
   if(splitButton) {
-    m_frame = new QFrame(0);
-    m_frame->setFocusProxy(this);
-    QHBoxLayout* layout = new QHBoxLayout(m_frame);
+    d->frame = new QFrame(0);
+    d->frame->setFocusProxy(this);
+    QHBoxLayout* layout = new QHBoxLayout(d->frame);
     // make sure not to use our own overridden version of reparent() here
-    KMyMoneyCombo::reparent(m_frame, getWFlags() & ~WType_Mask, QPoint(0, 0), true);
+    KMyMoneyCombo::reparent(d->frame, getWFlags() & ~WType_Mask, QPoint(0, 0), true);
     if(parent)
-      m_frame->reparent(parent, QPoint(0, 0), true);
+      d->frame->reparent(parent, QPoint(0, 0), true);
 
     // create button
     KGuiItem splitButtonItem("",
         QIconSet(KGlobal::iconLoader()->loadIcon("split_transaction", KIcon::Small,
         KIcon::SizeSmall)), "", "");
-    m_splitButton = new KPushButton(splitButtonItem, m_frame, "splitButton");
+    d->splitButton = new KPushButton(splitButtonItem, d->frame, "splitButton");
 
     layout->addWidget(this, 5);
-    layout->addWidget(m_splitButton);
+    layout->addWidget(d->splitButton);
   }
 
   m_completion = new kMyMoneyAccountCompletion(this, 0);
@@ -73,26 +84,28 @@ KMyMoneyCategory::KMyMoneyCategory(QWidget* parent, const char * name, bool spli
 KMyMoneyCategory::~KMyMoneyCategory()
 {
   // make sure to wipe out the frame, button and layout
-  if(m_frame && !m_frame->parentWidget())
-    m_frame->deleteLater();
+  if(d->frame && !d->frame->parentWidget())
+    d->frame->deleteLater();
+
+  delete d;
 }
 
 KPushButton* KMyMoneyCategory::splitButton(void) const
 {
-  return m_splitButton;
+  return d->splitButton;
 }
 
 void KMyMoneyCategory::setPalette(const QPalette& palette)
 {
-  if(m_frame)
-    m_frame->setPalette(palette);
+  if(d->frame)
+    d->frame->setPalette(palette);
   KMyMoneyCombo::setPalette(palette);
 }
 
 void KMyMoneyCategory::reparent(QWidget *parent, WFlags w, const QPoint& pos, bool showIt)
 {
-  if(m_frame)
-    m_frame->reparent(parent, w, pos, showIt);
+  if(d->frame)
+    d->frame->reparent(parent, w, pos, showIt);
   else
     KMyMoneyCombo::reparent(parent, w, pos, showIt);
 }
@@ -151,6 +164,23 @@ void KMyMoneyCategory::setSplitTransaction(void)
 bool KMyMoneyCategory::isSplitTransaction(void) const
 {
   return currentText() == i18n("Split transaction (category replacement)", "Split transaction");
+}
+
+void KMyMoneyCategory::setEnabled(bool enable)
+{
+  if(d->recursive || !d->frame) {
+    KMyMoneyCombo::setEnabled(enable);
+
+  } else if(d->frame) {
+    d->recursive = true;
+    d->frame->setEnabled(enable);
+    d->recursive = false;
+  }
+}
+
+void KMyMoneyCategory::setDisabled(bool disable)
+{
+  setEnabled(!disable);
 }
 
 KMyMoneySecurity::KMyMoneySecurity(QWidget* parent, const char * name) :

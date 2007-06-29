@@ -1,6 +1,7 @@
 2007-06-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed unnecessary code in MyMoneyReport
   * Made inclusion of stylesheet in HTML exported reports optional
+  * Enable/disable also the split-button of the category widget
 
 2007-06-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Rewrote the XML parser to be based on a SAX model
