@@ -54,9 +54,11 @@ class QListViewItem;
 #include "../views/kmymoneyview.h"
 
 class MyMoneyReport;
+class KReportsViewPrivate;
 
 namespace KReportView {
 };
+
 
 /**
   * Displays a page where reports can be placed.
@@ -98,7 +100,7 @@ public:
     void print(void);
     void toggleChart(void);
     void copyToClipboard(void);
-    void saveAs( const QString& filename );
+    void saveAs( const QString& filename, bool includeCSS = false );
     void updateReport(void);
     QString createTable(const QString& links=QString());
     const kMyMoneyReportControlDecl* control(void) const { return m_control; }
@@ -157,6 +159,7 @@ public:
   };
 
 private:
+  KReportsViewPrivate*  d;
   KTabWidget* m_reportTabWidget;
   KListView* m_reportListView;
   QWidget* m_listTab;
@@ -219,6 +222,9 @@ public slots:
   void slotConfigureFromList(void);
   void slotNewFromList(void);
   void slotDeleteFromList(void);
+
+protected slots:
+  void slotSaveFilterChanged(const QString&);
 
 signals:
   /**

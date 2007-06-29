@@ -45,7 +45,8 @@
 #include <qmessagebox.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
-
+#include <qcheckbox.h>
+#include <qvbox.h>
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -140,7 +141,7 @@ void KReportsView::KReportTab::copyToClipboard(void)
   QApplication::clipboard()->setData(pdrag);
 }
 
-void KReportsView::KReportTab::saveAs( const QString& filename )
+void KReportsView::KReportTab::saveAs( const QString& filename, bool includeCSS )
 {
   QFile file( filename );
   if ( file.open( IO_WriteOnly ) )
@@ -153,7 +154,7 @@ void KReportsView::KReportTab::saveAs( const QString& filename )
       QTextStream stream(&file);
       QRegExp exp("(.*)(<link.*css\" href=)\"(.*)\">(<meta.*utf-8\" />)(.*)");
       QString table = createTable();
-      if(exp.search(table) != -1) {
+      if(exp.search(table) != -1 && includeCSS) {
         QFile cssFile(exp.cap(3));
         if(cssFile.open(IO_ReadOnly)) {
           QTextStream cssStream(&cssFile);
@@ -295,8 +296,18 @@ void KReportsView::KReportTab::toggleChart(void)
   * KReportsView Implementation
   */
 
+class KReportsViewPrivate
+{
+public:
+  KReportsViewPrivate() :
+    includeCSS(0) {}
+
+  QCheckBox* includeCSS;
+};
+
 KReportsView::KReportsView(QWidget *parent, const char *name ) :
   KMyMoneyViewBase(parent, name, i18n("Reports")),
+  d(new KReportsViewPrivate),
   m_needReload(false)
 {
   m_reportTabWidget = new KTabWidget( this, "m_reportTabWidget" );
@@ -329,6 +340,7 @@ KReportsView::KReportsView(QWidget *parent, const char *name ) :
 
 KReportsView::~KReportsView()
 {
+  delete d;
 }
 
 void KReportsView::show()
@@ -544,16 +556,39 @@ void KReportsView::slotSaveView(void)
 {
   KReportTab* tab = dynamic_cast<KReportTab*>(m_reportTabWidget->currentPage());
   if(tab) {
-    QString newName=KFileDialog::getSaveFileName(KGlobalSettings::documentPath(),i18n("*.csv|CSV files\n""*.html|HTML files\n""*.*|All files"), this, i18n("Save as..."));
+    QVBox* vbox = new QVBox();
+    d->includeCSS = new QCheckBox(i18n("Include Stylesheet"), vbox);
 
-    if(!newName.isEmpty())
-    {
-      if(newName.findRev('.') == -1)
-        newName.append(".html");
+    // the following code is copied from KFileDialog::getSaveFileName,
+    // adjust to our local needs (filetypes etc.) and
+    // enhanced to show the m_saveEncrypted combo box
+    KFileDialog dlg( ":kmymoney-export",
+                   QString("%1|%2\n").arg("*.csv").arg(i18n("CSV (Filefilter))", "CSV files")) +
+                   QString("%1|%2\n").arg("*.html").arg(i18n("HTML (Filefilter)", "HTML files")),
+                   this, "filedialog", true, vbox);
+    connect(&dlg, SIGNAL(filterChanged(const QString&)), this, SLOT(slotSaveFilterChanged(const QString&)));
 
-      tab->saveAs( newName );
+    dlg.setOperationMode( KFileDialog::Saving );
+    dlg.setCaption(i18n("Export as"));
+    slotSaveFilterChanged("*.csv");    // init gui
+
+    if(dlg.exec() == QDialog::Accepted) {
+      KURL newURL = dlg.selectedURL();
+      if (!newURL.isEmpty()) {
+        QString newName = newURL.prettyURL(0, KURL::StripFileProtocol);
+
+        if(newName.findRev('.') == -1)
+          newName.append(".html");
+
+        tab->saveAs( newName, d->includeCSS->isEnabled() && d->includeCSS->isChecked() );
+      }
     }
   }
+}
+
+void KReportsView::slotSaveFilterChanged(const QString& filter)
+{
+  d->includeCSS->setEnabled(filter ==  "*.html");
 }
 
 void KReportsView::slotConfigure(void)

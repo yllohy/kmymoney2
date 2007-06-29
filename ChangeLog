@@ -1,11 +1,15 @@
 2007-06-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed unnecessary code in MyMoneyReport
+  * Made inclusion of stylesheet in HTML exported reports optional
+
+2007-06-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Rewrote the XML parser to be based on a SAX model
   * Provide readAll() with larger block sizes in KGPGFile
   * Fixed problem with balance cache mishits
   * Fixed crash when reading an encrypted file that does not contain
     the "kmm-encryption-key" is missing in the file (could happen when
     reading rather old files)
-  * replace QDate::shortMonthName() with KGlobal::locale()->monthName()
+  * replaced QDate::shortMonthName() with KGlobal::locale()->monthName()
   * Only assign check numbers for scheduled payments, if payment type
     is 'write check'.
 
