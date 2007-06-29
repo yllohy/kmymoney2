@@ -95,7 +95,6 @@ public:
   bool isConvertCurrency(void) const { return m_convertCurrency; }
   unsigned columnPitch(void) const { return static_cast<unsigned>(m_columnType); }
   bool isShowingColumnTotals(void) const { return m_convertCurrency; }
-  QCString id(void) const { return m_id; }
   const QString& comment( void ) const { return m_comment; }
   EQueryColumns queryColumns(void) const { return m_queryColumns; }
   const QString& group( void ) const { return m_group; }
@@ -125,7 +124,6 @@ public:
   void setGroup( const QString& _group ) { m_group = _group; }
   void setFavorite(bool _f) { m_favorite = _f; }
   void setQueryColumns( EQueryColumns _qc ) { m_queryColumns = _qc; }
-  void setId( const QCString& _id ) { m_id = _id; }
   void setTax(bool _f) { m_tax = _f; }
   void setInvestmentsOnly(bool _f) { m_investments = _f; if (_f) m_loans = false; }
   void setLoansOnly(bool _f) { m_loans = _f; if (_f) m_investments = false; }
