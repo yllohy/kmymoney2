@@ -1313,7 +1313,7 @@ void KMyMoney2App::slotFileViewPersonal()
     user.city(), user.state(), user.postcode(), user.telephone(),
     user.email(), this, "NewFileDlg", i18n("Edit Personal Data"));
 
-  if (newFileDlg.exec())
+  if (newFileDlg.exec() == QDialog::Accepted)
   {
     user.setName(newFileDlg.userNameText);
     user.setAddress(newFileDlg.userStreetText);
@@ -1322,7 +1322,14 @@ void KMyMoney2App::slotFileViewPersonal()
     user.setPostcode(newFileDlg.userPostcodeText);
     user.setTelephone(newFileDlg.userTelephoneText);
     user.setEmail(newFileDlg.userEmailText);
-    file->setUser(user);
+    MyMoneyFileTransaction ft;
+    try {
+      file->setUser(user);
+      ft.commit();
+    } catch(MyMoneyException *e) {
+      KMessageBox::information(this, i18n("Unable to store user information: %1").arg(e->what()));
+      delete e;
+    }
   }
 
   slotStatusMsg(prevMsg);

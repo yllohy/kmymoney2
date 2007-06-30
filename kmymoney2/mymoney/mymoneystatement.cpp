@@ -241,7 +241,7 @@ bool MyMoneyStatement::readXMLFile( MyMoneyStatement& _s, const QString& _filena
   QFile f( _filename );
   f.open( IO_ReadOnly );
   QDomDocument* doc = new QDomDocument;
-  if(doc->setContent(&f, FALSE))
+  if(doc->setContent(&f, false))
   {
     QDomElement rootElement = doc->documentElement();
     if(!rootElement.isNull())
