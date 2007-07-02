@@ -91,6 +91,7 @@ public:
 
   MyMoneySplit();
   MyMoneySplit(const QDomElement& node);
+  MyMoneySplit(const QCString& id, const MyMoneySplit& right);
   ~MyMoneySplit();
 
   bool operator == (const MyMoneySplit&) const;

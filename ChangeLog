@@ -1,3 +1,8 @@
+2007-07-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem while determining the last used id for accounts
+  * Remove all references from reports when objects are deleted
+  * Don't use setId() directly
+
 2007-06-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed crash when saving user information
 

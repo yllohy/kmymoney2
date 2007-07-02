@@ -102,6 +102,13 @@ MyMoneySchedule::MyMoneySchedule(const QDomElement& node) :
   }
 }
 
+MyMoneySchedule::MyMoneySchedule(const QCString& id, const MyMoneySchedule& right) :
+  MyMoneyObject(id)
+{
+  *this = right;
+  setId(id);
+}
+
 void MyMoneySchedule::setStartDate(const QDate& date)
 {
   m_startDate = date;

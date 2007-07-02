@@ -26,6 +26,7 @@
 #include "autotest.h"
 
 #define private public
+#define protected public
 #include "mymoneytransaction.h"
 #undef private
 

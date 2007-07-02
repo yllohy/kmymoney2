@@ -485,6 +485,12 @@ public:
 
   FilterSet filterSet(void) const { return m_filterSet; };
 
+  /**
+    * This member removes all references to object identified by @p id. Used
+    * to remove objects which are about to be removed from the engine.
+    */
+  void removeReference(const QCString& id);
+
 private:
   /**
     * This is a conversion tool from MyMoneySplit::reconcileFlagE

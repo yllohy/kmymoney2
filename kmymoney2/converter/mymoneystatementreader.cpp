@@ -678,7 +678,8 @@ bool MyMoneyStatementReader::selectOrCreateAccount(const SelectCreateMode /*mode
           ( (*it_account).number() == accountNumber )
         )
         {
-          account.setId( (*it_account).id() );
+          MyMoneyAccount newAccount((*it_account).id(), account);
+          account = newAccount;
           accountId = (*it_account).id();
           break;
         }

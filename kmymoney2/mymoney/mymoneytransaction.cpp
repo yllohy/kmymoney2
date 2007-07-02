@@ -121,7 +121,8 @@ void MyMoneyTransaction::addSplit(MyMoneySplit& split)
   }
 */
 
-  split.setId(nextSplitID());
+  MyMoneySplit newSplit(nextSplitID(), split);
+  split = newSplit;
   split.setTransactionId(id());
   m_splits.append(split);
 }

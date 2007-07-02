@@ -20,6 +20,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #define private public
+#define protected public
 #include "mymoneysplit.h"
 #undef private
 

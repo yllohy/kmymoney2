@@ -2031,7 +2031,10 @@ void MyMoneyStorageSql::readTransactions(const QString& tidList, const QString& 
   while (q.next()) {
     MyMoneyTransaction tx;
     QString txId;
+#if 0
+    // not necessary, as the new tx object does not contain an id
     tx.setId(QCString(txId));
+#endif
     MyMoneyDbTable::field_iterator ft = t.begin();
     int i = 0;
     while (ft != t.end()) {
@@ -2251,7 +2254,7 @@ const unsigned long MyMoneyStorageSql::transactionCount (const QCString& aid) {
 
 void MyMoneyStorageSql::readSplit (MyMoneySplit& s, const MyMoneySqlQuery& q, const MyMoneyDbTable& t) {
   DBG("*** Entering MyMoneyStorageSql::readSplit");
-  s.setId(QCString(""));
+  s.clearId();
   MyMoneyDbTable::field_iterator ft = t.begin();
   int i = 0;
   QCString payeeId;
@@ -2288,9 +2291,10 @@ void MyMoneyStorageSql::readSchedules(void) {
     MyMoneyDbTable::field_iterator ft = t.begin();
     int i = 0;
     MyMoneySchedule s;
+    QCString sId;
     QString boolChar;
     while (ft != t.end()) {
-      CASE(id) s.setId(GETCSTRING);
+      CASE(id) sId = GETCSTRING;
       CASE(name)  s.setName (GETSTRING);
       CASE(type)  s.setType (static_cast<MyMoneySchedule::typeE>(GETINT));
       CASE(occurence)  s.setOccurence (static_cast<MyMoneySchedule::occurenceE>(GETINT));
@@ -2303,6 +2307,9 @@ void MyMoneyStorageSql::readSchedules(void) {
       CASE(weekendOption)  s.setWeekendOption (static_cast<MyMoneySchedule::weekendOptionE>(GETINT));
       ++ft; ++i;
     }
+    // now assign the id to the schedule
+    MyMoneySchedule _s(sId, s);
+    s = _s;
     // read the associated transaction
     m_payeeList.clear();
     MyMoneyDbTable t = m_db.m_tables["kmmTransactions"];
@@ -2311,8 +2318,8 @@ void MyMoneyStorageSql::readSchedules(void) {
     q.bindValue(":id", s.id());
     if (!q.exec()) throw buildError (q, __func__, QString("reading Scheduled Transaction"));
     if (!q.next()) throw buildError (q, __func__, QString("retrieving scheduled transaction"));
-    MyMoneyTransaction tx;
-    tx.setId(s.id());
+    MyMoneyTransaction tx(s.id(), MyMoneyTransaction());
+    // tx.setId(s.id());
     ft = t.begin();
     i = 0;
     while (ft != t.end()) {

@@ -60,8 +60,6 @@ public:
     */
   const QCString& id(void) const { return m_id; };
 
-  void setId(const QCString& id) __attribute__ ((deprecated));
-
   /**
     * This method clears the id of the object
     */
@@ -114,6 +112,8 @@ protected:
    *           transactions within schedules)
    */
   MyMoneyObject(const QDomElement& node, const bool forceId = true);
+
+  void setId(const QCString& id) /* __attribute__ ((deprecated)) */;
 
 protected:
   QCString               m_id;

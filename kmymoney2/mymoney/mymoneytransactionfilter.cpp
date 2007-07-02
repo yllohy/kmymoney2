@@ -831,4 +831,19 @@ const bool MyMoneyTransactionFilter::translateDateRange(int range, QDate& start,
   }
   return result;
 }
+
+void MyMoneyTransactionFilter::removeReference(const QCString& id)
+{
+  if(m_accounts.find(id)) {
+    qDebug(QString("Remove account '%1' from report").arg(id));
+    m_accounts.remove(id);
+  } else if(m_categories.find(id)) {
+    qDebug(QString("Remove category '%1' from report").arg(id));
+    m_categories.remove(id);
+  } else if(m_payees.find(id)) {
+    m_payees.remove(id);
+  }
+}
+
+
 // vim:cin:si:ai:et:ts=2:sw=2:

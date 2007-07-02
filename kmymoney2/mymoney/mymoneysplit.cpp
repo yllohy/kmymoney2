@@ -67,6 +67,13 @@ MyMoneySplit::MyMoneySplit(const QDomElement& node) :
   m_bankID = QStringEmpty(node.attribute("bankid"));
 }
 
+MyMoneySplit::MyMoneySplit(const QCString& id, const MyMoneySplit& right) :
+  MyMoneyObject(id)
+{
+  *this = right;
+  setId(id);
+}
+
 MyMoneySplit::~MyMoneySplit()
 {
 }

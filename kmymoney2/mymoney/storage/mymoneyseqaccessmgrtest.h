@@ -25,6 +25,8 @@
 #include "../autotest.h"
 
 #define private public
+#define protected public
+#include "../mymoneyobject.h"
 #include "mymoneyseqaccessmgr.h"
 #undef private
 

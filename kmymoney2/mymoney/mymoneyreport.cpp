@@ -74,6 +74,13 @@ MyMoneyReport::MyMoneyReport(void):
 {
 }
 
+MyMoneyReport::MyMoneyReport(const QCString& id, const MyMoneyReport& right) :
+  MyMoneyObject(id)
+{
+  *this = right;
+  setId(id);
+}
+
 MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment ):
     m_name(_name),
     m_comment(_comment),

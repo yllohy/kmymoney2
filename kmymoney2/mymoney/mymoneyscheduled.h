@@ -103,6 +103,8 @@ public:
 
   MyMoneySchedule(const QDomElement& node);
 
+  MyMoneySchedule(const QCString& id, const MyMoneySchedule& right);
+
   /**
     * Standard destructor
     */

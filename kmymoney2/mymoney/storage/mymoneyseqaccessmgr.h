@@ -983,6 +983,9 @@ public:
   virtual void commitTransaction(void);
   virtual void rollbackTransaction(void);
 
+protected:
+  void removeReferences(const QCString& id);
+
 private:
 
   static const int INSTITUTION_ID_SIZE = 6;

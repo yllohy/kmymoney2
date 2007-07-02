@@ -1636,7 +1636,7 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
   } else {
     tx = convertTemplateTransaction (sc.name(), *itt);
   }
-  tx.setId("");
+  tx.clearId();
   sc.setTransaction(tx);
   // define the conversion table for intervals
   struct convIntvl {

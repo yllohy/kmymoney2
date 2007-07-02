@@ -77,6 +77,8 @@ public:
 public:
   MyMoneyReport(void);
   MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment );
+  MyMoneyReport(const QCString& id, const MyMoneyReport& right);
+
   /**
     * This constructor creates an object based on the data found in the
     * QDomElement referenced by @p node. If problems arise, the @p id of

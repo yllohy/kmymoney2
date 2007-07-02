@@ -261,6 +261,9 @@ void MyMoneySeqAccessMgr::removePayee(const MyMoneyPayee& payee)
         throw new MYMONEYEXCEPTION("Cannot remove payee that is referenced");
     }
   }
+
+  removeReferences(payee.id());
+
   // FIXME: check referential integrity in schedules
 
   m_payeeList.remove((*it_p).id());
@@ -749,7 +752,8 @@ void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transactio
 
   // mark file as changed
   touch();
-  IFDBASE m_sql->removeTransaction(transaction);}
+  IFDBASE m_sql->removeTransaction(transaction);
+}
 
 void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
 {
@@ -794,6 +798,8 @@ void MyMoneySeqAccessMgr::removeAccount(const MyMoneyAccount& account)
 
   if(!account.institutionId().isEmpty())
     throw new MYMONEYEXCEPTION("Cannot remove account still attached to an institution");
+
+  removeReferences(account.id());
 
   // FIXME: check referential integrity for the account to be removed
 
@@ -1100,7 +1106,7 @@ void MyMoneySeqAccessMgr::loadAccounts(const QMap<QCString, MyMoneyAccount>& map
   QMap<QCString, MyMoneyAccount>::const_iterator it_a;
   QCString lastId;
   for(it_a = map.begin(); it_a != map.end(); ++it_a) {
-    if((*it_a).id() > lastId)
+    if(!isStandardAccount((*it_a).id()) && (*it_a).id() > lastId)
       lastId = (*it_a).id();
   }
 
@@ -1264,9 +1270,9 @@ void MyMoneySeqAccessMgr::addSchedule(MyMoneySchedule& sched)
   // The following will throw an exception when it fails
   sched.validate(false);
 
-  sched.setId(nextScheduleID());
-
-  m_scheduleList.insert(sched.id(), sched);
+  MyMoneySchedule newSched(nextScheduleID(), sched);
+  m_scheduleList.insert(newSched.id(), newSched);
+  sched = newSched;
 
   // mark file as changed
   touch();
@@ -1613,11 +1619,11 @@ const QValueList<MyMoneyReport> MyMoneySeqAccessMgr::reportList(void) const
 void MyMoneySeqAccessMgr::addReport( MyMoneyReport& report )
 {
   if(!report.id().isEmpty())
-    throw new MYMONEYEXCEPTION("transaction already contains an id");
+    throw new MYMONEYEXCEPTION("report already contains an id");
 
-  report.setId( nextReportID() );
-
-  m_reportList.insert(report.id(), report);
+  MyMoneyReport newReport(nextReportID(), report);
+  m_reportList.insert(newReport.id(), newReport);
+  report = newReport;
 
   touch();
   IFDBASE m_sql->addReport(report);
@@ -1873,13 +1879,17 @@ void MyMoneySeqAccessMgr::rebuildAccountBalances(void)
 
 bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj, const MyMoneyFileBitArray& skipCheck) const
 {
+  // We delete all references in reports when an object
+  // is deleted, so we don't need to check here. See
+  // MyMoneySeqAccessMgr::removeReferences(). In case
+  // you miss the report checks in the following lines ;)
+
   bool rc = false;
   const QCString& id = obj.id();
   QMap<QCString, MyMoneyTransaction>::const_iterator it_t;
   QMap<QCString, MyMoneyAccount>::const_iterator it_a;
   QMap<QCString, MyMoneyInstitution>::const_iterator it_i;
   QMap<QCString, MyMoneyPayee>::const_iterator it_p;
-  QMap<QCString, MyMoneyReport>::const_iterator it_r;
   QMap<QCString, MyMoneyBudget>::const_iterator it_b;
   QMap<QCString, MyMoneySchedule>::const_iterator it_sch;
   QMap<QCString, MyMoneySecurity>::const_iterator it_sec;
@@ -1923,11 +1933,7 @@ bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj, const MyMoneyFi
       rc = (*it_p).hasReferenceTo(id);
     }
   }
-  if(!skipCheck[RefCheckReport]) {
-    for(it_r = m_reportList.begin(); !rc && it_r != m_reportList.end(); ++it_r) {
-      rc = (*it_r).hasReferenceTo(id);
-    }
-  }
+
   if(!skipCheck[RefCheckBudget]) {
     for(it_b = m_budgetList.begin(); !rc && it_b != m_budgetList.end(); ++it_b) {
       rc = (*it_b).hasReferenceTo(id);
@@ -1956,6 +1962,7 @@ bool MyMoneySeqAccessMgr::isReferenced(const MyMoneyObject& obj, const MyMoneyFi
       rc = (it_pr.key().first == id) || (it_pr.key().second == id);
     }
   }
+
   return rc;
 }
 
@@ -1999,6 +2006,18 @@ void MyMoneySeqAccessMgr::rollbackTransaction(void)
   m_currencyList.rollbackTransaction();
   m_reportList.rollbackTransaction();
   m_budgetList.rollbackTransaction();
+}
+
+void MyMoneySeqAccessMgr::removeReferences(const QCString& id)
+{
+  QMap<QCString, MyMoneyReport>::const_iterator it_r;
+
+  // remove from reports
+  for(it_r = m_reportList.begin(); it_r != m_reportList.end(); ++it_r) {
+    MyMoneyReport r = *it_r;
+    r.removeReference(id);
+    m_reportList.modify(r.id(), r);
+  }
 }
 
 #undef TRY
