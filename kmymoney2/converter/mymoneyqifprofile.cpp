@@ -24,6 +24,7 @@
 #include <kglobal.h>
 #include <kconfig.h>
 #include <klocale.h>
+#include <kcalendarsystem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -303,7 +304,7 @@ const QString MyMoneyQifProfile::date(const QDate& datein) const
             if(delim)
               buffer += delim;
             if(maskLen == 3)
-              buffer += KGlobal::locale()->monthName(datein.month(), true);
+              buffer += KGlobal::locale()->calendar()->monthString(datein, true);
             else
               buffer += QString::number(datein.month());
             break;
@@ -439,7 +440,7 @@ const QDate MyMoneyQifProfile::date(const QString& datein) const
             msg = "Invalid numeric character in month string";
         } else {
           for(j = 1; j <= 12; ++j) {
-            if(KGlobal::locale()->monthName(j, true).lower() == formatParts[i].lower()) {
+            if(KGlobal::locale()->calendar()->monthString(QDate(2000,j,1), true).lower() == formatParts[i].lower()) {
               mon = j;
               ok = true;
               break;

@@ -2,6 +2,7 @@
   * Fixed problem while determining the last used id for accounts
   * Remove all references from reports when objects are deleted
   * Don't use setId() directly
+  * convert locale->monthName() to locale->calendar->monthString
 
 2007-06-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed crash when saving user information

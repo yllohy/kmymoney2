@@ -42,6 +42,7 @@
 #include <kglobal.h>
 #include <klocale.h>
 #include <kdebug.h>
+#include <kcalendarsystem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -594,7 +595,7 @@ void PivotTable::calculateColumnHeadings(void)
       unsigned column = 1;
       while ( column++ < m_numColumns )
       {
-        QString heading = KGlobal::locale()->monthName(columnDate.month(), true) + " " + QString::number(columnDate.day());
+        QString heading = KGlobal::locale()->calendar()->monthString(columnDate, true) + " " + QString::number(columnDate.day());
         columnDate = columnDate.addDays(1);
         m_columnHeadings.append( heading);
       }
@@ -612,9 +613,9 @@ void PivotTable::calculateColumnHeadings(void)
         if (((dow % columnpitch) == 0) || (day == m_endDate))
         {
           m_columnHeadings.append(QString("%1&nbsp;%2 - %3&nbsp;%4")
-            .arg(KGlobal::locale()->monthName(prv.month(), true))
+            .arg(KGlobal::locale()->calendar()->monthString(prv, true))
             .arg(prv.day())
-            .arg(KGlobal::locale()->monthName(day.month(), true))
+            .arg(KGlobal::locale()->calendar()->monthString(day, true))
             .arg(day.day()));
           prv = day.addDays(1);
         }
@@ -642,9 +643,9 @@ void PivotTable::calculateColumnHeadings(void)
       unsigned column = 1;
       while ( column++ < m_numColumns )
       {
-        QString heading = KGlobal::locale()->monthName(1+segment*columnpitch, true);
+        QString heading = KGlobal::locale()->calendar()->monthString(QDate(2000,1+segment*columnpitch,1), true);
         if ( columnpitch != 1 )
-          heading += "-" + KGlobal::locale()->monthName((1+segment)*columnpitch, true);
+          heading += "-" + KGlobal::locale()->calendar()->monthString(QDate(2000,(1+segment)*columnpitch,1), true);
         if ( includeyear )
           heading += " " + QString::number(year);
         m_columnHeadings.append( heading);
