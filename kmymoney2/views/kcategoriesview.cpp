@@ -161,7 +161,7 @@ void KCategoriesView::loadAccounts(void)
     haveUnusedCategories |= loadSubAccounts(m_expenseItem, expense.accountList());
 
   } catch(MyMoneyException *e) {
-    kdDebug(2) << "Problem in categoriesview: " << e->what();
+    kdDebug(2) << "Problem in categoriesview: " << e->what() << endl;
     delete e;
   }
 
