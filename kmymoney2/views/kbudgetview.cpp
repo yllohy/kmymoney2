@@ -97,7 +97,7 @@ KBudgetAmountListItem::KBudgetAmountListItem(KListView *parent, KMyMoneyAccountT
   m_date(date),
   m_label("")
 {
-  setText(0, KGlobal::locale()->calendar()->monthString(date, true));
+  setText(0, KGlobal::locale()->calendar()->monthName(date.month(), date.year(), true));
   setAmount( amount );
   // allow column to be renamed
   setRenameEnabled(1, true);
