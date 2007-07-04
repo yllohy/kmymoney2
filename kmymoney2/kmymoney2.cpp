@@ -4135,18 +4135,33 @@ void KMyMoney2App::markTransaction(MyMoneySplit::reconcileFlagE flag)
       MyMoneySplit sp = t.splitById((*it_t).split().id());
       if(sp.reconcileFlag() != flag) {
         if(flag == MyMoneySplit::Unknown) {
-          switch(sp.reconcileFlag()) {
-            case MyMoneySplit::NotReconciled:
-              sp.setReconcileFlag(MyMoneySplit::Cleared);
-              break;
-            case MyMoneySplit::Cleared:
-              sp.setReconcileFlag(MyMoneySplit::Reconciled);
-              break;
-            case MyMoneySplit::Reconciled:
-              sp.setReconcileFlag(MyMoneySplit::NotReconciled);
-              break;
-            default:
-              break;
+          if(m_reconciliationAccount.id().isEmpty()) {
+            // in normal mode we cycle through all states
+            switch(sp.reconcileFlag()) {
+              case MyMoneySplit::NotReconciled:
+                sp.setReconcileFlag(MyMoneySplit::Cleared);
+                break;
+              case MyMoneySplit::Cleared:
+                sp.setReconcileFlag(MyMoneySplit::Reconciled);
+                break;
+              case MyMoneySplit::Reconciled:
+                sp.setReconcileFlag(MyMoneySplit::NotReconciled);
+                break;
+              default:
+                break;
+            }
+          } else {
+            // in reconciliation mode we skip the reconciled state
+            switch(sp.reconcileFlag()) {
+              case MyMoneySplit::NotReconciled:
+                sp.setReconcileFlag(MyMoneySplit::Cleared);
+                break;
+              case MyMoneySplit::Cleared:
+                sp.setReconcileFlag(MyMoneySplit::NotReconciled);
+                break;
+              default:
+                break;
+            }
           }
         } else {
           sp.setReconcileFlag(flag);

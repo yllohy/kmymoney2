@@ -2,6 +2,8 @@
   * calendar->monthString() was the wrong candidate. use calendar->monthName()
     instead. The monthName(QDate(),bool) version is broken on older KDE systems
     so we use monthName(int,int,bool) instead
+  * Don't cycle through 'Reconciled' state during reconciliation when
+    left clicking into the reconciliation state column of the ledger
 
 2007-07-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem while determining the last used id for accounts
