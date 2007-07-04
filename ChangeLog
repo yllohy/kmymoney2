@@ -4,6 +4,7 @@
     so we use monthName(int,int,bool) instead
   * Don't cycle through 'Reconciled' state during reconciliation when
     left clicking into the reconciliation state column of the ledger
+  * Adjust ending balance when changing statement date during reconciliation
 
 2007-07-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem while determining the last used id for accounts

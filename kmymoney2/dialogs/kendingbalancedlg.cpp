@@ -76,46 +76,6 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
   // we show a different first page
   value = account.value("lastReconciledBalance");
   if(value.isEmpty()) {
-    // determine the beginning balance and ending balance based on the following
-    // forumulas:
-    //
-    // end balance   = current balance - sum(all non cleared transactions)
-    // start balance = end balance - sum(all cleared transactions)
-    MyMoneyTransactionFilter filter(d->m_account.id());
-    filter.addState(MyMoneyTransactionFilter::notReconciled);
-    filter.addState(MyMoneyTransactionFilter::cleared);
-    filter.setReportAllSplits(true);
-
-    QValueList<QPair<MyMoneyTransaction, MyMoneySplit> > transactionList;
-    QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it;
-
-    // retrieve the list from the engine
-    MyMoneyFile::instance()->transactionList(transactionList, filter);
-
-    MyMoneyMoney balance = MyMoneyFile::instance()->balance(d->m_account.id());
-    MyMoneyMoney factor(1,1);
-    if(d->m_account.accountGroup() == MyMoneyAccount::Liability)
-      factor = -factor;
-
-    balance = balance * factor;
-    endBalance = startBalance = balance;
-
-    for(it = transactionList.begin(); it != transactionList.end(); ++it) {
-      const MyMoneySplit& split = (*it).second;
-      balance -= split.shares() * factor;
-      switch(split.reconcileFlag()) {
-        case MyMoneySplit::NotReconciled:
-          endBalance -= split.shares() * factor;
-          startBalance -= split.shares() * factor;
-          break;
-        case MyMoneySplit::Cleared:
-          startBalance -= split.shares() * factor;
-          break;
-        default:
-          break;
-      }
-    }
-
     // if the last statement has been entered long enough ago (more than one month),
     // then take the last statement date and add one month and use that as statement
     // date.
@@ -123,6 +83,8 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
     if(lastStatementDate.addMonths(1) < QDate::currentDate()) {
       m_statementDate->setDate(lastStatementDate.addMonths(1));
     }
+
+    slotUpdateBalances();
 
     setAppropriate(m_startPageCheckings, true);
     setAppropriate(m_pagePreviousPostpone, false);
@@ -139,9 +101,10 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
     startBalance = MyMoneyMoney(value);
     value = account.value("statementBalance");
     endBalance = MyMoneyMoney(value);
+
+    m_previousBalance->setValue(startBalance);
+    m_endingBalance->setValue(endBalance);
   }
-  m_previousBalance->setValue(startBalance);
-  m_endingBalance->setValue(endBalance);
 
   // We don't need to add the default into the list (see ::help() why)
   // m_helpAnchor[m_startPageCheckings] = QString("");
@@ -174,6 +137,7 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
   connect(m_interestCategoryEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished(void)));
   connect(m_chargesEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished(void)));
   connect(m_chargesCategoryEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPageFinished(void)));
+  connect(m_statementDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotUpdateBalances()));
 
   slotReloadEditWidgets();
 
@@ -194,6 +158,60 @@ KEndingBalanceDlg::KEndingBalanceDlg(const MyMoneyAccount& account, QWidget *par
 KEndingBalanceDlg::~KEndingBalanceDlg()
 {
   delete d;
+}
+
+void KEndingBalanceDlg::slotUpdateBalances(void)
+{
+  // determine the beginning balance and ending balance based on the following
+  // forumulas:
+  //
+  // end balance   = current balance - sum(all non cleared transactions)
+  //                                 - sum(all cleared transactions posted
+  //                                        after statement date)
+  // start balance = end balance - sum(all cleared transactions
+  //                                        up to statement date)
+  MyMoneyTransactionFilter filter(d->m_account.id());
+  filter.addState(MyMoneyTransactionFilter::notReconciled);
+  filter.addState(MyMoneyTransactionFilter::cleared);
+  filter.setReportAllSplits(true);
+
+  QValueList<QPair<MyMoneyTransaction, MyMoneySplit> > transactionList;
+  QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator it;
+
+    // retrieve the list from the engine
+  MyMoneyFile::instance()->transactionList(transactionList, filter);
+
+  MyMoneyMoney balance = MyMoneyFile::instance()->balance(d->m_account.id());
+  MyMoneyMoney factor(1,1);
+  if(d->m_account.accountGroup() == MyMoneyAccount::Liability)
+    factor = -factor;
+
+  MyMoneyMoney endBalance, startBalance;
+  balance = balance * factor;
+  endBalance = startBalance = balance;
+
+  for(it = transactionList.begin(); it != transactionList.end(); ++it) {
+    const MyMoneySplit& split = (*it).second;
+    balance -= split.shares() * factor;
+    if((*it).first.postDate() >= m_statementDate->date()) {
+      endBalance -= split.shares() * factor;
+      startBalance -= split.shares() * factor;
+    } else {
+      switch(split.reconcileFlag()) {
+        case MyMoneySplit::NotReconciled:
+          endBalance -= split.shares() * factor;
+          startBalance -= split.shares() * factor;
+          break;
+        case MyMoneySplit::Cleared:
+          startBalance -= split.shares() * factor;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  m_previousBalance->setValue(startBalance);
+  m_endingBalance->setValue(endBalance);
 }
 
 void KEndingBalanceDlg::accept(void)

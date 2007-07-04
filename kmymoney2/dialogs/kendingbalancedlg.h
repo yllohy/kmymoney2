@@ -77,6 +77,7 @@ protected slots:
   void slotCreateInterestCategory(const QString& txt, QCString& id);
   void slotCreateChargesCategory(const QString& txt, QCString& id);
   void accept(void);
+  void slotUpdateBalances(void);
 
 signals:
   /**
