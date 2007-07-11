@@ -69,6 +69,7 @@ public:
   bool                 m_inLoading;
   bool                 m_recursion;
   KMyMoneyRegister::Action m_action;
+  QTimer               m_viewPosTimer;
 };
 
 MousePressFilter::MousePressFilter(QWidget* parent, const char* name) :
@@ -182,6 +183,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(m_register, SIGNAL(openContextMenu()), this, SIGNAL(openContextMenu()));
   connect(m_register, SIGNAL(headerClicked()), this, SLOT(slotSortOptions()));
   connect(m_register, SIGNAL(reconcileStateColumnClicked(KMyMoneyRegister::Transaction*)), this, SLOT(slotToggleTransactionMark(KMyMoneyRegister::Transaction*)));
+  connect(&d->m_viewPosTimer, SIGNAL(timeout()), this, SLOT(slotUpdateViewPos()));
 
   // insert search line widget
 
@@ -332,8 +334,13 @@ void KGlobalLedgerView::loadView(void)
     // remember the upper left corner of the viewport
     if(!d->m_inLoading)
       d->m_startPoint = QPoint(m_register->contentsX(), m_register->contentsY());
-  } else
+  } else {
+    if(d->m_viewPosTimer.isActive())
+      d->m_viewPosTimer.stop();
+    d->m_startPoint = QPoint(-1, -1);
+    d->m_inLoading = false;
     d->m_registerSearchLine->searchLine()->reset();
+  }
 
   // clear the current contents ...
   clear();
@@ -508,7 +515,7 @@ void KGlobalLedgerView::loadView(void)
     }
   }
   if(!d->m_inLoading) {
-    QTimer::singleShot(0, this, SLOT(slotUpdateViewPos()));
+    d->m_viewPosTimer.start(30, true);
     d->m_inLoading = true;
   }
 
