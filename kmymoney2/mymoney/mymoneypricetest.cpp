@@ -71,7 +71,7 @@ void MyMoneyPriceTest::testRate()
 	try {
 		CPPUNIT_ASSERT(n1.rate("to") == MyMoneyMoney(1,3));
 		CPPUNIT_ASSERT(n1.rate("from") == MyMoneyMoney(3,1));
-		CPPUNIT_ASSERT(n1.rate() == MyMoneyMoney(1,3));
+		CPPUNIT_ASSERT(n1.rate(QCString()) == MyMoneyMoney(1,3));
 
 		CPPUNIT_ASSERT(n2.isValid() == false);
 		CPPUNIT_ASSERT(n2.rate("to") == MyMoneyMoney(1,1));

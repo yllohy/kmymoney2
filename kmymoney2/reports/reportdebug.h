@@ -32,10 +32,10 @@ namespace reports {
 
 // define to enable massive debug logging to stderr
 #undef DEBUG_REPORTS
-//#define DEBUG_REPORTS
+// #define DEBUG_REPORTS
 
 #define DEBUG_ENABLED_BY_DEFAULT false
- 
+
 #ifdef DEBUG_REPORTS
 
 // define to filter out account names & transaction amounts
@@ -59,7 +59,7 @@ namespace reports {
 #define DEBUG_ENTER(x)
 #define DEBUG_OUTPUT(x)
 #define DEBUG_OUTPUT_IF(x,y)
-#define DEBUG_ENABLE(x) 
+#define DEBUG_ENABLE(x)
 #define DEBUG_SENSITIVE(x)
 #endif
 

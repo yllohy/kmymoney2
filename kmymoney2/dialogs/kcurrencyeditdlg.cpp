@@ -27,11 +27,11 @@
 
 #include <qheader.h>
 #include <qtimer.h>
+
 #include <qpixmap.h>
 #include <qbitmap.h>
 #include <qlabel.h>
 #include <qgroupbox.h>
-#include <qcursor.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -41,7 +41,6 @@
 #include <klistview.h>
 #include <kstandarddirs.h>
 #include <kmessagebox.h>
-#include <kiconloader.h>
 #include <kinputdialog.h>
 
 // ----------------------------------------------------------------------------
@@ -66,32 +65,17 @@ KCurrencyEditDlg::KCurrencyEditDlg(QWidget *parent, const char *name ) :
   // FIXME: the online source table currently has no functionality
   m_onlineSourceTable->hide();
 
-  KIconLoader *kiconloader = KGlobal::iconLoader();
-
-  m_contextMenu = new KPopupMenu(this);
-  m_contextMenu->insertTitle(i18n("Currency Options"));
-  m_contextMenu->insertItem(kiconloader->loadIcon("filenew", KIcon::Small),
-                        i18n("New"),
-                        this, SLOT(slotNewCurrency()));
-
-  m_contextMenu->insertItem(kiconloader->loadIcon("edit", KIcon::Small),
-                        i18n("Rename ..."),
-                        this, SLOT(slotRenameCurrency()));
-
-  m_contextMenu->insertItem(kiconloader->loadIcon("delete", KIcon::Small),
-                        i18n("Delete ..."),
-                        this, SLOT(slotDeleteCurrency()));
-
   connect(m_currencyList, SIGNAL(rightButtonPressed(QListViewItem* , const QPoint&, int)),
           this, SLOT(slotListClicked(QListViewItem*, const QPoint&, int)));
-  connect(m_currencyList, SIGNAL(itemRenamed(QListViewItem*,int,const QString&)), this, SLOT(slotRenameCurrency(QListViewItem*,int,const QString&)));
-
-  loadCurrencies();
-
-  checkBaseCurrency();
-
   connect(m_currencyList, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotSelectCurrency(QListViewItem*)));
-  connect(m_baseCurrencyButton, SIGNAL(clicked()), this, SLOT(slotSetBaseCurrency()));
+
+
+  connect(m_currencyList, SIGNAL(itemRenamed(QListViewItem*,int,const QString&)), this, SIGNAL(renameCurrency(QListViewItem*,int,const QString&)));
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadCurrencies()));
+
+  slotLoadCurrencies();
+
+  connect(m_baseCurrencyButton, SIGNAL(clicked()), this, SIGNAL(selectBaseCurrency()));
   connect(buttonClose, SIGNAL(clicked()), this, SLOT(slotClose()));
 
   // FIXME: currently, no online help available
@@ -107,13 +91,15 @@ KCurrencyEditDlg::KCurrencyEditDlg(QWidget *parent, const char *name ) :
 void KCurrencyEditDlg::timerDone(void)
 {
   if(!m_currency.id().isEmpty()) {
-    QListViewItem* it;
-    for(it = m_currencyList->firstChild(); it; it = it->nextSibling()) {
-      KMyMoneyListViewItem* p = static_cast<KMyMoneyListViewItem *>(it);
+    QListViewItemIterator it(m_currencyList);
+    QListViewItem* q;
+    while((q = it.current()) != 0) {
+      KMyMoneyListViewItem* p = static_cast<KMyMoneyListViewItem *>(q);
       if(p->id() == m_currency.id()) {
-        m_currencyList->ensureItemVisible(it);
+        m_currencyList->ensureItemVisible(q);
         break;
       }
+      ++it;
     }
   }
   // the resize operation does the trick to adjust
@@ -134,7 +120,7 @@ void KCurrencyEditDlg::resizeEvent(QResizeEvent* /* e*/)
   m_currencyList->setColumnWidth(0, w);
 }
 
-void KCurrencyEditDlg::loadCurrencies(void)
+void KCurrencyEditDlg::slotLoadCurrencies(void)
 {
   QValueList<MyMoneySecurity> list = MyMoneyFile::instance()->currencyList();
   QValueList<MyMoneySecurity>::ConstIterator it;
@@ -155,30 +141,28 @@ void KCurrencyEditDlg::loadCurrencies(void)
 
     if((*it).id() == baseCurrency) {
       p->setPixmap(0, QPixmap( locate("icon","hicolor/16x16/apps/kmymoney2.png")));
+      if(m_currency.id().isEmpty())
+        first = p;
     } else {
       p->setPixmap(0, empty);
     }
-    if ((*it).id() == localCurrency)
+
+    // if we had a previously selected
+    if(!m_currency.id().isEmpty()) {
+      if(m_currency.id() == p->id())
+        first = p;
+    } else if ((*it).id() == localCurrency && !first)
       first = p;
   }
+
   if(first == 0)
     first = m_currencyList->firstChild();
-  if(first != 0)
-    m_currencyList->setCurrentItem(first);
+  if(first != 0) {
+    m_currencyList->setSelected(first, true);
+    m_currencyList->ensureItemVisible(first);
+  }
 
   slotSelectCurrency(first);
-}
-
-void KCurrencyEditDlg::checkBaseCurrency(void)
-{
-  if(MyMoneyFile::instance()->baseCurrency().id().isEmpty()) {
-    m_baseCurrencyButton->setEnabled(true);
-    buttonClose->setEnabled(false);
-    m_detailGroup->setEnabled(false);
-  } else {
-    buttonClose->setEnabled(true);
-    m_baseCurrencyFrame->hide();
-  }
 }
 
 void KCurrencyEditDlg::updateCurrency(void)
@@ -205,7 +189,9 @@ void KCurrencyEditDlg::slotSelectCurrency(const QCString& id)
   while(it.current()) {
     KMyMoneyListViewItem* p = static_cast<KMyMoneyListViewItem*>(it.current());
     if(p->id() == id) {
+      slotSelectCurrency(p);
       m_currencyList->setSelected(p, true);
+      m_currencyList->ensureItemVisible(p);
       break;
     }
     ++it;
@@ -233,52 +219,13 @@ void KCurrencyEditDlg::slotSelectCurrency(QListViewItem *item)
 
     } catch(MyMoneyException *e) {
       delete e;
+      m_currency = MyMoneySecurity();
       m_onlineSourceTable->clear();
       m_idLabel->setText(QString());
       m_symbolEdit->setText(QString());
     }
-  }
-// FIXME PRICE
-#if 0
-  if(item) {
-    try {
-      updateCurrency();
-      KMyMoneyListViewItem* p = static_cast<KMyMoneyListViewItem *>(item);
-      m_currency = file->currency(p->id());
-      m_idLabel->setText(m_currency.id());
-      m_symbolEdit->setText(m_currency.tradingSymbol());
-      m_priceList->setHistory(m_currency.priceHistory());
-      if(!file->baseCurrency().id().isEmpty() && file->baseCurrency().id() != p->id()) {
-        m_priceList->setEnabled(true);
-        m_description->setText(i18n("1 %2 costs <i>price</i<> %1").arg(file->baseCurrency().name()).arg(m_currency.name()));
-      } else {
-        m_priceList->setEnabled(false);
-        m_description->setText("");
-      }
-    } catch(MyMoneyException *e) {
-      delete e;
-      m_priceList->setHistory(history);
-      m_idLabel->setText(QString());
-      m_symbolEdit->setText(QString());
-    }
-  }
-#endif
-}
-
-void KCurrencyEditDlg::slotSetBaseCurrency(void)
-{
-  MyMoneyFile* file = MyMoneyFile::instance();
-
-  KMyMoneyListViewItem* p = static_cast<KMyMoneyListViewItem *>(m_currencyList->currentItem());
-  if(p) {
-    QString name = file->currency(p->id()).name();
-    QString question = i18n("Do you really want to select %1 as your base currency? This selection can currently not be modified! If unsure, press 'No' now.").arg(name);
-    if(KMessageBox::questionYesNo(this, question, i18n("Select base currency")) == KMessageBox::Yes) {
-      MyMoneyFileTransaction ft;
-      file->setBaseCurrency(file->currency(p->id()));
-      ft.commit();
-      accept();
-    }
+    m_baseCurrencyButton->setDisabled(m_currency.id() == file->baseCurrency().id());
+    emit selectObject(m_currency);
   }
 }
 
@@ -288,45 +235,19 @@ void KCurrencyEditDlg::slotClose(void)
   accept();
 }
 
-void KCurrencyEditDlg::slotNewCurrency(void)
+void KCurrencyEditDlg::slotStartRename(void)
 {
-  QString id = KInputDialog::getText(i18n("New currency"), i18n("Enter ISO 4217 code for new currency"), QString::null, 0, 0, 0, 0, ">AAA");
-  if(!id.isEmpty()) {
-    MyMoneySecurity currency(id.data(), i18n("New currency"));
-    try {
-      MyMoneyFile::instance()->addCurrency(currency);
-      loadCurrencies();
-      slotSelectCurrency(id.data());
-      m_currencyList->ensureItemVisible(m_currencyList->selectedItem());
-
-    } catch(MyMoneyException* e) {
-      delete e;
-      KMessageBox::sorry(this, i18n("Cannot create new currency."), i18n("New currency"));
-    }
+  QListViewItemIterator it_l(m_currencyList, QListViewItemIterator::Selected);
+  QListViewItem* it_v;
+  if((it_v = it_l.current()) != 0) {
+    it_v->startRename(0);
   }
-}
-
-void KCurrencyEditDlg::slotRenameCurrency(void)
-{
-  QListViewItem *item = m_currencyList->currentItem();
-  if(item) {
-    item->startRename(0);
-  }
-}
-
-void KCurrencyEditDlg::slotDeleteCurrency(void)
-{
-  KMessageBox::sorry(this, i18n("This feature needs to be implemented."), i18n("Implementation missing"));
 }
 
 void KCurrencyEditDlg::slotListClicked(QListViewItem* item, const QPoint&, int)
 {
-  int editId = m_contextMenu->idAt(2);
-  int delId = m_contextMenu->idAt(3);
-
-  m_contextMenu->setItemEnabled(editId, item != 0);
-  m_contextMenu->setItemEnabled(delId, item != 0);
-  m_contextMenu->exec(QCursor::pos());
+  slotSelectCurrency(item);
+  emit openContextMenu(m_currency);
 }
 
 void KCurrencyEditDlg::slotRenameCurrency(QListViewItem* item, int /* col */, const QString& txt)

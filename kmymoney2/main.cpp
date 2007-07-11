@@ -54,7 +54,6 @@ static KCmdLineOptions options[] =
   { "lang <lang-code>", I18N_NOOP("language to be used"), 0 },
   { "n", I18N_NOOP("don't open last used file"), 0},
   { "timers", I18N_NOOP("enable performance timers"), 0},
-  { "oldreports", I18N_NOOP("use the old report logic"), 0},
 
 #if KMM_DEBUG
   // The following options are only available when compiled in debug mode
@@ -69,7 +68,6 @@ static KCmdLineOptions options[] =
 
 QTime timer;
 bool timersOn = false;
-bool newReports = true;
 
 KMyMoney2App* kmymoney2;
 
@@ -182,7 +180,6 @@ int main(int argc, char *argv[])
     exit(0);
   }
 #endif
-  newReports = !args->isSet("oldreports");
 
   int rc = 0;
 

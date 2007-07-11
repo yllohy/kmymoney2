@@ -708,8 +708,7 @@ const KMyMoneyUtils::transactionTypeE KMyMoneyUtils::transactionType(const MyMon
 
 void KMyMoneyUtils::calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTransaction& transaction, const QMap<QCString, MyMoneyMoney>& balances)
 {
-  try
-  {
+  try {
     if (schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
       MyMoneySplit interestSplit, amortizationSplit;
       QValueList<MyMoneySplit>::ConstIterator it_s;
@@ -791,13 +790,17 @@ void KMyMoneyUtils::calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTr
         amortizationSplit.setValue(amortization);
         interestSplit.setValue(interest);
 
+        // FIXME: for now we only assume loans to be in the base currency
+        amortizationSplit.setShares(amortization);
+        interestSplit.setShares(interest);
+
+
         transaction.modifySplit(amortizationSplit);
         transaction.modifySplit(interestSplit);
       }
     }
-  }
-  catch (MyMoneyException* e)
-  {
+
+  } catch (MyMoneyException* e) {
     KMessageBox::detailedError(0, i18n("Unable to load schedule details"), e->what());
     delete e;
   }

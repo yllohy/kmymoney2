@@ -99,10 +99,9 @@ TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _actio
     setPostDate(_date);
 
     QCString currencyid = _currencyid;
-    if ( ! currencyid.isEmpty() )
-        setCommodity(currencyid);
-    else
+    if ( currencyid.isEmpty() )
       currencyid=MyMoneyFile::instance()->baseCurrency().id();
+    setCommodity(currencyid);
 
     MyMoneyMoney price;
     MyMoneySplit splitLeft;
@@ -110,7 +109,7 @@ TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _actio
       splitLeft.setPayeeId(payeeTest.id());
     splitLeft.setAction(_action);
     splitLeft.setValue(-_value);
-    price = MyMoneyFile::instance()->price(currencyid, file->account(_accountid).currencyId(),_date).rate();
+    price = MyMoneyFile::instance()->price(currencyid, file->account(_accountid).currencyId(),_date).rate(file->account(_accountid).currencyId());
     splitLeft.setShares(-_value * price);
     splitLeft.setAccountId(_accountid);
     addSplit(splitLeft);
@@ -120,7 +119,7 @@ TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _actio
       splitRight.setPayeeId(payeeTest.id());
     splitRight.setAction(_action);
     splitRight.setValue(_value);
-    price = MyMoneyFile::instance()->price(currencyid, file->account(_categoryid).currencyId(),_date).rate();
+    price = MyMoneyFile::instance()->price(currencyid, file->account(_categoryid).currencyId(),_date).rate(file->account(_categoryid).currencyId());
     splitRight.setShares(_value * price );
     splitRight.setAccountId(_categoryid);
     addSplit(splitRight);
@@ -253,7 +252,7 @@ void makePrice(const QCString& _currencyid, const QDate& _date, const MyMoneyMon
   MyMoneyFileTransaction ft;
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneySecurity curr = file->currency(_currencyid);
-  MyMoneyPrice price(file->baseCurrency().id(), _currencyid, _date, _price, "test");
+  MyMoneyPrice price(_currencyid, file->baseCurrency().id(), _date, _price, "test");
   file->addPrice(price);
   ft.commit();
 }

@@ -284,6 +284,19 @@ const bool MyMoneyTransaction::isLoanPayment(void) const
   return false;
 }
 
+const MyMoneySplit& MyMoneyTransaction::amortizationSplit(void) const
+{
+  static MyMoneySplit nullSplit;
+
+  QValueList<MyMoneySplit>::ConstIterator it;
+
+  for(it = m_splits.begin(); it != m_splits.end(); ++it) {
+    if((*it).isAmortizationSplit() && (*it).isAutoCalc())
+      return *it;
+  }
+  return nullSplit;
+}
+
 const unsigned long MyMoneyTransaction::hash(const QString& txt) const
 {
   unsigned long   h = 0,

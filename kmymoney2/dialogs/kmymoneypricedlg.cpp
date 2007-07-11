@@ -182,7 +182,7 @@ int KMyMoneyPriceDlg::slotEditPrice(void)
     KCurrencyCalculator calc(from,
                              to,
                              MyMoneyMoney(1,1),
-                             item->price().rate(),
+                             item->price().rate(to.id()),
                              item->price().date(),
                              fract,
                              this, "currencyCalculator");

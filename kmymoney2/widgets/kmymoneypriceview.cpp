@@ -105,9 +105,9 @@ int KMyMoneyPriceItem::compare(QListViewItem* i, int col, bool ascending) const
       break;
 
     case PRICE_COL:   // value
-      if(m_pr.rate() > item->m_pr.rate())
+      if(m_pr.rate(QCString()) > item->m_pr.rate(QCString()))
         rc = 1;
-      else if(m_pr.rate() < item->m_pr.rate())
+      else if(m_pr.rate(QCString()) < item->m_pr.rate(QCString()))
         rc = -1;
       break;
 

@@ -82,7 +82,6 @@ public:
     *
     * @param id return price to be the factor to be used to convert a value into
     *           the correcponding value in security @p id.
-    *           Defaults to @p toSecurity.
     *
     * @return returns the exchange rate (price) as MyMoneyMoney object.
     *
@@ -107,7 +106,7 @@ public:
     * @p 3/1 even though the price information kept with the object was @p 1/3, but based on the other
     * conversion direction (from ADF to GBP).
     */
-  const MyMoneyMoney& rate(const QCString& id = QCString()) const;
+  const MyMoneyMoney& rate(const QCString& id) const;
 
   const QDate& date(void) const { return m_date; };
   const QString& source(void) const { return m_source; };

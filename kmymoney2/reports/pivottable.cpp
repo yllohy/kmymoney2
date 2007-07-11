@@ -51,8 +51,7 @@
 #include "reportdebug.h"
 #include "kreportchartview.h"
 
-// FIXME don't forget to remove the variable declaration in main.cpp and kmymoneytest.cpp
-extern bool newReports;    // for debug purposes in main.cpp
+#include <kmymoney/kmymoneyutils.h>
 
 namespace reports {
 
@@ -197,10 +196,24 @@ MyMoneyMoney PivotTable::TCell::calculateRunningSum(const MyMoneyMoney& runningS
   return *this;
 }
 
+MyMoneyMoney PivotTable::TCell::cellBalance(const MyMoneyMoney& _balance)
+{
+  MyMoneyMoney balance(_balance);
+  balance += *this;
+  balance = (balance * m_stockSplit) + m_postSplit;
+  return balance;
+}
+
 //////////////////////////////////////////////////////////////////////
 
 PivotTable::PivotTable( const MyMoneyReport& _config_f ):
+  m_runningSumsCalculated(false),
   m_config_f( _config_f )
+{
+  init();
+}
+
+void PivotTable::init(void)
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
 
@@ -303,6 +316,10 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
       MyMoneyTransaction tx = (*it_schedule).transaction();
       if ( schedulefilter.match(tx,file->storage()) )
       {
+        // Keep the id of the schedule with the transaction so that
+        // we can do the autocalc later on in case of a loan payment
+        tx.setValue("kmm-schedule-id", (*it_schedule).id());
+
         // Get the dates when a payment will be made within the report window
         QDate nextpayment = (*it_schedule).nextPayment(configbegin);
         if ( nextpayment.isValid() )
@@ -333,7 +350,6 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   // transfers
   bool al_transfers = ( m_config_f.rowType() == MyMoneyReport::eExpenseIncome ) && ( m_config_f.isIncludingTransfers() );
 
-  if(!newReports) {
   QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
   unsigned colofs = columnValue(m_beginDate) - 1;
   while ( it_transaction != transactions.end() )
@@ -341,55 +357,26 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
     QDate postdate = (*it_transaction).postDate();
     unsigned column = columnValue(postdate) - colofs;
 
-    QValueList<MyMoneySplit> splits = (*it_transaction).splits();
-    QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
-    while ( it_split != splits.end() )
-    {
-      ReportAccount splitAccount = (*it_split).accountId();
+    MyMoneyTransaction tx = (*it_transaction);
 
-      // Each split must be further filtered, because if even one split matches,
-      // the ENTIRE transaction is returned with all splits (even non-matching ones)
-      if ( m_config_f.includes( splitAccount ))
-      {
-        // reverse sign to match common notation for cash flow direction, only for expense/income splits
-        MyMoneyMoney reverse(splitAccount.isIncomeExpense() ? -1 : 1, 1);
-
-        // retrieve the value in the account's underlying currency
-        // make sure to consider any autocalculation for loan payments
-        MyMoneyMoney value;
-        if((*it_split).shares() != MyMoneyMoney::autoCalc) {
-          value = (*it_split).shares() * reverse;
-        } else {
-        }
-
-        // the outer group is the account class (major account type)
+    // check if we need to call the autocalculation routine
+    if(tx.isLoanPayment() && tx.hasAutoCalcSplit() && (tx.value("kmm-schedule-id").length() > 0)) {
+      // make sure to consider any autocalculation for loan payments
+      MyMoneySchedule sched = file->schedule(QCString(tx.value("kmm-schedule-id")));
+      const MyMoneySplit& split = tx.amortizationSplit();
+      if(!split.id().isEmpty()) {
+        ReportAccount splitAccount = file->account(split.accountId());
         MyMoneyAccount::accountTypeE type = splitAccount.accountGroup();
         QString outergroup = accountTypeToString(type);
 
-        // Except in the case of transfers on an income/expense report
-        if ( al_transfers && ( type == MyMoneyAccount::Asset || type == MyMoneyAccount::Liability ) )
-        {
-          outergroup = i18n("Transfers");
-          value = -value;
-        }
-        // add the value to its correct position in the pivot table
-        assignCell( outergroup, splitAccount, column, value );
+        QMap<QCString, MyMoneyMoney> balances;
+        balances[splitAccount.id()] = cellBalance(outergroup, splitAccount, column, false);
 
+        KMyMoneyUtils::calculateAutoLoan(sched, tx, balances);
       }
-      ++it_split;
     }
 
-    ++it_transaction;
-  }
-  } else {    // newReports
-  QValueList<MyMoneyTransaction>::const_iterator it_transaction = transactions.begin();
-  unsigned colofs = columnValue(m_beginDate) - 1;
-  while ( it_transaction != transactions.end() )
-  {
-    QDate postdate = (*it_transaction).postDate();
-    unsigned column = columnValue(postdate) - colofs;
-
-    QValueList<MyMoneySplit> splits = (*it_transaction).splits();
+    QValueList<MyMoneySplit> splits = tx.splits();
     QValueList<MyMoneySplit>::const_iterator it_split = splits.begin();
     while ( it_split != splits.end() )
     {
@@ -408,14 +395,14 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
         QString outergroup = accountTypeToString(type);
 
         value = (*it_split).shares();
-        bool stockSplit = (*it_transaction).isStockSplit();
+        bool stockSplit = tx.isStockSplit();
         if(!stockSplit) {
           // retrieve the value in the account's underlying currency
-          // make sure to consider any autocalculation for loan payments
           if(value != MyMoneyMoney::autoCalc) {
             value = value * reverse;
           } else {
-            // TODO add autocalculation for loans etc.
+            qDebug("PivotTable::PivotTable(): This must not happen");
+            value = MyMoneyMoney();  // keep it 0 so far
           }
 
           // Except in the case of transfers on an income/expense report
@@ -427,18 +414,17 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
         }
         // add the value to its correct position in the pivot table
         assignCell( outergroup, splitAccount, column, value, false, stockSplit );
-
       }
       ++it_split;
     }
 
     ++it_transaction;
   }
-  } // newReports
 
   //
   // Collapse columns to match column type
   //
+
 
   if ( m_config_f.columnPitch() > 1 )
     collapseColumns();
@@ -475,7 +461,6 @@ PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   //
 
   calculateTotals();
-
 }
 
 void PivotTable::collapseColumns(void)
@@ -778,6 +763,8 @@ void PivotTable::calculateRunningSums( void )
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
 
+  m_runningSumsCalculated = true;
+
   TGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
@@ -808,6 +795,60 @@ void PivotTable::calculateRunningSums( void )
     ++it_outergroup;
   }
 }
+
+MyMoneyMoney PivotTable::cellBalance(const QString& outergroup, const ReportAccount& _row, unsigned _column, bool budget)
+{
+  if(m_runningSumsCalculated) {
+    qDebug("You must not call PivotTable::cellBalance() after calling PivotTable::calculateRunningSums()");
+    throw new MYMONEYEXCEPTION(QString("You must not call PivotTable::cellBalance() after calling PivotTable::calculateRunningSums()"));
+  }
+
+  // for budget reports, if this is the actual value, map it to the account which
+  // holds its budget
+  ReportAccount row = _row;
+  if ( !budget && m_config_f.hasBudget() )
+  {
+    QCString newrow = m_budgetMap[row.id()];
+
+    // if there was no mapping found, then the budget report is not interested
+    // in this account.
+    if ( newrow.isEmpty() )
+      return MyMoneyMoney();
+
+    row = newrow;
+  }
+
+  // ensure the row already exists (and its parental hierarchy)
+  createRow( outergroup, row, true );
+
+  // Determine the inner group from the top-most parent account
+  QString innergroup( row.topParentName() );
+
+  if ( m_numColumns <= _column )
+    throw new MYMONEYEXCEPTION(QString("Column %1 out of m_numColumns range (%2) in PivotTable::cellBalance").arg(_column).arg(m_numColumns));
+  if ( m_grid[outergroup][innergroup][row].count() <= _column )
+    throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::cellBalance").arg(_column).arg(m_grid[outergroup][innergroup][row].count()));
+
+  MyMoneyMoney balance;
+  if ( budget )
+    balance = m_grid[outergroup][innergroup][row].m_budget[0].cellBalance(MyMoneyMoney());
+  else
+    balance = m_grid[outergroup][innergroup][row][0].cellBalance(MyMoneyMoney());
+
+  unsigned column = 1;
+  while ( column < _column)
+  {
+    if ( m_grid[outergroup][innergroup][row].count() <= column )
+      throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::cellBalance").arg(column).arg(m_grid[outergroup][innergroup][row].count()));
+
+    balance = m_grid[outergroup][innergroup][row][column].cellBalance(balance);
+
+    ++column;
+  }
+
+  return balance;
+}
+
 
 void PivotTable::calculateBudgetMapping( void )
 {

@@ -270,12 +270,7 @@ bool KMyMoneyView::showPage(int index)
   // reset all selected items before showing the selected view
   // but not while we're in our own constructor
   if(!m_inConstructor && index != activePageIndex()) {
-    kmymoney2->slotSelectAccount();
-    kmymoney2->slotSelectInstitution();
-    kmymoney2->slotSelectInvestment();
-    kmymoney2->slotSelectPayees(QValueList<MyMoneyPayee>());
-    kmymoney2->slotSelectBudget(QValueList<MyMoneyBudget>());
-    kmymoney2->slotSelectTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>());
+    kmymoney2->slotResetSelections();
   }
 
   // pretend we're in the constructor to avoid calling the

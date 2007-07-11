@@ -107,87 +107,8 @@ MyMoneyTransaction KEnterScheduleDlg::transaction(void)
 
   try {
     if (d->m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
-      MyMoneySplit interestSplit, amortizationSplit;
-      QValueList<MyMoneySplit>::ConstIterator it_s;
-      for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
-        if((*it_s).value() == MyMoneyMoney::autoCalc) {
-          if((*it_s).action() == MyMoneySplit::ActionAmortization) {
-            amortizationSplit = (*it_s);
-          } else if((*it_s).action() == MyMoneySplit::ActionInterest) {
-            interestSplit = (*it_s);
-          }
-        }
-      }
+      KMyMoneyUtils::calculateAutoLoan(d->m_schedule, t, QMap<QCString, MyMoneyMoney>());
 
-      if(!amortizationSplit.id().isEmpty() && !interestSplit.id().isEmpty()) {
-        MyMoneyAccountLoan acc(MyMoneyFile::instance()->account(amortizationSplit.accountId()));
-        MyMoneyFinancialCalculator calc;
-
-        // FIXME: setup dueDate according to when the interest should be calculated
-        // current implementation: take the date of the next payment according to
-        // the schedule. If the calculation is based on the payment reception, and
-        // the payment is overdue then take the current date
-        dueDate = d->m_schedule.nextPayment(d->m_schedule.lastPayment());
-        if(acc.interestCalculation() == MyMoneyAccountLoan::paymentReceived) {
-          if(dueDate < QDate::currentDate())
-            dueDate = QDate::currentDate();
-        }
-
-        // we need to calculate the balance at the time the payment is due
-        MyMoneyMoney balance = MyMoneyFile::instance()->balance(acc.id(), dueDate.addDays(-1));
-
-  /*
-        QValueList<MyMoneyTransaction> list;
-        QValueList<MyMoneyTransaction>::ConstIterator it;
-        MyMoneySplit split;
-        MyMoneyTransactionFilter filter(acc.id());
-
-        filter.setDateFilter(QDate(), dueDate.addDays(-1));
-        list = MyMoneyFile::instance()->transactionList(filter);
-
-        for(it = list.begin(); it != list.end(); ++it) {
-          try {
-            split = (*it).splitByAccount(acc.id());
-            balance += split.value();
-
-          } catch(MyMoneyException *e) {
-            // account is not referenced within this transaction
-            delete e;
-          }
-        }
-  */
-
-        // FIXME: for now, we only support interest calculation at the end of the period
-        calc.setBep();
-        // FIXME: for now, we only support periodic compounding
-        calc.setDisc();
-
-        calc.setPF(KMyMoneyUtils::occurenceToFrequency(d->m_schedule.occurence()));
-        // FIXME: for now we only support compounding frequency == payment frequency
-        calc.setCF(KMyMoneyUtils::occurenceToFrequency(d->m_schedule.occurence()));
-
-        calc.setPv(balance.toDouble());
-        calc.setIr(static_cast<FCALC_DOUBLE> (acc.interestRate(dueDate).abs().toDouble()));
-        calc.setPmt(acc.periodicPayment().toDouble());
-
-        MyMoneyMoney interest(calc.interestDue()), amortization;
-        interest = interest.abs();    // make sure it's positive for now
-        amortization = acc.periodicPayment() - interest;
-
-        if(acc.accountType() == MyMoneyAccount::AssetLoan) {
-          interest = -interest;
-          amortization = -amortization;
-        }
-        amortizationSplit.setValue(amortization);
-        interestSplit.setValue(interest);
-
-        // FIXME: for now we only assume loans to be in the base currency
-        amortizationSplit.setShares(amortization);
-        interestSplit.setShares(interest);
-
-        t.modifySplit(amortizationSplit);
-        t.modifySplit(interestSplit);
-      }
     } else {
       dueDate = date(d->m_schedule.nextPayment(d->m_schedule.lastPayment()));
     }

@@ -1,3 +1,11 @@
+2007-07-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed the 'oldreports' option
+  * Allow creation of multi currency categories
+  * Allow changing the base currency
+  * Removed default parameter of MyMoneyPrice::rate()
+  * Base currency activities (new, edit, delete, etc.) on KActions
+  * Show networth graph on home page in base currency
+
 2007-07-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * calendar->monthString() was the wrong candidate. use calendar->monthName()
     instead. The monthName(QDate(),bool) version is broken on older KDE systems

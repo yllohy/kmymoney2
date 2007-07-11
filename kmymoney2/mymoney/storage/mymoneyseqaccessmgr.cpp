@@ -1795,7 +1795,7 @@ void MyMoneySeqAccessMgr::addPrice(const MyMoneyPrice& price)
   it = m_priceList[MyMoneySecurityPair(price.from(), price.to())].find(price.date());
   // do not replace, if the information did not change.
   if(it != m_priceList[MyMoneySecurityPair(price.from(), price.to())].end()) {
-    if((*it).rate() == price.rate()
+    if((*it).rate(QCString()) == price.rate(QCString())
     && (*it).source() == price.source())
       return;
   }

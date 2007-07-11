@@ -160,12 +160,13 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
         typeCombo->setCurrentItem(1);
         break;
     }
+    m_currency->setEnabled(true);
     if (m_isEditing)
     {
       typeCombo->setEnabled(false);
+      m_currency->setDisabled(MyMoneyFile::instance()->isReferenced(m_account));
     }
     m_qcheckboxPreferred->hide();
-    m_currency->setEnabled(false);
 
     m_qcheckboxTax->setChecked(account.value("Tax") == "Yes");
     loadVatAccounts();
@@ -295,11 +296,11 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     loadKVP("lastNumberUsed", m_lastCheckNumberUsed);
 
     // we do not allow to change the account type once an account
-    // was created. Same applies to currency.
+    // was created. Same applies to currency if it is referenced.
     if (m_isEditing)
     {
       typeCombo->setEnabled(false);
-      m_currency->setEnabled(false);
+      m_currency->setDisabled(MyMoneyFile::instance()->isReferenced(m_account));
     }
     if(m_account.accountType() == MyMoneyAccount::Stock) {
       typeCombo->setEnabled(false);

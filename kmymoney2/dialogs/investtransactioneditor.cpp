@@ -769,7 +769,7 @@ bool InvestTransactionEditor::setupPrice(const MyMoneyTransaction& t, MyMoneySpl
 
       fromValue = split.value();
       MyMoneyPrice priceInfo = MyMoneyFile::instance()->price(fromCurrency.id(), toCurrency.id());
-      toValue = split.value() * priceInfo.rate();
+      toValue = split.value() * priceInfo.rate(toCurrency.id());
 
       KCurrencyCalculator calc(fromCurrency,
                                 toCurrency,

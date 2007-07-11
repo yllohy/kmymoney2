@@ -485,7 +485,7 @@ void QueryTable::constructTransactionTable(void)
     if((* it).commodity() != file->baseCurrency().id()) {
       if (report.isConvertCurrency()) {
         MyMoneySecurity c = file->currency((* it).commodity());
-        xr = file->price(c.id(), file->baseCurrency().id(), QDate::currentDate()).rate();
+        xr = file->price(c.id(), file->baseCurrency().id(), QDate::currentDate()).rate(file->baseCurrency().id());
       }
       else {
         qA["currency"] = qS["currency"] = (* it).commodity();
@@ -806,8 +806,8 @@ void QueryTable::constructTransactionTable(void)
       MyMoneySecurity s = file->security(a.currencyId());
       s0 = file->balance(a.id(),date0);
       s1 = file->balance(a.id(),date1);
-      p0 = file->price(s.id(), QCString(), date0).rate();
-      p1 = file->price(s.id(), QCString(), date1).rate();
+      p0 = file->price(s.id(), QCString(), date0).rate(QCString());
+      p1 = file->price(s.id(), QCString(), date1).rate(QCString());
       b0 = s0 * p0;
       b1 = s1 * p1;
     }
@@ -873,8 +873,8 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   report.validDateRange( startingDate, endingDate );
   startingDate = startingDate.addDays(-1);
 
-  MyMoneyMoney startingBal = file->balance(account.id(),startingDate) * file->price(security.id(), QCString(), startingDate).rate();
-  MyMoneyMoney endingBal = file->balance((account).id(),endingDate) * file->price(security.id(), QCString(), endingDate).rate();
+  MyMoneyMoney startingBal = file->balance(account.id(),startingDate) * file->price(security.id(), QCString(), startingDate).rate(QCString());
+  MyMoneyMoney endingBal = file->balance((account).id(),endingDate) * file->price(security.id(), QCString(), endingDate).rate(QCString());
   CashFlowList buys;
   CashFlowList sells;
   CashFlowList reinvestincome;

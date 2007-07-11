@@ -186,6 +186,12 @@ public:
   const bool isLoanPayment(void) const;
 
   /**
+    * This method returns a const reference to the amortization split.
+    * In case none is found, a reference to an empty split will be returned.
+    */
+  const MyMoneySplit& amortizationSplit(void) const;
+
+  /**
     * This method is used to check if two transactions are identical.
     * Identical transactions have:
     *

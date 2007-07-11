@@ -266,7 +266,7 @@ void KHomeView::showNetWorthGraph(void)
   reportCfg.addAccountGroup(MyMoneyAccount::Asset);
   reportCfg.addAccountGroup(MyMoneyAccount::Liability);
   reportCfg.setColumnsAreDays( true );
-  reportCfg.setConvertCurrency( false );
+  reportCfg.setConvertCurrency( true );
   reportCfg.setDateFilter(QDate::currentDate().addDays(-10),QDate::currentDate().addDays(+90));
 
   reports::PivotTable table(reportCfg);

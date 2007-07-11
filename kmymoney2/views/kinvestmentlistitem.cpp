@@ -71,7 +71,7 @@ KInvestmentListItem::KInvestmentListItem(KListView* parent, const MyMoneyAccount
   //column 2 is the net value (price * quantity owned)
   MyMoneyPrice price = file->price(m_account.currencyId(), m_tradingCurrency.id());
   if(price.isValid()) {
-    setText(COLUMN_VALUE_INDEX, (file->balance(m_account.id()) * price.rate()).formatMoney(m_tradingCurrency.tradingSymbol(), prec));
+    setText(COLUMN_VALUE_INDEX, (file->balance(m_account.id()) * price.rate(m_tradingCurrency.id())).formatMoney(m_tradingCurrency.tradingSymbol(), prec));
   } else {
     setText(COLUMN_VALUE_INDEX, "---");
   }
@@ -86,7 +86,7 @@ KInvestmentListItem::KInvestmentListItem(KListView* parent, const MyMoneyAccount
 
   // prec = MyMoneyMoney::denomToPrec(m_tradingCurrency.smallestAccountFraction());
   if(price.isValid()) {
-    setText(COLUMN_PRICE_INDEX, price.rate().formatMoney(m_tradingCurrency.tradingSymbol(), prec));
+    setText(COLUMN_PRICE_INDEX, price.rate(m_tradingCurrency.id()).formatMoney(m_tradingCurrency.tradingSymbol(), prec));
   } else {
     setText(COLUMN_PRICE_INDEX, "---");
   }

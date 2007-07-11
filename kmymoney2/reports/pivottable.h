@@ -95,6 +95,9 @@ public:
     */
     void dump( const QString& file, const QString& context=QString()) const;
 
+protected:
+  void init(void);    // used for debugging the constructor
+
 private:
   /**
     * The fundamental data construct of this class is a 'grid'.  It is organized as follows:
@@ -130,6 +133,7 @@ private:
       TCell operator += (const MyMoneyMoney& value);
       const QString formatMoney(const QString& currency = QString(), const int prec = 2, bool showThousandSeparator = true) const;
       MyMoneyMoney calculateRunningSum(const MyMoneyMoney& runningSum);
+      MyMoneyMoney cellBalance(const MyMoneyMoney& _balance);
     private:
       MyMoneyMoney m_stockSplit;
       MyMoneyMoney m_postSplit;
@@ -196,6 +200,7 @@ private:
     unsigned m_numColumns;
     QDate m_beginDate;
     QDate m_endDate;
+    bool m_runningSumsCalculated;
 
     // For budget-vs-actual reports only, maps each account to the account which holds
     // the budget for it.  If an account is not contained in this map, it is not included
@@ -338,6 +343,12 @@ protected:
     * @param column The column
     */
     QDate columnDate(int column) const;
+
+  /**
+    * Returns the balance of a given cell. Throws an exception once calculateRunningSums() has been run.
+    */
+    MyMoneyMoney cellBalance(const QString& outergroup, const ReportAccount& _row, unsigned column, bool budget);
+
 };
 
 

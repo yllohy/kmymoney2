@@ -842,7 +842,7 @@ void MyMoneyStorageXML::writePricePair(QDomElement& price, const MyMoneyPriceEnt
 void MyMoneyStorageXML::writePrice(QDomElement& price, const MyMoneyPrice& p)
 {
   price.setAttribute("date", p.date().toString(Qt::ISODate));
-  price.setAttribute("price", p.rate().toString());
+  price.setAttribute("price", p.rate(QCString()).toString());
   price.setAttribute("source", p.source());
 }
 

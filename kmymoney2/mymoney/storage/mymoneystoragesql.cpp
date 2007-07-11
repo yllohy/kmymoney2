@@ -1401,8 +1401,8 @@ void MyMoneyStorageSql::addPrice(const MyMoneyPrice& p) {
   q.bindValue(":fromId", p.from());
   q.bindValue(":toId", p.to());
   q.bindValue(":priceDate", p.date());
-  q.bindValue(":price", p.rate().toString());
-  q.bindValue(":priceFormatted", p.rate().formatMoney());
+  q.bindValue(":price", p.rate(QCString()).toString());
+  q.bindValue(":priceFormatted", p.rate(QCString()).formatMoney());
   q.bindValue(":priceSource", p.source());
   if (!q.exec()) throw buildError (q, __func__, QString("writing Price"));
 
@@ -1431,8 +1431,8 @@ void MyMoneyStorageSql::writePrice(const MyMoneyPrice& p) {
   q.bindValue(":fromId", p.from());
   q.bindValue(":toId", p.to());
   q.bindValue(":priceDate", p.date());
-  q.bindValue(":price", p.rate().toString());
-  q.bindValue(":priceFormatted", p.rate().formatMoney());
+  q.bindValue(":price", p.rate(QCString()).toString());
+  q.bindValue(":priceFormatted", p.rate(QCString()).formatMoney());
   q.bindValue(":priceSource", p.source());
   if (!q.exec()) throw buildError (q, __func__, QString("writing Prices"));
 }

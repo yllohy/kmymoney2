@@ -96,10 +96,6 @@ void unexpectedException(MyMoneyException *e)
 
 #endif // HAVE_LIBCPPUNIT
 
-// FIXME newReports should be removed as soon as it is not
-//       needed in the PivotTable constructor anymore
-bool newReports = true;
-
 int main(int testargc, char** testargv)
 {
   int rc = 0;

@@ -424,6 +424,7 @@ void PivotTableTest::testMultipleCurrencies()
   filter.setRowType( MyMoneyReport::eExpenseIncome );
   filter.setDateFilter(QDate(2004,1,1),QDate(2005,1,1).addDays(-1));
   filter.setShowSubAccounts(true);
+  filter.setConvertCurrency(true);
   filter.setName("Multiple Currency Spending Rerport (with currency conversion)");
   XMLandback(filter);
 

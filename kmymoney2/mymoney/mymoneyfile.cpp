@@ -1143,7 +1143,7 @@ const MyMoneyMoney MyMoneyFile::accountValue(const QCString& id, const QDate& da
       if(acc.accountType() == MyMoneyAccount::Stock) {
         MyMoneySecurity security = this->security(acc.currencyId());
         MyMoneyPrice price = this->price(acc.currencyId(), security.tradingCurrency(), date);
-        result = result * price.rate();
+        result = result * price.rate(security.tradingCurrency());
         // if the trading currency differs from the base currency, we
         // calculate the conversion between these two currencies now.
         if(security.tradingCurrency() != baseCurrency().id()) {
@@ -1593,7 +1593,7 @@ QCString MyMoneyFile::createCategory(const MyMoneyAccount& base, const QString& 
   QString categoryText;
 
   if(base.id() != expense().id() && base.id() != income().id())
-    throw MYMONEYEXCEPTION("Invalid base category");
+    throw new MYMONEYEXCEPTION("Invalid base category");
 
   QStringList subAccounts = QStringList::split(AccountSeperator, name);
   QStringList::Iterator it;
@@ -1725,6 +1725,10 @@ void MyMoneyFile::removeCurrency(const MyMoneySecurity& currency)
 {
   checkTransaction(__PRETTY_FUNCTION__);
 
+  if(currency.id() == d->m_baseCurrency.id()) {
+    throw new MYMONEYEXCEPTION("Cannot delete base currency.");
+  }
+
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
@@ -1767,7 +1771,11 @@ void MyMoneyFile::setBaseCurrency(const MyMoneySecurity& curr)
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  setValue("kmm-baseCurrency", curr.id());
+  if(c.id() != d->m_baseCurrency.id()) {
+    setValue("kmm-baseCurrency", curr.id());
+    // force reload of base currency cache
+    d->m_baseCurrency = MyMoneySecurity();
+  }
 }
 
 void MyMoneyFile::addPrice(const MyMoneyPrice& price)

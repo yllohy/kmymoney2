@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="17" name="kmymoney2" >
+<kpartgui version="18" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
@@ -215,6 +215,13 @@
   <Action name="transaction_end_match" />
   <Action name="transaction_cancel_match" />
   <Action name="transaction_accept" />
+ </Menu>
+ <Menu name="currency_context_menu">
+  <title>Currency options</title>
+  <Action name="currency_new" />
+  <Action name="currency_rename" />
+  <Action name="currency_delete" />
+  <Action name="currency_setbase" />
  </Menu>
  <ToolBar noMerge="1" name="mainToolBar" fullWidth="true" >
   <text>Main Toolbar</text>

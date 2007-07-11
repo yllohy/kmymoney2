@@ -343,6 +343,22 @@ protected slots:
 
   /**
     */
+  void slotCurrencyNew(void);
+
+  /**
+    */
+  void slotCurrencyRename(QListViewItem* item, int, const QString& txt);
+
+  /**
+    */
+  void slotCurrencyDelete(void);
+
+  /**
+    */
+  void slotCurrencySetBase(void);
+
+  /**
+    */
   void slotNewUserWizard(void);
 
   /**
@@ -871,6 +887,12 @@ public slots:
   void slotShowTransactionContextMenu(void);
 
   /**
+    * This slot opens the currency options menu at the current cursor
+    * position.
+    */
+  void slotShowCurrencyContextMenu(void);
+
+  /**
     * This slot collects information for a new schedule transaction (bill)
     * and saves it in the engine
     */
@@ -932,6 +954,8 @@ public slots:
   void slotSelectTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list);
 
   void slotSelectMatchTransaction(const MyMoneyTransaction& t);
+
+  void slotSelectCurrency(const MyMoneySecurity& currency = MyMoneySecurity());
 
   void slotStartMatch(void);
 
@@ -1012,7 +1036,7 @@ signals:
   /**
     * This signal is emitted when a list of payees has been selected by
     * the GUI. If no payee is selected or the selection is removed,
-    * payees is identical to an empty QValueList. This signal is used
+    * @a payees is identical to an empty QValueList. This signal is used
     * by plugins to get information about changes.
     */
   void budgetSelected(const QValueList<MyMoneyBudget>& budget);
@@ -1021,7 +1045,7 @@ signals:
   /**
     * This signal is emitted when a new account has been selected by
     * the GUI. If no account is selected or the selection is removed,
-    * account is identical to MyMoneyAccount(). This signal is used
+    * @a account is identical to MyMoneyAccount(). This signal is used
     * by plugins to get information about changes.
     */
   void accountSelected(const MyMoneyAccount& account);
@@ -1030,7 +1054,7 @@ signals:
   /**
     * This signal is emitted when a new institution has been selected by
     * the GUI. If no institution is selected or the selection is removed,
-    * institution is identical to MyMoneyInstitution(). This signal is used
+    * @a institution is identical to MyMoneyInstitution(). This signal is used
     * by plugins to get information about changes.
     */
   void institutionSelected(const MyMoneyInstitution& institution);
@@ -1038,13 +1062,24 @@ signals:
   /**
     * This signal is emitted when a new schedule has been selected by
     * the GUI. If no schedule is selected or the selection is removed,
-    * schedule is identical to MyMoneySchedule(). This signal is used
+    * @a schedule is identical to MyMoneySchedule(). This signal is used
     * by plugins to get information about changes.
     */
   void scheduleSelected(const MyMoneySchedule& schedule);
 
+  /**
+    * This signal is emitted when a new currency has been selected by
+    * the GUI. If no currency is selected or the selection is removed,
+    * @a currency is identical to MyMoneySecurity(). This signal is used
+    * by plugins to get information about changes.
+    */
+  void currencySelected(const MyMoneySecurity& currency);
+
   void payeeRename(void);
   void payeeCreated(const QCString& id);
+
+  void currencyRename(void);
+  void currencyCreated(const QCString& id);
 
   void startMatchTransaction(const MyMoneyTransaction& t);
   void cancelMatchTransaction(void);
@@ -1146,6 +1181,7 @@ private:
   MyMoneyAccount        m_selectedInvestment;
   MyMoneyInstitution    m_selectedInstitution;
   MyMoneySchedule       m_selectedSchedule;
+  MyMoneySecurity       m_selectedCurrency;
   QValueList<MyMoneyPayee>  m_selectedPayees;
   QValueList<MyMoneyBudget> m_selectedBudget;
   QValueList<KMyMoneyRegister::SelectedTransaction> m_selectedTransactions;

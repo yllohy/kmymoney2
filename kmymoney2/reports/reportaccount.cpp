@@ -112,7 +112,7 @@ MyMoneyMoney ReportAccount::deepCurrencyPrice( const QDate& date ) const
     MyMoneyPrice price = file->price(undersecurity.id(),undersecurity.tradingCurrency(),date);
     if ( price.isValid() )
     {
-      result = price.rate();
+      result = price.rate(undersecurity.tradingCurrency());
 
       DEBUG_OUTPUT(QString("Converting under %1 to deep %2, price on %3 is %4")
         .arg(undersecurity.name())
@@ -159,7 +159,7 @@ MyMoneyMoney ReportAccount::baseCurrencyPrice( const QDate& date ) const
     MyMoneyPrice price = file->price(currency(), file->baseCurrency().id(), date);
     if(price.isValid())
     {
-      result = price.rate();
+      result = price.rate(file->baseCurrency().id());
 
       DEBUG_OUTPUT(QString("Converting deep %1 to base %2, price on %3 is %4")
         .arg(file->currency(currency()).name())

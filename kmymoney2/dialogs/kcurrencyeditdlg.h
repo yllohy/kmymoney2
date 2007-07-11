@@ -60,24 +60,24 @@ protected:
 
 protected slots:
   void slotSelectCurrency(QListViewItem *);
-  void slotSetBaseCurrency(void);
+
   void slotClose(void);
-  void slotNewCurrency(void);
-  void slotRenameCurrency(void);
-  void slotDeleteCurrency(void);
+  void slotStartRename(void);
   void slotListClicked(QListViewItem* item, const QPoint&, int);
   void slotRenameCurrency(QListViewItem* item, int col, const QString& txt);
+  void slotLoadCurrencies(void);
 
 private slots:
   void timerDone(void);
 
-private:
-  void loadCurrencies(void);
-  void checkBaseCurrency(void);
+signals:
+  void selectObject(const MyMoneySecurity& currency);
+  void openContextMenu(const MyMoneySecurity& currency);
+  void renameCurrency(QListViewItem* item, int, const QString& txt);
+  void selectBaseCurrency(void);
 
 private:
   MyMoneySecurity      m_currency;
-  KPopupMenu*          m_contextMenu;
 };
 
 #endif
