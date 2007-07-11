@@ -1291,7 +1291,6 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("CRC", i18n("Costa Rican Colon"),      QChar(0x20A1)), create);
   loadDefaultCurrency(MyMoneySecurity("HRK", i18n("Croatian Kuna")), create);
   loadDefaultCurrency(MyMoneySecurity("CUP", i18n("Cuban Peso")), create);
-  loadDefaultCurrency(MyMoneySecurity("CYP", i18n("Cyprus Pound"),           QChar(0x00A3)), create);
   loadDefaultCurrency(MyMoneySecurity("CZK", i18n("Czech Koruna")), create);
   loadDefaultCurrency(MyMoneySecurity("DKK", i18n("Danish Krone"),           "kr"), create);
   loadDefaultCurrency(MyMoneySecurity("DJF", i18n("Djibouti Franc")), create);
@@ -1343,7 +1342,6 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("MYR", i18n("Malaysian Ringgit")), create);
   loadDefaultCurrency(MyMoneySecurity("MVR", i18n("Maldive Rufiyaa")), create);
   loadDefaultCurrency(MyMoneySecurity("MLF", i18n("Mali Republic Franc")), create);
-  loadDefaultCurrency(MyMoneySecurity("MTL", i18n("Maltese Lira")), create);
   loadDefaultCurrency(MyMoneySecurity("MRO", i18n("Mauritanian Ouguiya"),    "MRO", 5, 5), create);
   loadDefaultCurrency(MyMoneySecurity("MUR", i18n("Mauritius Rupee")), create);
   loadDefaultCurrency(MyMoneySecurity("MXN", i18n("Mexican Peso"),           "$"), create);
@@ -1470,6 +1468,10 @@ void KMyMoneyView::loadAncientCurrencies(void)
 
   // Source: http://www.tf-portfoliosolutions.net/products/turkishlira.aspx
   loadAncientCurrency("TRL", i18n("Turkish Lira"), "TL", QDate(2004,12,31), MyMoneyMoney(1,1000000), "TRY");
+
+  // Source: http://www.focus.de/finanzen/news/malta-und-zypern_aid_66058.html
+  loadAncientCurrency("MTL", i18n("Maltese Lira"), "MTL", QDate(2008,1,1), MyMoneyMoney(429300,1000000), "EUR");
+  loadAncientCurrency("CYP", i18n("Cyprus Pound"), QString("C%1").arg(QChar(0x00A3)), QDate(2008,1,1), MyMoneyMoney(585274,1000000), "EUR");
 }
 
 void KMyMoneyView::viewUp(void)
