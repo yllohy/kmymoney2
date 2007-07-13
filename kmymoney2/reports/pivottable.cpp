@@ -2157,8 +2157,9 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 {
 #if 0 // make this "#if 1" if you want to play with the axis settings
   // not sure if 0 is X and 1 is Y.
-  KDChartAxisParams xAxisParams = _view.params().axisParams( 0 );
-  KDChartAxisParams yAxisParams = _view.params().axisParams( 1 );
+  KDChartAxisParams xAxisParams, yAxisParams;
+  KDChartAxisParams::deepCopy(xAxisParams, _view.params().axisParams(0));
+  KDChartAxisParams::deepCopy(yAxisParams, _view.params().axisParams(1));
 
   // modify axis settings here
 
