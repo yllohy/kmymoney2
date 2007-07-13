@@ -1,3 +1,6 @@
+2007-07-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added framework to modify axis parameters in PivotTable::drawChart()
+
 2007-07-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed the 'oldreports' option
   * Allow creation of multi currency categories
