@@ -2384,6 +2384,7 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
+  MyMoneyFileTransaction ft;
   try
   {
     int pos;
@@ -2414,81 +2415,63 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
           .arg(openingBal.formatMoney());
 
       int ans = KMessageBox::questionYesNoCancel(this, message);
-      if (ans == KMessageBox::Yes)
-      {
+      if (ans == KMessageBox::Yes) {
         openingBal = -openingBal;
-      }
-      else if (ans == KMessageBox::Cancel)
+
+      } else if (ans == KMessageBox::Cancel)
         return;
     }
 
-    MyMoneyFileTransaction ft;
+    file->addAccount(newAccount, parentAccount);
 
-    try {
-      file->addAccount(newAccount, parentAccount);
+    // We MUST add the schedule AFTER adding the account because
+    // otherwise an unknown account exception will be thrown.
+    createSchedule(schedule, newAccount);
 
-      // We MUST add the schedule AFTER adding the account because
-      // otherwise an unknown account exception will be thrown.
-      createSchedule(schedule, newAccount);
+    // in case of a loan account, we add the initial payment
+    if((newAccount.accountType() == MyMoneyAccount::Loan
+    || newAccount.accountType() == MyMoneyAccount::AssetLoan)
+    && !newAccount.value("kmm-loan-payment-acc").isEmpty()
+    && !newAccount.value("kmm-loan-payment-date").isEmpty()) {
+      MyMoneyAccountLoan acc(newAccount);
+      MyMoneyTransaction t;
+      MyMoneySplit a, b;
+      a.setAccountId(acc.id());
+      b.setAccountId(acc.value("kmm-loan-payment-acc").latin1());
+      a.setValue(acc.loanAmount());
+      if(acc.accountType() == MyMoneyAccount::Loan)
+        a.setValue(-a.value());
 
-      // in case of a loan account, we add the initial payment
-      if((newAccount.accountType() == MyMoneyAccount::Loan
-      || newAccount.accountType() == MyMoneyAccount::AssetLoan)
-      && !newAccount.value("kmm-loan-payment-acc").isEmpty()
-      && !newAccount.value("kmm-loan-payment-date").isEmpty()) {
-        MyMoneyAccountLoan acc(newAccount);
-        MyMoneyTransaction t;
-        MyMoneySplit a, b;
-        a.setAccountId(acc.id());
-        b.setAccountId(acc.value("kmm-loan-payment-acc").latin1());
-        a.setValue(acc.loanAmount());
-        if(acc.accountType() == MyMoneyAccount::Loan)
-          a.setValue(-a.value());
-        a.setShares(a.value());
-        b.setValue(-a.value());
-        b.setShares(b.value());
-        a.setMemo(i18n("Loan payout"));
-        b.setMemo(i18n("Loan payout"));
-        t.setPostDate(QDate::fromString(acc.value("kmm-loan-payment-date"), Qt::ISODate));
-        try {
-          newAccount.deletePair("kmm-loan-payment-acc");
-          newAccount.deletePair("kmm-loan-payment-date");
-          MyMoneyFile::instance()->modifyAccount(newAccount);
+      a.setShares(a.value());
+      b.setValue(-a.value());
+      b.setShares(b.value());
+      a.setMemo(i18n("Loan payout"));
+      b.setMemo(i18n("Loan payout"));
+      t.setPostDate(QDate::fromString(acc.value("kmm-loan-payment-date"), Qt::ISODate));
+      newAccount.deletePair("kmm-loan-payment-acc");
+      newAccount.deletePair("kmm-loan-payment-date");
+      MyMoneyFile::instance()->modifyAccount(newAccount);
 
-          t.addSplit(a);
-          t.addSplit(b);
-          MyMoneyFile::instance()->addTransaction(t);
-        } catch(MyMoneyException *e) {
-          qDebug("Cannot add loan payout transaction: %s", e->what().latin1());
-          delete e;
-        }
-        file->createOpeningBalanceTransaction(newAccount, openingBal);
+      t.addSplit(a);
+      t.addSplit(b);
+      file->addTransaction(t);
+      file->createOpeningBalanceTransaction(newAccount, openingBal);
 
-      // in case of an investment account we check if we should create
-      // a brokerage account
-      } else if(newAccount.accountType() == MyMoneyAccount::Investment
-              && !brokerageAccount.name().isEmpty()) {
-        try {
-          file->addAccount(brokerageAccount, parentAccount);
+    // in case of an investment account we check if we should create
+    // a brokerage account
+    } else if(newAccount.accountType() == MyMoneyAccount::Investment
+            && !brokerageAccount.name().isEmpty()) {
+      file->addAccount(brokerageAccount, parentAccount);
 
-          // set a link from the investment account to the brokerage account
-          newAccount.setValue("kmm-brokerage-account", brokerageAccount.id());
-          file->modifyAccount(newAccount);
-          file->createOpeningBalanceTransaction(brokerageAccount, openingBal);
-        } catch(MyMoneyException *e) {
-          qDebug("Cannot add brokerage account: %s", e->what().latin1());
-          delete e;
-        }
-      } else
-        file->createOpeningBalanceTransaction(newAccount, openingBal);
+      // set a link from the investment account to the brokerage account
+      newAccount.setValue("kmm-brokerage-account", brokerageAccount.id());
+      file->modifyAccount(newAccount);
+      file->createOpeningBalanceTransaction(brokerageAccount, openingBal);
 
-      ft.commit();
+    } else
+      file->createOpeningBalanceTransaction(newAccount, openingBal);
 
-    } catch (MyMoneyException *e) {
-      KMessageBox::information(this, i18n("Unable to add account: %1").arg(e->what()));
-      delete e;
-    }
-
+    ft.commit();
   }
   catch (MyMoneyException *e)
   {
@@ -2512,8 +2495,7 @@ void KMyMoney2App::slotCategoryNew(const QString& name, QCString& id)
 void KMyMoney2App::slotCategoryNew(MyMoneyAccount& account, const MyMoneyAccount& parent)
 {
   if(KMessageBox::questionYesNo(this,
-    QString("<qt>")+i18n("The category <b>%1</b> currently does not exist as sub-account of <b>%2</b>. "
-          "Do you want to create it?").arg(account.name()).arg(parent.name())+QString("</qt>"), i18n("Create category"),
+    QString("<qt>")+i18n("The category <b>%1</b> currently does not exist. Do you want to create it?<p><i>The parent account will default to <b>%2</b> but can be changed in the following dialog</i>.").arg(account.name()).arg(parent.name())+QString("</qt>"), i18n("Create category"),
     KStdGuiItem::yes(), KStdGuiItem::no(), "CreateNewCategories") == KMessageBox::Yes) {
     createCategory(account, parent);
   }
