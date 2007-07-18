@@ -1,3 +1,6 @@
+2007-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed crash when online price update for exchange rate failed
+
 2007-07-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added framework to modify axis parameters in PivotTable::drawChart()
   * Fixed creation of account hierarchies

@@ -344,22 +344,33 @@ void KEquityPriceUpdateDlg::slotQuoteFailed(const QString& _id, const QString& _
   QListViewItem* item = lvEquityList->findItem(_id,ID_COL,Qt::ExactMatch);
 
   // Give the user some options
-
-  int result = KMessageBox::questionYesNoCancel(this,i18n("Failed to retrieve a quote for %1 from %2.  Would you like to disable online price updates for this security?").arg(_symbol,item->text(SOURCE_COL)),i18n("Price Update Failed"),KStdGuiItem::yes(),KStdGuiItem::no(),"KEquityPriceUpdateDlg::slotQuoteFailed::Price Update Failed");
+  int result;
+  if(_id.contains(" ")) {
+    result = KMessageBox::warningContinueCancel(this, i18n("Failed to retrieve an exchange rate for %1 from %2. It will be skipped this time.").arg(_symbol, item->text(SOURCE_COL)), i18n("Price Update  Failed"));
+  } else {
+    result = KMessageBox::questionYesNoCancel(this, i18n("Failed to retrieve a quote for %1 from %2.  Would you like to disable online price updates for this security?").arg(_symbol, item->text(SOURCE_COL)),i18n("Price Update Failed"), KStdGuiItem::yes(), KStdGuiItem::no(), "KEquityPriceUpdateDlg::slotQuoteFailed::Price Update Failed");
+  }
 
   if ( result == KMessageBox::Yes )
   {
     // Disable price updates for this security
 
-    // Get this security (by ID)
-    MyMoneySecurity security = MyMoneyFile::instance()->security(_id.utf8());
+    MyMoneyFileTransaction ft;
+    try {
+      // Get this security (by ID)
+      MyMoneySecurity security = MyMoneyFile::instance()->security(_id.utf8());
 
-    // Set the quote source to blank
-    security.setValue("kmm-online-source",QString());
-    security.setValue("kmm-online-quote-system",QString());
+      // Set the quote source to blank
+      security.setValue("kmm-online-source",QString());
+      security.setValue("kmm-online-quote-system",QString());
 
-    // Re-commit the security
-    MyMoneyFile::instance()->modifySecurity(security);
+      // Re-commit the security
+      MyMoneyFile::instance()->modifySecurity(security);
+      ft.commit();
+    } catch(MyMoneyException* e) {
+      KMessageBox::error(this, QString("<qt>")+i18n("Cannot update security <b>%1</b>: %2").arg(_symbol, e->what())+QString("</qt>"), i18n("Price Update Failed"));
+      delete e;
+    }
   }
 
   // As long as the user doesn't want to cancel, move on!
