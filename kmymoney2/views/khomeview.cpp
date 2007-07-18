@@ -643,13 +643,45 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
 
 void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
   QString tmp;
-  MyMoneySecurity currency = MyMoneyFile::instance()->currency(acc.currencyId());
+  MyMoneySecurity currency = file->currency(acc.currencyId());
 
   QString amount;
   MyMoneyMoney value;
   if(acc.accountType() == MyMoneyAccount::Investment) {
-    value = MyMoneyFile::instance()->totalValue(acc.id(), QDate::currentDate());
+    value = file->balance(acc.id());
+    try {
+      if(currency.id() != file->baseCurrency().id()) {
+        value = value * file->price(currency.id(), file->baseCurrency().id()).rate(file->baseCurrency().id());
+        value.convert(file->baseCurrency().smallestAccountFraction());
+      }
+    } catch(MyMoneyException* e) {
+      qWarning(QString("cannot convert balance to base currency: %1").arg(e->what()));
+      delete e;
+    }
+    QValueList<QCString>::const_iterator it_a;
+    for(it_a = acc.accountList().begin(); it_a != acc.accountList().end(); ++it_a) {
+      MyMoneyAccount stock = file->account(*it_a);
+      try {
+        MyMoneyMoney val;
+        MyMoneyMoney balance = file->balance(stock.id());
+        MyMoneySecurity security = file->security(stock.currencyId());
+        MyMoneyPrice price = file->price(stock.currencyId(), security.tradingCurrency());
+        val = balance * price.rate(security.tradingCurrency());
+
+        if(security.tradingCurrency() != file->baseCurrency().id()) {
+          MyMoneySecurity sec = file->currency(security.tradingCurrency());
+          val = val * file->price(security.tradingCurrency(), file->baseCurrency().id()).rate(file->baseCurrency().id());
+        }
+        val = val.convert(file->baseCurrency().smallestAccountFraction());
+        value += val;
+      } catch(MyMoneyException* e) {
+        qWarning(QString("cannot convert stock balance of %1 to base currency: %2").arg(stock.name(), e->what()));
+        delete e;
+      }
+    }
+
     amount = value.formatMoney(currency.tradingSymbol());
   } else {
     value = MyMoneyFile::instance()->balance(acc.id(), QDate::currentDate());

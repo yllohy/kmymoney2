@@ -690,32 +690,6 @@ void KMyMoney2App::slotPerformanceTest(void)
   std::cerr << "First time: " << measurement[0] << " msec" << std::endl;
   std::cerr << "Average   : " << (measurement[0] + measurement[1]) / 1000 << " msec" << std::endl;
 
-  // total value of expense account
-  MyMoneyFile::instance()->clearCache();
-  measurement[0] = measurement[1] = 0;
-  acc = MyMoneyFile::instance()->expense();
-  for(int i = 0; i < 1000; ++i) {
-    timer.start();
-    MyMoneyMoney result = MyMoneyFile::instance()->totalValue(acc.id());
-    measurement[i != 0] += timer.elapsed();
-  }
-  std::cerr << "totalValue(Expense)" << std::endl;
-  std::cerr << "First time: " << measurement[0] << " msec" << std::endl;
-  std::cerr << "Average   : " << (measurement[0] + measurement[1]) / 1000 << " msec" << std::endl;
-
-  // total value valid of expense account
-  MyMoneyFile::instance()->clearCache();
-  measurement[0] = measurement[1] = 0;
-  acc = MyMoneyFile::instance()->expense();
-  for(int i = 0; i < 1000; ++i) {
-    timer.start();
-    MyMoneyMoney result = MyMoneyFile::instance()->totalValueValid(acc.id());
-    measurement[i != 0] += timer.elapsed();
-  }
-  std::cerr << "totalValueValid(Expense)" << std::endl;
-  std::cerr << "First time: " << measurement[0] << " msec" << std::endl;
-  std::cerr << "Average   : " << (measurement[0] + measurement[1]) / 1000 << " msec" << std::endl;
-
   // transaction list
   MyMoneyFile::instance()->clearCache();
   measurement[0] = measurement[1] = 0;
