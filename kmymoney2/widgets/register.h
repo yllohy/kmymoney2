@@ -454,6 +454,7 @@ protected slots:
   void slotDoubleClicked(int, int, int, const QPoint&);
 
   void slotToggleErronousTransactions(void);
+  void slotAutoColumnSizing(int section);
 
 signals:
   void selectionChanged(void);

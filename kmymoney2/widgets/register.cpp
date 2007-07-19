@@ -490,6 +490,8 @@ Register::Register(QWidget *parent, const char *name ) :
 
   setNumCols(MaxColumns);
   setCurrentCell(0, 1);
+  // we do our own sorting
+  setSorting(false);
 
   // keep the following list in sync with KMyMoneyRegister::Column in transaction.h
   horizontalHeader()->setLabel(NumberColumn, i18n("No."));
@@ -523,7 +525,8 @@ Register::Register(QWidget *parent, const char *name ) :
   connect(this, SIGNAL(clicked(int, int, int, const QPoint&)), this, SLOT(selectItem(int, int, int, const QPoint&)));
   connect(this, SIGNAL(doubleClicked(int, int, int, const QPoint&)), this, SLOT(slotDoubleClicked(int, int, int, const QPoint&)));
 
-  // QTimer::singleShot(500, this, SLOT(slotToggleErronousTransactions()));
+  // double clicking the header turns on auto column sizing
+  connect(horizontalHeader(), SIGNAL(sectionSizeChanged(int)), this, SLOT(slotAutoColumnSizing(int)));
 }
 
 Register::~Register()
@@ -533,11 +536,35 @@ Register::~Register()
   m_tooltip = 0;
 }
 
+void Register::slotAutoColumnSizing(int section)
+{
+#if 0
+  if(isUpdatesEnabled()) {
+    int w = visibleWidth();
+    QString size;
+    for(int i=0; i < numCols(); ++i) {
+      if(i)
+        size += ",";
+      if(i == DetailColumn) {
+        size += "0";
+        continue;
+      }
+      size += QString("%1").arg((columnWidth(i) * 100) / w);
+    }
+    qDebug("size = %s", size.data());
+    m_account.setValue("kmm-ledger-column-width", size);
+  }
+#endif
+}
+
 bool Register::eventFilter(QObject* o, QEvent* e)
 {
   if(o == horizontalHeader() && e->type() == QEvent::MouseButtonPress) {
-    emit headerClicked();
-    return true;
+    QMouseEvent *me = dynamic_cast<QMouseEvent*>(e);
+    if(me->button() == Qt::RightButton) {
+      emit headerClicked();
+      return true;
+    }
   }
 
   return QTable::eventFilter(o, e);
@@ -1053,81 +1080,109 @@ void Register::resize(int col)
   // resize the register
   int w = visibleWidth();
 
-  // check which space we need
-  if(columnWidth(NumberColumn))
-    adjustColumn(NumberColumn);
-  if(columnWidth(AccountColumn))
-    adjustColumn(AccountColumn);
-  if(columnWidth(PaymentColumn))
-    adjustColumn(PaymentColumn);
-  if(columnWidth(DepositColumn))
-    adjustColumn(DepositColumn);
-  if(columnWidth(BalanceColumn))
-    adjustColumn(BalanceColumn);
-  if(columnWidth(PriceColumn))
-    adjustColumn(PriceColumn);
-  if(columnWidth(ValueColumn))
-    adjustColumn(ValueColumn);
+  // TODO I was playing a bit with manual ledger resizing but could not get
+  // a good solution. I just leave the code around, so that maybe others
+  // pick it up again.  So far, it's not clear to me where to store the
+  // size of the sections:
+  //
+  // a) with the account (as it is done now)
+  // b) with the application for the specific account type
+  // c) ????
+  //
+  // Ideas are welcome (ipwizard: 2007-07-19)
+  // Note: currently there's no way to switch back to automatic
+  // column sizing once the manual sizing option has been saved
+#if 0
+  if(m_account.value("kmm-ledger-column-width").isEmpty()) {
+#endif
 
-  // make amount columns all the same size
-  // only extend the entry columns to make sure they fit
-  // the widget
-  int dwidth = 0;
-  int ewidth = 0;
-  if(ewidth < columnWidth(PaymentColumn))
-    ewidth = columnWidth(PaymentColumn);
-  if(ewidth < columnWidth(DepositColumn))
-    ewidth = columnWidth(DepositColumn);
-  if(dwidth < columnWidth(BalanceColumn))
-    dwidth = columnWidth(BalanceColumn);
-  if(ewidth < columnWidth(PriceColumn))
-    ewidth = columnWidth(PriceColumn);
-  if(dwidth < columnWidth(ValueColumn))
-    dwidth = columnWidth(ValueColumn);
+    // check which space we need
+    if(columnWidth(NumberColumn))
+      adjustColumn(NumberColumn);
+    if(columnWidth(AccountColumn))
+      adjustColumn(AccountColumn);
+    if(columnWidth(PaymentColumn))
+      adjustColumn(PaymentColumn);
+    if(columnWidth(DepositColumn))
+      adjustColumn(DepositColumn);
+    if(columnWidth(BalanceColumn))
+      adjustColumn(BalanceColumn);
+    if(columnWidth(PriceColumn))
+      adjustColumn(PriceColumn);
+    if(columnWidth(ValueColumn))
+      adjustColumn(ValueColumn);
 
-  int swidth = columnWidth(SecurityColumn);
-  if(swidth > 0) {
-    adjustColumn(SecurityColumn);
-    swidth = columnWidth(SecurityColumn);
-  }
+    // make amount columns all the same size
+    // only extend the entry columns to make sure they fit
+    // the widget
+    int dwidth = 0;
+    int ewidth = 0;
+    if(ewidth < columnWidth(PaymentColumn))
+      ewidth = columnWidth(PaymentColumn);
+    if(ewidth < columnWidth(DepositColumn))
+      ewidth = columnWidth(DepositColumn);
+    if(dwidth < columnWidth(BalanceColumn))
+      dwidth = columnWidth(BalanceColumn);
+    if(ewidth < columnWidth(PriceColumn))
+      ewidth = columnWidth(PriceColumn);
+    if(dwidth < columnWidth(ValueColumn))
+      dwidth = columnWidth(ValueColumn);
 
-  // Resize the date and money fields to either
-  // a) the size required by the input widget if no transaction form is shown
-  // b) the adjusted value for the input widget if the transaction form is visible
-  if(!KMyMoneySettings::transactionForm()) {
-    kMyMoneyDateInput* dateField = new kMyMoneyDateInput;
-    kMyMoneyEdit* valField = new kMyMoneyEdit;
-
-    dateField->setFont(KMyMoneyGlobalSettings::listCellFont());
-    setColumnWidth(DateColumn, dateField->minimumSizeHint().width());
-    valField->setMinimumWidth(ewidth);
-    ewidth = valField->minimumSizeHint().width();
-
+    int swidth = columnWidth(SecurityColumn);
     if(swidth > 0) {
-      swidth = columnWidth(SecurityColumn) + 40;
+      adjustColumn(SecurityColumn);
+      swidth = columnWidth(SecurityColumn);
     }
-    delete valField;
-    delete dateField;
+
+    // Resize the date and money fields to either
+    // a) the size required by the input widget if no transaction form is shown
+    // b) the adjusted value for the input widget if the transaction form is visible
+    if(!KMyMoneySettings::transactionForm()) {
+      kMyMoneyDateInput* dateField = new kMyMoneyDateInput;
+      kMyMoneyEdit* valField = new kMyMoneyEdit;
+
+      dateField->setFont(KMyMoneyGlobalSettings::listCellFont());
+      setColumnWidth(DateColumn, dateField->minimumSizeHint().width());
+      valField->setMinimumWidth(ewidth);
+      ewidth = valField->minimumSizeHint().width();
+
+      if(swidth > 0) {
+        swidth = columnWidth(SecurityColumn) + 40;
+      }
+      delete valField;
+      delete dateField;
+    } else {
+      adjustColumn(DateColumn);
+    }
+
+    if(columnWidth(PaymentColumn))
+      setColumnWidth(PaymentColumn, ewidth);
+    if(columnWidth(DepositColumn))
+      setColumnWidth(DepositColumn, ewidth);
+    if(columnWidth(BalanceColumn))
+      setColumnWidth(BalanceColumn, dwidth);
+    if(columnWidth(PriceColumn))
+      setColumnWidth(PriceColumn, ewidth);
+    if(columnWidth(ValueColumn))
+      setColumnWidth(ValueColumn, dwidth);
+
+    if(columnWidth(ReconcileFlagColumn))
+      setColumnWidth(ReconcileFlagColumn, 20);
+
+    if(swidth > 0)
+      setColumnWidth(SecurityColumn, swidth);
+#if 0
+  // see comment above
   } else {
-    adjustColumn(DateColumn);
+    QStringList colSizes = QStringList::split(",", m_account.value("kmm-ledger-column-width"), true);
+    for(int i; i < colSizes.count(); ++i) {
+      int colWidth = colSizes[i].toInt();
+      if(colWidth == 0)
+        continue;
+      setColumnWidth(i, w * colWidth / 100);
+    }
   }
-
-  if(columnWidth(PaymentColumn))
-    setColumnWidth(PaymentColumn, ewidth);
-  if(columnWidth(DepositColumn))
-    setColumnWidth(DepositColumn, ewidth);
-  if(columnWidth(BalanceColumn))
-    setColumnWidth(BalanceColumn, dwidth);
-  if(columnWidth(PriceColumn))
-    setColumnWidth(PriceColumn, ewidth);
-  if(columnWidth(ValueColumn))
-    setColumnWidth(ValueColumn, dwidth);
-
-  if(columnWidth(ReconcileFlagColumn))
-    setColumnWidth(ReconcileFlagColumn, 20);
-
-  if(swidth > 0)
-    setColumnWidth(SecurityColumn, swidth);
+#endif
 
   for(int i = 0; i < numCols(); ++i) {
     if(i == col)
