@@ -1,3 +1,7 @@
+2007-07-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Made MyMoneyFile a static singleton and MyMoneyFile::instance() an
+    inline method
+
 2007-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed crash when online price update for exchange rate failed
   * Removed some unused engine functions (accountValue/totalAccountValue)

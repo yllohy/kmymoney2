@@ -153,9 +153,8 @@ public:
   /**
     * This is the function to access the MyMoneyFile object.
     * It returns a pointer to the single instance of the object.
-    * If no instance exists, it will be created.
     */
-  static MyMoneyFile* const instance();
+  static inline MyMoneyFile* const instance() { return &file; }
 
   /**
     * This is the destructor for any MyMoneyFile object
@@ -1306,6 +1305,11 @@ signals:
   void dataChanged(void);
 
 private:
+  static MyMoneyFile file;
+
+  MyMoneyFile& operator=(MyMoneyFile&); // not allowed for singleton
+  MyMoneyFile(const MyMoneyFile&);      // not allowed for singleton
+
   const QCString locateSubAccount(const MyMoneyAccount& base, const QString& category) const;
 
   void ensureDefaultCurrency(MyMoneyAccount& acc) const;

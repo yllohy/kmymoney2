@@ -69,13 +69,7 @@ public:
 
 };
 
-MyMoneyFile* const MyMoneyFile::instance()
-{
-  if(_instance == 0) {
-    _instance = new MyMoneyFile;
-  }
-  return _instance;
-}
+MyMoneyFile MyMoneyFile::file;
 
 MyMoneyFile::MyMoneyFile() :
   d(new MyMoneyFilePrivate)
