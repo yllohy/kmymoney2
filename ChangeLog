@@ -2,6 +2,7 @@
   * Made MyMoneyFile a static singleton and MyMoneyFile::instance() an
     inline method
   * Adapted testcases to work with static singleton
+  * Added toolbutton for HBCI account update to toolbar
 
 2007-07-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed crash when online price update for exchange rate failed

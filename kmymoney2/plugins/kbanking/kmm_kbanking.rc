@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui name="kmymoneyplugin-kbanking" version="2">
+<kpartgui name="kmymoneyplugin-kbanking" version="3">
   <MenuBar>
     <Menu name="account">
       <Separator/>
@@ -26,4 +26,7 @@
     <Action name="account_map_aqbanking"/>
     <Action name="account_update_aqbanking"/>
   </Menu>
+  <ToolBar name="mainToolBar">
+    <Action name="account_update_aqbanking"/>
+  </ToolBar>
 </kpartgui>
