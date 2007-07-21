@@ -93,7 +93,6 @@ void PivotTableTest::setUp ()
 void PivotTableTest::tearDown ()
 {
   file->detachStorage(storage);
-  delete file;
   delete storage;
 }
 

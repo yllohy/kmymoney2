@@ -33,7 +33,6 @@ void MyMoneyFileTest::setUp () {
 
 void MyMoneyFileTest::tearDown () {
 	m->detachStorage(storage);
-	delete m;
 	delete storage;
 }
 

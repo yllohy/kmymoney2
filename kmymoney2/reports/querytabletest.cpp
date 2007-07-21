@@ -85,7 +85,6 @@ void QueryTableTest::setUp () {
 void QueryTableTest::tearDown ()
 {
   file->detachStorage(storage);
-  delete file;
   delete storage;
 }
 

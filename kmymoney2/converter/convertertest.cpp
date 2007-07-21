@@ -95,7 +95,6 @@ void ConverterTest::setUp () {
 void ConverterTest::tearDown ()
 {
   file->detachStorage(storage);
-  delete file;
   delete storage;
 }
 
