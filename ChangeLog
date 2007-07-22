@@ -1,3 +1,6 @@
+2007-07-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed typo. Thanks to David Houlden for finding it
+
 2007-07-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Made MyMoneyFile a static singleton and MyMoneyFile::instance() an
     inline method

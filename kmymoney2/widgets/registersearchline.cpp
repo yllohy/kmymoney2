@@ -79,7 +79,7 @@ void RegisterSearchLine::init(Register *reg)
   d->combo->insertItem(SmallIcon("run"), i18n("Any status"));
   d->combo->insertItem(SmallIcon("fileimport"), i18n("Imported"));
   d->combo->insertItem(SmallIcon("attention"), i18n("Erroneous"));
-  d->combo->insertItem(i18n("Not reconcoled"));
+  d->combo->insertItem(i18n("Not reconciled"));
   d->combo->insertItem(i18n("Cleared"));
   d->combo->setCurrentItem(0);
   connect(d->combo, SIGNAL(activated(int)), this, SLOT(slotStatusChanged(int)));
