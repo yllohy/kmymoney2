@@ -3678,7 +3678,7 @@ AC_DEFUN([AM_KDE_WITH_NLS],
       AC_SUBST(GMSGFMT)
       AC_SUBST(MSGFMT)
 
-      AM_PATH_PROG_WITH_TEST_KDE(XGETTEXT, xgettext,
+      AM_PATH_PROG_WITH_TEST_KDE(XGETTEXT, kde-xgettext,
 	[test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
 
       dnl Test whether we really found GNU xgettext.
