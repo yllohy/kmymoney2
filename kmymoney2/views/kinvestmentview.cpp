@@ -216,7 +216,7 @@ bool KInvestmentView::slotSelectAccount(const QCString& id, const QCString& tran
         d->m_account = MyMoneyFile::instance()->account(id);
         // if a stock account is selected, we show the
         // the corresponding parent (investment) account
-        if(d->m_account.accountType() == MyMoneyAccount::Stock) {
+        if(d->m_account.isInvest()) {
           d->m_account = MyMoneyFile::instance()->account(d->m_account.parentAccountId());
         }
         // TODO if we don't have an investment account, then we should switch to the ledger view

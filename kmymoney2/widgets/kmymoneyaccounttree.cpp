@@ -172,10 +172,10 @@ bool KMyMoneyAccountTree::dropAccountOnAccount(const MyMoneyAccount& accFrom, co
     // now check for exceptions
     if(rc) {
       if(accTo.accountType() == MyMoneyAccount::Investment
-      && accFrom.accountType() != MyMoneyAccount::Stock)
+      && !accFrom.isInvest())
         rc = false;
 
-      else if(accFrom.accountType() == MyMoneyAccount::Stock
+      else if(accFrom.isInvest()
       && accTo.accountType() != MyMoneyAccount::Investment)
         rc = false;
 
@@ -231,7 +231,7 @@ bool KMyMoneyAccountTree::acceptDrag(QDropEvent* event) const
 
       } else if(to->isInstitution() && m_institutionConnections) {
         // Moving a non-stock account to an institution is ok
-        if(accFrom.accountType() != MyMoneyAccount::Stock)
+        if(!accFrom.isInvest())
           rc = true;
       }
     }
@@ -289,7 +289,7 @@ void KMyMoneyAccountTree::slotObjectDropped(QDropEvent* event, QListViewItem* /*
         }
 
       } else if(newParent->isInstitution()) {
-        if(accFrom.accountType() != MyMoneyAccount::Stock) {
+        if(!accFrom.isInvest()) {
           const MyMoneyInstitution& institution = dynamic_cast<const MyMoneyInstitution&>(newParent->itemObject());
           emit reparent(accFrom, institution);
         }
@@ -741,7 +741,7 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
 MyMoneyMoney KMyMoneyAccountTreeItem::balance( const MyMoneyAccount& account ) const
 {
   // account.balance() is not compatable with stock accounts
-  if ( account.accountType() == MyMoneyAccount::Stock )
+  if ( account.isInvest() )
     return MyMoneyFile::instance()->balance(account.id());
   else
     return account.balance();
@@ -819,7 +819,7 @@ void KMyMoneyAccountTreeItem::paintCell(QPainter *p, const QColorGroup & cg, int
   else
     cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
 
-
+#ifndef KMM_DESIGNER
   // display base accounts in bold
   QFont font = KMyMoneyGlobalSettings::listCellFont();
   if(!parent())
@@ -830,6 +830,7 @@ void KMyMoneyAccountTreeItem::paintCell(QPainter *p, const QColorGroup & cg, int
     font.setStrikeOut(true);
 
   p->setFont(font);
+#endif
 
   QListViewItem::paintCell(p, cg2, column, width, align);
 }

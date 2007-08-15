@@ -17,6 +17,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qcheckbox.h>
 
 // ----------------------------------------------------------------------------
@@ -34,101 +35,50 @@
 
 #include "knewinvestmentwizard.h"
 
-#include "../widgets/kmymoneylineedit.h"
-#include "../widgets/kmymoneyedit.h"
+#include <kmymoney/kmymoneylineedit.h>
+#include <kmymoney/kmymoneyedit.h>
+#include <kmymoney/mymoneysecurity.h>
+#include <kmymoney/mymoneyfile.h>
 #include "../widgets/kmymoneycurrencyselector.h"
-#include "../mymoney/mymoneysecurity.h"
-#include "../mymoney/mymoneyfile.h"
 #include "../converter/webpricequote.h"
 #include "../kmymoneyutils.h"
 
 KNewInvestmentWizard::KNewInvestmentWizard( QWidget *parent, const char *name ) :
   KNewInvestmentWizardDecl( parent, name )
 {
-  init();
+  init1();
   slotCheckPage(QString());
 }
 
 KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneyAccount& acc, QWidget *parent, const char *name ) :
-  KNewInvestmentWizardDecl( parent, name )
+  KNewInvestmentWizardDecl( parent, name ),
+  m_account(acc)
 {
   setCaption(i18n("Investment detail wizard"));
-  init();
-
-  m_account = acc;
-
-  // make sure the first page is not shown
-  setAppropriate(m_investmentTypePage, false);
-  showPage(m_investmentDetailsPage);
+  init1();
 
   // load the widgets with the data
   m_investmentName->setText(m_account.name());
-
   m_security = MyMoneyFile::instance()->security(m_account.currencyId());
-  MyMoneySecurity tradingCurrency = MyMoneyFile::instance()->currency(m_security.tradingCurrency());
 
-  m_investmentSymbol->setText(m_security.tradingSymbol());
-  m_tradingMarket->setCurrentText(m_security.tradingMarket());
-  m_fraction->setValue(MyMoneyMoney(m_security.smallestAccountFraction(), 1));
-  m_tradingCurrencyEdit->setSecurity(tradingCurrency);
-  if (m_security.value("kmm-online-quote-system") == "Finance::Quote") {
-    FinanceQuoteProcess p;
-    m_useFinanceQuote->setChecked(true);
-    m_onlineSourceCombo->setCurrentText(p.niceName(m_security.value("kmm-online-source")));
-  } else {
-    m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
-  }
-  if(!m_security.value("kmm-online-factor").isEmpty())
-    m_onlineFactor->setValue(MyMoneyMoney(m_security.value("kmm-online-factor")));
-  m_investmentIdentification->setText(m_security.value("kmm-security-id"));
-
-  // we can't see this one because the page is hidden, but we have to
-  // set it anyway because during createObjects() we use the value
-  m_securityType->setCurrentText(KMyMoneyUtils::securityTypeToString(m_security.securityType()));
-
-  slotCheckPage(m_security.value("kmm-online-source"));
+  init2();
 }
 
 KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneySecurity& security, QWidget *parent, const char *name ) :
-  KNewInvestmentWizardDecl( parent, name )
+  KNewInvestmentWizardDecl( parent, name ),
+  m_security(security)
 {
   setCaption(i18n("Security detail wizard"));
-  init();
+  init1();
   m_createAccount = false;
 
-  // make sure the first page is not shown
-  setAppropriate(m_investmentTypePage, false);
-  showPage(m_investmentDetailsPage);
-
   // load the widgets with the data
-  m_security = security;
   m_investmentName->setText(security.name());
-  MyMoneySecurity tradingCurrency = MyMoneyFile::instance()->currency(m_security.tradingCurrency());
 
-  m_investmentSymbol->setText(m_security.tradingSymbol());
-  m_tradingMarket->setCurrentText(m_security.tradingMarket());
-  m_fraction->setValue(MyMoneyMoney(m_security.smallestAccountFraction(), 1));
-  m_tradingCurrencyEdit->setSecurity(tradingCurrency);
-
-  if (m_security.value("kmm-online-quote-system") == "Finance::Quote") {
-    FinanceQuoteProcess p;
-    m_useFinanceQuote->setChecked(true);
-    m_onlineSourceCombo->setCurrentText(p.niceName(m_security.value("kmm-online-source")));
-  } else {
-    m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
-  }
-  if(!m_security.value("kmm-online-factor").isEmpty())
-    m_onlineFactor->setValue(MyMoneyMoney(m_security.value("kmm-online-factor")));
-  m_investmentIdentification->setText(m_security.value("kmm-security-id"));
-
-  // we can't see this one because the page is hidden, but we have to
-  // set it anyway because during createObjects() we use the value
-  m_securityType->setCurrentText(KMyMoneyUtils::securityTypeToString(m_security.securityType()));
-
-  slotCheckPage(m_security.value("kmm-online-source"));
+  init2();
 }
 
-void KNewInvestmentWizard::init(void)
+void KNewInvestmentWizard::init1(void)
 {
   m_onlineSourceCombo->insertStringList( WebPriceQuote::quoteSources() );
 
@@ -152,6 +102,28 @@ void KNewInvestmentWizard::init(void)
   connect(m_onlineSourceCombo, SIGNAL(activated(const QString&)), this, SLOT(slotCheckPage(const QString&)));
   connect(m_useFinanceQuote, SIGNAL(toggled(bool)), this, SLOT(slotSourceChanged(bool)));
   m_createAccount = true;
+}
+
+void KNewInvestmentWizard::init2(void)
+{
+  MyMoneySecurity tradingCurrency = MyMoneyFile::instance()->currency(m_security.tradingCurrency());
+  m_investmentSymbol->setText(m_security.tradingSymbol());
+  m_tradingMarket->setCurrentText(m_security.tradingMarket());
+  m_fraction->setValue(MyMoneyMoney(m_security.smallestAccountFraction(), 1));
+  m_tradingCurrencyEdit->setSecurity(tradingCurrency);
+  if (m_security.value("kmm-online-quote-system") == "Finance::Quote") {
+    FinanceQuoteProcess p;
+    m_useFinanceQuote->setChecked(true);
+    m_onlineSourceCombo->setCurrentText(p.niceName(m_security.value("kmm-online-source")));
+  } else {
+    m_onlineSourceCombo->setCurrentText(m_security.value("kmm-online-source"));
+  }
+  if(!m_security.value("kmm-online-factor").isEmpty())
+    m_onlineFactor->setValue(MyMoneyMoney(m_security.value("kmm-online-factor")));
+  m_investmentIdentification->setText(m_security.value("kmm-security-id"));
+  m_securityType->setCurrentText(KMyMoneyUtils::securityTypeToString(m_security.securityType()));
+
+  slotCheckPage(m_security.value("kmm-online-source"));
 }
 
 KNewInvestmentWizard::~KNewInvestmentWizard()
@@ -230,6 +202,7 @@ void KNewInvestmentWizard::createObjects(const QCString& parentId)
     newSecurity.setTradingMarket(m_tradingMarket->currentText());
     newSecurity.setSmallestAccountFraction(m_fraction->value());
     newSecurity.setTradingCurrency(m_tradingCurrencyEdit->security().id());
+    newSecurity.setSecurityType(type);
     newSecurity.deletePair("kmm-online-source");
     newSecurity.deletePair("kmm-online-quote-system");
     newSecurity.deletePair("kmm-online-factor");
@@ -252,12 +225,9 @@ void KNewInvestmentWizard::createObjects(const QCString& parentId)
     if(m_security.id().isEmpty() || newSecurity != m_security) {
       m_security = newSecurity;
 
-      // if the security was not found, we have to create it while not forgetting
-      // to setup the type
+      // add or update it
       if(m_security.id().isEmpty()) {
-        m_security.setSecurityType(type);
         file->addSecurity(m_security);
-
       } else {
         file->modifySecurity(m_security);
       }

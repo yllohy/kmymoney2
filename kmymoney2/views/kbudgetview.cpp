@@ -438,7 +438,7 @@ bool KBudgetView::loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, const Q
     QValueList<MyMoneyPrice> prices;
     MyMoneySecurity security = file->baseCurrency();
     try {
-      if(acc.accountType() == MyMoneyAccount::Stock) {
+      if(acc.isInvest()) {
         security = m_securityMap[acc.currencyId()];
         prices += file->price(acc.currencyId(), security.tradingCurrency());
         if(security.tradingCurrency() != file->baseCurrency().id()) {

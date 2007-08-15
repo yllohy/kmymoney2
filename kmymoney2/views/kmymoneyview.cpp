@@ -1249,6 +1249,8 @@ void KMyMoneyView::loadDefaultCurrency(const MyMoneySecurity& currency, const bo
 
 void KMyMoneyView::loadDefaultCurrencies(void)
 {
+  // more information can be obtained from http://en.wikipedia.org/wiki/Currency_codes
+
   bool create = MyMoneyFile::instance()->currencyList().count() == 0;
   loadDefaultCurrency(MyMoneySecurity("AFA", i18n("Afghanistan Afghani")), create);
   loadDefaultCurrency(MyMoneySecurity("ALL", i18n("Albanian Lek")), create);
@@ -1407,6 +1409,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("VUV", i18n("Vanuatu Vatu")), create);
   loadDefaultCurrency(MyMoneySecurity("VEB", i18n("Venezuelan Bolivar")), create);
   loadDefaultCurrency(MyMoneySecurity("VND", i18n("Vietnamese Dong"),        QChar(0x20AB)), create);
+  loadDefaultCurrency(MyMoneySecurity("XPF", i18n("CFP franc"), "F", 1, 1, 100), create);
   loadDefaultCurrency(MyMoneySecurity("YUM", i18n("Yugoslav Dinar")), create);
   loadDefaultCurrency(MyMoneySecurity("ZMK", i18n("Zambian Kwacha")), create);
   loadDefaultCurrency(MyMoneySecurity("ZWD", i18n("Zimbabwe Dollar"),        "$"), create);
@@ -2021,7 +2024,7 @@ void KMyMoneyView::fixTransactions_0(void)
       }
 
       // fix the shares and values to have the correct fraction
-      if(splitAccount.accountType() != MyMoneyAccount::Stock) {
+      if(!splitAccount.isInvest()) {
         MyMoneySecurity sec;
         try {
           sec = file->security(splitAccount.currencyId());

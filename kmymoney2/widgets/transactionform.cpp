@@ -159,7 +159,8 @@ void TabBar::copyTabs(const TabBar* otabbar)
 TransactionForm::TransactionForm(QWidget *parent, const char *name) :
   TransactionEditorContainer(parent, name),
   m_transaction(0),
-  m_tabBar(0)
+  m_tabBar(0),
+  m_showAccountRow(false)
 {
   setBackgroundOrigin(QTable::WindowOrigin);
   setFrameShape( QTable::NoFrame);
@@ -231,8 +232,18 @@ void TransactionForm::slotSetTransaction(KMyMoneyRegister::Transaction* transact
   // extract the maximal sizeHint height
   int height = QMAX(dateInput.sizeHint().height(), category.sizeHint().height());
 
-  for(int row = 0; row < numRows(); ++row)
-    QTable::setRowHeight(row, height);
+  for(int row = 0; row < numRows(); ++row) {
+    if(row == 0) {
+      if(m_showAccountRow) {
+        showRow(row);
+        QTable::setRowHeight(row, height);
+      }
+      else
+        hideRow(row);
+    }
+    else
+      QTable::setRowHeight(row, height);
+  }
 
   // adjust vertical size of form table
   height *= numRows();
@@ -392,6 +403,7 @@ void TransactionForm::adjustColumn(Column col)
     w = QMAX(dateInput.sizeHint().width(), valInput.sizeHint().width());
   }
 
+#ifndef KMM_DESIGNER
   if(m_transaction) {
     QString txt;
     QFontMetrics fontMetrics(KMyMoneyGlobalSettings::listCellFont());
@@ -407,6 +419,7 @@ void TransactionForm::adjustColumn(Column col)
       w = QMAX(w, fontMetrics.width(txt)+10);
     }
   }
+#endif
 
   if(col < numCols())
     setColumnWidth( col, w );

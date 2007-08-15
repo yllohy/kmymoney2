@@ -654,7 +654,7 @@ void KGlobalLedgerView::loadAccounts(void)
       QCStringList::Iterator it;
       for(it = list.begin(); it != list.end(); ++it) {
         MyMoneyAccount a = file->account(*it);
-        if(a.accountType() != MyMoneyAccount::Stock) {
+        if(!a.isInvest()) {
           if(a.value("PreferredAccount") == "Yes") {
             m_account = a;
             break;
@@ -755,7 +755,7 @@ bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCString& tr
         m_account = MyMoneyFile::instance()->account(id);
         // if a stock account is selected, we show the
         // the corresponding parent (investment) account
-        if(m_account.accountType() == MyMoneyAccount::Stock) {
+        if(m_account.isInvest()) {
           m_account = MyMoneyFile::instance()->account(m_account.parentAccountId());
         }
         m_newAccountLoaded = true;

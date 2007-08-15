@@ -156,6 +156,8 @@ public:
     *   - Investment
     *   - MoneyMarket
     *   - CertificateDep
+    *   - AssetLoan
+    *   - Stock
     *
     * - Liability
     *   - Liability
@@ -358,7 +360,7 @@ public:
   /**
     * This method returns the type of the account.
     */
-  const accountTypeE accountType(void) const {return m_accountType; };
+  accountTypeE accountType(void) const { return m_accountType; }
 
   /**
     * This method retrieves the id of the currency used with this account.
@@ -392,7 +394,7 @@ public:
     * This member returns the balance of this account based on
     * all transactions stored in the journal.
     */
-  const MyMoneyMoney& balance(void) const { return m_balance; };
+  const MyMoneyMoney& balance(void) const { return m_balance; }
 
   /**
     * This method adjusts the balance of this account
@@ -401,7 +403,7 @@ public:
     * @param diff const reference to MyMoneyMoney object containing the
     *             value to be added to the balance
     */
-  void adjustBalance(const MyMoneyMoney& diff) { m_balance += diff; };
+  void adjustBalance(const MyMoneyMoney& diff) { m_balance += diff; }
 
   /**
     * This method sets the balance of this account
@@ -410,7 +412,7 @@ public:
     * @param val const reference to MyMoneyMoney object containing the
     *             value to be assigned to the balance
     */
-  void setBalance(const MyMoneyMoney& val) { m_balance = val; };
+  void setBalance(const MyMoneyMoney& val) { m_balance = val; }
 
   /**
     * This method sets the kvp's for online banking with this account
@@ -481,7 +483,7 @@ public:
     *
     * @retval true account is of type asset or liability
     * @retval false for all other account types
-   */
+    */
   bool isAssetLiability(void) const;
 
   /**
@@ -490,8 +492,17 @@ public:
     *
     * @retval true account is of type Loan or AssetLoan
     * @retval false for all other account types
-   */
+    */
   bool isLoan(void) const;
+
+  /**
+    * This method returns @a true if the account type is
+    * Stock
+    *
+    * @retval true account is of type Stock
+    * @retval false for all other account types
+    */
+  bool isInvest(void) const;
 
 private:
   /**
@@ -600,9 +611,9 @@ public:
     changeYearly
   };
 
-  MyMoneyAccountLoan() {};
+  MyMoneyAccountLoan() {}
   MyMoneyAccountLoan(const MyMoneyAccount&);
-  ~MyMoneyAccountLoan() {};
+  ~MyMoneyAccountLoan() {}
 
   const MyMoneyMoney loanAmount(void) const;
   void setLoanAmount(const MyMoneyMoney& amount);

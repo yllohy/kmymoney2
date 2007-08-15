@@ -58,7 +58,7 @@ public:
     *
     * @param tabOrderWidgets QWidgetList which will be filled with the pointers
     *                        to the editWidgets in their tab order
-    * @param account account that is currently shown in the calling ledget view
+    * @param account account that is currently shown in the calling ledger view
     * @param action default action (defaults to ActionNone).
     */
   void setup(QWidgetList& tabOrderWidgets, const MyMoneyAccount& account = MyMoneyAccount(), KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
@@ -132,6 +132,14 @@ public slots:
     * The default implementation returns QDialog::Rejected
     */
   virtual int slotEditSplits(void);
+
+  /**
+    * Modify the account which the transaction should be based on. The
+    * initial value for the account is passed during setup().
+    *
+    * @param id of the account to be used
+    */
+  void slotUpdateAccount(const QCString& id);
 
 protected:
   virtual void createEditWidgets(void) = 0;

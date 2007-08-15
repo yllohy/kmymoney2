@@ -251,9 +251,9 @@ const bool MyMoneyReport::includes( const MyMoneyAccount& acc ) const
     case MyMoneyAccount::Asset:
     case MyMoneyAccount::Liability:
       if ( isLoansOnly() )
-        result = (acc.accountType() == MyMoneyAccount::Loan) && includesAccount( acc.id() );
+        result = acc.isLoan() && includesAccount( acc.id() );
       else if ( isInvestmentsOnly() )
-        result = (acc.accountType() == MyMoneyAccount::Stock) && includesAccount( acc.id() );
+        result = acc.isInvest() && includesAccount( acc.id() );
       else if ( isIncludingTransfers() && m_rowType == MyMoneyReport::eExpenseIncome )
         // If transfers are included, ONLY include this account if it is NOT
         // included in the report itself!!

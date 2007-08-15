@@ -302,7 +302,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
       typeCombo->setEnabled(false);
       m_currency->setDisabled(MyMoneyFile::instance()->isReferenced(m_account));
     }
-    if(m_account.accountType() == MyMoneyAccount::Stock) {
+    if(m_account.isInvest()) {
       typeCombo->setEnabled(false);
       m_qcheckboxPreferred->hide();
       m_currencyText->hide();
@@ -340,7 +340,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   }
 
   initParentWidget(account.parentAccountId(), account.id());
-  if(m_account.accountType() == MyMoneyAccount::Stock)
+  if(m_account.isInvest())
     m_qlistviewParentAccounts->setEnabled(false);
 
   if (!categoryEditor)

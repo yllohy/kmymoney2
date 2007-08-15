@@ -83,6 +83,11 @@ TransactionEditor::~TransactionEditor()
   emit finishEdit(m_transactions);
 }
 
+void TransactionEditor::slotUpdateAccount(const QCString& id)
+{
+  m_account = MyMoneyFile::instance()->account(id);
+}
+
 void TransactionEditor::slotUpdateAccount(void)
 {
   // reload m_account as it might have been changed
@@ -523,6 +528,12 @@ StdTransactionEditor::StdTransactionEditor(TransactionEditorContainer* regForm, 
 
 void StdTransactionEditor::createEditWidgets(void)
 {
+  KMyMoneyCategory* account = new KMyMoneyCategory;
+  account->setHint(i18n("Account"));
+  m_editWidgets["account"] = account;
+  connect(account, SIGNAL(textChanged(const QString&)), this, SLOT(slotUpdateButtonState()));
+  connect(account, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateAccount(const QCString&)));
+
   KMyMoneyPayeeCombo* payee = new KMyMoneyPayeeCombo;
   payee->setHint(i18n("Payer/Receiver"));
   m_editWidgets["payee"] = payee;
@@ -642,6 +653,21 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
 
   QMap<QString, QWidget*>::const_iterator it_w;
   QWidget* w;
+  AccountSet aSet;
+
+  // load the account widget
+  KMyMoneyCategory* account = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["account"]);
+  aSet.addAccountGroup(MyMoneyAccount::Asset);
+  aSet.addAccountGroup(MyMoneyAccount::Liability);
+  aSet.removeAccountType(MyMoneyAccount::AssetLoan);
+  aSet.removeAccountType(MyMoneyAccount::CertificateDep);
+  aSet.removeAccountType(MyMoneyAccount::Investment);
+  aSet.removeAccountType(MyMoneyAccount::Stock);
+  aSet.removeAccountType(MyMoneyAccount::MoneyMarket);
+  aSet.removeAccountType(MyMoneyAccount::Loan);
+  aSet.load(account->selector());
+  account->completion()->setSelected(m_account.id());
+  account->slotItemSelected(m_account.id());
 
   // load the payee widget
   KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(m_editWidgets["payee"]);
@@ -660,13 +686,18 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
       haveEquityAccount = true;
   }
 
-  AccountSet aSet;
+  aSet.clear();
   aSet.addAccountGroup(MyMoneyAccount::Asset);
   aSet.addAccountGroup(MyMoneyAccount::Liability);
   aSet.addAccountGroup(MyMoneyAccount::Income);
   aSet.addAccountGroup(MyMoneyAccount::Expense);
   if(KMyMoneySettings::expertMode() || haveEquityAccount)
     aSet.addAccountGroup(MyMoneyAccount::Equity);
+
+  aSet.removeAccountType(MyMoneyAccount::CertificateDep);
+  aSet.removeAccountType(MyMoneyAccount::Investment);
+  aSet.removeAccountType(MyMoneyAccount::Stock);
+  aSet.removeAccountType(MyMoneyAccount::MoneyMarket);
   aSet.load(category->selector());
 
   // if an account is specified then remove it from the widget so that the user

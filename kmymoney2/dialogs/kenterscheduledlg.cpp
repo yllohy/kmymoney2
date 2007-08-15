@@ -42,6 +42,8 @@
 #include <kmymoney/kmymoneyutils.h>
 #include <kmymoney/mymoneyfinancialcalculator.h>
 #include <kmymoney/kmymoneylineedit.h>
+#include <kmymoney/kmymoneycategory.h>
+#include <kmymoney/kmymoneyaccountselector.h>
 
 #include "../kmymoney2.h"
 
@@ -73,6 +75,7 @@ KEnterScheduleDlg::KEnterScheduleDlg(QWidget *parent, const MyMoneySchedule& sch
   m_register->hide();
 
   // ... setup the form ...
+  m_form->setShowAccountRow(d->m_schedule.type() != MyMoneySchedule::TYPE_LOANPAYMENT);
   m_form->setupForm(d->m_schedule.account());
 
   // ... and the register ...

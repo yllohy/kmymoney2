@@ -220,7 +220,11 @@ void KMyMoneySelector::setOptimizedWidth(void)
 
   // scan items
   int w = 0;
+#ifndef KMM_DESIGNER
   QFontMetrics fm( KMyMoneyGlobalSettings::listCellFont());
+#else
+  QFontMetrics fm( font() );
+#endif
   while((it_v = it.current()) != 0) {
     it_l = dynamic_cast<KMyMoneyListViewItem*>(it_v);
     int nw = 0;

@@ -3,12 +3,7 @@
                             -------------------
    begin                : Sat Dec 4 2004
    copyright            : (C) 2004 by Thomas Baumgart
-   email                : kmymoney2-developers
-                          Javier Campos Morales <javi_c@users.sourceforge.net>
-                          Felix Rodriguez <frodriguez@users.sourceforge.net>
-                          John C <thetacoturtle@users.sourceforge.net>
-                          Thomas Baumgart <ipwizard@users.sourceforge.net>
-                          Kevin Tambascio <ktambascio@users.sourceforge.net>
+   email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
 ***************************************************************************/
 
 /***************************************************************************
@@ -33,8 +28,8 @@
 // Project Includes
 
 #include "../dialogs/knewinvestmentwizarddecl.h"
-#include "../mymoney/mymoneyaccount.h"
-#include "../mymoney/mymoneysecurity.h"
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneysecurity.h>
 
 /**
   * This class contains the implementation of the new investment wizard.
@@ -80,7 +75,8 @@ protected slots:
   void slotSourceChanged(bool);
   void slotHelp(void);
 private:
-  void init(void);
+  void init1(void);
+  void init2(void);
 
 private:
   MyMoneyAccount    m_account;

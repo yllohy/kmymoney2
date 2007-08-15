@@ -296,10 +296,10 @@ void MyMoneyFile::reparentAccount(MyMoneyAccount &account, MyMoneyAccount& paren
   || (account.accountType() == MyMoneyAccount::Income && parent.accountType() == MyMoneyAccount::Expense)
   || (account.accountType() == MyMoneyAccount::Expense && parent.accountType() == MyMoneyAccount::Income)) {
 
-    if(account.accountType() == MyMoneyAccount::Stock && parent.accountType() != MyMoneyAccount::Investment)
+    if(account.isInvest() && parent.accountType() != MyMoneyAccount::Investment)
       throw new MYMONEYEXCEPTION("Unable to reparent Stock to non-investment account");
 
-    if(parent.accountType() == MyMoneyAccount::Investment && account.accountType() != MyMoneyAccount::Stock)
+    if(parent.accountType() == MyMoneyAccount::Investment && !account.isInvest())
       throw new MYMONEYEXCEPTION("Unable to reparent non-stock to investment account");
 
     // clear all changed objects from cache
@@ -535,15 +535,13 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   // We enforce, that a stock account can never be a parent and
   // that the parent for a stock account must be an investment. Also,
   // an investment cannot have another investment account as it's parent
-  if(parent.accountType() == MyMoneyAccount::Stock)
+  if(parent.isInvest())
     throw new MYMONEYEXCEPTION("Stock account cannot be parent account");
 
-  if(account.accountType() == MyMoneyAccount::Stock
-  && parent.accountType() != MyMoneyAccount::Investment)
+  if(account.isInvest() && parent.accountType() != MyMoneyAccount::Investment)
     throw new MYMONEYEXCEPTION("Stock account must have investment account as parent ");
 
-  if(account.accountType() != MyMoneyAccount::Stock
-  && parent.accountType() == MyMoneyAccount::Investment)
+  if(!account.isInvest() && parent.accountType() == MyMoneyAccount::Investment)
     throw new MYMONEYEXCEPTION("Investment account can only have stock accounts as children");
 
   // clear all changed objects from cache

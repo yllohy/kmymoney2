@@ -277,7 +277,7 @@ void KAccountsView::loadIconView(void)
       case MyMoneyAccount::Asset:
       case MyMoneyAccount::Liability:
         // don't show stock accounts
-        if((*it).accountType() == MyMoneyAccount::Stock)
+        if((*it).isInvest())
           continue;
 
         // if we have a position stored with the object and no other
@@ -435,7 +435,7 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
     QValueList<MyMoneyPrice> prices;
     MyMoneySecurity security = file->baseCurrency();
     try {
-      if(acc.accountType() == MyMoneyAccount::Stock) {
+      if(acc.isInvest()) {
         security = m_securityMap[acc.currencyId()];
         prices += file->price(acc.currencyId(), security.tradingCurrency());
         if(security.tradingCurrency() != file->baseCurrency().id()) {

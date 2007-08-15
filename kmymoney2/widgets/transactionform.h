@@ -145,6 +145,8 @@ public:
 
   void setupForm(const MyMoneyAccount& acc);
 
+  void setShowAccountRow(bool show) { m_showAccountRow = show; }
+
 protected:
   /**
     * reimplemented to support QWidget::WState_BlockUpdates
@@ -203,6 +205,7 @@ protected:
   KMyMoneyRegister::Transaction*       m_transaction;
   QColorGroup                          m_cellColorGroup;
   TabBar*                              m_tabBar;
+  bool                                 m_showAccountRow;
 };
 
 

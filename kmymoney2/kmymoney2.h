@@ -104,7 +104,7 @@ protected slots:
     * @author mvillarino 2005
     * @see KMyMoney2App::slotDataChanged()
     */
-  void slotAutoSave();
+  void slotAutoSave(void);
 
   /**
     * This slot re-enables all message for which the "Don't show again"
@@ -112,13 +112,13 @@ protected slots:
     */
   void slotEnableMessages(void);
 
-  void slotKeySettings();
-  void slotEditToolbars();
-  void slotNewToolBarConfig();
+  void slotKeySettings(void);
+  void slotEditToolbars(void);
+  void slotNewToolBarConfig(void);
   /**
     * Called when the user asks for file information.
     */
-  void slotFileFileInfo();
+  void slotFileFileInfo(void);
 
   void slotPerformanceTest(void);
 
@@ -135,7 +135,7 @@ protected slots:
   /**
     * Called when the user asks for the personal information.
     */
-  void slotFileViewPersonal();
+  void slotFileViewPersonal(void);
 
   /**
     * Called when the user wishes to import tab delimeted transactions
@@ -144,7 +144,7 @@ protected slots:
     *
     * @see MyMoneyAccount
     */
-  void slotQifImport();
+  void slotQifImport(void);
 
   /**
     * Called when a QIF import is finished.
@@ -183,17 +183,17 @@ protected slots:
     * QIF formatted file. An account must be open for this to work.
     * Uses MyMoneyQifWriter() for the actual output.
     */
-  void slotQifExport();
+  void slotQifExport(void);
 
   /**
     * Open up the application wide settings dialog.
     *
     * @see KSettingsDlg
     */
-  void slotSettings();
+  void slotSettings(void);
 
   /** No descriptions */
-  void slotFileBackup();
+  void slotFileBackup(void);
 
   /**
     * This slot modifies the actions according to the specific view passed
@@ -215,7 +215,7 @@ protected slots:
     * Brings up a dialog to let the user search for specific transaction(s).  It then
     * opens a results window to display those transactions.
     */
-  void slotFindTransaction();
+  void slotFindTransaction(void);
 
   /**
     * Destroys a possibly open the search dialog
@@ -426,6 +426,10 @@ protected slots:
   void slotTransactionAssignNumber(void);
 
   /**
+    */
+  void slotTransactionCombine(void);
+
+  /**
     * Accept the selected transactions that are marked as 'imported' and remove the flag
     */
   void slotTransactionsAccept(void);
@@ -476,14 +480,14 @@ public:
   ~KMyMoney2App();
 
   /** Init wizard dialog */
-  bool initWizard();
+  bool initWizard(void);
 
   static void progressCallback(int current, int total, const QString&);
 
   void writeLastUsedDir(const QString& directory);
-  QString readLastUsedDir() const;
+  QString readLastUsedDir(void) const;
   void writeLastUsedFile(const QString& fileName);
-  QString readLastUsedFile() const;
+  QString readLastUsedFile(void) const;
 
   /**
     * Returns whether there is an importer available that can handle this file
@@ -520,6 +524,8 @@ public:
   void showContextMenu(const QString& containerName);
 
 k_dcop:
+  // Note: Don't use e.g. filename(void) but use filename() because
+  // otherwise the kidl compiler produces uncompilable results.
   const QString filename() const;
 
   void webConnect(const QString&, const QCString& asn_id);
@@ -638,20 +644,20 @@ public slots:
   void slotFileInfoDialog(void);
 
   /** */
-  void slotFileNew();
+  void slotFileNew(void);
 
   /** Open a new window */
-  void slotFileNewWindow();
+  void slotFileNewWindow(void);
 
   /** open a file and load it into the document*/
-  void slotFileOpen();
+  void slotFileOpen(void);
 
   /** opens a file from the recent files menu */
 
   void slotFileOpenRecent(const KURL& url);
 
   /** open a SQL database */
-  void slotOpenDatabase();
+  void slotOpenDatabase(void);
 
   /**
     * saves the current document. If it has no name yet, the user
@@ -660,7 +666,7 @@ public slots:
     * @retval false save operation failed
     * @retval true save operation was successful
     */
-  const bool slotFileSave();
+  const bool slotFileSave(void);
 
   /**
     * ask the user for the filename and save the current document
@@ -668,7 +674,7 @@ public slots:
     * @retval false save operation failed
     * @retval true save operation was successful
     */
-  const bool slotFileSaveAs();
+  const bool slotFileSaveAs(void);
 
   /**
    * ask the user to select a database and save the current document
@@ -676,13 +682,13 @@ public slots:
    * @retval false save operation failed
    * @retval true save operation was successful
    */
-  const bool slotSaveAsDatabase();
+  const bool slotSaveAsDatabase(void);
 
   /** asks for saving if the file is modified, then closes the actual file and window */
-  void slotFileCloseWindow();
+  void slotFileCloseWindow(void);
 
   /** asks for saving if the file is modified, then closes the actual file */
-  void slotFileClose();
+  void slotFileClose(void);
 
   /**
     * closes all open windows by calling close() on each memberList item
@@ -690,7 +696,7 @@ public slots:
     * If queryClose() returns false because the user canceled the
     * saveModified() dialog, the closing breaks.
     */
-  void slotFileQuit();
+  void slotFileQuit(void);
 
   void slotFileConsitencyCheck(void);
 
@@ -707,12 +713,12 @@ public slots:
   /**
     * toggles the toolbar
     */
-  void slotViewToolBar();
+  void slotViewToolBar(void);
 
   /**
     * toggles the statusbar
     */
-  void slotViewStatusBar();
+  void slotViewStatusBar(void);
 
   /**
     * Toggles the hide reconciled transactions setting
@@ -755,12 +761,12 @@ public slots:
   void slotStatusProgressBar(int current, int total = 0);
 
   /** No descriptions */
-  void slotProcessExited();
+  void slotProcessExited(void);
 
   /**
     * Called to update stock and currency prices from the user menu
     */
-  void slotEquityPriceUpdate();
+  void slotEquityPriceUpdate(void);
 
   /**
     * Imports a KMM statement into the engine, triggering the appropriate
@@ -1083,6 +1089,20 @@ signals:
 
   void startMatchTransaction(const MyMoneyTransaction& t);
   void cancelMatchTransaction(void);
+
+  /**
+    * This signal is emitted when an account has been successfully reconciled
+    * and all transactions are updated in the engine. It can be used by plugins
+    * to create reconciliation reports.
+    *
+    * @param account the account data
+    * @param date the reconciliation date as provided through the dialog
+    * @param startingBalance the starting balance as provided through the dialog
+    * @param endingBalance the ending balance as provided through the dialog
+    * @param transactionList reference to QValueList of QPair containing all
+    *        transaction/split pairs processed by the reconciliation.
+    */
+  void accountReconciled(const MyMoneyAccount& account, const QDate& date, const MyMoneyMoney& startingBalance, const MyMoneyMoney& endingBalance, const QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >& transactionList);
 
 public:
   /**

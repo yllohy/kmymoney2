@@ -1,3 +1,19 @@
+2007-08-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Replaced "acc.accountType == Stock" with "acc.isInvest()"
+  * Fixed #.... (Allow change of stock type)
+  * Merge message files during 'make package-messages'
+
+2007-08-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added account field to standard transaction editor
+  * Allow to change account during entry of scheduled transaction
+  * Removed references to KMyMoneySettings in designer plugin
+
+2007-08-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added interface for reconciliation report
+
+2007-07-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added "CFP franc" as currency
+
 2007-07-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed typo. Thanks to David Houlden for finding it
 

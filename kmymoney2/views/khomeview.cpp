@@ -594,7 +594,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
           break;
       }
 
-    } else if((*it).isClosed() || (*it).accountType() == MyMoneyAccount::Stock) {
+    } else if((*it).isClosed() || (*it).isInvest()) {
       // don't show if closed or a stock account
       it = accounts.remove(it);
     }
@@ -769,9 +769,7 @@ void KHomeView::showScheduleBasedForecast(void)
     for(; it_s != splits.end(); ++it_s ) {
       if(!(*it_s).shares().isZero()) {
         MyMoneyAccount acc = file->account((*it_s).accountId());
-        if((acc.accountGroup() == MyMoneyAccount::Asset
-        || acc.accountGroup() == MyMoneyAccount::Liability)
-        && acc.accountType() != MyMoneyAccount::Stock) {
+        if(acc.isAssetLiability() && !acc.isInvest()) {
           dailyBalances balance;
           balance = accountList[acc.id()];
           int offset = QDate::currentDate().daysTo((*it_t).postDate())+1;
@@ -851,9 +849,7 @@ void KHomeView::showScheduleBasedForecast(void)
 
               for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s ) {
                 MyMoneyAccount acc = file->account((*it_s).accountId());
-                if((acc.accountGroup() == MyMoneyAccount::Asset
-                || acc.accountGroup() == MyMoneyAccount::Liability)
-                && acc.accountType() != MyMoneyAccount::Stock) {
+                if(acc.isAssetLiability() && !acc.isInvest()) {
                   // check if this is a new account for us
                   if(nameIdx[acc.name()] != acc.id()) {
                     nameIdx[acc.name()] = acc.id();
@@ -875,9 +871,7 @@ void KHomeView::showScheduleBasedForecast(void)
               // now add the splits to the balances
               for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s ) {
                 MyMoneyAccount acc = file->account((*it_s).accountId());
-                if((acc.accountGroup() == MyMoneyAccount::Asset
-                || acc.accountGroup() == MyMoneyAccount::Liability)
-                && acc.accountType() != MyMoneyAccount::Stock) {
+                if(acc.isAssetLiability() && !acc.isInvest()) {
                   dailyBalances balance;
                   balance = accountList[acc.id()];
                   int offset = QDate::currentDate().daysTo(nextDate)+1;

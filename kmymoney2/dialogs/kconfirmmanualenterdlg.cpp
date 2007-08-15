@@ -102,12 +102,19 @@ void KConfirmManualEnterDlg::loadTransactions(const MyMoneyTransaction& to, cons
     }
 #endif
 
+    if(to.splits()[0].accountId() != tn.splits()[0].accountId()) {
+      noItemsChanged++;
+      messageDetail += i18n("Account changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>")
+        .arg(file->account(to.splits()[0].accountId()).name())
+        .arg(file->account(tn.splits()[0].accountId()).name());
+    }
+
     if(file->isTransfer(to) && file->isTransfer(tn)) {
       if(to.splits()[1].accountId() != tn.splits()[1].accountId()) {
         noItemsChanged++;
         messageDetail += i18n("Transfer account changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>")
-          .arg(file->account(to.splits()[0].accountId()).name())
-          .arg(file->account(to.splits()[1].accountId()).name());
+          .arg(file->account(to.splits()[1].accountId()).name())
+          .arg(file->account(tn.splits()[1].accountId()).name());
       }
     } else {
       QString co, cn;

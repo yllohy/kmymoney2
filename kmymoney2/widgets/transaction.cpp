@@ -441,7 +441,6 @@ void Transaction::setupForm(TransactionForm* form)
 
   // Force all cells to have some text (so that paintCell is called for each cell)
   for(int r = 0; r < numRowsForm(); ++r) {
-    form->setRowHeight(r, formRowHeight(r));
     for(int c = 0; c < numColsForm(); ++c) {
       form->setText(r, c, "x");
       if(r == 0 && form->columnWidth(c) == 0) {
@@ -751,7 +750,7 @@ StdTransaction::StdTransaction(Register *parent, const MyMoneyTransaction& trans
     kdDebug(2) << "Problem determining the category for transaction '" << m_transaction.id() << "'. Reason: " << e->what()  << "\n";
     delete e;
   }
-  m_rowsForm = 5;
+  m_rowsForm = 6;
 
   if(KMyMoneyUtils::transactionType(m_transaction) == KMyMoneyUtils::InvestmentTransaction) {
     MyMoneySplit split = KMyMoneyUtils::stockSplit(m_transaction);
@@ -835,7 +834,7 @@ void StdTransaction::setupForm(TransactionForm* form)
 {
   Transaction::setupForm(form);
 
-  QTableItem* memo = form->item(2, 1);
+  QTableItem* memo = form->item(3, ValueColumn1);
   memo->setSpan(3, 1);
 }
 
@@ -844,6 +843,15 @@ bool StdTransaction::formCellText(QString& txt, int& align, int row, int col, QP
   // if(m_transaction != MyMoneyTransaction()) {
     switch(row) {
       case 0:
+        switch(col) {
+          case LabelColumn1:
+            align |= Qt::AlignLeft;
+            txt = i18n("Account");
+            break;
+        }
+        break;
+
+      case 1:
         switch(col) {
           case LabelColumn1:
             align |= Qt::AlignLeft;
@@ -869,14 +877,14 @@ bool StdTransaction::formCellText(QString& txt, int& align, int row, int col, QP
         }
         break;
 
-      case 1:
+      case 2:
         switch(col) {
-          case 0:
+          case LabelColumn1:
             align |= Qt::AlignLeft;
             txt = m_categoryHeader;
             break;
 
-          case 1:
+          case ValueColumn1:
             align |= Qt::AlignLeft;
             txt = m_category;
             if(m_transaction != MyMoneyTransaction()) {
@@ -885,12 +893,12 @@ bool StdTransaction::formCellText(QString& txt, int& align, int row, int col, QP
             }
             break;
 
-          case 2:
+          case LabelColumn2:
             align |= Qt::AlignLeft;
             txt = i18n("Date");
             break;
 
-          case 3:
+          case ValueColumn2:
             align |= Qt::AlignRight;
             if(m_transaction != MyMoneyTransaction())
               txt = KGlobal::locale()->formatDate(m_transaction.postDate(), true);
@@ -898,14 +906,14 @@ bool StdTransaction::formCellText(QString& txt, int& align, int row, int col, QP
         }
         break;
 
-      case 2:
+      case 3:
         switch(col) {
-          case 0:
+          case LabelColumn1:
             align |= Qt::AlignLeft;
             txt = i18n("Memo");
             break;
 
-          case 1:
+          case ValueColumn1:
             align &= ~Qt::AlignVCenter;
             align |= Qt::AlignTop;
             align |= Qt::AlignLeft;
@@ -913,12 +921,12 @@ bool StdTransaction::formCellText(QString& txt, int& align, int row, int col, QP
               txt = m_split.memo().section('\n', 0, 2);
             break;
 
-          case 2:
+          case LabelColumn2:
             align |= Qt::AlignLeft;
             txt = i18n("Amount");
             break;
 
-          case 3:
+          case ValueColumn2:
             align |= Qt::AlignRight;
             if(m_transaction != MyMoneyTransaction())
               txt = (m_split.value(m_transaction.commodity(), m_splitCurrencyId).abs()).formatMoney();
@@ -926,24 +934,24 @@ bool StdTransaction::formCellText(QString& txt, int& align, int row, int col, QP
         }
         break;
 
-      case 4:
+      case 5:
         switch(col) {
-          case 2:
+          case LabelColumn2:
             align |= Qt::AlignLeft;
             txt = i18n("Status");
             break;
 
-          case 3:
+          case ValueColumn2:
             align |= Qt::AlignRight;
             txt = reconcileState();
             break;
         }
     }
   // }
-  if(col == ValueColumn2 && row == 0) {
+  if(col == ValueColumn2 && row == 1) {
     return haveNumberField();
   }
-  return (col == 1 && row < 3) || (col == 3 && row != 3);
+  return (col == ValueColumn1 && row < 4) || (col == ValueColumn2 && row > 0 && row != 4);
 }
 
 void StdTransaction::registerCellText(QString& txt, int& align, int row, int col, QPainter* painter)
@@ -1115,16 +1123,17 @@ void StdTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidgets)
 
   setupFormPalette(editWidgets);
 
-  arrangeWidget(m_form, 0, LabelColumn1, editWidgets["cashflow"]);
-  arrangeWidget(m_form, 0, ValueColumn1, editWidgets["payee"]);
-  arrangeWidget(m_form, 1, ValueColumn1, editWidgets["category"]->parentWidget());
-  arrangeWidget(m_form, 2, ValueColumn1, editWidgets["memo"]);
+  arrangeWidget(m_form, 0, ValueColumn1, editWidgets["account"]);
+  arrangeWidget(m_form, 1, LabelColumn1, editWidgets["cashflow"]);
+  arrangeWidget(m_form, 1, ValueColumn1, editWidgets["payee"]);
+  arrangeWidget(m_form, 2, ValueColumn1, editWidgets["category"]->parentWidget());
+  arrangeWidget(m_form, 3, ValueColumn1, editWidgets["memo"]);
   if(haveNumberField())
-    arrangeWidget(m_form, 0, ValueColumn2, editWidgets["number"]);
-  arrangeWidget(m_form, 1, ValueColumn2, editWidgets["postdate"]);
-  arrangeWidget(m_form, 2, ValueColumn2, editWidgets["amount"]);
-  arrangeWidget(m_form, 4, ValueColumn2, editWidgets["status"]);
-  arrangeWidget(m_form, 1, LabelColumn1, editWidgets["categoryLabel"]);
+    arrangeWidget(m_form, 1, ValueColumn2, editWidgets["number"]);
+  arrangeWidget(m_form, 2, ValueColumn2, editWidgets["postdate"]);
+  arrangeWidget(m_form, 3, ValueColumn2, editWidgets["amount"]);
+  arrangeWidget(m_form, 5, ValueColumn2, editWidgets["status"]);
+  arrangeWidget(m_form, 2, LabelColumn1, editWidgets["categoryLabel"]);
 
   // get rid of the hints. we don't need them for the form
   QMap<QString, QWidget*>::iterator it;
@@ -1151,31 +1160,33 @@ void StdTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidgets)
 void StdTransaction::tabOrderInForm(QWidgetList& tabOrderWidgets) const
 {
   // cashflow direction
-  tabOrderWidgets.append(focusWidget(m_form->cellWidget(0, LabelColumn1)));
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(1, LabelColumn1)));
   // payee
-  tabOrderWidgets.append(focusWidget(m_form->cellWidget(0, ValueColumn1)));
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(1, ValueColumn1)));
   // make sure to have the category field and the split button as seperate tab order widgets
   // ok, we have to have some internal knowledge about the KMyMoneyCategory object, but
   // it's one of our own widgets, so we actually don't care. Just make sure, that we don't
   // go haywire when someone changes the KMyMoneyCategory object ...
-  QWidget* w = m_form->cellWidget(1, ValueColumn1);
+  QWidget* w = m_form->cellWidget(2, ValueColumn1);
   tabOrderWidgets.append(focusWidget(w));
   w = dynamic_cast<QWidget*>(w->child("splitButton"));
   if(w)
     tabOrderWidgets.append(w);
   // memo
-  tabOrderWidgets.append(focusWidget(m_form->cellWidget(2, ValueColumn1)));
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(3, ValueColumn1)));
   // number
   if(haveNumberField()) {
-    if((w = focusWidget(m_form->cellWidget(0, ValueColumn2))))
+    if((w = focusWidget(m_form->cellWidget(1, ValueColumn2))))
       tabOrderWidgets.append(w);
   }
   // date
-  tabOrderWidgets.append(focusWidget(m_form->cellWidget(1, ValueColumn2)));
-  // amount
   tabOrderWidgets.append(focusWidget(m_form->cellWidget(2, ValueColumn2)));
+  // amount
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(3, ValueColumn2)));
   // state
-  tabOrderWidgets.append(focusWidget(m_form->cellWidget(4, ValueColumn2)));
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(5, ValueColumn2)));
+  // account
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(0, ValueColumn1)));
 }
 
 void StdTransaction::arrangeWidgetsInRegister(QMap<QString, QWidget*>& editWidgets)

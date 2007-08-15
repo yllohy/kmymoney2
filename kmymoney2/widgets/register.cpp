@@ -786,9 +786,11 @@ void Register::clear(void)
   m_selectAnchor = 0;
   m_focusItem = 0;
 
+#ifndef KMM_DESIGNER
   // recalculate row height hint
   QFontMetrics fm( KMyMoneyGlobalSettings::listCellFont() );
   m_rowHeightHint = fm.lineSpacing()+6;
+#endif
 
   m_needInitialColumnResize = true;
 }
@@ -1134,6 +1136,7 @@ void Register::resize(int col)
       swidth = columnWidth(SecurityColumn);
     }
 
+#ifndef KMM_DESIGNER
     // Resize the date and money fields to either
     // a) the size required by the input widget if no transaction form is shown
     // b) the adjusted value for the input widget if the transaction form is visible
@@ -1154,6 +1157,7 @@ void Register::resize(int col)
     } else {
       adjustColumn(DateColumn);
     }
+#endif
 
     if(columnWidth(PaymentColumn))
       setColumnWidth(PaymentColumn, ewidth);
@@ -1199,6 +1203,7 @@ void Register::resize(int col)
 
 void Register::adjustColumn(int col)
 {
+#ifndef KMM_DESIGNER
   QString msg = "%1 adjusting column %2";
   ::timetrace((msg.arg("Start").arg(col)).data());
   QHeader *topHeader = horizontalHeader();
@@ -1245,8 +1250,7 @@ void Register::adjustColumn(int col)
   }
 
   setColumnWidth( col, w );
-
-  ::timetrace(msg.arg("Done").arg(col));
+#endif
 }
 
 void Register::repaintItems(RegisterItem* first, RegisterItem* last)

@@ -507,7 +507,7 @@ void QueryTable::constructTransactionTable(void)
     for (is = S.begin(); is != S_end; ++is) {
       ReportAccount a = (* is).accountId();
       // always put split with a "stock" account if it exists
-      if (a.accountType() == MyMoneyAccount::Stock)
+      if (a.isInvest())
         break;
 
       // prefer to put splits with a "loan" account if it exists
@@ -546,7 +546,7 @@ void QueryTable::constructTransactionTable(void)
     // dividend / yield special case goes unimplemented.]
 
     bool stock_special_case =
-      ((a.accountType() == MyMoneyAccount::Stock) &&
+      (a.isInvest() &&
        ((* is).action() == MyMoneySplit::ActionDividend ||
         (* is).action() == MyMoneySplit::ActionYield));
 #endif
@@ -561,7 +561,7 @@ void QueryTable::constructTransactionTable(void)
       QCString i = a.institutionId();
       QCString p = (* is).payeeId();
 
-      if (a.accountType() == MyMoneyAccount::Stock) {
+      if (a.isInvest()) {
 
         // use the institution of the parent for stock accounts
         i = a.parent().institutionId();
@@ -797,12 +797,12 @@ void QueryTable::constructTransactionTable(void)
     QCString i = a.institutionId();
 
     // use the institution of the parent for stock accounts
-    if (a.accountType() == MyMoneyAccount::Stock)
+    if (a.isInvest())
       i = a.parent().institutionId();
 
     MyMoneyMoney b0,b1, s0,s1, p0,p1;
 
-    if (a.accountType() == MyMoneyAccount::Stock) {
+    if (a.isInvest()) {
       MyMoneySecurity s = file->security(a.currencyId());
       s0 = file->balance(a.id(),date0);
       s1 = file->balance(a.id(),date1);
@@ -831,7 +831,7 @@ void QueryTable::constructTransactionTable(void)
     qA["institution"] = i.isEmpty() ? i18n("No Institution") : file->institution(i).name();
     qA["rank"] = "-2";
 
-    if (a.accountType() == MyMoneyAccount::Stock) {
+    if (a.isInvest()) {
       qA["price"] = (p0 * xr).toString();
       qA["shares"] = s0.toString();
     }
@@ -841,7 +841,7 @@ void QueryTable::constructTransactionTable(void)
     qA["id"] = "A";
     m_transactions += qA;
 
-    if (a.accountType() == MyMoneyAccount::Stock) {
+    if (a.isInvest()) {
       qA["price"] = (p1 * xr).toString();
       qA["shares"] = s1.toString();
     }
@@ -1019,7 +1019,7 @@ void QueryTable::constructAccountTable(void)
 
       // TODO: Only do this if the report we're making really needs performance.  Otherwise
       // it's an expensive calculation done for no reason
-      if ( account.accountType() == MyMoneyAccount::Stock )
+      if ( account.isInvest() )
       {
         constructPerformanceRow( account, qaccountrow, displayprice );
       }

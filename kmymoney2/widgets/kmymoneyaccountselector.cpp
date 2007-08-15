@@ -462,8 +462,7 @@ int AccountSet::loadSubAccounts(kMyMoneyAccountSelector* selector, QListViewItem
   for(it_l = list.begin(); it_l != list.end(); ++it_l) {
     const MyMoneyAccount& acc = m_file->account(*it_l);
     // don't include stock accounts if not in expert mode
-    if(acc.accountType() == MyMoneyAccount::Stock
-    && !KMyMoneySettings::expertMode())
+    if(acc.isInvest() && !KMyMoneySettings::expertMode())
       continue;
 
     if(m_typeList.contains(acc.accountType())

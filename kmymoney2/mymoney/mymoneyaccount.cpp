@@ -240,7 +240,10 @@ bool MyMoneyAccount::isLoan(void) const
   return accountType() == Loan || accountType() == AssetLoan;
 }
 
-
+bool MyMoneyAccount::isInvest(void) const
+{
+  return accountType() == Stock;
+}
 
 
 MyMoneyAccountLoan::MyMoneyAccountLoan(const MyMoneyAccount& acc)

@@ -670,7 +670,7 @@ const MyMoneySplit KMyMoneyUtils::stockSplit(const MyMoneyTransaction& t)
   for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
     if(!(*it_s).accountId().isEmpty()) {
       MyMoneyAccount acc = MyMoneyFile::instance()->account((*it_s).accountId());
-      if(acc.accountType() == MyMoneyAccount::Stock) {
+      if(acc.isInvest()) {
         return *it_s;
       }
     }

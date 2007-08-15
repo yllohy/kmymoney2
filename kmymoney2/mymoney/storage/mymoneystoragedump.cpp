@@ -154,7 +154,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     if((*it_a).currencyId().isEmpty()) {
       s << "  Currency = unknown\n";
     } else {
-      if((*it_a).accountType() == MyMoneyAccount::Stock) {
+      if((*it_a).isInvest()) {
         s << "  Equity = " << storage->security((*it_a).currencyId()).name() << "\n";
       } else {
         s << "  Currency = " << storage->currency((*it_a).currencyId()).name() << "\n";
