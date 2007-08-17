@@ -1281,7 +1281,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("BIF", i18n("Burundi Franc")), create);
   loadDefaultCurrency(MyMoneySecurity("XAF", i18n("CFA Franc BEAC")), create);
   loadDefaultCurrency(MyMoneySecurity("XOF", i18n("CFA Franc BCEAO")), create);
-  loadDefaultCurrency(MyMoneySecurity("XPF", i18n("CFP Franc Pacifique")), create);
+  loadDefaultCurrency(MyMoneySecurity("XPF", i18n("CFP Franc Pacifique"), "F", 1, 1, 100), create);
   loadDefaultCurrency(MyMoneySecurity("KHR", i18n("Cambodia Riel")), create);
   loadDefaultCurrency(MyMoneySecurity("CAD", i18n("Canadian Dollar"),        "$"), create);
   loadDefaultCurrency(MyMoneySecurity("CVE", i18n("Cape Verde Escudo")), create);
@@ -1409,7 +1409,6 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("VUV", i18n("Vanuatu Vatu")), create);
   loadDefaultCurrency(MyMoneySecurity("VEB", i18n("Venezuelan Bolivar")), create);
   loadDefaultCurrency(MyMoneySecurity("VND", i18n("Vietnamese Dong"),        QChar(0x20AB)), create);
-  loadDefaultCurrency(MyMoneySecurity("XPF", i18n("CFP franc"), "F", 1, 1, 100), create);
   loadDefaultCurrency(MyMoneySecurity("YUM", i18n("Yugoslav Dinar")), create);
   loadDefaultCurrency(MyMoneySecurity("ZMK", i18n("Zambian Kwacha")), create);
   loadDefaultCurrency(MyMoneySecurity("ZWD", i18n("Zimbabwe Dollar"),        "$"), create);
