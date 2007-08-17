@@ -486,17 +486,17 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
 
     // draw future values in a different line style
     KDChartPropertySet propSetFutureValue("future value", KMM_KDCHART_PROPSET_NORMAL_DATA);
-    KDChartPropertySet propSetLastValue("last value", KMM_KDCHART_PROPSET_NORMAL_DATA);
+    propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
+    m_idPropFutureValue = m_chartWidget->params().registerProperties(propSetFutureValue);
 
+    KDChartPropertySet propSetLastValue("last value", m_idPropFutureValue);
     propSetLastValue.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignBottom);
     propSetLastValue.setExtraLinesWidth(KDChartPropertySet::OwnID, -4);
     propSetLastValue.setExtraLinesColor(KDChartPropertySet::OwnID, KMyMoneyGlobalSettings::listGridColor());
-    propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
 
-    m_idPropFutureValue = m_chartWidget->params().registerProperties(propSetFutureValue);
     m_idPropLastValue = m_chartWidget->params().registerProperties(propSetLastValue);
 
-    KDChartPropertySet propSetMinBalance("min balance", m_idPropLastValue);
+    KDChartPropertySet propSetMinBalance("min balance", m_idPropFutureValue);
     propSetMinBalance.setLineStyle(KDChartPropertySet::OwnID, Qt::NoPen);
     propSetMinBalance.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignRight);
     m_idPropMinBalance = m_chartWidget->params().registerProperties(propSetMinBalance);
@@ -1309,7 +1309,7 @@ void KNewAccountDlg::slotMarkersChanged(void)
     }
   }
 
-  for(int iCell = 91; iCell < 180; ++iCell) {
+  for(int iCell = 90; iCell < 180; ++iCell) {
     m_chartWidget->setProperty(0, iCell, m_idPropFutureValue);
   }
   m_chartWidget->setProperty(0, 90, m_idPropLastValue);

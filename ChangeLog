@@ -1,3 +1,6 @@
+2007-08-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed graph in account balance history
+
 2007-08-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Replaced "acc.accountType == Stock" with "acc.isInvest()"
   * Fixed #.... (Allow change of stock type)
