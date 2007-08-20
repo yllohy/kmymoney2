@@ -25,7 +25,7 @@
 #include <qstringlist.h>
 #include <qiodevice.h>
 #include <qcstring.h>
-#include <qmessagebox.h>  // FIXME: remove
+
 // ----------------------------------------------------------------------------
 // KDE Includes
 
