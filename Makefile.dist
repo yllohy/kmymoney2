@@ -35,4 +35,13 @@ all:
 	export UNSERMAKE=no
 	UNSERMAKE=no $(MAKE) -f admin/Makefile.common cvs
 
+release:
+	kdialog --warningcontinuecancel "This function is reserved for official releases of KMyMoney only.\nPlease do not continue unless you are authorised to produce such a release."; \
+	if test $$? != 0; then \
+		echo "Must be admin"; \
+		exit 1; \
+	fi;
+
+	KMYMONEY_RELEASE=1 $(MAKE) -f Makefile.dist
+
 .SILENT:
