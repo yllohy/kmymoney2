@@ -22,7 +22,6 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qmessagebox.h>
 #include <qlayout.h>
 
 // ----------------------------------------------------------------------------
@@ -211,19 +210,14 @@ void KBankingPlugin::slotAccountOnlineUpdate(void)
 
     /* get AqBanking account */
     ba=AB_Banking_GetAccountByAlias(m_kbanking->getCInterface(),
-				    m_account.id());
+            m_account.id());
     if (!ba) {
-      QMessageBox::critical(0,
-                            i18n("Account Not Mapped"),
-                            i18n("<qt>"
-                                 "<p>"
+      KMessageBox::error(0, i18n("<qt>"
                                  "The given application account "
                                  "has not been mapped to banking "
                                  "accounts."
-                                 "</p>"
-                                 "</qt>"
-                            ),
-			    QMessageBox::Ok,QMessageBox::NoButton);
+                                 "</qt>"),
+                            i18n("Account Not Mapped"));
       return;
     }
 
@@ -232,13 +226,11 @@ void KBankingPlugin::slotAccountOnlineUpdate(void)
     rv=AB_Job_CheckAvailability(job);
     if (rv) {
       DBG_ERROR(0, "Job \"GetTransactions\" is not available (%d)", rv);
-      QMessageBox::critical(0,
-                            i18n("Job not Available"),
-                            i18n("<qt>"
+      KMessageBox::error(0, i18n("<qt>"
                                  "The update job is not supported by the "
                                  "bank/account/backend.\n"
                                  "</qt>"),
-                            i18n("Dismiss"), QString::null);
+                            i18n("Job not Available"));
       AB_Job_free(job);
       return;
     }
@@ -254,16 +246,16 @@ void KBankingPlugin::slotAccountOnlineUpdate(void)
       ti1=ti2;
 
       if (GWEN_Time_GetBrokenDownDate(ti1, &day, &month, &year)) {
-	DBG_ERROR(0, "Bad date");
-	qd=QDate();
+  DBG_ERROR(0, "Bad date");
+  qd=QDate();
       }
       else
-	qd=QDate(year, month+1, day);
+  qd=QDate(year, month+1, day);
       GWEN_Time_free(ti1);
     }
 
     QBPickStartDate psd(m_kbanking, qd, QDate(), 3, 0,
-			"PickStartDate", true);
+      "PickStartDate", true);
     if (psd.exec()!=QDialog::Accepted) {
       AB_Job_free(job);
       return;
@@ -281,12 +273,10 @@ void KBankingPlugin::slotAccountOnlineUpdate(void)
     AB_Job_free(job);
     if (rv) {
       DBG_ERROR(0, "Error %d", rv);
-      QMessageBox::critical(0,
-                            i18n("Error"),
-                            i18n("<qt>"
-                                 "Could not enqueue the job.\n"
-                                 "</qt>"),
-                            i18n("Dismiss"), QString::null);
+      KMessageBox::error(0, i18n("<qt>"
+                              "Could not enqueue the job."
+                              "</qt>"),
+                            i18n("Error"));
       return;
     }
   }
@@ -571,7 +561,7 @@ bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai)
     if (bal) {
       val=AB_Balance_GetValue(bal);
       if (val) {
-	DBG_INFO(0, "Importing balance");
+  DBG_INFO(0, "Importing balance");
         ks.m_moneyClosingBalance=AB_Value_GetValue(val);
         p=AB_Value_GetCurrency(val);
         if (p)
@@ -630,11 +620,8 @@ bool KMyMoneyBanking::importAccountInfo(AB_IMEXPORTER_ACCOUNTINFO *ai)
 
   // import it
   if(!m_parent->importStatement(ks)) {
-    if (QMessageBox::critical(0,
-                              i18n("Critical Error"),
-                              i18n("Error importing statement."),
-                              i18n("Continue"),
-                              i18n("Abort"), 0, 0)!=0) {
+    if (KMessageBox::warningYesNo(0, i18n("Error importing statement. Do you want to continue?"),
+                                     i18n("Critical Error")) == KMessageBox::No) {
       DBG_ERROR(0, "User aborted");
       return false;
     }

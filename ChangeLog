@@ -1,3 +1,7 @@
+2007-08-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added release target in Makefile.dist as proposed by Tony Bloomfield
+  * Replaced QMessageBox with KMessageBox (except in GNC importer)
+
 2007-08-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed duplicate entry of XFP as default currency
 

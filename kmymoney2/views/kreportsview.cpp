@@ -42,7 +42,6 @@
 #include <qtimer.h>
 #include <qiconset.h>
 #include <qpopupmenu.h>
-#include <qmessagebox.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
 #include <qcheckbox.h>
@@ -256,7 +255,7 @@ QString KReportsView::KReportTab::createTable(const QString& links)
 
     QString error = QString(i18n("There was an error creating your report: \"%1\".\nPlease report this error to the developer's list: kmymoney2-developer@lists.sourceforge.net")).arg(e->what());
 
-    QMessageBox::critical(this,i18n("Critical Error"), error, QMessageBox::Ok, QMessageBox::NoButton );
+    KMessageBox::error(this, error, i18n("Critical Error"));
 
     html += header;
     html += links;

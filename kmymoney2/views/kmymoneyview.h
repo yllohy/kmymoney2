@@ -23,8 +23,8 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qwidget.h>
-#include <qmessagebox.h>
 class QVBox;
 class QFile;
 class QVBoxLayout;

@@ -36,7 +36,6 @@
 #include <qlayout.h>
 #include <qsignalmapper.h>
 #include <qclipboard.h>        // temp for problem 1105503
-#include <qmessagebox.h>       // ditto
 #include <qdatetime.h>         // only for performance tests
 #include <qtimer.h>
 #include <qsqlpropertymap.h>
@@ -1772,7 +1771,7 @@ bool KMyMoney2App::slotStatementImport(const QString& url)
   if ( MyMoneyStatement::readXMLFile( s, url ) )
     result = slotStatementImport(s);
   else
-    QMessageBox::critical( this, i18n("Invalid Statement"), i18n("Error importing %1: This file is not a valid KMM statement file.").arg(url), QMessageBox::Ok, 0 );
+    KMessageBox::error(this, i18n("Error importing %1: This file is not a valid KMM statement file.").arg(url), i18n("Invalid Statement"));
 
   return result;
 }
