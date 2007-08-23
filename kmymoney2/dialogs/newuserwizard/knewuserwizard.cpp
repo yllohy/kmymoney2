@@ -39,6 +39,9 @@
 #include <kurlrequester.h>
 #include <kio/netaccess.h>
 #include <kurl.h>
+#include <kabc/addressee.h>
+#include <kabc/stdaddressbook.h>
+#include <kmessagebox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -138,6 +141,37 @@ GeneralPage::GeneralPage(Wizard* wizard, const char* name) :
   WizardPage<Wizard>(1, this, wizard, name)
 {
   m_userNameEdit->setFocus();
+  KABC::StdAddressBook *ab = dynamic_cast<KABC::StdAddressBook*>(KABC::StdAddressBook::self());
+  m_loadAddressButton->setEnabled(ab != 0);
+  connect(m_loadAddressButton, SIGNAL(clicked()), this, SLOT(slotLoadFromKABC()));
+}
+
+void GeneralPage::slotLoadFromKABC(void)
+{
+  KABC::StdAddressBook *ab = dynamic_cast<KABC::StdAddressBook*>(KABC::StdAddressBook::self());
+  if (!ab)
+    return;
+
+  KABC::Addressee addr = ab->whoAmI();
+  if ( addr.isEmpty() ) {
+    KMessageBox::sorry(this, i18n("Unable to load data, because no contact has been associated with the owner of the standard addressbook."), i18n("Addressbook import"));
+    return;
+  }
+
+  m_userNameEdit->setText( addr.formattedName() );
+  m_emailEdit->setText( addr.preferredEmail() );
+
+  KABC::PhoneNumber phone = addr.phoneNumber( KABC::PhoneNumber::Home );
+  m_telephoneEdit->setText( phone.number() );
+
+  KABC::Address a = addr.address( KABC::Address::Home );
+  QString sep;
+  if(!a.country().isEmpty() && !a.region().isEmpty())
+    sep = " / ";
+  m_countyEdit->setText(QString("%1%2%3").arg(a.country(), sep, a.region()));
+  m_postcodeEdit->setText( a.postalCode() );
+  m_townEdit->setText( a.locality() );
+  m_streetEdit->setText( a.street() );
 }
 
 KMyMoneyWizardPage* GeneralPage::nextPage(void) const

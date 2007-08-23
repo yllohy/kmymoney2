@@ -52,6 +52,9 @@ class GeneralPage : public UserInfo, public WizardPage<Wizard>
 public:
   GeneralPage(Wizard* parent, const char* name = 0);
   KMyMoneyWizardPage* nextPage(void) const;
+
+protected slots:
+  void slotLoadFromKABC(void);
 };
 
 /**

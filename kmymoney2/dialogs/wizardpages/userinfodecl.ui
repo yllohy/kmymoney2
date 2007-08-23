@@ -142,7 +142,7 @@
                 </property>
                 <widget class="KPushButton">
                     <property name="name">
-                        <cstring>kabcBtn</cstring>
+                        <cstring>m_loadAddressButton</cstring>
                     </property>
                     <property name="text">
                         <string>Load from Addressbook</string>
@@ -218,7 +218,7 @@
     <tabstop>m_postcodeEdit</tabstop>
     <tabstop>m_telephoneEdit</tabstop>
     <tabstop>m_emailEdit</tabstop>
-    <tabstop>kabcBtn</tabstop>
+    <tabstop>m_loadAddressButton</tabstop>
     <tabstop>kActiveLabel1</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
