@@ -515,6 +515,10 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
   // get a copy of the current data
   MyMoneyAccount acc = MyMoneyFile::account(parent.id());
 
+#if 0
+  // TODO: remove the following code as we now can have multiple accounts
+  // with the same name even in the same hierarchy position of the account tree
+  //
   // check if the selected name is currently not among the child accounts
   // if we find one, then return it as the new account
   QCStringList::const_iterator it_a;
@@ -525,6 +529,7 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
       return;
     }
   }
+#endif
 
   // FIXME: make sure, that the parent has the same type
   // I left it out here because I don't know, if there is

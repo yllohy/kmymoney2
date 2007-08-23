@@ -371,9 +371,9 @@ public:
   void removeInstitution(const MyMoneyInstitution& institution);
 
   /**
-    * Adds an account to the file-global institution pool. A respective
+    * Adds an account to the file-global account pool. A respective
     * account-ID will be generated within this record. The modified
-    * members of account will be updated.
+    * members of @a account will be updated.
     *
     * A few parameters of the account to be added are checked against
     * the following conditions. If they do not match, an exception is
@@ -386,7 +386,7 @@ public:
     *   c) the transaction list must be empty
     *   d) the account must not have any sub-ordinate accounts
     *   e) the account must have no parent account
-    *   f) the account must not have reference to a MyMoneyFile object
+    *   f) the account must not have any reference to a MyMoneyFile object
     *
     * An exception will be thrown upon error conditions.
     *

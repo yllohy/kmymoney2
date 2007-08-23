@@ -1,3 +1,7 @@
+2007-08-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow to create an account with the same name on the same
+    hierarchy level
+
 2007-08-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added release target in Makefile.dist as proposed by Tony Bloomfield
   * Replaced QMessageBox with KMessageBox (except in GNC importer)
