@@ -427,7 +427,8 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
   MyMoneyFile* file = MyMoneyFile::instance();
 
   bool unused = false;
-  bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked();
+  bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked()
+                         || !KMyMoneyGlobalSettings::hideClosedAccounts();
 
   QCStringList::const_iterator it_a;
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {

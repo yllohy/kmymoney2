@@ -1,3 +1,10 @@
+2007-08-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added option to hide finished schedules
+  * Added option to hide closed accounts
+  * Added feature to 'Select all transactions' via Ctrl+A
+  * Added note that closed accounts will be not shown if the option is active
+    whenever an account is closed by the user
+
 2007-08-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow to create an account with the same name on the same
     hierarchy level

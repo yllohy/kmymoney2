@@ -241,6 +241,11 @@ public slots:
     */
   void slotCancelMatchTransaction(void);
 
+  /**
+    * Select all transactions in the ledger that are not hidden.
+    */
+  void slotSelectAllTransactions(void);
+
 protected:
   /**
     * This method reloads the account selection combo box of the

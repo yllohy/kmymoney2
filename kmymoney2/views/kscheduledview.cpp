@@ -194,34 +194,34 @@ void KScheduledView::refresh(bool full, const QCString schedId)
       if (!bContinue)
         continue;
 
+      KScheduledListItem* parent = 0;
       switch (schedData.type())
       {
         case MyMoneySchedule::TYPE_BILL:
-          item = new KScheduledListItem(itemBills, schedData);
-          if (schedData.id() == schedId)
-            openItem = item;
+          parent = itemBills;
           break;
 
         case MyMoneySchedule::TYPE_DEPOSIT:
-          item = new KScheduledListItem(itemDeposits, schedData);
-          if (schedData.id() == schedId)
-            openItem = item;
+          parent = itemDeposits;
           break;
 
         case MyMoneySchedule::TYPE_TRANSFER:
-          item = new KScheduledListItem(itemTransfers, schedData);
-          if (schedData.id() == schedId)
-            openItem = item;
+          parent = itemTransfers;
           break;
 
         case MyMoneySchedule::TYPE_LOANPAYMENT:
-          item = new KScheduledListItem(itemLoans, schedData);
-          if (schedData.id() == schedId)
-            openItem = item;
+          parent = itemLoans;
           break;
 
         case MyMoneySchedule::TYPE_ANY:
           break; // Should we display an error ?
+      }
+      if(parent) {
+        if(!KMyMoneyGlobalSettings::hideFinishedSchedules() || !schedData.isFinished()) {
+          item = new KScheduledListItem(parent, schedData);
+          if (schedData.id() == schedId)
+            openItem = item;
+        }
       }
     }
 

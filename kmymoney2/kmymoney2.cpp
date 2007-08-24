@@ -407,6 +407,7 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("Mark transaction reconciled", "Reconciled"), "", KShortcut("Ctrl+Shift+Space"), this, SLOT(slotMarkTransactionReconciled()), actionCollection(), "transaction_mark_reconciled");
   new KAction(i18n("Mark transaction not reconciled", "Not reconciled"), "", 0, this, SLOT(slotMarkTransactionNotReconciled()), actionCollection(), "transaction_mark_notreconciled");
   new KAction(i18n("Remove 'import' flag from transaction", "Accept"), "", 0, this, SLOT(slotTransactionsAccept()), actionCollection(), "transaction_accept");
+  new KAction(i18n("Select all transactions", "Select all"), 0, KShortcut("Ctrl+A"), this, SIGNAL(selectAllTransactions()), actionCollection(), "transaction_select_all");
 
   new KAction(i18n("Goto account"), "goto", 0, this, SLOT(slotTransactionGotoAccount()), actionCollection(), "transaction_goto_account");
   new KAction(i18n("Goto payee"), "goto", 0, this, SLOT(slotTransactionGotoPayee()), actionCollection(), "transaction_goto_payee");
@@ -3250,6 +3251,9 @@ void KMyMoney2App::slotAccountClose(void)
     a.setClosed(true);
     MyMoneyFile::instance()->modifyAccount(a);
     ft.commit();
+    if(KMyMoneyGlobalSettings::hideClosedAccounts()) {
+      KMessageBox::information(this, QString("<qt>")+i18n("You have closed this account. It remains in the system because you have transactions which still refer to it, but is not shown in the views. You can make it visible again by going to the View menu and selecting <b>Show all accounts</b> or by unselecting the <b>Don't show closed accounts</b> setting.")+QString("</qt>"), i18n("Information"), "CloseAccountInfo");
+    }
   } catch(MyMoneyException* e) {
     delete e;
   }
@@ -4741,6 +4745,7 @@ void KMyMoney2App::slotUpdateActions(void)
   action("transaction_accept")->setEnabled(false);
   action("transaction_create_schedule")->setEnabled(false);
   action("transaction_combine")->setEnabled(false);
+  action("transaction_select_all")->setEnabled(false);
 
   action("currency_new")->setEnabled(fileOpen);
   action("currency_rename")->setEnabled(false);
@@ -4751,6 +4756,9 @@ void KMyMoney2App::slotUpdateActions(void)
   if(w)
     w->setEnabled(false);
 
+  // FIXME for now it's always on, but we should only allow it, if we
+  //       can select at least a single transaction
+  action("transaction_select_all")->setEnabled(true);
   if(!m_selectedTransactions.isEmpty()) {
     tooltip = i18n("Delete the current selected transactions");
     action("transaction_delete")->setEnabled(myMoneyView->canModifyTransactions(m_selectedTransactions, tooltip) && !m_selectedTransactions[0].transaction().id().isEmpty());

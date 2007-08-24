@@ -212,7 +212,8 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
           this, SLOT(slotPayeeSelected(const QCString&, const QCString&, const QCString&)));
 
   connect(kmymoney2, SIGNAL(startMatchTransaction(const MyMoneyTransaction&)), m_ledgerView, SLOT(slotStartMatchTransaction(const MyMoneyTransaction&)));
-  connect(kmymoney2, SIGNAL(cancelMatchTransaction(void)), m_ledgerView, SLOT(slotCancelMatchTransaction()));
+  connect(kmymoney2, SIGNAL(cancelMatchTransaction()), m_ledgerView, SLOT(slotCancelMatchTransaction()));
+  connect(kmymoney2, SIGNAL(selectAllTransactions()), m_ledgerView, SLOT(slotSelectAllTransactions()));
 
   // Page 7
   m_investmentViewFrame = addVBoxPage( i18n("Investments"), i18n("Investments"),

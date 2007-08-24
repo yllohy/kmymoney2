@@ -1040,6 +1040,12 @@ signals:
   void transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>& transactions);
 
   /**
+    * This signal is sent out, when the user presses Ctrl+A or activates
+    * the Select all transactions action.
+    */
+  void selectAllTransactions(void);
+
+  /**
     * This signal is emitted when a list of payees has been selected by
     * the GUI. If no payee is selected or the selection is removed,
     * @a payees is identical to an empty QValueList. This signal is used
@@ -1150,7 +1156,6 @@ private:
     * - IDLE: the default value if not performing a backup
     * - MOUNTING: when a mount command has been issued
     * - COPYING:  when a copy command has been issued
-
     * - UNMOUNTING: when an unmount command has been issued
     */
   backupStateE   m_backupState;

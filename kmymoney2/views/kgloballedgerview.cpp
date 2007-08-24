@@ -697,6 +697,21 @@ void KGlobalLedgerView::selectTransaction(const QCString& id)
   }
 }
 
+void KGlobalLedgerView::slotSelectAllTransactions(void)
+{
+  KMyMoneyRegister::RegisterItem* p = m_register->firstItem();
+  while(p) {
+    KMyMoneyRegister::Transaction* t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
+    if(t) {
+      if(t->isVisible() && t->isSelectable() && !t->id().isEmpty()) {
+        t->setSelected(true);
+      }
+    }
+    p = p->nextItem();
+  }
+  m_register->repaintItems();
+}
+
 void KGlobalLedgerView::slotSetReconcileAccount(const MyMoneyAccount& acc, const MyMoneyMoney& endingBalance)
 {
   if(d->m_reconciliationAccount != acc.id()) {

@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="19" name="kmymoney2" >
+<kpartgui version="20" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
@@ -88,6 +88,8 @@
    <Action name="transaction_cancel_match" />
    <Action name="transaction_accept" />
    <Action name="transaction_combine" />
+   <Separator />
+   <Action name="transaction_select_all" />
   </Menu>
   <Merge/>
   <Menu name="tools" >
