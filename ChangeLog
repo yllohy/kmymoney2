@@ -1,3 +1,7 @@
+2007-08-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed layout of GNC import options dialog
+  * Fixed processing of ROOT type account entry in GNC importer
+
 2007-08-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added option to hide finished schedules
   * Added option to hide closed accounts

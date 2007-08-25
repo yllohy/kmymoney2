@@ -131,8 +131,8 @@ void GncObject::checkVersion (const QString& elName, const QXmlAttributes& elAtt
   for (uint i = 0; versionList[i] != "zzz"; i++) {
     if (versionList[i].section (' ', 0, 0) == elName) {
       if (elAttrs.value("version") != versionList[i].section(' ', 1, 1)) {
-          QString em = i18n("chkVersion: Element %1 must have version %2")
-                          .arg(elName).arg(versionList[i].section(' ', 1, 1));
+          QString em = i18n("chkVersion: Element %1 must have version %2 but has version")
+                          .arg(elName, versionList[i].section(' ', 1, 1), elAttrs.value("version"));
         throw new MYMONEYEXCEPTION (em);
       }
     }
@@ -1100,6 +1100,9 @@ void MyMoneyGncReader::convertPrice (const GncPrice *gpr) {
 void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
   Q_CHECK_PTR (gac);
   TRY
+  // we don't care about the GNC root account
+  if("ROOT" == gac->type())
+    return;
 
   MyMoneyAccount acc;
   if (m_accountCount == 0) signalProgress (0, m_gncAccountCount, i18n("Loading accounts..."));
