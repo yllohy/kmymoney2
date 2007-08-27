@@ -1,3 +1,6 @@
+2007-08-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Improved class documentation for MyMoneyFile::attachStorage()
+
 2007-08-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed layout of GNC import options dialog
   * Fixed processing of ROOT type account entry in GNC importer

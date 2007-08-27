@@ -177,22 +177,35 @@ public:
   void setUser(const MyMoneyPayee& user);
 
   /**
-    * This method is used to attach a storage to the MyMoneyFile object
+    * This method is used to attach a storage object to the MyMoneyFile object
     * Without an attached storage object, the MyMoneyFile object is
-    * of no use. In case of an error condition, an exception is thrown.
+    * of no use.
+    *
+    * After successful completion, the dataChanged() signal is emitted.
+    *
+    * In case of an error condition, an exception is thrown.
+    * The following error conditions are checked:
+    *
+    * - @a storage is not equal to 0
+    * - there is no other @a storage object attached (use detachStorage()
+    *   to revert the attachStorage() operation.
     *
     * @param storage pointer to object that implements the IMyMoneyStorage
     *                interface.
+    *
+    * @sa detachStorage()
     */
   void attachStorage(IMyMoneyStorage* const storage);
 
   /**
     * This method is used to detach a previously attached storage
-    * object from the MyMoneyFile object. In case of an error
-    * condition an exception will be thrown.
+    * object from the MyMoneyFile object. If no storage object
+    * is attached to the engine, this is a NOP.
     *
     * @param storage pointer to object that implements the IMyMoneyStorage
     *                interface.
+    *
+    * @sa attachStorage()
     */
   void detachStorage(IMyMoneyStorage* const storage = 0);
 
