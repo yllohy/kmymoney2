@@ -23,6 +23,8 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qpainter.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -219,6 +221,17 @@ void KInvestmentListItem::paintCell(QPainter * p, const QColorGroup & cg, int co
     bPaintRed = true;
   }
 
+  p->save();
+
+#ifndef KMM_DESIGNER
+  QFont font = KMyMoneyGlobalSettings::listCellFont();
+  // strike out closed accounts
+  if(m_account.isClosed())
+    font.setStrikeOut(true);
+
+  p->setFont(font);
+#endif
+
   if(bPaintRed)
   {
     QColorGroup _cg( cg );
@@ -231,4 +244,6 @@ void KInvestmentListItem::paintCell(QPainter * p, const QColorGroup & cg, int co
   {
     QListViewItem::paintCell(p, cg, column, width, align);
   }
+
+  p->restore();
 }

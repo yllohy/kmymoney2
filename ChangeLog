@@ -1,3 +1,7 @@
+2007-08-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added feature to close investments (stock accounts)
+    Maybe, the report functions need to be adjusted as well
+
 2007-08-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved class documentation for MyMoneyFile::attachStorage()
 

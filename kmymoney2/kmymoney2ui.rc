@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="20" name="kmymoney2" >
+<kpartgui version="21" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
@@ -172,6 +172,9 @@
   <Action name="investment_manual_price_update" />
   <Separator />
   <Action name="tools_update_prices" />
+  <Separator />
+  <Action name="account_close" />
+  <Action name="account_reopen" />
  </Menu>
  <Menu name="schedule_context_menu">
   <title>Schedule options</title>

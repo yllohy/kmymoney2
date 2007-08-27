@@ -1456,8 +1456,6 @@ void KMyMoney2App::slotQifImport(void)
 
 void KMyMoney2App::slotQifImportFinished(void)
 {
-  MyMoneyFile* file = MyMoneyFile::instance();
-
   if(m_qifReader != 0) {
     m_qifReader->finishImport();
 #if 0
@@ -1643,10 +1641,8 @@ void KMyMoney2App::slotAccountUpdateOFX(void)
   // plugin.  Or better yet it would just provide a MMStatement.
 
 #ifdef USE_OFX_DIRECTCONNECT
-  bool accountSuccess=false;
   try
   {
-    MyMoneyFile* file = MyMoneyFile::instance();
     MyMoneyAccount account;
 
     if(!m_selectedAccount.id().isEmpty())
@@ -1836,8 +1832,6 @@ bool KMyMoney2App::slotStatementImport(const QValueList<MyMoneyStatement>& state
 
 void KMyMoney2App::slotStatementImportFinished(void)
 {
-  MyMoneyFile* file = MyMoneyFile::instance();
-
   if(m_smtReader != 0) {
     m_smtReader->finishImport();
 #if 0
@@ -3242,12 +3236,16 @@ bool KMyMoney2App::canCloseAccount(const MyMoneyAccount& acc) const
 
 void KMyMoney2App::slotAccountClose(void)
 {
-  if(m_selectedAccount.id().isEmpty())
+  MyMoneyAccount a;
+  if(!m_selectedInvestment.id().isEmpty())
+    a = m_selectedInvestment;
+  else if(!m_selectedAccount.id().isEmpty())
+    a = m_selectedAccount;
+  if(a.id().isEmpty())
     return;  // need an account ID
 
   MyMoneyFileTransaction ft;
   try {
-    MyMoneyAccount a(m_selectedAccount);
     a.setClosed(true);
     MyMoneyFile::instance()->modifyAccount(a);
     ft.commit();
@@ -3261,13 +3259,17 @@ void KMyMoney2App::slotAccountClose(void)
 
 void KMyMoney2App::slotAccountReopen(void)
 {
-  if(m_selectedAccount.id().isEmpty())
+  MyMoneyAccount a;
+  if(!m_selectedInvestment.id().isEmpty())
+    a = m_selectedInvestment;
+  else if(!m_selectedAccount.id().isEmpty())
+    a = m_selectedAccount;
+  if(a.id().isEmpty())
     return;  // need an account ID
 
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyFileTransaction ft;
   try {
-    MyMoneyAccount a(m_selectedAccount);
     while(a.isClosed()) {
       a.setClosed(false);
       file->modifyAccount(a);
@@ -4885,6 +4887,10 @@ void KMyMoney2App::slotUpdateActions(void)
       qDebug("Error retrieving security for investment %s: %s", m_selectedInvestment.name().data(), e->what().data());
       delete e;
     }
+    if(m_selectedInvestment.isClosed())
+      action("account_reopen")->setEnabled(true);
+    else if(canCloseAccount(m_selectedInvestment))
+      action("account_close")->setEnabled(true);
   }
 
   if(!m_selectedSchedule.id().isEmpty()) {

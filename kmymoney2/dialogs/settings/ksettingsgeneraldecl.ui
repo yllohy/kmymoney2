@@ -349,6 +349,9 @@
                                 <property name="text">
                                     <string>Don't show unused categories</string>
                                 </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>This option hides all categories in the categories view that are not used in at least a single transaction. They are still shown in the category selection lists.</string>
+                                </property>
                             </widget>
                             <widget class="QCheckBox">
                                 <property name="name">
@@ -356,6 +359,11 @@
                                 </property>
                                 <property name="text">
                                     <string>Don't show closed accounts</string>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>This option hides all accounts that have been closed by the user in views and selection lists.
+
+You can use &lt;b&gt;View/Show all accounts&lt;/b&gt; to temporarily show hidden accounts in the views.</string>
                                 </property>
                             </widget>
                         </vbox>
@@ -378,6 +386,9 @@
                                 <property name="text">
                                     <string>Don't show finished schedules</string>
                                 </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>This option hides all finished schedules in the schedules view.</string>
+                                </property>
                             </widget>
                         </vbox>
                     </widget>
@@ -398,6 +409,9 @@
                                 </property>
                                 <property name="text">
                                     <string>Don't show reconciled transactions</string>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>This option hides all reconciled transactions in the ledger view.</string>
                                 </property>
                             </widget>
                         </vbox>

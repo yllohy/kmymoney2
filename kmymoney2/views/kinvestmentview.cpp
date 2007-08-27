@@ -283,13 +283,16 @@ void KInvestmentView::loadView(void)
   setEnabled(true);
 
   MyMoneyFile* file = MyMoneyFile::instance();
+  bool showClosedAccounts = kmymoney2->toggleAction("view_show_all_accounts")->isChecked()
+                         || !KMyMoneyGlobalSettings::hideClosedAccounts();
   try {
     d->m_account = file->account(d->m_account.id());
     QCStringList securities = d->m_account.accountList();
 
     for(QCStringList::ConstIterator it = securities.begin(); it != securities.end(); ++it) {
       MyMoneyAccount acc = file->account(*it);
-      new KInvestmentListItem(m_table, acc);
+      if(!acc.isClosed() || showClosedAccounts)
+        new KInvestmentListItem(m_table, acc);
     }
   } catch(MyMoneyException* e) {
     qDebug("KInvestmentView::loadView() - selected account does not exist anymore");
