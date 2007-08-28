@@ -1,3 +1,6 @@
+2007-08-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed unused code from KMyMoneyUtils
+
 2007-08-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added feature to close investments (stock accounts)
     Maybe, the report functions need to be adjusted as well

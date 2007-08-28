@@ -113,7 +113,7 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
 
   m_subAccountLabel->setText(i18n("Is a sub account"));
 
-  m_qlistviewParentAccounts->header()->setFont(KMyMoneyUtils::headerFont());
+  m_qlistviewParentAccounts->header()->setFont(KMyMoneyGlobalSettings::listHeaderFont());
 
   accountNameEdit->setText(account.name());
   descriptionEdit->setText(account.description());

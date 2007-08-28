@@ -41,15 +41,6 @@
 #include <kmymoney/kmymoneyglobalsettings.h>
 #include "kmymoneyutils.h"
 
-QColor KMyMoneyUtils::_backgroundColour;
-QColor KMyMoneyUtils::_listColour;
-QColor KMyMoneyUtils::_gridColour;
-
-QFont  KMyMoneyUtils::_cellFont;
-QFont  KMyMoneyUtils::_headerFont;
-
-bool   KMyMoneyUtils::_expertMode;
-
 KMyMoneyUtils::KMyMoneyUtils()
 {
 }
@@ -368,18 +359,6 @@ const QString KMyMoneyUtils::scheduleTypeToString(MyMoneySchedule::typeE type)
   return text;
 }
 
-KGuiItem KMyMoneyUtils::splitGuiItem(void)
-{
-  KIconLoader *ic = KGlobal::iconLoader();
-
-  KGuiItem splitGuiItem(  i18n("&Split"),
-                          QIconSet(ic->loadIcon("split", KIcon::User, KIcon::SizeSmall)),
-                          i18n("Split the amount into different categories."),
-                          i18n("Split the amount into different categories."));
-
-  return splitGuiItem;
-}
-
 KGuiItem KMyMoneyUtils::scheduleNewGuiItem(void)
 {
   KIconLoader *ic = KGlobal::iconLoader();
@@ -553,59 +532,6 @@ int KMyMoneyUtils::occurenceToFrequency(const MyMoneySchedule::occurenceE occure
   }
 
   return rc;
-}
-
-const QColor KMyMoneyUtils::defaultBackgroundColour(void)
-{
-  return KGlobalSettings::baseColor();
-  // return QColor(255,255,204);
-}
-
-const QColor KMyMoneyUtils::defaultListColour(void)
-{
-  QColor color = KGlobalSettings::alternateBackgroundColor();
-  if(!color.isValid())
-    color = defaultBackgroundColour();
-  return color;
-  // return QColor(255,255,238);
-}
-
-const QColor KMyMoneyUtils::defaultGridColour(void)
-{
-  return QColor(154,154,154);
-}
-
-void KMyMoneyUtils::updateSettings(void)
-{
-  QColor c;
-  QFont  f;
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-
-  c = defaultBackgroundColour();
-  _backgroundColour = config->readColorEntry("listBGColor", &c);
-
-  c = defaultListColour();
-  _listColour = config->readColorEntry("listColor", &c);
-
-  c = defaultGridColour();
-  _gridColour = config->readColorEntry("listGridColor", &c);
-
-  f = KGlobalSettings::generalFont();
-  if(config->readBoolEntry("useSystemFont", true) == false)
-    _cellFont = config->readFontEntry("listCellFont", &f);
-  else
-    _cellFont = f;
-
-  f = KGlobalSettings::generalFont();
-  f.setBold(true);
-  if(config->readBoolEntry("useSystemFont", true) == false)
-    _headerFont = config->readFontEntry("listHeaderFont", &f);
-  else
-    _headerFont = f;
-
-  config->setGroup("General Options");
-  _expertMode = config->readBoolEntry("ExpertMode", false);
 }
 
 void KMyMoneyUtils::checkConstants(void)

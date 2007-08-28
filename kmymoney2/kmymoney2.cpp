@@ -172,9 +172,6 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
 
   updateCaption(true);
 
-  // initial setup of settings
-  KMyMoneyUtils::updateSettings();
-
   QFrame* frame = new QFrame(this);
   frame->setFrameStyle(QFrame::NoFrame);
   // values for margin (11) and spacing(6) taken from KDialog implementation

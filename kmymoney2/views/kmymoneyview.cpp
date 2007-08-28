@@ -1493,9 +1493,6 @@ void KMyMoneyView::viewAccountList(const QCString& /*selectAccount*/)
 
 void KMyMoneyView::slotRefreshViews()
 {
-  // force update of settings
-  KMyMoneyUtils::updateSettings();
-
   // turn off sync between ledger and investment view
   disconnect(m_investmentView, SIGNAL(accountSelected(const MyMoneyObject&)), m_ledgerView, SLOT(slotSelectAccount(const MyMoneyObject&)));
   disconnect(m_ledgerView, SIGNAL(accountSelected(const MyMoneyObject&)), m_investmentView, SLOT(slotSelectAccount(const MyMoneyObject&)));

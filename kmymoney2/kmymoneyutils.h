@@ -228,13 +228,6 @@ public:
   static const int stringToHomePageItem(const QString& txt);
 
   /**
-    * Retrieve a KDE KGuiItem for the split button
-    *
-    * @return The KGuiItem that can be used to display the icon and text for a split button.
-    */
-  static KGuiItem splitGuiItem(void);
-
-  /**
     * Retrieve a KDE KGuiItem for the new schedule button.
     *
     * @return The KGuiItem that can be used to display the icon and text
@@ -276,53 +269,10 @@ public:
   static int occurenceToFrequency(const MyMoneySchedule::occurenceE occurence);
 
   /**
-    * This method returns the applications default background color if
-    * none has been setup by the user.
-    */
-  static const QColor defaultBackgroundColour(void);
-
-  /**
-    * This method returns the applications default list color if
-    * none has been setup by the user.
-    */
-  static const QColor defaultListColour(void);
-
-  /**
-    * This method returns the applications default grid color if
-    * none has been setup by the user.
-    */
-  static const QColor defaultGridColour(void);
-
-  /**
-    * This method is used to update all settings when they are
-    * changed by the user through the respective settings dialog.
-    * This routine must be called before any of the color/font
-    * settings routine can be used.
-    */
-  static void updateSettings(void);
-
-  static const QColor backgroundColour(void) {
-    return _backgroundColour;
-  }
-
-  static const QColor listColour(void) {
-    return _listColour;
-  }
-
-  static const QColor gridColour(void) {
-    return _gridColour;
-  }
-
-  static const QFont& cellFont(void) { return _cellFont; };
-  static const QFont& headerFont(void) { return _headerFont; };
-
-  /**
     * Check that internal MyMoney engine constants use the same
     * values as the KDE constants.
     */
   static void checkConstants(void);
-
-  static bool isExpertMode(void) { return _expertMode; };
 
   static QString variableCSS(void);
 
@@ -406,15 +356,6 @@ public:
     * then the full text will be returned otherwise a short form (usually one character).
     */
   static QString reconcileStateToString(MyMoneySplit::reconcileFlagE flag, bool text = false);
-
-private:
-  static QColor _backgroundColour;
-  static QColor _listColour;
-  static QColor _gridColour;
-
-  static QFont  _cellFont;
-  static QFont  _headerFont;
-  static bool   _expertMode;
 };
 
 #endif
