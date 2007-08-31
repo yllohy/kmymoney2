@@ -3329,6 +3329,7 @@ void KMyMoney2App::slotAccountTransactionReport(void)
 void KMyMoney2App::scheduleNew(const QCString& scheduleType)
 {
   MyMoneySchedule schedule;
+  schedule.setOccurence(MyMoneySchedule::OCCUR_MONTHLY);
 
   KEditScheduleDialog dlg(scheduleType, schedule, this);
   connect(&dlg, SIGNAL(createCategory(const QString&, QCString&)), this, SLOT(slotCategoryNew(const QString&, QCString&)));
@@ -3342,7 +3343,7 @@ void KMyMoney2App::scheduleNew(const QCString& scheduleType)
       ft.commit();
 
     } catch (MyMoneyException *e) {
-      KMessageBox::error(this, i18n("Unable to add schedule: "), e->what());
+      KMessageBox::error(this, i18n("Unable to add schedule: %1").arg(e->what()), i18n("Add schedule"));
       delete e;
     }
   }
@@ -3562,13 +3563,14 @@ bool KMyMoney2App::enterSchedule(MyMoneySchedule& schedule, bool autoEnter)
             }
 
             QCString newId;
-            if(m_transactionEditor->enterTransactions(newId))
-              deleteTransactionEditor();
+            if(m_transactionEditor->enterTransactions(newId)) {
+              schedule.setLastPayment(schedule.nextPayment(schedule.lastPayment()));
+              MyMoneyFile::instance()->modifySchedule(schedule);
+              rc = true;
+              ft.commit();
+            }
+            deleteTransactionEditor();
 
-            schedule.setLastPayment(schedule.nextPayment(schedule.lastPayment()));
-            MyMoneyFile::instance()->modifySchedule(schedule);
-            rc = true;
-            ft.commit();
           } catch (MyMoneyException *e) {
             KMessageBox::detailedSorry(this, i18n("Unable to enter transaction for schedule '%1'").arg(m_selectedSchedule.name()), e->what());
             delete e;

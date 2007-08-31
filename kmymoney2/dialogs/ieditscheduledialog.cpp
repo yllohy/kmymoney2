@@ -82,6 +82,15 @@ MyMoneySchedule::occurenceE KEditScheduleDialog::occurMasks[] = {
   MyMoneySchedule::OCCUR_EVERYOTHERYEAR,
   (MyMoneySchedule::occurenceE) END_OCCURS };
 
+QWidget* KEditScheduleDialog::focusWidget(QWidget *w)
+{
+  if(w) {
+    while(w->focusProxy())
+      w = w->focusProxy();
+  }
+  return w;
+}
+
 KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySchedule& schedule, QWidget *parent, const char *name) :
   kEditScheduledTransferDlgDecl(parent, name, true),
   m_cancelSave(false)
@@ -159,6 +168,9 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
   reloadFromFile();
   loadWidgetsFromSchedule();
 
+  if(m_kcomboMethod->item() == -1)
+    m_kcomboMethod->setItem(MyMoneySchedule::STYPE_OTHER);
+
   if (m_actionType == MyMoneySplit::ActionTransfer)
   {
     m_accountCombo->setEnabled(true);
@@ -192,6 +204,10 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     m_requiredFields->add(m_payee);
 
     setCaption(i18n("Edit Loan Payment Schedule"));
+    if(m_kcomboMethod->item() == MyMoneySchedule::STYPE_OTHER) {
+      m_kcomboMethod->setItem(MyMoneySchedule::STYPE_DIRECTDEBIT);
+      slotMethodChanged(MyMoneySchedule::STYPE_DIRECTDEBIT);
+    }
   }
   else if (m_actionType == MyMoneySplit::ActionDeposit)
   {
@@ -205,6 +221,10 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     m_requiredFields->add(m_payee);
 
     setCaption(i18n("Edit Deposit Schedule"));
+    if(m_kcomboMethod->item() == MyMoneySchedule::STYPE_OTHER) {
+      m_kcomboMethod->setItem(MyMoneySchedule::STYPE_DIRECTDEPOSIT);
+      slotMethodChanged(MyMoneySchedule::STYPE_DIRECTDEPOSIT);
+    }
   }
   else
   {
@@ -212,15 +232,28 @@ KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySc
     m_qlabelPay2->setEnabled(true);
     TextLabel1_3->setEnabled(false);
     m_kcomboTo->setEnabled(false);
-    setCaption(i18n("Edit Bill Schedule"));
 
     m_requiredFields->add(m_accountCombo);
     m_requiredFields->add(m_payee);
     m_requiredFields->add(m_category);
+
+    setCaption(i18n("Edit Bill Schedule"));
+    if(m_kcomboMethod->item() == MyMoneySchedule::STYPE_OTHER) {
+      m_kcomboMethod->setItem(MyMoneySchedule::STYPE_DIRECTDEBIT);
+      slotMethodChanged(MyMoneySchedule::STYPE_DIRECTDEBIT);
+    }
+  }
+
+  if(m_kcomboFreq->item() == -1) {
+    m_kcomboFreq->setItem(MyMoneySchedule::OCCUR_MONTHLY);
+    m_schedule.setOccurence(static_cast<MyMoneySchedule::occurenceE>(m_kcomboFreq->item()));
   }
 
   m_requiredFields->add(m_scheduleName);
   m_requiredFields->add(m_kmoneyeditAmount->lineedit());
+
+  // always drop the focus in the name field
+  m_scheduleName->setFocus();
 }
 
 KEditScheduleDialog::~KEditScheduleDialog()
@@ -230,12 +263,16 @@ KEditScheduleDialog::~KEditScheduleDialog()
 
 void KEditScheduleDialog::slotReloadEditWidgets(void)
 {
+  // reload category widget
   QCString categoryId = m_category->selectedItem();
 
   AccountSet aSet;
   aSet.addAccountGroup(MyMoneyAccount::Income);
   aSet.addAccountGroup(MyMoneyAccount::Expense);
   aSet.load(m_category->selector());
+
+  if(!categoryId.isEmpty())
+    m_category->setSelectedItem(categoryId);
 
   // reload payee widget
   QCString payeeId = m_payee->selectedItem();
@@ -569,6 +606,7 @@ void KEditScheduleDialog::okClicked(void)
       break;
   }
 
+  // FIXME: is this still needed? I think, we got rid of the normal 'actions'
   // Change the transaction action if one is specified
   if (m_paymentMethod->currentText().length()>0)
   {
@@ -1202,32 +1240,67 @@ bool KEditScheduleDialog::checkCategory(void)
   bool exitDialog = true;
 
   // Make sure a category has been set
-  if (m_category->isSplitTransaction() && !m_category->selectedItem().isEmpty())
-  {
-    bool invalid=false;
-    QCString categoryId = m_category->selectedItem();
-    if (m_category->selectedItem().isEmpty())
-      invalid = true;
-
-    if (invalid)
+  if(m_category->isEnabled()) {
+    if(!m_category->isSplitTransaction() && m_category->selectedItem().isEmpty())
     {
-      // Create the category
-      QString message = QString("The category '%1' does not exist.  Create?").arg(m_category->currentText());
-      if (KMessageBox::questionYesNo(this, message) == KMessageBox::Yes)
+      bool invalid=false;
+      QCString categoryId = m_category->selectedItem();
+      if (categoryId.isEmpty())
+        invalid = true;
+
+      if (invalid)
       {
-        MyMoneyAccount base;
-        if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
-          base = MyMoneyFile::instance()->income();
+        // Create the category
+        QString message = QString("The category '%1' does not exist.  Create?").arg(m_category->currentText());
+        if (KMessageBox::questionYesNo(this, message) == KMessageBox::Yes)
+        {
+          MyMoneyAccount base;
+          if (m_schedule.type() == MyMoneySchedule::TYPE_DEPOSIT)
+            base = MyMoneyFile::instance()->income();
+          else
+            base = MyMoneyFile::instance()->expense();
+
+          categoryId = MyMoneyFile::instance()->createCategory(base, m_category->currentText());
+
+          // Modify the split
+          MyMoneySplit s = m_transaction.splits()[1];
+          s.setAccountId(categoryId);
+          m_transaction.modifySplit(s);
+
+          QString type, stype;
+          MyMoneyAccount::accountTypeE typeE = MyMoneyFile::instance()->account(categoryId).accountType();
+          if (m_actionType == MyMoneySplit::ActionDeposit &&
+                typeE != MyMoneyAccount::Income)
+          {
+            type = i18n("Expense");
+            stype = i18n("Deposit");
+          }
+          else if (m_actionType != MyMoneySplit::ActionDeposit &&
+                typeE != MyMoneyAccount::Expense)
+          {
+            type = i18n("Income");
+            stype = i18n("Withdrawal or Transfer");
+          }
+
+          if (!type.isEmpty())
+          {
+            QString message = i18n("You have specified an %1 category for a %2 schedule. Do you want to keep it that way?").arg(type).arg(stype);
+            if(KMessageBox::warningYesNo(this, message, i18n("Verify category type")) == KMessageBox::No) {
+              m_category->setSelectedItem(QCString());
+              m_category->setFocus();
+              exitDialog = false;
+            }
+          }
+        }
         else
-          base = MyMoneyFile::instance()->expense();
-
-        categoryId = MyMoneyFile::instance()->createCategory(base, m_category->currentText());
-
-        // Modify the split
-        MyMoneySplit s = m_transaction.splits()[1];
-        s.setAccountId(categoryId);
-        m_transaction.modifySplit(s);
-
+        {
+          m_category->setSelectedItem(QCString());
+          m_category->setFocus();
+          exitDialog = false;
+        }
+      }
+      else
+      {
         QString type, stype;
         MyMoneyAccount::accountTypeE typeE = MyMoneyFile::instance()->account(categoryId).accountType();
         if (m_actionType == MyMoneySplit::ActionDeposit &&
@@ -1240,7 +1313,7 @@ bool KEditScheduleDialog::checkCategory(void)
               typeE != MyMoneyAccount::Expense)
         {
           type = i18n("Income");
-          stype = i18n("Withdrawal or Transfer");
+          stype = i18n("Bill or Transfer");
         }
 
         if (!type.isEmpty())
@@ -1253,39 +1326,12 @@ bool KEditScheduleDialog::checkCategory(void)
           }
         }
       }
-      else
-      {
-        m_category->setSelectedItem(QCString());
-        m_category->setFocus();
-        exitDialog = false;
-      }
     }
-    else
-    {
-      QString type, stype;
-      MyMoneyAccount::accountTypeE typeE = MyMoneyFile::instance()->account(categoryId).accountType();
-      if (m_actionType == MyMoneySplit::ActionDeposit &&
-            typeE != MyMoneyAccount::Income)
-      {
-        type = i18n("Expense");
-        stype = i18n("Deposit");
-      }
-      else if (m_actionType != MyMoneySplit::ActionDeposit &&
-            typeE != MyMoneyAccount::Expense)
-      {
-        type = i18n("Income");
-        stype = i18n("Bill or Transfer");
-      }
-
-      if (!type.isEmpty())
-      {
-        QString message = i18n("You have specified an %1 category for a %2 schedule. Do you want to keep it that way?").arg(type).arg(stype);
-        if(KMessageBox::warningYesNo(this, message, i18n("Verify category type")) == KMessageBox::No) {
-          m_category->setSelectedItem(QCString());
-          m_category->setFocus();
-          exitDialog = false;
-        }
-      }
+    if(!m_category->isSplitTransaction() && !m_category->selectedItem().isEmpty()) {
+      MyMoneySplit s = m_transaction.splits()[1];
+      QCString categoryId = m_category->selectedItem();
+      s.setAccountId(categoryId);
+      m_transaction.modifySplit(s);
     }
   }
 

@@ -530,6 +530,7 @@ void KMyMoneyPayeeCombo::loadPayees(const QValueList<MyMoneyPayee>& list)
 
 KMyMoneyGeneralCombo::KMyMoneyGeneralCombo(QWidget* w, const char* name) :
   KMyMoneyCombo(false, w, name),
+  m_id(-1),
   m_min(999999),
   m_max(-1)
 {

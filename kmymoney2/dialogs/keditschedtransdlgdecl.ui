@@ -673,13 +673,23 @@
     <tabstop>m_scheduleName</tabstop>
     <tabstop>m_accountCombo</tabstop>
     <tabstop>m_kcomboTo</tabstop>
+    <tabstop>m_kcomboMethod</tabstop>
+    <tabstop>m_payee</tabstop>
     <tabstop>m_kdateinputDue</tabstop>
+    <tabstop>m_kcomboFreq</tabstop>
     <tabstop>m_kmoneyeditAmount</tabstop>
     <tabstop>m_qcheckboxEstimate</tabstop>
+    <tabstop>m_category</tabstop>
+    <tabstop>m_qtexteditMemo</tabstop>
+    <tabstop>m_weekendOption</tabstop>
     <tabstop>m_qcheckboxAuto</tabstop>
+    <tabstop>m_paymentMethod</tabstop>
     <tabstop>m_qcheckboxEnd</tabstop>
     <tabstop>m_qlineeditRemaining</tabstop>
     <tabstop>m_kdateinputFinal</tabstop>
+    <tabstop>m_qbuttonOK</tabstop>
+    <tabstop>m_qbuttonCancel</tabstop>
+    <tabstop>m_helpButton</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

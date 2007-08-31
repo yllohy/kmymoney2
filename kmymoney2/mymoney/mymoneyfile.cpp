@@ -205,6 +205,10 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
     // the following line will throw an exception if the
     // account does not exist
     MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
+    if(acc.id().isEmpty())
+      throw new MYMONEYEXCEPTION("Cannot store split with no account assigned");
+    if(isStandardAccount((*it_s).accountId()))
+      throw new MYMONEYEXCEPTION("Cannot store split referencing standard account");
     if(acc.isLoan() && ((*it_s).action() == MyMoneySplit::ActionTransfer))
       loanAccountAffected = true;
   }
@@ -769,10 +773,12 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
     // the following line will throw an exception if the
     // account does not exist or is one of the standard accounts
     MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
+    if(acc.id().isEmpty())
+      throw new MYMONEYEXCEPTION("Cannot add split with no account assigned");
     if(acc.isLoan())
       loanAccountAffected = true;
     if(isStandardAccount((*it_s).accountId()))
-      throw new MYMONEYEXCEPTION("Cannot store split with standard account");
+      throw new MYMONEYEXCEPTION("Cannot add split referencing standard account");
   }
 
   // change transfer splits between asset/liability and loan accounts
@@ -1203,6 +1209,18 @@ void MyMoneyFile::addSchedule(MyMoneySchedule& sched)
 {
   checkTransaction(__PRETTY_FUNCTION__);
 
+  MyMoneyTransaction transaction = sched.transaction();
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+    // the following line will throw an exception if the
+    // account does not exist or is one of the standard accounts
+    MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
+    if(acc.id().isEmpty())
+      throw new MYMONEYEXCEPTION("Cannot add split with no account assigned");
+    if(isStandardAccount((*it_s).accountId()))
+      throw new MYMONEYEXCEPTION("Cannot add split referencing standard account");
+  }
+
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
@@ -1214,6 +1232,18 @@ void MyMoneyFile::addSchedule(MyMoneySchedule& sched)
 void MyMoneyFile::modifySchedule(const MyMoneySchedule& sched)
 {
   checkTransaction(__PRETTY_FUNCTION__);
+
+  MyMoneyTransaction transaction = sched.transaction();
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+    // the following line will throw an exception if the
+    // account does not exist or is one of the standard accounts
+    MyMoneyAccount acc = MyMoneyFile::account((*it_s).accountId());
+    if(acc.id().isEmpty())
+      throw new MYMONEYEXCEPTION("Cannot store split with no account assigned");
+    if(isStandardAccount((*it_s).accountId()))
+      throw new MYMONEYEXCEPTION("Cannot store split referencing standard account");
+  }
 
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);

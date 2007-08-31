@@ -1,3 +1,15 @@
+2007-08-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed creation of schedules
+  * Redefined tabstops in edit schedule dialog
+  * Engine throws exception when the application tries to store a
+    transaction that contains splits not referencing an account
+  * Don't show closed accounts in querytable based reports
+  * Prevent crash when cancel out of the exchange rate editor during
+    the entry of a scheduled transaction
+
+2007-08-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't show closed accounts in account query table
+
 2007-08-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed unused code from KMyMoneyUtils
 

@@ -1026,7 +1026,11 @@ void QueryTable::constructAccountTable(void)
       else
         qaccountrow["equitytype"] = QString();
 
-      m_transactions += qaccountrow;
+      // don't add the account if it is closed. In fact, the business logic
+      // should prevent that an account can be closed with a balance not equal
+      // to zero, but we never know.
+      if(!(shares.isZero() && account.isClosed()))
+        m_transactions += qaccountrow;
     }
 
     ++it_account;
