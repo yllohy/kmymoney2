@@ -82,15 +82,6 @@ MyMoneySchedule::occurenceE KEditScheduleDialog::occurMasks[] = {
   MyMoneySchedule::OCCUR_EVERYOTHERYEAR,
   (MyMoneySchedule::occurenceE) END_OCCURS };
 
-QWidget* KEditScheduleDialog::focusWidget(QWidget *w)
-{
-  if(w) {
-    while(w->focusProxy())
-      w = w->focusProxy();
-  }
-  return w;
-}
-
 KEditScheduleDialog::KEditScheduleDialog(const QCString& action, const MyMoneySchedule& schedule, QWidget *parent, const char *name) :
   kEditScheduledTransferDlgDecl(parent, name, true),
   m_cancelSave(false)
