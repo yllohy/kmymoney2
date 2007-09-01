@@ -1,6 +1,8 @@
 2007-09-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed display of first row in investment transaction form
   * Use alternate background in the investment view
+  * Control visibility of rows in the transaction form on a per
+    transaction basis
 
 2007-08-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed creation of schedules

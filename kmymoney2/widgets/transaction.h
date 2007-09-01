@@ -221,6 +221,18 @@ public:
   virtual void setMatchMark(bool mark);
   bool hasMatchMark(void) const { return m_matchMark; }
 
+  /**
+    * Return information if @a row should be shown (@a true )
+    * or hidden (@a false ) in the form. Default is true.
+    */
+  virtual bool showRowInForm(int row) const { Q_UNUSED(row) return true; }
+
+  /**
+    * Control visibility of @a row in the transaction form.
+    * Only row 0 has an effect, others return @a true.
+    */
+  virtual void setShowRowInForm(int row, bool show) { Q_UNUSED(row); Q_UNUSED(show) }
+
 protected:
   virtual void markAsErronous(QPainter* p, int row, int col, const QRect& r);
 
@@ -298,11 +310,25 @@ public:
 
   TransactionEditor* createEditor(TransactionEditorContainer* regForm, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
 
+  /**
+    * Return information if @a row should be shown (@a true )
+    * or hidden (@a false ) in the form. Default is true.
+    */
+  virtual bool showRowInForm(int row) const;
+
+  /**
+    * Control visibility of @a row in the transaction form.
+    * Only row 0 has an effect, others return @a true.
+    */
+  virtual void setShowRowInForm(int row, bool show);
+
 protected:
 
 private:
   void setupFormHeader(const QCString& id);
 
+private:
+  bool m_showAccountRow;
 };
 
 class InvestTransaction : public Transaction

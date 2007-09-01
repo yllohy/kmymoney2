@@ -75,7 +75,6 @@ KEnterScheduleDlg::KEnterScheduleDlg(QWidget *parent, const MyMoneySchedule& sch
   m_register->hide();
 
   // ... setup the form ...
-  m_form->setShowAccountRow(d->m_schedule.type() != MyMoneySchedule::TYPE_LOANPAYMENT);
   m_form->setupForm(d->m_schedule.account());
 
   // ... and the register ...
@@ -85,7 +84,11 @@ KEnterScheduleDlg::KEnterScheduleDlg(QWidget *parent, const MyMoneySchedule& sch
   MyMoneyTransaction t = transaction();
   d->m_item = KMyMoneyRegister::Register::transactionFactory(m_register, t, d->m_schedule.transaction().splits()[0], 0);
   m_register->selectItem(d->m_item);
+  // show the account row
+  d->m_item->setShowRowInForm(0, true);
+
   m_form->slotSetTransaction(d->m_item);
+
 
   // no need to see the tabbar
   tabbar->hide();

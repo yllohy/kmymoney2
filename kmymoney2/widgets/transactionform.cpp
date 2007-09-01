@@ -159,8 +159,7 @@ void TabBar::copyTabs(const TabBar* otabbar)
 TransactionForm::TransactionForm(QWidget *parent, const char *name) :
   TransactionEditorContainer(parent, name),
   m_transaction(0),
-  m_tabBar(0),
-  m_showAccountRow(false)
+  m_tabBar(0)
 {
   setBackgroundOrigin(QTable::WindowOrigin);
   setFrameShape( QTable::NoFrame);
@@ -233,16 +232,11 @@ void TransactionForm::slotSetTransaction(KMyMoneyRegister::Transaction* transact
   int height = QMAX(dateInput.sizeHint().height(), category.sizeHint().height());
 
   for(int row = 0; row < numRows(); ++row) {
-    if(row == 0) {
-      if(m_showAccountRow) {
-        showRow(row);
-        QTable::setRowHeight(row, height);
-      }
-      else
-        hideRow(row);
-    }
-    else
+    if(!transaction || transaction->showRowInForm(row)) {
+      showRow(row);
       QTable::setRowHeight(row, height);
+    } else
+      hideRow(row);
   }
 
   // adjust vertical size of form table

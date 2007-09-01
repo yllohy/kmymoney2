@@ -729,7 +729,8 @@ void Transaction::setMatchMark(bool mark)
 }
 
 StdTransaction::StdTransaction(Register *parent, const MyMoneyTransaction& transaction, const MyMoneySplit& split, int uniqueId) :
-  Transaction(parent, transaction, split, uniqueId)
+  Transaction(parent, transaction, split, uniqueId),
+  m_showAccountRow(false)
 {
   try {
     m_categoryHeader = i18n("Category");
@@ -832,11 +833,21 @@ void StdTransaction::loadTab(TransactionForm* form)
 
 void StdTransaction::setupForm(TransactionForm* form)
 {
-  form->setShowAccountRow(false);
   Transaction::setupForm(form);
 
   QTableItem* memo = form->item(3, ValueColumn1);
   memo->setSpan(3, 1);
+}
+
+bool StdTransaction::showRowInForm(int row) const
+{
+  return row == 0 ? m_showAccountRow : true;
+}
+
+void StdTransaction::setShowRowInForm(int row, bool show)
+{
+  if(row == 0)
+    m_showAccountRow = show;
 }
 
 bool StdTransaction::formCellText(QString& txt, int& align, int row, int col, QPainter* /* painter */)
@@ -1332,7 +1343,6 @@ InvestTransaction::InvestTransaction(Register *parent, const MyMoneyTransaction&
 
 void InvestTransaction::setupForm(TransactionForm* form)
 {
-  form->setShowAccountRow(true);
   Transaction::setupForm(form);
 
   QTableItem* memo = form->item(5, 1);
