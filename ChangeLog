@@ -1,3 +1,7 @@
+2007-09-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed display of first row in investment transaction form
+  * Use alternate background in the investment view
+
 2007-08-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed creation of schedules
   * Redefined tabstops in edit schedule dialog

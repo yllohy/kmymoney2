@@ -223,6 +223,13 @@ void KInvestmentListItem::paintCell(QPainter * p, const QColorGroup & cg, int co
 
   p->save();
 
+  QColorGroup cg2(cg);
+
+  if(isAlternate())
+    cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listColor());
+  else
+    cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
+
 #ifndef KMM_DESIGNER
   QFont font = KMyMoneyGlobalSettings::listCellFont();
   // strike out closed accounts
@@ -234,7 +241,7 @@ void KInvestmentListItem::paintCell(QPainter * p, const QColorGroup & cg, int co
 
   if(bPaintRed)
   {
-    QColorGroup _cg( cg );
+    QColorGroup _cg( cg2);
     QColor c = _cg.text();
     _cg.setColor(QColorGroup::Text, Qt::red);
     QListViewItem::paintCell(p, _cg, column, width, align);
@@ -242,7 +249,7 @@ void KInvestmentListItem::paintCell(QPainter * p, const QColorGroup & cg, int co
   }
   else
   {
-    QListViewItem::paintCell(p, cg, column, width, align);
+    QListViewItem::paintCell(p, cg2, column, width, align);
   }
 
   p->restore();

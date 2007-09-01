@@ -832,6 +832,7 @@ void StdTransaction::loadTab(TransactionForm* form)
 
 void StdTransaction::setupForm(TransactionForm* form)
 {
+  form->setShowAccountRow(false);
   Transaction::setupForm(form);
 
   QTableItem* memo = form->item(3, ValueColumn1);
@@ -1331,6 +1332,7 @@ InvestTransaction::InvestTransaction(Register *parent, const MyMoneyTransaction&
 
 void InvestTransaction::setupForm(TransactionForm* form)
 {
+  form->setShowAccountRow(true);
   Transaction::setupForm(form);
 
   QTableItem* memo = form->item(5, 1);
