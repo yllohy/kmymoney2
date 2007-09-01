@@ -6,6 +6,7 @@
   * Don't show closed accounts in querytable based reports
   * Prevent crash when cancel out of the exchange rate editor during
     the entry of a scheduled transaction
+  * Force usage of GPG agent if environment variable GPG_AGENT_INFO is filled
 
 2007-08-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't show closed accounts in account query table

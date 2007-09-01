@@ -153,18 +153,18 @@ bool KGPGFile::open(int mode, const QString& cmdArgs, bool skipPasswd)
 
   QStringList args;
   if(cmdArgs.isEmpty()) {
-    args << "--homedir" << QString("\"") + m_homedir + QString("\"")
+    args << "--homedir" << QString("\"%1\"").arg(m_homedir)
         << "-q"
         << "--batch";
 
     if(isWritable()) {
       args << "-ea"
           << "-z" << "6"
-          << "--comment" << QString("\"") + m_comment + QString("\"")
-          << "-o" << QString("\"") + m_fn + QString("\"");
+          << "--comment" << QString("\"%1\"").arg(m_comment)
+          << "-o" << QString("\"%1\"").arg(m_fn);
       QValueList<QCString>::Iterator it;
       for(it = m_recipient.begin(); it != m_recipient.end(); ++it)
-        args << "-r" << QCString("\"") + *it + QCString("\"");
+        args << "-r" << QString("\"%1\"").arg(*it);
 
       // some versions of GPG had trouble to replace a file
       // so we delete it first
@@ -173,7 +173,9 @@ bool KGPGFile::open(int mode, const QString& cmdArgs, bool skipPasswd)
       args << "-da";
       if(useOwnPassphrase)
         args << "--passphrase-fd" << "0";
-      args << "--no-default-recipient" << QString("\"") + m_fn + QString("\"");
+      else
+        args << "--use-agent";
+      args << "--no-default-recipient" << QString("\"%1\"").arg(m_fn);
     }
   } else {
     args = QStringList::split(" ", cmdArgs);
