@@ -126,17 +126,19 @@ private:
     class TCell: public MyMoneyMoney
     {
     public:
-      TCell() : m_stockSplit(MyMoneyMoney(1,1)) {};
-      TCell(const MyMoneyMoney& value) : MyMoneyMoney(value), m_stockSplit(MyMoneyMoney(1,1)) {}
+      TCell() : m_stockSplit(MyMoneyMoney(1,1)), m_cellUsed(false) {};
+      TCell(const MyMoneyMoney& value) : MyMoneyMoney(value), m_stockSplit(MyMoneyMoney(1,1)), m_cellUsed(false) {}
       static TCell stockSplit(const MyMoneyMoney& factor);
       TCell operator += (const TCell& right);
       TCell operator += (const MyMoneyMoney& value);
       const QString formatMoney(const QString& currency = QString(), const int prec = 2, bool showThousandSeparator = true) const;
       MyMoneyMoney calculateRunningSum(const MyMoneyMoney& runningSum);
       MyMoneyMoney cellBalance(const MyMoneyMoney& _balance);
+      bool isUsed(void) const { return m_cellUsed; }
     private:
       MyMoneyMoney m_stockSplit;
       MyMoneyMoney m_postSplit;
+      bool m_cellUsed;
     };
     class TGridRow: public QValueList<TCell>
     {

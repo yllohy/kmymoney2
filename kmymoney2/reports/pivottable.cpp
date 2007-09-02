@@ -161,11 +161,13 @@ PivotTable::TCell PivotTable::TCell::operator += (const TCell& right)
   m_postSplit = m_postSplit * right.m_stockSplit;
   m_stockSplit = m_stockSplit * right.m_stockSplit;
   m_postSplit += right.m_postSplit;
+  m_cellUsed |= right.m_cellUsed;
   return *this;
 }
 
 PivotTable::TCell PivotTable::TCell::operator += (const MyMoneyMoney& value)
 {
+  m_cellUsed |= !value.isZero();
   if(m_stockSplit != MyMoneyMoney(1,1))
     m_postSplit += value;
   else
@@ -1347,8 +1349,11 @@ QString PivotTable::renderCSV( void ) const
 
         QString rowdata;
         unsigned column = 1;
-        while ( column < m_numColumns )
+        bool isUsed = it_row.data()[0].isUsed();
+        while ( column < m_numColumns ) {
+          isUsed |= it_row.data()[column].isUsed();
           rowdata += QString(",\"%1\"").arg(it_row.data()[column++].formatMoney());
+        }
 
         if ( m_config_f.isShowingRowTotals() )
           rowdata += QString(",\"%1\"").arg((*it_row).m_total.formatMoney());
@@ -1358,22 +1363,22 @@ QString PivotTable::renderCSV( void ) const
         //
 
         ReportAccount rowname = it_row.key();
+        if(!rowname.isClosed() || isUsed) {
+          innergroupdata += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
 
-        innergroupdata += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
+          // if we don't convert the currencies to the base currency and the
+          // current row contains a foreign currency, then we append the currency
+          // to the name of the account
+          if (!m_config_f.isConvertCurrency() && rowname.isForeignCurrency() )
+            innergroupdata += QString(" (%1)").arg(rowname.currencyId());
 
-        // if we don't convert the currencies to the base currency and the
-        // current row contains a foreign currency, then we append the currency
-        // to the name of the account
-        if (!m_config_f.isConvertCurrency() && rowname.isForeignCurrency() )
-          innergroupdata += QString(" (%1)").arg(rowname.currencyId());
+          innergroupdata += "\"";
 
-        innergroupdata += "\"";
+          if ( ! (*it_row).m_total.isZero() )
+            innergroupdata += rowdata;
 
-        if ( ! (*it_row).m_total.isZero() )
-          innergroupdata += rowdata;
-
-        innergroupdata += "\n";
-
+          innergroupdata += "\n";
+        }
         ++it_row;
       }
 
@@ -1382,6 +1387,8 @@ QString PivotTable::renderCSV( void ) const
       //
 
       bool finishrow = true;
+      QString finalRow;
+      bool isUsed = false;
       if ( m_config_f.isShowingSubAccounts() && ((*it_innergroup).size() > 1 ))
       {
         // Print the individual rows
@@ -1390,37 +1397,49 @@ QString PivotTable::renderCSV( void ) const
         if ( m_config_f.isShowingColumnTotals() )
         {
           // Start the TOTALS row
-          result += i18n("Total");
+          finalRow = i18n("Total");
+          isUsed = true;
         }
         else
+        {
+          ++rownum;
           finishrow = false;
+        }
       }
       else
       {
         // Start the single INDIVIDUAL ACCOUNT row
         ReportAccount rowname = (*it_innergroup).begin().key();
+        isUsed |= !rowname.isClosed();
 
-        result += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
+        finalRow = "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
         if (!m_config_f.isConvertCurrency() && rowname.isForeignCurrency() )
-          result += QString(" (%1)").arg(rowname.currencyId());
-        result += "\"";
-
+          finalRow += QString(" (%1)").arg(rowname.currencyId());
+        finalRow += "\"";
       }
 
       // Finish the row started above, unless told not to
       if ( finishrow )
       {
         unsigned column = 1;
+        isUsed |= (*it_innergroup).m_total[0].isUsed();
         while ( column < m_numColumns )
-          result += QString(",\"%1\"").arg((*it_innergroup).m_total[column++].formatMoney());
+        {
+          isUsed |= (*it_innergroup).m_total[column].isUsed();
+          finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[column++].formatMoney());
+        }
 
         if (  m_config_f.isShowingRowTotals() )
-          result += QString(",\"%1\"").arg((*it_innergroup).m_total.m_total.formatMoney());
+          finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total.m_total.formatMoney());
 
-        result += "\n";
+        finalRow += "\n";
       }
 
-      ++rownum;
+      if(isUsed)
+      {
+        result += finalRow;
+        ++rownum;
+      }
       ++it_innergroup;
     }
 
@@ -1970,11 +1989,12 @@ QString PivotTable::renderHTML( void ) const
 
             QString rowdata;
             unsigned column = 1;
+            bool isUsed = it_row.data()[0].isUsed();
             while ( column < m_numColumns )
             {
               if ( m_config_f.isIncludingBudgetActuals() )
                 rowdata += QString("<td>%1</td>").arg(it_row.data().m_budget[column].formatMoney());
-
+              isUsed |= it_row.data()[column].isUsed();
               rowdata += QString("<td>%1</td>").arg(it_row.data()[column++].formatMoney());
             }
 
@@ -1992,21 +2012,24 @@ QString PivotTable::renderHTML( void ) const
 
             ReportAccount rowname = it_row.key();
 
-            innergroupdata += QString("<tr class=\"row-%1\"%2><td%3 class=\"left\" style=\"text-indent: %4.0em\">%5%6</td>")
-              .arg(rownum & 0x01 ? "even" : "odd")
-              .arg(rowname.isTopLevel() ? " id=\"topparent\"" : "")
-              .arg("") //.arg((*it_row).m_total.isZero() ? colspan : "")  // colspan the distance if this row will be blank
-              .arg(rowname.hierarchyDepth() - 1)
-              .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
-              .arg((m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
+            // don't show closed accounts if they have not been used
+            if(!rowname.isClosed() || isUsed) {
+              innergroupdata += QString("<tr class=\"row-%1\"%2><td%3 class=\"left\" style=\"text-indent: %4.0em\">%5%6</td>")
+                .arg(rownum & 0x01 ? "even" : "odd")
+                .arg(rowname.isTopLevel() ? " id=\"topparent\"" : "")
+                .arg("") //.arg((*it_row).m_total.isZero() ? colspan : "")  // colspan the distance if this row will be blank
+                .arg(rowname.hierarchyDepth() - 1)
+                .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
+                .arg((m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
 
-            // Don't print this row if it's going to be all zeros
-            // TODO: Uncomment this, and deal with the case where the data
-            // is zero, but the budget is non-zero
-            //if ( !(*it_row).m_total.isZero() )
+              // Don't print this row if it's going to be all zeros
+              // TODO: Uncomment this, and deal with the case where the data
+              // is zero, but the budget is non-zero
+              //if ( !(*it_row).m_total.isZero() )
               innergroupdata += rowdata;
 
-            innergroupdata += "</tr>\n";
+              innergroupdata += "</tr>\n";
+            }
 
             ++it_row;
           }
@@ -2016,6 +2039,8 @@ QString PivotTable::renderHTML( void ) const
           //
 
           bool finishrow = true;
+          QString finalRow;
+          bool isUsed = false;
           if ( m_config_f.isShowingSubAccounts() && ((*it_innergroup).size() > 1 ))
           {
             // Print the individual rows
@@ -2024,12 +2049,15 @@ QString PivotTable::renderHTML( void ) const
             if ( m_config_f.isShowingColumnTotals() )
             {
               // Start the TOTALS row
-              result += QString("<tr class=\"row-%1\" id=\"subtotal\"><td class=\"left\">&nbsp;&nbsp;%2</td>")
+              finalRow = QString("<tr class=\"row-%1\" id=\"subtotal\"><td class=\"left\">&nbsp;&nbsp;%2</td>")
                 .arg(rownum & 0x01 ? "even" : "odd")
                 .arg(i18n("Total"));
+              // don't suppress display of totals
+              isUsed = true;
             }
             else
               finishrow = false;
+              ++rownum;
           }
           else
           {
@@ -2041,7 +2069,8 @@ QString PivotTable::renderHTML( void ) const
             // FIXED: I found it in one of my reports and changed it to the proposed method.
             // This works for me (ipwizard)
             ReportAccount rowname = (*it_innergroup).begin().key();
-            result += QString("<tr class=\"row-%1\"%2><td class=\"left\" style=\"text-indent: %3.0em;\">%5%6</td>")
+            isUsed |= !rowname.isClosed();
+            finalRow = QString("<tr class=\"row-%1\"%2><td class=\"left\" style=\"text-indent: %3.0em;\">%5%6</td>")
               .arg(rownum & 0x01 ? "even" : "odd")
               .arg( m_config_f.isShowingSubAccounts() ? "id=\"solo\"" : "" )
               .arg(rowname.hierarchyDepth() - 1)
@@ -2053,25 +2082,29 @@ QString PivotTable::renderHTML( void ) const
           if ( finishrow )
           {
             unsigned column = 1;
+            isUsed |= (*it_innergroup).m_total[0].isUsed();
             while ( column < m_numColumns )
             {
               if ( m_config_f.isIncludingBudgetActuals() )
-                result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_budget[column].formatMoney());
-
-              result += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
+                finalRow += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_budget[column].formatMoney());
+              isUsed |= (*it_innergroup).m_total[column].isUsed();
+              finalRow += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
             }
 
             if (  m_config_f.isShowingRowTotals() )
             {
               if ( m_config_f.isIncludingBudgetActuals() )
-                result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_budget.m_total.formatMoney());
-              result += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_total.formatMoney());
+                finalRow += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_budget.m_total.formatMoney());
+              finalRow += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_total.formatMoney());
             }
 
-            result += "</tr>\n";
+            finalRow += "</tr>\n";
+            if(isUsed) {
+              result += finalRow;
+              ++rownum;
+            }
           }
 
-          ++rownum;
           ++it_innergroup;
 
         } // end while iterating on the inner groups

@@ -1,3 +1,6 @@
+2007-09-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Obey closed accounts in pivot table based reports
+
 2007-09-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed display of first row in investment transaction form
   * Use alternate background in the investment view
