@@ -656,18 +656,20 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
   AccountSet aSet;
 
   // load the account widget
-  KMyMoneyCategory* account = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["account"]);
-  aSet.addAccountGroup(MyMoneyAccount::Asset);
-  aSet.addAccountGroup(MyMoneyAccount::Liability);
-  aSet.removeAccountType(MyMoneyAccount::AssetLoan);
-  aSet.removeAccountType(MyMoneyAccount::CertificateDep);
-  aSet.removeAccountType(MyMoneyAccount::Investment);
-  aSet.removeAccountType(MyMoneyAccount::Stock);
-  aSet.removeAccountType(MyMoneyAccount::MoneyMarket);
-  aSet.removeAccountType(MyMoneyAccount::Loan);
-  aSet.load(account->selector());
-  account->completion()->setSelected(m_account.id());
-  account->slotItemSelected(m_account.id());
+  KMyMoneyCategory* account = dynamic_cast<KMyMoneyCategory*>(haveWidget("account"));
+  if(account) {
+    aSet.addAccountGroup(MyMoneyAccount::Asset);
+    aSet.addAccountGroup(MyMoneyAccount::Liability);
+    aSet.removeAccountType(MyMoneyAccount::AssetLoan);
+    aSet.removeAccountType(MyMoneyAccount::CertificateDep);
+    aSet.removeAccountType(MyMoneyAccount::Investment);
+    aSet.removeAccountType(MyMoneyAccount::Stock);
+    aSet.removeAccountType(MyMoneyAccount::MoneyMarket);
+    aSet.removeAccountType(MyMoneyAccount::Loan);
+    aSet.load(account->selector());
+    account->completion()->setSelected(m_account.id());
+    account->slotItemSelected(m_account.id());
+  }
 
   // load the payee widget
   KMyMoneyPayeeCombo* payee = dynamic_cast<KMyMoneyPayeeCombo*>(m_editWidgets["payee"]);

@@ -1,3 +1,7 @@
+2007-09-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed crash when editing splits w/o transaction form. Thanks to
+    Michael Aichler for tracking it down.
+
 2007-09-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Obey closed accounts in pivot table based reports
 
