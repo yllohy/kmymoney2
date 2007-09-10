@@ -51,6 +51,8 @@ class MyMoneyTransactionTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testAutoCalc);
 	CPPUNIT_TEST(testHasReferenceTo);
 	CPPUNIT_TEST(testIsStockSplit);
+	CPPUNIT_TEST(testAddMissingAccountId);
+	CPPUNIT_TEST(testModifyMissingAccountId);
 #if 0
 	CPPUNIT_TEST(testAddDuplicateAccount);
 	CPPUNIT_TEST(testModifyDuplicateAccount);
@@ -86,5 +88,7 @@ public:
 	void testAutoCalc();
 	void testHasReferenceTo();
 	void testIsStockSplit();
+	void testAddMissingAccountId();
+	void testModifyMissingAccountId();
 };
 #endif

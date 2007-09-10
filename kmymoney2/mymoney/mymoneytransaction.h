@@ -142,7 +142,8 @@ public:
 
   /**
     * This method is used to add a split to the transaction. The split
-    * will be assigned an id. The id member must be empty.
+    * will be assigned an id. The id member must be empty and the
+    * accountId member must be filled.
     *
     * @param split reference to the split that should be added
     *

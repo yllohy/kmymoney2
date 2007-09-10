@@ -513,7 +513,34 @@ void MyMoneyTransactionTest::testIsStockSplit()
 	MyMoneySplit s;
 	s.setShares(MyMoneyMoney(1,2));
 	s.setAction(MyMoneySplit::ActionSplitShares);
+	s.setAccountId("A0001");
 	m->addSplit(s);
 	CPPUNIT_ASSERT(m->isStockSplit() == true);
+}
+
+void MyMoneyTransactionTest::testAddMissingAccountId()
+{
+	MyMoneySplit s;
+	s.setShares(MyMoneyMoney(1,2));
+	try {
+		m->addSplit(s);
+		CPPUNIT_FAIL("Missing expected exception");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
+}
+
+void MyMoneyTransactionTest::testModifyMissingAccountId()
+{
+	testAddSplits();
+	MyMoneySplit s = m->splits()[0];
+	s.setAccountId(QCString());
+
+	try {
+		m->modifySplit(s);
+		CPPUNIT_FAIL("Missing expected exception");
+	} catch(MyMoneyException *e) {
+		delete e;
+	}
 }
 

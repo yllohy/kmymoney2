@@ -70,7 +70,10 @@ MyMoneyTransaction::MyMoneyTransaction(const QDomElement& node, const bool force
     nodeList = nodeList.item(0).toElement().elementsByTagName("SPLIT");
     for(unsigned int i = 0; i < nodeList.count(); ++i) {
       MyMoneySplit s(nodeList.item(i).toElement());
-      addSplit(s);
+      if(!s.accountId().isEmpty())
+        addSplit(s);
+      else
+        qDebug("Dropped split because it had account id");
     }
   }
 }
@@ -121,6 +124,9 @@ void MyMoneyTransaction::addSplit(MyMoneySplit& split)
   }
 */
 
+  if(split.accountId().isEmpty())
+    throw new MYMONEYEXCEPTION("Cannot add split that does not contain an account reference");
+
   MyMoneySplit newSplit(nextSplitID(), split);
   split = newSplit;
   split.setTransactionId(id());
@@ -162,6 +168,9 @@ void MyMoneyTransaction::modifySplit(MyMoneySplit& split)
 
 // This is the other version which allows having more splits referencing
 // the same account.
+  if(split.accountId().isEmpty())
+    throw new MYMONEYEXCEPTION("Cannot modify split that does not contain an account reference");
+
   QValueList<MyMoneySplit>::Iterator it;
   for(it = m_splits.begin(); it != m_splits.end(); ++it) {
     if(split.id() == (*it).id()) {
