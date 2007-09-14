@@ -312,7 +312,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     if((*it_s).isFinished())
       s << "  Next payment = payment finished" << "\n";
     else {
-      s << "  Next payment = " << (*it_s).nextPayment().toString(Qt::ISODate) << "\n";
+      s << "  Next payment = " << (*it_s).nextDueDate().toString(Qt::ISODate) << "\n";
       if((*it_s).isOverdue())
       s << "               = overdue!" << "\n";
     }

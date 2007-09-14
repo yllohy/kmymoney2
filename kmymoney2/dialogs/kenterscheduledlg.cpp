@@ -44,6 +44,7 @@
 #include <kmymoney/kmymoneylineedit.h>
 #include <kmymoney/kmymoneycategory.h>
 #include <kmymoney/kmymoneyaccountselector.h>
+#include <kmymoney/kmymoneydateinput.h>
 
 #include "../kmymoney2.h"
 
@@ -89,7 +90,6 @@ KEnterScheduleDlg::KEnterScheduleDlg(QWidget *parent, const MyMoneySchedule& sch
 
   m_form->slotSetTransaction(d->m_item);
 
-
   // no need to see the tabbar
   tabbar->hide();
 
@@ -109,14 +109,10 @@ KEnterScheduleDlg::~KEnterScheduleDlg()
 MyMoneyTransaction KEnterScheduleDlg::transaction(void)
 {
   MyMoneyTransaction t = d->m_schedule.transaction();
-  QDate dueDate;
 
   try {
     if (d->m_schedule.type() == MyMoneySchedule::TYPE_LOANPAYMENT) {
       KMyMoneyUtils::calculateAutoLoan(d->m_schedule, t, QMap<QCString, MyMoneyMoney>());
-
-    } else {
-      dueDate = date(d->m_schedule.nextPayment(d->m_schedule.lastPayment()));
     }
   } catch (MyMoneyException* e) {
     KMessageBox::detailedError(this, i18n("Unable to load schedule details"), e->what());
@@ -125,7 +121,6 @@ MyMoneyTransaction KEnterScheduleDlg::transaction(void)
 
   t.clearId();
   t.setEntryDate(QDate());
-  t.setPostDate(dueDate);
   return t;
 }
 
@@ -231,6 +226,13 @@ TransactionEditor* KEnterScheduleDlg::startEdit(void)
     QWidget* focusWidget = editor->firstWidget();
     if(!focusWidget)
       focusWidget = d->m_tabOrderWidgets.first();
+    focusWidget->setFocus();
+
+    // Make sure, we use the adjusted date
+    kMyMoneyDateInput* dateEdit = dynamic_cast<kMyMoneyDateInput*>(editor->haveWidget("postdate"));
+    if(dateEdit) {
+      dateEdit->setDate(d->m_schedule.adjustedNextDueDate());
+    }
   }
 
   return editor;

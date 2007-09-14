@@ -551,6 +551,9 @@ bool Transaction::haveNumberField(void) const
 
     case MyMoneyAccount::Checkings:
     case MyMoneyAccount::CreditCard:
+    // the next case is used for the editor when the account
+    // is unknown (eg. when creating new schedules)
+    case MyMoneyAccount::UnknownAccountType:
       break;
 
     default:
@@ -1140,12 +1143,15 @@ void StdTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidgets)
   arrangeWidget(m_form, 1, ValueColumn1, editWidgets["payee"]);
   arrangeWidget(m_form, 2, ValueColumn1, editWidgets["category"]->parentWidget());
   arrangeWidget(m_form, 3, ValueColumn1, editWidgets["memo"]);
-  if(haveNumberField())
+  if(haveNumberField()) {
+    arrangeWidget(m_form, 1, LabelColumn2, editWidgets["number-label"]);
     arrangeWidget(m_form, 1, ValueColumn2, editWidgets["number"]);
+  }
+  arrangeWidget(m_form, 2, LabelColumn2, editWidgets["date-label"]);
   arrangeWidget(m_form, 2, ValueColumn2, editWidgets["postdate"]);
   arrangeWidget(m_form, 3, ValueColumn2, editWidgets["amount"]);
   arrangeWidget(m_form, 5, ValueColumn2, editWidgets["status"]);
-  arrangeWidget(m_form, 2, LabelColumn1, editWidgets["categoryLabel"]);
+  arrangeWidget(m_form, 2, LabelColumn1, editWidgets["category-label"]);
 
   // get rid of the hints. we don't need them for the form
   QMap<QString, QWidget*>::iterator it;
@@ -1171,6 +1177,9 @@ void StdTransaction::arrangeWidgetsInForm(QMap<QString, QWidget*>& editWidgets)
 
 void StdTransaction::tabOrderInForm(QWidgetList& tabOrderWidgets) const
 {
+  // account
+  tabOrderWidgets.append(focusWidget(m_form->cellWidget(0, ValueColumn1)));
+
   // cashflow direction
   tabOrderWidgets.append(focusWidget(m_form->cellWidget(1, LabelColumn1)));
   // payee
@@ -1197,8 +1206,6 @@ void StdTransaction::tabOrderInForm(QWidgetList& tabOrderWidgets) const
   tabOrderWidgets.append(focusWidget(m_form->cellWidget(3, ValueColumn2)));
   // state
   tabOrderWidgets.append(focusWidget(m_form->cellWidget(5, ValueColumn2)));
-  // account
-  tabOrderWidgets.append(focusWidget(m_form->cellWidget(0, ValueColumn1)));
 }
 
 void StdTransaction::arrangeWidgetsInRegister(QMap<QString, QWidget*>& editWidgets)

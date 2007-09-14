@@ -105,7 +105,7 @@
 #include "dialogs/knewfiledlg.h"
 #include "dialogs/kselectdatabasedlg.h"
 #include "dialogs/kcurrencycalculator.h"
-#include "dialogs/ieditscheduledialog.h"
+#include "dialogs/keditscheduledlg.h"
 #include "dialogs/knewloanwizard.h"
 #include "dialogs/keditloanwizard.h"
 #include "dialogs/kpayeereassigndlg.h"
@@ -418,9 +418,7 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("Online price update..."), "", 0, this, SLOT(slotOnlinePriceUpdate()), actionCollection(), "investment_online_price_update");
   new KAction(i18n("Manual price update..."), "", 0, this, SLOT(slotManualPriceUpdate()), actionCollection(), "investment_manual_price_update");
 
-  new KAction(i18n("New bill..."), "", 0, this, SLOT(slotScheduleNewBill()), actionCollection(), "schedule_new_bill");
-  new KAction(i18n("New deposit..."), "", 0, this, SLOT(slotScheduleNewDeposit()), actionCollection(), "schedule_new_deposit");
-  new KAction(i18n("New transfer..."), "", 0, this, SLOT(slotScheduleNewTransfer()), actionCollection(), "schedule_new_transfer");
+  new KAction(i18n("New schedule..."), "", 0, this, SLOT(slotScheduleNew()), actionCollection(), "schedule_new");
   new KAction(i18n("Edit schedule..."), "edit", 0, this, SLOT(slotScheduleEdit()), actionCollection(), "schedule_edit");
   new KAction(i18n("Delete schedule..."), "delete", 0, this, SLOT(slotScheduleDelete()), actionCollection(), "schedule_delete");
   new KAction(i18n("Enter schedule..."), "", 0, this, SLOT(slotScheduleEnter()), actionCollection(), "schedule_enter");
@@ -3326,42 +3324,43 @@ void KMyMoney2App::slotAccountTransactionReport(void)
   }
 }
 
-void KMyMoney2App::scheduleNew(const QCString& scheduleType)
+void KMyMoney2App::slotScheduleNew(void)
+{
+  MyMoneyTransaction t;
+  scheduleNew(t);
+}
+
+void KMyMoney2App::scheduleNew(const MyMoneyTransaction& _t)
 {
   MyMoneySchedule schedule;
   schedule.setOccurence(MyMoneySchedule::OCCUR_MONTHLY);
 
-  KEditScheduleDialog dlg(scheduleType, schedule, this);
-  connect(&dlg, SIGNAL(createCategory(const QString&, QCString&)), this, SLOT(slotCategoryNew(const QString&, QCString&)));
-  connect(&dlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
+  // if the schedule is based on an existing transaction,
+  // we take the post date and project it to the next
+  // schedule in a month.
+  if(!_t.id().isEmpty()) {
+    MyMoneyTransaction t(_t);
+    t.setPostDate(schedule.nextPayment(t.postDate()));
+    schedule.setTransaction(t);
+  }
 
-  if (dlg.exec() == QDialog::Accepted) {
-    schedule = dlg.schedule();
-    MyMoneyFileTransaction ft;
-    try {
-      MyMoneyFile::instance()->addSchedule(schedule);
-      ft.commit();
+  KEditScheduleDlg dlg(schedule, this);
+  m_transactionEditor = dlg.startEdit();
+  if(m_transactionEditor) {
+    if(dlg.exec() == QDialog::Accepted) {
+      MyMoneyFileTransaction ft;
+      try {
+        schedule = dlg.schedule();
+        MyMoneyFile::instance()->addSchedule(schedule);
+        ft.commit();
 
-    } catch (MyMoneyException *e) {
-      KMessageBox::error(this, i18n("Unable to add schedule: %1").arg(e->what()), i18n("Add schedule"));
-      delete e;
+      } catch (MyMoneyException *e) {
+        KMessageBox::error(this, i18n("Unable to add schedule: %1").arg(e->what()), i18n("Add schedule"));
+        delete e;
+      }
     }
   }
-}
-
-void KMyMoney2App::slotScheduleNewBill(void)
-{
-  scheduleNew(MyMoneySplit::ActionCheck);
-}
-
-void KMyMoney2App::slotScheduleNewDeposit(void)
-{
-  scheduleNew(MyMoneySplit::ActionDeposit);
-}
-
-void KMyMoney2App::slotScheduleNewTransfer(void)
-{
-  scheduleNew(MyMoneySplit::ActionTransfer);
+  deleteTransactionEditor();
 }
 
 void KMyMoney2App::slotScheduleEdit(void)
@@ -3370,26 +3369,7 @@ void KMyMoney2App::slotScheduleEdit(void)
     try {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
 
-      const char *action = 0;
-      switch (schedule.type()) {
-        case MyMoneySchedule::TYPE_BILL:
-          action = MyMoneySplit::ActionWithdrawal;
-          break;
-
-        case MyMoneySchedule::TYPE_DEPOSIT:
-          action = MyMoneySplit::ActionDeposit;
-          break;
-
-        case MyMoneySchedule::TYPE_TRANSFER:
-          action = MyMoneySplit::ActionTransfer;
-          break;
-
-        case MyMoneySchedule::TYPE_LOANPAYMENT:
-        case MyMoneySchedule::TYPE_ANY:
-          break;
-      }
-
-      KEditScheduleDialog* sched_dlg = 0;
+      KEditScheduleDlg* sched_dlg = 0;
       KEditLoanWizard* loan_wiz = 0;
 
       MyMoneyFileTransaction ft;
@@ -3398,14 +3378,16 @@ void KMyMoney2App::slotScheduleEdit(void)
         case MyMoneySchedule::TYPE_BILL:
         case MyMoneySchedule::TYPE_DEPOSIT:
         case MyMoneySchedule::TYPE_TRANSFER:
-          sched_dlg = new KEditScheduleDialog(action, schedule, this);
-          connect(sched_dlg, SIGNAL(createCategory(const QString&, QCString&)), this, SLOT(slotCategoryNew(const QString&, QCString&)));
-          connect(sched_dlg, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
+          sched_dlg = new KEditScheduleDlg(schedule, this);
+          m_transactionEditor = sched_dlg->startEdit();
+          if(m_transactionEditor) {
+            if(sched_dlg->exec() == QDialog::Accepted) {
 
-          if (sched_dlg->exec() == QDialog::Accepted) {
-            MyMoneySchedule sched = sched_dlg->schedule();
-            MyMoneyFile::instance()->modifySchedule(sched);
+              MyMoneySchedule sched = sched_dlg->schedule();
+              MyMoneyFile::instance()->modifySchedule(sched);
+            }
           }
+          deleteTransactionEditor();
           delete sched_dlg;
           break;
 
@@ -3459,19 +3441,24 @@ void KMyMoney2App::slotScheduleDelete(void)
 void KMyMoney2App::slotScheduleSkip(void)
 {
   if (!m_selectedSchedule.id().isEmpty()) {
-    MyMoneyFileTransaction ft;
     try {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(m_selectedSchedule.id());
       if(!schedule.isFinished()) {
-        QDate next = schedule.nextPayment(schedule.lastPayment());
-        if(next.isValid() && (KMessageBox::questionYesNo(this, QString("<p>")+i18n("Do you really want to skip the transaction of schedule <b>%1</b> on <b>%2</b>?").arg(schedule.name()).arg(KGlobal::locale()->formatDate(next, true)))) == KMessageBox::Yes) {
-          schedule.setLastPayment(next);
-          MyMoneyFile::instance()->modifySchedule(schedule);
+        if(!schedule.isFinished()) {
+          if(schedule.occurence() != MyMoneySchedule::OCCUR_ONCE) {
+            QDate next = schedule.nextDueDate();
+            if(!schedule.isFinished() && (KMessageBox::questionYesNo(this, QString("<qt>")+i18n("Do you really want to skip the transaction of schedule <b>%1</b> on <b>%2</b>?").arg(schedule.name(), KGlobal::locale()->formatDate(next, true))+QString("</qt>"))) == KMessageBox::Yes) {
+              MyMoneyFileTransaction ft;
+              schedule.setLastPayment(next);
+              schedule.setNextDueDate(schedule.nextPayment(next));
+              MyMoneyFile::instance()->modifySchedule(schedule);
+              ft.commit();
+            }
+          }
         }
       }
-      ft.commit();
     } catch (MyMoneyException *e) {
-      KMessageBox::detailedSorry(this, QString("<p>")+i18n("Unable to skip schedule <b>%1</b>").arg(m_selectedSchedule.name()), e->what());
+      KMessageBox::detailedSorry(this, QString("<qt>")+i18n("Unable to skip schedule <b>%1</b>.").arg(m_selectedSchedule.name())+QString("</qt>"), e->what());
       delete e;
     }
   }
@@ -3496,6 +3483,7 @@ bool KMyMoney2App::enterSchedule(MyMoneySchedule& schedule, bool autoEnter)
   if (!schedule.id().isEmpty()) {
     try {
       schedule = MyMoneyFile::instance()->schedule(schedule.id());
+      QDate origDueDate = schedule.nextDueDate();
 
       KEnterScheduleDlg dlg(this, schedule);
       m_transactionEditor = dlg.startEdit();
@@ -3564,7 +3552,11 @@ bool KMyMoney2App::enterSchedule(MyMoneySchedule& schedule, bool autoEnter)
 
             QCString newId;
             if(m_transactionEditor->enterTransactions(newId)) {
-              schedule.setLastPayment(schedule.nextPayment(schedule.lastPayment()));
+              if(!newId.isEmpty()) {
+                MyMoneyTransaction t = MyMoneyFile::instance()->transaction(newId);
+                schedule.setLastPayment(t.postDate());
+              }
+              schedule.setNextDueDate(schedule.nextPayment(origDueDate));
               MyMoneyFile::instance()->modifySchedule(schedule);
               rc = true;
               ft.commit();
@@ -4288,7 +4280,8 @@ void KMyMoney2App::slotTransactionGotoPayee(void)
 
 void KMyMoney2App::slotTransactionCreateSchedule(void)
 {
-  qDebug("KMyMoney2App::slotTransactionCreateSchedule not yet implementated");
+  if(m_selectedTransactions.count() == 1)
+    scheduleNew(m_selectedTransactions[0].transaction());
 }
 
 void KMyMoney2App::slotTransactionAssignNumber(void)
@@ -4791,8 +4784,6 @@ void KMyMoney2App::slotUpdateActions(void)
       }
       action("transaction_accept")->setEnabled(haveImportedTransactionSelected());
       action("transaction_duplicate")->setEnabled(true);
-      // TODO once the feature is available just uncomment the following line
-      // action("transaction_create_schedule")->setEnabled(true);
       action("transaction_mark_cleared")->setEnabled(true);
       action("transaction_mark_reconciled")->setEnabled(true);
       action("transaction_mark_notreconciled")->setEnabled(true);
@@ -4801,6 +4792,7 @@ void KMyMoney2App::slotUpdateActions(void)
         w = factory()->container("transaction_move_menu", this);
         if(w)
           w->setEnabled(true);
+        action("transaction_create_schedule")->setEnabled(m_selectedTransactions.count() == 1);
       }
       if(m_selectedTransactions.count() > 1) {
         action("transaction_combine")->setEnabled(true);
@@ -4897,7 +4889,10 @@ void KMyMoney2App::slotUpdateActions(void)
     action("schedule_delete")->setEnabled(!file->isReferenced(m_selectedSchedule));
     if(!m_selectedSchedule.isFinished()) {
       action("schedule_enter")->setEnabled(true);
-      action("schedule_skip")->setEnabled(true);
+      // a schedule with a single occurence cannot be skipped
+      if(m_selectedSchedule.occurence() != MyMoneySchedule::OCCUR_ONCE) {
+        action("schedule_skip")->setEnabled(true);
+      }
     }
   }
 
@@ -5140,7 +5135,7 @@ void KMyMoney2App::slotCheckSchedules(void)
 
       if(schedule.autoEnter()) {
         try {
-          while ((schedule.nextPayment(schedule.lastPayment()) <= checkDate) && !schedule.isFinished()) {
+          while(!schedule.isFinished() && (schedule.nextDueDate() <= checkDate)) {
             if(!enterSchedule(schedule, true)) {
               // the user has selected to stop processing this schedule
               break;

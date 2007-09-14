@@ -1203,7 +1203,9 @@ void Register::resize(int col)
 
 void Register::adjustColumn(int col)
 {
-#ifndef KMM_DESIGNER
+#ifdef KMM_DESIGNER
+  Q_UNUSED(col)
+#else
   QString msg = "%1 adjusting column %2";
   ::timetrace((msg.arg("Start").arg(col)).data());
   QHeader *topHeader = horizontalHeader();

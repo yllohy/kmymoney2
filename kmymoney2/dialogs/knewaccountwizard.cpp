@@ -56,7 +56,6 @@
 
 #include "../kmymoneyutils.h"
 
-#include "ieditscheduledialog.h"
 #include "knewaccountwizard.h"
 #include "knewloanwizard.h"
 #include "kcurrencyeditdlg.h"
@@ -345,11 +344,12 @@ void KNewAccountWizard::accept()
                                    MyMoneySchedule::TYPE_TRANSFER,
                                    MyMoneySchedule::OCCUR_MONTHLY,
                                    paymentType,
-                                   m_date->date(),
+                                   QDate(),
                                    QDate(),
                                    false,
                                    false);
 
+    t.setPostDate(m_date->date());
     m_schedule.setTransaction(t);
   }
 

@@ -1,3 +1,13 @@
+2007-09-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Overhauled schedule editor
+  * Store the next due date of a schedule as the post date of the
+    transaction object within the schedule
+  * Improved MyMoneyBudget API (use references where possibly)
+  * Added testcase to test the next due date adjustment according to the
+    selected weekend option
+  * Added feature to create schedule based on existing transaction
+  * Don't allow 'skip transaction' for schedules with frequency 'once'
+
 2007-09-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem with loading a split w/o account id
   * Don't allow to add/modify a split w/o account id

@@ -142,7 +142,7 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
       setText(4, i18n("Finished"));
     }
     else
-      setText(4, schedule.nextPayment(schedule.lastPayment()).toString());
+      setText(4, schedule.nextDueDate().toString());
 
     setText(5, KMyMoneyUtils::occurenceToString(schedule.occurence()));
     setText(6, KMyMoneyUtils::paymentMethodToString(schedule.paymentType()));

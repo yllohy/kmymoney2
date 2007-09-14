@@ -657,7 +657,7 @@ void KMyMoneyUtils::calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTr
         // current implementation: take the date of the next payment according to
         // the schedule. If the calculation is based on the payment reception, and
         // the payment is overdue then take the current date
-        dueDate = schedule.nextPayment(schedule.lastPayment());
+        dueDate = schedule.nextDueDate();
         if(acc.interestCalculation() == MyMoneyAccountLoan::paymentReceived) {
           if(dueDate < QDate::currentDate())
             dueDate = QDate::currentDate();

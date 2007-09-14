@@ -1228,7 +1228,7 @@ void MyMoneyStorageSql::writeSchedule(const MyMoneySchedule& sch, MyMoneySqlQuer
     q.bindValue(":autoEnter", "N");
   }
   q.bindValue(":lastPayment", sch.lastPayment());
-  q.bindValue(":nextPaymentDue", sch.nextPayment(sch.lastPayment()));
+  q.bindValue(":nextPaymentDue", sch.nextDueDate());
   q.bindValue(":weekendOption", sch.weekendOption());
   q.bindValue(":weekendOptionString", ""); // weekendOptionToString?
   if (!q.exec()) throw buildError (q, __func__, QString("writing Schedules"));

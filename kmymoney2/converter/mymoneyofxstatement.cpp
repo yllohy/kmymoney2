@@ -77,7 +77,7 @@ MyMoneyOfxStatement::~MyMoneyOfxStatement()
 // program should not construct MMOS objects without one of these
 // defined.
 #ifndef USE_OFX_DIRECTCONNECT
-MyMoneyOfxStatement::MyMoneyOfxStatement(const QString&): m_valid(false) 
+MyMoneyOfxStatement::MyMoneyOfxStatement(const QString&): m_valid(false)
 {
 }
 #endif

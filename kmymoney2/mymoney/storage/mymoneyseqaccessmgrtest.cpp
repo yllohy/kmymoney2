@@ -1133,10 +1133,11 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 				 MyMoneySchedule::TYPE_DEPOSIT,
 				 MyMoneySchedule::OCCUR_DAILY,
 				 MyMoneySchedule::STYPE_MANUALDEPOSIT,
-				 QDate(2003,7,10),
+				 QDate(),
 				 QDate(),
 				 true,
 				 false);
+	t1.setPostDate(QDate(2003,7,10));
 	schedule.setTransaction(t1);
 
 		m->addSchedule(schedule);
@@ -1154,7 +1155,7 @@ void MyMoneySeqAccessMgrTest::testAddSchedule() {
 					 MyMoneySchedule::TYPE_DEPOSIT,
 					 MyMoneySchedule::OCCUR_DAILY,
 					 MyMoneySchedule::STYPE_MANUALDEPOSIT,
-					 QDate(2003,7,10),
+					 QDate(),
 					 QDate(),
 					 true,
 					 false);
@@ -1248,10 +1249,11 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 MyMoneySchedule::TYPE_BILL,
 				 MyMoneySchedule::OCCUR_ONCE,
 				 MyMoneySchedule::STYPE_DIRECTDEBIT,
-				 notOverdue,
+				 QDate(),
 				 QDate(),
 				 false,
 				 false);
+	t1.setPostDate(notOverdue);
 	schedule1.setTransaction(t1);
 	schedule1.setLastPayment(notOverdue);
 
@@ -1265,10 +1267,11 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 MyMoneySchedule::TYPE_DEPOSIT,
 				 MyMoneySchedule::OCCUR_DAILY,
 				 MyMoneySchedule::STYPE_DIRECTDEPOSIT,
-				 notOverdue.addDays(1),
+				 QDate(),
 				 QDate(),
 				 false,
 				 false);
+	t2.setPostDate(notOverdue.addDays(1));
 	schedule2.setTransaction(t2);
 	schedule2.setLastPayment(notOverdue.addDays(1));
 
@@ -1282,10 +1285,11 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 MyMoneySchedule::TYPE_TRANSFER,
 				 MyMoneySchedule::OCCUR_WEEKLY,
 				 MyMoneySchedule::STYPE_OTHER,
-				 notOverdue.addDays(2),
+				 QDate(),
 				 QDate(),
 				 false,
 				 false);
+	t3.setPostDate(notOverdue.addDays(2));
 	schedule3.setTransaction(t3);
 	schedule3.setLastPayment(notOverdue.addDays(2));
 
@@ -1299,10 +1303,11 @@ void MyMoneySeqAccessMgrTest::testScheduleList() {
 				 MyMoneySchedule::TYPE_BILL,
 				 MyMoneySchedule::OCCUR_WEEKLY,
 				 MyMoneySchedule::STYPE_WRITECHEQUE,
-				 overdue.addDays(-7),
+				 QDate(),
 				 notOverdue.addDays(31),
 				 false,
 				 false);
+	t4.setPostDate(overdue.addDays(-7));
 	schedule4.setTransaction(t4);
 
 	try {

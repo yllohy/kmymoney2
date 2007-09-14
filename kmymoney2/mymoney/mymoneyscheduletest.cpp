@@ -61,7 +61,7 @@ void MyMoneyScheduleTest::testConstructor() {
 	CPPUNIT_ASSERT(s.type() == MyMoneySchedule::TYPE_BILL);
 	CPPUNIT_ASSERT(s.occurence() == MyMoneySchedule::OCCUR_WEEKLY);
 	CPPUNIT_ASSERT(s.paymentType() == MyMoneySchedule::STYPE_DIRECTDEBIT);
-	CPPUNIT_ASSERT(s.startDate() == QDate::currentDate());
+	CPPUNIT_ASSERT(s.startDate() == QDate());
 	CPPUNIT_ASSERT(s.willEnd() == false);
 	CPPUNIT_ASSERT(s.isFixed() == true);
 	CPPUNIT_ASSERT(s.autoEnter() == true);
@@ -245,7 +245,7 @@ void MyMoneyScheduleTest::testOverdue()
 		"  <PAYMENTS>\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
-		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		"  <TRANSACTION postdate=\"\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"\" >\n"
 		"   <SPLITS>\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
@@ -743,7 +743,7 @@ void MyMoneyScheduleTest::testReadXML() {
 	try {
 		sch = MyMoneySchedule(node);
 		CPPUNIT_ASSERT(sch.id() == "SCH0002");
-		CPPUNIT_ASSERT(sch.transaction().postDate() == QDate(2001,12,28));
+		CPPUNIT_ASSERT(sch.nextDueDate() == QDate::currentDate().addDays(7));
 		CPPUNIT_ASSERT(sch.startDate() == QDate::currentDate());
 		CPPUNIT_ASSERT(sch.endDate() == QDate());
 		CPPUNIT_ASSERT(sch.autoEnter() == true);
@@ -804,5 +804,40 @@ void MyMoneyScheduleTest::testHasReferenceTo()
 	CPPUNIT_ASSERT(sch.hasReferenceTo("A000276") == true);
 	CPPUNIT_ASSERT(sch.hasReferenceTo("A000076") == true);
 	CPPUNIT_ASSERT(sch.hasReferenceTo("EUR") == true);
+}
+
+void MyMoneyScheduleTest::testAdjustedNextDueDate()
+{
+	MyMoneySchedule s;
+
+	QDate dueDate(2007,9,3); // start on a monday
+	for(int i = 0; i < 7; ++i) {
+		s.setNextDueDate(dueDate);
+		s.setWeekendOption(MyMoneySchedule::MoveNothing);
+		CPPUNIT_ASSERT(s.adjustedNextDueDate() == dueDate);
+
+		s.setWeekendOption(MyMoneySchedule::MoveFriday);
+		switch(i) {
+		    case 5: // saturday
+		    case 6: // sunday
+			break;
+			CPPUNIT_ASSERT(s.adjustedNextDueDate() == QDate(2007,9,7));
+		    default:
+			CPPUNIT_ASSERT(s.adjustedNextDueDate() == dueDate);
+			break;
+		}
+
+		s.setWeekendOption(MyMoneySchedule::MoveMonday);
+		switch(i) {
+		    case 5: // saturday
+		    case 6: // sunday
+			CPPUNIT_ASSERT(s.adjustedNextDueDate() == QDate(2007,9,10));
+			break;
+		    default:
+			CPPUNIT_ASSERT(s.adjustedNextDueDate() == dueDate);
+			break;
+		}
+		dueDate = dueDate.addDays(1);
+	}
 }
 

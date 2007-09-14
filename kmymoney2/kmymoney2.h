@@ -639,6 +639,11 @@ protected:
     */
   bool enterSchedule(MyMoneySchedule& s, bool autoEnter = false);
 
+  /**
+    * This slot collects information for a new scheduled transaction
+    * based on transaction @a t and saves it in the engine
+    */
+  void scheduleNew(const MyMoneyTransaction& t);
 
 public slots:
   void slotFileInfoDialog(void);
@@ -899,22 +904,10 @@ public slots:
   void slotShowCurrencyContextMenu(void);
 
   /**
-    * This slot collects information for a new schedule transaction (bill)
-    * and saves it in the engine
+    * This slot collects information for a new scheduled transaction
+    * and saves it in the engine. @sa scheduleNew(const MyMoneyTransaction&)
     */
-  void slotScheduleNewBill(void);
-
-  /**
-    * This slot collects information for a new schedule transaction (deposit)
-    * and saves it in the engine
-    */
-  void slotScheduleNewDeposit(void);
-
-  /**
-    * This slot collects information for a new schedule transaction (transfer)
-    * and saves it in the engine
-    */
-  void slotScheduleNewTransfer(void);
+  void slotScheduleNew(void);
 
   /**
     * This slot allows to edit information the currently selected schedule
@@ -990,7 +983,7 @@ private:
     */
   bool isReady(void);
 
-  void scheduleNew(const QCString& scheduleType);
+  void scheduleNew(MyMoneySchedule::typeE scheduleType);
 
   /**
     * Delete a possibly existing transaction editor but make sure to remove

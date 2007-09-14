@@ -72,7 +72,7 @@ public:
 
   /**
     * This constructor creates an object based on the data found in the
-    * MyMoneyBudget budget object. 
+    * MyMoneyBudget budget object.
     */
   MyMoneyBudget(const QCString& id, const MyMoneyBudget& budget);
 
@@ -97,8 +97,8 @@ public:
     const MyMoneyMoney& amount( void ) const { return m_amount; }
 
     // set functions
-    void setDate  ( QDate _start )         {m_start  = _start; }
-    void setAmount( MyMoneyMoney _amount ) {m_amount = _amount;}
+    void setDate  ( const QDate& _start )         {m_start  = _start; }
+    void setAmount( const MyMoneyMoney& _amount ) {m_amount = _amount;}
   };
 
   /**
@@ -113,7 +113,7 @@ public:
   public:
     typedef enum
     {
-	    eNone = 0,
+      eNone = 0,
       eMonthly,
       eMonthByMonth,
       eYearly,
@@ -141,7 +141,7 @@ public:
     bool getDefault( void ) const {return m_default;}
     const PeriodGroup& getPeriod( const QDate &_date ) const {return m_periods[_date];}
     const QMap<QDate, PeriodGroup>& getPeriods( void ) const {return m_periods;}
-    const MyMoneyMoney balance( void ) const 
+    const MyMoneyMoney balance( void ) const
     {
       MyMoneyMoney balance;
 
@@ -155,11 +155,11 @@ public:
 
     // set functions
     void setId( QString _id ) {m_id = _id;}
-    void setParentId( QString _id ) {m_parentId = _id;}
+    void setParentId( const QString& _id ) {m_parentId = _id;}
     void setBudgetLevel( eBudgetLevel _level ) {m_budgetlevel = _level;}
     void setDefault( bool _default ) {m_default = _default;}
     void setBudgetSubaccounts( bool _b ) {m_budgetsubaccounts = _b;}
-    void addPeriod( QDate _date, PeriodGroup &period ) {m_periods[_date] = period;}
+    void addPeriod( const QDate& _date, PeriodGroup &period ) {m_periods[_date] = period;}
   };
 
   // Simple get operations
@@ -173,7 +173,6 @@ public:
   // Simple set operations
   void setName(const QString& _name) { m_name = _name; }
   void setBudgetStart(const QDate& _start) { m_start = _start; }
-  void setId(const QCString& _id) {m_id = _id;}
   void setAccount(const AccountGroup &_account, const QCString _id) {m_accounts[_id] = _account;}
 
   /**
@@ -234,7 +233,7 @@ private:
     * Map the budgeted accounts
     *
     * Each account Id is stored against the AccountGroup information
-    * 
+    *
     */
   QMap<QCString, AccountGroup> m_accounts;
 };

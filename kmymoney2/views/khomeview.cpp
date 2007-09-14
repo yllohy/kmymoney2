@@ -346,7 +346,9 @@ void KHomeView::showPayments(void)
   QValueList<MyMoneySchedule>::Iterator d_it;
   for (d_it=schedule.begin(); d_it!=schedule.end();)
   {
-    if ((*d_it).isFinished() || (*d_it).nextPayment((*d_it).lastPayment()) == QDate())
+    // FIXME cleanup old code
+    // if ((*d_it).isFinished() || (*d_it).nextPayment((*d_it).lastPayment()) == QDate())
+    if ((*d_it).isFinished())
     {
       d_it = schedule.remove(d_it);
       continue;
@@ -356,7 +358,9 @@ void KHomeView::showPayments(void)
 
   for (d_it=overdues.begin(); d_it!=overdues.end();)
   {
-    if ((*d_it).isFinished() || (*d_it).nextPayment((*d_it).lastPayment()) == QDate())
+    // FIXME cleanup old code
+    // if ((*d_it).isFinished() || (*d_it).nextPayment((*d_it).lastPayment()) == QDate())
+    if ((*d_it).isFinished())
     {
       d_it = overdues.remove(d_it);
       continue;
@@ -377,7 +381,7 @@ void KHomeView::showPayments(void)
     m_part->write(QString("<tr><th class=\"warning\" colspan=\"3\">%1</th></tr>\n").arg(i18n("Overdue payments")));
     for(it = overdues.begin(); it != overdues.end(); ++it) {
       // determine number of overdue payments
-      QDate nextDate = (*it).nextPayment((*it).lastPayment());
+      QDate nextDate = (*it).nextDueDate();
       int cnt = 0;
       while(nextDate.isValid() && nextDate < QDate::currentDate()) {
         ++cnt;
@@ -411,10 +415,10 @@ void KHomeView::showPayments(void)
     QValueList<MyMoneySchedule>::Iterator t_it;
     for (t_it=schedule.begin(); t_it!=schedule.end();)
     {
-      if ((*t_it).nextPayment((*t_it).lastPayment()) == QDate::currentDate())
+      if ((*t_it).nextDueDate() == QDate::currentDate())
       {
         todays.append(*t_it);
-        (*t_it).setLastPayment((*t_it).nextPayment((*t_it).lastPayment()));
+        (*t_it).setNextDueDate((*t_it).nextPayment((*t_it).nextDueDate()));
       }
       ++t_it;
     }
@@ -454,7 +458,7 @@ void KHomeView::showPayments(void)
         if(it == schedule.end())
           break;
 
-        QDate nextDate = (*it).nextPayment((*it).lastPayment());
+        QDate nextDate = (*it).nextDueDate();
         if(!nextDate.isValid()) {
           schedule.remove(it);
           continue;
@@ -474,7 +478,7 @@ void KHomeView::showPayments(void)
         showPaymentEntry(*it);
         m_part->write("</tr>");
 
-        (*it).setLastPayment((*it).nextPayment((*it).lastPayment()));
+        (*it).setNextDueDate((*it).nextPayment((*it).nextDueDate()));
         qBubbleSort(schedule);
       }
       while(1);
@@ -499,11 +503,13 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched, int cnt)
     if(acc.id()) {
       MyMoneyTransaction t = sched.transaction();
       // only show the entry, if it is still active
-      if(!sched.isFinished() && sched.nextPayment(sched.lastPayment()) != QDate()) {
+      // FIXME clean old code
+      // if(!sched.isFinished() && sched.nextPayment(sched.lastPayment()) != QDate()) {
+      if(!sched.isFinished()) {
         MyMoneySplit sp = t.splitByAccount(acc.id(), true);
 
         tmp = QString("<td width=\"20%\">") +
-          KGlobal::locale()->formatDate(sched.nextPayment(sched.lastPayment()), true) +
+          KGlobal::locale()->formatDate(sched.nextDueDate(), true) +
           "</td><td width=\"70%\">" +
           link(VIEW_SCHEDULE, QString("?id=%1").arg(sched.id())) + sched.name() + linkend();
         if(cnt > 1)
@@ -824,7 +830,7 @@ void KHomeView::showScheduleBasedForecast(void)
       if(it == schedule.end())
         break;
 
-      QDate nextDate = (*it).nextPayment((*it).lastPayment());
+      QDate nextDate = (*it).nextDueDate();
       if(!nextDate.isValid()) {
         schedule.remove(it);
         continue;
@@ -885,7 +891,7 @@ void KHomeView::showScheduleBasedForecast(void)
               ++txnCount;
             }
           }
-          (*it).setLastPayment(nextDate);
+          (*it).setNextDueDate((*it).nextPayment(nextDate));
 
         } catch(MyMoneyException* e) {
           kdDebug(2) << __func__ << " Schedule " << (*it).id() << " (" << (*it).name() << "): " << e->what() << endl;

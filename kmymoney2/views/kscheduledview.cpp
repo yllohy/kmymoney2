@@ -77,11 +77,7 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   m_qlistviewScheduled->setSorting(-1);
   m_qlistviewScheduled->setColumnAlignment(3, Qt::AlignRight);
 
-  // attach popup to 'New schedule ...' button
-  QWidget* w = kmymoney2->factory()->container("schedule_create_menu", kmymoney2);
-  QPopupMenu *menu = dynamic_cast<QPopupMenu*>(w);
-  if(menu)
-    m_qbuttonNew->setPopup(menu);
+  connect(m_qbuttonNew, SIGNAL(clicked()), kmymoney2->action("schedule_new"), SLOT(activate()));
 
   // attach popup to 'Filter...' button
   m_kaccPopup = new KPopupMenu(this);
@@ -384,7 +380,7 @@ void KScheduledView::slotListItemExecuted(QListViewItem* item, const QPoint&, in
     {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(scheduleId);
 
-      m_calendar->setDate(schedule.nextPayment(schedule.lastPayment()));
+      m_calendar->setDate(schedule.nextDueDate());
       m_tabWidget->showPage(calendarTab);
       m_selectedSchedule = schedule.id();
     }

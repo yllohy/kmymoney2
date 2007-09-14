@@ -1095,12 +1095,14 @@ const MyMoneySchedule KNewLoanWizard::schedule() const
                         MyMoneySchedule::TYPE_LOANPAYMENT,
                         KMyMoneyUtils::stringToOccurence(m_paymentFrequencyUnitEdit->currentText()),
                         MyMoneySchedule::STYPE_OTHER,
-                        m_nextDueDateEdit->date(),
+                        QDate(),
                         QDate(),
                         false,
                         false);
 
-  sched.setTransaction(transaction());
+  MyMoneyTransaction t = transaction();
+  t.setPostDate(m_nextDueDateEdit->date());
+  sched.setTransaction(t);
 
   return sched;
 }

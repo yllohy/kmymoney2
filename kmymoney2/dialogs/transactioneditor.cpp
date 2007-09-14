@@ -618,7 +618,9 @@ void StdTransactionEditor::createEditWidgets(void)
     cashflow->removeDontCare();
   }
 
-  m_editWidgets["categoryLabel"] = new QLabel(i18n("Category"), 0);
+  QLabel* label;
+  m_editWidgets["category-label"] = label = new QLabel(i18n("Category"), 0);
+  label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
 
   // create a copy of tabbar above the form (if we are created for a form)
   KMyMoneyTransactionForm::TransactionForm* form = dynamic_cast<KMyMoneyTransactionForm::TransactionForm*>(m_regForm);
@@ -628,6 +630,14 @@ void StdTransactionEditor::createEditWidgets(void)
     tabbar->copyTabs(form->tabBar());
     connect(tabbar, SIGNAL(tabSelected(int)), this, SLOT(slotUpdateAction(int)));
   }
+
+  label = new QLabel("Date", 0);
+  label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
+  m_editWidgets["date-label"] = label;
+
+  label = new QLabel("Number", 0);
+  label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
+  m_editWidgets["number-label"] = label;
 }
 
 void StdTransactionEditor::setupCategoryWidget(QCString& categoryId)
@@ -751,7 +761,7 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
       cashflow->setDirection(m_split.value().isNegative() ? KMyMoneyRegister::Payment : KMyMoneyRegister::Deposit);
     }
 
-    if((w = haveWidget("categoryLabel")) != 0) {
+    if((w = haveWidget("category-label")) != 0) {
       QLabel *categoryLabel = dynamic_cast<QLabel*>(w);
       if(isTransfer(m_split.accountId(), categoryId)) {
         if(m_split.value().isPositive())
@@ -780,7 +790,7 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
 
     // try to preset for specific action if a new transaction is being started
     if(m_transaction.id().isEmpty()) {
-      if((w = haveWidget("categoryLabel")) != 0) {
+      if((w = haveWidget("category-label")) != 0) {
         TabBar* tabbar = dynamic_cast<TabBar*>(haveWidget("tabbar"));
         if(action == KMyMoneyRegister::ActionNone) {
           if(tabbar) {
@@ -1048,7 +1058,7 @@ void StdTransactionEditor::slotUpdateAction(int action)
 {
   TabBar* tabbar = dynamic_cast<TabBar*>(haveWidget("tabbar"));
   if(tabbar) {
-    QLabel* categoryLabel = dynamic_cast<QLabel*>(haveWidget("categoryLabel"));
+    QLabel* categoryLabel = dynamic_cast<QLabel*>(haveWidget("category-label"));
     KMyMoneyCashFlowCombo* cashflow = dynamic_cast<KMyMoneyCashFlowCombo*>(m_editWidgets["cashflow"]);
     switch(action) {
       case KMyMoneyRegister::ActionDeposit:
@@ -1069,7 +1079,7 @@ void StdTransactionEditor::slotUpdateAction(int action)
 
 void StdTransactionEditor::slotUpdateCashFlow(KMyMoneyRegister::CashFlowDirection dir)
 {
-  QLabel* categoryLabel = dynamic_cast<QLabel*>(haveWidget("categoryLabel"));
+  QLabel* categoryLabel = dynamic_cast<QLabel*>(haveWidget("category-label"));
 
   // qDebug("Update cashflow to %d", dir);
   if(categoryLabel) {
@@ -1092,7 +1102,7 @@ void StdTransactionEditor::slotUpdateCashFlow(KMyMoneyRegister::CashFlowDirectio
 
 void StdTransactionEditor::slotUpdateCategory(const QCString& id)
 {
-  QLabel *categoryLabel = dynamic_cast<QLabel*>(haveWidget("categoryLabel"));
+  QLabel *categoryLabel = dynamic_cast<QLabel*>(haveWidget("category-label"));
   // qDebug("Update category to %s", id.data());
 
   if(categoryLabel) {
@@ -1177,7 +1187,7 @@ void StdTransactionEditor::slotUpdateAmount(const QString& txt)
 
 void StdTransactionEditor::updateAmount(const MyMoneyMoney& val)
 {
-  QLabel *categoryLabel = dynamic_cast<QLabel*>(haveWidget("categoryLabel"));
+  QLabel *categoryLabel = dynamic_cast<QLabel*>(haveWidget("category-label"));
   if(categoryLabel) {
     KMyMoneyCashFlowCombo* cashflow = dynamic_cast<KMyMoneyCashFlowCombo*>(m_editWidgets["cashflow"]);
 

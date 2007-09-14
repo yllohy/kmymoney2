@@ -2,12 +2,9 @@
                           mymoneyscheduled.h
                              -------------------
     copyright            : (C) 2000-2002 by Michael Edwardes
+                           (C) 2007 by Thomas Baumgart
     email                : mte@users.sourceforge.net
-                           Javier Campos Morales <javi_c@users.sourceforge.net>
-                           Felix Rodriguez <frodriguez@users.sourceforge.net>
-                           John C <thetacoturtle@users.sourceforge.net>
                            Thomas Baumgart <ipwizard@users.sourceforge.net>
-                           Kevin Tambascio <ktambascio@users.sourceforge.net>
  ***************************************************************************/
 
 /***************************************************************************
@@ -97,9 +94,11 @@ public:
     *
     * Please note that the optional fields are not set and the transaction
     * MUST be set before it can be used.
+    *
+    * @a startDate is not used anymore and internally set to QDate()
     */
   MyMoneySchedule(const QString& name, typeE type, occurenceE occurence, paymentTypeE paymentType,
-        const QDate& startDate, const QDate& endDate, bool fixed, bool autoEnter);
+          const QDate& startDate, const QDate& endDate, bool fixed, bool autoEnter);
 
   MyMoneySchedule(const QDomElement& node);
 
@@ -125,11 +124,14 @@ public:
   typeE type(void) const { return m_type; }
 
   /**
-    * Simple get method that returns the schedule startDate.
+    * Simple get method that returns the schedule startDate. If
+    * the schedule has been executed once, the date of the first
+    * execution is returned. Otherwise, the next due date is
+    * returned.
     *
-    * @return QDate The instance startDate.
+    * @return reference to QDate containing the start date.
     */
-  const QDate& startDate(void) const { return m_startDate; }
+  const QDate& startDate(void) const;
 
   /**
     * Simple get method that returns the schedule paymentType.
@@ -183,11 +185,35 @@ public:
   const MyMoneyTransaction& transaction(void) const { return m_transaction; }
 
   /**
-    * Simple method that returns the schedule last payment.
+    * Simple method that returns the schedules last payment. If the
+    * schedule has never been executed, QDate() will be returned.
     *
-    * @return QDate The last payment for the instance.
+    * @return QDate The last payment for the schedule.
     */
   const QDate& lastPayment(void) const { return m_lastPayment; }
+
+  /**
+    * Simple method that returns the next due date for the schedule.
+    *
+    * @return reference to QDate containing the next due date.
+    *
+    * @note The date returned can represent a value that is past
+    *       a possible end of the schedule. Make sure to consider
+    *       the return value of isFinished() when using the value returned.
+    */
+  const QDate& nextDueDate(void) const;
+
+  /**
+    * This method adjusts returns the next due date adjusted
+    * according to the rules specified by the schedule's weekend option.
+    *
+    * @return QDate containing the adjusted next due date. If the
+    *         schedule is finished (@sa isFinished()) then the method
+    *         returns an invalid QDate.
+    *
+    * @sa weekendOption()
+    */
+  QDate adjustedNextDueDate(void) const;
 
   /**
     * Get the weekendOption that determines how the schedule check code
@@ -239,6 +265,8 @@ public:
 
   /**
     * Simple method that sets the transaction for the schedule.
+    * The transaction must have a valid postDate set, otherwise
+    * it will not be accepted.
     *
     * @param transaction The new transaction.
     * @return none
@@ -264,9 +292,21 @@ public:
   void setAutoEnter(bool autoenter);
 
   /**
-    * Simple set method to set the schedule's last payment.
+    * Simple set method to set the schedule's next payment date.
     *
-    * @param date The instances last payment date.
+    * @param date The next payment date.
+    * @return none
+    */
+  void setNextDueDate(const QDate& date);
+
+  /**
+    * Simple set method to set the schedule's last payment. If
+    * this method is called for the first time on the object,
+    * the @a m_startDate member will be set to @a date as well.
+    *
+    * This method should be called whenever a schedule is entered or skipped.
+    *
+    * @param date The last payment date.
     * @return none
     */
   void setLastPayment(const QDate& date);

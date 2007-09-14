@@ -54,7 +54,7 @@ email                : mte@users.sourceforge.net
   #include "../mymoney/mymoneyprice.h"
   #include "../dialogs/kgncimportoptionsdlg.h"
   #include "../dialogs/kgncpricesourcedlg.h"
-  #include "../dialogs/ieditscheduledialog.h"
+  #include "../dialogs/keditscheduledlg.h"
   #include "../widgets/kmymoneyedit.h"
   #define TRY try {
   #define CATCH } catch (MyMoneyException *e) {
@@ -1868,7 +1868,7 @@ void MyMoneyGncReader::terminate () {
                     QMessageBox::NoButton);
     switch (mb.exec()) {
     case QMessageBox::Yes:
-        KEditScheduleDialog *s = new  KEditScheduleDialog (sc.transaction().splits()[0].action(), sc, 0, "");
+        KEditScheduleDlg *s = new KEditScheduleDlg (sc);
         // FIXME: connect newCategory to something useful, so that we
         // can create categories from within the dialog
         if (s->exec())
