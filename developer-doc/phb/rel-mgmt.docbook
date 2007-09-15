@@ -68,7 +68,10 @@ In the TLD, check file configure.in.in for the correct version number. A line ne
 <para>
 Verify the libtool version number
 </para>
-<para>Visit all subdirectories that contain a shared library (in the TLD, issue the command 'find .|egrep .so$') and check whether the code or interface of the shared library has been changed since the last release. If so, modify the LIBVERSION setting in each Makefile.am according to the following recipe, where the LIBVERSION setting controls the libtool versioning system for shared libraries. It is constructed out of the triplet CURRENT:REVISION:AGE.
+<para>Visit all subdirectories that contain a shared library. In the TLD, issue the command
+<programlisting>find . -name Makefile.am -exec grep -H LIBVERSION= '{}' \;</programlisting>
+(Note that the space before the backslash is necessary.)
+For each match, check whether the code or interface of the shared library has been changed since the last release. If so, modify the LIBVERSION setting in each Makefile.am according to the following recipe, where the LIBVERSION setting controls the libtool versioning system for shared libraries. It is constructed out of the triplet CURRENT:REVISION:AGE.
 </para>
 <para>
   <orderedlist>
@@ -111,7 +114,7 @@ From the TLD, issue the commands:
 </para>
 
 <programlisting>
-<prompt>thb: ~&gt; </prompt><userinput>make -f Makefile.dist</userinput>
+<prompt>thb: ~&gt; </prompt><userinput>make -f Makefile.dist release</userinput>
 <prompt>thb: ~&gt; </prompt><userinput>./configure <emphasis>&lt;any-options-you-need&gt;</emphasis></userinput>
 <prompt>thb: ~&gt; </prompt><userinput>make</userinput>
 </programlisting>
@@ -187,7 +190,7 @@ to the ChangeLog file.
 Commit changes to CVS
 </para>
 <para>
-Commit the pot file created above, and the updated ChangeLog file to the CVS repository before you proceed with the next step. Use the message 'Released x.y.z'.
+Commit the pot file created above, the updated ChangeLog file, and any Makefiles updated in step 4 to the CVS repository before you proceed with the next step. Use the message 'Released x.y.z'.
 </para>
 </listitem>
 
@@ -203,7 +206,7 @@ Tag the version on CVS
 <para>
 Update and optimize the size of the tar-ball
 </para>
-<para>As the content has changed since the tar-ball was created in step 4, we need to re-create it. Create a more compressed version using the command:
+<para>As the content has changed since the tar-ball was created in step 7, we need to re-create it. Create a more compressed version using the command:
 </para>
   <programlisting>
     <prompt>thb: ~&gt; </prompt><userinput>make dist-bzip2</userinput>
@@ -219,6 +222,8 @@ This can be done with the following command from the TLD
   <programlisting>
     <prompt>thb: ~&gt; </prompt><userinput>md5sum <emphasis>name-of-tarball.tar.bz2</emphasis> &gt;/home/me/somewheresafe</userinput>
   </programlisting>
+<para>This checksum may be used to verify downloaded files at a later stage, and may be added to sourceforge at some future time.
+</para>
 </listitem>
 
 <listitem>
@@ -283,19 +288,6 @@ https://sourceforge.net/project/admin/editpackages.php?group_id=4708
 </listitem>
 
 <listitem>
-<para>Check that the upload has worked successfully.
-</para>
-<para>Download a copy of the tarball from
-<programlisting>http://dl.sourceforge.net/sourceforge/kmymoney2/<emphasis>name-of-tarball.</emphasis>tar.bz2</programlisting>
-Save the file in a temp directory, then issue the command
-<programlisting>
-  <prompt>thb: </prompt><userinput>md5sum -c /home/me/somewheresafe &lt;<emphasis>temp-path-to-downloaded-tarball</emphasis></userinput>
-</programlisting>
-where the 'somewheresafe' file is that created in the 'Make a checksum' section above. This should report an OK situation. If not, repeat the previous 2 steps.
-</para>
-</listitem>
-
-<listitem>
 <para>
 Activate tarball on Sourceforge
 </para>
@@ -343,10 +335,23 @@ Make sure that you increase the project version to the next version. This is der
 
 <para>
 Make the appropriate changes to configure.in.in as described in paragraph 3 above.
-Then rebuild the application as descibed in paragraph 5.
+From the TLD, issue the commands:
+</para>
+
+<programlisting>
+<prompt>thb: ~&gt; </prompt><userinput>make -f Makefile.dist</userinput>
+<prompt>thb: ~&gt; </prompt><userinput>./configure <emphasis>&lt;any-options-you-need&gt;</emphasis></userinput>
+<prompt>thb: ~&gt; </prompt><userinput>make</userinput>
+</programlisting>
+<para>
+This will regenerate all files of the application and rebuild everything.
+</para>
+<para>
 Finally, check in the updated configure.in.in to the CVS repository.
 </para>
+
 </listitem>
+
 </orderedlist>
 
 <note>
