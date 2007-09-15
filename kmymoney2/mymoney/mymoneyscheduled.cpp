@@ -114,10 +114,18 @@ MyMoneySchedule::MyMoneySchedule(const QDomElement& node) :
     m_startDate = QDate();
   }
 
+  // There are reports that lastPayment and nextDueDate are identical. This could
+  // be caused by older versions of the application. In this case, we just
+  // clear out the nextDueDate and let it calculate from the lastPayment.
+  if(nextDueDate().isValid() && nextDueDate() == m_lastPayment) {
+    setNextDueDate(QDate());
+  }
+
   if(!nextDueDate().isValid()) {
     setNextDueDate(m_lastPayment);
     setNextDueDate(nextPayment(m_lastPayment.addDays(1)));
   }
+
 }
 
 MyMoneySchedule::MyMoneySchedule(const QCString& id, const MyMoneySchedule& right) :

@@ -4,6 +4,9 @@
 2007-09-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added feature to create schedule for new transactions with a postdate
     in the future
+  * Fixed endless loop caused by scheduled transactions with single occurence
+  * Fix a problem, if last payment and next due date of a schedule are
+    identical
 
 2007-09-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Overhauled schedule editor

@@ -891,7 +891,14 @@ void KHomeView::showScheduleBasedForecast(void)
               ++txnCount;
             }
           }
-          (*it).setNextDueDate((*it).nextPayment(nextDate));
+
+          // for a single occurence, we don't need to go any further
+          if((*it).occurence() != MyMoneySchedule::OCCUR_ONCE)
+            (*it).setNextDueDate((*it).nextPayment(nextDate));
+          else {
+            // remove schedule from list
+            schedule.remove(it);
+          }
 
         } catch(MyMoneyException* e) {
           kdDebug(2) << __func__ << " Schedule " << (*it).id() << " (" << (*it).name() << "): " << e->what() << endl;
