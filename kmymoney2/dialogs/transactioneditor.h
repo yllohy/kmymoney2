@@ -31,6 +31,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/mymoneyscheduled.h>
 #include <kmymoney/transactioneditorcontainer.h>
 #include <kmymoney/register.h>
 
@@ -217,6 +218,12 @@ signals:
     * @param date the post date of the newly created transaction
     */
   void lastPostDateUsed(const QDate& date);
+
+  /**
+    * This signal is sent out, if the user decides to schedule the transaction @a t
+    * rather then adding it to the ledger right away.
+    */
+  void scheduleTransaction(const MyMoneyTransaction& t, MyMoneySchedule::occurenceE occurence);
 
 protected:
   QValueList<MyMoneySplit>                          m_splits;

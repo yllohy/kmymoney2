@@ -451,6 +451,12 @@ protected slots:
 
   void slotUpdateMoveToAccountMenu(void);
 
+  /**
+    * This slot collects information for a new scheduled transaction
+    * based on transaction @a t and @a occurence and saves it in the engine.
+    */
+  void slotScheduleNew(const MyMoneyTransaction& t, MyMoneySchedule::occurenceE occurence = MyMoneySchedule::OCCUR_MONTHLY);
+
 public:
   /**
     * This method checks if there is at least one asset or liability account
@@ -638,12 +644,6 @@ protected:
     * the given schedule
     */
   bool enterSchedule(MyMoneySchedule& s, bool autoEnter = false);
-
-  /**
-    * This slot collects information for a new scheduled transaction
-    * based on transaction @a t and saves it in the engine
-    */
-  void scheduleNew(const MyMoneyTransaction& t);
 
 public slots:
   void slotFileInfoDialog(void);
@@ -905,7 +905,7 @@ public slots:
 
   /**
     * This slot collects information for a new scheduled transaction
-    * and saves it in the engine. @sa scheduleNew(const MyMoneyTransaction&)
+    * and saves it in the engine. @sa slotScheduleNew(const MyMoneyTransaction&)
     */
   void slotScheduleNew(void);
 
@@ -982,8 +982,6 @@ private:
     * @retval false application is active working on a longer operation
     */
   bool isReady(void);
-
-  void scheduleNew(MyMoneySchedule::typeE scheduleType);
 
   /**
     * Delete a possibly existing transaction editor but make sure to remove

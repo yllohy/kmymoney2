@@ -1,3 +1,7 @@
+2007-09-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added feature to create schedule for new transactions with a postdate
+    in the future
+
 2007-09-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Overhauled schedule editor
   * Store the next due date of a schedule as the post date of the

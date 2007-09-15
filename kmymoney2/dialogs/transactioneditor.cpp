@@ -27,12 +27,15 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kglobal.h>
 #include <ktextedit.h>
 #include <klocale.h>
 #include <kcombobox.h>
 #include <kpushbutton.h>
 #include <kmessagebox.h>
 #include <kstdguiitem.h>
+#include <kiconloader.h>
+#include <kguiitem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -468,23 +471,48 @@ bool TransactionEditor::enterTransactions(QCString& newId)
           (*it_ts).deletePair("Imported");
 
         if((*it_ts).id().isEmpty()) {
-          // add new transaction
-          file->addTransaction(*it_ts);
-          // pass the newly assigned id on to the caller
-          newId = (*it_ts).id();
-          // refresh account object for transactional changes
-          m_account = file->account(m_account.id());
+          bool enter = true;
+          if((*it_ts).postDate() > QDate::currentDate()) {
+            KGuiItem enterItem;
+            KIconLoader* il = KGlobal::iconLoader();
+            KGuiItem enterButton( i18n("&Enter" ),
+                    QIconSet(il->loadIcon("kontact_journal", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Accepts the entered data and stores it"),
+                    i18n("Use this to enter the transaction into the ledger."));
+            KGuiItem scheduleButton( i18n("&Schedule" ),
+                    QIconSet(il->loadIcon("kontact_date", KIcon::Small, KIcon::SizeSmall)),
+                    i18n("Accepts the entered data and stores it as schedule"),
+                    i18n("Use this to schedule the transaction for later entry into the ledger."));
 
-          // if a new transaction has a valid number, keep it with the account
-          QString number = (*it_ts).splits()[0].number();
-          if(!number.isEmpty()) {
-            m_account.setValue("lastNumberUsed", number);
-            file->modifyAccount(m_account);
+            enter = KMessageBox::questionYesNo(m_regForm, QString("<qt>%1</qt>").arg(i18n("The transaction you are about to enter has a post date in the future.<br/><br/>Do you want to enter it in the ledger or add it to the schedules?")), i18n("Dialog caption for 'Enter or schedule' dialog", "Enter or schedule?"), enterButton, scheduleButton, "EnterOrScheduleTransactionInFuture") == KMessageBox::Yes;
+          }
+          if(enter) {
+            // add new transaction
+            file->addTransaction(*it_ts);
+            // pass the newly assigned id on to the caller
+            newId = (*it_ts).id();
+            // refresh account object for transactional changes
+            m_account = file->account(m_account.id());
+
+            // if a new transaction has a valid number, keep it with the account
+            QString number = (*it_ts).splits()[0].number();
+            if(!number.isEmpty()) {
+              m_account.setValue("lastNumberUsed", number);
+              file->modifyAccount(m_account);
+            }
+
+          } else {
+            // turn object creation on, so that moving the focus does
+            // not screw up the dialog that might be popping up
+            emit objectCreation(true);
+            emit scheduleTransaction(*it_ts, MyMoneySchedule::OCCUR_ONCE);
+            emit objectCreation(false);
+
+            newTransactionCreated = false;
           }
 
           // send out the post date of this transaction
           emit lastPostDateUsed((*it_ts).postDate());
-
         } else {
           // modify existing transaction
           file->modifyTransaction(*it_ts);

@@ -3326,27 +3326,27 @@ void KMyMoney2App::slotAccountTransactionReport(void)
 
 void KMyMoney2App::slotScheduleNew(void)
 {
-  MyMoneyTransaction t;
-  scheduleNew(t);
+  slotScheduleNew(MyMoneyTransaction());
 }
 
-void KMyMoney2App::scheduleNew(const MyMoneyTransaction& _t)
+void KMyMoney2App::slotScheduleNew(const MyMoneyTransaction& _t, MyMoneySchedule::occurenceE occurence)
 {
   MyMoneySchedule schedule;
-  schedule.setOccurence(MyMoneySchedule::OCCUR_MONTHLY);
+  schedule.setOccurence(occurence);
 
   // if the schedule is based on an existing transaction,
   // we take the post date and project it to the next
   // schedule in a month.
-  if(!_t.id().isEmpty()) {
+  if(_t != MyMoneyTransaction()) {
     MyMoneyTransaction t(_t);
-    t.setPostDate(schedule.nextPayment(t.postDate()));
+    if(occurence != MyMoneySchedule::OCCUR_ONCE)
+      t.setPostDate(schedule.nextPayment(t.postDate()));
     schedule.setTransaction(t);
   }
 
   KEditScheduleDlg dlg(schedule, this);
-  m_transactionEditor = dlg.startEdit();
-  if(m_transactionEditor) {
+  TransactionEditor* transactionEditor = dlg.startEdit();
+  if(transactionEditor) {
     if(dlg.exec() == QDialog::Accepted) {
       MyMoneyFileTransaction ft;
       try {
@@ -3360,7 +3360,7 @@ void KMyMoney2App::scheduleNew(const MyMoneyTransaction& _t)
       }
     }
   }
-  deleteTransactionEditor();
+  delete transactionEditor;
 }
 
 void KMyMoney2App::slotScheduleEdit(void)
@@ -3968,6 +3968,7 @@ void KMyMoney2App::slotTransactionDuplicate(void)
     QString prevMsg = slotStatusMsg(i18n("Duplicating transactions"));
     slotStatusProgressBar(0, cnt);
     MyMoneyFileTransaction ft;
+    MyMoneyTransaction lt;
     try {
       for(it_t = list.begin(); it_t != list.end(); ++it_t) {
         MyMoneyTransaction t = (*it_t).transaction();
@@ -3984,9 +3985,15 @@ void KMyMoney2App::slotTransactionDuplicate(void)
         t.setPostDate(QDate::currentDate());
 
         MyMoneyFile::instance()->addTransaction(t);
+        lt = t;
         slotStatusProgressBar(i++, 0);
       }
       ft.commit();
+
+      // select the new transaction in the ledger
+      if(!m_selectedAccount.id().isEmpty())
+        myMoneyView->slotLedgerSelected(m_selectedAccount.id(), lt.id());
+
     } catch(MyMoneyException* e) {
       KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to duplicate transaction(s): %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
       delete e;
@@ -4030,6 +4037,7 @@ void KMyMoney2App::slotTransactionsNew(void)
       if(m_transactionEditor) {
         connect(m_transactionEditor, SIGNAL(statusProgress(int, int)), this, SLOT(slotStatusProgressBar(int, int)));
         connect(m_transactionEditor, SIGNAL(statusMsg(const QString&)), this, SLOT(slotStatusMsg(const QString&)));
+        connect(m_transactionEditor, SIGNAL(scheduleTransaction(const MyMoneyTransaction&, MyMoneySchedule::occurenceE)), this, SLOT(slotScheduleNew(const MyMoneyTransaction&, MyMoneySchedule::occurenceE)));
       }
       slotUpdateActions();
     }
@@ -4281,7 +4289,7 @@ void KMyMoney2App::slotTransactionGotoPayee(void)
 void KMyMoney2App::slotTransactionCreateSchedule(void)
 {
   if(m_selectedTransactions.count() == 1)
-    scheduleNew(m_selectedTransactions[0].transaction());
+    slotScheduleNew(m_selectedTransactions[0].transaction());
 }
 
 void KMyMoney2App::slotTransactionAssignNumber(void)
