@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KAccountsViewDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>693</width>
+            <width>697</width>
             <height>426</height>
         </rect>
     </property>
@@ -60,12 +60,61 @@
                         <cstring>unnamed</cstring>
                     </property>
                     <property name="margin">
-                        <number>0</number>
+                        <number>2</number>
                     </property>
                     <widget class="KMyMoneyAccountTree">
                         <property name="name">
                             <cstring>m_accountTree</cstring>
                         </property>
+                    </widget>
+                    <widget class="QLayoutWidget">
+                        <property name="name">
+                            <cstring>layout5</cstring>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="KPushButton">
+                                <property name="name">
+                                    <cstring>m_collapseButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Collapse all accounts in the list</string>
+                                </property>
+                            </widget>
+                            <widget class="KPushButton">
+                                <property name="name">
+                                    <cstring>m_expandButton</cstring>
+                                </property>
+                                <property name="text">
+                                    <string></string>
+                                </property>
+                                <property name="toolTip" stdset="0">
+                                    <string>Expand all accounts in the list</string>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer2</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>515</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </hbox>
                     </widget>
                 </vbox>
             </widget>
@@ -110,7 +159,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout2</cstring>
+                <cstring>layout4</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -128,7 +177,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>20</width>
+                            <width>367</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -159,5 +208,19 @@
         </widget>
     </vbox>
 </widget>
+<connections>
+    <connection>
+        <sender>m_expandButton</sender>
+        <signal>clicked()</signal>
+        <receiver>m_accountTree</receiver>
+        <slot>slotExpandAll()</slot>
+    </connection>
+    <connection>
+        <sender>m_collapseButton</sender>
+        <signal>clicked()</signal>
+        <receiver>m_accountTree</receiver>
+        <slot>slotCollapseAll()</slot>
+    </connection>
+</connections>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -24,12 +24,16 @@
 // QT Includes
 
 #include <qlabel.h>
+#include <qlayout.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
 #include <klocale.h>
 #include <kdebug.h>
+#include <kiconloader.h>
+#include <kguiitem.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -37,6 +41,7 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneyaccounttree.h>
 #include "kcategoriesview.h"
+#include "../widgets/klistviewsearchline.h"
 #include "../kmymoneyglobalsettings.h"
 #include "../kmymoney2.h"
 
@@ -47,6 +52,27 @@ KCategoriesView::KCategoriesView(QWidget *parent, const char *name ) :
   m_expenseItem(0),
   m_needReload(false)
 {
+  // create the searchline widget
+  // and insert it into the existing layout
+  KListViewSearchLineWidget* searchWidget = new KListViewSearchLineWidget(m_accountTree, m_accountTree->parentWidget());
+  QVBoxLayout* layout = dynamic_cast<QVBoxLayout*>(m_accountTree->parentWidget()->layout());
+  if(layout) {
+    layout->insertWidget(2, searchWidget);
+  }
+
+  // setup icons for collapse and expand button
+  KIconLoader *ic = KGlobal::iconLoader();
+  KGuiItem collapseGuiItem("",
+                          QIconSet(ic->loadIcon("viewmag-", KIcon::Small, KIcon::SizeSmall)),
+                          QString(),
+                          QString());
+  KGuiItem expandGuiItem("",
+                          QIconSet(ic->loadIcon("viewmag+", KIcon::Small, KIcon::SizeSmall)),
+                          QString(),
+                          QString());
+  m_collapseButton->setGuiItem(collapseGuiItem);
+  m_expandButton->setGuiItem(expandGuiItem);
+
   m_accountTree->setSectionHeader(KMyMoneyAccountTree::NameColumn, i18n("Category"));
 
   connect(m_accountTree, SIGNAL(selectObject(const MyMoneyObject&)), this, SIGNAL(selectObject(const MyMoneyObject&)));

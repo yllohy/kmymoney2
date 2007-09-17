@@ -835,5 +835,25 @@ void KMyMoneyAccountTreeItem::paintCell(QPainter *p, const QColorGroup & cg, int
   QListViewItem::paintCell(p, cg2, column, width, align);
 }
 
+void KMyMoneyAccountTree::expandCollapseAll(bool expand)
+{
+  QListViewItemIterator it(this);
+  QListViewItem* p;
+  while(p = it.current()) {
+    p->setOpen(expand);
+    ++it;
+  }
+}
+
+void KMyMoneyAccountTree::slotExpandAll(void)
+{
+  expandCollapseAll(true);
+}
+
+void KMyMoneyAccountTree::slotCollapseAll(void)
+{
+  expandCollapseAll(false);
+}
+
 #include "kmymoneyaccounttree.moc"
 // vim:cin:si:ai:et:ts=2:sw=2:

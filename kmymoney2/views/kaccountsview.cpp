@@ -20,6 +20,7 @@
 #include <qlabel.h>
 #include <qtabwidget.h>
 #include <qpixmap.h>
+#include <qlayout.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -28,6 +29,8 @@
 #include <klocale.h>
 #include <kiconloader.h>
 #include <kiconview.h>
+#include <kguiitem.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -35,6 +38,7 @@
 #include <kmymoney/mymoneyfile.h>
 #include "kaccountsview.h"
 #include "kmymoneyview.h"
+#include "../widgets/klistviewsearchline.h"
 #include "../kmymoneyglobalsettings.h"
 #include "../kmymoney2.h"
 
@@ -116,6 +120,27 @@ KAccountsView::KAccountsView(QWidget *parent, const char *name) :
   m_assetItem(0),
   m_liabilityItem(0)
 {
+  // create the searchline widget
+  // and insert it into the existing layout
+  KListViewSearchLineWidget* searchWidget = new KListViewSearchLineWidget(m_accountTree, m_accountTree->parentWidget());
+  QVBoxLayout* layout = dynamic_cast<QVBoxLayout*>(m_accountTree->parentWidget()->layout());
+  if(layout) {
+    layout->insertWidget(0, searchWidget);
+  }
+
+  // setup icons for collapse and expand button
+  KIconLoader *ic = KGlobal::iconLoader();
+  KGuiItem collapseGuiItem("",
+                          QIconSet(ic->loadIcon("viewmag-", KIcon::Small, KIcon::SizeSmall)),
+                          QString(),
+                          QString());
+  KGuiItem expandGuiItem("",
+                          QIconSet(ic->loadIcon("viewmag+", KIcon::Small, KIcon::SizeSmall)),
+                          QString(),
+                          QString());
+  m_collapseButton->setGuiItem(collapseGuiItem);
+  m_expandButton->setGuiItem(expandGuiItem);
+
   for(int i=0; i < MaxViewTabs; ++i)
     m_needReload[i] = false;
 

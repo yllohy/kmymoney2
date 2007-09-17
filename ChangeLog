@@ -1,5 +1,8 @@
 2007-09-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added functionality to help buttons in edit and enter schedule dialog
+  * Added quick search to accounts and categories view
+  * Added 'collapse all' and 'expand all' buttons to accounts
+    and categories view
 
 2007-09-15 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Update developer documentation

@@ -84,7 +84,8 @@ public slots:
   /** autoscroll support */
   void slotStartAutoScroll(void);
   void slotStopAutoScroll(void);
-
+  void slotExpandAll(void);
+  void slotCollapseAll(void);
 
 protected:
   virtual bool acceptDrag (QDropEvent* event) const;
@@ -129,6 +130,8 @@ protected:
    * The API is unaffected.
    */
   virtual void viewportPaintEvent(QPaintEvent*);
+
+  void expandCollapseAll(bool expand);
 
 protected slots:
   void slotObjectDropped(QDropEvent* event, QListViewItem* parent, QListViewItem* after);
