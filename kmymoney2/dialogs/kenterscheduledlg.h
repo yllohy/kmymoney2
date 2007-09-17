@@ -62,6 +62,7 @@ public slots:
 
 private slots:
   void slotSetupSize(void);
+  void slotShowHelp(void);
 
 private:
   KEnterScheduleDlgPrivate*  d;

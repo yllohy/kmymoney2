@@ -78,6 +78,7 @@ private slots:
   void slotEndDateChanged(const QDate& date);
   void slotSetPaymentMethod(int);
   void slotFrequencyChanged(int item);
+  void slotShowHelp(void);
 
 private:
   KEditScheduleDlgPrivate* d;

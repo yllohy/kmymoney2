@@ -97,6 +97,8 @@ KEnterScheduleDlg::KEnterScheduleDlg(QWidget *parent, const MyMoneySchedule& sch
   m_scheduleName->setText(d->m_schedule.name());
   m_type->setText(KMyMoneyUtils::scheduleTypeToString(d->m_schedule.type()));
 
+  connect(buttonHelp, SIGNAL(clicked()), this, SLOT(slotShowHelp()));
+
   // force the initial height to be as small as possible
   QTimer::singleShot(0, this, SLOT(slotSetupSize()));
 }
@@ -273,6 +275,12 @@ bool KEnterScheduleDlg::focusNextPrevChild(bool next)
 
   return rc;
 }
+
+void KEnterScheduleDlg::slotShowHelp(void)
+{
+  kapp->invokeHelp("details.schedules.entering");
+}
+
 
 #include "kenterscheduledlg.moc"
 

@@ -167,6 +167,7 @@ KEditScheduleDlg::KEditScheduleDlg(const MyMoneySchedule& schedule, QWidget *par
     this, SLOT(slotEndDateChanged(const QDate&)));
   connect(m_frequencyEdit, SIGNAL(itemSelected(int)),
     this, SLOT(slotFrequencyChanged(int)));
+  connect(buttonHelp, SIGNAL(clicked()), this, SLOT(slotShowHelp()));
 
   // force the initial height to be as small as possible
   QTimer::singleShot(0, this, SLOT(slotSetupSize()));
@@ -443,6 +444,11 @@ void KEditScheduleDlg::slotFrequencyChanged(int item)
   m_endSeriesEdit->setEnabled(item != MyMoneySchedule::OCCUR_ONCE);
   if(m_endSeriesEdit->isChecked())
     m_endOptionsFrame->setEnabled(item != MyMoneySchedule::OCCUR_ONCE);
+}
+
+void KEditScheduleDlg::slotShowHelp(void)
+{
+  kapp->invokeHelp("details.schedules.intro");
 }
 
 #include <keditscheduledlg.moc>
