@@ -1,3 +1,6 @@
+2007-09-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Modified OFX importer to use Qt::UTC as dateformat
+
 2007-09-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added functionality to help buttons in edit and enter schedule dialog
   * Added quick search to accounts and categories view

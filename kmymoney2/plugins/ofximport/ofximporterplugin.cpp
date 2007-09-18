@@ -78,15 +78,15 @@ bool OfxImporterPlugin::isMyFormat( const QString& filename ) const
 
   return result;
 }
-  
+
 bool OfxImporterPlugin::import( const QString& filename, QValueList<MyMoneyStatement>& result )
 {
   m_fatalerror = "Unable to parse file";
   m_valid = false;
-  
+
   m_statementlist.clear();
   m_securitylist.clear();
-  
+
   QCString filename_deep( filename.utf8() );
 
   LibofxContextPtr ctx = libofx_get_new_context();
@@ -124,7 +124,7 @@ QString OfxImporterPlugin::lastError(void) const
 int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, void * pv)
 {
 //   kdDebug(2) << __func__ << endl;
-    
+
   OfxImporterPlugin* pofx = reinterpret_cast<OfxImporterPlugin*>(pv);
   MyMoneyStatement& s = pofx->back();
 
@@ -133,13 +133,13 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
   if(data.date_posted_valid==true)
   {
     QDateTime dt;
-    dt.setTime_t(data.date_posted);
+    dt.setTime_t(data.date_posted, Qt::UTC);
     t.m_datePosted = dt.date();
   }
   else if(data.date_initiated_valid==true)
   {
     QDateTime dt;
-    dt.setTime_t(data.date_initiated);
+    dt.setTime_t(data.date_initiated, Qt::UTC);
     t.m_datePosted = dt.date();
   }
 
@@ -215,9 +215,9 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
   {
     t.m_dShares = 0;
   }
-  
+
   t.m_moneyFees = 0.0;
-  
+
   if(data.fees_valid==true)
   {
     t.m_moneyFees += data.fees;
@@ -226,7 +226,7 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
   {
     t.m_moneyFees += data.commission;
   }
-  
+
   bool unhandledtype = false;
   QString type;
 
@@ -297,17 +297,17 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
   }
   else
     t.m_eAction = MyMoneyStatement::Transaction::eaNone;
-  
+
   // In the case of investment transactions, the 'total' is supposed to the total amount
   // of the transaction.  units * unitprice +/- commission.  Easy, right?  Sadly, it seems
   // some ofx creators do not follow this in all circumstances.  Therefore, we have to double-
   // check the total here and adjust it if it's wrong.
- 
-#if 0 
+
+#if 0
   // Even more sadly, this logic is BROKEN.  It consistently results in bogus total
   // values, because of rounding errors in the price.  A more through solution would
   // be to test if the comission alone is causing a discrepency, and adjust in that case.
-  
+
   if(data.invtransactiontype_valid==true && data.unitprice_valid)
   {
     double proper_total = t.m_dShares * data.unitprice + t.m_moneyFees;
@@ -318,14 +318,14 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
     }
   }
 #endif
-  
+
   if ( unhandledtype )
     pofx->addWarning(QString("Transaction %1 has an unsupported type (%2).").arg(t.m_strBankID,type));
   else
     s.m_listTransactions += t;
 
 //   kdDebug(2) << __func__ << "return 0 " << endl;
-  
+
   return 0;
 }
 
@@ -349,14 +349,14 @@ int OfxImporterPlugin::ofxStatementCallback(struct OfxStatementData data, void* 
   if(data.date_start_valid==true)
   {
     QDateTime dt;
-    dt.setTime_t(data.date_start);
+    dt.setTime_t(data.date_start, Qt::UTC);
     s.m_dateBegin = dt.date();
   }
 
   if(data.date_end_valid==true)
   {
     QDateTime dt;
-    dt.setTime_t(data.date_end);
+    dt.setTime_t(data.date_end, Qt::UTC);
     s.m_dateEnd = dt.date();
   }
 
@@ -366,7 +366,7 @@ int OfxImporterPlugin::ofxStatementCallback(struct OfxStatementData data, void* 
   }
 
 //   kdDebug(2) << __func__ << " return 0" << endl;
-  
+
   return 0;
 }
 
@@ -380,7 +380,7 @@ int OfxImporterPlugin::ofxAccountCallback(struct OfxAccountData data, void * pv)
 
   // Having any account at all makes an ofx statement valid
   pofx->m_valid = true;
-  
+
   if(data.account_id_valid==true)
   {
     s.m_strAccountName = data.account_name;
@@ -414,9 +414,9 @@ int OfxImporterPlugin::ofxAccountCallback(struct OfxAccountData data, void * pv)
 
   // copy over the securities
   s.m_listSecurities = pofx->m_securitylist;
-  
+
 //   kdDebug(2) << __func__ << " return 0" << endl;
-  
+
   return 0;
 }
 
@@ -453,7 +453,7 @@ int OfxImporterPlugin::ofxStatusCallback(struct OfxStatusData data, void * pv)
   // so if it fails after here it can only because there were no actual
   // accounts in the file!
   pofx->m_fatalerror = "No accounts found.";
-  
+
   if(data.ofx_element_name_valid==true)
     message.prepend(QString("%1: ").arg(data.ofx_element_name));
 
@@ -480,9 +480,9 @@ int OfxImporterPlugin::ofxStatusCallback(struct OfxStatusData data, void * pv)
       break;
     }
   }
-  
+
 //   kdDebug(2) << __func__ << " return 0 " << endl;
-  
+
   return 0;
 }
 

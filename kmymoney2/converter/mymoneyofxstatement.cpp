@@ -105,13 +105,13 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
   if(data.date_posted_valid==true)
   {
     QDateTime dt;
-    dt.setTime_t(data.date_posted);
+    dt.setTime_t(data.date_posted, Qt::UTC);
     t.m_datePosted = dt.date();
   }
   else if(data.date_initiated_valid==true)
   {
     QDateTime dt;
-    dt.setTime_t(data.date_initiated);
+    dt.setTime_t(data.date_initiated, Qt::UTC);
     t.m_datePosted = dt.date();
   }
 
@@ -282,14 +282,14 @@ int ofxStatementCallback(struct OfxStatementData data, void* pv)
   if(data.date_start_valid==true)
   {
     QDateTime dt;
-    dt.setTime_t(data.date_start);
+    dt.setTime_t(data.date_start, Qt::UTC);
     s.m_dateBegin = dt.date();
   }
 
   if(data.date_end_valid==true)
   {
     QDateTime dt;
-    dt.setTime_t(data.date_end);
+    dt.setTime_t(data.date_end, Qt::UTC);
     s.m_dateEnd = dt.date();
   }
 
