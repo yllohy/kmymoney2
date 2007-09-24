@@ -1071,20 +1071,34 @@
     </image>
 </images>
 <tabstops>
-    <tabstop>typeCombo</tabstop>
+    <tabstop>m_tab</tabstop>
     <tabstop>accountNameEdit</tabstop>
+    <tabstop>typeCombo</tabstop>
     <tabstop>startDateEdit</tabstop>
+    <tabstop>m_currency</tabstop>
     <tabstop>m_openingBalanceEdit</tabstop>
+    <tabstop>m_lastCheckNumberUsed</tabstop>
+    <tabstop>descriptionEdit</tabstop>
     <tabstop>m_qcheckboxPreferred</tabstop>
     <tabstop>m_qcheckboxNoVat</tabstop>
-    <tabstop>createButton</tabstop>
-    <tabstop>cancelButton</tabstop>
-    <tabstop>m_tab</tabstop>
+    <tabstop>m_qcomboboxInstitutions</tabstop>
+    <tabstop>m_qbuttonNew</tabstop>
+    <tabstop>ibanEdit</tabstop>
+    <tabstop>accountNoEdit</tabstop>
+    <tabstop>m_buttonOnlineSetup</tabstop>
+    <tabstop>m_qlistviewParentAccounts</tabstop>
+    <tabstop>kActiveLabel1</tabstop>
+    <tabstop>m_minBalanceEarlyEdit</tabstop>
+    <tabstop>m_minBalanceAbsoluteEdit</tabstop>
+    <tabstop>m_maxCreditEarlyEdit</tabstop>
+    <tabstop>m_maxCreditAbsoluteEdit</tabstop>
     <tabstop>m_vatCategory</tabstop>
     <tabstop>m_vatRate</tabstop>
     <tabstop>m_vatAssignment</tabstop>
     <tabstop>m_grossAmount</tabstop>
     <tabstop>m_qcheckboxTax</tabstop>
+    <tabstop>createButton</tabstop>
+    <tabstop>cancelButton</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

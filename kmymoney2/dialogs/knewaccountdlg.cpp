@@ -210,11 +210,13 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     }
 
     if(!haveMaxCredit) {
+      m_maxCreditLabel->setEnabled(false);
       m_maxCreditLabel->hide();
       m_maxCreditEarlyEdit->hide();
       m_maxCreditAbsoluteEdit->hide();
     }
     if(!haveMinBalance) {
+      m_minBalanceLabel->setEnabled(false);
       m_minBalanceLabel->hide();
       m_minBalanceEarlyEdit->hide();
       m_minBalanceAbsoluteEdit->hide();
@@ -293,7 +295,13 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     loadKVP("minBalanceEarly", m_minBalanceEarlyEdit);
     loadKVP("maxCreditAbsolute", m_maxCreditAbsoluteEdit);
     loadKVP("maxCreditEarly", m_maxCreditEarlyEdit);
+    // reverse the sign for display purposes
+    if(!m_maxCreditAbsoluteEdit->lineedit()->text().isEmpty())
+      m_maxCreditAbsoluteEdit->setValue(m_maxCreditAbsoluteEdit->value()*MyMoneyMoney(-1,1));
+    if(!m_maxCreditEarlyEdit->lineedit()->text().isEmpty())
+      m_maxCreditEarlyEdit->setValue(m_maxCreditEarlyEdit->value()*MyMoneyMoney(-1,1));
     loadKVP("lastNumberUsed", m_lastCheckNumberUsed);
+
 
     // we do not allow to change the account type once an account
     // was created. Same applies to currency if it is referenced.
@@ -592,8 +600,19 @@ void KNewAccountDlg::okClicked()
   storeKVP("iban", ibanEdit);
   storeKVP("minBalanceAbsolute", m_minBalanceAbsoluteEdit);
   storeKVP("minBalanceEarly", m_minBalanceEarlyEdit);
+
+  // the figures for credit line with reversed sign
+  if(!m_maxCreditAbsoluteEdit->lineedit()->text().isEmpty())
+    m_maxCreditAbsoluteEdit->setValue(m_maxCreditAbsoluteEdit->value()*MyMoneyMoney(-1,1));
+  if(!m_maxCreditEarlyEdit->lineedit()->text().isEmpty())
+    m_maxCreditEarlyEdit->setValue(m_maxCreditEarlyEdit->value()*MyMoneyMoney(-1,1));
   storeKVP("maxCreditAbsolute", m_maxCreditAbsoluteEdit);
   storeKVP("maxCreditEarly", m_maxCreditEarlyEdit);
+  if(!m_maxCreditAbsoluteEdit->lineedit()->text().isEmpty())
+    m_maxCreditAbsoluteEdit->setValue(m_maxCreditAbsoluteEdit->value()*MyMoneyMoney(-1,1));
+  if(!m_maxCreditEarlyEdit->lineedit()->text().isEmpty())
+    m_maxCreditEarlyEdit->setValue(m_maxCreditEarlyEdit->value()*MyMoneyMoney(-1,1));
+
   storeKVP("lastNumberUsed", m_lastCheckNumberUsed);
   // delete a previous version of the minimumbalance information
   storeKVP("minimumBalance", QString(), QString());
@@ -1265,26 +1284,26 @@ void KNewAccountDlg::slotMarkersChanged(void)
   if(m_account.accountGroup() == MyMoneyAccount::Asset)
     factor = -factor;
 
-  if(m_maxCreditLabel->isVisible()) {
-    if(m_maxCreditEarlyEdit->text().length()) {
+  if(m_maxCreditLabel->isEnabled()) {
+    if(m_maxCreditEarlyEdit->lineedit()->text().length()) {
       needRow = true;
       haveMaxCredit = true;
       maxCredit = m_maxCreditEarlyEdit->value() * factor;
     }
-    if(m_maxCreditAbsoluteEdit->text().length()) {
+    if(m_maxCreditAbsoluteEdit->lineedit()->text().length()) {
       needRow = true;
       haveMaxCredit = true;
       maxCredit = m_maxCreditAbsoluteEdit->value() * factor;
     }
   }
 
-  if(m_minBalanceLabel->isVisible()) {
-    if(m_minBalanceEarlyEdit->text().length()) {
+  if(m_minBalanceLabel->isEnabled()) {
+    if(m_minBalanceEarlyEdit->lineedit()->text().length()) {
       needRow = true;
       haveMinBalance = true;
       minBalance = m_minBalanceEarlyEdit->value();
     }
-    if(m_minBalanceAbsoluteEdit->text().length()) {
+    if(m_minBalanceAbsoluteEdit->lineedit()->text().length()) {
       needRow = true;
       haveMinBalance = true;
       minBalance = m_minBalanceAbsoluteEdit->value();
@@ -1316,9 +1335,9 @@ void KNewAccountDlg::slotMarkersChanged(void)
 #endif
 }
 
-void KNewAccountDlg::adjustEditWidgets(kMyMoneyEdit* dst, kMyMoneyEdit* src, char mode)
+void KNewAccountDlg::adjustEditWidgets(kMyMoneyEdit* dst, kMyMoneyEdit* src, char mode, int corr)
 {
-  MyMoneyMoney factor(1,1);
+  MyMoneyMoney factor(corr, 1);
   if(m_account.accountGroup() == MyMoneyAccount::Asset)
     factor = -factor;
 
@@ -1337,22 +1356,22 @@ void KNewAccountDlg::adjustEditWidgets(kMyMoneyEdit* dst, kMyMoneyEdit* src, cha
 
 void KNewAccountDlg::slotAdjustMinBalanceAbsoluteEdit(const QString&)
 {
-  adjustEditWidgets(m_minBalanceAbsoluteEdit, m_minBalanceEarlyEdit, '<');
+  adjustEditWidgets(m_minBalanceAbsoluteEdit, m_minBalanceEarlyEdit, '<', -1);
 }
 
 void KNewAccountDlg::slotAdjustMinBalanceEarlyEdit(const QString&)
 {
-  adjustEditWidgets(m_minBalanceEarlyEdit, m_minBalanceAbsoluteEdit, '>');
+  adjustEditWidgets(m_minBalanceEarlyEdit, m_minBalanceAbsoluteEdit, '>', -1);
 }
 
 void KNewAccountDlg::slotAdjustMaxCreditAbsoluteEdit(const QString&)
 {
-  adjustEditWidgets(m_maxCreditAbsoluteEdit, m_maxCreditEarlyEdit, '<');
+  adjustEditWidgets(m_maxCreditAbsoluteEdit, m_maxCreditEarlyEdit, '<', 1);
 }
 
 void KNewAccountDlg::slotAdjustMaxCreditEarlyEdit(const QString&)
 {
-  adjustEditWidgets(m_maxCreditEarlyEdit, m_maxCreditAbsoluteEdit, '>');
+  adjustEditWidgets(m_maxCreditEarlyEdit, m_maxCreditAbsoluteEdit, '>', 1);
 }
 
 #include "knewaccountdlg.moc"

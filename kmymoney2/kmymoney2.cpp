@@ -3551,7 +3551,7 @@ bool KMyMoney2App::enterSchedule(MyMoneySchedule& schedule, bool autoEnter)
             }
 
             QCString newId;
-            if(m_transactionEditor->enterTransactions(newId)) {
+            if(m_transactionEditor->enterTransactions(newId, false)) {
               if(!newId.isEmpty()) {
                 MyMoneyTransaction t = MyMoneyFile::instance()->transaction(newId);
                 schedule.setLastPayment(t.postDate());

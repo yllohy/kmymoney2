@@ -114,7 +114,7 @@ public:
 protected:
   void resizeEvent(QResizeEvent* e);
   void displayOnlineBankingStatus(void);
-  void adjustEditWidgets(kMyMoneyEdit* dst, kMyMoneyEdit* src, char mode);
+  void adjustEditWidgets(kMyMoneyEdit* dst, kMyMoneyEdit* src, char mode, int corr);
 
 protected slots:
   void okClicked();

@@ -64,7 +64,14 @@ public:
     */
   void setup(QWidgetList& tabOrderWidgets, const MyMoneyAccount& account = MyMoneyAccount(), KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone);
 
-  virtual bool enterTransactions(QCString&);
+  /**
+    * Enter the transactions into the ledger. In case of a newly created
+    * transaction @a newId contains the assigned id. In case @a askForSchedule
+    * is true (the default), the user will be asked if he wants to enter new
+    * transactions with a post date in the future into the ledger or rather
+    * create a schedule for them.
+    */
+  virtual bool enterTransactions(QCString& newId, bool askForSchedule = true);
 
   /**
     * This method creates a transaction based on the contents of the current widgets,
