@@ -899,6 +899,10 @@ void KPayeesView::slotSelectPayeeAndTransaction(const QCString& payeeId, const Q
     return;
 
   try {
+    // clear filter
+    m_searchWidget->searchLine()->clear();
+    m_searchWidget->searchLine()->updateSearch();
+
     // deselect all other selected items
     QListViewItemIterator it_l(m_payeesList, QListViewItemIterator::Selected);
     QListViewItem* it_v;

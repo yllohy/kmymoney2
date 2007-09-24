@@ -1,3 +1,7 @@
+2007-09-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Clear payee search filter when using the 'Goto payee' function
+    of the ledger view
+
 2007-09-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Modified OFX importer to use Qt::UTC as dateformat
 
