@@ -47,6 +47,8 @@
 #include <kmymoney/mymoneyfile.h>
 #include "../widgets/kmymoneyaccountselector.h"
 
+#include <../kmymoney2.h>
+
 KAccountSelectDlg::KAccountSelectDlg(const KMyMoneyUtils::categoryTypeE accountType, const QString& purpose, QWidget *parent, const char *name )
  : KAccountSelectDlgDecl(parent, name),
    m_purpose(purpose),
@@ -132,119 +134,18 @@ void KAccountSelectDlg::setAccount(const MyMoneyAccount& account, const QCString
 
 void KAccountSelectDlg::slotCreateInstitution(void)
 {
-  MyMoneyInstitution institution;
-
-  KNewBankDlg dlg(institution, this);
-  if (dlg.exec()) {
-    MyMoneyFileTransaction ft;
-    try {
-      MyMoneyFile* file = MyMoneyFile::instance();
-
-      institution = dlg.institution();
-
-      file->addInstitution(institution);
-      ft.commit();
-    } catch (MyMoneyException *e) {
-      KMessageBox::information(this, i18n("Cannot add institution: ")+e->what());
-      delete e;
-      return;
-    }
-  }
+  kmymoney2->slotInstitutionNew();
 }
 
 void KAccountSelectDlg::slotCreateAccount(void)
 {
-  MyMoneyAccount newAccount;
-  MyMoneyAccount parentAccount;
-  int dialogResult;
-  const bool isCategory = m_accountType & (KMyMoneyUtils::expense | KMyMoneyUtils::income);
-
   MyMoneyFileTransaction ft;
-  if(!isCategory) {
-    // wizard selected
-    KNewAccountWizard* wizard = new KNewAccountWizard(this);
-    connect(wizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotCreateInstitution()));
-    // FIXME: connect the newCategory() signal as well
-
-    wizard->setAccountName(m_account.name());
-    wizard->setAccountType(m_account.accountType());
-    wizard->setOpeningBalance(m_account.openingBalance());
-    wizard->setOpeningDate(m_account.openingDate());
-    if((dialogResult = wizard->exec()) == QDialog::Accepted) {
-      newAccount = wizard->account();
-      // keep a possible description field
-      newAccount.setDescription(m_account.description());
-      parentAccount = wizard->parentAccount();
-
-      MyMoneyFile* file = MyMoneyFile::instance();
-      MyMoneySchedule newSchedule = wizard->schedule();
-      try {
-        file->schedule(newSchedule.id());
-        file->modifySchedule(newSchedule);
-        newAccount.setValue("schedule", newSchedule.id());
-      } catch (MyMoneyException *e) {
-        try {
-          file->addSchedule(newSchedule);
-          newAccount.setValue("schedule", newSchedule.id());
-        } catch (MyMoneyException *f) {
-          qDebug("Cannot add schedule: '%s'", f->what().data());
-          delete f;
-        }
-        delete e;
-      }
-    }
-    delete wizard;
-  } else {
-    // regular dialog selected
-    MyMoneyAccount account(m_account);
-    KNewAccountDlg dialog(account, false, isCategory, 0, "hi", i18n("Create a new Account"));
-
-    if((dialogResult = dialog.exec()) == QDialog::Accepted) {
-      newAccount = dialog.account();
-      newAccount.setParentAccountId(QCString());  // make sure, it's not set for adding
-      parentAccount = dialog.parentAccount();
-    }
-  }
-
-  if(dialogResult == QDialog::Accepted) {
-    // if the account name contains one or more colons, we
-    // need to create a hierarchy.
-    int pos;
-    MyMoneyFile *file = MyMoneyFile::instance();
-
-    try
-    {
-      while((pos = newAccount.name().find(':')) != -1) {
-        QString part = newAccount.name().left(pos);
-        QString remainder = newAccount.name().mid(pos+1);
-        newAccount.setName(part);
-
-        file->addAccount(newAccount, parentAccount);
-        parentAccount = newAccount;
-        newAccount.setParentAccountId(QCString());  // make sure, there's no parent
-        newAccount.clearId();                       // and no id set for adding
-        newAccount.setName(remainder);
-      }
-
-      file->addAccount(newAccount, parentAccount);
-      // the next line should be already called through update()
-      // m_accountSelector->loadList(m_accountType);
-      m_accountSelector->setSelected(newAccount.id());
-/*
-      // widgets are updated in update() by engine's notification
-      if(isCategory)
-        m_accountComboBox->setCurrentItem(file->accountToCategory(newAccount.id()));
-      else
-        m_accountComboBox->setCurrentItem(newAccount.name());
-*/
-      ft.commit();
+  if(!(m_accountType & (KMyMoneyUtils::expense | KMyMoneyUtils::income))) {
+    kmymoney2->slotAccountNew(m_account);
+    if(!m_account.id().isEmpty())
       accept();
-    }
-    catch (MyMoneyException *e)
-    {
-      KMessageBox::information(this, i18n("Unable to add account: %1").arg(e->what()));
-      delete e;
-    }
+  } else {
+    kmymoney2->slotCategoryNew(m_account);
   }
 }
 

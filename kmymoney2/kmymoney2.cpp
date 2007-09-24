@@ -2331,7 +2331,7 @@ void KMyMoney2App::slotInstitutionDelete(void)
   }
 }
 
-void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal, MyMoneySchedule& schedule)
+void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -2374,10 +2374,6 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
     }
 
     file->addAccount(newAccount, parentAccount);
-
-    // We MUST add the schedule AFTER adding the account because
-    // otherwise an unknown account exception will be thrown.
-    createSchedule(schedule, newAccount);
 
     // in case of a loan account, we add the initial payment
     if((newAccount.accountType() == MyMoneyAccount::Loan
@@ -2433,10 +2429,8 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
 
 void KMyMoney2App::slotCategoryNew(const QString& name, QCString& id)
 {
-  MyMoneyAccount parent;
   MyMoneyAccount account;
   account.setName(name);
-  parent = MyMoneyFile::instance()->expense();
 
   slotCategoryNew(account, MyMoneyFile::instance()->expense());
 
@@ -2446,7 +2440,7 @@ void KMyMoney2App::slotCategoryNew(const QString& name, QCString& id)
 void KMyMoney2App::slotCategoryNew(MyMoneyAccount& account, const MyMoneyAccount& parent)
 {
   if(KMessageBox::questionYesNo(this,
-    QString("<qt>")+i18n("The category <b>%1</b> currently does not exist. Do you want to create it?<p><i>The parent account will default to <b>%2</b> but can be changed in the following dialog</i>.").arg(account.name()).arg(parent.name())+QString("</qt>"), i18n("Create category"),
+    QString("<qt>%1</qt>").arg(i18n("The category <b>%1</b> currently does not exist. Do you want to create it?<p><i>The parent account will default to <b>%2</b> but can be changed in the following dialog</i>.").arg(account.name()).arg(parent.name())), i18n("Create category"),
     KStdGuiItem::yes(), KStdGuiItem::no(), "CreateNewCategories") == KMessageBox::Yes) {
     createCategory(account, parent);
   }
@@ -2489,13 +2483,20 @@ void KMyMoney2App::createCategory(MyMoneyAccount& account, const MyMoneyAccount&
     MyMoneyAccount parentAccount, brokerageAccount;
     account = dialog.account();
     parentAccount = dialog.parentAccount();
-    MyMoneySchedule schedule;
 
-    createAccount(account, parentAccount, brokerageAccount, MyMoneyMoney(0,1), schedule);
+    createAccount(account, parentAccount, brokerageAccount, MyMoneyMoney(0,1));
   }
 }
 
 void KMyMoney2App::slotAccountNew(void)
+{
+  MyMoneyAccount acc;
+  acc.setOpeningDate(QDate::currentDate());
+
+  slotAccountNew(acc);
+}
+
+void KMyMoney2App::slotAccountNew(MyMoneyAccount& acc)
 {
   KNewAccountWizard newAccountWizard;
 
@@ -2503,7 +2504,10 @@ void KMyMoney2App::slotAccountNew(void)
   connect(&newAccountWizard, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
   connect(&newAccountWizard, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
 
-  newAccountWizard.setAccountName(QString());
+  newAccountWizard.setAccountName(acc.name());
+  newAccountWizard.setAccountType(acc.accountType());
+  newAccountWizard.setOpeningBalance(acc.openingBalance());
+  newAccountWizard.setOpeningDate(acc.openingDate());
   // Preselect the current selected institution (or none)
   newAccountWizard.setInstitution(m_selectedInstitution);
 
@@ -2514,8 +2518,13 @@ void KMyMoney2App::slotAccountNew(void)
     newAccount = newAccountWizard.account();
     parentAccount = newAccountWizard.parentAccount();
     brokerageAccount = newAccountWizard.brokerageAccount();
-    MyMoneySchedule schedule = newAccountWizard.schedule();
-    createAccount(newAccount, parentAccount, brokerageAccount, newAccountWizard.openingBalance(), schedule);
+    createAccount(newAccount, parentAccount, brokerageAccount, newAccountWizard.openingBalance());
+
+    // We MUST add the schedule AFTER adding the account because
+    // otherwise an unknown account exception will be thrown.
+    MyMoneySchedule schedule = newAccountWizard.schedule(newAccount.id());
+    createSchedule(schedule, newAccount);
+    acc = newAccount;
   }
 }
 
@@ -2608,6 +2617,7 @@ void KMyMoney2App::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
       if(t.splitCount() < 2) {
         throw new MYMONEYEXCEPTION("Transaction for schedule has less than 2 splits!");
       }
+#if 0
       // now search the split that does not have an account reference
       // and set it up to be the one of the account we just added
       // to the account pool. Note: the schedule code used to leave
@@ -2623,6 +2633,7 @@ void KMyMoney2App::createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& n
         }
       }
       newSchedule.setTransaction(t);
+#endif
 
       MyMoneyFileTransaction ft;
       try {

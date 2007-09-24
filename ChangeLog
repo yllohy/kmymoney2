@@ -3,6 +3,7 @@
     of the ledger view
   * Don't offer creating of a schedule while entering a schedule
   * Show warnings if a limit has been reached
+  * Fixed some schedule creation problems
 
 2007-09-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Modified OFX importer to use Qt::UTC as dateformat

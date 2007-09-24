@@ -298,7 +298,7 @@ void KNewAccountWizard::accept()
       m_paymentAccount->setFocus();
       return;
     }
-
+#if 0
     // Create the schedule transaction
     QCString payeeId = m_payee->selectedItem();
 
@@ -351,9 +351,74 @@ void KNewAccountWizard::accept()
 
     t.setPostDate(m_date->date());
     m_schedule.setTransaction(t);
+#endif
   }
 
   KNewAccountWizardDecl::accept();
+}
+
+MyMoneySchedule KNewAccountWizard::schedule(const QCString& accId)
+{
+  MyMoneySchedule schedule;
+
+  // Create the schedule transaction
+  try {
+    QCString payeeId = m_payee->selectedItem();
+
+    MyMoneySplit s1, s2;
+    s1.setValue(m_amount->value());
+    s2.setValue(-s1.value());
+    s1.setAccountId(accId);
+    s2.setAccountId(m_paymentAccount->selectedItem());
+    s1.setPayeeId(payeeId);
+    s2.setPayeeId(payeeId);
+
+    MyMoneyTransaction t;
+    t.addSplit(s1);
+    t.addSplit(s2);
+
+    MyMoneySchedule::paymentTypeE paymentType;
+
+    switch (m_method->currentItem())
+    {
+      case 0:
+        paymentType = MyMoneySchedule::STYPE_DIRECTDEBIT;
+        break;
+      case 1:
+        paymentType = MyMoneySchedule::STYPE_DIRECTDEPOSIT;
+        break;
+      case 2:
+        paymentType = MyMoneySchedule::STYPE_MANUALDEPOSIT;
+        break;
+      case 3:
+        paymentType = MyMoneySchedule::STYPE_WRITECHEQUE;
+        break;
+      case 4:
+        paymentType = MyMoneySchedule::STYPE_OTHER;
+        break;
+      default:
+        paymentType = MyMoneySchedule::STYPE_DIRECTDEBIT;
+        break;
+    }
+
+    schedule = MyMoneySchedule(  m_name->text(),
+                                    MyMoneySchedule::TYPE_TRANSFER,
+                                    MyMoneySchedule::OCCUR_MONTHLY,
+                                    paymentType,
+                                    QDate(),
+                                    QDate(),
+                                    false,
+                                    false);
+
+    t.setPostDate(m_date->date());
+    schedule.setTransaction(t);
+
+  } catch(MyMoneyException* e) {
+    KMessageBox::error(this, i18n("Cannot create schedule: %1").arg(e->what()));
+    delete e;
+    schedule = MyMoneySchedule();
+  }
+  return schedule;
 }
 
 int KNewAccountWizard::exec()

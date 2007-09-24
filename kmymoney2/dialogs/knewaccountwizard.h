@@ -119,8 +119,9 @@ public:
     * Get the schedule.
     *
     * If the schedule has not been created name() should be empty.
+    * @a accId should be the account id of the newly created account
     */
-  MyMoneySchedule schedule(void) const { return m_schedule; }
+  MyMoneySchedule schedule(const QCString& accId);
 
   /**
     * This method is used to preset the institution.

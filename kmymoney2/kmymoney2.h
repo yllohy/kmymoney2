@@ -223,11 +223,6 @@ protected slots:
   void slotCloseSearchDialog(void);
 
   /**
-    * Brings up the input dialog and saves the information.
-    */
-  void slotInstitutionNew(void);
-
-  /**
     * Preloads the input dialog with the data of the current
     * selected institution and brings up the input dialog
     * and saves the information entered.
@@ -246,28 +241,6 @@ protected slots:
     *                    the institution to be created.
     */
   void slotInstitutionNew(MyMoneyInstitution institution);
-
-  /**
-    * Brings up the new account wizard and saves the information.
-    */
-  void slotAccountNew(void);
-
-  /**
-    * Brings up the new category editor and saves the information.
-    */
-  void slotCategoryNew(void);
-
-  /**
-    * Brings up the new category editor and saves the information.
-    * The dialog will be preset with the name and parent account.
-    *
-    * @param account reference of category to be created. The @p name member
-    *                should be filled by the caller. The object will be filled
-    *                with additional information during the creation process
-    *                esp. the @p id member.
-    * @param parent reference to parent account (defaults to none)
-    */
-  void slotCategoryNew(MyMoneyAccount& account, const MyMoneyAccount& parent = MyMoneyAccount());
 
   /**
     * Brings up the new category editor and saves the information.
@@ -598,7 +571,7 @@ protected:
 
   void createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& newAccount);
 
-  void createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal, MyMoneySchedule& schedule);
+  void createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal);
 
   void createCategory(MyMoneyAccount& account, const MyMoneyAccount& parent);
 
@@ -961,9 +934,37 @@ public slots:
   void slotEndMatch(void);
 
   /**
+    * Brings up the new account wizard and saves the information.
+    */
+  void slotAccountNew(void);
+  void slotAccountNew(MyMoneyAccount&);
+
+  /**
+    * Brings up the new category editor and saves the information.
+    */
+  void slotCategoryNew(void);
+
+  /**
+    * Brings up the new category editor and saves the information.
+    * The dialog will be preset with the name and parent account.
+    *
+    * @param account reference of category to be created. The @p name member
+    *                should be filled by the caller. The object will be filled
+    *                with additional information during the creation process
+    *                esp. the @p id member.
+    * @param parent reference to parent account (defaults to none)
+    */
+  void slotCategoryNew(MyMoneyAccount& account, const MyMoneyAccount& parent = MyMoneyAccount());
+
+  /**
     * This method updates all KAction items to the current state.
     */
   void slotUpdateActions(void);
+
+  /**
+    * Brings up the input dialog and saves the information.
+    */
+  void slotInstitutionNew(void);
 
 private:
   // bool verifyImportedData(const MyMoneyAccount& account);
