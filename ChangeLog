@@ -1,3 +1,6 @@
+2007-09-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem when creating a payee during schedule creation
+
 2007-09-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Clear payee search filter when using the 'Goto payee' function
     of the ledger view
