@@ -170,6 +170,8 @@ typedef QMap<QCString, QCString> map_accountIds;
 typedef map_accountIds::iterator map_accountIds_iter;
 typedef map_accountIds::const_iterator map_accountIds_citer;
 
+typedef QMap<QString, QStringList> map_elementVersions;
+
 class MyMoneyGncReader;
 
 /** GncObject is the base class for the various objects in the gnucash file
@@ -204,9 +206,11 @@ protected:
   void resetDataPtr() {m_dataPtr = 0;};
   // process end element for 'this'; usually to convert to KMM format
   virtual void terminate() { return ;};
+  void setVersion (const QString& v) {m_version = v; return; };
+  const QString version() const {return (m_version);};
 
   // some gnucash elements have version attribute; check it
-  static void checkVersion (const QString&, const QXmlAttributes&);
+  void checkVersion (const QString&, const QXmlAttributes&, const map_elementVersions&);
   // get name of element processed by 'this'
   const QString getElName () const { return (m_elementName);};
   // pass 'main' pointer to object
@@ -228,6 +232,7 @@ protected:
   void adjustHideFactor();
   
   QString m_elementName; // save 'this' element's name
+  QString m_version;     // and it's gnucash version
   const QString *m_subElementList; // list of sub object element names for 'this'
   unsigned int m_subElementListCount; // count of above
   const QString *m_dataElementList; // ditto for data elements
@@ -290,6 +295,7 @@ protected:
   friend class GncTransaction;
   friend class GncSplit;
   friend class GncSchedule;
+  friend class GncRecurrence;
   const QDate date() const { return (QDate::fromString(m_v.at(TSDATE)->section(' ', 0, 0), Qt::ISODate));};
 private:
   // data elements
@@ -497,6 +503,7 @@ private:
 };
 // ************* GncSchedule********************************************
 class GncFreqSpec;
+class GncRecurrence;
 class GncSchedDef;
 class GncSchedule : public GncObject {
 public:
@@ -506,6 +513,7 @@ protected:
   friend class MyMoneyGncReader;
   // access data values
   const QString name() const { return (var(NAME));};
+  const QString enabled() const {return var(ENABLED);};
   const QString autoCreate() const { return (var(AUTOC));};
   const QString autoCrNotify() const { return (var(AUTOCN));};
   const QString autoCrDays() const { return (var(AUTOCD));};
@@ -525,15 +533,16 @@ protected:
   const GncSchedDef *getSchedDef() const { return (m_vpSchedDef);};
 private:
   // subsidiary objects/elements
-  enum ScheduleSubEls {STARTDATE, LASTDATE, ENDDATE, FREQ, DEFINST, END_Schedule_SELS };
+  enum ScheduleSubEls {STARTDATE, LASTDATE, ENDDATE, FREQ, RECURRENCE, DEFINST, END_Schedule_SELS };
   virtual GncObject *startSubEl();
   virtual void endSubEl(GncObject *);
   virtual void terminate();
   // data elements
-  enum ScheduleDataEls {NAME, AUTOC, AUTOCN, AUTOCD, ADVCD, ADVRD, INSTC,
+  enum ScheduleDataEls {NAME, ENABLED, AUTOC, AUTOCN, AUTOCD, ADVCD, ADVRD, INSTC,
                         NUMOCC, REMOCC, TEMPLID, END_Schedule_DELS };
   GncDate *m_vpStartDate, *m_vpLastDate, *m_vpEndDate;
   GncFreqSpec *m_vpFreqSpec;
+  mutable QPtrList<GncRecurrence> m_vpRecurrence; // gnc handles multiple occurrences
   GncSchedDef *m_vpSchedDef;
 };
 // ************* GncFreqSpec********************************************
@@ -554,6 +563,31 @@ private:
   enum FreqSpecDataEls {INTVT, MONTHLY, DAILY, WEEKLY, INTVI, INTVO, INTVD, END_FreqSpec_DELS};
   virtual void terminate();
   mutable QPtrList<GncObject> m_fsList;
+};
+
+// ************* GncRecurrence********************************************
+// this object replaces GncFreqSpec from Gnucash 2.2 onwards
+class GncRecurrence : public GncObject {
+public:
+  GncRecurrence ();
+  ~GncRecurrence();
+protected:
+  friend class MyMoneyGncReader;
+  // access data values 
+  const QDate startDate () const 
+    {QDate x = QDate(); return (m_vpStartDate == NULL ? x : m_vpStartDate->date());};
+  const QString mult() const {return (var(MULT));};
+  const QString periodType() const {return (var(PERIODTYPE));};
+  const QString getFrequency() const;
+private:
+  // subsidiary objects/elements
+  enum RecurrenceSubEls {STARTDATE, END_Recurrence_SELS };
+  virtual GncObject *startSubEl();
+  virtual void endSubEl(GncObject *);
+  // data elements
+  enum RecurrenceDataEls {MULT, PERIODTYPE, END_Recurrence_DELS};
+  virtual void terminate();
+  GncDate *m_vpStartDate;
 };
 
 // ************* GncSchedDef********************************************
@@ -590,8 +624,9 @@ private:
   QXmlInputSource *m_source;
   QXmlSimpleReader *m_reader;
   QPtrStack<GncObject> m_os; // stack of sub objects
-  GncObject *m_co;           // current object, for ease of coding (=== os.top)
+  GncObject *m_co;           // current object, for ease of coding (=== m_os.top)
   MyMoneyGncReader *pMain;  // the 'main' pointer, to pass on to objects
+  bool m_headerFound; // check for gnc-v2 header
 #ifdef _GNCFILEANON
   int lastType; // 0 = start element, 1 = data, 2 = end element
   int indentCount;
@@ -670,6 +705,7 @@ protected:
   friend class GncTemplateSplit;
   friend class GncSchedule;
   friend class GncFreqSpec;
+  friend class GncRecurrence;
   friend class XmlReader;
 #ifndef _GNCFILEANON
   /** functions to convert gnc objects to our equivalent */
@@ -681,6 +717,7 @@ protected:
   void saveTemplateTransaction (GncTransaction *t) {m_templateList.append (t);};
   void convertSchedule (const GncSchedule *);
   void convertFreqSpec (const GncFreqSpec *);
+  void convertRecurrence (const GncRecurrence *);
 #else  
     /** functions to convert gnc objects to our equivalent */
   void convertCommodity (const GncCommodity *) {return;};
@@ -746,7 +783,7 @@ protected:
   static double m_fileHideFactor; // an overall anonymization factor to be applied to all items
   bool developerDebug;
 private:
-  void setOptions (); // to set user options, with a dialog eventually
+  void setOptions (); // to set user options from dialog
   void setFileHideFactor (); 
   // the following handles the gnucash indicator for a bad value (-1/0) which causes us probs
   const QString convBadValue (QString gncValue) const {return (gncValue == "-1/0" ? "0/1" : gncValue); };
@@ -767,6 +804,8 @@ private:
   XmlReader *m_xr;
   /** to hold the callback pointer for the progress bar */
   void (*m_progressCallback)(int, int, const QString&);
+  // a map of which versions of the various elements (objects) we can import
+  map_elementVersions m_versionList;
   // counters holding count data from the Gnc 'count-data' section
   int m_gncCommodityCount;
   int m_gncAccountCount;
@@ -794,6 +833,7 @@ private:
     * Map gnucash vs. Kmm ids for accounts, equities, schedules, price sources
     */
   QMap<QCString, QCString> m_mapIds;
+  QCString m_rootId; // save the root id for terminate()
   QMap<QCString, QCString> m_mapEquities;
   QMap<QCString, QCString> m_mapSchedules;
   QMap<QString, QString> m_mapSources;

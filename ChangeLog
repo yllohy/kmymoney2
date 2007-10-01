@@ -1,3 +1,8 @@
+2007-10-01 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * GnuCash importer
+    - correct schedule import
+    - handle GnuCash 2.2 files
+
 2007-09-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem when creating a payee during schedule creation
 

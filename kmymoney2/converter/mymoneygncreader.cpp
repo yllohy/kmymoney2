@@ -111,35 +111,17 @@ GncObject::GncObject () {
 }
 
 // Check that the current element is of a version we are coded for
-void GncObject::checkVersion (const QString& elName, const QXmlAttributes& elAttrs) {
-#ifdef _GNCFILEANON // suppress all checks
-    static bool validHeaderFound = true;
-    return;
-#else
-  // a list of elements to check, and the required version numbers
-  static const QString versionList[] = {"gnc:book 2.0.0", "gnc:commodity 2.0.0", "gnc:pricedb 1",
-                                        "gnc:account 2.0.0", "gnc:transaction 2.0.0", "gnc:schedxaction 1.0.0",
-                                        "gnc:freqspec 1.0.0", "zzz" // zzz = stopper
-                                       };
-  static bool validHeaderFound = false;
+void GncObject::checkVersion (const QString& elName, const QXmlAttributes& elAttrs, const map_elementVersions& map) {
   TRY
-  if (!validHeaderFound) {  // check the header first
-    if (elName != "gnc-v2") throw new MYMONEYEXCEPTION (i18n("Invalid header for file. Should be gnc-v2"));
-  }
-  validHeaderFound = true;
-
-  for (uint i = 0; versionList[i] != "zzz"; i++) {
-    if (versionList[i].section (' ', 0, 0) == elName) {
-      if (elAttrs.value("version") != versionList[i].section(' ', 1, 1)) {
-          QString em = i18n("chkVersion: Element %1 must have version %2 but has version")
-                          .arg(elName, versionList[i].section(' ', 1, 1), elAttrs.value("version"));
-        throw new MYMONEYEXCEPTION (em);
-      }
+  if (map.contains(elName)) { // if it's not in the map, there's nothing to check
+    if (!map[elName].contains(elAttrs.value("version"))) {
+      QString em = i18n("checkVersion: Sorry. This importer cannot handle version %1 of element %2")
+                          .arg(elAttrs.value("version")).arg(elName);
+      throw new MYMONEYEXCEPTION (em);
     }
   }
   return ;
   PASS
-#endif // _GNCFILEANON
 }
 
 // Check if this element is in the current object's sub element list
@@ -688,10 +670,10 @@ void GncTemplateSplit::endSubEl(GncObject *subObj) {
 //************* GncSchedule********************************************
 GncSchedule::GncSchedule () {
   m_subElementListCount = END_Schedule_SELS;
-  static const QString subEls[] = {"sx:start", "sx:last", "sx:end", "gnc:freqspec", "sx:deferredInstance"};
+  static const QString subEls[] = {"sx:start", "sx:last", "sx:end", "gnc:freqspec", "gnc:recurrence","sx:deferredInstance"};
   m_subElementList = subEls;
   m_dataElementListCount = END_Schedule_DELS;
-  static const QString dataEls[] = {"sx:name", "sx:autoCreate", "sx:autoCreateNotify",
+  static const QString dataEls[] = {"sx:name", "sx:enabled", "sx:autoCreate", "sx:autoCreateNotify",
                                     "sx:autoCreateDays", "sx:advanceCreateDays", "sx:advanceRemindDays",
                                     "sx:instanceCount", "sx:num-occur",
                                     "sx:rem-occur", "sx:templ-acct"};
@@ -701,6 +683,8 @@ GncSchedule::GncSchedule () {
   for (uint i = 0; i < m_dataElementListCount; i++) m_v.append (new QString (""));
   m_vpStartDate = m_vpLastDate = m_vpEndDate = NULL;
   m_vpFreqSpec = NULL;
+  m_vpRecurrence.clear();
+  m_vpRecurrence.setAutoDelete(true);
   m_vpSchedDef = NULL;
 }
 
@@ -717,6 +701,7 @@ GncObject *GncSchedule::startSubEl() {
   case LASTDATE:
   case ENDDATE: next = new GncDate; break;
   case FREQ: next = new GncFreqSpec; break;
+  case RECURRENCE: next = new GncRecurrence; break;
   case DEFINST: next = new GncSchedDef; break;
   default: throw new MYMONEYEXCEPTION ("GncSchedule rcvd invalid m_state");
   }
@@ -731,6 +716,7 @@ void GncSchedule::endSubEl(GncObject *subObj) {
   case LASTDATE: m_vpLastDate = static_cast<GncDate *>(subObj); break;
   case ENDDATE: m_vpEndDate = static_cast<GncDate *>(subObj); break;
   case FREQ: m_vpFreqSpec = static_cast<GncFreqSpec *>(subObj); break;
+  case RECURRENCE: m_vpRecurrence.append(static_cast<GncRecurrence *>(subObj)); break;
   case DEFINST: m_vpSchedDef = static_cast<GncSchedDef *>(subObj); break;
   }
   return ;
@@ -785,6 +771,68 @@ void GncFreqSpec::terminate() {
   pMain->convertFreqSpec (this);
   return ;
 }
+//************* GncRecurrence********************************************
+GncRecurrence::GncRecurrence () {
+  m_subElementListCount = END_Recurrence_SELS;
+  static const QString subEls[] = {"recurrence:start"};
+  m_subElementList = subEls;
+  m_dataElementListCount = END_Recurrence_DELS;
+  static const QString dataEls[] = {"recurrence:mult", "recurrence:period_type"};
+  m_dataElementList = dataEls;
+  static const unsigned int anonClasses[] = {ASIS, ASIS};
+  m_anonClassList = anonClasses;
+  for (uint i = 0; i < m_dataElementListCount; i++) m_v.append (new QString (""));
+}
+
+GncRecurrence::~GncRecurrence () {
+  delete m_vpStartDate;
+}
+
+GncObject *GncRecurrence::startSubEl() {
+  TRY
+  if (pMain->xmldebug) qDebug ("Recurrence start subel m_state %d", m_state);
+
+  GncObject *next = 0;
+  switch (m_state) {
+  case STARTDATE: next = new GncDate; break;
+  default: throw new MYMONEYEXCEPTION ("GncRecurrence rcvd invalid m_state");
+  }
+  return (next);
+  PASS
+}
+
+void GncRecurrence::endSubEl(GncObject *subObj) {
+  if (pMain->xmldebug) qDebug ("Recurrence end subel");
+  switch (m_state) {
+  case STARTDATE: m_vpStartDate = static_cast<GncDate *>(subObj); break;
+  }
+  m_dataPtr = 0;
+  return ;
+}
+
+void GncRecurrence::terminate() {
+  pMain->convertRecurrence (this);
+  return ;
+}
+
+const QString GncRecurrence::getFrequency() const {
+  // This function converts a gnucash 2.2 recurrence specification into it's previous equivalent
+  // This will all need re-writing when MTE finishes the schedule re-write
+  if (periodType() == "once") return("once");
+  if ((periodType() == "day") and (mult() == "1")) return("daily");
+  if (periodType() == "week") {
+    if (mult() == "1") return ("weekly");
+    if (mult() == "2") return ("bi_weekly");
+  }
+  if (periodType() == "month") {
+    if (mult() == "1") return ("monthly");
+    if (mult() == "3") return ("quarterly");
+    if (mult() == "4") return ("tri_annually");
+    if (mult() == "6") return ("semi_yearly");
+    if (mult() == "12") return ("yearly");
+  }
+  return ("unknown");
+}
 
 //************* GncSchedDef********************************************
 GncSchedDef::GncSchedDef () {
@@ -817,6 +865,7 @@ bool XmlReader::startDocument() {
   m_co = new GncFile; // create initial object, push to stack , pass it the 'main' pointer
   m_os.push (m_co);
   m_co->setPm (pMain);
+  m_headerFound = false;
 #ifdef _GNCFILEANON
   pMain->oStream << "<?xml version=\"1.0\"?>";
   lastType = -1;
@@ -841,17 +890,22 @@ bool XmlReader::startElement (const QString&, const QString&, const QString& elN
     }
     pMain->oStream << '<' << elName;
     for (i = 0; i < elAttrs.count(); i++) {
-          pMain->oStream << ' ' << elAttrs.qName(i) << '='  << '"' << elAttrs.value(i) << '"';
+      pMain->oStream << ' ' << elAttrs.qName(i) << '='  << '"' << elAttrs.value(i) << '"';
     }
     pMain->oStream << '>';
     lastType = 0;
+#else
+    if ((!m_headerFound) && (elName != "gnc-v2"))
+      throw new MYMONEYEXCEPTION (i18n("Invalid header for file. Should be 'gnc-v2'"));
+    m_headerFound = true;
 #endif // _GNCFILEANON
-    GncObject::checkVersion (elName, elAttrs);
+    m_co->checkVersion (elName, elAttrs, pMain->m_versionList);
     // check if this is a sub object element; if so, push stack and initialize
     GncObject *temp = m_co->isSubElement (elName, elAttrs);
     if (temp != 0) {
       m_os.push (temp);
       m_co = m_os.top();
+      m_co->setVersion(elAttrs.value("version"));
       m_co->setPm (pMain); // pass the 'main' pointer to the sub object
       return (true);
     }
@@ -953,6 +1007,15 @@ MyMoneyGncReader::MyMoneyGncReader() {
   m_smallBusinessFound = m_budgetsFound = m_lotsFound = false;
   m_commodityCount = m_priceCount = m_accountCount = m_transactionCount = m_templateCount = m_scheduleCount = 0;
   m_decoder = 0;
+  // build a list of valid versions
+  static const QString versionList[] = {"gnc:book 2.0.0", "gnc:commodity 2.0.0", "gnc:pricedb 1",
+                                        "gnc:account 2.0.0", "gnc:transaction 2.0.0", "gnc:schedxaction 1.0.0",
+                                        "gnc:schedxaction 2.0.0", // for gnucash 2.2 onward
+                                        "gnc:freqspec 1.0.0", "zzz" // zzz = stopper
+                                       };
+  unsigned int i;
+  for (i = 0; versionList[i] != "zzz"; ++i)
+    m_versionList[versionList[i].section (' ', 0, 0)].append(versionList[i].section (' ', 1, 1));
 }
 
 //***************** Destructor *************************
@@ -1101,8 +1164,10 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
   Q_CHECK_PTR (gac);
   TRY
   // we don't care about the GNC root account
-  if("ROOT" == gac->type())
-    return;
+  if("ROOT" == gac->type()) {
+      m_rootId = gac->id().utf8();
+      return;
+  }
 
   MyMoneyAccount acc;
   if (m_accountCount == 0) signalProgress (0, m_gncAccountCount, i18n("Loading accounts..."));
@@ -1170,7 +1235,7 @@ void MyMoneyGncReader::convertAccount (const GncAccount* gac) {
     throw new MYMONEYEXCEPTION (em);
   }
   // if no parent account is present, assign to one of our standard accounts
-  if (acc.parentAccountId().isEmpty()) {
+  if ((acc.parentAccountId().isEmpty()) || (acc.parentAccountId() == m_rootId)) {
     switch (acc.accountGroup()) {
     case MyMoneyAccount::Asset: acc.setParentAccountId (m_storage->asset().id()); break;
     case MyMoneyAccount::Liability: acc.setParentAccountId (m_storage->liability().id()); break;
@@ -1640,8 +1705,8 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
     tx = convertTemplateTransaction (sc.name(), *itt);
   }
   tx.clearId();
-  sc.setTransaction(tx);
-  // define the conversion table for intervals
+
+// define the conversion table for intervals
   struct convIntvl {
     QString gncType; // the gnucash name
     unsigned char interval; // for date calculation
@@ -1649,34 +1714,60 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
     MyMoneySchedule::occurenceE occ; // equivalent occurence code
     MyMoneySchedule::weekendOptionE wo;
   };
-  /* other intervals supported by gnc according to Josh Sled's schema (see above)
-   "none" "semi_monthly"
-   */
+/* other intervals supported by gnc according to Josh Sled's schema (see above)
+ "none" "semi_monthly"
+ */
   static convIntvl vi [] = {
-                             {"once", 'o', 1, MyMoneySchedule::OCCUR_ONCE, MyMoneySchedule::MoveNothing },
-                             {"daily" , 'd', 1, MyMoneySchedule::OCCUR_DAILY, MyMoneySchedule::MoveNothing },
-                             //{"daily_mf", 'd', 1, MyMoneySchedule::OCCUR_DAILY, MyMoneySchedule::MoveMonday }, doesn't work, need new freq in kmm
-                             {"weekly", 'w', 1, MyMoneySchedule::OCCUR_WEEKLY, MyMoneySchedule::MoveNothing },
-                             {"bi_weekly", 'w', 2, MyMoneySchedule::OCCUR_EVERYOTHERWEEK, MyMoneySchedule::MoveNothing },
-                             {"monthly", 'm', 1, MyMoneySchedule::OCCUR_MONTHLY, MyMoneySchedule::MoveNothing },
-                             {"quarterly", 'm', 3, MyMoneySchedule::OCCUR_QUARTERLY, MyMoneySchedule::MoveNothing },
-                             {"tri_annually", 'm', 4, MyMoneySchedule::OCCUR_EVERYFOURMONTHS, MyMoneySchedule::MoveNothing },
-                             {"semi_yearly", 'm', 6, MyMoneySchedule::OCCUR_TWICEYEARLY, MyMoneySchedule::MoveNothing },
-                             {"yearly", 'y', 1, MyMoneySchedule::OCCUR_YEARLY, MyMoneySchedule::MoveNothing },
-                             {"zzz", 'y', 1, MyMoneySchedule::OCCUR_YEARLY, MyMoneySchedule::MoveNothing}
-                              // zzz = stopper, may cause problems. what else can we do?
+                           {"once", 'o', 1, MyMoneySchedule::OCCUR_ONCE, MyMoneySchedule::MoveNothing },
+                           {"daily" , 'd', 1, MyMoneySchedule::OCCUR_DAILY, MyMoneySchedule::MoveNothing },
+                           //{"daily_mf", 'd', 1, MyMoneySchedule::OCCUR_DAILY, MyMoneySchedule::MoveMonday }, doesn't work, need new freq in kmm
+                           {"weekly", 'w', 1, MyMoneySchedule::OCCUR_WEEKLY, MyMoneySchedule::MoveNothing },
+                           {"bi_weekly", 'w', 2, MyMoneySchedule::OCCUR_EVERYOTHERWEEK, MyMoneySchedule::MoveNothing },
+                           {"monthly", 'm', 1, MyMoneySchedule::OCCUR_MONTHLY, MyMoneySchedule::MoveNothing },
+                           {"quarterly", 'm', 3, MyMoneySchedule::OCCUR_QUARTERLY, MyMoneySchedule::MoveNothing },
+                           {"tri_annually", 'm', 4, MyMoneySchedule::OCCUR_EVERYFOURMONTHS, MyMoneySchedule::MoveNothing },
+                           {"semi_yearly", 'm', 6, MyMoneySchedule::OCCUR_TWICEYEARLY, MyMoneySchedule::MoveNothing },
+                           {"yearly", 'y', 1, MyMoneySchedule::OCCUR_YEARLY, MyMoneySchedule::MoveNothing },
+                           {"zzz", 'y', 1, MyMoneySchedule::OCCUR_YEARLY, MyMoneySchedule::MoveNothing}
+                            // zzz = stopper, may cause problems. what else can we do?
                            };
-  // find this interval
-  const GncFreqSpec *fs = gsc->getFreqSpec();
+
+  QString frequency = "unknown"; // set default to unknown frequency
+  bool unknownOccurs = false; // may have zero, or more than one frequency/recurrence spec
+  QString schedEnabled;
+  if (gsc->version() == "2.0.0") {
+    if (gsc->m_vpRecurrence.count() != 1) {
+      unknownOccurs = true;
+    } else {
+      const GncRecurrence *gre = gsc->m_vpRecurrence.first();
+      //qDebug (QString("Sched %1, pt %2, mu %3, sd %4").arg(gsc->name()).arg(gre->periodType())
+      //  .arg(gre->mult()).arg(gre->startDate().toString(Qt::ISODate)));
+      frequency = gre->getFrequency();
+      schedEnabled = gsc->enabled();
+    }
+    sc.setOccurence(MyMoneySchedule::OCCUR_ONCE); // FIXME - how to convert
+  } else {
+    // find this interval
+    const GncFreqSpec *fs = gsc->getFreqSpec();
+    if (fs == NULL) {
+      unknownOccurs = true;
+    } else {
+      frequency = fs->intervalType();
+      if (!fs->m_fsList.isEmpty()) unknownOccurs = true; // nested freqspec
+    }
+    schedEnabled = "y"; // earlier versions did not have an enable flag
+  }
+
   int i;
   for (i = 0; vi[i].gncType != "zzz"; i++) {
-    if (fs->intervalType() == vi[i].gncType) break;
+    if (frequency == vi[i].gncType) break;
   }
   if (vi[i].gncType == "zzz") {
-    postMessage ("SC", 1, sc.name().latin1(), fs->intervalType().latin1());
+    postMessage ("SC", 1, sc.name().latin1(), frequency.latin1());
+    i = 0; // treat as single occurrence
     m_suspectSchedule = true;
   }
-  if (!fs->m_fsList.isEmpty()) {
+  if (unknownOccurs) {
     postMessage ("SC", 7, sc.name().latin1());
     m_suspectSchedule = true;
   }
@@ -1688,13 +1779,16 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
   sc.setLastPayment(gsc->lastDate());
   numOccurs = gsc->numOccurs().toInt();
   if (sc.lastPayment() == QDate()) {
-    nextDate = gsc->startDate();
+    nextDate = lastDate = gsc->startDate();
     while (nextDate < today) {
       lastDate = nextDate;
       nextDate = incrDate (lastDate, vi[i].interval, vi[i].intervalCount);
     }
     sc.setLastPayment(lastDate);
   }
+  // under Tom's new regime, the tx dates are the next due date (I think)
+  tx.setPostDate(incrDate(sc.lastPayment(), vi[i].interval, vi[i].intervalCount));
+  tx.setEntryDate(incrDate(sc.lastPayment(), vi[i].interval, vi[i].intervalCount));
   // if an end date was specified, use it, otherwise if the input file had a number
   // of occurs remaining, work out the end date
   sc.setEndDate(gsc->endDate());
@@ -1708,13 +1802,14 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
   }
   // Check for sched deferred interval. Don't know how/if we can handle it, or even what it means...
   if (gsc->getSchedDef() != NULL) {
-    // FIXME: we really need to post a specific error message here, but we're on a string freeze for 0.8. Do it for 1.0
+    postMessage ("SC", 8, sc.name().latin1());
     m_suspectSchedule = true;
   }
   // payment type, options
   sc.setPaymentType((MyMoneySchedule::paymentTypeE)MyMoneySchedule::STYPE_OTHER);
   sc.setFixed (!m_suspectSchedule); // if any probs were found, set it as variable so user will always be prompted
-  sc.setAutoEnter (gsc->autoCreate() == "y");
+  // we don't currently have a 'disable' option, but just make sure auto-enter is off if not enabled
+  sc.setAutoEnter ((gsc->autoCreate() == "y") && (schedEnabled == "y"));
   // type
   QCString actionType = tx.splits().first().action();
   if (actionType == MyMoneySplit::ActionDeposit) {
@@ -1724,6 +1819,8 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
   } else {
     sc.setType((MyMoneySchedule::typeE)MyMoneySchedule::TYPE_BILL);
   }
+  // finally, set the transaction pointer
+  sc.setTransaction(tx);
   //tell the storage objects we have a new schedule object.
   if (m_suspectSchedule && m_dropSuspectSchedules) {
     postMessage ("SC", 2, sc.name().latin1());
@@ -1731,6 +1828,15 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
     m_storage->addSchedule(sc);
     if (m_suspectSchedule)
       m_suspectList.append (sc.id());
+  }
+  if (sc.name().left(8) == "Prospect") {
+    qDebug(QString("Prospect - start %1, last %2, end %3")
+        .arg(sc.startDate().toString(Qt::ISODate))
+        .arg(sc.lastPayment().toString(Qt::ISODate))
+        .arg(sc.endDate().toString(Qt::ISODate)));
+    qDebug(QString("tx post date %1, entry date %2")
+        .arg(sc.transaction().postDate().toString(Qt::ISODate))
+        .arg(sc.transaction().entryDate().toString(Qt::ISODate)));
   }
   signalProgress (++m_scheduleCount, 0);
   return ;
@@ -1742,13 +1848,18 @@ void MyMoneyGncReader::convertFreqSpec (const GncFreqSpec *) {
   // but we will probably need to look into the nested freqspec when we properly implement semi-monthly and stuff
   return ;
 }
+//********************************* convertRecurrence  ********************************************************
+void MyMoneyGncReader::convertRecurrence (const GncRecurrence *) {
+  return ;
+}
+
 //**********************************************************************************************************
 //************************************* terminate **********************************************************
 void MyMoneyGncReader::terminate () {
   TRY
   // All data has been converted and added to storage
   // this code is just temporary to show us what is in the file.
-  if (gncdebug) qDebug("%d accounts found in the GNU Cash file", (unsigned int)m_mapIds.count());
+  if (gncdebug) qDebug("%d accounts found in the GnuCash file", (unsigned int)m_mapIds.count());
   for (map_accountIds::Iterator it = m_mapIds.begin(); it != m_mapIds.end(); ++it) {
     if (gncdebug) qDebug("key = %s, value = %s", it.key().data(), it.data().data());
   }
@@ -1785,6 +1896,8 @@ void MyMoneyGncReader::terminate () {
       MyMoneyAccount equity = m_storage->equity();
       m_storage->addAccount(equity, (*acc));
       if (gncdebug) qDebug("Account id %s is a child of the main equity account", (*acc).id().data());
+    } else if ((*acc).parentAccountId() == m_rootId) {
+      if (gncdebug) qDebug("Account id %s is a child of root", (*acc).id().data());
     } else {
       // it is not under one of the main accounts, so find gnucash parent
       QCString parentKey = (*acc).parentAccountId();
@@ -2237,7 +2350,8 @@ GncMessages::messText GncMessages::texts [] = {
       {"SC", 4, i18n("Schedule %1 contains multiple actions; only one has been imported")},
       {"SC", 5, i18n("Schedule %1 contains no valid splits")},
       {"SC", 6, i18n("Schedule %1 appears to contain a formula. GnuCash formulae are not convertible")},
-      {"SC", 7, i18n("Schedule %1 contains a composite interval specification; please check for correct operation")},
+      {"SC", 7, i18n("Schedule %1 contains unknown interval specification; please check for correct operation")},
+      {"SC", 8, i18n("Schedule %1 contains a deferred interval specification; please check for correct operation")},
       {"CC", 4, i18n("Account or Category %1, transaction date %2; split contains invalid value; please check")},
       {"ZZ", 0, ""} // stopper
     };
