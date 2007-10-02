@@ -458,6 +458,8 @@ void KHomeView::showPayments(void)
         if(it == schedule.end())
           break;
 
+        // if the next due date is invalid (schedule is finished)
+        // we remove it from the list
         QDate nextDate = (*it).nextDueDate();
         if(!nextDate.isValid()) {
           schedule.remove(it);
@@ -477,6 +479,13 @@ void KHomeView::showPayments(void)
         m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
         showPaymentEntry(*it);
         m_part->write("</tr>");
+
+        // for single occurence we have reported everything so we
+        // better get out of here.
+        if((*it).occurence() == MyMoneySchedule::OCCUR_ONCE) {
+          schedule.remove(it);
+          continue;
+        }
 
         (*it).setNextDueDate((*it).nextPayment((*it).nextDueDate()));
         qBubbleSort(schedule);
