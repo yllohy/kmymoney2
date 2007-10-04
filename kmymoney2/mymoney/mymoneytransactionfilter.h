@@ -113,6 +113,9 @@ public:
     userDefined,
     last3ToNext3Months,
     last11Months,
+    currentQuarter,
+    lastQuarter,
+    nextQuarter,
     // insert new constants above of this line
     dateOptionCount
   };
@@ -481,7 +484,7 @@ public:
     * @param end QDate will be set to corresponding to the last date in @p range
     * @return return true if a range was successfully set, or false if @p range was invalid
     */
-  static const bool translateDateRange(int range, QDate& start, QDate& end);
+  static const bool translateDateRange(int range, QDate& start, QDate& end) KDE_DEPRECATED;
 
   FilterSet filterSet(void) const { return m_filterSet; };
 
