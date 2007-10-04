@@ -235,14 +235,6 @@ protected slots:
   void slotInstitutionDelete(void);
 
   /**
-    * Creates a new institution entry in the MyMoneyFile engine
-    *
-    * @param institution MyMoneyInstitution object containing the data of
-    *                    the institution to be created.
-    */
-  void slotInstitutionNew(MyMoneyInstitution institution);
-
-  /**
     * Brings up the new category editor and saves the information.
     * The dialog will be preset with the name. The parent defaults to
     * MyMoneyFile::expense()
@@ -618,6 +610,14 @@ protected:
     */
   bool enterSchedule(MyMoneySchedule& s, bool autoEnter = false);
 
+  /**
+    * Creates a new institution entry in the MyMoneyFile engine
+    *
+    * @param institution MyMoneyInstitution object containing the data of
+    *                    the institution to be created.
+    */
+  void createInstitution(MyMoneyInstitution& institution);
+
 public slots:
   void slotFileInfoDialog(void);
 
@@ -965,6 +965,16 @@ public slots:
     * Brings up the input dialog and saves the information.
     */
   void slotInstitutionNew(void);
+
+  /**
+    * Brings up the input dialog and saves the information. If
+    * the institution has been created, the @a id member is filled,
+    * otherwise it is empty.
+    *
+    * @param institution reference to data to be used to create the
+    *                    institution. id member will be updated.
+    */
+  void slotInstitutionNew(MyMoneyInstitution& institution);
 
 private:
   // bool verifyImportedData(const MyMoneyAccount& account);

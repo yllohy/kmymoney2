@@ -919,10 +919,15 @@ void MyMoneyFile::accountList(QValueList<MyMoneyAccount>& list, const QCStringLi
   }
 }
 
+void MyMoneyFile::institutionList(QValueList<MyMoneyInstitution>& list) const
+{
+  d->m_cache.institution(list);
+}
+
 const QValueList<MyMoneyInstitution> MyMoneyFile::institutionList(void) const
 {
   QValueList<MyMoneyInstitution> list;
-  d->m_cache.institution(list);
+  institutionList(list);
   return list;
 }
 

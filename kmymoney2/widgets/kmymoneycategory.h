@@ -35,7 +35,7 @@ class KPushButton;
 // Project Includes
 
 #include <kmymoney/mymoneyaccount.h>
-#include "../widgets/kmymoneycombo.h"
+#include <kmymoney/kmymoneycombo.h>
 
 class kMyMoneyAccountSelector;
 class KMyMoneyCategoryPrivate;

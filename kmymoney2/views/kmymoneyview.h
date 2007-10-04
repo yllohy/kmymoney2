@@ -54,7 +54,6 @@ class KInstitutionsView;
 class KPayeesView;
 class KBudgetView;
 class KScheduledView;
-class KNewAccountWizard;
 class KGlobalLedgerView;
 class IMyMoneyStorageFormat;
 class MyMoneyTransaction;

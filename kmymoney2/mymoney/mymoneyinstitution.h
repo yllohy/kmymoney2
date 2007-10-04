@@ -138,6 +138,7 @@ public:
   const unsigned int accountCount(void) const { return m_accountList.count(); }
 
   bool operator == (const MyMoneyInstitution&) const;
+  bool operator < (const MyMoneyInstitution& right) const;
 
   void writeXML(QDomDocument& document, QDomElement& parent) const;
 

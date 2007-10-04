@@ -99,7 +99,6 @@
 #include "dialogs/kmymoneyfileinfodlg.h"
 #include "dialogs/kfindtransactiondlg.h"
 #include "dialogs/knewbankdlg.h"
-#include "dialogs/knewaccountwizard.h"
 #include "dialogs/knewinvestmentwizard.h"
 #include "dialogs/knewaccountdlg.h"
 #include "dialogs/knewfiledlg.h"
@@ -114,6 +113,7 @@
 #include "dialogs/kendingbalancedlg.h"
 
 #include "dialogs/newuserwizard/knewuserwizard.h"
+#include "dialogs/newaccountwizard/knewaccountwizard.h"
 
 #ifdef USE_OFX_DIRECTCONNECT
 #include "dialogs/kofxdirectconnectdlg.h"
@@ -2250,7 +2250,7 @@ void KMyMoney2App::slotCloseSearchDialog(void)
   m_searchDlg = 0;
 }
 
-void KMyMoney2App::slotInstitutionNew(MyMoneyInstitution institution)
+void KMyMoney2App::createInstitution(MyMoneyInstitution& institution)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -2269,10 +2269,17 @@ void KMyMoney2App::slotInstitutionNew(MyMoneyInstitution institution)
 void KMyMoney2App::slotInstitutionNew(void)
 {
   MyMoneyInstitution institution;
+  slotInstitutionNew(institution);
+}
 
+void KMyMoney2App::slotInstitutionNew(MyMoneyInstitution& institution)
+{
+  institution.clearId();
   KNewBankDlg dlg(institution);
-  if (dlg.exec())
-    slotInstitutionNew(dlg.institution());
+  if (dlg.exec()) {
+    institution = dlg.institution();
+    createInstitution(institution);
+  }
 }
 
 void KMyMoney2App::slotInstitutionEdit(const MyMoneyObject& obj)
@@ -2498,6 +2505,40 @@ void KMyMoney2App::slotAccountNew(void)
 
 void KMyMoney2App::slotAccountNew(MyMoneyAccount& acc)
 {
+#if 1
+  NewAccountWizard::Wizard* wizard = new NewAccountWizard::Wizard();
+  connect(wizard, SIGNAL(newInstitutionClicked(MyMoneyInstitution&)), this, SLOT(slotInstitutionNew(MyMoneyInstitution&)));
+
+  if(wizard->exec() == QDialog::Accepted) {
+    MyMoneyAccount acc = wizard->account();
+    if(!(acc == MyMoneyAccount())) {
+      MyMoneyFileTransaction ft;
+      MyMoneyFile* file = MyMoneyFile::instance();
+      try {
+        // create the account
+        MyMoneyAccount parent = wizard->parentAccount();
+        file->addAccount(acc, parent);
+        // tell the wizard about the accound id which it
+        // needs to create a possible schedule
+        wizard->setAccount(acc);
+
+        // create the opening balance transaction if any
+        file->createOpeningBalanceTransaction(acc, wizard->openingBalance());
+
+        // create a possible schedule
+        MyMoneySchedule sch = wizard->schedule();
+        if(!(sch == MyMoneySchedule())) {
+          MyMoneyFile::instance()->addSchedule(sch);
+        }
+        ft.commit();
+      } catch (MyMoneyException *e) {
+        KMessageBox::error(this, i18n("Unable to create account: %1").arg(e->what()));
+      }
+    }
+  }
+  delete wizard;
+
+#else
   KNewAccountWizard newAccountWizard;
 
   connect(&newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotInstitutionNew()));
@@ -2526,6 +2567,7 @@ void KMyMoney2App::slotAccountNew(MyMoneyAccount& acc)
     createSchedule(schedule, newAccount);
     acc = newAccount;
   }
+#endif
 }
 
 void KMyMoney2App::slotInvestmentNew(MyMoneyAccount& account, const MyMoneyAccount& parent)
@@ -4840,8 +4882,10 @@ void KMyMoney2App::slotUpdateActions(void)
             if(m_reconciliationAccount.id().isEmpty()) {
               action("account_reconcile")->setEnabled(true);
             } else {
-              action("account_reconcile_finish")->setEnabled(m_selectedAccount.id() == m_reconciliationAccount.id());
-              action("account_reconcile_postpone")->setEnabled(m_selectedAccount.id() == m_reconciliationAccount.id());
+              if(!m_transactionEditor) {
+                action("account_reconcile_finish")->setEnabled(m_selectedAccount.id() == m_reconciliationAccount.id());
+                action("account_reconcile_postpone")->setEnabled(m_selectedAccount.id() == m_reconciliationAccount.id());
+              }
             }
           }
 

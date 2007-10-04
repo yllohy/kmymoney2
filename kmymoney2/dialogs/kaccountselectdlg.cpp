@@ -40,9 +40,6 @@
 // Project Includes
 
 #include "kaccountselectdlg.h"
-#include "knewaccountwizard.h"
-#include "knewaccountdlg.h"
-#include "knewbankdlg.h"
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneyfile.h>
 #include "../widgets/kmymoneyaccountselector.h"

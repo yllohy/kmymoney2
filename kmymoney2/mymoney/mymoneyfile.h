@@ -670,6 +670,15 @@ public:
     * This method returns a list of the institutions
     * inside a MyMoneyFile object
     *
+    * @param list reference to the list. It will be cleared by this method first
+    */
+  void institutionList(QValueList<MyMoneyInstitution>& list) const;
+
+  /**
+    * This method returns a list of the institutions
+    * inside a MyMoneyFile object. This is a convenience method
+    * to the one above
+    *
     * @return QValueList containing the institution objects
     */
   const QValueList<MyMoneyInstitution> institutionList(void) const;

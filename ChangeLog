@@ -1,3 +1,20 @@
+2007-10-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added operator < to MyMoneyInstitution
+  * Added operator < to MyMoneySecurity
+  * Replaced new account wizard
+  * Started implementation of KMyMoneyPeriodCombo
+  * Sort entries in KMyMoneySecuritySelector
+  * Changed display in KMyMoneySecuritySelctor from "Symbol (Name)"
+    to Name (Symbol)"
+  * Improved KMyMoneyWizard base class
+  * Disable 'postpone reconciliation' and 'finish reconciliation'
+    buttons during transaction edit
+  * Updated tips file
+
+2007-10-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Use KDE window title font for KMyMoneyTitleLabels
+  * Setup default buttons for KMyMoneyWizard
+
 2007-10-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Avoid display of multiple entries for single time schedules on homepage
 

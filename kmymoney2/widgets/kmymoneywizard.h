@@ -116,7 +116,11 @@ class KMyMoneyWizardPagePrivate;
   *   KNewUserGeneralDecl(parent),
   *   KNewUserPage(1, this, parent, name)
   * {
+  *   kMandatoryFieldGroup* mandatoryGroup = new kMandatoryFieldGroup(this);
+  *   mandatoryGroup->add(m_userName);
+  *   connect(m_mandatoryGroup, SIGNAL(stateChanged()), object(), SIGNAL(completeStateChanged()));
   * }
+  *
   * KMyMoneyWizardPage* KNewUserGeneral::nextPage(void)
   * {
   *   return m_wizard->m_personalPage;
@@ -192,10 +196,22 @@ public:
   /**
     * This method returns a pointer to the QObject used for
     * the signal/slot mechanism.
-    * It is required by the KMyMoneyWizard and is not intended
-    * to be used by application code.
+    * It is required by the KMyMoneyWizard and can be used
+    * by application code for signal/slot connections as well.
+    * Other use is not foreseen.
     */
   QObject* object(void) const;
+
+  /**
+    * This method returns a pointer to the widget which should
+    * receive the focus when the page is opened.
+    *
+    * @return pointer to widget or 0 if none is to be selected
+    *         The default implementation returns 0
+    */
+  virtual QWidget* initialFocusWidget(void) const { return 0; }
+
+  virtual KMyMoneyWizard* wizard(void) const = 0;
 
 protected:
   /**
@@ -220,24 +236,27 @@ private:
 };
 
 
-
 /**
-  * The general base class for new user wizard pages
-  *
-  * @author Thomas Baumgart
-  */
+ * The general base class for wizard pages
+ *
+ * @author Thomas Baumgart
+ */
 template <class T>
-class WizardPage : public KMyMoneyWizardPage
+    class WizardPage : public KMyMoneyWizardPage
 {
 public:
   WizardPage(unsigned int step, QWidget* widget, T* parent, const char* name) :
     KMyMoneyWizardPage(step, widget, name),
-    m_wizard(parent)
-  {
-  }
+    m_wizard(parent),
+    m_wizardBase(parent)
+    {
+    }
+
+    virtual KMyMoneyWizard* wizard(void) const { return m_wizardBase; }
 
 protected:
-  T*    m_wizard;
+  T*                m_wizard;
+  KMyMoneyWizard*   m_wizardBase;
 };
 
 
@@ -343,6 +362,8 @@ protected:
   */
 class KMyMoneyWizard : public QDialog
 {
+  friend class KMyMoneyWizardPage;
+
   Q_OBJECT
 public:
   /**
@@ -379,6 +400,16 @@ private slots:
   void nextButtonClicked(void);
   void completeStateChanged(void);
 
+protected:
+  /*
+   * The buttons
+   */
+  KPushButton*          m_cancelButton;
+  KPushButton*          m_backButton;
+  KPushButton*          m_nextButton;
+  KPushButton*          m_finishButton;
+  KPushButton*          m_helpButton;
+
 private:
   /**
     * Switch to page which is currently the top of the history stack.
@@ -395,15 +426,6 @@ private:
     * @param step step to be selected
     */
   void selectStep(unsigned int step);
-
-  /*
-   * The buttons
-   */
-  KPushButton*          m_cancelButton;
-  KPushButton*          m_backButton;
-  KPushButton*          m_nextButton;
-  KPushButton*          m_finishButton;
-  KPushButton*          m_helpButton;
 
   /*
    * The layouts
@@ -434,5 +456,7 @@ private:
    */
   QValueList<KMyMoneyWizardPage*> m_history;
 };
+
+
 
 #endif

@@ -573,4 +573,210 @@ void KMyMoneyGeneralCombo::slotSetItem(const QCString& id)
   update();
 }
 
+class KMyMoneyPeriodComboPrivate {
+public:
+  QMap<QString, MyMoneyTransactionFilter::dateOptionE> m_strings;
+  void addPeriod(const QString& s, MyMoneyTransactionFilter::dateOptionE idx) { m_strings[s] == idx; }
+
+  MyMoneyTransactionFilter::dateOptionE period(const QString& s) const {
+    QMap<QString, MyMoneyTransactionFilter::dateOptionE>::const_iterator it;
+    it = m_strings.find(s);
+    if(it != m_strings.end())
+      return *it;
+    return MyMoneyTransactionFilter::userDefined;
+  }
+
+  const QString& period(MyMoneyTransactionFilter::dateOptionE idx) {
+    QMap<QString, MyMoneyTransactionFilter::dateOptionE>::const_iterator it;
+    for(it = m_strings.begin(); it != m_strings.end(); ++it) {
+      if(*it == idx) {
+        return it.key();
+      }
+    }
+    return QString::null;
+  }
+};
+
+KMyMoneyPeriodCombo::KMyMoneyPeriodCombo(QWidget* parent, const char* name) :
+  KComboBox(parent, name),
+  d(new KMyMoneyPeriodComboPrivate)
+{
+  addPeriod(i18n("All dates"), MyMoneyTransactionFilter::allDates);
+  addPeriod(i18n("Until today"), MyMoneyTransactionFilter::untilToday);
+  addPeriod(i18n("Current month"), MyMoneyTransactionFilter::currentMonth);
+  addPeriod(i18n("Current quarter"), MyMoneyTransactionFilter::currentQuarter);
+  addPeriod(i18n("Current Year"), MyMoneyTransactionFilter::currentYear);
+  addPeriod(i18n("Month to date"), MyMoneyTransactionFilter::monthToDate);
+  addPeriod(i18n("Year to date"), MyMoneyTransactionFilter::yearToDate);
+  addPeriod(i18n("Year to month"), MyMoneyTransactionFilter::yearToMonth);
+  addPeriod(i18n("Last month"), MyMoneyTransactionFilter::lastMonth);
+  addPeriod(i18n("Last Year"), MyMoneyTransactionFilter::lastYear);
+  addPeriod(i18n("Last 7 days"), MyMoneyTransactionFilter::last7Days);
+  addPeriod(i18n("Last 30 days"), MyMoneyTransactionFilter::last30Days);
+  addPeriod(i18n("Last 3 months"), MyMoneyTransactionFilter::last3Months);
+  addPeriod(i18n("Last quarter"), MyMoneyTransactionFilter::lastQuarter);
+  addPeriod(i18n("Last 6 months"), MyMoneyTransactionFilter::last6Months);
+  addPeriod(i18n("Last 11 months"), MyMoneyTransactionFilter::last11Months);
+  addPeriod(i18n("Last 12 months"), MyMoneyTransactionFilter::last12Months);
+  addPeriod(i18n("Next 7 days"), MyMoneyTransactionFilter::next7Days);
+  addPeriod(i18n("Next 30 days"), MyMoneyTransactionFilter::next30Days);
+  addPeriod(i18n("Next 3 months"), MyMoneyTransactionFilter::next3Months);
+  addPeriod(i18n("Next quarter"), MyMoneyTransactionFilter::lastQuarter);
+  addPeriod(i18n("Next 6 months"), MyMoneyTransactionFilter::next6Months);
+  addPeriod(i18n("Next 12 months"), MyMoneyTransactionFilter::next12Months);
+  addPeriod(i18n("Last 3 months to next 3 months"), MyMoneyTransactionFilter::last3ToNext3Months);
+  addPeriod(i18n("User defined"), MyMoneyTransactionFilter::userDefined);
+}
+
+void KMyMoneyPeriodCombo::addPeriod(const QString& s, MyMoneyTransactionFilter::dateOptionE idx)
+{
+  d->addPeriod(s, idx);
+  insertItem(s);
+}
+
+void KMyMoneyPeriodCombo::setPeriod(MyMoneyTransactionFilter::dateOptionE idx)
+{
+  if(idx >= MyMoneyTransactionFilter::dateOptionCount)
+    idx = MyMoneyTransactionFilter::userDefined;
+
+  setCurrentText(d->period(idx));
+}
+
+MyMoneyTransactionFilter::dateOptionE KMyMoneyPeriodCombo::period(void) const
+{
+  return d->period(currentText());
+}
+
+QDate KMyMoneyPeriodCombo::start(void) const
+{
+  QDate start, end;
+  dates(start, end);
+  return start;
+}
+
+QDate KMyMoneyPeriodCombo::end(void) const
+{
+  QDate start, end;
+  dates(start, end);
+  return end;
+}
+
+void KMyMoneyPeriodCombo::dates(QDate& start, QDate& end) const
+{
+  int yr, mon, day;
+  yr = QDate::currentDate().year();
+  mon = QDate::currentDate().month();
+  day = QDate::currentDate().day();
+
+  switch(d->period(currentText())) {
+    case MyMoneyTransactionFilter::allDates:
+      start = QDate();
+      end = QDate();
+      break;
+    case MyMoneyTransactionFilter::untilToday:
+      start = QDate();
+      end =  QDate::currentDate();
+      break;
+    case MyMoneyTransactionFilter::currentMonth:
+      start = QDate(yr,mon,1);
+      end = QDate(yr,mon,1).addMonths(1).addDays(-1);
+      break;
+    case MyMoneyTransactionFilter::currentYear:
+      start = QDate(yr,1,1);
+      end = QDate(yr,12,31);
+      break;
+    case MyMoneyTransactionFilter::monthToDate:
+      start = QDate(yr,mon,1);
+      end = QDate::currentDate();
+      break;
+    case MyMoneyTransactionFilter::yearToDate:
+      start = QDate(yr,1,1);
+      end = QDate::currentDate();
+      break;
+    case MyMoneyTransactionFilter::yearToMonth:
+      start = QDate(yr,1,1);
+      end = QDate(yr,mon,1).addDays(-1);
+      break;
+    case MyMoneyTransactionFilter::lastMonth:
+      start = QDate(yr,mon,1).addMonths(-1);
+      end = QDate(yr,mon,1).addDays(-1);
+      break;
+    case MyMoneyTransactionFilter::lastYear:
+      start = QDate(yr,1,1).addYears(-1);
+      end = QDate(yr,12,31).addYears(-1);
+      break;
+    case MyMoneyTransactionFilter::last7Days:
+      start = QDate::currentDate().addDays(-7);
+      end = QDate::currentDate();
+      break;
+    case MyMoneyTransactionFilter::last30Days:
+      start = QDate::currentDate().addDays(-30);
+      end = QDate::currentDate();
+      break;
+    case MyMoneyTransactionFilter::last3Months:
+      start = QDate::currentDate().addMonths(-3);
+      end = QDate::currentDate();
+      break;
+    case MyMoneyTransactionFilter::last6Months:
+      start = QDate::currentDate().addMonths(-6);
+      end = QDate::currentDate();
+      break;
+    case MyMoneyTransactionFilter::last11Months:
+      start = QDate(yr,mon,1).addMonths(-12);
+      end = QDate(yr,mon,1).addDays(-1);
+      break;
+    case MyMoneyTransactionFilter::last12Months:
+      start = QDate::currentDate().addMonths(-12);
+      end = QDate::currentDate();
+      break;
+    case MyMoneyTransactionFilter::next7Days:
+      start = QDate::currentDate();
+      end = QDate::currentDate().addDays(7);
+      break;
+    case MyMoneyTransactionFilter::next30Days:
+      start = QDate::currentDate();
+      end = QDate::currentDate().addDays(30);
+      break;
+    case MyMoneyTransactionFilter::next3Months:
+      start = QDate::currentDate();
+      end = QDate::currentDate().addMonths(3);
+      break;
+    case MyMoneyTransactionFilter::next6Months:
+      start = QDate::currentDate();
+      end = QDate::currentDate().addMonths(6);
+      break;
+    case MyMoneyTransactionFilter::next12Months:
+      start = QDate::currentDate();
+      end = QDate::currentDate().addMonths(12);
+      break;
+    case MyMoneyTransactionFilter::userDefined:
+      start = QDate();
+      end = QDate();
+      break;
+    case MyMoneyTransactionFilter::last3ToNext3Months:
+      start = QDate::currentDate().addMonths(-3);
+      end = QDate::currentDate().addMonths(3);
+      break;
+    case MyMoneyTransactionFilter::currentQuarter:
+      start = QDate(yr, mon - ((mon-1) % 3), 1);
+      end = start.addMonths(3).addDays(-1);
+      break;
+    case MyMoneyTransactionFilter::lastQuarter:
+      start = QDate(yr, mon - ((mon-1) % 3), 1).addMonths(-3);
+      end = start.addMonths(3).addDays(-1);
+      break;
+    case MyMoneyTransactionFilter::nextQuarter:
+      start = QDate(yr, mon - ((mon-1) % 3), 1).addMonths(3);
+      end = start.addMonths(3).addDays(-1);
+      break;
+    default:
+      qFatal("Unknown date identifier in KMyMoneyPeriodCombo::dates()");
+      break;
+  }
+}
+
+KMyMoneyPeriodCombo::~KMyMoneyPeriodCombo()
+{
+  delete d;
+}
 #include "kmymoneycombo.moc"

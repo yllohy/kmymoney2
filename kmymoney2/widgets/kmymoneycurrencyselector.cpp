@@ -79,6 +79,9 @@ void KMyMoneySecuritySelector::update(const QCString& id)
   if(m_displayType & TypeSecurities)
     m_list += MyMoneyFile::instance()->securityList();
 
+  // sort
+  qHeapSort(m_list);
+
   QValueList<MyMoneySecurity>::ConstIterator it;
 
   // construct a transparent 16x16 pixmap
@@ -93,9 +96,9 @@ void KMyMoneySecuritySelector::update(const QCString& id)
       default:
       case FullName:
         if((*it).isCurrency()) {
-          display = QString("%1 (%2)").arg((*it).id()).arg((*it).name());
+          display = QString("%2 (%1)").arg((*it).id()).arg((*it).name());
         } else
-          display = QString("%1 (%2)").arg((*it).tradingSymbol()).arg((*it).name());
+          display = QString("%2 (%1)").arg((*it).tradingSymbol()).arg((*it).name());
         break;
         break;
 

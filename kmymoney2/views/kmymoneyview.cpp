@@ -68,7 +68,6 @@
 #include <string>
 #endif
 
-#include "../dialogs/knewaccountwizard.h"
 #include "../dialogs/knewaccountdlg.h"
 #include "../dialogs/kendingbalancedlg.h"
 #include "../dialogs/kchooseimportexportdlg.h"

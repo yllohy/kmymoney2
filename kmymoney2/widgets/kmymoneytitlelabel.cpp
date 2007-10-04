@@ -41,10 +41,7 @@ KMyMoneyTitleLabel::KMyMoneyTitleLabel(QWidget *parent, const char *name) :
   m_bgColor( KGlobalSettings::highlightColor() ),
   m_textColor( KGlobalSettings::highlightedTextColor() )
 {
-  QFont f = font();
-  f.setPointSize(14);
-  f.setStyleHint( QFont::SansSerif, QFont::PreferAntialias );
-  setFont(f);
+  setFont(KGlobalSettings::windowTitleFont());
 }
 
 KMyMoneyTitleLabel::~KMyMoneyTitleLabel()

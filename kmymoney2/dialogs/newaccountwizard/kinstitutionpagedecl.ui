@@ -1,0 +1,161 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>KInstitutionPageDecl</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>KInstitutionPageDecl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>586</width>
+            <height>322</height>
+        </rect>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <widget class="KActiveLabel">
+            <property name="name">
+                <cstring>kActiveLabel1</cstring>
+            </property>
+            <property name="focusPolicy">
+                <enum>NoFocus</enum>
+            </property>
+            <property name="text">
+                <string>If this account is managed by an institution please select the institution from the list. If the institution does not exist yet, please choose the &lt;b&gt;New Institution&lt;/b&gt; button to create it. Otherwise, leave this field empty.
+Enter the account number used by the institution to identify the account.</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout19</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout18</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="KLineEdit" row="1" column="1">
+                            <property name="name">
+                                <cstring>m_accountNumber</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Accounts managed by an institution are usually referenced by a unique number the so called account number. Enter that number here.
+
+KMyMoney currently uses this number only for some online banking functions.</string>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox" row="0" column="1">
+                            <property name="name">
+                                <cstring>m_institutionComboBox</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Select the institution which manages this account or leave empty</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="2" column="1">
+                            <property name="name">
+                                <cstring>m_iban</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Enter the International Bank Account Number into this field</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>You can enter the IBAN (International Bank Account Number) into this field if you know it. Usually, people at your institution can tell you the number or it is printed on your statements.
+
+See also http://en.wikipedia.org/wiki/International_Bank_Account_Number for more information.
+
+KMyMoney keeps this field only for documentation purposes and does not use it otherwise.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>IBAN</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel5</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Account number</string>
+                            </property>
+                        </widget>
+                        <widget class="KPushButton" row="0" column="2">
+                            <property name="name">
+                                <cstring>m_newInstitutionButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Ne&amp;w Institution</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel4</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Institution</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer16</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>132</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer17</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>40</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<tabstops>
+    <tabstop>m_institutionComboBox</tabstop>
+    <tabstop>m_newInstitutionButton</tabstop>
+    <tabstop>m_accountNumber</tabstop>
+</tabstops>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

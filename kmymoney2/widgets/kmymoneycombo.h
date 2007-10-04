@@ -38,6 +38,7 @@
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/transaction.h>
 #include <kmymoney/mymoneypayee.h>
+#include <kmymoney/mymoneytransactionfilter.h>
 
 class kMyMoneyCompletion;
 class KMyMoneySelector;
@@ -333,6 +334,30 @@ public:
   void loadPayees(const QValueList<MyMoneyPayee>& list);
 };
 
+
+/**
+ * This class implements a time period selector
+ * @author Thomas Baumgart
+ */
+class KMyMoneyPeriodComboPrivate;
+class KMyMoneyPeriodCombo : public KComboBox
+{
+  Q_OBJECT
+public:
+  KMyMoneyPeriodCombo(QWidget* parent = 0, const char* name = 0);
+  ~KMyMoneyPeriodCombo();
+
+  MyMoneyTransactionFilter::dateOptionE period(void) const;
+  void setPeriod(MyMoneyTransactionFilter::dateOptionE idx);
+
+  QDate start(void) const;
+  QDate end(void) const;
+
+private:
+  void addPeriod(const QString& s, MyMoneyTransactionFilter::dateOptionE idx);
+  void dates(QDate& start, QDate& end) const;
+  KMyMoneyPeriodComboPrivate* d;
+};
 
 class KMyMoneyGeneralCombo : public KMyMoneyCombo
 {

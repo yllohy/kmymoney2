@@ -22,6 +22,7 @@
 #include <qpoint.h>
 #include <qfont.h>
 #include <qframe.h>
+#include <qtooltip.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -84,9 +85,12 @@ bool KMyMoneyWizardPage::isLastPage(void) const
 
 bool KMyMoneyWizardPage::isComplete(void) const
 {
+  if(!isLastPage())
+    QToolTip::add(wizard()->m_nextButton, i18n("Continue with next page"));
+  else
+    QToolTip::add(wizard()->m_finishButton, i18n("Finish wizard"));
   return true;
 }
-
 
 
 KMyMoneyWizard::KMyMoneyWizard(QWidget *parent, const char *name, bool modal, WFlags f) :
@@ -194,7 +198,7 @@ void KMyMoneyWizard::addStep(const QString& text)
 
 void KMyMoneyWizard::selectStep(unsigned int step)
 {
-  if(step < 1 || step > m_steps.count())
+  if((step < 1) || (step > m_steps.count()))
     return;
 
   m_stepLabel->setText(i18n("Step %1 of %2").arg(step).arg(m_steps.count()));
@@ -232,6 +236,16 @@ void KMyMoneyWizard::switchPage(KMyMoneyWizardPage* oldPage)
     connect(newPage->object(), SIGNAL(completeStateChanged()), this, SLOT(completeStateChanged()));
     newPage->widget()->show();
     selectStep(newPage->step());
+    if(newPage->isLastPage()) {
+      m_nextButton->setDefault(false);
+      m_finishButton->setDefault(true);
+    } else {
+      m_finishButton->setDefault(false);
+      m_nextButton->setDefault(true);
+    }
+    QWidget* w = newPage->initialFocusWidget();
+    if(w)
+      w->setFocus();
   }
   completeStateChanged();
 }

@@ -112,6 +112,11 @@ QCString MyMoneyInstitution::removeAccountId(const QCString& account)
   return rc;
 }
 
+bool MyMoneyInstitution::operator < (const MyMoneyInstitution& right) const
+{
+  return m_name < right.m_name;
+}
+
 bool MyMoneyInstitution::operator == (const MyMoneyInstitution& right) const
 {
   if (MyMoneyObject::operator==(right) &&
@@ -159,7 +164,7 @@ void MyMoneyInstitution::writeXML(QDomDocument& document, QDomElement& parent) c
   parent.appendChild(el);
 }
 
-bool MyMoneyInstitution::hasReferenceTo(const QCString& id) const
+bool MyMoneyInstitution::hasReferenceTo(const QCString& /* id */) const
 {
   bool rc = false;
   return rc;

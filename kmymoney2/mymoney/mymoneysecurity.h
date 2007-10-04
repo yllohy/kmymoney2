@@ -62,10 +62,12 @@ public:
   MyMoneySecurity(const QDomElement& node);
   virtual ~MyMoneySecurity();
 
+  bool operator < (const MyMoneySecurity&) const;
+
   /**
     * This operator tests for equality of two MyMoneySecurity objects
     */
-  const bool operator == (const MyMoneySecurity&) const;
+  bool operator == (const MyMoneySecurity&) const;
 
   /**
     * This operator tests for inequality of this MyMoneySecurity object
@@ -73,7 +75,7 @@ public:
     *
     * @param r the right side of the comparison
     */
-  const bool operator != (const MyMoneySecurity& r) const { return !(*this == r); }
+  bool operator != (const MyMoneySecurity& r) const { return !(*this == r); }
 
 public:
   typedef enum {

@@ -92,7 +92,7 @@ MyMoneySecurity::~MyMoneySecurity()
 {
 }
 
-const bool MyMoneySecurity::operator == (const MyMoneySecurity& r) const
+bool MyMoneySecurity::operator == (const MyMoneySecurity& r) const
 {
   return (m_id == r.m_id)
       && (m_name == r.m_name)
@@ -107,6 +107,14 @@ const bool MyMoneySecurity::operator == (const MyMoneySecurity& r) const
       && this->MyMoneyKeyValueContainer::operator == (r);
 
 }
+
+bool MyMoneySecurity::operator < (const MyMoneySecurity& right) const
+{
+  if(m_securityType == right.m_securityType)
+    return m_name < right.m_name;
+  return m_securityType < right.m_securityType;
+}
+
 
 bool MyMoneySecurity::hasReferenceTo(const QCString& id) const
 {
