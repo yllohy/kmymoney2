@@ -57,6 +57,7 @@
 #include "../kmymoneyutils.h"
 #include "../kmymoneysettings.h"
 #include "../mymoney/mymoneyfile.h"
+#include "../mymoney/mymoneyforecast.h"
 #include "../kmymoney2.h"
 #include "../reports/kreportchartview.h"
 #include "../reports/pivottable.h"
@@ -760,261 +761,91 @@ void KHomeView::showTrendBasedForecast(void)
 
 void KHomeView::showScheduleBasedForecast(void)
 {
-  typedef QMap<int, MyMoneyMoney> dailyBalances;
-  QMap<QCString, dailyBalances> accountList;
   QMap<QString, QCString> nameIdx;
   MyMoneyFile* file = MyMoneyFile::instance();
-  const int forecastDays = 90;
-  int  txnCount = 0;
+  QValueList<MyMoneyAccount> accList;
+  MyMoneyForecast forecast;
 
-  QDate endDate = QDate::currentDate().addDays(forecastDays);
-  MyMoneyTransactionFilter filter;
-
-  // collect and process all transactions that have already been entered but
-  // are located in the future.
-  filter.setDateFilter(QDate::currentDate().addDays(1), endDate);
-  filter.setReportAllSplits(false);
-
-  QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
-  QValueList<MyMoneyTransaction>::const_iterator it_t = transactions.begin();
-
-  for(; it_t != transactions.end(); ++it_t ) {
-    const QValueList<MyMoneySplit>& splits = (*it_t).splits();
-    QValueList<MyMoneySplit>::const_iterator it_s = splits.begin();
-    for(; it_s != splits.end(); ++it_s ) {
-      if(!(*it_s).shares().isZero()) {
-        MyMoneyAccount acc = file->account((*it_s).accountId());
-        if(acc.isAssetLiability() && !acc.isInvest()) {
-          dailyBalances balance;
-          balance = accountList[acc.id()];
-          int offset = QDate::currentDate().daysTo((*it_t).postDate())+1;
-          balance[offset] += (*it_s).shares();
-          // check if this is a new account for us
-          if(nameIdx[acc.name()] != acc.id()) {
-            nameIdx[acc.name()] = acc.id();
-            balance[0] = file->balance(acc.id(), QDate::currentDate());
-          }
-          accountList[acc.id()] = balance;
-        }
-      }
-    }
-    ++txnCount;
-  }
-
-#if 0
-  QFile trcFile("forecast.csv");
-  trcFile.open(IO_WriteOnly);
-  QTextStream s(&trcFile);
-
+  //Get all accounts of the right type to calculate forecast
+  forecast.doForecast();
+  accList = forecast.forecastAccountList();
+  QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
+  for ( ; accList_t != accList.end(); ++accList_t )
   {
-    s << "Already present transactions\n";
-    QMap<QCString, dailyBalances>::Iterator it_a;
-    QMap<QString, QCString>::ConstIterator it_n;
-    for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
-      MyMoneyAccount acc = file->account(*it_n);
-      it_a = accountList.find(*it_n);
-      s << "\"" << acc.name() << "\",";
-      for(int i = 0; i < 90; ++i) {
-        s << "\"" << (*it_a)[i].formatMoney("") << "\",";
-      }
-      s << "\n";
+    MyMoneyAccount acc = *accList_t;
+    if ( nameIdx[acc.name() ] != acc.id() ) { //Check if the account is there
+      nameIdx[acc.name() ] = acc.id();
+
     }
   }
-#endif
 
-  // now process all the schedules that may have an impact
-  QValueList<MyMoneySchedule> schedule;
-
-  schedule = file->scheduleList("", MyMoneySchedule::TYPE_ANY,
-                                 MyMoneySchedule::OCCUR_ANY,
-                                 MyMoneySchedule::STYPE_ANY,
-                                 QDate::currentDate(),
-                                 endDate);
-  if(schedule.count() > 0) {
-    qBubbleSort(schedule);
-
-    QValueList<MyMoneySchedule>::Iterator it;
-    do {
-      it = schedule.begin();
-      if(it == schedule.end())
-        break;
-
-      QDate nextDate = (*it).nextDueDate();
-      if(!nextDate.isValid()) {
-        schedule.remove(it);
-        continue;
-      }
-
-      if (nextDate > endDate)
-        break;
-
-      // found the next schedule. process it
-      MyMoneyAccount acc = (*it).account();
-      if(!acc.id().isEmpty()) {
-        try {
-          if(acc.accountType() != MyMoneyAccount::Investment) {
-            MyMoneyTransaction t = (*it).transaction();
-
-            // only process the entry, if it is still active
-            if(!(*it).isFinished() && nextDate != QDate()) {
-
-              // make sure we have all 'starting balances' so that the autocalc works
-              QValueList<MyMoneySplit>::const_iterator it_s;
-              QMap<QCString, MyMoneyMoney> balanceMap;
-
-              for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s ) {
-                MyMoneyAccount acc = file->account((*it_s).accountId());
-                if(acc.isAssetLiability() && !acc.isInvest()) {
-                  // check if this is a new account for us
-                  if(nameIdx[acc.name()] != acc.id()) {
-                    nameIdx[acc.name()] = acc.id();
-                    accountList[acc.id()][0] = file->balance(acc.id());
-                  }
-                  int offset = QDate::currentDate().daysTo(nextDate)+1;
-                  if(offset <= 0) {  // collect all overdues on the first day
-                    offset = 1;
-                  }
-                  for(int i = 0; i < offset; ++i) {
-                    balanceMap[acc.id()] += accountList[acc.id()][i];
-                  }
-                }
-              }
-
-              // take care of the autoCalc stuff
-              KMyMoneyUtils::calculateAutoLoan(*it, t, balanceMap);
-
-              // now add the splits to the balances
-              for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s ) {
-                MyMoneyAccount acc = file->account((*it_s).accountId());
-                if(acc.isAssetLiability() && !acc.isInvest()) {
-                  dailyBalances balance;
-                  balance = accountList[acc.id()];
-                  int offset = QDate::currentDate().daysTo(nextDate)+1;
-                  if(offset <= 0) {  // collect all overdues on the first day
-                    offset = 1;
-                  }
-                  balance[offset] += (*it_s).value();
-                  accountList[acc.id()] = balance;
-                }
-              }
-              ++txnCount;
-            }
-          }
-
-          // for a single occurence, we don't need to go any further
-          if((*it).occurence() != MyMoneySchedule::OCCUR_ONCE)
-            (*it).setNextDueDate((*it).nextPayment(nextDate));
-          else {
-            // remove schedule from list
-            schedule.remove(it);
-          }
-
-        } catch(MyMoneyException* e) {
-          kdDebug(2) << __func__ << " Schedule " << (*it).id() << " (" << (*it).name() << "): " << e->what() << endl;
-
-          schedule.remove(it);
-          delete e;
-        }
-      } else {
-        // remove schedule from list
-        schedule.remove(it);
-      }
-
-      qBubbleSort(schedule);
-    }
-    while(1);
-  }
-
-#if 0
-  {
-    s << "\n\nAdded scheduled transactions\n";
-    QMap<QCString, dailyBalances>::Iterator it_a;
-    QMap<QString, QCString>::ConstIterator it_n;
-    for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
-      MyMoneyAccount acc = file->account(*it_n);
-      it_a = accountList.find(*it_n);
-      s << "\"" << acc.name() << "\",";
-      for(int i = 0; i < 90; ++i) {
-        s << "\"" << (*it_a)[i].formatMoney("") << "\",";
-      }
-      s << "\n";
-    }
-  }
-#endif
-
-  if(accountList.count() > 0) {
+  if(nameIdx.count() > 0) {
     int i = 0;
 
     // Now output header
-    m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("90 day schedule based forecast")));
+    m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(forecast.forecastDays())));
     m_part->write("<table width=\"95%\" cellspacing=\"0\" cellpadding=\"2\">");
     m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
     m_part->write(i18n("Account"));
     m_part->write("</th>");
-    for(i = 0; i < 3; ++i) {
+    for(i = 0; (i*forecast.accountsCycle()) < forecast.forecastDays(); ++i) {
       m_part->write("<th width=\"20%\" class=\"right\">");
-      // m_part->write(QString("%1").arg(KGlobal::locale()->formatDate(QDate::currentDate().addDays((i+1)*30), true)));
-      m_part->write(i18n("%1 days").arg((i+1)*30));
+
+      m_part->write(i18n("%1 days").arg((i+1)*forecast.accountsCycle()));
       m_part->write("</th>");
     }
     m_part->write("</tr>");
 
     // Now output entries
     i = 0;
-    QMap<QCString, dailyBalances>::Iterator it_a;
+
     QMap<QString, QCString>::ConstIterator it_n;
     for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
       MyMoneyAccount acc = file->account(*it_n);
-      it_a = accountList.find(*it_n);
+
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
       m_part->write(QString("<td width=\"40%\">") +
-        link(VIEW_LEDGER, QString("?id=%1").arg(acc.id())) + acc.name() + linkend() + "</td>");
+          link(VIEW_LEDGER, QString("?id=%1").arg(acc.id())) + acc.name() + linkend() + "</td>");
 
-      dailyBalances::Iterator it_b = (*it_a).begin();
-      MyMoneyMoney runningSum;
-      int dropZero = -1, dropMinimum = -1;
-      QString minimumBalance = acc.value("minBalanceAbsolute");
+      int dropZero = -1; //account dropped below zero
+      int dropMinimum = -1; //account dropped below minimum balance
+      QString minimumBalance = acc.value("minimumBalance");
+      MyMoneyMoney minBalance = MyMoneyMoney(minimumBalance);
       MyMoneySecurity currency = file->security(acc.currencyId());
 
-      for(int limit = 30; limit < 91; limit += 30) {
-        while(it_b != (*it_a).end() && it_b.key() < limit) {
-          runningSum += (*it_b);
+      MyMoneyMoney forecastBalance;
 
-          // check for the running sum going beyond the minimum balance for the first time
-          if(!minimumBalance.isEmpty()
-          && dropZero == -1
-          && dropMinimum == -1
-          && acc.accountGroup() == MyMoneyAccount::Asset
-          && runningSum < MyMoneyMoney(minimumBalance)) {
-            dropMinimum = it_b.key();
-          }
-
-          // check for the running sum going beyond 0 for the first time
-          if(dropZero == -1
-          && acc.accountGroup() == MyMoneyAccount::Asset
-          && runningSum < MyMoneyMoney(0, 1)) {
-            dropZero = it_b.key();
-          }
-          ++it_b;
-        }
+      for (int f = forecast.accountsCycle(); f <= forecast.forecastDays(); f += forecast.accountsCycle()) {
+        forecastBalance = forecast.forecastBalance(acc, QDate::currentDate().addDays(f));
         QString amount;
-        amount = runningSum.formatMoney(currency.tradingSymbol());
+        amount = forecastBalance.formatMoney(currency.tradingSymbol());
         amount.replace(" ","&nbsp;");
-        m_part->write(QString("<td width=\"20%\" align=\"right\">%1</td>").arg(amount));
+        m_part->write(QString("<td width=\"20%\" align=\"right\">"));
+        if(forecastBalance < MyMoneyMoney(0, 1)) m_part->write(QString("<font color=\"red\">")); //Show in red if below zero
+        m_part->write(QString("%1</td>").arg(amount));
       }
-      // tmp += QString("<td width=\"25%\" align=\"right\">%1</td>").arg(amount);
+
       m_part->write("</tr>");
+
+      //Check if the account is going to be below zero or below the minimal balance in the forecast period
+
+      //Check if the account is going to be below minimal balance
+      dropMinimum = forecast.daysToMinimumBalance(acc);
+
+      //Check if the account is going to be below zero in the future
+      dropZero = forecast.daysToZeroBalance(acc);
+
 
       // spit out possible warnings
       QString msg;
 
       // if a minimum balance has been specified, an appropriate warning will
       // only be shown, if the drop below 0 is on a different day or not present
-      MyMoneyMoney minBalance = MyMoneyMoney(minimumBalance);
+
       if(dropMinimum != -1
-      && !minBalance.isZero()
-      && (dropMinimum < dropZero
-       || dropZero == -1)) {
+         && !minBalance.isZero()
+         && (dropMinimum < dropZero
+         || dropZero == -1)) {
         switch(dropMinimum) {
           case -1:
             break;
@@ -1024,24 +855,39 @@ void KHomeView::showScheduleBasedForecast(void)
           default:
             msg = i18n("The balance of %1 will drop below the minimum balance %2 in %3 days.").arg(acc.name()).arg(minBalance.formatMoney(currency.tradingSymbol())).arg(dropMinimum-1);
         }
+
         if(!msg.isEmpty()) {
           m_part->write(QString("<tr><td colspan=4 align=\"center\" ><font color=\"red\">%1</font></td></tr>").arg(msg));
         }
-      }
+         }
       // a drop below zero is always shown
-      msg = QString();
-      switch(dropZero) {
-        case -1:
-          break;
-        case 0:
-          msg = i18n("The balance of %1 is below %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol()));
-          break;
-        default:
-          msg = i18n("The balance of %1 will drop below %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol())).arg(dropZero-1);
-      }
-      if(!msg.isEmpty()) {
-        m_part->write(QString("<tr><td colspan=4 align=\"center\" ><font color=\"red\"><b>%1</b></font></td></tr>").arg(msg));
-      }
+         msg = QString();
+         switch(dropZero) {
+           case -1:
+             break;
+           case 0:
+             if(acc.accountGroup() == MyMoneyAccount::Asset) {
+               msg = i18n("The balance of %1 is below %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol()));
+               break;
+             }
+             if(acc.accountGroup() == MyMoneyAccount::Liability) {
+               msg = i18n("The balance of %1 is above %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol()));
+               break;
+             }
+             break;
+           default:
+             if(acc.accountGroup() == MyMoneyAccount::Asset) {
+               msg = i18n("The balance of %1 will drop below %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol())).arg(dropZero);
+               break;
+             }
+             if(acc.accountGroup() == MyMoneyAccount::Liability) {
+               msg = i18n("The balance of %1 will raise above %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol())).arg(dropZero);
+               break;
+             }
+         }
+         if(!msg.isEmpty()) {
+           m_part->write(QString("<tr><td colspan=4 align=\"center\" ><font color=\"red\"><b>%1</b></font></td></tr>").arg(msg));
+         }
     }
     m_part->write("</table>");
 
@@ -1102,9 +948,9 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
         m_part->openURL(m_filename);
 
     } else if(view == "action") {
-        KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
-        Q_CHECK_PTR(mw);
-        QTimer::singleShot(0, mw->actionCollection()->action( id ), SLOT(activate()));
+      KMainWindow* mw = dynamic_cast<KMainWindow*>(qApp->mainWidget());
+      Q_CHECK_PTR(mw);
+      QTimer::singleShot(0, mw->actionCollection()->action( id ), SLOT(activate()));
 
     } else if(view == VIEW_HOME) {
       loadView();

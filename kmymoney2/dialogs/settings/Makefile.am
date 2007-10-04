@@ -12,12 +12,13 @@ libsettings_a_SOURCES = ksettingsgeneraldecl.ui ksettingsgeneral.cpp \
 	ksettingsfontsdecl.ui ksettingsfonts.cpp \
 	ksettingsschedulesdecl.ui ksettingsschedules.cpp \
 	ksettingsonlinequotesdecl.ui ksettingsonlinequotes.cpp \
-	ksettingshomedecl.ui ksettingshome.cpp
+	ksettingshomedecl.ui ksettingshome.cpp  \
+	ksettingsforecastdecl.ui ksettingsforecast.cpp
 
-EXTRA_DIST = ksettingsgeneraldecl.ui ksettingsregisterdecl.ui ksettingsgpgdecl.ui ksettingscolorsdecl.ui ksettingsfontsdecl.ui ksettingsschedulesdecl.ui ksettingsonlinequotesdecl.ui ksettingshomedecl.ui
+EXTRA_DIST = ksettingsgeneraldecl.ui ksettingsregisterdecl.ui ksettingsgpgdecl.ui ksettingscolorsdecl.ui ksettingsfontsdecl.ui ksettingsschedulesdecl.ui ksettingsonlinequotesdecl.ui ksettingshomedecl.ui ksettingsforecastdecl.ui
 
-DISTCLEANFILES= ksettingsgeneraldecl.cpp ksettingsgeneraldecl.h ksettingsregisterdecl.cpp ksettingsregisterdecl.h ksettingsgpgdecl.cpp ksettingsgpgdecl.h ksettingscolorsdecl.cpp ksettingscolorsdecl.h ksettingsfontsdecl.cpp ksettingsfontsdecl.h ksettingsschedulesdecl.cpp ksettingsschedulesdecl.h ksettingsonlinequotesdecl.cpp ksettingsonlinequotesdecl.h ksettingshomedecl.cpp ksettingshomedecl.h
+DISTCLEANFILES= ksettingsgeneraldecl.cpp ksettingsgeneraldecl.h ksettingsregisterdecl.cpp ksettingsregisterdecl.h ksettingsgpgdecl.cpp ksettingsgpgdecl.h ksettingscolorsdecl.cpp ksettingscolorsdecl.h ksettingsfontsdecl.cpp ksettingsfontsdecl.h ksettingsschedulesdecl.cpp ksettingsschedulesdecl.h ksettingsonlinequotesdecl.cpp ksettingsonlinequotesdecl.h ksettingshomedecl.cpp ksettingshomedecl.h ksettingsforecastdecl.cpp ksettingsforecastdecl.h
 
-noinst_HEADERS = ksettingsgeneral.h ksettingsregister.h ksettingsgpg.h ksettingscolors.h ksettingsfonts.h ksettingsschedules.h ksettingsonlinequotes.h ksettingshome.h
+noinst_HEADERS = ksettingsgeneral.h ksettingsregister.h ksettingsgpg.h ksettingscolors.h ksettingsfonts.h ksettingsschedules.h ksettingsonlinequotes.h ksettingshome.h ksettingsforecast.h
 
 messages: rc.cpp

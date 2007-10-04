@@ -215,6 +215,31 @@
  </group>
  <group name="Schedule Options">
  </group>
+ <group name="Forecast Options">
+  <entry name="forecastMethod" type="Int">
+   <label>Method to calculate forecast</label>
+   <default>0</default>
+  </entry>
+  <entry name="forecastDays" type="Int">
+   <label>Days to forecast</label>
+   <default>90</default>
+   <min>1</min>
+   <max>999</max>
+  </entry>
+  <entry name="forecastAccountCycle" type="Int">
+   <label>Days of normal account cycle</label>
+   <default>30</default>
+   <min>1</min>
+   <max>999</max>
+  </entry>
+  <entry name="forecastCycles" type="Int">
+   <label>Number of historic cycles to use in forecast</label>
+   <default>3</default>
+   <min>1</min>
+   <max>999</max>
+  </entry>
+ </group>
+
 </kcfg>
 <!-- 
   <entry name="" type="">

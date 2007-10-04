@@ -62,6 +62,7 @@ class KReportsView;
 class KMyMoneyViewBase;
 class MyMoneyReport;
 class TransactionEditor;
+class KForecastView;
 
 /**
   * This class represents the view of the MyMoneyFile which contains
@@ -88,7 +89,8 @@ public:
     LedgersView,
     InvestmentsView,
     ReportsView,
-    BudgetView
+    BudgetView,
+    ForecastView
   };
   // file actions for plugin
   enum fileActions {
@@ -123,6 +125,7 @@ private:
   KGlobalLedgerView *m_ledgerView;
   KInvestmentView *m_investmentView;
   KReportsView* m_reportsView;
+  KForecastView* m_forecastView;
 
   QVBox* m_homeViewFrame;
   QVBox* m_accountsViewFrame;
@@ -134,6 +137,7 @@ private:
   QVBox* m_ledgerViewFrame;
   QVBox* m_investmentViewFrame;
   QVBox* m_reportsViewFrame;
+  QVBox* m_forecastViewFrame;
 
   bool m_inConstructor;
 

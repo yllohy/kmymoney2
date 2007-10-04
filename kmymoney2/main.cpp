@@ -111,6 +111,7 @@ int main(int argc, char *argv[])
   aboutData.addCredit("Tony Bloomfield", I18N_NOOP("GnuCash Importer"), "tonybloom@users.sourceforge.net");
   aboutData.addCredit("Robert Wadley", I18N_NOOP("Icons & splash screen"), "rob@robntina.fastmail.us");
   aboutData.addCredit("Laurent Montel", I18N_NOOP("Patches"), "montel@kde.org");
+  aboutData.addCredit("Alvaro Soliverez", I18N_NOOP("Forecast view"), "asoliverez@gmail.com");
 
   KCmdLineArgs::init( argc, argv, &aboutData );
   KCmdLineArgs::addCmdLineOptions( options ); // Add our own options.

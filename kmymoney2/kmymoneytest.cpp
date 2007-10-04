@@ -51,6 +51,7 @@
 #include "mymoney/mymoneysecuritytest.h"
 #include "mymoney/mymoneypricetest.h"
 #include "mymoney/mymoneyobjecttest.h"
+#include "mymoney/mymoneyforecasttest.h"
 
 #include "reports/pivottabletest.h"
 #include "reports/querytabletest.h"
@@ -126,6 +127,7 @@ int main(int testargc, char** testargv)
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyScheduleTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneySecurityTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyPriceTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(MyMoneyForecastTest);
 
   // reports tests
   CPPUNIT_TEST_SUITE_REGISTRATION(PivotTableTest);

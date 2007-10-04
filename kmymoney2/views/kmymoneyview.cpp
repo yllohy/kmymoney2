@@ -105,6 +105,7 @@
 #include "kinvestmentview.h"
 #include "kreportsview.h"
 #include "kbudgetview.h"
+#include "kforecastview.h"
 
 #include "../kmymoney2.h"
 #include "../kmymoneyutils.h"
@@ -237,6 +238,11 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_budgetView, SIGNAL(openContextMenu(const MyMoneyObject&)), kmymoney2, SLOT(slotShowBudgetContextMenu()));
   connect(m_budgetView, SIGNAL(selectObjects(const QValueList<MyMoneyBudget>&)), kmymoney2, SLOT(slotSelectBudget(const QValueList<MyMoneyBudget>&)));
   connect(kmymoney2, SIGNAL(budgetRename()), m_budgetView, SLOT(slotStartRename()));
+
+  // Page 10
+  m_forecastViewFrame = addVBoxPage( i18n("Forecast"), i18n("Forecast"),
+                                     DesktopIcon("forcast", iconSize));
+  m_forecastView = new KForecastView(m_forecastViewFrame, "ForecastView");
 
 
   // construct an empty file
@@ -399,6 +405,7 @@ void KMyMoneyView::enableViews(int state)
   m_ledgerViewFrame->setEnabled(state);
   m_investmentViewFrame->setEnabled(state);
   m_reportsViewFrame->setEnabled(state);
+  m_forecastViewFrame->setEnabled(state);
 
   emit viewStateChanged(state != 0);
 }
@@ -1259,7 +1266,7 @@ void KMyMoneyView::loadDefaultCurrencies(void)
   loadDefaultCurrency(MyMoneySecurity("ADF", i18n("Andorran Franc")), create);
   loadDefaultCurrency(MyMoneySecurity("ADP", i18n("Andorran Peseta")), create);
   loadDefaultCurrency(MyMoneySecurity("AON", i18n("Angolan New Kwanza")), create);
-  loadDefaultCurrency(MyMoneySecurity("ARS", i18n("Argentine Peso")), create);
+  loadDefaultCurrency(MyMoneySecurity("ARS", i18n("Argentine Peso"),         "$"), create);
   loadDefaultCurrency(MyMoneySecurity("AWG", i18n("Aruban Florin")), create);
   loadDefaultCurrency(MyMoneySecurity("AUD", i18n("Australian Dollar"),      "$"), create);
   loadDefaultCurrency(MyMoneySecurity("AZM", i18n("Azerbaijani Manat")), create);
@@ -1511,6 +1518,7 @@ void KMyMoneyView::slotRefreshViews()
   m_homeView->slotLoadView();
   m_investmentView->slotLoadView();
   m_reportsView->slotLoadView();
+  m_forecastView->slotLoadForecast();
 
   m_scheduledView->slotReloadView();
 }

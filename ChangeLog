@@ -10,6 +10,7 @@
   * Disable 'postpone reconciliation' and 'finish reconciliation'
     buttons during transaction edit
   * Updated tips file
+  * Applied forecast patch provided by Alvaro Soliverez
 
 2007-10-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Use KDE window title font for KMyMoneyTitleLabels

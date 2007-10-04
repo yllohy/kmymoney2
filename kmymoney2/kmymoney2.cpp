@@ -86,6 +86,7 @@
 #include "dialogs/settings/ksettingsschedules.h"
 #include "dialogs/settings/ksettingsonlinequotes.h"
 #include "dialogs/settings/ksettingshome.h"
+#include "dialogs/settings/ksettingsforecast.h"
 #include "dialogs/kbackupdlg.h"
 #include "dialogs/kexportdlg.h"
 #include "dialogs/kimportdlg.h"
@@ -1920,6 +1921,7 @@ void KMyMoney2App::slotSettings(void)
   KSettingsColors* colorsPage = new KSettingsColors();
   KSettingsFonts* fontsPage = new KSettingsFonts();
   KSettingsOnlineQuotes* onlineQuotesPage = new KSettingsOnlineQuotes();
+  KSettingsForecast* forecastPage = new KSettingsForecast();
 
   // ... and add them to the dialog
   dlg->addPage(generalPage, i18n("General"), "misc");
@@ -1930,6 +1932,7 @@ void KMyMoney2App::slotSettings(void)
   dlg->addPage(colorsPage, i18n("Colors"), "colorscm");
   dlg->addPage(fontsPage, i18n("Fonts"), "font");
   dlg->addPage(onlineQuotesPage, i18n("Online Quotes"), "network_local");
+  dlg->addPage(forecastPage, i18n("Forecast"), "forcast");
 
   connect(dlg, SIGNAL(settingsChanged()), this, SLOT(slotUpdateConfiguration()));
 
