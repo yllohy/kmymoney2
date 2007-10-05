@@ -60,19 +60,29 @@
 #include <kmymoney/kmymoneyedit.h>
 
 #include "../../kmymoney2.h"
+#include "../../kmymoneyglobalsettings.h"
 
 using namespace NewUserWizard;
 
-NewUserWizard::Wizard::Wizard(QWidget *parent, const char *name, bool modal, WFlags flags)
-  : KMyMoneyWizard(parent, name, modal, flags)
+static int stepCount = 1;
+
+NewUserWizard::Wizard::Wizard(QWidget *parent, const char *name, bool modal, WFlags flags) :
+  KMyMoneyWizard(parent, name, modal, flags),
+  m_introPage(0)
 {
+  bool isFirstTime = KMyMoneyGlobalSettings::firstTimeRun();
+
   setTitle(i18n("KMyMoney New File Setup"));
+  if(isFirstTime)
+    addStep(i18n("Introduction"));
   addStep(i18n("Personal Data"));
   addStep(i18n("Select Currency"));
   addStep(i18n("Select Accounts"));
   addStep(i18n("Set preferences"));
   addStep(i18n("Finish"));
 
+  if(isFirstTime)
+    m_introPage = new IntroPage(this);
   m_generalPage = new GeneralPage(this);
   m_currencyPage = new CurrencyPage(this);
   m_accountPage = new AccountPage(this);
@@ -81,7 +91,10 @@ NewUserWizard::Wizard::Wizard(QWidget *parent, const char *name, bool modal, WFl
   m_filePage = new FilePage(this);
 
   m_accountPage->m_haveCheckingAccountButton->setChecked(true);
-  setFirstPage(m_generalPage);
+  if(isFirstTime)
+    setFirstPage(m_introPage);
+  else
+    setFirstPage(m_generalPage);
 }
 
 MyMoneyPayee NewUserWizard::Wizard::user(void) const
@@ -136,9 +149,20 @@ QValueList<MyMoneyTemplate> NewUserWizard::Wizard::templates(void) const
   return m_categoriesPage->selectedTemplates();
 }
 
+IntroPage::IntroPage(Wizard* wizard, const char* name) :
+  KIntroPageDecl(wizard),
+  WizardPage<Wizard>(stepCount++, this, wizard, name)
+{
+}
+
+KMyMoneyWizardPage* IntroPage::nextPage(void) const
+{
+  return m_wizard->m_generalPage;
+}
+
 GeneralPage::GeneralPage(Wizard* wizard, const char* name) :
   UserInfo(wizard),
-  WizardPage<Wizard>(1, this, wizard, name)
+  WizardPage<Wizard>(stepCount++, this, wizard, name)
 {
   m_userNameEdit->setFocus();
   KABC::StdAddressBook *ab = dynamic_cast<KABC::StdAddressBook*>(KABC::StdAddressBook::self());
@@ -181,7 +205,7 @@ KMyMoneyWizardPage* GeneralPage::nextPage(void) const
 
 CurrencyPage::CurrencyPage(Wizard* wizard, const char* name) :
   Currency(wizard),
-  WizardPage<Wizard>(2, this, wizard, name)
+  WizardPage<Wizard>(stepCount++, this, wizard, name)
 {
   QListViewItem *first = 0;
   QValueList<MyMoneySecurity> list = MyMoneyFile::instance()->currencyList();
@@ -228,7 +252,7 @@ KMyMoneyWizardPage* CurrencyPage::nextPage(void) const
 
 AccountPage::AccountPage(Wizard* wizard, const char* name) :
   KAccountPageDecl(wizard, name),
-  WizardPage<Wizard>(3, this, wizard, name)
+  WizardPage<Wizard>(stepCount, this, wizard, name)       // don't inc. the step count here
 {
   m_mandatoryGroup = new kMandatoryFieldGroup(this);
   m_mandatoryGroup->add(m_accountNameEdit);
@@ -250,7 +274,7 @@ bool AccountPage::isComplete(void) const
 
 CategoriesPage::CategoriesPage(Wizard* wizard, const char* name) :
   Accounts(wizard),
-  WizardPage<Wizard>(3, this, wizard, name)
+  WizardPage<Wizard>(stepCount++, this, wizard, name)
 {
   loadTemplateList();
   connect(m_groupList, SIGNAL(selectionChanged()), this, SLOT(slotLoadHierarchy()));
@@ -382,7 +406,7 @@ QValueList<MyMoneyTemplate> CategoriesPage::selectedTemplates(void) const
 
 PreferencePage::PreferencePage(Wizard* wizard, const char* name) :
   KPreferencePageDecl(wizard),
-  WizardPage<Wizard>(4, this, wizard, name)
+  WizardPage<Wizard>(stepCount++, this, wizard, name)
 {
   connect(m_openConfigButton, SIGNAL(clicked()), kmymoney2, SLOT(slotSettings()));
 }
@@ -394,7 +418,7 @@ KMyMoneyWizardPage* PreferencePage::nextPage(void) const
 
 FilePage::FilePage(Wizard* wizard, const char* name) :
   KFilePageDecl(wizard),
-  WizardPage<Wizard>(5, this, wizard, name)
+  WizardPage<Wizard>(stepCount++, this, wizard, name)
 {
   m_mandatoryGroup = new kMandatoryFieldGroup(this);
   m_mandatoryGroup->add(m_dataFileEdit->lineEdit());

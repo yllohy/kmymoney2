@@ -1,5 +1,7 @@
 2007-10-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added updated testcases for MyMoneyForecast as provided by Alvaro Soliverez
+  * Added introduction page to new user wizard which is shown
+    to first time users
 
 2007-10-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added operator < to MyMoneyInstitution

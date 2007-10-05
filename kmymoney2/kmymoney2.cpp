@@ -788,6 +788,7 @@ void KMyMoney2App::slotFileNew(void)
 
         m_fileName = KURL(wizard->url());
         ft.commit();
+        KMyMoneyGlobalSettings::setFirstTimeRun(false);
       } catch(MyMoneyException* e) {
         delete e;
         // next line required until we move all file handling out of KMyMoneyView

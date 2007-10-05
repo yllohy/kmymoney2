@@ -26,6 +26,7 @@
 
 #include <kmymoney/kmymoneywizard.h>
 
+#include "kintropagedecl.h"
 #include "kaccountpagedecl.h"
 #include "kpreferencepagedecl.h"
 #include "kfilepagedecl.h"
@@ -41,8 +42,16 @@ class kMandatoryFieldGroup;
 
 namespace NewUserWizard {
 
+class IntroPage : public KIntroPageDecl, public WizardPage<Wizard>
+{
+  Q_OBJECT
+public:
+  IntroPage(Wizard* parent, const char* name = 0);
+  KMyMoneyWizardPage* nextPage(void) const;
+};
+
 /**
-  * The first page of the new user wizard
+  * Wizard page collecting information about the user
   *
   * @author Thomas Baumgart
   */
@@ -58,7 +67,7 @@ protected slots:
 };
 
 /**
-  * The second page of the new user wizard
+  * Wizard page collecting information about the base currency
   *
   * @author Thomas Baumgart
   */
@@ -71,8 +80,7 @@ public:
 };
 
 /**
-  * The third page of the new user wizard collecting information
-  * about the checking account
+  * Wizard page collecting information about the checking account
   */
 class AccountPage : public KAccountPageDecl, public WizardPage<Wizard>
 {
@@ -88,8 +96,7 @@ private:
 };
 
 /**
-  * The fourth page of the new user wizard collecting information
-  * about the account templates.
+  * Wizard page collecting information about the account templates.
   *
   * @author Thomas Baumgart
   */

@@ -39,6 +39,7 @@ class MyMoneyTemplate;
   */
 namespace NewUserWizard {
 
+class IntroPage;
 class GeneralPage;
 class CurrencyPage;
 class AccountPage;
@@ -55,6 +56,7 @@ class FilePage;
   */
 class Wizard : public KMyMoneyWizard
 {
+  friend class IntroPage;
   friend class GeneralPage;
   friend class CurrencyPage;
   friend class AccountPage;
@@ -106,6 +108,7 @@ public:
 
 private:
   MyMoneySecurity   m_baseCurrency;
+  IntroPage*        m_introPage;
   GeneralPage*      m_generalPage;
   CurrencyPage*     m_currencyPage;
   AccountPage*      m_accountPage;

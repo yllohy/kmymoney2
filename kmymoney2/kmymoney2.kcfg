@@ -96,6 +96,10 @@
    <label>list of hidden views</label>
    <default/>
   </entry>
+  <entry name="firstTimeRun" type="Bool">
+   <label>Firsttime switch to start new user wizard</label>
+   <default>true</default>
+  </entry>
  </group>
  <group name="Homepage Options">
   <entry name="ItemList" type="String">

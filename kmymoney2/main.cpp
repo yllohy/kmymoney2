@@ -45,6 +45,7 @@
 #include "kmymoney2.h"
 #include "kstartuplogo.h"
 #include "kmymoneyutils.h"
+#include "kmymoneyglobalsettings.h"
 
 static const char *description =
   I18N_NOOP("\nKMyMoney, the Personal Finance Manager for KDE.\n\nPlease consider contributing to this project with code and/or suggestions.");
@@ -262,6 +263,8 @@ int main(int argc, char *argv[])
     KTipDialog::showTip(kmymoney2, "", false);
     if(url.isValid() && !args->isSet("n")) {
       kmymoney2->slotFileOpenRecent(url);
+    } else if(KMyMoneyGlobalSettings::firstTimeRun()) {
+      kmymoney2->slotFileNew();
     }
 
     if ( ! importfile.isEmpty() )
