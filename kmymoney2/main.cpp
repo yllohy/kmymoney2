@@ -266,6 +266,7 @@ int main(int argc, char *argv[])
     } else if(KMyMoneyGlobalSettings::firstTimeRun()) {
       kmymoney2->slotFileNew();
     }
+    KMyMoneyGlobalSettings::setFirstTimeRun(false);
 
     if ( ! importfile.isEmpty() )
       kmymoney2->webConnect( importfile, kapp->startupId() );
