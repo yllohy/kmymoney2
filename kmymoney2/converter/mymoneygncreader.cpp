@@ -823,13 +823,16 @@ const QString GncRecurrence::getFrequency() const {
   if (periodType() == "week") {
     if (mult() == "1") return ("weekly");
     if (mult() == "2") return ("bi_weekly");
+    if (mult() == "4") return ("four-weekly");
   }
   if (periodType() == "month") {
     if (mult() == "1") return ("monthly");
+    if (mult() == "2") return ("two-monthly");
     if (mult() == "3") return ("quarterly");
     if (mult() == "4") return ("tri_annually");
     if (mult() == "6") return ("semi_yearly");
     if (mult() == "12") return ("yearly");
+    if (mult() == "24") return ("two-yearly");
   }
   return ("unknown");
 }
@@ -1046,7 +1049,7 @@ void MyMoneyGncReader::readFile(QIODevice* pDevice, IMyMoneySerialize* storage) 
                            QMessageBox::Abort, QMessageBox::NoButton , QMessageBox::NoButton);
     qFatal ("%s", e->what().latin1());
   } // end catch
-  signalProgress ( -1, -1); // switch off progress bar
+  signalProgress (0, 1, i18n("Import complete")); // switch off progress bar
   delete m_xr;
   qDebug ("Exiting gnucash importer");
   return ;
@@ -1717,17 +1720,25 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
 /* other intervals supported by gnc according to Josh Sled's schema (see above)
  "none" "semi_monthly"
  */
+  /* some of these type names do not appear in gnucash and are difficult to generate for
+  pre 2.2 files.They can be generated for 2.2 however, by GncRecurrence::getFrequency() */
   static convIntvl vi [] = {
                            {"once", 'o', 1, MyMoneySchedule::OCCUR_ONCE, MyMoneySchedule::MoveNothing },
                            {"daily" , 'd', 1, MyMoneySchedule::OCCUR_DAILY, MyMoneySchedule::MoveNothing },
                            //{"daily_mf", 'd', 1, MyMoneySchedule::OCCUR_DAILY, MyMoneySchedule::MoveMonday }, doesn't work, need new freq in kmm
                            {"weekly", 'w', 1, MyMoneySchedule::OCCUR_WEEKLY, MyMoneySchedule::MoveNothing },
                            {"bi_weekly", 'w', 2, MyMoneySchedule::OCCUR_EVERYOTHERWEEK, MyMoneySchedule::MoveNothing },
+                           {"four-weekly", 'w', 4, MyMoneySchedule::OCCUR_EVERYFOURWEEKS,
+                           MyMoneySchedule::MoveNothing },
                            {"monthly", 'm', 1, MyMoneySchedule::OCCUR_MONTHLY, MyMoneySchedule::MoveNothing },
+                           {"two-monthly", 'm', 2, MyMoneySchedule::OCCUR_EVERYOTHERMONTH,
+                            MyMoneySchedule::MoveNothing },
                            {"quarterly", 'm', 3, MyMoneySchedule::OCCUR_QUARTERLY, MyMoneySchedule::MoveNothing },
                            {"tri_annually", 'm', 4, MyMoneySchedule::OCCUR_EVERYFOURMONTHS, MyMoneySchedule::MoveNothing },
                            {"semi_yearly", 'm', 6, MyMoneySchedule::OCCUR_TWICEYEARLY, MyMoneySchedule::MoveNothing },
                            {"yearly", 'y', 1, MyMoneySchedule::OCCUR_YEARLY, MyMoneySchedule::MoveNothing },
+                           {"two-yearly", 'y', 2, MyMoneySchedule::OCCUR_EVERYOTHERYEAR,
+                            MyMoneySchedule::MoveNothing },
                            {"zzz", 'y', 1, MyMoneySchedule::OCCUR_YEARLY, MyMoneySchedule::MoveNothing}
                             // zzz = stopper, may cause problems. what else can we do?
                            };
@@ -1741,7 +1752,7 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
     } else {
       const GncRecurrence *gre = gsc->m_vpRecurrence.first();
       //qDebug (QString("Sched %1, pt %2, mu %3, sd %4").arg(gsc->name()).arg(gre->periodType())
-      //  .arg(gre->mult()).arg(gre->startDate().toString(Qt::ISODate)));
+       // .arg(gre->mult()).arg(gre->startDate().toString(Qt::ISODate)));
       frequency = gre->getFrequency();
       schedEnabled = gsc->enabled();
     }
@@ -1809,7 +1820,9 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
   sc.setPaymentType((MyMoneySchedule::paymentTypeE)MyMoneySchedule::STYPE_OTHER);
   sc.setFixed (!m_suspectSchedule); // if any probs were found, set it as variable so user will always be prompted
   // we don't currently have a 'disable' option, but just make sure auto-enter is off if not enabled
+  //qDebug(QString("%1 and %2").arg(gsc->autoCreate()).arg(schedEnabled));
   sc.setAutoEnter ((gsc->autoCreate() == "y") && (schedEnabled == "y"));
+  //qDebug(QString("autoEnter set to %1").arg(sc.autoEnter()));
   // type
   QCString actionType = tx.splits().first().action();
   if (actionType == MyMoneySplit::ActionDeposit) {
@@ -1828,15 +1841,6 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
     m_storage->addSchedule(sc);
     if (m_suspectSchedule)
       m_suspectList.append (sc.id());
-  }
-  if (sc.name().left(8) == "Prospect") {
-    qDebug(QString("Prospect - start %1, last %2, end %3")
-        .arg(sc.startDate().toString(Qt::ISODate))
-        .arg(sc.lastPayment().toString(Qt::ISODate))
-        .arg(sc.endDate().toString(Qt::ISODate)));
-    qDebug(QString("tx post date %1, entry date %2")
-        .arg(sc.transaction().postDate().toString(Qt::ISODate))
-        .arg(sc.transaction().entryDate().toString(Qt::ISODate)));
   }
   signalProgress (++m_scheduleCount, 0);
   return ;
@@ -1916,6 +1920,7 @@ void MyMoneyGncReader::terminate () {
     }
     signalProgress (++i, 0);
   } // end for account
+  signalProgress (0, 1, (".")); // debug - get rid of reorg message
   // offer the most common account currency as a default
   QString mainCurrency = "";
   unsigned int maxCount = 0;
@@ -2031,10 +2036,13 @@ const QString MyMoneyGncReader::buildReportSection (const QString source) {
     }
     if (more) s.append (i18n("\n\nPress More for further information"));
   } else { // we need to retrieve the posted messages for this source
+    if (gncdebug) qDebug("Building messages for source %s", source.latin1());
     unsigned int i, j;
     for (i = 0; i < m_messageList.count(); i++) {
       GncMessageArgs *m = m_messageList.at(i);
       if (m->source == source) {
+        if (gncdebug) qDebug(QString("build text source %1, code %2, argcount %3")
+              .arg(m->source).arg(m->code).arg(m->args.count()));
         QString ss = GncMessages::text (m->source, m->code);
         // add variable args. the .arg function seems always to replace the
         // lowest numbered placeholder it finds, so translating messages

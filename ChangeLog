@@ -1,3 +1,9 @@
+2007-10-06 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash importer
+    - add new schedule intervals
+    - improve status reporting
+    - debug changes
+
 2007-10-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added updated testcases for MyMoneyForecast as provided by Alvaro Soliverez
   * Added introduction page to new user wizard which is shown
