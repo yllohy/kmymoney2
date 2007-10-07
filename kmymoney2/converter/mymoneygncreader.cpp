@@ -20,8 +20,6 @@ email                : mte@users.sourceforge.net
  *                                                                         *
  ***************************************************************************/
 
-#include <stdarg.h>
-
 // ----------------------------------------------------------------------------
 // QT Includes
 #include <qfile.h>
@@ -2071,6 +2069,7 @@ bool MyMoneyGncReader::writeReportToFile (const QValueList<QString> sectionsToRe
     stream << buildReportSection (*sectionsToReport.at(i)).latin1() << endl;
   }
   reportFile.close();
+  delete fd;
   return (true);
   PASS
 }
@@ -2317,8 +2316,21 @@ void MyMoneyGncReader::signalProgress(int current, int total, const QString& msg
 }
 // error and information reporting
 //***************************** Information and error messages *********************
-void MyMoneyGncReader::postMessage (const QString source, const unsigned int code, ...) {
-  TRY
+void MyMoneyGncReader::postMessage (const QString source, const unsigned int code, const char* arg1) {
+  postMessage (source, code, QStringList(arg1));
+}
+void MyMoneyGncReader::postMessage (const QString source, const unsigned int code, const char* arg1, const char* arg2) {
+  QStringList argList(arg1);
+  argList.append(arg2);
+  postMessage(source, code, argList);
+}
+void MyMoneyGncReader::postMessage (const QString source, const unsigned int code, const char* arg1, const char* arg2, const char* arg3) {
+  QStringList argList(arg1);
+  argList.append(arg2);
+  argList.append(arg3);
+  postMessage(source, code, argList);
+}
+void MyMoneyGncReader::postMessage (const QString source, const unsigned int code, const QStringList& argList) {
   unsigned int i;
   GncMessageArgs *m = new GncMessageArgs;
 
@@ -2326,21 +2338,17 @@ void MyMoneyGncReader::postMessage (const QString source, const unsigned int cod
   m->code = code;
   // get the number of args this message requires
   const unsigned int argCount = GncMessages::argCount (source, code);
-  // incredibly, va cannot for some reason provide a count of the args it contains
-  // so we may get a seg fault if not enough are provided
-  // the following debug may help trace the cause
-  if (gncdebug) qDebug
-    ("MyMoneyGncReader::postMessage: Message %s, code %d, requires %d arguments of type char *, else may segfault",
-     source.latin1(), code, argCount);
+  if ((gncdebug) && (argCount != argList.count()))
+    qDebug
+    (QString("MyMoneyGncReader::postMessage debug: Message %1, code %2, requires %3 arguments, got %4")
+        .arg(source).arg(code).arg(argCount).arg(argList.count()));
   // store the arguments
-  va_list arguments;
-  va_start(arguments, code); //Initializing arguments to store all values passed in after code
-  for (i = 0; i < argCount; i++)
-    m->args.append (QString(va_arg(arguments, char *))); //Adds the next argument to the list
-  va_end(arguments);      //Cleans up the list
+  for (i = 0; i < argCount; i++) {
+    if (i > argList.count()) m->args.append(QString());
+    else m->args.append (argList[i]); //Adds the next argument to the list
+  }
   m_messageList.append (m);
   return ;
-  PASS
 }
 //********************************** Message texts **********************************************
 GncMessages::messText GncMessages::texts [] = {

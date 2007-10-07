@@ -1,3 +1,6 @@
+2007-10-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Get rid of varargs from GNC importer
+
 2007-10-06 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash importer
     - add new schedule intervals

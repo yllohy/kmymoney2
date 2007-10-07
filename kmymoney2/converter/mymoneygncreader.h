@@ -730,7 +730,10 @@ protected:
   void convertFreqSpec (const GncFreqSpec *) {return;};
 #endif // _GNCFILEANON
 /** to post messages for final report */
-  void postMessage (const QString, const unsigned int, ...); // will have variable number of args
+  void postMessage (const QString, const unsigned int, const char *);
+  void postMessage (const QString, const unsigned int, const char *, const char *);
+  void postMessage (const QString, const unsigned int, const char *, const char *, const char *);
+  void postMessage (const QString, const unsigned int, const QStringList&);
   void setProgressCallback (void(*callback)(int, int, const QString&));
   void signalProgress (int current, int total, const QString& = "");
   /** user options */
