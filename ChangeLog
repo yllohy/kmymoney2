@@ -1,3 +1,6 @@
+2007-10-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Implemented #1394794 (Duplicate schedule)
+
 2007-10-07 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Get rid of varargs from GNC importer
 

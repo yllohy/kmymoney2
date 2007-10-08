@@ -422,6 +422,7 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("New schedule..."), "", 0, this, SLOT(slotScheduleNew()), actionCollection(), "schedule_new");
   new KAction(i18n("Edit schedule..."), "edit", 0, this, SLOT(slotScheduleEdit()), actionCollection(), "schedule_edit");
   new KAction(i18n("Delete schedule..."), "delete", 0, this, SLOT(slotScheduleDelete()), actionCollection(), "schedule_delete");
+  new KAction(i18n("Duplicate schedule"), "", 0, this, SLOT(slotScheduleDuplicate()), actionCollection(), "schedule_duplicate");
   new KAction(i18n("Enter schedule..."), "", 0, this, SLOT(slotScheduleEnter()), actionCollection(), "schedule_enter");
   new KAction(i18n("Skip schedule..."), "player_fwd", 0, this, SLOT(slotScheduleSkip()), actionCollection(), "schedule_skip");
 
@@ -3495,6 +3496,31 @@ void KMyMoney2App::slotScheduleDelete(void)
   }
 }
 
+void KMyMoney2App::slotScheduleDuplicate(void)
+{
+  // since we may jump here via code, we have to make sure to react only
+  // if the action is enabled
+  if(kmymoney2->action("schedule_duplicate")->isEnabled()) {
+    MyMoneySchedule sch = m_selectedSchedule;
+    sch.clearId();
+    sch.setName(i18n("Copy of schedulename", "Copy of %1").arg(sch.name()));
+
+    MyMoneyFileTransaction ft;
+    try {
+      MyMoneyFile::instance()->addSchedule(sch);
+      ft.commit();
+
+      // select the new schedule in the view
+      if(!m_selectedSchedule.id().isEmpty())
+        myMoneyView->slotScheduleSelected(sch.id());
+
+    } catch(MyMoneyException* e) {
+      KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to duplicate transaction(s): %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+      delete e;
+    }
+  }
+}
+
 void KMyMoney2App::slotScheduleSkip(void)
 {
   if (!m_selectedSchedule.id().isEmpty()) {
@@ -4055,8 +4081,6 @@ void KMyMoney2App::slotTransactionDuplicate(void)
       KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to duplicate transaction(s): %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
       delete e;
     }
-    // TODO select the newly created entry in the ledger view
-
     // switch off the progress bar
     slotStatusProgressBar(-1, -1);
     slotStatusMsg(prevMsg);
@@ -4806,6 +4830,13 @@ void KMyMoney2App::slotUpdateActions(void)
   action("transaction_combine")->setEnabled(false);
   action("transaction_select_all")->setEnabled(false);
 
+  action("schedule_new")->setEnabled(fileOpen);
+  action("schedule_edit")->setEnabled(false);
+  action("schedule_delete")->setEnabled(false);
+  action("schedule_duplicate")->setEnabled(false);
+  action("schedule_enter")->setEnabled(false);
+  action("schedule_skip")->setEnabled(false);
+
   action("currency_new")->setEnabled(fileOpen);
   action("currency_rename")->setEnabled(false);
   action("currency_delete")->setEnabled(false);
@@ -4953,6 +4984,7 @@ void KMyMoney2App::slotUpdateActions(void)
 
   if(!m_selectedSchedule.id().isEmpty()) {
     action("schedule_edit")->setEnabled(true);
+    action("schedule_duplicate")->setEnabled(true);
     action("schedule_delete")->setEnabled(!file->isReferenced(m_selectedSchedule));
     if(!m_selectedSchedule.isFinished()) {
       action("schedule_enter")->setEnabled(true);

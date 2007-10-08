@@ -422,6 +422,10 @@ protected slots:
     */
   void slotScheduleNew(const MyMoneyTransaction& t, MyMoneySchedule::occurenceE occurence = MyMoneySchedule::OCCUR_MONTHLY);
 
+  /**
+    */
+  void slotScheduleDuplicate(void);
+
 public:
   /**
     * This method checks if there is at least one asset or liability account
