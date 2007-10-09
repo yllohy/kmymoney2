@@ -676,7 +676,7 @@ GncSchedule::GncSchedule () {
                                     "sx:instanceCount", "sx:num-occur",
                                     "sx:rem-occur", "sx:templ-acct"};
   m_dataElementList = dataEls;
-  static const unsigned int anonClasses[] = {NXTSCHD, ASIS, ASIS, ASIS, ASIS, ASIS, ASIS, ASIS, ASIS, ASIS};
+  static const unsigned int anonClasses[] = {NXTSCHD, ASIS, ASIS, ASIS, ASIS, ASIS, ASIS, ASIS, ASIS, ASIS, ASIS};
   m_anonClassList = anonClasses;
   for (uint i = 0; i < m_dataElementListCount; i++) m_v.append (new QString (""));
   m_vpStartDate = m_vpLastDate = m_vpEndDate = NULL;
@@ -1127,6 +1127,7 @@ void MyMoneyGncReader::convertCommodity (const GncCommodity *gcm) {
     equ.setTradingCurrency (""); // not available here, will set from pricedb or transaction
     equ.setSecurityType (MyMoneySecurity::SECURITY_STOCK); // default to it being a stock
     //tell the storage objects we have a new equity object.
+    equ.setSmallestAccountFraction(gcm->fraction().toInt());
     m_storage->addSecurity(equ);
 
     //assign the gnucash id as the key into the map to find our id

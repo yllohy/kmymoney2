@@ -1,3 +1,6 @@
+2007-10-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Preserve fraction denominator of securities in GNC importer
+
 2007-10-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Implemented #1394794 (Duplicate schedule)
 
