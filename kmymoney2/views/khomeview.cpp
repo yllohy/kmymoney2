@@ -624,8 +624,8 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
       } else if(nameIdx[key].id() != (*it).id()) {
         key = (*it).name() + "[%1]";
         int dup = 2;
-        while(nameIdx[key.arg(dup)].id().isEmpty()
-        || nameIdx[key.arg(dup)].id() != (*it).id())
+        while(!nameIdx[key.arg(dup)].id().isEmpty()
+        && nameIdx[key.arg(dup)].id() != (*it).id())
           ++dup;
         nameIdx[key.arg(dup)] = *it;
       }
