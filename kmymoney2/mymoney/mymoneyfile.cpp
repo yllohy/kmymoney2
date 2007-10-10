@@ -273,12 +273,17 @@ void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
   // if the account was moved to another insitution, we notify
   // the old one as well as the new one and the structure change
   if(acc.institutionId() != account.institutionId()) {
-    MyMoneyInstitution inst = institution(acc.institutionId());
-    inst.removeAccountId(acc.id());
-    modifyInstitution(inst);
-    inst = institution(account.institutionId());
-    inst.addAccountId(acc.id());
-    modifyInstitution(inst);
+    MyMoneyInstitution inst;
+    if(!acc.institutionId().isEmpty()) {
+      inst = institution(acc.institutionId());
+      inst.removeAccountId(acc.id());
+      modifyInstitution(inst);
+    }
+    if(!account.institutionId().isEmpty()) {
+      inst = institution(account.institutionId());
+      inst.addAccountId(acc.id());
+      modifyInstitution(inst);
+    }
     addNotification(acc.institutionId());
     addNotification(account.institutionId());
   }
