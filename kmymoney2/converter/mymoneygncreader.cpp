@@ -1414,7 +1414,7 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
   // 3. others (categories)
   // but keeping each in same order as gnucash
   MyMoneySecurity e;
-  MyMoneyMoney price, newPrice;
+  MyMoneyMoney price, newPrice(0);
 
   switch (splitAccount.accountGroup()) {
   case MyMoneyAccount::Asset:
@@ -1428,14 +1428,15 @@ void MyMoneyGncReader::convertSplit (const GncSplit *gsp) {
       // newPrice fix supplied by Phil Longstaff
       price = split.value() / split.shares();
 #define NEW_DENOM 10000
-      newPrice = MyMoneyMoney ( price.toDouble(), (signed64)NEW_DENOM );
+      if (!split.shares().isZero())  // patch to fix divide by zero?
+        newPrice = MyMoneyMoney ( price.toDouble(), (signed64)NEW_DENOM );
       if (!newPrice.isZero()) {
         TRY
           // we can't use m_storage->security coz security list is not built yet
           m_storage->currency(m_txCommodity);   // will throw exception if not currency
           e.setTradingCurrency (m_txCommodity);
           if (gncdebug) qDebug ("added price for %s, %s date %s",
-              e.name().latin1(), price.toString().latin1(),
+              e.name().latin1(), newPrice.toString().latin1(),
               m_txDatePosted.toString(Qt::ISODate).latin1());
           m_storage->modifySecurity(e);
           MyMoneyPrice dealPrice (e.id(), m_txCommodity, m_txDatePosted, newPrice, i18n("Imported Transaction"));

@@ -1,3 +1,7 @@
+2007-10-12 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Gnucash importer
+    - Fix problem caused by improbable zero share quantity
+
 2007-10-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Preserve fraction denominator of securities in GNC importer
 
