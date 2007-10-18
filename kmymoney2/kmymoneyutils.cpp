@@ -39,6 +39,8 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/mymoneyfinancialcalculator.h>
 #include <kmymoney/kmymoneyglobalsettings.h>
+#include <kmymoney/kmymoneycombo.h>
+
 #include "kmymoneyutils.h"
 
 KMyMoneyUtils::KMyMoneyUtils()
@@ -235,57 +237,9 @@ const MyMoneySchedule::occurenceE KMyMoneyUtils::stringToOccurence(const QString
 
 const QString KMyMoneyUtils::occurenceToString(const MyMoneySchedule::occurenceE occurence)
 {
-  QString text;
-
-  switch (occurence)
-  {
-    case MyMoneySchedule::OCCUR_ONCE:
-      text = i18n("Once");
-      break;
-    case MyMoneySchedule::OCCUR_DAILY:
-      text = i18n("Daily");
-      break;
-    case MyMoneySchedule::OCCUR_WEEKLY:
-      text = i18n("Weekly");
-      break;
-    case MyMoneySchedule::OCCUR_FORTNIGHTLY:
-      text = i18n("Fortnightly");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
-      text = i18n("Every other week");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
-      text = i18n("Every four weeks");
-      break;
-    case MyMoneySchedule::OCCUR_MONTHLY:
-      text = i18n("Monthly");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
-      text = i18n("Every two months");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYTHREEMONTHS:
-      text = i18n("Every three months");
-      break;
-    case MyMoneySchedule::OCCUR_QUARTERLY:
-      text = i18n("Quarterly");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
-      text = i18n("Every four months");
-      break;
-    case MyMoneySchedule::OCCUR_TWICEYEARLY:
-      text = i18n("Twice yearly");
-      break;
-    case MyMoneySchedule::OCCUR_YEARLY:
-      text = i18n("Yearly");
-      break;
-    case MyMoneySchedule::OCCUR_EVERYOTHERYEAR:
-      text = i18n("Every other year");
-      break;
-    case MyMoneySchedule::OCCUR_ANY:
-      text = i18n("Any (Error)");
-      break;
-  }
-  return text;
+  KMyMoneyFrequencyCombo combo;
+  combo.setCurrentItem(occurence);
+  return combo.currentText();
 }
 
 const QString KMyMoneyUtils::paymentMethodToString(MyMoneySchedule::paymentTypeE paymentType)

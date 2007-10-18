@@ -1,0 +1,157 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>KLoanSchedulePageDecl</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>KLoanSchedulePageDecl</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>545</width>
+            <height>370</height>
+        </rect>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="KActiveLabel">
+            <property name="name">
+                <cstring>kActiveLabel2</cstring>
+            </property>
+            <property name="text">
+                <string>KMyMoney creates a schedule for this payment and reminds you whenever a payment must be made. Please select the account to/from which payments will be made and the category the interest will be assigned to.&lt;p&gt;
+If you selected to record all payments this date has already been supplied. If you selected to record only this years payments, then the &lt;b&gt;First payment due date&lt;/b&gt; is the date of the first payment made in this year.</string>
+            </property>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout54</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout53</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="KMyMoneyCategory" row="0" column="1">
+                            <property name="name">
+                                <cstring>m_interestCategory</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The category the interest part of the payment will be assigned to. If you borrow money you usually have to pay interest, so this should be an expense category. If you lend the money, you receive the interest. In this case, select an income category here.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel8</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Payment account</string>
+                            </property>
+                        </widget>
+                        <widget class="KMyMoneyCategory" row="1" column="1">
+                            <property name="name">
+                                <cstring>m_paymentAccount</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select the account from which you make your periodical payments or where you receive regular payments in case you lend the money. In most cases, this is a checking account.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget" row="2" column="1">
+                            <property name="name">
+                                <cstring>layout52</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>spacer89</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Expanding</enum>
+                                    </property>
+                                    <property name="sizeHint">
+                                        <size>
+                                            <width>61</width>
+                                            <height>20</height>
+                                        </size>
+                                    </property>
+                                </spacer>
+                                <widget class="kMyMoneyDateInput">
+                                    <property name="name">
+                                        <cstring>m_firstPaymentDueDate</cstring>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel7</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Interest category</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>First payment due on</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer4</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Preferred</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>41</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </hbox>
+        </widget>
+        <spacer>
+            <property name="name">
+                <cstring>spacer88</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Vertical</enum>
+            </property>
+            <property name="sizeType">
+                <enum>Expanding</enum>
+            </property>
+            <property name="sizeHint">
+                <size>
+                    <width>20</width>
+                    <height>21</height>
+                </size>
+            </property>
+        </spacer>
+    </vbox>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

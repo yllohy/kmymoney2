@@ -354,6 +354,171 @@ void MyMoneyForecastTest::testDoFutureScheduledForecast()
   //TODO test for schedules should be added  
 }
 
+void MyMoneyForecastTest::testScheduleForecast()
+{
+  //set up schedule environment for testing
+  MyMoneyAccount a_cash = file->account(acCash);
+  MyMoneyAccount a_parent = file->account(acParent);
+
+  MyMoneyFileTransaction ft;
+  MyMoneySchedule sch( "A Name",
+                       MyMoneySchedule::TYPE_BILL,
+                       MyMoneySchedule::OCCUR_WEEKLY,
+                       MyMoneySchedule::STYPE_DIRECTDEBIT,
+                       QDate::currentDate().addDays(1),
+                                          QDate(),
+                                              true,
+                                              true);
+
+  //sch.setLastPayment(QDate::currentDate());
+  //sch.recordPayment(QDate::currentDate().addDays(1));
+  //sch.setId("SCH0001");
+
+  MyMoneyTransaction t;
+  t.setPostDate(QDate::currentDate().addDays(1));
+  t.setEntryDate(QDate::currentDate().addDays(1));
+  //t.setId("T000000000000000001");
+  t.setBankID("BID");
+  t.setMemo("Wohnung:Miete");
+  t.setCommodity("USD");
+  t.setValue("key", "value");
+
+  MyMoneySplit s;
+  s.setPayeeId("P000001");
+  s.setShares(moT2);
+  s.setValue(moT2);
+  s.setAccountId(a_parent.id());
+  s.setBankID("SPID1");
+  s.setReconcileFlag(MyMoneySplit::Reconciled);
+  t.addSplit(s);
+
+  s.setPayeeId("P000001");
+  s.setShares(-moT2);
+  s.setValue(-moT2);
+  s.setAccountId(a_cash.id());
+  s.setBankID("SPID2");
+  s.setReconcileFlag(MyMoneySplit::Cleared);
+  s.clearId();
+  t.addSplit(s);
+
+  sch.setTransaction(t);
+
+  file->addSchedule(sch);
+  ft.commit();
+
+  MyMoneyFileTransaction ft3;
+  MyMoneySchedule sch3( "A Name1",
+                       MyMoneySchedule::TYPE_BILL,
+                       MyMoneySchedule::OCCUR_WEEKLY,
+                       MyMoneySchedule::STYPE_DIRECTDEBIT,
+                       QDate::currentDate().addDays(5),
+                                          QDate(),
+                                              true,
+                                              true);
+
+  //sch.setLastPayment(QDate::currentDate());
+  //sch.recordPayment(QDate::currentDate().addDays(1));
+  //sch.setId("SCH0001");
+
+  MyMoneyTransaction t3;
+  t3.setPostDate(QDate::currentDate().addDays(5));
+  t3.setEntryDate(QDate::currentDate().addDays(5));
+  //t.setId("T000000000000000001");
+  t3.setBankID("BID");
+  t3.setMemo("Wohnung:Miete");
+  t3.setCommodity("USD");
+  t3.setValue("key", "value");
+
+  MyMoneySplit s3;
+  s3.setPayeeId("P000001");
+  s3.setShares(moT2);
+  s3.setValue(moT2);
+  s3.setAccountId(a_parent.id());
+  s3.setBankID("SPID1");
+  s3.setReconcileFlag(MyMoneySplit::Reconciled);
+  t3.addSplit(s3);
+
+  s3.setPayeeId("P000001");
+  s3.setShares(-moT2);
+  s3.setValue(-moT2);
+  s3.setAccountId(a_cash.id());
+  s3.setBankID("SPID2");
+  s3.setReconcileFlag(MyMoneySplit::Cleared);
+  s3.clearId();
+  t3.addSplit(s3);
+
+  sch3.setTransaction(t3);
+
+  file->addSchedule(sch3);
+  ft3.commit();
+
+
+  MyMoneyFileTransaction ft2;
+  MyMoneySchedule sch2( "A Name2",
+                       MyMoneySchedule::TYPE_BILL,
+                       MyMoneySchedule::OCCUR_WEEKLY,
+                       MyMoneySchedule::STYPE_DIRECTDEBIT,
+                       QDate::currentDate().addDays(2),
+                                          QDate(),
+                                              true,
+                                              true);
+
+  //sch.setLastPayment(QDate::currentDate());
+  //sch.recordPayment(QDate::currentDate().addDays(1));
+  //sch.setId("SCH0001");
+
+  MyMoneyTransaction t2;
+  t2.setPostDate(QDate::currentDate().addDays(2));
+  t2.setEntryDate(QDate::currentDate().addDays(2));
+  //t.setId("T000000000000000001");
+  t2.setBankID("BID");
+  t2.setMemo("Wohnung:Miete");
+  t2.setCommodity("USD");
+  t2.setValue("key", "value");
+
+  MyMoneySplit s2;
+  s2.setPayeeId("P000001");
+  s2.setShares(moT1);
+  s2.setValue(moT1);
+  s2.setAccountId(a_parent.id());
+  s2.setBankID("SPID1");
+  s2.setReconcileFlag(MyMoneySplit::Reconciled);
+  t2.addSplit(s2);
+
+  s2.setPayeeId("P000001");
+  s2.setShares(-moT1);
+  s2.setValue(-moT1);
+  s2.setAccountId(a_cash.id());
+  s2.setBankID("SPID2");
+  s2.setReconcileFlag(MyMoneySplit::Cleared);
+  s2.clearId();
+  t2.addSplit(s2);
+
+  sch2.setTransaction(t2);
+
+  file->addSchedule(sch2);
+
+  ft2.commit();
+
+  //run forecast
+  MyMoneyForecast a;
+  KMyMoneyGlobalSettings::setForecastMethod(0);
+  KMyMoneyGlobalSettings::setForecastDays(3);
+  KMyMoneyGlobalSettings::setForecastAccountCycle(1);
+  KMyMoneyGlobalSettings::setForecastCycles(1);
+  a.doForecast();
+
+  //check result for single schedule
+  MyMoneyMoney b_cash = file->balance(a_cash.id(), QDate::currentDate());
+  MyMoneyMoney b_cash1 = a.forecastBalance(a_cash, QDate::currentDate().addDays(1));
+
+  //test valid results
+  CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate())==b_cash);
+  CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate().addDays(1))==b_cash-moT2);
+  CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate().addDays(2))==b_cash-moT2-moT1);
+}
+
+
 void MyMoneyForecastTest::testDaysToMinimumBalance()
 {
   //setup environment   

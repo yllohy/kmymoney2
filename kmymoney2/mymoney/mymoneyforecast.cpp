@@ -408,19 +408,24 @@ void MyMoneyForecast::doFutureScheduledForecast()
   schedule = file->scheduleList("", MyMoneySchedule::TYPE_ANY, MyMoneySchedule::OCCUR_ANY, MyMoneySchedule::STYPE_ANY,
                                               QDate::currentDate(), endDate);
   if(schedule.count() > 0) {
-    qBubbleSort(schedule);
-
     QValueList<MyMoneySchedule>::Iterator it;
     do {
+      qBubbleSort(schedule);
       it = schedule.begin();
-      if(it == schedule.end()) break;
+      if(it == schedule.end())
+        break;
 
       QDate nextDate = (*it).nextPayment((*it).lastPayment());
       if(!nextDate.isValid()) {
         schedule.remove(it);
         continue;
       }
-      if (nextDate > endDate) break;
+
+      if (nextDate > endDate) {
+        // We're done with this schedule, let's move on to the next
+        schedule.remove(it);
+        continue;
+      }
 
       // found the next schedule. process it
 
@@ -493,8 +498,6 @@ void MyMoneyForecast::doFutureScheduledForecast()
         // remove schedule from list
         schedule.remove(it);
       }
-
-      qBubbleSort(schedule);
     }
     while(1);
   }

@@ -546,7 +546,7 @@ const signed64 MyMoneyMoney::getLcd(const MyMoneyMoney& b) const
    * I.e. LCM 100,96875 == 2*2*5*5,31*5*5*5*5 = 2*2,31*5*5
    *      answer: multiply 100 by 31*5*5 == 387500
    */
-  while(current_divisor * current_divisor <= max_square) {
+  while((current_divisor * current_divisor) <= max_square) {
     if(((small_denom % current_divisor) == 0) &&
        ((big_denom % current_divisor) == 0)) {
       big_denom = big_denom / current_divisor;

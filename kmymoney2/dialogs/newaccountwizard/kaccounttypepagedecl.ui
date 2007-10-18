@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>584</width>
-            <height>419</height>
+            <width>674</width>
+            <height>349</height>
         </rect>
     </property>
     <vbox>
@@ -24,333 +24,176 @@
                 <enum>NoFocus</enum>
             </property>
             <property name="text">
-                <string>Enter the name of the account under which it is known within KMyMoney.</string>
+                <string>Enter the name of the account under which it is known within KMyMoney.
+Select the type for the new account. Use the &lt;b&gt;What's this?&lt;/b&gt; feature to see more details about the various account types.
+Enter the date the account was opened and its currency.</string>
             </property>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout28</cstring>
+                <cstring>layout13</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="KLineEdit">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>m_accountName</cstring>
+                        <cstring>layout10</cstring>
                     </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="KLineEdit" row="0" column="1">
+                            <property name="name">
+                                <cstring>m_accountName</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enter a name under which this account is known within KMyMoney.</string>
+                            </property>
+                        </widget>
+                        <widget class="kMyMoneyDateInput" row="3" column="1">
+                            <property name="name">
+                                <cstring>m_openingDate</cstring>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>StrongFocus</enum>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>The opening date would be the date of the last statement. In case you want to keep track of transactions prior to this date, enter the ending balance and statement date of a prior statement and add all following transactions into KMyMoney.
+&lt;br&gt;
+&lt;i&gt;Note&lt;/i&gt;: If you do not know the exact amount of the opening balance, enter an estimate. You can change this value later before you reconcile this account for the first time.</string>
+                            </property>
+                        </widget>
+                        <widget class="KMyMoneyGeneralCombo" row="1" column="1">
+                            <property name="name">
+                                <cstring>m_typeSelection</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>&lt;p&gt;&lt;b&gt;Checking&lt;/b&gt;
+Use the checking account type to manage activities on your checking account e.g. payments, checks and cash card purchases.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Savings&lt;/b&gt;
+Use the savings account type to manage activities on your savings account.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Credit Card&lt;/b&gt;
+Use the credit card account type to manage activities on your credit card.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Cash&lt;/b&gt;
+
+Use the cash account type to manage activities in your wallet.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Loan&lt;/b&gt;
+Use the loan account type to manage amortization loans (e.g. mortgages, car loan, money you lend, private loans etc.).&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Investment&lt;/b&gt;
+Use the investment account to manage your stock, mutual fund and other investments.&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Asset&lt;/b&gt;
+Use the asset account type to manage assets (e.g. your house, car or art collection).&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Liability&lt;/b&gt;
+Use the liability account type to manage any type of liability except amortization loans. Use it for taxes you owe or money you borrowed from friends. For amortization loans like mortgages you should create a loan account.&lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel2_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Account type</string>
+                            </property>
+                        </widget>
+                        <widget class="KMyMoneyCurrencySelector" row="2" column="1">
+                            <property name="name">
+                                <cstring>m_currencyComboBox</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Select the currency in which this account is denominated.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="3" column="0">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Opening date</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>textLabel3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Currency</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="4" column="0" rowspan="1" colspan="2">
+                            <property name="name">
+                                <cstring>m_preferredAccount</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Preferred account</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Mark this checkbox if the account should be maintained as preferred account</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Selecting the &lt;b&gt;Preferred Account&lt;/b&gt; checkbox will allow preferred access in some dialogs and views of KMyMoney.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Account name</string>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
-                <widget class="QCheckBox">
+                <spacer>
                     <property name="name">
-                        <cstring>m_preferredAccount</cstring>
+                        <cstring>spacer6</cstring>
                     </property>
-                    <property name="text">
-                        <string>Preferred account</string>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
                     </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Mark this checkbox if the account should be maintained as preferred account</string>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
                     </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Selecting the &lt;b&gt;Preferred Account&lt;/b&gt; checkbox will allow preferred access in some dialogs.</string>
+                    <property name="sizeHint">
+                        <size>
+                            <width>171</width>
+                            <height>20</height>
+                        </size>
                     </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="KActiveLabel">
-            <property name="name">
-                <cstring>kActiveLabel5</cstring>
-            </property>
-            <property name="focusPolicy">
-                <enum>NoFocus</enum>
-            </property>
-            <property name="text">
-                <string>Select the type for the new account. A description of the usage for each type will be shown after selection on the right hand pane.</string>
-            </property>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout26</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="KListBox">
-                    <item>
-                        <property name="text">
-                            <string>Checking</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Savings</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Credit Card</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Cash</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Loan</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Investment</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Asset</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Liability</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>m_typeSelection</cstring>
-                    </property>
-                </widget>
-                <widget class="QWidgetStack">
-                    <property name="name">
-                        <cstring>m_descriptionStack</cstring>
-                    </property>
-                    <property name="focusPolicy">
-                        <enum>NoFocus</enum>
-                    </property>
-                    <property name="frameShape">
-                        <enum>PopupPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Raised</enum>
-                    </property>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>0</number>
-                        </attribute>
-                        <vbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <property name="margin">
-                                <number>0</number>
-                            </property>
-                            <widget class="KActiveLabel">
-                                <property name="name">
-                                    <cstring>kActiveLabel6</cstring>
-                                </property>
-                                <property name="sizePolicy">
-                                    <sizepolicy>
-                                        <hsizetype>5</hsizetype>
-                                        <vsizetype>7</vsizetype>
-                                        <horstretch>0</horstretch>
-                                        <verstretch>0</verstretch>
-                                    </sizepolicy>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;center&gt;&lt;h1&gt;Checking&lt;/h1&gt;&lt;/&lt;center&gt;&lt;/p&gt;
-Use the checking account type to manage activities on your checking account e.g. payments, checks and cash card purchases.</string>
-                                </property>
-                            </widget>
-                        </vbox>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>1</number>
-                        </attribute>
-                        <vbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <property name="margin">
-                                <number>0</number>
-                            </property>
-                            <widget class="KActiveLabel">
-                                <property name="name">
-                                    <cstring>kActiveLabel7</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;center&gt;&lt;h1&gt;Savings&lt;/h1&gt;&lt;/&lt;center&gt;&lt;/p&gt;
-Use the savings account type to manage activities on your savings account.</string>
-                                </property>
-                            </widget>
-                        </vbox>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>2</number>
-                        </attribute>
-                        <vbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <property name="margin">
-                                <number>0</number>
-                            </property>
-                            <widget class="KActiveLabel">
-                                <property name="name">
-                                    <cstring>kActiveLabel8</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;center&gt;&lt;h1&gt;Credit Card&lt;/h1&gt;&lt;/&lt;center&gt;&lt;/p&gt;
-Use the credit card account type to manage activities on your credit card.</string>
-                                </property>
-                            </widget>
-                        </vbox>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>3</number>
-                        </attribute>
-                        <vbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <property name="margin">
-                                <number>0</number>
-                            </property>
-                            <widget class="KActiveLabel">
-                                <property name="name">
-                                    <cstring>kActiveLabel9</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;center&gt;&lt;h1&gt;Cash&lt;/h1&gt;&lt;/&lt;center&gt;&lt;/p&gt;
-Use the cash account type to manage activities in your wallet.</string>
-                                </property>
-                            </widget>
-                        </vbox>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>4</number>
-                        </attribute>
-                        <vbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <property name="margin">
-                                <number>0</number>
-                            </property>
-                            <widget class="KActiveLabel">
-                                <property name="name">
-                                    <cstring>kActiveLabel10</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;center&gt;&lt;h1&gt;Loan&lt;/h1&gt;&lt;/&lt;center&gt;&lt;/p&gt;
-Use the loan account type to manage amortization loans (e.g. mortgages, car loan, money you lend, private loans etc.).</string>
-                                </property>
-                            </widget>
-                        </vbox>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>5</number>
-                        </attribute>
-                        <vbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <property name="margin">
-                                <number>0</number>
-                            </property>
-                            <widget class="KActiveLabel">
-                                <property name="name">
-                                    <cstring>kActiveLabel11</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;center&gt;&lt;h1&gt;Investment&lt;/h1&gt;&lt;/&lt;center&gt;&lt;/p&gt;
-Use the investment account to manage your stock, mutual fund and other investments.</string>
-                                </property>
-                            </widget>
-                        </vbox>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>6</number>
-                        </attribute>
-                        <vbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <property name="margin">
-                                <number>0</number>
-                            </property>
-                            <widget class="KActiveLabel">
-                                <property name="name">
-                                    <cstring>kActiveLabel12</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;center&gt;&lt;h1&gt;Asset&lt;/h1&gt;&lt;/&lt;center&gt;&lt;/p&gt;
-Use the asset account type to manage assets (e.g. your house, car or art collection).</string>
-                                </property>
-                            </widget>
-                        </vbox>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>7</number>
-                        </attribute>
-                        <vbox>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <property name="margin">
-                                <number>0</number>
-                            </property>
-                            <widget class="KActiveLabel">
-                                <property name="name">
-                                    <cstring>kActiveLabel13</cstring>
-                                </property>
-                                <property name="focusPolicy">
-                                    <enum>NoFocus</enum>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>PopupPanel</enum>
-                                </property>
-                                <property name="frameShadow">
-                                    <enum>Raised</enum>
-                                </property>
-                                <property name="text">
-                                    <string>&lt;center&gt;&lt;h1&gt;Liability&lt;/h1&gt;&lt;/&lt;center&gt;&lt;/p&gt;
-Use the liability account type to manage any type of liability except amortization loans. Use it for taxes you owe or money you borrowed from friends. For amortization loans like mortgages you should create a loan account.</string>
-                                </property>
-                            </widget>
-                        </vbox>
-                    </widget>
-                </widget>
+                </spacer>
             </hbox>
         </widget>
         <spacer>
@@ -372,18 +215,12 @@ Use the liability account type to manage any type of liability except amortizati
         </spacer>
     </vbox>
 </widget>
-<connections>
-    <connection>
-        <sender>m_typeSelection</sender>
-        <signal>highlighted(int)</signal>
-        <receiver>m_descriptionStack</receiver>
-        <slot>raiseWidget(int)</slot>
-    </connection>
-</connections>
 <tabstops>
     <tabstop>m_accountName</tabstop>
-    <tabstop>m_preferredAccount</tabstop>
     <tabstop>m_typeSelection</tabstop>
+    <tabstop>m_currencyComboBox</tabstop>
+    <tabstop>m_openingDate</tabstop>
+    <tabstop>m_preferredAccount</tabstop>
 </tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

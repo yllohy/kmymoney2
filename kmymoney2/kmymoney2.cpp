@@ -413,16 +413,16 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("Assign next number"), "", KShortcut("Ctrl+Shift+N"), this, SLOT(slotTransactionAssignNumber()), actionCollection(), "transaction_assign_number");
   new KAction(i18n("Combine transactions", "Combine"), "", 0, this, SLOT(slotTransactionCombine()), actionCollection(), "transaction_combine");
 
-  new KAction(i18n("New investment"), "file_new", 0, this, SLOT(slotInvestmentNew()), actionCollection(), "investment_new");
+  new KAction(i18n("New investment"), "filenew", 0, this, SLOT(slotInvestmentNew()), actionCollection(), "investment_new");
   new KAction(i18n("Edit investment..."), "edit", 0, this, SLOT(slotInvestmentEdit()), actionCollection(), "investment_edit");
   new KAction(i18n("Delete investment..."), "delete", 0, this, SLOT(slotInvestmentDelete()), actionCollection(), "investment_delete");
   new KAction(i18n("Online price update..."), "", 0, this, SLOT(slotOnlinePriceUpdate()), actionCollection(), "investment_online_price_update");
   new KAction(i18n("Manual price update..."), "", 0, this, SLOT(slotManualPriceUpdate()), actionCollection(), "investment_manual_price_update");
 
-  new KAction(i18n("New schedule..."), "", 0, this, SLOT(slotScheduleNew()), actionCollection(), "schedule_new");
+  new KAction(i18n("New schedule..."), "filenew", 0, this, SLOT(slotScheduleNew()), actionCollection(), "schedule_new");
   new KAction(i18n("Edit schedule..."), "edit", 0, this, SLOT(slotScheduleEdit()), actionCollection(), "schedule_edit");
   new KAction(i18n("Delete schedule..."), "delete", 0, this, SLOT(slotScheduleDelete()), actionCollection(), "schedule_delete");
-  new KAction(i18n("Duplicate schedule"), "", 0, this, SLOT(slotScheduleDuplicate()), actionCollection(), "schedule_duplicate");
+  new KAction(i18n("Duplicate schedule"), "editcopy", 0, this, SLOT(slotScheduleDuplicate()), actionCollection(), "schedule_duplicate");
   new KAction(i18n("Enter schedule..."), "", 0, this, SLOT(slotScheduleEnter()), actionCollection(), "schedule_enter");
   new KAction(i18n("Skip schedule..."), "player_fwd", 0, this, SLOT(slotScheduleSkip()), actionCollection(), "schedule_skip");
 
@@ -442,9 +442,8 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("Delete currency"), "delete", 0, this, SLOT(slotCurrencyDelete()), actionCollection(), "currency_delete");
   new KAction(i18n("Select as base currency"), "kmymoney2", 0, this, SLOT(slotCurrencySetBase()), actionCollection(), "currency_setbase");
 
-  new KAction("Test new user wizard", "", KShortcut("Ctrl+G"), this, SLOT(slotNewUserWizard()), actionCollection(), "new_user_wizard");
-
 #ifdef KMM_DEBUG
+  new KAction("Test new feature", "", KShortcut("Ctrl+G"), this, SLOT(slotNewFeature()), actionCollection(), "new_user_wizard");
   new KToggleAction("Debug Traces", "", 0, this, SLOT(slotToggleTraces()), actionCollection(), "debug_traces");
   new KToggleAction("Debug Timers", "", 0, this, SLOT(slotToggleTimers()), actionCollection(), "debug_timers");
 #endif
@@ -2513,6 +2512,7 @@ void KMyMoney2App::slotAccountNew(MyMoneyAccount& acc)
 #if 1
   NewAccountWizard::Wizard* wizard = new NewAccountWizard::Wizard();
   connect(wizard, SIGNAL(newInstitutionClicked(MyMoneyInstitution&)), this, SLOT(slotInstitutionNew(MyMoneyInstitution&)));
+  connect(wizard, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
 
   if(wizard->exec() == QDialog::Accepted) {
     MyMoneyAccount acc = wizard->account();
@@ -3430,7 +3430,6 @@ void KMyMoney2App::slotScheduleEdit(void)
       KEditScheduleDlg* sched_dlg = 0;
       KEditLoanWizard* loan_wiz = 0;
 
-      MyMoneyFileTransaction ft;
 
       switch (schedule.type()) {
         case MyMoneySchedule::TYPE_BILL:
@@ -3440,9 +3439,15 @@ void KMyMoney2App::slotScheduleEdit(void)
           m_transactionEditor = sched_dlg->startEdit();
           if(m_transactionEditor) {
             if(sched_dlg->exec() == QDialog::Accepted) {
-
-              MyMoneySchedule sched = sched_dlg->schedule();
-              MyMoneyFile::instance()->modifySchedule(sched);
+              MyMoneyFileTransaction ft;
+              try {
+                MyMoneySchedule sched = sched_dlg->schedule();
+                MyMoneyFile::instance()->modifySchedule(sched);
+                ft.commit();
+              } catch (MyMoneyException *e) {
+                KMessageBox::detailedSorry(this, i18n("Unable to modify schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+                delete e;
+              }
             }
           }
           deleteTransactionEditor();
@@ -3454,8 +3459,15 @@ void KMyMoney2App::slotScheduleEdit(void)
           connect(loan_wiz, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
           connect(loan_wiz, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
           if (loan_wiz->exec() == QDialog::Accepted) {
-            MyMoneyFile::instance()->modifySchedule(loan_wiz->schedule());
-            MyMoneyFile::instance()->modifyAccount(loan_wiz->account());
+            MyMoneyFileTransaction ft;
+            try {
+              MyMoneyFile::instance()->modifySchedule(loan_wiz->schedule());
+              MyMoneyFile::instance()->modifyAccount(loan_wiz->account());
+              ft.commit();
+            } catch (MyMoneyException *e) {
+              KMessageBox::detailedSorry(this, i18n("Unable to modify schedule '%1'").arg(m_selectedSchedule.name()), e->what());
+              delete e;
+            }
           }
           delete loan_wiz;
           break;
@@ -3463,7 +3475,6 @@ void KMyMoney2App::slotScheduleEdit(void)
         case MyMoneySchedule::TYPE_ANY:
           break;
       }
-      ft.commit();
 
     } catch (MyMoneyException *e) {
       KMessageBox::detailedSorry(this, i18n("Unable to modify schedule '%1'").arg(m_selectedSchedule.name()), e->what());
@@ -4010,11 +4021,13 @@ void KMyMoney2App::slotBudgetDelete(void)
   }
 }
 
-void KMyMoney2App::slotNewUserWizard(void)
+void KMyMoney2App::slotNewFeature(void)
 {
-  NewUserWizard::Wizard *wizard = new NewUserWizard::Wizard();
-  wizard->exec();
-  delete wizard;
+  int rc;
+  KNewLoanWizard* loanWizard = new KNewLoanWizard(0);
+  if((rc = loanWizard->exec()) == QDialog::Accepted) {
+  }
+  delete loanWizard;
 }
 
 void KMyMoney2App::slotTransactionsDelete(void)

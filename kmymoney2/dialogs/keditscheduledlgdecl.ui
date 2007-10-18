@@ -15,13 +15,16 @@
     <property name="caption">
         <string>Edit Schedule</string>
     </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout17</cstring>
+                <cstring>layout8</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -52,7 +55,7 @@
                 </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout10</cstring>
+                        <cstring>layout7</cstring>
                     </property>
                     <hbox>
                         <property name="name">
@@ -66,17 +69,9 @@
                                 <string>Frequency:</string>
                             </property>
                         </widget>
-                        <widget class="KMyMoneyGeneralCombo">
+                        <widget class="KMyMoneyFrequencyCombo">
                             <property name="name">
                                 <cstring>m_frequencyEdit</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
                             </property>
                         </widget>
                     </hbox>
@@ -157,6 +152,51 @@
                     </property>
                 </widget>
                 <widget class="KMyMoneyRegister::Register">
+                    <column>
+                        <property name="text">
+                            <string>Security</string>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Details</string>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>C</string>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Payment</string>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Deposit</string>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Amount</string>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Price</string>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Value</string>
+                        </property>
+                    </column>
+                    <column>
+                        <property name="text">
+                            <string>Balance</string>
+                        </property>
+                    </column>
                     <property name="name">
                         <cstring>m_register</cstring>
                     </property>
@@ -402,6 +442,8 @@
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>buttonOk</sender>

@@ -1,6 +1,20 @@
+2007-10-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied forecast patch provided by Toan Nguyen
+  * Applied testcase provided by Alvaro Soliverez
+  * Initial implementation of the new loan wizard
+
+2007-10-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Improved sizeHint() of KMyMoneyCombo
+
 2007-10-12 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Gnucash importer
     - Fix problem caused by improbable zero share quantity
+
+2007-10-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow creation of payees while editing schedules
+  * Fixed logic to append suffix on the home view for
+    accounts with the same name
+  * Fixed re-assigning of an account to a different institution
 
 2007-10-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Preserve fraction denominator of securities in GNC importer

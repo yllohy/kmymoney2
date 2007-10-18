@@ -323,8 +323,9 @@ protected slots:
   void slotCurrencySetBase(void);
 
   /**
+    * This slot is used to start new features during the development cycle
     */
-  void slotNewUserWizard(void);
+  void slotNewFeature(void);
 
   /**
     */

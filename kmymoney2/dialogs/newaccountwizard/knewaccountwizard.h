@@ -37,6 +37,11 @@ class AccountTypePage;
 class InstitutionPage;
 class OpeningPage;
 class CreditCardSchedulePage;
+class GeneralLoanInfoPage;
+class LoanDetailsPage;
+class LoanPaymentPage;
+class LoanSchedulePage;
+class LoanPayoutPage;
 
 /**
   * @author Thomas Baumgart
@@ -50,6 +55,11 @@ class Wizard : public KMyMoneyWizard
   friend class InstitutionPage;
   friend class OpeningPage;
   friend class CreditCardSchedulePage;
+  friend class GeneralLoanInfoPage;
+  friend class LoanDetailsPage;
+  friend class LoanPaymentPage;
+  friend class LoanSchedulePage;
+  friend class LoanPayoutPage;
 
   Q_OBJECT
 public:
@@ -87,6 +97,27 @@ public:
    */
   MyMoneyMoney openingBalance(void);
 
+  /**
+   * This method returns the interest rate as factor, ie an
+   * interest rate of 6.5% will be returned as 0.065
+   */
+  MyMoneyMoney interestRate(void) const;
+
+protected:
+  /**
+   * This method returns the currently selected currency for the account
+   */
+  const MyMoneySecurity& currency(void) const;
+
+  /**
+   * This method returns information about the selection of the user
+   * if the loan is for borrowing or lending money.
+   *
+   * @retval true loan is for money borrowed
+   * @retval false loan is for money lent
+   */
+  bool moneyBorrowed() const;
+
 signals:
   void newInstitutionClicked(MyMoneyInstitution& institution);
 
@@ -95,6 +126,11 @@ private:
   AccountTypePage*         m_accountTypePage;
   OpeningPage*             m_openingPage;
   CreditCardSchedulePage*  m_schedulePage;
+  GeneralLoanInfoPage*     m_generalLoanInfoPage;
+  LoanDetailsPage*         m_loanDetailsPage;
+  LoanPaymentPage*         m_loanPaymentPage;
+  LoanSchedulePage*        m_loanSchedulePage;
+  LoanPayoutPage*          m_loanPayoutPage;
 
   MyMoneyAccount           m_account;
   MyMoneySchedule          m_schedule;
