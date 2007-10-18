@@ -24,6 +24,7 @@
 #include <qfocusdata.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>
+#include <qlabel.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
