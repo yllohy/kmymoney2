@@ -254,7 +254,6 @@ AccountPage::AccountPage(Wizard* wizard, const char* name) :
   KAccountPageDecl(wizard, name),
   WizardPage<Wizard>(stepCount, this, wizard, name)       // don't inc. the step count here
 {
-  m_mandatoryGroup = new kMandatoryFieldGroup(this);
   m_mandatoryGroup->add(m_accountNameEdit);
   connect(m_mandatoryGroup, SIGNAL(stateChanged()), object(), SIGNAL(completeStateChanged()));
   connect(m_haveCheckingAccountButton, SIGNAL(toggled(bool)), object(), SIGNAL(completeStateChanged()));
@@ -420,7 +419,6 @@ FilePage::FilePage(Wizard* wizard, const char* name) :
   KFilePageDecl(wizard),
   WizardPage<Wizard>(stepCount++, this, wizard, name)
 {
-  m_mandatoryGroup = new kMandatoryFieldGroup(this);
   m_mandatoryGroup->add(m_dataFileEdit->lineEdit());
   connect(m_mandatoryGroup, SIGNAL(stateChanged()), object(), SIGNAL(completeStateChanged()));
 

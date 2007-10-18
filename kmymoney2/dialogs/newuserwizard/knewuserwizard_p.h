@@ -38,7 +38,6 @@
 #include <kmymoney/mymoneytemplate.h>
 
 class Wizard;
-class kMandatoryFieldGroup;
 
 namespace NewUserWizard {
 
@@ -90,9 +89,6 @@ public:
   KMyMoneyWizardPage* nextPage(void) const;
 
   virtual bool isComplete(void) const;
-
-private:
-  kMandatoryFieldGroup*  m_mandatoryGroup;
 };
 
 /**
@@ -145,9 +141,6 @@ public:
   FilePage(Wizard* parent, const char* name = 0);
 
   virtual bool isComplete(void) const;
-
-private:
-  kMandatoryFieldGroup*  m_mandatoryGroup;
 };
 
 } // namespace
