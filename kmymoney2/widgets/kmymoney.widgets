@@ -30,6 +30,12 @@ IncludeFile=kmymoney/transactionform.h
 [KMyMoneyPayeeCombo]
 IncludeFile=kmymoney/kmymoneycombo.h
 
+[KMyMoneyPeriodCombo]
+IncludeFile=kmymoney/kmymoneycombo.h
+
+[KMyMoneyFrequencyCombo]
+IncludeFile=kmymoney/kmymoneycombo.h
+
 [TransactionSortOption]
 
 [KMyMoneyGeneralCombo]

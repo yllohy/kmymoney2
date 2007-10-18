@@ -215,6 +215,7 @@ void kMyMoneyEdit::init(void)
   m_calcButton = new KPushButton(QIconSet(QPixmap(KGlobal::iconLoader()->iconPath("kcalc", -KIcon::SizeSmall))), QString(""), this);
   m_calcButton->setFixedWidth( m_calcButton->sizeHint().width() );
   m_calcButton->setFixedHeight(m_edit->sizeHint().height());
+  m_calcButton->setFocusProxy(m_edit);
 
   QPixmap pixmap;
   pixmap.loadFromData(resetButtonImage, sizeof(resetButtonImage), "PNG", 0);
@@ -222,6 +223,7 @@ void kMyMoneyEdit::init(void)
   m_resetButton->setFixedWidth( m_resetButton->sizeHint().width() );
   m_resetButton->setFixedHeight(m_edit->sizeHint().height());
   m_resetButton->setEnabled(false);
+  m_resetButton->setFocusProxy(m_edit);
 
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("General Options");

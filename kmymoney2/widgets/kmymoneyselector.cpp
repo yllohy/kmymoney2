@@ -211,7 +211,7 @@ QListViewItem* KMyMoneySelector::item(const QCString& id) const
   return it_v;
 }
 
-void KMyMoneySelector::setOptimizedWidth(void)
+int KMyMoneySelector::optimizedWidth(void) const
 {
   QListViewItemIterator it(m_listView, QListViewItemIterator::Selectable);
   QListViewItem* it_v;
@@ -240,6 +240,13 @@ void KMyMoneySelector::setOptimizedWidth(void)
       w = nw;
     ++it;
   }
+  return w;
+}
+
+void KMyMoneySelector::setOptimizedWidth(void)
+{
+  int w = optimizedWidth();
+
   m_listView->setMinimumWidth(w+30);
   m_listView->setMaximumWidth(w+30);
   m_listView->setColumnWidth(0, w+28);

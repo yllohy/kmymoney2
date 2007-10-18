@@ -21,6 +21,7 @@
 #include <qrect.h>
 #include <qstyle.h>
 #include <qpainter.h>
+#include <qapp.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -38,6 +39,8 @@
 #include <kmymoney/kmymoneylineedit.h>
 #include <kmymoney/mymoneysplit.h>
 #include <kmymoney/registeritem.h>
+#include <kmymoney/mymoneyscheduled.h>
+
 #include "kmymoneyselector.h"
 
 KMyMoneyCombo::KMyMoneyCombo(QWidget *w, const char *name) :
@@ -293,6 +296,25 @@ void KMyMoneyCombo::setSelectedItem(const QCString& id)
   update();
 }
 
+QSize KMyMoneyCombo::sizeHint() const
+{
+  constPolish();
+  int i, w;
+  QFontMetrics fm = fontMetrics();
+
+  int maxW = count() ? 18 : 7 * fm.width(QChar('x')) + 18;
+  int maxH = QMAX( fm.lineSpacing(), 14 ) + 2;
+
+  w = selector()->optimizedWidth();
+  if ( w > maxW )
+    maxW = w;
+
+  QSize sizeHint = (style().sizeFromContents(QStyle::CT_ComboBox, this,
+                 QSize(maxW, maxH)).
+      expandedTo(QApplication::globalStrut()));
+
+  return sizeHint;
+}
 
 
 
@@ -528,68 +550,23 @@ void KMyMoneyPayeeCombo::loadPayees(const QValueList<MyMoneyPayee>& list)
 }
 
 
-KMyMoneyGeneralCombo::KMyMoneyGeneralCombo(QWidget* w, const char* name) :
-  KMyMoneyCombo(false, w, name),
-  m_id(-1),
-  m_min(999999),
-  m_max(-1)
-{
-  m_completion = new kMyMoneyCompletion(this, 0);
-  QCString num;
-  // add the items in reverse order of appearance (see KMyMoneySelector::newItem() for details)
-
-  connect(m_completion, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotItemSelected(const QCString&)));
-  connect(this, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotSetItem(const QCString&)));
-}
-
-void KMyMoneyGeneralCombo::insertItem(const QString& txt, int id)
-{
-  QCString num;
-  selector()->newTopItem(txt, QString(), num.setNum(id));
-  if(id > m_max)
-    m_max = id;
-  if(id < m_min)
-    m_min = id;
-}
-
-void KMyMoneyGeneralCombo::setItem(int id)
-{
-  m_id = id;
-  QCString num;
-  setSelectedItem(num.setNum(id));
-}
-
-void KMyMoneyGeneralCombo::slotSetItem(const QCString& id)
-{
-  QCString num;
-  for(int i = m_min; i <= m_max; ++i) {
-    num.setNum(i);
-    if(num == id) {
-      m_id = i;
-      break;
-    }
-  }
-  emit itemSelected(m_id);
-  update();
-}
-
-class KMyMoneyPeriodComboPrivate {
+class KMyMoneyGeneralComboPrivate {
 public:
-  QMap<QString, MyMoneyTransactionFilter::dateOptionE> m_strings;
-  void addPeriod(const QString& s, MyMoneyTransactionFilter::dateOptionE idx) { m_strings[s] == idx; }
+  QMap<QString, int> m_strings;
+  void insertItem(const QString& s, int id) { m_strings[s] = id; }
 
-  MyMoneyTransactionFilter::dateOptionE period(const QString& s) const {
-    QMap<QString, MyMoneyTransactionFilter::dateOptionE>::const_iterator it;
+  int itemId(const QString& s) const {
+    QMap<QString, int>::const_iterator it;
     it = m_strings.find(s);
     if(it != m_strings.end())
       return *it;
-    return MyMoneyTransactionFilter::userDefined;
+    return -1;
   }
 
-  const QString& period(MyMoneyTransactionFilter::dateOptionE idx) {
-    QMap<QString, MyMoneyTransactionFilter::dateOptionE>::const_iterator it;
+  const QString& itemText(int id) {
+    QMap<QString, int>::const_iterator it;
     for(it = m_strings.begin(); it != m_strings.end(); ++it) {
-      if(*it == idx) {
+      if(*it == id) {
         return it.key();
       }
     }
@@ -597,78 +574,127 @@ public:
   }
 };
 
+KMyMoneyGeneralCombo::KMyMoneyGeneralCombo(QWidget* w, const char* name) :
+  KComboBox(w, name),
+  d(new KMyMoneyGeneralComboPrivate)
+{
+  connect(this, SIGNAL(highlighted(int)), this, SLOT(slotChangeItem(int)));
+}
+
+KMyMoneyGeneralCombo::~KMyMoneyGeneralCombo()
+{
+  delete d;
+}
+
+void KMyMoneyGeneralCombo::setCurrentItem(int id)
+{
+  const QString& txt = d->itemText(id);
+  for(int idx = 0; idx < count(); ++idx) {
+    if(txt == text(idx)) {
+      KComboBox::setCurrentItem(idx);
+      break;
+    }
+  }
+}
+
+int KMyMoneyGeneralCombo::currentItem(void) const
+{
+  return d->itemId(currentText());
+}
+
+void KMyMoneyGeneralCombo::clear(void)
+{
+  d->m_strings.clear();
+  KComboBox::clear();
+}
+
+void KMyMoneyGeneralCombo::insertItem(const QString& txt, int id, int idx)
+{
+  d->insertItem(txt, id);
+  KComboBox::insertItem(txt, idx);
+}
+
+void KMyMoneyGeneralCombo::removeItem(int id)
+{
+  const QString& txt = d->itemText(id);
+  for(int idx = 0; idx < count(); ++idx) {
+    if(txt == text(idx)) {
+      KComboBox::removeItem(idx);
+      break;
+    }
+  }
+}
+
+void KMyMoneyGeneralCombo::slotChangeItem(int idx)
+{
+  emit itemSelected(d->itemId(text(idx)));
+}
+
 KMyMoneyPeriodCombo::KMyMoneyPeriodCombo(QWidget* parent, const char* name) :
-  KComboBox(parent, name),
-  d(new KMyMoneyPeriodComboPrivate)
+  KMyMoneyGeneralCombo(parent, name)
 {
-  addPeriod(i18n("All dates"), MyMoneyTransactionFilter::allDates);
-  addPeriod(i18n("Until today"), MyMoneyTransactionFilter::untilToday);
-  addPeriod(i18n("Current month"), MyMoneyTransactionFilter::currentMonth);
-  addPeriod(i18n("Current quarter"), MyMoneyTransactionFilter::currentQuarter);
-  addPeriod(i18n("Current Year"), MyMoneyTransactionFilter::currentYear);
-  addPeriod(i18n("Month to date"), MyMoneyTransactionFilter::monthToDate);
-  addPeriod(i18n("Year to date"), MyMoneyTransactionFilter::yearToDate);
-  addPeriod(i18n("Year to month"), MyMoneyTransactionFilter::yearToMonth);
-  addPeriod(i18n("Last month"), MyMoneyTransactionFilter::lastMonth);
-  addPeriod(i18n("Last Year"), MyMoneyTransactionFilter::lastYear);
-  addPeriod(i18n("Last 7 days"), MyMoneyTransactionFilter::last7Days);
-  addPeriod(i18n("Last 30 days"), MyMoneyTransactionFilter::last30Days);
-  addPeriod(i18n("Last 3 months"), MyMoneyTransactionFilter::last3Months);
-  addPeriod(i18n("Last quarter"), MyMoneyTransactionFilter::lastQuarter);
-  addPeriod(i18n("Last 6 months"), MyMoneyTransactionFilter::last6Months);
-  addPeriod(i18n("Last 11 months"), MyMoneyTransactionFilter::last11Months);
-  addPeriod(i18n("Last 12 months"), MyMoneyTransactionFilter::last12Months);
-  addPeriod(i18n("Next 7 days"), MyMoneyTransactionFilter::next7Days);
-  addPeriod(i18n("Next 30 days"), MyMoneyTransactionFilter::next30Days);
-  addPeriod(i18n("Next 3 months"), MyMoneyTransactionFilter::next3Months);
-  addPeriod(i18n("Next quarter"), MyMoneyTransactionFilter::lastQuarter);
-  addPeriod(i18n("Next 6 months"), MyMoneyTransactionFilter::next6Months);
-  addPeriod(i18n("Next 12 months"), MyMoneyTransactionFilter::next12Months);
-  addPeriod(i18n("Last 3 months to next 3 months"), MyMoneyTransactionFilter::last3ToNext3Months);
-  addPeriod(i18n("User defined"), MyMoneyTransactionFilter::userDefined);
+  insertItem(i18n("All dates"), MyMoneyTransactionFilter::allDates);
+  insertItem(i18n("Until today"), MyMoneyTransactionFilter::untilToday);
+  insertItem(i18n("Current month"), MyMoneyTransactionFilter::currentMonth);
+  insertItem(i18n("Current quarter"), MyMoneyTransactionFilter::currentQuarter);
+  insertItem(i18n("Current Year"), MyMoneyTransactionFilter::currentYear);
+  insertItem(i18n("Month to date"), MyMoneyTransactionFilter::monthToDate);
+  insertItem(i18n("Year to date"), MyMoneyTransactionFilter::yearToDate);
+  insertItem(i18n("Year to month"), MyMoneyTransactionFilter::yearToMonth);
+  insertItem(i18n("Last month"), MyMoneyTransactionFilter::lastMonth);
+  insertItem(i18n("Last Year"), MyMoneyTransactionFilter::lastYear);
+  insertItem(i18n("Last 7 days"), MyMoneyTransactionFilter::last7Days);
+  insertItem(i18n("Last 30 days"), MyMoneyTransactionFilter::last30Days);
+  insertItem(i18n("Last 3 months"), MyMoneyTransactionFilter::last3Months);
+  insertItem(i18n("Last quarter"), MyMoneyTransactionFilter::lastQuarter);
+  insertItem(i18n("Last 6 months"), MyMoneyTransactionFilter::last6Months);
+  insertItem(i18n("Last 11 months"), MyMoneyTransactionFilter::last11Months);
+  insertItem(i18n("Last 12 months"), MyMoneyTransactionFilter::last12Months);
+  insertItem(i18n("Next 7 days"), MyMoneyTransactionFilter::next7Days);
+  insertItem(i18n("Next 30 days"), MyMoneyTransactionFilter::next30Days);
+  insertItem(i18n("Next 3 months"), MyMoneyTransactionFilter::next3Months);
+  insertItem(i18n("Next quarter"), MyMoneyTransactionFilter::lastQuarter);
+  insertItem(i18n("Next 6 months"), MyMoneyTransactionFilter::next6Months);
+  insertItem(i18n("Next 12 months"), MyMoneyTransactionFilter::next12Months);
+  insertItem(i18n("Last 3 months to next 3 months"), MyMoneyTransactionFilter::last3ToNext3Months);
+  insertItem(i18n("User defined"), MyMoneyTransactionFilter::userDefined);
 }
 
-void KMyMoneyPeriodCombo::addPeriod(const QString& s, MyMoneyTransactionFilter::dateOptionE idx)
+void KMyMoneyPeriodCombo::setCurrentItem(MyMoneyTransactionFilter::dateOptionE id)
 {
-  d->addPeriod(s, idx);
-  insertItem(s);
+  if(id >= MyMoneyTransactionFilter::dateOptionCount)
+    id = MyMoneyTransactionFilter::userDefined;
+
+  setCurrentItem(id);
 }
 
-void KMyMoneyPeriodCombo::setPeriod(MyMoneyTransactionFilter::dateOptionE idx)
+MyMoneyTransactionFilter::dateOptionE KMyMoneyPeriodCombo::currentItem(void) const
 {
-  if(idx >= MyMoneyTransactionFilter::dateOptionCount)
-    idx = MyMoneyTransactionFilter::userDefined;
-
-  setCurrentText(d->period(idx));
+  return static_cast<MyMoneyTransactionFilter::dateOptionE>(KMyMoneyGeneralCombo::currentItem());
 }
 
-MyMoneyTransactionFilter::dateOptionE KMyMoneyPeriodCombo::period(void) const
-{
-  return d->period(currentText());
-}
-
-QDate KMyMoneyPeriodCombo::start(void) const
+QDate KMyMoneyPeriodCombo::start(MyMoneyTransactionFilter::dateOptionE id)
 {
   QDate start, end;
-  dates(start, end);
+  dates(start, end, id);
   return start;
 }
 
-QDate KMyMoneyPeriodCombo::end(void) const
+QDate KMyMoneyPeriodCombo::end(MyMoneyTransactionFilter::dateOptionE id)
 {
   QDate start, end;
-  dates(start, end);
+  dates(start, end, id);
   return end;
 }
 
-void KMyMoneyPeriodCombo::dates(QDate& start, QDate& end) const
+void KMyMoneyPeriodCombo::dates(QDate& start, QDate& end, MyMoneyTransactionFilter::dateOptionE id)
 {
   int yr, mon, day;
   yr = QDate::currentDate().year();
   mon = QDate::currentDate().month();
   day = QDate::currentDate().day();
 
-  switch(d->period(currentText())) {
+  switch(id) {
     case MyMoneyTransactionFilter::allDates:
       start = QDate();
       end = QDate();
@@ -770,13 +796,124 @@ void KMyMoneyPeriodCombo::dates(QDate& start, QDate& end) const
       end = start.addMonths(3).addDays(-1);
       break;
     default:
-      qFatal("Unknown date identifier in KMyMoneyPeriodCombo::dates()");
+      qFatal("Unknown date identifier %d in KMyMoneyPeriodCombo::dates()", id);
       break;
   }
 }
 
-KMyMoneyPeriodCombo::~KMyMoneyPeriodCombo()
+
+KMyMoneyFrequencyCombo::KMyMoneyFrequencyCombo(QWidget* parent, const char* name) :
+  KMyMoneyGeneralCombo(parent, name)
 {
-  delete d;
+  insertItem(i18n("Once"), MyMoneySchedule::OCCUR_ONCE);
+  insertItem(i18n("Daily"), MyMoneySchedule::OCCUR_DAILY);
+  insertItem(i18n("Weekly"), MyMoneySchedule::OCCUR_WEEKLY);
+  insertItem(i18n("Fortnightly"), MyMoneySchedule::OCCUR_FORTNIGHTLY);
+  insertItem(i18n("Every other week"), MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
+  insertItem(i18n("Every four weeks"), MyMoneySchedule::OCCUR_EVERYFOURWEEKS);
+  insertItem(i18n("Monthly"), MyMoneySchedule::OCCUR_MONTHLY);
+  insertItem(i18n("Every two months"), MyMoneySchedule::OCCUR_EVERYOTHERMONTH);
+  insertItem(i18n("Every three months"), MyMoneySchedule::OCCUR_EVERYTHREEMONTHS);
+  insertItem(i18n("Quarterly"), MyMoneySchedule::OCCUR_QUARTERLY);
+  insertItem(i18n("Every four months"), MyMoneySchedule::OCCUR_EVERYFOURMONTHS);
+  insertItem(i18n("Twice yearly"), MyMoneySchedule::OCCUR_TWICEYEARLY);
+  insertItem(i18n("Yearly"), MyMoneySchedule::OCCUR_YEARLY);
+  insertItem(i18n("Every other year"), MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
+}
+
+MyMoneySchedule::occurenceE KMyMoneyFrequencyCombo::currentItem(void) const
+{
+  return static_cast<MyMoneySchedule::occurenceE>(KMyMoneyGeneralCombo::currentItem());
+}
+
+int KMyMoneyFrequencyCombo::daysBetweenEvents(void) const
+{
+  int rc = 0;
+
+  switch(currentItem()) {
+    case MyMoneySchedule::OCCUR_DAILY:
+      rc = 1;
+      break;
+    case MyMoneySchedule::OCCUR_WEEKLY:
+      rc = 7;
+      break;
+    case MyMoneySchedule::OCCUR_FORTNIGHTLY:
+      rc = 14;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
+      rc = 15;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
+      rc = 28;
+      break;
+    case MyMoneySchedule::OCCUR_MONTHLY:
+      rc = 30;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
+      rc = 60;
+      break;
+    case MyMoneySchedule::OCCUR_QUARTERLY:
+      rc = 90;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
+      rc = 120;
+      break;
+    case MyMoneySchedule::OCCUR_TWICEYEARLY:
+      rc = 180;
+      break;
+    case MyMoneySchedule::OCCUR_YEARLY:
+      rc = 360;
+      break;
+    default:
+      qWarning("Occurence not supported by financial calculator");
+  }
+
+  return rc;
+}
+
+int KMyMoneyFrequencyCombo::eventsPerYear(void) const
+{
+  int rc = 0;
+
+  switch(currentItem()) {
+    case MyMoneySchedule::OCCUR_DAILY:
+      rc = 365;
+      break;
+    case MyMoneySchedule::OCCUR_WEEKLY:
+      rc = 52;
+      break;
+    case MyMoneySchedule::OCCUR_FORTNIGHTLY:
+      rc = 24;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
+      rc = 26;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
+      rc = 13;
+      break;
+    case MyMoneySchedule::OCCUR_MONTHLY:
+      rc = 12;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
+      rc = 6;
+      break;
+    case MyMoneySchedule::OCCUR_QUARTERLY:
+      rc = 4;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYFOURMONTHS:
+      rc = 3;
+      break;
+    case MyMoneySchedule::OCCUR_TWICEYEARLY:
+      rc = 2;
+      break;
+    case MyMoneySchedule::OCCUR_YEARLY:
+      rc = 1;
+      break;
+    default:
+      qWarning("Occurence not supported by financial calculator");
+  }
+
+  return rc;
+
 }
 #include "kmymoneycombo.moc"

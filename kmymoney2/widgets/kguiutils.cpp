@@ -25,6 +25,7 @@
 #include <qpushbutton.h>
 #include <qwidget.h>
 #include <qhbox.h>
+#include <qspinbox.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -68,6 +69,11 @@ void kMandatoryFieldGroup::add(QWidget *widget)
       connect((QLineEdit*)widget->qt_cast("QLineEdit"),
                SIGNAL(textChanged(const QString&)),
                this, SLOT(changed()));
+
+    else if (widget->inherits("QSpinBox"))
+      connect((QSpinBox*)widget->qt_cast("QSpinBox"),
+               SIGNAL(valueChanged(const QString&)),
+                      this, SLOT(changed()));
 
     else {
       qWarning("MandatoryFieldGroup: unsupported class %s",

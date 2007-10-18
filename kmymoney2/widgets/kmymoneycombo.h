@@ -39,6 +39,7 @@
 #include <kmymoney/transaction.h>
 #include <kmymoney/mymoneypayee.h>
 #include <kmymoney/mymoneytransactionfilter.h>
+#include <kmymoney/mymoneyscheduled.h>
 
 class kMyMoneyCompletion;
 class KMyMoneySelector;
@@ -137,6 +138,11 @@ public:
     * overridden to set the background color of the lineedit as well
     */
   void setPaletteBackgroundColor(const QColor& color);
+
+  /**
+   * Overridden to support our own completion box
+   */
+  QSize sizeHint() const;
 
 protected slots:
   virtual void slotItemSelected(const QCString& id);
@@ -334,56 +340,98 @@ public:
   void loadPayees(const QValueList<MyMoneyPayee>& list);
 };
 
+class KMyMoneyGeneralComboPrivate;
+class KMyMoneyGeneralCombo : public KComboBox
+{
+  Q_OBJECT
+public:
+  KMyMoneyGeneralCombo(QWidget* parent = 0, const char* name = 0);
+  virtual ~KMyMoneyGeneralCombo();
+
+  void insertItem(const QString& txt, int id, int idx = -1);
+
+  void setItem(int id) KDE_DEPRECATED { setCurrentItem(id); }
+  int item(void) const KDE_DEPRECATED { return currentItem(); }
+
+  void setCurrentItem(int id);
+  int currentItem(void) const;
+
+  void removeItem(int id);
+
+public slots:
+  void clear(void);
+
+signals:
+  void itemSelected(int id);
+
+protected:
+  // prevent the caller to use the standard KComboBox insertItem function with a default idx
+  void insertItem(const QString&);
+
+protected slots:
+  void slotChangeItem(int idx);
+
+private:
+  KMyMoneyGeneralComboPrivate* d;
+};
+
 
 /**
  * This class implements a time period selector
  * @author Thomas Baumgart
  */
-class KMyMoneyPeriodComboPrivate;
-class KMyMoneyPeriodCombo : public KComboBox
+class KMyMoneyPeriodCombo : public KMyMoneyGeneralCombo
 {
   Q_OBJECT
 public:
   KMyMoneyPeriodCombo(QWidget* parent = 0, const char* name = 0);
-  ~KMyMoneyPeriodCombo();
 
-  MyMoneyTransactionFilter::dateOptionE period(void) const;
-  void setPeriod(MyMoneyTransactionFilter::dateOptionE idx);
-
-  QDate start(void) const;
-  QDate end(void) const;
-
-private:
-  void addPeriod(const QString& s, MyMoneyTransactionFilter::dateOptionE idx);
-  void dates(QDate& start, QDate& end) const;
-  KMyMoneyPeriodComboPrivate* d;
-};
-
-class KMyMoneyGeneralCombo : public KMyMoneyCombo
-{
-   Q_OBJECT
-public:
-  KMyMoneyGeneralCombo(QWidget* parent = 0, const char* name = 0);
+  MyMoneyTransactionFilter::dateOptionE currentItem(void) const;
+  void setCurrentItem(MyMoneyTransactionFilter::dateOptionE id);
 
   /**
-    * @note Remember to load the items in reverse order. See
-    * KMyMoneySelector::newItem() for details.
-    */
-  void insertItem(const QString& txt, int id);
+   * This function returns the actual start date for the given
+   * period definition given by @p id. For user defined periods
+   * the returned value is QDate()
+   */
+  static QDate start(MyMoneyTransactionFilter::dateOptionE id);
 
-  void setItem(int id);
-  int item(void) const { return m_id; }
-
-protected slots:
-  void slotSetItem(const QCString& id);
-
-signals:
-  void itemSelected(int id);
+  /**
+   * This function returns the actual end date for the given
+   * period definition given by @p id. For user defined periods
+   * the returned value is QDate()
+   */
+  static QDate end(MyMoneyTransactionFilter::dateOptionE id);
 
 private:
-  int m_id;
-  int m_min;
-  int m_max;
+  static void dates(QDate& start, QDate& end, MyMoneyTransactionFilter::dateOptionE id);
+};
+
+/**
+ * This class implements a payment frequency selector
+ * @author Thomas Baumgart
+ */
+class KMyMoneyFrequencyCombo : public KMyMoneyGeneralCombo
+{
+  Q_OBJECT
+public:
+  KMyMoneyFrequencyCombo(QWidget* parent = 0, const char* name = 0);
+
+  MyMoneySchedule::occurenceE currentItem(void) const;
+
+  /**
+   * This method returns the number of events for the selected payment
+   * frequency (eg for yearly the return value is 1 and for monthly it
+   * is 12). In case, the frequency cannot be converted (once, every other year, etc.)
+   * the method returns 0.
+   */
+  int eventsPerYear(void) const;
+  /**
+   * This method returns the number of days between two events of
+   * the selected frequency. The return value for months is based
+   * on 30 days and the year is 360 days long.
+   */
+  int daysBetweenEvents(void) const;
 };
 
 #endif

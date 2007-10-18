@@ -275,6 +275,11 @@ public:
     */
   virtual void clear(void);
 
+  /**
+   * This method returns the optimal width for the widget
+   */
+  int optimizedWidth(void) const;
+
 public slots:
   /**
     * This slot selects all items that are currently in

@@ -38,6 +38,7 @@ class KPushButton;
 class KMyMoneyTitleLabel;
 class KMyMoneyWizard;
 class KMyMoneyWizardPagePrivate;
+class kMandatoryFieldGroup;
 
 /**
   * @author Thomas Baumgart (C) 2006
@@ -140,6 +141,18 @@ class KMyMoneyWizardPage
 {
 public:
   /**
+    * This method is called by the wizard when the page is entered from
+    * the previous page. The default implementation does nothing.
+    */
+  virtual void enterPage(void);
+
+  /**
+    * This method is called by the wizard when the page is left to return to
+    * the previous page. The default implementation does nothing.
+    */
+  virtual void leavePage(void);
+
+  /**
     * This method is called by the wizard whenever a page is entered
     * (either in forward or backward direction). The default
     * implementation does nothing.
@@ -228,6 +241,9 @@ protected:
     * to call this method.
     */
   void completeStateChanged(void) const;
+
+protected:
+  kMandatoryFieldGroup* m_mandatoryGroup;
 
 private:
   unsigned int     m_step;
@@ -382,6 +398,25 @@ public:
 
   QValueList<KMyMoneyWizardPage*> historyPages() const { return m_history; }
 
+signals:
+  /**
+    * This signal is sent out, when a new payee needs to be created
+    * @sa KMyMoneyCombo::createItem()
+    *
+    * @param txt The name of the payee to be created
+    * @param id A connected slot should store the id of the created object in this variable
+    */
+  void createPayee(const QString& txt, QCString& id);
+
+  /**
+    * This signal is sent out, when a new category needs to be created
+    * @sa KMyMoneyCombo::createItem()
+    *
+    * @param txt The name of the category to be created
+    * @param id A connected slot should store the id of the created object in this variable
+    */
+  void createCategory(const QString& txt, QCString& id);
+
 protected:
   /**
     * Constructor (kept protected, so that one cannot create such an object directly)
@@ -395,10 +430,24 @@ protected:
     */
   void setFirstPage(KMyMoneyWizardPage* page);
 
+  /**
+    * This method allows to hide or show a @p step.
+    *
+    * @param step step to be shown/hidden
+    * @param hidden hide step if true (the default) or show it if false
+    */
+  void setStepHidden(int step, bool hidden = true);
+
+protected slots:
+  virtual void accept(void);
+  void completeStateChanged(void);
+
+private:
+  void updateStepCount(void);
+
 private slots:
   void backButtonClicked(void);
   void nextButtonClicked(void);
-  void completeStateChanged(void);
 
 protected:
   /*
@@ -441,10 +490,8 @@ private:
   QFrame*               m_stepFrame;
   QLabel*               m_stepLabel;
 
-  /*
-   * The list of labels
-   */
-  QValueList<QLabel*>   m_steps;
+  QValueList<QLabel*>   m_steps;      // the list of step labels
+  int                   m_step;       // the currently selected step
 
   /*
    * The title bar

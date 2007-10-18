@@ -39,6 +39,7 @@
 #include <kmymoney/kmymoneywizard.h>
 #include "kmymoneywizard_p.h"
 #include <kmymoney/kmymoneytitlelabel.h>
+#include <kmymoney/kguiutils.h>
 
 KMyMoneyWizardPagePrivate::KMyMoneyWizardPagePrivate(QObject* parent, const char* name) :
   QObject(parent, name)
@@ -56,6 +57,8 @@ KMyMoneyWizardPage::KMyMoneyWizardPage(unsigned int step, QWidget* widget, const
   m_widget(widget),
   d(new KMyMoneyWizardPagePrivate(widget, name))
 {
+  m_mandatoryGroup = new kMandatoryFieldGroup(widget);
+  QObject::connect(m_mandatoryGroup, SIGNAL(stateChanged()), object(), SIGNAL(completeStateChanged()));
   widget->hide();
 }
 
@@ -70,6 +73,14 @@ void KMyMoneyWizardPage::completeStateChanged(void) const
 }
 
 void KMyMoneyWizardPage::resetPage(void)
+{
+}
+
+void KMyMoneyWizardPage::enterPage(void)
+{
+}
+
+void KMyMoneyWizardPage::leavePage(void)
 {
 }
 
@@ -89,12 +100,12 @@ bool KMyMoneyWizardPage::isComplete(void) const
     QToolTip::add(wizard()->m_nextButton, i18n("Continue with next page"));
   else
     QToolTip::add(wizard()->m_finishButton, i18n("Finish wizard"));
-  return true;
+  return m_mandatoryGroup->isEnabled();
 }
 
-
 KMyMoneyWizard::KMyMoneyWizard(QWidget *parent, const char *name, bool modal, WFlags f) :
-  QDialog(parent, name, modal, f)
+  QDialog(parent, name, modal, f),
+  m_step(0)
 {
   // enable the little grip in the right corner
   setSizeGripEnabled(true);
@@ -196,12 +207,21 @@ void KMyMoneyWizard::addStep(const QString& text)
   }
 }
 
+void KMyMoneyWizard::setStepHidden(int step, bool hidden)
+{
+  if((step < 1) || (step > m_steps.count()))
+    return;
+
+  m_steps[--step]->setHidden(hidden);
+  updateStepCount();
+}
+
 void KMyMoneyWizard::selectStep(unsigned int step)
 {
   if((step < 1) || (step > m_steps.count()))
     return;
 
-  m_stepLabel->setText(i18n("Step %1 of %2").arg(step).arg(m_steps.count()));
+  m_step = step;
   QValueList<QLabel*>::iterator it_l;
   QFont f = m_steps[0]->font();
   for(it_l = m_steps.begin(); it_l != m_steps.end(); ++it_l) {
@@ -213,6 +233,23 @@ void KMyMoneyWizard::selectStep(unsigned int step)
     }
     (*it_l)->setFont(f);
   }
+  updateStepCount();
+}
+
+void KMyMoneyWizard::updateStepCount(void)
+{
+  QValueList<QLabel*>::iterator it_l;
+  int stepCount = 0;
+  int hiddenAdjust = 0;
+  int step = 0;
+  for(it_l = m_steps.begin(); it_l != m_steps.end(); ++it_l) {
+    if(!(*it_l)->isHidden())
+      ++stepCount;
+    else if(step < m_step)
+      hiddenAdjust++;
+    ++step;
+  }
+  m_stepLabel->setText(i18n("Step %1 of %2").arg(m_step - hiddenAdjust).arg(stepCount));
 }
 
 void KMyMoneyWizard::setFirstPage(KMyMoneyWizardPage* page)
@@ -254,17 +291,25 @@ void KMyMoneyWizard::backButtonClicked(void)
 {
   KMyMoneyWizardPage* oldPage = m_history.back();
   m_history.pop_back();
+  oldPage->leavePage();
   oldPage->resetPage();
   switchPage(oldPage);
 }
 
 void KMyMoneyWizard::nextButtonClicked(void)
 {
+  // make sure it is really complete. Some widgets only change state during focusOutEvent,
+  // so we just create such an animal by changing the focus to the next button and
+  // check again for copmpleness
+  m_nextButton->setFocus();
   KMyMoneyWizardPage* oldPage = m_history.back();
-  KMyMoneyWizardPage* newPage = oldPage->nextPage();
-  m_history.append(newPage);
-  newPage->resetPage();
-  switchPage(oldPage);
+  if(oldPage->isComplete()) {
+    KMyMoneyWizardPage* newPage = oldPage->nextPage();
+    m_history.append(newPage);
+    newPage->enterPage();
+    newPage->resetPage();
+    switchPage(oldPage);
+  }
 }
 
 void KMyMoneyWizard::completeStateChanged(void)
@@ -275,12 +320,26 @@ void KMyMoneyWizard::completeStateChanged(void)
   m_finishButton->setShown(lastPage);
   m_nextButton->setShown(!lastPage);
 
-  if(lastPage)
-    m_finishButton->setEnabled(currentPage->isComplete());
-  else
-    m_nextButton->setEnabled(currentPage->isComplete());
+  KPushButton* button;
+
+  button = lastPage ? m_finishButton : m_nextButton;
+  bool buttonWasDisabled = !button->isEnabled();
+
+  bool rc = currentPage->isComplete();
+  button->setEnabled(rc);
 
   m_backButton->setEnabled(m_history.count() > 1);
+}
+
+void KMyMoneyWizard::accept(void)
+{
+  // make sure it is really complete. Some widgets only change state during focusOutEvent,
+  // so we just create such an animal by changing the focus to the finish button and
+  // check again for completeness.
+  m_finishButton->setFocus();
+  KMyMoneyWizardPage* page = m_history.back();
+  if(page->isComplete())
+    QDialog::accept();
 }
 
 #include "kmymoneywizard.moc"

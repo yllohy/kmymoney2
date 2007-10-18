@@ -29,7 +29,7 @@
 // Project Includes
 
 /**
-  * @author Thomas Baumgart (C) 2006  
+  * @author Thomas Baumgart (C) 2006
   *
   * This class represents a helper object required
   * to be able to use Qt's signal/slot mechanism within
