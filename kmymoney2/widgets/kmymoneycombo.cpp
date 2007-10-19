@@ -21,7 +21,7 @@
 #include <qrect.h>
 #include <qstyle.h>
 #include <qpainter.h>
-#include <qapp.h>
+#include <qapplication.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
