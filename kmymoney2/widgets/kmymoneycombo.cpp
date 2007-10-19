@@ -586,6 +586,16 @@ KMyMoneyGeneralCombo::~KMyMoneyGeneralCombo()
   delete d;
 }
 
+void KMyMoneyGeneralCombo::setItem(int id)
+{
+  setCurrentItem(id);
+}
+
+int KMyMoneyGeneralCombo::item(void) const
+{
+  return currentItem();
+}
+
 void KMyMoneyGeneralCombo::setCurrentItem(int id)
 {
   const QString& txt = d->itemText(id);
