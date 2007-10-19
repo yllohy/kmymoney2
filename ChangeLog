@@ -1,3 +1,6 @@
+2007-10-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed build problems caused by recent changes
+
 2007-10-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied forecast patch provided by Toan Nguyen
   * Applied testcase provided by Alvaro Soliverez
