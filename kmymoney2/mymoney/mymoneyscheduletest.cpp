@@ -680,7 +680,7 @@ void MyMoneyScheduleTest::testWriteXML() {
 void MyMoneyScheduleTest::testReadXML() {
 	MyMoneySchedule sch;
 
-	QString ref_ok = QString(
+	QString ref_ok1 = QString(
 		"<!DOCTYPE TEST>\n"
 		"<SCHEDULE-CONTAINER>\n"
 		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0002\" name=\"A Name\" fixed=\"1\" occurence=\"4\" >\n"
@@ -688,6 +688,30 @@ void MyMoneyScheduleTest::testReadXML() {
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
 		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		"   <SPLITS>\n"
+		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" bankid=\"SPID1\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" bankid=\"SPID2\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
+		"   </SPLITS>\n"
+		"   <KEYVALUEPAIRS>\n"
+		"    <PAIR key=\"key\" value=\"value\" />\n"
+		"   </KEYVALUEPAIRS>\n"
+		"  </TRANSACTION>\n"
+		" </SCHEDULED_TX>\n"
+		"</SCHEDULE-CONTAINER>\n"
+	).arg(QDate::currentDate().toString(Qt::ISODate))
+	 .arg(QDate::currentDate().toString(Qt::ISODate))
+	 .arg(QDate::currentDate().toString(Qt::ISODate));
+
+	// diff to ref_ok1 is that we now have an empty entrydate
+	// in the transaction parameters
+	QString ref_ok2 = QString(
+		"<!DOCTYPE TEST>\n"
+		"<SCHEDULE-CONTAINER>\n"
+		" <SCHEDULED_TX startDate=\"%1\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"%2\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH0002\" name=\"A Name\" fixed=\"1\" occurence=\"4\" >\n"
+		"  <PAYMENTS>\n"
+		"   <PAYMENT date=\"%3\" />\n"
+		"  </PAYMENTS>\n"
+		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"\" >\n"
 		"   <SPLITS>\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" bankid=\"SPID1\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" bankid=\"SPID2\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
@@ -736,7 +760,7 @@ void MyMoneyScheduleTest::testReadXML() {
 		delete e;
 	}
 
-	doc.setContent(ref_ok);
+	doc.setContent(ref_ok1);
 	node = doc.documentElement().firstChild().toElement();
 
 
@@ -754,6 +778,33 @@ void MyMoneyScheduleTest::testReadXML() {
 		CPPUNIT_ASSERT(sch.type() == MyMoneySchedule::TYPE_BILL);
 		CPPUNIT_ASSERT(sch.name() == "A Name");
 		CPPUNIT_ASSERT(sch.occurence() == MyMoneySchedule::OCCUR_WEEKLY);
+		CPPUNIT_ASSERT(sch.nextDueDate() == sch.lastPayment().addDays(7));
+		CPPUNIT_ASSERT(sch.recordedPayments().count() == 1);
+		CPPUNIT_ASSERT(sch.recordedPayments()[0] == QDate::currentDate());
+	} catch(MyMoneyException *e) {
+		delete e;
+		CPPUNIT_FAIL("Unexpected exception");
+	}
+
+	doc.setContent(ref_ok2);
+	node = doc.documentElement().firstChild().toElement();
+
+
+	try {
+		sch = MyMoneySchedule(node);
+		CPPUNIT_ASSERT(sch.id() == "SCH0002");
+		CPPUNIT_ASSERT(sch.nextDueDate() == QDate::currentDate().addDays(7));
+		CPPUNIT_ASSERT(sch.startDate() == QDate::currentDate());
+		CPPUNIT_ASSERT(sch.endDate() == QDate());
+		CPPUNIT_ASSERT(sch.autoEnter() == true);
+		CPPUNIT_ASSERT(sch.isFixed() == true);
+		CPPUNIT_ASSERT(sch.weekendOption() == MyMoneySchedule::MoveNothing);
+		CPPUNIT_ASSERT(sch.lastPayment() == QDate::currentDate());
+		CPPUNIT_ASSERT(sch.paymentType() == MyMoneySchedule::STYPE_DIRECTDEBIT);
+		CPPUNIT_ASSERT(sch.type() == MyMoneySchedule::TYPE_BILL);
+		CPPUNIT_ASSERT(sch.name() == "A Name");
+		CPPUNIT_ASSERT(sch.occurence() == MyMoneySchedule::OCCUR_WEEKLY);
+		CPPUNIT_ASSERT(sch.nextDueDate() == sch.lastPayment().addDays(7));
 		CPPUNIT_ASSERT(sch.recordedPayments().count() == 1);
 		CPPUNIT_ASSERT(sch.recordedPayments()[0] == QDate::currentDate());
 	} catch(MyMoneyException *e) {

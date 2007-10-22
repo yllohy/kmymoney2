@@ -1,5 +1,6 @@
 2007-10-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem during creation of schedules reported by David Houlden
+  * Fixed schedule XML loader to adjust old style nextDueDate information
 
 2007-10-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed build problems caused by recent changes
