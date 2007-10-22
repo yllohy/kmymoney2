@@ -100,7 +100,7 @@ KEditScheduleDlg::KEditScheduleDlg(const MyMoneySchedule& schedule, QWidget *par
 
   m_frequencyEdit->setCurrentItem(d->m_schedule.occurence());
   if(m_frequencyEdit->currentItem() == -1)
-    m_frequencyEdit->setItem(MyMoneySchedule::OCCUR_MONTHLY);
+    m_frequencyEdit->setCurrentItem(MyMoneySchedule::OCCUR_MONTHLY);
   slotFrequencyChanged(m_frequencyEdit->currentItem());
 
   // load option widgets
@@ -279,20 +279,27 @@ const MyMoneySchedule& KEditScheduleDlg::schedule(void) const
         break;
     }
 
-    switch(static_cast<KMyMoneyRegister::Action>(m_form->tabBar()->currentTab())) {
-      case KMyMoneyRegister::ActionDeposit:
-        d->m_schedule.setType(MyMoneySchedule::TYPE_DEPOSIT);
-        break;
-      default:
-      case KMyMoneyRegister::ActionWithdrawal:
-        d->m_schedule.setType(MyMoneySchedule::TYPE_BILL);
-        break;
-      case KMyMoneyRegister::ActionTransfer:
-        d->m_schedule.setType(MyMoneySchedule::TYPE_TRANSFER);
-        break;
+    d->m_schedule.setType(MyMoneySchedule::TYPE_BILL);
+    KMyMoneyTransactionForm::TabBar* tabbar = dynamic_cast<KMyMoneyTransactionForm::TabBar*>(d->m_editor->haveWidget("tabbar"));
+    if(tabbar) {
+      switch(static_cast<KMyMoneyRegister::Action>(tabbar->currentTab())) {
+        case KMyMoneyRegister::ActionDeposit:
+          d->m_schedule.setType(MyMoneySchedule::TYPE_DEPOSIT);
+          break;
+        default:
+        case KMyMoneyRegister::ActionWithdrawal:
+          d->m_schedule.setType(MyMoneySchedule::TYPE_BILL);
+          break;
+        case KMyMoneyRegister::ActionTransfer:
+          d->m_schedule.setType(MyMoneySchedule::TYPE_TRANSFER);
+          break;
+      }
+    } else {
+      qDebug("No tabbar found in KEditScheduleDlg::schedule(). Defaulting type to BILL");
     }
+
     d->m_schedule.setAutoEnter(m_autoEnterEdit->isChecked());
-    d->m_schedule.setPaymentType(static_cast<MyMoneySchedule::paymentTypeE>(m_paymentMethodEdit->item()));
+    d->m_schedule.setPaymentType(static_cast<MyMoneySchedule::paymentTypeE>(m_paymentMethodEdit->currentItem()));
     if(m_endSeriesEdit->isEnabled() && m_endSeriesEdit->isChecked()) {
       d->m_schedule.setEndDate(m_FinalPaymentEdit->date());
     } else {
@@ -395,7 +402,7 @@ void KEditScheduleDlg::slotEndDateChanged(const QDate& date)
 
   if(d->m_schedule.endDate() != date) {
     d->m_schedule.setEndDate(date);
-    if(d->m_schedule.transactionsRemaining() != m_RemainingEdit->text().toInt());
+    if(d->m_schedule.transactionsRemaining() != m_RemainingEdit->text().toInt())
       m_RemainingEdit->setText(QString::number(d->m_schedule.transactionsRemaining()));
   }
 }
