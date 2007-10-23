@@ -66,9 +66,10 @@ public:
     * not shown in the widget.
     *
     * @param t reference to transaction to be shown/modified
+    * @param s reference to split that is to be hidden
     * @param acc reference to account
     */
-  void setTransaction(const MyMoneyTransaction& t, const MyMoneyAccount& acc);
+  void setTransaction(const MyMoneyTransaction& t, const MyMoneySplit& s, const MyMoneyAccount& acc);
 
   /**
     * This method is used to retrieve the transaction from the widget.
@@ -209,6 +210,7 @@ private:
   MyMoneyTransaction  m_transaction;
   MyMoneyAccount      m_account;
   MyMoneySplit        m_split;
+  MyMoneySplit        m_hiddenSplit;
 
   unsigned            m_amountWidth;
 

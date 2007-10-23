@@ -57,6 +57,7 @@
 #include "../dialogs/ksplitcorrectiondlg.h"
 
 KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
+                                           const MyMoneySplit& s,
                                            const MyMoneyAccount& acc,
                                            const bool amountValid,
                                            const bool deposit,
@@ -66,6 +67,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   : KSplitTransactionDlgDecl(parent, name, true),
   m_transaction(t),
   m_account(acc),
+  m_split(s),
   m_amountValid(amountValid),
   m_isDeposit(deposit),
   m_calculatedValue(calculatedValue)
@@ -146,7 +148,7 @@ int KSplitTransactionDlg::exec(void)
     transactionsTable->setFocus();
 
     // initialize the display
-    transactionsTable->setTransaction(m_transaction, m_account);
+    transactionsTable->setTransaction(m_transaction, m_split, m_account);
     updateSums();
 
     rc = KSplitTransactionDlgDecl::exec();
@@ -273,7 +275,7 @@ void KSplitTransactionDlg::slotClearAllSplits()
       m_transaction.removeSplit(*it);
     }
 
-    transactionsTable->setTransaction(m_transaction, m_account);
+    transactionsTable->setTransaction(m_transaction, m_split, m_account);
     slotSetTransaction(m_transaction);
   }
 }

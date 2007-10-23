@@ -173,6 +173,7 @@ signals:
 protected:
   MyMoneyAccountLoan  m_account;
   MyMoneyTransaction  m_transaction;
+  MyMoneySplit        m_split;
 };
 
 #endif

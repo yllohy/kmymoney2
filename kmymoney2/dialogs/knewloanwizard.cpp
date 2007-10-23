@@ -159,10 +159,9 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
 
   // setup a phony transaction for additional fee processing
   m_account = MyMoneyAccount(QCString("Phony-ID"), MyMoneyAccount());
-  MyMoneySplit split;
-  split.setAccountId(m_account.id());
-  split.setValue(0);
-  m_transaction.addSplit(split);
+  m_split.setAccountId(m_account.id());
+  m_split.setValue(0);
+  m_transaction.addSplit(m_split);
 }
 
 KNewLoanWizard::~KNewLoanWizard()
@@ -1008,7 +1007,7 @@ void KNewLoanWizard::slotAdditionalFees(void)
   MyMoneyAccount account(QCString("Phony-ID"), MyMoneyAccount());
 
   QMap<QCString, MyMoneyMoney> priceInfo;
-  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction, account, false, !m_borrowButton->isChecked(), MyMoneyMoney(0), priceInfo);
+  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(m_transaction, m_split, account, false, !m_borrowButton->isChecked(), MyMoneyMoney(0), priceInfo);
   connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 
   if(dlg->exec() == QDialog::Accepted) {
@@ -1067,6 +1066,9 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
   sPayment.setPayeeId(payeeId);
   sAmortization.setPayeeId(payeeId);
 
+  MyMoneyAccount account(QCString("Phony-ID"), MyMoneyAccount());
+  sAmortization.setAccountId(account.id());
+
   // IMPORTANT: Payment split must be the first one, because
   //            the schedule view expects it this way during display
   t.addSplit(sPayment);
@@ -1074,7 +1076,6 @@ const MyMoneyTransaction KNewLoanWizard::transaction() const
   t.addSplit(sInterest);
 
   // copy the splits from the other costs and update the payment split
-  MyMoneyAccount account(QCString("Phony-ID"), MyMoneyAccount());
   QValueList<MyMoneySplit>::ConstIterator it;
   for(it = m_transaction.splits().begin(); it != m_transaction.splits().end(); ++it) {
     if((*it).accountId() != account.id()) {

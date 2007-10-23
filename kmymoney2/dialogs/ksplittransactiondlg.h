@@ -54,6 +54,7 @@ class KSplitTransactionDlg : public KSplitTransactionDlgDecl
 
 public:
   KSplitTransactionDlg(const MyMoneyTransaction& t,
+                       const MyMoneySplit& s,
                        const MyMoneyAccount& acc,
                        const bool amountValid,
                        const bool deposit,
@@ -138,6 +139,11 @@ private:
     * This member keeps a copy of the currently selected account
     */
   MyMoneyAccount         m_account;
+
+  /**
+    * This member keeps a copy of the currently selected split
+    */
+  MyMoneySplit           m_split;
 
   /**
     * flag that shows that the amount specified in the constructor

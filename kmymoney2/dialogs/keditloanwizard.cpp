@@ -175,11 +175,8 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
       // remove this split with one that will be replaced
       // later and has a phony id
       m_transaction.removeSplit(*it_s);
-
-      MyMoneySplit split;
-      split.setAccountId(QCString("Phony-ID"));
-      split.setValue(0);
-      m_transaction.addSplit(split);
+      m_split.clearId();
+      m_transaction.addSplit(m_split);
     }
 
     if((*it_s).action() == MyMoneySplit::ActionInterest) {
@@ -501,7 +498,7 @@ const MyMoneyAccount KEditLoanWizard::account(void) const
 const MyMoneyTransaction KEditLoanWizard::transaction() const
 {
   MyMoneyTransaction t = KNewLoanWizard::transaction();
-  MyMoneySplit s = t.splitByAccount(QCString());
+  MyMoneySplit s = t.splitByAccount(QCString("Phony-ID"));
 
   s.setAccountId(m_account.id());
   t.modifySplit(s);

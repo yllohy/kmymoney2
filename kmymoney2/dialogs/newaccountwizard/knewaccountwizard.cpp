@@ -845,6 +845,7 @@ class NewAccountWizard::LoanPaymentPagePrivate
 {
 public:
   MyMoneyAccount      phonyAccount;
+  MyMoneySplit        phonySplit;
   MyMoneyTransaction  additionalFeesTransaction;
   MyMoneyMoney        additionalFees;
 };
@@ -855,11 +856,10 @@ LoanPaymentPage::LoanPaymentPage(Wizard* wizard, const char* name) :
   d(new LoanPaymentPagePrivate)
 {
   d->phonyAccount = MyMoneyAccount(QCString("Phony-ID"), MyMoneyAccount());
-  MyMoneySplit split;
-  split.setAccountId(d->phonyAccount.id());
-  split.setValue(0);
-  split.setShares(0);
-  d->additionalFeesTransaction.addSplit(split);
+  d->phonySplit.setAccountId(d->phonyAccount.id());
+  d->phonySplit.setValue(0);
+  d->phonySplit.setShares(0);
+  d->additionalFeesTransaction.addSplit(d->phonySplit);
 
 
   connect(m_additionalFeesButton, SIGNAL(clicked()), this, SLOT(slotAdditionalFees()));
@@ -890,7 +890,7 @@ void LoanPaymentPage::enterPage(void)
 void LoanPaymentPage::slotAdditionalFees(void)
 {
   QMap<QCString, MyMoneyMoney> priceInfo;
-  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(d->additionalFeesTransaction, d->phonyAccount, false, !m_wizard->moneyBorrowed(), MyMoneyMoney(0), priceInfo);
+  KSplitTransactionDlg* dlg = new KSplitTransactionDlg(d->additionalFeesTransaction, d->phonySplit, d->phonyAccount, false, !m_wizard->moneyBorrowed(), MyMoneyMoney(0), priceInfo);
 
   // connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
 

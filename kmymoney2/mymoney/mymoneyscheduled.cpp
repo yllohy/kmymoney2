@@ -153,11 +153,18 @@ void MyMoneySchedule::setFixed(bool fixed)
 
 void MyMoneySchedule::setTransaction(const MyMoneyTransaction& transaction)
 {
+  MyMoneyTransaction t = transaction;
   // don't allow a transaction that has no due date
-  if(!transaction.postDate().isValid())
+  // if we get something like that, then we use the
+  // the current next due date. If that is also invalid
+  // we can't help it.
+  if(!t.postDate().isValid()) {
+    t.setPostDate(m_transaction.postDate());
+  }
+  if(!t.postDate().isValid())
     return;
 
-  m_transaction = transaction;
+  m_transaction = t;
   // make sure that the transaction does not have an id so that we can enter
   // it into the engine
   m_transaction.clearId();

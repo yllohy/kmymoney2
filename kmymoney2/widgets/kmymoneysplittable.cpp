@@ -469,10 +469,11 @@ void kMyMoneySplitTable::setNumRows(int irows)
   updateScrollBars();
 }
 
-void kMyMoneySplitTable::setTransaction(const MyMoneyTransaction& t, const MyMoneyAccount& acc)
+void kMyMoneySplitTable::setTransaction(const MyMoneyTransaction& t, const MyMoneySplit& s, const MyMoneyAccount& acc)
 {
   m_transaction = t;
   m_account = acc;
+  m_hiddenSplit = s;
   setCurrentCell(0, 0);
   slotUpdateData(m_transaction);
 }
@@ -485,10 +486,13 @@ const QValueList<MyMoneySplit> kMyMoneySplitTable::getSplits(const MyMoneyTransa
   // get list of splits
   list = t.splits();
 
-  // and ignore the very first
-  it = list.begin();
-  if(it != list.end()) {
-    list.remove(it);
+  // and ignore the one that should be hidden
+
+  for(it = list.begin(); it != list.end(); ++it) {
+    if(*it == m_hiddenSplit) {
+      list.remove(it);
+      break;
+    }
   }
   return list;
 }

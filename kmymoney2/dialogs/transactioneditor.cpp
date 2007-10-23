@@ -1606,6 +1606,7 @@ int StdTransactionEditor::slotEditSplits(void)
       MyMoneyMoney value;
 
       KSplitTransactionDlg* dlg = new KSplitTransactionDlg(transaction,
+                                                          transaction.splits()[0],
                                                           m_account,
                                                           isValidAmount,
                                                           dir == KMyMoneyRegister::Deposit,
