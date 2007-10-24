@@ -109,7 +109,7 @@ MyMoneySchedule::MyMoneySchedule(const QDomElement& node) :
   // if the next due date is not set (comes from old version)
   // then set it up the old way
   if(!nextDueDate().isValid() && !m_lastPayment.isValid()) {
-    setNextDueDate(m_startDate);
+    m_transaction.setPostDate(m_startDate);
     // clear it, because the schedule has never been used
     m_startDate = QDate();
   }
@@ -119,14 +119,13 @@ MyMoneySchedule::MyMoneySchedule(const QDomElement& node) :
   // be caused by older versions of the application. In this case, we just
   // clear out the nextDueDate and let it calculate from the lastPayment.
   if(nextDueDate().isValid() && nextDueDate() <= m_lastPayment) {
-    setNextDueDate(QDate());
+    m_transaction.setPostDate(QDate());
   }
 
   if(!nextDueDate().isValid()) {
-    setNextDueDate(m_lastPayment);
-    setNextDueDate(nextPayment(m_lastPayment.addDays(1)));
+    m_transaction.setPostDate(m_startDate);
+    m_transaction.setPostDate(nextPayment(m_lastPayment.addDays(1)));
   }
-
 }
 
 MyMoneySchedule::MyMoneySchedule(const QCString& id, const MyMoneySchedule& right) :
@@ -221,6 +220,8 @@ QDate MyMoneySchedule::adjustedNextDueDate(void) const
 void MyMoneySchedule::setNextDueDate(const QDate& date)
 {
   m_transaction.setPostDate(date);
+  if(date.isValid())
+    m_startDate = date;
 }
 
 void MyMoneySchedule::setLastPayment(const QDate& date)
@@ -475,7 +476,7 @@ QDate MyMoneySchedule::nextPayment(const QDate& refDate) const
 
 QValueList<QDate> MyMoneySchedule::paymentDates(const QDate& _startDate, const QDate& _endDate) const
 {
-  QDate paymentDate(startDate());
+  QDate paymentDate(nextDueDate());
   QValueList<QDate> theDates;
 
   QDate endDate(_endDate);
@@ -889,10 +890,11 @@ void MyMoneySchedule::setWeekendOption(const weekendOptionE option)
 
 void MyMoneySchedule::fixDate(QDate& date) const
 {
-  if(m_startDate.isValid()
-  && date.day() != m_startDate.day()
-  && QDate::isValid(date.year(), date.month(), m_startDate.day())) {
-    date.setYMD(date.year(), date.month(), m_startDate.day());
+  QDate fixDate(m_startDate);
+  if(fixDate.isValid()
+  && date.day() != fixDate.day()
+  && QDate::isValid(date.year(), date.month(), fixDate.day())) {
+    date.setYMD(date.year(), date.month(), fixDate.day());
   }
 }
 

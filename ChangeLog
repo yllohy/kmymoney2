@@ -1,3 +1,7 @@
+2007-10-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed some problems around changing the next due date of schedules
+  * Added testcases to catch those problems
+
 2007-10-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a few problems around the split transaction editor
 

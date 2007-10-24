@@ -493,9 +493,9 @@ void MyMoneyScheduleTest::testPaymentDates()
 		"<!DOCTYPE TEST>\n"
 		"<SCHEDULE-CONTAINER>\n"
 
-		"<SCHEDULED_TX startDate=\"2003-12-31\" autoEnter=\"1\" weekendOption=\"0\" lastPayment=\"2006-04-30\" paymentType=\"2\" endDate=\"\" type=\"2\" id=\"SCH000032\" name=\"DSL\" fixed=\"0\" occurence=\"32\" >\n"
+		"<SCHEDULED_TX startDate=\"2003-12-31\" autoEnter=\"1\" weekendOption=\"0\" lastPayment=\"2006-01-31\" paymentType=\"2\" endDate=\"\" type=\"2\" id=\"SCH000032\" name=\"DSL\" fixed=\"0\" occurence=\"32\" >\n"
 		" <PAYMENTS/>\n"
-		" <TRANSACTION postdate=\"\" bankid=\"\" memo=\"\" id=\"\" commodity=\"EUR\" entrydate=\"2004-01-25\" >\n"
+		" <TRANSACTION postdate=\"2006-02-28\" bankid=\"\" memo=\"\" id=\"\" commodity=\"EUR\" entrydate=\"\" >\n"
 		"  <SPLITS>\n"
 		"   <SPLIT payee=\"P000076\" reconciledate=\"\" shares=\"1200/100\" action=\"Deposit\" bankid=\"\" number=\"\" reconcileflag=\"0\" memo=\"\" value=\"1200/100\" account=\"A000076\" />\n"
 		"   <SPLIT payee=\"\" reconciledate=\"\" shares=\"-1200/100\" action=\"Deposit\" bankid=\"\" number=\"\" reconcileflag=\"0\" memo=\"\" value=\"-1200/100\" account=\"A000009\" />\n"
@@ -512,16 +512,17 @@ void MyMoneyScheduleTest::testPaymentDates()
 	doc.setContent(ref_ok);
 	node = doc.documentElement().firstChild().toElement();
 
-	QDate startDate(2006,4,28);
-	QDate endDate(2006,7,28);
+	QDate startDate(2006,1,28);
+	QDate endDate(2006,5,30);
 
 	try {
 		sch = MyMoneySchedule(node);
 		QDate nextPayment = sch.nextPayment(startDate);
 		QValueList<QDate> list = sch.paymentDates(nextPayment, endDate);
-		CPPUNIT_ASSERT(list.count() == 2);
-		CPPUNIT_ASSERT(list[0] == QDate(2006,5,31));
-		CPPUNIT_ASSERT(list[1] == QDate(2006,6,30));
+		CPPUNIT_ASSERT(list.count() == 3);
+		CPPUNIT_ASSERT(list[0] == QDate(2006,2,28));
+		CPPUNIT_ASSERT(list[1] == QDate(2006,3,31));
+		CPPUNIT_ASSERT(list[2] == QDate(2006,4,30));
 
 	} catch(MyMoneyException *e) {
 		delete e;
@@ -892,3 +893,32 @@ void MyMoneyScheduleTest::testAdjustedNextDueDate()
 	}
 }
 
+void MyMoneyScheduleTest::testModifyNextDueDate(void)
+{
+	MyMoneySchedule s;
+	s.setStartDate(QDate(2007, 1, 1));
+	s.setOccurence(MyMoneySchedule::OCCUR_MONTHLY);
+	s.setNextDueDate(s.startDate().addMonths(1));
+	s.setLastPayment(s.startDate());
+
+	QValueList<QDate> dates;
+	dates = s.paymentDates(QDate(2007,2,1), QDate(2007,2,1));
+	CPPUNIT_ASSERT(s.nextDueDate() == QDate(2007,2,1));
+	CPPUNIT_ASSERT(dates.count() == 1);
+	CPPUNIT_ASSERT(dates[0] == QDate(2007,2,1));
+
+	s.setNextDueDate(QDate(2007,1,24));
+
+	dates = s.paymentDates(QDate(2007,2,1), QDate(2007,2,1));
+	CPPUNIT_ASSERT(s.nextDueDate() == QDate(2007,1,24));
+	CPPUNIT_ASSERT(dates.count() == 0);
+
+	dates = s.paymentDates(QDate(2007,1,24), QDate(2007,1,24));
+	CPPUNIT_ASSERT(dates.count() == 1);
+
+	dates = s.paymentDates(QDate(2007,1,24), QDate(2007,2,24));
+	CPPUNIT_ASSERT(dates.count() == 2);
+	CPPUNIT_ASSERT(dates[0] == QDate(2007,1,24));
+	CPPUNIT_ASSERT(dates[1] == QDate(2007,2,24));
+	
+}
