@@ -781,6 +781,8 @@ void KHomeView::showScheduleBasedForecast(void)
 
   if(nameIdx.count() > 0) {
     int i = 0;
+    
+    int colspan = 1;
 
     // Now output header
     m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(forecast.forecastDays())));
@@ -793,6 +795,7 @@ void KHomeView::showScheduleBasedForecast(void)
 
       m_part->write(i18n("%1 days").arg((i+1)*forecast.accountsCycle()));
       m_part->write("</th>");
+      colspan++;
     }
     m_part->write("</tr>");
 
@@ -857,7 +860,7 @@ void KHomeView::showScheduleBasedForecast(void)
         }
 
         if(!msg.isEmpty()) {
-          m_part->write(QString("<tr><td colspan=4 align=\"center\" ><font color=\"red\">%1</font></td></tr>").arg(msg));
+          m_part->write(QString("<tr><td colspan=%2 align=\"center\" ><font color=\"red\">%1</font></td></tr>").arg(msg).arg(colspan));
         }
          }
       // a drop below zero is always shown
@@ -886,7 +889,7 @@ void KHomeView::showScheduleBasedForecast(void)
              }
          }
          if(!msg.isEmpty()) {
-           m_part->write(QString("<tr><td colspan=4 align=\"center\" ><font color=\"red\"><b>%1</b></font></td></tr>").arg(msg));
+           m_part->write(QString("<tr><td colspan=%2 align=\"center\" ><font color=\"red\"><b>%1</b></font></td></tr>").arg(msg).arg(colspan));
          }
     }
     m_part->write("</table>");

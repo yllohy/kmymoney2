@@ -16,6 +16,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qtabwidget.h>
 
 // ----------------------------------------------------------------------------
@@ -23,9 +24,10 @@
 
 #include <kdebug.h>
 #include <klocale.h>
+#include <klistview.h>
 
 // ----------------------------------------------------------------------------
-// Project IncludesAccounts
+// Project Includes
 
 #include <kmymoney/mymoneyfile.h>
 #include "kforecastview.h"
@@ -49,8 +51,9 @@ KForecastView::KForecastView(QWidget *parent, const char *name) :
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadForecast()));
 
-  //loadListView();
-
+  m_forecastList->setAllColumnsShowFocus(true);
+  m_summaryList->setAllColumnsShowFocus(true);
+  m_adviceList->setAllColumnsShowFocus(true);
 }
 
 KForecastView::~KForecastView()
@@ -77,6 +80,9 @@ void KForecastView::loadForecast(ForecastViewTab tab)
       case ListView:
         loadListView();
         break;
+      case SummaryView:
+        loadSummaryView();
+        break;
       default:
         break;
     }
@@ -95,13 +101,13 @@ void KForecastView::show(void)
 void KForecastView::slotLoadForecast(void)
 {
   m_needReload[ListView] = true;
+  m_needReload[SummaryView] = true;
   if(isVisible())
     slotTabChanged(m_tab->currentPage());
 }
 
 void KForecastView::loadListView(void)
 {
-
   MyMoneyFile* file = MyMoneyFile::instance();
 
   QValueList<MyMoneyAccount> accList;
@@ -126,24 +132,24 @@ void KForecastView::loadListView(void)
     m_forecastList->removeColumn(0);
   }
 
-  int dateColumn = m_forecastList->addColumn("Date");
+  int dateColumn = m_forecastList->addColumn(i18n("Date"), -1);
 
   QMap<QString, QCString>::ConstIterator it_n;
   for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
-    m_forecastList->addColumn(acc.name());
+    m_forecastList->addColumn(acc.name(), -1);
   }
 
-  m_forecastList->addColumn(i18n("Total Forecast"));
+  m_forecastList->addColumn(i18n("Total Forecast"), -1);
 
   m_forecastList->setSorting(-1);
 
-  QListViewItem *forecastItem = 0;
+  KListViewItem *forecastItem = 0;
 
   for(int it_f=0;it_f <= forecast.forecastDays(); ++it_f){
     QDate forecastDate = QDate::currentDate().addDays(it_f);
     QString dateString = forecastDate.toString(Qt::LocalDate);
-    forecastItem = new QListViewItem(m_forecastList, forecastItem);
+    forecastItem = new KListViewItem(m_forecastList, forecastItem);
     forecastItem->setText(dateColumn, dateString);
     MyMoneyMoney totalAmountMM = MyMoneyMoney::MyMoneyMoney(0,1);
     QString totalAmount;
@@ -166,8 +172,219 @@ void KForecastView::loadListView(void)
     totalAmount = totalAmountMM.formatMoney(baseCurrency.tradingSymbol());
     forecastItem->setText((dateColumn+it_c), totalAmount);
   }
+
+  //adjust the width all columns
+  for(int col=1; col < m_forecastList->columns(); ++col) {
+    m_forecastList->setColumnWidthMode(col, QListView::Maximum);
+    m_forecastList->setColumnAlignment(col, Qt::AlignRight);
+    m_forecastList->adjustColumn(col);
+  }
+
+  m_forecastList->triggerUpdate();
   m_forecastList->show();
 }
+
+void KForecastView::loadSummaryView(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QValueList<MyMoneyAccount> accList;
+  int dropMinimum;
+  int dropZero;
+
+  MyMoneySecurity baseCurrency = file->baseCurrency();
+
+  MyMoneyForecast forecast;
+
+  //Get all accounts of the right type to calculate forecast
+  forecast.doForecast();
+  accList = forecast.forecastAccountList();
+  QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
+  for(; accList_t != accList.end(); ++accList_t ) {
+    MyMoneyAccount acc = *accList_t;
+    if(nameIdx[acc.name()] != acc.id()) { //Check if the account is there
+      nameIdx[acc.name()] = acc.id();
+    }
+  }
+
+  //clear the list, including columns
+  m_summaryList->clear();
+  for(;m_summaryList->columns() > 0;) {
+    m_summaryList->removeColumn(0);
+  }
+
+  //clear the list, including columns
+  m_adviceList->clear();
+  for(;m_adviceList->columns() > 0;) {
+    m_adviceList->removeColumn(0);
+  }
+
+  //add first column of both lists
+  int accountColumn = m_summaryList->addColumn(i18n("Account"), -1);
+  m_adviceList->addColumn("", -1);
+
+  //add cycle interval columns
+  for(int i = 0; (i*forecast.accountsCycle()) <= forecast.forecastDays(); ++i) {
+    QString columnName =  i18n("%1 days").arg(i*forecast.accountsCycle(), 0, 10);
+    m_summaryList->addColumn(columnName, -1);
+  }
+
+  //add variation columns
+  m_summaryList->addColumn(i18n("Total variation"), -1);
+
+  //align columns
+  for(int i = 1; i < m_summaryList->columns(); ++i) {
+    m_summaryList->setColumnAlignment(i, Qt::AlignRight);
+  }
+
+  /*QMap<QString, QCString>::ConstIterator it_n;
+  for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
+    MyMoneyAccount acc = file->account(*it_n);
+    m_forecastList->addColumn(acc.name());
+  }*/
+
+  m_summaryList->setSorting(-1);
+
+  KListViewItem *summaryItem = 0;
+  KListViewItem *adviceItem = 0;
+  QMap<QDate, MyMoneyMoney> cycleBalance;
+
+  QMap<QString, QCString>::ConstIterator it_nc;
+  for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
+
+    MyMoneyAccount acc = file->account(*it_nc);
+    MyMoneySecurity currency = file->security(acc.currencyId());
+    QString amount;
+    QString vAmount;
+    MyMoneyMoney vAmountMM;
+    MyMoneyMoney tempVAmountMM;
+
+    summaryItem = new KListViewItem(m_summaryList, summaryItem);
+    summaryItem->setText(accountColumn, acc.name());
+    int it_c = 1; // iterator for the columns of the listview
+
+    for(int i = 0; (i*forecast.accountsCycle()) <= forecast.forecastDays(); ++i) {
+      QDate summaryDate = QDate::currentDate().addDays(i*forecast.accountsCycle());
+
+      MyMoneyMoney amountMM;
+      amountMM = forecast.forecastBalance(acc, summaryDate);
+
+      cycleBalance[summaryDate] += amountMM;
+
+      //calculate variation
+      if (i == 0) tempVAmountMM = amountMM;
+
+      vAmountMM += (amountMM - tempVAmountMM);
+      tempVAmountMM = amountMM;
+      amount = amountMM.formatMoney(currency.tradingSymbol());
+      summaryItem->setText((accountColumn+it_c), amount);
+      it_c++;
+    }
+
+    //calculate and add variation per cycle
+    vAmount = vAmountMM.formatMoney(currency.tradingSymbol());
+    summaryItem->setText((accountColumn+it_c), vAmount);
+
+  }
+  //add total row
+  summaryItem = new KListViewItem(m_summaryList, summaryItem);
+  summaryItem->setText(accountColumn, i18n("Total"));
+  int i;
+  for(i = 0; (i*forecast.accountsCycle()) <= forecast.forecastDays(); ++i) {
+    QDate summaryDate = QDate::currentDate().addDays(i*forecast.accountsCycle());
+    MyMoneyMoney amountMM = cycleBalance[summaryDate];
+    QString amount = amountMM.formatMoney(file->baseCurrency().tradingSymbol());
+    summaryItem->setText((i+1), amount);
+  }
+  //calculate total variation
+  QString totalVarAmount;
+  MyMoneyMoney totalVarAmountMM = cycleBalance[QDate::currentDate().addDays((i-1)*forecast.accountsCycle())]-cycleBalance[QDate::currentDate()];
+  totalVarAmount = totalVarAmountMM.formatMoney(file->baseCurrency().tradingSymbol());
+  summaryItem->setText((i+1), totalVarAmount);
+
+  m_summaryList->triggerUpdate();
+
+    //Add comments to the advice list
+  for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
+
+    MyMoneyAccount acc = file->account(*it_nc);
+    MyMoneySecurity currency = file->security(acc.currencyId());
+
+    //Check if the account is going to be below zero or below the minimal balance in the forecast period
+    QString minimumBalance = acc.value("minimumBalance");
+    MyMoneyMoney minBalance = MyMoneyMoney(minimumBalance);
+
+    //Check if the account is going to be below minimal balance
+    dropMinimum = forecast.daysToMinimumBalance(acc);
+
+      //Check if the account is going to be below zero in the future
+    dropZero = forecast.daysToZeroBalance(acc);
+
+
+    // spit out possible warnings
+    QString msg;
+
+    // if a minimum balance has been specified, an appropriate warning will
+    // only be shown, if the drop below 0 is on a different day or not present
+
+    if(dropMinimum != -1
+       && !minBalance.isZero()
+       && (dropMinimum < dropZero
+       || dropZero == -1)) {
+      switch(dropMinimum) {
+        case -1:
+          break;
+        case 0:
+          msg = i18n("The balance of %1 is below the minimum balance %2 today.").arg(acc.name()).arg(minBalance.formatMoney(currency.tradingSymbol()));
+          break;
+        default:
+          msg = i18n("The balance of %1 will drop below the minimum balance %2 in %3 days.").arg(acc.name()).arg(minBalance.formatMoney(currency.tradingSymbol())).arg(dropMinimum-1);
+      }
+
+      if(!msg.isEmpty()) {
+        summaryItem = new KListViewItem(m_adviceList, adviceItem);
+        summaryItem->setText(0, msg);
+      }
+    }
+
+    // a drop below zero is always shown
+    msg = QString();
+    switch(dropZero) {
+      case -1:
+        break;
+      case 0:
+        if(acc.accountGroup() == MyMoneyAccount::Asset) {
+          msg = i18n("The balance of %1 is below %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol()));
+          break;
+        }
+        if(acc.accountGroup() == MyMoneyAccount::Liability) {
+          msg = i18n("The balance of %1 is above %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol()));
+          break;
+        }
+        break;
+      default:
+        if(acc.accountGroup() == MyMoneyAccount::Asset) {
+          msg = i18n("The balance of %1 will drop below %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol())).arg(dropZero);
+          break;
+        }
+        if(acc.accountGroup() == MyMoneyAccount::Liability) {
+          msg = i18n("The balance of %1 will raise above %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol())).arg(dropZero);
+          break;
+        }
+    }
+    if(!msg.isEmpty()) {
+      summaryItem = new KListViewItem(m_adviceList, adviceItem);
+      summaryItem->setText(0, msg);
+    }
+  }
+
+  //adjust width of all columns
+  for(int col=0; col < m_summaryList->columns(); ++col) {
+    m_summaryList->adjustColumn(col);
+  }
+
+  m_forecastList->show();
+}
+
 
 
 #include "kforecastview.moc"

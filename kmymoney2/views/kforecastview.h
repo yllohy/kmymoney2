@@ -19,18 +19,14 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
-#include <qlistview.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
-
-
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
 #include <kmymoney/mymoneyaccount.h>
-//#include <kmymoney/kmymoneyaccounttree.h>
 #include <kmymoney/mymoneyutils.h>
 
 #include "../views/kforecastviewdecl.h"
@@ -59,33 +55,35 @@ public slots:
 
 protected:
   typedef enum {
-    ListView = 0,
+    SummaryView = 0,
+    ListView,
     // insert new values above this line
     MaxViewTabs
   } ForecastViewTab;
-  
-  //typedef 
+
+  //typedef
       //QMap<int, MyMoneyMoney> dailyBalances;
   //QMap<QCString, dailyBalances> accountList;
-  
+
   QMap<QString, QCString> nameIdx;
-      
+
 
   /**
     * This method loads the forecast view.
-    * 
+    *
     */
   void loadForecast(ForecastViewTab tab);
   void loadListView(void);
+  void loadSummaryView(void);
 
 //  void calculateDailyBalances(int forecastDays, int forecastTerm, int forecastTerms);
-  
-  protected slots:
-    void slotTabChanged(QWidget*);
+
+protected slots:
+  void slotTabChanged(QWidget*);
 
 private:
   bool                                m_needReload[MaxViewTabs];
-  
+
 };
 
 #endif
