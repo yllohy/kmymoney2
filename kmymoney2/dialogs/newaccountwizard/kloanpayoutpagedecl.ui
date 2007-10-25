@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>359</height>
+            <height>384</height>
         </rect>
     </property>
     <vbox>
@@ -19,6 +19,9 @@
         <widget class="KActiveLabel">
             <property name="name">
                 <cstring>kActiveLabel1</cstring>
+            </property>
+            <property name="focusPolicy">
+                <enum>NoFocus</enum>
             </property>
             <property name="text">
                 <string>If this loan is for an asset, such as a car or a house, you can create the asset account now. An asset account represents the total value of an asset. The money from this loan will be transfered into the asset account you create or select.
@@ -47,7 +50,10 @@ If this loan is a 'consumer loan' (money to use however you want), you can use a
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel" row="1" column="0">
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <widget class="QLabel" row="3" column="0">
                     <property name="name">
                         <cstring>textLabel2</cstring>
                     </property>
@@ -55,7 +61,7 @@ If this loan is a 'consumer loan' (money to use however you want), you can use a
                         <string>Date of payment</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="0" column="0">
+                <widget class="QLabel" row="1" column="0">
                     <property name="name">
                         <cstring>textLabel1</cstring>
                     </property>
@@ -63,7 +69,37 @@ If this loan is a 'consumer loan' (money to use however you want), you can use a
                         <string>Asset Account</string>
                     </property>
                 </widget>
-                <widget class="KPushButton" row="0" column="3">
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Loan account</string>
+                    </property>
+                </widget>
+                <spacer row="3" column="1">
+                    <property name="name">
+                        <cstring>spacer88</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>40</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="kMyMoneyDateInput" row="3" column="2">
+                    <property name="name">
+                        <cstring>m_payoutDate</cstring>
+                    </property>
+                </widget>
+                <widget class="KPushButton" row="1" column="3">
                     <property name="name">
                         <cstring>m_createAssetButton</cstring>
                     </property>
@@ -71,7 +107,34 @@ If this loan is a 'consumer loan' (money to use however you want), you can use a
                         <string>Create</string>
                     </property>
                 </widget>
-                <widget class="KMyMoneyCategory" row="0" column="1" rowspan="1" colspan="2">
+                <widget class="KMyMoneyCategory" row="2" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>m_loanAccount</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>1</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="4">
+                    <property name="name">
+                        <cstring>m_refinanceLoan</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Refinance existing loan</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Check this if you are refinancing a loan that already exists in KMyMoney</string>
+                    </property>
+                </widget>
+                <widget class="KMyMoneyCategory" row="1" column="1" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>m_assetAccount</cstring>
                     </property>
@@ -84,28 +147,6 @@ If this loan is a 'consumer loan' (money to use however you want), you can use a
                         </sizepolicy>
                     </property>
                 </widget>
-                <widget class="kMyMoneyDateInput" row="1" column="2">
-                    <property name="name">
-                        <cstring>m_payoutDate</cstring>
-                    </property>
-                </widget>
-                <spacer row="1" column="1">
-                    <property name="name">
-                        <cstring>spacer88</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
             </grid>
         </widget>
         <spacer>
@@ -121,7 +162,7 @@ If this loan is a 'consumer loan' (money to use however you want), you can use a
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>31</height>
+                    <height>20</height>
                 </size>
             </property>
         </spacer>
@@ -134,6 +175,32 @@ If this loan is a 'consumer loan' (money to use however you want), you can use a
         <receiver>m_payoutDetailFrame</receiver>
         <slot>setDisabled(bool)</slot>
     </connection>
+    <connection>
+        <sender>m_refinanceLoan</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_assetAccount</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_refinanceLoan</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_loanAccount</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_refinanceLoan</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_createAssetButton</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
 </connections>
+<tabstops>
+    <tabstop>m_noPayoutTransaction</tabstop>
+    <tabstop>m_refinanceLoan</tabstop>
+    <tabstop>m_assetAccount</tabstop>
+    <tabstop>m_createAssetButton</tabstop>
+    <tabstop>m_loanAccount</tabstop>
+    <tabstop>m_payoutDate</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

@@ -628,7 +628,7 @@ public:
     * @retval false view was not capable to edit transactions
     * @retval true view was capable to edit the transactions and did so
     */
-  bool editTransactions(const QValueList<MyMoneyTransaction>& transactions) const { return false; }
+  bool editTransactions(const QValueList<MyMoneyTransaction>& transactions) const { Q_UNUSED(transactions)  return false; }
 
 protected:
   KMyMoneyTitleLabel*    m_titleLabel;

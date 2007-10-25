@@ -156,9 +156,7 @@ KMyMoneyWizard::KMyMoneyWizard(QWidget *parent, const char *name, bool modal, WF
   // create page layout
   m_pageLayout = new QVBoxLayout(0, 0, 6, "pageLayout");
 
-  // the page will be inserted later dynamically above this spacer
-  m_pageLayout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
-
+  // the page will be inserted later dynamically above this line
   QFrame* line = new QFrame( this, "line" );
   line->setFrameShadow( QFrame::Sunken );
   line->setFrameShape( QFrame::HLine );

@@ -111,6 +111,10 @@ void kMandatoryFieldGroup::changed(void)
   QValueList<QWidget *>::ConstIterator i;
   for (i = widgets.begin(); i != widgets.end(); ++i) {
     QWidget *widget = *i;
+    // disabled widgets don't count
+    if(!(widget->isEnabled())) {
+      continue;
+    }
     if (widget->inherits("QCheckBox")) {
       if (((QCheckBox*)widget->qt_cast("QCheckBox"))->state() == QButton::NoChange) {
         enable = false;

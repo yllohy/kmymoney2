@@ -57,6 +57,8 @@ protected:
     */
   QDate date(const QDate& _date) const;
 
+  void resizeEvent(QResizeEvent* ev);
+
 public slots:
   int exec(void);
 

@@ -42,6 +42,7 @@ class LoanDetailsPage;
 class LoanPaymentPage;
 class LoanSchedulePage;
 class LoanPayoutPage;
+class AccountSummaryPage;
 
 /**
   * @author Thomas Baumgart
@@ -60,6 +61,7 @@ class Wizard : public KMyMoneyWizard
   friend class LoanPaymentPage;
   friend class LoanSchedulePage;
   friend class LoanPayoutPage;
+  friend class AccountSummaryPage;
 
   Q_OBJECT
 public:
@@ -119,7 +121,9 @@ protected:
   bool moneyBorrowed() const;
 
 signals:
-  void newInstitutionClicked(MyMoneyInstitution& institution);
+  void createInstitution(MyMoneyInstitution& institution);
+  void createAccount(MyMoneyAccount& account);
+  void createCategory(MyMoneyAccount&, const MyMoneyAccount&);
 
 private:
   InstitutionPage*         m_institutionPage;
@@ -131,6 +135,7 @@ private:
   LoanPaymentPage*         m_loanPaymentPage;
   LoanSchedulePage*        m_loanSchedulePage;
   LoanPayoutPage*          m_loanPayoutPage;
+  AccountSummaryPage*      m_accountSummaryPage;
 
   MyMoneyAccount           m_account;
   MyMoneySchedule          m_schedule;

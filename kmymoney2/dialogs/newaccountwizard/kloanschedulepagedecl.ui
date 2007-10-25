@@ -20,6 +20,9 @@
             <property name="name">
                 <cstring>kActiveLabel2</cstring>
             </property>
+            <property name="focusPolicy">
+                <enum>NoFocus</enum>
+            </property>
             <property name="text">
                 <string>KMyMoney creates a schedule for this payment and reminds you whenever a payment must be made. Please select the account to/from which payments will be made and the category the interest will be assigned to.&lt;p&gt;
 If you selected to record all payments this date has already been supplied. If you selected to record only this years payments, then the &lt;b&gt;First payment due date&lt;/b&gt; is the date of the first payment made in this year.</string>

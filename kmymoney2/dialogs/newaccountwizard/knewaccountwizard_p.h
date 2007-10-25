@@ -48,6 +48,7 @@
 #include "kloanpaymentpagedecl.h"
 #include "kloanschedulepagedecl.h"
 #include "kloanpayoutpagedecl.h"
+#include "kaccountsummarypagedecl.h"
 
 class Wizard;
 class MyMoneyInstitution;
@@ -96,6 +97,8 @@ public:
   MyMoneyAccount::accountTypeE accountType(void) const;
   const MyMoneySecurity& currency(void) const;
 
+  void setAccount(const MyMoneyAccount& acc);
+
 private slots:
   void slotLoadWidgets(void);
 };
@@ -116,12 +119,11 @@ class CreditCardSchedulePage : public KSchedulePageDecl, public WizardPage<Wizar
   Q_OBJECT
 public:
   CreditCardSchedulePage(Wizard* parent, const char* name = 0);
+  KMyMoneyWizardPage* nextPage(void) const;
   virtual bool isComplete(void) const;
+  void enterPage(void);
 
   QWidget* initialFocusWidget(void) const { return m_reminderCheckBox; }
-
-public slots:
-  virtual void show(void);
 
 private slots:
   void slotLoadWidgets(void);
@@ -196,12 +198,28 @@ public:
 
   void enterPage(void);
 
+  /**
+   * This method returns the sum of the additional fees
+   */
+  MyMoneyMoney additionalFees(void) const;
+
+  /**
+   * This method returns the base payment, that's principal and interest
+   */
+  MyMoneyMoney basePayment(void) const;
+
+  /**
+   * This method returns the splits that make up the additional fees in @p list.
+   * @note The splits may contain assigned ids which the caller must remove before
+   * adding the splits to a MyMoneyTransaction object.
+   */
+  void additionalFeesSplits(QValueList<MyMoneySplit>& list);
+
 protected slots:
   void slotAdditionalFees(void);
 
 protected:
   void updateAmounts(void);
-  MyMoneyMoney basePayment(void) const;
 
 private:
   LoanPaymentPagePrivate* d;
@@ -216,9 +234,14 @@ public:
 
   KMyMoneyWizardPage* nextPage(void) const;
 
+  /**
+   * This method returns the due date of the first payment to be recorded.
+   */
+  QDate firstPaymentDueDate(void) const;
+
 private slots:
   void slotLoadWidgets(void);
-
+  void slotCreateCategory(const QString& name, QCString& id);
 };
 
 
@@ -234,6 +257,16 @@ public:
 
 private slots:
   void slotLoadWidgets(void);
+  void slotCreateAssetAccount(void);
+  void slotButtonsToggled(void);
+};
+
+class AccountSummaryPage : public KAccountSummaryPageDecl, public WizardPage<Wizard>
+{
+  Q_OBJECT
+public:
+  AccountSummaryPage(Wizard* parent, const char* name = 0);
+  void enterPage(void);
 };
 
 } // namespace

@@ -148,6 +148,13 @@ QDate KEnterScheduleDlg::date(const QDate& _date) const
   return date;
 }
 
+void KEnterScheduleDlg::resizeEvent(QResizeEvent* ev)
+{
+  m_register->resize(KMyMoneyRegister::DetailColumn);
+  m_form->resize(KMyMoneyTransactionForm::ValueColumn1);
+  KEnterScheduleDlgDecl::resizeEvent(ev);
+}
+
 
 void KEnterScheduleDlg::slotSetupSize(void)
 {

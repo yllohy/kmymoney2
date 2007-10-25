@@ -72,6 +72,9 @@ protected:
   /// Overridden for internal reasons. No API changes.
   bool focusNextPrevChild(bool next);
 
+  /// Overridden for internal reasons. No API changes.
+  void resizeEvent(QResizeEvent* ev);
+
 private slots:
   void slotSetupSize(void);
   void slotRemainingChanged(const QString& text);

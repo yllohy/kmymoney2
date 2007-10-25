@@ -383,6 +383,14 @@ bool KEditScheduleDlg::focusNextPrevChild(bool next)
   return rc;
 }
 
+void KEditScheduleDlg::resizeEvent(QResizeEvent* ev)
+{
+  m_register->resize(KMyMoneyRegister::DetailColumn);
+  m_form->resize(KMyMoneyTransactionForm::ValueColumn1);
+  KEditScheduleDlgDecl::resizeEvent(ev);
+}
+
+
 void KEditScheduleDlg::slotRemainingChanged(const QString& text)
 {
   // Make sure the required fields are set

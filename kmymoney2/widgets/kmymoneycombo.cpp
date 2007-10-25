@@ -298,6 +298,13 @@ void KMyMoneyCombo::setSelectedItem(const QCString& id)
 
 QSize KMyMoneyCombo::sizeHint() const
 {
+  return KComboBox::sizeHint();
+
+  // I wanted to use the code below to adjust the size of the combo box
+  // according to the largest item in the selector list. Apparently that
+  // does not work too well in the enter and edit schedule dialog for
+  // the category combo box. So we just use the standard implementation for now.
+#if 0
   constPolish();
   int i, w;
   QFontMetrics fm = fontMetrics();
@@ -314,6 +321,7 @@ QSize KMyMoneyCombo::sizeHint() const
       expandedTo(QApplication::globalStrut()));
 
   return sizeHint;
+#endif
 }
 
 

@@ -1,6 +1,11 @@
 2007-10-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added forecast patch provided by Alvaro Soliverez
   * Modified layout and changed QListView* into KListView* objects in forecast
+  * Don't include disabled widgets in mandatory field checks
+  * Fixed a layout problem in enter and edit schedule dialogs when resizing
+  * Fixed a sizing problem with KMyMoneyCombo widgets
+  * Removed a spacer in the base wizard logic
+  * Improved new account wizard
 
 2007-10-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some problems around changing the next due date of schedules
