@@ -1,3 +1,7 @@
+2007-10-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem in forecast module (take initial balance into account)
+  * Adjusted a few signatures of forecast module for better performance
+
 2007-10-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added forecast patch provided by Alvaro Soliverez
   * Modified layout and changed QListView* into KListView* objects in forecast

@@ -140,7 +140,7 @@ void MyMoneyForecast::pastTransactions()
   }
 }
 
-bool MyMoneyForecast::isForecastAccount(MyMoneyAccount acc)
+bool MyMoneyForecast::isForecastAccount(const MyMoneyAccount& acc)
 {
   if(m_nameIdx.isEmpty())
   {
@@ -205,7 +205,7 @@ QValueList<MyMoneyAccount> MyMoneyForecast::forecastAccountList(void)
 }
 
 
-MyMoneyMoney MyMoneyForecast::calculateAccountTrend(MyMoneyAccount acc, int trendDays)
+MyMoneyMoney MyMoneyForecast::calculateAccountTrend(const MyMoneyAccount& acc, int trendDays)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyTransactionFilter filter;
@@ -310,7 +310,7 @@ void MyMoneyForecast::calculateDailyBalances()
   }
 }
 
-MyMoneyMoney MyMoneyForecast::forecastBalance(MyMoneyAccount acc, QDate forecastDate)
+MyMoneyMoney MyMoneyForecast::forecastBalance(const MyMoneyAccount& acc, QDate forecastDate)
 {
   int offset = QDate::currentDate().daysTo(forecastDate);
 
@@ -323,7 +323,7 @@ MyMoneyMoney MyMoneyForecast::forecastBalance(MyMoneyAccount acc, QDate forecast
  * Returns 0 if offset not in range of forecast days.
  */
 
-MyMoneyMoney MyMoneyForecast::forecastBalance ( MyMoneyAccount acc, int offset )
+MyMoneyMoney MyMoneyForecast::forecastBalance (const MyMoneyAccount& acc, int offset )
 {
   dailyBalances balance;
   MyMoneyMoney MM_amount;
@@ -344,7 +344,7 @@ MyMoneyMoney MyMoneyForecast::forecastBalance ( MyMoneyAccount acc, int offset )
   return MM_amount;
 }
 
-void MyMoneyForecast::doFutureScheduledForecast()
+void MyMoneyForecast::doFutureScheduledForecast(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -375,7 +375,7 @@ void MyMoneyForecast::doFutureScheduledForecast()
             m_nameIdx[acc.name()] = acc.id();
             balance[0] = file->balance(acc.id(), QDate::currentDate());
           }
-        m_accountList[acc.id()] = balance;
+          m_accountList[acc.id()] = balance;
         }
       }
     }
@@ -434,8 +434,6 @@ void MyMoneyForecast::doFutureScheduledForecast()
       if(!acc.id().isEmpty()) {
         try {
           if(acc.accountType() != MyMoneyAccount::Investment) {
-            dailyBalances balance;
-            balance = m_accountList[acc.id()];
             MyMoneyTransaction t = (*it).transaction();
 
             // only process the entry, if it is still active
@@ -447,15 +445,14 @@ void MyMoneyForecast::doFutureScheduledForecast()
               for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s ) {
                 MyMoneyAccount acc = file->account((*it_s).accountId());
                 if(isForecastAccount(acc)) {
-                  // check if this is a new account for us
-/*                  if(m_nameIdx[acc.name()] != acc.id()) {
-                    m_nameIdx[acc.name()] = acc.id();
+                  // check if this is a new account for us and if so, keep the
+                  // current balance in offset 0 of the array
+                  if(m_accountList[acc.id()][0].isZero())
                     m_accountList[acc.id()][0] = file->balance(acc.id());
-                  }*/
                   int offset = QDate::currentDate().daysTo(nextDate);
                   if(offset <= 0) {  // collect all overdues on the first day
                     offset = 1;
-                  }      QString amount;
+                  }
                   dailyBalances balance;
                   balance = m_accountList[acc.id()];
                   for(int i = 0; i < offset; ++i) {
@@ -470,9 +467,6 @@ void MyMoneyForecast::doFutureScheduledForecast()
               // now add the splits to the balances
               for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s ) {
                 MyMoneyAccount acc = file->account((*it_s).accountId());
-                QString amount;
-                dailyBalances balance;
-                balance = m_accountList[acc.id()];
                 if(isForecastAccount(acc)) {
                   dailyBalances balance;
                   balance = m_accountList[acc.id()];
@@ -534,7 +528,8 @@ void MyMoneyForecast::doFutureScheduledForecast()
   }
 }
 
-int MyMoneyForecast::daysToMinimumBalance(MyMoneyAccount acc) {
+int MyMoneyForecast::daysToMinimumBalance(const MyMoneyAccount& acc)
+{
   QString minimumBalance = acc.value("minBalanceAbsolute");
   MyMoneyMoney minBalance = MyMoneyMoney(minimumBalance);
   dailyBalances balance;
@@ -556,7 +551,8 @@ int MyMoneyForecast::daysToMinimumBalance(MyMoneyAccount acc) {
   return -1;
 }
 
-int MyMoneyForecast::daysToZeroBalance(MyMoneyAccount acc) {
+int MyMoneyForecast::daysToZeroBalance(const MyMoneyAccount& acc)
+{
   dailyBalances balance;
 
   //Check if acc is not a forecast account, return -1
@@ -625,7 +621,7 @@ int MyMoneyForecast::forecastDays() const
   return m_forecastDays;
 }
 
-void MyMoneyForecast::setForecastAccountList()
+void MyMoneyForecast::setForecastAccountList(void)
 {
 
   //get forecast accounts

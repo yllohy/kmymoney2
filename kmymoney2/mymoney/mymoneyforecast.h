@@ -65,37 +65,37 @@ public:
    * Collects and processes all transactions in the past for the
    * same period of forecast and calculates the balance trend
    */
-  static MyMoneyMoney calculateAccountTrend(MyMoneyAccount acc, int forecastDays);
+  static MyMoneyMoney calculateAccountTrend(const MyMoneyAccount& acc, int forecastDays);
 
   /**
    * Returns the forecast balance trend for account @a acc for day @p QDate
    */
-  MyMoneyMoney forecastBalance(MyMoneyAccount acc, QDate forecastDate);
+  MyMoneyMoney forecastBalance(const MyMoneyAccount& acc, QDate forecastDate);
 
   /**
    * Returns the forecast balance trend for account @a acc for offset @p int
    * offset is days from current date, inside forecast days.
    * Returns 0 if offset not in range of forecast days.
    */
-  MyMoneyMoney forecastBalance(MyMoneyAccount acc, int offset);
+  MyMoneyMoney forecastBalance(const MyMoneyAccount& acc, int offset);
 
   /**
    * Returns true if an account @a acc is an account to be forecast
    */
-  bool isForecastAccount(MyMoneyAccount acc);
+  bool isForecastAccount(const MyMoneyAccount& acc);
 
   /**
    * returns the number of days when a given account is forecast to be below minimum balance
    * returns -1 if it will not be below minimum balance in the forecast period
    */
-  int daysToMinimumBalance(MyMoneyAccount acc);
+  int daysToMinimumBalance(const MyMoneyAccount& acc);
 
   /**
    * returns the number of days when a given account is forecast to be below zero if it is an asset accounts
    * or above zero if it is a liability account
    * returns -1 if it will not happen in the forecast period
    */
-  int daysToZeroBalance(MyMoneyAccount acc);
+  int daysToZeroBalance(const MyMoneyAccount& acc);
 
   /**
    * number of days to go back in history to calculate forecast
