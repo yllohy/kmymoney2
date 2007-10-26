@@ -489,7 +489,7 @@ const QValueList<MyMoneySplit> kMyMoneySplitTable::getSplits(const MyMoneyTransa
   // and ignore the one that should be hidden
 
   for(it = list.begin(); it != list.end(); ++it) {
-    if(*it == m_hiddenSplit) {
+    if((*it).id() == m_hiddenSplit.id()) {
       list.remove(it);
       break;
     }
