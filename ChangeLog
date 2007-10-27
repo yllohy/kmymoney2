@@ -1,3 +1,6 @@
+2007-10-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't show unused securities/currencies in update stock price dialog
+
 2007-10-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem in forecast module (take initial balance into account)
   * Adjusted a few signatures of forecast module for better performance

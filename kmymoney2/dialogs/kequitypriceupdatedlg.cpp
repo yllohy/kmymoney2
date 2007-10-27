@@ -100,12 +100,14 @@ KEquityPriceUpdateDlg::KEquityPriceUpdateDlg(QWidget *parent, const QCString& se
   MyMoneyPriceList prices = file->priceList();
   for(MyMoneyPriceList::ConstIterator it_price = prices.begin(); it_price != prices.end(); ++it_price)
   {
-    MyMoneySecurityPair pair = it_price.key();
-
+    const MyMoneySecurityPair& pair = it_price.key();
     if ( file->security( pair.first ).isCurrency() && ( securityId.isEmpty() || ( pair == currencyIds ) ) )
     {
-      addPricePair(pair);
-      btnUpdateAll->setEnabled(true);
+      const MyMoneyPriceEntries& entries = (*it_price);
+      if(entries.count() > 0 && entries.begin().key() <= QDate::currentDate()) {
+        addPricePair(pair);
+        btnUpdateAll->setEnabled(true);
+      }
     }
   }
 
@@ -173,15 +175,37 @@ void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair)
   {
     MyMoneyPrice pr = file->price(pair.first,pair.second);
     if(pr.source() != "KMyMoney") {
-      KListViewItem* item = new KListViewItem(lvEquityList,
-        symbol,
-        i18n("%1 units in %2").arg(pair.first,pair.second));
-      if(pr.isValid()) {
-        item->setText(PRICE_COL, pr.rate(pair.second).formatMoney(file->currency(pair.second).tradingSymbol(), KMyMoneySettings::pricePrecision()));
-        item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
+      const QCString& foreignCurrency = file->foreignCurrency(pair.first, pair.second);
+      // check that the foreign currency is still in use
+      QValueList<MyMoneyAccount>::const_iterator it_a;
+      QValueList<MyMoneyAccount> list;
+      file->accountList(list);
+      for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+        // if it's an account denominated in the foreign currency
+        // keep it
+        if(((*it_a).currencyId() == foreignCurrency)
+        && !(*it_a).isClosed())
+          break;
+        // if it's an investment traded in the foreign currency
+        // keep it
+        if((*it_a).isInvest() && !(*it_a).isClosed()) {
+          MyMoneySecurity sec = file->security((*it_a).currencyId());
+          if(sec.tradingCurrency() == foreignCurrency)
+            break;
+        }
       }
-      item->setText(ID_COL,id);
-      item->setText(SOURCE_COL, "Yahoo Currency");  // This string value should not be localized
+      // if it is in use, it_a is not equal to list.end()
+      if(it_a != list.end()) {
+        KListViewItem* item = new KListViewItem(lvEquityList,
+          symbol,
+          i18n("%1 units in %2").arg(pair.first,pair.second));
+        if(pr.isValid()) {
+          item->setText(PRICE_COL, pr.rate(pair.second).formatMoney(file->currency(pair.second).tradingSymbol(), KMyMoneySettings::pricePrecision()));
+          item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
+        }
+        item->setText(ID_COL,id);
+        item->setText(SOURCE_COL, "Yahoo Currency");  // This string value should not be localized
+      }
     }
   }
 }
@@ -194,25 +218,38 @@ void KEquityPriceUpdateDlg::addInvestment(const MyMoneySecurity& inv)
   QString id = inv.id();
   if ( ! lvEquityList->findItem(id,ID_COL,Qt::ExactMatch) )
   {
-    KListViewItem* item = new KListViewItem(lvEquityList, symbol, inv.name());
-    MyMoneySecurity currency = file->currency(inv.tradingCurrency());
-    MyMoneyPrice pr = file->price(id.utf8(), inv.tradingCurrency());
-    if(pr.isValid()) {
-      item->setText(PRICE_COL, pr.rate(currency.id()).formatMoney(currency.tradingSymbol(), KMyMoneySettings::pricePrecision()));
-      item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
+    // check that the security is still in use
+    QValueList<MyMoneyAccount>::const_iterator it_a;
+    QValueList<MyMoneyAccount> list;
+    file->accountList(list);
+    for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+      if((*it_a).isInvest()
+      && ((*it_a).currencyId() == inv.id())
+      && !(*it_a).isClosed())
+        break;
     }
-    item->setText(ID_COL,id);
-    if (inv.value("kmm-online-quote-system") == "Finance::Quote")
-      item->setText(SOURCE_COL, QString("Finance::Quote " + inv.value("kmm-online-source")));
-    else
-      item->setText(SOURCE_COL, inv.value("kmm-online-source"));
+    // if it is in use, it_a is not equal to list.end()
+    if(it_a != list.end()) {
+      KListViewItem* item = new KListViewItem(lvEquityList, symbol, inv.name());
+      MyMoneySecurity currency = file->currency(inv.tradingCurrency());
+      MyMoneyPrice pr = file->price(id.utf8(), inv.tradingCurrency());
+      if(pr.isValid()) {
+        item->setText(PRICE_COL, pr.rate(currency.id()).formatMoney(currency.tradingSymbol(), KMyMoneySettings::pricePrecision()));
+        item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
+      }
+      item->setText(ID_COL,id);
+      if (inv.value("kmm-online-quote-system") == "Finance::Quote")
+        item->setText(SOURCE_COL, QString("Finance::Quote %1").arg( inv.value("kmm-online-source")));
+      else
+        item->setText(SOURCE_COL, inv.value("kmm-online-source"));
 
-    // If this investment is denominated in a foreign currency, ensure that
-    // the appropriate price pair is also on the list
+      // If this investment is denominated in a foreign currency, ensure that
+      // the appropriate price pair is also on the list
 
-    if ( currency.id() != file->baseCurrency().id() )
-    {
-      addPricePair(MyMoneySecurityPair(currency.id(),file->baseCurrency().id()));
+      if ( currency.id() != file->baseCurrency().id() )
+      {
+        addPricePair(MyMoneySecurityPair(currency.id(),file->baseCurrency().id()));
+      }
     }
   }
 }

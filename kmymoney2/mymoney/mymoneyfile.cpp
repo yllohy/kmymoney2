@@ -1652,6 +1652,13 @@ const QValueList<MyMoneySecurity> MyMoneyFile::currencyList(void) const
   return m_storage->currencyList();
 }
 
+const QCString& MyMoneyFile::foreignCurrency(const QCString& first, const QCString& second) const
+{
+  if(baseCurrency().id() == second)
+    return first;
+  return second;
+}
+
 const MyMoneySecurity& MyMoneyFile::baseCurrency(void) const
 {
   if(d->m_baseCurrency.id().isEmpty()) {

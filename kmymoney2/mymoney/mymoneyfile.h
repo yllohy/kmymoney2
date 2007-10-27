@@ -1076,6 +1076,13 @@ public:
   const MyMoneySecurity& baseCurrency(void) const;
 
   /**
+    * This method returns the foreign currency of the given two
+    * currency ids. If second is the base currency id then @a first
+    * is returned otherwise @a second is returned.
+    */
+  const QCString& foreignCurrency(const QCString& first, const QCString& second) const;
+
+  /**
     * This method allows to select the base currency. It does
     * not perform any changes to the data in the engine. It merely
     * stores a reference to the base currency. The currency
