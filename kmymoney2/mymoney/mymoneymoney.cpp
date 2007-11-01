@@ -34,6 +34,8 @@
 // Project Includes
 
 #include "mymoneymoney.h"
+#include "mymoneyaccount.h"
+#include "mymoneysecurity.h"
 
 unsigned char MyMoneyMoney::_thousandSeparator = ',';
 unsigned char MyMoneyMoney::_decimalSeparator = '.';
@@ -169,6 +171,11 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
 
   if(isNegative)
     m_num = -m_num;
+}
+
+const QString MyMoneyMoney::formatMoney(const MyMoneyAccount& acc, const MyMoneySecurity& sec, bool showThousandSeparator) const
+{
+  return formatMoney(sec.tradingSymbol(), denomToPrec(acc.fraction(sec)), showThousandSeparator);
 }
 
 const QString MyMoneyMoney::formatMoney(const QString& currency, const int prec, bool showThousandSeparator) const

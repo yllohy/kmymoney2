@@ -1,3 +1,6 @@
+2007-11-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added new MyMoneyMoney::formatMoney() convenience method
+
 2007-10-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't show unused securities/currencies in update stock price dialog
 

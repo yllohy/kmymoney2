@@ -58,6 +58,9 @@
 typedef int64_t signed64;
 typedef uint64_t unsigned64;
 
+class MyMoneyAccount;
+class MyMoneySecurity;
+
 /**
   * This class represents a value within the MyMoney Engine
   *
@@ -120,6 +123,13 @@ public:
     *                              (@a true) or not (@a false)
     */
   const QString formatMoney(const QString& currency = QString(), const int prec = 2, bool showThousandSeparator = true) const;
+
+  /**
+   * This is a convenience method. It behaves exactly as the above one, but takes the information
+   * about currency symbol and precision out of the MyMoneySecurity and MyMoneyAccount objects
+   * @a acc and @a sec.
+   */
+  const QString formatMoney(const MyMoneyAccount& acc, const MyMoneySecurity& sec, bool showThousandSeparator = true) const;
 
   /**
     * This method is used to convert the smallest fraction information into
