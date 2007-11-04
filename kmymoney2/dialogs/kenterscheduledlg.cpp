@@ -212,6 +212,8 @@ TransactionEditor* KEnterScheduleDlg::startEdit(void)
           case MyMoneySchedule::STYPE_MANUALDEPOSIT:
             action = KMyMoneyRegister::ActionDeposit;
             break;
+          default:
+            break;
         }
         break;
       default:

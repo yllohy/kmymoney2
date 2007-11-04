@@ -28,6 +28,7 @@
 
 #include <kcombobox.h>
 #include <klineedit.h>
+#include <klistview.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
