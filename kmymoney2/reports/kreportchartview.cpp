@@ -39,8 +39,9 @@ KReportChartView::KReportChartView( QWidget* parent, const char* name ): KDChart
     // Chart Params
     // ********************************************************************
     m_params.setChartType( KDChartParams::Line );
-    m_params.setLineMarker( true );
+    m_params.setLineMarker( false );
     m_params.setAxisLabelStringParams( KDChartAxisParams::AxisPosBottom,&m_abscissaNames,0);
+    m_params.setDataSubduedColors();
 
     // ********************************************************************
     // set Chart Table Data

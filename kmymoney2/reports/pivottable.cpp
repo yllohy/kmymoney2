@@ -2188,17 +2188,23 @@ void PivotTable::dump( const QString& file, const QString& /* context */) const
 #ifdef HAVE_KDCHART
 void PivotTable::drawChart( KReportChartView& _view ) const
 {
-#if 0 // make this "#if 1" if you want to play with the axis settings
+#if 1 // make this "#if 1" if you want to play with the axis settings
   // not sure if 0 is X and 1 is Y.
   KDChartAxisParams xAxisParams, yAxisParams;
   KDChartAxisParams::deepCopy(xAxisParams, _view.params().axisParams(0));
   KDChartAxisParams::deepCopy(yAxisParams, _view.params().axisParams(1));
 
   // modify axis settings here
+  xAxisParams.setAxisLabelsFontMinSize(12);
+  xAxisParams.setAxisLabelsFontRelSize(20);
+  yAxisParams.setAxisLabelsFontMinSize(12);
+  yAxisParams.setAxisLabelsFontRelSize(20);
 
   _view.params().setAxisParams( 0, xAxisParams );
   _view.params().setAxisParams( 1, yAxisParams );
 #endif
+  _view.params().setLegendFontRelSize(20);
+  _view.params().setLegendTitleFontRelSize(24);
 
   _view.params().setAxisShowGrid(0,m_config_f.isChartGridLines());
   _view.params().setAxisShowGrid(1,m_config_f.isChartGridLines());

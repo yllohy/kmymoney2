@@ -1,3 +1,6 @@
+2007-11-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Made some adjustments to charts. Thanks to David Houlden for some of them
+
 2007-11-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added new MyMoneyMoney::formatMoney() convenience method
 
