@@ -159,18 +159,19 @@ class LoanDetailsPage : public KLoanDetailsPageDecl, public WizardPage<Wizard>
   Q_OBJECT
 public:
   LoanDetailsPage(Wizard* parent, const char* name = 0);
+  void enterPage(void);
   KMyMoneyWizardPage* nextPage(void) const;
   virtual bool isComplete(void) const;
 
   QWidget* initialFocusWidget(void) const { return m_paymentDue; }
 
-private:
   /**
    * This method returns the number of payments depending on
    * the settings of m_termAmount and m_termUnit widgets
    */
   int term(void) const;
 
+private:
   /**
    * This method is used to update the term widgets
    * according to the length of the given @a term.
@@ -239,6 +240,8 @@ public:
    */
   QDate firstPaymentDueDate(void) const;
 
+  QWidget* initialFocusWidget(void) const { return m_interestCategory; }
+
 private slots:
   void slotLoadWidgets(void);
   void slotCreateCategory(const QString& name, QCString& id);
@@ -255,6 +258,10 @@ public:
 
   KMyMoneyWizardPage* nextPage(void) const;
 
+  QWidget* initialFocusWidget(void) const { return m_noPayoutTransaction; }
+
+  const QCString& payoutAccountId(void) const;
+
 private slots:
   void slotLoadWidgets(void);
   void slotCreateAssetAccount(void);
@@ -267,6 +274,7 @@ class AccountSummaryPage : public KAccountSummaryPageDecl, public WizardPage<Wiz
 public:
   AccountSummaryPage(Wizard* parent, const char* name = 0);
   void enterPage(void);
+  QWidget* initialFocusWidget(void) const { return m_dataList; }
 };
 
 } // namespace

@@ -206,6 +206,14 @@ TransactionEditor* KEnterScheduleDlg::startEdit(void)
       case MyMoneySchedule::TYPE_DEPOSIT:
         action = KMyMoneyRegister::ActionDeposit;
         break;
+      case MyMoneySchedule::TYPE_LOANPAYMENT:
+        switch(d->m_schedule.paymentType()) {
+          case MyMoneySchedule::STYPE_DIRECTDEPOSIT:
+          case MyMoneySchedule::STYPE_MANUALDEPOSIT:
+            action = KMyMoneyRegister::ActionDeposit;
+            break;
+        }
+        break;
       default:
         break;
     }

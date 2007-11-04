@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>675</width>
-            <height>543</height>
+            <height>471</height>
         </rect>
     </property>
     <vbox>
@@ -47,10 +47,16 @@
                             <property name="name">
                                 <cstring>m_interestChangeDateEdit</cstring>
                             </property>
+                            <property name="focusPolicy">
+                                <enum>StrongFocus</enum>
+                            </property>
                         </widget>
                         <widget class="kMyMoneyDateInput" row="6" column="1">
                             <property name="name">
                                 <cstring>m_firstPaymentDate</cstring>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>StrongFocus</enum>
                             </property>
                             <property name="whatsThis" stdset="0">
                                 <string>Depending on the answer to &lt;b&gt;What do you want to record?&lt;/b&gt; this field means the following:&lt;p&gt;
@@ -104,6 +110,9 @@ The option to &lt;b&gt;start from the beginning of the current year&lt;/b&gt; is
                         <widget class="KMyMoneyFrequencyCombo" row="5" column="1">
                             <property name="name">
                                 <cstring>m_paymentFrequency</cstring>
+                            </property>
+                            <property name="focusPolicy">
+                                <enum>TabFocus</enum>
                             </property>
                         </widget>
                         <widget class="QLabel" row="9" column="0">
@@ -281,7 +290,10 @@ Note: Payments made to obtain the loan (e.g. Disagio) are not considered as paym
                                 <cstring>textLabel1_3</cstring>
                             </property>
                             <property name="text">
-                                <string>Balance on January 1st of current year</string>
+                                <string>Balance before start of recording</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enter the ending balance found on the statement that is the last one before you want to start recording this loan in KMyMoney.</string>
                             </property>
                         </widget>
                     </grid>

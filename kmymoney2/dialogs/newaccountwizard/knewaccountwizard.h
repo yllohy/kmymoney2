@@ -105,6 +105,14 @@ public:
    */
   MyMoneyMoney interestRate(void) const;
 
+  /**
+   * This method returns the payout transaction for loans.
+   * If the account to be created is not a loan or no
+   * payout transaction should be generated, this method
+   * returns an emtpy transaction.
+   */
+  MyMoneyTransaction payoutTransaction(void);
+
 protected:
   /**
    * This method returns the currently selected currency for the account
@@ -137,7 +145,7 @@ private:
   LoanPayoutPage*          m_loanPayoutPage;
   AccountSummaryPage*      m_accountSummaryPage;
 
-  MyMoneyAccount           m_account;
+  MyMoneyAccountLoan       m_account;
   MyMoneySchedule          m_schedule;
 };
 

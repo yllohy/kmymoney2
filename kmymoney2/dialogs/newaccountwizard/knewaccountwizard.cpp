@@ -47,6 +47,7 @@
 #include <kmymoney/mymoneyfinancialcalculator.h>
 #include <kmymoney/kmymoneychecklistitem.h>
 #include <kmymoney/kmymoneylistviewitem.h>
+#include <kmymoney/kcurrencycalculator.h>
 
 #include "knewaccountwizard.h"
 #include "knewaccountwizard_p.h"
@@ -112,7 +113,7 @@ MyMoneyMoney NewAccountWizard::Wizard::interestRate(void) const
 
 const MyMoneyAccount& NewAccountWizard::Wizard::account(void)
 {
-  m_account = MyMoneyAccount();
+  m_account = MyMoneyAccountLoan();
   m_account.setName(m_accountTypePage->m_accountName->text());
   m_account.setOpeningDate(m_accountTypePage->m_openingDate->date());
   m_account.setAccountType(m_accountTypePage->accountType());
@@ -121,17 +122,61 @@ const MyMoneyAccount& NewAccountWizard::Wizard::account(void)
   m_account.setValue("IBAN", m_institutionPage->m_iban->text());
 
   m_account.setCurrencyId(currency().id());
-
+  if(m_account.isLoan()) {
+    // in case we lend the money we adjust the account type
+    if(!moneyBorrowed())
+      m_account.setAccountType(MyMoneyAccount::AssetLoan);
+    m_account.setLoanAmount(m_loanDetailsPage->m_loanAmount->value());
+    m_account.setInterestRate(m_loanSchedulePage->firstPaymentDueDate(), m_loanDetailsPage->m_interestRate->value());
+    m_account.setInterestCalculation(m_loanDetailsPage->m_paymentDue->currentItem() == 0 ? MyMoneyAccountLoan::paymentReceived : MyMoneyAccountLoan::paymentDue);
+    m_account.setFixedInterestRate(m_generalLoanInfoPage->m_interestType->currentItem() == 0);
+    m_account.setFinalPayment(m_loanDetailsPage->m_balloonAmount->value());
+    m_account.setTerm(m_loanDetailsPage->term());
+    m_account.setPeriodicPayment(m_loanDetailsPage->m_paymentAmount->value());
+    m_account.setPayee(m_generalLoanInfoPage->m_payee->selectedItem());
+    if(!m_account.fixedInterestRate()) {
+      m_account.setNextInterestChange(m_generalLoanInfoPage->m_interestChangeDateEdit->date());
+      m_account.setInterestChangeFrequency(m_generalLoanInfoPage->m_interestFrequencyAmountEdit->value(), m_generalLoanInfoPage->m_interestFrequencyUnitEdit->currentItem());
+    }
+  }
   return m_account;
+}
+
+MyMoneyTransaction NewAccountWizard::Wizard::payoutTransaction(void)
+{
+  MyMoneyTransaction t;
+  if(m_account.isLoan() && openingBalance().isZero()) {
+    t.setPostDate(m_loanPayoutPage->m_payoutDate->date());
+    t.setCommodity(m_account.currencyId());
+    MyMoneySplit s;
+    s.setAccountId(m_account.id());
+    s.setShares(m_loanDetailsPage->m_loanAmount->value());
+    if(moneyBorrowed())
+      s.setShares(-s.shares());
+    s.setValue(s.shares());
+    t.addSplit(s);
+
+    s.clearId();
+    s.setValue(-s.value());
+    s.setAccountId(m_loanPayoutPage->payoutAccountId());
+    MyMoneyMoney shares;
+    KCurrencyCalculator::setupSplitPrice(shares, t, s, QMap<QCString, MyMoneyMoney>(), this);
+    s.setShares(shares);
+    t.addSplit(s);
+  }
+  return t;
 }
 
 const MyMoneyAccount& NewAccountWizard::Wizard::parentAccount(void)
 {
   switch(m_accountTypePage->accountType()) {
     case MyMoneyAccount::CreditCard:
-    case MyMoneyAccount::Loan:
     case MyMoneyAccount::Liability:
       return MyMoneyFile::instance()->liability();
+      break;
+    case MyMoneyAccount::Loan:
+      if(moneyBorrowed())
+        return MyMoneyFile::instance()->liability();
       break;
     default:
       break;
@@ -168,6 +213,7 @@ const MyMoneySchedule& NewAccountWizard::Wizard::schedule(void)
       // setup the next due date
       t.setPostDate(m_schedulePage->m_date->date());
       m_schedule.setTransaction(t);
+
     } else if(m_account.isLoan()) {
       m_schedule.setName(i18n("Loan payment for %1").arg(m_accountTypePage->m_accountName->text()));
       m_schedule.setType(MyMoneySchedule::TYPE_LOANPAYMENT);
@@ -235,6 +281,13 @@ const MyMoneySchedule& NewAccountWizard::Wizard::schedule(void)
 
 MyMoneyMoney NewAccountWizard::Wizard::openingBalance(void)
 {
+  if(m_accountTypePage->accountType() == MyMoneyAccount::Loan) {
+    if(m_generalLoanInfoPage->recordAllPayments())
+      return MyMoneyMoney(0, 1);
+    if(moneyBorrowed())
+      return -(m_generalLoanInfoPage->m_openingBalance->value());
+    return m_generalLoanInfoPage->m_openingBalance->value();
+  }
   return m_openingPage->m_openingBalance->value();
 }
 
@@ -550,6 +603,7 @@ void GeneralLoanInfoPage::enterPage(void)
 
 bool GeneralLoanInfoPage::isComplete(void) const
 {
+  m_wizard->setStepHidden(StepPayout, !m_wizard->openingBalance().isZero());
   bool rc = KMyMoneyWizardPage::isComplete();
   if(!rc) {
     QToolTip::add(m_wizard->m_nextButton, i18n("No payee supplied"));
@@ -607,6 +661,17 @@ LoanDetailsPage::LoanDetailsPage(Wizard* wizard, const char* name) :
   connect(m_balloonAmount, SIGNAL(textChanged(const QString&)), this, SLOT(slotValuesChanged()));
 
   connect(m_calculateButton, SIGNAL(clicked()), this, SLOT(slotCalculate()));
+}
+
+void LoanDetailsPage::enterPage(void)
+{
+  m_mandatoryGroup->clear();
+  if(!m_wizard->openingBalance().isZero()) {
+    m_mandatoryGroup->add(m_loanAmount->lineedit());
+    if(m_loanAmount->lineedit()->text().length() == 0) {
+      m_loanAmount->setValue(m_wizard->openingBalance().abs());
+    }
+  }
 }
 
 void LoanDetailsPage::slotValuesChanged(void)
@@ -1026,7 +1091,6 @@ LoanSchedulePage::LoanSchedulePage(Wizard* wizard, const char* name) :
   m_mandatoryGroup->add(m_paymentAccount->lineEdit());
   connect(m_interestCategory, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateCategory(const QString&, QCString&)));
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadWidgets()));
-  slotLoadWidgets();
 }
 
 void LoanSchedulePage::slotCreateCategory(const QString& name, QCString& id)
@@ -1056,6 +1120,7 @@ void LoanSchedulePage::enterPage(void)
 {
   m_interestCategory->setFocus();
   m_firstPaymentDueDate->setDisabled(m_wizard->m_generalLoanInfoPage->recordAllPayments());
+  slotLoadWidgets();
 }
 
 void LoanSchedulePage::slotLoadWidgets(void)
@@ -1074,7 +1139,12 @@ void LoanSchedulePage::slotLoadWidgets(void)
 
 KMyMoneyWizardPage* LoanSchedulePage::nextPage(void) const
 {
-  return m_wizard->m_loanPayoutPage;
+  // if the balance widget of the general loan info page is enabled and
+  // the value is not zero, then the payout already happened and we don't
+  // aks for it.
+  if(m_wizard->openingBalance().isZero())
+    return m_wizard->m_loanPayoutPage;
+  return m_wizard->m_accountSummaryPage;
 }
 
 LoanPayoutPage::LoanPayoutPage(Wizard* wizard, const char* name) :
@@ -1136,6 +1206,12 @@ void LoanPayoutPage::slotLoadWidgets(void)
 
 void LoanPayoutPage::enterPage(void)
 {
+  // only allow to create new asset accounts for liability loans
+  m_createAssetButton->setEnabled(m_wizard->moneyBorrowed());
+  m_refinanceLoan->setEnabled(m_wizard->moneyBorrowed());
+  if(!m_wizard->moneyBorrowed()) {
+    m_refinanceLoan->setChecked(false);
+  }
   m_payoutDetailFrame->setDisabled(m_noPayoutTransaction->isChecked());
 }
 
@@ -1147,6 +1223,15 @@ KMyMoneyWizardPage* LoanPayoutPage::nextPage(void) const
 bool LoanPayoutPage::isComplete(void) const
 {
   return KMyMoneyWizardPage::isComplete() | m_noPayoutTransaction->isChecked();
+}
+
+const QCString& LoanPayoutPage::payoutAccountId(void) const
+{
+  if(m_refinanceLoan->isChecked()) {
+    return m_loanAccount->selectedItem();
+  } else {
+    return m_assetAccount->selectedItem();
+  }
 }
 
 AccountSummaryPage::AccountSummaryPage(Wizard* wizard, const char* name) :
@@ -1161,6 +1246,7 @@ AccountSummaryPage::AccountSummaryPage(Wizard* wizard, const char* name) :
 void AccountSummaryPage::enterPage(void)
 {
   MyMoneyAccount acc = m_wizard->account();
+  MyMoneySecurity sec = m_wizard->currency();
   // assign an id to the account inside the wizard which is required for a schedule
   // get the schedule and clear the id again in the wizards object.
   MyMoneyAccount tmp(QCString("Phony-ID"), acc);
@@ -1181,7 +1267,8 @@ void AccountSummaryPage::enterPage(void)
     p = new KListViewItem(group, p, i18n("Type"), m_wizard->m_accountTypePage->m_typeSelection->currentText());
   p = new KListViewItem(group, p, i18n("Currency"), m_wizard->currency().name());
   p = new KListViewItem(group, p, i18n("Opening date"), KGlobal::locale()->formatDate(acc.openingDate()));
-  p = new KListViewItem(group, p, i18n("Opening balance"), m_wizard->openingBalance().formatMoney());
+  if(!acc.isLoan() || !m_wizard->openingBalance().isZero())
+    p = new KListViewItem(group, p, i18n("Opening balance"), m_wizard->openingBalance().formatMoney(acc, sec));
 
   if(!m_wizard->m_institutionPage->institution().id().isEmpty()) {
     p = new KListViewItem(group, p, i18n("Institution"), m_wizard->m_institutionPage->institution().name());
@@ -1198,24 +1285,27 @@ void AccountSummaryPage::enterPage(void)
     group = new KMyMoneyCheckListItem(m_dataList, group, i18n("Loan information"), QString(), QCString(), QCheckListItem::RadioButtonController);
     group->setOpen(true);
     if(m_wizard->moneyBorrowed()) {
-      p = new KListViewItem(group, p, i18n("Amount borrowed"), m_wizard->m_loanDetailsPage->m_loanAmount->value().formatMoney());
+      p = new KListViewItem(group, p, i18n("Amount borrowed"), m_wizard->m_loanDetailsPage->m_loanAmount->value().formatMoney(m_wizard->currency().tradingSymbol()));
     } else {
-      p = new KListViewItem(group, p, i18n("Amount lent"), m_wizard->m_loanDetailsPage->m_loanAmount->value().formatMoney());
+      p = new KListViewItem(group, p, i18n("Amount lent"), m_wizard->m_loanDetailsPage->m_loanAmount->value().formatMoney(m_wizard->currency().tradingSymbol()));
     }
     p = new KListViewItem(group, p, i18n("Interest rate"), QString("%1 %").arg(m_wizard->m_loanDetailsPage->m_interestRate->value().formatMoney()));
     p = new KListViewItem(group, p, i18n("Interest rate is"), m_wizard->m_generalLoanInfoPage->m_interestType->currentText());
-    p = new KListViewItem(group, p, i18n("Principal and interest"), m_wizard->m_loanDetailsPage->m_paymentAmount->value().formatMoney());
-    p = new KListViewItem(group, p, i18n("Additional fees"), m_wizard->m_loanPaymentPage->additionalFees().formatMoney());
+    p = new KListViewItem(group, p, i18n("Principal and interest"), m_wizard->m_loanDetailsPage->m_paymentAmount->value().formatMoney(acc, sec));
+    p = new KListViewItem(group, p, i18n("Additional fees"), m_wizard->m_loanPaymentPage->additionalFees().formatMoney(acc, sec));
     p = new KListViewItem(group, p, i18n("Payment frequency"), m_wizard->m_generalLoanInfoPage->m_paymentFrequency->currentText());
-    p = new KListViewItem(group, p, i18n("Account for payments"), m_wizard->m_loanSchedulePage->m_paymentAccount->currentText());
+    p = new KListViewItem(group, p, i18n("Payment account"), m_wizard->m_loanSchedulePage->m_paymentAccount->currentText());
 
-    if(!m_wizard->m_loanPayoutPage->m_noPayoutTransaction->isChecked()) {
+    if(!m_wizard->m_loanPayoutPage->m_noPayoutTransaction->isChecked() && m_wizard->openingBalance().isZero()) {
       group = new KMyMoneyCheckListItem(m_dataList, group, i18n("Payout information"), QString(), QCString(), QCheckListItem::RadioButtonController);
       group->setOpen(true);
       if(m_wizard->m_loanPayoutPage->m_refinanceLoan->isChecked()) {
         p = new KListViewItem(group, p, i18n("Refinance"), m_wizard->m_loanPayoutPage->m_loanAccount->currentText());
       } else {
-        p = new KListViewItem(group, p, i18n("Transfer amount to"), m_wizard->m_loanPayoutPage->m_assetAccount->currentText());
+        if(m_wizard->moneyBorrowed())
+          p = new KListViewItem(group, p, i18n("Transfer amount to"), m_wizard->m_loanPayoutPage->m_assetAccount->currentText());
+        else
+          p = new KListViewItem(group, p, i18n("Transfer amount from"), m_wizard->m_loanPayoutPage->m_assetAccount->currentText());
       }
       p = new KListViewItem(group, p, i18n("Payment date"), KGlobal::locale()->formatDate(m_wizard->m_loanPayoutPage->m_payoutDate->date()));
     }
@@ -1231,17 +1321,16 @@ void AccountSummaryPage::enterPage(void)
       p = new KListViewItem(group, p, i18n("Occurence"), i18n("Monthly"));
       p = new KListViewItem(group, p, i18n("Paid from"), paymentAccount.name());
       p = new KListViewItem(group, p, i18n("Pay to"), m_wizard->m_schedulePage->m_payee->currentText());
-      p = new KListViewItem(group, p, i18n("Amount"), m_wizard->m_schedulePage->m_amount->value().formatMoney());
-      p = new KListViewItem(group, p, i18n("Due date of payment"), KGlobal::locale()->formatDate(sch.nextDueDate()));
+      p = new KListViewItem(group, p, i18n("Amount"), m_wizard->m_schedulePage->m_amount->value().formatMoney(acc, sec));
+      p = new KListViewItem(group, p, i18n("First payment due"), KGlobal::locale()->formatDate(sch.nextDueDate()));
       p = new KListViewItem(group, p, i18n("Payment method"), m_wizard->m_schedulePage->m_method->currentText());
     }
     if(acc.isLoan()) {
       p = new KListViewItem(group, p, i18n("Occurence"), m_wizard->m_generalLoanInfoPage->m_paymentFrequency->currentText());
-      p = new KListViewItem(group, p, i18n("Amount"), (m_wizard->m_loanPaymentPage->basePayment() + m_wizard->m_loanPaymentPage->additionalFees()).formatMoney());
+      p = new KListViewItem(group, p, i18n("Amount"), (m_wizard->m_loanPaymentPage->basePayment() + m_wizard->m_loanPaymentPage->additionalFees()).formatMoney(acc, sec));
       p = new KListViewItem(group, p, i18n("First payment due"), KGlobal::locale()->formatDate(m_wizard->m_loanSchedulePage->firstPaymentDueDate()));
     }
   }
-
 }
 
 #include "knewaccountwizard.moc"

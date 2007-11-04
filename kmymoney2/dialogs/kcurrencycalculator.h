@@ -35,7 +35,7 @@
 // Project Includes
 
 #include "../dialogs/kcurrencycalculatordecl.h"
-#include "../mymoney/mymoneyfile.h"
+#include <kmymoney/mymoneyfile.h>
 
 /**
   * @author Thomas Baumgart

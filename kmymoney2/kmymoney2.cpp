@@ -1145,6 +1145,7 @@ void KMyMoney2App::slotFileClose(void)
   slotSelectInvestment();
   slotSelectSchedule();
   slotSelectCurrency();
+  slotSelectMatchTransaction(MyMoneyTransaction());
   slotSelectBudget(QValueList<MyMoneyBudget>());
   slotSelectPayees(QValueList<MyMoneyPayee>());
   slotSelectTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>());
@@ -2523,30 +2524,39 @@ void KMyMoney2App::slotAccountNew(MyMoneyAccount& account)
     if(!(acc == MyMoneyAccount())) {
       MyMoneyFileTransaction ft;
       MyMoneyFile* file = MyMoneyFile::instance();
-      if(acc.isLoan()) {
-        KMessageBox::information(this, i18n("The logic to create loan accounts is not ready in this version of KMyMoney. No account or schedule was created."));
-      } else {
-        try {
-          // create the account
-          MyMoneyAccount parent = wizard->parentAccount();
-          file->addAccount(acc, parent);
-          // tell the wizard about the accound id which it
-          // needs to create a possible schedule
-          wizard->setAccount(acc);
+      try {
+        // create the account
+        MyMoneyAccount parent = wizard->parentAccount();
+        file->addAccount(acc, parent);
 
-          // create the opening balance transaction if any
-          file->createOpeningBalanceTransaction(acc, wizard->openingBalance());
+        // tell the wizard about the accound id which it
+        // needs to create a possible schedule and transactions
+        wizard->setAccount(acc);
 
-          // create a possible schedule
-          MyMoneySchedule sch = wizard->schedule();
-          if(!(sch == MyMoneySchedule())) {
-            MyMoneyFile::instance()->addSchedule(sch);
-          }
-          ft.commit();
-          account = acc;
-        } catch (MyMoneyException *e) {
-          KMessageBox::error(this, i18n("Unable to create account: %1").arg(e->what()));
+        // create the opening balance transaction if any
+        file->createOpeningBalanceTransaction(acc, wizard->openingBalance());
+
+        // create the payout transaction for loans if any
+        MyMoneyTransaction payoutTransaction = wizard->payoutTransaction();
+        if(payoutTransaction.splits().count() > 0) {
+          file->addTransaction(payoutTransaction);
         }
+
+        // create a possible schedule
+        MyMoneySchedule sch = wizard->schedule();
+        if(!(sch == MyMoneySchedule())) {
+          MyMoneyFile::instance()->addSchedule(sch);
+          if(acc.isLoan()) {
+            MyMoneyAccountLoan accLoan = MyMoneyFile::instance()->account(acc.id());
+            accLoan.setSchedule(sch.id());
+            acc = accLoan;
+            MyMoneyFile::instance()->modifyAccount(acc);
+          }
+        }
+        ft.commit();
+        account = acc;
+      } catch (MyMoneyException *e) {
+        KMessageBox::error(this, i18n("Unable to create account: %1").arg(e->what()));
       }
     }
   }
