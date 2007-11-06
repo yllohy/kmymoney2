@@ -146,6 +146,14 @@
    <label>Show fancy group markers</label>
    <default>true</default>
   </entry>
+  <entry name="ShowFiscalMarker" type="Bool">
+   <label>Show fancy markers for previous and current fiscal year</label>
+   <default>true</default>
+  </entry>
+  <entry name="FiscalYearBegin" type="Int">
+   <label>Starting month of the fiscal year</label>
+   <default>0</default>
+  </entry>
   <entry name="StartDate" type="DateTime">
    <label>Start date</label>
    <default>QDateTime::fromString("1900-01-01T00:00:00", Qt::ISODate)</default>

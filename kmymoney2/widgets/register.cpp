@@ -182,10 +182,22 @@ bool ItemPtrVector::item_cmp(RegisterItem* i1, RegisterItem* i2)
 
     if(rc == 0) {
       if(dynamic_cast<GroupMarker*>(i1) == 0) {
+        // only one item is a non-marker
         if(dynamic_cast<GroupMarker*>(i2) == 0) {
+          // no, both are non-markers, then just continue with the next criteria
           continue;
         }
+        // the marker 'wins'
         return false;
+      } else if(dynamic_cast<GroupMarker*>(i2) != 0) {
+        // we have two markers to compare
+        bool fm1 = dynamic_cast<FiscalYearGroupMarker*>(i1) != 0;
+        bool fm2 = dynamic_cast<FiscalYearGroupMarker*>(i2) != 0;
+        // if one of them is a fiscal year marker give it precedence
+        if(fm1 || fm2) {
+          if(fm1)
+            return false;
+        }
       }
       return true;
     }
@@ -249,7 +261,7 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /* col */, c
 
   // clear out cell rectangle
   QColorGroup cg(_cg);
-  cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::groupMarkerColor());
+  setupColors(cg);
 
   QBrush backgroundBrush(cg.base());
   painter->fillRect(cellRect, backgroundBrush);
@@ -305,6 +317,11 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /* col */, c
   painter->restore();
 }
 
+void GroupMarker::setupColors(QColorGroup& cg)
+{
+  cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::groupMarkerColor());
+}
+
 int GroupMarker::rowHeightHint(void) const
 {
   if(!m_visible)
@@ -319,6 +336,17 @@ FancyDateGroupMarker::FancyDateGroupMarker(Register* parent, const QDate& date, 
   m_txt = txt;
   m_date = date;
 }
+
+FiscalYearGroupMarker::FiscalYearGroupMarker(Register* parent, const QDate& date, const QString& txt) :
+    FancyDateGroupMarker(parent, date, txt)
+{
+}
+
+void FiscalYearGroupMarker::setupColors(QColorGroup& cg)
+{
+  cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::groupMarkerColor());
+}
+
 
 SimpleDateGroupMarker::SimpleDateGroupMarker(Register* parent, const QDate& date, const QString& txt) :
   FancyDateGroupMarker(parent, date, txt)
@@ -539,6 +567,9 @@ Register::~Register()
 void Register::slotAutoColumnSizing(int section)
 {
 #if 0
+  // this is some trial code to make the col sizes adjustable
+  // there are some drawbacks though: what when we have a register
+  // but no account? (ipwizard 2007-11-06)
   if(isUpdatesEnabled()) {
     int w = visibleWidth();
     QString size;
@@ -1997,6 +2028,15 @@ void Register::addGroupMarkers(void)
         new KMyMoneyRegister::FancyDateGroupMarker(this, today.addDays(1), i18n("Future transactions"));
       } else {
         new KMyMoneyRegister::SimpleDateGroupMarker(this, today.addDays(1), i18n("Future transactions"));
+      }
+      if(KMyMoneyGlobalSettings::showFiscalMarker()) {
+        QDate currentFiscalYear(QDate::currentDate().year(), KMyMoneyGlobalSettings::firstFiscalMonth(), 1);
+
+        if(QDate::currentDate() < currentFiscalYear)
+          currentFiscalYear = currentFiscalYear.addYears(-1);
+        QDate previousFiscalYear = currentFiscalYear.addYears(-1);
+        new KMyMoneyRegister::FiscalYearGroupMarker(this, currentFiscalYear, i18n("Current fiscal year"));
+        new KMyMoneyRegister::FiscalYearGroupMarker(this, currentFiscalYear.addYears(-1), i18n("Previous fiscal year"));
       }
       break;
 

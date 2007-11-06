@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>531</width>
+            <width>549</width>
             <height>384</height>
         </rect>
     </property>
@@ -136,7 +136,7 @@
                         <property name="title">
                             <string>Autosave options</string>
                         </property>
-                        <vbox>
+                        <hbox>
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
@@ -196,14 +196,117 @@
                                         </property>
                                         <property name="sizeHint">
                                             <size>
-                                                <width>161</width>
+                                                <width>354</width>
                                                 <height>20</height>
                                             </size>
                                         </property>
                                     </spacer>
                                 </hbox>
                             </widget>
-                        </vbox>
+                        </hbox>
+                    </widget>
+                    <widget class="QGroupBox">
+                        <property name="name">
+                            <cstring>groupBox6</cstring>
+                        </property>
+                        <property name="title">
+                            <string>Fiscal Year</string>
+                        </property>
+                        <hbox>
+                            <property name="name">
+                                <cstring>unnamed</cstring>
+                            </property>
+                            <widget class="QLabel">
+                                <property name="name">
+                                    <cstring>textLabel1_2_2</cstring>
+                                </property>
+                                <property name="text">
+                                    <string>Your fiscal year starts in</string>
+                                </property>
+                            </widget>
+                            <widget class="KComboBox">
+                                <item>
+                                    <property name="text">
+                                        <string>January</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>February</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>March</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>April</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>May</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>June</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>July</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>August</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>September</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>October</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>November</string>
+                                    </property>
+                                </item>
+                                <item>
+                                    <property name="text">
+                                        <string>December</string>
+                                    </property>
+                                </item>
+                                <property name="name">
+                                    <cstring>kcfg_FiscalYearBegin</cstring>
+                                </property>
+                            </widget>
+                            <spacer>
+                                <property name="name">
+                                    <cstring>spacer11</cstring>
+                                </property>
+                                <property name="orientation">
+                                    <enum>Horizontal</enum>
+                                </property>
+                                <property name="sizeType">
+                                    <enum>Expanding</enum>
+                                </property>
+                                <property name="sizeHint">
+                                    <size>
+                                        <width>21</width>
+                                        <height>20</height>
+                                    </size>
+                                </property>
+                            </spacer>
+                        </hbox>
                     </widget>
                     <spacer>
                         <property name="name">
@@ -217,7 +320,7 @@
                         </property>
                         <property name="sizeHint">
                             <size>
-                                <width>16</width>
+                                <width>20</width>
                                 <height>20</height>
                             </size>
                         </property>

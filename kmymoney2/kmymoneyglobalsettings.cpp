@@ -84,3 +84,8 @@ QStringList KMyMoneyGlobalSettings::itemList(void)
   }
   return list;
 }
+
+int KMyMoneyGlobalSettings::firstFiscalMonth(void)
+{
+  return KMyMoneySettings::fiscalYearBegin()+1;
+}

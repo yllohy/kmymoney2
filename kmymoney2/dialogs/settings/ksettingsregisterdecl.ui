@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>566</width>
+            <width>632</width>
             <height>353</height>
         </rect>
     </property>
@@ -49,6 +49,9 @@
                         <property name="text">
                             <string>&amp;Use the ledger lens</string>
                         </property>
+                        <property name="whatsThis" stdset="0">
+                            <string>Using the ledger lens shows the details for the transaction that has focus in the ledger. Usually, when using the transaction form, only a one line summary is displayed for each transaction as the details are shown in the form.</string>
+                        </property>
                     </widget>
                     <widget class="QCheckBox">
                         <property name="name">
@@ -77,6 +80,14 @@
                             <string>Draws a larger header above each group of transaction. The grouping depends on the current sort order.</string>
                         </property>
                     </widget>
+                    <widget class="QCheckBox">
+                        <property name="name">
+                            <cstring>kcfg_ShowFiscalMarker</cstring>
+                        </property>
+                        <property name="text">
+                            <string>Show header for the previous and current fiscal year</string>
+                        </property>
+                    </widget>
                     <spacer>
                         <property name="name">
                             <cstring>spacer6</cstring>
@@ -90,7 +101,7 @@
                         <property name="sizeHint">
                             <size>
                                 <width>20</width>
-                                <height>30</height>
+                                <height>40</height>
                             </size>
                         </property>
                     </spacer>

@@ -124,6 +124,9 @@ public:
   bool matches(const QString&) const { return true; }
 
 protected:
+  void setupColors(QColorGroup& cg);
+
+protected:
   QString                  m_txt;
   unsigned int             m_drawCounter;
 
@@ -160,6 +163,16 @@ public:
   CashFlowDirection sortType(void) const { return m_dir; }
 private:
   CashFlowDirection        m_dir;
+};
+
+class FiscalYearGroupMarker : public FancyDateGroupMarker
+{
+public:
+  FiscalYearGroupMarker(Register* parent, const QDate& date, const QString& txt);
+  virtual const char* className(void) { return "FiscalYearGroupMarker"; }
+
+protected:
+  void setupColors(QColorGroup& cg);
 };
 
 class PayeeGroupMarker : public GroupMarker
