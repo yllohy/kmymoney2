@@ -76,7 +76,7 @@ public:
 
 public:
   MyMoneyReport(void);
-  MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment );
+  MyMoneyReport(ERowType _rt, unsigned _ct, dateOptionE _dl, bool _ss, const QString& _name, const QString& _comment );
   MyMoneyReport(const QCString& id, const MyMoneyReport& right);
 
   /**
@@ -177,7 +177,12 @@ public:
     *          which this report should be locked to.
     */
 
-  void setDateFilter(unsigned _u) { m_dateLock = _u; if (_u != userDefined) MyMoneyTransactionFilter::setDateFilter( _u ); }
+  void setDateFilter(dateOptionE _u)
+    {
+      m_dateLock = _u;
+      if (_u != userDefined)
+        MyMoneyTransactionFilter::setDateFilter( _u );
+    }
 
   /**
     * Set the underlying date filter using the start and end dates provided.
@@ -378,6 +383,7 @@ private:
     * in the case of a 'QueryTable' report
     */
   enum EQueryColumns m_queryColumns;
+
   /**
     * The plain-language description of what the date range should be locked
     * to.  'userDefined' means NO locking, in any other case, the report
@@ -387,7 +393,7 @@ private:
     * automatically when the report is loaded, and should also be done
     * manually by calling updateDateFilter() before generating the report
     */
-  unsigned m_dateLock;
+  dateOptionE m_dateLock;
   /**
     * Which account groups should be included in the report.  This filter
     * is applied to the individual splits AFTER a transaction has been

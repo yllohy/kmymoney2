@@ -68,6 +68,7 @@
 #include <kmymoney/kmymoneyaccountselector.h>
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/mymoneyreport.h>
+#include <kmymoney/kmymoneycombo.h>
 #include "../widgets/kmymoneyreportconfigtab1decl.h"
 #include "../widgets/kmymoneyreportconfigtab2decl.h"
 #include "../widgets/kmymoneyreportconfigtab3decl.h"
@@ -232,7 +233,7 @@ void KReportConfigurationFilterDlg::slotSearch(void)
   }
 
   // setup the date lock
-  unsigned range = m_dateRange->currentItem();
+  MyMoneyTransactionFilter::dateOptionE range = m_dateRange->currentItem();
   m_currentState.setDateFilter(range);
 
   done(true);
@@ -562,15 +563,15 @@ void KReportConfigurationFilterDlg::slotReset(void)
   QDate dateFrom, dateTo;
   if ( m_initialState.dateFilter( dateFrom, dateTo ) )
   {
-    m_dateRange->setCurrentItem(userDefined);
+    m_dateRange->setCurrentItem(MyMoneyTransactionFilter::userDefined);
     m_fromDate->setDate(dateFrom);
     m_toDate->setDate(dateTo);
     slotDateChanged();
   }
   else
   {
-    m_dateRange->setCurrentItem(allDates);
-    slotDateRangeChanged(allDates);
+    m_dateRange->setCurrentItem(MyMoneyTransactionFilter::allDates);
+    slotDateRangeChanged(MyMoneyTransactionFilter::allDates);
   }
 
   slotRightSize();

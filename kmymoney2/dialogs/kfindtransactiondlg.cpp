@@ -52,6 +52,7 @@
 #include <kmymoney/kmymoneyglobalsettings.h>
 #include <kmymoney/register.h>
 #include <kmymoney/transaction.h>
+#include <kmymoney/kmymoneycombo.h>
 
 #include "ksortoptiondlg.h"
 
@@ -174,8 +175,8 @@ void KFindTransactionDlg::slotReset(void)
 
   // the following call implies a call to slotUpdateSelections,
   // that's why we call it last
-  m_dateRange->setCurrentItem(allDates);
-  slotDateRangeChanged(allDates);
+  m_dateRange->setCurrentItem(MyMoneyTransactionFilter::allDates);
+  slotDateRangeChanged(MyMoneyTransactionFilter::allDates);
 }
 
 void KFindTransactionDlg::slotUpdateSelections(void)
@@ -360,40 +361,23 @@ void KFindTransactionDlg::selectSubItems(QListViewItem* item, const QCStringList
 
 void KFindTransactionDlg::setupDatePage(void)
 {
-  MyMoneyTransactionFilter::translateDateRange(allDates,m_startDates[allDates],m_endDates[allDates]);
-  MyMoneyTransactionFilter::translateDateRange(untilToday,m_startDates[untilToday],m_endDates[untilToday]);
-  MyMoneyTransactionFilter::translateDateRange(currentMonth,m_startDates[currentMonth],m_endDates[currentMonth]);
-  MyMoneyTransactionFilter::translateDateRange(currentYear,m_startDates[currentYear],m_endDates[currentYear]);
-  MyMoneyTransactionFilter::translateDateRange(monthToDate,m_startDates[monthToDate],m_endDates[monthToDate]);
-  MyMoneyTransactionFilter::translateDateRange(yearToDate,m_startDates[yearToDate],m_endDates[yearToDate]);
-  MyMoneyTransactionFilter::translateDateRange(yearToMonth,m_startDates[yearToMonth],m_endDates[yearToMonth]);
-  MyMoneyTransactionFilter::translateDateRange(lastMonth,m_startDates[lastMonth],m_endDates[lastMonth]);
-  MyMoneyTransactionFilter::translateDateRange(lastYear,m_startDates[lastYear],m_endDates[lastYear]);
-  MyMoneyTransactionFilter::translateDateRange(last7Days,m_startDates[last7Days],m_endDates[last7Days]);
-  MyMoneyTransactionFilter::translateDateRange(last30Days,m_startDates[last30Days],m_endDates[last30Days]);
-  MyMoneyTransactionFilter::translateDateRange(last3Months,m_startDates[last3Months],m_endDates[last3Months]);
-  MyMoneyTransactionFilter::translateDateRange(last6Months,m_startDates[last6Months],m_endDates[last6Months]);
-  MyMoneyTransactionFilter::translateDateRange(last11Months,m_startDates[last11Months],m_endDates[last11Months]);
-  MyMoneyTransactionFilter::translateDateRange(last12Months,m_startDates[last12Months],m_endDates[last12Months]);
-  MyMoneyTransactionFilter::translateDateRange(next7Days,m_startDates[next7Days],m_endDates[next7Days]);
-  MyMoneyTransactionFilter::translateDateRange(next30Days,m_startDates[next30Days],m_endDates[next30Days]);
-  MyMoneyTransactionFilter::translateDateRange(next3Months,m_startDates[next3Months],m_endDates[next3Months]);
-  MyMoneyTransactionFilter::translateDateRange(next6Months,m_startDates[next6Months],m_endDates[next6Months]);
-  MyMoneyTransactionFilter::translateDateRange(next12Months,m_startDates[next12Months],m_endDates[next12Months]);
-  MyMoneyTransactionFilter::translateDateRange(userDefined,m_startDates[userDefined],m_endDates[userDefined]);
+  int i;
+  for(i = MyMoneyTransactionFilter::allDates; i < MyMoneyTransactionFilter::dateOptionCount; ++i) {
+    MyMoneyTransactionFilter::translateDateRange(static_cast<MyMoneyTransactionFilter::dateOptionE>(i), m_startDates[i], m_endDates[i]);
+  }
 
-  connect(m_dateRange, SIGNAL(activated(int)), this, SLOT(slotDateRangeChanged(int)));
+  connect(m_dateRange, SIGNAL(itemSelected(int)), this, SLOT(slotDateRangeChanged(int)));
   connect(m_fromDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged()));
   connect(m_toDate, SIGNAL(dateChanged(const QDate&)), this, SLOT(slotDateChanged()));
 
-  slotDateRangeChanged(allDates);
+  slotDateRangeChanged(MyMoneyTransactionFilter::allDates);
 }
 
 void KFindTransactionDlg::slotDateRangeChanged(int idx)
 {
   switch(idx) {
-    case allDates:
-    case userDefined:
+    case MyMoneyTransactionFilter::allDates:
+    case MyMoneyTransactionFilter::userDefined:
       m_fromDate->loadDate(QDate());
       m_toDate->loadDate(QDate());
       break;
@@ -408,13 +392,13 @@ void KFindTransactionDlg::slotDateRangeChanged(int idx)
 void KFindTransactionDlg::slotDateChanged(void)
 {
   int idx;
-  for(idx = untilToday; idx < userDefined; ++idx) {
+  for(idx = MyMoneyTransactionFilter::untilToday; idx < MyMoneyTransactionFilter::userDefined; ++idx) {
     if(m_fromDate->date() == m_startDates[idx]
     && m_toDate->date() == m_endDates[idx]) {
       break;
     }
   }
-  m_dateRange->setCurrentItem(idx);
+  m_dateRange->setCurrentItem(static_cast<MyMoneyTransactionFilter::dateOptionE>(idx));
   slotUpdateSelections();
 }
 

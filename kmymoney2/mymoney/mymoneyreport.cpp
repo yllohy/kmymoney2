@@ -81,7 +81,7 @@ MyMoneyReport::MyMoneyReport(const QCString& id, const MyMoneyReport& right) :
   setId(id);
 }
 
-MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, unsigned _dl, bool _ss, const QString& _name, const QString& _comment ):
+MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, dateOptionE _dl, bool _ss, const QString& _name, const QString& _comment ):
     m_name(_name),
     m_comment(_comment),
     m_detailLevel(_ss?eDetailAll:eDetailTop),
@@ -576,7 +576,7 @@ bool MyMoneyReport::read(const QDomElement& e)
       if ( i == -1 )
         i = userDefined;
     }
-    setDateFilter( i );
+    setDateFilter( static_cast<dateOptionE>(i) );
 
     i = kRowTypeText.findIndex(e.attribute("rowtype","expenseincome"));
     if ( i != -1 )

@@ -934,8 +934,8 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
       MyMoneyFile::instance()->setValue("kmm-encryption-key", key);
     }
     statusDevice = dev = kgpg;
-    MyMoneyFile::instance()->blockSignals(blocked);
     if(!dev || !dev->open(IO_WriteOnly)) {
+      MyMoneyFile::instance()->blockSignals(blocked);
       delete dev;
       throw new MYMONEYEXCEPTION(i18n("Unable to open file '%1' for writing.").arg(qfile->name()));
     }
@@ -948,8 +948,8 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
       base->setDevice(qfile, false);
       // we need to reopen the file to set the mode inside the filter stuff
       dev = new KFilterDev(base, true);
-      MyMoneyFile::instance()->blockSignals(blocked);
       if(!dev || !dev->open(IO_WriteOnly)) {
+        MyMoneyFile::instance()->blockSignals(blocked);
         delete dev;
         throw new MYMONEYEXCEPTION(i18n("Unable to open file '%1' for writing.").arg(qfile->name()));
       }
@@ -959,7 +959,6 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
   umask(mask);
   ft.commit();
 
-  MyMoneyFile::instance()->blockSignals(true);
   pWriter->setProgressCallback(&KMyMoneyView::progressCallback);
   dev->resetStatus();
   pWriter->writeFile(dev, dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage()));

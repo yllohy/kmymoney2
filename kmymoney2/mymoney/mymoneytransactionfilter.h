@@ -116,6 +116,8 @@ public:
     currentQuarter,
     lastQuarter,
     nextQuarter,
+    currentFiscalYear,
+    lastFiscalYear,
     // insert new constants above of this line
     dateOptionCount
   };
@@ -227,7 +229,7 @@ public:
     */
   void setDateFilter(const QDate& from, const QDate& to);
 
-  void setDateFilter(unsigned range);
+  void setDateFilter(dateOptionE range);
 
   /**
     * This method sets the amount filter to match only transactions with
@@ -484,7 +486,9 @@ public:
     * @param end QDate will be set to corresponding to the last date in @p range
     * @return return true if a range was successfully set, or false if @p range was invalid
     */
-  static const bool translateDateRange(int range, QDate& start, QDate& end) KDE_DEPRECATED;
+  static bool translateDateRange(dateOptionE range, QDate& start, QDate& end);
+
+  static void setStartMonthFiscalYear(int firstMonth);
 
   FilterSet filterSet(void) const { return m_filterSet; };
 

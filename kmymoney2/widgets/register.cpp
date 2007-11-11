@@ -566,6 +566,7 @@ Register::~Register()
 
 void Register::slotAutoColumnSizing(int section)
 {
+  Q_UNUSED(section)
 #if 0
   // this is some trial code to make the col sizes adjustable
   // there are some drawbacks though: what when we have a register
@@ -1072,7 +1073,7 @@ int Register::rowHeightHint(void) const
 void Register::paintCell(QPainter* painter, int row, int col, const QRect& r, bool selected, const QColorGroup& cg)
 {
   // determine the item that we need to paint in the row and call it's paintRegisterCell() method
-  if(row < 0 || ((unsigned)row) > m_itemIndex.size()) {
+  if((row < 0) || ((unsigned)row > m_itemIndex.size())) {
     qDebug("Register::paintCell: row %d out of bounds %d", row, m_itemIndex.size());
     return;
   }

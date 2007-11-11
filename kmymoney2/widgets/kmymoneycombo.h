@@ -403,8 +403,7 @@ public:
    */
   static QDate end(MyMoneyTransactionFilter::dateOptionE id);
 
-private:
-  static void dates(QDate& start, QDate& end, MyMoneyTransactionFilter::dateOptionE id);
+  // static void dates(QDate& start, QDate& end, MyMoneyTransactionFilter::dateOptionE id);
 };
 
 /**

@@ -47,6 +47,7 @@ class KFindTransactionDlg : public KFindTransactionDlgDecl
   Q_OBJECT
 public:
 
+  /*
   // Make sure to keep the following enum valus in sync with the values
   // used by the GUI in kfindtransactiondlgdecl.ui
   enum dateOptionE {
@@ -75,7 +76,7 @@ public:
     // insert new constants above of this line
     dateOptionCount
   };
-
+*/
   KFindTransactionDlg(QWidget *parent=0, const char *name=0);
   ~KFindTransactionDlg() {}
 
@@ -184,8 +185,8 @@ protected:
   void addItemToFilter(const opTypeE op, const QCString& id);
 
 protected:
-  QDate                m_startDates[dateOptionCount];
-  QDate                m_endDates[dateOptionCount];
+  QDate                m_startDates[MyMoneyTransactionFilter::dateOptionCount];
+  QDate                m_endDates[MyMoneyTransactionFilter::dateOptionCount];
 
   /**
     * This member holds a list of all transactions matching the filter criteria

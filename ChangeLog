@@ -1,3 +1,10 @@
+2007-11-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't send out data changed signal during file save operation
+
+2007-11-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added current and last fiscal year to period combo
+  * Added period combo widget to find transaction dialog
+
 2007-11-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added settings for beginning of fiscal year and drawing of markers for it
   * Added ledger markers for current and previous fiscal year
