@@ -1,5 +1,6 @@
 2007-11-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't send out data changed signal during file save operation
+  * Imported GnuCash account template files
 
 2007-11-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added current and last fiscal year to period combo

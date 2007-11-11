@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE KMYMONEY-TEMPLATE>
 <kmymoney-account-template>
-  <title></title>
+  <title>KMyMoney 0.8 default</title>
   <shortdesc></shortdesc>
   <longdesc></longdesc>
   <accounts>
