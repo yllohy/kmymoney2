@@ -66,7 +66,7 @@ class MyMoneyDbColumn : public KShared {
     m_type(itype),
     m_isPrimary(iprimary),
     m_isNotNull(inotnull),
-    m_initVersion(initVersion) 
+    m_initVersion(initVersion)
     {};
     MyMoneyDbColumn (void) {};
     virtual ~MyMoneyDbColumn () {};
@@ -165,7 +165,7 @@ class MyMoneyDbIndex {
 
 class MyMoneyDbTable {
   public:
-    MyMoneyDbTable (const QString& iname, 
+    MyMoneyDbTable (const QString& iname,
              const QValueList<KSharedPtr <MyMoneyDbColumn> >& ifields,
              const QString& initVersion = "1.0"):
     m_name(iname),
@@ -336,8 +336,8 @@ public:
   void readTransactions(const MyMoneyTransactionFilter& filter);
   void setProgressCallback(void(*callback)(int, int, const QString&));
 
-  virtual void readFile(QIODevice* s, IMyMoneySerialize* storage) {};
-  virtual void writeFile(QIODevice* s, IMyMoneySerialize* storage){};
+  virtual void readFile(QIODevice* s, IMyMoneySerialize* storage) { Q_UNUSED(s); Q_UNUSED(storage) };
+  virtual void writeFile(QIODevice* s, IMyMoneySerialize* storage){ Q_UNUSED(s); Q_UNUSED(storage) };
 
 private:
   // a function to build a comprehensive error message
