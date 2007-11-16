@@ -499,6 +499,13 @@ public:
     */
   void showContextMenu(const QString& containerName);
 
+  /**
+   * This method opens the category editor with the data found in @a account. The
+   * parent account is preset to @a parent but can be modified. If the user
+   * acknowledges, the category is created.
+   */
+  void createCategory(MyMoneyAccount& account, const MyMoneyAccount& parent);
+
 k_dcop:
   // Note: Don't use e.g. filename(void) but use filename() because
   // otherwise the kidl compiler produces uncompilable results.
@@ -569,8 +576,6 @@ protected:
   void createSchedule(MyMoneySchedule newSchedule, MyMoneyAccount& newAccount);
 
   void createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& parentAccount, MyMoneyAccount& brokerageAccount, MyMoneyMoney openingBal);
-
-  void createCategory(MyMoneyAccount& account, const MyMoneyAccount& parent);
 
   /**
     * This method checks, if an account can be closed or not. An account

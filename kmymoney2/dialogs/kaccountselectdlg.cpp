@@ -35,6 +35,7 @@
 #include <kmessagebox.h>
 #include <kiconloader.h>
 #include <kguiitem.h>
+#include <kactivelabel.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -42,6 +43,7 @@
 #include "kaccountselectdlg.h"
 #include <kmymoney/mymoneyinstitution.h>
 #include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneycategory.h>
 #include "../widgets/kmymoneyaccountselector.h"
 
 #include <../kmymoney2.h>
@@ -110,7 +112,7 @@ void KAccountSelectDlg::slotReloadWidget(void)
   if(m_accountType & KMyMoneyUtils::equity)
     set.addAccountGroup(MyMoneyAccount::Equity);
 
-  set.load(m_accountSelector);
+  set.load(m_accountSelector->selector());
 }
 
 void KAccountSelectDlg::setDescription(const QString& msg)
@@ -126,7 +128,7 @@ void KAccountSelectDlg::setHeader(const QString& msg)
 void KAccountSelectDlg::setAccount(const MyMoneyAccount& account, const QCString& id)
 {
   m_account = account;
-  m_accountSelector->setSelected(id);
+  m_accountSelector->setSelectedItem(id);
 }
 
 void KAccountSelectDlg::slotCreateInstitution(void)
@@ -136,13 +138,23 @@ void KAccountSelectDlg::slotCreateInstitution(void)
 
 void KAccountSelectDlg::slotCreateAccount(void)
 {
-  MyMoneyFileTransaction ft;
   if(!(m_accountType & (KMyMoneyUtils::expense | KMyMoneyUtils::income))) {
     kmymoney2->slotAccountNew(m_account);
-    if(!m_account.id().isEmpty())
+    if(!m_account.id().isEmpty()) {
+      slotReloadWidget();
+      m_accountSelector->setSelectedItem(m_account.id());
       accept();
+    }
   } else {
-    kmymoney2->slotCategoryNew(m_account);
+    if(m_account.accountType() == MyMoneyAccount::Expense)
+      kmymoney2->createCategory(m_account, MyMoneyFile::instance()->expense());
+    else
+      kmymoney2->createCategory(m_account, MyMoneyFile::instance()->income());
+    if(!m_account.id().isEmpty()) {
+      slotReloadWidget();
+      m_accountSelector->setSelectedItem(m_account.id());
+      accept();
+    }
   }
 }
 
@@ -177,12 +189,9 @@ int KAccountSelectDlg::exec(void)
   return rc;
 }
 
-const QCString KAccountSelectDlg::selectedAccount(void) const
+const QCString& KAccountSelectDlg::selectedAccount(void) const
 {
-  QCString rc;
-  if(!m_accountSelector->selectedItems().isEmpty())
-    rc = m_accountSelector->selectedItems().first();
-  return rc;
+  return m_accountSelector->selectedItem();
 }
 
 #include "kaccountselectdlg.moc"

@@ -72,7 +72,6 @@ MyMoneyQifReader::MyMoneyQifReader()
   m_warnedInvestment = false;
   m_warnedSecurity = false;
   m_warnedPrice = false;
-  m_ft = 0;
 
   connect(&m_filter, SIGNAL(wroteStdin(KProcess*)), this, SLOT(slotSendDataToFilter()));
   connect(&m_filter, SIGNAL(receivedStdout(KProcess*, char*, int)), this, SLOT(slotReceivedDataFromFilter(KProcess*, char*, int)));
@@ -82,8 +81,6 @@ MyMoneyQifReader::MyMoneyQifReader()
 
 MyMoneyQifReader::~MyMoneyQifReader()
 {
-  if(m_ft)
-    delete m_ft;
   if(m_file)
     delete m_file;
 }
@@ -228,8 +225,6 @@ const bool MyMoneyQifReader::startImport(void)
   m_file = new QFile(m_filename);
   if(m_file->open(IO_ReadOnly)) {
 
-    m_ft = new MyMoneyFileTransaction();
-
 #ifdef DEBUG_IMPORT
     Q_LONG len;
 
@@ -264,8 +259,6 @@ const bool MyMoneyQifReader::startImport(void)
       rc = true;
     } else {
       qDebug("starting filter failed :-(");
-      delete m_ft;
-      m_ft = 0;
     }
 #endif
   }
@@ -333,6 +326,7 @@ const bool MyMoneyQifReader::finishImport(void)
   kapp->processEvents();
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyTransaction>::iterator it = m_transactionCache.begin();
+  MyMoneyFileTransaction ft;
   try
   {
     while( it != m_transactionCache.end() )
@@ -347,6 +341,8 @@ const bool MyMoneyQifReader::finishImport(void)
       dlg.progressBar()->advance(1);
       ++it;
     }
+    if(rc)
+      ft.commit();
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to add transactions"),
     (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
@@ -354,10 +350,6 @@ const bool MyMoneyQifReader::finishImport(void)
     rc = false;
   }
 
-  if(rc)
-    m_ft->commit();
-  delete m_ft;
-  m_ft = 0;
   return rc;
 }
 
@@ -514,7 +506,6 @@ void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE 
     m_account.setAccountType(accountType);
     QString txt = extractLine('T');
     MyMoneyMoney balance = m_qifProfile.value('T', txt);
-    m_account.setOpeningBalance(balance);
 
     QDate date = m_qifProfile.date(extractLine('D'));
     m_account.setOpeningDate(date);
@@ -524,12 +515,13 @@ void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE 
       name = name.mid(1, name.length()-2);
     }
     m_account.setName(name);
-    selectOrCreateAccount(Select, m_account);
+    selectOrCreateAccount(Select, m_account, balance);
 
     if ( ! balance.isZero() )
     {
       MyMoneyFile* file = MyMoneyFile::instance();
       QCString openingtxid = file->openingBalanceTransaction(m_account);
+      MyMoneyFileTransaction ft;
       if ( ! openingtxid.isEmpty() )
       {
         MyMoneyTransaction openingtx = file->transaction(openingtxid);
@@ -559,6 +551,7 @@ void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE 
         m_account.setOpeningDate( date );
         file->createOpeningBalanceTransaction( m_account, balance );
       }
+      ft.commit();
     }
 
   } else {
@@ -747,10 +740,11 @@ void MyMoneyQifReader::processTransactionEntry(void)
         // of the payee.
         payee.setName(tmp);
 
+        MyMoneyFileTransaction ft;
         try {
           file->addPayee(payee);
           s1.setPayeeId(payee.id());
-
+          ft.commit();
         } catch(MyMoneyException *e) {
           KMessageBox::detailedSorry(0, i18n("Unable to add payee/receiver"),
             (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
@@ -851,7 +845,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
       }
     }
   } else {
-    // splitted transaction
+    // split transaction
     int   count;
 
     for(count = 1; !extractLine('$', count).isEmpty(); ++count) {
@@ -937,7 +931,7 @@ void MyMoneyQifReader::processTransactionEntry(void)
       }
     }
 
-    // Second, if no bank-id diplicates, try using the more error-prone
+    // Second, if no bank-id duplicates, try using the more error-prone
     // MMTransaction::isDuplicate() method, as long as the user asked for
     // this behaviour
     if ( oktoadd & m_qifProfile.attemptMatchDuplicates() )
@@ -1574,7 +1568,9 @@ const QCString MyMoneyQifReader::findOrCreateIncomeAccount(const QString& search
     acc.setName( searchname );
     acc.setAccountType( MyMoneyAccount::Income );
     MyMoneyAccount income = file->income();
+    MyMoneyFileTransaction ft;
     file->addAccount( acc, income );
+    ft.commit();
     result = acc.id();
   }
 
@@ -1610,8 +1606,10 @@ const QCString MyMoneyQifReader::findOrCreateExpenseAccount(const QString& searc
     MyMoneyAccount acc;
     acc.setName( searchname );
     acc.setAccountType( MyMoneyAccount::Expense );
+    MyMoneyFileTransaction ft;
     MyMoneyAccount expense = file->expense();
     file->addAccount( acc, expense );
+    ft.commit();
     result = acc.id();
   }
 
@@ -1709,7 +1707,7 @@ void MyMoneyQifReader::processAccountEntry(void)
   selectOrCreateAccount(Select, m_account);
 }
 
-void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account)
+void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account, const MyMoneyMoney& balance)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -1828,11 +1826,12 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
         // MMAccount::openingBalance() is where the accountSelect dialog has
         // stashed the opening balance that the user chose.
         MyMoneyAccount importedAccountData(account);
-        MyMoneyMoney balance = importedAccountData.openingBalance();
+        // MyMoneyMoney balance = importedAccountData.openingBalance();
         account = file->account(accountId);
         if ( ! balance.isZero() )
         {
           QCString openingtxid = file->openingBalanceTransaction(account);
+          MyMoneyFileTransaction ft;
           if ( ! openingtxid.isEmpty() )
           {
             MyMoneyTransaction openingtx = file->transaction(openingtxid);
@@ -1859,6 +1858,7 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
             // Add an opening balance
             file->createOpeningBalanceTransaction( account, balance );
           }
+          ft.commit();
         }
         break;
       }
@@ -1933,6 +1933,7 @@ void MyMoneyQifReader::processPriceEntry(void)
       // universal in the file, so all securities in the file must be
       // searched.
 
+      MyMoneyFileTransaction ft;
       QValueList<MyMoneySecurity>::const_iterator it_security = securities.begin();
       while ( it_security != securities.end() )
       {
@@ -1947,6 +1948,7 @@ void MyMoneyQifReader::processPriceEntry(void)
         }
         ++ it_security;
       }
+      ft.commit();
 
       // if the security mentioned in this price was not found in the file
       if ( it_security == securities.end() )

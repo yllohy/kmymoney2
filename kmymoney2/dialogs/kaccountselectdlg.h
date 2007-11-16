@@ -85,7 +85,7 @@ public:
     *
     * @return QCString containing the id of the selected account
     */
-  const QCString selectedAccount(void) const;
+  const QCString& selectedAccount(void) const;
 
   /**
     * This method is used to set the mode of the dialog. Two modes

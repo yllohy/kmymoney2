@@ -262,7 +262,7 @@ private:
     * @param mode Is either Create or Select depending on the above table
     * @param account Reference to MyMoneyAccount object
     */
-  void selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account);
+  void selectOrCreateAccount(const SelectCreateMode mode, MyMoneyAccount& account, const MyMoneyMoney& openingBalance = MyMoneyMoney());
 
   /**
     * This method looks up the @p searchname account by name and returns its id

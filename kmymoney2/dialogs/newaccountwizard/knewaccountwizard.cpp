@@ -448,6 +448,7 @@ void AccountTypePage::setAccount(const MyMoneyAccount& acc)
 {
   m_typeSelection->setCurrentItem(acc.accountType());
   m_openingDate->setDate(acc.openingDate());
+  m_accountName->setText(acc.name());
 }
 
 OpeningPage::OpeningPage(Wizard* wizard, const char* name) :
