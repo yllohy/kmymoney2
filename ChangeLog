@@ -1,3 +1,6 @@
+2007-11-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem when importing OFX statements with cash dividends
+
 2007-11-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed QIF importer to work with new wizards
 

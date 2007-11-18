@@ -67,6 +67,10 @@ public:
   void preloadInstitution(const QValueList<MyMoneyInstitution>& list);
   void preloadSecurity(const QValueList<MyMoneySecurity>& list);
 
+  void preloadAccount(const MyMoneyAccount& account);
+  void preloadSecurity(const MyMoneySecurity& security);
+  void preloadPayee(const MyMoneyPayee& payee);
+
   void clear(const QCString& id);
   void clear(IMyMoneyStorage* storage = 0);
 

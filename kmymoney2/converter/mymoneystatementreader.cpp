@@ -210,7 +210,17 @@ void MyMoneyStatementReader::processSecurityEntry(const MyMoneyStatement::Securi
     security.setValue("kmm-security-id", sec_in.m_strId);
     security.setValue("kmm-online-source", "Yahoo");
     security.setSecurityType(MyMoneySecurity::SECURITY_STOCK);
-    file->addSecurity(security);
+    MyMoneyFileTransaction ft;
+    try {
+      file->addSecurity(security);
+      ft.commit();
+      file->preloadCache();
+      kdDebug(0) << "Created " << security.name() << " with id " << security.id() << endl;
+    } catch(MyMoneyException *e) {
+      KMessageBox::error(0, i18n("Error creating security record: %1").arg(e->what()), i18n("Error"));
+    }
+  } else {
+    kdDebug(0) << "Found " << security.name() << " with id " << security.id() << endl;
   }
 }
 
@@ -279,24 +289,23 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
         QString symboltoken = security.tradingSymbol() + " ";
         QString nametoken = " " + security.name();
 
-        if (
-          ( t_in.m_strSecurity.startsWith(symboltoken,false) || (t_in.m_strSecurity == nametoken) )
-          &&
-          (t_in.m_eAction != MyMoneyStatement::Transaction::eaCashDividend) // Bug #1581788: Should not update a price for cash dividends
-          )
+        if(t_in.m_strSecurity.startsWith(symboltoken,false)
+        || (t_in.m_strSecurity == nametoken))
         {
-
           thisaccount = file->account(*it_account);
           found = true;
 
-          // update the price, while we're here.  in the future, this should be
-          // an option
-          QCString basecurrencyid = file->baseCurrency().id();
-          MyMoneyPrice price = file->price( currencyid, basecurrencyid, t_in.m_datePosted, true );
-          if ( !price.isValid() )
+          if(t_in.m_eAction != MyMoneyStatement::Transaction::eaCashDividend) // Bug #1581788: Should not update a price for cash dividends
           {
-            MyMoneyPrice newprice( currencyid, basecurrencyid, t_in.m_datePosted, t_in.m_moneyAmount / t_in.m_dShares, i18n("Statement Importer") );
-            file->addPrice(newprice);
+            // update the price, while we're here.  in the future, this should be
+            // an option
+            QCString basecurrencyid = file->baseCurrency().id();
+            MyMoneyPrice price = file->price( currencyid, basecurrencyid, t_in.m_datePosted, true );
+            if ( !price.isValid() )
+            {
+              MyMoneyPrice newprice( currencyid, basecurrencyid, t_in.m_datePosted, t_in.m_moneyAmount / t_in.m_dShares, i18n("Statement Importer") );
+              file->addPrice(newprice);
+            }
           }
         }
 
@@ -335,7 +344,8 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
           thisaccount.setCurrencyId(security.id());
 
           file->addAccount(thisaccount, m_account);
-          kdDebug(2) << __func__ << ": created account " << thisaccount.id() << " for security " << t_in.m_strSecurity << " under account " << m_account.id() << endl;
+          kdDebug(0) << __func__ << ": created account " << thisaccount.id() << " for security " << t_in.m_strSecurity << " under account " << m_account.id() << endl;
+          file->preloadCache();
         }
         // this security does not exist in the file.
         else
@@ -795,6 +805,7 @@ const QCString MyMoneyStatementReader::findOrCreateIncomeAccount(const QString& 
     acc.setAccountType( MyMoneyAccount::Income );
     MyMoneyAccount income = file->income();
     file->addAccount( acc, income );
+    file->preloadCache();
     result = acc.id();
   }
 
@@ -830,6 +841,7 @@ const QCString MyMoneyStatementReader::findOrCreateExpenseAccount(const QString&
     acc.setAccountType( MyMoneyAccount::Expense );
     MyMoneyAccount expense = file->expense();
     file->addAccount( acc, expense );
+    file->preloadCache();
     result = acc.id();
   }
 

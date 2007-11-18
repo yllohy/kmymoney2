@@ -290,6 +290,8 @@ void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
 
   m_storage->modifyAccount(account);
 
+  d->m_cache.preloadAccount(account);
+
   addNotification(account.id());
 }
 
@@ -588,6 +590,8 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
     addNotification(institution.id());
   }
 
+  d->m_cache.preloadAccount(account);
+
   addNotification(account.id());
   addNotification(parent.id());
 }
@@ -855,6 +859,7 @@ void MyMoneyFile::addPayee(MyMoneyPayee& payee)
   MyMoneyNotifier notifier(this);
 
   m_storage->addPayee(payee);
+  d->m_cache.preloadPayee(payee);
 }
 
 const MyMoneyPayee& MyMoneyFile::payee(const QCString& id) const
@@ -879,6 +884,7 @@ void MyMoneyFile::modifyPayee(const MyMoneyPayee& payee)
   addNotification(payee.id());
 
   m_storage->modifyPayee(payee);
+  d->m_cache.preloadPayee(payee);
 }
 
 void MyMoneyFile::removePayee(const MyMoneyPayee& payee)
@@ -1555,6 +1561,9 @@ void MyMoneyFile::addSecurity(MyMoneySecurity& security)
   MyMoneyNotifier notifier(this);
 
   m_storage->addSecurity(security);
+
+  d->m_cache.preloadSecurity(security);
+
   addNotification(security.id());
 }
 
@@ -1566,6 +1575,9 @@ void MyMoneyFile::modifySecurity(const MyMoneySecurity& security)
   MyMoneyNotifier notifier(this);
 
   m_storage->modifySecurity(security);
+
+  d->m_cache.preloadSecurity(security);
+
   addNotification(security.id());
 }
 

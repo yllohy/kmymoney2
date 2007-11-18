@@ -68,7 +68,7 @@ void MyMoneyObjectContainer::a(QValueList<T>& list) \
   } \
 }
 
-#define preloadMethod(a, T) \
+#define preloadListMethod(a, T) \
 void MyMoneyObjectContainer::preload##a(const QValueList<T>& list) \
 { \
   QValueList<T>::const_iterator it; \
@@ -78,28 +78,12 @@ void MyMoneyObjectContainer::preload##a(const QValueList<T>& list) \
   } \
 }
 
-#if 0
-#define objectAccessMethod(a, T) \
-const T& MyMoneyObjectContainer::a(const QCString& id) \
+#define preloadMethod(a, T) \
+void MyMoneyObjectContainer::preload##a(const T& obj) \
 { \
-  static T nullElement; \
-  QMap<QCString, MyMoneyObject const *>::const_iterator it; \
-  it = m_map.find(id); \
-  if(it == m_map.end()) { \
-    /* not found, need to load from engine */ \
-    try { \
-      const T& x = m_storage->a(id); \
-      m_map[id] = new T(x); \
-      return dynamic_cast<const T&>(*m_map[id]); \
-    } catch(MyMoneyException * e) { \
-      delete e; \
-      qDebug(#T " with id %s not found", id.data()); \
-      return nullElement; \
-    } \
-  } \
-  return dynamic_cast<const T&>(*(*it)); \
+  delete m_map[obj.id()]; \
+  m_map[obj.id()] = new T(obj); \
 }
-#endif
 
 #define objectAccessMethod(a, T) \
 const T& MyMoneyObjectContainer::a(const QCString& id) \
@@ -123,13 +107,17 @@ objectAccessMethod(payee, MyMoneyPayee)
 objectAccessMethod(security, MyMoneySecurity)
 objectAccessMethod(institution, MyMoneyInstitution)
 
-preloadMethod(Account, MyMoneyAccount)
-preloadMethod(Payee, MyMoneyPayee)
-preloadMethod(Institution, MyMoneyInstitution)
-preloadMethod(Security, MyMoneySecurity)
+preloadListMethod(Account, MyMoneyAccount)
+preloadListMethod(Payee, MyMoneyPayee)
+preloadListMethod(Institution, MyMoneyInstitution)
+preloadListMethod(Security, MyMoneySecurity)
 
-listMethod(account, MyMoneyAccount);
-listMethod(payee, MyMoneyPayee);
-listMethod(institution, MyMoneyInstitution);
+preloadMethod(Account, MyMoneyAccount)
+preloadMethod(Security, MyMoneySecurity)
+preloadMethod(Payee, MyMoneyPayee)
+
+listMethod(account, MyMoneyAccount)
+listMethod(payee, MyMoneyPayee)
+listMethod(institution, MyMoneyInstitution)
 
 #include "mymoneyobjectcontainer.moc"
