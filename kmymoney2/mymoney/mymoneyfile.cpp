@@ -1308,6 +1308,7 @@ const QStringList MyMoneyFile::consistencyCheck(void)
 {
   QValueList<MyMoneyAccount> list;
   QValueList<MyMoneyAccount>::Iterator it_a;
+  QValueList<MyMoneySchedule>::Iterator it_sch;
   QCStringList accountRebuild;
   QCStringList::ConstIterator it_c;
 
@@ -1477,6 +1478,29 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         delete e;
         rc << QString("  * Unable to update account data for account %1 in engine").arg((*it_a).name());
       }
+    }
+  }
+
+  QValueList<MyMoneySchedule> schList = scheduleList();
+  for(it_sch = schList.begin(); it_sch != schList.end(); ++it_sch) {
+    MyMoneySchedule sch = (*it_sch);
+    MyMoneyTransaction t = sch.transaction();
+    bool tChanged = false;
+    QValueList<MyMoneySplit>::const_iterator it_s;
+    for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+      if(!(*it_s).value().isZero() && (*it_s).shares().isZero()) {
+        MyMoneySplit s = (*it_s);
+        s.setShares(s.value());
+        t.modifySplit(s);
+        tChanged = true;
+        rc << QString("  * Split in scheduled transaction '%1' contained value != 0 and shares == 0.").arg((*it_sch).name());
+        rc << "    Shares set to value.";
+        ++problemCount;
+      }
+    }
+    if(tChanged) {
+      sch.setTransaction(t);
+      m_storage->modifySchedule(sch);
     }
   }
 
