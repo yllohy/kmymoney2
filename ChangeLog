@@ -1,3 +1,7 @@
+2007-11-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Use name match if no ticker symbol is present in
+    security record of OFX file
+
 2007-11-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem when importing OFX statements with cash dividends
 

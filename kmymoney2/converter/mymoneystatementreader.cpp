@@ -194,7 +194,10 @@ void MyMoneyStatementReader::processSecurityEntry(const MyMoneyStatement::Securi
   QValueList<MyMoneySecurity>::ConstIterator it = list.begin();
   while ( it != list.end() && security.id().isEmpty() )
   {
-    if((*it).tradingSymbol() == sec_in.m_strSymbol)
+    if(sec_in.m_strSymbol.isEmpty()) {
+      if((*it).name() == sec_in.m_strName)
+        security = *it;
+    } else if((*it).tradingSymbol() == sec_in.m_strSymbol)
       security = *it;
     ++it;
   }
