@@ -263,6 +263,12 @@ const QString KMyMoneyUtils::paymentMethodToString(MyMoneySchedule::paymentTypeE
     case MyMoneySchedule::STYPE_WRITECHEQUE:
       text = i18n("Write check");
       break;
+    case MyMoneySchedule::STYPE_STANDINGORDER:
+      text = i18n("Standing order");
+      break;
+    case MyMoneySchedule::STYPE_BANKTRANSFER:
+      text = i18n("Bank transfer");
+      break;
     case MyMoneySchedule::STYPE_ANY:
       text = i18n("Any (Error)");
       break;

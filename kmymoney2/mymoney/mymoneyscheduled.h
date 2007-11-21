@@ -74,7 +74,9 @@ public:
     */
   enum paymentTypeE { STYPE_ANY=0, STYPE_DIRECTDEBIT=1, STYPE_DIRECTDEPOSIT=2,
                       STYPE_MANUALDEPOSIT=4, STYPE_OTHER=8,
-                      STYPE_WRITECHEQUE=16 };
+                      STYPE_WRITECHEQUE=16,
+                      STYPE_STANDINGORDER=32,
+                      STYPE_BANKTRANSFER=64 };
 
   /**
     * This enum is used by the auto-commit functionality.

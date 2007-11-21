@@ -489,11 +489,15 @@ CreditCardSchedulePage::CreditCardSchedulePage(Wizard* wizard, const char* name)
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadWidgets()));
 
-  m_method->insertItem(i18n("Other"), MyMoneySchedule::STYPE_OTHER);
   m_method->insertItem(i18n("Write check"), MyMoneySchedule::STYPE_WRITECHEQUE);
+#if 0
+  m_method->insertItem(i18n("Direct debit"), MyMoneySchedule::STYPE_DIRECTDEBIT);
+  m_method->insertItem(i18n("Bank transfer"), MyMoneySchedule::STYPE_BANKTRANSFER);
+#endif
+  m_method->insertItem(i18n("Standing order"), MyMoneySchedule::STYPE_STANDINGORDER);
   m_method->insertItem(i18n("Manual deposit"), MyMoneySchedule::STYPE_MANUALDEPOSIT);
   m_method->insertItem(i18n("Direct deposit"), MyMoneySchedule::STYPE_DIRECTDEPOSIT);
-  m_method->insertItem(i18n("Direct debit"), MyMoneySchedule::STYPE_DIRECTDEBIT);
+  m_method->insertItem(i18n("Other"), MyMoneySchedule::STYPE_OTHER);
   m_method->setCurrentItem(MyMoneySchedule::STYPE_DIRECTDEBIT);
 
   slotLoadWidgets();
