@@ -316,7 +316,7 @@ void PivotTable::init(void)
     {
       // If the transaction meets the filter
       MyMoneyTransaction tx = (*it_schedule).transaction();
-      if ( schedulefilter.match(tx,file->storage()) )
+      if (!(*it_schedule).isFinished() && schedulefilter.match(tx, file->storage()) )
       {
         // Keep the id of the schedule with the transaction so that
         // we can do the autocalc later on in case of a loan payment

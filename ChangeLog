@@ -1,3 +1,6 @@
+2007-11-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't include finished schedules in reports
+
 2007-11-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added standing orders and bank transfer as payment types for schedules
 
