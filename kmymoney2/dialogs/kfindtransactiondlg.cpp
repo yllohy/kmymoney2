@@ -398,7 +398,9 @@ void KFindTransactionDlg::slotDateChanged(void)
       break;
     }
   }
+  m_dateRange->blockSignals(true);
   m_dateRange->setCurrentItem(static_cast<MyMoneyTransactionFilter::dateOptionE>(idx));
+  m_dateRange->blockSignals(false);
   slotUpdateSelections();
 }
 

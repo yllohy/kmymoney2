@@ -1,3 +1,6 @@
+2007-11-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem in KFindTransactionDlg when entering a user defined date
+
 2007-11-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't include finished schedules in reports
 
