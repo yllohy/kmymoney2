@@ -599,8 +599,28 @@ void MyMoneyForecastTest::testDaysToZeroBalance()
   
   //test it does not warn when it will be outside of the forecast period
   
-
-  
 }
 
-
+void MyMoneyForecastTest::testSkipOpeningDate()
+{
+  //set up environment
+  MyMoneyForecast a;
+  
+  TransactionHelper t1( QDate::currentDate().addDays(-2), MyMoneySplit::ActionWithdrawal, this->moT1, acCash, acSolo);
+  TransactionHelper t2( QDate::currentDate().addDays(-1), MyMoneySplit::ActionWithdrawal, this->moT2, acCash, acSolo);
+  
+  KMyMoneyGlobalSettings::setForecastMethod(1);
+  KMyMoneyGlobalSettings::setForecastDays(3);
+  KMyMoneyGlobalSettings::setForecastAccountCycle(2);
+  KMyMoneyGlobalSettings::setForecastCycles(1);
+  a.doForecast();
+  
+  MyMoneyAccount a_cash = file->account(acCash);
+  
+  //test it it has no variation because it skipped the variation of the opening date
+  MyMoneyMoney b_cash = file->balance(a_cash.id(), QDate::currentDate());
+  CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate())==b_cash);
+  CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate().addDays(1))==b_cash);
+  CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate().addDays(2))==b_cash-moT2);
+  CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate().addDays(3))==b_cash-moT2);
+}

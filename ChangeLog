@@ -1,3 +1,6 @@
+2007-11-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied patch provided by Alvaro Soliverez with a few modifications
+
 2007-11-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem in KFindTransactionDlg when entering a user defined date
 

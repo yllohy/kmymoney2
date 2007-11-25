@@ -35,7 +35,10 @@
 #include "../kmymoney2.h"
 #include "../kmymoneyutils.h"
 #include "../mymoney/mymoneyforecast.h"
+#include "../widgets/kmymoneyforecastlistviewitem.h"
+#include "../reports/reportaccount.h"
 
+using namespace reports;
 
 KForecastView::KForecastView(QWidget *parent, const char *name) :
   KForecastViewDecl(parent,name)
@@ -190,6 +193,7 @@ void KForecastView::loadSummaryView(void)
   QValueList<MyMoneyAccount> accList;
   int dropMinimum;
   int dropZero;
+  bool negative = false;
 
   MyMoneySecurity baseCurrency = file->baseCurrency();
 
@@ -243,9 +247,10 @@ void KForecastView::loadSummaryView(void)
   }*/
 
   m_summaryList->setSorting(-1);
+  m_adviceList->setSorting(-1);
 
-  KListViewItem *summaryItem = 0;
-  KListViewItem *adviceItem = 0;
+  KMyMoneyForecastListViewItem *summaryItem = 0;
+  KMyMoneyForecastListViewItem *adviceItem = 0;
   QMap<QDate, MyMoneyMoney> cycleBalance;
 
   QMap<QString, QCString>::ConstIterator it_nc;
@@ -258,7 +263,7 @@ void KForecastView::loadSummaryView(void)
     MyMoneyMoney vAmountMM;
     MyMoneyMoney tempVAmountMM;
 
-    summaryItem = new KListViewItem(m_summaryList, summaryItem);
+    summaryItem = new KMyMoneyForecastListViewItem(m_summaryList, summaryItem, false);
     summaryItem->setText(accountColumn, acc.name());
     int it_c = 1; // iterator for the columns of the listview
 
@@ -268,7 +273,16 @@ void KForecastView::loadSummaryView(void)
       MyMoneyMoney amountMM;
       amountMM = forecast.forecastBalance(acc, summaryDate);
 
-      cycleBalance[summaryDate] += amountMM;
+      //calculate the balance in base currency for the total row
+      if(acc.currencyId() != file->baseCurrency().id()) {
+        ReportAccount repAcc = ReportAccount(acc.id());
+        MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(summaryDate);
+        MyMoneyMoney baseAmountMM = amountMM * curPrice;
+        cycleBalance[summaryDate] += baseAmountMM;
+        
+      } else {
+        cycleBalance[summaryDate] += amountMM;
+      }
 
       //calculate variation
       if (i == 0) tempVAmountMM = amountMM;
@@ -281,12 +295,13 @@ void KForecastView::loadSummaryView(void)
     }
 
     //calculate and add variation per cycle
+    summaryItem->setNegative(vAmountMM.isNegative()); 
     vAmount = vAmountMM.formatMoney(currency.tradingSymbol());
     summaryItem->setText((accountColumn+it_c), vAmount);
 
   }
   //add total row
-  summaryItem = new KListViewItem(m_summaryList, summaryItem);
+  summaryItem = new KMyMoneyForecastListViewItem(m_summaryList, summaryItem, false);
   summaryItem->setText(accountColumn, i18n("Total"));
   int i;
   for(i = 0; (i*forecast.accountsCycle()) <= forecast.forecastDays(); ++i) {
@@ -298,8 +313,10 @@ void KForecastView::loadSummaryView(void)
   //calculate total variation
   QString totalVarAmount;
   MyMoneyMoney totalVarAmountMM = cycleBalance[QDate::currentDate().addDays((i-1)*forecast.accountsCycle())]-cycleBalance[QDate::currentDate()];
+  summaryItem->setNegative(totalVarAmountMM.isNegative()); 
   totalVarAmount = totalVarAmountMM.formatMoney(file->baseCurrency().tradingSymbol());
   summaryItem->setText((i+1), totalVarAmount);
+
 
   m_summaryList->triggerUpdate();
 
@@ -335,14 +352,16 @@ void KForecastView::loadSummaryView(void)
           break;
         case 0:
           msg = i18n("The balance of %1 is below the minimum balance %2 today.").arg(acc.name()).arg(minBalance.formatMoney(currency.tradingSymbol()));
+          negative = true;
           break;
         default:
           msg = i18n("The balance of %1 will drop below the minimum balance %2 in %3 days.").arg(acc.name()).arg(minBalance.formatMoney(currency.tradingSymbol())).arg(dropMinimum-1);
+          negative = true;
       }
 
       if(!msg.isEmpty()) {
-        summaryItem = new KListViewItem(m_adviceList, adviceItem);
-        summaryItem->setText(0, msg);
+        adviceItem = new KMyMoneyForecastListViewItem(m_adviceList, adviceItem, negative);
+        adviceItem->setText(0, msg);
       }
     }
 
@@ -354,26 +373,43 @@ void KForecastView::loadSummaryView(void)
       case 0:
         if(acc.accountGroup() == MyMoneyAccount::Asset) {
           msg = i18n("The balance of %1 is below %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol()));
+          negative = true;
           break;
         }
         if(acc.accountGroup() == MyMoneyAccount::Liability) {
           msg = i18n("The balance of %1 is above %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol()));
+          negative = false;
           break;
         }
         break;
       default:
         if(acc.accountGroup() == MyMoneyAccount::Asset) {
           msg = i18n("The balance of %1 will drop below %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol())).arg(dropZero);
+          negative = true;
           break;
         }
         if(acc.accountGroup() == MyMoneyAccount::Liability) {
           msg = i18n("The balance of %1 will raise above %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol())).arg(dropZero);
+          negative = false;
           break;
         }
     }
     if(!msg.isEmpty()) {
-      summaryItem = new KListViewItem(m_adviceList, adviceItem);
-      summaryItem->setText(0, msg);
+      adviceItem = new KMyMoneyForecastListViewItem(m_adviceList, adviceItem, negative);
+      adviceItem->setText(0, msg);
+    }
+    
+    //advice about trends
+    msg = QString();
+    MyMoneyMoney accCycleVariation = forecast.accountCycleVariation(acc);
+    if (accCycleVariation < MyMoneyMoney(0, 1)) {
+      msg = i18n("The account %1 is decreasing %2 per cycle.").arg(acc.name()).arg(accCycleVariation.formatMoney(currency.tradingSymbol()));
+      negative = true;
+    }
+    
+    if(!msg.isEmpty()) {
+      adviceItem = new KMyMoneyForecastListViewItem(m_adviceList, adviceItem, negative);
+      adviceItem->setText(0, msg);
     }
   }
 

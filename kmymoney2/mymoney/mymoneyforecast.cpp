@@ -117,7 +117,8 @@ void MyMoneyForecast::pastTransactions()
     for(; it_s != splits.end(); ++it_s ) {
       if(!(*it_s).shares().isZero()) {
         MyMoneyAccount acc = file->account((*it_s).accountId());
-        if(isForecastAccount(acc)) { //If it is one of the accounts we are checking, add the amount of the transaction
+        if(isForecastAccount(acc) && //If it is one of the accounts we are checking, add the amount of the transaction 
+           acc.openingDate() < (*it_t).postDate()) { //dont take the opening day of the account to calculate balance
           dailyBalances balance;
           balance = m_accountListPast[acc.id()];
           int offset = startDate.daysTo((*it_t).postDate())+1;
@@ -637,4 +638,17 @@ void MyMoneyForecast::setForecastAccountList(void)
     }
   }
 
+}
+
+MyMoneyMoney MyMoneyForecast::accountCycleVariation(const MyMoneyAccount& acc)
+{
+  MyMoneyMoney cycleVariation;
+  
+  if (KMyMoneyGlobalSettings::forecastMethod() == HISTORIC) {
+    for(int t_day = 1; t_day <= accountsCycle() ; ++t_day) {
+      cycleVariation += m_accountTrendList[acc.id()][t_day];
+    }
+  } 
+  
+  return cycleVariation;
 }

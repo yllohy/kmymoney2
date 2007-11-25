@@ -41,6 +41,7 @@ class MyMoneyForecastTest : public CppUnit::TestFixture
     CPPUNIT_TEST ( testDaysToMinimumBalance );
     CPPUNIT_TEST ( testDaysToZeroBalance );
     CPPUNIT_TEST ( testScheduleForecast );
+    CPPUNIT_TEST ( testSkipOpeningDate );
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -60,6 +61,7 @@ class MyMoneyForecastTest : public CppUnit::TestFixture
     void testDaysToMinimumBalance();
     void testDaysToZeroBalance();
     void testScheduleForecast();
+    void testSkipOpeningDate();
 
   protected:
     MyMoneyForecast *m;

@@ -101,6 +101,11 @@ public:
    * number of days to go back in history to calculate forecast
    */
   int historyDays(void) const;
+  
+  /**
+   * amount of variation of a given account in one cycle
+   */
+  MyMoneyMoney accountCycleVariation(const MyMoneyAccount& acc);
 
   void setAccountsCycle(int accountsCycle);
 
