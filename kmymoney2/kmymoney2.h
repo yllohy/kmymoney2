@@ -164,6 +164,8 @@ protected slots:
 
   void slotAccountUpdateOFX(void);
 
+  void slotAccountChart(void);
+
   /**
     * Opens a file selector dialog for the user to choose an existing KMM
     * statement file from the file system to be imported.  This is for testing

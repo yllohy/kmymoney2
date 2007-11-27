@@ -125,12 +125,8 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   bool haveMaxCredit = false;
   if (categoryEditor)
   {
-
     // get rid of the tabs that are not used for categories
-    QWidget* tab = m_tab->page(m_tab->indexOf(m_balanceTab));
-    if(tab)
-      m_tab->removePage(tab);
-    tab = m_tab->page(m_tab->indexOf(m_institutionTab));
+    QWidget* tab = m_tab->page(m_tab->indexOf(m_institutionTab));
     if(tab)
       m_tab->removePage(tab);
     tab = m_tab->page(m_tab->indexOf(m_limitsTab));
@@ -177,11 +173,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     QWidget* tab = m_tab->page(m_tab->indexOf(m_taxTab));
     if(tab)
       m_tab->removePage(tab);
-#ifndef HAVE_KDCHART
-    tab = m_tab->page(m_tab->indexOf(m_balanceTab));
-    if(tab)
-      m_tab->removePage(tab);
-#endif
 
     switch(m_account.accountType()) {
       case MyMoneyAccount::Savings:
@@ -449,74 +440,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   slotVatChanged(m_vatCategory->isChecked());
   slotVatAssignmentChanged(m_vatAssignment->isChecked());
   slotCheckFinished();
-
-#ifdef HAVE_KDCHART
-
-  // only create the chart, if the resp. page is still available
-  if(m_tab->indexOf(m_balanceTab) != -1) {
-    MyMoneyReport reportCfg = MyMoneyReport(
-      MyMoneyReport::eAssetLiability,
-      MyMoneyReport::eMonths,
-      MyMoneyTransactionFilter::userDefined, // overridden by the setDateFilter() call below
-      false,
-      i18n("%1 Balance History").arg(m_account.name()),
-      i18n("Generated Report")
-    );
-    reportCfg.setChartByDefault(true);
-    reportCfg.setChartGridLines(false);
-    reportCfg.setChartDataLabels(false);
-    reportCfg.setDetailLevel(MyMoneyReport::eDetailTotal);
-    reportCfg.setChartType(MyMoneyReport::eChartLine);
-    reportCfg.setIncludingSchedules( true );
-    if(m_account.accountType() == MyMoneyAccount::Investment) {
-      QCStringList::const_iterator it_a;
-      for(it_a = m_account.accountList().begin(); it_a != m_account.accountList().end(); ++it_a)
-        reportCfg.addAccount(*it_a);
-    } else
-      reportCfg.addAccount(m_account.id());
-    reportCfg.setColumnsAreDays( true );
-    reportCfg.setConvertCurrency( false );
-    reportCfg.setDateFilter(QDate::currentDate().addDays(-90),QDate::currentDate().addDays(+90));
-
-    reports::PivotTable table(reportCfg);
-
-    m_chartWidget = new reports::KReportChartView(m_balanceTab, 0);
-
-    QVBoxLayout* balanceTabLayout = new QVBoxLayout( m_balanceTab, 11, 6, "m_balanceTabLayout");
-    balanceTabLayout->addWidget(m_chartWidget);
-
-    table.drawChart(*m_chartWidget);
-
-    m_chartWidget->params().setLineMarker(false);
-    m_chartWidget->params().setLegendPosition(KDChartParams::NoLegend);
-    m_chartWidget->params().setLineWidth(2);
-    m_chartWidget->params().setDataColor(0, KGlobalSettings::textColor());
-
-    // draw future values in a different line style
-    KDChartPropertySet propSetFutureValue("future value", KMM_KDCHART_PROPSET_NORMAL_DATA);
-    propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
-    m_idPropFutureValue = m_chartWidget->params().registerProperties(propSetFutureValue);
-
-    KDChartPropertySet propSetLastValue("last value", m_idPropFutureValue);
-    propSetLastValue.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignBottom);
-    propSetLastValue.setExtraLinesWidth(KDChartPropertySet::OwnID, -4);
-    propSetLastValue.setExtraLinesColor(KDChartPropertySet::OwnID, KMyMoneyGlobalSettings::listGridColor());
-
-    m_idPropLastValue = m_chartWidget->params().registerProperties(propSetLastValue);
-
-    KDChartPropertySet propSetMinBalance("min balance", m_idPropFutureValue);
-    propSetMinBalance.setLineStyle(KDChartPropertySet::OwnID, Qt::NoPen);
-    propSetMinBalance.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignRight);
-    m_idPropMinBalance = m_chartWidget->params().registerProperties(propSetMinBalance);
-
-    KDChartPropertySet propSetMaxCredit("max credit", m_idPropMinBalance);
-    propSetMaxCredit.setExtraLinesColor(KDChartPropertySet::OwnID, KMyMoneyGlobalSettings::listNegativeValueColor());
-    propSetMaxCredit.setExtraLinesStyle(KDChartPropertySet::OwnID, Qt::DotLine);
-    m_idPropMaxCredit = m_chartWidget->params().registerProperties(propSetMaxCredit);
-
-    slotMarkersChanged();
-  }
-#endif
 
   kMandatoryFieldGroup* requiredFields = new kMandatoryFieldGroup (this);
   requiredFields->setOkButton(createButton); // button to be enabled when all fields present

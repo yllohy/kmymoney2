@@ -1,6 +1,7 @@
 2007-11-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added logic to the consistency check to remove invalid payee ids
     and replace them with correct ones
+  * Moved account balance graph into own dialog
 
 2007-11-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied patch provided by Alvaro Soliverez with a few modifications

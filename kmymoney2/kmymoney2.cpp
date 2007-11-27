@@ -112,6 +112,7 @@
 #include "dialogs/kcategoryreassigndlg.h"
 #include "dialogs/kmergetransactionsdlg.h"
 #include "dialogs/kendingbalancedlg.h"
+#include "dialogs/kbalancechartdlg.h"
 
 #include "dialogs/newuserwizard/knewuserwizard.h"
 #include "dialogs/newaccountwizard/knewaccountwizard.h"
@@ -342,6 +343,9 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("Close account"), "", 0, this, SLOT(slotAccountClose()), actionCollection(), "account_close");
   new KAction(i18n("Reopen account"), "", 0, this, SLOT(slotAccountReopen()), actionCollection(), "account_reopen");
   new KAction(i18n("Transaction report"), "view_info", 0, this, SLOT(slotAccountTransactionReport()), actionCollection(), "account_transaction_report");
+#ifdef HAVE_KDCHART
+  new KAction(i18n("Show balance chart..."), "kchart_chrt", 0, this, SLOT(slotAccountChart()), actionCollection(), "account_chart");
+#endif
 
   // *******************
   // The categories menu
@@ -1630,6 +1634,14 @@ void KMyMoney2App::slotPluginImport(const QString& format)
   {
     KMessageBox::error( this, i18n("Unable to import <b>%1</b> file.  There is no such plugin loaded.").arg(format), i18n("Function not available"));
   }
+}
+
+void KMyMoney2App::slotAccountChart(void)
+{
+#ifdef HAVE_KDCHART
+  KBalanceChartDlg dlg(m_selectedAccount, this);
+  dlg.exec();
+#endif
 }
 
 void KMyMoney2App::slotAccountUpdateOFX(void)
@@ -4811,6 +4823,9 @@ void KMyMoney2App::slotUpdateActions(void)
   action("account_close")->setEnabled(false);
   action("account_reopen")->setEnabled(false);
   action("account_transaction_report")->setEnabled(false);
+#ifdef HAVE_KDCHART
+  action("account_chart")->setEnabled(false);
+#endif
 
   action("category_new")->setEnabled(fileOpen);
   action("category_edit")->setEnabled(false);
@@ -4893,9 +4908,20 @@ void KMyMoney2App::slotUpdateActions(void)
     if(!m_transactionEditor) {
       if(myMoneyView->canEditTransactions(m_selectedTransactions, tooltip)) {
         action("transaction_edit")->setEnabled(true);
+        action("transaction_duplicate")->setEnabled(true);
+        action("transaction_mark_cleared")->setEnabled(true);
+        action("transaction_mark_reconciled")->setEnabled(true);
+        action("transaction_mark_notreconciled")->setEnabled(true);
+        action("transaction_mark_toggle")->setEnabled(true);
         // editing splits is allowed only if we have one transaction selected
         if(m_selectedTransactions.count() == 1) {
           action("transaction_editsplits")->setEnabled(true);
+        }
+        if(m_selectedAccount.isAssetLiability()) {
+          w = factory()->container("transaction_move_menu", this);
+          if(w)
+            w->setEnabled(true);
+          action("transaction_create_schedule")->setEnabled(m_selectedTransactions.count() == 1);
         }
       }
       action("transaction_edit")->setToolTip(tooltip);
@@ -4915,17 +4941,6 @@ void KMyMoney2App::slotUpdateActions(void)
         }
       }
       action("transaction_accept")->setEnabled(haveImportedTransactionSelected());
-      action("transaction_duplicate")->setEnabled(true);
-      action("transaction_mark_cleared")->setEnabled(true);
-      action("transaction_mark_reconciled")->setEnabled(true);
-      action("transaction_mark_notreconciled")->setEnabled(true);
-      action("transaction_mark_toggle")->setEnabled(true);
-      if(m_selectedAccount.isAssetLiability()) {
-        w = factory()->container("transaction_move_menu", this);
-        if(w)
-          w->setEnabled(true);
-        action("transaction_create_schedule")->setEnabled(m_selectedTransactions.count() == 1);
-      }
       if(m_selectedTransactions.count() > 1) {
         action("transaction_combine")->setEnabled(true);
       }
@@ -4968,6 +4983,9 @@ void KMyMoney2App::slotUpdateActions(void)
           else if(canCloseAccount(m_selectedAccount))
             action("account_close")->setEnabled(true);
 
+#ifdef HAVE_KDCHART
+          action("account_chart")->setEnabled(true);
+#endif
 #ifdef USE_OFX_DIRECTCONNECT
           if ( !m_selectedAccount.onlineBankingSettings().value("protocol").isEmpty() )
             action("account_update_ofx")->setEnabled(true);

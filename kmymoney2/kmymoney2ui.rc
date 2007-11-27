@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="23" name="kmymoney2" >
+<kpartgui version="24" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
@@ -242,6 +242,7 @@
   <Action name="account_open" />
   <Action name="account_edit" />
   <Action name="account_reconcile" />
+  <Action name="account_chart" />
   <Separator lineSeparator="true"/>
   <Action name="edit_find_transaction" />
   <Separator />
