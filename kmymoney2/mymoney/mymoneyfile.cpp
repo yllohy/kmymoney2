@@ -1309,6 +1309,9 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   QValueList<MyMoneyAccount> list;
   QValueList<MyMoneyAccount>::Iterator it_a;
   QValueList<MyMoneySchedule>::Iterator it_sch;
+  QValueList<MyMoneyPayee>::Iterator it_p;
+  QValueList<MyMoneyTransaction>::Iterator it_t;
+  QValueList<MyMoneyReport>::Iterator it_r;
   QCStringList accountRebuild;
   QCStringList::ConstIterator it_c;
 
@@ -1481,6 +1484,48 @@ const QStringList MyMoneyFile::consistencyCheck(void)
     }
   }
 
+  // For some reason, files exist with invalid ids. This has been found in the payee id
+  // so we fix them here
+  QValueList<MyMoneyPayee> pList = payeeList();
+  QMap<QCString, QCString>payeeConversionMap;
+
+  for(it_p = pList.begin(); it_p != pList.end(); ++it_p) {
+    if((*it_p).id().length() > 7) {
+      // found one of those with an invalid ids
+      // create a new one and store it in the map.
+      MyMoneyPayee payee = (*it_p);
+      payee.clearId();
+      m_storage->addPayee(payee);
+      payeeConversionMap[(*it_p).id()] = payee.id();
+      rc << QString("  * Payee %1 recreated with fixed id").arg(payee.name());
+      ++problemCount;
+    }
+  }
+
+  // Fix the transactions
+  QValueList<MyMoneyTransaction> tList;
+  MyMoneyTransactionFilter filter;
+  m_storage->transactionList(tList, filter);
+  for(it_t = tList.begin(); it_t != tList.end(); ++it_t) {
+    MyMoneyTransaction t = (*it_t);
+    QValueList<MyMoneySplit>::const_iterator it_s;
+    bool tChanged = false;
+    for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+      if(payeeConversionMap.find((*it_s).payeeId()) != payeeConversionMap.end()) {
+        MyMoneySplit s = (*it_s);
+        s.setPayeeId(payeeConversionMap[s.payeeId()]);
+        t.modifySplit(s);
+        tChanged = true;
+        rc << QString("  * Payee id updated in split of transaction '%1'.").arg(t.id());
+        ++problemCount;
+      }
+    }
+    if(tChanged) {
+      m_storage->modifyTransaction(t);
+    }
+  }
+
+  // Fix the schedules
   QValueList<MyMoneySchedule> schList = scheduleList();
   for(it_sch = schList.begin(); it_sch != schList.end(); ++it_sch) {
     MyMoneySchedule sch = (*it_sch);
@@ -1488,20 +1533,61 @@ const QStringList MyMoneyFile::consistencyCheck(void)
     bool tChanged = false;
     QValueList<MyMoneySplit>::const_iterator it_s;
     for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+      MyMoneySplit s = (*it_s);
+      bool sChanged = false;
+      if(payeeConversionMap.find((*it_s).payeeId()) != payeeConversionMap.end()) {
+        s.setPayeeId(payeeConversionMap[s.payeeId()]);
+        sChanged = true;
+        rc << QString("  * Payee id updated in split of schedule '%1'.").arg((*it_sch).name());
+        ++problemCount;
+      }
       if(!(*it_s).value().isZero() && (*it_s).shares().isZero()) {
-        MyMoneySplit s = (*it_s);
         s.setShares(s.value());
-        t.modifySplit(s);
-        tChanged = true;
+        sChanged = true;
         rc << QString("  * Split in scheduled transaction '%1' contained value != 0 and shares == 0.").arg((*it_sch).name());
         rc << "    Shares set to value.";
         ++problemCount;
+      }
+      if(sChanged) {
+        t.modifySplit(s);
+        tChanged = true;
       }
     }
     if(tChanged) {
       sch.setTransaction(t);
       m_storage->modifySchedule(sch);
     }
+  }
+
+  // Fix the reports
+  QValueList<MyMoneyReport> rList = reportList();
+  for(it_r = rList.begin(); it_r != rList.end(); ++it_r) {
+    MyMoneyReport r = *it_r;
+    QCStringList pList;
+    QCStringList::Iterator it_p;
+    (*it_r).payees(pList);
+    bool rChanged = false;
+    for(it_p = pList.begin(); it_p != pList.end(); ++it_p) {
+      if(payeeConversionMap.find(*it_p) != payeeConversionMap.end()) {
+        rc << QString("  * Payee id updated in report '%1'.").arg((*it_r).name());
+        ++problemCount;
+        r.removeReference(*it_p);
+        r.addPayee(payeeConversionMap[*it_p]);
+        rChanged = true;
+      }
+    }
+    if(rChanged) {
+      m_storage->modifyReport(r);
+    }
+  }
+
+  // erase old payee ids
+  QMap<QCString, QCString>::Iterator it_m;
+  for(it_m = payeeConversionMap.begin(); it_m != payeeConversionMap.end(); ++it_m) {
+    MyMoneyPayee payee = this->payee(it_m.key());
+    removePayee(payee);
+    rc << QString("  * Payee '%1' removed.").arg(payee.id());
+    ++problemCount;
   }
 
   // add more checks here

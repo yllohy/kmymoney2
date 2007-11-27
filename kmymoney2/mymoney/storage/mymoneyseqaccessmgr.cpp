@@ -1165,8 +1165,11 @@ void MyMoneySeqAccessMgr::loadPayees(const QMap<QCString, MyMoneyPayee>& map)
   QMap<QCString, MyMoneyPayee>::const_iterator it_p;
   QCString lastId;
   for(it_p = map.begin(); it_p != map.end(); ++it_p) {
-    if((*it_p).id() > lastId)
-      lastId = (*it_p).id();
+    if((*it_p).id().length() <= PAYEE_ID_SIZE+1) {
+      if((*it_p).id() > lastId)
+        lastId = (*it_p).id();
+    } else {
+    }
   }
 
   int pos = lastId.find(QRegExp("\\d+"), 0);
