@@ -439,6 +439,7 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("New budget"), "filenew", 0, this, SLOT(slotBudgetNew()), actionCollection(), "budget_new");
   new KAction(i18n("Rename budget"), "edit", 0, this, SIGNAL(budgetRename()), actionCollection(), "budget_rename");
   new KAction(i18n("Delete budget"), "delete", 0, this, SLOT(slotBudgetDelete()), actionCollection(), "budget_delete");
+  new KAction(i18n("Change budget year"), "", 0, this, SLOT(slotBudgetChangeYear()), actionCollection(), "budget_change_year");
 
   // ************************
   // Currency actions
@@ -4014,27 +4015,15 @@ void KMyMoney2App::slotBudgetNew(void)
 
 void KMyMoney2App::slotBudgetDelete(void)
 {
-  if(m_selectedBudget.isEmpty())
+  if(m_selectedBudgets.isEmpty())
     return; // shouldn't happen
 
   MyMoneyFile * file = MyMoneyFile::instance();
 
-  // FIXME: adjust the following comment
-  // first create list with all non-selected payees
-  QValueList<MyMoneyBudget> remainingBudgets = file->budgetList();
-  QValueList<MyMoneyBudget>::iterator it_p;
-  for(it_p = remainingBudgets.begin(); it_p != remainingBudgets.end(); ) {
-    if(m_selectedBudget.find(*it_p) != m_selectedBudget.end()) {
-      it_p = remainingBudgets.erase(it_p);
-    } else {
-      ++it_p;
-    }
-  }
-
   // get confirmation from user
   QString prompt;
-  if (m_selectedBudget.size() == 1)
-    prompt = QString("<p>")+i18n("Do you really want to remove the budget <b>%1</b>").arg(m_selectedBudget.front().name());
+  if (m_selectedBudgets.size() == 1)
+    prompt = QString("<p>")+i18n("Do you really want to remove the budget <b>%1</b>").arg(m_selectedBudgets.front().name());
   else
     prompt = i18n("Do you really want to remove all selected budgets?");
 
@@ -4044,8 +4033,8 @@ void KMyMoney2App::slotBudgetDelete(void)
   MyMoneyFileTransaction ft;
   try {
     // now loop over all selected budgets and remove them
-    for (QValueList<MyMoneyBudget>::iterator it = m_selectedBudget.begin();
-      it != m_selectedBudget.end(); ++it) {
+    for (QValueList<MyMoneyBudget>::iterator it = m_selectedBudgets.begin();
+      it != m_selectedBudgets.end(); ++it) {
       file->removeBudget(*it);
     }
     ft.commit();
@@ -4055,6 +4044,46 @@ void KMyMoney2App::slotBudgetDelete(void)
     delete e;
   }
 }
+
+void KMyMoney2App::slotBudgetChangeYear(void)
+{
+  if(m_selectedBudgets.size() == 1) {
+    QStringList years;
+    int current = 0;
+    bool haveCurrent = false;
+    MyMoneyBudget budget = *(m_selectedBudgets.begin());
+    for(int i = (QDate::currentDate().year()-3); i < (QDate::currentDate().year()+5); ++i) {
+      years << QString("%1").arg(i);
+      if(i == budget.budgetStart().year()) {
+        haveCurrent = true;
+      }
+      if(!haveCurrent)
+        ++current;
+    }
+    if(!haveCurrent)
+      current = 0;
+    bool ok = false;
+
+    QString yearString = KInputDialog::getItem(i18n("Select year"), i18n("Budget year"), years, current, false, &ok, this);
+
+    if(ok) {
+      int year = yearString.toInt(0, 0);
+      QDate newYear = QDate(year, 1, 1);
+      if(newYear != budget.budgetStart()) {
+        MyMoneyFileTransaction ft;
+        try {
+          budget.setBudgetStart(newYear);
+          MyMoneyFile::instance()->modifyBudget(budget);
+          ft.commit();
+        } catch(MyMoneyException *e) {
+          KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to modify budget: %1, thrown in %2:%3").      arg(e->what()).arg(e->file()).arg(e->line()));
+          delete e;
+        }
+      }
+    }
+  }
+}
+
 
 void KMyMoney2App::slotNewFeature(void)
 {
@@ -4854,6 +4883,7 @@ void KMyMoney2App::slotUpdateActions(void)
 
   action("budget_delete")->setEnabled(false);
   action("budget_rename")->setEnabled(false);
+  action("budget_change_year")->setEnabled(false);
   action("budget_new")->setEnabled(true);
 
   QString tooltip = i18n("Create a new transaction");
@@ -5054,9 +5084,10 @@ void KMyMoney2App::slotUpdateActions(void)
     action("payee_delete")->setEnabled(true);
   }
 
-  if(m_selectedBudget.count() >= 1) {
+  if(m_selectedBudgets.count() >= 1) {
     action("budget_rename")->setEnabled(true);
     action("budget_delete")->setEnabled(true);
+    action("budget_change_year")->setEnabled(true);
   }
 
   if(!m_selectedCurrency.id().isEmpty()) {
@@ -5102,9 +5133,9 @@ void KMyMoney2App::slotSelectCurrency(const MyMoneySecurity& currency)
 
 void KMyMoney2App::slotSelectBudget(const QValueList<MyMoneyBudget>& list)
 {
-  m_selectedBudget = list;
+  m_selectedBudgets = list;
   slotUpdateActions();
-  emit budgetSelected(m_selectedBudget);
+  emit budgetSelected(m_selectedBudgets);
 }
 
 void KMyMoney2App::slotSelectPayees(const QValueList<MyMoneyPayee>& list)

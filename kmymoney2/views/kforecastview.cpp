@@ -98,7 +98,8 @@ void KForecastView::show(void)
   // don't forget base class implementation
   KForecastViewDecl::show();
   slotTabChanged(m_tab->currentPage());
-  m_forecastList->setResizeMode(QListView::LastColumn);
+  m_summaryList->setResizeMode(QListView::AllColumns);
+  
 }
 
 void KForecastView::slotLoadForecast(void)
@@ -182,8 +183,6 @@ void KForecastView::loadListView(void)
     m_forecastList->setColumnAlignment(col, Qt::AlignRight);
     m_forecastList->adjustColumn(col);
   }
-
-  m_forecastList->triggerUpdate();
   m_forecastList->show();
 }
 
@@ -317,9 +316,6 @@ void KForecastView::loadSummaryView(void)
   totalVarAmount = totalVarAmountMM.formatMoney(file->baseCurrency().tradingSymbol());
   summaryItem->setText((i+1), totalVarAmount);
 
-
-  m_summaryList->triggerUpdate();
-
     //Add comments to the advice list
   for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
 
@@ -412,12 +408,6 @@ void KForecastView::loadSummaryView(void)
       adviceItem->setText(0, msg);
     }
   }
-
-  //adjust width of all columns
-  for(int col=0; col < m_summaryList->columns(); ++col) {
-    m_summaryList->adjustColumn(col);
-  }
-
   m_forecastList->show();
 }
 

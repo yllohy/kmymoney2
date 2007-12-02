@@ -110,23 +110,8 @@ public:
     */
   void updateAccount(const MyMoneyAccount& account, bool forceTotalUpdate = false);
 
-  MyMoneyMoney balance(void);
-  QString tradingSymbol();
-
 private:
   MyMoneyBudget m_budget;
-
-  MyMoneyMoney                      m_balance;
-  MyMoneyMoney                      m_value;
-  QValueList<MyMoneyPrice>          m_price;
-  MyMoneySecurity                   m_security;
-  MyMoneyMoney                      m_totalValue;
-  MyMoneyMoney                      m_displayFactor;
-
-  MyMoneyAccount                    m_account;
-  MyMoneyInstitution                m_institution;
-
-  KMyMoneyAccountTreeItemType       m_type;
 };
 
 #endif

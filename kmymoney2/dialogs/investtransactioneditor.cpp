@@ -564,7 +564,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
     // price
     value = dynamic_cast<kMyMoneyEdit*>(haveWidget("price"));
     if(!m_split.shares().isZero()) {
-      value->setValue(m_split.value() / m_split.shares());
+      value->setValue(m_split.price());
     }
 
     // fee amount

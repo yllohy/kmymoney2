@@ -2007,12 +2007,20 @@ void MyMoneySeqAccessMgr::rollbackTransaction(void)
 void MyMoneySeqAccessMgr::removeReferences(const QCString& id)
 {
   QMap<QCString, MyMoneyReport>::const_iterator it_r;
+  QMap<QCString, MyMoneyBudget>::const_iterator it_b;
 
   // remove from reports
   for(it_r = m_reportList.begin(); it_r != m_reportList.end(); ++it_r) {
     MyMoneyReport r = *it_r;
     r.removeReference(id);
     m_reportList.modify(r.id(), r);
+  }
+
+  // remove from budgets
+  for(it_b = m_budgetList.begin(); it_b != m_budgetList.end(); ++it_b) {
+    MyMoneyBudget b = *it_b;
+    b.removeReference(id);
+    m_budgetList.modify(b.id(), b);
   }
 }
 

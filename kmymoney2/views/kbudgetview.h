@@ -33,18 +33,15 @@
 // Project Includes
 
 #include "kbudgetviewdecl.h"
-// #include "kledgerview.h"
-#include "../mymoney/mymoneyobserver.h"
 #include "../mymoney/mymoneybudget.h"
 #include "../mymoney/mymoneysecurity.h"
-#include "../widgets/kmymoneyaccounttreebudget.h"
-#include "../widgets/kmymoneycategory.h"
+class KMyMoneyAccountTreeBudgetItem;
 
 /**
   * @author Darren Gould
-  */
-
-/**
+  * @author Thomas Baumgart
+  *
+  *
   * This class represents an item in the budgets list view.
   */
 class KBudgetListItem : public KListViewItem
@@ -68,7 +65,8 @@ public:
     */
   void paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align);
 
-  MyMoneyBudget& budget(void) { return m_budget; };
+  const MyMoneyBudget& budget(void) { return m_budget; };
+  void setBudget(const MyMoneyBudget& budget) { m_budget = budget; }
 
 private:
   MyMoneyBudget  m_budget;
@@ -76,67 +74,8 @@ private:
 
 /**
   * @author Darren Gould
+  * @author Thomas Baumgart
   */
-
-/**
-  * This class represents an item in the BudgetAmount list view.
-  */
-class KBudgetAmountListItem : public KListViewItem
-{
-public:
-  /**
-    * Constructor to be used to construct a BudgetAmount entry object.
-    *
-    * @param parent pointer to the KListView object this entry should be
-    *               added to.
-    * @param account pointer to KMyMoneyAccountTreeBudgetItem that represents
-    *               the account
-    * @param amount const reference to MyMoneyMoney for which
-    *               the KListView entry is constructed
-    * @param date   const reference to QDate for the budgeted item
-    */
-  KBudgetAmountListItem(KListView *parent, KMyMoneyAccountTreeBudgetItem *account, const MyMoneyMoney& amount, const QDate &date);
-
-  /**
-    * Constructor to be used to construct a BudgetAmount entry object.
-    *
-    * @param parent pointer to the KListView object this entry should be
-    *               added to.
-    * @param account pointer to KMyMoneyAccountTreeBudgetItem that represents
-    *               the account
-    * @param amount const reference to MyMoneyMoney for which
-    *               the KListView entry is constructed
-    * @param date   const reference to QDate for the budgeted item
-    * @param label  const reference to QString for a label for the item
-    */
-  KBudgetAmountListItem(KListView *parent, KMyMoneyAccountTreeBudgetItem *account, const MyMoneyMoney& amount, const QDate &date, const QString &label);
-
-  ~KBudgetAmountListItem();
-
-  /**
-    * This method is re-implemented from QListViewItem::paintCell().
-    * Besides the standard implementation, the QPainter is set
-    * according to the applications settings.
-    */
-  void paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align);
-  void setAmount( const MyMoneyMoney &amount );
-
-  MyMoneyMoney& amount(void) { return m_amount; };
-  QDate&        date(void)   { return m_date; };
-  KMyMoneyAccountTreeBudgetItem* account(void) { return m_account; };
-
-private:
-  KMyMoneyAccountTreeBudgetItem *m_account;
-  MyMoneyMoney  m_amount;
-  QDate         m_date;
-  QString       m_label;
-};
-
-
-/**
-  *@author Darren Gould
-  */
-
 class KBudgetView : public KBudgetViewDecl
 {
    Q_OBJECT
@@ -168,13 +107,6 @@ public slots:
   void slotStartRename(void);
 
   /**
-    * These slots are for the implementing the functionality of buttons in the visual design of the view
-    */
-  void bNewBudget_clicked();
-  void bEditBudget_clicked();
-  void bDeleteBudget_clicked();
-
-  /**
     *This is to update the information about the checkbox "budget amount integrates subaccounts" into the file, when the user clicks the check box
    */
   void cb_includesSubaccounts_clicked();
@@ -183,7 +115,7 @@ public slots:
 protected:
   void resizeEvent(QResizeEvent*);
   void loadAccounts(void);
-  bool loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, const QCStringList& accountList, const MyMoneyBudget& budget);
+  bool loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QCStringList& accountList, const MyMoneyBudget& budget);
   void loadBudget(void);
   void ensureBudgetVisible(const QCString& id);
   bool selectedBudget(MyMoneyBudget& budget) const;
@@ -203,31 +135,16 @@ protected slots:
   void slotRenameBudget(QListViewItem *p, int col, const QString& txt);
 
   /**
-    * This slot is called when the name of a budget is changed inside
-    * the budget list view and only a single budget is selected.
+    * This slot is called when the amount of a budget is changed. It
+    * updates the budget and stores it in the engine
     */
-  void slotBudgetedAmount(QListViewItem *p, int col, const QString& newamount);
-
-  /**
-    * This slot is called when the year of a budget is changed inside
-    * the budget list view and only a single budget is selected.
-    */
-  void slotSelectYear(int iYear);
-
-  /**
-    * This slot is called when the time span of a budget is changed
-    */
-  void slotSelectTimeSpan(int iTimeSpan);
-
+  void slotBudgetedAmountChanged(void);
 
   /**
     */
-  void slotSelectObject();
+  void slotSelectAccount(QListViewItem*);
 
   void AccountEnter();
-
-  void slotBudgetAmountClicked(QListViewItem *item);
-
 
 private slots:
   void slotRearrange(void);

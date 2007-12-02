@@ -931,14 +931,14 @@ void PivotTable::calculateBudgetMapping( void )
       QString outergroup = accountTypeToString(type);
 
       // reverse sign to match common notation for cash flow direction, only for expense/income splits
-      MyMoneyMoney reverse(splitAccount.isIncomeExpense() ? -1 : 1, 1);
+      MyMoneyMoney reverse((splitAccount.accountType() == MyMoneyAccount::Expense) ? -1 : 1, 1);
 
       const QMap<QDate, MyMoneyBudget::PeriodGroup>& periods = (*it_bacc).getPeriods();
       MyMoneyMoney value = (*periods.begin()).amount() * reverse;
       unsigned column = 1;
 
       // based on the kind of budget it is, deal accordingly
-      switch ( (*it_bacc).budgetlevel() )
+      switch ( (*it_bacc).budgetLevel() )
       {
       case MyMoneyBudget::AccountGroup::eYearly:
         // divide the single yearly value by 12 and place it in each column
@@ -962,8 +962,10 @@ void PivotTable::calculateBudgetMapping( void )
         while ( it_period != periods.end() )
         {
           value = (*it_period).amount() * reverse;
-          column = columnValue((*it_period).start());
-          assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+          column = (*it_period).startDate().month();
+          if(column < m_numColumns) {
+            assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+          }
 
           ++it_period;
         }
@@ -1101,7 +1103,7 @@ void PivotTable::calculateTotals( void )
 
           MyMoneyMoney budget = it_row.data().m_budget[column];
           (*it_innergroup).m_total.m_budget[column] += budget;
-          (*it_row).m_budget.m_total += value;
+          (*it_row).m_budget.m_total += budget;
 
 
           ++column;

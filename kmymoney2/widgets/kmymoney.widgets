@@ -41,6 +41,9 @@ IncludeFile=kmymoney/kmymoneycombo.h
 [KMyMoneyGeneralCombo]
 IncludeFile=kmymoney/kmymoneycombo.h
 
+[KBudgetValues]
+
 # deprecated will be removed at some point in time
 
 [KMyMoneyAccountCombo]
+

@@ -1677,7 +1677,7 @@ void MyMoneyStorageSql::writeBudget (const MyMoneyBudget& bud, MyMoneySqlQuery& 
   bud.writeXML(d, e); // write the XML to document
   q.bindValue(":id", bud.id());
   q.bindValue(":name", bud.name());
-  q.bindValue(":start", bud.budgetstart());
+  q.bindValue(":start", bud.budgetStart());
   q.bindValue(":XML", d.toString());
   if (!q.exec()) throw buildError (q, __func__, QString("writing Budgets"));
 }

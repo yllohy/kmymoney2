@@ -24,6 +24,7 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qmap.h>
 #include <qvaluelist.h>
 #include <qstring.h>
@@ -32,10 +33,10 @@ class QDomDocument;
 
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include <kmymoney/mymoneyobject.h>
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/mymoneymoney.h>
-#include <kmymoney/mymoneytransactionfilter.h>
 #include <kmymoney/export.h>
 
 /**
@@ -43,21 +44,13 @@ class QDomDocument;
   * contains all the configuration parameters needed to run a Budget, plus
   * XML serialization.
   *
-  * A Budget is a transactionfilter, so any Budget can specify which
-  * transactions it's interested down to the most minute level of detail.
-  * It extends the transactionfilter by providing identification (name,
-  * comments, group type, etc) as well as layout information (what kind
-  * of layout should be used, how the rows & columns should be presented,
-  * currency converted, etc.)
-  *
   * As noted above, this class only provides a Budget DEFINITION.  The
   * generation and presentation of the Budget itself are left to higher
   * level classes.
   *
   * @author Darren Gould <darren_gould@gmx.de>
   */
-
-class KMYMONEY_EXPORT MyMoneyBudget: public MyMoneyObject, public MyMoneyTransactionFilter
+class KMYMONEY_EXPORT MyMoneyBudget: public MyMoneyObject
 {
 public:
   MyMoneyBudget(void);
@@ -85,20 +78,18 @@ public:
     */
   class PeriodGroup
   {
-  private:
-    QDate         m_start;
-    MyMoneyMoney  m_amount;
-
   public:
-    PeriodGroup( void ) {}
-
     // get functions
-    const QDate&        start ( void ) const { return m_start; }
+    const QDate&    startDate ( void ) const { return m_start; }
     const MyMoneyMoney& amount( void ) const { return m_amount; }
 
     // set functions
-    void setDate  ( const QDate& _start )         {m_start  = _start; }
-    void setAmount( const MyMoneyMoney& _amount ) {m_amount = _amount;}
+    void setStartDate  ( const QDate& _start )    { m_start  = _start; }
+    void setAmount( const MyMoneyMoney& _amount ) { m_amount = _amount;}
+
+ private:
+    QDate         m_start;
+    MyMoneyMoney  m_amount;
   };
 
   /**
@@ -121,26 +112,19 @@ public:
     } eBudgetLevel;
 
     static const QStringList kBudgetLevelText;
-  private:
-    QCString m_id;
-    QCString m_parentId;
-
-    eBudgetLevel             m_budgetlevel;
-    bool                     m_budgetsubaccounts;
-    bool                     m_default;
-    QMap<QDate, PeriodGroup> m_periods;
 
   public:
-    AccountGroup( void ): m_budgetlevel(eNone), m_budgetsubaccounts(false), m_default(false) {}
+    AccountGroup() : m_budgetlevel(eNone), m_budgetsubaccounts(false), m_default(false) {}
 
     // get functions
     const QCString& id( void ) const { return m_id; }
     const QCString& parentid( void ) const { return m_parentId; }
     bool budgetsubaccounts( void ) const { return m_budgetsubaccounts; }
-    const eBudgetLevel& budgetlevel( void ) const { return m_budgetlevel; }
+    const eBudgetLevel& budgetLevel( void ) const { return m_budgetlevel; }
     bool getDefault( void ) const {return m_default;}
-    const PeriodGroup& getPeriod( const QDate &_date ) const {return m_periods[_date];}
+    const PeriodGroup& period( const QDate &_date ) const {return m_periods[_date];}
     const QMap<QDate, PeriodGroup>& getPeriods( void ) const {return m_periods;}
+    void clearPeriods(void) { m_periods.clear(); }
     const MyMoneyMoney balance( void ) const
     {
       MyMoneyMoney balance;
@@ -160,11 +144,20 @@ public:
     void setDefault( bool _default ) {m_default = _default;}
     void setBudgetSubaccounts( bool _b ) {m_budgetsubaccounts = _b;}
     void addPeriod( const QDate& _date, PeriodGroup &period ) {m_periods[_date] = period;}
+
+  private:
+    QCString m_id;
+    QCString m_parentId;
+
+    eBudgetLevel             m_budgetlevel;
+    bool                     m_budgetsubaccounts;
+    bool                     m_default;
+    QMap<QDate, PeriodGroup> m_periods;
   };
 
   // Simple get operations
   const QString& name(void) const { return m_name; }
-  const QDate& budgetstart(void) const { return m_start; }
+  const QDate& budgetStart(void) const { return m_start; }
   QCString id(void) const { return m_id; }
   const AccountGroup & account(const QCString _id) const;
   bool contains(const QCString _id) const { return m_accounts.contains(_id); }
@@ -172,7 +165,7 @@ public:
 
   // Simple set operations
   void setName(const QString& _name) { m_name = _name; }
-  void setBudgetStart(const QDate& _start) { m_start = _start; }
+  void setBudgetStart(const QDate& _start);
   void setAccount(const AccountGroup &_account, const QCString _id) {m_accounts[_id] = _account;}
 
   /**
@@ -210,13 +203,20 @@ public:
   /**
     * This method checks if a reference to the given object exists. It returns,
     * a @p true if the object is referencing the one requested by the
-    * parameter @p id. If it does not, this method returns @p false.
+    * parameter @p id and the balance() returned is zero.
+    * If it does not, this method returns @p false.
     *
     * @param id id of the object to be checked for references
     * @retval true This object references object with id @p id.
     * @retval false This object does not reference the object with id @p id.
     */
   virtual bool hasReferenceTo(const QCString& id) const;
+
+  /**
+    * This member removes all references to object identified by @p id. Used
+    * to remove objects which are about to be removed from the engine.
+    */
+  void removeReference(const QCString& id);
 
 private:
   /**
@@ -233,7 +233,6 @@ private:
     * Map the budgeted accounts
     *
     * Each account Id is stored against the AccountGroup information
-    *
     */
   QMap<QCString, AccountGroup> m_accounts;
 };

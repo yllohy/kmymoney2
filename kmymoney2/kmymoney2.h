@@ -310,6 +310,10 @@ protected slots:
 
   /**
     */
+  void slotBudgetChangeYear(void);
+
+  /**
+    */
   void slotCurrencyNew(void);
 
   /**
@@ -1222,7 +1226,7 @@ private:
   MyMoneySchedule       m_selectedSchedule;
   MyMoneySecurity       m_selectedCurrency;
   QValueList<MyMoneyPayee>  m_selectedPayees;
-  QValueList<MyMoneyBudget> m_selectedBudget;
+  QValueList<MyMoneyBudget> m_selectedBudgets;
   QValueList<KMyMoneyRegister::SelectedTransaction> m_selectedTransactions;
 
   QValueList<KMyMoneyRegister::SelectedTransaction> m_editTransactions;

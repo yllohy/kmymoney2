@@ -111,6 +111,15 @@ public:
 
   const MyMoneyMoney& shares(void) const { return m_shares; }
   const MyMoneyMoney& value(void) const { return m_value; }
+
+  /**
+   * This method returns the price. If the member m_price is not zero
+   * its value is returned. Otherwise, if m_shares is not zero the quotient
+   * of m_value / m_shares is returned. If m_values equals ot zero, 1
+   * will be returned.
+   */
+  MyMoneyMoney price(void) const;
+
   MyMoneyMoney value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const;
   const QCString& accountId(void) const { return m_account; }
   const QString& memo(void) const { return m_memo; }
@@ -126,6 +135,7 @@ public:
 
   void setShares(const MyMoneyMoney& shares);
   void setValue(const MyMoneyMoney& value);
+  void setPrice(const MyMoneyMoney& price);
 
   /**
     * This method is used to set either the shares or the value depending on
@@ -192,6 +202,14 @@ private:
   /**
     */
   MyMoneyMoney  m_value;
+
+
+  /**
+    * If the quotient of m_shares divided by m_values is not the correct price
+    * because of truncation, the price can be stored in this member. For display
+    * purpose and transaction edit this value can be used by the application.
+    */
+  MyMoneyMoney  m_price;
 
   QString       m_memo;
 

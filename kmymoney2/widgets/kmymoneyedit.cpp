@@ -270,7 +270,7 @@ MyMoneyMoney kMyMoneyEdit::value(void) const
   QString txt = m_edit->text();
   ensureFractionalPart(txt);
   MyMoneyMoney money(txt);
-  return money;
+  return money.convert(MyMoneyMoney::precToDenom(m_prec));
 }
 
 void kMyMoneyEdit::setValue(const MyMoneyMoney& value)

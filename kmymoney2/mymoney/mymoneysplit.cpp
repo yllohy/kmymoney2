@@ -61,6 +61,7 @@ MyMoneySplit::MyMoneySplit(const QDomElement& node) :
   m_reconcileFlag = static_cast<MyMoneySplit::reconcileFlagE>(node.attribute("reconcileflag").toInt());
   m_memo = QStringEmpty(node.attribute("memo"));
   m_value = MyMoneyMoney(QStringEmpty(node.attribute("value")));
+  m_price = MyMoneyMoney(QStringEmpty(node.attribute("price")));
   m_shares = MyMoneyMoney(QStringEmpty(node.attribute("shares")));
   m_account = QCStringEmpty(node.attribute("account"));
   m_number = QStringEmpty(node.attribute("number"));
@@ -90,6 +91,7 @@ bool MyMoneySplit::operator == (const MyMoneySplit& right) const
     ((m_number.length() == 0 && right.m_number.length() == 0) || m_number == right.m_number) &&
     m_shares == right.m_shares &&
     m_value == right.m_value &&
+    m_price == right.m_price &&
     m_transactionId == right.m_transactionId;
 }
 
@@ -177,6 +179,20 @@ MyMoneyMoney MyMoneySplit::value(const QCString& transactionCurrencyId, const QC
   return (transactionCurrencyId == splitCurrencyId) ? m_value : m_shares;
 }
 
+void MyMoneySplit::setPrice(const MyMoneyMoney& price)
+{
+  m_price = price;
+}
+
+MyMoneyMoney MyMoneySplit::price(void) const
+{
+  if(!m_price.isZero())
+    return m_price;
+  if(!m_value.isZero())
+    return m_value / m_shares;
+  return MyMoneyMoney(1,1);
+}
+
 void MyMoneySplit::writeXML(QDomDocument& document, QDomElement& parent) const
 {
   QDomElement el = document.createElement("SPLIT");
@@ -187,6 +203,8 @@ void MyMoneySplit::writeXML(QDomDocument& document, QDomElement& parent) const
   el.setAttribute("reconcileflag", m_reconcileFlag);
   el.setAttribute("value", m_value.toString());
   el.setAttribute("shares", m_shares.toString());
+  if(!m_price.isZero())
+    el.setAttribute("price", m_price.toString());
   el.setAttribute("memo", m_memo);
   // No need to write the split id as it will be re-assigned when the file is read
   // el.setAttribute("id", split.id());

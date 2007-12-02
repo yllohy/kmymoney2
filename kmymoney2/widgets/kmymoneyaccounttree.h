@@ -331,7 +331,7 @@ public:
     * @note if account.id() is not equal to the current account id
     *       then this method returns immediately
     */
-  void updateAccount(const MyMoneyAccount& account, bool forceTotalUpdate = false);
+  virtual void updateAccount(const MyMoneyAccount& account, bool forceTotalUpdate = false);
 
   /**
     * This method is loads new information into the item and updates the fields
@@ -450,19 +450,20 @@ protected:
     */
   virtual MyMoneyMoney balance( const MyMoneyAccount& account ) const;
 
-private:
+protected:
   MyMoneyMoney                      m_balance;
   MyMoneyMoney                      m_value;
   QValueList<MyMoneyPrice>          m_price;
   MyMoneySecurity                   m_security;
   MyMoneyMoney                      m_totalValue;
   MyMoneyMoney                      m_displayFactor;
-
   MyMoneyAccount                    m_account;
+
+private:
+
   MyMoneyInstitution                m_institution;
 
   KMyMoneyAccountTreeItemType       m_type;
-  MyMoneyBudget                     m_budget;
 
   bool                              m_reconcileFlag;
 };

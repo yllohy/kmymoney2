@@ -559,7 +559,6 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMone
   m_displayFactor(MyMoneyMoney(1)),
   m_account(account),
   m_type(Account),
-  m_budget(budget),
   m_reconcileFlag(false)
 {
 }
@@ -572,7 +571,6 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent
   m_displayFactor(MyMoneyMoney(1)),
   m_account(account),
   m_type(Account),
-  m_budget(budget),
   m_reconcileFlag(false)
 {
 }

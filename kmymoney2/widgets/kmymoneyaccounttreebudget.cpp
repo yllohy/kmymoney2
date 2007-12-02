@@ -40,10 +40,6 @@
 // Project Includes
 #include <kmymoneyaccounttreebudget.h>
 
-/**
-  * @todo drag/drop in KMyMoneyAccountTree
-  */
-
 KMyMoneyAccountTreeBudget::KMyMoneyAccountTreeBudget(QWidget* parent, const char* name) :
   KMyMoneyAccountTree::KMyMoneyAccountTree(parent, name)
 {
@@ -99,52 +95,22 @@ KMyMoneyAccountTreeBudgetItem* KMyMoneyAccountTreeBudget::findItem(const QCStrin
 /****************************************************************************/
 
 KMyMoneyAccountTreeBudgetItem::KMyMoneyAccountTreeBudgetItem(KListView *parent, const MyMoneyAccount& account, const MyMoneyBudget &budget, const MyMoneySecurity& security, const QString& name) :
-  KMyMoneyAccountTreeItem(parent, account, budget, security, name),
-  m_budget(budget),
-  m_price(),
-  m_security(security),
-  m_totalValue(MyMoneyMoney(0)),
-  m_displayFactor(MyMoneyMoney(1)),
-  m_account(account),
-  m_type(Account)
+  KMyMoneyAccountTreeItem(parent, account, security, name),
+  m_budget(budget)
 {
-  setExpandable(true);
-  MyMoneyAccount acc(account);
-  if(!name.isEmpty())
-    acc.setName(name);
-  updateAccount(acc, true);
+  updateAccount(account, true);
 }
 
 KMyMoneyAccountTreeBudgetItem::KMyMoneyAccountTreeBudgetItem(KMyMoneyAccountTreeBudgetItem *parent, const MyMoneyAccount& account, const MyMoneyBudget& budget, const QValueList<MyMoneyPrice>& price, const MyMoneySecurity& security) :
-  KMyMoneyAccountTreeItem(parent, account, budget, price, security),
-  m_budget(budget),
-  m_price(price),
-  m_security(security),
-  m_totalValue(MyMoneyMoney(0)),
-  m_displayFactor(MyMoneyMoney(1)),
-  m_account(account),
-  m_type(Account)
+  KMyMoneyAccountTreeItem(parent, account, price, security),
+  m_budget(budget)
 {
-  setExpandable(true);
   updateAccount(account, true);
 }
 
 
 KMyMoneyAccountTreeBudgetItem::~KMyMoneyAccountTreeBudgetItem()
 {
-}
-
-MyMoneyMoney KMyMoneyAccountTreeBudgetItem::balance()
-{
-  return KMyMoneyAccountTreeItem::balance(m_account);
-}
-
-QString KMyMoneyAccountTreeBudgetItem::tradingSymbol()
-{
-  if(m_security.id() == listView()->baseCurrency().id())
-    return listView()->baseCurrency().tradingSymbol();
-  else
-    return m_security.tradingSymbol();
 }
 
 void KMyMoneyAccountTreeBudgetItem::updateAccount(const MyMoneyAccount& account, bool forceTotalUpdate)
@@ -187,49 +153,52 @@ void KMyMoneyAccountTreeBudgetItem::updateAccount(const MyMoneyAccount& account,
   if(!lv)
     return;
 
-    MyMoneyMoney oldValue = m_value;
-    m_account = account;
-    // find out if the account is budgeted
-    MyMoneyBudget::AccountGroup budgetAccount = m_budget.account( account.id() );
-    if ( budgetAccount.id() == account.id() )
-      m_balance = budgetAccount.balance();
+  MyMoneyMoney oldValue = m_value;
+  m_account = account;
+  // find out if the account is budgeted
+  MyMoneyBudget::AccountGroup budgetAccount = m_budget.account( account.id() );
+  m_balance = MyMoneyMoney();
+  if ( budgetAccount.id() == account.id() )
+    m_balance = budgetAccount.balance();
 
-    if ( budgetAccount.budgetlevel() == MyMoneyBudget::AccountGroup::eMonthly )
+  switch(budgetAccount.budgetLevel()) {
+    case MyMoneyBudget::AccountGroup::eMonthly:
       m_balance = m_balance * 12;
+      break;
 
-    // calculate the new value by running down the price list
-    m_value = m_balance;
-    QValueList<MyMoneyPrice>::const_iterator it_p;
-    QCString security = m_security.id();
-    for(it_p = m_price.begin(); it_p != m_price.end(); ++it_p) {
-      m_value = m_value * (MyMoneyMoney(1,1) / (*it_p).rate(security));
-      if((*it_p).from() == security)
-        security = (*it_p).to();
-      else
-        security = (*it_p).from();
-    }
+    default:
+      break;
+  }
 
-    // check if we need to update the display of values
-    if(parent() && (isOpen() || m_account.accountList().count() == 0)) {
-      if(m_security.id() != listView()->baseCurrency().id())
-      {
-        QString strAmount = m_balance.formatMoney(m_security.tradingSymbol(), MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction())) + "  ";
-        setText(KMyMoneyAccountTree::BalanceColumn, strAmount);
-      }
-      else
-      {
-        QString strAmount = m_balance.formatMoney("", MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction())) + "  ";
-        setText(KMyMoneyAccountTree::BalanceColumn, strAmount);
-      }
-      setText(KMyMoneyAccountTree::ValueColumn, m_value.formatMoney(listView()->baseCurrency().tradingSymbol(),   MyMoneyMoney::denomToPrec(listView()->baseCurrency().smallestAccountFraction())) + "  ");
-    }
+  // calculate the new value by running down the price list
+  m_value = m_balance;
 
-    // check if we need to tell upstream account objects in the tree
-    // that the value has changed
-    if(oldValue != m_value || forceTotalUpdate) {
-      adjustTotalValue(m_value - oldValue);
-      lv->emitValueChanged();
+  QValueList<MyMoneyPrice>::const_iterator it_p;
+  QCString security = m_security.id();
+  for(it_p = m_price.begin(); it_p != m_price.end(); ++it_p) {
+    m_value = m_value * (MyMoneyMoney(1,1) / (*it_p).rate(security));
+    if((*it_p).from() == security)
+      security = (*it_p).to();
+    else
+      security = (*it_p).from();
+  }
+
+  // check if we need to update the display of values
+  if(parent() && (isOpen() || m_account.accountList().count() == 0)) {
+    if(m_security.id() != listView()->baseCurrency().id())
+    {
+      QString strAmount = m_balance.formatMoney(m_security.tradingSymbol(), MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction())) + "  ";
+      setText(KMyMoneyAccountTree::BalanceColumn, strAmount);
     }
+    setText(KMyMoneyAccountTree::ValueColumn, m_value.formatMoney(listView()->baseCurrency().tradingSymbol(),   MyMoneyMoney::denomToPrec(listView()->baseCurrency().smallestAccountFraction())) + "  ");
+  }
+
+  // check if we need to tell upstream account objects in the tree
+  // that the value has changed
+  if(oldValue != m_value || forceTotalUpdate) {
+    adjustTotalValue(m_value - oldValue);
+    lv->emitValueChanged();
+  }
 }
 
 #include "kmymoneyaccounttreebudget.moc"

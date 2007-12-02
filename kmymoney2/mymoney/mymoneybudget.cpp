@@ -31,18 +31,18 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "mymoneyfile.h"
 #include "mymoneybudget.h"
 
 const QStringList MyMoneyBudget::AccountGroup::kBudgetLevelText = QStringList::split(",","none,monthly,monthbymonth,yearly,invalid",true);
+const int BUDGET_VERSION = 2;
 
-MyMoneyBudget::MyMoneyBudget(void):
-    m_name("Unconfigured Budget")
+MyMoneyBudget::MyMoneyBudget(void) :
+  m_name("Unconfigured Budget")
 {
 }
 
-MyMoneyBudget::MyMoneyBudget(const QString& _name):
-    m_name(_name)
+MyMoneyBudget::MyMoneyBudget(const QString& _name) :
+  m_name(_name)
 {
 }
 
@@ -65,40 +65,36 @@ MyMoneyBudget::~MyMoneyBudget()
 
 void MyMoneyBudget::write(QDomElement& e, QDomDocument *doc) const
 {
-  // (acejones) Darren: You'll want to delete this comment, or add a 'type'
-  // attribute :-)
-  // 
-  // No matter what changes, be sure to have a 'type' attribute.  Only change
-  // the major type if it becomes impossible to maintain compatability with
-  // older versions of the program as new features are added to the Budgets.
-  // Feel free to change the minor type every time a change is made here.
-
   e.setAttribute("name",  m_name);
   e.setAttribute("id",    m_id );
   e.setAttribute("start", m_start.toString(Qt::ISODate) );
+  e.setAttribute("version", BUDGET_VERSION);
 
   QMap<QCString, AccountGroup>::const_iterator it;
-  for(it = m_accounts.begin(); it != m_accounts.end(); ++it)
-  {
-    QDomElement domAccount = doc->createElement("ACCOUNT");
-    domAccount.setAttribute("id", it.key());
-    domAccount.setAttribute("parent", it.data().parentid());
-	  domAccount.setAttribute("default", it.data().getDefault());
-		domAccount.setAttribute("budgetlevel", AccountGroup::kBudgetLevelText[it.data().budgetlevel()]);
-	  domAccount.setAttribute("budgetsubaccounts", it.data().budgetsubaccounts());
+  for(it = m_accounts.begin(); it != m_accounts.end(); ++it) {
+    // only add the account if there is a budget entered
+    if(!(*it).balance().isZero()) {
+      QDomElement domAccount = doc->createElement("ACCOUNT");
+      domAccount.setAttribute("id", it.key());
+      domAccount.setAttribute("parent", it.data().parentid());
+      domAccount.setAttribute("default", it.data().getDefault());
+      domAccount.setAttribute("budgetlevel", AccountGroup::kBudgetLevelText[it.data().budgetLevel()]);
+      domAccount.setAttribute("budgetsubaccounts", it.data().budgetsubaccounts());
 
-    const QMap<QDate, PeriodGroup> periods = it.data().getPeriods();
-    QMap<QDate, PeriodGroup>::const_iterator it_per;
-    for(it_per = periods.begin(); it_per != periods.end(); ++it_per)
-    {
-      QDomElement domPeriod = doc->createElement("PERIOD");
+      const QMap<QDate, PeriodGroup> periods = it.data().getPeriods();
+      QMap<QDate, PeriodGroup>::const_iterator it_per;
+      for(it_per = periods.begin(); it_per != periods.end(); ++it_per) {
+        if(!(*it_per).amount().isZero()) {
+          QDomElement domPeriod = doc->createElement("PERIOD");
 
-      domPeriod.setAttribute("amount", (*it_per).amount().toString());
-      domPeriod.setAttribute("start", (*it_per).start().toString(Qt::ISODate));
-      domAccount.appendChild(domPeriod);
+          domPeriod.setAttribute("amount", (*it_per).amount().toString());
+          domPeriod.setAttribute("start", (*it_per).startDate().toString(Qt::ISODate));
+          domAccount.appendChild(domPeriod);
+        }
+      }
+
+      e.appendChild(domAccount);
     }
-
-    e.appendChild(domAccount);
   }
 }
 
@@ -150,23 +146,20 @@ bool MyMoneyBudget::read(const QDomElement& e)
 
       if("ACCOUNT" == c.tagName() && c.hasAttribute("budgetsubaccounts"))
       {
-	      account.setBudgetSubaccounts(c.attribute("budgetsubaccounts").toUInt());
+        account.setBudgetSubaccounts(c.attribute("budgetsubaccounts").toUInt());
       }
 
       QDomNode period = c.firstChild();
       while(!period.isNull() && period.isElement())
       {
         QDomElement per = period.toElement();
-	      PeriodGroup pGroup;
+        PeriodGroup pGroup;
 
-        if("PERIOD" == per.tagName() && per.hasAttribute("amount"))
+        if("PERIOD" == per.tagName() && per.hasAttribute("amount") && per.hasAttribute("start"))
         {
           pGroup.setAmount( MyMoneyMoney(per.attribute("amount")) );
-        }
-        if("PERIOD" == per.tagName() && per.hasAttribute("start"))
-        {
-          pGroup.setDate( QDate::fromString(per.attribute("start"), Qt::ISODate) );
-          account.addPeriod(pGroup.start(), pGroup);
+          pGroup.setStartDate( QDate::fromString(per.attribute("start"), Qt::ISODate) );
+          account.addPeriod(pGroup.startDate(), pGroup);
         }
 
         period = period.nextSibling();
@@ -190,24 +183,19 @@ void MyMoneyBudget::writeXML(QDomDocument& document, QDomElement& parent) const
 
 bool MyMoneyBudget::hasReferenceTo(const QCString& id) const
 {
-  QCStringList list;
-
-  // collect all ids
-  
-  // !!! (ace) I think this is wrong.  accounts(list) calls the base class's
-  // accounts() method, but I don't think we ever set the base class's accounts
-  // anywhere!
-  //
-  // And where does this class use payees??
-  
-  accounts(list);
-  categories(list);
-  payees(list);
-
-  return (list.contains(id) > 0);
+  // return true if we have a non-zero assignment for this id
+  return (m_accounts.contains(id) && !m_accounts[id].balance().isZero());
 }
 
-const MyMoneyBudget::AccountGroup& MyMoneyBudget::account(const QCString _id) const 
+void MyMoneyBudget::removeReference(const QCString& id)
+{
+  if(m_accounts.contains(id)) {
+    qDebug("%s", (QString("Remove account '%1' from budget").arg(id)).data());
+    m_accounts.remove(id);
+  }
+}
+
+const MyMoneyBudget::AccountGroup& MyMoneyBudget::account(const QCString _id) const
 {
   static AccountGroup empty;
 
@@ -215,6 +203,26 @@ const MyMoneyBudget::AccountGroup& MyMoneyBudget::account(const QCString _id) co
     return m_accounts[_id];
   else
     return empty;
+}
+
+void MyMoneyBudget::setBudgetStart(const QDate& _start)
+{
+  QDate oldDate = QDate(m_start.year(), m_start.month(), 1);
+  m_start = QDate(_start.year(), _start.month(), 1);
+  if(oldDate.isValid()) {
+    int adjust = ((m_start.year() - oldDate.year())*12) + (m_start.month() - oldDate.month());
+    QMap<QCString, AccountGroup>::iterator it;
+    for(it = m_accounts.begin(); it != m_accounts.end(); ++it) {
+      const QMap<QDate, PeriodGroup> periods = (*it).getPeriods();
+      QMap<QDate, PeriodGroup>::const_iterator it_per;
+      (*it).clearPeriods();
+      for(it_per = periods.begin(); it_per != periods.end(); ++it_per) {
+        PeriodGroup pgroup = (*it_per);
+        pgroup.setStartDate(pgroup.startDate().addMonths(adjust));
+        (*it).addPeriod(pgroup.startDate(), pgroup);
+      }
+    }
+  }
 }
 
 // vim:cin:si:ai:et:ts=2:sw=2:

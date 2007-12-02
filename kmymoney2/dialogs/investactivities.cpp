@@ -203,10 +203,12 @@ bool Buy::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpli
     shares = sharesEdit->value().abs();
     s0.setShares(shares);
     s0.setValue((shares * price).reduce());
+    s0.setPrice(price);
   }
   if(!isMultiSelection() || (isMultiSelection() && !priceEdit->text().isEmpty())) {
     price = priceEdit->value().abs();
     s0.setValue((shares * price).reduce());
+    s0.setPrice(price);
   }
 
   if(!createCategorySplits(t, dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account")), dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount")), MyMoneyMoney(1,1), feeSplits, m_feeSplits))
@@ -274,10 +276,12 @@ bool Sell::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpl
     shares = -sharesEdit->value().abs();
     s0.setShares(shares);
     s0.setValue((shares * price).reduce());
+    s0.setPrice(price);
   }
   if(!isMultiSelection() || (isMultiSelection() && !priceEdit->text().isEmpty())) {
     price = priceEdit->value().abs();
     s0.setValue((shares * price).reduce());
+    s0.setPrice(price);
   }
 
   if(!createCategorySplits(t, dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account")), dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount")), MyMoneyMoney(1,1), feeSplits, m_feeSplits))
@@ -330,6 +334,7 @@ bool Div::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpli
   MyMoneyMoney shares;
   s0.setShares(shares);
   s0.setValue(shares);
+  s0.setPrice(MyMoneyMoney(1,1));
 
   if(!createCategorySplits(t, dynamic_cast<KMyMoneyCategory*>(haveWidget("interest-account")), dynamic_cast<kMyMoneyEdit*>(haveWidget("interest-amount")), MyMoneyMoney(-1,1), interestSplits, m_interestSplits))
     return false;
@@ -392,10 +397,12 @@ bool Reinvest::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMone
     shares = sharesEdit->value().abs();
     s0.setShares(shares);
     s0.setValue((shares * price).reduce());
+    s0.setPrice(price);
   }
   if(!isMultiSelection() || (isMultiSelection() && !priceEdit->text().isEmpty())) {
     price = priceEdit->value().abs();
     s0.setValue((shares * price).reduce());
+    s0.setPrice(price);
   }
 
   if(!createCategorySplits(t, dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account")), dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount")), MyMoneyMoney(1,1), feeSplits, m_feeSplits))
@@ -443,6 +450,7 @@ bool Add::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpli
   s0.setAction(MyMoneySplit::AddShares);
   s0.setShares(sharesEdit->value().abs());
   s0.setValue(MyMoneyMoney(0, 1));
+  s0.setPrice(MyMoneyMoney(0, 1));
 
   feeSplits.clear();
   interestSplits.clear();
@@ -473,6 +481,7 @@ bool Remove::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneyS
   s0.setAction(MyMoneySplit::AddShares);
   s0.setShares(-(sharesEdit->value().abs()));
   s0.setValue(MyMoneyMoney(0, 1));
+  s0.setPrice(MyMoneyMoney(0, 1));
 
   feeSplits.clear();
   interestSplits.clear();
@@ -501,6 +510,7 @@ bool Split::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySp
   s0.setAction(MyMoneySplit::SplitShares);
   s0.setShares(sharesEdit->value().abs());
   s0.setValue(MyMoneyMoney(0, 1));
+  s0.setPrice(MyMoneyMoney(0, 1));
 
   feeSplits.clear();
   interestSplits.clear();

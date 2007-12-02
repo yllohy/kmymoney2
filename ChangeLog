@@ -1,3 +1,11 @@
+2007-12-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Store original price with investment splits for display purposes
+  * Improved budget UI (except reports)
+
+2007-11-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied patch provided by Alvaro Soliverez to fix some budget report issues
+  * Improved budget view
+
 2007-11-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added logic to the consistency check to remove invalid payee ids
     and replace them with correct ones
