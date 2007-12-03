@@ -463,4 +463,7 @@
     </vbox>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
+<includes>
+    <include location="global" impldecl="in implementation">kmymoney/kmymoneyedit.h</include>
+</includes>
 </UI>
