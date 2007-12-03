@@ -13,7 +13,7 @@ libwidgets_a_SOURCES = kbudgetvalues.cpp kbudgetvaluesdecl.ui kguiutils.cpp klis
 #register.cpp registeritem.cpp transaction.cpp transactionform.cpp transactioneditor.cpp transactioneditorcontainer.cpp kmymoneychecklistitem.cpp kmymoneylistviewitem.cpp kmymoneyforecastlistviewitem.cpp kmymoneyselector.cpp \
 #transactionsortoption.ui 
 
-EXTRA_DIST = kmymoney.widgets kmymoneygpgconfigdecl.ui kmymoneyonlinequoteconfigdecl.ui kmymoneyreportconfigtab1decl.ui kmymoneyreportconfigtab2decl.ui kmymoneyreportconfigtab3decl.ui kmymoneyreportcontroldecl.ui kschedulebriefwidget.ui kmymoneyreportconfigtabchartdecl.ui transactionsortoption.ui transactionsortoption.ui.h sortoptionlistitem.h makekdewidgets
+EXTRA_DIST = kmymoney.widgets kmymoneygpgconfigdecl.ui kmymoneyonlinequoteconfigdecl.ui kmymoneyreportconfigtab1decl.ui kmymoneyreportconfigtab2decl.ui kmymoneyreportconfigtab3decl.ui kmymoneyreportcontroldecl.ui kschedulebriefwidget.ui kmymoneyreportconfigtabchartdecl.ui transactionsortoption.ui transactionsortoption.ui.h sortoptionlistitem.h makekdewidgets kbudgetvaluesdecl.ui
 
 # include the widgets that are available to 3rd party sw (e.g. plugins or
 # Qt designer) here

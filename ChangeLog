@@ -1,6 +1,7 @@
 2007-12-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed selection of all transactions with ctrl+a
   * Applied patch provided by Alvaro Soliverez
+  * Fixed build system to include new files in tarball
 
 2007-12-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Store original price with investment splits for display purposes
