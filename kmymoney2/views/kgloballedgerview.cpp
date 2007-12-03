@@ -710,6 +710,11 @@ void KGlobalLedgerView::slotSelectAllTransactions(void)
     p = p->nextItem();
   }
   m_register->repaintItems();
+
+  // inform everyone else about the selected items
+  QValueList<KMyMoneyRegister::SelectedTransaction> list;
+  m_register->selectedTransactions(list);
+  emit transactionsSelected(list);
 }
 
 void KGlobalLedgerView::slotSetReconcileAccount(const MyMoneyAccount& acc, const MyMoneyMoney& endingBalance)
