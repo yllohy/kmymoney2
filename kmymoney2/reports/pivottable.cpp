@@ -1899,7 +1899,7 @@ QString PivotTable::renderHTML( void ) const
 
   QString headerspan;
   if ( m_config_f.isIncludingBudgetActuals() )
-    headerspan = " colspan=\"2\"";
+    headerspan = " colspan=\"3\"";
 
   unsigned column = 1;
   while ( column < m_numColumns )
@@ -1920,12 +1920,12 @@ QString PivotTable::renderHTML( void ) const
     unsigned column = 1;
     while ( column < m_numColumns )
     {
-      result += QString("<td>%1</td><td>%2</td>").arg(i18n("Budget"),i18n("Actual"));
+      result += QString("<td>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Difference"),i18n("Actual"));
       column++;
     }
 
     if ( m_config_f.isShowingRowTotals() )
-      result += QString("<td>%1</td><td>%2</td>").arg(i18n("Budget"),i18n("Actual"));
+      result += QString("<td>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Difference"),i18n("Actual"));
     result += "</tr>";
   }
 
@@ -1994,16 +1994,22 @@ QString PivotTable::renderHTML( void ) const
             bool isUsed = it_row.data()[0].isUsed();
             while ( column < m_numColumns )
             {
-              if ( m_config_f.isIncludingBudgetActuals() )
+              if ( m_config_f.isIncludingBudgetActuals() ) {
                 rowdata += QString("<td>%1</td>").arg(it_row.data().m_budget[column].formatMoney());
+                MyMoneyMoney diff = it_row.data().m_budget[column] - it_row.data()[column];
+                rowdata += QString("<td>%1</td>").arg(diff.formatMoney());
+              }
               isUsed |= it_row.data()[column].isUsed();
               rowdata += QString("<td>%1</td>").arg(it_row.data()[column++].formatMoney());
             }
 
             if ( m_config_f.isShowingRowTotals() )
             {
-              if ( m_config_f.isIncludingBudgetActuals() )
+              if ( m_config_f.isIncludingBudgetActuals() ) {
                 rowdata += QString("<td>%1</td>").arg((*it_row).m_budget.m_total.formatMoney());
+                MyMoneyMoney diff = (*it_row).m_budget.m_total - (*it_row).m_total;
+                rowdata += QString("<td>%1</td>").arg(diff.formatMoney());
+              }
 
               rowdata += QString("<td>%1</td>").arg((*it_row).m_total.formatMoney());
             }
@@ -2087,16 +2093,22 @@ QString PivotTable::renderHTML( void ) const
             isUsed |= (*it_innergroup).m_total[0].isUsed();
             while ( column < m_numColumns )
             {
-              if ( m_config_f.isIncludingBudgetActuals() )
+              if ( m_config_f.isIncludingBudgetActuals() ) {
                 finalRow += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_budget[column].formatMoney());
+                MyMoneyMoney diff = (*it_innergroup).m_total.m_budget[column] - (*it_innergroup).m_total[column];
+                finalRow += QString("<td>%1</td>").arg(diff.formatMoney());
+              }
               isUsed |= (*it_innergroup).m_total[column].isUsed();
               finalRow += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
             }
 
             if (  m_config_f.isShowingRowTotals() )
             {
-              if ( m_config_f.isIncludingBudgetActuals() )
+              if ( m_config_f.isIncludingBudgetActuals() ) {
                 finalRow += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_budget.m_total.formatMoney());
+                MyMoneyMoney diff = (*it_innergroup).m_total.m_budget.m_total - (*it_innergroup).m_total.m_total;
+                finalRow += QString("<td>%1</td>").arg(diff.formatMoney());
+              }
               finalRow += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_total.formatMoney());
             }
 
@@ -2123,16 +2135,22 @@ QString PivotTable::renderHTML( void ) const
         unsigned column = 1;
         while ( column < m_numColumns )
         {
-          if ( m_config_f.isIncludingBudgetActuals() )
+          if ( m_config_f.isIncludingBudgetActuals() ) {
             result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_budget[column].formatMoney());
+            MyMoneyMoney diff = (*it_outergroup).m_total.m_budget[column] - (*it_outergroup).m_total[column];
+            result += QString("<td>%1</td>").arg(diff.formatMoney());
+          }
 
           result += QString("<td>%1</td>").arg((*it_outergroup).m_total[column++].formatMoney());
         }
 
         if (  m_config_f.isShowingRowTotals() )
         {
-          if ( m_config_f.isIncludingBudgetActuals() )
+          if ( m_config_f.isIncludingBudgetActuals() ) {
             result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_budget.m_total.formatMoney());
+            MyMoneyMoney diff = (*it_outergroup).m_total.m_budget.m_total - (*it_outergroup).m_total.m_total;
+            result += QString("<td>%1</td>").arg(diff.formatMoney());
+          }
           result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_total.formatMoney());
         }
 
@@ -2156,16 +2174,21 @@ QString PivotTable::renderHTML( void ) const
     unsigned totalcolumn = 1;
     while ( totalcolumn < m_numColumns )
     {
-      if ( m_config_f.isIncludingBudgetActuals() )
+      if ( m_config_f.isIncludingBudgetActuals() ) {
         result += QString("<td>%1</td>").arg(m_grid.m_total.m_budget[totalcolumn].formatMoney());
-
+        MyMoneyMoney diff = m_grid.m_total.m_budget[totalcolumn] - m_grid.m_total[totalcolumn];
+        result += QString("<td>%1</td>").arg(diff.formatMoney());
+      }
       result += QString("<td>%1</td>").arg(m_grid.m_total[totalcolumn++].formatMoney());
     }
 
     if (  m_config_f.isShowingRowTotals() )
     {
-      if ( m_config_f.isIncludingBudgetActuals() )
+      if ( m_config_f.isIncludingBudgetActuals() ) {
         result += QString("<td>%1</td>").arg(m_grid.m_total.m_budget.m_total.formatMoney());
+        MyMoneyMoney diff = m_grid.m_total.m_budget.m_total - m_grid.m_total.m_total;
+        result += QString("<td>%1</td>").arg(diff.formatMoney());
+      }
       result += QString("<td>%1</td>").arg(m_grid.m_total.m_total.formatMoney());
     }
 
