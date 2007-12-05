@@ -923,13 +923,13 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
     dynamic_cast<KMyMoneyReconcileCombo*>(m_editWidgets["status"])->setState(MyMoneySplit::Unknown);
     if(haveWidget("deposit")) {
       dynamic_cast<kMyMoneyEdit*>(m_editWidgets["deposit"])->loadText("");
-      dynamic_cast<kMyMoneyEdit*>(m_editWidgets["deposit"])->setEmptyAllowed();
+      dynamic_cast<kMyMoneyEdit*>(m_editWidgets["deposit"])->setAllowEmpty();
       dynamic_cast<kMyMoneyEdit*>(m_editWidgets["payment"])->loadText("");
-      dynamic_cast<kMyMoneyEdit*>(m_editWidgets["payment"])->setEmptyAllowed();
+      dynamic_cast<kMyMoneyEdit*>(m_editWidgets["payment"])->setAllowEmpty();
     }
     if((w = haveWidget("amount")) != 0) {
       dynamic_cast<kMyMoneyEdit*>(w)->loadText("");
-      dynamic_cast<kMyMoneyEdit*>(w)->setEmptyAllowed();
+      dynamic_cast<kMyMoneyEdit*>(w)->setAllowEmpty();
     }
 
     if((w = haveWidget("cashflow")) != 0) {

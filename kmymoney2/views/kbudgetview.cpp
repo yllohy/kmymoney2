@@ -261,8 +261,13 @@ void KBudgetView::slotRefreshView(void)
 {
   if(isVisible()) {
     loadBudget();
+    // the following code seems useless, because if a budget was selected and it
+    // is not the first one in the list the one remembered during loadBudget will
+    // be forgotten with that code. So I commented it out (ipwizard)
+#if 0
     QListViewItem * item = m_budgetList->firstChild();
     m_budgetList->setSelected(item, true);
+#endif
   } else {
     m_needReload = true;
   }
@@ -463,6 +468,7 @@ void KBudgetView::slotSelectBudget()
   }
 
   loadAccounts();
+
   QValueList<MyMoneyBudget> budgetList;
   if(!budget.id().isEmpty())
     budgetList << budget;
@@ -582,7 +588,8 @@ void KBudgetView::slotSelectAccount(QListViewItem* item)
 
       QCString id = account->id();
       m_leAccounts->setText(MyMoneyFile::instance()->account(id).name());
-      m_cbBudgetSubaccounts->setChecked(budget.account( id ).budgetsubaccounts());
+      m_cbBudgetSubaccounts->setChecked(budget.account(id).budgetsubaccounts());
+      m_accountTotal->setValue(budget.account(id).totalBalance());
 
       MyMoneyBudget::AccountGroup budgetAccount = budget.account( id );
       if ( id != budgetAccount.id() ) {

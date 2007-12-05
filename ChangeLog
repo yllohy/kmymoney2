@@ -1,3 +1,8 @@
+2007-12-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added readOnly property to kMyMoneyEdit
+  * Fixed allowEmpty property in kMyMoneyEdit
+  * Revised budget value widget
+
 2007-12-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed selection of all transactions with ctrl+a
   * Applied patch provided by Alvaro Soliverez

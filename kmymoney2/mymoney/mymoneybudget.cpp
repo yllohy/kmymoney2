@@ -76,7 +76,7 @@ void MyMoneyBudget::write(QDomElement& e, QDomDocument *doc) const
     if(!(*it).balance().isZero()) {
       QDomElement domAccount = doc->createElement("ACCOUNT");
       domAccount.setAttribute("id", it.key());
-      domAccount.setAttribute("parent", it.data().parentid());
+      domAccount.setAttribute("parent", it.data().parentId());
       domAccount.setAttribute("default", it.data().getDefault());
       domAccount.setAttribute("budgetlevel", AccountGroup::kBudgetLevelText[it.data().budgetLevel()]);
       domAccount.setAttribute("budgetsubaccounts", it.data().budgetsubaccounts());

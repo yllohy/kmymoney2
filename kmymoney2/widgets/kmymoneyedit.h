@@ -94,6 +94,7 @@ class kMyMoneyEdit : public QHBox
   Q_PROPERTY(bool calculatorButtonVisibility READ isCalculatorButtonVisible WRITE setCalculatorButtonVisible);
   Q_PROPERTY(bool resetButtonVisibility READ isResetButtonVisible WRITE setResetButtonVisible);
   Q_PROPERTY(bool allowEmpty READ isEmptyAllowed WRITE setAllowEmpty);
+  Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly )
 
 private:
   QString previousText; // keep track of what has been typed
@@ -192,7 +193,7 @@ public:
     * @param allowed if @a true, empty input is allowed, if @a false
     *                emtpy input will be converted to 0.00
     */
-  void setEmptyAllowed(bool allowed = true);
+  void setAllowEmpty(bool allowed = true);
 
   /** Overloaded for internal reasons. The API is not affected. */
   void setValidator(const QValidator* v);
@@ -207,9 +208,10 @@ public:
 
   void setHint(const QString& hint) const;
 
+  bool isReadOnly(void) const;
+
 public slots:
   void loadText(const QString& text);
-  void setReadOnly(bool ro) { m_edit->setReadOnly(ro); };
   void resetText(void);
   void clearText(void);
 
@@ -225,6 +227,8 @@ public slots:
   void setCalculatorButtonVisible(const bool show);
 
   void setResetButtonVisible(const bool show);
+
+  void setReadOnly(bool readOnly);
 
 signals: // Signals
   /**

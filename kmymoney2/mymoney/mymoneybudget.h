@@ -118,7 +118,7 @@ public:
 
     // get functions
     const QCString& id( void ) const { return m_id; }
-    const QCString& parentid( void ) const { return m_parentId; }
+    const QCString& parentId( void ) const { return m_parentId; }
     bool budgetsubaccounts( void ) const { return m_budgetsubaccounts; }
     const eBudgetLevel& budgetLevel( void ) const { return m_budgetlevel; }
     bool getDefault( void ) const {return m_default;}
@@ -136,6 +136,19 @@ public:
       }
       return balance;
     };
+
+    const MyMoneyMoney totalBalance(void) const
+    {
+      MyMoneyMoney bal = balance();
+      switch(m_budgetlevel) {
+        default:
+          break;
+        case eMonthly:
+          bal = bal * 12;
+          break;
+      }
+      return bal;
+    }
 
     // set functions
     void setId( QString _id ) {m_id = _id;}

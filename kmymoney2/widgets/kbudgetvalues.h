@@ -21,6 +21,9 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qdatetime.h>
+class QLabel;
+
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -46,7 +49,16 @@ class KBudgetValues : public KBudgetValuesDecl
     void clear(void);
 
   private:
+    void enableMonths(bool enabled);
+    void fillMonthLabels(void);
+
+  protected slots:
+    void slotChangePeriod(int id);
+
+  private:
     kMyMoneyEdit*   m_field[12];
+    QLabel*         m_label[12];
+    QDate           m_budgetDate;
 
   signals:
     void valuesChanged(void);

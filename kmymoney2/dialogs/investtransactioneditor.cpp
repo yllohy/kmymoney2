@@ -609,7 +609,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
     for(it_f = fields.begin(); it_f != fields.end(); ++it_f) {
       value = dynamic_cast<kMyMoneyEdit*>(haveWidget((*it_f)));
       value->setText("");
-      value->setEmptyAllowed();
+      value->setAllowEmpty();
     }
 
     // if we have transactions with different activities, disable some more widgets

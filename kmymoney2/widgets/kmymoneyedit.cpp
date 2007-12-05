@@ -488,7 +488,7 @@ void kMyMoneyEdit::setResetButtonVisible(const bool show)
   m_resetButton->setShown(show);
 }
 
-void kMyMoneyEdit::setEmptyAllowed(bool allowed)
+void kMyMoneyEdit::setAllowEmpty(bool allowed)
 {
   allowEmpty = allowed;
 }
@@ -512,6 +512,22 @@ void kMyMoneyEdit::setHint(const QString& hint) const
 {
   if(m_edit)
     m_edit->setHint(hint);
+}
+
+bool kMyMoneyEdit::isReadOnly(void) const
+{
+  if(m_edit)
+    return m_edit->isReadOnly();
+  return false;
+}
+
+void kMyMoneyEdit::setReadOnly(bool readOnly)
+{
+  // we use the QLineEdit::setReadOnly() method directly to avoid
+  // changing the background between readonly and read/write mode
+  // as it is done by the KLineEdit code.
+  if(m_edit)
+    m_edit->QLineEdit::setReadOnly(readOnly);
 }
 
 #include "kmymoneyedit.moc"
