@@ -161,6 +161,7 @@ bool KGPGFile::open(int mode, const QString& cmdArgs, bool skipPasswd)
       args << "-ea"
           << "-z" << "6"
           << "--comment" << QString("\"%1\"").arg(m_comment)
+          << "--trust-model=always"
           << "-o" << QString("\"%1\"").arg(m_fn);
       QValueList<QCString>::Iterator it;
       for(it = m_recipient.begin(); it != m_recipient.end(); ++it)
