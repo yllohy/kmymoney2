@@ -1,3 +1,10 @@
+2007-12-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * adapted MyMoneyStatement interface to use MyMoneyMoney objects
+    for monetary values instead of doubles
+  * Removed KBanking plugin. From now on, the plugin can be found under
+    http://www.aquamaniac.de/sites/download/packages.php or via SVN under
+    http://devel.aqbanking.de/svn/kmm_plugins/banking/trunk
+
 2007-12-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added readOnly property to kMyMoneyEdit
   * Fixed allowEmpty property in kMyMoneyEdit

@@ -49,7 +49,7 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
   e.setAttribute("currency", m_strCurrency);
   e.setAttribute("begindate", m_dateBegin.toString(Qt::ISODate));
   e.setAttribute("enddate", m_dateEnd.toString(Qt::ISODate));
-  e.setAttribute("closingbalance", QString::number(m_moneyClosingBalance));
+  e.setAttribute("closingbalance", m_closingBalance.toString());
   e.setAttribute("type", kAccountTypeTxt[m_eType]);
 
   // iterate over transactions, and add each one
@@ -61,12 +61,12 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
     p.setAttribute("payee", (*it_t).m_strPayee);
     p.setAttribute("memo", (*it_t).m_strMemo);
     p.setAttribute("number", (*it_t).m_strNumber);
-    p.setAttribute("amount", QString::number((*it_t).m_moneyAmount,'f',20));
+    p.setAttribute("amount", (*it_t).m_amount.toString());
     p.setAttribute("bankid", (*it_t).m_strBankID);
 
     if (m_eType == etInvestment)
     {
-      p.setAttribute("shares", QString::number((*it_t).m_dShares,'f', 10));
+      p.setAttribute("shares", (*it_t).m_shares.toString());
       p.setAttribute("action", kActionText[(*it_t).m_eAction]);
       p.setAttribute("security", (*it_t).m_strSecurity);
     }
@@ -83,7 +83,7 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
     QDomElement p = _doc->createElement("PRICE");
     p.setAttribute("dateposted", (*it_p).m_date.toString(Qt::ISODate));
     p.setAttribute("security", (*it_p).m_strSecurity);
-    p.setAttribute("amount", QString::number((*it_p).m_moneyAmount));
+    p.setAttribute("amount", (*it_p).m_amount.toString());
 
     e.appendChild(p);
 
@@ -119,7 +119,7 @@ bool MyMoneyStatement::read(const QDomElement& _e)
     m_strCurrency = _e.attribute("currency");
     m_dateBegin = QDate::fromString(_e.attribute("begindate"),Qt::ISODate);
     m_dateEnd = QDate::fromString(_e.attribute("enddate"),Qt::ISODate);
-    m_moneyClosingBalance = _e.attribute("closingbalance").toDouble();
+    m_closingBalance = MyMoneyMoney(_e.attribute("closingbalance"));
 
     int i = kAccountTypeTxt.findIndex(_e.attribute("type",kAccountTypeTxt[1]));
     if ( i != -1 )
@@ -135,7 +135,7 @@ bool MyMoneyStatement::read(const QDomElement& _e)
         MyMoneyStatement::Transaction t;
 
         t.m_datePosted = QDate::fromString(c.attribute("dateposted"),Qt::ISODate);
-        t.m_moneyAmount = c.attribute("amount").toDouble();
+        t.m_amount = MyMoneyMoney(c.attribute("amount"));
         t.m_strMemo = c.attribute("memo");
         t.m_strNumber = c.attribute("number");
         t.m_strPayee = c.attribute("payee");
@@ -143,7 +143,7 @@ bool MyMoneyStatement::read(const QDomElement& _e)
 
         if (m_eType == etInvestment)
         {
-          t.m_dShares = c.attribute("shares").toDouble();
+          t.m_shares = MyMoneyMoney(c.attribute("shares"));
           t.m_strSecurity = c.attribute("security");
           int i = kActionText.findIndex(c.attribute("action",kActionText[1]));
           if ( i != -1 )
@@ -158,7 +158,7 @@ bool MyMoneyStatement::read(const QDomElement& _e)
 
         p.m_date = QDate::fromString(c.attribute("dateposted"), Qt::ISODate);
         p.m_strSecurity = c.attribute("security");
-        p.m_moneyAmount = c.attribute("amount").toDouble();
+        p.m_amount = MyMoneyMoney(c.attribute("amount"));
 
         m_listPrices += p;
       }

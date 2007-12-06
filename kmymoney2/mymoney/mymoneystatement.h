@@ -28,14 +28,22 @@
 #include <config.h>
 #endif
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qstring.h>
 #include <qvaluelist.h>
 #include <qdatetime.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include <kmymoney/export.h>
+#include <kmymoney/mymoneymoney.h>
 
 class QDomElement;
 class QDomDocument;
-  
+
 /**
 Represents the electronic analog of the paper bank statement just like we used to get in the regular mail.  This class is designed to be easy to extend and easy to create with minimal dependencies.  So the header file should include as few project files as possible (preferrably NONE).
 
@@ -44,7 +52,7 @@ Represents the electronic analog of the paper bank statement just like we used t
 struct MyMoneyStatement
 {
   enum EType { etNone = 0, etCheckings, etSavings, etInvestment, etCreditCard, etEnd };
-  
+
   struct Transaction
   {
     QDate m_datePosted;
@@ -52,24 +60,24 @@ struct MyMoneyStatement
     QString m_strMemo;
     QString m_strNumber;
     QString m_strBankID;
-    double m_moneyAmount;
-    
+    MyMoneyMoney m_amount;
+
     // the following members are only used for investment accounts (m_eType==etInvestment)
     // eaNone means the action, shares, and security can be ignored.
     enum EAction { eaNone = 0, eaBuy, eaSell, eaReinvestDividend, eaCashDividend, eaEnd };
     EAction m_eAction;
-    double m_dShares;
-    double m_moneyFees;
+    MyMoneyMoney m_shares;
+    MyMoneyMoney m_fees;
     // should be trading symbol followed by name, e.g. "DIS The Disney Corporation"
     // if there is no symbol, then it's a space followed by the name, e.g. " PennyStock Co., Inc."
-    QString m_strSecurity;  
+    QString m_strSecurity;
   };
-  
+
   struct Price
   {
     QDate m_date;
     QString m_strSecurity;
-    double m_moneyAmount;
+    MyMoneyMoney m_amount;
   };
 
   struct Security
@@ -78,22 +86,22 @@ struct MyMoneyStatement
     QString m_strSymbol;
     QString m_strId;
   };
-  
+
   QString m_strAccountName;
   QString m_strAccountNumber;
   QString m_strCurrency;
   QDate m_dateBegin;
   QDate m_dateEnd;
-  double m_moneyClosingBalance;
+  MyMoneyMoney m_closingBalance;
   EType m_eType;
-  
+
   QValueList<Transaction> m_listTransactions;
   QValueList<Price> m_listPrices;
   QValueList<Security> m_listSecurities;
-  
+
   void write(QDomElement&,QDomDocument*) const;
   bool read(const QDomElement&);
-  
+
   KMYMONEY_EXPORT static bool isStatementFile(const QString&);
   KMYMONEY_EXPORT static bool readXMLFile( MyMoneyStatement&, const QString& );
   KMYMONEY_EXPORT static void writeXMLFile( const MyMoneyStatement&, const QString& );

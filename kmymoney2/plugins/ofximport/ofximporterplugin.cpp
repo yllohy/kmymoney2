@@ -151,7 +151,7 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
     if (data.invtransactiontype_valid==true)
       sign=-1.0;
 
-    t.m_moneyAmount = sign * data.amount;
+    t.m_amount = MyMoneyMoney(sign * data.amount);
   }
 
   if(data.check_number_valid==true)
@@ -207,24 +207,21 @@ int OfxImporterPlugin::ofxTransactionCallback(struct OfxTransactionData data, vo
     }
   }
 
+  t.m_shares = MyMoneyMoney();
   if(data.units_valid==true)
   {
-    t.m_dShares = data.units;
-  }
-  else
-  {
-    t.m_dShares = 0;
+    t.m_shares = MyMoneyMoney(data.units);
   }
 
-  t.m_moneyFees = 0.0;
-
+  t.m_fees = MyMoneyMoney();
   if(data.fees_valid==true)
   {
-    t.m_moneyFees += data.fees;
+    t.m_fees += MyMoneyMoney(data.fees);
   }
+
   if(data.commission_valid==true)
   {
-    t.m_moneyFees += data.commission;
+    t.m_fees += MyMoneyMoney(data.commission);
   }
 
   bool unhandledtype = false;
@@ -362,7 +359,7 @@ int OfxImporterPlugin::ofxStatementCallback(struct OfxStatementData data, void* 
 
   if(data.ledger_balance_valid==true)
   {
-    s.m_moneyClosingBalance = static_cast<double>(data.ledger_balance);
+    s.m_closingBalance = MyMoneyMoney(data.ledger_balance);
   }
 
 //   kdDebug(2) << __func__ << " return 0" << endl;

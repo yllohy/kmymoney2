@@ -2,18 +2,6 @@ echo ""
 echo ""
 echo "Configure results (user options):"
 echo "------------------------------------------"
-if test x$enable_kbanking = xno; then
-	echo "KBanking support:                      disabled"
-elif test x$have_kbanking = xyes; then
-	echo "KBanking support:                      yes"
-else
-	echo "KBanking support:                      no"
-	echo "    You are missing the KBanking headers and libraries"
-	echo "    The HBCI support won't be compiled."
-fi
-
-echo ""
-
 echo "OFX plugin:                            $enable_ofxplugin"
 
 echo ""

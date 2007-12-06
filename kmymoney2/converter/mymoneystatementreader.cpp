@@ -85,7 +85,7 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
 
   m_account.setName(s.m_strAccountName);
   m_account.setNumber(s.m_strAccountNumber);
-  m_account.setValue("lastStatementBalance", QString::number(s.m_moneyClosingBalance));
+  m_account.setValue("lastStatementBalance", s.m_closingBalance.toString());
 
   if ( s.m_dateEnd.isValid() )
     m_account.setValue("lastStatementDate", s.m_dateEnd.toString("yyyy-MM-dd"));
@@ -260,8 +260,8 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   MyMoneySplit s1;
 
   s1.setMemo(t_in.m_strMemo);
-  s1.setValue(t_in.m_moneyAmount-t_in.m_moneyFees);
-  s1.setShares(t_in.m_moneyAmount-t_in.m_moneyFees);
+  s1.setValue(t_in.m_amount - t_in.m_fees);
+  s1.setShares(s1.value());
   s1.setNumber(t_in.m_strNumber);
 
   // set these values if a transfer split is needed at the very end.
@@ -306,7 +306,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
             MyMoneyPrice price = file->price( currencyid, basecurrencyid, t_in.m_datePosted, true );
             if ( !price.isValid() )
             {
-              MyMoneyPrice newprice( currencyid, basecurrencyid, t_in.m_datePosted, t_in.m_moneyAmount / t_in.m_dShares, i18n("Statement Importer") );
+              MyMoneyPrice newprice( currencyid, basecurrencyid, t_in.m_datePosted, t_in.m_amount / t_in.m_shares, i18n("Statement Importer") );
               file->addPrice(newprice);
             }
           }
@@ -375,14 +375,14 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
     if (t_in.m_eAction==MyMoneyStatement::Transaction::eaReinvestDividend)
     {
-      s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
+      s1.setShares(t_in.m_shares * MyMoneyMoney(1,1000));
       s1.setAction(MyMoneySplit::ActionReinvestDividend);
 
       MyMoneySplit s2;
       s2.setMemo(t_in.m_strMemo);
       s2.setAccountId(findOrCreateIncomeAccount("_Dividend"));
-      s2.setShares(-t_in.m_moneyAmount);
-      s2.setValue(-t_in.m_moneyAmount);
+      s2.setShares(-t_in.m_amount);
+      s2.setValue(-t_in.m_amount);
       t.addSplit(s2);
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaCashDividend)
@@ -409,8 +409,8 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       // interpret the 'amount' as the cash account part.
 
       s1.setAccountId(findOrCreateIncomeAccount("_Dividend"));
-      s1.setShares(t_in.m_moneyAmount);
-      s1.setValue(t_in.m_moneyAmount);
+      s1.setShares(t_in.m_amount);
+      s1.setValue(t_in.m_amount);
 
       // Split 2 will be the zero-amount investment split that serves to
       // mark this transaction as a cash dividend and note which stock account
@@ -422,14 +422,14 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
       s2.setAccountId(thisaccount.id());
       t.addSplit(s2);
 
-      transfervalue = -t_in.m_moneyAmount-t_in.m_moneyFees;
+      transfervalue = -t_in.m_amount-t_in.m_fees;
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaBuy || t_in.m_eAction==MyMoneyStatement::Transaction::eaSell)
     {
-      s1.setShares(MyMoneyMoney(t_in.m_dShares,1000));
+      s1.setShares(t_in.m_shares * MyMoneyMoney(1,1000));
       s1.setAction(MyMoneySplit::ActionBuyShares);
 
-      transfervalue = -t_in.m_moneyAmount;
+      transfervalue = -t_in.m_amount;
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaNone)
     {
@@ -604,12 +604,12 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   // The fees has to be added AFTER the interest, because
   // KLedgerViewInvestments::preloadInvestmentSplits expects the splits to be
   // ordered this way.
-  if ( t_in.m_moneyFees != 0.0 )
+  if ( !t_in.m_fees.isZero() )
   {
     MyMoneySplit s;
     s.setMemo(i18n("(Fees) ") + t_in.m_strMemo);
-    s.setValue(t_in.m_moneyFees);
-    s.setShares(t_in.m_moneyFees);
+    s.setValue(t_in.m_fees);
+    s.setShares(t_in.m_fees);
     s.setAccountId(findOrCreateExpenseAccount("_Fees"));
     t.addSplit(s);
   }

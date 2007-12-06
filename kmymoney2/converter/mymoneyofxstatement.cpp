@@ -29,6 +29,7 @@
 #include <qtextstream.h>
 
 #include "../mymoney/mymoneyexception.h"
+#include "../mymoney/mymoneymoney.h"
 #include "mymoneyofxstatement.h"
 
 /* __________________________________________________________________________
@@ -123,7 +124,7 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
     if (data.invtransactiontype_valid==true)
       sign=-1.0;
 
-    t.m_moneyAmount = sign * data.amount;
+    t.m_amount = MyMoneyMoney(sign * data.amount);
   }
 
   if(data.check_number_valid==true)
@@ -181,11 +182,11 @@ int ofxTransactionCallback(struct OfxTransactionData data, void * pv)
 
   if(data.units_valid==true)
   {
-    t.m_dShares = data.units;
+    t.m_shares = MyMoneyMoney(data.units);
   }
   else
   {
-    t.m_dShares = 0;
+    t.m_shares = MyMoneyMoney();
   }
 
   bool unhandledtype = false;
@@ -295,7 +296,7 @@ int ofxStatementCallback(struct OfxStatementData data, void* pv)
 
   if(data.ledger_balance_valid==true)
   {
-    s.m_moneyClosingBalance = static_cast<double>(data.ledger_balance);
+    s.m_closingBalance = MyMoneyMoney(data.ledger_balance);
   }
 
   return 0;
