@@ -100,11 +100,11 @@ KHomeView::KHomeView(QWidget *parent, const char *name ) :
 KHomeView::~KHomeView()
 {
   // if user wants to remember the font size, store it here
-  if (KMyMoneySettings::self()->rememberFontSize())
+  if (KMyMoneyGlobalSettings::rememberFontSize())
   {
-    KMyMoneySettings::self()->setFontSizePercentage(m_part->zoomFactor());
+    KMyMoneyGlobalSettings::setFontSizePercentage(m_part->zoomFactor());
     //kdDebug() << "Storing font size: " << m_part->zoomFactor() << endl;
-    KMyMoneySettings::self()->writeConfig();
+    KMyMoneyGlobalSettings::self()->writeConfig();
   }
 }
 
@@ -134,7 +134,7 @@ void KHomeView::slotPrintView(void)
 
 void KHomeView::loadView(void)
 {
-  m_part->setZoomFactor( KMyMoneySettings::self()->fontSizePercentage() );
+  m_part->setZoomFactor( KMyMoneyGlobalSettings::fontSizePercentage() );
   //kdDebug() << "Setting font size: " << m_part->zoomFactor() << endl;
 
   QValueList<MyMoneyAccount> list;
@@ -673,7 +673,7 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
         value.convert(file->baseCurrency().smallestAccountFraction());
       }
     } catch(MyMoneyException* e) {
-      qWarning(QString("cannot convert balance to base currency: %1").arg(e->what()));
+      qWarning("%s", (QString("cannot convert balance to base currency: %1").arg(e->what())).data());
       delete e;
     }
     QValueList<QCString>::const_iterator it_a;
@@ -693,7 +693,7 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
         val = val.convert(file->baseCurrency().smallestAccountFraction());
         value += val;
       } catch(MyMoneyException* e) {
-        qWarning(QString("cannot convert stock balance of %1 to base currency: %2").arg(stock.name(), e->what()));
+        qWarning("%s", (QString("cannot convert stock balance of %1 to base currency: %2").arg(stock.name(), e->what())).data());
         delete e;
       }
     }
@@ -781,7 +781,7 @@ void KHomeView::showScheduleBasedForecast(void)
 
   if(nameIdx.count() > 0) {
     int i = 0;
-    
+
     int colspan = 1;
 
     // Now output header

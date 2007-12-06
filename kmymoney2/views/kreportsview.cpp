@@ -66,6 +66,7 @@
 
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/mymoneyreport.h>
+#include <kmymoney/kmymoneyglobalsettings.h>
 
 #include "kreportsview.h"
 #include "../reports/querytable.h"
@@ -96,6 +97,8 @@ KReportsView::KReportTab::KReportTab(KTabWidget* parent, const MyMoneyReport& re
   m_needReload( true ),
   m_table(0)
 {
+  m_part->setZoomFactor( KMyMoneyGlobalSettings::fontSizePercentage() );
+
   if ( ! KReportChartView::implemented() || m_report.reportType() != MyMoneyReport::ePivotTable )
   {
     m_control->buttonChart->hide();
