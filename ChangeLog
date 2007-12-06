@@ -5,6 +5,7 @@
     http://www.aquamaniac.de/sites/download/packages.php or via SVN under
     http://devel.aqbanking.de/svn/kmm_plugins/banking/trunk
   * Use same font size for reports as for home page
+  * Renamed pt_PT.po into pt.po
 
 2007-12-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added readOnly property to kMyMoneyEdit
