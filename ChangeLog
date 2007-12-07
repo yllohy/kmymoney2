@@ -1,5 +1,7 @@
 2007-12-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Dump POT-Creation-Date and PO-Revision-Date in XML output
+  * Added all available language files to the po directory
+  * Created kmymoney.pot and merged all language files
 
 2007-12-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * adapted MyMoneyStatement interface to use MyMoneyMoney objects
