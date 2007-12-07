@@ -11,9 +11,12 @@ message-stats:
 	@echo "<!DOCTYPE issuelist>"
 	@echo "<translist>"
 	@echo "<translation><flag>C</flag>"
-	@echo "<revision>"
+	@echo "<cvsrevision>"
 	@cvs stat kmymoney2.pot | grep Working | cut -d: -f2 | sed -e 's/\ *//'
-	@echo "</revision>"
+	@echo "</cvsrevision>"
+	@echo -n "<potrevision>"
+	@R=`grep POT kmymoney2.pot | cut -d' ' -f 2`; \
+	echo "$$R</potrevision>"
 	@echo "</translation>"
 	
 	@for i in ${srcdir}/*.po; do \

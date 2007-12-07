@@ -1,3 +1,6 @@
+2007-12-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Dump POT-Creation-Date and PO-Revision-Date in XML output
+
 2007-12-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * adapted MyMoneyStatement interface to use MyMoneyMoney objects
     for monetary values instead of doubles

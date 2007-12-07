@@ -142,6 +142,10 @@ while(<IN>) {
     $potVersionOk = "1" if($_ eq $potVersion);
     next;
   }
+  # "PO-Revision-Date: 2007-02-21 21:57+0100\n"
+  if($_ =~ /PO-Revision-Date: (\d+-\d+-\d+) /) {
+    $poRevision = $1;
+  }
 
   if($state == 0) {
     if($_ =~ /^\#:/) {
@@ -200,5 +204,6 @@ print " <translated>$ptransdisp</translated>\n";
 print " <fuzzy>$pfuzzy</fuzzy>\n";
 print " <untranslated>$puntrans</untranslated>\n";
 print " <potcurrent>$potVersionOk</potcurrent>\n";
+print " <porevision>$poRevision</porevision>\n";
 print "</translation>\n";
 
