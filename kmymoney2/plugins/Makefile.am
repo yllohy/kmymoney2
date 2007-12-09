@@ -5,7 +5,7 @@ INCLUDES = $(all_includes)  -I$(top_srcdir) -I.
 
 # since some of the subdirs are conditional, we need to define DIST_SUBDIRS
 SUBDIRS = interfaces @OFX_IMPORTERPLUGIN@
-DIST_SUBDIRS = interfaces kbanking ofximport
+DIST_SUBDIRS = interfaces ofximport
 
 # The library containing the plugin base class
 lib_LTLIBRARIES = libkmm_plugin.la
