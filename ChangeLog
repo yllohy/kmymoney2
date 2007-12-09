@@ -1,3 +1,6 @@
+2007-12-09 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Fix Finance::Quote interface to use 'last' price
+
 2007-12-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Dump POT-Creation-Date and PO-Revision-Date in XML output
   * Added all available language files to the po directory
