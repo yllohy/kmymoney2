@@ -1,3 +1,6 @@
+2007-12-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a precision problem when entering the number of shares
+
 2007-12-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Italian translation as provided by Vincenzo Reale
 

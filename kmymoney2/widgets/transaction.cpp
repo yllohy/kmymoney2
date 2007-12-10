@@ -1640,7 +1640,7 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
         case ValueColumn:
           align |= Qt::AlignRight;
           if(haveAmount()) {
-            txt = m_assetAccountSplit.value().abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
+            txt = m_assetAccountSplit.value().abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
 
           } else if(haveInterest()) {
             txt = m_interestAmount.abs().formatMoney(m_currency.tradingSymbol(), MyMoneyMoney::denomToPrec(m_currency.smallestAccountFraction()));
