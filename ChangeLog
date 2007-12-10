@@ -1,3 +1,6 @@
+2007-12-10 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Make GNC import error message translator-friendly 
+
 2007-12-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a precision problem when entering the number of shares
 
