@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KPayeesViewDecl</class>
 <widget class="QWidget">
     <property name="name">
@@ -64,6 +64,9 @@
                     </property>
                     <property name="selectionMode" stdset="0">
                         <enum>FileManager</enum>
+                    </property>
+                    <property name="shadeSortColumn">
+                        <bool>false</bool>
                     </property>
                 </widget>
                 <widget class="QTabWidget">
@@ -159,6 +162,9 @@
                                                 </column>
                                                 <property name="name">
                                                     <cstring>m_transactionView</cstring>
+                                                </property>
+                                                <property name="shadeSortColumn">
+                                                    <bool>false</bool>
                                                 </property>
                                             </widget>
                                             <widget class="QLabel">
@@ -666,10 +672,5 @@
         </widget>
     </vbox>
 </widget>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="950">789ccdd0cd6a83401486e1bd5731e84eca244e5a30845e4221cb40e9e2cc5f34d1c4a85d94d27b2ffa7d8bb6a48b4217195cccc3cb390c2e72b5db3ea97c910ca38cb553ae925ee5feb56ddf9e5f1edf93d41885af48ef92b4534e65cbf94cb4e43d18c8126c48070a5870d6939c3d929ced49ce1e669686b506575c9591ac1792b3a78945b9f6e01e9407709c689622604b063082d68003e8581de859ab996bcf7a062337eb89ab2246f2eab9a99289c5c5f920f16bd95701973ad387e3f76d2c4dab4ff66ab167adbb3f96dfb7d5971f2f10e91aad7bad071f9af1b6fee87f948f4df2098142ba27</data>
-    </image>
-</images>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

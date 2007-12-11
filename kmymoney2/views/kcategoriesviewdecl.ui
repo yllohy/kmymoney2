@@ -54,6 +54,9 @@
             <property name="name">
                 <cstring>m_accountTree</cstring>
             </property>
+            <property name="shadeSortColumn">
+                <bool>false</bool>
+            </property>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">

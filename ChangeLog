@@ -1,5 +1,9 @@
 2007-12-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Resolved duplicate function parameter name
+  * Added plugin dialog to show plugin information
+  * Added warning message when quitting transaction dialog editor
+    via selection of a different transaction
+  * Don't show the sort column shaded in KListViews
 
 2007-12-10 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Make GNC import error message translator-friendly 

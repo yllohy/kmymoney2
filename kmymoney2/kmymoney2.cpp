@@ -113,6 +113,7 @@
 #include "dialogs/kmergetransactionsdlg.h"
 #include "dialogs/kendingbalancedlg.h"
 #include "dialogs/kbalancechartdlg.h"
+#include "dialogs/kplugindlg.h"
 
 #include "dialogs/newuserwizard/knewuserwizard.h"
 #include "dialogs/newaccountwizard/knewaccountwizard.h"
@@ -150,10 +151,11 @@ class KMyMoneyPrivate
 {
 public:
   KMyMoneyPrivate() :
-    m_moveToAccountSelector(0)
+    m_moveToAccountSelector(0), m_pluginDlg(0)
   {}
 
   kMyMoneyAccountSelector* m_moveToAccountSelector;
+  KPluginDlg*              m_pluginDlg;
 };
 
 KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
@@ -203,6 +205,8 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
 
   // now initialize the plugin structure
   ::timetrace("load plugins");
+  d->m_pluginDlg = new KPluginDlg(this);
+  new KListViewItem(d->m_pluginDlg->m_listView, i18n("No plugins loaded"));
   createInterfaces();
   loadPlugins();
 
@@ -370,6 +374,7 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("Consistency Check"), "", 0, this, SLOT(slotFileConsitencyCheck()), actionCollection(), "tools_consistency_check");
   new KAction(i18n("Performance-Test"), "fork", 0, this, SLOT(slotPerformanceTest()), actionCollection(), "tools_performancetest");
   new KAction(i18n("KCalc..."), "kcalc", 0, this, SLOT(slotToolsStartKCalc()), actionCollection(), "tools_kcalc");
+  new KAction(i18n("Plugins"), "", 0, this, SLOT(slotToolsPluginDlg()), actionCollection(), "tools_plugin_list");
 
   // *****************
   // The settings menu
@@ -2251,6 +2256,13 @@ void KMyMoney2App::slotQifProfileEditor(void)
 void KMyMoney2App::slotToolsStartKCalc(void)
 {
   KRun::runCommand("kcalc");
+}
+
+void KMyMoney2App::slotToolsPluginDlg(void)
+{
+  if(d->m_pluginDlg) {
+    d->m_pluginDlg->exec();
+  }
 }
 
 void KMyMoney2App::slotFindTransaction(void)
@@ -4282,13 +4294,34 @@ void KMyMoney2App::slotTransactionsEnter(void)
 
 void KMyMoney2App::slotTransactionsCancelOrEnter(void)
 {
-  // qDebug("KMyMoney2App::slotCancelOrEndEdit");
-  if(m_transactionEditor) {
-    if(KMyMoneySettings::focusChangeIsEnter() && kmymoney2->action("transaction_enter")->isEnabled()) {
-      slotTransactionsEnter();
-    } else {
-      slotTransactionsCancel();
+  static bool oneTime = false;
+  if(!oneTime) {
+    oneTime = true;
+    QString dontShowAgain = "CancelOrEditTransaction";
+    // qDebug("KMyMoney2App::slotCancelOrEndEdit");
+    if(m_transactionEditor) {
+      if(KMyMoneySettings::focusChangeIsEnter() && kmymoney2->action("transaction_enter")->isEnabled()) {
+        slotTransactionsEnter();
+      } else {
+        switch(KMessageBox::warningYesNoCancel(0, QString("<p>")+i18n("Do you really want to cancel editing this transaction without saving it?<p>- <b>Yes</b> cancels editing the transaction<br>- <b>No</b> saves the transaction prior to cancelling and<br>- <b>Cancel</b> returns to the transaction editor.<p>You can also select an option to save the transaction automatically when e.g. selecting another transaction."), i18n("Cancel transaction edit"), KStdGuiItem::yes(), KStdGuiItem::no(), dontShowAgain)) {
+          case KMessageBox::Yes:
+            slotTransactionsCancel();
+            break;
+          case KMessageBox::No:
+            slotTransactionsEnter();
+            // make sure that we'll see this message the next time no matter
+            // if the user has chosen the 'Don't show again' checkbox
+            KMessageBox::enableMessage(dontShowAgain);
+            break;
+          case KMessageBox::Cancel:
+            // make sure that we'll see this message the next time no matter
+            // if the user has chosen the 'Don't show again' checkbox
+            KMessageBox::enableMessage(dontShowAgain);
+            break;
+        }
+      }
     }
+    oneTime = false;
   }
 }
 
@@ -4923,6 +4956,8 @@ void KMyMoney2App::slotUpdateActions(void)
   action("currency_delete")->setEnabled(false);
   action("currency_setbase")->setEnabled(false);
 
+  action("tools_plugin_list")->setEnabled(d->m_pluginDlg != 0);
+
   w = factory()->container("transaction_move_menu", this);
   if(w)
     w->setEnabled(false);
@@ -5527,6 +5562,7 @@ void KMyMoney2App::createInterfaces(void)
 
 void KMyMoney2App::loadPlugins(void)
 {
+  bool firstPlugin = true;
   {
     KTrader::OfferList offers = KTrader::self()->query("KMyMoneyPlugin");
 
@@ -5544,6 +5580,10 @@ void KMyMoney2App::loadPlugins(void)
         guiFactory()->addClient(plugin);
         kdDebug() << "Loaded '"
                   << plugin->name() << "' plugin" << endl;
+        if(firstPlugin)
+          d->m_pluginDlg->m_listView->clear();
+        firstPlugin = false;
+        new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("Loaded"));
         KMyMoneyPlugin::OnlinePlugin* op = dynamic_cast<KMyMoneyPlugin::OnlinePlugin *>(plugin);
         if(op) {
           m_onlinePlugins[plugin->name()] = op;
@@ -5552,6 +5592,11 @@ void KMyMoney2App::loadPlugins(void)
           kdDebug() << "It's an online banking plugin and supports '" << protocolList << "'" << endl;
         }
       } else {
+        if(firstPlugin)
+          d->m_pluginDlg->m_listView->clear();
+        firstPlugin = false;
+        new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("not loaded: %1").arg(KLibLoader::self()->lastErrorMessage()));
+
         kdDebug() << "Failed to load '"
                   << service->name() << "' service, error=" << errCode << endl;
         kdDebug() << KLibLoader::self()->lastErrorMessage() << endl;
@@ -5579,6 +5624,11 @@ void KMyMoney2App::loadPlugins(void)
         QString format = plugin->formatName();
         KAction* action = new KAction(i18n("%1 (Plugin)...").arg(format), "", 0, m_pluginSignalMapper, SLOT(map()), actionCollection(), QString("file_import_plugin_%1").arg(format));
 
+        if(firstPlugin)
+          d->m_pluginDlg->m_listView->clear();
+        firstPlugin = false;
+        new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("Loaded"));
+
         // Add it to the signal mapper, so we'll know which plugin triggered the signal
         m_pluginSignalMapper->setMapping( action, format );
 
@@ -5591,6 +5641,11 @@ void KMyMoney2App::loadPlugins(void)
         import_actions.append( action );
         plugActionList( "file_import_plugins", import_actions );
       } else {
+        if(firstPlugin)
+          d->m_pluginDlg->m_listView->clear();
+        firstPlugin = false;
+        new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("not loaded: %1").arg(KLibLoader::self()->lastErrorMessage()));
+
         kdDebug() << "Failed to load '"
                   << service->name() << "' service, error=" << errCode << endl;
         kdDebug() << KLibLoader::self()->lastErrorMessage() << endl;

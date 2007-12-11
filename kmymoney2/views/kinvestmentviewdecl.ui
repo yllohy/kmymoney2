@@ -101,6 +101,9 @@
                 <font>
                 </font>
             </property>
+            <property name="shadeSortColumn">
+                <bool>false</bool>
+            </property>
             <property name="toolTip" stdset="0">
                 <string>Summary of the equities contained in this account, showing your holdings and their most recent price.</string>
             </property>

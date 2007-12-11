@@ -327,6 +327,7 @@ KReportsView::KReportsView(QWidget *parent, const char *name ) :
   m_reportListView->setResizeMode(QListView::AllColumns);
   m_reportListView->setAllColumnsShowFocus(true);
   m_reportListView->setRootIsDecorated(true);
+  m_reportListView->setShadeSortColumn(false);
 
   connect( m_reportTabWidget, SIGNAL(closeRequest(QWidget*)),
     this, SLOT(slotClose(QWidget*)) );

@@ -925,6 +925,11 @@ public slots:
     */
   void slotToolsStartKCalc(void);
 
+  /**
+   * This slot shows the plugin dialog
+   */
+  void slotToolsPluginDlg(void);
+
   void slotResetSelections(void);
 
   void slotSelectAccount(const MyMoneyObject& account = MyMoneyAccount());
