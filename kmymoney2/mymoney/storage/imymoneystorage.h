@@ -106,7 +106,7 @@ public:
   virtual void setFileFixVersion(const unsigned int v) = 0;
 
   // methods provided by MyMoneyKeyValueContainer
-  virtual void setValue(const QCString& key, const QString& key) = 0;
+  virtual void setValue(const QCString& key, const QString& value) = 0;
   virtual const QString value(const QCString& key) const = 0;
   virtual void deletePair(const QCString& key) = 0;
 
