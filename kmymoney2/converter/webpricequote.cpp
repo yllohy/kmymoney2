@@ -354,13 +354,14 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
     "[^,]*,[^,]*,\"([^\"]*)\"", // dateregexp
     "%m %d %y" // dateformat
   );
-
+  // sl1d1 format for Yahoo France doesn't seem to give a date ever
+  // sl1d3 gives us time (99h99) and date
   result["Yahoo France"] = WebPriceQuoteSource("Yahoo France",
-    "http://fr.finance.yahoo.com/d/quotes.csv?s=%251&f=sl1d1",
+    "http://fr.finance.yahoo.com/d/quotes.csv?s=%1&f=sl1d3",
     "([^;]*).*",             // symbolregexp
     "[^;]*.([^;]*),*",       // priceregexp
-    "[^;]*.[^;]*.([^;]*),*", // dateregexp
-    "%m %d %y"               // dateformat
+    "[^;]*.[^;]*...h...([^;]*)", // dateregexp
+    "%d/%m/%y"               // dateformat
   );
 
   result["Globe & Mail"] = WebPriceQuoteSource("Globe & Mail",
