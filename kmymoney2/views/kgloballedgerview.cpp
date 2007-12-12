@@ -235,7 +235,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(m_register, SIGNAL(selectionChanged(const QValueList<KMyMoneyRegister::SelectedTransaction>&)), this, SIGNAL(transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>&)));
   connect(m_register, SIGNAL(editTransaction()), this, SIGNAL(startEdit()));
   connect(m_register, SIGNAL(emptyItemSelected()), this, SLOT(slotNewTransaction()));
-  connect(m_register, SIGNAL(aboutToSelectItem(KMyMoneyRegister::RegisterItem*)), this, SIGNAL(cancelOrEndEdit()));
+  connect(m_register, SIGNAL(aboutToSelectItem(KMyMoneyRegister::RegisterItem*, bool&)), this, SLOT(slotAboutToSelectItem(KMyMoneyRegister::RegisterItem*, bool&)));
   connect(d->m_mousePressFilter, SIGNAL(mousePressedOnExternalWidget()), this, SIGNAL(cancelOrEndEdit()));
 
   connect(m_form, SIGNAL(newTransaction(KMyMoneyRegister::Action)), this, SLOT(slotNewTransaction(KMyMoneyRegister::Action)));
@@ -250,6 +250,11 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
 KGlobalLedgerView::~KGlobalLedgerView()
 {
   delete d;
+}
+
+void KGlobalLedgerView::slotAboutToSelectItem(KMyMoneyRegister::RegisterItem* item, bool& okToSelect)
+{
+  emit cancelOrEndEdit(okToSelect);
 }
 
 void KGlobalLedgerView::slotLoadView(void)

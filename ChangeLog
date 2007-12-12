@@ -1,3 +1,6 @@
+2007-12-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't select different transaction if action is cancelled
+
 2007-12-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Resolved duplicate function parameter name
   * Added plugin dialog to show plugin information

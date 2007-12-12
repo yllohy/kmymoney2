@@ -359,7 +359,7 @@ protected slots:
 
   /**
     */
-  void slotTransactionsCancelOrEnter(void);
+  void slotTransactionsCancelOrEnter(bool& okToSelect);
 
   /**
     */

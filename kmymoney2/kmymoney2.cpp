@@ -4292,7 +4292,7 @@ void KMyMoney2App::slotTransactionsEnter(void)
   }
 }
 
-void KMyMoney2App::slotTransactionsCancelOrEnter(void)
+void KMyMoney2App::slotTransactionsCancelOrEnter(bool& okToSelect)
 {
   static bool oneTime = false;
   if(!oneTime) {
@@ -4317,6 +4317,7 @@ void KMyMoney2App::slotTransactionsCancelOrEnter(void)
             // make sure that we'll see this message the next time no matter
             // if the user has chosen the 'Don't show again' checkbox
             KMessageBox::enableMessage(dontShowAgain);
+            okToSelect = false;
             break;
         }
       }

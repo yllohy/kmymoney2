@@ -1523,38 +1523,46 @@ void Register::selectItem(RegisterItem* item, bool dontChangeSelections)
 
   if(item->isSelectable()) {
     QCString id = item->id();
+    bool okToSelect = true;
     int cnt = selectedItemsCount();
     if(buttonState & Qt::LeftButton) {
       if(!(buttonState & (Qt::ShiftButton | Qt::ControlButton))) {
         if((cnt != 1) || ((cnt == 1) && !item->isSelected())) {
-          emit aboutToSelectItem(item);
-          // pointer 'item' might have changed. reconstruct it.
-          item = itemById(id);
-          unselectItems();
-          item->setSelected(true);
-          setFocusItem(item);
+          emit aboutToSelectItem(item, okToSelect);
+          if(okToSelect) {
+            // pointer 'item' might have changed. reconstruct it.
+            item = itemById(id);
+            unselectItems();
+            item->setSelected(true);
+            setFocusItem(item);
+          }
         }
-        m_selectAnchor = item;
+        if(okToSelect)
+          m_selectAnchor = item;
       }
 
       if(m_selectionMode == Multi) {
         switch(buttonState & (Qt::ShiftButton | Qt::ControlButton)) {
           case Qt::ControlButton:
             // toggle selection state of current item
-            emit aboutToSelectItem(item);
-            // pointer 'item' might have changed. reconstruct it.
-            item = itemById(id);
-            item->setSelected(!item->isSelected());
-            setFocusItem(item);
+            emit aboutToSelectItem(item, okToSelect);
+            if(okToSelect) {
+              // pointer 'item' might have changed. reconstruct it.
+              item = itemById(id);
+              item->setSelected(!item->isSelected());
+              setFocusItem(item);
+            }
             break;
 
           case Qt::ShiftButton:
-            emit aboutToSelectItem(item);
-            // pointer 'item' might have changed. reconstruct it.
-            item = itemById(id);
-            unselectItems();
-            selectItems(rowToIndex(m_selectAnchor->startRow()), rowToIndex(item->startRow()));
-            setFocusItem(item);
+            emit aboutToSelectItem(item, okToSelect);
+            if(okToSelect) {
+              // pointer 'item' might have changed. reconstruct it.
+              item = itemById(id);
+              unselectItems();
+              selectItems(rowToIndex(m_selectAnchor->startRow()), rowToIndex(item->startRow()));
+              setFocusItem(item);
+            }
             break;
         }
       }
@@ -1567,29 +1575,36 @@ void Register::selectItem(RegisterItem* item, bool dontChangeSelections)
       // b) multiple transactions are selected and the one to be selected is not
       if(!(buttonState & (Qt::ShiftButton | Qt::ControlButton))) {
         if((cnt > 0) && (!item->isSelected())) {
-          emit aboutToSelectItem(item);
-          // pointer 'item' might have changed. reconstruct it.
-          item = itemById(id);
-          unselectItems();
-          item->setSelected(true);
-          setFocusItem(item);
+          emit aboutToSelectItem(item, okToSelect);
+          if(okToSelect) {
+            // pointer 'item' might have changed. reconstruct it.
+            item = itemById(id);
+            unselectItems();
+            item->setSelected(true);
+            setFocusItem(item);
+          }
         }
-        m_selectAnchor = item;
+        if(okToSelect)
+          m_selectAnchor = item;
       }
     } else {
       // we get here when called by application logic
-      emit aboutToSelectItem(item);
-      // pointer 'item' might have changed. reconstruct it.
-      item = itemById(id);
-      if(!dontChangeSelections)
-        unselectItems();
-      item->setSelected(true);
-      setFocusItem(item);
-      m_selectAnchor = item;
+      emit aboutToSelectItem(item, okToSelect);
+      if(okToSelect) {
+        // pointer 'item' might have changed. reconstruct it.
+        item = itemById(id);
+        if(!dontChangeSelections)
+          unselectItems();
+        item->setSelected(true);
+        setFocusItem(item);
+        m_selectAnchor = item;
+      }
     }
-    QValueList<SelectedTransaction> list;
-    selectedTransactions(list);
-    emit selectionChanged(list);
+    if(okToSelect) {
+      QValueList<SelectedTransaction> list;
+      selectedTransactions(list);
+      emit selectionChanged(list);
+    }
   }
 }
 

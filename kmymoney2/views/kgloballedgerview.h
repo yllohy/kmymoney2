@@ -320,6 +320,8 @@ protected slots:
 
   void slotKeepPostDate(const QDate&);
 
+  void slotAboutToSelectItem(KMyMoneyRegister::RegisterItem*, bool&);
+
 protected:
   /**
     * This member keeps the date that was used as the last posting date.
@@ -376,7 +378,7 @@ signals:
   void newTransaction(void);
   void startEdit(void);
   void endEdit(void);
-  void cancelOrEndEdit(void);
+  void cancelOrEndEdit(bool&);
 
   /**
     * This signal is emitted, when a new report has been generated.  A

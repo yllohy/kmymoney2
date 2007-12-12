@@ -485,7 +485,14 @@ signals:
     */
   void focusChanged(void);
 
-  void aboutToSelectItem(KMyMoneyRegister::RegisterItem* item);
+  /**
+   * This signal is emitted when an @p item is about to be selected. The boolean
+   * @p okToSelect is preset to @c true. If the @p item should not be selected
+   * for whatever reason, the boolean @p okToSelect should be reset to @c false
+   * by the connected slot.
+   */
+  void aboutToSelectItem(KMyMoneyRegister::RegisterItem* item, bool& okToSelect);
+
   void editTransaction(void);
   void headerClicked(void);
 
