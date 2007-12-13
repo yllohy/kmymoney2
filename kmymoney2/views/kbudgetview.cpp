@@ -588,7 +588,7 @@ void KBudgetView::slotSelectAccount(QListViewItem* item)
 
       QCString id = account->id();
       m_leAccounts->setText(MyMoneyFile::instance()->account(id).name());
-      m_cbBudgetSubaccounts->setChecked(budget.account(id).budgetsubaccounts());
+      m_cbBudgetSubaccounts->setChecked(budget.account(id).budgetSubaccounts());
       m_accountTotal->setValue(budget.account(id).totalBalance());
 
       MyMoneyBudget::AccountGroup budgetAccount = budget.account( id );

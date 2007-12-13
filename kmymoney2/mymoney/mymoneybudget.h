@@ -119,11 +119,11 @@ public:
     // get functions
     const QCString& id( void ) const { return m_id; }
     const QCString& parentId( void ) const { return m_parentId; }
-    bool budgetsubaccounts( void ) const { return m_budgetsubaccounts; }
-    const eBudgetLevel& budgetLevel( void ) const { return m_budgetlevel; }
-    bool getDefault( void ) const {return m_default;}
-    const PeriodGroup& period( const QDate &_date ) const {return m_periods[_date];}
-    const QMap<QDate, PeriodGroup>& getPeriods( void ) const {return m_periods;}
+    bool budgetSubaccounts( void ) const { return m_budgetsubaccounts; }
+    eBudgetLevel budgetLevel( void ) const { return m_budgetlevel; }
+    bool getDefault( void ) const { return m_default; }
+    const PeriodGroup& period( const QDate &_date ) const { return m_periods[_date]; }
+    const QMap<QDate, PeriodGroup>& getPeriods( void ) const { return m_periods; }
     void clearPeriods(void) { m_periods.clear(); }
     const MyMoneyMoney balance( void ) const
     {
@@ -151,12 +151,12 @@ public:
     }
 
     // set functions
-    void setId( QString _id ) {m_id = _id;}
-    void setParentId( const QString& _id ) {m_parentId = _id;}
-    void setBudgetLevel( eBudgetLevel _level ) {m_budgetlevel = _level;}
-    void setDefault( bool _default ) {m_default = _default;}
-    void setBudgetSubaccounts( bool _b ) {m_budgetsubaccounts = _b;}
-    void addPeriod( const QDate& _date, PeriodGroup &period ) {m_periods[_date] = period;}
+    void setId( QString _id ) { m_id = _id; }
+    void setParentId( const QString& _id ) { m_parentId = _id; }
+    void setBudgetLevel( eBudgetLevel _level ) { m_budgetlevel = _level; }
+    void setDefault( bool _default ) { m_default = _default; }
+    void setBudgetSubaccounts( bool _b ) { m_budgetsubaccounts = _b; }
+    void addPeriod( const QDate& _date, PeriodGroup &period ) { m_periods[_date] = period; }
 
   private:
     QCString m_id;

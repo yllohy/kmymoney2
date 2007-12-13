@@ -18,7 +18,7 @@
 #include "mymoneyutils.h"
 #include <kmymoney/mymoneyexception.h>
 
-MyMoneyPayee MyMoneyPayee::null = MyMoneyPayee();
+MyMoneyPayee MyMoneyPayee::null;
 
 MyMoneyPayee::MyMoneyPayee(): m_matchingEnabled(false), m_usingMatchKey(false), m_matchKeyIgnoreCase(true)
 {

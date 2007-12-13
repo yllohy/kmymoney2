@@ -873,107 +873,107 @@ void PivotTable::calculateBudgetMapping( void )
 
     if ( m_config_f.isIncludingBudgetActuals() )
     {
-    //
-    // Go through all accounts in the system to build the mapping
-    //
+      //
+      // Go through all accounts in the system to build the mapping
+      //
 
-    QValueList<MyMoneyAccount> accounts;
-    file->accountList(accounts);
-    QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
-    while ( it_account != accounts.end() )
-    {
-      QCString id = (*it_account).id();
-      QCString acid = id;
-
-      // If the budget contains this account outright
-      if ( budget.contains(id) )
+      QValueList<MyMoneyAccount> accounts;
+      file->accountList(accounts);
+      QValueList<MyMoneyAccount>::const_iterator it_account = accounts.begin();
+      while ( it_account != accounts.end() )
       {
-        // Add it to the mapping
-        m_budgetMap[acid] = id;
+        QCString id = (*it_account).id();
+        QCString acid = id;
 
-        //kdDebug(2) << ReportAccount(acid).debugName() << " self-maps / type =" << budget.account(id).budgetlevel() << endl;
-      }
-
-      // Otherwise, search for a parent account which includes sub-accounts
-      else
-      {
-        do
+        // If the budget contains this account outright
+        if ( budget.contains(id) )
         {
-          id = file->account(id).parentAccountId();
-          if ( budget.contains(id) )
+          // Add it to the mapping
+          m_budgetMap[acid] = id;
+
+          //kdDebug(2) << ReportAccount(acid).debugName() << " self-maps / type =" << budget.account(id).budgetlevel() << endl;
+        }
+
+        // Otherwise, search for a parent account which includes sub-accounts
+        else
+        {
+          do
           {
-            if ( budget.account(id).budgetsubaccounts() )
+            id = file->account(id).parentAccountId();
+            if ( budget.contains(id) )
             {
-              m_budgetMap[acid] = id;
-              //kdDebug(2) << ReportAccount(acid).debugName() << " maps to " << ReportAccount(id).debugName() << endl;
-              break;
+              if ( budget.account(id).budgetSubaccounts() )
+              {
+                m_budgetMap[acid] = id;
+                //kdDebug(2) << ReportAccount(acid).debugName() << " maps to " << ReportAccount(id).debugName() << endl;
+                break;
+              }
             }
           }
+          while ( ! id.isEmpty() );
         }
-        while ( ! id.isEmpty() );
-      }
 
-      ++it_account;
-    } // end while looping through the accounts in the file
+        ++it_account;
+      } // end while looping through the accounts in the file
     }
 
     if ( m_config_f.isIncludingBudgetActuals() )
     {
-    //
-    // Place the budget values into the budget grid
-    //
-    QValueList<MyMoneyBudget::AccountGroup> baccounts = budget.getaccounts();
-    QValueList<MyMoneyBudget::AccountGroup>::const_iterator it_bacc = baccounts.begin();
-    while ( it_bacc != baccounts.end() )
-    {
-      ReportAccount splitAccount = (*it_bacc).id();
-      MyMoneyAccount::accountTypeE type = splitAccount.accountGroup();
-      QString outergroup = accountTypeToString(type);
-
-      // reverse sign to match common notation for cash flow direction, only for expense/income splits
-      MyMoneyMoney reverse((splitAccount.accountType() == MyMoneyAccount::Expense) ? -1 : 1, 1);
-
-      const QMap<QDate, MyMoneyBudget::PeriodGroup>& periods = (*it_bacc).getPeriods();
-      MyMoneyMoney value = (*periods.begin()).amount() * reverse;
-      unsigned column = 1;
-
-      // based on the kind of budget it is, deal accordingly
-      switch ( (*it_bacc).budgetLevel() )
+      //
+      // Place the budget values into the budget grid
+      //
+      QValueList<MyMoneyBudget::AccountGroup> baccounts = budget.getaccounts();
+      QValueList<MyMoneyBudget::AccountGroup>::const_iterator it_bacc = baccounts.begin();
+      while ( it_bacc != baccounts.end() )
       {
-      case MyMoneyBudget::AccountGroup::eYearly:
-        // divide the single yearly value by 12 and place it in each column
+        ReportAccount splitAccount = (*it_bacc).id();
+        MyMoneyAccount::accountTypeE type = splitAccount.accountGroup();
+        QString outergroup = accountTypeToString(type);
 
-        value /= MyMoneyMoney(12,1);
-      case MyMoneyBudget::AccountGroup::eNone:
-      case MyMoneyBudget::AccountGroup::eMax:
-      case MyMoneyBudget::AccountGroup::eMonthly:
-        // place the single monthly value in each column of the report
-        while ( column < m_numColumns )
+        // reverse sign to match common notation for cash flow direction, only for expense/income splits
+        MyMoneyMoney reverse((splitAccount.accountType() == MyMoneyAccount::Expense) ? -1 : 1, 1);
+
+        const QMap<QDate, MyMoneyBudget::PeriodGroup>& periods = (*it_bacc).getPeriods();
+        MyMoneyMoney value = (*periods.begin()).amount() * reverse;
+        unsigned column = 1;
+
+        // based on the kind of budget it is, deal accordingly
+        switch ( (*it_bacc).budgetLevel() )
         {
+        case MyMoneyBudget::AccountGroup::eYearly:
+          // divide the single yearly value by 12 and place it in each column
 
-          assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
-          ++column;
-        }
-        break;
+          value /= MyMoneyMoney(12,1);
+        case MyMoneyBudget::AccountGroup::eNone:
+        case MyMoneyBudget::AccountGroup::eMax:
+        case MyMoneyBudget::AccountGroup::eMonthly:
+          // place the single monthly value in each column of the report
+          while ( column < m_numColumns )
+          {
 
-      case MyMoneyBudget::AccountGroup::eMonthByMonth:
-        // place each value in the appropriate column
-        QMap<QDate, MyMoneyBudget::PeriodGroup>::const_iterator it_period = periods.begin();
-        while ( it_period != periods.end() )
-        {
-          value = (*it_period).amount() * reverse;
-          column = (*it_period).startDate().month();
-          if(column < m_numColumns) {
             assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+            ++column;
           }
+          break;
 
-          ++it_period;
+        case MyMoneyBudget::AccountGroup::eMonthByMonth:
+          // place each value in the appropriate column
+          QMap<QDate, MyMoneyBudget::PeriodGroup>::const_iterator it_period = periods.begin();
+          while ( it_period != periods.end() )
+          {
+            value = (*it_period).amount() * reverse;
+            column = (*it_period).startDate().month();
+            if(column < m_numColumns) {
+              assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+            }
+
+            ++it_period;
+          }
+          break;
         }
-        break;
-      }
 
-      ++it_bacc;
-    }
+        ++it_bacc;
+      }
     }
   } // end if there was a budget
 }

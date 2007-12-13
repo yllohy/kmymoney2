@@ -79,7 +79,7 @@ void MyMoneyBudget::write(QDomElement& e, QDomDocument *doc) const
       domAccount.setAttribute("parent", it.data().parentId());
       domAccount.setAttribute("default", it.data().getDefault());
       domAccount.setAttribute("budgetlevel", AccountGroup::kBudgetLevelText[it.data().budgetLevel()]);
-      domAccount.setAttribute("budgetsubaccounts", it.data().budgetsubaccounts());
+      domAccount.setAttribute("budgetsubaccounts", it.data().budgetSubaccounts());
 
       const QMap<QDate, PeriodGroup> periods = it.data().getPeriods();
       QMap<QDate, PeriodGroup>::const_iterator it_per;
