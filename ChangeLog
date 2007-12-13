@@ -4,6 +4,7 @@
   * Added more budget entry features (use previously entered value when
     switching to another method (eg. from monthly to yearly)
   * Added clear button to clear the budget values
+  * Added running balance column to transaction reports
 
 2007-12-12 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Update default quote strings for Yahoo France

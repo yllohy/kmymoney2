@@ -187,17 +187,6 @@
                                 <string>&lt;p&gt;Select this option to show the Memo column&lt;/p&gt;</string>
                             </property>
                         </widget>
-                        <widget class="QCheckBox" row="0" column="4">
-                            <property name="name">
-                                <cstring>m_checkAction</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Action</string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>&lt;p&gt;Select this option to show the Action column&lt;/p&gt;</string>
-                            </property>
-                        </widget>
                         <widget class="QCheckBox" row="0" column="3">
                             <property name="name">
                                 <cstring>m_checkShares</cstring>
@@ -291,6 +280,28 @@
                             </property>
                             <property name="toolTip" stdset="0">
                                 <string>&lt;p&gt;Select this option to show the Category column&lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="0" column="4">
+                            <property name="name">
+                                <cstring>m_checkAction</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Action</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>&lt;p&gt;Select this option to show the Action column&lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="4">
+                            <property name="name">
+                                <cstring>m_checkBalance</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Balance</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>&lt;p&gt;Select this option to show the Running balance column&lt;/p&gt;</string>
                             </property>
                         </widget>
                     </grid>

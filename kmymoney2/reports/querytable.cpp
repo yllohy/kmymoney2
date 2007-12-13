@@ -426,6 +426,8 @@ void QueryTable::init(void)
     m_columns += ",payment,interest,fees";
     m_postcolumns = "balance";
   }
+  if( qc & MyMoneyReport::eQCbalance)
+    m_postcolumns = "balance";
 
   TableRow::setSortCriteria(sort);
   qHeapSort(m_transactions);
@@ -837,7 +839,7 @@ void QueryTable::constructTransactionTable(void)
     }
 
     qA["postdate"] = date0s;
-    qA["balance"] = (b0 * xr).toString();
+    qA["balance"] = qA["value"] = (b0 * xr).toString();
     qA["id"] = "A";
     m_transactions += qA;
 
@@ -847,7 +849,7 @@ void QueryTable::constructTransactionTable(void)
     }
 
     qA["postdate"] = date1s;
-    qA["balance"] = (b1 * xr).toString();
+    qA["balance"] = qA["value"] = (b1 * xr).toString();
     qA["id"] = "Z";
     m_transactions += qA;
   }
@@ -1271,13 +1273,16 @@ void QueryTable::render( QString& result, QString& csv ) const
         || *it_column == "action"
         || *it_column == "shares"
         || *it_column == "price"
+        || *it_column == "balance"
         || *it_column == "account")
           data = "";
       }
 
       // ***DV***
       if ((* it_row)["rank"] == "-2") {
-        if (* it_column == "value") data = (* it_row)["balance"];
+        if ((* it_column == "value") || (*it_column == "balance"))
+          data = (* it_row)["balance"];
+
         if (need_label) {
           if ((* it_column == "payee") ||
               (* it_column == "category") ||
@@ -1297,7 +1302,8 @@ void QueryTable::render( QString& result, QString& csv ) const
       }
 
       // The 'balance' column is calculated at render-time
-      if ( *it_column == "balance" )
+      // but not printed on split lines
+      else if ( *it_column == "balance" && (* it_row)["rank"] == "0")
       {
         // Take the balance off the deepest group iterator
         data = groupIteratorList.back().currenttotal().toString();
