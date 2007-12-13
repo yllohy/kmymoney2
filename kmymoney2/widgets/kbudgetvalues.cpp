@@ -30,6 +30,8 @@
 #include <kglobal.h>
 #include <klocale.h>
 #include <kcalendarsystem.h>
+#include <kmessagebox.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -78,7 +80,10 @@ KBudgetValues::KBudgetValues(QWidget* parent, const char* name) :
   for(int i=0; i < 12; ++i)
     connect(m_field[i], SIGNAL(valueChanged(const QString&)), this, SIGNAL(valuesChanged()));
 
+  connect(m_clearButton, SIGNAL(clicked()), this, SLOT(slotClearAllValues()));
   connect(m_periodGroup, SIGNAL(clicked(int)), this, SLOT(slotChangePeriod(int)));
+
+  m_clearButton->setGuiItem(KStdGuiItem::clear());
 }
 
 
@@ -96,24 +101,93 @@ void KBudgetValues::clear(void)
   blockSignals(false);
 }
 
+void KBudgetValues::slotClearAllValues(void)
+{
+  QWidget* tab = m_periodGroup->selected();
+  if(tab == m_monthlyButton) {
+    m_amountMonthly->setValue(MyMoneyMoney());
+  } else if(tab == m_yearlyButton) {
+    m_amountYearly->setValue(MyMoneyMoney());
+  } else if(tab == m_individualButton) {
+    for(int i=0; i < 12; ++i)
+      m_field[i]->setValue(MyMoneyMoney());
+  }
+}
+
 void KBudgetValues::slotChangePeriod(int id)
 {
+  // Prevent a recursive entry of this method due to widget changes
+  // performed during execution of this method
+  static bool inside = false;
+  if(inside)
+    return;
+  inside = true;
+
   QWidget *tab = m_periodGroup->find(id);
   fillMonthLabels();
+
+  MyMoneyMoney newValue;
   if(tab == m_monthlyButton) {
     m_firstItemStack->raiseWidget(m_monthlyPage);
     enableMonths(false);
     m_label[0]->setText(" ");
+    if(m_amountMonthly->value().isZero()) {
+      if(m_currentTab == m_yearlyButton) {
+        newValue = (m_amountYearly->value() / MyMoneyMoney(12, 1)).convert();
+
+      } else if(m_currentTab == m_individualButton) {
+        for(int i=0; i < 12; ++i)
+          newValue += m_field[i]->value();
+        newValue = (newValue / MyMoneyMoney(12, 1)).convert();
+      }
+      if(!newValue.isZero()) {
+        if(KMessageBox::questionYesNo(this, QString("<qt>")+i18n("You have entered budget values using a different base which would result in a monthly budget of <b>%1</b>. Should this value be used to fill the monthly budget?").arg(newValue.formatMoney()), i18n("Auto assignment (caption)", "Auto assignment")+QString("</qt>"), KStdGuiItem::yes(), KStdGuiItem::no(), "use_previous_budget_values") == KMessageBox::Yes) {
+          m_amountMonthly->setValue(newValue);
+        }
+      }
+    }
 
   } else if(tab == m_yearlyButton) {
     m_firstItemStack->raiseWidget(m_yearlyPage);
     enableMonths(false);
     m_label[0]->setText(" ");
+    if(m_amountYearly->value().isZero()) {
+      if(m_currentTab == m_monthlyButton) {
+        newValue = (m_amountMonthly->value() * MyMoneyMoney(12, 1)).convert();
+
+      } else if(m_currentTab == m_individualButton) {
+        for(int i=0; i < 12; ++i)
+          newValue += m_field[i]->value();
+      }
+      if(!newValue.isZero()) {
+        if(KMessageBox::questionYesNo(this, QString("<qt>")+i18n("You have entered budget values using a different base which would result in a yearly budget of <b>%1</b>. Should this value be used to fill the monthly budget?").arg(newValue.formatMoney()), i18n("Auto assignment (caption)", "Auto assignment")+QString("</qt>"), KStdGuiItem::yes(), KStdGuiItem::no(), "use_previous_budget_values") == KMessageBox::Yes) {
+          m_amountYearly->setValue(newValue);
+        }
+      }
+    }
 
   } else if(tab == m_individualButton) {
     m_firstItemStack->raiseWidget(m_individualPage);
     enableMonths(true);
+    for(int i=0; i < 12; ++i)
+      newValue += m_field[i]->value();
+    if(newValue.isZero()) {
+      if(m_currentTab == m_monthlyButton) {
+        newValue = m_amountMonthly->value();
+      } else if(m_currentTab == m_yearlyButton) {
+        newValue = (m_amountYearly->value() / MyMoneyMoney(12, 1)).convert();
+      }
+
+      if(!newValue.isZero()) {
+        if(KMessageBox::questionYesNo(this, QString("<qt>")+i18n("You have entered budget values using a different base which would result in an individual monthly budget of <b>%1</b>. Should this value be used to fill the monthly budgets?").arg(newValue.formatMoney()), i18n("Auto assignment (caption)", "Auto assignment")+QString("</qt>"), KStdGuiItem::yes(), KStdGuiItem::no(), "use_previous_budget_values") == KMessageBox::Yes) {
+          for(int i=0; i < 12; ++i)
+            m_field[i]->setValue(newValue);
+        }
+      }
+    }
   }
+  m_currentTab = tab;
+  inside = false;
 }
 
 void KBudgetValues::enableMonths(bool enabled)

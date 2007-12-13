@@ -55,9 +55,16 @@ class KBudgetValues : public KBudgetValuesDecl
   protected slots:
     void slotChangePeriod(int id);
 
+    /**
+     * This slot clears the value in the value widgets of the selected budget type.
+     * Values of the other types are unaffected.
+     */
+    void slotClearAllValues(void);
+
   private:
     kMyMoneyEdit*   m_field[12];
     QLabel*         m_label[12];
+    QWidget*        m_currentTab;
     QDate           m_budgetDate;
 
   signals:
