@@ -243,7 +243,6 @@ TransactionEditor* KEditScheduleDlg::startEdit(void)
     // add the required fields to the mandatory group
     d->m_requiredFields->add(m_nameEdit);
     d->m_requiredFields->add(editor->haveWidget("account"));
-    d->m_requiredFields->add(editor->haveWidget("payee"));
     d->m_requiredFields->add(editor->haveWidget("category"));
 
     // fix labels

@@ -1,3 +1,6 @@
+2007-12-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Remove payee from required field for schedules
+
 2007-12-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed unnecessary assignment to MyMoneyPayee::null
   * renamed budgetsubaccounts() to budgetSubaccounts() in MyMoneyBudget
