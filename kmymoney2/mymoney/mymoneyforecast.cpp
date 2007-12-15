@@ -649,6 +649,59 @@ MyMoneyMoney MyMoneyForecast::accountCycleVariation(const MyMoneyAccount& acc)
       cycleVariation += m_accountTrendList[acc.id()][t_day];
     }
   } 
-  
   return cycleVariation;
 }
+
+MyMoneyMoney MyMoneyForecast::accountTotalVariation(const MyMoneyAccount& acc)
+{
+  MyMoneyMoney totalVariation;
+  
+  totalVariation = forecastBalance(acc, forecastDays()) - forecastBalance(acc, QDate::currentDate());
+  
+  return totalVariation;
+}
+
+QValueList<QDate> MyMoneyForecast::accountMinimumBalanceDateList(const MyMoneyAccount& acc) 
+{
+  QValueList<QDate> minBalanceList;
+  for(int t_cycle = 0; (t_cycle * accountsCycle()) < forecastDays() ; ++t_cycle) {
+    MyMoneyMoney minBalance = forecastBalance(acc, (t_cycle * accountsCycle() + 1));
+    QDate minDate = QDate::currentDate().addDays(t_cycle * accountsCycle() + 1);
+    for(int t_day = 1; t_day <= accountsCycle() ; ++t_day) {
+      if( minBalance > forecastBalance(acc, (t_cycle * accountsCycle()) + t_day) ) {
+        minBalance = forecastBalance(acc, (t_cycle * accountsCycle()) + t_day );
+        minDate = QDate::currentDate().addDays( (t_cycle * accountsCycle()) + t_day);
+      }
+    }
+    minBalanceList.append(minDate);
+  }
+  return minBalanceList;
+}
+
+QValueList<QDate> MyMoneyForecast::accountMaximumBalanceDateList(const MyMoneyAccount& acc) 
+{
+  QValueList<QDate> maxBalanceList;
+  for(int t_cycle = 0; (t_cycle * accountsCycle()) < forecastDays() ; ++t_cycle) {
+    MyMoneyMoney maxBalance = forecastBalance(acc, (t_cycle * accountsCycle() + 1));
+    QDate maxDate = QDate::currentDate().addDays(t_cycle * accountsCycle() + 1);
+    
+    for(int t_day = 1; t_day <= accountsCycle() ; ++t_day) {
+      if( maxBalance < forecastBalance(acc, (t_cycle * accountsCycle()) + t_day) ) {
+        maxBalance = forecastBalance(acc, (t_cycle * accountsCycle()) + t_day );
+        maxDate = QDate::currentDate().addDays( (t_cycle * accountsCycle()) + t_day);
+      }
+    }
+    maxBalanceList.append(maxDate);
+  }
+  return maxBalanceList;
+}
+
+MyMoneyMoney MyMoneyForecast::accountAverageBalance(const MyMoneyAccount& acc) 
+{
+  MyMoneyMoney totalBalance;
+  for(int f_day = 1; f_day <= forecastDays() ; ++f_day) {
+    totalBalance += m_accountList[acc.id()][f_day];
+  }
+  return totalBalance / MyMoneyMoney( forecastDays(), 1);
+}
+

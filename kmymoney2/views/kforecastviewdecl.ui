@@ -194,6 +194,30 @@
                     </widget>
                 </vbox>
             </widget>
+	    <widget class="QWidget">
+                <property name="name">
+                    <cstring>advanced</cstring>
+                </property>
+                <attribute name="title">
+                    <string>A&amp;dvanced</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <widget class="KListView">
+                        <property name="name">
+                            <cstring>m_advancedList</cstring>
+                        </property>
+                        <property name="resizePolicy">
+                            <enum>AutoOneFit</enum>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">

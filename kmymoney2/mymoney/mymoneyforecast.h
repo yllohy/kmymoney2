@@ -107,6 +107,26 @@ public:
    */
   MyMoneyMoney accountCycleVariation(const MyMoneyAccount& acc);
 
+  /**
+   * amount of variation of a given account for the whole forecast period
+   */
+  MyMoneyMoney accountTotalVariation(const MyMoneyAccount& acc);
+  
+  /**
+   * returns a list of the dates where the account was on its lowest balance in each cycle
+   */
+  QValueList<QDate> accountMinimumBalanceDateList(const MyMoneyAccount& acc);
+  
+  /**
+   * returns a list of the dates where the account was on its highest balance in each cycle
+   */
+  QValueList<QDate> accountMaximumBalanceDateList(const MyMoneyAccount& acc);
+  
+  /**
+   * returns the average balance of the account within the forecast period
+   */
+  MyMoneyMoney accountAverageBalance(const MyMoneyAccount& acc);
+  
   void setAccountsCycle(int accountsCycle);
 
   int accountsCycle(void) const;
@@ -186,7 +206,6 @@ private:
   /**
    * cycle of accounts in days
    */
-
   int m_accountsCycle;
 
   /**

@@ -57,6 +57,7 @@ protected:
   typedef enum {
     SummaryView = 0,
     ListView,
+    AdvancedView,
     // insert new values above this line
     MaxViewTabs
   } ForecastViewTab;
@@ -75,6 +76,7 @@ protected:
   void loadForecast(ForecastViewTab tab);
   void loadListView(void);
   void loadSummaryView(void);
+  void loadAdvancedView(void);
 
 //  void calculateDailyBalances(int forecastDays, int forecastTerm, int forecastTerms);
 

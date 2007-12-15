@@ -1,3 +1,6 @@
+2007-12-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by Alvaro Soliverez
+
 2007-12-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Remove payee from required field for schedules
 
