@@ -1041,7 +1041,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
 
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAccount,
-      MyMoneyReport::eQCnumber|MyMoneyReport::eQCpayee|MyMoneyReport::eQCcategory,
+      MyMoneyReport::eQCnumber|MyMoneyReport::eQCpayee|MyMoneyReport::eQCcategory|MyMoneyReport::eQCbalance,
       MyMoneyTransactionFilter::yearToDate,
       false,
       i18n("Transactions by Account"),

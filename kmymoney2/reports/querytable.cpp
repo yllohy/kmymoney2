@@ -426,7 +426,7 @@ void QueryTable::init(void)
     m_columns += ",payment,interest,fees";
     m_postcolumns = "balance";
   }
-  if( qc & MyMoneyReport::eQCbalance)
+  if ( qc & MyMoneyReport::eQCbalance)
     m_postcolumns = "balance";
 
   TableRow::setSortCriteria(sort);
@@ -839,7 +839,8 @@ void QueryTable::constructTransactionTable(void)
     }
 
     qA["postdate"] = date0s;
-    qA["balance"] = qA["value"] = (b0 * xr).toString();
+    qA["balance"] = (b0 * xr).toString();
+    qA["value"] = QString();
     qA["id"] = "A";
     m_transactions += qA;
 
@@ -849,7 +850,7 @@ void QueryTable::constructTransactionTable(void)
     }
 
     qA["postdate"] = date1s;
-    qA["balance"] = qA["value"] = (b1 * xr).toString();
+    qA["balance"] = (b1 * xr).toString();
     qA["id"] = "Z";
     m_transactions += qA;
   }
@@ -1163,6 +1164,7 @@ void QueryTable::render( QString& result, QString& csv ) const
   bool row_odd = true;
 
   // ***DV***
+  MyMoneyMoney startingBalance;
   for (QValueList<TableRow>::const_iterator it_row = m_transactions.begin();
        it_row != m_transactions.end();
        ++it_row) {
@@ -1175,8 +1177,8 @@ void QueryTable::render( QString& result, QString& csv ) const
     // always detect a group change for different accounts with the same name
     // (as occurs with the same stock purchased from different investment accts)
     if (it_row != m_transactions.begin())
-    if (((* it_row)["rank"] == "-2") && ((* it_row)["id"] == "A"))
-      (groupIteratorList.last()).force();
+      if (((* it_row)["rank"] == "-2") && ((* it_row)["id"] == "A"))
+        (groupIteratorList.last()).force();
 
     // There's a subtle bug here.  If an earlier group gets a new group,
     // then we need to force all the downstream groups to get one too.
@@ -1241,8 +1243,9 @@ void QueryTable::render( QString& result, QString& csv ) const
     // Columns
     //
 
-    // ***DV***
-    if (m_config.isConvertCurrency() && ((* it_row)["rank"] == "-2"))
+    // skip the opening and closing balance row,
+    // if the balance column is not shown
+    if ((columns.contains("balance") == 0) && ((*it_row)["rank"] == "-2"))
       continue;
 
     bool need_label = true;
@@ -1280,8 +1283,11 @@ void QueryTable::render( QString& result, QString& csv ) const
 
       // ***DV***
       if ((* it_row)["rank"] == "-2") {
-        if ((* it_column == "value") || (*it_column == "balance"))
+        if (*it_column == "balance") {
           data = (* it_row)["balance"];
+          if((* it_row)["id"] == "A")           // opening balance?
+            startingBalance = MyMoneyMoney(data);
+        }
 
         if (need_label) {
           if ((* it_column == "payee") ||
@@ -1306,7 +1312,7 @@ void QueryTable::render( QString& result, QString& csv ) const
       else if ( *it_column == "balance" && (* it_row)["rank"] == "0")
       {
         // Take the balance off the deepest group iterator
-        data = groupIteratorList.back().currenttotal().toString();
+        data = (groupIteratorList.back().currenttotal() + startingBalance).toString();
       }
 
       // Figure out how to render the value in this column, depending on
