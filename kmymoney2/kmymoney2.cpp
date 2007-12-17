@@ -4487,7 +4487,7 @@ void KMyMoney2App::slotTransactionCreateSchedule(void)
 void KMyMoney2App::slotTransactionAssignNumber(void)
 {
   if(m_transactionEditor)
-    m_transactionEditor->assignNumber();
+    m_transactionEditor->assignNextNumber();
 }
 
 void KMyMoney2App::slotTransactionCombine(void)

@@ -116,6 +116,18 @@ void TransactionEditor::slotReloadEditWidgets(void)
 {
 }
 
+bool TransactionEditor::eventFilter(QObject* o, QEvent* e)
+{
+  bool rc = false;
+  if(o == haveWidget("number")) {
+    if(e->type() == QEvent::MouseButtonDblClick) {
+      emit assignNumber();
+      rc = true;
+    }
+  }
+  return rc;
+}
+
 void TransactionEditor::slotNumberChanged(const QString& txt)
 {
   kMyMoneyLineEdit* number = dynamic_cast<kMyMoneyLineEdit*>(haveWidget("number"));
@@ -359,7 +371,7 @@ bool TransactionEditor::fixTransactionCommodity(const MyMoneyAccount& account)
   return rc;
 }
 
-void TransactionEditor::assignNumber(void)
+void TransactionEditor::assignNextNumber(void)
 {
   if(canAssignNumber()) {
     kMyMoneyLineEdit* number = dynamic_cast<kMyMoneyLineEdit*>(haveWidget("number"));
@@ -669,11 +681,13 @@ void StdTransactionEditor::createEditWidgets(void)
     default:
       break;
   }
+
   if(showNumberField) {
     kMyMoneyLineEdit* number = new kMyMoneyLineEdit;
     number->setHint(i18n("Number"));
     m_editWidgets["number"] = number;
     connect(number, SIGNAL(lineChanged(const QString&)), this, SLOT(slotNumberChanged(const QString&)));
+    number->installEventFilter(this);
   }
 
   m_editWidgets["postdate"] = new kMyMoneyDateInput;
@@ -826,7 +840,7 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
       && dynamic_cast<kMyMoneyLineEdit*>(w)->text().isEmpty()    // no number filled in
       && m_account.accountType() == MyMoneyAccount::Checkings    // checkings account
       && KMyMoneyGlobalSettings::autoIncCheckNumber()) {         // and auto inc number turned on?
-        assignNumber();
+        assignNextNumber();
       }
     }
     dynamic_cast<KMyMoneyReconcileCombo*>(m_editWidgets["status"])->setState(m_split.reconcileFlag());

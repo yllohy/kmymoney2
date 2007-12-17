@@ -118,7 +118,7 @@ public:
   virtual bool fixTransactionCommodity(const MyMoneyAccount& account);
 
   virtual bool canAssignNumber(void) const;
-  virtual void assignNumber(void);
+  virtual void assignNextNumber(void);
 
   /**
     * Returns a pointer to the widget that should receive
@@ -132,6 +132,8 @@ public:
   QWidget* haveWidget(const QString& name) const;
 
   void setTransaction(const MyMoneyTransaction& t, const MyMoneySplit& s);
+
+  bool eventFilter(QObject* o, QEvent* e);
 
 public slots:
   void slotReloadEditWidgets(void);
@@ -231,6 +233,11 @@ signals:
     * rather then adding it to the ledger right away.
     */
   void scheduleTransaction(const MyMoneyTransaction& t, MyMoneySchedule::occurenceE occurence);
+
+  /**
+   * This signal is sent out, if the user double clicks the number field
+   */
+  void assignNumber(void);
 
 protected:
   QValueList<MyMoneySplit>                          m_splits;
