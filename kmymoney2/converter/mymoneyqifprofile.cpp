@@ -297,7 +297,7 @@ const QString MyMoneyQifProfile::date(const QDate& datein) const
           case 'd':
             if(delim)
               buffer += delim;
-            buffer += QString::number(datein.day());
+            buffer += QString::number(datein.day()).rightJustify(2, '0');
             break;
 
           case 'm':
@@ -306,7 +306,7 @@ const QString MyMoneyQifProfile::date(const QDate& datein) const
             if(maskLen == 3)
               buffer += KGlobal::locale()->calendar()->monthName(datein.month(), datein.year(), true);
             else
-              buffer += QString::number(datein.month());
+              buffer += QString::number(datein.month()).rightJustify(2, '0');
             break;
 
           case 'y':

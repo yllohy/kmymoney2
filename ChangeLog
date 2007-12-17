@@ -3,6 +3,7 @@
   * Fixed type assignment for schedules to be created
     based on existing transactions
   * Added split fees and interest to investment transaction editor
+  * Use two digit month and day values in QIF export
 
 2007-12-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a bug in transaction reports which only showed in the testcases
