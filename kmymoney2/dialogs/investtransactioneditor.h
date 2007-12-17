@@ -122,6 +122,25 @@ protected:
 
   MyMoneyMoney subtotal(const QValueList<MyMoneySplit>& splits) const;
 
+  /**
+   * This method creates a transaction to be used for the split fee/interest editor.
+   * It has a reference to a phony account and the splits contained in @a splits .
+   */
+  bool createPseudoTransaction(MyMoneyTransaction& t, const QValueList<MyMoneySplit>& splits);
+
+  /**
+   * Convenience method used by slotEditInterestSplits() and slotEditFeeSplits().
+   *
+   * @param categoryWidgetName name of the category widget
+   * @param amountWidgetName name of the amount widget
+   * @param splits the splits that make up the transaction to be edited
+   * @param isIncome @c false for fees, @c true for interest
+   * @param slotEditSplits name of the slot to be connected to the focusIn signal of the
+   *                       category widget named @p categoryWidgetName in case of multiple splits
+   *                       in @p splits .
+   */
+  int editSplits(const QString& categoryWidgetName, const QString& amountWidgetName, QValueList<MyMoneySplit>& splits, bool isIncome, const char* slotEditSplits);
+
 private:
 
 private:

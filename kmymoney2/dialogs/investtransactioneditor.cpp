@@ -66,6 +66,7 @@ public:
     m_parent(parent),
     m_activity(0)
   {
+    m_phonyAccount = MyMoneyAccount(QCString("Phony-ID"), MyMoneyAccount());
   }
 
   ~InvestTransactionEditorPrivate() {
@@ -76,6 +77,8 @@ public:
 
   InvestTransactionEditor* m_parent;
   Activity*                m_activity;
+  MyMoneyAccount           m_phonyAccount;
+  MyMoneySplit             m_phonySplit;
 };
 
 
@@ -217,8 +220,6 @@ void InvestTransactionEditor::createEditWidgets(void)
   connect(fees, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateFeeCategory(const QString&, QCString&)));
   connect(fees, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
   connect(fees->splitButton(), SIGNAL(clicked()), this, SLOT(slotEditFeeSplits()));
-  // FIXME for now, hide the split button
-  fees->splitButton()->hide();
 
   KMyMoneyCategory* interest = new KMyMoneyCategory(0, 0, true);
   interest->setHint(i18n("Interest"));
@@ -229,8 +230,6 @@ void InvestTransactionEditor::createEditWidgets(void)
   connect(interest, SIGNAL(createItem(const QString&, QCString&)), this, SLOT(slotCreateInterestCategory(const QString&, QCString&)));
   connect(interest, SIGNAL(objectCreation(bool)), this, SIGNAL(objectCreation(bool)));
   connect(interest->splitButton(), SIGNAL(clicked()), this, SLOT(slotEditInterestSplits()));
-  // FIXME for now, hide the split button
-  interest->splitButton()->hide();
 
   KTextEdit* memo = new KTextEdit;
   memo->setTabChangesFocus(true);
@@ -316,93 +315,104 @@ void InvestTransactionEditor::createEditWidgets(void)
 
 int InvestTransactionEditor::slotEditFeeSplits(void)
 {
-  int rc = QDialog::Rejected;
-
-  // force focus change to update all data
-  QWidget* w = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["fee-account"])->splitButton();
-  if(w)
-    w->setFocus();
-
-  kMyMoneyEdit* amount = dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount"));
-#if 0
-  kMyMoneyEdit* deposit = dynamic_cast<kMyMoneyEdit*>(haveWidget("deposit"));
-  kMyMoneyEdit* payment = dynamic_cast<kMyMoneyEdit*>(haveWidget("payment"));
-  KMyMoneyCashFlowCombo* cashflow = 0;
-  KMyMoneyRegister::CashFlowDirection dir = KMyMoneyRegister::Unknown;
-  bool isValidAmount = false;
-
-  if(amount) {
-    isValidAmount = amount->text().length() != 0;
-    cashflow = dynamic_cast<KMyMoneyCashFlowCombo*>(haveWidget("cashflow"));
-    if(cashflow)
-      dir = cashflow->direction();
-
-  } else {
-    if(deposit) {
-      if (deposit->text().length() != 0) {
-        isValidAmount = true;
-        dir = KMyMoneyRegister::Deposit;
-      }
-    }
-    if(payment) {
-      if (payment->text().length() != 0) {
-        isValidAmount = true;
-        dir = KMyMoneyRegister::Payment;
-      }
-    }
-    if(!deposit || !payment) {
-      qDebug("Internal error: deposit(%p) & payment(%p) widgets not found but required", deposit, payment);
-      return rc;
-    }
-  }
-
-  if(dir == KMyMoneyRegister::Unknown)
-    dir = KMyMoneyRegister::Payment;
-#endif
-
-  MyMoneyTransaction transaction;
-  transaction.setCommodity(m_currency.id());
-#if 0
-  if(createPseudoTransaction(transaction, m_feeSplits)) {
-    MyMoneyMoney value;
-
-    KSplitTransactionDlg* dlg = new KSplitTransactionDlg(transaction,
-                                                        m_account,
-                                                        isValidAmount,
-                                                        dir == KMyMoneyRegister::Deposit,
-                                                        0,
-                                                        m_objects,
-                                                        m_priceInfo,
-                                                        m_regForm);
-    // connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
-
-    if((rc = dlg->exec()) == QDialog::Accepted) {
-      m_transaction = dlg->transaction();
-      m_split = m_transaction.splits()[0];
-      loadEditWidgets();
-    }
-
-    delete dlg;
-  }
-
-  // focus jumps into the memo field
-  if((w = haveWidget("memo")) != 0) {
-    w->setFocus();
-  }
-#endif
-  return rc;
+  return editSplits("fee-account", "fee-amount", m_feeSplits, false, SLOT(slotEditFeeSplits()));
 }
-
-#if 0
-bool InvestTransactionEditor::createPseudoTransaction(MyMoneyTransaction& t, const QValueList<MyMoneySplit>& splits, KMyMoneyCategory* category, kMyMoneyEdit* amount)
-{
-
-}
-#endif
 
 int InvestTransactionEditor::slotEditInterestSplits(void)
 {
-  return 0;
+  return editSplits("interest-account", "interest-amount", m_interestSplits, true, SLOT(slotEditInterestSplits()));
+}
+
+int InvestTransactionEditor::editSplits(const QString& categoryWidgetName, const QString& amountWidgetName, QValueList<MyMoneySplit>& splits, bool isIncome, const char* slotEditSplits)
+{
+  int rc = QDialog::Rejected;
+
+  if(!m_openEditSplits) {
+  // only get in here in a single instance
+    m_openEditSplits = true;
+
+    // force focus change to update all data
+    KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets[categoryWidgetName]);
+    QWidget* w = category->splitButton();
+    if(w)
+      w->setFocus();
+
+    kMyMoneyEdit* amount = dynamic_cast<kMyMoneyEdit*>(haveWidget(amountWidgetName));
+
+    MyMoneyTransaction transaction;
+    transaction.setCommodity(m_currency.id());
+    if(splits.count() == 0 && category->selectedItem()) {
+      MyMoneySplit s;
+      s.setAccountId(category->selectedItem());
+      s.setShares(amount->value());
+      s.setValue(s.shares());
+      splits << s;
+    }
+    if(createPseudoTransaction(transaction, splits)) {
+      MyMoneyMoney value;
+
+      KSplitTransactionDlg* dlg = new KSplitTransactionDlg(transaction,
+                                                          d->m_phonySplit,
+                                                          d->m_phonyAccount,
+                                                          false,
+                                                          isIncome,
+                                                          0,
+                                                          m_priceInfo,
+                                                          m_regForm);
+      // connect(dlg, SIGNAL(newCategory(MyMoneyAccount&)), this, SIGNAL(newCategory(MyMoneyAccount&)));
+
+      if((rc = dlg->exec()) == QDialog::Accepted) {
+        transaction = dlg->transaction();
+        // collect splits out of the transaction
+        splits.clear();
+        QValueList<MyMoneySplit>::const_iterator it_s;
+        MyMoneyMoney fees;
+        for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
+          if((*it_s).accountId() == d->m_phonyAccount.id())
+            continue;
+          splits << *it_s;
+          fees += (*it_s).shares();
+        }
+        if(isIncome)
+          fees = -fees;
+
+        QCString categoryId;
+        setupCategoryWidget(category, splits, categoryId, slotEditSplits);
+        amount->setValue(fees);
+        slotUpdateTotalAmount();
+      }
+
+      delete dlg;
+    }
+
+    // focus jumps into the memo field
+    if((w = haveWidget("memo")) != 0) {
+      w->setFocus();
+    }
+
+    m_openEditSplits = false;
+  }
+  return rc;
+}
+
+bool InvestTransactionEditor::createPseudoTransaction(MyMoneyTransaction& t, const QValueList<MyMoneySplit>& splits)
+{
+  t.removeSplits();
+
+  MyMoneySplit split;
+  split.setAccountId(d->m_phonyAccount.id());
+  split.setValue(-subtotal(splits));
+  split.setShares(split.value());
+  t.addSplit(split);
+  d->m_phonySplit = split;
+
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  for(it_s = splits.begin(); it_s != splits.end(); ++it_s) {
+    split = *it_s;
+    split.clearId();
+    t.addSplit(split);
+  }
+  return true;
 }
 
 void InvestTransactionEditor::slotCreateSecurity(const QString& name, QCString& id)
