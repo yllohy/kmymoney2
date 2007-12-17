@@ -1,5 +1,7 @@
 2007-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Double click in number field assigns next check number
+  * Fixed type assignment for schedules to be created
+    based on existing transactions
 
 2007-12-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a bug in transaction reports which only showed in the testcases

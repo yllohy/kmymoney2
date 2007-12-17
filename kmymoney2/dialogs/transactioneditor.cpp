@@ -907,11 +907,15 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
         }
         if(action != KMyMoneyRegister::ActionNone) {
           QLabel *categoryLabel = dynamic_cast<QLabel*>(w);
-          if(action == KMyMoneyRegister::ActionTransfer)
-            categoryLabel->setText(i18n("Transfer to"));
+          if(action == KMyMoneyRegister::ActionTransfer) {
+            if(m_split.value().isPositive())
+              categoryLabel->setText(i18n("Transfer from"));
+            else
+              categoryLabel->setText(i18n("Transfer to"));
+          }
           if((w = haveWidget("cashflow")) != 0) {
             KMyMoneyCashFlowCombo* cashflow = dynamic_cast<KMyMoneyCashFlowCombo*>(w);
-            if(action == KMyMoneyRegister::ActionDeposit)
+            if(action == KMyMoneyRegister::ActionDeposit || (action == KMyMoneyRegister::ActionTransfer && m_split.value().isPositive()))
               cashflow->setDirection(KMyMoneyRegister::Deposit);
             else
               cashflow->setDirection(KMyMoneyRegister::Payment);
