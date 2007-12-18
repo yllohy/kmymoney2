@@ -134,6 +134,12 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     m_criteriaTab->showPage( m_tab1 );
     m_criteriaTab->setMinimumSize( 500,200 );
 
+    QValueList<MyMoneyBudget> list = MyMoneyFile::instance()->budgetList();
+    QValueList<MyMoneyBudget>::const_iterator it_b;
+    for(it_b = list.begin(); it_b != list.end(); ++it_b) {
+      m_budgets.push_back(*it_b);
+    }
+
     //
     // Now set up the widgets with proper values
     //
@@ -181,6 +187,11 @@ void KReportConfigurationFilterDlg::slotSearch(void)
 
     m_currentState.setIncludingUnusedAccounts( m_tab2->m_checkUnused->isChecked() );
 
+    if(m_tab2->m_comboBudget->isEnabled()) {
+      m_currentState.setBudget(m_budgets[m_tab2->m_comboBudget->currentItem()].id(), m_initialState.rowType() == MyMoneyReport::eBudgetActual);
+    } else {
+      m_currentState.setBudget(QCString(), false);
+    }
   }
   else if ( m_tab3 )
   {
@@ -313,6 +324,17 @@ void KReportConfigurationFilterDlg::slotReset(void)
         break;
       }
     }
+
+    if(m_initialState.rowType() == MyMoneyReport::eBudget
+    || m_initialState.rowType() == MyMoneyReport::eBudgetActual) {
+      m_tab2->m_budgetFrame->setEnabled(!m_budgets.empty());
+      QValueVector<MyMoneyBudget>::const_iterator it_b;
+      int i = 0;
+      for(it_b = m_budgets.begin(); it_b != m_budgets.end(); ++it_b) {
+        m_tab2->m_comboBudget->insertItem((*it_b).name(), i++);
+      }
+    }
+
     m_tab2->m_checkScheduled->setChecked( m_currentState.isIncludingSchedules() );
     m_tab2->m_checkTransfers->setChecked( m_currentState.isIncludingTransfers() );
     m_tab2->m_checkUnused->setChecked( m_currentState.isIncludingUnusedAccounts() );

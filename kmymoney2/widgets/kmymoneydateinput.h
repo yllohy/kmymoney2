@@ -69,7 +69,7 @@ public:
   ~kMyMoneyDateInput();
 
   // Replace calls to this with the new date() method
-  QDate getQDate(void) KDE_DEPRECATED;
+  // QDate getQDate(void) KDE_DEPRECATED;
 
   QDate date(void) const;
   void setDate(QDate date);

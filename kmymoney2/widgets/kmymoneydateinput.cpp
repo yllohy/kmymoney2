@@ -54,15 +54,17 @@ bool KMyMoneyDateEdit::event(QEvent* e)
 {
   // make sure that we keep the current date setting of a kMyMoneyDateInput object
   // across the QDateEdit::event(FocusOutEvent)
+  bool rc;
 
   kMyMoneyDateInput* p = dynamic_cast<kMyMoneyDateInput*>(parentWidget());
   if(e->type() == QEvent::FocusOut && p) {
     QDate d = p->date();
-    QDateEdit::event(e);
+    rc = QDateEdit::event(e);
     p->loadDate(d);
   } else {
-    QDateEdit::event(e);
+    rc = QDateEdit::event(e);
   }
+  return rc;
 }
 
 kMyMoneyDateInput::kMyMoneyDateInput(QWidget *parent, const char *name, Qt::AlignmentFlags flags)
@@ -300,11 +302,6 @@ void kMyMoneyDateInput::slotDateChosen(QDate date)
 }
 
 QDate kMyMoneyDateInput::date(void) const
-{
-  return dateEdit->date();
-}
-
-QDate kMyMoneyDateInput::getQDate(void)
 {
   return dateEdit->date();
 }

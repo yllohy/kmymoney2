@@ -182,8 +182,8 @@ void KExportDlg::writeConfig(void)
   kconfig->writeEntry("KExportDlg_LastFile", m_qlineeditFile->text());
   kconfig->writeEntry("KExportDlg_AccountOpt", m_qcheckboxAccount->isChecked());
   kconfig->writeEntry("KExportDlg_CatOpt", m_qcheckboxCategories->isChecked());
-  kconfig->writeEntry("KExportDlg_StartDate", QDateTime(m_kmymoneydateStart->getQDate()));
-  kconfig->writeEntry("KExportDlg_EndDate", QDateTime(m_kmymoneydateEnd->getQDate()));
+  kconfig->writeEntry("KExportDlg_StartDate", QDateTime(m_kmymoneydateStart->date()));
+  kconfig->writeEntry("KExportDlg_EndDate", QDateTime(m_kmymoneydateEnd->date()));
   kconfig->writeEntry("KExportDlg_LastProfile", m_profileComboBox->currentText());
   kconfig->sync();
 }
@@ -222,7 +222,7 @@ void KExportDlg::checkData(const QCString& accountId)
   if(!m_qlineeditFile->text().isEmpty()
   && m_accountComboBox->selectedAccounts().count() != 0
   && !m_profileComboBox->currentText().isEmpty()
-  && m_kmymoneydateStart->getQDate() <= m_kmymoneydateEnd->getQDate()
+  && m_kmymoneydateStart->date() <= m_kmymoneydateEnd->date()
   && (m_qcheckboxAccount->isChecked() || m_qcheckboxCategories->isChecked()))
     okEnabled = true;
 

@@ -113,7 +113,7 @@ public:
   bool isColumnsAreDays(void) const { return m_columnsAreDays; }
   bool isIncludingTransfers(void) const { return m_includeTransfers; }
   bool isIncludingUnusedAccounts(void) const { return m_includeUnusedAccounts; }
-  bool hasBudget(void) const { return m_hasBudget; }
+  bool hasBudget(void) const { return !m_budgetId.isEmpty(); }
   bool isIncludingBudgetActuals(void) const { return m_includeBudgetActuals; }
 
   // Simple set operations
@@ -150,7 +150,7 @@ public:
     * simply checked for any non-empty string, and if so, hasBudget()
     * will return true.
     */
-  void setBudget( const QCString& _budget, bool _fa = true ) { m_hasBudget = !_budget.isEmpty(); m_includeBudgetActuals=_fa; }
+  void setBudget( const QCString& _budget, bool _fa = true ) { m_budgetId = _budget; m_includeBudgetActuals=_fa; }
 
   /**
     * This method allows you to clear the underlying transaction filter
@@ -430,14 +430,9 @@ private:
     */
   bool m_includeTransfers;
   /**
-    * Whether this report has a budget associated with it
-    *
-    * TODO: Ultimately, the user should be able to select which budget
-    * the report should consider.  Then this will not be a bool, but a
-    * budget ID instead.  For now, choosing a budget is left up to the
-    * report generator.
+    * The id of the budget associated with this report.
     */
-  bool m_hasBudget;
+  QCString m_budgetId;
   /**
     * Whether this report should print the actual data to go along with
     * the budget.  This is only valid if the report has a budget.

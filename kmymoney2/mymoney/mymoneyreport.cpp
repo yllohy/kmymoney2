@@ -68,7 +68,6 @@ MyMoneyReport::MyMoneyReport(void):
     m_chartByDefault(false),
     m_includeSchedules(false),
     m_includeTransfers(false),
-    m_hasBudget(false),
     m_includeBudgetActuals(false),
     m_includeUnusedAccounts(false)
 {
@@ -101,7 +100,6 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, dateOptionE _dl, bool _
     m_chartByDefault(false),
     m_includeSchedules(false),
     m_includeTransfers(false),
-    m_hasBudget(false),
     m_includeBudgetActuals(false),
     m_includeUnusedAccounts(false)
 {
@@ -111,7 +109,8 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, dateOptionE _dl, bool _
     m_queryColumns = static_cast<EQueryColumns>(_ct);
   setDateFilter(_dl);
 
-  if ( static_cast<size_t>(_rt) > sizeof(kTypeArray)/sizeof(EReportType) || m_reportType == eNoReport )
+  if ( (_rt > static_cast<ERowType>(sizeof(kTypeArray)/sizeof(kTypeArray[0])))
+  || (m_reportType == eNoReport) )
     throw new MYMONEYEXCEPTION("Invalid report type");
 
   if ( _rt == MyMoneyReport::eAssetLiability )
@@ -297,7 +296,8 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   e.setAttribute("includeschedules",m_includeSchedules);
   e.setAttribute("columnsaredays",m_columnsAreDays);
   e.setAttribute("includestransfers",m_includeTransfers);
-  e.setAttribute("hasbudget",m_hasBudget);
+  if(!m_budgetId.isEmpty())
+    e.setAttribute("budget",m_budgetId);
   e.setAttribute("includesactuals",m_includeBudgetActuals);
   e.setAttribute("includeunused", m_includeUnusedAccounts);
 
@@ -553,7 +553,8 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_includeSchedules = e.attribute("includeschedules","0").toUInt();
     m_columnsAreDays = e.attribute("columnsaredays","0").toUInt();
     m_includeTransfers = e.attribute("includestransfers","0").toUInt();
-    m_hasBudget = e.attribute("hasbudget","0").toUInt();
+    if(e.hasAttribute("budget"))
+      m_budgetId = e.attribute("budget");
     m_includeBudgetActuals = e.attribute("includesactuals","0").toUInt();
     m_includeUnusedAccounts = e.attribute("includeunused", "0").toUInt();
 

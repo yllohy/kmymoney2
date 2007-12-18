@@ -234,8 +234,8 @@ void KCsvProgressDlg::writeConfig(void)
   KConfig *kconfig = KGlobal::config();
   kconfig->setGroup("Last Use Settings");
   kconfig->writeEntry("KCsvProgressDlg_LastFile", m_qlineeditFile->text());
-  kconfig->writeEntry("KCsvProgressDlg_StartDate", QDateTime(m_kmymoneydateStart->getQDate()));
-  kconfig->writeEntry("KCsvProgressDlg_EndDate", QDateTime(m_kmymoneydateEnd->getQDate()));
+  kconfig->writeEntry("KCsvProgressDlg_StartDate", QDateTime(m_kmymoneydateStart->date()));
+  kconfig->writeEntry("KCsvProgressDlg_EndDate", QDateTime(m_kmymoneydateEnd->date()));
   kconfig->sync();
 }
 

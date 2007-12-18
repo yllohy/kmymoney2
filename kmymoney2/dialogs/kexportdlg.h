@@ -85,12 +85,12 @@ public:
   /**
     * This method returns the start date of the export dialog
     */
-  const QDate startDate(void) const { return m_kmymoneydateStart->getQDate(); };
+  const QDate startDate(void) const { return m_kmymoneydateStart->date(); };
 
   /**
     * This method returns the end date of the export dialog
     */
-  const QDate endDate(void) const { return m_kmymoneydateEnd->getQDate(); };
+  const QDate endDate(void) const { return m_kmymoneydateEnd->date(); };
 
   /**
     * This method returns the state of the account checkbox

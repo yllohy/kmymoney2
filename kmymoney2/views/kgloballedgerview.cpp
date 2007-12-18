@@ -116,7 +116,8 @@ bool MousePressFilter::eventFilter(QObject* o, QEvent* e)
       }
       if(it_w == m_parents.end()) {
         m_lastMousePressEvent = e;
-        emit mousePressedOnExternalWidget();
+        bool rc;
+        emit mousePressedOnExternalWidget(rc);
       }
     }
 
@@ -236,7 +237,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(m_register, SIGNAL(editTransaction()), this, SIGNAL(startEdit()));
   connect(m_register, SIGNAL(emptyItemSelected()), this, SLOT(slotNewTransaction()));
   connect(m_register, SIGNAL(aboutToSelectItem(KMyMoneyRegister::RegisterItem*, bool&)), this, SLOT(slotAboutToSelectItem(KMyMoneyRegister::RegisterItem*, bool&)));
-  connect(d->m_mousePressFilter, SIGNAL(mousePressedOnExternalWidget()), this, SIGNAL(cancelOrEndEdit()));
+  connect(d->m_mousePressFilter, SIGNAL(mousePressedOnExternalWidget(bool&)), this, SIGNAL(cancelOrEndEdit(bool&)));
 
   connect(m_form, SIGNAL(newTransaction(KMyMoneyRegister::Action)), this, SLOT(slotNewTransaction(KMyMoneyRegister::Action)));
 

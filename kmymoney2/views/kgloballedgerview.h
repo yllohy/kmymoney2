@@ -118,7 +118,7 @@ protected:
   bool eventFilter(QObject* o, QEvent* e);
 
 signals:
-  void mousePressedOnExternalWidget(void);
+  void mousePressedOnExternalWidget(bool&);
 
 private:
   QValueList<QWidget*> m_parents;

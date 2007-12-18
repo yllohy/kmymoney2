@@ -24,12 +24,17 @@
 #ifndef KREPORTCONFIGURATIONFILTERDLG_H
 #define KREPORTCONFIGURATIONFILTERDLG_H
 
+#include <qvaluevector.h>
+
 #include "../dialogs/kfindtransactiondlg.h"
 #include "../mymoney/mymoneyreport.h"
+#include "../mymoney/mymoneybudget.h"
+
 class kMyMoneyReportConfigTab1Decl;
 class kMyMoneyReportConfigTab2Decl;
 class kMyMoneyReportConfigTab3Decl;
 class kMyMoneyReportConfigTabChartDecl;
+class MyMoneyBudget;
 
 /**
   * @author Ace Jones
@@ -57,6 +62,8 @@ protected slots:
   void slotSearch(void);
   void slotShowHelp(void);
 
+private:
+  QValueVector<MyMoneyBudget>  m_budgets;
 };
 
 #endif

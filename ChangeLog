@@ -1,6 +1,11 @@
 2007-12-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Take the character pressed to start editing a split transaction
     as the first character of the category
+  * Get rid of kMyMoneyDateInput::getQDate()
+  * Store real budget id with report
+  * Fixed the signature of a signal
+  * Added a budget selector widget to report configuration
+  * Fixed unknown signal/slot problem during startup
 
 2007-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Double click in number field assigns next check number
