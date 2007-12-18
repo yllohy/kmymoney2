@@ -844,7 +844,7 @@ QWidget* kMyMoneySplitTable::createEditWidgets(void)
   m_editCategory->lineEdit()->selectAll();
   m_editMode = true;
 
-  return m_editCategory;
+  return m_editCategory->lineEdit();
 }
 
 void kMyMoneySplitTable::slotLoadEditWidgets(void)

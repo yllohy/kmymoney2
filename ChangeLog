@@ -1,3 +1,7 @@
+2007-12-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Take the character pressed to start editing a split transaction
+    as the first character of the category
+
 2007-12-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Double click in number field assigns next check number
   * Fixed type assignment for schedules to be created
