@@ -3836,8 +3836,10 @@ void KMyMoney2App::slotPayeeDelete(void)
            s_it != (*it).transaction().splits().end(); ++s_it)
       {
         // is the payee in the split to be deleted?
-        if(payeeInList(m_selectedPayees, (*it_p).id()))
+        if(payeeInList(m_selectedPayees, (*s_it).payeeId())) {
           used_schedules.push_back(*it); // remember this schedule
+          break;
+        }
       }
     }
 //     kdDebug() << "[KPayeesView::slotDeletePayee]  " << used_schedules.count() << " schedules use one of the selected payees" << endl;
@@ -3895,7 +3897,7 @@ void KMyMoney2App::slotPayeeDelete(void)
           } // for - Splits
           // store transaction in current schedule
           (*it).setTransaction(trans);
-          file->modifySchedule(*it);  // modify the schedule in the MyMoney object
+          file->modifySchedule(*it);  // modify the schedule in the MyMoney engine
         } // for - Schedules
       } catch(MyMoneyException *e) {
         KMessageBox::detailedSorry(0, i18n("Unable to reassign payee of transaction/split"),
