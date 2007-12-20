@@ -114,6 +114,7 @@ public:
   bool isIncludingTransfers(void) const { return m_includeTransfers; }
   bool isIncludingUnusedAccounts(void) const { return m_includeUnusedAccounts; }
   bool hasBudget(void) const { return !m_budgetId.isEmpty(); }
+  const QCString& budget(void) const { return m_budgetId; }
   bool isIncludingBudgetActuals(void) const { return m_includeBudgetActuals; }
 
   // Simple set operations

@@ -1,3 +1,6 @@
+2007-12-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added budget() to MyMoneyReport to return the budget id
+
 2007-12-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed layout problem in report configuration dialog
   * Fixed payee assignment when deleting a payee
