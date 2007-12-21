@@ -145,6 +145,11 @@ kMyMoneyCalculator::~kMyMoneyCalculator()
 
 void kMyMoneyCalculator::digitClicked(int button)
 {
+  if(m_clearOperandOnDigit) {
+    operand = QString();
+    m_clearOperandOnDigit = false;
+  }
+
   operand += QChar(button + 0x30);
   if(operand.length() > 16)
     operand = operand.left(16);

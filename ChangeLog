@@ -1,3 +1,7 @@
+2007-12-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem with the calculator when starting to enter numbers
+    using the mouse
+
 2007-12-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added budget() to MyMoneyReport to return the budget id
 
