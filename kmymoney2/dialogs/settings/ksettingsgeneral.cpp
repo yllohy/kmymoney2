@@ -23,15 +23,31 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
+#include <kmymoney/kmymoneydateinput.h>
 #include "ksettingsgeneral.h"
 
 KSettingsGeneral::KSettingsGeneral(QWidget* parent, const char* name) :
   KSettingsGeneralDecl(parent, name)
 {
+  // hide the internally used date field
+  kcfg_StartDate->hide();
+
+  // setup connections, so that the sort optios get loaded once the edit fields are filled
+  connect(kcfg_StartDate, SIGNAL(valueChanged(const QDate&)), this, SLOT(slotLoadStartDate(const QDate&)));
+
+  // setup connections, so that changes by the user are forwarded to the (hidden) edit fields
+  connect(m_startDateEdit, SIGNAL(dateChanged(const QDate&)), kcfg_StartDate, SLOT(setDate(const QDate&)));
 }
 
 KSettingsGeneral::~KSettingsGeneral()
 {
+}
+
+void KSettingsGeneral::slotLoadStartDate(const QDate&)
+{
+  // only need this once
+  disconnect(kcfg_StartDate, SIGNAL(valueChanged(const QDate&)), this, SLOT(slotLoadStartDate(const QDate&)));
+  m_startDateEdit->setDate(kcfg_StartDate->date());
 }
 
 #include "ksettingsgeneral.moc"

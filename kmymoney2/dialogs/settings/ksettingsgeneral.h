@@ -35,6 +35,10 @@ class KSettingsGeneral : public KSettingsGeneralDecl
 public:
   KSettingsGeneral(QWidget* parent = 0, const char* name = 0);
   ~KSettingsGeneral();
+
+protected slots:
+  void slotLoadStartDate(const QDate&);
+
 };
 #endif
 

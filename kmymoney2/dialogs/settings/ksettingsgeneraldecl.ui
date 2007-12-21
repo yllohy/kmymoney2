@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>549</width>
-            <height>384</height>
+            <width>614</width>
+            <height>387</height>
         </rect>
     </property>
     <property name="caption">
@@ -506,6 +506,51 @@ You can use &lt;b&gt;View/Show all accounts&lt;/b&gt; to temporarily show hidden
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
+                            <widget class="QLayoutWidget">
+                                <property name="name">
+                                    <cstring>layout2</cstring>
+                                </property>
+                                <hbox>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QLabel">
+                                        <property name="name">
+                                            <cstring>textLabel1_3</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Don't show transactions prior to</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="kMyMoneyDateInput">
+                                        <property name="name">
+                                            <cstring>m_startDateEdit</cstring>
+                                        </property>
+                                    </widget>
+                                    <widget class="QDateEdit">
+                                        <property name="name">
+                                            <cstring>kcfg_StartDate</cstring>
+                                        </property>
+                                    </widget>
+                                    <spacer>
+                                        <property name="name">
+                                            <cstring>spacer10</cstring>
+                                        </property>
+                                        <property name="orientation">
+                                            <enum>Horizontal</enum>
+                                        </property>
+                                        <property name="sizeType">
+                                            <enum>Expanding</enum>
+                                        </property>
+                                        <property name="sizeHint">
+                                            <size>
+                                                <width>63</width>
+                                                <height>20</height>
+                                            </size>
+                                        </property>
+                                    </spacer>
+                                </hbox>
+                            </widget>
                             <widget class="QCheckBox">
                                 <property name="name">
                                     <cstring>kcfg_HideReconciledTransactions</cstring>
@@ -532,7 +577,7 @@ You can use &lt;b&gt;View/Show all accounts&lt;/b&gt; to temporarily show hidden
                         <property name="sizeHint">
                             <size>
                                 <width>20</width>
-                                <height>70</height>
+                                <height>30</height>
                             </size>
                         </property>
                     </spacer>

@@ -3,6 +3,7 @@
     using the mouse
   * Fixed problem with various negative sign positions
   * Show negative numbers in pivot table reports in the selected color
+  * Removed unused filter settings on the register tab of the settings dialog
 
 2007-12-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added budget() to MyMoneyReport to return the budget id
