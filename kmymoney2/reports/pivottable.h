@@ -211,6 +211,8 @@ private:
 
     MyMoneyReport m_config_f;
 
+    QString coloredAmount(const MyMoneyMoney& amount, const QString& currencySymbol = QString(), int prec = 2 ) const;
+
 protected:
   /**
     * Creates a row in the grid if it doesn't already exist

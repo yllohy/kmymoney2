@@ -50,6 +50,7 @@
 #include "pivottable.h"
 #include "reportdebug.h"
 #include "kreportchartview.h"
+#include "../kmymoneyglobalsettings.h"
 
 #include <kmymoney/kmymoneyutils.h>
 
@@ -279,7 +280,7 @@ void PivotTable::init(void)
   // Calculate budget mapping
   // (for budget-vs-actual reports only)
   //
-  if ( m_config_f.hasBudget() )
+  if ( m_config_f.hasBudget())
     calculateBudgetMapping();
 
   //
@@ -1920,12 +1921,12 @@ QString PivotTable::renderHTML( void ) const
     unsigned column = 1;
     while ( column < m_numColumns )
     {
-      result += QString("<td>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Difference"),i18n("Actual"));
+      result += QString("<td>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Actual"),i18n("Difference"));
       column++;
     }
 
     if ( m_config_f.isShowingRowTotals() )
-      result += QString("<td>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Difference"),i18n("Actual"));
+      result += QString("<td>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Actual"),i18n("Difference"));
     result += "</tr>";
   }
 
@@ -1994,24 +1995,35 @@ QString PivotTable::renderHTML( void ) const
             bool isUsed = it_row.data()[0].isUsed();
             while ( column < m_numColumns )
             {
-              if ( m_config_f.isIncludingBudgetActuals() ) {
-                rowdata += QString("<td>%1</td>").arg(it_row.data().m_budget[column].formatMoney());
-                MyMoneyMoney diff = it_row.data().m_budget[column] - it_row.data()[column];
-                rowdata += QString("<td>%1</td>").arg(diff.formatMoney());
-              }
+              if ( m_config_f.hasBudget() )
+                rowdata += QString("<td>%1</td>")
+                    .arg(coloredAmount(it_row.data().m_budget[column]));
+
               isUsed |= it_row.data()[column].isUsed();
-              rowdata += QString("<td>%1</td>").arg(it_row.data()[column++].formatMoney());
+              rowdata += QString("<td>%1</td>")
+                  .arg(coloredAmount(it_row.data()[column]));
+
+              if ( m_config_f.isIncludingBudgetActuals() ) {
+                MyMoneyMoney diff = it_row.data().m_budget[column] - it_row.data()[column];
+                rowdata += QString("<td>%1</td>")
+                    .arg(coloredAmount(diff));
+              }
+              column++;
             }
 
             if ( m_config_f.isShowingRowTotals() )
             {
-              if ( m_config_f.isIncludingBudgetActuals() ) {
-                rowdata += QString("<td>%1</td>").arg((*it_row).m_budget.m_total.formatMoney());
-                MyMoneyMoney diff = (*it_row).m_budget.m_total - (*it_row).m_total;
-                rowdata += QString("<td>%1</td>").arg(diff.formatMoney());
-              }
+              if ( m_config_f.hasBudget() )
+                rowdata += QString("<td>%1</td>")
+                    .arg(coloredAmount((*it_row).m_budget.m_total));
 
-              rowdata += QString("<td>%1</td>").arg((*it_row).m_total.formatMoney());
+              rowdata += QString("<td>%1</td>")
+                  .arg(coloredAmount((*it_row).m_total));
+
+              if ( m_config_f.isIncludingBudgetActuals() ) {
+                MyMoneyMoney diff = (*it_row).m_budget.m_total - (*it_row).m_total;
+                rowdata += QString("<td>%1</td>").arg(coloredAmount(diff));
+              }
             }
 
             //
@@ -2093,23 +2105,34 @@ QString PivotTable::renderHTML( void ) const
             isUsed |= (*it_innergroup).m_total[0].isUsed();
             while ( column < m_numColumns )
             {
-              if ( m_config_f.isIncludingBudgetActuals() ) {
-                finalRow += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_budget[column].formatMoney());
-                MyMoneyMoney diff = (*it_innergroup).m_total.m_budget[column] - (*it_innergroup).m_total[column];
-                finalRow += QString("<td>%1</td>").arg(diff.formatMoney());
-              }
+              if ( m_config_f.hasBudget())
+                finalRow += QString("<td>%1</td>")
+                    .arg(coloredAmount((*it_innergroup).m_total.m_budget[column]));
+
               isUsed |= (*it_innergroup).m_total[column].isUsed();
-              finalRow += QString("<td>%1</td>").arg((*it_innergroup).m_total[column++].formatMoney());
+              finalRow += QString("<td>%1</td>")
+                  .arg(coloredAmount((*it_innergroup).m_total[column]));
+
+              if ( m_config_f.isIncludingBudgetActuals() ) {
+                MyMoneyMoney diff = (*it_innergroup).m_total.m_budget[column] - (*it_innergroup).m_total[column];
+                finalRow += QString("<td>%1</td>").arg(coloredAmount(diff));
+              }
+              column++;
             }
 
             if (  m_config_f.isShowingRowTotals() )
             {
+              if ( m_config_f.hasBudget() )
+                finalRow += QString("<td>%1</td>")
+                    .arg(coloredAmount((*it_innergroup).m_total.m_budget.m_total));
+
+              finalRow += QString("<td>%1</td>")
+                  .arg(coloredAmount((*it_innergroup).m_total.m_total));
+
               if ( m_config_f.isIncludingBudgetActuals() ) {
-                finalRow += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_budget.m_total.formatMoney());
                 MyMoneyMoney diff = (*it_innergroup).m_total.m_budget.m_total - (*it_innergroup).m_total.m_total;
-                finalRow += QString("<td>%1</td>").arg(diff.formatMoney());
+                finalRow += QString("<td>%1</td>").arg(coloredAmount(diff));
               }
-              finalRow += QString("<td>%1</td>").arg((*it_innergroup).m_total.m_total.formatMoney());
             }
 
             finalRow += "</tr>\n";
@@ -2135,23 +2158,33 @@ QString PivotTable::renderHTML( void ) const
         unsigned column = 1;
         while ( column < m_numColumns )
         {
-          if ( m_config_f.isIncludingBudgetActuals() ) {
-            result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_budget[column].formatMoney());
-            MyMoneyMoney diff = (*it_outergroup).m_total.m_budget[column] - (*it_outergroup).m_total[column];
-            result += QString("<td>%1</td>").arg(diff.formatMoney());
-          }
+          if ( m_config_f.hasBudget() )
+            result += QString("<td>%1</td>")
+                .arg(coloredAmount((*it_outergroup).m_total.m_budget[column]));
 
-          result += QString("<td>%1</td>").arg((*it_outergroup).m_total[column++].formatMoney());
+          result += QString("<td>%1</td>")
+              .arg(coloredAmount((*it_outergroup).m_total[column]));
+
+          if ( m_config_f.isIncludingBudgetActuals() ) {
+            MyMoneyMoney diff = (*it_outergroup).m_total.m_budget[column] - (*it_outergroup).m_total[column];
+            result += QString("<td>%1</td>").arg(coloredAmount(diff));
+          }
+          column++;
         }
 
         if (  m_config_f.isShowingRowTotals() )
         {
+          if ( m_config_f.hasBudget() )
+            result += QString("<td>%1</td>")
+                .arg(coloredAmount((*it_outergroup).m_total.m_budget.m_total));
+
+          result += QString("<td>%1</td>")
+              .arg(coloredAmount((*it_outergroup).m_total.m_total));
+
           if ( m_config_f.isIncludingBudgetActuals() ) {
-            result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_budget.m_total.formatMoney());
             MyMoneyMoney diff = (*it_outergroup).m_total.m_budget.m_total - (*it_outergroup).m_total.m_total;
-            result += QString("<td>%1</td>").arg(diff.formatMoney());
+            result += QString("<td>%1</td>").arg(coloredAmount(diff));
           }
-          result += QString("<td>%1</td>").arg((*it_outergroup).m_total.m_total.formatMoney());
         }
 
         result += "</tr>\n";
@@ -2174,22 +2207,33 @@ QString PivotTable::renderHTML( void ) const
     unsigned totalcolumn = 1;
     while ( totalcolumn < m_numColumns )
     {
+      if ( m_config_f.hasBudget() )
+        result += QString("<td>%1</td>")
+            .arg(coloredAmount(m_grid.m_total.m_budget[totalcolumn]));
+
+      result += QString("<td>%1</td>")
+          .arg(coloredAmount(m_grid.m_total[totalcolumn]));
+
       if ( m_config_f.isIncludingBudgetActuals() ) {
-        result += QString("<td>%1</td>").arg(m_grid.m_total.m_budget[totalcolumn].formatMoney());
         MyMoneyMoney diff = m_grid.m_total.m_budget[totalcolumn] - m_grid.m_total[totalcolumn];
-        result += QString("<td>%1</td>").arg(diff.formatMoney());
+        result += QString("<td>%1</td>").arg(coloredAmount(diff));
       }
-      result += QString("<td>%1</td>").arg(m_grid.m_total[totalcolumn++].formatMoney());
+      totalcolumn++;
     }
 
     if (  m_config_f.isShowingRowTotals() )
     {
+      if ( m_config_f.hasBudget())
+        result += QString("<td>%1</td>")
+            .arg(coloredAmount(m_grid.m_total.m_budget.m_total));
+
+      result += QString("<td>%1</td>")
+          .arg(coloredAmount(m_grid.m_total.m_total));
+
       if ( m_config_f.isIncludingBudgetActuals() ) {
-        result += QString("<td>%1</td>").arg(m_grid.m_total.m_budget.m_total.formatMoney());
         MyMoneyMoney diff = m_grid.m_total.m_budget.m_total - m_grid.m_total.m_total;
-        result += QString("<td>%1</td>").arg(diff.formatMoney());
+        result += QString("<td>%1</td>").arg(coloredAmount(diff));
       }
-      result += QString("<td>%1</td>").arg(m_grid.m_total.m_total.formatMoney());
     }
 
     result += "</tr>\n";
@@ -2547,6 +2591,21 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 #else
 void PivotTable::drawChart( KReportChartView& ) const { }
 #endif
+
+QString PivotTable::coloredAmount(const MyMoneyMoney& amount, const QString& currencySymbol, int prec) const
+{
+  QString result;
+  if( amount.isNegative() )
+    result += QString("<font color=\"rgb(%1,%2,%3)\">")
+        .arg(KMyMoneyGlobalSettings::listNegativeValueColor().red())
+        .arg(KMyMoneyGlobalSettings::listNegativeValueColor().green())
+        .arg(KMyMoneyGlobalSettings::listNegativeValueColor().blue());
+  result += amount.formatMoney(currencySymbol, prec);
+  if( amount.isNegative() )
+    result += QString("</font>");
+  return result;
+}
+
 
 } // namespace
 // vim:cin:si:ai:et:ts=2:sw=2:

@@ -2,6 +2,7 @@
   * Fixed problem with the calculator when starting to enter numbers
     using the mouse
   * Fixed problem with various negative sign positions
+  * Show negative numbers in pivot table reports in the selected color
 
 2007-12-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added budget() to MyMoneyReport to return the budget id
