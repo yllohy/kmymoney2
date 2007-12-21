@@ -4431,6 +4431,19 @@ void KMyMoney2App::slotTransactionsAccept(void)
       MyMoneyTransaction t = (*it_t).transaction();
       if(t.value("Imported").lower() == "true") {
         t.deletePair("Imported");
+        if(!m_selectedAccount.id().isEmpty()) {
+          QValueList<MyMoneySplit> list = t.splits();
+          QValueList<MyMoneySplit>::const_iterator it_s;
+          for(it_s = list.begin(); it_s != list.end(); ++it_s) {
+            if((*it_s).accountId() == m_selectedAccount.id()) {
+              if((*it_s).reconcileFlag() == MyMoneySplit::NotReconciled) {
+                MyMoneySplit s = (*it_s);
+                s.setReconcileFlag(MyMoneySplit::Cleared);
+                t.modifySplit(s);
+              }
+            }
+          }
+        }
         MyMoneyFile::instance()->modifyTransaction(t);
       }
       slotStatusProgressBar(i++, 0);
@@ -4713,6 +4726,12 @@ void KMyMoney2App::slotEndMatch(void)
         ++it_split;
       }
 #endif
+
+      // mark the split as cleared if it does not have a reconciliation information yet
+      if(startSplit.reconcileFlag() == MyMoneySplit::NotReconciled) {
+        startSplit.setReconcileFlag(MyMoneySplit::Cleared);
+        startMatchTransaction.modifySplit(startSplit);
+      }
 
       bool enabled = MyMoneyFile::instance()->signalsBlocked();
       MyMoneyFile::instance()->blockSignals(true);

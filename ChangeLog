@@ -4,6 +4,9 @@
   * Fixed problem with various negative sign positions
   * Show negative numbers in pivot table reports in the selected color
   * Removed unused filter settings on the register tab of the settings dialog
+  * Mark splits as cleared when accepting or matching a transaction
+  * Show not reconciled and cleared transactions when setting the quick
+    filter in the ledger view to 'Not reconciled'
 
 2007-12-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added budget() to MyMoneyReport to return the budget id

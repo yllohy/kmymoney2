@@ -191,7 +191,8 @@ bool RegisterSearchLine::itemMatches(const RegisterItem* item, const QString& s)
           return false;
         break;
       case 3:    // Not reconciled
-        if(t->split().reconcileFlag() != MyMoneySplit::NotReconciled)
+        if(t->split().reconcileFlag() != MyMoneySplit::NotReconciled
+        && t->split().reconcileFlag() != MyMoneySplit::Cleared)
           return false;
         break;
 
