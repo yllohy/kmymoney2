@@ -12,7 +12,9 @@ The process of releasing a new version is to build a source tar-ball archive, ve
 that &app; can be built from it and upload it to the SourceForge File Release System.
 This chapter explains the steps of making sure that the version numbers are set
 correctly, creating the source tar-ball, tagging the repository etc.
-
+</para>
+<para>
+The first few steps of the release process should be taken some time in advance of the anticipated release date, in order to give translators a chance to 'do their thing'. The length of time required will depend on how many translatable strings have been changed since the previous release, but something like two weeks for a minor release should suffice.
 <note>
 <para>
 The steps explained apply to both the development and the
@@ -50,6 +52,27 @@ development branch in CVS are also adjusted. More details below.
 </para>
 <para>
 Create a new directory specifically for the release process, something like /home/me/distkmm, which will ensure that the following steps are not contaminated by other, existing versions of &app;. From this directory, check out a copy of the app from the CVS branch which forms the basis of this release, e.g. for 0.8.2, the branch will be rel-0-8-branch. The checkout process will create a sub-directory called kmymoney2. This is referred to subsequently as the TLD (top level directory).
+</para>
+</listitem>
+
+<listitem>
+<para>
+Update the text source file for translations.
+</para>
+<para> This is done from the TLD by running the command:
+
+<programlisting>
+<prompt>thb: ~&gt; </prompt><userinput>make package-messages</userinput>
+</programlisting>
+</para>
+<para>
+This will create the file kmymoney2.pot in TLD/po, and will merge all new and changed messages into the various translation files in the same directory. These files (kmymoney2.pot and *.po) should be committed to the appropriate branch of CVS. Also, an announcement should be made on the translator's mailing list that these are ready for updating, and mentioning a date a few days before the proposed release date as a deadline for translations to be submitted.
+</para>
+<para>
+At this point also, a 'string freeze' for the base release should be declared on the developer's list. From now on until the release is complete, the only changes which should be committed to the CVS branch should be fixes which do not change translatable strings, and updated .po files submitted by translators.
+</para>
+<para>
+Once the anticipated release date is reached, you should make sure that your sandbox is up-to-date. This is probably best achieved by deleting the directory created in step 2, and re-creating it by a full CVS checkout as described there.
 </para>
 </listitem>
 
@@ -125,21 +148,6 @@ This will regenerate all files of the application and rebuild everything automat
 
 <listitem>
 <para>
-Update the text source file for translations.
-</para>
-<para> This is done from the TLD by running the command:
-
-<programlisting>
-<prompt>thb: ~&gt; </prompt><userinput>make package-messages</userinput>
-</programlisting>
-</para>
-<para>
-This will create the file kmymoney2.pot in TLD/po.
-</para>
-</listitem>
-
-<listitem>
-<para>
 Check the distribution
 </para>
 <para>
@@ -190,7 +198,7 @@ to the ChangeLog file.
 Commit changes to CVS
 </para>
 <para>
-Commit the pot file created above, the updated ChangeLog file, and any Makefiles updated in step 4 to the CVS repository before you proceed with the next step. Use the message 'Released x.y.z'.
+Commit the updated ChangeLog file, and any Makefiles updated in step 5 to the CVS repository before you proceed with the next step. Use the message 'Released x.y.z'.
 </para>
 </listitem>
 
@@ -334,7 +342,7 @@ Make sure that you increase the project version to the next version. This is der
 </para>
 
 <para>
-Make the appropriate changes to configure.in.in as described in paragraph 3 above.
+Make the appropriate changes to configure.in.in as described in step 4 above.
 From the TLD, issue the commands:
 </para>
 
