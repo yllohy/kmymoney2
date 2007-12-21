@@ -285,6 +285,26 @@ const QString kMyMoneyCalculator::result(void) const
 {
   QString txt = m_result;
   txt.replace(QRegExp("\\."), m_comma);
+  if(txt[0] == '-') {
+    txt = txt.mid(1); // get rid of the minus sign
+    QString mask;
+    switch(KGlobal::locale()->negativeMonetarySignPosition()) {
+      case KLocale::ParensAround:
+        mask = "(%1)";
+        break;
+      case KLocale::AfterQuantityMoney:
+        mask = "%1-";
+        break;
+      case KLocale::AfterMoney:
+      case KLocale::BeforeMoney:
+        mask = "%1 -";
+        break;
+      case KLocale::BeforeQuantityMoney:
+        mask = "-%1";
+        break;
+    }
+    txt = QString(mask).arg(txt);
+  }
   return txt;
 }
 
@@ -364,12 +384,25 @@ void kMyMoneyCalculator::keyPressEvent(QKeyEvent* ev)
 
 void kMyMoneyCalculator::setInitialValues(const QString& value, QKeyEvent* ev)
 {
+  bool negative = false;
   // setup operand
   operand = value;
   operand.replace(QRegExp(QString("\\")+KGlobal::locale()->thousandsSeparator()), QString());
   operand.replace(QRegExp(QString("\\")+m_comma), ".");
+  if(operand.contains('(')) {
+    negative = true;
+    operand.replace("(", QString());
+    operand.replace(")", QString());
+  }
+  if(operand.contains('-')) {
+    negative = true;
+    operand.replace("-", QString());
+  }
   if(operand.isEmpty())
     operand = "0";
+  else if(negative)
+    operand = QString("-%1").arg(operand);
+
   changeDisplay(operand);
 
   // and operation

@@ -529,3 +529,28 @@ void MyMoneyMoneyTest::testPositiveSignPos(void)
   MyMoneyMoney::setPositiveMonetarySignPosition(pos);
 }
 
+void MyMoneyMoneyTest::testNegativeStringConstructor(void)
+{
+  MyMoneyMoney *m1;
+  MyMoneyMoney::setDecimalSeparator(',');
+  MyMoneyMoney::setThousandSeparator('.');
+  MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::ParensAround);
+  m1 = new MyMoneyMoney("x(1.234,567) EUR");
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(-1234567));
+  CPPUNIT_ASSERT(m1->m_denom == 1000);
+  delete m1;
+  MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::BeforeQuantityMoney);
+  m1 = new MyMoneyMoney("x1.234,567- EUR");
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(-1234567));
+  CPPUNIT_ASSERT(m1->m_denom == 1000);
+  delete m1;
+  m1 = new MyMoneyMoney("x1.234,567 -EUR");
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(-1234567));
+  CPPUNIT_ASSERT(m1->m_denom == 1000);
+  delete m1;
+  m1 = new MyMoneyMoney("-1.234,567 EUR");
+  CPPUNIT_ASSERT(m1->m_num == LLCONST(-1234567));
+  CPPUNIT_ASSERT(m1->m_denom == 1000);
+  delete m1;
+}
+

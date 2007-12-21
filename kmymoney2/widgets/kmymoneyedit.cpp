@@ -115,6 +115,12 @@ QValidator::State kMyMoneyMoneyValidator::validate( QString & input, int & _p ) 
   if(s.find(nonNumeric) != -1)
     return Invalid;
 
+  // check for minus sign trailing the number
+  QRegExp trailingMinus("^([^-]*)\\w*-$");
+  if(s.find(trailingMinus) != -1) {
+    s = QString("-%1").arg(trailingMinus.cap(1));
+  }
+
   // check for the maximum allowed number of decimal places
   int decPos = s.find('.');
   if(decPos != -1) {
