@@ -1,3 +1,6 @@
+2007-12-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied budget report patch provided by Alvaro Soliverez
+
 2007-12-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem with the calculator when starting to enter numbers
     using the mouse

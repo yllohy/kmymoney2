@@ -211,7 +211,42 @@ private:
 
     MyMoneyReport m_config_f;
 
+    /**
+      * This method returns the formatted value of @a amount with
+      * a possible @a currencySymbol added and @a prec fractional digits.
+      * @a currencySymbol defaults to be empty and @a prec defaults to 2.
+      *
+      * If @a amount is negative the formatted value is enclosed in an
+      * HTML font tag to modify the color to reflect the user settings for
+      * negtive numbers.
+      *
+      * Example: 1.23 is returned as '1.23' whereas -1.23 is returned as
+      *          '<font color="rgb($red,$green,$blue)">-1.23</font>' with
+      *          $red, $green and $blue being the actual value for the
+      *          chosen color.
+      */
     QString coloredAmount(const MyMoneyMoney& amount, const QString& currencySymbol = QString(), int prec = 2 ) const;
+
+    /**
+      * This method returns the difference between a @a budgeted and an @a
+      * actual amount. The calculation is based on the type of the
+      * @a repAccount. The difference value returned is calculated as follows:
+      *
+      * If @a repAccount is of type MyMoneyAccount::Income
+      *
+      * @code
+      *      diff = actual - budgeted
+      * @endcode
+      *
+      * If @a repAccount is of type MyMoneyAccount::Expense
+      *
+      * @code
+      *      diff = budgeted - actual
+      * @endcode
+      *
+      * In all other cases, 0 is returned.
+      */
+    MyMoneyMoney calculateBudgetDiff( const ReportAccount& repAccount, const TCell& budgeted, const TCell& actual ) const;
 
 protected:
   /**

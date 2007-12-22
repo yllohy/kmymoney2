@@ -2004,7 +2004,7 @@ QString PivotTable::renderHTML( void ) const
                   .arg(coloredAmount(it_row.data()[column]));
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
-                MyMoneyMoney diff = it_row.data().m_budget[column] - it_row.data()[column];
+                MyMoneyMoney diff = calculateBudgetDiff(it_row.key(), it_row.data().m_budget[column], it_row.data()[column]);
                 rowdata += QString("<td>%1</td>")
                     .arg(coloredAmount(diff));
               }
@@ -2021,7 +2021,7 @@ QString PivotTable::renderHTML( void ) const
                   .arg(coloredAmount((*it_row).m_total));
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
-                MyMoneyMoney diff = (*it_row).m_budget.m_total - (*it_row).m_total;
+                MyMoneyMoney diff = calculateBudgetDiff( it_row.key(), (*it_row).m_budget.m_total , (*it_row).m_total);
                 rowdata += QString("<td>%1</td>").arg(coloredAmount(diff));
               }
             }
@@ -2114,7 +2114,7 @@ QString PivotTable::renderHTML( void ) const
                   .arg(coloredAmount((*it_innergroup).m_total[column]));
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
-                MyMoneyMoney diff = (*it_innergroup).m_total.m_budget[column] - (*it_innergroup).m_total[column];
+                MyMoneyMoney diff = calculateBudgetDiff((*it_innergroup).begin().key(), (*it_innergroup).m_total.m_budget[column] , (*it_innergroup).m_total[column]);
                 finalRow += QString("<td>%1</td>").arg(coloredAmount(diff));
               }
               column++;
@@ -2130,7 +2130,7 @@ QString PivotTable::renderHTML( void ) const
                   .arg(coloredAmount((*it_innergroup).m_total.m_total));
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
-                MyMoneyMoney diff = (*it_innergroup).m_total.m_budget.m_total - (*it_innergroup).m_total.m_total;
+                MyMoneyMoney diff = calculateBudgetDiff((*it_innergroup).begin().key(),  (*it_innergroup).m_total.m_budget.m_total , (*it_innergroup).m_total.m_total);
                 finalRow += QString("<td>%1</td>").arg(coloredAmount(diff));
               }
             }
@@ -2166,7 +2166,7 @@ QString PivotTable::renderHTML( void ) const
               .arg(coloredAmount((*it_outergroup).m_total[column]));
 
           if ( m_config_f.isIncludingBudgetActuals() ) {
-            MyMoneyMoney diff = (*it_outergroup).m_total.m_budget[column] - (*it_outergroup).m_total[column];
+            MyMoneyMoney diff = calculateBudgetDiff( (*(*it_outergroup).begin()).begin().key(), (*it_outergroup).m_total.m_budget[column], (*it_outergroup).m_total[column]);
             result += QString("<td>%1</td>").arg(coloredAmount(diff));
           }
           column++;
@@ -2182,7 +2182,7 @@ QString PivotTable::renderHTML( void ) const
               .arg(coloredAmount((*it_outergroup).m_total.m_total));
 
           if ( m_config_f.isIncludingBudgetActuals() ) {
-            MyMoneyMoney diff = (*it_outergroup).m_total.m_budget.m_total - (*it_outergroup).m_total.m_total;
+            MyMoneyMoney diff = calculateBudgetDiff( (*(*it_outergroup).begin()).begin().key(), (*it_outergroup).m_total.m_budget.m_total, (*it_outergroup).m_total.m_total);
             result += QString("<td>%1</td>").arg(coloredAmount(diff));
           }
         }
@@ -2215,7 +2215,7 @@ QString PivotTable::renderHTML( void ) const
           .arg(coloredAmount(m_grid.m_total[totalcolumn]));
 
       if ( m_config_f.isIncludingBudgetActuals() ) {
-        MyMoneyMoney diff = m_grid.m_total.m_budget[totalcolumn] - m_grid.m_total[totalcolumn];
+        MyMoneyMoney diff = m_grid.m_total[totalcolumn] - m_grid.m_total.m_budget[totalcolumn];
         result += QString("<td>%1</td>").arg(coloredAmount(diff));
       }
       totalcolumn++;
@@ -2231,7 +2231,7 @@ QString PivotTable::renderHTML( void ) const
           .arg(coloredAmount(m_grid.m_total.m_total));
 
       if ( m_config_f.isIncludingBudgetActuals() ) {
-        MyMoneyMoney diff = m_grid.m_total.m_budget.m_total - m_grid.m_total.m_total;
+        MyMoneyMoney diff = m_grid.m_total.m_total - m_grid.m_total.m_budget.m_total;
         result += QString("<td>%1</td>").arg(coloredAmount(diff));
       }
     }
@@ -2605,6 +2605,18 @@ QString PivotTable::coloredAmount(const MyMoneyMoney& amount, const QString& cur
     result += QString("</font>");
   return result;
 }
+
+MyMoneyMoney PivotTable::calculateBudgetDiff( const ReportAccount& repAccount, const TCell& budgeted, const TCell& actual ) const 
+{
+  MyMoneyMoney diff;
+  if( repAccount.accountType() == MyMoneyAccount::Income ) {
+    diff = actual - budgeted;
+  } else if ( repAccount.accountType() == MyMoneyAccount::Expense ) {
+    diff = budgeted - actual;
+  }
+  return diff;
+}
+
 
 
 } // namespace
