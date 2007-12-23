@@ -115,7 +115,7 @@ public:
   /**
    * This method returns the price. If the member m_price is not zero
    * its value is returned. Otherwise, if m_shares is not zero the quotient
-   * of m_value / m_shares is returned. If m_values equals ot zero, 1
+   * of m_value / m_shares is returned. If m_values equals to zero, 1
    * will be returned.
    */
   MyMoneyMoney price(void) const;
