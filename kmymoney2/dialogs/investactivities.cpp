@@ -207,8 +207,14 @@ bool Buy::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpli
   }
   if(!isMultiSelection() || (isMultiSelection() && !priceEdit->text().isEmpty())) {
     price = priceEdit->value().abs();
-    s0.setValue((shares * price).reduce());
-    s0.setPrice(price);
+    if(priceMode() == InvestTransactionEditor::PricePerTransaction) {
+      s0.setValue(price.reduce());
+      if(!s0.shares().isZero())
+        s0.setPrice(price / s0.shares());
+    } else {
+      s0.setValue((shares * price).reduce());
+      s0.setPrice(price);
+    }
   }
 
   if(!createCategorySplits(t, dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account")), dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount")), MyMoneyMoney(1,1), feeSplits, m_feeSplits))
@@ -280,8 +286,14 @@ bool Sell::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpl
   }
   if(!isMultiSelection() || (isMultiSelection() && !priceEdit->text().isEmpty())) {
     price = priceEdit->value().abs();
-    s0.setValue((shares * price).reduce());
-    s0.setPrice(price);
+    if(priceMode() == InvestTransactionEditor::PricePerTransaction) {
+      s0.setValue(price.reduce());
+      if(!s0.shares().isZero())
+        s0.setPrice(price / s0.shares());
+    } else {
+      s0.setValue((shares * price).reduce());
+      s0.setPrice(price);
+    }
   }
 
   if(!createCategorySplits(t, dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account")), dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount")), MyMoneyMoney(1,1), feeSplits, m_feeSplits))
@@ -401,8 +413,14 @@ bool Reinvest::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMone
   }
   if(!isMultiSelection() || (isMultiSelection() && !priceEdit->text().isEmpty())) {
     price = priceEdit->value().abs();
-    s0.setValue((shares * price).reduce());
-    s0.setPrice(price);
+    if(priceMode() == InvestTransactionEditor::PricePerTransaction) {
+      s0.setValue(price.reduce());
+      if(!s0.shares().isZero())
+        s0.setPrice(price / s0.shares());
+    } else {
+      s0.setValue((shares * price).reduce());
+      s0.setPrice(price);
+    }
   }
 
   if(!createCategorySplits(t, dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account")), dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount")), MyMoneyMoney(1,1), feeSplits, m_feeSplits))

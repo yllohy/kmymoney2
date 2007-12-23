@@ -38,6 +38,11 @@ class InvestTransactionEditor : public TransactionEditor
 
   Q_OBJECT
 public:
+  typedef enum {
+    PricePerShare = 1,
+    PricePerTransaction
+  } priceModeE;
+
   InvestTransactionEditor();
   InvestTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::InvestTransaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
   virtual ~InvestTransactionEditor();
@@ -85,6 +90,9 @@ public:
     * @note Usually not used directly. If unsure, use enterTransactions() instead.
     */
   bool createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig, bool skipPriceDialog = false);
+
+  priceModeE priceMode(void) const;
+
 
 protected slots:
   void slotCreateSecurity(const QString& name, QCString& id);
@@ -140,6 +148,8 @@ protected:
    *                       in @p splits .
    */
   int editSplits(const QString& categoryWidgetName, const QString& amountWidgetName, QValueList<MyMoneySplit>& splits, bool isIncome, const char* slotEditSplits);
+
+  void updatePriceMode(void);
 
 private:
 

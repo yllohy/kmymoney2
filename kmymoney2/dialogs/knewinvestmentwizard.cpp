@@ -39,6 +39,7 @@
 #include <kmymoney/kmymoneyedit.h>
 #include <kmymoney/mymoneysecurity.h>
 #include <kmymoney/mymoneyfile.h>
+#include <kmymoney/kmymoneycombo.h>
 #include "../widgets/kmymoneycurrencyselector.h"
 #include "../converter/webpricequote.h"
 #include "../kmymoneyutils.h"
@@ -62,6 +63,12 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneyAccount& acc, QWidget *
   m_security = MyMoneyFile::instance()->security(m_account.currencyId());
 
   init2();
+
+  int priceMode = 0;
+  if(!m_account.value("priceMode").isEmpty())
+    priceMode = m_account.value("priceMode").toInt();
+  m_priceMode->setCurrentItem(priceMode);
+
 }
 
 KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneySecurity& security, QWidget *parent, const char *name ) :
@@ -76,6 +83,10 @@ KNewInvestmentWizard::KNewInvestmentWizard( const MyMoneySecurity& security, QWi
   m_investmentName->setText(security.name());
 
   init2();
+
+  // no chance to change the price mode here
+  m_priceMode->setCurrentItem(0);
+  m_priceMode->setEnabled(false);
 }
 
 void KNewInvestmentWizard::init1(void)
@@ -90,6 +101,11 @@ void KNewInvestmentWizard::init1(void)
   kMyMoneyMoneyValidator* fractionValidator = new kMyMoneyMoneyValidator(1, 100000, 0, this);
   m_fraction->setValidator(fractionValidator);
 
+  // load the price mode combo
+  m_priceMode->insertItem(i18n("default price mode", "<default>"), 0);
+  m_priceMode->insertItem(i18n("Price per share"), 1);
+  m_priceMode->insertItem(i18n("Total for all shares"), 2);
+
   // load the widget with the available currencies
   m_tradingCurrencyEdit->update(QCString());
 
@@ -101,6 +117,7 @@ void KNewInvestmentWizard::init1(void)
   connect(m_onlineFactor, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckPage(void)));
   connect(m_onlineSourceCombo, SIGNAL(activated(const QString&)), this, SLOT(slotCheckPage(const QString&)));
   connect(m_useFinanceQuote, SIGNAL(toggled(bool)), this, SLOT(slotSourceChanged(bool)));
+
   m_createAccount = true;
 }
 
@@ -238,7 +255,17 @@ void KNewInvestmentWizard::createObjects(const QCString& parentId)
       m_account.setName(m_investmentName->text());
       if(m_account.accountType() == MyMoneyAccount::UnknownAccountType)
         m_account.setAccountType(MyMoneyAccount::Stock);
+
       m_account.setCurrencyId(m_security.id());
+      switch(m_priceMode->currentItem()) {
+        case 0:
+          m_account.deletePair("priceMode");
+          break;
+        case 1:
+        case 2:
+          m_account.setValue("priceMode", QString("%1").arg(m_priceMode->currentItem()));
+          break;
+      }
 
       if(m_account.id().isEmpty()) {
         MyMoneyAccount parent = file->account(parentId);

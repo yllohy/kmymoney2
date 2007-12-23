@@ -573,10 +573,12 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
       value->setValue(m_split.shares().abs());
 
     // price
+    dynamic_cast<QLabel*>(haveWidget("price-label"))->setText(i18n("Price/Share"));
     value = dynamic_cast<kMyMoneyEdit*>(haveWidget("price"));
     if(!m_split.shares().isZero()) {
       value->setValue(m_split.price());
     }
+    updatePriceMode();
 
     // fee amount
     value = dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount"));
@@ -669,6 +671,8 @@ void InvestTransactionEditor::slotUpdateSecurity(const QCString& stockId)
     dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"))->setPrecision(MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
   }
 
+  updatePriceMode();
+
   haveWidget("shares")->setEnabled(currencyKnown);
   haveWidget("price")->setEnabled(currencyKnown);
   haveWidget("fee-amount")->setEnabled(currencyKnown);
@@ -685,7 +689,10 @@ void InvestTransactionEditor::totalAmount(MyMoneyMoney& amount) const
   kMyMoneyEdit* feesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount"));
   kMyMoneyEdit* interestEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("interest-amount"));
 
-  amount = sharesEdit->value().abs() * priceEdit->value().abs();
+  if(priceMode() == InvestTransactionEditor::PricePerTransaction)
+    amount = priceEdit->value().abs();
+  else
+    amount = sharesEdit->value().abs() * priceEdit->value().abs();
 
   if(feesEdit->isVisible()) {
     MyMoneyMoney fee = feesEdit->value().abs();
@@ -760,6 +767,30 @@ void InvestTransactionEditor::slotUpdateActivity(MyMoneySplit::investTransaction
   cat = dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account"));
   if(cat->parentWidget()->isVisible())
     slotUpdateFeeVisibility(cat->currentText());
+}
+
+InvestTransactionEditor::priceModeE InvestTransactionEditor::priceMode(void) const
+{
+  priceModeE mode = static_cast<priceModeE>(0);
+  KMyMoneySecurity* sec = dynamic_cast<KMyMoneySecurity*>(m_editWidgets["security"]);
+  QCString accId;
+  if(!sec->currentText().isEmpty()) {
+    accId = sec->selectedItem();
+    if(accId.isEmpty())
+      accId = m_account.id();
+  }
+  while(!accId.isEmpty() && mode == 0) {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(accId);
+    if(acc.value("priceMode").isEmpty())
+      accId = acc.parentAccountId();
+    else
+      mode = static_cast<priceModeE>(acc.value("priceMode").toInt());
+  }
+
+  // if it's still <default> then use that default
+  if(mode == 0)
+    mode = PricePerShare;
+  return mode;
 }
 
 bool InvestTransactionEditor::setupPrice(const MyMoneyTransaction& t, MyMoneySplit& split)
@@ -950,6 +981,26 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
   }
 
   return rc;
+}
+
+void InvestTransactionEditor::updatePriceMode(void)
+{
+  qDebug("updatePriceMode");
+  QLabel* label = dynamic_cast<QLabel*>(haveWidget("price-label"));
+  if(label) {
+    kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+    kMyMoneyEdit* priceEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("price"));
+    if(priceMode() == PricePerTransaction && label->text() != i18n("Price")) {
+      label->setText(i18n("Price"));
+      if(!sharesEdit->value().isZero())
+        priceEdit->setValue(sharesEdit->value().abs() * priceEdit->value().abs());
+
+    } else if(priceMode() == PricePerShare && label->text() == i18n("Price")) {
+      label->setText(i18n("Price/Share"));
+      if(!sharesEdit->value().isZero())
+        priceEdit->setValue(priceEdit->value().abs() / sharesEdit->value().abs());
+    }
+  }
 }
 
 #include "investtransactioneditor.moc"

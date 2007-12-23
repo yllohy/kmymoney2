@@ -261,21 +261,65 @@
                                     </widget>
                                 </grid>
                             </widget>
-                            <widget class="QCheckBox">
+                            <widget class="QLayoutWidget">
                                 <property name="name">
-                                    <cstring>m_qcheckboxPreferred</cstring>
+                                    <cstring>layout18</cstring>
                                 </property>
-                                <property name="text">
-                                    <string>Preferred Account</string>
-                                </property>
-                            </widget>
-                            <widget class="QCheckBox">
-                                <property name="name">
-                                    <cstring>m_qcheckboxNoVat</cstring>
-                                </property>
-                                <property name="text">
-                                    <string>No auto-VAT-assignment</string>
-                                </property>
+                                <grid>
+                                    <property name="name">
+                                        <cstring>unnamed</cstring>
+                                    </property>
+                                    <widget class="QCheckBox" row="1" column="0">
+                                        <property name="name">
+                                            <cstring>m_qcheckboxNoVat</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>No auto-VAT-assignment</string>
+                                        </property>
+                                    </widget>
+                                    <widget class="QLayoutWidget" row="0" column="1">
+                                        <property name="name">
+                                            <cstring>layout17</cstring>
+                                        </property>
+                                        <hbox>
+                                            <property name="name">
+                                                <cstring>unnamed</cstring>
+                                            </property>
+                                            <widget class="QLabel">
+                                                <property name="name">
+                                                    <cstring>textLabel1_5</cstring>
+                                                </property>
+                                                <property name="text">
+                                                    <string>Price entry</string>
+                                                </property>
+                                            </widget>
+                                            <widget class="KMyMoneyGeneralCombo">
+                                                <property name="name">
+                                                    <cstring>m_priceMode</cstring>
+                                                </property>
+                                                <property name="enabled">
+                                                    <bool>false</bool>
+                                                </property>
+                                                <property name="sizePolicy">
+                                                    <sizepolicy>
+                                                        <hsizetype>1</hsizetype>
+                                                        <vsizetype>0</vsizetype>
+                                                        <horstretch>1</horstretch>
+                                                        <verstretch>0</verstretch>
+                                                    </sizepolicy>
+                                                </property>
+                                            </widget>
+                                        </hbox>
+                                    </widget>
+                                    <widget class="QCheckBox" row="0" column="0">
+                                        <property name="name">
+                                            <cstring>m_qcheckboxPreferred</cstring>
+                                        </property>
+                                        <property name="text">
+                                            <string>Preferred Account</string>
+                                        </property>
+                                    </widget>
+                                </grid>
                             </widget>
                         </vbox>
                     </widget>

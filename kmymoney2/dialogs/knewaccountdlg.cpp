@@ -65,6 +65,7 @@
 #include <kmymoney/kmymoneyglobalsettings.h>
 #include <kmymoney/mymoneyreport.h>
 #include <kmymoney/kguiutils.h>
+#include <kmymoney/kmymoneycombo.h>
 
 #include "../widgets/kmymoneycurrencyselector.h"
 #include "../widgets/kmymoneyaccountselector.h"
@@ -120,6 +121,19 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
 
   typeCombo->setEnabled(true);
   MyMoneyFile *file = MyMoneyFile::instance();
+
+  // load the price mode combo
+  m_priceMode->insertItem(i18n("default price mode", "<default>"), 0);
+  m_priceMode->insertItem(i18n("Price per share"), 1);
+  m_priceMode->insertItem(i18n("Total for all shares"), 2);
+
+  int priceMode = 0;
+  if(m_account.accountType() == MyMoneyAccount::Investment) {
+    m_priceMode->setEnabled(true);
+    if(!m_account.value("priceMode").isEmpty())
+      priceMode = m_account.value("priceMode").toInt();
+  }
+  m_priceMode->setCurrentItem(priceMode);
 
   bool haveMinBalance = false;
   bool haveMaxCredit = false;
@@ -670,6 +684,18 @@ const MyMoneyAccount& KNewAccountDlg::account(void)
 {
   // assign the right currency to the account
   m_account.setCurrencyId(m_currency->security().id());
+
+  // and the price mode
+  switch(m_priceMode->currentItem()) {
+    case 0:
+      m_account.deletePair("priceMode");
+      break;
+    case 1:
+    case 2:
+      m_account.setValue("priceMode", QString("%1").arg(m_priceMode->currentItem()));
+      break;
+  }
+
   return m_account;
 }
 
