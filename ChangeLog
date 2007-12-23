@@ -1,3 +1,6 @@
+2007-12-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Update balance visibility after sorting the ledger items during view load
+
 2007-12-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied budget report patch provided by Alvaro Soliverez
 

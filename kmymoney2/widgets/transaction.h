@@ -218,6 +218,8 @@ public:
 
   virtual void setVisible(bool visible);
 
+  virtual void setShowBalance(bool showBalance);
+
   virtual void setMatchMark(bool mark);
   bool hasMatchMark(void) const { return m_matchMark; }
 

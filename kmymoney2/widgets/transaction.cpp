@@ -672,6 +672,11 @@ bool Transaction::matches(const QString& txt) const
   return false;
 }
 
+void Transaction::setShowBalance(bool showBalance)
+{
+  m_showBalance = showBalance;
+}
+
 void Transaction::setVisible(bool visible)
 {
   if(visible != isVisible()) {
@@ -700,7 +705,8 @@ void Transaction::setVisible(bool visible)
         t = dynamic_cast<Transaction*>(p);
       } while(!t && p);
 
-      if(t && t->m_showBalance) {
+      // if the next transaction is visible or I am the last one
+      if((t && t->m_showBalance) || !t) {
         m_showBalance = true;
         p = prevItem();
         while(p && p->isVisible()) {

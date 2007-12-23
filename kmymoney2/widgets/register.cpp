@@ -773,9 +773,10 @@ void Register::sortItems(void)
 
   // update the next/prev item chains
   RegisterItem* prev = 0;
+  RegisterItem* item;
   m_firstItem = m_lastItem = 0;
   for(QValueVector<RegisterItem*>::size_type i = 0; i < m_items.size(); ++i) {
-    RegisterItem* item = m_items[i];
+    item = m_items[i];
     if(!item)
       continue;
 
@@ -787,6 +788,20 @@ void Register::sortItems(void)
     item->setPrevItem(prev);
     item->setNextItem(0);
     prev = item;
+  }
+
+  // update the balance visibility settings
+  item = m_lastItem;
+  bool showBalance = true;
+  while(item) {
+    Transaction* t = dynamic_cast<Transaction*>(item);
+    if(t) {
+      t->setShowBalance(showBalance);
+      if(!t->isVisible()) {
+        showBalance = false;
+      }
+    }
+    item = item->prevItem();
   }
 
   // force update of the item index (row to item array)
