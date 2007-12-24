@@ -60,6 +60,7 @@ class MyMoneyMoneyTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testNegativeSignPos);
 	CPPUNIT_TEST(testPositiveSignPos);
 	CPPUNIT_TEST(testNegativeStringConstructor);
+	CPPUNIT_TEST(testReduce);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -92,6 +93,7 @@ public:
 	void testNegativeSignPos();
 	void testPositiveSignPos();
 	void testNegativeStringConstructor();
+	void testReduce();
 };
 
 #endif

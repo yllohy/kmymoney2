@@ -1,3 +1,8 @@
+2007-12-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added testcase for MyMoneyMoney::reduce()
+  * Fixed price handling when loading a transaction into the editor
+    to prevent rounding errors
+
 2007-12-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Update balance visibility after sorting the ledger items during view load
   * Added feature to either enter price/share or price/transaction

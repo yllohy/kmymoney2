@@ -536,7 +536,6 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
     postDate->setDate(m_transaction.postDate());
 
     // security
-    qDebug("Security is '%s'", m_split.accountId().data());
     security->completion()->setSelected(m_split.accountId());
     security->slotItemSelected(m_split.accountId());
 
@@ -573,12 +572,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
       value->setValue(m_split.shares().abs());
 
     // price
-    dynamic_cast<QLabel*>(haveWidget("price-label"))->setText(i18n("Price/Share"));
-    value = dynamic_cast<kMyMoneyEdit*>(haveWidget("price"));
-    if(!m_split.shares().isZero()) {
-      value->setValue(m_split.price());
-    }
-    updatePriceMode();
+    updatePriceMode(m_split);
 
     // fee amount
     value = dynamic_cast<kMyMoneyEdit*>(haveWidget("fee-amount"));
@@ -983,22 +977,27 @@ bool InvestTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyM
   return rc;
 }
 
-void InvestTransactionEditor::updatePriceMode(void)
+void InvestTransactionEditor::updatePriceMode(const MyMoneySplit& split)
 {
-  qDebug("updatePriceMode");
   QLabel* label = dynamic_cast<QLabel*>(haveWidget("price-label"));
   if(label) {
     kMyMoneyEdit* sharesEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
     kMyMoneyEdit* priceEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("price"));
+    MyMoneyMoney price;
+    if(!split.id().isEmpty())
+      price = split.price().reduce();
+    else
+      price = priceEdit->value().abs();
+
     if(priceMode() == PricePerTransaction && label->text() != i18n("Price")) {
       label->setText(i18n("Price"));
       if(!sharesEdit->value().isZero())
-        priceEdit->setValue(sharesEdit->value().abs() * priceEdit->value().abs());
+        priceEdit->setValue(sharesEdit->value().abs() * price);
 
     } else if(priceMode() == PricePerShare && label->text() == i18n("Price")) {
       label->setText(i18n("Price/Share"));
       if(!sharesEdit->value().isZero())
-        priceEdit->setValue(priceEdit->value().abs() / sharesEdit->value().abs());
+        priceEdit->setValue(price / sharesEdit->value().abs());
     }
   }
 }

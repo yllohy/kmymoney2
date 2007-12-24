@@ -210,7 +210,7 @@ bool Buy::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpli
     if(priceMode() == InvestTransactionEditor::PricePerTransaction) {
       s0.setValue(price.reduce());
       if(!s0.shares().isZero())
-        s0.setPrice(price / s0.shares());
+        s0.setPrice((price / s0.shares()).reduce());
     } else {
       s0.setValue((shares * price).reduce());
       s0.setPrice(price);
@@ -289,7 +289,7 @@ bool Sell::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpl
     if(priceMode() == InvestTransactionEditor::PricePerTransaction) {
       s0.setValue(price.reduce());
       if(!s0.shares().isZero())
-        s0.setPrice(price / s0.shares());
+        s0.setPrice((price / s0.shares()).reduce());
     } else {
       s0.setValue((shares * price).reduce());
       s0.setPrice(price);
@@ -416,7 +416,7 @@ bool Reinvest::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMone
     if(priceMode() == InvestTransactionEditor::PricePerTransaction) {
       s0.setValue(price.reduce());
       if(!s0.shares().isZero())
-        s0.setPrice(price / s0.shares());
+        s0.setPrice((price / s0.shares()).reduce());
     } else {
       s0.setValue((shares * price).reduce());
       s0.setPrice(price);

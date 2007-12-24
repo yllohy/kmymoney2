@@ -554,3 +554,17 @@ void MyMoneyMoneyTest::testNegativeStringConstructor(void)
   delete m1;
 }
 
+void MyMoneyMoneyTest::testReduce(void)
+{
+  MyMoneyMoney a(36488100, 1267390000);
+  MyMoneyMoney b(-a);
+
+  a = a.reduce();
+  CPPUNIT_ASSERT(a.m_num == 364881);
+  CPPUNIT_ASSERT(a.m_denom == 12673900);
+
+  b = b.reduce();  
+  CPPUNIT_ASSERT(b.m_num == -364881);
+  CPPUNIT_ASSERT(b.m_denom == 12673900);
+}
+

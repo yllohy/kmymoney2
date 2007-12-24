@@ -149,7 +149,7 @@ protected:
    */
   int editSplits(const QString& categoryWidgetName, const QString& amountWidgetName, QValueList<MyMoneySplit>& splits, bool isIncome, const char* slotEditSplits);
 
-  void updatePriceMode(void);
+  void updatePriceMode(const MyMoneySplit& split = MyMoneySplit());
 
 private:
 
