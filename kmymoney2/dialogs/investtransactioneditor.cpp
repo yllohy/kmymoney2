@@ -998,7 +998,12 @@ void InvestTransactionEditor::updatePriceMode(const MyMoneySplit& split)
       label->setText(i18n("Price/Share"));
       if(!sharesEdit->value().isZero())
         priceEdit->setValue(price / sharesEdit->value().abs());
-    }
+
+    } else if(priceMode() == PricePerTransaction) {
+      priceEdit->setValue(sharesEdit->value().abs() * price);
+
+    } else
+      priceEdit->setValue(price);
   }
 }
 
