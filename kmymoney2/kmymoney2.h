@@ -433,6 +433,8 @@ protected slots:
     */
   void slotScheduleDuplicate(void);
 
+  void slotKDELanguageSettings(void);
+
 public:
   /**
     * This method checks if there is at least one asset or liability account

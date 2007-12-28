@@ -1,3 +1,6 @@
+2007-12-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added feature to start KDE language settings from within KMyMoney
+
 2007-12-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem when loading price information in the investment
     transaction editor

@@ -385,6 +385,7 @@ void KMyMoney2App::initActions(void)
   KStdAction::configureToolbars( this, SLOT( slotEditToolbars() ), actionCollection());
   KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
   new KAction(i18n("Enable all messages"), "", 0, this, SLOT(slotEnableMessages()), actionCollection(), "settings_enable_messages");
+  new KAction(i18n("KDE language settings..."), "", 0, this, SLOT(slotKDELanguageSettings()), actionCollection(), "settings_language");
 
   // *************
   // The help menu
@@ -4098,6 +4099,17 @@ void KMyMoney2App::slotBudgetChangeYear(void)
   }
 }
 
+void KMyMoney2App::slotKDELanguageSettings(void)
+{
+  KMessageBox::information(this, i18n("Please be aware that changes made in the following dialog affect all KDE applications not only KMyMoney."), i18n("Warning"), "LanguageSettingsWarning");
+
+  QStringList args;
+  args << "language";
+  QString error;
+  int pid;
+
+  KApplication::kdeinitExec("kcmshell", args, &error, &pid);
+}
 
 void KMyMoney2App::slotNewFeature(void)
 {
