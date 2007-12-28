@@ -84,7 +84,7 @@ the names by colons (:) as in <emphasis>Bills:Car:Gasoline</emphasis>.
 </para>
  
 <para>
- Example: In Germany, there are three VAT percentages (0, 7 and 16%). So I 
+ Example: In Germany, there are three VAT percentages (0, 7 and 19%). So I 
  have a main category "VAT paid" and three subcategories, one for each 
  percentage rate. Next I have this on the income and the expense side so a 
  total of 8 categories.  For the goods I buy, I select one of the above 
