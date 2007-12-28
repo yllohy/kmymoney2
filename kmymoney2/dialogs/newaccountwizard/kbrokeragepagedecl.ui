@@ -162,5 +162,11 @@
         <slot>setEnabled(bool)</slot>
     </connection>
 </connections>
+<tabstops>
+    <tabstop>m_createBrokerageButton</tabstop>
+    <tabstop>m_brokerageCurrency</tabstop>
+    <tabstop>m_accountNumber</tabstop>
+    <tabstop>m_iban</tabstop>
+</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
