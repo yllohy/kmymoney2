@@ -528,7 +528,7 @@ const bool KGPGFile::keyAvailable(const QString& name)
   Q_LONG len;
 
   KGPGFile file;
-  QString args = QString("--list-keys %1").arg(name);
+  QString args = QString("--list-keys --list-options no-show-photos %1").arg(name);
   file.open(IO_ReadOnly, args, true);
   while((len = file.readBlock(buffer, sizeof(buffer)-1)) != EOF) {
     buffer[len] = 0;

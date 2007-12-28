@@ -42,7 +42,7 @@
 
 #include "kinstitutionpagedecl.h"
 #include "kaccounttypepagedecl.h"
-#include "kopeningpagedecl.h"
+#include "kbrokeragepagedecl.h"
 #include "kschedulepagedecl.h"
 #include "kgeneralloaninfopagedecl.h"
 #include "kloandetailspagedecl.h"
@@ -104,15 +104,18 @@ private slots:
   void slotLoadWidgets(void);
 };
 
-class OpeningPage : public KOpeningPageDecl, public WizardPage<Wizard>
+class BrokeragePage : public KBrokeragePageDecl, public WizardPage<Wizard>
 {
   Q_OBJECT
 public:
-  OpeningPage(Wizard* parent, const char* name = 0);
+  BrokeragePage(Wizard* parent, const char* name = 0);
   KMyMoneyWizardPage* nextPage(void) const;
   void enterPage(void);
 
-  QWidget* initialFocusWidget(void) const { return m_openingBalance; }
+  QWidget* initialFocusWidget(void) const { return m_createBrokerageButton; }
+
+private slots:
+  void slotLoadWidgets(void);
 };
 
 class CreditCardSchedulePage : public KSchedulePageDecl, public WizardPage<Wizard>

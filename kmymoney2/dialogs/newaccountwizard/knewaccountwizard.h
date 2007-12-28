@@ -35,7 +35,7 @@ namespace NewAccountWizard {
 
 class AccountTypePage;
 class InstitutionPage;
-class OpeningPage;
+class BrokeragePage;
 class CreditCardSchedulePage;
 class GeneralLoanInfoPage;
 class LoanDetailsPage;
@@ -54,7 +54,7 @@ class Wizard : public KMyMoneyWizard
 {
   friend class AccountTypePage;
   friend class InstitutionPage;
-  friend class OpeningPage;
+  friend class BrokeragePage;
   friend class CreditCardSchedulePage;
   friend class GeneralLoanInfoPage;
   friend class LoanDetailsPage;
@@ -113,6 +113,18 @@ public:
    */
   MyMoneyTransaction payoutTransaction(void);
 
+  /**
+   * This method returns a MyMoneyAccount() object filled
+   * with the data to create a brokerage account. If the
+   * user selected not to create a brokerage account or
+   * the account type is not able to create a brokerage
+   * account, an empty MyMoneyAccount() object is returned.
+   *
+   * @note Make sure to call the account() method before you call this method.
+   * Otherwise the returned object might contain unexpected results.
+   */
+  MyMoneyAccount brokerageAccount(void) const;
+
 protected:
   /**
    * This method returns the currently selected currency for the account
@@ -136,7 +148,7 @@ signals:
 private:
   InstitutionPage*         m_institutionPage;
   AccountTypePage*         m_accountTypePage;
-  OpeningPage*             m_openingPage;
+  BrokeragePage*           m_brokeragepage;
   CreditCardSchedulePage*  m_schedulePage;
   GeneralLoanInfoPage*     m_generalLoanInfoPage;
   LoanDetailsPage*         m_loanDetailsPage;

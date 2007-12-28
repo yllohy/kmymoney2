@@ -471,6 +471,10 @@ RegisterToolTip::RegisterToolTip(QWidget* parent, Register * reg) :
 
 void RegisterToolTip::maybeTip(const QPoint& pos)
 {
+  // if we update the register, there's no need to show tooltips
+  if(!m_register->isUpdatesEnabled())
+    return;
+
   QPoint cpos = m_register->viewportToContents(pos);
   // qDebug("RegisterToolTip::mayBeTip(%d,%d)", cpos.x(), cpos.y());
   int row = m_register->rowAt(cpos.y());

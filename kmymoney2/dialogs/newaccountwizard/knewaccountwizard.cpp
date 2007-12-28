@@ -61,8 +61,8 @@ using namespace NewAccountWizard;
 namespace NewAccountWizard {
   enum steps {
     StepInstitution = 1,
-    StepType,
     StepDetail,
+    StepBrokerage,
     StepSchedule,
     StepPayout,
     StepFinish
@@ -73,17 +73,18 @@ NewAccountWizard::Wizard::Wizard(QWidget *parent, const char *name, bool modal, 
 {
   setTitle(i18n("KMyMoney New Account Setup"));
   addStep(i18n("Institution"));
-  addStep(i18n("Type"));
   addStep(i18n("Details"));
+  addStep(i18n("Broker"));
   addStep(i18n("Schedule"));
   addStep(i18n("Payout"));
   addStep(i18n("Finish"));
+  setStepHidden(StepBrokerage);
   setStepHidden(StepSchedule);
   setStepHidden(StepPayout);
 
   m_institutionPage = new InstitutionPage(this);
   m_accountTypePage = new AccountTypePage(this);
-  m_openingPage = new OpeningPage(this);
+  m_brokeragepage = new BrokeragePage(this);
   m_schedulePage = new CreditCardSchedulePage(this);
   m_generalLoanInfoPage = new GeneralLoanInfoPage(this);
   m_loanDetailsPage = new LoanDetailsPage(this);
@@ -182,6 +183,24 @@ const MyMoneyAccount& NewAccountWizard::Wizard::parentAccount(void)
       break;
   }
   return MyMoneyFile::instance()->asset();
+}
+
+MyMoneyAccount NewAccountWizard::Wizard::brokerageAccount(void) const
+{
+  MyMoneyAccount account;
+  if(m_account.accountType() == MyMoneyAccount::Investment
+  && m_brokeragepage->m_createBrokerageButton->isChecked()) {
+    account.setName(i18n("%1 (Brokerage)").arg(m_account.name()));
+    account.setAccountType(MyMoneyAccount::Checkings);
+    account.setInstitutionId(m_account.institutionId());
+    account.setOpeningDate(m_account.openingDate());
+    account.setCurrencyId(m_brokeragepage->m_brokerageCurrency->security().id());
+    if(m_brokeragepage->m_accountNumber->isEnabled() && !m_brokeragepage->m_accountNumber->text().isEmpty())
+      account.setNumber(m_brokeragepage->m_accountNumber->text());
+    if(m_brokeragepage->m_iban->isEnabled() && !m_brokeragepage->m_iban->text().isEmpty())
+      account.setValue("IBAN", m_brokeragepage->m_iban->text());
+  }
+  return account;
 }
 
 const MyMoneySchedule& NewAccountWizard::Wizard::schedule(void)
@@ -288,7 +307,7 @@ MyMoneyMoney NewAccountWizard::Wizard::openingBalance(void)
       return -(m_generalLoanInfoPage->m_openingBalance->value());
     return m_generalLoanInfoPage->m_openingBalance->value();
   }
-  return m_openingPage->m_openingBalance->value();
+  return m_accountTypePage->m_openingBalance->value();
 }
 
 bool NewAccountWizard::Wizard::moneyBorrowed(void) const
@@ -381,7 +400,7 @@ KMyMoneyWizardPage* InstitutionPage::nextPage(void) const
 
 AccountTypePage::AccountTypePage(Wizard* wizard, const char* name) :
   KAccountTypePageDecl(wizard),
-  WizardPage<Wizard>(StepType, this, wizard, name)
+  WizardPage<Wizard>(StepDetail, this, wizard, name)
 {
   m_typeSelection->insertItem(i18n("Checking"), MyMoneyAccount::Checkings);
   m_typeSelection->insertItem(i18n("Savings"), MyMoneyAccount::Savings);
@@ -405,7 +424,11 @@ KMyMoneyWizardPage* AccountTypePage::nextPage(void) const
 {
   if(accountType() == MyMoneyAccount::Loan)
     return m_wizard->m_generalLoanInfoPage;
-  return m_wizard->m_openingPage;
+  if(accountType() == MyMoneyAccount::CreditCard)
+    return m_wizard->m_schedulePage;
+  if(accountType() == MyMoneyAccount::Investment)
+    return m_wizard->m_brokeragepage;
+  return m_wizard->m_accountSummaryPage;
 }
 
 void AccountTypePage::slotLoadWidgets(void)
@@ -417,6 +440,7 @@ void AccountTypePage::slotLoadWidgets(void)
 void AccountTypePage::leavePage(void)
 {
   m_wizard->setStepHidden(StepSchedule);
+  m_wizard->setStepHidden(StepBrokerage);
 }
 
 bool AccountTypePage::isComplete(void) const
@@ -431,6 +455,7 @@ bool AccountTypePage::isComplete(void) const
                        && (accountType() != MyMoneyAccount::Loan);
   m_wizard->setStepHidden(StepSchedule, hideSchedulePage);
   m_wizard->setStepHidden(StepPayout, (accountType() != MyMoneyAccount::Loan));
+  m_wizard->setStepHidden(StepBrokerage, accountType() != MyMoneyAccount::Investment);
   return rc;
 }
 
@@ -451,23 +476,37 @@ void AccountTypePage::setAccount(const MyMoneyAccount& acc)
   m_accountName->setText(acc.name());
 }
 
-OpeningPage::OpeningPage(Wizard* wizard, const char* name) :
-  KOpeningPageDecl(wizard),
-  WizardPage<Wizard>(StepDetail, this, wizard, name)
+BrokeragePage::BrokeragePage(Wizard* wizard, const char* name) :
+  KBrokeragePageDecl(wizard),
+  WizardPage<Wizard>(StepBrokerage, this, wizard, name)
 {
+  connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadWidgets()));
 }
 
-void OpeningPage::enterPage(void)
+void BrokeragePage::slotLoadWidgets(void)
 {
-  m_openingDateDisplay->setText(KGlobal::locale()->formatDate(m_wizard->m_accountTypePage->m_openingDate->date()));
+  m_brokerageCurrency->update(QCString("x"));
 }
 
-KMyMoneyWizardPage* OpeningPage::nextPage(void) const
+void BrokeragePage::enterPage(void)
 {
-  if(m_wizard->m_accountTypePage->accountType() == MyMoneyAccount::CreditCard)
-    return m_wizard->m_schedulePage;
-  else
-    return m_wizard->m_accountSummaryPage;
+  // assign the currency of the investment account to the
+  // brokerage account if nothing else has ever been selected
+  if(m_brokerageCurrency->security().id().isEmpty()) {
+    m_brokerageCurrency->setSecurity(m_wizard->m_accountTypePage->m_currencyComboBox->security());
+  }
+
+  // check if the institution relevant fields should be enabled or not
+  bool enabled = m_wizard->m_institutionPage->m_accountNumber->isEnabled();
+  m_accountNumberLabel->setEnabled(enabled);
+  m_accountNumber->setEnabled(enabled);
+  m_ibanLabel->setEnabled(enabled);
+  m_iban->setEnabled(enabled);
+}
+
+KMyMoneyWizardPage* BrokeragePage::nextPage(void) const
+{
+  return m_wizard->m_accountSummaryPage;
 }
 
 CreditCardSchedulePage::CreditCardSchedulePage(Wizard* wizard, const char* name) :
@@ -1282,6 +1321,19 @@ void AccountSummaryPage::enterPage(void)
     }
     if(!acc.value("IBAN").isEmpty()) {
       p = new KListViewItem(group, p, i18n("IBAN"), acc.value("IBAN"));
+    }
+  }
+
+  if(acc.accountType() == MyMoneyAccount::Investment) {
+    if(m_wizard->m_brokeragepage->m_createBrokerageButton->isChecked()) {
+      group = new KMyMoneyCheckListItem(m_dataList, group, i18n("Brokerage Account"), QString(), QCString(), QCheckListItem::RadioButtonController);
+      group->setOpen(true);
+      p = new KListViewItem(group, p, i18n("Name"), QString("%1 (Brokerage)").arg(acc.name()));
+      p = new KListViewItem(group, p, i18n("Currency"), m_wizard->m_brokeragepage->m_brokerageCurrency->security().name());
+      if(m_wizard->m_brokeragepage->m_accountNumber->isEnabled() && !m_wizard->m_brokeragepage->m_accountNumber->text().isEmpty())
+        p = new KListViewItem(group, p, i18n("Number"), m_wizard->m_brokeragepage->m_accountNumber->text());
+      if(m_wizard->m_brokeragepage->m_iban->isEnabled() && !m_wizard->m_brokeragepage->m_iban->text().isEmpty())
+        p = new KListViewItem(group, p, i18n("IBAN"), m_wizard->m_brokeragepage->m_iban->text());
     }
   }
 

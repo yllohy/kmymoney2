@@ -1,5 +1,11 @@
 2007-12-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added feature to start KDE language settings from within KMyMoney
+  * Updated French translation as provided by Patrick Petit
+  * Fixed a crash when updating multiple transactions
+  * Fixed documentation to mention 19% VAT for Germany
+  * Added i18n support to strings in mymoneyfile.cpp
+  * Fixed the problem of GPG photo id's popping up
+  * Allow to create a brokerage account for investment accounts
 
 2007-12-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem when loading price information in the investment

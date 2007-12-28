@@ -2572,6 +2572,12 @@ void KMyMoney2App::slotAccountNew(MyMoneyAccount& account)
           file->addTransaction(payoutTransaction);
         }
 
+        // create a brokerage account if selected
+        MyMoneyAccount brokerageAccount = wizard->brokerageAccount();
+        if(!(brokerageAccount == MyMoneyAccount())) {
+          file->addAccount(brokerageAccount, parent);
+        }
+
         // create a possible schedule
         MyMoneySchedule sch = wizard->schedule();
         if(!(sch == MyMoneySchedule())) {

@@ -1,15 +1,15 @@
 <!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>KOpeningPageDecl</class>
+<class>KBrokeragePageDecl</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>KOpeningPageDecl</cstring>
+        <cstring>KBrokeragePageDecl</cstring>
     </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
             <width>594</width>
-            <height>373</height>
+            <height>398</height>
         </rect>
     </property>
     <vbox>
@@ -24,87 +24,101 @@
                 <enum>NoFocus</enum>
             </property>
             <property name="text">
-                <string>Enter the opening balance for this account. This is usually the ending balance of your last statement.</string>
+                <string>Does this investment account has a brokerage account?&lt;p&gt;
+
+&lt;b&gt;Check&lt;/b&gt; the mark if this investment account has an associated account for money that is not invested.&lt;br&gt;
+
+&lt;b&gt;Uncheck&lt;/b&gt; it if you don't use this account for active stock brokerage. You should also uncheck it if this account is not maintained by a bank or broker.</string>
             </property>
         </widget>
-        <widget class="KActiveLabel">
+        <widget class="QCheckBox">
             <property name="name">
-                <cstring>kActiveLabel1</cstring>
+                <cstring>m_createBrokerageButton</cstring>
             </property>
-            <property name="sizePolicy">
-                <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                </sizepolicy>
-            </property>
-            <property name="minimumSize">
-                <size>
-                    <width>0</width>
-                    <height>40</height>
-                </size>
+            <property name="text">
+                <string>Create brokerage account</string>
             </property>
         </widget>
-        <widget class="QLayoutWidget">
+        <widget class="QFrame">
             <property name="name">
-                <cstring>layout16</cstring>
+                <cstring>m_currencyFrame</cstring>
+            </property>
+            <property name="enabled">
+                <bool>false</bool>
+            </property>
+            <property name="frameShape">
+                <enum>NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Raised</enum>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout15</cstring>
+                        <cstring>layout8</cstring>
                     </property>
                     <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLabel" row="1" column="0">
+                        <widget class="QLabel" row="0" column="0">
                             <property name="name">
                                 <cstring>textLabel1</cstring>
                             </property>
                             <property name="text">
-                                <string>Opening balance</string>
+                                <string>Currency</string>
                             </property>
                         </widget>
-                        <widget class="kMyMoneyEdit" row="1" column="1">
+                        <widget class="KLineEdit" row="2" column="1">
                             <property name="name">
-                                <cstring>m_openingBalance</cstring>
-                            </property>
-                            <property name="minimumSize">
-                                <size>
-                                    <width>150</width>
-                                    <height>0</height>
-                                </size>
-                            </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
+                                <cstring>m_iban</cstring>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="0" column="0">
+                        <widget class="KMyMoneyCurrencySelector" row="0" column="1">
                             <property name="name">
-                                <cstring>textLabel3</cstring>
+                                <cstring>m_brokerageCurrency</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>3</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>m_ibanLabel</cstring>
                             </property>
                             <property name="text">
-                                <string>Opening date</string>
+                                <string>IBAN</string>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="0" column="1">
+                        <widget class="KLineEdit" row="1" column="1">
                             <property name="name">
-                                <cstring>m_openingDateDisplay</cstring>
+                                <cstring>m_accountNumber</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>m_accountNumberLabel</cstring>
                             </property>
                             <property name="text">
-                                <string>xxx</string>
+                                <string>Account number</string>
                             </property>
                         </widget>
                     </grid>
                 </widget>
                 <spacer>
                     <property name="name">
-                        <cstring>spacer21</cstring>
+                        <cstring>spacer2</cstring>
                     </property>
                     <property name="orientation">
                         <enum>Horizontal</enum>
@@ -114,7 +128,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>200</width>
+                            <width>30</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -134,14 +148,19 @@
             <property name="sizeHint">
                 <size>
                     <width>21</width>
-                    <height>100</height>
+                    <height>30</height>
                 </size>
             </property>
         </spacer>
     </vbox>
 </widget>
-<tabstops>
-    <tabstop>m_openingBalance</tabstop>
-</tabstops>
+<connections>
+    <connection>
+        <sender>m_createBrokerageButton</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>m_currencyFrame</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+</connections>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

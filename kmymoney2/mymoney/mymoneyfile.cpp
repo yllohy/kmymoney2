@@ -1374,13 +1374,13 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         problemCount++;
         if(problemAccount != (*it_a).name()) {
           problemAccount = (*it_a).name();
-          rc << QString("* Problem with account '%1'").arg(problemAccount);
+          rc << i18n("* Problem with account '%1'").arg(problemAccount);
         }
         // the parent belongs to a different group, so we reconnect to the
         // master group account (asset, liability, etc) to which this account
         // should belong and update it in the engine.
-        rc << QString("  * Parent account '%1' belongs to a different group.").arg(parent.name());
-        rc << QString("    New parent account is the top level account '%1'.").arg(toplevel.name());
+        rc << i18n("  * Parent account '%1' belongs to a different group.").arg(parent.name());
+        rc << i18n("    New parent account is the top level account '%1'.").arg(toplevel.name());
         (*it_a).setParentAccountId(toplevel.id());
 
         // make sure to rebuild the sub-accounts of the top account
@@ -1398,10 +1398,10 @@ const QStringList MyMoneyFile::consistencyCheck(void)
       problemCount++;
       if(problemAccount != (*it_a).name()) {
         problemAccount = (*it_a).name();
-        rc << QString("* Problem with account '%1'").arg(problemAccount);
+        rc << i18n("* Problem with account '%1'").arg(problemAccount);
       }
-      rc << QString("  * The parent with id %1 does not exist anymore.").arg(parentId);
-      rc << QString("    New parent account is the top level account '%1'.").arg(toplevel.name());
+      rc << i18n("  * The parent with id %1 does not exist anymore.").arg(parentId);
+      rc << i18n("    New parent account is the top level account '%1'.").arg(toplevel.name());
       (*it_a).setParentAccountId(toplevel.id());
 
       addNotification((*it_a).id());
@@ -1420,10 +1420,10 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         problemCount++;
         if(problemAccount != (*it_a).name()) {
           problemAccount = (*it_a).name();
-          rc << QString("* Problem with account '%1'").arg(problemAccount);
+          rc << i18n("* Problem with account '%1'").arg(problemAccount);
         }
-        rc << QString("  * Child account with id %1 does not exist anymore.").arg(*it_c);
-        rc << "    The child account list will be reconstructed.";
+        rc << i18n("  * Child account with id %1 does not exist anymore.").arg(*it_c);
+        rc << i18n("    The child account list will be reconstructed.");
         if(accountRebuild.contains((*it_a).id()) == 0)
           accountRebuild << (*it_a).id();
       }
@@ -1435,14 +1435,14 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         addNotification((*it_a).id());
       } catch (MyMoneyException *e) {
         delete e;
-        rc << "  * Unable to update account data in engine";
+        rc << i18n("  * Unable to update account data in engine.");
         return rc;
       }
     }
   }
 
   if(accountRebuild.count() != 0) {
-    rc << "* Reconstructing the child lists for";
+    rc << i18n("* Reconstructing the child lists for");
   }
 
   // clear the affected lists
@@ -1479,7 +1479,7 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         addNotification((*it_a).id());
       } catch (MyMoneyException *e) {
         delete e;
-        rc << QString("  * Unable to update account data for account %1 in engine").arg((*it_a).name());
+        rc << i18n("  * Unable to update account data for account %1 in engine").arg((*it_a).name());
       }
     }
   }
@@ -1497,7 +1497,7 @@ const QStringList MyMoneyFile::consistencyCheck(void)
       payee.clearId();
       m_storage->addPayee(payee);
       payeeConversionMap[(*it_p).id()] = payee.id();
-      rc << QString("  * Payee %1 recreated with fixed id").arg(payee.name());
+      rc << i18n("  * Payee %1 recreated with fixed id").arg(payee.name());
       ++problemCount;
     }
   }
@@ -1516,7 +1516,7 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         s.setPayeeId(payeeConversionMap[s.payeeId()]);
         t.modifySplit(s);
         tChanged = true;
-        rc << QString("  * Payee id updated in split of transaction '%1'.").arg(t.id());
+        rc << i18n("  * Payee id updated in split of transaction '%1'.").arg(t.id());
         ++problemCount;
       }
     }
@@ -1538,14 +1538,14 @@ const QStringList MyMoneyFile::consistencyCheck(void)
       if(payeeConversionMap.find((*it_s).payeeId()) != payeeConversionMap.end()) {
         s.setPayeeId(payeeConversionMap[s.payeeId()]);
         sChanged = true;
-        rc << QString("  * Payee id updated in split of schedule '%1'.").arg((*it_sch).name());
+        rc << i18n("  * Payee id updated in split of schedule '%1'.").arg((*it_sch).name());
         ++problemCount;
       }
       if(!(*it_s).value().isZero() && (*it_s).shares().isZero()) {
         s.setShares(s.value());
         sChanged = true;
-        rc << QString("  * Split in scheduled transaction '%1' contained value != 0 and shares == 0.").arg((*it_sch).name());
-        rc << "    Shares set to value.";
+        rc << i18n("  * Split in scheduled transaction '%1' contained value != 0 and shares == 0.").arg((*it_sch).name());
+        rc << i18n("    Shares set to value.");
         ++problemCount;
       }
       if(sChanged) {
@@ -1569,7 +1569,7 @@ const QStringList MyMoneyFile::consistencyCheck(void)
     bool rChanged = false;
     for(it_p = pList.begin(); it_p != pList.end(); ++it_p) {
       if(payeeConversionMap.find(*it_p) != payeeConversionMap.end()) {
-        rc << QString("  * Payee id updated in report '%1'.").arg((*it_r).name());
+        rc << i18n("  * Payee id updated in report '%1'.").arg((*it_r).name());
         ++problemCount;
         r.removeReference(*it_p);
         r.addPayee(payeeConversionMap[*it_p]);
@@ -1586,16 +1586,16 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   for(it_m = payeeConversionMap.begin(); it_m != payeeConversionMap.end(); ++it_m) {
     MyMoneyPayee payee = this->payee(it_m.key());
     removePayee(payee);
-    rc << QString("  * Payee '%1' removed.").arg(payee.id());
+    rc << i18n("  * Payee '%1' removed.").arg(payee.id());
     ++problemCount;
   }
 
   // add more checks here
 
   if(problemCount == 0)
-    rc << "Finish! Data is consistent.";
+    rc << i18n("Finish! Data is consistent.");
   else
-    rc << QString("Finish! %1 problems corrected. Data is consistent.")
+    rc << i18n("Finish! %1 problems corrected. Data is consistent.")
             .arg(QString::number(problemCount));
 
   return rc;
