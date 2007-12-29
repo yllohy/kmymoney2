@@ -40,7 +40,7 @@
 #include <../mymoney/mymoneykeyvaluecontainer.h>
 
 /**
-  * @author Ace Jones 
+  * @author Ace Jones
   */
 
 /**
@@ -51,10 +51,10 @@
   * his account.
   *
   * Currently works only with OFX Direct Connect, but I imagined that
-  * other protocols could be included here.  To accomodate this, we'd 
+  * other protocols could be included here.  To accomodate this, we'd
   * add another page at the start of the wizard to ask which protocol
   * they wanted.
-  *  
+  *
   */
 class KOnlineBankingSetupWizard : public KOnlineBankingSetupDecl
 {
@@ -66,11 +66,13 @@ public:
     ListViewItem( QListView* parent, const MyMoneyKeyValueContainer& kvps );
     virtual void x(void);
   };
-    
+
   KOnlineBankingSetupWizard(QWidget *parent=0, const char *name=0);
   ~KOnlineBankingSetupWizard();
 
   bool chosenSettings( MyMoneyKeyValueContainer& settings );
+
+  bool isInit(void) const { return m_fInit; }
 
 public slots:
   void next();
@@ -87,6 +89,7 @@ private:
   QValueList<OfxFiServiceInfo> m_bankInfo;
   QValueList<OfxFiServiceInfo>::const_iterator m_it_info;
   bool m_fDone;
+  bool m_fInit;
 };
 
 #endif

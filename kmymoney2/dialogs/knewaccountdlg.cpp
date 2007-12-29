@@ -1106,13 +1106,15 @@ void KNewAccountDlg::slotOnlineSetupClicked(void)
   // Or, the wizard itself could ask the user.
 
   KOnlineBankingSetupWizard wiz(this,"onlinebankingsetup");
-  wiz.exec();
-
-  MyMoneyKeyValueContainer settings;
-  if ( wiz.chosenSettings( settings ) )
-  {
-    m_account.setOnlineBankingSettings( settings );
-    displayOnlineBankingStatus();
+  if(wiz.isInit()) {
+    if(wiz.exec() == QDialog::Accepted) {
+      MyMoneyKeyValueContainer settings;
+      if ( wiz.chosenSettings( settings ) )
+      {
+        m_account.setOnlineBankingSettings( settings );
+        displayOnlineBankingStatus();
+      }
+    }
   }
 #else
   KMessageBox::sorry(this,i18n("This version of KMyMoney has not been compiled with support for online banking"));

@@ -1,3 +1,7 @@
+2007-12-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Catch exceptions thrown in libxml++ during OFX setup
+  * Store OFX bank list files in ~/.kde/share/apps/kmymoney2
+
 2007-12-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added feature to start KDE language settings from within KMyMoney
   * Updated French translation as provided by Patrick Petit
