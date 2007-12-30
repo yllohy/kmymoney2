@@ -1389,6 +1389,15 @@ const QStringList MyMoneyFile::consistencyCheck(void)
           accountRebuild << toplevel.id();
         if(accountRebuild.contains(parent.id()) == 0)
           accountRebuild << parent.id();
+      } else if(!parent.accountList().contains((*it_a).id())) {
+        problemCount++;
+        if(problemAccount != (*it_a).name()) {
+          problemAccount = (*it_a).name();
+          rc << i18n("* Problem with account '%1'").arg(problemAccount);
+        }
+        // parent exists, but does not have a reference to the account
+        rc << i18n("  * Parent account '%1' does not contain '%2' as sub-account.").arg(parent.name(), problemAccount);
+        accountRebuild << parent.id();
       }
     } catch(MyMoneyException *e) {
       delete e;
