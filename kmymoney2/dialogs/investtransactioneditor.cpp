@@ -667,6 +667,8 @@ void InvestTransactionEditor::slotUpdateSecurity(const QCString& stockId)
 
   updatePriceMode();
 
+  d->m_activity->preloadAssetAccount();
+
   haveWidget("shares")->setEnabled(currencyKnown);
   haveWidget("price")->setEnabled(currencyKnown);
   haveWidget("fee-amount")->setEnabled(currencyKnown);
@@ -753,6 +755,8 @@ void InvestTransactionEditor::slotUpdateActivity(MyMoneySplit::investTransaction
   }
 
   d->m_activity->showWidgets();
+
+  d->m_activity->preloadAssetAccount();
 
   cat = dynamic_cast<KMyMoneyCategory*>(haveWidget("interest-account"));
   if(cat->parentWidget()->isVisible())

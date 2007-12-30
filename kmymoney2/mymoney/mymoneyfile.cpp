@@ -339,6 +339,11 @@ const MyMoneyAccount& MyMoneyFile::account(const QCString& id) const
   return d->m_cache.account(id);
 }
 
+const MyMoneyAccount& MyMoneyFile::accountByName(const QString& name) const
+{
+  return d->m_cache.accountByName(name);
+}
+
 void MyMoneyFile::removeTransaction(const MyMoneyTransaction& transaction)
 {
   checkTransaction(__PRETTY_FUNCTION__);

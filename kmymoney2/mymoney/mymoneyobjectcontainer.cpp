@@ -102,6 +102,20 @@ const T& MyMoneyObjectContainer::a(const QCString& id) \
   return dynamic_cast<const T&>(*(*it)); \
 }
 
+const MyMoneyAccount& MyMoneyObjectContainer::accountByName(const QString& name) const
+{
+  static MyMoneyAccount nullElement;
+  QMap<QCString, MyMoneyObject const *>::const_iterator it;
+  for(it = m_map.begin(); it != m_map.end(); ++it) {
+    const MyMoneyAccount* node = dynamic_cast<const MyMoneyAccount *>(*it);
+    if(node) {
+      if(node->name() == name)
+        return dynamic_cast<const MyMoneyAccount &>(*(*it));
+    }
+  }
+  return nullElement;
+}
+
 objectAccessMethod(account, MyMoneyAccount)
 objectAccessMethod(payee, MyMoneyPayee)
 objectAccessMethod(security, MyMoneySecurity)

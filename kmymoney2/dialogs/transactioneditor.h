@@ -135,6 +135,8 @@ public:
 
   bool eventFilter(QObject* o, QEvent* e);
 
+  const MyMoneyAccount& account(void) const { return m_account; }
+
 public slots:
   void slotReloadEditWidgets(void);
 

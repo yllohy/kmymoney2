@@ -2,6 +2,7 @@
   * Fixed sign problem when selling shares with a price per transaction setting
   * LibOFX 0.9.0 now mandatory
   * Added missing testcase to consistency check
+  * Preset brokerage account if available for investment transactions
 
 2007-12-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Catch exceptions thrown in libxml++ during OFX setup

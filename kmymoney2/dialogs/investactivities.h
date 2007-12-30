@@ -49,6 +49,8 @@ public:
     */
   virtual bool createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& feeSplits, QValueList<MyMoneySplit>& m_feeSplits, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& m_interestSplits, MyMoneySecurity& security, MyMoneySecurity& currency) = 0;
 
+  virtual void preloadAssetAccount(void);
+
 protected:
   Activity(InvestTransactionEditor* editor) { m_parent = editor; }
   QWidget* haveWidget(const QString& name) const { return m_parent->haveWidget(name); }

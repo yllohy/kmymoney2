@@ -684,13 +684,22 @@ public:
   const QValueList<MyMoneyInstitution> institutionList(void) const;
 
   /**
-    * Returns the account addressed by it's id.
+    * Returns the account addressed by its id.
     *
     * @param id id of the account to locate.
     * @return MyMoneyAccount object carrying the @p id. An exception is thrown
     *         if the id is unknown
     */
   const MyMoneyAccount& account(const QCString& id) const;
+
+  /**
+   * Returns the account addressed by its name.
+   *
+   * @param name  name of the account to locate.
+   * @return First MyMoneyAccount object found carrying the @p name.
+   * An empty MyMoneyAccount object will be returned if the name is not found.
+   */
+  const MyMoneyAccount& accountByName(const QString& name) const;
 
   /**
     * This method returns a list of accounts inside a MyMoneyFile object.

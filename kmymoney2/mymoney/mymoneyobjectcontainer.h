@@ -74,6 +74,8 @@ public:
   void clear(const QCString& id);
   void clear(IMyMoneyStorage* storage = 0);
 
+  const MyMoneyAccount& accountByName(const QString& name) const;
+
 private:
   QMap<QCString, MyMoneyObject const *>  m_map;
   IMyMoneyStorage*                       m_storage;
