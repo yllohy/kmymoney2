@@ -66,7 +66,7 @@ protected:
   QString username(void) const;
   QString password(void) const;
   QString accountnum(void) const;
-  AccountType accounttype(void) const;
+  OfxAccountData::AccountType accounttype(void) const;
 
 private:
 //   QString m_body;

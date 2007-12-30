@@ -59,17 +59,17 @@ QString MyMoneyOfxConnector::password(void) const { return m_fiSettings.value("p
 QString MyMoneyOfxConnector::accountnum(void) const { return m_fiSettings.value("accountid"); }
 QString MyMoneyOfxConnector::url(void) const { return m_fiSettings.value("url"); }
  
-AccountType MyMoneyOfxConnector::accounttype(void) const
+OfxAccountData::AccountType MyMoneyOfxConnector::accounttype(void) const
 {
-  AccountType result = OFX_BANK_ACCOUNT;
+  OfxAccountData::AccountType result = OfxAccountData::OFX_CHECKING;
 
   switch( m_account.accountType() )
   {
   case MyMoneyAccount::Investment:
-    result = OFX_INVEST_ACCOUNT;
+    result = OfxAccountData::OFX_INVESTMENT;
     break;
   case MyMoneyAccount::CreditCard:
-    result = OFX_CREDITCARD_ACCOUNT;
+    result = OfxAccountData::OFX_CREDITCARD;
     break;
   default:
     break;
@@ -85,11 +85,11 @@ AccountType MyMoneyOfxConnector::accounttype(void) const
     kdDebug(2) << "MyMoneyOfxConnector::accounttype() overriding to " << result << endl;
     
     if ( override == "BANK" )
-    result = OFX_BANK_ACCOUNT;
+    result = OfxAccountData::OFX_CHECKING;
     else if ( override == "CC" )
-      result = OFX_CREDITCARD_ACCOUNT;
+      result = OfxAccountData::OFX_CREDITCARD;
     else if ( override == "INV" )
-      result = OFX_INVEST_ACCOUNT;
+      result = OfxAccountData::OFX_INVESTMENT;
   }
 
   return result;
@@ -104,13 +104,13 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
   strncpy(fi.userid,username().latin1(),OFX_USERID_LENGTH-1);
   strncpy(fi.userpass,password().latin1(),OFX_USERPASS_LENGTH-1);
   
-  OfxAccountInfo account;
-  memset(&account,0,sizeof(OfxAccountInfo));
+  OfxAccountData account;
+  memset(&account,0,sizeof(OfxAccountData));
  
-  strncpy(account.bankid,iban().latin1(),OFX_BANKID_LENGTH-1);
-  strncpy(account.brokerid,iban().latin1(),OFX_BROKERID_LENGTH-1);
-  strncpy(account.accountid,accountnum().latin1(),OFX_ACCOUNT_ID_LENGTH-1);
-  account.type = accounttype();
+  strncpy(account.bank_id,iban().latin1(),OFX_BANKID_LENGTH-1);
+  strncpy(account.broker_id,iban().latin1(),OFX_BROKERID_LENGTH-1);
+  strncpy(account.account_id,accountnum().latin1(),OFX_ACCOUNT_ID_LENGTH-1);
+  account.account_type = accounttype();
   
   char* szrequest = libofx_request_statement( &fi, &account, QDateTime(_dtstart).toTime_t() );
   QString request = szrequest;
