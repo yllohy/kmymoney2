@@ -287,6 +287,7 @@ bool Sell::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpl
   if(!isMultiSelection() || (isMultiSelection() && !priceEdit->text().isEmpty())) {
     price = priceEdit->value().abs();
     if(priceMode() == InvestTransactionEditor::PricePerTransaction) {
+      price = -price;
       s0.setValue(price.reduce());
       if(!s0.shares().isZero())
         s0.setPrice((price / s0.shares()).reduce());
