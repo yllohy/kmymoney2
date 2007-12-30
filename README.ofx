@@ -14,8 +14,8 @@ user manual.
 
 To build it:
 
-1. Get the correct version of libofx.  For CVS version of KMM, get the latest
-CVS version of libofx.  Please ensure you have the absolute latest version
+1. Get the required version of libofx.  For CVS version of KMM, get at least
+version 0.9.0 of libofx.  Please ensure you have at least this version
 before requesting support for any problem building with OFX.
 
 For released versions of KMM, the configure script will tell you which version
