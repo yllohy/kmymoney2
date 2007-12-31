@@ -96,7 +96,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   : KNewAccountDlgDecl(parent,name,true),
     m_account(account),
     m_bSelectedParentAccount(false),
-    m_chartWidget(0),
     m_categoryEditor(categoryEditor),
     m_isEditing(isEditing)
 {
@@ -395,11 +394,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   connect(m_vatAssignment, SIGNAL(toggled(bool)), this, SLOT(slotCheckFinished()));
   connect(m_vatRate, SIGNAL(textChanged(const QString&)), this, SLOT(slotCheckFinished()));
   connect(m_vatAccount, SIGNAL(stateChanged()), this, SLOT(slotCheckFinished()));
-
-  connect(m_minBalanceEarlyEdit->lineedit(), SIGNAL(textChanged(const QString&)), this, SLOT(slotMarkersChanged()));
-  connect(m_minBalanceAbsoluteEdit->lineedit(), SIGNAL(textChanged(const QString&)), this, SLOT(slotMarkersChanged()));
-  connect(m_maxCreditEarlyEdit->lineedit(), SIGNAL(textChanged(const QString&)), this, SLOT(slotMarkersChanged()));
-  connect(m_maxCreditAbsoluteEdit->lineedit(), SIGNAL(textChanged(const QString&)), this, SLOT(slotMarkersChanged()));
 
   connect(m_minBalanceEarlyEdit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAdjustMinBalanceAbsoluteEdit(const QString&)));
   connect(m_minBalanceAbsoluteEdit, SIGNAL(valueChanged(const QString&)), this, SLOT(slotAdjustMinBalanceEarlyEdit(const QString&)));
@@ -1217,72 +1211,6 @@ void KNewAccountDlg::displayOnlineBankingStatus(void)
 
 #else
     m_textOnlineStatus->setText(i18n("STATUS: Disabled.  No online banking services are available"));
-#endif
-}
-
-void KNewAccountDlg::slotMarkersChanged(void)
-{
-#ifdef HAVE_KDCHART
-  // add another row for markers if required or remove it if not necessary
-  // see http://www.klaralvdalens-datakonsult.se/kdchart/ProgrammersManual/KDChart.pdf
-  // Chapter 6, "Adding separate Lines/Markers".
-
-  bool needRow = false;
-  bool haveMinBalance = false;
-  bool haveMaxCredit = false;
-  MyMoneyMoney minBalance, maxCredit;
-  MyMoneyMoney factor(1,1);
-  if(m_account.accountGroup() == MyMoneyAccount::Asset)
-    factor = -factor;
-
-  if(m_maxCreditLabel->isEnabled()) {
-    if(m_maxCreditEarlyEdit->lineedit()->text().length()) {
-      needRow = true;
-      haveMaxCredit = true;
-      maxCredit = m_maxCreditEarlyEdit->value() * factor;
-    }
-    if(m_maxCreditAbsoluteEdit->lineedit()->text().length()) {
-      needRow = true;
-      haveMaxCredit = true;
-      maxCredit = m_maxCreditAbsoluteEdit->value() * factor;
-    }
-  }
-
-  if(m_minBalanceLabel->isEnabled()) {
-    if(m_minBalanceEarlyEdit->lineedit()->text().length()) {
-      needRow = true;
-      haveMinBalance = true;
-      minBalance = m_minBalanceEarlyEdit->value();
-    }
-    if(m_minBalanceAbsoluteEdit->lineedit()->text().length()) {
-      needRow = true;
-      haveMinBalance = true;
-      minBalance = m_minBalanceAbsoluteEdit->value();
-    }
-  }
-
-  KDChartTableDataBase* data = m_chartWidget->data();
-  if(!needRow && data->usedRows() == 2) {
-    data->expand( data->usedRows()-1, data->usedCols() );
-  } else if(needRow && data->usedRows() == 1) {
-    data->expand( data->usedRows()+1, data->usedCols() );
-  }
-
-  if(needRow) {
-    if(haveMinBalance) {
-      data->setCell(1, 0, minBalance.toDouble());
-      m_chartWidget->setProperty(1, 0, m_idPropMinBalance);
-    }
-    if(haveMaxCredit) {
-      data->setCell(1, 1, maxCredit.toDouble());
-      m_chartWidget->setProperty(1, 1, m_idPropMaxCredit);
-    }
-  }
-
-  for(int iCell = 90; iCell < 180; ++iCell) {
-    m_chartWidget->setProperty(0, iCell, m_idPropFutureValue);
-  }
-  m_chartWidget->setProperty(0, 90, m_idPropLastValue);
 #endif
 }
 

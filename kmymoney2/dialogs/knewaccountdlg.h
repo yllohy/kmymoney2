@@ -58,7 +58,6 @@ private:
 
   KMyMoneyAccountTreeItem *m_parentItem;
   KMyMoneyAccountTreeItem *m_accountItem;
-  reports::KReportChartView* m_chartWidget;
   bool m_categoryEditor;
   bool m_isEditing;
 
@@ -126,7 +125,6 @@ protected slots:
   void slotCheckFinished(void);
   void slotOnlineSetupClicked(void);
   void slotLoadInstitutions(const QString&);
-  void slotMarkersChanged(void);
   void slotAdjustMinBalanceAbsoluteEdit(const QString&);
   void slotAdjustMinBalanceEarlyEdit(const QString&);
   void slotAdjustMaxCreditAbsoluteEdit(const QString&);
