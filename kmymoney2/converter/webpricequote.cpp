@@ -432,6 +432,16 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
     "(\\d{4,4}-\\d{2,2}-\\d{2,2})", // date regexp
     "%y %m %d"                   // date format
   );
+  
+  // The following price quote is for getting prices of different funds
+  // at OMX Baltic market.
+  result["OMX Baltic funds"] = WebPriceQuoteSource("OMX Baltic funds",
+      "http://www.baltic.omxgroup.com/market/?pg=nontradeddetails&currency=0&instrument=%1",
+      QString(),  // symbolregexp
+      "NAV (\\d+,\\d+)",  // priceregexp
+      "Kpv (\\d+.\\d+.\\d+)",  // dateregexp
+      "%d.%m.%y"   // dateformat
+  );
 
   return result;
 }

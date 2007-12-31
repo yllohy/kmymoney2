@@ -1,6 +1,7 @@
 2007-12-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Store all OFX bank list files in ~/.kde/share/apps/kmymoney2
   * Use different VER settings to retrieve information in ofxpartner
+  * Added webprice quote patch as provided by David Pugal
 
 2007-12-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sign problem when selling shares with a price per transaction setting
