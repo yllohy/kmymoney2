@@ -866,14 +866,26 @@ void PivotTable::calculateBudgetMapping( void )
     //
     // (Currently, we will choose the first budget in the list.  Ultimately,
     // we'll need to make this a configuration option for the user)
-    QValueList<MyMoneyBudget> budgets = file->budgetList();
-    const MyMoneyBudget& budget = budgets[0];
+    MyMoneyBudget budget = MyMoneyBudget();
+    if (m_config_f.budget() == "Any" ) {
+      QValueList<MyMoneyBudget> budgets = file->budgetList();
+      QValueList<MyMoneyBudget>::const_iterator budgets_it = budgets.begin();
+      while( budgets_it != budgets.end() ) {
+        if( (*budgets_it).budgetStart().year() == QDate::currentDate().year() ) {
+          budget = file->budget( (*budgets_it).id());
+          break;
+        }
+      }
+      //if we cant find a matching budget, take the first of the list
+      if( budget.id() == "" )
+        budget = budgets[0];
+    } else {
+      budget = file->budget( m_config_f.budget());
+    }
 
     // Dump the budget
     //kdDebug(2) << "Budget " << budget.name() << ": " << endl;
 
-    if ( m_config_f.isIncludingBudgetActuals() )
-    {
       //
       // Go through all accounts in the system to build the mapping
       //
@@ -898,6 +910,9 @@ void PivotTable::calculateBudgetMapping( void )
         // Otherwise, search for a parent account which includes sub-accounts
         else
         {
+          //if includeBudgetActuals, include all account regardless of whether in budget or not
+          if ( m_config_f.isIncludingBudgetActuals() )
+            m_budgetMap[acid] = id;
           do
           {
             id = file->account(id).parentAccountId();
@@ -916,11 +931,7 @@ void PivotTable::calculateBudgetMapping( void )
 
         ++it_account;
       } // end while looping through the accounts in the file
-    }
 
-    if ( m_config_f.isIncludingBudgetActuals() )
-    {
-      //
       // Place the budget values into the budget grid
       //
       QValueList<MyMoneyBudget::AccountGroup> baccounts = budget.getaccounts();
@@ -975,7 +986,6 @@ void PivotTable::calculateBudgetMapping( void )
 
         ++it_bacc;
       }
-    }
   } // end if there was a budget
 }
 
@@ -1506,392 +1516,6 @@ QString PivotTable::renderHTML( void ) const
   result += QString("</div>\n");
   result += QString("<div class=\"gap\">&nbsp;</div>\n");
 
-  // Hardcoded exampled for a budget vs. actual report
-  if (m_config_f.rowType() == MyMoneyReport::eBudgetActual )
-  {
-    result += QString("<div class=\"subtitle\">Budget 2006 for 2006</div>");
-    result += QString("\n\n<table class=\"report\" cellspacing=\"0\">");
-    result += QString("<tbody>\n");
-    result += QString("<tr class=\"itemheader\">\n");
-    result += QString("<th>Account</th>\n");
-    result += QString("<th colspan=\"2\">Jan<br></th>\n");
-    result += QString("<th colspan=\"2\">Feb<br></th>\n");
-    result += QString("<th colspan=\"2\">Total<br></th>\n");
-    result += QString("<th colspan=\"2\">Difference<br></th>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">Budget<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">Actual<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">Budget<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">Actual<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">Budget<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">Actual<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr>\n");
-    result += QString("<td class=\"left\" colspan=\"1\">Income<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td colspan=\"1\" style=\"vertical-align: top; font-weight: normal;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td colspan=\"1\" style=\"vertical-align: top; font-weight: normal;\">200.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: normal;\">200.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: normal;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: normal;\">300.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: normal;\">300.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td\n");
-    result += QString("style=\"vertical-align: top; font-weight: normal;\">0.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr class=\"row-even\" id=\"topparent\">\n");
-    result += QString("<td class=\"left2\">Salary<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td>400.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td>100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td>100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">500.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">400.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; color: rgb(255, 0, 0);\">(100.00)<br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr class=\"row-even\" id=\"topparent\">\n");
-    result += QString("<td style=\"text-align: left; font-weight: normal;\" class=\"left2\">Interest<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td colspan=\"1\" style=\"vertical-align: top; font-weight: normal;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td colspan=\"1\" style=\"vertical-align: top; font-weight: normal;\">200.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: normal;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: normal;\">300.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: normal;\">200.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: normal;\">500.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; color: rgb(255, 0, 0);\"><span\n");
-    result += QString("style=\"font-weight: normal; color: rgb(0, 0, 0);\">300.00</span><br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr class=\"row-even\" id=\"subtotal\">\n");
-    result += QString("<td style=\"font-weight: bold;\" class=\"left\">&nbsp;&nbsp;Total</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">600.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">500.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">400.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">500.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">1000.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">1200.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td\n");
-    result += QString("style=\"vertical-align: top; color: rgb(0, 0, 0); font-weight: bold;\">&nbsp;<br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr class=\"row-even\" id=\"topparent\">\n");
-    result += QString("<td style=\"font-weight: bold;\" class=\"left2\">Difference<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"text-align: center; font-weight: bold;\" colspan=\"2\"\n");
-    result += QString("rowspan=\"1\"><span style=\"color: rgb(255, 0, 0);\">(100.00)</span><br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"text-align: center; font-weight: bold;\" colspan=\"2\"\n");
-    result += QString("rowspan=\"1\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td colspan=\"2\" rowspan=\"1\"\n");
-    result += QString("style=\"vertical-align: top; text-align: center; font-weight: bold;\">200.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td\n");
-    result += QString("style=\"vertical-align: top; color: rgb(0, 0, 0); font-weight: bold;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr>\n");
-    result += QString("<td style=\"vertical-align: top;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr>\n");
-    result += QString("<td style=\"vertical-align: top; text-align: left;\">Expense<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">200.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">200.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">300.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">300.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">0.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr>\n");
-    result += QString("<td style=\"vertical-align: top; text-align: left;\" class=\"left2\">Groceries<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">400.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">400.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">500.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr>\n");
-    result += QString("<td style=\"vertical-align: top; text-align: left;\" class=\"left2\">&nbsp;&nbsp;&nbsp;\n");
-    result += QString("Phone<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">600.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">500.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">700.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top;\">600.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; color: rgb(255, 0, 0);\">(100.00)<br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr>\n");
-    result += QString("<td\n");
-    result += QString("<tr class=\"row-even\" id=\"subtotal\">\n");
-    result += QString("<td style=\"font-weight: bold;\" class=\"left\">&nbsp;&nbsp;Total</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">900.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">600.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">300.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">800.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">1400.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">1400.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">&nbsp;<br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr>\n");
-    result += QString("<tr class=\"row-even\" id=\"topparent\">\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">Difference<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td colspan=\"2\" rowspan=\"1\"\n");
-    result += QString("style=\"vertical-align: top; font-weight: bold; text-align: center;\">300.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td colspan=\"2\" rowspan=\"1\"\n");
-    result += QString("style=\"vertical-align: top; font-weight: bold; text-align: center;\"><span\n");
-    result += QString("style=\"color: rgb(255, 0, 0);\">(500.00)</span><br>\n");
-    result += QString("</td>\n");
-    result += QString("<td colspan=\"2\" rowspan=\"1\"\n");
-    result += QString("style=\"vertical-align: top; font-weight: bold; text-align: center;\">0.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");
-    result += QString("<tr class=\"reportfooter\"><td class=\"left\">Net Profit</td>");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold; color: rgb(255, 0, 0);\">(300.00)</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold; color: rgb(255, 0, 0);\">(100.00)</td><br>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold; color: rgb(0, 0, 0);\">100.00</td><br>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold; color: rgb(255, 0, 0);\">(300.00)<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold; color: rgb(255, 0, 0);\">(400.00)<br></td>\n");
-    result += QString("<td\n");
-    result += QString("style=\"vertical-align: top; font-weight: bold; color: rgb(255, 0, 0);\">(200.00)<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">Difference<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td colspan=\"2\" rowspan=\"1\"\n");
-    result += QString("style=\"vertical-align: top; font-weight: bold; text-align: center;\">200.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td colspan=\"2\" rowspan=\"1\"\n");
-    result += QString("style=\"vertical-align: top; font-weight: bold; text-align: center; color: rgb(255, 0, 0);\">(400.00)<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td colspan=\"2\" rowspan=\"1\"\n");
-    result += QString("style=\"vertical-align: top; font-weight: bold; text-align: center;\">200.00<br>\n");
-    result += QString("</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\"><br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");
-    result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");
-    result += QString("</tbody>\n");
-    result += QString("</table>\n");
-
-    return result;
-  }
-  // Hardcoded exampled for a budget report
-  else if (m_config_f.rowType() == MyMoneyReport::eBudget )
-  {
-    result += QString("<div class=\"subtitle\">Budget 2006 for 2006</div>");
-    result += QString("\n\n<table class=\"report\" cellspacing=\"0\">");
-    result += QString("<tbody>");
-    result += QString("<tr class=\"itemheader\">");
-    result += QString("<th>Account</th>");
-    result += QString("<th colspan=\"1\">Jan<br>");
-    result += QString("</th>");
-    result += QString("<th colspan=\"1\">Feb<br>");
-    result += QString("</th>");
-    result += QString("<th colspan=\"1\">Total<br>");
-    result += QString("</th>");
-    result += QString("</tr>");
-    result += QString("<tr>");
-    result += QString("<td class=\"left\" colspan=\"1\">Income<br>");
-    result += QString("</td>");
-    result += QString("<td colspan=\"1\" style=\"vertical-align: top; font-weight: normal;\">100.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top; font-weight: normal;\">200.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top; font-weight: normal;\">300.00<br>");
-    result += QString("</td>");
-    result += QString("</tr>");
-    result += QString("<tr class=\"row-even\" id=\"topparent\">");
-    result += QString("<td class=\"left2\">Salary<br>");
-    result += QString("</td>");
-    result += QString("<td>400.00<br>");
-    result += QString("</td>");
-    result += QString("<td>100.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\">500.00<br>");
-    result += QString("</td>");
-    result += QString("</tr>");
-    result += QString("<tr class=\"row-even\" id=\"topparent\">");
-    result += QString("<td style=\"text-align: left; font-weight: normal;\" class=\"left2\">Interest<br>");
-    result += QString("</td>");
-    result += QString("<td colspan=\"1\" style=\"vertical-align: top; font-weight: normal;\">100.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top; font-weight: normal;\">100.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top; font-weight: normal;\">200.00<br>");
-    result += QString("</td>");
-    result += QString("</tr>");
-    result += QString("<tr class=\"row-even\" id=\"subtotal\">");
-    result += QString("<td style=\"font-weight: bold;\" class=\"left\">&nbsp;&nbsp;Total</td>");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">600.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">400.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">1000.00<br>");
-    result += QString("</td>");
-    result += QString("</tr>");
-    result += QString("<tr>");
-    result += QString("<td style=\"vertical-align: top;\"><br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\"><br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\"><br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\"><br>");
-    result += QString("</td>");
-    result += QString("</tr>");
-    result += QString("<tr>");
-    result += QString("<td style=\"vertical-align: top; text-align: left;\">Expense<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\">200.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\">300.00<br>");
-    result += QString("</td>");
-    result += QString("</tr>");
-    result += QString("<tr>");
-    result += QString("<td style=\"vertical-align: top; text-align: left;\" class=\"left2\">Groceries<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\">200.00<br>");
-    result += QString("</td>");
-    result += QString("</tr>");
-    result += QString("<tr>");
-    result += QString("<td style=\"vertical-align: top; text-align: left;\" class=\"left2\">&nbsp;&nbsp;&nbsp;");
-    result += QString("Phone<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\">600.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\">100.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top;\">700.00<br>");
-    result += QString("</td>");
-    result += QString("</tr>");
-    result += QString("<tr class=\"row-even\" id=\"subtotal\">");
-    result += QString("<td style=\"font-weight: bold;\" class=\"left\">&nbsp;&nbsp;Total</td>");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">300.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">900.00<br>");
-    result += QString("</td>");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold;\">1200.00<br>");
-    result += QString("</td>");
-    result += QString("</tr>");
-    result += QString("<tr class=\"spacer\"><td>&nbsp;</td></tr>\n");
-    result += QString("<tr class=\"reportfooter\"><td class=\"left\">Net Profit</td>");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold; color: rgb(255, 0, 0);\">(300.00)</td>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold; color: rgb(255, 0, 0);\">(100.00)</td><br>\n");
-    result += QString("<td style=\"vertical-align: top; font-weight: bold; color: rgb(0, 0, 0);\">100.00</td><br>\n");
-    result += QString("</td>\n");
-    result += QString("</tr>\n");
-    result += QString("</tbody>");
-    result += QString("</table>");
-    result += QString("</body>");
-    result += QString("</table>\n");
-
-    return result;
-  }
-
   //
   // Table Header
   //
@@ -2000,7 +1624,9 @@ QString PivotTable::renderHTML( void ) const
                     .arg(coloredAmount(it_row.data().m_budget[column]));
 
               isUsed |= it_row.data()[column].isUsed();
-              rowdata += QString("<td>%1</td>")
+              if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
+                    || !m_config_f.hasBudget())
+                rowdata += QString("<td>%1</td>")
                   .arg(coloredAmount(it_row.data()[column]));
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
@@ -2017,8 +1643,10 @@ QString PivotTable::renderHTML( void ) const
                 rowdata += QString("<td>%1</td>")
                     .arg(coloredAmount((*it_row).m_budget.m_total));
 
-              rowdata += QString("<td>%1</td>")
-                  .arg(coloredAmount((*it_row).m_total));
+              if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
+                    || !m_config_f.hasBudget())
+                rowdata += QString("<td>%1</td>")
+                    .arg(coloredAmount((*it_row).m_total));
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
                 MyMoneyMoney diff = calculateBudgetDiff( it_row.key(), (*it_row).m_budget.m_total , (*it_row).m_total);
@@ -2110,7 +1738,9 @@ QString PivotTable::renderHTML( void ) const
                     .arg(coloredAmount((*it_innergroup).m_total.m_budget[column]));
 
               isUsed |= (*it_innergroup).m_total[column].isUsed();
-              finalRow += QString("<td>%1</td>")
+              if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
+                    || !m_config_f.hasBudget())
+                finalRow += QString("<td>%1</td>")
                   .arg(coloredAmount((*it_innergroup).m_total[column]));
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
@@ -2126,7 +1756,9 @@ QString PivotTable::renderHTML( void ) const
                 finalRow += QString("<td>%1</td>")
                     .arg(coloredAmount((*it_innergroup).m_total.m_budget.m_total));
 
-              finalRow += QString("<td>%1</td>")
+              if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
+                    || !m_config_f.hasBudget())
+                finalRow += QString("<td>%1</td>")
                   .arg(coloredAmount((*it_innergroup).m_total.m_total));
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
@@ -2162,7 +1794,9 @@ QString PivotTable::renderHTML( void ) const
             result += QString("<td>%1</td>")
                 .arg(coloredAmount((*it_outergroup).m_total.m_budget[column]));
 
-          result += QString("<td>%1</td>")
+          if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
+                || !m_config_f.hasBudget())
+            result += QString("<td>%1</td>")
               .arg(coloredAmount((*it_outergroup).m_total[column]));
 
           if ( m_config_f.isIncludingBudgetActuals() ) {
@@ -2178,7 +1812,9 @@ QString PivotTable::renderHTML( void ) const
             result += QString("<td>%1</td>")
                 .arg(coloredAmount((*it_outergroup).m_total.m_budget.m_total));
 
-          result += QString("<td>%1</td>")
+          if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
+                || !m_config_f.hasBudget())
+            result += QString("<td>%1</td>")
               .arg(coloredAmount((*it_outergroup).m_total.m_total));
 
           if ( m_config_f.isIncludingBudgetActuals() ) {
@@ -2211,7 +1847,9 @@ QString PivotTable::renderHTML( void ) const
         result += QString("<td>%1</td>")
             .arg(coloredAmount(m_grid.m_total.m_budget[totalcolumn]));
 
-      result += QString("<td>%1</td>")
+      if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
+            || !m_config_f.hasBudget())
+        result += QString("<td>%1</td>")
           .arg(coloredAmount(m_grid.m_total[totalcolumn]));
 
       if ( m_config_f.isIncludingBudgetActuals() ) {
@@ -2227,7 +1865,9 @@ QString PivotTable::renderHTML( void ) const
         result += QString("<td>%1</td>")
             .arg(coloredAmount(m_grid.m_total.m_budget.m_total));
 
-      result += QString("<td>%1</td>")
+      if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
+            || !m_config_f.hasBudget())
+        result += QString("<td>%1</td>")
           .arg(coloredAmount(m_grid.m_total.m_total));
 
       if ( m_config_f.isIncludingBudgetActuals() ) {
@@ -2606,13 +2246,24 @@ QString PivotTable::coloredAmount(const MyMoneyMoney& amount, const QString& cur
   return result;
 }
 
-MyMoneyMoney PivotTable::calculateBudgetDiff( const ReportAccount& repAccount, const TCell& budgeted, const TCell& actual ) const 
+MyMoneyMoney PivotTable::calculateBudgetDiff( const ReportAccount& repAccount, const TCell& budgeted, const TCell& actual ) const
 {
   MyMoneyMoney diff;
-  if( repAccount.accountType() == MyMoneyAccount::Income ) {
-    diff = actual - budgeted;
-  } else if ( repAccount.accountType() == MyMoneyAccount::Expense ) {
-    diff = budgeted - actual;
+  switch( repAccount.accountGroup() )
+  {
+    case MyMoneyAccount::Income:
+    case MyMoneyAccount::Asset:
+      diff = actual - budgeted;
+      break;
+
+    case MyMoneyAccount::Expense:
+    case MyMoneyAccount::Liability:
+      diff = budgeted - actual;
+      break;
+
+    default:
+      break;
+
   }
   return diff;
 }

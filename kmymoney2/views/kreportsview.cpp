@@ -416,7 +416,8 @@ void KReportsView::loadView(void)
   while ( it_group != defaultreports.end() )
   {
     QString groupname = (*it_group).name();
-    QString pagename = QString::number(pagenumber++) + ". " + groupname;
+    QString grouptitle = (*it_group).title();
+    QString pagename = QString::number(pagenumber++) + ". " + grouptitle;
     KListViewItem* curnode = new KListViewItem(m_reportListView, pagename);
     curnode->setOpen(isOpen.find(pagename) != isOpen.end());
     groupitems[groupname] = curnode;
@@ -915,7 +916,7 @@ void KReportsView::slotDeleteFromList(void)
 void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
 {
   {
-    ReportGroup list = i18n("Income and Expenses");
+    ReportGroup list("Income and Expenses", i18n("Income and Expenses"));
 
     list.push_back(MyMoneyReport(
       MyMoneyReport::eExpenseIncome,
@@ -964,7 +965,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     groups.push_back(list);
   }
   {
-    ReportGroup list = i18n("Net Worth");
+    ReportGroup list("Net Worth", i18n("Net Worth"));
 
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAssetLiability,
@@ -1037,7 +1038,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     groups.push_back(list);
   }
   {
-    ReportGroup list = i18n("Transactions");
+    ReportGroup list("Transactions", i18n("Transactions"));
 
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAccount,
@@ -1093,7 +1094,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     groups.push_back(list);
   }
   {
-    ReportGroup list = i18n("Investments");
+    ReportGroup list("Investments", i18n("Investments"));
 
     list.push_back(MyMoneyReport(
       MyMoneyReport::eTopAccount,
@@ -1148,7 +1149,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     groups.push_back(list);
   }
   {
-    ReportGroup list = i18n("Taxes");
+    ReportGroup list("Taxes", i18n("Taxes"));
 
     list.push_back(MyMoneyReport(
       MyMoneyReport::eCategory,
@@ -1162,7 +1163,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     groups.push_back(list);
   }
   {
-    ReportGroup list = i18n("Budgeting");
+    ReportGroup list("Budgeting", i18n("Budgeting"));
 
     list.push_back(MyMoneyReport(
       MyMoneyReport::eExpenseIncome,
@@ -1178,34 +1179,43 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       MyMoneyReport::eBudgetActual,
       MyMoneyReport::eMonths,
       MyMoneyTransactionFilter::currentMonth,
-      false,
-      i18n("(Test) Monthly Budgeted vs. Actual"),
+      true,
+      i18n("Monthly Budgeted vs. Actual"),
       i18n("Default Report")
     ));
+    list.back().setBudget("Any",true);
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eBudgetActual,
       MyMoneyReport::eMonths,
       MyMoneyTransactionFilter::yearToDate,
-      false,
-      i18n("(Test) Yearly Budgeted vs. Actual"),
+      true,
+      i18n("Yearly Budgeted vs. Actual"),
       i18n("Default Report")
     ));
+    list.back().setBudget("Any",true);
+    list.back().setShowingRowTotals(true);
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eBudget,
       MyMoneyReport::eMonths,
       MyMoneyTransactionFilter::currentMonth,
-      false,
-      i18n("(Test) Monthly Budget"),
+      true,
+      i18n("Monthly Budget"),
       i18n("Default Report")
     ));
+    list.back().setBudget("Any",false);
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eBudget,
       MyMoneyReport::eMonths,
       MyMoneyTransactionFilter::yearToDate,
-      false,
-      i18n("(Test) Yearly Budget"),
+      true,
+      i18n("Yearly Budget"),
       i18n("Default Report")
     ));
+    list.back().setBudget("Any",false);
+    list.back().setShowingRowTotals(true);
 
     groups.push_back(list);
   }

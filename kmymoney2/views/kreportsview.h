@@ -151,11 +151,13 @@ public:
   class ReportGroup: public QValueList<MyMoneyReport>
   {
   private:
-    QString m_name;
+    QString m_name;     ///< the title of the group in non-translated form
+    QString m_title;    ///< the title of the group in i18n-ed form
   public:
     ReportGroup( void ) {}
-    ReportGroup( const QString& name ): m_name( name ) {};
-    const QString& name( void ) const { return m_name; };
+    ReportGroup( const QString& name, const QString& title ): m_name( name ), m_title(title) {}
+    const QString& name( void ) const { return m_name; }
+    const QString& title(void) const { return m_title; }
   };
 
 private:

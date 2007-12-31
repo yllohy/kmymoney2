@@ -89,7 +89,7 @@ public:
   // Simple get operations
   const QString& name(void) const { return m_name; }
   bool isShowingSubAccounts(void) const { return (m_detailLevel==eDetailAll); }
-  bool isShowingRowTotals(void) const { return (m_rowType==eExpenseIncome); }
+  bool isShowingRowTotals(void) const { return (m_showRowTotals); }
   EReportType reportType(void) const { return m_reportType; }
   ERowType rowType(void) const { return m_rowType; }
   EColumnType columnType(void) const { return m_columnType; }
@@ -139,6 +139,7 @@ public:
   void setColumnsAreDays( bool _f ) { m_columnsAreDays = _f; }
   void setIncludingTransfers( bool _f ) { m_includeTransfers = _f; }
   void setIncludingUnusedAccounts( bool _f ) { m_includeUnusedAccounts = _f; }
+  void setShowingRowTotals( bool _f ) { m_showRowTotals = _f; }
 
   /**
     * Sets the budget used for this report
@@ -444,6 +445,10 @@ private:
     * accounts with transactions.
     */
   bool m_includeUnusedAccounts;
+  /**
+   * Whether this report should include columns for row totals
+   */
+  bool m_showRowTotals;  
 };
 
 #endif // MYMONEYREPORT_H

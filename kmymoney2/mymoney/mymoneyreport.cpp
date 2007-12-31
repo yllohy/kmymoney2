@@ -101,7 +101,8 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, dateOptionE _dl, bool _
     m_includeSchedules(false),
     m_includeTransfers(false),
     m_includeBudgetActuals(false),
-    m_includeUnusedAccounts(false)
+    m_includeUnusedAccounts(false),
+    m_showRowTotals(false)
 {
   if ( m_reportType == ePivotTable )
     m_columnType = static_cast<EColumnType>(_ct);
@@ -119,6 +120,13 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, dateOptionE _dl, bool _
     addAccountGroup(MyMoneyAccount::Liability);
   }
   if ( _rt == MyMoneyReport::eExpenseIncome )
+  {
+    addAccountGroup(MyMoneyAccount::Expense);
+    addAccountGroup(MyMoneyAccount::Income);
+    m_showRowTotals = true;
+  }
+  //FIXME take this out once we have sorted out all issues regarding budget of assets and liabilities -- asoliverez@gmail.com
+  if ( _rt == MyMoneyReport::eBudget || _rt == MyMoneyReport::eBudgetActual )
   {
     addAccountGroup(MyMoneyAccount::Expense);
     addAccountGroup(MyMoneyAccount::Income);
@@ -583,6 +591,10 @@ bool MyMoneyReport::read(const QDomElement& e)
     if ( i != -1 )
     {
       setRowType( static_cast<ERowType>(i) );
+      // recent versions of KMyMoney always showed a total column for
+      // income/expense reports. We turn it on for backward compatability
+      // here. In the future, this should be a user configurable item.
+      m_showRowTotals = true;
     }
 
     i = kColumnTypeText.findIndex(e.attribute("columntype","months"));

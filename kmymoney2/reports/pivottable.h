@@ -226,7 +226,7 @@ private:
       *          chosen color.
       */
     QString coloredAmount(const MyMoneyMoney& amount, const QString& currencySymbol = QString(), int prec = 2 ) const;
-
+    
     /**
       * This method returns the difference between a @a budgeted and an @a
       * actual amount. The calculation is based on the type of the
