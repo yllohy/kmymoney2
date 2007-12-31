@@ -65,8 +65,9 @@ KOnlineBankingSetupWizard::KOnlineBankingSetupWizard(QWidget *parent, const char
   dlg->setMinimumDuration(0);
   kapp->processEvents();
 
+  OfxPartner::setDirectory(locateLocal("appdata", ""));
   try {
-    vector<string> banks = OfxPartner::BankNames(locateLocal("appdata", ""));
+    vector<string> banks = OfxPartner::BankNames();
     vector<string>::const_iterator it_bank = banks.begin();
     while (it_bank != banks.end())
     {

@@ -30,7 +30,16 @@ const string kBankFilename = "ofx-bank-index.xml";
 const string kCcFilename = "ofx-cc-index.xml";
 const string kInvFilename = "ofx-inv-index.xml";
 
-void ValidateIndexCache(const std::string& directory)
+#define VER "9"
+
+static string directory;
+
+void setDirectory(const std::string& dir)
+{
+  directory = dir;
+}
+
+void ValidateIndexCache(void)
 {
   // TODO (Ace) Check whether these files exist and are recent enough before getting them again
 
@@ -39,23 +48,23 @@ void ValidateIndexCache(const std::string& directory)
 
   fname = directory + kBankFilename;
   if ( stat( fname.c_str(), &filestats ) || difftime(time(0),filestats.st_mtime) > 7.0*24.0*60.0*60.0 )
-    post("T=1&S=*&R=1&O=0&TEST=0","http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=6",fname);
+    post("T=1&S=*&R=1&O=0&TEST=0","http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=" VER,fname);
 
   fname = directory + kCcFilename;
   if ( stat( fname.c_str(), &filestats ) || difftime(time(0),filestats.st_mtime) > 7.0*24.0*60.0*60.0 )
-    post("T=2&S=*&R=1&O=0&TEST=0","http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=6",fname);
+    post("T=2&S=*&R=1&O=0&TEST=0","http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=" VER,fname);
 
   fname = directory + kInvFilename;
   if ( stat( fname.c_str(), &filestats ) || difftime(time(0),filestats.st_mtime) > 7.0*24.0*60.0*60.0 )
-    post("T=3&S=*&R=1&O=0&TEST=0","http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=6",fname);
+    post("T=3&S=*&R=1&O=0&TEST=0","http://moneycentral.msn.com/money/2005/mnynet/service/ols/filist.aspx?SKU=3&VER=" VER,fname);
 }
 
-vector<string> BankNames(const std::string& directory)
+vector<string> BankNames(void)
 {
   vector<string> result;
 
   // Make sure the index files are up to date
-  ValidateIndexCache(directory);
+  ValidateIndexCache();
 
   xmlpp::DomParser parser;
   parser.set_substitute_entities();
@@ -93,21 +102,21 @@ vector<string> FipidForBank(const string& bank)
 
   xmlpp::DomParser parser;
   parser.set_substitute_entities();
-  parser.parse_file(kBankFilename);
+  parser.parse_file(directory + kBankFilename);
   if ( parser )
   {
     vector<string> fipids = NodeParser(parser).Path("fi/prov").Select("name",bank).Path("guid").Text();
     if ( ! fipids.back().empty() )
       result.insert(result.end(),fipids.begin(),fipids.end());
   }
-  parser.parse_file(kCcFilename);
+  parser.parse_file(directory + kCcFilename);
   if ( parser )
   {
     vector<string> fipids = NodeParser(parser).Path("fi/prov").Select("name",bank).Path("guid").Text();
     if ( ! fipids.back().empty() )
       result.insert(result.end(),fipids.begin(),fipids.end());
   }
-  parser.parse_file(kInvFilename);
+  parser.parse_file(directory + kInvFilename);
   if ( parser )
   {
     vector<string> fipids = NodeParser(parser).Path("fi/prov").Select("name",bank).Path("guid").Text();
@@ -144,11 +153,15 @@ OfxFiServiceInfo ServiceInfo(const std::string& fipid)
     return result;
   }
 
-  string url = "http://moneycentral.msn.com/money/2005/mnynet/service/olsvcupd/OnlSvcBrandInfo.aspx?MSNGUID=&GUID=%1&SKU=3&VER=6";
+  // Apparently at some point in time, for VER=6 msn returned an online URL
+  // to a static error page (http://moneycentral.msn.com/cust404.htm).
+  // Increasing to VER=9 solved the problem. This may happen again in the
+  // future.
+  string url = "http://moneycentral.msn.com/money/2005/mnynet/service/olsvcupd/OnlSvcBrandInfo.aspx?MSNGUID=&GUID=%1&SKU=3&VER=" VER;
   url.replace(url.find("%1"),2,fipid);
 
   // TODO: Check whether this file exists and is recent enough before getting it again
-  string guidfile = "fipid-%1.xml";
+  string guidfile = directory + "fipid-%1.xml";
   guidfile.replace(guidfile.find("%1"),2,fipid);
 
   struct stat filestats;
