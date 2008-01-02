@@ -47,7 +47,7 @@ static const QStringList kStateText = QStringList::split(",","all,notreconciled,
 static const QStringList kDateLockText = QStringList::split(",", "alldates,untiltoday,currentmonth,currentyear,monthtodate,yeartodate,yeartomonth,lastmonth,lastyear,last7days,last30days,last3months,last6months,last12months,next7days,next30days,next3months,next6months,next12months,userdefined,last3tonext3months");
 static const QStringList kAccountTypeText = QStringList::split(",","unknown,checkings,savings,cash,creditcard,loan,certificatedep,investment,moneymarket,asset,liability,currency,income,expense,assetloan,stock,equity,invalid");
 
-MyMoneyReport::MyMoneyReport(void):
+MyMoneyReport::MyMoneyReport() :
     m_name("Unconfigured Pivot Table Report"),
     m_detailLevel(eDetailNone),
     m_convertCurrency(true),
@@ -69,7 +69,8 @@ MyMoneyReport::MyMoneyReport(void):
     m_includeSchedules(false),
     m_includeTransfers(false),
     m_includeBudgetActuals(false),
-    m_includeUnusedAccounts(false)
+    m_includeUnusedAccounts(false),
+    m_showRowTotals(false)
 {
 }
 
@@ -543,7 +544,6 @@ bool MyMoneyReport::read(const QDomElement& e)
     // Removed the line that screened out loading reports that are called
     // "Default Report".  It's possible for the user to change the comment
     // to this, and we'd hate for it to break as a result.
-
     m_group = e.attribute("group");
     m_id = e.attribute("id");
     if ( e.hasAttribute("detail") )
@@ -596,7 +596,8 @@ bool MyMoneyReport::read(const QDomElement& e)
       // income/expense reports. We turn it on for backward compatability
       // here. If the total column is turned off, the flag will be reset
       // in the next step
-      m_showRowTotals = true;
+      if(i == eExpenseIncome)
+        m_showRowTotals = true;
     }
     if(e.hasAttribute("showrowtotals"))
       m_showRowTotals = e.attribute("showrowtotals").toUInt();
