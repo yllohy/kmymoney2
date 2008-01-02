@@ -875,6 +875,7 @@ void PivotTable::calculateBudgetMapping( void )
           budget = file->budget( (*budgets_it).id());
           break;
         }
+        ++budgets_it;
       }
       //if we cant find a matching budget, take the first of the list
       if( budget.id() == "" )
