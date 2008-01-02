@@ -58,6 +58,7 @@ protected:
     MyMoneyReport m_currentState;
 
 protected slots:
+  void slotRowTypeChanged(int);
   void slotReset(void);
   void slotSearch(void);
   void slotShowHelp(void);

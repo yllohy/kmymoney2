@@ -316,9 +316,10 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
 
   if ( m_reportType == ePivotTable )
   {
-    e.setAttribute("type","pivottable 1.14");
+    e.setAttribute("type","pivottable 1.15");
     e.setAttribute("detail", kDetailLevelText[m_detailLevel]);
     e.setAttribute("columntype", kColumnTypeText[m_columnType]);
+    e.setAttribute("showrowtotals", m_showRowTotals);
   }
   else if ( m_reportType == eQueryTable )
   {
@@ -593,9 +594,12 @@ bool MyMoneyReport::read(const QDomElement& e)
       setRowType( static_cast<ERowType>(i) );
       // recent versions of KMyMoney always showed a total column for
       // income/expense reports. We turn it on for backward compatability
-      // here. In the future, this should be a user configurable item.
+      // here. If the total column is turned off, the flag will be reset
+      // in the next step
       m_showRowTotals = true;
     }
+    if(e.hasAttribute("showrowtotals"))
+      m_showRowTotals = e.attribute("showrowtotals").toUInt();
 
     i = kColumnTypeText.findIndex(e.attribute("columntype","months"));
     if ( i != -1 )

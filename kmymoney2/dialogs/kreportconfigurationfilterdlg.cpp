@@ -114,6 +114,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     {
       m_tab2 = new kMyMoneyReportConfigTab2Decl( m_criteriaTab, "kMyMoneyReportConfigTab2" );
       m_criteriaTab->insertTab( m_tab2, i18n( "Rows/Columns"), 1 );
+      connect(m_tab2->m_comboRows, SIGNAL(highlighted(int)), this, SLOT(slotRowTypeChanged(int)));
 
 #ifdef HAVE_KDCHART
       m_tabChart = new kMyMoneyReportConfigTabChartDecl( m_criteriaTab, "kMyMoneyReportConfigTabChart" );
@@ -173,6 +174,9 @@ void KReportConfigurationFilterDlg::slotSearch(void)
 
     MyMoneyReport::ERowType rt[2] = { MyMoneyReport::eExpenseIncome, MyMoneyReport::eAssetLiability };
     m_currentState.setRowType( rt[m_tab2->m_comboRows->currentItem()] );
+    m_currentState.setShowingRowTotals(false);
+    if(m_tab2->m_comboRows->currentItem() == 0)
+      m_currentState.setShowingRowTotals(m_tab2->m_checkTotalColumn->isChecked());
 
     MyMoneyReport::EColumnType ct[6] = { MyMoneyReport::eDays, MyMoneyReport::eWeeks, MyMoneyReport::eMonths, MyMoneyReport::eBiMonths, MyMoneyReport::eQuarters, MyMoneyReport::eYears };
     bool dy[6] = { true, true, false, false, false, false };
@@ -252,6 +256,11 @@ void KReportConfigurationFilterDlg::slotSearch(void)
   done(true);
 }
 
+void KReportConfigurationFilterDlg::slotRowTypeChanged(int row)
+{
+  m_tab2->m_checkTotalColumn->setEnabled(row == 0);
+}
+
 void KReportConfigurationFilterDlg::slotReset(void)
 {
   //
@@ -287,10 +296,13 @@ void KReportConfigurationFilterDlg::slotReset(void)
       break;
     }
 
-    if ( m_initialState.rowType() == MyMoneyReport::eExpenseIncome )
+    if ( m_initialState.rowType() == MyMoneyReport::eExpenseIncome ) {
       m_tab2->m_comboRows->setCurrentItem(0);
-    else
+      m_tab2->m_checkTotalColumn->setChecked(m_initialState.isShowingRowTotals());
+    } else
       m_tab2->m_comboRows->setCurrentItem(1);
+
+    slotRowTypeChanged(m_tab2->m_comboRows->currentItem());
 
     if ( m_initialState.isColumnsAreDays() )
     {
@@ -335,9 +347,9 @@ void KReportConfigurationFilterDlg::slotReset(void)
       }
     }
 
-    m_tab2->m_checkScheduled->setChecked( m_currentState.isIncludingSchedules() );
-    m_tab2->m_checkTransfers->setChecked( m_currentState.isIncludingTransfers() );
-    m_tab2->m_checkUnused->setChecked( m_currentState.isIncludingUnusedAccounts() );
+    m_tab2->m_checkScheduled->setChecked( m_initialState.isIncludingSchedules() );
+    m_tab2->m_checkTransfers->setChecked( m_initialState.isIncludingTransfers() );
+    m_tab2->m_checkUnused->setChecked( m_initialState.isIncludingUnusedAccounts() );
   }
   else if ( m_tab3 )
   {

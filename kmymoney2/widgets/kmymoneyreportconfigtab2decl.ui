@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>600</width>
-            <height>231</height>
+            <height>278</height>
         </rect>
     </property>
     <property name="caption">
@@ -27,7 +27,7 @@
         </property>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout5</cstring>
+                <cstring>layout10</cstring>
             </property>
             <hbox>
                 <property name="name">
@@ -35,31 +35,21 @@
                 </property>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout4</cstring>
+                        <cstring>layout9</cstring>
                     </property>
                     <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QComboBox" row="1" column="1">
-                            <item>
-                                <property name="text">
-                                    <string>Income &amp; Expenses</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Assets &amp; Liabilities</string>
-                                </property>
-                            </item>
+                        <widget class="QLabel" row="3" column="0">
                             <property name="name">
-                                <cstring>m_comboRows</cstring>
+                                <cstring>textLabel6</cstring>
                             </property>
-                            <property name="toolTip" stdset="0">
-                                <string>&lt;p&gt;Choose what kind of accounts to display as the rows of this report.&lt;/p&gt;</string>
+                            <property name="text">
+                                <string>Detail</string>
                             </property>
                         </widget>
-                        <widget class="QComboBox" row="2" column="1">
+                        <widget class="QComboBox" row="3" column="1">
                             <item>
                                 <property name="text">
                                     <string>All</string>
@@ -87,20 +77,47 @@
                                 <string>&lt;p&gt;Choose what kind of accounts to display as the rows of this report.&lt;/p&gt;</string>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="2" column="0">
+                        <widget class="QFrame" row="0" column="2">
                             <property name="name">
-                                <cstring>textLabel6</cstring>
+                                <cstring>m_budgetFrame</cstring>
                             </property>
-                            <property name="text">
-                                <string>Detail</string>
+                            <property name="enabled">
+                                <bool>false</bool>
                             </property>
+                            <property name="frameShape">
+                                <enum>NoFrame</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Raised</enum>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
+                                    <number>0</number>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel1</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Budget</string>
+                                    </property>
+                                </widget>
+                                <widget class="KMyMoneyGeneralCombo">
+                                    <property name="name">
+                                        <cstring>m_comboBudget</cstring>
+                                    </property>
+                                </widget>
+                            </hbox>
                         </widget>
-                        <widget class="QLabel" row="1" column="0">
+                        <widget class="QLabel" row="0" column="0">
                             <property name="name">
-                                <cstring>textLabel5</cstring>
+                                <cstring>textLabel4</cstring>
                             </property>
                             <property name="text">
-                                <string>Rows</string>
+                                <string>Columns</string>
                             </property>
                         </widget>
                         <widget class="QComboBox" row="0" column="1">
@@ -141,48 +158,42 @@
                                 <string>&lt;p&gt;Choose how large of a time period each column should encompass&lt;/p&gt;</string>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="0" column="0">
+                        <widget class="QComboBox" row="2" column="1">
+                            <item>
+                                <property name="text">
+                                    <string>Income &amp; Expenses</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Assets &amp; Liabilities</string>
+                                </property>
+                            </item>
                             <property name="name">
-                                <cstring>textLabel4</cstring>
+                                <cstring>m_comboRows</cstring>
                             </property>
-                            <property name="text">
-                                <string>Columns</string>
+                            <property name="toolTip" stdset="0">
+                                <string>&lt;p&gt;Choose what kind of accounts to display as the rows of this report.&lt;/p&gt;</string>
                             </property>
                         </widget>
-                        <widget class="QFrame" row="0" column="2">
+                        <widget class="QLabel" row="2" column="0">
                             <property name="name">
-                                <cstring>m_budgetFrame</cstring>
+                                <cstring>textLabel5</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Rows</string>
+                            </property>
+                        </widget>
+                        <widget class="QCheckBox" row="1" column="1">
+                            <property name="name">
+                                <cstring>m_checkTotalColumn</cstring>
                             </property>
                             <property name="enabled">
                                 <bool>false</bool>
                             </property>
-                            <property name="frameShape">
-                                <enum>NoFrame</enum>
+                            <property name="text">
+                                <string>Show totals column</string>
                             </property>
-                            <property name="frameShadow">
-                                <enum>Raised</enum>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <property name="margin">
-                                    <number>0</number>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>textLabel1</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Budget</string>
-                                    </property>
-                                </widget>
-                                <widget class="KMyMoneyGeneralCombo">
-                                    <property name="name">
-                                        <cstring>m_comboBudget</cstring>
-                                    </property>
-                                </widget>
-                            </hbox>
                         </widget>
                     </grid>
                 </widget>
@@ -242,7 +253,7 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>16</height>
+                    <height>40</height>
                 </size>
             </property>
         </spacer>
