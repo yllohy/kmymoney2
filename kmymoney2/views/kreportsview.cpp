@@ -1188,7 +1188,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.push_back(MyMoneyReport(
       MyMoneyReport::eBudgetActual,
       MyMoneyReport::eMonths,
-      MyMoneyTransactionFilter::yearToDate,
+      MyMoneyTransactionFilter::currentYear,
       true,
       i18n("Yearly Budgeted vs. Actual"),
       i18n("Default Report")
@@ -1209,7 +1209,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.push_back(MyMoneyReport(
       MyMoneyReport::eBudget,
       MyMoneyReport::eMonths,
-      MyMoneyTransactionFilter::yearToDate,
+      MyMoneyTransactionFilter::currentYear,
       true,
       i18n("Yearly Budget"),
       i18n("Default Report")

@@ -1,4 +1,7 @@
 2008-01-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added patch provided by Alvaro Soliverez to fix total for yearly budgets
+
+2008-01-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added option to show/hide row totals in reports
   * Removed default total column from non income/expense reports
 
