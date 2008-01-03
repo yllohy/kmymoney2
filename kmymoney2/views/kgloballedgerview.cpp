@@ -923,7 +923,6 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
       parent = m_register;
     }
 
-    // TODO create the right editor depending on the account type we look at
     editor = item->createEditor(parent, list, m_lastPostDate);
 
     // check that we use the same transaction commodity in all selected transactions
@@ -946,6 +945,9 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
 
       m_inEditMode = true;
       connect(editor, SIGNAL(transactionDataSufficient(bool)), kmymoney2->action("transaction_enter"), SLOT(setEnabled(bool)));
+      connect(editor, SIGNAL(returnPressed()), kmymoney2->action("transaction_enter"), SLOT(activate()));
+      connect(editor, SIGNAL(escapePressed()), kmymoney2->action("transaction_cancel"), SLOT(activate()));
+
       connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), editor, SLOT(slotReloadEditWidgets()));
       connect(editor, SIGNAL(finishEdit(const QValueList<KMyMoneyRegister::SelectedTransaction >&)), this, SLOT(slotLeaveEditMode(const QValueList<KMyMoneyRegister::SelectedTransaction >&)));
 
@@ -1093,22 +1095,7 @@ bool KGlobalLedgerView::eventFilter(QObject* o, QEvent* e)
     QKeyEvent *k = static_cast<QKeyEvent*>(e);
     if(m_inEditMode) {
       // qDebug("object = %s, key = %d", o->className(), k->key());
-      if(m_tabOrderWidgets.findRef(dynamic_cast<QWidget*>(o)) != -1) {
-        if((k->state() & Qt::KeyButtonMask) == 0) {
-          switch(k->key()) {
-            case Qt::Key_Escape:
-              kmymoney2->action("transaction_cancel")->activate();
-              rc = true;
-              break;
-
-            case Qt::Key_Return:
-            case Qt::Key_Enter:
-              kmymoney2->action("transaction_enter")->activate();
-              rc = true;
-              break;
-          }
-        }
-      } else if(o == m_register) {
+      if(o == m_register) {
         // we hide all key press events from the register
         // while editing a transaction
         rc = true;

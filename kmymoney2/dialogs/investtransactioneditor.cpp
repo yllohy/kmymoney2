@@ -270,6 +270,11 @@ void InvestTransactionEditor::createEditWidgets(void)
   m_editWidgets["status"] = reconcile;
   connect(reconcile, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateButtonState()));
 
+  KMyMoneyRegister::QWidgetContainer::iterator it_w;
+  for(it_w = m_editWidgets.begin(); it_w != m_editWidgets.end(); ++it_w) {
+    (*it_w)->installEventFilter(this);
+  }
+
   QLabel* label = new QLabel("", 0);
   label->setAlignment(Qt::AlignVCenter | Qt::AlignRight | Qt::DontClip);
   m_editWidgets["total"] = label;
@@ -1009,6 +1014,11 @@ void InvestTransactionEditor::updatePriceMode(const MyMoneySplit& split)
     } else
       priceEdit->setValue(price);
   }
+}
+
+void InvestTransactionEditor::setupFinalWidgets(void)
+{
+  addFinalWidget(haveWidget("memo"));
 }
 
 #include "investtransactioneditor.moc"

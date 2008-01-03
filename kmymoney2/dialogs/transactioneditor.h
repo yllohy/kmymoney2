@@ -137,6 +137,10 @@ public:
 
   const MyMoneyAccount& account(void) const { return m_account; }
 
+  void clearFinalWidgets(void);
+
+  void addFinalWidget(const QWidget*);
+
 public slots:
   void slotReloadEditWidgets(void);
 
@@ -155,6 +159,7 @@ public slots:
 
 protected:
   virtual void createEditWidgets(void) = 0;
+  virtual void setupFinalWidgets(void) = 0;
   virtual void loadEditWidgets(KMyMoneyRegister::Action action = KMyMoneyRegister::ActionNone) = 0;
   void setupCategoryWidget(KMyMoneyCategory* category, const QValueList<MyMoneySplit>& splits, QCString& categoryId, const char* splitEditSlot, bool allowObjectCreation = true);
 
@@ -241,9 +246,21 @@ signals:
    */
   void assignNumber(void);
 
+  /**
+   * This signal is sent out, if the user has pressed the ESC key.
+   */
+  void escapePressed(void);
+
+  /**
+   * This signal is sent out, if the user has pressed the Return or Enter
+   * key and asks to end editing the transaction
+   */
+  void returnPressed(void);
+
 protected:
   QValueList<MyMoneySplit>                          m_splits;
   QValueList<KMyMoneyRegister::SelectedTransaction> m_transactions;
+  QValueList<const QWidget*>                        m_finalEditWidgets;
   TransactionEditorContainer*                       m_regForm;
   KMyMoneyRegister::Transaction*                    m_item;
   KMyMoneyRegister::QWidgetContainer                m_editWidgets;
@@ -357,6 +374,8 @@ protected:
     * @retval true VAT split has been added
     */
   bool addVatSplit(MyMoneyTransaction& tr, const MyMoneyMoney& amount);
+
+  void setupFinalWidgets(void);
 
 private:
   MyMoneyMoney        m_shares;

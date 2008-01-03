@@ -1,3 +1,7 @@
+2008-01-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Changed behavior of Return-Key in transaction editor. Acts like a TAB
+    key except for the amount field where it acts as the Enter button.
+
 2008-01-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added patch provided by Alvaro Soliverez to fix total for yearly budgets
 

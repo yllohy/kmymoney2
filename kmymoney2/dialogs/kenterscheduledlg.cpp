@@ -191,6 +191,9 @@ TransactionEditor* KEnterScheduleDlg::startEdit(void)
 
   if(editor) {
     connect(editor, SIGNAL(transactionDataSufficient(bool)), buttonOk, SLOT(setEnabled(bool)));
+    connect(editor, SIGNAL(escapePressed()), buttonCancel, SLOT(animateClick()));
+    connect(editor, SIGNAL(returnPressed()), buttonOk, SLOT(animateClick()));
+
     connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), editor, SLOT(slotReloadEditWidgets()));
     // connect(editor, SIGNAL(finishEdit(const QValueList<KMyMoneyRegister::SelectedTransaction >&)), this, SLOT(slotLeaveEditMode(const QValueList<KMyMoneyRegister::SelectedTransaction >&)));
     connect(editor, SIGNAL(createPayee(const QString&, QCString&)), kmymoney2, SLOT(slotPayeeNew(const QString&, QCString&)));
@@ -239,6 +242,7 @@ TransactionEditor* KEnterScheduleDlg::startEdit(void)
     // install event filter in all taborder widgets
     for(QWidget* w = d->m_tabOrderWidgets.first(); w; w = d->m_tabOrderWidgets.next()) {
       w->installEventFilter(this);
+      w->installEventFilter(editor);
     }
 
     // Check if the editor has some preference on where to set the focus

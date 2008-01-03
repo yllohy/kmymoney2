@@ -109,7 +109,21 @@ void TransactionEditor::setup(QWidgetList& tabOrderWidgets, const MyMoneyAccount
     tabOrderWidgets.append(w);
   loadEditWidgets(action);
   m_editWidgets.removeOrphans();
+  clearFinalWidgets();
+  setupFinalWidgets();
   slotUpdateButtonState();
+}
+
+void TransactionEditor::clearFinalWidgets(void)
+{
+  m_finalEditWidgets.clear();
+}
+
+void TransactionEditor::addFinalWidget(const QWidget* w)
+{
+  if(w) {
+    m_finalEditWidgets << w;
+  }
 }
 
 void TransactionEditor::slotReloadEditWidgets(void)
@@ -123,6 +137,58 @@ bool TransactionEditor::eventFilter(QObject* o, QEvent* e)
     if(e->type() == QEvent::MouseButtonDblClick) {
       emit assignNumber();
       rc = true;
+    }
+  }
+
+  // if the object is a widget, the event is a key press event and
+  // the object is one of our edit widgets, then ....
+  if(o->isWidgetType()
+  && (e->type() == QEvent::KeyPress)
+  && m_editWidgets.values().contains(dynamic_cast<QWidget*>(o))) {
+    QKeyEvent* k = dynamic_cast<QKeyEvent*>(e);
+    if(k->state() == 0) {
+      bool isFinal = false;
+      QValueList<const QWidget*>::const_iterator it_w;
+      switch(k->key()) {
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+          // we check, if the object is one of the m_finalEditWidgets and if it's
+          // a kMyMoneyEdit object that the value is not 0. If any of that is the
+          // case, it's the final object and we mark that.
+          // TODO maybe we should make this whole behaviour dependant on an option
+          //      here's the place to do it. Wrap everything until the 'break'
+          //      statement in an if() loop
+          for(it_w = m_finalEditWidgets.begin(); !isFinal && it_w != m_finalEditWidgets.end(); ++it_w) {
+            if(*it_w == o) {
+              if(dynamic_cast<const kMyMoneyEdit*>(*it_w)) {
+                isFinal = !(dynamic_cast<const kMyMoneyEdit*>(*it_w)->value().isZero());
+              } else
+                isFinal = true;
+            }
+          }
+          // for the non-final objects, we treat the return key as a TAB
+          if(!isFinal) {
+            QKeyEvent evt(e->type(),
+                          Key_Tab, 0, k->state(), QString::null,
+                          k->isAutoRepeat(), k->count());
+
+            QApplication::sendEvent( o, &evt );
+              // in case of a category item and the split button is visible
+              // send a second event so that we get passed the button.
+            if(dynamic_cast<KMyMoneyCategory*>(o) && dynamic_cast<KMyMoneyCategory*>(o)->splitButton())
+              QApplication::sendEvent( o, &evt );
+
+          } else {
+            QTimer::singleShot(0, this, SIGNAL(returnPressed()));
+          }
+          // don't process any further
+          rc = true;
+          break;
+
+        case Qt::Key_Escape:
+          QTimer::singleShot(0, this, SIGNAL(escapePressed()));
+          break;
+      }
     }
   }
   return rc;
@@ -687,7 +753,7 @@ void StdTransactionEditor::createEditWidgets(void)
     number->setHint(i18n("Number"));
     m_editWidgets["number"] = number;
     connect(number, SIGNAL(lineChanged(const QString&)), this, SLOT(slotNumberChanged(const QString&)));
-    number->installEventFilter(this);
+    // number->installEventFilter(this);
   }
 
   m_editWidgets["postdate"] = new kMyMoneyDateInput;
@@ -719,6 +785,10 @@ void StdTransactionEditor::createEditWidgets(void)
   m_editWidgets["status"] = reconcile;
   connect(reconcile, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotUpdateButtonState()));
 
+  KMyMoneyRegister::QWidgetContainer::iterator it_w;
+  for(it_w = m_editWidgets.begin(); it_w != m_editWidgets.end(); ++it_w) {
+    (*it_w)->installEventFilter(this);
+  }
   // if we don't have more than 1 selected transaction, we don't need
   // the "don't change" item in some of the combo widgets
   if(!isMultiSelection()) {
@@ -1875,6 +1945,12 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
   return true;
 }
 
+void StdTransactionEditor::setupFinalWidgets(void)
+{
+  addFinalWidget(haveWidget("deposit"));
+  addFinalWidget(haveWidget("payment"));
+  addFinalWidget(haveWidget("amount"));
+}
 
 #include "transactioneditor.moc"
 

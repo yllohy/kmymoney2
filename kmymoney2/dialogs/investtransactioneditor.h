@@ -151,7 +151,7 @@ protected:
 
   void updatePriceMode(const MyMoneySplit& split = MyMoneySplit());
 
-private:
+  void setupFinalWidgets(void);
 
 private:
   MyMoneySplit                              m_assetAccountSplit;
