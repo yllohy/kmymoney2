@@ -718,3 +718,4 @@ void MyMoneyForecastTest::testAccountAverageBalance() {
   
   CPPUNIT_ASSERT(a.accountAverageBalance(a_cash)==average);
 }
+
