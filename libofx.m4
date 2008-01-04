@@ -20,7 +20,7 @@ if test "$enable_ofxplugin" != "no" -o "$enable_ofxbanking" != "no"; then
   CFLAGS="$CFLAGS $all_includes $USER_INCLUDES"
   AC_CHECK_HEADER([OpenSP/macros.h],[],[AC_MSG_ERROR([cannot find OpenSP headers. Please ensure you have OpenSP installed.])])
   CFLAGS="$ac_save_CFLAGS"
-  PKG_CHECK_MODULES(OFX,libofx >= 0.9.0)
+  PKG_CHECK_MODULES(OFX,libofx >= 0.8.2)
 fi
 if test "$enable_ofxplugin" != "no"; then
  OFX_IMPORTERPLUGIN="ofximport" 

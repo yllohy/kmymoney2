@@ -221,7 +221,7 @@ bool KOnlineBankingSetupWizard::finishLoginPage(void)
     // who owns this memory?!?!
     char* request = libofx_request_accountinfo( &fi );
 
-    char* filename = "response.ofx";
+    const char* filename = "response.ofx";
     post(request,(*m_it_info).url,filename);
 
     LibofxContextPtr ctx = libofx_get_new_context();

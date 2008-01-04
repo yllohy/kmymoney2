@@ -1,3 +1,8 @@
+2008-01-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed a problem in LibOFX 0.9 adapter implementation that caused
+    statement downloads to fail
+  * Reduced minimum version for LibOFX to 0.8.2
+
 2008-01-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Changed behavior of Return-Key in transaction editor. Acts like a TAB
     key except for the amount field where it acts as the Enter button.

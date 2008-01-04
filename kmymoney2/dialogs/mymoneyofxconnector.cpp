@@ -58,7 +58,8 @@ QString MyMoneyOfxConnector::username(void) const { return m_fiSettings.value("u
 QString MyMoneyOfxConnector::password(void) const { return m_fiSettings.value("password"); }
 QString MyMoneyOfxConnector::accountnum(void) const { return m_fiSettings.value("accountid"); }
 QString MyMoneyOfxConnector::url(void) const { return m_fiSettings.value("url"); }
- 
+
+#if LIBOFX_IS_VERSION(0,9,0)
 OfxAccountData::AccountType MyMoneyOfxConnector::accounttype(void) const
 {
   OfxAccountData::AccountType result = OfxAccountData::OFX_CHECKING;
@@ -70,6 +71,9 @@ OfxAccountData::AccountType MyMoneyOfxConnector::accounttype(void) const
     break;
   case MyMoneyAccount::CreditCard:
     result = OfxAccountData::OFX_CREDITCARD;
+    break;
+  case MyMoneyAccount::Savings:
+    result = OfxAccountData::OFX_SAVINGS;
     break;
   default:
     break;
@@ -83,7 +87,7 @@ OfxAccountData::AccountType MyMoneyOfxConnector::accounttype(void) const
   {
     QString override = rexp.cap(1);
     kdDebug(2) << "MyMoneyOfxConnector::accounttype() overriding to " << result << endl;
-    
+
     if ( override == "BANK" )
     result = OfxAccountData::OFX_CHECKING;
     else if ( override == "CC" )
@@ -94,7 +98,45 @@ OfxAccountData::AccountType MyMoneyOfxConnector::accounttype(void) const
 
   return result;
 }
+#else
+AccountType MyMoneyOfxConnector::accounttype(void) const
+{
+  AccountType result = OFX_BANK_ACCOUNT;
 
+  switch( m_account.accountType() )
+  {
+  case MyMoneyAccount::Investment:
+    result = OFX_INVEST_ACCOUNT;
+    break;
+  case MyMoneyAccount::CreditCard:
+    result = OFX_CREDITCARD_ACCOUNT;
+    break;
+  default:
+    break;
+  }
+
+  // This is a bit of a personalized hack.  Sometimes we may want to override the
+  // ofx type for an account.  For now, I will stash it in the notes!
+
+  QRegExp rexp("OFXTYPE:([A-Z]*)");
+  if ( rexp.search(m_account.description()) != -1 )
+  {
+    QString override = rexp.cap(1);
+    kdDebug(2) << "MyMoneyOfxConnector::accounttype() overriding to " << result << endl;
+
+    if ( override == "BANK" )
+    result = OFX_BANK_ACCOUNT;
+    else if ( override == "CC" )
+      result = OFX_CREDITCARD_ACCOUNT;
+    else if ( override == "INV" )
+      result = OFX_INVEST_ACCOUNT;
+  }
+
+  return result;
+}
+#endif
+
+#if LIBOFX_IS_VERSION(0,9,0)
 const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) const
 {
   OfxFiLogin fi;
@@ -103,15 +145,15 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
   strncpy(fi.org,fiorg().latin1(),OFX_ORG_LENGTH-1);
   strncpy(fi.userid,username().latin1(),OFX_USERID_LENGTH-1);
   strncpy(fi.userpass,password().latin1(),OFX_USERPASS_LENGTH-1);
-  
+
   OfxAccountData account;
   memset(&account,0,sizeof(OfxAccountData));
- 
+
   strncpy(account.bank_id,iban().latin1(),OFX_BANKID_LENGTH-1);
   strncpy(account.broker_id,iban().latin1(),OFX_BROKERID_LENGTH-1);
-  strncpy(account.account_id,accountnum().latin1(),OFX_ACCOUNT_ID_LENGTH-1);
+  strncpy(account.account_number,accountnum().latin1(),OFX_ACCTID_LENGTH-1);
   account.account_type = accounttype();
-  
+
   char* szrequest = libofx_request_statement( &fi, &account, QDateTime(_dtstart).toTime_t() );
   QString request = szrequest;
   // remove the trailing zero
@@ -119,8 +161,40 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
   result.truncate(result.size()-1);
   free(szrequest);
 
+  QString msg(result);
+  qDebug("statement-request-0.9.0='%s'", msg.data());
   return result;
 }
+#else
+const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) const
+{
+  OfxFiLogin fi;
+  memset(&fi,0,sizeof(OfxFiLogin));
+  strncpy(fi.fid,fiid().latin1(),OFX_FID_LENGTH-1);
+  strncpy(fi.org,fiorg().latin1(),OFX_ORG_LENGTH-1);
+  strncpy(fi.userid,username().latin1(),OFX_USERID_LENGTH-1);
+  strncpy(fi.userpass,password().latin1(),OFX_USERPASS_LENGTH-1);
+
+  OfxAccountInfo account;
+  memset(&account,0,sizeof(OfxAccountInfo));
+
+  strncpy(account.bankid,iban().latin1(),OFX_BANKID_LENGTH-1);
+  strncpy(account.brokerid,iban().latin1(),OFX_BROKERID_LENGTH-1);
+  strncpy(account.accountid,accountnum().latin1(),OFX_ACCOUNT_ID_LENGTH-1);
+  account.type = accounttype();
+
+  char* szrequest = libofx_request_statement( &fi, &account, QDateTime(_dtstart).toTime_t() );
+  QString request = szrequest;
+  // remove the trailing zero
+  QByteArray result = request.utf8();
+  result.truncate(result.size()-1);
+  free(szrequest);
+
+  QString msg(result);
+  qDebug("statement-request-0.8.3='%s'", msg.data());
+  return result;
+}
+#endif
 
 const QByteArray MyMoneyOfxConnector::accountInfoRequest(void) const
 {
@@ -130,7 +204,7 @@ const QByteArray MyMoneyOfxConnector::accountInfoRequest(void) const
   strncpy(fi.org,fiorg().latin1(),OFX_ORG_LENGTH-1);
   strncpy(fi.userid,username().latin1(),OFX_USERID_LENGTH-1);
   strncpy(fi.userpass,password().latin1(),OFX_USERPASS_LENGTH-1);
-  
+
   char* szrequest = libofx_request_accountinfo( &fi );
   QString request = szrequest;
   // remove the trailing zero
@@ -411,7 +485,7 @@ MyMoneyOfxConnector::Tag MyMoneyOfxConnector::transaction(const MyMoneyTransacti
     .element("TRNTYPE","DEBIT")
     .element("DTPOSTED",_t.postDate().toString(Qt::ISODate).remove(QRegExp("[^0-9]")))
     .element("TRNAMT",s.value().formatMoney(QString(),2));
-  
+
   if ( ! _t.bankID().isEmpty() )
     result.element("FITID",_t.bankID());
   else
