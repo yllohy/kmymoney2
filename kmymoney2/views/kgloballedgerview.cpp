@@ -835,9 +835,9 @@ bool KGlobalLedgerView::selectEmptyTransaction(void)
     m_register->selectedTransactions(list);
     if(list.count() > 0 && !list[0].transaction().id().isEmpty()) {
       m_register->clearSelection();
-      m_register->selectItem(m_register->lastItem());
-      m_register->updateRegister();
     }
+    m_register->selectItem(m_register->lastItem());
+    m_register->updateRegister();
     rc = true;
   }
   return rc;
