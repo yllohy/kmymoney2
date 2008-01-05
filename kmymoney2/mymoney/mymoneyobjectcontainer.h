@@ -70,11 +70,19 @@ public:
   void preloadAccount(const MyMoneyAccount& account);
   void preloadSecurity(const MyMoneySecurity& security);
   void preloadPayee(const MyMoneyPayee& payee);
+  void preloadInstitution(const MyMoneyInstitution& institution);
 
   void clear(const QCString& id);
   void clear(IMyMoneyStorage* storage = 0);
 
   const MyMoneyAccount& accountByName(const QString& name) const;
+
+  /**
+   * This method refreshes an already existing object in the container
+   * with a copy from the engine. The object is identified by its @a id.
+   * If the object is unknown or the @a id is empty, nothing is done.
+   */
+  void refresh(const QCString& id);
 
 private:
   QMap<QCString, MyMoneyObject const *>  m_map;

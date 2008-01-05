@@ -116,6 +116,43 @@ const MyMoneyAccount& MyMoneyObjectContainer::accountByName(const QString& name)
   return nullElement;
 }
 
+void MyMoneyObjectContainer::refresh(const QCString& id)
+{
+  if(id.isEmpty())
+    return;
+
+  QMap<QCString, MyMoneyObject const *>::const_iterator it;
+  it = m_map.find(id);
+  if(it != m_map.end()) {
+    const MyMoneyAccount* account = dynamic_cast<const MyMoneyAccount *>(*it);
+    const MyMoneyPayee* payee = dynamic_cast<const MyMoneyPayee *>(*it);
+    const MyMoneySecurity* security = dynamic_cast<const MyMoneySecurity *>(*it);
+    const MyMoneyInstitution* institution = dynamic_cast<const MyMoneyInstitution *>(*it);
+    delete *it;
+    if(account) {
+      const MyMoneyAccount& a = m_storage->account(id);
+      m_map[id] = new MyMoneyAccount(a);
+    } else if(security) {
+      const MyMoneySecurity& s = m_storage->security(id);
+      if(s.id().isEmpty()) {
+        const MyMoneySecurity& c = m_storage->currency(id);
+        m_map[id] = new MyMoneySecurity(c);
+      } else {
+        m_map[id] = new MyMoneySecurity(s);
+      }
+    } else if(payee) {
+      const MyMoneyPayee& p = m_storage->payee(id);
+      m_map[id] = new MyMoneyPayee(p);
+    } else if(institution) {
+      const MyMoneyInstitution& i = m_storage->institution(id);
+      m_map[id] = new MyMoneyInstitution(i);
+    } else {
+      qWarning("Ooops, should preload an unknown object with id '%s'", id.data());
+    }
+    return;
+  }
+}
+
 objectAccessMethod(account, MyMoneyAccount)
 objectAccessMethod(payee, MyMoneyPayee)
 objectAccessMethod(security, MyMoneySecurity)
@@ -129,6 +166,7 @@ preloadListMethod(Security, MyMoneySecurity)
 preloadMethod(Account, MyMoneyAccount)
 preloadMethod(Security, MyMoneySecurity)
 preloadMethod(Payee, MyMoneyPayee)
+preloadMethod(Institution, MyMoneyInstitution)
 
 listMethod(account, MyMoneyAccount)
 listMethod(payee, MyMoneyPayee)

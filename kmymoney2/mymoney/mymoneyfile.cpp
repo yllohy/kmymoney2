@@ -63,7 +63,11 @@ public:
 
   /**
     * This member keeps a list of ids to notify after an
-    * operation is completed.
+    * operation is completed. The boolean is used as follows
+    * during processing of the list:
+    *
+    * false - don't reload the object immediately
+    * true  - reload the object immediately
     */
   QMap<QCString, bool>   m_notificationList;
 
@@ -176,7 +180,7 @@ void MyMoneyFile::addInstitution(MyMoneyInstitution& institution)
 
   m_storage->addInstitution(institution);
 
-  addNotification(institution.id());
+  d->m_cache.preloadInstitution(institution);
 }
 
 void MyMoneyFile::modifyInstitution(const MyMoneyInstitution& institution)
@@ -423,6 +427,8 @@ void MyMoneyFile::removeAccount(const MyMoneyAccount& account)
     m_storage->modifyInstitution(institution);
   }
   acc.setInstitutionId(QCString());
+  addNotification(acc.id(), false);
+
   m_storage->removeAccount(acc);
 }
 
@@ -481,7 +487,7 @@ void MyMoneyFile::removeInstitution(const MyMoneyInstitution& institution)
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  addNotification(institution.id());
+  addNotification(institution.id(), false);
 
   QValueList<QCString>::ConstIterator it_a;
   MyMoneyInstitution inst = MyMoneyFile::institution(institution.id());
@@ -589,7 +595,7 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
     addNotification(institution.id());
   }
 
-  addNotification(account.id());
+  d->m_cache.preloadAccount(account);
   addNotification(parent.id());
 }
 
@@ -819,21 +825,6 @@ void MyMoneyFile::addTransaction(MyMoneyTransaction& transaction)
   }
 }
 
-void MyMoneyFile::updateBalances(const QMap<QCString, MyMoneyMoney>& diffMap)
-{
-  QMap<QCString, MyMoneyMoney>::const_iterator it;
-
-  // update the accounts directly affected by the splits
-  // and collect the ids of the parents
-  for(it = diffMap.begin(); it != diffMap.end(); ++it) {
-    if(!(*it).isZero()) {
-      MyMoneyAccount acc = account(it.key());
-      acc.adjustBalance(*it);
-      m_storage->modifyAccount(acc);
-    }
-  }
-}
-
 const MyMoneyTransaction& MyMoneyFile::transaction(const QCString& id) const
 {
   checkStorage();
@@ -856,6 +847,7 @@ void MyMoneyFile::addPayee(MyMoneyPayee& payee)
   MyMoneyNotifier notifier(this);
 
   m_storage->addPayee(payee);
+
   d->m_cache.preloadPayee(payee);
 }
 
@@ -890,7 +882,7 @@ void MyMoneyFile::removePayee(const MyMoneyPayee& payee)
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  addNotification(payee.id());
+  addNotification(payee.id(), false);
 
   m_storage->removePayee(payee);
 }
@@ -1068,18 +1060,19 @@ void MyMoneyFile::warningMissingRate(const QCString& fromId, const QCString& toI
 void MyMoneyFile::notify(void)
 {
   QMap<QCString, bool>::ConstIterator it;
-  // keep a local copy so that the called update()
-  // members can modify the original list
   for(it = d->m_notificationList.begin(); it != d->m_notificationList.end(); ++it) {
-    d->m_cache.clear(it.key());
+    if(*it)
+      d->m_cache.refresh(it.key());
+    else
+      d->m_cache.clear(it.key());
   }
   clearNotification();
 }
 
-void MyMoneyFile::addNotification(const QCString& id)
+void MyMoneyFile::addNotification(const QCString& id, bool reload)
 {
   if(!id.isEmpty())
-    d->m_notificationList[id] = true;
+    d->m_notificationList[id] = reload;
 }
 
 void MyMoneyFile::clearNotification()
@@ -1237,8 +1230,6 @@ void MyMoneyFile::addSchedule(MyMoneySchedule& sched)
   MyMoneyNotifier notifier(this);
 
   m_storage->addSchedule(sched);
-
-  addNotification(sched.id());
 }
 
 void MyMoneyFile::modifySchedule(const MyMoneySchedule& sched)
@@ -1272,7 +1263,7 @@ void MyMoneyFile::removeSchedule(const MyMoneySchedule& sched)
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  addNotification(sched.id());
+  addNotification(sched.id(), false);
 
   m_storage->removeSchedule(sched);
 
@@ -1677,7 +1668,7 @@ void MyMoneyFile::addSecurity(MyMoneySecurity& security)
 
   m_storage->addSecurity(security);
 
-  addNotification(security.id());
+  d->m_cache.preloadSecurity(security);
 }
 
 void MyMoneyFile::modifySecurity(const MyMoneySecurity& security)
@@ -1699,7 +1690,7 @@ void MyMoneyFile::removeSecurity(const MyMoneySecurity& security)
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  addNotification(security.id());
+  addNotification(security.id(), false);
   m_storage->removeSecurity(security);
 }
 
@@ -1746,10 +1737,7 @@ void MyMoneyFile::modifyCurrency(const MyMoneySecurity& currency)
 
   m_storage->modifyCurrency(currency);
 
-  // we can't really use addNotification here, because there is
-  // a difference in currency and security handling. So we just
-  // preload the object right here.
-  d->m_cache.preloadSecurity(currency);
+  addNotification(currency.id());
 }
 
 void MyMoneyFile::removeCurrency(const MyMoneySecurity& currency)
@@ -1763,7 +1751,7 @@ void MyMoneyFile::removeCurrency(const MyMoneySecurity& currency)
   // clear all changed objects from cache
   MyMoneyNotifier notifier(this);
 
-  addNotification(currency.id());
+  addNotification(currency.id(), false);
   m_storage->removeCurrency(currency);
 }
 
@@ -1897,8 +1885,6 @@ void MyMoneyFile::addReport( MyMoneyReport& report )
   MyMoneyNotifier notifier(this);
 
   m_storage->addReport( report );
-
-  addNotification(report.id());
 }
 
 void MyMoneyFile::modifyReport( const MyMoneyReport& report )
@@ -1932,7 +1918,7 @@ void MyMoneyFile::removeReport(const MyMoneyReport& report)
   checkTransaction(__PRETTY_FUNCTION__);
   MyMoneyNotifier notifier(this);
 
-  addNotification(report.id());
+  addNotification(report.id(), false);
   m_storage->removeReport(report);
 }
 
@@ -1952,8 +1938,6 @@ void MyMoneyFile::addBudget( MyMoneyBudget& budget )
   MyMoneyNotifier notifier(this);
 
   m_storage->addBudget( budget );
-
-  addNotification(budget.id());
 }
 
 const MyMoneyBudget& MyMoneyFile::budgetByName(const QString& name) const
@@ -1994,7 +1978,7 @@ void MyMoneyFile::removeBudget(const MyMoneyBudget& budget)
   checkTransaction(__PRETTY_FUNCTION__);
   MyMoneyNotifier notifier(this);
 
-  addNotification(budget.id());
+  addNotification(budget.id(), false);
   m_storage->removeBudget(budget);
 }
 

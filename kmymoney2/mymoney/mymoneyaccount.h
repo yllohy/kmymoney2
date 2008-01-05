@@ -504,6 +504,13 @@ public:
     */
   bool isInvest(void) const;
 
+  /**
+   * This method returns a name that has a brokerage suffix of
+   * the current name. It only works on investment accounts and
+   * returns the name for all other cases.
+   */
+  QString brokerageName(void) const;
+
 private:
   /**
     * This member variable identifies the type of account

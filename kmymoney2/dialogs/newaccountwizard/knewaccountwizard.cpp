@@ -190,7 +190,7 @@ MyMoneyAccount NewAccountWizard::Wizard::brokerageAccount(void) const
   MyMoneyAccount account;
   if(m_account.accountType() == MyMoneyAccount::Investment
   && m_brokeragepage->m_createBrokerageButton->isChecked()) {
-    account.setName(i18n("%1 (Brokerage)").arg(m_account.name()));
+    account.setName(m_account.brokerageName());
     account.setAccountType(MyMoneyAccount::Checkings);
     account.setInstitutionId(m_account.institutionId());
     account.setOpeningDate(m_account.openingDate());

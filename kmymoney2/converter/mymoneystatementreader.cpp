@@ -217,7 +217,6 @@ void MyMoneyStatementReader::processSecurityEntry(const MyMoneyStatement::Securi
     try {
       file->addSecurity(security);
       ft.commit();
-      file->preloadCache();
       kdDebug(0) << "Created " << security.name() << " with id " << security.id() << endl;
     } catch(MyMoneyException *e) {
       KMessageBox::error(0, i18n("Error creating security record: %1").arg(e->what()), i18n("Error"));
@@ -348,7 +347,6 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
           file->addAccount(thisaccount, m_account);
           kdDebug(0) << __func__ << ": created account " << thisaccount.id() << " for security " << t_in.m_strSecurity << " under account " << m_account.id() << endl;
-          file->preloadCache();
         }
         // this security does not exist in the file.
         else
@@ -375,7 +373,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
 
     if (t_in.m_eAction==MyMoneyStatement::Transaction::eaReinvestDividend)
     {
-      s1.setShares(t_in.m_shares * MyMoneyMoney(1,1000));
+      s1.setShares(t_in.m_shares);
       s1.setAction(MyMoneySplit::ActionReinvestDividend);
 
       MyMoneySplit s2;
@@ -426,7 +424,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
     }
     else if (t_in.m_eAction==MyMoneyStatement::Transaction::eaBuy || t_in.m_eAction==MyMoneyStatement::Transaction::eaSell)
     {
-      s1.setShares(t_in.m_shares * MyMoneyMoney(1,1000));
+      s1.setShares(t_in.m_shares);
       s1.setAction(MyMoneySplit::ActionBuyShares);
 
       transfervalue = -t_in.m_amount;
@@ -618,7 +616,12 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   if ( ! transfervalue.isZero() )
   {
     QCString brokerageactid = m_account.value("kmm-brokerage-account").utf8();
-    if ( ! brokerageactid.isEmpty() )
+    if (brokerageactid.isEmpty() )
+    {
+      brokerageactid = file->accountByName(m_account.brokerageName()).id();
+    }
+
+    if ( !brokerageactid.isEmpty() )
     {
       // FIXME This may not deal with foreign currencies properly
       MyMoneySplit s;
@@ -745,7 +748,7 @@ bool MyMoneyStatementReader::selectOrCreateAccount(const SelectCreateMode /*mode
       account = file->account(accountId);
       if ( ! accountNumber.isEmpty() && account.value("StatementKey") != accountNumber )
       {
-        account.setValue("StatementKey",accountNumber);
+        account.setValue("StatementKey", accountNumber);
         MyMoneyFileTransaction ft;
         try {
           MyMoneyFile::instance()->modifyAccount(account);
@@ -808,7 +811,6 @@ const QCString MyMoneyStatementReader::findOrCreateIncomeAccount(const QString& 
     acc.setAccountType( MyMoneyAccount::Income );
     MyMoneyAccount income = file->income();
     file->addAccount( acc, income );
-    file->preloadCache();
     result = acc.id();
   }
 
@@ -844,7 +846,6 @@ const QCString MyMoneyStatementReader::findOrCreateExpenseAccount(const QString&
     acc.setAccountType( MyMoneyAccount::Expense );
     MyMoneyAccount expense = file->expense();
     file->addAccount( acc, expense );
-    file->preloadCache();
     result = acc.id();
   }
 

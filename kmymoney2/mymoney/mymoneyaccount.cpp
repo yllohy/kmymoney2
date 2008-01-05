@@ -24,7 +24,7 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-//#include <kdebug.h>
+#include <klocale.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -536,3 +536,9 @@ bool MyMoneyAccount::isCategory(void) const
   return m_accountType == Income || m_accountType == Expense;
 }
 
+QString MyMoneyAccount::brokerageName(void) const
+{
+  if(m_accountType == Investment)
+    return QString("%1 (%2)").arg(m_name, i18n("Brokerage (suffix for account names)", "Brokerage"));
+  return m_name;
+}

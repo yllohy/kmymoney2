@@ -1333,8 +1333,6 @@ protected:
     */
   MyMoneyFile();
 
-  void updateBalances(const QMap<QCString, MyMoneyMoney>& map);
-
 signals:
   /**
     * This signal is emitted whenever any data has been changed in the engine
@@ -1372,9 +1370,10 @@ private:
     * to be removed from the cache. If id is empty, then nothing is added to the list.
     *
     * @param id id of object to be notified
+    * @param reload reload the object (@c true) or not (@c false). The default is @c true
     * @see attach, detach
     */
-  void addNotification(const QCString& id);
+  void addNotification(const QCString& id, bool reload = true);
 
   /**
     * This method is used to clear the notification list
