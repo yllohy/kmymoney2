@@ -1950,6 +1950,7 @@ void StdTransactionEditor::setupFinalWidgets(void)
   addFinalWidget(haveWidget("deposit"));
   addFinalWidget(haveWidget("payment"));
   addFinalWidget(haveWidget("amount"));
+  addFinalWidget(haveWidget("status"));
 }
 
 #include "transactioneditor.moc"
