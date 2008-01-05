@@ -596,7 +596,7 @@ bool KMyMoneyView::readFile(const KURL& url)
           haveAt = false;
           isEncrypted = true;
         } else {
-          KMessageBox::sorry(this, i18n("GPG is not available for decryption of file '%1'").arg(filename));
+          KMessageBox::sorry(this, QString("<qt>%1</qt>"). arg(i18n("GPG is not available for decryption of file <b>%1</b>").arg(filename)));
           qfile = new QFile(file.name());
         }
       } else {
@@ -674,20 +674,20 @@ bool KMyMoneyView::readFile(const KURL& url)
               ::timetrace("done reading to memory");
             } else {
               if(m_fileType == KmmBinary) {
-                KMessageBox::sorry(this, i18n("File <b>%1</b> contains the old binary format used by KMyMoney. Please use an older version of KMyMoney (0.8.x) that still supports this format to convert it to the new XML based format.").arg(filename));
+                KMessageBox::sorry(this, QString("<qt>%1</qt>"). arg(i18n("File <b>%1</b> contains the old binary format used by KMyMoney. Please use an older version of KMyMoney (0.8.x) that still supports this format to convert it to the new XML based format.").arg(filename)));
               } else {
-                KMessageBox::sorry(this, i18n("File '%1' contains an unknown file format!").arg(filename));
+                KMessageBox::sorry(this, QString("<qt>%1</qt>"). arg(i18n("File <b>%1</b> contains an unknown file format!").arg(filename)));
               }
               rc = false;
             }
           } else {
-            KMessageBox::sorry(this, i18n("Cannot read from file '%1'!").arg(filename));
+            KMessageBox::sorry(this, QString("<qt>%1</qt>"). arg(i18n("Cannot read from file <b>%1</b>!").arg(filename)));
             rc = false;
           }
         } catch (MyMoneyException *e) {
-          QString msg = e->what();
-          qDebug("%s", msg.latin1());
+          KMessageBox::sorry(this, QString("<qt>%1</qt>"). arg(i18n("Cannot load file <b>%1</b>. Reason: %2").arg(filename, e->what())));
           delete e;
+          rc = false;
         }
         if(pReader) {
           pReader->setProgressCallback(0);
@@ -695,13 +695,13 @@ bool KMyMoneyView::readFile(const KURL& url)
         }
         qfile->close();
       } else {
-        KMessageBox::sorry(this, i18n("File '%1' not found!").arg(filename));
+        KMessageBox::sorry(this, QString("<qt>%1</qt>"). arg(i18n("File <b>%1</b> not found!").arg(filename)));
         rc = false;
       }
       delete qfile;
     }
   } else {
-    KMessageBox::sorry(this, i18n("File '%1' not found!").arg(filename));
+    KMessageBox::sorry(this, QString("<qt>%1</qt>"). arg(i18n("File <b>%1</b> not found!").arg(filename)));
     rc = false;
   }
 

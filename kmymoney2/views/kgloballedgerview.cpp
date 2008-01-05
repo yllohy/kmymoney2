@@ -255,6 +255,7 @@ KGlobalLedgerView::~KGlobalLedgerView()
 
 void KGlobalLedgerView::slotAboutToSelectItem(KMyMoneyRegister::RegisterItem* item, bool& okToSelect)
 {
+  Q_UNUSED(item);
   emit cancelOrEndEdit(okToSelect);
 }
 
