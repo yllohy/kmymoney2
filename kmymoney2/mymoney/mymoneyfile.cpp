@@ -290,8 +290,6 @@ void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
 
   m_storage->modifyAccount(account);
 
-  d->m_cache.preloadAccount(account);
-
   addNotification(account.id());
 }
 
@@ -582,10 +580,6 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
 
   account.setParentAccountId(parent.id());
 
-  // FIXME: remove next line
-  // MyMoneyMoney openingBalance(account.openingBalance());
-  account.setOpeningBalance(MyMoneyMoney(0,1));
-
   m_storage->addAccount(account);
   m_storage->addAccount(parent, account);
 
@@ -594,8 +588,6 @@ void MyMoneyFile::addAccount(MyMoneyAccount& account, MyMoneyAccount& parent)
     m_storage->modifyInstitution(institution);
     addNotification(institution.id());
   }
-
-  d->m_cache.preloadAccount(account);
 
   addNotification(account.id());
   addNotification(parent.id());
@@ -889,7 +881,6 @@ void MyMoneyFile::modifyPayee(const MyMoneyPayee& payee)
   addNotification(payee.id());
 
   m_storage->modifyPayee(payee);
-  d->m_cache.preloadPayee(payee);
 }
 
 void MyMoneyFile::removePayee(const MyMoneyPayee& payee)
@@ -1686,8 +1677,6 @@ void MyMoneyFile::addSecurity(MyMoneySecurity& security)
 
   m_storage->addSecurity(security);
 
-  d->m_cache.preloadSecurity(security);
-
   addNotification(security.id());
 }
 
@@ -1699,8 +1688,6 @@ void MyMoneyFile::modifySecurity(const MyMoneySecurity& security)
   MyMoneyNotifier notifier(this);
 
   m_storage->modifySecurity(security);
-
-  d->m_cache.preloadSecurity(security);
 
   addNotification(security.id());
 }
@@ -1739,7 +1726,11 @@ void MyMoneyFile::addCurrency(const MyMoneySecurity& currency)
   MyMoneyNotifier notifier(this);
 
   m_storage->addCurrency(currency);
-  addNotification(currency.id());
+
+  // we can't really use addNotification here, because there is
+  // a difference in currency and security handling. So we just
+  // preload the object right here.
+  d->m_cache.preloadSecurity(currency);
 }
 
 void MyMoneyFile::modifyCurrency(const MyMoneySecurity& currency)
@@ -1754,7 +1745,11 @@ void MyMoneyFile::modifyCurrency(const MyMoneySecurity& currency)
     d->m_baseCurrency.clearId();
 
   m_storage->modifyCurrency(currency);
-  addNotification(currency.id());
+
+  // we can't really use addNotification here, because there is
+  // a difference in currency and security handling. So we just
+  // preload the object right here.
+  d->m_cache.preloadSecurity(currency);
 }
 
 void MyMoneyFile::removeCurrency(const MyMoneySecurity& currency)

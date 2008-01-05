@@ -55,7 +55,7 @@ public:
   QueryTable(const MyMoneyReport&);
   QString renderHTML( void ) const;
   QString renderCSV( void ) const;
-  void drawChart( KReportChartView& view ) const {}
+  void drawChart( KReportChartView& ) const {}
   void dump( const QString& file, const QString& context=QString() ) const;
   void init(void);
 

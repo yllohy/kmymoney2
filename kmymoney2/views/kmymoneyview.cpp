@@ -1755,34 +1755,11 @@ void KMyMoneyView::fixLoanAccount_0(MyMoneyAccount acc)
     KMessageBox::information(this,
         i18n("The account \"%1\" was previously created as loan account but some information "
              "is missing. The new loan wizard will be started to collect all relevant "
-             "information. If you cancel the wizard, then the file will be "
-             "closed.").arg(acc.name()),
+             "information. Please use a KMyMoney version >= 0.8.7 and < 0.9 to correct the problem."
+             ).arg(acc.name()),
         i18n("Account problem"));
-    KNewLoanWizard* wiz = new KNewLoanWizard(this);
-    connect(wiz, SIGNAL(newCategory(MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&)));
-    connect(wiz, SIGNAL(createPayee(const QString&, QCString&)), kmymoney2, SIGNAL(slotPayeeNew(const QString&, QCString&)));
-    wiz->loadWidgets(acc);
 
-    if(wiz->exec() == QDialog::Accepted) {
-      MyMoneyAccount newAcc = wiz->account();
-      acc.setAccountType(newAcc.accountType());
-      acc.setName(newAcc.name());
-      acc.setNumber(QString());
-      acc.setOpeningBalance(newAcc.openingBalance());
-      acc.setOpeningDate(newAcc.openingDate());
-      acc.setPairs(newAcc.pairs());
-
-      try {
-        MyMoneyFile::instance()->modifyAccount(acc);
-        createSchedule(wiz->schedule(), acc);
-
-      } catch(MyMoneyException *e) {
-        delete e;
-        qDebug("Unable to update loan account and/or create schedule");
-      }
-    } else
-      throw new MYMONEYEXCEPTION("Fix failed");
-    delete wiz;
+    throw new MYMONEYEXCEPTION("Fix LoanAccount0 not supported anymore");
   }
 }
 

@@ -2,6 +2,10 @@
   * Fixed problem with creating new transactions when quick filter is active
   * Save transaction also on Return pressed on status combo box
   * Preset status combo box with 'Not Reconciled' for new transactions
+  * Got rid of some openingBalance() and setOpeningBalance() calls
+  * Updated the reporting testcases to construct an opening balance transaction
+  * Removed an automatic loan account fix. User has to use version 0.8.7
+    or higher in 0.8 branch to fix the problem.
 
 2008-01-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem in LibOFX 0.9 adapter implementation that caused

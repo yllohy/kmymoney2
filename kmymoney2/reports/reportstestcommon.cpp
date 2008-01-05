@@ -233,15 +233,20 @@ QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, 
 
   info.setName(_name);
   info.setAccountType(_type);
-  info.setOpeningBalance(_balance);
   info.setOpeningDate(_open);
   if ( _currency != "" )
     info.setCurrencyId(_currency);
   else
-    info.setCurrencyId("USD");
+    info.setCurrencyId(MyMoneyFile::instance()->baseCurrency().id());
 
   MyMoneyAccount parent = MyMoneyFile::instance()->account(_parent);
   MyMoneyFile::instance()->addAccount( info, parent );
+  // create the opening balance transaction if any
+  if(!_balance.isZero()) {
+    MyMoneySecurity sec = MyMoneyFile::instance()->currency(info.currencyId());
+    MyMoneyFile::instance()->openingBalanceAccount(sec);
+    MyMoneyFile::instance()->createOpeningBalanceTransaction(info, _balance);
+  }
   ft.commit();
 
   return info.id();
@@ -374,8 +379,10 @@ void writeRCFtoXML( const MyMoneyReport& filter, const QString& _filename )
 {
   static unsigned filenum = 1;
   QString filename = _filename;
-  if ( filename.isEmpty() )
-    filename = QString("report-%1%2.xml").arg((filenum<10)?"0":"").arg(filenum++);
+  if ( filename.isEmpty() ) {
+    filename = QString("report-%1%2.xml").arg(QString::number(filenum).rightJustify(2, '0'));
+    ++filenum;
+  }
 
   QDomDocument* doc = new QDomDocument("KMYMONEY-FILE");
   Q_CHECK_PTR(doc);

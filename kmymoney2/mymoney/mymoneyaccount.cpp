@@ -77,7 +77,10 @@ MyMoneyAccount::MyMoneyAccount(const QDomElement& node) :
     qWarning("XMLREADER: Account %s had invalid or no account type information.", name().data());
   }
 
-  // setOpeningBalance(MyMoneyMoney(node.attribute("openingbalance")));
+  if(node.hasAttribute("openingbalance")) {
+    m_openingBalance = MyMoneyMoney(node.attribute("openingbalance"));
+    qWarning("Opening balance found with account '%s'", m_name.data());
+  }
   setDescription(node.attribute("description"));
 
   m_id = QCStringEmpty(node.attribute("id"));
