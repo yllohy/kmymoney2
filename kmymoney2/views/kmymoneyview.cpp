@@ -1213,7 +1213,6 @@ void KMyMoneyView::selectBaseCurrency(void)
         (*it).setCurrencyId(file->baseCurrency().id());
         MyMoneyFileTransaction ft;
         try {
-          fixOpeningBalance_0(*it);
           file->modifyAccount(*it);
           ft.commit();
         } catch(MyMoneyException *e) {
@@ -1635,7 +1634,6 @@ void KMyMoneyView::fixFile_0(void)
 
   ::timetrace("Fix accounts start");
   for(it_a = accountList.begin(); it_a != accountList.end(); ++it_a) {
-    fixOpeningBalance_0(*it_a);
     if((*it_a).accountType() == MyMoneyAccount::Loan
     || (*it_a).accountType() == MyMoneyAccount::AssetLoan) {
       fixLoanAccount_0(*it_a);
@@ -1665,20 +1663,6 @@ void KMyMoneyView::fixFile_0(void)
   ::timetrace("Fix transactions start");
   fixTransactions_0();
   ::timetrace("Fix transactions done");
-}
-
-void KMyMoneyView::fixOpeningBalance_0(MyMoneyAccount& acc)
-{
-  if(!acc.openingBalance().isZero()) {
-    try {
-      MyMoneyFile::instance()->createOpeningBalanceTransaction(acc, acc.openingBalance());
-      acc.setOpeningBalance(MyMoneyMoney(0, 1));
-      MyMoneyFile::instance()->modifyAccount(acc);
-    } catch(MyMoneyException *e) {
-      kdDebug(2) << __func__ << " Unable to create opening balance transaction for account " << acc.id() << " (" << e->what() << ")" << endl;
-      delete e;
-    }
-  }
 }
 
 void KMyMoneyView::fixSchedule_0(MyMoneySchedule sched)

@@ -6,6 +6,9 @@
   * Fixed popup of price editor during loan creation
   * Improved detection of splits for loan payment transaction in
     loan editor
+  * Removed all references to MyMoneyAccount::openingBalance
+  * Fixed a bug in the XML loader that caused the date order to be incorrect
+  * Fixed QIF writer to write out the opening balance as expected
 
 2008-01-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem with creating new transactions when quick filter is active

@@ -717,26 +717,8 @@ void PivotTable::calculateOpeningBalances( void )
       // this is in the underlying currency
       MyMoneyMoney value = file->balance(account.id(), from.addDays(-1));
 
-#if 1 // FIXME: openingbalance is now a transaction
-      // remove the opening balance from the figure, if necessary
-      QDate opendate = account.openingDate();
-      if ( opendate >= from )
-        value -= account.openingBalance();
-#endif
-
       // place into the 'opening' column...
       assignCell( outergroup, account, 0, value );
-
-#if 1 // FIXME: openingbalance is now a transaction
-      if ( ( opendate >= from ) && ( opendate <= to ) )
-      {
-        // get the opening value
-        MyMoneyMoney value = account.openingBalance();
-        // place in the correct column
-        unsigned column = columnValue(opendate) - columnValue(m_beginDate) + 1;
-        assignCell( outergroup, account, column, value );
-      }
-#endif
     }
     else
     {

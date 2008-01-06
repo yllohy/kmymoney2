@@ -214,17 +214,6 @@ private:
   void fixLoanAccount_0(MyMoneyAccount acc);
 
   /**
-    * This method converts a possible opening balance held with @p
-    * account into a transaction between the account in question and
-    * the opening balances account for the currency of @p account.
-    * @p account is updated. If the opening balance is 0, then nothing
-    * is changed.
-    *
-    * @param account reference to the account object to be checked
-    */
-  void fixOpeningBalance_0(MyMoneyAccount& account);
-
-  /**
     */
   void fixTransactions_0(void);
   void fixSchedule_0(MyMoneySchedule sched);

@@ -59,15 +59,6 @@ public:
   ~KNewLoanWizard();
 
   /**
-    * This method returns a MyMoneyAccount object with all data
-    * filled out as provided by the wizard. The institution reference
-    * will be empty.
-    *
-    * @return MyMoneyAccount object to be used to create a new account
-    */
-  const MyMoneyAccount account(void) const;
-
-  /**
     * This method returns the schedule for the payments. The account
     * where the amortization should be transferred to is the one
     * we currently try to create with this wizard. The appropriate split
@@ -98,8 +89,6 @@ public:
     * @return selected date or invalid QDate if checkbox is selected.
     */
   const QDate initialPaymentDate(void) const;
-
-  void loadWidgets(const MyMoneyAccount& acc);
 
 protected:
   /**

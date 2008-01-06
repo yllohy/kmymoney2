@@ -34,7 +34,6 @@
 
 MyMoneyAccount::MyMoneyAccount()
 {
-  m_openingBalance = MyMoneyMoney(0);
   m_accountType = UnknownAccountType;
 }
 
@@ -78,8 +77,8 @@ MyMoneyAccount::MyMoneyAccount(const QDomElement& node) :
   }
 
   if(node.hasAttribute("openingbalance")) {
-    m_openingBalance = MyMoneyMoney(node.attribute("openingbalance"));
-    qWarning("Opening balance found with account '%s'", m_name.data());
+    QString msg = i18n("Account %s contains an opening balance. Please use a KMyMoney version >= 0.8 and < 0.9 to correct the problem.").arg(m_name);
+    throw new MYMONEYEXCEPTION(msg);
   }
   setDescription(node.attribute("description"));
 
@@ -135,11 +134,6 @@ void MyMoneyAccount::setLastModified(const QDate& date)
 void MyMoneyAccount::setOpeningDate(const QDate& date)
 {
   m_openingDate = date;
-}
-
-void MyMoneyAccount::setOpeningBalance(const MyMoneyMoney& balance)
-{
-  m_openingBalance = balance;
 }
 
 void MyMoneyAccount::setLastReconciliationDate(const QDate& date)
@@ -211,7 +205,6 @@ const bool MyMoneyAccount::operator == (const MyMoneyAccount& right) const
       ((m_name.length() == 0 && right.m_name.length() == 0) || (m_name == right.m_name)) &&
       ((m_number.length() == 0 && right.m_number.length() == 0) || (m_number == right.m_number)) &&
       ((m_description.length() == 0 && right.m_description.length() == 0) || (m_description == right.m_description)) &&
-      (m_openingBalance == right.m_openingBalance) &&
       (m_openingDate == right.m_openingDate) &&
       (m_parentAccount == right.m_parentAccount) &&
       (m_currencyId == right.m_currencyId) &&

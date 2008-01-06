@@ -90,10 +90,19 @@ void MyMoneyQifWriter::writeAccountEntry(QTextStream &s, const QCString& account
   MyMoneyTransactionFilter filter(accountId);
   filter.setDateFilter(startDate, endDate);
   QValueList<MyMoneyTransaction> list = file->transactionList(filter);
+  QCString openingBalanceTransactionId;
 
   s << "!Type:" << m_qifProfile.profileType() << endl;
-  s << "D" << m_qifProfile.date(account.openingDate()) << endl;
-  s << "T" << m_qifProfile.value('T', account.openingBalance()) << endl;
+  if(!startDate.isValid() || startDate <= account.openingDate()) {
+    s << "D" << m_qifProfile.date(account.openingDate()) << endl;
+    openingBalanceTransactionId = file->openingBalanceTransaction(account);
+    MyMoneyTransaction openingBalanceTransaction = file->transaction(openingBalanceTransactionId);
+    MyMoneySplit split = openingBalanceTransaction.splitByAccount(account.id(), true /* match */);
+    s << "T" << m_qifProfile.value('T', split.value()) << endl;
+  } else {
+    s << "D" << m_qifProfile.date(startDate) << endl;
+    s << "T" << m_qifProfile.value('T', file->balance(accountId, startDate.addDays(-1))) << endl;
+  }
   s << "CX" << endl;
   s << "P" << m_qifProfile.openingBalanceText() << endl;
   s << "L";
@@ -109,7 +118,9 @@ void MyMoneyQifWriter::writeAccountEntry(QTextStream &s, const QCString& account
   signalProgress(0, list.count());
   int count = 0;
   for(it = list.begin(); it != list.end(); ++it) {
-    writeTransactionEntry(s, *it, accountId);
+    // don't include the openingBalanceTransaction again
+    if((*it).id() != openingBalanceTransactionId)
+      writeTransactionEntry(s, *it, accountId);
     signalProgress(++count, 0);
   }
 }

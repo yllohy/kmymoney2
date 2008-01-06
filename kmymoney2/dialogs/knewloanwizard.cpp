@@ -1108,45 +1108,6 @@ const MyMoneySchedule KNewLoanWizard::schedule() const
   return sched;
 }
 
-const MyMoneyAccount KNewLoanWizard::account(void) const
-{
-  MyMoneyAccountLoan acc;
-
-  acc.setName(m_nameEdit->text());
-  acc.setOpeningDate(m_firstDueDateEdit->date());
-  if(m_allPaymentsButton->isChecked()) {
-    acc.setOpeningBalance(0);
-  } else {
-    acc.setOpeningBalance(m_loanAmountEdit->value());
-  }
-  if(m_borrowButton->isChecked()) {
-    acc.setAccountType(MyMoneyAccount::Loan);
-    acc.setOpeningBalance(-acc.openingBalance());
-  } else {
-    acc.setAccountType(MyMoneyAccount::AssetLoan);
-  }
-  acc.setLoanAmount(m_loanAmountEdit->value());
-  acc.setInterestRate(m_firstDueDateEdit->date(), m_interestRateEdit->value());
-  if(m_interestOnReceptionButton->isChecked())
-    acc.setInterestCalculation(MyMoneyAccountLoan::paymentReceived);
-  else
-    acc.setInterestCalculation(MyMoneyAccountLoan::paymentDue);
-
-  acc.setFixedInterestRate(m_fixedInterestButton->isChecked());
-  acc.setFinalPayment(MyMoneyMoney(m_finalPaymentEdit->text()));
-  acc.setTerm(term());
-  acc.setPeriodicPayment(m_paymentEdit->value());
-
-  acc.setPayee(m_payeeEdit->selectedItem());
-
-  if(m_variableInterestButton->isChecked()) {
-    acc.setNextInterestChange(m_interestChangeDateEdit->date());
-    acc.setInterestChangeFrequency(m_interestFrequencyAmountEdit->value(),
-                                   m_interestFrequencyUnitEdit->item());
-  }
-  return acc;
-}
-
 void KNewLoanWizard::slotReloadEditWidgets(void)
 {
   // load the various account widgets
@@ -1160,30 +1121,6 @@ void KNewLoanWizard::slotReloadEditWidgets(void)
   if(!payeeId.isEmpty()) {
     m_payeeEdit->setSelectedItem(payeeId);
   }
-}
-
-void KNewLoanWizard::loadWidgets(const MyMoneyAccount& account)
-{
-  bool borrowing = false;
-  MyMoneyAccountLoan acc(account);
-
-  m_nameEdit->loadText(acc.name());
-  if(acc.accountType() == MyMoneyAccount::Loan) {
-    m_borrowButton->animateClick();
-    borrowing = true;
-  } else
-    m_lendButton->animateClick();
-
-  if(!acc.openingBalance().isZero()) {
-    if(borrowing)
-      m_loanAmountEdit->loadText((-account.openingBalance()).formatMoney());
-    else
-      m_loanAmountEdit->loadText(account.openingBalance().formatMoney());
-  }
-
-
-  if(account.openingDate().isValid())
-    m_firstDueDateEdit->setDate(account.openingDate());
 }
 
 int KNewLoanWizard::term(void) const

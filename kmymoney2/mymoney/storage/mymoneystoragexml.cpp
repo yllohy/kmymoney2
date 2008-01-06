@@ -206,7 +206,7 @@ bool MyMoneyXmlContentHandler::endElement(const QString& /* namespaceURI */, con
       try {
         if(s == "transaction") {
           MyMoneyTransaction t(m_baseNode);
-          m_reader->d->tList[t.id()] = t;
+          m_reader->d->tList[t.uniqueSortKey()] = t;
         } else if(s == "account") {
           MyMoneyAccount a(m_baseNode);
           m_reader->d->aList[a.id()] = a;

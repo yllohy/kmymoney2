@@ -215,13 +215,6 @@ public:
   const QDate& openingDate(void) const { return m_openingDate; }
 
   /**
-    * This method is used to return the opening balance of an account
-    *
-    * @return MyMoneyMoney value of opening balance
-    */
-  __attribute__ ((deprecated)) const MyMoneyMoney openingBalance(void) const { return m_openingBalance; };
-
-  /**
     * This method returns the date of the last reconciliation of this account
     * @return date of last reconciliation as const QDate value
     * @see setLastReconciliationDate
@@ -320,16 +313,6 @@ public:
     * @see openingDate
     */
   void setOpeningDate(const QDate& date);
-
-  /**
-    * This method is used to set the opening balance information of an
-    * account.
-    *
-    * @param balance MyMoneyMoney value of opening balance
-    *
-    * @see openingBalance
-    */
-  void setOpeningBalance(const MyMoneyMoney& balance) __attribute__ ((deprecated));
 
   /**
     * This method is used to set the date of the last reconciliation
@@ -555,11 +538,6 @@ private:
     * account was created as an object in a MyMoneyFile
     */
   QDate m_openingDate;
-
-  /**
-    * This member holds the opening balance of this account
-    */
-  MyMoneyMoney m_openingBalance;
 
   /**
     * This member variable keeps the date of the last

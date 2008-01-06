@@ -1490,7 +1490,6 @@ void MyMoneyFileTest::testOpeningBalance(void)
 		openingAcc = m->openingBalanceAccount(m->baseCurrency());
 		CPPUNIT_ASSERT(openingAcc.parentAccountId() == m->equity().id());
 		CPPUNIT_ASSERT(openingAcc.name() == MyMoneyFile::OpeningBalancesPrefix);
-		CPPUNIT_ASSERT(openingAcc.openingBalance() == MyMoneyMoney(0,1));
 		CPPUNIT_ASSERT(openingAcc.openingDate() == QDate::currentDate());
 	} catch(MyMoneyException *e) {
 		unexpectedException(e);
@@ -1510,7 +1509,6 @@ void MyMoneyFileTest::testOpeningBalance(void)
 		openingAcc = m->openingBalanceAccount(second);
 		CPPUNIT_ASSERT(openingAcc.parentAccountId() == m->equity().id());
 		CPPUNIT_ASSERT(openingAcc.name() == refName);
-		CPPUNIT_ASSERT(openingAcc.openingBalance() == MyMoneyMoney(0,1));
 		CPPUNIT_ASSERT(openingAcc.openingDate() == QDate::currentDate());
 	} catch(MyMoneyException *e) {
 		unexpectedException(e);

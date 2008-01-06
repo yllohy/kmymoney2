@@ -161,17 +161,6 @@ void MyMoneySeqAccessMgr::accountList(QValueList<MyMoneyAccount>& list)
 
 void MyMoneySeqAccessMgr::addAccount(MyMoneyAccount& account)
 {
-  // we do not allow an opening balance different from 0 anymore
-  // This used to work in older releases
-  if(!account.openingBalance().isZero()) {
-    // FIXME we should really generate an exception here. For now,
-    // we only print a warning and hope that only old binary files
-    // still have this feature. Once we get rid of the binary
-    // reader we can safely throw the exception
-    // throw new MYMONEYEXCEPTION("Cannot create account with opening balance != 0");
-    qWarning("Createing accounts with opening balance != 0 in the engine is deprecated!");
-  }
-
   // create the account.
   MyMoneyAccount newAccount(nextAccountID(), account);
   m_accountList.insert(newAccount.id(), newAccount);
@@ -532,9 +521,6 @@ const QValueList<MyMoneyInstitution> MyMoneySeqAccessMgr::institutionList(void) 
 void MyMoneySeqAccessMgr::modifyAccount(const MyMoneyAccount& account, const bool skipCheck)
 {
   QMap<QCString, MyMoneyAccount>::ConstIterator pos;
-
-  if(!account.openingBalance().isZero())
-    throw new MYMONEYEXCEPTION("Cannot modify account with opening balance != 0");
 
   // locate the account in the file global pool
   pos = m_accountList.find(account.id());

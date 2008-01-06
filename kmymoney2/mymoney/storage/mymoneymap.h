@@ -84,7 +84,7 @@ public:
       throw new MYMONEYEXCEPTION("No transaction started to remove element from container");
 
     if(key.isEmpty())
-      throw new MYMONEYEXCEPTION("No key to update object");
+      throw new MYMONEYEXCEPTION("No key to remove object");
 
     m_stack.push(new MyMoneyMapRemove(this, key));
   }
