@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>614</width>
-            <height>387</height>
+            <height>409</height>
         </rect>
     </property>
     <property name="caption">
@@ -356,7 +356,7 @@
                     </widget>
                     <widget class="QLabel">
                         <property name="name">
-                            <cstring>textLabel1_2</cstring>
+                            <cstring>m_viewLabel</cstring>
                         </property>
                         <property name="text">
                             <string>Check the views you want to enable, uncheck those you want to hide, because you don't need the functionality.</string>
@@ -368,6 +368,14 @@
                     <widget class="KListView">
                         <property name="name">
                             <cstring>m_viewList</cstring>
+                        </property>
+                        <property name="sizePolicy">
+                            <sizepolicy>
+                                <hsizetype>7</hsizetype>
+                                <vsizetype>7</vsizetype>
+                                <horstretch>0</horstretch>
+                                <verstretch>2</verstretch>
+                            </sizepolicy>
                         </property>
                     </widget>
                     <widget class="QButtonGroup">
@@ -421,6 +429,23 @@
                             </widget>
                         </grid>
                     </widget>
+                    <spacer>
+                        <property name="name">
+                            <cstring>spacer7</cstring>
+                        </property>
+                        <property name="orientation">
+                            <enum>Vertical</enum>
+                        </property>
+                        <property name="sizeType">
+                            <enum>Expanding</enum>
+                        </property>
+                        <property name="sizeHint">
+                            <size>
+                                <width>20</width>
+                                <height>21</height>
+                            </size>
+                        </property>
+                    </spacer>
                 </vbox>
             </widget>
             <widget class="QWidget">

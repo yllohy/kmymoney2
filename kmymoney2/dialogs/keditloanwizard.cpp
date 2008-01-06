@@ -146,9 +146,10 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
   for(it_s = m_schedule.transaction().splits().begin();
       it_s != m_schedule.transaction().splits().end();
       ++it_s) {
+    MyMoneyAccount acc = file->account((*it_s).accountId());
     // if it's the split that references the source/dest
     // of the money, we check if we borrow or loan money
-    if((*it_s).action() == MyMoneySplit::ActionAmortization
+    if(acc.isAssetLiability() && !acc.isLoan()
     && (*it_s).value() != MyMoneyMoney::autoCalc) {
       if((*it_s).value().isNegative()) {
         m_lendButton->setChecked(false);

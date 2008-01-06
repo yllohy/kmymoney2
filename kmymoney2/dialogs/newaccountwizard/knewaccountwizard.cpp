@@ -146,7 +146,9 @@ const MyMoneyAccount& NewAccountWizard::Wizard::account(void)
 MyMoneyTransaction NewAccountWizard::Wizard::payoutTransaction(void)
 {
   MyMoneyTransaction t;
-  if(m_account.isLoan() && openingBalance().isZero()) {
+  if(m_account.isLoan()                                       // we're creating a loan
+  && openingBalance().isZero()                                // and don't have an opening balance
+  && !m_loanPayoutPage->m_noPayoutTransaction->isChecked()) { // and the user wants to have a payout transaction
     t.setPostDate(m_loanPayoutPage->m_payoutDate->date());
     t.setCommodity(m_account.currencyId());
     MyMoneySplit s;
@@ -439,6 +441,7 @@ void AccountTypePage::slotLoadWidgets(void)
 
 void AccountTypePage::leavePage(void)
 {
+
   m_wizard->setStepHidden(StepSchedule);
   m_wizard->setStepHidden(StepBrokerage);
 }
@@ -1049,11 +1052,12 @@ LoanPaymentPage::LoanPaymentPage(Wizard* wizard, const char* name) :
   d(new LoanPaymentPagePrivate)
 {
   d->phonyAccount = MyMoneyAccount(QCString("Phony-ID"), MyMoneyAccount());
+
   d->phonySplit.setAccountId(d->phonyAccount.id());
   d->phonySplit.setValue(0);
   d->phonySplit.setShares(0);
-  d->additionalFeesTransaction.addSplit(d->phonySplit);
 
+  d->additionalFeesTransaction.addSplit(d->phonySplit);
 
   connect(m_additionalFeesButton, SIGNAL(clicked()), this, SLOT(slotAdditionalFees()));
 }
@@ -1093,7 +1097,12 @@ void LoanPaymentPage::updateAmounts(void)
 
 void LoanPaymentPage::enterPage(void)
 {
-  m_basePayment->setText(basePayment().formatMoney(m_wizard->currency().tradingSymbol()));
+  const MyMoneySecurity& currency = m_wizard->currency();
+
+  m_basePayment->setText(basePayment().formatMoney(currency.tradingSymbol()));
+  d->phonyAccount.setCurrencyId(currency.id());
+  d->additionalFeesTransaction.setCommodity(currency.id());
+
   updateAmounts();
 }
 

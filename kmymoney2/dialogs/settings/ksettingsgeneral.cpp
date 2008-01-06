@@ -17,8 +17,13 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qlabel.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
+
+#include <klineedit.h>
+#include <klistview.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -31,6 +36,11 @@ KSettingsGeneral::KSettingsGeneral(QWidget* parent, const char* name) :
 {
   // hide the internally used date field
   kcfg_StartDate->hide();
+  kcfg_hiddenViews->hide();
+
+  // for now, we don't show the widgets for view selection
+  m_viewLabel->hide();
+  m_viewList->hide();
 
   // setup connections, so that the sort optios get loaded once the edit fields are filled
   connect(kcfg_StartDate, SIGNAL(valueChanged(const QDate&)), this, SLOT(slotLoadStartDate(const QDate&)));

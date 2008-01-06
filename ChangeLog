@@ -1,6 +1,11 @@
 2008-01-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show a marker in the ledger when transactions are possibly filtered
     This is shown if the filter is set to any other date than 1900-1-1
+  * Removed widget in settings dialog that should not be visible
+  * Fixed loan creation when no payout transaction was selected
+  * Fixed popup of price editor during loan creation
+  * Improved detection of splits for loan payment transaction in
+    loan editor
 
 2008-01-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem with creating new transactions when quick filter is active
