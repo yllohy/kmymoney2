@@ -2052,6 +2052,9 @@ void Register::addGroupMarkers(void)
       thisWeek = today.addDays(-weekStartOfs);
       lastWeek = thisWeek.addDays(-7);
       thisYear.setYMD(today.year(), 1, 1);
+      if(KMyMoneySettings::startDate().date() != QDate(1900,1,1))
+        new KMyMoneyRegister::FancyDateGroupMarker(this, KMyMoneySettings::startDate().date(), i18n("Prior transactions possibly filtered"));
+
       if(KMyMoneySettings::showFancyMarker()) {
         new KMyMoneyRegister::FancyDateGroupMarker(this, thisYear, i18n("This year"));
         new KMyMoneyRegister::FancyDateGroupMarker(this, lastMonth, i18n("Last month"));
