@@ -700,8 +700,6 @@ void MyMoneySeqAccessMgr::reparentAccount(MyMoneyAccount &account, MyMoneyAccoun
 
 void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transaction)
 {
-  QMap<QCString, bool> modifiedAccounts;
-
   // first perform all the checks
   if(transaction.id().isEmpty())
     throw new MYMONEYEXCEPTION("invalid transaction to be deleted");
@@ -723,7 +721,6 @@ void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transactio
   // to be updated after the removal of this transaction
   for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
     MyMoneyAccount acc = m_accountList[(*it_s).accountId()];
-    modifiedAccounts[(*it_s).accountId()] = true;
     acc.adjustBalance(-((*it_s).shares()));
     acc.touch();
     m_accountList.modify(acc.id(), acc);
@@ -976,7 +973,7 @@ const MyMoneyMoney MyMoneySeqAccessMgr::balance(const QCString& id, const QDate&
         if((*it_s).action() == MyMoneySplit::ActionSplitShares) {
           balances[aid] = balances[aid] * (*it_s).shares();
         } else {
-          balances[aid] += (*it_s).value((*it_t).commodity(), m_accountList[aid].currencyId());
+          balances[aid] += (*it_s).shares();
         }
       }
     }
