@@ -1887,8 +1887,9 @@ RegisterItem* Register::scrollPage(int key)
       while(height < visibleHeight() && item->prevItem()) {
         do {
           item = item->prevItem();
-          height += item->rowHeightHint();
-        } while(!item->isSelectable() && item->prevItem());
+          if(item->isVisible())
+            height += item->rowHeightHint();
+        } while((!item->isSelectable() || !item->isVisible()) && item->prevItem());
         if(item)
           newItem = item;
       }
@@ -1896,9 +1897,10 @@ RegisterItem* Register::scrollPage(int key)
     case Qt::Key_PageDown:
       while(height < visibleHeight() && item->nextItem()) {
         do {
-          height += item->rowHeightHint();
+          if(item->isVisible())
+            height += item->rowHeightHint();
           item = item->nextItem();
-        } while(!item->isSelectable() && item->nextItem());
+        } while((!item->isSelectable() || !item->isVisible()) && item->nextItem());
         if(item)
           newItem = item;
       }
@@ -1908,7 +1910,7 @@ RegisterItem* Register::scrollPage(int key)
       if(item->prevItem()) {
         do {
           item = item->prevItem();
-        } while(!item->isSelectable() && item->prevItem());
+        } while((!item->isSelectable() || !item->isVisible()) && item->prevItem());
         if(item)
           newItem = item;
       }
@@ -1918,7 +1920,7 @@ RegisterItem* Register::scrollPage(int key)
       if(item->nextItem()) {
         do {
           item = item->nextItem();
-        } while(!item->isSelectable() && item->nextItem());
+        } while((!item->isSelectable() || !item->isVisible()) && item->nextItem());
         if(item)
           newItem = item;
       }
@@ -1926,7 +1928,7 @@ RegisterItem* Register::scrollPage(int key)
 
     case Qt::Key_Home:
       item = m_firstItem;
-      while(!item->isSelectable() && item->nextItem())
+      while((!item->isSelectable() || !item->isVisible()) && item->nextItem())
         item = item->nextItem();
       if(item)
         newItem = item;
@@ -1934,7 +1936,7 @@ RegisterItem* Register::scrollPage(int key)
 
     case Qt::Key_End:
       item = m_lastItem;
-      while(!item->isSelectable() && item->prevItem())
+      while((!item->isSelectable() || !item->isVisible()) && item->prevItem())
         item = item->prevItem();
       if(item)
         newItem = item;
