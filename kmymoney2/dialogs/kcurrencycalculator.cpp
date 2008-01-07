@@ -128,6 +128,7 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMo
   m_toCurrencyText->setText(m_toCurrency.isCurrency() ? m_toCurrency.id() : m_toCurrency.tradingSymbol());
 
   m_fromAmount->setText(m_value.formatMoney("", MyMoneyMoney::denomToPrec(m_fromCurrency.smallestAccountFraction())));
+
   m_dateText->setText(KGlobal::locale()->formatDate(date, true));
 
   m_fromType->setText(KMyMoneyUtils::securityTypeToString(m_fromCurrency.securityType()));
@@ -137,7 +138,7 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMo
   m_cancelButton->setGuiItem(KStdGuiItem::cancel());
   m_okButton->setGuiItem(KStdGuiItem::ok());
 
-  m_updateButton->setChecked(KMyMoneySettings::priceHistoryUpdate());
+  m_updateButton->setChecked(KMyMoneyGlobalSettings::priceHistoryUpdate());
 
   // setup initial result
   if(m_result == MyMoneyMoney() && !m_value.isZero()) {
@@ -149,6 +150,9 @@ KCurrencyCalculator::KCurrencyCalculator(const MyMoneySecurity& from, const MyMo
 
   // fill in initial values
   m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_resultFraction)));
+  m_toAmount->setPrecision(MyMoneyMoney::denomToPrec(m_resultFraction));
+
+  m_conversionRate->setPrecision(KMyMoneyGlobalSettings::pricePrecision());
 
   connect(m_amountButton, SIGNAL(clicked()), this, SLOT(slotSetToAmount()));
   connect(m_rateButton, SIGNAL(clicked()), this, SLOT(slotSetExchangeRate()));
@@ -211,7 +215,7 @@ void KCurrencyCalculator::slotUpdateResult(const QString& /*txt*/)
   if(!result.isZero()) {
     price = result / m_value;
 
-    m_conversionRate->loadText(price.formatMoney("", KMyMoneySettings::pricePrecision()));
+    m_conversionRate->loadText(price.formatMoney("", KMyMoneyGlobalSettings::pricePrecision()));
     m_result = (m_value * price).convert(m_resultFraction);
     m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_resultFraction)));
   }
@@ -229,7 +233,7 @@ void KCurrencyCalculator::slotUpdateRate(const QString& /*txt*/)
   }
 
   if(!price.isZero()) {
-    m_conversionRate->loadText(price.formatMoney("", KMyMoneySettings::pricePrecision()));
+    m_conversionRate->loadText(price.formatMoney("", KMyMoneyGlobalSettings::pricePrecision()));
     m_result = (m_value * price).convert(m_resultFraction);
     m_toAmount->loadText(m_result.formatMoney("", MyMoneyMoney::denomToPrec(m_resultFraction)));
   }
@@ -249,12 +253,12 @@ void KCurrencyCalculator::updateExample(const MyMoneyMoney& price)
     }
   } else {
     msg = QString("1 %1 = %2 %3").arg(m_fromCurrency.tradingSymbol())
-                                 .arg(price.formatMoney("", KMyMoneySettings::pricePrecision()))
+                                 .arg(price.formatMoney("", KMyMoneyGlobalSettings::pricePrecision()))
                                  .arg(m_toCurrency.tradingSymbol());
     if(m_fromCurrency.isCurrency()) {
       msg += QString("\n");
       msg += QString("1 %1 = %2 %3").arg(m_toCurrency.tradingSymbol())
-                                    .arg((MyMoneyMoney(1,1)/price).formatMoney("", KMyMoneySettings::pricePrecision()))
+                                    .arg((MyMoneyMoney(1,1)/price).formatMoney("", KMyMoneyGlobalSettings::pricePrecision()))
                                     .arg(m_fromCurrency.tradingSymbol());
     }
   }
@@ -287,7 +291,7 @@ void KCurrencyCalculator::accept(void)
   }
 
   // remember setting for next round
-  KMyMoneySettings::setPriceHistoryUpdate(m_updateButton->isChecked());
+  KMyMoneyGlobalSettings::setPriceHistoryUpdate(m_updateButton->isChecked());
 
   KCurrencyCalculatorDecl::accept();
 }

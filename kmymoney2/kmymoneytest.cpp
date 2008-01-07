@@ -176,6 +176,7 @@ int main(int testargc, char** testargv)
 // required for the testcases (mymoneystoragesql references it)
 void timetrace(const char *txt)
 {
+  Q_UNUSED(txt);
 }
 
 #if 0

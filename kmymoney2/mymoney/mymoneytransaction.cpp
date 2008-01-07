@@ -70,10 +70,14 @@ MyMoneyTransaction::MyMoneyTransaction(const QDomElement& node, const bool force
     nodeList = nodeList.item(0).toElement().elementsByTagName("SPLIT");
     for(unsigned int i = 0; i < nodeList.count(); ++i) {
       MyMoneySplit s(nodeList.item(i).toElement());
+      if(i == 0) { // first split
+        if(!m_bankID.isEmpty())
+          s.setBankID(m_bankID);
+      }
       if(!s.accountId().isEmpty())
         addSplit(s);
       else
-        qDebug("Dropped split because it had account id");
+        qDebug("Dropped split because it did not have an account id");
     }
   }
 }

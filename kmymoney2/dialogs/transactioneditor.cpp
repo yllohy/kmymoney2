@@ -1920,8 +1920,10 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
           return false;
       } else {
         MyMoneyAccount cat = MyMoneyFile::instance()->account(s1.accountId());
-        if(m_priceInfo.find(cat.currencyId()) != m_priceInfo.end())
-          shares = (s1.value() * m_priceInfo[cat.currencyId()]).reduce();
+        if(m_priceInfo.find(cat.currencyId()) != m_priceInfo.end()) {
+          MyMoneySecurity sec = MyMoneyFile::instance()->security(cat.currencyId());
+          shares = (s1.value() * m_priceInfo[cat.currencyId()]).reduce().convert(cat.fraction(sec));
+        }
         else
           shares = s1.value();
       }

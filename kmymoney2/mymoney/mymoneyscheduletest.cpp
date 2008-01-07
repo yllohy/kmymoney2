@@ -229,12 +229,12 @@ void MyMoneyScheduleTest::testOverdue()
 	// the following checks only work correctly, if currentDate() is
 	// between the 1st and 27th. If it is between 28th and 31st
 	// we don't perform them. Note: this should be fixed.
-
+#if 0
 	if(QDate::currentDate().day() > 27 || QDate::currentDate().day() == 1) {
 		std::cout << std::endl << "testOverdue() skipped because current day is between 28th and 2nd" << std::endl;
 		return;
 	}
-
+#endif
 	QDate startDate = QDate::currentDate().addDays(-1).addMonths(-23);
 	QDate lastPaymentDate = QDate::currentDate().addDays(-1).addMonths(-1);
 

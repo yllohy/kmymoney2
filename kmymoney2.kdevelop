@@ -15,25 +15,30 @@
     <description/>
     <ignoreparts/>
     <secondaryLanguages/>
+    <versioncontrol/>
+    <projectname>kmymoney2</projectname>
+    <defaultencoding/>
   </general>
   <kdevautoproject>
     <general>
       <mainprogram>kmymoney2/kmymoney2</mainprogram>
-      <useconfiguration>suse91</useconfiguration>
-      <activetarget>kmymoney2/kmymoneytest</activetarget>
+      <useconfiguration>suse103</useconfiguration>
+      <activetarget>kmymoney2/kmymoney2</activetarget>
     </general>
     <configure>
       <configargs>\s--build=i386-linux --host=i386-linux --target=i386-linux\s</configargs>
     </configure>
     <make>
       <abortonerror>true</abortonerror>
-      <numberofjobs>1</numberofjobs>
+      <numberofjobs>3</numberofjobs>
       <dontact>false</dontact>
       <makebin/>
       <envvars>
         <envvar value="1" name="WANT_AUTOCONF_2_5" />
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
+      <runmultiplejobs>true</runmultiplejobs>
+      <prio>0</prio>
     </make>
     <compiler>
       <cflags/>
@@ -43,7 +48,7 @@
       <directoryradio>executable</directoryradio>
       <customdirectory>/</customdirectory>
       <mainprogram>kmymoney2/kmymoney2</mainprogram>
-      <programargs>--newreports</programargs>
+      <programargs/>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <envvars/>
@@ -65,9 +70,9 @@
         <cxxflags>-D_CHECK_MEMORY</cxxflags>
         <f77flags/>
       </default>
-      <suse91>
+      <suse103>
         <configargs>--mandir=/usr/share/man --enable-debug=full --enable-kbanking=yes</configargs>
-        <builddir>suse91</builddir>
+        <builddir>suse103</builddir>
         <topsourcedir>/home/thb/devel/kmymoney2</topsourcedir>
         <cppflags/>
         <ldflags/>
@@ -80,7 +85,8 @@
         <cflags/>
         <cxxflags/>
         <f77flags/>
-      </suse91>
+        <envvars/>
+      </suse103>
     </configurations>
   </kdevautoproject>
   <kdevfileview>
@@ -155,11 +161,33 @@
       <codeCompletionDelay>250</codeCompletionDelay>
       <argumentsHintDelay>400</argumentsHintDelay>
       <headerCompletionDelay>250</headerCompletionDelay>
+      <showOnlyAccessibleItems>false</showOnlyAccessibleItems>
+      <completionBoxItemOrder>0</completionBoxItemOrder>
+      <howEvaluationContextMenu>true</howEvaluationContextMenu>
+      <showCommentWithArgumentHint>true</showCommentWithArgumentHint>
+      <statusBarTypeEvaluation>false</statusBarTypeEvaluation>
+      <namespaceAliases>std=_GLIBCXX_STD;__gnu_cxx=std</namespaceAliases>
+      <processPrimaryTypes>true</processPrimaryTypes>
+      <processFunctionArguments>false</processFunctionArguments>
+      <preProcessAllHeaders>false</preProcessAllHeaders>
+      <parseMissingHeadersExperimental>false</parseMissingHeadersExperimental>
+      <resolveIncludePathsUsingMakeExperimental>false</resolveIncludePathsUsingMakeExperimental>
+      <alwaysParseInBackground>true</alwaysParseInBackground>
+      <usePermanentCaching>true</usePermanentCaching>
+      <alwaysIncludeNamespaces>false</alwaysIncludeNamespaces>
+      <includePaths>.;</includePaths>
+      <parseMissingHeaders>false</parseMissingHeaders>
+      <resolveIncludePaths>true</resolveIncludePaths>
     </codecompletion>
     <qt>
       <used>false</used>
       <version>3</version>
       <root>/usr/lib/qt3</root>
+      <includestyle>3</includestyle>
+      <designerintegration>EmbeddedKDevDesigner</designerintegration>
+      <qmake>/usr/lib/qt3/bin/qmake</qmake>
+      <designer>/usr/lib/qt3/bin/designer</designer>
+      <designerpluginpaths/>
     </qt>
     <creategettersetter>
       <prefixGet/>
@@ -172,6 +200,11 @@
     <designerintegration>
       <qtdesigner/>
     </designerintegration>
+    <splitheadersource>
+      <enabled>false</enabled>
+      <synchronize>true</synchronize>
+      <orientation>Vertical</orientation>
+    </splitheadersource>
   </kdevcppsupport>
   <cppsupportpart>
     <filetemplates>
@@ -183,4 +216,11 @@
     <filetypes/>
     <useglobaltypes/>
   </kdevfilecreate>
+  <kdevdocumentation>
+    <projectdoc>
+      <docsystem/>
+      <docurl/>
+      <usermanualurl/>
+    </projectdoc>
+  </kdevdocumentation>
 </kdevelop>
