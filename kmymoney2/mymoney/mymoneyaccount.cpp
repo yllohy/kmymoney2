@@ -77,8 +77,10 @@ MyMoneyAccount::MyMoneyAccount(const QDomElement& node) :
   }
 
   if(node.hasAttribute("openingbalance")) {
-    QString msg = i18n("Account %s contains an opening balance. Please use a KMyMoney version >= 0.8 and < 0.9 to correct the problem.").arg(m_name);
-    throw new MYMONEYEXCEPTION(msg);
+    if(!MyMoneyMoney(node.attribute("openingbalance")).isZero()) {
+      QString msg = i18n("Account %s contains an opening balance. Please use a KMyMoney version >= 0.8 and < 0.9 to correct the problem.").arg(m_name);
+      throw new MYMONEYEXCEPTION(msg);
+    }
   }
   setDescription(node.attribute("description"));
 
