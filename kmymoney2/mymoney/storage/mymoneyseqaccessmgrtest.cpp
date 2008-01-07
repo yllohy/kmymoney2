@@ -597,6 +597,8 @@ void MyMoneySeqAccessMgrTest::testBalance() {
 	CPPUNIT_ASSERT(m->balance("A000003") == MyMoneyMoney(400));
 	CPPUNIT_ASSERT(m->totalBalance("A000001") == MyMoneyMoney(1600));
 	CPPUNIT_ASSERT(m->balance("A000006", QDate(2002,5,9)) == MyMoneyMoney(-11600));
+	CPPUNIT_ASSERT(m->balance("A000005", QDate(2002,5,10)) == MyMoneyMoney(-100000));
+	CPPUNIT_ASSERT(m->balance("A000006", QDate(2002,5,10)) == MyMoneyMoney(88400));
 }
 
 void MyMoneySeqAccessMgrTest::testModifyTransaction() {
