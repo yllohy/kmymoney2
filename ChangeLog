@@ -1,6 +1,7 @@
 2008-01-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem with price precision in currency calculator dialog
   * Fixed a warning in kmymoneytest.cpp
+  * Fixed problem with keypad return key during transaction entry
 
 2008-01-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show a marker in the ledger when transactions are possibly filtered
