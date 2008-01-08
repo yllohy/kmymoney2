@@ -13,6 +13,21 @@ that &app; can be built from it and upload it to the SourceForge File Release Sy
 This chapter explains the steps of making sure that the version numbers are set
 correctly, creating the source tar-ball, tagging the repository etc.
 </para>
+
+<para>
+Note that in order to perform some of the functions associated with this procedure, you will need to:
+  <para>
+    <orderedlist>
+      <listitem><para>
+      Obtain a userid by registering with Sourceforge; this userid is represented below as &lt;your_sf_userid&gt;
+      </para></listitem>
+      <listitem><para>
+      Be registered as a &kappname; developer; this must be done by a project administrator, the names of which appear on the project home page on Sourceforge.
+      </para></listitem>
+    </orderedlist>
+  </para>
+</para>
+
 <para>
 The first few steps of the release process should be taken some time in advance of the anticipated release date, in order to give translators a chance to 'do their thing'. The length of time required will depend on how many translatable strings have been changed since the previous release, but something like two weeks for a minor release should suffice.
 <note>
@@ -70,6 +85,13 @@ This will create the file kmymoney2.pot in TLD/po, and will merge all new and ch
 </para>
 <para>
 At this point also, a 'string freeze' for the base release should be declared on the developer's list. From now on until the release is complete, the only changes which should be committed to the CVS branch should be fixes which do not change translatable strings, and updated .po files submitted by translators.
+</para>
+<para>
+As each .po file is committed, it is desirable to update the translation statistics on the project web site. This can be performed with the command
+  <programlisting>
+  make message-stats | ssh &lt;your_sf_userid&gt;@user.sourceforge.net "cat > /home/groups/k/km/kmymoney2/htdocs/translate-stable.xml"
+  </programlisting>
+You should certainly make sure that this command is run at least once, after all .po files have been committed.
 </para>
 <para>
 Once the anticipated release date is reached, you should make sure that your sandbox is up-to-date. This is probably best achieved by deleting the directory created in step 2, and re-creating it by a full CVS checkout as described there.
@@ -262,7 +284,7 @@ Connected to osdn.dl.sourceforge.net.
 &lt;snip&gt;
 <prompt>Name (upload.sourceforge.net:tonyb): </prompt><userinput>anonymous</userinput>
 331 Please specify the password.
-<prompt>Password:</prompt><userinput>&lt;enter your sf email name, the bit of the address before the @ sign&gt;</userinput>
+<prompt>Password:</prompt><userinput>&lt;your_sf_userid&gt;</userinput>
 230 Login successful.
 Remote system type is UNIX.
 Using binary mode to transfer files.
