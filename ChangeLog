@@ -1,3 +1,6 @@
+2008-01-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added copy budget feature
+
 2008-01-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem with price precision in currency calculator dialog
   * Fixed a warning in kmymoneytest.cpp

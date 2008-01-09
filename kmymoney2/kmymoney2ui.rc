@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="27" name="kmymoney2" >
+<kpartgui version="28" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <Action append="open_merge" name="open_database" />
@@ -165,6 +165,7 @@
    <Action name="budget_rename" />
    <Action name="budget_change_year" />
    <Action name="budget_delete" />
+   <Action name="budget_copy" />
  </Menu>
  <Menu name="investment_context_menu">
   <title>Investment options</title>

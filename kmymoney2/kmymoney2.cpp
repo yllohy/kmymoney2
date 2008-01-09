@@ -445,6 +445,7 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("New budget"), "filenew", 0, this, SLOT(slotBudgetNew()), actionCollection(), "budget_new");
   new KAction(i18n("Rename budget"), "edit", 0, this, SIGNAL(budgetRename()), actionCollection(), "budget_rename");
   new KAction(i18n("Delete budget"), "delete", 0, this, SLOT(slotBudgetDelete()), actionCollection(), "budget_delete");
+  new KAction(i18n("Copy budget"), "editcopy", 0, this, SLOT(slotBudgetCopy()), actionCollection(), "budget_copy");
   new KAction(i18n("Change budget year"), "", 0, this, SLOT(slotBudgetChangeYear()), actionCollection(), "budget_change_year");
 
   // ************************
@@ -4063,6 +4064,24 @@ void KMyMoney2App::slotBudgetDelete(void)
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to remove budget: %1, thrown in %2:%3").      arg(e->what()).arg(e->file()).arg(e->line()));
     delete e;
+  }
+}
+
+void KMyMoney2App::slotBudgetCopy(void)
+{
+  if(m_selectedBudgets.size() == 1) {
+    MyMoneyFileTransaction ft;
+    try {
+      MyMoneyBudget budget = m_selectedBudgets[0];
+      budget.clearId();
+      budget.setName(i18n("Copy of %1").arg(budget.name()));
+
+      MyMoneyFile::instance()->addBudget(budget);
+      ft.commit();
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to add budget: %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+      delete e;
+    }
   }
 }
 

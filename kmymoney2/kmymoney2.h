@@ -309,6 +309,10 @@ protected slots:
   void slotBudgetDelete(void);
 
   /**
+   */
+  void slotBudgetCopy(void);
+
+  /**
     */
   void slotBudgetChangeYear(void);
 
