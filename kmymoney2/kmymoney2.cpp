@@ -4977,6 +4977,7 @@ void KMyMoney2App::slotUpdateActions(void)
   action("budget_rename")->setEnabled(false);
   action("budget_change_year")->setEnabled(false);
   action("budget_new")->setEnabled(true);
+  action("budget_copy")->setEnabled(false);
 
   QString tooltip = i18n("Create a new transaction");
   action("transaction_new")->setEnabled(fileOpen && myMoneyView->canCreateTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>(), tooltip));
@@ -5179,9 +5180,12 @@ void KMyMoney2App::slotUpdateActions(void)
   }
 
   if(m_selectedBudgets.count() >= 1) {
-    action("budget_rename")->setEnabled(true);
     action("budget_delete")->setEnabled(true);
-    action("budget_change_year")->setEnabled(true);
+    if(m_selectedBudgets.count() == 1) {
+      action("budget_change_year")->setEnabled(true);
+      action("budget_copy")->setEnabled(true);
+      action("budget_rename")->setEnabled(true);
+    }
   }
 
   if(!m_selectedCurrency.id().isEmpty()) {
