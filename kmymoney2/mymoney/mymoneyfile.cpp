@@ -1310,6 +1310,7 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   QStringList rc;
 
   int problemCount = 0;
+  int unfixedCount = 0;
   QString problemAccount;
 
   // check that we have a storage object
@@ -1544,6 +1545,14 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         rc << i18n("    Shares set to value.");
         ++problemCount;
       }
+      try {
+        this->account((*it_s).accountId());
+      } catch(MyMoneyException *e) {
+        rc << i18n("  * Split %2 in schedule '%1' contains a reference to invalid account %3. Please fix manually.").arg((*it_sch).name(), (*it_s).id(), (*it_s).accountId());
+        ++problemCount;
+        ++unfixedCount;
+        delete e;
+      }
       if(sChanged) {
         t.modifySplit(s);
         tChanged = true;
@@ -1591,8 +1600,8 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   if(problemCount == 0)
     rc << i18n("Finish! Data is consistent.");
   else
-    rc << i18n("Finish! %1 problems corrected. Data is consistent.")
-            .arg(QString::number(problemCount));
+    rc << i18n("Finish! %1 problem(s) corrected. %2 problem(s) still present.")
+            .arg(problemCount).arg(unfixedCount);
 
   return rc;
 }
