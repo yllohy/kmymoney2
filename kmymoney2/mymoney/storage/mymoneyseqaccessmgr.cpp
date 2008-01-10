@@ -893,13 +893,17 @@ const MyMoneyTransaction& MyMoneySeqAccessMgr::transaction(const QCString& id) c
 {
   // get the full key of this transaction, throw exception
   // if it's invalid (unknown)
-  if(!m_transactionKeys.contains(id))
-    throw new MYMONEYEXCEPTION("invalid transaction id");
+  if(!m_transactionKeys.contains(id)) {
+    QString msg = QString("Invalid transaction id '%1'").arg(id);
+    throw new MYMONEYEXCEPTION(msg);
+  }
 
   // check if this key is in the list, throw exception if not
   QCString key = m_transactionKeys[id];
-  if(!m_transactionList.contains(key))
-    throw new MYMONEYEXCEPTION("invalid transaction key");
+  if(!m_transactionList.contains(key)) {
+    QString msg = QString("Invalid transaction key '%1'").arg(key);
+    throw new MYMONEYEXCEPTION(msg);
+  }
 
   return m_transactionList[key];
 }
