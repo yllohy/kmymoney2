@@ -1,3 +1,8 @@
+2008-01-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Exchanged order of test for OFX and KDChart during configure
+    to avoid problems with additional libraries (eg curl) as reported
+    here: http://sourceforge.net/mailarchive/message.php?msg_name=478558AB.1080003%40lemmons.name .
+
 2008-01-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added copy budget feature
 

@@ -52,14 +52,14 @@ dnl
 AC_PDF_GENERATION()
 
 dnl
-dnl check for libofx
-dnl 
-AC_LIBOFX()
-
-dnl
 dnl check for kdchart
 dnl 
 AC_KDCHART()
+
+dnl
+dnl check for libofx
+dnl 
+AC_LIBOFX()
 
 dnl
 dnl check for library build for Qt-Designer
