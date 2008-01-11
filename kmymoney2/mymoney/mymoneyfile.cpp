@@ -946,7 +946,8 @@ void MyMoneyFile::setUser(const MyMoneyPayee& user)
 
 bool MyMoneyFile::dirty(void) const
 {
-  checkStorage();
+  if(!m_storage)
+    return false;
 
   return m_storage->dirty();
 }
