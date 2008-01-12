@@ -36,6 +36,20 @@
 const QStringList MyMoneyBudget::AccountGroup::kBudgetLevelText = QStringList::split(",","none,monthly,monthbymonth,yearly,invalid",true);
 const int BUDGET_VERSION = 2;
 
+bool MyMoneyBudget::AccountGroup::isZero(void) const
+{
+  return (!m_budgetsubaccounts && balance().isZero());
+}
+
+const bool MyMoneyBudget::AccountGroup::operator == (const AccountGroup &r) const
+{
+  return (m_id == r.m_id && m_parentId == r.m_parentId
+       && m_budgetlevel == r.m_budgetlevel
+       && m_budgetsubaccounts == r.m_budgetsubaccounts
+       && m_periods.keys() == r.m_periods.keys()
+       && m_periods.values() == r.m_periods.values());
+}
+
 MyMoneyBudget::MyMoneyBudget(void) :
   m_name("Unconfigured Budget")
 {
@@ -63,6 +77,16 @@ MyMoneyBudget::~MyMoneyBudget()
 {
 }
 
+const bool MyMoneyBudget::operator == (const MyMoneyBudget& right) const
+{
+  return (MyMoneyObject::operator==(right) &&
+      (m_accounts.count() == right.m_accounts.count()) &&
+      (m_accounts.keys() == right.m_accounts.keys()) &&
+      (m_accounts.values() == right.m_accounts.values()) &&
+      (m_name == right.m_name) &&
+      (m_start == right.m_start) );
+}
+
 void MyMoneyBudget::write(QDomElement& e, QDomDocument *doc) const
 {
   e.setAttribute("name",  m_name);
@@ -77,7 +101,6 @@ void MyMoneyBudget::write(QDomElement& e, QDomDocument *doc) const
       QDomElement domAccount = doc->createElement("ACCOUNT");
       domAccount.setAttribute("id", it.key());
       domAccount.setAttribute("parent", it.data().parentId());
-      domAccount.setAttribute("default", it.data().getDefault());
       domAccount.setAttribute("budgetlevel", AccountGroup::kBudgetLevelText[it.data().budgetLevel()]);
       domAccount.setAttribute("budgetsubaccounts", it.data().budgetSubaccounts());
 
@@ -121,32 +144,21 @@ bool MyMoneyBudget::read(const QDomElement& e)
 
       AccountGroup account;
 
-      if("ACCOUNT" == c.tagName() && c.hasAttribute("id"))
-      {
-        account.setId(c.attribute("id"));
-      }
+      if("ACCOUNT" == c.tagName()) {
+        if(c.hasAttribute("id"))
+          account.setId(c.attribute("id"));
 
-      if("ACCOUNT" == c.tagName() && c.hasAttribute("parent"))
-      {
-        account.setParentId(c.attribute("parent"));
-      }
+        if(c.hasAttribute("parent"))
+          account.setParentId(c.attribute("parent"));
 
-      if("ACCOUNT" == c.tagName() && c.hasAttribute("default"))
-      {
-        account.setDefault(c.attribute("default").toUInt());
-      }
+        if(c.hasAttribute("budgetlevel")) {
+          int i = AccountGroup::kBudgetLevelText.findIndex(c.attribute("budgetlevel"));
+          if ( i != -1 )
+            account.setBudgetLevel(static_cast<AccountGroup::eBudgetLevel>(i));
+        }
 
-      if("ACCOUNT" == c.tagName() && c.hasAttribute("budgetlevel"))
-      {
-
-        int i = AccountGroup::kBudgetLevelText.findIndex(c.attribute("budgetlevel"));
-        if ( i != -1 )
-          account.setBudgetLevel(static_cast<AccountGroup::eBudgetLevel>(i));
-      }
-
-      if("ACCOUNT" == c.tagName() && c.hasAttribute("budgetsubaccounts"))
-      {
-        account.setBudgetSubaccounts(c.attribute("budgetsubaccounts").toUInt());
+        if(c.hasAttribute("budgetsubaccounts"))
+          account.setBudgetSubaccounts(c.attribute("budgetsubaccounts").toUInt());
       }
 
       QDomNode period = c.firstChild();
@@ -192,6 +204,15 @@ void MyMoneyBudget::removeReference(const QCString& id)
   if(m_accounts.contains(id)) {
     qDebug("%s", (QString("Remove account '%1' from budget").arg(id)).data());
     m_accounts.remove(id);
+  }
+}
+
+void MyMoneyBudget::setAccount(const AccountGroup &_account, const QCString _id)
+{
+  if(_account.isZero()) {
+    m_accounts.remove(_id);
+  } else {
+    m_accounts[_id] = _account;
   }
 }
 

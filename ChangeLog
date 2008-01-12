@@ -1,3 +1,9 @@
+2008-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed operator == for MyMoneyPayee to include match parameters
+  * Cleaned up payees view and match parameter handling
+  * Cleanup up budget view and introduced an OK button as in payees view
+  * KBudgetValues widget sends out valuesChanged() signal upon all changes
+
 2008-01-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Exchanged order of test for OFX and KDChart during configure
     to avoid problems with additional libraries (eg curl) as reported

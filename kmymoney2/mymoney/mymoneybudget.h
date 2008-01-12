@@ -87,6 +87,8 @@ public:
     void setStartDate  ( const QDate& _start )    { m_start  = _start; }
     void setAmount( const MyMoneyMoney& _amount ) { m_amount = _amount;}
 
+    const bool operator == (const PeriodGroup &r) const { return (m_start == r.m_start && m_amount == r.m_amount); }
+
  private:
     QDate         m_start;
     MyMoneyMoney  m_amount;
@@ -114,14 +116,13 @@ public:
     static const QStringList kBudgetLevelText;
 
   public:
-    AccountGroup() : m_budgetlevel(eNone), m_budgetsubaccounts(false), m_default(false) {}
+    AccountGroup() : m_budgetlevel(eNone), m_budgetsubaccounts(false) {}
 
     // get functions
     const QCString& id( void ) const { return m_id; }
     const QCString& parentId( void ) const { return m_parentId; }
     bool budgetSubaccounts( void ) const { return m_budgetsubaccounts; }
     eBudgetLevel budgetLevel( void ) const { return m_budgetlevel; }
-    bool getDefault( void ) const { return m_default; }
     const PeriodGroup& period( const QDate &_date ) const { return m_periods[_date]; }
     const QMap<QDate, PeriodGroup>& getPeriods( void ) const { return m_periods; }
     void clearPeriods(void) { m_periods.clear(); }
@@ -154,9 +155,12 @@ public:
     void setId( QString _id ) { m_id = _id; }
     void setParentId( const QString& _id ) { m_parentId = _id; }
     void setBudgetLevel( eBudgetLevel _level ) { m_budgetlevel = _level; }
-    void setDefault( bool _default ) { m_default = _default; }
     void setBudgetSubaccounts( bool _b ) { m_budgetsubaccounts = _b; }
     void addPeriod( const QDate& _date, PeriodGroup &period ) { m_periods[_date] = period; }
+
+    const bool operator == (const AccountGroup &r) const;
+
+    bool isZero(void) const;
 
   private:
     QCString m_id;
@@ -164,9 +168,14 @@ public:
 
     eBudgetLevel             m_budgetlevel;
     bool                     m_budgetsubaccounts;
-    bool                     m_default;
     QMap<QDate, PeriodGroup> m_periods;
   };
+
+  /**
+   * This operator tests for equality of two MyMoneyBudget objects
+   */
+  const bool operator == (const MyMoneyBudget &) const;
+
 
   // Simple get operations
   const QString& name(void) const { return m_name; }
@@ -179,7 +188,7 @@ public:
   // Simple set operations
   void setName(const QString& _name) { m_name = _name; }
   void setBudgetStart(const QDate& _start);
-  void setAccount(const AccountGroup &_account, const QCString _id) {m_accounts[_id] = _account;}
+  void setAccount(const AccountGroup &_account, const QCString _id);
 
   /**
     * This method writes this Budget to the DOM element @p e,

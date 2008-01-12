@@ -38,6 +38,7 @@
 #include <qradiobutton.h>
 #include <qpainter.h>
 #include <qheader.h>
+#include <qbuttongroup.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -324,7 +325,8 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   KPayeesViewDecl(parent,name),
   m_needReload(false),
   m_needConnection(true),
-  m_updatesQueued(0)
+  m_updatesQueued(0),
+  m_inSelection(false)
 {
   // create the searchline widget
   // and insert it into the existing layout
@@ -341,6 +343,9 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   m_payeesList->addColumn(i18n("Name"));
 
   m_updateButton->setEnabled(false);
+
+  matchKeyEdit->setEnabled(false);
+  checkMatchIgnoreCase->setEnabled(false);
 
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem updateButtenItem( i18n("&Update" ),
@@ -496,7 +501,9 @@ void KPayeesView::slotSelectPayee(void)
     if (KMessageBox::questionYesNo(this,
           i18n("Do you want to discard the changes for '%1'").arg(m_newName),
           i18n("Discard changes")) == KMessageBox::No) {
+      m_inSelection = true;
       slotUpdatePayee();
+      m_inSelection = false;
     }
   }
 
@@ -507,7 +514,8 @@ void KPayeesView::slotSelectPayee(void)
 
   emit selectObjects(payeesList);
 
-  if (payeesList.count() == 0) return; // make sure we don't access an undefined payee
+  if (payeesList.count() == 0)
+    return; // make sure we don't access an undefined payee
 
   // if we have multiple payees selected, clear and disable the payee informations
   if (payeesList.count() > 1) {
@@ -542,21 +550,12 @@ void KPayeesView::slotSelectPayee(void)
     emailEdit->setText(m_payee.email());
 
     QString key;
-    bool ignorecase = true;
-    bool enabled = m_payee.matchData(key,ignorecase);
-    bool namematch = (enabled && (key == m_payee.name()));
+    bool ignorecase = false;
+    MyMoneyPayee::payeeMatchType type = m_payee.matchData(ignorecase, key);
 
-    radioNoMatch->setEnabled(true);
-    radioNoMatch->setChecked(!enabled);
-    radioNameMatch->setEnabled(true);
-    radioNameMatch->setChecked(namematch);
-    radioKeyMatch->setEnabled(true);
-    radioKeyMatch->setChecked(enabled && !namematch);
-    matchKeyEdit->setEnabled(true);
+    m_matchType->setButton(static_cast<int>(type));
     matchKeyEdit->setText(key);
-    checkMatchIgnoreCase->setEnabled(true);
     checkMatchIgnoreCase->setChecked(ignorecase);
-
     slotPayeeDataChanged();
 
     showTransactions();
@@ -698,23 +697,23 @@ void KPayeesView::slotPayeeDataChanged(void)
   rc |= ((m_payee.name().isEmpty() != m_newName.isEmpty())
       || (!m_newName.isEmpty() && m_payee.name() != m_newName));
 
-  bool ignorecase = true;
+  bool ignorecase = false;
   QString key;
-  bool enabled = m_payee.matchData(key,ignorecase);
-  int newradiostate = radioNameMatch->isChecked()?1:0 + radioKeyMatch->isChecked()?2:0;
-  int oldradiostate = (enabled?1:0) + ((enabled && (key != m_payee.name()))?1:0);
 
-  kdDebug(2) << "enabled=" << enabled << " key=" << key << " m_payee.name()==" << m_payee.name() << endl;
-  kdDebug(2) << "radiostates: old=" << oldradiostate << " new=" << newradiostate << endl;
+  MyMoneyPayee::payeeMatchType type = m_payee.matchData(ignorecase, key);
+  rc |= (static_cast<int>(type) != m_matchType->selectedId());
 
-  rc |= (newradiostate != oldradiostate);
+  checkMatchIgnoreCase->setEnabled(false);
+  matchKeyEdit->setEnabled(false);
 
-  if ( enabled )
-  {
+  if(m_matchType->selectedId() != MyMoneyPayee::matchDisabled) {
+    checkMatchIgnoreCase->setEnabled(true);
     rc |= (ignorecase != checkMatchIgnoreCase->isChecked());
-    rc |= (key != m_payee.name() && key != matchKeyEdit->text());
+    if(m_matchType->selectedId() == MyMoneyPayee::matchKey) {
+      matchKeyEdit->setEnabled(true);
+      rc |= (key != matchKeyEdit->text());
+    }
   }
-
   m_updateButton->setEnabled(rc);
 }
 
@@ -728,13 +727,7 @@ void KPayeesView::slotUpdatePayee(void)
       m_payee.setPostcode(postcodeEdit->text());
       m_payee.setTelephone(telephoneEdit->text());
       m_payee.setEmail(emailEdit->text());
-
-      m_payee.setMatchData(
-          !radioNoMatch->isChecked(),
-          radioKeyMatch->isChecked(),
-          checkMatchIgnoreCase->isChecked(),
-          matchKeyEdit->text()
-      );
+      m_payee.setMatchData(static_cast<MyMoneyPayee::payeeMatchType>(m_matchType->selectedId()), checkMatchIgnoreCase->isChecked(), matchKeyEdit->text());
 
       MyMoneyFile::instance()->modifyPayee(m_payee);
       ft.commit();
@@ -793,7 +786,10 @@ void KPayeesView::show(void)
 void KPayeesView::slotLoadPayees(void)
 {
   if(isVisible()) {
-    loadPayees();
+    if(m_inSelection)
+      QTimer::singleShot(0, this, SLOT(slotLoadPayees()));
+    else
+      loadPayees();
   } else {
     m_needReload = true;
   }
@@ -801,6 +797,9 @@ void KPayeesView::slotLoadPayees(void)
 
 void KPayeesView::loadPayees(void)
 {
+  if(m_inSelection)
+    return;
+
   QMap<QCString, bool> isSelected;
   QCString id;
 

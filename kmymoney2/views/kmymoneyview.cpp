@@ -229,7 +229,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_reportsView = new KReportsView(m_reportsViewFrame, "ReportsView");
 
   // Page 9
-  m_budgetViewFrame = addVBoxPage(i18n("Budget"), i18n("Budget"),
+  m_budgetViewFrame = addVBoxPage(i18n("Budgets"), i18n("Budgets"),
     DesktopIcon("budget", iconSize));
   m_budgetView = new KBudgetView(m_budgetViewFrame, "BudgetView");
   connect(kmymoney2, SIGNAL(fileLoaded(const KURL&)), m_budgetView, SLOT(slotRefreshView()));

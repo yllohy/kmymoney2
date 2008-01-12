@@ -116,9 +116,14 @@ protected:
   void resizeEvent(QResizeEvent*);
   void loadAccounts(void);
   bool loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QCStringList& accountList, const MyMoneyBudget& budget);
-  void loadBudget(void);
+
+  /**
+   * This method loads all available budgets into the budget list widget. If a budget is
+   * currently selected it remains selected if it is still present.
+   */
+  void loadBudgets(void);
   void ensureBudgetVisible(const QCString& id);
-  bool selectedBudget(MyMoneyBudget& budget) const;
+  const MyMoneyBudget& selectedBudget(void) const;
   KMyMoneyAccountTreeBudgetItem* selectedAccount(void) const;
   void setTimeSpan(KMyMoneyAccountTreeBudgetItem *account, MyMoneyBudget::AccountGroup& accountGroup, int iTimeSpan);
 
@@ -146,6 +151,8 @@ protected slots:
 
   void AccountEnter();
 
+  void slotUpdateBudget(void);
+
 private slots:
   void slotRearrange(void);
 
@@ -172,17 +179,19 @@ private:
     eMonthByMonth=2
   } eTimePeriodColumn;
 
-  QMap<QCString, MyMoneyAccount>      m_accountMap;
+  MyMoneyBudget                       m_budget;
 
-  QMap<QCString, MyMoneySecurity>     m_securityMap;
   QMap<QCString, unsigned long>       m_transactionCountMap;
   QStringList                         m_yearList;
 
-  KMyMoneyAccountTreeBudgetItem*            m_incomeItem;
-  KMyMoneyAccountTreeBudgetItem*            m_expenseItem;
+  KMyMoneyAccountTreeBudgetItem*      m_incomeItem;
+  KMyMoneyAccountTreeBudgetItem*      m_expenseItem;
 
   /// set if a view needs to be reloaded during show()
   bool                                m_needReload;
+
+  // set if we are in the selection of a different budget
+  bool                                m_inSelection;
 
   static const int m_iBudgetYearsAhead;
   static const int m_iBudgetYearsBack;

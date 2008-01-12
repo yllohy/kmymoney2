@@ -112,6 +112,7 @@ void KBudgetValues::slotClearAllValues(void)
     for(int i=0; i < 12; ++i)
       m_field[i]->setValue(MyMoneyMoney());
   }
+  emit valuesChanged();
 }
 
 void KBudgetValues::slotChangePeriod(int id)
@@ -143,6 +144,7 @@ void KBudgetValues::slotChangePeriod(int id)
       if(!newValue.isZero()) {
         if(KMessageBox::questionYesNo(this, QString("<qt>")+i18n("You have entered budget values using a different base which would result in a monthly budget of <b>%1</b>. Should this value be used to fill the monthly budget?").arg(newValue.formatMoney()), i18n("Auto assignment (caption)", "Auto assignment")+QString("</qt>"), KStdGuiItem::yes(), KStdGuiItem::no(), "use_previous_budget_values") == KMessageBox::Yes) {
           m_amountMonthly->setValue(newValue);
+
         }
       }
     }
@@ -186,6 +188,8 @@ void KBudgetValues::slotChangePeriod(int id)
       }
     }
   }
+
+  emit valuesChanged();
   m_currentTab = tab;
   inside = false;
 }

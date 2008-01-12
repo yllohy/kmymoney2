@@ -307,6 +307,11 @@ private:
     * Counting semaphore to collect updates
     */
   int m_updatesQueued;
+
+  /**
+   * Semaphore to suppress loading during selection
+   */
+  bool m_inSelection;
 };
 
 #endif

@@ -2,7 +2,9 @@
                           mymoneypayee.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
+                           (C) 2008 by Thomas Baumgart
     email                : mte@users.sourceforge.net
+                           ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -13,6 +15,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+// ----------------------------------------------------------------------------
+// QT Includes
+
+// ----------------------------------------------------------------------------
+// Project Includes
 
 #include "mymoneypayee.h"
 #include "mymoneyutils.h"
@@ -58,12 +66,11 @@ MyMoneyPayee::MyMoneyPayee(const QDomElement& node) :
   m_matchingEnabled = node.attribute("matchingenabled","0").toUInt();
   if ( m_matchingEnabled )
   {
-    qDebug("MyMoneyPayee::MyMoneyPayee(const QDomElement& node): Matching enabled for %s",m_name.latin1());
     m_usingMatchKey = node.attribute("usingmatchkey");
-    m_matchKeyIgnoreCase = node.attribute("matchignorecase");
-    m_matchKey = node.attribute("matchkey"); 
+    m_matchKeyIgnoreCase = (node.attribute("matchignorecase") == "1");
+    m_matchKey = node.attribute("matchkey");
   }
-  
+
   QDomNodeList nodeList = node.elementsByTagName("ADDRESS");
   if(nodeList.count() == 0) {
     QString msg = QString("No ADDRESS in payee %1").arg(m_name);
@@ -98,6 +105,10 @@ const bool MyMoneyPayee::operator == (const MyMoneyPayee& right) const
       ((m_postcode.length() == 0 && right.m_postcode.length() == 0) || (m_postcode == right.m_postcode)) &&
       ((m_telephone.length() == 0 && right.m_telephone.length() == 0) || (m_telephone == right.m_telephone)) &&
       ((m_email.length() == 0 && right.m_email.length() == 0) || (m_email == right.m_email)) &&
+      (m_matchingEnabled == right.m_matchingEnabled) &&
+      (m_usingMatchKey == right.m_usingMatchKey) &&
+      (m_matchKeyIgnoreCase == right.m_matchKeyIgnoreCase) &&
+      ((m_matchKey.length() == 0 && right.m_matchKey.length() == 0) || m_matchKey == right.m_matchKey) &&
       ((m_reference.length() == 0 && right.m_reference.length() == 0) || (m_reference == right.m_reference)) );
 }
 
@@ -115,9 +126,9 @@ void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
   {
     el.setAttribute("usingmatchkey", m_usingMatchKey);
     el.setAttribute("matchignorecase", m_matchKeyIgnoreCase);
-    el.setAttribute("matchkey", m_matchKey); 
+    el.setAttribute("matchkey", m_matchKey);
   }
-  
+
   QDomElement address = document.createElement("ADDRESS");
   address.setAttribute("street", m_address);
   address.setAttribute("city", m_city);
@@ -132,40 +143,42 @@ void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
 
 bool MyMoneyPayee::hasReferenceTo(const QCString& id) const
 {
+  Q_UNUSED(id);
+
   // the payee does not reference any other object
   return false;
 }
 
 
-bool MyMoneyPayee::matchData(QString& key, bool& ignorecase) const
+MyMoneyPayee::payeeMatchType MyMoneyPayee::matchData(bool& ignorecase, QString& key) const
 {
+  payeeMatchType type = matchDisabled;
+  key = QString();
+  ignorecase = false;
+
   if ( m_matchingEnabled )
   {
-    if ( m_usingMatchKey )
-      key = m_matchKey;
-    else
-      key = m_name;
-
+    type = m_usingMatchKey ? matchKey : matchName;
     ignorecase = m_matchKeyIgnoreCase;
-    qDebug("MyMoneyPayee::matchData key=%s ignorecase=%i",key.latin1(),ignorecase);
- 
+    if(type == matchKey)
+      key = m_matchKey;
   }
-  
-  qDebug("MyMoneyPayee::matchData returned %i",m_matchingEnabled);
-  return m_matchingEnabled;
+
+  return type;
 }
 
-void MyMoneyPayee::setMatchData(bool enabled, bool usingkey, bool ignorecase, const QString& key)
+void MyMoneyPayee::setMatchData(payeeMatchType type, bool ignorecase, const QString& key)
 {
-  qDebug("MyMoneyPayee::setMatchData(%i,%i,%i,%s",enabled,usingkey,ignorecase,key.latin1());
+  m_matchingEnabled = (type != matchDisabled);
+  m_matchKeyIgnoreCase = false;
+  m_matchKey = QString();
 
-  m_matchingEnabled = enabled;
-  if ( enabled )
+  if ( m_matchingEnabled )
   {
-    m_usingMatchKey = usingkey;
-    if ( usingkey )
-      m_matchKey = key; 
+    m_usingMatchKey = (type == matchKey);
+    if ( m_usingMatchKey )
+      m_matchKey = key;
     m_matchKeyIgnoreCase = ignorecase;
-  } 
+  }
 }
 // vim:cin:si:ai:et:ts=2:sw=2:

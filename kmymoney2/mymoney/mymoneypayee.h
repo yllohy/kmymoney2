@@ -23,8 +23,15 @@
 #include <config.h>
 #endif
 
+// ----------------------------------------------------------------------------
+// QT Includes
+
 #include <qstring.h>
 #include <qcstring.h>
+
+// ----------------------------------------------------------------------------
+// Project Includes
+
 #include <kmymoney/export.h>
 #include <kmymoney/mymoneyobject.h>
 
@@ -51,8 +58,8 @@ private:
   bool m_matchingEnabled;  // Whether this payee should be matched at all
   bool m_usingMatchKey; // If so, whether a key is used (true), or just m_name is used (false)
   bool m_matchKeyIgnoreCase; // Whether to ignore the case of the match key or name
-  QString m_matchKey; 
-  
+  QString m_matchKey;
+
   /**
     * This member keeps a reference to an external database
     * (e.g. kaddressbook). It is the responsability of the
@@ -65,6 +72,12 @@ private:
   QString m_reference;
 
 public:
+  typedef enum {
+    matchDisabled = 0,
+    matchName,
+    matchKey
+  } payeeMatchType;
+
   MyMoneyPayee();
   MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee);
   MyMoneyPayee(const QString& name,
@@ -110,24 +123,23 @@ public:
   /**
    * Get all match data in one call
    *
-   * @param key String which will be replaced by the match key to use for this payee
    * @param ignorecase Bool which will be replaced to indicate whether the match is
    * case-sensitive (false) or case-insensitive (true)
-   * 
-   * @return whether matching is enabled.  If false, the other outputs are not touched
+   * @param key String which will be replaced by the match key to use for this payee
+   *
+   * @return the matching type (see payeeMatchType for details)
    */
-  bool matchData(QString& key, bool& ignorecase) const; 
+  payeeMatchType matchData(bool& ignorecase, QString& key) const;
 
   /**
    * Set all match data in one call
    *
-   * @param enabled Whether matching is enabled at all, if false, all other parameters ignored.
-   * @param usingkey Whether a special key should be used, or false if the name is used
+   * @param type matching type (see payeeMatchType for details)
    * @param ignorecase Whether case should be ignored for the key/name match
    * @param key The key itself, if applicable
    */
-  void setMatchData(bool enabled, bool usingkey, bool ignorecase, const QString& key);
-  
+  void setMatchData(payeeMatchType type, bool ignorecase, const QString& key);
+
   // Copy constructors
   MyMoneyPayee(const MyMoneyPayee&);
 
