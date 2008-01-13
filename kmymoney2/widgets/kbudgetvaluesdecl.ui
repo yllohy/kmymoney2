@@ -339,7 +339,7 @@
                         <cstring>m_yearlyButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Yearly</string>
+                        <string>&amp;Yearly</string>
                     </property>
                 </widget>
                 <widget class="QRadioButton">
@@ -347,7 +347,7 @@
                         <cstring>m_individualButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Individual</string>
+                        <string>I&amp;ndividual</string>
                     </property>
                 </widget>
                 <spacer>
@@ -371,11 +371,16 @@
         </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <tabstops>
     <tabstop>m_monthlyButton</tabstop>
     <tabstop>m_yearlyButton</tabstop>
     <tabstop>m_individualButton</tabstop>
+    <tabstop>m_clearButton</tabstop>
+    <tabstop>m_amount1</tabstop>
     <tabstop>m_amountMonthly</tabstop>
+    <tabstop>m_amountYearly</tabstop>
     <tabstop>m_amount2</tabstop>
     <tabstop>m_amount3</tabstop>
     <tabstop>m_amount4</tabstop>
@@ -387,8 +392,6 @@
     <tabstop>m_amount10</tabstop>
     <tabstop>m_amount11</tabstop>
     <tabstop>m_amount12</tabstop>
-    <tabstop>m_amountYearly</tabstop>
-    <tabstop>m_amount1</tabstop>
 </tabstops>
 <includes>
     <include location="global" impldecl="in implementation">kmymoney/kmymoneyedit.h</include>

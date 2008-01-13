@@ -163,7 +163,7 @@
                                 <cstring>m_buttonNewBudget</cstring>
                             </property>
                             <property name="text">
-                                <string>Ne&amp;w</string>
+                                <string>&amp;New</string>
                             </property>
                         </widget>
                     </vbox>
@@ -235,6 +235,9 @@
                                                     <horstretch>1</horstretch>
                                                     <verstretch>0</verstretch>
                                                 </sizepolicy>
+                                            </property>
+                                            <property name="focusPolicy">
+                                                <enum>NoFocus</enum>
                                             </property>
                                             <property name="readOnly">
                                                 <bool>true</bool>

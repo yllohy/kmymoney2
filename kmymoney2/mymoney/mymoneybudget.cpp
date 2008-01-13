@@ -38,7 +38,7 @@ const int BUDGET_VERSION = 2;
 
 bool MyMoneyBudget::AccountGroup::isZero(void) const
 {
-  return (!m_budgetsubaccounts && balance().isZero());
+  return (!m_budgetsubaccounts && m_budgetlevel == eMonthly && balance().isZero());
 }
 
 const bool MyMoneyBudget::AccountGroup::operator == (const AccountGroup &r) const

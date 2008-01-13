@@ -35,8 +35,8 @@ class QLabel;
 class kMyMoneyEdit;
 
 /**
-	@author Thomas Baumgart <ipwizard@users.sourceforge.net>
-*/
+ * @author Thomas Baumgart <ipwizard@users.sourceforge.net>
+ */
 class KBudgetValues : public KBudgetValuesDecl
 {
   Q_OBJECT
@@ -60,6 +60,11 @@ class KBudgetValues : public KBudgetValuesDecl
      * Values of the other types are unaffected.
      */
     void slotClearAllValues(void);
+
+    /**
+     * Helper slot used to postpone sending the valuesChanged() signal.
+     */
+    void slotNeedUpdate(void);
 
   private:
     kMyMoneyEdit*   m_field[12];

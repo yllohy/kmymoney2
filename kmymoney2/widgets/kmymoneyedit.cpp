@@ -425,10 +425,11 @@ bool kMyMoneyEdit::eventFilter(QObject * /* o */ , QEvent *e )
     if(!m_edit->text().isEmpty() || !allowEmpty)
       ensureFractionalPart();
 
-    if(MyMoneyMoney(m_edit->text()) != MyMoneyMoney(m_text)) {
+    if(MyMoneyMoney(m_edit->text()) != MyMoneyMoney(m_text)
+    && !m_calculator->isVisible()) {
       emit valueChanged(m_edit->text());
-      m_text = m_edit->text();
     }
+    m_text = m_edit->text();
   }
   return rc;
 }
@@ -462,6 +463,7 @@ void kMyMoneyEdit::calculatorOpen(QKeyEvent* k)
   r.moveTopLeft(p);
   m_calculatorFrame->setGeometry(r);
   m_calculatorFrame->show();
+  m_calculator->setFocus();
 }
 
 void kMyMoneyEdit::slotCalculatorResult(void)

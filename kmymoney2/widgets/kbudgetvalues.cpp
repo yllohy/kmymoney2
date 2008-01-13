@@ -23,6 +23,7 @@
 #include <qbuttongroup.h>
 #include <qradiobutton.h>
 #include <qwidgetstack.h>
+#include <qtimer.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -75,10 +76,10 @@ KBudgetValues::KBudgetValues(QWidget* parent, const char* name) :
   slotChangePeriod(m_periodGroup->id(m_monthlyButton));
 
   // connect(m_budgetLevel, SIGNAL(currentChanged(QWidget*)), this, SIGNAL(valuesChanged()));
-  connect(m_amountMonthly, SIGNAL(valueChanged(const QString&)), this, SIGNAL(valuesChanged()));
-  connect(m_amountYearly, SIGNAL(valueChanged(const QString&)), this, SIGNAL(valuesChanged()));
+  connect(m_amountMonthly, SIGNAL(valueChanged(const QString&)), this, SLOT(slotNeedUpdate()));
+  connect(m_amountYearly, SIGNAL(valueChanged(const QString&)), this, SLOT(slotNeedUpdate()));
   for(int i=0; i < 12; ++i)
-    connect(m_field[i], SIGNAL(valueChanged(const QString&)), this, SIGNAL(valuesChanged()));
+    connect(m_field[i], SIGNAL(valueChanged(const QString&)), this, SLOT(slotNeedUpdate()));
 
   connect(m_clearButton, SIGNAL(clicked()), this, SLOT(slotClearAllValues()));
   connect(m_periodGroup, SIGNAL(clicked(int)), this, SLOT(slotChangePeriod(int)));
@@ -189,9 +190,15 @@ void KBudgetValues::slotChangePeriod(int id)
     }
   }
 
-  emit valuesChanged();
+  slotNeedUpdate();
   m_currentTab = tab;
   inside = false;
+}
+
+void KBudgetValues::slotNeedUpdate(void)
+{
+  if(!signalsBlocked())
+    QTimer::singleShot(0, this, SIGNAL(valuesChanged()));
 }
 
 void KBudgetValues::enableMonths(bool enabled)
@@ -216,6 +223,10 @@ void KBudgetValues::setBudgetValues(const MyMoneyBudget& budget, const MyMoneyBu
   MyMoneyBudget::PeriodGroup period;
   m_budgetDate = budget.budgetStart();
   QDate date;
+
+  // make sure all values are zero so that slotChangePeriod()
+  // doesn't check for anything.
+  clear();
 
   blockSignals(true);
   switch(budgetAccount.budgetLevel()) {
