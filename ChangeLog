@@ -1,5 +1,6 @@
 2008-01-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added 'Not marked' as new item to status filter
+  * Show date field when manually updateing prices
 
 2008-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed operator == for MyMoneyPayee to include match parameters

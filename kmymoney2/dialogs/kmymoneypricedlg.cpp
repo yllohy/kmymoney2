@@ -187,6 +187,8 @@ int KMyMoneyPriceDlg::slotEditPrice(void)
                              fract,
                              this, "currencyCalculator");
     // we always want to update the price, that's why we're here
+    calc.m_dateFrame->show();
+    calc.m_dateEdit->setDate(QDate::currentDate());
     calc.m_updateButton->setChecked(true);
     calc.m_updateButton->hide();
 

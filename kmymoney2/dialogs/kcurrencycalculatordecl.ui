@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>KCurrencyCalculatorDecl</class>
 <widget class="QDialog">
     <property name="name">
@@ -11,8 +11,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>454</width>
-            <height>366</height>
+            <width>387</width>
+            <height>368</height>
         </rect>
     </property>
     <property name="caption">
@@ -202,7 +202,7 @@
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
-                <cstring>layout21</cstring>
+                <cstring>layout14</cstring>
             </property>
             <grid>
                 <property name="name">
@@ -244,7 +244,7 @@
                                 <cstring>m_amountButton</cstring>
                             </property>
                             <property name="text">
-                                <string>To amount</string>
+                                <string>To &amp;amount</string>
                             </property>
                         </widget>
                         <widget class="QRadioButton">
@@ -257,31 +257,7 @@
                         </widget>
                     </vbox>
                 </widget>
-                <widget class="kMyMoneyEdit" row="0" column="1">
-                    <property name="name">
-                        <cstring>m_toAmount</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="1">
-                    <property name="name">
-                        <cstring>m_conversionExample</cstring>
-                    </property>
-                    <property name="text">
-                        <string>xx
-xx</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout11</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QFrame">
+                <widget class="QFrame" row="3" column="0" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>m_dateFrame</cstring>
                     </property>
@@ -316,24 +292,21 @@ xx</string>
                         </widget>
                     </hbox>
                 </widget>
-                <spacer>
+                <widget class="QLabel" row="2" column="1">
                     <property name="name">
-                        <cstring>spacer10_2</cstring>
+                        <cstring>m_conversionExample</cstring>
                     </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
+                    <property name="text">
+                        <string>xx
+xx</string>
                     </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
+                </widget>
+                <widget class="kMyMoneyEdit" row="0" column="1">
+                    <property name="name">
+                        <cstring>m_toAmount</cstring>
                     </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>69</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-            </hbox>
+                </widget>
+            </grid>
         </widget>
         <widget class="QCheckBox">
             <property name="name">
@@ -428,6 +401,8 @@ xx</string>
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <tabstops>
     <tabstop>m_amountButton</tabstop>
     <tabstop>m_rateButton</tabstop>
