@@ -1,3 +1,6 @@
+2008-01-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added 'Not marked' as new item to status filter
+
 2008-01-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed operator == for MyMoneyPayee to include match parameters
   * Cleaned up payees view and match parameter handling

@@ -79,6 +79,7 @@ void RegisterSearchLine::init(Register *reg)
   d->combo->insertItem(SmallIcon("run"), i18n("Any status"));
   d->combo->insertItem(SmallIcon("fileimport"), i18n("Imported"));
   d->combo->insertItem(SmallIcon("attention"), i18n("Erroneous"));
+  d->combo->insertItem(i18n("Not marked"));
   d->combo->insertItem(i18n("Not reconciled"));
   d->combo->insertItem(i18n("Cleared"));
   d->combo->setCurrentItem(0);
@@ -179,6 +180,9 @@ bool RegisterSearchLine::itemMatches(const RegisterItem* item, const QString& s)
 {
   const Transaction* t = dynamic_cast<const Transaction*>(item);
   if(t && !t->transaction().id().isEmpty()) {
+    // Keep the case list of the following switch statement
+    // in sync with the logic to fill the combo box in
+    // RegisterSearchLine::init()
     switch(d->status) {
       default:
         break;
@@ -190,13 +194,16 @@ bool RegisterSearchLine::itemMatches(const RegisterItem* item, const QString& s)
         if(t->transaction().splitSum().isZero())
           return false;
         break;
-      case 3:    // Not reconciled
+      case 3:    // Not marked
+        if(t->split().reconcileFlag() != MyMoneySplit::NotReconciled)
+          return false;
+        break;
+      case 4:    // Not reconciled
         if(t->split().reconcileFlag() != MyMoneySplit::NotReconciled
         && t->split().reconcileFlag() != MyMoneySplit::Cleared)
           return false;
         break;
-
-      case 4:    // Cleared
+      case 5:    // Cleared
         if(t->split().reconcileFlag() != MyMoneySplit::Cleared)
           return false;
         break;
