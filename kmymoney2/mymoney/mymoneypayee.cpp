@@ -66,8 +66,8 @@ MyMoneyPayee::MyMoneyPayee(const QDomElement& node) :
   m_matchingEnabled = node.attribute("matchingenabled","0").toUInt();
   if ( m_matchingEnabled )
   {
-    m_usingMatchKey = node.attribute("usingmatchkey");
-    m_matchKeyIgnoreCase = (node.attribute("matchignorecase") == "1");
+    m_usingMatchKey = node.attribute("usingmatchkey","0").toUInt();
+    m_matchKeyIgnoreCase = node.attribute("matchignorecase","0").toUInt();
     m_matchKey = node.attribute("matchkey");
   }
 
