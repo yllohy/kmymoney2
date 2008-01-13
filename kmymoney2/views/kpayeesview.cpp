@@ -348,7 +348,7 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   checkMatchIgnoreCase->setEnabled(false);
 
   KIconLoader* il = KGlobal::iconLoader();
-  KGuiItem updateButtenItem( i18n("&Update" ),
+  KGuiItem updateButtenItem( "",
                     QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Accepts the entered data and stores it"),
                     i18n("Use this to accept the modified data."));
