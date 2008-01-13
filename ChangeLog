@@ -1,5 +1,6 @@
 2008-01-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a bunch of open budget GUI issues
+  * Adapted testcases to latest changes
 
 2008-01-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added 'Not marked' as new item to status filter

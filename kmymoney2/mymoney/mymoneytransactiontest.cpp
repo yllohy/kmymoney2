@@ -39,11 +39,9 @@ void MyMoneyTransactionTest::testEmptyConstructor() {
 void MyMoneyTransactionTest::testSetFunctions() {
 	m->setMemo("Memo");
 	m->setPostDate(QDate(1,2,3));
-	m->setBankID("BankID");
 
 	CPPUNIT_ASSERT(m->postDate() == QDate(1,2,3));
 	CPPUNIT_ASSERT(m->memo() == "Memo");
-	CPPUNIT_ASSERT(m->bankID() == "BankID");
 }
 
 void MyMoneyTransactionTest::testConstructor() {
@@ -54,7 +52,6 @@ void MyMoneyTransactionTest::testConstructor() {
 	CPPUNIT_ASSERT(a.entryDate() == QDate::currentDate());
 	CPPUNIT_ASSERT(a.memo() == "Memo");
 	CPPUNIT_ASSERT(a.postDate() == QDate(1,2,3));
-	CPPUNIT_ASSERT(a.bankID() == "BankID");
 }
 
 void MyMoneyTransactionTest::testCopyConstructor() {
@@ -67,7 +64,6 @@ void MyMoneyTransactionTest::testCopyConstructor() {
 	CPPUNIT_ASSERT(n.entryDate() == QDate::currentDate());
 	CPPUNIT_ASSERT(n.memo() == "Memo");
 	CPPUNIT_ASSERT(n.postDate() == QDate(1,2,3));
-	CPPUNIT_ASSERT(n.bankID() == "BankID");
 	
 }
 
@@ -83,7 +79,6 @@ void MyMoneyTransactionTest::testAssignmentConstructor() {
 	CPPUNIT_ASSERT(n.entryDate() == QDate::currentDate());
 	CPPUNIT_ASSERT(n.memo() == "Memo");
 	CPPUNIT_ASSERT(n.postDate() == QDate(1,2,3));
-	CPPUNIT_ASSERT(n.bankID() == "BankID");
 }
 
 void MyMoneyTransactionTest::testEquality() {
@@ -362,7 +357,6 @@ void MyMoneyTransactionTest::testWriteXML() {
 	t.setPostDate(QDate(2001,12,28));
 	t.setEntryDate(QDate(2003,9,29));
 	t.setId("T000000000000000001");
-	t.setBankID("BID");
 	t.setMemo("Wohnung:Miete");
 	t.setCommodity("EUR");
 	t.setValue("key", "value");
@@ -385,7 +379,7 @@ void MyMoneyTransactionTest::testWriteXML() {
 	QString ref = QString(
                 "<!DOCTYPE TEST>\n"
                 "<TRANSACTION-CONTAINER>\n"
-		" <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		" <TRANSACTION postdate=\"2001-12-28\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"  <SPLITS>\n"
 		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" bankid=\"SPID\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"  </SPLITS>\n"
@@ -406,7 +400,7 @@ void MyMoneyTransactionTest::testReadXML() {
 	QString ref_ok = QString(
                 "<!DOCTYPE TEST>\n"
                 "<TRANSACTION-CONTAINER>\n"
-		" <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		" <TRANSACTION postdate=\"2001-12-28\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"  <SPLITS>\n"
 		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" bankid=\"SPID\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"  </SPLITS>\n"
@@ -420,7 +414,7 @@ void MyMoneyTransactionTest::testReadXML() {
 	QString ref_false = QString(
                 "<!DOCTYPE TEST>\n"
                 "<TRANSACTION-CONTAINER>\n"
-		" <TRANS-ACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		" <TRANS-ACTION postdate=\"2001-12-28\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"  <SPLITS>\n"
 		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" bankid=\"SPID\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"  </SPLITS>\n"
@@ -452,7 +446,6 @@ void MyMoneyTransactionTest::testReadXML() {
 		CPPUNIT_ASSERT(t.m_postDate == QDate(2001,12,28));
 		CPPUNIT_ASSERT(t.m_entryDate == QDate(2003,9,29));
 		CPPUNIT_ASSERT(t.id() == "T000000000000000001");
-		CPPUNIT_ASSERT(t.m_bankID == "BID");
 		CPPUNIT_ASSERT(t.m_memo == "Wohnung:Miete");
 		CPPUNIT_ASSERT(t.m_commodity == "EUR");
 		CPPUNIT_ASSERT(t.pairs().count() == 1);
@@ -470,7 +463,6 @@ void MyMoneyTransactionTest::testHasReferenceTo()
 	t.setPostDate(QDate(2001,12,28));
 	t.setEntryDate(QDate(2003,9,29));
 	t.setId("T000000000000000001");
-	t.setBankID("BID");
 	t.setMemo("Wohnung:Miete");
 	t.setCommodity("EUR");
 	t.setValue("key", "value");

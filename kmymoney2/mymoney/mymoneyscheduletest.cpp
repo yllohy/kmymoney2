@@ -245,7 +245,7 @@ void MyMoneyScheduleTest::testOverdue()
 		"  <PAYMENTS>\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
-		"  <TRANSACTION postdate=\"\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"\" >\n"
+		"  <TRANSACTION postdate=\"\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"\" >\n"
 		"   <SPLITS>\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
@@ -435,7 +435,7 @@ void MyMoneyScheduleTest::testNextPayment()
 		"<SCHEDULE-CONTAINER>\n"
 		"<SCHEDULED_TX startDate=\"2007-02-17\" autoEnter=\"1\" weekendOption=\"2\" lastPayment=\"\" paymentType=\"1\" endDate=\"\" type=\"1\" id=\"SCH000058\" name=\"Car Tax\" fixed=\"1\" occurence=\"16384\" >\n"
 		"  <PAYMENTS/>\n"
-		"  <TRANSACTION postdate=\"\" bankid=\"\" memo=\"\" id=\"\" commodity=\"GBP\" entrydate=\"\" >\n"
+		"  <TRANSACTION postdate=\"\" memo=\"\" id=\"\" commodity=\"GBP\" entrydate=\"\" >\n"
 		"  <SPLITS>\n"
 		"    <SPLIT payee=\"P000044\" reconciledate=\"\" shares=\"-15000/100\" action=\"Withdrawal\" bankid=\"\" number=\"\" reconcileflag=\"0\" memo=\"\" value=\"-15000/100\" account=\"A000155\" />\n"
 		"    <SPLIT payee=\"\" reconciledate=\"\" shares=\"15000/100\" action=\"Withdrawal\" bankid=\"\" number=\"\" reconcileflag=\"0\" memo=\"\" value=\"15000/100\" account=\"A000182\" />\n"
@@ -495,7 +495,7 @@ void MyMoneyScheduleTest::testPaymentDates()
 
 		"<SCHEDULED_TX startDate=\"2003-12-31\" autoEnter=\"1\" weekendOption=\"0\" lastPayment=\"2006-01-31\" paymentType=\"2\" endDate=\"\" type=\"2\" id=\"SCH000032\" name=\"DSL\" fixed=\"0\" occurence=\"32\" >\n"
 		" <PAYMENTS/>\n"
-		" <TRANSACTION postdate=\"2006-02-28\" bankid=\"\" memo=\"\" id=\"\" commodity=\"EUR\" entrydate=\"\" >\n"
+		" <TRANSACTION postdate=\"2006-02-28\" memo=\"\" id=\"\" commodity=\"EUR\" entrydate=\"\" >\n"
 		"  <SPLITS>\n"
 		"   <SPLIT payee=\"P000076\" reconciledate=\"\" shares=\"1200/100\" action=\"Deposit\" bankid=\"\" number=\"\" reconcileflag=\"0\" memo=\"\" value=\"1200/100\" account=\"A000076\" />\n"
 		"   <SPLIT payee=\"\" reconciledate=\"\" shares=\"-1200/100\" action=\"Deposit\" bankid=\"\" number=\"\" reconcileflag=\"0\" memo=\"\" value=\"-1200/100\" account=\"A000009\" />\n"
@@ -623,7 +623,6 @@ void MyMoneyScheduleTest::testWriteXML() {
 	t.setPostDate(QDate(2001,12,28));
 	t.setEntryDate(QDate(2003,9,29));
 	t.setId("T000000000000000001");
-	t.setBankID("BID");
 	t.setMemo("Wohnung:Miete");
 	t.setCommodity("EUR");
 	t.setValue("key", "value");
@@ -660,7 +659,7 @@ void MyMoneyScheduleTest::testWriteXML() {
 		"  <PAYMENTS>\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
-		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		"  <TRANSACTION postdate=\"2001-12-28\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"   <SPLITS>\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" bankid=\"SPID1\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" bankid=\"SPID2\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
@@ -688,7 +687,7 @@ void MyMoneyScheduleTest::testReadXML() {
 		"  <PAYMENTS>\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
-		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		"  <TRANSACTION postdate=\"2001-12-28\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"   <SPLITS>\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" bankid=\"SPID1\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" bankid=\"SPID2\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
@@ -712,7 +711,7 @@ void MyMoneyScheduleTest::testReadXML() {
 		"  <PAYMENTS>\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
-		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"\" >\n"
+		"  <TRANSACTION postdate=\"2001-12-28\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"\" >\n"
 		"   <SPLITS>\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" bankid=\"SPID1\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" bankid=\"SPID2\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
@@ -734,7 +733,7 @@ void MyMoneyScheduleTest::testReadXML() {
 		"  <PAYMENTS count=\"1\" >\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
-		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		"  <TRANSACTION postdate=\"2001-12-28\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"   <SPLITS>\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" bankid=\"SPID1\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" bankid=\"SPID2\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
@@ -824,7 +823,7 @@ void MyMoneyScheduleTest::testHasReferenceTo()
 		"  <PAYMENTS>\n"
 		"   <PAYMENT date=\"%3\" />\n"
 		"  </PAYMENTS>\n"
-		"  <TRANSACTION postdate=\"2001-12-28\" bankid=\"BID\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
+		"  <TRANSACTION postdate=\"2001-12-28\" memo=\"Wohnung:Miete\" id=\"\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"   <SPLITS>\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
 		"    <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"-96379/100\" action=\"\" number=\"\" reconcileflag=\"1\" memo=\"\" value=\"-96379/100\" account=\"A000276\" />\n"
