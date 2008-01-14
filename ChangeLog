@@ -1,3 +1,6 @@
+2008-01-14 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Fix desktop file errors
+
 2008-01-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a bunch of reported budget GUI issues
   * Replace KMyMoneySettings with KMyMoneyGlobalSettings
