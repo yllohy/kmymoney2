@@ -1,6 +1,7 @@
 2008-01-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a bunch of reported budget GUI issues
   * Replace KMyMoneySettings with KMyMoneyGlobalSettings
+  * Added searchline widget to schedules view
 
 2008-01-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a bunch of open budget GUI issues

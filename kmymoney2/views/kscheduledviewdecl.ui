@@ -113,7 +113,7 @@
             </property>
             <widget class="QWidget">
                 <property name="name">
-                    <cstring>listTab</cstring>
+                    <cstring>m_listTab</cstring>
                 </property>
                 <attribute name="title">
                     <string>List View</string>
@@ -121,6 +121,9 @@
                 <vbox>
                     <property name="name">
                         <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
                     </property>
                     <widget class="KListView">
                         <property name="name">
@@ -134,7 +137,7 @@
             </widget>
             <widget class="QWidget">
                 <property name="name">
-                    <cstring>calendarTab</cstring>
+                    <cstring>m_calendarTab</cstring>
                 </property>
                 <attribute name="title">
                     <string>Calendar View</string>

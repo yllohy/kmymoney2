@@ -41,8 +41,8 @@
 #include "../kmymoneyglobalsettings.h"
 #include "../kmymoneyutils.h"
 
-KScheduledListItem::KScheduledListItem(KListView *parent, const QString& name)
- : KListViewItem(parent,name)/*, m_even(false)*/, m_base(true)
+KScheduledListItem::KScheduledListItem(KListView *parent, const QString& name) :
+  KListViewItem(parent,name)
 {
   if (name == i18n("Bills"))
     setPixmap(0, KMyMoneyUtils::billScheduleIcon(KIcon::Small));
@@ -55,15 +55,13 @@ KScheduledListItem::KScheduledListItem(KListView *parent, const QString& name)
 }
 
 KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule/*, bool even*/)
- : KListViewItem(parent), m_base(false)
+ : KListViewItem(parent)
 {
   m_schedule = schedule;
   setPixmap(0, KMyMoneyUtils::scheduleIcon(KIcon::Small));
 
-//  m_even = even;
   try
   {
-    m_id = schedule.id();
     MyMoneyTransaction transaction = schedule.transaction();
     MyMoneySplit s1 = transaction.splits()[0];
     MyMoneySplit s2 = transaction.splits()[1];
@@ -163,8 +161,6 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
 {
   QColorGroup cg2(cg);
 
-  QColor colour = KMyMoneyGlobalSettings::listColor();
-  QColor bgColour = KMyMoneyGlobalSettings::listBGColor();
   QColor textColour = KGlobalSettings::textColor();
   QFont cellFont = KMyMoneyGlobalSettings::listCellFont();
 
@@ -174,159 +170,20 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
       textColour = Qt::darkGreen;
     else if (m_schedule.isOverdue())
       textColour = Qt::red;
-    // else
-    //   keep the same colour
   }
 
-  p->setFont(cellFont);
   cg2.setColor(QColorGroup::Text, textColour);
 
-  if (m_base)
-  {
-    QFont font(p->font());
-    font.setBold(true);
-    p->setFont(font);
-  }
+  // display group items in bold
+  if (!parent())
+    cellFont.setBold(true);
+
+  p->setFont(cellFont);
 
   if (isAlternate())
-  {
-    cg2.setColor(QColorGroup::Base, colour);
-  }
+    cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listColor());
   else
-  {
-    cg2.setColor(QColorGroup::Base, bgColour);
-  }
+    cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
 
   QListViewItem::paintCell(p, cg2, column, width, align);
-
-  if (column == 0)
-  {
-    int ts = listView()->treeStepSize();
-    int indent = ts * (depth()+1);
-    p->save();
-    p->translate(-indent, 0);
-
-    paintBranches(p, cg, 0, 0, 0);
-
-    p->restore();
-  }
-}
-
-void KScheduledListItem::paintBranches(QPainter* p, const QColorGroup& cg, int/* w*/, int/* y*/, int/* h*/)
-// void KScheduledListItem::paintBranches(QPainter* p, const QColorGroup& cg, int w, int y, int h)
-{
-  // qDebug("paintBranches(%d,%d,%d)", w, y, h);
-  QColorGroup cg2(cg);
-
-  QColor colour = KMyMoneyGlobalSettings::listColor();
-  QColor bgColour = KMyMoneyGlobalSettings::listBGColor();
-
-  if (isAlternate())
-  {
-    cg2.setColor(QColorGroup::Base, colour);
-  }
-  else
-  {
-    cg2.setColor(QColorGroup::Base, bgColour);
-  }
-
-  int ts = listView()->treeStepSize();
-  int ofs;
-  int indent = ts * (depth()+1);
-
-  if ( isSelected()) {
-    p->fillRect( 0, 0, indent, height(), cg2.brush( QColorGroup::Highlight ) );
-    if ( isEnabled() || !listView() )
-      p->setPen( cg2.highlightedText() );
-    else if ( !isEnabled() && listView())
-      p->setPen( listView()->palette().disabled().highlightedText() );
-
-  } else
-    p->fillRect( 0, 0, indent, height(), cg2.base() );
-
-  // draw dotted lines in upper levels to the left of us
-  QListViewItem *parent = this;
-  for(int j = depth()-1; j >= 0; --j) {
-    if(!parent)
-      break;
-    parent = parent->parent();
-    if(parent->nextSibling()) {
-      ofs = (j * ts) + ts/2 - 1;
-      for(int j = 0; j < height(); j += 2)
-        p->drawPoint(ofs, j);
-    }
-  }
-
-  if(childCount() == 0) {
-    // if we have no children, the we need to draw a vertical line
-    // which length depends if we have a sibling or not.
-    // also a horizontal line to the right is required.
-    ofs = depth()*ts + ts/2 - 1;
-    int end = nextSibling() ? height() : height()/2;
-    for(int i = 0; i < end; i += 2)
-      p->drawPoint(ofs, i);
-
-    for(int i = ofs; i < (depth()+1)*ts; i += 2)
-      p->drawPoint(i, height()/2);
-
-  } else {
-    // draw upper part of vertical line
-    ofs = depth()*ts + ts/2 - 1;
-    for(int i = 0; i < height()/2-(ts-2)/4; i += 2)
-      p->drawPoint(ofs, i);
-
-    // draw horizontal part
-    for(int i = ofs + ts/4 ; i < (depth()+1)*ts; i += 2)
-      p->drawPoint(i, height()/2);
-
-    // need to draw box with +/- in it
-    ofs = depth() * ts;
-    p->drawRect( ofs + ts/4, height() / 2 - (ts-2)/4, (ts-2)/2, (ts-2)/2 );
-    p->drawLine( ofs + ts/2-3, height() / 2, ofs + ts/2+1, height() / 2 );
-    if ( !isOpen() )
-        p->drawLine( ofs + ts/2-1, height() / 2 - 2, ofs + ts/2-1, height() / 2 + 2 );
-
-    // if there are more siblings, we need to draw
-    // the remainder of the vertical line
-    if(nextSibling()) {
-      ofs = depth()*ts + ts/2 - 1;
-      for(int i = height() / 2 + (ts-2)/4; i < height(); i += 2)
-        p->drawPoint(ofs, i);
-    }
-  }
-}
-
-void KScheduledListItem::paintFocus(QPainter* p, const QColorGroup& cg, const QRect& r)
-{
-  QColorGroup cg2(cg);
-
-  KConfig *config = KGlobal::config();
-  config->setGroup("List Options");
-
-  QColor textColour = cg2.highlightedText();
-  textColour = config->readColorEntry("listGridColor", &textColour);
-
-  if (m_schedule.isFinished())
-    textColour = Qt::darkGreen;
-  else if (m_schedule.isOverdue())
-    textColour = Qt::red;
-
-  cg2.setColor(QColorGroup::HighlightedText, textColour);
-
-  int indent = listView()->treeStepSize() * (depth()+1);
-
-  QRect r2(r);
-  r2.setLeft(r2.left() + -indent);
-  if (isSelected())
-    p->fillRect(  r2.left(),
-                  r2.top(),
-                  -indent,
-                  r2.height(),
-                  cg2.highlight());
-
-  listView()->style().drawPrimitive(
-                QStyle::PE_FocusRect, p, r2, cg2,
-                (isSelected() ? QStyle::Style_FocusAtBorder : QStyle::Style_Default),
-                QStyleOption(isSelected() ? cg2.highlight() : cg2.base()));
-
 }

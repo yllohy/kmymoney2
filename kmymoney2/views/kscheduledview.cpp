@@ -41,6 +41,7 @@
 #include <kmessagebox.h>
 #include <klistview.h>
 #include <kpushbutton.h>
+#include <klistviewsearchline.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -54,13 +55,18 @@
 
 #include "../kmymoney2.h"
 
-KScheduledView::KScheduledView(QWidget *parent, const char *name )
- : KScheduledViewDecl(parent,name, false),
- m_openBills(true),
- m_openDeposits(true),
- m_openTransfers(true),
- m_openLoans(true)
+KScheduledView::KScheduledView(QWidget *parent, const char *name ) :
+  KScheduledViewDecl(parent,name, false),
+  m_openBills(true),
+  m_openDeposits(true),
+  m_openTransfers(true),
+  m_openLoans(true)
 {
+  // create the searchline widget
+  // and insert it into the existing layout
+  m_searchWidget = new KListViewSearchLineWidget(m_qlistviewScheduled, m_listTab);
+  m_listTabLayout->insertWidget(0, m_searchWidget);
+
   m_qlistviewScheduled->setRootIsDecorated(true);
   m_qlistviewScheduled->addColumn(i18n("Type/Name"));
   m_qlistviewScheduled->addColumn(i18n("Account"));
@@ -89,8 +95,8 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name )
   m_accountsCombo->setGuiItem(KMyMoneyUtils::accountsFilterGuiItem());
 
   KIconLoader *il = KGlobal::iconLoader();
-  m_tabWidget->setTabIconSet(listTab, QIconSet(il->loadIcon("contents", KIcon::Small, KIcon::SizeSmall)));
-  m_tabWidget->setTabIconSet(calendarTab, QIconSet(il->loadIcon("calendartab", KIcon::User, KIcon::SizeSmall)));
+  m_tabWidget->setTabIconSet(m_listTab, QIconSet(il->loadIcon("contents", KIcon::Small, KIcon::SizeSmall)));
+  m_tabWidget->setTabIconSet(m_calendarTab, QIconSet(il->loadIcon("calendartab", KIcon::User, KIcon::SizeSmall)));
 
   readConfig();
 
@@ -381,7 +387,7 @@ void KScheduledView::slotListItemExecuted(QListViewItem* item, const QPoint&, in
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(scheduleId);
 
       m_calendar->setDate(schedule.nextDueDate());
-      m_tabWidget->showPage(calendarTab);
+      m_tabWidget->showPage(m_calendarTab);
       m_selectedSchedule = schedule.id();
     }
   } catch (MyMoneyException *e)
@@ -456,6 +462,7 @@ void KScheduledView::slotListViewCollapsed(QListViewItem* item)
       m_openLoans = false;
   }
 }
+
 void KScheduledView::slotSelectSchedule(const QCString& schedule)
 {
   refresh(true, schedule);
@@ -463,6 +470,8 @@ void KScheduledView::slotSelectSchedule(const QCString& schedule)
 
 void KScheduledView::slotBriefEnterClicked(const MyMoneySchedule& schedule, const QDate& date)
 {
+  Q_UNUSED(date);
+
   emit scheduleSelected(schedule);
   emit enterSchedule();
 }

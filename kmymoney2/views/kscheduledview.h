@@ -24,14 +24,18 @@
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
 #include <qwidget.h>
 #include <qlistview.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+class KListViewSearchLineWidget;
+
 // ----------------------------------------------------------------------------
 // Project Includes
+
 #include "kscheduledviewdecl.h"
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/mymoneyaccount.h>
@@ -45,7 +49,7 @@ class KPopupMenu;
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.28 2007/08/24 09:01:12 ipwizard Exp $
+  * $Id: kscheduledview.h,v 1.29 2008/01/14 13:30:00 ipwizard Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -146,6 +150,11 @@ private:
   bool m_openTransfers;
   bool m_openLoans;
   bool m_needReload;
+
+  /**
+   * Search widget for the list
+   */
+  KListViewSearchLineWidget*  m_searchWidget;
 };
 
 #endif
