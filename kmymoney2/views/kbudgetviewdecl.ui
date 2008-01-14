@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>973</width>
+            <width>957</width>
             <height>610</height>
         </rect>
     </property>
@@ -104,7 +104,7 @@
                         </property>
                         <widget class="QLayoutWidget">
                             <property name="name">
-                                <cstring>layout10</cstring>
+                                <cstring>layout8</cstring>
                             </property>
                             <hbox>
                                 <property name="name">
@@ -112,18 +112,57 @@
                                 </property>
                                 <widget class="KPushButton">
                                     <property name="name">
-                                        <cstring>m_buttonEditBudget</cstring>
+                                        <cstring>m_newButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>E&amp;dit</string>
+                                        <string>&amp;New</string>
                                     </property>
                                 </widget>
                                 <widget class="KPushButton">
                                     <property name="name">
-                                        <cstring>m_buttonDeleteBudget</cstring>
+                                        <cstring>m_renameButton</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>De&amp;lete</string>
+                                        <string>&amp;Ren</string>
+                                    </property>
+                                </widget>
+                                <widget class="KPushButton">
+                                    <property name="name">
+                                        <cstring>m_deleteButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Del</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string></string>
+                                    </property>
+                                </widget>
+                                <widget class="KPushButton">
+                                    <property name="name">
+                                        <cstring>m_resetButton</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>false</bool>
+                                    </property>
+                                    <property name="text">
+                                        <string>Res</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string></string>
+                                    </property>
+                                </widget>
+                                <widget class="KPushButton">
+                                    <property name="name">
+                                        <cstring>m_updateButton</cstring>
+                                    </property>
+                                    <property name="enabled">
+                                        <bool>false</bool>
+                                    </property>
+                                    <property name="text">
+                                        <string>Upd</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string></string>
                                     </property>
                                 </widget>
                             </hbox>
@@ -157,63 +196,6 @@
                             <property name="shadeSortColumn">
                                 <bool>false</bool>
                             </property>
-                        </widget>
-                        <widget class="KPushButton">
-                            <property name="name">
-                                <cstring>m_buttonNewBudget</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;New</string>
-                            </property>
-                        </widget>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout8</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <spacer>
-                                    <property name="name">
-                                        <cstring>spacer3</cstring>
-                                    </property>
-                                    <property name="orientation">
-                                        <enum>Horizontal</enum>
-                                    </property>
-                                    <property name="sizeType">
-                                        <enum>Expanding</enum>
-                                    </property>
-                                    <property name="sizeHint">
-                                        <size>
-                                            <width>21</width>
-                                            <height>20</height>
-                                        </size>
-                                    </property>
-                                </spacer>
-                                <widget class="KPushButton">
-                                    <property name="name">
-                                        <cstring>m_resetButton</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>false</bool>
-                                    </property>
-                                    <property name="text">
-                                        <string></string>
-                                    </property>
-                                </widget>
-                                <widget class="KPushButton">
-                                    <property name="name">
-                                        <cstring>m_updateButton</cstring>
-                                    </property>
-                                    <property name="enabled">
-                                        <bool>false</bool>
-                                    </property>
-                                    <property name="text">
-                                        <string></string>
-                                    </property>
-                                </widget>
-                            </hbox>
                         </widget>
                     </vbox>
                 </widget>

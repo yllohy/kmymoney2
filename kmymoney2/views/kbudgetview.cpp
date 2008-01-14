@@ -102,16 +102,40 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
   m_accountTree->setSorting(-1);
 
   KIconLoader* il = KGlobal::iconLoader();
+  KGuiItem newButtenItem( i18n("" ),
+                             QIconSet(il->loadIcon("file_new", KIcon::Small, KIcon::SizeSmall)),
+                             i18n("Creates a new budget"),
+                             i18n("Use this to create a new emtpy budget."));
+  m_newButton->setGuiItem(newButtenItem);
+  QToolTip::add(m_newButton, newButtenItem.toolTip());
+
+  KGuiItem renameButtenItem( i18n("" ),
+                          QIconSet(il->loadIcon("editpaste", KIcon::Small, KIcon::SizeSmall)),
+                          i18n("Rename the current selected budget"),
+                          i18n("Use this to start renaming the selected budget."));
+  m_renameButton->setGuiItem(renameButtenItem);
+  QToolTip::add(m_renameButton, renameButtenItem.toolTip());
+
+  KGuiItem deleteButtenItem( i18n("" ),
+                             QIconSet(il->loadIcon("editdelete", KIcon::Small, KIcon::SizeSmall)),
+                             i18n("Delete the current selected budget"),
+                             i18n("Use this to delete the selected budget."));
+  m_deleteButton->setGuiItem(deleteButtenItem);
+  QToolTip::add(m_deleteButton, deleteButtenItem.toolTip());
+
   KGuiItem updateButtenItem( i18n("" ),
                              QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
                              i18n("Accepts the entered values and stores the budget"),
                              i18n("Use this to store the modified data."));
   m_updateButton->setGuiItem(updateButtenItem);
+  QToolTip::add(m_updateButton, updateButtenItem.toolTip());
+
   KGuiItem resetButtenItem( i18n("" ),
                              QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
                              i18n("Revert budget to last saved state"),
                              i18n("Use this to discard the modified data."));
   m_resetButton->setGuiItem(resetButtenItem);
+  QToolTip::add(m_resetButton, resetButtenItem.toolTip());
 
 
   connect(m_budgetList, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
@@ -125,25 +149,23 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
 
   // connect the buttons to the actions. Make sure the enabled state
   // of the actions is reflected by the buttons
-  connect(m_buttonNewBudget, SIGNAL(clicked()), kmymoney2->action("budget_new"), SLOT(activate()));
-  connect(kmymoney2->action("budget_new"), SIGNAL(enabled(bool)), m_buttonNewBudget, SLOT(setEnabled(bool)));
-  connect(m_buttonEditBudget, SIGNAL(clicked()), kmymoney2->action("budget_rename"), SLOT(activate()));
-  connect(kmymoney2->action("budget_rename"), SIGNAL(enabled(bool)), m_buttonEditBudget, SLOT(setEnabled(bool)));
-  connect(m_buttonDeleteBudget, SIGNAL(clicked()), kmymoney2->action("budget_delete"), SLOT(activate()));
-  connect(kmymoney2->action("budget_delete"), SIGNAL(enabled(bool)), m_buttonDeleteBudget, SLOT(setEnabled(bool)));
+  connect(m_newButton, SIGNAL(clicked()), kmymoney2->action("budget_new"), SLOT(activate()));
+  connect(kmymoney2->action("budget_new"), SIGNAL(enabled(bool)), m_newButton, SLOT(setEnabled(bool)));
+  connect(m_renameButton, SIGNAL(clicked()), kmymoney2->action("budget_rename"), SLOT(activate()));
+  connect(kmymoney2->action("budget_rename"), SIGNAL(enabled(bool)), m_renameButton, SLOT(setEnabled(bool)));
+  connect(m_deleteButton, SIGNAL(clicked()), kmymoney2->action("budget_delete"), SLOT(activate()));
+  connect(kmymoney2->action("budget_delete"), SIGNAL(enabled(bool)), m_deleteButton, SLOT(setEnabled(bool)));
 
   connect(m_budgetValue, SIGNAL(valuesChanged()), this, SLOT(slotBudgetedAmountChanged()));
 
   connect(m_updateButton, SIGNAL(pressed()), this, SLOT(slotUpdateBudget()));
-  QToolTip::add(m_updateButton, updateButtenItem.toolTip());
 
   connect(m_resetButton, SIGNAL(pressed()), this, SLOT(slotResetBudget()));
-  QToolTip::add(m_resetButton, resetButtenItem.toolTip());
 
   // setup initial state
-  m_buttonNewBudget->setEnabled(kmymoney2->action("budget_new")->isEnabled());
-  m_buttonEditBudget->setEnabled(kmymoney2->action("budget_rename")->isEnabled());
-  m_buttonDeleteBudget->setEnabled(kmymoney2->action("budget_delete")->isEnabled());
+  m_newButton->setEnabled(kmymoney2->action("budget_new")->isEnabled());
+  m_renameButton->setEnabled(kmymoney2->action("budget_rename")->isEnabled());
+  m_deleteButton->setEnabled(kmymoney2->action("budget_delete")->isEnabled());
 
   // make sure to use the previous settings. If no settings are found
   // we use equal distribution of all fields as an initial setting
