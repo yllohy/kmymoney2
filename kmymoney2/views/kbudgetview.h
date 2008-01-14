@@ -153,6 +153,8 @@ protected slots:
 
   void slotUpdateBudget(void);
 
+  void slotResetBudget(void);
+
 private slots:
   void slotRearrange(void);
 

@@ -24,6 +24,7 @@
 #include <qradiobutton.h>
 #include <qwidgetstack.h>
 #include <qtimer.h>
+#include <qtooltip.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -33,6 +34,7 @@
 #include <kcalendarsystem.h>
 #include <kmessagebox.h>
 #include <kpushbutton.h>
+#include <kstdguiitem.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -84,7 +86,11 @@ KBudgetValues::KBudgetValues(QWidget* parent, const char* name) :
   connect(m_clearButton, SIGNAL(clicked()), this, SLOT(slotClearAllValues()));
   connect(m_periodGroup, SIGNAL(clicked(int)), this, SLOT(slotChangePeriod(int)));
 
-  m_clearButton->setGuiItem(KStdGuiItem::clear());
+  KGuiItem clearItem(KStdGuiItem::clear());
+
+  m_clearButton->setGuiItem(clearItem);
+  m_clearButton->setText("");
+  QToolTip::add(m_clearButton, clearItem.toolTip());
 }
 
 

@@ -29,6 +29,7 @@
 #include <qlistbox.h>
 #include <qcheckbox.h>
 #include <qgroupbox.h>
+#include <qtooltip.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -106,9 +107,14 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem updateButtenItem( i18n("" ),
                              QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
-                             i18n("Accepts the entered data and stores it"),
-                             i18n("Use this to accept the modified data."));
+                             i18n("Accepts the entered values and stores the budget"),
+                             i18n("Use this to store the modified data."));
   m_updateButton->setGuiItem(updateButtenItem);
+  KGuiItem resetButtenItem( i18n("" ),
+                             QIconSet(il->loadIcon("undo", KIcon::Small, KIcon::SizeSmall)),
+                             i18n("Revert budget to last saved state"),
+                             i18n("Use this to discard the modified data."));
+  m_resetButton->setGuiItem(resetButtenItem);
 
 
   connect(m_budgetList, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
@@ -132,6 +138,10 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
   connect(m_budgetValue, SIGNAL(valuesChanged()), this, SLOT(slotBudgetedAmountChanged()));
 
   connect(m_updateButton, SIGNAL(pressed()), this, SLOT(slotUpdateBudget()));
+  QToolTip::add(m_updateButton, updateButtenItem.toolTip());
+
+  connect(m_resetButton, SIGNAL(pressed()), this, SLOT(slotResetBudget()));
+  QToolTip::add(m_resetButton, resetButtenItem.toolTip());
 
   // setup initial state
   m_buttonNewBudget->setEnabled(kmymoney2->action("budget_new")->isEnabled());
@@ -198,6 +208,7 @@ void KBudgetView::loadBudgets(void)
 
   // clear the budget list
   m_budgetList->clear();
+  m_budgetValue->clear();
 
   // add the correct years to the drop down list
   QDate date = QDate::currentDate(Qt::LocalTime);
@@ -238,6 +249,10 @@ void KBudgetView::loadBudgets(void)
   m_budgetList->setUpdatesEnabled(true);
   m_budgetList->repaintContents();
   m_budgetList->setSorting(-1);
+
+  // reset the status of the buttons
+  m_updateButton->setEnabled(false);
+  m_resetButton->setEnabled(false);
 
   // make sure the world around us knows what we have selected
   slotSelectBudget();
@@ -294,6 +309,7 @@ void KBudgetView::loadAccounts(void)
     m_accountTree->clear();
     m_budgetValue->clear();
     m_updateButton->setEnabled(false);
+    m_resetButton->setEnabled(false);
     ::timetrace("done load budgets view");
     return;
   }
@@ -377,6 +393,7 @@ void KBudgetView::loadAccounts(void)
   m_accountTree->repaintContents();
 
   m_updateButton->setEnabled(!(selectedBudget() == m_budget));
+  m_resetButton->setEnabled(!(selectedBudget() == m_budget));
 
   ::timetrace("done load budgets view");
 }
@@ -662,6 +679,18 @@ void KBudgetView::cb_includesSubaccounts_clicked()
     m_budget.setAccount( auxAccount, accountID);
 
     loadAccounts();
+  }
+}
+
+void KBudgetView::slotResetBudget(void)
+{
+  try {
+    m_budget = MyMoneyFile::instance()->budget(m_budget.id());
+    loadAccounts();
+  } catch(MyMoneyException *e) {
+    KMessageBox::detailedSorry(0, i18n("Unable to reset budget"),
+                               (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
+    delete e;
   }
 }
 
