@@ -388,14 +388,14 @@ void KGlobalLedgerView::loadView(void)
 
     if(isReconciliationAccount()) {
       key = "kmm-sort-reconcile";
-      sortOrder = KMyMoneySettings::sortReconcileView();
+      sortOrder = KMyMoneyGlobalSettings::sortReconcileView();
       filter.addState(MyMoneyTransactionFilter::notReconciled);
       filter.addState(MyMoneyTransactionFilter::cleared);
     } else {
-      filter.setDateFilter(KMyMoneySettings::startDate().date(), QDate());
+      filter.setDateFilter(KMyMoneyGlobalSettings::startDate().date(), QDate());
       key = "kmm-sort-std";
-      sortOrder = KMyMoneySettings::sortNormalView();
-      if (KMyMoneySettings::hideReconciledTransactions()) {
+      sortOrder = KMyMoneyGlobalSettings::sortNormalView();
+      if (KMyMoneyGlobalSettings::hideReconciledTransactions()) {
         filter.addState(MyMoneyTransactionFilter::notReconciled);
         filter.addState(MyMoneyTransactionFilter::cleared);
       }
@@ -941,7 +941,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
     if(editor) {
       if(parent == m_register) {
         // make sure, the height of the table is correct
-        m_register->updateRegister(KMyMoneySettings::ledgerLens() | !KMyMoneySettings::transactionForm());
+        m_register->updateRegister(KMyMoneyGlobalSettings::ledgerLens() | !KMyMoneyGlobalSettings::transactionForm());
       }
 
       m_inEditMode = true;
@@ -1130,10 +1130,10 @@ void KGlobalLedgerView::slotSortOptions(void)
   QString sortOrder, def;
   if(isReconciliationAccount()) {
     key = "kmm-sort-reconcile";
-    def = KMyMoneySettings::sortReconcileView();
+    def = KMyMoneyGlobalSettings::sortReconcileView();
   } else {
     key = "kmm-sort-std";
-    def = KMyMoneySettings::sortNormalView();
+    def = KMyMoneyGlobalSettings::sortNormalView();
   }
 
   // check if we have an account override of the sort order

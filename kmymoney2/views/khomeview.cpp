@@ -55,7 +55,7 @@
 // Project Includes
 #include "khomeview.h"
 #include "../kmymoneyutils.h"
-#include "../kmymoneysettings.h"
+#include "../kmymoneyglobalsettings.h"
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneyforecast.h"
 #include "../kmymoney2.h"
@@ -710,7 +710,7 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
 
   QString fontStart, fontEnd;
   if(value.isNegative()) {
-    QColor x = KMyMoneySettings::listNegativeValueColor();
+    QColor x = KMyMoneyGlobalSettings::listNegativeValueColor();
     fontStart.sprintf("<font color=\"#%02x%02x%02x\">", x.red(), x.green(), x.blue());
     fontEnd = "</font>";
   }

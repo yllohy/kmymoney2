@@ -527,7 +527,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
   aSet.addAccountType(MyMoneyAccount::Asset);
   aSet.addAccountType(MyMoneyAccount::Currency);
   aSet.addAccountType(MyMoneyAccount::CreditCard);
-  if(KMyMoneySettings::expertMode() || haveEquityAccount)
+  if(KMyMoneyGlobalSettings::expertMode() || haveEquityAccount)
     aSet.addAccountGroup(MyMoneyAccount::Equity);
   aSet.load(asset->selector());
 

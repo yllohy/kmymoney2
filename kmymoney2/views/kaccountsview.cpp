@@ -295,7 +295,7 @@ void KAccountsView::loadIconView(void)
     KMyMoneyAccountIconItem* item;
     switch((*it).accountGroup()) {
       case MyMoneyAccount::Equity:
-        if(!KMyMoneySettings::expertMode())
+        if(!KMyMoneyGlobalSettings::expertMode())
           continue;
         // tricky fall through here
 
@@ -409,7 +409,7 @@ void KAccountsView::loadListView(void)
     KMyMoneyAccountTreeItem *expenseItem = new KMyMoneyAccountTreeItem(m_accountTree, expense, security, i18n("Expense"));
     m_haveUnusedCategories |= loadSubAccounts(expenseItem, expense.accountList());
 
-    if(KMyMoneySettings::expertMode()) {
+    if(KMyMoneyGlobalSettings::expertMode()) {
       const MyMoneyAccount& equity = file->equity();
       KMyMoneyAccountTreeItem *equityItem = new KMyMoneyAccountTreeItem(m_accountTree, equity, security, i18n("Equity"));
       loadSubAccounts(equityItem, equity.accountList());
@@ -492,7 +492,7 @@ bool KAccountsView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCStr
     // In case of a category which is unused and we are requested to suppress
     // the display of those,
     if(acc.isIncomeExpense()) {
-      if(KMyMoneySettings::hideUnusedCategory() && thisUnused) {
+      if(KMyMoneyGlobalSettings::hideUnusedCategory() && thisUnused) {
         unused = true;
         delete item;
       }

@@ -118,7 +118,7 @@ KScheduledView::~KScheduledView()
 
 void KScheduledView::refresh(bool full, const QCString schedId)
 {
-  m_qlistviewScheduled->header()->setFont(KMyMoneySettings::listHeaderFont());
+  m_qlistviewScheduled->header()->setFont(KMyMoneyGlobalSettings::listHeaderFont());
 
   m_qlistviewScheduled->clear();
 
@@ -320,7 +320,7 @@ void KScheduledView::readConfig(void)
   m_openTransfers = config->readBoolEntry("KScheduleView_openTransfers", true);
   m_openLoans = config->readBoolEntry("KScheduleView_openLoans", true);
 
-  m_qlistviewScheduled->header()->setFont(KMyMoneySettings::listHeaderFont());
+  m_qlistviewScheduled->header()->setFont(KMyMoneyGlobalSettings::listHeaderFont());
   m_qlistviewScheduled->restoreLayout(KGlobal::config(), "Schedule View Settings");
 
 }

@@ -47,7 +47,7 @@
 #include <kmymoney/kmymoneychecklistitem.h>
 
 #include "../kmymoneyutils.h"
-#include "../kmymoneysettings.h"
+#include "../kmymoneyglobalsettings.h"
 
 kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *name, QWidget::WFlags flags, const bool createButtons) :
   KMyMoneySelector(parent, name, flags),
@@ -462,7 +462,7 @@ int AccountSet::loadSubAccounts(kMyMoneyAccountSelector* selector, QListViewItem
   for(it_l = list.begin(); it_l != list.end(); ++it_l) {
     const MyMoneyAccount& acc = m_file->account(*it_l);
     // don't include stock accounts if not in expert mode
-    if(acc.isInvest() && !KMyMoneySettings::expertMode())
+    if(acc.isInvest() && !KMyMoneyGlobalSettings::expertMode())
       continue;
 
     if(m_typeList.contains(acc.accountType())

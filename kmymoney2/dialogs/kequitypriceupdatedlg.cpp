@@ -52,7 +52,7 @@
 #include "../mymoney/mymoneyfile.h"
 #include "../mymoney/mymoneysecurity.h"
 #include "../mymoney/mymoneyprice.h"
-#include "../kmymoneysettings.h"
+#include "../kmymoneyglobalsettings.h"
 
 #define SYMBOL_COL      0
 #define NAME_COL        1
@@ -200,7 +200,7 @@ void KEquityPriceUpdateDlg::addPricePair(const MyMoneySecurityPair& pair)
           symbol,
           i18n("%1 units in %2").arg(pair.first,pair.second));
         if(pr.isValid()) {
-          item->setText(PRICE_COL, pr.rate(pair.second).formatMoney(file->currency(pair.second).tradingSymbol(), KMyMoneySettings::pricePrecision()));
+          item->setText(PRICE_COL, pr.rate(pair.second).formatMoney(file->currency(pair.second).tradingSymbol(), KMyMoneyGlobalSettings::pricePrecision()));
           item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
         }
         item->setText(ID_COL,id);
@@ -234,7 +234,7 @@ void KEquityPriceUpdateDlg::addInvestment(const MyMoneySecurity& inv)
       MyMoneySecurity currency = file->currency(inv.tradingCurrency());
       MyMoneyPrice pr = file->price(id.utf8(), inv.tradingCurrency());
       if(pr.isValid()) {
-        item->setText(PRICE_COL, pr.rate(currency.id()).formatMoney(currency.tradingSymbol(), KMyMoneySettings::pricePrecision()));
+        item->setText(PRICE_COL, pr.rate(currency.id()).formatMoney(currency.tradingSymbol(), KMyMoneyGlobalSettings::pricePrecision()));
         item->setText(DATE_COL, pr.date().toString(Qt::ISODate));
       }
       item->setText(ID_COL,id);
@@ -483,7 +483,7 @@ void KEquityPriceUpdateDlg::slotReceivedQuote(const QString& _id, const QString&
           }
         }
       }
-      item->setText(PRICE_COL, KGlobal::locale()->formatMoney(price, sec.tradingSymbol(), KMyMoneySettings::pricePrecision()));
+      item->setText(PRICE_COL, KGlobal::locale()->formatMoney(price, sec.tradingSymbol(), KMyMoneyGlobalSettings::pricePrecision()));
       item->setText(DATE_COL, date.toString(Qt::ISODate));
       logStatusMessage(i18n("Price for %1 updated (id %2)").arg(_symbol,_id));
     }

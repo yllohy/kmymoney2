@@ -585,7 +585,7 @@ void KPayeesView::showTransactions(void)
   // setup the list and the pointer vector
   MyMoneyTransactionFilter filter;
   filter.addPayee(m_payee.id());
-  filter.setDateFilter(KMyMoneySettings::startDate().date(), QDate());
+  filter.setDateFilter(KMyMoneyGlobalSettings::startDate().date(), QDate());
 
   QValueList<MyMoneyTransaction> list = file->transactionList(filter);
   m_transactionList.clear();
@@ -745,15 +745,15 @@ void KPayeesView::readConfig(void)
 {
   m_transactionView->setFont(KMyMoneyGlobalSettings::listCellFont());
 
-  QFontMetrics fm( KMyMoneySettings::listHeaderFont() );
+  QFontMetrics fm( KMyMoneyGlobalSettings::listHeaderFont() );
   int height = fm.lineSpacing()+6;
 
   m_transactionView->header()->setMinimumHeight(height);
   m_transactionView->header()->setMaximumHeight(height);
-  m_transactionView->header()->setFont(KMyMoneySettings::listHeaderFont());
+  m_transactionView->header()->setFont(KMyMoneyGlobalSettings::listHeaderFont());
 
   m_payeesList->setDefaultRenameAction(
-           KMyMoneySettings::focusChangeIsEnter() ? QListView::Accept : QListView::Reject);
+           KMyMoneyGlobalSettings::focusChangeIsEnter() ? QListView::Accept : QListView::Reject);
 }
 
 void KPayeesView::show(void)

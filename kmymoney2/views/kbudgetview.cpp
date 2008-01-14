@@ -80,15 +80,12 @@ void KBudgetListItem::paintCell(QPainter *p, const QColorGroup & cg, int column,
 {
   p->setFont(KMyMoneyGlobalSettings::listCellFont());
 
-  QColor colour = KMyMoneySettings::listColor();
-  QColor bgColour = KMyMoneySettings::listBGColor();
-
   QColorGroup cg2(cg);
 
   if (isAlternate())
-    cg2.setColor(QColorGroup::Base, colour);
+    cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listColor());
   else
-    cg2.setColor(QColorGroup::Base, bgColour);
+    cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
 
   QListViewItem::paintCell(p, cg2, column, width, align);
 }
@@ -458,7 +455,7 @@ bool KBudgetView::loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QCStrin
     // the display of those,
     if(acc.accountGroup() == MyMoneyAccount::Income
     || acc.accountGroup() == MyMoneyAccount::Expense) {
-      if(KMyMoneySettings::hideUnusedCategory() && thisUnused) {
+      if(KMyMoneyGlobalSettings::hideUnusedCategory() && thisUnused) {
         unused = true;
         delete item;
       }

@@ -736,7 +736,7 @@ void StdTransactionEditor::createEditWidgets(void)
     case MyMoneyAccount::Asset:
     case MyMoneyAccount::Liability:
     case MyMoneyAccount::Equity:
-      showNumberField = KMyMoneySettings::alwaysShowNrField();
+      showNumberField = KMyMoneyGlobalSettings::alwaysShowNrField();
       break;
 
     case MyMoneyAccount::Income:
@@ -881,7 +881,7 @@ void StdTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action action)
   aSet.addAccountGroup(MyMoneyAccount::Liability);
   aSet.addAccountGroup(MyMoneyAccount::Income);
   aSet.addAccountGroup(MyMoneyAccount::Expense);
-  if(KMyMoneySettings::expertMode() || haveEquityAccount)
+  if(KMyMoneyGlobalSettings::expertMode() || haveEquityAccount)
     aSet.addAccountGroup(MyMoneyAccount::Equity);
 
   aSet.removeAccountType(MyMoneyAccount::CertificateDep);
@@ -1054,7 +1054,7 @@ void StdTransactionEditor::slotReloadEditWidgets(void)
   aSet.addAccountGroup(MyMoneyAccount::Liability);
   aSet.addAccountGroup(MyMoneyAccount::Income);
   aSet.addAccountGroup(MyMoneyAccount::Expense);
-  if(KMyMoneySettings::expertMode())
+  if(KMyMoneyGlobalSettings::expertMode())
     aSet.addAccountGroup(MyMoneyAccount::Equity);
   aSet.load(category->selector());
 
@@ -1086,7 +1086,7 @@ void StdTransactionEditor::slotUpdatePayee(const QCString& payeeId)
   // in the account.
   if(m_transaction.id().isEmpty()
   && m_splits.count() == 0
-  && KMyMoneySettings::autoFillTransaction()) {
+  && KMyMoneyGlobalSettings::autoFillTransaction()) {
     // check if category is empty
     KMyMoneyCategory* category = dynamic_cast<KMyMoneyCategory*>(m_editWidgets["category"]);
     QCStringList list;

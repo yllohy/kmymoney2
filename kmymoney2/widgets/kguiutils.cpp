@@ -34,7 +34,7 @@
 // Project Includes
 
 #include "kguiutils.h"
-#include "../kmymoneysettings.h"
+#include "../kmymoneyglobalsettings.h"
 
  /**************************************************************************
   *                                                                        *
@@ -81,7 +81,7 @@ void kMandatoryFieldGroup::add(QWidget *widget)
       return;
     }
 
-    widget->setPaletteBackgroundColor(KMyMoneySettings::requiredFieldColor());
+    widget->setPaletteBackgroundColor(KMyMoneyGlobalSettings::requiredFieldColor());
     widgets.append(widget);
     changed();
   }

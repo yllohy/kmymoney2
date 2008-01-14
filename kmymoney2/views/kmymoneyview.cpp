@@ -124,7 +124,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 {
   // the global variable kmymoney2 is not yet assigned. So we construct it here
   QObject* kmymoney2 = parent->parent();
-  const int iconSize = (KMyMoneySettings::iconSize()+1)*16;
+  const int iconSize = (KMyMoneyGlobalSettings::iconSize()+1)*16;
   newStorage();
 
   // Page 0
@@ -712,7 +712,7 @@ bool KMyMoneyView::readFile(const KURL& url)
   // make sure we setup the encryption key correctly
   if(isEncrypted && MyMoneyFile::instance()->value("kmm-encryption-key").isEmpty()) {
     MyMoneyFileTransaction ft;
-    MyMoneyFile::instance()->setValue("kmm-encryption-key", KMyMoneySettings::gpgRecipient());
+    MyMoneyFile::instance()->setValue("kmm-encryption-key", KMyMoneyGlobalSettings::gpgRecipient());
     ft.commit();
   }
 
@@ -814,7 +814,7 @@ bool KMyMoneyView::initializeStorage()
   KConfig *config = KGlobal::config();
   int page;
   config->setGroup("General Options");
-  if(KMyMoneySettings::startLastViewSelected() != 0) {
+  if(KMyMoneyGlobalSettings::startLastViewSelected() != 0) {
     config->setGroup("Last Use Settings");
     page = config->readNumEntry("LastViewSelected", 0);
   } else {
@@ -893,7 +893,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
       encryptedOk = false;
     }
 
-    if(KMyMoneySettings::encryptRecover()) {
+    if(KMyMoneyGlobalSettings::encryptRecover()) {
       encryptRecover = true;
       if(!KGPGFile::keyAvailable(QString(RECOVER_KEY_ID))) {
         KMessageBox::sorry(this, QString("<p>")+i18n("You have selected to encrypt your data also with the KMyMoney recover key, but the key with id</p><p><center><b>%1</b></center></p>has not been found in your keyring at this time. Please make sure to import this key into your keyring. You can find it on the <a href=\"http://kmymoney2.sourceforge.net/\">KMyMoney web-site</a>. This time your data will not be encrypted with the KMyMoney recover key.").arg(RECOVER_KEY_ID), i18n("GPG-Key not found"));
@@ -1521,7 +1521,7 @@ void KMyMoneyView::slotRefreshViews()
 
 void KMyMoneyView::slotShowTransactionDetail(bool detailed)
 {
-  KMyMoneySettings::setShowRegisterDetailed(detailed);
+  KMyMoneyGlobalSettings::setShowRegisterDetailed(detailed);
   slotRefreshViews();
 }
 
@@ -2036,7 +2036,7 @@ void KMyMoneyView::slotPrintView(void)
 
 KMyMoneyViewBase* KMyMoneyView::addPage(const QString& title, const QString& icon)
 {
-  const int iconSize = (KMyMoneySettings::iconSize()+1)*16;
+  const int iconSize = (KMyMoneyGlobalSettings::iconSize()+1)*16;
   QFrame* frm = KJanusWidget::addVBoxPage(title, title, DesktopIcon(icon, iconSize));
   return new KMyMoneyViewBase(frm, title.latin1(), title);
 }

@@ -181,14 +181,14 @@ void Transaction::setFocus(bool focus, bool updateLens)
     m_focus = focus;
   }
   if(updateLens) {
-    if(KMyMoneySettings::ledgerLens()
-    || !KMyMoneySettings::transactionForm()
-    || KMyMoneySettings::showRegisterDetailed()
+    if(KMyMoneyGlobalSettings::ledgerLens()
+    || !KMyMoneyGlobalSettings::transactionForm()
+    || KMyMoneyGlobalSettings::showRegisterDetailed()
     || m_parent->m_ledgerLensForced) {
       if(focus)
         setNumRowsRegister(numRowsRegister(true));
       else
-        setNumRowsRegister(numRowsRegister(KMyMoneySettings::showRegisterDetailed()));
+        setNumRowsRegister(numRowsRegister(KMyMoneyGlobalSettings::showRegisterDetailed()));
     }
   }
 }
@@ -222,10 +222,10 @@ void Transaction::paintRegisterCellSetup(QPainter* painter, int row, int col, QR
     cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
 
   if(m_transaction.value("Imported").lower() == "true") {
-    cg.setColor(QColorGroup::Base, KMyMoneySettings::importedTransactionColor());
+    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::importedTransactionColor());
   }
   if(m_matchMark) {
-    cg.setColor(QColorGroup::Base, KMyMoneySettings::matchedTransactionColor());
+    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::matchedTransactionColor());
   }
 
   cellRect.setX(0);
@@ -251,7 +251,7 @@ void Transaction::paintRegisterCellSetup(QPainter* painter, int row, int col, QR
 
   // do we need to switch to the error color?
   if(m_erronous && m_parent->markErronousTransactions()) {
-    painter->setPen(KMyMoneySettings::listErronousTransactionColor());
+    painter->setPen(KMyMoneyGlobalSettings::listErronousTransactionColor());
   }
 }
 
@@ -396,9 +396,9 @@ void Transaction::paintRegisterCell(QPainter* painter, int row, int col, const Q
     painter->drawText(textRect, align, txt);
 
     // if a grid is selected, we paint it right away
-  if (KMyMoneySettings::showGrid()) {
+  if (KMyMoneyGlobalSettings::showGrid()) {
     painter->save();
-    painter->setPen(KMyMoneySettings::listGridColor());
+    painter->setPen(KMyMoneyGlobalSettings::listGridColor());
     if(col != 0)
       painter->drawLine(cellRect.x(), 0, cellRect.x(), cellRect.height()-1);
     if(row == numRowsRegister()-1)
@@ -546,7 +546,7 @@ bool Transaction::haveNumberField(void) const
     case MyMoneyAccount::Asset:
     case MyMoneyAccount::Liability:
     case MyMoneyAccount::Equity:
-      rc = KMyMoneySettings::alwaysShowNrField();
+      rc = KMyMoneyGlobalSettings::alwaysShowNrField();
       break;
 
     case MyMoneyAccount::Checkings:
@@ -785,7 +785,7 @@ StdTransaction::StdTransaction(Register *parent, const MyMoneyTransaction& trans
   }
 
   // setup initial size
-  setNumRowsRegister(numRowsRegister(KMyMoneySettings::showRegisterDetailed()));
+  setNumRowsRegister(numRowsRegister(KMyMoneyGlobalSettings::showRegisterDetailed()));
 
   emit parent->itemAdded(this);
 }
@@ -1004,7 +1004,7 @@ void StdTransaction::registerCellText(QString& txt, int& align, int row, int col
               if(txt.isEmpty() && !m_split.value().isZero()) {
                 txt = i18n("*** UNASSIGNED ***");
                 if(painter)
-                  painter->setPen(KMyMoneySettings::listErronousTransactionColor());
+                  painter->setPen(KMyMoneyGlobalSettings::listErronousTransactionColor());
               }
             }
           }
@@ -1055,7 +1055,7 @@ void StdTransaction::registerCellText(QString& txt, int& align, int row, int col
           if(txt.isEmpty() && !m_split.value().isZero()) {
             txt = i18n("*** UNASSIGNED ***");
             if(painter)
-              painter->setPen(KMyMoneySettings::listErronousTransactionColor());
+              painter->setPen(KMyMoneyGlobalSettings::listErronousTransactionColor());
           }
           break;
 
@@ -1349,7 +1349,7 @@ InvestTransaction::InvestTransaction(Register *parent, const MyMoneyTransaction&
   m_rowsForm = 7;
 
   // setup initial size
-  setNumRowsRegister(numRowsRegister(KMyMoneySettings::showRegisterDetailed()));
+  setNumRowsRegister(numRowsRegister(KMyMoneyGlobalSettings::showRegisterDetailed()));
 
   emit parent->itemAdded(this);
 }

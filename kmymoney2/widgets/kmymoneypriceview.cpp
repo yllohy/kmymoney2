@@ -284,7 +284,7 @@ int KMyMoneyPriceView::slotEditPrice(void)
   if(item) {
     MyMoneySecurity from(MyMoneyFile::instance()->security(item->price().from()));
     MyMoneySecurity to(MyMoneyFile::instance()->security(item->price().to()));
-    signed64 fract = MyMoneyMoney::precToDenom(KMyMoneySettings::pricePrecision());
+    signed64 fract = MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision());
 
     KCurrencyCalculator calc(from,
                              to,

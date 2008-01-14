@@ -259,7 +259,7 @@ bool KCategoriesView::loadSubAccounts(KMyMoneyAccountTreeItem* parent, const QCS
     // the display of those,
     if(acc.accountGroup() == MyMoneyAccount::Income
     || acc.accountGroup() == MyMoneyAccount::Expense) {
-      if(KMyMoneySettings::hideUnusedCategory() && thisUnused) {
+      if(KMyMoneyGlobalSettings::hideUnusedCategory() && thisUnused) {
         unused = true;
         delete item;
       }

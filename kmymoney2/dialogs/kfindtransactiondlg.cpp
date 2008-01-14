@@ -672,7 +672,7 @@ void KFindTransactionDlg::show(void)
 void KFindTransactionDlg::loadView(void)
 {
   // setup sort order
-  m_register->setSortOrder(KMyMoneySettings::sortSearchView());
+  m_register->setSortOrder(KMyMoneyGlobalSettings::sortSearchView());
 
   // clear out old data
   m_register->clear();

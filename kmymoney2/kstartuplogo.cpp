@@ -39,14 +39,14 @@
 // Project Includes
 
 #include "kstartuplogo.h"
-#include "kmymoneysettings.h"
+#include "kmymoneyglobalsettings.h"
 
 KStartupLogo::KStartupLogo() :
   QObject(0, 0),
   m_splash(0)
 {
   // splash screen setting
-  if(!KMyMoneySettings::showSplash())
+  if(!KMyMoneyGlobalSettings::showSplash())
     return;
 
   QString filename = KGlobal::dirs()->findResource("appdata", "pics/startlogo.png");

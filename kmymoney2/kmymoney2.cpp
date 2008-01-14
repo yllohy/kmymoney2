@@ -473,9 +473,9 @@ void KMyMoney2App::initActions(void)
 #endif
 
   // Setup transaction detail switch
-  toggleAction("view_show_transaction_detail")->setChecked(KMyMoneySettings::showRegisterDetailed());
-  toggleAction("view_hide_reconciled_transactions")->setChecked(KMyMoneySettings::hideReconciledTransactions());
-  toggleAction("view_hide_unused_categories")->setChecked(KMyMoneySettings::hideUnusedCategory());
+  toggleAction("view_show_transaction_detail")->setChecked(KMyMoneyGlobalSettings::showRegisterDetailed());
+  toggleAction("view_hide_reconciled_transactions")->setChecked(KMyMoneyGlobalSettings::hideReconciledTransactions());
+  toggleAction("view_hide_unused_categories")->setChecked(KMyMoneyGlobalSettings::hideUnusedCategory());
   toggleAction("view_show_all_accounts")->setChecked(false);
 
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
@@ -566,8 +566,8 @@ void KMyMoney2App::readOptions(void)
   toggleAction("options_show_statusbar")->setChecked(config->readBoolEntry("Show Statusbar", true));
   slotViewStatusBar();
 
-  toggleAction("view_hide_reconciled_transactions")->setChecked(KMyMoneySettings::hideReconciledTransactions());
-  toggleAction("view_hide_unused_categories")->setChecked(KMyMoneySettings::hideUnusedCategory());
+  toggleAction("view_hide_reconciled_transactions")->setChecked(KMyMoneyGlobalSettings::hideReconciledTransactions());
+  toggleAction("view_hide_unused_categories")->setChecked(KMyMoneyGlobalSettings::hideUnusedCategory());
 
   // initialize the recent file list
   KRecentFilesAction *p = dynamic_cast<KRecentFilesAction*>(action("file_open_recent"));
@@ -1012,7 +1012,7 @@ const bool KMyMoney2App::slotFileSaveAs(void)
       name.replace('(', "[");
       name.replace(')', "]");
       m_saveEncrypted->insertItem(QString("%1 (0x%2)").arg(name).arg(fields[0]));
-      if((*it).contains(KMyMoneySettings::gpgRecipient())) {
+      if((*it).contains(KMyMoneyGlobalSettings::gpgRecipient())) {
         m_saveEncrypted->setCurrentItem(idx);
       }
     }
@@ -1207,13 +1207,13 @@ void KMyMoney2App::slotViewStatusBar(void)
 
 void KMyMoney2App::slotHideReconciledTransactions(void)
 {
-  KMyMoneySettings::setHideReconciledTransactions(toggleAction("view_hide_reconciled_transactions")->isChecked());
+  KMyMoneyGlobalSettings::setHideReconciledTransactions(toggleAction("view_hide_reconciled_transactions")->isChecked());
   myMoneyView->slotRefreshViews();
 }
 
 void KMyMoney2App::slotHideUnusedCategories(void)
 {
-  KMyMoneySettings::setHideUnusedCategory(toggleAction("view_hide_unused_categories")->isChecked());
+  KMyMoneyGlobalSettings::setHideUnusedCategory(toggleAction("view_hide_unused_categories")->isChecked());
   myMoneyView->slotRefreshViews();
 }
 
@@ -1933,7 +1933,7 @@ void KMyMoney2App::slotSettings(void)
     return;
 
   // otherwise, we have to create it
-  KConfigDialog* dlg = new KConfigDialog(this, "KMyMoney-Settings", KMyMoneySettings::self(),
+  KConfigDialog* dlg = new KConfigDialog(this, "KMyMoney-Settings", KMyMoneyGlobalSettings::self(),
     KDialogBase::IconList, KDialogBase::Default | KDialogBase::Ok | KDialogBase::Cancel | KDialogBase::Help, KDialogBase::Ok, true);
 
   // create the pages ...
@@ -1970,8 +1970,8 @@ void KMyMoney2App::slotUpdateConfiguration(void)
   myMoneyView->slotRefreshViews();
 
   // re-read autosave configuration
-  m_autoSaveEnabled = KMyMoneySettings::autoSaveFile();
-  m_autoSavePeriod = KMyMoneySettings::autoSavePeriod();
+  m_autoSaveEnabled = KMyMoneyGlobalSettings::autoSaveFile();
+  m_autoSavePeriod = KMyMoneyGlobalSettings::autoSavePeriod();
 
   // stop timer if turned off but running
   if(m_autoSaveTimer->isActive() && !m_autoSaveEnabled) {
@@ -2691,7 +2691,7 @@ void KMyMoney2App::slotManualPriceUpdate(void)
       MyMoneySecurity security = MyMoneyFile::instance()->security(m_selectedInvestment.currencyId());
       MyMoneySecurity currency = MyMoneyFile::instance()->security(security.tradingCurrency());
       MyMoneyPrice price = MyMoneyFile::instance()->price(security.id(), currency.id());
-      signed64 fract = MyMoneyMoney::precToDenom(KMyMoneySettings::pricePrecision());
+      signed64 fract = MyMoneyMoney::precToDenom(KMyMoneyGlobalSettings::pricePrecision());
 
       KCurrencyCalculator calc(security, currency, MyMoneyMoney(1,1), price.rate(currency.id()), price.date(), fract);
       calc.setupPriceEditor();
@@ -4339,7 +4339,7 @@ void KMyMoney2App::slotTransactionsCancelOrEnter(bool& okToSelect)
     QString dontShowAgain = "CancelOrEditTransaction";
     // qDebug("KMyMoney2App::slotCancelOrEndEdit");
     if(m_transactionEditor) {
-      if(KMyMoneySettings::focusChangeIsEnter() && kmymoney2->action("transaction_enter")->isEnabled()) {
+      if(KMyMoneyGlobalSettings::focusChangeIsEnter() && kmymoney2->action("transaction_enter")->isEnabled()) {
         slotTransactionsEnter();
       } else {
         switch(KMessageBox::warningYesNoCancel(0, QString("<p>")+i18n("Do you really want to cancel editing this transaction without saving it?<p>- <b>Yes</b> cancels editing the transaction<br>- <b>No</b> saves the transaction prior to cancelling and<br>- <b>Cancel</b> returns to the transaction editor.<p>You can also select an option to save the transaction automatically when e.g. selecting another transaction."), i18n("Cancel transaction edit"), KStdGuiItem::yes(), KStdGuiItem::no(), dontShowAgain)) {
@@ -5406,7 +5406,7 @@ void KMyMoney2App::slotCheckSchedules(void)
 
     QString prevMsg = slotStatusMsg(i18n("Checking for overdue schedules..."));
     MyMoneyFile *file = MyMoneyFile::instance();
-    QDate checkDate = QDate::currentDate().addDays(KMyMoneySettings::checkSchedulePreview());
+    QDate checkDate = QDate::currentDate().addDays(KMyMoneyGlobalSettings::checkSchedulePreview());
 
     QValueList<MyMoneySchedule> scheduleList =  file->scheduleList();
     QValueList<MyMoneySchedule>::Iterator it;

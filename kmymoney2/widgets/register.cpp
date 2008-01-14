@@ -265,7 +265,7 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /* col */, c
 
   QBrush backgroundBrush(cg.base());
   painter->fillRect(cellRect, backgroundBrush);
-  painter->setPen(KMyMoneySettings::listGridColor());
+  painter->setPen(KMyMoneyGlobalSettings::listGridColor());
   painter->drawLine(cellRect.x(), cellRect.height()-1, cellRect.width(), cellRect.height()-1);
 
 #if 0
@@ -276,7 +276,7 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /* col */, c
   cellRect.setWidth(cellRect.width()-5);
   cellRect.setHeight(cellRect.height()-5);
 
-  cg.setColor(QColorGroup::Base, KMyMoneySettings::listMissingConversionRate());
+  cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listMissingConversionRate());
   painter->setBrush(cg.base());
   painter->setPen(Qt::NoPen);
   painter->drawRoundRect(cellRect, 2, 25);
@@ -381,16 +381,16 @@ void SimpleDateGroupMarker::paintRegisterCell(QPainter* painter, int row, int /*
   // clear out cell rectangle
   QColorGroup cg(_cg);
   if(m_alternate)
-    cg.setColor(QColorGroup::Base, KMyMoneySettings::listColor());
+    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listColor());
   else
-    cg.setColor(QColorGroup::Base, KMyMoneySettings::listBGColor());
+    cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
   QBrush backgroundBrush(cg.base());
   // backgroundBrush.setStyle(Qt::DiagCrossPattern);
   backgroundBrush.setStyle(Qt::Dense5Pattern);
-  backgroundBrush.setColor(KMyMoneySettings::listGridColor());
+  backgroundBrush.setColor(KMyMoneyGlobalSettings::listGridColor());
   painter->eraseRect(cellRect);
   painter->fillRect(cellRect, backgroundBrush);
-  painter->setPen(KMyMoneySettings::listGridColor());
+  painter->setPen(KMyMoneyGlobalSettings::listGridColor());
   painter->drawLine(cellRect.x(), cellRect.height()-1, cellRect.width(), cellRect.height()-1);
 
   painter->restore();
@@ -672,7 +672,7 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
     case MyMoneyAccount::Asset:
     case MyMoneyAccount::Liability:
     case MyMoneyAccount::Equity:
-      if(KMyMoneySettings::alwaysShowNrField())
+      if(KMyMoneyGlobalSettings::alwaysShowNrField())
         showColumn(NumberColumn);
       break;
 
@@ -966,7 +966,7 @@ void Register::drawContents( QPainter *p, int cx, int cy, int cw, int ch )
     return;
 
   if(m_listsDirty) {
-    updateRegister(KMyMoneySettings::ledgerLens() | !KMyMoneySettings::transactionForm());
+    updateRegister(KMyMoneyGlobalSettings::ledgerLens() | !KMyMoneyGlobalSettings::transactionForm());
   }
 
   ++m_drawCounter;
@@ -1191,7 +1191,7 @@ void Register::resize(int col)
     // Resize the date and money fields to either
     // a) the size required by the input widget if no transaction form is shown
     // b) the adjusted value for the input widget if the transaction form is visible
-    if(!KMyMoneySettings::transactionForm()) {
+    if(!KMyMoneyGlobalSettings::transactionForm()) {
       kMyMoneyDateInput* dateField = new kMyMoneyDateInput;
       kMyMoneyEdit* valField = new kMyMoneyEdit;
 
@@ -1521,7 +1521,7 @@ void Register::setFocusItem(RegisterItem* focusItem)
     m_focusItem = focusItem;
     m_focusItem->setFocus(true);
     if(m_listsDirty)
-      updateRegister(KMyMoneySettings::ledgerLens() | !KMyMoneySettings::transactionForm());
+      updateRegister(KMyMoneyGlobalSettings::ledgerLens() | !KMyMoneyGlobalSettings::transactionForm());
     ensureItemVisible(m_focusItem);
     repaintItems(m_focusItem);
   }
@@ -2054,10 +2054,10 @@ void Register::addGroupMarkers(void)
       thisWeek = today.addDays(-weekStartOfs);
       lastWeek = thisWeek.addDays(-7);
       thisYear.setYMD(today.year(), 1, 1);
-      if(KMyMoneySettings::startDate().date() != QDate(1900,1,1))
-        new KMyMoneyRegister::FancyDateGroupMarker(this, KMyMoneySettings::startDate().date(), i18n("Prior transactions possibly filtered"));
+      if(KMyMoneyGlobalSettings::startDate().date() != QDate(1900,1,1))
+        new KMyMoneyRegister::FancyDateGroupMarker(this, KMyMoneyGlobalSettings::startDate().date(), i18n("Prior transactions possibly filtered"));
 
-      if(KMyMoneySettings::showFancyMarker()) {
+      if(KMyMoneyGlobalSettings::showFancyMarker()) {
         new KMyMoneyRegister::FancyDateGroupMarker(this, thisYear, i18n("This year"));
         new KMyMoneyRegister::FancyDateGroupMarker(this, lastMonth, i18n("Last month"));
         new KMyMoneyRegister::FancyDateGroupMarker(this, thisMonth, i18n("This month"));
@@ -2081,14 +2081,14 @@ void Register::addGroupMarkers(void)
       break;
 
     case KMyMoneyRegister::TypeSort:
-      if(KMyMoneySettings::showFancyMarker()) {
+      if(KMyMoneyGlobalSettings::showFancyMarker()) {
         new KMyMoneyRegister::TypeGroupMarker(this, KMyMoneyRegister::Deposit, m_account.accountType());
         new KMyMoneyRegister::TypeGroupMarker(this, KMyMoneyRegister::Payment, m_account.accountType());
       }
       break;
 
     case KMyMoneyRegister::ReconcileStateSort:
-      if(KMyMoneySettings::showFancyMarker()) {
+      if(KMyMoneyGlobalSettings::showFancyMarker()) {
         new KMyMoneyRegister::ReconcileGroupMarker(this, MyMoneySplit::NotReconciled);
         new KMyMoneyRegister::ReconcileGroupMarker(this, MyMoneySplit::Cleared);
         new KMyMoneyRegister::ReconcileGroupMarker(this, MyMoneySplit::Reconciled);
@@ -2097,7 +2097,7 @@ void Register::addGroupMarkers(void)
       break;
 
     case KMyMoneyRegister::PayeeSort:
-      if(KMyMoneySettings::showFancyMarker()) {
+      if(KMyMoneyGlobalSettings::showFancyMarker()) {
         while(p) {
           t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
           if(t) {
@@ -2116,7 +2116,7 @@ void Register::addGroupMarkers(void)
       break;
 
     case KMyMoneyRegister::CategorySort:
-      if(KMyMoneySettings::showFancyMarker()) {
+      if(KMyMoneyGlobalSettings::showFancyMarker()) {
         while(p) {
           t = dynamic_cast<KMyMoneyRegister::Transaction*>(p);
           if(t) {
@@ -2135,7 +2135,7 @@ void Register::addGroupMarkers(void)
       break;
 
     case KMyMoneyRegister::SecuritySort:
-      if(KMyMoneySettings::showFancyMarker()) {
+      if(KMyMoneyGlobalSettings::showFancyMarker()) {
         while(p) {
           t = dynamic_cast<KMyMoneyRegister::InvestTransaction*>(p);
           if(t) {
