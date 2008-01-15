@@ -173,7 +173,18 @@ This will regenerate all files of the application and rebuild everything automat
 Check the distribution
 </para>
 <para>
-From the TLD, run the command
+Before doing this, check that all desktop files conform to the freedesktop specification. From the TLD, issue the following command:
+<programlisting>
+<prompt>thb: ~&gt; </prompt><userinput>find ./kmymoney2 -name '*.desktop' -exec desktop-file-validate {} \;</userinput>
+</programlisting>
+N.B. Any errors in file x-kmymoney2.desktop can be ignored since kde3 does not conform to the specification for this file type.
+</para>
+<para>
+Note: desktop-file-validate is part of the desktop-file-utils package, which may be installed from your distribution repository, or downloaded from
+<ulink url="http://www.freedesktop.org/wiki/Software/desktop-file-utils">http://www.freedesktop.org/wiki/Software/desktop-file-utils</ulink> 
+</para>
+<para>
+Then, to check the distribution itself, from the TLD, run the command
  
 <programlisting>
 <prompt>thb: ~&gt; </prompt><userinput>make distcheck</userinput>
