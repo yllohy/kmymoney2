@@ -66,6 +66,9 @@ class KBudgetValues : public KBudgetValuesDecl
      */
     void slotNeedUpdate(void);
 
+  protected:
+    bool eventFilter(QObject* o, QEvent* e);
+
   private:
     kMyMoneyEdit*   m_field[12];
     QLabel*         m_label[12];

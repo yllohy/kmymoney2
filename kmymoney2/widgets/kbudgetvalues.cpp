@@ -25,6 +25,7 @@
 #include <qwidgetstack.h>
 #include <qtimer.h>
 #include <qtooltip.h>
+#include <qapplication.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -80,8 +81,13 @@ KBudgetValues::KBudgetValues(QWidget* parent, const char* name) :
   // connect(m_budgetLevel, SIGNAL(currentChanged(QWidget*)), this, SIGNAL(valuesChanged()));
   connect(m_amountMonthly, SIGNAL(valueChanged(const QString&)), this, SLOT(slotNeedUpdate()));
   connect(m_amountYearly, SIGNAL(valueChanged(const QString&)), this, SLOT(slotNeedUpdate()));
-  for(int i=0; i < 12; ++i)
+  m_amountMonthly->installEventFilter(this);
+  m_amountYearly->installEventFilter(this);
+
+  for(int i=0; i < 12; ++i) {
     connect(m_field[i], SIGNAL(valueChanged(const QString&)), this, SLOT(slotNeedUpdate()));
+    m_field[i]->installEventFilter(this);
+  }
 
   connect(m_clearButton, SIGNAL(clicked()), this, SLOT(slotClearAllValues()));
   connect(m_periodGroup, SIGNAL(clicked(int)), this, SLOT(slotChangePeriod(int)));
@@ -96,6 +102,33 @@ KBudgetValues::KBudgetValues(QWidget* parent, const char* name) :
 
 KBudgetValues::~KBudgetValues()
 {
+}
+
+bool KBudgetValues::eventFilter(QObject* o, QEvent* e)
+{
+  bool rc = false;
+
+  if(o->isWidgetType()
+  && (e->type() == QEvent::KeyPress)) {
+    QKeyEvent* k = dynamic_cast<QKeyEvent*>(e);
+    if((k->state() & Qt::KeyButtonMask) == 0) {
+      QKeyEvent evt(e->type(),
+                    Qt::Key_Tab, 0, k->state(), QString::null,
+                    k->isAutoRepeat(), k->count());
+      switch(k->key()) {
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+          // send out a TAB key event
+          QApplication::sendEvent( o, &evt );
+          // don't process this one any further
+          rc = true;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  return rc;
 }
 
 void KBudgetValues::clear(void)

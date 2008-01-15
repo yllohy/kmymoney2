@@ -1,5 +1,7 @@
 2008-01-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1866855 with patch provided by Chris Roland
+  * Pressing the enter key during budget value entry moves the focus to the
+    next (value) field.
 
 2008-01-14 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix desktop file errors
