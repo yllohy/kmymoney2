@@ -732,6 +732,14 @@ void KFindTransactionDlg::slotRightSize(void)
 
 void KFindTransactionDlg::resizeEvent(QResizeEvent* ev)
 {
+  // Columns
+  // 1 = Date
+  // 2 = Account
+  // 4 = Detail
+  // 5 = C
+  // 6 = Payment
+  // 7 = Deposit
+
   // don't forget the resizer
   KFindTransactionDlgDecl::resizeEvent(ev);
 
@@ -744,23 +752,24 @@ void KFindTransactionDlg::resizeEvent(QResizeEvent* ev)
   int m_debitWidth = 80;
   int m_creditWidth = 80;
 
-  m_register->adjustColumn(0);
-  m_register->adjustColumn(1);
-  m_register->adjustColumn(2);
+  m_register->adjustColumn(1);  
+  m_register->adjustColumn(2);  
+  m_register->adjustColumn(5);  
 
-  m_register->setColumnWidth(4, m_debitWidth);
-  m_register->setColumnWidth(5, m_creditWidth);
+  m_register->setColumnWidth(6, m_debitWidth);
+  m_register->setColumnWidth(7, m_creditWidth);
 
   for(int i = 0; i < m_register->numCols(); ++i) {
     switch(i) {
+      case 4:     // skip the one, we want to set
+        break;
       default:
         w -= m_register->columnWidth(i);
         break;
-      case 3:     // skip the one, we want to set
-        break;
     }
   }
-  m_register->setColumnWidth(3, w);
+  
+  m_register->setColumnWidth(4, w);
 }
 
 
