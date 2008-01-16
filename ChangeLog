@@ -1,3 +1,6 @@
+2008-01-16 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Added FT Quote source for UK Funds - contributed by Peter Lord
+
 2008-01-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1866855 with patch provided by Chris Roland
   * Pressing the enter key during budget value entry moves the focus to the

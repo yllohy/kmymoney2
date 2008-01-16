@@ -398,7 +398,18 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
     ", (\\d+\\D+\\d+\\D+\\d+)", // dateregexp
     "%d %m %y" // dateformat
   );
-
+  
+  // This quote source provided by Peter Lord
+  // The trading symbol will normally be the SEDOL (see wikipedia) but
+  // the flexibility presently (1/2008) in the code will allow use of
+  // the ISIN or MEXID (FT specific) codes
+  result["Financial Times UK Funds"] = WebPriceQuoteSource("Financial Times UK Funds",
+      "http://funds.ft.com/funds/simpleSearch.do?searchArea=%&search=%1",
+      "SEDOL[\\ ]*(\\d+.\\d+)", // symbol regexp
+      "\\(GBX\\)[\\ ]*([0-9,]*.\\d+)[\\ ]*", // price regexp
+      "Valuation date:[\\ ]*(\\d+/\\d+/\\d+)", // date regexp
+      "%d/%m/%y" // date format
+  );
   // (tf2k) The "mpid" is I think the market place id. In this case five
   // stands for Hamburg.
   //
