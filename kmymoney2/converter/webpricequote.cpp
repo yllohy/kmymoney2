@@ -410,6 +410,16 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
       "Valuation date:[\\ ]*(\\d+/\\d+/\\d+)", // date regexp
       "%d/%m/%y" // date format
   );
+  
+  // This quote source provided by Danny Scott
+  result["Yahoo Canada"] = WebPriceQuoteSource("Yahoo Canada",
+      "http://ca.finance.yahoo.com/q?s=%1",
+      "%1", // symbol regexp
+      "Last Trade: (\\d+\\.\\d+)", // price regexp
+      "day, (.\\D+\\d+\\D+\\d+)", // date regexp
+      "%m %d %y" // date format
+  );
+  
   // (tf2k) The "mpid" is I think the market place id. In this case five
   // stands for Hamburg.
   //
