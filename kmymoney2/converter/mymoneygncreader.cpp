@@ -25,7 +25,6 @@ email                : mte@users.sourceforge.net
 #include <qfile.h>
 #include <qmap.h>
 #include <qobject.h>
-#include <qmessagebox.h>
 #include <qfiledialog.h>
 #include <qinputdialog.h>
 #include <qdatetime.h>
@@ -886,8 +885,14 @@ bool XmlReader::startElement (const QString&, const QString&, const QString& elN
     if (elName == "gnc:book" || elName == "gnc:count-data" || elName == "book:id") lastType = -1;
     pMain->oStream << endl;
     switch (lastType) {
-    case 0: indentCount += 2;
-    case 2: spaces.fill (' ', indentCount); pMain->oStream << spaces.latin1(); break;
+      case 0:
+        indentCount += 2;
+        // tricky fall through here
+
+      case 2:
+        spaces.fill (' ', indentCount);
+        pMain->oStream << spaces.latin1();
+        break;
     }
     pMain->oStream << '<' << elName;
     for (i = 0; i < elAttrs.count(); i++) {
@@ -908,22 +913,27 @@ bool XmlReader::startElement (const QString&, const QString&, const QString& elN
       m_co = m_os.top();
       m_co->setVersion(elAttrs.value("version"));
       m_co->setPm (pMain); // pass the 'main' pointer to the sub object
-      return (true);
+      // return true;   // removed, as we hit a return true anyway
     }
+#if 0
     // check for a data element
-    if (m_co->isDataElement (elName, elAttrs)) return (true);
-    return (true);
+    if (m_co->isDataElement (elName, elAttrs))
+      return (true);
+#endif
+    else {
+      // reduced the above to
+      m_co->isDataElement(elName, elAttrs);
+    }
   } catch (MyMoneyException *e) {
 #ifndef _GNCFILEANON
     // we can't pass on exceptions here coz the XML reader won't catch them and we just abort
-    QMessageBox::critical (0, PACKAGE, i18n("Import failed\n\n") + e->what(),
-                           QMessageBox::Abort, QMessageBox::NoButton , QMessageBox::NoButton);
+    KMessageBox::error(0, i18n("Import failed:\n\n%1").arg(e->what()), PACKAGE);
     qFatal ("%s", e->what().latin1());
 #else
     qFatal ("%s", e->latin1());
 #endif // _GNCFILEANON
   }
-  return (true); // to keep compiler happy
+  return true; // to keep compiler happy
 }
 
 bool XmlReader::endElement( const QString&, const QString&, const QString&elName ) {
@@ -952,8 +962,7 @@ bool XmlReader::endElement( const QString&, const QString&, const QString&elName
   } catch (MyMoneyException *e) {
 #ifndef _GNCFILEANON
     // we can't pass on exceptions here coz the XML reader won't catch them and we just abort
-    QMessageBox::critical (0, PACKAGE, i18n("Import failed\n\n") + e->what(),
-                           QMessageBox::Abort, QMessageBox::NoButton , QMessageBox::NoButton);
+    KMessageBox::error(0, i18n("Import failed:\n\n%1").arg(e->what()), PACKAGE);
     qFatal ("%s", e->what().latin1());
 #else
     qFatal ("%s", e->latin1());
@@ -1043,8 +1052,7 @@ void MyMoneyGncReader::readFile(QIODevice* pDevice, IMyMoneySerialize* storage) 
     terminate (); // do all the wind-up things
     ft.commit();
   } catch (MyMoneyException *e) {
-    QMessageBox::critical (0, PACKAGE, i18n("Import failed\n\n") + e->what(),
-                           QMessageBox::Abort, QMessageBox::NoButton , QMessageBox::NoButton);
+    KMessageBox::error(0, i18n("Import failed:\n\n%1").arg(e->what()), PACKAGE);
     qFatal ("%s", e->what().latin1());
   } // end catch
   signalProgress (0, 1, i18n("Import complete")); // switch off progress bar
@@ -1959,7 +1967,22 @@ void MyMoneyGncReader::terminate () {
   bool exit = false;
   for (i = 0; (i < sectionsToReport.count()) && !exit; i++) {
     QString button0Text = i18n("More");
-    if (i + 1 == sectionsToReport.count()) button0Text = i18n("Done"); // last section
+    if (i + 1 == sectionsToReport.count())
+      button0Text = i18n("Done"); // last section
+    KGuiItem yesItem(button0Text, QIconSet(), "", "");
+    KGuiItem noItem(i18n("Save Report"), QIconSet(), "", "");
+
+    switch(KMessageBox::questionYesNoCancel(0, buildReportSection (*sectionsToReport.at(i)), PACKAGE)) {
+      case KMessageBox::Yes:
+        break;
+      case KMessageBox::No:
+        exit = writeReportToFile (sectionsToReport);
+        break;
+      default:
+        exit = true;
+        break;
+    }
+#if 0
     switch (QMessageBox::information (0, PACKAGE,
                                       buildReportSection (*sectionsToReport.at(i)),
                                       button0Text, i18n("Save Report"), i18n("Cancel"),
@@ -1974,9 +1997,11 @@ void MyMoneyGncReader::terminate () {
       exit = true;
       break;
     }
+#endif
   }
   for (i = 0; i < m_suspectList.count(); i++) {
     MyMoneySchedule sc = m_storage->schedule(m_suspectList[i]);
+#if 0
     QMessageBox mb (PACKAGE,
             i18n(QString("Problems were encountered in converting schedule '%1'.\n"
                 "Do you want to review or edit it now?").arg(sc.name())),
@@ -1992,6 +2017,22 @@ void MyMoneyGncReader::terminate () {
         if (s->exec())
           m_storage->modifySchedule (s->schedule());
         delete s;
+    }
+#endif
+
+      KEditScheduleDlg *s;
+      switch(KMessageBox::warningYesNo(0, i18n("Problems were encountered in converting schedule '%1'.\nDo you want to review or edit it now?").arg(sc.name()), PACKAGE)) {
+      case KMessageBox::Yes:
+        s = new KEditScheduleDlg (sc);
+        // FIXME: connect newCategory to something useful, so that we
+        // can create categories from within the dialog
+        if (s->exec())
+          m_storage->modifySchedule (s->schedule());
+        delete s;
+        break;
+
+      default:
+        break;
     }
   }
   PASS
@@ -2041,8 +2082,8 @@ const QString MyMoneyGncReader::buildReportSection (const QString source) {
     for (i = 0; i < m_messageList.count(); i++) {
       GncMessageArgs *m = m_messageList.at(i);
       if (m->source == source) {
-        if (gncdebug) qDebug(QString("build text source %1, code %2, argcount %3")
-              .arg(m->source).arg(m->code).arg(m->args.count()));
+        if (gncdebug) qDebug("%s", QString("build text source %1, code %2, argcount %3")
+              .arg(m->source).arg(m->code).arg(m->args.count()).data());
         QString ss = GncMessages::text (m->source, m->code);
         // add variable args. the .arg function seems always to replace the
         // lowest numbered placeholder it finds, so translating messages
@@ -2247,6 +2288,7 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
           ok = true;
         } else {
           // this code is probably not going to be implemented coz we can't change account types (??)
+#if 0
           QMessageBox mb (PACKAGE,
                           i18n ("%1 is not an Investment Account. Do you wish to make it one?").arg(invAcc.name()),
                           QMessageBox::Question,
@@ -2261,6 +2303,17 @@ void MyMoneyGncReader::checkInvestmentOption (QString stockId) {
             qFatal ("Not yet implemented");
             ok = true;
             break;
+          }
+#endif
+          switch(KMessageBox::questionYesNo(0, i18n ("%1 is not an Investment Account. Do you wish to make it one?").arg(invAcc.name(), PACKAGE))) {
+            case KMessageBox::Yes:
+              // convert it - but what if it has splits???
+              qFatal ("Not yet implemented");
+              ok = true;
+              break;
+            default:
+              ok = false;
+              break;
           }
         }
       } // end if ok - user pressed Cancel
@@ -2341,9 +2394,8 @@ void MyMoneyGncReader::postMessage (const QString source, const unsigned int cod
   // get the number of args this message requires
   const unsigned int argCount = GncMessages::argCount (source, code);
   if ((gncdebug) && (argCount != argList.count()))
-    qDebug
-    (QString("MyMoneyGncReader::postMessage debug: Message %1, code %2, requires %3 arguments, got %4")
-        .arg(source).arg(code).arg(argCount).arg(argList.count()));
+    qDebug("%s", QString("MyMoneyGncReader::postMessage debug: Message %1, code %2, requires %3 arguments, got %4")
+        .arg(source).arg(code).arg(argCount).arg(argList.count()).data());
   // store the arguments
   for (i = 0; i < argCount; i++) {
     if (i > argList.count()) m->args.append(QString());

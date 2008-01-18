@@ -726,4 +726,15 @@ void KBudgetView::slotUpdateBudget(void)
   }
 }
 
+void KBudgetView::languageChange(void)
+{
+  KBudgetViewDecl::languageChange();
+
+  m_newButton->setText(QString());
+  m_renameButton->setText(QString());
+  m_deleteButton->setText(QString());
+  m_updateButton->setText(QString());
+  m_resetButton->setText(QString());
+}
+
 #include "kbudgetview.moc"

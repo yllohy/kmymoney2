@@ -155,6 +155,8 @@ protected slots:
 
   void slotResetBudget(void);
 
+  void languageChange(void);
+
 private slots:
   void slotRearrange(void);
 

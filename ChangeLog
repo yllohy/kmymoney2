@@ -1,3 +1,8 @@
+
+2008-01-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed text from buttons on top of budget list in budget view
+  * Converted QMessageBox calls to use KMessageBox in GNCConverter
+
 2008-01-17 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Yahoo Canada Online Quote Source - contributed by Danny Scott
 
