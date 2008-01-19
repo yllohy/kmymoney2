@@ -1,4 +1,9 @@
 
+2008-01-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Show date field when manually updateing prices
+  * Don't show 'Accounts with no institution' item in institution view
+    if there are no such accounts 
+
 2008-01-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed text from buttons on top of budget list in budget view
   * Converted QMessageBox calls to use KMessageBox in GNCConverter

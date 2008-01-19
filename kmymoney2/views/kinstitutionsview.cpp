@@ -167,6 +167,9 @@ void KInstitutionsView::loadAccounts(void)
 
     loadSubAccounts(noInstitutionItem, QCString());
 
+    // hide it, if unused
+    noInstitutionItem->setVisible(noInstitutionItem->childCount() != 0);
+
     QValueList<MyMoneyInstitution> list = file->institutionList();
     QValueList<MyMoneyInstitution>::const_iterator it_i;
     for(it_i = list.begin(); it_i != list.end(); ++it_i) {
