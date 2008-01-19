@@ -3,6 +3,8 @@
   * Show date field when manually updateing prices
   * Don't show 'Accounts with no institution' item in institution view
     if there are no such accounts 
+  * Use date of last new transaction entered also in
+    investment transaction editor
 
 2008-01-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed text from buttons on top of budget list in budget view

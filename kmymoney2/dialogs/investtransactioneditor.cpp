@@ -538,7 +538,12 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
 
   if(!isMultiSelection()) {
     // date
-    postDate->setDate(m_transaction.postDate());
+    if(m_transaction.postDate().isValid())
+      postDate->setDate(m_transaction.postDate());
+    else if(m_lastPostDate.isValid())
+      postDate->setDate(m_lastPostDate);
+    else
+      postDate->setDate(QDate::currentDate());
 
     // security
     security->completion()->setSelected(m_split.accountId());
