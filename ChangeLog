@@ -3,6 +3,8 @@
   * Improved sorting of schedules view
   * Show date in schedule view according to KDE settings
   * Double click on scheduled transaction opens schedule editor
+  * Added two changes from the debian distribution
+  * Clear out the reconciliation account when closing a file
 
 2008-01-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show date field when manually updateing prices

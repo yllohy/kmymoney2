@@ -1164,6 +1164,9 @@ void KMyMoney2App::slotFileClose(void)
   slotSelectPayees(QValueList<MyMoneyPayee>());
   slotSelectTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>());
 
+  m_reconciliationAccount = MyMoneyAccount();
+  myMoneyView->finishReconciliation(m_reconciliationAccount);
+
   myMoneyView->closeFile();
   m_fileName = KURL();
   updateCaption();
