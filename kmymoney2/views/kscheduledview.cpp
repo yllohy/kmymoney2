@@ -67,7 +67,6 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name ) :
   m_searchWidget = new KListViewSearchLineWidget(m_qlistviewScheduled, m_listTab);
   m_listTabLayout->insertWidget(0, m_searchWidget);
 
-  m_qlistviewScheduled->setRootIsDecorated(true);
   m_qlistviewScheduled->addColumn(i18n("Type/Name"));
   m_qlistviewScheduled->addColumn(i18n("Account"));
   m_qlistviewScheduled->addColumn(i18n("Payee"));
@@ -75,13 +74,14 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name ) :
   m_qlistviewScheduled->addColumn(i18n("Next Due Date"));
   m_qlistviewScheduled->addColumn(i18n("Frequency"));
   m_qlistviewScheduled->addColumn(i18n("Payment Method"));
+  m_qlistviewScheduled->setColumnAlignment(3, Qt::AlignRight);
+
+  readConfig();
+
   m_qlistviewScheduled->setMultiSelection(false);
   m_qlistviewScheduled->header()->setResizeEnabled(true);
-  m_qlistviewScheduled->setAllColumnsShowFocus(true);
-  // never show a horizontal scroll bar
-  // m_qlistviewScheduled->setHScrollBarMode(QScrollView::AlwaysOff);
-  m_qlistviewScheduled->setSorting(-1);
-  m_qlistviewScheduled->setColumnAlignment(3, Qt::AlignRight);
+  if(m_qlistviewScheduled->sortColumn() == -1)
+    m_qlistviewScheduled->setSorting(0);
 
   connect(m_qbuttonNew, SIGNAL(clicked()), kmymoney2->action("schedule_new"), SLOT(activate()));
 
@@ -97,8 +97,6 @@ KScheduledView::KScheduledView(QWidget *parent, const char *name ) :
   KIconLoader *il = KGlobal::iconLoader();
   m_tabWidget->setTabIconSet(m_listTab, QIconSet(il->loadIcon("contents", KIcon::Small, KIcon::SizeSmall)));
   m_tabWidget->setTabIconSet(m_calendarTab, QIconSet(il->loadIcon("calendartab", KIcon::User, KIcon::SizeSmall)));
-
-  readConfig();
 
   connect(m_qlistviewScheduled, SIGNAL(contextMenu(KListView*, QListViewItem*, const QPoint&)),
     this, SLOT(slotListViewContextMenu(KListView*, QListViewItem*, const QPoint&)));
@@ -166,10 +164,10 @@ void KScheduledView::refresh(bool full, const QCString schedId)
 
     MyMoneyFile *file = MyMoneyFile::instance();
 
-    KScheduledListItem *itemTransfers = new KScheduledListItem(m_qlistviewScheduled, i18n("Transfers"));
-    KScheduledListItem *itemDeposits = new KScheduledListItem(m_qlistviewScheduled, i18n("Deposits"));
-    KScheduledListItem *itemBills = new KScheduledListItem(m_qlistviewScheduled, i18n("Bills"));
-    KScheduledListItem *itemLoans = new KScheduledListItem(m_qlistviewScheduled, i18n("Loans"));
+    KScheduledListItem *itemBills = new KScheduledListItem(m_qlistviewScheduled, i18n("Bills"), KMyMoneyUtils::billScheduleIcon(KIcon::Small), "0");
+    KScheduledListItem *itemDeposits = new KScheduledListItem(m_qlistviewScheduled, i18n("Deposits"), KMyMoneyUtils::depositScheduleIcon(KIcon::Small), "1");
+    KScheduledListItem *itemLoans = new KScheduledListItem(m_qlistviewScheduled, i18n("Loans"), KMyMoneyUtils::transferScheduleIcon(KIcon::Small), "2");
+    KScheduledListItem *itemTransfers = new KScheduledListItem(m_qlistviewScheduled, i18n("Transfers"), KMyMoneyUtils::transferScheduleIcon(KIcon::Small), "3");
 
     QValueList<MyMoneySchedule> scheduledItems = file->scheduleList();
 
@@ -300,23 +298,6 @@ void KScheduledView::slotRearrange(void)
   resizeEvent(0);
 }
 
-void KScheduledView::resizeEvent(QResizeEvent* e)
-{
-#if 0
-  m_qlistviewScheduled->setColumnWidth(1, 100);
-  m_qlistviewScheduled->setColumnWidth(2, 100);
-  m_qlistviewScheduled->setColumnWidth(3, 80);
-  m_qlistviewScheduled->setColumnWidth(4, 120);
-  m_qlistviewScheduled->setColumnWidth(5, 100);
-  m_qlistviewScheduled->setColumnWidth(6, 120);
-  m_qlistviewScheduled->setColumnWidth(0, m_qlistviewScheduled->visibleWidth()-620);
-#endif
-
-  // call base class resizeEvent()
-  KScheduledViewDecl::resizeEvent(e);
-}
-
-
 void KScheduledView::readConfig(void)
 {
   KConfig *config = KGlobal::config();
@@ -385,10 +366,8 @@ void KScheduledView::slotListItemExecuted(QListViewItem* item, const QPoint&, in
     if (!scheduleId.isEmpty()) // Top level item
     {
       MyMoneySchedule schedule = MyMoneyFile::instance()->schedule(scheduleId);
-
-      m_calendar->setDate(schedule.nextDueDate());
-      m_tabWidget->showPage(m_calendarTab);
       m_selectedSchedule = schedule.id();
+      emit editSchedule();
     }
   } catch (MyMoneyException *e)
   {

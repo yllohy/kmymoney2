@@ -49,7 +49,7 @@ class KPopupMenu;
   * Used by the KMyMoneyView class to show the view.
   *
   * @author Michael Edwardes 2000-2002
-  * $Id: kscheduledview.h,v 1.29 2008/01/14 13:30:00 ipwizard Exp $
+  * $Id: kscheduledview.h,v 1.30 2008/01/20 14:52:12 ipwizard Exp $
   *
   * @short A class to encapsulate recurring transaction operations.
   */
@@ -81,20 +81,7 @@ signals:
   void scheduleSelected(const MyMoneySchedule& schedule);
   void openContextMenu(void);
   void enterSchedule(void);
-
-protected:
-  /**
-    * Re-implement the standard qt resize event.
-    */
-  void resizeEvent(QResizeEvent *);
-
-  /**
-    * Re-implement the update method from MyMoneyObserver.
-    *
-    * It just updates the account list in the combo box.  (We dont need to
-    * update anything else.
-    */
-  void update(const QCString& account);
+  void editSchedule(void);
 
 protected slots:
   /**

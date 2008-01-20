@@ -326,19 +326,11 @@ public:
   bool dirty(void);
 
   /**
-    * Creates a new file first making sure that one isn't open already.  Opens
-    * up a KNewFileDlg to input the new details.
-    *
-    * @param createEmtpyFile if false (default) the user will be asked for personal
-    *                        information and will be offered to load default income
-    *                        and expense accounts. If true, a completely empty file
-    *                        will be created without user interaction.
-    * @retval false User pressed Cancel button
-    * @retval true User pressed Ok
+    * Close the currently opened file and create an empty new file.
     *
     * @see MyMoneyFile
     */
-  bool newFile(const bool createEmtpyFile = false);
+  void newFile(void);
 
   /**
     * Moves the view up from transaction to Bank/Account view.

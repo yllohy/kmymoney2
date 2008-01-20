@@ -19,11 +19,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef KSCHEDULEDLISTITEM_H
 #define KSCHEDULEDLISTITEM_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
+#include <qpixmap.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -55,10 +58,12 @@ public:
     *
     * @param parent The list view to be a child of.
     * @param description The (translated) description.
+    * @param pixmap A pixmap for the entry
+    * @param sortKey a sortkey, if empty, @c description will be used.
     *
     * @see MyMoneySchedule
     */
-  KScheduledListItem(KListView *parent, const QString& description);
+  KScheduledListItem(KListView *parent, const QString& description, const QPixmap& pixmap = QPixmap(), const QString& sortKey = QString());
 
   /**
     * This constructor is used to create a child of one of the children
@@ -88,11 +93,15 @@ public:
     */
   const QCString& scheduleId(void) const { return m_schedule.id(); }
 
+  int compare(QListViewItem* i, int col, bool ascending) const;
+
 protected:
   void paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align);
 
 private:
   MyMoneySchedule m_schedule;
+  QString         m_sortKey;
+  MyMoneyMoney    m_amount;
 };
 
 #endif

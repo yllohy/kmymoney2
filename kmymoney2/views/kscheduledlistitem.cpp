@@ -31,6 +31,7 @@
 
 #include <kconfig.h>
 #include <klocale.h>
+#include <kglobal.h>
 #include <kglobalsettings.h>
 
 // ----------------------------------------------------------------------------
@@ -41,23 +42,20 @@
 #include "../kmymoneyglobalsettings.h"
 #include "../kmymoneyutils.h"
 
-KScheduledListItem::KScheduledListItem(KListView *parent, const QString& name) :
-  KListViewItem(parent,name)
+KScheduledListItem::KScheduledListItem(KListView *parent, const QString& name, const QPixmap& pixmap, const QString& sortKey) :
+  KListViewItem(parent, name),
+  m_sortKey(sortKey)
 {
-  if (name == i18n("Bills"))
-    setPixmap(0, KMyMoneyUtils::billScheduleIcon(KIcon::Small));
-  else if (name == i18n("Deposits"))
-    setPixmap(0, KMyMoneyUtils::depositScheduleIcon(KIcon::Small));
-  else if (name == i18n("Transfers"))
-    setPixmap(0, KMyMoneyUtils::transferScheduleIcon(KIcon::Small));
-  else if (name == i18n("Loans"))
-    setPixmap(0, KMyMoneyUtils::transferScheduleIcon(KIcon::Small));
+  setPixmap(0, pixmap);
+  if(m_sortKey.isEmpty())
+    m_sortKey = name;
 }
 
 KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoneySchedule& schedule/*, bool even*/)
  : KListViewItem(parent)
 {
   m_schedule = schedule;
+  m_sortKey = schedule.name();
   setPixmap(0, KMyMoneyUtils::scheduleIcon(KIcon::Small));
 
   try
@@ -131,16 +129,15 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
       setText(2, MyMoneyFile::instance()->payee(split.payeeId()).name());
     else
       setText(2, "---");
-    MyMoneyMoney amount = split.value();
-    amount = amount.abs();
-    setText(3, amount.formatMoney(currency.tradingSymbol()));
+    m_amount = split.value().abs();
+    setText(3, QString("%1  ").arg(m_amount.formatMoney(currency.tradingSymbol())));
     // Do the real next payment like ms-money etc
     if (schedule.isFinished())
     {
       setText(4, i18n("Finished"));
     }
     else
-      setText(4, schedule.nextDueDate().toString());
+      setText(4, KGlobal::locale()->formatDate(schedule.nextDueDate(), true));
 
     setText(5, KMyMoneyUtils::occurenceToString(schedule.occurence()));
     setText(6, KMyMoneyUtils::paymentMethodToString(schedule.paymentType()));
@@ -186,4 +183,49 @@ void KScheduledListItem::paintCell(QPainter* p, const QColorGroup& cg, int colum
     cg2.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
 
   QListViewItem::paintCell(p, cg2, column, width, align);
+}
+
+int KScheduledListItem::compare(QListViewItem* i, int col, bool ascending) const
+{
+  KScheduledListItem* item = dynamic_cast<KScheduledListItem*>(i);
+  int rc;
+  // do special sorting only if
+  // a) date
+  // b) amount
+  // c) name/group
+  // d) occurence
+  // in all other cases use the standard sorting
+  MyMoneyMoney diff;
+  switch(col) {
+    case 0:   // type and name
+      rc = m_sortKey.compare(item->m_sortKey);
+      break;
+
+    case 3:   // amount
+      diff = m_amount - item->m_amount;
+      if(diff.isZero())
+        rc = 0;
+      else if(diff.isPositive())
+        rc = 1;
+      else
+        rc = -1;
+      break;
+
+    case 4:   // date
+      rc = item->m_schedule.nextDueDate().daysTo(m_schedule.nextDueDate());
+      break;
+
+    case 5:   // occurence
+      rc = (m_schedule.occurence() - item->m_schedule.occurence());
+      break;
+
+    default:
+      rc = KListViewItem::compare(i, col, ascending);
+      break;
+  }
+  // adjust to [-1..1]
+  if(rc != 0) {
+    rc = (rc > 0) ? 1 : -1;
+  }
+  return rc;
 }

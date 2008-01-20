@@ -172,6 +172,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   connect(m_scheduledView, SIGNAL(scheduleSelected(const MyMoneySchedule&)), kmymoney2, SLOT(slotSelectSchedule(const MyMoneySchedule&)));
   connect(m_scheduledView, SIGNAL(openContextMenu()), kmymoney2, SLOT(slotShowScheduleContextMenu()));
   connect(m_scheduledView, SIGNAL(enterSchedule()), kmymoney2, SLOT(slotScheduleEnter()));
+  connect(m_scheduledView, SIGNAL(editSchedule()), kmymoney2, SLOT(slotScheduleEdit()));
 
   // Page 4
   m_categoriesViewFrame = addVBoxPage( i18n("Categories"), i18n("Categories"),
@@ -244,7 +245,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
 
 
   // construct an empty file
-  newFile(true);
+  newFile();
 
   // get rid of the title text
   QWidget* widget = dynamic_cast<QWidget*>(child("KJanusWidgetTitleLabel", "QLabel"));
@@ -1176,12 +1177,11 @@ void KMyMoneyView::finishReconciliation(const MyMoneyAccount& /* account */)
   emit reconciliationStarts(MyMoneyAccount(), MyMoneyMoney());
 }
 
-bool KMyMoneyView::newFile(const bool createEmtpyFile)
+void KMyMoneyView::newFile(void)
 {
   closeFile();
   m_fileType = KmmXML; // assume native type until saved
   m_fileOpen = true;
-  return true;
 }
 
 void KMyMoneyView::selectBaseCurrency(void)

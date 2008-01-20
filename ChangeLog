@@ -1,4 +1,9 @@
 
+2008-01-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Improved sorting of schedules view
+  * Show date in schedule view according to KDE settings
+  * Double click on scheduled transaction opens schedule editor
+
 2008-01-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Show date field when manually updateing prices
   * Don't show 'Accounts with no institution' item in institution view
