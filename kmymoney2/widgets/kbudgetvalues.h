@@ -66,6 +66,8 @@ class KBudgetValues : public KBudgetValuesDecl
      */
     void slotNeedUpdate(void);
 
+    void slotUpdateClearButton(void);
+
   protected:
     bool eventFilter(QObject* o, QEvent* e);
 

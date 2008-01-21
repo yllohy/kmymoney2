@@ -113,6 +113,12 @@ KMyMoneyAccountTreeBudgetItem::~KMyMoneyAccountTreeBudgetItem()
 {
 }
 
+void KMyMoneyAccountTreeBudgetItem::setBudget(const MyMoneyBudget& budget)
+{
+  m_budget = budget;
+  updateAccount(m_account);
+}
+
 void KMyMoneyAccountTreeBudgetItem::updateAccount(const MyMoneyAccount& account, bool forceTotalUpdate)
 {
   // make sure it's for the same object

@@ -2,6 +2,11 @@
 2008-01-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Write out id to XML via MyMoneyObject
   * Adjusted testcases
+  * Keep modified budget values when switching to a different view
+  * Keep focus when changing budget values
+  * Hide unused budgetary categories when 'Hide unused categories' filter
+    is active
+  * Deactivate clear button if budget value is zero
 
 2008-01-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved sorting of schedules view

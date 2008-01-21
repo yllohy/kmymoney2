@@ -97,6 +97,7 @@ const int KBudgetView::m_iBudgetYearsBack = 3;
 
 KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
   KBudgetViewDecl(parent,name),
+  m_needReload(false),
   m_inSelection(false)
 {
   m_accountTree->setSorting(-1);
@@ -189,7 +190,10 @@ void KBudgetView::show()
 {
   QTimer::singleShot(50, this, SLOT(slotRearrange()));
   QWidget::show();
-  slotRefreshView();
+  if(m_needReload) {
+    qDebug("reloading upon show");
+    slotRefreshView();
+  }
 }
 
 void KBudgetView::slotRearrange(void)
@@ -302,15 +306,10 @@ void KBudgetView::slotRefreshView(void)
   if(isVisible()) {
     if(m_inSelection)
       QTimer::singleShot(0, this, SLOT(slotRefreshView()));
-    else
+    else {
       loadBudgets();
-    // the following code seems useless, because if a budget was selected and it
-    // is not the first one in the list the one remembered during loadBudget will
-    // be forgotten with that code. So I commented it out (ipwizard)
-#if 0
-    QListViewItem * item = m_budgetList->firstChild();
-    m_budgetList->setSelected(item, true);
-#endif
+      m_needReload = false;
+    }
   } else {
     m_needReload = true;
   }
@@ -470,8 +469,8 @@ bool KBudgetView::loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QCStrin
     KMyMoneyAccountTreeBudgetItem *item = new KMyMoneyAccountTreeBudgetItem(parent, acc, budget, prices, security);
     unused |= loadSubAccounts(item, subAcctList, budget);
 
-    // no child accounts and not transactions in this account means 'unused'
-    bool thisUnused = (!item->firstChild()) && (m_transactionCountMap[acc.id()] == 0);
+    // no child accounts and no value assigned to this account
+    bool thisUnused = (!item->firstChild()) && (!budget.contains(acc.id()));
 
     // In case of a budget which is unused and we are requested to suppress
     // the display of those,
@@ -665,7 +664,10 @@ void KBudgetView::slotBudgetedAmountChanged(void)
   m_budgetValue->budgetValues(m_budget, accountGroup);
   m_budget.setAccount(accountGroup, account->id());
 
-  loadAccounts();
+  account->setBudget(m_budget);
+
+  m_updateButton->setEnabled(!(selectedBudget() == m_budget));
+  m_resetButton->setEnabled(!(selectedBudget() == m_budget));
 }
 
 void KBudgetView::AccountEnter()

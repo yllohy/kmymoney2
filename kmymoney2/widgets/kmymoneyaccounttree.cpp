@@ -774,9 +774,11 @@ void KMyMoneyAccountTreeItem::adjustTotalValue(const MyMoneyMoney& diff)
 {
   m_totalValue += diff;
 
-  // if the entry has no children, or it is currently not open
+  // if the entry has no children,
+  // or it is the top entry
+  // or it is currently not open
   // we need to display the value of it
-  if(!firstChild() || (!isOpen() && firstChild())) {
+  if(!firstChild() || !parent() || (!isOpen() && firstChild())) {
     if(firstChild())
       setText(KMyMoneyAccountTree::BalanceColumn, " ");
     if(parent())

@@ -97,6 +97,9 @@ public:
 
   ~KMyMoneyAccountTreeBudgetItem();
 
+  void setBudget(const MyMoneyBudget& budget);
+
+protected:
   /**
     * This method is loads new information into the item and updates the fields
     *

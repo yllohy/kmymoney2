@@ -91,6 +91,7 @@ KBudgetValues::KBudgetValues(QWidget* parent, const char* name) :
 
   connect(m_clearButton, SIGNAL(clicked()), this, SLOT(slotClearAllValues()));
   connect(m_periodGroup, SIGNAL(clicked(int)), this, SLOT(slotChangePeriod(int)));
+  connect(this, SIGNAL(valuesChanged()), this, SLOT(slotUpdateClearButton()));
 
   KGuiItem clearItem(KStdGuiItem::clear());
 
@@ -290,6 +291,7 @@ void KBudgetValues::setBudgetValues(const MyMoneyBudget& budget, const MyMoneyBu
       }
       break;
   }
+  slotUpdateClearButton();
   blockSignals(false);
 }
 
@@ -319,6 +321,21 @@ void KBudgetValues::budgetValues(const MyMoneyBudget& budget, MyMoneyBudget::Acc
       date = date.addMonths(1);
     }
   }
+}
+
+void KBudgetValues::slotUpdateClearButton(void)
+{
+  bool rc = false;
+  if(m_periodGroup->selected() == m_monthlyButton) {
+    rc = !m_amountMonthly->value().isZero();
+  } else if(m_periodGroup->selected() == m_yearlyButton) {
+    rc = !m_amountYearly->value().isZero();
+  } else if(m_periodGroup->selected() == m_individualButton) {
+    for(int i = 0; (i < 12) && (rc == false); ++i) {
+      rc |= !m_field[i]->value().isZero();
+    }
+  }
+  m_clearButton->setEnabled(rc);
 }
 
 #include "kbudgetvalues.moc"
