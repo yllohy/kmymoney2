@@ -283,6 +283,8 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   // older versions of the program as new features are added to the reports.
   // Feel free to change the minor type every time a change is made here.
 
+  writeBaseXML(*doc, e);
+
   if ( anonymous )
   {
     e.setAttribute("name", m_id);
@@ -300,7 +302,6 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
   e.setAttribute("investments", m_investments);
   e.setAttribute("loans", m_loans);
   e.setAttribute("rowtype", kRowTypeText[m_rowType]);
-  e.setAttribute("id", m_id);
   e.setAttribute("datelock", kDateLockText[m_dateLock]);
   e.setAttribute("includeschedules",m_includeSchedules);
   e.setAttribute("columnsaredays",m_columnsAreDays);

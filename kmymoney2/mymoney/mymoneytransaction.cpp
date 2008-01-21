@@ -372,7 +372,8 @@ void MyMoneyTransaction::writeXML(QDomDocument& document, QDomElement& parent) c
 {
   QDomElement el = document.createElement("TRANSACTION");
 
-  el.setAttribute("id", m_id);
+  writeBaseXML(document, el);
+
   el.setAttribute("postdate", dateToString(m_postDate));
   el.setAttribute("memo", m_memo);
   el.setAttribute("entrydate", dateToString(m_entryDate));

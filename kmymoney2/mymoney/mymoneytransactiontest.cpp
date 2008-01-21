@@ -381,7 +381,7 @@ void MyMoneyTransactionTest::testWriteXML() {
                 "<TRANSACTION-CONTAINER>\n"
 		" <TRANSACTION postdate=\"2001-12-28\" memo=\"Wohnung:Miete\" id=\"T000000000000000001\" commodity=\"EUR\" entrydate=\"2003-09-29\" >\n"
 		"  <SPLITS>\n"
-		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" bankid=\"SPID\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" account=\"A000076\" />\n"
+		"   <SPLIT payee=\"P000001\" reconciledate=\"\" shares=\"96379/100\" action=\"Withdrawal\" bankid=\"SPID\" number=\"\" reconcileflag=\"2\" memo=\"\" value=\"96379/100\" id=\"S0001\" account=\"A000076\" />\n"
 		"  </SPLITS>\n"
 		"  <KEYVALUEPAIRS>\n"
 		"   <PAIR key=\"key\" value=\"value\" />\n"

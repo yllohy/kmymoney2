@@ -44,11 +44,7 @@ MyMoneySplit::MyMoneySplit()
 }
 
 MyMoneySplit::MyMoneySplit(const QDomElement& node) :
-  /*
-    * don't call the MyMoneyObject(const QDomElement&) constructor here,
-    * because the splits are stored w/o an id
-    */
-  MyMoneyObject()
+  MyMoneyObject(node, false)
 {
   if("SPLIT" != node.tagName())
     throw new MYMONEYEXCEPTION("Node was not SPLIT");
@@ -196,6 +192,8 @@ MyMoneyMoney MyMoneySplit::price(void) const
 void MyMoneySplit::writeXML(QDomDocument& document, QDomElement& parent) const
 {
   QDomElement el = document.createElement("SPLIT");
+
+  writeBaseXML(document, el);
 
   el.setAttribute("payee", m_payee);
   el.setAttribute("reconciledate", dateToString(m_reconcileDate));

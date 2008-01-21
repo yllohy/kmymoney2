@@ -115,6 +115,11 @@ protected:
 
   void setId(const QCString& id) /* __attribute__ ((deprecated)) */;
 
+  /**
+   * This method writes out the members contained in this object.
+   */
+  void writeBaseXML(QDomDocument& document, QDomElement& el) const;
+
 protected:
   QCString               m_id;
   static const QCString  m_emptyId;

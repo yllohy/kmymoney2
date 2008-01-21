@@ -444,6 +444,8 @@ void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
 {
   QDomElement el = document.createElement("ACCOUNT");
 
+  writeBaseXML(document, el);
+
   el.setAttribute("parentaccount", parentAccountId());
   el.setAttribute("lastreconciled", dateToString(lastReconciliationDate()));
   el.setAttribute("lastmodified", dateToString(lastModified()));
@@ -452,7 +454,6 @@ void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
   el.setAttribute("number", number());
   // el.setAttribute("openingbalance", openingBalance().toString());
   el.setAttribute("type", accountType());
-  el.setAttribute("id", id());
   el.setAttribute("name", name());
   el.setAttribute("description", description());
   if(!currencyId().isEmpty())

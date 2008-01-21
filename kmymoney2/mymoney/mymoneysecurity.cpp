@@ -129,10 +129,11 @@ void MyMoneySecurity::writeXML(QDomDocument& document, QDomElement& parent) cons
   else
     el = document.createElement("SECURITY");
 
+  writeBaseXML(document, el);
+
   el.setAttribute("name", m_name);
   el.setAttribute("symbol", m_tradingSymbol);
   el.setAttribute("type", static_cast<int>(m_securityType));
-  el.setAttribute("id", id());
   el.setAttribute("saf", m_smallestAccountFraction);
   if(isCurrency()) {
     el.setAttribute("ppu", m_partsPerUnit);

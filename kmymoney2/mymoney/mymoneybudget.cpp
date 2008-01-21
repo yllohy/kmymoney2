@@ -89,8 +89,9 @@ const bool MyMoneyBudget::operator == (const MyMoneyBudget& right) const
 
 void MyMoneyBudget::write(QDomElement& e, QDomDocument *doc) const
 {
+  writeBaseXML(*doc, e);
+
   e.setAttribute("name",  m_name);
-  e.setAttribute("id",    m_id );
   e.setAttribute("start", m_start.toString(Qt::ISODate) );
   e.setAttribute("version", BUDGET_VERSION);
 

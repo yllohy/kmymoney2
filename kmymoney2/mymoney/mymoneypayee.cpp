@@ -116,8 +116,9 @@ void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
 {
   QDomElement el = document.createElement("PAYEE");
 
+  writeBaseXML(document, el);
+
   el.setAttribute("name", m_name);
-  el.setAttribute("id", m_id);
   el.setAttribute("reference", m_reference);
   el.setAttribute("email", m_email);
 

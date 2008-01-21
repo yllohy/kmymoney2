@@ -137,7 +137,8 @@ void MyMoneyInstitution::writeXML(QDomDocument& document, QDomElement& parent) c
 {
   QDomElement el = document.createElement("INSTITUTION");
 
-  el.setAttribute("id", m_id);
+  writeBaseXML(document, el);
+
   el.setAttribute("name", m_name);
   el.setAttribute("manager", m_manager);
   el.setAttribute("sortcode", m_sortcode);

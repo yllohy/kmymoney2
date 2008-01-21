@@ -902,6 +902,8 @@ void MyMoneySchedule::writeXML(QDomDocument& document, QDomElement& parent) cons
 {
   QDomElement el = document.createElement("SCHEDULED_TX");
 
+  writeBaseXML(document, el);
+
   el.setAttribute("name", m_name);
   el.setAttribute("type", m_type);
   el.setAttribute("occurence", m_occurence);
@@ -910,7 +912,6 @@ void MyMoneySchedule::writeXML(QDomDocument& document, QDomElement& parent) cons
   el.setAttribute("endDate", dateToString(m_endDate));
   el.setAttribute("fixed", m_fixed);
   el.setAttribute("autoEnter", m_autoEnter);
-  el.setAttribute("id", id());
   el.setAttribute("lastPayment", dateToString(m_lastPayment));
   el.setAttribute("weekendOption", m_weekendOption);
 
