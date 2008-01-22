@@ -182,6 +182,8 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   // values for margin (11) and spacing(6) taken from KDialog implementation
   QBoxLayout* layout = new QBoxLayout(frame, QBoxLayout::TopToBottom, 2, 6);
 
+  setCentralWidget(frame);
+
   ::timetrace("init statusbar");
   initStatusBar();
   ::timetrace("init actions");
@@ -209,8 +211,6 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   createInterfaces();
   loadPlugins();
 
-  setCentralWidget(frame);
-
   ::timetrace("done");
 
   connect(&proc,SIGNAL(processExited(KProcess *)),this,SLOT(slotProcessExited()));
@@ -225,10 +225,8 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   m_smtReader = 0;
   m_engineBackup = 0;
 
-  //this initializes Auto Saving related stuff
-  config->setGroup("General Options");
-  m_autoSaveEnabled = config->readBoolEntry("AutoSaveFile", false);
-  m_autoSavePeriod = config->readNumEntry("AutoSavePeriod", 0);
+  m_autoSaveEnabled = KMyMoneyGlobalSettings::autoSaveFile();
+  m_autoSavePeriod = KMyMoneyGlobalSettings::autoSavePeriod();
 
   m_autoSaveTimer = new QTimer(this);
   connect(m_autoSaveTimer, SIGNAL(timeout()), this, SLOT(slotAutoSave()));

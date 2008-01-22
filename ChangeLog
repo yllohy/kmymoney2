@@ -1,4 +1,8 @@
 
+2008-01-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Preserve last selected tab of schedule view
+  * Use KMyMoneyGlobalSettings for autosave options
+
 2008-01-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Write out id to XML via MyMoneyObject
   * Adjusted testcases
