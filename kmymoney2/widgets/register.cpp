@@ -599,8 +599,9 @@ bool Register::eventFilter(QObject* o, QEvent* e)
     QMouseEvent *me = dynamic_cast<QMouseEvent*>(e);
     if(me->button() == Qt::RightButton) {
       emit headerClicked();
-      return true;
     }
+    // eat up left mouse button press for now
+    return true;
   }
 
   return QTable::eventFilter(o, e);
