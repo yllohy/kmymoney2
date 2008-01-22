@@ -65,7 +65,6 @@
 #include <dcopclient.h>
 #include <kstartupinfo.h>
 #include <kparts/componentfactory.h>
-#include <kedittoolbar.h>
 #include <krun.h>
 #include <kconfigdialog.h>
 #include <kinputdialog.h>
@@ -379,10 +378,6 @@ void KMyMoney2App::initActions(void)
   // *****************
   // The settings menu
   // *****************
-  KStdAction::showToolbar(this, SLOT(slotViewToolBar()), actionCollection());
-  KStdAction::showStatusbar(this, SLOT(slotViewStatusBar()), actionCollection());
-  KStdAction::keyBindings(this, SLOT(slotKeySettings()), actionCollection());
-  KStdAction::configureToolbars( this, SLOT( slotEditToolbars() ), actionCollection());
   KStdAction::preferences(this, SLOT( slotSettings() ), actionCollection());
   new KAction(i18n("Enable all messages"), "", 0, this, SLOT(slotEnableMessages()), actionCollection(), "settings_enable_messages");
   new KAction(i18n("KDE language settings..."), "", 0, this, SLOT(slotKDELanguageSettings()), actionCollection(), "settings_language");
@@ -479,7 +474,8 @@ void KMyMoney2App::initActions(void)
   toggleAction("view_show_all_accounts")->setChecked(false);
 
   // use the absolute path to your kmymoney2ui.rc file for testing purpose in createGUI();
-  createGUI(QString::null, false);
+  // createGUI(QString::null, false);
+  setupGUI();
 }
 
 void KMyMoney2App::dumpActions(void) const
@@ -550,8 +546,8 @@ void KMyMoney2App::saveOptions(void)
 {
   config->setGroup("General Options");
   config->writeEntry("Geometry", size());
-  config->writeEntry("Show Statusbar", toggleAction("options_show_statusbar")->isChecked());
-  toolBar("mainToolBar")->saveSettings(config, "mainToolBar");
+  // config->writeEntry("Show Statusbar", toggleAction("options_show_statusbar")->isChecked());
+  // toolBar("mainToolBar")->saveSettings(config, "mainToolBar");
 
   dynamic_cast<KRecentFilesAction*>(action("file_open_recent"))->saveEntries(config,"Recent Files");
 }
@@ -559,12 +555,7 @@ void KMyMoney2App::saveOptions(void)
 
 void KMyMoney2App::readOptions(void)
 {
-  toolBar("mainToolBar")->applySettings(config, "mainToolBar");
-  toggleAction("options_show_toolbar")->setChecked(toolBar("mainToolBar")->isShown());
-
   config->setGroup("General Options");
-  toggleAction("options_show_statusbar")->setChecked(config->readBoolEntry("Show Statusbar", true));
-  slotViewStatusBar();
 
   toggleAction("view_hide_reconciled_transactions")->setChecked(KMyMoneyGlobalSettings::hideReconciledTransactions());
   toggleAction("view_hide_unused_categories")->setChecked(KMyMoneyGlobalSettings::hideUnusedCategory());
@@ -1196,16 +1187,6 @@ void KMyMoney2App::slotFileQuit(void)
 
   } else
       kapp->quit();
-}
-
-void KMyMoney2App::slotViewToolBar(void)
-{
-  toolBar("mainToolBar")->setShown(toggleAction("options_show_toolbar")->isChecked());
-}
-
-void KMyMoney2App::slotViewStatusBar(void)
-{
-  statusBar()->setShown(toggleAction("options_show_statusbar")->isChecked());
 }
 
 void KMyMoney2App::slotHideReconciledTransactions(void)
@@ -2212,24 +2193,6 @@ void KMyMoney2App::slotFileNewWindow(void)
   KMyMoney2App *newWin = new KMyMoney2App;
 
   newWin->show();
-}
-
-void KMyMoney2App::slotEditToolbars(void)
-{
-    saveMainWindowSettings( KGlobal::config(), "main_window_settings" );
-    KEditToolbar dlg( factory(),this );
-    connect( &dlg, SIGNAL( newToolbarConfig() ), SLOT( slotNewToolBarConfig() ) );
-    dlg.exec();
-}
-
-void KMyMoney2App::slotNewToolBarConfig(void)
-{
-  applyMainWindowSettings( KGlobal::config(), "main_window_settings" );
-}
-
-void KMyMoney2App::slotKeySettings(void)
-{
-  KKeyDialog::configure( actionCollection() );
 }
 
 void KMyMoney2App::slotShowTipOfTheDay(void)

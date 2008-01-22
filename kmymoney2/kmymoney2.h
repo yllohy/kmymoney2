@@ -112,9 +112,6 @@ protected slots:
     */
   void slotEnableMessages(void);
 
-  void slotKeySettings(void);
-  void slotEditToolbars(void);
-  void slotNewToolBarConfig(void);
   /**
     * Called when the user asks for file information.
     */
@@ -709,16 +706,6 @@ public slots:
     * fires up the currency table editor
     */
   void slotCurrencyDialog(void);
-
-  /**
-    * toggles the toolbar
-    */
-  void slotViewToolBar(void);
-
-  /**
-    * toggles the statusbar
-    */
-  void slotViewStatusBar(void);
 
   /**
     * Toggles the hide reconciled transactions setting
