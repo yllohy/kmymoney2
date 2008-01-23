@@ -1,4 +1,7 @@
 
+2008-01-23 Alvaro Soliverez <asoliverez@gmail.com>
+  * Adjusted width of forecast columns when refreshing
+
 2008-01-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Preserve last selected tab of schedule view
   * Use KMyMoneyGlobalSettings for autosave options
