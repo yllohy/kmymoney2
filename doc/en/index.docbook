@@ -13,6 +13,7 @@
 	<!ENTITY whatsnew SYSTEM "whatsnew.docbook">
 	<!ENTITY details-institutions SYSTEM "details-institutions.docbook">
 	<!ENTITY details-accounts SYSTEM "details-accounts.docbook">
+	<!ENTITY details-budgets SYSTEM "details-budgets.docbook">
 	<!ENTITY details-categories SYSTEM "details-categories.docbook">
 	<!ENTITY details-payees SYSTEM "details-payees.docbook">
 	<!ENTITY details-schedules SYSTEM "details-schedules.docbook">
@@ -112,6 +113,8 @@
 <year>2004</year>
 <year>2005</year>
 <year>2006</year>
+<year>2007</year>
+<year>2008</year>
 <holder>The KMyMoney Development Team</holder>
 </copyright>
 
@@ -128,7 +131,7 @@ Please respect the format of the date (DD/MM/YYYY) and of the version
 Do NOT change these in the translation. -->
 
 <date>16/07/2005</date>
-<releaseinfo>0.8</releaseinfo>
+<releaseinfo>0.9</releaseinfo>
 
 <!-- Abstract about this handbook -->
 
@@ -174,6 +177,7 @@ Do NOT change these in the translation. -->
 &details-reports;
 &details-impexp;
 &details-loans;
+&details-budgets;
 &details-settings;
 &details-search;
 &details-formats;
