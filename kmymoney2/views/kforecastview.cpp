@@ -102,8 +102,6 @@ void KForecastView::show(void)
   // don't forget base class implementation
   KForecastViewDecl::show();
   slotTabChanged(m_tab->currentPage());
-  m_summaryList->setResizeMode(QListView::AllColumns);
-  m_advancedList->setResizeMode(QListView::AllColumns);
 }
 
 void KForecastView::slotLoadForecast(void)
@@ -146,10 +144,12 @@ void KForecastView::loadListView(void)
   QMap<QString, QCString>::ConstIterator it_n;
   for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
-    m_forecastList->addColumn(acc.name(), -1);
+    int col = m_forecastList->addColumn(acc.name(), -1);
+    m_forecastList->setColumnAlignment(col, Qt::AlignRight);
   }
 
-  m_forecastList->addColumn(i18n("Total Forecast"), -1);
+  int totalCol = m_forecastList->addColumn(i18n("Total Forecast"), -1);
+  m_forecastList->setColumnAlignment(totalCol, Qt::AlignRight);
 
   m_forecastList->setSorting(-1);
 
@@ -180,13 +180,6 @@ void KForecastView::loadListView(void)
     }
     totalAmount = totalAmountMM.formatMoney(baseCurrency.tradingSymbol());
     forecastItem->setText((dateColumn+it_c), totalAmount);
-  }
-
-  //adjust the width all columns
-  for(int col=1; col < m_forecastList->columns(); ++col) {
-    m_forecastList->setColumnWidthMode(col, QListView::Maximum);
-    m_forecastList->setColumnAlignment(col, Qt::AlignRight);
-    m_forecastList->adjustColumn(col);
   }
   m_forecastList->show();
 }
