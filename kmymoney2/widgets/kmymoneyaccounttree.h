@@ -133,6 +133,11 @@ protected:
 
   void expandCollapseAll(bool expand);
 
+  /**
+    * Overridden to detect Menu Key
+    */
+  bool eventFilter(QObject* o, QEvent* e);
+
 protected slots:
   void slotObjectDropped(QDropEvent* event, QListViewItem* parent, QListViewItem* after);
 

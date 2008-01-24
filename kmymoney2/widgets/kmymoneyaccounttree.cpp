@@ -88,6 +88,8 @@ KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char* name) :
   setDropVisualizer(false);
   setDropHighlighter(true);
 
+  installEventFilter(this);
+
   // setup a default
   m_baseCurrency.setSmallestAccountFraction(100);
   m_baseCurrency.setSmallestCashFraction(100);
@@ -129,6 +131,27 @@ void KMyMoneyAccountTree::setSectionHeader(int sec, const QString& txt)
 KMyMoneyAccountTreeItem* KMyMoneyAccountTree::selectedItem(void) const
 {
   return dynamic_cast<KMyMoneyAccountTreeItem *>(KListView::selectedItem());
+}
+
+bool KMyMoneyAccountTree::eventFilter(QObject* o, QEvent* e)
+{
+  if(o == this && e->type() == QEvent::KeyPress) {
+    QKeyEvent* ke = dynamic_cast<QKeyEvent*>(e);
+    if(ke->key() == Qt::Key_Menu) {
+      // Create a copy of the item since the original might be destroyed
+      // during processing of this signal.
+      KMyMoneyAccountTreeItem* item = selectedItem();
+      if(item->isInstitution()) {
+        MyMoneyInstitution institution = dynamic_cast<const MyMoneyInstitution&>(item->itemObject());
+        emit openContextMenu(institution);
+      } else {
+        MyMoneyAccount account = dynamic_cast<const MyMoneyAccount&>(item->itemObject());
+        emit openContextMenu(account);
+      }
+      return true;
+    }
+  }
+  return KListView::eventFilter(o, e);
 }
 
 const KMyMoneyAccountTreeItem* KMyMoneyAccountTree::findItem(const QCString& id) const

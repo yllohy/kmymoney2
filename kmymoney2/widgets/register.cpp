@@ -602,6 +602,12 @@ bool Register::eventFilter(QObject* o, QEvent* e)
     }
     // eat up left mouse button press for now
     return true;
+  } else if(o == this && e->type() == QEvent::KeyPress) {
+    QKeyEvent* ke = dynamic_cast<QKeyEvent*>(e);
+    if(ke->key() == Qt::Key_Menu) {
+      emit openContextMenu();
+      return true;
+    }
   }
 
   return QTable::eventFilter(o, e);

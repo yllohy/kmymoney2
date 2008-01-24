@@ -1102,6 +1102,7 @@ bool KGlobalLedgerView::eventFilter(QObject* o, QEvent* e)
         rc = true;
       }
     } else {
+      // qDebug("object = %s, key = %d", o->className(), k->key());
       if(o == m_register) {
         if((k->state() & Qt::KeyButtonMask) == 0) {
           switch(k->key()) {
