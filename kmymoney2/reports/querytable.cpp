@@ -873,11 +873,22 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   MyMoneyReport report = m_config;
   QDate startingDate;
   QDate endingDate;
+  MyMoneyMoney price;
   report.validDateRange( startingDate, endingDate );
   startingDate = startingDate.addDays(-1);
 
-  MyMoneyMoney startingBal = file->balance(account.id(),startingDate) * file->price(security.id(), QCString(), startingDate).rate(QCString());
-  MyMoneyMoney endingBal = file->balance((account).id(),endingDate) * file->price(security.id(), QCString(), endingDate).rate(QCString());
+  if ( m_config.isConvertCurrency() ) {
+    price = file->price(security.id(), QCString(), startingDate).rate(QCString()) * account.baseCurrencyPrice(startingDate);
+  } else {
+    price = file->price(security.id(), QCString(), startingDate).rate(QCString());
+  }
+  MyMoneyMoney startingBal = file->balance(account.id(),startingDate) * price;
+  if ( m_config.isConvertCurrency() ) {
+    price = file->price(security.id(), QCString(), endingDate).rate(QCString()) * account.baseCurrencyPrice(endingDate);
+  } else {
+    price = file->price(security.id(), QCString(), endingDate).rate(QCString());
+  }
+  MyMoneyMoney endingBal = file->balance((account).id(),endingDate) * price;
   CashFlowList buys;
   CashFlowList sells;
   CashFlowList reinvestincome;

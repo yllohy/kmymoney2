@@ -106,9 +106,6 @@ MyMoneyMoney ReportAccount::deepCurrencyPrice( const QDate& date ) const
   MyMoneySecurity undersecurity = file->security( currencyId() );
   if ( ! undersecurity.isCurrency() )
   {
-    // FIXME: If there is no price for this date, our method will return a 1.0,
-    // which will be confusing for the user. We should report an error back to the report.
-    // This will require an error-handling mechanism, which I don't have right now.
     MyMoneyPrice price = file->price(undersecurity.id(),undersecurity.tradingCurrency(),date);
     if ( price.isValid() )
     {
@@ -153,9 +150,6 @@ MyMoneyMoney ReportAccount::baseCurrencyPrice( const QDate& date ) const
 
   if(isForeignCurrency())
   {
-    // FIXME: If there is no price for this date, our method will return a 1.0,
-    // which will be confusing for the user. We should report an error back to the report.
-    // This will require an error-handling mechanism, which I don't have right now.
     MyMoneyPrice price = file->price(currency(), file->baseCurrency().id(), date);
     if(price.isValid())
     {

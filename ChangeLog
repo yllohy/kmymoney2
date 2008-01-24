@@ -1,4 +1,9 @@
 
+2008-01-24 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added calculation of base currency balances in Investment Performance report - bug #1699859
+  * Removed comments of ReportAccount::deepCurrencyPrice and baseCurrencyPrice where it said
+    it would return 1.0 if date was not exact
+
 2008-01-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added Context Menu Key handling to ledger and account tree views
 
