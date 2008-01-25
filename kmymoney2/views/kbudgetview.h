@@ -127,11 +127,6 @@ protected:
   KMyMoneyAccountTreeBudgetItem* selectedAccount(void) const;
   void setTimeSpan(KMyMoneyAccountTreeBudgetItem *account, MyMoneyBudget::AccountGroup& accountGroup, int iTimeSpan);
 
-  /**
-   * Overridden to detect Menu Key
-   */
-  bool eventFilter(QObject* o, QEvent* e);
-
 protected slots:
 
   /**
@@ -169,9 +164,11 @@ private slots:
     * This slot receives the signal from the listview control that an item was right-clicked,
     * If @p item points to a real payee item, emits openContextMenu().
     *
+    * @param lv pointer to the listview
     * @param i the item on which the cursor resides
+    * @param p position of the pointing device
     */
-  void slotOpenContextMenu(QListViewItem* i);
+  void slotOpenContextMenu(KListView* lv, QListViewItem* i, const QPoint& p);
 
 signals:
   /**

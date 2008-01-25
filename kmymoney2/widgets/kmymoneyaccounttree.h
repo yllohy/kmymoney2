@@ -133,11 +133,6 @@ protected:
 
   void expandCollapseAll(bool expand);
 
-  /**
-    * Overridden to detect Menu Key
-    */
-  bool eventFilter(QObject* o, QEvent* e);
-
 protected slots:
   void slotObjectDropped(QDropEvent* event, QListViewItem* parent, QListViewItem* after);
 
@@ -152,13 +147,15 @@ protected slots:
   void slotSelectObject(QListViewItem *i);
 
   /**
-    * This slot is connected to the accout list view's rightButtonClicked signal
+    * This slot is connected to the accout list view's contextMenu signal
     * and checks if the item pointed to by @p i is either an account or institution
     * and sends out the necessary signal openContextMenu.
     *
+    * @param lv pointer to KListView
     * @param i pointer to QListViewItem
+    * @param p position information
     */
-  void slotOpenContextMenu(QListViewItem* i);
+  void slotOpenContextMenu(KListView* lv, QListViewItem* i, const QPoint& p);
 
   /**
     * This slot is connected to the accout list view's executed signal

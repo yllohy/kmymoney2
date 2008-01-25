@@ -86,10 +86,8 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name) :
   m_table->setShowSortIndicator(true);
   m_table->restoreLayout(KGlobal::config(), "Investment Settings");
 
-  m_table->installEventFilter(this);
-
-  connect(m_table, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
-    this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
+  connect(m_table, SIGNAL(contextMenu(KListView*, QListViewItem* , const QPoint&)),
+    this, SLOT(slotListContextMenu(KListView*, QListViewItem*, const QPoint&)));
   connect(m_table, SIGNAL(selectionChanged(QListViewItem *)), this, SLOT(slotSelectionChanged(QListViewItem *)));
 
   connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)),
@@ -105,24 +103,6 @@ KInvestmentView::~KInvestmentView()
   m_table->saveLayout(KGlobal::config(), "Investment Settings");
   delete d;
 }
-
-bool KInvestmentView::eventFilter(QObject* o, QEvent* e)
-{
-  if(o == m_table && e->type() == QEvent::KeyPress) {
-    QKeyEvent* ke = dynamic_cast<QKeyEvent*>(e);
-    if(ke->key() == Qt::Key_Menu) {
-      kmymoney2->slotSelectInvestment();
-      KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(m_table->selectedItem());
-      if(pItem) {
-        kmymoney2->slotSelectInvestment(MyMoneyFile::instance()->account(pItem->account().id()));
-      }
-      emit investmentRightMouseClick();
-      return true;
-    }
-  }
-  return KInvestmentViewDecl::eventFilter(o, e);
-}
-
 
 void KInvestmentView::slotSelectionChanged(QListViewItem *item)
 {
@@ -140,7 +120,7 @@ void KInvestmentView::slotSelectionChanged(QListViewItem *item)
   }
 }
 
-void KInvestmentView::slotListRightMouse(QListViewItem* /*item*/, const QPoint& /*point*/, int /*x*/)
+void KInvestmentView::slotListContextMenu(KListView* /* lv */, QListViewItem* /*item*/, const QPoint& /*point*/)
 {
   kmymoney2->slotSelectInvestment();
   KInvestmentListItem *pItem = dynamic_cast<KInvestmentListItem*>(m_table->selectedItem());

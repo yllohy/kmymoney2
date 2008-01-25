@@ -218,11 +218,6 @@ protected:
   void selectedPayees(QValueList<MyMoneyPayee>& payeesList) const;
   void ensurePayeeVisible(const QCString& id);
 
-  /**
-   * Overridden to detect Menu Key
-   */
-  bool eventFilter(QObject* o, QEvent* e);
-
 protected slots:
   /**
     * This method loads the m_transactionList, clears
@@ -264,9 +259,11 @@ private slots:
     * This slot receives the signal from the listview control that an item was right-clicked,
     * If @p item points to a real payee item, emits openContextMenu().
     *
+    * @param lv pointer to the listview sending the signal
     * @param item the item on which the cursor resides
+    * @param p position of the pointer device
     */
-  void slotOpenContextMenu(QListViewItem* item);
+  void slotOpenContextMenu(KListView* lv, QListViewItem* item, const QPoint& p);
 
   void slotQueueUpdate(void);
 

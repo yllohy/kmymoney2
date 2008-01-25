@@ -106,16 +106,12 @@ protected:
 
   void loadView(void);
 
-  /**
-   * Overridden to detect Menu Key
-   */
-  bool eventFilter(QObject* o, QEvent* e);
-
 protected slots:
   /**
-    * This slot receives the signal from the listview control that an item was right-clicked,
+    * This slot receives the signal from the listview @c lv control that the context menu
+    * was requested for @c item at @c point.
     */
-  void slotListRightMouse(QListViewItem* item, const QPoint& point, int);
+  void slotListContextMenu(KListView* lv, QListViewItem* item, const QPoint& point);
 
   void slotSelectionChanged(QListViewItem *item);
 

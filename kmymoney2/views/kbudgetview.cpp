@@ -138,10 +138,8 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
   m_resetButton->setGuiItem(resetButtenItem);
   QToolTip::add(m_resetButton, resetButtenItem.toolTip());
 
-  m_budgetList->installEventFilter(this);
-
-  connect(m_budgetList, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
-    this, SLOT(slotOpenContextMenu(QListViewItem*)));
+  connect(m_budgetList, SIGNAL(contextMenu(KListView*, QListViewItem* , const QPoint&)),
+    this, SLOT(slotOpenContextMenu(KListView*, QListViewItem*, const QPoint&)));
   connect(m_budgetList, SIGNAL(itemRenamed(QListViewItem*,int,const QString&)), this, SLOT(slotRenameBudget(QListViewItem*,int,const QString&)));
   connect(m_budgetList, SIGNAL(selectionChanged()), this, SLOT(slotSelectBudget()));
 
@@ -185,18 +183,6 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
 KBudgetView::~KBudgetView()
 {
   m_accountTree->saveLayout(KGlobal::config(), "Budget Account View Settings");
-}
-
-bool KBudgetView::eventFilter(QObject* o, QEvent* e)
-{
-  if(o == m_budgetList && e->type() == QEvent::KeyPress) {
-    QKeyEvent* ke = dynamic_cast<QKeyEvent*>(e);
-    if(ke->key() == Qt::Key_Menu) {
-      emit openContextMenu(selectedBudget());
-      return true;
-    }
-  }
-  return KBudgetViewDecl::eventFilter(o, e);
 }
 
 void KBudgetView::show()
@@ -561,8 +547,11 @@ KMyMoneyAccountTreeBudgetItem* KBudgetView::selectedAccount(void) const
   return item;
 }
 
-void KBudgetView::slotOpenContextMenu(QListViewItem* i)
+void KBudgetView::slotOpenContextMenu(KListView* lv, QListViewItem* i, const QPoint& p)
 {
+  Q_UNUSED(lv);
+  Q_UNUSED(p);
+
   m_accountTree->setUpdatesEnabled(false);
 
   KBudgetListItem* item = dynamic_cast<KBudgetListItem*>(i);

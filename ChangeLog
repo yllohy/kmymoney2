@@ -3,6 +3,7 @@
   * Added sort indicator to payees list
   * Added context menu key handling to payees, investment and budget view
   * Fixed crash when using context menu key in account trees
+  * Handle context menu the KDE way
 
 2008-01-24 Alvaro Soliverez <asoliverez@gmail.com>
   * Swapped rows and columns in detail forecast view

@@ -353,8 +353,6 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
                     i18n("Use this to accept the modified data."));
   m_updateButton->setGuiItem(updateButtenItem);
 
-  m_payeesList->installEventFilter(this);
-
   connect(m_payeesList, SIGNAL(selectionChanged()), this, SLOT(slotSelectPayee()));
   connect(m_payeesList, SIGNAL(itemRenamed(QListViewItem*,int,const QString&)), this, SLOT(slotRenamePayee(QListViewItem*,int,const QString&)));
 
@@ -371,8 +369,10 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   connect(m_updateButton, SIGNAL(pressed()), this, SLOT(slotUpdatePayee()));
   connect(m_helpButton, SIGNAL(pressed()), this, SLOT(slotHelp()));
 
-  connect(m_payeesList, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
-    this, SLOT(slotOpenContextMenu(QListViewItem*)));
+  connect(m_payeesList, SIGNAL(contextMenu(KListView*, QListViewItem*, const QPoint&)), this, SLOT(slotOpenContextMenu(KListView*, QListViewItem*, const QPoint&)));
+
+//  connect(m_payeesList, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
+//    this, SLOT(slotOpenContextMenu(QListViewItem*)));
 
   connect(m_transactionView, SIGNAL(doubleClicked(QListViewItem*)),
           this, SLOT(slotTransactionDoubleClicked(QListViewItem*)));
@@ -384,21 +384,6 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
 
 KPayeesView::~KPayeesView()
 {
-}
-
-bool KPayeesView::eventFilter(QObject* o, QEvent* e)
-{
-  if(o == m_payeesList && e->type() == QEvent::KeyPress) {
-    QKeyEvent* ke = dynamic_cast<QKeyEvent*>(e);
-    if(ke->key() == Qt::Key_Menu) {
-      QValueList<MyMoneyPayee> pList;
-      selectedPayees(pList);
-      if(pList.count() != 0)
-        emit openContextMenu(pList[0]);
-      return true;
-    }
-  }
-  return KPayeesViewDecl::eventFilter(o, e);
 }
 
 void KPayeesView::slotQueueUpdate(void)
@@ -965,11 +950,14 @@ void KPayeesView::slotSelectPayeeAndTransaction(const QCString& payeeId, const Q
   }
 }
 
-void KPayeesView::slotOpenContextMenu(QListViewItem* i)
+void KPayeesView::slotOpenContextMenu(KListView* lv, QListViewItem* i, const QPoint& p)
 {
-  KPayeeListItem* item = dynamic_cast<KPayeeListItem*>(i);
-  if(item) {
-    emit openContextMenu(item->payee());
+  Q_UNUSED(p);
+  if(lv == m_payeesList) {
+    KPayeeListItem* item = dynamic_cast<KPayeeListItem*>(i);
+    if(item) {
+      emit openContextMenu(item->payee());
+    }
   }
 }
 
