@@ -190,7 +190,6 @@ void KBudgetView::show()
   QTimer::singleShot(50, this, SLOT(slotRearrange()));
   QWidget::show();
   if(m_needReload) {
-    qDebug("reloading upon show");
     slotRefreshView();
   }
 }
