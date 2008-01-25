@@ -138,6 +138,7 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
   m_resetButton->setGuiItem(resetButtenItem);
   QToolTip::add(m_resetButton, resetButtenItem.toolTip());
 
+  m_budgetList->installEventFilter(this);
 
   connect(m_budgetList, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotOpenContextMenu(QListViewItem*)));
@@ -184,6 +185,18 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
 KBudgetView::~KBudgetView()
 {
   m_accountTree->saveLayout(KGlobal::config(), "Budget Account View Settings");
+}
+
+bool KBudgetView::eventFilter(QObject* o, QEvent* e)
+{
+  if(o == m_budgetList && e->type() == QEvent::KeyPress) {
+    QKeyEvent* ke = dynamic_cast<QKeyEvent*>(e);
+    if(ke->key() == Qt::Key_Menu) {
+      emit openContextMenu(selectedBudget());
+      return true;
+    }
+  }
+  return KBudgetViewDecl::eventFilter(o, e);
 }
 
 void KBudgetView::show()

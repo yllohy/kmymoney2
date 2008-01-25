@@ -127,6 +127,11 @@ protected:
   KMyMoneyAccountTreeBudgetItem* selectedAccount(void) const;
   void setTimeSpan(KMyMoneyAccountTreeBudgetItem *account, MyMoneyBudget::AccountGroup& accountGroup, int iTimeSpan);
 
+  /**
+   * Overridden to detect Menu Key
+   */
+  bool eventFilter(QObject* o, QEvent* e);
+
 protected slots:
 
   /**

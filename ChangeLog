@@ -1,11 +1,17 @@
 
+2008-01-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added sort indicator to payees list
+  * Added context menu key handling to payees, investment and budget view
+  * Fixed crash when using context menu key in account trees
+
 2008-01-24 Alvaro Soliverez <asoliverez@gmail.com>
   * Swapped rows and columns in detail forecast view
 
 2008-01-24 Alvaro Soliverez <asoliverez@gmail.com>
-  * Added calculation of base currency balances in Investment Performance report - bug #1699859
-  * Removed comments of ReportAccount::deepCurrencyPrice and baseCurrencyPrice where it said
-    it would return 1.0 if date was not exact
+  * Added calculation of base currency balances in Investment
+    Performance report - bug #1699859
+  * Removed comments of ReportAccount::deepCurrencyPrice and
+    baseCurrencyPrice where it said it would return 1.0 if date was not exact
 
 2008-01-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added Context Menu Key handling to ledger and account tree views

@@ -106,6 +106,11 @@ protected:
 
   void loadView(void);
 
+  /**
+   * Overridden to detect Menu Key
+   */
+  bool eventFilter(QObject* o, QEvent* e);
+
 protected slots:
   /**
     * This slot receives the signal from the listview control that an item was right-clicked,

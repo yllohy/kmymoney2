@@ -141,12 +141,14 @@ bool KMyMoneyAccountTree::eventFilter(QObject* o, QEvent* e)
       // Create a copy of the item since the original might be destroyed
       // during processing of this signal.
       KMyMoneyAccountTreeItem* item = selectedItem();
-      if(item->isInstitution()) {
-        MyMoneyInstitution institution = dynamic_cast<const MyMoneyInstitution&>(item->itemObject());
-        emit openContextMenu(institution);
-      } else {
-        MyMoneyAccount account = dynamic_cast<const MyMoneyAccount&>(item->itemObject());
-        emit openContextMenu(account);
+      if(item) {
+        if(item->isInstitution()) {
+          MyMoneyInstitution institution = dynamic_cast<const MyMoneyInstitution&>(item->itemObject());
+          emit openContextMenu(institution);
+        } else {
+          MyMoneyAccount account = dynamic_cast<const MyMoneyAccount&>(item->itemObject());
+          emit openContextMenu(account);
+        }
       }
       return true;
     }

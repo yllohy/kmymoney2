@@ -218,6 +218,11 @@ protected:
   void selectedPayees(QValueList<MyMoneyPayee>& payeesList) const;
   void ensurePayeeVisible(const QCString& id);
 
+  /**
+   * Overridden to detect Menu Key
+   */
+  bool eventFilter(QObject* o, QEvent* e);
+
 protected slots:
   /**
     * This method loads the m_transactionList, clears
