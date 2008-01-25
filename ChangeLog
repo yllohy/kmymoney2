@@ -1,5 +1,8 @@
 
 2008-01-24 Alvaro Soliverez <asoliverez@gmail.com>
+  * Swapped rows and columns in detail forecast view
+
+2008-01-24 Alvaro Soliverez <asoliverez@gmail.com>
   * Added calculation of base currency balances in Investment Performance report - bug #1699859
   * Removed comments of ReportAccount::deepCurrencyPrice and baseCurrencyPrice where it said
     it would return 1.0 if date was not exact

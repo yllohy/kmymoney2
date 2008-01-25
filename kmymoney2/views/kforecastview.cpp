@@ -138,7 +138,7 @@ void KForecastView::loadListView(void)
   for(;m_forecastList->columns() > 0;) {
     m_forecastList->removeColumn(0);
   }
-
+/*
   int dateColumn = m_forecastList->addColumn(i18n("Date"), -1);
 
   QMap<QString, QCString>::ConstIterator it_n;
@@ -180,7 +180,97 @@ void KForecastView::loadListView(void)
     }
     totalAmount = totalAmountMM.formatMoney(baseCurrency.tradingSymbol());
     forecastItem->setText((dateColumn+it_c), totalAmount);
+    
+    
+    
+    
+    
+  } */
+  
+  //***********************************************
+  //add first column of both lists
+  int accountColumn = m_forecastList->addColumn(i18n("Account"), -1);
+  
+  //add cycle interval columns
+  m_forecastList->addColumn(i18n("Current"), -1);
+  for(int i = 1; i <= forecast.forecastDays(); ++i) {
+    QDate forecastDate = QDate::currentDate().addDays(i);
+    QString columnName =  forecastDate.toString(Qt::LocalDate);
+    m_forecastList->addColumn(columnName, -1);
   }
+
+  //add variation columns
+  m_forecastList->addColumn(i18n("Total variation"), -1);
+
+  //align columns
+  for(int i = 1; i < m_forecastList->columns(); ++i) {
+    m_forecastList->setColumnAlignment(i, Qt::AlignRight);
+  }
+
+  m_forecastList->setSorting(-1);
+  
+  KMyMoneyForecastListViewItem *forecastItem = 0;
+  QMap<QDate, MyMoneyMoney> cycleBalance;
+
+  QMap<QString, QCString>::ConstIterator it_nc;
+  for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
+
+    MyMoneyAccount acc = file->account(*it_nc);
+    MyMoneySecurity currency = file->security(acc.currencyId());
+    QString amount;
+    QString vAmount;
+    MyMoneyMoney vAmountMM;
+
+    forecastItem = new KMyMoneyForecastListViewItem(m_forecastList, forecastItem, false);
+    forecastItem->setText(accountColumn, acc.name());
+    int it_c = 1; // iterator for the columns of the listview
+
+    for(int i = 0; i <= forecast.forecastDays(); ++i) {
+      QDate forecastDate = QDate::currentDate().addDays(i);
+
+      MyMoneyMoney amountMM;
+      amountMM = forecast.forecastBalance(acc, forecastDate);
+
+      //calculate the balance in base currency for the total row
+      if(acc.currencyId() != file->baseCurrency().id()) {
+        ReportAccount repAcc = ReportAccount(acc.id());
+        MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(forecastDate);
+        MyMoneyMoney baseAmountMM = amountMM * curPrice;
+        cycleBalance[forecastDate] += baseAmountMM;
+        
+      } else {
+        cycleBalance[forecastDate] += amountMM;
+      }
+
+      amount = amountMM.formatMoney(currency.tradingSymbol());
+      forecastItem->setText((accountColumn+it_c), amount);
+      it_c++;
+    }
+
+    //calculate and add variation per cycle
+    vAmountMM = forecast.accountTotalVariation(acc);
+    forecastItem->setNegative(vAmountMM.isNegative()); 
+    vAmount = vAmountMM.formatMoney(currency.tradingSymbol());
+    forecastItem->setText((accountColumn+it_c), vAmount);
+
+  }
+  //add total row
+  forecastItem = new KMyMoneyForecastListViewItem(m_forecastList, forecastItem, false);
+  forecastItem->setText(accountColumn, i18n("Total"));
+  int i;
+  for(i = 0; i <= forecast.forecastDays(); ++i) {
+    QDate forecastDate = QDate::currentDate().addDays(i);
+    MyMoneyMoney amountMM = cycleBalance[forecastDate];
+    QString amount = amountMM.formatMoney(file->baseCurrency().tradingSymbol());
+    forecastItem->setText((i+1), amount);
+  }
+  //calculate total variation
+  QString totalVarAmount;
+  MyMoneyMoney totalVarAmountMM = cycleBalance[QDate::currentDate().addDays(i)]-cycleBalance[QDate::currentDate()];
+  forecastItem->setNegative(totalVarAmountMM.isNegative()); 
+  totalVarAmount = totalVarAmountMM.formatMoney(file->baseCurrency().tradingSymbol());
+  forecastItem->setText((i+1), totalVarAmount);
+
   m_forecastList->show();
 }
 
