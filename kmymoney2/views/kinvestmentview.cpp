@@ -86,7 +86,7 @@ KInvestmentView::KInvestmentView(QWidget *parent, const char *name) :
   m_table->setShowSortIndicator(true);
   m_table->restoreLayout(KGlobal::config(), "Investment Settings");
 
-  installEventFilter(this);
+  m_table->installEventFilter(this);
 
   connect(m_table, SIGNAL(rightButtonClicked(QListViewItem* , const QPoint&, int)),
     this, SLOT(slotListRightMouse(QListViewItem*, const QPoint&, int)));
@@ -108,7 +108,7 @@ KInvestmentView::~KInvestmentView()
 
 bool KInvestmentView::eventFilter(QObject* o, QEvent* e)
 {
-  if(o == this && e->type() == QEvent::KeyPress) {
+  if(o == m_table && e->type() == QEvent::KeyPress) {
     QKeyEvent* ke = dynamic_cast<QKeyEvent*>(e);
     if(ke->key() == Qt::Key_Menu) {
       kmymoney2->slotSelectInvestment();
