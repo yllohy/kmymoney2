@@ -266,7 +266,7 @@ void KForecastView::loadListView(void)
   }
   //calculate total variation
   QString totalVarAmount;
-  MyMoneyMoney totalVarAmountMM = cycleBalance[QDate::currentDate().addDays(i)]-cycleBalance[QDate::currentDate()];
+  MyMoneyMoney totalVarAmountMM = cycleBalance[QDate::currentDate().addDays(i-1)]-cycleBalance[QDate::currentDate()];
   forecastItem->setNegative(totalVarAmountMM.isNegative()); 
   totalVarAmount = totalVarAmountMM.formatMoney(file->baseCurrency().tradingSymbol());
   forecastItem->setText((i+1), totalVarAmount);
