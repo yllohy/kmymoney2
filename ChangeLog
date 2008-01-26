@@ -1,4 +1,10 @@
 
+2008-01-26 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed width of summary list when over the width of the screen
+
+2008-01-25 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed off-by-one error when calculating total variation in detail forecast view
+
 2008-01-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added sort indicator to payees list
   * Added context menu key handling to payees, investment and budget view

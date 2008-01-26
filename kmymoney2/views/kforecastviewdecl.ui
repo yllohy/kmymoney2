@@ -19,17 +19,6 @@
         <property name="margin">
             <number>0</number>
         </property>
-        <widget class="KMyMoneyTitleLabel">
-            <property name="name">
-                <cstring>titleLabel</cstring>
-            </property>
-            <property name="text">
-                <string>Forecast</string>
-            </property>
-            <property name="rightImageFile">
-                <string>pics/titlelabel_background.png</string>
-            </property>
-        </widget>
         <widget class="Line">
             <property name="name">
                 <cstring>line2</cstring>
@@ -120,10 +109,10 @@
                         </property>
                         <property name="sizePolicy">
                             <sizepolicy>
-                                <hsizetype>1</hsizetype>
+                                <hsizetype>7</hsizetype>
                                 <vsizetype>7</vsizetype>
                                 <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
+                                <verstretch>1</verstretch>
                             </sizepolicy>
                         </property>
                         <property name="midLineWidth">
@@ -158,10 +147,10 @@
                         </property>
                         <property name="sizePolicy">
                             <sizepolicy>
-                                <hsizetype>1</hsizetype>
+                                <hsizetype>7</hsizetype>
                                 <vsizetype>7</vsizetype>
                                 <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
+                                <verstretch>1</verstretch>
                             </sizepolicy>
                         </property>
                         <property name="resizePolicy">
@@ -194,12 +183,12 @@
                     </widget>
                 </vbox>
             </widget>
-	    <widget class="QWidget">
+            <widget class="QWidget">
                 <property name="name">
                     <cstring>advanced</cstring>
                 </property>
                 <attribute name="title">
-                    <string>A&amp;dvanced</string>
+                    <string>Adva&amp;nced</string>
                 </attribute>
                 <vbox>
                     <property name="name">
