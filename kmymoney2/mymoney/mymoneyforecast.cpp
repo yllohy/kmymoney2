@@ -51,7 +51,7 @@ MyMoneyForecast::MyMoneyForecast()
 void MyMoneyForecast::doForecast()
 {
 
-  int fDays = KMyMoneyGlobalSettings::forecastDays();
+  int fDays = calculateBeginForecastDay();
   int fMethod = KMyMoneyGlobalSettings::forecastMethod();
   int fAccCycle = KMyMoneyGlobalSettings::forecastAccountCycle();
   int fCycles = KMyMoneyGlobalSettings::forecastCycles();
@@ -622,6 +622,16 @@ int MyMoneyForecast::forecastDays() const
   return m_forecastDays;
 }
 
+  void MyMoneyForecast::setBeginForecastDate(QDate beginForecastDate)
+{
+  m_beginForecastDate = beginForecastDate;
+}
+  
+  QDate MyMoneyForecast::beginForecastDate(void) const
+{
+  return m_beginForecastDate;
+}
+
 void MyMoneyForecast::setForecastAccountList(void)
 {
 
@@ -680,15 +690,19 @@ QValueList<QDate> MyMoneyForecast::accountMinimumBalanceDateList(const MyMoneyAc
 
 QValueList<QDate> MyMoneyForecast::accountMaximumBalanceDateList(const MyMoneyAccount& acc) 
 {
+  int daysToBeginDay;
+  
+  daysToBeginDay = QDate::currentDate().daysTo(beginForecastDate());
+  
   QValueList<QDate> maxBalanceList;
-  for(int t_cycle = 0; (t_cycle * accountsCycle()) < forecastDays() ; ++t_cycle) {
-    MyMoneyMoney maxBalance = forecastBalance(acc, (t_cycle * accountsCycle() + 1));
-    QDate maxDate = QDate::currentDate().addDays(t_cycle * accountsCycle() + 1);
+  for(int t_cycle = 0; ((t_cycle * accountsCycle()) + daysToBeginDay) < forecastDays() ; ++t_cycle) {
+    MyMoneyMoney maxBalance = forecastBalance(acc, ((t_cycle * accountsCycle()) + daysToBeginDay + 1));
+    QDate maxDate = QDate::currentDate().addDays((t_cycle * accountsCycle()) + daysToBeginDay + 1);
     
     for(int t_day = 1; t_day <= accountsCycle() ; ++t_day) {
-      if( maxBalance < forecastBalance(acc, (t_cycle * accountsCycle()) + t_day) ) {
-        maxBalance = forecastBalance(acc, (t_cycle * accountsCycle()) + t_day );
-        maxDate = QDate::currentDate().addDays( (t_cycle * accountsCycle()) + t_day);
+      if( maxBalance < forecastBalance(acc, (t_cycle * accountsCycle()) + daysToBeginDay + t_day) ) {
+        maxBalance = forecastBalance(acc, (t_cycle * accountsCycle()) + daysToBeginDay + t_day );
+        maxDate = QDate::currentDate().addDays((t_cycle * accountsCycle()) + daysToBeginDay + t_day);
       }
     }
     maxBalanceList.append(maxDate);
@@ -705,3 +719,49 @@ MyMoneyMoney MyMoneyForecast::accountAverageBalance(const MyMoneyAccount& acc)
   return totalBalance / MyMoneyMoney( forecastDays(), 1);
 }
 
+int MyMoneyForecast::calculateBeginForecastDay()
+{
+  int fDays = KMyMoneyGlobalSettings::forecastDays();
+  int beginDay = KMyMoneyGlobalSettings::beginForecastDay();
+  int accCycle = KMyMoneyGlobalSettings::forecastAccountCycle();
+  QDate beginDate;
+  
+  //if 0, beginDate is current date and forecastDays remains unchanged
+  if(beginDay == 0) {
+    setBeginForecastDate(QDate::currentDate());
+    return fDays;
+  }
+  
+  //adjust if beginDay more than days of current month
+  if(QDate::currentDate().daysInMonth() < beginDay)
+    beginDay = QDate::currentDate().daysInMonth();
+  
+  //if beginDay still to come, calculate and return  
+  if(QDate::currentDate().day() <= beginDay) {
+    beginDate = QDate( QDate::currentDate().year(), QDate::currentDate().month(), beginDay);
+    fDays += QDate::currentDate().daysTo(beginDate);
+    setBeginForecastDate(beginDate);
+    return fDays;
+  } 
+  
+  //adjust beginDay for next month
+  if(QDate::currentDate().addMonths(1).daysInMonth() < beginDay)
+    beginDay = QDate::currentDate().addMonths(1).daysInMonth();  
+    
+  //if beginDay of next month comes before 1 interval, use beginDay next month
+  if(QDate::currentDate().addDays(accCycle) > 
+       (QDate(QDate::currentDate().addMonths(1).year(), QDate::currentDate().addMonths(1).month(), 1).addDays(beginDay-1) ) ) 
+  {
+    beginDate = QDate(QDate::currentDate().addMonths(1).year(), QDate::currentDate().addMonths(1).month(), 1).addDays(beginDay-1);
+    fDays += QDate::currentDate().daysTo(beginDate);
+  }
+  else //add intervals to current beginDay and take the first after current date
+  {
+    beginDay = ((((QDate::currentDate().day()-beginDay)/accCycle) + 1) * accCycle) + beginDay;
+    beginDate = QDate::currentDate().addDays(beginDay - QDate::currentDate().day());
+    fDays += QDate::currentDate().daysTo(beginDate);
+  }
+    
+  setBeginForecastDate(beginDate);
+  return fDays;
+}

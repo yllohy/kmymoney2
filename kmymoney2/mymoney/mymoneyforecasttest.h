@@ -45,6 +45,7 @@ class MyMoneyForecastTest : public CppUnit::TestFixture
     CPPUNIT_TEST ( testAccountMinimumBalanceDateList );
     CPPUNIT_TEST ( testAccountMaximumBalanceDateList );
     CPPUNIT_TEST ( testAccountAverageBalance );
+    CPPUNIT_TEST ( testBeginForecastDate );
     CPPUNIT_TEST_SUITE_END();
 
 
@@ -68,6 +69,7 @@ class MyMoneyForecastTest : public CppUnit::TestFixture
     void testAccountMinimumBalanceDateList();
     void testAccountMaximumBalanceDateList();
     void testAccountAverageBalance();
+    void testBeginForecastDate();
 
   protected:
     MyMoneyForecast *m;

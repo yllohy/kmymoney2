@@ -138,56 +138,7 @@ void KForecastView::loadListView(void)
   for(;m_forecastList->columns() > 0;) {
     m_forecastList->removeColumn(0);
   }
-/*
-  int dateColumn = m_forecastList->addColumn(i18n("Date"), -1);
-
-  QMap<QString, QCString>::ConstIterator it_n;
-  for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
-    MyMoneyAccount acc = file->account(*it_n);
-    int col = m_forecastList->addColumn(acc.name(), -1);
-    m_forecastList->setColumnAlignment(col, Qt::AlignRight);
-  }
-
-  int totalCol = m_forecastList->addColumn(i18n("Total Forecast"), -1);
-  m_forecastList->setColumnAlignment(totalCol, Qt::AlignRight);
-
-  m_forecastList->setSorting(-1);
-
-  KListViewItem *forecastItem = 0;
-
-  for(int it_f=0;it_f <= forecast.forecastDays(); ++it_f){
-    QDate forecastDate = QDate::currentDate().addDays(it_f);
-    QString dateString = forecastDate.toString(Qt::LocalDate);
-    forecastItem = new KListViewItem(m_forecastList, forecastItem);
-    forecastItem->setText(dateColumn, dateString);
-    MyMoneyMoney totalAmountMM = MyMoneyMoney::MyMoneyMoney(0,1);
-    QString totalAmount;
-
-    int it_c = 1; // iterator for the columns of the listview
-    QMap<QString, QCString>::ConstIterator it_nc;
-    for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
-      MyMoneyAccount acc = file->account(*it_nc);
-      MyMoneySecurity currency = file->security(acc.currencyId());
-      QString amount;
-
-      //MyMoneyMoney amountMM = accountList[acc.id()][it_f];
-      MyMoneyMoney amountMM;
-      amountMM = forecast.forecastBalance(acc, QDate::currentDate().addDays(it_f));
-      totalAmountMM += amountMM;
-      amount = amountMM.formatMoney(currency.tradingSymbol());
-      forecastItem->setText((dateColumn+it_c), amount);
-      it_c++;
-    }
-    totalAmount = totalAmountMM.formatMoney(baseCurrency.tradingSymbol());
-    forecastItem->setText((dateColumn+it_c), totalAmount);
-    
-    
-    
-    
-    
-  } */
   
-  //***********************************************
   //add first column of both lists
   int accountColumn = m_forecastList->addColumn(i18n("Account"), -1);
   
@@ -281,6 +232,7 @@ void KForecastView::loadSummaryView(void)
   int dropMinimum;
   int dropZero;
   bool negative = false;
+  int daysToBeginDay;
 
   MyMoneySecurity baseCurrency = file->baseCurrency();
 
@@ -315,8 +267,16 @@ void KForecastView::loadSummaryView(void)
 
   //add cycle interval columns
   m_summaryList->addColumn(i18n("Current"), -1);
-  for(int i = 1; (i*forecast.accountsCycle()) <= forecast.forecastDays(); ++i) {
-    QString columnName =  i18n("%1 days").arg(i*forecast.accountsCycle(), 0, 10);
+  
+  //if beginning of forecast is today, set the begin day to next cycle to avoid repeating the first cycle
+  if(QDate::currentDate() < forecast.beginForecastDate()) {
+    daysToBeginDay = QDate::currentDate().daysTo(forecast.beginForecastDate());
+  } else {
+    daysToBeginDay = forecast.accountsCycle();
+  }
+  for(int i = 0; ((i*forecast.accountsCycle())+daysToBeginDay) <= forecast.forecastDays(); ++i) {
+    int intervalDays = ((i*forecast.accountsCycle())+daysToBeginDay);
+    QString columnName =  i18n("%1 days").arg(intervalDays, 0, 10);
     m_summaryList->addColumn(columnName, -1);
   }
 
@@ -343,20 +303,41 @@ void KForecastView::loadSummaryView(void)
     QString amount;
     QString vAmount;
     MyMoneyMoney vAmountMM;
+    ReportAccount repAcc;
+    if(acc.currencyId() != file->baseCurrency().id())
+      repAcc = ReportAccount(acc.id());
 
     summaryItem = new KMyMoneyForecastListViewItem(m_summaryList, summaryItem, false);
     summaryItem->setText(accountColumn, acc.name());
     int it_c = 1; // iterator for the columns of the listview
 
-    for(int i = 0; (i*forecast.accountsCycle()) <= forecast.forecastDays(); ++i) {
-      QDate summaryDate = QDate::currentDate().addDays(i*forecast.accountsCycle());
+    //add current balance column
+    QDate summaryDate = QDate::currentDate();
+    
+    MyMoneyMoney amountMM;
+    amountMM = forecast.forecastBalance(acc, summaryDate);
 
-      MyMoneyMoney amountMM;
+    //calculate the balance in base currency for the total row
+    if(acc.currencyId() != file->baseCurrency().id()) {
+      MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(summaryDate);
+      MyMoneyMoney baseAmountMM = amountMM * curPrice;
+      cycleBalance[summaryDate] += baseAmountMM;
+    } else {
+      cycleBalance[summaryDate] += amountMM;
+    }
+    amount = amountMM.formatMoney(currency.tradingSymbol());
+    summaryItem->setText((accountColumn+it_c), amount);
+    it_c++;
+
+    //iterate through all other columns
+    for(int i = 0; ((i*forecast.accountsCycle())+daysToBeginDay) <= forecast.forecastDays(); ++i) {
+      int intervalDays = ((i*forecast.accountsCycle())+daysToBeginDay);
+      QDate summaryDate = QDate::currentDate().addDays(intervalDays);
+
       amountMM = forecast.forecastBalance(acc, summaryDate);
 
       //calculate the balance in base currency for the total row
       if(acc.currencyId() != file->baseCurrency().id()) {
-        ReportAccount repAcc = ReportAccount(acc.id());
         MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(summaryDate);
         MyMoneyMoney baseAmountMM = amountMM * curPrice;
         cycleBalance[summaryDate] += baseAmountMM;
@@ -381,18 +362,24 @@ void KForecastView::loadSummaryView(void)
   summaryItem = new KMyMoneyForecastListViewItem(m_summaryList, summaryItem, false);
   summaryItem->setText(accountColumn, i18n("Total"));
   int i;
-  for(i = 0; (i*forecast.accountsCycle()) <= forecast.forecastDays(); ++i) {
-    QDate summaryDate = QDate::currentDate().addDays(i*forecast.accountsCycle());
+  
+  //add current total
+  summaryItem->setText(1, cycleBalance[QDate::currentDate()].formatMoney(file->baseCurrency().tradingSymbol()));
+  
+  //add interval totals
+  for(i = 0; ((i*forecast.accountsCycle())+daysToBeginDay) <= forecast.forecastDays(); ++i) {
+    int intervalDays = ((i*forecast.accountsCycle())+daysToBeginDay);
+    QDate summaryDate = QDate::currentDate().addDays(intervalDays);
     MyMoneyMoney amountMM = cycleBalance[summaryDate];
     QString amount = amountMM.formatMoney(file->baseCurrency().tradingSymbol());
-    summaryItem->setText((i+1), amount);
+    summaryItem->setText((i+2), amount);
   }
   //calculate total variation
   QString totalVarAmount;
-  MyMoneyMoney totalVarAmountMM = cycleBalance[QDate::currentDate().addDays((i-1)*forecast.accountsCycle())]-cycleBalance[QDate::currentDate()];
+  MyMoneyMoney totalVarAmountMM = cycleBalance[QDate::currentDate().addDays(forecast.forecastDays())]-cycleBalance[QDate::currentDate()];
   summaryItem->setNegative(totalVarAmountMM.isNegative()); 
   totalVarAmount = totalVarAmountMM.formatMoney(file->baseCurrency().tradingSymbol());
-  summaryItem->setText((i+1), totalVarAmount);
+  summaryItem->setText((i+2), totalVarAmount);
 
   //Add comments to the advice list
   for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
@@ -496,6 +483,7 @@ void KForecastView::loadAdvancedView(void)
   QValueList<MyMoneyAccount> accList;
   MyMoneySecurity baseCurrency = file->baseCurrency();
   MyMoneyForecast forecast;
+  int daysToBeginDay;
   
   //Get all accounts of the right type to calculate forecast
   forecast.doForecast();
@@ -515,14 +503,21 @@ void KForecastView::loadAdvancedView(void)
 
   //add first column of both lists
   int accountColumn = m_advancedList->addColumn(i18n("Account"), -1);
+  
+  //if beginning of forecast is today, set the begin day to next cycle to avoid repeating the first cycle
+  if(QDate::currentDate() < forecast.beginForecastDate()) {
+    daysToBeginDay = QDate::currentDate().daysTo(forecast.beginForecastDate());
+  } else {
+    daysToBeginDay = forecast.accountsCycle();
+  }
  
   //add columns
-  for(int i = 1; (i * forecast.accountsCycle()) <= forecast.forecastDays(); ++i) {
+  for(int i = 1; ((i * forecast.accountsCycle()) + daysToBeginDay) <= forecast.forecastDays(); ++i) {
     int col = m_advancedList->addColumn(i18n("Min Bal %1").arg(i), -1);
     m_advancedList->setColumnAlignment(col, Qt::AlignRight);
     m_advancedList->addColumn(i18n("Min Date %1").arg(i), -1);
   }
-  for(int i = 1; (i * forecast.accountsCycle()) <= forecast.forecastDays(); ++i) {
+  for(int i = 1; ((i * forecast.accountsCycle()) + daysToBeginDay) <= forecast.forecastDays(); ++i) {
     int col = m_advancedList->addColumn(i18n("Max Bal %1").arg(i), -1);
     m_advancedList->setColumnAlignment(col, Qt::AlignRight);
     m_advancedList->addColumn(i18n("Max Date %1").arg(i), -1);

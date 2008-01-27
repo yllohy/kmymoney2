@@ -138,6 +138,10 @@ public:
   void setForecastDays(int forecastDays);
 
   int forecastDays(void) const;
+  
+  void setBeginForecastDate(QDate beginForecastDate);
+  
+  QDate beginForecastDate(void) const;
 
 private:
 
@@ -177,6 +181,19 @@ private:
    * get past transactions for the accounts to be forecast
    */
   void pastTransactions(void);
+  
+  /**
+   * calculate the day to start forecast and sets the begin date
+   * The quantity of forecast days will be counted from this date
+   * Depends on the values of begin day and accounts cycle
+   * The rules to calculate begin day are as follows:
+   * - if beginDay is 0, begin date is current date
+   * - if the day of the month set by beginDay has not passed, that will be used
+   * - if adding an account cycle to beginDay, will not go past the beginDay of next month,
+   *   that date will be used, otherwise it will add account cycle to beginDay until it is past current date
+   * It returns the total amount of Forecast Days from current date. 
+   */
+  int calculateBeginForecastDay();
 
   /**
    * daily balances of an account
@@ -217,6 +234,11 @@ private:
    * number of days to forecast
    */
   int m_forecastDays;
+  
+  /**
+   * date to start forecast
+   */
+  QDate m_beginForecastDate;
 
 };
 

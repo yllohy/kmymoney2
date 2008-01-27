@@ -8,18 +8,18 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>466</width>
-            <height>288</height>
+            <width>497</width>
+            <height>379</height>
         </rect>
     </property>
     <property name="caption">
         <string>Forecast Settings</string>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QGroupBox">
+        <widget class="QGroupBox" row="0" column="0">
             <property name="name">
                 <cstring>groupBox6</cstring>
             </property>
@@ -34,32 +34,29 @@
             <property name="title">
                 <string></string>
             </property>
-            <vbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLayoutWidget">
+                <widget class="QLayoutWidget" row="0" column="0">
                     <property name="name">
-                        <cstring>layout2</cstring>
+                        <cstring>layout7</cstring>
                     </property>
-                    <hbox>
+                    <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLayoutWidget">
+                        <widget class="QLayoutWidget" row="0" column="0">
                             <property name="name">
-                                <cstring>layout1</cstring>
+                                <cstring>layout5</cstring>
                             </property>
                             <grid>
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="QLabel" row="0" column="0">
+                                <widget class="QSpinBox" row="1" column="1">
                                     <property name="name">
-                                        <cstring>textLabel4</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Number of Days to Forecast:</string>
+                                        <cstring>kcfg_forecastAccountCycle</cstring>
                                     </property>
                                 </widget>
                                 <widget class="QLabel" row="1" column="0">
@@ -75,14 +72,30 @@
                                         <cstring>kcfg_forecastDays</cstring>
                                     </property>
                                 </widget>
-                                <widget class="QSpinBox" row="1" column="1">
+                                <widget class="QLabel" row="2" column="0">
                                     <property name="name">
-                                        <cstring>kcfg_forecastAccountCycle</cstring>
+                                        <cstring>textLabel1</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Day of Month to start Forecast:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QSpinBox" row="2" column="1">
+                                    <property name="name">
+                                        <cstring>kcfg_beginForecastDay</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>textLabel4</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Number of Days to Forecast:</string>
                                     </property>
                                 </widget>
                             </grid>
                         </widget>
-                        <spacer>
+                        <spacer row="0" column="1">
                             <property name="name">
                                 <cstring>spacer6</cstring>
                             </property>
@@ -94,14 +107,14 @@
                             </property>
                             <property name="sizeHint">
                                 <size>
-                                    <width>100</width>
+                                    <width>133</width>
                                     <height>21</height>
                                 </size>
                             </property>
                         </spacer>
-                    </hbox>
+                    </grid>
                 </widget>
-                <widget class="QButtonGroup">
+                <widget class="QButtonGroup" row="1" column="0">
                     <property name="name">
                         <cstring>kcfg_forecastMethod</cstring>
                     </property>
@@ -136,7 +149,7 @@
                         </widget>
                     </vbox>
                 </widget>
-                <widget class="QGroupBox">
+                <widget class="QGroupBox" row="2" column="0">
                     <property name="name">
                         <cstring>groupBox3</cstring>
                     </property>
@@ -179,9 +192,9 @@
                         </spacer>
                     </hbox>
                 </widget>
-            </vbox>
+            </grid>
         </widget>
-        <spacer>
+        <spacer row="1" column="0">
             <property name="name">
                 <cstring>spacer10</cstring>
             </property>
@@ -194,11 +207,11 @@
             <property name="sizeHint">
                 <size>
                     <width>20</width>
-                    <height>50</height>
+                    <height>40</height>
                 </size>
             </property>
         </spacer>
-    </vbox>
+    </grid>
 </widget>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

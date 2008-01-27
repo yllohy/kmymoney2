@@ -670,6 +670,7 @@ void MyMoneyForecastTest::testAccountMaximumBalanceDateList() {
   KMyMoneyGlobalSettings::setForecastDays(6);
   KMyMoneyGlobalSettings::setForecastAccountCycle(2);
   KMyMoneyGlobalSettings::setForecastCycles(3);
+  KMyMoneyGlobalSettings::setBeginForecastDay(0);
   a.doForecast();
   
   MyMoneyAccount a_cash = file->account(acCash);
@@ -717,5 +718,71 @@ void MyMoneyForecastTest::testAccountAverageBalance() {
   
   
   CPPUNIT_ASSERT(a.accountAverageBalance(a_cash)==average);
+}
+
+void MyMoneyForecastTest::testBeginForecastDate() {
+    //set up environment
+  MyMoneyForecast a;
+  QDate beginDate;
+  int beginDay;
+  
+  KMyMoneyGlobalSettings::setForecastMethod(1);
+  KMyMoneyGlobalSettings::setForecastDays(90);
+  KMyMoneyGlobalSettings::setForecastAccountCycle(14);
+  KMyMoneyGlobalSettings::setForecastCycles(3);
+  KMyMoneyGlobalSettings::setBeginForecastDay(0);
+  a.doForecast();
+  
+  //test when using old method without begin day
+  CPPUNIT_ASSERT(QDate::currentDate() == a.beginForecastDate());
+
+  //setup begin to last day of month
+  KMyMoneyGlobalSettings::setBeginForecastDay(31);
+  beginDay = KMyMoneyGlobalSettings::beginForecastDay();
+  a.doForecast();
+
+  //test
+  if(QDate::currentDate().day() < beginDay)
+  {
+    if(QDate::currentDate().daysInMonth() < beginDay)
+      beginDay = QDate::currentDate().daysInMonth();
+    
+    beginDate = QDate(QDate::currentDate().year(), QDate::currentDate().month(), beginDay);
+    
+    CPPUNIT_ASSERT(beginDate == a.beginForecastDate());
+  }
+  
+  //setup begin day to same date
+  KMyMoneyGlobalSettings::setBeginForecastDay(QDate::currentDate().day());
+  beginDay = KMyMoneyGlobalSettings::beginForecastDay();
+  a.doForecast();
+
+  CPPUNIT_ASSERT(QDate::currentDate() == a.beginForecastDate());
+  
+  //setup to first day of month with small interval
+  KMyMoneyGlobalSettings::setBeginForecastDay(1);
+  KMyMoneyGlobalSettings::setForecastAccountCycle(1);
+  beginDay = KMyMoneyGlobalSettings::beginForecastDay();
+  a.doForecast();
+  
+  //test
+  if(QDate::currentDate() == a.beginForecastDate()) {
+    CPPUNIT_ASSERT(QDate::currentDate() == a.beginForecastDate());
+  } else {
+    beginDay = ((((QDate::currentDate().day() - beginDay)/a.accountsCycle()) + 1) * a.accountsCycle()) + beginDay;
+    beginDate = QDate(QDate::currentDate().year(), QDate::currentDate().month(), beginDay);
+    
+    CPPUNIT_ASSERT(beginDate == a.beginForecastDate());
+  }
+  
+  //setup to test when the begin day will be next month
+  KMyMoneyGlobalSettings::setBeginForecastDay(1);
+  KMyMoneyGlobalSettings::setForecastAccountCycle(40);
+  a.doForecast();
+  
+  beginDate = QDate(QDate::currentDate().addMonths(1).year(), QDate::currentDate().addMonths(1).month(), 1);
+    
+  //test
+  CPPUNIT_ASSERT(beginDate == a.beginForecastDate());
 }
 
