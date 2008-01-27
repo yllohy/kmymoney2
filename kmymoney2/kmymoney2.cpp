@@ -3885,6 +3885,9 @@ void KMyMoney2App::slotPayeeDelete(void)
     }
     ft.commit();
 
+    // If we just deleted the payees, they sure don't exist anymore
+    slotSelectPayees(QValueList<MyMoneyPayee>());
+
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to remove payee(s)"),
       (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));
