@@ -1,8 +1,13 @@
 
-2008-01-26 Alvaro Soliverez <asoliverez@gmail.com>
+2008-01-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied documentation update provided by Colin Wright
+
+2008-01-28 Alvaro Soliverez <asoliverez@gmail.com>
   * Added begin day of forecast setting and default - #1877701
-  * Added calculation to start forecast according to begin day of forecast setting - #1877701
-  * Modified summary and advanced to show intervals according to begin day of forecast setting - #1877701
+  * Added calculation to start forecast according to begin day of
+    forecast setting - #1877701
+  * Modified summary and advanced to show intervals according to
+    begin day of forecast setting - #1877701
 
 2008-01-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Block delete payee function when a payee was just deleted
