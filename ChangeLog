@@ -1,3 +1,5 @@
+2008-01-28 Alvaro Soliverez <asoliverez@gmail.com>
+  * Modified home page forecast cycles according to begin day setting - #1877701
 
 2008-01-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied documentation update provided by Colin Wright

@@ -783,6 +783,11 @@ void KHomeView::showScheduleBasedForecast(void)
     int i = 0;
 
     int colspan = 1;
+    //get begin day
+    int beginDay = QDate::currentDate().daysTo(forecast.beginForecastDate());
+    //if begin day is today skip to next cycle
+    if(beginDay == 0)
+      beginDay = forecast.accountsCycle();
 
     // Now output header
     m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("%1 day forecast").arg(forecast.forecastDays())));
@@ -790,10 +795,11 @@ void KHomeView::showScheduleBasedForecast(void)
     m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
     m_part->write(i18n("Account"));
     m_part->write("</th>");
-    for(i = 0; (i*forecast.accountsCycle()) < forecast.forecastDays(); ++i) {
-      m_part->write("<th width=\"20%\" class=\"right\">");
+    int colWidth = 55/ (forecast.forecastDays() / forecast.accountsCycle());
+    for(i = 0; (i*forecast.accountsCycle() + beginDay) <= forecast.forecastDays(); ++i) {
+      m_part->write(QString("<th width=\"%1%\" class=\"right\">").arg(colWidth));
 
-      m_part->write(i18n("%1 days").arg((i+1)*forecast.accountsCycle()));
+      m_part->write(i18n("%1 days").arg(i*forecast.accountsCycle() + beginDay));
       m_part->write("</th>");
       colspan++;
     }
@@ -818,12 +824,12 @@ void KHomeView::showScheduleBasedForecast(void)
 
       MyMoneyMoney forecastBalance;
 
-      for (int f = forecast.accountsCycle(); f <= forecast.forecastDays(); f += forecast.accountsCycle()) {
+      for (int f = beginDay; f <= forecast.forecastDays(); f += forecast.accountsCycle()) {
         forecastBalance = forecast.forecastBalance(acc, QDate::currentDate().addDays(f));
         QString amount;
         amount = forecastBalance.formatMoney(currency.tradingSymbol());
         amount.replace(" ","&nbsp;");
-        m_part->write(QString("<td width=\"20%\" align=\"right\">"));
+        m_part->write(QString("<td width=\"%1%\" align=\"right\">").arg(colWidth));
         if(forecastBalance < MyMoneyMoney(0, 1)) m_part->write(QString("<font color=\"red\">")); //Show in red if below zero
         m_part->write(QString("%1</td>").arg(amount));
       }
@@ -860,7 +866,7 @@ void KHomeView::showScheduleBasedForecast(void)
         }
 
         if(!msg.isEmpty()) {
-          m_part->write(QString("<tr><td colspan=%2 align=\"center\" ><font color=\"red\">%1</font></td></tr>").arg(msg).arg(colspan));
+          m_part->write(QString("<tr class=\"row-even\"><td colspan=%2 align=\"center\" ><font color=\"red\">%1</font></td></tr>").arg(msg).arg(colspan));
         }
          }
       // a drop below zero is always shown
@@ -889,7 +895,7 @@ void KHomeView::showScheduleBasedForecast(void)
              }
          }
          if(!msg.isEmpty()) {
-           m_part->write(QString("<tr><td colspan=%2 align=\"center\" ><font color=\"red\"><b>%1</b></font></td></tr>").arg(msg).arg(colspan));
+           m_part->write(QString("<tr class=\"row-even\"><td colspan=%2 align=\"center\" ><font color=\"red\"><b>%1</b></font></td></tr>").arg(msg).arg(colspan));
          }
     }
     m_part->write("</table>");
