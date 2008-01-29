@@ -775,6 +775,16 @@ void MyMoneyForecastTest::testBeginForecastDate() {
     CPPUNIT_ASSERT(beginDate == a.beginForecastDate());
   }
   
+  //setup to test when current date plus cycle equals begin day
+  KMyMoneyGlobalSettings::setForecastAccountCycle(14);
+  beginDay = QDate::currentDate().addDays(14).day();
+  KMyMoneyGlobalSettings::setBeginForecastDay(beginDay);
+  beginDate = QDate::currentDate().addDays(14);
+  a.doForecast();
+  
+  //test
+  CPPUNIT_ASSERT(beginDate == a.beginForecastDate());
+  
   //setup to test when the begin day will be next month
   KMyMoneyGlobalSettings::setBeginForecastDay(1);
   KMyMoneyGlobalSettings::setForecastAccountCycle(40);

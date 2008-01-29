@@ -1,11 +1,15 @@
-2008-01-28 Alvaro Soliverez <asoliverez@gmail.com>
-  * Modified home page forecast cycles according to begin day setting - #1877701
+
+2008-01-29 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed error calculating beginDate when currentDate plus cycle equals beginDay - #1877701
 
 2008-01-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied documentation update provided by Colin Wright
 
 2008-01-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Applied documentation update provided by Colin Wright
+
+2008-01-28 Alvaro Soliverez <asoliverez@gmail.com>
+  * Modified home page forecast cycles according to begin day setting - #1877701
 
 2008-01-28 Alvaro Soliverez <asoliverez@gmail.com>
   * Added begin day of forecast setting and default - #1877701

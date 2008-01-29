@@ -749,7 +749,7 @@ int MyMoneyForecast::calculateBeginForecastDay()
     beginDay = QDate::currentDate().addMonths(1).daysInMonth();  
     
   //if beginDay of next month comes before 1 interval, use beginDay next month
-  if(QDate::currentDate().addDays(accCycle) > 
+  if(QDate::currentDate().addDays(accCycle) >=
        (QDate(QDate::currentDate().addMonths(1).year(), QDate::currentDate().addMonths(1).month(), 1).addDays(beginDay-1) ) ) 
   {
     beginDate = QDate(QDate::currentDate().addMonths(1).year(), QDate::currentDate().addMonths(1).month(), 1).addDays(beginDay-1);
