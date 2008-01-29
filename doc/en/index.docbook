@@ -14,6 +14,7 @@
 	<!ENTITY details-institutions SYSTEM "details-institutions.docbook">
 	<!ENTITY details-accounts SYSTEM "details-accounts.docbook">
 	<!ENTITY details-budgets SYSTEM "details-budgets.docbook">
+	<!ENTITY details-forecast SYSTEM "details-forecast.docbook">
 	<!ENTITY details-categories SYSTEM "details-categories.docbook">
 	<!ENTITY details-payees SYSTEM "details-payees.docbook">
 	<!ENTITY details-schedules SYSTEM "details-schedules.docbook">
@@ -178,6 +179,7 @@ Do NOT change these in the translation. -->
 &details-impexp;
 &details-loans;
 &details-budgets;
+&details-forecast;
 &details-settings;
 &details-search;
 &details-formats;
