@@ -1335,13 +1335,14 @@ void KMyMoney2App::slotLoadAccountTemplates(void)
 {
   QString prevMsg = slotStatusMsg(i18n("Importing account templates."));
 
+#if 0
   // create a dialog that drops the user in the base directory for templates
   QLabel* label = new QLabel(i18n("Change into one of the directories and select the desired file."), 0);
   QStringList list = KGlobal::dirs()->findDirs("appdata", "templates");
   QStringList::iterator it;
   for(it = list.begin(); it != list.end(); ++it)
     qDebug("%s", (*it).data());
-#if 0
+
   KFileDialog* dialog = new KFileDialog(KGlobal::dirs()->findResourceDir("appdata", "templates/README")+"templates",
                                         i18n("*.kmt|Account templates"),
                                         this, "defaultaccounts",

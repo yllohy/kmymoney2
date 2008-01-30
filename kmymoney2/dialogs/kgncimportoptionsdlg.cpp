@@ -45,11 +45,11 @@ KGncImportOptionsDlg::KGncImportOptionsDlg(QWidget *parent, const char *name)
   buildCodecList (); // build list of codecs and insert into combo box
   checkDecode->setChecked (false);
   comboDecode->setEnabled (false);
-  
+
   checkDebugGeneral->setChecked (false);
   checkDebugXML->setChecked (false);
   checkAnonymize->setChecked (false);
-  
+
   connect (checkDecode, SIGNAL(toggled(bool)), this, SLOT(slotDecodeOptionChanged(bool)));
 }
 
@@ -70,17 +70,17 @@ void KGncImportOptionsDlg::slotDecodeOptionChanged(bool isOn) {
 // build a list of known codecs and sort it so that the locale codec is first
 // try to get the others in some sort of order of likelihood
 void KGncImportOptionsDlg::buildCodecList () {
-  
+
   m_localeCodec = QTextCodec::codecForLocale();
   m_codecList.setAutoDelete (true);
   // retrieve all codec pointers
   QTextCodec *codec;
-  int i;
+  unsigned int i;
   for (i = 0; (codec = QTextCodec::codecForIndex(i)); i++) {
     int rank;
     if (codec == m_localeCodec) rank = 999; // ensure locale rank comes first
     else rank = codec->heuristicNameMatch(m_localeCodec->name());
-    
+
     codecData *p = new codecData(rank, codec);
     m_codecList.append (p);
   }
@@ -95,7 +95,7 @@ void KGncImportOptionsDlg::buildCodecList () {
 int codecDataList::compareItems (void *a, void *b) {
   codecData *pa = reinterpret_cast<codecData *>(a);
   codecData *pb = reinterpret_cast<codecData *>(b);
-  
+
   if (pa->first > pb->first) {
     return (-1); // greater rank is treated as less-than so gets sorted first
   } else { if (pb->first > pa->first)

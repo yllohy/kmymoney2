@@ -217,7 +217,7 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
   int amt = m_account.interestChangeFrequency(&changeFrequencyUnit);
   if(amt != -1) {
     m_interestFrequencyAmountEdit->setValue(amt);
-    m_interestFrequencyUnitEdit->setItem(changeFrequencyUnit);
+    m_interestFrequencyUnitEdit->setCurrentItem(changeFrequencyUnit);
   }
 
   // keep track, if the loan should be fully repayed

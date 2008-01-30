@@ -1,6 +1,7 @@
 
 2008-01-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't run overdue test between 28th and 2nd
+  * Resolved a bunch of compiler warnings
 
 2008-01-29 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed error calculating beginDate when currentDate plus cycle equals beginDay - #1877701

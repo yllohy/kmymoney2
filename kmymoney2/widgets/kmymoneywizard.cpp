@@ -205,7 +205,7 @@ void KMyMoneyWizard::addStep(const QString& text)
   }
 }
 
-void KMyMoneyWizard::setStepHidden(int step, bool hidden)
+void KMyMoneyWizard::setStepHidden(unsigned int step, bool hidden)
 {
   if((step < 1) || (step > m_steps.count()))
     return;
@@ -321,7 +321,6 @@ void KMyMoneyWizard::completeStateChanged(void)
   KPushButton* button;
 
   button = lastPage ? m_finishButton : m_nextButton;
-  bool buttonWasDisabled = !button->isEnabled();
 
   bool rc = currentPage->isComplete();
   button->setEnabled(rc);

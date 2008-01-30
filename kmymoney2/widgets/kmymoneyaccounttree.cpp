@@ -311,6 +311,8 @@ void KMyMoneyAccountTree::slotSelectObject(QListViewItem* i)
 
 void KMyMoneyAccountTree::slotOpenContextMenu(KListView* lv, QListViewItem* i, const QPoint&)
 {
+  Q_UNUSED(lv);
+
   KMyMoneyAccountTreeItem* item = dynamic_cast<KMyMoneyAccountTreeItem *>(i);
   if(item) {
     emit selectObject(item->itemObject());
@@ -550,31 +552,6 @@ KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent
   updateAccount(account, true);
 }
 
-
-KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KListView *parent, const MyMoneyAccount& account, const MyMoneyBudget &budget, const MyMoneySecurity& security, const QString& /* name */) :
-  KListViewItem(parent),
-  m_price(),
-  m_security(security),
-  m_totalValue(MyMoneyMoney(0)),
-  m_displayFactor(MyMoneyMoney(1)),
-  m_account(account),
-  m_type(Account),
-  m_reconcileFlag(false)
-{
-}
-
-KMyMoneyAccountTreeItem::KMyMoneyAccountTreeItem(KMyMoneyAccountTreeItem *parent, const MyMoneyAccount& account, const MyMoneyBudget& budget, const QValueList<MyMoneyPrice>& price, const MyMoneySecurity& security) :
-  KListViewItem(parent),
-  m_price(price),
-  m_security(security),
-  m_totalValue(MyMoneyMoney(0)),
-  m_displayFactor(MyMoneyMoney(1)),
-  m_account(account),
-  m_type(Account),
-  m_reconcileFlag(false)
-{
-}
-
 KMyMoneyAccountTreeItem::~KMyMoneyAccountTreeItem()
 {
 }
@@ -597,6 +574,8 @@ bool KMyMoneyAccountTreeItem::isChildOf(const QListViewItem* const item) const
 
 void KMyMoneyAccountTreeItem::updatePrice(const MyMoneyPrice& price)
 {
+  Q_UNUSED(price);
+
   MyMoneyMoney oldValue = m_value;
 
   // FIXME calculate new value based on price information
@@ -839,7 +818,7 @@ void KMyMoneyAccountTree::expandCollapseAll(bool expand)
 {
   QListViewItemIterator it(this);
   QListViewItem* p;
-  while(p = it.current()) {
+  while((p = it.current()) != 0) {
     p->setOpen(expand);
     ++it;
   }

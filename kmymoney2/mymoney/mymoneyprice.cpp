@@ -60,8 +60,10 @@ MyMoneyPrice::~MyMoneyPrice()
 
 const MyMoneyMoney& MyMoneyPrice::rate(const QCString& id) const
 {
+  static MyMoneyMoney dummyPrice(1,1);
+
   if(!isValid())
-    return MyMoneyMoney(1,1);
+    return dummyPrice;
 
   if(id.isEmpty() || id == m_toSecurity)
     return m_rate;

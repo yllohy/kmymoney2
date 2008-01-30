@@ -436,7 +436,7 @@ protected:
     * @param step step to be shown/hidden
     * @param hidden hide step if true (the default) or show it if false
     */
-  void setStepHidden(int step, bool hidden = true);
+  void setStepHidden(unsigned int step, bool hidden = true);
 
 protected slots:
   virtual void accept(void);

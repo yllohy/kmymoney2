@@ -43,7 +43,7 @@
 #define CATCH } catch (MyMoneyException *e) {
 #define PASS } catch (MyMoneyException *e) { throw; }
 #define ECATCH }
-#define DBG  // qDebug
+#define DBG(a)  // qDebug(a)
 //********************** THE CURRENT VERSION OF THE DATABASE LAYOUT **********************
 unsigned int MyMoneyDbDef::m_currentVersion = 1;
 
@@ -148,7 +148,7 @@ try {
       }
       break;
     default:
-      qFatal (QString("%1 - unknown open mode %2").arg(__func__).arg(openMode));
+      qFatal("%s", QString("%1 - unknown open mode %2").arg(__func__).arg(openMode).data());
   }
   if (rc != 0) return (rc);
   // bypass logon check if we are creating a database
@@ -161,7 +161,7 @@ try {
         .arg(m_logonUser)
         .arg(m_logonAt.date().toString(Qt::ISODate))
         .arg(m_logonAt.time().toString("hh.mm.ss"));
-    qDebug(m_error);
+    qDebug("%s", m_error.data());
     close(false);
     rc = -1;
   } else {
@@ -598,7 +598,7 @@ void MyMoneyStorageSql::startCommitUnit (const QString& callingFunction) {
 void MyMoneyStorageSql::endCommitUnit (const QString& callingFunction) {
   DBG("*** Entering MyMoneyStorageSql::endCommitUnit");
   if (callingFunction != m_commitUnitStack.top())
-    qFatal(QString("%1 - %2 s/be %3").arg(__func__).arg(callingFunction).arg(m_commitUnitStack.top()));
+    qFatal("%s", QString("%1 - %2 s/be %3").arg(__func__).arg(callingFunction).arg(m_commitUnitStack.top()).data());
   m_commitUnitStack.pop();
   if (m_commitUnitStack.isEmpty()) {
     MyMoneySqlQuery q(this);
@@ -610,7 +610,7 @@ void MyMoneyStorageSql::endCommitUnit (const QString& callingFunction) {
 void MyMoneyStorageSql::cancelCommitUnit (const QString& callingFunction) {
   DBG("*** Entering MyMoneyStorageSql::cancelCommitUnit");
   if (callingFunction != m_commitUnitStack.top())
-    qDebug(QString("%1 - %2 s/be %3").arg(__func__).arg(callingFunction).arg(m_commitUnitStack.top()));
+    qDebug("%s", QString("%1 - %2 s/be %3").arg(__func__).arg(callingFunction).arg(m_commitUnitStack.top()).data());
   if (m_commitUnitStack.isEmpty()) return;
   m_commitUnitStack.clear();
   MyMoneySqlQuery q(this);
@@ -1945,7 +1945,6 @@ void MyMoneyStorageSql::readAccounts(void) {
     QCString aid;
     QString balance;
     MyMoneyAccount acc;
-    unsigned long txCount;
     while (ft != t.end()) {
       CASE(id) aid = GETCSTRING;
       CASE(institutionId) acc.setInstitutionId(GETCSTRING);
@@ -2219,8 +2218,8 @@ void MyMoneyStorageSql::readTransactions(const MyMoneyTransactionFilter& filter)
     txFilterActive = false; // kill off the date filter now
   }
   if (!q.exec()) throw buildError (q, __func__, QString("%1 reading Tids").arg(__func__));
-  qDebug(QString("Id list query = %1 returned %2 rows").arg(q.executedQuery())
-      .arg(q.size()));
+  qDebug("%s", QString("Id list query = %1 returned %2 rows").arg(q.executedQuery())
+      .arg(q.size()).data());
   QStringList txList;
   while (q.next()) {
     QCString tid = q.value(0).toCString();
@@ -2595,7 +2594,7 @@ QString& MyMoneyStorageSql::buildError (const MyMoneySqlQuery& q, const QString&
   s += QString ("\nExecuted: %1").arg(q.executedQuery());
   s += QString ("\nQuery error No %1: %2").arg(e.number()).arg(e.text());
   m_error = s;
-  qDebug(s);
+  qDebug("%s", s.data());
   cancelCommitUnit(function);
   return (m_error);
 }
@@ -2950,13 +2949,16 @@ const QString MyMoneyDbTable::generateCreateSQL (const QString& driver) const {
   return qs;
 }
 
-const QString MyMoneyDbTable::dropPrimaryKeyString(const QString& driver) const {
+const QString MyMoneyDbTable::dropPrimaryKeyString(const QString& driver) const
+{
   if (driver == "QMYSQL3")
     return "ALTER TABLE " + m_name + " DROP PRIMARY KEY;";
   else if (driver == "QPSQL7")
     return "ALTER TABLE " + m_name + " DROP CONSTRAINT " + m_name + "_pkey;";
   else if (driver == "QSQLITE")
     return "";
+
+  return "";
 }
 
 const QString MyMoneyDbTable::modifyColumnString(const QString& driver, const QString& columnName, const MyMoneyDbColumn& newDef) const {
@@ -2972,7 +2974,10 @@ const QString MyMoneyDbTable::modifyColumnString(const QString& driver, const QS
 }
 
 //*****************************************************************************
-const QString MyMoneyDbIndex::generateDDL (const QString& driver) const {
+const QString MyMoneyDbIndex::generateDDL (const QString& driver) const
+{
+  Q_UNUSED(driver);
+
   QString qs = "CREATE ";
 
   if (m_unique)
@@ -3008,14 +3013,18 @@ MyMoneyDbDatetimeColumn* MyMoneyDbDatetimeColumn::clone () const
 MyMoneyDbTextColumn* MyMoneyDbTextColumn::clone () const
 { return (new MyMoneyDbTextColumn (*this)); }
 
-const QString MyMoneyDbColumn::generateDDL (const QString& driver) const {
+const QString MyMoneyDbColumn::generateDDL (const QString& driver) const
+{
+  Q_UNUSED(driver);
+
   QString qs = name() + " " + type();
   //if (isPrimaryKey()) qs += " PRIMARY KEY";
   if (isNotNull()) qs += " NOT NULL";
   return qs;
 }
 
-const QString MyMoneyDbIntColumn::generateDDL (const QString& driver) const {
+const QString MyMoneyDbIntColumn::generateDDL (const QString& driver) const
+{
   QString qs = name() + " ";
 
   switch (m_type) {
@@ -3080,7 +3089,8 @@ const QString MyMoneyDbIntColumn::generateDDL (const QString& driver) const {
   return qs;
 }
 
-const QString MyMoneyDbTextColumn::generateDDL (const QString& driver) const {
+const QString MyMoneyDbTextColumn::generateDDL (const QString& driver) const
+{
   QString qs = name() + " ";
 
   switch (m_type) {
@@ -3141,7 +3151,8 @@ const QString MyMoneyDbTextColumn::generateDDL (const QString& driver) const {
   return qs;
 }
 
-const QString MyMoneyDbDatetimeColumn::generateDDL (const QString& driver) const {
+const QString MyMoneyDbDatetimeColumn::generateDDL (const QString& driver) const
+{
   QString qs = name() + " ";
   if (driver == "QMYSQL3"  || driver == "QODBC3") {
     qs += "datetime ";

@@ -112,11 +112,11 @@ bool _CheckMemory::CheckMemoryLeak(bool freeall)
         d=true;
       }
       if(d==true)
-        Output("%p |%-13d|%s:%d",(*it).pointer(),(*it).size(),(*it).file(),(*it).line());
+        Output("%p |%-13d|%s:%d",(*it).pointer(),(int)(*it).size(),(*it).file(),(*it).line());
     }
   }
   if(d == true)
-    Output("You have forgotten to free %d object(s), %d bytes of memory.",freec,total);
+    Output("You have forgotten to free %d object(s), %d bytes of memory.",freec, (int)total);
   else
     Output("CheckMemory++: CheckMemoryLeak: No memory leak detected.");
   if(freeall == true)
@@ -134,12 +134,12 @@ void _CheckMemory::FreeAll()
     if((*it).pointer() != 0) {
       total += (*it).size();
       freec++;
-      Output("CheckMemory++: FreeAll: freed %d bytes of memory at %p.",(*it).size(),(*it).pointer());
+      Output("CheckMemory++: FreeAll: freed %d bytes of memory at %p.",(int)(*it).size(),(*it).pointer());
       free((*it).pointer());
     }
     table.remove(it);
   }
-  Output("CheckMemory++: FreeAll: Totally freed %d objects, %d bytes of memory.",freec,total);
+  Output("CheckMemory++: FreeAll: Totally freed %d objects, %d bytes of memory.",freec,(int)total);
 }
 
 void _CheckMemory_Init(_CheckMemoryOutFunc *out)

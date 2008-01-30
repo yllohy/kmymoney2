@@ -68,5 +68,7 @@ const QCString& MyMoneyObject::emptyId(void)
 
 void MyMoneyObject::writeBaseXML(QDomDocument& document, QDomElement& el) const
 {
+  Q_UNUSED(document);
+
   el.setAttribute("id", m_id);
 }

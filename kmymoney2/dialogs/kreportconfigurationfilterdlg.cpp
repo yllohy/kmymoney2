@@ -315,6 +315,8 @@ void KReportConfigurationFilterDlg::slotReset(void)
       case MyMoneyReport::eWeeks:
         m_tab2->m_comboColumns->setCurrentItem(1);
         break;
+      default:
+        break;
       }
     }
     else
@@ -333,6 +335,8 @@ void KReportConfigurationFilterDlg::slotReset(void)
         break;
       case MyMoneyReport::eYears:
         m_tab2->m_comboColumns->setCurrentItem(5);
+        break;
+      default:
         break;
       }
     }
@@ -377,12 +381,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
     case MyMoneyReport::eWeek:
       m_tab3->m_comboOrganizeBy->setCurrentItem(6);
       break;
-    case MyMoneyReport::eAccountByTopAccount:
-    case MyMoneyReport::eEquityType:
-    case MyMoneyReport::eAccountType:
-    case MyMoneyReport::eInstitution:
-    case MyMoneyReport::eAssetLiability:
-    case MyMoneyReport::eExpenseIncome:
+    default:
       throw new MYMONEYEXCEPTION("KReportConfigurationFilterDlg::slotReset(): QueryTable report has invalid rowtype");
     }
 

@@ -1100,7 +1100,7 @@ void Register::paintCell(QPainter* painter, int row, int col, const QRect& r, bo
 {
   // determine the item that we need to paint in the row and call it's paintRegisterCell() method
   if((row < 0) || ((unsigned)row > m_itemIndex.size())) {
-    qDebug("Register::paintCell: row %d out of bounds %d", row, m_itemIndex.size());
+    qDebug("Register::paintCell: row %d out of bounds %d", row, (int)m_itemIndex.size());
     return;
   }
 

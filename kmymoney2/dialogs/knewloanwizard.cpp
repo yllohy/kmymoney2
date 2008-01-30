@@ -109,7 +109,7 @@ KNewLoanWizard::KNewLoanWizard(QWidget *parent, const char *name ) :
   m_interestOnReceptionButton->animateClick();
 
   m_interestFrequencyAmountEdit->setValue(1);
-  m_interestFrequencyUnitEdit->setItem(static_cast<int>(MyMoneyAccountLoan::changeYearly));
+  m_interestFrequencyUnitEdit->setCurrentItem(static_cast<int>(MyMoneyAccountLoan::changeYearly));
   m_paymentFrequencyUnitEdit->setCurrentItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_MONTHLY));
   m_firstDueDateEdit->loadDate(QDate(QDate::currentDate().year(),QDate::currentDate().month(),30));
 
@@ -926,15 +926,15 @@ const QString KNewLoanWizard::updateTermWidgets(const long double val)
   switch(unit) {
     case MyMoneySchedule::OCCUR_MONTHLY:
       valString = i18n("one month", "%n months", vl);
-      m_durationUnitEdit->setItem(static_cast<int>(MyMoneySchedule::OCCUR_MONTHLY));
+      m_durationUnitEdit->setCurrentItem(static_cast<int>(MyMoneySchedule::OCCUR_MONTHLY));
       break;
     case MyMoneySchedule::OCCUR_YEARLY:
       valString = i18n("one year", "%n years", vl);
-      m_durationUnitEdit->setItem(static_cast<int>(MyMoneySchedule::OCCUR_YEARLY));
+      m_durationUnitEdit->setCurrentItem(static_cast<int>(MyMoneySchedule::OCCUR_YEARLY));
       break;
     default:
       valString = i18n("one payment", "%n payments", vl);
-      m_durationUnitEdit->setItem(static_cast<int>(MyMoneySchedule::OCCUR_ONCE));
+      m_durationUnitEdit->setCurrentItem(static_cast<int>(MyMoneySchedule::OCCUR_ONCE));
       break;
   }
   m_durationValueEdit->setValue(vl);
@@ -1129,7 +1129,7 @@ int KNewLoanWizard::term(void) const
 
   if(m_durationValueEdit->value() != 0) {
     factor = 1;
-    switch(m_durationUnitEdit->item()) {
+    switch(m_durationUnitEdit->currentItem()) {
       case MyMoneySchedule::OCCUR_YEARLY: // years
         factor = 12;
         // tricky fall through here

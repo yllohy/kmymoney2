@@ -157,6 +157,8 @@ void MyMoneySplit::setAction(investTransactionTypeE type)
     case MyMoneySplit::SplitShares:
       setAction(ActionSplitShares);
       break;
+    case MyMoneySplit::UnknownTransactionType:
+      break;
   }
 }
 
