@@ -341,6 +341,19 @@ const MyMoneyAccount& MyMoneyFile::account(const QCString& id) const
   return d->m_cache.account(id);
 }
 
+const MyMoneyAccount& MyMoneyFile::subAccountByName(const MyMoneyAccount& acc, const QString& name) const
+{
+  static MyMoneyAccount nullAccount;
+
+  QValueList<QCString>::const_iterator it_a;
+  for(it_a = acc.accountList().begin(); it_a != acc.accountList().end(); ++it_a) {
+    const MyMoneyAccount& sacc = account(*it_a);
+    if(sacc.name() == name)
+      return sacc;
+  }
+  return nullAccount;
+}
+
 const MyMoneyAccount& MyMoneyFile::accountByName(const QString& name) const
 {
   return d->m_cache.accountByName(name);

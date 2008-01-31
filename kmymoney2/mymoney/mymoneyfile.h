@@ -702,6 +702,16 @@ public:
   const MyMoneyAccount& accountByName(const QString& name) const;
 
   /**
+   * Returns the sub-account addressed by its name.
+   *
+   * @param acc account to search in
+   * @param name  name of the account to locate.
+   * @return First MyMoneyAccount object found carrying the @p name.
+   * An empty MyMoneyAccount object will be returned if the name is not found.
+   */
+  const MyMoneyAccount& MyMoneyFile::subAccountByName(const MyMoneyAccount& acc, const QString& name) const;
+
+  /**
     * This method returns a list of accounts inside a MyMoneyFile object.
     * An optional parameter is a list of id's. If this list is emtpy (the default)
     * the returned list contains all accounts, otherwise only those referenced

@@ -1,4 +1,8 @@
 
+2008-01-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't create the same parent account if it already exists during
+    account creation
+
 2008-01-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't run overdue test between 28th and 2nd
   * Resolved a bunch of compiler warnings

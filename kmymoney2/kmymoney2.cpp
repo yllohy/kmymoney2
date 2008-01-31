@@ -182,8 +182,6 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   // values for margin (11) and spacing(6) taken from KDialog implementation
   QBoxLayout* layout = new QBoxLayout(frame, QBoxLayout::TopToBottom, 2, 6);
 
-  setCentralWidget(frame);
-
   ::timetrace("init statusbar");
   initStatusBar();
   ::timetrace("init actions");
@@ -210,6 +208,8 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   new KListViewItem(d->m_pluginDlg->m_listView, i18n("No plugins loaded"));
   createInterfaces();
   loadPlugins();
+
+  setCentralWidget(frame);
 
   ::timetrace("done");
 
@@ -2351,10 +2351,15 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
     while((pos = newAccount.name().find(MyMoneyFile::AccountSeperator)) != -1) {
       QString part = newAccount.name().left(pos);
       QString remainder = newAccount.name().mid(pos+1);
-      newAccount.setName(part);
+      const MyMoneyAccount& existingAccount = file->subAccountByName(parentAccount, part);
+      if(existingAccount.id().isEmpty()) {
+        newAccount.setName(part);
 
-      file->addAccount(newAccount, parentAccount);
-      parentAccount = newAccount;
+        file->addAccount(newAccount, parentAccount);
+        parentAccount = newAccount;
+      } else {
+        parentAccount = existingAccount;
+      }
       newAccount.setParentAccountId(QCString());  // make sure, there's no parent
       newAccount.clearId();                       // and no id set for adding
       newAccount.removeAccountIds();              // and no sub-account ids
