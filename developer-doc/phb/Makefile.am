@@ -1,6 +1,6 @@
 KDE_OPTIONS = noautodist
 
-DOCBOOK_FILES = phb.docbook cfg-mgmt.docbook coding.docbook cvs-examples.docbook  src-examples.docbook licence.docbook error-mgmt.docbook unit-test.docbook rel-mgmt.docbook test-examples.docbook rpm-example.docbook fdl-licence translation.docbook dialogs.docbook documentation.docbook
+DOCBOOK_FILES = phb.docbook cfg-mgmt.docbook coding.docbook cvs-examples.docbook  src-examples.docbook licence.docbook error-mgmt.docbook unit-test.docbook rel-mgmt.docbook test-examples.docbook rpm-example.docbook fdl-licence translation.docbook dialogs.docbook documentation.docbook settings.docbook submissions.docbook
 
 EXTRA_DIST = $(DOCBOOK_FILES)
 
@@ -12,7 +12,7 @@ if HAVE_DOCCONVERSIONTOOLS
 PDF_TARGET = kmymoney-phb.pdf
 endif
 
-.PHONY: all get-files clear-files web
+.PHONY: all show preview get-files clear-files web
 all:	$(TARGETS) $(PDF_TARGET)
 
 STYLESHEET = kde-nochunk.xsl
@@ -23,6 +23,11 @@ phb.html:	$(DOCBOOK_FILES)
 		echo sed -i "s/ISO-8859-1/UTF-8/g" phb.html; \
 		$(MEINPROC) --stylesheet $(kde_libs_prefix)/share/apps/ksgmltools2/customization/$(STYLESHEET) $(srcdir)/phb.docbook --stdout | sed "s/ISO-8859-1/UTF-8/g" > phb.html; \
 	fi
+
+preview: phb.html
+
+show: preview
+	konqueror phb.html
 
 # if we're in a VPATH environment, we need to copy all files over
 # to the build directory. Otherwise, we'll get into trouble. Of course
@@ -95,3 +100,4 @@ kmymoney-phb.pdf: $(DOCBOOK_FILES)
 		phb.docbook
 	$(MAKE) clear-files
 endif
+

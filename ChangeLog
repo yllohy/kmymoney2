@@ -1,3 +1,7 @@
+2008-01-31 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added submissions chapter to project handbook - #1394772
+  * Added settings chapter to project handbook
+  * Added option to Makefile to preview project handbook
 
 2008-01-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't create the same parent account if it already exists during
