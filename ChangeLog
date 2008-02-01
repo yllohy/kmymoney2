@@ -1,3 +1,5 @@
+2008-02-01 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added missing files for submissions and settings chapter
 
 2008-02-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed extra qualifier from subAccountByName() declaration
