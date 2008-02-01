@@ -1,3 +1,7 @@
+
+2008-02-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed extra qualifier from subAccountByName() declaration
+
 2008-01-31 Alvaro Soliverez <asoliverez@gmail.com>
   * Added submissions chapter to project handbook - #1394772
   * Added settings chapter to project handbook
