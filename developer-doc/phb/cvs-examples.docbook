@@ -499,7 +499,7 @@ directory so I did it as follows:
 </example>
 Now the development sources are found in ~/devel/kmymoney2/. It is
 important to move all the CVS directories as well. If you start from
-scratch, the you just follow the instructions on how to checkout the
+scratch, then you just follow the instructions on how to checkout the
 project and do that in the <command>devel</command> subdirectory. See the
 chapter <emphasis>
 <link linkend="cvs-checkout">Checking out from the repository</link>
@@ -525,7 +525,6 @@ the repository.
 <screen>
 
   <prompt>thb:~&gt; </prompt><userinput>cd stable</userinput>
-  <prompt>thb:~/stable&gt; </prompt><userinput>mv kmymoney2 devel</userinput>
   <prompt>thb:~/stable&gt; </prompt><userinput>cvs -d &cvs-user;@&cvs-host;:&cvs-dir; \ <footnote>
 <para>
 The back-slash is inserted here to break the line for readability. For real usage, the command has to be entered on a single line. 
