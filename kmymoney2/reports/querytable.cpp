@@ -569,6 +569,8 @@ void QueryTable::constructTransactionTable(void)
         i = a.parent().institutionId();
 
         MyMoneyMoney sh = (* is).shares();
+        
+        
 
         qA["shares"] = sh.isZero() ? "" : sh.toString();
         qA["price"] = sh.isZero() ? "" : ((* is).value()*xr/sh).toString();
@@ -586,6 +588,11 @@ void QueryTable::constructTransactionTable(void)
         include_me = m_config.includes(a);
         a_fullname = a.fullName();
         a_memo = (* is).memo();
+        
+        if (m_config.isConvertCurrency() && a.isForeignCurrency()) {
+          xr = a.baseCurrencyPrice((* it).postDate()).reduce();
+          qA["price"] = a.baseCurrencyPrice((* it).postDate()).reduce().toString();
+        }
 
         qA["account"] = a.name();
         qA["accountid"] = a.id();

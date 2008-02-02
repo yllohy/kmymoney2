@@ -1,3 +1,6 @@
+2008-02-02 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed calculation of foreign currency in transaction reports - #1369048
+  
 2008-02-01 Alvaro Soliverez <asoliverez@gmail.com>
   * Added missing files for submissions and settings chapter
 
