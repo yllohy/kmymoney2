@@ -487,7 +487,7 @@ void QueryTable::constructTransactionTable(void)
     if((* it).commodity() != file->baseCurrency().id()) {
       if (report.isConvertCurrency()) {
         MyMoneySecurity c = file->currency((* it).commodity());
-        xr = file->price(c.id(), file->baseCurrency().id(), QDate::currentDate()).rate(file->baseCurrency().id());
+        xr = file->price(c.id(), file->baseCurrency().id(), (* it).postDate()).rate(file->baseCurrency().id());
       }
       else {
         qA["currency"] = qS["currency"] = (* it).commodity();
@@ -829,8 +829,9 @@ void QueryTable::constructTransactionTable(void)
 
     // adjust exchange rate
     if (m_config.isConvertCurrency() && a.isForeignCurrency())
-      xr = a.baseCurrencyPrice(m_config.toDate()).reduce();
+      xr = a.baseCurrencyPrice(m_config.fromDate()).reduce();
 
+    //starting balance
     // don't show currency if we're converting or if it's not foreign
     qA["currency"] = (m_config.isConvertCurrency() || ! a.isForeignCurrency()) ? "" : a.currency();
 
@@ -844,17 +845,31 @@ void QueryTable::constructTransactionTable(void)
       qA["price"] = (p0 * xr).toString();
       qA["shares"] = s0.toString();
     }
+    
+    if (m_config.isConvertCurrency() && a.isForeignCurrency())
+      qA["price"] = xr.toString();
+        
 
     qA["postdate"] = date0s;
     qA["balance"] = (b0 * xr).toString();
     qA["value"] = QString();
     qA["id"] = "A";
+    
+    //ending balance
     m_transactions += qA;
+    
+    if (m_config.isConvertCurrency() && a.isForeignCurrency()) {
+      xr = a.baseCurrencyPrice(m_config.toDate()).reduce();
+      qA["price"] = xr.toString();
+    }
 
     if (a.isInvest()) {
       qA["price"] = (p1 * xr).toString();
       qA["shares"] = s1.toString();
     }
+    
+    if (m_config.isConvertCurrency() && a.isForeignCurrency())
+      
 
     qA["postdate"] = date1s;
     qA["balance"] = (b1 * xr).toString();

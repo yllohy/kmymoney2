@@ -1,3 +1,6 @@
+2008-02-02 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed calculation of foreign currency balances and prices in transaction reports
+
 2008-02-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed the example on keeping a stable and development version
     on the same machine.
