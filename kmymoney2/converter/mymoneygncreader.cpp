@@ -1736,8 +1736,10 @@ void MyMoneyGncReader::convertSchedule (const GncSchedule *gsc) {
                            //{"daily_mf", 'd', 1, MyMoneySchedule::OCCUR_DAILY, MyMoneySchedule::MoveMonday }, doesn't work, need new freq in kmm
                            {"weekly", 'w', 1, MyMoneySchedule::OCCUR_WEEKLY, MyMoneySchedule::MoveNothing },
                            {"bi_weekly", 'w', 2, MyMoneySchedule::OCCUR_EVERYOTHERWEEK, MyMoneySchedule::MoveNothing },
+                           {"three-weekly", 'w', 3, MyMoneySchedule::OCCUR_EVERYTHREEWEEKS, MyMoneySchedule::MoveNothing },
                            {"four-weekly", 'w', 4, MyMoneySchedule::OCCUR_EVERYFOURWEEKS,
                            MyMoneySchedule::MoveNothing },
+                           {"eight-weekly", 'w', 8, MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS, MyMoneySchedule::MoveNothing },
                            {"monthly", 'm', 1, MyMoneySchedule::OCCUR_MONTHLY, MyMoneySchedule::MoveNothing },
                            {"two-monthly", 'm', 2, MyMoneySchedule::OCCUR_EVERYOTHERMONTH,
                             MyMoneySchedule::MoveNothing },

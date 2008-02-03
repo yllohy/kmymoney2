@@ -616,8 +616,10 @@ void KNewLoanWizard::loadComboBoxes(void)
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_WEEKLY));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_FORTNIGHTLY));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERWEEK));
+  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYFOURWEEKS));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_MONTHLY));
+  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERMONTH));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_QUARTERLY));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYFOURMONTHS));
@@ -659,11 +661,17 @@ int KNewLoanWizard::occurenceToPeriod(const MyMoneySchedule::occurenceE occurenc
     case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
       rc = 15;
       break;
+    case MyMoneySchedule::OCCUR_EVERYTHREEWEEKS:
+      rc = 21;
+      break;
     case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
       rc = 28;
       break;
     case MyMoneySchedule::OCCUR_MONTHLY:
       rc = 30;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS:
+      rc = 56;
       break;
     case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
       rc = 60;
@@ -704,11 +712,17 @@ int KNewLoanWizard::occurenceToFrequency(const MyMoneySchedule::occurenceE occur
     case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
       rc = 26;
       break;
+    case MyMoneySchedule::OCCUR_EVERYTHREEWEEKS:
+      rc = 17;
+      break;
     case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
       rc = 13;
       break;
     case MyMoneySchedule::OCCUR_MONTHLY:
       rc = 12;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS:
+      rc = 6;
       break;
     case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
       rc = 6;

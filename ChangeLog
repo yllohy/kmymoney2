@@ -1,3 +1,6 @@
+2008-02-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * New schedule intervals (3, 8 wks) - patch supplied by Colin Wright
+
 2008-02-02 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed calculation of foreign currency balances and prices in transaction reports
 

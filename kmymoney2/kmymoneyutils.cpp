@@ -213,10 +213,14 @@ const MyMoneySchedule::occurenceE KMyMoneyUtils::stringToOccurence(const QString
     occurence = MyMoneySchedule::OCCUR_FORTNIGHTLY;
   else if(tmp == i18n("Every other week").lower())
     occurence = MyMoneySchedule::OCCUR_EVERYOTHERWEEK;
-  else if(tmp == i18n("Every four week").lower())
+  else if(tmp == i18n("Every three weeks").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYTHREEWEEKS;
+  else if(tmp == i18n("Every four weeks").lower())
     occurence = MyMoneySchedule::OCCUR_EVERYFOURWEEKS;
   else if(tmp == i18n("Monthly").lower())
     occurence = MyMoneySchedule::OCCUR_MONTHLY;
+  else if(tmp == i18n("Every eight weeks").lower())
+    occurence = MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS;
   else if(tmp == i18n("Every two months").lower())
     occurence = MyMoneySchedule::OCCUR_EVERYOTHERMONTH;
   else if(tmp == i18n("Every three months").lower())
@@ -466,11 +470,17 @@ int KMyMoneyUtils::occurenceToFrequency(const MyMoneySchedule::occurenceE occure
     case MyMoneySchedule::OCCUR_EVERYOTHERWEEK:
       rc = 26;
       break;
+    case MyMoneySchedule::OCCUR_EVERYTHREEWEEKS:
+      rc = 17;
+      break;
     case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
       rc = 13;
       break;
     case MyMoneySchedule::OCCUR_MONTHLY:
       rc = 12;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS:
+      rc = 6;
       break;
     case MyMoneySchedule::OCCUR_EVERYOTHERMONTH:
       rc = 6;
