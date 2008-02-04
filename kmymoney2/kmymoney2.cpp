@@ -3468,6 +3468,21 @@ void KMyMoney2App::slotScheduleEdit(void)
               MyMoneyFileTransaction ft;
               try {
                 MyMoneySchedule sched = sched_dlg->schedule();
+                // Check whether the new Schedule Date
+                // is at or before the lastPaymentDate
+                // If it is, ask the user whether to clear the
+                // lastPaymentDate
+                const QDate& next = sched.nextDueDate();
+                const QDate& last = sched.lastPayment();
+                if ( next.isValid() && last.isValid() && next <= last ) {
+                  // Entered a date effectively no later
+                  // than previous payment.  Date would be
+                  // updated automatically so we probably
+                  // want to clear it.  Let's ask the user.
+                  if(KMessageBox::questionYesNo(this, QString("<qt>")+i18n("You have entered a Schedule date of <b>%1</b>.  Because the schedule was last paid on <b>%2</b>, KMyMoney will automatically adjust the schedule date to the next date unless the last payment date is reset.  Do you want to reset the last payment date?").arg(KGlobal::locale()->formatDate(next, true)).arg(KGlobal::locale()->formatDate(last, true))+QString("</qt>"),i18n("Reset Last Payment Date" ), KStdGuiItem::yes(), KStdGuiItem::no()) == KMessageBox::Yes) {
+                    sched.setLastPayment( QDate() );
+                  }
+                }
                 MyMoneyFile::instance()->modifySchedule(sched);
                 ft.commit();
               } catch (MyMoneyException *e) {
