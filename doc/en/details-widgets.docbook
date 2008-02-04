@@ -104,7 +104,7 @@ select the entry by pressing the RETURN key.
 </para>
 
 <para>
-If a name is entered that is not yet known to &kappname; you will be asked if you wants to create a new payee/payer record.
+If a name is entered that is not yet known to &kappname; you will be asked if you want to create a new payee/payer record.
 If you do not wish to do so, then the field will be blanked. Otherwise, the record will be created and added to the list.
 </para>
 </sect2>
@@ -133,7 +133,7 @@ select the entry by pressing the RETURN key.
 </para>
 
 <para>
-If a name is entered that is not yet known to &kappname; you will be asked if you wants to create a new category record.
+If a name is entered that is not yet known to &kappname; you will be asked if you want to create a new category record.
 If you do not wish to do so, then the field will be blanked. Otherwise, the record will be created and added to the list.
 </para>
 </sect2>
