@@ -2918,13 +2918,15 @@ void KMyMoney2App::slotAccountDelete(void)
           MyMoneyAccount child = file->account(*it);
           file->reparentAccount(child, parent);
         }
+        // reload the account because the sub-account list might have changed
+        m_selectedAccount = file->account(m_selectedAccount.id());
         // now recursively delete remaining sub-categories
         file->removeAccountList(m_selectedAccount.accountList());
         // don't forget to update m_selectedAccount, because we still have a copy of
         // the old account list, which is no longer valid
         m_selectedAccount = file->account(m_selectedAccount.id());
       } catch(MyMoneyException* e) {
-        KMessageBox::error( this, i18n("Unable to delete a sub-category of category <b>%1</b>. Reason: %2").arg(m_selectedAccount.name()).arg(e->what()));
+        KMessageBox::error( this, QString("<qt>")+i18n("Unable to delete a sub-category of category <b>%1</b>. Reason: %2").arg(m_selectedAccount.name()).arg(e->what())+QString("</qt>"));
         delete e;
         return;
       }
