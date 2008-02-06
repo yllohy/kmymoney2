@@ -46,6 +46,8 @@ public:
   ~KMyMoneyForecastListViewItem();
   
   void setNegative(bool isNegative);
+  
+  void setText( int column, const QString &text, const bool &negative = false );
 
   /**
     * use my own paint method
@@ -56,7 +58,8 @@ public:
 private:
   
   bool m_negative;
-
+  
+  QMap<int, QColor> m_columnsColor;
 };
 
 #endif

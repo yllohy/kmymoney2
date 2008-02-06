@@ -194,15 +194,14 @@ void KForecastView::loadListView(void)
       }
 
       amount = amountMM.formatMoney(currency.tradingSymbol());
-      forecastItem->setText((accountColumn+it_c), amount);
+      forecastItem->setText((accountColumn+it_c), amount, amountMM.isNegative()); //sets the text and negative color
       it_c++;
     }
 
     //calculate and add variation per cycle
     vAmountMM = forecast.accountTotalVariation(acc);
-    forecastItem->setNegative(vAmountMM.isNegative()); 
     vAmount = vAmountMM.formatMoney(currency.tradingSymbol());
-    forecastItem->setText((accountColumn+it_c), vAmount);
+    forecastItem->setText((accountColumn+it_c), vAmount, vAmountMM.isNegative());
 
   }
   //add total row
@@ -213,12 +212,11 @@ void KForecastView::loadListView(void)
     QDate forecastDate = QDate::currentDate().addDays(i);
     MyMoneyMoney amountMM = cycleBalance[forecastDate];
     QString amount = amountMM.formatMoney(file->baseCurrency().tradingSymbol());
-    forecastItem->setText((i+1), amount);
+    forecastItem->setText((i+1), amount, amountMM.isNegative());
   }
   //calculate total variation
   QString totalVarAmount;
   MyMoneyMoney totalVarAmountMM = cycleBalance[QDate::currentDate().addDays(i-1)]-cycleBalance[QDate::currentDate()];
-  forecastItem->setNegative(totalVarAmountMM.isNegative()); 
   totalVarAmount = totalVarAmountMM.formatMoney(file->baseCurrency().tradingSymbol());
   forecastItem->setText((i+1), totalVarAmount);
 
@@ -547,11 +545,11 @@ void KForecastView::loadAdvancedView(void)
       amountMM = forecast.forecastBalance(acc, minDate);
 
       amount = amountMM.formatMoney(currency.tradingSymbol());
-      advancedItem->setText(it_c, amount);
+      advancedItem->setText(it_c, amount, amountMM.isNegative());
       it_c++;
 
       QString dateString = minDate.toString(Qt::LocalDate);
-      advancedItem->setText(it_c, dateString);
+      advancedItem->setText(it_c, dateString, amountMM.isNegative());
       it_c++;
     }
 
@@ -564,17 +562,17 @@ void KForecastView::loadAdvancedView(void)
       amountMM = forecast.forecastBalance(acc, maxDate);
 
       amount = amountMM.formatMoney(currency.tradingSymbol());
-      advancedItem->setText(it_c, amount);
+      advancedItem->setText(it_c, amount, amountMM.isNegative());
       it_c++;
 
       QString dateString = maxDate.toString(Qt::LocalDate);
-      advancedItem->setText(it_c, dateString);
+      advancedItem->setText(it_c, dateString, amountMM.isNegative());
       it_c++;
     }
     //get average balance
     amountMM = forecast.accountAverageBalance(acc);
     amount = amountMM.formatMoney(currency.tradingSymbol());
-    advancedItem->setText(it_c, amount);
+    advancedItem->setText(it_c, amount, amountMM.isNegative());
     it_c++;
   }
   m_advancedList->show();
