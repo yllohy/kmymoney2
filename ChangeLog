@@ -3,6 +3,7 @@
   * Changed forecast negative numbers to use KMyMoney settings
   * Changed detail forecast to show negative by cell not row - #1877719
   * Added negative color to advanced forecast - #1877719
+  * Added beginDay to calculation of accountMinimumBalanceDateList in forecast
 
 2008-02-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed removal of categories
