@@ -20,6 +20,8 @@
 # include <config.h>
 #endif
 
+#include <unistd.h>
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -1024,26 +1026,34 @@ const bool KMyMoneyView::saveFile(const KURL& url, const QString& key)
     if(url.isLocalFile()) {
       filename = url.path();
       int fmode = 0600;
+      gid_t gid = static_cast<gid_t>(-1);      // don't change the group id (see "man 2 chown")
       QFileInfo fi(filename);
       if(fi.exists()) {
         fmode |= fi.permission(QFileInfo::ReadGroup) ? 040 : 0;
         fmode |= fi.permission(QFileInfo::WriteGroup) ? 020 : 0;
         fmode |= fi.permission(QFileInfo::ReadOther) ? 004 : 0;
         fmode |= fi.permission(QFileInfo::WriteOther) ? 002 : 0;
+        if(fi.groupId() != static_cast<uint>(-2))
+          gid = fi.groupId();
       }
 
-      KSaveFile qfile(filename, fmode);
-      if(qfile.status() == 0) {
-        try {
-          saveToLocalFile(qfile.file(), pWriter, plaintext, key);
-        } catch (MyMoneyException* e) {
-          qfile.abort();
-          delete e;
+      // create a new basic block here, so that the object qfile gets
+      // deleted, before we reach the chown() call
+      {
+        KSaveFile qfile(filename, fmode);
+        if(qfile.status() == 0) {
+          try {
+            saveToLocalFile(qfile.file(), pWriter, plaintext, key);
+          } catch (MyMoneyException* e) {
+            qfile.abort();
+            delete e;
+            throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
+          }
+        } else {
           throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
         }
-      } else {
-        throw new MYMONEYEXCEPTION(i18n("Unable to write changes to '%1'").arg(filename));
       }
+      chown(filename, static_cast<uid_t>(-1), gid);
     } else {
       KTempFile tmpfile;
       saveToLocalFile(tmpfile.file(), pWriter, plaintext, key);
