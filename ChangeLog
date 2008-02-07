@@ -1,3 +1,5 @@
+2008-02-07 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed forecast tests for minimum, maximum and average balance methods
 
 2008-02-06 Alvaro Soliverez <asoliverez@gmail.com>
   * Changed forecast negative numbers to use KMyMoney settings

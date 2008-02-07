@@ -637,6 +637,7 @@ void MyMoneyForecastTest::testAccountMinimumBalanceDateList() {
   KMyMoneyGlobalSettings::setForecastDays(6);
   KMyMoneyGlobalSettings::setForecastAccountCycle(2);
   KMyMoneyGlobalSettings::setForecastCycles(3);
+  KMyMoneyGlobalSettings::setBeginForecastDay(QDate::currentDate().addDays(1).day());
   a.doForecast();
   
   MyMoneyAccount a_cash = file->account(acCash);
@@ -670,7 +671,7 @@ void MyMoneyForecastTest::testAccountMaximumBalanceDateList() {
   KMyMoneyGlobalSettings::setForecastDays(6);
   KMyMoneyGlobalSettings::setForecastAccountCycle(2);
   KMyMoneyGlobalSettings::setForecastCycles(3);
-  KMyMoneyGlobalSettings::setBeginForecastDay(0);
+  KMyMoneyGlobalSettings::setBeginForecastDay(QDate::currentDate().addDays(1).day());
   a.doForecast();
   
   MyMoneyAccount a_cash = file->account(acCash);
@@ -705,6 +706,7 @@ void MyMoneyForecastTest::testAccountAverageBalance() {
   KMyMoneyGlobalSettings::setForecastDays(3);
   KMyMoneyGlobalSettings::setForecastAccountCycle(2);
   KMyMoneyGlobalSettings::setForecastCycles(1);
+  KMyMoneyGlobalSettings::setBeginForecastDay(0);
   a.doForecast();
   
   MyMoneyAccount a_cash = file->account(acCash);
