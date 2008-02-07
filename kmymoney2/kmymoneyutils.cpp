@@ -389,13 +389,10 @@ const QString KMyMoneyUtils::homePageItemToString(const int idx)
       rc = i18n("Favorite reports");
       break;
     case 5:
-      rc = i18n("Forecast (schedule)");
+      rc = i18n("Forecast");
       break;
     case 6:
       rc = i18n("Networth forecast");
-      break;
-    case 7:
-      rc = i18n("Forecast (history)");
       break;
     default:
       rc = "";

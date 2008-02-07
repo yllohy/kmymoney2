@@ -223,14 +223,11 @@ void KHomeView::loadView(void)
           case 4:         // favorite reports
             showFavoriteReports();
             break;
-          case 5:         // forecast (schedule based)
-            showScheduleBasedForecast();
+          case 5:         // forecast
+            showForecast();
             break;
           case 6:         // net worth graph over all accounts
             showNetWorthGraph();
-            break;
-          case 7:         // forecast (based on history)
-            showTrendBasedForecast();
             break;
         }
         m_part->write("<div class=\"gap\">&nbsp;</div>\n");
@@ -752,14 +749,7 @@ void KHomeView::showFavoriteReports(void)
   }
 }
 
-void KHomeView::showTrendBasedForecast(void)
-{
-    m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Trend based forecast")));
-
-    m_part->write("<p>This is a hook provided for further development</p>");
-}
-
-void KHomeView::showScheduleBasedForecast(void)
+void KHomeView::showForecast(void)
 {
   QMap<QString, QCString> nameIdx;
   MyMoneyFile* file = MyMoneyFile::instance();
