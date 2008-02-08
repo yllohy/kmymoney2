@@ -2,8 +2,9 @@
 <!DOCTYPE KMYMONEY-TEMPLATE>
 <kmymoney-account-template>
  <title>ScheduleE rental property</title>
- <shortdesc/>
- <longdesc/>
+ <shortdesc>Categories from IRS Schedule E</shortdesc>
+ <longdesc>Use this group if you own rental properties or receive royalties and are required to use IRS Schedule E</longdesc> 
+
  <accounts>
   <account type="12" name="" >
    <account type="12" name="Rental Income" >

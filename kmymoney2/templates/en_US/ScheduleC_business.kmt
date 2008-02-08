@@ -2,8 +2,9 @@
 <!DOCTYPE KMYMONEY-TEMPLATE>
 <kmymoney-account-template>
  <title>ScheduleC business</title>
- <shortdesc/>
- <longdesc/>
+ <shortdesc>Categories from IRS Schedule C</shortdesc>
+ <longdesc>Use this group if you plan to use KMyMoney for a simple business or to track business expenses. This group contains categories that correspond to IRS Schedule C and will make preparing your taxes easier.  Can be used alone or with one of the base category groups.</longdesc> 
+
  <accounts>
   <account type="12" name="" >
    <account type="12" name="Business" >
@@ -50,9 +51,9 @@
      <account type="13" name="Telephone/Internet/Fax" />
      <account type="13" name="Water" />
      <account type="13" name="Sewer" />
-     <account type="13" name="Garbage &amp; Recycling" />
+     <account type="13" name="Garbage/Recycling" />
     </account>
-    <account type="13" name="Wages &amp; Salary" />
+    <account type="13" name="Wages/Salary" />
     <account type="13" name="Advertising" />
     <account type="13" name="Contract Labor" />
     <account type="13" name="Commisions and Fees" />
