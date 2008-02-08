@@ -22,6 +22,7 @@
 
 #include <qdialog.h>
 #include <qvaluelist.h>
+#include <qpalette.h>
 class QVBoxLayout;
 class QHBoxLayout;
 class QLabel;
@@ -489,6 +490,7 @@ private:
    */
   QFrame*               m_stepFrame;
   QLabel*               m_stepLabel;
+  QPalette              m_stepPalette;
 
   QValueList<QLabel*>   m_steps;      // the list of step labels
   int                   m_step;       // the currently selected step

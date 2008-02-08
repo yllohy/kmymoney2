@@ -1,5 +1,10 @@
+
+2008-02-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Labels in wizards use KDE color settings
+
 2008-02-07 Robert Wadley <robntina@users.sourceforge.net>
-  * Reorganized the old template into new, more modular category templates and added descriptions.
+  * Reorganized the old template into new, more modular category
+    templates and added descriptions.
 
 2008-02-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Keep group membership when saving to a local file

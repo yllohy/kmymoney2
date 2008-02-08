@@ -153,6 +153,16 @@ KMyMoneyWizard::KMyMoneyWizard(QWidget *parent, const char *name, bool modal, WF
   m_stepLayout->addWidget(m_stepLabel);
   hboxLayout->addWidget(m_stepFrame);
 
+  // FIXME use the protected virtual method QWidget::paletteChange() to update the palette
+  // information when the user selected a different color set using the KConfigCenter
+  m_stepPalette = m_stepLabel->palette();
+  QColorGroup::ColorRole role = QColorGroup::Foreground;
+  QColor color = KGlobalSettings::highlightedTextColor();
+  m_stepPalette.setColor( QPalette::Active, role, color );
+  m_stepPalette.setColor( QPalette::Inactive, role, color );
+  m_stepPalette.setColor( QPalette::Disabled, role, color );
+  m_stepLabel->setPalette(m_stepPalette);
+
   // create page layout
   m_pageLayout = new QVBoxLayout(0, 0, 6, "pageLayout");
 
@@ -193,6 +203,8 @@ void KMyMoneyWizard::addStep(const QString& text)
   step->setAlignment(Qt::AlignHCenter);
   step->setFrameStyle(QFrame::Box | QFrame::Sunken);
   step->setMargin(2);
+  step->setPalette( m_stepPalette );
+
   m_steps.append(step);
   m_stepLayout->insertWidget(m_steps.count(), step);
 
