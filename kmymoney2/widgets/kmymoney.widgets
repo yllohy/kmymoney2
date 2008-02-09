@@ -43,6 +43,8 @@ IncludeFile=kmymoney/kmymoneycombo.h
 
 [KBudgetValues]
 
+[KAccountTemplateSelector]
+
 # deprecated will be removed at some point in time
 
 [KMyMoneyAccountCombo]

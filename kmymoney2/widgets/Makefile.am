@@ -6,14 +6,14 @@ noinst_LIBRARIES = libwidgets.a
 
 libwidgets_a_METASOURCES = AUTO
 
-libwidgets_a_SOURCES = kbudgetvalues.cpp kbudgetvaluesdecl.ui kguiutils.cpp klistviewsearchline.cpp kmymoneyaccountcombo.cpp kmymoneyaccountcompletion.cpp kmymoneyaccountselector.cpp kmymoneyaccounttree.cpp kmymoneyaccounttreebudget.cpp kmymoneybriefschedule.cpp kmymoneycalculator.cpp kmymoneycalendar.cpp kmymoneycategory.cpp kmymoneychecklistitem.cpp kmymoneycombo.cpp kmymoneycompletion.cpp kmymoneycurrencyselector.cpp kmymoneydateinput.cpp kmymoneydatetbl.cpp kmymoneyedit.cpp kmymoneyforecastlistviewitem.cpp kmymoneygpgconfig.cpp kmymoneygpgconfigdecl.ui kmymoneylineedit.cpp kmymoneylistviewitem.cpp kmymoneyonlinequoteconfig.cpp kmymoneyonlinequoteconfigdecl.ui kmymoneypriceview.cpp kmymoneyreportconfigtab1decl.ui kmymoneyreportconfigtab2decl.ui kmymoneyreportconfigtab3decl.ui kmymoneyreportconfigtabchartdecl.ui kmymoneyreportcontroldecl.ui kmymoneyscheduledcalendar.cpp kmymoneyscheduleddatetbl.cpp kmymoneyselector.cpp kmymoneysplittable.cpp kmymoneytitlelabel.cpp kmymoneywizard.cpp kschedulebriefwidget.ui register.cpp registeritem.cpp registersearchline.cpp transaction.cpp transactioneditorcontainer.cpp transactionform.cpp \
+libwidgets_a_SOURCES = kbudgetvalues.cpp kbudgetvaluesdecl.ui kguiutils.cpp klistviewsearchline.cpp kmymoneyaccountcombo.cpp kmymoneyaccountcompletion.cpp kmymoneyaccountselector.cpp kmymoneyaccounttree.cpp kmymoneyaccounttreebudget.cpp kmymoneybriefschedule.cpp kmymoneycalculator.cpp kmymoneycalendar.cpp kmymoneycategory.cpp kmymoneychecklistitem.cpp kmymoneycombo.cpp kmymoneycompletion.cpp kmymoneycurrencyselector.cpp kmymoneydateinput.cpp kmymoneydatetbl.cpp kmymoneyedit.cpp kmymoneyforecastlistviewitem.cpp kmymoneygpgconfig.cpp kmymoneygpgconfigdecl.ui kmymoneylineedit.cpp kmymoneylistviewitem.cpp kmymoneyonlinequoteconfig.cpp kmymoneyonlinequoteconfigdecl.ui kmymoneypriceview.cpp kmymoneyreportconfigtab1decl.ui kmymoneyreportconfigtab2decl.ui kmymoneyreportconfigtab3decl.ui kmymoneyreportconfigtabchartdecl.ui kmymoneyreportcontroldecl.ui kmymoneyscheduledcalendar.cpp kmymoneyscheduleddatetbl.cpp kmymoneyselector.cpp kmymoneysplittable.cpp kmymoneytitlelabel.cpp kmymoneywizard.cpp kschedulebriefwidget.ui register.cpp registeritem.cpp registersearchline.cpp transaction.cpp transactioneditorcontainer.cpp transactionform.cpp kaccounttemplateselectordecl.ui kaccounttemplateselector.cpp \
 	transactionsortoption.cpp transactionsortoption.ui
 
 #libwidgets_a_SOURCES = kmymoneyregisterinvestment.cpp kmymoneyequity.cpp kmymoneyequitycompletion.cpp kmymoneycompletion.cpp kmymoneyequityselector.cpp kmymoneyaccountcombo.cpp kmymoneyaccountcompletion.cpp kmymoneycurrencyselector.cpp kmymoneypriceview.cpp kmymoneypriceviewdecl.ui kschedulebriefwidget.ui kmymoneyaccountselector.cpp kmymoneyregisterloan.cpp kmymoneyregistersearch.cpp kmymoneybriefschedule.cpp kmymoneyscheduleddatetbl.cpp kmymoneydatetbl.cpp kmymoneyscheduledcalendar.cpp kmymoneycalendar.cpp kmymoneycalculator.cpp kmymoneycategory.cpp kmymoneypayee.cpp kmymoneytransactionform.cpp kmymoneyregistercheckings.cpp kmymoneyregister.cpp kmymoneysplittable.cpp kmymoneycombo.cpp kmymoneyhlayout.cpp kmymoneylineedit.cpp kmymoneyedit.cpp kmymoneydateinput.cpp kmymoneyreportcontroldecl.ui kmymoneyreportconfigtab1decl.ui kmymoneyreportconfigtab2decl.ui kmymoneyreportconfigtab3decl.ui kmymoneyreportconfigtabchartdecl.ui kmymoneyonlinequoteconfig.cpp kmymoneyonlinequoteconfigdecl.ui kmymoneyaccounttree.cpp kmymoneygpgconfigdecl.ui kmymoneygpgconfig.cpp kmymoneytitlelabel.cpp kguiutils.cpp kmymoneywizard.cpp kmymoneyaccounttreebudget.cpp \
 #register.cpp registeritem.cpp transaction.cpp transactionform.cpp transactioneditor.cpp transactioneditorcontainer.cpp kmymoneychecklistitem.cpp kmymoneylistviewitem.cpp kmymoneyforecastlistviewitem.cpp kmymoneyselector.cpp \
 #transactionsortoption.ui 
 
-EXTRA_DIST = kmymoney.widgets kmymoneygpgconfigdecl.ui kmymoneyonlinequoteconfigdecl.ui kmymoneyreportconfigtab1decl.ui kmymoneyreportconfigtab2decl.ui kmymoneyreportconfigtab3decl.ui kmymoneyreportcontroldecl.ui kschedulebriefwidget.ui kmymoneyreportconfigtabchartdecl.ui transactionsortoption.ui transactionsortoption.ui.h sortoptionlistitem.h makekdewidgets kbudgetvaluesdecl.ui
+EXTRA_DIST = kmymoney.widgets kmymoneygpgconfigdecl.ui kmymoneyonlinequoteconfigdecl.ui kmymoneyreportconfigtab1decl.ui kmymoneyreportconfigtab2decl.ui kmymoneyreportconfigtab3decl.ui kmymoneyreportcontroldecl.ui kschedulebriefwidget.ui kmymoneyreportconfigtabchartdecl.ui transactionsortoption.ui transactionsortoption.ui.h sortoptionlistitem.h makekdewidgets kbudgetvaluesdecl.ui kaccounttemplateselectordecl.ui
 
 # include the widgets that are available to 3rd party sw (e.g. plugins or
 # Qt designer) here
@@ -22,7 +22,7 @@ EXTRA_DIST = kmymoney.widgets kmymoneygpgconfigdecl.ui kmymoneyonlinequoteconfig
 # but the file is included in the tar-ball. See also the separate target
 # $(top_builddir)/kmymoney/xxx.h further down and the BUILT_SOURCES target.
 instdir=$(includedir)/kmymoney
-inst_HEADERS = kmymoneydateinput.h kmymoneyedit.h kmymoneytitlelabel.h kmymoneyaccountselector.h kmymoneycategory.h kmymoneyaccounttree.h kmymoneycurrencyselector.h kguiutils.h kmymoneywizard.h kmymoneyaccounttreebudget.h kmymoneyaccountcombo.h register.h registeritem.h transaction.h selectedtransaction.h transactionform.h transactioneditorcontainer.h kmymoneylineedit.h kmymoneychecklistitem.h kmymoneylistviewitem.h kmymoneyforecastlistviewitem.h kmymoneyselector.h kmymoneyaccountcompletion.h kmymoneycompletion.h kmymoneycombo.h kbudgetvalues.h \
+inst_HEADERS = kmymoneydateinput.h kmymoneyedit.h kmymoneytitlelabel.h kmymoneyaccountselector.h kmymoneycategory.h kmymoneyaccounttree.h kmymoneycurrencyselector.h kguiutils.h kmymoneywizard.h kmymoneyaccounttreebudget.h kmymoneyaccountcombo.h register.h registeritem.h transaction.h selectedtransaction.h transactionform.h transactioneditorcontainer.h kmymoneylineedit.h kmymoneychecklistitem.h kmymoneylistviewitem.h kmymoneyforecastlistviewitem.h kmymoneyselector.h kmymoneyaccountcompletion.h kmymoneycompletion.h kmymoneycombo.h kbudgetvalues.h kaccounttemplateselector.h \
  transactionsortoption.h
 
 # include the widgets that are only available to KMyMoney here
@@ -33,7 +33,7 @@ noinst_HEADERS = kbudgetvalues.h klistviewsearchline.h kmymoneyaccounttree.h \
 	kmymoneysplittable.h kmymoneywizard_p.h registersearchline.h
 
 # make sure, automatically generated files exist
-BUILT_SOURCES = settings $(top_builddir)/kmymoney/transactionsortoption.h mocs dialogs transactionsortoption.cpp kbudgetvaluesdecl.h libkmymoney.la kmmwidgets.cpp 
+BUILT_SOURCES = settings $(top_builddir)/kmymoney/transactionsortoption.h mocs dialogs transactionsortoption.cpp kbudgetvaluesdecl.h kaccounttemplateselectordecl.h libkmymoney.la kmmwidgets.cpp 
 
 CLEANFILES = kmmwidgets.cpp
 
@@ -52,7 +52,7 @@ $(top_builddir)/kmymoney/transactionsortoption.h: transactionsortoption.h
 PICS_DIR=kmymoney2/pics
 WIDGET_PNGS = kmymoneytitlelabel.png
 
-libkmymoney_la_SOURCES = kmmwidgets.cpp ../kmymoneysettings.cpp kmymoneycompletion.cpp kmymoneyaccountcombo.cpp kmymoneyaccountcompletion.cpp kmymoneycurrencyselector.cpp kmymoneyaccountselector.cpp kmymoneydatetbl.cpp kmymoneycalculator.cpp kmymoneycategory.cpp kmymoneycombo.cpp kmymoneylineedit.cpp kmymoneyedit.cpp kmymoneydateinput.cpp kmymoneyaccounttree.cpp kmymoneytitlelabel.cpp kguiutils.cpp kmymoneyaccounttreebudget.cpp register.cpp registeritem.cpp transaction.cpp transactionform.cpp kmymoneychecklistitem.cpp kmymoneylistviewitem.cpp kmymoneyselector.cpp transactionsortoption.cpp kbudgetvalues.cpp kbudgetvaluesdecl.cpp
+libkmymoney_la_SOURCES = kmmwidgets.cpp ../kmymoneysettings.cpp kmymoneycompletion.cpp kmymoneyaccountcombo.cpp kmymoneyaccountcompletion.cpp kmymoneycurrencyselector.cpp kmymoneyaccountselector.cpp kmymoneydatetbl.cpp kmymoneycalculator.cpp kmymoneycategory.cpp kmymoneycombo.cpp kmymoneylineedit.cpp kmymoneyedit.cpp kmymoneydateinput.cpp kmymoneyaccounttree.cpp kmymoneytitlelabel.cpp kguiutils.cpp kmymoneyaccounttreebudget.cpp register.cpp registeritem.cpp transaction.cpp transactionform.cpp kmymoneychecklistitem.cpp kmymoneylistviewitem.cpp kmymoneyselector.cpp transactionsortoption.cpp kbudgetvalues.cpp kbudgetvaluesdecl.cpp kaccounttemplateselector.cpp kaccounttemplateselectordecl.cpp
 
 noinst_LTLIBRARIES = libkmymoney.la
 

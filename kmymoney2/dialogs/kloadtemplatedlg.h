@@ -1,9 +1,8 @@
 /***************************************************************************
-                             accounts.cpp
+                          kloadtemplatedlg.h
                              -------------------
-    begin                : Fri Jun  1 2007
-    copyright            : (C) 2007 Thomas Baumgart
-    email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
+    copyright            : (C) 2008 by Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,25 +14,33 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef KLOADTEMPLATEDLG_H
+#define KLOADTEMPLATEDLG_H
+
 // ----------------------------------------------------------------------------
 // QT Includes
-
-#include <qheader.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <klistview.h>
-#include <kmymoney/kmymoneyaccounttree.h>
-
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "accounts.h"
+#include <kmymoney/mymoneytemplate.h>
+#include "../dialogs/kloadtemplatedlgdecl.h"
 
-Accounts::Accounts(QWidget* parent, const char* name) :
-  AccountsDecl(parent, name)
+/// This dialog lets the user load more account templates
+class KLoadTemplateDlg : public KLoadTemplateDlgDecl
 {
-}
+  Q_OBJECT
 
-#include "accounts.moc"
+  public:
+    KLoadTemplateDlg(QWidget *parent = 0, const char *name = 0);
+
+    QValueList<MyMoneyTemplate> templates(void) const;
+
+  private slots:
+    void slotHelp(void);
+};
+
+#endif

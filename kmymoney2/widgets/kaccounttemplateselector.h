@@ -1,8 +1,8 @@
 /***************************************************************************
-                             accounts.cpp
+                          kaccounttemplateselector.h  -  description
                              -------------------
-    begin                : Fri Jun  1 2007
-    copyright            : (C) 2007 Thomas Baumgart
+    begin                : Tue Feb 5 2008
+    copyright            : (C) 2008 by Thomas Baumgart
     email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
  ***************************************************************************/
 
@@ -15,25 +15,40 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef KACCOUNTTEMPLATESELECTOR_H
+#define KACCOUNTTEMPLATESELECTOR_H
+
 // ----------------------------------------------------------------------------
 // QT Includes
-
-#include <qheader.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <klistview.h>
-#include <kmymoney/kmymoneyaccounttree.h>
-
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "accounts.h"
+#include <kmymoney2/widgets/kaccounttemplateselectordecl.h>
+class KAccountTemplateSelectorPrivate;
+class MyMoneyTemplate;
 
-Accounts::Accounts(QWidget* parent, const char* name) :
-  AccountsDecl(parent, name)
+/**
+ * @author Thomas Baumgart <ipwizard@users.sourceforge.net>
+ */
+class KAccountTemplateSelector : public KAccountTemplateSelectorDecl
 {
-}
+  Q_OBJECT
+  public:
+    KAccountTemplateSelector(QWidget* parent = 0, const char* name = 0);
+    ~KAccountTemplateSelector();
+    QValueList<MyMoneyTemplate> selectedTemplates(void) const;
 
-#include "accounts.moc"
+    void loadTemplateList(void);
+
+  private slots:
+    void slotLoadHierarchy(void);
+
+  private:
+    KAccountTemplateSelectorPrivate* d;
+};
+
+#endif

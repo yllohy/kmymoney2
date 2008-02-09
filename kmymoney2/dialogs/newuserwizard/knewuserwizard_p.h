@@ -103,17 +103,6 @@ public:
   CategoriesPage(Wizard* parent, const char* name = 0);
   KMyMoneyWizardPage* nextPage(void) const;
   QValueList<MyMoneyTemplate> selectedTemplates(void) const;
-
-protected:
-  void loadTemplateList(void);
-  QListViewItem* hierarchyItem(const QString& parent, const QString& name);
-
-protected slots:
-  void slotLoadHierarchy(void);
-
-private:
-  QMap<QString, MyMoneyTemplate>    m_templates;
-  QMap<QString, QListViewItem*>     m_templateHierarchy;
 };
 
 /**

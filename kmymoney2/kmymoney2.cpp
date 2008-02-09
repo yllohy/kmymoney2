@@ -113,7 +113,7 @@
 #include "dialogs/kendingbalancedlg.h"
 #include "dialogs/kbalancechartdlg.h"
 #include "dialogs/kplugindlg.h"
-
+#include "dialogs/kloadtemplatedlg.h"
 #include "dialogs/newuserwizard/knewuserwizard.h"
 #include "dialogs/newaccountwizard/knewaccountwizard.h"
 
@@ -1335,31 +1335,24 @@ void KMyMoney2App::slotLoadAccountTemplates(void)
 {
   QString prevMsg = slotStatusMsg(i18n("Importing account templates."));
 
-#if 0
-  // create a dialog that drops the user in the base directory for templates
-  QLabel* label = new QLabel(i18n("Change into one of the directories and select the desired file."), 0);
-  QStringList list = KGlobal::dirs()->findDirs("appdata", "templates");
-  QStringList::iterator it;
-  for(it = list.begin(); it != list.end(); ++it)
-    qDebug("%s", (*it).data());
-
-  KFileDialog* dialog = new KFileDialog(KGlobal::dirs()->findResourceDir("appdata", "templates/README")+"templates",
-                                        i18n("*.kmt|Account templates"),
-                                        this, "defaultaccounts",
-                                        true,
-                                        label);
-  dialog->setMode(KFile::Files | KFile::ExistingOnly);
-  dialog->setCaption(i18n("Select account template(s)"));
-
-  if(dialog->exec() == QDialog::Accepted) {
-
+  int rc;
+  KLoadTemplateDlg* dlg = new KLoadTemplateDlg();
+  if((rc = dlg->exec()) == QDialog::Accepted) {
     MyMoneyFileTransaction ft;
-    loadAccountTemplates(dialog->selectedFiles());
-    ft.commit();
+    try {
+    // import the account templates
+      QValueList<MyMoneyTemplate> templates = dlg->templates();
+      QValueList<MyMoneyTemplate>::iterator it_t;
+      for(it_t = templates.begin(); it_t != templates.end(); ++it_t) {
+        (*it_t).importTemplate(&progressCallback);
+      }
+      ft.commit();
+    } catch(MyMoneyException* e) {
+      KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to import template(s): %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+      delete e;
+    }
   }
-  delete dialog;
-#endif
-
+  delete dlg;
   slotStatusMsg(prevMsg);
 }
 
@@ -1402,17 +1395,6 @@ void KMyMoney2App::slotSaveAccountTemplates(void)
     }
   }
   slotStatusMsg(prevMsg);
-}
-
-void KMyMoney2App::loadAccountTemplates(const QStringList& filelist)
-{
-  QStringList::ConstIterator it;
-  for(it = filelist.begin(); it != filelist.end(); ++it) {
-    MyMoneyTemplate templ;
-    if(templ.loadTemplate(*it)) {
-      templ.importTemplate(&progressCallback);
-    }
-  }
 }
 
 void KMyMoney2App::slotQifImport(void)
@@ -4128,11 +4110,28 @@ void KMyMoney2App::slotKDELanguageSettings(void)
 
 void KMyMoney2App::slotNewFeature(void)
 {
+#if 0
   int rc;
-  KNewLoanWizard* loanWizard = new KNewLoanWizard(0);
-  if((rc = loanWizard->exec()) == QDialog::Accepted) {
+  KLoadTemplateDlg* dlg = new KLoadTemplateDlg();
+  if((rc = dlg->exec()) == QDialog::Accepted) {
+    QString prevMsg = slotStatusMsg(i18n("Importing templates..."));
+    MyMoneyFileTransaction ft;
+    try {
+    // import the account templates
+      QValueList<MyMoneyTemplate> templates = dlg->templates();
+      QValueList<MyMoneyTemplate>::iterator it_t;
+      for(it_t = templates.begin(); it_t != templates.end(); ++it_t) {
+        (*it_t).importTemplate(&progressCallback);
+      }
+      ft.commit();
+    } catch(MyMoneyException* e) {
+      KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to import template(s): %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+      delete e;
+    }
+    slotStatusMsg(prevMsg);
   }
-  delete loanWizard;
+  delete dlg;
+#endif
 }
 
 void KMyMoney2App::slotTransactionsDelete(void)

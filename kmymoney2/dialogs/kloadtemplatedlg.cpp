@@ -1,9 +1,8 @@
 /***************************************************************************
-                             accounts.cpp
+                          kloadtemplatedlg.cpp
                              -------------------
-    begin                : Fri Jun  1 2007
-    copyright            : (C) 2007 Thomas Baumgart
-    email                : Thomas Baumgart <ipwizard@users.sourceforge.net>
+    copyright            : (C) 2008 by Thomas Baumgart
+    email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,25 +14,42 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
-
-#include <qheader.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <klistview.h>
-#include <kmymoney/kmymoneyaccounttree.h>
+#include <kstdguiitem.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "accounts.h"
+#include "kloadtemplatedlg.h"
+#include "../widgets/kaccounttemplateselector.h"
 
-Accounts::Accounts(QWidget* parent, const char* name) :
-  AccountsDecl(parent, name)
+KLoadTemplateDlg::KLoadTemplateDlg(QWidget* parent, const char* name) :
+  KLoadTemplateDlgDecl(parent, name)
+{
+  buttonOk->setGuiItem(KStdGuiItem::ok());
+  buttonCancel->setGuiItem(KStdGuiItem::cancel());
+  buttonHelp->setGuiItem(KStdGuiItem::help());
+
+  connect(buttonHelp, SIGNAL(clicked()), this, SLOT(slotHelp()));
+}
+
+QValueList<MyMoneyTemplate> KLoadTemplateDlg::templates(void) const
+{
+  return m_templateSelector->selectedTemplates();
+}
+
+void KLoadTemplateDlg::slotHelp(void)
 {
 }
 
-#include "accounts.moc"
+#include "kloadtemplatedlg.moc"

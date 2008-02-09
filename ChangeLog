@@ -1,6 +1,12 @@
 
+2008-02-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Created new widget for account template loading
+  * Integrated that into the new user wizard
+  * New dialog for loading account templates once file is created
+
 2008-02-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Labels in wizards use KDE color settings
+  * Fix label frames in new user wizard when started multiple times
 
 2008-02-07 Robert Wadley <robntina@users.sourceforge.net>
   * Reorganized the old template into new, more modular category

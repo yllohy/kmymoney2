@@ -175,8 +175,6 @@ protected slots:
   void slotLoadAccountTemplates(void);
   void slotSaveAccountTemplates(void);
 
-  void loadAccountTemplates(const QStringList& filelist);
-
   /**
     * Called when the user wishes to export some transaction to a
     * QIF formatted file. An account must be open for this to work.
@@ -193,12 +191,6 @@ protected slots:
 
   /** No descriptions */
   void slotFileBackup(void);
-
-  /**
-    * This slot modifies the actions according to the specific view passed
-    * as argument @p view.
-    */
-  // void slotSetViewSpecificActions(int view);
 
   void slotShowTipOfTheDay(void);
 

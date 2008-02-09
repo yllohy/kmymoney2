@@ -733,10 +733,12 @@ public:
     * the single account names seperated by MyMoneyAccount::AccountSeperator.
     *
     * @param accountId const QCString reference of the account's id
+    * @param includeStandardAccounts if true, the standard top account will be part
+    *                   of the name, otherwise it will not be included (default is @c false)
     *
     * @return QString of the constructed name.
     */
-  const QString accountToCategory(const QCString& accountId) const;
+  const QString accountToCategory(const QCString& accountId, bool includeStandardAccounts = false) const;
 
   /**
     * This method is used to convert a string representing a category to

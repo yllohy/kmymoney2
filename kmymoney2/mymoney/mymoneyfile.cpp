@@ -1121,7 +1121,7 @@ const QValueList<MyMoneyPayee> MyMoneyFile::payeeList(void) const
   return list;
 }
 
-const QString MyMoneyFile::accountToCategory(const QCString& accountId) const
+const QString MyMoneyFile::accountToCategory(const QCString& accountId, bool includeStandardAccounts) const
 {
   MyMoneyAccount acc;
   QString rc;
@@ -1133,7 +1133,7 @@ const QString MyMoneyFile::accountToCategory(const QCString& accountId) const
         rc = AccountSeperator + rc;
       rc = acc.name() + rc;
       acc = account(acc.parentAccountId());
-    } while(!acc.id().isEmpty() && !isStandardAccount(acc.id()));
+    } while(!acc.id().isEmpty() && (includeStandardAccounts || !isStandardAccount(acc.id())));
   }
   return rc;
 }
