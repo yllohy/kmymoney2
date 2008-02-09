@@ -117,7 +117,7 @@ void MyMoneyForecast::pastTransactions()
     for(; it_s != splits.end(); ++it_s ) {
       if(!(*it_s).shares().isZero()) {
         MyMoneyAccount acc = file->account((*it_s).accountId());
-        if(isForecastAccount(acc) && //If it is one of the accounts we are checking, add the amount of the transaction 
+        if(isForecastAccount(acc) && //If it is one of the accounts we are checking, add the amount of the transaction
            acc.openingDate() < (*it_t).postDate()) { //dont take the opening day of the account to calculate balance
           dailyBalances balance;
           balance = m_accountListPast[acc.id()];
@@ -139,12 +139,12 @@ void MyMoneyForecast::pastTransactions()
       m_accountListPast[acc.id()][it_f] += m_accountListPast[acc.id()][(it_f-1)]; //Running sum
     }
   }
-  
+
   //adjust value of investments to deep currency
   /*QMap<QString, QCStrinlistErronousTransactionColorg>::Iterator it_i;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
-        
+
     if(acc.isInvest()) {
       MyMoneySecurity undersecurity = file->security( acc.currencyId() );
       if ( ! undersecurity.isCurrency() )
@@ -155,7 +155,7 @@ void MyMoneyForecast::pastTransactions()
         {
           rate = price.rate(undersecurity.tradingCurrency());
         }
-      
+
         m_accountListPast[acc.id()][0] = m_accountListPast[acc.id()][0] * rate; //balance of startdate is the balance at the end of the day before
       for(int it_f = 0; it_f < historyDays(); ++it_f) {
         MyMoneyPrice price = file->price(undersecurity.id(),undersecurity.tradingCurrency(), startDate.addDays(it_f));
@@ -222,7 +222,7 @@ QValueList<MyMoneyAccount> MyMoneyForecast::forecastAccountList(void)
   for(; accList_t != accList.end(); ) {
     MyMoneyAccount acc = *accList_t;
     if(acc.isClosed()             //check the account is not closed
-    || (!acc.isAssetLiability()) 
+    || (!acc.isAssetLiability())
     || (acc.accountType() == MyMoneyAccount::Investment)//check that it is not an Investment account nor a Stock account
     || (acc.isInvest())) { //They could be included but you have to manage how to display the account name and how to calculate the balance
       accList.remove(accList_t);    //remove the account if it is not of the correct type
@@ -616,7 +616,7 @@ int MyMoneyForecast::daysToZeroBalance(const MyMoneyAccount& acc)
 }
 
 
-int MyMoneyForecast::historyDays() const
+int MyMoneyForecast::historyDays(void) const
 {
   return accountsCycle() * forecastCycles();
 }
@@ -626,7 +626,7 @@ void MyMoneyForecast::setAccountsCycle(int accountsCycle)
   m_accountsCycle = accountsCycle;
 }
 
-int MyMoneyForecast::accountsCycle() const
+int MyMoneyForecast::accountsCycle(void) const
 {
   return m_accountsCycle;
 }
@@ -636,7 +636,7 @@ void MyMoneyForecast::setForecastCycles(int forecastCycles)
   m_forecastCycles = forecastCycles;
 }
 
-int MyMoneyForecast::forecastCycles() const
+int MyMoneyForecast::forecastCycles(void) const
 {
   return m_forecastCycles;
 }
@@ -646,7 +646,7 @@ void MyMoneyForecast::setForecastDays(int forecastDays)
   m_forecastDays = forecastDays;
 }
 
-int MyMoneyForecast::forecastDays() const
+int MyMoneyForecast::forecastDays(void) const
 {
   return m_forecastDays;
 }
@@ -655,7 +655,7 @@ int MyMoneyForecast::forecastDays() const
 {
   m_beginForecastDate = beginForecastDate;
 }
-  
+
   QDate MyMoneyForecast::beginForecastDate(void) const
 {
   return m_beginForecastDate;
@@ -682,31 +682,31 @@ void MyMoneyForecast::setForecastAccountList(void)
 MyMoneyMoney MyMoneyForecast::accountCycleVariation(const MyMoneyAccount& acc)
 {
   MyMoneyMoney cycleVariation;
-  
+
   if (KMyMoneyGlobalSettings::forecastMethod() == HISTORIC) {
     for(int t_day = 1; t_day <= accountsCycle() ; ++t_day) {
       cycleVariation += m_accountTrendList[acc.id()][t_day];
     }
-  } 
+  }
   return cycleVariation;
 }
 
 MyMoneyMoney MyMoneyForecast::accountTotalVariation(const MyMoneyAccount& acc)
 {
   MyMoneyMoney totalVariation;
-  
+
   totalVariation = forecastBalance(acc, forecastDays()) - forecastBalance(acc, QDate::currentDate());
-  
+
   return totalVariation;
 }
 
-QValueList<QDate> MyMoneyForecast::accountMinimumBalanceDateList(const MyMoneyAccount& acc) 
+QValueList<QDate> MyMoneyForecast::accountMinimumBalanceDateList(const MyMoneyAccount& acc)
 {
   QValueList<QDate> minBalanceList;
   int daysToBeginDay;
-  
+
   daysToBeginDay = QDate::currentDate().daysTo(beginForecastDate());
-  
+
   for(int t_cycle = 0; ((t_cycle * accountsCycle()) + daysToBeginDay) < forecastDays() ; ++t_cycle) {
     MyMoneyMoney minBalance = forecastBalance(acc, (t_cycle * accountsCycle() + daysToBeginDay));
     QDate minDate = QDate::currentDate().addDays(t_cycle * accountsCycle() + daysToBeginDay);
@@ -721,17 +721,17 @@ QValueList<QDate> MyMoneyForecast::accountMinimumBalanceDateList(const MyMoneyAc
   return minBalanceList;
 }
 
-QValueList<QDate> MyMoneyForecast::accountMaximumBalanceDateList(const MyMoneyAccount& acc) 
+QValueList<QDate> MyMoneyForecast::accountMaximumBalanceDateList(const MyMoneyAccount& acc)
 {
   QValueList<QDate> maxBalanceList;
   int daysToBeginDay;
-  
+
   daysToBeginDay = QDate::currentDate().daysTo(beginForecastDate());
-  
+
   for(int t_cycle = 0; ((t_cycle * accountsCycle()) + daysToBeginDay) < forecastDays() ; ++t_cycle) {
     MyMoneyMoney maxBalance = forecastBalance(acc, ((t_cycle * accountsCycle()) + daysToBeginDay));
     QDate maxDate = QDate::currentDate().addDays((t_cycle * accountsCycle()) + daysToBeginDay);
-    
+
     for(int t_day = 0; t_day < accountsCycle() ; ++t_day) {
       if( maxBalance < forecastBalance(acc, (t_cycle * accountsCycle()) + daysToBeginDay + t_day) ) {
         maxBalance = forecastBalance(acc, (t_cycle * accountsCycle()) + daysToBeginDay + t_day );
@@ -743,7 +743,7 @@ QValueList<QDate> MyMoneyForecast::accountMaximumBalanceDateList(const MyMoneyAc
   return maxBalanceList;
 }
 
-MyMoneyMoney MyMoneyForecast::accountAverageBalance(const MyMoneyAccount& acc) 
+MyMoneyMoney MyMoneyForecast::accountAverageBalance(const MyMoneyAccount& acc)
 {
   MyMoneyMoney totalBalance;
   for(int f_day = 1; f_day <= forecastDays() ; ++f_day) {
@@ -758,32 +758,32 @@ int MyMoneyForecast::calculateBeginForecastDay()
   int beginDay = KMyMoneyGlobalSettings::beginForecastDay();
   int accCycle = KMyMoneyGlobalSettings::forecastAccountCycle();
   QDate beginDate;
-  
+
   //if 0, beginDate is current date and forecastDays remains unchanged
   if(beginDay == 0) {
     setBeginForecastDate(QDate::currentDate());
     return fDays;
   }
-  
+
   //adjust if beginDay more than days of current month
   if(QDate::currentDate().daysInMonth() < beginDay)
     beginDay = QDate::currentDate().daysInMonth();
-  
-  //if beginDay still to come, calculate and return  
+
+  //if beginDay still to come, calculate and return
   if(QDate::currentDate().day() <= beginDay) {
     beginDate = QDate( QDate::currentDate().year(), QDate::currentDate().month(), beginDay);
     fDays += QDate::currentDate().daysTo(beginDate);
     setBeginForecastDate(beginDate);
     return fDays;
-  } 
-  
+  }
+
   //adjust beginDay for next month
   if(QDate::currentDate().addMonths(1).daysInMonth() < beginDay)
-    beginDay = QDate::currentDate().addMonths(1).daysInMonth();  
-    
+    beginDay = QDate::currentDate().addMonths(1).daysInMonth();
+
   //if beginDay of next month comes before 1 interval, use beginDay next month
   if(QDate::currentDate().addDays(accCycle) >=
-       (QDate(QDate::currentDate().addMonths(1).year(), QDate::currentDate().addMonths(1).month(), 1).addDays(beginDay-1) ) ) 
+       (QDate(QDate::currentDate().addMonths(1).year(), QDate::currentDate().addMonths(1).month(), 1).addDays(beginDay-1) ) )
   {
     beginDate = QDate(QDate::currentDate().addMonths(1).year(), QDate::currentDate().addMonths(1).month(), 1).addDays(beginDay-1);
     fDays += QDate::currentDate().daysTo(beginDate);
@@ -794,7 +794,7 @@ int MyMoneyForecast::calculateBeginForecastDay()
     beginDate = QDate::currentDate().addDays(beginDay - QDate::currentDate().day());
     fDays += QDate::currentDate().daysTo(beginDate);
   }
-    
+
   setBeginForecastDate(beginDate);
   return fDays;
 }

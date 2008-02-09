@@ -96,6 +96,9 @@ void KSettingsHome::slotLoadItems(void)
 
   for(it = list.begin(); it != list.end(); ++it) {
     int idx = (*it).toInt();
+    // skip over unknown item entries
+    if(idx == 0)
+      continue;
     bool enabled = idx > 0;
     if(!enabled) idx = -idx;
     QCheckListItem* item = new QCheckListItem(m_homePageList, KMyMoneyUtils::homePageItemToString(idx), QCheckListItem::CheckBox);

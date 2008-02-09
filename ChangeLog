@@ -3,6 +3,7 @@
   * Created new widget for account template loading
   * Integrated that into the new user wizard
   * New dialog for loading account templates once file is created
+  * Fixed home page settings
 
 2008-02-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Labels in wizards use KDE color settings

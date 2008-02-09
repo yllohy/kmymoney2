@@ -371,32 +371,23 @@ QPixmap KMyMoneyUtils::scheduleIcon(int size)
   return ic->loadIcon("schedule", KIcon::User, size);
 }
 
+const char* homePageItems[] = {
+  I18N_NOOP("Payments"),
+  I18N_NOOP("Preferred accounts"),
+  I18N_NOOP("Payment accounts"),
+  I18N_NOOP("Favorite reports"),
+  I18N_NOOP("Forecast (schedule)"),
+  I18N_NOOP("Networth forecast"),
+  I18N_NOOP("Forecast (history)"),
+  // insert new items above this comment
+  0
+};
+
 const QString KMyMoneyUtils::homePageItemToString(const int idx)
 {
   QString rc;
-
-  switch(abs(idx)) {
-    case 1:
-      rc = i18n("Payments");
-      break;
-    case 2:
-      rc = i18n("Preferred accounts");
-      break;
-    case 3:
-      rc = i18n("Payment accounts");
-      break;
-    case 4:
-      rc = i18n("Favorite reports");
-      break;
-    case 5:
-      rc = i18n("Forecast");
-      break;
-    case 6:
-      rc = i18n("Networth forecast");
-      break;
-    default:
-      rc = "";
-      break;
+  if(abs(idx) > 0 && abs(idx) < sizeof(homePageItems)/sizeof(homePageItems[0])) {
+    rc = i18n(homePageItems[abs(idx-1)]);
   }
   return rc;
 }
@@ -404,21 +395,11 @@ const QString KMyMoneyUtils::homePageItemToString(const int idx)
 const int KMyMoneyUtils::stringToHomePageItem(const QString& txt)
 {
   int idx = 0;
-  if(txt == i18n("Payments"))
-    idx = 1;
-  else if(txt == i18n("Preferred accounts"))
-    idx = 2;
-  else if(txt == i18n("Payment accounts"))
-    idx = 3;
-  else if(txt == i18n("Favorite reports"))
-    idx = 4;
-  else if(txt == i18n("Forecast (schedule)"))
-    idx = 5;
-  else if(txt == i18n("Networth forecast"))
-    idx = 6;
-  else if(txt == i18n("Forecast (history)"))
-    idx = 7;
-  return idx;
+  for(idx = 0; homePageItems[idx] != 0; ++idx) {
+    if(txt == i18n(homePageItems[idx]))
+      return idx+1;
+  }
+  return 0;
 }
 
 bool KMyMoneyUtils::appendCorrectFileExt(QString& str, const QString& strExtToUse)
