@@ -1,4 +1,8 @@
 
+2008-02-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Remember date of last imported transaction with account object
+  * Fixed a compiler warning
+
 2008-02-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Created new widget for account template loading
   * Integrated that into the new user wizard

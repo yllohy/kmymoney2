@@ -85,10 +85,6 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
 
   m_account.setName(s.m_strAccountName);
   m_account.setNumber(s.m_strAccountNumber);
-  m_account.setValue("lastStatementBalance", s.m_closingBalance.toString());
-
-  if ( s.m_dateEnd.isValid() )
-    m_account.setValue("lastStatementDate", s.m_dateEnd.toString("yyyy-MM-dd"));
 
   switch ( s.m_eType )
   {
@@ -116,6 +112,18 @@ const bool MyMoneyStatementReader::startImport(const MyMoneyStatement& s)
 
   if ( !m_userAbort )
     m_userAbort = ! selectOrCreateAccount(Select, m_account);
+
+  m_account.setValue("lastStatementBalance", s.m_closingBalance.toString());
+  if ( s.m_dateEnd.isValid() ) {
+    m_account.setValue("lastImportedTransactionDate", s.m_dateEnd.toString(Qt::ISODate));
+  }
+
+  try {
+    MyMoneyFile::instance()->modifyAccount(m_account);
+  } catch(MyMoneyException* e) {
+    qDebug("Updating account in MyMoneyStatementReader::startImport failed");
+    delete e;
+  }
 
   signalProgress(0, s.m_listTransactions.count(), "Importing Statement ...");
 

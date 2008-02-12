@@ -386,7 +386,7 @@ const char* homePageItems[] = {
 const QString KMyMoneyUtils::homePageItemToString(const int idx)
 {
   QString rc;
-  if(abs(idx) > 0 && abs(idx) < sizeof(homePageItems)/sizeof(homePageItems[0])) {
+  if(abs(idx) > 0 && abs(idx) < static_cast<int>(sizeof(homePageItems)/sizeof(homePageItems[0]))) {
     rc = i18n(homePageItems[abs(idx-1)]);
   }
   return rc;
