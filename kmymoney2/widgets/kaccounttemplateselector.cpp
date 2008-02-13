@@ -198,13 +198,16 @@ void KAccountTemplateSelector::loadTemplateList(void)
             exp.search(oName);
             QString oCountry = KGlobal::locale()->twoAlphaToCountryName(exp.cap(2));
             QString oLang = KGlobal::locale()->twoAlphaToLanguageName(exp.cap(1));
-            countries.remove(oName);
+            countries.remove(country);
             countries[QString("%1 (%2)").arg(oCountry).arg(oLang)] = oName;
             countries[QString("%1 (%2)").arg(country).arg(lang)] = *it_d;
           }
         } else {
           countries[country] = *it_d;
         }
+      } else if((*it_d).length() == 2) {
+        QString country = KGlobal::locale()->twoAlphaToCountryName((*it_d).upper());
+        countries[country] = *it_d;
       } else {
         qDebug("'%s/%s' not scanned", (*it).data(), (*it_d).data());
       }

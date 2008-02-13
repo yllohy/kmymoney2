@@ -1,4 +1,7 @@
 
+2008-02-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated account templates
+
 2008-02-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Remember date of last imported transaction with account object
   * Fixed a compiler warning
