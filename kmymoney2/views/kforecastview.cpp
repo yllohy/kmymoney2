@@ -167,7 +167,13 @@ void KForecastView::loadListView(void)
   for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
 
     MyMoneyAccount acc = file->account(*it_nc);
-    MyMoneySecurity currency = file->security(acc.currencyId());
+    MyMoneySecurity currency;
+    if(acc.isInvest()) {
+      MyMoneySecurity underSecurity = file->security(acc.currencyId());
+      currency = file->security(underSecurity.tradingCurrency());
+    } else {
+        currency = file->security(acc.currencyId());
+    }
     QString amount;
     QString vAmount;
     MyMoneyMoney vAmountMM;
@@ -297,7 +303,7 @@ void KForecastView::loadSummaryView(void)
   for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
 
     MyMoneyAccount acc = file->account(*it_nc);
-    MyMoneySecurity currency = file->security(acc.currencyId());
+    MyMoneySecurity currency;
     QString amount;
     QString vAmount;
     MyMoneyMoney vAmountMM;
@@ -305,6 +311,15 @@ void KForecastView::loadSummaryView(void)
     if(acc.currencyId() != file->baseCurrency().id())
       repAcc = ReportAccount(acc.id());
 
+    //change currency to deep currency if account is an investment
+    if(acc.isInvest()) {
+      MyMoneySecurity underSecurity = file->security(acc.currencyId());
+      currency = file->security(underSecurity.tradingCurrency());
+    } else {
+      currency = file->security(acc.currencyId());
+    }
+    
+    
     summaryItem = new KMyMoneyForecastListViewItem(m_summaryList, summaryItem, false);
     summaryItem->setText(accountColumn, acc.name());
     int it_c = 1; // iterator for the columns of the listview
@@ -383,7 +398,15 @@ void KForecastView::loadSummaryView(void)
   for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
 
     MyMoneyAccount acc = file->account(*it_nc);
-    MyMoneySecurity currency = file->security(acc.currencyId());
+    MyMoneySecurity currency;
+
+    //change currency to deep currency if account is an investment
+    if(acc.isInvest()) {
+      MyMoneySecurity underSecurity = file->security(acc.currencyId());
+      currency = file->security(underSecurity.tradingCurrency());
+    } else {
+      currency = file->security(acc.currencyId());
+    }
 
     //Check if the account is going to be below zero or below the minimal balance in the forecast period
     QString minimumBalance = acc.value("minimumBalance");
@@ -528,9 +551,18 @@ void KForecastView::loadAdvancedView(void)
   QMap<QString, QCString>::ConstIterator it_nc;
   for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
     MyMoneyAccount acc = file->account(*it_nc);
-    MyMoneySecurity currency = file->security(acc.currencyId());
     QString amount;
     MyMoneyMoney amountMM;
+    MyMoneySecurity currency;
+    
+    //change currency to deep currency if account is an investment
+    if(acc.isInvest()) {
+      MyMoneySecurity underSecurity = file->security(acc.currencyId());
+      currency = file->security(underSecurity.tradingCurrency());
+    } else {
+      currency = file->security(acc.currencyId());
+    }
+    
 
     advancedItem = new KMyMoneyForecastListViewItem(m_advancedList, advancedItem, false);
     advancedItem->setText(accountColumn, acc.name());

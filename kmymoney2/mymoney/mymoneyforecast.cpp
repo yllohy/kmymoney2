@@ -50,7 +50,6 @@ MyMoneyForecast::MyMoneyForecast()
 
 void MyMoneyForecast::doForecast()
 {
-
   int fDays = calculateBeginForecastDay();
   int fMethod = KMyMoneyGlobalSettings::forecastMethod();
   int fAccCycle = KMyMoneyGlobalSettings::forecastAccountCycle();
@@ -61,7 +60,7 @@ void MyMoneyForecast::doForecast()
      || fCycles < 1
      || fDays < 1)
   {
-  throw new MYMONEYEXCEPTION("Illegal settings when calling doForecast. Settings must be higher than 0");
+    throw new MYMONEYEXCEPTION("Illegal settings when calling doForecast. Settings must be higher than 0");
   }
 
   //initialize global variables
@@ -87,7 +86,6 @@ void MyMoneyForecast::doForecast()
       calculateDailyBalances();
       break;
     default:
-
       break;
   }
 }
@@ -141,33 +139,30 @@ void MyMoneyForecast::pastTransactions()
   }
 
   //adjust value of investments to deep currency
-  /*QMap<QString, QCStrinlistErronousTransactionColorg>::Iterator it_i;
-  for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
-    MyMoneyAccount acc = file->account(*it_n);
-
-    if(acc.isInvest()) {
-      MyMoneySecurity undersecurity = file->security( acc.currencyId() );
-      if ( ! undersecurity.isCurrency() )
+  for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n ) {
+    MyMoneyAccount acc = file->account ( *it_n );
+  
+    if ( acc.isInvest() ) {
+      //get the id of the security for that account
+      MyMoneySecurity undersecurity = file->security ( acc.currencyId() );
+      if ( ! undersecurity.isCurrency() ) //only do it if the security is not an actual currency
       {
-        MyMoneyMoney rate = MyMoneyMoney(1,0);
-        MyMoneyPrice price = file->price(undersecurity.id(),undersecurity.tradingCurrency(), startDate.addDays(-1));
-        if (price.isValid())
-        {
-          rate = price.rate(undersecurity.tradingCurrency());
-        }
+        MyMoneyMoney rate = MyMoneyMoney ( 1, 0 ); //set the default value
+        MyMoneyPrice price;
 
-        m_accountListPast[acc.id()][0] = m_accountListPast[acc.id()][0] * rate; //balance of startdate is the balance at the end of the day before
-      for(int it_f = 0; it_f < historyDays(); ++it_f) {
-        MyMoneyPrice price = file->price(undersecurity.id(),undersecurity.tradingCurrency(), startDate.addDays(it_f));
-        if (price.isValid())
-        {
-          rate = price.rate(undersecurity.tradingCurrency());
+        for ( int it_f = 0; it_f <= historyDays(); ++it_f ) {
+          //get the price for the tradingCurrency that day
+          price = file->price ( undersecurity.id(), undersecurity.tradingCurrency(), startDate.addDays ( it_f-1 ) );
+          if ( price.isValid() )
+          {
+            rate = price.rate ( undersecurity.tradingCurrency() );
+          }
+          //value is the amount of shares multiplied by the rate of the deep currency
+          m_accountListPast[acc.id() ][it_f] = m_accountListPast[acc.id() ][it_f] * rate;
         }
-        m_accountListPast[acc.id()][it_f] = m_accountListPast[acc.id()][it_f] * rate; //Running sum
-      }
       }
     }
-  }*/
+  }
 }
 
 bool MyMoneyForecast::isForecastAccount(const MyMoneyAccount& acc)
@@ -209,7 +204,6 @@ void MyMoneyForecast::calculateAccountTrendList()
   }
 }
 
-
 QValueList<MyMoneyAccount> MyMoneyForecast::forecastAccountList(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -223,8 +217,7 @@ QValueList<MyMoneyAccount> MyMoneyForecast::forecastAccountList(void)
     MyMoneyAccount acc = *accList_t;
     if(acc.isClosed()             //check the account is not closed
     || (!acc.isAssetLiability())
-    || (acc.accountType() == MyMoneyAccount::Investment)//check that it is not an Investment account nor a Stock account
-    || (acc.isInvest())) { //They could be included but you have to manage how to display the account name and how to calculate the balance
+    || (acc.accountType() == MyMoneyAccount::Investment) ) {//check that it is not an Investment account and only include Stock accounts
       accList.remove(accList_t);    //remove the account if it is not of the correct type
       accList_t = accList.begin();
     } else {
@@ -233,7 +226,6 @@ QValueList<MyMoneyAccount> MyMoneyForecast::forecastAccountList(void)
   }
   return accList;
 }
-
 
 MyMoneyMoney MyMoneyForecast::calculateAccountTrend(const MyMoneyAccount& acc, int trendDays)
 {
@@ -267,11 +259,8 @@ MyMoneyMoney MyMoneyForecast::calculateAccountTrend(const MyMoneyAccount& acc, i
      }
 
   filter.setReportAllSplits(false);
-
   QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
   QValueList<MyMoneyTransaction>::const_iterator it_t = transactions.begin();
-
-
 
   //add all transactions for that account
   for(; it_t != transactions.end(); ++it_t ) {
@@ -301,7 +290,6 @@ MyMoneyMoney MyMoneyForecast::calculateAccountDailyTrend(MyMoneyAccount acc, int
   //Calculate a daily trend for the account based on the accounts of a given number of terms
   //With a term of 1 month and 3 terms, it calculates the trend taking the transactions occured at that day and the day before,
   //for the last 3 months
-
   MyMoneyMoney balanceVariation;
 
   for(int it_terms=0; (trendDay+(forecastTerm*it_terms)) <= historyDays(); ++it_terms) //sum for each term
@@ -325,7 +313,24 @@ void MyMoneyForecast::calculateDailyBalances()
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
 
-    m_accountList[acc.id()][0] = file->balance(acc.id(), QDate::currentDate());//Get current account balance
+    //Get current account balance
+    if ( acc.isInvest() ) { //investments require special treatment
+      //get the security id of that account
+      MyMoneySecurity undersecurity = file->security ( acc.currencyId() );
+      if ( ! undersecurity.isCurrency() ) //only do it if the security is not an actual currency
+      {
+        MyMoneyMoney rate = MyMoneyMoney ( 1, 0 ); //set the default value
+        //get te
+        MyMoneyPrice price = file->price ( undersecurity.id(), undersecurity.tradingCurrency(), QDate::currentDate() );
+        if ( price.isValid() )
+        {
+          rate = price.rate ( undersecurity.tradingCurrency() );
+        }
+        m_accountList[acc.id()][0] = file->balance(acc.id(), QDate::currentDate()) * rate;
+      }
+    } else {
+      m_accountList[acc.id()][0] = file->balance(acc.id(), QDate::currentDate());
+    }
 
     for(int f_day = 1; f_day <= forecastDays();) {
       for(int t_day = 1; t_day <= accountsCycle(); ++t_day, ++f_day) {
@@ -343,7 +348,6 @@ void MyMoneyForecast::calculateDailyBalances()
 MyMoneyMoney MyMoneyForecast::forecastBalance(const MyMoneyAccount& acc, QDate forecastDate)
 {
   int offset = QDate::currentDate().daysTo(forecastDate);
-
   return forecastBalance(acc, offset);
 }
 
@@ -352,7 +356,6 @@ MyMoneyMoney MyMoneyForecast::forecastBalance(const MyMoneyAccount& acc, QDate f
  * offset is days from current date, inside forecast days.
  * Returns 0 if offset not in range of forecast days.
  */
-
 MyMoneyMoney MyMoneyForecast::forecastBalance (const MyMoneyAccount& acc, int offset )
 {
   dailyBalances balance;
@@ -526,7 +529,6 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
     while(1);
   }
 
-
 #if 0
   {
   s << "\n\nAdded scheduled transactions\n";
@@ -571,8 +573,7 @@ int MyMoneyForecast::daysToMinimumBalance(const MyMoneyAccount& acc)
 
   balance = m_accountList[acc.id()];
 
-  int it_b;
-  for(it_b = 0 ; it_b < forecastDays(); ++it_b) {
+  for(int it_b = 0 ; it_b < forecastDays(); ++it_b) {
     MyMoneyMoney amount = balance[it_b];
     if(minBalance > balance[it_b]) {
       return it_b;
@@ -593,8 +594,7 @@ int MyMoneyForecast::daysToZeroBalance(const MyMoneyAccount& acc)
   balance = m_accountList[acc.id()];
 
   if (acc.accountGroup() == MyMoneyAccount::Asset) {
-  int it_b;
-    for (it_b = 0 ; it_b < forecastDays(); ++it_b )
+    for (int it_b = 0 ; it_b < forecastDays(); ++it_b )
     {
       MyMoneyMoney amount = balance[it_b];
       if ( balance[it_b] < MyMoneyMoney ( 0, 1 ) )
@@ -603,8 +603,7 @@ int MyMoneyForecast::daysToZeroBalance(const MyMoneyAccount& acc)
       }
     }
   } else if (acc.accountGroup() == MyMoneyAccount::Liability) {
-    int it_b;
-    for (it_b = 0  ; it_b < forecastDays() ; ++it_b )
+    for (int it_b = 0  ; it_b < forecastDays() ; ++it_b )
     {
       if ( balance[it_b] > MyMoneyMoney ( 0, 1 ) )
       {
@@ -676,7 +675,6 @@ void MyMoneyForecast::setForecastAccountList(void)
       m_nameIdx[acc.name()] = acc.id();
     }
   }
-
 }
 
 MyMoneyMoney MyMoneyForecast::accountCycleVariation(const MyMoneyAccount& acc)
@@ -696,7 +694,6 @@ MyMoneyMoney MyMoneyForecast::accountTotalVariation(const MyMoneyAccount& acc)
   MyMoneyMoney totalVariation;
 
   totalVariation = forecastBalance(acc, forecastDays()) - forecastBalance(acc, QDate::currentDate());
-
   return totalVariation;
 }
 

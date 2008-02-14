@@ -810,9 +810,16 @@ void KHomeView::showForecast(void)
       int dropMinimum = -1; //account dropped below minimum balance
       QString minimumBalance = acc.value("minimumBalance");
       MyMoneyMoney minBalance = MyMoneyMoney(minimumBalance);
-      MyMoneySecurity currency = file->security(acc.currencyId());
-
+      MyMoneySecurity currency;
       MyMoneyMoney forecastBalance;
+
+      //change account to deep currency if account is an investment
+      if(acc.isInvest()) {
+        MyMoneySecurity underSecurity = file->security(acc.currencyId());
+        currency = file->security(underSecurity.tradingCurrency());
+      } else {
+        currency = file->security(acc.currencyId());
+      }
 
       for (int f = beginDay; f <= forecast.forecastDays(); f += forecast.accountsCycle()) {
         forecastBalance = forecast.forecastBalance(acc, QDate::currentDate().addDays(f));
