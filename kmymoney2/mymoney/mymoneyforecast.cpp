@@ -558,6 +558,32 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
       m_accountList[acc.id()][f_day] += balanceDayBefore; //running sum
     }
   }
+  
+    //adjust value of investments to deep currency
+  for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n ) {
+    MyMoneyAccount acc = file->account ( *it_n );
+  
+    if ( acc.isInvest() ) {
+      //get the id of the security for that account
+      MyMoneySecurity undersecurity = file->security ( acc.currencyId() );
+      if ( ! undersecurity.isCurrency() ) //only do it if the security is not an actual currency
+      {
+        MyMoneyMoney rate = MyMoneyMoney ( 1, 0 ); //set the default value
+        MyMoneyPrice price;
+
+        for ( int it_f = 0; it_f <= forecastDays(); ++it_f ) {
+          //get the price for the tradingCurrency that day
+          price = file->price ( undersecurity.id(), undersecurity.tradingCurrency(), QDate::currentDate().addDays ( it_f-1 ) );
+          if ( price.isValid() )
+          {
+            rate = price.rate ( undersecurity.tradingCurrency() );
+          }
+          //value is the amount of shares multiplied by the rate of the deep currency
+          m_accountList[acc.id() ][it_f] = m_accountList[acc.id() ][it_f] * rate;
+        }
+      }
+    }
+  }
 }
 
 int MyMoneyForecast::daysToMinimumBalance(const MyMoneyAccount& acc)
