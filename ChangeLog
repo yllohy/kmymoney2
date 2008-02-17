@@ -1,5 +1,6 @@
 2008-02-15 Alvaro Soliverez <asoliverez@gmail.com>
-  * Fixed crash when calculating recent stock prices - #157905
+  * Fixed crash when calculating recent stock prices - #157905 at bugs.kde.org
+  * Added warning label about excluding transfers when filtering transactions by Category
 
 2008-02-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed 'WARNING: KLocale: trying to look up "" in catalog.' at appl start

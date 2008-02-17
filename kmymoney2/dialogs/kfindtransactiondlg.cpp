@@ -244,6 +244,12 @@ void KFindTransactionDlg::slotUpdateSelections(void)
       txt += ", ";
     txt += i18n("Details");
   }
+  
+  if(!m_categoriesView->allItemsSelected()) {
+    m_transferWarning->setText( i18n("Warning: Filtering by Category will exclude all transfers from the results.") );
+  } else {
+    m_transferWarning->setText("");
+  }
 
   // disable the search button if no selection is made
   emit selectionEmpty(txt.isEmpty());
