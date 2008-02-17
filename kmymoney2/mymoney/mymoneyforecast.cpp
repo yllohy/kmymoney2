@@ -147,7 +147,7 @@ void MyMoneyForecast::pastTransactions()
       MyMoneySecurity undersecurity = file->security ( acc.currencyId() );
       if ( ! undersecurity.isCurrency() ) //only do it if the security is not an actual currency
       {
-        MyMoneyMoney rate = MyMoneyMoney ( 1, 0 ); //set the default value
+        MyMoneyMoney rate = MyMoneyMoney ( 1, 1 ); //set the default value
         MyMoneyPrice price;
 
         for ( int it_f = 0; it_f <= historyDays(); ++it_f ) {
@@ -319,7 +319,7 @@ void MyMoneyForecast::calculateDailyBalances()
       MyMoneySecurity undersecurity = file->security ( acc.currencyId() );
       if ( ! undersecurity.isCurrency() ) //only do it if the security is not an actual currency
       {
-        MyMoneyMoney rate = MyMoneyMoney ( 1, 0 ); //set the default value
+        MyMoneyMoney rate = MyMoneyMoney ( 1, 1 ); //set the default value
         //get te
         MyMoneyPrice price = file->price ( undersecurity.id(), undersecurity.tradingCurrency(), QDate::currentDate() );
         if ( price.isValid() )
@@ -568,7 +568,7 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
       MyMoneySecurity undersecurity = file->security ( acc.currencyId() );
       if ( ! undersecurity.isCurrency() ) //only do it if the security is not an actual currency
       {
-        MyMoneyMoney rate = MyMoneyMoney ( 1, 0 ); //set the default value
+        MyMoneyMoney rate = MyMoneyMoney ( 1, 1 ); //set the default value
         MyMoneyPrice price;
 
         for ( int it_f = 0; it_f <= forecastDays(); ++it_f ) {
