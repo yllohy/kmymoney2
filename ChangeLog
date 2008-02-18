@@ -4,6 +4,7 @@
   * Fixed a problem with unavailability of the 'mark transaction as' options
   * Removed unused code
   * Fixed persistancy of balance column setting in reports
+  * Fixed position of closing balance row in query table reports
 
 2008-02-17 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed crash when calculating recent stock prices - #157905 at bugs.kde.org

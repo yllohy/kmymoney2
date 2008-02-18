@@ -569,8 +569,8 @@ void QueryTable::constructTransactionTable(void)
         i = a.parent().institutionId();
 
         MyMoneyMoney sh = (* is).shares();
-        
-        
+
+
 
         qA["shares"] = sh.isZero() ? "" : sh.toString();
         qA["price"] = sh.isZero() ? "" : ((* is).value()*xr/sh).toString();
@@ -588,7 +588,7 @@ void QueryTable::constructTransactionTable(void)
         include_me = m_config.includes(a);
         a_fullname = a.fullName();
         a_memo = (* is).memo();
-        
+
         if (m_config.isConvertCurrency() && a.isForeignCurrency()) {
           xr = a.baseCurrencyPrice((* it).postDate()).reduce();
           qA["price"] = a.baseCurrencyPrice((* it).postDate()).reduce().toString();
@@ -831,6 +831,7 @@ void QueryTable::constructTransactionTable(void)
     if (m_config.isConvertCurrency() && a.isForeignCurrency())
       xr = a.baseCurrencyPrice(m_config.fromDate()).reduce();
 
+#if 1 // Alvaro, start to check this part of the code
     //starting balance
     // don't show currency if we're converting or if it's not foreign
     qA["currency"] = (m_config.isConvertCurrency() || ! a.isForeignCurrency()) ? "" : a.currency();
@@ -845,19 +846,17 @@ void QueryTable::constructTransactionTable(void)
       qA["price"] = (p0 * xr).toString();
       qA["shares"] = s0.toString();
     }
-    
+
     if (m_config.isConvertCurrency() && a.isForeignCurrency())
       qA["price"] = xr.toString();
-        
 
     qA["postdate"] = date0s;
     qA["balance"] = (b0 * xr).toString();
     qA["value"] = QString();
     qA["id"] = "A";
-    
-    //ending balance
     m_transactions += qA;
-    
+
+    //ending balance
     if (m_config.isConvertCurrency() && a.isForeignCurrency()) {
       xr = a.baseCurrencyPrice(m_config.toDate()).reduce();
       qA["price"] = xr.toString();
@@ -867,14 +866,17 @@ void QueryTable::constructTransactionTable(void)
       qA["price"] = (p1 * xr).toString();
       qA["shares"] = s1.toString();
     }
-    
-    if (m_config.isConvertCurrency() && a.isForeignCurrency())
-      
+
+    // The next line caused the closing balance to show up in the wrong spot
+    // if (m_config.isConvertCurrency() && a.isForeignCurrency())
+
 
     qA["postdate"] = date1s;
     qA["balance"] = (b1 * xr).toString();
     qA["id"] = "Z";
     m_transactions += qA;
+
+#endif // end of area to check
   }
 }
 
