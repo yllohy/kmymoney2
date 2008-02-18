@@ -63,7 +63,11 @@ public:
   enum ERowType { eNoRows = 0, eAssetLiability, eExpenseIncome, eCategory, eTopCategory, eAccount, ePayee, eMonth, eWeek, eTopAccount, eAccountByTopAccount, eEquityType, eAccountType, eInstitution, eBudget, eBudgetActual};
   enum EReportType { eNoReport = 0, ePivotTable, eQueryTable };
   enum EColumnType { eNoColumns = 0, eDays = 1, eMonths = 1, eBiMonths = 2, eQuarters = 3, eWeeks = 7, eYears = 12 };
-  enum EQueryColumns { eQCnone = 0x0, eQCbegin = 0x1, eQCnumber = 0x1, eQCpayee = 0x2, eQCcategory = 0x4, eQCmemo = 0x8, eQCaccount = 0x10, eQCreconciled = 0x20, eQCaction = 0x40, eQCshares = 0x80, eQCprice = 0x100, eQCperformance = 0x200, eQCloan = 0x400, eQCend = 0x400, eQCbalance = 0x800 };
+
+  // if you add bits to this bitmask, start with the value currently assigned to eQCend and update its value afterwards
+  // also don't forget to add column names to kQueryColumnsText in mymoneyreport.cpp
+  enum EQueryColumns { eQCnone = 0x0, eQCbegin = 0x1, eQCnumber = 0x1, eQCpayee = 0x2, eQCcategory = 0x4, eQCmemo = 0x8, eQCaccount = 0x10, eQCreconciled = 0x20, eQCaction = 0x40, eQCshares = 0x80, eQCprice = 0x100, eQCperformance = 0x200, eQCloan = 0x400, eQCbalance = 0x800, eQCend = 0x1000 };
+
   enum EDetailLevel { eDetailNone = 0, eDetailAll, eDetailTop, eDetailGroup, eDetailTotal, eDetailEnd };
   enum EChartType { eChartNone = 0, eChartLine, eChartBar, eChartPie, eChartRing, eChartStackedBar, eChartEnd };
 
@@ -448,7 +452,7 @@ private:
   /**
    * Whether this report should include columns for row totals
    */
-  bool m_showRowTotals;  
+  bool m_showRowTotals;
 };
 
 #endif // MYMONEYREPORT_H
