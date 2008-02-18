@@ -25,7 +25,6 @@
 
 
 #include "kreconciledlg.h"
-#include "kreconcilelistitem.h"
 
 KReconcileDlg::KReconcileDlg(const MyMoneyMoney /* previousBal */, const MyMoneyMoney /* endingBal */,
   const QDate /* endingDate */, MyMoneyAccount* /*accountIndex */,

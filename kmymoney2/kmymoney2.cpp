@@ -5023,10 +5023,6 @@ void KMyMoney2App::slotUpdateActions(void)
       if(myMoneyView->canEditTransactions(m_selectedTransactions, tooltip)) {
         action("transaction_edit")->setEnabled(true);
         action("transaction_duplicate")->setEnabled(true);
-        action("transaction_mark_cleared")->setEnabled(true);
-        action("transaction_mark_reconciled")->setEnabled(true);
-        action("transaction_mark_notreconciled")->setEnabled(true);
-        action("transaction_mark_toggle")->setEnabled(true);
         // editing splits is allowed only if we have one transaction selected
         if(m_selectedTransactions.count() == 1) {
           action("transaction_editsplits")->setEnabled(true);
@@ -5039,6 +5035,12 @@ void KMyMoney2App::slotUpdateActions(void)
         }
       }
       action("transaction_edit")->setToolTip(tooltip);
+
+      // Allow marking the transaction if at least one is selected
+      action("transaction_mark_cleared")->setEnabled(true);
+      action("transaction_mark_reconciled")->setEnabled(true);
+      action("transaction_mark_notreconciled")->setEnabled(true);
+      action("transaction_mark_toggle")->setEnabled(true);
 
       if(!m_accountGoto.isEmpty())
         action("transaction_goto_account")->setEnabled(true);

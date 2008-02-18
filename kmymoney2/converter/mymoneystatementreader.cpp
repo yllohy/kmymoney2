@@ -274,7 +274,7 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   // set these values if a transfer split is needed at the very end.
   MyMoneyMoney transfervalue;
 
-  // If the user has chosent to import into an investment account, determine the correct account to use
+  // If the user has chosen to import into an investment account, determine the correct account to use
   MyMoneyAccount thisaccount = m_account;
   if ( thisaccount.accountType() == MyMoneyAccount::Investment )
   {
