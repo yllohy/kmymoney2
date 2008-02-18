@@ -2,6 +2,7 @@
 2008-02-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added check for MyMoneyMoney constructor to avoid zero denominators
   * Fixed a problem with unavailability of the 'mark transaction as' options
+  * Removed unused code
 
 2008-02-17 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed crash when calculating recent stock prices - #157905 at bugs.kde.org
