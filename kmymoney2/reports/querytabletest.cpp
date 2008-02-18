@@ -163,8 +163,6 @@ void QueryTableTest::testQueryBasics()
     filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); //
     XMLandback(filter);
     QueryTable qtbl_3(filter);
-    
-    QString testDate = qtbl_3.m_transactions[14]["postdate"];
 
     writeTabletoHTML(qtbl_3,"Transactions by Account.html");
 #if 1
@@ -172,9 +170,9 @@ void QueryTableTest::testQueryBasics()
     CPPUNIT_ASSERT(qtbl_3.m_transactions[1]["account"]=="Checking Account");
     CPPUNIT_ASSERT(qtbl_3.m_transactions[1]["category"]=="Solo");
     CPPUNIT_ASSERT(qtbl_3.m_transactions[1]["postdate"]=="2004-01-01");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[15]["account"]=="Credit Card");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[15]["category"]=="Parent");
-    CPPUNIT_ASSERT(qtbl_3.m_transactions[15]["postdate"]=="2005-09-01");
+    CPPUNIT_ASSERT(qtbl_3.m_transactions[14]["account"]=="Credit Card");
+    CPPUNIT_ASSERT(qtbl_3.m_transactions[14]["category"]=="Parent");
+    CPPUNIT_ASSERT(qtbl_3.m_transactions[14]["postdate"]=="2005-09-01");
 #else
     CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 12);
     CPPUNIT_ASSERT(qtbl_3.m_transactions[0]["account"]=="Checking Account");
@@ -455,34 +453,34 @@ void QueryTableTest::testInvestment(void)
 #if 1
   writeTabletoHTML(invtran,"investment_transactions_test.html");
   CPPUNIT_ASSERT(invtran.m_transactions.count()==17);
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[2]["value"])==MyMoneyMoney(100000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[3]["value"])==MyMoneyMoney(110000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[4]["value"])==MyMoneyMoney(-24000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[5]["value"])==MyMoneyMoney(-20000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[6]["value"])==MyMoneyMoney(  5000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[7]["value"])==MyMoneyMoney(  4000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[1]["value"])==MyMoneyMoney(100000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[2]["value"])==MyMoneyMoney(110000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[3]["value"])==MyMoneyMoney(-24000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[4]["value"])==MyMoneyMoney(-20000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[5]["value"])==MyMoneyMoney(  5000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[6]["value"])==MyMoneyMoney(  4000.00));
   // need to fix these... fundamentally different from the original test
   //CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[8]["value"])==MyMoneyMoney( -1000.00));
   //CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[11]["value"])==MyMoneyMoney( -1200.00));
   //CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[14]["value"])==MyMoneyMoney( -1100.00));
 
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[2]["price"])==MyMoneyMoney(100.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[4]["price"])==MyMoneyMoney(120.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[6]["price"])==MyMoneyMoney(100.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[8]["price"])==MyMoneyMoney(  0.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[11]["price"])==MyMoneyMoney(  0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[1]["price"])==MyMoneyMoney(100.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[3]["price"])==MyMoneyMoney(120.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[5]["price"])==MyMoneyMoney(100.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[7]["price"])==MyMoneyMoney(  0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[10]["price"])==MyMoneyMoney(  0.00));
 
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[3]["shares"])==MyMoneyMoney(1000.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[5]["shares"])==MyMoneyMoney(-200.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[7]["shares"])==MyMoneyMoney(  50.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[9]["shares"])==MyMoneyMoney(   0.00));
-  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[12]["shares"])==MyMoneyMoney(   0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[2]["shares"])==MyMoneyMoney(1000.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[4]["shares"])==MyMoneyMoney(-200.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[6]["shares"])==MyMoneyMoney(  50.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[8]["shares"])==MyMoneyMoney(   0.00));
+  CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[11]["shares"])==MyMoneyMoney(   0.00));
 
-  CPPUNIT_ASSERT(invtran.m_transactions[2]["action"]=="Buy");
-  CPPUNIT_ASSERT(invtran.m_transactions[4]["action"]=="Sell");
-  CPPUNIT_ASSERT(invtran.m_transactions[6]["action"]=="Reinvest");
-  CPPUNIT_ASSERT(invtran.m_transactions[8]["action"]=="Dividend");
-  CPPUNIT_ASSERT(invtran.m_transactions[15]["action"]=="Yield");
+  CPPUNIT_ASSERT(invtran.m_transactions[1]["action"]=="Buy");
+  CPPUNIT_ASSERT(invtran.m_transactions[3]["action"]=="Sell");
+  CPPUNIT_ASSERT(invtran.m_transactions[5]["action"]=="Reinvest");
+  CPPUNIT_ASSERT(invtran.m_transactions[7]["action"]=="Dividend");
+  CPPUNIT_ASSERT(invtran.m_transactions[13]["action"]=="Yield");
 #else
   CPPUNIT_ASSERT(invtran.m_transactions.count()==9);
   CPPUNIT_ASSERT(MyMoneyMoney(invtran.m_transactions[0]["value"])==MyMoneyMoney(100000.00));
