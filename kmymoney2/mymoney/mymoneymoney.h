@@ -42,6 +42,7 @@
 #include <qstring.h>
 #include <qdatastream.h>
 #include <kmymoney/export.h>
+#include <kmymoney/mymoneyexception.h>
 
 // Check for standard definitions
 #ifdef HAVE_STDINT_H
@@ -257,6 +258,9 @@ inline MyMoneyMoney::MyMoneyMoney()
 ////////////////////////////////////////////////////////////////////////////////
 inline MyMoneyMoney::MyMoneyMoney(signed64 Amount, const signed64 denom)
 {
+  if(!denom)
+    throw new MYMONEYEXCEPTION("Denominator 0 not allowed!");
+
   m_num = Amount;
   m_denom = denom;
 }
@@ -306,6 +310,9 @@ inline MyMoneyMoney::MyMoneyMoney(const long double dAmount, const signed64 deno
 ////////////////////////////////////////////////////////////////////////////////
 inline MyMoneyMoney::MyMoneyMoney(const int iAmount, const signed64 denom)
 {
+  if(!denom)
+    throw new MYMONEYEXCEPTION("Denominator 0 not allowed!");
+
   m_num = static_cast<signed64>(iAmount);
   m_denom = denom;
 }

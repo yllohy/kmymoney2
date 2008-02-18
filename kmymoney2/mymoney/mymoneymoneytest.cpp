@@ -20,6 +20,7 @@
 #endif
 
 #include "mymoneymoneytest.h"
+#include "mymoneyexception.h"
 #include <iostream>
 #include <stdint.h>
 
@@ -40,7 +41,7 @@ void MyMoneyMoneyTest::setUp()
   m_0 = new MyMoneyMoney(12);
   m_1 = new MyMoneyMoney(-10);
   m_2 = new MyMoneyMoney(2);
-  m_3 = new MyMoneyMoney(123,0);
+  m_3 = new MyMoneyMoney(123,1);
   m_4 = new MyMoneyMoney(1234,1000);
   m_5 = new MyMoneyMoney(195883,100000);
 
@@ -566,5 +567,22 @@ void MyMoneyMoneyTest::testReduce(void)
   b = b.reduce();  
   CPPUNIT_ASSERT(b.m_num == -364881);
   CPPUNIT_ASSERT(b.m_denom == 12673900);
+}
+
+void MyMoneyMoneyTest::testZeroDenominator()
+{
+  try {
+    MyMoneyMoney m((int)1, 0);
+    CPPUNIT_FAIL("Missing expected exception");
+  } catch(MyMoneyException *e) {
+    delete e;
+  }
+
+  try {
+    MyMoneyMoney m((signed64)1, 0);
+    CPPUNIT_FAIL("Missing expected exception");
+  } catch(MyMoneyException *e) {
+    delete e;
+  }
 }
 
