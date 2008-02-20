@@ -572,5 +572,56 @@ void QueryTableTest::testInvestment(void)
     delete e;
   }
 }
+  //this is to prevent me from making mistakes again when modifying balances - asoliverez
+  //this case tests only the opening and ending balance of the accounts
+  void QueryTableTest::testBalanceColumn()
+  {
+    try
+    {
+      TransactionHelper t1q1( QDate(2004,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+      TransactionHelper t2q1( QDate(2004,2,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+      TransactionHelper t3q1( QDate(2004,3,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+      TransactionHelper t4y1( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
+
+      TransactionHelper t1q2( QDate(2004,4,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+      TransactionHelper t2q2( QDate(2004,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+      TransactionHelper t3q2( QDate(2004,6,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+      TransactionHelper t4q2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
+
+      TransactionHelper t1y2( QDate(2005,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+      TransactionHelper t2y2( QDate(2005,5,1), MyMoneySplit::ActionWithdrawal, moParent1, acCredit, acParent );
+      TransactionHelper t3y2( QDate(2005,9,1), MyMoneySplit::ActionWithdrawal, moParent2, acCredit, acParent );
+      TransactionHelper t4y2( QDate(2004,11,7), MyMoneySplit::ActionWithdrawal, moChild, acCredit, acChild );
+
+      unsigned cols;
+
+      MyMoneyReport filter;
+      
+      filter.setRowType( MyMoneyReport::eAccount );
+      filter.setName("Transactions by Account");
+      cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCcategory | MyMoneyReport::eQCbalance;
+      filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) ); //
+      XMLandback(filter);
+      QueryTable qtbl_3(filter);
+
+      writeTabletoHTML(qtbl_3,"Transactions by Account.html");
+
+      QString html = qtbl_3.renderHTML();
+      CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 16);
+      
+      //this is to make sure that the dates of closing and opening balances and the balance numbers are ok
+      CPPUNIT_ASSERT( html.find("01/01/04</td><td class=\"left\"></td><td class=\"left\">"+i18n("Opening Balance")) > 0);
+      CPPUNIT_ASSERT( html.find("01/09/05</td><td class=\"left\"></td><td class=\"left\">"+i18n("Closing Balance")+"</td><td class=\"left\"></td><td class=\"value\"></td><td>&nbsp;-702.36</td></tr>") > 0);
+      CPPUNIT_ASSERT( html.find("01/09/05</td><td class=\"left\"></td><td class=\"left\">"+i18n("Closing Balance")+"</td><td class=\"left\"></td><td class=\"value\"></td><td>&nbsp;-705.69</td></tr>") > 0);
+      
+    }
+    catch(MyMoneyException *e)
+    {
+      CPPUNIT_FAIL(e->what());
+      delete e;
+    }
+
+  }
+
 
 // vim:cin:si:ai:et:ts=2:sw=2:

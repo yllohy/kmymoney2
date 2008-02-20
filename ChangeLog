@@ -1,3 +1,5 @@
+2008-02-17 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added test case to check for correct date and value of closing balance in query table
 
 2008-02-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added check for MyMoneyMoney constructor to avoid zero denominators

@@ -28,6 +28,7 @@ class QueryTableTest : public CppUnit::TestFixture  {
   CPPUNIT_TEST(testCashFlowAnalysis);
   CPPUNIT_TEST(testAccountQuery);
   CPPUNIT_TEST(testInvestment);
+  CPPUNIT_TEST(testBalanceColumn);
   CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -44,6 +45,7 @@ public:
   void testCashFlowAnalysis();
   void testAccountQuery();
   void testInvestment();
+  void testBalanceColumn();
 };
 
 #endif

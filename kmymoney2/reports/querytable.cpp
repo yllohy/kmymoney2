@@ -831,7 +831,6 @@ void QueryTable::constructTransactionTable(void)
     if (m_config.isConvertCurrency() && a.isForeignCurrency())
       xr = a.baseCurrencyPrice(m_config.fromDate()).reduce();
 
-#if 1 // Alvaro, start to check this part of the code
     //starting balance
     // don't show currency if we're converting or if it's not foreign
     qA["currency"] = (m_config.isConvertCurrency() || ! a.isForeignCurrency()) ? "" : a.currency();
@@ -867,16 +866,10 @@ void QueryTable::constructTransactionTable(void)
       qA["shares"] = s1.toString();
     }
 
-    // The next line caused the closing balance to show up in the wrong spot
-    // if (m_config.isConvertCurrency() && a.isForeignCurrency())
-
-
     qA["postdate"] = date1s;
     qA["balance"] = (b1 * xr).toString();
     qA["id"] = "Z";
     m_transactions += qA;
-
-#endif // end of area to check
   }
 }
 
