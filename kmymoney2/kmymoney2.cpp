@@ -216,7 +216,6 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   connect(&proc,SIGNAL(processExited(KProcess *)),this,SLOT(slotProcessExited()));
 
   // force to show the home page if the file is closed
-  connect(action("file_close"), SIGNAL(activated()), myMoneyView, SLOT(slotShowHomePage()));
   connect(action("view_show_transaction_detail"), SIGNAL(toggled(bool)), myMoneyView, SLOT(slotShowTransactionDetail(bool)));
 
   m_backupState = BACKUP_IDLE;
@@ -1134,6 +1133,14 @@ void KMyMoney2App::slotFileCloseWindow(void)
 
 void KMyMoney2App::slotFileClose(void)
 {
+  bool okToSelect = true;
+
+  // check if transaction editor is open and ask user what he wants to do
+  slotTransactionsCancelOrEnter(okToSelect);
+
+  if(!okToSelect)
+    return;
+
   // no update status here, as we might delete the status too early.
   if (myMoneyView->dirty()) {
     int answer = KMessageBox::warningYesNoCancel(this, i18n("The file has been changed, save it ?"));

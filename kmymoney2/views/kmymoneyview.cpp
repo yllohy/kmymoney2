@@ -491,6 +491,8 @@ void KMyMoneyView::closeFile(void)
   if (isSyncDatabase() && m_fileOpen)
     MyMoneyFile::instance()->storage()->close(); // to log off a database user
   newStorage();
+  slotShowHomePage();
+
   emit kmmFilePlugin (postClose);
   m_fileOpen = false;
 }
