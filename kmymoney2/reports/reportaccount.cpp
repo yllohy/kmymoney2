@@ -150,7 +150,7 @@ MyMoneyMoney ReportAccount::baseCurrencyPrice( const QDate& date ) const
 
   if(isForeignCurrency())
   {
-    MyMoneyPrice price = file->price(currency(), file->baseCurrency().id(), date);
+    MyMoneyPrice price = file->price(currency().id(), file->baseCurrency().id(), date);
     if(price.isValid())
     {
       result = price.rate(file->baseCurrency().id());
@@ -174,11 +174,11 @@ MyMoneyMoney ReportAccount::baseCurrencyPrice( const QDate& date ) const
 }
 
 /**
-  * Fetch the trading symbol of this account's currency
+  * Fetch the trading currency of this account's currency
   *
-  * @return QCString The account's currency trading symbol
+  * @return The account's currency trading currency
   */
-QCString ReportAccount::currency( void ) const
+MyMoneySecurity ReportAccount::currency( void ) const
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
@@ -188,7 +188,7 @@ QCString ReportAccount::currency( void ) const
     deepcurrency = file->security( deepcurrency.tradingCurrency() );
 
   // Return the deep currency's ID
-  return deepcurrency.id();
+  return deepcurrency;
 }
 
 /**
@@ -199,7 +199,7 @@ QCString ReportAccount::currency( void ) const
   */
 bool ReportAccount::isForeignCurrency( void ) const
 {
-  return ( currency() != MyMoneyFile::instance()->baseCurrency().id() );
+  return ( currency().id() != MyMoneyFile::instance()->baseCurrency().id() );
 }
 
 bool ReportAccount::operator<(const ReportAccount& second) const

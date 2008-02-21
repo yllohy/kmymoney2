@@ -561,6 +561,7 @@ bool Remove::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneyS
 void Split::showWidgets(void) const
 {
   // TODO do we need a special split ratio widget?
+  // TODO maybe yes, currently the precision is the one of the fraction and might differ from it
   haveWidget("shares")->show();
   setLabelText("shares-label", i18n("Ratio 1/"));
 }

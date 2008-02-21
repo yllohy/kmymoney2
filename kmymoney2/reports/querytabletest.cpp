@@ -610,9 +610,11 @@ void QueryTableTest::testInvestment(void)
       CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 16);
       
       //this is to make sure that the dates of closing and opening balances and the balance numbers are ok
-      CPPUNIT_ASSERT( html.find("01/01/04</td><td class=\"left\"></td><td class=\"left\">"+i18n("Opening Balance")) > 0);
-      CPPUNIT_ASSERT( html.find("01/09/05</td><td class=\"left\"></td><td class=\"left\">"+i18n("Closing Balance")+"</td><td class=\"left\"></td><td class=\"value\"></td><td>&nbsp;-702.36</td></tr>") > 0);
-      CPPUNIT_ASSERT( html.find("01/09/05</td><td class=\"left\"></td><td class=\"left\">"+i18n("Closing Balance")+"</td><td class=\"left\"></td><td class=\"value\"></td><td>&nbsp;-705.69</td></tr>") > 0);
+      QString openingDate = KGlobal::locale()->formatDate(QDate(2004,1,1), true);
+      QString closingDate = KGlobal::locale()->formatDate(QDate(2005,9,1), true);
+      CPPUNIT_ASSERT( html.find(openingDate + "</td><td class=\"left\"></td><td class=\"left\">"+i18n("Opening Balance")) > 0);
+      CPPUNIT_ASSERT( html.find(closingDate + "</td><td class=\"left\"></td><td class=\"left\">"+i18n("Closing Balance")+"</td><td class=\"left\"></td><td class=\"value\"></td><td>&nbsp;-702.36</td></tr>") > 0);
+      CPPUNIT_ASSERT( html.find(closingDate + "</td><td class=\"left\"></td><td class=\"left\">"+i18n("Closing Balance")+"</td><td class=\"left\"></td><td class=\"value\"></td><td>&nbsp;-705.69</td></tr>") > 0);
       
     }
     catch(MyMoneyException *e)

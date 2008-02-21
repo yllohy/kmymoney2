@@ -162,6 +162,8 @@ KEndingBalanceDlg::~KEndingBalanceDlg()
 
 void KEndingBalanceDlg::slotUpdateBalances(void)
 {
+  MYMONEYTRACER(tracer);
+
   // determine the beginning balance and ending balance based on the following
   // forumulas:
   //
@@ -190,19 +192,24 @@ void KEndingBalanceDlg::slotUpdateBalances(void)
   balance = balance * factor;
   endBalance = startBalance = balance;
 
+  tracer.printf("total balance = %s", endBalance.formatMoney("", 2).data());
+
   for(it = transactionList.begin(); it != transactionList.end(); ++it) {
     const MyMoneySplit& split = (*it).second;
     balance -= split.shares() * factor;
     if((*it).first.postDate() >= m_statementDate->date()) {
+      tracer.printf("Reducing balances by %s because postdate of %s/%s(%s) is past statement date", (split.shares() * factor).formatMoney("", 2).data(), (*it).first.id().data(),split.id().data(), (*it).first.postDate().toString(Qt::ISODate).data());
       endBalance -= split.shares() * factor;
       startBalance -= split.shares() * factor;
     } else {
       switch(split.reconcileFlag()) {
         case MyMoneySplit::NotReconciled:
+          tracer.printf("Reducing balances by %s because %s/%s(%s) is not reconciled", (split.shares() * factor).formatMoney("", 2).data(), (*it).first.id().data(), split.id().data(), (*it).first.postDate().toString(Qt::ISODate).data());
           endBalance -= split.shares() * factor;
           startBalance -= split.shares() * factor;
           break;
         case MyMoneySplit::Cleared:
+          tracer.printf("Reducing start balance by %s because %s/%s(%s) is cleared", (split.shares() * factor).formatMoney("", 2).data(), (*it).first.id().data(), split.id().data(), (*it).first.postDate().toString(Qt::ISODate).data());
           startBalance -= split.shares() * factor;
           break;
         default:
@@ -212,6 +219,8 @@ void KEndingBalanceDlg::slotUpdateBalances(void)
   }
   m_previousBalance->setValue(startBalance);
   m_endingBalance->setValue(endBalance);
+  tracer.printf("total balance = %s", endBalance.formatMoney("", 2).data());
+  tracer.printf("start balance = %s", startBalance.formatMoney("", 2).data());
 }
 
 void KEndingBalanceDlg::accept(void)

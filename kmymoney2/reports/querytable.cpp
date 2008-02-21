@@ -833,7 +833,7 @@ void QueryTable::constructTransactionTable(void)
 
     //starting balance
     // don't show currency if we're converting or if it's not foreign
-    qA["currency"] = (m_config.isConvertCurrency() || ! a.isForeignCurrency()) ? "" : a.currency();
+    qA["currency"] = (m_config.isConvertCurrency() || ! a.isForeignCurrency()) ? "" : a.currency().id();
 
     qA["accountid"] = a.id();
     qA["account"] = a.name();
@@ -1018,7 +1018,7 @@ void QueryTable::constructAccountTable(void)
       else
       {
         // display currency is the account's deep currency.  display this fact in the report
-        qaccountrow["currency"] = account.currency();
+        qaccountrow["currency"] = account.currency().id();
       }
 
       qaccountrow["account"] = account.name();
@@ -1069,10 +1069,8 @@ void QueryTable::constructAccountTable(void)
 }
 void QueryTable::render( QString& result, QString& csv ) const
 {
-//   MyMoneyMoney::signPosition savesignpos = MyMoneyMoney::negativeMonetarySignPosition();
-  unsigned char savethsep = MyMoneyMoney::thousandSeparator();
-
   MyMoneyMoney grandtotal;
+  MyMoneyFile* file = MyMoneyFile::instance();
 
   result="";
   csv="";
@@ -1081,13 +1079,13 @@ void QueryTable::render( QString& result, QString& csv ) const
   result += QString("<div class=\"subtitle\">");
   if ( m_config.isConvertCurrency() )
   {
-    result += i18n("All currencies converted to %1").arg(MyMoneyFile::instance()->baseCurrency().name());
-    csv += i18n("All currencies converted to %1\n").arg(MyMoneyFile::instance()->baseCurrency().name());
+    result += i18n("All currencies converted to %1").arg(file->baseCurrency().name());
+    csv += i18n("All currencies converted to %1\n").arg(file->baseCurrency().name());
   }
   else
   {
-    result += i18n("All values shown in %1 unless otherwise noted").arg(MyMoneyFile::instance()->baseCurrency().name());
-    csv += i18n("All values shown in %1 unless otherwise noted\n").arg(MyMoneyFile::instance()->baseCurrency().name());
+    result += i18n("All values shown in %1 unless otherwise noted").arg(file->baseCurrency().name());
+    csv += i18n("All values shown in %1 unless otherwise noted\n").arg(file->baseCurrency().name());
   }
   result += QString("</div>\n");
   result += QString("<div class=\"gap\">&nbsp;</div>\n");
@@ -1197,6 +1195,13 @@ void QueryTable::render( QString& result, QString& csv ) const
        it_row != m_transactions.end();
        ++it_row) {
 
+    // the standard fraction is the fraction of an non-cash account in the base currency
+    // this could be overridden using the "fraction" element of a row for each row.
+    // Currently (2008-02-21) this override is not used at all (ipwizard)
+    int fraction = file->baseCurrency().smallestAccountFraction();
+    if((*it_row).find("fraction") != (*it_row).end())
+      fraction = (*it_row)["fraction"].toInt();
+
     //
     // Process Groups
     //
@@ -1230,8 +1235,8 @@ void QueryTable::render( QString& result, QString& csv ) const
           if ( (*it_group).depth() == 1 )
             grandtotal += (*it_group).subtotal();
 
-          QString subtotal_html = (*it_group).subtotal().formatMoney();
-          QString subtotal_csv = (*it_group).subtotal().formatMoney("", 2, true);
+          QString subtotal_html = (*it_group).subtotal().formatMoney(fraction);
+          QString subtotal_csv = (*it_group).subtotal().formatMoney(fraction, false);
 
           // ***DV*** HACK fix the side-effiect from .force() method above
           QString oldName = QString((*it_group).oldName()).stripWhiteSpace();
@@ -1357,7 +1362,7 @@ void QueryTable::render( QString& result, QString& csv ) const
         }
         else {
           result += QString("<td>%1</td>").arg(MyMoneyMoney(data).formatMoney("",3));
-          csv += "\"" + MyMoneyMoney(data).formatMoney("", 3, true) + "\",";
+          csv += "\"" + MyMoneyMoney(data).formatMoney("", 3, false) + "\",";
         }
       }
       else if ( moneyColumns.contains(*it_column) )
@@ -1371,13 +1376,13 @@ void QueryTable::render( QString& result, QString& csv ) const
           result += QString("<td%1>%2&nbsp;%3</td>")
             .arg((*it_column == "value") ? " class=\"value\"" : "")
             .arg((*it_row)["currency"])
-            .arg(MyMoneyMoney(data).formatMoney());
-          csv += "\"" + (*it_row)["currency"] + " " + MyMoneyMoney(data).formatMoney("", 2, true) + "\",";
+            .arg(MyMoneyMoney(data).formatMoney(fraction));
+          csv += "\"" + (*it_row)["currency"] + " " + MyMoneyMoney(data).formatMoney(fraction, false) + "\",";
         }
       }
       else if ( percentColumns.contains(*it_column) )
       {
-        data = (MyMoneyMoney(data) * MyMoneyMoney(100,1)).formatMoney();
+        data = (MyMoneyMoney(data) * MyMoneyMoney(100,1)).formatMoney(fraction);
         result += QString("<td>%1%</td>").arg(data);
         csv += data + "%,";
       }
@@ -1413,6 +1418,7 @@ void QueryTable::render( QString& result, QString& csv ) const
   // Do subtotals backwards
   if ( m_config.isConvertCurrency() )
   {
+    int fraction = file->baseCurrency().smallestAccountFraction();
     QValueList<GroupIterator>::iterator it_group = groupIteratorList.fromLast();
     while ( it_group != groupIteratorList.end() )
     {
@@ -1421,10 +1427,8 @@ void QueryTable::render( QString& result, QString& csv ) const
       if ( (*it_group).depth() == 1 )
         grandtotal += (*it_group).subtotal();
 
-      QString subtotal_html = (*it_group).subtotal().formatMoney();
-      MyMoneyMoney::setThousandSeparator('\0');
-      QString subtotal_csv = (*it_group).subtotal().formatMoney();
-      MyMoneyMoney::setThousandSeparator(savethsep);
+      QString subtotal_html = (*it_group).subtotal().formatMoney(fraction);
+      QString subtotal_csv = (*it_group).subtotal().formatMoney(fraction, false);
 
       result += "<tr class=\"sectionfooter\">"
         "<td class=\"left"+ QString::number((*it_group).depth()-1) + "\" "
@@ -1439,10 +1443,8 @@ void QueryTable::render( QString& result, QString& csv ) const
     // Grand total
     //
 
-    QString grandtotal_html = grandtotal.formatMoney();
-    MyMoneyMoney::setThousandSeparator('\0');
-    QString grandtotal_csv = grandtotal.formatMoney();
-    MyMoneyMoney::setThousandSeparator(savethsep);
+    QString grandtotal_html = grandtotal.formatMoney(fraction);
+    QString grandtotal_csv = grandtotal.formatMoney(fraction, false);
 
     result += "<tr class=\"sectionfooter\">"
       "<td class=\"left0\" "

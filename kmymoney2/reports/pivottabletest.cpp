@@ -1009,45 +1009,45 @@ void PivotTableTest::testCellAddValue(void)
   CPPUNIT_ASSERT(a == MyMoneyMoney(0,1));
   CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(1,1));
   CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(0,1));
-  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(0,1).formatMoney());
+  CPPUNIT_ASSERT(a.formatMoney("", 2) == MyMoneyMoney(0,1).formatMoney("", 2));
 
   PivotTable::TCell b(MyMoneyMoney(13,10));
   CPPUNIT_ASSERT(b == MyMoneyMoney(13,10));
   CPPUNIT_ASSERT(b.m_stockSplit == MyMoneyMoney(1,1));
   CPPUNIT_ASSERT(b.m_postSplit == MyMoneyMoney(0,1));
-  CPPUNIT_ASSERT(b.formatMoney() == MyMoneyMoney(13,10).formatMoney());
+  CPPUNIT_ASSERT(b.formatMoney("", 2) == MyMoneyMoney(13,10).formatMoney("", 2));
 
   PivotTable::TCell s(b);
   CPPUNIT_ASSERT(s == MyMoneyMoney(13,10));
   CPPUNIT_ASSERT(s.m_stockSplit == MyMoneyMoney(1,1));
   CPPUNIT_ASSERT(s.m_postSplit == MyMoneyMoney(0,1));
-  CPPUNIT_ASSERT(s.formatMoney() == MyMoneyMoney(13,10).formatMoney());
+  CPPUNIT_ASSERT(s.formatMoney("", 2) == MyMoneyMoney(13,10).formatMoney("", 2));
 
   s = PivotTable::TCell::stockSplit(MyMoneyMoney(1,2));
   CPPUNIT_ASSERT(s == MyMoneyMoney(0,1));
   CPPUNIT_ASSERT(s.m_stockSplit == MyMoneyMoney(1,2));
   CPPUNIT_ASSERT(s.m_postSplit == MyMoneyMoney(0,1));
-  CPPUNIT_ASSERT(s.formatMoney() == MyMoneyMoney(0,1).formatMoney());
+  CPPUNIT_ASSERT(s.formatMoney("", 2) == MyMoneyMoney(0,1).formatMoney("", 2));
   
   a += MyMoneyMoney(1,1);
   a += MyMoneyMoney(2,1);
   CPPUNIT_ASSERT(a == MyMoneyMoney(3,1));
   CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(1,1));
   CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(0,1));
-  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(3,1).formatMoney());
+  CPPUNIT_ASSERT(a.formatMoney("", 2) == MyMoneyMoney(3,1).formatMoney("", 2));
 
   a += s;
   CPPUNIT_ASSERT(a == MyMoneyMoney(3,1));
   CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(1,2));
   CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(0,1));
-  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(15,10).formatMoney());
+  CPPUNIT_ASSERT(a.formatMoney("", 2) == MyMoneyMoney(15,10).formatMoney("", 2));
 
   a += MyMoneyMoney(3,1);
   a += MyMoneyMoney(3,1);
   CPPUNIT_ASSERT(a == MyMoneyMoney(3,1));
   CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(1,2));
   CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(6,1));
-  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(75,10).formatMoney());
+  CPPUNIT_ASSERT(a.formatMoney("", 2) == MyMoneyMoney(75,10).formatMoney("", 2));
 }
 
 void PivotTableTest::testCellAddCell(void)
@@ -1061,7 +1061,7 @@ void PivotTableTest::testCellAddCell(void)
   CPPUNIT_ASSERT(a == MyMoneyMoney(3,1));
   CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(2,1));
   CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(4,1));
-  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(10,1).formatMoney());
+  CPPUNIT_ASSERT(a.formatMoney("", 2) == MyMoneyMoney(10,1).formatMoney("", 2));
 
   b += MyMoneyMoney(4,1);
   b += PivotTable::TCell::stockSplit(MyMoneyMoney(4,1));
@@ -1070,14 +1070,14 @@ void PivotTableTest::testCellAddCell(void)
   CPPUNIT_ASSERT(b == MyMoneyMoney(4,1));
   CPPUNIT_ASSERT(b.m_stockSplit == MyMoneyMoney(4,1));
   CPPUNIT_ASSERT(b.m_postSplit == MyMoneyMoney(16,1));
-  CPPUNIT_ASSERT(b.formatMoney() == MyMoneyMoney(32,1).formatMoney());
+  CPPUNIT_ASSERT(b.formatMoney("", 2) == MyMoneyMoney(32,1).formatMoney("", 2));
 
   a += b;
 
   CPPUNIT_ASSERT(a == MyMoneyMoney(3,1));
   CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(8,1));
   CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(48,1));
-  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(72,1).formatMoney());
+  CPPUNIT_ASSERT(a.formatMoney("", 2) == MyMoneyMoney(72,1).formatMoney("", 2));
 }
 
 void PivotTableTest::testCellRunningSum(void)
@@ -1095,7 +1095,7 @@ void PivotTableTest::testCellRunningSum(void)
   runningSum = a.calculateRunningSum(runningSum);
 
   CPPUNIT_ASSERT(runningSum == MyMoneyMoney(1865,100));
-  CPPUNIT_ASSERT(a.formatMoney() == MyMoneyMoney(1865,100).formatMoney());
+  CPPUNIT_ASSERT(a.formatMoney("", 2) == MyMoneyMoney(1865,100).formatMoney("", 2));
   CPPUNIT_ASSERT(a.m_stockSplit == MyMoneyMoney(1,1));
   CPPUNIT_ASSERT(a.m_postSplit == MyMoneyMoney(0,1));
 }

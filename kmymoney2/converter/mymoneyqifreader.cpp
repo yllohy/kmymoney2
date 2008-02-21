@@ -529,9 +529,10 @@ void MyMoneyQifReader::processMSAccountEntry(const MyMoneyAccount::accountTypeE 
 
         if ( split.shares() != balance )
         {
+          const MyMoneySecurity& sec = file->security(m_account.currencyId());
           if ( KMessageBox::questionYesNo(
             qApp->mainWidget(),
-            i18n("The %1 account currently has an opening balance of %2. This QIF file reports an opening balance of %3. Would you like to overwrite the current balance with the one from the QIF file?").arg(m_account.name(),split.shares().formatMoney(),balance.formatMoney()),
+            i18n("The %1 account currently has an opening balance of %2. This QIF file reports an opening balance of %3. Would you like to overwrite the current balance with the one from the QIF file?").arg(m_account.name(), split.shares().formatMoney(m_account, sec),balance.formatMoney(m_account, sec)),
             i18n("Overwrite opening balance"),
             KStdGuiItem::yes(),
             KStdGuiItem::no(),
@@ -1839,9 +1840,10 @@ void MyMoneyQifReader::selectOrCreateAccount(const SelectCreateMode mode, MyMone
 
             if ( split.shares() != balance )
             {
+              const MyMoneySecurity&  sec = file->security(account.currencyId());
               if ( KMessageBox::questionYesNo(
                 qApp->mainWidget(),
-                i18n("The %1 account currently has an opening balance of %2. This QIF file reports an opening balance of %3. Would you like to overwrite the current balance with the one from the QIF file?").arg(account.name(),split.shares().formatMoney(),balance.formatMoney()),
+                i18n("The %1 account currently has an opening balance of %2. This QIF file reports an opening balance of %3. Would you like to overwrite the current balance with the one from the QIF file?").arg(account.name(), split.shares().formatMoney(account, sec), balance.formatMoney(account, sec)),
                 i18n("Overwrite opening balance"),
                 KStdGuiItem::yes(),
                 KStdGuiItem::no(),

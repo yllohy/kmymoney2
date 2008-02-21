@@ -132,6 +132,12 @@ protected:
   const MyMoneySecurity& currency(void) const;
 
   /**
+   * This method returns the precision in digits for the selected currency.
+   * @sa currency()
+   */
+  int precision(void) const;
+
+  /**
    * This method returns information about the selection of the user
    * if the loan is for borrowing or lending money.
    *

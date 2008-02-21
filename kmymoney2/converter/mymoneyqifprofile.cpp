@@ -548,7 +548,7 @@ const QString MyMoneyQifProfile::value(const QChar& def, const MyMoneyMoney& val
   MyMoneyMoney::setThousandSeparator(amountThousands(def));
   MyMoneyMoney::setNegativeMonetarySignPosition(MyMoneyMoney::BeforeQuantityMoney);
 
-  res = valuein.formatMoney();
+  res = valuein.formatMoney("", 2);
 
   MyMoneyMoney::setDecimalSeparator(_decimalSeparator);
   MyMoneyMoney::setThousandSeparator(_thousandsSeparator);

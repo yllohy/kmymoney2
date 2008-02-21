@@ -131,7 +131,8 @@ private:
       static TCell stockSplit(const MyMoneyMoney& factor);
       TCell operator += (const TCell& right);
       TCell operator += (const MyMoneyMoney& value);
-      const QString formatMoney(const QString& currency = QString(), const int prec = 2, bool showThousandSeparator = true) const;
+      const QString formatMoney(int fraction, bool showThousandSeparator = true) const;
+      const QString formatMoney(const QString& currency, const int prec, bool showThousandSeparator = true) const;
       MyMoneyMoney calculateRunningSum(const MyMoneyMoney& runningSum);
       MyMoneyMoney cellBalance(const MyMoneyMoney& _balance);
       bool isUsed(void) const { return m_cellUsed; }
@@ -226,7 +227,7 @@ private:
       *          chosen color.
       */
     QString coloredAmount(const MyMoneyMoney& amount, const QString& currencySymbol = QString(), int prec = 2 ) const;
-    
+
     /**
       * This method returns the difference between a @a budgeted and an @a
       * actual amount. The calculation is based on the type of the

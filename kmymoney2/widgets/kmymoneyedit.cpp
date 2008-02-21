@@ -262,7 +262,11 @@ KLineEdit* kMyMoneyEdit::lineedit(void) const
 void kMyMoneyEdit::setPrecision(const int prec)
 {
   if(prec >= 0 && prec <= 20) {
-    m_prec = prec;
+    if(prec != m_prec) {
+      m_prec = prec;
+      // update current display
+      setValue(value());
+    }
   }
 }
 

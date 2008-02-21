@@ -304,6 +304,8 @@ void KGlobalLedgerView::clear(void)
 
 void KGlobalLedgerView::loadView(void)
 {
+  MYMONEYTRACER(tracer);
+
   // setup form visibility
   m_formFrame->setShown(KMyMoneyGlobalSettings::transactionForm());
 
@@ -451,6 +453,10 @@ void KGlobalLedgerView::loadView(void)
       (*it_b) = balance;
     }
 
+    tracer.printf("total balance of %s = %s", m_account.name().data(), actBalance[m_account.id()].formatMoney("", 2).data());
+    tracer.printf("future balance of %s = %s", m_account.name().data(), futureBalance[m_account.id()].formatMoney("", 2).data());
+    tracer.printf("cleared balance of %s = %s", m_account.name().data(), clearedBalance[m_account.id()].formatMoney("", 2).data());
+
     KMyMoneyRegister::RegisterItem* p = m_register->lastItem();
     focusItem = p;
     while(p) {
@@ -475,15 +481,21 @@ void KGlobalLedgerView::loadView(void)
           balance -= split.shares() * factor;
         }
         if(split.reconcileFlag() == MyMoneySplit::NotReconciled) {
+          tracer.printf("Reducing cleared balance by %s because %s/%s(%s) is not reconciled", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data());
           clearedBalance[t->split().accountId()] -= split.shares() * factor;
         }
         if(t->transaction().postDate() > QDate::currentDate()) {
+          tracer.printf("Reducing actual balance by %s because %s/%s(%s) is in the future", (split.shares() * factor).formatMoney("", 2).data(), t->transaction().id().data(), split.id().data(), t->transaction().postDate().toString(Qt::ISODate).data());
           actBalance[t->split().accountId()] -= split.shares() * factor;
         }
         futureBalance[t->split().accountId()] = balance;
       }
       p = p->prevItem();
     }
+
+    tracer.printf("total balance of %s = %s", m_account.name().data(), actBalance[m_account.id()].formatMoney("", 2).data());
+    tracer.printf("future balance of %s = %s", m_account.name().data(), futureBalance[m_account.id()].formatMoney("", 2).data());
+    tracer.printf("cleared balance of %s = %s", m_account.name().data(), clearedBalance[m_account.id()].formatMoney("", 2).data());
 
     // add a last empty entry for new transactions
     // leave some information about the current account

@@ -112,6 +112,11 @@ MyMoneyMoney NewAccountWizard::Wizard::interestRate(void) const
   return m_loanDetailsPage->m_interestRate->value() / MyMoneyMoney(100,1);
 }
 
+int NewAccountWizard::Wizard::precision(void) const
+{
+  return MyMoneyMoney::denomToPrec(currency().smallestAccountFraction());
+}
+
 const MyMoneyAccount& NewAccountWizard::Wizard::account(void)
 {
   m_account = MyMoneyAccountLoan();
@@ -420,6 +425,7 @@ AccountTypePage::AccountTypePage(Wizard* wizard, const char* name) :
   m_mandatoryGroup->add(m_accountName);
   connect(m_typeSelection, SIGNAL(highlighted(int)), object(), SIGNAL(completeStateChanged()));
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadWidgets()));
+  connect(m_currencyComboBox, SIGNAL(activated(int)), this, SLOT(slotUpdateCurrency()));
 }
 
 KMyMoneyWizardPage* AccountTypePage::nextPage(void) const
@@ -431,6 +437,14 @@ KMyMoneyWizardPage* AccountTypePage::nextPage(void) const
   if(accountType() == MyMoneyAccount::Investment)
     return m_wizard->m_brokeragepage;
   return m_wizard->m_accountSummaryPage;
+}
+
+void AccountTypePage::slotUpdateCurrency(void)
+{
+  MyMoneyAccount acc;
+  acc.setAccountType(accountType());
+
+  m_openingBalance->setPrecision(MyMoneyMoney::denomToPrec(acc.fraction(currency())));
 }
 
 void AccountTypePage::slotLoadWidgets(void)
@@ -787,7 +801,7 @@ void LoanDetailsPage::slotCalculate(void)
     if(m_loanAmount->lineedit()->text().isEmpty()) {
       // calculate the amount of the loan out of the other information
       val = calc.presentValue();
-      m_loanAmount->loadText(MyMoneyMoney(static_cast<double>(val)).abs().formatMoney());
+      m_loanAmount->loadText(MyMoneyMoney(static_cast<double>(val)).abs().formatMoney("", m_wizard->precision()));
       result = i18n("KMyMoney has calculated the amount of the loan as %1.")
           .arg(m_loanAmount->lineedit()->text());
 
@@ -818,16 +832,16 @@ void LoanDetailsPage::slotCalculate(void)
         // updateTermWidgets(calc.npp());
         val = calc.futureValue();
         MyMoneyMoney refVal(static_cast<double>(val));
-        m_balloonAmount->loadText(refVal.abs().formatMoney());
+        m_balloonAmount->loadText(refVal.abs().formatMoney("", m_wizard->precision()));
         result += QString(" ");
         result += i18n("The number of payments has been decremented and the balloon payment has been modified to %1.")
             .arg(m_balloonAmount->lineedit()->text());
           } else if((moneyBorrowed && val < 0 && fabsl(val) < fabsl(calc.payment()))
                      || (moneyLend && val > 0 && fabs(val) < fabs(calc.payment()))) {
-                       m_balloonAmount->loadText(MyMoneyMoney(0,1).formatMoney());
+                       m_balloonAmount->loadText(MyMoneyMoney(0,1).formatMoney("", m_wizard->precision()));
                      } else {
                        MyMoneyMoney refVal(static_cast<double>(val));
-                       m_balloonAmount->loadText(refVal.abs().formatMoney());
+                       m_balloonAmount->loadText(refVal.abs().formatMoney("", m_wizard->precision()));
                        result += i18n("The balloon payment has been modified to %1.")
                            .arg(m_balloonAmount->lineedit()->text());
                      }
@@ -847,7 +861,7 @@ void LoanDetailsPage::slotCalculate(void)
         calc.setNpp(floorl(val));
         val = calc.futureValue();
         MyMoneyMoney refVal(static_cast<double>(val));
-        m_balloonAmount->loadText(refVal.abs().formatMoney());
+        m_balloonAmount->loadText(refVal.abs().formatMoney("", m_wizard->precision()));
         result += i18n("The balloon payment has been modified to %1.")
             .arg(m_balloonAmount->lineedit()->text());
       }
@@ -880,7 +894,7 @@ void LoanDetailsPage::slotCalculate(void)
 
       MyMoneyMoney refVal(static_cast<double>(val));
       result = i18n("KMyMoney has calculated a balloon payment of %1 for this loan.")
-          .arg(refVal.abs().formatMoney());
+          .arg(refVal.abs().formatMoney("", m_wizard->precision()));
 
       if(!m_balloonAmount->lineedit()->text().isEmpty()) {
         if((m_balloonAmount->value().abs() - refVal.abs()).abs().toDouble() > 1) {
@@ -888,7 +902,7 @@ void LoanDetailsPage::slotCalculate(void)
         }
         result = i18n("KMyMoney has successfully verified your loan information.");
       }
-      m_balloonAmount->loadText(refVal.abs().formatMoney());
+      m_balloonAmount->loadText(refVal.abs().formatMoney("", m_wizard->precision()));
     }
 
   } catch (MyMoneyException *e) {
@@ -1091,15 +1105,15 @@ void LoanPaymentPage::additionalFeesSplits(QValueList<MyMoneySplit>& list)
 
 void LoanPaymentPage::updateAmounts(void)
 {
-  m_additionalFees->setText(d->additionalFees.formatMoney(m_wizard->currency().tradingSymbol()));
-  m_totalPayment->setText((basePayment() + d->additionalFees).formatMoney(m_wizard->currency().tradingSymbol()));
+  m_additionalFees->setText(d->additionalFees.formatMoney(m_wizard->currency().tradingSymbol(), m_wizard->precision()));
+  m_totalPayment->setText((basePayment() + d->additionalFees).formatMoney(m_wizard->currency().tradingSymbol(), m_wizard->precision()));
 }
 
 void LoanPaymentPage::enterPage(void)
 {
   const MyMoneySecurity& currency = m_wizard->currency();
 
-  m_basePayment->setText(basePayment().formatMoney(currency.tradingSymbol()));
+  m_basePayment->setText(basePayment().formatMoney(currency.tradingSymbol(), m_wizard->precision()));
   d->phonyAccount.setCurrencyId(currency.id());
   d->additionalFeesTransaction.setCommodity(currency.id());
 
@@ -1351,11 +1365,11 @@ void AccountSummaryPage::enterPage(void)
     group = new KMyMoneyCheckListItem(m_dataList, group, i18n("Loan information"), QString(), QCString(), QCheckListItem::RadioButtonController);
     group->setOpen(true);
     if(m_wizard->moneyBorrowed()) {
-      p = new KListViewItem(group, p, i18n("Amount borrowed"), m_wizard->m_loanDetailsPage->m_loanAmount->value().formatMoney(m_wizard->currency().tradingSymbol()));
+      p = new KListViewItem(group, p, i18n("Amount borrowed"), m_wizard->m_loanDetailsPage->m_loanAmount->value().formatMoney(m_wizard->currency().tradingSymbol(), m_wizard->precision()));
     } else {
-      p = new KListViewItem(group, p, i18n("Amount lent"), m_wizard->m_loanDetailsPage->m_loanAmount->value().formatMoney(m_wizard->currency().tradingSymbol()));
+      p = new KListViewItem(group, p, i18n("Amount lent"), m_wizard->m_loanDetailsPage->m_loanAmount->value().formatMoney(m_wizard->currency().tradingSymbol(), m_wizard->precision()));
     }
-    p = new KListViewItem(group, p, i18n("Interest rate"), QString("%1 %").arg(m_wizard->m_loanDetailsPage->m_interestRate->value().formatMoney()));
+    p = new KListViewItem(group, p, i18n("Interest rate"), QString("%1 %").arg(m_wizard->m_loanDetailsPage->m_interestRate->value().formatMoney("", 3)));
     p = new KListViewItem(group, p, i18n("Interest rate is"), m_wizard->m_generalLoanInfoPage->m_interestType->currentText());
     p = new KListViewItem(group, p, i18n("Principal and interest"), m_wizard->m_loanDetailsPage->m_paymentAmount->value().formatMoney(acc, sec));
     p = new KListViewItem(group, p, i18n("Additional fees"), m_wizard->m_loanPaymentPage->additionalFees().formatMoney(acc, sec));

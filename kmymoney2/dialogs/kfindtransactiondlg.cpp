@@ -244,7 +244,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
       txt += ", ";
     txt += i18n("Details");
   }
-  
+
   if(!m_categoriesView->allItemsSelected()) {
     m_transferWarning->setText( i18n("Warning: Filtering by Category will exclude all transfers from the results.") );
   } else {
@@ -723,7 +723,7 @@ void KFindTransactionDlg::loadView(void)
   m_register->updateRegister(true);
 
   m_foundText->setText(i18n(QString("Found %1 matching transactions (D %2 / P %3 = %4)")
-                      .arg(splitCount).arg(deposit.formatMoney()).arg(payment.formatMoney()).arg((deposit-payment).formatMoney())));
+                      .arg(splitCount).arg(deposit.formatMoney("", 2)).arg(payment.formatMoney("", 2)).arg((deposit-payment).formatMoney("", 2))));
 
   m_tabWidget->setTabEnabled(m_resultPage, true);
   m_tabWidget->setCurrentPage(m_tabWidget->indexOf(m_resultPage));
@@ -758,9 +758,9 @@ void KFindTransactionDlg::resizeEvent(QResizeEvent* ev)
   int m_debitWidth = 80;
   int m_creditWidth = 80;
 
-  m_register->adjustColumn(1);  
-  m_register->adjustColumn(2);  
-  m_register->adjustColumn(5);  
+  m_register->adjustColumn(1);
+  m_register->adjustColumn(2);
+  m_register->adjustColumn(5);
 
   m_register->setColumnWidth(6, m_debitWidth);
   m_register->setColumnWidth(7, m_creditWidth);
@@ -774,7 +774,7 @@ void KFindTransactionDlg::resizeEvent(QResizeEvent* ev)
         break;
     }
   }
-  
+
   m_register->setColumnWidth(4, w);
 }
 

@@ -320,12 +320,12 @@ void MyMoneyMoneyTest::testSetDecimalSeparator()
   MyMoneyMoney m1(100000);
   MyMoneyMoney m2(200000);
 
-  CPPUNIT_ASSERT(m1.formatMoney() == QString("1,000.00"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("1,000.00"));
   CPPUNIT_ASSERT(MyMoneyMoney::decimalSeparator() == '.');
 
   MyMoneyMoney::setDecimalSeparator(':');
-  CPPUNIT_ASSERT(m1.formatMoney() == QString("1,000:00"));
-  CPPUNIT_ASSERT(m2.formatMoney() == QString("2,000:00"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("1,000:00"));
+  CPPUNIT_ASSERT(m2.formatMoney("", 2) == QString("2,000:00"));
 
   CPPUNIT_ASSERT(MyMoneyMoney::decimalSeparator() == ':');
 }
@@ -335,38 +335,47 @@ void MyMoneyMoneyTest::testSetThousandSeparator()
   MyMoneyMoney m1(100000);
   MyMoneyMoney m2(200000);
 
-  CPPUNIT_ASSERT(m1.formatMoney() == QString("1,000.00"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("1,000.00"));
   CPPUNIT_ASSERT(MyMoneyMoney::thousandSeparator() == ',');
 
   MyMoneyMoney::setThousandSeparator(':');
-  CPPUNIT_ASSERT(m1.formatMoney() == QString("1:000.00"));
-  CPPUNIT_ASSERT(m2.formatMoney() == QString("2:000.00"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("1:000.00"));
+  CPPUNIT_ASSERT(m2.formatMoney("", 2) == QString("2:000.00"));
 
   CPPUNIT_ASSERT(MyMoneyMoney::thousandSeparator() == ':');
 }
 
 void MyMoneyMoneyTest::testFormatMoney()
 {
-  CPPUNIT_ASSERT(m_0->formatMoney() == QString("0.12"));
-  CPPUNIT_ASSERT(m_1->formatMoney() == QString("-0.10"));
+  CPPUNIT_ASSERT(m_0->formatMoney("", 2) == QString("0.12"));
+  CPPUNIT_ASSERT(m_1->formatMoney("", 2) == QString("-0.10"));
 
   MyMoneyMoney m1(10099);
-  CPPUNIT_ASSERT(m1.formatMoney() == QString("100.99"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("100.99"));
 
   m1 = MyMoneyMoney(100,1);
-  CPPUNIT_ASSERT(m1.formatMoney() == QString("100.00"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("100.00"));
 
   m1 = m1 * 10;
-  CPPUNIT_ASSERT(m1.formatMoney() == QString("1,000.00"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("1,000.00"));
 
   m1 = MyMoneyMoney(INT64_MAX, 100);
-  CPPUNIT_ASSERT(m1.formatMoney() == QString("92,233,720,368,547,758.07"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("92,233,720,368,547,758.07"));
+  CPPUNIT_ASSERT(m1.formatMoney(100) == QString("92,233,720,368,547,758.07"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 2, false) == QString("92233720368547758.07"));
+  CPPUNIT_ASSERT(m1.formatMoney(100, false) == QString("92233720368547758.07"));
 
   m1 = MyMoneyMoney(INT64_MIN, 100);
-  CPPUNIT_ASSERT(m1.formatMoney() == QString("-92,233,720,368,547,758.08"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("-92,233,720,368,547,758.08"));
+  CPPUNIT_ASSERT(m1.formatMoney(100) == QString("-92,233,720,368,547,758.08"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 2, false) == QString("-92233720368547758.08"));
+  CPPUNIT_ASSERT(m1.formatMoney(100, false) == QString("-92233720368547758.08"));
 
   m1 = MyMoneyMoney(1,5);
-  CPPUNIT_ASSERT(m1.formatMoney() == QString("0.20"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("0.20"));
+  CPPUNIT_ASSERT(m1.formatMoney(1000) == QString("0.200"));
+  CPPUNIT_ASSERT(m1.formatMoney(100) == QString("0.20"));
+  CPPUNIT_ASSERT(m1.formatMoney(10) == QString("0.2"));
 
   m1 = MyMoneyMoney(13333,5000);
   CPPUNIT_ASSERT(m1.formatMoney("", 10) == QString("2.6666000000"));

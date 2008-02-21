@@ -181,7 +181,7 @@ void MyMoneyStorageDump::writeStream(QDataStream& _s, IMyMoneySerialize* _storag
     s << "  Opening data = " << (*it_a).openingDate().toString(Qt::ISODate) << "\n";
     s << "  Last modified = " << (*it_a).lastModified().toString(Qt::ISODate) << "\n";
     s << "  Last reconciled = " << (*it_a).lastReconciliationDate().toString(Qt::ISODate) << "\n";
-    s << "  Balance = " << (*it_a).balance().formatMoney() << "\n";
+    s << "  Balance = " << (*it_a).balance().formatMoney("", 2) << "\n";
 
     s << "  KVP: " << "\n";
     QMap<QCString, QString>kvp = (*it_a).pairs();
@@ -372,9 +372,9 @@ void MyMoneyStorageDump::dumpTransaction(QTextStream& s, IMyMoneyStorage* storag
     if((*it_s).value() == MyMoneyMoney::autoCalc)
       s << "    Value = will be calculated" << "\n";
     else
-      s << "    Value = " << (*it_s).value().formatMoney()
+      s << "    Value = " << (*it_s).value().formatMoney("", 2)
                           << " (" << (*it_s).value().toString() << ")\n";
-    s << "    Shares = " <<  (*it_s).shares().formatMoney()
+    s << "    Shares = " <<  (*it_s).shares().formatMoney("", 2)
                          << " (" << (*it_s).shares().toString() << ")\n";
     s << "    Action = '" << (*it_s).action() << "'\n";
     s << "    Nr = '" << (*it_s).number() << "'\n";

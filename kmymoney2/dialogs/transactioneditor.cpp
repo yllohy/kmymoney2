@@ -643,29 +643,30 @@ bool TransactionEditor::enterTransactions(QCString& newId, bool askForSchedule)
         QString msg;
         MyMoneyAccount acc = file->account(it_a.key());
         MyMoneyMoney balance = file->balance(acc.id());
+        const MyMoneySecurity& sec = file->security(acc.currencyId());
         QCString key;
         key = "minBalanceEarly";
         if(!acc.value(key).isEmpty()) {
           if(minBalanceEarly[acc.id()] == false && balance < MyMoneyMoney(acc.value(key))) {
-            msg = QString("<qt>%1</qt>").arg(i18n("The balance of account <b>%1</b> dropped below the warning balance of %2.").arg(acc.name(), MyMoneyMoney(acc.value(key)).formatMoney()));
+            msg = QString("<qt>%1</qt>").arg(i18n("The balance of account <b>%1</b> dropped below the warning balance of %2.").arg(acc.name(), MyMoneyMoney(acc.value(key)).formatMoney(acc, sec)));
           }
         }
         key = "minBalanceAbsolute";
         if(!acc.value(key).isEmpty()) {
           if(minBalanceAbsolute[acc.id()] == false && balance < MyMoneyMoney(acc.value(key))) {
-            msg = QString("<qt>%1</qt>").arg(i18n("The balance of account <b>%1</b> dropped below the minimum balance of %2.").arg(acc.name(), MyMoneyMoney(acc.value(key)).formatMoney()));
+            msg = QString("<qt>%1</qt>").arg(i18n("The balance of account <b>%1</b> dropped below the minimum balance of %2.").arg(acc.name(), MyMoneyMoney(acc.value(key)).formatMoney(acc, sec)));
           }
         }
         key = "maxCreditEarly";
         if(!acc.value(key).isEmpty()) {
           if(maxCreditEarly[acc.id()] == false && balance < MyMoneyMoney(acc.value(key))) {
-            msg = QString("<qt>%1</qt>").arg(i18n("The balance of account <b>%1</b> dropped below the maximum credit warning limit of %2.").arg(acc.name(), MyMoneyMoney(acc.value(key)).formatMoney()));
+            msg = QString("<qt>%1</qt>").arg(i18n("The balance of account <b>%1</b> dropped below the maximum credit warning limit of %2.").arg(acc.name(), MyMoneyMoney(acc.value(key)).formatMoney(acc, sec)));
           }
         }
         key = "maxCreditAbsolute";
         if(!acc.value(key).isEmpty()) {
           if(maxCreditAbsolute[acc.id()] == false && balance < MyMoneyMoney(acc.value(key))) {
-            msg = QString("<qt>%1</qt>").arg(i18n("The balance of account <b>%1</b> dropped below the maximum credit limit of %2.").arg(acc.name(), MyMoneyMoney(acc.value(key)).formatMoney()));
+            msg = QString("<qt>%1</qt>").arg(i18n("The balance of account <b>%1</b> dropped below the maximum credit limit of %2.").arg(acc.name(), MyMoneyMoney(acc.value(key)).formatMoney(acc, sec)));
           }
         }
 
@@ -1479,9 +1480,9 @@ bool StdTransactionEditor::addVatSplit(MyMoneyTransaction& tr, const MyMoneyMone
     if(category.value("VatAccount").isEmpty())
       return false;
     MyMoneyAccount vatAcc = file->account(category.value("VatAccount").latin1());
-    MyMoneySecurity asec = file->security(m_account.currencyId());
-    MyMoneySecurity csec = file->security(category.currencyId());
-    MyMoneySecurity vsec = file->security(vatAcc.currencyId());
+    const MyMoneySecurity& asec = file->security(m_account.currencyId());
+    const MyMoneySecurity& csec = file->security(category.currencyId());
+    const MyMoneySecurity& vsec = file->security(vatAcc.currencyId());
     if(asec.id() != csec.id() || asec.id() != vsec.id()) {
       qDebug("Auto VAT assignment only works if all three accounts use the same currency.");
       return false;

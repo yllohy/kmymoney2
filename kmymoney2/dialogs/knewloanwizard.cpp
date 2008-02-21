@@ -200,7 +200,7 @@ void KNewLoanWizard::resetCalculator(void)
   m_payment5->setText(QString());
   m_balloon5->setText(QString());
 
-  m_additionalCost->setText(MyMoneyMoney(0).formatMoney());
+  m_additionalCost->setText(MyMoneyMoney(0).formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId()))));
 }
 
 void KNewLoanWizard::slotLiabilityLoan(void)
@@ -310,7 +310,7 @@ void KNewLoanWizard::updateLoanAmount(void)
   if(m_loanAmountEdit->lineedit()->text().isEmpty()) {
     txt = QString("<") + i18n("calculate") + QString(">");
   } else {
-    txt = m_loanAmountEdit->value().formatMoney();
+    txt = m_loanAmountEdit->value().formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId())));
   }
   m_loanAmount1->setText(txt);
   m_loanAmount2->setText(txt);
@@ -356,7 +356,7 @@ void KNewLoanWizard::updatePayment(void)
   if(m_paymentEdit->lineedit()->text().isEmpty()) {
     txt = QString("<") + i18n("calculate") + QString(">");
   } else {
-    txt = m_paymentEdit->value().formatMoney();
+    txt = m_paymentEdit->value().formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId())));
   }
   m_payment1->setText(txt);
   m_payment2->setText(txt);
@@ -372,7 +372,7 @@ void KNewLoanWizard::updateFinalPayment(void)
   if(m_finalPaymentEdit->lineedit()->text().isEmpty()) {
     txt = QString("<") + i18n("calculate") + QString(">");
   } else {
-    txt = m_finalPaymentEdit->value().formatMoney();
+    txt = m_finalPaymentEdit->value().formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId())));
   }
   m_balloon1->setText(txt);
   m_balloon2->setText(txt);
@@ -392,13 +392,14 @@ void KNewLoanWizard::updateLoanInfo(void)
 
   QString txt;
 
-  m_loanAmount6->setText(m_loanAmountEdit->value().formatMoney());
+  int fraction = m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId()));
+  m_loanAmount6->setText(m_loanAmountEdit->value().formatMoney(fraction));
   m_interestRate6->setText(m_interestRateEdit->value().formatMoney("", 3) + QString("%"));
   txt = QString().sprintf("%d ", m_durationValueEdit->value())
         + m_durationUnitEdit->currentText();
   m_duration6->setText(txt);
-  m_payment6->setText(m_paymentEdit->value().formatMoney());
-  m_balloon6->setText(m_finalPaymentEdit->value().formatMoney());
+  m_payment6->setText(m_paymentEdit->value().formatMoney(fraction));
+  m_balloon6->setText(m_finalPaymentEdit->value().formatMoney(fraction));
 }
 
 void KNewLoanWizard::updatePeriodicPayment(void)
@@ -406,7 +407,7 @@ void KNewLoanWizard::updatePeriodicPayment(void)
   MyMoneyMoney base(m_basePayment->text());
   MyMoneyMoney add(m_additionalCost->text());
 
-  m_periodicPayment->setText((base + add).formatMoney());
+  m_periodicPayment->setText((base + add).formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId()))));
 }
 
 void KNewLoanWizard::updateSummary(void)
@@ -798,12 +799,13 @@ int KNewLoanWizard::calculateLoan(void)
     calc.setNpp(static_cast<long double>(term()));
   }
 
+  int fraction = m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId()));
   // setup of parameters is done, now do the calculation
   try {
     if(m_loanAmountEdit->lineedit()->text().isEmpty()) {
       // calculate the amount of the loan out of the other information
       val = calc.presentValue();
-      m_loanAmountEdit->loadText(MyMoneyMoney(static_cast<double>(val)).abs().formatMoney());
+      m_loanAmountEdit->loadText(MyMoneyMoney(static_cast<double>(val)).abs().formatMoney(fraction));
       result = i18n("KMyMoney has calculated the amount of the loan as %1.")
                         .arg(m_loanAmountEdit->lineedit()->text());
 
@@ -834,16 +836,16 @@ int KNewLoanWizard::calculateLoan(void)
         updateTermWidgets(calc.npp());
         val = calc.futureValue();
         MyMoneyMoney refVal(static_cast<double>(val));
-        m_finalPaymentEdit->loadText(refVal.abs().formatMoney());
+        m_finalPaymentEdit->loadText(refVal.abs().formatMoney(fraction));
         result += QString(" ");
         result += i18n("The number of payments has been decremented and the final payment has been modified to %1.")
                       .arg(m_finalPaymentEdit->lineedit()->text());
       } else if((m_borrowButton->isChecked() && val < 0 && fabsl(val) < fabsl(calc.payment()))
              || (m_lendButton->isChecked() && val > 0 && fabs(val) < fabs(calc.payment()))) {
-        m_finalPaymentEdit->loadText(MyMoneyMoney(0,1).formatMoney());
+        m_finalPaymentEdit->loadText(MyMoneyMoney(0,1).formatMoney(fraction));
       } else {
         MyMoneyMoney refVal(static_cast<double>(val));
-        m_finalPaymentEdit->loadText(refVal.abs().formatMoney());
+        m_finalPaymentEdit->loadText(refVal.abs().formatMoney(fraction));
         result += i18n("The final payment has been modified to %1.")
                       .arg(m_finalPaymentEdit->lineedit()->text());
       }
@@ -863,7 +865,7 @@ int KNewLoanWizard::calculateLoan(void)
         calc.setNpp(floorl(val));
         val = calc.futureValue();
         MyMoneyMoney refVal(static_cast<double>(val));
-        m_finalPaymentEdit->loadText(refVal.abs().formatMoney());
+        m_finalPaymentEdit->loadText(refVal.abs().formatMoney(fraction));
         result += i18n("The final payment has been modified to %1.")
                       .arg(m_finalPaymentEdit->lineedit()->text());
       }
@@ -896,7 +898,7 @@ int KNewLoanWizard::calculateLoan(void)
 
       MyMoneyMoney refVal(static_cast<double>(val));
       result = i18n("KMyMoney has calculated a final payment of %1 for this loan.")
-                        .arg(refVal.abs().formatMoney());
+                        .arg(refVal.abs().formatMoney(fraction));
 
       if(!m_finalPaymentEdit->lineedit()->text().isEmpty()) {
         if((m_finalPaymentEdit->value().abs() - refVal.abs()).abs().toDouble() > 1) {
@@ -904,7 +906,7 @@ int KNewLoanWizard::calculateLoan(void)
         }
         result = i18n("KMyMoney has successfully verified your loan information.");
       }
-      m_finalPaymentEdit->loadText(refVal.abs().formatMoney());
+      m_finalPaymentEdit->loadText(refVal.abs().formatMoney(fraction));
     }
 
   } catch (MyMoneyException *e) {
@@ -1035,7 +1037,7 @@ void KNewLoanWizard::slotAdditionalFees(void)
         fees += (*it).value();
       }
     }
-    m_additionalCost->setText(fees.abs().formatMoney());
+    m_additionalCost->setText(fees.abs().formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId()))));
   }
 
   delete dlg;

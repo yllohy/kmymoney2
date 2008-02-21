@@ -124,9 +124,9 @@ public:
   /**
     * Fetch the trading symbol of this account's deep currency
     *
-    * @return QCString The account's currency trading symbol
+    * @return  The account's currency trading currency object
     */
-  QCString currency( void ) const;
+  MyMoneySecurity currency( void ) const;
 
   /**
     * Determine if this account's deep currency is different from the file's

@@ -173,6 +173,11 @@ MyMoneyMoney::MyMoneyMoney(const QString& pszAmount)
     m_num = -m_num;
 }
 
+const QString MyMoneyMoney::formatMoney(int denom, bool showThousandSeparator) const
+{
+  return formatMoney("", denomToPrec(denom), showThousandSeparator);
+}
+
 const QString MyMoneyMoney::formatMoney(const MyMoneyAccount& acc, const MyMoneySecurity& sec, bool showThousandSeparator) const
 {
   return formatMoney(sec.tradingSymbol(), denomToPrec(acc.fraction(sec)), showThousandSeparator);

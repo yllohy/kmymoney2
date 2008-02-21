@@ -157,13 +157,14 @@ void KConfirmManualEnterDlg::loadTransactions(const MyMoneyTransaction& to, cons
       messageDetail += i18n("Memo changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>").arg(mo).arg(mn);
     }
 
+    const MyMoneySecurity& sec = MyMoneyFile::instance()->security(to.commodity());
     MyMoneyMoney ao, an;
     ao = to.splits()[0].value();
     an = tn.splits()[0].value();
     if (ao != an) {
       noItemsChanged++;
       messageDetail += i18n("Amount changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>")
-        .arg(ao.formatMoney()).arg(an.formatMoney());
+        .arg(ao.formatMoney(sec.smallestAccountFraction())).arg(an.formatMoney(sec.smallestAccountFraction()));
     }
 
     MyMoneySplit::reconcileFlagE fo, fn;

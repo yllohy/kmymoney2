@@ -68,6 +68,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   m_transaction(t),
   m_account(acc),
   m_split(s),
+  m_precision(2),
   m_amountValid(amountValid),
   m_isDeposit(deposit),
   m_calculatedValue(calculatedValue)
@@ -113,6 +114,14 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
   connect(cancelBtn, SIGNAL(clicked()), this, SLOT(reject()));
   connect(finishBtn, SIGNAL(clicked()), this, SLOT(accept()));
   connect(clearAllBtn, SIGNAL(clicked()), this, SLOT(slotClearAllSplits()));
+
+  // setup the precision
+  try {
+    const MyMoneySecurity& sec = MyMoneyFile::instance()->security(m_account.currencyId());
+    m_precision = MyMoneyMoney::denomToPrec(m_account.fraction(sec));
+  } catch(MyMoneyException *e) {
+    delete e;
+  }
 
   // pass on those vars
   transactionsTable->setup(priceInfo);
@@ -162,9 +171,9 @@ int KSplitTransactionDlg::exec(void)
         corrDlg->cancelBtn->setGuiItem(KStdGuiItem::cancel());
 
         MyMoneySplit split = m_transaction.splits()[0];
-        QString total = (-split.value()).formatMoney();
-        QString sums = splitsValue().formatMoney();
-        QString diff = diffAmount().formatMoney();
+        QString total = (-split.value()).formatMoney("", m_precision);
+        QString sums = splitsValue().formatMoney("", m_precision);
+        QString diff = diffAmount().formatMoney("", m_precision);
 
         // now modify the text items of the dialog to contain the correct values
         QString q = i18n("The total amount of this transaction is %1 while "
@@ -296,9 +305,9 @@ void KSplitTransactionDlg::updateSums(void)
     m_transaction.modifySplit(split);
   }
 
-  splitSum->setText("<b>" + splits.formatMoney() + " ");
-  splitUnassigned->setText("<b>" + diffAmount().formatMoney() + " ");
-  transactionAmount->setText("<b>" + (-split.value()).formatMoney() + " ");
+  splitSum->setText("<b>" + splits.formatMoney("", m_precision) + " ");
+  splitUnassigned->setText("<b>" + diffAmount().formatMoney("", m_precision) + " ");
+  transactionAmount->setText("<b>" + (-split.value()).formatMoney("", m_precision) + " ");
 }
 
 MyMoneyMoney KSplitTransactionDlg::splitsValue(void)

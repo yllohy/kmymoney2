@@ -926,7 +926,7 @@ void MyMoneyStorageSql::writeAccount(const MyMoneyAccount& acc, MyMoneySqlQuery&
   q.bindValue(":description", acc.description());
   q.bindValue(":currencyId", acc.currencyId());
   q.bindValue(":balance", m_storagePtr->balance(acc.id(), QDate()).toString());
-  q.bindValue(":balanceFormatted", m_storagePtr->balance(acc.id(), QDate()).formatMoney());
+  q.bindValue(":balanceFormatted", m_storagePtr->balance(acc.id(), QDate()).formatMoney("", 2));
   q.bindValue(":transactionCount", Q_ULLONG(m_transactionCountMap[acc.id()]));
   if (!q.exec()) throw buildError (q, __func__, QString("writing Account"));
 
@@ -1118,9 +1118,9 @@ void MyMoneyStorageSql::writeSplit(const QString& txId, const MyMoneySplit& spli
   q.bindValue(":action", split.action());
   q.bindValue(":reconcileFlag", split.reconcileFlag());
   q.bindValue(":value", split.value().toString());
-  q.bindValue(":valueFormatted", split.value().formatMoney());
+  q.bindValue(":valueFormatted", split.value().formatMoney("", 2));
   q.bindValue(":shares", split.shares().toString());
-  q.bindValue(":sharesFormatted", split.shares().formatMoney());
+  q.bindValue(":sharesFormatted", split.shares().formatMoney("", 2));
   q.bindValue(":memo", split.memo());
   q.bindValue(":accountId", split.accountId());
   q.bindValue(":checkNumber", split.number());
@@ -1402,7 +1402,7 @@ void MyMoneyStorageSql::addPrice(const MyMoneyPrice& p) {
   q.bindValue(":toId", p.to());
   q.bindValue(":priceDate", p.date());
   q.bindValue(":price", p.rate(QCString()).toString());
-  q.bindValue(":priceFormatted", p.rate(QCString()).formatMoney());
+  q.bindValue(":priceFormatted", p.rate(QCString()).formatMoney("", 2));
   q.bindValue(":priceSource", p.source());
   if (!q.exec()) throw buildError (q, __func__, QString("writing Price"));
 
@@ -1432,7 +1432,7 @@ void MyMoneyStorageSql::writePrice(const MyMoneyPrice& p) {
   q.bindValue(":toId", p.to());
   q.bindValue(":priceDate", p.date());
   q.bindValue(":price", p.rate(QCString()).toString());
-  q.bindValue(":priceFormatted", p.rate(QCString()).formatMoney());
+  q.bindValue(":priceFormatted", p.rate(QCString()).formatMoney("", 2));
   q.bindValue(":priceSource", p.source());
   if (!q.exec()) throw buildError (q, __func__, QString("writing Prices"));
 }

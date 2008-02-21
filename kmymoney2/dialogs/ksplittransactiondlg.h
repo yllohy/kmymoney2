@@ -146,6 +146,11 @@ private:
   MyMoneySplit           m_split;
 
   /**
+    * This member keeps the precision for the values
+    */
+  int                    m_precision;
+
+  /**
     * flag that shows that the amount specified in the constructor
     * should be used as fix value (true) or if it can be changed (false)
     */

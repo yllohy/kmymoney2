@@ -578,7 +578,7 @@ void KPayeesView::showTransactions(void)
   m_transactionView->clear();
 
   if(m_payee.id().isEmpty()) {
-    m_balanceLabel->setText(i18n("Balance: %1").arg(balance.formatMoney()));
+    m_balanceLabel->setText(i18n("Balance: %1").arg(balance.formatMoney(MyMoneyFile::instance()->baseCurrency().smallestAccountFraction())));
     return;
   }
 
@@ -631,7 +631,8 @@ void KPayeesView::showTransactions(void)
   for(i = 0; i < m_transactionPtrVector.size(); ++i) {
     KMyMoneyTransaction* t = m_transactionPtrVector[i];
     MyMoneySplit s = t->splitById(t->splitId());
-    MyMoneyAccount acc = file->account(s.accountId());
+    const MyMoneyAccount& acc = file->account(s.accountId());
+    const MyMoneySecurity& sec = file->security(acc.currencyId());
 
     item = new KTransactionListItem(m_transactionView, item, s.accountId(), t->id());
     item->setText(0, s.number());
@@ -667,9 +668,9 @@ void KPayeesView::showTransactions(void)
       txt = MyMoneyFile::instance()->accountToCategory(s0.accountId());
     }
     item->setText(2, txt);
-    item->setText(3, s.value().formatMoney());
+    item->setText(3, s.value().formatMoney(acc.fraction(sec)));
   }
-  m_balanceLabel->setText(i18n("Balance: %1").arg(balance.formatMoney()));
+  m_balanceLabel->setText(i18n("Balance: %1").arg(balance.formatMoney(MyMoneyFile::instance()->baseCurrency().smallestAccountFraction())));
 
   // Trick: it seems, that the initial sizing of the view does
   // not work correctly. At least, the columns do not get displayed

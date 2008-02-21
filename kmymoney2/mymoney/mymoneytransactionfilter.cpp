@@ -227,8 +227,9 @@ bool MyMoneyTransactionFilter::match(const MyMoneySplit * const sp, const IMyMon
   if(m_filterSet.singleFilter.textFilter) {
     bool textMatch = false;
     const MyMoneyAccount& acc = storage->account(sp->accountId());
+    const MyMoneySecurity& sec = storage->security(acc.currencyId());
     if(sp->memo().contains(m_text)
-    || sp->value().formatMoney().contains(m_text)
+    || sp->value().formatMoney(acc.fraction(sec)).contains(m_text)
     || sp->number().contains(m_text))
       textMatch = true;
 

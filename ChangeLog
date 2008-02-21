@@ -1,5 +1,11 @@
-2008-02-17 Alvaro Soliverez <asoliverez@gmail.com>
-  * Added test case to check for correct date and value of closing balance in query table
+
+2008-02-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Require currency string and precision for all formatMoney() calls
+  * Fixed queryTable testcase to obey selected date formatting
+
+2008-02-20 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added test case to check for correct date and value of closing
+    balance in query table
 
 2008-02-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added check for MyMoneyMoney constructor to avoid zero denominators

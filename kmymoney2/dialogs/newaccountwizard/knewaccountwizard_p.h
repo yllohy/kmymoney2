@@ -102,6 +102,7 @@ public:
 
 private slots:
   void slotLoadWidgets(void);
+  void slotUpdateCurrency(void);
 };
 
 class BrokeragePage : public KBrokeragePageDecl, public WizardPage<Wizard>

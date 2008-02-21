@@ -130,7 +130,7 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
     else
       setText(2, "---");
     m_amount = split.value().abs();
-    setText(3, QString("%1  ").arg(m_amount.formatMoney(currency.tradingSymbol())));
+    setText(3, QString("%1  ").arg(m_amount.formatMoney(acc, currency)));
     // Do the real next payment like ms-money etc
     if (schedule.isFinished())
     {

@@ -523,8 +523,8 @@ void KHomeView::showPaymentEntry(const MyMoneySchedule& sched, int cnt)
           tmp += i18n(" (%1 payments)").arg(cnt);
         tmp += "</td><td width=\"10%\" align=\"right\">";
 
-        MyMoneySecurity currency = MyMoneyFile::instance()->currency(acc.currencyId());
-        QString amount = (sp.value()*cnt).formatMoney(currency.tradingSymbol());
+        const MyMoneySecurity& currency = MyMoneyFile::instance()->currency(acc.currencyId());
+        QString amount = (sp.value()*cnt).formatMoney(acc, currency);
         amount.replace(" ","&nbsp;");
         tmp += amount;
         tmp += "</td>";
@@ -695,10 +695,10 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
       }
     }
 
-    amount = value.formatMoney(currency.tradingSymbol());
+    amount = value.formatMoney(acc, currency);
   } else {
     value = MyMoneyFile::instance()->balance(acc.id(), QDate::currentDate());
-    amount = value.formatMoney(currency.tradingSymbol());
+    amount = value.formatMoney(acc, currency);
   }
   amount.replace(" ","&nbsp;");
 
@@ -824,7 +824,7 @@ void KHomeView::showForecast(void)
       for (int f = beginDay; f <= forecast.forecastDays(); f += forecast.accountsCycle()) {
         forecastBalance = forecast.forecastBalance(acc, QDate::currentDate().addDays(f));
         QString amount;
-        amount = forecastBalance.formatMoney(currency.tradingSymbol());
+        amount = forecastBalance.formatMoney(acc, currency);
         amount.replace(" ","&nbsp;");
         m_part->write(QString("<td width=\"%1%\" align=\"right\">").arg(colWidth));
         if(forecastBalance < MyMoneyMoney(0, 1)) m_part->write(QString("<font color=\"red\">")); //Show in red if below zero
@@ -856,10 +856,10 @@ void KHomeView::showForecast(void)
           case -1:
             break;
           case 0:
-            msg = i18n("The balance of %1 is below the minimum balance %2 today.").arg(acc.name()).arg(minBalance.formatMoney(currency.tradingSymbol()));
+            msg = i18n("The balance of %1 is below the minimum balance %2 today.").arg(acc.name()).arg(minBalance.formatMoney(acc, currency));
             break;
           default:
-            msg = i18n("The balance of %1 will drop below the minimum balance %2 in %3 days.").arg(acc.name()).arg(minBalance.formatMoney(currency.tradingSymbol())).arg(dropMinimum-1);
+            msg = i18n("The balance of %1 will drop below the minimum balance %2 in %3 days.").arg(acc.name()).arg(minBalance.formatMoney(acc, currency)).arg(dropMinimum-1);
         }
 
         if(!msg.isEmpty()) {
@@ -873,21 +873,21 @@ void KHomeView::showForecast(void)
              break;
            case 0:
              if(acc.accountGroup() == MyMoneyAccount::Asset) {
-               msg = i18n("The balance of %1 is below %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol()));
+               msg = i18n("The balance of %1 is below %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency));
                break;
              }
              if(acc.accountGroup() == MyMoneyAccount::Liability) {
-               msg = i18n("The balance of %1 is above %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol()));
+               msg = i18n("The balance of %1 is above %2 today.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency));
                break;
              }
              break;
            default:
              if(acc.accountGroup() == MyMoneyAccount::Asset) {
-               msg = i18n("The balance of %1 will drop below %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol())).arg(dropZero);
+               msg = i18n("The balance of %1 will drop below %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency)).arg(dropZero);
                break;
              }
              if(acc.accountGroup() == MyMoneyAccount::Liability) {
-               msg = i18n("The balance of %1 will raise above %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(currency.tradingSymbol())).arg(dropZero);
+               msg = i18n("The balance of %1 will raise above %2 in %3 days.").arg(acc.name()).arg(MyMoneyMoney().formatMoney(acc, currency)).arg(dropZero);
                break;
              }
          }

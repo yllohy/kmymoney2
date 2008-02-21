@@ -118,12 +118,12 @@ public:
     * _positivePrefixCurrencySymbol. Those values can be modified using
     * the appropriate set-methods.
     *
-    * @param currency The currency symbol (default "")
-    * @param prec The number of fractional digits (default 2)
+    * @param currency The currency symbol
+    * @param prec The number of fractional digits
     * @param showThousandSeparator should the thousandSeparator symbol be inserted
-    *                              (@a true) or not (@a false)
+    *                              (@a true) or not (@a false) (default true)
     */
-  const QString formatMoney(const QString& currency = QString(), const int prec = 2, bool showThousandSeparator = true) const;
+  const QString formatMoney(const QString& currency, const int prec, bool showThousandSeparator = true) const;
 
   /**
    * This is a convenience method. It behaves exactly as the above one, but takes the information
@@ -131,6 +131,16 @@ public:
    * @a acc and @a sec.
    */
   const QString formatMoney(const MyMoneyAccount& acc, const MyMoneySecurity& sec, bool showThousandSeparator = true) const;
+
+  /**
+   * This is a convenience method. It behaves exactly as the above one, but takes the information
+   * about precision out of the denomination @a denom. No currency symbol is shown. If you want
+   * to see a currency symbol, please use formatMoney(const MyMoneyAccount& acc, const MyMoneySecurity& sec, bool showThousandSeparator)
+   * instead.
+   *
+   * @note denom is often set to account.fraction(security).
+   */
+  const QString formatMoney(int denom, bool showThousandSeparator = true) const;
 
   /**
     * This method is used to convert the smallest fraction information into

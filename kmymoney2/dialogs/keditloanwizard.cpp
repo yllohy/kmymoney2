@@ -111,8 +111,8 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
   QCString paymentAccountId, interestAccountId;
 
   m_nameEdit->loadText(m_account.name());
-  m_loanAmountEdit->loadText(m_account.loanAmount().formatMoney());
-  m_finalPaymentEdit->loadText(m_account.finalPayment().formatMoney());
+  m_loanAmountEdit->loadText(m_account.loanAmount().formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId()))));
+  m_finalPaymentEdit->loadText(m_account.finalPayment().formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId()))));
   m_firstDueDateEdit->setDate(m_account.openingDate());
 
   if(m_account.fixedInterestRate()) {
@@ -204,11 +204,12 @@ void KEditLoanWizard::loadWidgets(const MyMoneyAccount& /* account */)
   // we borrow or lend money
   loadAccountList();
 
-  m_paymentEdit->loadText(basePayment.formatMoney());
-  m_newPaymentEdit->loadText(basePayment.formatMoney());
-  m_paymentLabel->setText(QString(" ") + basePayment.formatMoney());
+  int fraction = m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId()));
+  m_paymentEdit->loadText(basePayment.formatMoney(fraction));
+  m_newPaymentEdit->loadText(basePayment.formatMoney(fraction));
+  m_paymentLabel->setText(QString(" ") + basePayment.formatMoney(fraction));
 
-  m_additionalCost->setText(addPayment.formatMoney());
+  m_additionalCost->setText(addPayment.formatMoney(fraction));
   m_interestAccountEdit->setSelected(interestAccountId);
   m_paymentAccountEdit->setSelected(paymentAccountId);
   m_nextDueDateEdit->setDate(m_schedule.nextPayment());
@@ -345,7 +346,7 @@ void KEditLoanWizard::next()
         m_durationValueEdit->setValue(0);
       }
       if(m_fullyRepayLoan)
-        m_finalPaymentEdit->loadText(MyMoneyMoney(0).formatMoney());
+        m_finalPaymentEdit->loadText(MyMoneyMoney(0).formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId()))));
     }
 
 /*

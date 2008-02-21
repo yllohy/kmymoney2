@@ -2348,6 +2348,7 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
       newAccount.setName(remainder);
     }
 
+    const MyMoneySecurity& sec = file->security(newAccount.currencyId());
     // Check the opening balance
     if (openingBal.isPositive() && newAccount.accountGroup() == MyMoneyAccount::Liability)
     {
@@ -2357,8 +2358,8 @@ void KMyMoney2App::createAccount(MyMoneyAccount& newAccount, MyMoneyAccount& par
           "Please click Yes to change the opening balance to %1,\n"
           "Please click No to leave the amount as %2,\n"
           "Please click Cancel to abort the account creation.")
-          .arg((-openingBal).formatMoney())
-          .arg(openingBal.formatMoney());
+          .arg((-openingBal).formatMoney(newAccount, sec))
+          .arg(openingBal.formatMoney(newAccount, sec));
 
       int ans = KMessageBox::questionYesNoCancel(this, message);
       if (ans == KMessageBox::Yes) {
@@ -4628,6 +4629,8 @@ void KMyMoney2App::slotEndMatch(void)
   dlg.addTransaction(endMatchTransaction);
   if (dlg.exec() == QDialog::Accepted)
   {
+    const MyMoneySecurity& sec = MyMoneyFile::instance()->security(m_selectedAccount.currencyId());
+
     // Now match the transactions.
     //
     // 'Matching' the transactions entails DELETING the end transaction,
@@ -4670,7 +4673,7 @@ void KMyMoney2App::slotEndMatch(void)
 
       // verify that the amounts are the same, otherwise we should not be matching!
       if ( startSplit.shares() != endSplit.shares() ) {
-        throw new MYMONEYEXCEPTION(i18n("Splits for %1 have conflicting values (%2,%3)").arg(m_selectedAccount.name()).arg(startSplit.shares().formatMoney(),endSplit.shares().formatMoney()));
+        throw new MYMONEYEXCEPTION(i18n("Splits for %1 have conflicting values (%2,%3)").arg(m_selectedAccount.name()).arg(startSplit.shares().formatMoney(m_selectedAccount, sec),endSplit.shares().formatMoney(m_selectedAccount, sec)));
       }
 
       // ipwizard: I took over the code to keep the bank id found in the endMatchTransaction
@@ -5630,13 +5633,13 @@ void KMyMoney2App::loadPlugins(void)
         ( service, m_pluginInterface, service->name(), QStringList(), &errCode);
       // here we ought to check the error code.
 
+      if(firstPlugin)
+        d->m_pluginDlg->m_listView->clear();
+      firstPlugin = false;
       if (plugin) {
         guiFactory()->addClient(plugin);
         kdDebug() << "Loaded '"
                   << plugin->name() << "' plugin" << endl;
-        if(firstPlugin)
-          d->m_pluginDlg->m_listView->clear();
-        firstPlugin = false;
         new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("Loaded"));
         KMyMoneyPlugin::OnlinePlugin* op = dynamic_cast<KMyMoneyPlugin::OnlinePlugin *>(plugin);
         if(op) {
@@ -5646,9 +5649,6 @@ void KMyMoney2App::loadPlugins(void)
           kdDebug() << "It's an online banking plugin and supports '" << protocolList << "'" << endl;
         }
       } else {
-        if(firstPlugin)
-          d->m_pluginDlg->m_listView->clear();
-        firstPlugin = false;
         new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("not loaded: %1").arg(KLibLoader::self()->lastErrorMessage()));
 
         kdDebug() << "Failed to load '"
@@ -5670,6 +5670,9 @@ void KMyMoney2App::loadPlugins(void)
         ( service, NULL, service->name(), QStringList(), &errCode);
       // here we ought to check the error code.
 
+      if(firstPlugin)
+        d->m_pluginDlg->m_listView->clear();
+      firstPlugin = false;
       if (plugin) {
         kdDebug() << "Loaded '"
                   << plugin->name() << "' importer plugin" << endl;
@@ -5678,9 +5681,6 @@ void KMyMoney2App::loadPlugins(void)
         QString format = plugin->formatName();
         KAction* action = new KAction(i18n("%1 (Plugin)...").arg(format), "", 0, m_pluginSignalMapper, SLOT(map()), actionCollection(), QString("file_import_plugin_%1").arg(format));
 
-        if(firstPlugin)
-          d->m_pluginDlg->m_listView->clear();
-        firstPlugin = false;
         new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("Loaded"));
 
         // Add it to the signal mapper, so we'll know which plugin triggered the signal
@@ -5695,9 +5695,6 @@ void KMyMoney2App::loadPlugins(void)
         import_actions.append( action );
         plugActionList( "file_import_plugins", import_actions );
       } else {
-        if(firstPlugin)
-          d->m_pluginDlg->m_listView->clear();
-        firstPlugin = false;
         new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("not loaded: %1").arg(KLibLoader::self()->lastErrorMessage()));
 
         kdDebug() << "Failed to load '"

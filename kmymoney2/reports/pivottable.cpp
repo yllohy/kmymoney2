@@ -183,6 +183,11 @@ PivotTable::TCell PivotTable::TCell::stockSplit(const MyMoneyMoney& factor)
   return s;
 }
 
+const QString PivotTable::TCell::formatMoney(int fraction, bool showThousandSeparator) const
+{
+  return formatMoney("", MyMoneyMoney::denomToPrec(fraction), showThousandSeparator);
+}
+
 const QString PivotTable::TCell::formatMoney(const QString& currency, const int prec, bool showThousandSeparator) const
 {
   // construct the result
@@ -1281,9 +1286,6 @@ QString PivotTable::renderCSV( void ) const
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
 
-  char saveseparator = MyMoneyMoney::thousandSeparator();
-  MyMoneyMoney::setThousandSeparator('\0');
-
   //
   // Report Title
   //
@@ -1308,6 +1310,8 @@ QString PivotTable::renderCSV( void ) const
     result += QString(",%1").arg(i18n("Total"));
 
   result += "\n";
+
+  int fraction = MyMoneyFile::instance()->baseCurrency().smallestAccountFraction();
 
   //
   // Outer groups
@@ -1339,6 +1343,9 @@ QString PivotTable::renderCSV( void ) const
       TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
+        ReportAccount rowname = it_row.key();
+        int fraction = rowname.fraction(rowname.currency());
+
         //
         // Columns
         //
@@ -1348,17 +1355,16 @@ QString PivotTable::renderCSV( void ) const
         bool isUsed = it_row.data()[0].isUsed();
         while ( column < m_numColumns ) {
           isUsed |= it_row.data()[column].isUsed();
-          rowdata += QString(",\"%1\"").arg(it_row.data()[column++].formatMoney());
+          rowdata += QString(",\"%1\"").arg(it_row.data()[column++].formatMoney(fraction, false));
         }
 
         if ( m_config_f.isShowingRowTotals() )
-          rowdata += QString(",\"%1\"").arg((*it_row).m_total.formatMoney());
+          rowdata += QString(",\"%1\"").arg((*it_row).m_total.formatMoney(fraction, false));
 
         //
         // Row Header
         //
 
-        ReportAccount rowname = it_row.key();
         if(!rowname.isClosed() || isUsed) {
           innergroupdata += "\"" + QString().fill(' ',rowname.hierarchyDepth() - 1) + rowname.name();
 
@@ -1422,11 +1428,11 @@ QString PivotTable::renderCSV( void ) const
         while ( column < m_numColumns )
         {
           isUsed |= (*it_innergroup).m_total[column].isUsed();
-          finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[column++].formatMoney());
+          finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total[column++].formatMoney(fraction, false));
         }
 
         if (  m_config_f.isShowingRowTotals() )
-          finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total.m_total.formatMoney());
+          finalRow += QString(",\"%1\"").arg((*it_innergroup).m_total.m_total.formatMoney(fraction, false));
 
         finalRow += "\n";
       }
@@ -1448,10 +1454,10 @@ QString PivotTable::renderCSV( void ) const
       result += QString("%1 %2").arg(i18n("Total")).arg(it_outergroup.key());
       unsigned column = 1;
       while ( column < m_numColumns )
-        result += QString(",\"%1\"").arg((*it_outergroup).m_total[column++].formatMoney());
+        result += QString(",\"%1\"").arg((*it_outergroup).m_total[column++].formatMoney(fraction, false));
 
       if (  m_config_f.isShowingRowTotals() )
-        result += QString(",\"%1\"").arg((*it_outergroup).m_total.m_total.formatMoney());
+        result += QString(",\"%1\"").arg((*it_outergroup).m_total.m_total.formatMoney(fraction, false));
 
       result += "\n";
     }
@@ -1467,15 +1473,13 @@ QString PivotTable::renderCSV( void ) const
     result += i18n("Grand Total");
     unsigned totalcolumn = 1;
     while ( totalcolumn < m_numColumns )
-      result += QString(",\"%1\"").arg(m_grid.m_total[totalcolumn++].formatMoney());
+      result += QString(",\"%1\"").arg(m_grid.m_total[totalcolumn++].formatMoney(fraction, false));
 
     if (  m_config_f.isShowingRowTotals() )
-      result += QString(",\"%1\"").arg(m_grid.m_total.m_total.formatMoney());
+      result += QString(",\"%1\"").arg(m_grid.m_total.m_total.formatMoney(fraction, false));
 
     result += "\n";
   }
-
-  MyMoneyMoney::setThousandSeparator(saveseparator);
 
   return result;
 }
@@ -1651,7 +1655,7 @@ QString PivotTable::renderHTML( void ) const
                 .arg("") //.arg((*it_row).m_total.isZero() ? colspan : "")  // colspan the distance if this row will be blank
                 .arg(rowname.hierarchyDepth() - 1)
                 .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
-                .arg((m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
+                .arg((m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )?QString():QString(" (%1)").arg(rowname.currency().id()));
 
               // Don't print this row if it's going to be all zeros
               // TODO: Uncomment this, and deal with the case where the data
@@ -1706,7 +1710,7 @@ QString PivotTable::renderHTML( void ) const
               .arg( m_config_f.isShowingSubAccounts() ? "id=\"solo\"" : "" )
               .arg(rowname.hierarchyDepth() - 1)
               .arg(rowname.name().replace(QRegExp(" "), "&nbsp;"))
-              .arg((m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )?QString():QString(" (%1)").arg(rowname.currency()));
+              .arg((m_config_f.isConvertCurrency() || !rowname.isForeignCurrency() )?QString():QString(" (%1)").arg(rowname.currency().id()));
           }
 
           // Finish the row started above, unless told not to
