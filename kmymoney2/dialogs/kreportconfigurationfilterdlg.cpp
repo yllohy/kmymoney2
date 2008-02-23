@@ -141,10 +141,12 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
       m_budgets.push_back(*it_b);
     }
 
+    //control the state of the includeTransfer check
+    connect(m_categoriesView, SIGNAL(stateChanged()), this, SLOT(slotUpdateCheckTransfers()));
+    
     //
     // Now set up the widgets with proper values
     //
-
     slotReset();
 }
 
@@ -618,4 +620,15 @@ void KReportConfigurationFilterDlg::slotShowHelp(void)
   kapp->invokeHelp("details.reports.config");
 }
 
+//TODO Fix the reports and engine to include transfers even if categories are filtered - bug #1523508
+void KReportConfigurationFilterDlg::slotUpdateCheckTransfers(void)
+{
+  if(!m_categoriesView->allItemsSelected()) {
+    m_tab2->m_checkTransfers->setChecked(false);
+    m_tab2->m_checkTransfers->setDisabled(true);
+  } else {
+    m_tab2->m_checkTransfers->setEnabled(true);
+  }
+}
+ 
 #include "kreportconfigurationfilterdlg.moc"

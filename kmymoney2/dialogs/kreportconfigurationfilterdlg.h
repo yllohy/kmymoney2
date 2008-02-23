@@ -62,6 +62,11 @@ protected slots:
   void slotReset(void);
   void slotSearch(void);
   void slotShowHelp(void);
+  /**
+   * This is to enable/disable the check to Include Transfers based on whether Categories are filtered or not.
+   * This is because if Categories are filtered, transfers will not be included anyway
+   */
+  void slotUpdateCheckTransfers(void);
 
 private:
   QValueVector<MyMoneyBudget>  m_budgets;

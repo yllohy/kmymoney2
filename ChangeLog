@@ -1,3 +1,5 @@
+2008-02-22 Alvaro Soliverez <asoliverez@gmail.com>
+  * Disable Include Transfers checkbox when filtering by Category - #1523508
 
 2008-02-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Require currency string and precision for all formatMoney() calls

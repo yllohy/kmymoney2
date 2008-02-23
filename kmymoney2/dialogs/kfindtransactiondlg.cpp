@@ -245,6 +245,7 @@ void KFindTransactionDlg::slotUpdateSelections(void)
     txt += i18n("Details");
   }
 
+  //Show a warning about transfers if Categories are filtered - bug #1523508
   if(!m_categoriesView->allItemsSelected()) {
     m_transferWarning->setText( i18n("Warning: Filtering by Category will exclude all transfers from the results.") );
   } else {
