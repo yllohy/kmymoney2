@@ -538,9 +538,12 @@ void QueryTableTest::testInvestment(void)
   invhold_r.setInvestmentsOnly(true);
   XMLandback(invhold_r);
   QueryTable invhold(invhold_r);
+  
+  writeTabletoHTML(invhold,"Investment Performance by Account.html");
 
+  MyMoneyMoney test = MyMoneyMoney(invhold.m_transactions[0]["return"]);
   CPPUNIT_ASSERT(invhold.m_transactions.count()==2);
-  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["return"])==MyMoneyMoney("669/10000"));
+  CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["return"])==MyMoneyMoney("7/1693"));
   CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["buys"])==MyMoneyMoney(210000.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["sells"])==MyMoneyMoney(-44000.00));
   CPPUNIT_ASSERT(MyMoneyMoney(invhold.m_transactions[0]["reinvestincome"])==MyMoneyMoney(9000.00));
