@@ -156,7 +156,7 @@ MyMoneyMoney ReportAccount::baseCurrencyPrice( const QDate& date ) const
       result = price.rate(file->baseCurrency().id());
 
       DEBUG_OUTPUT(QString("Converting deep %1 to base %2, price on %3 is %4")
-        .arg(file->currency(currency()).name())
+        .arg(file->currency(currency().id()).name())
         .arg(file->baseCurrency().name())
         .arg(date.toString())
         .arg(result.toDouble()));
@@ -164,7 +164,7 @@ MyMoneyMoney ReportAccount::baseCurrencyPrice( const QDate& date ) const
     else
     {
       DEBUG_OUTPUT(QString("No price to convert deep %1 to base %2 on %3")
-        .arg(file->currency(currency()).name())
+        .arg(file->currency(currency().id()).name())
         .arg(file->baseCurrency().name())
         .arg(date.toString()));
     }
