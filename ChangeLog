@@ -1,5 +1,6 @@
 2008-02-22 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed a crash due to precision formatting in forecast view
+  * Change performance return to show the current return, not annualized - #1897433
 
 2008-02-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added missing code changes due to interface changes

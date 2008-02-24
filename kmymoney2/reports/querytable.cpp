@@ -61,6 +61,7 @@ QDate CashFlowListItem::m_sToday = QDate::currentDate();
 MyMoneyMoney CashFlowListItem::NPV( double _rate ) const
 {
   double T = static_cast<double>(m_sToday.daysTo(m_date)) / 365.0;
+  //double T = (1);
   MyMoneyMoney result = m_value.toDouble() / pow(1+_rate,T);
 
   //kdDebug(2) << "CashFlowListItem::NPV( " << _rate << " ) == " << result << endl;
@@ -906,6 +907,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
     price = file->price(security.id(), QCString(), endingDate).rate(QCString());
   }
   MyMoneyMoney endingBal = file->balance((account).id(),endingDate) * price;
+  MyMoneyMoney performance = startingBal;
   CashFlowList buys;
   CashFlowList sells;
   CashFlowList reinvestincome;
@@ -925,10 +927,13 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
     const QCString& action = s.action();
     if ( action == MyMoneySplit::ActionBuyShares )
     {
-      if ( s.value().isPositive() )
+      if ( s.value().isPositive() ) {
         buys += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
-      else
+        performance += s.value();
+      } else {
         sells += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
+        performance += s.value();
+      }
     }
     else if ( action == MyMoneySplit::ActionReinvestDividend )
     {
@@ -951,8 +956,10 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
         ++it_split;
       }
 
-      if ( found )
+      if ( found ) {
         cashincome += CashFlowListItem( (*it_transaction).postDate(), -(*it_split).value() );
+        performance += -(*it_split).value();
+      }
     }
     ++it_transaction;
   }
@@ -965,10 +972,14 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   all += cashincome;
   all += CashFlowListItem(startingDate,-startingBal);
   all += CashFlowListItem(endingDate,endingBal);
+  
+  performance = (endingBal - performance)/performance;
 
   try
   {
-    result["return"] = MyMoneyMoney(all.IRR(),10000).toString();
+    //TODO If this works, there will be a lot of cleanup to do
+    result["return"] = performance.toString();
+    //result["return"] = MyMoneyMoney(all.IRR(),10000).toString();
   }
   catch (QString e)
   {
@@ -1128,7 +1139,7 @@ void QueryTable::render( QString& result, QString& csv ) const
   i18nHeaders["cashincome"] = i18n("Dividends Paid Out");
   i18nHeaders["startingbal"] = i18n("Starting Balance");
   i18nHeaders["endingbal"] = i18n("Ending Balance");
-  i18nHeaders["return"] = i18n("Annualized Return");
+  i18nHeaders["return"] = i18n("Return");
   i18nHeaders["fees"] = i18n("Fees");
   i18nHeaders["interest"] = i18n("Interest");
   i18nHeaders["payment"] = i18n("Payment");
