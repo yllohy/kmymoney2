@@ -1,6 +1,10 @@
-2008-02-22 Alvaro Soliverez <asoliverez@gmail.com>
+2008-02-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Italian translation as provided by Vincenzo Reale
+
+2008-02-24 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed a crash due to precision formatting in forecast view
-  * Change performance return to show the current return, not annualized - #1897433
+  * Change performance return to show the current return, not
+    annualized - #1897433
   * Updated performance return unit test
 
 2008-02-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
