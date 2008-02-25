@@ -61,7 +61,6 @@ QDate CashFlowListItem::m_sToday = QDate::currentDate();
 MyMoneyMoney CashFlowListItem::NPV( double _rate ) const
 {
   double T = static_cast<double>(m_sToday.daysTo(m_date)) / 365.0;
-  //double T = (1);
   MyMoneyMoney result = m_value.toDouble() / pow(1+_rate,T);
 
   //kdDebug(2) << "CashFlowListItem::NPV( " << _rate << " ) == " << result << endl;
@@ -973,13 +972,14 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   all += CashFlowListItem(startingDate,-startingBal);
   all += CashFlowListItem(endingDate,endingBal);
   
-  performance = (endingBal - performance)/performance;
+  //check if no activity on that term
+  if(!performance.isZero())
+    performance = (endingBal - performance)/performance;
 
   try
   {
     //TODO If this works, there will be a lot of cleanup to do
     result["return"] = performance.toString();
-    //result["return"] = MyMoneyMoney(all.IRR(),10000).toString();
   }
   catch (QString e)
   {

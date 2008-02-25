@@ -1,3 +1,7 @@
+2008-02-25 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed performance calculation when no activity during the report timeframe
+  * Cleaned up test code in querytable and querytabletest
+
 2008-02-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Italian translation as provided by Vincenzo Reale
 
