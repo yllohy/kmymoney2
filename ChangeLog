@@ -1,6 +1,7 @@
 
 2008-02-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed unused parentId information from budget account group
+  * Show details of split transaction as tooltip
 
 2008-02-25 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed performance calculation when no activity during the report timeframe

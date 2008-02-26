@@ -565,27 +565,54 @@ bool Transaction::haveNumberField(void) const
 
 bool Transaction::maybeTip(const QPoint& cpos, int row, int col, QRect& r, QString& msg)
 {
-  if(col != DetailColumn || row != 0)
+  if(col != DetailColumn)
     return false;
 
-  if(!m_erronous)
+  if(!m_erronous && m_transaction.splitCount() < 3)
     return false;
 
   int h = m_parent->rowHeightHint();
-  r = m_parent->cellGeometry(m_startRow + row, col);
+
+  // check for detail column in row 0 of the transaction for a possible exclamation mark
+  r = m_parent->cellGeometry(m_startRow + 0, col);
   // qDebug("r is %d,%d,%d,%d", r.x(), r.y(), r.width(), r.height());
   r.setBottomLeft(QPoint(r.x() + (r.width() - h), r.y() + h));
   // qDebug("r is %d,%d,%d,%d", r.x(), r.y(), r.width(), r.height());
   // qDebug("p is in r = %d", r.contains(cpos));
-  if(r.contains(cpos)) {
+  if(r.contains(cpos) && m_erronous) {
     if(m_transaction.splits().count() < 2) {
       msg = QString("<qt>%1</qt>").arg(i18n("Transaction is missing a category assignment."));
     } else {
       const MyMoneySecurity& sec = MyMoneyFile::instance()->security(m_account.currencyId());
-      msg = QString("<qt>%1</qt>").arg(i18n("The transaction has a missing assignment of <b>%1</b>.").arg(m_transaction.splitSum().abs().formatMoney(m_account.fraction(sec))));
+      msg = QString("<qt>%1</qt>").arg(i18n("The transaction has a missing assignment of <b>%1</b>.").arg(m_transaction.splitSum().abs().formatMoney(m_account, sec)));
     }
     return true;
   }
+
+  // check for detail column in row 1 of the transaction for a possible exclamation mark
+  r = m_parent->cellGeometry(m_startRow + 1, col);
+  if(row == 1 && r.contains(cpos) && m_transaction.splitCount() > 2) {
+    MyMoneyFile* file = MyMoneyFile::instance();
+    QValueList<MyMoneySplit>::const_iterator it_s;
+    QString txt;
+    const MyMoneySecurity& sec = file->security(m_transaction.commodity());
+    MyMoneyMoney factor(1, 1);
+    if(!m_split.value().isNegative())
+      factor = -factor;
+
+    for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
+      if(*it_s == m_split)
+        continue;
+      const MyMoneyAccount& acc = file->account((*it_s).accountId());
+      QString category = file->accountToCategory(acc.id());
+      QString amount = ((*it_s).value() * factor).formatMoney(acc, sec);
+
+      txt += QString("<tr><td><nobr>%1</nobr></td><td align=right><nobr>%2</nobr></td></tr>").arg(category, amount);
+    }
+    msg = QString("<table>%1</table>").arg(txt);
+    return true;
+  }
+
   return false;
 }
 
