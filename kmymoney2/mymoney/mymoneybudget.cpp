@@ -43,7 +43,7 @@ bool MyMoneyBudget::AccountGroup::isZero(void) const
 
 const bool MyMoneyBudget::AccountGroup::operator == (const AccountGroup &r) const
 {
-  return (m_id == r.m_id && m_parentId == r.m_parentId
+  return (m_id == r.m_id
        && m_budgetlevel == r.m_budgetlevel
        && m_budgetsubaccounts == r.m_budgetsubaccounts
        && m_periods.keys() == r.m_periods.keys()
@@ -101,7 +101,6 @@ void MyMoneyBudget::write(QDomElement& e, QDomDocument *doc) const
     if(!(*it).balance().isZero()) {
       QDomElement domAccount = doc->createElement("ACCOUNT");
       domAccount.setAttribute("id", it.key());
-      domAccount.setAttribute("parent", it.data().parentId());
       domAccount.setAttribute("budgetlevel", AccountGroup::kBudgetLevelText[it.data().budgetLevel()]);
       domAccount.setAttribute("budgetsubaccounts", it.data().budgetSubaccounts());
 
@@ -148,9 +147,6 @@ bool MyMoneyBudget::read(const QDomElement& e)
       if("ACCOUNT" == c.tagName()) {
         if(c.hasAttribute("id"))
           account.setId(c.attribute("id"));
-
-        if(c.hasAttribute("parent"))
-          account.setParentId(c.attribute("parent"));
 
         if(c.hasAttribute("budgetlevel")) {
           int i = AccountGroup::kBudgetLevelText.findIndex(c.attribute("budgetlevel"));

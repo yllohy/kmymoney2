@@ -120,7 +120,6 @@ public:
 
     // get functions
     const QCString& id( void ) const { return m_id; }
-    const QCString& parentId( void ) const { return m_parentId; }
     bool budgetSubaccounts( void ) const { return m_budgetsubaccounts; }
     eBudgetLevel budgetLevel( void ) const { return m_budgetlevel; }
     const PeriodGroup& period( const QDate &_date ) const { return m_periods[_date]; }
@@ -153,7 +152,6 @@ public:
 
     // set functions
     void setId( QString _id ) { m_id = _id; }
-    void setParentId( const QString& _id ) { m_parentId = _id; }
     void setBudgetLevel( eBudgetLevel _level ) { m_budgetlevel = _level; }
     void setBudgetSubaccounts( bool _b ) { m_budgetsubaccounts = _b; }
     void addPeriod( const QDate& _date, PeriodGroup &period ) { m_periods[_date] = period; }
@@ -164,7 +162,6 @@ public:
 
   private:
     QCString m_id;
-    QCString m_parentId;
 
     eBudgetLevel             m_budgetlevel;
     bool                     m_budgetsubaccounts;
