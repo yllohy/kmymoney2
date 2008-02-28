@@ -55,10 +55,9 @@ public:
   void doForecast();
 
   /**
-   * Returns the list of accounts to be forecast. Only Asset and Liability are returned.
-   * Investment accounts are not forecast due to further complications in its calculations.
+   * Returns the list of accounts to be forecast.
    */
-  static QValueList<MyMoneyAccount> forecastAccountList(void);
+  QValueList<MyMoneyAccount> accountList(void);
 
   /**
    * Returns the balance trend for account @a acc based on a number of days @p forecastDays
@@ -150,6 +149,11 @@ private:
   static const int HISTORIC = 1;
 
   /**
+   * Returns the list of accounts to be forecast. Only Asset and Liability are returned.
+   */
+  static QValueList<MyMoneyAccount> forecastAccountList(void);
+
+  /**
    * calculate daily forecast balance based on historic transactions
    */
   void calculateDailyBalances(void);
@@ -194,6 +198,17 @@ private:
    * It returns the total amount of Forecast Days from current date. 
    */
   int calculateBeginForecastDay();
+
+  /**
+   * remove accounts from the list if the accounts had no transactions during that history timeframe
+   */
+  void purgeForecastAccountsBasedOnHistory(void);
+  
+  /**
+   * remove accounts from the list if the accounts has no transactions in the forecast timeframe.
+   * Used for scheduled-forecast method.
+   */
+  void purgeForecastAccountsList(void);
 
   /**
    * daily balances of an account

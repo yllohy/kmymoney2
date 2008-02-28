@@ -127,6 +127,9 @@ void MyMoneyForecast::pastTransactions()
       }
     }
   }
+  
+  //purge those accounts with no transactions on the period
+  purgeForecastAccountsBasedOnHistory();
 
   //calculate running sum
   QMap<QString, QCString>::Iterator it_n;
@@ -216,13 +219,34 @@ QValueList<MyMoneyAccount> MyMoneyForecast::forecastAccountList(void)
   for(; accList_t != accList.end(); ) {
     MyMoneyAccount acc = *accList_t;
     if(acc.isClosed()             //check the account is not closed
-    || (!acc.isAssetLiability())
-    || (acc.accountType() == MyMoneyAccount::Investment) ) {//check that it is not an Investment account and only include Stock accounts
+    || (!acc.isAssetLiability()) ) {
+    //|| (acc.accountType() == MyMoneyAccount::Investment) ) {//check that it is not an Investment account and only include Stock accounts
       accList.remove(accList_t);    //remove the account if it is not of the correct type
       accList_t = accList.begin();
     } else {
       ++accList_t;
     }
+  }
+  return accList;
+}
+
+QValueList<MyMoneyAccount> MyMoneyForecast::accountList(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  QValueList<MyMoneyAccount> accList;
+  QCStringList emptyStringList;
+  //Get all accounts from the file and check if they are present
+  file->accountList(accList, emptyStringList, false);
+  QValueList<MyMoneyAccount>::iterator accList_t = accList.begin();
+  for(; accList_t != accList.end(); ) {
+    MyMoneyAccount acc = *accList_t;
+    if(!isForecastAccount( acc ) ) {
+      accList.remove(accList_t);    //remove the account
+      accList_t = accList.begin();
+       } else {
+         ++accList_t;
+       }
   }
   return accList;
 }
@@ -545,7 +569,9 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
   }
   }
 #endif
-
+  //do not show accounts with no transactions
+  purgeForecastAccountsList();
+           
   //Calculate account daily balances
   QMap<QString, QCString>::ConstIterator it_n;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
@@ -821,3 +847,26 @@ int MyMoneyForecast::calculateBeginForecastDay()
   setBeginForecastDate(beginDate);
   return fDays;
 }
+
+void MyMoneyForecast::purgeForecastAccountsBasedOnHistory(void)
+{
+  QMap<QString, QCString>::Iterator it_n;
+  for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n ) {
+    if(!m_accountListPast.contains(*it_n)) {
+      m_nameIdx.remove(it_n);
+      it_n = m_nameIdx.begin();
+    }
+  }
+}
+
+void MyMoneyForecast::purgeForecastAccountsList(void)
+{
+  QMap<QString, QCString>::Iterator it_n;
+  for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n ) {
+    if(!m_accountList.contains(*it_n)) {
+      m_nameIdx.remove(it_n);
+      it_n = m_nameIdx.begin();
+    }
+  }
+}
+

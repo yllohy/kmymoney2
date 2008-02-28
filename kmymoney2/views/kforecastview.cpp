@@ -124,7 +124,7 @@ void KForecastView::loadListView(void)
 
   //Get all accounts of the right type to calculate forecast
   forecast.doForecast();
-  accList = forecast.forecastAccountList();
+  accList = forecast.accountList();
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for(; accList_t != accList.end(); ++accList_t ) {
     MyMoneyAccount acc = *accList_t;
@@ -244,7 +244,7 @@ void KForecastView::loadSummaryView(void)
 
   //Get all accounts of the right type to calculate forecast
   forecast.doForecast();
-  accList = forecast.forecastAccountList();
+  accList = forecast.accountList();
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for(; accList_t != accList.end(); ++accList_t ) {
     MyMoneyAccount acc = *accList_t;
@@ -509,7 +509,7 @@ void KForecastView::loadAdvancedView(void)
 
   //Get all accounts of the right type to calculate forecast
   forecast.doForecast();
-  accList = forecast.forecastAccountList();
+  accList = forecast.accountList();
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for(; accList_t != accList.end(); ++accList_t ) {
     MyMoneyAccount acc = *accList_t;
