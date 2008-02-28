@@ -2,6 +2,7 @@
 2008-02-25 Alvaro Soliverez <asoliverez@gmail.com>
   * Show all investment accounts in forecast
   * Do not calculate account in forecast if there is no relevant transaction for that account
+  * Adjusted forecast test cases for investment accounts
 
 2008-02-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed unused parentId information from budget account group

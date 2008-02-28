@@ -317,7 +317,7 @@ void MyMoneyForecastTest::testIsForecastAccount()
   
   //test an invalid account
   CPPUNIT_ASSERT(a.isForecastAccount(a_solo)==false);
-  CPPUNIT_ASSERT(a.isForecastAccount(a_investment)==false);
+  CPPUNIT_ASSERT(a.isForecastAccount(a_investment)==true);
   
   //test a valid account
   CPPUNIT_ASSERT(a.isForecastAccount(a_checking)==true);
