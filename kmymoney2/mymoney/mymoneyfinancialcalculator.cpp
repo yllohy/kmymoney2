@@ -303,7 +303,7 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::eff_int(void) const
       eint = nint / static_cast<FCALC_DOUBLE>(m_CF);
 
     } else {
-      eint = powl((static_cast<FCALC_DOUBLE>(1.0) + nint / static_cast<FCALC_DOUBLE>(m_CF)),
+      eint = powl((static_cast<FCALC_DOUBLE>(1.0) + (nint / static_cast<FCALC_DOUBLE>(m_CF))),
                   (static_cast<FCALC_DOUBLE>(m_CF) / static_cast<FCALC_DOUBLE>(m_PF))) - 1.0;
 
     }

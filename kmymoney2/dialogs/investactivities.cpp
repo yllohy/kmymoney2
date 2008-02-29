@@ -182,9 +182,11 @@ void Buy::showWidgets(void) const
 {
   KMyMoneyCategory* cat;
   cat = dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account"));
+  kMyMoneyEdit* shareEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+  shareEdit->show();
+  shareEdit->setPrecision(MyMoneyMoney::denomToPrec(m_parent->security().smallestAccountFraction()));
   cat->parentWidget()->show();
   haveWidget("asset-account")->show();
-  haveWidget("shares")->show();
   haveWidget("price")->show();
   haveWidget("total")->show();
   setLabelText("fee-label", i18n("Fees"));
@@ -263,8 +265,10 @@ void Sell::showWidgets(void) const
   cat->parentWidget()->show();
   cat = dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account"));
   cat->parentWidget()->show();
+  kMyMoneyEdit* shareEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+  shareEdit->show();
+  shareEdit->setPrecision(MyMoneyMoney::denomToPrec(m_parent->security().smallestAccountFraction()));
   haveWidget("asset-account")->show();
-  haveWidget("shares")->show();
   haveWidget("price")->show();
   haveWidget("total")->show();
 
@@ -402,7 +406,9 @@ void Reinvest::showWidgets(void) const
   cat->parentWidget()->show();
   cat = dynamic_cast<KMyMoneyCategory*>(haveWidget("fee-account"));
   cat->parentWidget()->show();
-  haveWidget("shares")->show();
+  kMyMoneyEdit* shareEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+  shareEdit->show();
+  shareEdit->setPrecision(MyMoneyMoney::denomToPrec(m_parent->security().smallestAccountFraction()));
   haveWidget("price")->show();
   haveWidget("total")->show();
 
@@ -484,7 +490,10 @@ bool Reinvest::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMone
 
 void Add::showWidgets(void) const
 {
-  haveWidget("shares")->show();
+  kMyMoneyEdit* shareEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+  shareEdit->show();
+  shareEdit->setPrecision(MyMoneyMoney::denomToPrec(m_parent->security().smallestAccountFraction()));
+
   setLabelText("shares-label", i18n("Shares"));
 }
 
@@ -522,7 +531,9 @@ bool Add::createTransaction(MyMoneyTransaction& t, MyMoneySplit& s0, MyMoneySpli
 
 void Remove::showWidgets(void) const
 {
-  haveWidget("shares")->show();
+  kMyMoneyEdit* shareEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+  shareEdit->show();
+  shareEdit->setPrecision(MyMoneyMoney::denomToPrec(m_parent->security().smallestAccountFraction()));
   setLabelText("shares-label", i18n("Shares"));
 }
 
@@ -562,7 +573,9 @@ void Split::showWidgets(void) const
 {
   // TODO do we need a special split ratio widget?
   // TODO maybe yes, currently the precision is the one of the fraction and might differ from it
-  haveWidget("shares")->show();
+  kMyMoneyEdit* shareEdit = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
+  shareEdit->show();
+  shareEdit->setPrecision(-1);
   setLabelText("shares-label", i18n("Ratio 1/"));
 }
 

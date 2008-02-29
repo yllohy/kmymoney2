@@ -187,12 +187,18 @@ const QString MyMoneyMoney::formatMoney(const QString& currency, const int prec,
 {
   QString res;
   QString tmpCurrency = currency;
-  unsigned int tmpPrec = prec;
+  int tmpPrec = prec;
   signed64 denom = 1;
   signed64 m_64Value;
 
-  while(tmpPrec--) {
-    denom *= 10;
+  // if prec == -1 we want the maximum possible but w/o trailing zeroes
+  if(tmpPrec > -1) {
+    while(tmpPrec--) {
+      denom *= 10;
+    }
+  } else {
+    // fix it to a max of 8 digits on the right side for now
+    denom = 100000000;
   }
 
   m_64Value = convert(denom).m_num;
@@ -231,7 +237,7 @@ const QString MyMoneyMoney::formatMoney(const QString& currency, const int prec,
       res.insert(pos, thousandSeparator());
   }
 
-  if(prec > 0) {
+  if(prec > 0 || (prec == -1 && right != 0)) {
     if(decimalSeparator())
       res += decimalSeparator();
 
@@ -244,7 +250,15 @@ const QString MyMoneyMoney::formatMoney(const QString& currency, const int prec,
     // res being "2," the result wasn't "2,6666000000" as expected, but rather
     // "2,0666600000" which was not usable. The code below works for me.
     QString rs  = QString("%1").arg(right);
-    rs = rs.rightJustify(prec, '0', true);
+    if(prec != -1)
+      rs = rs.rightJustify(prec, '0', true);
+    else {
+      // no trailing zeroes or decimal separators
+      while(rs.endsWith("0"))
+        rs.truncate(rs.length()-1);
+      while(rs.endsWith(QChar(decimalSeparator())))
+        rs.truncate(rs.length()-1);
+    }
     res += rs;
   }
 

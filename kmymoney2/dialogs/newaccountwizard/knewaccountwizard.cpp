@@ -140,6 +140,8 @@ const MyMoneyAccount& NewAccountWizard::Wizard::account(void)
     m_account.setTerm(m_loanDetailsPage->term());
     m_account.setPeriodicPayment(m_loanDetailsPage->m_paymentAmount->value());
     m_account.setPayee(m_generalLoanInfoPage->m_payee->selectedItem());
+    m_account.setInterestCompounding(m_generalLoanInfoPage->m_compoundFrequency->currentItem());
+
     if(!m_account.fixedInterestRate()) {
       m_account.setNextInterestChange(m_generalLoanInfoPage->m_interestChangeDateEdit->date());
       m_account.setInterestChangeFrequency(m_generalLoanInfoPage->m_interestFrequencyAmountEdit->value(), m_generalLoanInfoPage->m_interestFrequencyUnitEdit->currentItem());
@@ -249,7 +251,7 @@ const MyMoneySchedule& NewAccountWizard::Wizard::schedule(void)
         m_schedule.setPaymentType(MyMoneySchedule::STYPE_DIRECTDEPOSIT);
 
       m_schedule.setFixed(true);
-      m_schedule.setOccurence(MyMoneySchedule::OCCUR_MONTHLY);
+      m_schedule.setOccurence(m_generalLoanInfoPage->m_paymentFrequency->currentItem());
 
       MyMoneyTransaction t;
       MyMoneySplit s;
@@ -618,10 +620,13 @@ GeneralLoanInfoPage::GeneralLoanInfoPage(Wizard* wizard, const char* name) :
 {
   m_mandatoryGroup->add(m_payee);
 
-  // remove the unsupported payment frequencies and setup default
+  // remove the unsupported payment and compounding frequencies and setup default
   m_paymentFrequency->removeItem(MyMoneySchedule::OCCUR_ONCE);
   m_paymentFrequency->removeItem(MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
   m_paymentFrequency->setCurrentItem(MyMoneySchedule::OCCUR_MONTHLY);
+  m_compoundFrequency->removeItem(MyMoneySchedule::OCCUR_ONCE);
+  m_compoundFrequency->removeItem(MyMoneySchedule::OCCUR_EVERYOTHERYEAR);
+  m_compoundFrequency->setCurrentItem(MyMoneySchedule::OCCUR_MONTHLY);
 
   slotLoadWidgets();
 
@@ -706,12 +711,6 @@ LoanDetailsPage::LoanDetailsPage(Wizard* wizard, const char* name) :
   // force the balloon payment to zero (default)
   m_balloonAmount->setValue(MyMoneyMoney());
 
-  // we need to remove a bunch of entries of the payment frequencies
-  m_termUnit->clear();
-  m_termUnit->insertItem(i18n("Months"), MyMoneySchedule::OCCUR_MONTHLY);
-  m_termUnit->insertItem(i18n("Years"), MyMoneySchedule::OCCUR_YEARLY);
-  m_termUnit->insertItem(i18n("Payments"), MyMoneySchedule::OCCUR_ONCE);
-
   connect(m_paymentDue, SIGNAL(activated(int)), this, SLOT(slotValuesChanged()));
 
   connect(m_termAmount, SIGNAL(valueChanged(int)), this, SLOT(slotValuesChanged()));
@@ -726,12 +725,31 @@ LoanDetailsPage::LoanDetailsPage(Wizard* wizard, const char* name) :
 
 void LoanDetailsPage::enterPage(void)
 {
+  // we need to remove a bunch of entries of the payment frequencies
+  m_termUnit->clear();
+
   m_mandatoryGroup->clear();
   if(!m_wizard->openingBalance().isZero()) {
     m_mandatoryGroup->add(m_loanAmount->lineedit());
     if(m_loanAmount->lineedit()->text().length() == 0) {
       m_loanAmount->setValue(m_wizard->openingBalance().abs());
     }
+  }
+
+  switch(m_wizard->m_generalLoanInfoPage->m_paymentFrequency->currentItem()) {
+    default:
+      m_termUnit->insertItem(i18n("Payments"), MyMoneySchedule::OCCUR_ONCE);
+      m_termUnit->setCurrentItem(MyMoneySchedule::OCCUR_ONCE);
+      break;
+    case MyMoneySchedule::OCCUR_MONTHLY:
+      m_termUnit->insertItem(i18n("Months"), MyMoneySchedule::OCCUR_MONTHLY);
+      m_termUnit->insertItem(i18n("Years"), MyMoneySchedule::OCCUR_YEARLY);
+      m_termUnit->setCurrentItem(MyMoneySchedule::OCCUR_MONTHLY);
+      break;
+    case MyMoneySchedule::OCCUR_YEARLY:
+      m_termUnit->insertItem(i18n("Years"), MyMoneySchedule::OCCUR_YEARLY);
+      m_termUnit->setCurrentItem(MyMoneySchedule::OCCUR_YEARLY);
+      break;
   }
 }
 
@@ -745,7 +763,7 @@ void LoanDetailsPage::slotCalculate(void)
 {
   MyMoneyFinancialCalculator calc;
   long double val;
-  int PF;
+  int PF, CF;
   QString result;
   bool moneyBorrowed = m_wizard->moneyBorrowed();
   bool moneyLend = !moneyBorrowed;
@@ -756,14 +774,13 @@ void LoanDetailsPage::slotCalculate(void)
   calc.setDisc();
 
   PF = m_wizard->m_generalLoanInfoPage->m_paymentFrequency->eventsPerYear();
+  CF = m_wizard->m_generalLoanInfoPage->m_compoundFrequency->eventsPerYear();
 
-  if(PF == 0)
+  if(PF == 0 || CF == 0)
     return;
 
   calc.setPF(PF);
-
-  // FIXME: for now we only support compounding frequency == payment frequency
-  calc.setCF(PF);
+  calc.setCF(CF);
 
 
   if(!m_loanAmount->lineedit()->text().isEmpty()) {

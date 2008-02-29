@@ -535,7 +535,7 @@ bool TransactionEditor::enterTransactions(QCString& newId, bool askForSchedule)
   // if not interrupted by user, continue to store them in the engine
   if(storeTransactions) {
     int i = 0;
-    emit statusMsg(i18n("Storeing transactions"));
+    emit statusMsg(i18n("Storing transactions"));
     emit statusProgress(0, list.count());
 
     MyMoneyFileTransaction ft;

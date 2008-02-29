@@ -440,6 +440,16 @@ bool MyMoneyAccountLoan::hasReferenceTo(const QCString& id) const
          || (id == schedule());
 }
 
+void MyMoneyAccountLoan::setInterestCompounding(int frequency)
+{
+  setValue("compoundingFrequency", QString("%1").arg(frequency));
+}
+
+int MyMoneyAccountLoan::interestCompounding(void) const
+{
+  return value("compoundingFrequency").toInt();
+}
+
 void MyMoneyAccount::writeXML(QDomDocument& document, QDomElement& parent) const
 {
   QDomElement el = document.createElement("ACCOUNT");

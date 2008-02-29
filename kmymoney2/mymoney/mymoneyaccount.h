@@ -620,6 +620,8 @@ public:
   void setInterestChangeFrequency(const int amount, const int unit);
   const MyMoneyMoney periodicPayment(void) const;
   void setPeriodicPayment(const MyMoneyMoney& payment);
+  int interestCompounding(void) const;
+  void setInterestCompounding(int frequency);
   const QCString payee(void) const;
   void setPayee(const QCString& payee);
   const QCString interestAccountId(void) const;

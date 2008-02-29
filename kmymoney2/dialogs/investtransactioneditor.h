@@ -93,6 +93,7 @@ public:
 
   priceModeE priceMode(void) const;
 
+  const MyMoneySecurity& security(void) const { return m_security; }
 
 protected slots:
   void slotCreateSecurity(const QString& name, QCString& id);

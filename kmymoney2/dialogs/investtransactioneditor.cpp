@@ -577,7 +577,11 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
     // don't set the value if the number of shares is zero so that
     // we can see the hint
     value = dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"));
-    value->setPrecision(MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
+    if(typeid(*(d->m_activity)) != typeid(Invest::Split(this)))
+      value->setPrecision(MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
+    else
+      value->setPrecision(-1);
+
     if(!m_split.shares().isZero())
       value->setValue(m_split.shares().abs());
 
@@ -671,7 +675,7 @@ void InvestTransactionEditor::slotUpdateSecurity(const QCString& stockId)
   bool currencyKnown = !m_currency.id().isEmpty();
   if(!currencyKnown) {
     m_currency.setTradingSymbol("???");
-  } else {
+  } else if(typeid(*(d->m_activity)) != typeid(Invest::Split(this))) {
     dynamic_cast<kMyMoneyEdit*>(haveWidget("shares"))->setPrecision(MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
   }
 

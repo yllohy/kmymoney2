@@ -646,8 +646,11 @@ void KMyMoneyUtils::calculateAutoLoan(const MyMoneySchedule& schedule, MyMoneyTr
         calc.setDisc();
 
         calc.setPF(occurenceToFrequency(schedule.occurence()));
-        // FIXME: for now we only support compounding frequency == payment frequency
-        calc.setCF(occurenceToFrequency(schedule.occurence()));
+        MyMoneySchedule::occurenceE compoundingOccurence = static_cast<MyMoneySchedule::occurenceE>(acc.interestCompounding());
+        if(compoundingOccurence == MyMoneySchedule::OCCUR_ANY)
+          compoundingOccurence = schedule.occurence();
+
+        calc.setCF(occurenceToFrequency(compoundingOccurence));
 
         calc.setPv(balance.toDouble());
         calc.setIr(static_cast<FCALC_DOUBLE> (acc.interestRate(dueDate).abs().toDouble()));

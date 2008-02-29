@@ -1110,44 +1110,15 @@ void StdTransaction::registerCellText(QString& txt, int& align, int row, int col
 int StdTransaction::registerColWidth(int col, const QFontMetrics& cellFontMetrics)
 {
   QString txt;
-  MyMoneyMoney amount;
+  int firstRow = 0, lastRow = 0;
+
   int nw = 0;
-
-  switch(col) {
-    default:
-      break;
-
-    case NumberColumn:
-      txt = split().number();
-      nw = cellFontMetrics.width(txt+"  ");
-      break;
-
-    case PaymentColumn:
-      amount = split().value();
-      if(amount.isNegative()) {
-        txt = amount.formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId())));
-        nw = cellFontMetrics.width(txt+"  ");
-      }
-      break;
-
-    case DepositColumn:
-      amount = split().value();
-      if(!amount.isNegative()) {
-        txt = amount.formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId())));
-        nw = cellFontMetrics.width(txt+"  ");
-      }
-      break;
-
-    case BalanceColumn:
-      txt = balance();
-      nw = cellFontMetrics.width(txt+"  ");
-      break;
-
-    case AccountColumn:
-      // txt = m_objects->account(m_transaction.splits()[0].accountId()).name();
-      txt = MyMoneyFile::instance()->account(m_split.accountId()).name();
-      nw = cellFontMetrics.width(txt+"  ");
-      break;
+  for(int i = firstRow; i <= lastRow; ++i) {
+    int align;
+    registerCellText(txt, align, i, col, 0);
+    int w = cellFontMetrics.width(txt+"  ");
+    if(w > nw)
+      nw = w;
   }
   return nw;
 }
@@ -1483,8 +1454,7 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
           if((fieldEditable = haveShares()) == true) {
             txt = m_split.shares().abs().formatMoney("", MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
           } else if(haveSplitRatio()) {
-            // FIXME add the -1 option for a flexible precision
-            txt = QString("1 / %1").arg(m_split.shares().abs().formatMoney("", 2));
+            txt = QString("1 / %1").arg(m_split.shares().abs().formatMoney("", -1));
           }
           break;
       }
@@ -1662,8 +1632,7 @@ void InvestTransaction::registerCellText(QString& txt, int& align, int row, int 
           if(haveShares())
             txt = m_split.shares().abs().formatMoney("", MyMoneyMoney::denomToPrec(m_security.smallestAccountFraction()));
           else if(haveSplitRatio()) {
-            // FIXME add the flexible precision option here
-            txt = QString("1 / %1").arg(m_split.shares().abs().formatMoney("", 2));
+            txt = QString("1 / %1").arg(m_split.shares().abs().formatMoney("", -1));
           }
           break;
 

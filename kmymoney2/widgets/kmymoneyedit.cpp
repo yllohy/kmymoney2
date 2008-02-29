@@ -154,7 +154,7 @@ kMyMoneyEdit::kMyMoneyEdit(QWidget *parent, const char *name, const int prec)
  : QHBox(parent, name)
 {
   m_prec = prec;
-  if(prec < 0 || prec > 20)
+  if(prec < -1 || prec > 20)
     m_prec = KGlobal::locale()->fracDigits();
   init();
 }
@@ -261,7 +261,7 @@ KLineEdit* kMyMoneyEdit::lineedit(void) const
 
 void kMyMoneyEdit::setPrecision(const int prec)
 {
-  if(prec >= 0 && prec <= 20) {
+  if(prec >= -1 && prec <= 20) {
     if(prec != m_prec) {
       m_prec = prec;
       // update current display
@@ -280,7 +280,9 @@ MyMoneyMoney kMyMoneyEdit::value(void) const
   QString txt = m_edit->text();
   ensureFractionalPart(txt);
   MyMoneyMoney money(txt);
-  return money.convert(MyMoneyMoney::precToDenom(m_prec));
+  if(m_prec != -1)
+    money = money.convert(MyMoneyMoney::precToDenom(m_prec));
+  return money;
 }
 
 void kMyMoneyEdit::setValue(const MyMoneyMoney& value)
@@ -368,13 +370,21 @@ void kMyMoneyEdit::ensureFractionalPart(QString& s) const
         for (int i=0; i < m_prec; i++)
           s += "0";
       }
-    } else {
+    } else if(m_prec == 0) {
       while(s.contains(decimalSymbol)) {
         int pos = s.findRev(decimalSymbol);
         if(pos != -1) {
-          s = s.left(pos);
+          s.truncate(pos);
         }
       }
+    } else {  // m_prec == -1
+      // no trailing zeroes
+      while(s.endsWith("0")) {
+        s.truncate(s.length()-1);
+      }
+      // no trailing decimalSymbol
+      if(s.endsWith(decimalSymbol))
+        s.truncate(s.length()-1);
     }
   }
 }

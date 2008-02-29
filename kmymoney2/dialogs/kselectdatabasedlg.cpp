@@ -182,7 +182,7 @@ void KSelectDatabaseDlg::slotHelp(void) {
       "<h3>Generate SQL</h3>"
       "<p>This button will generate the CREATE TABLE commands to a text file, which may be edited"
       " if the in-built commands do not work for your database system."
-      "</p"
+      "</p>"
   );
 
   QDialog dlg;
