@@ -214,16 +214,17 @@ void KForecastView::loadListView(void)
   forecastItem = new KMyMoneyForecastListViewItem(m_forecastList, forecastItem, false);
   forecastItem->setText(accountColumn, i18n("Total"));
   int i;
+  int prec = MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction());
   for(i = 0; i <= forecast.forecastDays(); ++i) {
     QDate forecastDate = QDate::currentDate().addDays(i);
     MyMoneyMoney amountMM = cycleBalance[forecastDate];
-    QString amount = amountMM.formatMoney(file->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction()));
+    QString amount = amountMM.formatMoney(file->baseCurrency().tradingSymbol(), prec);
     forecastItem->setText((i+1), amount, amountMM.isNegative());
   }
   //calculate total variation
   QString totalVarAmount;
   MyMoneyMoney totalVarAmountMM = cycleBalance[QDate::currentDate().addDays(i-1)]-cycleBalance[QDate::currentDate()];
-  totalVarAmount = totalVarAmountMM.formatMoney(file->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction()));
+  totalVarAmount = totalVarAmountMM.formatMoney(file->baseCurrency().tradingSymbol(), prec);
   forecastItem->setText((i+1), totalVarAmount);
 
   m_forecastList->show();
@@ -377,22 +378,22 @@ void KForecastView::loadSummaryView(void)
   int i;
 
   //add current total
-  MyMoneyMoney test = cycleBalance[QDate::currentDate()];
-  summaryItem->setText(1, cycleBalance[QDate::currentDate()].formatMoney(file->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction())));
+  int prec = MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction());
+  summaryItem->setText(1, cycleBalance[QDate::currentDate()].formatMoney(file->baseCurrency().tradingSymbol(), prec));
 
   //add interval totals
   for(i = 0; ((i*forecast.accountsCycle())+daysToBeginDay) <= forecast.forecastDays(); ++i) {
     int intervalDays = ((i*forecast.accountsCycle())+daysToBeginDay);
     QDate summaryDate = QDate::currentDate().addDays(intervalDays);
     MyMoneyMoney amountMM = cycleBalance[summaryDate];
-    QString amount = amountMM.formatMoney(file->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction()));
+    QString amount = amountMM.formatMoney(file->baseCurrency().tradingSymbol(), prec);
     summaryItem->setText((i+2), amount);
   }
   //calculate total variation
   QString totalVarAmount;
   MyMoneyMoney totalVarAmountMM = cycleBalance[QDate::currentDate().addDays(forecast.forecastDays())]-cycleBalance[QDate::currentDate()];
   summaryItem->setNegative(totalVarAmountMM.isNegative());
-  totalVarAmount = totalVarAmountMM.formatMoney(file->baseCurrency().tradingSymbol(), MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction()));
+  totalVarAmount = totalVarAmountMM.formatMoney(file->baseCurrency().tradingSymbol(), prec);
   summaryItem->setText((i+2), totalVarAmount);
 
   //Add comments to the advice list
