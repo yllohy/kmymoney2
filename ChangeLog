@@ -1,8 +1,9 @@
-2008-02-28 Alvaro Soliverez <asoliverez@gmail.com>
+2008-03-01 Alvaro Soliverez <asoliverez@gmail.com>
   * Skip beginForecastDate test cases if 1st or last day of month
 
 2008-03-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed alternating background colors in pivot table based reports
+  * Added vertical column border for budget vs. actual reports
 
 2008-02-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added compounding frequency widget to new account wizard for loans

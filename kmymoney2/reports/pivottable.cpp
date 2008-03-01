@@ -1503,6 +1503,11 @@ QString PivotTable::renderHTML( void ) const
   result += QString("</div>\n");
   result += QString("<div class=\"gap\">&nbsp;</div>\n");
 
+  // setup a leftborder for better readability of budget vs actual reports
+  QString leftborder;
+  if (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
+    leftborder = " class=\"leftborder\"";
+
   //
   // Table Header
   //
@@ -1532,12 +1537,16 @@ QString PivotTable::renderHTML( void ) const
     unsigned column = 1;
     while ( column < m_numColumns )
     {
-      result += QString("<td>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Actual"),i18n("Difference"));
+      QString lb;
+      if(column != 1)
+        lb = leftborder;
+
+      result += QString("<td%4>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Actual"),i18n("Difference"),lb);
       column++;
     }
 
     if ( m_config_f.isShowingRowTotals() )
-      result += QString("<td>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Actual"),i18n("Difference"));
+      result += QString("<td%4>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Actual"),i18n("Difference"),leftborder);
     result += "</tr>";
   }
 
@@ -1606,9 +1615,13 @@ QString PivotTable::renderHTML( void ) const
             bool isUsed = it_row.data()[0].isUsed();
             while ( column < m_numColumns )
             {
+              QString lb;
+              if(column != 1)
+                lb = leftborder;
+
               if ( m_config_f.hasBudget() )
-                rowdata += QString("<td>%1</td>")
-                    .arg(coloredAmount(it_row.data().m_budget[column]));
+                rowdata += QString("<td%2>%1</td>")
+                    .arg(coloredAmount(it_row.data().m_budget[column]), lb);
 
               isUsed |= it_row.data()[column].isUsed();
               if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
@@ -1627,8 +1640,8 @@ QString PivotTable::renderHTML( void ) const
             if ( m_config_f.isShowingRowTotals() )
             {
               if ( m_config_f.hasBudget() )
-                rowdata += QString("<td>%1</td>")
-                    .arg(coloredAmount((*it_row).m_budget.m_total));
+                rowdata += QString("<td%2>%1</td>")
+                    .arg(coloredAmount((*it_row).m_budget.m_total), leftborder);
 
               if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
                     || !m_config_f.hasBudget())
@@ -1721,9 +1734,12 @@ QString PivotTable::renderHTML( void ) const
             isUsed |= (*it_innergroup).m_total[0].isUsed();
             while ( column < m_numColumns )
             {
+              QString lb;
+              if(column != 1)
+                lb = leftborder;
               if ( m_config_f.hasBudget())
-                finalRow += QString("<td>%1</td>")
-                    .arg(coloredAmount((*it_innergroup).m_total.m_budget[column]));
+                finalRow += QString("<td%2>%1</td>")
+                    .arg(coloredAmount((*it_innergroup).m_total.m_budget[column]), lb);
 
               isUsed |= (*it_innergroup).m_total[column].isUsed();
               if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
@@ -1741,8 +1757,8 @@ QString PivotTable::renderHTML( void ) const
             if (  m_config_f.isShowingRowTotals() )
             {
               if ( m_config_f.hasBudget() )
-                finalRow += QString("<td>%1</td>")
-                    .arg(coloredAmount((*it_innergroup).m_total.m_budget.m_total));
+                finalRow += QString("<td%2>%1</td>")
+                    .arg(coloredAmount((*it_innergroup).m_total.m_budget.m_total), leftborder);
 
               if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
                     || !m_config_f.hasBudget())
@@ -1778,9 +1794,12 @@ QString PivotTable::renderHTML( void ) const
         unsigned column = 1;
         while ( column < m_numColumns )
         {
+          QString lb;
+          if(column != 1)
+            lb = leftborder;
           if ( m_config_f.hasBudget() )
-            result += QString("<td>%1</td>")
-                .arg(coloredAmount((*it_outergroup).m_total.m_budget[column]));
+            result += QString("<td%2>%1</td>")
+                .arg(coloredAmount((*it_outergroup).m_total.m_budget[column]), lb);
 
           if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
                 || !m_config_f.hasBudget())
@@ -1797,8 +1816,8 @@ QString PivotTable::renderHTML( void ) const
         if (  m_config_f.isShowingRowTotals() )
         {
           if ( m_config_f.hasBudget() )
-            result += QString("<td>%1</td>")
-                .arg(coloredAmount((*it_outergroup).m_total.m_budget.m_total));
+            result += QString("<td%2>%1</td>")
+                .arg(coloredAmount((*it_outergroup).m_total.m_budget.m_total),leftborder);
 
           if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
                 || !m_config_f.hasBudget())
@@ -1831,9 +1850,12 @@ QString PivotTable::renderHTML( void ) const
     unsigned totalcolumn = 1;
     while ( totalcolumn < m_numColumns )
     {
+      QString lb;
+      if(totalcolumn != 1)
+        lb = leftborder;
       if ( m_config_f.hasBudget() )
-        result += QString("<td>%1</td>")
-            .arg(coloredAmount(m_grid.m_total.m_budget[totalcolumn]));
+        result += QString("<td%2>%1</td>")
+            .arg(coloredAmount(m_grid.m_total.m_budget[totalcolumn]),lb);
 
       if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
             || !m_config_f.hasBudget())
@@ -1850,8 +1872,8 @@ QString PivotTable::renderHTML( void ) const
     if (  m_config_f.isShowingRowTotals() )
     {
       if ( m_config_f.hasBudget())
-        result += QString("<td>%1</td>")
-            .arg(coloredAmount(m_grid.m_total.m_budget.m_total));
+        result += QString("<td%2>%1</td>")
+            .arg(coloredAmount(m_grid.m_total.m_budget.m_total), leftborder);
 
       if ( (m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals())
             || !m_config_f.hasBudget())
