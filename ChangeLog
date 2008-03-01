@@ -1,4 +1,7 @@
 
+2008-03-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed alternating background colors in pivot table based reports
+
 2008-02-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added compounding frequency widget to new account wizard for loans
   * Allow share split transactions with (almost) arbitrary precision ratio

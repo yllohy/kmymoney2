@@ -1690,9 +1690,10 @@ QString PivotTable::renderHTML( void ) const
               // don't suppress display of totals
               isUsed = true;
             }
-            else
+            else {
               finishrow = false;
               ++rownum;
+            }
           }
           else
           {
