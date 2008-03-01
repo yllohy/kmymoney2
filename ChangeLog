@@ -1,3 +1,5 @@
+2008-02-28 Alvaro Soliverez <asoliverez@gmail.com>
+  * Skip beginForecastDate test cases if 1st or last day of month
 
 2008-03-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed alternating background colors in pivot table based reports
