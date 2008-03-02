@@ -1,3 +1,7 @@
+2008-03-02 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added settings box to forecast view
+  * Added button to run forecast on modified settings from forecast view
+
 2008-03-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem with entering budget values that end in 0 and
     have no fraction (trailing zeroes were removed)

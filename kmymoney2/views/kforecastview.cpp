@@ -18,6 +18,8 @@
 // QT Includes
 
 #include <qtabwidget.h>
+#include <qspinbox.h>
+#include <qlabel.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -25,6 +27,7 @@
 #include <kdebug.h>
 #include <klocale.h>
 #include <klistview.h>
+#include <kpushbutton.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -53,11 +56,32 @@ KForecastView::KForecastView(QWidget *parent, const char *name) :
   connect(m_tab, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotTabChanged(QWidget*)));
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadForecast()));
-
+  
+  connect(m_forecastButton, SIGNAL(clicked()), this, SLOT(slotLoadForecast()));
+  
   m_forecastList->setAllColumnsShowFocus(true);
   m_summaryList->setAllColumnsShowFocus(true);
   m_adviceList->setAllColumnsShowFocus(true);
   m_advancedList->setAllColumnsShowFocus(true);
+  
+  //fill the settings controls
+  m_forecastDays->setValue(KMyMoneyGlobalSettings::forecastDays());
+  m_accountsCycle->setValue(KMyMoneyGlobalSettings::forecastAccountCycle());
+  m_beginDay->setValue(KMyMoneyGlobalSettings::beginForecastDay());
+  m_forecastCycles->setValue(KMyMoneyGlobalSettings::forecastCycles());
+  switch(KMyMoneyGlobalSettings::forecastMethod()) {
+    case 0:
+      m_forecastMethod->setText(i18n("Scheduled"));
+      m_forecastCycles->setDisabled(true);
+      break;
+    case 1:
+      m_forecastMethod->setText(i18n("History"));
+      m_forecastCycles->setEnabled(true);
+      break;
+    default:
+      m_forecastMethod->setText(i18n("Unknown"));
+      break;
+  }
 }
 
 KForecastView::~KForecastView()
@@ -121,9 +145,15 @@ void KForecastView::loadListView(void)
   MyMoneySecurity baseCurrency = file->baseCurrency();
 
   MyMoneyForecast forecast;
-
-  //Get all accounts of the right type to calculate forecast
+  
+  //get the settings from current page
+  forecast.setForecastDays(m_forecastDays->value());
+  forecast.setAccountsCycle(m_accountsCycle->value());
+  forecast.setBeginForecastDay(m_beginDay->value());
+  forecast.setForecastCycles(m_forecastCycles->value());
   forecast.doForecast();
+  
+  //Get all accounts of the right type to calculate forecast
   accList = forecast.accountList();
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for(; accList_t != accList.end(); ++accList_t ) {
@@ -242,9 +272,14 @@ void KForecastView::loadSummaryView(void)
   MyMoneySecurity baseCurrency = file->baseCurrency();
 
   MyMoneyForecast forecast;
-
-  //Get all accounts of the right type to calculate forecast
+  
+  //get the settings from current page
+  forecast.setForecastDays(m_forecastDays->value());
+  forecast.setAccountsCycle(m_accountsCycle->value());
+  forecast.setBeginForecastDay(m_beginDay->value());
+  forecast.setForecastCycles(m_forecastCycles->value());
   forecast.doForecast();
+  //Get all accounts of the right type to calculate forecast
   accList = forecast.accountList();
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for(; accList_t != accList.end(); ++accList_t ) {
@@ -508,8 +543,14 @@ void KForecastView::loadAdvancedView(void)
   MyMoneyForecast forecast;
   int daysToBeginDay;
 
-  //Get all accounts of the right type to calculate forecast
+  //get the settings from current page
+  forecast.setForecastDays(m_forecastDays->value());
+  forecast.setAccountsCycle(m_accountsCycle->value());
+  forecast.setBeginForecastDay(m_beginDay->value());
+  forecast.setForecastCycles(m_forecastCycles->value());
   forecast.doForecast();
+
+  //Get all accounts of the right type to calculate forecast
   accList = forecast.accountList();
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for(; accList_t != accList.end(); ++accList_t ) {

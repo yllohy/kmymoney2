@@ -141,6 +141,15 @@ public:
   void setBeginForecastDate(QDate beginForecastDate);
   
   QDate beginForecastDate(void) const;
+  
+  void setBeginForecastDay(int beginDay);
+  
+  int beginForecastDay(void) const;
+  
+  void setForecastMethod(int forecastMethod);
+
+  int forecastMethod(void) const;
+
 
 private:
 
@@ -254,6 +263,17 @@ private:
    * date to start forecast
    */
   QDate m_beginForecastDate;
+
+  /**
+   * day to start forecast
+   */
+  int m_beginForecastDay;
+
+  /**
+   * forecast method
+   */
+  int m_forecastMethod;
+
 
 };
 

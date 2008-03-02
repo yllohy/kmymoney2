@@ -42,18 +42,20 @@
 
 MyMoneyForecast::MyMoneyForecast()
 {
-  setForecastCycles(1);
-  setAccountsCycle(1);
-  setForecastDays(1);
+  setForecastCycles(KMyMoneyGlobalSettings::forecastCycles());
+  setAccountsCycle(KMyMoneyGlobalSettings::forecastAccountCycle());
+  setForecastDays(KMyMoneyGlobalSettings::forecastDays());
+  setBeginForecastDay(KMyMoneyGlobalSettings::beginForecastDay());
+  setForecastMethod(KMyMoneyGlobalSettings::forecastMethod());
 }
 
 
 void MyMoneyForecast::doForecast()
 {
   int fDays = calculateBeginForecastDay();
-  int fMethod = KMyMoneyGlobalSettings::forecastMethod();
-  int fAccCycle = KMyMoneyGlobalSettings::forecastAccountCycle();
-  int fCycles = KMyMoneyGlobalSettings::forecastCycles();
+  int fMethod = forecastMethod();
+  int fAccCycle = accountsCycle();
+  int fCycles = forecastCycles();
 
   //validate settings
   if(fAccCycle < 1
@@ -702,7 +704,7 @@ int MyMoneyForecast::forecastDays(void) const
   return m_forecastDays;
 }
 
-  void MyMoneyForecast::setBeginForecastDate(QDate beginForecastDate)
+void MyMoneyForecast::setBeginForecastDate(QDate beginForecastDate)
 {
   m_beginForecastDate = beginForecastDate;
 }
@@ -710,6 +712,26 @@ int MyMoneyForecast::forecastDays(void) const
   QDate MyMoneyForecast::beginForecastDate(void) const
 {
   return m_beginForecastDate;
+}
+
+void MyMoneyForecast::setBeginForecastDay(int beginDay)
+{
+  m_beginForecastDay = beginDay;
+}
+
+  int MyMoneyForecast::beginForecastDay(void) const
+{
+  return m_beginForecastDay;
+}
+
+void MyMoneyForecast::setForecastMethod(int forecastMethod)
+{
+  m_forecastMethod = forecastMethod;
+}
+
+int MyMoneyForecast::forecastMethod(void) const
+{
+  return m_forecastMethod;
 }
 
 void MyMoneyForecast::setForecastAccountList(void)
@@ -733,7 +755,7 @@ MyMoneyMoney MyMoneyForecast::accountCycleVariation(const MyMoneyAccount& acc)
 {
   MyMoneyMoney cycleVariation;
 
-  if (KMyMoneyGlobalSettings::forecastMethod() == HISTORIC) {
+  if (forecastMethod() == HISTORIC) {
     for(int t_day = 1; t_day <= accountsCycle() ; ++t_day) {
       cycleVariation += m_accountTrendList[acc.id()][t_day];
     }
@@ -803,9 +825,9 @@ MyMoneyMoney MyMoneyForecast::accountAverageBalance(const MyMoneyAccount& acc)
 
 int MyMoneyForecast::calculateBeginForecastDay()
 {
-  int fDays = KMyMoneyGlobalSettings::forecastDays();
-  int beginDay = KMyMoneyGlobalSettings::beginForecastDay();
-  int accCycle = KMyMoneyGlobalSettings::forecastAccountCycle();
+  int fDays = forecastDays();
+  int beginDay = beginForecastDay();
+  int accCycle = accountsCycle();
   QDate beginDate;
 
   //if 0, beginDate is current date and forecastDays remains unchanged
