@@ -10,7 +10,7 @@ echo "OFX direct connect:                    $enable_ofxbanking"
 
 echo ""
 
-echo "Chart support:                         $enable_charts"
+echo "Chart support:                         yes"
 
 echo "------------------------------------------"
 echo ""

@@ -2065,6 +2065,9 @@ void Register::addGroupMarkers(void)
         new KMyMoneyRegister::FancyDateGroupMarker(this, KMyMoneyGlobalSettings::startDate().date(), i18n("Prior transactions possibly filtered"));
 
       if(KMyMoneyGlobalSettings::showFancyMarker()) {
+        if(m_account.lastReconciliationDate().isValid())
+          new KMyMoneyRegister::FancyDateGroupMarker(this, m_account.lastReconciliationDate(), i18n("Last reconciliation"));
+
         new KMyMoneyRegister::FancyDateGroupMarker(this, thisYear, i18n("This year"));
         new KMyMoneyRegister::FancyDateGroupMarker(this, lastMonth, i18n("Last month"));
         new KMyMoneyRegister::FancyDateGroupMarker(this, thisMonth, i18n("This month"));

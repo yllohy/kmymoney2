@@ -54,7 +54,10 @@ AC_PDF_GENERATION()
 dnl
 dnl check for kdchart
 dnl 
-AC_KDCHART()
+dnl AC_KDCHART()
+AC_DEFINE_UNQUOTED(HAVE_KDCHART, "1", [Define if you have libkdchart])
+AC_DEFINE_UNQUOTED(HAVE_KDCHART_SETPROP, "1", [Define if you have KDChartListTableData::setProp method])
+
 
 dnl
 dnl check for libofx

@@ -1,6 +1,6 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
-SUBDIRS = libkgpgfile kmymoney2 po doc developer-doc
+SUBDIRS = libkgpgfile libkdchart kmymoney2 po doc developer-doc
 
 EXTRA_DIST = kmymoney2.kdevprj AUTHORS COPYING ChangeLog INSTALL README TODO ChangeLog.original configure.in.in configure.in.bot README.Fileformats stamp-h1 subdirs inst-apps
 

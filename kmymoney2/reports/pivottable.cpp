@@ -981,6 +981,8 @@ void PivotTable::convertToBaseCurrency( void )
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
 
+  int fraction = MyMoneyFile::instance()->baseCurrency().smallestAccountFraction();
+
   TGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
@@ -997,10 +999,11 @@ void PivotTable::convertToBaseCurrency( void )
             throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::convertToBaseCurrency").arg(column).arg(it_row.data().count()));
 
           QDate valuedate = columnDate(column);
-          double conversionfactor = it_row.key().baseCurrencyPrice(valuedate).toDouble();
-          double oldval = it_row.data()[column].toDouble();
-          double value = oldval * conversionfactor;
-          it_row.data()[column] = TCell( value );
+          MyMoneyMoney conversionfactor = it_row.key().baseCurrencyPrice(valuedate);
+          MyMoneyMoney oldval = it_row.data()[column];
+          double d = it_row.data()[column].toDouble();
+          MyMoneyMoney value = (oldval * conversionfactor).reduce();
+          it_row.data()[column] = TCell(value.convert(fraction));
 
           DEBUG_OUTPUT_IF(conversionfactor != 1.0 ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[column].toDouble())));
 
@@ -1018,6 +1021,8 @@ void PivotTable::convertToDeepCurrency( void )
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
 
+  int fraction = MyMoneyFile::instance()->baseCurrency().smallestAccountFraction();
+
   TGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
@@ -1034,10 +1039,11 @@ void PivotTable::convertToDeepCurrency( void )
             throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::convertToDeepCurrency").arg(column).arg(it_row.data().count()));
 
           QDate valuedate = columnDate(column);
-          double conversionfactor = it_row.key().deepCurrencyPrice(valuedate).toDouble();
-          double oldval = it_row.data()[column].toDouble();
-          double value = oldval * conversionfactor;
-          it_row.data()[column] = TCell( value );
+
+          MyMoneyMoney conversionfactor = it_row.key().deepCurrencyPrice(valuedate);
+          MyMoneyMoney oldval = it_row.data()[column];
+          MyMoneyMoney value = (oldval * conversionfactor).reduce();
+          it_row.data()[column] = TCell(value.convert(fraction));
 
           DEBUG_OUTPUT_IF(conversionfactor != 1.0 ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[column].toDouble())));
 
@@ -1921,6 +1927,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
   _view.params().setAxisParams( 0, xAxisParams );
   _view.params().setAxisParams( 1, yAxisParams );
+
 #endif
   _view.params().setLegendFontRelSize(20);
   _view.params().setLegendTitleFontRelSize(24);
@@ -2208,6 +2215,9 @@ void PivotTable::drawChart( KReportChartView& _view ) const
   }
 
   _view.setNewData(data);
+
+  // make sure to show only the required number of fractional digits on the labels of the graph
+  _view.params().setDataValuesCalc(0, MyMoneyMoney::denomToPrec(MyMoneyFile::instance()->baseCurrency().smallestAccountFraction()));
   _view.refreshLabels();
 
 #if 0

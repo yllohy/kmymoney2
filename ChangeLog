@@ -2,6 +2,7 @@
   * Fixed a problem with entering budget values that end in 0 and
     have no fraction (trailing zeroes were removed)
   * Added some testcases to check formatMoney() in more details
+  * Added our own copy of libkdchart so we don't depend on KOffice anymore
 
 2008-03-01 Alvaro Soliverez <asoliverez@gmail.com>
   * Skip beginForecastDate test cases if 1st or last day of month
