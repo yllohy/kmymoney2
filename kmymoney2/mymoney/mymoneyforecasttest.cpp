@@ -103,10 +103,10 @@ void MyMoneyForecastTest::testEmptyConstructor() {
   CPPUNIT_ASSERT(a.forecastBalance(b, QDate::currentDate()) == MyMoneyMoney(0,1));
   CPPUNIT_ASSERT(a.daysToMinimumBalance(b) == -1);
   CPPUNIT_ASSERT(a.daysToZeroBalance(b) == -2);
-  CPPUNIT_ASSERT(a.forecastDays() == 1);
-  CPPUNIT_ASSERT(a.accountsCycle() == 1);
-  CPPUNIT_ASSERT(a.forecastCycles() == 1);
-  CPPUNIT_ASSERT(a.historyDays() == 1);
+  CPPUNIT_ASSERT(a.forecastDays() == KMyMoneyGlobalSettings::forecastDays());
+  CPPUNIT_ASSERT(a.accountsCycle() == KMyMoneyGlobalSettings::forecastAccountCycle());
+  CPPUNIT_ASSERT(a.forecastCycles() == KMyMoneyGlobalSettings::forecastCycles());
+  CPPUNIT_ASSERT(a.historyDays() == KMyMoneyGlobalSettings::forecastAccountCycle() * KMyMoneyGlobalSettings::forecastCycles());
 }
 
 
@@ -175,10 +175,10 @@ void MyMoneyForecastTest::testDoForecast() {
   TransactionHelper t3( QDate::currentDate().addDays(-1), MyMoneySplit::ActionTransfer, this->moT1, acCredit, acChecking);
   
   
-  KMyMoneyGlobalSettings::setForecastMethod(1);
-  KMyMoneyGlobalSettings::setForecastDays(3);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(1);
-  KMyMoneyGlobalSettings::setForecastCycles(1);
+  a.setForecastMethod(1);
+  a.setForecastDays(3);
+  a.setAccountsCycle(1);
+  a.setForecastCycles(1);
   a.doForecast();
 
   //checking didnt have balance variations, so the forecast should be equal to the current balance
@@ -201,10 +201,10 @@ void MyMoneyForecastTest::testDoForecast() {
   TransactionHelper t4( QDate::currentDate().addDays(-2), MyMoneySplit::ActionDeposit, -moT2, acCredit, acParent );
   TransactionHelper t5( QDate::currentDate().addDays(-10), MyMoneySplit::ActionDeposit, -moT2, acCredit, acParent );
   
-  KMyMoneyGlobalSettings::setForecastMethod(1);
-  KMyMoneyGlobalSettings::setForecastDays(3);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(1);
-  KMyMoneyGlobalSettings::setForecastCycles(1);
+  a.setForecastMethod(1);
+  a.setForecastDays(3);
+  a.setAccountsCycle(1);
+  a.setForecastCycles(1);
   a.doForecast();
   //check forecast
   b_credit = file->balance(a_credit.id(), QDate::currentDate());
@@ -280,10 +280,10 @@ void MyMoneyForecastTest::testGetForecastBalance()
   TransactionHelper t2( QDate::currentDate().addDays(-1), MyMoneySplit::ActionDeposit, -(this->moT2), acCredit, acParent);
   TransactionHelper t3( QDate::currentDate().addDays(-1), MyMoneySplit::ActionTransfer, this->moT1, acCredit, acChecking);
   
-  KMyMoneyGlobalSettings::setForecastMethod(1);
-  KMyMoneyGlobalSettings::setForecastDays(3);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(1);
-  KMyMoneyGlobalSettings::setForecastCycles(1);
+  a.setForecastMethod(1);
+  a.setForecastDays(3);
+  a.setAccountsCycle(1);
+  a.setForecastCycles(1);
   a.doForecast();
   
   MyMoneyAccount a_checking = file->account(acChecking);
@@ -339,10 +339,10 @@ void MyMoneyForecastTest::testDoFutureScheduledForecast()
   TransactionHelper t3( QDate::currentDate().addDays(3), MyMoneySplit::ActionDeposit, -moT3, acCash, acParent );
   TransactionHelper t4( QDate::currentDate().addDays(10), MyMoneySplit::ActionDeposit, -moT4, acCash, acParent );
   
-  KMyMoneyGlobalSettings::setForecastMethod(0);
-  KMyMoneyGlobalSettings::setForecastDays(3);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(1);
-  KMyMoneyGlobalSettings::setForecastCycles(1);
+  a.setForecastMethod(0);
+  a.setForecastDays(3);
+  a.setAccountsCycle(1);
+  a.setForecastCycles(1);
   a.doForecast();
   
   MyMoneyMoney b_cash = file->balance(a_cash.id(), QDate::currentDate());
@@ -504,10 +504,10 @@ void MyMoneyForecastTest::testScheduleForecast()
 
   //run forecast
   MyMoneyForecast a;
-  KMyMoneyGlobalSettings::setForecastMethod(0);
-  KMyMoneyGlobalSettings::setForecastDays(3);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(1);
-  KMyMoneyGlobalSettings::setForecastCycles(1);
+  a.setForecastMethod(0);
+  a.setForecastDays(3);
+  a.setAccountsCycle(1);
+  a.setForecastCycles(1);
   a.doForecast();
 
   //check result for single schedule
@@ -536,10 +536,10 @@ void MyMoneyForecastTest::testDaysToMinimumBalance()
   TransactionHelper t3( QDate::currentDate().addDays(-1), MyMoneySplit::ActionWithdrawal, -moT1, acCredit, acParent );
   TransactionHelper t4( QDate::currentDate().addDays(4), MyMoneySplit::ActionWithdrawal, moT5, acCredit, acParent );
   
-  KMyMoneyGlobalSettings::setForecastMethod(0);
-  KMyMoneyGlobalSettings::setForecastDays(3);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(1);
-  KMyMoneyGlobalSettings::setForecastCycles(1);
+  a.setForecastMethod(0);
+  a.setForecastDays(3);
+  a.setAccountsCycle(1);
+  a.setForecastCycles(1);
   a.doForecast();
   
    
@@ -571,10 +571,10 @@ void MyMoneyForecastTest::testDaysToZeroBalance()
   //ft.commit();
   
   MyMoneyForecast a;
-  KMyMoneyGlobalSettings::setForecastMethod(0);
-  KMyMoneyGlobalSettings::setForecastDays(30);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(1);
-  KMyMoneyGlobalSettings::setForecastCycles(3);
+  a.setForecastMethod(0);
+  a.setForecastDays(30);
+  a.setAccountsCycle(1);
+  a.setForecastCycles(3);
   a.doForecast();
 
   //test invalid arguments
@@ -611,10 +611,10 @@ void MyMoneyForecastTest::testSkipOpeningDate()
   TransactionHelper t1( QDate::currentDate().addDays(-2), MyMoneySplit::ActionWithdrawal, this->moT1, acCash, acSolo);
   TransactionHelper t2( QDate::currentDate().addDays(-1), MyMoneySplit::ActionWithdrawal, this->moT2, acCash, acSolo);
   
-  KMyMoneyGlobalSettings::setForecastMethod(1);
-  KMyMoneyGlobalSettings::setForecastDays(3);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(2);
-  KMyMoneyGlobalSettings::setForecastCycles(1);
+  a.setForecastMethod(1);
+  a.setForecastDays(3);
+  a.setAccountsCycle(2);
+  a.setForecastCycles(1);
   a.doForecast();
   
   MyMoneyAccount a_cash = file->account(acCash);
@@ -635,11 +635,11 @@ void MyMoneyForecastTest::testAccountMinimumBalanceDateList() {
   TransactionHelper t1( QDate::currentDate().addDays(-2), MyMoneySplit::ActionWithdrawal, this->moT1, acCash, acSolo);
   TransactionHelper t2( QDate::currentDate().addDays(-1), MyMoneySplit::ActionWithdrawal, this->moT2, acCash, acSolo);
   
-  KMyMoneyGlobalSettings::setForecastMethod(1);
-  KMyMoneyGlobalSettings::setForecastDays(6);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(2);
-  KMyMoneyGlobalSettings::setForecastCycles(3);
-  KMyMoneyGlobalSettings::setBeginForecastDay(QDate::currentDate().addDays(1).day());
+  a.setForecastMethod(1);
+  a.setForecastDays(6);
+  a.setAccountsCycle(2);
+  a.setForecastCycles(3);
+  a.setBeginForecastDay(QDate::currentDate().addDays(1).day());
   a.doForecast();
   
   MyMoneyAccount a_cash = file->account(acCash);
@@ -669,11 +669,11 @@ void MyMoneyForecastTest::testAccountMaximumBalanceDateList() {
   TransactionHelper t1( QDate::currentDate().addDays(-2), MyMoneySplit::ActionWithdrawal, this->moT1, acCash, acSolo);
   TransactionHelper t2( QDate::currentDate().addDays(-1), MyMoneySplit::ActionWithdrawal, this->moT2, acCash, acSolo);
   
-  KMyMoneyGlobalSettings::setForecastMethod(1);
-  KMyMoneyGlobalSettings::setForecastDays(6);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(2);
-  KMyMoneyGlobalSettings::setForecastCycles(3);
-  KMyMoneyGlobalSettings::setBeginForecastDay(QDate::currentDate().addDays(1).day());
+  a.setForecastMethod(1);
+  a.setForecastDays(6);
+  a.setAccountsCycle(2);
+  a.setForecastCycles(3);
+  a.setBeginForecastDay(QDate::currentDate().addDays(1).day());
   a.doForecast();
   
   MyMoneyAccount a_cash = file->account(acCash);
@@ -704,11 +704,11 @@ void MyMoneyForecastTest::testAccountAverageBalance() {
   TransactionHelper t1( QDate::currentDate().addDays(-2), MyMoneySplit::ActionWithdrawal, this->moT1, acCash, acSolo);
   TransactionHelper t2( QDate::currentDate().addDays(-1), MyMoneySplit::ActionWithdrawal, this->moT2, acCash, acSolo);
   
-  KMyMoneyGlobalSettings::setForecastMethod(1);
-  KMyMoneyGlobalSettings::setForecastDays(3);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(2);
-  KMyMoneyGlobalSettings::setForecastCycles(1);
-  KMyMoneyGlobalSettings::setBeginForecastDay(0);
+  a.setForecastMethod(1);
+  a.setForecastDays(3);
+  a.setAccountsCycle(2);
+  a.setForecastCycles(1);
+  a.setBeginForecastDay(0);
   a.doForecast();
   
   MyMoneyAccount a_cash = file->account(acCash);
@@ -730,19 +730,19 @@ void MyMoneyForecastTest::testBeginForecastDate() {
   QDate beginDate;
   int beginDay;
   
-  KMyMoneyGlobalSettings::setForecastMethod(1);
-  KMyMoneyGlobalSettings::setForecastDays(90);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(14);
-  KMyMoneyGlobalSettings::setForecastCycles(3);
-  KMyMoneyGlobalSettings::setBeginForecastDay(0);
+  a.setForecastMethod(1);
+  a.setForecastDays(90);
+  a.setAccountsCycle(14);
+  a.setForecastCycles(3);
+  a.setBeginForecastDay(0);
   a.doForecast();
   
   //test when using old method without begin day
   CPPUNIT_ASSERT(QDate::currentDate() == a.beginForecastDate());
 
   //setup begin to last day of month
-  KMyMoneyGlobalSettings::setBeginForecastDay(31);
-  beginDay = KMyMoneyGlobalSettings::beginForecastDay();
+  a.setBeginForecastDay(31);
+  beginDay = a.beginForecastDay();
   a.doForecast();
 
   //test
@@ -757,16 +757,16 @@ void MyMoneyForecastTest::testBeginForecastDate() {
   }
   
   //setup begin day to same date
-  KMyMoneyGlobalSettings::setBeginForecastDay(QDate::currentDate().day());
-  beginDay = KMyMoneyGlobalSettings::beginForecastDay();
+  a.setBeginForecastDay(QDate::currentDate().day());
+  beginDay = a.beginForecastDay();
   a.doForecast();
 
   CPPUNIT_ASSERT(QDate::currentDate() == a.beginForecastDate());
   
   //setup to first day of month with small interval
-  KMyMoneyGlobalSettings::setBeginForecastDay(1);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(1);
-  beginDay = KMyMoneyGlobalSettings::beginForecastDay();
+  a.setBeginForecastDay(1);
+  a.setAccountsCycle(1);
+  beginDay = a.beginForecastDay();
   a.doForecast();
   
   //test
@@ -783,9 +783,9 @@ void MyMoneyForecastTest::testBeginForecastDate() {
   }
   
   //setup to test when current date plus cycle equals begin day
-  KMyMoneyGlobalSettings::setForecastAccountCycle(14);
+  a.setAccountsCycle(14);
   beginDay = QDate::currentDate().addDays(14).day();
-  KMyMoneyGlobalSettings::setBeginForecastDay(beginDay);
+  a.setBeginForecastDay(beginDay);
   beginDate = QDate::currentDate().addDays(14);
   a.doForecast();
   
@@ -793,8 +793,8 @@ void MyMoneyForecastTest::testBeginForecastDate() {
   CPPUNIT_ASSERT(beginDate == a.beginForecastDate());
   
   //setup to test when the begin day will be next month
-  KMyMoneyGlobalSettings::setBeginForecastDay(1);
-  KMyMoneyGlobalSettings::setForecastAccountCycle(40);
+  a.setBeginForecastDay(1);
+  a.setAccountsCycle(40);
   a.doForecast();
   
   beginDate = QDate(QDate::currentDate().addMonths(1).year(), QDate::currentDate().addMonths(1).month(), 1);

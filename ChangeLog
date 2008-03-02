@@ -1,6 +1,8 @@
 2008-03-02 Alvaro Soliverez <asoliverez@gmail.com>
   * Added settings box to forecast view
   * Added button to run forecast on modified settings from forecast view
+  * Forecast settings are now only used on instantiating
+  * Adjusted forecast test cases due to new way of using settings
 
 2008-03-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem with entering budget values that end in 0 and
