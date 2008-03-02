@@ -355,9 +355,13 @@ void MyMoneyMoneyTest::testFormatMoney()
 
   m1 = MyMoneyMoney(100,1);
   CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("100.00"));
+  CPPUNIT_ASSERT(m1.formatMoney("", -1) == QString("100"));
 
   m1 = m1 * 10;
   CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("1,000.00"));
+  CPPUNIT_ASSERT(m1.formatMoney("", -1) == QString("1,000"));
+  CPPUNIT_ASSERT(m1.formatMoney("", -1, false) == QString("1000"));
+  CPPUNIT_ASSERT(m1.formatMoney("", 3, false) == QString("1000.000"));
 
   m1 = MyMoneyMoney(INT64_MAX, 100);
   CPPUNIT_ASSERT(m1.formatMoney("", 2) == QString("92,233,720,368,547,758.07"));

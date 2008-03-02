@@ -377,7 +377,7 @@ void kMyMoneyEdit::ensureFractionalPart(QString& s) const
           s.truncate(pos);
         }
       }
-    } else {  // m_prec == -1
+    } else if(s.contains(decimalSymbol)) {  // m_prec == -1 && fraction
       // no trailing zeroes
       while(s.endsWith("0")) {
         s.truncate(s.length()-1);

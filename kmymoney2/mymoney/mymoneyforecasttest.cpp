@@ -14,6 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <iostream>
+
 #include <qvaluelist.h>
 
 #include "mymoneyforecasttest.h"
