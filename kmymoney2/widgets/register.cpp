@@ -23,6 +23,7 @@
 #include <qapplication.h>
 #include <qeventloop.h>
 #include <qtooltip.h>
+#include <qimage.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -215,6 +216,19 @@ GroupMarker::GroupMarker(Register *parent) :
   RegisterItem(parent),
   m_drawCounter(parent->drawCounter()-1)   // make sure we get painted the first time around
 {
+  int h;
+  if(m_parent) {
+    h = m_parent->rowHeightHint();
+  } else {
+    QFontMetrics fm( KMyMoneyGlobalSettings::listCellFont() );
+    h = fm.lineSpacing()+6;
+  }
+
+  if(m_bg && (m_bg->height() != h)) {
+    delete m_bg;
+    m_bg = 0;
+  }
+
   // convert the backgroud once
   if(m_bg == 0) {
     m_bg = new QPixmap;
@@ -222,7 +236,16 @@ GroupMarker::GroupMarker(Register *parent) :
     a.setRawData(fancymarker_bg_image, sizeof(fancymarker_bg_image));
     m_bg->loadFromData(a);
     a.resetRawData(fancymarker_bg_image, sizeof(fancymarker_bg_image));
+
+    // for now, we can't simply resize the m_bg member as Qt does not support
+    // alpha resizing. So we take the (slow) detour through a QImage object
+    // which is ok, since we do this only once.
+    // m_bg->resize(m_bg->width(), h);
+    QImage img(m_bg->convertToImage());
+    img = img.smoothScale(img.width(), h);
+    m_bg->convertFromImage(img);
   }
+
   ++m_bgRefCnt;
 }
 
@@ -268,41 +291,18 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /* col */, c
   painter->setPen(KMyMoneyGlobalSettings::listGridColor());
   painter->drawLine(cellRect.x(), cellRect.height()-1, cellRect.width(), cellRect.height()-1);
 
-#if 0
-  // now draw round rectangle in marker color
-  // adjust rectangle a bit before
-  cellRect.setX(5);
-  cellRect.setY(5);
-  cellRect.setWidth(cellRect.width()-5);
-  cellRect.setHeight(cellRect.height()-5);
-
-  cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listMissingConversionRate());
-  painter->setBrush(cg.base());
-  painter->setPen(Qt::NoPen);
-  painter->drawRoundRect(cellRect, 2, 25);
-
-#endif
   // now write the text
   painter->setPen(cg.text());
   QFont font = painter->font();
-  int size = font.pointSize();
-  if(size == -1) {
-    size = font.pixelSize();
-    font.setPixelSize(size*2);
-  } else {
-    font.setPointSize(size*2);
-  }
+  font.setBold(true);
   painter->setFont(font);
-  // cellRect.setX(cellRect.x()+5);
-  // cellRect.setWidth(cellRect.width()-10);
 
   painter->drawText(cellRect, Qt::AlignVCenter | Qt::AlignCenter, m_txt);
 
-  // cellRect.setX(cellRect.x()-5);
-  // cellRect.setWidth(cellRect.width()+10);
-
   cellRect.setHeight(m_bg->height());
   int curWidth = m_bg->width();
+
+  // if the background image is too small (not wide enough) we need to increase its width.
   if(curWidth < cellRect.width()) {
     QPixmap* newPic = new QPixmap(cellRect.width(), cellRect.height());
     int x = 0;
@@ -313,6 +313,8 @@ void GroupMarker::paintRegisterCell(QPainter* painter, int row, int /* col */, c
     delete m_bg;
     m_bg = newPic;
   }
+
+  // now it's time to draw the background
   painter->drawPixmap(cellRect, *m_bg);
   painter->restore();
 }
@@ -602,6 +604,13 @@ bool Register::eventFilter(QObject* o, QEvent* e)
     }
     // eat up left mouse button press for now
     return true;
+
+  } else if(o == horizontalHeader() && e->type() == QEvent::Paint) {
+    // always show the header in bold (to suppress cell selection)
+    QFont f(horizontalHeader()->font());
+    f.setBold(true);
+    horizontalHeader()->setFont(f);
+
   } else if(o == this && e->type() == QEvent::KeyPress) {
     QKeyEvent* ke = dynamic_cast<QKeyEvent*>(e);
     if(ke->key() == Qt::Key_Menu) {

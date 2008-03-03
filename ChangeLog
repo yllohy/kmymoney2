@@ -1,3 +1,8 @@
+
+2008-03-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Always show register header in bold
+  * Size ledger divider according to the font size
+
 2008-03-02 Alvaro Soliverez <asoliverez@gmail.com>
   * Added settings box to forecast view
   * Added button to run forecast on modified settings from forecast view
