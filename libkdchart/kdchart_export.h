@@ -3,7 +3,7 @@
 
 #include <qglobal.h>
 
-#if 1
+#if 0
 #include <koffice_export.h>
 #else
 
