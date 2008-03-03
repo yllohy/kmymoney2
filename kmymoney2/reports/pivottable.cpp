@@ -1001,7 +1001,6 @@ void PivotTable::convertToBaseCurrency( void )
           QDate valuedate = columnDate(column);
           MyMoneyMoney conversionfactor = it_row.key().baseCurrencyPrice(valuedate);
           MyMoneyMoney oldval = it_row.data()[column];
-          double d = it_row.data()[column].toDouble();
           MyMoneyMoney value = (oldval * conversionfactor).reduce();
           it_row.data()[column] = TCell(value.convert(fraction));
 

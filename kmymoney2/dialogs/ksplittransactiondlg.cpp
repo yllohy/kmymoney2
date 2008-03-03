@@ -53,7 +53,7 @@
 #include <kmymoney/kmymoneylineedit.h>
 #include <kmymoney/mymoneyfile.h>
 
-#include "../widgets/kmymoneysplittable.h"
+#include "kmymoneysplittable.h"
 #include "../dialogs/ksplitcorrectiondlg.h"
 
 KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,

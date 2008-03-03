@@ -15,12 +15,6 @@ DISTCLEANFILES= kinstitutionpagedecl.cpp kinstitutionpagedecl.h kaccounttypepage
 
 noinst_HEADERS = knewaccountwizard.h knewaccountwizard_p.h
 
-BUILT_SOURCES = dialogs
-
-.PHONY: dialogs
-dialogs:
-	$(MAKE) -C .. ksplittransactiondlgdecl.h
-
 SUBDIRS = 
 
 messages: rc.cpp

@@ -53,7 +53,7 @@
 #include "knewaccountwizard_p.h"
 #include <kmymoney/kguiutils.h>
 
-#include "../ksplittransactiondlg.h"
+#include "../../dialogs/ksplittransactiondlg.h"
 #include "../../kmymoney2.h"
 
 using namespace NewAccountWizard;

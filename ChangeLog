@@ -2,6 +2,8 @@
 2008-03-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Always show register header in bold
   * Size ledger divider according to the font size
+  * Refactored wizard modules into their own directory
+  * Resolved circular dependency between widgets and dialogs
 
 2008-03-02 Alvaro Soliverez <asoliverez@gmail.com>
   * Added settings box to forecast view

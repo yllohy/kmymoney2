@@ -361,7 +361,7 @@
 <customwidgets>
     <customwidget>
         <class>kMyMoneySplitTable</class>
-        <header location="local">../widgets/kmymoneysplittable.h</header>
+        <header location="local">../dialogs/kmymoneysplittable.h</header>
         <sizehint>
             <width>330</width>
             <height>390</height>

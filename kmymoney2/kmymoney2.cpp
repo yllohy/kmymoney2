@@ -114,8 +114,8 @@
 #include "dialogs/kbalancechartdlg.h"
 #include "dialogs/kplugindlg.h"
 #include "dialogs/kloadtemplatedlg.h"
-#include "dialogs/newuserwizard/knewuserwizard.h"
-#include "dialogs/newaccountwizard/knewaccountwizard.h"
+#include "wizards/newuserwizard/knewuserwizard.h"
+#include "wizards/newaccountwizard/knewaccountwizard.h"
 
 #ifdef USE_OFX_DIRECTCONNECT
 #include "dialogs/kofxdirectconnectdlg.h"
