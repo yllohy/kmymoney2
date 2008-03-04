@@ -1,6 +1,6 @@
 KDE_OPTIONS = noautodist
 
-INCLUDES = -I$(top_srcdir) $(all_includes) 
+INCLUDES = -I$(top_srcdir) $(all_includes) -I$(top_srcdir)/libkdchart
 
 noinst_LIBRARIES = libviews.a
 libviews_a_METASOURCES = AUTO

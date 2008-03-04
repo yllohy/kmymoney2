@@ -1,4 +1,7 @@
 
+2008-03-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Last changes required to compile w/o KOffice being installed
+
 2008-03-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Always show register header in bold
   * Size ledger divider according to the font size
