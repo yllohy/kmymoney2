@@ -69,12 +69,13 @@ protected slots:
 
 private slots:
   void timerDone(void);
+  void slotSelectBaseCurrency(void);
 
 signals:
   void selectObject(const MyMoneySecurity& currency);
   void openContextMenu(const MyMoneySecurity& currency);
   void renameCurrency(QListViewItem* item, int, const QString& txt);
-  void selectBaseCurrency(void);
+  void selectBaseCurrency(const MyMoneySecurity& currency);
 
 private:
   MyMoneySecurity      m_currency;

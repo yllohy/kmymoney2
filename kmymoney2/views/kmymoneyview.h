@@ -514,6 +514,14 @@ protected slots:
     */
   void slotShowTransactionDetail(bool detailed);
 
+  /**
+   * eventually replace this with KMyMoney2App::slotCurrencySetBase(void).
+   * it contains the same code
+   *
+   * @deprecated
+   */
+  void slotSetBaseCurrency(const MyMoneySecurity& baseCurrency);
+
 private:
   /**
    * This method is called from readFile to open a database file which

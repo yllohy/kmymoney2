@@ -5368,7 +5368,7 @@ void KMyMoney2App::slotCurrencyDialog(void)
   connect(this, SIGNAL(currencyRename()), &dlg, SLOT(slotStartRename()));
   connect(&dlg, SIGNAL(renameCurrency(QListViewItem*, int, const QString&)), this, SLOT(slotCurrencyRename(QListViewItem*,int,const QString&)));
   connect(this, SIGNAL(currencyCreated(const QCString&)), &dlg, SLOT(slotSelectCurrency(const QCString&)));
-  connect(&dlg, SIGNAL(selectBaseCurrency()), this, SLOT(slotCurrencySetBase()));
+  connect(&dlg, SIGNAL(selectBaseCurrency(const MyMoneySecurity&)), this, SLOT(slotCurrencySetBase()));
 
   dlg.exec();
 

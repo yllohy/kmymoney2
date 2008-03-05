@@ -1,4 +1,7 @@
 
+2008-03-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed setup of base currency when missing in file
+
 2008-03-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Last changes required to compile w/o KOffice being installed
 

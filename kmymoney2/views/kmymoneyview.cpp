@@ -811,7 +811,7 @@ bool KMyMoneyView::initializeStorage()
     //
     //   <PAIR key="kmm-baseCurrency" value="xxx" />
     //
-    // and restart the application with this file. This will for to
+    // and restart the application with this file. This will force to
     // run the above loop.
     selectBaseCurrency();
   }
@@ -1196,6 +1196,22 @@ void KMyMoneyView::newFile(void)
   m_fileOpen = true;
 }
 
+void KMyMoneyView::slotSetBaseCurrency(const MyMoneySecurity& baseCurrency)
+{
+  if(!baseCurrency.id().isEmpty()) {
+    if(baseCurrency.id() != MyMoneyFile::instance()->baseCurrency().id()) {
+      MyMoneyFileTransaction ft;
+      try {
+        MyMoneyFile::instance()->setBaseCurrency(baseCurrency);
+        ft.commit();
+      } catch(MyMoneyException *e) {
+        KMessageBox::sorry(this, i18n("Cannot set %1 as base currency: %2").arg(baseCurrency.name()).arg(e->what()), i18n("Set base currency"));
+        delete e;
+      }
+    }
+  }
+}
+
 void KMyMoneyView::selectBaseCurrency(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -1203,6 +1219,7 @@ void KMyMoneyView::selectBaseCurrency(void)
   // check if we have a base currency. If not, we need to select one
   if(file->baseCurrency().id().isEmpty()) {
     KCurrencyEditDlg dlg(this, "CurrencyEditDlg");
+    connect(&dlg, SIGNAL(selectBaseCurrency(const MyMoneySecurity&)), this, SLOT(slotSetBaseCurrency(const MyMoneySecurity&)));
     dlg.exec();
   }
 

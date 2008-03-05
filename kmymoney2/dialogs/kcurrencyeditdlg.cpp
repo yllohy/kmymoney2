@@ -75,7 +75,7 @@ KCurrencyEditDlg::KCurrencyEditDlg(QWidget *parent, const char *name ) :
 
   slotLoadCurrencies();
 
-  connect(m_baseCurrencyButton, SIGNAL(clicked()), this, SIGNAL(selectBaseCurrency()));
+  connect(m_baseCurrencyButton, SIGNAL(clicked()), this, SLOT(slotSelectBaseCurrency()));
   connect(buttonClose, SIGNAL(clicked()), this, SLOT(slotClose()));
 
   // FIXME: currently, no online help available
@@ -273,6 +273,18 @@ void KCurrencyEditDlg::slotRenameCurrency(QListViewItem* item, int /* col */, co
   } catch(MyMoneyException *e) {
     delete e;
     updateCurrency();
+  }
+}
+
+void KCurrencyEditDlg::slotSelectBaseCurrency(void)
+{
+  if(!m_currency.id().isEmpty()) {
+    QListViewItem* p = m_currencyList->selectedItem();
+    emit selectBaseCurrency(m_currency);
+    // in case the dataChanged() signal was not sent out (nested FileTransaction)
+    // we update the list manually
+    if(p == m_currencyList->selectedItem())
+      slotLoadCurrencies();
   }
 }
 
