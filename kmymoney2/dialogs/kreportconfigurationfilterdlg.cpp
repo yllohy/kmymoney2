@@ -115,6 +115,9 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
       m_tab2 = new kMyMoneyReportConfigTab2Decl( m_criteriaTab, "kMyMoneyReportConfigTab2" );
       m_criteriaTab->insertTab( m_tab2, i18n( "Rows/Columns"), 1 );
       connect(m_tab2->m_comboRows, SIGNAL(highlighted(int)), this, SLOT(slotRowTypeChanged(int)));
+      //control the state of the includeTransfer check
+      connect(m_categoriesView, SIGNAL(stateChanged()), this, SLOT(slotUpdateCheckTransfers()));
+
 
 #ifdef HAVE_KDCHART
       m_tabChart = new kMyMoneyReportConfigTabChartDecl( m_criteriaTab, "kMyMoneyReportConfigTabChart" );
@@ -140,9 +143,6 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     for(it_b = list.begin(); it_b != list.end(); ++it_b) {
       m_budgets.push_back(*it_b);
     }
-
-    //control the state of the includeTransfer check
-    connect(m_categoriesView, SIGNAL(stateChanged()), this, SLOT(slotUpdateCheckTransfers()));
     
     //
     // Now set up the widgets with proper values

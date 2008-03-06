@@ -120,12 +120,12 @@ double CashFlowList::IRR( void ) const
   if ( lonpv.isZero() )
   {
     result = lobound;
-    goto done;
+    return result;
   }
   else if ( hinpv.isZero() )
   {
     result = hibound;
-    goto done;
+    return result;
   }
 
   // our next goal is to ensure that NPV==0 lies somewhere in between lobound & hibound.
@@ -163,7 +163,7 @@ double CashFlowList::IRR( void ) const
 
     // if we've found zero, we're done!
     if ( npv.isZero() )
-      goto done;
+      return result;
 
     // if lobound & result have the opposite sign, then use the range from lobound to result
     if ( lonpv.isPositive() != npv.isPositive() )
@@ -179,8 +179,6 @@ double CashFlowList::IRR( void ) const
       lonpv = npv;
     }
   }
-
-done:
   return result;
 }
 
@@ -420,7 +418,7 @@ void QueryTable::init(void)
   if ( qc & MyMoneyReport::eQCprice )
     m_columns += ",price";
   if ( qc & MyMoneyReport::eQCperformance )
-    m_columns += ",startingbal,buys,sells,reinvestincome,cashincome,return";
+    m_columns += ",startingbal,buys,sells,reinvestincome,cashincome,return,returninvestment";
   if ( qc & MyMoneyReport::eQCloan )
   {
     m_columns += ",payment,interest,fees";
@@ -906,7 +904,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
     price = file->price(security.id(), QCString(), endingDate).rate(QCString());
   }
   MyMoneyMoney endingBal = file->balance((account).id(),endingDate) * price;
-  MyMoneyMoney performance = startingBal;
+  MyMoneyMoney returnInvestment = startingBal;
   CashFlowList buys;
   CashFlowList sells;
   CashFlowList reinvestincome;
@@ -928,10 +926,10 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
     {
       if ( s.value().isPositive() ) {
         buys += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
-        performance += s.value();
+        returnInvestment += s.value();
       } else {
         sells += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
-        performance += s.value();
+        returnInvestment += s.value();
       }
     }
     else if ( action == MyMoneySplit::ActionReinvestDividend )
@@ -957,7 +955,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
 
       if ( found ) {
         cashincome += CashFlowListItem( (*it_transaction).postDate(), -(*it_split).value() );
-        performance += -(*it_split).value();
+        returnInvestment += -(*it_split).value();
       }
     }
     ++it_transaction;
@@ -971,15 +969,16 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   all += cashincome;
   all += CashFlowListItem(startingDate,-startingBal);
   all += CashFlowListItem(endingDate,endingBal);
-  
+
   //check if no activity on that term
-  if(!performance.isZero())
-    performance = (endingBal - performance)/performance;
+  if(!returnInvestment.isZero() && !endingBal.isZero())
+    returnInvestment = (endingBal - returnInvestment)/returnInvestment;
 
   try
   {
-    //TODO If this works, there will be a lot of cleanup to do
-    result["return"] = performance.toString();
+    MyMoneyMoney annualReturn = MyMoneyMoney(all.IRR(),10000);
+    result["return"] = annualReturn.toString();
+    result["returninvestment"] = returnInvestment.toString();
   }
   catch (QString e)
   {
@@ -1139,7 +1138,8 @@ void QueryTable::render( QString& result, QString& csv ) const
   i18nHeaders["cashincome"] = i18n("Dividends Paid Out");
   i18nHeaders["startingbal"] = i18n("Starting Balance");
   i18nHeaders["endingbal"] = i18n("Ending Balance");
-  i18nHeaders["return"] = i18n("Return");
+  i18nHeaders["return"] = i18n("Annualized Return");
+  i18nHeaders["returninvestment"] = i18n("Return On Investment");
   i18nHeaders["fees"] = i18n("Fees");
   i18nHeaders["interest"] = i18n("Interest");
   i18nHeaders["payment"] = i18n("Payment");
@@ -1153,7 +1153,7 @@ void QueryTable::render( QString& result, QString& csv ) const
   QStringList sharesColumns = QStringList::split(",","shares");
 
   // the list of columns which represent a percentage, so we can display them correctly
-  QStringList percentColumns = QStringList::split(",","return");
+  QStringList percentColumns = QStringList::split(",","return,returninvestment");
 
   // the list of columns which represent dates, so we can display them correctly
   QStringList dateColumns = QStringList::split(",", "postdate,entrydate");
