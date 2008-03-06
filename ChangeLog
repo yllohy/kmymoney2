@@ -4,6 +4,9 @@
   * Restored original test case for IRR
   * Fixed a crash on config report when not showing Include Transfers
 
+2008-03-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added checkbox to hide unused budget categories
+
 2008-03-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed setup of base currency when missing in file
 

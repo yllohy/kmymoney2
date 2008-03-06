@@ -162,6 +162,8 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
 
   connect(m_resetButton, SIGNAL(pressed()), this, SLOT(slotResetBudget()));
 
+  connect(m_hideUnusedButton, SIGNAL(toggled(bool)), this, SLOT(slotSelectBudget()));
+
   // setup initial state
   m_newButton->setEnabled(kmymoney2->action("budget_new")->isEnabled());
   m_renameButton->setEnabled(kmymoney2->action("budget_rename")->isEnabled());
@@ -367,6 +369,10 @@ void KBudgetView::loadAccounts(void)
 
   m_accountTree->setBaseCurrency(file->baseCurrency());
 
+  // make sure we show all items for an empty budget
+  if(m_budget.getaccounts().isEmpty())
+    m_hideUnusedButton->setChecked(false);
+
   bool haveUnusedBudgets = false;
 
   // create the items
@@ -478,7 +484,7 @@ bool KBudgetView::loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QCStrin
     // the display of those,
     if(acc.accountGroup() == MyMoneyAccount::Income
     || acc.accountGroup() == MyMoneyAccount::Expense) {
-      if(KMyMoneyGlobalSettings::hideUnusedCategory() && thisUnused) {
+      if(m_hideUnusedButton->isChecked() && thisUnused) {
         unused = true;
         delete item;
       }
