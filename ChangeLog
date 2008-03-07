@@ -1,4 +1,8 @@
-2008-03-05 Alvaro Soliverez <asoliverez@gmail.com>
+
+2008-03-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Minor change in configure.in.in to support NetBSD's shell
+
+2008-03-06 Alvaro Soliverez <asoliverez@gmail.com>
   * Restored calculation of investment performance (IRR)
   * Added new column on investment performance report to show ROI
   * Restored original test case for IRR

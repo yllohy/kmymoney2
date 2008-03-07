@@ -92,7 +92,7 @@ mkdir kmymoney
 
 echo Generating symlinks to header files
 CURDIR=
-if test "x${srcdir:0:1}" != "x/"; then
+if test "x${srcdir}" = "x${srcdir#/}"; then
   CURDIR=`pwd`/
 fi
 BASEDIR=$CURDIR$srcdir
