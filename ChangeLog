@@ -2,6 +2,8 @@
 2008-03-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Minor change in configure.in.in to support NetBSD's shell
   * Added automatic insertion of path to perl interpreter for makekdewidgets
+  * Fixed a leftover problem from conversion of double to MyMoneyMoney
+    in reports
 
 2008-03-06 Alvaro Soliverez <asoliverez@gmail.com>
   * Restored calculation of investment performance (IRR)
