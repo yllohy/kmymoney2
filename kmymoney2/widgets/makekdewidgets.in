@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!@PERL@
 
 # copied from KDELIBS 3.1.4
 # modified for usage with KMyMoney

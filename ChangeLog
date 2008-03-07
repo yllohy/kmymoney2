@@ -1,6 +1,7 @@
 
 2008-03-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Minor change in configure.in.in to support NetBSD's shell
+  * Added automatic insertion of path to perl interpreter for makekdewidgets
 
 2008-03-06 Alvaro Soliverez <asoliverez@gmail.com>
   * Restored calculation of investment performance (IRR)
