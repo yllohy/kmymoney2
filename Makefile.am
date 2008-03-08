@@ -41,9 +41,9 @@ export EXTRACTRC ?= $(PWD)/admin/extractrc
 
 package-messages: check-vpath-environment
 	find . -name rc.cpp -exec rm {} \;
-	$(MAKE) -C $(top_srcdir) -f admin/Makefile.common package-messages
+	$(MAKE) -C $(top_srcdir) -f admin/Makefile.common package-messages XGETTEXT=$(XGETTEXT)
 	find . -name rc.cpp -exec rm {} \;
-	@if test `grep '"_: ' po/kmymoney2.pot | grep -v TRANSLATORS | wc -l` -ne 0; then echo -e "It seems that context i18n's are not translated correctly.\n'$(XGETTEXT)' has been used for translation."; exit 1; fi;
+	@if test `grep '"_: ' po/kmymoney2.pot | grep -v TRANSLATORS | wc -l` -eq 0; then echo -e "It seems that context i18n's are not translated correctly.\n'$(XGETTEXT)' has been used for translation."; exit 1; fi;
 	$(MAKE) merge-messages
 
 merge-messages: check-vpath-environment
