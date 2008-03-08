@@ -182,7 +182,7 @@
                                     <cstring>m_attemptMatch</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Attempt to match similiar transactions</string>
+                                    <string>Attempt to match similar transactions</string>
                                 </property>
                             </widget>
                             <spacer>

@@ -96,7 +96,7 @@
                                         <string>Press this button to calculate/verify your loan details.</string>
                                     </property>
                                     <property name="whatsThis" stdset="0">
-                                        <string>Pressing this button calculates a possibly missing paramter for your loan or verifies that the values entered match. If something is not correct you will receive information about it.</string>
+                                        <string>Pressing this button calculates a possibly missing parameter for your loan or verifies that the values entered match. If something is not correct you will receive information about it.</string>
                                     </property>
                                 </widget>
                             </hbox>

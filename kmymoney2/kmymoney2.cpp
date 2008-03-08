@@ -3791,7 +3791,7 @@ void KMyMoney2App::slotPayeeDelete(void)
   // get confirmation from user
   QString prompt;
   if (m_selectedPayees.size() == 1)
-    prompt = QString("<p>")+i18n("Do you really want to remove the payee <b>%1</b>").arg(m_selectedPayees.front().name());
+    prompt = QString("<p>")+i18n("Do you really want to remove the payee <b>%1</b>?").arg(m_selectedPayees.front().name());
   else
     prompt = i18n("Do you really want to remove all selected payees?");
 

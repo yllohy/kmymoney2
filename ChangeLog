@@ -1,4 +1,7 @@
 
+2008-03-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed spelling problems as reported by mvillarino
+
 2008-03-07 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed ROI calculation when ending balance is zero
 

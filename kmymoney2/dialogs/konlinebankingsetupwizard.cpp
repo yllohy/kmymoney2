@@ -144,7 +144,7 @@ bool KOnlineBankingSetupWizard::finishFiPage(void)
         if ( info.investments )
           message += i18n("Supports investments<br>");
         if ( info.billpay )
-          message += i18n("Supports bill payment (but not supported in KMyMoney yet<br>");
+          message += i18n("Supports bill payment (but not supported by KMyMoney yet)<br>");
       }
       else
       {

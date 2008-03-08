@@ -198,7 +198,7 @@ The first step in this process requires to select the type of investment. The fo
                             <cstring>m_investmentSymbol</cstring>
                         </property>
                         <property name="toolTip" stdset="0">
-                            <string>Emter the ticker symbol (e.g. RHAT).</string>
+                            <string>Enter the ticker symbol (e.g. RHAT).</string>
                         </property>
                     </widget>
                     <widget class="kMyMoneyLineEdit" row="4" column="1">

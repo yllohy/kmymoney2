@@ -499,7 +499,7 @@ void KPayeesView::slotSelectPayee(void)
   // and ask to store the data
   if (m_updateButton->isEnabled()) {
     if (KMessageBox::questionYesNo(this, QString("<qt>%1</qt>").arg(
-          i18n("Do you want to save the changes for <b>%1</b>").arg(m_newName)),
+          i18n("Do you want to save the changes for <b>%1</b>?").arg(m_newName)),
           i18n("Save changes")) == KMessageBox::Yes) {
       m_inSelection = true;
       slotUpdatePayee();
