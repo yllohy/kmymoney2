@@ -971,8 +971,11 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   all += CashFlowListItem(endingDate,endingBal);
 
   //check if no activity on that term
-  if(!returnInvestment.isZero() && !endingBal.isZero())
+  if(!returnInvestment.isZero() && !endingBal.isZero()) {
     returnInvestment = (endingBal - returnInvestment)/returnInvestment;
+  } else {
+    returnInvestment = MyMoneyMoney(0,1);
+  }
 
   try
   {

@@ -1,4 +1,7 @@
 
+2008-03-07 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed ROI calculation when ending balance is zero
+
 2008-03-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Minor change in configure.in.in to support NetBSD's shell
   * Added automatic insertion of path to perl interpreter for makekdewidgets
