@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     "http://kmymoney2.sourceforge.net/",
     "kmymoney2-developer@lists.sourceforge.net");
 
-  aboutData.addAuthor("Michael Edwardes.", I18N_NOOP("Initial idea, much intial source code, Project admin"), "mte@users.sourceforge.net");
+  aboutData.addAuthor("Michael Edwardes.", I18N_NOOP("Initial idea, much initial source code, Project admin"), "mte@users.sourceforge.net");
   aboutData.addAuthor("Thomas Baumgart", I18N_NOOP("Core engine, Release Manager, Project admin"), "ipwizard@users.sourceforge.net");
   aboutData.addAuthor("Ace Jones", I18N_NOOP("Reporting logic, OFX Import"), "acejones@users.sourceforge.net");
   aboutData.addAuthor("Kevin Tambascio", I18N_NOOP("Initial investment support"), "ktambascio@users.sourceforge.net");

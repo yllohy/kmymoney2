@@ -4025,7 +4025,7 @@ void KMyMoney2App::slotBudgetDelete(void)
   // get confirmation from user
   QString prompt;
   if (m_selectedBudgets.size() == 1)
-    prompt = QString("<p>")+i18n("Do you really want to remove the budget <b>%1</b>").arg(m_selectedBudgets.front().name());
+    prompt = QString("<p>")+i18n("Do you really want to remove the budget <b>%1</b>?").arg(m_selectedBudgets.front().name());
   else
     prompt = i18n("Do you really want to remove all selected budgets?");
 
