@@ -305,7 +305,9 @@ void WebPriceQuote::slotParseQuote(const QString& _quotedata)
       }
       catch (MyMoneyException* e)
       {
-        emit error(i18n("Unable to parse date %1 using format %2: %3").arg(datestr,dateparse.format(),e->what()));
+        // emit error(i18n("Unable to parse date %1 using format %2: %3").arg(datestr,dateparse.format(),e->what()));
+        m_date = QDate::currentDate();
+        gotdate = true;
         delete e;
       }
     }
@@ -379,13 +381,21 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
     "NAV update (\\d+\\D+\\d+\\D+\\d+)", // dateregexp
     "%d %m %y" // dateformat
   );
-
-  result["VWD.DE"] = WebPriceQuoteSource("VWD.DE",
-    "http://www.finanztreff.de/ftreff/kurse_einzelkurs_uebersicht.htm?s=%1",
+  // Finanztreff (replaces VWD.DE) and boerseonline supplied by Micahel Zimmerman
+  result["Finanztreff"] = WebPriceQuoteSource("Finanztreff",
+    "http://finanztreff.de/kurse_einzelkurs_detail.htn?u=100&i=%1",
     QString(),  // symbolregexp
-    "[Kurs|Realtime]: \\d+\\D+\\d+\\D+\\d+ ([0-9.]+,\\d+)", // priceregexp
-    "Jahreschart (\\d+\\D+\\d+\\D+\\d+)", // dateregexp
-    "%d %m %y" // dateformat
+    "([0-9]+,\\d+).+Gattung:Fonds", // priceregexp
+    "\\).(\\d+\\D+\\d+\\D+\\d+)", // dateregexp (doesn't work; date in chart
+    "%d.%m.%y" // dateformat
+  );
+  
+  result["boerseonline"] = WebPriceQuoteSource("boerseonline",
+    "http://www.boerse-online.de/tools/boerse/einzelkurs_kurse.htm?&s=%1",
+    QString(),  // symbolregexp
+    "Akt\\. Kurs.(\\d+,\\d\\d)", // priceregexp
+    "Datum.(\\d+\\.\\d+\\.\\d+)", // dateregexp (doesn't work; date in chart
+    "%d.%m.%y" // dateformat
   );
 
   // The following two price sources were contributed by
@@ -428,9 +438,9 @@ QMap<QString,WebPriceQuoteSource> WebPriceQuote::defaultQuoteSources(void)
   // Xetra, 32 NASDAQ, 36 NYSE
 
   result["Wallstreet-Online.DE (Hamburg)"] = WebPriceQuoteSource("Wallstreet-Online.DE (Hamburg)",
-    "http://www.wallstreet-online.de/si/?k=%1&spid=ws&mpid=5",
+    "http://fonds.wallstreet-online.de/si/?k=%1&spid=ws&mpid=5",
     "Symbol:(\\w+)",  // symbolregexp
-    "Letzter Kurs: ([0-9.]+,\\d+)", // priceregexp
+    "Fonds \\(EUR\\) ([0-9.]+,\\d+)", // priceregexp
     ", (\\d+\\D+\\d+\\D+\\d+)", // dateregexp
     "%d %m %y" // dateformat
   );
