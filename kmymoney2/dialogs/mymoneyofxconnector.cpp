@@ -149,8 +149,10 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
   OfxAccountData account;
   memset(&account,0,sizeof(OfxAccountData));
 
-  strncpy(account.bank_id,iban().latin1(),OFX_BANKID_LENGTH-1);
-  strncpy(account.broker_id,iban().latin1(),OFX_BROKERID_LENGTH-1);
+  if(iban().latin1() != 0) {
+    strncpy(account.bank_id,iban().latin1(),OFX_BANKID_LENGTH-1);
+    strncpy(account.broker_id,iban().latin1(),OFX_BROKERID_LENGTH-1);
+  }
   strncpy(account.account_number,accountnum().latin1(),OFX_ACCTID_LENGTH-1);
   account.account_type = accounttype();
 
@@ -162,7 +164,6 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
   free(szrequest);
 
   QString msg(result);
-  qDebug("statement-request-0.9.0='%s'", msg.data());
   return result;
 }
 #else
@@ -191,7 +192,6 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
   free(szrequest);
 
   QString msg(result);
-  qDebug("statement-request-0.8.3='%s'", msg.data());
   return result;
 }
 #endif

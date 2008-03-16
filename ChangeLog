@@ -4,6 +4,8 @@
   * Fixed a lock-up problem with transaction reports that contain transactions
     with a single income or expense split
   * Added 'Favorites' to the single selection mode account selectors
+  * Fixed crash with OFX download when IBAN field is empty (thanks to
+    John Whitlock for pointing it out)
 
 2008-03-13 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed layout of findTransactionDialog
