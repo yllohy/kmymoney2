@@ -300,15 +300,6 @@ signals:
 
 protected:
   /**
-    * Helper method for setSelected() to traverse the tree.
-    *
-    * @param item pointer to item to start with
-    * @param id id of object
-    * @param state selection state
-    */
-  void setSelected(QListViewItem *item, const QCString& id, const bool state);
-
-  /**
     * Helper method for selectedItems() to traverse the tree.
     *
     * @param list list of selected ids

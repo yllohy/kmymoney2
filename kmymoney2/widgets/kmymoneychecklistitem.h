@@ -68,9 +68,12 @@ public:
   bool isAlternate(void);
 
   /**
-    * This method returns a const reference to the key passed to the constructor
+    * This method returns a const reference to the key passed to the constructor. The column
+    * defines what is returned: For @a column equals 0, the first character passed as @a key to
+    * the constructor concatenated with the value returned by text(0) is returned. For @a column
+    * equals to 1, the @a key as passed to the constructor except the first character is returned.
     */
-  const QString& key(void) const { return m_key; }
+  QString key(int column, bool ascending) const;
 
 signals:
   void stateChanged(bool);

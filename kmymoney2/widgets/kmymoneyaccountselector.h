@@ -177,5 +177,6 @@ private:
   int                                      m_count;
   MyMoneyFile*                             m_file;
   QValueList<MyMoneyAccount::accountTypeE> m_typeList;
+  QListViewItem*                           m_favorites;
 };
 #endif

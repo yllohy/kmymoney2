@@ -61,6 +61,16 @@ KMyMoneyListViewItem::~KMyMoneyListViewItem()
 {
 }
 
+QString KMyMoneyListViewItem::key(int column, bool ascending) const
+{
+  Q_UNUSED(ascending);
+
+  if(column == 0)
+    return m_key[0] + text(0);
+  return m_key.mid(1);
+}
+
+
 void KMyMoneyListViewItem::paintCell(QPainter *p, const QColorGroup &cg, int column, int width, int alignment)
 {
   QColorGroup _cg = cg;

@@ -85,6 +85,9 @@ kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *na
     connect(m_incomeCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectIncomeCategories()));
     connect(m_expenseCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectExpenseCategories()));
   }
+
+  // sort the list of accounts by ascending type
+  m_listView->setSorting(0);
 }
 
 kMyMoneyAccountSelector::~kMyMoneyAccountSelector()
@@ -161,9 +164,9 @@ bool kMyMoneyAccountSelector::match(const QRegExp& exp, QListViewItem* item) con
     if(!it_c) {
       return KMyMoneySelector::match(exp, item);
     }
-    return exp.search(it_c->key()) != -1;
+    return exp.search(it_c->key(1, true)) != -1;
   }
-  return exp.search(it_l->key()) != -1;
+  return exp.search(it_l->key(1, true)) != -1;
 }
 
 bool kMyMoneyAccountSelector::contains(const QString& txt) const
@@ -182,12 +185,12 @@ bool kMyMoneyAccountSelector::contains(const QString& txt) const
     QRegExp exp(QString("^(?:%1):%2$").arg(baseName).arg(QRegExp::escape(txt)));
     if(it_v->rtti() == 1) {
       KMyMoneyCheckListItem* it_c = dynamic_cast<KMyMoneyCheckListItem*>(it_v);
-      if(exp.search(it_c->key()) != -1) {
+      if(exp.search(it_c->key(1, true)) != -1) {
         return true;
       }
     } else if(it_v->rtti() == 0) {
       KMyMoneyListViewItem* it_c = dynamic_cast<KMyMoneyListViewItem*>(it_v);
-      if(exp.search(it_c->key()) != -1) {
+      if(exp.search(it_c->key(1, true)) != -1) {
         return true;
       }
     }
@@ -241,7 +244,8 @@ void kMyMoneyAccountSelector::update(const QCString& /* id */)
 
 AccountSet::AccountSet() :
   m_count(0),
-  m_file(MyMoneyFile::instance())
+  m_file(MyMoneyFile::instance()),
+  m_favorites(0)
 {
 }
 
@@ -340,46 +344,50 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
   QString key;
   QListViewItem* after = 0;
 
+  // create the favorite section first and sort it to the beginning
+  key = QString("A%1").arg(i18n("Favorites"));
+  m_favorites = selector->newItem(i18n("Favorites"), key);
+
   for(int mask = 0x01; mask != KMyMoneyUtils::last; mask <<= 1) {
     QListViewItem* item = 0;
-    if(typeMask & mask & KMyMoneyUtils::asset) {
+    if((typeMask & mask & KMyMoneyUtils::asset) != 0) {
       ++m_count;
-      item = selector->newItem(i18n("Asset accounts"));
-      key = i18n("Asset");
+      key = QString("B%1").arg(i18n("Asset"));
+      item = selector->newItem(i18n("Asset accounts"), key);
       list = m_file->asset().accountList();
     }
 
-    if(typeMask & mask & KMyMoneyUtils::liability) {
+    if((typeMask & mask & KMyMoneyUtils::liability) != 0) {
       ++m_count;
-      item = selector->newItem(i18n("Liability accounts"));
-      key = i18n("Liability");
+      key = QString("C%1").arg(i18n("Liability"));
+      item = selector->newItem(i18n("Liability accounts"), key);
       list = m_file->liability().accountList();
     }
 
-    if(typeMask & mask & KMyMoneyUtils::income) {
+    if((typeMask & mask & KMyMoneyUtils::income) != 0) {
       ++m_count;
-      item = selector->newItem(i18n("Income categories"));
-      key = i18n("Income");
+      key = QString("D%1").arg(i18n("Income"));
+      item = selector->newItem(i18n("Income categories"), key);
       list = m_file->income().accountList();
       if(selector->selectionMode() == QListView::Multi) {
         selector->m_incomeCategoriesButton->show();
       }
     }
 
-    if(typeMask & mask & KMyMoneyUtils::expense) {
+    if((typeMask & mask & KMyMoneyUtils::expense) != 0) {
       ++m_count;
-      item = selector->newItem(i18n("Expense categories"));
-      key = i18n("Expense");
+      key = QString("E%1").arg(i18n("Expense"));
+      item = selector->newItem(i18n("Expense categories"), key);
       list = m_file->expense().accountList();
       if(selector->selectionMode() == QListView::Multi) {
         selector->m_expenseCategoriesButton->show();
       }
     }
 
-    if(typeMask & mask & KMyMoneyUtils::equity) {
+    if((typeMask & mask & KMyMoneyUtils::equity) != 0) {
       ++m_count;
-      item = selector->newItem(i18n("Equity accounts"), after);
-      key = i18n("Equity");
+      key = QString("F%1").arg(i18n("Equity"));
+      item = selector->newItem(i18n("Equity accounts"), key);
       list = m_file->equity().accountList();
     }
 
@@ -397,6 +405,9 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
           QString tmpKey;
           tmpKey = key + MyMoneyFile::AccountSeperator + acc.name();
           QListViewItem* subItem = selector->newItem(item, acc.name(), tmpKey, acc.id());
+          if(acc.value("PreferredAccount") == "Yes") {
+            selector->newItem(m_favorites, acc.name(), tmpKey, acc.id());
+          }
           if(acc.accountList().count() > 0) {
             subItem->setOpen(true);
             count += loadSubAccounts(selector, subItem, tmpKey, acc.accountList());
@@ -406,6 +417,17 @@ int AccountSet::load(kMyMoneyAccountSelector* selector)
       item->sortChildItems(0, true);
     }
   }
+
+  // if we don't have a favorite account or the selector is for multi-mode
+  // we get rid of the favorite entry and subentries.
+  if(m_favorites->childCount() == 0 || selector->selectionMode() == QListView::Multi) {
+    delete m_favorites;
+    m_favorites = 0;
+  }
+
+  // sort the list
+  selector->listView()->sort();
+
   if(lv->firstChild()) {
     if(currentId.isEmpty()) {
       lv->setCurrentItem(lv->firstChild());
@@ -472,6 +494,9 @@ int AccountSet::loadSubAccounts(kMyMoneyAccountSelector* selector, QListViewItem
       ++count;
       ++m_count;
       QListViewItem* item = selector->newItem(parent, acc.name(), tmpKey, acc.id());
+      if(acc.value("PreferredAccount") == "Yes") {
+        selector->newItem(m_favorites, acc.name(), tmpKey, acc.id());
+      }
       if(acc.accountList().count() > 0) {
         item->setOpen(true);
         count += loadSubAccounts(selector, item, tmpKey, acc.accountList());

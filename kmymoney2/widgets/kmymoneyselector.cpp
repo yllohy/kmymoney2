@@ -300,18 +300,28 @@ void KMyMoneySelector::removeItem(const QCString& id)
       if(it_c->type() == QCheckListItem::CheckBox) {
         if(id == it_c->id()) {
           delete it_c;
-          return;
         }
       }
     } else if(it_v->rtti() == 0) {
       KMyMoneyListViewItem* it_c = dynamic_cast<KMyMoneyListViewItem*>(it_v);
       if(id == it_c->id()) {
         delete it_c;
-        return;
       }
     }
     it++;
   }
+
+  // get rid of top items that just lost the last children (e.g. Favorites)
+  it = QListViewItemIterator(m_listView, QListViewItemIterator::NotSelectable);
+  while((it_v = it.current()) != 0) {
+    if(it_v->rtti() == 1) {
+      KMyMoneyCheckListItem* it_c = dynamic_cast<KMyMoneyCheckListItem*>(it_v);
+      if(it_c->childCount() == 0)
+        delete it_c;
+    }
+    it++;
+  }
+
   return;
 }
 
@@ -442,16 +452,12 @@ void KMyMoneySelector::itemList(QCStringList& list) const
 
 void KMyMoneySelector::setSelected(const QCString& id, const bool state)
 {
+  QListViewItemIterator it;
   QListViewItem* it_v;
+  QListViewItem* it_visible = 0;
 
-  if(id.isEmpty() && m_selMode == QListView::Single) {
-    QListViewItem* item = m_listView->selectedItem();
-    if(item)
-      m_listView->setSelected(item, false);
-    return;
-  }
-
-  for(it_v = m_listView->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
+  it = QListViewItemIterator(m_listView, QListViewItemIterator::Selectable);
+  while((it_v = it.current()) != 0) {
     if(it_v->rtti() == 1) {
       KMyMoneyCheckListItem* it_c = dynamic_cast<KMyMoneyCheckListItem*>(it_v);
       Q_CHECK_PTR(it_c);
@@ -459,8 +465,8 @@ void KMyMoneySelector::setSelected(const QCString& id, const bool state)
         if(it_c->id() == id) {
           it_c->setOn(state);
           m_listView->setSelected(it_v, true);
-          ensureItemVisible(it_v);
-          return;
+          if(!it_visible)
+            it_visible = it_v;
         }
       }
     } else if(it_v->rtti() == 0) {
@@ -468,41 +474,19 @@ void KMyMoneySelector::setSelected(const QCString& id, const bool state)
       Q_CHECK_PTR(it_c);
       if(it_c->id() == id) {
         m_listView->setSelected(it_v, true);
+        if(!it_visible)
+          it_visible = it_v;
         ensureItemVisible(it_v);
         return;
       }
     }
-    setSelected(it_v, id, state);
+    it++;
   }
+
+  // make sure the first one found is visible
+  if(it_visible)
+    ensureItemVisible(it_visible);
 }
-
-void KMyMoneySelector::setSelected(QListViewItem* item, const QCString& id, const bool state)
-{
-  QListViewItem* it_v;
-
-  for(it_v = item->firstChild(); it_v != 0; it_v = it_v->nextSibling()) {
-    if(it_v->rtti() == 1) {
-      KMyMoneyCheckListItem* it_c = dynamic_cast<KMyMoneyCheckListItem*>(it_v);
-      Q_CHECK_PTR(it_c);
-      if(it_c->id() == id) {
-        it_c->setOn(state);
-        m_listView->setSelected(it_v, true);
-        ensureItemVisible(it_v);
-        return;
-      }
-    } else if(it_v->rtti() == 0) {
-      KMyMoneyListViewItem* it_c = dynamic_cast<KMyMoneyListViewItem*>(it_v);
-      Q_CHECK_PTR(it_c);
-      if(it_c->id() == id) {
-        m_listView->setSelected(it_v, true);
-        ensureItemVisible(it_v);
-        return;
-      }
-    }
-    setSelected(it_v, id, state);
-  }
-}
-
 
 void KMyMoneySelector::ensureItemVisible(const QListViewItem *it_v)
 {

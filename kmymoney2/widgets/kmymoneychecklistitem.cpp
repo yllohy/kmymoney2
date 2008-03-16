@@ -71,6 +71,15 @@ KMyMoneyCheckListItem::~KMyMoneyCheckListItem()
 {
 }
 
+QString KMyMoneyCheckListItem::key(int column, bool ascending) const
+{
+  Q_UNUSED(ascending);
+
+  if(column == 0)
+    return m_key[0] + text(0);
+  return m_key.mid(1);
+}
+
 void KMyMoneyCheckListItem::stateChange(bool state)
 {
   emit stateChanged(state);
