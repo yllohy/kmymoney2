@@ -522,6 +522,14 @@ void QueryTable::constructTransactionTable(void)
     // select our "reference" split
     if (is == S_end) is = myBegin; else myBegin = is;
 
+    // if the split is still unknown, use the first one. I have seen this
+    // happen with a transaction that has only a single split referencing an income or expense
+    // account and has an amount and value of 0. Such a transaction will fall through
+    // the above logic and leave 'is' pointing to S_end which causes the remainder
+    // of this to end in an infinite loop.
+    if(is == S_end) {
+      is = S.begin();
+    }
 
     ReportAccount a = (* is).accountId();
 
@@ -760,6 +768,10 @@ void QueryTable::constructTransactionTable(void)
       ++is;
       // look for wrap-around
       if (is == S_end) is = S.begin();
+
+      // but terminate if this transaction has only a single split
+      if(S.count() < 2)
+        break;
 
     } while (is != myBegin);
 
