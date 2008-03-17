@@ -179,8 +179,10 @@ const QByteArray MyMoneyOfxConnector::statementRequest(const QDate& _dtstart) co
   OfxAccountInfo account;
   memset(&account,0,sizeof(OfxAccountInfo));
 
-  strncpy(account.bankid,iban().latin1(),OFX_BANKID_LENGTH-1);
-  strncpy(account.brokerid,iban().latin1(),OFX_BROKERID_LENGTH-1);
+  if(iban().latin1() != 0) {
+    strncpy(account.bankid,iban().latin1(),OFX_BANKID_LENGTH-1);
+    strncpy(account.brokerid,iban().latin1(),OFX_BROKERID_LENGTH-1);
+  }
   strncpy(account.accountid,accountnum().latin1(),OFX_ACCOUNT_ID_LENGTH-1);
   account.type = accounttype();
 

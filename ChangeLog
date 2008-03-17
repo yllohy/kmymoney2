@@ -1,4 +1,8 @@
 
+2008-03-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed crash with OFX download when IBAN field is empty (thanks to
+    John Whitlock for pointing it out) now for libofx < 0.9
+
 2008-03-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Portuguese translation from José Jorge
   * Fixed a lock-up problem with transaction reports that contain transactions
