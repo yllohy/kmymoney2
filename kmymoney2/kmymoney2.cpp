@@ -4339,7 +4339,16 @@ void KMyMoney2App::slotTransactionsCancelOrEnter(bool& okToSelect)
       if(KMyMoneyGlobalSettings::focusChangeIsEnter() && kmymoney2->action("transaction_enter")->isEnabled()) {
         slotTransactionsEnter();
       } else {
-        switch(KMessageBox::warningYesNoCancel(0, QString("<p>")+i18n("Do you really want to cancel editing this transaction without saving it?<p>- <b>Yes</b> cancels editing the transaction<br>- <b>No</b> saves the transaction prior to cancelling and<br>- <b>Cancel</b> returns to the transaction editor.<p>You can also select an option to save the transaction automatically when e.g. selecting another transaction."), i18n("Cancel transaction edit"), KStdGuiItem::yes(), KStdGuiItem::no(), dontShowAgain)) {
+        // okToSelect is preset to true if a cancel of the dialog is useful and false if it is not
+        int rc;
+        if(okToSelect == true) {
+          rc = KMessageBox::warningYesNoCancel(0, QString("<p>")+i18n("Do you really want to cancel editing this transaction without saving it?<p>- <b>Yes</b> cancels editing the transaction<br>- <b>No</b> saves the transaction prior to cancelling and<br>- <b>Cancel</b> returns to the transaction editor.<p>You can also select an option to save the transaction automatically when e.g. selecting another transaction."), i18n("Cancel transaction edit"), KStdGuiItem::yes(), KStdGuiItem::no(), dontShowAgain);
+
+        } else {
+          rc = KMessageBox::warningYesNo(0, QString("<p>")+i18n("Do you really want to cancel editing this transaction without saving it?<p>- <b>Yes</b> cancels editing the transaction<br>- <b>No</b> saves the transaction prior to cancelling.<p>You can also select an option to save the transaction automatically when e.g. selecting another transaction."), i18n("Cancel transaction edit"), KStdGuiItem::yes(), KStdGuiItem::no(), dontShowAgain);
+        }
+
+        switch(rc) {
           case KMessageBox::Yes:
             slotTransactionsCancel();
             break;

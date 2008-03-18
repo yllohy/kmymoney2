@@ -116,7 +116,7 @@ bool MousePressFilter::eventFilter(QObject* o, QEvent* e)
       }
       if(it_w == m_parents.end()) {
         m_lastMousePressEvent = e;
-        bool rc;
+        bool rc = false;
         emit mousePressedOnExternalWidget(rc);
       }
     }

@@ -1,4 +1,8 @@
 
+2008-03-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow Cancel option when leaving the transaction editor only when
+    leaving is caused by selection of another transaction in the register
+
 2008-03-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed crash with OFX download when IBAN field is empty (thanks to
     John Whitlock for pointing it out) now for libofx < 0.9
