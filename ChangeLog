@@ -1,6 +1,7 @@
 
 2008-03-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Portuguese translation from José Jorge
+  * Fixed widget update problem in schedule editor dialog
 
 2008-03-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Allow Cancel option when leaving the transaction editor only when

@@ -427,7 +427,9 @@ void KEditScheduleDlg::slotRemainingChanged(const QString& text)
   d->m_schedule.setOccurence(static_cast<MyMoneySchedule::occurenceE>(m_frequencyEdit->currentItem()));
 
   if(d->m_schedule.transactionsRemaining() != text.toInt()) {
+    m_FinalPaymentEdit->blockSignals(true);
     m_FinalPaymentEdit->setDate(d->m_schedule.dateAfter(text.toInt()));
+    m_FinalPaymentEdit->blockSignals(false);
   }
 }
 
@@ -441,7 +443,9 @@ void KEditScheduleDlg::slotEndDateChanged(const QDate& date)
   if(d->m_schedule.endDate() != date) {
     d->m_schedule.setEndDate(date);
     if(d->m_schedule.transactionsRemaining() != m_RemainingEdit->text().toInt())
+      m_RemainingEdit->blockSignals(true);
       m_RemainingEdit->setText(QString::number(d->m_schedule.transactionsRemaining()));
+      m_RemainingEdit->blockSignals(false);
   }
 }
 
