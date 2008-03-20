@@ -460,7 +460,8 @@ int AccountSet::load(kMyMoneyAccountSelector* selector, const QString& baseName,
     if(acc.isClosed())
       continue;
     QString tmpKey;
-    tmpKey = baseName + MyMoneyFile::AccountSeperator + acc.name();
+    // the first character must be preset. Since we don't know any sort order here, we just use A
+    tmpKey = QString("A%1%2%3").arg(baseName, MyMoneyFile::AccountSeperator, acc.name());
     selector->newItem(item, acc.name(), tmpKey, acc.id());
     ++m_count;
     ++count;

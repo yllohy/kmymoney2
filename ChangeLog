@@ -1,4 +1,8 @@
 
+2008-03-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed problem with investment transaction editor due to recent changes
+    of 'Favorites' handling
+
 2008-03-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Portuguese translation from José Jorge
   * Fixed widget update problem in schedule editor dialog
