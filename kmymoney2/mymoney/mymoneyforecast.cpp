@@ -38,15 +38,16 @@
 #include "mymoneyforecast.h"
 #include "mymoneytransactionfilter.h"
 
-
-
 MyMoneyForecast::MyMoneyForecast()
 {
   setForecastCycles(KMyMoneyGlobalSettings::forecastCycles());
   setAccountsCycle(KMyMoneyGlobalSettings::forecastAccountCycle());
+  setHistoryStartDate(QDate::currentDate().addDays(-forecastCycles()*accountsCycle()));
+  setHistoryEndDate(QDate::currentDate().addDays(-1));
   setForecastDays(KMyMoneyGlobalSettings::forecastDays());
   setBeginForecastDay(KMyMoneyGlobalSettings::beginForecastDay());
   setForecastMethod(KMyMoneyGlobalSettings::forecastMethod());
+  setSkipOpeningDate(true);
 }
 
 
@@ -67,8 +68,12 @@ void MyMoneyForecast::doForecast()
 
   //initialize global variables
   setForecastDays(fDays);
+  setForecastStartDate(QDate::currentDate().addDays(1));
+  setForecastEndDate(QDate::currentDate().addDays(fDays));
   setAccountsCycle(fAccCycle);
   setForecastCycles(fCycles);
+  setHistoryStartDate(forecastCycles()*accountsCycle());
+  setHistoryEndDate(QDate::currentDate().addDays(-1)); //yesterday
 
   //clear all data before calculating
   m_accountListPast.clear();
@@ -99,12 +104,9 @@ MyMoneyForecast::~MyMoneyForecast()
 void MyMoneyForecast::pastTransactions()
 {
   MyMoneyFile* file = MyMoneyFile::instance();
-  QDate startDate = QDate::currentDate().addDays(-(historyDays()));
-  QDate endDate = QDate::currentDate().addDays(-1);
-
   MyMoneyTransactionFilter filter;
 
-  filter.setDateFilter(startDate, endDate);
+  filter.setDateFilter(historyStartDate(), historyEndDate());
   filter.setReportAllSplits(false);
 
   QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
@@ -117,12 +119,17 @@ void MyMoneyForecast::pastTransactions()
     for(; it_s != splits.end(); ++it_s ) {
       if(!(*it_s).shares().isZero()) {
         MyMoneyAccount acc = file->account((*it_s).accountId());
-        if(isForecastAccount(acc) && //If it is one of the accounts we are checking, add the amount of the transaction
-           acc.openingDate() < (*it_t).postDate()) { //dont take the opening day of the account to calculate balance
+        if(isForecastAccount(acc) //If it is one of the accounts we are checking, add the amount of the transaction
+          && ( (acc.openingDate() < (*it_t).postDate() && skipOpeningDate())
+           || !skipOpeningDate() ) ){ //dont take the opening day of the account to calculate balance
           dailyBalances balance;
+          //FIXME deal with leap years
           balance = m_accountListPast[acc.id()];
-          int offset = startDate.daysTo((*it_t).postDate())+1;
-          balance[offset] += (*it_s).shares();
+          if(acc.accountType() == MyMoneyAccount::Income) {//if it is income, the balance is stored as negative number
+            balance[(*it_t).postDate()] += ((*it_s).shares() * MyMoneyMoney(-1, 1));
+          } else {
+            balance[(*it_t).postDate()] += (*it_s).shares();
+          }
           // check if this is a new account for us
           m_accountListPast[acc.id()] = balance;
         }
@@ -137,9 +144,10 @@ void MyMoneyForecast::pastTransactions()
   QMap<QString, QCString>::Iterator it_n;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
-    m_accountListPast[acc.id()][0] = file->balance(acc.id(), startDate.addDays(-1)); //balance of startdate is the balance at the end of the day before
-    for(int it_f = 1; it_f <= historyDays(); ++it_f) {
-      m_accountListPast[acc.id()][it_f] += m_accountListPast[acc.id()][(it_f-1)]; //Running sum
+    m_accountListPast[acc.id()][historyStartDate().addDays(-1)] = file->balance(acc.id(), historyStartDate().addDays(-1));
+    for(QDate it_date = historyStartDate(); it_date <= historyEndDate(); ) {
+      m_accountListPast[acc.id()][it_date] += m_accountListPast[acc.id()][it_date.addDays(-1)]; //Running sum
+      it_date = it_date.addDays(1);
     }
   }
 
@@ -155,15 +163,16 @@ void MyMoneyForecast::pastTransactions()
         MyMoneyMoney rate = MyMoneyMoney ( 1, 1 ); //set the default value
         MyMoneyPrice price;
 
-        for ( int it_f = 0; it_f <= historyDays(); ++it_f ) {
+        for ( QDate it_date = historyStartDate().addDays(-1) ; it_date <= historyEndDate();) {
           //get the price for the tradingCurrency that day
-          price = file->price ( undersecurity.id(), undersecurity.tradingCurrency(), startDate.addDays ( it_f-1 ) );
+          price = file->price ( undersecurity.id(), undersecurity.tradingCurrency(), it_date );
           if ( price.isValid() )
           {
             rate = price.rate ( undersecurity.tradingCurrency() );
           }
           //value is the amount of shares multiplied by the rate of the deep currency
-          m_accountListPast[acc.id() ][it_f] = m_accountListPast[acc.id() ][it_f] * rate;
+          m_accountListPast[acc.id() ][it_date] = m_accountListPast[acc.id() ][it_date] * rate;
+          it_date = it_date.addDays(1);
         }
       }
     }
@@ -197,11 +206,12 @@ void MyMoneyForecast::calculateAccountTrendList()
     MyMoneyAccount acc = file->account(*it_n);
     m_accountTrendList[acc.id()][0] = MyMoneyMoney(0,1); // for today, the trend is 0
 
-    if(acc.openingDate().daysTo(QDate::currentDate()) < historyDays()) { //if acc opened after forecast period
-      auxForecastTerms = 1 + (acc.openingDate().daysTo(QDate::currentDate()) / accountsCycle()); // set forecastTerms to a lower value, to calculate only based on how much this account was opened
-    } else {
-      auxForecastTerms = forecastCycles();
-    }
+    auxForecastTerms = forecastCycles();
+    if(skipOpeningDate()) {
+      if(acc.openingDate() > historyStartDate() ) { //if acc opened after forecast period
+        auxForecastTerms = 1 + ((acc.openingDate().daysTo(historyEndDate()) + 1)/ accountsCycle()); // set forecastTerms to a lower value, to calculate only based on how much this account was opened
+      }
+    } 
 
     for(int t_day = 1; t_day <= accountsCycle(); t_day++) {
       m_accountTrendList[acc.id()][t_day] = calculateAccountDailyTrend(acc, t_day, accountsCycle(), auxForecastTerms);
@@ -318,10 +328,10 @@ MyMoneyMoney MyMoneyForecast::calculateAccountDailyTrend(MyMoneyAccount acc, int
   //for the last 3 months
   MyMoneyMoney balanceVariation;
 
-  for(int it_terms=0; (trendDay+(forecastTerm*it_terms)) <= historyDays(); ++it_terms) //sum for each term
+  for(int it_terms = 0; (trendDay+(forecastTerm*it_terms)) <= historyDays(); ++it_terms) //sum for each term
   {
-    MyMoneyMoney balanceBefore = m_accountListPast[acc.id()][(trendDay+(forecastTerm*it_terms)-1)]; //get balance for the day before
-    MyMoneyMoney balanceAfter = m_accountListPast[acc.id()][(trendDay+(forecastTerm*it_terms))];
+    MyMoneyMoney balanceBefore = m_accountListPast[acc.id()][historyStartDate().addDays(trendDay+(forecastTerm*it_terms)-2)]; //get balance for the day before
+    MyMoneyMoney balanceAfter = m_accountListPast[acc.id()][historyStartDate().addDays(trendDay+(forecastTerm*it_terms)-1)];
     balanceVariation += (balanceAfter - balanceBefore); //add the balance variation between days
   }
   //calculate average of the variations
@@ -352,20 +362,21 @@ void MyMoneyForecast::calculateDailyBalances()
         {
           rate = price.rate ( undersecurity.tradingCurrency() );
         }
-        m_accountList[acc.id()][0] = file->balance(acc.id(), QDate::currentDate()) * rate;
+        m_accountList[acc.id()][QDate::currentDate()] = file->balance(acc.id(), QDate::currentDate()) * rate;
       }
     } else {
-      m_accountList[acc.id()][0] = file->balance(acc.id(), QDate::currentDate());
+      m_accountList[acc.id()][QDate::currentDate()] = file->balance(acc.id(), QDate::currentDate());
     }
 
-    for(int f_day = 1; f_day <= forecastDays();) {
-      for(int t_day = 1; t_day <= accountsCycle(); ++t_day, ++f_day) {
-        MyMoneyMoney balanceDayBefore = m_accountList[acc.id()][(f_day-1)];//balance of the day before
+    for(QDate f_day = forecastStartDate(); f_day <= forecastEndDate(); ) {
+      for(int t_day = 1; t_day <= accountsCycle(); ++t_day) {
+        MyMoneyMoney balanceDayBefore = m_accountList[acc.id()][(f_day.addDays(-1))];//balance of the day before
         MyMoneyMoney accountDailyTrend = m_accountTrendList[acc.id()][t_day]; //trend for that day
         //balance of the day is the balance of the day before multiplied by the trend for the day
         m_accountList[acc.id()][f_day] = balanceDayBefore;
         m_accountList[acc.id()][f_day] += accountDailyTrend; //movement trend for that particular day
-        //m_accountList[acc.id()][f_day] += m_accountListPast[acc.id()][f_day]; //movement trend for that particular day
+        //m_accountList[acc.id()][f_day] += m_accountListPast[acc.id()][f_day.addDays(-historyDays())];
+        f_day = f_day.addDays(1);
       }
     }
   }
@@ -373,8 +384,22 @@ void MyMoneyForecast::calculateDailyBalances()
 
 MyMoneyMoney MyMoneyForecast::forecastBalance(const MyMoneyAccount& acc, QDate forecastDate)
 {
-  int offset = QDate::currentDate().daysTo(forecastDate);
-  return forecastBalance(acc, offset);
+  
+  dailyBalances balance;
+  MyMoneyMoney MM_amount;
+
+  //Check if acc is not a forecast account, return 0
+  if ( !isForecastAccount ( acc ) )
+  {
+    return MM_amount;
+  }
+
+  balance = m_accountList[acc.id() ];
+  if ( balance.contains ( forecastDate ) )
+  { //if the date is not in the forecast, it returns 0
+    MM_amount = m_accountList[acc.id() ][forecastDate];
+  }
+  return MM_amount;
 }
 
 /**
@@ -384,35 +409,20 @@ MyMoneyMoney MyMoneyForecast::forecastBalance(const MyMoneyAccount& acc, QDate f
  */
 MyMoneyMoney MyMoneyForecast::forecastBalance (const MyMoneyAccount& acc, int offset )
 {
-  dailyBalances balance;
-  MyMoneyMoney MM_amount;
-
-  //Check if acc is not a forecast account or date is in the past, return 0
-  if ( !isForecastAccount ( acc )
-          || offset < 0
-          || offset > forecastDays() )
-  {
-    return MM_amount;
-  }
-
-  balance = m_accountList[acc.id() ];
-  if ( balance.contains ( offset ) )
-  { //if the date is not in the forecast, it returns 0
-    MM_amount = m_accountList[acc.id() ][offset];
-  }
-  return MM_amount;
+  QDate forecastDate = QDate::currentDate().addDays(offset);
+  return forecastBalance(acc, forecastDate);
 }
 
 void MyMoneyForecast::doFutureScheduledForecast(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
 
-  QDate endDate = QDate::currentDate().addDays(forecastDays());
+  //QDate endDate = forecastEndDate();
   MyMoneyTransactionFilter filter;
 
   // collect and process all transactions that have already been entered but
   // are located in the future.
-  filter.setDateFilter(QDate::currentDate().addDays(1), endDate);
+  filter.setDateFilter(forecastStartDate(), forecastEndDate());
   filter.setReportAllSplits(false);
 
   QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
@@ -427,12 +437,11 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
         if(isForecastAccount(acc)) {
           dailyBalances balance;
           balance = m_accountList[acc.id()];
-          int offset = QDate::currentDate().daysTo((*it_t).postDate());
-          balance[offset] += (*it_s).shares();
+          balance[(*it_t).postDate()] += (*it_s).shares();
           // check if this is a new account for us
           if(m_nameIdx[acc.name()] != acc.id()) {
             m_nameIdx[acc.name()] = acc.id();
-            balance[0] = file->balance(acc.id(), QDate::currentDate());
+            balance[QDate::currentDate()] = file->balance(acc.id(), QDate::currentDate());
           }
           m_accountList[acc.id()] = balance;
         }
@@ -465,7 +474,7 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
   QValueList<MyMoneySchedule> schedule;
 
   schedule = file->scheduleList("", MyMoneySchedule::TYPE_ANY, MyMoneySchedule::OCCUR_ANY, MyMoneySchedule::STYPE_ANY,
-                                              QDate::currentDate(), endDate);
+                                QDate::currentDate(), forecastEndDate());
   if(schedule.count() > 0) {
     QValueList<MyMoneySchedule>::Iterator it;
     do {
@@ -480,7 +489,7 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
         continue;
       }
 
-      if (nextDate > endDate) {
+      if (nextDate > forecastEndDate()) {
         // We're done with this schedule, let's move on to the next
         schedule.remove(it);
         continue;
@@ -505,17 +514,20 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
                 MyMoneyAccount acc = file->account((*it_s).accountId());
                 if(isForecastAccount(acc)) {
                   // check if this is a new account for us and if so, keep the
-                  // current balance in offset 0 of the array
-                  if(m_accountList[acc.id()][0].isZero())
-                    m_accountList[acc.id()][0] = file->balance(acc.id());
-                  int offset = QDate::currentDate().daysTo(nextDate);
-                  if(offset <= 0) {  // collect all overdues on the first day
-                    offset = 1;
-                  }
+                  // current balance in current date of the array
+                  if(m_accountList[acc.id()][QDate::currentDate()].isZero())
+                    m_accountList[acc.id()][QDate::currentDate()] = file->balance(acc.id(), QDate::currentDate());
+
+                  // collect all overdues on the first day
+                  QDate forecastDate = nextDate;
+                  if(QDate::currentDate() >= nextDate)
+                    forecastDate = QDate::currentDate().addDays(1);
+
                   dailyBalances balance;
                   balance = m_accountList[acc.id()];
-                  for(int i = 0; i < offset; ++i) {
-                    balanceMap[acc.id()] += m_accountList[acc.id()][i];
+                  for(QDate f_day = QDate::currentDate(); f_day < forecastDate; ) {
+                    balanceMap[acc.id()] += m_accountList[acc.id()][f_day];
+                    f_day = f_day.addDays(1);
                   }
                 }
               }
@@ -529,11 +541,16 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
                 if(isForecastAccount(acc)) {
                   dailyBalances balance;
                   balance = m_accountList[acc.id()];
-                  int offset = QDate::currentDate().daysTo(nextDate);
-                  if(offset <= 0) {  // collect all overdues on the first day
-                    offset = 1;
-                  }
-                  balance[offset] += (*it_s).value();
+                  //int offset = QDate::currentDate().daysTo(nextDate);
+                  //if(offset <= 0) {  // collect all overdues on the first day
+                  //  offset = 1;
+                  //}
+                  // collect all overdues on the first day
+                  QDate forecastDate = nextDate;
+                  if(QDate::currentDate() >= nextDate)
+                    forecastDate = QDate::currentDate().addDays(1);
+
+                  balance[forecastDate] += (*it_s).value();
                   m_accountList[acc.id()] = balance;
                 }
               }
@@ -579,11 +596,12 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
 
-    m_accountList[acc.id()][0] = file->balance(acc.id(), QDate::currentDate());//Get current account balance
+    m_accountList[acc.id()][QDate::currentDate()] = file->balance(acc.id(), QDate::currentDate());//Get current account balance
 
-    for(int f_day = 1; f_day <= forecastDays(); ++f_day) {
-      MyMoneyMoney balanceDayBefore = m_accountList[acc.id()][(f_day-1)];//balance of the day before
+    for(QDate f_day = forecastStartDate(); f_day <= forecastEndDate(); ) {
+      MyMoneyMoney balanceDayBefore = m_accountList[acc.id()][(f_day.addDays(-1))];//balance of the day before
       m_accountList[acc.id()][f_day] += balanceDayBefore; //running sum
+      f_day = f_day.addDays(1);
     }
   }
   
@@ -599,15 +617,16 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
         MyMoneyMoney rate = MyMoneyMoney ( 1, 1 ); //set the default value
         MyMoneyPrice price;
 
-        for ( int it_f = 0; it_f <= forecastDays(); ++it_f ) {
+        for (QDate it_day = QDate::currentDate(); it_day <= forecastEndDate(); ) {
           //get the price for the tradingCurrency that day
-          price = file->price ( undersecurity.id(), undersecurity.tradingCurrency(), QDate::currentDate().addDays ( it_f-1 ) );
+          price = file->price ( undersecurity.id(), undersecurity.tradingCurrency(), it_day );
           if ( price.isValid() )
           {
             rate = price.rate ( undersecurity.tradingCurrency() );
           }
           //value is the amount of shares multiplied by the rate of the deep currency
-          m_accountList[acc.id() ][it_f] = m_accountList[acc.id() ][it_f] * rate;
+          m_accountList[acc.id() ][it_day] = m_accountList[acc.id() ][it_day] * rate;
+          it_day = it_day.addDays(1);
         }
       }
     }
@@ -627,11 +646,11 @@ int MyMoneyForecast::daysToMinimumBalance(const MyMoneyAccount& acc)
 
   balance = m_accountList[acc.id()];
 
-  for(int it_b = 0 ; it_b < forecastDays(); ++it_b) {
-    MyMoneyMoney amount = balance[it_b];
-    if(minBalance > balance[it_b]) {
-      return it_b;
+  for(QDate it_day = QDate::currentDate() ; it_day <= forecastEndDate(); ) {
+    if(minBalance > balance[it_day]) {
+      return QDate::currentDate().daysTo(it_day);
     }
+    it_day = it_day.addDays(1);
   }
   return -1;
 }
@@ -648,90 +667,25 @@ int MyMoneyForecast::daysToZeroBalance(const MyMoneyAccount& acc)
   balance = m_accountList[acc.id()];
 
   if (acc.accountGroup() == MyMoneyAccount::Asset) {
-    for (int it_b = 0 ; it_b < forecastDays(); ++it_b )
+    for (QDate it_day = QDate::currentDate() ; it_day <= forecastEndDate(); )
     {
-      MyMoneyMoney amount = balance[it_b];
-      if ( balance[it_b] < MyMoneyMoney ( 0, 1 ) )
+      if ( balance[it_day] < MyMoneyMoney ( 0, 1 ) )
       {
-        return it_b;
+        return QDate::currentDate().daysTo(it_day);
       }
+      it_day = it_day.addDays(1);
     }
   } else if (acc.accountGroup() == MyMoneyAccount::Liability) {
-    for (int it_b = 0  ; it_b < forecastDays() ; ++it_b )
+    for (QDate it_day = QDate::currentDate() ; it_day <= forecastEndDate(); )
     {
-      if ( balance[it_b] > MyMoneyMoney ( 0, 1 ) )
+      if ( balance[it_day] > MyMoneyMoney ( 0, 1 ) )
       {
-        return it_b;
+        return QDate::currentDate().daysTo(it_day);
       }
+      it_day = it_day.addDays(1);
     }
   }
   return -1;
-}
-
-
-int MyMoneyForecast::historyDays(void) const
-{
-  return accountsCycle() * forecastCycles();
-}
-
-void MyMoneyForecast::setAccountsCycle(int accountsCycle)
-{
-  m_accountsCycle = accountsCycle;
-}
-
-int MyMoneyForecast::accountsCycle(void) const
-{
-  return m_accountsCycle;
-}
-
-void MyMoneyForecast::setForecastCycles(int forecastCycles)
-{
-  m_forecastCycles = forecastCycles;
-}
-
-int MyMoneyForecast::forecastCycles(void) const
-{
-  return m_forecastCycles;
-}
-
-void MyMoneyForecast::setForecastDays(int forecastDays)
-{
-  m_forecastDays = forecastDays;
-}
-
-int MyMoneyForecast::forecastDays(void) const
-{
-  return m_forecastDays;
-}
-
-void MyMoneyForecast::setBeginForecastDate(QDate beginForecastDate)
-{
-  m_beginForecastDate = beginForecastDate;
-}
-
-  QDate MyMoneyForecast::beginForecastDate(void) const
-{
-  return m_beginForecastDate;
-}
-
-void MyMoneyForecast::setBeginForecastDay(int beginDay)
-{
-  m_beginForecastDay = beginDay;
-}
-
-  int MyMoneyForecast::beginForecastDay(void) const
-{
-  return m_beginForecastDay;
-}
-
-void MyMoneyForecast::setForecastMethod(int forecastMethod)
-{
-  m_forecastMethod = forecastMethod;
-}
-
-int MyMoneyForecast::forecastMethod(void) const
-{
-  return m_forecastMethod;
 }
 
 void MyMoneyForecast::setForecastAccountList(void)
@@ -744,7 +698,7 @@ void MyMoneyForecast::setForecastAccountList(void)
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for(; accList_t != accList.end(); ++accList_t ) {
     MyMoneyAccount acc = *accList_t;
-      // check if this is a new account for us
+    // check if this is a new account for us
     if(m_nameIdx[acc.name()] != acc.id()) {
       m_nameIdx[acc.name()] = acc.id();
     }
@@ -767,7 +721,7 @@ MyMoneyMoney MyMoneyForecast::accountTotalVariation(const MyMoneyAccount& acc)
 {
   MyMoneyMoney totalVariation;
 
-  totalVariation = forecastBalance(acc, forecastDays()) - forecastBalance(acc, QDate::currentDate());
+  totalVariation = forecastBalance(acc, forecastEndDate()) - forecastBalance(acc, QDate::currentDate());
   return totalVariation;
 }
 
@@ -818,7 +772,7 @@ MyMoneyMoney MyMoneyForecast::accountAverageBalance(const MyMoneyAccount& acc)
 {
   MyMoneyMoney totalBalance;
   for(int f_day = 1; f_day <= forecastDays() ; ++f_day) {
-    totalBalance += m_accountList[acc.id()][f_day];
+    totalBalance += forecastBalance(acc, f_day);
   }
   return totalBalance / MyMoneyMoney( forecastDays(), 1);
 }
@@ -888,6 +842,142 @@ void MyMoneyForecast::purgeForecastAccountsList(void)
     if(!m_accountList.contains(*it_n)) {
       m_nameIdx.remove(it_n);
       it_n = m_nameIdx.begin();
+    }
+  }
+}
+
+MyMoneyBudget MyMoneyForecast::createBudget ( QDate historyStart, QDate historyEnd, QDate budgetStart, QDate budgetEnd, const bool returnBudget )
+{
+  MyMoneyBudget budget;
+
+  //check parameters
+  if ( historyStart > historyEnd ||
+       budgetStart > budgetEnd ||
+       budgetStart <= historyEnd )
+  {
+    throw new MYMONEYEXCEPTION ( "Illegal parameters when trying to create budget" );
+  }
+
+  //set start date to 1st of month and end dates to last day of month, since we deal with full months in budget
+  historyStart = QDate ( historyStart.year(), historyStart.month(), 1 );
+  historyEnd = QDate ( historyEnd.year(), historyEnd.month(), historyEnd.daysInMonth() );
+  budgetStart = QDate ( budgetStart.year(), budgetStart.month(), 1 );
+  budgetEnd = QDate ( budgetEnd.year(), budgetEnd.month(), budgetEnd.daysInMonth() );
+
+  //set forecast parameters
+  setHistoryStartDate ( historyStart );
+  setHistoryEndDate ( historyEnd );
+  setForecastStartDate ( budgetStart );
+  setForecastEndDate ( budgetEnd );
+  setForecastDays ( budgetStart.daysTo ( budgetEnd ) + 1 );
+  if ( budgetStart.daysTo ( budgetEnd ) > historyStart.daysTo ( historyEnd ) ) { //if history period is shorter than budget, use that one as the trend length
+    setAccountsCycle ( historyStart.daysTo ( historyEnd ) ); //we set the accountsCycle to the base timeframe we will use to calculate the average (eg. 180 days, 365, etc)
+  } else { //if one timeframe is larger than the other, but not enough to be 1 time larger, we take the lowest value
+    setAccountsCycle ( budgetStart.daysTo ( budgetEnd ) );
+  }
+  setForecastCycles ( ( historyStart.daysTo ( historyEnd ) / accountsCycle() ) );
+  if ( forecastCycles() == 0 ) //the cycles must be at least 1
+    setForecastCycles ( 1 );
+
+  //do not skip opening date
+  setSkipOpeningDate ( false );
+
+  //clear and set accounts list we are going to use. Actually categories, in this case
+  m_nameIdx.clear();
+  setBudgetAccountList();
+
+  pastTransactions(); //get all transactions for history period
+
+  calculateAccountTrendList();
+
+  calculateMonthlyBalances();
+
+  if ( returnBudget ) { //only fill the budget if it is going to be used
+    //setup the budget itself
+    MyMoneyFile* file = MyMoneyFile::instance();
+    budget.setBudgetStart ( budgetStart );
+
+    //go through all the accounts and add them to budget
+    QMap<QString, QCString>::ConstIterator it_nc;
+    for ( it_nc = m_nameIdx.begin(); it_nc != m_nameIdx.end(); ++it_nc ) {
+      MyMoneyAccount acc = file->account ( *it_nc );
+
+      MyMoneyBudget::AccountGroup budgetAcc;
+      budgetAcc.setId ( acc.id() );
+      budgetAcc.setBudgetLevel ( MyMoneyBudget::AccountGroup::eMonthByMonth );
+
+      for ( QDate f_date = forecastStartDate(); f_date <= forecastEndDate(); ) {
+        MyMoneyBudget::PeriodGroup period;
+
+        //add period to budget account
+        period.setStartDate ( f_date );
+        period.setAmount ( forecastBalance ( acc, f_date ) );
+        budgetAcc.addPeriod ( f_date, period );
+
+        f_date = f_date.addMonths ( 1 ); //next month
+      }
+      budget.setAccount ( budgetAcc, acc.id() ); //add budget account to budget
+    }
+  }
+  return budget;
+}
+
+void MyMoneyForecast::setBudgetAccountList(void)
+{
+  //get budget accounts
+  QValueList<MyMoneyAccount> accList;
+  accList = budgetAccountList();
+
+  QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
+  for(; accList_t != accList.end(); ++accList_t ) {
+    MyMoneyAccount acc = *accList_t;
+      // check if this is a new account for us
+    if(m_nameIdx[acc.name()] != acc.id()) {
+      m_nameIdx[acc.name()] = acc.id();
+    }
+  }
+}
+
+QValueList<MyMoneyAccount> MyMoneyForecast::budgetAccountList(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  QValueList<MyMoneyAccount> accList;
+  QCStringList emptyStringList;
+  //Get all accounts from the file and check if they are of the right type to calculate forecast
+  file->accountList(accList, emptyStringList, false);
+  QValueList<MyMoneyAccount>::iterator accList_t = accList.begin();
+  for(; accList_t != accList.end(); ) {
+    MyMoneyAccount acc = *accList_t;
+    if(acc.isClosed()             //check the account is not closed
+       || (!acc.isIncomeExpense()) ) {
+      accList.remove(accList_t);    //remove the account if it is not of the correct type
+      accList_t = accList.begin();
+       } else {
+         ++accList_t;
+       }
+  }
+  return accList;
+}
+
+void MyMoneyForecast::calculateMonthlyBalances()
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+
+  //Calculate account monthly balances
+  QMap<QString, QCString>::ConstIterator it_n;
+  for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
+    MyMoneyAccount acc = file->account(*it_n);
+    
+    for( QDate f_date = forecastStartDate(); f_date <= forecastEndDate(); ) {
+      for(int f_day = 1; f_day <= accountsCycle() && f_date <= forecastEndDate(); ++f_day) {
+        MyMoneyMoney accountDailyTrend = m_accountTrendList[acc.id()][f_day]; //trend for that day
+        //check for leap year
+        if(f_date.month() == 2 && f_date.day() == 29)
+          f_date = f_date.addDays(1); //skip 1 day
+        m_accountList[acc.id()][QDate(f_date.year(), f_date.month(), 1)] += accountDailyTrend; //movement trend for that particular day
+        f_date = f_date.addDays(1);
+      }
     }
   }
 }

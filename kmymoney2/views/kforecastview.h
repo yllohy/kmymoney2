@@ -35,7 +35,6 @@
   * @author Alvaro Soliverez
   */
 
-
 /**
   * This class implements the forecast 'view'.
   */
@@ -58,13 +57,10 @@ protected:
     SummaryView = 0,
     ListView,
     AdvancedView,
+    BudgetView,
     // insert new values above this line
     MaxViewTabs
   } ForecastViewTab;
-
-  //typedef
-      //QMap<int, MyMoneyMoney> dailyBalances;
-  //QMap<QCString, dailyBalances> accountList;
 
   QMap<QString, QCString> nameIdx;
 
@@ -77,8 +73,7 @@ protected:
   void loadListView(void);
   void loadSummaryView(void);
   void loadAdvancedView(void);
-
-//  void calculateDailyBalances(int forecastDays, int forecastTerm, int forecastTerms);
+  void loadBudgetView(void);
 
 protected slots:
   void slotTabChanged(QWidget*);

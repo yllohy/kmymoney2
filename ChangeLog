@@ -1,3 +1,10 @@
+2008-03-22 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed date locale in forecast view
+  * Added createBudget to forecast, to forecast budget based on history
+  * Added unit tests to check budget forecast
+  * Added budget forecast tab to forecast view
+  * Changed the way forecast is stored internally to date and cleaned up code in forecast class
+  * Added skipOpeningDate setting to forecast
 
 2008-03-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed problem with investment transaction editor due to recent changes

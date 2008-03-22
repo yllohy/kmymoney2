@@ -19,6 +19,7 @@
 #include <qvaluelist.h>
 
 #include "mymoneyforecasttest.h"
+#include "mymoneybudget.h"
 
 #include <kmymoney/mymoneyexception.h>
 
@@ -106,6 +107,8 @@ void MyMoneyForecastTest::testEmptyConstructor() {
   CPPUNIT_ASSERT(a.forecastDays() == KMyMoneyGlobalSettings::forecastDays());
   CPPUNIT_ASSERT(a.accountsCycle() == KMyMoneyGlobalSettings::forecastAccountCycle());
   CPPUNIT_ASSERT(a.forecastCycles() == KMyMoneyGlobalSettings::forecastCycles());
+  CPPUNIT_ASSERT(a.historyStartDate() == QDate::currentDate().addDays(-KMyMoneyGlobalSettings::forecastCycles()*KMyMoneyGlobalSettings::forecastAccountCycle()));
+  CPPUNIT_ASSERT(a.historyEndDate() == QDate::currentDate().addDays(-1));
   CPPUNIT_ASSERT(a.historyDays() == KMyMoneyGlobalSettings::forecastAccountCycle() * KMyMoneyGlobalSettings::forecastCycles());
 }
 
@@ -179,6 +182,7 @@ void MyMoneyForecastTest::testDoForecast() {
   a.setForecastDays(3);
   a.setAccountsCycle(1);
   a.setForecastCycles(1);
+  a.setBeginForecastDay(0);
   a.doForecast();
 
   //checking didnt have balance variations, so the forecast should be equal to the current balance
@@ -205,6 +209,7 @@ void MyMoneyForecastTest::testDoForecast() {
   a.setForecastDays(3);
   a.setAccountsCycle(1);
   a.setForecastCycles(1);
+  a.setBeginForecastDay(0);
   a.doForecast();
   //check forecast
   b_credit = file->balance(a_credit.id(), QDate::currentDate());
@@ -535,25 +540,24 @@ void MyMoneyForecastTest::testDaysToMinimumBalance()
   TransactionHelper t2( QDate::currentDate().addDays(2), MyMoneySplit::ActionDeposit, moT2, acCash, acParent );
   TransactionHelper t3( QDate::currentDate().addDays(-1), MyMoneySplit::ActionWithdrawal, -moT1, acCredit, acParent );
   TransactionHelper t4( QDate::currentDate().addDays(4), MyMoneySplit::ActionWithdrawal, moT5, acCredit, acParent );
-  
+
   a.setForecastMethod(0);
   a.setForecastDays(3);
   a.setAccountsCycle(1);
   a.setForecastCycles(1);
+  a.setBeginForecastDay(0);
   a.doForecast();
-  
-   
-  
+
   //test invalid arguments
   MyMoneyAccount nullAcc;
   CPPUNIT_ASSERT(a.daysToMinimumBalance(nullAcc) == -1);
-  
+
   //test when not a forecast account
   CPPUNIT_ASSERT(a.daysToMinimumBalance(a_parent) == -1);
-  
+
   //test it warns when inside the forecast period
   CPPUNIT_ASSERT(a.daysToMinimumBalance(a_cash) == 2);
-  
+
   //test it does not warn when it will be outside of the forecast period
   CPPUNIT_ASSERT(a.daysToMinimumBalance(a_credit) == -1);
 }
@@ -807,4 +811,67 @@ void MyMoneyForecastTest::testBeginForecastDate() {
     std::cout << std::endl << "testBeginForecastDate(): test of first day of month skipped because current day is 1st of month" << std::endl;
   }
 }
+  
+  void MyMoneyForecastTest::testHistoryDays(void) 
+{
+  MyMoneyForecast a;
+  
+  CPPUNIT_ASSERT(a.historyStartDate() == QDate::currentDate().addDays(-a.forecastCycles()*a.accountsCycle()) );
+  CPPUNIT_ASSERT(a.historyEndDate() == QDate::currentDate().addDays(-1) );
+  CPPUNIT_ASSERT(a.historyDays() == a.forecastCycles()*a.accountsCycle());
+  
+  a.setForecastMethod(1);
+  a.setForecastDays(90);
+  a.setAccountsCycle(14);
+  a.setForecastCycles(3);
+  a.setBeginForecastDay(0);
+  a.doForecast();
+  
+  CPPUNIT_ASSERT(a.historyStartDate() == QDate::currentDate().addDays(-14*3) );
+  CPPUNIT_ASSERT(a.historyDays() == (14*3));
+  CPPUNIT_ASSERT(a.historyEndDate() == (QDate::currentDate().addDays(-1)) );
+}
 
+void MyMoneyForecastTest::testCreateBudget() 
+{
+  //set up environment
+  MyMoneyForecast a;
+  MyMoneyForecast b;
+  MyMoneyBudget budget;
+  
+  TransactionHelper t1( QDate(2005, 1, 3), MyMoneySplit::ActionWithdrawal, this->moT1, acCash, acSolo);
+  TransactionHelper t2( QDate(2005, 1, 15), MyMoneySplit::ActionWithdrawal, this->moT2, acCash, acParent);
+  TransactionHelper t3( QDate(2005, 1, 30), MyMoneySplit::ActionWithdrawal, this->moT3, acCash, acSolo);
+  TransactionHelper t4( QDate(2006, 1, 25), MyMoneySplit::ActionWithdrawal, this->moT4, acCash, acParent);
+  TransactionHelper t5( QDate(2005, 4, 3), MyMoneySplit::ActionWithdrawal, this->moT1, acCash, acSolo);
+  TransactionHelper t6( QDate(2006, 5, 15), MyMoneySplit::ActionWithdrawal, this->moT2, acCash, acParent);
+  TransactionHelper t7( QDate(2005, 8, 3), MyMoneySplit::ActionWithdrawal, this->moT3, acCash, acSolo);
+  TransactionHelper t8( QDate(2006, 9, 15), MyMoneySplit::ActionWithdrawal, this->moT4, acCash, acParent);
+
+  budget = a.createBudget(QDate(2005, 1, 1), QDate(2006, 12, 31), QDate(2007, 1, 1), QDate(2007, 12, 31), true);
+
+  //test
+  MyMoneyAccount a_solo = file->account(acSolo);
+  MyMoneyAccount a_parent = file->account(acParent);
+
+  //test it has no variation because it skipped the variation of the opening date
+  CPPUNIT_ASSERT(a.forecastBalance(a_solo, QDate(2007, 1, 1)) == ((moT1+moT3)/MyMoneyMoney(2, 1)));
+  CPPUNIT_ASSERT(a.forecastBalance(a_parent, QDate(2007, 1, 1)) == ((moT2+moT4)/MyMoneyMoney(2, 1)));
+  CPPUNIT_ASSERT(a.forecastBalance(a_solo, QDate(2007, 4, 1)) == ((moT1)/MyMoneyMoney(2, 1)));
+  CPPUNIT_ASSERT(a.forecastBalance(a_parent, QDate(2007, 5, 1)) == ((moT2)/MyMoneyMoney(2, 1)));
+  CPPUNIT_ASSERT(a.forecastBalance(a_solo, QDate(2007, 8, 1)) == ((moT3)/MyMoneyMoney(2, 1)));
+  CPPUNIT_ASSERT(a.forecastBalance(a_parent, QDate(2007, 9, 1)) == ((moT4)/MyMoneyMoney(2, 1)));
+  //test the budget object returned by the method
+  CPPUNIT_ASSERT(budget.account(a_parent.id()).period(QDate(2007, 9, 1)).amount() == ((moT4)/MyMoneyMoney(2, 1)));
+
+  //setup test for a length lower than a year
+  b.createBudget(QDate(2005, 1, 1), QDate(2005, 6, 30), QDate(2007, 1, 1), QDate(2007, 6, 30), true);
+  
+  //test
+  CPPUNIT_ASSERT(b.forecastBalance(a_solo, QDate(2007, 1, 1)) == (moT1+moT3));
+  CPPUNIT_ASSERT(b.forecastBalance(a_parent, QDate(2007, 1, 1)) == (moT2));
+  CPPUNIT_ASSERT(b.forecastBalance(a_solo, QDate(2007, 4, 1)) == (moT1));
+  CPPUNIT_ASSERT(b.forecastBalance(a_parent, QDate(2007, 5, 1)) == (MyMoneyMoney(0, 1)));
+  
+  
+}

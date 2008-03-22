@@ -458,6 +458,30 @@
                     </widget>
                 </vbox>
             </widget>
+	    <widget class="QWidget">
+                <property name="name">
+                    <cstring>budget</cstring>
+                </property>
+                <attribute name="title">
+                    <string>Budget Forecast</string>
+                </attribute>
+                <vbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>0</number>
+                    </property>
+                    <widget class="KListView">
+                        <property name="name">
+                            <cstring>m_budgetList</cstring>
+                        </property>
+                        <property name="resizePolicy">
+                            <enum>AutoOneFit</enum>
+                        </property>
+                    </widget>
+                </vbox>
+            </widget>
         </widget>
     </vbox>
 </widget>

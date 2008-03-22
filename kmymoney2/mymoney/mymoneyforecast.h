@@ -36,6 +36,7 @@
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/mymoneymoney.h>
 #include <kmymoney/export.h>
+#include "mymoneybudget.h"
 
 /**
   *
@@ -97,11 +98,6 @@ public:
   int daysToZeroBalance(const MyMoneyAccount& acc);
 
   /**
-   * number of days to go back in history to calculate forecast
-   */
-  int historyDays(void) const;
-  
-  /**
    * amount of variation of a given account in one cycle
    */
   MyMoneyMoney accountCycleVariation(const MyMoneyAccount& acc);
@@ -126,30 +122,41 @@ public:
    */
   MyMoneyMoney accountAverageBalance(const MyMoneyAccount& acc);
   
-  void setAccountsCycle(int accountsCycle);
-
-  int accountsCycle(void) const;
-
-  void setForecastCycles(int forecastCycles);
-
-  int forecastCycles(void) const;
-
-  void setForecastDays(int forecastDays);
-
-  int forecastDays(void) const;
+  /**
+   * creates a budget based on the history of a given timeframe
+   */
+  MyMoneyBudget createBudget(QDate historyStart, QDate historyEnd, QDate budgetStart, QDate budgetEnd, const bool returnBudget);
   
-  void setBeginForecastDate(QDate beginForecastDate);
-  
-  QDate beginForecastDate(void) const;
-  
-  void setBeginForecastDay(int beginDay);
-  
-  int beginForecastDay(void) const;
-  
-  void setForecastMethod(int forecastMethod);
+  /**
+   * number of days to go back in history to calculate forecast
+   */
+  int historyDays(void) const { return (m_historyStartDate.daysTo(m_historyEndDate) + 1); }
 
-  int forecastMethod(void) const;
+  void setAccountsCycle(int accountsCycle)   { m_accountsCycle = accountsCycle; }
+  void setForecastCycles(int forecastCycles)   { m_forecastCycles = forecastCycles; }
+  void setForecastDays(int forecastDays)   { m_forecastDays = forecastDays; }
+  void setBeginForecastDate(QDate beginForecastDate) { m_beginForecastDate = beginForecastDate; }
+  void setBeginForecastDay(int beginDay)   { m_beginForecastDay = beginDay; }
+  void setForecastMethod(int forecastMethod) { m_forecastMethod = forecastMethod; }
+  void setHistoryStartDate(QDate historyStartDate) { m_historyStartDate = historyStartDate; }
+  void setHistoryEndDate(QDate historyEndDate) { m_historyEndDate = historyEndDate; }
+  void setHistoryStartDate(int daysToStartDate) { setHistoryStartDate(QDate::currentDate().addDays(-daysToStartDate)); }
+  void setHistoryEndDate(int daysToEndDate) { setHistoryEndDate(QDate::currentDate().addDays(-daysToEndDate)); }
+  void setForecastStartDate(QDate _startDate) { m_forecastStartDate = _startDate; }
+  void setForecastEndDate(QDate _endDate) { m_forecastEndDate = _endDate; }
+  void setSkipOpeningDate(bool _skip) { m_skipOpeningDate = _skip; }
 
+  int accountsCycle(void) const   { return m_accountsCycle; }
+  int forecastCycles(void) const   { return m_forecastCycles; }
+  int forecastDays(void) const { return m_forecastDays; }
+  QDate beginForecastDate(void) const   { return m_beginForecastDate; }
+  int beginForecastDay(void) const   { return m_beginForecastDay; }
+  int forecastMethod(void) const   { return m_forecastMethod; }
+  QDate historyStartDate(void) const { return m_historyStartDate; }
+  QDate historyEndDate(void) const { return m_historyEndDate; }
+  QDate forecastStartDate(void) const { return m_forecastStartDate; }
+  QDate forecastEndDate(void) const { return m_forecastEndDate; }
+  bool skipOpeningDate(void) const { return m_skipOpeningDate; }
 
 private:
 
@@ -163,9 +170,19 @@ private:
   static QValueList<MyMoneyAccount> forecastAccountList(void);
 
   /**
+   * Returns the list of accounts to create a budget. Only Income and Expenses are returned.
+   */
+  QValueList<MyMoneyAccount> budgetAccountList(void);
+
+  /**
    * calculate daily forecast balance based on historic transactions
    */
   void calculateDailyBalances(void);
+
+  /**
+   * calculate monthly budget balance based on historic transactions
+   */
+  void calculateMonthlyBalances();
 
   /**
    * calculate forecast based on future and scheduled transactions
@@ -190,6 +207,11 @@ private:
    */
   void setForecastAccountList(void);
 
+  /**
+   * set the internal list of accounts to create a budget
+   */
+  void setBudgetAccountList(void);
+  
   /**
    * get past transactions for the accounts to be forecast
    */
@@ -222,7 +244,12 @@ private:
   /**
    * daily balances of an account
    */
-  typedef QMap<int, MyMoneyMoney> dailyBalances;
+  typedef QMap<QDate, MyMoneyMoney> dailyBalances;
+  
+  /**
+   * map of trends of an account
+   */
+  typedef QMap<int, MyMoneyMoney> trendBalances;
 
   /**
    * daily forecast balance of accounts
@@ -237,7 +264,7 @@ private:
   /**
    * daily forecast trends of accounts
    */
-  QMap<QCString, dailyBalances> m_accountTrendList;
+  QMap<QCString, trendBalances> m_accountTrendList;
 
   /**
    * list of forecast accounts
@@ -258,7 +285,7 @@ private:
    * number of days to forecast
    */
   int m_forecastDays;
-  
+
   /**
    * date to start forecast
    */
@@ -274,7 +301,30 @@ private:
    */
   int m_forecastMethod;
 
+  /**
+   * start date of history
+   */
+  QDate m_historyStartDate;
 
+  /**
+   * end date of history
+   */
+  QDate m_historyEndDate;
+  
+  /**
+   * start date of forecast
+   */
+  QDate m_forecastStartDate;
+
+  /**
+   * end date of forecast
+   */
+  QDate m_forecastEndDate;
+
+  /**
+   * skip opening date when fetching transactions of an account
+   */
+  bool m_skipOpeningDate;
 };
 
 #endif // MYMONEYFORECAST_H
