@@ -773,7 +773,7 @@ bool MyMoneyStatementReader::selectOrCreateAccount(const SelectCreateMode /*mode
         //throw new MYMONEYEXCEPTION("USERABORT");
         done = true;
       else
-        KMessageBox::error(0, i18n("You must select an account, create a new one, or press the <b>Abort</b> button."));
+        KMessageBox::error(0, QString("<qt>%1</qt>").arg(i18n("You must select an account, create a new one, or press the <b>Abort</b> button.")));
     }
   }
   return result;
