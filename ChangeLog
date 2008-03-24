@@ -1,4 +1,7 @@
 
+2008-03-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added missing #include <typeinfo> statements
+
 2008-03-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a string problem in a dialog when reading an OFX statement
 

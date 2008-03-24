@@ -25,6 +25,7 @@
 // ----------------------------------------------------------------------------
 // Std C++ / STL Includes
 
+#include <typeinfo>
 #include <cstdio>
 #include <iostream>
 

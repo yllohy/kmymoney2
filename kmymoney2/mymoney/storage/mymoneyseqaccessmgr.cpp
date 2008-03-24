@@ -17,6 +17,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <typeinfo>
 #include "mymoneyseqaccessmgr.h"
 #include "../mymoneytransactionfilter.h"
 #include "../mymoneycategory.h"
