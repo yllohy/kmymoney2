@@ -1,4 +1,10 @@
 
+2008-03-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed removal and loop operation in MyMoneyForecast::
+      -purgeForecastAccountsBasedOnHistory and
+      -purgeForecastAccountsList
+    which caused a lockup if no data is present
+
 2008-03-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added missing #include <typeinfo> statements
 

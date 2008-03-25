@@ -136,7 +136,7 @@ void MyMoneyForecast::pastTransactions()
       }
     }
   }
-  
+
   //purge those accounts with no transactions on the period
   purgeForecastAccountsBasedOnHistory();
 
@@ -154,7 +154,7 @@ void MyMoneyForecast::pastTransactions()
   //adjust value of investments to deep currency
   for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n ) {
     MyMoneyAccount acc = file->account ( *it_n );
-  
+
     if ( acc.isInvest() ) {
       //get the id of the security for that account
       MyMoneySecurity undersecurity = file->security ( acc.currencyId() );
@@ -211,7 +211,7 @@ void MyMoneyForecast::calculateAccountTrendList()
       if(acc.openingDate() > historyStartDate() ) { //if acc opened after forecast period
         auxForecastTerms = 1 + ((acc.openingDate().daysTo(historyEndDate()) + 1)/ accountsCycle()); // set forecastTerms to a lower value, to calculate only based on how much this account was opened
       }
-    } 
+    }
 
     for(int t_day = 1; t_day <= accountsCycle(); t_day++) {
       m_accountTrendList[acc.id()][t_day] = calculateAccountDailyTrend(acc, t_day, accountsCycle(), auxForecastTerms);
@@ -384,7 +384,7 @@ void MyMoneyForecast::calculateDailyBalances()
 
 MyMoneyMoney MyMoneyForecast::forecastBalance(const MyMoneyAccount& acc, QDate forecastDate)
 {
-  
+
   dailyBalances balance;
   MyMoneyMoney MM_amount;
 
@@ -590,7 +590,7 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
 #endif
   //do not show accounts with no transactions
   purgeForecastAccountsList();
-           
+
   //Calculate account daily balances
   QMap<QString, QCString>::ConstIterator it_n;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
@@ -604,11 +604,11 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
       f_day = f_day.addDays(1);
     }
   }
-  
+
     //adjust value of investments to deep currency
   for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n ) {
     MyMoneyAccount acc = file->account ( *it_n );
-  
+
     if ( acc.isInvest() ) {
       //get the id of the security for that account
       MyMoneySecurity undersecurity = file->security ( acc.currencyId() );
@@ -827,22 +827,24 @@ int MyMoneyForecast::calculateBeginForecastDay()
 void MyMoneyForecast::purgeForecastAccountsBasedOnHistory(void)
 {
   QMap<QString, QCString>::Iterator it_n;
-  for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n ) {
+  for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ) {
     if(!m_accountListPast.contains(*it_n)) {
       m_nameIdx.remove(it_n);
       it_n = m_nameIdx.begin();
-    }
+    } else
+      ++it_n;
   }
 }
 
 void MyMoneyForecast::purgeForecastAccountsList(void)
 {
   QMap<QString, QCString>::Iterator it_n;
-  for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n ) {
+  for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ) {
     if(!m_accountList.contains(*it_n)) {
       m_nameIdx.remove(it_n);
       it_n = m_nameIdx.begin();
-    }
+    } else
+      ++it_n;
   }
 }
 
@@ -968,7 +970,7 @@ void MyMoneyForecast::calculateMonthlyBalances()
   QMap<QString, QCString>::ConstIterator it_n;
   for(it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ++it_n) {
     MyMoneyAccount acc = file->account(*it_n);
-    
+
     for( QDate f_date = forecastStartDate(); f_date <= forecastEndDate(); ) {
       for(int f_day = 1; f_day <= accountsCycle() && f_date <= forecastEndDate(); ++f_day) {
         MyMoneyMoney accountDailyTrend = m_accountTrendList[acc.id()][f_day]; //trend for that day
