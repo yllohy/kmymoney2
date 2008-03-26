@@ -18,6 +18,8 @@
 #ifndef REGISTER_H
 #define REGISTER_H
 
+#include <algorithm>
+
 // ----------------------------------------------------------------------------
 // QT Includes
 

@@ -1,4 +1,7 @@
 
+2008-03-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added missing #include statements for GCC 4.3
+
 2008-03-25 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed removal and loop operation in MyMoneyForecast::
       -purgeForecastAccountsBasedOnHistory and
