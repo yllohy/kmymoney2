@@ -221,6 +221,8 @@ private:
 
   void createSchedule(MyMoneySchedule s, MyMoneyAccount& a);
 
+  void checkAccountName(const MyMoneyAccount& acc, const QString& name) const;
+
 public:
   /**
     * The constructor for KMyMoneyView. Just creates all the tabs for the

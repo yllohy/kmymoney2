@@ -810,11 +810,11 @@ void StdTransactionEditor::createEditWidgets(void)
     connect(tabbar, SIGNAL(tabSelected(int)), this, SLOT(slotUpdateAction(int)));
   }
 
-  label = new QLabel("Date", 0);
+  label = new QLabel(i18n("Date"), 0);
   label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
   m_editWidgets["date-label"] = label;
 
-  label = new QLabel("Number", 0);
+  label = new QLabel(i18n("Number"), 0);
   label->setAlignment(Qt::AlignVCenter | Qt::DontClip);
   m_editWidgets["number-label"] = label;
 }

@@ -1,6 +1,17 @@
+
+2008-03-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Allow changing the name and currency of the base accounts
+  * Added testcases
+  * Change the name of the base accounts to desired language when
+    loading file
+  * Updated French translation as provided by Patrick Petit
+  * Fixed an attribute string in MyMoneyStatement XML presentation
+
 2008-03-26 Alvaro Soliverez <asoliverez@gmail.com>
-  * Added weighted moving average to history forecast as default for history-based forecast
-  * Added setting to forecast to select between simple moving average and weighted moving average
+  * Added weighted moving average to history forecast as default for
+    history-based forecast
+  * Added setting to forecast to select between simple moving average and
+    weighted moving average
   * Added test case to test empty template
   * Added test cases for weighted moving average
 

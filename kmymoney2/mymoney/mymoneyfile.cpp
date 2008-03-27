@@ -259,15 +259,28 @@ void MyMoneyFile::modifyTransaction(const MyMoneyTransaction& transaction)
   }
 }
 
-void MyMoneyFile::modifyAccount(const MyMoneyAccount& account)
+void MyMoneyFile::modifyAccount(const MyMoneyAccount& _account)
 {
   checkTransaction(__PRETTY_FUNCTION__);
 
-  // check that it's not one of the standard account groups
-  if(isStandardAccount(account.id()))
-    throw new MYMONEYEXCEPTION("Unable to modify the standard account groups");
+  MyMoneyAccount account(_account);
 
   MyMoneyAccount acc = MyMoneyFile::account(account.id());
+
+  // check that for standard accounts only specific parameters are changed
+  if(isStandardAccount(account.id())) {
+    // make sure to use the stuff we found on file
+    account = acc;
+
+    // and only use the changes that are allowed
+    account.setName(_account.name());
+    account.setCurrencyId(_account.currencyId());
+
+    // now check that it is the same
+    if(!(account == _account))
+      throw new MYMONEYEXCEPTION("Unable to modify the standard account groups");
+  }
+
   if(account.accountType() != acc.accountType())
     throw new MYMONEYEXCEPTION("Unable to change account type");
 

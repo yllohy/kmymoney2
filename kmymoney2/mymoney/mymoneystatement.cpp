@@ -43,7 +43,7 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
   QDomElement e = _doc->createElement("STATEMENT");
   _root.appendChild(e);
 
-  e.setAttribute("verson","1.1");
+  e.setAttribute("version","1.1");
   e.setAttribute("accountname", m_strAccountName);
   e.setAttribute("accountnumber", m_strAccountNumber);
   e.setAttribute("currency", m_strCurrency);
@@ -222,14 +222,8 @@ void MyMoneyStatement::writeXMLFile( const MyMoneyStatement& _s, const QString& 
   g.open( IO_WriteOnly );
 
   QTextStream stream(&g);
-#if KDE_IS_VERSION(3,2,0)
   stream.setEncoding(QTextStream::UnicodeUTF8);
   stream << doc->toString();
-#else
-  //stream.setEncoding(QTextStream::Locale);
-  QCString temp = doc->toCString();
-  stream << temp.data();
-#endif
   g.close();
 
   delete doc;

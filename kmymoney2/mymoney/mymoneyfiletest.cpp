@@ -1515,3 +1515,36 @@ void MyMoneyFileTest::testOpeningBalance(void)
 	}
 }
 
+void MyMoneyFileTest::testModifyStdAccount() {
+	CPPUNIT_ASSERT(m->asset().currencyId().isEmpty());
+	CPPUNIT_ASSERT(m->asset().name() == "Asset");
+	testBaseCurrency();
+	CPPUNIT_ASSERT(m->asset().currencyId().isEmpty());
+	CPPUNIT_ASSERT(!m->baseCurrency().id().isEmpty());
+
+	MyMoneyFileTransaction ft;
+	try {
+		MyMoneyAccount acc = m->asset();
+		acc.setName("Anlagen");
+		acc.setCurrencyId(m->baseCurrency().id());
+		m->modifyAccount(acc);
+		ft.commit();
+
+		CPPUNIT_ASSERT(m->asset().name() == "Anlagen");
+		CPPUNIT_ASSERT(m->asset().currencyId() == m->baseCurrency().id());
+	} catch(MyMoneyException *e) {
+		unexpectedException(e);
+	}
+
+	ft.restart();
+	try {
+		MyMoneyAccount acc = m->asset();
+		acc.setNumber("Test");
+		m->modifyAccount(acc);
+		CPPUNIT_FAIL("Missing expected exception");
+	} catch(MyMoneyException *e) {
+		ft.rollback();
+		delete e;
+	}
+	
+}

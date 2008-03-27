@@ -645,18 +645,15 @@ void KMyMoneyAccountTreeItem::updateAccount(const MyMoneyAccount& account, bool 
       break;
   }
 
+  QPixmap pic = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon)));
   if(m_account.isClosed()) {
-    QPixmap pic = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon)));
     QPixmap closed = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/account-types_closed.png")));
     bitBlt(&pic, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
-    setPixmap(KMyMoneyAccountTree::NameColumn, pic);
   } else if(m_reconcileFlag) {
-    QPixmap pic = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon)));
     QPixmap closed = QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/account-types_reconcile.png")));
     bitBlt(&pic, 0, 0, &closed, 0, 0, closed.width(), closed.height(), Qt::CopyROP, false);
-    setPixmap(KMyMoneyAccountTree::NameColumn, pic);
-  } else
-    setPixmap(KMyMoneyAccountTree::NameColumn, QPixmap(KGlobal::dirs()->findResource("appdata",QString( "icons/hicolor/22x22/actions/%1.png").arg(icon))));
+  }
+  setPixmap(KMyMoneyAccountTree::NameColumn, pic);
 
   setText(KMyMoneyAccountTree::NameColumn, account.name());
 #ifndef KMM_DESIGNER

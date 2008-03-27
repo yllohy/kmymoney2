@@ -39,6 +39,7 @@ class MyMoneyFileTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testSetFunctions);
 	CPPUNIT_TEST(testAddAccounts);
 	CPPUNIT_TEST(testModifyAccount);
+	CPPUNIT_TEST(testModifyStdAccount);
 	CPPUNIT_TEST(testReparentAccount);
 	CPPUNIT_TEST(testRemoveAccount);
 	CPPUNIT_TEST(testRemoveAccountTree);
@@ -90,6 +91,7 @@ public:
 	void testSetFunctions();
 	void testAddAccounts();
 	void testModifyAccount();
+	void testModifyStdAccount();
 	void testReparentAccount();
 	void testRemoveAccount();
 	void testRemoveAccountTree();

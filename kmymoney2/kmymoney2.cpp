@@ -5564,7 +5564,7 @@ void KMyMoney2App::webConnect(const QString& url, const QCString& asn_id)
 {
   //
   // Web connect attempts to go through the known importers and see if the file
-  // can be importing using that method.  If so, it will import it unsing that
+  // can be importing using that method.  If so, it will import it using that
   // plugin
   //
 

@@ -715,10 +715,22 @@ bool KMyMoneyView::readFile(const KURL& url)
     return rc;
 
   // make sure we setup the encryption key correctly
+  MyMoneyFileTransaction ft;
   if(isEncrypted && MyMoneyFile::instance()->value("kmm-encryption-key").isEmpty()) {
-    MyMoneyFileTransaction ft;
     MyMoneyFile::instance()->setValue("kmm-encryption-key", KMyMoneyGlobalSettings::gpgRecipient());
+  }
+
+  // make sure we setup the name of the base accounts in translated form
+  try {
+    MyMoneyFile* file = MyMoneyFile::instance();
+    checkAccountName(file->asset(), i18n("Asset"));
+    checkAccountName(file->liability(), i18n("Liability"));
+    checkAccountName(file->income(), i18n("Income"));
+    checkAccountName(file->expense(), i18n("Expense"));
+    checkAccountName(file->equity(), i18n("Equity"));
     ft.commit();
+  } catch(MyMoneyException* e) {
+    delete e;
   }
 
   // if a temporary file was constructed by NetAccess::download,
@@ -726,6 +738,16 @@ bool KMyMoneyView::readFile(const KURL& url)
   // stays untouched on the local filesystem
   KIO::NetAccess::removeTempFile(filename);
   return initializeStorage();
+}
+
+void KMyMoneyView::checkAccountName(const MyMoneyAccount& _acc, const QString& name) const
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  if(_acc.name() != name) {
+    MyMoneyAccount acc(_acc);
+    acc.setName(name);
+    file->modifyAccount(acc);
+  }
 }
 
 bool KMyMoneyView::openDatabase (const KURL& url) {
