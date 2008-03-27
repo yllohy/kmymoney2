@@ -1,3 +1,8 @@
+2008-03-26 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added weighted moving average to history forecast as default for history-based forecast
+  * Added setting to forecast to select between simple moving average and weighted moving average
+  * Added test case to test empty template
+  * Added test cases for weighted moving average
 
 2008-03-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added missing #include statements for GCC 4.3

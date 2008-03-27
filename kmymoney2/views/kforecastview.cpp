@@ -386,7 +386,7 @@ void KForecastView::loadSummaryView(void)
     it_c++;
 
     //iterate through all other columns
-    for(int i = 0; ((i*forecast.accountsCycle())+daysToBeginDay) <= forecast.forecastDays(); ++i) {
+    for(int i = 0; ((i*forecast.accountsCycle())+daysToBeginDay) <= forecast.forecastDays(); ++i, ++it_c) {
       int intervalDays = ((i*forecast.accountsCycle())+daysToBeginDay);
       QDate summaryDate = QDate::currentDate().addDays(intervalDays);
 
@@ -404,7 +404,6 @@ void KForecastView::loadSummaryView(void)
 
       amount = amountMM.formatMoney(acc, currency);
       summaryItem->setText((accountColumn+it_c), amount);
-      it_c++;
     }
 
     //calculate and add variation per cycle

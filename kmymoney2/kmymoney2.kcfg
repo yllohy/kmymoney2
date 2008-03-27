@@ -256,6 +256,14 @@
    <min>0</min>
    <max>31</max>
   </entry>
+  <entry name="historyMethod" type="Int">
+   <label>Method to calculate history-based forecast</label>
+   <default>1</default>
+  </entry>
+  <entry name="skipOpeningDate" type="Bool">
+   <label>Skip opening date when fetching transactions</label>
+   <default>true</default>
+  </entry>
  </group>
 
 </kcfg>

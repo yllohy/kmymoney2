@@ -145,6 +145,7 @@ public:
   void setForecastStartDate(QDate _startDate) { m_forecastStartDate = _startDate; }
   void setForecastEndDate(QDate _endDate) { m_forecastEndDate = _endDate; }
   void setSkipOpeningDate(bool _skip) { m_skipOpeningDate = _skip; }
+  void setHistoryMethod(int historyMethod) { m_historyMethod = historyMethod; }
 
   int accountsCycle(void) const   { return m_accountsCycle; }
   int forecastCycles(void) const   { return m_forecastCycles; }
@@ -157,6 +158,7 @@ public:
   QDate forecastStartDate(void) const { return m_forecastStartDate; }
   QDate forecastEndDate(void) const { return m_forecastEndDate; }
   bool skipOpeningDate(void) const { return m_skipOpeningDate; }
+  int historyMethod(void) const   { return m_historyMethod; }
 
 private:
 
@@ -190,12 +192,17 @@ private:
   void doFutureScheduledForecast(void);
 
   /**
-   * Returns the day trend for the account @a acc based on the daily balances of a given number of @p forecastTerms
-   * It returns the trend for a given @p trendDay of the forecastTerm
+   * Returns the day moving average for the account @a acc based on the daily balances of a given number of @p forecastTerms
+   * It returns the moving average for a given @p trendDay of the forecastTerm
    * With a term of 1 month and 3 terms, it calculates the trend taking the transactions occured
    * at that day and the day before,for the last 3 months
    */
-  MyMoneyMoney calculateAccountDailyTrend(MyMoneyAccount acc, int trendDay, int forecastTerm, int forecastTerms);
+  MyMoneyMoney accountMovingAverage(const MyMoneyAccount acc, const int trendDay, const int forecastTerms);
+
+  /**
+   * Returns the weighted moving average for a given @p trendDay
+   */
+  MyMoneyMoney accountWeightedMovingAverage(const MyMoneyAccount acc, const int trendDay, const int totalWeight);
 
   /**
    * calculate daily forecast trend based on historic transactions
@@ -300,6 +307,11 @@ private:
    * forecast method
    */
   int m_forecastMethod;
+
+  /**
+   * history method
+   */
+  int m_historyMethod;
 
   /**
    * start date of history

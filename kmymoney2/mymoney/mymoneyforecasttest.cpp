@@ -173,6 +173,10 @@ void MyMoneyForecastTest::testDoForecast() {
   MyMoneyAccount a_checking = file->account(acChecking);
   MyMoneyAccount a_credit = file->account(acCredit);
   
+  //test empty forecast
+  a.doForecast(); //this is just to check nothing goes wrong if forecast is run agains an empty template
+  
+  //setup some transactions
   TransactionHelper t1( QDate::currentDate().addDays(-1), MyMoneySplit::ActionWithdrawal, this->moT1, acChecking, acSolo);
   TransactionHelper t2( QDate::currentDate().addDays(-1), MyMoneySplit::ActionDeposit, -(this->moT2), acCredit, acParent);
   TransactionHelper t3( QDate::currentDate().addDays(-1), MyMoneySplit::ActionTransfer, this->moT1, acCredit, acChecking);
@@ -183,6 +187,7 @@ void MyMoneyForecastTest::testDoForecast() {
   a.setAccountsCycle(1);
   a.setForecastCycles(1);
   a.setBeginForecastDay(0);
+  a.setHistoryMethod(0); //moving average
   a.doForecast();
 
   //checking didnt have balance variations, so the forecast should be equal to the current balance
@@ -201,15 +206,25 @@ void MyMoneyForecastTest::testDoForecast() {
   CPPUNIT_ASSERT(a.forecastBalance(a_credit, QDate::currentDate().addDays(2)) == (b_credit+((moT2-moT1)*2)));
   CPPUNIT_ASSERT(a.forecastBalance(a_credit, QDate::currentDate().addDays(3)) == b_credit+((moT2-moT1)*3));
   
+  a.setHistoryMethod(1); //weighted moving average
+  a.doForecast();
+
+  CPPUNIT_ASSERT(a.forecastBalance(a_credit, 0) == b_credit);
+  CPPUNIT_ASSERT(a.forecastBalance(a_credit, QDate::currentDate().addDays(1)) == (b_credit+(moT2-moT1)));
+  CPPUNIT_ASSERT(a.forecastBalance(a_credit, QDate::currentDate().addDays(2)) == (b_credit+((moT2-moT1)*2)));
+  CPPUNIT_ASSERT(a.forecastBalance(a_credit, QDate::currentDate().addDays(3)) == b_credit+((moT2-moT1)*3));
+
   //insert transactions outside the forecast period. The calculation should be the same.
   TransactionHelper t4( QDate::currentDate().addDays(-2), MyMoneySplit::ActionDeposit, -moT2, acCredit, acParent );
   TransactionHelper t5( QDate::currentDate().addDays(-10), MyMoneySplit::ActionDeposit, -moT2, acCredit, acParent );
+  TransactionHelper t6( QDate::currentDate().addDays(-3), MyMoneySplit::ActionDeposit, -moT2, acCredit, acParent );
   
   a.setForecastMethod(1);
   a.setForecastDays(3);
   a.setAccountsCycle(1);
   a.setForecastCycles(1);
   a.setBeginForecastDay(0);
+  a.setHistoryMethod(0); //moving average
   a.doForecast();
   //check forecast
   b_credit = file->balance(a_credit.id(), QDate::currentDate());
@@ -220,6 +235,18 @@ void MyMoneyForecastTest::testDoForecast() {
   CPPUNIT_ASSERT(a.forecastBalance(a_credit, QDate::currentDate().addDays(1))==b_credit+(moT2-moT1));
   CPPUNIT_ASSERT(a.forecastBalance(a_credit, QDate::currentDate().addDays(2))==b_credit+((moT2-moT1)*2));
   CPPUNIT_ASSERT(a.forecastBalance(a_credit, QDate::currentDate().addDays(3))==b_credit+((moT2-moT1)*3));
+  
+  //test weighted moving average
+  a.setForecastMethod(1);
+  a.setForecastDays(3);
+  a.setAccountsCycle(1);
+  a.setForecastCycles(3);
+  a.setBeginForecastDay(0);  a.setHistoryMethod(1); //weighted moving average
+  a.doForecast();
+
+  CPPUNIT_ASSERT(a.forecastBalance(a_credit, 0) == b_credit);
+  CPPUNIT_ASSERT(a.forecastBalance(a_credit, QDate::currentDate().addDays(1)) == (b_credit+(((moT2-moT1)*3+moT2*2+moT2)/MyMoneyMoney(6,1))));
+  
 }
 
 void MyMoneyForecastTest::testGetForecastAccountList()
@@ -848,6 +875,7 @@ void MyMoneyForecastTest::testCreateBudget()
   TransactionHelper t7( QDate(2005, 8, 3), MyMoneySplit::ActionWithdrawal, this->moT3, acCash, acSolo);
   TransactionHelper t8( QDate(2006, 9, 15), MyMoneySplit::ActionWithdrawal, this->moT4, acCash, acParent);
 
+  a.setHistoryMethod(0);
   budget = a.createBudget(QDate(2005, 1, 1), QDate(2006, 12, 31), QDate(2007, 1, 1), QDate(2007, 12, 31), true);
 
   //test
@@ -865,6 +893,7 @@ void MyMoneyForecastTest::testCreateBudget()
   CPPUNIT_ASSERT(budget.account(a_parent.id()).period(QDate(2007, 9, 1)).amount() == ((moT4)/MyMoneyMoney(2, 1)));
 
   //setup test for a length lower than a year
+  b.setHistoryMethod(0);
   b.createBudget(QDate(2005, 1, 1), QDate(2005, 6, 30), QDate(2007, 1, 1), QDate(2007, 6, 30), true);
   
   //test
