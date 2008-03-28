@@ -139,7 +139,7 @@ void MyMoneyForecast::pastTransactions()
   }
   
   //purge those accounts with no transactions on the period
-  purgeForecastAccountsBasedOnHistory();
+  purgeForecastAccountsList(m_accountListPast);
 
   //calculate running sum
   QMap<QString, QCString>::Iterator it_n;
@@ -627,7 +627,7 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
   }
 #endif
   //do not show accounts with no transactions
-  purgeForecastAccountsList();
+  purgeForecastAccountsList(m_accountList);
            
   //Calculate account daily balances
   QMap<QString, QCString>::ConstIterator it_n;
@@ -862,23 +862,11 @@ int MyMoneyForecast::calculateBeginForecastDay()
   return fDays;
 }
 
-void MyMoneyForecast::purgeForecastAccountsBasedOnHistory(void)
+void MyMoneyForecast::purgeForecastAccountsList(QMap<QCString, dailyBalances>& accountList)
 {
   QMap<QString, QCString>::Iterator it_n;
   for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ) {
-    if(!m_accountListPast.contains(*it_n)) {
-      m_nameIdx.remove(it_n);
-      it_n = m_nameIdx.begin();
-    } else
-      ++it_n;
-  }
-}
-
-void MyMoneyForecast::purgeForecastAccountsList(void)
-{
-  QMap<QString, QCString>::Iterator it_n;
-  for ( it_n = m_nameIdx.begin(); it_n != m_nameIdx.end(); ) {
-    if(!m_accountList.contains(*it_n)) {
+    if(!accountList.contains(*it_n)) {
       m_nameIdx.remove(it_n);
       it_n = m_nameIdx.begin();
     } else

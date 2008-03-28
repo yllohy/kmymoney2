@@ -167,6 +167,16 @@ private:
   static const int HISTORIC = 1;
 
   /**
+   * daily balances of an account
+   */
+  typedef QMap<QDate, MyMoneyMoney> dailyBalances;
+
+  /**
+   * map of trends of an account
+   */
+  typedef QMap<int, MyMoneyMoney> trendBalances;
+
+  /**
    * Returns the list of accounts to be forecast. Only Asset and Liability are returned.
    */
   static QValueList<MyMoneyAccount> forecastAccountList(void);
@@ -238,25 +248,10 @@ private:
   int calculateBeginForecastDay();
 
   /**
-   * remove accounts from the list if the accounts had no transactions during that history timeframe
-   */
-  void purgeForecastAccountsBasedOnHistory(void);
-  
-  /**
    * remove accounts from the list if the accounts has no transactions in the forecast timeframe.
    * Used for scheduled-forecast method.
    */
-  void purgeForecastAccountsList(void);
-
-  /**
-   * daily balances of an account
-   */
-  typedef QMap<QDate, MyMoneyMoney> dailyBalances;
-  
-  /**
-   * map of trends of an account
-   */
-  typedef QMap<int, MyMoneyMoney> trendBalances;
+  void purgeForecastAccountsList(QMap<QCString, dailyBalances>& accountList);
 
   /**
    * daily forecast balance of accounts
