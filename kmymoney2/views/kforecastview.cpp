@@ -226,11 +226,11 @@ void KForecastView::loadListView(void)
         MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(forecastDate);
         MyMoneyMoney baseAmountMM = amountMM * curPrice;
         cycleBalance[forecastDate] += baseAmountMM;
-
+        //convert to lowest fraction after using a different currency
+        cycleBalance[forecastDate] = cycleBalance[forecastDate].convert(file->baseCurrency().smallestAccountFraction());
       } else {
         cycleBalance[forecastDate] += amountMM;
       }
-
       amount = amountMM.formatMoney(acc, currency);
       forecastItem->setText((accountColumn+it_c), amount, amountMM.isNegative()); //sets the text and negative color
     }
@@ -381,7 +381,6 @@ void KForecastView::loadSummaryView(void)
 
     //iterate through all other columns
     for(QDate summaryDate = QDate::currentDate().addDays(daysToBeginDay); summaryDate <= forecast.forecastEndDate();summaryDate = summaryDate.addDays(forecast.accountsCycle()), ++it_c) {
-      
       amountMM = forecast.forecastBalance(acc, summaryDate);
 
       //calculate the balance in base currency for the total row
@@ -389,14 +388,14 @@ void KForecastView::loadSummaryView(void)
         MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(summaryDate);
         MyMoneyMoney baseAmountMM = amountMM * curPrice;
         cycleBalance[summaryDate] += baseAmountMM;
-
+        //convert to the lowest fraction, otherwise we get crazy results
+        cycleBalance[summaryDate] = cycleBalance[summaryDate].convert(file->baseCurrency().smallestAccountFraction());
       } else {
         cycleBalance[summaryDate] += amountMM;
       }
       amount = amountMM.formatMoney(acc, currency);
       summaryItem->setText(it_c, amount);
     }
-
     //calculate and add variation per cycle
     vAmountMM = forecast.accountTotalVariation(acc);
     summaryItem->setNegative(vAmountMM.isNegative());

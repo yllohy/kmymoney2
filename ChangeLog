@@ -1,5 +1,6 @@
 2008-03-28 Alvaro Soliverez <asoliverez@gmail.com>
   * Removed duplicate code and cleaned up code in forecast
+  * Fixed miscalculation of total row in forecast summary and detail view
 
 2008-03-28 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Portuguese translation from José Jorge
