@@ -41,5 +41,6 @@ public:
   static QColor listBGColor(void);
   static QStringList itemList(void);
   static int firstFiscalMonth(void);
+  static int firstFiscalDay(void);
 };
 #endif

@@ -730,10 +730,12 @@ void MyMoneyTransactionFilter::setDateFilter(dateOptionE range)
 }
 
 static int fiscalYearStartMonth = 1;
+static int fiscalYearStartDay = 1;
 
-void MyMoneyTransactionFilter::setStartMonthFiscalYear(int firstMonth)
+void MyMoneyTransactionFilter::setFiscalYearStart(int firstMonth, int firstDay)
 {
   fiscalYearStartMonth = firstMonth;
+  fiscalYearStartDay = firstDay;
 }
 
 bool MyMoneyTransactionFilter::translateDateRange(dateOptionE id, QDate& start, QDate& end)
@@ -847,13 +849,13 @@ bool MyMoneyTransactionFilter::translateDateRange(dateOptionE id, QDate& start, 
       end = start.addMonths(3).addDays(-1);
       break;
     case MyMoneyTransactionFilter::currentFiscalYear:
-      start = QDate(QDate::currentDate().year(), fiscalYearStartMonth, 1);
+      start = QDate(QDate::currentDate().year(), fiscalYearStartMonth, fiscalYearStartDay);
       if(QDate::currentDate() < start)
         start = start.addYears(-1);
       end = start.addYears(1).addDays(-1);
       break;
     case MyMoneyTransactionFilter::lastFiscalYear:
-      start = QDate(QDate::currentDate().year(), fiscalYearStartMonth, 1);
+      start = QDate(QDate::currentDate().year(), fiscalYearStartMonth, fiscalYearStartDay);
       if(QDate::currentDate() < start)
        start = start.addYears(-1);
       start = start.addYears(-1);

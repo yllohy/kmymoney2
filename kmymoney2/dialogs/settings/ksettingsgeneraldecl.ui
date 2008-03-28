@@ -221,7 +221,12 @@
                                     <cstring>textLabel1_2_2</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Your fiscal year starts in</string>
+                                    <string>Your fiscal year starts on</string>
+                                </property>
+                            </widget>
+                            <widget class="KIntSpinBox">
+                                <property name="name">
+                                    <cstring>kcfg_FiscalYearBeginDay</cstring>
                                 </property>
                             </widget>
                             <widget class="KComboBox">
@@ -301,7 +306,7 @@
                                 </property>
                                 <property name="sizeHint">
                                     <size>
-                                        <width>21</width>
+                                        <width>90</width>
                                         <height>20</height>
                                     </size>
                                 </property>
@@ -611,6 +616,8 @@ You can use &lt;b&gt;View/Show all accounts&lt;/b&gt; to temporarily show hidden
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>kcfg_AutoSaveFile</sender>

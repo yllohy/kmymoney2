@@ -174,7 +174,7 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   kmymoney2 = this;
   config = kapp->config();
 
-  MyMoneyTransactionFilter::setStartMonthFiscalYear(KMyMoneyGlobalSettings::firstFiscalMonth());
+  MyMoneyTransactionFilter::setFiscalYearStart(KMyMoneyGlobalSettings::firstFiscalMonth(), KMyMoneyGlobalSettings::firstFiscalDay());
 
   updateCaption(true);
 
@@ -1938,7 +1938,7 @@ void KMyMoney2App::slotSettings(void)
 
 void KMyMoney2App::slotUpdateConfiguration(void)
 {
-  MyMoneyTransactionFilter::setStartMonthFiscalYear(KMyMoneyGlobalSettings::firstFiscalMonth());
+  MyMoneyTransactionFilter::setFiscalYearStart(KMyMoneyGlobalSettings::firstFiscalMonth(), KMyMoneyGlobalSettings::firstFiscalDay());
 
   myMoneyView->slotRefreshViews();
 

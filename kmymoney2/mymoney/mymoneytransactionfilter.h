@@ -488,7 +488,7 @@ public:
     */
   static bool translateDateRange(dateOptionE range, QDate& start, QDate& end);
 
-  static void setStartMonthFiscalYear(int firstMonth);
+  static void setFiscalYearStart(int firstMonth, int firstDay);
 
   FilterSet filterSet(void) const { return m_filterSet; };
 

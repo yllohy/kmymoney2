@@ -89,3 +89,9 @@ int KMyMoneyGlobalSettings::firstFiscalMonth(void)
 {
   return KMyMoneySettings::fiscalYearBegin()+1;
 }
+
+int KMyMoneyGlobalSettings::firstFiscalDay(void)
+{
+  return KMyMoneySettings::fiscalYearBeginDay();
+}
+
