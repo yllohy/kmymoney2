@@ -154,18 +154,22 @@ bool TransactionEditor::eventFilter(QObject* o, QEvent* e)
         case Qt::Key_Enter:
           // we check, if the object is one of the m_finalEditWidgets and if it's
           // a kMyMoneyEdit object that the value is not 0. If any of that is the
-          // case, it's the final object and we mark that.
-          // TODO maybe we should make this whole behaviour dependant on an option
-          //      here's the place to do it. Wrap everything until the 'break'
-          //      statement in an if() loop
-          for(it_w = m_finalEditWidgets.begin(); !isFinal && it_w != m_finalEditWidgets.end(); ++it_w) {
-            if(*it_w == o) {
-              if(dynamic_cast<const kMyMoneyEdit*>(*it_w)) {
-                isFinal = !(dynamic_cast<const kMyMoneyEdit*>(*it_w)->value().isZero());
-              } else
-                isFinal = true;
+          // case, it's the final object. In other cases, we convert the enter
+          // key into a TAB key to move between the fields. Of course, we only need
+          // to do this as long as the appropriate option is set. In all other cases,
+          // we treat the return/enter key as such.
+          if(KMyMoneyGlobalSettings::enterMovesBetweenFields()) {
+            for(it_w = m_finalEditWidgets.begin(); !isFinal && it_w != m_finalEditWidgets.end(); ++it_w) {
+              if(*it_w == o) {
+                if(dynamic_cast<const kMyMoneyEdit*>(*it_w)) {
+                  isFinal = !(dynamic_cast<const kMyMoneyEdit*>(*it_w)->value().isZero());
+                } else
+                  isFinal = true;
+              }
             }
-          }
+          } else
+            isFinal = true;
+
           // for the non-final objects, we treat the return key as a TAB
           if(!isFinal) {
             QKeyEvent evt(e->type(),

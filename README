@@ -53,7 +53,7 @@ from.
      Fedora 1/2	       |  omit this parameter    | /usr
      Mandriva 2006     |  omit this parameter    | /usr
      
-     Distribution      | --man-dir               | --program-prefix
+     Distribution      | --mandir                | --program-prefix
      ------------------+-------------------------+---------------------------
      SuSE >= 8.1       |  /usr/share/man         | omit this parameter
      Mandrake 9.0      |  ???                    | 

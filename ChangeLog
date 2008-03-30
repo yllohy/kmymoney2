@@ -2,6 +2,8 @@
 2008-03-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Russian translation from Eugene Morozov
   * Fixed an i18n issue in the sort order dialog
+  * Added option 'Enter key moves between the fields'
+  * Fixed typo in README
 
 2008-03-28 Alvaro Soliverez <asoliverez@gmail.com>
   * Removed duplicate code and cleaned up code in forecast
