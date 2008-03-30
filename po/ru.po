@@ -9,20 +9,18 @@ msgstr ""
 "Project-Id-Version: ru_new\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-03-28 13:55+0100\n"
-"PO-Revision-Date: 2007-09-21 20:20+0400\n"
-"Last-Translator: Andrey Cherepanov <sibskull@mail.ru>\n"
+"PO-Revision-Date: 2008-03-29 17:14+0300\n"
+"Last-Translator: Eugene Morozov <eugene@cactus-mouse.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms:  nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: dialogs/investactivities.cpp:168
-#, fuzzy
 msgid "%1 (Brokerage)"
-msgstr " (комиссия)"
+msgstr "%1 (комиссия)"
 
 #: dialogs/investactivities.cpp:192 dialogs/investactivities.cpp:275
 #: dialogs/investactivities.cpp:415 dialogs/investtransactioneditor.cpp:217
@@ -54,7 +52,6 @@ msgstr "Количество"
 
 #: dialogs/investactivities.cpp:195 dialogs/investactivities.cpp:280
 #: dialogs/investactivities.cpp:418 widgets/transaction.cpp:1481
-#, fuzzy
 msgid "Price/share"
 msgstr "Цена за штуку"
 
@@ -173,62 +170,65 @@ msgid ""
 "Getting list of banks from http://moneycentral.msn.com/\n"
 "This may take some time depending on the available bandwidth."
 msgstr ""
+"Получаю список банков с адреса http://moneycentral.msn.com/\n"
+"Эта операция может занять некоторое время, в зависисмости от\n"
+"скорости доступа к сети."
 
 #: dialogs/konlinebankingsetupwizard.cpp:81
 msgid ""
 "Reading the bank list failed with the following error: '%1'. The console "
 "output may have more information."
 msgstr ""
+"При чтении списка банков возникла следующая ошибка: '%1'. Вывод в\n"
+"консоли может содержать дополнительную информацию."
 
 #: dialogs/konlinebankingsetupwizard.cpp:81
 msgid "XMLPP error"
-msgstr ""
+msgstr "Ошибка XMLPP"
 
 #: dialogs/konlinebankingsetupwizard.cpp:143
 msgid "Supports online statements<br>"
-msgstr ""
+msgstr "Поддерживает онлайновые выписки со счета<br>"
 
 #: dialogs/konlinebankingsetupwizard.cpp:145
-#, fuzzy
 msgid "Supports investments<br>"
-msgstr "Тип инвестиции"
+msgstr "Поддерживает инвестиции<br>"
 
 #: dialogs/konlinebankingsetupwizard.cpp:147
 msgid "Supports bill payment (but not supported by KMyMoney yet)<br>"
-msgstr ""
+msgstr "Поддерживает оплату счетов (пока не поддерживается KMyMoney)<br>"
 
 #: dialogs/konlinebankingsetupwizard.cpp:151
 msgid "Does not support online banking</p>"
-msgstr ""
+msgstr "Не поддерживает работу через Интернет</p>"
 
 #: dialogs/konlinebankingsetupwizard.cpp:161
 msgid "Please choose a bank."
-msgstr ""
+msgstr "Выберите банк."
 
 #: dialogs/konlinebankingsetupwizard.cpp:241
 msgid "No suitable accounts were found at this bank."
-msgstr ""
+msgstr "Не было найдено подходящих счетов в данном банке."
 
 #: dialogs/konlinebankingsetupwizard.cpp:253
-#, fuzzy
 msgid "Please choose an account"
-msgstr "Выберите родительский счёт."
+msgstr "Выберите счёт."
 
 #: dialogs/konlinebankingsetupwizard.cpp:273
 msgid "CHECKING"
-msgstr ""
+msgstr "ПЛАСТИКОВАЯ КАРТА"
 
 #: dialogs/konlinebankingsetupwizard.cpp:276
 msgid "SAVINGS"
-msgstr ""
+msgstr "БАНКОВСКИЙ ВКЛАД"
 
 #: dialogs/konlinebankingsetupwizard.cpp:279
 msgid "MONEY MARKET"
-msgstr ""
+msgstr "ВАЛЮТНЫЙ РЫНОК"
 
 #: dialogs/konlinebankingsetupwizard.cpp:282
 msgid "CREDIT LINE"
-msgstr ""
+msgstr "КРЕДИТНАЯ ЛИНИЯ"
 
 #: dialogs/konlinebankingsetupwizard.cpp:285
 msgid "CMA"
@@ -236,38 +236,37 @@ msgstr ""
 
 #: dialogs/konlinebankingsetupwizard.cpp:288
 msgid "CREDIT CARD"
-msgstr ""
+msgstr "КРЕДИТНАЯ КАРТА"
 
 #: dialogs/konlinebankingsetupwizard.cpp:291
 msgid "INVESTMENT"
-msgstr ""
+msgstr "ИНВЕСТИЦИИ"
 
 #: dialogs/konlinebankingsetupwizard.cpp:294
 msgid "UNKNOWN"
-msgstr ""
+msgstr "НЕИЗВЕСТНЫЙ"
 
 #: dialogs/konlinebankingsetupwizard.cpp:342
 msgid "Server message: %1\n"
-msgstr ""
+msgstr "Сообщение сервера: %1\n"
 
 #: dialogs/konlinebankingsetupwizard.cpp:350
 msgid "Your bank returned warnings when signing on"
-msgstr ""
+msgstr "Банк выдал предупреждения при подключении"
 
 #: dialogs/konlinebankingsetupwizard.cpp:350
 #, c-format
 msgid "WARNING %1"
-msgstr ""
+msgstr "ПРЕДУПРЕЖДЕНИЕ %1"
 
 #: dialogs/konlinebankingsetupwizard.cpp:353
-#, fuzzy
 msgid "Error signing onto your bank"
-msgstr "Ошибка подключения к банку: %1"
+msgstr "Ошибка подключения к банку"
 
 #: dialogs/konlinebankingsetupwizard.cpp:353
 #, c-format
 msgid "ERROR %1"
-msgstr ""
+msgstr "ОШИБКА %1"
 
 #: dialogs/knewfiledlg.cpp:120 wizards/newuserwizard/knewuserwizard.cpp:185
 msgid ""
@@ -285,12 +284,11 @@ msgstr "Импорт адресной книги"
 msgid ""
 "This dialog does not allow to create new payees. Please pick a payee from "
 "the list."
-msgstr ""
+msgstr "Данное окно не позволяет создавать новых получаетелей. Выберите получателя из списка."
 
 #: dialogs/kpayeereassigndlg.cpp:75
-#, fuzzy
 msgid "Payee creation"
-msgstr "Информация о получателе"
+msgstr "Создание нового получателя"
 
 #: dialogs/kaccountselectdlg.cpp:76 dialogs/kbackupdlg.cpp:58
 #: dialogs/kbalancechartdlg.cpp:205 dialogs/kcommodityeditordecl.cpp:161
@@ -319,20 +317,18 @@ msgid "Use this to dismiss all the changes made in this dialog."
 msgstr "Отменить все изменения."
 
 #: dialogs/kbalancechartdlg.cpp:59
-#, fuzzy, c-format
+#, c-format
 msgid "Balance of %1"
-msgstr "Остаток: %1"
+msgstr "Остаток счета %1"
 
 #: dialogs/kbalancechartdlg.cpp:70
-#, fuzzy
 msgid "%1 Balance History"
-msgstr "Изменение курса"
+msgstr "Изменение остатка %1"
 
 #: dialogs/kbalancechartdlg.cpp:71 kmymoney2.cpp:3395 views/khomeview.cpp:256
 #: views/kreportsview.cpp:604
-#, fuzzy
 msgid "Generated Report"
-msgstr "Удалить отчёт?"
+msgstr "Сгенерированный отчёт"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:65
 msgid "Account and transfer account are the same.  Please change one."
@@ -341,7 +337,7 @@ msgstr ""
 
 #: dialogs/kconfirmmanualenterdlg.cpp:84
 msgid "Payee changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr ""
+msgstr "Изменен получатель.<br>&nbsp;&nbsp;&nbsp;С<b>%1</b> изменен на <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:92
 #: dialogs/kconfirmmanualenterdlg.cpp:100
@@ -350,49 +346,47 @@ msgstr "Изменён счёт списания. \"%1\"изменён на \"%2
 
 #: dialogs/kconfirmmanualenterdlg.cpp:107
 msgid "Account changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr ""
+msgstr "Изменен счет.<br>&nbsp;&nbsp;&nbsp;<b>%1</b> изменен на <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:115
-#, fuzzy
 msgid ""
 "Transfer account changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</"
 "b><p>"
-msgstr "Изменён счёт зачисления. \"%1\" изменён на \"%2\""
+msgstr "Изменен счет перевода.<br>&nbsp;&nbsp;&nbsp;<b>%1</b> изменен на <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:123
 #: dialogs/kconfirmmanualenterdlg.cpp:133 views/kpayeesview.cpp:665
 #: widgets/kmymoneycategory.cpp:160 widgets/kmymoneycategory.cpp:166
 #: widgets/transaction.cpp:775 widgets/transaction.cpp:1331
 #: widgets/transaction.cpp:1345
-#, fuzzy
 msgid ""
 "_: Split transaction (category replacement)\n"
 "Split transaction"
-msgstr "Только операции без получателей"
+msgstr "Разделить операцию"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:143
 msgid ""
 "Category changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr ""
+msgstr "Изменена статья.<br>&nbsp;&nbsp;&nbsp;<b>%1</b> изменена на <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:151
 #: dialogs/kconfirmmanualenterdlg.cpp:153
 msgid "empty"
-msgstr ""
+msgstr "пусто"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:157
 msgid "Memo changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr ""
+msgstr "Изменён комментарий.<br>&nbsp;&nbsp;&nbsp;<b>%1</b> изменен на <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:166
 msgid "Amount changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%2</b><p>"
-msgstr ""
+msgstr "Изменена сумма.<br>&nbsp;&nbsp;&nbsp;<b>%1</b> изменена на <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:175
 msgid ""
 "Reconciliation flag changed.<br>&nbsp;&nbsp;&nbsp;Old: <b>%1</b>, New: <b>%"
 "2</b><p>"
-msgstr ""
+msgstr "Изменено состояние сверки.<br>&nbsp;&nbsp;&nbsp;<b>%1</b> изменено на <b>%2</b><p>"
 
 #: dialogs/kconfirmmanualenterdlg.cpp:182
 msgid "Fatal error in determining data: "
@@ -470,9 +464,8 @@ msgstr ""
 "платежам.</p></b>"
 
 #: dialogs/kenterscheduledlg.cpp:168
-#, fuzzy
 msgid "Enter scheduled transaction"
-msgstr "Произвести платёж"
+msgstr "Создать запланированную операцию"
 
 #: dialogs/kgncpricesourcedlg.cpp:48
 #, c-format
@@ -631,9 +624,8 @@ msgstr ""
 "результатам."
 
 #: dialogs/transactioneditor.cpp:538
-#, fuzzy
 msgid "Storing transactions"
-msgstr "Добавление операций"
+msgstr "Сохранение операций"
 
 #: dialogs/transactioneditor.cpp:584 widgets/kmymoneybriefschedule.cpp:64
 msgid "&Enter"
@@ -647,14 +639,12 @@ msgid "Accepts the entered data and stores it"
 msgstr "Сохранить данные"
 
 #: dialogs/transactioneditor.cpp:587
-#, fuzzy
 msgid "Use this to enter the transaction into the ledger."
 msgstr "Сохранить операцию в журнале"
 
 #: dialogs/transactioneditor.cpp:588
-#, fuzzy
 msgid "&Schedule"
-msgstr "Платежи"
+msgstr "&Платежи"
 
 #: dialogs/transactioneditor.cpp:590
 #, fuzzy
@@ -662,48 +652,46 @@ msgid "Accepts the entered data and stores it as schedule"
 msgstr "Сохранить данные"
 
 #: dialogs/transactioneditor.cpp:591
-#, fuzzy
 msgid "Use this to schedule the transaction for later entry into the ledger."
-msgstr "Сохранить импортированные операции в файле."
+msgstr "Используйте для внесения операции в список операций по графику."
 
 #: dialogs/transactioneditor.cpp:593
 msgid ""
 "The transaction you are about to enter has a post date in the future.<br/"
 "><br/>Do you want to enter it in the ledger or add it to the schedules?"
-msgstr ""
+msgstr "Дата совершения новой операции приходится на дату в будущем.<br/><br/>Вы хотите добавить ее в таблицу или в график платежей?"
 
 #: dialogs/transactioneditor.cpp:593
 msgid ""
 "_: Dialog caption for 'Enter or schedule' dialog\n"
 "Enter or schedule?"
-msgstr ""
+msgstr "Ввести или запланировать?"
 
 #: dialogs/transactioneditor.cpp:651
 msgid ""
 "The balance of account <b>%1</b> dropped below the warning balance of %2."
-msgstr ""
+msgstr "Остаток на счету <b>%1</b> ниже порога предупреждения %2."
 
 #: dialogs/transactioneditor.cpp:657
 msgid ""
 "The balance of account <b>%1</b> dropped below the minimum balance of %2."
-msgstr ""
+msgstr "Остаток на счету <b>%1</b> ниже минимального остатка %2."
 
 #: dialogs/transactioneditor.cpp:663
 msgid ""
 "The balance of account <b>%1</b> dropped below the maximum credit warning "
 "limit of %2."
-msgstr ""
+msgstr "Остаток на счету <b>%1</b> ниже уровня предупреждения о максимальном кредите %2."
 
 #: dialogs/transactioneditor.cpp:669
 msgid ""
 "The balance of account <b>%1</b> dropped below the maximum credit limit of %"
 "2."
-msgstr ""
+msgstr "Остаток на счету <b>%1</b> ниже ограничения на максимальный кредит %2."
 
 #: dialogs/transactioneditor.cpp:711
-#, fuzzy
 msgid "Payer/Receiver"
-msgstr "Получатель"
+msgstr "Отправитель/получатель"
 
 #: dialogs/transactioneditor.cpp:719
 msgid "Category/Account"
@@ -742,9 +730,8 @@ msgid "Transfer to"
 msgstr "Счёт"
 
 #: dialogs/transactioneditor.cpp:1147
-#, fuzzy
 msgid "Select autofill transaction"
-msgstr "Удалить операцию"
+msgstr "Выберите автозаполняемую операцию"
 
 #: dialogs/kselectdatabasedlg.cpp:67
 msgid ""
@@ -752,6 +739,8 @@ msgid ""
 "Please consult documentation for your distro, or visit the Qt web site (www."
 "trolltech.com) and search for SQL drivers."
 msgstr ""
+"В системе не установлены драйверы SQL для Qt.\n"
+"Поищите информацию об их установке в документации к вашему дистрибутиву или на сайте Qt (www.trolltech.com)"
 
 #: dialogs/kselectdatabasedlg.cpp:156
 msgid ""
@@ -778,7 +767,7 @@ msgstr ""
 
 #: dialogs/kselectdatabasedlg.cpp:195
 msgid "Selecting a SQL database"
-msgstr ""
+msgstr "Выбираю базу данных SQL"
 
 #: dialogs/kcommodityeditordecl.cpp:159 dialogs/kequitypriceupdatedlg.cpp:69
 #: dialogs/kequitypriceupdatedlg.cpp:70 dialogs/rc.cpp:40 dialogs/rc.cpp:89
@@ -837,12 +826,11 @@ msgstr "Ошибка обновления курса для %1"
 
 #: dialogs/kequitypriceupdatedlg.cpp:408
 msgid "Cannot update security <b>%1</b>: %2"
-msgstr ""
+msgstr "Не могу обновить информацию о ценной бумаге <b>%1</b>: %2"
 
 #: dialogs/kequitypriceupdatedlg.cpp:488
-#, fuzzy
 msgid "Price for %1 updated (id %2)"
-msgstr "Обновлён курс для %1"
+msgstr "Обновлён курс для %1 (идентификатор %2)"
 
 #: dialogs/kequitypriceupdatedlg.cpp:492
 msgid "Received an invalid price for %1, unable to update."
@@ -853,8 +841,7 @@ msgstr "Получен неверный ответ для %1, обновлени
 msgid ""
 "Received a price for %1 (id %2), but this symbol is not on the list!  "
 "Aborting entire update."
-msgstr ""
-"Получен курс для %1, но этого кода нет в списке. Обновление невозможно."
+msgstr "Получен курс для %1 (идентификатор %2), но этого кода нет в списке. Обновление невозможно."
 
 #: dialogs/kreportconfigurationfilterdlg.cpp:90
 msgid "Report Configuration"
@@ -1061,7 +1048,7 @@ msgstr "Параметры устройства"
 msgid ""
 "_: This is the mount point\n"
 "Mount Point:"
-msgstr "Нажмите на эту кнопку для выбора точки монтирования. "
+msgstr "Точка монтирования:"
 
 #: dialogs/kbackupdlg.cpp:70 dialogs/rc.cpp:11
 msgid "C&hoose..."
@@ -1072,9 +1059,8 @@ msgid "Mount this directory before backing up."
 msgstr "Подключить диск перед резервным копированием"
 
 #: dialogs/rc.cpp:15
-#, fuzzy
 msgid "Reassign categories"
-msgstr "Скрытие статей"
+msgstr "Переназначение статей"
 
 #: dialogs/rc.cpp:16
 msgid ""
@@ -1090,7 +1076,7 @@ msgstr "Скрытие статей"
 
 #: dialogs/rc.cpp:19 dialogs/rc.cpp:714
 msgid "Ca&ncel"
-msgstr ""
+msgstr "О&тменя"
 
 #: dialogs/rc.cpp:21
 msgid ""
@@ -1163,7 +1149,7 @@ msgstr "Точность"
 
 #: dialogs/kcommodityeditordecl.cpp:157 dialogs/rc.cpp:38
 msgid "Code"
-msgstr ""
+msgstr "Код"
 
 #: dialogs/kcommodityeditordecl.cpp:158 dialogs/rc.cpp:39 dialogs/rc.cpp:455
 msgid "Full name"
@@ -1176,11 +1162,11 @@ msgstr "Выбор счёта"
 
 #: dialogs/kcommodityeditordecl.cpp:162 dialogs/rc.cpp:43
 msgid "Alt+O"
-msgstr ""
+msgstr "Alt+O"
 
 #: dialogs/kcommodityeditordecl.cpp:164 dialogs/rc.cpp:45
 msgid "Alt+C"
-msgstr ""
+msgstr "Alt+C"
 
 #: dialogs/rc.cpp:46
 msgid "Confirm Manual Enter"
@@ -1275,7 +1261,6 @@ msgid "0 of 0"
 msgstr "0 из 0"
 
 #: dialogs/rc.cpp:68
-#, fuzzy
 msgid "Exchange Rate/Price  Editor"
 msgstr "Редактор курсов"
 
@@ -1420,23 +1405,20 @@ msgid "&Add"
 msgstr "&Добавить"
 
 #: dialogs/rc.cpp:115
-#, fuzzy
 msgid "Edit Schedule"
-msgstr "Счёт на оплату"
+msgstr "Изменить платеж"
 
 #: dialogs/rc.cpp:116
-#, fuzzy
 msgid "Schedule name:"
-msgstr "Название:"
+msgstr "Название платежа:"
 
 #: dialogs/rc.cpp:117
 msgid "Frequency:"
 msgstr "Периодичность:"
 
 #: dialogs/rc.cpp:118
-#, fuzzy
 msgid "Payment information"
-msgstr "Выплата"
+msgstr "Информация о платеже"
 
 #: dialogs/rc.cpp:119 wizards/newaccountwizard/knewaccountwizard.cpp:1423
 #: wizards/newaccountwizard/rc.cpp:108
@@ -1480,7 +1462,6 @@ msgid "Balance"
 msgstr "Остаток"
 
 #: dialogs/rc.cpp:130
-#, fuzzy
 msgid "Do nothing"
 msgstr "ничего не делать"
 
@@ -1497,17 +1478,14 @@ msgid "If this schedule occurs on the weekend:"
 msgstr "Если дата приходится на выходные:"
 
 #: dialogs/rc.cpp:134
-#, fuzzy
 msgid "The amount is an estimate because it varies for each payment"
 msgstr "Сумма может меняться"
 
 #: dialogs/rc.cpp:135
-#, fuzzy
 msgid "Enter this schedule into the register automatically when it is due"
 msgstr "Автоматически создавать операцию"
 
 #: dialogs/rc.cpp:136
-#, fuzzy
 msgid "This schedule will end at some time"
 msgstr "Фиксированное окончание платежей"
 
@@ -1657,7 +1635,7 @@ msgstr "Данные выписки"
 #: dialogs/rc.cpp:319 dialogs/rc.cpp:322 dialogs/rc.cpp:323 dialogs/rc.cpp:327
 #: dialogs/rc.cpp:332 dialogs/rc.cpp:333 dialogs/rc.cpp:362
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: dialogs/rc.cpp:162
 msgid "Statement date:"
@@ -1694,7 +1672,6 @@ msgid "Charges"
 msgstr "Списание"
 
 #: dialogs/rc.cpp:171
-#, fuzzy
 msgid "Enter Schedule"
 msgstr "Новый график платежей"
 
@@ -1803,16 +1780,15 @@ msgstr "Поиск операций"
 
 #: dialogs/rc.cpp:202
 msgid "Criteria"
-msgstr ""
+msgstr "Критерии поиска"
 
 #: dialogs/rc.cpp:203
 msgid "Define your search criteria"
 msgstr "Укажите критерий поиска"
 
 #: dialogs/rc.cpp:204
-#, fuzzy
 msgid "Te&xt"
-msgstr "Текст"
+msgstr "Те&кст"
 
 #: dialogs/rc.cpp:205
 msgid "Search transactions containing the following text"
@@ -1835,14 +1811,13 @@ msgstr "Период"
 msgid ""
 "_: To (Date)\n"
 "To"
-msgstr "по"
+msgstr "По"
 
 #: dialogs/rc.cpp:212
-#, fuzzy
 msgid ""
 "_: From (Date)\n"
 "From"
-msgstr "с"
+msgstr "С"
 
 #: dialogs/rc.cpp:214
 msgid "Search this amount"
@@ -1889,7 +1864,7 @@ msgstr "Все состояния"
 #: dialogs/rc.cpp:228 widgets/kmymoneycombo.cpp:339
 #: widgets/registersearchline.cpp:83
 msgid "Not reconciled"
-msgstr "Не сверенные"
+msgstr "Не сверено"
 
 #: dialogs/rc.cpp:229 widgets/kmymoneycombo.cpp:338
 #: widgets/registersearchline.cpp:84
@@ -1966,12 +1941,11 @@ msgstr "текст"
 
 #: dialogs/rc.cpp:244
 msgid "warning"
-msgstr ""
+msgstr "предупреждение"
 
 #: dialogs/rc.cpp:245
-#, fuzzy
 msgid "Result"
-msgstr "Очистить"
+msgstr "Результат"
 
 #: dialogs/rc.cpp:255
 msgid "F"
@@ -2130,14 +2104,12 @@ msgid "MyDialog"
 msgstr "Диалог CSV"
 
 #: dialogs/rc.cpp:308
-#, fuzzy
 msgid "File Information"
-msgstr "Информация о получателе"
+msgstr "Информация о файле"
 
 #: dialogs/rc.cpp:314
-#, fuzzy
 msgid "Last modified on"
-msgstr "последний месяц"
+msgstr "Дата последнего изменения"
 
 #: dialogs/rc.cpp:317
 #, fuzzy
@@ -2296,25 +2268,23 @@ msgstr "знаков после запятой"
 msgid ""
 "This page allows to setup certain limits. KMyMoney will warn you when the "
 "account balance reaches a limit."
-msgstr ""
+msgstr "На данной странице можно настроить ограничения. KMyMoney будет выдавать предупреждение при достижении остатком на счету установленного ограничения."
 
 #: dialogs/rc.cpp:373
-#, fuzzy
 msgid "Absolute limit"
-msgstr "Разделитель счетов"
+msgstr "Абсолютное ограничение"
 
 #: dialogs/rc.cpp:374
 msgid "Maximum credit limit"
-msgstr ""
+msgstr "Максимальное ограничение кредита"
 
 #: dialogs/rc.cpp:375
-#, fuzzy
 msgid "Minimum balance"
-msgstr "Остаток на конец"
+msgstr "Минимальный остаток"
 
 #: dialogs/rc.cpp:376
 msgid "Early warning"
-msgstr ""
+msgstr "Раннее предупреждение"
 
 #: dialogs/rc.cpp:377
 msgid "Tax"
@@ -2385,16 +2355,15 @@ msgstr "Внутренний номер:"
 #: dialogs/rc.cpp:399
 #, fuzzy
 msgid "New Budget"
-msgstr "Бюджетирование"
+msgstr "Создать бюджет"
 
 #: dialogs/rc.cpp:401 views/rc.cpp:18
-#, fuzzy
 msgid "Year"
-msgstr "Годы"
+msgstr "Год"
 
 #: dialogs/rc.cpp:402
 msgid "O&K"
-msgstr ""
+msgstr "O&K"
 
 #: dialogs/rc.cpp:404
 msgid "New Equity"
@@ -2538,7 +2507,7 @@ msgstr ""
 
 #: dialogs/rc.cpp:458
 msgid "Use Finance::Quote"
-msgstr ""
+msgstr "Используйте модуль Finance::Quote"
 
 #: dialogs/rc.cpp:460
 msgid "Factor"
@@ -3203,26 +3172,23 @@ msgstr "Подключение к банку..."
 
 #: dialogs/rc.cpp:685
 msgid "Online Banking Account Setup"
-msgstr ""
+msgstr "Настройка счета банк-клиент."
 
 #: dialogs/rc.cpp:686
-#, fuzzy
 msgid "Select Financial Institution"
-msgstr "Остатки по счетам по учреждениям"
+msgstr "Выберите учреждение"
 
 #: dialogs/rc.cpp:687
 msgid "Please select your financial institution from the list below..."
 msgstr ""
 
 #: dialogs/rc.cpp:688
-#, fuzzy
 msgid "Financial Institution"
 msgstr "Учреждение"
 
 #: dialogs/rc.cpp:689
-#, fuzzy
 msgid "Enter Login Details"
-msgstr "Операция"
+msgstr "Введите имя и пароль для входа"
 
 #: dialogs/rc.cpp:690
 msgid ""
@@ -3232,14 +3198,12 @@ msgid ""
 msgstr ""
 
 #: dialogs/rc.cpp:693
-#, fuzzy
 msgid "Connection Details"
-msgstr "Операция"
+msgstr "Информация о подключении"
 
 #: dialogs/rc.cpp:694
-#, fuzzy
 msgid "Select Account"
-msgstr "Счёт:"
+msgstr "Выберите счёт"
 
 #: dialogs/rc.cpp:695
 msgid ""
@@ -3249,12 +3213,11 @@ msgstr ""
 
 #: dialogs/rc.cpp:698
 msgid "Bank"
-msgstr ""
+msgstr "Банк"
 
 #: dialogs/rc.cpp:699
-#, fuzzy
 msgid "Branch"
-msgstr "Остаток"
+msgstr "Отделение"
 
 #: dialogs/rc.cpp:700
 msgid "WizardPage"
@@ -3992,9 +3955,8 @@ msgid "Other"
 msgstr "платёж вручную"
 
 #: dialogs/keditscheduledlg.cpp:278
-#, fuzzy
 msgid "Next due date"
-msgstr "Следующая выплата:"
+msgstr "Следующая выплата"
 
 #: dialogs/kaccountselectdlg.cpp:70 dialogs/knewloanwizard.cpp:122
 #: dialogs/knewloanwizard.cpp:136
@@ -4448,9 +4410,8 @@ msgid "Header font"
 msgstr "Шрифт заголовка столбцов"
 
 #: dialogs/settings/rc.cpp:23 views/rc.cpp:30
-#, fuzzy
 msgid "Forecast Settings"
-msgstr "Выбор шрифтов"
+msgstr "Настройки прогнозирования"
 
 #: dialogs/settings/rc.cpp:24
 msgid "Number of Days of Account Cycle:"
@@ -4466,18 +4427,16 @@ msgid "Number of Days to Forecast:"
 msgstr "Осталось операций:"
 
 #: dialogs/settings/rc.cpp:27
-#, fuzzy
 msgid "Forecast Method"
-msgstr "Операция"
+msgstr "Метод прогнозирования"
 
 #: dialogs/settings/rc.cpp:28
-#, fuzzy
 msgid "Scheduled &and Future Transactions"
 msgstr "Планируемые операции"
 
 #: dialogs/settings/rc.cpp:29
 msgid "History-&based"
-msgstr ""
+msgstr "Основанный на прошлых данных"
 
 #: dialogs/settings/rc.cpp:30
 #, fuzzy
@@ -5325,9 +5284,8 @@ msgstr "каждую вторую неделю"
 
 #: kmymoneyutils.cpp:216 mymoney/storage/mymoneystoragedump.cpp:417
 #: widgets/kmymoneycombo.cpp:724
-#, fuzzy
 msgid "Every three weeks"
-msgstr "каждую вторую неделю"
+msgstr "каждую третью неделю"
 
 #: kmymoneyutils.cpp:218 mymoney/storage/mymoneystoragedump.cpp:420
 #: widgets/kmymoneycombo.cpp:725
@@ -5342,9 +5300,8 @@ msgstr "ежемесячно"
 
 #: kmymoneyutils.cpp:222 mymoney/storage/mymoneystoragedump.cpp:426
 #: widgets/kmymoneycombo.cpp:727
-#, fuzzy
 msgid "Every eight weeks"
-msgstr "каждую вторую неделю"
+msgstr "каждые восемь недель"
 
 #: kmymoneyutils.cpp:224 mymoney/storage/mymoneystoragedump.cpp:429
 #: widgets/kmymoneycombo.cpp:728
@@ -5444,7 +5401,7 @@ msgstr "Избранные отчёты"
 #: kmymoneyutils.cpp:379
 #, fuzzy
 msgid "Forecast (schedule)"
-msgstr "Создать график платежей..."
+msgstr "Прогноз (по графику платежей)"
 
 #: kmymoneyutils.cpp:380
 #, fuzzy
@@ -5453,62 +5410,55 @@ msgstr "Остатки на сегодня"
 
 #: kmymoneyutils.cpp:381
 msgid "Forecast (history)"
-msgstr ""
+msgstr "Прогноз (по прошлым данным)"
 
 #: kmymoneyutils.cpp:705 widgets/register.cpp:444
-#, fuzzy
 msgid ""
 "_: Reconcile state 'Not reconciled'\n"
 "Not reconciled"
-msgstr "не сверено"
+msgstr "Не сверено"
 
 #: kmymoneyutils.cpp:708 widgets/register.cpp:447
-#, fuzzy
 msgid ""
 "_: Reconcile state 'Cleared'\n"
 "Cleared"
-msgstr "Мастер сверки"
+msgstr "Проверено"
 
 #: kmymoneyutils.cpp:711 widgets/register.cpp:450
-#, fuzzy
 msgid ""
 "_: Reconcile state 'Reconciled'\n"
 "Reconciled"
-msgstr "не сверено"
+msgstr "Сверено"
 
 #: kmymoneyutils.cpp:714 widgets/register.cpp:453
-#, fuzzy
 msgid ""
 "_: Reconcile state 'Frozen'\n"
 "Frozen"
-msgstr "Последняя сверенная операция: %1"
+msgstr "Заморожено"
 
 #: kmymoneyutils.cpp:725
-#, fuzzy
 msgid ""
 "_: Reconcile flag C\n"
 "C"
-msgstr "Сверено"
+msgstr "П"
 
 #: kmymoneyutils.cpp:728
-#, fuzzy
 msgid ""
 "_: Reconcile flag R\n"
 "R"
-msgstr "Сверено"
+msgstr "С"
 
 #: kmymoneyutils.cpp:731
-#, fuzzy
 msgid ""
 "_: Reconcile flag F\n"
 "F"
-msgstr "Сверено"
+msgstr "З"
 
 #: kmymoneyutils.cpp:734
 msgid ""
 "_: Flag for unknown reconciliation state\n"
 "?"
-msgstr ""
+msgstr "?"
 
 #: reports/pivottable.cpp:68
 msgid "Checkings"
@@ -5543,9 +5493,8 @@ msgid "All values shown in %1 unless otherwise noted"
 msgstr "Все суммы указаны в валюте %1 если не иное не указано явно"
 
 #: reports/pivottable.cpp:1549 reports/pivottable.cpp:1554 widgets/rc.cpp:70
-#, fuzzy
 msgid "Budget"
-msgstr "Бюджетирование"
+msgstr "Бюджет"
 
 #: reports/pivottable.cpp:1549 reports/pivottable.cpp:1554
 msgid "Actual"
@@ -5721,9 +5670,8 @@ msgid "Show KMyMoney welcome page"
 msgstr "Страница приветствия"
 
 #: views/khomeview.cpp:248 views/khomeview.cpp:255
-#, fuzzy
 msgid "Networth Forecast"
-msgstr "Остатки на сегодня"
+msgstr "Прогноз остатков"
 
 #: views/khomeview.cpp:379
 msgid "Overdue payments"
@@ -5764,7 +5712,7 @@ msgstr ""
 
 #: views/kforecastview.cpp:326 views/khomeview.cpp:792
 msgid "%1 days"
-msgstr ""
+msgstr "через %1 дней"
 
 #: views/kforecastview.cpp:479 views/khomeview.cpp:859
 msgid "The balance of %1 is below the minimum balance %2 today."
@@ -5822,9 +5770,8 @@ msgid "Reports"
 msgstr "Отчёты"
 
 #: views/kreportsview.cpp:409 views/kreportsview.cpp:445
-#, fuzzy
 msgid "Charts"
-msgstr "Диаграмма"
+msgstr "Диаграммы"
 
 #: views/kreportsview.cpp:469
 msgid "Old Customized Reports"
@@ -6014,9 +5961,8 @@ msgid "Tax Transactions"
 msgstr "Выплата налогов"
 
 #: views/kreportsview.cpp:1166
-#, fuzzy
 msgid "Budgeting"
-msgstr "Бюджетирование"
+msgstr "Бюджеты"
 
 #: views/kreportsview.cpp:1173
 msgid "Budget vs. Actual This Year"
@@ -6038,7 +5984,7 @@ msgstr "ежемесячно"
 #: views/kreportsview.cpp:1214
 #, fuzzy
 msgid "Yearly Budget"
-msgstr "Бюджетирование"
+msgstr "Годовой бюджет"
 
 #: views/kscheduledview.cpp:70
 msgid "Type/Name"
@@ -6094,14 +6040,12 @@ msgid "History"
 msgstr "Изменение курса"
 
 #: views/kforecastview.cpp:181 views/kforecastview.cpp:316
-#, fuzzy
 msgid "Current"
-msgstr "Валюта"
+msgstr "Сегодня"
 
 #: views/kforecastview.cpp:189 views/kforecastview.cpp:331
-#, fuzzy
 msgid "Total variation"
-msgstr "Проверка импорта"
+msgstr "Сумма изменений"
 
 #: views/kforecastview.cpp:531
 msgid "The account %1 is decreasing %2 per cycle."
@@ -6143,11 +6087,11 @@ msgstr "Операции"
 #: converter/mymoneygncreader.cpp:2074 views/kmymoneyview.cpp:235
 #: views/rc.cpp:9
 msgid "Budgets"
-msgstr "Бюджетирование"
+msgstr "Бюджеты"
 
 #: kmymoney2.cpp:1932 views/kmymoneyview.cpp:244 views/rc.cpp:37
 msgid "Forecast"
-msgstr ""
+msgstr "Прогноз"
 
 #: views/kmymoneyview.cpp:323
 msgid "Creating transactions can only be performed in the ledger view"
@@ -7127,7 +7071,6 @@ msgid "Last reconciled: %1"
 msgstr "Последняя сверенная операция: %1"
 
 #: views/kgloballedgerview.cpp:601
-#, fuzzy
 msgid "Never reconciled"
 msgstr "Не сверенные"
 
@@ -7231,9 +7174,8 @@ msgid "Total Profits:"
 msgstr "Общий доход:"
 
 #: views/rc.cpp:11
-#, fuzzy
 msgid "Your budgets"
-msgstr "Бюджетирование"
+msgstr "Бюджеты"
 
 #: views/rc.cpp:13
 #, fuzzy
@@ -7256,19 +7198,16 @@ msgid "Upd"
 msgstr "&Выше"
 
 #: views/rc.cpp:19
-#, fuzzy
 msgid "Hide unused budget categories"
-msgstr "Скрытие статей"
+msgstr "Скрыть неиспользуемые статьи бюджета"
 
 #: views/rc.cpp:20
-#, fuzzy
 msgid "Assignments"
-msgstr "Активы"
+msgstr "Назначения"
 
 #: views/rc.cpp:23
-#, fuzzy
 msgid "Incl&ude subaccounts"
-msgstr "Является субсчётом"
+msgstr "&Включая субсчета"
 
 #: views/rc.cpp:31
 msgid "Days of Accounts Cycle:"
@@ -7284,9 +7223,8 @@ msgid "Historic Cycles:"
 msgstr ""
 
 #: views/rc.cpp:35
-#, fuzzy
 msgid "Current Forecast Method:"
-msgstr "Операция"
+msgstr "Выбранный метод прогнозирования:"
 
 #: views/rc.cpp:36
 #, fuzzy
@@ -7294,53 +7232,45 @@ msgid "method"
 msgstr "Операция:"
 
 #: views/rc.cpp:39
-#, fuzzy
 msgid "S&ummary"
-msgstr "Завершение"
+msgstr "&Сводка"
 
 #: views/rc.cpp:41
-#, fuzzy
 msgid "0 days"
-msgstr "последние 30 дней"
+msgstr "последние 0 дней"
 
 #: views/rc.cpp:42
-#, fuzzy
 msgid "30 days"
 msgstr "последние 30 дней"
 
 #: views/rc.cpp:43
-#, fuzzy
 msgid "60 days"
 msgstr "последние 30 дней"
 
 #: views/rc.cpp:44
-#, fuzzy
 msgid "90 days"
-msgstr "последние 30 дней"
+msgstr "последние 90 дней"
 
 #: views/rc.cpp:45
 #, fuzzy
 msgid "Column 1"
-msgstr "Столбцы"
+msgstr "Столбец 1"
 
 #: views/rc.cpp:46
 msgid "New Item"
 msgstr ""
 
 #: views/rc.cpp:47
-#, fuzzy
 msgid "Det&ail"
-msgstr "Прочее"
+msgstr "&Подробности"
 
 #: views/rc.cpp:48
-#, fuzzy
 msgid "Adva&nced"
-msgstr "&Дополнительно..."
+msgstr "&Дополнительно"
 
 #: views/rc.cpp:49
-#, fuzzy
 msgid "Budget Forecast"
-msgstr "Следующий год"
+msgstr "Прогнозируемый бюджет"
 
 #: views/rc.cpp:53
 msgid "Investment Summary"
@@ -7427,19 +7357,16 @@ msgid "Calendar View"
 msgstr "Календарь"
 
 #: views/kbudgetview.cpp:108
-#, fuzzy
 msgid "Creates a new budget"
-msgstr "Создать счёт"
+msgstr "Создать бюджет"
 
 #: views/kbudgetview.cpp:109
-#, fuzzy
 msgid "Use this to create a new emtpy budget."
-msgstr "Добавить новый график платежей."
+msgstr "Используйте для создания пустого бюджета."
 
 #: views/kbudgetview.cpp:115
-#, fuzzy
 msgid "Rename the current selected budget"
-msgstr "Удалить профиль"
+msgstr "Переименовать выбранный бюджет"
 
 #: views/kbudgetview.cpp:116
 #, fuzzy
@@ -7449,7 +7376,7 @@ msgstr "Удалить выбранный профиль"
 #: views/kbudgetview.cpp:122
 #, fuzzy
 msgid "Delete the current selected budget"
-msgstr "Удалить профиль"
+msgstr "Удалить выбранный бюджет"
 
 #: views/kbudgetview.cpp:123
 #, fuzzy
@@ -7481,9 +7408,8 @@ msgid "Do you want to save the changes for <b>%1</b>"
 msgstr "Отменить изменения о получателе '%1'"
 
 #: views/kbudgetview.cpp:503 views/kpayeesview.cpp:503
-#, fuzzy
 msgid "Save changes"
-msgstr "Отменить изменения"
+msgstr "Сохранить изменения"
 
 #: views/kbudgetview.cpp:604
 msgid ""
@@ -7493,9 +7419,8 @@ msgid ""
 msgstr ""
 
 #: views/kbudgetview.cpp:629 views/kbudgetview.cpp:736
-#, fuzzy
 msgid "Unable to modify budget"
-msgstr "Невозможно изменить сумму"
+msgstr "Невозможно изменить бюджет"
 
 #: converter/mymoneyqifreader.cpp:348 converter/mymoneyqifreader.cpp:751
 #: converter/mymoneystatementreader.cpp:528 kmymoney2.cpp:3890
@@ -7511,7 +7436,6 @@ msgid "Unable to reset budget"
 msgstr "Невозможно изменить сумму"
 
 #: views/kinstitutionsview.cpp:43
-#, fuzzy
 msgid "Institution/Account"
 msgstr "Учреждение"
 
@@ -7535,9 +7459,8 @@ msgid "Unable to modify payee"
 msgstr "Невозможно изменить данные получателя"
 
 #: views/kpayeesview.cpp:502
-#, fuzzy
 msgid "Do you want to save the changes for <b>%1</b>?"
-msgstr "Отменить изменения о получателе '%1'"
+msgstr "Сохранить изменение получателя <b>%1</b>?"
 
 #: views/kpayeesview.cpp:645 views/kpayeesview.cpp:651
 #, c-format
@@ -7571,28 +7494,24 @@ msgid "TextLabel4"
 msgstr "TextLabel4"
 
 #: views/kcategoriesview.cpp:278
-#, fuzzy
 msgid "Profit: "
-msgstr "Прибыль: %1"
+msgstr "Прибыль: "
 
 #: views/kcategoriesview.cpp:280
-#, fuzzy
 msgid "Loss: "
-msgstr "Убыток: %1"
+msgstr "Убыток: "
 
 #: kmymoney2.cpp:209
 msgid "No plugins loaded"
 msgstr ""
 
 #: kmymoney2.cpp:296
-#, fuzzy
 msgid "Open database ..."
-msgstr "Открыть файл..."
+msgstr "Открыть базу данных..."
 
 #: kmymoney2.cpp:297
-#, fuzzy
 msgid "Save as database ..."
-msgstr "Сохранить как..."
+msgstr "Сохранить как базу данных..."
 
 #: kmymoney2.cpp:298
 msgid "Backup..."
@@ -7619,14 +7538,12 @@ msgid "Personal Data..."
 msgstr "Данные владельца..."
 
 #: kmymoney2.cpp:309
-#, fuzzy
 msgid "Dump Memory"
 msgstr "Содержимое памяти..."
 
 #: kmymoney2.cpp:310
-#, fuzzy
 msgid "File-Information..."
-msgstr "Информация о получателе"
+msgstr "Информация о файле..."
 
 #: kmymoney2.cpp:316
 msgid "Find transaction..."
@@ -7641,29 +7558,24 @@ msgid "Hide reconciled transactions"
 msgstr "Скрыть корректирующие операции"
 
 #: kmymoney2.cpp:323 rc.cpp:49
-#, fuzzy
 msgid "Hide unused categories"
-msgstr "Скрытие статей"
+msgstr "Скрыть неиспользуемые статьи"
 
 #: kmymoney2.cpp:324
-#, fuzzy
 msgid "Show all accounts"
-msgstr "Нет активного счёта"
+msgstr "Показать все счета"
 
 #: kmymoney2.cpp:329
-#, fuzzy
 msgid "New institution..."
 msgstr "Новое учреждение..."
 
 #: kmymoney2.cpp:330
-#, fuzzy
 msgid "Edit institution..."
-msgstr "Добавить учреждение..."
+msgstr "Изменить учреждение..."
 
 #: kmymoney2.cpp:331
-#, fuzzy
 msgid "Delete institution..."
-msgstr "Новое учреждение..."
+msgstr "Удалить учреждение..."
 
 #: kmymoney2.cpp:336
 msgid "New account..."
@@ -7679,7 +7591,6 @@ msgid "Reconcile..."
 msgstr "Сверить..."
 
 #: kmymoney2.cpp:340
-#, fuzzy
 msgid "Finish reconciliation"
 msgstr "Закончить сверку счёта"
 
@@ -7777,32 +7688,29 @@ msgstr "Показывать все сообщения"
 
 #: kmymoney2.cpp:381
 msgid "KDE language settings..."
-msgstr ""
+msgstr "Языковые настройки KDE..."
 
 #: kmymoney2.cpp:386
 msgid "&Show tip of the day"
 msgstr "Показывать совет &дня"
 
 #: kmymoney2.cpp:391
-#, fuzzy
 msgid ""
 "_: New transaction button\n"
 "New"
-msgstr "Показывать форму ввода операции"
+msgstr "Добавить"
 
 #: kmymoney2.cpp:396
-#, fuzzy
 msgid ""
 "_: Edit transaction button\n"
 "Edit"
-msgstr "Разделённая операция"
+msgstr "Изменить"
 
 #: kmymoney2.cpp:398
-#, fuzzy
 msgid ""
 "_: Enter transaction\n"
 "Enter"
-msgstr "Все операции"
+msgstr "Сохранить"
 
 #: kmymoney2.cpp:401
 #, fuzzy
@@ -7812,18 +7720,16 @@ msgid ""
 msgstr "Разделить операцию..."
 
 #: kmymoney2.cpp:402
-#, fuzzy
 msgid ""
 "_: Cancel transaction edit\n"
 "Cancel"
-msgstr "Правильная операция"
+msgstr "Отменить"
 
 #: kmymoney2.cpp:403
-#, fuzzy
 msgid ""
 "_: Delete transaction\n"
 "Delete"
-msgstr "Удалить операцию"
+msgstr "Удалить"
 
 #: kmymoney2.cpp:404
 #, fuzzy
@@ -7959,7 +7865,6 @@ msgid "Duplicate schedule"
 msgstr "Файл заблокирован"
 
 #: kmymoney2.cpp:431
-#, fuzzy
 msgid "Enter schedule..."
 msgstr "Создать график платежей..."
 
@@ -7969,38 +7874,32 @@ msgid "Skip schedule..."
 msgstr "Загрузка графиков платежей..."
 
 #: kmymoney2.cpp:434
-#, fuzzy
 msgid "New payee"
 msgstr "Новый получатель"
 
 #: kmymoney2.cpp:435
-#, fuzzy
 msgid "Rename payee"
-msgstr "Удаление получателя"
+msgstr "Переименовать получателя"
 
 #: kmymoney2.cpp:436
-#, fuzzy
 msgid "Delete payee"
-msgstr "Удалить получателя..."
+msgstr "Удалить получателя"
 
 #: kmymoney2.cpp:438
 msgid "New budget"
-msgstr ""
+msgstr "Создать бюджет"
 
 #: kmymoney2.cpp:439
-#, fuzzy
 msgid "Rename budget"
-msgstr "Переименовать..."
+msgstr "Переименовать бюджет"
 
 #: kmymoney2.cpp:440
-#, fuzzy
 msgid "Delete budget"
-msgstr "Удалить отчёт?"
+msgstr "Удалить бюджет?"
 
 #: kmymoney2.cpp:441
-#, fuzzy
 msgid "Copy budget"
-msgstr "Бюджетирование"
+msgstr "Копировать бюджет"
 
 #: kmymoney2.cpp:442
 msgid "Change budget year"
@@ -8088,33 +7987,31 @@ msgid "Encryption key to be used"
 msgstr ""
 
 #: kmymoney2.cpp:992
-#, fuzzy
 msgid "No encryption"
-msgstr "Шифрование"
+msgstr "Без шифрования"
 
 #: kmymoney2.cpp:1015
 #, fuzzy
 msgid ""
 "_: KMyMoney (Filefilter)\n"
 "KMyMoney files"
-msgstr "Нет открытого файла KMyMoney"
+msgstr "Файлы KMyMoney"
 
 #: kmymoney2.cpp:1016
 msgid ""
 "_: XML (Filefilter)\n"
 "XML files"
-msgstr ""
+msgstr "Файлы XML"
 
 #: kmymoney2.cpp:1017
 msgid ""
 "_: Anonymous (Filefilter)\n"
 "Anonymous files"
-msgstr ""
+msgstr "Анонимные файлы"
 
 #: kmymoney2.cpp:1018
-#, fuzzy
 msgid "All files"
-msgstr "все даты"
+msgstr "Все файлы"
 
 #: kmymoney2.cpp:1101
 #, fuzzy
@@ -8308,7 +8205,7 @@ msgstr "Статья \"%1\" не существует. Создать её?"
 
 #: kmymoney2.cpp:1896
 msgid "File already exists"
-msgstr ""
+msgstr "Файл с таким именем уже существует"
 
 #: kmymoney2.cpp:1925
 msgid "Register"
@@ -8319,7 +8216,6 @@ msgid "Encryption"
 msgstr "Шифрование"
 
 #: kmymoney2.cpp:1929
-#, fuzzy
 msgid "Colors"
 msgstr "Цвета"
 
@@ -8739,13 +8635,13 @@ msgid "Cannot delete currency %1. %2"
 msgstr "Невозможно добавить валюту."
 
 #: kmymoney2.cpp:3989
-#, fuzzy, c-format
+#, c-format
 msgid "Budget %1"
-msgstr "Бюджетирование"
+msgstr "Бюджет %1"
 
 #: kmymoney2.cpp:3999
 msgid "Budget %1 (%2)"
-msgstr ""
+msgstr "Бюджет %1 (%2)"
 
 #: kmymoney2.cpp:4014 kmymoney2.cpp:4063
 #, fuzzy
@@ -8880,9 +8776,8 @@ msgid "Unable to match these transactions"
 msgstr "Невозможно удалить операцию"
 
 #: kmymoney2.cpp:4991
-#, fuzzy
 msgid "Create a new transaction"
-msgstr "Создать активный счёт"
+msgstr "Создать операцию"
 
 #: kmymoney2.cpp:5038
 #, fuzzy
@@ -9145,7 +9040,7 @@ msgstr "не открывать последний файл"
 
 #: main.cpp:57
 msgid "enable performance timers"
-msgstr ""
+msgstr "разрешить таймеры производительности"
 
 #: main.cpp:61
 msgid "turn on program traces"
@@ -10079,14 +9974,12 @@ msgid "&Account"
 msgstr "С&чёт"
 
 #: rc.cpp:5
-#, fuzzy
 msgid "&Category"
-msgstr "Статья"
+msgstr "Ст&атьи"
 
 #: rc.cpp:6
-#, fuzzy
 msgid "&Transaction"
-msgstr "Операции"
+msgstr "&Операции"
 
 #: rc.cpp:7 rc.cpp:19
 #, fuzzy
@@ -10374,9 +10267,8 @@ msgstr "Статьи дохода"
 
 #: widgets/kmymoneyaccountselector.cpp:348
 #: widgets/kmymoneyaccountselector.cpp:349
-#, fuzzy
 msgid "Favorites"
-msgstr "Избранные отчёты"
+msgstr "Предпочтительные счета"
 
 #: widgets/kmymoneyaccountselector.cpp:356
 msgid "Asset accounts"
@@ -10532,22 +10424,19 @@ msgstr "каждые два месяца"
 
 #: widgets/kmymoneycombo.cpp:663 widgets/register.cpp:2083
 msgid "Last month"
-msgstr "последний месяц"
+msgstr "Последний месяц"
 
 #: widgets/kmymoneycombo.cpp:664
-#, fuzzy
 msgid "Last Year"
 msgstr "последний год"
 
 #: widgets/kmymoneycombo.cpp:665
-#, fuzzy
 msgid "Last fiscal year"
 msgstr "последний год"
 
 #: widgets/kmymoneycombo.cpp:666
-#, fuzzy
 msgid "Last 7 days"
-msgstr "последние 30 дней"
+msgstr "последние 7 дней"
 
 #: widgets/kmymoneycombo.cpp:667
 msgid "Last 30 days"
@@ -10558,27 +10447,24 @@ msgid "Last 3 months"
 msgstr "последние 3 месяца"
 
 #: widgets/kmymoneycombo.cpp:669
-#, fuzzy
 msgid "Last quarter"
-msgstr "последний год"
+msgstr "последний квартал"
 
 #: widgets/kmymoneycombo.cpp:670
 msgid "Last 6 months"
 msgstr "последние 6 месяцев"
 
 #: widgets/kmymoneycombo.cpp:671
-#, fuzzy
 msgid "Last 11 months"
-msgstr "последние 12 месяцев"
+msgstr "последние 11 месяцев"
 
 #: widgets/kmymoneycombo.cpp:672
 msgid "Last 12 months"
 msgstr "последние 12 месяцев"
 
 #: widgets/kmymoneycombo.cpp:673
-#, fuzzy
 msgid "Next 7 days"
-msgstr "следующие 30 дней"
+msgstr "следующие 7 дней"
 
 #: widgets/kmymoneycombo.cpp:674
 msgid "Next 30 days"
@@ -10589,9 +10475,8 @@ msgid "Next 3 months"
 msgstr "следующие 3 месяца"
 
 #: widgets/kmymoneycombo.cpp:676
-#, fuzzy
 msgid "Next quarter"
-msgstr "Следующий платёж"
+msgstr "Следующий квартал"
 
 #: widgets/kmymoneycombo.cpp:677
 msgid "Next 6 months"
@@ -10718,16 +10603,15 @@ msgstr "Описание"
 
 #: widgets/rc.cpp:18
 msgid "Period"
-msgstr ""
+msgstr "Периодичность"
 
 #: widgets/rc.cpp:20
-#, fuzzy
 msgid "&Yearly"
-msgstr "ежегодно"
+msgstr "&ежегодно"
 
 #: widgets/rc.cpp:21
 msgid "I&ndividual"
-msgstr ""
+msgstr "е&диноразово"
 
 #: widgets/rc.cpp:26
 msgid ""
@@ -11329,36 +11213,33 @@ msgid "Last reconciliation"
 msgstr "Отложить сверку счёта"
 
 #: widgets/register.cpp:2082
-#, fuzzy
 msgid "This year"
-msgstr "дважды в год"
+msgstr "Текущий год"
 
 #: widgets/register.cpp:2084
-#, fuzzy
 msgid "This month"
-msgstr "последний месяц"
+msgstr "Текущий месяц"
 
 #: widgets/register.cpp:2085
-#, fuzzy
 msgid "Last week"
-msgstr "последний год"
+msgstr "Последняя неделя"
 
 #: widgets/register.cpp:2086
 msgid "This week"
-msgstr ""
+msgstr "Текущая неделя"
 
 #: widgets/register.cpp:2087
 msgid "Yesterday"
-msgstr ""
+msgstr "Вчера"
 
 #: widgets/register.cpp:2088
 msgid "Today"
-msgstr ""
+msgstr "Сегодня"
 
 #: widgets/register.cpp:2089 widgets/register.cpp:2091
 #, fuzzy
 msgid "Future transactions"
-msgstr "Восстановление испорченный операций"
+msgstr "Будущие операции"
 
 #: widgets/register.cpp:2100
 #, fuzzy
@@ -11390,26 +11271,23 @@ msgstr "Неизвестный счёт"
 msgid ""
 "_: label for status combo\n"
 "Stat&us"
-msgstr ""
+msgstr "С&остояние"
 
 #: widgets/registersearchline.cpp:79
-#, fuzzy
 msgid "Any status"
 msgstr "Все состояния"
 
 #: widgets/registersearchline.cpp:80
-#, fuzzy
 msgid "Imported"
-msgstr "&Импорт"
+msgstr "Импортированные"
 
 #: widgets/registersearchline.cpp:81
 msgid "Erroneous"
-msgstr ""
+msgstr "Ошибочные"
 
 #: widgets/registersearchline.cpp:82
-#, fuzzy
 msgid "Not marked"
-msgstr "Не проверено"
+msgstr "Неотмеченные"
 
 #: widgets/klistviewsearchline.cpp:461 widgets/registersearchline.cpp:281
 #, fuzzy
