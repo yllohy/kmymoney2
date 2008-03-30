@@ -194,48 +194,88 @@
                             <property name="name">
                                 <cstring>layout17</cstring>
                             </property>
-                            <hbox>
+                            <vbox>
                                 <property name="name">
                                     <cstring>unnamed</cstring>
                                 </property>
-                                <widget class="QLabel">
+                                        <hbox>
+                                        <property name="name">
+                                        <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QLabel">
+                                        <property name="name">
+                                                <cstring>textLabel2</cstring>
+                                        </property>
+                                        <property name="sizePolicy">
+                                                <sizepolicy>
+                                                <hsizetype>5</hsizetype>
+                                                <vsizetype>5</vsizetype>
+                                                <horstretch>1</horstretch>
+                                                <verstretch>0</verstretch>
+                                                </sizepolicy>
+                                        </property>
+                                        <property name="text">
+                                                <string>Current Forecast Method:</string>
+                                        </property>
+                                        </widget>
+                                        <widget class="QLabel">
+                                        <property name="name">
+                                                <cstring>m_forecastMethod</cstring>
+                                        </property>
+                                        <property name="sizePolicy">
+                                                <sizepolicy>
+                                                <hsizetype>5</hsizetype>
+                                                <vsizetype>5</vsizetype>
+                                                <horstretch>2</horstretch>
+                                                <verstretch>0</verstretch>
+                                                </sizepolicy>
+                                        </property>
+                                        <property name="font">
+                                                <font>
+                                                <bold>1</bold>
+                                                </font>
+                                        </property>
+                                        <property name="text">
+                                                <string>method</string>
+                                        </property>
+                                        </widget>
+                                </hbox>
+                                <widget class="QButtonGroup" row="2" column="0">
                                     <property name="name">
-                                        <cstring>textLabel2</cstring>
+                                        <cstring>m_historyMethod</cstring>
                                     </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>5</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>1</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
+                                    <property name="title">
+                                        <string>History Forecast Method</string>
                                     </property>
-                                    <property name="text">
-                                        <string>Current Forecast Method:</string>
-                                    </property>
+                                    <vbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QRadioButton">
+                                            <property name="name">
+                                                <cstring>radioButton11</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Simple Moving Average</string>
+                                            </property>
+                                            <property name="buttonGroupId">
+                                                <number>0</number>
+                                            </property>
+                                        </widget>
+                                        <widget class="QRadioButton">
+                                            <property name="name">
+                                                <cstring>radioButton12</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>Weighted Moving Average</string>
+                                            </property>
+                                            <property name="buttonGroupId">
+                                                <number>1</number>
+                                            </property>
+                                        </widget>
+                                    </vbox>
                                 </widget>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>m_forecastMethod</cstring>
-                                    </property>
-                                    <property name="sizePolicy">
-                                        <sizepolicy>
-                                            <hsizetype>5</hsizetype>
-                                            <vsizetype>5</vsizetype>
-                                            <horstretch>2</horstretch>
-                                            <verstretch>0</verstretch>
-                                        </sizepolicy>
-                                    </property>
-                                    <property name="font">
-                                        <font>
-                                            <bold>1</bold>
-                                        </font>
-                                    </property>
-                                    <property name="text">
-                                        <string>method</string>
-                                    </property>
-                                </widget>
-                            </hbox>
+                            </vbox>
                         </widget>
                         <spacer>
                             <property name="name">
@@ -250,7 +290,7 @@
                             <property name="sizeHint">
                                 <size>
                                     <width>21</width>
-                                    <height>31</height>
+                                    <height>6</height>
                                 </size>
                             </property>
                         </spacer>

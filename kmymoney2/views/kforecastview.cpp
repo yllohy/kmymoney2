@@ -20,6 +20,7 @@
 #include <qtabwidget.h>
 #include <qspinbox.h>
 #include <qlabel.h>
+#include <qbuttongroup.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -69,14 +70,17 @@ KForecastView::KForecastView(QWidget *parent, const char *name) :
   m_accountsCycle->setValue(KMyMoneyGlobalSettings::forecastAccountCycle());
   m_beginDay->setValue(KMyMoneyGlobalSettings::beginForecastDay());
   m_forecastCycles->setValue(KMyMoneyGlobalSettings::forecastCycles());
+  m_historyMethod->setButton(KMyMoneyGlobalSettings::historyMethod());
   switch(KMyMoneyGlobalSettings::forecastMethod()) {
     case 0:
       m_forecastMethod->setText(i18n("Scheduled"));
       m_forecastCycles->setDisabled(true);
+      m_historyMethod->setDisabled(true);
       break;
     case 1:
       m_forecastMethod->setText(i18n("History"));
       m_forecastCycles->setEnabled(true);
+      m_historyMethod->setEnabled(true);
       break;
     default:
       m_forecastMethod->setText(i18n("Unknown"));
@@ -155,6 +159,7 @@ void KForecastView::loadListView(void)
   forecast.setAccountsCycle(m_accountsCycle->value());
   forecast.setBeginForecastDay(m_beginDay->value());
   forecast.setForecastCycles(m_forecastCycles->value());
+  forecast.setHistoryMethod(m_historyMethod->selectedId());
   forecast.doForecast();
   
   //Get all accounts of the right type to calculate forecast
@@ -280,6 +285,7 @@ void KForecastView::loadSummaryView(void)
   forecast.setAccountsCycle(m_accountsCycle->value());
   forecast.setBeginForecastDay(m_beginDay->value());
   forecast.setForecastCycles(m_forecastCycles->value());
+  forecast.setHistoryMethod(m_historyMethod->selectedId());
   forecast.doForecast();
   
   //Get all accounts of the right type to calculate forecast
@@ -542,6 +548,7 @@ void KForecastView::loadAdvancedView(void)
   forecast.setAccountsCycle(m_accountsCycle->value());
   forecast.setBeginForecastDay(m_beginDay->value());
   forecast.setForecastCycles(m_forecastCycles->value());
+  forecast.setHistoryMethod(m_historyMethod->selectedId());
   forecast.doForecast();
 
   //Get all accounts of the right type to calculate forecast
@@ -661,6 +668,7 @@ void KForecastView::loadBudgetView(void)
   QDate historyStartDate = historyEndDate.addDays(-m_accountsCycle->value() * m_forecastCycles->value());
   QDate forecastStartDate = QDate(QDate::currentDate().year(), 1, 1);
   QDate forecastEndDate = QDate::currentDate().addDays(m_forecastDays->value());
+  forecast.setHistoryMethod(m_historyMethod->selectedId());
 
   forecast.createBudget(historyStartDate, historyEndDate, forecastStartDate, forecastEndDate, false);
   
