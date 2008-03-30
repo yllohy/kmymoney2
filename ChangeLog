@@ -4,6 +4,7 @@
   * Fixed an i18n issue in the sort order dialog
   * Added option 'Enter key moves between the fields'
   * Fixed typo in README
+  * Fixed forecast view to contain a title label and reduced margin to 0
 
 2008-03-28 Alvaro Soliverez <asoliverez@gmail.com>
   * Removed duplicate code and cleaned up code in forecast

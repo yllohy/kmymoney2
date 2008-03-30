@@ -8,14 +8,42 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>669</height>
+            <width>909</width>
+            <height>771</height>
         </rect>
     </property>
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <property name="margin">
+            <number>0</number>
+        </property>
+        <widget class="KMyMoneyTitleLabel">
+            <property name="name">
+                <cstring>kMyMoneyTitleLabel</cstring>
+            </property>
+            <property name="text">
+                <string>Forcecast</string>
+            </property>
+            <property name="rightImageFile">
+                <string>pics/titlelabel_background.png</string>
+            </property>
+        </widget>
+        <widget class="Line">
+            <property name="name">
+                <cstring>line1</cstring>
+            </property>
+            <property name="frameShape">
+                <enum>HLine</enum>
+            </property>
+            <property name="frameShadow">
+                <enum>Sunken</enum>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
         <widget class="QGroupBox">
             <property name="name">
                 <cstring>groupBox3</cstring>
@@ -458,7 +486,7 @@
                     </widget>
                 </vbox>
             </widget>
-	    <widget class="QWidget">
+            <widget class="QWidget">
                 <property name="name">
                     <cstring>budget</cstring>
                 </property>
