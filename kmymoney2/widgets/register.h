@@ -73,7 +73,7 @@ class Register;
 class RegisterItem;
 class ItemPtrVector;
 
-const QString& sortOrderToText(TransactionSortField idx);
+const QString sortOrderToText(TransactionSortField idx);
 TransactionSortField textToSortOrder(const QString& text);
 
 

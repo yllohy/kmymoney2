@@ -60,7 +60,7 @@ static QString sortOrderText[] = {
   I18N_NOOP("Category"),
   I18N_NOOP("Reconcile state"),
   I18N_NOOP("Security")
-  // add new values above this line
+  // add new values above this comment line
   };
 
 using namespace KMyMoneyRegister;
@@ -1741,11 +1741,11 @@ TransactionSortField KMyMoneyRegister::textToSortOrder(const QString& text)
   return UnknownSort;
 }
 
-const QString& KMyMoneyRegister::sortOrderToText(TransactionSortField idx)
+const QString KMyMoneyRegister::sortOrderToText(TransactionSortField idx)
 {
   if(idx < PostDateSort || idx >= MaxSortFields)
     idx = UnknownSort;
-  return sortOrderText[idx];
+  return i18n(sortOrderText[idx]);
 }
 
 QString Register::text(int /*row*/, int /*col*/) const
