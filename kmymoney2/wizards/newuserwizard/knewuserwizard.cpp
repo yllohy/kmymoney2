@@ -246,6 +246,11 @@ CurrencyPage::CurrencyPage(Wizard* wizard, const char* name) :
   }
 }
 
+void CurrencyPage::enterPage(void)
+{
+  m_currencyList->setFocus();
+}
+
 
 KMyMoneyWizardPage* CurrencyPage::nextPage(void) const
 {

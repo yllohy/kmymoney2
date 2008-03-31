@@ -83,6 +83,7 @@ QCString acStock1;
 QCString acStock2;
 QCString acDividends;
 QCString acInterest;
+QCString acTax;
 
 TransactionHelper::TransactionHelper( const QDate& _date, const QCString& _action, MyMoneyMoney _value, const QCString& _accountid, const QCString& _categoryid, const QCString& _currencyid, const QString& _payee )
 {
@@ -226,7 +227,7 @@ void InvTransactionHelper::init( const QDate& _date, const QCString& _action, My
   //kdDebug(2) << "successfully added " << id() << endl;
 }
 
-QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency )
+QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency, bool _taxReport )
 {
   MyMoneyAccount info;
   MyMoneyFileTransaction ft;
@@ -238,6 +239,9 @@ QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, 
     info.setCurrencyId(_currency);
   else
     info.setCurrencyId(MyMoneyFile::instance()->baseCurrency().id());
+
+  if(_taxReport)
+    info.setValue("Tax", "Yes");
 
   MyMoneyAccount parent = MyMoneyFile::instance()->account(_parent);
   MyMoneyFile::instance()->addAccount( info, parent );

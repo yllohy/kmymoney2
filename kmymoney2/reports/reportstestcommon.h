@@ -71,6 +71,7 @@ extern QCString acStock1;
 extern QCString acStock2;
 extern QCString acDividends;
 extern QCString acInterest;
+extern QCString acTax;
 
 class TransactionHelper: public MyMoneyTransaction
 {
@@ -109,7 +110,7 @@ class BudgetHelper: public QValueList<BudgetEntryHelper>
   MyMoneyMoney budgetAmount( const QDate& _date, const QCString& _categoryid, bool& _applytosub );
 };
 
-extern QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency="" );
+extern QCString makeAccount( const QString& _name, MyMoneyAccount::accountTypeE _type, MyMoneyMoney _balance, const QDate& _open, const QCString& _parent, QCString _currency="", bool _taxReport = false );
 extern void makePrice(const QCString& _currencyid, const QDate& _date, const MyMoneyMoney& _price );
 QCString makeEquity(const QString& _name, const QString& _symbol );
 extern void makeEquityPrice(const QCString& _id, const QDate& _date, const MyMoneyMoney& _price );

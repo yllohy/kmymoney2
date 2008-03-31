@@ -726,7 +726,7 @@ void QueryTable::constructTransactionTable(void)
               qA ["categorytype"] = accountTypeToString(a.accountGroup());
             }
 
-            if (use_transfers || (a.isIncomeExpense() && m_config.includesCategory(a.id())))
+            if (use_transfers || (a.isIncomeExpense() && m_config.includes(a)))
               m_transactions += qA;
           }
         }

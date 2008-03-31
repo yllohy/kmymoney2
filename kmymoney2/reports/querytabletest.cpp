@@ -75,6 +75,7 @@ void QueryTableTest::setUp () {
   acParent = makeAccount(QString("Parent"),MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
   acChild = makeAccount(QString("Child"),MyMoneyAccount::Expense,0,QDate(2004,2,11),acParent);
   acForeign = makeAccount(QString("Foreign"),MyMoneyAccount::Expense,0,QDate(2004,1,11),acExpense);
+  acTax = makeAccount(QString("Tax"), MyMoneyAccount::Expense,0,QDate(2005,1,11),acExpense, "", true);
 
   MyMoneyInstitution i("Bank of the World","","","","","","");
   file->addInstitution(i);
@@ -625,5 +626,32 @@ void QueryTableTest::testInvestment(void)
 
   }
 
+void QueryTableTest::testTaxReport()
+{
+  try {
+    TransactionHelper t1q1( QDate(2004,1,1), MyMoneySplit::ActionWithdrawal, moSolo, acChecking, acSolo );
+    TransactionHelper t2q1( QDate(2004,2,1), MyMoneySplit::ActionWithdrawal, moParent1, acChecking, acTax );
+
+    unsigned cols;
+    MyMoneyReport filter;
+
+    filter.setRowType( MyMoneyReport::eCategory );
+    filter.setName("Tax Transactions");
+    cols = MyMoneyReport::eQCnumber | MyMoneyReport::eQCpayee | MyMoneyReport::eQCaccount;
+    filter.setQueryColumns( static_cast<MyMoneyReport::EQueryColumns>(cols) );
+    filter.setTax(true);
+
+    XMLandback(filter);
+    QueryTable qtbl_3(filter);
+
+    writeTabletoHTML(qtbl_3,"Tax Transactions.html");
+
+    QString html = qtbl_3.renderHTML();
+    CPPUNIT_ASSERT(qtbl_3.m_transactions.count() == 1);
+  } catch(MyMoneyException *e) {
+    CPPUNIT_FAIL(e->what());
+    delete e;
+  }
+}
 
 // vim:cin:si:ai:et:ts=2:sw=2:

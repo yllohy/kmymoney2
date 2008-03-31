@@ -75,6 +75,7 @@ class CurrencyPage : public Currency, public WizardPage<Wizard>
   Q_OBJECT
 public:
   CurrencyPage(Wizard* parent, const char* name = 0);
+  void enterPage(void);
   KMyMoneyWizardPage* nextPage(void) const;
 };
 
