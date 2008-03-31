@@ -805,6 +805,8 @@ void MyMoneyForecastTest::testBeginForecastDate() {
     CPPUNIT_ASSERT(QDate::currentDate() == a.beginForecastDate());
   } else {
     beginDay = ((((QDate::currentDate().day() - beginDay)/a.accountsCycle()) + 1) * a.accountsCycle()) + beginDay;
+    if(beginDay > QDate::currentDate().daysInMonth())
+      beginDay = QDate::currentDate().daysInMonth();
     beginDate = QDate(QDate::currentDate().year(), QDate::currentDate().month(), beginDay);
     if(QDate::currentDate().day() == QDate::currentDate().daysInMonth() ) {
       std::cout << std::endl << "testBeginForecastDate(): test of first day of month with small interval skipped because it is the last day of month" << std::endl;
