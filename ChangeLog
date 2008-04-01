@@ -3,6 +3,7 @@
   * Changed interface of MyMoneyAccount::adjustBalance() to
     support stock splits
   * Adjusted testcases
+  * Updated Portuguese translation from José Jorge
 
 2008-03-31 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed forecast beginDay test when day is last day of month
