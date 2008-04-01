@@ -16,6 +16,7 @@
 
 #include "mymoneyaccounttest.h"
 #include <kmymoney/mymoneyexception.h>
+#include <kmymoney/mymoneysplit.h>
 
 MyMoneyAccountTest::MyMoneyAccountTest()
 {
@@ -46,6 +47,7 @@ void MyMoneyAccountTest::testConstructor() {
 	QString institutionid = "B000001";
 	QCString parent = "Parent";
 	MyMoneyAccount r;
+	MyMoneySplit s;
 	r.setAccountType(MyMoneyAccount::Asset);
 	r.setOpeningDate(QDate::currentDate());
 	r.setLastModified(QDate::currentDate());
@@ -53,7 +55,8 @@ void MyMoneyAccountTest::testConstructor() {
 	r.setNumber("465500");
 	r.setParentAccountId(parent);
 	r.setValue(QCString("key"), "value");
-	r.adjustBalance(MyMoneyMoney(1,1));
+	s.setShares(MyMoneyMoney(1,1));
+	r.adjustBalance(s);
 	CPPUNIT_ASSERT(r.m_kvp.count() == 1);
 	CPPUNIT_ASSERT(r.value("key") == "value");
 
@@ -161,12 +164,20 @@ void MyMoneyAccountTest::testAssignmentConstructor() {
 
 void MyMoneyAccountTest::testAdjustBalance() {
 	MyMoneyAccount a;
-
-	a.adjustBalance(MyMoneyMoney(3,1));
+	MyMoneySplit s;
+	s.setShares(MyMoneyMoney(3,1));
+	a.adjustBalance(s);
 	CPPUNIT_ASSERT(a.balance() == MyMoneyMoney(3,1));
-	a.adjustBalance(MyMoneyMoney(-5,1));
+	s.setShares(MyMoneyMoney(5,1));
+	a.adjustBalance(s, true);
 	CPPUNIT_ASSERT(a.balance() == MyMoneyMoney(-2,1));
-	a.adjustBalance(MyMoneyMoney(2,1));
+	s.setShares(MyMoneyMoney(2,1));
+	s.setAction(MyMoneySplit::ActionSplitShares);
+	a.adjustBalance(s);
+	CPPUNIT_ASSERT(a.balance() == MyMoneyMoney(-4,1));
+	s.setShares(MyMoneyMoney(4,1));
+	s.setAction(QCString());
+	a.adjustBalance(s);
 	CPPUNIT_ASSERT(a.balance().isZero());
 }
 

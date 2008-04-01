@@ -1,6 +1,11 @@
-2008-03-30 Alvaro Soliverez <asoliverez@gmail.com>
-  * Fixed forecast beginDay test when day is last day of month
 
+2008-04-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Changed interface of MyMoneyAccount::adjustBalance() to
+    support stock splits
+  * Adjusted testcases
+
+2008-03-31 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed forecast beginDay test when day is last day of month
 
 2008-03-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Force focus to currency selection list in new user wizard

@@ -469,7 +469,7 @@ void MyMoneySeqAccessMgr::addTransaction(MyMoneyTransaction& transaction, const 
   // adjust the balance of all affected accounts
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
     MyMoneyAccount acc = m_accountList[(*it_s).accountId()];
-    acc.adjustBalance((*it_s).shares());
+    acc.adjustBalance(*it_s);
     if(!skipAccountUpdate) {
       acc.touch();
       invalidateBalanceCache(acc.id());
@@ -619,7 +619,7 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
   // as modified
   for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
     MyMoneyAccount acc = m_accountList[(*it_s).accountId()];
-    acc.adjustBalance(-((*it_s).shares()));
+    acc.adjustBalance(*it_s, true);   // reverse the adjust operation (reverse = true)
     acc.touch();
     invalidateBalanceCache(acc.id());
     m_accountList.modify(acc.id(), acc);
@@ -627,7 +627,7 @@ void MyMoneySeqAccessMgr::modifyTransaction(const MyMoneyTransaction& transactio
   }
   for(it_s = transaction.splits().begin(); it_s != transaction.splits().end(); ++it_s) {
     MyMoneyAccount acc = m_accountList[(*it_s).accountId()];
-    acc.adjustBalance((*it_s).shares());
+    acc.adjustBalance(*it_s);
     acc.touch();
     invalidateBalanceCache(acc.id());
     m_accountList.modify(acc.id(), acc);
@@ -722,7 +722,7 @@ void MyMoneySeqAccessMgr::removeTransaction(const MyMoneyTransaction& transactio
   // to be updated after the removal of this transaction
   for(it_s = (*it_t).splits().begin(); it_s != (*it_t).splits().end(); ++it_s) {
     MyMoneyAccount acc = m_accountList[(*it_s).accountId()];
-    acc.adjustBalance(-((*it_s).shares()));
+    acc.adjustBalance(*it_s, true);  // reverse = true
     acc.touch();
     m_accountList.modify(acc.id(), acc);
     invalidateBalanceCache(acc.id());
@@ -1852,7 +1852,7 @@ void MyMoneySeqAccessMgr::rebuildAccountBalances(void)
         const QCString& id = (*it_s).accountId();
         // locate the account and if present, update data
         if(map.find(id) != map.end()) {
-          map[id].adjustBalance((*it_s).shares());
+          map[id].adjustBalance(*it_s);
         }
       }
     }

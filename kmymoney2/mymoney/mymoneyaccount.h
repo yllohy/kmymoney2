@@ -42,7 +42,7 @@
 #include "mymoneyutils.h"
 class MyMoneyTransaction;
 class MyMoneyInstitution;
-
+class MyMoneySplit;
 
 /**
   * A representation of an account.
@@ -381,12 +381,16 @@ public:
 
   /**
     * This method adjusts the balance of this account
-    * according to the difference provided by @p diff.
+    * according to the difference contained in the split @p s.
+    * If the s.action() is MyMoneySplit::ActionSplitShares then
+    * the balance will be adjusted accordingly.
     *
-    * @param diff const reference to MyMoneyMoney object containing the
-    *             value to be added to the balance
+    * @param s const reference to MyMoneySplit object containing the
+    *             value to be added/subtracted to/from the balance
+    * @param reverse add (false) or subtract (true) the shares contained in the split.
+    *          It also affects the balance for share splits in the opposite direction.
     */
-  void adjustBalance(const MyMoneyMoney& diff) { m_balance += diff; }
+  void adjustBalance(const MyMoneySplit& s, bool reverse = false);
 
   /**
     * This method sets the balance of this account

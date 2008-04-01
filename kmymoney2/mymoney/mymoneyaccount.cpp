@@ -31,6 +31,7 @@
 
 #include <kmymoney/mymoneyexception.h>
 #include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneysplit.h>
 
 MyMoneyAccount::MyMoneyAccount()
 {
@@ -547,4 +548,20 @@ QString MyMoneyAccount::brokerageName(void) const
   if(m_accountType == Investment)
     return QString("%1 (%2)").arg(m_name, i18n("Brokerage (suffix for account names)", "Brokerage"));
   return m_name;
+}
+
+void MyMoneyAccount::adjustBalance(const MyMoneySplit& s, bool reverse)
+{
+  if(s.action() == MyMoneySplit::ActionSplitShares) {
+    if(reverse)
+      m_balance = m_balance / s.shares();
+    else
+      m_balance = m_balance * s.shares();
+  } else {
+    if(reverse)
+      m_balance -= s.shares();
+    else
+      m_balance += s.shares();
+  }
+
 }
