@@ -1,4 +1,7 @@
 
+2008-04-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed #1931100 (Minor visibility problem)
+
 2008-04-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Changed interface of MyMoneyAccount::adjustBalance() to
     support stock splits

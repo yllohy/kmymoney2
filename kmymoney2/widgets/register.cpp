@@ -1094,6 +1094,11 @@ void Register::updateRegister(bool forceUpdateRowHeight)
       m_needInitialColumnResize = false;
     } else {
       updateContents();
+
+      // if the number of rows changed, we might need to resize the register
+      // to make sure we reflect the current visibility of the scrollbars.
+      if(needUpdateHeaders)
+        QTimer::singleShot(0, this, SLOT(resize()));
     }
   }
   ::timetrace("Done updateing register");
