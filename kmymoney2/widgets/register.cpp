@@ -2096,7 +2096,7 @@ void Register::addGroupMarkers(void)
         new KMyMoneyRegister::SimpleDateGroupMarker(this, today.addDays(1), i18n("Future transactions"));
       }
       if(KMyMoneyGlobalSettings::showFiscalMarker()) {
-        QDate currentFiscalYear(QDate::currentDate().year(), KMyMoneyGlobalSettings::firstFiscalMonth(), 1);
+        QDate currentFiscalYear(QDate::currentDate().year(), KMyMoneyGlobalSettings::firstFiscalMonth(), KMyMoneyGlobalSettings::firstFiscalDay());
 
         if(QDate::currentDate() < currentFiscalYear)
           currentFiscalYear = currentFiscalYear.addYears(-1);

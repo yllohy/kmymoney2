@@ -1,6 +1,7 @@
 
 2008-04-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed #1931100 (Minor visibility problem)
+  * Respect first fiscal day in register for fiscal year group marker
 
 2008-04-01 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Changed interface of MyMoneyAccount::adjustBalance() to
