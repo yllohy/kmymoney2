@@ -102,6 +102,45 @@ const T& MyMoneyObjectContainer::a(const QCString& id) \
   return dynamic_cast<const T&>(*(*it)); \
 }
 
+void MyMoneyObjectContainer::account(QValueList<MyMoneyAccount>& list)
+{
+  QMap<QCString, const MyMoneyObject*>::const_iterator it;
+  for(it = m_map.begin(); it != m_map.end(); ++it) {
+    const MyMoneyAccount* node = dynamic_cast<const MyMoneyAccount*>(*it);
+    if(node) {
+      assignFraction(const_cast<MyMoneyAccount*>(node));
+      list.append(*node);
+    }
+  }
+}
+
+const MyMoneyAccount& MyMoneyObjectContainer::account(const QCString& id)
+{
+  static MyMoneyAccount nullElement;
+  if(id.isEmpty())
+    return nullElement;
+  QMap<QCString, MyMoneyObject const *>::iterator it;
+  it = m_map.find(id);
+  if(it == m_map.end()) {
+    /* not found, need toload from engine */
+    const MyMoneyAccount& x = m_storage->account(id);
+    MyMoneyAccount* item = new MyMoneyAccount(x);
+    assignFraction(dynamic_cast<MyMoneyAccount*>(item));
+    m_map[id] = item;
+    return dynamic_cast<const MyMoneyAccount&>(*m_map[id]);
+  }
+  assignFraction(dynamic_cast<MyMoneyAccount*> (const_cast<MyMoneyObject*>(*it)));
+  return dynamic_cast<const MyMoneyAccount&>(*(*it));
+}
+
+void MyMoneyObjectContainer::assignFraction(MyMoneyAccount* acc)
+{
+  if(acc != 0 && acc->m_fraction == -1) {
+    const MyMoneySecurity& sec = security(acc->currencyId());
+    acc->fraction(sec);
+  }
+}
+
 const MyMoneyAccount& MyMoneyObjectContainer::accountByName(const QString& name) const
 {
   static MyMoneyAccount nullElement;
@@ -153,7 +192,6 @@ void MyMoneyObjectContainer::refresh(const QCString& id)
   }
 }
 
-objectAccessMethod(account, MyMoneyAccount)
 objectAccessMethod(payee, MyMoneyPayee)
 objectAccessMethod(security, MyMoneySecurity)
 objectAccessMethod(institution, MyMoneyInstitution)
@@ -168,7 +206,6 @@ preloadMethod(Security, MyMoneySecurity)
 preloadMethod(Payee, MyMoneyPayee)
 preloadMethod(Institution, MyMoneyInstitution)
 
-listMethod(account, MyMoneyAccount)
 listMethod(payee, MyMoneyPayee)
 listMethod(institution, MyMoneyInstitution)
 

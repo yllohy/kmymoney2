@@ -180,7 +180,7 @@ const QString MyMoneyMoney::formatMoney(int denom, bool showThousandSeparator) c
 
 const QString MyMoneyMoney::formatMoney(const MyMoneyAccount& acc, const MyMoneySecurity& sec, bool showThousandSeparator) const
 {
-  return formatMoney(sec.tradingSymbol(), denomToPrec(acc.fraction(sec)), showThousandSeparator);
+  return formatMoney(sec.tradingSymbol(), denomToPrec(acc.fraction()), showThousandSeparator);
 }
 
 const QString MyMoneyMoney::formatMoney(const QString& currency, const int prec, bool showThousandSeparator) const

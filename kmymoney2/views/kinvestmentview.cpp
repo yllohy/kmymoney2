@@ -181,8 +181,7 @@ void KInvestmentView::loadAccounts(void)
   if(!d->m_account.id().isEmpty()) {
     m_accountComboBox->setSelected(d->m_account);
     try {
-      MyMoneySecurity sec = MyMoneyFile::instance()->security(d->m_account.currencyId());
-      d->m_precision = MyMoneyMoney::denomToPrec(d->m_account.fraction(sec));
+      d->m_precision = MyMoneyMoney::denomToPrec(d->m_account.fraction());
     } catch(MyMoneyException *e) {
       qDebug("Security %s for account %s not found", d->m_account.currencyId().data(), d->m_account.name().data());
       delete e;

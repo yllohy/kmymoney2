@@ -446,7 +446,7 @@ void AccountTypePage::slotUpdateCurrency(void)
   MyMoneyAccount acc;
   acc.setAccountType(accountType());
 
-  m_openingBalance->setPrecision(MyMoneyMoney::denomToPrec(acc.fraction(currency())));
+  m_openingBalance->setPrecision(MyMoneyMoney::denomToPrec(acc.fraction()));
 }
 
 void AccountTypePage::slotLoadWidgets(void)

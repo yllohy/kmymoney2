@@ -43,6 +43,7 @@
 class MyMoneyTransaction;
 class MyMoneyInstitution;
 class MyMoneySplit;
+class MyMoneyObjectContainer;
 
 /**
   * A representation of an account.
@@ -78,6 +79,7 @@ class MyMoneySplit;
 **/
 class KMYMONEY_EXPORT MyMoneyAccount : public MyMoneyObject, public MyMoneyKeyValueContainer
 {
+  friend class MyMoneyObjectContainer;
 public:
 
   /**
@@ -435,14 +437,30 @@ public:
 
   /**
     * returns the applicable smallest fraction for this account
-    * for the given security based on the account type.
+    * for the given security based on the account type. At the same
+    * time, m_fraction is updated to the value returned.
     *
     * @param sec const reference to currency (security)
     *
     * @retval sec.smallestCashFraction() for account type Cash
     * @retval sec.smallestAccountFraction() for all other account types
     */
+  int fraction(const MyMoneySecurity& sec);
+
+  /**
+   * Same as the above method, but does not modify m_fraction.
+   */
   int fraction(const MyMoneySecurity& sec) const;
+
+  /**
+    * This method returns the stored value for the fraction of this
+    * account or -1 if not initialized. It can be initialized by
+    * calling fraction(const MyMoneySecurity& sec) once.
+    *
+    * @note Don't use this method outside of KMyMoney application context (eg. testcases).
+    * Use the above method instead.
+    */
+  int fraction(void) const;
 
   /**
     * This method returns @a true if the account type is
@@ -575,6 +593,12 @@ private:
     * online banking sessions to this account.
     */
   MyMoneyKeyValueContainer m_onlineBankingSettings;
+
+  /**
+    * This member keeps the fraction for the account. It is filled by MyMoneyFile
+    * when set to -1. See also @sa fraction(const MyMoneySecurity&).
+    */
+  int             m_fraction;
 
 };
 

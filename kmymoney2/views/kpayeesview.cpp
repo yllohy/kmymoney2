@@ -632,7 +632,6 @@ void KPayeesView::showTransactions(void)
     KMyMoneyTransaction* t = m_transactionPtrVector[i];
     MyMoneySplit s = t->splitById(t->splitId());
     const MyMoneyAccount& acc = file->account(s.accountId());
-    const MyMoneySecurity& sec = file->security(acc.currencyId());
 
     item = new KTransactionListItem(m_transactionView, item, s.accountId(), t->id());
     item->setText(0, s.number());
@@ -668,7 +667,7 @@ void KPayeesView::showTransactions(void)
       txt = MyMoneyFile::instance()->accountToCategory(s0.accountId());
     }
     item->setText(2, txt);
-    item->setText(3, s.value().formatMoney(acc.fraction(sec)));
+    item->setText(3, s.value().formatMoney(acc.fraction()));
   }
   m_balanceLabel->setText(i18n("Balance: %1").arg(balance.formatMoney(MyMoneyFile::instance()->baseCurrency().smallestAccountFraction())));
 

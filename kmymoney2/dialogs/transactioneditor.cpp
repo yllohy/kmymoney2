@@ -313,7 +313,7 @@ bool TransactionEditor::fixTransactionCommodity(const MyMoneyAccount& account)
 
   // determine the max fraction for this account
   MyMoneySecurity sec = file->security(m_account.currencyId());
-  int fract = m_account.fraction(sec);
+  int fract = m_account.fraction();
 
   // scan the list of selected transactions
   QValueList<KMyMoneyRegister::SelectedTransaction>::iterator it_t;
@@ -1494,7 +1494,7 @@ bool StdTransactionEditor::addVatSplit(MyMoneyTransaction& tr, const MyMoneyMone
 
     MyMoneyMoney vatRate;
     MyMoneyMoney gv, nv;    // gross value, net value
-    int fract = m_account.fraction(asec);
+    int fract = m_account.fraction();
 
     vatRate.fromString(vatAcc.value("VatRate"));
     if(!vatRate.isZero()) {
@@ -1779,8 +1779,7 @@ MyMoneyMoney StdTransactionEditor::amountFromWidget(bool* update) const
 
   // determine the max fraction for this account and
   // adjust the value accordingly
-  const MyMoneySecurity& sec = MyMoneyFile::instance()->security(m_account.currencyId());
-  return value.convert(m_account.fraction(sec));
+  return value.convert(m_account.fraction());
 }
 
 bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMoneyTransaction& torig, const MyMoneySplit& sorig, bool skipPriceDialog)
@@ -1926,8 +1925,7 @@ bool StdTransactionEditor::createTransaction(MyMoneyTransaction& t, const MyMone
       } else {
         MyMoneyAccount cat = MyMoneyFile::instance()->account(s1.accountId());
         if(m_priceInfo.find(cat.currencyId()) != m_priceInfo.end()) {
-          MyMoneySecurity sec = MyMoneyFile::instance()->security(cat.currencyId());
-          shares = (s1.value() * m_priceInfo[cat.currencyId()]).reduce().convert(cat.fraction(sec));
+          shares = (s1.value() * m_priceInfo[cat.currencyId()]).reduce().convert(cat.fraction());
         }
         else
           shares = s1.value();

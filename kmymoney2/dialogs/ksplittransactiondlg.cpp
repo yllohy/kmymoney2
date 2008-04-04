@@ -117,8 +117,7 @@ KSplitTransactionDlg::KSplitTransactionDlg(const MyMoneyTransaction& t,
 
   // setup the precision
   try {
-    const MyMoneySecurity& sec = MyMoneyFile::instance()->security(m_account.currencyId());
-    m_precision = MyMoneyMoney::denomToPrec(m_account.fraction(sec));
+    m_precision = MyMoneyMoney::denomToPrec(m_account.fraction());
   } catch(MyMoneyException *e) {
     delete e;
   }

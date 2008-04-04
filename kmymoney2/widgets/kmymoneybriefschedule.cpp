@@ -100,7 +100,6 @@ void KMyMoneyBriefSchedule::loadSchedule()
       m_account->setText(sched.account().name());
       QString text;
       MyMoneyMoney amount = sched.transaction().splitByAccount(sched.account().id()).value();
-      const MyMoneySecurity& sec = MyMoneyFile::instance()->security(sched.account().currencyId());
       amount = amount.abs();
 
       if (sched.willEnd())
@@ -108,13 +107,13 @@ void KMyMoneyBriefSchedule::loadSchedule()
         int transactions = sched.paymentDates(m_date, sched.endDate()).count()-1;
         text = i18n("Payment on %1 for %2 with %3 transactions remaining occuring %4.")
                 .arg(KGlobal::locale()->formatDate(m_date, true))
-                .arg(amount.formatMoney(sched.account().fraction(sec)))
+                .arg(amount.formatMoney(sched.account().fraction()))
                 .arg(QString::number(transactions))
                 .arg(KMyMoneyUtils::occurenceToString(sched.occurence()));
       } else {
         text = i18n("Payment on %1 for %2 occuring %4.")
                 .arg(KGlobal::locale()->formatDate(m_date, true))
-                .arg(amount.formatMoney(sched.account().fraction(sec)))
+                .arg(amount.formatMoney(sched.account().fraction()))
                 .arg(KMyMoneyUtils::occurenceToString(sched.occurence()));
       }
 

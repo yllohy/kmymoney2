@@ -1,4 +1,8 @@
 
+2008-04-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Keep the fraction of an account with the account object in the
+    MyMoneyObjectContainer
+
 2008-04-03 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed some .desktop file issues reported by Andrey Cherepanov
 

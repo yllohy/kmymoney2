@@ -686,11 +686,11 @@ bool Transaction::matches(const QString& txt) const
 
     if(!s.isEmpty()) {
       // check if any of the value field matches if a value has been entered
-      QString r = (*it_s).value().formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId())), false);
+      QString r = (*it_s).value().formatMoney(m_account.fraction(), false);
       if(r.contains(s, false))
         return true;
       const MyMoneyAccount& acc = file->account((*it_s).accountId());
-      r = (*it_s).shares().formatMoney(acc.fraction(MyMoneyFile::instance()->security(acc.currencyId())), false);
+      r = (*it_s).shares().formatMoney(acc.fraction(), false);
       if(r.contains(s, false))
         return true;
     }
@@ -977,8 +977,7 @@ bool StdTransaction::formCellText(QString& txt, int& align, int row, int col, QP
           case ValueColumn2:
             align |= Qt::AlignRight;
             if(m_transaction != MyMoneyTransaction()) {
-              const MyMoneySecurity& sec = MyMoneyFile::instance()->security(m_account.currencyId());
-              txt = (m_split.value(m_transaction.commodity(), m_splitCurrencyId).abs()).formatMoney(m_account.fraction(sec));
+              txt = (m_split.value(m_transaction.commodity(), m_splitCurrencyId).abs()).formatMoney(m_account.fraction());
             }
             break;
         }
@@ -1047,14 +1046,14 @@ void StdTransaction::registerCellText(QString& txt, int& align, int row, int col
         case PaymentColumn:
           align |= Qt::AlignRight;
           if(m_split.value().isNegative()) {
-            txt = (-m_split.value(m_transaction.commodity(), m_splitCurrencyId)).formatMoney(m_account.fraction( MyMoneyFile::instance()->security(m_account.currencyId())));
+            txt = (-m_split.value(m_transaction.commodity(), m_splitCurrencyId)).formatMoney(m_account.fraction());
           }
           break;
 
         case DepositColumn:
           align |= Qt::AlignRight;
           if(!m_split.value().isNegative()) {
-            txt = m_split.value(m_transaction.commodity(), m_splitCurrencyId).formatMoney(m_account.fraction( MyMoneyFile::instance()->security(m_account.currencyId())));
+            txt = m_split.value(m_transaction.commodity(), m_splitCurrencyId).formatMoney(m_account.fraction());
           }
           break;
 
@@ -1515,7 +1514,7 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
           align |= Qt::AlignRight;
           if(haveFees()) {
             if((fieldEditable = !m_feeCategory.isEmpty()) == true) {
-              txt = m_feeAmount.abs().formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId())));
+              txt = m_feeAmount.abs().formatMoney(m_account.fraction());
             }
           }
           break;
@@ -1547,7 +1546,7 @@ bool InvestTransaction::formCellText(QString& txt, int& align, int row, int col,
           align |= Qt::AlignRight;
           if(haveInterest()) {
             if((fieldEditable = !m_interestCategory.isEmpty()) == true) {
-              txt = m_interestAmount.abs().formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId())));
+              txt = m_interestAmount.abs().formatMoney(m_account.fraction());
             }
           }
           break;

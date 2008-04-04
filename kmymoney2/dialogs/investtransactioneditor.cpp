@@ -812,7 +812,7 @@ bool InvestTransactionEditor::setupPrice(const MyMoneyTransaction& t, MyMoneySpl
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount acc = file->account(split.accountId());
   MyMoneySecurity toCurrency(file->security(acc.currencyId()));
-  int fract = acc.fraction(toCurrency);
+  int fract = acc.fraction();
 
   if(acc.currencyId() != t.commodity()) {
     QMap<QCString, MyMoneyMoney>::Iterator it_p;

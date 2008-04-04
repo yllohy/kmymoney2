@@ -518,7 +518,7 @@ void kMyMoneySplitTable::slotUpdateData(const MyMoneyTransaction& t)
         delete e;
       }
     }
-    QString amountTxt = value.formatMoney(m_account.fraction(MyMoneyFile::instance()->security(m_account.currencyId())));
+    QString amountTxt = value.formatMoney(m_account.fraction());
     if(value == MyMoneyMoney::autoCalc) {
       amountTxt = i18n("will be calculated");
     }

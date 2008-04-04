@@ -2038,10 +2038,8 @@ void KMyMoneyView::fixTransactions_0(void)
 
       // fix the shares and values to have the correct fraction
       if(!splitAccount.isInvest()) {
-        MyMoneySecurity sec;
         try {
-          sec = file->security(splitAccount.currencyId());
-          int fract = splitAccount.fraction(sec);
+          int fract = splitAccount.fraction();
           if((*it_s).shares() != (*it_s).shares().convert(fract)) {
             qDebug("adjusting fraction in %s,%s", (*it_t).id().data(), (*it_s).id().data());
             (*it_s).setShares((*it_s).shares().convert(fract));

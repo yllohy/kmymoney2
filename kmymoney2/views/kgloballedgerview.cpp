@@ -690,8 +690,7 @@ void KGlobalLedgerView::loadAccounts(void)
   if(!m_account.id().isEmpty()) {
     m_accountComboBox->setSelected(m_account);
     try {
-      MyMoneySecurity sec = MyMoneyFile::instance()->security(m_account.currencyId());
-      d->m_precision = MyMoneyMoney::denomToPrec(m_account.fraction(sec));
+      d->m_precision = MyMoneyMoney::denomToPrec(m_account.fraction());
     } catch(MyMoneyException *e) {
       qDebug("Security %s for account %s not found", m_account.currencyId().data(), m_account.name().data());
       delete e;

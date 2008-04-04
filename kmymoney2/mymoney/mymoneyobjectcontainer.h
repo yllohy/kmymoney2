@@ -85,6 +85,9 @@ public:
   void refresh(const QCString& id);
 
 private:
+  void assignFraction(MyMoneyAccount* acc);
+
+private:
   QMap<QCString, MyMoneyObject const *>  m_map;
   IMyMoneyStorage*                       m_storage;
 };

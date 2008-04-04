@@ -33,7 +33,8 @@
 #include <kmymoney/mymoneyaccount.h>
 #include <kmymoney/mymoneysplit.h>
 
-MyMoneyAccount::MyMoneyAccount()
+MyMoneyAccount::MyMoneyAccount() :
+  m_fraction(-1)
 {
   m_accountType = UnknownAccountType;
 }
@@ -51,7 +52,8 @@ MyMoneyAccount::MyMoneyAccount(const QCString& id, const MyMoneyAccount& right) 
 
 MyMoneyAccount::MyMoneyAccount(const QDomElement& node) :
   MyMoneyObject(node),
-  MyMoneyKeyValueContainer(node.elementsByTagName("KEYVALUEPAIRS").item(0).toElement())
+  MyMoneyKeyValueContainer(node.elementsByTagName("KEYVALUEPAIRS").item(0).toElement()),
+  m_fraction(-1)
 {
   if("ACCOUNT" != node.tagName())
     throw new MYMONEYEXCEPTION("Node was not ACCOUNT");
@@ -533,9 +535,28 @@ bool MyMoneyAccount::isClosed(void) const
 
 int MyMoneyAccount::fraction(const MyMoneySecurity& sec) const
 {
+  int fraction;
   if(m_accountType == Cash)
-    return sec.smallestCashFraction();
-  return sec.smallestAccountFraction();
+    fraction = sec.smallestCashFraction();
+  else
+    fraction = sec.smallestAccountFraction();
+  return fraction;
+}
+
+int MyMoneyAccount::fraction(const MyMoneySecurity& sec)
+{
+  if(m_accountType == Cash)
+    m_fraction = sec.smallestCashFraction();
+  else
+    m_fraction = sec.smallestAccountFraction();
+  return m_fraction;
+}
+
+int MyMoneyAccount::fraction(void) const
+{
+  Q_ASSERT(m_fraction != -1);
+
+  return m_fraction;
 }
 
 bool MyMoneyAccount::isCategory(void) const
