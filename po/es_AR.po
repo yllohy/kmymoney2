@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: es_AR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-03-28 13:55+0100\n"
-"PO-Revision-Date: 2008-04-02 21:22-0300\n"
+"PO-Revision-Date: 2008-04-04 14:22-0300\n"
 "Last-Translator: Alvaro Soliverez <asoliverez@gmail.com>\n"
 "Language-Team: Español (Argentina) <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: dialogs/investactivities.cpp:168
 msgid "%1 (Brokerage)"
-msgstr ""
+msgstr "%1 (Corretaje)"
 
 #: dialogs/investactivities.cpp:192 dialogs/investactivities.cpp:275
 #: dialogs/investactivities.cpp:415 dialogs/investtransactioneditor.cpp:217
@@ -8790,11 +8790,15 @@ msgid ""
 "transaction editor.<p>You can also select an option to save the transaction "
 "automatically when e.g. selecting another transaction."
 msgstr ""
+"¿Desea realmente cancelar la edición de este asiento sin guardarlo?<p>- "
+"<b>Sí</b> cancela la edición del asiento<br>- <b>No</b> guarda el asiento "
+"antes de cancelar la edición y <br>- <b>Cancelar</b> regresa e editor "
+"de asientos.<p> Usted puede también seleccionar la opción de guardar el "
+"asiento automáticamente cuando, por ej., seleccione otro asiento."
 
 #: kmymoney2.cpp:4346 kmymoney2.cpp:4349
-#, fuzzy
 msgid "Cancel transaction edit"
-msgstr "Asientos válidos"
+msgstr "Cancelar edición del asiento"
 
 #: kmymoney2.cpp:4349
 msgid ""
@@ -8803,15 +8807,18 @@ msgid ""
 "transaction prior to cancelling.<p>You can also select an option to save the "
 "transaction automatically when e.g. selecting another transaction."
 msgstr ""
+"¿Desea realmente cancelar la edición de este asiento sin guardarlo?<p>- "
+"<b>Sí</b> cancela la edición del asiento<br>- <b>No</b> guarda el asiento "
+"antes de cancelar la edición.<p> Usted puede también seleccionar la opción de "
+"guardar el asiento automáticamente cuando, por ej., seleccione otro asiento."
 
 #: kmymoney2.cpp:4498
-#, fuzzy
 msgid "Unable to accept transaction: %1, thrown in %2:%3"
-msgstr "Incapaz de asentar la transacción: "
+msgstr "Imposible aceptar la transacción: %1, arrojado en %2:%3"
 
 #: kmymoney2.cpp:4693 kmymoney2.cpp:4743
 msgid "Splits for %1 have conflicting values (%2,%3)"
-msgstr ""
+msgstr "Las partidas para %1 tienen valores en conflicto (%2, %3)"
 
 #: kmymoney2.cpp:4706 kmymoney2.cpp:4759
 msgid ""
@@ -8819,26 +8826,24 @@ msgid ""
 "cannot be matched.  Matching works with one imported transaction and one non-"
 "imported transaction."
 msgstr ""
+"Ambos asientos han sido importados a %1. Por lo tanto, no pueden ser conciliados. "
+"La conciliación funciona con un asiento importado y otro no importado."
 
 #: kmymoney2.cpp:4711 kmymoney2.cpp:4766
-#, fuzzy
 msgid "Unable to match all splits (%1)"
-msgstr "No fue posible marcar la partida"
+msgstr "Imposible conciliar todas las partidas (%1)"
 
 #: kmymoney2.cpp:4793
-#, fuzzy
 msgid "Unable to match these transactions"
-msgstr "No fue posible eliminar el asiento"
+msgstr "Imposible conciliar estos asientos"
 
 #: kmymoney2.cpp:4991
-#, fuzzy
 msgid "Create a new transaction"
-msgstr "Crear una nueva cuenta de activos"
+msgstr "Crear un nuevo asiento"
 
 #: kmymoney2.cpp:5038
-#, fuzzy
 msgid "Delete the current selected transactions"
-msgstr "Borrar el perfil seleccionado"
+msgstr "Borrar el/los asiento(s) seleccionado(s) actualmente"
 
 #: kmymoney2.cpp:5272 kmymoney2.cpp:5294
 msgid "Goto '%1'"
@@ -8849,9 +8854,9 @@ msgid "Running consistency check..."
 msgstr "Ejecutando comprobación de consistencia..."
 
 #: kmymoney2.cpp:5404
-#, fuzzy, c-format
+#, c-format
 msgid "Consistency check failed: %1"
-msgstr "Resultados de la comprobación de consistencia"
+msgstr "La comprobación de consistencia falló: %1"
 
 #: kmymoney2.cpp:5408
 msgid "Consistency check result"
@@ -8894,23 +8899,21 @@ msgid "All messages"
 msgstr "Todos los mensajes"
 
 #: kmymoney2.cpp:5660 kmymoney2.cpp:5701
-#, fuzzy
 msgid "Loaded"
-msgstr "Préstamo"
+msgstr "Cargado"
 
 #: kmymoney2.cpp:5669 kmymoney2.cpp:5715
-#, fuzzy, c-format
+#, c-format
 msgid "not loaded: %1"
-msgstr "LIbrado: %1"
+msgstr "no cargado: %1"
 
 #: kmymoney2.cpp:5699
 msgid "%1 (Plugin)..."
 msgstr "%1 (Plugin)..."
 
 #: kmymoney2.cpp:5729
-#, fuzzy
 msgid "Auto saving ..."
-msgstr "Guardando archivo..."
+msgstr "Autoguardando..."
 
 #: _translatorinfo.cpp:1
 msgid ""
@@ -8961,15 +8964,14 @@ msgstr ""
 "mediante la función 'lente del libro mayor', del diálogo configuración?\n"
 
 #: _tips.cpp:28
-#, fuzzy
 msgid ""
 "<p>...that transactions with no category assigned or split\n"
 "transactions with unassigned values are marked with an exclamation mark \n"
 "on a yellow triangle in the register?\n"
 msgstr ""
-"<p>...que los asientos sin categoría asignada o con partidas sin valores "
-"asignados son destacados con color <font color=\"red\">rojo</font> en el "
-"registro?\n"
+"<p>...que los asientos sin categoría asignada o con partidas\n"
+"sin valores asignados aparecen marcados con un signo de exclamación\n "
+"sobre un triangulo amarillo en el registro?\n"
 
 #: _tips.cpp:35
 msgid ""
@@ -9106,7 +9108,7 @@ msgstr "no abrir el último archivo utilizado"
 
 #: main.cpp:57
 msgid "enable performance timers"
-msgstr ""
+msgstr "habilitar cronómetros de desempeño"
 
 #: main.cpp:61
 msgid "turn on program traces"
@@ -9114,7 +9116,7 @@ msgstr "habilitar trazas del programa"
 
 #: main.cpp:62
 msgid "dump the names of all defined KAction objects to stdout and quit"
-msgstr ""
+msgstr "volcar los nombres de todos los objetos KAction definidos a stdout y salir"
 
 #: main.cpp:66
 msgid "file to open"
@@ -9129,7 +9131,6 @@ msgid "Compiled with the following settings:\n"
 msgstr "Compilado con las siguientes opciones:\n"
 
 #: main.cpp:104
-#, fuzzy
 msgid "Initial idea, much initial source code, Project admin"
 msgstr "Idea inicial, mucho código fuente inicial, Administrador del Proyecto"
 
@@ -9171,19 +9172,17 @@ msgstr "Parches"
 
 #: main.cpp:115
 msgid "Forecast view"
-msgstr ""
+msgstr "Vista de Pronóstico"
 
 #: main.cpp:134
-#, fuzzy
 msgid ""
 "The monetary decimal symbol is not correctly set in the KDE Control Center's "
 "Country/Region & Language settings. Please set it to a reasonable value and "
 "start KMyMoney again."
 msgstr ""
-"El símbolo monetario decimal o el separador de miles no están configurados "
-"correctamente en la configuración de País/Región y Lenguaje del Centro de "
-"Control de KDE. Por favor configure los valores correctamente y reinicie "
-"KMyMoney."
+"El símbolo monetario decimal no está configurado correctamente en la "
+"configuración de País/Región y Lenguaje del Centro de Control de KDE. "
+"Por favor configure los valores correctamente y reinicie KMyMoney."
 
 #: main.cpp:134
 msgid "Invalid settings"
@@ -9213,9 +9212,9 @@ msgid "Unable to update price for %1"
 msgstr "No ha sido posible actualizar el precio de %1"
 
 #: converter/mymoneystatementreader.cpp:230
-#, fuzzy, c-format
+#, c-format
 msgid "Error creating security record: %1"
-msgstr "Error al conectarse al banco: %1"
+msgstr "Error al crear registro de seguridad: %1"
 
 #: converter/mymoneyqifreader.cpp:1116
 #: converter/mymoneystatementreader.cpp:316
@@ -9223,13 +9222,12 @@ msgid "Statement Importer"
 msgstr "Importador de Extractos Bancarios"
 
 #: converter/mymoneystatementreader.cpp:364
-#, fuzzy
 msgid ""
 "This imported statement contains investment transactions with no security.  "
 "These transactions will be ignored."
 msgstr ""
-"Esta cuenta de inversiones no contiene el valor bursatil \"%1\". Los "
-"asientos que involucren este valor serán ignorados."
+"El resumen importado contiene asientos de inversión sin valor bursátil. "
+"Los asientos serán ignorados."
 
 #: converter/mymoneyqifreader.cpp:1133
 #: converter/mymoneystatementreader.cpp:364
@@ -9282,9 +9280,8 @@ msgid "(Fees) "
 msgstr "(Comisiones)"
 
 #: converter/mymoneystatementreader.cpp:665
-#, fuzzy
 msgid "Problem adding imported transaction #%1: "
-msgstr "Problemas al añadir el asiento importado:"
+msgstr "Problemas al añadir el asiento importado #%1: "
 
 #: converter/mymoneystatementreader.cpp:715
 msgid "<b>You have downloaded a statement for the following account:</b><br><br>"
@@ -9349,11 +9346,10 @@ msgid "Unable to open file '%1' for writing"
 msgstr "No fue posible abrir el archivo '%1' para escritura"
 
 #: converter/mymoneygncreader.cpp:115
-#, fuzzy
 msgid "%1: Sorry. This importer cannot handle version %2 of element %3"
 msgstr ""
-"Verificación de versión: Lamentablemente este importador no puede manejar la "
-"version %1 del elemento %2"
+"%1: Lamentablemente, este importador no puede manejar la "
+"version %2 del elemento %3"
 
 #: converter/mymoneygncreader.cpp:189
 #, c-format
@@ -9385,14 +9381,15 @@ msgstr "Cabecera de archivo no válida. Debería ser 'gnc-v2'"
 
 #: converter/mymoneygncreader.cpp:930 converter/mymoneygncreader.cpp:965
 #: converter/mymoneygncreader.cpp:1055
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Import failed:\n"
 "\n"
 "%1"
 msgstr ""
-"Fallo al Importar\n"
+"Falla al Importar\n"
 "\n"
+"%1"
 
 #: converter/mymoneygncreader.cpp:1058
 msgid "Import complete"
@@ -9493,6 +9490,8 @@ msgid ""
 "Problems were encountered in converting schedule '%1'.\n"
 "Do you want to review or edit it now?"
 msgstr ""
+"Se encontraron problemas al convertir la programación '%1'.\n"
+"Desea revisar o editarlo ahora?"
 
 #: converter/mymoneygncreader.cpp:2048
 msgid ""
@@ -9683,9 +9682,8 @@ msgid "Now adding the transactions to your ledger..."
 msgstr "Se están añadiendo los asientos a su libro mayor..."
 
 #: converter/mymoneyqifreader.cpp:347
-#, fuzzy
 msgid "Unable to add transactions"
-msgstr "Incapaz de asentar la transacción: "
+msgstr "Incapaz de agregar asientos"
 
 #: converter/mymoneyqifreader.cpp:535 converter/mymoneyqifreader.cpp:1846
 msgid ""
@@ -9862,60 +9860,56 @@ msgid ""
 "Account %1 contains an opening balance. Please use a KMyMoney version >= 0.8 "
 "and < 0.9 to correct the problem."
 msgstr ""
+"La cuenta %1 contiene un asiento de apertura. Por favor utilice una versión de "
+"KMyMoney >= 0.8 y < 0.9 para corregir el problema."
 
 #: mymoney/mymoneyaccount.cpp:548
 msgid ""
 "_: Brokerage (suffix for account names)\n"
 "Brokerage"
 msgstr ""
+"_: Corretaje (sufijo para nombre de cuentas)\n"
+"Corretaje"
 
 #: mymoney/storage/mymoneystoragexml.cpp:174
-#, fuzzy
 msgid "Loading securities..."
-msgstr "Cargando mercancias..."
+msgstr "Cargando valores bursátiles..."
 
 #: mymoney/storage/mymoneystoragexml.cpp:181
-#, fuzzy
 msgid "Loading reports..."
-msgstr "Cargando precios..."
+msgstr "Cargando reportes..."
 
 #: mymoney/storage/mymoneystoragexml.cpp:244
 msgid "Unknown XML tag %1 found in line %2"
-msgstr ""
+msgstr "Etiqueta XML desconocida %1 encontrada en línea %2"
 
 #: mymoney/storage/mymoneystoragexml.cpp:250
 msgid "Exception while creating a %1 element: %2"
-msgstr ""
+msgstr "Excepción al crear un elemento %1: %2"
 
 #: mymoney/storage/mymoneystoragexml.cpp:484
-#, fuzzy
 msgid "Loading file information..."
-msgstr "Cargando archivo..."
+msgstr "Cargando información del archivo..."
 
 #: mymoney/storage/mymoneystoragexml.cpp:562
-#, fuzzy
 msgid "Loading user information..."
-msgstr "Cargando asientos..."
+msgstr "Cargando información del usuario..."
 
 #: mymoney/storage/mymoneystoragexml.cpp:626
-#, fuzzy
 msgid "Saving accounts..."
-msgstr "Cargando cuentas..."
+msgstr "Guardando cuentas..."
 
 #: mymoney/storage/mymoneystoragexml.cpp:649
-#, fuzzy
 msgid "Saving transactions..."
-msgstr "Cargando asientos..."
+msgstr "Guardando asientos..."
 
 #: mymoney/storage/mymoneystoragexml.cpp:718
-#, fuzzy
 msgid "Saving reports..."
-msgstr "Guardando archivo..."
+msgstr "Guardando reportes..."
 
 #: mymoney/storage/mymoneystoragexml.cpp:733
-#, fuzzy
 msgid "Saving budgets..."
-msgstr "Guardando archivo..."
+msgstr "Guardando presupuestos..."
 
 #: mymoney/storage/mymoneystoragesql.cpp:160
 msgid ""
