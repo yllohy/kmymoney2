@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: es_AR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-03-28 13:55+0100\n"
-"PO-Revision-Date: 2008-04-05 12:56-0300\n"
+"PO-Revision-Date: 2008-04-05 15:20-0300\n"
 "Last-Translator: Alvaro Soliverez <asoliverez@gmail.com>\n"
 "Language-Team: Español (Argentina) <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -230,7 +230,7 @@ msgstr "LÍNEA DE CRÉDITO"
 
 #: dialogs/konlinebankingsetupwizard.cpp:285
 msgid "CMA"
-msgstr ""
+msgstr "Cuenta de Administración de Efectivo (CMA)"
 
 #: dialogs/konlinebankingsetupwizard.cpp:288
 msgid "CREDIT CARD"
@@ -2303,7 +2303,7 @@ msgstr "Número:"
 
 #: dialogs/rc.cpp:360 dialogs/rc.cpp:395
 msgid "BIC"
-msgstr ""
+msgstr "Código de Identificación del Banco (BIC)"
 
 #: dialogs/rc.cpp:363
 msgid "Online Banking"
@@ -4029,9 +4029,8 @@ msgstr "Débito directo"
 #: dialogs/keditscheduledlg.cpp:110 kmymoneyutils.cpp:271
 #: mymoney/storage/mymoneystoragedump.cpp:503
 #: wizards/newaccountwizard/knewaccountwizard.cpp:555
-#, fuzzy
 msgid "Standing order"
-msgstr "Orden actual"
+msgstr "Orden de pago"
 
 #: dialogs/keditscheduledlg.cpp:111 kmymoneyutils.cpp:274
 #: mymoney/storage/mymoneystoragedump.cpp:506
@@ -11137,9 +11136,8 @@ msgid "Reinvest Dividend"
 msgstr "Reinvertir Dividendos"
 
 #: widgets/transaction.cpp:1448
-#, fuzzy
 msgid "Ratio"
-msgstr "Fracción"
+msgstr "Coeficiente"
 
 #: widgets/register.cpp:53
 msgid "Post date"
@@ -11792,6 +11790,14 @@ msgid ""
 "<b>Start with this year's payments</b><br>\n"
 "Enter the due date of the first payment in the current year"
 msgstr ""
+"Dependiendo de la respuesta a <b>¿Qué desea registrar?</b> este campo "
+"significa lo siguiente:<p>\n"
+"\n"
+"<b>Todos los pagos</b><br>\n"
+"Ingrese la fecha de vencimiento del primer pago<p>\n"
+"\n"
+"<b>Comenzar con los pagos de este año</b><br>\n"
+"Ingrese la fecha de vencimiento del primer pago del corriente año"
 
 #: wizards/newaccountwizard/rc.cpp:24
 msgid "Fixed"
@@ -11811,7 +11817,7 @@ msgstr "Tipo de tasa de interés"
 
 #: wizards/newaccountwizard/rc.cpp:28
 msgid "Interest Compounding frequency"
-msgstr ""
+msgstr "Frecuencia del Interés Compuesto"
 
 #: wizards/newaccountwizard/rc.cpp:31
 msgid ""
@@ -11833,6 +11839,11 @@ msgid ""
 "If the name does not exist within KMyMoney's database, you are asked if you "
 "want to create it."
 msgstr ""
+"Ingrese el nombre de la persona o banco al que le debe plata o que le debe plata "
+"a usted.\n"
+"\n"
+"Si el nombre no existe en la base de datos de KMyMoney, se le preguntará si "
+"desea crearlo."
 
 #: wizards/newaccountwizard/rc.cpp:33
 msgid "Who is the payee/payer of the loan?"
@@ -11848,10 +11859,13 @@ msgid ""
 "select the same as the payment frequency. Consult your loan contract for "
 "details."
 msgstr ""
+"Seleccione la frecuencia con la que se compone el interés. Si no está seguro, "
+"seleccione la misma que la frecuencia de pago. Consulte el contrato de "
+"préstamo para más detalles."
 
 #: wizards/newaccountwizard/rc.cpp:41
 msgid "Did you make/receive any payments yet?"
-msgstr ""
+msgstr "¿Ya ha recibido/efectuado algún pago?"
 
 #: wizards/newaccountwizard/rc.cpp:42
 msgid "Time between interest changes"
@@ -11859,13 +11873,15 @@ msgstr "Tiempo entre cambios de interés"
 
 #: wizards/newaccountwizard/rc.cpp:43
 msgid "Balance before start of recording"
-msgstr ""
+msgstr "Saldo previo a comenzar a registrar"
 
 #: wizards/newaccountwizard/rc.cpp:44
 msgid ""
 "Enter the ending balance found on the statement that is the last one before "
 "you want to start recording this loan in KMyMoney."
 msgstr ""
+"Ingrese el saldo final de su resumen anterior al punto en que desea comenzar "
+"a registrar este préstamo en KMyMoney."
 
 #: wizards/newaccountwizard/rc.cpp:47
 msgid ""
@@ -11873,6 +11889,9 @@ msgid ""
 "Since prior transactions will not be recorded, you need to supply the "
 "balance of the loan on January 1st of this year."
 msgstr ""
+"Usted ha seleccionado registrar pagos sólo desde el comienzo de este año. "
+"Como los asientos anteriores no serán registrados, debe proporcionar el "
+"saldo del préstamo al 1 de enero de este año."
 
 #: wizards/newaccountwizard/rc.cpp:48
 msgid "All payments"
@@ -11893,6 +11912,15 @@ msgid ""
 "want to enter all transactions of the past.\n"
 "</qt>"
 msgstr ""
+"<qt>Seleccione qué asientos deberían registrarse.\n"
+"\n"
+"<b>Todos los pagos</b> le permite ingresar todos los pagos realizados para esta "
+"préstamo.\n"
+"\n"
+"La opción de <b>comenzar desde principios de este año</b> es para "
+"préstamos activos por un periodo de tiempo más largo y que no desea ingresar "
+"todos los asientos realizados en el pasado.\n"
+"</qt>"
 
 #: wizards/newaccountwizard/rc.cpp:51
 msgid "Next interest change is due"
@@ -11923,14 +11951,18 @@ msgid ""
 "\n"
 "KMyMoney currently uses this number only for some online banking functions."
 msgstr ""
+"Las cuentas manejadas por una organización generalmente tienen una número único "
+"de referencia denominado número de cuenta. Ingrese este número aquí.\n"
+"\n"
+"Actualmente KMyMoney sólo utiliza este número para algunas funciones de banca online."
 
 #: wizards/newaccountwizard/rc.cpp:55
 msgid "Select the institution which manages this account or leave empty"
-msgstr ""
+msgstr "Seleccione la organización que maneja esta cuenta o deje el espacio en blanco"
 
 #: wizards/newaccountwizard/rc.cpp:56
 msgid "Enter the International Bank Account Number into this field"
-msgstr ""
+msgstr "Ingrese el Número de Cuenta Bancaria Internacional en este campo"
 
 #: wizards/newaccountwizard/rc.cpp:57
 msgid ""
@@ -11944,6 +11976,14 @@ msgid ""
 "KMyMoney keeps this field only for documentation purposes and does not use "
 "it otherwise."
 msgstr ""
+"Usted puede ingresar el IBAN (Número de Cuenta Bancaria Internacional) en "
+"este campo si lo conoce. Usualmente, su organización puede decirle el número "
+"o está impreso en sus resumenes.\n"
+"\n"
+"Vea también http://es.wikipedia.org/wiki/IBAN para más información.\n"
+"\n"
+"KMyMoney guarda este campo sólo con propósitos de documentación y no lo "
+"utiliza de otra manera."
 
 #: wizards/newaccountwizard/rc.cpp:60
 msgid "Ne&w Institution"
@@ -11957,6 +11997,11 @@ msgid ""
 "<b>Calculate</b> so that KMyMoney can check the logical correctness of the "
 "values you have supplied."
 msgstr ""
+"Ahora ingrese los detalles de su préstamo. Puede dejar uno de los campos "
+"en blanco y KMyMoney lo calculará cuando presione el botón <b>Calcular</b>. "
+"Antes de poder continuar con la siguiente página, también debe presionar "
+"<b>Calcular</b> para que KMyMoney pueda verificar que los valores provistos "
+"son correctos desde un punto de vista lógico."
 
 #: wizards/newaccountwizard/rc.cpp:63
 msgid "Calculate"
@@ -11964,7 +12009,7 @@ msgstr "Calcular"
 
 #: wizards/newaccountwizard/rc.cpp:64
 msgid "Press this button to calculate/verify your loan details."
-msgstr ""
+msgstr "Presione este botón para calcular/verificar los detalles de su préstamo."
 
 #: wizards/newaccountwizard/rc.cpp:65
 msgid ""
@@ -11972,6 +12017,9 @@ msgid ""
 "or verifies that the values entered match. If something is not correct you "
 "will receive information about it."
 msgstr ""
+"Presionando este botón se calcula un posible parámetro faltante de su "
+"préstamo o se verifica que los valores ingresados coincidan. Si algo no "
+"está correcto, se le informará."
 
 #: wizards/newaccountwizard/rc.cpp:68
 msgid ""
@@ -12024,6 +12072,11 @@ msgid ""
 "fact that there were already some payments towards the loan. In this case, "
 "please enter the ending balance of your last statement."
 msgstr ""
+"Ingrese el importe del préstamo en este campo. Si desea calcular este "
+"campo basado en los otros parámetros, por favor déjelo en blanco. Si el "
+"campo está marcado como requerido (fondo en colores), usted ha informado a "
+"KMyMoney del hecho que ya hay pagos realizados para este préstamo. En ese "
+"caso, por favor ingrese el saldo final de su último resumen."
 
 #: wizards/newaccountwizard/rc.cpp:77
 msgid "Balloon payment"
@@ -12065,11 +12118,11 @@ msgstr "Crear"
 
 #: wizards/newaccountwizard/rc.cpp:93
 msgid "Refinance existing loan"
-msgstr ""
+msgstr "Refinanciar un préstamo existente"
 
 #: wizards/newaccountwizard/rc.cpp:94
 msgid "Check this if you are refinancing a loan that already exists in KMyMoney"
-msgstr ""
+msgstr "Marque esto si está refinanciando un préstamo que ya existe en KMyMoney"
 
 #: wizards/newaccountwizard/rc.cpp:95
 msgid ""
@@ -12095,6 +12148,10 @@ msgid ""
 "category. If you lend the money, you receive the interest. In this case, "
 "select an income category here."
 msgstr ""
+"La categoría a la cual se va a asignar el interés del pago. Si pide dinero prestado, "
+"usualmente debe pagar interés, así que ésta debería ser una categoría de gastos. "
+"Si presta dinero, recibe el interés. En ese caso, seleccione aquí una categoría de "
+"ingresos."
 
 #: wizards/newaccountwizard/rc.cpp:98
 msgid ""
@@ -12102,6 +12159,9 @@ msgid ""
 "receive regular payments in case you lend the money. In most cases, this is "
 "a checking account."
 msgstr ""
+"Seleccione la cuenta de la cual hará los pagos periódicos o en la cual recibirá "
+"pagos periódicos en caso que preste el dinero. En la mayoría de los casos, ésta "
+"será una cuenta corriente."
 
 #: wizards/newaccountwizard/rc.cpp:101
 msgid ""
@@ -12109,6 +12169,9 @@ msgid ""
 "automatically remind you about the payment. Please fill in the details about "
 "this payment here."
 msgstr ""
+"Para cuentas de tarjeta de crédito puede crear una programación mensual "
+"que le recuerde automáticamente acerca del pago. Por favor ingrese los "
+"detalles de este pago aquí."
 
 #: wizards/newaccountwizard/rc.cpp:102
 msgid "Yes, remind me when the payment is due"
@@ -12147,9 +12210,8 @@ msgid "Personal Data"
 msgstr "Datos Personales"
 
 #: wizards/newuserwizard/knewuserwizard.cpp:82
-#, fuzzy
 msgid "Select Currency"
-msgstr "Escoger divisa base"
+msgstr "Escoger divisa"
 
 #: wizards/newuserwizard/knewuserwizard.cpp:83
 msgid "Select Accounts"
@@ -12157,7 +12219,7 @@ msgstr "Seleccionar Cuentas"
 
 #: wizards/newuserwizard/knewuserwizard.cpp:84
 msgid "Set preferences"
-msgstr ""
+msgstr "Escoger sus preferencias"
 
 #: wizards/newuserwizard/rc.cpp:1
 msgid ""
@@ -12165,20 +12227,25 @@ msgid ""
 "and uses it to receive money or pay bills. If this is not the case, please "
 "deselect the checkbox below and continue on the next page."
 msgstr ""
+"Un usuario típico de KMyMoney mantiene una cuenta corriente con alguna "
+"organización y la utiliza para recibir dinero o pagar facturas. Si éste no es el caso, "
+"por favor desmarque la casilla debajo y continúe a la siguiente página."
 
 #: wizards/newuserwizard/rc.cpp:2
 msgid "I have a checking account that I want to manage with KMyMoney"
-msgstr ""
+msgstr "Tengo una cuenta corriente que deseo administrar con KMyMoney"
 
 #: wizards/newuserwizard/rc.cpp:3
 msgid "The name of the instititution that issued the account."
-msgstr ""
+msgstr "El nombre de la organización emisora de la cuenta."
 
 #: wizards/newuserwizard/rc.cpp:4
 msgid ""
 "Each institution has a routing number. Enter it here. If uncertain, leave "
 "the field blank. You can modify it later."
 msgstr ""
+"Cada organización tiene un número de identificación. Ingreselo aquí. Si no "
+"está seguro, deje el campo en blanco. Puede modificarlo luego."
 
 #: wizards/newuserwizard/rc.cpp:5
 msgid "Name of the institution"
@@ -12193,12 +12260,16 @@ msgid ""
 "In general the institution that issued the account also issued a number for "
 "it. Enter it here. If uncertain, you can modify this entry later."
 msgstr ""
+"Generalmente la organización que emitió la cuenta, también emitió un número "
+"para la cuenta. Ingréselo aquí. Si no está seguro, puede modificarlo luego."
 
 #: wizards/newuserwizard/rc.cpp:8
 msgid ""
 "Enter a descriptive name that will be used by KMyMoney to identify your "
 "checking account."
 msgstr ""
+"Ingrese un nombre descriptivo que será utilizado por KMyMoney para "
+"identificar su cuenta corriente."
 
 #: wizards/newuserwizard/rc.cpp:10
 msgid ""
@@ -12206,6 +12277,9 @@ msgid ""
 "that account. This is usually the date of the last statement. If uncertain, "
 "leave as is."
 msgstr ""
+"Ingrese la fecha desde cuando planea llevar registro de sus asientos en esta "
+"cuenta. Esta es usualmente la fecha de su último resumen. Si no está seguro, "
+"déjela como está."
 
 #: wizards/newuserwizard/rc.cpp:11
 msgid "Number of the account"
@@ -12220,6 +12294,8 @@ msgid ""
 "Enter the opening balance of the account. This is usually the ending balance "
 "of the last statement. If uncertain, leave as is."
 msgstr ""
+"Ingrese el saldo de apertura de esta cuenta. Es usualmente el saldo final de su "
+"último resumen. Si no está seguro, déjelo como está."
 
 #: wizards/newuserwizard/rc.cpp:16
 msgid ""
@@ -12227,6 +12303,9 @@ msgid ""
 "account. Once this wizard finishes, the account will be created for you "
 "within KMyMoney."
 msgstr ""
+"Los campos debajo le permiten ingresar información sobre su cuenta "
+"corriente. Una vez que finalice este asistente, esta cuenta será creada "
+"para usted en KMyMoney."
 
 #: wizards/newuserwizard/rc.cpp:17
 msgid ""
@@ -12234,6 +12313,9 @@ msgid ""
 "default curreny which you can select here. The default for new accounts is "
 "also the currency you select here."
 msgstr ""
+"KMyMoney permite trabajar con múltiples divisas. Sus informes estarán basados "
+"en una divisa por defecto, que usted puede seleccionar aquí. La divisa por defecto "
+"para nuevas cuentas será también la divisa que seleccione aquí."
 
 #: wizards/newuserwizard/rc.cpp:18
 msgid ""
@@ -12241,12 +12323,17 @@ msgid ""
 "filename within your KDE user environment will be the default. This is just "
 "provided for convenience and you can choose any other location here."
 msgstr ""
+"KMyMoney guardará sus datos financieros en un archivo en disco. Un nombre "
+"de archivo estándar dentro de su ambiente de usuario de KDE será sugerido. "
+"Esto es sólo provisto por conveniencia y usted puede cambiarlo aquí."
 
 #: wizards/newuserwizard/rc.cpp:19
 msgid ""
 "This finishes the setup of your KMyMoney environment. You can now press the "
 "Finish button and start using KMyMoney to record your financial transactions."
 msgstr ""
+"Esto finaliza la configuración de su ambiente de KMyMoney. Puede presionar el "
+"botón Finalizar y empezar a utilizar KMyMoney para registrar sus asientos financieros."
 
 #: wizards/newuserwizard/rc.cpp:20
 msgid ""
@@ -12262,11 +12349,11 @@ msgstr ""
 
 #: wizards/newuserwizard/rc.cpp:27
 msgid "Zip code"
-msgstr ""
+msgstr "Código postal"
 
 #: wizards/newuserwizard/rc.cpp:29
 msgid "Welcome to KMyMoney!"
-msgstr ""
+msgstr "Bienvenido a KMyMoney!"
 
 #: wizards/newuserwizard/rc.cpp:30
 msgid ""
@@ -12277,6 +12364,12 @@ msgid ""
 "On the next few pages you will be guided through the steps necessary to "
 "setup the program. This will happen only once."
 msgstr ""
+"Ha iniciado KMyMoney por primera vez en esta computador. Antes que este "
+"programa pueda ayudarlo a administrar sus finanzas, necesita obtener algunos "
+"datos de usted.<p>\n"
+"\n"
+"En las páginas siguientes, usted será guiado a través de los pasos necesarios "
+"para configurar el programa. Esto sólo ocurrirá una vez."
 
 #: wizards/newuserwizard/rc.cpp:31
 msgid ""
@@ -12285,12 +12378,18 @@ msgid ""
 "your account numbers and other important financial information will be very "
 "secure.</p>"
 msgstr ""
+"<p>KMyMoney puede codificar su archivo de datos utilizando codificación GPG. La "
+"codificación GPG es uno de los métodos más seguros para proteger datos. Todos "
+"sus números de cuenta y otra información financiera importante estarán muy "
+"seguros.</p>"
 
 #: wizards/newuserwizard/rc.cpp:32
 msgid ""
 "If you would like to review or change any preference settings for KMyMoney "
 "at this time, you can do so here. If not just click <b>Next</b>."
 msgstr ""
+"Si desea revisar o cambiar alguna configuración de sus preferencias de KMyMoney "
+"en este momento, puede hacerlo aquí. Si no, sólo presione <b>Siguiente</b>."
 
 #: wizards/newuserwizard/rc.cpp:33
 msgid "Open Configuration Dialog"
@@ -12302,6 +12401,9 @@ msgid ""
 "dialog. Just select the <b>Configure KMyMoney ...</b> option in the "
 "<b>Settings</b> menu."
 msgstr ""
+"Usted puede cambiar las opciones de configuración en cualquier momento "
+"utilizando el cuadro de diálogo de configuración. Sólo seleccione la opción "
+"<b>Configurar KMyMoney...</b> en el menú <b>Configuración</b>."
 
 #: wizards/wizardpages/rc.cpp:1
 msgid ""
