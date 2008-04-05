@@ -24,7 +24,7 @@
                 <enum>NoFocus</enum>
             </property>
             <property name="text">
-                <string>Does this investment account has a brokerage account?&lt;p&gt;
+                <string>Does this investment account have a brokerage account?&lt;p&gt;
 
 &lt;b&gt;Check&lt;/b&gt; the mark if this investment account has an associated account for money that is not invested.&lt;br&gt;
 
