@@ -1337,6 +1337,13 @@ void MyMoneyGncReader::convertTransaction (const GncTransaction *gtx) {
   for (i = 0; i < gtx->splitCount(); i++) {
     convertSplit (static_cast<const GncSplit *>(gtx->getSplit (i)));
   }
+  // handle the odd case of just one split, which gnc allows,
+  // by just duplicating the split
+  // of course, we should change the sign but this case has only ever been seen
+  // when the balance is zero, and can cause kmm to crash, so...
+  if (gtx->splitCount() == 1) {
+    convertSplit (static_cast<const GncSplit *>(gtx->getSplit (0)));
+  }
   m_splitList += m_liabilitySplitList += m_otherSplitList;
   // the splits are in order in splitList. Link them to the tx. also, determine the
   // action type, and fill in some fields which gnc holds at transaction level
@@ -1974,7 +1981,10 @@ void MyMoneyGncReader::terminate () {
     KGuiItem yesItem(button0Text, QIconSet(), "", "");
     KGuiItem noItem(i18n("Save Report"), QIconSet(), "", "");
 
-    switch(KMessageBox::questionYesNoCancel(0, buildReportSection (*sectionsToReport.at(i)), PACKAGE)) {
+    switch(KMessageBox::questionYesNoCancel(0,
+           buildReportSection (*sectionsToReport.at(i)),
+                                PACKAGE,
+                                yesItem, noItem)) {
       case KMessageBox::Yes:
         break;
       case KMessageBox::No:
@@ -1984,44 +1994,10 @@ void MyMoneyGncReader::terminate () {
         exit = true;
         break;
     }
-#if 0
-    switch (QMessageBox::information (0, PACKAGE,
-                                      buildReportSection (*sectionsToReport.at(i)),
-                                      button0Text, i18n("Save Report"), i18n("Cancel"),
-                                      0, 2))    // Enter == button 0, Escape == button 2
-    {
-    case 0:
-      break; // more
-    case 1:
-      exit = writeReportToFile (sectionsToReport);
-      break;
-    case 2:   // Cancel clicked or Escape pressed
-      exit = true;
-      break;
-    }
-#endif
   }
+
   for (i = 0; i < m_suspectList.count(); i++) {
     MyMoneySchedule sc = m_storage->schedule(m_suspectList[i]);
-#if 0
-    QMessageBox mb (PACKAGE,
-            i18n(QString("Problems were encountered in converting schedule '%1'.\n"
-                "Do you want to review or edit it now?").arg(sc.name())),
-                    QMessageBox::Question,
-                    QMessageBox::Yes | QMessageBox::Default,
-                    QMessageBox::No | QMessageBox::Escape,
-                    QMessageBox::NoButton);
-    switch (mb.exec()) {
-    case QMessageBox::Yes:
-        KEditScheduleDlg *s = new KEditScheduleDlg (sc);
-        // FIXME: connect newCategory to something useful, so that we
-        // can create categories from within the dialog
-        if (s->exec())
-          m_storage->modifySchedule (s->schedule());
-        delete s;
-    }
-#endif
-
       KEditScheduleDlg *s;
       switch(KMessageBox::warningYesNo(0, i18n("Problems were encountered in converting schedule '%1'.\nDo you want to review or edit it now?").arg(sc.name()), PACKAGE)) {
       case KMessageBox::Yes:
@@ -2105,10 +2081,16 @@ bool MyMoneyGncReader::writeReportToFile (const QValueList<QString> sectionsToRe
   unsigned int i;
   QFileDialog* fd = new QFileDialog (0, "Save report as", TRUE);
   fd->setMode (QFileDialog::AnyFile);
-  if (fd->exec() != QDialog::Accepted) return (false);
+  if (fd->exec() != QDialog::Accepted) {
+    delete fd;
+    return (false);
+  }
   QFile reportFile(fd->selectedFile());
   QFileInfo fi (reportFile);
-  if (!reportFile.open (IO_WriteOnly)) return (false);
+  if (!reportFile.open (IO_WriteOnly))  {
+    delete fd;
+    return (false);
+  }
   QTextStream stream (&reportFile);
   for (i = 0; i < sectionsToReport.count(); i++) {
     stream << buildReportSection (*sectionsToReport.at(i)).latin1() << endl;
