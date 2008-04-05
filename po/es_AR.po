@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: es_AR\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-03-28 13:55+0100\n"
-"PO-Revision-Date: 2008-04-04 14:22-0300\n"
+"PO-Revision-Date: 2008-04-04 22:59-0300\n"
 "Last-Translator: Alvaro Soliverez <asoliverez@gmail.com>\n"
 "Language-Team: Español (Argentina) <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -9917,11 +9917,14 @@ msgid ""
 "Opened by %1 on %2 at %3.\n"
 "Open anyway?"
 msgstr ""
+"La base de datos está aparentemente en uso\n"
+"Abierta por %1 en %2 a las %3.\n"
+"¿Abrir de todas maneras?"
 
 #: mymoney/storage/mymoneystoragesql.cpp:193
 #, c-format
 msgid "Cannot currently create database for driver %1"
-msgstr ""
+msgstr "Imposible crear actualmente la base de datos para el manejador %1"
 
 #: mymoney/storage/mymoneystoragedump.cpp:521
 msgid "not reconciled"
@@ -9949,88 +9952,88 @@ msgstr "Saldos de Apertura"
 
 #: mymoney/mymoneyfile.cpp:1392 mymoney/mymoneyfile.cpp:1411
 #: mymoney/mymoneyfile.cpp:1425 mymoney/mymoneyfile.cpp:1447
-#, fuzzy
 msgid "* Problem with account '%1'"
-msgstr "No fue posible agregar la cuenta: %1"
+msgstr "* Problema con la cuenta: '%1'"
 
 #: mymoney/mymoneyfile.cpp:1397
 msgid "  * Parent account '%1' belongs to a different group."
-msgstr ""
+msgstr "  * Cuenta madre '%1' pertenece a un grupo diferente."
 
 #: mymoney/mymoneyfile.cpp:1398 mymoney/mymoneyfile.cpp:1428
 msgid "    New parent account is the top level account '%1'."
-msgstr ""
+msgstr "    Nueva cuenta madre es la cuenta del nivel superior '%1'."
 
 #: mymoney/mymoneyfile.cpp:1414
 msgid "  * Parent account '%1' does not contain '%2' as sub-account."
-msgstr ""
+msgstr "  * La cuenta madre '%1' no contiene a '%2' como subcuenta."
 
 #: mymoney/mymoneyfile.cpp:1427
 msgid "  * The parent with id %1 does not exist anymore."
-msgstr ""
+msgstr "  * La madre con el id '%1' ya no existe más."
 
 #: mymoney/mymoneyfile.cpp:1449
 msgid "  * Child account with id %1 does not exist anymore."
-msgstr ""
+msgstr "  * Cuenta hija con el id '%1' ya no existe más."
 
 #: mymoney/mymoneyfile.cpp:1450
 msgid "    The child account list will be reconstructed."
-msgstr ""
+msgstr "    La lista de cuentas hijas será reconstruida."
 
 #: mymoney/mymoneyfile.cpp:1462
-#, fuzzy
 msgid "  * Unable to update account data in engine."
-msgstr "No fue posible eliminar la cuenta:"
+msgstr "  * Incapaz de actualizar los datos de la cuenta en el motor."
 
 #: mymoney/mymoneyfile.cpp:1469
 msgid "* Reconstructing the child lists for"
-msgstr ""
+msgstr "* Reconstruyendo la lista de cuentas hijas para"
 
 #: mymoney/mymoneyfile.cpp:1506
 msgid "  * Unable to update account data for account %1 in engine"
-msgstr ""
+msgstr "  * Incapaz de actualizar los datos de la cuenta para la cuenta '%1' en el motor"
 
 #: mymoney/mymoneyfile.cpp:1524
 msgid "  * Payee %1 recreated with fixed id"
-msgstr ""
+msgstr "  * Pagador '%1' recreado con id fijo"
 
 #: mymoney/mymoneyfile.cpp:1543
 msgid "  * Payee id updated in split of transaction '%1'."
-msgstr ""
+msgstr "  * Id del pagador actualizado en la partida del asiento '%1'."
 
 #: mymoney/mymoneyfile.cpp:1565
 msgid "  * Payee id updated in split of schedule '%1'."
-msgstr ""
+msgstr "  * Id del pagador actualizado en la partida de la programación '%1'."
 
 #: mymoney/mymoneyfile.cpp:1571
 msgid "  * Split in scheduled transaction '%1' contained value != 0 and shares == 0."
-msgstr ""
+msgstr "  * Partida en la programación '%1' contenía un valor != 0 y acciones == 0."
 
 #: mymoney/mymoneyfile.cpp:1572
 msgid "    Shares set to value."
-msgstr ""
+msgstr "    Acciones fijadas al valor."
 
 #: mymoney/mymoneyfile.cpp:1578
 msgid ""
 "  * Split %2 in schedule '%1' contains a reference to invalid account %3. "
 "Please fix manually."
 msgstr ""
+"  * Partida '%2' en la programación '%1' contiene una referencia a la cuenta inválida '%3'. "
+"Por favor arréglela manualmente."
 
 #: mymoney/mymoneyfile.cpp:1604
 msgid "  * Payee id updated in report '%1'."
-msgstr ""
+msgstr "  * Id del pagador actualizado en el reporte '%1'."
 
 #: mymoney/mymoneyfile.cpp:1621
 msgid "  * Payee '%1' removed."
-msgstr ""
+msgstr "  * Pagador '%1' eliminado."
 
 #: mymoney/mymoneyfile.cpp:1628
 msgid "Finish! Data is consistent."
-msgstr ""
+msgstr "Finalizado! Los datos son consistentes."
 
 #: mymoney/mymoneyfile.cpp:1630
 msgid "Finish! %1 problem(s) corrected. %2 problem(s) still present."
-msgstr ""
+msgstr "Finalizado! %1 problema(s) corregido(s). %2 problema(s) aún persiste(n)."
 
 #: rc.cpp:2
 msgid "E&xport"
@@ -10045,76 +10048,62 @@ msgid "&Account"
 msgstr "&Cuenta"
 
 #: rc.cpp:5
-#, fuzzy
 msgid "&Category"
-msgstr "Categoría"
+msgstr "&Categoría"
 
 #: rc.cpp:6
-#, fuzzy
 msgid "&Transaction"
-msgstr "Asientos"
+msgstr "Asien&to"
 
 #: rc.cpp:7 rc.cpp:19
-#, fuzzy
 msgid "Mark transaction as..."
-msgstr "Uniendo los asientos..."
+msgstr "Marcar asiento como..."
 
 #: rc.cpp:8 rc.cpp:20
-#, fuzzy
 msgid "Mark transaction"
-msgstr "asientos\n"
+msgstr "Marcar asiento"
 
 #: rc.cpp:9
 msgid "Account options"
 msgstr "Opciones de Cuenta"
 
 #: rc.cpp:10
-#, fuzzy
 msgid "Category options"
-msgstr "Selección de categoría"
+msgstr "Opciones de Categoría"
 
 #: rc.cpp:11
-#, fuzzy
 msgid "Institution options"
-msgstr "Opciones de la Organización"
+msgstr "Opciones de Organización"
 
 #: rc.cpp:12
-#, fuzzy
 msgid "Payee options"
-msgstr "Opciones del Beneficiario"
+msgstr "Opciones de Pagador/Beneficiario"
 
 #: rc.cpp:13
-#, fuzzy
 msgid "Budget options"
-msgstr "Opciones de Cuenta"
+msgstr "Opciones de Presupuesto"
 
 #: rc.cpp:14
-#, fuzzy
 msgid "Investment options"
-msgstr "Opciones de la Inversión"
+msgstr "Opciones de Inversión"
 
 #: rc.cpp:15
-#, fuzzy
 msgid "Schedule options"
-msgstr "Opciones de comienzo de las programaciones"
+msgstr "Opciones de Programación"
 
 #: rc.cpp:16
-#, fuzzy
 msgid "Transaction options"
-msgstr "Opciones de asiento"
+msgstr "Opciones de Asiento"
 
 #: rc.cpp:17
-#, fuzzy
 msgid "Move transaction to..."
-msgstr "Uniendo los asientos..."
+msgstr "Mover asiento a..."
 
 #: rc.cpp:18
-#, fuzzy
 msgid "Select account"
-msgstr "Escoger Cuenta:"
+msgstr "Seleccionar cuenta"
 
 #: rc.cpp:21
-#, fuzzy
 msgid "Currency options"
 msgstr "Opciones de Divisa"
 
@@ -10124,11 +10113,11 @@ msgstr "Mostrar siempre un campo Nº en el formulario de asiento de asientos"
 
 #: rc.cpp:26
 msgid "Autosave file periodically"
-msgstr ""
+msgstr "Autoguardar archivo periódicamente"
 
 #: rc.cpp:27
 msgid "Autosave interval in minutes"
-msgstr ""
+msgstr "Intervalo de autoguardado en minutos"
 
 #: rc.cpp:28
 msgid "Check schedules upon startup"
@@ -10139,140 +10128,128 @@ msgid "Use the ledger lens"
 msgstr "Usar la lupa del libro mayor"
 
 #: rc.cpp:33
-#, fuzzy
 msgid "Price Precision"
-msgstr "Precisión del Precio:"
+msgstr "Precisión del Precio"
 
 #: rc.cpp:36
-#, fuzzy
 msgid "Start with last selected view or homepage"
-msgstr "Iniciar con la última página escogida"
+msgstr "Iniciar con la última página escogida o página de inicio"
 
 #: rc.cpp:37
-#, fuzzy
 msgid "Use GPG to encrypt data file"
-msgstr "Guardar cifrado con GPG"
+msgstr "Utilizar GPG para codificar el archivo"
 
 #: rc.cpp:38
-#, fuzzy
 msgid "Also encrypt against recover key"
-msgstr "Cifrar también con la llave kmymoney-recover"
+msgstr "Codificar también con la llave de recuperación"
 
 #: rc.cpp:39
-#, fuzzy
 msgid "GPG User ID"
-msgstr "ID de usuário"
+msgstr "ID de usuario GPG"
 
 #: rc.cpp:40
 msgid "Run in expert (accountant) mode"
-msgstr ""
+msgstr "Ejecutar en modo experto (contable)"
 
 #: rc.cpp:41
 msgid "Show splash screen during startup"
-msgstr ""
+msgstr "Mostrar la pantalla de presentación durante el inicio"
 
 #: rc.cpp:42
 msgid "Synchronize account in ledger and investment view"
-msgstr ""
+msgstr "Sincronizar la cuenta seleccionada en las vistas de libro mayor e inversiones"
 
 #: rc.cpp:43
 msgid "Icon size for view selection"
-msgstr ""
+msgstr "Tamaño de ícono para la selección de vistas"
 
 #: rc.cpp:44
 msgid "list of hidden views"
-msgstr ""
+msgstr "lista de vistas ocultas"
 
 #: rc.cpp:45
 msgid "Firsttime switch to start new user wizard"
-msgstr ""
+msgstr "La primera vez cambiar al asistente de usuario nuevo"
 
 #: rc.cpp:46
 msgid "Order of items on homepage"
-msgstr ""
+msgstr "Orden de los elementos en la página de inicio"
 
 #: rc.cpp:47
 msgid "Percentage of default font size used for home view HTML page"
-msgstr ""
+msgstr "Porcentaje de tamaño de la letra por defecto utilizado en la página HTML de la vista de inicio"
 
 #: rc.cpp:48
 msgid "Remember (manually adjusted) font size in home view on program end."
-msgstr ""
+msgstr "Recordar el tamaño de letra (ajustado manualmente) en la vista de inicio al terminar el programa."
 
 #: rc.cpp:50
-#, fuzzy
 msgid "Hide closed accounts"
-msgstr "Filtrar las cuentas"
+msgstr "Ocultar cuentas cerradas"
 
 #: rc.cpp:51
-#, fuzzy
 msgid "Hide finished schedules"
-msgstr "Cargando planificaciones..."
+msgstr "Ocultar programaciones cerradas"
 
 #: rc.cpp:53
 msgid "Show all register entries in full detail"
-msgstr ""
+msgstr "Mostrar todas las entradas del registro con detalle completo"
 
 #: rc.cpp:55
 msgid "Show fancy group markers"
-msgstr ""
+msgstr "Mostrar marcadores de grupo con estilo"
 
 #: rc.cpp:56
 msgid "Show fancy markers for previous and current fiscal year"
-msgstr ""
+msgstr "Mostrar marcadores de grupo para el año fiscal actual y el previo"
 
 #: rc.cpp:57
 msgid "Starting month of the fiscal year"
-msgstr ""
+msgstr "Mes de inicio del año fiscal"
 
 #: rc.cpp:58
 msgid "Start date"
 msgstr "Fecha de inicio"
 
 #: rc.cpp:60
-#, fuzzy
 msgid "List color"
-msgstr "Lista de colores"
+msgstr "Color de lista"
 
 #: rc.cpp:61
-#, fuzzy
 msgid "List background color"
-msgstr "Color del fondo de la lista:"
+msgstr "Color de fondo de lista"
 
 #: rc.cpp:62
-#, fuzzy
 msgid "List grid color"
-msgstr "Color de la grilla de la lista:"
+msgstr "Color de la grilla de lista"
 
 #: rc.cpp:63
-#, fuzzy
 msgid "Background color for imported transactions"
-msgstr "Problemas al añadir el asiento importado:"
+msgstr "Color de fondo para asientos importados"
 
 #: rc.cpp:64
 msgid "Background color for matched transactions"
-msgstr ""
+msgstr "Color de fondo para asientos conciliados"
 
 #: rc.cpp:65
 msgid "List color for erronous transactions"
-msgstr ""
+msgstr "Color de lista para asientos erroneos"
 
 #: rc.cpp:66
-#, fuzzy
 msgid "List color for missing conversion rate"
-msgstr "Valor sin tasas de conversión :"
+msgstr "Color de lista para tasas de conversión faltantes"
 
 #: rc.cpp:67
 msgid "List color for negative values"
-msgstr ""
+msgstr "Color de lista para valores negativos"
 
 #: rc.cpp:68
 msgid "Background color for group marker"
-msgstr ""
+msgstr "Color de fondo para marcadores de grupo"
 
 #: rc.cpp:69
 msgid "Background color for required fields"
-msgstr ""
+msgstr "Color de fondo para campos requeridos"
 
 #: rc.cpp:70
 #, fuzzy
@@ -10281,40 +10258,39 @@ msgstr "Usar tipos de letra del sistema"
 
 #: rc.cpp:73 rc.cpp:74
 msgid "Sort order of register in normal view"
-msgstr ""
+msgstr "Orden del registro en la vista normal"
 
 #: rc.cpp:75
 msgid "Sort order of register in search dialog"
-msgstr ""
+msgstr "Orden del registro en la búsqueda"
 
 #: rc.cpp:76
 msgid "Method to calculate forecast"
-msgstr ""
+msgstr "Método para calcular el pronóstico"
 
 #: rc.cpp:77
 msgid "Days to forecast"
-msgstr ""
+msgstr "Días a pronosticar"
 
 #: rc.cpp:78
 msgid "Days of normal account cycle"
-msgstr ""
+msgstr "Días del ciclo de cuenta normal"
 
 #: rc.cpp:79
 msgid "Number of historic cycles to use in forecast"
-msgstr ""
+msgstr "Número de ciclos históricos a usar en el pronóstico"
 
 #: rc.cpp:80
 msgid "Day of month to start forecast"
-msgstr ""
+msgstr "Día del mes a empezar el pronóstico"
 
 #: rc.cpp:81
 msgid "Method to calculate history-based forecast"
-msgstr ""
+msgstr "Método para calcular el pronóstico histórico"
 
 #: rc.cpp:82
-#, fuzzy
 msgid "Skip opening date when fetching transactions"
-msgstr "Saltear este asiento"
+msgstr "Saltear fecha de apertura al obtener los asientos"
 
 #: rc.cpp:83 widgets/rc.cpp:158 widgets/rc.cpp:160
 msgid "..."
@@ -10322,11 +10298,11 @@ msgstr "..."
 
 #: testdriver.cpp:17
 msgid "Automatic Application Test driver suite"
-msgstr ""
+msgstr "Suite para manejo de Pruebas Automáticas de la Aplicación"
 
 #: testdriver.cpp:22
 msgid "AppTest"
-msgstr ""
+msgstr "AppTest"
 
 #: widgets/kmymoneyaccountselector.cpp:64 widgets/rc.cpp:65
 msgid "All"
@@ -10339,9 +10315,8 @@ msgstr "Categorías de Ingresos"
 
 #: widgets/kmymoneyaccountselector.cpp:348
 #: widgets/kmymoneyaccountselector.cpp:349
-#, fuzzy
 msgid "Favorites"
-msgstr "Informes favoritos"
+msgstr "Favoritas"
 
 #: widgets/kmymoneyaccountselector.cpp:356
 msgid "Asset accounts"
