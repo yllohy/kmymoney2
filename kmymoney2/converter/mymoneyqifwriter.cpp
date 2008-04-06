@@ -96,8 +96,11 @@ void MyMoneyQifWriter::writeAccountEntry(QTextStream &s, const QCString& account
   if(!startDate.isValid() || startDate <= account.openingDate()) {
     s << "D" << m_qifProfile.date(account.openingDate()) << endl;
     openingBalanceTransactionId = file->openingBalanceTransaction(account);
-    MyMoneyTransaction openingBalanceTransaction = file->transaction(openingBalanceTransactionId);
-    MyMoneySplit split = openingBalanceTransaction.splitByAccount(account.id(), true /* match */);
+    MyMoneySplit split;
+    if(!openingBalanceTransactionId.isEmpty()) {
+      MyMoneyTransaction openingBalanceTransaction = file->transaction(openingBalanceTransactionId);
+      split = openingBalanceTransaction.splitByAccount(account.id(), true /* match */);
+    }
     s << "T" << m_qifProfile.value('T', split.value()) << endl;
   } else {
     s << "D" << m_qifProfile.date(startDate) << endl;

@@ -2,6 +2,8 @@
 2008-04-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed an i18n string issue
   * Fixed usage of KMM_DEBUG
+  * Fixed a bug in the QIF writer that caused a problem when
+    an account has no opening balance transaction
 
 2008-04-05 Alvaro Soliverez <asoliverez@gmail.com>
   * Updated Argentinian translation
