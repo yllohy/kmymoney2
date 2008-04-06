@@ -653,15 +653,16 @@ KMyMoneyPeriodCombo::KMyMoneyPeriodCombo(QWidget* parent, const char* name) :
 {
   insertItem(i18n("All dates"), MyMoneyTransactionFilter::allDates);
   insertItem(i18n("Until today"), MyMoneyTransactionFilter::untilToday);
+  insertItem(i18n("Today"), MyMoneyTransactionFilter::today);
   insertItem(i18n("Current month"), MyMoneyTransactionFilter::currentMonth);
   insertItem(i18n("Current quarter"), MyMoneyTransactionFilter::currentQuarter);
-  insertItem(i18n("Current Year"), MyMoneyTransactionFilter::currentYear);
+  insertItem(i18n("Current year"), MyMoneyTransactionFilter::currentYear);
   insertItem(i18n("Current fiscal year"), MyMoneyTransactionFilter::currentFiscalYear);
   insertItem(i18n("Month to date"), MyMoneyTransactionFilter::monthToDate);
   insertItem(i18n("Year to date"), MyMoneyTransactionFilter::yearToDate);
   insertItem(i18n("Year to month"), MyMoneyTransactionFilter::yearToMonth);
   insertItem(i18n("Last month"), MyMoneyTransactionFilter::lastMonth);
-  insertItem(i18n("Last Year"), MyMoneyTransactionFilter::lastYear);
+  insertItem(i18n("Last year"), MyMoneyTransactionFilter::lastYear);
   insertItem(i18n("Last fiscal year"), MyMoneyTransactionFilter::lastFiscalYear);
   insertItem(i18n("Last 7 days"), MyMoneyTransactionFilter::last7Days);
   insertItem(i18n("Last 30 days"), MyMoneyTransactionFilter::last30Days);

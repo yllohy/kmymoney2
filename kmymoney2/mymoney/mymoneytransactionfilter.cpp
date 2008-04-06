@@ -861,6 +861,10 @@ bool MyMoneyTransactionFilter::translateDateRange(dateOptionE id, QDate& start, 
       start = start.addYears(-1);
       end = start.addYears(1).addDays(-1);
       break;
+    case MyMoneyTransactionFilter::today:
+      start = QDate::currentDate();
+      end =  QDate::currentDate();
+      break;
     default:
       qFatal("Unknown date identifier %d in MyMoneyTransactionFilter::translateDateRange()", id);
       rc = false;

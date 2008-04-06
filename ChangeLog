@@ -1,3 +1,5 @@
+2008-04-06 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added Today option to time filter combo
 
 2008-04-06 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed an i18n string issue

@@ -118,6 +118,7 @@ public:
     nextQuarter,
     currentFiscalYear,
     lastFiscalYear,
+    today,
     // insert new constants above of this line
     dateOptionCount
   };
