@@ -723,8 +723,12 @@ void KFindTransactionDlg::loadView(void)
 
   m_register->updateRegister(true);
 
-  m_foundText->setText(i18n(QString("Found %1 matching transactions (D %2 / P %3 = %4)")
-                      .arg(splitCount).arg(deposit.formatMoney("", 2)).arg(payment.formatMoney("", 2)).arg((deposit-payment).formatMoney("", 2))));
+#ifdef KMM_DEBUG
+  m_foundText->setText(i18n("Found %1 matching transactions (D %2 / P %3 = %4)")
+                      .arg(splitCount).arg(deposit.formatMoney("", 2)).arg(payment.formatMoney("", 2)).arg((deposit-payment).formatMoney("", 2)));
+#else
+  m_foundText->setText(i18n("Found %1 matching transactions") .arg(splitCount));
+#endif
 
   m_tabWidget->setTabEnabled(m_resultPage, true);
   m_tabWidget->setCurrentPage(m_tabWidget->indexOf(m_resultPage));
