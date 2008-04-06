@@ -723,7 +723,7 @@ void KFindTransactionDlg::loadView(void)
 
   m_register->updateRegister(true);
 
-#ifdef KMM_DEBUG
+#if KMM_DEBUG
   m_foundText->setText(i18n("Found %1 matching transactions (D %2 / P %3 = %4)")
                       .arg(splitCount).arg(deposit.formatMoney("", 2)).arg(payment.formatMoney("", 2)).arg((deposit-payment).formatMoney("", 2)));
 #else
