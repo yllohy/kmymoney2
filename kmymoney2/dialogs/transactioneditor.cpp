@@ -1115,11 +1115,22 @@ void StdTransactionEditor::slotUpdatePayee(const QCString& payeeId)
         return;
     }
 
+#if 0
+    // Tony mentioned, that autofill does not work when he changed the date. Well,
+    // that certainly makes sense when you enter transactions in register mode as
+    // opposed to form mode, because the date field is located prior to the date
+    // field in the tab order of the widgets and the user might have already
+    // changed it.
+    //
+    // So I commented out the code that checks the date but left it in for reference.
+    // (ipwizard, 2008-04-07)
+
     // check if date has been altered by user
     kMyMoneyDateInput* postDate = dynamic_cast<kMyMoneyDateInput*>(m_editWidgets["postdate"]);
     if((m_lastPostDate.isValid() && (postDate->date() != m_lastPostDate))
     || (!m_lastPostDate.isValid() && (postDate->date() != QDate::currentDate())))
       return;
+#endif
 
     // if we got here, we have to autofill
     autoFill(payeeId);
