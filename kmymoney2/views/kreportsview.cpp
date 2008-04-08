@@ -1145,7 +1145,21 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Default Report")
     ));
     list.back().setInvestmentsOnly(true);
-
+#ifdef HAVE_KDCHART
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eAssetLiability,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::today,
+      false,
+      i18n("Investment Holdings Pie"),
+      i18n("Default Report")
+    ));
+    list.back().setChartByDefault(true);
+    list.back().setChartGridLines(false);
+    list.back().setDetailLevel(MyMoneyReport::eDetailAll);
+    list.back().setChartType(MyMoneyReport::eChartPie);
+    list.back().setInvestmentsOnly(true);
+#endif
     groups.push_back(list);
   }
   {
@@ -1156,7 +1170,16 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       MyMoneyReport::eQCnumber|MyMoneyReport::eQCpayee|MyMoneyReport::eQCaccount,
       MyMoneyTransactionFilter::yearToDate,
       false,
-      i18n("Tax Transactions"),
+      i18n("Tax Transactions by Category"),
+      i18n("Default Report")
+    ));
+    list.back().setTax(true);
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::ePayee,
+      MyMoneyReport::eQCnumber|MyMoneyReport::eQCcategory|MyMoneyReport::eQCaccount,
+      MyMoneyTransactionFilter::yearToDate,
+      false,
+      i18n("Tax Transactions by Payee"),
       i18n("Default Report")
     ));
     list.back().setTax(true);

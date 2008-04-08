@@ -450,7 +450,11 @@ void QueryTable::constructTransactionTable(void)
     use_transfers = false;
     hide_details = false;
     break;
-
+  case MyMoneyReport::ePayee:
+    use_summary = false;
+    use_transfers = false;
+    hide_details = (m_config.detailLevel() == MyMoneyReport::eDetailNone);
+    break;
   default:
     use_summary = true;
     use_transfers = true;

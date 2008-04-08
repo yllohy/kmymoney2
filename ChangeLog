@@ -1,3 +1,7 @@
+2008-04-06 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added Tax Transactions by Payee report
+  * Added Investment Holdings Pie report
+  * Fixed queryTable to filter tax by Payee correctly
 
 2008-04-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Ignore prior date changes when checking for autofill
