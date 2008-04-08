@@ -1,4 +1,7 @@
-2008-04-06 Alvaro Soliverez <asoliverez@gmail.com>
+2008-04-08 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added Tax Transactions reports for Last Fiscal Year
+
+2008-04-07 Alvaro Soliverez <asoliverez@gmail.com>
   * Added Tax Transactions by Payee report
   * Added Investment Holdings Pie report
   * Fixed queryTable to filter tax by Payee correctly

@@ -1183,6 +1183,24 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       i18n("Default Report")
     ));
     list.back().setTax(true);
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eCategory,
+      MyMoneyReport::eQCnumber|MyMoneyReport::eQCpayee|MyMoneyReport::eQCaccount,
+      MyMoneyTransactionFilter::lastFiscalYear,
+      false,
+      i18n("Tax Transactions by Category Last Fiscal Year"),
+      i18n("Default Report")
+    ));
+    list.back().setTax(true);
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::ePayee,
+      MyMoneyReport::eQCnumber|MyMoneyReport::eQCcategory|MyMoneyReport::eQCaccount,
+      MyMoneyTransactionFilter::lastFiscalYear,
+      false,
+      i18n("Tax Transactions by Payee Last Fiscal Year"),
+      i18n("Default Report")
+    ));
+    list.back().setTax(true);
     groups.push_back(list);
   }
   {
