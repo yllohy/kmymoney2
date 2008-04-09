@@ -1,9 +1,11 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="28" name="kmymoney2" >
+<kpartgui version="29" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
+   <!--
    <Action append="open_merge" name="open_database" />
    <Action append="save_merge" name="saveas_database" />
+   -->
    <Menu icon="fileimport" append="save_merge" name="import" >
     <text>&amp;Import</text>
     <Action name="file_import_qif" />
