@@ -167,7 +167,8 @@
         </varlistentry>
 
         <varlistentry>
-          <term>Credit Card</term>
+          <term>Credit Card</term><link linkend="details.schedules">scheduled
+        transaction</link>
 
           <listitem>
             <para>An account to represent your credit card.</para>
