@@ -126,8 +126,6 @@
       <title>Account details</title>
 
       <para><screenshot>
-          <screeninfo>Schedule View</screeninfo>
-
           <mediaobject>
             <imageobject>
               <imagedata fileref="accwiz2.png" format="PNG" />
@@ -167,8 +165,7 @@
         </varlistentry>
 
         <varlistentry>
-          <term>Credit Card</term><link linkend="details.schedules">scheduled
-        transaction</link>
+          <term>Credit Card</term>
 
           <listitem>
             <para>An account to represent your credit card.</para>
