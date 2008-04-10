@@ -1,6 +1,7 @@
 
 2008-04-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Italian translation from Sandro Bonazzola
+  * Regenerated pot file, merge changes into translations
 
 2008-04-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed database menu items temporarily
