@@ -55,7 +55,7 @@
     you will need to create a <link linkend="firsttime-3">new file</link>.
     </emphasis></para>
     <para>
-	To create a new account, you can either select <menuchoice><guimenu>Account</guimenu><guimenuitem>New</guimenuitem></menuchoice> from the  menu or choose the <inlinemediaobject><imageobject><imagedata fileref="newacct.png"/></imageobject><textobject><phrase>New</phrase></textobject></inlinemediaobject> icon from the toolbar.
+	To create a new account, you can either select <menuchoice><guimenu>Account</guimenu><guimenuitem>New</guimenuitem></menuchoice> from the  menu or choose the <guiicon><inlinemediaobject><imageobject><imagedata fileref="newacct.png"/></imageobject><textobject><phrase>New</phrase></textobject></inlinemediaobject></guiicon> icon from the toolbar.
     </para>
 
     <para>Alternatively, to create an account using the accounts view click on the Accounts
@@ -78,7 +78,9 @@
               <phrase>Account Wizard</phrase>
             </textobject>
           </mediaobject>
-        </screenshot>The first step involves setting an institution for the
+        </screenshot></para>
+
+      <para>The first step involves setting an institution for the
       account. If this is not a bank account, or if you do not want to use
       online banking, this step can optionally be skipped; just click
       Next.</para>
@@ -93,9 +95,7 @@
       url="http://www.investordictionary.com/definition/international+bank+account+number.aspx">IBAN</ulink>
       number. These fields may be left blank and filled in at a later time;
       they are only required for online banking. To proceed to the next step
-      click on Next.</para>
-
-      <para></para>
+      click on <guibutton>Next</guibutton>.</para>
 
       <para><screenshot>
           <mediaobject>
@@ -107,7 +107,10 @@
               <phrase>Account Wizard</phrase>
             </textobject>
           </mediaobject>
-        </screenshot> Only the name is required in the New Institution dialog,
+        </screenshot>
+      </para>
+
+      <para>Only the name is required in the New Institution dialog,
       all other fields are optional.</para>
 
       <para>As with the personal information dialog, this data is not
