@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE KMYMONEY-TEMPLATE>
 <kmymoney-account-template>
- <title>KMyMoney 0.8 default</title>
- <shortdesc/>
- <longdesc/>
+  <title>Use 0.8 default</title>
+ <shortdesc>default from KMyMoney 0.8</shortdesc>
+ <longdesc>This was the default category group for most of the 0.7 and 0.8 series. This group contains a lot of categories.</longdesc>
+
  <accounts>
   <account type="12" name="" >
    <account type="12" name="Employment" >
