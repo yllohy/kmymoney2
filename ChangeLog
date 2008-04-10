@@ -1,10 +1,13 @@
+
 2008-04-10 Robert Wadley <robntina@users.sourceforge.net>
-  * Renamed some of the old template and made some minor template changes to the old us template descriptions.
+  * Renamed some of the old template and made some minor template
+    changes to the old us template descriptions
 
 2008-04-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Italian translation from Sandro Bonazzola
   * Regenerated pot file, merge changes into translations
   * Fixed a problem in the documentation
+  * Cleanup Makefile.am in template/en_US
 
 2008-04-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed database menu items temporarily
