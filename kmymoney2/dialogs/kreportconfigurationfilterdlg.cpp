@@ -118,7 +118,6 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
       //control the state of the includeTransfer check
       connect(m_categoriesView, SIGNAL(stateChanged()), this, SLOT(slotUpdateCheckTransfers()));
 
-
 #ifdef HAVE_KDCHART
       m_tabChart = new kMyMoneyReportConfigTabChartDecl( m_criteriaTab, "kMyMoneyReportConfigTabChart" );
       m_criteriaTab->insertTab( m_tabChart, i18n( "Chart"), 2 );
@@ -143,7 +142,7 @@ KReportConfigurationFilterDlg::KReportConfigurationFilterDlg(
     for(it_b = list.begin(); it_b != list.end(); ++it_b) {
       m_budgets.push_back(*it_b);
     }
-    
+
     //
     // Now set up the widgets with proper values
     //
@@ -174,8 +173,12 @@ void KReportConfigurationFilterDlg::slotSearch(void)
 
     m_currentState.setDetailLevel( dl[m_tab2->m_comboDetail->currentItem()] );
 
-    MyMoneyReport::ERowType rt[2] = { MyMoneyReport::eExpenseIncome, MyMoneyReport::eAssetLiability };
-    m_currentState.setRowType( rt[m_tab2->m_comboRows->currentItem()] );
+    // modify the rowtype only if the widget is enabled
+    if(m_tab2->m_comboRows->isEnabled()) {
+      MyMoneyReport::ERowType rt[2] = { MyMoneyReport::eExpenseIncome, MyMoneyReport::eAssetLiability };
+      m_currentState.setRowType( rt[m_tab2->m_comboRows->currentItem()] );
+    }
+
     m_currentState.setShowingRowTotals(false);
     if(m_tab2->m_comboRows->currentItem() == 0)
       m_currentState.setShowingRowTotals(m_tab2->m_checkTotalColumn->isChecked());
@@ -298,11 +301,17 @@ void KReportConfigurationFilterDlg::slotReset(void)
       break;
     }
 
-    if ( m_initialState.rowType() == MyMoneyReport::eExpenseIncome ) {
-      m_tab2->m_comboRows->setCurrentItem(0);
-      m_tab2->m_checkTotalColumn->setChecked(m_initialState.isShowingRowTotals());
-    } else
-      m_tab2->m_comboRows->setCurrentItem(1);
+    switch(m_initialState.rowType()) {
+      case MyMoneyReport::eExpenseIncome:
+      case MyMoneyReport::eBudget:
+      case MyMoneyReport::eBudgetActual:
+        m_tab2->m_comboRows->setCurrentItem(0); // income / expense
+        break;
+      default:
+        m_tab2->m_comboRows->setCurrentItem(1); // asset / liability
+        break;
+    }
+    m_tab2->m_checkTotalColumn->setChecked(m_initialState.isShowingRowTotals());
 
     slotRowTypeChanged(m_tab2->m_comboRows->currentItem());
 
@@ -345,6 +354,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
 
     if(m_initialState.rowType() == MyMoneyReport::eBudget
     || m_initialState.rowType() == MyMoneyReport::eBudgetActual) {
+      m_tab2->m_comboRows->setEnabled(false);
       m_tab2->m_budgetFrame->setEnabled(!m_budgets.empty());
       QValueVector<MyMoneyBudget>::const_iterator it_b;
       int i = 0;
@@ -630,5 +640,5 @@ void KReportConfigurationFilterDlg::slotUpdateCheckTransfers(void)
     m_tab2->m_checkTransfers->setEnabled(true);
   }
 }
- 
+
 #include "kreportconfigurationfilterdlg.moc"

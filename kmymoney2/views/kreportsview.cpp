@@ -1207,13 +1207,14 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     ReportGroup list("Budgeting", i18n("Budgeting"));
 
     list.push_back(MyMoneyReport(
-      MyMoneyReport::eExpenseIncome,
+      MyMoneyReport::eBudgetActual,
       MyMoneyReport::eMonths,
       MyMoneyTransactionFilter::yearToDate,
       true,
       i18n("Budget vs. Actual This Year"),
       i18n("Default Report")
     ));
+    list.back().setShowingRowTotals(true);
     list.back().setBudget("Any",true);
 
     list.push_back(MyMoneyReport(
