@@ -55,7 +55,7 @@
     you will need to create a <link linkend="firsttime-3">new file</link>.
     </emphasis></para>
     <para>
-	To create a new account, you can either select <menuchoice><guimenu>Account</guimenu><guimenuitem>New</guimenuitem></menuchoice> from the  menu or choose the <guiicon><inlinemediaobject><imageobject><imagedata fileref="newacct.png"/></imageobject><textobject><phrase>New</phrase></textobject></inlinemediaobject></guiicon> icon from the toolbar.
+	To create a new account, you can either select <menuchoice><guimenu>Account</guimenu><guimenuitem>New</guimenuitem></menuchoice> from the  menu or choose the <guiicon><inlinemediaobject><imageobject><imagedata fileref="newacct.png" format="PNG"/></imageobject><textobject><phrase>New</phrase></textobject></inlinemediaobject></guiicon> icon from the toolbar.
     </para>
 
     <para>Alternatively, to create an account using the accounts view click on the Accounts
