@@ -24,7 +24,7 @@
                 <cstring>kMyMoneyTitleLabel</cstring>
             </property>
             <property name="text">
-                <string>Forcecast</string>
+                <string>Forecast</string>
             </property>
             <property name="rightImageFile">
                 <string>pics/titlelabel_background.png</string>

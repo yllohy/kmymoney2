@@ -22,7 +22,7 @@
   <kdevautoproject>
     <general>
       <mainprogram>kmymoney2/kmymoney2</mainprogram>
-      <useconfiguration>suse103</useconfiguration>
+      <useconfiguration>default</useconfiguration>
       <activetarget>kmymoney2/kmymoney2</activetarget>
     </general>
     <configure>
@@ -47,13 +47,13 @@
     <run>
       <directoryradio>executable</directoryradio>
       <customdirectory>/</customdirectory>
-      <mainprogram>/home/thb/devel/kmymoney2/suse103/kmymoney2/kmymoney2</mainprogram>
+      <mainprogram>/home/al/desarrollo/kmm/kmymoney2/kmymoney2/kmymoney2</mainprogram>
       <programargs/>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <envvars/>
       <globaldebugarguments/>
-      <globalcwd>/home/thb/devel/kmymoney2/suse103/kmymoney2</globalcwd>
+      <globalcwd>/home/al/desarrollo/kmm/kmymoney2/kmymoney2</globalcwd>
       <useglobalprogram>true</useglobalprogram>
       <autoinstall>false</autoinstall>
       <autokdesu>false</autokdesu>
@@ -62,7 +62,7 @@
       <default>
         <configargs>--mandir=/usr/share/man --enable-debug=full --enable-charts</configargs>
         <builddir/>
-        <topsourcedir>/home/thb/devel/kmymoney2</topsourcedir>
+        <topsourcedir>/home/al/desarrollo/kmm/kmymoney2</topsourcedir>
         <cppflags/>
         <ldflags/>
         <ccompiler>kdevgccoptions</ccompiler>
@@ -189,11 +189,11 @@
     <qt>
       <used>true</used>
       <version>3</version>
-      <root>/usr/lib/qt3</root>
+      <root>/usr/share/qt3</root>
       <includestyle>3</includestyle>
       <designerintegration>EmbeddedKDevDesigner</designerintegration>
-      <qmake>/usr/lib/qt3/bin/qmake</qmake>
-      <designer>/usr/lib/qt3/bin/designer</designer>
+      <qmake>/usr/bin/qmake-qt3</qmake>
+      <designer>/usr/bin/designer-qt3</designer>
       <designerpluginpaths/>
     </qt>
     <creategettersetter>
