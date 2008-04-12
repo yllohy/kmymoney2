@@ -1,3 +1,5 @@
+2008-04-12 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed account filter for budget report
 
 2008-04-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed budget report configuration problem
