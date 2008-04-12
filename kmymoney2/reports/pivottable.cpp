@@ -2175,10 +2175,28 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
         ++it_outergroup;
       }
-      if ( accountseries )
-        data.expand( rownum-1, m_numColumns-1 );
+
+      if (m_config_f.isShowingRowTotals())
+      {
+        // For now, just the totals
+        unsigned totalcolumn = 1;
+        _view.params().setLegendText( rownum-1, i18n("Total") );
+        while ( totalcolumn < m_numColumns )
+         {
+           if ( accountseries )
+             data.setCell( rownum-1, totalcolumn-1, m_grid.m_total[totalcolumn].toDouble() );
+           else
+             data.setCell( totalcolumn-1, rownum-1, m_grid.m_total[totalcolumn].toDouble() );
+           ++totalcolumn;
+         }
+      }
       else
-        data.expand( m_numColumns-1, rownum-1 );
+      {
+        if ( accountseries )
+          data.expand( rownum-1, m_numColumns-1 );
+        else
+          data.expand( m_numColumns-1, rownum-1 );
+      }
     }
     break;
 

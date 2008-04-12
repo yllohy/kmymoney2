@@ -123,6 +123,7 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, dateOptionE _dl, bool _
   {
     addAccountGroup(MyMoneyAccount::Asset);
     addAccountGroup(MyMoneyAccount::Liability);
+    m_showRowTotals = true;
   }
   if ( _rt == MyMoneyReport::eExpenseIncome )
   {
