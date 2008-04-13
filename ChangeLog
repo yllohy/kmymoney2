@@ -1,6 +1,11 @@
+
+2008-04-13 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Dutch translation from Bert Keuter
+
 2008-04-12 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed account filter for budget report
-  * Enable show total columns switch on graphs - patch provided by Arni Ingimundarson
+  * Enable show total columns switch on graphs - patch provided
+    by Arni Ingimundarson
 
 2008-04-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed budget report configuration problem
