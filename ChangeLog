@@ -1,3 +1,6 @@
+2008-04-14 Alvaro Soliverez <asoliverez@gmail.com>
+  * Adjust forecast days on Home View if lower than accounts cycle
+  * Fixed minimum limit of begin forecast day in forecast view
 
 2008-04-14 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Brazilian translation from Marcus Gama

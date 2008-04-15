@@ -756,6 +756,10 @@ void KHomeView::showForecast(void)
   QValueList<MyMoneyAccount> accList;
   MyMoneyForecast forecast;
 
+  //If forecastDays lower than accountsCycle, adjust to the first cycle
+  if(forecast.accountsCycle() > forecast.forecastDays())
+    forecast.setForecastDays(forecast.accountsCycle());
+
   //Get all accounts of the right type to calculate forecast
   forecast.doForecast();
   accList = forecast.accountList();
