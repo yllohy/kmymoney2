@@ -377,6 +377,12 @@ protected:
 
   void setupFinalWidgets(void);
 
+  /**
+   * This method returns the sum of all splits of transaction @a t that
+   * reference account m_account.
+   */
+  MyMoneyMoney shares(const MyMoneyTransaction& t) const;
+
 private:
   MyMoneyMoney        m_shares;
   bool                m_inUpdateVat;

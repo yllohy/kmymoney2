@@ -1137,6 +1137,18 @@ void StdTransactionEditor::slotUpdatePayee(const QCString& payeeId)
   }
 }
 
+MyMoneyMoney StdTransactionEditor::shares(const MyMoneyTransaction& t) const
+{
+  MyMoneyMoney result;
+  QValueList<MyMoneySplit>::const_iterator it_s;
+  for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+    if((*it_s).accountId() == m_account.id()) {
+      result += (*it_s).shares();
+    }
+  }
+  return result;
+}
+
 void StdTransactionEditor::autoFill(const QCString& payeeId)
 {
   QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >  list;
@@ -1150,8 +1162,36 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
     QValueList<QPair<MyMoneyTransaction, MyMoneySplit> >::const_iterator  it_t;
     QMap<QString, const MyMoneyTransaction* > uniqList;
 
+    // collect the transactions and see if we have any duplicates
     for(it_t = list.begin(); it_t != list.end(); ++it_t) {
-      uniqList[(*it_t).first.accountSignature()] = &((*it_t).first);
+      QString key = (*it_t).first.accountSignature();
+      int cnt = 0;
+      QMap<QString, const MyMoneyTransaction* >::iterator it_u;
+      do {
+        QString ukey = QString("%1-%2").arg(key).arg(cnt);
+        it_u = uniqList.find(ukey);
+        if(it_u == uniqList.end()) {
+          uniqList[ukey] = &((*it_t).first);
+        } else {
+          // we already have a transaction with this signature. we must
+          // now check, if we should really treat it as a duplicate according
+          // to the value comparison delta.
+          MyMoneyMoney s1 = shares(*(*it_u));
+          MyMoneyMoney s2 = shares((*it_t).first);
+          if(s2.abs() > s1.abs()) {
+            MyMoneyMoney t(s1);
+            s1 = s2;
+            s2 = t;
+          }
+          MyMoneyMoney diff = ((s1 - s2) / s2).convert(10000);
+          if(diff.isPositive() && diff <= MyMoneyMoney(KMyMoneyGlobalSettings::autoFillDifference(),100)) {
+            uniqList[ukey] = &((*it_t).first);
+            break;
+          }
+        }
+        ++cnt;
+      } while(it_u != uniqList.end());
+
     }
 
     MyMoneyTransaction t;

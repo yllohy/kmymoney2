@@ -3,6 +3,7 @@
   * Updated Italian translation from Sandro Bonazzola
   * Date for interest and charges in reconciliation wizard follow
     statement date
+  * Added percentage field to auto fill mode
 
 2008-04-14 Alvaro Soliverez <asoliverez@gmail.com>
   * Adjust forecast days on Home View if lower than accounts cycle
