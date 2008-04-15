@@ -1,6 +1,8 @@
 
 2008-04-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Italian translation from Sandro Bonazzola
+  * Date for interest and charges in reconciliation wizard follow
+    statement date
 
 2008-04-14 Alvaro Soliverez <asoliverez@gmail.com>
   * Adjust forecast days on Home View if lower than accounts cycle

@@ -221,6 +221,9 @@ void KEndingBalanceDlg::slotUpdateBalances(void)
   m_endingBalance->setValue(endBalance);
   tracer.printf("total balance = %s", endBalance.formatMoney("", 2).data());
   tracer.printf("start balance = %s", startBalance.formatMoney("", 2).data());
+
+  m_interestDateEdit->setDate(m_statementDate->date());
+  m_chargesDateEdit->setDate(m_statementDate->date());
 }
 
 void KEndingBalanceDlg::accept(void)
