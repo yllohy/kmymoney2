@@ -959,10 +959,13 @@ void PivotTable::calculateBudgetMapping( void )
             QMap<QDate, MyMoneyBudget::PeriodGroup>::const_iterator it_period = periods.begin();
             while ( it_period != periods.end() )
             {
-              value = (*it_period).amount() * reverse;
-              column = (*it_period).startDate().month();
-              if(column < m_numColumns) {
-                assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+              if((*it_period).startDate().month() >= m_beginDate.month()
+                   && (*it_period).startDate().month() <= m_endDate.month()) {
+                value = (*it_period).amount() * reverse;
+                if(column < m_numColumns) {
+                  assignCell( outergroup, splitAccount, column, value, true /*budget*/ );
+                }
+                ++column;
               }
               ++it_period;
             }

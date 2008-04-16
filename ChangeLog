@@ -1,3 +1,5 @@
+2008-04-15 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed budget column when report timeframe is less than a year
 
 2008-04-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Italian translation from Sandro Bonazzola
