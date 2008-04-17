@@ -1,3 +1,6 @@
+2008-04-16 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed total column of pivot reports
+
 2008-04-15 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed budget column when report timeframe is less than a year
 

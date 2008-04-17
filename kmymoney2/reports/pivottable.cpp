@@ -1093,7 +1093,7 @@ void PivotTable::calculateTotals( void )
         // Columns
         //
 
-        unsigned column = 0;
+        unsigned column = 1;
         while ( column < m_numColumns )
         {
           if ( it_row.data().count() <= column )
@@ -1119,7 +1119,7 @@ void PivotTable::calculateTotals( void )
       // Inner Row Group Totals
       //
 
-      unsigned column = 0;
+      unsigned column = 1;
       while ( column < m_numColumns )
       {
         if ( (*it_innergroup).m_total.count() <= column )
@@ -1146,7 +1146,7 @@ void PivotTable::calculateTotals( void )
     //
 
     bool invert_total = (*it_outergroup).m_inverted;
-    unsigned column = 0;
+    unsigned column = 1;
     while ( column < m_numColumns )
     {
       if ( m_grid.m_total.count() <= column )
@@ -1178,7 +1178,7 @@ void PivotTable::calculateTotals( void )
   // Report Totals
   //
 
-  unsigned totalcolumn = 0;
+  unsigned totalcolumn = 1;
   while ( totalcolumn < m_numColumns )
   {
     if ( m_grid.m_total.count() <= totalcolumn )
