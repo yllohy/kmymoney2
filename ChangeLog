@@ -1,3 +1,7 @@
+
+2008-04-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Preserve date during auto transaction fill
+
 2008-04-16 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed total column of pivot reports
 

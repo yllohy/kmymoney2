@@ -1280,8 +1280,10 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
           action = KMyMoneyRegister::ActionTransfer;
       }
 
-      // now setup the widgets with the new data
+      // now setup the widgets with the new data but keep the date
+      QDate date = dynamic_cast<kMyMoneyDateInput*>(m_editWidgets["postdate"])->date();
       loadEditWidgets(action);
+      dynamic_cast<kMyMoneyDateInput*>(m_editWidgets["postdate"])->setDate(date);
     }
   }
 
