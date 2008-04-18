@@ -710,8 +710,24 @@ void PivotTable::calculateOpeningBalances( void )
     // and if the report includes this account
     if ( m_config_f.includes( *it_account ) )
     {
-      DEBUG_OUTPUT(QString("Includes account %1").arg(account.name()));
+      
+      //do not include account if it is closed and it has no transactions in the report period
+      if(account.isClosed()) {
+        //check if the account has transactions for the report timeframe
+        MyMoneyTransactionFilter filter;
+        filter.addAccount(account.id());
+        filter.setDateFilter(m_beginDate, m_endDate);
+        filter.setReportAllSplits(false);
+        QValueList<MyMoneyTransaction> transactions = file->transactionList(filter);
+        //if a closed account has no transactions in that timeframe, do not include it
+        if(transactions.size() == 0 ) {
+          DEBUG_OUTPUT(QString("DOES NOT INCLUDE account %1").arg(account.name()));
+          ++it_account;
+          continue;
+        }
+      }
 
+      DEBUG_OUTPUT(QString("Includes account %1").arg(account.name()));
       // the row group is the account class (major account type)
       QString outergroup = accountTypeToString(account.accountGroup());
 
