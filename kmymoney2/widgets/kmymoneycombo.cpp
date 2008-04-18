@@ -723,6 +723,7 @@ KMyMoneyFrequencyCombo::KMyMoneyFrequencyCombo(QWidget* parent, const char* name
   insertItem(i18n("Fortnightly"), MyMoneySchedule::OCCUR_FORTNIGHTLY);
   insertItem(i18n("Every other week"), MyMoneySchedule::OCCUR_EVERYOTHERWEEK);
   insertItem(i18n("Every three weeks"), MyMoneySchedule::OCCUR_EVERYTHREEWEEKS);
+  insertItem(i18n("Every thirty days"), MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS);
   insertItem(i18n("Every four weeks"), MyMoneySchedule::OCCUR_EVERYFOURWEEKS);
   insertItem(i18n("Monthly"), MyMoneySchedule::OCCUR_MONTHLY);
   insertItem(i18n("Every eight weeks"), MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS);
@@ -762,6 +763,9 @@ int KMyMoneyFrequencyCombo::daysBetweenEvents(void) const
       break;
     case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
       rc = 28;
+      break;
+    case MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS:
+      rc = 30;
       break;
     case MyMoneySchedule::OCCUR_MONTHLY:
       rc = 30;
@@ -815,6 +819,7 @@ int KMyMoneyFrequencyCombo::eventsPerYear(void) const
       rc = 13;
       break;
     case MyMoneySchedule::OCCUR_MONTHLY:
+    case MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS:
       rc = 12;
       break;
     case MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS:

@@ -619,6 +619,7 @@ void KNewLoanWizard::loadComboBoxes(void)
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERWEEK));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHREEWEEKS));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYFOURWEEKS));
+  m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_MONTHLY));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS));
   m_paymentFrequencyUnitEdit->insertItem(KMyMoneyUtils::occurenceToString(MyMoneySchedule::OCCUR_EVERYOTHERMONTH));
@@ -669,6 +670,7 @@ int KNewLoanWizard::occurenceToPeriod(const MyMoneySchedule::occurenceE occurenc
       rc = 28;
       break;
     case MyMoneySchedule::OCCUR_MONTHLY:
+    case MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS:
       rc = 30;
       break;
     case MyMoneySchedule::OCCUR_EVERYEIGHTWEEKS:

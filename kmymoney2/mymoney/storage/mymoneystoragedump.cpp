@@ -416,6 +416,9 @@ const QString MyMoneyStorageDump::occurenceToString(const MyMoneySchedule::occur
     case MyMoneySchedule::OCCUR_EVERYTHREEWEEKS:
       text = i18n("Every three weeks");
       break;
+    case MyMoneySchedule::OCCUR_EVERYTHIRTYDAYS:
+      text = i18n("Every thirty days");
+      break;
     case MyMoneySchedule::OCCUR_EVERYFOURWEEKS:
       text = i18n("Every four weeks");
       break;
