@@ -1,8 +1,13 @@
+
+2008-04-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added another validation to the consistency check feature
+
 2008-04-18 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * 30-day schedule interval
 
 2008-04-16 Alvaro Soliverez <asoliverez@gmail.com>
-  * Hide accounts in reports if closed and no transactions for the report timeframe
+  * Hide accounts in reports if closed and no transactions for
+    the report timeframe
   * Replaced Until today by As of today in Time Combo
 
 2008-04-17 Thomas Baumgart <ipwizard@users.sourceforge.net>

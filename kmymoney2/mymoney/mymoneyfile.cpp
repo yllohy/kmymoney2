@@ -1529,19 +1529,43 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   // Fix the transactions
   QValueList<MyMoneyTransaction> tList;
   MyMoneyTransactionFilter filter;
+  filter.setReportAllSplits(false);
   m_storage->transactionList(tList, filter);
   for(it_t = tList.begin(); it_t != tList.end(); ++it_t) {
     MyMoneyTransaction t = (*it_t);
     QValueList<MyMoneySplit>::const_iterator it_s;
     bool tChanged = false;
     for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+      bool sChanged = false;
+      MyMoneySplit s = (*it_s);
       if(payeeConversionMap.find((*it_s).payeeId()) != payeeConversionMap.end()) {
-        MyMoneySplit s = (*it_s);
         s.setPayeeId(payeeConversionMap[s.payeeId()]);
-        t.modifySplit(s);
-        tChanged = true;
+        sChanged = true;
         rc << i18n("  * Payee id updated in split of transaction '%1'.").arg(t.id());
         ++problemCount;
+      }
+
+      // make sure, that shares and value have the same number if they
+      // represent the same currency.
+      try {
+        const MyMoneyAccount& acc = this->account(s.accountId());
+        if(t.commodity() == acc.currencyId()
+        && s.shares().reduce() != s.value().reduce()) {
+          s.setValue(s.shares());
+          sChanged = true;
+          rc << i18n("  * value set to shares in split of transaction '%1'.").arg(t.id());
+          ++problemCount;
+        }
+      } catch(MyMoneyException *e) {
+        rc << i18n("  * Split %2 in transaction '%1' contains a reference to invalid account %3. Please fix manually.").arg(t.id(), (*it_s).id(), (*it_s).accountId());
+        ++problemCount;
+        ++unfixedCount;
+        delete e;
+      }
+
+      if(sChanged) {
+        tChanged = true;
+        t.modifySplit(s);
       }
     }
     if(tChanged) {
@@ -1572,8 +1596,19 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         rc << i18n("    Shares set to value.");
         ++problemCount;
       }
+
+
+      // make sure, that shares and value have the same number if they
+      // represent the same currency.
       try {
-        this->account((*it_s).accountId());
+        const MyMoneyAccount& acc = this->account(s.accountId());
+        if(t.commodity() == acc.currencyId()
+        && s.shares().reduce() != s.value().reduce()) {
+          s.setValue(s.shares());
+          sChanged = tChanged = true;
+          rc << i18n("  * value set to shares in split of schedule '%1'.").arg(sch.name());
+          ++problemCount;
+        }
       } catch(MyMoneyException *e) {
         rc << i18n("  * Split %2 in schedule '%1' contains a reference to invalid account %3. Please fix manually.").arg((*it_sch).name(), (*it_s).id(), (*it_s).accountId());
         ++problemCount;
