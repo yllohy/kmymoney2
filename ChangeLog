@@ -1,3 +1,6 @@
+2008-04-18 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * 30-day schedule interval
+
 2008-04-16 Alvaro Soliverez <asoliverez@gmail.com>
   * Hide accounts in reports if closed and no transactions for the report timeframe
   * Replaced Until today by As of today in Time Combo
