@@ -638,11 +638,15 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
 
     m_part->write(tmp);
     m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
-    m_part->write("<tr class=\"item\"><th class=\"left\" width=\"70%\">");
+    m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
     m_part->write(i18n("Account"));
     m_part->write("</th><th width=\"30%\" class=\"right\">");
     m_part->write(i18n("Balance"));
+    m_part->write("</th>");
+    m_part->write("</th><th width=\"30%\" class=\"right\">");
+    m_part->write(i18n("To Minimum Balance"));
     m_part->write("</th></tr>");
+
 
     QMap<QString, MyMoneyAccount>::const_iterator it_m;
     for(it_m = nameIdx.begin(); it_m != nameIdx.end(); ++it_m) {
@@ -659,13 +663,18 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
   MyMoneyFile* file = MyMoneyFile::instance();
   QString tmp;
   MyMoneySecurity currency = file->currency(acc.currencyId());
+  QString minimumBalance = acc.value("minBalanceAbsolute");
+  MyMoneyMoney minBalance = MyMoneyMoney(minimumBalance);
+  MyMoneyMoney valueToMinBal;
 
   QString amount;
+  QString amountToMinBal;
   MyMoneyMoney value;
   if(acc.accountType() == MyMoneyAccount::Investment) {
     value = file->balance(acc.id());
     try {
       if(currency.id() != file->baseCurrency().id()) {
+        //convert current balance
         value = value * file->price(currency.id(), file->baseCurrency().id()).rate(file->baseCurrency().id());
         value.convert(file->baseCurrency().smallestAccountFraction());
       }
@@ -698,11 +707,13 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
     amount = value.formatMoney(acc, currency);
   } else {
     value = MyMoneyFile::instance()->balance(acc.id(), QDate::currentDate());
+    valueToMinBal = value - minBalance;
     amount = value.formatMoney(acc, currency);
+    amountToMinBal = valueToMinBal.formatMoney(acc, currency);
   }
   amount.replace(" ","&nbsp;");
 
-  tmp = QString("<td width=\"70%\">") +
+  tmp = QString("<td>") +
       link(VIEW_LEDGER, QString("?id=%1").arg(acc.id())) + acc.name() + linkend() + "</td>";
 
   QString fontStart, fontEnd;
@@ -711,7 +722,13 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
     fontStart.sprintf("<font color=\"#%02x%02x%02x\">", x.red(), x.green(), x.blue());
     fontEnd = "</font>";
   }
-  tmp += QString("<td width=\"30%\" align=\"right\">%1%2%3</td>").arg(fontStart).arg(amount).arg(fontEnd);
+  tmp += QString("<td align=\"right\">%1%2%3</td>").arg(fontStart).arg(amount).arg(fontEnd);
+  //add amount to minimum balance if it is not an investment
+  if(acc.accountType() == MyMoneyAccount::Investment) {
+    tmp += QString("<td align=\"right\">&nbsp;</td>");
+  } else {
+    tmp += QString("<td align=\"right\">%1%2%3</td>").arg(fontStart).arg(amountToMinBal).arg(fontEnd);
+  }
   // qDebug("accountEntry = '%s'", tmp.latin1());
   m_part->write(tmp);
 }
