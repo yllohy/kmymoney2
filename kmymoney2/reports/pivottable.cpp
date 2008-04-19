@@ -884,6 +884,9 @@ void PivotTable::calculateBudgetMapping( void )
       //if we cant find a matching budget, take the first of the list
       if( budget.id() == "" )
         budget = budgets[0];
+
+      //assign the budget to the report
+      m_config_f.setBudget(budget.id());
     } else {
       //pick the budget selected by the user
       budget = file->budget( m_config_f.budget());

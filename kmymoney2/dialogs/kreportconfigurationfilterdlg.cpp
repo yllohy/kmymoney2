@@ -352,6 +352,7 @@ void KReportConfigurationFilterDlg::slotReset(void)
       }
     }
 
+    //load budgets combo
     if(m_initialState.rowType() == MyMoneyReport::eBudget
     || m_initialState.rowType() == MyMoneyReport::eBudgetActual) {
       m_tab2->m_comboRows->setEnabled(false);
@@ -359,7 +360,11 @@ void KReportConfigurationFilterDlg::slotReset(void)
       QValueVector<MyMoneyBudget>::const_iterator it_b;
       int i = 0;
       for(it_b = m_budgets.begin(); it_b != m_budgets.end(); ++it_b) {
-        m_tab2->m_comboBudget->insertItem((*it_b).name(), i++);
+        m_tab2->m_comboBudget->insertItem((*it_b).name(), i);
+        //set the current selected item
+        if(m_initialState.budget() == "Any" && (*it_b).budgetStart().year() == QDate::currentDate().year())
+          m_tab2->m_comboBudget->setCurrentItem(i);
+        i++;
       }
     }
 

@@ -167,9 +167,9 @@ void PivotTableTest::testNetWorthOpeningPrior()
   filter.setName("Net Worth Opening Prior 2");
   PivotTable networth_f2( filter );
   writeTabletoCSV(networth_f2);
-  CPPUNIT_ASSERT(networth_f2.m_grid["Liability"]["Credit Card"].m_total[0]==-moCreditOpen+moParent);
-  CPPUNIT_ASSERT(networth_f2.m_grid["Asset"]["Checking Account"].m_total[0]==moCheckingOpen-moChild);
-  CPPUNIT_ASSERT(networth_f2.m_grid.m_total[0]==moCheckingOpen+moCreditOpen-moChild-moParent);
+  CPPUNIT_ASSERT(networth_f2.m_grid["Liability"]["Credit Card"].m_total[1]==-moCreditOpen+moParent);
+  CPPUNIT_ASSERT(networth_f2.m_grid["Asset"]["Checking Account"].m_total[1]==moCheckingOpen-moChild);
+  CPPUNIT_ASSERT(networth_f2.m_grid.m_total[1]==moCheckingOpen+moCreditOpen-moChild-moParent);
 }
 
 void PivotTableTest::testNetWorthDateFilter()
