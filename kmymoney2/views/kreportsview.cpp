@@ -1159,6 +1159,22 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.back().setDetailLevel(MyMoneyReport::eDetailAll);
     list.back().setChartType(MyMoneyReport::eChartPie);
     list.back().setInvestmentsOnly(true);
+    
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eAssetLiability,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::last12Months,
+      false,
+      i18n("Investment Worth Graph"),
+      i18n("Default Report")
+    ));
+    list.back().setChartByDefault(true);
+    list.back().setChartGridLines(false);
+    list.back().setDetailLevel(MyMoneyReport::eDetailAll);
+    list.back().setChartType(MyMoneyReport::eChartLine);
+    list.back().setColumnsAreDays( true );
+    list.back().setInvestmentsOnly(true);
+    
 #endif
     groups.push_back(list);
   }

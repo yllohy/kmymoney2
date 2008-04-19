@@ -1,4 +1,7 @@
 2008-04-18 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added Investment Worth Graph report
+
+2008-04-18 Alvaro Soliverez <asoliverez@gmail.com>
   * Assign budget to report if Any is selected
   * Select budget combo if Any is selected
   * Fix pivottabletest check for total column
