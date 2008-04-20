@@ -127,6 +127,7 @@
 #include "mymoney/mymoneyutils.h"
 #include "mymoney/mymoneystatement.h"
 #include "mymoney/storage/mymoneystoragedump.h"
+#include "mymoney/mymoneyforecast.h"
 
 #include "converter/mymoneyqifwriter.h"
 #include "converter/mymoneyqifreader.h"
@@ -4119,27 +4120,41 @@ void KMyMoney2App::slotKDELanguageSettings(void)
 
 void KMyMoney2App::slotNewFeature(void)
 {
-#if 0
-  int rc;
-  KLoadTemplateDlg* dlg = new KLoadTemplateDlg();
-  if((rc = dlg->exec()) == QDialog::Accepted) {
-    QString prevMsg = slotStatusMsg(i18n("Importing templates..."));
+#if 1
+  if(m_selectedBudgets.size() == 1) {
     MyMoneyFileTransaction ft;
     try {
-    // import the account templates
-      QValueList<MyMoneyTemplate> templates = dlg->templates();
-      QValueList<MyMoneyTemplate>::iterator it_t;
-      for(it_t = templates.begin(); it_t != templates.end(); ++it_t) {
-        (*it_t).importTemplate(&progressCallback);
+      MyMoneyBudget budget = m_selectedBudgets[0];
+      bool calcBudget = budget.getaccounts().count() == 0;
+      if(!calcBudget) {
+        if(KMessageBox::warningContinueCancel(0, i18n("The current budget already contains data. Continuing will replace all current values of this budget."), i18n("Warning")) == KMessageBox::Continue)
+          calcBudget = true;
       }
-      ft.commit();
-    } catch(MyMoneyException* e) {
-      KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to import template(s): %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+
+      if(calcBudget) {
+        QDate historyStart;
+        QDate historyEnd;
+        QDate budgetStart;
+        QDate budgetEnd;
+
+        budgetStart = budget.budgetStart();
+        budgetEnd = budgetStart.addYears(1).addDays(-1);
+        historyStart = budgetStart.addYears(-1);
+        historyEnd = budgetEnd.addYears(-1);
+
+        MyMoneyForecast forecast;
+        budget = forecast.createBudget (historyStart, historyEnd, budgetStart, budgetEnd, true);
+
+        budget.setName(m_selectedBudgets[0].name());
+        MyMoneyFile::instance()->removeBudget(m_selectedBudgets[0]);
+        MyMoneyFile::instance()->addBudget(budget);
+        ft.commit();
+      }
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to modify budget: %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
       delete e;
     }
-    slotStatusMsg(prevMsg);
   }
-  delete dlg;
 #endif
 }
 

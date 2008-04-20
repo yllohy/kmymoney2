@@ -1,4 +1,9 @@
-2008-04-18 Alvaro Soliverez <asoliverez@gmail.com>
+
+2008-04-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added preliminary version of the budget calculation on historic data
+  * Added separate generate-messages target to Makefile.am
+
+2008-04-19 Alvaro Soliverez <asoliverez@gmail.com>
   * Added Investment Worth Graph report
   * Added Difference To Minimum Balance column to Home Page
 
