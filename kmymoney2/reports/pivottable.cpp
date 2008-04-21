@@ -886,7 +886,7 @@ void PivotTable::calculateBudgetMapping( void )
         budget = budgets[0];
 
       //assign the budget to the report
-      m_config_f.setBudget(budget.id());
+      m_config_f.setBudget(budget.id(), m_config_f.isIncludingBudgetActuals());
     } else {
       //pick the budget selected by the user
       budget = file->budget( m_config_f.budget());
