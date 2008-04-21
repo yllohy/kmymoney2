@@ -4,6 +4,7 @@
   * Updated Dutch translation from Bert Keuter
   * Added budget forecasting
   * Added sort options for budgets in GUI
+  * Renamed kmymoney2.kdevelop into kmymoney2.kdevelop.sample
 
 2008-04-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added preliminary version of the budget calculation on historic data
