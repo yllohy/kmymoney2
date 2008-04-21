@@ -1,4 +1,7 @@
 
+2008-04-21 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Brazilian translation from Marcus Gama
+
 2008-04-20 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added preliminary version of the budget calculation on historic data
   * Added separate generate-messages target to Makefile.am
