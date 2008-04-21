@@ -106,27 +106,27 @@ public:
    * amount of variation of a given account for the whole forecast period
    */
   MyMoneyMoney accountTotalVariation(const MyMoneyAccount& acc);
-  
+
   /**
    * returns a list of the dates where the account was on its lowest balance in each cycle
    */
   QValueList<QDate> accountMinimumBalanceDateList(const MyMoneyAccount& acc);
-  
+
   /**
    * returns a list of the dates where the account was on its highest balance in each cycle
    */
   QValueList<QDate> accountMaximumBalanceDateList(const MyMoneyAccount& acc);
-  
+
   /**
    * returns the average balance of the account within the forecast period
    */
   MyMoneyMoney accountAverageBalance(const MyMoneyAccount& acc);
-  
+
   /**
    * creates a budget based on the history of a given timeframe
    */
-  MyMoneyBudget createBudget(QDate historyStart, QDate historyEnd, QDate budgetStart, QDate budgetEnd, const bool returnBudget);
-  
+  void createBudget(MyMoneyBudget& budget, QDate historyStart, QDate historyEnd, QDate budgetStart, QDate budgetEnd, const bool returnBudget);
+
   /**
    * number of days to go back in history to calculate forecast
    */
@@ -228,12 +228,12 @@ private:
    * set the internal list of accounts to create a budget
    */
   void setBudgetAccountList(void);
-  
+
   /**
    * get past transactions for the accounts to be forecast
    */
   void pastTransactions(void);
-  
+
   /**
    * calculate the day to start forecast and sets the begin date
    * The quantity of forecast days will be counted from this date
@@ -243,7 +243,7 @@ private:
    * - if the day of the month set by beginDay has not passed, that will be used
    * - if adding an account cycle to beginDay, will not go past the beginDay of next month,
    *   that date will be used, otherwise it will add account cycle to beginDay until it is past current date
-   * It returns the total amount of Forecast Days from current date. 
+   * It returns the total amount of Forecast Days from current date.
    */
   int calculateBeginForecastDay();
 
@@ -317,7 +317,7 @@ private:
    * end date of history
    */
   QDate m_historyEndDate;
-  
+
   /**
    * start date of forecast
    */

@@ -193,6 +193,15 @@
                             <property name="name">
                                 <cstring>m_budgetList</cstring>
                             </property>
+                            <property name="allColumnsShowFocus">
+                                <bool>true</bool>
+                            </property>
+                            <property name="showSortIndicator">
+                                <bool>true</bool>
+                            </property>
+                            <property name="fullWidth">
+                                <bool>false</bool>
+                            </property>
                             <property name="shadeSortColumn">
                                 <bool>false</bool>
                             </property>

@@ -441,6 +441,7 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("Delete budget"), "delete", 0, this, SLOT(slotBudgetDelete()), actionCollection(), "budget_delete");
   new KAction(i18n("Copy budget"), "editcopy", 0, this, SLOT(slotBudgetCopy()), actionCollection(), "budget_copy");
   new KAction(i18n("Change budget year"), "", 0, this, SLOT(slotBudgetChangeYear()), actionCollection(), "budget_change_year");
+  new KAction(i18n("Budget based on forecast", "Forecast"), "forcast", 0, this, SLOT(slotBudgetForecast()), actionCollection(), "budget_forecast");
 
   // ************************
   // Currency actions
@@ -4106,6 +4107,42 @@ void KMyMoney2App::slotBudgetChangeYear(void)
   }
 }
 
+void KMyMoney2App::slotBudgetForecast(void)
+{
+  if(m_selectedBudgets.size() == 1) {
+    MyMoneyFileTransaction ft;
+    try {
+      MyMoneyBudget budget = m_selectedBudgets[0];
+      bool calcBudget = budget.getaccounts().count() == 0;
+      if(!calcBudget) {
+        if(KMessageBox::warningContinueCancel(0, i18n("The current budget already contains data. Continuing will replace all current values of this budget."), i18n("Warning")) == KMessageBox::Continue)
+          calcBudget = true;
+      }
+
+      if(calcBudget) {
+        QDate historyStart;
+        QDate historyEnd;
+        QDate budgetStart;
+        QDate budgetEnd;
+
+        budgetStart = budget.budgetStart();
+        budgetEnd = budgetStart.addYears(1).addDays(-1);
+        historyStart = budgetStart.addYears(-1);
+        historyEnd = budgetEnd.addYears(-1);
+
+        MyMoneyForecast forecast;
+        forecast.createBudget(budget, historyStart, historyEnd, budgetStart, budgetEnd, true);
+
+        MyMoneyFile::instance()->modifyBudget(budget);
+        ft.commit();
+      }
+    } catch(MyMoneyException *e) {
+      KMessageBox::detailedSorry(0, i18n("Error"), i18n("Unable to modify budget: %1, thrown in %2:%3").arg(e->what()).arg(e->file()).arg(e->line()));
+      delete e;
+    }
+  }
+}
+
 void KMyMoney2App::slotKDELanguageSettings(void)
 {
   KMessageBox::information(this, i18n("Please be aware that changes made in the following dialog affect all KDE applications not only KMyMoney."), i18n("Warning"), "LanguageSettingsWarning");
@@ -4120,7 +4157,7 @@ void KMyMoney2App::slotKDELanguageSettings(void)
 
 void KMyMoney2App::slotNewFeature(void)
 {
-#if 1
+#if 0
   if(m_selectedBudgets.size() == 1) {
     MyMoneyFileTransaction ft;
     try {
@@ -5002,6 +5039,7 @@ void KMyMoney2App::slotUpdateActions(void)
   action("budget_change_year")->setEnabled(false);
   action("budget_new")->setEnabled(true);
   action("budget_copy")->setEnabled(false);
+  action("budget_forecast")->setEnabled(false);
 
   QString tooltip = i18n("Create a new transaction");
   action("transaction_new")->setEnabled(fileOpen && myMoneyView->canCreateTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>(), tooltip));
@@ -5211,6 +5249,7 @@ void KMyMoney2App::slotUpdateActions(void)
       action("budget_change_year")->setEnabled(true);
       action("budget_copy")->setEnabled(true);
       action("budget_rename")->setEnabled(true);
+      action("budget_forecast")->setEnabled(true);
     }
   }
 

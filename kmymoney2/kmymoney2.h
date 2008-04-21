@@ -307,6 +307,10 @@ protected slots:
 
   /**
     */
+  void slotBudgetForecast(void);
+
+  /**
+    */
   void slotCurrencyNew(void);
 
   /**

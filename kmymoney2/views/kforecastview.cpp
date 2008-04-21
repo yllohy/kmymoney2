@@ -57,14 +57,14 @@ KForecastView::KForecastView(QWidget *parent, const char *name) :
   connect(m_tab, SIGNAL(currentChanged(QWidget*)), this, SLOT(slotTabChanged(QWidget*)));
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadForecast()));
-  
+
   connect(m_forecastButton, SIGNAL(clicked()), this, SLOT(slotLoadForecast()));
-  
+
   m_forecastList->setAllColumnsShowFocus(true);
   m_summaryList->setAllColumnsShowFocus(true);
   m_adviceList->setAllColumnsShowFocus(true);
   m_advancedList->setAllColumnsShowFocus(true);
-  
+
   //fill the settings controls
   m_forecastDays->setValue(KMyMoneyGlobalSettings::forecastDays());
   m_accountsCycle->setValue(KMyMoneyGlobalSettings::forecastAccountCycle());
@@ -153,7 +153,7 @@ void KForecastView::loadListView(void)
   MyMoneySecurity baseCurrency = file->baseCurrency();
 
   MyMoneyForecast forecast;
-  
+
   //get the settings from current page
   forecast.setForecastDays(m_forecastDays->value());
   forecast.setAccountsCycle(m_accountsCycle->value());
@@ -161,7 +161,7 @@ void KForecastView::loadListView(void)
   forecast.setForecastCycles(m_forecastCycles->value());
   forecast.setHistoryMethod(m_historyMethod->selectedId());
   forecast.doForecast();
-  
+
   //Get all accounts of the right type to calculate forecast
   nameIdx.clear();
   accList = forecast.accountList();
@@ -249,7 +249,7 @@ void KForecastView::loadListView(void)
   //add total row
   forecastItem = new KMyMoneyForecastListViewItem(m_forecastList, forecastItem, false);
   forecastItem->setText(accountColumn, i18n("Total"));
-  
+
   int prec = MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction());
   int column = 1;
   for(QDate forecastDate = QDate::currentDate(); forecastDate <= forecast.forecastEndDate(); forecastDate = forecastDate.addDays(1), ++column) {
@@ -279,7 +279,7 @@ void KForecastView::loadSummaryView(void)
   MyMoneySecurity baseCurrency = file->baseCurrency();
 
   MyMoneyForecast forecast;
-  
+
   //get the settings from current page
   forecast.setForecastDays(m_forecastDays->value());
   forecast.setAccountsCycle(m_accountsCycle->value());
@@ -287,7 +287,7 @@ void KForecastView::loadSummaryView(void)
   forecast.setForecastCycles(m_forecastCycles->value());
   forecast.setHistoryMethod(m_historyMethod->selectedId());
   forecast.doForecast();
-  
+
   //Get all accounts of the right type to calculate forecast
   nameIdx.clear();
   accList = forecast.accountList();
@@ -670,8 +670,9 @@ void KForecastView::loadBudgetView(void)
   QDate forecastEndDate = QDate::currentDate().addDays(m_forecastDays->value());
   forecast.setHistoryMethod(m_historyMethod->selectedId());
 
-  forecast.createBudget(historyStartDate, historyEndDate, forecastStartDate, forecastEndDate, false);
-  
+  MyMoneyBudget budget;
+  forecast.createBudget(budget, historyStartDate, historyEndDate, forecastStartDate, forecastEndDate, false);
+
   //Get all accounts of the right type to calculate forecast
   nameIdx.clear();
   accList = forecast.accountList();
@@ -700,7 +701,7 @@ void KForecastView::loadBudgetView(void)
   }
   //add total column
   m_budgetList->addColumn(i18n("Total"), -1);
-  
+
 
   //align columns
   for(int i = 1; i < m_budgetList->columns(); ++i) {

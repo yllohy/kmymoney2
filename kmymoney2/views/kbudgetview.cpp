@@ -101,6 +101,7 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
   m_inSelection(false)
 {
   m_accountTree->setSorting(-1);
+  m_budgetList->setSorting(0);
 
   KIconLoader* il = KGlobal::iconLoader();
   KGuiItem newButtenItem( QString(""),
@@ -275,7 +276,6 @@ void KBudgetView::loadBudgets(void)
   // turn updates back on
   m_budgetList->setUpdatesEnabled(true);
   m_budgetList->repaintContents();
-  m_budgetList->setSorting(-1);
 
   // reset the status of the buttons
   m_updateButton->setEnabled(false);

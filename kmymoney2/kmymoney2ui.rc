@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="29" name="kmymoney2" >
+<kpartgui version="30" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <!--
@@ -168,6 +168,7 @@
    <Action name="budget_change_year" />
    <Action name="budget_delete" />
    <Action name="budget_copy" />
+   <Action name="budget_forecast" />
  </Menu>
  <Menu name="investment_context_menu">
   <title>Investment options</title>
