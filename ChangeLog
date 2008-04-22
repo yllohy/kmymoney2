@@ -1,3 +1,7 @@
+
+2008-04-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed forecast testcases due to interface change of createBudget()
+
 2008-04-21 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed assignment of budget for budget only reports
 

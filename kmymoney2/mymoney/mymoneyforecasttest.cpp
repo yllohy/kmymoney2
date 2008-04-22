@@ -878,7 +878,7 @@ void MyMoneyForecastTest::testCreateBudget()
   TransactionHelper t8( QDate(2006, 9, 15), MyMoneySplit::ActionWithdrawal, this->moT4, acCash, acParent);
 
   a.setHistoryMethod(0);
-  budget = a.createBudget(QDate(2005, 1, 1), QDate(2006, 12, 31), QDate(2007, 1, 1), QDate(2007, 12, 31), true);
+  a.createBudget(budget, QDate(2005, 1, 1), QDate(2006, 12, 31), QDate(2007, 1, 1), QDate(2007, 12, 31), true);
 
   //test
   MyMoneyAccount a_solo = file->account(acSolo);
@@ -896,7 +896,7 @@ void MyMoneyForecastTest::testCreateBudget()
 
   //setup test for a length lower than a year
   b.setHistoryMethod(0);
-  b.createBudget(QDate(2005, 1, 1), QDate(2005, 6, 30), QDate(2007, 1, 1), QDate(2007, 6, 30), true);
+  b.createBudget(budget, QDate(2005, 1, 1), QDate(2005, 6, 30), QDate(2007, 1, 1), QDate(2007, 6, 30), true);
   
   //test
   CPPUNIT_ASSERT(b.forecastBalance(a_solo, QDate(2007, 1, 1)) == (moT1+moT3));
