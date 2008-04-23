@@ -1,6 +1,8 @@
 
 2008-04-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Regenerated POT file
+  * Reverted patch from Arni Ingimundarson because it breaks income/expense
+    reports and shows a total column
 
 2008-04-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed forecast testcases due to interface change of createBudget()

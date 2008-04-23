@@ -180,7 +180,8 @@ void KReportConfigurationFilterDlg::slotSearch(void)
     }
 
     m_currentState.setShowingRowTotals(false);
-    m_currentState.setShowingRowTotals(m_tab2->m_checkTotalColumn->isChecked());
+    if(m_tab2->m_comboRows->currentItem() == 0)
+      m_currentState.setShowingRowTotals(m_tab2->m_checkTotalColumn->isChecked());
 
     MyMoneyReport::EColumnType ct[6] = { MyMoneyReport::eDays, MyMoneyReport::eWeeks, MyMoneyReport::eMonths, MyMoneyReport::eBiMonths, MyMoneyReport::eQuarters, MyMoneyReport::eYears };
     bool dy[6] = { true, true, false, false, false, false };
@@ -262,8 +263,7 @@ void KReportConfigurationFilterDlg::slotSearch(void)
 
 void KReportConfigurationFilterDlg::slotRowTypeChanged(int row)
 {
-//  m_tab2->m_checkTotalColumn->setEnabled(row == 0);
-  m_tab2->m_checkTotalColumn->setEnabled(true);
+  m_tab2->m_checkTotalColumn->setEnabled(row == 0);
 }
 
 void KReportConfigurationFilterDlg::slotReset(void)
