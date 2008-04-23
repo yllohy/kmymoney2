@@ -1,4 +1,7 @@
 
+2008-04-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Regenerated POT file
+
 2008-04-22 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed forecast testcases due to interface change of createBudget()
   * Updated Dutch translation from Bert Keuter
