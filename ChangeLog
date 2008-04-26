@@ -1,6 +1,7 @@
 2008-04-26 Alvaro Soliverez <asoliverez@gmail.com>
   * Added Summary to Home Page
   * Added convert to investment return calculation to prevent overflow
+  * Added Incomes and Expenses to Summary
 
 2008-04-23 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Regenerated POT file
