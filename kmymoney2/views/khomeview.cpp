@@ -61,6 +61,7 @@
 #include "../kmymoney2.h"
 #include "../reports/kreportchartview.h"
 #include "../reports/pivottable.h"
+#include "../reports/reportaccount.h"
 #include "../kmymoneyglobalsettings.h"
 
 
@@ -79,6 +80,7 @@
 #define KMM_KDCHART_PROPSET_NORMAL_DATA KDCHART_PROPSET_NORMAL_DATA
 #endif
 
+using namespace reports;
 
 KHomeView::KHomeView(QWidget *parent, const char *name ) :
   KMyMoneyViewBase(parent, name, i18n("Home")),
@@ -229,6 +231,9 @@ void KHomeView::loadView(void)
           case 6:         // net worth graph over all accounts
             showNetWorthGraph();
             break;
+          case 8:         // summary
+              showSummary();
+              break;
         }
         m_part->write("<div class=\"gap\">&nbsp;</div>\n");
       }
@@ -411,18 +416,15 @@ void KHomeView::showPayments(void)
     // Extract todays payments if any
     QValueList<MyMoneySchedule> todays;
     QValueList<MyMoneySchedule>::Iterator t_it;
-    for (t_it=schedule.begin(); t_it!=schedule.end();)
-    {
-      if ((*t_it).nextDueDate() == QDate::currentDate())
-      {
+    for (t_it=schedule.begin(); t_it!=schedule.end();) {
+      if ((*t_it).nextDueDate() == QDate::currentDate()) {
         todays.append(*t_it);
         (*t_it).setNextDueDate((*t_it).nextPayment((*t_it).nextDueDate()));
       }
       ++t_it;
     }
 
-    if (todays.count() > 0)
-    {
+    if (todays.count() > 0) {
       m_part->write("<div class=\"gap\">&nbsp;</div>\n");
       m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
       m_part->write(QString("<tr class=\"item\"><th class=\"left\" colspan=\"3\">%1</th></tr>\n").arg(i18n("Todays payments")));
@@ -633,9 +635,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
   if(accounts.count() > 0) {
     QString tmp;
     int i = 0;
-    tmp = "<div class=\"itemheader\">" + header +
-          "</div>\n<div class=\"gap\">&nbsp;</div>\n";
-
+    tmp = "<div class=\"itemheader\">" + header + "</div>\n<div class=\"gap\">&nbsp;</div>\n";
     m_part->write(tmp);
     m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
     m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
@@ -666,71 +666,99 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
   QString minimumBalance = acc.value("minBalanceAbsolute");
   MyMoneyMoney minBalance = MyMoneyMoney(minimumBalance);
   MyMoneyMoney valueToMinBal;
-
   QString amount;
   QString amountToMinBal;
   MyMoneyMoney value;
+  
   if(acc.accountType() == MyMoneyAccount::Investment) {
-    value = file->balance(acc.id());
-    try {
-      if(currency.id() != file->baseCurrency().id()) {
-        //convert current balance
-        value = value * file->price(currency.id(), file->baseCurrency().id()).rate(file->baseCurrency().id());
-        value.convert(file->baseCurrency().smallestAccountFraction());
-      }
-    } catch(MyMoneyException* e) {
-      qWarning("%s", (QString("cannot convert balance to base currency: %1").arg(e->what())).data());
-      delete e;
-    }
-    QValueList<QCString>::const_iterator it_a;
-    for(it_a = acc.accountList().begin(); it_a != acc.accountList().end(); ++it_a) {
-      MyMoneyAccount stock = file->account(*it_a);
-      try {
-        MyMoneyMoney val;
-        MyMoneyMoney balance = file->balance(stock.id());
-        MyMoneySecurity security = file->security(stock.currencyId());
-        MyMoneyPrice price = file->price(stock.currencyId(), security.tradingCurrency());
-        val = balance * price.rate(security.tradingCurrency());
-
-        if(security.tradingCurrency() != file->baseCurrency().id()) {
-          MyMoneySecurity sec = file->currency(security.tradingCurrency());
-          val = val * file->price(security.tradingCurrency(), file->baseCurrency().id()).rate(file->baseCurrency().id());
-        }
-        val = val.convert(file->baseCurrency().smallestAccountFraction());
-        value += val;
-      } catch(MyMoneyException* e) {
-        qWarning("%s", (QString("cannot convert stock balance of %1 to base currency: %2").arg(stock.name(), e->what())).data());
-        delete e;
-      }
-    }
-
+    //investment accounts show the balances of all its subaccounts
+    value = investmentBalance(acc);
     amount = value.formatMoney(acc, currency);
+    //investment accounts have no minimum balance
+    showAccountEntry(acc, value, MyMoneyMoney(), true);
   } else {
+    //get balance for normal accounts
     value = MyMoneyFile::instance()->balance(acc.id(), QDate::currentDate());
     valueToMinBal = value - minBalance;
-    amount = value.formatMoney(acc, currency);
-    amountToMinBal = valueToMinBal.formatMoney(acc, currency);
+    showAccountEntry(acc, value, valueToMinBal, true);
   }
+}
+
+void KHomeView::showAccountEntry(const MyMoneyAccount& acc, const MyMoneyMoney& value, const MyMoneyMoney& valueToMinBal, const bool showMinBal)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QString tmp;
+  MyMoneySecurity currency = file->currency(acc.currencyId());
+  QString amount;
+  QString amountToMinBal;
+
+  //format amounts
+  amount = value.formatMoney(acc, currency);
   amount.replace(" ","&nbsp;");
+  if(showMinBal) {
+    amountToMinBal = valueToMinBal.formatMoney(acc, currency);
+    amountToMinBal.replace(" ","&nbsp;");
+  }
 
   tmp = QString("<td>") +
       link(VIEW_LEDGER, QString("?id=%1").arg(acc.id())) + acc.name() + linkend() + "</td>";
 
-  QString fontStart, fontEnd;
-  if(value.isNegative()) {
-    QColor x = KMyMoneyGlobalSettings::listNegativeValueColor();
-    fontStart.sprintf("<font color=\"#%02x%02x%02x\">", x.red(), x.green(), x.blue());
-    fontEnd = "</font>";
-  }
-  tmp += QString("<td align=\"right\">%1%2%3</td>").arg(fontStart).arg(amount).arg(fontEnd);
-  //add amount to minimum balance if it is not an investment
-  if(acc.accountType() == MyMoneyAccount::Investment) {
-    tmp += QString("<td align=\"right\">&nbsp;</td>");
-  } else {
-    tmp += QString("<td align=\"right\">%1%2%3</td>").arg(fontStart).arg(amountToMinBal).arg(fontEnd);
+  //show account balance
+  tmp += QString("<td align=\"right\">%1</td>").arg(showColoredAmount(amount, value.isNegative()));
+
+  //show minimum balance column if requested
+  if(showMinBal) {
+    //if it is an investment, show minimum balance empty
+    if(acc.accountType() == MyMoneyAccount::Investment) {
+      tmp += QString("<td align=\"right\">&nbsp;</td>");
+    } else {
+      //show minimum balance entry
+      tmp += QString("<td align=\"right\">%1</td>").arg(showColoredAmount(amountToMinBal, valueToMinBal.isNegative()));
+    }
   }
   // qDebug("accountEntry = '%s'", tmp.latin1());
   m_part->write(tmp);
+}
+
+MyMoneyMoney KHomeView::investmentBalance(const MyMoneyAccount& acc)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  MyMoneyMoney value;
+  MyMoneySecurity currency = file->currency(acc.currencyId());
+  
+  value = file->balance(acc.id());
+  try {
+    if(currency.id() != file->baseCurrency().id()) {
+        //convert current balance
+      value = value * file->price(currency.id(), file->baseCurrency().id()).rate(file->baseCurrency().id());
+      value.convert(file->baseCurrency().smallestAccountFraction());
+    }
+  } catch(MyMoneyException* e) {
+    qWarning("%s", (QString("cannot convert balance to base currency: %1").arg(e->what())).data());
+    delete e;
+  }
+  QValueList<QCString>::const_iterator it_a;
+  for(it_a = acc.accountList().begin(); it_a != acc.accountList().end(); ++it_a) {
+    MyMoneyAccount stock = file->account(*it_a);
+    try {
+      MyMoneyMoney val;
+      MyMoneyMoney balance = file->balance(stock.id());
+      MyMoneySecurity security = file->security(stock.currencyId());
+      MyMoneyPrice price = file->price(stock.currencyId(), security.tradingCurrency());
+      val = balance * price.rate(security.tradingCurrency());
+
+      if(security.tradingCurrency() != file->baseCurrency().id()) {
+        MyMoneySecurity sec = file->currency(security.tradingCurrency());
+        val = val * file->price(security.tradingCurrency(), file->baseCurrency().id()).rate(file->baseCurrency().id());
+      }
+      val = val.convert(file->baseCurrency().smallestAccountFraction());
+      value += val;
+    } catch(MyMoneyException* e) {
+      qWarning("%s", (QString("cannot convert stock balance of %1 to base currency: %2").arg(stock.name(), e->what())).data());
+      delete e;
+    }
+  }
+  return value;
 }
 
 void KHomeView::showFavoriteReports(void)
@@ -848,8 +876,7 @@ void KHomeView::showForecast(void)
         amount = forecastBalance.formatMoney(acc, currency);
         amount.replace(" ","&nbsp;");
         m_part->write(QString("<td width=\"%1%\" align=\"right\">").arg(colWidth));
-        if(forecastBalance < MyMoneyMoney(0, 1)) m_part->write(QString("<font color=\"red\">")); //Show in red if below zero
-        m_part->write(QString("%1</td>").arg(amount));
+        m_part->write(QString("%1</td>").arg(showColoredAmount(amount, forecastBalance.isNegative())));
       }
 
       m_part->write("</tr>");
@@ -987,6 +1014,245 @@ void KHomeView::slotOpenURL(const KURL &url, const KParts::URLArgs& /* args */)
     }
   }
 }
+
+void KHomeView::showSummary(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  QValueList<MyMoneyAccount> accounts;
+  QValueList<MyMoneyAccount> assets;
+  QValueList<MyMoneyAccount> liabilities;
+  QValueList<MyMoneyAccount>::Iterator it;
+  QMap<QString, MyMoneyAccount> nameAssetsIdx;
+  QMap<QString, MyMoneyAccount> nameLiabilitiesIdx;
+  MyMoneyMoney netAssets;
+  MyMoneyMoney netLiabilities;
+  QString fontStart, fontEnd;
+  int prec = MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction());
+  int i = 0;
+
+
+  // get list of all accounts
+  file->accountList(accounts);
+  for(it = accounts.begin(); it != accounts.end();) {
+    if(!(*it).isClosed()) {
+      switch((*it).accountType()) {
+        //group all assets into one list
+        case MyMoneyAccount::Checkings:
+        case MyMoneyAccount::Savings:
+        case MyMoneyAccount::Cash:
+        case MyMoneyAccount::Investment:
+        case MyMoneyAccount::Asset:
+          assets.append(*it);
+          break;
+        //group the liabilities into the other
+        case MyMoneyAccount::CreditCard:
+        case MyMoneyAccount::Liability:
+          liabilities.append(*it);
+          break;
+        default:
+          break;
+      }
+    }
+    ++it;
+  }
+
+  //only do it if we have assets or liabilities account
+  if(assets.count() > 0 || liabilities.count() > 0) {
+    QString tmp;
+    tmp = "<div class=\"itemheader\">" + i18n("Summary") +
+        "</div>\n<div class=\"gap\">&nbsp;</div>\n";
+
+    m_part->write(tmp);
+    m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
+    m_part->write("<tr class=\"item\"><th class=\"center\" colspan=\"2\">");
+    m_part->write(i18n("Assets"));
+    m_part->write("<th></th>");
+    m_part->write("</th><th class=\"center\" colspan=\"2\">");
+    m_part->write(i18n("Liabilities"));
+    m_part->write("</th></tr>");
+    m_part->write("<tr class=\"item\"><th class=\"left\" width=\"30%\">");
+    m_part->write(i18n("Accounts"));
+    m_part->write("</th><th width=\"15%\" class=\"right\">");
+    m_part->write(i18n("Balance"));
+    m_part->write("<th width=\"10%\"></th>");
+    m_part->write("</th>");
+    m_part->write("<th class=\"left\" width=\"30%\">");
+    m_part->write(i18n("Accounts"));
+    m_part->write("</th><th width=\"15%\" class=\"right\">");
+    m_part->write(i18n("Balance"));
+    m_part->write("</th></tr>");
+
+
+    QValueList<MyMoneyAccount>::const_iterator asset_it;
+    QValueList<MyMoneyAccount>::const_iterator liabilities_it;
+    asset_it = assets.begin();
+    liabilities_it = liabilities.begin();
+    for(; asset_it != assets.end() || liabilities_it != liabilities.end();) {
+      m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
+      //write an asset account if we still have any
+      if(asset_it != assets.end()) {
+        MyMoneyMoney value;
+        if( (*asset_it).accountType() == MyMoneyAccount::Investment) {
+          value = investmentBalance(*asset_it);
+        } else {
+        value = MyMoneyFile::instance()->balance((*asset_it).id(), QDate::currentDate());
+        }
+        if((*asset_it).currencyId() != file->baseCurrency().id()) {
+          ReportAccount repAcc = ReportAccount((*asset_it).id());
+          MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
+          MyMoneyMoney baseValue = value * curPrice;
+          netAssets += baseValue;
+        } else {
+          netAssets += value;
+        }
+        showAccountEntry(*asset_it, value, MyMoneyMoney(), false);
+        ++asset_it;
+      } else {
+        //write a white space if we don't
+        m_part->write("<td></td><td></td>");
+      }
+
+      //leave the intermediate column empty
+      m_part->write("<td></td>");
+
+      //write a liability account
+      if(liabilities_it != liabilities.end()) {
+        MyMoneyMoney value;
+        value = MyMoneyFile::instance()->balance((*liabilities_it).id(), QDate::currentDate());
+        if((*asset_it).currencyId() != file->baseCurrency().id()) {
+          ReportAccount repAcc = ReportAccount((*asset_it).id());
+          MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
+          MyMoneyMoney baseValue = value * curPrice;
+          netLiabilities += baseValue;
+        } else {
+          netLiabilities += value;
+        }
+        showAccountEntry(*liabilities_it, value, MyMoneyMoney(), false);
+        ++liabilities_it;
+      } else {
+        //leave the space empty if we run out of liabilities
+        m_part->write("<td></td><td></td>");
+      }
+      m_part->write("</tr>");
+    }
+    //calculate net worth
+    MyMoneyMoney netWorth = netAssets+netLiabilities;
+
+    //format assets, liabilities and net worth
+    QString amountAssets = netAssets.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+    QString amountLiabilities = netLiabilities.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+    QString amountNetWorth = netWorth.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+    m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
+
+    //print total for assets
+    m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Assets")).arg(showColoredAmount(amountAssets, netAssets.isNegative())));
+
+    //leave the intermediate column empty
+    m_part->write("<td></td>");
+
+    //print total liabilities
+    m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Liabilities")).arg(showColoredAmount(amountLiabilities, netLiabilities.isNegative())));
+    m_part->write("</tr>");
+
+    //print net worth
+    m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
+
+      m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td><td></td><td></td><td></td>").arg(i18n("Net Worth")).arg(showColoredAmount(amountNetWorth, netWorth.isNegative() )));
+    m_part->write("</tr>");
+    
+  }
+
+  //Add all schedules for this month
+  MyMoneyMoney scheduledIncome;
+  MyMoneyMoney scheduledExpense;
+  QValueList<MyMoneySchedule> schedule;
+  QDate endOfMonth = QDate(QDate::currentDate().year(), QDate::currentDate().month(), QDate::currentDate().daysInMonth());
+
+  //get overdues and schedules until the end of this month
+  schedule = file->scheduleList("", MyMoneySchedule::TYPE_ANY,
+                                MyMoneySchedule::OCCUR_ANY,
+                                MyMoneySchedule::STYPE_ANY,
+                                QDate(),
+                                endOfMonth);
+
+  //Remove the finished schedules
+  QValueList<MyMoneySchedule>::Iterator d_it;
+  for (d_it=schedule.begin(); d_it!=schedule.end();) {
+    if ((*d_it).isFinished()) {
+      d_it = schedule.remove(d_it);
+      continue;
+    }
+    ++d_it;
+  }
+
+  //add incomes and expenses
+  QValueList<MyMoneySchedule>::Iterator t_it;
+  for (t_it=schedule.begin(); t_it!=schedule.end();) {
+    QDate nextDate = (*t_it).nextDueDate();
+    int cnt = 0;
+
+    while(nextDate.isValid() && nextDate <= endOfMonth) {
+      ++cnt;
+      nextDate = (*t_it).nextPayment(nextDate);
+        // for single occurence nextDate will not change, so we
+        // better get out of here.
+      if((*t_it).occurence() == MyMoneySchedule::OCCUR_ONCE)
+        break;
+    }
+
+    MyMoneyAccount acc = (*t_it).account();
+    if(acc.id()) {
+      MyMoneyTransaction t = (*t_it).transaction();
+      // only show the entry, if it is still active
+
+      MyMoneySplit sp = t.splitByAccount(acc.id(), true);
+
+      MyMoneyMoney value = (sp.value()*cnt);
+      if(acc.currencyId() != file->baseCurrency().id()) {
+        ReportAccount repAcc = ReportAccount(acc.id());
+        MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
+        value = value * curPrice;
+      }
+      if(sp.value().isNegative()) {
+        scheduledExpense += value;
+      } else {
+        scheduledIncome += value;
+      }
+    }
+    ++t_it;
+  }
+
+  //format the currency strings
+  QString amountIncome = scheduledIncome.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  QString amountExpense = scheduledExpense.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+
+  m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
+
+  //print the scheduled income
+  m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("This Month Scheduled Income: ")).arg(amountIncome));
+
+  //leave the intermediate column empty
+  m_part->write("<td></td>");
+
+  //print the scheduled expenses
+  m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("This Month Scheduled Expense: ")).arg(showColoredAmount(amountExpense,  false)));
+  m_part->write("</tr>");
+  m_part->write("</table>");
+}
+
+QString KHomeView::showColoredAmount(const QString& amount, bool isNegative)
+{
+  if(isNegative) {
+    //if negative, get the settings for negative numbers
+    QString fontStart = QString("<font color=\"%1\">").arg(KMyMoneyGlobalSettings::listNegativeValueColor().name());
+    QString fontEnd = "</font>";
+    return QString(fontStart + amount + fontEnd);
+  } else {
+    //if positive, return the same string
+    return amount;
+  }
+}
+
 
 // Make sure, that these definitions are only used within this file
 // this does not seem to be necessary, but when building RPMs the

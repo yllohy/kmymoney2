@@ -381,6 +381,7 @@ const char* homePageItems[] = {
   I18N_NOOP("Forecast (schedule)"),
   I18N_NOOP("Networth forecast"),
   I18N_NOOP("Forecast (history)"),
+  I18N_NOOP("Summary"),
   // insert new items above this comment
   0
 };

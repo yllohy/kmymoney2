@@ -70,6 +70,7 @@ protected:
   void showFavoriteReports();
   void showForecast(void);
   void showNetWorthGraph(void);
+  void showSummary(void);
 
   const QString link(const QString& view, const QString& query) const;
   const QString linkend(void) const;
@@ -97,6 +98,11 @@ signals:
   void reportSelected(const QCString& id);
 
 private:
+
+  void showAccountEntry(const MyMoneyAccount& acc, const MyMoneyMoney& value, const MyMoneyMoney& valueToMinBal, const bool showMinBal);
+  MyMoneyMoney investmentBalance(const MyMoneyAccount& acc);
+  QString showColoredAmount(const QString& amount, bool isNegative);
+
   KHTMLPart*      m_part;
   QVBoxLayout*    m_qvboxlayoutPage;
   QString         m_filename;

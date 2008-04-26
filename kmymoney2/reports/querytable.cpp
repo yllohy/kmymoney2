@@ -914,12 +914,21 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
     price = file->price(security.id(), QCString(), startingDate).rate(QCString());
   }
   MyMoneyMoney startingBal = file->balance(account.id(),startingDate) * price;
+
+  //convert to lowest fraction
+  startingBal = startingBal.convert(account.currency().smallestAccountFraction());
+
   if ( m_config.isConvertCurrency() ) {
     price = file->price(security.id(), QCString(), endingDate).rate(QCString()) * account.baseCurrencyPrice(endingDate);
   } else {
     price = file->price(security.id(), QCString(), endingDate).rate(QCString());
   }
   MyMoneyMoney endingBal = file->balance((account).id(),endingDate) * price;
+
+  //convert to lowest fraction
+  endingBal = endingBal.convert(account.currency().smallestAccountFraction());
+
+  //add start balance to calculate return on investment
   MyMoneyMoney returnInvestment = startingBal;
   CashFlowList buys;
   CashFlowList sells;
@@ -943,9 +952,11 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
       if ( s.value().isPositive() ) {
         buys += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
         returnInvestment += s.value();
+        returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
       } else {
         sells += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
         returnInvestment += s.value();
+        returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
       }
     }
     else if ( action == MyMoneySplit::ActionReinvestDividend )
@@ -972,6 +983,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
       if ( found ) {
         cashincome += CashFlowListItem( (*it_transaction).postDate(), -(*it_split).value() );
         returnInvestment += -(*it_split).value();
+        returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
       }
     }
     ++it_transaction;

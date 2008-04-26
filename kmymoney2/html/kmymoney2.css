@@ -138,6 +138,9 @@
     text-align: right;
   }
 
+  th.center {
+    text-align: center;
+  }
 
   /* These affect only the reports found in the reports view */
 
