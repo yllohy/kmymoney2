@@ -669,7 +669,7 @@ void KHomeView::showAccountEntry(const MyMoneyAccount& acc)
   QString amount;
   QString amountToMinBal;
   MyMoneyMoney value;
-  
+
   if(acc.accountType() == MyMoneyAccount::Investment) {
     //investment accounts show the balances of all its subaccounts
     value = investmentBalance(acc);
@@ -725,7 +725,7 @@ MyMoneyMoney KHomeView::investmentBalance(const MyMoneyAccount& acc)
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyMoney value;
   MyMoneySecurity currency = file->currency(acc.currencyId());
-  
+
   value = file->balance(acc.id());
   try {
     if(currency.id() != file->baseCurrency().id()) {
@@ -1042,11 +1042,13 @@ void KHomeView::showSummary(void)
         case MyMoneyAccount::Cash:
         case MyMoneyAccount::Investment:
         case MyMoneyAccount::Asset:
+        case MyMoneyAccount::AssetLoan:
           assets.append(*it);
           break;
         //group the liabilities into the other
         case MyMoneyAccount::CreditCard:
         case MyMoneyAccount::Liability:
+        case MyMoneyAccount::Loan:
           liabilities.append(*it);
           break;
         default:
@@ -1147,6 +1149,10 @@ void KHomeView::showSummary(void)
     QString amountAssets = netAssets.formatMoney(file->baseCurrency().tradingSymbol(), prec);
     QString amountLiabilities = netLiabilities.formatMoney(file->baseCurrency().tradingSymbol(), prec);
     QString amountNetWorth = netWorth.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+    amountAssets.replace(" ","&nbsp;");
+    amountLiabilities.replace(" ","&nbsp;");
+    amountNetWorth.replace(" ","&nbsp;");
+
     m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
 
     //print total for assets
@@ -1164,7 +1170,7 @@ void KHomeView::showSummary(void)
 
       m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td><td></td><td></td><td></td>").arg(i18n("Net Worth")).arg(showColoredAmount(amountNetWorth, netWorth.isNegative() )));
     m_part->write("</tr>");
-    
+
   }
 
   //Add total income and expenses for this month
@@ -1204,6 +1210,9 @@ void KHomeView::showSummary(void)
   //format income and expenses
   QString amountIncome = incomeValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
   QString amountExpense = expenseValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  amountIncome.replace(" ","&nbsp;");
+  amountExpense.replace(" ","&nbsp;");
+
   m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
 
     //print total for income
@@ -1279,6 +1288,9 @@ void KHomeView::showSummary(void)
   QString amountScheduledIncome = scheduledIncome.formatMoney(file->baseCurrency().tradingSymbol(), prec);
   QString amountScheduledExpense = scheduledExpense.formatMoney(file->baseCurrency().tradingSymbol(), prec);
 
+  amountScheduledIncome.replace(" ","&nbsp;");
+  amountScheduledExpense.replace(" ","&nbsp;");
+
   m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
 
   //print the scheduled income
@@ -1297,13 +1309,11 @@ QString KHomeView::showColoredAmount(const QString& amount, bool isNegative)
 {
   if(isNegative) {
     //if negative, get the settings for negative numbers
-    QString fontStart = QString("<font color=\"%1\">").arg(KMyMoneyGlobalSettings::listNegativeValueColor().name());
-    QString fontEnd = "</font>";
-    return QString(fontStart + amount + fontEnd);
-  } else {
-    //if positive, return the same string
-    return amount;
+    return QString("<font color=\"%1\">%2</font>").arg(KMyMoneyGlobalSettings::listNegativeValueColor().name(), amount);
   }
+
+  //if positive, return the same string
+  return amount;
 }
 
 
