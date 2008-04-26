@@ -1183,7 +1183,11 @@ void StdTransactionEditor::autoFill(const QCString& payeeId)
             s1 = s2;
             s2 = t;
           }
-          MyMoneyMoney diff = ((s1 - s2) / s2).convert(10000);
+          MyMoneyMoney diff;
+          if(s2.isZero())
+            diff = s1.abs();
+          else
+            diff = ((s1 - s2) / s2).convert(10000);
           if(diff.isPositive() && diff <= MyMoneyMoney(KMyMoneyGlobalSettings::autoFillDifference(),100)) {
             uniqList[ukey] = &((*it_t).first);
             break;
