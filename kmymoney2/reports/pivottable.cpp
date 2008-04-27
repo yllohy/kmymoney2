@@ -237,6 +237,11 @@ void PivotTable::init(void)
 
   m_config_f.validDateRange( m_beginDate, m_endDate );
 
+  // If we need to calculate running sums, it does not make sense
+  // to show a row total column
+  if ( m_config_f.isRunningSum() )
+    m_config_f.setShowingRowTotals(false);
+
   // if this is a months-based report
   if (! m_config_f.isColumnsAreDays())
   {
@@ -710,7 +715,7 @@ void PivotTable::calculateOpeningBalances( void )
     // and if the report includes this account
     if ( m_config_f.includes( *it_account ) )
     {
-      
+
       //do not include account if it is closed and it has no transactions in the report period
       if(account.isClosed()) {
         //check if the account has transactions for the report timeframe

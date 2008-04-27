@@ -96,7 +96,7 @@ public:
     * Returns the price of this account's underlying currency on the indicated date,
     * translated into the account's deep currency
     *
-    * There are three differeny currencies in play with a single Account:
+    * There are three different currencies in play with a single Account:
     *   - The underlying currency: What currency the account itself is denominated in
     *   - The deep currency: The underlying currency's own underlying currency.  This
     *      is only a factor if the underlying currency of this account IS NOT a
