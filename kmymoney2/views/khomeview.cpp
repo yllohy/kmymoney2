@@ -1125,8 +1125,8 @@ void KHomeView::showSummary(void)
         MyMoneyMoney value;
         value = MyMoneyFile::instance()->balance((*liabilities_it).id(), QDate::currentDate());
         //calculate balance if foreign currency
-        if((*asset_it).currencyId() != file->baseCurrency().id()) {
-          ReportAccount repAcc = ReportAccount((*asset_it).id());
+        if((*liabilities_it).currencyId() != file->baseCurrency().id()) {
+          ReportAccount repAcc = ReportAccount((*liabilities_it).id());
           MyMoneyMoney curPrice = repAcc.baseCurrencyPrice(QDate::currentDate());
           MyMoneyMoney baseValue = value * curPrice;
           netLiabilities += baseValue;

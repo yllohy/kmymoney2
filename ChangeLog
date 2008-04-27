@@ -1,3 +1,5 @@
+2008-04-26 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed account reference in Summary of Home Page
 
 2008-04-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Turn off total column if report is configured for running sums
