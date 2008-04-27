@@ -1,6 +1,7 @@
 
 2008-04-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Turn off total column if report is configured for running sums
+  * Sort numeric account view columns by their numeric value
 
 2008-04-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Brazilian translation from Marcus Gama

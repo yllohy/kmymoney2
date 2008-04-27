@@ -777,13 +777,34 @@ int KMyMoneyAccountTreeItem::compare(QListViewItem* i, int col, bool ascending) 
   // a) name
   // b) account
   // c) and different group
+  // d) value column
   // in all other cases use the standard sorting
-  if(col != KMyMoneyAccountTree::NameColumn
-  || item == 0
-  || m_account.accountGroup() == item->m_account.accountGroup())
-    return KListViewItem::compare(i, col, ascending);
+  if(item) {
+    switch(col) {
+      case KMyMoneyAccountTree::NameColumn:
+        if(m_account.accountGroup() == item->m_account.accountGroup())
+          return (m_account.accountGroup() - item->m_account.accountGroup());
+        break;
 
-  return (m_account.accountGroup() - item->m_account.accountGroup());
+      case KMyMoneyAccountTree::BalanceColumn:
+      case KMyMoneyAccountTree::ValueColumn:
+        {
+          MyMoneyMoney result = MyMoneyMoney(text(col)) - MyMoneyMoney(item->text(col));
+          if(result.isNegative())
+            return -1;
+          if(result.isZero())
+            return 0;
+          return 1;
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  // do standard sorting here
+  return KListViewItem::compare(i, col, ascending);
 }
 
 void KMyMoneyAccountTreeItem::paintCell(QPainter *p, const QColorGroup & cg, int column, int width, int align)
