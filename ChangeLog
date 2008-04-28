@@ -1,5 +1,9 @@
 2008-04-26 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed account reference in Summary of Home Page
+  * Fixed fraction of deep conversion in pivottable to reference current account
+  * Added budget difference to report properties
+  * Change budget difference column to calculate on report init
+  * Added more comments to pivottable
 
 2008-04-27 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Turn off total column if report is configured for running sums

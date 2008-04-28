@@ -276,7 +276,7 @@ void PivotTable::init(void)
   // Initialize grid totals
   //
 
-  m_grid.m_total = TGridRowPair(m_numColumns);
+  m_grid.m_total = TGridRowSet(m_numColumns);
 
   //
   // Get opening balances
@@ -462,6 +462,13 @@ void PivotTable::init(void)
 
   if ( m_config_f.isConvertCurrency() )
     convertToBaseCurrency();
+
+  //
+  // Calculate Budget Difference
+  //
+
+  if ( m_config_f.isIncludingBudgetActuals() )
+    calculateBudgetDiff();
 
   //
   // Determine column headings
@@ -1023,9 +1030,15 @@ void PivotTable::convertToBaseCurrency( void )
             throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::convertToBaseCurrency").arg(column).arg(it_row.data().count()));
 
           QDate valuedate = columnDate(column);
+
+          //get base price for that date
           MyMoneyMoney conversionfactor = it_row.key().baseCurrencyPrice(valuedate);
+
+          //calculate base value
           MyMoneyMoney oldval = it_row.data()[column];
           MyMoneyMoney value = (oldval * conversionfactor).reduce();
+
+          //convert to lowest fraction
           it_row.data()[column] = TCell(value.convert(fraction));
 
           DEBUG_OUTPUT_IF(conversionfactor != MyMoneyMoney(1,1) ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[column].toDouble())));
@@ -1044,7 +1057,7 @@ void PivotTable::convertToDeepCurrency( void )
 {
   DEBUG_ENTER(__PRETTY_FUNCTION__);
 
-  int fraction = MyMoneyFile::instance()->baseCurrency().smallestAccountFraction();
+  int fraction;
 
   TGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
@@ -1063,9 +1076,20 @@ void PivotTable::convertToDeepCurrency( void )
 
           QDate valuedate = columnDate(column);
 
+          //get conversion factor for the account and date
           MyMoneyMoney conversionfactor = it_row.key().deepCurrencyPrice(valuedate);
+
+          //use the fraction relevant to the account at hand
+          fraction = it_row.key().fraction();
+
+          //use base currency fraction if not initialized
+          if(fraction == -1)
+            fraction = MyMoneyFile::instance()->baseCurrency().smallestAccountFraction();
+
+          //convert to deep currency
           MyMoneyMoney oldval = it_row.data()[column];
           MyMoneyMoney value = (oldval * conversionfactor).reduce();
+          //reduce to lowest fraction
           it_row.data()[column] = TCell(value.convert(fraction));
 
           DEBUG_OUTPUT_IF(conversionfactor != MyMoneyMoney(1,1) ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[column].toDouble())));
@@ -1125,14 +1149,20 @@ void PivotTable::calculateTotals( void )
           if ( (*it_innergroup).m_total.count() <= column )
             throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, inner group totals").arg(column).arg((*it_innergroup).m_total.count()));
 
+          //calculate actual total
           MyMoneyMoney value = it_row.data()[column];
           (*it_innergroup).m_total[column] += value;
           (*it_row).m_total += value;
 
+          //calculate budget total
           MyMoneyMoney budget = it_row.data().m_budget[column];
           (*it_innergroup).m_total.m_budget[column] += budget;
           (*it_row).m_budget.m_total += budget;
 
+          //calculate budget difference total
+          MyMoneyMoney budgetDiff = it_row.data().m_budgetDiff[column];
+          (*it_innergroup).m_total.m_budgetDiff[column] += budgetDiff;
+          (*it_row).m_budgetDiff.m_total += budgetDiff;
 
           ++column;
         }
@@ -1151,13 +1181,20 @@ void PivotTable::calculateTotals( void )
         if ( (*it_outergroup).m_total.count() <= column )
           throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, outer group totals").arg(column).arg((*it_innergroup).m_total.count()));
 
+        //calculate actual totals
         MyMoneyMoney value = (*it_innergroup).m_total[column];
         (*it_outergroup).m_total[column] += value;
         (*it_innergroup).m_total.m_total += value;
 
+        //calculate budget totals
         MyMoneyMoney budget = (*it_innergroup).m_total.m_budget[column];
         (*it_outergroup).m_total.m_budget[column] += budget;
         (*it_innergroup).m_total.m_budget.m_total += budget;
+
+        //calculate budget difference totals
+        MyMoneyMoney budgetDiff = (*it_innergroup).m_total.m_budgetDiff[column];
+        (*it_outergroup).m_total.m_budgetDiff[column] += budgetDiff;
+        (*it_innergroup).m_total.m_budgetDiff.m_total += budgetDiff;
 
         ++column;
       }
@@ -1176,6 +1213,7 @@ void PivotTable::calculateTotals( void )
       if ( m_grid.m_total.count() <= column )
         throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::calculateTotals, grid totals").arg(column).arg((*it_innergroup).m_total.count()));
 
+      //calculate actual totals
       MyMoneyMoney value = (*it_outergroup).m_total[column];
       (*it_outergroup).m_total.m_total += value;
 
@@ -1184,6 +1222,7 @@ void PivotTable::calculateTotals( void )
 
       m_grid.m_total[column] += value;
 
+      //calculate budget totals
       MyMoneyMoney budget = (*it_outergroup).m_total.m_budget[column];
       (*it_outergroup).m_total.m_budget.m_total += budget;
 
@@ -1191,6 +1230,13 @@ void PivotTable::calculateTotals( void )
         budget = -budget;
 
       m_grid.m_total.m_budget[column] += budget;
+
+      //calculate budget difference totals
+      MyMoneyMoney budgetDiff = (*it_outergroup).m_total.m_budgetDiff[column];
+      (*it_outergroup).m_total.m_budgetDiff.m_total += budgetDiff;
+
+      //for budget difference it does not take the invert into account because the total has to be the sum of both
+      m_grid.m_total.m_budgetDiff[column] += budgetDiff;
 
       ++column;
     }
@@ -1208,11 +1254,17 @@ void PivotTable::calculateTotals( void )
     if ( m_grid.m_total.count() <= totalcolumn )
       throw new MYMONEYEXCEPTION(QString("Total column %1 out of grid range (%2) in PivotTable::calculateTotals, grid totals").arg(totalcolumn).arg(m_grid.m_total.count()));
 
+    //calculate actual totals
     MyMoneyMoney value = m_grid.m_total[totalcolumn];
     m_grid.m_total.m_total += value;
 
+    //calculate budget totals
     MyMoneyMoney budget = m_grid.m_total.m_budget[totalcolumn];
     m_grid.m_total.m_budget.m_total += budget;
+
+    //calculate budget difference totals
+    MyMoneyMoney budgetDiff = m_grid.m_total.m_budgetDiff[totalcolumn];
+    m_grid.m_total.m_budgetDiff.m_total += budgetDiff;
 
     ++totalcolumn;
   }
@@ -1288,7 +1340,7 @@ void PivotTable::createRow( const QString& outergroup, const ReportAccount& row,
   if ( ! m_grid[outergroup][innergroup].contains(row) )
   {
     DEBUG_OUTPUT(QString("Adding row [%1][%2][%3]").arg(outergroup).arg(innergroup).arg(row.debugName()));
-    m_grid[outergroup][innergroup][row] = TGridRowPair(m_numColumns);
+    m_grid[outergroup][innergroup][row] = TGridRowSet(m_numColumns);
 
     if ( recursive && !row.isTopLevel() )
         createRow( outergroup, row.parent(), recursive );
@@ -1659,9 +1711,7 @@ QString PivotTable::renderHTML( void ) const
                   .arg(coloredAmount(it_row.data()[column]));
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
-                MyMoneyMoney diff = calculateBudgetDiff(it_row.key(), it_row.data().m_budget[column], it_row.data()[column]);
-                rowdata += QString("<td>%1</td>")
-                    .arg(coloredAmount(diff));
+                rowdata += QString("<td>%1</td>").arg(coloredAmount(it_row.data().m_budgetDiff[column]));
               }
               column++;
             }
@@ -1678,8 +1728,7 @@ QString PivotTable::renderHTML( void ) const
                     .arg(coloredAmount((*it_row).m_total));
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
-                MyMoneyMoney diff = calculateBudgetDiff( it_row.key(), (*it_row).m_budget.m_total , (*it_row).m_total);
-                rowdata += QString("<td>%1</td>").arg(coloredAmount(diff));
+                rowdata += QString("<td>%1</td>").arg(coloredAmount((*it_row).m_budgetDiff.m_total));
               }
             }
 
@@ -1777,8 +1826,7 @@ QString PivotTable::renderHTML( void ) const
                   .arg(coloredAmount((*it_innergroup).m_total[column]));
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
-                MyMoneyMoney diff = calculateBudgetDiff((*it_innergroup).begin().key(), (*it_innergroup).m_total.m_budget[column] , (*it_innergroup).m_total[column]);
-                finalRow += QString("<td>%1</td>").arg(coloredAmount(diff));
+                finalRow += QString("<td>%1</td>").arg(coloredAmount((*it_innergroup).m_total.m_budgetDiff[column]));
               }
               column++;
             }
@@ -1795,8 +1843,7 @@ QString PivotTable::renderHTML( void ) const
                   .arg(coloredAmount((*it_innergroup).m_total.m_total));
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
-                MyMoneyMoney diff = calculateBudgetDiff((*it_innergroup).begin().key(),  (*it_innergroup).m_total.m_budget.m_total , (*it_innergroup).m_total.m_total);
-                finalRow += QString("<td>%1</td>").arg(coloredAmount(diff));
+                finalRow += QString("<td>%1</td>").arg(coloredAmount((*it_innergroup).m_total.m_budgetDiff.m_total));
               }
             }
 
@@ -1836,8 +1883,7 @@ QString PivotTable::renderHTML( void ) const
               .arg(coloredAmount((*it_outergroup).m_total[column]));
 
           if ( m_config_f.isIncludingBudgetActuals() ) {
-            MyMoneyMoney diff = calculateBudgetDiff( (*(*it_outergroup).begin()).begin().key(), (*it_outergroup).m_total.m_budget[column], (*it_outergroup).m_total[column]);
-            result += QString("<td>%1</td>").arg(coloredAmount(diff));
+            result += QString("<td>%1</td>").arg(coloredAmount((*it_outergroup).m_total.m_budgetDiff[column]));
           }
           column++;
         }
@@ -1854,8 +1900,7 @@ QString PivotTable::renderHTML( void ) const
               .arg(coloredAmount((*it_outergroup).m_total.m_total));
 
           if ( m_config_f.isIncludingBudgetActuals() ) {
-            MyMoneyMoney diff = calculateBudgetDiff( (*(*it_outergroup).begin()).begin().key(), (*it_outergroup).m_total.m_budget.m_total, (*it_outergroup).m_total.m_total);
-            result += QString("<td>%1</td>").arg(coloredAmount(diff));
+            result += QString("<td>%1</td>").arg(coloredAmount((*it_outergroup).m_total.m_budgetDiff.m_total));
           }
         }
 
@@ -1892,8 +1937,7 @@ QString PivotTable::renderHTML( void ) const
           .arg(coloredAmount(m_grid.m_total[totalcolumn]));
 
       if ( m_config_f.isIncludingBudgetActuals() ) {
-        MyMoneyMoney diff = m_grid.m_total[totalcolumn] - m_grid.m_total.m_budget[totalcolumn];
-        result += QString("<td>%1</td>").arg(coloredAmount(diff));
+        result += QString("<td>%1</td>").arg(coloredAmount(m_grid.m_total.m_budgetDiff[totalcolumn]));
       }
       totalcolumn++;
     }
@@ -1910,8 +1954,7 @@ QString PivotTable::renderHTML( void ) const
           .arg(coloredAmount(m_grid.m_total.m_total));
 
       if ( m_config_f.isIncludingBudgetActuals() ) {
-        MyMoneyMoney diff = m_grid.m_total.m_total - m_grid.m_total.m_budget.m_total;
-        result += QString("<td>%1</td>").arg(coloredAmount(diff));
+        result += QString("<td>%1</td>").arg(coloredAmount(m_grid.m_total.m_budgetDiff.m_total));
       }
     }
 
@@ -2307,26 +2350,48 @@ QString PivotTable::coloredAmount(const MyMoneyMoney& amount, const QString& cur
   return result;
 }
 
-MyMoneyMoney PivotTable::calculateBudgetDiff( const ReportAccount& repAccount, const TCell& budgeted, const TCell& actual ) const
+void PivotTable::calculateBudgetDiff(void)
 {
-  MyMoneyMoney diff;
-  switch( repAccount.accountGroup() )
+  TGrid::iterator it_outergroup = m_grid.begin();
+  while ( it_outergroup != m_grid.end() )
   {
-    case MyMoneyAccount::Income:
-    case MyMoneyAccount::Asset:
-      diff = actual - budgeted;
-      break;
-
-    case MyMoneyAccount::Expense:
-    case MyMoneyAccount::Liability:
-      diff = budgeted - actual;
-      break;
-
-    default:
-      break;
-
+    TOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    while ( it_innergroup != (*it_outergroup).end() )
+    {
+      TInnerGroup::iterator it_row = (*it_innergroup).begin();
+      while ( it_row != (*it_innergroup).end() )
+      {
+        unsigned column = 1;
+        switch( it_row.key().accountGroup() )
+        {
+          case MyMoneyAccount::Income:
+          case MyMoneyAccount::Asset:
+            while ( column < m_numColumns ) {
+              it_row.data().m_budgetDiff[column] = it_row.data()[column] - it_row.data().m_budget[column];
+              ++column;
+            }
+            break;
+          case MyMoneyAccount::Expense:
+          case MyMoneyAccount::Liability:
+            while ( column < m_numColumns ) {
+              it_row.data().m_budgetDiff[column] = it_row.data().m_budget[column] - it_row.data()[column];
+              ++column;
+            }
+            break;
+          default:
+            break;
+        }
+        ++it_row;
+      }
+      ++it_innergroup;
+    }
+    ++it_outergroup;
   }
-  return diff;
+
+  
+  
+  
+  
 }
 
 

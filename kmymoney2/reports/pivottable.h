@@ -151,18 +151,19 @@ private:
       }
       MyMoneyMoney m_total;
     };
-    class TGridRowPair: public TGridRow
+    class TGridRowSet: public TGridRow
     {
     public:
-      TGridRowPair( unsigned _numcolumns = 0 ): TGridRow(_numcolumns), m_budget(_numcolumns) {}
+      TGridRowSet( unsigned _numcolumns = 0 ): TGridRow(_numcolumns), m_budget(_numcolumns), m_budgetDiff(_numcolumns) {}
       TGridRow m_budget;
+      TGridRow m_budgetDiff;
     };
-    class TInnerGroup: public QMap<ReportAccount,TGridRowPair>
+    class TInnerGroup: public QMap<ReportAccount,TGridRowSet>
     {
     public:
       TInnerGroup( unsigned _numcolumns = 0 ): m_total(_numcolumns) {}
 
-      TGridRowPair m_total;
+      TGridRowSet m_total;
     };
     class TOuterGroup: public QMap<QString,TInnerGroup>
     {
@@ -175,7 +176,7 @@ private:
         else
           return m_displayName < _right.m_displayName;
       }
-      TGridRowPair m_total;
+      TGridRowSet m_total;
 
       // An inverted outergroup means that all values placed in subordinate rows
       // should have their sign inverted from typical cash-flow notation.  Also it
@@ -195,7 +196,7 @@ private:
       // default sort order
       static const unsigned m_kDefaultSortOrder;
     };
-    class TGrid: public QMap<QString,TOuterGroup> { public: TGridRowPair m_total; };
+    class TGrid: public QMap<QString,TOuterGroup> { public: TGridRowSet m_total; };
 
     TGrid m_grid;
 
@@ -319,6 +320,27 @@ protected:
     */
     void calculateRunningSums( void );
     void calculateRunningSums( TInnerGroup::iterator& it_row);
+
+    /**
+     * This method calculates the difference between a @a budgeted and an @a
+     * actual amount. The calculation is based on the type of the
+      * @a repAccount. The difference value is calculated as follows:
+     *
+     * If @a repAccount is of type MyMoneyAccount::Income
+     *
+     * @code
+     *      diff = actual - budgeted
+     * @endcode
+     *
+     * If @a repAccount is of type MyMoneyAccount::Expense
+     *
+     * @code
+     *      diff = budgeted - actual
+     * @endcode
+     *
+     * In all other cases, 0 is returned.
+     */
+    void calculateBudgetDiff(void);
 
   /**
     * Calculate the row and column totals
