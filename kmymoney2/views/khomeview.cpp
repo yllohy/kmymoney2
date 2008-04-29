@@ -767,19 +767,23 @@ void KHomeView::showFavoriteReports(void)
 
   if ( reports.count() > 0 )
   {
-    m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Favorite Reports")));
-    m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
-    m_part->write("<tr class=\"item\"><th class=\"left\" width=\"50%\">");
-    m_part->write(i18n("Report"));
-    m_part->write("</th><th width=\"50%\" class=\"right\">");
-    m_part->write(i18n("Comment"));
-    m_part->write("</th></tr>");
-
+    bool firstTime = 1;
     int row = 0;
     QValueList<MyMoneyReport>::const_iterator it_report = reports.begin();
     while( it_report != reports.end() )
     {
-      if ( (*it_report).isFavorite() )
+      if ( (*it_report).isFavorite() ) {
+        if(firstTime) {
+          m_part->write(QString("<div class=\"itemheader\">%1</div>\n<div class=\"gap\">&nbsp;</div>\n").arg(i18n("Favorite Reports")));
+          m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
+          m_part->write("<tr class=\"item\"><th class=\"left\" width=\"50%\">");
+          m_part->write(i18n("Report"));
+          m_part->write("</th><th width=\"50%\" class=\"right\">");
+          m_part->write(i18n("Comment"));
+          m_part->write("</th></tr>");
+          firstTime = false;
+        }
+
         m_part->write(QString("<tr class=\"row-%1\"><td>%2%3%4</td><td align=\"right\">%5</td></tr>")
           .arg(row++ & 0x01 ? "even" : "odd")
           .arg(link(VIEW_REPORTS, QString("?id=%1").arg((*it_report).id())))
@@ -787,10 +791,12 @@ void KHomeView::showFavoriteReports(void)
           .arg(linkend())
           .arg((*it_report).comment())
         );
+      }
 
       ++it_report;
     }
-    m_part->write("</table>");
+    if(!firstTime)
+      m_part->write("</table>");
   }
 }
 

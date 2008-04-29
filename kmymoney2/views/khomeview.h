@@ -67,7 +67,7 @@ protected:
   void showPaymentEntry(const MyMoneySchedule&, int cnt = 1);
   void showAccounts(paymentTypeE type, const QString& hdr);
   void showAccountEntry(const MyMoneyAccount&);
-  void showFavoriteReports();
+  void showFavoriteReports(void);
   void showForecast(void);
   void showNetWorthGraph(void);
   void showSummary(void);
