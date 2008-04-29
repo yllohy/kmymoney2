@@ -66,6 +66,12 @@ public:
   const MyMoneyAccount& account(void) const { return m_account; };
   const MyMoneySecurity tradingCurrency(void) const { return m_tradingCurrency; };
 
+ /**
+   * Helper method to show the right order
+   */
+  int compare(QListViewItem* i, int col, bool ascending) const;
+
+
 protected:
   void paintCell(QPainter * p, const QColorGroup & cg, int column, int width, int align);
 

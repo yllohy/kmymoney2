@@ -209,6 +209,44 @@ const QString KInvestmentListItem::calculateGain(const equity_price_history& his
 }
 #endif
 
+int KInvestmentListItem::compare(QListViewItem* i, int col, bool ascending) const
+{
+  KInvestmentListItem* item = dynamic_cast<KInvestmentListItem*>(i);
+  // do special sorting only for numeric columns
+  // in all other cases use the standard sorting
+  if(item) {
+    switch(col) {
+      case COLUMN_VALUE_INDEX:
+      case COLUMN_QUANTITY_INDEX:
+      case COLUMN_PRICE_INDEX:
+      {
+        bool inv1 = text(col) == "---";
+        bool inv2 = item->text(col) == "---";
+        if(!inv1 && !inv2) {
+          MyMoneyMoney result = MyMoneyMoney(text(col)) - MyMoneyMoney(item->text(col));
+          if(result.isNegative())
+            return -1;
+          if(result.isZero())
+            return 0;
+          return 1;
+        } else if(inv1 && inv2) {
+          return 0;
+        } else if(inv1) {
+          return -1;
+        }
+        return 1;
+      }
+      break;
+
+      default:
+        break;
+    }
+  }
+
+  // do standard sorting here
+  return KListViewItem::compare(i, col, ascending);
+}
+
 void KInvestmentListItem::paintCell(QPainter * p, const QColorGroup & cg, int column, int width, int align)
 {
   bool bPaintRed = false;

@@ -2,6 +2,7 @@
 2008-04-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Simplified Chinese translation from Roy Qu
   * If there are no favorite reports, don't show section on homepage
+  * Fixed sorting of value columns in investment view
 
 2008-04-26 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed account reference in Summary of Home Page
