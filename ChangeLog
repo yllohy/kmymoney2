@@ -3,6 +3,7 @@
   * Updated Simplified Chinese translation from Roy Qu
   * If there are no favorite reports, don't show section on homepage
   * Fixed sorting of value columns in investment view
+  * Added missing #include statements for GCC 4.3 as reported by Tony Graffy
 
 2008-04-26 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed account reference in Summary of Home Page

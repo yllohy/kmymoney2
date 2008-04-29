@@ -15,6 +15,8 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
+#include <algorithm>
 #include <vector>
 
 using std::string;
