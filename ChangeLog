@@ -1,4 +1,7 @@
 
+2008-04-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed sorting of value columns in account views
+
 2008-04-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Simplified Chinese translation from Roy Qu
   * If there are no favorite reports, don't show section on homepage

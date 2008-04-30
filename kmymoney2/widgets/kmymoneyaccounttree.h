@@ -42,6 +42,8 @@ class KMyMoneyAccountTreeItem;
 
 class KMyMoneyAccountTree : public KListView
 {
+  friend class KMyMoneyAccountTreeItem;
+
   Q_OBJECT
 public:
   KMyMoneyAccountTree(QWidget* parent = 0, const char *name = 0);
@@ -133,6 +135,8 @@ protected:
 
   void expandCollapseAll(bool expand);
 
+  void queueSort(void);
+
 protected slots:
   void slotObjectDropped(QDropEvent* event, QListViewItem* parent, QListViewItem* after);
 
@@ -174,6 +178,8 @@ protected slots:
   /** override KListView implementation */
   void cleanItemHighlighter(void);
 
+  void slotActivateSort(void);
+
 private:
   MyMoneySecurity     m_baseCurrency;
   bool                m_accountConnections;
@@ -184,6 +190,7 @@ private:
   int                 m_autoscrollAccel;
   QListViewItem*      m_dropItem;
   QRect               m_lastDropHighlighter;
+  int                 m_queuedSort;
 
 signals:
   /**
@@ -203,7 +210,7 @@ signals:
   void openContextMenu(const MyMoneyObject& obj);
 
   /**
-    * This signal is emitted whenever the user requests the open an object
+    * This signal is emitted whenever the user requests to open an object
     *
     * @param obj reference to actual MyMoneyObject (is either
     *            MyMoneyAccount or MyMoneyInstitution depending on selected item)

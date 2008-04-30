@@ -49,7 +49,8 @@
 KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char* name) :
   KListView(parent, name),
   m_accountConnections(false),
-  m_institutionConnections(false)
+  m_institutionConnections(false),
+  m_queuedSort(0)
 {
   setRootIsDecorated(true);
   setAllColumnsShowFocus(true);
@@ -723,6 +724,8 @@ MyMoneyMoney KMyMoneyAccountTreeItem::balance( const MyMoneyAccount& account ) c
 
 void KMyMoneyAccountTreeItem::setOpen(bool open)
 {
+  bool prev = isOpen();
+
   // make sure, that we only run through the extened logic if
   // the parent is a KMyMoneyAccountTree object
   if(listView()) {
@@ -744,6 +747,9 @@ void KMyMoneyAccountTreeItem::setOpen(bool open)
     }
   }
   KListViewItem::setOpen(open);
+
+  if(prev != isOpen() && listView())
+    listView()->queueSort();
 }
 
 void KMyMoneyAccountTreeItem::adjustTotalValue(const MyMoneyMoney& diff)
@@ -782,7 +788,7 @@ int KMyMoneyAccountTreeItem::compare(QListViewItem* i, int col, bool ascending) 
   if(item) {
     switch(col) {
       case KMyMoneyAccountTree::NameColumn:
-        if(m_account.accountGroup() == item->m_account.accountGroup())
+        if(m_account.accountGroup() != item->m_account.accountGroup())
           return (m_account.accountGroup() - item->m_account.accountGroup());
         break;
 
@@ -850,6 +856,27 @@ void KMyMoneyAccountTree::slotExpandAll(void)
 void KMyMoneyAccountTree::slotCollapseAll(void)
 {
   expandCollapseAll(false);
+}
+
+void KMyMoneyAccountTree::queueSort(void)
+{
+  switch(sortColumn()) {
+    case KMyMoneyAccountTree::BalanceColumn:
+    case KMyMoneyAccountTree::ValueColumn:
+      ++m_queuedSort;
+      QTimer::singleShot(100, this, SLOT(slotActivateSort()));
+      break;
+
+    default:
+      break;
+  }
+}
+
+void KMyMoneyAccountTree::slotActivateSort(void)
+{
+  --m_queuedSort;
+  if(!m_queuedSort)
+    KListView::sort();
 }
 
 #include "kmymoneyaccounttree.moc"
