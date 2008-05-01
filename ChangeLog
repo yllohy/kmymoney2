@@ -2,6 +2,7 @@
   * Separated grid of pivottable into a separate file
   * Added budget overrun report to Home page
   * Removed unit tests for TCell
+  * Moved PivotGrid tests to their own class
 
 2008-04-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sorting of value columns in account views

@@ -54,6 +54,7 @@
 #include "mymoney/mymoneyforecasttest.h"
 
 #include "reports/pivottabletest.h"
+#include "reports/pivotgridtest.h"
 #include "reports/querytabletest.h"
 
 #include "converter/convertertest.h"
@@ -131,6 +132,7 @@ int main(int testargc, char** testargv)
 
   // reports tests
   CPPUNIT_TEST_SUITE_REGISTRATION(PivotTableTest);
+  CPPUNIT_TEST_SUITE_REGISTRATION(PivotGridTest);
   CPPUNIT_TEST_SUITE_REGISTRATION(QueryTableTest);
 
   // converter tests
