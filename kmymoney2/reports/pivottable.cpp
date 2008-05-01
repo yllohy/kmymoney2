@@ -48,6 +48,7 @@
 // Project Includes
 
 #include "pivottable.h"
+#include "pivotgrid.h"
 #include "reportdebug.h"
 #include "kreportchartview.h"
 #include "../kmymoneyglobalsettings.h"
@@ -55,8 +56,6 @@
 #include <kmymoney/kmymoneyutils.h>
 
 namespace reports {
-
-const unsigned PivotTable::TOuterGroup::m_kDefaultSortOrder = 100;
 
 const QString accountTypeToString(const MyMoneyAccount::accountTypeE accountType)
 {
@@ -153,67 +152,6 @@ void Debug::output( const QString& _text )
     qDebug( "%s%s(): %s", m_sTabs.latin1(), m_methodName.latin1(), _text.latin1() );
 }
 
-//////////////////////////////////////////////////////////////////////
-
-PivotTable::TCell PivotTable::TCell::operator += (const TCell& right)
-{
-  const MyMoneyMoney& r = static_cast<const MyMoneyMoney&>(right);
-  *this += r;
-  m_postSplit = m_postSplit * right.m_stockSplit;
-  m_stockSplit = m_stockSplit * right.m_stockSplit;
-  m_postSplit += right.m_postSplit;
-  m_cellUsed |= right.m_cellUsed;
-  return *this;
-}
-
-PivotTable::TCell PivotTable::TCell::operator += (const MyMoneyMoney& value)
-{
-  m_cellUsed |= !value.isZero();
-  if(m_stockSplit != MyMoneyMoney(1,1))
-    m_postSplit += value;
-  else
-    MyMoneyMoney::operator += (value);
-  return *this;
-}
-
-PivotTable::TCell PivotTable::TCell::stockSplit(const MyMoneyMoney& factor)
-{
-  TCell s;
-  s.m_stockSplit = factor;
-  return s;
-}
-
-const QString PivotTable::TCell::formatMoney(int fraction, bool showThousandSeparator) const
-{
-  return formatMoney("", MyMoneyMoney::denomToPrec(fraction), showThousandSeparator);
-}
-
-const QString PivotTable::TCell::formatMoney(const QString& currency, const int prec, bool showThousandSeparator) const
-{
-  // construct the result
-  MyMoneyMoney res = (*this * m_stockSplit) + m_postSplit;
-  return res.formatMoney(currency, prec, showThousandSeparator);
-}
-
-MyMoneyMoney PivotTable::TCell::calculateRunningSum(const MyMoneyMoney& runningSum)
-{
-  MyMoneyMoney::operator += (runningSum);
-  MyMoneyMoney::operator = ((*this * m_stockSplit) + m_postSplit);
-  m_postSplit = MyMoneyMoney(0,1);
-  m_stockSplit = MyMoneyMoney(1,1);
-  return *this;
-}
-
-MyMoneyMoney PivotTable::TCell::cellBalance(const MyMoneyMoney& _balance)
-{
-  MyMoneyMoney balance(_balance);
-  balance += *this;
-  balance = (balance * m_stockSplit) + m_postSplit;
-  return balance;
-}
-
-//////////////////////////////////////////////////////////////////////
-
 PivotTable::PivotTable( const MyMoneyReport& _config_f ):
   m_runningSumsCalculated(false),
   m_config_f( _config_f )
@@ -258,13 +196,13 @@ void PivotTable::init(void)
   //
   if ( m_config_f.rowType() == MyMoneyReport::eAssetLiability )
   {
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Asset),TOuterGroup(m_numColumns));
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Liability),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder,true /* inverted */));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Asset),PivotOuterGroup(m_numColumns));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Liability),PivotOuterGroup(m_numColumns,PivotOuterGroup::m_kDefaultSortOrder,true /* inverted */));
   }
   else
   {
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Income),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder-2));
-    m_grid.insert(accountTypeToString(MyMoneyAccount::Expense),TOuterGroup(m_numColumns,TOuterGroup::m_kDefaultSortOrder-1,true /* inverted */));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Income),PivotOuterGroup(m_numColumns,PivotOuterGroup::m_kDefaultSortOrder-2));
+    m_grid.insert(accountTypeToString(MyMoneyAccount::Expense),PivotOuterGroup(m_numColumns,PivotOuterGroup::m_kDefaultSortOrder-1,true /* inverted */));
     //
     // Create rows for income/expense reports with all accounts included
     //
@@ -276,7 +214,7 @@ void PivotTable::init(void)
   // Initialize grid totals
   //
 
-  m_grid.m_total = TGridRowSet(m_numColumns);
+  m_grid.m_total = PivotGridRowSet(m_numColumns);
 
   //
   // Get opening balances
@@ -527,15 +465,15 @@ void PivotTable::accumulateColumn(unsigned destcolumn, unsigned sourcecolumn)
   DEBUG_OUTPUT(QString("From Column %1 to %2").arg(sourcecolumn).arg(destcolumn));
 
   // iterate over outer groups
-  TGrid::iterator it_outergroup = m_grid.begin();
+  PivotGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
     // iterate over inner groups
-    TOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
     while ( it_innergroup != (*it_outergroup).end() )
     {
       // iterator over rows
-      TInnerGroup::iterator it_row = (*it_innergroup).begin();
+      PivotInnerGroup::iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
         if ( (*it_row).count() <= sourcecolumn )
@@ -559,21 +497,21 @@ void PivotTable::clearColumn(unsigned column)
   DEBUG_OUTPUT(QString("Column %1").arg(column));
 
   // iterate over outer groups
-  TGrid::iterator it_outergroup = m_grid.begin();
+  PivotGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
     // iterate over inner groups
-    TOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
     while ( it_innergroup != (*it_outergroup).end() )
     {
       // iterator over rows
-      TInnerGroup::iterator it_row = (*it_innergroup).begin();
+      PivotInnerGroup::iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
         if ( (*it_row).count() <= column )
           throw new MYMONEYEXCEPTION(QString("Column %1 out of grid range (%2) in PivotTable::accumulateColumn").arg(column).arg((*it_row).count()));
 
-        (*it_row++)[column] = TCell();
+        (*it_row++)[column] = PivotCell();
       }
 
       ++it_innergroup;
@@ -762,7 +700,7 @@ void PivotTable::calculateOpeningBalances( void )
   }
 }
 
-void PivotTable::calculateRunningSums( TInnerGroup::iterator& it_row)
+void PivotTable::calculateRunningSums( PivotInnerGroup::iterator& it_row)
 {
   MyMoneyMoney runningsum = it_row.data()[0].calculateRunningSum(MyMoneyMoney(0,1));
   unsigned column = 1;
@@ -783,13 +721,13 @@ void PivotTable::calculateRunningSums( void )
 
   m_runningSumsCalculated = true;
 
-  TGrid::iterator it_outergroup = m_grid.begin();
+  PivotGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
-    TOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
     while ( it_innergroup != (*it_outergroup).end() )
     {
-      TInnerGroup::iterator it_row = (*it_innergroup).begin();
+      PivotInnerGroup::iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
 #if 0
@@ -1014,13 +952,13 @@ void PivotTable::convertToBaseCurrency( void )
 
   int fraction = MyMoneyFile::instance()->baseCurrency().smallestAccountFraction();
 
-  TGrid::iterator it_outergroup = m_grid.begin();
+  PivotGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
-    TOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
     while ( it_innergroup != (*it_outergroup).end() )
     {
-      TInnerGroup::iterator it_row = (*it_innergroup).begin();
+      PivotInnerGroup::iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
         unsigned column = 1;
@@ -1039,7 +977,7 @@ void PivotTable::convertToBaseCurrency( void )
           MyMoneyMoney value = (oldval * conversionfactor).reduce();
 
           //convert to lowest fraction
-          it_row.data()[column] = TCell(value.convert(fraction));
+          it_row.data()[column] = PivotCell(value.convert(fraction));
 
           DEBUG_OUTPUT_IF(conversionfactor != MyMoneyMoney(1,1) ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[column].toDouble())));
 
@@ -1059,13 +997,13 @@ void PivotTable::convertToDeepCurrency( void )
 
   int fraction;
 
-  TGrid::iterator it_outergroup = m_grid.begin();
+  PivotGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
-    TOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
     while ( it_innergroup != (*it_outergroup).end() )
     {
-      TInnerGroup::iterator it_row = (*it_innergroup).begin();
+      PivotInnerGroup::iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
         unsigned column = 1;
@@ -1090,7 +1028,7 @@ void PivotTable::convertToDeepCurrency( void )
           MyMoneyMoney oldval = it_row.data()[column];
           MyMoneyMoney value = (oldval * conversionfactor).reduce();
           //reduce to lowest fraction
-          it_row.data()[column] = TCell(value.convert(fraction));
+          it_row.data()[column] = PivotCell(value.convert(fraction));
 
           DEBUG_OUTPUT_IF(conversionfactor != MyMoneyMoney(1,1) ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[column].toDouble())));
 
@@ -1106,35 +1044,35 @@ void PivotTable::convertToDeepCurrency( void )
 
 void PivotTable::calculateTotals( void )
 {
-  m_grid.m_total.insert( m_grid.m_total.end(), m_numColumns, TCell() );
-  m_grid.m_total.m_budget.insert( m_grid.m_total.m_budget.end(), m_numColumns, TCell() );
+  m_grid.m_total.insert( m_grid.m_total.end(), m_numColumns, PivotCell() );
+  m_grid.m_total.m_budget.insert( m_grid.m_total.m_budget.end(), m_numColumns, PivotCell() );
 
   //
   // Outer groups
   //
 
   // iterate over outer groups
-  TGrid::iterator it_outergroup = m_grid.begin();
+  PivotGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
-    (*it_outergroup).m_total.insert( (*it_outergroup).m_total.end(), m_numColumns, TCell() );
-    (*it_outergroup).m_total.m_budget.insert( (*it_outergroup).m_total.m_budget.end(), m_numColumns, TCell() );
+    (*it_outergroup).m_total.insert( (*it_outergroup).m_total.end(), m_numColumns, PivotCell() );
+    (*it_outergroup).m_total.m_budget.insert( (*it_outergroup).m_total.m_budget.end(), m_numColumns, PivotCell() );
 
     //
     // Inner Groups
     //
 
-    TOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
     while ( it_innergroup != (*it_outergroup).end() )
     {
-      (*it_innergroup).m_total.insert( (*it_innergroup).m_total.end(), m_numColumns, TCell() );
-      (*it_innergroup).m_total.m_budget.insert( (*it_innergroup).m_total.m_budget.end(), m_numColumns, TCell() );
+      (*it_innergroup).m_total.insert( (*it_innergroup).m_total.end(), m_numColumns, PivotCell() );
+      (*it_innergroup).m_total.m_budget.insert( (*it_innergroup).m_total.m_budget.end(), m_numColumns, PivotCell() );
 
       //
       // Rows
       //
 
-      TInnerGroup::iterator it_row = (*it_innergroup).begin();
+      PivotInnerGroup::iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
         //
@@ -1313,7 +1251,7 @@ void PivotTable::assignCell( const QString& outergroup, const ReportAccount& _ro
     else
       m_grid[outergroup][innergroup][row][column] += value;
   } else {
-    m_grid[outergroup][innergroup][row][column] += TCell::stockSplit(value);
+    m_grid[outergroup][innergroup][row][column] += PivotCell::stockSplit(value);
   }
 
 }
@@ -1328,19 +1266,19 @@ void PivotTable::createRow( const QString& outergroup, const ReportAccount& row,
   if ( ! m_grid.contains(outergroup) )
   {
     DEBUG_OUTPUT(QString("Adding group [%1]").arg(outergroup));
-    m_grid[outergroup] = TOuterGroup(m_numColumns);
+    m_grid[outergroup] = PivotOuterGroup(m_numColumns);
   }
 
   if ( ! m_grid[outergroup].contains(innergroup) )
   {
     DEBUG_OUTPUT(QString("Adding group [%1][%2]").arg(outergroup).arg(innergroup));
-    m_grid[outergroup][innergroup] = TInnerGroup(m_numColumns);
+    m_grid[outergroup][innergroup] = PivotInnerGroup(m_numColumns);
   }
 
   if ( ! m_grid[outergroup][innergroup].contains(row) )
   {
     DEBUG_OUTPUT(QString("Adding row [%1][%2][%3]").arg(outergroup).arg(innergroup).arg(row.debugName()));
-    m_grid[outergroup][innergroup][row] = TGridRowSet(m_numColumns);
+    m_grid[outergroup][innergroup][row] = PivotGridRowSet(m_numColumns);
 
     if ( recursive && !row.isTopLevel() )
         createRow( outergroup, row.parent(), recursive );
@@ -1399,7 +1337,7 @@ QString PivotTable::renderCSV( void ) const
   //
 
   // iterate over outer groups
-  TGrid::const_iterator it_outergroup = m_grid.begin();
+  PivotGrid::const_iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
     //
@@ -1412,7 +1350,7 @@ QString PivotTable::renderCSV( void ) const
     // Inner Groups
     //
 
-    TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
+    PivotOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
     unsigned rownum = 0;
     while ( it_innergroup != (*it_outergroup).end() )
     {
@@ -1421,7 +1359,7 @@ QString PivotTable::renderCSV( void ) const
       //
 
       QString innergroupdata;
-      TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
+      PivotInnerGroup::const_iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
         ReportAccount rowname = it_row.key();
@@ -1644,8 +1582,8 @@ QString PivotTable::renderHTML( void ) const
     //
     // I hope this doesn't bog the performance of reports, given that we're copying the entire report
     // data.  If this is a perf hit, we could change to storing outergroup pointers, I think.
-    QValueList<TOuterGroup> outergroups;
-    TGrid::const_iterator it_outergroup_map = m_grid.begin();
+    QValueList<PivotOuterGroup> outergroups;
+    PivotGrid::const_iterator it_outergroup_map = m_grid.begin();
     while ( it_outergroup_map != m_grid.end() )
     {
       outergroups.push_back(it_outergroup_map.data());
@@ -1658,7 +1596,7 @@ QString PivotTable::renderHTML( void ) const
     }
     qHeapSort(outergroups);
 
-    QValueList<TOuterGroup>::const_iterator it_outergroup = outergroups.begin();
+    QValueList<PivotOuterGroup>::const_iterator it_outergroup = outergroups.begin();
     while ( it_outergroup != outergroups.end() )
     {
       //
@@ -1675,7 +1613,7 @@ QString PivotTable::renderHTML( void ) const
         // Inner Groups
         //
 
-        TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
+        PivotOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
         unsigned rownum = 0;
         while ( it_innergroup != (*it_outergroup).end() )
         {
@@ -1684,7 +1622,7 @@ QString PivotTable::renderHTML( void ) const
           //
 
           QString innergroupdata;
-          TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
+          PivotInnerGroup::const_iterator it_row = (*it_innergroup).begin();
           while ( it_row != (*it_innergroup).end() )
           {
             //
@@ -2081,12 +2019,12 @@ void PivotTable::drawChart( KReportChartView& _view ) const
       unsigned rownum = 1;
 
       // iterate over outer groups
-      TGrid::const_iterator it_outergroup = m_grid.begin();
+      PivotGrid::const_iterator it_outergroup = m_grid.begin();
       while ( it_outergroup != m_grid.end() )
       {
 
         // iterate over inner groups
-        TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
+        PivotOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
         while ( it_innergroup != (*it_outergroup).end() )
         {
           //
@@ -2094,7 +2032,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
           //
 
           QString innergroupdata;
-          TInnerGroup::const_iterator it_row = (*it_innergroup).begin();
+          PivotInnerGroup::const_iterator it_row = (*it_innergroup).begin();
           while ( it_row != (*it_innergroup).end() )
           {
             _view.params().setLegendText( rownum-1, it_row.key().name() );
@@ -2149,12 +2087,12 @@ void PivotTable::drawChart( KReportChartView& _view ) const
       unsigned rownum = 1;
 
       // iterate over outer groups
-      TGrid::const_iterator it_outergroup = m_grid.begin();
+      PivotGrid::const_iterator it_outergroup = m_grid.begin();
       while ( it_outergroup != m_grid.end() )
       {
 
         // iterate over inner groups
-        TOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
+        PivotOuterGroup::const_iterator it_innergroup = (*it_outergroup).begin();
         while ( it_innergroup != (*it_outergroup).end() )
         {
           _view.params().setLegendText( rownum-1, it_innergroup.key() );
@@ -2207,7 +2145,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
       unsigned rownum = 1;
 
       // iterate over outer groups
-      TGrid::const_iterator it_outergroup = m_grid.begin();
+      PivotGrid::const_iterator it_outergroup = m_grid.begin();
       while ( it_outergroup != m_grid.end() )
       {
         _view.params().setLegendText( rownum-1, it_outergroup.key() );
@@ -2352,13 +2290,13 @@ QString PivotTable::coloredAmount(const MyMoneyMoney& amount, const QString& cur
 
 void PivotTable::calculateBudgetDiff(void)
 {
-  TGrid::iterator it_outergroup = m_grid.begin();
+  PivotGrid::iterator it_outergroup = m_grid.begin();
   while ( it_outergroup != m_grid.end() )
   {
-    TOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
     while ( it_innergroup != (*it_outergroup).end() )
     {
-      TInnerGroup::iterator it_row = (*it_innergroup).begin();
+      PivotInnerGroup::iterator it_row = (*it_innergroup).begin();
       while ( it_row != (*it_innergroup).end() )
       {
         unsigned column = 1;
@@ -2387,14 +2325,8 @@ void PivotTable::calculateBudgetDiff(void)
     }
     ++it_outergroup;
   }
-
-  
-  
-  
-  
+ 
 }
-
-
 
 } // namespace
 // vim:cin:si:ai:et:ts=2:sw=2:

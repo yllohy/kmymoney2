@@ -61,6 +61,7 @@
 #include "../kmymoney2.h"
 #include "../reports/kreportchartview.h"
 #include "../reports/pivottable.h"
+#include "../reports/pivotgrid.h"
 #include "../reports/reportaccount.h"
 #include "../kmymoneyglobalsettings.h"
 
@@ -234,6 +235,10 @@ void KHomeView::loadView(void)
           case 8:         // summary
               showSummary();
               break;
+          case 9:         // budget
+              showBudget();
+              break;
+
         }
         m_part->write("<div class=\"gap\">&nbsp;</div>\n");
       }
@@ -1308,6 +1313,91 @@ void KHomeView::showSummary(void)
   //print the scheduled expenses
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Scheduled Expenses This Month")).arg(showColoredAmount(amountScheduledExpense,  true)));
   m_part->write("</tr>");
+  m_part->write("</table>");
+}
+
+void KHomeView::showBudget(void)
+{
+  MyMoneyFile* file = MyMoneyFile::instance();
+  int prec = MyMoneyMoney::denomToPrec(file->baseCurrency().smallestAccountFraction());
+  int i = 0;
+
+  //config report just like "Monthly Budgeted vs Actual
+  MyMoneyReport reportCfg = MyMoneyReport(
+    MyMoneyReport::eBudgetActual,
+    MyMoneyReport::eMonths,
+    MyMoneyTransactionFilter::currentMonth,
+    true,
+    i18n("Monthly Budgeted vs. Actual"),
+    i18n("Generated Report"));
+
+  reportCfg.setBudget("Any",true);
+
+  reports::PivotTable table(reportCfg);
+
+  PivotGrid grid = table.grid();
+
+  //table header
+  m_part->write("<div class=\"itemheader\">" + i18n("Budget Overruns") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
+  m_part->write("<table width=\"75%\" cellspacing=\"0\" cellpadding=\"2\">");
+    //asset and liability titles
+  m_part->write("<tr class=\"item\">");
+  m_part->write("<th class=\"left\" width=\"30%\">");
+  m_part->write(i18n("Account"));
+  m_part->write("</th>");
+  m_part->write("<th class=\"right\" width=\"20%\">");
+  m_part->write(i18n("Budgeted"));
+  m_part->write("</th>");
+  m_part->write("<th class=\"right\" width=\"20%\">");
+  m_part->write(i18n("Actual"));
+  m_part->write("</th>");
+  m_part->write("<th class=\"right\" width=\"20%\">");
+  m_part->write(i18n("Difference"));
+  m_part->write("</th></tr>");
+
+
+  PivotGrid::iterator it_outergroup = grid.begin();
+  while ( it_outergroup != grid.end() )
+  {
+    PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    while ( it_innergroup != (*it_outergroup).end() )
+    {
+      PivotInnerGroup::iterator it_row = (*it_innergroup).begin();
+      while ( it_row != (*it_innergroup).end() )
+      {
+        //column number is 1 because the report includes only current month
+        if(it_row.data().m_budgetDiff[1].isNegative()) {
+          //get report account to get the name later
+          ReportAccount rowname = it_row.key();
+
+          m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
+
+          //get values from grid
+          MyMoneyMoney actualValue = it_row.data()[1];
+          MyMoneyMoney budgetValue = it_row.data().m_budget[1];
+          MyMoneyMoney budgetDiffValue = it_row.data().m_budgetDiff[1];
+
+          //format amounts
+          QString actualAmount = actualValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+          QString budgetAmount = budgetValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+          QString budgetDiffAmount = budgetDiffValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+
+          //account name
+          m_part->write(QString("<td class=\"left\">%1</td>").arg(rowname.name().replace(QRegExp(" "), "&nbsp;")));
+
+          //show amounts
+          m_part->write(QString("<td align=\"right\">%1</td>").arg(showColoredAmount(budgetAmount, budgetValue.isNegative())));
+          m_part->write(QString("<td align=\"right\">%1</td>").arg(showColoredAmount(actualAmount, actualValue.isNegative())));
+          m_part->write(QString("<td align=\"right\">%1</td>").arg(showColoredAmount(budgetDiffAmount, budgetDiffValue.isNegative())));
+          m_part->write("</tr>");
+        }
+        ++it_row;
+        
+      }
+      ++it_innergroup;
+    }
+    ++it_outergroup;
+  }
   m_part->write("</table>");
 }
 

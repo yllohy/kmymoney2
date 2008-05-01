@@ -71,6 +71,7 @@ protected:
   void showForecast(void);
   void showNetWorthGraph(void);
   void showSummary(void);
+  void showBudget(void);
 
   const QString link(const QString& view, const QString& query) const;
   const QString linkend(void) const;
