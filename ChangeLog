@@ -1,6 +1,7 @@
 2008-05-01 Alvaro Soliverez <asoliverez@gmail.com>
   * Separated grid of pivottable into a separate file
   * Added budget overrun report to Home page
+  * Removed unit tests for TCell
 
 2008-04-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sorting of value columns in account views
