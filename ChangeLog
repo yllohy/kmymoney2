@@ -3,6 +3,7 @@
   * Added budget overrun report to Home page
   * Removed unit tests for TCell
   * Moved PivotGrid tests to their own class
+  * Do not show Budget on Home Page if budget list is empty
 
 2008-04-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed sorting of value columns in account views
