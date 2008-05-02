@@ -2,6 +2,7 @@
 2008-05-02 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added budget option to home page settings
   * Fixed handling of home page settings that default to off
+  * Updated French translation from Patrick Petit
 
 2008-05-01 Alvaro Soliverez <asoliverez@gmail.com>
   * Separated grid of pivottable into a separate file
