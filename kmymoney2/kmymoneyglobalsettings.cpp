@@ -73,11 +73,10 @@ QStringList KMyMoneyGlobalSettings::itemList(void)
   QStringList list = QStringList::split(",", KMyMoneySettings::itemList());
 
   // now add all from 'all' that are missing in 'list'
-  QRegExp exp("-?(.*)");
+  QRegExp exp("-?(\\d+)");
   QStringList::iterator it_s;
   for(it_s = all.begin(); it_s != all.end(); ++it_s) {
     exp.search(*it_s);
-    QString bla = exp.cap(1);
     if(!list.contains(exp.cap(1)) && !list.contains(QString("-%1").arg(exp.cap(1)))) {
       list << *it_s;
     }
