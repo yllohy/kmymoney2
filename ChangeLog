@@ -1,4 +1,7 @@
-2008-05-01 Alvaro Soliverez <asoliverez@gmail.com>
+2008-05-02 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added conversion to lowest fraction to querytable
+
+2008-05-02 Alvaro Soliverez <asoliverez@gmail.com>
   * Added account type headers to budget on home page
 
 2008-05-02 Thomas Baumgart <ipwizard@users.sourceforge.net>

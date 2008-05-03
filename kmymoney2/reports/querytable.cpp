@@ -570,6 +570,14 @@ void QueryTable::constructTransactionTable(void)
     do {
 
       ReportAccount a = (* is).accountId();
+
+      //get fraction for account
+      int fraction = a.fraction();
+
+      //use base currency fraction if not initialized
+      if(fraction == -1)
+        fraction = MyMoneyFile::instance()->baseCurrency().smallestAccountFraction();
+
       QCString i = a.institutionId();
       QCString p = (* is).payeeId();
 
@@ -583,7 +591,7 @@ void QueryTable::constructTransactionTable(void)
 
 
         qA["shares"] = sh.isZero() ? "" : sh.toString();
-        qA["price"] = sh.isZero() ? "" : ((* is).value()*xr/sh).toString();
+        qA["price"] = sh.isZero() ? "" : ((* is).value()*xr/sh).convert(fraction).toString();
 
         qA["action"] = (* is).action();
 
@@ -635,8 +643,9 @@ void QueryTable::constructTransactionTable(void)
 
           if (loan_special_case) {
 
-            // put the principal amount in the "value" column
-            qA["value"] = ((-(* is).value()) * xr).toString();
+            // put the principal amount in the "value" column and convert to lowest fraction
+            qA["value"] = ((-(* is).value()) * xr).convert(fraction).toString();
+
             qA["rank"] = "0";
             qA["split"] = "";
 
@@ -647,7 +656,8 @@ void QueryTable::constructTransactionTable(void)
 
               // add the "summarized" split transaction
               // this is the sub-total of the split detail
-              qA["value"] = ((* is).value() * xr).toString();
+              // convert to lowest fraction
+              qA["value"] = ((* is).value() * xr).convert(fraction).toString();
               qA["rank"] = "0";
               qA["category"] = i18n("[Split Transaction]");
               qA["topcategory"] = i18n("Split");
@@ -669,12 +679,12 @@ void QueryTable::constructTransactionTable(void)
           if (loan_special_case) {
 
             if ((*is).action() == MyMoneySplit::ActionAmortization) {
-              // put the payment in the "payment" column
-              qA["payment"] = ((-(* is).value()) * xr).toString();
+              // put the payment in the "payment" column and convert to lowest fraction
+              qA["payment"] = ((-(* is).value()) * xr).convert(fraction).toString();
             }
             else if ((*is).action() == MyMoneySplit::ActionInterest) {
-              // put the interest in the "interest" column
-              qA["interest"] = ((-(* is).value()) * xr).toString();
+              // put the interest in the "interest" column and convert to lowest fraction
+              qA["interest"] = ((-(* is).value()) * xr).convert(fraction).toString();
             }
             else if (S.count() > 2) {
               // [dv: This comment carried from the original code. I am
@@ -706,12 +716,15 @@ void QueryTable::constructTransactionTable(void)
 
             if ((S.count() > 2) && use_summary) {
               qA["value"] = "";
-              qA["split"] = ((-(* is).value()) * xr).toString();
+              //convert to lowest fraction
+              qA["split"] = ((-(* is).value()) * xr).convert(fraction).toString();
               qA["rank"] = "1";
             }
             else {
               qA["split"] = "";
-              qA["value"] = ((-(* is).value()) * xr).toString();
+
+              //multiply by currency and convert to lowest fraction
+              qA["value"] = ((-(* is).value()) * xr).convert(fraction).toString();
               qA["rank"] = "0";
             }
 
@@ -738,7 +751,9 @@ void QueryTable::constructTransactionTable(void)
         if (m_config.includes(a) && use_transfers) {
           if (! a.isIncomeExpense()) {
 
-            qS["value"] = ((* is).value() * xr).toString();
+            //multiply by currency and convert to lowest fraction
+            qS["value"] = ((* is).value() * xr).convert(fraction).toString();
+
             qS["rank"] = "0";
 
             qS["account"] = a.name();
@@ -817,6 +832,12 @@ void QueryTable::constructTransactionTable(void)
 
     ReportAccount a = (* ia);
 
+    //get fraction for account
+    int fraction = a.fraction();
+
+    //use base currency fraction if not initialized
+    if(fraction == -1)
+      fraction = MyMoneyFile::instance()->baseCurrency().smallestAccountFraction();
     QCString i = a.institutionId();
 
     // use the institution of the parent for stock accounts
@@ -856,7 +877,7 @@ void QueryTable::constructTransactionTable(void)
     qA["rank"] = "-2";
 
     if (a.isInvest()) {
-      qA["price"] = (p0 * xr).toString();
+      qA["price"] = (p0 * xr).convert(fraction).toString();
       qA["shares"] = s0.toString();
     }
 
@@ -864,7 +885,7 @@ void QueryTable::constructTransactionTable(void)
       qA["price"] = xr.toString();
 
     qA["postdate"] = date0s;
-    qA["balance"] = (b0 * xr).toString();
+    qA["balance"] = (b0 * xr).convert(fraction).toString();
     qA["value"] = QString();
     qA["id"] = "A";
     m_transactions += qA;
@@ -876,12 +897,12 @@ void QueryTable::constructTransactionTable(void)
     }
 
     if (a.isInvest()) {
-      qA["price"] = (p1 * xr).toString();
+      qA["price"] = (p1 * xr).convert(fraction).toString();
       qA["shares"] = s1.toString();
     }
 
     qA["postdate"] = date1s;
-    qA["balance"] = (b1 * xr).toString();
+    qA["balance"] = (b1 * xr).convert(fraction).toString();
     qA["id"] = "Z";
     m_transactions += qA;
   }
@@ -952,10 +973,12 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
       if ( s.value().isPositive() ) {
         buys += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
         returnInvestment += s.value();
+        //convert to lowest fraction
         returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
       } else {
         sells += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
         returnInvestment += s.value();
+        //convert to lowest fraction
         returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
       }
     }
@@ -983,6 +1006,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
       if ( found ) {
         cashincome += CashFlowListItem( (*it_transaction).postDate(), -(*it_split).value() );
         returnInvestment += -(*it_split).value();
+        //convert to lowest fraction
         returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
       }
     }
@@ -1001,6 +1025,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   //check if no activity on that term
   if(!returnInvestment.isZero() && !endingBal.isZero()) {
     returnInvestment = (endingBal - returnInvestment)/returnInvestment;
+    returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
   } else {
     returnInvestment = MyMoneyMoney(0,1);
   }
@@ -1034,6 +1059,13 @@ void QueryTable::constructAccountTable(void)
   while ( it_account != accounts.end() )
   {
     ReportAccount account = *it_account;
+
+    //get fraction for account
+    int fraction = account.fraction();
+
+      //use base currency fraction if not initialized
+    if(fraction == -1)
+      fraction = MyMoneyFile::instance()->baseCurrency().smallestAccountFraction();
 
     // Note, "Investment" accounts are never included in account rows because
     // they don't contain anything by themselves.  In reports, they are only
@@ -1070,8 +1102,8 @@ void QueryTable::constructAccountTable(void)
       qaccountrow["shares"] = shares.toString();
 
       MyMoneyMoney netprice = account.deepCurrencyPrice(m_config.toDate()).reduce() * displayprice;
-      qaccountrow["price"] = ( netprice.reduce() ).toString();
-      qaccountrow["value"] = ( netprice.reduce() * shares.reduce() ).toString();
+      qaccountrow["price"] = ( netprice.reduce() ).convert(fraction).toString();
+      qaccountrow["value"] = ( netprice.reduce() * shares.reduce() ).convert(fraction).toString();
 
       QCString iid = (*it_account).institutionId();
 
