@@ -362,7 +362,8 @@ void KReportConfigurationFilterDlg::slotReset(void)
       for(it_b = m_budgets.begin(); it_b != m_budgets.end(); ++it_b) {
         m_tab2->m_comboBudget->insertItem((*it_b).name(), i);
         //set the current selected item
-        if(m_initialState.budget() == "Any" && (*it_b).budgetStart().year() == QDate::currentDate().year())
+        if( (m_initialState.budget() == "Any" && (*it_b).budgetStart().year() == QDate::currentDate().year())
+             || m_initialState.budget() == (*it_b).id())
           m_tab2->m_comboBudget->setCurrentItem(i);
         i++;
       }

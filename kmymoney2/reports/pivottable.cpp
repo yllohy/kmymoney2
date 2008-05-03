@@ -2067,6 +2067,39 @@ void PivotTable::drawChart( KReportChartView& _view ) const
             else
               data.expand( m_numColumns-1, ++rownum );
 
+            //show budget data
+            if ( m_config_f.hasBudget())
+            {
+              _view.params().setLegendText( rownum-1, QString(i18n("Budget ") + it_row.key().name() ) );
+
+            // Columns
+
+            if ( seriestotals )
+            {
+              if ( accountseries )
+                data.setCell( rownum-1, 0, it_row.data().m_budget.m_total.toDouble() );
+              else
+                data.setCell( 0, rownum-1, it_row.data().m_budget.m_total.toDouble() );
+            }
+            else
+            {
+              unsigned column = 1;
+              while ( column < m_numColumns )
+              {
+                if ( accountseries )
+                  data.setCell( rownum-1, column-1, it_row.data().m_budget[column].toDouble() );
+                else
+                  data.setCell( column-1, rownum-1, it_row.data().m_budget[column].toDouble() );
+                ++column;
+              }
+            }
+            // TODO: This is inefficient. Really we should total up how many rows
+            // there will be and allocate it all at once.
+            if ( accountseries )
+              data.expand( ++rownum, m_numColumns-1 );
+            else
+              data.expand( m_numColumns-1, ++rownum );
+            }
             ++it_row;
           }
           ++it_innergroup;
@@ -2128,6 +2161,38 @@ void PivotTable::drawChart( KReportChartView& _view ) const
           else
             data.expand( m_numColumns-1, ++rownum );
 
+          //show budget data
+          if ( m_config_f.hasBudget())
+          {
+            _view.params().setLegendText( rownum-1, QString(i18n("Budget ") + it_innergroup.key() ) );
+
+            // Columns
+            if ( seriestotals )
+            {
+              if ( accountseries )
+                data.setCell( rownum-1, 0, (*it_innergroup).m_total.m_budget.m_total.toDouble() );
+              else
+                data.setCell( 0, rownum-1, (*it_innergroup).m_total.m_budget.m_total.toDouble() );
+            }
+            else
+            {
+              unsigned column = 1;
+              while ( column < m_numColumns )
+              {
+                if ( accountseries )
+                  data.setCell( rownum-1, column-1, (*it_innergroup).m_total.m_budget[column].toDouble() );
+                else
+                  data.setCell( column-1, rownum-1, (*it_innergroup).m_total.m_budget[column].toDouble() );
+                ++column;
+              }
+            }
+            // TODO: This is inefficient. Really we should total up how many rows
+            // there will be and allocate it all at once.
+            if ( accountseries )
+              data.expand( ++rownum, m_numColumns-1 );
+            else
+              data.expand( m_numColumns-1, ++rownum );
+          }
           ++it_innergroup;
         }
         ++it_outergroup;
@@ -2136,7 +2201,6 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         data.expand( rownum-1, m_numColumns-1 );
       else
         data.expand( m_numColumns-1, rownum-1 );
-
     }
     break;
 
@@ -2181,6 +2245,44 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         else
           data.expand( m_numColumns-1, ++rownum );
 
+        //show budget data
+        if ( m_config_f.hasBudget())
+        {
+          _view.params().setLegendText( rownum-1, QString(i18n("Budget ") + it_outergroup.key()) );
+
+          //
+        // Columns
+          //
+
+          if ( seriestotals )
+          {
+            if ( accountseries )
+              data.setCell( rownum-1, 0, (*it_outergroup).m_total.m_budget.m_total.toDouble() );
+            else
+              data.setCell( 0, rownum-1, (*it_outergroup).m_total.m_budget.m_total.toDouble() );
+          }
+          else
+          {
+            unsigned column = 1;
+            while ( column < m_numColumns )
+            {
+              if ( accountseries )
+                data.setCell( rownum-1, column-1, (*it_outergroup).m_total.m_budget[column].toDouble() );
+              else
+                data.setCell( column-1, rownum-1, (*it_outergroup).m_total.m_budget[column].toDouble() );
+              ++column;
+            }
+          }
+
+        // TODO: This is inefficient. Really we should total up how many rows
+        // there will be and allocate it all at once.
+          if ( accountseries )
+            data.expand( ++rownum, m_numColumns-1 );
+          else
+            data.expand( m_numColumns-1, ++rownum );
+
+        }
+
         ++it_outergroup;
       }
 
@@ -2197,6 +2299,28 @@ void PivotTable::drawChart( KReportChartView& _view ) const
              data.setCell( totalcolumn-1, rownum-1, m_grid.m_total[totalcolumn].toDouble() );
            ++totalcolumn;
          }
+
+         //show budget data
+         if ( m_config_f.hasBudget())
+         {
+           unsigned totalcolumn = 1;
+
+           //add another row
+           if ( accountseries )
+             data.expand( ++rownum, m_numColumns-1 );
+           else
+             data.expand( m_numColumns-1, ++rownum );
+
+           _view.params().setLegendText( rownum-1, i18n("Budget Total") );
+           while ( totalcolumn < m_numColumns )
+           {
+             if ( accountseries )
+               data.setCell( rownum-1, totalcolumn-1, m_grid.m_total.m_budget[totalcolumn].toDouble() );
+             else
+               data.setCell( totalcolumn-1, rownum-1, m_grid.m_total.m_budget[totalcolumn].toDouble() );
+             ++totalcolumn;
+           } 
+         }
       }
       else
       {
@@ -2210,14 +2334,15 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
     case MyMoneyReport::eDetailTotal:
     {
+      unsigned rownum = 1;
       _view.params().setLegendText( 0, i18n("Total") );
 
       if ( seriestotals )
       {
         if ( accountseries )
-          data.setCell( 0, 0, m_grid.m_total.m_total.toDouble() );
+          data.setCell( rownum-1, 0, m_grid.m_total.m_total.toDouble() );
         else
-          data.setCell( 0, 0, m_grid.m_total.m_total.toDouble() );
+          data.setCell( 0, rownum-1, m_grid.m_total.m_total.toDouble() );
       }
       else
       {
@@ -2226,10 +2351,42 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         while ( totalcolumn < m_numColumns )
         {
           if ( accountseries )
-            data.setCell( 0, totalcolumn-1, m_grid.m_total[totalcolumn].toDouble() );
+            data.setCell( rownum-1, totalcolumn-1, m_grid.m_total[totalcolumn].toDouble() );
           else
-            data.setCell( totalcolumn-1, 0, m_grid.m_total[totalcolumn].toDouble() );
+            data.setCell( totalcolumn-1, rownum-1, m_grid.m_total[totalcolumn].toDouble() );
           ++totalcolumn;
+        }
+      }
+
+      //show budget data
+      if ( m_config_f.hasBudget())
+      {
+        if ( accountseries )
+          data.expand( ++rownum, m_numColumns-1 );
+        else
+          data.expand( m_numColumns-1, ++rownum );
+
+        _view.params().setLegendText( 1, i18n("Budget Total") );
+
+        if ( seriestotals )
+        {
+          if ( accountseries )
+            data.setCell( rownum-1, 0, m_grid.m_total.m_budget.m_total.toDouble() );
+          else
+            data.setCell( 0, rownum-1, m_grid.m_total.m_budget.m_total.toDouble() );
+        }
+        else
+        {
+        // For now, just the totals
+          unsigned totalcolumn = 1;
+          while ( totalcolumn < m_numColumns )
+          {
+            if ( accountseries )
+              data.setCell(rownum-1, totalcolumn-1, m_grid.m_total.m_budget[totalcolumn].toDouble() );
+            else
+              data.setCell( totalcolumn-1, rownum-1, m_grid.m_total.m_budget[totalcolumn].toDouble() );
+            ++totalcolumn;
+          }
         }
       }
     }

@@ -1227,7 +1227,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
       MyMoneyReport::eMonths,
       MyMoneyTransactionFilter::yearToDate,
       true,
-      i18n("Budget vs. Actual This Year"),
+      i18n("Budgeted vs. Actual This Year"),
       i18n("Default Report")
     ));
     list.back().setShowingRowTotals(true);
@@ -1274,6 +1274,21 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     ));
     list.back().setBudget("Any",false);
     list.back().setShowingRowTotals(true);
+#ifdef HAVE_KDCHART
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eBudgetActual,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::currentYear,
+      true,
+      i18n("Yearly Budgeted vs Actual Graph"),
+      i18n("Default Report")
+    ));
+    list.back().setChartByDefault(true);
+    list.back().setChartGridLines(false);
+    list.back().setBudget("Any",false);
+    list.back().setDetailLevel(MyMoneyReport::eDetailGroup);
+    list.back().setChartType(MyMoneyReport::eChartLine);
+#endif
 
     groups.push_back(list);
   }
