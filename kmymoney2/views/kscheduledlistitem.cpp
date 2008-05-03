@@ -69,10 +69,10 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
 
     switch(schedule.type()) {
       case MyMoneySchedule::TYPE_DEPOSIT:
-        if (!s1.value().isNegative())
-          split = s1;
-        else
+        if (s1.value().isNegative())
           split = s2;
+        else
+          split = s1;
         break;
 
       case MyMoneySchedule::TYPE_LOANPAYMENT:
@@ -93,7 +93,7 @@ KScheduledListItem::KScheduledListItem(KScheduledListItem *parent, const MyMoney
         break;
 
       default:
-        if (s1.value().isNegative())
+        if (!s1.value().isPositive())
           split = s1;
         else
           split = s2;
