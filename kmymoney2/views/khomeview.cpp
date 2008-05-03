@@ -1361,6 +1361,7 @@ void KHomeView::showBudget(void)
     PivotGrid::iterator it_outergroup = grid.begin();
     while ( it_outergroup != grid.end() )
     {
+      i = 0;
       PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
       while ( it_innergroup != (*it_outergroup).end() )
       {
@@ -1372,6 +1373,12 @@ void KHomeView::showBudget(void)
             //get report account to get the name later
             ReportAccount rowname = it_row.key();
 
+            //write the outergroup if it is the first row of outergroup being shown
+            if(i == 0) {
+              m_part->write("<tr style=\"font-weight:bold;\">");
+              m_part->write(QString("<td class=\"left\" colspan=\"4\">%1</td>").arg(KMyMoneyUtils::accountTypeToString( rowname.accountType())));
+              m_part->write("</tr>");
+            }
             m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
 
             //get values from grid
