@@ -47,7 +47,8 @@ KMyMoneyCombo::KMyMoneyCombo(QWidget *w, const char *name) :
   KComboBox(w, name),
   m_completion(0),
   m_edit(0),
-  m_canCreateObjects(false)
+  m_canCreateObjects(false),
+  m_inFocusOutEvent(false)
 {
 }
 
@@ -55,7 +56,8 @@ KMyMoneyCombo::KMyMoneyCombo(bool rw, QWidget *w, const char *name) :
   KComboBox(rw, w, name),
   m_completion(0),
   m_edit(0),
-  m_canCreateObjects(false)
+  m_canCreateObjects(false),
+  m_inFocusOutEvent(false)
 {
   if(rw) {
     m_edit = new kMyMoneyLineEdit(this, "combo edit");
@@ -223,6 +225,12 @@ void KMyMoneyCombo::disconnectNotify(const char* signal)
 
 void KMyMoneyCombo::focusOutEvent(QFocusEvent* e)
 {
+  if(m_inFocusOutEvent) {
+    KComboBox::focusOutEvent(e);
+    return;
+  }
+
+  m_inFocusOutEvent = true;
   if(editable() && !currentText().isEmpty()) {
     if(m_canCreateObjects) {
       if(!m_completion->selector()->contains(currentText())) {
@@ -261,6 +269,7 @@ void KMyMoneyCombo::focusOutEvent(QFocusEvent* e)
       emit itemSelected(m_id);
     repaint();
   }
+  m_inFocusOutEvent = false;
 }
 
 KMyMoneySelector* KMyMoneyCombo::selector(void) const

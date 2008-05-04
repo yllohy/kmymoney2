@@ -213,6 +213,10 @@ private:
     */
   bool                   m_canCreateObjects;
 
+  /**
+    * Flag to check whether a focusOutEvent processing is underway or not
+    */
+  bool                   m_inFocusOutEvent;
 };
 
 /**

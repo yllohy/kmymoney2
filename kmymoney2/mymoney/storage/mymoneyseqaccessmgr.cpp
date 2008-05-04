@@ -1807,18 +1807,23 @@ MyMoneyPrice MyMoneySeqAccessMgr::price(const QCString& fromId, const QCString& 
   MyMoneyPriceEntries::ConstIterator it;
   QDate date(_date);
 
+  // If no valid date is passed, we use today's date.
   if(!date.isValid())
     date = QDate::currentDate();
 
-  for(it = m_priceList[MyMoneySecurityPair(fromId, toId)].begin(); it != m_priceList[MyMoneySecurityPair(fromId, toId)].end(); ++it) {
-    if(date < it.key())
-      break;
+  // If the caller selected an exact entry, we can search for
+  // it using the date as the key
+  if(exactDate) {
+    it = m_priceList[MyMoneySecurityPair(fromId, toId)].find(date);
+    if(it != m_priceList[MyMoneySecurityPair(fromId, toId)].end())
+      rc = *it;
 
-    if(exactDate) {
-      if(date == it.key())
-        rc = *it;
+  } else {
+    // otherwise, we must scan the map for the previous price entry
+    for(it = m_priceList[MyMoneySecurityPair(fromId, toId)].begin(); it != m_priceList[MyMoneySecurityPair(fromId, toId)].end(); ++it) {
+      if(date < it.key())
+        break;
 
-    } else {
       if(date >= it.key())
         rc = *it;
     }

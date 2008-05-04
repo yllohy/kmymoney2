@@ -83,6 +83,9 @@ private slots:
   void slotFrequencyChanged(int item);
   void slotShowHelp(void);
 
+  /// Overridden for internal reasons. No API changes.
+  void accept(void);
+
 private:
   KEditScheduleDlgPrivate* d;
 };

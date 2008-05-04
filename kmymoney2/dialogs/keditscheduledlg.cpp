@@ -287,6 +287,22 @@ TransactionEditor* KEditScheduleDlg::startEdit(void)
   return editor;
 }
 
+void KEditScheduleDlg::accept(void)
+{
+  // Force the focus to be on the OK button. This will trigger creation
+  // of any unknown objects (payees, categories etc.)
+  buttonOk->setFocus();
+
+  // only accept if the button is really still enabled. We could end
+  // up here, if the user filled all fields, the focus is on the category
+  // field, but the category is not yet existant. When the user presses the
+  // OK button in this context, he will be asked if he wants to create
+  // the category or not. In case he decides no, we end up here with no
+  // category filled in, so we don't run through the final acceptance.
+  if(buttonOk->isEnabled())
+    KEditScheduleDlgDecl::accept();
+}
+
 const MyMoneySchedule& KEditScheduleDlg::schedule(void) const
 {
   if(d->m_editor) {
