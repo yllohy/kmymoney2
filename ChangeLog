@@ -1,4 +1,8 @@
 
+2008-05-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Portuguese translation from José Jorge
+  * Updated Simplified Chinese translation from Roy Qu
+
 2008-05-04 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed a problem while creating categories within the schedule editor
   * Improved price search when exact date option is set in the API
