@@ -271,7 +271,7 @@ private:
   /**
    * list of forecast accounts
    */
-  QMap<QString, QCString> m_nameIdx;
+  QMap<QCString, QCString> m_nameIdx;
 
   /**
    * cycle of accounts in days

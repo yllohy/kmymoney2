@@ -807,7 +807,7 @@ void KHomeView::showFavoriteReports(void)
 
 void KHomeView::showForecast(void)
 {
-  QMap<QString, QCString> nameIdx;
+  QMap<QCString, QCString> nameIdx;
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyAccount> accList;
   MyMoneyForecast forecast;
@@ -823,8 +823,8 @@ void KHomeView::showForecast(void)
   for ( ; accList_t != accList.end(); ++accList_t )
   {
     MyMoneyAccount acc = *accList_t;
-    if ( nameIdx[acc.name() ] != acc.id() ) { //Check if the account is there
-      nameIdx[acc.name() ] = acc.id();
+    if ( nameIdx[acc.id() ] != acc.id() ) { //Check if the account is there
+      nameIdx[acc.id() ] = acc.id();
 
     }
   }
@@ -858,7 +858,7 @@ void KHomeView::showForecast(void)
     // Now output entries
     i = 0;
 
-    QMap<QString, QCString>::ConstIterator it_n;
+    QMap<QCString, QCString>::ConstIterator it_n;
     for(it_n = nameIdx.begin(); it_n != nameIdx.end(); ++it_n) {
       MyMoneyAccount acc = file->account(*it_n);
 

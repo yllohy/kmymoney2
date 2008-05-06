@@ -163,13 +163,13 @@ void KForecastView::loadListView(void)
   forecast.doForecast();
 
   //Get all accounts of the right type to calculate forecast
-  nameIdx.clear();
+  m_nameIdx.clear();
   accList = forecast.accountList();
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for(; accList_t != accList.end(); ++accList_t ) {
     MyMoneyAccount acc = *accList_t;
-    if(nameIdx[acc.name()] != acc.id()) { //Check if the account is there
-        nameIdx[acc.name()] = acc.id();
+    if(m_nameIdx[acc.id()] != acc.id()) { //Check if the account is there
+        m_nameIdx[acc.id()] = acc.id();
     }
   }
 
@@ -203,8 +203,8 @@ void KForecastView::loadListView(void)
   KMyMoneyForecastListViewItem *forecastItem = 0;
   QMap<QDate, MyMoneyMoney> cycleBalance;
 
-  QMap<QString, QCString>::ConstIterator it_nc;
-  for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
+  QMap<QCString, QCString>::ConstIterator it_nc;
+  for(it_nc = m_nameIdx.begin(); it_nc != m_nameIdx.end(); ++it_nc) {
 
     MyMoneyAccount acc = file->account(*it_nc);
     MyMoneySecurity currency;
@@ -289,13 +289,13 @@ void KForecastView::loadSummaryView(void)
   forecast.doForecast();
 
   //Get all accounts of the right type to calculate forecast
-  nameIdx.clear();
+  m_nameIdx.clear();
   accList = forecast.accountList();
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for(; accList_t != accList.end(); ++accList_t ) {
     MyMoneyAccount acc = *accList_t;
-    if(nameIdx[acc.name()] != acc.id()) { //Check if the account is there
-      nameIdx[acc.name()] = acc.id();
+    if(m_nameIdx[acc.id()] != acc.id()) { //Check if the account is there
+      m_nameIdx[acc.id()] = acc.id();
     }
   }
 
@@ -344,8 +344,8 @@ void KForecastView::loadSummaryView(void)
   KMyMoneyForecastListViewItem *summaryItem = 0;
   KMyMoneyForecastListViewItem *adviceItem = 0;
 
-  QMap<QString, QCString>::ConstIterator it_nc;
-  for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
+  QMap<QCString, QCString>::ConstIterator it_nc;
+  for(it_nc = m_nameIdx.begin(); it_nc != m_nameIdx.end(); ++it_nc) {
     const MyMoneyAccount& acc = file->account(*it_nc);
     MyMoneySecurity currency;
     QString amount;
@@ -432,7 +432,7 @@ void KForecastView::loadSummaryView(void)
   summaryItem->setText( column, totalVarAmount);
 
   //Add comments to the advice list
-  for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
+  for(it_nc = m_nameIdx.begin(); it_nc != m_nameIdx.end(); ++it_nc) {
 
     const MyMoneyAccount& acc = file->account(*it_nc);
     MyMoneySecurity currency;
@@ -552,13 +552,13 @@ void KForecastView::loadAdvancedView(void)
   forecast.doForecast();
 
   //Get all accounts of the right type to calculate forecast
-  nameIdx.clear();
+  m_nameIdx.clear();
   accList = forecast.accountList();
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for(; accList_t != accList.end(); ++accList_t ) {
     MyMoneyAccount acc = *accList_t;
-    if(nameIdx[acc.name()] != acc.id()) { //Check if the account is there
-      nameIdx[acc.name()] = acc.id();
+    if(m_nameIdx[acc.id()] != acc.id()) { //Check if the account is there
+      m_nameIdx[acc.id()] = acc.id();
     }
   }
   //clear the list, including columns
@@ -593,8 +593,8 @@ void KForecastView::loadAdvancedView(void)
   m_advancedList->setSorting(-1);
   KMyMoneyForecastListViewItem *advancedItem = 0;
 
-  QMap<QString, QCString>::ConstIterator it_nc;
-  for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
+  QMap<QCString, QCString>::ConstIterator it_nc;
+  for(it_nc = m_nameIdx.begin(); it_nc != m_nameIdx.end(); ++it_nc) {
     const MyMoneyAccount& acc = file->account(*it_nc);
     QString amount;
     MyMoneyMoney amountMM;
@@ -674,13 +674,13 @@ void KForecastView::loadBudgetView(void)
   forecast.createBudget(budget, historyStartDate, historyEndDate, forecastStartDate, forecastEndDate, false);
 
   //Get all accounts of the right type to calculate forecast
-  nameIdx.clear();
+  m_nameIdx.clear();
   accList = forecast.accountList();
   QValueList<MyMoneyAccount>::const_iterator accList_t = accList.begin();
   for(; accList_t != accList.end(); ++accList_t ) {
     MyMoneyAccount acc = *accList_t;
-    if(nameIdx[acc.name()] != acc.id()) { //Check if the account is there
-      nameIdx[acc.name()] = acc.id();
+    if(m_nameIdx[acc.id()] != acc.id()) { //Check if the account is there
+      m_nameIdx[acc.id()] = acc.id();
     }
   }
 
@@ -713,8 +713,8 @@ void KForecastView::loadBudgetView(void)
   KMyMoneyForecastListViewItem *budgetItem = 0;
   QMap<int, MyMoneyMoney> cycleBalance;
 
-  QMap<QString, QCString>::ConstIterator it_nc;
-  for(it_nc = nameIdx.begin(); it_nc != nameIdx.end(); ++it_nc) {
+  QMap<QCString, QCString>::ConstIterator it_nc;
+  for(it_nc = m_nameIdx.begin(); it_nc != m_nameIdx.end(); ++it_nc) {
     MyMoneyAccount acc = file->account(*it_nc);
     MyMoneySecurity currency;
     QString amount;

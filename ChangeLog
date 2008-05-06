@@ -1,5 +1,6 @@
 2008-05-05 Alvaro Soliverez <asoliverez@gmail.com>
   * Modified default of Income Expense Pie Chart to not show row totals
+  * Fixed forecast account comparison when accounts have duplicate names
 
 2008-05-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Portuguese translation from José Jorge

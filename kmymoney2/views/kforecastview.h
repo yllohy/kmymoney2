@@ -62,7 +62,7 @@ protected:
     MaxViewTabs
   } ForecastViewTab;
 
-  QMap<QString, QCString> nameIdx;
+  QMap<QCString, QCString> m_nameIdx;
 
 
   /**
