@@ -960,6 +960,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.back().setChartByDefault(true);
     list.back().setDetailLevel(MyMoneyReport::eDetailGroup);
     list.back().setChartType(MyMoneyReport::eChartPie);
+    list.back().setShowingRowTotals(false);
 #endif
 
     groups.push_back(list);
