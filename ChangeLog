@@ -1,6 +1,7 @@
 
 2008-05-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed old KDevelop project file
+  * Added check for interest accounts to consistency check
 
 2008-05-05 Alvaro Soliverez <asoliverez@gmail.com>
   * Modified default of Income Expense Pie Chart to not show row totals

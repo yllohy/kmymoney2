@@ -2,7 +2,7 @@
                           mymoneyfile.cpp
                              -------------------
     copyright            : (C) 2000 by Michael Edwardes
-                           (C) 2002, 2007 by Thomas Baumgart
+                           (C) 2002, 2007-2008 by Thomas Baumgart
     email                : mte@users.sourceforge.net
                            ipwizard@users.sourceforge.net
  ***************************************************************************/
@@ -35,6 +35,7 @@
 #include "mymoneyfile.h"
 #include "mymoneyreport.h"
 #include "mymoneybudget.h"
+#include "mymoneyprice.h"
 #include "mymoneyobjectcontainer.h"
 
 #ifndef HAVE_CONFIG_H
@@ -60,6 +61,7 @@ public:
   bool                   m_inTransaction;
   MyMoneySecurity        m_baseCurrency;
   MyMoneyObjectContainer m_cache;
+  MyMoneyPriceList       m_priceCache;
 
   /**
     * This member keeps a list of ids to notify after an
@@ -109,6 +111,7 @@ void MyMoneyFile::attachStorage(IMyMoneyStorage* const storage)
 
   // and the whole cache
   d->m_cache.clear(storage);
+  d->m_priceCache.clear();
 
   // notify application about new data availability
   emit dataChanged();
@@ -117,6 +120,7 @@ void MyMoneyFile::attachStorage(IMyMoneyStorage* const storage)
 void MyMoneyFile::detachStorage(IMyMoneyStorage* const /* storage */)
 {
   d->m_cache.clear();
+  d->m_priceCache.clear();
   m_storage = 0;
 }
 
@@ -1329,6 +1333,8 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   QCStringList accountRebuild;
   QCStringList::ConstIterator it_c;
 
+  QMap<QCString, bool> interestAccounts;
+
   MyMoneyAccount parent;
   MyMoneyAccount child;
   MyMoneyAccount toplevel;
@@ -1452,6 +1458,14 @@ const QStringList MyMoneyFile::consistencyCheck(void)
           accountRebuild << (*it_a).id();
       }
     }
+
+    // see if it is a loan account. if so, remember the assigned interest account
+    if((*it_a).isLoan()) {
+      const MyMoneyAccountLoan* loan = dynamic_cast<MyMoneyAccountLoan*>(&(*it_a));
+      if(!loan->interestAccountId().isEmpty())
+        interestAccounts[loan->interestAccountId()] = true;
+    }
+
     // if the account was modified, we need to update it in the engine
     if(!(m_storage->account((*it_a).id()) == (*it_a))) {
       try {
@@ -1531,6 +1545,15 @@ const QStringList MyMoneyFile::consistencyCheck(void)
   MyMoneyTransactionFilter filter;
   filter.setReportAllSplits(false);
   m_storage->transactionList(tList, filter);
+  // Generate the list of interest accounts
+  for(it_t = tList.begin(); it_t != tList.end(); ++it_t) {
+    const MyMoneyTransaction& t = (*it_t);
+    QValueList<MyMoneySplit>::const_iterator it_s;
+    for(it_s = t.splits().begin(); it_s != t.splits().end(); ++it_s) {
+      if((*it_s).action() == MyMoneySplit::ActionInterest)
+        interestAccounts[(*it_s).accountId()] = true;
+    }
+  }
   for(it_t = tList.begin(); it_t != tList.end(); ++it_t) {
     MyMoneyTransaction t = (*it_t);
     QValueList<MyMoneySplit>::const_iterator it_s;
@@ -1561,6 +1584,15 @@ const QStringList MyMoneyFile::consistencyCheck(void)
         ++problemCount;
         ++unfixedCount;
         delete e;
+      }
+
+      // make sure the interest splits are marked correct as such
+      if(interestAccounts.find(s.accountId()) != interestAccounts.end()
+      && s.action() != MyMoneySplit::ActionInterest) {
+        s.setAction(MyMoneySplit::ActionInterest);
+        sChanged = true;
+        rc << i18n("  * action marked as interest in split of transaction '%1'.").arg(t.id());
+        ++problemCount;
       }
 
       if(sChanged) {
