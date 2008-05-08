@@ -1,4 +1,9 @@
 
+2008-05-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Removed some old files from the repository
+  * Updated splash screen and titlelabel for 0.9
+  * Released 0.9
+
 2008-05-07 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed old KDevelop project file
   * Added check for interest accounts to consistency check
