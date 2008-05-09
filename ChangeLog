@@ -1,3 +1,5 @@
+2008-05-08 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed selection of date range combo in filter custom dialog
 
 2008-05-08 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Removed some old files from the repository

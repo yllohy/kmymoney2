@@ -399,12 +399,16 @@ void KFindTransactionDlg::slotDateRangeChanged(int idx)
 void KFindTransactionDlg::slotDateChanged(void)
 {
   int idx;
-  for(idx = MyMoneyTransactionFilter::untilToday; idx < MyMoneyTransactionFilter::userDefined; ++idx) {
+  for(idx = MyMoneyTransactionFilter::untilToday; idx < MyMoneyTransactionFilter::dateOptionCount; ++idx) {
     if(m_fromDate->date() == m_startDates[idx]
     && m_toDate->date() == m_endDates[idx]) {
       break;
     }
   }
+  //if no filter matched, set to user defined
+  if(idx == MyMoneyTransactionFilter::dateOptionCount)
+    idx = MyMoneyTransactionFilter::userDefined;
+
   m_dateRange->blockSignals(true);
   m_dateRange->setCurrentItem(static_cast<MyMoneyTransactionFilter::dateOptionE>(idx));
   m_dateRange->blockSignals(false);
