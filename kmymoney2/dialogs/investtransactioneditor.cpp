@@ -355,6 +355,16 @@ int InvestTransactionEditor::editSplits(const QString& categoryWidgetName, const
       s.setValue(s.shares());
       splits << s;
     }
+    // use the transactions commodity as the currency indicator for the splits
+    // this is used to allow some useful setting for the fractions in the amount fields
+    try {
+      d->m_phonyAccount.setCurrencyId(m_transaction.commodity());
+      d->m_phonyAccount.fraction(MyMoneyFile::instance()->security(m_transaction.commodity()));
+    } catch(MyMoneyException *e) {
+      qDebug("Unable to setup precision");
+      delete e;
+    }
+
     if(createPseudoTransaction(transaction, splits)) {
       MyMoneyMoney value;
 
