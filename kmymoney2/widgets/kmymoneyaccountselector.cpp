@@ -86,7 +86,7 @@ kMyMoneyAccountSelector::kMyMoneyAccountSelector(QWidget *parent, const char *na
     connect(m_expenseCategoriesButton, SIGNAL(clicked()), this, SLOT(slotSelectExpenseCategories()));
   }
 
-  // sort the list of accounts by ascending type
+  // sort the list of accounts in ascending order
   m_listView->setSorting(0);
 }
 

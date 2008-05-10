@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-10 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Make menu key work in split editor
+
 2008-05-09 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed precision problem when opening the split transaction editor
     for fees/interest in investment transactions
