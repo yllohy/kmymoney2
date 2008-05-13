@@ -3,6 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Dutch translation from Bert Keuter
+  * Updated German translation from Marko Kaening
+
 2008-05-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * New files will be name $HOME/$USER.kmy
 
