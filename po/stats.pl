@@ -85,6 +85,7 @@ $country{"pt"} = "Portugal";
 $country{"ru"} = "Russia";
 $country{"sk"} = "Slovakia";
 $country{"sl"} = "Slovenia";
+$country{"sv"} = "Sweden";
 $country{"zh_CN"} = "China";
 
 $language{"ca"} = "Catalan";
@@ -105,11 +106,13 @@ $language{"pt"} = "Portuguese (Portugal)";
 $language{"ru"} = "Russian";
 $language{"sk"} = "Slovak";
 $language{"sl"} = "Slovenian";
+$language{"sv"} = "Swedish";
 $language{"zh_CN"} = "Simplified Chinese";
 
 $flags{"es_AR"} = "ar";
 $flags{"en_GB"} = "gb";
 $flags{"pt_BR"} = "br";
+$flags{"pt"} = "pt";
 $flags{"da"} = "dk";
 $flags{"gl"} = "Galicia";
 $flags{"zh_CN"} = "cn";
