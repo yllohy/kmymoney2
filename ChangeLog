@@ -6,6 +6,13 @@
 2008-05-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Dutch translation from Bert Keuter
   * Updated German translation from Marko Kaening
+  * Regenerated POT file
+  * Bumped version number to 0.9.1
+  * Bumped min KDE version to 3.4.0
+
+2008-05-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Updated Dutch translation from Bert Keuter
+  * Updated German translation from Marko Kaening
   * Added Sweden to stats.pl for translations
 
 2008-05-11 Thomas Baumgart <ipwizard@users.sourceforge.net>
