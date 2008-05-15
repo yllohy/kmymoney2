@@ -267,6 +267,7 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
         break;
 
       default:
+        rc = true;
         KShortcut copySplit(i18n("Duplicate split", "CTRL+c"));
         KShortcut newSplit(QKeySequence(Qt::CTRL | Qt::Key_Insert));
         if(copySplit.contains(KKey(k))) {
@@ -326,13 +327,13 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
         break;
 
       default:
+        rc = false;
         break;
     }
   } else if(e->type() == QEvent::KeyRelease && !isEditMode()) {
     // for some reason, we only see a KeyRelease event of the Menu key
     // here. In other locations (e.g. Register::eventFilter()) we see
     // a KeyPress event. Strange. (ipwizard - 2008-05-10)
-    rc = true;
     switch(k->key()) {
       case Qt::Key_Menu:
         // if the very last entry is selected, the delete
@@ -343,6 +344,7 @@ bool kMyMoneySplitTable::eventFilter(QObject *o, QEvent *e)
               row < static_cast<int> (m_transaction.splits().count()-1));
 
         m_contextMenu->exec(QCursor::pos());
+        rc = true;
         break;
       default:
         break;
