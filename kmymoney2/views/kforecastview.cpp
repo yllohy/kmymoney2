@@ -65,27 +65,8 @@ KForecastView::KForecastView(QWidget *parent, const char *name) :
   m_adviceList->setAllColumnsShowFocus(true);
   m_advancedList->setAllColumnsShowFocus(true);
 
-  //fill the settings controls
-  m_forecastDays->setValue(KMyMoneyGlobalSettings::forecastDays());
-  m_accountsCycle->setValue(KMyMoneyGlobalSettings::forecastAccountCycle());
-  m_beginDay->setValue(KMyMoneyGlobalSettings::beginForecastDay());
-  m_forecastCycles->setValue(KMyMoneyGlobalSettings::forecastCycles());
-  m_historyMethod->setButton(KMyMoneyGlobalSettings::historyMethod());
-  switch(KMyMoneyGlobalSettings::forecastMethod()) {
-    case 0:
-      m_forecastMethod->setText(i18n("Scheduled"));
-      m_forecastCycles->setDisabled(true);
-      m_historyMethod->setDisabled(true);
-      break;
-    case 1:
-      m_forecastMethod->setText(i18n("History"));
-      m_forecastCycles->setEnabled(true);
-      m_historyMethod->setEnabled(true);
-      break;
-    default:
-      m_forecastMethod->setText(i18n("Unknown"));
-      break;
-  }
+  loadForecastSettings();
+
 }
 
 KForecastView::~KForecastView()
@@ -141,8 +122,37 @@ void KForecastView::slotLoadForecast(void)
   m_needReload[ListView] = true;
   m_needReload[AdvancedView] = true;
   m_needReload[BudgetView] = true;
+
+  //refresh settings
+  loadForecastSettings();
+
   if(isVisible())
     slotTabChanged(m_tab->currentPage());
+}
+
+void KForecastView::loadForecastSettings(void)
+{
+  //fill the settings controls
+  m_forecastDays->setValue(KMyMoneyGlobalSettings::forecastDays());
+  m_accountsCycle->setValue(KMyMoneyGlobalSettings::forecastAccountCycle());
+  m_beginDay->setValue(KMyMoneyGlobalSettings::beginForecastDay());
+  m_forecastCycles->setValue(KMyMoneyGlobalSettings::forecastCycles());
+  m_historyMethod->setButton(KMyMoneyGlobalSettings::historyMethod());
+  switch(KMyMoneyGlobalSettings::forecastMethod()) {
+    case 0:
+      m_forecastMethod->setText(i18n("Scheduled"));
+      m_forecastCycles->setDisabled(true);
+      m_historyMethod->setDisabled(true);
+      break;
+    case 1:
+      m_forecastMethod->setText(i18n("History"));
+      m_forecastCycles->setEnabled(true);
+      m_historyMethod->setEnabled(true);
+      break;
+    default:
+      m_forecastMethod->setText(i18n("Unknown"));
+      break;
+  }
 }
 
 void KForecastView::loadListView(void)

@@ -70,10 +70,36 @@ protected:
     *
     */
   void loadForecast(ForecastViewTab tab);
+
+  /**
+    * This method loads the detailed view
+    *
+    */
   void loadListView(void);
+
+  /**
+   * This method loads the summary view
+   *
+   */
   void loadSummaryView(void);
+
+  /**
+   * This method loads the advanced view
+   *
+   */
   void loadAdvancedView(void);
+
+  /**
+   * This method loads the budget view
+   *
+   */
   void loadBudgetView(void);
+
+  /**
+   * This method loads the settings from user configuration
+   *
+   */
+  void loadForecastSettings(void);
 
 protected slots:
   void slotTabChanged(QWidget*);

@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-14 Alvaro Soliverez <asoliverez@gmail.com>
+  * Fixed forecast settings refresh
+
 2008-05-12 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Dutch translation from Bert Keuter
   * Updated German translation from Marko Kaening
