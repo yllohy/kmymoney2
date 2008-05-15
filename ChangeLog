@@ -5,6 +5,8 @@
 
 2008-05-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed keyboard handling in split editor widgets
+  * Updated German translation from Marko Kaening
+  * Updated Simplified Chinese translation from Roy Qu
 
 2008-05-14 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed forecast settings refresh
