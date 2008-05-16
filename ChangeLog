@@ -5,6 +5,8 @@
 
 2008-05-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Dutch translation from Bert Keuter
+  * Fixed crash when saving institution data from editor that was opened
+    using a double click in the institution view
 
 2008-05-15 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed keyboard handling in split editor widgets

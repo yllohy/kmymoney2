@@ -334,7 +334,15 @@ void KMyMoneyAccountTree::slotOpenObject(QListViewItem* i)
 {
   KMyMoneyAccountTreeItem* item = dynamic_cast<KMyMoneyAccountTreeItem *>(i);
   if(item) {
-    emit openObject(item->itemObject());
+    // Create a copy of the item since the original might be destroyed
+    // during processing of this signal.
+    if(item->isAccount()) {
+      MyMoneyAccount acc = dynamic_cast<const MyMoneyAccount&>(item->itemObject());
+      emit openObject(acc);
+    } else if(item->isInstitution()) {
+      MyMoneyInstitution inst = dynamic_cast<const MyMoneyInstitution&>(item->itemObject());
+      emit openObject(inst);
+    }
   }
 }
 
