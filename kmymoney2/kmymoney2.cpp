@@ -1255,6 +1255,7 @@ void KMyMoney2App::slotStatusProgressBar(int current, int total)
   if(total == -1 && current == -1) {      // reset
     progressBar->reset();
     progressBar->hide();
+    m_nextUpdate = 0;
 
   } else if(total != 0) {                 // init
     progressBar->setTotalSteps(total);
@@ -2751,6 +2752,17 @@ void KMyMoney2App::slotAccountDelete(void)
   if (file->isStandardAccount(m_selectedAccount.id()))
     return;
 
+  // check if the account is referenced by a transaction or schedule
+  MyMoneyFileBitArray skip(IMyMoneyStorage::MaxRefCheckBits);
+  skip.fill(false);
+  skip.setBit(IMyMoneyStorage::RefCheckAccount);
+  skip.setBit(IMyMoneyStorage::RefCheckInstitution);
+  skip.setBit(IMyMoneyStorage::RefCheckPayee);
+  skip.setBit(IMyMoneyStorage::RefCheckSecurity);
+  skip.setBit(IMyMoneyStorage::RefCheckCurrency);
+  skip.setBit(IMyMoneyStorage::RefCheckPrice);
+  bool hasReference = file->isReferenced(m_selectedAccount, skip);
+
   // make sure we only allow transactions in a 'category' (income/expense account)
   switch(m_selectedAccount.accountType()) {
     case MyMoneyAccount::Income:
@@ -2758,8 +2770,8 @@ void KMyMoney2App::slotAccountDelete(void)
       break;
 
     default:
-      // if the account still has transactions
-      if(file->transactionCount(m_selectedAccount.id()) != 0) {
+      // if the account is still referenced
+      if(hasReference) {
         return;
       }
       break;
@@ -2772,7 +2784,7 @@ void KMyMoney2App::slotAccountDelete(void)
 
   MyMoneyFileTransaction ft;
 
-  if(file->transactionCount(m_selectedAccount.id()) != 0) {
+  if(hasReference) {
     // show transaction reassignment dialog
 
     needAskUser = false;
@@ -2824,6 +2836,24 @@ void KMyMoney2App::slotAccountDelete(void)
       }
       slotStatusProgressBar(slist.count(), 0);
 
+      // now fix all budgets
+      slotStatusMsg(i18n("Adjusting budgets ..."));
+      QValueList<MyMoneyBudget> blist = file->budgetList();
+      QValueList<MyMoneyBudget>::const_iterator it_b;
+      for(it_b = blist.begin(); it_b != blist.end(); ++it_b) {
+        if((*it_b).hasReferenceTo(m_selectedAccount.id())) {
+          MyMoneyBudget b = (*it_b);
+          MyMoneyBudget::AccountGroup fromBudget = b.account(m_selectedAccount.id());
+          MyMoneyBudget::AccountGroup toBudget = b.account(categoryId);
+          toBudget += fromBudget;
+          b.setAccount(toBudget, toBudget.id());
+          b.removeReference(m_selectedAccount.id());
+          file->modifyBudget(b);
+
+        }
+      }
+      slotStatusProgressBar(blist.count(), 0);
+
     } catch(MyMoneyException  *e) {
       KMessageBox::error( this, i18n("Unable to exchange category <b>%1</b> with category <b>%2</b>. Reason: %3").arg(m_selectedAccount.name()).arg(newCategory.name()).arg(e->what()));
       delete e;
@@ -2836,6 +2866,8 @@ void KMyMoney2App::slotAccountDelete(void)
   if(exit)
     return;
 
+  // at this point, we must not have a reference to the account
+  // to be deleted anymore
   switch(m_selectedAccount.accountGroup()) {
     // special handling for categories to allow deleting of empty subcategories
     case MyMoneyAccount::Income:
@@ -5186,11 +5218,13 @@ void KMyMoney2App::slotUpdateActions(void)
           action("category_edit")->setEnabled(true);
           // enable delete action, if category/account itself is not referenced
           // by any object except accounts, because we want to allow
-          // deleting of sub-categories. Also, we allow transactions and schedules
+          // deleting of sub-categories. Also, we allow transactions, schedules and budgets
           // to be present because we can re-assign them during the delete process
           skip.fill(false);
+          skip.setBit(IMyMoneyStorage::RefCheckTransaction);
           skip.setBit(IMyMoneyStorage::RefCheckAccount);
           skip.setBit(IMyMoneyStorage::RefCheckSchedule);
+          skip.setBit(IMyMoneyStorage::RefCheckBudget);
           action("category_delete")->setEnabled(!file->isReferenced(m_selectedAccount, skip));
           action("account_open")->setEnabled(true);
         break;

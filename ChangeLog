@@ -3,6 +3,14 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-17 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Applied patches provided by Wolfgang Rohdewald
+  * Added logic to deal with deleting a category still assigned
+    to a budget
+  * Fixed logic that deletes categories to work correct even if no
+    transaction is assigned to that category but it is referenced
+    by a schedule or budget
+
 2008-05-16 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated Dutch translation from Bert Keuter
   * Fixed crash when saving institution data from editor that was opened

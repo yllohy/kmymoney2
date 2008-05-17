@@ -36,7 +36,7 @@
                 </size>
             </property>
             <property name="text">
-                <string>The transactions/schedules associated with the selected category need to be re-assigned to a different category before the selected category can be deleted. Please select a category from the list below.</string>
+                <string>The transactions, schedules and budgets associated with the selected category need to be re-assigned to a different category before the selected category can be deleted. Please select a category from the list below.</string>
             </property>
             <property name="alignment">
                 <set>WordBreak|AlignJustify|AlignTop</set>

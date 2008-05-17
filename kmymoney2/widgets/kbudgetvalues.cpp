@@ -44,7 +44,8 @@
 #include <kmymoney/kmymoneyedit.h>
 
 KBudgetValues::KBudgetValues(QWidget* parent, const char* name) :
-  KBudgetValuesDecl(parent, name)
+  KBudgetValuesDecl(parent, name),
+  m_currentTab(m_monthlyButton)
 {
   m_budgetDate = QDate(2007,1,1);
 

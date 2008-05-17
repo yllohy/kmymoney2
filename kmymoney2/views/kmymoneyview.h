@@ -298,7 +298,7 @@ public:
     * @retval true file is native
     * @retval false file is foreign
     */
-  const bool isNativeFile() { return (m_fileType < MaxNativeFileType);};
+  const bool isNativeFile() { return (m_fileOpen && (m_fileType < MaxNativeFileType)); }
 
   /**
    * Call this to find out if the currently open file is a sql database
@@ -307,7 +307,7 @@ public:
    * @retval false file is serial
    */
   const bool isDatabase()
-    { return ((m_fileType == KmmDbFile) || (m_fileType == KmmDbSingleUser) || (m_fileType == KmmDbMultiUser));};
+    { return (m_fileOpen && ((m_fileType == KmmDbFile) || (m_fileType == KmmDbSingleUser) || (m_fileType == KmmDbMultiUser))); }
 
   /**
    * Call this to find out if the currently open file is a SQL database
@@ -317,7 +317,7 @@ public:
    * @retval false file is asynchronous
    */
   const bool isSyncDatabase()
-  { return ((m_fileType == KmmDbSingleUser) || (m_fileType == KmmDbMultiUser));};
+  { return (m_fileOpen && ((m_fileType == KmmDbSingleUser) || (m_fileType == KmmDbMultiUser))); }
 
   /**
     * Call this to see if the MyMoneyFile contains any unsaved data.

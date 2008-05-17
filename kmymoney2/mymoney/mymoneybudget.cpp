@@ -41,6 +41,112 @@ bool MyMoneyBudget::AccountGroup::isZero(void) const
   return (!m_budgetsubaccounts && m_budgetlevel == eMonthly && balance().isZero());
 }
 
+void MyMoneyBudget::AccountGroup::convertToMonthly(void)
+{
+  MyMoneyBudget::PeriodGroup period;
+
+  switch(m_budgetlevel) {
+    case eYearly:
+    case eMonthByMonth:
+      period = *(m_periods.begin());         // make him monthly
+      period.setAmount(balance() / MyMoneyMoney(12,1));
+      clearPeriods();
+      addPeriod(period.startDate(), period);
+      break;
+    default:
+      break;
+  }
+  m_budgetlevel = eMonthly;
+}
+
+void MyMoneyBudget::AccountGroup::convertToYearly(void)
+{
+  MyMoneyBudget::PeriodGroup period;
+
+  switch(m_budgetlevel) {
+    case eMonthByMonth:
+    case eMonthly:
+      period = *(m_periods.begin());         // make him monthly
+      period.setAmount(totalBalance());
+      clearPeriods();
+      addPeriod(period.startDate(), period);
+      break;
+    default:
+      break;
+  }
+  m_budgetlevel = eYearly;
+}
+
+void MyMoneyBudget::AccountGroup::convertToMonthByMonth(void)
+{
+  MyMoneyBudget::PeriodGroup period;
+  QDate date;
+
+  switch(m_budgetlevel) {
+    case eMonthByMonth:
+    case eMonthly:
+      period = *(m_periods.begin());
+      period.setAmount(totalBalance() / MyMoneyMoney(12,1));
+      clearPeriods();
+      date = period.startDate();
+      for(int i = 0; i < 12; ++i) {
+        addPeriod(date, period);
+        date = date.addMonths(1);
+        period.setStartDate(date);
+      }
+      break;
+    default:
+      break;
+  }
+  m_budgetlevel = eYearly;
+}
+
+MyMoneyBudget::AccountGroup MyMoneyBudget::AccountGroup::operator += (const MyMoneyBudget::AccountGroup& _r)
+{
+  MyMoneyBudget::AccountGroup r(_r);
+
+  // make both operands based on the same budget level
+  if(m_budgetlevel != r.m_budgetlevel) {
+    if(m_budgetlevel == eMonthly) {         // my budget is monthly
+      if(r.m_budgetlevel == eYearly) {      // his his yearly
+        r.convertToMonthly();
+      } else if(r.m_budgetlevel == eMonthByMonth) { // his is month by month
+        convertToMonthByMonth();
+      }
+    } else if(m_budgetlevel == eYearly) {   // my budget is yearly
+      if(r.m_budgetlevel == eMonthly) {     // his is monthly
+        r.convertToYearly();
+      } else if(r.m_budgetlevel == eMonthByMonth) { // his is month by month
+        convertToMonthByMonth();
+      }
+    } else if(m_budgetlevel == eMonthByMonth) {   // my budget is month by month
+      r.convertToMonthByMonth();
+    }
+  }
+
+  // now both budgets should be of the same type and we simply need
+  // to iterate over the period list and add the values
+  QMap<QDate, MyMoneyBudget::PeriodGroup> periods = m_periods;
+  QMap<QDate, MyMoneyBudget::PeriodGroup> rPeriods = r.m_periods;
+  QMap<QDate, MyMoneyBudget::PeriodGroup>::const_iterator it_p;
+  QMap<QDate, MyMoneyBudget::PeriodGroup>::const_iterator it_pr;
+  m_periods.clear();
+  it_p = periods.begin();
+  it_pr = rPeriods.begin();
+  QDate date = (*it_p).startDate();
+  while(it_p != periods.end()) {
+    MyMoneyBudget::PeriodGroup period = *it_p;
+    if(it_pr != rPeriods.end()) {
+      period.setAmount(period.amount() + (*it_pr).amount());
+      ++it_pr;
+    }
+    addPeriod(date, period);
+    date = date.addMonths(1);
+    ++it_p;
+  }
+  return *this;
+}
+
 const bool MyMoneyBudget::AccountGroup::operator == (const AccountGroup &r) const
 {
   return (m_id == r.m_id
@@ -192,14 +298,13 @@ void MyMoneyBudget::writeXML(QDomDocument& document, QDomElement& parent) const
 
 bool MyMoneyBudget::hasReferenceTo(const QCString& id) const
 {
-  // return true if we have a non-zero assignment for this id
-  return (m_accounts.contains(id) && !m_accounts[id].balance().isZero());
+  // return true if we have an assignment for this id
+  return (m_accounts.contains(id));
 }
 
 void MyMoneyBudget::removeReference(const QCString& id)
 {
   if(m_accounts.contains(id)) {
-    qDebug("%s", (QString("Remove account '%1' from budget").arg(id)).data());
     m_accounts.remove(id);
   }
 }

@@ -488,7 +488,7 @@ void KMyMoneyView::closeFile(void)
     m_reportsView->slotCloseAll();
 
   emit kmmFilePlugin (preClose);
-  if (isSyncDatabase() && m_fileOpen)
+  if (isSyncDatabase())
     MyMoneyFile::instance()->storage()->close(); // to log off a database user
   newStorage();
   slotShowHomePage();
@@ -656,7 +656,7 @@ bool KMyMoneyView::readFile(const KURL& url)
                   ungetString(qfile, hdr.data(), 70);
                 QRegExp kmyexp("<!DOCTYPE KMYMONEY-FILE>");
                 QRegExp gncexp("<gnc-v(\\d+)");
-                QCString txt(hdr);
+                QCString txt(hdr, 70);
                 if(kmyexp.search(txt) != -1) {
                   ::timetrace("is XML format");
                   pReader = new MyMoneyStorageXML;

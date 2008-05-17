@@ -156,9 +156,19 @@ public:
     void setBudgetSubaccounts( bool _b ) { m_budgetsubaccounts = _b; }
     void addPeriod( const QDate& _date, PeriodGroup &period ) { m_periods[_date] = period; }
 
+    // This member adds the value of another account group
+    // m_budgetlevel is adjusted to the larger one of both
+    // m_budgetsubaccounts remains unaffected
+    AccountGroup operator += (const AccountGroup& r);
+
     const bool operator == (const AccountGroup &r) const;
 
     bool isZero(void) const;
+
+  protected:
+    void convertToMonthly(void);
+    void convertToYearly(void);
+    void convertToMonthByMonth(void);
 
   private:
     QCString m_id;
@@ -172,7 +182,6 @@ public:
    * This operator tests for equality of two MyMoneyBudget objects
    */
   const bool operator == (const MyMoneyBudget &) const;
-
 
   // Simple get operations
   const QString& name(void) const { return m_name; }
