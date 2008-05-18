@@ -1529,7 +1529,7 @@ void Register::selectItem(int row, int col, int button, const QPoint& /* mousePo
 
 void Register::setFocusItem(RegisterItem* focusItem)
 {
-  if(focusItem->canHaveFocus()) {
+  if(focusItem && focusItem->canHaveFocus()) {
     if(m_focusItem) {
       m_focusItem->setFocus(false);
       // issue a repaint here only if we move the focus
@@ -1898,6 +1898,8 @@ RegisterItem* Register::scrollPage(int key)
   // make sure we have a focus item
   if(!m_focusItem)
     setFocusItem(m_firstItem);
+  if(!m_focusItem && m_firstItem)
+    setFocusItem(m_firstItem->nextItem());
   if(!m_focusItem)
     return 0;
 
