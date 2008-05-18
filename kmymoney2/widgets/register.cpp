@@ -1527,7 +1527,7 @@ void Register::selectItem(int row, int col, int button, const QPoint& /* mousePo
   }
 }
 
-void Register::setFocusItem(RegisterItem* focusItem)
+bool Register::setFocusItem(RegisterItem* focusItem)
 {
   if(focusItem && focusItem->canHaveFocus()) {
     if(m_focusItem) {
@@ -1547,7 +1547,20 @@ void Register::setFocusItem(RegisterItem* focusItem)
       updateRegister(KMyMoneyGlobalSettings::ledgerLens() | !KMyMoneyGlobalSettings::transactionForm());
     ensureItemVisible(m_focusItem);
     repaintItems(m_focusItem);
+    return true;
+  } else
+    return false;
+}
+
+bool Register::setFocusToTop(void)
+{
+  RegisterItem* rgItem=m_firstItem;
+  while (rgItem) {
+    if (setFocusItem(rgItem))
+      return true;
+    rgItem=rgItem->nextItem();
   }
+  return false;
 }
 
 void Register::selectItem(RegisterItem* item, bool dontChangeSelections)

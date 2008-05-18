@@ -2235,6 +2235,7 @@ void KMyMoney2App::slotFindTransaction(void)
   }
   m_searchDlg->show();
   m_searchDlg->raise();
+  m_searchDlg->setActiveWindow();
 }
 
 void KMyMoney2App::slotCloseSearchDialog(void)

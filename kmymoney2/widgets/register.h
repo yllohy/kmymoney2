@@ -290,7 +290,18 @@ public:
   void updateCell(int /* row */, int /* col */) {}
 
   RegisterItem* focusItem(void) const { return m_focusItem; }
-  void setFocusItem(RegisterItem* focusItem);
+  
+  /**
+    * set focus to specific item.
+    * @return true if the item got focus
+    */
+  bool setFocusItem(RegisterItem* focusItem);
+
+  /**
+    * Set focus to the first focussable item
+    * @return true if a focussable item was found
+    */
+  bool setFocusToTop(void);
 
   /**
     * Select @a item and unselect all others if @a dontChangeSelections
