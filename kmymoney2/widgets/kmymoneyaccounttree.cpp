@@ -253,8 +253,8 @@ void KMyMoneyAccountTree::startDrag(void)
     drag->setSubtype("plain");
 
     // use the icon that is attached to the item to be dragged
-    QPixmap pixmap(*p->pixmap(0));
-    if(!pixmap.isNull()) {
+    if (p->pixmap(0)) {
+      QPixmap pixmap(*p->pixmap(0));
       QPoint hotspot( pixmap.width() / 2, pixmap.height() / 2 );
       drag->setPixmap(pixmap, hotspot);
     }

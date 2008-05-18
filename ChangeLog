@@ -11,6 +11,9 @@
   * when entering CTRL-F to get to the search window, make sure that
     the search window always gets focus. If it already existed, this
     did not always happen
+  * dragging a category in the tree segfaulted when there was no icon
+    defined for the category. Can happen when kmymoney2 cannot find its
+    resources.
 
 2008-05-18 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Updated German translation from yllohy
