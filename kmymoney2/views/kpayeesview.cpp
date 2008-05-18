@@ -654,7 +654,7 @@ void KPayeesView::showTransactions(void)
       } else {
         txt = i18n("Loan payment from %1").arg(acc.name());
       }
-    } else if(s.action() == MyMoneySplit::ActionTransfer) {
+    } else if (file->isTransfer(*t)) {
       if(!s.value().isNegative()) {
         txt = i18n("Transfer to %1").arg(acc.name());
       } else {
