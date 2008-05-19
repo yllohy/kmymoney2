@@ -2002,8 +2002,9 @@ void PivotTable::drawChart( KReportChartView& _view ) const
   if ( accountseries )
   {
     unsigned column = 1;
-    while ( column < m_numColumns )
-      abscissaNames += m_columnHeadings[column++];
+    while ( column < m_numColumns ) {
+      abscissaNames += QString(m_columnHeadings[column++]).replace("&nbsp;", " ");
+    }
   }
   else
   {
@@ -2319,7 +2320,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
              else
                data.setCell( totalcolumn-1, rownum-1, m_grid.m_total.m_budget[totalcolumn].toDouble() );
              ++totalcolumn;
-           } 
+           }
          }
       }
       else
@@ -2482,7 +2483,7 @@ void PivotTable::calculateBudgetDiff(void)
     }
     ++it_outergroup;
   }
- 
+
 }
 
 } // namespace

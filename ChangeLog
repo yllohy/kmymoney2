@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Don't show '&nbsp;' in abscissa labels of charts
+
 2008-05-19 Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * History of transactions for payees could show wrong action for
     transactions entered with a pre 0.9.0 version
