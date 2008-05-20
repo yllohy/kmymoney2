@@ -120,6 +120,7 @@ public:
   bool hasBudget(void) const { return !m_budgetId.isEmpty(); }
   const QCString& budget(void) const { return m_budgetId; }
   bool isIncludingBudgetActuals(void) const { return m_includeBudgetActuals; }
+  bool isIncludingForecast(void) const { return m_includeForecast; }
 
   // Simple set operations
   void setName(const QString& _s) { m_name = _s; }
@@ -144,6 +145,7 @@ public:
   void setIncludingTransfers( bool _f ) { m_includeTransfers = _f; }
   void setIncludingUnusedAccounts( bool _f ) { m_includeUnusedAccounts = _f; }
   void setShowingRowTotals( bool _f ) { m_showRowTotals = _f; }
+  void setIncludingForecast( bool _f ) { m_includeForecast = _f; }
 
   /**
     * Sets the budget used for this report
@@ -453,6 +455,11 @@ private:
    * Whether this report should include columns for row totals
    */
   bool m_showRowTotals;
+  /**
+   * Whether this report should include forecast balance
+   */
+  bool m_includeForecast;
+
 };
 
 #endif // MYMONEYREPORT_H

@@ -209,7 +209,7 @@ protected:
     void calculateRunningSums( void );
     void calculateRunningSums( PivotInnerGroup::iterator& it_row);
 
-    /**
+   /**
      * This method calculates the difference between a @a budgeted and an @a
      * actual amount. The calculation is based on the type of the
       * @a repAccount. The difference value is calculated as follows:
@@ -229,6 +229,11 @@ protected:
      * In all other cases, 0 is returned.
      */
     void calculateBudgetDiff(void);
+
+  /**
+    * This method calculates forecast for a report
+    */
+    void calculateForecast(void);
 
   /**
     * Calculate the row and column totals

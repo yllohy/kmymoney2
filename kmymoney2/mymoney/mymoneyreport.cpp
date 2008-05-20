@@ -74,7 +74,8 @@ MyMoneyReport::MyMoneyReport() :
     m_includeTransfers(false),
     m_includeBudgetActuals(false),
     m_includeUnusedAccounts(false),
-    m_showRowTotals(false)
+    m_showRowTotals(false),
+    m_includeForecast(false)
 {
 }
 
@@ -107,7 +108,8 @@ MyMoneyReport::MyMoneyReport(ERowType _rt, unsigned _ct, dateOptionE _dl, bool _
     m_includeTransfers(false),
     m_includeBudgetActuals(false),
     m_includeUnusedAccounts(false),
-    m_showRowTotals(false)
+    m_showRowTotals(false),
+    m_includeForecast(false)
 {
   if ( m_reportType == ePivotTable )
     m_columnType = static_cast<EColumnType>(_ct);

@@ -146,6 +146,7 @@ public:
   void setForecastEndDate(QDate _endDate) { m_forecastEndDate = _endDate; }
   void setSkipOpeningDate(bool _skip) { m_skipOpeningDate = _skip; }
   void setHistoryMethod(int historyMethod) { m_historyMethod = historyMethod; }
+  void setIncludeUnusedAccounts(bool _bool) { m_includeUnusedAccounts = _bool; }
 
   int accountsCycle(void) const   { return m_accountsCycle; }
   int forecastCycles(void) const   { return m_forecastCycles; }
@@ -159,6 +160,7 @@ public:
   QDate forecastEndDate(void) const { return m_forecastEndDate; }
   bool skipOpeningDate(void) const { return m_skipOpeningDate; }
   int historyMethod(void) const   { return m_historyMethod; }
+  bool isIncludingUnusedAccounts(void) const { return m_includeUnusedAccounts; }
 
 private:
 
@@ -332,6 +334,11 @@ private:
    * skip opening date when fetching transactions of an account
    */
   bool m_skipOpeningDate;
+
+  /**
+   * include accounts with no transactions in the forecast timeframe. default is false.
+   */
+  bool m_includeUnusedAccounts;
 };
 
 #endif // MYMONEYFORECAST_H

@@ -38,7 +38,9 @@
 #include "mymoneyforecast.h"
 #include "mymoneytransactionfilter.h"
 
-MyMoneyForecast::MyMoneyForecast()
+MyMoneyForecast::MyMoneyForecast() :
+    m_skipOpeningDate(true),
+    m_includeUnusedAccounts(false)
 {
   setForecastCycles(KMyMoneyGlobalSettings::forecastCycles());
   setAccountsCycle(KMyMoneyGlobalSettings::forecastAccountCycle());
@@ -48,7 +50,6 @@ MyMoneyForecast::MyMoneyForecast()
   setBeginForecastDay(KMyMoneyGlobalSettings::beginForecastDay());
   setForecastMethod(KMyMoneyGlobalSettings::forecastMethod());
   setHistoryMethod(KMyMoneyGlobalSettings::historyMethod());
-  setSkipOpeningDate(true);
 }
 
 
@@ -139,7 +140,8 @@ void MyMoneyForecast::pastTransactions()
   }
 
   //purge those accounts with no transactions on the period
-  purgeForecastAccountsList(m_accountListPast);
+  if(isIncludingUnusedAccounts() == false)
+    purgeForecastAccountsList(m_accountListPast);
 
   //calculate running sum
   QMap<QCString, QCString>::Iterator it_n;
@@ -424,7 +426,7 @@ MyMoneyMoney MyMoneyForecast::forecastBalance(const MyMoneyAccount& acc, QDate f
 {
 
   dailyBalances balance;
-  MyMoneyMoney MM_amount;
+  MyMoneyMoney MM_amount = MyMoneyMoney(0,1);
 
   //Check if acc is not a forecast account, return 0
   if ( !isForecastAccount ( acc ) )
@@ -627,7 +629,8 @@ void MyMoneyForecast::doFutureScheduledForecast(void)
   }
 #endif
   //do not show accounts with no transactions
-  purgeForecastAccountsList(m_accountList);
+  if(isIncludingUnusedAccounts() == false)
+    purgeForecastAccountsList(m_accountList);
 
   //Calculate account daily balances
   QMap<QCString, QCString>::ConstIterator it_n;

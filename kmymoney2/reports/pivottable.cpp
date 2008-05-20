@@ -52,6 +52,8 @@
 #include "reportdebug.h"
 #include "kreportchartview.h"
 #include "../kmymoneyglobalsettings.h"
+#include "../mymoney/mymoneyforecast.h"
+
 
 #include <kmymoney/kmymoneyutils.h>
 
@@ -371,6 +373,12 @@ void PivotTable::init(void)
 
     ++it_transaction;
   }
+
+  //
+  // Get forecast data
+  //
+  if(m_config_f.isIncludingForecast())
+    calculateForecast();
 
   //
   // Collapse columns to match column type
@@ -979,6 +987,13 @@ void PivotTable::convertToBaseCurrency( void )
           //convert to lowest fraction
           it_row.data()[column] = PivotCell(value.convert(fraction));
 
+          if(m_config_f.isIncludingForecast()) {
+            //calculate base value of forecast
+            MyMoneyMoney oldForecastval = it_row.data().m_forecast[column];
+            MyMoneyMoney forecastValue = (oldForecastval * conversionfactor).reduce();
+            it_row.data().m_forecast[column] = PivotCell(forecastValue.convert(fraction));
+          }
+
           DEBUG_OUTPUT_IF(conversionfactor != MyMoneyMoney(1,1) ,QString("Factor of %1, value was %2, now %3").arg(conversionfactor).arg(DEBUG_SENSITIVE(oldval)).arg(DEBUG_SENSITIVE(it_row.data()[column].toDouble())));
 
           ++column;
@@ -1045,7 +1060,14 @@ void PivotTable::convertToDeepCurrency( void )
 void PivotTable::calculateTotals( void )
 {
   m_grid.m_total.insert( m_grid.m_total.end(), m_numColumns, PivotCell() );
-  m_grid.m_total.m_budget.insert( m_grid.m_total.m_budget.end(), m_numColumns, PivotCell() );
+
+  //insert only if they are going to be used
+  if(m_config_f.hasBudget())
+    m_grid.m_total.m_budget.insert( m_grid.m_total.m_budget.end(), m_numColumns, PivotCell() );
+  if(m_config_f.isIncludingBudgetActuals())
+    m_grid.m_total.m_budget.insert( m_grid.m_total.m_budget.end(), m_numColumns, PivotCell() );
+  if(m_config_f.isIncludingForecast())
+    m_grid.m_total.m_budget.insert( m_grid.m_total.m_budget.end(), m_numColumns, PivotCell() );
 
   //
   // Outer groups
@@ -1056,7 +1078,12 @@ void PivotTable::calculateTotals( void )
   while ( it_outergroup != m_grid.end() )
   {
     (*it_outergroup).m_total.insert( (*it_outergroup).m_total.end(), m_numColumns, PivotCell() );
-    (*it_outergroup).m_total.m_budget.insert( (*it_outergroup).m_total.m_budget.end(), m_numColumns, PivotCell() );
+    if(m_config_f.hasBudget())
+      (*it_outergroup).m_total.m_budget.insert( (*it_outergroup).m_total.m_budget.end(), m_numColumns, PivotCell() );
+    if(m_config_f.isIncludingBudgetActuals())
+      (*it_outergroup).m_total.m_budgetDiff.insert( (*it_outergroup).m_total.m_budgetDiff.end(), m_numColumns, PivotCell() );
+    if(m_config_f.isIncludingForecast())
+      (*it_outergroup).m_total.m_forecast.insert( (*it_outergroup).m_total.m_forecast.end(), m_numColumns, PivotCell() );
 
     //
     // Inner Groups
@@ -1066,7 +1093,12 @@ void PivotTable::calculateTotals( void )
     while ( it_innergroup != (*it_outergroup).end() )
     {
       (*it_innergroup).m_total.insert( (*it_innergroup).m_total.end(), m_numColumns, PivotCell() );
-      (*it_innergroup).m_total.m_budget.insert( (*it_innergroup).m_total.m_budget.end(), m_numColumns, PivotCell() );
+      if(m_config_f.hasBudget())
+        (*it_innergroup).m_total.m_budget.insert( (*it_innergroup).m_total.m_budget.end(), m_numColumns, PivotCell() );
+      if(m_config_f.isIncludingBudgetActuals())
+        (*it_innergroup).m_total.m_budgetDiff.insert( (*it_innergroup).m_total.m_budgetDiff.end(), m_numColumns, PivotCell() );
+      if(m_config_f.isIncludingForecast())
+        (*it_innergroup).m_total.m_forecast.insert( (*it_innergroup).m_total.m_forecast.end(), m_numColumns, PivotCell() );
 
       //
       // Rows
@@ -1092,15 +1124,26 @@ void PivotTable::calculateTotals( void )
           (*it_innergroup).m_total[column] += value;
           (*it_row).m_total += value;
 
-          //calculate budget total
-          MyMoneyMoney budget = it_row.data().m_budget[column];
-          (*it_innergroup).m_total.m_budget[column] += budget;
-          (*it_row).m_budget.m_total += budget;
+          if(m_config_f.hasBudget()) {
+            //calculate budget total
+            MyMoneyMoney budget = it_row.data().m_budget[column];
+            (*it_innergroup).m_total.m_budget[column] += budget;
+            (*it_row).m_budget.m_total += budget;
+          }
 
-          //calculate budget difference total
-          MyMoneyMoney budgetDiff = it_row.data().m_budgetDiff[column];
-          (*it_innergroup).m_total.m_budgetDiff[column] += budgetDiff;
-          (*it_row).m_budgetDiff.m_total += budgetDiff;
+          if(m_config_f.isIncludingBudgetActuals()) {
+            //calculate budget difference total
+            MyMoneyMoney budgetDiff = it_row.data().m_budgetDiff[column];
+            (*it_innergroup).m_total.m_budgetDiff[column] += budgetDiff;
+            (*it_row).m_budgetDiff.m_total += budgetDiff;
+          }
+
+          if(m_config_f.isIncludingForecast()) {
+            //calculate forecast total
+            MyMoneyMoney forecast = it_row.data().m_forecast[column];
+            (*it_innergroup).m_total.m_forecast[column] += forecast;
+            (*it_row).m_forecast.m_total += forecast;
+          }
 
           ++column;
         }
@@ -1124,15 +1167,26 @@ void PivotTable::calculateTotals( void )
         (*it_outergroup).m_total[column] += value;
         (*it_innergroup).m_total.m_total += value;
 
-        //calculate budget totals
-        MyMoneyMoney budget = (*it_innergroup).m_total.m_budget[column];
-        (*it_outergroup).m_total.m_budget[column] += budget;
-        (*it_innergroup).m_total.m_budget.m_total += budget;
+        if(m_config_f.hasBudget()) {
+          //calculate budget totals
+          MyMoneyMoney budget = (*it_innergroup).m_total.m_budget[column];
+          (*it_outergroup).m_total.m_budget[column] += budget;
+          (*it_innergroup).m_total.m_budget.m_total += budget;
+        }
 
-        //calculate budget difference totals
-        MyMoneyMoney budgetDiff = (*it_innergroup).m_total.m_budgetDiff[column];
-        (*it_outergroup).m_total.m_budgetDiff[column] += budgetDiff;
-        (*it_innergroup).m_total.m_budgetDiff.m_total += budgetDiff;
+        if(m_config_f.isIncludingBudgetActuals()) {
+          //calculate budget difference totals
+          MyMoneyMoney budgetDiff = (*it_innergroup).m_total.m_budgetDiff[column];
+          (*it_outergroup).m_total.m_budgetDiff[column] += budgetDiff;
+          (*it_innergroup).m_total.m_budgetDiff.m_total += budgetDiff;
+        }
+
+        if(m_config_f.isIncludingForecast()) {
+          //calculate forecast totals
+          MyMoneyMoney forecast = (*it_innergroup).m_total.m_forecast[column];
+          (*it_outergroup).m_total.m_forecast[column] += forecast;
+          (*it_innergroup).m_total.m_forecast.m_total += forecast;
+        }
 
         ++column;
       }
@@ -1160,21 +1214,34 @@ void PivotTable::calculateTotals( void )
 
       m_grid.m_total[column] += value;
 
-      //calculate budget totals
-      MyMoneyMoney budget = (*it_outergroup).m_total.m_budget[column];
-      (*it_outergroup).m_total.m_budget.m_total += budget;
+      if(m_config_f.hasBudget()) {
+        //calculate budget totals
+        MyMoneyMoney budget = (*it_outergroup).m_total.m_budget[column];
+        (*it_outergroup).m_total.m_budget.m_total += budget;
 
-      if ( invert_total )
-        budget = -budget;
+        if ( invert_total )
+          budget = -budget;
 
-      m_grid.m_total.m_budget[column] += budget;
+        m_grid.m_total.m_budget[column] += budget;
+      }
 
-      //calculate budget difference totals
-      MyMoneyMoney budgetDiff = (*it_outergroup).m_total.m_budgetDiff[column];
-      (*it_outergroup).m_total.m_budgetDiff.m_total += budgetDiff;
+      if(m_config_f.isIncludingBudgetActuals()) {
+        //calculate budget difference totals
+        MyMoneyMoney budgetDiff = (*it_outergroup).m_total.m_budgetDiff[column];
+        (*it_outergroup).m_total.m_budgetDiff.m_total += budgetDiff;
 
-      //for budget difference it does not take the invert into account because the total has to be the sum of both
-      m_grid.m_total.m_budgetDiff[column] += budgetDiff;
+        //for budget difference it does not take the invert into account because the total has to be the sum of both
+        m_grid.m_total.m_budgetDiff[column] += budgetDiff;
+      }
+
+      if(m_config_f.isIncludingForecast()) {
+        //calculate forecast totals
+        MyMoneyMoney forecast = (*it_outergroup).m_total.m_forecast[column];
+        (*it_outergroup).m_total.m_forecast.m_total += forecast;
+
+        //for forecast the invert is not taken into account either
+        m_grid.m_total.m_forecast[column] += forecast;
+      }
 
       ++column;
     }
@@ -1196,14 +1263,24 @@ void PivotTable::calculateTotals( void )
     MyMoneyMoney value = m_grid.m_total[totalcolumn];
     m_grid.m_total.m_total += value;
 
-    //calculate budget totals
-    MyMoneyMoney budget = m_grid.m_total.m_budget[totalcolumn];
-    m_grid.m_total.m_budget.m_total += budget;
+    if(m_config_f.hasBudget()) {
+      //calculate budget totals
+      MyMoneyMoney budget = m_grid.m_total.m_budget[totalcolumn];
+      m_grid.m_total.m_budget.m_total += budget;
+    }
 
-    //calculate budget difference totals
-    MyMoneyMoney budgetDiff = m_grid.m_total.m_budgetDiff[totalcolumn];
-    m_grid.m_total.m_budgetDiff.m_total += budgetDiff;
+    if(m_config_f.isIncludingBudgetActuals()) {
+      //calculate budget difference totals
+      MyMoneyMoney budgetDiff = m_grid.m_total.m_budgetDiff[totalcolumn];
+      m_grid.m_total.m_budgetDiff.m_total += budgetDiff;
+    }
 
+    if(m_config_f.isIncludingForecast()) {
+      //calculate forecast totals
+      MyMoneyMoney forecast = m_grid.m_total.m_forecast[totalcolumn];
+      m_grid.m_total.m_forecast.m_total += forecast;
+    }
+    
     ++totalcolumn;
   }
 
@@ -1534,8 +1611,17 @@ QString PivotTable::renderHTML( void ) const
        "<thead><tr class=\"itemheader\">\n<th>%1</th>").arg(i18n("Account"));
 
   QString headerspan;
-  if ( m_config_f.isIncludingBudgetActuals() )
-    headerspan = " colspan=\"3\"";
+  int span = 1;
+
+  //add two columns for actuals and difference
+  if ( m_config_f.hasBudget() && m_config_f.isIncludingBudgetActuals() )
+    span = 3;
+
+  //add a column for forecast
+  if ( m_config_f.isIncludingForecast() )
+    span++;
+
+  headerspan = QString(" colspan=\"%1\"").arg(span);
 
   unsigned column = 1;
   while ( column < m_numColumns )
@@ -1566,6 +1652,27 @@ QString PivotTable::renderHTML( void ) const
 
     if ( m_config_f.isShowingRowTotals() )
       result += QString("<td%4>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Actual"),i18n("Difference"),leftborder);
+    result += "</tr>";
+  }
+  
+  //Forecast/Actual header
+  if ( m_config_f.isIncludingForecast() )
+  {
+    result += "<tr><td></td>";
+
+    unsigned column = 1;
+    while ( column < m_numColumns )
+    {
+      QString lb;
+      if(column != 1)
+        lb = leftborder;
+
+      result += QString("<td%4>%1</td><td>%2</td>").arg(i18n("Actual"),i18n("Forecast"),lb);
+      column++;
+    }
+
+    if ( m_config_f.isShowingRowTotals() )
+      result += QString("<td%4>%1</td><td>%2</td>").arg(i18n("Actual"),i18n("forecast"),leftborder);
     result += "</tr>";
   }
 
@@ -1651,6 +1758,11 @@ QString PivotTable::renderHTML( void ) const
               if ( m_config_f.isIncludingBudgetActuals() ) {
                 rowdata += QString("<td>%1</td>").arg(coloredAmount(it_row.data().m_budgetDiff[column]));
               }
+
+              if ( m_config_f.isIncludingForecast() ) {
+                rowdata += QString("<td>%1</td>").arg(coloredAmount(it_row.data().m_forecast[column]));
+              }
+
               column++;
             }
 
@@ -1667,6 +1779,10 @@ QString PivotTable::renderHTML( void ) const
 
               if ( m_config_f.isIncludingBudgetActuals() ) {
                 rowdata += QString("<td>%1</td>").arg(coloredAmount((*it_row).m_budgetDiff.m_total));
+              }
+
+              if ( m_config_f.isIncludingForecast() ) {
+                rowdata += QString("<td>%1</td>").arg(coloredAmount((*it_row).m_forecast.m_total));
               }
             }
 
@@ -1766,6 +1882,11 @@ QString PivotTable::renderHTML( void ) const
               if ( m_config_f.isIncludingBudgetActuals() ) {
                 finalRow += QString("<td>%1</td>").arg(coloredAmount((*it_innergroup).m_total.m_budgetDiff[column]));
               }
+
+              if ( m_config_f.isIncludingForecast() ) {
+                finalRow += QString("<td>%1</td>").arg(coloredAmount((*it_innergroup).m_total.m_forecast[column]));
+              }
+
               column++;
             }
 
@@ -1783,6 +1904,11 @@ QString PivotTable::renderHTML( void ) const
               if ( m_config_f.isIncludingBudgetActuals() ) {
                 finalRow += QString("<td>%1</td>").arg(coloredAmount((*it_innergroup).m_total.m_budgetDiff.m_total));
               }
+
+              if ( m_config_f.isIncludingForecast() ) {
+                finalRow += QString("<td>%1</td>").arg(coloredAmount((*it_innergroup).m_total.m_forecast.m_total));
+              }
+
             }
 
             finalRow += "</tr>\n";
@@ -1823,6 +1949,11 @@ QString PivotTable::renderHTML( void ) const
           if ( m_config_f.isIncludingBudgetActuals() ) {
             result += QString("<td>%1</td>").arg(coloredAmount((*it_outergroup).m_total.m_budgetDiff[column]));
           }
+
+          if ( m_config_f.isIncludingForecast() ) {
+            result += QString("<td>%1</td>").arg(coloredAmount((*it_outergroup).m_total.m_forecast[column]));
+          }
+
           column++;
         }
 
@@ -1840,6 +1971,11 @@ QString PivotTable::renderHTML( void ) const
           if ( m_config_f.isIncludingBudgetActuals() ) {
             result += QString("<td>%1</td>").arg(coloredAmount((*it_outergroup).m_total.m_budgetDiff.m_total));
           }
+
+          if ( m_config_f.isIncludingForecast() ) {
+            result += QString("<td>%1</td>").arg(coloredAmount((*it_outergroup).m_total.m_forecast.m_total));
+          }
+
         }
 
         result += "</tr>\n";
@@ -1877,6 +2013,11 @@ QString PivotTable::renderHTML( void ) const
       if ( m_config_f.isIncludingBudgetActuals() ) {
         result += QString("<td>%1</td>").arg(coloredAmount(m_grid.m_total.m_budgetDiff[totalcolumn]));
       }
+
+      if ( m_config_f.isIncludingForecast() ) {
+        result += QString("<td>%1</td>").arg(coloredAmount(m_grid.m_total.m_forecast[totalcolumn]));
+      }
+
       totalcolumn++;
     }
 
@@ -1894,6 +2035,11 @@ QString PivotTable::renderHTML( void ) const
       if ( m_config_f.isIncludingBudgetActuals() ) {
         result += QString("<td>%1</td>").arg(coloredAmount(m_grid.m_total.m_budgetDiff.m_total));
       }
+
+      if ( m_config_f.isIncludingForecast() ) {
+        result += QString("<td>%1</td>").arg(coloredAmount(m_grid.m_total.m_forecast.m_total));
+      }
+
     }
 
     result += "</tr>\n";
@@ -2073,34 +2219,67 @@ void PivotTable::drawChart( KReportChartView& _view ) const
             {
               _view.params().setLegendText( rownum-1, QString(i18n("Budget ") + it_row.key().name() ) );
 
-            // Columns
-
-            if ( seriestotals )
-            {
-              if ( accountseries )
-                data.setCell( rownum-1, 0, it_row.data().m_budget.m_total.toDouble() );
-              else
-                data.setCell( 0, rownum-1, it_row.data().m_budget.m_total.toDouble() );
-            }
-            else
-            {
-              unsigned column = 1;
-              while ( column < m_numColumns )
+              // Columns
+              if ( seriestotals )
               {
                 if ( accountseries )
-                  data.setCell( rownum-1, column-1, it_row.data().m_budget[column].toDouble() );
+                  data.setCell( rownum-1, 0, it_row.data().m_budget.m_total.toDouble() );
                 else
-                  data.setCell( column-1, rownum-1, it_row.data().m_budget[column].toDouble() );
-                ++column;
+                  data.setCell( 0, rownum-1, it_row.data().m_budget.m_total.toDouble() );
               }
+              else
+              {
+                unsigned column = 1;
+                while ( column < m_numColumns )
+                {
+                  if ( accountseries )
+                    data.setCell( rownum-1, column-1, it_row.data().m_budget[column].toDouble() );
+                  else
+                    data.setCell( column-1, rownum-1, it_row.data().m_budget[column].toDouble() );
+                  ++column;
+                }
+              }
+              // TODO: This is inefficient. Really we should total up how many rows
+              // there will be and allocate it all at once.
+              if ( accountseries )
+                data.expand( ++rownum, m_numColumns-1 );
+              else
+                data.expand( m_numColumns-1, ++rownum );
             }
-            // TODO: This is inefficient. Really we should total up how many rows
-            // there will be and allocate it all at once.
-            if ( accountseries )
-              data.expand( ++rownum, m_numColumns-1 );
-            else
-              data.expand( m_numColumns-1, ++rownum );
+
+            //show forecast data
+            if ( m_config_f.isIncludingForecast())
+            {
+              _view.params().setLegendText( rownum-1, QString(i18n("Forecast ") + it_row.key().name() ) );
+
+              // Columns
+              if ( seriestotals )
+              {
+                if ( accountseries )
+                  data.setCell( rownum-1, 0, it_row.data().m_forecast.m_total.toDouble() );
+                else
+                  data.setCell( 0, rownum-1, it_row.data().m_forecast.m_total.toDouble() );
+              }
+              else
+              {
+                unsigned column = 1;
+                while ( column < m_numColumns )
+                {
+                  if ( accountseries )
+                    data.setCell( rownum-1, column-1, it_row.data().m_forecast[column].toDouble() );
+                  else
+                    data.setCell( column-1, rownum-1, it_row.data().m_forecast[column].toDouble() );
+                  ++column;
+                }
+              }
+              // TODO: This is inefficient. Really we should total up how many rows
+              // there will be and allocate it all at once.
+              if ( accountseries )
+                data.expand( ++rownum, m_numColumns-1 );
+              else
+                data.expand( m_numColumns-1, ++rownum );
             }
+
             ++it_row;
           }
           ++it_innergroup;
@@ -2194,6 +2373,39 @@ void PivotTable::drawChart( KReportChartView& _view ) const
             else
               data.expand( m_numColumns-1, ++rownum );
           }
+
+          //show forecast data
+          if ( m_config_f.isIncludingForecast())
+          {
+            _view.params().setLegendText( rownum-1, QString(i18n("Forecast ") + it_innergroup.key() ) );
+
+            // Columns
+            if ( seriestotals )
+            {
+              if ( accountseries )
+                data.setCell( rownum-1, 0, (*it_innergroup).m_total.m_forecast.m_total.toDouble() );
+              else
+                data.setCell( 0, rownum-1, (*it_innergroup).m_total.m_forecast.m_total.toDouble() );
+            }
+            else
+            {
+              unsigned column = 1;
+              while ( column < m_numColumns )
+              {
+                if ( accountseries )
+                  data.setCell( rownum-1, column-1, (*it_innergroup).m_total.m_forecast[column].toDouble() );
+                else
+                  data.setCell( column-1, rownum-1, (*it_innergroup).m_total.m_forecast[column].toDouble() );
+                ++column;
+              }
+            }
+            // TODO: This is inefficient. Really we should total up how many rows
+            // there will be and allocate it all at once.
+            if ( accountseries )
+              data.expand( ++rownum, m_numColumns-1 );
+            else
+              data.expand( m_numColumns-1, ++rownum );
+          }
           ++it_innergroup;
         }
         ++it_outergroup;
@@ -2251,10 +2463,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
         {
           _view.params().setLegendText( rownum-1, QString(i18n("Budget ") + it_outergroup.key()) );
 
-          //
-        // Columns
-          //
-
+          // Columns
           if ( seriestotals )
           {
             if ( accountseries )
@@ -2275,8 +2484,8 @@ void PivotTable::drawChart( KReportChartView& _view ) const
             }
           }
 
-        // TODO: This is inefficient. Really we should total up how many rows
-        // there will be and allocate it all at once.
+          // TODO: This is inefficient. Really we should total up how many rows
+          // there will be and allocate it all at once.
           if ( accountseries )
             data.expand( ++rownum, m_numColumns-1 );
           else
@@ -2284,6 +2493,39 @@ void PivotTable::drawChart( KReportChartView& _view ) const
 
         }
 
+        //show forecast data
+        if ( m_config_f.isIncludingForecast())
+        {
+          _view.params().setLegendText( rownum-1, QString(i18n("Forecast ") + it_outergroup.key()) );
+
+          // Columns
+          if ( seriestotals )
+          {
+            if ( accountseries )
+              data.setCell( rownum-1, 0, (*it_outergroup).m_total.m_forecast.m_total.toDouble() );
+            else
+              data.setCell( 0, rownum-1, (*it_outergroup).m_total.m_forecast.m_total.toDouble() );
+          }
+          else
+          {
+            unsigned column = 1;
+            while ( column < m_numColumns )
+            {
+              if ( accountseries )
+                data.setCell( rownum-1, column-1, (*it_outergroup).m_total.m_forecast[column].toDouble() );
+              else
+                data.setCell( column-1, rownum-1, (*it_outergroup).m_total.m_forecast[column].toDouble() );
+              ++column;
+            }
+          }
+
+          // TODO: This is inefficient. Really we should total up how many rows
+          // there will be and allocate it all at once.
+          if ( accountseries )
+            data.expand( ++rownum, m_numColumns-1 );
+          else
+            data.expand( m_numColumns-1, ++rownum );
+        }
         ++it_outergroup;
       }
 
@@ -2321,6 +2563,28 @@ void PivotTable::drawChart( KReportChartView& _view ) const
                data.setCell( totalcolumn-1, rownum-1, m_grid.m_total.m_budget[totalcolumn].toDouble() );
              ++totalcolumn;
            }
+         }
+
+         //show forecast data
+         if ( m_config_f.isIncludingForecast())
+         {
+           unsigned totalcolumn = 1;
+
+           //add another row
+           if ( accountseries )
+             data.expand( ++rownum, m_numColumns-1 );
+           else
+             data.expand( m_numColumns-1, ++rownum );
+
+           _view.params().setLegendText( rownum-1, i18n("Forecast Total") );
+           while ( totalcolumn < m_numColumns )
+           {
+             if ( accountseries )
+               data.setCell( rownum-1, totalcolumn-1, m_grid.m_total.m_forecast[totalcolumn].toDouble() );
+             else
+               data.setCell( totalcolumn-1, rownum-1, m_grid.m_total.m_forecast[totalcolumn].toDouble() );
+             ++totalcolumn;
+           } 
          }
       }
       else
@@ -2386,6 +2650,38 @@ void PivotTable::drawChart( KReportChartView& _view ) const
               data.setCell(rownum-1, totalcolumn-1, m_grid.m_total.m_budget[totalcolumn].toDouble() );
             else
               data.setCell( totalcolumn-1, rownum-1, m_grid.m_total.m_budget[totalcolumn].toDouble() );
+            ++totalcolumn;
+          }
+        }
+      }
+
+      //show forecast data
+      if ( m_config_f.isIncludingForecast())
+      {
+        if ( accountseries )
+          data.expand( ++rownum, m_numColumns-1 );
+        else
+          data.expand( m_numColumns-1, ++rownum );
+
+        _view.params().setLegendText( 1, i18n("Forecast Total") );
+
+        if ( seriestotals )
+        {
+          if ( accountseries )
+            data.setCell( rownum-1, 0, m_grid.m_total.m_forecast.m_total.toDouble() );
+          else
+            data.setCell( 0, rownum-1, m_grid.m_total.m_forecast.m_total.toDouble() );
+        }
+        else
+        {
+        // For now, just the totals
+          unsigned totalcolumn = 1;
+          while ( totalcolumn < m_numColumns )
+          {
+            if ( accountseries )
+              data.setCell(rownum-1, totalcolumn-1, m_grid.m_total.m_forecast[totalcolumn].toDouble() );
+            else
+              data.setCell( totalcolumn-1, rownum-1, m_grid.m_total.m_forecast[totalcolumn].toDouble() );
             ++totalcolumn;
           }
         }
@@ -2485,6 +2781,86 @@ void PivotTable::calculateBudgetDiff(void)
   }
 
 }
+
+void PivotTable::calculateForecast(void)
+{
+  //setup forecast
+  MyMoneyForecast forecast;
+
+  //setup forecast settings
+
+  //we only want to display what is on the report timeframe
+  forecast.setBeginForecastDay(0);
+
+  //since this is a net worth forecast we want to include all account even those that are not in use
+  forecast.setIncludeUnusedAccounts(true);
+
+  //setup forecast dates
+  if(m_endDate > QDate::currentDate()) {
+    forecast.setForecastEndDate(m_endDate);
+    forecast.setForecastDays(QDate::currentDate().daysTo(m_endDate));
+  } else {
+    forecast.setForecastStartDate(m_beginDate);
+    forecast.setForecastEndDate(m_endDate);
+    forecast.setForecastDays(m_beginDate.daysTo(m_endDate) + 1);
+  }
+
+  //set history dates
+  if(m_beginDate < QDate::currentDate()) {
+    forecast.setHistoryEndDate(m_beginDate.addDays(-1));
+    forecast.setHistoryStartDate(forecast.historyEndDate().addDays(-forecast.accountsCycle()*forecast.forecastCycles()));
+  }
+
+  //run forecast
+  forecast.doForecast();
+
+
+  //go through the data and add forecast
+  PivotGrid::iterator it_outergroup = m_grid.begin();
+  while ( it_outergroup != m_grid.end() )
+  {
+    PivotOuterGroup::iterator it_innergroup = (*it_outergroup).begin();
+    while ( it_innergroup != (*it_outergroup).end() )
+    {
+      PivotInnerGroup::iterator it_row = (*it_innergroup).begin();
+      while ( it_row != (*it_innergroup).end() )
+      {
+        unsigned column = 1;
+        QDate forecastDate = m_beginDate;
+        //check whether columns are days or months
+        if(m_config_f.isColumnsAreDays())
+        {
+          while(column < m_numColumns) {
+            it_row.data().m_forecast[column] = forecast.forecastBalance(it_row.key(), forecastDate);
+
+            forecastDate = forecastDate.addDays(1);
+            ++column;
+          }
+        } else {
+          //if columns are months
+          while(column < m_numColumns) {
+            //set forecastDate to last day of each month
+            //TODO we really need a date manipulation util
+            forecastDate = QDate(forecastDate.year(), forecastDate.month(), forecastDate.daysInMonth());
+            //check that forecastDate is not over ending date
+            if(forecastDate > m_endDate)
+              forecastDate = m_endDate;
+
+            //get forecast balance and set the corresponding column
+            it_row.data().m_forecast[column] = forecast.forecastBalance(it_row.key(), forecastDate);
+
+            forecastDate = forecastDate.addDays(1);
+            ++column;
+          }
+        }
+        ++it_row;
+      }
+      ++it_innergroup;
+    }
+    ++it_outergroup;
+  }
+}
+
 
 } // namespace
 // vim:cin:si:ai:et:ts=2:sw=2:

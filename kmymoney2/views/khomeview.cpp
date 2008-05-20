@@ -752,11 +752,11 @@ MyMoneyMoney KHomeView::investmentBalance(const MyMoneyAccount& acc)
       MyMoneyPrice price = file->price(stock.currencyId(), security.tradingCurrency());
       val = balance * price.rate(security.tradingCurrency());
 
-      if(security.tradingCurrency() != file->baseCurrency().id()) {
+      /*if(security.tradingCurrency() != file->baseCurrency().id()) {
         MyMoneySecurity sec = file->currency(security.tradingCurrency());
         val = val * file->price(security.tradingCurrency(), file->baseCurrency().id()).rate(file->baseCurrency().id());
-      }
-      val = val.convert(file->baseCurrency().smallestAccountFraction());
+      }*/
+      val = val.convert(acc.fraction());
       value += val;
     } catch(MyMoneyException* e) {
       qWarning("%s", (QString("cannot convert stock balance of %1 to base currency: %2").arg(stock.name(), e->what())).data());

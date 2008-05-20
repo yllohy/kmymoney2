@@ -92,9 +92,10 @@ namespace reports {
   class PivotGridRowSet: public PivotGridRow
   {
   public:
-    PivotGridRowSet( unsigned _numcolumns = 0 ): PivotGridRow(_numcolumns), m_budget(_numcolumns), m_budgetDiff(_numcolumns) {}
+    PivotGridRowSet( unsigned _numcolumns = 0 ): PivotGridRow(_numcolumns), m_budget(_numcolumns), m_budgetDiff(_numcolumns), m_forecast(_numcolumns) {}
     PivotGridRow m_budget;
     PivotGridRow m_budgetDiff;
+    PivotGridRow m_forecast;
   };
 
   class PivotInnerGroup: public QMap<ReportAccount,PivotGridRowSet>

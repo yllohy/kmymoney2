@@ -406,7 +406,7 @@ void KReportsView::loadView(void)
   unsigned pagenumber = 1;
 
   // Default Reports
-  QString pagename = "9. " + i18n("Charts");
+  QString pagename = "10. " + i18n("Charts");
   KListViewItem* chartnode = new KListViewItem(m_reportListView, pagename);
 
   QMap<QString,KListViewItem*> groupitems;
@@ -1291,6 +1291,47 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.back().setChartType(MyMoneyReport::eChartLine);
 #endif
 
+    groups.push_back(list);
+  }
+  {
+    ReportGroup list("Forecast", i18n("Forecast"));
+
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eAssetLiability,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::next12Months,
+      false,
+      i18n("Forecast By Month"),
+      i18n("Default Report")
+    ));
+    list.back().setIncludingForecast( true );
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eAssetLiability,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::nextQuarter,
+      false,
+      i18n("Forecast Next Quarter"),
+      i18n("Default Report")
+    ));
+    list.back().setColumnsAreDays( true );
+    list.back().setIncludingForecast( true );
+
+#ifdef HAVE_KDCHART
+    list.push_back(MyMoneyReport(
+      MyMoneyReport::eAssetLiability,
+      MyMoneyReport::eMonths,
+      MyMoneyTransactionFilter::next3Months,
+      false,
+      i18n("Net Worth Forecast Graph"),
+      i18n("Default Report")
+    ));
+    list.back().setColumnsAreDays( true );
+    list.back().setIncludingForecast( true );
+    list.back().setChartByDefault(true);
+    list.back().setChartGridLines(false);
+    list.back().setDetailLevel(MyMoneyReport::eDetailTotal);
+    list.back().setChartType(MyMoneyReport::eChartLine);
+#endif
     groups.push_back(list);
   }
 

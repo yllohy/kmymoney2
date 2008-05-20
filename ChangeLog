@@ -3,6 +3,15 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-14 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added forecast calculation to pivot reports
+  * Added group of forecast default reports
+  * Skip total calculation of budget or forecast if report does not 
+    include them
+  * Added setting to not purge unused forecast accounts if required
+  * Fixed investment calculation in home page. Calculate deep currency
+    not base currency.
+
 2008-05-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't show '&nbsp;' in abscissa labels of charts
 

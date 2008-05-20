@@ -652,6 +652,7 @@ void MyMoneyForecastTest::testSkipOpeningDate()
   
   //test it has no variation because it skipped the variation of the opening date
   MyMoneyMoney b_cash = file->balance(a_cash.id(), QDate::currentDate());
+  CPPUNIT_ASSERT(a.skipOpeningDate() == true);
   CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate())==b_cash);
   CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate().addDays(1))==b_cash);
   CPPUNIT_ASSERT(a.forecastBalance(a_cash, QDate::currentDate().addDays(2))==b_cash-moT2);
