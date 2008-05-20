@@ -575,6 +575,10 @@ bool MyMoneyReport::read(const QDomElement& e)
     m_includeBudgetActuals = e.attribute("includesactuals","0").toUInt();
     m_includeUnusedAccounts = e.attribute("includeunused", "0").toUInt();
 
+    //FIXME temporary fix until adding the forecast settings to reports
+    m_includeForecast = false;
+
+
     i = kChartTypeText.findIndex(e.attribute("charttype"));
     if ( i != -1 )
       m_chartType = static_cast<EChartType>(i);

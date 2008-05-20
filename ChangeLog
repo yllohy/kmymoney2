@@ -11,6 +11,7 @@
   * Added setting to not purge unused forecast accounts if required
   * Fixed investment calculation in home page. Calculate deep currency
     not base currency.
+  * Set includeForecast to false when reading a report from file
 
 2008-05-19 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Don't show '&nbsp;' in abscissa labels of charts
