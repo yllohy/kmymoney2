@@ -1030,8 +1030,6 @@ void KHomeView::showSummary(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneyAccount> accounts;
-  QValueList<MyMoneyAccount> assets;
-  QValueList<MyMoneyAccount> liabilities;
   QValueList<MyMoneyAccount>::Iterator it;
   QMap<QString, MyMoneyAccount> nameAssetsIdx;
   QMap<QString, MyMoneyAccount> nameLiabilitiesIdx;
@@ -1054,14 +1052,42 @@ void KHomeView::showSummary(void)
         case MyMoneyAccount::Investment:
         case MyMoneyAccount::Asset:
         case MyMoneyAccount::AssetLoan:
-          assets.append(*it);
+        {
+          //add it to a map to have it ordered by name
+          QString key = (*it).name();
+          if(nameAssetsIdx[key].id().isEmpty()) {
+            nameAssetsIdx[key] = *it;
+            //take care of accounts with duplicate names
+          } else if(nameAssetsIdx[key].id() != (*it).id()) {
+            key = (*it).name() + "[%1]";
+            int dup = 2;
+            while(!nameAssetsIdx[key.arg(dup)].id().isEmpty()
+                   && nameAssetsIdx[key.arg(dup)].id() != (*it).id())
+              ++dup;
+            nameAssetsIdx[key.arg(dup)] = *it;
+          }
           break;
+        }
         //group the liabilities into the other
         case MyMoneyAccount::CreditCard:
         case MyMoneyAccount::Liability:
         case MyMoneyAccount::Loan:
-          liabilities.append(*it);
+        {
+          //add it to a map to have it ordered by name
+          QString key = (*it).name();
+          if(nameLiabilitiesIdx[key].id().isEmpty()) {
+            nameLiabilitiesIdx[key] = *it;
+            //take care of duplicate account names
+          } else if(nameLiabilitiesIdx[key].id() != (*it).id()) {
+            key = (*it).name() + "[%1]";
+            int dup = 2;
+            while(!nameLiabilitiesIdx[key.arg(dup)].id().isEmpty()
+                   && nameLiabilitiesIdx[key.arg(dup)].id() != (*it).id())
+              ++dup;
+            nameLiabilitiesIdx[key.arg(dup)] = *it;
+          }
           break;
+        }
         default:
           break;
       }
@@ -1070,7 +1096,7 @@ void KHomeView::showSummary(void)
   }
 
   //only do it if we have assets or liabilities account
-  if(assets.count() > 0 || liabilities.count() > 0) {
+  if(nameAssetsIdx.count() > 0 || nameLiabilitiesIdx.count() > 0) {
     //print header
     m_part->write("<div class=\"itemheader\">" + i18n("Summary") + "</div>\n<div class=\"gap\">&nbsp;</div>\n");
     m_part->write("<table width=\"100%\" cellspacing=\"0\" cellpadding=\"2\">");
@@ -1096,14 +1122,12 @@ void KHomeView::showSummary(void)
     m_part->write("</th></tr>");
 
     //get asset and liability accounts
-    QValueList<MyMoneyAccount>::const_iterator asset_it;
-    QValueList<MyMoneyAccount>::const_iterator liabilities_it;
-    asset_it = assets.begin();
-    liabilities_it = liabilities.begin();
-    for(; asset_it != assets.end() || liabilities_it != liabilities.end();) {
+    QMap<QString, MyMoneyAccount>::const_iterator asset_it = nameAssetsIdx.begin();
+    QMap<QString,MyMoneyAccount>::const_iterator liabilities_it = nameLiabilitiesIdx.begin();
+    for(; asset_it != nameAssetsIdx.end() || liabilities_it != nameLiabilitiesIdx.end();) {
       m_part->write(QString("<tr class=\"row-%1\">").arg(i++ & 0x01 ? "even" : "odd"));
       //write an asset account if we still have any
-      if(asset_it != assets.end()) {
+      if(asset_it != nameAssetsIdx.end()) {
         MyMoneyMoney value;
         //investment accounts consolidate the balance of its subaccounts
         if( (*asset_it).accountType() == MyMoneyAccount::Investment) {
@@ -1132,7 +1156,7 @@ void KHomeView::showSummary(void)
       m_part->write("<td></td>");
 
       //write a liability account
-      if(liabilities_it != liabilities.end()) {
+      if(liabilities_it != nameLiabilitiesIdx.end()) {
         MyMoneyMoney value;
         value = MyMoneyFile::instance()->balance((*liabilities_it).id(), QDate::currentDate());
         //calculate balance if foreign currency

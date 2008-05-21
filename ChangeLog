@@ -3,7 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
-2008-05-14 Alvaro Soliverez <asoliverez@gmail.com>
+2008-05-20 Alvaro Soliverez <asoliverez@gmail.com>
+  * Sort Summary accounts by name
+
+2008-05-19 Alvaro Soliverez <asoliverez@gmail.com>
   * Added forecast calculation to pivot reports
   * Added group of forecast default reports
   * Skip total calculation of budget or forecast if report does not 
