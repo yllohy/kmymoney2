@@ -317,6 +317,7 @@ void MyMoneyReport::write(QDomElement& e, QDomDocument *doc, bool anonymous) con
     e.setAttribute("budget",m_budgetId);
   e.setAttribute("includesactuals",m_includeBudgetActuals);
   e.setAttribute("includeunused", m_includeUnusedAccounts);
+  e.setAttribute("includesforecast", m_includeForecast);
 
   e.setAttribute("charttype",kChartTypeText[m_chartType]);
   e.setAttribute("chartdatalabels",m_chartDataLabels);
@@ -574,10 +575,7 @@ bool MyMoneyReport::read(const QDomElement& e)
       m_budgetId = e.attribute("budget");
     m_includeBudgetActuals = e.attribute("includesactuals","0").toUInt();
     m_includeUnusedAccounts = e.attribute("includeunused", "0").toUInt();
-
-    //FIXME temporary fix until adding the forecast settings to reports
-    m_includeForecast = false;
-
+    m_includeForecast = e.attribute("includesforecast","0").toUInt();
 
     i = kChartTypeText.findIndex(e.attribute("charttype"));
     if ( i != -1 )

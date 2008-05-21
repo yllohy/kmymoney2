@@ -5,6 +5,7 @@
 
 2008-05-20 Alvaro Soliverez <asoliverez@gmail.com>
   * Sort Summary accounts by name
+  * Save includesForecast setting in pivot reports
 
 2008-05-19 Alvaro Soliverez <asoliverez@gmail.com>
   * Added forecast calculation to pivot reports
