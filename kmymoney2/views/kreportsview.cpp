@@ -1286,7 +1286,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     ));
     list.back().setChartByDefault(true);
     list.back().setChartGridLines(false);
-    list.back().setBudget("Any",false);
+    list.back().setBudget("Any",true);
     list.back().setDetailLevel(MyMoneyReport::eDetailGroup);
     list.back().setChartType(MyMoneyReport::eChartLine);
 #endif

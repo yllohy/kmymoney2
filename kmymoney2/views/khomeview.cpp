@@ -270,12 +270,13 @@ void KHomeView::showNetWorthGraph(void)
   reportCfg.setChartDataLabels(false);
   reportCfg.setDetailLevel(MyMoneyReport::eDetailTotal);
   reportCfg.setChartType(MyMoneyReport::eChartLine);
-  reportCfg.setIncludingSchedules( true );
+  reportCfg.setIncludingSchedules( false );
   reportCfg.addAccountGroup(MyMoneyAccount::Asset);
   reportCfg.addAccountGroup(MyMoneyAccount::Liability);
   reportCfg.setColumnsAreDays( true );
   reportCfg.setConvertCurrency( true );
-  reportCfg.setDateFilter(QDate::currentDate().addDays(-10),QDate::currentDate().addDays(+90));
+  reportCfg.setIncludingForecast( true );
+  reportCfg.setDateFilter(QDate::currentDate(),QDate::currentDate().addDays(+90));
 
   reports::PivotTable table(reportCfg);
 
@@ -293,18 +294,18 @@ void KHomeView::showNetWorthGraph(void)
   propSetFutureValue.setLineStyle(KDChartPropertySet::OwnID, Qt::DotLine);
   const int idPropFutureValue = chartWidget->params().registerProperties(propSetFutureValue);
 
-  KDChartPropertySet propSetLastValue("last value", idPropFutureValue);
-  propSetLastValue.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignBottom);
-  propSetLastValue.setExtraLinesWidth(KDChartPropertySet::OwnID, -4);
-  propSetLastValue.setExtraLinesColor(KDChartPropertySet::OwnID, KMyMoneyGlobalSettings::listGridColor());
+  //KDChartPropertySet propSetLastValue("last value", idPropFutureValue);
+  //propSetLastValue.setExtraLinesAlign(KDChartPropertySet::OwnID, Qt::AlignLeft | Qt::AlignBottom);
+  //propSetLastValue.setExtraLinesWidth(KDChartPropertySet::OwnID, -4);
+  //propSetLastValue.setExtraLinesColor(KDChartPropertySet::OwnID, KMyMoneyGlobalSettings::listGridColor());
   // propSetLastValue.setShowMarker(KDChartPropertySet::OwnID, true);
   // propSetLastValue.setMarkerStyle(KDChartPropertySet::OwnID, KDChartParams::LineMarkerDiamond);
 
-  const int idPropLastValue = chartWidget->params().registerProperties(propSetLastValue);
-  for(int iCell = 10; iCell < 100; ++iCell) {
+  //const int idPropLastValue = chartWidget->params().registerProperties(propSetLastValue);
+  for(int iCell = 0; iCell < 90; ++iCell) {
     chartWidget->setProperty(0, iCell, idPropFutureValue);
   }
-  chartWidget->setProperty(0, 10, idPropLastValue);
+  //chartWidget->setProperty(0, 10, idPropLastValue);
 
   // Adjust the size
   if(width() < chartWidget->width()) {

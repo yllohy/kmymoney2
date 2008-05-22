@@ -4,6 +4,13 @@
 --------------------------------------------------------------------
 
 2008-05-20 Alvaro Soliverez <asoliverez@gmail.com>
+  * For budget or forecast only show actual in the charts if set to 
+    do so
+  * Switch networth forecast graph in the home page to use new forecast
+    pivot report. Changed timeframe to current date + 90 days.
+  * Fixed bugdet graph configuration
+
+2008-05-20 Alvaro Soliverez <asoliverez@gmail.com>
   * Sort Summary accounts by name
   * Save includesForecast setting in pivot reports
 
