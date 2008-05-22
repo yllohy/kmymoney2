@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-22 Wolfgang Rohdewald <wolfgang@rohdewald.de>
+  * Summary: Fix computation of investment accounts when foreign
+    currencies are involved
 2008-05-20 Alvaro Soliverez <asoliverez@gmail.com>
   * For budget or forecast only show actual in the charts if set to 
     do so

@@ -730,19 +730,8 @@ MyMoneyMoney KHomeView::investmentBalance(const MyMoneyAccount& acc)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyMoney value;
-  MyMoneySecurity currency = file->currency(acc.currencyId());
 
   value = file->balance(acc.id());
-  try {
-    if(currency.id() != file->baseCurrency().id()) {
-        //convert current balance
-      value = value * file->price(currency.id(), file->baseCurrency().id()).rate(file->baseCurrency().id());
-      value.convert(file->baseCurrency().smallestAccountFraction());
-    }
-  } catch(MyMoneyException* e) {
-    qWarning("%s", (QString("cannot convert balance to base currency: %1").arg(e->what())).data());
-    delete e;
-  }
   QValueList<QCString>::const_iterator it_a;
   for(it_a = acc.accountList().begin(); it_a != acc.accountList().end(); ++it_a) {
     MyMoneyAccount stock = file->account(*it_a);
@@ -752,11 +741,9 @@ MyMoneyMoney KHomeView::investmentBalance(const MyMoneyAccount& acc)
       MyMoneySecurity security = file->security(stock.currencyId());
       MyMoneyPrice price = file->price(stock.currencyId(), security.tradingCurrency());
       val = balance * price.rate(security.tradingCurrency());
-
-      /*if(security.tradingCurrency() != file->baseCurrency().id()) {
-        MyMoneySecurity sec = file->currency(security.tradingCurrency());
-        val = val * file->price(security.tradingCurrency(), file->baseCurrency().id()).rate(file->baseCurrency().id());
-      }*/
+      // adjust value of security to the currency of the account
+      MyMoneySecurity accountCurrency = file->currency(acc.currencyId());
+      val = val * file->price(security.tradingCurrency(), accountCurrency.id()).rate(accountCurrency.id());
       val = val.convert(acc.fraction());
       value += val;
     } catch(MyMoneyException* e) {

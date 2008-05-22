@@ -101,6 +101,11 @@ signals:
 private:
 
   void showAccountEntry(const MyMoneyAccount& acc, const MyMoneyMoney& value, const MyMoneyMoney& valueToMinBal, const bool showMinBal);
+  
+  /**
+    * @param acc the investment account
+    * @return the balance in the currency of the investment account
+    */
   MyMoneyMoney investmentBalance(const MyMoneyAccount& acc);
   QString showColoredAmount(const QString& amount, bool isNegative);
 
