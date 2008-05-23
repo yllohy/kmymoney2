@@ -95,7 +95,7 @@ const T& MyMoneyObjectContainer::a(const QCString& id) \
   it = m_map.find(id); \
   if(it == m_map.end()) { \
     /* not found, need to load from engine */ \
-    const T& x = m_storage->a(id); \
+    const T x = m_storage->a(id); \
     m_map[id] = new T(x); \
     return dynamic_cast<const T&>(*m_map[id]); \
   } \

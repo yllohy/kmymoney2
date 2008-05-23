@@ -119,8 +119,12 @@ public:
    * will be returned.
    */
   MyMoneyMoney price(void) const;
+  /** This method just returns what is in m_price, so when we write to the
+   *  database, we don't just generate prices
+  */
+  MyMoneyMoney actualPrice(void) const { return m_price; }
 
-  MyMoneyMoney value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const;
+  const MyMoneyMoney value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const;
   const QCString& accountId(void) const { return m_account; }
   const QString& memo(void) const { return m_memo; }
   reconcileFlagE reconcileFlag(void) const { return m_reconcileFlag; }
@@ -155,7 +159,7 @@ public:
   void setAccountId(const QCString& account);
   void setMemo(const QString& memo);
   void setReconcileFlag(const reconcileFlagE flag);
-  void setReconcileDate(const QDate date);
+  void setReconcileDate(const QDate& date);
   void setPayeeId(const QCString& payee);
   void setAction(const QCString& action);
   void setAction(investTransactionTypeE type);

@@ -58,9 +58,9 @@ public:
   virtual ~IMyMoneySerialize();
 
   // general get functions
-  virtual const MyMoneyPayee& user(void) const = 0;
-  virtual const QDate& creationDate(void) const = 0;
-  virtual const QDate& lastModificationDate(void) const = 0;
+  virtual const MyMoneyPayee user(void) const = 0;
+  virtual const QDate creationDate(void) const = 0;
+  virtual const QDate lastModificationDate(void) const = 0;
   virtual const unsigned int currentFixVersion(void) const = 0;
   virtual const unsigned int fileFixVersion(void) const = 0;
 
@@ -97,7 +97,7 @@ public:
     *
     * @note The standard accounts will not be returned
     */
-  virtual void accountList(QValueList<MyMoneyAccount>& list) = 0;
+  virtual void accountList(QValueList<MyMoneyAccount>& list) const = 0;
 
   /**
     * This method returns a list of the institutions
@@ -171,31 +171,31 @@ public:
     * This method is used to return the standard liability account
     * @return MyMoneyAccount liability account(group)
     */
-  virtual const MyMoneyAccount& liability(void) const = 0;
+  virtual const MyMoneyAccount liability(void) const = 0;
 
   /**
     * This method is used to return the standard asset account
     * @return MyMoneyAccount asset account(group)
     */
-  virtual const MyMoneyAccount& asset(void) const = 0;
+  virtual const MyMoneyAccount asset(void) const = 0;
 
   /**
     * This method is used to return the standard expense account
     * @return MyMoneyAccount expense account(group)
     */
-  virtual const MyMoneyAccount& expense(void) const = 0;
+  virtual const MyMoneyAccount expense(void) const = 0;
 
   /**
     * This method is used to return the standard income account
     * @return MyMoneyAccount income account(group)
     */
-  virtual const MyMoneyAccount& income(void) const = 0;
+  virtual const MyMoneyAccount income(void) const = 0;
 
   /**
     * This method is used to return the standard equity account
     * @return MyMoneyAccount equity account(group)
     */
-  virtual const MyMoneyAccount& equity(void) const = 0;
+  virtual const MyMoneyAccount equity(void) const = 0;
 
   /**
     * This method is used to create a new account
@@ -286,14 +286,14 @@ public:
   virtual void loadReports( const QMap<QCString, MyMoneyReport>& reports ) = 0;
   virtual void loadBudgets( const QMap<QCString, MyMoneyBudget>& budgets ) = 0;
 
-  virtual const unsigned long accountId(void) = 0;
-  virtual const unsigned long transactionId(void) = 0;
-  virtual const unsigned long payeeId(void) = 0;
-  virtual const unsigned long institutionId(void) = 0;
-  virtual const unsigned long scheduleId(void) = 0;
-  virtual const unsigned long securityId(void) = 0;
-  virtual const unsigned long reportId(void) = 0;
-  virtual const unsigned long budgetId(void) = 0;
+  virtual const unsigned long accountId(void) const = 0;
+  virtual const unsigned long transactionId(void) const = 0;
+  virtual const unsigned long payeeId(void) const = 0;
+  virtual const unsigned long institutionId(void) const = 0;
+  virtual const unsigned long scheduleId(void) const = 0;
+  virtual const unsigned long securityId(void) const = 0;
+  virtual const unsigned long reportId(void) const = 0;
+  virtual const unsigned long budgetId(void) const = 0;
 
   virtual void loadAccountId(const unsigned long id) = 0;
   virtual void loadTransactionId(const unsigned long id) = 0;
@@ -312,7 +312,7 @@ public:
     * @return QMap<QCString, QString> containing all key/value pairs of
     *         this container.
     */
-  virtual QMap<QCString, QString> pairs(void) const = 0;
+  virtual const QMap<QCString, QString> pairs(void) const = 0;
 
   /**
     * This method is used to initially store a set of key/value pairs
@@ -327,7 +327,7 @@ public:
     */
   virtual void setPairs(const QMap<QCString, QString>& list) = 0;
 
-  virtual QValueList<MyMoneySchedule> scheduleListEx( int scheduleTypes,
+  virtual const QValueList<MyMoneySchedule> scheduleListEx( int scheduleTypes,
                                               int scheduleOcurrences,
                                               int schedulePaymentTypes,
                                               QDate startDate,
@@ -374,7 +374,7 @@ public:
     *
     * @return MyMoneyPriceList of all MyMoneyPrice objects.
     */
-  virtual const MyMoneyPriceList& priceList(void) const = 0;
+  virtual const MyMoneyPriceList priceList(void) const = 0;
 
   /**
     * This method recalculates the balances of all accounts

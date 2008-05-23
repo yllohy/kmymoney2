@@ -3,6 +3,9 @@
 #include <qptrstack.h>
 #include <kmymoney/mymoneyexception.h>
 
+#ifndef MYMONEYMAP_H
+#define MYMONEYMAP_H
+
 #define MY_OWN_DEBUG 0
 
 /**
@@ -307,5 +310,7 @@ main()
   printf("b.name() = %s\n", container["001"].name().data());
   printf("b.name() = %s\n", container["005"].name().data());
 }
+
+#endif
 
 #endif

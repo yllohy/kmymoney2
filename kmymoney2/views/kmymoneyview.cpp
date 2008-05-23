@@ -84,7 +84,7 @@
 #include "../dialogs/knewfiledlg.h"
 
 #include "../mymoney/storage/mymoneyseqaccessmgr.h"
-//#include "../mymoney/storage/mymoneydatabasemgr.h"
+#include "../mymoney/storage/mymoneydatabasemgr.h"
 #include "../mymoney/storage/imymoneystorageformat.h"
 #include "../mymoney/storage/mymoneystoragebin.h"
 #include "../mymoney/mymoneyexception.h"
@@ -378,8 +378,8 @@ void KMyMoneyView::newStorage(storageTypeE t)
   removeStorage();
   MyMoneyFile* file = MyMoneyFile::instance();
   if (t == Memory) file->attachStorage(new MyMoneySeqAccessMgr);
-  else //file->attachStorage(new MyMoneyDatabaseMgr);
-    qFatal ("Mode not implemented");
+  else file->attachStorage(new MyMoneyDatabaseMgr);
+    //qFatal ("Mode not implemented");
 }
 
 void KMyMoneyView::removeStorage(void)
@@ -509,7 +509,7 @@ bool KMyMoneyView::readFile(const KURL& url)
 {
   QString filename;
 
-  newStorage();
+//  newStorage();
   m_fileOpen = false;
   bool isEncrypted = false;
 
@@ -525,6 +525,8 @@ bool KMyMoneyView::readFile(const KURL& url)
   }
 
   if (url.protocol() == "sql") { // handle reading of database
+    //newStorage(Database);
+    MyMoneyFile::instance()->detachStorage();
     if (url.queryItem("mode") == "single") {
       m_fileType = KmmDbSingleUser;
       return (openDatabase(url)); // open database in single user mode
@@ -541,6 +543,8 @@ bool KMyMoneyView::readFile(const KURL& url)
       return (openDatabase(newUrl)); // on error, any message will have been displayed
     }
   }
+
+  newStorage();
 
   if(url.isLocalFile()) {
     filename = url.path();
@@ -761,6 +765,11 @@ bool KMyMoneyView::openDatabase (const KURL& url) {
   }
   // open the database in single-user mode
   IMyMoneySerialize* pStorage = dynamic_cast<IMyMoneySerialize*> (MyMoneyFile::instance()->storage());
+  MyMoneyDatabaseMgr* pDBMgr = 0;
+  if (! pStorage) {
+    pDBMgr = new MyMoneyDatabaseMgr;
+    pStorage = dynamic_cast<IMyMoneySerialize*> (pDBMgr);
+  }
   MyMoneyStorageSql* reader = pStorage->connectToDatabase (url);
   KURL dbURL (url);
   bool retry = true;
@@ -781,6 +790,10 @@ bool KMyMoneyView::openDatabase (const KURL& url) {
         dbURL.addQueryItem("options", options);
       }
     }
+  }
+  if (pDBMgr) {
+    removeStorage();
+    MyMoneyFile::instance()->attachStorage(pDBMgr);
   }
   // single user mode; read some of the data into memory
   reader->setProgressCallback(&KMyMoneyView::progressCallback);
@@ -811,6 +824,7 @@ bool KMyMoneyView::initializeStorage()
     ft.commit();
   } catch(MyMoneyException *e) {
     delete e;
+    MyMoneyFile::instance()->blockSignals(blocked);
     return false;
   }
 
@@ -859,6 +873,7 @@ bool KMyMoneyView::initializeStorage()
       // Check if we have to modify the file before we allow to work with it
       IMyMoneyStorage* s = MyMoneyFile::instance()->storage();
       while (s->fileFixVersion() < s->currentFixVersion()) {
+        qDebug(QString("testing %1 < %2").arg(s->fileFixVersion()).arg(s->currentFixVersion()));
         switch (s->fileFixVersion()) {
           case 0:
             fixFile_0();
@@ -877,6 +892,7 @@ bool KMyMoneyView::initializeStorage()
       ft.commit();
     } catch(MyMoneyException *e) {
       delete e;
+      MyMoneyFile::instance()->blockSignals(blocked);
       return false;
     }
   } else {

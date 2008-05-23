@@ -248,6 +248,7 @@ KMyMoney2App::~KMyMoney2App()
   delete m_endingBalanceDlg;
   delete d->m_moveToAccountSelector;
   delete d;
+  delete myMoneyView;
 }
 
 const KURL KMyMoney2App::lastOpenedURL(void)
@@ -1103,11 +1104,21 @@ const bool KMyMoney2App::slotSaveAsDatabase(void)
   QString prevMsg = slotStatusMsg(i18n("Saving file to database..."));
   KSelectDatabaseDlg dialog;
   dialog.setMode(IO_WriteOnly);
-  KURL url;
+  KURL oldUrl = m_fileName.isEmpty() ? lastOpenedURL() : m_fileName;
+  KURL url = oldUrl;
 
-  if(dialog.exec() == QDialog::Accepted) {
+  while (oldUrl == url && dialog.exec() == QDialog::Accepted) {
     url = dialog.selectedURL();
-    rc = myMoneyView->saveAsDatabase(url);
+    // If the protocol is SQL for the old and new, and the hostname and database names match
+    // Let the user know that the current database cannot be saved on top of itself.
+    if (url.protocol() == "sql" && oldUrl.protocol() == "sql"
+    && oldUrl.host() == url.host()
+    && oldUrl.queryItem("driver") == url.queryItem("driver")
+    && oldUrl.path().right(oldUrl.path().length() - 1) == url.path().right(url.path().length() - 1)) {
+      KMessageBox::sorry(this, i18n("Cannot save to current database."));
+    } else {
+      rc = myMoneyView->saveAsDatabase(url);
+    }
   }
   if (rc) writeLastUsedFile(url.prettyURL(0, KURL::StripFileProtocol));
   m_autoSaveTimer->stop();

@@ -58,7 +58,7 @@ MyMoneyPrice::~MyMoneyPrice()
 {
 }
 
-const MyMoneyMoney& MyMoneyPrice::rate(const QCString& id) const
+const MyMoneyMoney MyMoneyPrice::rate(const QCString& id) const
 {
   static MyMoneyMoney dummyPrice(1,1);
 

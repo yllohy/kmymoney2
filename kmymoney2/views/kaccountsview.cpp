@@ -390,7 +390,7 @@ void KAccountsView::loadListView(void)
 
   // create the items
   try {
-    const MyMoneySecurity& security = file->baseCurrency();
+    const MyMoneySecurity security = file->baseCurrency();
     m_accountTree->setBaseCurrency(security);
 
     const MyMoneyAccount& asset = file->asset();
@@ -410,7 +410,7 @@ void KAccountsView::loadListView(void)
     m_haveUnusedCategories |= loadSubAccounts(expenseItem, expense.accountList());
 
     if(KMyMoneyGlobalSettings::expertMode()) {
-      const MyMoneyAccount& equity = file->equity();
+      const MyMoneyAccount equity = file->equity();
       KMyMoneyAccountTreeItem *equityItem = new KMyMoneyAccountTreeItem(m_accountTree, equity, security, i18n("Equity"));
       loadSubAccounts(equityItem, equity.accountList());
     }

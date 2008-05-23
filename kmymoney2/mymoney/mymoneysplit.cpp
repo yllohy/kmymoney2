@@ -101,7 +101,7 @@ void MyMoneySplit::setMemo(const QString& memo)
   m_memo = memo;
 }
 
-void MyMoneySplit::setReconcileDate(const QDate date)
+void MyMoneySplit::setReconcileDate(const QDate& date)
 {
   m_reconcileDate = date;
 }
@@ -172,7 +172,7 @@ void MyMoneySplit::setNumber(const QString& number)
   m_number = number;
 }
 
-MyMoneyMoney MyMoneySplit::value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const
+const MyMoneyMoney MyMoneySplit::value(const QCString& transactionCurrencyId, const QCString& splitCurrencyId) const
 {
   return (transactionCurrencyId == splitCurrencyId) ? m_value : m_shares;
 }

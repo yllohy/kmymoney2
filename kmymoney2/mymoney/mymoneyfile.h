@@ -171,7 +171,7 @@ public:
   MyMoneyFile(IMyMoneyStorage *storage);
 
   // general get functions
-  const MyMoneyPayee& user(void) const;
+  const MyMoneyPayee user(void) const;
 
   // general set functions
   void setUser(const MyMoneyPayee& user);
@@ -332,7 +332,7 @@ public:
     *            should be retrieved
     * @return QCString id for the transaction, or QCString() if no transaction exists
     */
-  QCString openingBalanceTransaction(const MyMoneyAccount& acc) const;
+  const QCString openingBalanceTransaction(const MyMoneyAccount& acc) const;
 
   /**
     * This method returns an indicator if the MyMoneyFile object has been
@@ -552,7 +552,7 @@ public:
     * @param id id of transaction as QString.
     * @return reference to the requested transaction
     */
-  const MyMoneyTransaction& transaction(const QCString& id) const;
+  const MyMoneyTransaction transaction(const QCString& id) const;
 
   /**
     * This method is used to extract a transaction from the file global
@@ -562,7 +562,7 @@ public:
     * @param idx number of transaction in this account
     * @return reference to MyMoneyTransaction object
     */
-  const MyMoneyTransaction& transaction(const QCString& account, const int idx) const;
+  const MyMoneyTransaction transaction(const QCString& account, const int idx) const;
 
   /**
     * This method is used to pull a list of transactions from the file
@@ -577,7 +577,7 @@ public:
     *
     * @return set of transactions in form of a QValueList<MyMoneyTransaction>
     */
-  QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;
+  const QValueList<MyMoneyTransaction> transactionList(MyMoneyTransactionFilter& filter) const;
 
   void transactionList(QValueList<MyMoneyTransaction>& list, MyMoneyTransactionFilter& filter) const;
 
@@ -973,9 +973,9 @@ public:
     * @exception An exception will be thrown, if @p base is not equal
     *            expense() or income().
     **/
-  QCString createCategory(const MyMoneyAccount& base, const QString& name);
+  const QCString createCategory(const MyMoneyAccount& base, const QString& name);
 
-  QValueList<MyMoneySchedule> scheduleListEx( int scheduleTypes,
+  const QValueList<MyMoneySchedule> scheduleListEx( int scheduleTypes,
                                               int scheduleOcurrences,
                                               int schedulePaymentTypes,
                                               QDate startDate,
@@ -1023,7 +1023,7 @@ public:
     * @param id QCString containing the id of the MyMoneySecurity object
     * @return MyMoneySecurity object
     */
-  const MyMoneySecurity security(const QCString& id) const;
+  const MyMoneySecurity& security(const QCString& id) const;
 
   /**
     * This method is used to retrieve a list of all MyMoneySecurity objects.
@@ -1209,7 +1209,7 @@ public:
     * @param id QCString containing the id of the MyMoneyReport object
     * @return MyMoneyReport object
     */
-  MyMoneyReport report( const QCString& id ) const;
+  const MyMoneyReport report( const QCString& id ) const;
 
   /**
     * This method is used to remove an existing MyMoneyReport object
@@ -1253,7 +1253,7 @@ public:
     *
     * @return MyMoneyBudget refernce to object of budget
     */
-  const MyMoneyBudget& budgetByName(const QString& budget) const;
+  const MyMoneyBudget budgetByName(const QString& budget) const;
 
 
   /**
@@ -1283,7 +1283,7 @@ public:
     * @param id QCString containing the id of the MyMoneyBudget object
     * @return MyMoneyBudget object
     */
-  MyMoneyBudget budget( const QCString& id ) const;
+  const MyMoneyBudget budget( const QCString& id ) const;
 
   /**
     * This method is used to remove an existing MyMoneyBudget object
@@ -1328,7 +1328,7 @@ public:
     * @param accId id of account to be scanned
     * @return highest check no. used
     */
-  QString highestCheckNo(const QCString& accId) const;
+  const QString highestCheckNo(const QCString& accId) const;
 
   /**
     * Clear all internal caches (used internally for performance measurements)

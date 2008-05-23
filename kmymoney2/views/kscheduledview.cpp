@@ -159,17 +159,16 @@ void KScheduledView::refresh(bool full, const QCString schedId)
     // Refresh the calendar view first
     m_calendar->refresh();
 
-    if (MyMoneyFile::instance()->scheduleList().count() == 0)
-      return;
-
     MyMoneyFile *file = MyMoneyFile::instance();
+    QValueList<MyMoneySchedule> scheduledItems = file->scheduleList();
+
+    if (scheduledItems.count() == 0)
+      return;
 
     KScheduledListItem *itemBills = new KScheduledListItem(m_qlistviewScheduled, i18n("Bills"), KMyMoneyUtils::billScheduleIcon(KIcon::Small), "0");
     KScheduledListItem *itemDeposits = new KScheduledListItem(m_qlistviewScheduled, i18n("Deposits"), KMyMoneyUtils::depositScheduleIcon(KIcon::Small), "1");
     KScheduledListItem *itemLoans = new KScheduledListItem(m_qlistviewScheduled, i18n("Loans"), KMyMoneyUtils::transferScheduleIcon(KIcon::Small), "2");
     KScheduledListItem *itemTransfers = new KScheduledListItem(m_qlistviewScheduled, i18n("Transfers"), KMyMoneyUtils::transferScheduleIcon(KIcon::Small), "3");
-
-    QValueList<MyMoneySchedule> scheduledItems = file->scheduleList();
 
     QValueList<MyMoneySchedule>::Iterator it;
 
