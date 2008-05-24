@@ -47,9 +47,12 @@ typedef enum {
 typedef enum {
   ActionNone = -1,
   ActionCheck = 0,
-  ActionDeposit,
-  ActionTransfer,
-  ActionWithdrawal,
+  /* these should be values which qt 3.3 never uses for QTab:
+   * qt starts upwards from 0
+   */
+  ActionDeposit = 12201,
+  ActionTransfer = 12202,
+  ActionWithdrawal = 12203,
   ActionAtm,
   // insert new values above this line
   MaxAction

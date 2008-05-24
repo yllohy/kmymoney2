@@ -72,12 +72,22 @@ int TabBar::currentTab(void) const
 
 void TabBar::setCurrentTab(int id)
 {
+  /* if a QAccel calls this, id will be as set by qt.
+   * however if we call it programmatically, id will
+   * be our own id. We do tell QTab about our id but
+   * in qt3.3 I (woro) am not able to make sure that
+   * QAccel also gets it. See registeritem.h: We defined
+   * new values for our own ids which should lie way
+   * outside of the range that qt uses
+   */
   QMap<int, int>::const_iterator it;
   for(it = m_idMap.begin(); it != m_idMap.end(); ++it) {
     if(*it == id) {
       QTabBar::setCurrentTab(it.key());
+      return;
     }
   }
+  QTabBar::setCurrentTab(id);
 }
 
 QTab* TabBar::tab(int id) const
