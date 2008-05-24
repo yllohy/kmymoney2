@@ -48,7 +48,7 @@ const QStringList MyMoneyReport::kChartTypeText = QStringList::split(",","none,l
 // This should live in mymoney/mymoneytransactionfilter.h
 static const QStringList kTypeText = QStringList::split(",","all,payments,deposits,transfers,none");
 static const QStringList kStateText = QStringList::split(",","all,notreconciled,cleared,reconciled,frozen,none");
-static const QStringList kDateLockText = QStringList::split(",", "alldates,untiltoday,currentmonth,currentyear,monthtodate,yeartodate,yeartomonth,lastmonth,lastyear,last7days,last30days,last3months,last6months,last12months,next7days,next30days,next3months,next6months,next12months,userdefined,last3tonext3months");
+static const QStringList kDateLockText = QStringList::split(",", "alldates,untiltoday,currentmonth,currentyear,monthtodate,yeartodate,yeartomonth,lastmonth,lastyear,last7days,last30days,last3months,last6months,last12months,next7days,next30days,next3months,next6months,next12months,userdefined,last3tonext3months,last11Months,currentQuarter,lastQuarter,nextQuarter,currentFiscalYear,lastFiscalYear,today");
 static const QStringList kAccountTypeText = QStringList::split(",","unknown,checkings,savings,cash,creditcard,loan,certificatedep,investment,moneymarket,asset,liability,currency,income,expense,assetloan,stock,equity,invalid");
 
 MyMoneyReport::MyMoneyReport() :
