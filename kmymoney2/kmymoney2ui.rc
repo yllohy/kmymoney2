@@ -94,7 +94,8 @@
    <Action name="transaction_select_all" />
   </Menu>
   <Merge/>
-  <Menu name="tools" >
+  <Menu name="kmtools" >
+   <Text>T&amp;ools</Text>
    <Action name="tools_qif_editor" />
    <Action name="tools_security_editor" />
    <Action name="tools_currency_editor" />

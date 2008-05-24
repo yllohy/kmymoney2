@@ -8,6 +8,8 @@
 
 2008-05-24 Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * fixed keyboard handling for accelerators in transaction editor
+  * fixed accelerator for the Tools main menu: Was T although the o
+    was underlined
   
 2008-05-23 Fernando Vilas <fvilas@iname.com>
   * Updated database engine to support new KMM engine.
