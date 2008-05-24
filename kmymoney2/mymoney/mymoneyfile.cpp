@@ -113,6 +113,7 @@ void MyMoneyFile::attachStorage(IMyMoneyStorage* const storage)
   // and the whole cache
   d->m_cache.clear(storage);
   d->m_priceCache.clear();
+  preloadCache();
 
   // notify application about new data availability
   emit dataChanged();
@@ -923,10 +924,16 @@ void MyMoneyFile::accountList(QValueList<MyMoneyAccount>& list, const QCStringLi
 {
   if(idlist.isEmpty()) {
     d->m_cache.account(list);
+
+#if 0
+    // TODO: I have no idea what this was good for, but it caused the networth report
+    //       to show double the numbers so I commented it out (ipwizard, 2008-05-24)
     if (m_storage && (list.isEmpty() || list.size() != m_storage->accountCount())) {
       m_storage->accountList(list);
       d->m_cache.preloadAccount(list);
     }
+#endif
+
     QValueList<MyMoneyAccount>::Iterator it;
     QValueList<MyMoneyAccount>::Iterator next;
     for(it = list.begin(); it != list.end(); ) {
@@ -1869,7 +1876,10 @@ const MyMoneySecurity& MyMoneyFile::currency(const QCString& id) const
   if(id.isEmpty())
     return baseCurrency();
 
-  return d->m_cache.security(id);
+  const MyMoneySecurity& curr = d->m_cache.security(id);
+  if(curr.id().isEmpty())
+    throw new MYMONEYEXCEPTION("Currency not found.");
+  return curr;
 }
 
 const QValueList<MyMoneySecurity> MyMoneyFile::currencyList(void) const
