@@ -2,6 +2,10 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+
+2008-05-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Reverted some changes introduced during DB integration
+
 2008-05-24 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Prepare sqlite3 support
   * Fix create views in mysql
@@ -10,14 +14,14 @@
   * fixed keyboard handling for accelerators in transaction editor
   * fixed accelerator for the Tools main menu: Was T although the o
     was underlined
-  
+
 2008-05-23 Fernando Vilas <fvilas@iname.com>
   * Updated database engine to support new KMM engine.
-  
+
 2008-05-22 Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * Summary: Fix computation of investment accounts when foreign
     currencies are involved
-    
+
 2008-05-20 Alvaro Soliverez <asoliverez@gmail.com>
   * For budget or forecast only show actual in the charts if set to 
     do so
