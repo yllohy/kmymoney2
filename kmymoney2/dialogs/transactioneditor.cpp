@@ -703,6 +703,15 @@ StdTransactionEditor::StdTransactionEditor(TransactionEditorContainer* regForm, 
 {
 }
 
+StdTransactionEditor::~StdTransactionEditor()
+{
+  KMyMoneyTransactionForm::TransactionForm* form = dynamic_cast<KMyMoneyTransactionForm::TransactionForm*>(m_regForm);
+  if(form) {
+    form->enableTabBar(true);
+  }
+}
+
+
 void StdTransactionEditor::createEditWidgets(void)
 {
   KMyMoneyCategory* account = new KMyMoneyCategory;
@@ -808,6 +817,7 @@ void StdTransactionEditor::createEditWidgets(void)
   // create a copy of tabbar above the form (if we are created for a form)
   KMyMoneyTransactionForm::TransactionForm* form = dynamic_cast<KMyMoneyTransactionForm::TransactionForm*>(m_regForm);
   if(form) {
+    form->enableTabBar(false);
     KMyMoneyTransactionForm::TabBar* tabbar = new KMyMoneyTransactionForm::TabBar;
     m_editWidgets["tabbar"] = tabbar;
     tabbar->copyTabs(form->tabBar());

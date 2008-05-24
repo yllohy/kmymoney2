@@ -96,7 +96,16 @@ signals:
 
 private:
   SignalEmissionE    m_signalType;
+  
+  /**
+    * maps our internal action ids to those used by
+    * qt3. Since it does not seem possible to tell
+    * qt3 to use our ids everywhere (in QAccel) we
+    * need to know which is which
+    */
   QMap<int, int>     m_idMap;
+  
+  
 };
 
 typedef enum {
@@ -145,7 +154,9 @@ public:
 
   void setupForm(const MyMoneyAccount& acc);
 
-protected:
+  void enableTabBar(bool b);
+
+  protected:
   /**
     * reimplemented to support QWidget::WState_BlockUpdates
     */

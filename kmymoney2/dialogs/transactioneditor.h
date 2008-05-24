@@ -280,6 +280,7 @@ class StdTransactionEditor : public TransactionEditor
 public:
   StdTransactionEditor();
   StdTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+  ~StdTransactionEditor();
 
   bool isComplete(void) const;
   QWidget* firstWidget(void) const;

@@ -72,33 +72,26 @@ int TabBar::currentTab(void) const
 
 void TabBar::setCurrentTab(int id)
 {
-  /* if a QAccel calls this, id will be as set by qt.
-   * however if we call it programmatically, id will
-   * be our own id. We do tell QTab about our id but
-   * in qt3.3 I (woro) am not able to make sure that
-   * QAccel also gets it. See registeritem.h: We defined
-   * new values for our own ids which should lie way
-   * outside of the range that qt uses
-   */
-  QMap<int, int>::const_iterator it;
-  for(it = m_idMap.begin(); it != m_idMap.end(); ++it) {
-    if(*it == id) {
-      QTabBar::setCurrentTab(it.key());
-      return;
-    }
-  }
-  QTabBar::setCurrentTab(id);
+  if (tab(id)->isEnabled())
+    setCurrentTab(tab(id));
 }
 
 QTab* TabBar::tab(int id) const
 {
+  /* if a QAccel calls setCurrentTab, id will be as set by qt.
+  * however if we call it programmatically, id will
+  * be our own id. We do tell QTab about our id but
+  * in qt3.3 I (woro) am not able to make sure that
+  * QAccel also gets it. See registeritem.h: We defined
+  * new values for our own ids which should lie way
+  * outside of the range that qt uses
+  */
+  QTab *result=QTabBar::tab(id);
   QMap<int, int>::const_iterator it;
-  for(it = m_idMap.begin(); it != m_idMap.end(); ++it) {
-    if(*it == id) {
-      return QTabBar::tab(it.key());
-    }
-  }
-  return 0;
+  for(it = m_idMap.begin(); it != m_idMap.end(); ++it)
+    if(*it == id)
+      result=QTabBar::tab(it.key());
+  return result;
 }
 
 void TabBar::setCurrentTab(QTab* tab)
@@ -124,6 +117,11 @@ void TabBar::addTab(QTab* tab, int id)
 void TabBar::setIdentifier(QTab* tab, int newId)
 {
   m_idMap[tab->identifier()] = newId;
+}
+
+void TransactionForm::enableTabBar(bool b)
+{
+  m_tabBar->setEnabled(b);
 }
 
 void TabBar::slotTabSelected(int id)
