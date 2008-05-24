@@ -2,6 +2,10 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+2008-05-24 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Prepare sqlite3 support
+  * Fix create views in mysql
+
 2008-05-24 Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * fixed keyboard handling for accelerators in transaction editor
   
