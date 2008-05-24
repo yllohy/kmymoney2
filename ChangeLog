@@ -5,6 +5,7 @@
 
 2008-05-24 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Reverted some changes introduced during DB integration
+  * Fixed reference for file inclusion in Makefile.am
 
 2008-05-24 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Prepare sqlite3 support
