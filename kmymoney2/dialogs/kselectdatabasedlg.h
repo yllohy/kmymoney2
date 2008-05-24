@@ -50,7 +50,7 @@ public:
   const QString password() const {return (textPassword->text());} */
     
 public slots:
-  void slotDriverSelected(const QString&);
+  void slotDriverSelected(QListBoxItem *driver);
   void slotBrowse();
   void slotHelp();
   void slotGenerateSQL();

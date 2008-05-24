@@ -25,6 +25,7 @@
 #include <qstringlist.h>
 #include <qiodevice.h>
 #include <qcstring.h>
+#include <qsqldriver.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -53,8 +54,16 @@ bool MyMoneySqlQuery::exec () {
   bool rc = QSqlQuery::exec();
   QString msg("end sql\n%1\n***Query returned %2, row count %3");
   ::timetrace (msg.arg(QSqlQuery::executedQuery()).arg(rc).arg(numRowsAffected()));
-  //qDebug (QString("%1\n***Query returned %2, row count %3").arg(QSqlQuery::executedQuery()).arg(rc).arg(size()));
+  //DBG (QString("%1\n***Query returned %2, row count %3").arg(QSqlQuery::executedQuery()).arg(rc).arg(size()));
   return (rc);
+}
+
+bool MyMoneySqlQuery::prepare ( const QString & query ) {
+  if ((driver()->name() == "QSQLITE") || (driver()->name() == "QSQLITE3")) {
+    QString newQuery = query;
+    return (QSqlQuery::prepare (newQuery.replace("FOR UPDATE", "")));
+  }
+  return (QSqlQuery::prepare (query));
 }
 
 //************************ Constructor/Destructor *****************************
@@ -83,6 +92,7 @@ MyMoneyStorageSql::MyMoneyStorageSql (IMyMoneySerialize *storage, const KURL& ur
   m_driverMap["QPSQL7"] = QString("PostgreSQL v6.x and v7.x");
   m_driverMap["QSQLITE"] = QString("SQLite Version 2");
   m_driverMap["QTDS7"] = QString("Sybase Adaptive Server and Microsoft SQL Server");
+  m_driverMap["QSQLITE3"] = QString("SQLite Version 3");
 }
 
 int MyMoneyStorageSql::open(const KURL& url, int openMode, bool clear) {
@@ -98,6 +108,7 @@ try {
   else if (driverName == "QPSQL7") m_dbType = Postgresql;
   else if (driverName == "QSQLITE") m_dbType = Sqlite;
   else if (driverName == "QTDS7") m_dbType = Sybase;
+  else if (driverName == "QSQLITE3") m_dbType = Sqlite3;
   //get the input options
   QString mode = url.queryItem("mode");
   m_mode = 0;
@@ -184,7 +195,7 @@ void MyMoneyStorageSql::close(bool logoff) {
 
 int MyMoneyStorageSql::createDatabase (const KURL& url) {
   DBG("*** Entering MyMoneyStorageSql::createDatabase");
-  if (driverName() == "QSQLITE") return(0); // not needed for sqlite
+  if ((driverName() == "QSQLITE") || (driverName() == "QSQLITE3")) return(0); // not needed for sqlite
   if (driverName() != "QMYSQL3") {
     m_error = QString(i18n("Cannot currently create database for driver %1")).arg(driverName());
     return (1);
@@ -197,11 +208,11 @@ int MyMoneyStorageSql::createDatabase (const KURL& url) {
   maindb->setUserName (url.user());
   maindb->setPassword (url.pass());
   maindb->open();
-  MyMoneySqlQuery qm;
+  MyMoneySqlQuery qm(maindb);
   QString qs = QString("CREATE DATABASE %1;").arg(dbName);
   qm.prepare (qs);
   if (!qm.exec()) {
-    buildError (qm, __func__, "Error in create database %1").arg(dbName);
+    buildError (qm, __func__, QString("Error in create database %1; do you have create permissions?").arg(dbName));
     return (1);
   }
   QSqlDatabase::removeDatabase (maindb);
@@ -248,7 +259,7 @@ int MyMoneyStorageSql::upgradeDb() {
 
 int MyMoneyStorageSql::upgradeToV1() {
   DBG("*** Entering MyMoneyStorageSql::upgradeToV1");
-  if (m_dbType == Sqlite) qFatal("SQLite upgrade NYI");
+  if ((m_dbType == Sqlite) || (m_dbType == Sqlite3)) qFatal("SQLite upgrade NYI");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   // change kmmSplits pkey to (transactionId, splitId)
@@ -424,7 +435,7 @@ int MyMoneyStorageSql::upgradeToV1() {
 
 int MyMoneyStorageSql::upgradeToV2() {
   DBG("*** Entering MyMoneyStorageSql::upgradeToV2");
-  if (m_dbType == Sqlite) qFatal("SQLite upgrade NYI");
+  if ((m_dbType == Sqlite) || (m_dbType == Sqlite3)) qFatal("SQLite upgrade NYI");
   startCommitUnit(__func__);
   MyMoneySqlQuery q(this);
   // change kmmSplits add price fields
@@ -468,10 +479,11 @@ int MyMoneyStorageSql::createTables () {
   for (QMapConstIterator<QString, MyMoneyDbTable> tt = m_db.tableBegin(); tt != m_db.tableEnd(); ++tt) {
     if (!lowerTables.contains(tt.key().lower())) createTable (tt.data());
   }
-
-  lowerTables = tables(QSql::Views);
-  for (QStringList::iterator i = lowerTables.begin(); i != lowerTables.end(); ++i) {
-    (*i) = (*i).lower();
+  if (driverName() != "QMYSQL3") { // mysql lists views as tables
+    lowerTables = tables(QSql::Views);
+    for (QStringList::iterator i = lowerTables.begin(); i != lowerTables.end(); ++i) {
+      (*i) = (*i).lower();
+    }
   }
 
   MyMoneySqlQuery q(this);
@@ -1861,8 +1873,8 @@ void MyMoneyStorageSql::readFileInfo(void) {
   int i = 0;
   while (ft != t.end()) {
     CASE(version)  setVersion(GETSTRING); // check version == current version...
-    else CASE(created) m_storage->setCreationDate(QDate::fromString(GETSTRING, Qt::ISODate));
-    else CASE(lastModified) m_storage->setLastModificationDate(QDate::fromString(GETSTRING, Qt::ISODate));
+    else CASE(created) m_storage->setCreationDate(GETDATE);
+    else CASE(lastModified) m_storage->setLastModificationDate(GETDATE);
     else CASE(hiInstitutionId) {m_hiIdInstitutions = GETULL; m_storage->loadInstitutionId(m_hiIdInstitutions);}
     else CASE(hiPayeeId)       {m_hiIdPayees = GETULL; m_storage->loadPayeeId(m_hiIdPayees);}
     else CASE(hiAccountId)     {m_hiIdAccounts = GETULL; m_storage->loadAccountId(m_hiIdAccounts);}
@@ -1885,7 +1897,7 @@ void MyMoneyStorageSql::readFileInfo(void) {
     else CASE(budgets     ) m_budgets = GETULL;
     else CASE(encryptData) m_encryptData = GETSTRING;
     else CASE(logonUser)  m_logonUser = GETSTRING;
-    else CASE(logonAt)  m_logonAt = QDateTime::fromString(GETSTRING, Qt::ISODate);
+    else CASE(logonAt)  m_logonAt = GETDATETIME;
     ++ft; ++i;
     signalProgress(i,0);
   }
@@ -2553,7 +2565,7 @@ void MyMoneyStorageSql::readSplit (MyMoneySplit& s, const MyMoneySqlQuery& q, co
     else CASE(memo) s.setMemo(GETSTRING);
     else CASE(accountId) s.setAccountId(GETCSTRING);
     else CASE(checkNumber) s.setNumber(GETSTRING);
-    //else CASE(postDate) m_txPostDate = GETDATE; // FIXME - when Tom puts date into split object
+    //else CASE(postDate) s.setPostDate(GETDATETIME); // FIXME - when Tom puts date into split object
     ++ft; ++i;
   }
 //  s.setPayeeId(payeeId);
@@ -3667,6 +3679,8 @@ const QString MyMoneyDbTable::dropPrimaryKeyString(const QString& driver) const
     return "ALTER TABLE " + m_name + " DROP CONSTRAINT " + m_name + "_pkey;";
   else if (driver == "QSQLITE")
     return "";
+  else if (driver == "QSQLITE3")
+    return "";
 
   return "";
 }
@@ -3678,6 +3692,8 @@ const QString MyMoneyDbTable::modifyColumnString(const QString& driver, const QS
   else if (driver == "QPSQL7")
     qs += "ALTER COLUMN " + columnName + " TYPE " + newDef.generateDDL(driver).section(' ', 1);
   else if (driver == "QSQLITE")
+    qs = "";
+  else if (driver == "QSQLITE3")
     qs = "";
 
   return qs;
@@ -3738,7 +3754,7 @@ const QString MyMoneyDbIntColumn::generateDDL (const QString& driver) const
 
   switch (m_type) {
     case MyMoneyDbIntColumn::TINY:
-      if (driver == "QMYSQL3" || driver == "QSQLITE") {
+      if (driver == "QMYSQL3" || driver == "QSQLITE" || driver == "QSQLITE3") {
         qs += "tinyint ";
       } else if (driver == "QPSQL7") {
         qs += "int2 ";
@@ -3750,7 +3766,7 @@ const QString MyMoneyDbIntColumn::generateDDL (const QString& driver) const
       }
       break;
     case MyMoneyDbIntColumn::SMALL:
-      if (driver == "QMYSQL3" || driver == "QDB2" || driver == "QSQLITE") {
+      if (driver == "QMYSQL3" || driver == "QDB2" || driver == "QSQLITE" || driver == "QSQLITE3") {
         qs += "smallint ";
       } else if (driver == "QPSQL7") {
         qs += "int2 ";
@@ -3764,7 +3780,7 @@ const QString MyMoneyDbIntColumn::generateDDL (const QString& driver) const
         qs += "int ";
       } else if (driver == "QPSQL7") {
         qs += "int4 ";
-      } else if (driver == "QSQLITE") {
+      } else if (driver == "QSQLITE" || driver == "QSQLITE3") {
         qs += "integer ";
       } else {
         // cross your fingers...
@@ -3772,7 +3788,7 @@ const QString MyMoneyDbIntColumn::generateDDL (const QString& driver) const
       }
       break;
     case MyMoneyDbIntColumn::BIG:
-      if (driver == "QMYSQL3" || driver == "QDB2" || driver == "QSQLITE") {
+      if (driver == "QMYSQL3" || driver == "QDB2" || driver == "QSQLITE" || driver == "QSQLITE3") {
         qs += "bigint ";
       } else if (driver == "QPSQL7") {
         qs += "int8 ";
@@ -3786,7 +3802,7 @@ const QString MyMoneyDbIntColumn::generateDDL (const QString& driver) const
       break;
   }
 
-  if ((! m_isSigned) && (driver == "QMYSQL3" || driver == "QSQLITE")) {
+  if ((! m_isSigned) && (driver == "QMYSQL3" || driver == "QSQLITE" || driver == "QSQLITE3")) {
     qs += "unsigned ";
   }
 
@@ -3803,7 +3819,7 @@ const QString MyMoneyDbTextColumn::generateDDL (const QString& driver) const
 
   switch (m_type) {
     case MyMoneyDbTextColumn::TINY:
-      if (driver == "QMYSQL3" || driver == "QSQLITE") {
+      if (driver == "QMYSQL3" || driver == "QSQLITE" || driver == "QSQLITE3") {
         qs += "tinytext ";
       } else if (driver == "QPSQL7") {
         qs += "text ";
@@ -3815,7 +3831,7 @@ const QString MyMoneyDbTextColumn::generateDDL (const QString& driver) const
       }
       break;
     case MyMoneyDbTextColumn::NORMAL:
-      if (driver == "QMYSQL3" || driver == "QSQLITE" || driver == "QPSQL7") {
+      if (driver == "QMYSQL3" || driver == "QSQLITE" || driver == "QSQLITE3"  || driver == "QPSQL7") {
         qs += "text ";
       } else if (driver == "QDB2") {
         qs += "clob(64K) ";
@@ -3825,7 +3841,7 @@ const QString MyMoneyDbTextColumn::generateDDL (const QString& driver) const
       }
       break;
     case MyMoneyDbTextColumn::MEDIUM:
-      if (driver == "QMYSQL3" || driver == "QSQLITE") {
+      if (driver == "QMYSQL3" || driver == "QSQLITE" || driver == "QSQLITE3" ) {
         qs += "mediumtext ";
       } else if (driver == "QPSQL7") {
         qs += "text ";
@@ -3837,7 +3853,7 @@ const QString MyMoneyDbTextColumn::generateDDL (const QString& driver) const
       }
       break;
     case MyMoneyDbTextColumn::LONG:
-      if (driver == "QMYSQL3" || driver == "QSQLITE") {
+      if (driver == "QMYSQL3" || driver == "QSQLITE" || driver == "QSQLITE3" ) {
         qs += "longtext ";
       } else if (driver == "QPSQL7") {
         qs += "text ";
@@ -3863,7 +3879,7 @@ const QString MyMoneyDbDatetimeColumn::generateDDL (const QString& driver) const
   QString qs = name() + " ";
   if (driver == "QMYSQL3"  || driver == "QODBC3") {
     qs += "datetime ";
-  } else if (driver == "QPSQL7" || driver == "QDB2" || driver == "QOCI8"|| driver == "QSQLITE") {
+  } else if (driver == "QPSQL7" || driver == "QDB2" || driver == "QOCI8"|| driver == "QSQLITE" || driver == "QSQLITE3" ) {
     qs += "timestamp ";
   } else {
     qs += "";

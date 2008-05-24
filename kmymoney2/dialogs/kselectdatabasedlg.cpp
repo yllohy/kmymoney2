@@ -1,5 +1,5 @@
 /***************************************************************************
-                          kselectdatabase.cpp
+                          kselectdatabasedlg.cpp
                              -------------------
     copyright            : (C) 2005 by Tony Bloomfield
     author               : Tony Bloomfield
@@ -59,8 +59,9 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
   map["QOCI8"] = QString("Oracle Call Interface, version 8 and 9");
   map["QODBC3"] = QString("Open Database Connectivity");
   map["QPSQL7"] = QString("PostgreSQL v6.x and v7.x");
-  map["QSQLITE"] = QString("SQLite");
+  map["QSQLITE"] = QString("SQLite version 2");
   map["QTDS7"] = QString("Sybase Adaptive Server and Microsoft SQL Server");
+  map["QSQLITE3"] = QString("SQLite version 3");
 
   QStringList list = QSqlDatabase::drivers();
   if (list.count() == 0) {
@@ -75,11 +76,11 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
       QString dname = *it;
       if (map.keys().contains(dname)) dname = dname + " - " + map[dname];
       listDrivers->insertItem (dname);
-      ++it;
+      it++;
     }
 
-    listDrivers->setCurrentItem (0);
-    slotDriverSelected (listDrivers->currentText());
+    //listDrivers->setCurrentItem (0);
+    //slotDriverSelected (listDrivers->currentText());
     textDbName->setText ("KMyMoney");
     textHostName->setText ("localhost");
     textUserName->setText("");
@@ -88,7 +89,7 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
       textUserName->setText (QString(pwd->pw_name));
     textPassword->setText ("");
     buttonOK->setEnabled(true);
-    connect (listDrivers, SIGNAL(highlighted(const QString&)), this, SLOT(slotDriverSelected(const QString &)));
+    connect (listDrivers, SIGNAL(clicked(QListBoxItem *)), this, SLOT(slotDriverSelected(QListBoxItem *)));
   }
   connect (buttonHelp, SIGNAL(released()), this, SLOT(slotHelp()));
   connect (buttonSQL, SIGNAL(released()), this, SLOT(slotGenerateSQL()));
@@ -115,9 +116,9 @@ const KURL KSelectDatabaseDlg::selectedURL() {
   return (url);
 }
 
-void KSelectDatabaseDlg::slotDriverSelected (const QString &driver) {
+void KSelectDatabaseDlg::slotDriverSelected (QListBoxItem *driver) {
 
-  if (driver.section(' ', 0, 0) == "QSQLITE") {
+  if ((driver->text().section(' ', 0, 0) == "QSQLITE") || (driver->text().section(' ', 0, 0) == "QSQLITE3")){
     slotBrowse();   // SQLITE needs a file name
     textHostName->setEnabled (false);  // but not host (how about user/password?)
   } else {

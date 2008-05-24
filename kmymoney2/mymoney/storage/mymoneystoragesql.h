@@ -78,6 +78,7 @@ class MyMoneySqlQuery : public QSqlQuery {
     MyMoneySqlQuery (QSqlDatabase* db) : QSqlQuery (db) {};
     MyMoneySqlQuery () : QSqlQuery() {};
     bool exec ();
+    bool prepare ( const QString & query );
 };
 
 class MyMoneyDbColumn : public KShared {
@@ -536,7 +537,8 @@ private:
     ODBC3, //
     Postgresql, //
     Sqlite, //
-    Sybase //
+    Sybase, //
+    Sqlite3 //
   } _databaseType;
 
   QMap<QString, QString> m_driverMap;
