@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-25 Wolfgang Rohdewald <wolfgang@rohdewald.de>
+  * Fixed segfault after deleting an investment
+  
 2008-05-24 Alvaro Soliverez <asoliverez@gmail.com>
   * Added missing enum item to report date enum
   * Fixed date when reading a custom saved report

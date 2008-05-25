@@ -59,7 +59,7 @@ bool MyMoneySqlQuery::exec () {
 }
 
 bool MyMoneySqlQuery::prepare ( const QString & query ) {
-  if ((driver()->name() == "QSQLITE") || (driver()->name() == "QSQLITE3")) {
+  if ((driver()->name() == QString("QSQLITE")) || (driver()->name() == QString("QSQLITE3"))) {
     QString newQuery = query;
     return (QSqlQuery::prepare (newQuery.replace("FOR UPDATE", "")));
   }
