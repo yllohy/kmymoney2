@@ -58,7 +58,7 @@ KForecastView::KForecastView(QWidget *parent, const char *name) :
 
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadForecast()));
 
-  connect(m_forecastButton, SIGNAL(clicked()), this, SLOT(slotLoadForecast()));
+  connect(m_forecastButton, SIGNAL(clicked()), this, SLOT(slotManualForecast()));
 
   m_forecastList->setAllColumnsShowFocus(true);
   m_summaryList->setAllColumnsShowFocus(true);
@@ -125,6 +125,17 @@ void KForecastView::slotLoadForecast(void)
 
   //refresh settings
   loadForecastSettings();
+
+  if(isVisible())
+    slotTabChanged(m_tab->currentPage());
+}
+
+void KForecastView::slotManualForecast(void)
+{
+  m_needReload[SummaryView] = true;
+  m_needReload[ListView] = true;
+  m_needReload[AdvancedView] = true;
+  m_needReload[BudgetView] = true;
 
   if(isVisible())
     slotTabChanged(m_tab->currentPage());

@@ -51,6 +51,7 @@ public:
 
 public slots:
   void slotLoadForecast(void);
+  void slotManualForecast(void);
 
 protected:
   typedef enum {
