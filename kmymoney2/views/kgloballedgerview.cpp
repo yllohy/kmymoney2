@@ -806,6 +806,8 @@ bool KGlobalLedgerView::slotSelectAccount(const QCString& id, const QCString& tr
         rc = false;
       }
     } else {
+      // we need to refresh m_account.m_accountList, a child could have been deleted
+      m_account = MyMoneyFile::instance()->account(id);
       emit accountSelected(m_account);
     }
     selectTransaction(transactionId);
