@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #ifdef HAVE_CONFIG_H
-#include "../../config.h"
+#include "config.h"
 #endif
 #ifdef USE_OFX_DIRECTCONNECT
 
@@ -39,10 +39,10 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyfile.h"
-#include "../mymoney/mymoneyaccount.h"
-#include "../mymoney/mymoneyinstitution.h"
-#include "../mymoney/mymoneykeyvaluecontainer.h"
+#include <kmymoney/mymoneyfile.h>
+#include <kmymoney/mymoneyaccount.h>
+#include <kmymoney/mymoneyinstitution.h>
+#include <kmymoney/mymoneykeyvaluecontainer.h>
 #include "mymoneyofxconnector.h"
 
 MyMoneyOfxConnector::MyMoneyOfxConnector(const MyMoneyAccount& _account):

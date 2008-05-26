@@ -32,6 +32,7 @@
 // QT Includes
 
 #include <qstring.h>
+#include <qcstring.h>
 #include <qvaluelist.h>
 #include <qdatetime.h>
 
@@ -40,6 +41,7 @@
 
 #include <kmymoney/export.h>
 #include <kmymoney/mymoneymoney.h>
+#include <kmymoney/mymoneysplit.h>
 
 class QDomElement;
 class QDomDocument;
@@ -52,6 +54,15 @@ Represents the electronic analog of the paper bank statement just like we used t
 struct MyMoneyStatement
 {
   enum EType { etNone = 0, etCheckings, etSavings, etInvestment, etCreditCard, etEnd };
+
+  struct Split
+  {
+    QString      m_strCategoryName;
+    QString      m_strMemo;
+    MyMoneySplit::reconcileFlagE m_reconcile;
+    MyMoneyMoney m_amount;
+
+  };
 
   struct Transaction
   {
@@ -71,6 +82,7 @@ struct MyMoneyStatement
     // should be trading symbol followed by name, e.g. "DIS The Disney Corporation"
     // if there is no symbol, then it's a space followed by the name, e.g. " PennyStock Co., Inc."
     QString m_strSecurity;
+    QValueList<Split> m_listSplits;
   };
 
   struct Price
@@ -89,6 +101,18 @@ struct MyMoneyStatement
 
   QString m_strAccountName;
   QString m_strAccountNumber;
+  QString m_strRoutingNumber;
+
+  /**
+   * The statement provider's information for the statement reader how to find the
+   * account. The provider usually leaves some value with a key unique to the provider in the KVP of the
+   * MyMoneyAccount object when setting up the connection or at a later point in time.
+   * Using the KMyMoneyPlugin::KMMStatementInterface::account() method it can retrieve the
+   * MyMoneyAccount object for this key. The account id of that account should be returned
+   * here. If no id is available, leave it empty.
+   */
+  QCString m_accountId;
+
   QString m_strCurrency;
   QDate m_dateBegin;
   QDate m_dateEnd;

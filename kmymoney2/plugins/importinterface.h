@@ -1,8 +1,8 @@
 /***************************************************************************
-                          kmmstatementinterface.h
+                          importinterface.h
                              -------------------
-    begin                : Wed Jan 5 2005
-    copyright            : (C) 2005 Thomas Baumgart
+    begin                : Mon Apr 14 2008
+    copyright            : (C) 2008 Thomas Baumgart
     email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KMMSTATEMENTINTERFACE_H
-#define KMMSTATEMENTINTERFACE_H
+#ifndef IMPORTINTERFACE_H
+#define IMPORTINTERFACE_H
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -25,45 +25,38 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qobject.h>
+#include <qstring.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
+
+#include <kfile.h>
+#include <kurl.h>
+class KPopupMenu;
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-class KMyMoney2App;
-class MyMoneyAccount;
-
-#include "../statementinterface.h"
+#include <kmymoney/export.h>
 
 namespace KMyMoneyPlugin {
 
 /**
-  * This class represents the implementation of the
-  * StatementInterface.
+  * This abstract class represents the ImportInterface to
+  * add new importers to KMyMoney.
   */
-class KMMStatementInterface : public StatementInterface
+class KMYMONEY_EXPORT ImportInterface : public QObject
 {
   Q_OBJECT
 
 public:
-  KMMStatementInterface(KMyMoney2App* app, QObject* parent, const char* name = 0);
-  ~KMMStatementInterface() {};
+  ImportInterface(QObject* parent, const char* name = 0);
+  ~ImportInterface() {};
 
-  /**
-    * This method imports a MyMoneyStatement into the engine
-    */
-  bool import(const MyMoneyStatement& s);
+  virtual KURL selectFile(const QString& title, const QString& path, const QString& mask, KFile::Mode mode) const = 0;
 
-  /**
-   * This method returns the account for a given @a key - @a value pair.
-   * If the account is not found in the list of accounts, MyMoneyAccount()
-   * is returned.
-   */
-  const MyMoneyAccount& account(const QString& key, const QString& value) const;
-
-private:
-  KMyMoney2App*    m_app;
+signals:
 };
 
 }; // namespace

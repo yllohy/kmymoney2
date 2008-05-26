@@ -19,7 +19,7 @@
 #define MYMONEYOFXCONNECTOR_H
 
 #ifdef HAVE_CONFIG_H
-#include "../../config.h"
+#include "config.h"
 #endif
 
 
@@ -29,7 +29,6 @@
 // Library Includes
 
 #include <libofx/libofx.h>
-#include "kdecompat.h"
 
 // if OFX has a major version number defined, we'll take it
 // if not, we assume 0.8.3. 0.8.3 was the last version w/o version number info
@@ -51,7 +50,7 @@ class QDate;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneykeyvaluecontainer.h"
+#include <kmymoney/mymoneykeyvaluecontainer.h>
 
 class MyMoneyAccount;
 class MyMoneyInstitution;

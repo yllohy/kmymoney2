@@ -46,11 +46,13 @@ void MyMoneyStatement::write(QDomElement& _root,QDomDocument* _doc) const
   e.setAttribute("version","1.1");
   e.setAttribute("accountname", m_strAccountName);
   e.setAttribute("accountnumber", m_strAccountNumber);
+  e.setAttribute("routingnumber", m_strRoutingNumber);
   e.setAttribute("currency", m_strCurrency);
   e.setAttribute("begindate", m_dateBegin.toString(Qt::ISODate));
   e.setAttribute("enddate", m_dateEnd.toString(Qt::ISODate));
   e.setAttribute("closingbalance", m_closingBalance.toString());
   e.setAttribute("type", kAccountTypeTxt[m_eType]);
+  e.setAttribute("accountid", m_accountId);
 
   // iterate over transactions, and add each one
   QValueList<Transaction>::const_iterator it_t = m_listTransactions.begin();
@@ -116,10 +118,12 @@ bool MyMoneyStatement::read(const QDomElement& _e)
 
     m_strAccountName = _e.attribute("accountname");
     m_strAccountNumber = _e.attribute("accountnumber");
+    m_strRoutingNumber = _e.attribute("routingnumber");
     m_strCurrency = _e.attribute("currency");
     m_dateBegin = QDate::fromString(_e.attribute("begindate"),Qt::ISODate);
     m_dateEnd = QDate::fromString(_e.attribute("enddate"),Qt::ISODate);
     m_closingBalance = MyMoneyMoney(_e.attribute("closingbalance"));
+    m_accountId = _e.attribute("accountid");
 
     int i = kAccountTypeTxt.findIndex(_e.attribute("type",kAccountTypeTxt[1]));
     if ( i != -1 )

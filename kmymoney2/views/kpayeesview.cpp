@@ -52,6 +52,7 @@
 #include <kstandarddirs.h>
 #include <kdebug.h>
 #include <kapplication.h>
+#include <keditlistbox.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -342,12 +343,12 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   m_payeesList->addColumn(i18n("Name"));
 
   m_updateButton->setEnabled(false);
+  radioNoMatch->setChecked(true);
 
-  matchKeyEdit->setEnabled(false);
   checkMatchIgnoreCase->setEnabled(false);
 
   KIconLoader* il = KGlobal::iconLoader();
-  KGuiItem updateButtenItem( "",
+  KGuiItem updateButtenItem( i18n("Update"),
                     QIconSet(il->loadIcon("button_ok", KIcon::Small, KIcon::SizeSmall)),
                     i18n("Accepts the entered data and stores it"),
                     i18n("Use this to accept the modified data."));
@@ -360,6 +361,7 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   connect(postcodeEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeDataChanged()));
   connect(telephoneEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeDataChanged()));
   connect(emailEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeDataChanged()));
+  connect(notesEdit, SIGNAL(textChanged()), this, SLOT(slotPayeeDataChanged()));
 
   connect(radioNoMatch, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
   connect(radioNameMatch, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
@@ -514,14 +516,17 @@ void KPayeesView::slotSelectPayee(void)
 
   emit selectObjects(payeesList);
 
-  if (payeesList.count() == 0)
+  if (payeesList.count() == 0) {
+    m_tabWidget->setEnabled(false); // disable tab widget
+    clearItemData();
+    m_payee = MyMoneyPayee();
     return; // make sure we don't access an undefined payee
+  }
 
   // if we have multiple payees selected, clear and disable the payee informations
   if (payeesList.count() > 1) {
-    m_tabWidget->setCurrentPage(0); // activate transaction view
-    m_transactionView->clear();     // clear transaction view
     m_tabWidget->setEnabled(false); // disable tab widget
+    clearItemData();
     // disable renaming in all listviewitem
     for (QListViewItem * i = m_payeesList->firstChild(); i; i = i->itemBelow())
       i->setRenameEnabled(0, false);
@@ -548,13 +553,15 @@ void KPayeesView::slotSelectPayee(void)
     telephoneEdit->setText(m_payee.telephone());
     emailEdit->setEnabled(true);
     emailEdit->setText(m_payee.email());
+    notesEdit->setText(m_payee.notes());
 
-    QString key;
+    QStringList keys;
     bool ignorecase = false;
-    MyMoneyPayee::payeeMatchType type = m_payee.matchData(ignorecase, key);
+    MyMoneyPayee::payeeMatchType type = m_payee.matchData(ignorecase, keys);
 
     m_matchType->setButton(static_cast<int>(type));
-    matchKeyEdit->setText(key);
+    matchKeyEditList->clear();
+    matchKeyEditList->insertStringList(keys);
     checkMatchIgnoreCase->setChecked(ignorecase);
     slotPayeeDataChanged();
 
@@ -568,6 +575,16 @@ void KPayeesView::slotSelectPayee(void)
   }
 }
 
+void KPayeesView::clearItemData(void)
+{
+  addressEdit->setText(QString());
+  postcodeEdit->setText(QString());
+  telephoneEdit->setText(QString());
+  emailEdit->setText(QString());
+  notesEdit->setText(QString());
+  showTransactions();
+}
+
 void KPayeesView::showTransactions(void)
 {
   MyMoneyFile* file = MyMoneyFile::instance();
@@ -577,7 +594,7 @@ void KPayeesView::showTransactions(void)
   // clear the current transaction listview
   m_transactionView->clear();
 
-  if(m_payee.id().isEmpty()) {
+  if(m_payee.id().isEmpty() || !m_tabWidget->isEnabled()) {
     m_balanceLabel->setText(i18n("Balance: %1").arg(balance.formatMoney(MyMoneyFile::instance()->baseCurrency().smallestAccountFraction())));
     return;
   }
@@ -602,7 +619,7 @@ void KPayeesView::showTransactions(void)
   for(i = 0, it_t = list.begin(); it_t != list.end(); ++it_t) {
     KMyMoneyTransaction k(*it_t);
 
-    filter.match(*it_t, MyMoneyFile::instance()->storage());
+    filter.match(*it_t);
     if(lastId != (*it_t).id()) {
       ofs = 0;
       lastId = (*it_t).id();
@@ -686,32 +703,36 @@ void KPayeesView::slotPayeeDataChanged(void)
 
   bool rc = false;
 
-  rc |= ((m_payee.email().isEmpty() != emailEdit->text().isEmpty())
-      || (!emailEdit->text().isEmpty() && m_payee.email() != emailEdit->text()));
-  rc |= ((m_payee.address().isEmpty() != addressEdit->text().isEmpty())
-      || (!addressEdit->text().isEmpty() && m_payee.address() != addressEdit->text()));
-  rc |= ((m_payee.postcode().isEmpty() != postcodeEdit->text().isEmpty())
-      || (!postcodeEdit->text().isEmpty() && m_payee.postcode() != postcodeEdit->text()));
-  rc |= ((m_payee.telephone().isEmpty() != telephoneEdit->text().isEmpty())
-      || (!telephoneEdit->text().isEmpty() && m_payee.telephone() != telephoneEdit->text()));
-  rc |= ((m_payee.name().isEmpty() != m_newName.isEmpty())
-      || (!m_newName.isEmpty() && m_payee.name() != m_newName));
+  if(m_tabWidget->isEnabled()) {
+    rc |= ((m_payee.email().isEmpty() != emailEdit->text().isEmpty())
+        || (!emailEdit->text().isEmpty() && m_payee.email() != emailEdit->text()));
+    rc |= ((m_payee.address().isEmpty() != addressEdit->text().isEmpty())
+        || (!addressEdit->text().isEmpty() && m_payee.address() != addressEdit->text()));
+    rc |= ((m_payee.postcode().isEmpty() != postcodeEdit->text().isEmpty())
+        || (!postcodeEdit->text().isEmpty() && m_payee.postcode() != postcodeEdit->text()));
+    rc |= ((m_payee.telephone().isEmpty() != telephoneEdit->text().isEmpty())
+        || (!telephoneEdit->text().isEmpty() && m_payee.telephone() != telephoneEdit->text()));
+    rc |= ((m_payee.name().isEmpty() != m_newName.isEmpty())
+        || (!m_newName.isEmpty() && m_payee.name() != m_newName));
+    rc |= ((m_payee.notes().isEmpty() != notesEdit->text().isEmpty())
+        || (!notesEdit->text().isEmpty() && m_payee.notes() != notesEdit->text()));
 
-  bool ignorecase = false;
-  QString key;
+    bool ignorecase = false;
+    QStringList keys;
 
-  MyMoneyPayee::payeeMatchType type = m_payee.matchData(ignorecase, key);
-  rc |= (static_cast<int>(type) != m_matchType->selectedId());
+    MyMoneyPayee::payeeMatchType type = m_payee.matchData(ignorecase, keys);
+    rc |= (static_cast<int>(type) != m_matchType->selectedId());
 
-  checkMatchIgnoreCase->setEnabled(false);
-  matchKeyEdit->setEnabled(false);
+    checkMatchIgnoreCase->setEnabled(false);
+    matchKeyEditList->setEnabled(false);
 
-  if(m_matchType->selectedId() != MyMoneyPayee::matchDisabled) {
-    checkMatchIgnoreCase->setEnabled(true);
-    rc |= (ignorecase != checkMatchIgnoreCase->isChecked());
-    if(m_matchType->selectedId() == MyMoneyPayee::matchKey) {
-      matchKeyEdit->setEnabled(true);
-      rc |= (key != matchKeyEdit->text());
+    if(m_matchType->selectedId() != MyMoneyPayee::matchDisabled) {
+      checkMatchIgnoreCase->setEnabled(true);
+      rc |= (ignorecase != checkMatchIgnoreCase->isChecked());
+      if(m_matchType->selectedId() == MyMoneyPayee::matchKey) {
+        matchKeyEditList->setEnabled(true);
+        rc |= (keys != matchKeyEditList->items());
+      }
     }
   }
   m_updateButton->setEnabled(rc);
@@ -727,7 +748,8 @@ void KPayeesView::slotUpdatePayee(void)
       m_payee.setPostcode(postcodeEdit->text());
       m_payee.setTelephone(telephoneEdit->text());
       m_payee.setEmail(emailEdit->text());
-      m_payee.setMatchData(static_cast<MyMoneyPayee::payeeMatchType>(m_matchType->selectedId()), checkMatchIgnoreCase->isChecked(), matchKeyEdit->text());
+      m_payee.setNotes(notesEdit->text());
+      m_payee.setMatchData(static_cast<MyMoneyPayee::payeeMatchType>(m_matchType->selectedId()), checkMatchIgnoreCase->isChecked(), matchKeyEditList->items());
 
       MyMoneyFile::instance()->modifyPayee(m_payee);
       ft.commit();
@@ -860,6 +882,8 @@ void KPayeesView::loadPayees(void)
   // turn updates back on
   m_payeesList->setUpdatesEnabled(true);
   m_payeesList->repaintContents();
+
+  slotSelectPayee();
 
   ::timetrace("End KPayeesView::loadPayees");
 }

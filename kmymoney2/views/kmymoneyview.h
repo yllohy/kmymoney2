@@ -265,14 +265,14 @@ public:
     *
     * @param url The URL to save into.
     *            If no protocol is specified, file:// is assumed.
-    * @param key QString containing the key to be used for encryption
-    *            If @p key is empty, the file will be saved unencrypted
-    *            (the default)
+    * @param keyList QString containing a comma separated list of keys
+    *            to be used for encryption. If @p keyList is empty,
+    *            the file will be saved unencrypted (the default)
     *
     * @retval false save operation failed
     * @retval true save operation was successful
     */
-  const bool saveFile(const KURL& url, const QString& key = QString());
+  const bool saveFile(const KURL& url, const QString& keyList = QString());
   /**
    * Saves the data into permanent storage on a new or empty SQL database.
    *
@@ -553,12 +553,12 @@ private:
     * @param qf pointer to QFile representing the opened file
     * @param writer pointer to the formatter
     * @param plaintext whether to override any compression & encryption settings
-    * @param key QString containing the key to be used for encryption
-    *            If @p key is empty, the file will be saved unencrypted
+    * @param keyList QString containing a comma separated list of keys to be used for encryption
+    *            If @p keyList is empty, the file will be saved unencrypted
     *
     * @note This method will close the file when it is written.
     */
-  void saveToLocalFile(QFile* qf, IMyMoneyStorageFormat* writer, bool plaintext=false, const QString& key = QString());
+  void saveToLocalFile(QFile* qf, IMyMoneyStorageFormat* writer, bool plaintext=false, const QString& keyList = QString());
 
   /**
     * Internal method used by slotAccountNew() and slotAccountCategory().

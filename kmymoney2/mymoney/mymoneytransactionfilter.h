@@ -44,7 +44,6 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-class IMyMoneyStorage;
 #include <kmymoney/mymoneytransaction.h>
 #include <kmymoney/export.h>
 
@@ -283,13 +282,12 @@ public:
     * matches.
     *
     * @param transaction A transaction
-    * @param storage pointer to object of IMyMoneyStorage class
     *
     * @retval true The transaction matches the filter set
     * @retval false The transaction does not match at least one of
     *               the filters in the filter set
     */
-  const bool match(const MyMoneyTransaction& transaction, const IMyMoneyStorage* const storage);
+  const bool match(const MyMoneyTransaction& transaction);
 
   /**
     * This method is used to check a specific split against the
@@ -298,13 +296,12 @@ public:
     * method, any split matches.
     *
     * @param sp pointer to the split to be checked
-    * @param storage pointer to object of IMyMoneyStorage class
     *
     * @retval true The split matches the filter set
     * @retval false The split does not match at least one of
     *               the filters in the filter set
     */
-  bool match(const MyMoneySplit * const sp, const IMyMoneyStorage* const storage) const;
+  bool match(const MyMoneySplit * const sp) const;
 
   /**
     * This method is used to switch the amount of splits reported
@@ -514,13 +511,12 @@ private:
     * This is a conversion tool from MyMoneySplit::action
     * to MyMoneyTransactionFilter::typeE types
     *
-    * @param storage pointer to object of IMyMoneyStorage class
     * @param t reference to transaction
     * @param split reference to split in question
     *
     * @return converted action of the split passed as parameter
     */
-  const int splitType(const IMyMoneyStorage* const storage, const MyMoneyTransaction& t, const MyMoneySplit& split) const;
+  const int splitType(const MyMoneyTransaction& t, const MyMoneySplit& split) const;
 
   /**
     * This method checks if a transaction is valid or not. A transaction

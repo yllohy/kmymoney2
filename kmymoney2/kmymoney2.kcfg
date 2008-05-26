@@ -82,6 +82,9 @@
    <default>false</default>
   </entry>
   <entry name="GpgRecipient" type="String">
+   <label>GPG User ID (deprecated)</label>
+  </entry>
+  <entry name="GpgRecipientList" type="StringList">
    <label>GPG User ID</label>
   </entry>
   <entry name="ExpertMode" type="Bool">

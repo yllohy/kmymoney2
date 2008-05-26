@@ -741,7 +741,7 @@ void MyMoneyDatabaseMgr::transactionList(QValueList<QPair<MyMoneyTransaction, My
   QMap<QCString, MyMoneyTransaction>::ConstIterator txEnd = transactionList.end();
 
   for(it_t = transactionList.begin(); it_t != txEnd; ++it_t) {
-    if(filter.match(*it_t, this)) {
+    if(filter.match(*it_t)) {
       QValueList<MyMoneySplit>::const_iterator it_s;
       for(it_s = filter.matchingSplits().begin(); it_s != filter.matchingSplits().end(); ++it_s) {
         list.append(qMakePair(*it_t, *it_s));
@@ -1593,7 +1593,7 @@ void MyMoneyDatabaseMgr::commitTransaction(void)
 void MyMoneyDatabaseMgr::rollbackTransaction(void)
 { m_sql->cancelCommitUnit ("databasetransaction"); }
 
-void MyMoneyDatabaseMgr::setCreationDate(const QDate& val) 
+void MyMoneyDatabaseMgr::setCreationDate(const QDate& val)
 { m_creationDate = val; }
 
 MyMoneyStorageSql *MyMoneyDatabaseMgr::connectToDatabase(const KURL& url) {
@@ -1607,10 +1607,10 @@ MyMoneyStorageSql *MyMoneyDatabaseMgr::connectToDatabase(const KURL& url) {
 void MyMoneyDatabaseMgr::setLastModificationDate(const QDate& val)
 { m_lastModificationDate = val; }
 
-bool MyMoneyDatabaseMgr::isDuplicateTransaction(const QCString& /*id*/) const 
-{ 
+bool MyMoneyDatabaseMgr::isDuplicateTransaction(const QCString& /*id*/) const
+{
   //FIXME: figure out the real id from the key and check the DB.
-//return m_transactionKeys.contains(id); 
+//return m_transactionKeys.contains(id);
   return false;
 }
 

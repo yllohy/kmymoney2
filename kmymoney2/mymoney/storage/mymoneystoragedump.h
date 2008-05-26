@@ -49,6 +49,7 @@ public:
 
 private:
   void dumpTransaction(QTextStream& s, IMyMoneyStorage* storage, const MyMoneyTransaction& it_t);
+  void dumpKVP(const QString& headline, QTextStream& s, const MyMoneyKeyValueContainer &kvp);
   // void dumpPriceHistory(QTextStream& s, const equity_price_history history);
   const QString occurenceToString(const MyMoneySchedule::occurenceE occurence);
   const QString scheduleTypeToString(MyMoneySchedule::typeE type);

@@ -3,6 +3,18 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-26 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Moved all OFX relevant code into the OFX plugin
+  * Support encryption to more than one GPG key
+  * Added plugin specifc tab to account editor dialog for online support
+  * Added array operator to MyMoneyKeyValueContainer
+  * Support multiple strings (actually regexp's) for payee matching
+  * Added capability to store multiline notes with a payee record
+  * Store bank routing number and account id in MyMoneyStatement
+  * Removed KMyMoneyImporterPlugin service type
+  * Improve speed for database access by using MyMoneyFile's cache
+  * Fixed some testcases for the above change
+
 2008-05-26 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Remove Sqlite v2 support
   * Fix Sqlite v3 detection

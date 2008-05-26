@@ -267,7 +267,7 @@ void PivotTable::init(void)
     {
       // If the transaction meets the filter
       MyMoneyTransaction tx = (*it_schedule).transaction();
-      if (!(*it_schedule).isFinished() && schedulefilter.match(tx, file->storage()) )
+      if (!(*it_schedule).isFinished() && schedulefilter.match(tx) )
       {
         // Keep the id of the schedule with the transaction so that
         // we can do the autocalc later on in case of a loan payment
@@ -337,7 +337,7 @@ void PivotTable::init(void)
 
       // Each split must be further filtered, because if even one split matches,
       // the ENTIRE transaction is returned with all splits (even non-matching ones)
-      if ( m_config_f.includes( splitAccount ) && m_config_f.match(&(*it_split), MyMoneyFile::instance()->storage()))
+      if ( m_config_f.includes( splitAccount ) && m_config_f.match(&(*it_split)))
       {
         // reverse sign to match common notation for cash flow direction, only for expense/income splits
         MyMoneyMoney reverse(splitAccount.isIncomeExpense() ? -1 : 1, 1);
@@ -1280,7 +1280,7 @@ void PivotTable::calculateTotals( void )
       MyMoneyMoney forecast = m_grid.m_total.m_forecast[totalcolumn];
       m_grid.m_total.m_forecast.m_total += forecast;
     }
-    
+
     ++totalcolumn;
   }
 
@@ -1669,7 +1669,7 @@ QString PivotTable::renderHTML( void ) const
     if ( m_config_f.isShowingRowTotals() ) {
       if(showBudget)
         result += QString("<td%4>%1</td><td>%2</td><td>%3</td>").arg(i18n("Budget"),i18n("Actual"),i18n("Difference"),leftborder);
-      
+
       if(showForecast)
         result += QString("<td%4>%1</td><td>%2</td>").arg(i18n("Actual"),i18n("Forecast"),leftborder);
     }
@@ -2574,7 +2574,7 @@ void PivotTable::drawChart( KReportChartView& _view ) const
              else
                data.setCell( totalcolumn-1, rownum-1, m_grid.m_total.m_forecast[totalcolumn].toDouble() );
              ++totalcolumn;
-           } 
+           }
          }
       }
       else

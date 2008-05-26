@@ -10,7 +10,10 @@
     <text>&amp;Import</text>
     <Action name="file_import_qif" />
     <Action name="file_import_gnc" />
+    <MergeLocal name="import_merge"/>
+<!--
     <ActionList name="file_import_plugins" />
+-->
     <Separator/>
     <Action name="file_import_template" />
    </Menu>
@@ -57,7 +60,8 @@
    <Action name="account_close" />
    <Action name="account_reopen" />
    <Separator/>
-   <Action name="account_update_ofx" />
+   <Action name="account_online_map" />
+   <Action name="account_online_update" />
   </Menu>
   <Menu name="category" >
    <text>&amp;Category</text>
@@ -94,7 +98,7 @@
    <Action name="transaction_select_all" />
   </Menu>
   <Merge/>
-  <Menu name="kmtools" >
+  <Menu name="kmmtools" >
    <Text>T&amp;ools</Text>
    <Action name="tools_qif_editor" />
    <Action name="tools_security_editor" />
@@ -133,7 +137,8 @@
   <Action name="account_close" />
   <Action name="account_reopen" />
   <Separator/>
-  <Action name="account_update_ofx" />
+  <Action name="account_online_map" />
+  <Action name="account_online_update" />
   <Separator/>
   <Action name="investment_new" />
   <Action name="investment_edit" />
@@ -238,7 +243,6 @@
  </Menu>
  <ToolBar noMerge="1" name="mainToolBar" fullWidth="true" >
   <text>Main Toolbar</text>
-  <Action name="file_quit" />
   <Action name="file_new" />
   <Action name="file_open" />
   <Action name="file_save" />
@@ -250,6 +254,7 @@
   <Action name="account_open" />
   <Action name="account_edit" />
   <Action name="account_reconcile" />
+  <Action name="account_online_update" />
   <Action name="account_chart" />
   <Separator lineSeparator="true"/>
   <Action name="edit_find_transaction" />

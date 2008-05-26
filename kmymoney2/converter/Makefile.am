@@ -7,20 +7,18 @@ instdir=$(includedir)/kmymoney
 noinst_LIBRARIES = libconverter.a
 libconverter_a_METASOURCES = AUTO
 
-libconverter_a_SOURCES = mymoneyqifreader.cpp mymoneyqifwriter.cpp mymoneyqifprofile.cpp mymoneytemplate.cpp mymoneystatementreader.cpp mymoneyofxstatement.cpp webpricequote.cpp mymoneygncreader.cpp
-
-if OFXBANKING
-libconverter_a_SOURCES += nodeparser.cpp ofxpartner.cpp
-endif
+libconverter_a_SOURCES = mymoneyqifreader.cpp mymoneyqifwriter.cpp mymoneyqifprofile.cpp mymoneytemplate.cpp mymoneystatementreader.cpp webpricequote.cpp mymoneygncreader.cpp
 
 EXTRA_DIST = 
 
 inst_HEADERS = mymoneytemplate.h
 
-noinst_HEADERS = convertertest.h imymoneyreader.h mymoneyofxstatement.h mymoneyqifprofile.h mymoneyqifreader.h mymoneyqifwriter.h mymoneystatementreader.h webpricequote.h mymoneygncreader.h nodeparser.h ofxpartner.h
+noinst_HEADERS = imymoneyreader.h mymoneyqifprofile.h mymoneyqifreader.h mymoneyqifwriter.h mymoneystatementreader.h webpricequote.h mymoneygncreader.h convertertest.h
 
 if CPPUNIT
 check_LIBRARIES = libconvertertest.a
 
 libconvertertest_a_SOURCES = convertertest.cpp
 endif
+
+

@@ -19,7 +19,7 @@
 #define KOFXDIRECTCONNECTDLG_H
 
 #ifdef HAVE_CONFIG_H
-#include "../../config.h"
+#include "config.h"
 #endif
 
 #ifdef USE_OFX_DIRECTCONNECT
@@ -40,8 +40,8 @@ class TransferJob;
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../dialogs/mymoneyofxconnector.h"
-#include "../dialogs/kofxdirectconnectdlgdecl.h"
+#include "mymoneyofxconnector.h"
+#include "kofxdirectconnectdlgdecl.h"
 
 /**
 @author ace jones
@@ -56,7 +56,11 @@ public:
   void init(void);  
 
 signals:
-  void statementReady(const QString&, const QString&);
+  /**
+    * This signal is emitted when the statement is downloaded
+    * and stored in file @a fname.
+    */
+  void statementReady(const QString& fname);
 
 protected slots:
   void slotOfxFinished(KIO::Job*);

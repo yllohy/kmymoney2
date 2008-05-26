@@ -133,6 +133,19 @@ public:
     */
   static void secretKeyList(QStringList& list);
 
+  /**
+    * This function returns a list of the public keys contained
+    * in the keyring. Each list item is devided into two fields
+    * separated by a colon (':'). The first field contains the
+    * key id, the second field the name. The list may contain
+    * multiple entries with the same key-id and different names.
+    *
+    * Example of an entry in the list:
+    *
+    *    "9C59DB40B75DD3BA:Thomas Baumgart <ipwizard@users.sourceforge.net>"
+    */
+  static void publicKeyList(QStringList& list);
+
 #ifdef KMM_DEBUG
   void dumpUngetBuffer(void);
   void dumpBuffer(char *s, int len) const;

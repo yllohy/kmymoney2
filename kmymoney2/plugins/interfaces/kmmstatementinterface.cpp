@@ -18,6 +18,8 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qstring.h>
+
 // ----------------------------------------------------------------------------
 // KDE Includes
 
@@ -26,6 +28,7 @@
 
 #include "kmmstatementinterface.h"
 #include "../../kmymoney2.h"
+#include <kmymoney/mymoneyaccount.h>
 
 KMyMoneyPlugin::KMMStatementInterface::KMMStatementInterface(KMyMoney2App* app, QObject* parent, const char* name) :
   StatementInterface(parent, name),
@@ -33,9 +36,15 @@ KMyMoneyPlugin::KMMStatementInterface::KMMStatementInterface(KMyMoney2App* app, 
 {
 }
 
-bool KMyMoneyPlugin::KMMStatementInterface::import(MyMoneyStatement& s)
+bool KMyMoneyPlugin::KMMStatementInterface::import(const MyMoneyStatement& s)
 {
+  qDebug("KMyMoneyPlugin::KMMStatementInterface::import start");
   return m_app->slotStatementImport(s);
+}
+
+const MyMoneyAccount& KMyMoneyPlugin::KMMStatementInterface::account(const QString& key, const QString& value) const
+{
+  return m_app->account(key, value);
 }
 
 #include "kmmstatementinterface.moc"

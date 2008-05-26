@@ -110,6 +110,13 @@ public:
 
   void setOpeningBalanceShown(bool shown);
 
+  /**
+   * This method adds an additional tab pointed to with @a w to the tab widget.
+   * This tab is usually defined by a plugin (eg. online banking). If @a w is
+   * zero, this is a NOP. @a name is used as the text to be placed on the tab.
+   */
+  void addTab(QWidget* w, const QString& name);
+
 protected:
   void resizeEvent(QResizeEvent* e);
   void displayOnlineBankingStatus(void);
@@ -123,7 +130,6 @@ protected slots:
   void slotVatAssignmentChanged(bool);
   void slotNewClicked(void);
   void slotCheckFinished(void);
-  void slotOnlineSetupClicked(void);
   void slotLoadInstitutions(const QString&);
   void slotAdjustMinBalanceAbsoluteEdit(const QString&);
   void slotAdjustMinBalanceEarlyEdit(const QString&);

@@ -19,6 +19,8 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
+#include <qstringlist.h>
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
@@ -28,12 +30,17 @@
 
 MyMoneyPayee MyMoneyPayee::null;
 
-MyMoneyPayee::MyMoneyPayee(): m_matchingEnabled(false), m_usingMatchKey(false), m_matchKeyIgnoreCase(true)
+MyMoneyPayee::MyMoneyPayee() :
+  m_matchingEnabled(false),
+  m_usingMatchKey(false),
+  m_matchKeyIgnoreCase(true)
 {
 }
 
-MyMoneyPayee::MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee): m_matchingEnabled(false), m_usingMatchKey(false), m_matchKeyIgnoreCase(true)
-
+MyMoneyPayee::MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee) :
+  m_matchingEnabled(false),
+  m_usingMatchKey(false),
+  m_matchKeyIgnoreCase(true)
 {
   *this = payee;
   m_id = id;
@@ -41,8 +48,10 @@ MyMoneyPayee::MyMoneyPayee(const QCString& id, const MyMoneyPayee& payee): m_mat
 
 MyMoneyPayee::MyMoneyPayee(const QString& name, const QString& address,
         const QString& city, const QString& state, const QString& postcode,
-        const QString& telephone, const QString& email): m_matchingEnabled(false), m_usingMatchKey(false), m_matchKeyIgnoreCase(true)
-
+        const QString& telephone, const QString& email) :
+  m_matchingEnabled(false),
+  m_usingMatchKey(false),
+  m_matchKeyIgnoreCase(true)
 {
   m_name      = name;
   m_address   = address;
@@ -69,6 +78,10 @@ MyMoneyPayee::MyMoneyPayee(const QDomElement& node) :
     m_usingMatchKey = node.attribute("usingmatchkey","0").toUInt();
     m_matchKeyIgnoreCase = node.attribute("matchignorecase","0").toUInt();
     m_matchKey = node.attribute("matchkey");
+  }
+
+  if(node.hasAttribute("notes")) {
+    m_notes = node.attribute("notes");
   }
 
   QDomNodeList nodeList = node.elementsByTagName("ADDRESS");
@@ -121,6 +134,8 @@ void MyMoneyPayee::writeXML(QDomDocument& document, QDomElement& parent) const
   el.setAttribute("name", m_name);
   el.setAttribute("reference", m_reference);
   el.setAttribute("email", m_email);
+  if(!m_notes.isEmpty())
+    el.setAttribute("notes", m_notes);
 
   el.setAttribute("matchingenabled", m_matchingEnabled);
   if ( m_matchingEnabled )
@@ -150,11 +165,10 @@ bool MyMoneyPayee::hasReferenceTo(const QCString& id) const
   return false;
 }
 
-
-MyMoneyPayee::payeeMatchType MyMoneyPayee::matchData(bool& ignorecase, QString& key) const
+MyMoneyPayee::payeeMatchType MyMoneyPayee::matchData(bool& ignorecase, QStringList& keys) const
 {
   payeeMatchType type = matchDisabled;
-  key = QString();
+  keys.clear();
   ignorecase = false;
 
   if ( m_matchingEnabled )
@@ -162,13 +176,13 @@ MyMoneyPayee::payeeMatchType MyMoneyPayee::matchData(bool& ignorecase, QString& 
     type = m_usingMatchKey ? matchKey : matchName;
     ignorecase = m_matchKeyIgnoreCase;
     if(type == matchKey)
-      key = m_matchKey;
+      keys = QStringList::split(";", m_matchKey);
   }
 
   return type;
 }
 
-void MyMoneyPayee::setMatchData(payeeMatchType type, bool ignorecase, const QString& key)
+void MyMoneyPayee::setMatchData(payeeMatchType type, bool ignorecase, const QStringList& keys)
 {
   m_matchingEnabled = (type != matchDisabled);
   m_matchKeyIgnoreCase = false;
@@ -177,8 +191,9 @@ void MyMoneyPayee::setMatchData(payeeMatchType type, bool ignorecase, const QStr
   if ( m_matchingEnabled )
   {
     m_usingMatchKey = (type == matchKey);
-    if ( m_usingMatchKey )
-      m_matchKey = key;
+    if ( m_usingMatchKey ) {
+      m_matchKey = keys.join(";");
+    }
     m_matchKeyIgnoreCase = ignorecase;
   }
 }

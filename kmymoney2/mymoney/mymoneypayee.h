@@ -28,6 +28,7 @@
 
 #include <qstring.h>
 #include <qcstring.h>
+class QStringList;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -53,11 +54,17 @@ private:
   QString m_postcode;
   QString m_telephone;
   QString m_email;
+  QString m_notes;
 
   // Transaction matching fields
-  bool m_matchingEnabled;  // Whether this payee should be matched at all
-  bool m_usingMatchKey; // If so, whether a key is used (true), or just m_name is used (false)
-  bool m_matchKeyIgnoreCase; // Whether to ignore the case of the match key or name
+  bool m_matchingEnabled;      //< Whether this payee should be matched at all
+  bool m_usingMatchKey;        //< If so, whether a m_matchKey list is used (true), or just m_name is used (false)
+  bool m_matchKeyIgnoreCase;   //< Whether to ignore the case of the match key or name
+
+  /**
+   * Semicolon separated list of matching keys used when trying to find a suitable
+   * payee for imported transactions.
+   */
   QString m_matchKey;
 
   /**
@@ -106,6 +113,8 @@ public:
   QString postcode(void) const        { return m_postcode; }
   QString telephone(void) const       { return m_telephone; }
   QString email(void) const           { return m_email; }
+  QString notes(void) const           { return m_notes; }
+
   const QCString id(void) const       { return m_id; };
   const QString reference(void) const { return m_reference; };
 
@@ -117,6 +126,7 @@ public:
   void setPostcode(const QString& val)  { m_postcode = val; }
   void setTelephone(const QString& val) { m_telephone = val; }
   void setEmail(const QString& val)     { m_email = val; }
+  void setNotes(const QString& val)     { m_notes = val; }
   void setReference(const QString& ref) { m_reference = ref; }
   void setId(const QCString& val)       { m_id = val; }
 
@@ -125,20 +135,20 @@ public:
    *
    * @param ignorecase Bool which will be replaced to indicate whether the match is
    * case-sensitive (false) or case-insensitive (true)
-   * @param key String which will be replaced by the match key to use for this payee
+   * @param keys List of strings which will be replaced by the match key to use for this payee
    *
    * @return the matching type (see payeeMatchType for details)
    */
-  payeeMatchType matchData(bool& ignorecase, QString& key) const;
+  payeeMatchType matchData(bool& ignorecase, QStringList& keys) const;
 
   /**
    * Set all match data in one call
    *
    * @param type matching type (see payeeMatchType for details)
    * @param ignorecase Whether case should be ignored for the key/name match
-   * @param key The key itself, if applicable
+   * @param keys A list of keys themselves, if applicable
    */
-  void setMatchData(payeeMatchType type, bool ignorecase, const QString& key);
+  void setMatchData(payeeMatchType type, bool ignorecase, const QStringList& keys);
 
   // Copy constructors
   MyMoneyPayee(const MyMoneyPayee&);

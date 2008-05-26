@@ -486,7 +486,34 @@ void MyMoneyStatementReader::processTransactionEntry(const MyMoneyStatement::Tra
   {
     QCString payeeid;
     try {
-      payeeid = file->payeeByName(payeename).id();
+      QValueList<MyMoneyPayee> pList = file->payeeList();
+      QValueList<MyMoneyPayee>::const_iterator it_p;
+      for(it_p = pList.begin(); payeeid.isEmpty() && it_p != pList.end(); ++it_p) {
+        bool ignoreCase;
+        QStringList keys;
+        QStringList::const_iterator it_s;
+        switch((*it_p).matchData(ignoreCase, keys)) {
+          case MyMoneyPayee::matchDisabled:
+            break;
+
+          case MyMoneyPayee::matchName:
+            keys << (*it_p).name();
+            // tricky fall through here
+
+          case MyMoneyPayee::matchKey:
+            for(it_s = keys.begin(); it_s != keys.end(); ++it_s) {
+              QRegExp exp(*it_s, !ignoreCase);
+              if(exp.search(payeename) != -1) {
+                payeeid = (*it_p).id();
+                break;
+              }
+            }
+            break;
+        }
+      }
+      if(payeeid.isEmpty())
+        throw new MYMONEYEXCEPTION("payee not matched");
+
       s1.setPayeeId(payeeid);
     }
     catch (MyMoneyException *e)

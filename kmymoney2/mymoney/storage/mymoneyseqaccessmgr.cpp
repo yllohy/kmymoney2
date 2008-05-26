@@ -809,7 +809,7 @@ void MyMoneySeqAccessMgr::transactionList(QValueList<MyMoneyTransaction>& list, 
     //
     // I have no idea, if this has some impact on the functionality. So far,
     // I could not see it.  (ipwizard 9/5/2003)
-    if(filter.match(*it_t, this)) {
+    if(filter.match(*it_t)) {
       unsigned int cnt = filter.matchingSplits().count();
       if(cnt > 1) {
         for(unsigned i=0; i < cnt; ++i)
@@ -828,7 +828,7 @@ void MyMoneySeqAccessMgr::transactionList(QValueList< QPair<MyMoneyTransaction, 
   QMap<QCString, MyMoneyTransaction>::ConstIterator it_t;
 
   for(it_t = m_transactionList.begin(); it_t != m_transactionList.end(); ++it_t) {
-    if(filter.match(*it_t, this)) {
+    if(filter.match(*it_t)) {
       QValueList<MyMoneySplit>::const_iterator it_s;
       for(it_s = filter.matchingSplits().begin(); it_s != filter.matchingSplits().end(); ++it_s) {
         list.append(qMakePair(*it_t, *it_s));

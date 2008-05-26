@@ -325,8 +325,6 @@ public:
   virtual void setShowRowInForm(int row, bool show);
 
 protected:
-
-private:
   void setupFormHeader(const QCString& id);
 
 private:

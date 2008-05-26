@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=OFX Import
+Name=KMyMoney OFX
 Comment=Add OFX importing to KMyMoney
-ServiceTypes=KMyMoneyImporterPlugin
+ServiceTypes=KMyMoneyPlugin
 Type=Service
 X-KDE-Library=kmm_ofximport
 

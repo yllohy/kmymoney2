@@ -24,9 +24,6 @@
 
 class ConverterTest : public CppUnit::TestFixture  {
   CPPUNIT_TEST_SUITE(ConverterTest);
-#ifdef USE_OFX_DIRECTCONNECT
-  CPPUNIT_TEST(testOfxImport);
-#endif
   CPPUNIT_TEST(testWebQuotes);
   CPPUNIT_TEST(testDateFormat);
   CPPUNIT_TEST_SUITE_END();
@@ -41,7 +38,6 @@ public:
   ConverterTest();
   void setUp ();
   void tearDown ();
-  void testOfxImport();
   void testWebQuotes();
   void testDateFormat();
 };

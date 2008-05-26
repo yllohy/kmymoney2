@@ -95,7 +95,7 @@ const T& MyMoneyObjectContainer::a(const QCString& id) \
   it = m_map.find(id); \
   if(it == m_map.end()) { \
     /* not found, need to load from engine */ \
-    const T x = m_storage->a(id); \
+    T x = m_storage->a(id); \
     m_map[id] = new T(x); \
     return dynamic_cast<const T&>(*m_map[id]); \
   } \
@@ -123,7 +123,7 @@ const MyMoneyAccount& MyMoneyObjectContainer::account(const QCString& id)
   it = m_map.find(id);
   if(it == m_map.end()) {
     /* not found, need toload from engine */
-    const MyMoneyAccount& x = m_storage->account(id);
+    MyMoneyAccount x = m_storage->account(id);
     MyMoneyAccount* item = new MyMoneyAccount(x);
     assignFraction(dynamic_cast<MyMoneyAccount*>(item));
     m_map[id] = item;

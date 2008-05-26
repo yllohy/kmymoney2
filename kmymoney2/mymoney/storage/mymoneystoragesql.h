@@ -50,7 +50,7 @@ class QIODevice;
 // This functor may disappear when all filtering can be handled in SQL.
 class FilterFail {
   public:
-    FilterFail (const MyMoneyTransactionFilter& filter, 
+    FilterFail (const MyMoneyTransactionFilter& filter,
                    IMyMoneyStorage* storage)
       : m_filter (filter),
         m_storage (storage)
@@ -61,7 +61,7 @@ class FilterFail {
 
     inline bool operator() (const MyMoneyTransaction& transaction)
     {
-      return (! m_filter.match(transaction, m_storage)) && (m_filter.matchingSplits().count() == 0);
+      return (! m_filter.match(transaction)) && (m_filter.matchingSplits().count() == 0);
     }
 
   private:

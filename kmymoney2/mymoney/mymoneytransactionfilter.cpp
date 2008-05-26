@@ -29,8 +29,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/storage/imymoneystorage.h"
-
+#include <kmymoney/mymoneyfile.h>
 #include "mymoneytransactionfilter.h"
 
 MyMoneyTransactionFilter::MyMoneyTransactionFilter()
@@ -218,16 +217,17 @@ const QValueList<MyMoneySplit>& MyMoneyTransactionFilter::matchingSplits(void) c
   return m_matchingSplits;
 }
 
-bool MyMoneyTransactionFilter::match(const MyMoneySplit * const sp, const IMyMoneyStorage* const storage) const
+bool MyMoneyTransactionFilter::match(const MyMoneySplit * const sp) const
 {
   bool rc = true;
+  MyMoneyFile* file = MyMoneyFile::instance();
 
   // check if the text is contained in one of the fields
   // memo, value, number, payee, account, date
   if(m_filterSet.singleFilter.textFilter) {
     bool textMatch = false;
-    const MyMoneyAccount& acc = storage->account(sp->accountId());
-    const MyMoneySecurity& sec = storage->security(acc.currencyId());
+    const MyMoneyAccount& acc = file->account(sp->accountId());
+    const MyMoneySecurity& sec = file->security(acc.currencyId());
     if(sp->memo().contains(m_text)
     || sp->value().formatMoney(acc.fraction(sec)).contains(m_text)
     || sp->number().contains(m_text))
@@ -237,7 +237,7 @@ bool MyMoneyTransactionFilter::match(const MyMoneySplit * const sp, const IMyMon
       textMatch = true;
 
     if(!textMatch && !sp->payeeId().isEmpty()) {
-      const MyMoneyPayee& payee = storage->payee(sp->payeeId());
+      const MyMoneyPayee& payee = file->payee(sp->payeeId());
       if(payee.name().contains(m_text))
         textMatch = true;
     }
@@ -255,8 +255,9 @@ bool MyMoneyTransactionFilter::match(const MyMoneySplit * const sp, const IMyMon
   return rc;
 }
 
-const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction, const IMyMoneyStorage* const storage)
+const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction)
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
   QValueList<MyMoneySplit>::ConstIterator it;
 
   m_matchingSplits.clear();
@@ -312,7 +313,7 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
   || m_filterSet.singleFilter.categoryFilter == 1) {
     for(sp = matchingSplits.first(); sp != 0; ) {
       MyMoneySplit* removeSplit = sp;
-      const MyMoneyAccount& acc = storage->account(sp->accountId());
+      const MyMoneyAccount& acc = file->account(sp->accountId());
       if(m_considerCategory) {
         switch(acc.accountGroup()) {
           case MyMoneyAccount::Income:
@@ -390,9 +391,9 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
   // check if we still have something to do
   if(filterSet.allFilter != 0) {
     for(sp = matchingSplits.first(); sp != 0;) {
-      MyMoneySplit* removeSplit = match(sp, storage) ? 0 : sp;
+      MyMoneySplit* removeSplit = match(sp) ? 0 : sp;
 
-      const MyMoneyAccount& acc = storage->account(sp->accountId());
+      const MyMoneyAccount& acc = file->account(sp->accountId());
 
       // Determine if this account is a category or an account
       bool isCategory = false;
@@ -461,7 +462,7 @@ const bool MyMoneyTransactionFilter::match(const MyMoneyTransaction& transaction
         // check the type list
         if(!removeSplit && m_filterSet.singleFilter.typeFilter) {
           if(m_types.count() > 0) {
-            if(!m_types.find(splitType(storage, transaction, *sp)))
+            if(!m_types.find(splitType(transaction, *sp)))
               removeSplit = sp;
           }
         }
@@ -534,10 +535,11 @@ const int MyMoneyTransactionFilter::splitState(const MyMoneySplit& split) const
   return rc;
 }
 
-const int MyMoneyTransactionFilter::splitType(const IMyMoneyStorage* const storage, const MyMoneyTransaction& t, const MyMoneySplit& split) const
+const int MyMoneyTransactionFilter::splitType(const MyMoneyTransaction& t, const MyMoneySplit& split) const
 {
+  MyMoneyFile* file = MyMoneyFile::instance();
   MyMoneyAccount a, b;
-  a = storage->account(split.accountId());
+  a = file->account(split.accountId());
   if((a.accountGroup() == MyMoneyAccount::Income
   || a.accountGroup() == MyMoneyAccount::Expense))
     return allTypes;
@@ -547,8 +549,8 @@ const int MyMoneyTransactionFilter::splitType(const IMyMoneyStorage* const stora
     ida = t.splits()[0].accountId();
     idb = t.splits()[1].accountId();
 
-    a = storage->account(ida);
-    b = storage->account(idb);
+    a = file->account(ida);
+    b = file->account(idb);
     if((a.accountGroup() != MyMoneyAccount::Expense
     && a.accountGroup() != MyMoneyAccount::Income)
     && (b.accountGroup() != MyMoneyAccount::Expense

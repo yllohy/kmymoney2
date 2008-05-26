@@ -115,12 +115,9 @@
 #include "dialogs/kbalancechartdlg.h"
 #include "dialogs/kplugindlg.h"
 #include "dialogs/kloadtemplatedlg.h"
+#include "dialogs/kgpgkeyselectiondlg.h"
 #include "wizards/newuserwizard/knewuserwizard.h"
 #include "wizards/newaccountwizard/knewaccountwizard.h"
-
-#ifdef USE_OFX_DIRECTCONNECT
-#include "dialogs/kofxdirectconnectdlg.h"
-#endif
 
 #include "views/kmymoneyview.h"
 
@@ -136,6 +133,7 @@
 
 #include "plugins/interfaces/kmmviewinterface.h"
 #include "plugins/interfaces/kmmstatementinterface.h"
+#include "plugins/interfaces/kmmimportinterface.h"
 
 #include <libkgpgfile/kgpgfile.h>
 
@@ -201,12 +199,17 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   ::timetrace("init options");
   readOptions();
 
+#if 0
   m_pluginSignalMapper = new QSignalMapper( this );
   connect( m_pluginSignalMapper, SIGNAL( mapped( const QString& ) ), this, SLOT( slotPluginImport( const QString& ) ) );
+#endif
 
   // now initialize the plugin structure
   ::timetrace("load plugins");
   d->m_pluginDlg = new KPluginDlg(this);
+  d->m_pluginDlg->buttonCancel->hide();
+  d->m_pluginDlg->buttonOk->hide();
+
   new KListViewItem(d->m_pluginDlg->m_listView, i18n("No plugins loaded"));
   createInterfaces();
   loadPlugins();
@@ -224,7 +227,6 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
 
   m_qifReader = 0;
   m_smtReader = 0;
-  m_engineBackup = 0;
 
   m_autoSaveEnabled = KMyMoneyGlobalSettings::autoSaveFile();
   m_autoSavePeriod = KMyMoneyGlobalSettings::autoSavePeriod();
@@ -235,6 +237,15 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   // make sure, we get a note when the engine changes state
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotDataChanged()));
 
+  // check if we need to copy the gpgRecipient to gpgRecipientList
+  if(!KMyMoneyGlobalSettings::gpgRecipient().isEmpty()
+  && (KMyMoneyGlobalSettings::gpgRecipientList().count() == 0)) {
+    QStringList list;
+    list << KMyMoneyGlobalSettings::gpgRecipient();
+    KMyMoneyGlobalSettings::setGpgRecipientList(list);
+    KMyMoneyGlobalSettings::setGpgRecipient(QString());
+  }
+
   // kickstart date change timer
   slotDateChanged();
 }
@@ -243,7 +254,6 @@ KMyMoney2App::~KMyMoney2App()
 {
   delete m_searchDlg;
   delete m_qifReader;
-  delete m_engineBackup;
   delete m_transactionEditor;
   delete m_endingBalanceDlg;
   delete d->m_moveToAccountSelector;
@@ -349,6 +359,8 @@ void KMyMoney2App::initActions(void)
 #ifdef HAVE_KDCHART
   new KAction(i18n("Show balance chart..."), "kchart_chrt", 0, this, SLOT(slotAccountChart()), actionCollection(), "account_chart");
 #endif
+  new KAction(i18n("Map to online account"), "news_subscribe", 0, this, SLOT(slotAccountMapOnline()), actionCollection(), "account_online_map");
+  new KAction(i18n("Update account..."), "reload", 0, this, SLOT(slotAccountUpdateOnline()), actionCollection(), "account_online_update");
 
   // *******************
   // The categories menu
@@ -357,10 +369,6 @@ void KMyMoney2App::initActions(void)
   new KAction(i18n("Edit category..."), "edit", 0, this, SLOT(slotAccountEdit()), actionCollection(), "category_edit");
   new KAction(i18n("Delete category..."), "delete", 0, this, SLOT(slotAccountDelete()), actionCollection(), "category_delete");
 
-
-#ifdef USE_OFX_DIRECTCONNECT
-  new KAction(i18n("Online update using OFX..."), "account", 0, this, SLOT(slotAccountUpdateOFX()), actionCollection(), "account_update_ofx");
-#endif
 
   // **************
   // The tools menu
@@ -813,6 +821,25 @@ void KMyMoney2App::slotFileNew(void)
   slotStatusMsg(prevMsg);
 }
 
+KURL KMyMoney2App::selectFile(const QString& title, const QString& _path, const QString& mask, KFile::Mode mode)
+{
+  KURL url;
+  QString path(_path);
+
+  if(path.isEmpty())
+    path = KGlobalSettings::documentPath();
+
+  KFileDialog* dialog = new KFileDialog(path, mask, this, title, true);
+  dialog->setMode(mode);
+
+  if(dialog->exec() == QDialog::Accepted) {
+    url = dialog->selectedURL();
+  }
+  delete dialog;
+
+  return url;
+}
+
 // General open
 void KMyMoney2App::slotFileOpen(void)
 {
@@ -956,7 +983,9 @@ const bool KMyMoney2App::slotFileSave(void)
   /*if (myMoneyView->isDatabase()) {
     rc = myMoneyView->saveDatabase(m_fileName);
     // the 'save' function is no longer relevant for a database*/
+  setEnabled(false);
   rc = myMoneyView->saveFile(m_fileName, MyMoneyFile::instance()->value("kmm-encryption-key"));
+  setEnabled(true);
 
   m_autoSaveTimer->stop();
 
@@ -975,6 +1004,16 @@ void KMyMoney2App::slotFileSaveAsFilterChanged(const QString& filter)
   }
 }
 
+void KMyMoney2App::slotManageGpgKeys(void)
+{
+  KGpgKeySelectionDlg dlg(this);
+  dlg.setKeys(m_additionalGpgKeys);
+  if(dlg.exec() == QDialog::Accepted) {
+    m_additionalGpgKeys = dlg.keys();
+    m_additionalKeyLabel->setText(i18n("Additional encryption key(s) to be used: %1").arg(m_additionalGpgKeys.count()));
+  }
+}
+
 const bool KMyMoney2App::slotFileSaveAs(void)
 {
   bool rc = false;
@@ -986,26 +1025,39 @@ const bool KMyMoney2App::slotFileSaveAs(void)
   if (myMoneyView->isNativeFile())
     prevDir = readLastUsedDir();
 
+  // fill the additional key list with the default
+  m_additionalGpgKeys = KMyMoneyGlobalSettings::gpgRecipientList();
+
   QVBox* vbox = new QVBox();
-  new QLabel(i18n("Encryption key to be used"), vbox);
-  m_saveEncrypted = new KComboBox(vbox);
+  if(KGPGFile::GPGAvailable()) {
+    QHBox* keyBox = new QHBox(vbox);
+    new QLabel(i18n("Encryption key to be used"), keyBox);
+    m_saveEncrypted = new KComboBox(keyBox);
 
-  QStringList keyList;
-  KGPGFile::secretKeyList(keyList);
-  m_saveEncrypted->insertItem(i18n("No encryption"));
+    QHBox* labelBox = new QHBox(vbox);
+    m_additionalKeyLabel = new QLabel(i18n("Additional encryption key(s) to be used: %1").arg(m_additionalGpgKeys.count()), labelBox);
+    KPushButton* button = new KPushButton(i18n("Manage additional keys"), labelBox);
+    connect(button, SIGNAL(clicked()), this, SLOT(slotManageGpgKeys()));
 
-  int idx = 0;
-  for(QStringList::iterator it = keyList.begin(); it != keyList.end(); ++it) {
-    QStringList fields = QStringList::split(":", *it);
-    if(fields[0] != RECOVER_KEY_ID) {
-      ++idx;
-      // replace parenthesis in name field with brackets
-      QString name = fields[1];
-      name.replace('(', "[");
-      name.replace(')', "]");
-      m_saveEncrypted->insertItem(QString("%1 (0x%2)").arg(name).arg(fields[0]));
-      if((*it).contains(KMyMoneyGlobalSettings::gpgRecipient())) {
-        m_saveEncrypted->setCurrentItem(idx);
+    // fill the secret key list and combo box
+    QStringList keyList;
+    KGPGFile::secretKeyList(keyList);
+    m_saveEncrypted->insertItem(i18n("No encryption"));
+
+    int idx = 0;
+    for(QStringList::iterator it = keyList.begin(); it != keyList.end(); ++it) {
+      QStringList fields = QStringList::split(":", *it);
+      if(fields[0] != RECOVER_KEY_ID) {
+        ++idx;
+        // replace parenthesis in name field with brackets
+        QString name = fields[1];
+        name.replace('(', "[");
+        name.replace(')', "]");
+        m_saveEncrypted->insertItem(QString("%1 (0x%2)").arg(name).arg(fields[0]));
+        // TODO base check on gpgRecipientList
+        if((*it).contains(KMyMoneyGlobalSettings::gpgRecipient())) {
+          m_saveEncrypted->setCurrentItem(idx);
+        }
       }
     }
   }
@@ -1061,6 +1113,7 @@ const bool KMyMoney2App::slotFileSaveAs(void)
         if(p)
           p->addURL( newName );
 
+        setEnabled(false);
         // If this is the anonymous file export, just save it, don't actually take the
         // name, or remember it! Don't even try to encrypt it
         if (newName.right(9).lower() == ".anon.xml")
@@ -1071,20 +1124,25 @@ const bool KMyMoney2App::slotFileSaveAs(void)
         {
 
           m_fileName = newName;
-          QString encryptionKey;
+          QString encryptionKeys;
           if(m_saveEncrypted->currentItem() != 0) {
             QRegExp keyExp(".* \\((.*)\\)");
             if(keyExp.search(m_saveEncrypted->currentText()) != -1) {
-              encryptionKey = keyExp.cap(1);
+              encryptionKeys = keyExp.cap(1);
             }
           }
-
-          rc = myMoneyView->saveFile(newName, encryptionKey);
+          if(!m_additionalGpgKeys.isEmpty()) {
+            if(!encryptionKeys.isEmpty())
+              encryptionKeys += ",";
+            encryptionKeys += m_additionalGpgKeys.join(",");
+          }
+          rc = myMoneyView->saveFile(newName, encryptionKeys);
           //write the directory used for this file as the default one for next time.
           writeLastUsedDir(newName);
           writeLastUsedFile(newName);
         }
         m_autoSaveTimer->stop();
+        setEnabled(true);
       }
     }
   }
@@ -1431,11 +1489,6 @@ void KMyMoney2App::slotQifImport(void)
       m_qifReader = new MyMoneyQifReader;
       connect(m_qifReader, SIGNAL(importFinished()), this, SLOT(slotQifImportFinished()));
 
-      // construct a copy of the current engine
-      if(m_engineBackup)
-        delete m_engineBackup;
-      m_engineBackup = MyMoneyFile::instance()->storage()->duplicate();
-
       m_qifReader->setURL(dlg->filename());
 
       m_qifReader->setProfile(dlg->profile());
@@ -1541,169 +1594,16 @@ void KMyMoney2App::slotGncImport(void)
   slotStatusMsg(prevMsg);
 }
 
-void KMyMoney2App::slotPluginImport(const QString& format)
-{
-  kdDebug() << __PRETTY_FUNCTION__ << ": Activated '" << format << "'plugin." << endl;
-
-  if ( m_importerPlugins.contains(format) )
-  {
-    KMyMoneyPlugin::ImporterPlugin* plugin = m_importerPlugins[format];
-
-    QString prevMsg = slotStatusMsg(i18n("Importing a statement using %1 plugin").arg(format));
-
-    KFileDialog* dialog = new KFileDialog
-    (
-      KGlobalSettings::documentPath(),
-      i18n("%1|%2 files (%3)\n*.*|All files (*.*)")
-        .arg(plugin->formatFilenameFilter().lower())
-        .arg(format)
-        .arg(plugin->formatFilenameFilter().lower()),
-      this,
-      i18n("Import %1 Statement...").arg(format),
-      true
-    );
-
-    dialog->setMode(KFile::File | KFile::ExistingOnly);
-
-    if(dialog->exec() == QDialog::Accepted)
-    {
-      if ( plugin->isMyFormat(dialog->selectedURL().path()) )
-      {
-        QValueList<MyMoneyStatement> statements;
-        if ( plugin->import(dialog->selectedURL().path(),statements) )
-        {
-#if 0
-          /*
-           * This section is under construction
-           */
-
-          bool ok = true;
-          unsigned nerrors = plugin->errors().count();
-          unsigned nwarns = plugin->warnings().count();
-
-          if ( nerrors || nwarns )
-          {
-            int answer = KMessageBox::warningYesNoCancel(this, i18n("There were %1 errors and %2 warnings found when processing this file.  Would you like to view them?").arg(nerrors).arg(nwarns));
-            if (answer == KMessageBox::Cancel)
-              ok = false;
-
-            if (answer == KMessageBox::Yes)
-            {
-              // is there a better way to do this?!?!
-
-              QString errstring = "<p><b>Errors<b>" + plugin->errors().join("</p><p>") + "</p><b>Warnings</b>" + plugin->warnings().join("</p><p>") + "</p>";
-
-              QDialog dlg;
-              QVBoxLayout layout( &dlg, 11, 6, "Warnings Layout");
-              KTextBrowser te(&dlg,"Warnings");
-              layout.addWidget(&te);
-              te.setReadOnly(true);
-              te.setTextFormat(Qt::RichText);
-              te.setText(errstring);
-              dlg.setCaption(i18n("Imported Data Warnings"));
-              unsigned width = QApplication::desktop()->width();
-              unsigned height = QApplication::desktop()->height();
-              te.setMinimumSize(width/2,height/2);
-              layout.setResizeMode(QLayout::Minimum);
-              dlg.exec();
-            }
-          }
-
-          if ( ok )
-#endif
-          slotStatementImport(statements);
-        }
-        else
-        {
-          KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  The plugin returned the following error: %3").arg(dialog->selectedURL().prettyURL(0, KURL::StripFileProtocol),format,plugin->lastError()), i18n("Importing error"));
-        }
-      }
-      else
-      {
-          KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  This file is not the correct format.").arg(dialog->selectedURL().prettyURL(0, KURL::StripFileProtocol),format), i18n("Incorrect format"));
-      }
-    }
-    slotStatusMsg(prevMsg);
-  }
-  else
-  {
-    KMessageBox::error( this, i18n("Unable to import <b>%1</b> file.  There is no such plugin loaded.").arg(format), i18n("Function not available"));
-  }
-}
-
 void KMyMoney2App::slotAccountChart(void)
 {
 #ifdef HAVE_KDCHART
-  KBalanceChartDlg dlg(m_selectedAccount, this);
-  dlg.exec();
-#endif
-}
-
-void KMyMoney2App::slotAccountUpdateOFX(void)
-{
-  // TODO: This would be a good place to support other protocols and tie into
-  // a plugin.  The "protocol" setting could be used to choose the correct
-  // plugin.  We'd pass the online banking MMKVPC to the plugin, and expect
-  // it to provide a statement which we could then pass to the importer
-  // plugin.  Or better yet it would just provide a MMStatement.
-
-#ifdef USE_OFX_DIRECTCONNECT
-  try
-  {
-    MyMoneyAccount account;
-
-    if(!m_selectedAccount.id().isEmpty())
-    {
-      KOfxDirectConnectDlg dlg(m_selectedAccount);
-
-      connect(&dlg, SIGNAL(statementReady(const QString&, const QString&)), this,
-        SLOT(slotPluginImport(const QString&, const QString&)));
-
-      dlg.init();
-      dlg.exec();
-    }
-  }
-  catch (MyMoneyException *e)
-  {
-    KMessageBox::information(this,i18n("Error connecting to bank: %1").arg(e->what()));
-    delete e;
+  if(!m_selectedAccount.id().isEmpty()) {
+    KBalanceChartDlg dlg(m_selectedAccount, this);
+    dlg.exec();
   }
 #endif
 }
 
-void KMyMoney2App::slotPluginImport(const QString& format, const QString& url)
-{
-  kdDebug() << __PRETTY_FUNCTION__ << ": Activated '" << format << "'plugin." << endl;
-
-  if ( m_importerPlugins.contains(format) )
-  {
-    KMyMoneyPlugin::ImporterPlugin* plugin = m_importerPlugins[format];
-
-    QString prevMsg = slotStatusMsg(i18n("Importing a statement using %1 plugin").arg(format));
-
-    if ( plugin->isMyFormat(url) )
-    {
-      QValueList<MyMoneyStatement> statements;
-      if ( plugin->import(url,statements) )
-      {
-        slotStatementImport(statements);
-      }
-      else
-      {
-        KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  The plugin returned the following error: %3").arg(url, format, plugin->lastError()), i18n("Importing error"));
-      }
-    }
-    else
-    {
-        KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  This file is not the correct format.").arg(url, format), i18n("Incorrect format"));
-    }
-    slotStatusMsg(prevMsg);
-  }
-  else
-  {
-    KMessageBox::error( this, i18n("Unable to import <b>%1</b> file.  There is no such plugin loaded.").arg(format), i18n("Function not available"));
-  }
-}
 
 //
 // KMyMoney2App::slotStatementImport() is for testing only.  The MyMoneyStatement
@@ -1787,11 +1687,6 @@ bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
   m_smtReader = new MyMoneyStatementReader;
   connect(m_smtReader, SIGNAL(importFinished()), this, SLOT(slotStatementImportFinished()));
 
-  // construct a copy of the current engine
-  if(m_engineBackup)
-    delete m_engineBackup;
-  m_engineBackup = MyMoneyFile::instance()->storage()->duplicate();
-
   m_smtReader->setAutoCreatePayee(true);
   m_smtReader->setProgressCallback(&progressCallback);
 
@@ -1803,73 +1698,10 @@ bool KMyMoney2App::slotStatementImport(const MyMoneyStatement& s)
   return result;
 }
 
-bool KMyMoney2App::slotStatementImport(const QValueList<MyMoneyStatement>& statements)
-{
-  bool hasstatements = (statements.count() > 0);
-  bool ok = true;
-  bool abort = false;
-
-  // FIXME Deal with warnings/errors coming back from plugins
-  /*if ( ofx.errors().count() )
-  {
-    if ( KMessageBox::warningContinueCancelList(this,i18n("The following errors were returned from your bank"),ofx.errors(),i18n("OFX Errors")) == KMessageBox::Cancel )
-      abort = true;
-  }
-
-  if ( ofx.warnings().count() )
-  {
-    if ( KMessageBox::warningContinueCancelList(this,i18n("The following warnings were returned from your bank"),ofx.warnings(),i18n("OFX Warnings"),KStdGuiItem::cont(),"ofxwarnings") == KMessageBox::Cancel )
-      abort = true;
-  }*/
-
-  QValueList<MyMoneyStatement>::const_iterator it_s = statements.begin();
-  while ( it_s != statements.end() && !abort )
-  {
-    ok = ok && slotStatementImport(*it_s);
-    ++it_s;
-  }
-
-  if ( hasstatements && !ok )
-  {
-    KMessageBox::error( this, i18n("Importing process terminated unexpectedly."), i18n("Failed to import all statements."));
-  }
-
-  return ( !hasstatements || ok );
-}
-
 void KMyMoney2App::slotStatementImportFinished(void)
 {
   if(m_smtReader != 0) {
     m_smtReader->finishImport();
-#if 0
-    if(m_smtReader->finishImport()) {
-      if(verifyImportedData(m_smtReader->account())) {
-        // keep the new data set, destroy the backup copy
-        delete m_engineBackup;
-        m_engineBackup = 0;
-      }
-    }
-
-    if(m_engineBackup != 0) {
-      // user cancelled, destroy the updated set and keep the backup copy
-      IMyMoneyStorage* data = file->storage();
-
-
-      if(data != 0) {
-        file->detachStorage(data);
-        delete data;
-      }
-      file->attachStorage(m_engineBackup);
-      m_engineBackup = 0;
-    }
-
-#endif
-    // update the views as they might still contain invalid data
-    // from the import session. The same applies for the window caption
-    myMoneyView->slotRefreshViews();
-    updateCaption();
-
-    // slotStatusMsg(prevMsg);
     delete m_smtReader;
     m_smtReader = 0;
   }
@@ -2517,7 +2349,6 @@ void KMyMoney2App::slotAccountNew(void)
 
 void KMyMoney2App::slotAccountNew(MyMoneyAccount& account)
 {
-#if 1
   NewAccountWizard::Wizard* wizard = new NewAccountWizard::Wizard();
   connect(wizard, SIGNAL(createInstitution(MyMoneyInstitution&)), this, SLOT(slotInstitutionNew(MyMoneyInstitution&)));
   connect(wizard, SIGNAL(createAccount(MyMoneyAccount&)), this, SLOT(slotAccountNew(MyMoneyAccount&)));
@@ -2574,37 +2405,6 @@ void KMyMoney2App::slotAccountNew(MyMoneyAccount& account)
     }
   }
   delete wizard;
-
-#else
-  KNewAccountWizard newAccountWizard;
-
-  connect(&newAccountWizard, SIGNAL(newInstitutionClicked()), this, SLOT(slotInstitutionNew()));
-  connect(&newAccountWizard, SIGNAL(newCategory(MyMoneyAccount&)), this, SLOT(slotCategoryNew(MyMoneyAccount&)));
-  connect(&newAccountWizard, SIGNAL(createPayee(const QString&, QCString&)), this, SLOT(slotPayeeNew(const QString&, QCString&)));
-
-  newAccountWizard.setAccountName(acc.name());
-  newAccountWizard.setAccountType(acc.accountType());
-  newAccountWizard.setOpeningBalance(acc.openingBalance());
-  newAccountWizard.setOpeningDate(acc.openingDate());
-  // Preselect the current selected institution (or none)
-  newAccountWizard.setInstitution(m_selectedInstitution);
-
-  if(newAccountWizard.exec() == QDialog::Accepted) {
-    // The wizard doesn't check the parent.
-    // An exception will be thrown on the next line instead.
-    MyMoneyAccount newAccount, parentAccount, brokerageAccount;
-    newAccount = newAccountWizard.account();
-    parentAccount = newAccountWizard.parentAccount();
-    brokerageAccount = newAccountWizard.brokerageAccount();
-    createAccount(newAccount, parentAccount, brokerageAccount, newAccountWizard.openingBalance());
-
-    // We MUST add the schedule AFTER adding the account because
-    // otherwise an unknown account exception will be thrown.
-    MyMoneySchedule schedule = newAccountWizard.schedule(newAccount.id());
-    createSchedule(schedule, newAccount);
-    acc = newAccount;
-  }
-#endif
 }
 
 void KMyMoney2App::slotInvestmentNew(MyMoneyAccount& account, const MyMoneyAccount& parent)
@@ -3036,12 +2836,31 @@ void KMyMoney2App::slotAccountEdit(void)
           }
         }
 
+        // check for online modules
+        QMap<QString, KMyMoneyPlugin::OnlinePlugin *>::const_iterator it_plugin = m_onlinePlugins.end();
+        const MyMoneyKeyValueContainer& kvp = m_selectedAccount.onlineBankingSettings();
+        if(!kvp["provider"].isEmpty()) {
+          // if we have an online provider for this account, we need to check
+          // that we have the corresponding plugin. If that exists, we ask it
+          // to provide an additional tab for the account editor.
+          it_plugin = m_onlinePlugins.find(kvp["provider"]);
+          if(it_plugin != m_onlinePlugins.end()) {
+            QString name;
+            QWidget *w = 0;
+            w = (*it_plugin)->accountConfigTab(m_selectedAccount, name);
+            dlg.addTab(w, name);
+          }
+        }
+
         if (dlg.exec() == QDialog::Accepted) {
           try {
             MyMoneyFileTransaction ft;
 
             MyMoneyAccount account = dlg.account();
             MyMoneyAccount parent = dlg.parentAccount();
+            if(it_plugin != m_onlinePlugins.end()) {
+              account.setOnlineBankingSettings((*it_plugin)->onlineBankingSettings(account.onlineBankingSettings()));
+            }
             MyMoneyMoney bal = dlg.openingBalance();
             if(m_selectedAccount.accountGroup() == MyMoneyAccount::Liability) {
               bal = -bal;
@@ -5049,6 +4868,8 @@ void KMyMoney2App::slotUpdateActions(void)
   action("account_close")->setEnabled(false);
   action("account_reopen")->setEnabled(false);
   action("account_transaction_report")->setEnabled(false);
+  action("account_online_map")->setEnabled(false);
+  action("account_online_update")->setEnabled(false);
 #ifdef HAVE_KDCHART
   action("account_chart")->setEnabled(false);
 #endif
@@ -5056,10 +4877,6 @@ void KMyMoney2App::slotUpdateActions(void)
   action("category_new")->setEnabled(fileOpen);
   action("category_edit")->setEnabled(false);
   action("category_delete")->setEnabled(false);
-
-#ifdef USE_OFX_DIRECTCONNECT
-  action("account_update_ofx")->setEnabled(false);
-#endif
 
   action("institution_new")->setEnabled(fileOpen);
   action("institution_edit")->setEnabled(false);
@@ -5216,12 +5033,13 @@ void KMyMoney2App::slotUpdateActions(void)
           else if(canCloseAccount(m_selectedAccount))
             action("account_close")->setEnabled(true);
 
+          if ( !m_selectedAccount.onlineBankingSettings().value("provider").isEmpty() )
+            action("account_online_update")->setEnabled(true);
+          else
+            action("account_online_map")->setEnabled(m_onlinePlugins.count() > 0);
+
 #ifdef HAVE_KDCHART
           action("account_chart")->setEnabled(true);
-#endif
-#ifdef USE_OFX_DIRECTCONNECT
-          if ( !m_selectedAccount.onlineBankingSettings().value("protocol").isEmpty() )
-            action("account_update_ofx")->setEnabled(true);
 #endif
           break;
 
@@ -5610,28 +5428,6 @@ QString KMyMoney2App::readLastUsedFile(void) const
   return str;
 }
 
-#if 0
-void KMyMoney2App::createInitialAccount(void)
-{
-  MyMoneyFile* file = MyMoneyFile::instance();
-  if(file->asset().accountCount() == 0
-  && file->liability().accountCount() == 0
-  && myMoneyView != 0) {
-    KMessageBox::information(
-      this,
-      // I had some trouble with xgettext to get this in a single message when
-      // I split the message over multiple lines. Make sure, you don't break
-      // the i18n stuff when you modify this message. See kmymoney2.pot for
-      // this entry. (ipwizard)
-      i18n(
-        "The currently opened KMyMoney document does not contain a single asset account. In order to maintain your finances you need at least one asset account (e.g. your checkings account). KMyMoney will start the \"New Account Wizard\" now which allows you to create your first asset account."
-          ),
-      i18n("No asset account"));
-    slotAccountNew();
-  }
-}
-#endif
-
 const QString KMyMoney2App::filename(void) const
 {
   return m_fileName.url();
@@ -5688,11 +5484,7 @@ void KMyMoney2App::webConnect(const QString& url, const QCString& asn_id)
       if ( (*it_plugin)->isMyFormat(url) )
       {
         QValueList<MyMoneyStatement> statements;
-        if ( (*it_plugin)->import(url,statements) )
-        {
-          slotStatementImport(statements);
-        }
-        else
+        if (!(*it_plugin)->import(url) )
         {
           KMessageBox::error( this, i18n("Unable to import %1 using %2 plugin.  The plugin returned the following error: %3").arg(url,(*it_plugin)->formatName(),(*it_plugin)->lastError()), i18n("Importing error"));
         }
@@ -5732,6 +5524,7 @@ void KMyMoney2App::createInterfaces(void)
 
   new KMyMoneyPlugin::KMMViewInterface(this, myMoneyView, m_pluginInterface, "view interface");
   new KMyMoneyPlugin::KMMStatementInterface(this, m_pluginInterface, "statement interface");
+  new KMyMoneyPlugin::KMMImportInterface(this, m_pluginInterface, "import interface");
 }
 
 void KMyMoney2App::loadPlugins(void)
@@ -5757,60 +5550,26 @@ void KMyMoney2App::loadPlugins(void)
         guiFactory()->addClient(plugin);
         kdDebug() << "Loaded '"
                   << plugin->name() << "' plugin" << endl;
-        new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("Loaded"));
+        KListViewItem* item = new KListViewItem(d->m_pluginDlg->m_listView, service->name(), i18n("Loaded"));
+
+        // check for online plugin
         KMyMoneyPlugin::OnlinePlugin* op = dynamic_cast<KMyMoneyPlugin::OnlinePlugin *>(plugin);
         if(op) {
           m_onlinePlugins[plugin->name()] = op;
           QStringList protocolList;
           op->protocols(protocolList);
+          new KListViewItem(item, i18n("Plugin interface description", "Online access"), "", protocolList.join(", "));
+          item->setOpen(true);
           kdDebug() << "It's an online banking plugin and supports '" << protocolList << "'" << endl;
         }
-      } else {
-        new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("not loaded: %1").arg(KLibLoader::self()->lastErrorMessage()));
 
-        kdDebug() << "Failed to load '"
-                  << service->name() << "' service, error=" << errCode << endl;
-        kdDebug() << KLibLoader::self()->lastErrorMessage() << endl;
-      }
-    }
-  }
-  {
-    KTrader::OfferList offers = KTrader::self()->query("KMyMoneyImporterPlugin");
+        // check for importer plugin
+        KMyMoneyPlugin::ImporterPlugin* ip = dynamic_cast<KMyMoneyPlugin::ImporterPlugin *>(plugin);
+        if(ip) {
+          m_importerPlugins[plugin->name()] = ip;
+          new KListViewItem(item, i18n("Plugin interface description", "File import"), "");
+        }
 
-    KTrader::OfferList::ConstIterator iter;
-    for(iter = offers.begin(); iter != offers.end(); ++iter) {
-      KService::Ptr service = *iter;
-      int errCode = 0;
-
-      KMyMoneyPlugin::ImporterPlugin* plugin =
-        KParts::ComponentFactory::createInstanceFromService<KMyMoneyPlugin::ImporterPlugin>
-        ( service, NULL, service->name(), QStringList(), &errCode);
-      // here we ought to check the error code.
-
-      if(firstPlugin)
-        d->m_pluginDlg->m_listView->clear();
-      firstPlugin = false;
-      if (plugin) {
-        kdDebug() << "Loaded '"
-                  << plugin->name() << "' importer plugin" << endl;
-
-        // Create the custom action for this plugin
-        QString format = plugin->formatName();
-        KAction* action = new KAction(i18n("%1 (Plugin)...").arg(format), "", 0, m_pluginSignalMapper, SLOT(map()), actionCollection(), QString("file_import_plugin_%1").arg(format));
-
-        new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("Loaded"));
-
-        // Add it to the signal mapper, so we'll know which plugin triggered the signal
-        m_pluginSignalMapper->setMapping( action, format );
-
-        // Add it to the plugin map, so we can find it later
-        // FIXME: Check for duplicate and error out if there is already a plugin to handle this format.
-        m_importerPlugins[format] = plugin;
-
-        // Add it into the UI at the 'file_import_plugins' insertion point
-        QPtrList<KAction> import_actions;
-        import_actions.append( action );
-        plugActionList( "file_import_plugins", import_actions );
       } else {
         new KListViewItem(d->m_pluginDlg->m_listView, service->name(), QString(), i18n("not loaded: %1").arg(KLibLoader::self()->lastErrorMessage()));
 
@@ -5850,5 +5609,100 @@ void KMyMoney2App::slotDateChanged(void)
   myMoneyView->slotRefreshViews();
 }
 
+const MyMoneyAccount& KMyMoney2App::account(const QString& key, const QString& value) const
+{
+  QValueList<MyMoneyAccount> list;
+  QValueList<MyMoneyAccount>::const_iterator it_a;
+  MyMoneyFile::instance()->accountList(list);
+  for(it_a = list.begin(); it_a != list.end(); ++it_a) {
+    if((*it_a).onlineBankingSettings().value(QCString(key)) == value) {
+      return MyMoneyFile::instance()->account((*it_a).id());
+    }
+  }
+
+  // return reference to empty element
+  return MyMoneyFile::instance()->account(QCString());
+}
+
+void KMyMoney2App::slotAccountMapOnline(void)
+{
+  // no account selected
+  if(m_selectedAccount.id().isEmpty())
+    return;
+
+  // already an account mapped
+  if(!m_selectedAccount.onlineBankingSettings().value("provider").isEmpty())
+    return;
+
+  // if we have more than one provider display a dialog to select the current providers
+  KPluginDlg dlg(this);
+  dlg.setCaption(i18n("Select online banking plugin"));
+  dlg.closeButton->hide();
+  QString provider;
+  QMap<QString, KMyMoneyPlugin::OnlinePlugin*>::const_iterator it_p;
+  switch(m_onlinePlugins.count()) {
+    case 0:
+      break;
+    case 1:
+      provider = m_onlinePlugins.begin().key();
+      break;
+    default:
+      for(it_p = m_onlinePlugins.begin(); it_p != m_onlinePlugins.end(); ++it_p) {
+        QStringList protocolList;
+        (*it_p)->protocols(protocolList);
+        new KListViewItem(dlg.m_listView, it_p.key(), "Loaded", protocolList.join(", "));
+      }
+      if(dlg.exec() == QDialog::Accepted) {
+        if(dlg.m_listView->selectedItem()) {
+          provider = dlg.m_listView->selectedItem()->text(0);
+        }
+      }
+      break;
+  }
+
+  if(provider.isEmpty())
+    return;
+
+  // find the provider
+  it_p = m_onlinePlugins.find(provider);
+  if(it_p != m_onlinePlugins.end()) {
+    // plugin found, call it
+    MyMoneyKeyValueContainer settings;
+    if((*it_p)->mapAccount(m_selectedAccount, settings)) {
+      settings["provider"] = provider;
+      MyMoneyAccount acc(m_selectedAccount);
+      acc.setOnlineBankingSettings(settings);
+      MyMoneyFileTransaction ft;
+      try {
+        MyMoneyFile::instance()->modifyAccount(acc);
+        ft.commit();
+      } catch(MyMoneyException* e) {
+        KMessageBox::error(this, i18n("Unable to map account to online account: %1").arg(e->what()));
+        delete e;
+      }
+    }
+  }
+}
+
+void KMyMoney2App::slotAccountUpdateOnline(void)
+{
+  // no account selected
+  if(m_selectedAccount.id().isEmpty())
+    return;
+
+  // no online account mapped
+  if(m_selectedAccount.onlineBankingSettings().value("provider").isEmpty())
+    return;
+
+  // find the provider
+  QMap<QString, KMyMoneyPlugin::OnlinePlugin*>::const_iterator it_p;
+  it_p = m_onlinePlugins.find(m_selectedAccount.onlineBankingSettings().value("provider"));
+  if(it_p != m_onlinePlugins.end()) {
+    // plugin found, call it
+    (*it_p)->updateAccount(m_selectedAccount);
+  }
+}
+
 #include "kmymoney2.moc"
 // vim:cin:si:ai:et:ts=2:sw=2:
+

@@ -6,7 +6,7 @@ SUBDIRS =
 
 noinst_LIBRARIES = libinterfaces.a
 
-libinterfaces_a_SOURCES = kmmviewinterface.cpp kmmstatementinterface.cpp
+libinterfaces_a_SOURCES = kmmviewinterface.cpp kmmstatementinterface.cpp kmmimportinterface.cpp
 
-noinst_HEADERS = kmmviewinterface.h kmmstatementinterface.h
+noinst_HEADERS = kmmviewinterface.h kmmstatementinterface.h kmmimportinterface.h
 

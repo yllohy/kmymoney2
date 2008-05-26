@@ -35,6 +35,7 @@
 #include <qradiobutton.h>
 #include <qtextedit.h>
 #include <qlayout.h>
+#include <qtabwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Headers
@@ -78,10 +79,6 @@
 
 #include "../reports/kreportchartview.h"
 #include "../reports/pivottable.h"
-
-#ifdef USE_OFX_DIRECTCONNECT
-#include "../dialogs/konlinebankingsetupwizard.h"
-#endif
 
 // in KOffice version < 1.5 KDCHART_PROPSET_NORMAL_DATA was a static const
 // but in 1.5 this has been changed into a #define'd value. So we have to
@@ -151,7 +148,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     accountNoEdit->setEnabled(false);
 
     m_institutionBox->hide();
-    m_onlineBankingBox->hide();
     m_qcheckboxNoVat->hide();
 
     typeCombo->insertItem(KMyMoneyUtils::accountTypeToString(MyMoneyAccount::Income));
@@ -271,7 +267,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
         break;
       case MyMoneyAccount::Stock:
         m_institutionBox->hide();
-        m_onlineBankingBox->hide();
         typeCombo->setCurrentItem(8);
         break;
 /*
@@ -327,9 +322,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
     }
 
     m_qcheckboxTax->hide();
-
-    displayOnlineBankingStatus();
-
   }
 
   m_currency->setSecurity(file->currency(account.currencyId()));
@@ -382,7 +374,6 @@ KNewAccountDlg::KNewAccountDlg(const MyMoneyAccount& account, bool isEditing, bo
   connect(m_qlistviewParentAccounts, SIGNAL(selectionChanged(QListViewItem*)),
     this, SLOT(slotSelectionChanged(QListViewItem*)));
   connect(m_qbuttonNew, SIGNAL(clicked()), this, SLOT(slotNewClicked()));
-  connect(m_buttonOnlineSetup, SIGNAL(clicked()), this, SLOT(slotOnlineSetupClicked()));
   connect(typeCombo, SIGNAL(activated(const QString&)),
     this, SLOT(slotAccountTypeChanged(const QString&)));
 
@@ -1089,32 +1080,6 @@ void KNewAccountDlg::slotNewClicked()
   }
 }
 
-void KNewAccountDlg::slotOnlineSetupClicked(void)
-{
-#ifdef USE_OFX_DIRECTCONNECT
-  // TODO (Ace) This is one place to add in logic for other online banking
-  // protocols.  We could have a dialog that asks the user which
-  // protocol to set up for this account, and then call the correct
-  // wizard (using a plugin)
-  //
-  // Or, the wizard itself could ask the user.
-
-  KOnlineBankingSetupWizard wiz(this,"onlinebankingsetup");
-  if(wiz.isInit()) {
-    if(wiz.exec() == QDialog::Accepted) {
-      MyMoneyKeyValueContainer settings;
-      if ( wiz.chosenSettings( settings ) )
-      {
-        m_account.setOnlineBankingSettings( settings );
-        displayOnlineBankingStatus();
-      }
-    }
-  }
-#else
-  KMessageBox::sorry(this,i18n("This version of KMyMoney has not been compiled with support for online banking"));
-#endif
-}
-
 void KNewAccountDlg::slotAccountTypeChanged(const QString& typeStr)
 {
   MyMoneyAccount::accountTypeE type;
@@ -1185,35 +1150,6 @@ void KNewAccountDlg::slotVatAssignmentChanged(bool state)
   m_amountGroup->setEnabled(state);
 }
 
-void KNewAccountDlg::displayOnlineBankingStatus(void)
-{
-// this should be a run-time conditional, checking whether there are any online
-// banking plugins loaded
-#ifdef USE_OFX_DIRECTCONNECT
-    // Set up online banking settings if applicable
-    MyMoneyKeyValueContainer settings = m_account.onlineBankingSettings();
-    QString protocol = settings.value("protocol");
-    if ( ! protocol.isEmpty() )
-    {
-      m_textOnlineStatus->setText(i18n("STATUS: Enabled & configured (%1)").arg(protocol));
-      m_ledOnlineStatus->on();
-
-      QString account = i18n("ACCOUNT: %1").arg(settings.value("accountid"));
-      QString bank = i18n("BANK/BROKER: %1").arg(settings.value("bankname"));
-      QString bankid = settings.value("bankid") + " " + settings.value("branchid");
-      if ( bankid.length() > 1 )
-        bank += " (" + bankid + ")";
-      m_textBank->setText(bank);
-      m_textOnlineAccount->setText(account);
-    }
-    else
-      m_textOnlineStatus->setText(i18n("STATUS: Account not configured"));
-
-#else
-    m_textOnlineStatus->setText(i18n("STATUS: Disabled.  No online banking services are available"));
-#endif
-}
-
 void KNewAccountDlg::adjustEditWidgets(kMyMoneyEdit* dst, kMyMoneyEdit* src, char mode, int corr)
 {
   MyMoneyMoney factor(corr, 1);
@@ -1252,6 +1188,15 @@ void KNewAccountDlg::slotAdjustMaxCreditEarlyEdit(const QString&)
 {
   adjustEditWidgets(m_maxCreditEarlyEdit, m_maxCreditAbsoluteEdit, '>', 1);
 }
+
+void KNewAccountDlg::addTab(QWidget* w, const QString& name)
+{
+  if(w) {
+    w->reparent(m_tab, QPoint(0,0));
+    m_tab->addTab(w, name);
+  }
+}
+
 
 #include "knewaccountdlg.moc"
 // vim:cin:si:ai:et:ts=2:sw=2:

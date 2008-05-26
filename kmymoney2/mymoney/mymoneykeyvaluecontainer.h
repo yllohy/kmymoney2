@@ -117,6 +117,10 @@ public:
     */
   const bool operator == (const MyMoneyKeyValueContainer &) const;
 
+  const QString& operator[] ( const QCString& k ) const { return value(k); }
+
+  QString& operator[] ( const QCString& k) { return m_kvp[k]; }
+
   /**
     * This method creates a QDomElement for the @p document
     * under the parent node @p parent.

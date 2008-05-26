@@ -35,6 +35,7 @@
 
 #include <kmymoney/mymoneystatement.h>
 #include <kmymoney/export.h>
+
 namespace KMyMoneyPlugin {
 
 /**
@@ -51,7 +52,14 @@ public:
   /**
     * This method imports a MyMoneyStatement into the engine
     */
-  virtual bool import(MyMoneyStatement& s) = 0;
+  virtual bool import(const MyMoneyStatement& s) = 0;
+
+  /**
+   * This method returns the account for a given @a key - @a value pair.
+   * If the account is not found in the list of accounts, MyMoneyAccount()
+   * is returned.
+   */
+  virtual const MyMoneyAccount& account(const QString& key, const QString& value) const = 0;
 
 };
 

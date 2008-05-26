@@ -430,6 +430,7 @@ protected:
   void drawContents(QPainter *p, int cx, int cy, int cw, int ch);
 
   void contentsMouseReleaseEvent( QMouseEvent *e );
+
   void unselectItems(int from = -1, int to = -1) { doSelectItems(from, to, false); }
   void selectItems(int from, int to) { doSelectItems(from, to, true); }
   void doSelectItems(int from, int to, bool selected);

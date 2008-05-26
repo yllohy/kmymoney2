@@ -217,6 +217,7 @@ protected:
   void loadPayees(void);
   void selectedPayees(QValueList<MyMoneyPayee>& payeesList) const;
   void ensurePayeeVisible(const QCString& id);
+  void clearItemData(void);
 
 protected slots:
   /**

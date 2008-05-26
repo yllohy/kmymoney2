@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #ifdef HAVE_CONFIG_H
-#include "../../config.h"
+#include "config.h"
 #endif
 #ifdef USE_OFX_DIRECTCONNECT
 
@@ -42,9 +42,8 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "../mymoney/mymoneyinstitution.h"
-#include "../mymoney/mymoneyfile.h"
-#include "../converter/mymoneyofxstatement.h"
+#include <kmymoney/mymoneyinstitution.h>
+#include <kmymoney/mymoneyfile.h>
 #include "mymoneyofxconnector.h"
 #include "kofxdirectconnectdlg.h"
 
@@ -66,13 +65,13 @@ void KOfxDirectConnectDlg::init(void)
   show();
 
   QByteArray request = m_connector.statementRequest(QDate::currentDate().addMonths(-2));
-  
+
   // For debugging, dump out the request
   QFile g( "request.ofx" );
   g.open( IO_WriteOnly );
   QTextStream(&g) << QString(request);
   g.close();
-    
+
   m_job = KIO::http_post(
     m_connector.url(),
     request,
@@ -139,7 +138,7 @@ void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job* /* e */)
       delete m_tmpfile;
     }
     m_tmpfile = 0;
-  } 
+  }
   else if ( m_job->isErrorPage() )
   {
     QString details;
@@ -152,23 +151,23 @@ void KOfxDirectConnectDlg::slotOfxFinished(KIO::Job* /* e */)
           details += stream.readLine(); // line of text excluding '\n'
       }
       f.close();
-      
+
       kdDebug(2) << "The HTTP request failed: " << details << endl;
     }
     KMessageBox::detailedSorry( this, i18n("The HTTP request failed."), details, i18n("Failed") );
   }
   else if ( m_tmpfile )
   {
-    m_tmpfile->close();  
+    m_tmpfile->close();
 
-    emit statementReady("OFX",m_tmpfile->name());
-    
+    emit statementReady(m_tmpfile->name());
+
 // TODO (Ace) unlink this file, when I'm sure this is all really working.
 // in the meantime, I'll leave the file around to assist people in debugging.
 //     m_tmpfile->unlink();
     delete m_tmpfile;
     m_tmpfile = 0;
-    
+
   }
   hide();
 }

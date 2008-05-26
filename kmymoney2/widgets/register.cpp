@@ -758,10 +758,6 @@ void Register::setupRegister(const MyMoneyAccount& account, bool showAccountColu
   }
 
   switch(account.accountType()) {
-    case MyMoneyAccount::Investment:
-      m_lastCol = ValueColumn;
-      break;
-
     default:
       m_lastCol = BalanceColumn;
       break;

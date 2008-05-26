@@ -25,6 +25,7 @@
 
 #include <qapplication.h>
 class QTimer;
+class QLabel;
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -35,6 +36,7 @@ class QTimer;
 #include <kaction.h>
 #include <kprocess.h>
 #include <kurl.h>
+#include <kfile.h>
 #include <dcopobject.h>
 class KComboBox;
 
@@ -84,7 +86,7 @@ namespace KMyMoneyPlugin { class ImporterPlugin; }
   * @see KMyMoneyView
   *
   * @author Michael Edwardes 2000-2001
-  * @author Thomas Baumgart 2006
+  * @author Thomas Baumgart 2006-2008
   *
   * @short Main application class.
   */
@@ -155,12 +157,11 @@ protected slots:
     */
   void slotGncImport(void);
 
-  void slotPluginImport(const QString&);
-
-  void slotPluginImport(const QString& format, const QString& url);
-
-  void slotAccountUpdateOFX(void);
-
+  /**
+   * Open a dialog with a chart of the balance for the currently selected
+   * account (m_selectedAccount). Return once the dialog is closed. Don't do
+   * anything if no account is selected or charts are not available.
+   */
   void slotAccountChart(void);
 
   /**
@@ -432,6 +433,12 @@ protected slots:
 
   void slotKDELanguageSettings(void);
 
+  void slotAccountMapOnline(void);
+
+  void slotAccountUpdateOnline(void);
+
+  void slotManageGpgKeys(void);
+
 public:
   /**
     * This method checks if there is at least one asset or liability account
@@ -510,6 +517,15 @@ public:
    * acknowledges, the category is created.
    */
   void createCategory(MyMoneyAccount& account, const MyMoneyAccount& parent);
+
+  /**
+   * This method returns the account for a given @a key - @a value pair.
+   * If the account is not found in the list of accounts, MyMoneyAccount()
+   * is returned.
+   */
+  const MyMoneyAccount& account(const QString& key, const QString& value) const;
+
+  KURL selectFile(const QString& title, const QString& path, const QString& mask, KFile::Mode mode);
 
 k_dcop:
   // Note: Don't use e.g. filename(void) but use filename() because
@@ -763,12 +779,6 @@ public slots:
     * from disk first, given the URL.
     */
   bool slotStatementImport(const QString& url);
-
-  /**
-    * Essentially similiar to the above slot, except this imports the whole
-    * list of statements
-    */
-  bool slotStatementImport(const QValueList<MyMoneyStatement>& list);
 
   /**
     * This slot starts the reconciliation of the currently selected account
@@ -1150,7 +1160,6 @@ private:
 
   KConfig *config;
 
-  QSignalMapper *m_pluginSignalMapper;
   QMap<QString,KMyMoneyPlugin::ImporterPlugin*> m_importerPlugins;
 
   QMap<QString, KMyMoneyPlugin::OnlinePlugin*> m_onlinePlugins;
@@ -1201,7 +1210,6 @@ private:
   int m_progressUpdate;
   int m_nextUpdate;
 
-  IMyMoneyStorage*  m_engineBackup;
   MyMoneyQifReader* m_qifReader;
   MyMoneyStatementReader* m_smtReader;
   KFindTransactionDlg* m_searchDlg;
@@ -1244,6 +1252,9 @@ private:
 
   // id's that need to be remembered
   QCString              m_accountGoto, m_payeeGoto;
+
+  QStringList           m_additionalGpgKeys;
+  QLabel*               m_additionalKeyLabel;
 };
 
 extern  KMyMoney2App *kmymoney2;

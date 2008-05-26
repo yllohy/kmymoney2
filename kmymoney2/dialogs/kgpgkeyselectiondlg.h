@@ -1,8 +1,7 @@
 /***************************************************************************
-                          kmmstatementinterface.h
+                          kgpgkeyselectiondlg.h
                              -------------------
-    begin                : Wed Jan 5 2005
-    copyright            : (C) 2005 Thomas Baumgart
+    copyright            : (C) 2008 by Thomas Baumgart
     email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
@@ -15,12 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KMMSTATEMENTINTERFACE_H
-#define KMMSTATEMENTINTERFACE_H
-
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#ifndef KGPGKEYSELECTIONDLG_H
+#define KGPGKEYSELECTIONDLG_H
 
 // ----------------------------------------------------------------------------
 // QT Includes
@@ -28,43 +23,44 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kdialogbase.h>
+class KEditListBox;
+class KLed;
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
-class KMyMoney2App;
-class MyMoneyAccount;
-
-#include "../statementinterface.h"
-
-namespace KMyMoneyPlugin {
-
 /**
-  * This class represents the implementation of the
-  * StatementInterface.
+  * @author Thomas Baumgart
   */
-class KMMStatementInterface : public StatementInterface
+class KGpgKeySelectionDlg : public KDialogBase
 {
   Q_OBJECT
-
 public:
-  KMMStatementInterface(KMyMoney2App* app, QObject* parent, const char* name = 0);
-  ~KMMStatementInterface() {};
+
+  KGpgKeySelectionDlg(QWidget *parent=0, const char *name=0);
+  virtual ~KGpgKeySelectionDlg() {}
 
   /**
-    * This method imports a MyMoneyStatement into the engine
-    */
-  bool import(const MyMoneyStatement& s);
-
-  /**
-   * This method returns the account for a given @a key - @a value pair.
-   * If the account is not found in the list of accounts, MyMoneyAccount()
-   * is returned.
+   * preset the key list with the given key ids in @a list
    */
-  const MyMoneyAccount& account(const QString& key, const QString& value) const;
+  void setKeys(const QStringList& list);
+
+  /**
+   * Returns the list of keys currently listed in the KEditListBox
+   */
+  const QStringList keys(void) const { return m_listBox->items(); }
+
+protected slots:
+  void slotIdChanged(void);
+  void slotKeyListChanged(void);
 
 private:
-  KMyMoney2App*    m_app;
+  KEditListBox*   m_listBox;
+  KLed*           m_keyLed;
+  bool            m_needCheckList;
+  bool            m_listOk;
+  int             m_checkCount;
 };
 
-}; // namespace
 #endif

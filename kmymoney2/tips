@@ -121,3 +121,11 @@ this file in KMyMoney and see how the developers see your data.
 </html>
 </tip>
 
+<tip category="KMyMoney|General">
+<html>
+<p>... that you can import your bank statements even without a network 
+connection? Just select the file (OFX or QIF) from the File->Import menu.</p>
+<p>Provided by Jose Jorge</p>
+</html>
+</tip>
+

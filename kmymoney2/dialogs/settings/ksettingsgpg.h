@@ -37,12 +37,18 @@ public:
   KSettingsGpg(QWidget* parent = 0, const char* name = 0);
   ~KSettingsGpg();
 
+public slots:
+  void show(void);
+
 protected slots:
   void slotStatusChanged(bool state);
-  void slotIdChanged(const QString& txt);
+  void slotIdChanged(void);
+  void slotKeyListChanged(void);
 
 private:
   int        m_checkCount;
+  bool       m_needCheckList;
+  bool       m_listOk;
 };
 #endif
 

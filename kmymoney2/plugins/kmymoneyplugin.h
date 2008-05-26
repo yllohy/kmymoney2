@@ -41,6 +41,7 @@ class KToggleAction;
 
 #include <kmymoney/viewinterface.h>
 #include <kmymoney/statementinterface.h>
+#include <kmymoney/importinterface.h>
 #include <kmymoney/export.h>
 
 namespace KMyMoneyPlugin {
@@ -69,50 +70,105 @@ namespace KMyMoneyPlugin {
     /** See KMyMoney2App::toggleAction() for a description */
     KToggleAction* toggleAction(const QString& name) const;
 
-    // define interface classes here
+    // define interface classes here. The interface classes provide a mechanism
+    // for the plugin to interact with KMyMoney
     // they are defined in the following form for an interface
     // named Xxx:
     //
     // XxxInterface* xxxInterface();
-    ViewInterface*          viewInterface();
-    StatementInterface*     statementInterface();
-
+    ViewInterface*          viewInterface() const;
+    StatementInterface*     statementInterface() const;
+    ImportInterface*        importInterface() const;
   };
 
-  class KMYMONEY_EXPORT OnlinePlugin : public Plugin
+/**
+   * This class describes the interface between the KMyMoney
+   * application and it's ONLINE-BANKING plugins. All online banking plugins
+   * must provide this interface.
+   *
+   * A good tutorial on how to design and develop a plugin
+   * structure for a KDE application (e.g. KMyMoney) can be found at
+   * http://developer.kde.org/documentation/tutorials/developing-a-plugin-structure/index.html
+   *
+ */
+  class KMYMONEY_EXPORT OnlinePlugin
   {
-    Q_OBJECT
   public:
-    OnlinePlugin(QObject* parent, const char* name);
-    virtual ~OnlinePlugin();
+    OnlinePlugin() {};
+    virtual ~OnlinePlugin() {};
 
     virtual void protocols(QStringList& protocolList) const = 0;
+
+    /**
+     * This method returns a pointer to a widget representing an additional
+     * tab that will be added to the KNewAccountDlg. The string referenced
+     * with @a tabName will be filled with the text that should be placed
+     * on the tab. It should return 0 if no additional tab is needed.
+     *
+     * Information about the account can be taken out of @a account.
+     *
+     * Once the pointer to the widget is returned to KMyMoney, it takes care
+     * of destruction of all included widgets when the dialog is closed. The plugin
+     * can access the widgets created after the call to storeConfigParameters()
+     * happened.
+     */
+    virtual QWidget* accountConfigTab(const MyMoneyAccount& account, QString& tabName) = 0;
+
+    /**
+     * This method is called by the framework whenever it is time to store
+     * the configuration data maintained by the plugin. The plugin should use
+     * the widgets created in accountConfigTab() to extract the current values.
+     *
+     * @param current The @a current container contains the current settings
+     */
+    virtual MyMoneyKeyValueContainer onlineBankingSettings(const MyMoneyKeyValueContainer& current) = 0;
+
+    /**
+     * This method is called by the framework when the user wants to map
+     * a KMyMoney account onto an online account. The KMyMoney account is identified
+     * by @a acc and the online provider should store its data in @a onlineBankingSettings
+     * upon success.
+     *
+     * @retval true if account is mapped
+     * @retval false if account is not mapped
+     */
+    virtual bool mapAccount(const MyMoneyAccount& acc, MyMoneyKeyValueContainer& onlineBankingSettings) = 0;
+
+    /**
+     * This method is called by the framework when the user wants to update
+     * a KMyMoney account with data from an online account. The KMyMoney account is identified
+     * by @a acc. The online provider should read its data from acc.onlineBankingSettings().
+     * @a true is returned upon success.
+     *
+     * @retval true if account is updated
+     * @retval false if account is not updated
+     */
+    virtual bool updateAccount(const MyMoneyAccount& acc) = 0;
   };
 
 /**
   * This class describes the interface between the KMyMoney
-  * application and it's IMPORTER plugins. All importer plugins 
-  * must be derived from this class.
+  * application and it's IMPORTER plugins. All importer plugins
+  * must provide this interface.
   *
   * A good tutorial on how to design and develop a plugin
   * structure for a KDE application (e.g. KMyMoney) can be found at
   * http://developer.kde.org/documentation/tutorials/developing-a-plugin-structure/index.html
   *
   */
-  class KMYMONEY_EXPORT ImporterPlugin : public QObject
+  class KMYMONEY_EXPORT ImporterPlugin
   {
-    Q_OBJECT
   public:
-    ImporterPlugin(QObject* parent, const char* name);
-    virtual ~ImporterPlugin();
-    
+    ImporterPlugin() {};
+    virtual ~ImporterPlugin() {};
+
     /**
       * This method returns the english-language name of the format
       * this plugin imports, e.g. "OFX"
       *
       * @return QString Name of the format
       */
-    virtual QString formatName(void) const /*= 0*/;
+    virtual QString formatName(void) const = 0;
 
     /**
       * This method returns the filename filter suitable for passing to
@@ -121,7 +177,7 @@ namespace KMyMoneyPlugin {
       *
       * @return QString Filename filter string
       */
-    virtual QString formatFilenameFilter(void) const /*= 0*/;
+    virtual QString formatFilenameFilter(void) const = 0;
 
     /**
       * This method returns whether this plugin is able to import
@@ -131,30 +187,27 @@ namespace KMyMoneyPlugin {
       *
       * @return bool Whether the indicated file is importable by this plugin
       */
-    virtual bool isMyFormat( const QString& filename ) const /*= 0*/;
+    virtual bool isMyFormat( const QString& filename ) const = 0;
 
     /**
       * Import a file
       *
       * @param filename File to import
-      * @param result List of statements onto which to add the resulting 
-      *  statements 
       *
-      * @return bool Whether the import was successful.  If the return value is
-      *  false, the @p result list should be unmodified.
+      * @return bool Whether the import was successful.
       */
-    virtual bool import( const QString& filename, QValueList<MyMoneyStatement>& result ) /*= 0*/;
-  
+    virtual bool import( const QString& filename) = 0;
+
     /**
       * Returns the error result of the last import
       *
       * @return QString English-language name of the error encountered in the
       *  last import, or QString() if it was successful.
-      * 
+      *
       */
-    virtual QString lastError(void) const /*= 0*/;
-    
+    virtual QString lastError(void) const = 0;
+
   };
-  
+
 }; // end of namespace
 #endif

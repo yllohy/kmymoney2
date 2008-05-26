@@ -25,12 +25,16 @@ MyMoneySeqAccessMgrTest::MyMoneySeqAccessMgrTest()
 void MyMoneySeqAccessMgrTest::setUp()
 {
 	m = new MyMoneySeqAccessMgr;
+	MyMoneyFile* file = MyMoneyFile::instance();
+	file->attachStorage(m);
 	m->startTransaction();
 }
 
 void MyMoneySeqAccessMgrTest::tearDown()
 {
 	m->commitTransaction();
+	MyMoneyFile* file = MyMoneyFile::instance();
+	file->detachStorage(m);
 	delete m;
 }
 

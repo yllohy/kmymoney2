@@ -34,6 +34,8 @@ class MyMoneyKeyValueContainerTest : public CppUnit::TestFixture  {
 	CPPUNIT_TEST(testLoadList);
 	CPPUNIT_TEST(testWriteXML);
 	CPPUNIT_TEST(testReadXML);
+	CPPUNIT_TEST(testArrayRead);
+	CPPUNIT_TEST(testArrayWrite);
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -50,6 +52,8 @@ public:
 	void testClear();
 	void testRetrieveList();
 	void testLoadList();
+	void testArrayRead();
+	void testArrayWrite();
 	void testWriteXML();
 	void testReadXML();
 };

@@ -1,7 +1,7 @@
 /***************************************************************************
-                             ksettingsgpg.cpp
-                             --------------------
-    copyright            : (C) 2005, 2008 by Thomas Baumgart
+                          kgpgkeyselectiondlg.cpp
+                             -------------------
+    copyright            : (C) 2008 by Thomas Baumgart
     email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
@@ -17,56 +17,80 @@
 // ----------------------------------------------------------------------------
 // QT Includes
 
-#include <qgroupbox.h>
-#include <qcheckbox.h>
 #include <qlayout.h>
+#include <qlabel.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
 
-#include <kled.h>
-#include <klineedit.h>
+#include <klocale.h>
 #include <keditlistbox.h>
+#include <kled.h>
 
 // ----------------------------------------------------------------------------
 // Project Includes
 
-#include "ksettingsgpg.h"
+#include "kgpgkeyselectiondlg.h"
 #include <kmymoney/kgpgfile.h>
 
-#define RECOVER_KEY_ID  "0xD2B08440"
-
-KSettingsGpg::KSettingsGpg(QWidget* parent, const char* name) :
-  KSettingsGpgDecl(parent, name),
-  m_checkCount(0),
+KGpgKeySelectionDlg::KGpgKeySelectionDlg(QWidget *parent, const char *name) :
+  KDialogBase(parent, name, true, i18n("Select additional keys"), Ok | Cancel),
   m_needCheckList(true),
-  m_listOk(false)
+  m_listOk(false),
+  m_checkCount(0)
 {
-  setEnabled(KGPGFile::GPGAvailable());
+  QWidget* page = new QWidget(this);
+  setMainWidget(page);
+  QVBoxLayout* topLayout = new QVBoxLayout(page, 0, spacingHint());
 
-  // don't show the widget, where the old config item was shown
-  kcfg_GpgRecipient->hide();
+  m_listBox = new KEditListBox(page);
+  m_listBox->setTitle(i18n("User identification"));
+  m_listBox->setButtons( int( KEditListBox::Remove | KEditListBox::Add ) );
 
-  connect(kcfg_WriteDataEncrypted, SIGNAL(toggled(bool)), this, SLOT(slotStatusChanged(bool)));
-  connect(kcfg_GpgRecipientList, SIGNAL(changed()), this, SLOT(slotIdChanged()));
-  connect(kcfg_GpgRecipientList, SIGNAL(added(const QString&)), this, SLOT(slotKeyListChanged()));
-  connect(kcfg_GpgRecipientList, SIGNAL(removed(const QString&)), this, SLOT(slotKeyListChanged()));
+  topLayout->addWidget(m_listBox);
 
-  // Initial state setup
-  slotStatusChanged(kcfg_WriteDataEncrypted->isChecked());
+  // add a LED for the availability of all keys
+  QHBoxLayout* ledBox = new QHBoxLayout(0, 0, 6, "ledBoxLayout");
+  m_keyLed = new KLed(page);
+  m_keyLed->setShape( KLed::Circular );
+  m_keyLed->setLook( KLed::Sunken );
+
+  ledBox->addWidget(m_keyLed);
+  ledBox->addWidget(new QLabel(i18n("Keys for all of the above user ids found"), page));
+  ledBox->addItem(new QSpacerItem( 50, 20, QSizePolicy::Expanding, QSizePolicy::Minimum ));
+
+  topLayout->addLayout(ledBox);
+
+  connect(m_listBox, SIGNAL(changed()), this, SLOT(slotIdChanged()));
+  connect(m_listBox, SIGNAL(added(const QString&)), this, SLOT(slotKeyListChanged()));
+  connect(m_listBox, SIGNAL(removed(const QString&)), this, SLOT(slotKeyListChanged()));
 }
 
-KSettingsGpg::~KSettingsGpg()
+void KGpgKeySelectionDlg::setKeys(const QStringList& list)
 {
+  m_listBox->clear();
+  m_listBox->insertStringList(list);
+  slotKeyListChanged();
 }
 
-void KSettingsGpg::slotKeyListChanged(void)
+#if 0
+void KGpgKeySelectionDlg::slotShowHelp(void)
+{
+  QString anchor = m_helpAnchor[m_criteriaTab->currentPage()];
+  if(anchor.isEmpty())
+    anchor = QString("details.search");
+
+  kapp->invokeHelp(anchor);
+}
+#endif
+
+void KGpgKeySelectionDlg::slotKeyListChanged(void)
 {
   m_needCheckList = true;
   slotIdChanged();
 }
 
-void KSettingsGpg::slotIdChanged(void)
+void KGpgKeySelectionDlg::slotIdChanged(void)
 {
   // this looks a bit awkward. Here's why: KGPGFile::keyAvailable() starts
   // an external task and processes UI events while it waits for the external
@@ -81,14 +105,14 @@ void KSettingsGpg::slotIdChanged(void)
     while(1) {
       // first we check the current edit field if filled
       bool keysOk = true;
-      if(!kcfg_GpgRecipientList->currentText().isEmpty()) {
-        keysOk = KGPGFile::keyAvailable(kcfg_GpgRecipientList->currentText());
+      if(!m_listBox->currentText().isEmpty()) {
+        keysOk = KGPGFile::keyAvailable(m_listBox->currentText());
       }
 
       // if it is available, then scan the current list if we need to
       if(keysOk) {
         if(m_needCheckList) {
-          QStringList keys = kcfg_GpgRecipientList->items();
+          QStringList keys = m_listBox->items();
           QStringList::const_iterator it_s;
           for(it_s = keys.begin(); keysOk && it_s != keys.end(); ++it_s) {
             if(!KGPGFile::keyAvailable(*it_s))
@@ -108,7 +132,8 @@ void KSettingsGpg::slotIdChanged(void)
         continue;
       }
 
-      m_userKeysFound->setState(static_cast<KLed::State>(keysOk && (kcfg_GpgRecipientList->items().count() != 0) ? KLed::On : KLed::Off));
+      m_keyLed->setState(static_cast<KLed::State>(keysOk && (m_listBox->items().count() != 0) ? KLed::On : KLed::Off));
+      enableButtonOK((m_listBox->items().count() == 0) || (m_keyLed->state() == KLed::On));
       break;
     }
 
@@ -116,29 +141,7 @@ void KSettingsGpg::slotIdChanged(void)
   }
 }
 
-void KSettingsGpg::show(void)
-{
-  slotStatusChanged(kcfg_WriteDataEncrypted->isChecked());
-  KSettingsGpgDecl::show();
-}
 
-void KSettingsGpg::slotStatusChanged(bool state)
-{
-  if(state && !KGPGFile::GPGAvailable())
-    state = false;
+#include "kgpgkeyselectiondlg.moc"
 
-  m_idGroup->setEnabled(state);
-  kcfg_EncryptRecover->setEnabled(state);
-
-  if(state) {
-    m_recoverKeyFound->setState((KLed::State) (KGPGFile::keyAvailable(RECOVER_KEY_ID) ? KLed::On : KLed::Off));
-    kcfg_EncryptRecover->setEnabled(m_recoverKeyFound);
-    slotIdChanged();
-
-  } else {
-    m_recoverKeyFound->setState(KLed::Off);
-    m_userKeysFound->setState(KLed::Off);
-  }
-}
-
-#include "ksettingsgpg.moc"
+// vim:cin:si:ai:et:ts=2:sw=2:

@@ -73,50 +73,19 @@ KToggleAction* KMyMoneyPlugin::Plugin::toggleAction(const QString& actionName) c
   return &dummyAction;
 }
 
-KMyMoneyPlugin::ViewInterface* KMyMoneyPlugin::Plugin::viewInterface()
+KMyMoneyPlugin::ViewInterface* KMyMoneyPlugin::Plugin::viewInterface() const
 {
   return static_cast<ViewInterface*>( parent()->child( 0, "KMyMoneyPlugin::ViewInterface" ) );
 }
 
-KMyMoneyPlugin::StatementInterface* KMyMoneyPlugin::Plugin::statementInterface()
+KMyMoneyPlugin::StatementInterface* KMyMoneyPlugin::Plugin::statementInterface() const
 {
   return static_cast<StatementInterface*>( parent()->child( 0, "KMyMoneyPlugin::StatementInterface" ) );
 }
 
-
-
-KMyMoneyPlugin::OnlinePlugin::OnlinePlugin(QObject* o, const char* name) :
-  KMyMoneyPlugin::Plugin(o, name)
+KMyMoneyPlugin::ImportInterface* KMyMoneyPlugin::Plugin::importInterface() const
 {
+  return static_cast<ImportInterface*>( parent()->child( 0, "KMyMoneyPlugin::ImportInterface" ) );
 }
-
-KMyMoneyPlugin::OnlinePlugin::~OnlinePlugin()
-{
-}
-
-
-
-
-
-KMyMoneyPlugin::ImporterPlugin::ImporterPlugin(QObject* o, const char* name) :
-  QObject(o, name)
-{
-}
-
-KMyMoneyPlugin::ImporterPlugin::~ImporterPlugin()
-{
-}
-
-QString KMyMoneyPlugin::ImporterPlugin::formatName(void) const /*= 0*/
-{ return QString(); }
-QString KMyMoneyPlugin::ImporterPlugin::formatFilenameFilter(void) const /*= 0*/
-{ return QString(); }
-bool KMyMoneyPlugin::ImporterPlugin::isMyFormat( const QString& /*filename*/ ) const /*= 0*/
-{ return false; }
-bool KMyMoneyPlugin::ImporterPlugin::import( const QString& /*filename*/, QValueList<MyMoneyStatement>& /*result*/ ) /*= 0*/
-{ return false; }
-QString KMyMoneyPlugin::ImporterPlugin::lastError(void) const /*= 0*/
-{ return QString(); }
-
 
 #include "kmymoneyplugin.moc"

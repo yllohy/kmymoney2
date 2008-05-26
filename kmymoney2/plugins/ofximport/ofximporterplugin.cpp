@@ -16,33 +16,65 @@
  ***************************************************************************/
 
 // ----------------------------------------------------------------------------
-// KDE Includes
-
-#include <kgenericfactory.h>
-#include <kdebug.h>
-
-// ----------------------------------------------------------------------------
 // QT Includes
 
 #include <qfile.h>
 #include <qtextstream.h>
 
 // ----------------------------------------------------------------------------
+// KDE Includes
+
+#include <kgenericfactory.h>
+#include <kdebug.h>
+#include <kfile.h>
+#include <kurl.h>
+#include <kaction.h>
+#include <kmessagebox.h>
+
+// ----------------------------------------------------------------------------
 // Project Includes
 
 #include "ofximporterplugin.h"
+#include "konlinebankingstatus.h"
+#include "konlinebankingsetupwizard.h"
+#include "kofxdirectconnectdlg.h"
 
 K_EXPORT_COMPONENT_FACTORY( kmm_ofximport,
                             KGenericFactory<OfxImporterPlugin>( "kmm_ofximport" ) )
 
-OfxImporterPlugin::OfxImporterPlugin(QObject *parent, const char *name, const QStringList&)
- : KMyMoneyPlugin::ImporterPlugin( parent, name ),
+OfxImporterPlugin::OfxImporterPlugin(QObject *parent, const char *name, const QStringList&) :
+ KMyMoneyPlugin::Plugin( parent, name ),
+ KMyMoneyPlugin::ImporterPlugin(),
  m_valid( false )
 {
+  setInstance(KGenericFactory<OfxImporterPlugin>::instance());
+  setXMLFile("kmm_ofximport.rc");
+  createActions();
 }
 
 OfxImporterPlugin::~OfxImporterPlugin()
 {
+}
+
+void OfxImporterPlugin::createActions(void)
+{
+  new KAction(i18n("OFX ..."), "", 0, this, SLOT(slotImportFile()), actionCollection(), "file_import_ofx");
+}
+
+void OfxImporterPlugin::slotImportFile(void)
+{
+  KURL url = importInterface()->selectFile(i18n("OFX import file selection"),
+                                             "",
+                                             "*.ofx *.qfx *.ofc|OFX files (*.ofx, *.qfx, *.ofc)\n*.*|All files (*.*)",
+                                             static_cast<KFile::Mode>(KFile::File | KFile::ExistingOnly));
+  if(url.isValid()) {
+    if ( isMyFormat(url.path()) ) {
+      slotImportFile(url.path());
+    } else {
+      KMessageBox::error( 0, i18n("Unable to import %1 using the OFX importer plugin.  This file is not the correct format.").arg(url.prettyURL(0, KURL::StripFileProtocol)), i18n("Incorrect format"));
+    }
+
+  }
 }
 
 QString OfxImporterPlugin::formatName(void) const
@@ -54,6 +86,7 @@ QString OfxImporterPlugin::formatFilenameFilter(void) const
 {
   return "*.ofx *.qfx *.ofc";
 }
+
 
 bool OfxImporterPlugin::isMyFormat( const QString& filename ) const
 {
@@ -79,9 +112,9 @@ bool OfxImporterPlugin::isMyFormat( const QString& filename ) const
   return result;
 }
 
-bool OfxImporterPlugin::import( const QString& filename, QValueList<MyMoneyStatement>& result )
+bool OfxImporterPlugin::import( const QString& filename )
 {
-  m_fatalerror = "Unable to parse file";
+  m_fatalerror = i18n("Unable to parse file");
   m_valid = false;
 
   m_statementlist.clear();
@@ -102,8 +135,8 @@ bool OfxImporterPlugin::import( const QString& filename, QValueList<MyMoneyState
 
   if ( m_valid )
   {
-    result += m_statementlist;
     m_fatalerror = QString();
+    m_valid = storeStatements(m_statementlist);
   }
   return m_valid;
 }
@@ -481,6 +514,121 @@ int OfxImporterPlugin::ofxStatusCallback(struct OfxStatusData data, void * pv)
 //   kdDebug(2) << __func__ << " return 0 " << endl;
 
   return 0;
+}
+
+bool OfxImporterPlugin::importStatement(const MyMoneyStatement& s)
+{
+  qDebug("OfxImporterPlugin::importStatement start");
+  return statementInterface()->import(s);
+}
+
+const MyMoneyAccount& OfxImporterPlugin::account(const QString& key, const QString& value) const
+{
+  Q_UNUSED(key);
+  Q_UNUSED(value);
+
+  static MyMoneyAccount null;
+
+  return null;
+}
+
+void OfxImporterPlugin::protocols(QStringList& protocolList) const
+{
+  protocolList.clear();
+  protocolList << "OFX";
+}
+
+QWidget* OfxImporterPlugin::accountConfigTab(const MyMoneyAccount& acc, QString& name)
+{
+  name = i18n("Online settings");
+  return new KOnlineBankingStatus(acc, 0, 0);
+
+  return 0;
+}
+
+MyMoneyKeyValueContainer OfxImporterPlugin::onlineBankingSettings(const MyMoneyKeyValueContainer& current)
+{
+  MyMoneyKeyValueContainer kvp(current);
+  // keep the provider name in sync with the one found in kmm_ofximport.desktop
+  kvp["provider"] = "KMyMoney OFX";
+
+  return kvp;
+}
+
+bool OfxImporterPlugin::mapAccount(const MyMoneyAccount& acc, MyMoneyKeyValueContainer& settings)
+{
+  Q_UNUSED(acc);
+
+  bool rc = false;
+  KOnlineBankingSetupWizard wiz(0, "onlinebankingsetup");
+  if(wiz.isInit()) {
+    if(wiz.exec() == QDialog::Accepted) {
+      rc = wiz.chosenSettings( settings );
+    }
+  }
+
+  return rc;
+}
+
+bool OfxImporterPlugin::updateAccount(const MyMoneyAccount& acc)
+{
+  try {
+    if(!acc.id().isEmpty()) {
+      KOfxDirectConnectDlg dlg(acc);
+
+      connect(&dlg, SIGNAL(statementReady(const QString&)),
+              this, SLOT(slotImportFile(const QString&)));
+
+      dlg.init();
+      dlg.exec();
+    }
+  } catch (MyMoneyException *e) {
+    KMessageBox::information(0 ,i18n("Error connecting to bank: %1").arg(e->what()));
+    delete e;
+  }
+
+  return false;
+}
+
+void OfxImporterPlugin::slotImportFile(const QString& url)
+{
+  
+  if(!import(url)) {
+    KMessageBox::error( 0, i18n("Unable to import %1 using the OFX importer plugin.  The plugin returned the following error: %2").arg(url, lastError()), i18n("Importing error"));
+  }
+}
+
+bool OfxImporterPlugin::storeStatements(QValueList<MyMoneyStatement>& statements)
+{
+  bool hasstatements = (statements.count() > 0);
+  bool ok = true;
+  bool abort = false;
+
+  // FIXME Deal with warnings/errors coming back from plugins
+  /*if ( ofx.errors().count() )
+  {
+    if ( KMessageBox::warningContinueCancelList(this,i18n("The following errors were returned from your bank"),ofx.errors(),i18n("OFX Errors")) == KMessageBox::Cancel )
+      abort = true;
+  }
+
+  if ( ofx.warnings().count() )
+  {
+    if ( KMessageBox::warningContinueCancelList(this,i18n("The following warnings were returned from your bank"),ofx.warnings(),i18n("OFX Warnings"),KStdGuiItem::cont(),"ofxwarnings") == KMessageBox::Cancel )
+      abort = true;
+  }*/
+
+  qDebug("OfxImporterPlugin::storeStatements() with %d statements called", static_cast<int>(statements.count()));
+  QValueList<MyMoneyStatement>::const_iterator it_s = statements.begin();
+  while ( it_s != statements.end() && !abort ) {
+    ok = ok && importStatement((*it_s));
+    ++it_s;
+  }
+
+  if ( hasstatements && !ok ) {
+    KMessageBox::error( 0, i18n("Importing process terminated unexpectedly."), i18n("Failed to import all statements."));
+  }
+
+  return ( !hasstatements || ok );
 }
 
 #include "ofximporterplugin.moc"

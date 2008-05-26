@@ -538,6 +538,50 @@ const bool KGPGFile::keyAvailable(const QString& name)
   return !output.isEmpty();
 }
 
+void KGPGFile::publicKeyList(QStringList& list)
+{
+  QMap<QString, QString> map;
+  QString output;
+  char  buffer[1024];
+  Q_LONG len;
+
+  list.clear();
+  KGPGFile file;
+  file.open(IO_ReadOnly, "--list-keys --with-colons", true);
+  while((len = file.readBlock(buffer, sizeof(buffer)-1)) != EOF) {
+    buffer[len] = 0;
+    output += QString(buffer);
+  }
+  file.close();
+
+  // now parse the data. it looks like:
+  /*
+    tru::0:1210616414:1214841688:3:1:5
+    pub:u:1024:17:9C59DB40B75DD3BA:2001-06-23:::u:Thomas Baumgart <thomas.baumgart@syrocon.de>::scaESCA:
+    uid:u::::2001-11-29::63493BF182C494227E198FE5DA00ACDF63961AFB::Thomas Baumgart <thb@net-bembel.de>:
+    uid:u::::2001-11-29::00A393737BC120C98A6402B921599F6D72058DD8::Thomas Baumgart <ipwizard@users.sourceforge.net>:
+    sub:u:1024:16:85968A70D1F83C2B:2001-06-23::::::e:
+  */
+  QStringList lines = QStringList::split("\n", output);
+  QStringList::iterator it;
+  QString currentKey;
+  for(it = lines.begin(); it != lines.end(); ++it) {
+    // qDebug("Parsing: '%s'", (*it).data());
+    QStringList fields = QStringList::split(":", (*it), true);
+    QString val;
+    if(fields[0] == "pub") {
+      currentKey = fields[4];
+      val = QString("%1:%2").arg(currentKey).arg(fields[9]);
+      map[val] = val;
+    } else if(fields[0] == "uid") {
+      val = QString("%1:%2").arg(currentKey).arg(fields[9]);
+      map[val] = val;
+    }
+  }
+  list = map.values();
+}
+
+
 void KGPGFile::secretKeyList(QStringList& list)
 {
   QString output;

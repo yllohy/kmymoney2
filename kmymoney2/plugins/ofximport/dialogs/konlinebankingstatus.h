@@ -1,8 +1,8 @@
 /***************************************************************************
-                          kmmstatementinterface.h
+                          konlinebankingstatus.h
                              -------------------
-    begin                : Wed Jan 5 2005
-    copyright            : (C) 2005 Thomas Baumgart
+    begin                : Wed Apr 16 2008
+    copyright            : (C) 2008 by Thomas Baumgart
     email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
@@ -15,15 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KMMSTATEMENTINTERFACE_H
-#define KMMSTATEMENTINTERFACE_H
+#ifndef KONLINEBANKINGSTATUS_H
+#define KONLINEBANKINGSTATUS_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+// ----------------------------------------------------------------------------
+// Library Includes
 
 // ----------------------------------------------------------------------------
 // QT Includes
+
+#include <qwidget.h>
 
 // ----------------------------------------------------------------------------
 // KDE Includes
@@ -31,40 +32,21 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 
-class KMyMoney2App;
+#include "konlinebankingstatusdecl.h"
 class MyMoneyAccount;
 
-#include "../statementinterface.h"
-
-namespace KMyMoneyPlugin {
-
 /**
-  * This class represents the implementation of the
-  * StatementInterface.
+  * @author Thomas Baumgart
   */
-class KMMStatementInterface : public StatementInterface
+
+class KOnlineBankingStatus : public KOnlineBankingStatusDecl
 {
   Q_OBJECT
-
 public:
-  KMMStatementInterface(KMyMoney2App* app, QObject* parent, const char* name = 0);
-  ~KMMStatementInterface() {};
+  KOnlineBankingStatus(const MyMoneyAccount& acc, QWidget *parent=0, const char *name=0);
+  ~KOnlineBankingStatus();
 
-  /**
-    * This method imports a MyMoneyStatement into the engine
-    */
-  bool import(const MyMoneyStatement& s);
-
-  /**
-   * This method returns the account for a given @a key - @a value pair.
-   * If the account is not found in the list of accounts, MyMoneyAccount()
-   * is returned.
-   */
-  const MyMoneyAccount& account(const QString& key, const QString& value) const;
-
-private:
-  KMyMoney2App*    m_app;
 };
 
-}; // namespace
 #endif
+// vim:cin:si:ai:et:ts=2:sw=2:

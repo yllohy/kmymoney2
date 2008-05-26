@@ -168,3 +168,22 @@ void MyMoneyKeyValueContainerTest::testReadXML() {
 	}
 }
 
+void MyMoneyKeyValueContainerTest::testArrayRead()
+{
+	MyMoneyKeyValueContainer kvp;
+	const MyMoneyKeyValueContainer& ckvp = kvp;
+	CPPUNIT_ASSERT(kvp.pairs().count() == 0);
+	CPPUNIT_ASSERT(ckvp["Key"].isEmpty());
+	CPPUNIT_ASSERT(kvp.pairs().count() == 0);
+	kvp.setValue("Key", "Value");
+	CPPUNIT_ASSERT(kvp["Key"] == "Value");
+}
+
+void MyMoneyKeyValueContainerTest::testArrayWrite()
+{
+	MyMoneyKeyValueContainer kvp;
+	kvp["Key"] = "Value";
+	CPPUNIT_ASSERT(kvp.pairs().count() == 1);
+	CPPUNIT_ASSERT(kvp.value("Key") == "Value");
+}
+

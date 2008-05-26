@@ -1,8 +1,8 @@
 /***************************************************************************
-                          kmmstatementinterface.h
+                          kmmimportinterface.h
                              -------------------
-    begin                : Wed Jan 5 2005
-    copyright            : (C) 2005 Thomas Baumgart
+    begin                : Mon Apr 14 2008
+    copyright            : (C) 2008 Thomas Baumgart
     email                : ipwizard@users.sourceforge.net
  ***************************************************************************/
 
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef KMMSTATEMENTINTERFACE_H
-#define KMMSTATEMENTINTERFACE_H
+#ifndef KMMIMPORTINTERFACE_H
+#define KMMIMPORTINTERFACE_H
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -28,39 +28,29 @@
 // ----------------------------------------------------------------------------
 // KDE Includes
 
+#include <kfile.h>
+#include <kurl.h>
+class KMyMoney2App;
+
 // ----------------------------------------------------------------------------
 // Project Includes
 
-class KMyMoney2App;
-class MyMoneyAccount;
-
-#include "../statementinterface.h"
+#include "../importinterface.h"
 
 namespace KMyMoneyPlugin {
 
 /**
   * This class represents the implementation of the
-  * StatementInterface.
+  * ViewInterface.
   */
-class KMMStatementInterface : public StatementInterface
-{
+class KMMImportInterface : public ImportInterface {
   Q_OBJECT
 
 public:
-  KMMStatementInterface(KMyMoney2App* app, QObject* parent, const char* name = 0);
-  ~KMMStatementInterface() {};
+  KMMImportInterface(KMyMoney2App* app, QObject* parent, const char* name = 0);
+  ~KMMImportInterface() {};
 
-  /**
-    * This method imports a MyMoneyStatement into the engine
-    */
-  bool import(const MyMoneyStatement& s);
-
-  /**
-   * This method returns the account for a given @a key - @a value pair.
-   * If the account is not found in the list of accounts, MyMoneyAccount()
-   * is returned.
-   */
-  const MyMoneyAccount& account(const QString& key, const QString& value) const;
+  KURL selectFile(const QString& title, const QString& path, const QString& mask, KFile::Mode mode) const;
 
 private:
   KMyMoney2App*    m_app;
