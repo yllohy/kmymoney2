@@ -2,6 +2,12 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+
+2008-05-26 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Remove Sqlite v2 support
+  * Fix Sqlite v3 detection
+  * Clarify dialog help text
+
 2008-05-25 Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * add new budget did throw away changes without asking
     to save them

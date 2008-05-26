@@ -59,7 +59,6 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
   map["QOCI8"] = QString("Oracle Call Interface, version 8 and 9");
   map["QODBC3"] = QString("Open Database Connectivity");
   map["QPSQL7"] = QString("PostgreSQL v6.x and v7.x");
-  map["QSQLITE"] = QString("SQLite version 2");
   map["QTDS7"] = QString("Sybase Adaptive Server and Microsoft SQL Server");
   map["QSQLITE3"] = QString("SQLite version 3");
 
@@ -74,8 +73,10 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
     QStringList::Iterator it = list.begin();
     while(it != list.end()) {
       QString dname = *it;
-      if (map.keys().contains(dname)) dname = dname + " - " + map[dname];
-      listDrivers->insertItem (dname);
+      if (map.keys().contains(dname)) {
+        dname = dname + " - " + map[dname];
+        listDrivers->insertItem (dname);
+      }
       it++;
     }
 
@@ -118,7 +119,7 @@ const KURL KSelectDatabaseDlg::selectedURL() {
 
 void KSelectDatabaseDlg::slotDriverSelected (QListBoxItem *driver) {
 
-  if ((driver->text().section(' ', 0, 0) == "QSQLITE") || (driver->text().section(' ', 0, 0) == "QSQLITE3")){
+  if (driver->text().section(' ', 0, 0) == "QSQLITE3"){
     slotBrowse();   // SQLITE needs a file name
     textHostName->setEnabled (false);  // but not host (how about user/password?)
   } else {
@@ -165,14 +166,15 @@ void KSelectDatabaseDlg::slotHelp(void) {
       "<h3>Database Name</h3>"
       "<p>"
       "The default database name is KMyMoney, but you may choose some other name if you like."
-      " SQLite has one databases per file; selecting this driver opens the file dialog."
-      " For database types other than MySql, the database name must be pre-created,"
-      " though this application will create all table structures where necessary."
+      " SQLite has one database per file; selecting this driver opens the file dialog."
+      " For database types other than SQLite and MySql, the database itself must be pre-created,"
+      " though KMyMoney will create all table structures where necessary."
       "</p>"
       "<h3>Host Name</h3>"
       "<p>"
       "For the average user, the default name of localhost, being the machine you are currently using,"
-      " is correct. For networked databases, enter the connected host name."
+      " is correct. For networked databases, enter the host name of the system where the database is stored."
+      " You may need to contact your database administrator for this information."
       "</p>"
       "<h3>User Name and Password</h3>"
       "<p>"
@@ -181,8 +183,11 @@ void KSelectDatabaseDlg::slotHelp(void) {
       " records. If the user name is the same as your login name, a password is not normally required."
       "</p>"
       "<h3>Generate SQL</h3>"
-      "<p>This button will generate the CREATE TABLE commands to a text file, which may be edited"
-      " if the in-built commands do not work for your database system."
+      "<p>Click this button to create a text file and write the commands needed to create the database tables and other objects."
+      " With care, this may be edited if the in-built commands do not work for your database system."
+      "</p>"
+      "<p>"
+      "Please read the appropriate chapter of the KMyMoney handbook for further information on database usage."
       "</p>"
   );
 

@@ -49,6 +49,12 @@
 unsigned int MyMoneyDbDef::m_currentVersion = 2;
 
 // subclass QSqlQuery for performance tracing
+
+MyMoneySqlQuery::MyMoneySqlQuery (MyMoneyStorageSql*  db)
+  : QSqlQuery (static_cast<QSqlDatabase*>(db)) {
+  m_db = db;
+}
+
 bool MyMoneySqlQuery::exec () {
   ::timetrace("start sql");
   bool rc = QSqlQuery::exec();
@@ -59,7 +65,7 @@ bool MyMoneySqlQuery::exec () {
 }
 
 bool MyMoneySqlQuery::prepare ( const QString & query ) {
-  if ((driver()->name() == QString("QSQLITE")) || (driver()->name() == QString("QSQLITE3"))) {
+  if (m_db->isSqlite3()) {
     QString newQuery = query;
     return (QSqlQuery::prepare (newQuery.replace("FOR UPDATE", "")));
   }
@@ -106,7 +112,6 @@ try {
   else if (driverName == "QOCI8") m_dbType = Oracle8;
   else if (driverName == "QODBC3") m_dbType = ODBC3;
   else if (driverName == "QPSQL7") m_dbType = Postgresql;
-  else if (driverName == "QSQLITE") m_dbType = Sqlite;
   else if (driverName == "QTDS7") m_dbType = Sybase;
   else if (driverName == "QSQLITE3") m_dbType = Sqlite3;
   //get the input options
@@ -195,9 +200,10 @@ void MyMoneyStorageSql::close(bool logoff) {
 
 int MyMoneyStorageSql::createDatabase (const KURL& url) {
   DBG("*** Entering MyMoneyStorageSql::createDatabase");
-  if ((driverName() == "QSQLITE") || (driverName() == "QSQLITE3")) return(0); // not needed for sqlite
-  if (driverName() != "QMYSQL3") {
-    m_error = QString(i18n("Cannot currently create database for driver %1")).arg(driverName());
+  if (m_dbType == Sqlite3) return(0); // not needed for sqlite
+  if (!m_dbType == Mysql) {
+    m_error = 
+        QString(i18n("Cannot currently create database for driver %1; please create manually")).arg(driverName());
     return (1);
   }
   // create the database (only works for mysql at present)
@@ -208,11 +214,11 @@ int MyMoneyStorageSql::createDatabase (const KURL& url) {
   maindb->setUserName (url.user());
   maindb->setPassword (url.pass());
   maindb->open();
-  MyMoneySqlQuery qm(maindb);
+  QSqlQuery qm(maindb);
   QString qs = QString("CREATE DATABASE %1;").arg(dbName);
   qm.prepare (qs);
   if (!qm.exec()) {
-    buildError (qm, __func__, QString("Error in create database %1; do you have create permissions?").arg(dbName));
+    buildError (qm, __func__, QString(i18n("Error in create database %1; do you have create permissions?")).arg(dbName));
     return (1);
   }
   QSqlDatabase::removeDatabase (maindb);
@@ -3283,7 +3289,7 @@ void MyMoneyStorageSql::signalProgress(int current, int total, const QString& ms
 }
 
 // **************************** Error display routine *******************************
-QString& MyMoneyStorageSql::buildError (const MyMoneySqlQuery& q, const QString& function, const QString& message) const {
+QString& MyMoneyStorageSql::buildError (const QSqlQuery& q, const QString& function, const QString& message) const {
   QString s = QString("Error in function %1 : %2").arg(function).arg(message);
   QSqlError e = lastError();
   s += QString ("\nDriver = %1, Host = %2, User = %3, Database = %4")

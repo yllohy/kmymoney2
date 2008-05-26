@@ -72,13 +72,14 @@ class FilterFail {
 /**
 @author Tony Bloomfield
  */
-
+class MyMoneyStorageSql;
 class MyMoneySqlQuery : public QSqlQuery {
   public:
-    MyMoneySqlQuery (QSqlDatabase* db) : QSqlQuery (db) {};
-    MyMoneySqlQuery () : QSqlQuery() {};
+    MyMoneySqlQuery (MyMoneyStorageSql* db = 0);
     bool exec ();
     bool prepare ( const QString & query );
+  private:
+    const MyMoneyStorageSql* m_db;
 };
 
 class MyMoneyDbColumn : public KShared {
@@ -332,6 +333,16 @@ public:
    *
    */
   bool writeFile(void);
+  
+  // check database type
+  bool isDb2() const { return (m_dbType == Db2);};
+  bool isInterbase() const { return (m_dbType == Interbase);};
+  bool isMysql() const { return (m_dbType == Mysql);};
+  bool isOracle8() const { return (m_dbType == Oracle8);};
+  bool isODBC3() const { return (m_dbType == ODBC3);};
+  bool isPostgresql() const { return (m_dbType == Postgresql);};
+  bool isSybase() const { return (m_dbType == Sybase);};
+  bool isSqlite3() const { return (m_dbType == Sqlite3);};
 
     /**
    * MyMoneyStorageSql generalized error routine
@@ -435,7 +446,7 @@ public:
 
 private:
   // a function to build a comprehensive error message
-  QString& buildError (const MyMoneySqlQuery& q, const QString& function, const QString& message) const;
+  QString& buildError (const QSqlQuery& q, const QString& function, const QString& message) const;
   // write routines
   void writeUserInformation(void);
   void writeInstitutions(void);
