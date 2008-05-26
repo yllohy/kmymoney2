@@ -1058,9 +1058,9 @@ signals:
   void selectAllTransactions(void);
 
   /**
-    * This signal is emitted when a list of payees has been selected by
-    * the GUI. If no payee is selected or the selection is removed,
-    * @a payees is identical to an empty QValueList. This signal is used
+    * This signal is emitted when a list of budgets has been selected by
+    * the GUI. If no budget is selected or the selection is removed,
+    * @a budget is identical to an empty QValueList. This signal is used
     * by plugins to get information about changes.
     */
   void budgetSelected(const QValueList<MyMoneyBudget>& budget);
