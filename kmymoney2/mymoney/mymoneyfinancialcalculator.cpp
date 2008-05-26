@@ -246,8 +246,13 @@ const FCALC_DOUBLE MyMoneyFinancialCalculator::interestRate(void)
       }
     }
     do {
-      dik = _fi(eint) / _fip(eint);
-      eint -= dik;
+      try {
+        dik = _fi(eint) / _fip(eint);
+        eint -= dik;
+      } catch(MyMoneyException *e) {
+        delete e;
+        eint = 0;
+      }
       (void) modfl(ratio * (dik / eint), &a);
       ri = static_cast<unsigned> (a);
     }

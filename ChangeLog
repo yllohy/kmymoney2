@@ -15,6 +15,7 @@
     fixes bug 1962065. Toggling this no longer asks if
     the user wants to save the budget. The checkbox is
     now disabled if the budget has no used accounts.
+  * fix bug 1575585: Loan with 0% interest (division by 0)
 
 2008-05-24 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed manual forecast in forecast view
