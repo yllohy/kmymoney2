@@ -107,7 +107,7 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
   KGuiItem newButtenItem( QString(""),
                              QIconSet(il->loadIcon("file_new", KIcon::Small, KIcon::SizeSmall)),
                              i18n("Creates a new budget"),
-                             i18n("Use this to create a new emtpy budget."));
+                             i18n("Use this to create a new empty budget."));
   m_newButton->setGuiItem(newButtenItem);
   QToolTip::add(m_newButton, newButtenItem.toolTip());
 
