@@ -147,10 +147,10 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
   connect(m_cbBudgetSubaccounts, SIGNAL(clicked()), this, SLOT(cb_includesSubaccounts_clicked()));
 
   connect(m_accountTree, SIGNAL(selectionChanged(QListViewItem*)), this, SLOT(slotSelectAccount(QListViewItem*)));
+  connect(m_accountTree, SIGNAL(valueChanged()), this, SLOT(slotRefreshHideUnusedButton()));
 
   // connect the buttons to the actions. Make sure the enabled state
   // of the actions is reflected by the buttons
-  connect(m_newButton, SIGNAL(clicked()), kmymoney2->action("budget_new"), SLOT(activate()));
   connect(kmymoney2->action("budget_new"), SIGNAL(enabled(bool)), m_newButton, SLOT(setEnabled(bool)));
   connect(m_renameButton, SIGNAL(clicked()), kmymoney2->action("budget_rename"), SLOT(activate()));
   connect(kmymoney2->action("budget_rename"), SIGNAL(enabled(bool)), m_renameButton, SLOT(setEnabled(bool)));
@@ -159,11 +159,11 @@ KBudgetView::KBudgetView(QWidget *parent, const char *name ) :
 
   connect(m_budgetValue, SIGNAL(valuesChanged()), this, SLOT(slotBudgetedAmountChanged()));
 
+  connect(m_newButton, SIGNAL(clicked()), this, SLOT(slotNewBudget()));
   connect(m_updateButton, SIGNAL(pressed()), this, SLOT(slotUpdateBudget()));
-
   connect(m_resetButton, SIGNAL(pressed()), this, SLOT(slotResetBudget()));
 
-  connect(m_hideUnusedButton, SIGNAL(toggled(bool)), this, SLOT(slotSelectBudget()));
+  connect(m_hideUnusedButton, SIGNAL(toggled(bool)), this, SLOT(slotHideUnused(bool)));
 
   // setup initial state
   m_newButton->setEnabled(kmymoney2->action("budget_new")->isEnabled());
@@ -222,7 +222,7 @@ void KBudgetView::slotReloadView(void)
 void KBudgetView::loadBudgets(void)
 {
   QCString id;
-
+  
   ::timetrace("Start KBudgetView::loadBudgets");
 
   // remember which item is currently selected
@@ -322,7 +322,7 @@ void KBudgetView::slotRefreshView(void)
 void KBudgetView::loadAccounts(void)
 {
   QMap<QCString, bool> isOpen;
-
+  
   ::timetrace("start load budget account view");
 
   // if no budgets are selected, don't load the accounts
@@ -368,11 +368,7 @@ void KBudgetView::loadAccounts(void)
   m_transactionCountMap = file->transactionCountMap();
 
   m_accountTree->setBaseCurrency(file->baseCurrency());
-
-  // make sure we show all items for an empty budget
-  if(m_budget.getaccounts().isEmpty())
-    m_hideUnusedButton->setChecked(false);
-
+  
   bool haveUnusedBudgets = false;
 
   // create the items
@@ -484,7 +480,7 @@ bool KBudgetView::loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QCStrin
     // the display of those,
     if(acc.accountGroup() == MyMoneyAccount::Income
     || acc.accountGroup() == MyMoneyAccount::Expense) {
-      if(m_hideUnusedButton->isChecked() && thisUnused) {
+      if(m_hideUnusedButton->isEnabled() && m_hideUnusedButton->isChecked() && thisUnused) {
         unused = true;
         delete item;
       }
@@ -493,26 +489,35 @@ bool KBudgetView::loadSubAccounts(KMyMoneyAccountTreeBudgetItem* parent, QCStrin
   return unused;
 }
 
-void KBudgetView::slotSelectBudget(void)
+void KBudgetView::askSave(void)
 {
-  // check if the content of a currently selected payee was modified
+  // check if the content of a currently selected budget was modified
   // and ask to store the data
   if (m_updateButton->isEnabled()) {
     if (KMessageBox::questionYesNo(this, QString("<qt>%1</qt>").arg(
-      i18n("Do you want to save the changes for <b>%1</b>").arg(m_budget.name())),
-      i18n("Save changes")) == KMessageBox::Yes) {
-        m_inSelection = true;
-        slotUpdateBudget();
-        m_inSelection = false;
-    }
+        i18n("Do you want to save the changes for <b>%1</b>").arg(m_budget.name())),
+             i18n("Save changes")) == KMessageBox::Yes) {
+               m_inSelection = true;
+               slotUpdateBudget();
+               m_inSelection = false;
+             }
   }
+}
 
+void KBudgetView::slotRefreshHideUnusedButton(void)
+{
+  m_hideUnusedButton->setDisabled(m_budget.getaccounts().isEmpty());
+}
+
+void KBudgetView::slotSelectBudget(void)
+{
+  askSave();
   KBudgetListItem* item;
   if (m_budget.id().isEmpty()) {
     item = dynamic_cast<KBudgetListItem*>(m_budgetList->firstChild());
     if(item) {
       m_budgetList->blockSignals(true);
-      m_budgetList->setSelected(item, true);
+      m_budgetList->setSelected(item, true); // WRTODO das auch beim NewBudget machen
       m_budgetList->blockSignals(false);
     }
   }
@@ -528,12 +533,22 @@ void KBudgetView::slotSelectBudget(void)
     m_accountTree->setEnabled(true);
   }
 
+  slotRefreshHideUnusedButton();
   loadAccounts();
 
   QValueList<MyMoneyBudget> budgetList;
   if(!m_budget.id().isEmpty())
     budgetList << m_budget;
   emit selectObjects(budgetList);
+}
+
+void KBudgetView::slotHideUnused(bool toggled)
+{
+  // make sure we show all items for an empty budget
+  bool prevState=!toggled;
+  slotRefreshHideUnusedButton();
+  if (prevState!=m_hideUnusedButton->isChecked())
+    loadAccounts();
 }
 
 const MyMoneyBudget& KBudgetView::selectedBudget(void) const
@@ -594,9 +609,9 @@ void KBudgetView::slotRenameBudget(QListViewItem* p , int /*col*/, const QString
   if (pBudget->budget().name() != new_name) {
     MyMoneyFileTransaction ft;
     try {
-      // check if we already have a payee with the new name
+      // check if we already have a budget with the new name
       try {
-        // this function call will throw an exception, if the payee
+        // this function call will throw an exception, if the budget
         // hasn't been found.
         MyMoneyFile::instance()->budgetByName(new_name);
         // the name already exists, ask the user whether he's sure to keep the name
@@ -714,6 +729,12 @@ void KBudgetView::cb_includesSubaccounts_clicked()
   }
 }
 
+void KBudgetView::slotNewBudget(void)
+{
+  askSave();
+  kmymoney2->action("budget_new")->activate();
+}
+
 void KBudgetView::slotResetBudget(void)
 {
   try {
@@ -732,6 +753,7 @@ void KBudgetView::slotUpdateBudget(void)
   try {
     MyMoneyFile::instance()->modifyBudget(m_budget);
     ft.commit();
+    slotRefreshHideUnusedButton();
   } catch(MyMoneyException *e) {
     KMessageBox::detailedSorry(0, i18n("Unable to modify budget"),
                                (e->what() + " " + i18n("thrown in") + " " + e->file()+ ":%1").arg(e->line()));

@@ -104,6 +104,8 @@ public slots:
   void slotReloadView(void);
   void slotRefreshView(void);
   void slotSelectBudget(void);
+  void slotHideUnused(bool);
+  void slotRefreshHideUnusedButton();
   void slotStartRename(void);
 
   /**
@@ -126,6 +128,7 @@ protected:
   const MyMoneyBudget& selectedBudget(void) const;
   KMyMoneyAccountTreeBudgetItem* selectedAccount(void) const;
   void setTimeSpan(KMyMoneyAccountTreeBudgetItem *account, MyMoneyBudget::AccountGroup& accountGroup, int iTimeSpan);
+  void askSave(void);
 
 protected slots:
 
@@ -155,6 +158,8 @@ protected slots:
 
   void slotResetBudget(void);
 
+  void slotNewBudget(void);
+
   void languageChange(void);
 
 private slots:
@@ -162,7 +167,7 @@ private slots:
 
   /**
     * This slot receives the signal from the listview control that an item was right-clicked,
-    * If @p item points to a real payee item, emits openContextMenu().
+    * If @p item points to a real budget item, emits openContextMenu().
     *
     * @param lv pointer to the listview
     * @param i the item on which the cursor resides
@@ -198,6 +203,8 @@ private:
 
   // set if we are in the selection of a different budget
   bool                                m_inSelection;
+  
+  void adaptHideUnusedButton(void);
 
   static const int m_iBudgetYearsAhead;
   static const int m_iBudgetYearsBack;

@@ -2,6 +2,13 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+2008-05-25 Wolfgang Rohdewald <wolfgang@rohdewald.de>
+  * add new budget did throw away changes without asking
+    to save them
+  * budgetview: hide unused accounts had problems. This
+    fixes bug 1962065. Toggling this no longer asks if
+    the user wants to save the budget. The checkbox is
+    now disabled if the budget has no used accounts.
 
 2008-05-24 Alvaro Soliverez <asoliverez@gmail.com>
   * Fixed manual forecast in forecast view
