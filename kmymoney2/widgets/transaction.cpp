@@ -845,7 +845,7 @@ void StdTransaction::loadTab(TransactionForm* form)
   QValueList<MyMoneySplit>::const_iterator it_s;
 
   if(m_transaction.splitCount() > 0) {
-    KMyMoneyRegister::Action action;
+    KMyMoneyRegister::Action action=ActionNone;
 
     for(it_s = m_transaction.splits().begin(); it_s != m_transaction.splits().end(); ++it_s) {
       if((*it_s).accountId() == m_split.accountId())

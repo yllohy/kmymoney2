@@ -72,8 +72,9 @@ int TabBar::currentTab(void) const
 
 void TabBar::setCurrentTab(int id)
 {
-  if (tab(id)->isEnabled())
-    setCurrentTab(tab(id));
+  if (tab(id)) // there are no tabs in an expense/income ledger
+    if (tab(id)->isEnabled())
+      setCurrentTab(tab(id));
 }
 
 QTab* TabBar::tab(int id) const
