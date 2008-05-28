@@ -372,7 +372,26 @@ void KReportsView::slotLoadView(void)
   }
 }
 
+QString KReportsView::KReportGroupListItem::key ( int column, bool ascending ) const
+{
+  if (column==0)
+    return QString::number(m_nr).rightJustify(3,'0');
+  else
+    return KListViewItem::key(column,ascending);
+}
 
+KReportsView::KReportGroupListItem::KReportGroupListItem(KListView* parent,const int nr,QString name):
+    KListViewItem( parent,QString::number(nr)+". "+name),
+    m_nr(nr),
+    m_name(name)
+{}
+
+void KReportsView::KReportGroupListItem::setNr(const int nr)
+{
+  m_nr=nr;
+  setText(0,QString::number(nr)+QString(". ")+m_name);
+}
+    
 void KReportsView::loadView(void)
 {
   ::timetrace("Start KReportsView::loadView");
@@ -406,20 +425,17 @@ void KReportsView::loadView(void)
   unsigned pagenumber = 1;
 
   // Default Reports
-  QString pagename = "10. " + i18n("Charts");
-  KListViewItem* chartnode = new KListViewItem(m_reportListView, pagename);
+  KReportGroupListItem* chartnode = new KReportGroupListItem(m_reportListView, 10, i18n("Charts"));
 
-  QMap<QString,KListViewItem*> groupitems;
+  QMap<QString,KReportGroupListItem*> groupitems;
   QValueList<ReportGroup> defaultreports;
   defaultReports(defaultreports);
   QValueList<ReportGroup>::const_iterator it_group = defaultreports.begin();
   while ( it_group != defaultreports.end() )
   {
     QString groupname = (*it_group).name();
-    QString grouptitle = (*it_group).title();
-    QString pagename = QString::number(pagenumber++) + ". " + grouptitle;
-    KListViewItem* curnode = new KListViewItem(m_reportListView, pagename);
-    curnode->setOpen(isOpen.find(pagename) != isOpen.end());
+    KReportGroupListItem* curnode = new KReportGroupListItem(m_reportListView, pagenumber++, (*it_group).title());
+    curnode->setOpen(isOpen.find(curnode->text(0)) != isOpen.end());
     groupitems[groupname] = curnode;
 
     QValueList<MyMoneyReport>::const_iterator it_report = (*it_group).begin();
@@ -442,33 +458,28 @@ void KReportsView::loadView(void)
   }
 
   // Rename the charts item to place it at this point in the list.
-  pagename = QString::number(pagenumber++) + ". " + i18n("Charts");
-  chartnode->setText(0,pagename);
-  chartnode->setOpen(isOpen.find(pagename) != isOpen.end());
+  chartnode->setNr(pagenumber++);
+  chartnode->setOpen(isOpen.find(chartnode->text(0)) != isOpen.end());
 
   // Custom reports
 
-  pagename = QString::number(pagenumber++) + ". " + i18n("Favorite Reports");
-  KListViewItem* favoritenode = new KListViewItem(m_reportListView,pagename);
-  favoritenode->setOpen(isOpen.find(pagename) != isOpen.end());
-  KListViewItem* orphannode = NULL;
+  KReportGroupListItem* favoritenode = new KReportGroupListItem(m_reportListView,pagenumber++, i18n("Favorite Reports"));
+  favoritenode->setOpen(isOpen.find(favoritenode->text(0)) != isOpen.end());
+  KReportGroupListItem* orphannode = NULL;
 
   QValueList<MyMoneyReport> customreports = MyMoneyFile::instance()->reportList();
   QValueList<MyMoneyReport>::const_iterator it_report = customreports.begin();
   while( it_report != customreports.end() )
   {
     // If this report is in a known group, place it there
-    KListViewItem* groupnode = groupitems[(*it_report).group()];
+    KReportGroupListItem* groupnode = groupitems[(*it_report).group()];
     if ( groupnode )
       new KReportListItem( groupnode, *it_report );
     else
     // otherwise, place it in the orphanage
     {
       if ( ! orphannode )
-      {
-        QString pagename = QString::number(pagenumber++) + ". " + i18n("Old Customized Reports");
-        orphannode = new KListViewItem(m_reportListView, pagename);
-      }
+        orphannode = new KReportGroupListItem(m_reportListView, pagenumber++, i18n("Old Customized Reports"));
       new KReportListItem( orphannode, *it_report );
     }
 

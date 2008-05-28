@@ -140,6 +140,18 @@ public:
     const MyMoneyReport& report(void) const { return m_report; }
   };
 
+  class KReportGroupListItem: public KListViewItem
+  {
+  private:
+    int m_nr;
+    QString m_name;
+
+  public:
+    KReportGroupListItem( KListView* parent,const int nr,const QString name);
+    virtual QString key ( int column, bool ascending ) const;
+    void setNr(const int nr);
+  };
+
   /**
     * Helper class for KReportView.
     *
