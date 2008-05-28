@@ -3,8 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
-2008-05-27  Wolfgang Rohdewald <wolfgang@rohdewald.de>
+2008-05-28  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * report view: correctly order the report groups by number
+  * fix one more usage of an uninitialized variable
 
 2008-05-27  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * fixed segfault when doubleclicking on an expense category in

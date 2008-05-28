@@ -154,11 +154,17 @@ Transaction::Transaction(Register *parent, const MyMoneyTransaction& transaction
   if(!m_split.accountId().isEmpty())
     m_account = file->account(m_split.accountId());
 
+  MyMoneyAccount& acc=parent->m_account;
   // load the payee
   if(!m_split.payeeId().isEmpty()) {
     m_payee = file->payee(m_split.payeeId()).name();
   }
-  m_payeeHeader = m_split.shares().isNegative() ? i18n("Pay to") : i18n("From");
+  if(acc.accountGroup() == MyMoneyAccount::Income
+  || acc.accountGroup() == MyMoneyAccount::Expense) {
+    m_payeeHeader = m_split.shares().isNegative() ? i18n("From") : i18n("Pay to");
+  } else {
+    m_payeeHeader = m_split.shares().isNegative() ? i18n("Pay to") : i18n("From");
+  }
 
   // load the currency
   if(!m_transaction.id().isEmpty())
