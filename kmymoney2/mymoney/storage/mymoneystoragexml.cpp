@@ -95,7 +95,8 @@ private:
 MyMoneyXmlContentHandler::MyMoneyXmlContentHandler(MyMoneyStorageXML* reader) :
   m_reader(reader),
   m_loc(0),
-  m_level(0)
+  m_level(0),
+  m_elementCount(0)
 {
 }
 
