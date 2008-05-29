@@ -7,6 +7,8 @@
   * Added ability to enter negative numbers with a leading dash even
     if display format is "parens around".
   * Improved some code changes made by Wolfgang
+  * Updated German translation from Yllohy
+  * Updated Brazilian translation from Marcus Gama
 
 2008-05-28  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * report view: correctly order the report groups by number
