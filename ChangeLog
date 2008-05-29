@@ -3,6 +3,11 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-29 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Remove all Sqlite2 references
+  * Improve usability of DB selection dialog
+  * Coding changes
+
 2008-05-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added ability to enter negative numbers with a leading dash even
     if display format is "parens around".
