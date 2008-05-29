@@ -9,6 +9,7 @@
   * Improved some code changes made by Wolfgang
   * Updated German translation from Yllohy
   * Updated Brazilian translation from Marcus Gama
+  * Don't allow editing transactions that reference closed accounts
 
 2008-05-28  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * report view: correctly order the report groups by number

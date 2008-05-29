@@ -878,11 +878,13 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
     const QValueList<MyMoneySplit>& splits = (*it_t).transaction().splits();
     QValueList<MyMoneySplit>::const_iterator it_s;
     for(it_s = splits.begin(); warnLevel < 2 && it_s != splits.end(); ++it_s) {
-      if((*it_s).reconcileFlag() == MyMoneySplit::Frozen)
+      const MyMoneyAccount& acc = MyMoneyFile::instance()->account((*it_s).accountId());
+      if(acc.isClosed())
+        warnLevel = 3;
+      else if((*it_s).reconcileFlag() == MyMoneySplit::Frozen)
         warnLevel = 2;
-      if((*it_s).reconcileFlag() == MyMoneySplit::Reconciled && warnLevel < 1)
+      else if((*it_s).reconcileFlag() == MyMoneySplit::Reconciled && warnLevel < 1)
         warnLevel = 1;
-
     }
   }
 
@@ -909,9 +911,16 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
                  "Editing the transactions is therefore prohibited."),
             i18n("Transaction already frozen"));
       break;
+
+    case 3:
+      KMessageBox::sorry(0,
+            i18n("At least one split of the seelected transaction references an account that has been closed. "
+                 "Editing the transactions is therefore prohibited."),
+            i18n("Account closed"));
+      break;
   }
 
-  if(warnLevel == 2)
+  if(warnLevel > 1)
     return 0;
 
 
