@@ -778,9 +778,17 @@ bool KMyMoneyView::openDatabase (const KURL& url) {
       break;
     case 1: // permanent error
       KMessageBox::detailedError (this, i18n("Can't open database %1\n").arg(dbURL.prettyURL()), reader->lastError());
+      if (pDBMgr) {
+        removeStorage();
+        delete pDBMgr;
+      }
       return false;
     case -1: // retryable error
       if (KMessageBox::warningYesNo (this, reader->lastError(), PACKAGE) == KMessageBox::No) {
+        if (pDBMgr) {
+          removeStorage();
+          delete pDBMgr;
+        }
         return false;
       } else {
         QString options = dbURL.queryItem("options") + ",override";

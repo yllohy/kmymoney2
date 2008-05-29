@@ -31,6 +31,7 @@
 // ----------------------------------------------------------------------------
 // Project Includes
 #include "kselectdatabasedlgdecl.h"
+#include "../mymoney/storage/mymoneystoragesql.h"
 
 class KSelectDatabaseDlg : public KSelectDatabaseDlgDecl
 {
@@ -38,8 +39,13 @@ Q_OBJECT
 public:
   KSelectDatabaseDlg(QWidget *parent = 0, const char *name = 0);
   ~KSelectDatabaseDlg();
-
+  /** Set the mode of this dialog
+    * @param - openMode (IO_ReadWrite = open database; IO_WriteOnly = saveas database)
+  **/
   void setMode(int openMode);
+  /** Return URL of database
+    * @return - pseudo-URL of database selected by user
+  **/
   const KURL selectedURL();
 
 /* leave these in for now, useful for testing...
@@ -51,9 +57,13 @@ public:
     
 public slots:
   void slotDriverSelected(QListBoxItem *driver);
-  void slotBrowse();
   void slotHelp();
   void slotGenerateSQL();
+  void slotOKPressed();
+private:
+  int m_mode;
+  void getFileName();
+  MyMoneyDbDrivers m_map;
 };
 
 #endif

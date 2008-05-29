@@ -43,45 +43,30 @@
 // Project Includes
 
 #include "kselectdatabasedlg.h"
-#include "../mymoney/storage/mymoneystoragesql.h"
 
 KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
  : KSelectDatabaseDlgDecl(parent, name) {
-  // list available drivers
   listDrivers->clear();
-//  listDrivers->insertStringList (QSqlDatabase::drivers());
-  typedef QMap<QString, QString> dnMap;
-  dnMap map;
-  // it would be nice if Qt provided us with meaningful names...
-  map["QDB2"] = QString("IBM DB2");
-  map["QIBASE"] = QString("Borland Interbase");
-  map["QMYSQL3"] = QString("MySQL");
-  map["QOCI8"] = QString("Oracle Call Interface, version 8 and 9");
-  map["QODBC3"] = QString("Open Database Connectivity");
-  map["QPSQL7"] = QString("PostgreSQL v6.x and v7.x");
-  map["QTDS7"] = QString("Sybase Adaptive Server and Microsoft SQL Server");
-  map["QSQLITE3"] = QString("SQLite version 3");
-
+  // list drivers supported by KMM
+  QMap<QString, QString> map = m_map.driverMap();
+  // list drivers installed on system
   QStringList list = QSqlDatabase::drivers();
   if (list.count() == 0) {
     KMessageBox::error (0, i18n("There are no Qt SQL drivers installed in your system.\n"
         "Please consult documentation for your distro, or visit the Qt web site (www.trolltech.com)"
             " and search for SQL drivers."),
         "");
-        buttonOK->setEnabled(false);
+        reject();
   } else {
     QStringList::Iterator it = list.begin();
     while(it != list.end()) {
       QString dname = *it;
-      if (map.keys().contains(dname)) {
+      if (map.keys().contains(dname)) { // only display if driver is supported
         dname = dname + " - " + map[dname];
         listDrivers->insertItem (dname);
       }
       it++;
     }
-
-    //listDrivers->setCurrentItem (0);
-    //slotDriverSelected (listDrivers->currentText());
     textDbName->setText ("KMyMoney");
     textHostName->setText ("localhost");
     textUserName->setText("");
@@ -89,17 +74,20 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
     if (pwd != 0)
       textUserName->setText (QString(pwd->pw_name));
     textPassword->setText ("");
-    buttonOK->setEnabled(true);
-    connect (listDrivers, SIGNAL(clicked(QListBoxItem *)), this, SLOT(slotDriverSelected(QListBoxItem *)));
+    buttonOK->setEnabled(false);
+    connect (listDrivers, SIGNAL(clicked(QListBoxItem *)),
+             this, SLOT(slotDriverSelected(QListBoxItem *)));
   }
   connect (buttonHelp, SIGNAL(released()), this, SLOT(slotHelp()));
   connect (buttonSQL, SIGNAL(released()), this, SLOT(slotGenerateSQL()));
+  connect (buttonOK, SIGNAL(released()), this, SLOT(slotOKPressed()));
   checkPreLoad->setChecked(false);
 }
 
 KSelectDatabaseDlg::~KSelectDatabaseDlg() {}
 
 void KSelectDatabaseDlg::setMode (int openMode) {
+  m_mode = openMode;
   checkPreLoad->setEnabled (openMode == IO_ReadWrite);
 }
 
@@ -118,22 +106,41 @@ const KURL KSelectDatabaseDlg::selectedURL() {
 }
 
 void KSelectDatabaseDlg::slotDriverSelected (QListBoxItem *driver) {
-
   if (driver->text().section(' ', 0, 0) == "QSQLITE3"){
-    slotBrowse();   // SQLITE needs a file name
+    textDbName->clear();
     textHostName->setEnabled (false);  // but not host (how about user/password?)
+    if (m_mode == IO_WriteOnly) getFileName(); // saveAs dialog - try to get file name now
   } else {
     textHostName->setEnabled (true);
   }
+  buttonOK->setEnabled(true);
 }
 
-void KSelectDatabaseDlg::slotBrowse () { // relevant for SQLite only
-  textDbName->setText (QFileDialog::getOpenFileName(
-      "",
-      "SQLite files (*.sql);; All files (*.*)",
-      this,
-      "",
-      "Select SQLite file"));
+void KSelectDatabaseDlg::slotOKPressed () {
+  if (listDrivers->currentText().section(' ', 0, 0) == "QSQLITE3"){
+    getFileName();   // SQLITE needs a file name
+    if (textDbName->text().isEmpty()) reject();
+    else accept();
+  }
+  else accept();
+}
+
+void KSelectDatabaseDlg::getFileName () { // relevant for SQLite only
+  while (textDbName->text().isEmpty()) {
+    textDbName->setText (QFileDialog::getOpenFileName(
+    "",
+    "SQLite files (*.sql);; All files (*.*)",
+    this,
+    "",
+    "Select SQLite file"));
+    if (textDbName->text().isEmpty()) {
+      int rc = KMessageBox::warningYesNo
+        (0, i18n("SQLite requires a file name; try again?"), "");
+      if (rc == KMessageBox::No)
+        return;
+    }
+  }
+  return;
 }
 
 void KSelectDatabaseDlg::slotGenerateSQL () {

@@ -72,6 +72,18 @@ class FilterFail {
 /**
 @author Tony Bloomfield
  */
+typedef enum databaseTypeE { // database (driver) type
+  Db2 = 0, //
+  Interbase, //
+  Mysql, //
+  Oracle8, //
+  ODBC3, //
+  Postgresql, //
+  Sqlite, //
+  Sybase, //
+  Sqlite3 //
+} _databaseType;
+
 class MyMoneyStorageSql;
 class MyMoneySqlQuery : public QSqlQuery {
   public:
@@ -80,6 +92,18 @@ class MyMoneySqlQuery : public QSqlQuery {
     bool prepare ( const QString & query );
   private:
     const MyMoneyStorageSql* m_db;
+};
+
+class MyMoneyDbDrivers {
+  public:
+    MyMoneyDbDrivers ();
+    /**
+      *  @return a list ofsupported Qt database driver types, their qt names and useful names
+      **/
+    const QMap<QString, QString> driverMap() const {return (m_driverMap);};
+    const databaseTypeE driverToType (const QString& driver) const;
+  private:
+    QMap<QString, QString> m_driverMap;
 };
 
 class MyMoneyDbColumn : public KShared {
@@ -100,7 +124,7 @@ class MyMoneyDbColumn : public KShared {
 
     virtual MyMoneyDbColumn* clone () const;
 
-    virtual const QString generateDDL (const QString& driver) const;
+    virtual const QString generateDDL (databaseTypeE dbType) const;
 
     const QString& name(void) const {return (m_name);}
     const QString& type(void) const {return (m_type);}
@@ -122,7 +146,7 @@ class MyMoneyDbDatetimeColumn : public MyMoneyDbColumn {
              const QString &initVersion = "0.1"):
       MyMoneyDbColumn (iname, "", iprimary, inotnull, initVersion)
       {};
-    virtual const QString generateDDL (const QString& driver) const;
+    virtual const QString generateDDL (databaseTypeE dbType) const;
     virtual MyMoneyDbDatetimeColumn* clone () const;
   private:
     static const QString calcType(void);
@@ -141,7 +165,7 @@ class MyMoneyDbIntColumn : public MyMoneyDbColumn {
     m_type  (type),
     m_isSigned (isigned)
     {};
-    virtual const QString generateDDL (const QString& driver) const;
+    virtual const QString generateDDL (databaseTypeE dbType) const;
     virtual MyMoneyDbIntColumn* clone () const;
   private:
     size m_type;
@@ -160,7 +184,7 @@ class MyMoneyDbTextColumn : public MyMoneyDbColumn {
     m_type  (type)
     {};
 
-    virtual const QString generateDDL (const QString& driver) const;
+    virtual const QString generateDDL (databaseTypeE dbType) const;
     virtual MyMoneyDbTextColumn* clone () const;
   private:
     size m_type;
@@ -182,7 +206,7 @@ class MyMoneyDbIndex {
     inline bool isUnique () const {return m_unique;}
     inline const QString name () const {return m_name;}
     inline const QStringList columns () const {return m_columns;}
-    const QString generateDDL (const QString& driver) const;
+    const QString generateDDL (databaseTypeE dbType) const;
   private:
     QString m_table;
     bool m_unique;
@@ -199,17 +223,17 @@ class MyMoneyDbTable {
     m_fields(ifields),
     m_initVersion(initVersion) {};
     MyMoneyDbTable (void) {};
-
+    
     inline const QString& name(void) const {return (m_name);}
     inline const QString& insertString(void) const {return (m_insertString);};
     inline const QString selectAllString(bool terminate = true) const
       {return (terminate ? QString(m_selectAllString + ";") : m_selectAllString);};
     inline const QString updateString(void) const {return (m_updateString);};
     inline const QString deleteString(void) const {return (m_deleteString);};
-    const QString dropPrimaryKeyString(const QString& driver) const;
-    const QString modifyColumnString(const QString& driver, const QString& columnName, const MyMoneyDbColumn& newDef) const;
+    const QString dropPrimaryKeyString(databaseTypeE dbType) const;
+    const QString modifyColumnString(databaseTypeE dbType, const QString& columnName, const MyMoneyDbColumn& newDef) const;
     void buildSQLStrings(void);
-    const QString generateCreateSQL (const QString& driver) const;
+    const QString generateCreateSQL (databaseTypeE dbType) const;
     void addIndex(const QString& name, const QStringList& columns, bool unique = false);
 
     typedef QValueList<KSharedPtr <MyMoneyDbColumn> >::const_iterator field_iterator;
@@ -268,6 +292,7 @@ public:
 
 private:
   static unsigned int m_currentVersion; // The current version of the database layout
+  MyMoneyDbDrivers m_drivers;
 #define TABLE(name) void name();
 #define VIEW(name) void name();
   TABLE(FileInfo);
@@ -294,6 +319,7 @@ class IMyMoneySerialize;
 
 class MyMoneyStorageSql : public IMyMoneyStorageFormat, public QSqlDatabase, public KShared {
 public:
+
   MyMoneyStorageSql (IMyMoneySerialize *storage, const KURL& = KURL());
   ~MyMoneyStorageSql() {};
 
@@ -539,20 +565,7 @@ private:
   void clean ();
   int isEmpty();
   // data
-
-  typedef enum databaseTypeE {
-    Db2 = 0, //
-    Interbase, //
-    Mysql, //
-    Oracle8, //
-    ODBC3, //
-    Postgresql, //
-    Sqlite, //
-    Sybase, //
-    Sqlite3 //
-  } _databaseType;
-
-  QMap<QString, QString> m_driverMap;
+  MyMoneyDbDrivers m_drivers;
   databaseTypeE m_dbType;
 
   MyMoneyDbDef m_db;
