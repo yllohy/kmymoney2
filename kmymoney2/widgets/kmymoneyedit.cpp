@@ -130,6 +130,10 @@ QValidator::State kMyMoneyMoneyValidator::validate( QString & input, int & _p ) 
       return Invalid;
   }
 
+  // If we have just a single minus sign, we are done
+  if(s == QString("-"))
+    return Acceptable;
+
   QValidator::State rc = QDoubleValidator::validate( s, _p );
 
   if(rc == Acceptable) {

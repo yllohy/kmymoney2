@@ -3,6 +3,11 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-29 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added ability to enter negative numbers with a leading dash even
+    if display format is "parens around".
+  * Improved some code changes made by Wolfgang
+
 2008-05-28  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * report view: correctly order the report groups by number
   * fix one more usage of an uninitialized variable

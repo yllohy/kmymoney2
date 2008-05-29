@@ -374,24 +374,25 @@ void KReportsView::slotLoadView(void)
 
 QString KReportsView::KReportGroupListItem::key ( int column, bool ascending ) const
 {
-  if (column==0)
+  if (column == 0)
     return QString::number(m_nr).rightJustify(3,'0');
   else
     return KListViewItem::key(column,ascending);
 }
 
-KReportsView::KReportGroupListItem::KReportGroupListItem(KListView* parent,const int nr,QString name):
-    KListViewItem( parent,QString::number(nr)+". "+name),
-    m_nr(nr),
-    m_name(name)
-{}
+KReportsView::KReportGroupListItem::KReportGroupListItem(KListView* parent, const int nr, QString name) :
+  KListViewItem(parent),
+  m_name(name)
+{
+  setNr(nr);
+}
 
 void KReportsView::KReportGroupListItem::setNr(const int nr)
 {
-  m_nr=nr;
-  setText(0,QString::number(nr)+QString(". ")+m_name);
+  m_nr = nr;
+  setText(0, QString("%1. %2").arg(nr).arg(m_name));
 }
-    
+
 void KReportsView::loadView(void)
 {
   ::timetrace("Start KReportsView::loadView");
@@ -1171,7 +1172,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.back().setDetailLevel(MyMoneyReport::eDetailAll);
     list.back().setChartType(MyMoneyReport::eChartPie);
     list.back().setInvestmentsOnly(true);
-    
+
     list.push_back(MyMoneyReport(
       MyMoneyReport::eAssetLiability,
       MyMoneyReport::eMonths,
@@ -1186,7 +1187,7 @@ void KReportsView::defaultReports(QValueList<ReportGroup>& groups)
     list.back().setChartType(MyMoneyReport::eChartLine);
     list.back().setColumnsAreDays( true );
     list.back().setInvestmentsOnly(true);
-    
+
 #endif
     groups.push_back(list);
   }
