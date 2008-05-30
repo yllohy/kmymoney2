@@ -78,9 +78,9 @@ KSelectDatabaseDlg::KSelectDatabaseDlg(QWidget *parent, const char *name)
     connect (listDrivers, SIGNAL(clicked(QListBoxItem *)),
              this, SLOT(slotDriverSelected(QListBoxItem *)));
   }
-  connect (buttonHelp, SIGNAL(released()), this, SLOT(slotHelp()));
-  connect (buttonSQL, SIGNAL(released()), this, SLOT(slotGenerateSQL()));
-  connect (buttonOK, SIGNAL(released()), this, SLOT(slotOKPressed()));
+  connect (buttonHelp, SIGNAL(clicked()), this, SLOT(slotHelp()));
+  connect (buttonSQL, SIGNAL(clicked()), this, SLOT(slotGenerateSQL()));
+  connect (buttonOK, SIGNAL(clicked()), this, SLOT(slotOKPressed()));
   checkPreLoad->setChecked(false);
 }
 
