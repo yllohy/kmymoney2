@@ -1230,22 +1230,31 @@ void KHomeView::showSummary(void)
       }
     }
   }
+  MyMoneyMoney profitValue = incomeValue + expenseValue;
   //format income and expenses
   QString amountIncome = incomeValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
   QString amountExpense = expenseValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
+  QString amountProfit = profitValue.formatMoney(file->baseCurrency().tradingSymbol(), prec);
   amountIncome.replace(" ","&nbsp;");
   amountExpense.replace(" ","&nbsp;");
+  amountProfit.replace(" ","&nbsp;");
 
   m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
 
-    //print total for income
+  //print total for income
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Incomes This Month")).arg(showColoredAmount(amountIncome, incomeValue.isNegative())));
 
-    //leave the intermediate column empty
+  //leave the intermediate column empty
   m_part->write("<td></td>");
 
     //print total income
   m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Expenses This Month")).arg(showColoredAmount(amountExpense, expenseValue.isNegative())));
+  m_part->write("</tr>");
+
+  //print total profit/loss
+  m_part->write(QString("<tr class=\"row-%1\" style=\"font-weight:bold;\">").arg(i++ & 0x01 ? "even" : "odd"));
+  m_part->write(QString("<td class=\"left\">%1</td><td align=\"right\">%2</td>").arg(i18n("Total Profit/Loss")).arg(showColoredAmount(amountProfit, profitValue.isNegative())));
+  m_part->write("<td></td><td></td><td></td>");
   m_part->write("</tr>");
 
   //Add all schedules for this month

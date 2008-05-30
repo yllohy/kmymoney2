@@ -3,6 +3,9 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-30 Alvaro Soliverez <asoliverez@gmail.com>
+  * Added total profit/loss to summary on home page
+
 2008-05-29 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Remove all Sqlite2 references
   * Improve usability of DB selection dialog
