@@ -980,7 +980,7 @@ void KMyMoneyView::saveToLocalFile(QFile* qfile, IMyMoneyStorageFormat* pWriter,
     if(kgpg) {
       QStringList keys = QStringList::split(",", keyList);
       QStringList::const_iterator it_s;
-      for(it_s = keys.begin(); it_s != keys.begin(); ++it_s) {
+      for(it_s = keys.begin(); it_s != keys.end(); ++it_s) {
         kgpg->addRecipient((*it_s).latin1());
       }
       if(encryptRecover) {

@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>601</width>
-            <height>451</height>
+            <height>418</height>
         </rect>
     </property>
     <property name="caption">
@@ -46,12 +46,51 @@ The &lt;i&gt;additional recovery encryption&lt;/i&gt; is only accessible, if the
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout3</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Your key</string>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox">
+                            <property name="name">
+                                <cstring>m_masterKeyCombo</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>1</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>This combo box lists all the secret keys you have in your keyring. Select the one you want to use for encryption when saving to a file.</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="KLineEdit">
+                    <property name="name">
+                        <cstring>kcfg_GpgRecipient</cstring>
+                    </property>
+                </widget>
                 <widget class="KEditListBox">
                     <property name="name">
                         <cstring>kcfg_GpgRecipientList</cstring>
                     </property>
                     <property name="title">
-                        <string>User identification</string>
+                        <string>Additonal keys</string>
                     </property>
                     <property name="checkable">
                         <bool>false</bool>
@@ -61,11 +100,6 @@ The &lt;i&gt;additional recovery encryption&lt;/i&gt; is only accessible, if the
                     </property>
                     <property name="whatsThis" stdset="0">
                         <string>Enter the id of the key you want to use for data encryption. This can either be an e-mail address or the hexadecimal key id. In case of the key id don't forget the leading 0x.</string>
-                    </property>
-                </widget>
-                <widget class="KLineEdit">
-                    <property name="name">
-                        <cstring>kcfg_GpgRecipient</cstring>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget">
@@ -194,7 +228,7 @@ This mechanism is provided for the case that you have lost your key and cannot a
             <property name="sizeHint">
                 <size>
                     <width>21</width>
-                    <height>20</height>
+                    <height>30</height>
                 </size>
             </property>
         </spacer>

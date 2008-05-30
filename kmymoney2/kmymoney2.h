@@ -39,6 +39,7 @@ class QLabel;
 #include <kfile.h>
 #include <dcopobject.h>
 class KComboBox;
+class KPushButton;
 
 // ----------------------------------------------------------------------------
 // Project Includes
@@ -438,6 +439,7 @@ protected slots:
   void slotAccountUpdateOnline(void);
 
   void slotManageGpgKeys(void);
+  void slotKeySelected(int idx);
 
 public:
   /**
@@ -1255,6 +1257,7 @@ private:
 
   QStringList           m_additionalGpgKeys;
   QLabel*               m_additionalKeyLabel;
+  KPushButton*          m_additionalKeyButton;
 };
 
 extern  KMyMoney2App *kmymoney2;

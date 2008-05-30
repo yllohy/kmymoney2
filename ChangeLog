@@ -5,6 +5,8 @@
 
 2008-05-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved button signal handling for database selection dialog
+  * Improved encryption setup (differentiate between main key and
+    additional keys)
 
 2008-05-30 Alvaro Soliverez <asoliverez@gmail.com>
   * Added total profit/loss to summary on home page

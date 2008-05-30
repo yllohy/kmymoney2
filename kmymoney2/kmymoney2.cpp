@@ -237,15 +237,6 @@ KMyMoney2App::KMyMoney2App(QWidget * /*parent*/ , const char* name) :
   // make sure, we get a note when the engine changes state
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotDataChanged()));
 
-  // check if we need to copy the gpgRecipient to gpgRecipientList
-  if(!KMyMoneyGlobalSettings::gpgRecipient().isEmpty()
-  && (KMyMoneyGlobalSettings::gpgRecipientList().count() == 0)) {
-    QStringList list;
-    list << KMyMoneyGlobalSettings::gpgRecipient();
-    KMyMoneyGlobalSettings::setGpgRecipientList(list);
-    KMyMoneyGlobalSettings::setGpgRecipient(QString());
-  }
-
   // kickstart date change timer
   slotDateChanged();
 }
@@ -1014,6 +1005,17 @@ void KMyMoney2App::slotManageGpgKeys(void)
   }
 }
 
+void KMyMoney2App::slotKeySelected(int idx)
+{
+  int cnt = 0;
+  if(idx != 0) {
+    cnt = m_additionalGpgKeys.count();
+  }
+  m_additionalKeyLabel->setEnabled(idx != 0);
+  m_additionalKeyButton->setEnabled(idx != 0);
+  m_additionalKeyLabel->setText(i18n("Additional encryption key(s) to be used: %1").arg(cnt));
+}
+
 const bool KMyMoney2App::slotFileSaveAs(void)
 {
   bool rc = false;
@@ -1036,27 +1038,26 @@ const bool KMyMoney2App::slotFileSaveAs(void)
 
     QHBox* labelBox = new QHBox(vbox);
     m_additionalKeyLabel = new QLabel(i18n("Additional encryption key(s) to be used: %1").arg(m_additionalGpgKeys.count()), labelBox);
-    KPushButton* button = new KPushButton(i18n("Manage additional keys"), labelBox);
-    connect(button, SIGNAL(clicked()), this, SLOT(slotManageGpgKeys()));
+    m_additionalKeyButton = new KPushButton(i18n("Manage additional keys"), labelBox);
+    connect(m_additionalKeyButton, SIGNAL(clicked()), this, SLOT(slotManageGpgKeys()));
+    connect(m_saveEncrypted, SIGNAL(activated(int)), this, SLOT(slotKeySelected(int)));
 
     // fill the secret key list and combo box
     QStringList keyList;
     KGPGFile::secretKeyList(keyList);
     m_saveEncrypted->insertItem(i18n("No encryption"));
 
-    int idx = 0;
     for(QStringList::iterator it = keyList.begin(); it != keyList.end(); ++it) {
       QStringList fields = QStringList::split(":", *it);
       if(fields[0] != RECOVER_KEY_ID) {
-        ++idx;
         // replace parenthesis in name field with brackets
         QString name = fields[1];
         name.replace('(', "[");
         name.replace(')', "]");
-        m_saveEncrypted->insertItem(QString("%1 (0x%2)").arg(name).arg(fields[0]));
-        // TODO base check on gpgRecipientList
-        if((*it).contains(KMyMoneyGlobalSettings::gpgRecipient())) {
-          m_saveEncrypted->setCurrentItem(idx);
+        name = QString("%1 (0x%2)").arg(name).arg(fields[0]);
+        m_saveEncrypted->insertItem(name);
+        if(name.contains(KMyMoneyGlobalSettings::gpgRecipient())) {
+          m_saveEncrypted->setCurrentItem(name);
         }
       }
     }
@@ -1130,11 +1131,11 @@ const bool KMyMoney2App::slotFileSaveAs(void)
             if(keyExp.search(m_saveEncrypted->currentText()) != -1) {
               encryptionKeys = keyExp.cap(1);
             }
-          }
-          if(!m_additionalGpgKeys.isEmpty()) {
-            if(!encryptionKeys.isEmpty())
-              encryptionKeys += ",";
-            encryptionKeys += m_additionalGpgKeys.join(",");
+            if(!m_additionalGpgKeys.isEmpty()) {
+              if(!encryptionKeys.isEmpty())
+                encryptionKeys += ",";
+              encryptionKeys += m_additionalGpgKeys.join(",");
+            }
           }
           rc = myMoneyView->saveFile(newName, encryptionKeys);
           //write the directory used for this file as the default one for next time.
