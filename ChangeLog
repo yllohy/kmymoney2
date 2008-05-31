@@ -6,6 +6,8 @@
 2008-05-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed payees view when changing existing match patterns
   * Added MyMoneyTransaction::isImported()
+  * Fixed a bug which caused the sign of splits be reverse when
+    entering split transactions in the register w/o using the form
 
 2008-05-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved button signal handling for database selection dialog

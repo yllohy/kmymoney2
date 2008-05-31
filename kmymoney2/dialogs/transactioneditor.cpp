@@ -1734,20 +1734,20 @@ int StdTransactionEditor::slotEditSplits(void)
     bool isValidAmount = false;
 
     if(amount) {
-      isValidAmount = amount->text().length() != 0;
+      isValidAmount = amount->lineedit()->text().length() != 0;
       cashflow = dynamic_cast<KMyMoneyCashFlowCombo*>(haveWidget("cashflow"));
       if(cashflow)
         dir = cashflow->direction();
 
     } else {
       if(deposit) {
-        if (deposit->text().length() != 0) {
+        if (deposit->lineedit()->text().length() != 0) {
           isValidAmount = true;
           dir = KMyMoneyRegister::Deposit;
         }
       }
       if(payment) {
-        if (payment->text().length() != 0) {
+        if (payment->lineedit()->text().length() != 0) {
           isValidAmount = true;
           dir = KMyMoneyRegister::Payment;
         }
@@ -1821,7 +1821,7 @@ MyMoneyMoney StdTransactionEditor::amountFromWidget(bool* update) const
     kMyMoneyEdit* amount = dynamic_cast<kMyMoneyEdit*>(m_editWidgets["amount"]);
     // if both fields do not contain changes -> no need to update
     if(cashflow->direction() != KMyMoneyRegister::Unknown
-    && !amount->text().isEmpty())
+    && !amount->lineedit()->text().isEmpty())
       updateValue = true;
     value = amount->value();
     if(cashflow->direction() == KMyMoneyRegister::Payment)
