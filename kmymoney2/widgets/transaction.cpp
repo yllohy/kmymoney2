@@ -225,7 +225,7 @@ void Transaction::paintRegisterCellSetup(QPainter* painter, int row, int col, QR
   else
     cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::listBGColor());
 
-  if(m_transaction.value("Imported").lower() == "true") {
+  if(m_transaction.isImported()) {
     cg.setColor(QColorGroup::Base, KMyMoneyGlobalSettings::importedTransactionColor());
   }
   if(m_matchMark) {

@@ -362,6 +362,7 @@ KPayeesView::KPayeesView(QWidget *parent, const char *name ) :
   connect(telephoneEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeDataChanged()));
   connect(emailEdit, SIGNAL(textChanged(const QString&)), this, SLOT(slotPayeeDataChanged()));
   connect(notesEdit, SIGNAL(textChanged()), this, SLOT(slotPayeeDataChanged()));
+  connect(matchKeyEditList, SIGNAL(changed()), this, SLOT(slotKeyListChanged()));
 
   connect(radioNoMatch, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
   connect(radioNameMatch, SIGNAL(toggled(bool)), this, SLOT(slotPayeeDataChanged()));
@@ -695,6 +696,18 @@ void KPayeesView::showTransactions(void)
   // So, we let the dialog show up and resize it then. It's not really
   // clean, but the only way I got the damned thing working.
   QTimer::singleShot(50, this, SLOT(rearrange()));
+}
+
+void KPayeesView::slotKeyListChanged(void)
+{
+  bool rc = false;
+  bool ignorecase = false;
+  QStringList keys;
+  MyMoneyPayee::payeeMatchType type = m_payee.matchData(ignorecase, keys);
+  if(m_matchType->selectedId() == MyMoneyPayee::matchKey) {
+    rc |= (keys != matchKeyEditList->items());
+  }
+  m_updateButton->setEnabled(rc);
 }
 
 void KPayeesView::slotPayeeDataChanged(void)

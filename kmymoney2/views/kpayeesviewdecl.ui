@@ -505,7 +505,7 @@
                                             </rect>
                                         </property>
                                         <property name="text">
-                                            <string>Match on key:</string>
+                                            <string>Match on a name listed below</string>
                                         </property>
                                     </widget>
                                 </widget>
@@ -523,7 +523,10 @@
                                     </sizepolicy>
                                 </property>
                                 <property name="title">
-                                    <string></string>
+                                    <string>List of matching names</string>
+                                </property>
+                                <property name="whatsThis" stdset="0">
+                                    <string>This list contains the names that will match this payee if a transaction is imported from an external source. Keep in mind, that you can specify regular expressions here.</string>
                                 </property>
                             </widget>
                             <widget class="QCheckBox">

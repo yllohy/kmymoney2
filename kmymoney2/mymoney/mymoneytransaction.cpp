@@ -329,6 +329,11 @@ bool MyMoneyTransaction::isStockSplit(void) const
   return (m_splits.count() == 1 && m_splits[0].action() == MyMoneySplit::ActionSplitShares);
 }
 
+bool MyMoneyTransaction::isImported(void) const
+{
+  return value("Imported").lower() == QString("true");
+}
+
 const bool MyMoneyTransaction::isDuplicate(const MyMoneyTransaction& r) const
 {
   bool rc = true;

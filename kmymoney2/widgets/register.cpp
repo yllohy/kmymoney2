@@ -42,6 +42,7 @@
 #include <kmymoney/kmymoneycategory.h>
 #include <kmymoney/register.h>
 #include <kmymoney/transactionform.h>
+#include <kmymoney/stdtransactiondownloaded.h>
 
 #include "../kmymoneyutils.h"
 #include "../kmymoneyglobalsettings.h"
@@ -2041,7 +2042,10 @@ Transaction* Register::transactionFactory(Register *parent, const MyMoneyTransac
     case MyMoneyAccount::AssetLoan:
       if(s.accountId().isEmpty())
         s.setAccountId(parent->account().id());
-      t = new KMyMoneyRegister::StdTransaction(parent, transaction, s, uniqueId);
+      if(transaction.isImported())
+        t = new KMyMoneyRegister::StdTransactionDownloaded(parent, transaction, s, uniqueId);
+      else
+        t = new KMyMoneyRegister::StdTransaction(parent, transaction, s, uniqueId);
       break;
 
     case MyMoneyAccount::Investment:

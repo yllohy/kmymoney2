@@ -187,7 +187,7 @@ bool RegisterSearchLine::itemMatches(const RegisterItem* item, const QString& s)
       default:
         break;
       case 1:    // Imported
-        if(t->transaction().value("Imported").lower() != "true")
+        if(!t->transaction().isImported())
           return false;
         break;
       case 2:    // Erroneous

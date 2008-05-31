@@ -238,6 +238,7 @@ protected slots:
     * This slot marks the current selected payee as modified (dirty).
     */
   void slotPayeeDataChanged(void);
+  void slotKeyListChanged(void);
 
   /**
     * This slot is called when the name of a payee is changed inside

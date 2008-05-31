@@ -3,6 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Fixed payees view when changing existing match patterns
+  * Added MyMoneyTransaction::isImported()
+
 2008-05-30 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Improved button signal handling for database selection dialog
   * Improved encryption setup (differentiate between main key and
