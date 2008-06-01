@@ -3,6 +3,12 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-05-30 Alvaro Soliverez <asoliverez@gmail.com>
+  * Improved calculation of investment balances in query reports
+  * Calculate base currency price for investment based on 
+  transaction date in query reports
+  * Fixed decimals for Return On Investment that were being cut off
+
 2008-05-31 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Fixed payees view when changing existing match patterns
   * Added MyMoneyTransaction::isImported()

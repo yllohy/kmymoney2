@@ -929,20 +929,22 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   report.validDateRange( startingDate, endingDate );
   startingDate = startingDate.addDays(-1);
 
+  //calculate starting balance
   if ( m_config.isConvertCurrency() ) {
-    price = file->price(security.id(), QCString(), startingDate).rate(QCString()) * account.baseCurrencyPrice(startingDate);
+    price = account.deepCurrencyPrice(startingDate) * account.baseCurrencyPrice(startingDate);
   } else {
-    price = file->price(security.id(), QCString(), startingDate).rate(QCString());
+    price = account.deepCurrencyPrice(startingDate);
   }
   MyMoneyMoney startingBal = file->balance(account.id(),startingDate) * price;
 
   //convert to lowest fraction
   startingBal = startingBal.convert(account.currency().smallestAccountFraction());
 
+  //calculate ending balance
   if ( m_config.isConvertCurrency() ) {
-    price = file->price(security.id(), QCString(), endingDate).rate(QCString()) * account.baseCurrencyPrice(endingDate);
+    price = account.deepCurrencyPrice(endingDate) * account.baseCurrencyPrice(endingDate);
   } else {
-    price = file->price(security.id(), QCString(), endingDate).rate(QCString());
+    price = account.deepCurrencyPrice(endingDate);
   }
   MyMoneyMoney endingBal = file->balance((account).id(),endingDate) * price;
 
@@ -967,24 +969,34 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
     // s is the split for the stock account
     MyMoneySplit s = (*it_transaction).splitByAccount(account.id());
 
+    //get price for the day of the transaction if we have to calculate base currency
+    //we are using the value of the split which is in deep currency
+    if ( m_config.isConvertCurrency() ) {
+      price = account.baseCurrencyPrice(endingDate); //we only need base currency because the value is in deep currency
+    } else {
+      price = MyMoneyMoney(1,1);
+    }
+
+    MyMoneyMoney value = s.value() * price;
+
     const QCString& action = s.action();
     if ( action == MyMoneySplit::ActionBuyShares )
     {
       if ( s.value().isPositive() ) {
-        buys += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
-        returnInvestment += s.value();
+        buys += CashFlowListItem( (*it_transaction).postDate(), -value );
+        returnInvestment += value;
         //convert to lowest fraction
         returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
       } else {
-        sells += CashFlowListItem( (*it_transaction).postDate(), -s.value() );
-        returnInvestment += s.value();
+        sells += CashFlowListItem( (*it_transaction).postDate(), value );
+        returnInvestment += value;
         //convert to lowest fraction
         returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
       }
     }
     else if ( action == MyMoneySplit::ActionReinvestDividend )
     {
-      reinvestincome += CashFlowListItem( (*it_transaction).postDate(), s.value() );
+      reinvestincome += CashFlowListItem( (*it_transaction).postDate(), value );
     }
     else if ( action == MyMoneySplit::ActionDividend || action == MyMoneySplit::ActionYield )
     {
@@ -1004,8 +1016,8 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
       }
 
       if ( found ) {
-        cashincome += CashFlowListItem( (*it_transaction).postDate(), -(*it_split).value() );
-        returnInvestment += -(*it_split).value();
+        cashincome += CashFlowListItem( (*it_transaction).postDate(), -(*it_split).value() * price);
+        returnInvestment += -(*it_split).value() * price;
         //convert to lowest fraction
         returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
       }
@@ -1025,7 +1037,7 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
   //check if no activity on that term
   if(!returnInvestment.isZero() && !endingBal.isZero()) {
     returnInvestment = (endingBal - returnInvestment)/returnInvestment;
-    returnInvestment = returnInvestment.convert(account.currency().smallestAccountFraction());
+    returnInvestment = returnInvestment.convert(10000);
   } else {
     returnInvestment = MyMoneyMoney(0,1);
   }
@@ -1041,12 +1053,12 @@ void QueryTable::constructPerformanceRow( const ReportAccount& account, TableRow
     kdDebug(2) << e << endl;
   }
 
-  result["buys"] = (-(buys.total())*displayprice).toString();
-  result["sells"] = (-(sells.total())*displayprice).toString();
-  result["cashincome"] = (cashincome.total()*displayprice).toString();
-  result["reinvestincome"] = (reinvestincome.total()*displayprice).toString();
-  result["startingbal"] = (startingBal*displayprice).toString();
-  result["endingbal"] = (endingBal*displayprice).toString();
+  result["buys"] = (-(buys.total())).toString();
+  result["sells"] = (-(sells.total())).toString();
+  result["cashincome"] = (cashincome.total()).toString();
+  result["reinvestincome"] = (reinvestincome.total()).toString();
+  result["startingbal"] = (startingBal).toString();
+  result["endingbal"] = (endingBal).toString();
 }
 
 void QueryTable::constructAccountTable(void)
