@@ -14,6 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <typeinfo>
+
 #include "mymoneydatabasemgr.h"
 #include "../mymoneytransactionfilter.h"
 #include "../mymoneycategory.h"
