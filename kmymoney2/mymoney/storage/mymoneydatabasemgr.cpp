@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include <typeinfo>
+#include <algorithm>
 
 #include "mymoneydatabasemgr.h"
 #include "../mymoneytransactionfilter.h"
