@@ -47,7 +47,9 @@
 2008-05-28  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * report view: correctly order the report groups by number
   * fix one more usage of an uninitialized variable
-
+  * category ledger: For the payee, the strings "Paid to" and "From"
+    were interchanged
+  
 2008-05-27  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * fixed segfault when doubleclicking on an expense category in
     the category view
