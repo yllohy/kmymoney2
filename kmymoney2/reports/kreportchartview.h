@@ -29,6 +29,10 @@
 
 // ----------------------------------------------------------------------------
 // KDE Includes
+// Some STL headers in GCC4.3 contain operator new. Memory checker mangles these
+#ifdef _CHECK_MEMORY
+  #undef new
+#endif
 
 #include <KDChartWidget.h>
 #include <KDChartTable.h>
@@ -37,6 +41,9 @@
 
 // ----------------------------------------------------------------------------
 // Project Includes
+#ifdef _CHECK_MEMORY
+  #include <kmymoney/mymoneyutils.h>
+#endif
 
 namespace reports {
 

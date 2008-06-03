@@ -2,6 +2,9 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+2008-06-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
+  * Unsubtle fix for memcheck to compile on GCC4.3
+
 2008-06-02 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Fix (some) GCC4.3 compile errors
 

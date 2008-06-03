@@ -25,6 +25,11 @@
 
 #include "kdecompat.h"
 
+// Some STL headers in GCC4.3 contain operator new. Memory checker mangles these
+#ifdef _CHECK_MEMORY
+  #undef new
+#endif
+
 // ----------------------------------------------------------------------------
 // QT Includes
 
@@ -43,6 +48,9 @@ class QListViewItem;
 
 // ----------------------------------------------------------------------------
 // Project Includes
+#ifdef _CHECK_MEMORY
+  #include <kmymoney/mymoneyutils.h>
+#endif
 
 #include <kmymoney/mymoneyscheduled.h>
 #include <kmymoney/mymoneyaccount.h>
