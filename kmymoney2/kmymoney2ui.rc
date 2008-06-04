@@ -1,5 +1,5 @@
 <!DOCTYPE kpartgui>
-<kpartgui version="30" name="kmymoney2" >
+<kpartgui version="31" name="kmymoney2" >
  <MenuBar>
   <Menu name="file" >
    <!--
