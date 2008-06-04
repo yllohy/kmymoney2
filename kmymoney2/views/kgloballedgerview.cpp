@@ -914,7 +914,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
 
     case 3:
       KMessageBox::sorry(0,
-            i18n("At least one split of the seelected transaction references an account that has been closed. "
+            i18n("At least one split of the selected transaction references an account that has been closed. "
                  "Editing the transactions is therefore prohibited."),
             i18n("Account closed"));
       break;
