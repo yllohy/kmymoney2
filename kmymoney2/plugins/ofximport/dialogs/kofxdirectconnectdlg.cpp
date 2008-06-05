@@ -69,7 +69,7 @@ void KOfxDirectConnectDlg::init(void)
   // For debugging, dump out the request
   QFile g( "request.ofx" );
   g.open( IO_WriteOnly );
-  QTextStream(&g) << QString(request);
+  QTextStream(&g) << m_connector.url() << "\n" << QString(request);
   g.close();
 
   m_job = KIO::http_post(

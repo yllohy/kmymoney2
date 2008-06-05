@@ -12,6 +12,7 @@
     adds an account hierarchy page to the new account wizard
   * Added a refined patch from Colin Wright for the new account wizard
   * Fixed ledger sorting in i18n-ed version of KMyMoney
+  * Added some debug output to OFX direct connect
 
 2008-06-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Unsubtle fix for memcheck to compile on GCC4.3
