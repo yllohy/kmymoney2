@@ -246,6 +246,11 @@ void KMyMoneyWizard::selectStep(unsigned int step)
   updateStepCount();
 }
 
+void KMyMoneyWizard::reselectStep(void)
+{
+  selectStep(m_step);
+}
+
 void KMyMoneyWizard::updateStepCount(void)
 {
   QValueList<QLabel*>::iterator it_l;

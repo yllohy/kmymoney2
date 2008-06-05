@@ -397,7 +397,15 @@ public:
     */
   void addStep(const QString& text);
 
-  QValueList<KMyMoneyWizardPage*> historyPages() const { return m_history; }
+  QValueList<KMyMoneyWizardPage*> historyPages(void) const { return m_history; }
+
+  /**
+    * This method repeats selection of the current step in the
+    * step frame.
+    * This is used to allow changes made to showing and hiding
+    * pages to immediately to be reflected in the step frame
+    */
+  void reselectStep(void);
 
 signals:
   /**

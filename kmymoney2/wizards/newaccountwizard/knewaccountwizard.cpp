@@ -44,10 +44,12 @@
 #include <kmymoney/mymoneyfile.h>
 #include <kmymoney/kmymoneycurrencyselector.h>
 #include <kmymoney/kmymoneyaccountselector.h>
+#include <kmymoney/kmymoneyaccounttree.h>
 #include <kmymoney/mymoneyfinancialcalculator.h>
 #include <kmymoney/kmymoneychecklistitem.h>
 #include <kmymoney/kmymoneylistviewitem.h>
 #include <kmymoney/kcurrencycalculator.h>
+#include <kmymoney/mymoneyaccount.h>
 
 #include "knewaccountwizard.h"
 #include "knewaccountwizard_p.h"
@@ -65,6 +67,7 @@ namespace NewAccountWizard {
     StepBrokerage,
     StepSchedule,
     StepPayout,
+    StepHierarchy,
     StepFinish
   };
 };
@@ -77,6 +80,7 @@ NewAccountWizard::Wizard::Wizard(QWidget *parent, const char *name, bool modal, 
   addStep(i18n("Broker"));
   addStep(i18n("Schedule"));
   addStep(i18n("Payout"));
+  addStep(i18n("Parent Account"));
   addStep(i18n("Finish"));
   setStepHidden(StepBrokerage);
   setStepHidden(StepSchedule);
@@ -84,13 +88,19 @@ NewAccountWizard::Wizard::Wizard(QWidget *parent, const char *name, bool modal, 
 
   m_institutionPage = new InstitutionPage(this);
   m_accountTypePage = new AccountTypePage(this);
+  // Investment Pages
   m_brokeragepage = new BrokeragePage(this);
+  // Credit Card Pages
   m_schedulePage = new CreditCardSchedulePage(this);
+  // Loan Pages
   m_generalLoanInfoPage = new GeneralLoanInfoPage(this);
   m_loanDetailsPage = new LoanDetailsPage(this);
   m_loanPaymentPage = new LoanPaymentPage(this);
   m_loanSchedulePage = new LoanSchedulePage(this);
   m_loanPayoutPage = new LoanPayoutPage(this);
+  // Not a loan page
+  m_hierarchyPage = new HierarchyPage(this);
+  // Finish
   m_accountSummaryPage = new AccountSummaryPage(this);
 
   setFirstPage(m_institutionPage);
@@ -179,19 +189,11 @@ MyMoneyTransaction NewAccountWizard::Wizard::payoutTransaction(void)
 
 const MyMoneyAccount& NewAccountWizard::Wizard::parentAccount(void)
 {
-  switch(m_accountTypePage->accountType()) {
-    case MyMoneyAccount::CreditCard:
-    case MyMoneyAccount::Liability:
-      return MyMoneyFile::instance()->liability();
-      break;
-    case MyMoneyAccount::Loan:
-      if(moneyBorrowed())
-        return MyMoneyFile::instance()->liability();
-      break;
-    default:
-      break;
-  }
-  return MyMoneyFile::instance()->asset();
+  return m_accountTypePage->allowsParentAccount()
+         ? m_hierarchyPage->parentAccount()
+         : ( m_accountTypePage->accountType() == MyMoneyAccount::Loan
+           ? m_generalLoanInfoPage->parentAccount()
+           : m_accountTypePage->parentAccount() );
 }
 
 MyMoneyAccount NewAccountWizard::Wizard::brokerageAccount(void) const
@@ -425,10 +427,27 @@ AccountTypePage::AccountTypePage(Wizard* wizard, const char* name) :
   m_currencyComboBox->setSecurity(MyMoneyFile::instance()->baseCurrency());
 
   m_mandatoryGroup->add(m_accountName);
-  connect(m_typeSelection, SIGNAL(highlighted(int)), object(), SIGNAL(completeStateChanged()));
+  connect(m_typeSelection, SIGNAL(itemSelected(int)), this, SLOT(slotUpdateType(int)));
   connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotLoadWidgets()));
   connect(m_currencyComboBox, SIGNAL(activated(int)), this, SLOT(slotUpdateCurrency()));
 }
+
+void AccountTypePage::slotUpdateType(int i)
+{
+  hideShowPages(static_cast<MyMoneyAccount::accountTypeE> (i));
+}
+
+void AccountTypePage::hideShowPages(MyMoneyAccount::accountTypeE accountType) const
+{
+  bool hideSchedulePage = (accountType != MyMoneyAccount::CreditCard)
+                       && (accountType != MyMoneyAccount::Loan);
+  m_wizard->setStepHidden(StepSchedule, hideSchedulePage);
+  m_wizard->setStepHidden(StepPayout, (accountType != MyMoneyAccount::Loan));
+  m_wizard->setStepHidden(StepBrokerage, accountType != MyMoneyAccount::Investment);
+  m_wizard->setStepHidden(StepHierarchy, accountType == MyMoneyAccount::Loan);
+  // Force an update of the steps in case the list has changed
+  m_wizard->reselectStep();
+};
 
 KMyMoneyWizardPage* AccountTypePage::nextPage(void) const
 {
@@ -438,7 +457,7 @@ KMyMoneyWizardPage* AccountTypePage::nextPage(void) const
     return m_wizard->m_schedulePage;
   if(accountType() == MyMoneyAccount::Investment)
     return m_wizard->m_brokeragepage;
-  return m_wizard->m_accountSummaryPage;
+  return m_wizard->m_hierarchyPage;
 }
 
 void AccountTypePage::slotUpdateCurrency(void)
@@ -454,14 +473,6 @@ void AccountTypePage::slotLoadWidgets(void)
   m_currencyComboBox->update(QCString("x"));
 }
 
-
-void AccountTypePage::leavePage(void)
-{
-
-  m_wizard->setStepHidden(StepSchedule);
-  m_wizard->setStepHidden(StepBrokerage);
-}
-
 bool AccountTypePage::isComplete(void) const
 {
   bool rc = KMyMoneyWizardPage::isComplete();
@@ -469,12 +480,7 @@ bool AccountTypePage::isComplete(void) const
   if(!rc) {
     QToolTip::add(m_wizard->m_nextButton, i18n("No account name supplied"));
   }
-
-  bool hideSchedulePage = (accountType() != MyMoneyAccount::CreditCard)
-                       && (accountType() != MyMoneyAccount::Loan);
-  m_wizard->setStepHidden(StepSchedule, hideSchedulePage);
-  m_wizard->setStepHidden(StepPayout, (accountType() != MyMoneyAccount::Loan));
-  m_wizard->setStepHidden(StepBrokerage, accountType() != MyMoneyAccount::Investment);
+  hideShowPages(accountType());
   return rc;
 }
 
@@ -493,6 +499,25 @@ void AccountTypePage::setAccount(const MyMoneyAccount& acc)
   m_typeSelection->setCurrentItem(acc.accountType());
   m_openingDate->setDate(acc.openingDate());
   m_accountName->setText(acc.name());
+}
+
+const MyMoneyAccount& AccountTypePage::parentAccount(void)
+{
+  switch(accountType()) {
+    case MyMoneyAccount::CreditCard:
+    case MyMoneyAccount::Liability:
+    case MyMoneyAccount::Loan: // Can be either but we return liability here
+      return MyMoneyFile::instance()->liability();
+      break;
+    default:
+      break;
+  }
+  return MyMoneyFile::instance()->asset();
+}
+
+bool AccountTypePage::allowsParentAccount(void) const
+{
+  return accountType() != MyMoneyAccount::Loan;
 }
 
 BrokeragePage::BrokeragePage(Wizard* wizard, const char* name) :
@@ -525,7 +550,7 @@ void BrokeragePage::enterPage(void)
 
 KMyMoneyWizardPage* BrokeragePage::nextPage(void) const
 {
-  return m_wizard->m_accountSummaryPage;
+  return m_wizard->m_hierarchyPage;
 }
 
 CreditCardSchedulePage::CreditCardSchedulePage(Wizard* wizard, const char* name) :
@@ -610,7 +635,7 @@ void CreditCardSchedulePage::slotLoadWidgets(void)
 
 KMyMoneyWizardPage* CreditCardSchedulePage::nextPage(void) const
 {
-  return m_wizard->m_accountSummaryPage;
+  return m_wizard->m_hierarchyPage;
 }
 
 GeneralLoanInfoPage::GeneralLoanInfoPage(Wizard* wizard, const char* name) :
@@ -696,6 +721,13 @@ bool GeneralLoanInfoPage::isComplete(void) const
     QToolTip::add(m_wizard->m_nextButton, i18n("An interest change can only happen after the first payment"));
   }
   return rc;
+}
+
+const MyMoneyAccount& GeneralLoanInfoPage::parentAccount(void)
+{
+  return ( m_loanDirection->currentItem() == 0 )
+         ? MyMoneyFile::instance()->liability()
+         : MyMoneyFile::instance()->asset();
 }
 
 void GeneralLoanInfoPage::slotLoadWidgets(void)
@@ -1318,6 +1350,113 @@ const QCString& LoanPayoutPage::payoutAccountId(void) const
   }
 }
 
+HierarchyPage::HierarchyPage(Wizard* wizard, const char* name) :
+  KHierarchyPageDecl(wizard),
+  WizardPage<Wizard>(StepHierarchy, this, wizard, name)
+{
+  m_mandatoryGroup->add(m_qlistviewParentAccounts);
+  m_qlistviewParentAccounts->setEnabled(true);
+  m_qlistviewParentAccounts->setRootIsDecorated(true);
+  m_qlistviewParentAccounts->setAllColumnsShowFocus(true);
+  m_qlistviewParentAccounts->addColumn("Accounts");
+  m_qlistviewParentAccounts->setMultiSelection(false);
+  m_qlistviewParentAccounts->header()->setResizeEnabled(true);
+  m_qlistviewParentAccounts->setColumnWidthMode(0, QListView::Maximum);
+  // never show the horizontal scroll bar
+  // m_qlistviewParentAccounts->setHScrollBarMode(QScrollView::AlwaysOff);
+}
+
+void HierarchyPage::enterPage(void)
+{
+  // Ensure that the list reflects the Account Type
+  // - if the type has changed
+  // - - clear the list
+  // - - populate the account list (also occurs first time we come here)
+  MyMoneyAccount topAccount = m_wizard->m_accountTypePage->parentAccount();
+
+  // If the list was not populated with this top account we populate it now
+  if ( &m_topAccount == NULL || m_topAccount.id() != topAccount.id())
+  {
+    if ( &m_topAccount != NULL )
+    {
+      // If the list has alrady been populated clear it
+      if ( (*m_qlistviewParentAccounts).childCount() > 0 )
+        (*m_qlistviewParentAccounts).clear();
+    }
+
+    // Add the Tree for the Top Account
+    KMyMoneyAccountTreeItem *topAccountTree = buildAccountTree(m_qlistviewParentAccounts, topAccount, false);
+    topAccountTree->setOpen(true);
+    // Record the top account used to populate the list
+    m_topAccount = topAccount;
+  }
+}
+
+KMyMoneyAccountTreeItem* HierarchyPage::buildAccountTree
+    ( KListView* parent
+    , const MyMoneyAccount& account
+    , bool open ) const
+{
+  // Recursively add child accounts to the list
+  if ( account.accountType() == MyMoneyAccount::Investment)
+    return NULL;
+  KMyMoneyAccountTreeItem* childItem = new KMyMoneyAccountTreeItem( parent, account );
+  if ( open )
+    childItem->setOpen(true);
+  for ( QCStringList::ConstIterator it = account.accountList().begin();
+        it != account.accountList().end();
+        ++it )
+  {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(*it);
+    if(acc.isClosed())
+      continue;
+    if(acc.accountType() == MyMoneyAccount::Investment)
+      continue;
+    buildAccountTree( childItem, acc, open );
+  }
+  return childItem;
+}
+
+KMyMoneyAccountTreeItem* HierarchyPage::buildAccountTree
+    ( KMyMoneyAccountTreeItem* parent
+    , const MyMoneyAccount& account
+    , bool open ) const
+{
+  // Recursively add child accounts to the list
+  if ( account.accountType() == MyMoneyAccount::Investment)
+    return NULL;
+  KMyMoneyAccountTreeItem* childItem = new KMyMoneyAccountTreeItem( parent, account );
+  if ( open )
+    childItem->setOpen(true);
+  for ( QCStringList::ConstIterator it = account.accountList().begin();
+        it != account.accountList().end();
+        ++it )
+  {
+    MyMoneyAccount acc = MyMoneyFile::instance()->account(*it);
+    if(acc.isClosed())
+      continue;
+    if (account.accountType() == MyMoneyAccount::Investment)
+      continue;
+    buildAccountTree( childItem, acc, open );
+  }
+  return childItem;
+}
+
+KMyMoneyWizardPage* HierarchyPage::nextPage(void) const
+{
+  return m_wizard->m_accountSummaryPage;
+}
+
+const MyMoneyAccount& HierarchyPage::parentAccount(void)
+{
+  // TODO
+  // Instead of returning the Parent Account we can simply
+  // return the account associated with the current item
+  // in the ListView
+  KMyMoneyAccountTreeItem* item = dynamic_cast<KMyMoneyAccountTreeItem*>(m_qlistviewParentAccounts->currentItem());
+  return dynamic_cast<const MyMoneyAccount&>(item->itemObject());
+}
+
 AccountSummaryPage::AccountSummaryPage(Wizard* wizard, const char* name) :
   KAccountSummaryPageDecl(wizard),
   WizardPage<Wizard>(StepFinish, this, wizard, name)
@@ -1345,6 +1484,9 @@ void AccountSummaryPage::enterPage(void)
   group->setOpen(true);
   QListViewItem* p;
   p = new KListViewItem(group, i18n("Name"), acc.name());
+  if(!acc.isLoan())
+    p = new KListViewItem(group, p, i18n("Subaccount of"),
+                          m_wizard->parentAccount().name());
   if(acc.accountType() == MyMoneyAccount::AssetLoan)
     p = new KListViewItem(group, p, i18n("Type"), i18n("Loan"));
   else

@@ -42,6 +42,7 @@ class LoanDetailsPage;
 class LoanPaymentPage;
 class LoanSchedulePage;
 class LoanPayoutPage;
+class HierarchyPage;
 class AccountSummaryPage;
 
 /**
@@ -61,6 +62,7 @@ class Wizard : public KMyMoneyWizard
   friend class LoanPaymentPage;
   friend class LoanSchedulePage;
   friend class LoanPayoutPage;
+  friend class HierarchyPage;
   friend class AccountSummaryPage;
 
   Q_OBJECT
@@ -161,6 +163,7 @@ private:
   LoanPaymentPage*         m_loanPaymentPage;
   LoanSchedulePage*        m_loanSchedulePage;
   LoanPayoutPage*          m_loanPayoutPage;
+  HierarchyPage*           m_hierarchyPage;
   AccountSummaryPage*      m_accountSummaryPage;
 
   MyMoneyAccountLoan       m_account;

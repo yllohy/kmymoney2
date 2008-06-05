@@ -49,10 +49,12 @@
 #include "kloanpaymentpagedecl.h"
 #include "kloanschedulepagedecl.h"
 #include "kloanpayoutpagedecl.h"
+#include "khierarchypagedecl.h"
 #include "kaccountsummarypagedecl.h"
 
 class Wizard;
 class MyMoneyInstitution;
+class KMyMoneyAccountTreeItem;
 
 namespace NewAccountWizard {
 
@@ -91,17 +93,22 @@ public:
   AccountTypePage(Wizard* parent, const char* name = 0);
   virtual bool isComplete(void) const;
   KMyMoneyWizardPage* nextPage(void) const;
-  void leavePage(void);
 
   QWidget* initialFocusWidget(void) const { return m_accountName; }
 
   MyMoneyAccount::accountTypeE accountType(void) const;
+  const MyMoneyAccount& parentAccount(void);
+  bool allowsParentAccount(void) const;
   const MyMoneySecurity& currency(void) const;
 
   void setAccount(const MyMoneyAccount& acc);
 
+private:
+  void hideShowPages(MyMoneyAccount::accountTypeE i) const;
+
 private slots:
   void slotLoadWidgets(void);
+  void slotUpdateType(int i);
   void slotUpdateCurrency(void);
 };
 
@@ -144,6 +151,7 @@ public:
   KMyMoneyWizardPage* nextPage(void) const;
   virtual bool isComplete(void) const;
   void enterPage(void);
+  const MyMoneyAccount& parentAccount(void);
 
   QWidget* initialFocusWidget(void) const { return m_loanDirection; }
 
@@ -271,6 +279,29 @@ private slots:
   void slotLoadWidgets(void);
   void slotCreateAssetAccount(void);
   void slotButtonsToggled(void);
+};
+
+class HierarchyPage : public KHierarchyPageDecl, public WizardPage<Wizard>
+{
+  Q_OBJECT
+public:
+  HierarchyPage(Wizard* parent, const char* name = 0);
+  void enterPage(void);
+  KMyMoneyWizardPage* nextPage(void) const;
+  QWidget* initialFocusWidget(void) const { return m_qlistviewParentAccounts; }
+  const MyMoneyAccount& parentAccount(void);
+
+private:
+  KMyMoneyAccountTreeItem* buildAccountTree
+      ( KListView* parent
+      , const MyMoneyAccount& account
+      , bool open = false ) const;
+  KMyMoneyAccountTreeItem* buildAccountTree
+      ( KMyMoneyAccountTreeItem* parent
+      , const MyMoneyAccount& account
+      , bool open = false ) const;
+  MyMoneyAccount m_topAccount;    // Last populated top account
+  bool bFirstTime;
 };
 
 class AccountSummaryPage : public KAccountSummaryPageDecl, public WizardPage<Wizard>

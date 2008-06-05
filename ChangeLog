@@ -2,6 +2,11 @@
      Leave this note at the top of the file until the next release:
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
+
+2008-06-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
+  * Added (slightly modified) patch from Colin Wright which
+    adds an account hierarchy page to the new account wizard
+
 2008-06-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Unsubtle fix for memcheck to compile on GCC4.3
 
