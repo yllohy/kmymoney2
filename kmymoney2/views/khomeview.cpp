@@ -647,7 +647,7 @@ void KHomeView::showAccounts(KHomeView::paymentTypeE type, const QString& header
     m_part->write("<tr class=\"item\"><th class=\"left\" width=\"40%\">");
     m_part->write(i18n("Account"));
     m_part->write("</th><th width=\"30%\" class=\"right\">");
-    m_part->write(i18n("Balance"));
+    m_part->write(i18n("Current Balance"));
     m_part->write("</th>");
     m_part->write("</th><th width=\"30%\" class=\"right\">");
     m_part->write(i18n("To Minimum Balance"));
@@ -1099,14 +1099,14 @@ void KHomeView::showSummary(void)
     m_part->write("<tr class=\"item\"><th class=\"left\" width=\"30%\">");
     m_part->write(i18n("Accounts"));
     m_part->write("</th><th width=\"15%\" class=\"right\">");
-    m_part->write(i18n("Balance"));
+    m_part->write(i18n("Current Balance"));
     //intermediate row to separate both columns
     m_part->write("<th width=\"10%\"></th>");
     m_part->write("</th>");
     m_part->write("<th class=\"left\" width=\"30%\">");
     m_part->write(i18n("Accounts"));
     m_part->write("</th><th width=\"15%\" class=\"right\">");
-    m_part->write(i18n("Balance"));
+    m_part->write(i18n("Current Balance"));
     m_part->write("</th></tr>");
 
     //get asset and liability accounts

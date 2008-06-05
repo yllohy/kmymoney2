@@ -3,6 +3,10 @@
         Set version of kmm_mymoney.so to 5.0.0
 --------------------------------------------------------------------
 
+2008-06-05  Wolfgang Rohdewald <wolfgang@rohdewald.de>
+  * In home view and account tree, rename Balance to Current Balance
+    resp. Total Balance
+    
 2008-06-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added (slightly modified) patch from Colin Wright which
     adds an account hierarchy page to the new account wizard

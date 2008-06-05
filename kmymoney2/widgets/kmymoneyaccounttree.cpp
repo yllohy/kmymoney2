@@ -59,8 +59,8 @@ KMyMoneyAccountTree::KMyMoneyAccountTree(QWidget* parent, const char* name) :
   addColumn(i18n("Type"));
   addColumn(i18n("Column heading for category in tax report", "Tax"));
   addColumn(i18n("Column heading for VAT category", "VAT"));
-  addColumn(i18n("Balance"));
-  addColumn(i18n("Value"));
+  addColumn(i18n("Total Balance"));
+  addColumn(i18n("Total Value"));
 
   setMultiSelection(false);
 
