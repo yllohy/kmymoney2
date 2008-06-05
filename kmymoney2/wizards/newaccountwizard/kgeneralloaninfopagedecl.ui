@@ -18,7 +18,7 @@
         </property>
         <widget class="KActiveLabel">
             <property name="name">
-                <cstring>kActiveLabel1</cstring>
+	    <cstring>kActiveLabel1</cstring>
             </property>
             <property name="focusPolicy">
                 <enum>NoFocus</enum>
@@ -43,60 +43,53 @@
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="kMyMoneyDateInput" row="7" column="1">
+                        <widget class="QLabel" row="0" column="0">
                             <property name="name">
-                                <cstring>m_firstPaymentDate</cstring>
+                                <cstring>textLabel1</cstring>
                             </property>
-                            <property name="focusPolicy">
-                                <enum>StrongFocus</enum>
+                            <property name="text">
+                                <string>What is the type of the loan?</string>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox" row="0" column="1">
+                            <item>
+                                <property name="text">
+                                    <string>I am borrowing money</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>I am lending money</string>
+                                </property>
+                            </item>
+                            <property name="name">
+                                <cstring>m_loanDirection</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Who is the payee/payer of the loan?</string>
+                            </property>
+                        </widget>
+                        <widget class="KMyMoneyPayeeCombo" row="1" column="1">
+                            <property name="name">
+                                <cstring>m_payee</cstring>
                             </property>
                             <property name="whatsThis" stdset="0">
-                                <string>Depending on the answer to &lt;b&gt;What do you want to record?&lt;/b&gt; this field means the following:&lt;p&gt;
+                                <string>Enter the name of the person or bank you owe money or who owes you money.
 
-&lt;b&gt;All payments&lt;/b&gt;&lt;br&gt;
-Enter the due date of the very first payment&lt;p&gt;
-
-&lt;b&gt;Start with this year's payments&lt;/b&gt;&lt;br&gt;
-Enter the due date of the first payment in the current year</string>
+If the name does not exist within KMyMoney's database, you are asked if you want to create it.</string>
                             </property>
                         </widget>
-                        <widget class="KComboBox" row="8" column="1">
-                            <item>
-                                <property name="text">
-                                    <string>Fixed</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Variable</string>
-                                </property>
-                            </item>
+                        <widget class="QLabel" row="2" column="0">
                             <property name="name">
-                                <cstring>m_interestType</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="7" column="0">
-                            <property name="name">
-                                <cstring>textLabel2_2</cstring>
+                                <cstring>textLabel1_2</cstring>
                             </property>
                             <property name="text">
-                                <string>Due date of first payment to be recorded</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="8" column="0">
-                            <property name="name">
-                                <cstring>textLabel4</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Type of interest rate</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="6" column="0">
-                            <property name="name">
-                                <cstring>textLabel1_4</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Interest Compounding frequency</string>
+                                <string>Did you make/receive any payments yet?</string>
                             </property>
                         </widget>
                         <widget class="KComboBox" row="2" column="1">
@@ -119,17 +112,65 @@ Enter the due date of the first payment in the current year</string>
 Note: Payments made to obtain the loan (e.g. Disagio) are not considered as payments in this context.</string>
                             </property>
                         </widget>
-                        <widget class="KMyMoneyPayeeCombo" row="1" column="1">
+                        <widget class="QLabel" row="3" column="0">
                             <property name="name">
-                                <cstring>m_payee</cstring>
+                                <cstring>textLabel3</cstring>
                             </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Enter the name of the person or bank you owe money or who owes you money.
-
-If the name does not exist within KMyMoney's database, you are asked if you want to create it.</string>
+                            <property name="text">
+                                <string>Which payments do you want to record?</string>
                             </property>
                         </widget>
-                        <widget class="KMyMoneyFrequencyCombo" row="5" column="1">
+                        <widget class="KComboBox" row="3" column="1">
+                            <item>
+                                <property name="text">
+                                    <string>All payments</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Start with this year's payments</string>
+                                </property>
+                            </item>
+                            <property name="name">
+                                <cstring>m_recordings</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>&lt;qt&gt;Select which transactions should be recorded.
+
+&lt;b&gt;All payments&lt;/b&gt; allows you to enter all payments made for this loan.
+
+The option to &lt;b&gt;start from the beginning of the current year&lt;/b&gt; is meant for loans that are active for a longer period of time already and you don't want to enter all transactions of the past.
+&lt;/qt&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="4" column="0">
+                            <property name="name">
+                                <cstring>textLabel1_3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Balance before start of recording</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enter the ending balance found on the statement that is the last one before you want to start recording this loan in KMyMoney.</string>
+                            </property>
+                        </widget>
+                        <widget class="kMyMoneyEdit" row="4" column="1">
+                            <property name="name">
+                                <cstring>m_openingBalance</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>You have selected to record only payments from the beginning of this year. Since prior transactions will not be recorded, you need to supply the balance of the loan on January 1st of this year.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="5" column="0">
+                            <property name="name">
+                                <cstring>textLabel5</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Payment frequency</string>
+                            </property>
+                        </widget>
+                         <widget class="KMyMoneyFrequencyCombo" row="5" column="1">
                             <property name="name">
                                 <cstring>m_paymentFrequency</cstring>
                             </property>
@@ -137,23 +178,15 @@ If the name does not exist within KMyMoney's database, you are asked if you want
                                 <enum>TabFocus</enum>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="1" column="0">
+                        <widget class="QLabel" row="6" column="0">
                             <property name="name">
-                                <cstring>textLabel2</cstring>
+                                <cstring>textLabel1_4</cstring>
                             </property>
                             <property name="text">
-                                <string>Who is the payee/payer of the loan?</string>
+                                <string>Interest Compounding frequency</string>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>What is the type of the loan?</string>
-                            </property>
-                        </widget>
-                        <widget class="KMyMoneyFrequencyCombo" row="6" column="1">
+                       <widget class="KMyMoneyFrequencyCombo" row="6" column="1">
                             <property name="name">
                                 <cstring>m_compoundFrequency</cstring>
                             </property>
@@ -161,12 +194,60 @@ If the name does not exist within KMyMoney's database, you are asked if you want
                                 <string>Select the frequency with which the interest is compounded. If uncertain, select the same as the payment frequency. Consult your loan contract for details.</string>
                             </property>
                         </widget>
-                        <widget class="kMyMoneyDateInput" row="10" column="1">
+                        <widget class="QLabel" row="7" column="0">
                             <property name="name">
-                                <cstring>m_interestChangeDateEdit</cstring>
+                                <cstring>textLabel2_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Due date of first payment to be recorded</string>
+                            </property>
+                        </widget>
+                        <widget class="kMyMoneyDateInput" row="7" column="1">
+                            <property name="name">
+                                <cstring>m_firstPaymentDate</cstring>
                             </property>
                             <property name="focusPolicy">
                                 <enum>StrongFocus</enum>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Depending on the answer to &lt;b&gt;What do you want to record?&lt;/b&gt; this field means the following:&lt;p&gt;
+
+&lt;b&gt;All payments&lt;/b&gt;&lt;br&gt;
+Enter the due date of the very first payment&lt;p&gt;
+
+&lt;b&gt;Start with this year's payments&lt;/b&gt;&lt;br&gt;
+Enter the due date of the first payment in the current year</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="8" column="0">
+                            <property name="name">
+                                <cstring>textLabel4</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Type of interest rate</string>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox" row="8" column="1">
+                            <item>
+                                <property name="text">
+                                    <string>Fixed</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>Variable</string>
+                                </property>
+                            </item>
+                            <property name="name">
+                                <cstring>m_interestType</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="9" column="0">
+                            <property name="name">
+                                <cstring>textLabel3_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Time between interest changes</string>
                             </property>
                         </widget>
                         <widget class="QLayoutWidget" row="9" column="1">
@@ -215,87 +296,6 @@ If the name does not exist within KMyMoney's database, you are asked if you want
                                 </widget>
                             </hbox>
                         </widget>
-                        <widget class="QLabel" row="5" column="0">
-                            <property name="name">
-                                <cstring>textLabel5</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Payment frequency</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>textLabel1_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Did you make/receive any payments yet?</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="9" column="0">
-                            <property name="name">
-                                <cstring>textLabel3_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Time between interest changes</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="4" column="0">
-                            <property name="name">
-                                <cstring>textLabel1_3</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Balance before start of recording</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Enter the ending balance found on the statement that is the last one before you want to start recording this loan in KMyMoney.</string>
-                            </property>
-                        </widget>
-                        <widget class="KComboBox" row="0" column="1">
-                            <item>
-                                <property name="text">
-                                    <string>I am borrowing money</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>I am lending money</string>
-                                </property>
-                            </item>
-                            <property name="name">
-                                <cstring>m_loanDirection</cstring>
-                            </property>
-                        </widget>
-                        <widget class="kMyMoneyEdit" row="4" column="1">
-                            <property name="name">
-                                <cstring>m_openingBalance</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>You have selected to record only payments from the beginning of this year. Since prior transactions will not be recorded, you need to supply the balance of the loan on January 1st of this year.</string>
-                            </property>
-                        </widget>
-                        <widget class="KComboBox" row="3" column="1">
-                            <item>
-                                <property name="text">
-                                    <string>All payments</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>Start with this year's payments</string>
-                                </property>
-                            </item>
-                            <property name="name">
-                                <cstring>m_recordings</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>&lt;qt&gt;Select which transactions should be recorded.
-
-&lt;b&gt;All payments&lt;/b&gt; allows you to enter all payments made for this loan.
-
-The option to &lt;b&gt;start from the beginning of the current year&lt;/b&gt; is meant for loans that are active for a longer period of time already and you don't want to enter all transactions of the past.
-&lt;/qt&gt;</string>
-                            </property>
-                        </widget>
                         <widget class="QLabel" row="10" column="0">
                             <property name="name">
                                 <cstring>textLabel4_2</cstring>
@@ -304,12 +304,12 @@ The option to &lt;b&gt;start from the beginning of the current year&lt;/b&gt; is
                                 <string>Next interest change is due</string>
                             </property>
                         </widget>
-                        <widget class="QLabel" row="3" column="0">
+                        <widget class="kMyMoneyDateInput" row="10" column="1">
                             <property name="name">
-                                <cstring>textLabel3</cstring>
+                                <cstring>m_interestChangeDateEdit</cstring>
                             </property>
-                            <property name="text">
-                                <string>Which payments do you want to record?</string>
+                            <property name="focusPolicy">
+                                <enum>StrongFocus</enum>
                             </property>
                         </widget>
                     </grid>
@@ -354,19 +354,5 @@ The option to &lt;b&gt;start from the beginning of the current year&lt;/b&gt; is
 </widget>
 <customwidgets>
 </customwidgets>
-<tabstops>
-    <tabstop>m_loanDirection</tabstop>
-    <tabstop>m_payee</tabstop>
-    <tabstop>m_anyPayments</tabstop>
-    <tabstop>m_recordings</tabstop>
-    <tabstop>m_openingBalance</tabstop>
-    <tabstop>m_paymentFrequency</tabstop>
-    <tabstop>m_firstPaymentDate</tabstop>
-    <tabstop>m_interestType</tabstop>
-    <tabstop>m_interestFrequencyAmountEdit</tabstop>
-    <tabstop>m_interestFrequencyUnitEdit</tabstop>
-    <tabstop>m_interestChangeDateEdit</tabstop>
-    <tabstop>kActiveLabel1</tabstop>
-</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

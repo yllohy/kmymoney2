@@ -44,6 +44,14 @@ If you selected to record all payments this date has already been supplied. If y
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel7</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Interest category</string>
+                            </property>
+                        </widget>
                         <widget class="KMyMoneyCategory" row="0" column="1">
                             <property name="name">
                                 <cstring>m_interestCategory</cstring>
@@ -66,6 +74,14 @@ If you selected to record all payments this date has already been supplied. If y
                             </property>
                             <property name="whatsThis" stdset="0">
                                 <string>Select the account from which you make your periodical payments or where you receive regular payments in case you lend the money. In most cases, this is a checking account.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>First payment due on</string>
                             </property>
                         </widget>
                         <widget class="QLayoutWidget" row="2" column="1">
@@ -99,22 +115,6 @@ If you selected to record all payments this date has already been supplied. If y
                                     </property>
                                 </widget>
                             </hbox>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel7</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Interest category</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>First payment due on</string>
-                            </property>
                         </widget>
                     </grid>
                 </widget>

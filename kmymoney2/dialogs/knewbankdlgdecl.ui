@@ -45,32 +45,17 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QLabel" row="4" column="0">
+                <widget class="QLabel" row="0" column="0">
                     <property name="name">
-                        <cstring>TextLabel5</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>100</width>
-                            <height>0</height>
-                        </size>
+                        <cstring>TextLabel1</cstring>
                     </property>
                     <property name="text">
-                        <string>Telephone/Fax:</string>
+                        <string>Name:</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="3" column="0">
+                <widget class="KLineEdit" row="0" column="1">
                     <property name="name">
-                        <cstring>TextLabel4</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>100</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Postal Code:</string>
+                        <cstring>nameEdit</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="1" column="0">
@@ -87,6 +72,11 @@
                         <string>City:</string>
                     </property>
                 </widget>
+                <widget class="KLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>cityEdit</cstring>
+                    </property>
+                </widget>
                 <widget class="QLabel" row="2" column="0">
                     <property name="name">
                         <cstring>TextLabel3</cstring>
@@ -101,17 +91,14 @@
                         <string>Street:</string>
                     </property>
                 </widget>
-                <widget class="QLabel" row="0" column="0">
+                <widget class="KLineEdit" row="2" column="1">
                     <property name="name">
-                        <cstring>TextLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Name:</string>
+                        <cstring>streetEdit</cstring>
                     </property>
                 </widget>
-                <widget class="QLabel" row="6" column="0">
+                <widget class="QLabel" row="3" column="0">
                     <property name="name">
-                        <cstring>TextLabel7</cstring>
+                        <cstring>TextLabel4</cstring>
                     </property>
                     <property name="minimumSize">
                         <size>
@@ -120,7 +107,31 @@
                         </size>
                     </property>
                     <property name="text">
-                        <string>BIC</string>
+                        <string>Postal Code:</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="3" column="1">
+                    <property name="name">
+                        <cstring>postcodeEdit</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="4" column="0">
+                    <property name="name">
+                        <cstring>TextLabel5</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Telephone/Fax:</string>
+                    </property>
+                </widget>
+                <widget class="KLineEdit" row="4" column="1">
+                    <property name="name">
+                        <cstring>telephoneEdit</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="5" column="0">
@@ -137,39 +148,28 @@
                         <string>Routing Number:</string>
                     </property>
                 </widget>
-                <widget class="KLineEdit" row="3" column="1">
-                    <property name="name">
-                        <cstring>postcodeEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="KLineEdit" row="4" column="1">
-                    <property name="name">
-                        <cstring>telephoneEdit</cstring>
-                    </property>
-                </widget>
                 <widget class="KLineEdit" row="5" column="1">
                     <property name="name">
                         <cstring>sortCodeEdit</cstring>
                     </property>
                 </widget>
+                <widget class="QLabel" row="6" column="0">
+                    <property name="name">
+                        <cstring>TextLabel7</cstring>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>100</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>BIC</string>
+                    </property>
+                </widget>
                 <widget class="KLineEdit" row="6" column="1">
                     <property name="name">
                         <cstring>bicEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="KLineEdit" row="2" column="1">
-                    <property name="name">
-                        <cstring>streetEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="KLineEdit" row="1" column="1">
-                    <property name="name">
-                        <cstring>cityEdit</cstring>
-                    </property>
-                </widget>
-                <widget class="KLineEdit" row="0" column="1">
-                    <property name="name">
-                        <cstring>nameEdit</cstring>
                     </property>
                 </widget>
             </grid>

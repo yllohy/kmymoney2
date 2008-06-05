@@ -53,12 +53,15 @@ If this loan is a 'consumer loan' (money to use however you want), you can use a
                 <property name="margin">
                     <number>0</number>
                 </property>
-                <widget class="QLabel" row="3" column="0">
+                <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="4">
                     <property name="name">
-                        <cstring>textLabel2</cstring>
+                        <cstring>m_refinanceLoan</cstring>
                     </property>
                     <property name="text">
-                        <string>Date of payment</string>
+                        <string>Refinance existing loan</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>Check this if you are refinancing a loan that already exists in KMyMoney</string>
                     </property>
                 </widget>
                 <widget class="QLabel" row="1" column="0">
@@ -69,12 +72,57 @@ If this loan is a 'consumer loan' (money to use however you want), you can use a
                         <string>Asset Account</string>
                     </property>
                 </widget>
+                <widget class="KMyMoneyCategory" row="1" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>m_assetAccount</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>1</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="KPushButton" row="1" column="3">
+                    <property name="name">
+                        <cstring>m_createAssetButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Create</string>
+                    </property>
+                </widget>
                 <widget class="QLabel" row="2" column="0">
                     <property name="name">
                         <cstring>textLabel1_2</cstring>
                     </property>
                     <property name="text">
                         <string>Loan account</string>
+                    </property>
+                </widget>
+                <widget class="KMyMoneyCategory" row="2" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>m_loanAccount</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>1</hsizetype>
+                            <vsizetype>0</vsizetype>
+                            <horstretch>1</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Date of payment</string>
                     </property>
                 </widget>
                 <spacer row="3" column="1">
@@ -97,54 +145,6 @@ If this loan is a 'consumer loan' (money to use however you want), you can use a
                 <widget class="kMyMoneyDateInput" row="3" column="2">
                     <property name="name">
                         <cstring>m_payoutDate</cstring>
-                    </property>
-                </widget>
-                <widget class="KPushButton" row="1" column="3">
-                    <property name="name">
-                        <cstring>m_createAssetButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Create</string>
-                    </property>
-                </widget>
-                <widget class="KMyMoneyCategory" row="2" column="1" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>m_loanAccount</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>1</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>1</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                </widget>
-                <widget class="QCheckBox" row="0" column="0" rowspan="1" colspan="4">
-                    <property name="name">
-                        <cstring>m_refinanceLoan</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Refinance existing loan</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>Check this if you are refinancing a loan that already exists in KMyMoney</string>
-                    </property>
-                </widget>
-                <widget class="KMyMoneyCategory" row="1" column="1" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>m_assetAccount</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>1</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>1</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
                     </property>
                 </widget>
             </grid>
@@ -194,13 +194,5 @@ If this loan is a 'consumer loan' (money to use however you want), you can use a
         <slot>setDisabled(bool)</slot>
     </connection>
 </connections>
-<tabstops>
-    <tabstop>m_noPayoutTransaction</tabstop>
-    <tabstop>m_refinanceLoan</tabstop>
-    <tabstop>m_assetAccount</tabstop>
-    <tabstop>m_createAssetButton</tabstop>
-    <tabstop>m_loanAccount</tabstop>
-    <tabstop>m_payoutDate</tabstop>
-</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

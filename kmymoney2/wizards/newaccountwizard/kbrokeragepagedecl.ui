@@ -75,11 +75,6 @@
                                 <string>Currency</string>
                             </property>
                         </widget>
-                        <widget class="KLineEdit" row="2" column="1">
-                            <property name="name">
-                                <cstring>m_iban</cstring>
-                            </property>
-                        </widget>
                         <widget class="KMyMoneyCurrencySelector" row="0" column="1">
                             <property name="name">
                                 <cstring>m_brokerageCurrency</cstring>
@@ -93,6 +88,19 @@
                                 </sizepolicy>
                             </property>
                         </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>m_accountNumberLabel</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Account number</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="1" column="1">
+                            <property name="name">
+                                <cstring>m_accountNumber</cstring>
+                            </property>
+                        </widget>
                         <widget class="QLabel" row="2" column="0">
                             <property name="name">
                                 <cstring>m_ibanLabel</cstring>
@@ -101,17 +109,9 @@
                                 <string>IBAN</string>
                             </property>
                         </widget>
-                        <widget class="KLineEdit" row="1" column="1">
+                        <widget class="KLineEdit" row="2" column="1">
                             <property name="name">
-                                <cstring>m_accountNumber</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>m_accountNumberLabel</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Account number</string>
+                                <cstring>m_iban</cstring>
                             </property>
                         </widget>
                     </grid>

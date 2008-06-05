@@ -6,10 +6,12 @@
 2008-06-05  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * In home view and account tree, rename Balance to Current Balance
     resp. Total Balance
-    
+
 2008-06-05 Thomas Baumgart <ipwizard@users.sourceforge.net>
   * Added (slightly modified) patch from Colin Wright which
     adds an account hierarchy page to the new account wizard
+  * Added a refined patch from Colin Wright for the new account wizard
+  * Fixed ledger sorting in i18n-ed version of KMyMoney
 
 2008-06-03 Tony Bloomfield <tonybloom@users.sourceforge.net>
   * Unsubtle fix for memcheck to compile on GCC4.3

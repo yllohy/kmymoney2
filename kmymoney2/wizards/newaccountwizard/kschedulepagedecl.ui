@@ -52,14 +52,52 @@
                 <property name="margin">
                     <number>0</number>
                 </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabel2</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>0</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                        <size>
+                            <width>180</width>
+                            <height>0</height>
+                        </size>
+                    </property>
+                    <property name="text">
+                        <string>Name of schedule</string>
+                    </property>
+                </widget>
                 <widget class="QLineEdit" row="0" column="1">
                     <property name="name">
                         <cstring>m_name</cstring>
                     </property>
                 </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Payee</string>
+                    </property>
+                </widget>
                 <widget class="KMyMoneyPayeeCombo" row="1" column="1">
                     <property name="name">
                         <cstring>m_payee</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>TextLabel2_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Estimated monthly payment</string>
                     </property>
                 </widget>
                 <widget class="kMyMoneyEdit" row="2" column="1">
@@ -86,16 +124,6 @@
                         <enum>StrongFocus</enum>
                     </property>
                 </widget>
-                <widget class="KMyMoneyCategory" row="4" column="1">
-                    <property name="name">
-                        <cstring>m_paymentAccount</cstring>
-                    </property>
-                </widget>
-                <widget class="KMyMoneyGeneralCombo" row="5" column="1">
-                    <property name="name">
-                        <cstring>m_method</cstring>
-                    </property>
-                </widget>
                 <widget class="QLabel" row="4" column="0">
                     <property name="name">
                         <cstring>TextLabel3_3</cstring>
@@ -108,42 +136,9 @@ from account</string>
                         <set>AlignTop</set>
                     </property>
                 </widget>
-                <widget class="QLabel" row="2" column="0">
+                <widget class="KMyMoneyCategory" row="4" column="1">
                     <property name="name">
-                        <cstring>TextLabel2_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Estimated monthly payment</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>textLabel3</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Payee</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>textLabel2</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>5</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>180</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>Name of schedule</string>
+                        <cstring>m_paymentAccount</cstring>
                     </property>
                 </widget>
                 <widget class="QLabel" row="5" column="0">
@@ -152,6 +147,11 @@ from account</string>
                     </property>
                     <property name="text">
                         <string>Payment method</string>
+                    </property>
+                </widget>
+                <widget class="KMyMoneyGeneralCombo" row="5" column="1">
+                    <property name="name">
+                        <cstring>m_method</cstring>
                     </property>
                 </widget>
             </grid>

@@ -60,6 +60,130 @@
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel7</cstring>
+                            </property>
+                            <property name="text">
+                                <string>The interest rate gets calculated</string>
+                            </property>
+                        </widget>
+                        <widget class="KComboBox" row="0" column="1" rowspan="1" colspan="3">
+                            <item>
+                                <property name="text">
+                                    <string>when the payment is received</string>
+                                </property>
+                            </item>
+                            <item>
+                                <property name="text">
+                                    <string>when the payment is due</string>
+                                </property>
+                            </item>
+                            <property name="name">
+                                <cstring>m_paymentDue</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel8</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Loan amount</string>
+                            </property>
+                        </widget>
+                        <widget class="kMyMoneyEdit" row="1" column="1" rowspan="1" colspan="3">
+                            <property name="name">
+                                <cstring>m_loanAmount</cstring>
+                            </property>
+                            <property name="resetButtonVisibility" stdset="0">
+                                <bool>true</bool>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Enter the amount of the loan in this field. If you want to calculate this field out of the other parameters, please leave it empty. If the field is marked as required (colored background) you have informed KMyMoney about the fact that there were already some payments towards the loan. In this case, please enter the ending balance of your last statement.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>textLabel9</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Interest rate</string>
+                            </property>
+                        </widget>
+                        <widget class="kMyMoneyEdit" row="2" column="1" rowspan="1" colspan="3">
+                            <property name="name">
+                                <cstring>m_interestRate</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Please enter the interest rate in percent or leave the field empty to calculate it.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="3" column="0">
+                            <property name="name">
+                                <cstring>textLabel10</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Term</string>
+                            </property>
+                        </widget>
+                        <widget class="QLayoutWidget" row="3" column="1" rowspan="1" colspan="3">
+                            <property name="name">
+                                <cstring>layout8</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="KIntSpinBox">
+                                    <property name="name">
+                                        <cstring>m_termAmount</cstring>
+                                    </property>
+                                    <property name="maxValue">
+                                        <number>999</number>
+                                    </property>
+                                    <property name="whatsThis" stdset="0">
+                                        <string>Please enter the term of this loan or enter 0 to calculate it. The term is the time that is required to fully repay the loan. This time might be different from the time your loan contract is signed for.</string>
+                                    </property>
+                                </widget>
+                                <widget class="KMyMoneyFrequencyCombo">
+                                    <property name="name">
+                                        <cstring>m_termUnit</cstring>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="QLabel" row="4" column="0">
+                            <property name="name">
+                                <cstring>textLabel11</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Payment (principal and interest)</string>
+                            </property>
+                        </widget>
+                        <widget class="kMyMoneyEdit" row="4" column="1" rowspan="1" colspan="3">
+                            <property name="name">
+                                <cstring>m_paymentAmount</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Please enter the amount you pay for principal and interest or leave the field empty to calculate it.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="5" column="0">
+                            <property name="name">
+                                <cstring>textLabel12</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Balloon payment</string>
+                            </property>
+                        </widget>
+                        <widget class="kMyMoneyEdit" row="5" column="1" rowspan="1" colspan="3">
+                            <property name="name">
+                                <cstring>m_balloonAmount</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Please enter the amount of a final amortization payment or leave the field empty to calculate it.</string>
+                            </property>
+                        </widget>
                         <widget class="QLayoutWidget" row="6" column="1">
                             <property name="name">
                                 <cstring>layout53</cstring>
@@ -101,122 +225,6 @@
                                 </widget>
                             </hbox>
                         </widget>
-                        <widget class="QLabel" row="3" column="0">
-                            <property name="name">
-                                <cstring>textLabel10</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Term</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>textLabel9</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Interest rate</string>
-                            </property>
-                        </widget>
-                        <widget class="kMyMoneyEdit" row="5" column="1" rowspan="1" colspan="3">
-                            <property name="name">
-                                <cstring>m_balloonAmount</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Please enter the amount of a final amortization payment or leave the field empty to calculate it.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLayoutWidget" row="3" column="1" rowspan="1" colspan="3">
-                            <property name="name">
-                                <cstring>layout8</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="KIntSpinBox">
-                                    <property name="name">
-                                        <cstring>m_termAmount</cstring>
-                                    </property>
-                                    <property name="maxValue">
-                                        <number>999</number>
-                                    </property>
-                                    <property name="whatsThis" stdset="0">
-                                        <string>Please enter the term of this loan or enter 0 to calculate it. The term is the time that is required to fully repay the loan. This time might be different from the time your loan contract is signed for.</string>
-                                    </property>
-                                </widget>
-                                <widget class="KMyMoneyFrequencyCombo">
-                                    <property name="name">
-                                        <cstring>m_termUnit</cstring>
-                                    </property>
-                                </widget>
-                            </hbox>
-                        </widget>
-                        <widget class="KComboBox" row="0" column="1" rowspan="1" colspan="3">
-                            <item>
-                                <property name="text">
-                                    <string>when the payment is received</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>when the payment is due</string>
-                                </property>
-                            </item>
-                            <property name="name">
-                                <cstring>m_paymentDue</cstring>
-                            </property>
-                        </widget>
-                        <widget class="kMyMoneyEdit" row="2" column="1" rowspan="1" colspan="3">
-                            <property name="name">
-                                <cstring>m_interestRate</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Please enter the interest rate in percent or leave the field empty to calculate it.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel7</cstring>
-                            </property>
-                            <property name="text">
-                                <string>The interest rate gets calculated</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="4" column="0">
-                            <property name="name">
-                                <cstring>textLabel11</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Payment (principal and interest)</string>
-                            </property>
-                        </widget>
-                        <widget class="kMyMoneyEdit" row="1" column="1" rowspan="1" colspan="3">
-                            <property name="name">
-                                <cstring>m_loanAmount</cstring>
-                            </property>
-                            <property name="resetButtonVisibility" stdset="0">
-                                <bool>true</bool>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Enter the amount of the loan in this field. If you want to calculate this field out of the other parameters, please leave it empty. If the field is marked as required (colored background) you have informed KMyMoney about the fact that there were already some payments towards the loan. In this case, please enter the ending balance of your last statement.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>textLabel8</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Loan amount</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="5" column="0">
-                            <property name="name">
-                                <cstring>textLabel12</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Balloon payment</string>
-                            </property>
-                        </widget>
                         <spacer row="6" column="2">
                             <property name="name">
                                 <cstring>spacer88_2</cstring>
@@ -234,14 +242,6 @@
                                 </size>
                             </property>
                         </spacer>
-                        <widget class="kMyMoneyEdit" row="4" column="1" rowspan="1" colspan="3">
-                            <property name="name">
-                                <cstring>m_paymentAmount</cstring>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Please enter the amount you pay for principal and interest or leave the field empty to calculate it.</string>
-                            </property>
-                        </widget>
                     </grid>
                 </widget>
                 <spacer>
@@ -284,16 +284,5 @@
 </widget>
 <customwidgets>
 </customwidgets>
-<tabstops>
-    <tabstop>m_paymentDue</tabstop>
-    <tabstop>m_loanAmount</tabstop>
-    <tabstop>m_interestRate</tabstop>
-    <tabstop>m_termAmount</tabstop>
-    <tabstop>m_termUnit</tabstop>
-    <tabstop>m_paymentAmount</tabstop>
-    <tabstop>m_balloonAmount</tabstop>
-    <tabstop>m_calculateButton</tabstop>
-    <tabstop>kActiveLabel2</tabstop>
-</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

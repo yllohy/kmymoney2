@@ -47,14 +47,12 @@ Enter the account number used by the institution to identify the account.</strin
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="KLineEdit" row="1" column="1">
+                        <widget class="QLabel" row="0" column="0">
                             <property name="name">
-                                <cstring>m_accountNumber</cstring>
+                                <cstring>textLabel4</cstring>
                             </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>Accounts managed by an institution are usually referenced by a unique number the so called account number. Enter that number here.
-
-KMyMoney currently uses this number only for some online banking functions.</string>
+                            <property name="text">
+                                <string>Institution</string>
                             </property>
                         </widget>
                         <widget class="KComboBox" row="0" column="1">
@@ -65,7 +63,41 @@ KMyMoney currently uses this number only for some online banking functions.</str
                                 <string>Select the institution which manages this account or leave empty</string>
                             </property>
                         </widget>
-                        <widget class="KLineEdit" row="2" column="1">
+                        <widget class="KPushButton" row="0" column="2">
+                            <property name="name">
+                                <cstring>m_newInstitutionButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Ne&amp;w Institution</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel5</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Account number</string>
+                            </property>
+                        </widget>
+                        <widget class="KLineEdit" row="1" column="1">
+                            <property name="name">
+                                <cstring>m_accountNumber</cstring>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>Accounts managed by an institution are usually referenced by a unique number the so called account number. Enter that number here.
+
+KMyMoney currently uses this number only for some online banking functions.</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="2" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>IBAN</string>
+                            </property>
+                        </widget>
+			<widget class="KLineEdit" row="2" column="1" colspan="2">
                             <property name="name">
                                 <cstring>m_iban</cstring>
                             </property>
@@ -78,38 +110,6 @@ KMyMoney currently uses this number only for some online banking functions.</str
 See also http://en.wikipedia.org/wiki/International_Bank_Account_Number for more information.
 
 KMyMoney keeps this field only for documentation purposes and does not use it otherwise.</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>IBAN</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>textLabel5</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Account number</string>
-                            </property>
-                        </widget>
-                        <widget class="KPushButton" row="0" column="2">
-                            <property name="name">
-                                <cstring>m_newInstitutionButton</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Ne&amp;w Institution</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel4</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Institution</string>
                             </property>
                         </widget>
                     </grid>
@@ -152,10 +152,5 @@ KMyMoney keeps this field only for documentation purposes and does not use it ot
         </spacer>
     </vbox>
 </widget>
-<tabstops>
-    <tabstop>m_institutionComboBox</tabstop>
-    <tabstop>m_newInstitutionButton</tabstop>
-    <tabstop>m_accountNumber</tabstop>
-</tabstops>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
