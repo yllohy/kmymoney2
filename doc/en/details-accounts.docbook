@@ -329,6 +329,35 @@
     </sect2>
 
     <sect2>
+      <title>Select a parent account</title>
+
+      <para><screenshot>
+	<screeninfo>Parent Account</screeninfo>
+
+	<mediaobject>
+	  <imageobject>
+            <imagedata fileref="accwiz10.png" format="PNG" />
+	  </imageobject>
+
+	  <textobject>
+	    <phrase>Account Wizard</phrase>
+	  </textobject>
+	</mediaobject>
+      </screenshot></para>
+
+      <para>
+      This is the penultimate step in creating a new account. A tree of accounts is displayed. The tree will be of your Asset or Liability accounts, depending on the type of account that is being created.
+      </para>
+
+      <para>
+      Select the account you wish  contain the new account.  If you do not select a parent account, the new account will be created at the top level.
+      </para>
+
+      <para>
+      The Parent Account page is not currently shown for Loans because they cannot be created as sub-accounts.  Also, Investment accounts cannot contain other accounts so they are not shown in the tree.
+      </para>
+    </sect2>
+    <sect2>
       <title>Review and save the account details</title>
 
       <para><screenshot>
