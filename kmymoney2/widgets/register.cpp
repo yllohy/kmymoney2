@@ -1424,13 +1424,13 @@ int Register::rowToIndex(int row) const
   return -1;
 }
 
-void Register::selectedTransactions(QValueList<SelectedTransaction>& list) const
+void Register::selectedTransactions(SelectedTransactions* list) const
 {
   if(m_focusItem && m_focusItem->isSelected() && m_focusItem->isVisible()) {
     Transaction* t = dynamic_cast<Transaction*>(m_focusItem);
     if(t) {
       SelectedTransaction s(t->transaction(), t->split());
-      list << s;
+      *(list) << s;
     }
   }
 
@@ -1443,7 +1443,7 @@ void Register::selectedTransactions(QValueList<SelectedTransaction>& list) const
       Transaction* t = dynamic_cast<Transaction*>(item);
       if(t) {
         SelectedTransaction s(t->transaction(), t->split());
-        list << s;
+        *(list) << s;
       }
     }
   }
@@ -1653,8 +1653,7 @@ void Register::selectItem(RegisterItem* item, bool dontChangeSelections)
       }
     }
     if(okToSelect) {
-      QValueList<SelectedTransaction> list;
-      selectedTransactions(list);
+      SelectedTransactions list(this);
       emit selectionChanged(list);
     }
   }

@@ -76,13 +76,13 @@ KSelectTransactionsDlg::KSelectTransactionsDlg(const MyMoneyAccount& _account, Q
   // catch some events from the register
   m_register->installEventFilter(this);
 
-  connect(m_register, SIGNAL(selectionChanged(const QValueList<KMyMoneyRegister::SelectedTransaction>&)), this, SLOT(slotEnableOk(const QValueList<KMyMoneyRegister::SelectedTransaction>&)));
+  connect(m_register, SIGNAL(selectionChanged(const KMyMoneyRegister::SelectedTransactions&)), this, SLOT(slotEnableOk(const KMyMoneyRegister::SelectedTransactions&)));
   connect(m_register, SIGNAL(editTransaction()), this, SLOT(accept()));
 
   connect(m_helpButton, SIGNAL(clicked()), this, SLOT(slotHelp()));
 }
 
-void KSelectTransactionsDlg::slotEnableOk(const QValueList<KMyMoneyRegister::SelectedTransaction>& list)
+void KSelectTransactionsDlg::slotEnableOk(const KMyMoneyRegister::SelectedTransactions& list)
 {
   buttonOk->setEnabled(list.count() != 0);
 }

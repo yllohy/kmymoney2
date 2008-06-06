@@ -366,7 +366,7 @@ public:
     * @retval true Yes, view allows to create a transaction (tooltip is not changed)
     * @retval false No, view cannot to create a transaction (tooltip is updated with message)
     */
-  bool canCreateTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const;
+  bool canCreateTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
 
   /**
     * check if the current view allows to modify (edit/delete) the selected transactions
@@ -379,7 +379,7 @@ public:
     * @retval true Yes, view allows to edit/delete transactions (tooltip is not changed)
     * @retval false No, view cannot edit/delete transactions (tooltip is updated with message)
     */
-  bool canModifyTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const;
+  bool canModifyTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
 
   /**
     * check if the current view allows to edit the selected transactions
@@ -392,7 +392,7 @@ public:
     * @retval true Yes, view allows to enter/edit transactions
     * @retval false No, view cannot enter/edit transactions
     */
-  bool canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const;
+  bool canEditTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
 
   /**
     * check if the current view allows to print something
@@ -402,7 +402,7 @@ public:
     */
   bool canPrint(void);
 
-  TransactionEditor* startEdit(const QValueList<KMyMoneyRegister::SelectedTransaction>&);
+  TransactionEditor* startEdit(const KMyMoneyRegister::SelectedTransactions&);
 
   bool createNewTransaction(void);
 

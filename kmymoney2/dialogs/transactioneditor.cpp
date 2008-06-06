@@ -59,7 +59,7 @@
 using namespace KMyMoneyRegister;
 using namespace KMyMoneyTransactionForm;
 
-TransactionEditor::TransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
+TransactionEditor::TransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const KMyMoneyRegister::SelectedTransactions& list, const QDate& lastPostDate) :
   m_transactions(list),
   m_regForm(regForm),
   m_item(item),
@@ -316,7 +316,7 @@ bool TransactionEditor::fixTransactionCommodity(const MyMoneyAccount& account)
   int fract = m_account.fraction();
 
   // scan the list of selected transactions
-  QValueList<KMyMoneyRegister::SelectedTransaction>::iterator it_t;
+  KMyMoneyRegister::SelectedTransactions::iterator it_t;
   for(it_t = m_transactions.begin(); (rc == true) && (it_t != m_transactions.end()); ++it_t) {
     // there was a time when the schedule editor did not setup the transaction commodity
     // let's give a helping hand here for those old schedules
@@ -508,7 +508,7 @@ bool TransactionEditor::enterTransactions(QCString& newId, bool askForSchedule)
   // we don't need to update our widgets anymore, so we just disconnect the signal
   disconnect(file, SIGNAL(dataChanged()), this, SLOT(slotReloadEditWidgets()));
 
-  QValueList<KMyMoneyRegister::SelectedTransaction>::iterator it_t;
+  KMyMoneyRegister::SelectedTransactions::iterator it_t;
   MyMoneyTransaction t;
   bool newTransactionCreated = false;
 
@@ -697,7 +697,7 @@ StdTransactionEditor::StdTransactionEditor()
 {
 }
 
-StdTransactionEditor::StdTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
+StdTransactionEditor::StdTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const KMyMoneyRegister::SelectedTransactions& list, const QDate& lastPostDate) :
   TransactionEditor(regForm, item, list, lastPostDate),
   m_inUpdateVat(false)
 {

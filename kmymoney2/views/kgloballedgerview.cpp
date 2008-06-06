@@ -235,7 +235,7 @@ KGlobalLedgerView::KGlobalLedgerView(QWidget *parent, const char *name )
   connect(m_register, SIGNAL(focusChanged(KMyMoneyRegister::Transaction*)), m_form, SLOT(slotSetTransaction(KMyMoneyRegister::Transaction*)));
   connect(m_register, SIGNAL(focusChanged()), kmymoney2, SLOT(slotUpdateActions()));
   connect(m_accountComboBox, SIGNAL(accountSelected(const QCString&)), this, SLOT(slotSelectAccount(const QCString&)));
-  connect(m_register, SIGNAL(selectionChanged(const QValueList<KMyMoneyRegister::SelectedTransaction>&)), this, SIGNAL(transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>&)));
+  connect(m_register, SIGNAL(selectionChanged(const KMyMoneyRegister::SelectedTransactions&)), this, SIGNAL(transactionsSelected(const KMyMoneyRegister::SelectedTransactions&)));
   connect(m_register, SIGNAL(editTransaction()), this, SIGNAL(startEdit()));
   connect(m_register, SIGNAL(emptyItemSelected()), this, SLOT(slotNewTransaction()));
   connect(m_register, SIGNAL(aboutToSelectItem(KMyMoneyRegister::RegisterItem*, bool&)), this, SLOT(slotAboutToSelectItem(KMyMoneyRegister::RegisterItem*, bool&)));
@@ -314,7 +314,7 @@ void KGlobalLedgerView::loadView(void)
   // no account selected
   emit accountSelected(MyMoneyAccount());
   // no transaction selected
-  QValueList<KMyMoneyRegister::SelectedTransaction> list;
+  KMyMoneyRegister::SelectedTransactions list;
   emit transactionsSelected(list);
   // no match transaction selected
   m_matchTransaction = MyMoneyTransaction();
@@ -732,8 +732,7 @@ void KGlobalLedgerView::slotSelectAllTransactions(void)
   m_register->repaintItems();
 
   // inform everyone else about the selected items
-  QValueList<KMyMoneyRegister::SelectedTransaction> list;
-  m_register->selectedTransactions(list);
+  KMyMoneyRegister::SelectedTransactions list(m_register);
   emit transactionsSelected(list);
 }
 
@@ -847,8 +846,7 @@ bool KGlobalLedgerView::selectEmptyTransaction(void)
   bool rc = false;
 
   if(!m_inEditMode) {
-    QValueList<KMyMoneyRegister::SelectedTransaction> list;
-    m_register->selectedTransactions(list);
+    KMyMoneyRegister::SelectedTransactions list(m_register);
     if(list.count() > 0 && !list[0].transaction().id().isEmpty()) {
       m_register->clearSelection();
     }
@@ -859,7 +857,7 @@ bool KGlobalLedgerView::selectEmptyTransaction(void)
   return rc;
 }
 
-TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegister::SelectedTransaction>& list)
+TransactionEditor* KGlobalLedgerView::startEdit(const KMyMoneyRegister::SelectedTransactions& list)
 {
   // we use the warnlevel to keep track, if we have to warn the
   // user that some or all splits have been reconciled or if the
@@ -873,7 +871,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
 
   int warnLevel = 0;
 
-  QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+  KMyMoneyRegister::SelectedTransactions::const_iterator it_t;
   for(it_t = list.begin(); warnLevel < 2 && it_t != list.end(); ++it_t) {
     const QValueList<MyMoneySplit>& splits = (*it_t).transaction().splits();
     QValueList<MyMoneySplit>::const_iterator it_s;
@@ -974,7 +972,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
       connect(editor, SIGNAL(escapePressed()), kmymoney2->action("transaction_cancel"), SLOT(activate()));
 
       connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), editor, SLOT(slotReloadEditWidgets()));
-      connect(editor, SIGNAL(finishEdit(const QValueList<KMyMoneyRegister::SelectedTransaction >&)), this, SLOT(slotLeaveEditMode(const QValueList<KMyMoneyRegister::SelectedTransaction >&)));
+      connect(editor, SIGNAL(finishEdit(const KMyMoneyRegister::SelectedTransactions&)), this, SLOT(slotLeaveEditMode(const KMyMoneyRegister::SelectedTransactions&)));
 
       connect(editor, SIGNAL(objectCreation(bool)), d->m_mousePressFilter, SLOT(setFilterDeactive(bool)));
       connect(editor, SIGNAL(createPayee(const QString&, QCString&)), kmymoney2, SLOT(slotPayeeNew(const QString&, QCString&)));
@@ -1015,7 +1013,7 @@ TransactionEditor* KGlobalLedgerView::startEdit(const QValueList<KMyMoneyRegiste
   return editor;
 }
 
-void KGlobalLedgerView::slotLeaveEditMode(const QValueList<KMyMoneyRegister::SelectedTransaction>& list)
+void KGlobalLedgerView::slotLeaveEditMode(const KMyMoneyRegister::SelectedTransactions& list)
 {
   m_inEditMode = false;
   qApp->removeEventFilter(d->m_mousePressFilter);
@@ -1102,8 +1100,7 @@ void KGlobalLedgerView::show(void)
 
   } else {
     emit accountSelected(m_account);
-    QValueList<KMyMoneyRegister::SelectedTransaction> list;
-    m_register->selectedTransactions(list);
+    KMyMoneyRegister::SelectedTransactions list(m_register);
     emit transactionsSelected(list);
     emit matchTransactionSelected(m_matchTransaction);
   }
@@ -1213,7 +1210,7 @@ bool KGlobalLedgerView::canCreateTransactions(QString& tooltip) const
   return rc;
 }
 
-bool KGlobalLedgerView::canModifyTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
+bool KGlobalLedgerView::canModifyTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const
 {
   if(m_register->focusItem() == 0)
     return false;
@@ -1225,7 +1222,7 @@ bool KGlobalLedgerView::canModifyTransactions(const QValueList<KMyMoneyRegister:
   return list.count() > 0;
 }
 
-bool KGlobalLedgerView::canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
+bool KGlobalLedgerView::canEditTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const
 {
   // check if we can edit the list of transactions. We can edit, if
   //
@@ -1248,7 +1245,7 @@ bool KGlobalLedgerView::canEditTransactions(const QValueList<KMyMoneyRegister::S
     rc = false;
   }
 
-  QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+  KMyMoneyRegister::SelectedTransactions::const_iterator it_t;
   for(it_t = list.begin(); rc && it_t != list.end(); ++it_t) {
     if((*it_t).transaction().id().isEmpty()) {
       tooltip = QString();

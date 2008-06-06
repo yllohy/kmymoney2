@@ -275,7 +275,7 @@ void KMyMoney2App::initDynamicMenus(void)
     menu->insertItem(d->m_moveToAccountSelector);
     connect(d->m_moveToAccountSelector, SIGNAL(itemSelected(const QCString&)), this, SLOT(slotMoveToAccount(const QCString&)));
     connect(this, SIGNAL(accountSelected(const MyMoneyAccount&)), this, SLOT(slotUpdateMoveToAccountMenu()));
-    connect(this, SIGNAL(transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>&)), this, SLOT(slotUpdateMoveToAccountMenu()));
+    connect(this, SIGNAL(transactionsSelected(const KMyMoneyRegister::SelectedTransactions&)), this, SLOT(slotUpdateMoveToAccountMenu()));
     connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), this, SLOT(slotUpdateMoveToAccountMenu()));
   }
 }
@@ -1231,7 +1231,7 @@ void KMyMoney2App::slotFileClose(void)
   slotSelectMatchTransaction(MyMoneyTransaction());
   slotSelectBudget(QValueList<MyMoneyBudget>());
   slotSelectPayees(QValueList<MyMoneyPayee>());
-  slotSelectTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>());
+  slotSelectTransactions(KMyMoneyRegister::SelectedTransactions());
 
   m_reconciliationAccount = MyMoneyAccount();
   myMoneyView->finishReconciliation(m_reconciliationAccount);
@@ -4085,8 +4085,8 @@ void KMyMoney2App::slotTransactionDuplicate(void)
   // since we may jump here via code, we have to make sure to react only
   // if the action is enabled
   if(kmymoney2->action("transaction_duplicate")->isEnabled()) {
-    QValueList<KMyMoneyRegister::SelectedTransaction> list = m_selectedTransactions;
-    QValueList<KMyMoneyRegister::SelectedTransaction>::iterator it_t;
+    KMyMoneyRegister::SelectedTransactions list = m_selectedTransactions;
+    KMyMoneyRegister::SelectedTransactions::iterator it_t;
 
     int i = 0;
     int cnt = m_selectedTransactions.count();
@@ -4131,8 +4131,8 @@ void KMyMoney2App::slotTransactionDuplicate(void)
 
 void KMyMoney2App::doDeleteTransactions(void)
 {
-  QValueList<KMyMoneyRegister::SelectedTransaction> list = m_selectedTransactions;
-  QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+  KMyMoneyRegister::SelectedTransactions list = m_selectedTransactions;
+  KMyMoneyRegister::SelectedTransactions::const_iterator it_t;
   int cnt = list.count();
   int i = 0;
   slotStatusProgressBar(0, cnt);
@@ -4316,8 +4316,8 @@ void KMyMoney2App::slotMarkTransactionNotReconciled(void)
 
 void KMyMoney2App::markTransaction(MyMoneySplit::reconcileFlagE flag)
 {
-  QValueList<KMyMoneyRegister::SelectedTransaction> list = m_selectedTransactions;
-  QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+  KMyMoneyRegister::SelectedTransactions list = m_selectedTransactions;
+  KMyMoneyRegister::SelectedTransactions::const_iterator it_t;
   int cnt = list.count();
   int i = 0;
   slotStatusProgressBar(0, cnt);
@@ -4380,8 +4380,8 @@ void KMyMoney2App::markTransaction(MyMoneySplit::reconcileFlagE flag)
 
 void KMyMoney2App::slotTransactionsAccept(void)
 {
-  QValueList<KMyMoneyRegister::SelectedTransaction> list = m_selectedTransactions;
-  QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+  KMyMoneyRegister::SelectedTransactions list = m_selectedTransactions;
+  KMyMoneyRegister::SelectedTransactions::const_iterator it_t;
   int cnt = list.count();
   int i = 0;
   slotStatusProgressBar(0, cnt);
@@ -4483,7 +4483,7 @@ void KMyMoney2App::slotMoveToAccount(const QCString& id)
   if(m_selectedTransactions.count() > 0 && m_selectedAccount.isAssetLiability()) {
     MyMoneyFileTransaction ft;
     try {
-      QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+      KMyMoneyRegister::SelectedTransactions::const_iterator it_t;
       for(it_t = m_selectedTransactions.begin(); it_t != m_selectedTransactions.end(); ++it_t) {
         QValueList<MyMoneySplit>::const_iterator it_s;
         bool changed = false;
@@ -4525,7 +4525,7 @@ void KMyMoney2App::slotUpdateMoveToAccountMenu(void)
 
     accountSet.load(d->m_moveToAccountSelector);
     // remove those accounts that we currently reference
-    QValueList<KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+    KMyMoneyRegister::SelectedTransactions::const_iterator it_t;
     for(it_t = m_selectedTransactions.begin(); it_t != m_selectedTransactions.end(); ++it_t) {
       QValueList<MyMoneySplit>::const_iterator it_s;
       for(it_s = (*it_t).transaction().splits().begin(); it_s != (*it_t).transaction().splits().end(); ++it_s) {
@@ -4904,7 +4904,7 @@ void KMyMoney2App::slotUpdateActions(void)
   action("budget_forecast")->setEnabled(false);
 
   QString tooltip = i18n("Create a new transaction");
-  action("transaction_new")->setEnabled(fileOpen && myMoneyView->canCreateTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>(), tooltip));
+  action("transaction_new")->setEnabled(fileOpen && myMoneyView->canCreateTransactions(KMyMoneyRegister::SelectedTransactions(), tooltip));
   action("transaction_new")->setToolTip(tooltip);
 
   action("transaction_edit")->setEnabled(false);
@@ -5138,13 +5138,13 @@ void KMyMoney2App::slotResetSelections(void)
   slotSelectCurrency();
   slotSelectPayees(QValueList<MyMoneyPayee>());
   slotSelectBudget(QValueList<MyMoneyBudget>());
-  slotSelectTransactions(QValueList<KMyMoneyRegister::SelectedTransaction>());
+  slotSelectTransactions(KMyMoneyRegister::SelectedTransactions());
   slotUpdateActions();
 }
 
 bool KMyMoney2App::haveImportedTransactionSelected(void) const
 {
-  QValueList< KMyMoneyRegister::SelectedTransaction>::const_iterator it_t;
+  KMyMoneyRegister::SelectedTransactions::const_iterator it_t;
   for(it_t = m_selectedTransactions.begin(); it_t != m_selectedTransactions.end(); ++it_t) {
     if((*it_t).transaction().value("Imported").lower() == "true")
       return true;
@@ -5173,7 +5173,7 @@ void KMyMoney2App::slotSelectPayees(const QValueList<MyMoneyPayee>& list)
   emit payeesSelected(m_selectedPayees);
 }
 
-void KMyMoney2App::slotSelectTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list)
+void KMyMoney2App::slotSelectTransactions(const KMyMoneyRegister::SelectedTransactions& list)
 {
   m_selectedTransactions = list;
 

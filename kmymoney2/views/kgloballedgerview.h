@@ -165,7 +165,7 @@ public:
     * @retval true Yes, view allows to edit/delete transactions (tooltip is not changed)
     * @retval false No, view cannot edit/delete transactions (tooltip is updated with message)
     */
-  bool canModifyTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const;
+  bool canModifyTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
 
   /**
     * Checks if the list of transactions can be edited in the current context
@@ -177,9 +177,9 @@ public:
     *
     * @return @c true if edit operation is possible, @c false if not
     */
-  bool canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const;
+  bool canEditTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const;
 
-  TransactionEditor* startEdit(const QValueList<KMyMoneyRegister::SelectedTransaction>& list);
+  TransactionEditor* startEdit(const KMyMoneyRegister::SelectedTransactions& list);
 
   /**
     * Method to prepare the ledger view to create a new transaction.
@@ -306,7 +306,7 @@ protected:
   void setupDefaultAction(void);
 
 protected slots:
-  void slotLeaveEditMode(const QValueList<KMyMoneyRegister::SelectedTransaction>& list);
+  void slotLeaveEditMode(const KMyMoneyRegister::SelectedTransactions& list);
   void slotNewTransaction(void);
   void slotNewTransaction(KMyMoneyRegister::Action);
 
@@ -373,7 +373,7 @@ private:
 
 signals:
   void accountSelected(const MyMoneyObject&);
-  void transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>&);
+  void transactionsSelected(const KMyMoneyRegister::SelectedTransactions&);
   void matchTransactionSelected(const MyMoneyTransaction&);
   void newTransaction(void);
   void startEdit(void);

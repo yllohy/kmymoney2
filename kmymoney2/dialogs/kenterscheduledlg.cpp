@@ -173,8 +173,7 @@ int KEnterScheduleDlg::exec(void)
 
 TransactionEditor* KEnterScheduleDlg::startEdit(void)
 {
-  QValueList<KMyMoneyRegister::SelectedTransaction> list;
-  m_register->selectedTransactions(list);
+  KMyMoneyRegister::SelectedTransactions list(m_register);
   TransactionEditor* editor = d->m_item->createEditor(m_form, list, QDate());
 
   // check that we use the same transaction commodity in all selected transactions
@@ -195,7 +194,7 @@ TransactionEditor* KEnterScheduleDlg::startEdit(void)
     connect(editor, SIGNAL(returnPressed()), buttonOk, SLOT(animateClick()));
 
     connect(MyMoneyFile::instance(), SIGNAL(dataChanged()), editor, SLOT(slotReloadEditWidgets()));
-    // connect(editor, SIGNAL(finishEdit(const QValueList<KMyMoneyRegister::SelectedTransaction >&)), this, SLOT(slotLeaveEditMode(const QValueList<KMyMoneyRegister::SelectedTransaction >&)));
+    // connect(editor, SIGNAL(finishEdit(const KMyMoneyRegister::SelectedTransactions&)), this, SLOT(slotLeaveEditMode(const KMyMoneyRegister::SelectedTransactions&)));
     connect(editor, SIGNAL(createPayee(const QString&, QCString&)), kmymoney2, SLOT(slotPayeeNew(const QString&, QCString&)));
     connect(editor, SIGNAL(createCategory(MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotCategoryNew(MyMoneyAccount&, const MyMoneyAccount&)));
     connect(editor, SIGNAL(createSecurity(MyMoneyAccount&, const MyMoneyAccount&)), kmymoney2, SLOT(slotInvestmentNew(MyMoneyAccount&, const MyMoneyAccount&)));

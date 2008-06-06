@@ -43,7 +43,7 @@ class TransactionEditor : public QObject
   Q_OBJECT
 public:
   TransactionEditor() {};
-  TransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+  TransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const KMyMoneyRegister::SelectedTransactions& list, const QDate& lastPostDate);
   virtual ~TransactionEditor();
 
   /**
@@ -174,7 +174,7 @@ signals:
     * that editing has been finished. The parameter @a t contains the list
     * of transactions that were processed.
     */
-  void finishEdit(const QValueList<KMyMoneyRegister::SelectedTransaction>& t);
+  void finishEdit(const KMyMoneyRegister::SelectedTransactions& t);
 
   /**
     * This signal is sent out whenever enough data is present to enter the
@@ -259,7 +259,7 @@ signals:
 
 protected:
   QValueList<MyMoneySplit>                          m_splits;
-  QValueList<KMyMoneyRegister::SelectedTransaction> m_transactions;
+  KMyMoneyRegister::SelectedTransactions            m_transactions;
   QValueList<const QWidget*>                        m_finalEditWidgets;
   TransactionEditorContainer*                       m_regForm;
   KMyMoneyRegister::Transaction*                    m_item;
@@ -279,7 +279,7 @@ class StdTransactionEditor : public TransactionEditor
   Q_OBJECT
 public:
   StdTransactionEditor();
-  StdTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+  StdTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::Transaction* item, const KMyMoneyRegister::SelectedTransactions& list, const QDate& lastPostDate);
   ~StdTransactionEditor();
 
   bool isComplete(void) const;

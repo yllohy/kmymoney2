@@ -48,6 +48,15 @@ private:
   MyMoneySplit            m_split;
 };
 
+class Register;
+
+class SelectedTransactions:public QValueList<SelectedTransaction>
+{
+public:
+  SelectedTransactions() {};
+  SelectedTransactions(const Register* r);
+};
+
 } // namespace
 
 #endif

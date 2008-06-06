@@ -57,7 +57,7 @@ public slots:
   virtual void slotHelp();
 
 protected slots:
-  void slotEnableOk(const QValueList<KMyMoneyRegister::SelectedTransaction>& list);
+  void slotEnableOk(const KMyMoneyRegister::SelectedTransactions& list);
 
 protected:
   void resizeEvent(QResizeEvent* ev);

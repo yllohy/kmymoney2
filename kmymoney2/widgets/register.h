@@ -272,7 +272,7 @@ public:
     *
     * @param list reference to QValueList receiving the SelectedTransaction()'s
     */
-  void selectedTransactions(QValueList<SelectedTransaction>& list) const;
+  void selectedTransactions(SelectedTransactions*  list) const;
 
   QString text(int row, int col) const;
   QWidget* createEditor(int row, int col, bool initFromCell) const;
@@ -493,7 +493,7 @@ protected slots:
 
 signals:
   void selectionChanged(void);
-  void selectionChanged(const QValueList<KMyMoneyRegister::SelectedTransaction>& list);
+  void selectionChanged(const KMyMoneyRegister::SelectedTransactions& list);
   /**
     * This signal is emitted when the focus and selection changes to @p item.
     *

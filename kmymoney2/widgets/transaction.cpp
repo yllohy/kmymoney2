@@ -1295,7 +1295,7 @@ int StdTransaction::numRowsRegister(bool expanded) const
   return numRows;
 }
 
-TransactionEditor* StdTransaction::createEditor(TransactionEditorContainer* regForm, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate)
+TransactionEditor* StdTransaction::createEditor(TransactionEditorContainer* regForm, const KMyMoneyRegister::SelectedTransactions& list, const QDate& lastPostDate)
 {
   m_inRegisterEdit = regForm == m_parent;
   return new StdTransactionEditor(regForm, this, list, lastPostDate);
@@ -2103,7 +2103,7 @@ void InvestTransaction::splits(MyMoneySplit& assetAccountSplit, QValueList<MyMon
   feeSplits = m_feeSplits;
 }
 
-TransactionEditor* InvestTransaction::createEditor(TransactionEditorContainer* regForm, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate)
+TransactionEditor* InvestTransaction::createEditor(TransactionEditorContainer* regForm, const KMyMoneyRegister::SelectedTransactions& list, const QDate& lastPostDate)
 {
   m_inRegisterEdit = regForm == m_parent;
   return new InvestTransactionEditor(regForm, this, list, lastPostDate);

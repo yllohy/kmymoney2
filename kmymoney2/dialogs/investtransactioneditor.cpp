@@ -94,7 +94,7 @@ InvestTransactionEditor::~InvestTransactionEditor()
   delete d;
 }
 
-InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::InvestTransaction* item, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) :
+InvestTransactionEditor::InvestTransactionEditor(TransactionEditorContainer* regForm, KMyMoneyRegister::InvestTransaction* item, const KMyMoneyRegister::SelectedTransactions& list, const QDate& lastPostDate) :
   TransactionEditor(regForm, item, list, lastPostDate),
   d(new InvestTransactionEditorPrivate(this))
 {
@@ -628,7 +628,7 @@ void InvestTransactionEditor::loadEditWidgets(KMyMoneyRegister::Action /* action
 
     // scan the list of selected transactions and check that they have
     // the same activity.
-    QValueList<KMyMoneyRegister::SelectedTransaction>::iterator it_t = m_transactions.begin();
+    KMyMoneyRegister::SelectedTransactions::iterator it_t = m_transactions.begin();
     const QCString& action = m_item->split().action();
     bool isNegative = m_item->split().shares().isNegative();
     bool allSameActivity = true;

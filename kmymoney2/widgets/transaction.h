@@ -214,7 +214,7 @@ public:
   /**
     * This method creates an editor for the transaction
     */
-  virtual TransactionEditor* createEditor(TransactionEditorContainer* regForm, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate) = 0;
+  virtual TransactionEditor* createEditor(TransactionEditorContainer* regForm, const KMyMoneyRegister::SelectedTransactions& list, const QDate& lastPostDate) = 0;
 
   virtual void setVisible(bool visible);
 
@@ -310,7 +310,7 @@ public:
     */
   int numRowsRegister(void) const { return RegisterItem::numRowsRegister(); }
 
-  TransactionEditor* createEditor(TransactionEditorContainer* regForm, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+  TransactionEditor* createEditor(TransactionEditorContainer* regForm, const KMyMoneyRegister::SelectedTransactions& list, const QDate& lastPostDate);
 
   /**
     * Return information if @a row should be shown (@a true )
@@ -367,7 +367,7 @@ public:
     */
   int numRowsRegister(void) const { return RegisterItem::numRowsRegister(); }
 
-  TransactionEditor* createEditor(TransactionEditorContainer* regForm, const QValueList<KMyMoneyRegister::SelectedTransaction>& list, const QDate& lastPostDate);
+  TransactionEditor* createEditor(TransactionEditorContainer* regForm, const KMyMoneyRegister::SelectedTransactions& list, const QDate& lastPostDate);
 
   void splits(MyMoneySplit& assetAccountSplit, QValueList<MyMoneySplit>& interestSplits, QValueList<MyMoneySplit>& feeSplits) const;
 

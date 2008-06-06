@@ -945,7 +945,7 @@ public slots:
 
   void slotSelectBudget(const QValueList<MyMoneyBudget>& list);
 
-  void slotSelectTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list);
+  void slotSelectTransactions(const KMyMoneyRegister::SelectedTransactions& list);
 
   void slotSelectMatchTransaction(const MyMoneyTransaction& t);
 
@@ -1061,7 +1061,7 @@ signals:
     * @p transactions is identical to an empty QValueList. This signal is used
     * by plugins to get information about changes.
     */
-  void transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>& transactions);
+  void transactionsSelected(const KMyMoneyRegister::SelectedTransactions& transactions);
 
   /**
     * This signal is sent out, when the user presses Ctrl+A or activates
@@ -1231,10 +1231,9 @@ private:
   MyMoneySecurity       m_selectedCurrency;
   QValueList<MyMoneyPayee>  m_selectedPayees;
   QValueList<MyMoneyBudget> m_selectedBudgets;
-  QValueList<KMyMoneyRegister::SelectedTransaction> m_selectedTransactions;
+  KMyMoneyRegister::SelectedTransactions m_selectedTransactions;
 
-  QValueList<KMyMoneyRegister::SelectedTransaction> m_editTransactions;
-  MyMoneyTransaction                                m_matchTransaction;
+  MyMoneyTransaction    m_matchTransaction;
 
   // This is Auto Saving related
   bool                  m_autoSaveEnabled;

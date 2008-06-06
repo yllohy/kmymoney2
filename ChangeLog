@@ -4,6 +4,11 @@
 --------------------------------------------------------------------
 
 2008-06-05  Wolfgang Rohdewald <wolfgang@rohdewald.de>
+  * globally replaced QValueList<SelectedTransaction> by the new class
+    SelectedTransactions. Right now it is almost empty, so this patch
+    is mostly syntactic sugar. Exception: constructor(const Register* r)
+
+2008-06-05  Wolfgang Rohdewald <wolfgang@rohdewald.de>
   * In home view and account tree, rename Balance to Current Balance
     resp. Total Balance
 

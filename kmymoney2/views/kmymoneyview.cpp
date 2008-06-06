@@ -201,7 +201,7 @@ KMyMoneyView::KMyMoneyView(QWidget *parent, const char *name)
   m_ledgerView = new KGlobalLedgerView(m_ledgerViewFrame, "GlobalLedgerView");
   connect(m_ledgerView, SIGNAL(accountSelected(const MyMoneyObject&)), kmymoney2, SLOT(slotSelectAccount(const MyMoneyObject&)));
   connect(m_ledgerView, SIGNAL(openContextMenu()), kmymoney2, SLOT(slotShowTransactionContextMenu()));
-  connect(m_ledgerView, SIGNAL(transactionsSelected(const QValueList<KMyMoneyRegister::SelectedTransaction>&)), kmymoney2, SLOT(slotSelectTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>&)));
+  connect(m_ledgerView, SIGNAL(transactionsSelected(const KMyMoneyRegister::SelectedTransactions&)), kmymoney2, SLOT(slotSelectTransactions(const KMyMoneyRegister::SelectedTransactions&)));
   connect(m_ledgerView, SIGNAL(newTransaction()), kmymoney2, SLOT(slotTransactionsNew()));
   connect(m_ledgerView, SIGNAL(cancelOrEndEdit(bool&)), kmymoney2, SLOT(slotTransactionsCancelOrEnter(bool&)));
   connect(m_ledgerView, SIGNAL(startEdit()), kmymoney2, SLOT(slotTransactionsEdit()));
@@ -309,7 +309,7 @@ bool KMyMoneyView::canPrint(void)
   return rc;
 }
 
-bool KMyMoneyView::canCreateTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& /* list */, QString& tooltip) const
+bool KMyMoneyView::canCreateTransactions(const KMyMoneyRegister::SelectedTransactions& /* list */, QString& tooltip) const
 {
   // we can only create transactions in the ledger view so
   // we check that this is the active page
@@ -322,7 +322,7 @@ bool KMyMoneyView::canCreateTransactions(const QValueList<KMyMoneyRegister::Sele
   return rc;
 }
 
-bool KMyMoneyView::canModifyTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
+bool KMyMoneyView::canModifyTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const
 {
   // we can only modify transactions in the ledger view so
   // we check that this is the active page
@@ -337,7 +337,7 @@ bool KMyMoneyView::canModifyTransactions(const QValueList<KMyMoneyRegister::Sele
   return rc;
 }
 
-bool KMyMoneyView::canEditTransactions(const QValueList<KMyMoneyRegister::SelectedTransaction>& list, QString& tooltip) const
+bool KMyMoneyView::canEditTransactions(const KMyMoneyRegister::SelectedTransactions& list, QString& tooltip) const
 {
   bool rc;
   // we can only edit transactions in the ledger view so
@@ -353,7 +353,7 @@ bool KMyMoneyView::canEditTransactions(const QValueList<KMyMoneyRegister::Select
 bool KMyMoneyView::createNewTransaction(void)
 {
   bool rc = false;
-  QValueList<KMyMoneyRegister::SelectedTransaction> list;
+  KMyMoneyRegister::SelectedTransactions list;
   QString txt;
   if(canCreateTransactions(list, txt)) {
     rc = m_ledgerView->selectEmptyTransaction();
@@ -361,7 +361,7 @@ bool KMyMoneyView::createNewTransaction(void)
   return rc;
 }
 
-TransactionEditor* KMyMoneyView::startEdit(const QValueList<KMyMoneyRegister::SelectedTransaction>& list)
+TransactionEditor* KMyMoneyView::startEdit(const KMyMoneyRegister::SelectedTransactions& list)
 {
   TransactionEditor* editor = 0;
   QString txt;
